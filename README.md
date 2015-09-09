@@ -1,18 +1,18 @@
  What is it?
   -----------
-A Free Clash of Clans bot. 
-A bot is a general term in gaming that is used to refer to a character controlled by a computer.
-https://mybot.run
+- A Free Clash of Clans bot. 
+- A bot is a general term in gaming that is used to refer to a character controlled by a computer.
+- https://mybot.run
 
 The Latest Version
   ------------------
-Details of the latest version can be found on the MyBot forum under https://mybot.run/forums/thread-6924.html
+- Details of the latest version can be found on the MyBot forum under https://mybot.run/forums/thread-6924.html
 
 Documentation
   -------------
 
-How to Start Bot - https://mybot.run/forums/showthread.php?tid=4
-How to Report Bug/Help - https://mybot.run/forums/showthread.php?tid=211
+- How to Start Bot - https://mybot.run/forums/showthread.php?tid=4
+- How to Report Bug/Help - https://mybot.run/forums/showthread.php?tid=211
 
 Installation
   ------------
@@ -29,9 +29,8 @@ Essential software :
 Licensing
   ---------
 Please see the file called LICENSE.
-
-MyBot autoit code is open sourced under GNU GENERAL PUBLIC LICENSE v3
-http://www.gnu.org/licenses/gpl-3.0.txt
+- MyBot autoit code is open sourced under GNU GENERAL PUBLIC LICENSE v3
+- http://www.gnu.org/licenses/gpl-3.0.txt
 
 Mybot use non-GPL 3rd party libraries for extension (#SystemLibraryException): 
 - OpenCV - BSD license - repository : https://github.com/MyBotRun/Libraries
@@ -40,4 +39,4 @@ Mybot use non-GPL 3rd party libraries for extension (#SystemLibraryException):
 
 Contacts
   --------
-https://mybot.run/forums/index.php
+- https://mybot.run/forums/index.php
