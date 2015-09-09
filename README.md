@@ -17,14 +17,14 @@ How to Report Bug/Help - https://mybot.run/forums/showthread.php?tid=211
 Installation
   ------------
 Essential software :
-Windows Vista/7/8/8.1  
-{Note - MyBot does not support Windows 10 at this time!} https://mybot.run/forums/thread-7296.html
-Microsoft Visual C++ 2010 Redistributable Package (x86)
-Microsoft .NET Framework 4.5
-BlueStacks App Player 0.9.24.5311 Superuser BSEasy ROOT by @swvr (Recommended)
-The latest drivers for your graphics device
-MyBot last version avaiable
-DON´T USE THE OLD CONFIG FILES
+-Windows Vista/7/8/8.1  
+-{Note - MyBot does not support Windows 10 at this time!} https://mybot.run/forums/thread-7296.html
+-Microsoft Visual C++ 2010 Redistributable Package (x86)
+-Microsoft .NET Framework 4.5
+-BlueStacks App Player 0.9.24.5311 Superuser BSEasy ROOT by @swvr (Recommended)
+-The latest drivers for your graphics device
+-MyBot last version avaiable
+-DON´T USE THE OLD CONFIG FILES
 
 Licensing
   ---------
