@@ -23,7 +23,7 @@ Microsoft Visual C++ 2010 Redistributable Package (x86)
 Microsoft .NET Framework 4.5
 BlueStacks App Player 0.9.24.5311 Superuser BSEasy ROOT by @swvr (Recommended)
 The latest drivers for your graphics device
-Clash Game Bot v4.1.1
+MyBot last version avaiable
 DON´T USE THE OLD CONFIG FILES
 
 Licensing
