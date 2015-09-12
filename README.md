@@ -10,7 +10,6 @@ The Latest Version
 
 Documentation
   -------------
-
 - How to Start Bot - https://mybot.run/forums/showthread.php?tid=4
 - How to Report Bug/Help - https://mybot.run/forums/showthread.php?tid=211
 
@@ -31,6 +30,9 @@ Licensing
 Please see the file called LICENSE.
 - MyBot autoit code is open sourced under GNU GENERAL PUBLIC LICENSE v3
 - http://www.gnu.org/licenses/gpl-3.0.txt
+
+- Curl.exe - curl is an open source command line tool and library for transferring data with URL syntax, supporting DICT, FILE, FTP, FTPS, Gopher, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMTP, SMTPS, Telnet and TFTP. curl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP form based upload, proxies, HTTP/2, cookies, user+password authentication (Basic, Plain, Digest, CRAM-MD5, NTLM, Negotiate and Kerberos), file transfer resume, proxy tunneling and more. This executable is used in our software because Pushbullet.
+  http://curl.haxx.se/
 
 Mybot use non-GPL 3rd party libraries for extension (#SystemLibraryException): 
 - OpenCV - BSD license - repository : https://github.com/MyBotRun/Libraries
