@@ -1,4 +1,4 @@
-!http://i.imgur.com/kcR9pyH.png(Logo)!
+
 
 ﻿ What is it?
   -----------
