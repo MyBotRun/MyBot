@@ -14,6 +14,7 @@ Documentation
   -------------
 - How to Start Bot - https://mybot.run/forums/showthread.php?tid=4
 - How to Report Bug/Help - https://mybot.run/forums/showthread.php?tid=211
+- https://github.com/MyBotRun/MyBot/wiki
 
 Installation
   ------------
