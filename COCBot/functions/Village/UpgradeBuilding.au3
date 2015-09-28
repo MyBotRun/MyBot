@@ -24,7 +24,7 @@ Func UpgradeBuilding()
 	$itxtUpgrMinDark = Number($itxtUpgrMinDark)
 
 	; check to see if anything is enabled before wasting time.
-	For $iz = 0 To 11
+	For $iz = 0 To 5
 		If $ichkbxUpgrade[$iz] = 1 Then
 			$iUpgradeAction += 2 ^ ($iz + 1)
 		EndIf
@@ -32,7 +32,7 @@ Func UpgradeBuilding()
 	If $iUpgradeAction < 0 Then Return False
 	$iUpgradeAction = -1 ; Reset action
 
-	Setlog("Upgrade Buildings", $COLOR_BLUE)
+	Setlog("Checking Upgrade", $COLOR_BLUE)
 
 	; Need to update village report function to skip statistics and extra messages not required using a bypass?
 	VillageReport(True) ; Get current loot available after training troops and update free builder status
@@ -51,7 +51,7 @@ Func UpgradeBuilding()
 		Return False
 	EndIf
 
-	For $iz = 0 To 11
+	For $iz = 0 To 5
 		If $ichkbxUpgrade[$iz] = 0 Then ContinueLoop ; Is the upgrade checkbox selected?
 		If $aUpgrades[$iz][0] <= 0 Or $aUpgrades[$iz][1] <= 0 Or $aUpgrades[$iz][3] = "" Then ContinueLoop ; Now check to see if upgrade manually located?
 		If $iAvailBldr <= 0 Then ; Check free builder in case of multiple upgrades
@@ -76,10 +76,6 @@ Func UpgradeBuilding()
 				$iAvailBldr -= 1
 				ContinueLoop
 			Case "Elixir"
-				If $LabNeedsElix = 1 Then
-					SetLog("Lab Needs Elixir", $COLOR_RED)
-					ContinueLoop
-				EndIf
 				If $iAvailElixir < $aUpgrades[$iz][2] + $itxtUpgrMinElixir Then
 					SetLog("Insufficent Elixir for #" & $iz + 1 & ", requires: " & $aUpgrades[$iz][2] & " + " & $itxtUpgrMinElixir, $COLOR_BLUE)
 					ContinueLoop
@@ -92,10 +88,6 @@ Func UpgradeBuilding()
 				$iAvailBldr -= 1
 				ContinueLoop
 			Case "Dark"
-				If $LabNeedsDE = 1 Then
-					SetLog("Lab Needs DE", $COLOR_RED)
-					ContinueLoop
-				EndIf
 				If $iAvailDark  < $aUpgrades[$iz][2] + $itxtUpgrMinDark Then
 					SetLog("Insufficent Dark for #" & $iz + 1 & ", requires: " & $aUpgrades[$iz][2] & " + " & $itxtUpgrMinDark, $COLOR_BLUE)
 					ContinueLoop

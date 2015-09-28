@@ -346,105 +346,28 @@ Func Train()
 		;USE BARRACK
 		While isBarrack()
 			_CaptureRegion()
-			Local $NumTroopsToTrain = 75
-			Local $NumCurTroopTraining = 0
-
 			If $FirstStart Then
 				$icount = 0
-				While Not _ColorCheck(_GetPixelColor(488, 191, True), Hex(0xD1D0C2, 6), 20)
+				While Not _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xE8E8DE, 6), 20) ; while not disappears  green arrow
+					If Not (IsTrainPage()) Then Return
 					Click(496, 197, 10, 0, "#0273")
 					$icount += 1
 					If $icount = 20 Then ExitLoop
 				WEnd
 				If $debugSetlog = 1 And $icount = 20 Then SetLog("Train warning 6")
-
-				If $barrackTroop[$brrNum] = 0 Or $barrackTroop[$brrNum] = 1 Or $barrackTroop[$brrNum] = 3 Then
-					 Switch $barrackTroop[$brrNum]
-					  Case 0
-						  TrainClick(220, 320, 80, 10, $FullBarb, $GemBarb, "#0274") ;Barbarian
-					  Case 1
-						  TrainClick(331, 320, 80, 10, $FullArch, $GemArch, "#0275") ;Archer
-					  Case 3
-						  TrainClick(546, 320, 80, 10, $FullGobl, $GemGobl, "#0277") ;Goblin
-					 EndSwitch
-
-					 If _Sleep(1000) Then ExitLoop
-
-					 If Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296)) <> 0 Then
-						 If _Sleep(200) Then ExitLoop
-						 $iMaxBarrackTroop[$brrNum] = Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296))					 
-
-					 Else
-						  If _Sleep(500) Then ExitLoop
-						  If Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296)) <> 0 Then ;retry
-							  If _Sleep(200) Then ExitLoop
-							  $iMaxBarrackTroop[$brrNum] = Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296))
-							  
-						  Else
-							  SetLog("Unable to read max Number")
-							  $iMaxBarrackTroop[$brrNum] = 75
-						  EndIf
-					 EndIf
-
-					If $iMaxBarrackTroop[$brrNum] > 75 Then
-					   If _Sleep(500) Then ExitLoop
-						  If Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296)) <> 0 Then ;retry
-							  If _Sleep(200) Then ExitLoop
-							  $iMaxBarrackTroop[$brrNum] = Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296))							  
-						  Else
-							  $iMaxBarrackTroop[$brrNum] = 75
-							  SetLog("OCR ERROR: Defaulting Max Troops of Barrack " & $brrNum)
-						  EndIf
-					EndIf
-					
-					$iMaxBarrackTroop[$brrNum] = 5 * Ceiling($iMaxBarrackTroop[$brrNum]/5.0)
-					
-					SetLog("Set Max Troop in Barracks " & $brrNum & " to " & $iMaxBarrackTroop[$brrNum])
-
-				  $NumTroopsToTrain = 0
-			   EndIf
-
-			ElseIf $barrackTroop[$brrNum] = 0 Or $barrackTroop[$brrNum] = 1 Or $barrackTroop[$brrNum] = 3 Then
-				$NumCurTroopTraining = 0
-
-				If _Sleep(500) Then ExitLoop
-				If Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296)) <> 0 Then
-					If _Sleep(200) Then ExitLoop
-					$NumCurTroopTraining = Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296))
-				 Else
-					If _Sleep(500) Then ExitLoop
-					If Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296)) <> 0 Then
-						If _Sleep(200) Then ExitLoop
-						$NumCurTroopTraining = Number(getBarracksTroopQuantity(175 + 107 * $barrackTroop[$brrNum], 296))
-					EndIf
-				EndIf
-
-				$NumTroopsToTrain = $iMaxBarrackTroop[$brrNum] - $NumCurTroopTraining
-
-				If $NumTroopsToTrain < 0 Or $NumTroopsToTrain > $iMaxBarrackTroop[$brrNum] Then
-					$NumTroopsToTrain = 75
-				EndIf				
 			EndIf
-
-			If _Sleep(500) Then ExitLoop
+			If _Sleep($iDelayTrain2) Then ExitLoop
 			$brrNum += 1
-
+			If Not (IsTrainPage()) Then Return ; exit from train if no train page
 			Switch $barrackTroop[$brrNum - 1]
 				Case 0
-					;Click(220, 320, 50, 10, "#0274") ;Barbarian
-					SetLog("Training " & $NumTroopsToTrain & " Barb/s")
-					TrainClick(220, 320, $NumTroopsToTrain  + Random(0,3,1), 10, $FullBarb, $GemBarb, "#0274") ;Barbarian
+					TrainClick(220, 320, 75, 10, $FullBarb, $GemBarb, "#0274") ;Barbarian
 				Case 1
-					;Click(331, 320, 50, 10, "#0275") ;Archer
-					SetLog("Training " & $NumTroopsToTrain & " Archer/s")
-					TrainClick(331, 320, $NumTroopsToTrain  + Random(0,3,1), 10, $FullArch, $GemArch, "#0275") ;Archer
+					TrainClick(331, 320, 75, 10, $FullArch, $GemArch, "#0275") ;Archer
 				Case 2
-					;Click(432, 320, 50, 10, "#0276") ;Giant
 					TrainClick(432, 320, 15, 10, $FullGiant, $GemGiant, "#0276") ;Giant
 				Case 3
-					;Click(546, 320, 50, 10, "#0277") ;Goblin
-					SetLog("Training " & $NumTroopsToTrain & " Gob/s")
-					TrainClick(546, 320, $NumTroopsToTrain  + Random(0,3,1), 10, $FullGobl, $GemGobl, "#0277") ;Goblin
+					TrainClick(546, 320, 75, 10, $FullGobl, $GemGobl, "#0277") ;Goblin
 				Case 4
 					TrainClick(647, 320, 37, 10, $FullWall, $GemWall, "#0278") ;Wall Breaker
 				Case 5

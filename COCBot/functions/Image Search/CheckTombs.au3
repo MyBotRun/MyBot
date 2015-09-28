@@ -4,8 +4,8 @@
 ; Syntax ........:
 ; Parameters ....: None
 ; Return values .: False if regular farming is needed to refill storage
-; Author ........:
-; Modified ......:
+; Author ........: barracoda/KnowJack (2015)
+; Modified ......: sardo 2015-06 2015-08
 ; Remarks .......: This file is part of ClashGameBot. Copyright 2015
 ;                  ClashGameBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -20,47 +20,27 @@ Func CheckTombs()
 	$tomb = @ScriptDir & "\images\tomb.png"
 	If Not FileExists($tomb) Then Return False
 	$TombLoc = 0
-	$TombClicked = 0
-
-	SetLog("Clear Tombs", $COLOR_BLUE)
-
 	_CaptureRegion()
-
-	$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-	$res = DllCall($LibDir & "\ImageSearch.dll", "str", "searchInCoCD", "handle", $sendHBitmap, "str", $tomb, "float", 0.940)
-	_WinAPI_DeleteObject($sendHBitmap)
-
-
-	If IsArray($res) Then
-		;SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
-		If $res[0] = "0" Then
-				; failed to find any obstacles to clear on the field
-				SetLog("No tombs found", $COLOR_RED)
-		ElseIf $res[0] = "-1" Then
-				SetLog("DLL Error", $COLOR_RED)
-		ElseIf $res[0] = "-2" Then
-				SetLog("Invalid Resolution", $COLOR_RED)
-		Else
-			$expRet = StringSplit($res[0], "|", 2)
-			For $j = 1 To UBound($expRet) - 1 Step 2
-				$TombX = Int($expRet[$j])
-				$TombY = Int($expRet[$j + 1])
-				If isInsideDiamondXY($TombX, $TombY) Then
-					;SetLog("Tombstone found (" & $TombX & "," & $TombY &")", $COLOR_GREEN)
-					Click($TombX, $TombY,1,0,"#0120")
-					If _Sleep($iDelayCheckTombs2) Then Return
-					ClickP($aAway,1,0,"#0121") ; click away
-					If _Sleep($iDelayCheckTombs1) Then Return
-					$TombClicked += 1
-						If($TombClicked > 2) Then
-							Return True
-						EndIf
-				EndIf
-			Next
+	If _Sleep($iDelayCheckTombs1) Then Return
+	For $TombTol = 0 To 20
+		If $TombLoc = 0 Then
+			$TombX = 0
+			$TombY = 0
+			$TombLoc = _ImageSearch($tomb, 1, $TombX, $TombY, $TombTol) ; Getting Tree Location
+;			If $TombLoc = 1 And $TombX > 35 And $TombY < 610 Then
+			If $TombLoc = 1 And isInsideDiamondXY($TombX, $TombY) Then
+				SetLog("Found tombstone ,  Removing...", $COLOR_GREEN)
+				If $DebugSetLog = 1 Then SetLog("Tombstone found (" & $TombX & "," & $TombY & ") tolerance:" & $TombTol, $COLOR_PURPLE)
+				Click($TombX, $TombY,1,0,"#0120")
+				If _Sleep($iDelayCheckTombs2) Then Return
+				ClickP($aAway,1,0,"#0121") ; click away
+				If _Sleep($iDelayCheckTombs1) Then Return
+				Return True
+			EndIf
 		EndIf
-	Else
-		SetLog("DLL Error", $COLOR_RED)
-		return
-	EndIf
+	Next
+	If $DebugSetLog = 1 Then SetLog("Cannot find tombstones, Yard is clean!", $COLOR_PURPLE)
+	If _Sleep($iDelayCheckTombs1) Then Return
+	checkMainScreen(False) ; check for screen errors while function was running
 
 EndFunc   ;==>CheckTombs

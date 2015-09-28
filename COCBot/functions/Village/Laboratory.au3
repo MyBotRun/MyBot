@@ -28,14 +28,12 @@ Func Laboratory()
 		Return False ; Nothing selected to upgrade
 	EndIf
 	If $aLabPos[0] = 0 Or $aLabPos[1] = 0 Then
-		;SetLog("Laboratory Location not found!", $COLOR_RED)
-		;LocateLab() ; Lab location unknown, so find it.
-		;If $aLabPos[0] = 0 Or $aLabPos[1] = 0 Then
-		;	SetLog("Problem locating Laboratory, train laboratory position before proceeding", $COLOR_RED)
-		;	Return False
-		;EndIf
-		SetLog("Bad Lab location", $COLOR_ORANGE)	
-		Return False
+		SetLog("Laboratory Location not found!", $COLOR_RED)
+		LocateLab() ; Lab location unknown, so find it.
+		If $aLabPos[0] = 0 Or $aLabPos[1] = 0 Then
+			SetLog("Problem locating Laboratory, train laboratory position before proceeding", $COLOR_RED)
+			Return False
+		EndIf
 	EndIf
 	SetLog("Checking Troop Upgrade in Laboratory ...", $COLOR_BLUE)
 
@@ -88,10 +86,8 @@ Func Laboratory()
 		Next
 		$iFirstTimeLab = 1
 	EndIf
-	$LabNeedsDE = 0
-	$LabNeedsElix = 0
 	; check for upgrade in process
-	If _ColorCheck(_GetPixelColor(625, 280, True), Hex(0x488408, 6), 20) Or _ColorCheck(_GetPixelColor(660, 280, True), Hex(0x488408, 6), 20) Then
+	If _ColorCheck(_GetPixelColor(625, 280, True), Hex(0x60AC10, 6), 20) Or _ColorCheck(_GetPixelColor(660, 280, True), Hex(0x60AC10, 6), 20) Then
 		SetLog("Upgrade in progress, waiting for completion of other troops", $COLOR_MAROON)
 		If _Sleep($iDelayLaboratory2) Then Return
 		If $debugSetlog <> 1 Then
@@ -137,7 +133,6 @@ Func Laboratory()
 	Switch $icmbLaboratory ;Change messaging based on troop number
 		Case 1 To 15  ; regular elixir
 			If $iAvailElixir < ($aUpgradeValue[$icmbLaboratory] + $itxtUpgrMinElixir) Then
-				$LabNeedsElix = 1
 				SetLog("Insufficent Elixir for " &$aLabTroops[$icmbLaboratory][3]& ", Lab requires: " &  $aUpgradeValue[$icmbLaboratory] & " + " & $itxtUpgrMinElixir & " user reserve", $COLOR_BLUE)
 				ClickP($aAway, 2, $iDelayLaboratory4,"#0355")
 				Return False
@@ -150,7 +145,6 @@ Func Laboratory()
 
 		Case 16 To 24  ; Dark Elixir
 			If $iAvailDark  <  $aUpgradeValue[$icmbLaboratory] + $itxtUpgrMinDark Then
-				$LabNeedsDE = 1
 				SetLog("Insufficent Dark Elixir for " & $aLabTroops[$icmbLaboratory][3] & ", Lab requires: " &  $aUpgradeValue[$icmbLaboratory] & " + " & $itxtUpgrMinDark & " user reserve", $COLOR_BLUE)
 				ClickP($aAway, 2, $iDelayLaboratory4,"#0357")
 				Return False

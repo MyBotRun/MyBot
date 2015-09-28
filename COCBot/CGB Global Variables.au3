@@ -175,7 +175,6 @@ Global $ReduceCount, $ReduceGold, $ReduceElixir, $ReduceGoldPlusElixir, $ReduceD
 Global $iChkEnableAfter[$iModeCount], $iCmbMeetGE[$iModeCount], $iChkMeetDE[$iModeCount], $iChkMeetTrophy[$iModeCount], $iChkMeetTH[$iModeCount], $iChkMeetTHO[$iModeCount], $iChkMeetOne[$iModeCount], $iCmbTH[$iModeCount], $iChkWeakBase[$iModeCount]
 Global $THLocation
 Global $THx = 0, $THy = 0
-Global $Defx = 0, $Defy = 0
 Global $DESLoc
 Global $DESLocx = 0
 Global $DESLocy = 0
@@ -185,12 +184,6 @@ $THText[1] = "7"
 $THText[2] = "8"
 $THText[3] = "9"
 $THText[4] = "10"
-Global $DefText[5] ; Text of Defense Type
-$DefText[0] = "Inferno Tower"
-$DefText[1] = "Hidden Tesla"
-$DefText[2] = "Mortar"
-$DefText[3] = "Wizard Tower"
-$DefText[4] = "Air Defense"
 Global $SearchCount = 0 ;Number of searches
 Global $THaddtiles, $THside, $THi
 Global $SearchTHLResult = 0
@@ -201,7 +194,6 @@ Global $ATBullyMode
 Global $YourTH
 Global $iTHBullyAttackMode
 Global $AttackTHType
-Global $allTroops = False, $skipBase = False
 ;Global $chklightspell
 ;Global $iLSpellQ
 
@@ -496,10 +488,10 @@ Global $stxtMinGoldStopAtk2 = 1000, $stxtMinElixirStopAtk2 = 1000, $stxtMinDarkE
 Global $ichkEndOneStar = 0, $ichkEndTwoStars = 0
 
 ;ImprovedUpgradeBuildingHero
-Global $aUpgrades[12][4] = [[-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""],[-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""]] ;Store upgrade position x&y, value, and loot type
-Global $picUpgradeStatus[12], $ipicUpgradeStatus[12] ;Add indexable array variables for accessing the Upgrades GUI
-Global $picUpgradeType[12], $txtUpgradeX[12], $txtUpgradeY[12], $chkbxUpgrade[12], $txtUpgradeValue[12]
-Global $ichkbxUpgrade[12], $itxtUpgrMinGold, $itxtUpgrMinElixir, $txtUpgrMinDark, $itxtUpgrMinDark
+Global $aUpgrades[6][4] = [[-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""]] ;Store upgrade position x&y, value, and loot type
+Global $picUpgradeStatus[6], $ipicUpgradeStatus[6] ;Add indexable array variables for accessing the Upgrades GUI
+Global $picUpgradeType[6], $txtUpgradeX[6], $txtUpgradeY[6], $chkbxUpgrade[6], $txtUpgradeValue[6]
+Global $ichkbxUpgrade[6], $itxtUpgrMinGold, $itxtUpgrMinElixir, $txtUpgrMinDark, $itxtUpgrMinDark
 Global $chkSaveWallBldr, $iSaveWallBldr
 Global $pushLastModified = 0
 
@@ -609,22 +601,3 @@ Global $League[16][4] = [ _
 		["35000", "Crystal III", "100", "C3"], ["50000", "Crystal II", "200", "C2"], ["65000", "Crystal I", "300", "C1"], _
 		["100000", "Master III", "500", "M3"], ["120000", "Master II", "700", "M2"], ["140000", "Master I", "900", "M1"], _
 		["180000", "Champion", "1200", "CA"]]
-
-;Mods
-
-;Heroes
-Global $ichkUpgradeKing = 0
-Global $ichkUpgradeQueen = 0
-Global $KingPos[2] = [-1, -1]
-Global $QueenPos[2] = [-1, -1]
-
-;Barracks Training
-Global $iArmyPercent = 0
-Global $iMaxBarrackTroop[4] ;
-
-;Obstacle
-Global $ObsFolder = 0
-
-;Lab
-Global $LabNeedsDE = 0
-Global $LabNeedsElix = 0			

@@ -790,7 +790,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWrite($building, "upgrade", "LabPosY", $aLabPos[1])
 	;
 
-	For $iz = 0 To 11 ; Save Upgrades data
+	For $iz = 0 To 5 ; Save Upgrades data
 		IniWrite($building, "upgrade", "xupgrade" & $iz, $aUpgrades[$iz][0])
 		IniWrite($building, "upgrade", "yupgrade" & $iz, $aUpgrades[$iz][1])
 		IniWrite($building, "upgrade", "upgradevalue" & $iz, $aUpgrades[$iz][2])
@@ -813,25 +813,9 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWrite($building, "other", "xCCPos", $aCCPos[0])
 	IniWrite($building, "other", "yCCPos", $aCCPos[1])
 
-	IniWrite($building, "other", "xKingPos", $KingPos[0])
-	IniWrite($building, "other", "yKingPos", $KingPos[1])
-	
-	IniWrite($building, "other", "xQueenPos", $QueenPos[0])
-	IniWrite($building, "other", "yQueenPos", $QueenPos[1])
 	IniWrite($building, "other", "xArmy", $ArmyPos[0])
 	IniWrite($building, "other", "yArmy", $ArmyPos[1])
 
-	If GUICtrlRead($chkUpgradeKing) = $GUI_CHECKED Then ;==>upgradeking
-	    IniWrite($building, "other", "UpKing", 1)
-	Else
-	    IniWrite($building, "other", "UpKing", 0)
-	EndIf
-	 
-	If GUICtrlRead($chkUpgradeQueen) = $GUI_CHECKED Then ;==>upgradequeen
-	    IniWrite($building, "other", "UpQueen", 1)
-	Else
-	    IniWrite($building, "other", "UpQueen", 0)
-	EndIf
 	;IniWrite($building, "other", "barrackNum", $barrackNum)
 	;IniWrite($building, "other", "barrackDarkNum", $barrackDarkNum)
 

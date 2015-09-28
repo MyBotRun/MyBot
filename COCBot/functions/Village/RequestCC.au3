@@ -59,7 +59,6 @@ Func RequestCC()
 	;exit from army overview
 	If _Sleep($iDelayRequestCC1) Then Return
 	ClickP($aAway, 2, 0, "#0335")
-	If _Sleep(500) Then Return
 
 EndFunc   ;==>RequestCC
 
