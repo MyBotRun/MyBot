@@ -147,7 +147,6 @@ Func runBot() ;Bot that runs everything in order
 				If _Sleep($iDelayRunBot1) Then Return
 			    checkMainScreen(False)  ; required here due to many possible exits
 				If $Restart = True Then ContinueLoop
-			$iArmyPercent = 0
 			Train()
 				If _Sleep($iDelayRunBot1) Then Return
 			    checkMainScreen(False)
@@ -156,10 +155,10 @@ Func runBot() ;Bot that runs everything in order
 				If $Restart = True Then ContinueLoop
 			BoostSpellFactory()
 				If $Restart = True Then ContinueLoop
-			;RequestCC()
-			;	If _Sleep($iDelayRunBot1) Then Return
-			;	checkMainScreen(False) ; required here due to many possible exits
-			;	If $Restart = True Then ContinueLoop
+			RequestCC()
+				If _Sleep($iDelayRunBot1) Then Return
+				checkMainScreen(False) ; required here due to many possible exits
+				If $Restart = True Then ContinueLoop
 			If $iUnbreakableMode >= 1 Then
 				If Unbreakable() = True Then ContinueLoop
 			Endif
@@ -167,31 +166,12 @@ Func runBot() ;Bot that runs everything in order
 				If _Sleep($iDelayRunBot3) Then Return
 				checkMainScreen(False)  ; required here due to many possible exits
 				If $Restart = True Then ContinueLoop
-			If $FreeBuilder > $iSaveWallBldr Then
-				UpgradeHeroes()
-					If _Sleep($iDelayRunBot3) Then Return
-					checkMainScreen(False)  ; required here due to many possible exits
-					If $Restart = True Then ContinueLoop
-				UpgradeBuilding()
-					If _Sleep($iDelayRunBot3) Then Return
-					checkMainScreen(False)  ; required here due to many possible exits
-					If $Restart = True Then ContinueLoop
-			EndIf	
+			UpgradeBuilding()
+				If _Sleep($iDelayRunBot3) Then Return
+				If $Restart = True Then ContinueLoop
 			UpgradeWall()
 				If _Sleep($iDelayRunBot3) Then Return
 				If $Restart = True Then ContinueLoop
-			
-			ClearObstacles()
-
-				If _Sleep($iDelayRunBot3) Then Return
-				If $Restart = True Then ContinueLoop
-
-			RequestCC()
-
-				If _Sleep($iDelayRunBot3) Then Return
-				;checkMainScreen(False) ; required here due to many possible exits
-				If $Restart = True Then ContinueLoop
-				
 			Idle()
 				If _Sleep($iDelayRunBot3) Then Return
 				If $Restart = True Then ContinueLoop
@@ -263,64 +243,10 @@ Func Idle() ;Sequence that runs until Full Army
 		EndIf
 		$iCollectCounter = $iCollectCounter + 1
 		if $CommandStop <> 0 Or $CommandStop <> 3 Then
-			If _GUICtrlComboBox_GetCurSel($cmbTroopComp) = 8 Then
-
-			   If (($CurCamp >= ($TotalCamp * 20/100)) and ($iArmyPercent < 20)) then
-					SetLog("====== Army more than 20% ======", $COLOR_GREEN)
-					Train()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					checkMainScreen(False)
-					RequestCC()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					;checkMainScreen(False)
-					$iArmyPercent = 20
-			   ElseIf (($CurCamp >= ($TotalCamp * 40/100)) and ($iArmyPercent < 40)) then
-					SetLog("====== Army more than 40% ======", $COLOR_GREEN)
-					Train()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					checkMainScreen(False)
-					RequestCC()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					;checkMainScreen(False)
-					$iArmyPercent = 40
-				ElseIf (($CurCamp >= ($TotalCamp * 60/100)) and ($iArmyPercent < 60)) then
-					SetLog("====== Army more than 60% ======", $COLOR_GREEN)
-					Train()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					checkMainScreen(False)
-					RequestCC()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					;checkMainScreen(False)
-					$iArmyPercent = 60
-				ElseIf (($CurCamp >= ($TotalCamp * 80/100)) and ($iArmyPercent < 80)) then
-					SetLog("====== Army more than 80% ======", $COLOR_GREEN)
-					Train()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					checkMainScreen(False)
-					RequestCC()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					;checkMainScreen(False)
-					$iArmyPercent = 80
-				Else
-					checkArmyCamp()
-					If $Restart = True Then ExitLoop
-					If _Sleep($iDelayIdle1) Then ExitLoop
-					checkMainScreen(False)
-				EndIf
-			Else
-				 Train()
-				 If $Restart = True Then ExitLoop
-				 If _Sleep($iDelayIdle1) Then ExitLoop
-				 checkMainScreen(False)
-			EndIf
+			Train()
+			If $Restart = True Then ExitLoop
+			If _Sleep($iDelayIdle1) Then ExitLoop
+			checkMainScreen(False)
 		endif
 		If _Sleep($iDelayIdle1) Then Return
 		If $CommandStop = 0 And $bTrainEnabled = True Then

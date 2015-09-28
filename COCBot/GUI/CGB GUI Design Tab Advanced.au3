@@ -99,7 +99,7 @@
 		$y+=25
 		$lblAttackTHType = GUICtrlCreateLabel("Attack Type:", $x + 10 , $y + 5, -1, 17, $SS_RIGHT)
 		$cmbAttackTHType = GUICtrlCreateCombo("",  $x + 95, $y, 105, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			GUICtrlSetData(-1, "Barch|Attack1:Normal|Attack2:eXtreme|Attack3:GBarch|Attack4:SmartBarch", "Attack1:Normal")			
+			GUICtrlSetData(-1, "Barch|Attack1:Normal|Attack2:eXtreme|Attack3:GBarch", "Attack1:Normal")
 			GUICtrlSetState(-1, $GUI_DISABLE)
     GUICtrlCreateGroup("", -99, -99, 1, 1)
 

@@ -30,30 +30,24 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	If _Sleep($iDelayalgorithm_AllTroops1) Then Return
 
 	If $iMatchMode = $TS Or ($chkATH = 1 And SearchTownHallLoc()) Then
-		If $allTroops = True Then ; added
-            AttackTrappedTH() ; added
-        Else ; added
-			Switch $AttackTHType
-				Case 0
-					algorithmTH()
-					;_CaptureRegion()
-					If _ColorCheck(_GetPixelColor($aWonOneStar[0],$aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) Then AttackTHNormal() ;if 'no' use another attack mode.
-				Case 1
-					AttackTHNormal();Good for Masters
-				Case 2
-					AttackTHXtreme();Good for Champ
-				Case 3
-					AttackTHGbarch()
-				Case 4
-					AttackTHSmartBarch() ; Good for Master to Champ	
-			EndSwitch
-			If $zoomedin = True Then
-				ZoomOut()
-				$zoomedin = False
-				$zCount = 0
-				$sCount = 0
-			EndIf
-		EndIf ; added	
+		Switch $AttackTHType
+			Case 0
+				algorithmTH()
+				;_CaptureRegion()
+				If _ColorCheck(_GetPixelColor($aWonOneStar[0],$aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) Then AttackTHNormal() ;if 'no' use another attack mode.
+			Case 1
+				AttackTHNormal();Good for Masters
+			Case 2
+				AttackTHXtreme();Good for Champ
+			Case 3
+				AttackTHGbarch()
+		EndSwitch
+		If $zoomedin = True Then
+			ZoomOut()
+			$zoomedin = False
+			$zCount = 0
+			$sCount = 0
+		EndIf
 	EndIf
 
 	;If $OptTrophyMode = 1 And SearchTownHallLoc() Then; Return ;Exit attacking if trophy hunting and not bullymode

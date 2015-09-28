@@ -195,13 +195,9 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 		If $OptTrophyMode = 1 Then ;Enables Triple Mode Settings ;---compare resources
 			If SearchTownHallLoc() Then ; attack this base anyway because outside TH found to snipe
-				If $skipBase = False Then
-                    SetLog(_PadStringCenter(" TH Outside Found! ", 50, "~"), $COLOR_GREEN)
-                    $iMatchMode = $TS
-                    ExitLoop
-                Else
-                    SetLog("Trap found, skipping base...", $COLOR_RED)
-                EndIf
+				SetLog(_PadStringCenter(" TH Outside Found! ", 50, "~"), $COLOR_GREEN)
+				$iMatchMode = $TS
+				ExitLoop
 			EndIf
 		EndIf
 

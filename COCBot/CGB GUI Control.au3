@@ -52,7 +52,6 @@ AtkLogHead()
 #include "GUI\CGB GUI Control Tab Donate.au3"
 #include "GUI\CGB GUI Control Tab Misc.au3"
 #include "GUI\CGB GUI Control Tab Upgrade.au3"
-#include "GUI\CGB GUI Control Tab Buildings.au3"
 #include "GUI\CGB GUI Control Tab Notify.au3"
 #include "GUI\CGB GUI Control Tab Expert.au3"
 #include "GUI\CGB GUI Control Tab Stats.au3"

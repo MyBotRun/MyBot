@@ -77,8 +77,8 @@ Local $x = 30, $y = 205
 	;Local $x = 30, $y = 400
 	;$grpTombstones = GUICtrlCreateGroup("Clear Tombstones", $x - 20, $y - 20 , 225, 55)
 		GUICtrlCreateIcon($pIconLib, $eIcnTombstone, $x + 20, $y, 24, 24)
-		$chkTombstones = GUICtrlCreateCheckbox("Clear Tomb/Field", $x + 75, $y + 2, -1, -1)
-			$txtTip = "Check this to automatically clear tombstones and obstacles (tree,bush,etc.) on the field."
+		$chkTombstones = GUICtrlCreateCheckbox("Clear Tombstones", $x + 75, $y + 2, -1, -1)
+			$txtTip = "Check this to automatically clear tombstones after enemy attack."
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)

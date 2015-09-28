@@ -39,19 +39,136 @@ Local $x = 30, $y = 150
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 	Local $x = 260, $y = 150
 
-	Local $x = 30, $y = 220
-		$Heroes = GUICtrlCreateGroup("Heroes", $x - 20, $y - 20, 450, 35)		
-		$chkUpgradeKing = GUICtrlCreateCheckbox("Upgrade King", $x + 40, $y-10, -1, -1)
-			$txtTip = "Check box to enable continuously upgrade King when you have enough DE"
+	Local $x = 30, $y = 215
+	$grpUpgrade = GUICtrlCreateGroup("Buildings or Heroes", $x - 20, $y - 15, 450, 180)
+		$picUpgradeStatus[0]= GUICtrlCreateIcon($pIconLib, $eIcnRedLight, $x - 15, $y + 1, 16, 16)
+			$txtTip = "Status: Red=not programmed, Yellow=programmed, not completed, Green=Completed"
 			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetOnEvent(-1, "ichkUpgradeKing")		
-		$chkUpgradeQueen = GUICtrlCreateCheckbox("Upgrade Queen", $x + 205, $y-10, -1, -1)
-			$txtTip = "Check box to enable continuously upgrade Queen when you have enough DE"
+		 $chkbxUpgrade[0] = GUICtrlCreateCheckbox(" Upgrade #1:", $x + 5, $y + 1, 80, 17)
+			$txtTip = "Check box to Enable Upgrade #1 after using Locate Upgrades button"
 			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetOnEvent(-1, "ichkUpgradeQueen")			
-		GUICtrlCreateGroup("", -99, -99, 1, 1)	
-			
-	Local $x = 30, $y = 265
+			GUICtrlSetOnEvent(-1, "btnchkbxUpgrade")
+		 $lblUpgrade0PosX = GUICtrlCreateLabel("XPos: ", $x+95, $y+3, 38, 18)
+			$txtUpgradeX[0] = GUICtrlCreateInput("", $x+125, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$lblUpgrade0PosY = GUICtrlCreateLabel("YPos: ", $x+192, $y+3, 38, 18)
+			$txtUpgradeY[0] = GUICtrlCreateInput("", $x+158, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$picUpgradeType[0]= GUICtrlCreateIcon($pIconLib, $eIcnBlank,$x+230, $y, 16, 16)
+			$txtTip = "This shows type of upgrade"
+			GUICtrlSetTip(-1, $txtTip)
+		$txtUpgradeValue[0] = GUICtrlCreateInput("", $x+248, $y-1, 65, 18, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$btnLocateUpgrade = GUICtrlCreateButton("Locate Upgrades", $x+330, $y-1, 95, 60, BitOR($BS_MULTILINE, $BS_VCENTER))
+			$txtTip = "Push button to locate and record information on building/Hero upgrades"
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "btnLocateUpgrades")
+		$btnResetUpgrade = GUICtrlCreateButton("Reset Upgrades", $x+330, $y+65, 95, 60, BitOR($BS_MULTILINE, $BS_VCENTER))
+			$txtTip = "Push button to reset & remove all located upgrades"
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "btnResetUpgrade")
+
+		$y+=22
+		$picUpgradeStatus[1]= GUICtrlCreateIcon($pIconLib, $eIcnRedLight, $x-15, $y + 1, 16, 16)
+			$txtTip = "Status: Red=not programmed, Yellow=programmed, not completed, Green=Completed"
+			GUICtrlSetTip(-1, $txtTip)
+		$chkbxUpgrade[1] = GUICtrlCreateCheckbox(" Upgrade #2:", $x + 5, $y + 1, 80, 17)
+			$txtTip = "Check box to Enable Upgrade #2 after using Locate Upgrades button"
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "btnchkbxUpgrade")
+		$lblUpgrade1PosX = GUICtrlCreateLabel("XPos: ", $x+95, $y+3, 38, 18)
+			$txtUpgradeX[1] = GUICtrlCreateInput("", $x+125, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$lblUpgrade1PosY = GUICtrlCreateLabel("YPos: ", $x+192, $y+3, 38, 18)
+			$txtUpgradeY[1] = GUICtrlCreateInput("", $x+158, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$picUpgradeType[1]= GUICtrlCreateIcon($pIconLib, $eIcnBlank,$x+230, $y, 16, 16)
+			$txtTip = "This shows type of upgrade"
+			GUICtrlSetTip(-1, $txtTip)
+		$txtUpgradeValue[1] = GUICtrlCreateInput("", $x+248, $y-1, 65, 18, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+
+		$y+=22
+		$picUpgradeStatus[2]= GUICtrlCreateIcon($pIconLib, $eIcnRedLight, $x - 15, $y + 1, 16, 16)
+			$txtTip = "Status: Red=not programmed, Yellow=programmed, not completed, Green=Completed"
+			GUICtrlSetTip(-1, $txtTip)
+		$chkbxUpgrade[2] = GUICtrlCreateCheckbox(" Upgrade #3:", $x + 5, $y + 1, 80, 17)
+			$txtTip = "Check box to Enable Upgrade #3 after using Locate Upgrades button"
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "btnchkbxUpgrade")
+		$lblUpgrade2PosX = GUICtrlCreateLabel("XPos: ", $x+95, $y+3, 38, 18)
+			$txtUpgradeX[2] = GUICtrlCreateInput("", $x+125, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$lblUpgrade2PosY = GUICtrlCreateLabel("YPos: ", $x+192, $y+3, 38, 18)
+			$txtUpgradeY[2] = GUICtrlCreateInput("", $x+158, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$picUpgradeType[2]= GUICtrlCreateIcon($pIconLib, $eIcnBlank,$x+230, $y, 16, 16)
+			$txtTip = "This shows type of upgrade"
+			GUICtrlSetTip(-1, $txtTip)
+		$txtUpgradeValue[2] = GUICtrlCreateInput("", $x+248, $y-1, 65, 18, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+
+		$y+=22
+		$picUpgradeStatus[3]= GUICtrlCreateIcon($pIconLib, $eIcnRedLight,$x-15, $y + 1, 16, 16)
+			$txtTip = "Status: Red=not programmed, Yellow=programmed, not completed, Green=Completed"
+			GUICtrlSetTip(-1, $txtTip)
+		$chkbxUpgrade[3] = GUICtrlCreateCheckbox(" Upgrade #4:", $x + 5, $y + 1, 80, 17)
+			$txtTip = "Check box to Enable Upgrade #4 after using Locate Upgrades button"
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "btnchkbxUpgrade")
+		$lblUpgrade3PosX = GUICtrlCreateLabel("XPos: ", $x+95, $y+3, 38, 18)
+			 $txtUpgradeX[3] = GUICtrlCreateInput("", $x+125, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$lblUpgrade3PosY = GUICtrlCreateLabel("YPos: ", $x+192, $y+3, 38, 18)
+			 $txtUpgradeY[3] = GUICtrlCreateInput("", $x+158, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$picUpgradeType[3]= GUICtrlCreateIcon($pIconLib, $eIcnBlank,$x+230, $y, 16, 16)
+			$txtTip = "This shows type of upgrade"
+			GUICtrlSetTip(-1, $txtTip)
+		$txtUpgradeValue[3] = GUICtrlCreateInput("", $x+248, $y-1, 65, 18, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+
+		$y+=22
+		$picUpgradeStatus[4]= GUICtrlCreateIcon($pIconLib, $eIcnRedLight,$x-15, $y + 1, 16, 16)
+			$txtTip = "Status: Red=not programmed, Yellow=programmed, not completed, Green=Completed"
+			GUICtrlSetTip(-1, $txtTip)
+		$chkbxUpgrade[4] = GUICtrlCreateCheckbox(" Upgrade #5:", $x + 5, $y + 1, 80, 17)
+			$txtTip = "Check box to Enable Upgrade #5 after using Locate Upgrades button"
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "btnchkbxUpgrade")
+		$lblUpgrade4PosX = GUICtrlCreateLabel("XPos: ", $x+95, $y+3, 38, 18)
+			 $txtUpgradeX[4] = GUICtrlCreateInput("", $x+125, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$lblUpgrade4PosY = GUICtrlCreateLabel("YPos: ", $x+192, $y+3, 38, 18)
+			 $txtUpgradeY[4] = GUICtrlCreateInput("", $x+158, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$picUpgradeType[4]= GUICtrlCreateIcon($pIconLib, $eIcnBlank,$x+230, $y, 16, 16)
+			$txtTip = "This shows type of upgrade"
+			GUICtrlSetTip(-1, $txtTip)
+		$txtUpgradeValue[4] = GUICtrlCreateInput("", $x+248, $y-1, 65, 18, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+
+		$y+=22
+		$picUpgradeStatus[5]= GUICtrlCreateIcon($pIconLib, $eIcnRedLight,$x-15, $y + 1, 16, 16)
+			$txtTip = "Status: Red=not programmed, Yellow=programmed, not completed, Green=Completed"
+			GUICtrlSetTip(-1, $txtTip)
+		$chkbxUpgrade[5] = GUICtrlCreateCheckbox(" Upgrade #6:", $x + 5, $y + 1, 80, 17)
+			$txtTip = "Check box to Enable Upgrade #6 after using Locate Upgrades button"
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "btnchkbxUpgrade")
+		$lblUpgrade5PosX = GUICtrlCreateLabel("XPos: ", $x+95, $y+3, 38, 18)
+			 $txtUpgradeX[5] = GUICtrlCreateInput("", $x+125, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$lblUpgrade5PosY = GUICtrlCreateLabel("YPos: ", $x+192, $y+3, 38, 18)
+			 $txtUpgradeY[5] = GUICtrlCreateInput("", $x+158, $y-1, 31, 20, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+		$picUpgradeType[5]= GUICtrlCreateIcon($pIconLib, $eIcnBlank, $x+230, $y, 16, 16)
+			$txtTip = "This shows type of upgrade"
+			GUICtrlSetTip(-1, $txtTip)
+		$txtUpgradeValue[5] = GUICtrlCreateInput("", $x+248, $y-1, 65, 18, BitOR($ES_CENTER, $GUI_SS_DEFAULT_INPUT, $ES_READONLY, $ES_NUMBER))
+
+		$y+=27
+		GUICtrlCreateIcon ($pIconLib, $eIcnGold, $x - 15, $y, 16, 16)
+		$UpgrMinGold = GUICtrlCreateLabel("Min. Gold:", $x + 5, $y + 3, -1, -1)
+		$txtUpgrMinGold = GUICtrlCreateInput("250000", $x + 60, $y - 2, 61, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			GUICtrlSetTip(-1, "Save this much Gold after the upgrade completes." & @CRLF & "Set this value as needed to save for searching, or wall upgrades.")
+			GUICtrlSetLimit(-1, 7)
+		GUICtrlCreateIcon ($pIconLib, $eIcnElixir, $x + 140, $y, 16, 16)
+		$UpgrMinElixir = GUICtrlCreateLabel("Min. Elixir:", $x + 160, $y + 3, -1, -1)
+		$txtUpgrMinElixir = GUICtrlCreateInput("250000", $x + 210, $y - 2, 61, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			GUICtrlSetTip(-1, "Save this much Elixir after the upgrade completes" & @CRLF & "Set this value as needed to save for making troops or wall upgrades.")
+			GUICtrlSetLimit(-1, 7)
+		GUICtrlCreateIcon ($pIconLib, $eIcnDark, $x + 285, $y, 16, 16)
+		$UpgrMinDark = GUICtrlCreateLabel("Min. Dark:", $x + 305, $y + 3, -1, -1)
+		$txtUpgrMinDark= GUICtrlCreateInput("3000", $x + 360, $y - 2, 61, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			GUICtrlSetTip(-1, "Save this amount of Dark Elixir after the upgrade completes." & @CRLF & "Set this value higher if you want make war troops.")
+			GUICtrlSetLimit(-1, 6)
+		GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	Local $x = 30, $y = 405
 		$grpWalls = GUICtrlCreateGroup("Walls", $x - 20, $y - 20, 450, 120)
 		GUICtrlCreateIcon ($pIconLib, $eIcnWall, $x - 12, $y - 6, 24, 24)
 		$chkWalls = GUICtrlCreateCheckbox("Auto Wall Upgrade", $x + 18, $y-2, -1, -1)
@@ -67,8 +184,8 @@ Local $x = 30, $y = 150
 		$UseElixir = GUICtrlCreateRadio("Use Elixir", $x + 35, $y + 34, -1, -1)
 			GUICtrlSetTip(-1, "Use only Elixir for Walls." & @CRLF & "Available only at Wall levels upgradeable with Elixir.")
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$UseElixirGold = GUICtrlCreateRadio("Use Gold and Elixir", $x + 35, $y + 52, -1, -1)
-			GUICtrlSetTip(-1, "Use both Gold and Elixir for Walls." & @CRLF & "Available only at Wall levels upgradeable with Elixir.")
+		$UseElixirGold = GUICtrlCreateRadio("Try Elixir first, Gold second", $x + 35, $y + 52, -1, -1)
+			GUICtrlSetTip(-1, "Try to use Elixir first. If not enough Elixir try to use Gold second for Walls." & @CRLF & "Available only at Wall levels upgradeable with Elixir.")
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		GUICtrlCreateIcon ($pIconLib, $eIcnBuilder, $x - 12, $y + 72, 20, 20)
 		$chkSaveWallBldr = GUICtrlCreateCheckbox("Save ONE builder for Walls", $x+18, $y + 72, -1, -1)

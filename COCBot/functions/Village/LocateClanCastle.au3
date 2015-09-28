@@ -108,10 +108,5 @@ Func LocateClanCastle()
 	WEnd
 
 	ClickP($aAway, 1, 200, "#0327")
-	If _Sleep(500) Then Return
-	
-	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-	$stext = "Now you can remove mouse out of bluestacks, Thanks!!"
-	$MsgBox = _ExtMsgBox(48, "OK", "Notice!", $stext, 15, $frmBot)
-	
+
 EndFunc   ;==>LocateClanCastle

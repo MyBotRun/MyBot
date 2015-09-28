@@ -23,16 +23,9 @@ Func readConfig() ;Reads config and sets it to the variables
 		$aCCPos[0] = IniRead($building, "other", "xCCPos", "0")
 		$aCCPos[1] = IniRead($building, "other", "yCCPos", "0")
 
-		$KingPos[0] = IniRead($building, "other", "xKingPos", "0")
-		$KingPos[1] = IniRead($building, "other", "yKingPos", "0")
-		
-		$QueenPos[0] = IniRead($building, "other", "xQueenPos", "0")
-		$QueenPos[1] = IniRead($building, "other", "yQueenPos", "0")
 		$barrackPos[0] = IniRead($building, "other", "xBarrack", "0")
 		$barrackPos[1] = IniRead($building, "other", "yBarrack", "0")
 
-		$ichkUpgradeQueen = IniRead($building, "other", "UpQueen", "0")
-		$ichkUpgradeKing = IniRead($building, "other", "UpKing", "0")
 		$ArmyPos[0] = IniRead($building, "other", "xArmy", "0")
 		$ArmyPos[1] = IniRead($building, "other", "yArmy", "0")
 
@@ -44,7 +37,7 @@ Func readConfig() ;Reads config and sets it to the variables
 
 		$listResourceLocation = IniRead($building, "other", "listResource", "")
 
-		For $iz = 0 to 11 ; SReads Upgrade building data
+		For $iz = 0 to 5 ; SReads Upgrade building data
 			$aUpgrades[$iz][0] = IniRead($building, "upgrade", "xupgrade"&$iz, "-1")
 			$aUpgrades[$iz][1] = IniRead($building, "upgrade", "yupgrade"&$iz, "-1")
 			$aUpgrades[$iz][2] = IniRead($building, "upgrade", "upgradevalue"&$iz, "-1")
