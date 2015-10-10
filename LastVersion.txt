@@ -1,6 +1,6 @@
 [general]
 
-version    = "v4.1.1"
+version    = "v4.2"
 
-messagenew = "Stay tuned as we edge nearer to the release of version 4.2!\n\nSupport the Development:\n\n- As our community grows sadly so does our running costs, please show your support with a small donation\n\n- Don't be a stranger, stop by our community forums and join in on the revolution\n\nhttps://mybot.run\n\n Always free and open source."
+messagenew = "Single barrack boost, enhanced stats, TH Snipe with spells and more in this version. Be sure to check out the changelog on our forums\n\n- Don't be a stranger, stop by our community forums and join in on the revolution\n\nhttps://mybot.run\n\n Always free and open source."
 messageold = "Your version is out of date, please download the latest version at:\nhttps://mybot.run"
