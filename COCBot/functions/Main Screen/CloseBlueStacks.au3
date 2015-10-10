@@ -7,10 +7,10 @@
 ; Return values .: @error = 1 if failure
 ; Author ........: The Master1 (From CGB Forums Aug2015)
 ; Modified ......: KnowJack (August 2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -93,7 +93,7 @@ Func ServiceStop($sServiceName)
 	$svcWaitIterations = 0
 
 	While $ServiceRunning ; check if service is stopped yet
-		_StatusUpdateTime($hTimer)
+		_StatusUpdateTime($hTimer, "BS Service Stop")
 		$data = ""
 		$pid = Run(@WindowsDir & '\System32\sc.exe query ' & $sServiceName, '', @SW_HIDE, 2)
 		Do

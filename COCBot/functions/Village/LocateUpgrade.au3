@@ -7,10 +7,10 @@
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (June-2015) edited for V3.X bot and SC updates
 ;				   Sardo 2015-08
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -255,16 +255,4 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 
 EndFunc   ;==>UpgradeValue
 
-
-Func DebugImageSave($TxtName = "Unknown")
-
-	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
-	SetLog("Taking snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
-	$Date = @MDAY & "." & @MON & "." & @YEAR
-	$Time = @HOUR & "." & @MIN & "." & @SEC
-	_CaptureRegion()
-	_GDIPlus_ImageSaveToFile($hBitmap, $dirloots & $TxtName & $Date & " at " & $Time & ".png")
-	If _Sleep($iDelayDebugImageSave1) Then Return
-
-EndFunc   ;==>DebugImageSave
 

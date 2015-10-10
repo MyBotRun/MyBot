@@ -6,14 +6,15 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Code Monkey #6
-; Modified ......: kaganus (June 2015), Sardo 2015-07, kaganus (August 2015)
-; Remarks .......:This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Modified ......: kaganus (Jun/Aug 2015), Sardo 2015-07, KnowJack(Aug 2015)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func VillageSearch() ;Control for searching a village that meets conditions
+	Local $Result
 	$iSkipped = 0
 
 	If $debugDeadBaseImage = 1 Then
@@ -35,10 +36,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 	If _Sleep($iDelayVillageSearch1) Then Return
 
-	;	; Check Break Shield button again
-	;	If _CheckPixel($aBreakShield, $bCapturePixel) Then
-	;		ClickP($aBreakShield, 1, 0, "#0154");Click Okay To Break Shield
-	;	EndIf
+	checkAttackDisable($iTaBChkAttack) ;last check to see If TakeABreak msg on screen for fast PC from PrepareSearch click
 
 	For $x = 0 To $iModeCount - 1
 		If $x = $iCmbSearchMode Or $iCmbSearchMode = 2 Then
@@ -79,7 +77,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 	If $OptBullyMode + $OptTrophyMode + $chkATH > 0 Then
 		SetLog(_PadStringCenter(" ADVANCED SETTINGS ", 50, "~"), $COLOR_BLUE)
-		Local $YourTHText = "", $AttackTHTypeText = "", $chkATHText = "", $OptTrophyModeText = ""
+		Local $YourTHText = "", $chkATHText = "", $OptTrophyModeText = ""
 
 		If $OptBullyMode = 1 Then
 			For $i = 0 To 4
@@ -89,13 +87,9 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 		If $OptBullyMode = 1 Then SetLog("THBully Combo @" & $ATBullyMode & " SearchCount, " & $YourTHText)
 
-		If $chkATH = 1 Then $chkATHText = "AttackTH"
-		If $chkATH = 1 And $AttackTHType = 0 Then $AttackTHTypeText = ", Barch"
-		If $chkATH = 1 And $AttackTHType = 1 Then $AttackTHTypeText = ", Attack1:Normal"
-		If $chkATH = 1 And $AttackTHType = 2 Then $AttackTHTypeText = ", Attack2:Extreme"
-		If $chkATH = 1 And $AttackTHType = 3 Then $AttackTHTypeText = ", Attack3:GBarch"
+		If $chkATH = 1 Then $chkATHText = " Attack TH Outside "
 		If $OptTrophyMode = 1 Then $OptTrophyModeText = "THSnipe Combo, " & $THaddtiles & " Tile(s), "
-		If $OptTrophyMode = 1 Or $chkATH = 1 Then SetLog($OptTrophyModeText & $chkATHText & $AttackTHTypeText)
+		If $OptTrophyMode = 1 Or $chkATH = 1 Then SetLog($OptTrophyModeText & $chkATHText & $txtAttackTHType)
 	EndIf
 
 	SetLog(_StringRepeat("=", 50), $COLOR_BLUE)
@@ -112,9 +106,17 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		$SearchCount = 0
 	EndIf
 
+	If Not $bSearchMode Then
+		$Is_ClientSyncError = True
+	EndIf
+
 	While 1
-		If $iVSDelay > 0 Then
-			If _Sleep(1000 * $iVSDelay) Then Return
+		If $iVSDelay > 0 And $iMaxVSDelay > 0 Then ; Check if village delay values are set
+			If $iVSDelay <> $iMaxVSDelay Then ; Check if random delay requested
+				If _Sleep(1000 * Random($iVSDelay, $iMaxVSDelay)) Then Return ;Delay time is random between min & max set by user
+			Else
+				If _Sleep(1000 * $iVSDelay) Then Return ; Wait Village Serch delay set by user
+			EndIf
 		EndIf
 
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
@@ -140,6 +142,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			$isModeActive[$i] = False
 		Next
 
+		If _Sleep($iDelayVillageSearch2) Then Return
 		If $iCmbSearchMode = 0 Then
 			$isModeActive[$DB] = True
 			$match[$DB] = CompareResources($DB)
@@ -155,6 +158,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			Next
 		EndIf
 
+		If _Sleep($iDelayVillageSearch2) Then Return
 		For $i = 0 To $iModeCount - 1
 			If ($match[$i] And $iChkWeakBase[$i] = 1 And $iChkMeetOne[$i] <> 1) Or ($isModeActive[$i] And Not $match[$i] And $iChkWeakBase[$i] = 1 And $iChkMeetOne[$i] = 1) Then
 				If IsWeakBase($i) Then
@@ -166,10 +170,12 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			EndIf
 		Next
 
+		If _Sleep($iDelayVillageSearch2) Then Return
 		If $match[$DB] Or $match[$LB] Then
 			$dbBase = checkDeadBase()
 		EndIf
 
+		If _Sleep($iDelayVillageSearch2) Then Return
 		If $match[$DB] And $dbBase Then
 			SetLog(_PadStringCenter(" Dead Base Found! ", 50, "~"), $COLOR_GREEN)
 			$iMatchMode = $DB
@@ -193,6 +199,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			EndIf
 		EndIf
 
+		If _Sleep($iDelayVillageSearch2) Then Return
 		If $OptTrophyMode = 1 Then ;Enables Triple Mode Settings ;---compare resources
 			If SearchTownHallLoc() Then ; attack this base anyway because outside TH found to snipe
 				SetLog(_PadStringCenter(" TH Outside Found! ", 50, "~"), $COLOR_GREEN)
@@ -201,6 +208,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			EndIf
 		EndIf
 
+		If _Sleep($iDelayVillageSearch2) Then Return
 		If $match[$DB] And Not $dbBase Then
 			$noMatchTxt &= ", Not a " & $sModeText[$DB]
 			If $debugDeadBaseImage = 1 Then
@@ -224,6 +232,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 		Local $i = 0
 		While $i < 100
+			If _Sleep($iDelayVillageSearch2) Then Return
 			$i += 1
 			If ( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1], True), Hex($NextBtn[2], 6), $NextBtn[3])) Then
 				ClickP($NextBtn, 1, 0, "#0155") ;Click Next
@@ -244,9 +253,11 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 					SetLog("Have strange problem can not determine, Restarting Bot...", $COLOR_RED)
 					Return
 				EndIf
-		EndIf
-			_Sleep($iDelayVillageSearch2)
+			EndIf
 		WEnd
+
+		If _Sleep(500) Then Return
+		$Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check
 
 		If _Sleep($iDelayVillageSearch3) Then Return
 
@@ -259,8 +270,15 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			Return
 		EndIf
 
+		checkAttackDisable($iTaBChkAttack, $Result) ;check to see If TakeABreak msg on screen after next click and gem delay
+
 		$iSkipped = $iSkipped + 1
-		GUICtrlSetData($lblresultvillagesskipped, GUICtrlRead($lblresultvillagesskipped) + 1)
+		$iSkippedVillageCount += 1
+		If $iTownHallLevel <> "" Then
+			$iSearchCost += $aSearchCost[$iTownHallLevel - 1]
+			$iGoldTotal -= $aSearchCost[$iTownHallLevel - 1]
+		EndIf
+		UpdateStats()
 	WEnd
 
 	If $bBtnAttackNowPressed = True Then

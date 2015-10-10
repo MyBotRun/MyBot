@@ -54,7 +54,7 @@
 ; Remarks .......: The use of the $hWnd parameter is not normally necessary - it is only required if the UDF does not
 ;                   return correct dimensions without it.
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: Yes
 ;=====================================================================================================================
 Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = "", $iMaxWidth = 0, $hWnd = 0)

@@ -6,10 +6,10 @@
 ; Return values .: $THx, $THy
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -53,7 +53,7 @@ $atkTHADV[4][0] = @ScriptDir & "\images\TH\10.bmp"
 $atkTHADV[4][1] = @ScriptDir & "\images\TH\th10b.bmp"
 $atkTHADV[4][2] = @ScriptDir & "\images\TH\th10c.bmp"
 $atkTHADV[4][3] = @ScriptDir & "\images\TH\th10d.bmp"
-$atkTHADV[4][4] = @ScriptDir & "\images\TH\th10e.bmpx" ;false positives
+$atkTHADV[4][4] = ""
 $atkTHADV[4][5] = @ScriptDir & "\images\TH\th10f.bmp"
 $atkTHADV[4][6] = @ScriptDir & "\images\TH\th10g.bmp"
 $atkTHADV[4][7] = @ScriptDir & "\images\TH\th10h.bmp"

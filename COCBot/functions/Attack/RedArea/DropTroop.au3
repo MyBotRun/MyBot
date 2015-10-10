@@ -64,7 +64,7 @@ Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1
 			For $i = $startIndex To $maxElementNearCollector
 				$pixel = $PixelNearCollector[$i]
 				ReDim $listEdgesPixelToDrop[UBound($listEdgesPixelToDrop) + 1]
-				If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini) Then
+				If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini or $troop = $eBarb) Then
 					$listEdgesPixelToDrop[UBound($listEdgesPixelToDrop) - 1] = _FindPixelCloser($PixelRedAreaFurther, $pixel, 5)
 				Else
 					$listEdgesPixelToDrop[UBound($listEdgesPixelToDrop) - 1] = _FindPixelCloser($PixelRedArea, $pixel, 5)

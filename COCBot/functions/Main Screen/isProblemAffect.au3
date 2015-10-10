@@ -6,10 +6,10 @@
 ; Return values .: True if screen is blocked by an error message from CoC or BlueStacks
 ; Author ........: HungLe (may-2015)
 ; Modified ......: HungLe (may-2015), Hervidero (may-2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 

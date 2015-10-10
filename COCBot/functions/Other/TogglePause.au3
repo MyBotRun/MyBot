@@ -12,7 +12,11 @@ Func TogglePauseImpl($Source)
 	If $TPaused and $Runstate = True Then
 		TrayTip($sBotTitle, "", 1)
 		TrayTip($sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
-		Setlog("ClashGameBot was Paused!",$COLOR_RED)
+		Setlog("Bot was Paused!",$COLOR_RED)
+		If Not $bSearchMode Then
+			$iTimePassed += Int(TimerDiff($sTimer))
+			AdlibUnRegister("SetTime")
+		EndIf
 		PushMsg("Pause", $Source)
 		 If $BlockInputPause>0 Then	 $BlockInputPausePrev=$BlockInputPause
 		 If $BlockInputPause>0 Then  _BlockInputEx(0,"","",$HWnD)
@@ -22,7 +26,11 @@ Func TogglePauseImpl($Source)
 	ElseIf $TPaused = False And $Runstate = True Then
 		TrayTip($sBotTitle, "", 1)
 		TrayTip($sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
-		Setlog("ClashGameBot was Resumed.",$COLOR_GREEN)
+		Setlog("Bot was Resumed.",$COLOR_GREEN)
+		If Not $bSearchMode Then
+			$sTimer = TimerInit()
+			AdlibRegister("SetTime", 1000)
+		EndIf
 		PushMsg("Resume", $Source)
 		 If $BlockInputPausePrev>0 Then  _BlockInputEx($BlockInputPausePrev,"","",$HWnD)
 		 If $BlockInputPausePrev>0 Then $BlockInputPausePrev=0

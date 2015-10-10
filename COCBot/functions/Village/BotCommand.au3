@@ -7,10 +7,10 @@
 ; Return values .: None
 ; Author ........: Code Monkey #17
 ; Modified ......:
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func BotCommand()
@@ -22,8 +22,8 @@ Func BotCommand()
 		;$icmbHoursStop = _GUICtrlComboBox_GetCurSel($cmbHoursStop)
 		If $icmbBotCond = 13 And $icmbHoursStop <> 0 Then $TimeToStop = $icmbHoursStop * 3600000 ; 3600000 = 1 Hours
 
-		Local $TrophyCount = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
-		Local $TrophyMax = Number($TrophyCount) > Number($itxtMaxTrophy)
+		Local $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
+		Local $TrophyMax = Number($iTrophyCurrent) > Number($itxtMaxTrophy)
 		If $TrophyMax Then
 			$Trophy = "Max. Trophy Reached!"
 		Else

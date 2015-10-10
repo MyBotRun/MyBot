@@ -6,30 +6,30 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Code Monkey #666
-; Modified ......:
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Modified ......: KnowJack(Aug 2015)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func DropTrophy()
-	Local $TrophyCount = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
-	If $DebugSetlog = 1 Then SetLog("Trophy Count : " & $TrophyCount, $COLOR_PURPLE)
+	Local $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
+	If $DebugSetlog = 1 Then SetLog("Trophy Count : " & $iTrophyCurrent, $COLOR_PURPLE)
 
 	Local $iCount, $RandomEdge, $RandomXY
 	Local $itxtMaxTrophyNeedCheck
 
 	$itxtMaxTrophyNeedCheck = $itxtMaxTrophy ; $itxtMaxTrophy = 1800
 
-	If Number($TrophyCount) > Number($itxtMaxTrophyNeedCheck) Then
+	If Number($iTrophyCurrent) > Number($itxtMaxTrophyNeedCheck) Then
 		If $iChkTrophyAtkDead = 1 Then
 			If ($CurCamp >= ($TotalCamp * 70 / 100)) Then
 
-				While Number($TrophyCount) > Number($itxtMaxTrophyNeedCheck)
-					$TrophyCount = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
-					SetLog("Trophy Count : " & $TrophyCount, $COLOR_GREEN)
-					If Number($TrophyCount) > Number($itxtMaxTrophyNeedCheck) Then
+				While Number($iTrophyCurrent) > Number($itxtMaxTrophyNeedCheck)
+					$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
+					SetLog("Trophy Count : " & $iTrophyCurrent, $COLOR_GREEN)
+					If Number($iTrophyCurrent) > Number($itxtMaxTrophyNeedCheck) Then
 						$itxtMaxTrophyNeedCheck = $itxtdropTrophy ; $itxtMinTrophy = 1650
 						SetLog("Dropping Trophies to " & $itxtdropTrophy, $COLOR_BLUE)
 						If _Sleep($iDelayDropTrophy2) Then ExitLoop
@@ -91,6 +91,7 @@ Func DropTrophy()
 								Click(GetXPosOfArmySlot($King, 68), 595, 1, 0, "#0177") ;Select King
 								_Sleep($iDelayDropTrophy1)
 								Click($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], 1, 0, "#0178") ;Drop King
+								$checkKPower = True
 								If _Sleep($iDelayDropTrophy1) Then ExitLoop
 								SetTrophyLoss()
 								ReturnHome(False, False) ;Return home no screenshot
@@ -101,6 +102,7 @@ Func DropTrophy()
 								Click(GetXPosOfArmySlot($Queen, 68), 595, 1, 0, "#0179") ;Select Queen
 								_Sleep($iDelayDropTrophy1)
 								Click($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], 1, 0, "#0180") ;Drop Queen
+								$checkQPower = True
 								If _Sleep($iDelayDropTrophy1) Then ExitLoop
 								SetTrophyLoss()
 								ReturnHome(False, False) ;Return home no screenshot
@@ -164,10 +166,10 @@ Func DropTrophy()
 
 		Else
 
-			While Number($TrophyCount) > Number($itxtMaxTrophyNeedCheck)
-				$TrophyCount = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
-				SetLog("Trophy Count : " & $TrophyCount, $COLOR_GREEN)
-				If Number($TrophyCount) > Number($itxtMaxTrophyNeedCheck) Then
+			While Number($iTrophyCurrent) > Number($itxtMaxTrophyNeedCheck)
+				$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
+				SetLog("Trophy Count : " & $iTrophyCurrent, $COLOR_GREEN)
+				If Number($iTrophyCurrent) > Number($itxtMaxTrophyNeedCheck) Then
 					$itxtMaxTrophyNeedCheck = $itxtdropTrophy ; $itxtMinTrophy = 1650
 					SetLog("Dropping Trophies to " & $itxtdropTrophy, $COLOR_BLUE)
 					If _Sleep($iDelayDropTrophy2) Then ExitLoop
@@ -205,6 +207,7 @@ Func DropTrophy()
 							Click(GetXPosOfArmySlot($King, 68), 595, 1, 0, "#0187") ;Select King
 							_Sleep($iDelayDropTrophy1)
 							Click($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], 1, 0, "#0188") ;Drop King
+							$checkKPower = True
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop
 							SetTrophyLoss()
 							ReturnHome(False, False) ;Return home no screenshot
@@ -215,6 +218,7 @@ Func DropTrophy()
 							Click(GetXPosOfArmySlot($Queen, 68), 595, 1, 0, "#0189") ;Select Queen
 							_Sleep($iDelayDropTrophy1)
 							Click($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], 1, 0, "#0190") ;Drop Queen
+							$checkQPower = True
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop
 							SetTrophyLoss()
 							ReturnHome(False, False) ;Return home no screenshot
@@ -283,5 +287,6 @@ Func SetTrophyLoss()
 		$sTrophyLoss = getTrophyLossAttackScreen(48, 184)
 	EndIf
 	Setlog(" Trophy loss = " & $sTrophyLoss, $COLOR_PURPLE) ; record trophy loss
-	GUICtrlSetData($lblresulttrophiesdropped, GUICtrlRead($lblresulttrophiesdropped) - (Number($sTrophyLoss)))
+	$iDroppedTrophyCount -= Number($sTrophyLoss)
+	UpdateStats()
 EndFunc   ;==>SetTrophyLoss

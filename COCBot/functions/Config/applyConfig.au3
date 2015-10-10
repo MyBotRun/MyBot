@@ -6,10 +6,10 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -370,22 +370,15 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkAttackTH, $GUI_UNCHECKED)
 	EndIf
 
-	;	If $iChkLightSpell = 1 Then
-	;		GUICtrlSetState($chkLightSpell, $GUI_CHECKED)
-	;	Else
-	;		GUICtrlSetState($chkLightSpell, $GUI_UNCHECKED)
-	;	EndIf
-	;	GUILightSpell()
-	;
-	;	_GUICtrlComboBox_SetCurSel($cmbiLSpellQ, $iLSpellQ - 1)
-
 	If $OptBullyMode = 1 Then
 		GUICtrlSetState($chkBullyMode, $GUI_CHECKED)
 	ElseIf $OptBullyMode = 0 Then
 		GUICtrlSetState($chkBullyMode, $GUI_UNCHECKED)
 	EndIf
+
 	GUICtrlSetData($txtATBullyMode, $ATBullyMode)
 	_GUICtrlComboBox_SetCurSel($cmbYourTH, $YourTH)
+
 	If $iTHBullyAttackMode = 0 Then
 		GUICtrlSetState($radUseDBAttack, $GUI_CHECKED)
 	ElseIf $iTHBullyAttackMode = 1 Then
@@ -399,7 +392,44 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkTrophyMode, $GUI_UNCHECKED)
 	EndIf
 	GUICtrlSetData($txtTHaddTiles, $THaddTiles)
-	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, $AttackTHType)
+	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, $icmbAttackTHType)
+	_GUICtrlComboBox_SetCurSel($cmbAttackbottomType, $icmbDeployBtmTHType)
+
+	If $ichkUseKingTH = 1 Then
+		GUICtrlSetState($chkUseKingTH, $GUI_CHECKED)
+	ElseIf $ichkUseKingTH = 0 Then
+		GUICtrlSetState($chkUseKingTH, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkUseQueenTH = 1 Then
+		GUICtrlSetState($chkUseQueenTH, $GUI_CHECKED)
+	ElseIf $ichkUseQueenTH = 0 Then
+		GUICtrlSetState($chkUseQueenTH, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkUseClastleTH = 1 Then
+		GUICtrlSetState($chkUseClastleTH, $GUI_CHECKED)
+	ElseIf $ichkUseClastleTH = 0 Then
+		GUICtrlSetState($chkUseClastleTH, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkUseLSpellsTH = 1 Then
+		GUICtrlSetState($chkUseLSpellsTH, $GUI_CHECKED)
+	ElseIf $ichkUseLSpellsTH = 0 Then
+		GUICtrlSetState($chkUseLSpellsTH, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkUseRSpellsTH = 1 Then
+		GUICtrlSetState($chkUseRSpellsTH, $GUI_CHECKED)
+	ElseIf $ichkUseRSpellsTH = 0 Then
+		GUICtrlSetState($chkUseRSpellsTH, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkUseHSpellsTH = 1 Then
+		GUICtrlSetState($chkUseHSpellsTH, $GUI_CHECKED)
+	ElseIf $ichkUseHSpellsTH = 0 Then
+		GUICtrlSetState($chkUseHSpellsTH, $GUI_UNCHECKED)
+	EndIf
 	chkSnipeMode()
 
 	If $iAlertPBVillage = 1 Then
@@ -416,13 +446,13 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 
 	If $iAlertPBLastRaidTxt = 1 Then
 		GUICtrlSetState($chkAlertPBLastRaidTxt, $GUI_CHECKED)
-	Else
+	ElseIf $iAlertPBLastRaidTxt = 0 Then
 		GUICtrlSetState($chkAlertPBLastRaidTxt, $GUI_UNCHECKED)
 	EndIf
 
 	If $ichkAlertPBCampFull = 1 Then
 		GUICtrlSetState($chkAlertPBCampFull, $GUI_CHECKED)
-	Else
+	ElseIf $ichkAlertPBCampFull = 0 Then
 		GUICtrlSetState($chkAlertPBCampFull, $GUI_UNCHECKED)
 	EndIf
 
@@ -778,6 +808,13 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkDonateAllCustom, $GUI_UNCHECKED)
 	EndIf
 
+	; Extra Alphabets , Cyrillic.
+	If $ichkExtraAlphabets = 0 then
+		GUICtrlSetState($chkExtraAlphabets, $GUI_UNCHECKED)
+	ElseIf $ichkExtraAlphabets = 1 then
+		GUICtrlSetState($chkExtraAlphabets, $GUI_CHECKED)
+	EndIf
+
 	;Troop Settings--------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbTroopComp, $iCmbTroopComp)
 
@@ -800,6 +837,14 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetData($lbltxtTrainITDelay, "delay " & $isldTrainITDelay & " ms.")
 	;barracks boost not saved (no use)
 
+	; Spells Creation  ---------------------------------------------------------------------
+	GUICtrlSetData ($txtNumLightningSpell, $LightningSpellComp)
+	GUICtrlSetData ($txtNumRageSpell, $RageSpellComp)
+    GUICtrlSetData ($txtNumHealSpell, $HealSpellComp)
+	GUICtrlSetData ($txtNumPoisonSpell, $PoisonSpellComp)
+	GUICtrlSetData ($txtNumHasteSpell, $HasteSpellComp)
+	GUICtrlSetData ($txtTotalCountSpell, $iTotalCountSpell)
+	lblTotalCountSpell()
 
 	;PushBullet-----------------------------------------------------------------------------
 
@@ -992,8 +1037,11 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 
 	GUICtrlSetData($txtTimeWakeUp, $sTimeWakeUp)
 
+	If $iVSDelay > $iMaxVSDelay Then $iMaxVSDelay = $iVSDelay ; check for illegal condition
 	GUICtrlSetData($sldVSDelay, $iVSDelay)
 	GUICtrlSetData($lblVSDelay, $iVSDelay)
+	GUICtrlSetData($sldMaxVSDelay, $iMaxVSDelay)
+	GUICtrlSetData($lblMaxVSDelay, $iMaxVSDelay)
 
 	GUICtrlSetData($txtMaxTrophy, $itxtMaxTrophy)
 	GUICtrlSetData($txtdropTrophy, $itxtdropTrophy)
@@ -1062,6 +1110,14 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	EndIf
 	chkDropCCHours()
 
+	If $iPlannedBoostBarracksEnable = 1 Then
+		GUICtrlSetState($chkBoostBarracksHours, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkBoostBarracksHours, $GUI_UNCHECKED)
+	EndIf
+	chkBoostBarracksHours()
+
+
 	For $i = 0 To 23
 		If $iPlannedDonateHours[$i] = 1 Then
 			GUICtrlSetState(Eval("chkDonateHours" & $i), $GUI_CHECKED)
@@ -1084,7 +1140,17 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		Else
 			GUICtrlSetState(Eval("chkDropCCHours" & $i), $GUI_UNCHECKED)
 		EndIf
+	 Next
+
+	 For $i = 0 To 23
+		If $iPlannedBoostBarracksHours[$i] = 1 Then
+			GUICtrlSetState(Eval("chkBoostBarracksHours" & $i), $GUI_CHECKED)
+		Else
+			GUICtrlSetState(Eval("chkBoostBarracksHours" & $i), $GUI_UNCHECKED)
+		EndIf
 	Next
+
+
 
 	;Share Attack Settings----------------------------------------
 

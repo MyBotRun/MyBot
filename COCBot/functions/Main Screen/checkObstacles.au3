@@ -7,10 +7,10 @@
 ; Return values .: Returns True when there is something blocking
 ; Author ........: Hungle (2014)
 ; Modified ......: KnowJack (2015) Sardo 2015-08
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 ;
@@ -42,6 +42,8 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 	EndIf
 	If _ImageSearchArea($CocStopped, 0, 250, 328, 618, 402, $x, $y, 70) Then
 		SetLog("CoC Has Stopped Error .....", $COLOR_RED)
+		$iNbrOfOoS += 1
+		UpdateStats()
 		PushMsg("CoCError")
 		If _Sleep($iDelaycheckObstacles1) Then Return
 		PureClick(250 + $x, 328 + $y, 1, 0, "#0129");Check for "CoC has stopped error, looking for OK message" on screen

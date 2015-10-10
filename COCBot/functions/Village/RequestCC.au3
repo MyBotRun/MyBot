@@ -5,11 +5,11 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Code Monkey #73
-; Modified ......: (2015-06) Sardo, KnowJack(July 2015), Sardo 2015-08
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Modified ......: (2015-06) Sardo, KnowJack(Jul/Aug 2015), Sardo 2015-08
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func RequestCC()
@@ -30,6 +30,9 @@ Func RequestCC()
 
 	;open army overview
 	Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0334")
+	If _Sleep($iDelayRequestCC1) Then Return
+
+	checkAttackDisable($iTaBChkIdle)  ; Early Take-A-Break detection
 
 	;wait to see army overview
 	Local $icount = 0

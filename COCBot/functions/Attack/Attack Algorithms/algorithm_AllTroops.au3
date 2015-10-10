@@ -6,10 +6,10 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Didipe (May-2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -30,18 +30,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	If _Sleep($iDelayalgorithm_AllTroops1) Then Return
 
 	If $iMatchMode = $TS Or ($chkATH = 1 And SearchTownHallLoc()) Then
-		Switch $AttackTHType
-			Case 0
-				algorithmTH()
-				;_CaptureRegion()
-				If _ColorCheck(_GetPixelColor($aWonOneStar[0],$aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) Then AttackTHNormal() ;if 'no' use another attack mode.
-			Case 1
-				AttackTHNormal();Good for Masters
-			Case 2
-				AttackTHXtreme();Good for Champ
-			Case 3
-				AttackTHGbarch()
-		EndSwitch
+		SwitchAttackTHType()
 		If $zoomedin = True Then
 			ZoomOut()
 			$zoomedin = False
@@ -54,7 +43,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	If $iMatchMode = $TS Then; Return ;Exit attacking if trophy hunting and not bullymode
 		For $i = 1 To 30
 			;_CaptureRegion()
-			If _ColorCheck(_GetPixelColor($aWonOneStar[0],$aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) = True Then ExitLoop ;exit if not 'no star'
+			If _ColorCheck(_GetPixelColor($aWonOneStar[0], $aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) = True Then ExitLoop ;exit if not 'no star'
 			_Sleep($iDelayalgorithm_AllTroops2)
 		Next
 
@@ -110,6 +99,10 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			SetLog("[" & UBound($PixelMine) & "] Gold Mines")
 			SetLog("[" & UBound($PixelElixir) & "] Elixir Collectors")
 			SetLog("[" & UBound($PixelDarkElixir) & "] Dark Elixir Drill/s")
+			$iNbrOfDetectedMines[$iMatchMode] += UBound($PixelMine)
+			$iNbrOfDetectedCollectors[$iMatchMode] += UBound($PixelElixir)
+			$iNbrOfDetectedDrills[$iMatchMode] += UBound($PixelDarkElixir)
+			UpdateStats()
 		EndIf
 
 	EndIf

@@ -7,14 +7,13 @@
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (June-2015) edited for V3.x Bot and SC updates
 ;                  Sardo 2015-08
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 ;
-
 Func UpgradeBuilding()
 	Local $iz = 0
 	Local $iUpgradeAction = -1
@@ -35,15 +34,15 @@ Func UpgradeBuilding()
 	Setlog("Checking Upgrade", $COLOR_BLUE)
 
 	; Need to update village report function to skip statistics and extra messages not required using a bypass?
-	VillageReport(True) ; Get current loot available after training troops and update free builder status
-	$iAvailGold = Number($GoldCount)
-	$iAvailElixir = Number($ElixirCount)
-	$iAvailDark = Number($DarkCount)
+	VillageReport(True, True) ; Get current loot available after training troops and update free builder status
+	$iAvailGold = Number($iGoldCurrent)
+	$iAvailElixir = Number($iElixirCurrent)
+	$iAvailDark = Number($iDarkCurrent)
 
 	If $iSaveWallBldr = 1 Then  ; If save wall builder is enable, make sure to reserve builder if enabled
-		$iAvailBldr = $FreeBuilder - $iSaveWallBldr
+		$iAvailBldr = $iFreeBuilderCount - $iSaveWallBldr
 	Else
-		$iAvailBldr = $FreeBuilder
+		$iAvailBldr = $iFreeBuilderCount
 	EndIf
 
 	If $iAvailBldr <= 0 Then
@@ -71,8 +70,10 @@ Func UpgradeBuilding()
 				If UpgradeNormal($iz) = False Then ContinueLoop
 				$iUpgradeAction += 2 ^ ($iz + 1)
 				Setlog("Gold used = " & $aUpgrades[$iz][2], $COLOR_BLUE)
+				$iNbrOfBuildingsUppedGold += 1
+				$iCostGoldBuilding += $aUpgrades[$iz][2]
+				UpdateStats()
 				$iAvailGold -= $aUpgrades[$iz][2]
-				$CostGoldUpgrades += $aUpgrades[$iz][2]
 				$iAvailBldr -= 1
 				ContinueLoop
 			Case "Elixir"
@@ -83,8 +84,10 @@ Func UpgradeBuilding()
 				If UpgradeNormal($iz) = False Then ContinueLoop
 				$iUpgradeAction += 2 ^ ($iz + 1)
 				Setlog("Elixir used = " & $aUpgrades[$iz][2], $COLOR_BLUE)
+				$iNbrOfBuildingsUppedElixir += 1
+				$iCostElixirBuilding += $aUpgrades[$iz][2]
+				UpdateStats()
 				$iAvailElixir -= $aUpgrades[$iz][2]
-				$CostElixirUpgrades += $aUpgrades[$iz][2]
 				$iAvailBldr -= 1
 				ContinueLoop
 			Case "Dark"
@@ -95,8 +98,10 @@ Func UpgradeBuilding()
 				If UpgradeHero($iz) = False Then ContinueLoop
 				$iUpgradeAction += 2 ^ ($iz + 1)
 				Setlog("Dark Elixir used = " & $aUpgrades[$iz][2], $COLOR_BLUE)
+				$iNbrOfHeroesUpped += 1
+				$iCostDElixirHero += $aUpgrades[$iz][2]
+				UpdateStats()
 				$iAvailDark  -= $aUpgrades[$iz][2]
-				$CostDElixirUpgrades += $aUpgrades[$iz][2]
 				$iAvailBldr -= 1
 				ContinueLoop
 			Case Else

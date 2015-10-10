@@ -6,17 +6,21 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
 
 Func saveConfig() ;Saves the controls settings to the config
 	;General Settings--------------------------------------------------------------------------
+
+	FileOpen($config, $FO_UTF16_LE + $FO_OVERWRITE)
+
 	Local $frmBotPos = WinGetPos($sBotTitle)
+
 	IniWrite($config, "general", "cmbProfile", _GUICtrlComboBox_GetCurSel($cmbProfile))
 	IniWrite($config, "general", "frmBotPosX", $frmBotPos[0])
 	IniWrite($config, "general", "frmBotPosY", $frmBotPos[1])
@@ -354,13 +358,6 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "advanced", "townhall", 0)
 	EndIf
 
-	;	If GUICtrlRead($chkLightSpell) = $GUI_CHECKED Then
-	;		IniWrite($config, "advanced", "hitDElightning", 1)
-	;	Else
-	;		IniWrite($config, "advanced", "hitDElightning", 0)
-	;	EndIf
-	;	IniWrite($config, "advanced", "QLSpell", _GUICtrlComboBox_GetCurSel($cmbiLSpellQ) + 1)
-
 	If GUICtrlRead($chkBullyMode) = $GUI_CHECKED Then
 		IniWrite($config, "advanced", "BullyMode", 1)
 	Else
@@ -369,11 +366,13 @@ Func saveConfig() ;Saves the controls settings to the config
 
 	IniWrite($config, "advanced", "ATBullyMode", GUICtrlRead($txtATBullyMode))
 	IniWrite($config, "advanced", "YourTH", _GUICtrlComboBox_GetCurSel($cmbYourTH))
+
 	If GUICtrlRead($radUseDBAttack) = $GUI_CHECKED Then
 		IniWrite($config, "advanced", "THBullyAttackMode", 0)
 	ElseIf GUICtrlRead($radUseLBAttack) = $GUI_CHECKED Then
 		IniWrite($config, "advanced", "THBullyAttackMode", 1)
 	EndIf
+
 	If GUICtrlRead($chkTrophyMode) = $GUI_CHECKED Then
 		IniWrite($config, "advanced", "TrophyMode", 1)
 	Else
@@ -382,6 +381,46 @@ Func saveConfig() ;Saves the controls settings to the config
 
 	IniWrite($config, "advanced", "THaddTiles", GUICtrlRead($txtTHaddtiles))
 	IniWrite($config, "advanced", "AttackTHType", _GUICtrlComboBox_GetCurSel($cmbAttackTHType))
+	$txtAttackTHType = GUICtrlRead($cmbAttackTHType)
+	IniWrite($config, "advanced", "AttackBottomTHType", _GUICtrlComboBox_GetCurSel($cmbAttackbottomType))
+
+
+	If GUICtrlRead($chkUseKingTH) = $GUI_CHECKED Then
+		IniWrite($config, "advanced", "UseKingTH", 1)
+	Else
+		IniWrite($config, "advanced", "UseKingTH", 0)
+	EndIf
+
+	If GUICtrlRead($chkUseQueenTH) = $GUI_CHECKED Then
+		IniWrite($config, "advanced", "UseQueenTH", 1)
+	Else
+		IniWrite($config, "advanced", "UseQueenTH", 0)
+	EndIf
+
+	If GUICtrlRead($chkUseClastleTH) = $GUI_CHECKED Then
+		IniWrite($config, "advanced", "UseCastleTH", 1)
+	Else
+		IniWrite($config, "advanced", "UseCastleTH", 0)
+	EndIf
+
+	If GUICtrlRead($chkUseLSpellsTH) = $GUI_CHECKED Then
+		IniWrite($config, "advanced", "UseLspellTH", 1)
+	Else
+		IniWrite($config, "advanced", "UseLspellTH", 0)
+	EndIf
+
+	If GUICtrlRead($chkUseRSpellsTH) = $GUI_CHECKED Then
+		IniWrite($config, "advanced", "UseRspellTH", 1)
+	Else
+		IniWrite($config, "advanced", "UseRspellTH", 0)
+	EndIf
+
+	If GUICtrlRead($chkUseHSpellsTH) = $GUI_CHECKED Then
+		IniWrite($config, "advanced", "UseHspellTH", 1)
+	Else
+		IniWrite($config, "advanced", "UseHspellTH", 0)
+	EndIf
+
 
 	If GUICtrlRead($chkAlertPBVillage) = $GUI_CHECKED Then
 		IniWrite($config, "advanced", "AlertPBVillage", 1)
@@ -697,6 +736,13 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWrite($config, "donate", "txtDonateCustom3", GUICtrlRead($txtDonateCustom3))
 	IniWrite($config, "donate", "txtBlacklist", StringReplace(GUICtrlRead($txtBlacklist), @CRLF, "|"))
 
+	; Extra Alphabets , Cyrillic.
+	If GUICtrlRead($chkExtraAlphabets) = $GUI_CHECKED Then
+		IniWrite($config, "donate", "chkExtraAlphabets", 1)
+	Else
+		IniWrite($config, "donate", "chkExtraAlphabets", 0)
+	EndIf
+
 	;Troop Settings--------------------------------------------------------------------------
 	IniWrite($config, "troop", "TroopComposition", _GUICtrlComboBox_GetCurSel($cmbTroopComp))
 
@@ -716,6 +762,14 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWrite($config, "troop", "TrainITDelay", GUICtrlRead($sldTrainITDelay))
 
 	;barracks boost not saved (no use)
+
+	; Spells Creation  ---------------------------------------------------------------------
+    IniWrite($config, "Spells", "LightningSpell", GUICtrlRead($txtNumLightningSpell))
+	IniWrite($config, "Spells", "RageSpell", GUICtrlRead($txtNumRageSpell))
+	IniWrite($config, "Spells", "HealSpell", GUICtrlRead($txtNumHealSpell))
+	IniWrite($config, "Spells", "PoisonSpell", GUICtrlRead($txtNumPoisonSpell))
+	IniWrite($config, "Spells", "HasteSpell", GUICtrlRead($txtNumHasteSpell))
+	IniWrite($config, "Spells", "SpellFactory", GUICtrlRead($txtTotalCountSpell))
 
 	;Misc Settings--------------------------------------------------------------------------
 	If $ichkWalls = 1 Then
@@ -764,6 +818,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	EndIf
 	IniWrite($config, "other", "txtTimeWakeUp", GUICtrlRead($txtTimeWakeUp))
 	IniWrite($config, "other", "VSDelay", GUICtrlRead($sldVSDelay))
+	IniWrite($config, "other", "MaxVSDelay", GUICtrlRead($sldMaxVSDelay))
 
 	IniWrite($config, "other", "MaxTrophy", GUICtrlRead($txtMaxTrophy))
 	IniWrite($config, "other", "MinTrophy", GUICtrlRead($txtdropTrophy))
@@ -815,19 +870,39 @@ Func saveConfig() ;Saves the controls settings to the config
 
 	IniWrite($building, "other", "xArmy", $ArmyPos[0])
 	IniWrite($building, "other", "yArmy", $ArmyPos[1])
+	IniWrite($building, "other", "totalcamp", $TotalCamp)
 
 	;IniWrite($building, "other", "barrackNum", $barrackNum)
 	;IniWrite($building, "other", "barrackDarkNum", $barrackDarkNum)
 
 	IniWrite($building, "other", "listResource", $listResourceLocation)
 
-	;For $i = 0 To 3 ;Covers all 4 Barracks
-	IniWrite($building, "other", "xBarrack", $barrackPos[0])
-	IniWrite($building, "other", "yBarrack", $barrackPos[1])
-	;Next
 
-	IniWrite($building, "other", "xSpellfactory", $SFPos[0])
-	IniWrite($building, "other", "ySpellfactory", $SFPos[1])
+	IniWrite($building, "other", "xBarrack1", $barrackPos[0][0])
+	IniWrite($building, "other", "yBarrack1", $barrackPos[0][1])
+
+	IniWrite($building, "other", "xBarrack2", $barrackPos[1][0])
+	IniWrite($building, "other", "yBarrack2", $barrackPos[1][1])
+
+	IniWrite($building, "other", "xBarrack3", $barrackPos[2][0])
+	IniWrite($building, "other", "yBarrack3", $barrackPos[2][1])
+
+	IniWrite($building, "other", "xBarrack4", $barrackPos[3][0])
+	IniWrite($building, "other", "yBarrack4", $barrackPos[3][1])
+
+
+	IniWrite($building, "other", "xspellfactory", $SFPos[0])
+	IniWrite($building, "other", "yspellfactory", $SFPos[1])
+
+	IniWrite($building, "other", "xDspellfactory", $DSFPos[0])
+	IniWrite($building, "other", "yDspellfactory", $DSFPos[1])
+
+	IniWrite($building, "other", "xKingAltarPos", $KingAltarPos[0])
+	IniWrite($building, "other", "yKingAltarPos", $KingAltarPos[1])
+
+	IniWrite($building, "other", "xQueenAltarPos", $QueenAltarPos[0])
+	IniWrite($building, "other", "yQueenAltarPos", $QueenAltarPos[1])
+
 
 	;PushBullet Settings----------------------------------------
 	IniWrite($config, "pushbullet", "AccountToken", GUICtrlRead($PushBTokenValue))
@@ -948,6 +1023,12 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "planned", "DropCCEnable", 1)
 	Else
 		IniWrite($config, "planned", "DropCCEnable", 0)
+	 EndIf
+
+   If GUICtrlRead($chkBoostBarracksHours) = $GUI_CHECKED Then
+		IniWrite($config, "planned", "BoostBarracksHoursEnable", 1)
+	Else
+		IniWrite($config, "planned", "BoostBarracksHoursEnable", 0)
 	EndIf
 
 	Local $string = ""
@@ -979,6 +1060,17 @@ Func saveConfig() ;Saves the controls settings to the config
 		EndIf
 	Next
 	IniWrite($config, "planned", "DropCCHours", $string)
+
+	Local $string = ""
+	For $i = 0 To 23
+		If GUICtrlRead(Eval("chkBoostBarracksHours" & $i)) = $GUI_CHECKED Then
+			$string &= "1|"
+		Else
+			$string &= "0|"
+		EndIf
+	Next
+	IniWrite($config, "planned", "BoostBarracksHours", $string)
+
 
 	;Share Attack Settings----------------------------------------
 	IniWrite($config, "shareattack", "minGold", GUICtrlRead($txtShareMinGold))
@@ -1051,5 +1143,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "General", "ChkVersion", 0)
 	EndIf
+
+	FileClose($config)
 
 EndFunc   ;==>saveConfig

@@ -1,56 +1,47 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: UpgradeWall.au3
-; Description ...:
-; Syntax ........:
+; Name ..........: UpgradeWall
+; Description ...: This file checks if enough resources to upgrade walls, and upgrades them
+; Syntax ........: UpgradeWall()
 ; Parameters ....:
-; Return values .:
-; Author ........:
-; Modified ......: Sardo 2015-08
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
-; Related .......:
-; Link ..........:
+; Return values .: None
+; Author ........: ProMac (2015), HungLe (2015)
+; Modified ......: Sardo 2015-08, KnowJack (Aug 2105)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......: checkwall.au3
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
 Func UpgradeWall()
 
-	;If $NoMoreWalls = 1 Then Return
 
-	If GUICtrlRead($chkWalls) = $GUI_CHECKED Then
-		If $FreeBuilder > 0 Then
+
+	If $ichkWalls = 1 Then
+		If $iFreeBuilderCount > 0 Then
 			SetLog("Checking Upgrade Walls", $COLOR_BLUE)
+
 			ClickP($aAway,1,0,"#0313") ; click away
-			$itxtWallMinGold = GUICtrlRead($txtWallMinGold)
-			$itxtWallMinElixir = GUICtrlRead($txtWallMinElixir)
 
-			Local $MinWallGold = Number($GoldCount - $Wallcost) > Number($itxtWallMinGold) ; Check if enough Gold
-			Local $MinWallElixir = Number($ElixirCount - $Wallcost) > Number($itxtWallMinElixir) ; Check if enough Elixir
-
-			If GUICtrlRead($UseGold) = $GUI_CHECKED Then
-				$iUseStorage = 1
-			ElseIf GUICtrlRead($UseElixir) = $GUI_CHECKED Then
-				$iUseStorage = 2
-			ElseIf GUICtrlRead($UseElixirGold) = $GUI_CHECKED Then
-				$iUseStorage = 3
-			EndIf
+			Local $MinWallGold = Number($iGoldCurrent - $WallCost) > Number($itxtWallMinGold) ; Check if enough Gold
+			Local $MinWallElixir = Number($iElixirCurrent - $WallCost) > Number($itxtWallMinElixir) ; Check if enough Elixir
 
 			Switch $iUseStorage
-				Case 1
+				Case 0
 					If $MinWallGold Then
 						SetLog("Upgrading Wall using Gold", $COLOR_GREEN)
 						If CheckWall() Then UpgradeWallGold()
 					Else
 						SetLog("Gold is below minimum, Skipping Upgrade", $COLOR_RED)
 					EndIf
-				Case 2
+				Case 1
 					If $MinWallElixir Then
 						Setlog("Upgrading Wall using Elixir", $COLOR_GREEN)
 						If CheckWall() Then UpgradeWallElixir()
 					Else
 						Setlog("Elixir is below minimum, Skipping Upgrade", $COLOR_RED)
 					EndIf
-				Case 3
+				Case 2
 					If $MinWallElixir Then
 						SetLog("Upgrading Wall using Elixir", $COLOR_GREEN)
 						If CheckWall() And Not UpgradeWallElixir() Then
@@ -66,7 +57,10 @@ Func UpgradeWall()
 						EndIf
 					EndIf
 			EndSwitch
+
 			ClickP($aAway,1,0,"#0314") ; click away
+			If _Sleep(100) Then Return
+
 			Click(820, 40,1,0,"#0315") ; Close Builder/Shop if open by accident
 		Else
 			SetLog("No free builder, Upgrade Walls skipped..", $COLOR_RED)
@@ -92,8 +86,8 @@ Func UpgradeWallGold()
 		EndIf
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20,1,0,"#0316") ; Click Upgrade Gold Button
 		If _Sleep($iDelayUpgradeWallGold2) Then Return
-		_CaptureRegion()
-		If _ColorCheck(_GetPixelColor(685, 150), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x
+
+		If _ColorCheck(_GetPixelColor(685, 150, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x
 			If isNoUpgradeLoot(False) = True Then
 				SetLog("Upgrade stopped due no loot", $COLOR_RED)
 				Return False
@@ -102,8 +96,9 @@ Func UpgradeWallGold()
 			If _Sleep($iDelayUpgradeWallGold3) Then Return
 			SetLog("Upgrade complete", $COLOR_GREEN)
 			PushMsg("UpgradeWithGold")
-			$wallgoldmake = $wallgoldmake + 1
-			GUICtrlSetData($lblWallgoldmake, $wallgoldmake)
+			$iNbrOfWallsUppedGold += 1
+			$iCostGoldWall += $WallCost
+			UpdateStats()
 			Return True
 		EndIf
 	Else
@@ -123,9 +118,9 @@ Func UpgradeWallElixir()
 	Global $ButtonPixel = _MultiPixelSearch(240, 563, 670, 650, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
 	If IsArray($ButtonPixel) Then
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20,1,0,"#0322") ; Click Upgrade Elixir Button
+
 		If _Sleep($iDelayUpgradeWallElixir2) Then Return
-		_CaptureRegion()
-		If _ColorCheck(_GetPixelColor(685, 150), Hex(0xE1090E, 6), 20) Then
+		If _ColorCheck(_GetPixelColor(685, 150, True), Hex(0xE1090E, 6), 20) Then
 			If isNoUpgradeLoot(False) = True Then
 				SetLog("Upgrade stopped due to insufficient loot", $COLOR_RED)
 				Return False
@@ -134,8 +129,9 @@ Func UpgradeWallElixir()
 			If _Sleep($iDelayUpgradeWallElixir3) Then Return
 			SetLog("Upgrade complete", $COLOR_GREEN)
 			PushMsg("UpgradeWithElixir")
-			$wallelixirmake = $wallelixirmake + 1
-			GUICtrlSetData($lblWallelixirmake, $wallelixirmake)
+			$iNbrOfWallsUppedElixir += 1
+			$iCostElixirWall += $WallCost
+			UpdateStats()
 			Return True
 		EndIf
 	Else

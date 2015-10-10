@@ -3,10 +3,10 @@
 ; Description ...: Gets complete value of gold/Elixir/DarkElixir/Trophy/Gem xxx,xxx
 ; Author ........: Didipe (2015)
 ; Modified ......: ProMac (2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -44,7 +44,7 @@ Func getUpgradeResource($x_start, $y_start) ; -> Gets complete value of Gold/Eli
 EndFunc   ;==>getUpgradeResource
 
 Func getResourcesMainScreen($x_start, $y_start) ; -> Gets complete value of Gold/Elixir/Dark Elixir/Trophies/Gems xxx,xxx "VillageReport.au3"
-	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 95, 16, True)
+	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 100, 16, True)
 EndFunc   ;==>getResourcesMainScreen
 
 Func getResourcesLoot($x_start, $y_start) ; -> Gets complete value of Gold/Elixir/Dark Elixir/Trophies xxx,xxx "AttackReport"
@@ -114,8 +114,30 @@ Func getBarracksTroopQuantity($x_start, $y_start);  -> Gets quantity of troops i
 EndFunc   ;==>getBarracksTroopQuantity
 
 Func getAttackDisable($x_start, $y_start);  -> 346, 182 - Gets red text disabled for early warning of Take-A-Break
-    Return getOcrAndCapture("coc-dis", $x_start, $y_start, 118, 24, True)
+	Return getOcrAndCapture("coc-dis", $x_start, $y_start, 118, 24, True)
 EndFunc   ;==>getAttackDisable
+
+Func getOcrLanguage($x_start, $y_start);  -> Get english language - main screen --> getLanguage(324,6)
+	Return getOcrAndCapture("coc-ms-testl", $x_start, $y_start, 43, 11, True)
+EndFunc   ;==>getOcrLanguage
+
+Func getOcrSpellDetection($x_start, $y_start);  -> Recognition of the Spells in Armyoverview window
+	Return getOcrAndCapture("coc-t-spells", $x_start, $y_start, 50, 10, True)
+EndFunc   ;==>getOcrSpellDetection
+
+Func getOcrSpellQuantity($x_start, $y_start);  -> Get the Spells quantity in Armyoverview window
+	Return getOcrAndCapture("coc-t-t", $x_start, $y_start, 25, 12, True)
+EndFunc   ;==>getOcrSpellQuantity
+
+Func getOcrClanLevel($x_start, $y_start);  -> Get the Spells quantity in Armyoverview window
+	Return getOcrAndCapture("coc-clanlevel", $x_start, $y_start, 20, 19, True)
+EndFunc   ;==>getOcrClanLevel
+
+Func getOcrSpaceCastleDonate($x_start, $y_start);  -> Get the space of castle request
+	Return getOcrAndCapture("coc-totalreq", $x_start, $y_start, 38, 11, True)
+EndFunc   ;==>getOcrSpaceCastleDonate
+
+
 
 
 Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpace = False)
@@ -136,8 +158,3 @@ Func getOcr($hBitmap, $language)
 		Return ""
 	EndIf
 EndFunc   ;==>getOcr
-
-
-Func getOcrLanguage($x_start, $y_start);  -> Get english language - main screen --> getLanguage(324,6)
-	return getOcrAndCapture("coc-ms-testl", $x_start, $y_start, 43, 11, True)
-EndFunc   ;==>getOcrLanguage
