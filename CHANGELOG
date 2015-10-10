@@ -1,0 +1,378 @@
+﻿* **V1**
+ * Initial version
+
+*  **V1.1**
+ * Hog Riders added
+ * Raid when camp > 90% 
+ * Upgrade wall function fixed and optimized
+ * Implemented a pause/un-pause function (activate using keyboard key "pause")
+ * Adjustable slider to change the time between clicking "Next" when searching to eliminate out of sync issues
+ * Added the ability to halt attack mode and only Train/dontate troops
+ * Optimised Coding and reduced many lines for efficiency
+ * GUI Improvments including tool tips added to functions giving an explanation as to what they do
+ * Auto upgrading walls fix/optimizations
+ * Ability to set a reserved amount of Gold/Elixir that remains untouched from auto wall upgrade
+ * Locate Town Hall button fixed
+ * Fix TH Detection
+ * Folders restructured
+ * Giant Donation bug fixed
+ * More error checks to reduce out of sync and incorrect bot running, such as misclicks
+ * Fixed the issue when the bot started when not at the village screen
+ * Fixed Random training of Barbarian
+ * Fixed issue When searching for a raid a random troop was sometimes deployed
+ * Halt Attack (stay online/collect/donate troops)
+ * Bully Mode added
+
+*  **V1.1.1**
+ * Quick fix for Village Search.
+
+* **V1.2**
+ * Add time for wait device connect
+ * Add time u want end battle , default is 40s(for save king, queen)
+ * Add Minion
+ * Add atk only with full barrack(choice)
+ * Add pause button
+ * Fix bug bot run time
+ * Fix bug auto wall
+ * More powerfull train troop
+ * when you got out of sync then you got in main screen again ... the bot attack already
+ * Fix bug bully mode , recreate and redesign it for easy understand
+ * Fix many bug on 1.1
+
+* **V1.2.1**
+ * Fix some issues which may have caused the bot to still wait for full army and not continuing to train anything else(custom troop)
+ * Makethe auto device connect more effective
+
+* **V2.0**
+ * Complete GUI overhaul
+ * New bot users no longer need to manually resize BlueStacks (simply launch the bot and BlueStacks and the bot will do the rest)
+ * Fixed an issue where users would experience the Bot to hang upon launching
+ * The ability to manually activate your Hero special abilities after your preferred time frame
+ * The ability for your Hero's special ability to activate automatically activate when low health is detected
+ * Improved attack option (TH outside)
+ * Added Wizards as an extra troop
+ * Added search reduction setup (resources will drop after x number of searches)
+ * Added option to raid after troop capacity reaches "x%"
+ * Donation chat requests now detect spaces between words
+ * Bot checks for donation requests and recognizes them almost instantly
+ * Added option for trophies (now includes minimum & maximum)
+ * Added new Army composition
+ * Added ability for the bot to not train troops (select "0" for Archers, Barbarians, Goblins)
+ * Improved the battle end option which sometimes would return home with false Gold/Elixir detected changes
+ * Improved stats page with more detailed information showing you exactly how your bot is performing.
+ * Optimized certain functions to reduce the "out of sync" issue
+ * Stats page overhaul giving much more detail as to how your bot is performing
+ * Many other minor bug fixes
+
+* **V3.0**
+ * New image detection system in place
+ * Auto detect collectors
+ * Auto detect all barracks including dark barracks
+ * Attack now (see a base you want to target and with a click of a button the bot will initiate the attack sequence)
+ * Brand new donation system with the ability to whitelist/blacklist keywords
+ * Improved character recognition
+ * Much faster donation filling requests
+ * Train all troops
+ * Super fast village searching (default is 0 seconds)
+ * Fixed wallbreaker detection bug
+ * Much improved zooming out
+ * Faster troop training
+ * Smartest ever seen training system which will auto fill empty slots with archers ensuring your army camps are always full
+ * Smart automatic attack modes (select weak base and it will still look for dead bases, select dead bases and the bot will also look for weak bases)
+ * Auto detect your Town Hall (no more manually selecting it)
+ * Lightning attack on DE storage now implemented
+ * Added option to use Heroes to auto drop trophies
+ * Boost spell factory option added wit hthe ability to select how many spells should be created before being used
+ * Building coordinates now saved in a seperate config file so you can now share your bot settings with your friends
+ * Auto upgrade building option added
+ * Heroes automatically restore health by activating special abilities if not used in battle
+ * Advanced troop deployment options added (drop troops on the redline, near Gold collectors/Elixir collectors & DE pumps
+ * Brand new Weak Base feature which detects village Mortar and Wizard Towers
+ * Removed GUI skin for lighter feel and better performance
+ * Removed Bot preloader
+ * Changed GUI to include tabbed options as apposed to buttons for future features
+
+* **V3.0.1**
+ * Hot Fixs
+ * Fixed some stability issues
+ * Fixed DonateCC not recognising text
+ * More checks added to detect if Army Camp is full
+
+* **V3.0.2**
+ * Added automatic checks to ensure end user meets correct NET Framework version/VS ++
+
+* **V3.0.3**
+ * Fixed "cannot locate next button" issue
+ * Fixed bug that sometimes made BS disconnect due to false reading on inactivity
+ * Fixed rare case of the bot sometimes clicking on "boost" when not requested
+
+* **V3.0.4**
+ * Fixed train archer issue
+ * Fixed train loop issue
+ * Fixed train when boosted issue
+ * No more bot not zoomout
+ * Fastest detect "Device Connect" , dont worry, bot can see you connect by other device right away
+ * Auto connect after "Coc Error Stop.."
+ * Fastest detect OOS for comeback attack as soon as possible (previous 1 min, now only 3 ---> 10s)
+ * Shorten tab descriptions so no scroll needed
+ * Fix auto activate heroes by health , now it's possible to drop heroes in first wave
+ * Change village search to make compatible bully mode and trophy mode and weak base mode
+ * Fix remain troop with smart attack , no more troops not deploy
+ * Fix problem with smart attack and number side = 1
+
+* **V3.1**
+ * FIX - Train HOGS after May 11 Update from SuperCell
+ * FIX - Issues with chat request not read
+ * FIX-  Issue with chat - stuck in donation
+ * FIX - Unable to zoom out COC in bluestacks
+ * FIX - Queen ability auto engage
+ * FIX - Detection of some troops like dragons
+ * FIX - Miss click on "Surrender" / "End battle"
+ * FIX - Mod spend Gems to upgrade building
+ * FIX - ArmyCamp not available
+ * FIX - DropTrophy don't wait for 70% army when not using DeadBase attack
+ * FIX - GUI: VillageSearch Delay starts at 0 second by default
+ * Improve - Pushbullet
+ * Improve - the Wall detection and Upgrade
+ * Improve - the waiting for mainscreen
+ * Improve - the Building upgrade with the minimun to save like walls.
+ * Improve - Train Only 25 troops each time
+ * Improve - the Pause/Stop button
+ * Improve - RedArea zone detection
+ * Improve - Don't click on the ClanCastle when already full (no Gems window)
+ * Improve - DonateCC - dont click below the black area to prevent CoC close.
+ * Improve - DonateCC - detect when Donate screen is partly hidden
+ * Add - PushBullet remote and more stats
+ * Add - Unbreakable mode - farm defenses
+ * Add - Clan Castle option: Balance between the donation and castle use
+ * Add - AttackReport: loot info after attack on log and on GUI more accurate
+ * Add - GUI: Profile option to load/save config.ini
+ * Add - GUI: Take Loot Snapshot can include Loot Info in filename
+ * Updated: GUI tab PushBullet to Notify
+ * Updated: GUI Credits
+
+* **V3.1.1**
+ * Fix - Bug OOS each search
+ * Fix - PushBullet - AlertPBVillage and AlertPBLastAttack now available
+
+* **V3.1.2**
+ * Fix - Bug STOP button did not respond correctly.
+ * Fix - PushBullet - Send a blank screenshot when drop trophies
+ * Fix - PushBullet - AlertPBLastRaidTxt now available
+
+* **V3.1.3**
+ * Fix - PushBullet - Error: "Variable not declared"
+
+* **V3.1.4**
+ * Fix - Bot stuck at check main screen
+
+* **V3.1.5**
+ * Fix - Train loop and not attack
+ * Fix - Stop button work immediately
+ * Add- Train now can wait to full if it detected camp nearly full --> save time
+It mean, when see camp nearly full: ex: 210/200 , it will not do other process(donate, collect,...), and only forcus on train for wait it full then attack
+ * Improved - memory management
+ * Improved - PushBullet, add "Delete All Messages"
+
+* **V3.1.6**
+ * Fix - Loop at the main screen.
+ * Fix - If you stop it while its in that loop state it tries to attack your own base.
+ * Fix - If you stop the bot while searching it starts spamming.
+ * Fix - HALT ATTACK OPTION BREAKS.
+
+* **V3.1.7**
+ * Fix - PushBullet - Message for Wall upgrades with Gold or Elixir separated
+ * Fix - PushBullet - Reduced number of calls/pushes to the PushBullet servers :-)
+Note: If you don't use PushBullet, you can use v3.1.6 also.
+
+* **V3.1.8**
+ * Fix - Hide BlueStacks screen not working for some
+
+* **V4.0**
+ * New attack log
+ * Make a photo of your village
+ * Use barracks mode with dark barrack troops custom army
+ * Dual search tab, livebase and deadbase
+ * Gold + Elixir condition added
+ * Dual options for livebase and deadbase
+ * Clan Castle balance D/R ratio
+ * Added preset list of troops to be used while attacking
+ * TH Bully can be (and must be) used with attack settings from deadbase or livebase
+ * Add option exit if resources lower than the set values
+ * Add option exit if no resourcea left
+ * Add option exit if one or two stars earned
+ * Enable sharing replay
+ * Donate custom troops
+ * Latin Alphabetic + Numbers + special characters ( like ñ , ç and ã ) , special Turkish and Russian characters. 
+ * Moved here halt attack options from log tab
+ * Multiple profiles
+ * Added option auto clear Tombstones
+ * Minimum resource values that should be met to restart attacking after halting attack because of low resources
+ * Add upgrade Buildings and Heroes
+ * Add save one Builder for walls
+ * Add upgrade Laboratory
+ * Add restart command
+ * Add stop command
+ * Add Army camp full notification
+ * Compliant to new Pushbullet API syntax
+ * Check latest version
+ * Auto delete log and temp files older than date
+ * Check Game language (English is needed for bot)
+ * Set delay for slow pc
+ * Automatic press start button on-load
+ * Automatic positioning of BlueStacks and Bot windows when start button pressed
+ * Write log coordinates
+ * Make screenshot in PNG format (jpg as default)
+ * Donate CC, Request CC and Drop CC scheduler
+ * Force total army camp if not auto detected (instead of asking)
+ * Two rows tabs GUI
+ * Minor bug fix
+ * Anti-gem spend fix : rearm, walls, build, spells, search,requestCC, ugrade heroes, train
+ * New OCR recognition improved - Latin Alphabetic + special letters + numbers / Russian / Turkish
+ * Debug code add 
+
+* **V4.0.1**
+ * CoC English language check improved, should work for everyone
+ * Unnecessary Weak Base checking fixed
+ * Fix for never getting a match with Weak Base option together with Dual Search mode
+ * Search reduction is now applied separately for Dual Search Mode (Dead / Live Base) (affects only if you use "Enabled after X skips")
+ * Bot now does not crash if you have more than 11 troops/spells/heroes/cc available while attacking
+ * Bot now does not crash while checking for remaining troop, if it deployed all your available units
+ * Heroes [Queen] automatic ability activation fixed
+ * Clan Castle troop request disabling is fixed
+ * Custom Troop Wizard training is fixed
+ * Dark Troop training is now balanced
+ * Auto Start feature now does not cause bot and PushBullet remote control to malfunction
+ * TH Snipe zoom out issue is fixed
+ * Fixed the log for dark elixir and trophy gain after the attack
+ * Fixed "End battle when no resources left"
+ * Save one builder for wall upgrading logic error fixed
+ * Unbreakable mode "excess cloud watching time"
+ * Zoom out endless loop fixed
+ * King Deployment fixed
+ * Fixed the problem with reading some troop quantities
+ * Improved bot version check
+ * Improved OCR
+ * Troop training is now done using the new army view button
+ * New army view is used to detect available number of barracks and dark barracks
+ * TH Snipe GBarch attack now comes with the official release
+ * Early Detection for Take-A-Break warning
+ * Added 2nd attempt to read Take-A-Break text for slow PC, VM and VPS after a short delay.
+ * Return of the "Not a Dead Base" "Not a Live Base" "Not a Weak Base for Dead/Live Base" info message while searching
+ * New Dark Spells are now recognized
+ * Manual locating (Town Hall, Barracks, Clan Castle, Laboratory, Spell Factory) is improved
+ * Prevention of bot going out of screen when moving
+ * When using automatic positioning of BlueStacks and Bot, bot will no longer accidentally go off the screen with BS
+ * Addition of ignoring level 6-7-8 Elixir Collectors for TH9-10s is removed
+
+* **V4.1**
+ * Reading Profile report bug on slow PC
+ * Town Hall Snipe troop Balancing
+ * Locate upgrade crash when BS window is not open
+ * Read error on Dark Elixir Storage
+ * Clan Castle recognition issue in Troop deployment bar, and failed deployment
+ * Drop trophy attack without enough troops bug
+ * Attack Report Reading values bug for slow PC
+ * Issues in RequestCC for slow PC
+ * Unbreakable not attacking when camp is full bug
+ * Zoom out bug when users base had valid colors in same place as pixel check
+ * Stuck in "Waiting for mainscreen" endless loop bug
+ * Reduced the setlog text color rainbow to use consistent colors for common messages
+ * Next button coordinates to avoid clicking config button when OOS error.
+ * "Check Obstacles not checking for battle end button" bug
+ * Village search not ending battle when out of gold bug
+ * BlueStacks and AutoIt crashes due DLL error
+ * Barracks boost not working due bad pixel color check
+ * Not attacking due Train troop loop when barracks full
+ * Building locating process
+ * Reduced building locating @ startup if already known
+ * GBARCH TH Snipe algorithm
+ * Increased speed of collecting
+ * Changed training to use barracks tabs instead of prev/next buttons to ensure proper barracks
+ * Changed Default trophy level to 5000 to prevent unwanted trophy loss
+ * Code readabililty through more use of screen coordinates
+ * Skip locating buildings for OOS
+ * Ability to specify profile when starting via command line
+ * Extra character spaces in GUI for longer village names
+ * Status update count down timer for Take-A-Break
+ * Reboot PC option to Halt modes
+ * Code to avoid Zoom out hang bug due window focus loss
+ * Removed/Improved debugsetlog messages to improve execution speed and maintain diagnosis capabilities.
+ * Code to allow Bot folder to work on any drive in PC.
+ * Startup message when Bot detects Town hall below TH6
+
+* **V4.1.1**
+ * Collecting Mines/pumps with Collect resources disabled
+ * Bot not clearing shield after Take-A-Break, and not attacking loop
+ * Barracks mode with an additional dark troops training issues
+ * Slow close of Profile Report window creating errors and not attacking loops 
+ * Bot doesn't pre-cook dark troops
+ * Training troops capacity problem, trouble reading number "2"
+ * Balloons in First slot position during attack returning the incorrect number
+ * TH Snipe not deploying Hero's or Clan Castle
+ * BS but not CoC opened when bot 1st started
+ * Boosting barracks confuses troop training
+ * Wallbreaker training issues
+ * Rare problem with reading "a" and "o" in building text OCR
+ * Unbreakable mode unnecessary farming due default values reversed
+ * Added Y offset to auto windows arrange to fix bad positions
+ * Donated troops not subtracted from camp properly, and train not adding troops properly
+ * Temporarily removed automatic version check due issues with GitHub repo
+ * Upgrade lab occasionally not reading values correctly for page 2 of lab upgrades
+ * Gem window not always closing if out of elixir during troop training
+ * modified open BS to stop a random recursive loop event
+ * village search not seeing OOS for 5 loops and going inactive and losing trophy
+ * Zoom out not working if user has black pixels in same place as window check
+ * Removed wall upgrade disable if code cannot find anymore walls to upgrade, keeps trying forever even if it’s hopeless
+ * Changed minimum troop requirements for unbreakable mode based on the attack dead base setting
+ * Troop training and balancing code adjusted for fewer out of balance events during TH Snipe
+ * Adjusted log messages for "out of Elixir" during training to show type of elixir
+ * Reset fast attack flag if Take-A-Break event happens to avoid rare looping issues due multiple errors.
+ * Increased Village search max wait times to compensate for slow PC with variable loop to not impact normal PC
+ * Changed barracks mode training to add max number of troops for lvl10 barracks
+ * Increased searching speed by removing unnecessary weak base searching, if other resource conditions are not met.
+ * Process to stop and Start BS/CoC for OOS or other errors
+ * Changed close BS code to include a stop of all processes and services.
+ * change order of profile report and village report to avoid replication of function calls.
+ * Error trap, and restart BS when BS is not running to avoid getBSPos crash
+ * Missing icons for Dark spells used in Lab Upgrade GUI
+ * Code to remove ghost icons created by restarting BS
+ * Button to misc tab to reset all building information by deleting building.ini
+
+* **V4.2**
+ * New Icon and Banner - MyBot
+ * Enhanced Statistics with cool icons and loads of data
+ * Search Mode button fixed, and should work properly every time now
+ * User Selectable Random Delay for Village Searching Anti-Bot avoidance
+ * User DPI setting confirmation and warning if not correct
+ * Added set/reset buttons for quick editng AM/PM rows in donatecc/requestcc Time on expert tab
+ * Expanded Take-A-Break detection to include idle times
+ * Single barracks boost capability
+ * Add Scheduler to Boost Barracks
+ * Spell creation capability
+ * Read the Clan level and limits donate troops (5/6/8)
+ * Use Spells in TH Snipes
+ * Use Heroes in TH snipes
+ * Possibility of custom deploy in TH snipes
+ * Add the Cyrillic Alphabet to Donate troops
+ * Boost Heroes
+ * Boost Dark Spell Factory
+ * Add Options to TH Snipes
+ * Removed some old code
+ * Removed the Locate ArmyCamp , Barracks and Clan Castle from the First Run function
+ * Wall upgrade execution speed improvement (removed direct calls to GUI)
+ * Wall level 10 with extra 2 pictures
+ * Train system balance troops in TH snipes
+ * Turned on the check version feature
+ * The Config file saved in Unicode to use the Cyrillic Alphabet
+ * OCR name of Buildings
+ * Added missing CheckPower flags to drop trophy to enable hero activation before exiting like normal in return home process
+ * Added variable wait delay on Army camp size OCR that was impacted by extended donation message text.
+ * Total camp size not correct when switching profiles
+ * Prevent random troop drop due blind button clicks by return home function
+ * Zoom out issue when tall trees are located at top corner of base
+ * Smart Attack 4 sides , some times was reported 3 sides deploy intead of 4
+ * Pushbullet crash or errors when there are internet connection issues
+ * Fixed the train 20 archer when boosted error
+ * Fixed cant find train page error , coordinates error
+ * Others minor issues fixed
