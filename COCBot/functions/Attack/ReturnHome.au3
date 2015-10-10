@@ -6,17 +6,18 @@
 ;                  $GoldChangeCheck     - [optional] an unknown value. Default is True.
 ; Return values .: None
 ; Author ........:
-; Modified ......: KnowJack (June 2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Modified ......: KnowJack (Jun/Aug2015)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 
 	Local $counter = 0
 	Local $hBitmap_Scaled
+	Local $i
 
 	If $GoldChangeCheck = True Then
 		SetLog("Checking if the battle has finished", $COLOR_BLUE)
@@ -43,14 +44,54 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	$checkKPower = False
 	$checkQPower = False
 
-	If $iMatchMode = $TS And _GUICtrlComboBox_GetCurSel($cmbTroopComp) = 9 Then $FirstStart = True ;reset barracks upon return when TH sniping w/custom army
+	If $iMatchMode = $TS And $icmbTroopComp <> 8 Then $FirstStart = True ;reset barracks upon return when TH sniping w/custom army
 
 	SetLog("Returning Home", $COLOR_BLUE)
 	If $RunState = False Then Return
-	ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
-	If _Sleep($iDelayReturnHome2) Then Return
-	ClickP($aConfirmSurrender, 1, 0, "#0100") ;Click Confirm
-	If _Sleep($iDelayReturnHome2) Then Return
+; remove old blind button clicks and replace with pixel check or button search to stop random clicking in battle screen and random troop drop
+;	ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
+;	If _Sleep($iDelayReturnHome2) Then Return
+;	ClickP($aConfirmSurrender, 1, 0, "#0100") ;Click Confirm
+;	If _Sleep($iDelayReturnHome2) Then Return
+
+	$i = 0 ; Reset Loop counter
+	While 1
+		If _CheckPixel($aSurrenderButton, $bCapturePixel) Then
+			ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
+			ExitLoop
+		Else
+			$i += 1
+		EndIf
+		If $i > 10 Then ExitLoop  ; if end battle or surrender button are not found in 10*200mms or 2 seconds, then give up.
+		If _Sleep($iDelayReturnHome5) Then Return
+	WEnd
+	If _Sleep($iDelayReturnHome2) Then Return ; short wait for confirm button to appear
+
+	$i = 0 ; Reset Loop counter
+	While 1  ; Look for Okay button on the confirm surrender window before clicking to avoid troop deployment, since button is green (same as grass) have to search for edges of the button
+		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
+		Global $ButtonPixel = _MultiPixelSearch(438, 372, 590, 404, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
+		If $debugSetlog = 1 Then Setlog("Confirm Surrender color #1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_PURPLE)
+		If IsArray($ButtonPixel) Then
+			If $debugSetlog = 1 Then
+				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
+				Setlog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_PURPLE)
+			EndIf
+			ControlFocus($Title, "", "") ; grab window focus
+			PureClick($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 2, 50) ; Click Okay Button
+			ExitLoop
+		EndIf
+		If $i > 5 Then  ; if okay button not found in 5*300-400ms search time or 1.5-2 seconds, then stop searching
+			If $DebugSetlog = 1 Then
+				Setlog("Can not find Okay to surrender button, giving up", $COLOR_PURPLE)
+				DebugImageSave("ReturnHomeSurrenderButtonCheck_")
+			EndIf
+			ExitLoop ;
+		EndIf
+		$i += 1
+	WEnd
+	If _Sleep($iDelayReturnHome2) Then Return ; short wait for return
+
 	TrayTip($sBotTitle, "", BitOR($TIP_ICONASTERISK, $TIP_NOSOUND)) ; clear village search match found message
 
 	If $GoldChangeCheck = True Then
@@ -63,7 +104,6 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		If _Sleep($iDelayReturnHome3) Then Return ; wait for all report details
 		_CaptureRegion(0, 0, 860, 675)
 		AttackReport()
-		GUICtrlSetData($lblresultvillagesattacked, GUICtrlRead($lblresultvillagesattacked) + 1)
 	EndIf
 
 	If $TakeSS = 1 And $GoldChangeCheck = True Then
@@ -74,7 +114,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
 		; screenshot filename according with new options around filenames
 		If $ScreenshotLootInfo = 1 Then
-			$LootFileName = $Date & "_" & $Time & " G" & $lootGold & " E" & $lootElixir & " DE" & $lootDarkElixir & " T" & $lootTrophies & " S" & StringFormat("%s", $SearchCount) & ".jpg"
+			$LootFileName = $Date & "_" & $Time & " G" & $iGoldLast & " E" & $iElixirLast & " DE" & $iDarkLast & " T" & $iTrophyLast & " S" & StringFormat("%3s", $SearchCount) & ".jpg"
 		Else
 			$LootFileName = $Date & "_" & $Time & ".jpg"
 		EndIf
@@ -87,7 +127,18 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		PushMsg("LastRaid")
 	EndIf
 
-	ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
+	$i = 0 ; Reset Loop counter
+	While 1
+		If _CheckPixel($aEndFightSceneAvl, $bCapturePixel) Then  ; check for the gold ribbon in the end of battle data screen
+			ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
+			ExitLoop
+		Else
+			$i += 1
+		EndIf
+		If $i > 10 Then ExitLoop  ; if end battle window is not found in 10*200mms or 2 seconds, then give up.
+		If _Sleep($iDelayReturnHome5) Then Return
+	WEnd
+	If _Sleep($iDelayReturnHome2) Then Return ; short wait for screen to close
 
 	$counter = 0
 	While 1

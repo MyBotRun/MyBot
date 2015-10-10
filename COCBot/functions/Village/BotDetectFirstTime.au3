@@ -3,10 +3,10 @@
 ; Description ...: This script detects your builings on the first run
 ; Author ........: HungLe (april-2015)
 ; Modified ......: Hervidero (april-2015),(may-2015), HungLe (may-2015), KnowJack(July 2015), Sardo 2015-08
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -24,81 +24,83 @@ Func BotDetectFirstTime()
 
 	SetLog("Detecting your Buildings..", $COLOR_BLUE)
 
-	If $ichkTrap = 1 And (isInsideDiamond($TownHallPos) = False) Then
+	If (isInsideDiamond($TownHallPos) = False) Then
+		If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) And _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
+			Zoomout()
+			Collect()
+		EndIf
 		Local $PixelTHHere = GetLocationItem("getLocationTownHall")
 		If UBound($PixelTHHere) > 0 Then
 			$pixel = $PixelTHHere[0]
 			$TownHallPos[0] = $pixel[0]
 			$TownHallPos[1] = $pixel[1]
-			If $debugSetlog = 1 Then SetLog("Townhall: (" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_PURPLE)
+			If $debugSetlog = 1 Then SetLog("DLLc# Townhall: (" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_RED)
 		EndIf
+		If $TownHallPos[1] = "" Then
+			checkTownhallADV()
+			$TownHallPos[0] = $THx
+			$TownHallPos[1] = $THy
+			If $debugSetlog = 1 Then SetLog("OldDDL Townhall: (" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_RED)
+		EndIf
+		SetLog("Townhall: (" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_PURPLE)
 	EndIf
 
 	If Number($iTownHallLevel) < 2 Then
 		$Result = GetTownHallLevel(True) ; Get the Users TH level
-		If IsArray($Result) Then $iTownHallLevel = 0  ; Check for error finding TH level, and reset to zero if yes
+		If IsArray($Result) Then $iTownHallLevel = 0 ; Check for error finding TH level, and reset to zero if yes
 	EndIf
 	If Number($iTownHallLevel) > 1 And Number($iTownHallLevel) < 6 Then
 		Setlog("Warning: TownHall level below 6 NOT RECOMMENDED!", $COLOR_RED)
 		Setlog("Proceed with caution as errors may occur.", $COLOR_RED)
 	EndIf
 
-	If _Sleep($iDelayBotDetectFirstTime3) Then Return
+	If _Sleep($iDelayBotDetectFirstTime1) Then Return
+	Setlog("Finding your Clan Level, wait..")
+	ClanLevel()
+	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 
-;~ 	If $barrackPos[0] = "" Or $barrackNum = 0 Then
-;~ 		Local $PixelBarrackHere = GetLocationItem("getLocationBarrack")
-;~ 		$barrackNum = UBound($PixelBarrackHere)
-;~ 		SetLog("Total No. of Barracks: " & $barrackNum, $COLOR_PURPLE)
-;~ 		If UBound($PixelBarrackHere) > 0 Then
-;~ 			$pixel = $PixelBarrackHere[0]
-;~ 			$barrackPos[0] = $pixel[0]
-;~ 			$barrackPos[1] = $pixel[1]
-;~ 			If $debugSetlog = 1 Then
-;~ 				For $i = 0 To UBound($PixelBarrackHere) - 1
-;~ 					$pixel = $PixelBarrackHere[$i]
-;~ 					SetLog("- Barrack " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
-;~ 				Next
-;~ 			EndIf
-
-;~ 		EndIf
-;~ 	EndIf
-
-;~ 	If _Sleep($iDelayBotDetectFirstTime2) Then Return
-
-;~ 	If $barrackDarkNum = 0 Then
-;~ 		Local $PixelBarrackDarkHere = GetLocationItem("getLocationDarkBarrack")
-;~ 		$barrackDarkNum = UBound($PixelBarrackDarkHere)
-;~ 		SetLog("Total No. of Dark Barracks: " & $barrackDarkNum, $COLOR_PURPLE)
-;~ 		If UBound($PixelBarrackDarkHere) > 0 And $debugSetlog = 1 Then
-;~ 			For $i = 0 To UBound($PixelBarrackDarkHere) - 1
-;~ 				$pixel = $PixelBarrackDarkHere[$i]
-;~ 				SetLog("- Dark Barrack " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
-;~ 			Next
-;~ 		EndIf
-
-;~ 	EndIf
-	If _Sleep($iDelayBotDetectFirstTime3) Then Return
-
-	If isInsideDiamond($barrackPos) = False Then
-		LocateBarrack()
+	If GUICtrlRead($cmbQuantBoostBarracks) > 0 Then
+		If _Sleep($iDelayBotDetectFirstTime3) Then Return
+		If $barrackPos[GUICtrlRead($cmbQuantBoostBarracks) - 1][0] = "" Then ;  Boost individual barracks with "button Boost 10 gems"
+			LocateBarrack2()
+			SaveConfig()
+		EndIf
 	EndIf
 
-
-	If _Sleep($iDelayBotDetectFirstTime3) Then Return
-
-	If isInsideDiamond($ArmyPos) = False Then
-		LocateBarrack(True)
+	If (GUICtrlRead($cmbBoostDarkSpellFactory) > 0) Then
+		If _Sleep($iDelayBotDetectFirstTime3) Then Return
+		If $DSFPos[0] = -1 Then
+			LocateDarkSpellFactory()
+			SaveConfig()
+		EndIf
 	EndIf
 
-	If _Sleep($iDelayBotDetectFirstTime3) Then Return
-
-	If isInsideDiamond($aCCPos) = False Then
-		LocateClanCastle()
+	If (GUICtrlRead($cmbBoostSpellFactory) > 0) Then
+		If _Sleep($iDelayBotDetectFirstTime3) Then Return
+		If $SFPos[0] = -1 Then
+			LocateSpellFactory()
+			SaveConfig()
+		EndIf
 	EndIf
 
-	If _Sleep($iDelayBotDetectFirstTime3) Then Return
+	If (GUICtrlRead($cmbBoostBarbarianKing) > 0) Then
+		If _Sleep($iDelayBotDetectFirstTime3) Then Return
+		If $KingAltarPos[0] = -1 Then
+			LocateKingAltar()
+			SaveConfig()
+		EndIf
+	EndIf
 
-	If $listResourceLocation = "" Then
+	If (GUICtrlRead($cmbBoostArcherQueen) > 0) Then
+		If _Sleep($iDelayBotDetectFirstTime3) Then Return
+		If $QueenAltarPos[0] = -1 Then
+			LocateQueenAltar()
+			SaveConfig()
+		EndIf
+	EndIf
+
+	If $iChkCollect = 1 And $listResourceLocation = "" Then
+		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		While 1 ; Clear the collectors using old image find to reduce collector image finding errors
 			If _Sleep($iDelayBotDetectFirstTime3) Or $RunState = False Then ExitLoop
 			_CaptureRegion(0, 0, 780)

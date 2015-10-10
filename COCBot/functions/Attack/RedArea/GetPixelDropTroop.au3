@@ -5,7 +5,7 @@ Func GetPixelDropTroop($troop, $number, $slotsPerEdge)
 	Local $newPixelTopRight
 	Local $newPixelBottomRight
 
-	If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini) Then
+	If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini or $troop = $eBarb ) Then
 		$newPixelTopLeft = $PixelTopLeftFurther
 		$newPixelBottomLeft = $PixelBottomLeftFurther
 		$newPixelTopRight = $PixelTopRightFurther

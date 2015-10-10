@@ -46,10 +46,10 @@ $g_aEMB_Settings[9] = BitAND(BitShift(String(Binary($g_aEMB_TempArray[0])), 8), 
 $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 11) ; Title bar icon width
 $g_aEMB_Settings[12] = $g_aEMB_TempArray[0]
 $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 30) ; Title bar button width
-$g_aEMB_Settings[12] += ( ($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0]) ) ; Compensate for small buttons in some themes
+$g_aEMB_Settings[12] += (($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0])) ; Compensate for small buttons in some themes
 $g_aEMB_TempArray = 0
 $g_aEMB_TempArray = DllCall("dwmapi.dll", "uint", "DwmIsCompositionEnabled", "int*", $g_aEMB_TempArray) ; Check for Aero enabled
-If $g_aEMB_TempArray[1] = True Then
+If Not @error And $g_aEMB_TempArray[1] = True Then
 	$g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 7) ; GUI button frame width
 	$g_aEMB_Settings[12] += ($g_aEMB_TempArray[0] * 4) ; Add frames to compensate for incorrect Aero return
 EndIf
@@ -454,7 +454,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 	; Check if title wider than text
 	If $aTitleSize[2] > ($iMsg_Width - 70) Then ; Assume icon reduction of 50 regardless of icon setting
 		; Adjust dialog width up to absolute dialog width value
-		$iDialog_Width = ( ($aTitleSize[2] < ($g_aEMB_Settings[7] - $g_aEMB_Settings[12])) ? ($aTitleSize[2] + $g_aEMB_Settings[12]) : ($g_aEMB_Settings[7]) )
+		$iDialog_Width = (($aTitleSize[2] < ($g_aEMB_Settings[7] - $g_aEMB_Settings[12])) ? ($aTitleSize[2] + $g_aEMB_Settings[12]) : ($g_aEMB_Settings[7]))
 	EndIf
 
 	;ConsoleWrite($iDialog_Width & @CRLF)

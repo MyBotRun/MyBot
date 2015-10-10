@@ -8,10 +8,10 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (July/Aug 2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkObstacles(), waitMainScreen()
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func checkMainScreen($Check = True) ;Checks if in main screen
@@ -39,14 +39,19 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 			$Restart = True
 		EndIf
 		waitMainScreen()  ; Due to differeneces in PC speed, let waitMainScreen test for CoC restart
+		If @extended Then
+			SetError(1, 1, -1)
+			Return
+		EndIf
 		If @error Then $iCount += 1
 		If $iCount > 2 Then
 			SetLog("Unable to fix the window error", $COLOR_RED)
-			SetError(1, @extended, 0)
+			SetError(1, 0, 0)
 			ExitLoop
 		EndIf
 	WEnd
 	ZoomOut()
+
 	If $Check = True Then
 		SetLog("Main Screen Located", $COLOR_GREEN)
 	Else

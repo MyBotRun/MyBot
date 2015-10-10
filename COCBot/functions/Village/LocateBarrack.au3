@@ -6,10 +6,10 @@
 ; Return values .: None
 ; Author ........: Code Monkey #19
 ; Modified ......: KnowJack (June 2015) Sardo 2015-08
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func LocateBarrack($ArmyCamp = False)
@@ -105,9 +105,9 @@ Func LocateBarrack($ArmyCamp = False)
 				EndIf
 				SetLog($choice & ": " & "(" & $ArmyPos[0] & "," & $ArmyPos[1] & ")", $COLOR_GREEN)
 			Else
-				$barrackPos[0] = FindPos()[0]
-				$barrackPos[1] = FindPos()[1]
-				If isInsideDiamond($barrackPos) = False Then
+				$barrackPos[0][0] = FindPos()[0]
+				$barrackPos[0][1] = FindPos()[1]
+				If isInsideDiamondXY($barrackPos[0][0],$barrackPos[0][1]) = False Then
 					$iStupid += 1
 					Select
 						Case $iStupid = 1
@@ -118,19 +118,19 @@ Func LocateBarrack($ArmyCamp = False)
 							$sErrorText = "Please try to click inside the grass field!" & @CRLF
 							ContinueLoop
 						Case $iStupid = 3
-							$sErrorText = "This is not funny, why did you click @ (" &$barrackPos[0] & "," & $barrackPos[1] & ")?  Please stop!" & @CRLF
+							$sErrorText = "This is not funny, why did you click @ (" &$barrackPos[0][0] & "," & $barrackPos[0][1] & ")?  Please stop!" & @CRLF
 							ContinueLoop
 						Case $iStupid = 4
 							$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
 							ContinueLoop
 						Case $iStupid > 4
-							SetLog(" Operator Error - Bad  " & $choice & " Location: " & "(" & $barrackPos[0] & "," & $barrackPos[1] & ")", $COLOR_RED)
+							SetLog(" Operator Error - Bad  " & $choice & " Location: " & "(" & $barrackPos[0][0] & "," & $barrackPos[0][1] & ")", $COLOR_RED)
 							ClickP($aAway,1,0,"#0366")
 							Return False
 						Case Else
-							SetLog(" Operator Error - Bad " & $choice & " Location: " & "(" & $barrackPos[0] & "," & $barrackPos[1] & ")", $COLOR_RED)
-							$barrackPos[0] = -1
-							$barrackPos[1] = -1
+							SetLog(" Operator Error - Bad " & $choice & " Location: " & "(" & $barrackPos[0][0] & "," & $barrackPos[0][1] & ")", $COLOR_RED)
+							$barrackPos[0][0] = -1
+							 $barrackPos[0][1] = -1
 							ClickP($aAway,1,0,"#0367")
 							Return False
 					EndSelect
@@ -159,20 +159,20 @@ Func LocateBarrack($ArmyCamp = False)
 								ContinueLoop
 							Case $iSilly > 4
 								SetLog("Quit joking, Click the Barracks, or restart bot and try again", $COLOR_RED)
-								$barrackPos[0] = -1
-								$barrackPos[1] = -1
+								 $barrackPos[0][0] = -1
+								 $barrackPos[0][1] = -1
 								ClickP($aAway,1,0,"#0368")
 								Return False
 						EndSelect
 					EndIf
 				Else
-					SetLog(" Operator Error - Bad " & $choice & " Location: " & "(" & $barrackPos[0] & "," & $barrackPos[1] & ")", $COLOR_RED)
-					$barrackPos[0] = -1
-					$barrackPos[1] = -1
+					SetLog(" Operator Error - Bad " & $choice & " Location: " & "(" &  $barrackPos[0][0] & "," &  $barrackPos[0][1] & ")", $COLOR_RED)
+					 $barrackPos[0][0] = -1
+					 $barrackPos[0][1] = -1
 					ClickP($aAway,1,0,"#0369")
 					Return False
 				EndIf
-				SetLog("Locate success "&$choice & ": " & "(" & $barrackPos[0] & "," & $barrackPos[1] & ")", $COLOR_GREEN)
+				SetLog("Locate success "&$choice & ": " & "(" &  $barrackPos[0][0] & "," &  $barrackPos[0][1] & ")", $COLOR_GREEN)
 			EndIf
 		Else
 			SetLog("Locate "&$choice&" Cancelled", $COLOR_BLUE)
@@ -227,3 +227,99 @@ Func LocateBarrack($ArmyCamp = False)
 	ClickP($aAway, 1, 0, "#0206")
 
 EndFunc   ;==>LocateBarrack
+
+
+Func LocateBarrack2()
+	Local $errorPositon = 0
+	Local $barrackNum = ""
+	Local $x
+
+	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) And _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
+		Zoomout()
+		Collect()
+	EndIf
+
+	Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293") ;Click Army Camp
+
+	If WaitforPixel(715, 124, 718, 125, Hex(0xD80408, 6), 5, 10) Then
+	    BarracksStatus(False) ; $numBarracksAvaiables
+	Else
+		SetLog ("Error open the ArmyOverView Windows!..")
+	EndiF
+
+	If _Sleep($iDelaycheckArmyCamp1) Then Return
+	ClickP($aAway, 1, 0, "#0295") ;Click Away
+
+	If $barrackPos[$numBarracksAvaiables - 1][0] = "" Then
+		Local $PixelBarrackHere = GetLocationItem("getLocationBarrack")
+		$barrackNum = UBound($PixelBarrackHere)
+		SetLog("Total No. of Barracks: " & $barrackNum, $COLOR_PURPLE)
+		If UBound($PixelBarrackHere) > 0 Then
+			For $i = 0 To UBound($PixelBarrackHere) - 1
+				$pixel = $PixelBarrackHere[$i]
+				If $debugSetlog = 1 Then Setlog("click " & $pixel[0] & "/" & $pixel[1] )
+				If isInsideDiamond($pixel) Then
+					Click($pixel[0], $pixel[1])
+					If _Sleep(1000) Then Return
+					Local $TrainPos = _PixelSearch(512, 585, 641, 588, Hex(0x7895C2, 6), 10)  ;Finds Train Troops button
+					Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
+					If WaitforPixel(715, 124, 718, 125, Hex(0xD80408, 6), 5, 10) Then ;wait until finds red Cross button in new Training popup window, max of 5 senconds / return True
+						For $x = 0 To 3
+							If _Sleep(100) Then Return
+							If _ColorCheck(_GetPixelColor(254 + (60 * $x), 540, True), Hex(0xE8E8E0, 6), 20) Then ; slot position 60 * $x
+								$barrackPos[$x][0] = $pixel[0]
+								$barrackPos[$x][1] = $pixel[1]
+								SetLog("- Barrack " & $x + 1 & ": (" & $barrackPos[$x][0] & "," & $barrackPos[$x][1] & ")", $COLOR_PURPLE)
+								ExitLoop
+							EndIf
+						Next
+					Else
+						SetLog("- Barrack " & $i + 1 & " Error open the ArmyOverView Window!", $COLOR_PURPLE)
+					EndIf
+				Else
+					SetLog("- Barrack " & $i + 1 & " is not inside the field, position: (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+					$errorPositon = 1
+				EndIf
+				ClickP($aAway, 2, 50, "#0206")
+			Next
+		EndIf
+
+
+		If $errorPositon = 1 Or $barrackNum < $numBarracksAvaiables Then
+			Local $TEMPbarrackPos[4][2]
+
+			For $i = 0 To ($numBarracksAvaiables - 1)
+				Setlog("Click in Barrack nº " & $i + 1 & " and wait please...")
+				$TEMPbarrackPos[$i][0] = FindPos()[0]
+				$TEMPbarrackPos[$i][1] = FindPos()[1]
+				If isInsideDiamondXY($TEMPbarrackPos[$i][0], $TEMPbarrackPos[$i][1]) Then
+					If _Sleep($iDelayLocateBarrack2) Then Return
+					Local $TrainPos = _PixelSearch(512, 585, 641, 588, Hex(0x7895C2, 6), 10) ;Finds Train Troops button
+					Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
+					If WaitforPixel(715, 124, 718, 125, Hex(0xD80408, 6), 5, 10) Then ;wait until finds red Cross button in new Training popup window, max of 5 senconds / return True
+						For $x = 0 To 3
+							If _Sleep($iDelayLocateBarrack2) Then Return
+							If _ColorCheck(_GetPixelColor(254 + (60 * $x), 540, True), Hex(0xE8E8E0, 6), 20) Then ; slot position 60 * $x
+								$barrackPos[$x][0] = $TEMPbarrackPos[$i][0]
+								$barrackPos[$x][1] = $TEMPbarrackPos[$i][1]
+								SetLog("- Barrack " & $i + 1 & ": (" & $barrackPos[$x][0] & "," & $barrackPos[$x][1] & ")", $COLOR_PURPLE)
+							;Else
+								;SetLog("- Barrack " & $i + 1 & " error , position: (" & $TEMPbarrackPos[$i][0] & "," & $TEMPbarrackPos[$i][1] & ")", $COLOR_PURPLE)
+							EndIf
+						Next
+					Else
+						SetLog("- Barrack " & $i + 1 & " Error open the ArmyOverView Window!", $COLOR_PURPLE)
+					EndIf
+				Else
+					SetLog("Quit joking, Click the Barracks, or restart bot and try again", $COLOR_RED)
+				EndIf
+				If _Sleep(1000) Then Return
+				ClickP($aAway, 1, 0, "#0206")
+			Next
+		EndIf
+
+	EndIf
+	If _Sleep($iDelayBotDetectFirstTime3) Then Return
+
+EndFunc   ;==>LocateBarrack2
+

@@ -6,10 +6,10 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -23,14 +23,33 @@ Func readConfig() ;Reads config and sets it to the variables
 		$aCCPos[0] = IniRead($building, "other", "xCCPos", "0")
 		$aCCPos[1] = IniRead($building, "other", "yCCPos", "0")
 
-		$barrackPos[0] = IniRead($building, "other", "xBarrack", "0")
-		$barrackPos[1] = IniRead($building, "other", "yBarrack", "0")
+		$barrackPos[0][0] = IniRead($building, "other", "xBarrack1", "0")
+		$barrackPos[0][1] = IniRead($building, "other", "yBarrack1", "0")
+
+		$barrackPos[1][0] = IniRead($building, "other", "xBarrack2", "0")
+		$barrackPos[1][1] = IniRead($building, "other", "yBarrack2", "0")
+
+		$barrackPos[2][0] = IniRead($building, "other", "xBarrack3", "0")
+		$barrackPos[2][1] = IniRead($building, "other", "yBarrack3", "0")
+
+		$barrackPos[3][0] = IniRead($building, "other", "xBarrack4", "0")
+		$barrackPos[3][1] = IniRead($building, "other", "yBarrack4", "0")
 
 		$ArmyPos[0] = IniRead($building, "other", "xArmy", "0")
 		$ArmyPos[1] = IniRead($building, "other", "yArmy", "0")
+		$TotalCamp = Number(IniRead($building, "other", "totalcamp", "0"))
 
 		$SFPos[0] = IniRead($building, "other", "xspellfactory", "-1")
 		$SFPos[1] = IniRead($building, "other", "yspellfactory", "-1")
+
+		$DSFPos[0] = IniRead($building, "other", "xDspellfactory", "-1")
+		$DSFPos[1] = IniRead($building, "other", "yDspellfactory", "-1")
+
+		$KingAltarPos[0] = IniRead($building, "other", "xKingAltarPos", "-1")
+		$KingAltarPos[1] = IniRead($building, "other", "yKingAltarPos", "-1")
+
+		$QueenAltarPos[0] = IniRead($building, "other", "xQueenAltarPos", "-1")
+		$QueenAltarPos[1] = IniRead($building, "other", "yQueenAltarPos", "-1")
 
 		;$barrackNum = IniRead($building, "other", "barrackNum", "0")
 		;$barrackDarkNum = IniRead($building, "other", "barrackDarkNum", "0")
@@ -61,7 +80,7 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iDividerY = Number(IniRead($config, "general", "LogDividerY", "385"))
 
 		$ichkAutoStart = IniRead($config, "general", "AutoStart", "0")
-		$ichkAutoStartDelay = IniRead($config, "general", "AutoStartDelay", "5")
+		$ichkAutoStartDelay = IniRead($config, "general", "AutoStartDelay", "10")
 		$restarted = IniRead($config, "general", "Restarted", "0")
 		$ichkBackground = IniRead($config, "general", "Background", "0")
 		$ichkBotStop = IniRead($config, "general", "BotStop", "0")
@@ -72,7 +91,6 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iDisposeWindows = IniRead($config, "general", "DisposeWindows", "0")
 		$icmbDisposeWindowsPos = IniRead($config, "general", "DisposeWindowsPos", "SNAP-TR")
 		$iUseOldOCR = IniRead($config, "general", "UseOldOCR", "0")
-
 
 		;Search Settings------------------------------------------------------------------------
 		$iCmbSearchMode = IniRead($config, "search", "SearchMode", "0")
@@ -164,7 +182,7 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iCmbCCDonated = IniRead($config, "attack", "BalanceCCDonated", "1")
 		$iCmbCCReceived = IniRead($config, "attack", "BalanceCCReceived", "1")
 
-		$iActivateKQCondition = IniRead($config, "attack", "ActivateKQ", "Manual")
+		$iActivateKQCondition = IniRead($config, "attack", "ActivateKQ", "Auto")
 		$delayActivateKQ = (1000 * IniRead($config, "attack", "delayActivateKQ", "9"))
 
 		$TakeLootSnapShot = IniRead($config, "attack", "TakeLootSnapShot", "0")
@@ -175,8 +193,6 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iAttackNowDelay = IniRead($config, "advanced", "attacknowdelay", "3")
 
 		$chkATH = IniRead($config, "advanced", "townhall", "0")
-;		$iChkLightSpell = IniRead($config, "advanced", "hitDElightning", "0")
-;		$iLSpellQ = IniRead($config, "advanced", "QLSpell", "3")
 
 		$OptBullyMode = IniRead($config, "advanced", "BullyMode", "0")
 		$ATBullyMode = IniRead($config, "advanced", "ATBullyMode", "0")
@@ -184,15 +200,23 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iTHBullyAttackMode = IniRead($config, "advanced", "THBullyAttackMode", "0")
 
 		$OptTrophyMode = IniRead($config, "advanced", "TrophyMode", "0")
-		$THaddtiles = IniRead($config, "advanced", "THaddTiles", "0")
-		$AttackTHType = IniRead($config, "advanced", "AttackTHType", "0")
+		$THaddtiles = IniRead($config, "advanced", "THaddTiles", "2")
+		$icmbAttackTHType = IniRead($config, "advanced", "AttackTHType", "3")
+		$icmbDeployBtmTHType = IniRead($config, "advanced", "AttackBottomTHType", "1")
 
 		$PushToken = IniRead($config, "advanced", "AccountToken", "")
 
 		$iAlertPBVillage = IniRead($config, "advanced", "AlertPBVillage", "0")
 		$iLastAttack = IniRead($config, "advanced", "AlertPBLastAttack", "0")
 
-		;		$iUnbreakableMode = IniRead($config, "advanced", "chkUnbreakable", "0")
+		$ichkUseKingTH    = IniRead($config, "advanced", "UseKingTH", "0")
+		$ichkUseQueenTH   = IniRead($config, "advanced", "UseQueenTH", "0")
+		$ichkUseClastleTH = IniRead($config, "advanced", "UseCastleTH", "0")
+		$ichkUseLSpellsTH = IniRead($config, "advanced", "UseLspellTH", "0")
+		$ichkUseRSpellsTH = IniRead($config, "advanced", "UseRspellTH", "0")
+		$ichkUseHSpellsTH = IniRead($config, "advanced", "UseHspellTH", "0")
+
+		;$iUnbreakableMode = IniRead($config, "advanced", "chkUnbreakable", "0")
 		$iUnbreakableWait = IniRead($config, "advanced", "UnbreakableWait", "5")
 		$iUnBrkMinGold = IniRead($config, "advanced", "minUnBrkgold", "50000")
 		$iUnBrkMinElixir = IniRead($config, "advanced", "minUnBrkelixir", "50000")
@@ -354,6 +378,9 @@ Func readConfig() ;Reads config and sets it to the variables
 		$sTxtBlacklist = StringReplace(IniRead($config, "donate", "txtBlacklist", "clan war|war|cw"), "|", @CRLF)
 		$aBlackList = StringSplit($sTxtBlacklist, @CRLF, $STR_ENTIRESPLIT)
 
+		; Extra Alphabets , Cyrillic.
+		$ichkExtraAlphabets = IniRead($config, "donate", "chkExtraAlphabets", "0")
+
 		;Troop Settings--------------------------------------------------------------------------
 		$iCmbTroopComp = IniRead($config, "troop", "TroopComposition", "0")
 
@@ -372,6 +399,14 @@ Func readConfig() ;Reads config and sets it to the variables
 
 		$isldTrainITDelay = IniRead($config, "troop", "TrainITDelay", "20")
 		;barracks boost not saved (no use)
+
+		; Spells Creation  ---------------------------------------------------------------------
+		$LightningSpellComp = IniRead($config, "Spells", "LightningSpell", "0")
+		$RageSpellComp      = IniRead($config, "Spells", "RageSpell"     , "0")
+		$HealSpellComp      = IniRead($config, "Spells", "HealSpell"     , "0")
+		$PoisonSpellComp   = IniRead($config, "Spells", "PoisonSpell"  , "0")
+		$HasteSpellComp     = IniRead($config, "Spells", "HasteSpell"    , "0")
+		$iTotalCountSpell   = IniRead($config, "Spells", "SpellFactory"    , "0")
 
 		;Misc Settings--------------------------------------------------------------------------
 
@@ -398,6 +433,7 @@ Func readConfig() ;Reads config and sets it to the variables
 		$ichkTombstones = IniRead($config, "other", "chkTombstones", "0")
 		$sTimeWakeUp = IniRead($config, "other", "txtTimeWakeUp", "0")
 		$iVSDelay = IniRead($config, "other", "VSDelay", "0")
+		$iMaxVSDelay = IniRead($config, "other", "MaxVSDelay", "0")
 
 		$itxtMaxTrophy = IniRead($config, "other", "MaxTrophy", "5000")
 		$itxtdropTrophy = IniRead($config, "other", "MinTrophy", "5000")
@@ -452,6 +488,8 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iPlannedDonateHoursEnable  	= IniRead($config, "planned", "DonateHoursEnable", "0")
 		$iPlannedRequestCCHoursEnable 	= IniRead($config, "planned", "RequestHoursEnable", "0")
 		$iPlannedDropCCHoursEnable 		= IniRead($config, "planned", "DropCCEnable", "0")
+		$iPlannedBoostBarracksEnable    = IniRead($config, "planned", "BoostBarracksHoursEnable", "0")
+		$iPlannedBoostBarracksHours     = StringSplit(IniRead($config, "planned", "BoostBarracksHours", "1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1"),"|", $STR_NOCOUNT)
 
 		;Share Attack Settings----------------------------------------
 		$iShareminGold = IniRead($config, "shareattack", "minGold", "200000")
@@ -470,10 +508,7 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iValueTotalCampForced =  IniRead($config, "other", "ValueTotalCampForced", "200")
 
 		$ichkLanguage = IniRead($config, "General", "ChkLanguage", "1")
-
-
 		$ichkVersion = IniRead($config, "General", "ChkVersion", "1")
-
 
 	Else
 		Return False

@@ -1,6 +1,14 @@
-; Delay Times
+; #Variables# ====================================================================================================================
+; Name ..........: iDelay Variable
+; Description ...: Master file with all program delays
+; Syntax ........: $iDelayXXXXXXYYY  : XXXX = function name using the delay, YYY = delay value or position of delay in file
+; Author ........: Sardo (Aug 2015)
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
+; Example .......: No
+; ===============================================================================================================================
 
-;gamebot.org
 Global Const $iDelayRunBot1 = 1000
 Global Const $iDelayRunBot2 = 800
 Global Const $iDelayRunBot3 = 200
@@ -79,6 +87,7 @@ Global Const $iDelayReturnHome1 = 1000
 Global Const $iDelayReturnHome2 = 500
 Global Const $iDelayReturnHome3 = 2500
 Global Const $iDelayReturnHome4 = 2000
+Global Const $iDelayReturnHome5 = 200
 
 ;DropOnEdge
 Global Const $iDelayDropOnEdge1 = 100
@@ -198,6 +207,14 @@ Global Const $iDelayBoostSpellFactory2 = 2000
 Global Const $iDelayBoostSpellFactory3 = 500
 Global Const $iDelayBoostSpellFactory4 = 600
 
+;BoostHeroes
+
+Global Const $iDelayBoostHeroes1 = 1000
+Global Const $iDelayBoostHeroes2 = 2000
+Global Const $iDelayBoostHeroes3 = 500
+Global Const $iDelayBoostHeroes4 = 600
+
+
 ;BotCommand
 Global Const $iDelayBotCommand1 = 500
 
@@ -316,6 +333,7 @@ Global Const $iDelayTrain3 = 1000
 Global Const $iDelayTrain4 = 200
 Global Const $iDelayTrain5 = 250 ; click
 Global Const $iDelayTrain6 = 20 ; click
+Global Const $iDelayTrain7 = 5 ; Spells Creation
 
 ;IsTrainPage
 Global Const $iDelayIsTrainPage1 = 100
@@ -357,129 +375,8 @@ Global Const $iDelayDropLSpell1 = 250
 ;TrainMoveBtn
 Global Const $iDelayTrainMoveBtn1 = 250
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+; WaitnOpenCoC
+Global Const $iDelayWaitnOpenCoC500 = 500
+Global Const $iDelayWaitnOpenCoC1000 = 1000
+Global Const $iDelayWaitnOpenCoC25000 = 25000
 

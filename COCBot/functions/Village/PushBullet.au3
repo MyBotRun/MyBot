@@ -8,10 +8,10 @@
 ; Modified ......: Sardo and Didipe (2015-05) rewrite code
 ;				   kgns (2015-06) $pushLastModified addition
 ;				   Sardo (2015-06) compliant with new pushbullet syntax (removed title)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -19,6 +19,8 @@
 #include <String.au3>
 
 Func _RemoteControl()
+
+    If $pEnabled = 0 Or $pRemote = 0 Then Return
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $PushToken
 	Local $pushbulletApiUrl
@@ -104,11 +106,11 @@ Func _RemoteControl()
 						_DeleteMessage($iden[$x])
 					Case "BOT " & StringUpper($iOrigPushB) & " LASTRAIDTXT"
 						SetLog("Pusbullet: Your request has been received. Last Raid txt sent", $COLOR_GREEN)
-						_Push($iOrigPushB & " | Last Raid txt" & "\n" & "[G]: " & _NumberFormat($lootGold) & " [E]: " & _NumberFormat($lootElixir) & " [D]: " & _NumberFormat($lootDarkElixir) & " [T]: " & $lootTrophies)
+						_Push($iOrigPushB & " | Last Raid txt" & "\n" & "[G]: " & _NumberFormat($iGoldLast) & " [E]: " & _NumberFormat($iElixirLast) & " [D]: " & _NumberFormat($iDarkLast) & " [T]: " & $iTrophyLast)
 						_DeleteMessage($iden[$x])
 					Case "BOT " & StringUpper($iOrigPushB) & " STATS"
 						SetLog("Pushbullet: Your request has been received. Statistics sent", $COLOR_GREEN)
-						_Push($iOrigPushB & " | Stats Village Report" & "\n" & "At Start\n[G]: " & _NumberFormat($GoldStart) & " [E]: " & _NumberFormat($ElixirStart) & " [D]: " & _NumberFormat($DarkStart) & " [T]: " & $TrophyStart & "\n\nNow (Current Resources)\n[G]: " & _NumberFormat($GoldVillage) & " [E]: " & _NumberFormat($ElixirVillage) & " [D]: " & _NumberFormat($DarkVillage) & " [T]: " & $TrophyVillage & " [GEM]: " & $GemCount & "\n \n [No. of Free Builders]: " & $FreeBuilder & "\n [No. of Wall Up]: G: " & $wallgoldmake & "/ E: " & $wallelixirmake & "\n\nAttacked: " & GUICtrlRead($lblresultvillagesattacked) & "\nSkipped: " & GUICtrlRead($lblresultvillagesskipped))
+						_Push($iOrigPushB & " | Stats Village Report" & "\n" & "At Start\n[G]: " & _NumberFormat($iGoldStart) & " [E]: " & _NumberFormat($iElixirStart) & " [D]: " & _NumberFormat($iDarkStart) & " [T]: " & $iTrophyStart & "\n\nNow (Current Resources)\n[G]: " & _NumberFormat($iGoldCurrent) & " [E]: " & _NumberFormat($iElixirCurrent) & " [D]: " & _NumberFormat($iDarkCurrent) & " [T]: " & $iTrophyCurrent & " [GEM]: " & $iGemAmount & "\n \n [No. of Free Builders]: " & $iFreeBuilderCount & "\n [No. of Wall Up]: G: " & $iNbrOfWallsUppedGold & "/ E: " & $iNbrOfWallsUppedElixir & "\n\nAttacked: " & GUICtrlRead($lblresultvillagesattacked) & "\nSkipped: " & $iSkippedVillageCount)
 						_DeleteMessage($iden[$x])
 					Case "BOT " & StringUpper($iOrigPushB) & " SCREENSHOT"
 						SetLog("Pushbullet: ScreenShot request received", $COLOR_GREEN)
@@ -144,9 +146,12 @@ Func _RemoteControl()
 			EndIf
 		Next
 	EndIf
+
 EndFunc   ;==>_RemoteControl
 
 Func _PushBullet($pMessage = "")
+
+    If $pEnabled = 0 Or $PushToken = "" Then Return
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $PushToken
 	$oHTTP.Open("Get", "https://api.pushbullet.com/v2/devices", False)
@@ -162,9 +167,12 @@ Func _PushBullet($pMessage = "")
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
 	Local $pPush = '{"type": "note", "body": "' & $pMessage & '"}'
 	$oHTTP.Send($pPush)
+
 EndFunc   ;==>_PushBullet
 
 Func _Push($pMessage)
+
+	If $pEnabled = 0 Or $PushToken = "" Then Return
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $PushToken
 	$oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
@@ -172,9 +180,13 @@ Func _Push($pMessage)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
 	Local $pPush = '{"type": "note", "body": "' & $pMessage & '"}'
 	$oHTTP.Send($pPush)
+
 EndFunc   ;==>_Push
 
 Func _PushFile($File, $Folder, $FileType, $body)
+
+    If $pEnabled = 0 Or $PushToken = "" Then Return
+
 	If FileExists($sProfilePath & "\" & $sCurrProfile & '\' & $Folder & '\' & $File) Then
 		$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 		$access_token = $PushToken
@@ -210,33 +222,40 @@ Func _PushFile($File, $Folder, $FileType, $body)
 		SetLog("Pushbullet: Unable to send file " & $File, $COLOR_RED)
 		_Push($iOrigPushB & " | Unable to Upload File" & "\n" & "Occured an error type 2 uploading file to PushBullet server...")
 	EndIf
+
 EndFunc   ;==>_PushFile
 
 Func ReportPushBullet()
 
+    If $pEnabled = 0 Then Return
 	If $iAlertPBVillage = 1 Then
-		_PushBullet($iOrigPushB & " | My Village:" & "\n" & " [G]: " & _NumberFormat($GoldCount) & " [E]: " & _NumberFormat($ElixirCount) & " [D]: " & _NumberFormat($DarkCount) & "  [T]: " & _NumberFormat($TrophyCount) & " [FB]: " & _NumberFormat($FreeBuilder))
+		_PushBullet($iOrigPushB & " | My Village:" & "\n" & " [G]: " & _NumberFormat($iGoldCurrent) & " [E]: " & _NumberFormat($iElixirCurrent) & " [D]: " & _NumberFormat($iDarkCurrent) & "  [T]: " & _NumberFormat($iTrophyCurrent) & " [FB]: " & _NumberFormat($iFreeBuilderCount))
 	EndIf
 
 	If $iLastAttack = 1 Then
-		If Not ($GoldLast = "" And $ElixirLast = "") Then _PushBullet($iOrigPushB & " | Last Gain :" & "\n" & " [G]: " & _NumberFormat($GoldLast) & " [E]: " & _NumberFormat($ElixirLast) & " [D]: " & _NumberFormat($DarkLast) & "  [T]: " & _NumberFormat($TrophyLast))
+		If Not ($iGoldLast = "" And $iElixirLast = "") Then _PushBullet($iOrigPushB & " | Last Gain :" & "\n" & " [G]: " & _NumberFormat($iGoldLast) & " [E]: " & _NumberFormat($iElixirLast) & " [D]: " & _NumberFormat($iDarkLast) & "  [T]: " & _NumberFormat($iTrophyLast))
 	EndIf
 	If _Sleep($iDelayReportPushBullet1) Then Return
-   checkMainScreen(False)
+	checkMainScreen(False)
 
 EndFunc   ;==>ReportPushBullet
 
 
 Func _DeletePush($token)
+
+    If $pEnabled = 0 Or $PushToken = "" Then Return
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $token
 	$oHTTP.Open("DELETE", "https://api.pushbullet.com/v2/pushes", False)
 	$oHTTP.SetCredentials($access_token, "", 0)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
 	$oHTTP.Send()
+
 EndFunc   ;==>_DeletePush
 
 Func _DeleteMessage($iden)
+
+    If $pEnabled = 0 Or $PushToken = "" Then Return
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $PushToken
 	$oHTTP.Open("Delete", "https://api.pushbullet.com/v2/pushes/" & $iden, False)
@@ -244,9 +263,12 @@ Func _DeleteMessage($iden)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
 	$oHTTP.Send()
 	$iden = ""
+
 EndFunc   ;==>_DeleteMessage
 
 Func PushMsg($Message, $Source = "")
+
+    If $pEnabled = 0 Then Return
 	Local $hBitmap_Scaled
 	Switch $Message
 		Case "Restarted"
@@ -254,14 +276,18 @@ Func PushMsg($Message, $Source = "")
 		Case "OutOfSync"
 			If $pEnabled = 1 And $pOOS = 1 Then _Push($iOrigPushB & " | Restarted after Out of Sync Error" & "\n" & "Attacking now...")
 		Case "LastRaid"
+			If $pEnabled = 1 And $iAlertPBLastRaidTxt = 1 Then
+				_Push($iOrigPushB & " | Last Raid txt" & "\n" & "[G]: " & _NumberFormat($iGoldLast) & " [E]: " & _NumberFormat($iElixirLast) & " [D]: " & _NumberFormat($iDarkLast) & " [T]: " & $iTrophyLast)
+				If _Sleep($iDelayPushMsg1) Then Return
+				SetLog("Pushbullet: Last Raid Text has been sent!", $COLOR_GREEN)
+			EndIf
 			If $pEnabled = 1 And $pLastRaidImg = 1 Then
 				_CaptureRegion(0, 0, 860, 675)
 				;create a temporary file to send with pushbullet...
 				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 				Local $Time = @HOUR & "." & @MIN
-
 				If $ScreenshotLootInfo = 1 Then
-					$AttackFile = $Date & "__" & $Time & " G" & $lootGold & " E" & $lootElixir & " DE" & $lootDarkElixir & " T" & $lootTrophies & " S" & StringFormat("%s", $SearchCount) & ".jpg" ; separator __ is need  to not have conflict with saving other files if $TakeSS = 1 and $chkScreenshotLootInfo = 0
+					$AttackFile = $Date & "__" & $Time & " G" & $iGoldLast & " E" & $iElixirLast & " DE" & $iDarkLast & " T" & $iTrophyLast & " S" & StringFormat("%3s", $SearchCount) & ".jpg" ; separator __ is need  to not have conflict with saving other files if $TakeSS = 1 and $chkScreenshotLootInfo = 0
 				Else
 					$AttackFile = $Date & "__" & $Time & ".jpg" ; separator __ is need  to not have conflict with saving other files if $TakeSS = 1 and $chkScreenshotLootInfo = 0
 				EndIf
@@ -333,11 +359,13 @@ Func PushMsg($Message, $Source = "")
 				EndIf
 			EndIf
 	EndSwitch
+
 EndFunc   ;==>PushMsg
 
 
 Func _DeleteOldPushes()
 
+    If $pEnabled = 0 Or $PushToken = "" Or $ichkDeleteOldPushes = 0 Then Return
 	;local UTC time
 	Local $tLocal = _Date_Time_GetLocalTime()
 	Local $tSystem = _Date_Time_TzSpecificLocalTimeToSystemTime(DllStructGetPtr($tLocal))
@@ -380,10 +408,14 @@ Func _DeleteOldPushes()
 		setlog("Pushbullet: removed " & $msgdeleted & " messages older than " & $icmbHoursPushBullet & " h ", $COLOR_GREEN)
 		;_Push($iOrigPushB & " | removed " & $msgdeleted & " messages older than " & $icmbHoursPushBullet & " h ")
 	EndIf
+
 EndFunc   ;==>_DeleteOldPushes
 
 
 Func _GetDateFromUnix($nPosix)
+
+    If $pEnabled = 0 Then Return
+
 	Local $nYear = 1970, $nMon = 1, $nDay = 1, $nHour = 00, $nMin = 00, $nSec = 00, $aNumDays = StringSplit("31,28,31,30,31,30,31,31,30,31,30,31", ",")
 	While 1
 		If (Mod($nYear + 1, 400) = 0) Or (Mod($nYear + 1, 4) = 0 And Mod($nYear + 1, 100) <> 0) Then; is leap year
@@ -416,4 +448,5 @@ Func _GetDateFromUnix($nPosix)
 	Next
 	;   Return $nDay & "/" & $nMon & "/" & $nYear & " " & $nHour & ":" & $nMin & ":" & $nSec
 	Return $nYear & "-" & $nMon & "-" & $nDay & " " & $nHour & ":" & $nMin & ":" & StringFormat("%02i", $nSec)
+
 EndFunc   ;==>_GetDateFromUnix

@@ -1,12 +1,12 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: CGB Bot
+; Name ..........: MBR Bot
 ; Description ...: Uses the ColorCheck until the screen is clear from Clouds to Get Resources values.
 ; Author ........: HungLe (2015)
 ; Modified ......: ProMac (2015), Hervidero (2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -28,6 +28,8 @@ Func GetResources() ;Reads resources
 			checkMainScreen()
 			If $Restart Then
 				SetLog("Cannot locate Next button, Restarting Bot...", $COLOR_RED)
+				$iNbrOfOoS += 1
+				UpdateStats()
 				Pushmsg("OoSResources")
 				$Is_ClientSyncError = True
 				$iStuck = 0
@@ -67,6 +69,8 @@ Func GetResources() ;Reads resources
 		checkMainScreen()
 		If $Restart Then
 			SetLog("Cannot locate Next button, Restarting Bot...", $COLOR_RED)
+			$iNbrOfOoS += 1
+			UpdateStats()
 			Pushmsg("OoSResources")
 			$Is_ClientSyncError = True
 			$iStuck = 0

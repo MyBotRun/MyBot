@@ -5,36 +5,52 @@
 ; Parameters ....: $bRestart            - [optional] a boolean value. Default is False.
 ; Return values .: None
 ; Author ........: GkevinOD (2014), Hervidero (2015) (orginal open() fucntion)
-; Modified ......: KnowJack (August 2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Modified ......: KnowJack (Aug2015)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func OpenBS($bRestart = False)
 
 	Local $hTimer, $iCount = 0
+	Local $PID, $BSPath, $ErrorResult
 	SetLog("Starting BlueStacks and Clash Of Clans", $COLOR_GREEN)
 
-	Local $BSPath = RegRead("HKLM\SOFTWARE\BlueStacks\", "InstallDir")
+	Local $BSPath = RegRead("HKLM\SOFTWARE\BlueStacks\", "InstallDir")  ; Get the installed BS location from the registry
+	If $debugsetlog = 1 Then Setlog("$BSPath= " & $BSPath, $COLOR_PURPLE)  ; Debug only
 	If @error <> 0 Then
-		$BSPath = @ProgramFilesDir & "\BlueStacks\"
+		$BSPath = @ProgramFilesDir & "\BlueStacks\"   ; If not found default to standard program files directory
+		Setlog("Default BS Path = " & $BSPath, $COLOR_MAROON)  ; Debug only
 		SetError(0, 0, 0)
 	EndIf
 
-	ShellExecute($BSPath & "HD-RunApp.exe", "-p com.supercell.clashofclans -a com.supercell.clashofclans.GameApp")
+	$PID = ShellExecute($BSPath & "HD-RunApp.exe", "-p com.supercell.clashofclans -a com.supercell.clashofclans.GameApp")  ;Start BS and CoC with command line
+	If _Sleep(1000) Then Return
+	$ErrorResult = ControlGetHandle("BlueStacks Error", "", "") ; Check for BS error window handle if it opens
+	If $debugsetlog = 1 Then Setlog("$PID= "&$PID & ", $ErrorResult = " &$ErrorResult, $COLOR_PURPLE)
+	If $PID = 0 Or $ErrorResult <> 0  Then  ; IF ShellExecute failed or BS opens error window = STOP
+		SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_RED)
+		SetLog("Unable to continue........", $COLOR_MAROON)
+		btnstop()
+		SetError(1, 1, -1)
+		Return
+	EndIf
 
-	$hTimer = TimerInit()
+	$hTimer = TimerInit()  ; start a timer for tracking BS start up time
 	SetLog("Please wait while BS/CoC starts....", $COLOR_GREEN)
 	While IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) = False
 		If _Sleep(1000) Then ExitLoop
 		$iCount += 1
-		_StatusUpdateTime($hTimer)
+		_StatusUpdateTime($hTimer, "BS/CoC Start")
 		If $iCount > 240 Then ; if no BS position returned in 4 minutes, BS/PC has major issue so exit
 			SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
 			SetLog("BlueStacks refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_RED)
-			SetError(1, @extended, False)
+			DebugSaveDesktopImage("BSOpenError_") ; Save copy of user desktop for analysis
+			SetLog("Unable to continue........", $COLOR_MAROON)
+			btnstop()
+			SetError(1, 1, -1)
 			Return
 		EndIf
 	WEnd
@@ -44,15 +60,16 @@ Func OpenBS($bRestart = False)
 		$HWnD = WinGetHandle($Title) ; get BS window Handle
 		DisableBS($HWnD, $SC_MINIMIZE)
 		DisableBS($HWnD, $SC_CLOSE)
-		If $bRestart = False Then
+		If $bRestart = False Then  ; Then 1st time BS is open
 			waitMainScreenMini()
 			Zoomout()
 			Initiate()
 		Else
 			WaitMainScreenMini()
-			If @error = 1 Then
+			If @error = 1 Then  ; if error waiting for main screen, set restart flag, clear OOS flag, and hope the rest of code fixes it
 				$Restart = True
 				$Is_ClientSyncError = False
+				SetError(0,0,0)
 				Return
 			EndIf
 			Zoomout()
@@ -76,10 +93,10 @@ Func waitMainScreenMini()
 			SetLog("CoC main window took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_GREEN)
 			Return
 		EndIf
-		_StatusUpdateTime($hTimer)
+		_StatusUpdateTime($hTimer, "Main Screen")
 		If ($i > 60) Or ($iCount > 80) Then ExitLoop  ; If CheckObstacles forces reset, limit total time to 6 minute before Force restart BS
 	Next
-	Return SetError( 1, @extended, -1)
+	Return SetError( 1, 0, -1)
 EndFunc
 
 #comments-start

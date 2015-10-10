@@ -7,10 +7,10 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (July/Aug 2015)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func waitMainScreen() ;Waits for main screen to popup
@@ -38,12 +38,16 @@ Func waitMainScreen() ;Waits for main screen to popup
 		CloseBS() 	 ; BS must die!
 		If _Sleep(1000) Then Return
 		OpenBS(True) ; Open BS and restart CoC
+		If @extended Then
+			SetError(1, 1, -1)
+			Return
+		EndIf
 		If _CheckPixel($aIsMain, $bCapturepixel) = True Then ExitLoop
 		CheckObstacles()  ; Check for random error windows and close them
 		$iCount += 1
 		If $iCount > 2 Then ; If we can't restart BS after 2 tries, exit the loop
 			SetLog("Stuck trying to Restart BS...", $COLOR_RED)
-			SetError(1, @extended, 0)
+			SetError(1, 0, 0)
 			Return
 		EndIf
 		If _CheckPixel($aIsMain, $bCapturepixel) = True Then ExitLoop

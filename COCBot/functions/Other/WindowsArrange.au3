@@ -4,13 +4,13 @@
 ; Syntax ........:
 ; Parameters ....: None
 ; Return values .: None
-; Author ........: Sardo (2015-06)
+; Author ........: Sardo (2015-06) (2015-09)
 ; Modified ......:
 ;
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -63,3 +63,23 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 
 
 EndFunc   ;==>WindowsArrange
+
+Func DisposeWindows()
+   If $debugSetlog = 1 Then SetLog("Func DisposeWindows ", $COLOR_PURPLE)
+		If $iDisposeWindows = 1 Then
+			Switch $icmbDisposeWindowsPos
+				Case 0
+					WindowsArrange("BS-BOT",  $iWAOffsetX, $iWAOffsetY)
+				Case 1
+					WindowsArrange("BOT-BS",  $iWAOffsetX, $iWAOffsetY)
+				Case 2
+					WindowsArrange("SNAP-TR", $iWAOffsetX, $iWAOffsetY)
+				Case 3
+					WindowsArrange("SNAP-TL", $iWAOffsetX, $iWAOffsetY)
+				Case 4
+					WindowsArrange("SNAP-BR", $iWAOffsetX, $iWAOffsetY)
+				Case 5
+					WindowsArrange("SNAP-BL", $iWAOffsetX, $iWAOffsetY)
+			EndSwitch
+		EndIf
+EndFunc

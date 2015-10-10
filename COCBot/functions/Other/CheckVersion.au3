@@ -6,10 +6,10 @@
 ; Return values .: None
 ; Author ........: Sardo (2015-06)
 ; Modified ......:
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -20,11 +20,11 @@ Func CheckVersion()
 			SetLog("WE CANNOT OBTAIN PRODUCT VERSION AT THIS TIME", $COLOR_ORANGE)
 		ElseIf VersionNumFromVersionTXT($sBotVersion) < VersionNumFromVersionTXT($lastversion) Then
 			SetLog("WARNING, YOUR BOT VERSION (" & $sBotVersion & ") IS OUT OF DATE.", $COLOR_RED)
-			SetLog("PLEASE DOWNLOAD THE LATEST(" & $lastversion & ") FROM https://GameBot.org               ", $COLOR_RED)
+			SetLog("PLEASE DOWNLOAD THE LATEST(" & $lastversion & ") FROM https://MyBot.run               ", $COLOR_RED)
 			SetLog(" ")
 			_PrintLogVersion($oldversmessage)
 		ElseIf VersionNumFromVersionTXT($sBotVersion) > VersionNumFromVersionTXT($lastversion) Then
-			SetLog("YOU ARE USING A FUTURE VERSION OF CLASH GAMEBOT CHIEF!", $COLOR_GREEN)
+			SetLog("YOU ARE USING A FUTURE VERSION OF MYBOT CHIEF!", $COLOR_GREEN)
 			SetLog("YOUR VERSION: " & $sBotVersion, $COLOR_GREEN)
 			SetLog("OFFICIAL VERSION: " & $lastversion, $COLOR_GREEN)
 			SetLog(" ")
@@ -38,7 +38,7 @@ EndFunc   ;==>CheckVersion
 
 ;~ Func CheckVersionTXT()
 ;~ 	;download page from site contains last bot version
-;~ 	$hLastVersion = InetGet("https://gamebot.org/lastversion.txt", @ScriptDir & "\LastVersion.txt")
+;~ 	$hLastVersion = InetGet("https://mybot.run/lastversion.txt", @ScriptDir & "\LastVersion.txt")
 ;~ 	InetClose($hLastVersion)
 
 ;~ 	;search version into downloaded page
@@ -68,14 +68,14 @@ Func CheckVersionHTML()
 		FileCopy(@ScriptDir & "\TestVersion.txt", @ScriptDir & "\LastVersion.txt", 1)
 	Else
 		;download page from site contains last bot version
-		$hDownload = InetGet("https://raw.githubusercontent.com/ClashGameBot/CGB/master/LastVersion.txt", @ScriptDir & "\LastVersion.txt")
+		$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", @ScriptDir & "\LastVersion.txt")
 
 		; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
 		Local $i=0
 		Do
 			Sleep($iDelayCheckVersionHTML1)
 			$i +=1
-		Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) or $i > 10
+		Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) or $i > 25
 
 		InetClose($hDownload)
 	EndIf

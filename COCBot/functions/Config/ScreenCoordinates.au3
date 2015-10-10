@@ -1,8 +1,18 @@
+; #Variables# ====================================================================================================================
+; Name ..........: Screen Position Variables
+; Description ...: Global variables for commonly used X|Y positions, screen check color, and tolerance
+; Syntax ........: $aXXXXX[Y]  : XXXX is name of point or item being checked, Y = 2 for position only, or 4 when color/tolerance value included
+; Author ........: Code Gorilla #1
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
+; Example .......: No
+; ===============================================================================================================================
 ;                                 x    y     color  tolerance
 Global $aIsMain[4]           = [284,  28, 0x41B1CD, 20] ; Main Screen, Builder Left Eye
 Global $aIsMainGrayed[4]     = [284,  28, 0x215B69, 15] ; Main Screen Grayed, Builder Left Eye
 Global $aTopLeftClient[4]    = [  1,   1, 0x000000,  0] ; TopLeftClient: Tolerance not needed
-Global $aTopMiddleClient[4]  = [425,   1, 0x000000,  0] ; TopMiddleClient: Tolerance not needed
+Global $aTopMiddleClient[4]  = [475,   1, 0x000000,  0] ; TopMiddleClient: Tolerance not needed
 Global $aTopRightClient[4]   = [850,   1, 0x000000,  0] ; TopRightClient: Tolerance not needed
 Global $aBottomRightClient[4]= [850, 675, 0x000000,  0] ; BottomRightClient: Tolerance not needed
 Global $aIsInactive[4]       = [457, 300, 0x33B5E5, 10] ; COC message : 'Anyone there?'
@@ -21,10 +31,11 @@ Global $aReturnHomeButton[2] = [428, 544]               ; Return Home Button, En
 Global $aChatTab[4]          = [331, 330, 0xF0A03B, 20] ; Chat Window Open, Main Screen
 Global $aOpenChat[2]         = [ 19, 349]               ; Open Chat Windows, Main Screen
 Global $aClanTab[2]          = [189,  24]               ; Clan Tab, Chat Window, Main Screen
+Global $aClanInfo[2]         = [282,  55]  				; Clan Info Icon
 Global $aArmyCampSize[2]     = [586, 193]               ; Training Window, Overview screen, Current Size/Total Size
 Global $aIsCampNotFull[4] 	 = [149, 150, 0x761714, 20] ; Training Window, Overview screen Red pixel in Exclamation mark with camp is not full
 Global $aIsCampFull[4]  	 = [151, 154, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
-Global $aArmyCampFull[4] 	 = [395, 156, 0x761714, 20] ; Training Window, Barracks Screen, Red pixel in Exclamation mark with camp is full (normally not there and off while color)
+Global $aBarrackFull[4] 	 = [392, 154, 0xE84D50, 20] ; Training Window, Barracks Screen, Red pixel in Exclamation mark with Barrack is full
 Global $aBuildersDigits[2]   = [324,  21]               ; Main Screen, Free/Total Builders
 Global $aLanguageCheck1[4]   = [326,   8, 0xF9FAF9, 20] ; Main Screen Test Language for word 'Builders'
 Global $aLanguageCheck2[4]   = [329,   9, 0x060706, 20] ; Main Screen Test Language for word 'Builders'

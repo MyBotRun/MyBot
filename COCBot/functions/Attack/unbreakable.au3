@@ -4,12 +4,12 @@
 ; Syntax ........:
 ; Parameters ....: None
 ; Return values .: False if regular farming is needed to refill storage
-; Author ........: KnowJack (July 2015) updated for COC changes, added early Take-A-Break Detection
+; Author ........: KnowJack (Jul/Aug 2015) updated for COC changes, added early Take-A-Break Detection
 ; Modified ......: Sardo (2015-08)
-; Remarks .......: This file is part of ClashGameBot. Copyright 2015
-;                  ClashGameBot is distributed under the terms of the GNU GPL
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
-; Link ..........:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
@@ -24,7 +24,7 @@ Func Unbreakable()
 
 	Switch $iUnbreakableMode
 		Case 2
-			If (Number($GoldCount) > Number($iUnBrkMaxGold)) And (Number($ElixirCount) > Number($iUnBrkMaxElixir)) And (Number($DarkCount) > Number($iUnBrkMaxDark)) Then
+			If (Number($iGoldCurrent) > Number($iUnBrkMaxGold)) And (Number($iElixirCurrent) > Number($iUnBrkMaxElixir)) And (Number($iDarkCurrent) > Number($iUnBrkMaxDark)) Then
 				SetLog(" ====== Unbreakable Mode restarted! ====== ", $COLOR_GREEN)
 				$iUnbreakableMode = 1
 			Else
@@ -53,14 +53,14 @@ Func Unbreakable()
 	EndSelect
 
 	Local $sMissingLoot = ""
-	If ((Number($GoldCount) - Number($iUnBrkMinGold)) < 0) Then
+	If ((Number($iGoldCurrent) - Number($iUnBrkMinGold)) < 0) Then
 		$sMissingLoot &= "Gold, "
 	EndIf
-	If ((Number($ElixirCount) - Number($iUnBrkMinElixir)) < 0) Then
+	If ((Number($iElixirCurrent) - Number($iUnBrkMinElixir)) < 0) Then
 		$sMissingLoot &= "Elixir, "
 	EndIf
-	If ((Number($DarkCount) - Number($iUnBrkMinDark)) < 0) Then
-		$sMissingLoot &= "Dark Elxir"
+	If ((Number($iDarkCurrent) - Number($iUnBrkMinDark)) < 0) Then
+		$sMissingLoot &= "Dark Elixir"
 	EndIf
 	If $sMissingLoot <> "" Then
 		SetLog("Oops, Out of " & $sMissingLoot & " - back to farming", $COLOR_RED)
@@ -74,16 +74,16 @@ Func Unbreakable()
 	If _Sleep($iDelayUnbreakable1) Then Return  ; wait for home screen
 	If $Restart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
 	$iCount = 0
-	Local $TrophyCount = getTrophyMainScreen($aTrophies[0], $aTrophies[1])  ; Get trophy
-	If $debugSetlog = 1 Then Setlog("Trophy Count Read = " &$TrophyCount, $COLOR_PURPLE)
-	While Number($TrophyCount) > Number($itxtMaxTrophy)  ; verify that trophy dropped and didn't fail due misc errors searching
+	Local $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])  ; Get trophy
+	If $debugSetlog = 1 Then Setlog("Trophy Count Read = " &$iTrophyCurrent, $COLOR_PURPLE)
+	While Number($iTrophyCurrent) > Number($itxtMaxTrophy)  ; verify that trophy dropped and didn't fail due misc errors searching
 		If $debugSetlog = 1 Then Setlog("Drop Trophy Loop #" &$iCount+1, $COLOR_PURPLE)
 		DropTrophy()
 		If _Sleep($iDelayUnbreakable2) Then Return  ; wait for home screen
 		ClickP($aAway,1,0,"#0395") ;clear screen
 		If _Sleep($iDelayUnbreakable1) Then Return  ; wait for home screen
-		$TrophyCount = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
-		If ($iCount > 2) And  (Number($TrophyCount) > Number($itxtMaxTrophy)) Then  ; If unable to drop trophy after a couple of tries, restart at main loop.
+		$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
+		If ($iCount > 2) And  (Number($iTrophyCurrent) > Number($itxtMaxTrophy)) Then  ; If unable to drop trophy after a couple of tries, restart at main loop.
 			Setlog("Unable to drop trophy, trying again", $COLOR_RED)
 			If _Sleep(500) Then Return
 			Return True
@@ -119,7 +119,7 @@ Func Unbreakable()
 	ClickP($aAway, 2, $iDelayUnbreakable8, "#0115") ;clear screen selections
 	If _Sleep($iDelayUnbreakable1) Then Return
 
-	If CheckObstacles() = True Then Setlog("Window clean required, but no problem for ClashGameBot!", $COLOR_BLUE)
+	If CheckObstacles() = True Then Setlog("Window clean required, but no problem for MyBot!", $COLOR_BLUE)
 	_WinAPI_EmptyWorkingSet(WinGetProcess($Title))  ; Reduce BS memory usage
 
 	SetLog("Closing Clash Of Clans", $COLOR_BLUE)
@@ -146,15 +146,9 @@ Func Unbreakable()
 
 	$iTime = Number($iUnbreakableWait)
 	If $iTime < 1 Then $iTime = 1 ;error check user time input
+	$iTime = $iTime * 60 * 1000
 
-	SetLog("Waiting " & $iTime & " Minutes for Defense Attacks", $COLOR_GREEN)
-	If _SleepStatus($iTime * 60 * 1000) Then Return ; Eenemy attack time Wait
-
-	$HWnD = WinGetHandle($Title)
-	Local $RunApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "RunApp")
-	Run($RunApp & " Android com.supercell.clashofclans com.supercell.clashofclans.GameApp")
-	If $debugSetlog = 1 Then setlog("Waiting for CoC to restart", $COLOR_PURPLE)
-	If _SleepStatus($iDelayUnbreakable5) Then Return ; Wait for CoC restart
+	WaitnOpenCoC($iTime, False)  ;Tell ClosenOpenCoC False to not cleanup windows
 
 	$iCount = 0
 	While 1  ; Under attack when return from sleep?  wait some more ...
