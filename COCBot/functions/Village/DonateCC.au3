@@ -1,4 +1,4 @@
-﻿; #FUNCTION# ====================================================================================================================
+; #FUNCTION# ====================================================================================================================
 ; Name ..........: DonateCC
 ; Description ...: This file includes functions to Donate troops
 ; Syntax ........:
@@ -341,6 +341,7 @@ Func DonateCC($Check = False)
 			EndIf
 
 			If $DonateAllTroop Then
+				$aTotalDonateCapacity = 35
 				Select
 					Case $iChkDonateAllCustom = 1
 						For $i = 0 To 2
