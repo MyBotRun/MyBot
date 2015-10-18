@@ -19,11 +19,11 @@
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
 
-#pragma compile(ProductVersion, 4.2)
-#pragma compile(FileVersion, 4.2)
+#pragma compile(ProductVersion, 4.2.1)
+#pragma compile(FileVersion, 4.2.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 
-$sBotVersion = "v4.2"
+$sBotVersion = "v4.2.1"
 $sBotTitle = "My Bot " & $sBotVersion
 Global $sBotDll = @ScriptDir & "\MBRPlugin.dll"
 

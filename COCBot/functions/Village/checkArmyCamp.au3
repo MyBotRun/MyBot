@@ -14,6 +14,7 @@
 ; ===============================================================================================================================
 
 Func checkArmyCamp()
+
 	Local $aGetArmySize[3] = ["", "", ""]
 	Local $aGetSFactorySize[3] = ["", "", ""]
 	Local $sArmyInfo = ""
@@ -22,52 +23,44 @@ Func checkArmyCamp()
 	Local $TroopName = 0
 	Local $TroopQ = 0
 	Local $TroopTypeT = ""
-
-	Local $sInputbox, $iCount, $iTried, $tmpTotalCamp, $tmpCurCamp, $iHoldCamp
+	Local $sInputbox, $iCount, $iTried, $iHoldCamp
+	Local $tmpTotalCamp = 0
+	Local $tmpCurCamp = 0
 
 	SetLog("Checking Army Camp...", $COLOR_BLUE)
 	If _Sleep($iDelaycheckArmyCamp1) Then Return
 
-	ClickP($aAway, 1, 0, "#0292") ;Click Away
-	If _Sleep($iDelaycheckArmyCamp1) Then Return
-
-	Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293") ;Click Army Camp
-	If _Sleep($iDelaycheckArmyCamp2) Then Return
-
 	$iTried = 0 ; reset loop safety exit counter
 	$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
 	If $debugSetlog = 1 Then Setlog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
-	While 1
-		If _Sleep($iDelaycheckArmyCamp4) Then Return ; Short wait before checking value again
-		$iCount = 0 ; reset OCR loop counter
-		While $sArmyInfo = "" ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
-			$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
-			If $debugSetlog = 1 Then Setlog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
-			$iCount += 1
-			If $iCount > 30 Then ExitLoop ; try reading 30 times for 250+150ms OCR for 12 sec
-			If _Sleep($iDelaycheckArmyCamp5) Then Return ; Wait 250ms
-		WEnd
+
+	While $iTried < 100 ; 30 - 40 sec
+
 		$iTried += 1
+		If _Sleep($iDelaycheckArmyCamp5) Then Return ; Wait 250ms before reading again
+		$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+		If $debugSetlog = 1 Then Setlog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
+		If StringInStr($sArmyInfo, "#", 0, 1) < 2 Then ContinueLoop ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
+
 		$aGetArmySize = StringSplit($sArmyInfo, "#") ; split the trained troop number from the total troop number
 		If IsArray($aGetArmySize) Then
 			If $aGetArmySize[0] > 1 Then ; check if the OCR was valid and returned both values
+				If Number($aGetArmySize[2]) < 10 Or Mod(Number($aGetArmySize[2]), 5) <> 0 Then ; check to see if camp size is multiple of 5, or try to read again
+					If $debugSetlog = 1 Then Setlog(" OCR value is not valid camp size", $COLOR_PURPLE)
+					ContinueLoop
+				EndIf
 				$tmpCurCamp = Number($aGetArmySize[1])
 				If $debugSetlog = 1 Then Setlog("$tmpCurCamp = " & $tmpCurCamp, $COLOR_PURPLE)
 				$tmpTotalCamp = Number($aGetArmySize[2])
 				If $debugSetlog = 1 Then Setlog("$TotalCamp = " & $TotalCamp & ", Camp OCR = " & $aGetArmySize[2], $COLOR_PURPLE)
-				If Mod(Int($tmpTotalCamp), 5) <> 0 Then ; check to see if camp size is multiple of 5, or try to read again
-					If $debugSetlog = 1 Then Setlog(" OCR value is not valid camp size", $COLOR_PURPLE)
-					If $iTried > 2 Then ExitLoop ; try to read camp values 3 times or wait upto 36 seconds for donation messages to clear and prevent other errors.
-					ContinueLoop
-				EndIf
 				If $iHoldCamp = $tmpTotalCamp Then ExitLoop ; check to make sure the OCR read value is same in 2 reads before exit
 				$iHoldCamp = $tmpTotalCamp ; Store last OCR read value
 			EndIf
 		EndIf
-		If $iTried > 2 Then ExitLoop ; try to read camp values 5 times or wait max of 36 seconds for donation messages to clear.
+
 	WEnd
 
-	If $iTried <= 2 Then
+	If $iTried <= 99 Then
 		$CurCamp = $tmpCurCamp
 		If $TotalCamp = 0 Then $TotalCamp = $tmpTotalCamp
 		If $debugSetlog = 1 Then Setlog("$CurCamp = " & $CurCamp & ", $TotalCamp = " & $TotalCamp, $COLOR_PURPLE)
@@ -251,7 +244,7 @@ Func checkArmyCamp()
 	If $iTotalCountSpell > 0 Then ; only use this code if the user had input spells to brew ... and assign the spells quantity
 		$sSpellsInfo = getArmyCampCap(204, 391) ; OCR read Spells and total capacity
 
-        $iCount = 0 ; reset OCR loop counter
+		$iCount = 0 ; reset OCR loop counter
 		While $sSpellsInfo = "" ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
 			$sSpellsInfo = getArmyCampCap(204, 391) ; OCR read Spells and total capacity
 			$iCount += 1
@@ -279,6 +272,14 @@ Func checkArmyCamp()
 		EndIf
 
 		SetLog("Total Spell(s) Capacity: " & $CurSFactory & "/" & $TotalSFactory)
+		$CurLightningSpell = 0
+		$CurHealSpell = 0
+		$CurRageSpell = 0
+		$CurJumpSpell = 0
+		$CurFreezeSpell = 0
+		$CurPoisonSpell = 0
+		$CurHasteSpell = 0
+		$CurEarthSpell = 0
 
 		For $i = 0 To 4 ; 5 visible slots in ArmyoverView window
 			If $debugSetlog = 1 Then Setlog(" Slot : " & $i + 1)
@@ -332,7 +333,7 @@ Func checkArmyCamp()
 		BarracksStatus(False)
 	EndIf
 
-	ClickP($aAway, 1, 0, "#0295") ;Click Away
+;~ 	ClickP($aAway, 1, 0, "#0295") ;Click Away
 	$FirstCampView = True
 
 EndFunc   ;==>checkArmyCamp

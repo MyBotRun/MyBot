@@ -199,7 +199,7 @@ Func DropTrophy()
 							EndIf
 						Next
 
-						$RandomEdge = $Edges[Round(Random(0, 3))]
+						$RandomEdge = $Edges[Round(Random(0, 3,1))]
 						$RandomXY = Round(Random(0, 4))
 						If $DebugSetlog = 1 Then Setlog("Hero Loc = " & $RandomXY & ", X:Y= " & $RandomEdge[$RandomXY][0] & "|" & $RandomEdge[$RandomXY][1], $COLOR_PURPLE)
 						If $King <> -1 Then
@@ -226,8 +226,8 @@ Func DropTrophy()
 						EndIf
 					EndIf
 					If ($Queen = -1 And $King = -1) Or $iChkTrophyHeroes = 0 Then
-						$RandomEdge = $Edges[Round(Random(0, 3))]
-						$RandomXY = Round(Random(0, 4))
+						$RandomEdge = $Edges[Round(Random(0, 3,1))]
+						$RandomXY = Round(Random(0, 4,1))
 						If $DebugSetlog = 1 Then Setlog("Troop Loc = " & $RandomXY & ", X:Y= " & $RandomEdge[$RandomXY][0] & "|" & $RandomEdge[$RandomXY][1], $COLOR_PURPLE)
 						Select
 							Case $atkTroops[0][0] = $eBarb

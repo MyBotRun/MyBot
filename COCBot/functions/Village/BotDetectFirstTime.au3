@@ -61,10 +61,18 @@ Func BotDetectFirstTime()
 
 	If GUICtrlRead($cmbQuantBoostBarracks) > 0 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
-		If $barrackPos[GUICtrlRead($cmbQuantBoostBarracks) - 1][0] = "" Then ;  Boost individual barracks with "button Boost 10 gems"
-			LocateBarrack2()
-			SaveConfig()
-		EndIf
+		For $i = 0 To GUICtrlRead($cmbQuantBoostBarracks) - 1 ; verify if all barracks haves a valid position
+			If $barrackPos[$i][0] = "" or $barrackPos[$i][0] = -1 Then ;  Boost individual barracks with "button Boost 10 gems"
+				; Setlog("loop: "& $i+1 )
+				For $x = 0 to 3
+					$barrackPos[$x][0] = -1
+					$barrackPos[$x][1] = -1
+				Next
+				LocateBarrack2()
+				SaveConfig()
+				ExitLoop
+			EndIf
+		Next
 	EndIf
 
 	If (GUICtrlRead($cmbBoostDarkSpellFactory) > 0) Then

@@ -1,4 +1,4 @@
-﻿; #FUNCTION# ====================================================================================================================
+; #FUNCTION# ====================================================================================================================
 ; Name ..........: DonateCC
 ; Description ...: This file includes functions to Donate troops
 ; Syntax ........:
@@ -67,10 +67,6 @@ Func DonateCC($Check = False)
 		If IsArray($DonatePixel) Then
 			$Donate = False
 			If $DonateTroop Then
-
-				; Clan Clastle Capacity
-				Local $aTempTotalDonate = ""
-				$aTempTotalDonate = getOcrSpaceCastleDonate(80, $DonatePixel[1] - 4)
 				If $ichkExtraAlphabets = 1 Then
 					; Chast Request , Latin + Turkish + Extra latin + Cyrillic Alphabets / three paragraphs.
 					Local $ClanString = ""
@@ -103,36 +99,6 @@ Func DonateCC($Check = False)
 					If _Sleep($iDelayDonateCC2) Then ExitLoop
 				EndIf
 
-				; Verify with OCR the Donation Clan Castle capacity
-				$aTotalDonateCapacity = 0
-				If $debugSetlog = 1 Then Setlog("Started getOcrSpaceCastleDonate")
-				Local $aTempTotalDonate2 = ""
-				If $debugSetlog = 1 Then Setlog("$aTempTotalDonate :" & $aTempTotalDonate)
-				If Not $aTempTotalDonate = "" Then
-					; Splitting the XX/XX
-					$aTempTotalDonate2 = StringSplit($aTempTotalDonate, "#")
-					If $debugSetlog = 1 Then Setlog("$aTempTotalDonate2 splitted :" & $aTempTotalDonate2[1] & "/" & $aTempTotalDonate2[2])
-
-					; Local Variables to use
-					If $aTempTotalDonate2[2] > 0 Then
-						Local $aDonatedTroops = $aTempTotalDonate2[1]
-						Local $aCastleTotalCapacity = $aTempTotalDonate2[2]
-					Else
-						Setlog("Error reading the Castle Capacity...", $COLOR_RED) ; log if there is read error
-						Local $aDonatedTroops = 0
-						Local $aCastleTotalCapacity = 0
-					EndIf
-
-				Else
-					Setlog("Error reading the Castle Capacity...", $COLOR_RED) ; log if there is read error
-					Local $aDonatedTroops = 0
-					Local $aCastleTotalCapacity = 0
-				EndIf
-
-
-				; $aTotalDonateCapacity it will be use to determinate the quantity of kind troop to donate
-				$aTotalDonateCapacity = ($aCastleTotalCapacity - $aDonatedTroops)
-
 				If $ClanString = "" Or $ClanString = " " Then
 					SetLog("Unable to read Chat Request!", $COLOR_RED)
 					$Donate = True
@@ -148,12 +114,7 @@ Func DonateCC($Check = False)
 					EndIf
 				EndIf
 
-				If $aTotalDonateCapacity < 0 Or $aTotalDonateCapacity = "" Then
-					SetLog("Unable to read Castle Capacity!", $COLOR_RED)
-				Else
-					SetLog("Castle Capacity : " & $aDonatedTroops & "/" & $aCastleTotalCapacity)
-				EndIf
-
+				RemainingCCcapacity() ; Remaining CC capacity of requested troops from your ClanMates
 
 				;;; Custom Combination Donate by ChiefM3
 				If $iChkDonateCustom = 1 Then
@@ -341,6 +302,7 @@ Func DonateCC($Check = False)
 			EndIf
 
 			If $DonateAllTroop Then
+				RemainingCCcapacity() ; Remaining CC capacity of requested troops from your ClanMates
 				Select
 					Case $iChkDonateAllCustom = 1
 						For $i = 0 To 2
@@ -411,13 +373,24 @@ Func DonateCC($Check = False)
 		$Donate = False
 	WEnd
 
-	_CaptureRegion()
-	If _ColorCheck(_GetPixelColor($aCloseChat[0], $aCloseChat[1]), Hex($aCloseChat[2], 6), $aCloseChat[3]) Then
-		Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0173") ;Clicks chat thing
-	EndIf
+	$i = 0
+	While 1
+		If _Sleep(100) Then Return
+		If _ColorCheck(_GetPixelColor($aCloseChat[0], $aCloseChat[1], True), Hex($aCloseChat[2], 6), $aCloseChat[3]) Then
+			; Clicks chat thing
+			Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0173") ;Clicks chat thing
+			ExitLoop
+		Else
+			If _Sleep(100) Then Return
+			$i += 1
+			If $i > 30 Then
+				SetLog("Error finding Clan Tab to close...", $COLOR_RED)
+				ExitLoop
+			EndIf
+		EndIf
+	WEnd
 
 	If _Sleep($iDelayDonateCC2) Then Return
-
 
 EndFunc   ;==>DonateCC
 
@@ -501,6 +474,10 @@ Func DonateTroopType($Type, $quant = 8, $custom = False)
 	For $i = 0 To UBound($TroopName) - 1
 		If Eval("e" & $TroopName[$i]) = $Type Then
 			$sDonateQuantityAvaible = Floor($aTotalDonateCapacity / $TroopHeight[$i])
+			If $sDonateQuantityAvaible < 1 Then
+				Setlog("Sorry Chief!" & NameOfTroop($Type) & " don't fit in the remaining space!")
+				Return
+			EndIf
 			If $sDonateQuantityAvaible >= $aDonationLimit Then
 				$sDonateQuantity = $aDonationLimit
 			Else
@@ -511,6 +488,10 @@ Func DonateTroopType($Type, $quant = 8, $custom = False)
 	For $i = 0 To UBound($TroopDarkName) - 1
 		If Eval("e" & $TroopDarkName[$i]) = $Type Then
 			$sDonateQuantityAvaible = Floor($aTotalDonateCapacity / $TroopDarkHeight[$i])
+			If $sDonateQuantityAvaible < 1 Then
+				Setlog("Sorry Chief!" & NameOfTroop($Type) & " don't fit in the remaining space!")
+				Return
+			EndIf
 			If $sDonateQuantityAvaible >= $aDonationLimit Then
 				$sDonateQuantity = $aDonationLimit
 			Else
@@ -585,4 +566,52 @@ Func DonateTroopType($Type, $quant = 8, $custom = False)
 	If _Sleep($iDelayDonateTroopType1) Then Return
 EndFunc   ;==>DonateTroopType
 
+
+
+
+Func RemainingCCcapacity()
+	; Remaining CC capacity of requested troops from your ClanMates
+	; Will return the $aTotalDonateCapacity with that capacity for use in donation logic.
+
+	Local $aTempTotalDonate = ""
+	$aTempTotalDonate = getOcrSpaceCastleDonate(80, $DonatePixel[1] - 4)
+
+	; Verify with OCR the Donation Clan Castle capacity
+	$aTotalDonateCapacity = 0
+	If $debugSetlog = 1 Then Setlog("Started getOcrSpaceCastleDonate")
+	Local $aTempTotalDonate2 = ""
+	If $debugSetlog = 1 Then Setlog("$aTempTotalDonate :" & $aTempTotalDonate)
+	If Not $aTempTotalDonate = "" Then
+		; Splitting the XX/XX
+		$aTempTotalDonate2 = StringSplit($aTempTotalDonate, "#")
+		If $debugSetlog = 1 Then Setlog("$aTempTotalDonate2 splitted :" & $aTempTotalDonate2[1] & "/" & $aTempTotalDonate2[2])
+
+		; Local Variables to use
+		If $aTempTotalDonate2[2] > 0 Then
+			Local $aDonatedTroops = $aTempTotalDonate2[1]
+			Local $aCastleTotalCapacity = $aTempTotalDonate2[2]
+		Else
+			Setlog("Error reading the Castle Capacity...", $COLOR_RED) ; log if there is read error
+			Local $aDonatedTroops = 0
+			Local $aCastleTotalCapacity = 0
+		EndIf
+
+	Else
+		Setlog("Error reading the Castle Capacity...", $COLOR_RED) ; log if there is read error
+		Local $aDonatedTroops = 0
+		Local $aCastleTotalCapacity = 0
+	EndIf
+
+	; $aTotalDonateCapacity it will be use to determinate the quantity of kind troop to donate
+	$aTotalDonateCapacity = ($aCastleTotalCapacity - $aDonatedTroops)
+
+	If $aTotalDonateCapacity < 0 Then
+		SetLog("Unable to read Castle Capacity!", $COLOR_RED)
+	Else
+		SetLog("Castle Capacity : " & $aDonatedTroops & "/" & $aCastleTotalCapacity)
+	EndIf
+
+	Return $aTotalDonateCapacity
+
+EndFunc   ;==>RemainingCCcapacity
 

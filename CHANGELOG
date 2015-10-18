@@ -1,10 +1,13 @@
-* **V4.2.1** Incoming 
+* **V4.2.1**
  * Fix the Donate All function
  * Fix the Locate Barracks when one barrack is Upgrading
  * Fix the Spells creation , reset the variables and Stop/Start Bot
  * Minor GUI glitch, redline near Mine checkbox contained a text, now it is blank
  * Fix some spelling setlogs
  * Force random to put integer values in Attack algorithm 
+ * Fix the Armycamp size error because the Clan Chat is Open
+ * Improve the Train System , now goes from Left to Right ArmyOverView window to Dark Spell Factory.
+ * Locate manually now with all available barracks
 
 * **V4.2**
  * New Icon and Banner - MyBot

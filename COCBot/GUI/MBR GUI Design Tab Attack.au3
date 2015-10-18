@@ -60,7 +60,7 @@ $tabAttack = GUICtrlCreateTabItem("Attack")
 			GUICtrlSetData(-1, "Sides, then Troops|Troops, then Sides", "Sides, then Troops")
 			GUICtrlSetTip(-1, $txtTip)
 		$y += 26
-		$chkDbAttackNearGoldMine = GUICtrlCreateCheckbox("Mine", $x + 20, $y, 17, 17)
+		$chkDbAttackNearGoldMine = GUICtrlCreateCheckbox("", $x + 20, $y, 17, 17)
 			$txtTip = "Drop troops near Gold Mines"
 			GUICtrlSetTip(-1, $txtTip)
 		$picDBAttackNearGoldMine = GUICtrlCreateIcon($pIconLib, $eIcnMine, $x + 40 , $y - 3 , 24, 24)

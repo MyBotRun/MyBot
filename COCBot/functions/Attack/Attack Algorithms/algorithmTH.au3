@@ -163,7 +163,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThy = 314 - $ii * 14
 					If CheckOneStar(0, False, False) Then Return
 					Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0019")
-					If _Sleep(Random(20, 40)) Then Return
+					If _Sleep(Random(20, 40,1)) Then Return
 				Next
 			Next
 		Case 1 ;LL
@@ -178,7 +178,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThy = 314 + $ii * 14
 					If CheckOneStar(0, False, False) Then Return
 					Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0020")
-					If _Sleep(Random(20, 40)) Then Return
+					If _Sleep(Random(20, 40,1)) Then Return
 				Next
 			Next
 		Case 2 ;UR
@@ -193,7 +193,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThy = 314 - $ii * 14
 					If CheckOneStar(0, False, False) Then Return
 					Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0021")
-					If _Sleep(Random(20, 40)) Then Return
+					If _Sleep(Random(20, 40,1)) Then Return
 				Next
 			Next
 		Case 3 ;LR
@@ -208,7 +208,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThy = 314 + $ii * 14
 					If CheckOneStar(0, False, False) Then Return
 					Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0022")
-					If _Sleep(Random(20, 40)) Then Return
+					If _Sleep(Random(20, 40,1)) Then Return
 				Next
 			Next
 	EndSwitch
@@ -258,7 +258,7 @@ Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
 		For $count = 1 To $iAtEachSpot * $iNbOfSpots
 			If CheckOneStar(0, False, False) Then Return
 			Click(Random(480, 540, 1), Random(564, 566, 1))
-			If _Sleep(Random(20, 40)) Then Return
+			If _Sleep(Random(20, 40,1)) Then Return
 		Next
 
 	Else
@@ -267,7 +267,7 @@ Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
 				If CheckOneStar(0, False, False) Then Return
 				Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
-				If _Sleep(Random(20, 40)) Then Return
+				If _Sleep(Random(20, 40,1)) Then Return
 			Next
 		EndIf
 
@@ -276,7 +276,7 @@ Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
 				If CheckOneStar(0, False, False) Then Return
 				Click(Random(510, 580, 1), Random(564, 566, 1), 1, 0, "#0022")
-				If _Sleep(Random(20, 40)) Then Return
+				If _Sleep(Random(20, 40,1)) Then Return
 			Next
 
 		EndIf
@@ -303,7 +303,7 @@ Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
 				Click(Random(488, 500, 1), Random(564, 566, 1))
 				$i = 0
 			EndIf
-			If _Sleep(Random(20, 40)) Then Return
+			If _Sleep(Random(20, 40,1)) Then Return
 		Next
 
 	Else
@@ -313,7 +313,7 @@ Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
 				If CheckOneStar(0, False, False) Then Return
 				Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
-				If _Sleep(Random(20, 40)) Then Return
+				If _Sleep(Random(20, 40,1)) Then Return
 			Next
 		EndIf
 
@@ -322,7 +322,7 @@ Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
 				If CheckOneStar(0, False, False) Then Return
 				Click(Random(510, 540, 1), Random(564, 566, 1), 1, 0, "#0022")
-				If _Sleep(Random(20, 40)) Then Return
+				If _Sleep(Random(20, 40,1)) Then Return
 			Next
 		EndIf
 
