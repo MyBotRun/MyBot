@@ -27,26 +27,26 @@ $tabTroops = GUICtrlCreateTabItem("Troops")
 
 	$x += 150
 	$grpBarrackMode = GUICtrlCreateGroup("Barrack Mode", $x - 20, $y -20, 150, 123)
-		$lblBarrack4 = GUICtrlCreateLabel("1:", $x - 5, $y + 5, -1, -1)
-		$cmbBarrack4 = GUICtrlCreateCombo("", $x + 10, $y, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$lblBarrack1 = GUICtrlCreateLabel("1:", $x - 5, $y + 5, -1, -1)
+		$cmbBarrack1 = GUICtrlCreateCombo("", $x + 10, $y, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetTip(-1, "Set the Troops to make in Barrack 1.")
 			GUICtrlSetData(-1, "Barbarians|Archers|Giants|Goblins|WallBreakers|Balloons|Wizards|Healers|Dragons|Pekkas", "Barbarians") ; "Barbarians|Archers|Giants|Goblins|WallBreakers|Balloons|Wizards|Healers|Dragons|Pekkas"
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$y += 2
-		$lblBarrack3 = GUICtrlCreateLabel("2:", $x - 5, $y + 26, -1, -1)
-		$cmbBarrack3 = GUICtrlCreateCombo("", $x + 10, $y + 21, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$lblBarrack2 = GUICtrlCreateLabel("2:", $x - 5, $y + 26, -1, -1)
+		$cmbBarrack2 = GUICtrlCreateCombo("", $x + 10, $y + 21, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetTip(-1, "Set the Troops to make in Barrack 2.")
 			GUICtrlSetData(-1, "Barbarians|Archers|Giants|Goblins|WallBreakers|Balloons|Wizards|Healers|Dragons|Pekkas", "Archers") ; "Barbarians|Archers|Giants|Goblins|WallBreakers|Balloons|Wizards|Healers|Dragons|Pekkas"
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$y += 2
-		$lblBarrack2 = GUICtrlCreateLabel("3:", $x - 5, $y + 47, -1, -1)
-		$cmbBarrack2 = GUICtrlCreateCombo("", $x + 10, $y + 42, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$lblBarrack3 = GUICtrlCreateLabel("3:", $x - 5, $y + 47, -1, -1)
+		$cmbBarrack3 = GUICtrlCreateCombo("", $x + 10, $y + 42, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetTip(-1, "Set the Troops to make in Barrack 3.")
 			GUICtrlSetData(-1, "Barbarians|Archers|Giants|Goblins|WallBreakers|Balloons|Wizards|Healers|Dragons|Pekkas", "Archers") ; "Barbarians|Archers|Giants|Goblins|WallBreakers|Balloons|Wizards|Healers|Dragons|Pekkas"
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$y += 2
-		$lblBarrack1 = GUICtrlCreateLabel("4:", $x - 5, $y + 68, -1, -1)
-		$cmbBarrack1 = GUICtrlCreateCombo("", $x + 10, $y + 63, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$lblBarrack4 = GUICtrlCreateLabel("4:", $x - 5, $y + 68, -1, -1)
+		$cmbBarrack4 = GUICtrlCreateCombo("", $x + 10, $y + 63, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetTip(-1, "Set the Troops to make in Barrack 4.")
 			GUICtrlSetData(-1, "Barbarians|Archers|Giants|Goblins|WallBreakers|Balloons|Wizards|Healers|Dragons|Pekkas", "Goblins") ; "Barbarians|Archers|Giants|Goblins|WallBreakers|Balloons|Wizards|Healers|Dragons|Pekkas"
 			GUICtrlSetState(-1, $GUI_DISABLE)

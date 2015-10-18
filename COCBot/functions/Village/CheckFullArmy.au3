@@ -83,7 +83,8 @@ Func CheckFullBarrack()
 
 	If _sleep(200) Then Return
 	Local $Pixel = _CheckPixel($aBarrackFull, True)
-	If $debugSetlog = 1 Then Setlog("Checking for full Barrack [!]" & $Pixel, $COLOR_PURPLE)
+	If $debugSetlog = 1 Then Setlog("Check Barrack Full color : " & _GetPixelColor($aBarrackFull[0], $aBarrackFull[1],True) & " Expected if Full : " & Hex($aBarrackFull[2],6), $COLOR_PURPLE)
+	If $debugSetlog = 1 Then Setlog("Checking for Full Normal or Dark Barrack [!]" & $Pixel , $COLOR_PURPLE)
 
 	If $Pixel Then
 		Return True ; The Barrack Has Stopped
