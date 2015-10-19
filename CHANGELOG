@@ -1,4 +1,7 @@
-﻿* **V4.2.1**
+﻿* **V4.2.2**
+ * Fix the Color and position for Train Button
+
+* **V4.2.1**
  * Fix the Donate All function
  * Fix the Locate Barracks when one barrack is Upgrading
  * Fix the Spells creation , reset the variables and Stop/Start Bot
