@@ -95,7 +95,7 @@ Func Train()
 
 	;OPEN ARMY OVERVIEW WITH NEW BUTTON
 	; WaitforPixel($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation, $maxDelay = 10)
-	If WaitforPixel(28, 442, 34, 443, Hex(0xE8A737, 6), 5, 10) Then
+	If WaitforPixel(28, 505, 30, 507, Hex(0xE4A438, 6), 5, 10) Then
 		If $debugSetlog = 1 Then SetLog("Click $aArmyTrainButton", $COLOR_GREEN)
 		Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293") ; Button Army Overview
 	EndIf
