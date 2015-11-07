@@ -1,4 +1,10 @@
-﻿* **V4.2.2**
+﻿* **V4.2.3**
+ * Improve Smart Attack 4 sides, some times was reported 3 sides deploy instead of 4, prevent some troops to drop on red line
+ * Prevent some error on Smart Attack
+ * GUI stats alignment for negative Trophy count
+ * Fix Double counting of Out of Sync (OoS) errors on GUI stats
+
+* **V4.2.2**
  * Fix the Color and position for Train Button
 
 * **V4.2.1**

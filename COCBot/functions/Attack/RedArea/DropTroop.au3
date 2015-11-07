@@ -1,5 +1,7 @@
 
 Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1)
+
+	If isProblemAffect(True) Then Return
 	$nameFunc = "[DropTroop]"
 	debugRedArea($nameFunc & " IN ")
 	debugRedArea("troop : [" & $troop & "] / nbSides : [" & $nbSides & "] / number : [" & $number & "] / slotsPerEdge [" & $slotsPerEdge & "]")
@@ -128,7 +130,7 @@ Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
 			Local $maxElementNearCollector = UBound($PixelNearCollector) - 1
 			Local $startIndex = 0
 			Local $troopFurther = False
-			If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini) Then
+			If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini or $troop = $eBarb) Then
 				$troopFurther = True
 			EndIf
 			Local $centerPixel[2] = [430, 313]

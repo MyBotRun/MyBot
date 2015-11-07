@@ -9,6 +9,8 @@
 ;	Browse the tab of pixel and send troop
 Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 
+	If isProblemAffect(True) Then Return
+
 	$nameFunc = "[DropOnPixel]"
 	debugRedArea($nameFunc & " IN ")
 	debugRedArea("troop : [" & $troop & "] / size arrPixel [" & UBound($listArrPixel) & "] / number [" & $number & "]/ $slotsPerEdge [" & $slotsPerEdge & "] ")

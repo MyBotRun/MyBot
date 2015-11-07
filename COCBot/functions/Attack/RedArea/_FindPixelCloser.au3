@@ -1,5 +1,8 @@
 ; Search the closer array of pixel in the array of pixel
 Func _FindPixelCloser($arrPixel, $pixel, $nb = 1)
+
+	If IsArray($arrPixel) = False Then Return ; Prevent error
+
 	Local $arrPixelCloser[0]
 	For $j = 0 To $nb
 		Local $PixelCloser = $arrPixel[0]
