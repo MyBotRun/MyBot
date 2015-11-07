@@ -1,0 +1,39 @@
+# MyBot.run AUTOIT .gitignore file
+
+# Global Files
+/.project
+*.ini
+*.log
+*.orig
+*.png
+*.jpg
+*.exe
+
+# Global Folders
+[Pp]rofiles/
+[Tt]emplates/
+[Tt]emp/
+[Bb]ackup/
+
+# Obsolete Files and Folders
+[Ll]oots/
+[Aa]llTowns/
+
+# Exclusion Curl (used for PushBullet)
+![Cc]url.exe
+
+# Debug
+[Ll]ib/[Dd]ebug/
+[Ll]ib/[Tt]est.txt
+EnableMBRDebug.txt
+
+# SQL (not in use)
+*.sqlite3
+*.db
+
+# Release files
+TestVersion.txt
+
+# Exclusion Release
+!LastVersion.txt
+!MyBot.run.exe
