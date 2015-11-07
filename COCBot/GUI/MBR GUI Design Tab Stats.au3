@@ -206,7 +206,7 @@ Local $x = 30, $y = 145
 		$y = 258
 		GUICtrlCreateIcon ($pIconLib, $eIcnTrophy, $x - 5, $y, 16, 16)
         $lbltrophiesdropped = GUICtrlCreateLabel("Dropped:", $x + 13, $y + 2, -1, 17)
-        $lblresulttrophiesdropped = GUICtrlCreateLabel("0", $x + 115, $y + 2, 30, 17, $SS_RIGHT)
+        $lblresulttrophiesdropped = GUICtrlCreateLabel("0", $x + 95, $y + 2, 50, 17, $SS_RIGHT)
 			$txtTip = "The amount of Trophies dropped by the Bot due to Trophy Settings (on Misc Tab)."
 			GUICtrlSetTip(-1, $txtTip)
 

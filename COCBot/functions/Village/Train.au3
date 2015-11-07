@@ -605,7 +605,7 @@ Func Train()
 					If (Not $isDarkBuild) Or (($BarrackDarkFull[0] = True Or $BarrackDarkStatus[0] = False) And ($BarrackDarkFull[1] = True Or $BarrackDarkStatus[1] = False)) Then
 						If _Sleep($iDelayTrain1) Then Return
 						ClickP($aAway, 2, $iDelayTrain5, "#0291"); Click away twice with 250ms delay
-						If WaitforPixel(28, 442, 34, 443, Hex(0xE8A737, 6), 5, 10) Then
+						If WaitforPixel(28, 505, 30, 507, Hex(0xE4A438, 6), 5, 10) Then
 							If $debugSetlog = 1 Then SetLog("Click $aArmyTrainButton", $COLOR_GREEN)
 							Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293") ; Button Army Overview
 						EndIf
@@ -835,8 +835,8 @@ Func Train()
 						If $debugSetlog = 1 Then SetLog("Call Func TrainIt for Mini", $COLOR_PURPLE)
 						If Not (IsTrainPage()) Then Return ;exit from train
 						TrainIt($eMini, 10)
-						$BarrackDarkFull[$brrDarkNum-1] = False
-						$BarrackDarkStatus[$brrDarkNum-1] = True
+						$BarrackDarkFull[$brrDarkNum - 1] = False
+						$BarrackDarkStatus[$brrDarkNum - 1] = True
 						If $i >= 2 Then ExitLoop ; Make sure no more infiniti loop
 
 						If $brrDarkNum = 1 Then
@@ -912,13 +912,13 @@ Func IsTrainPage()
 
 	Local $i = 0
 	While $i < 30
-		If $DebugSetlog = 1 Then SetLog( "TrainPage:(" & _GetPixelColor(717, 120, True) & ",Expected:E0070A)(" & _GetPixelColor(762, 328, True) & ",Expected:F18439)", $COLOR_PURPLE)
+		If $debugSetlog = 1 Then SetLog("TrainPage:(" & _GetPixelColor(717, 120, True) & ",Expected:E0070A)(" & _GetPixelColor(762, 328, True) & ",Expected:F18439)", $COLOR_PURPLE)
 		If _ColorCheck(_GetPixelColor(717, 120, True), Hex(0xE0070A, 6), 10) And _ColorCheck(_GetPixelColor(762, 328, True), Hex(0xF18439, 6), 10) Then ExitLoop
 		_Sleep($iDelayIsTrainPage1)
 		$i += 1
 	WEnd
 	If $i < 30 Then
-		If $DebugSetlog = 1 Then Setlog("**TrainPage OK**", $COLOR_PURPLE)
+		If $debugSetlog = 1 Then Setlog("**TrainPage OK**", $COLOR_PURPLE)
 		Return True
 	Else
 		SetLog("Cannot find train page.", $COLOR_RED)
