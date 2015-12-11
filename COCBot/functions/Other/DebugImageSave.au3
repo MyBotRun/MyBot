@@ -17,11 +17,12 @@
 Func DebugImageSave($TxtName = "Unknown")
 
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
-	SetLog("Taking snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
 	$Date = @MDAY & "." & @MON & "." & @YEAR
 	$Time = @HOUR & "." & @MIN & "." & @SEC
+	$fn = $dirtemp & $TxtName & $Date & " at " & $Time & ".png" ;jp
+	SetLog("Taking snapshot for later review (" & $fn & ")", $COLOR_GREEN) ;Debug purposes only :)
 	_CaptureRegion()
-	_GDIPlus_ImageSaveToFile($hBitmap, $dirtemp & $TxtName & $Date & " at " & $Time & ".png")
+	_GDIPlus_ImageSaveToFile($hBitmap, $fn) ;jp
 	If _Sleep($iDelayDebugImageSave1) Then Return
 
 EndFunc   ;==>DebugImageSave

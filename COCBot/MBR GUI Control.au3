@@ -30,7 +30,7 @@ Local $aLblBtnControls[17] = [$lblBtnBarbarians, $lblBtnArchers, $lblBtnGiants, 
 
 _GDIPlus_Startup()
 Global Const $64Bit = StringInStr(@OSArch, "64") > 0
-Global Const $DEFAULT_HEIGHT = 720
+Global Const $DEFAULT_HEIGHT = 720+60 ;jp
 Global Const $DEFAULT_WIDTH = 860
 Global $Initiate = 0
 Global Const $REGISTRY_KEY_DIRECTORY = "HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks\Guests\Android\FrameBuffer\0"
