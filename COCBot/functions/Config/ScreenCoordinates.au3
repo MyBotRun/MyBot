@@ -10,7 +10,9 @@
 ; ===============================================================================================================================
 ;                                 x    y     color  tolerance
 Global $aIsMain[4]           = [284,  28, 0x41B1CD, 20] ; Main Screen, Builder Left Eye
-Global $aIsMainGrayed[4]     = [284,  28, 0x215B69, 15] ; Main Screen Grayed, Builder Left Eye
+;jp delete Global $aIsMain[4]           = [284,  28, 0x030A0B, 20] ; Main Screen, Builder Left Eye
+;jp Global $aIsMainGrayed[4]     = [284,  28, 0x215B69, 15] ; Main Screen Grayed, Builder Left Eye
+Global $aIsMainGrayed[4]     = [284,  28, 0x215967, 15] ; Main Screen Grayed, Builder Left Eye
 Global $aTopLeftClient[4]    = [  1,   1, 0x000000,  0] ; TopLeftClient: Tolerance not needed
 Global $aTopMiddleClient[4]  = [475,   1, 0x000000,  0] ; TopMiddleClient: Tolerance not needed
 Global $aTopRightClient[4]   = [850,   1, 0x000000,  0] ; TopRightClient: Tolerance not needed
