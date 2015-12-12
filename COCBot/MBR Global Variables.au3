@@ -426,7 +426,8 @@ Global $D[4] = [99, 111, 109, 47]
 Global $fnBreak = @ScriptDir & "\images\break.bmp" ;jp
 ; other breaks to be implemented (these are placeholders)
 Global $fnPersonalBreak = @ScriptDir & "\images\personalbreak.bmp" ;jp
-Global $fnBreak2 = @ScriptDir & "\images\break2.bmp" ;jp
+Global $fnBreakEnding = @ScriptDir & "\images\breakending.bmp" ;jp
+Global $fnReload = @ScriptDir & "\images\reload.bmp" ;jp
 Global $device = @ScriptDir & "\images\device.bmp"
 Global $CocStopped = @ScriptDir & "\images\CocStopped.bmp"
 Global $imgDivider = @ScriptDir & "\images\divider.bmp"
