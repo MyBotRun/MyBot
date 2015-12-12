@@ -17,7 +17,8 @@
 Func checkObstacles() ;Checks if something is in the way for mainscreen
 	Local $x, $y
 	_CaptureRegion()
-	If _ImageSearchArea($device, 0, 237, 321, 293, 346, $x, $y, 80) Then
+	;FIXME don't hard code coordinates
+	If _ImageSearchArea($device, 0, 237, 321+30, 293, 346+30, $x, $y, 80) Then ;jp
 		If $sTimeWakeUp > 3600 Then
 			SetLog("Another Device has connected, waiting " & Floor(Floor($sTimeWakeUp / 60) / 60) & " hours " & Floor(Mod(Floor($sTimeWakeUp / 60), 60)) & " minutes " & Floor(Mod($sTimeWakeUp, 60)) & " seconds", $COLOR_RED)
 			PushMsg("AnotherDevice3600")
@@ -33,14 +34,16 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		If _Sleep(2000) Then Return
 		Return True
 	EndIf
-	If _ImageSearch($break, 0, $x, $y, 80) Then
+	;TODO add other breaks (personal break, etc.
+	If _ImageSearch($fnBreak, 0, $x, $y, 80) Then
 		SetLog("Village must take a break, wait ...", $COLOR_RED)
 		PushMsg("TakeBreak")
 		If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
 		PureClickP($aReloadButton, 1, 0, "#0128");Check for "Take a break" message
 		Return True
 	EndIf
-	If _ImageSearchArea($CocStopped, 0, 250, 328, 618, 402, $x, $y, 70) Then
+	;FIXME don't hard code coordinates
+	If _ImageSearchArea($CocStopped, 0, 250, 328+30, 618, 402+30, $x, $y, 70) Then ;jp
 		SetLog("CoC Has Stopped Error .....", $COLOR_RED)
 		$iNbrOfOoS += 1
 		UpdateStats()
@@ -61,7 +64,8 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		Return True
 	EndIf
 	_CaptureRegion()
-	If _ColorCheck(_GetPixelColor(235, 209), Hex(0x9E3826, 6), 20) Then
+	;FIXME don't hard code coordinates
+	If _ColorCheck(_GetPixelColor(235, 209+30), Hex(0x9E3826, 6), 20) Then ;jp
 		PureClick(429, 493, 1, 0, "#0132");See if village was attacked, clicks Okay
 		Return True
 	EndIf
@@ -69,6 +73,7 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		PureClickP($aAway, 1, 0, "#0133") ;Click away If things are open
 		Return True
 	EndIf
+	;FIXME don't hard code coordinates
 	If _ColorCheck(_GetPixelColor(819, 55), Hex(0xD80400, 6), 20) Then
 		PureClick(819, 55, 1, 0, "#0134") ;Clicks X
 		Return True
@@ -90,7 +95,8 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		ReturnHome(False, False) ;If End battle is available
 		Return True
 	EndIf
-	$Message = _PixelSearch(19, 565, 104, 580, Hex(0xD9DDCF, 6), 10)
+	;FIXME don't hard code coordinates
+	$Message = _PixelSearch(19, 565+60, 104, 580+60, Hex(0xD9DDCF, 6), 10) ;jp
 	If IsArray($Message) Then
 		PureClick(67, 602, 1, 0, "#0138");Check if Return Home button available
 		If _Sleep($iDelaycheckObstacles2) Then Return

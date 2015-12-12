@@ -45,6 +45,7 @@
 
 ;debugging
 Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugDeadBaseImage = 0
+$debugSetlog = 1 ;jp
 
 Global Const $COLOR_ORANGE = 0xFF7700
 Global Const $bCapturePixel = True, $bNoCapturePixel = False
@@ -422,7 +423,10 @@ Global $ichkBackground ; Background mode enabled disabled
 Global $collectorPos[17][2] ;Positions of each collectors
 Global $D[4] = [99, 111, 109, 47]
 
-Global $break = @ScriptDir & "\images\break.bmp"
+Global $fnBreak = @ScriptDir & "\images\break.bmp" ;jp
+; other breaks to be implemented (these are placeholders)
+Global $fnPersonalBreak = @ScriptDir & "\images\personalbreak.bmp" ;jp
+Global $fnBreak2 = @ScriptDir & "\images\break2.bmp" ;jp
 Global $device = @ScriptDir & "\images\device.bmp"
 Global $CocStopped = @ScriptDir & "\images\CocStopped.bmp"
 Global $imgDivider = @ScriptDir & "\images\divider.bmp"
