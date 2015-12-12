@@ -21,6 +21,7 @@ Func Collect()
 	If $iChkCollect = 0 Then Return
 
 	Local $collx, $colly, $i = 0
+	Local $collx2, $colly2, $count
 
 	VillageReport(True, True)
 	$tempCounter = 0
@@ -42,6 +43,7 @@ Func Collect()
 				$pixel = StringSplit($ResourceLocations[$i],";")
 				If isInsideDiamondXY($pixel[1],$pixel[2]) Then
 					click($pixel[1],$pixel[2],1,0,"#0331")
+					if $debugSetlog then SetLog("Resource " & $pixel[1] &"x"& $pixel[2], $COLOR_BLUE) ;jp
 				Else
 					SetLog("Error in Mines/Collector locations found, finding positions again", $COLOR_RED)
 					IniDelete($building, "other", "listResource")
@@ -58,13 +60,23 @@ Func Collect()
 
 	checkAttackDisable($iTaBChkIdle)  ; Early Take-A-Break detection
 
+	$collx2=-1
+	$colly2=-1
+	$count=0
 	While 1
 		If _Sleep($iDelayCollect1) Or $RunState = False Then ExitLoop
 		_CaptureRegion(0,0,780)
 		If _ImageSearch(@ScriptDir & "\images\collect.png", 1, $collx, $colly, 20) Then
+			If $collx = $collx2 and $colly = $colly2 Then
+				$count += 1
+				if $count > 2 Then ExitLoop
+			EndIf
 			Click($collx, $colly,1,0,"#0330") ;Click collector
+			if $debugSetlog then SetLog("Resource2 " & $collx &"x"& $colly, $COLOR_BLUE) ;jp
 			If _Sleep($iDelayCollect1) Then Return
 			ClickP($aAway,1,0,"#0329") ;Click Away
+			$collx2 = $collx
+			$colly2 = $colly
 		Elseif $i >= 20 Then
 			ExitLoop
 		EndIf

@@ -335,7 +335,7 @@ Func PushMsg($Message, $Source = "")
 		Case "RequestScreenshot"
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(0, 0, 860, 720)
+			_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT)
 			$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
 			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 			_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirTemp & $Screnshotfilename)
