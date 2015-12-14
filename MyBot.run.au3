@@ -21,7 +21,7 @@
 
 #pragma compile(ProductVersion, 4.2.3)
 #pragma compile(FileVersion, 4.2.3)
-#pragma compile(LegalCopyright, © https://mybot.run)
+#pragma compile(LegalCopyright, Â© https://mybot.run)
 
 $sBotVersion = "v4.2.3"
 $sBotTitle = "My Bot " & $sBotVersion

@@ -46,8 +46,13 @@
 ;debugging
 Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugDeadBaseImage = 0
 $debugSetlog = 1 ;jp
+$debugGetPixel = 0 ;jp
+
+;Debug Click
+Global $debugClick = 0 ;jp
 
 Global Const $COLOR_ORANGE = 0xFF7700
+Global Const $COLOR_CYAN = 0x00FFFF
 Global Const $bCapturePixel = True, $bNoCapturePixel = False
 
 Global $Compiled
@@ -424,8 +429,7 @@ Global $collectorPos[17][2] ;Positions of each collectors
 Global $D[4] = [99, 111, 109, 47]
 
 Global $fnBreak = @ScriptDir & "\images\break.bmp" ;jp
-; other breaks to be implemented (these are placeholders)
-Global $fnPersonalBreak = @ScriptDir & "\images\personalbreak.bmp" ;jp
+Global $fnBreakExtended = @ScriptDir & "\images\breakextended.bmp" ;jp
 Global $fnBreakEnding = @ScriptDir & "\images\breakending.bmp" ;jp
 Global $fnReload = @ScriptDir & "\images\reload.bmp" ;jp
 Global $device = @ScriptDir & "\images\device.bmp"
@@ -501,10 +505,6 @@ Global $PixelRedAreaFurther[0]
 
 Global $hBitmapFirst
 Global Enum $eVectorLeftTop, $eVectorRightTop, $eVectorLeftBottom, $eVectorRightBottom
-
-
-;Debug CLick
-Global $debugClick = 0
 
 
 Global $DESTOLoc = ""
@@ -642,8 +642,8 @@ Global $numFactorySpellAvaiables = 0
 Global $numFactoryDarkSpell = 0
 Global $numFactoryDarkSpellAvaiables = 0
 
-;position of barakcs
-Global $btnpos = [[114, 535], [228, 535], [288, 535], [348, 535], [409, 535], [494, 535], [555, 535], [637, 535], [698, 535]]
+;position of barack buttons on army training dialog
+Global $btnpos = [[114, 535+30], [228, 535+30], [288, 535+30], [348, 535+30], [409, 535+30], [494, 535+30], [555, 535+30], [637, 535+30], [698, 535+30]] ;jp
 ;barracks and spells avaiables
 Global $Trainavailable = [1, 0, 0, 0, 0, 0, 0, 0, 0]
 

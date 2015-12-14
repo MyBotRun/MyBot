@@ -34,7 +34,6 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		If _Sleep(2000) Then Return
 		Return True
 	EndIf
-	;TODO add other breaks (personal break, etc.
 	If _ImageSearch($fnBreak, 0, $x, $y, 80) Then
 		SetLog("Village must take a break, wait ...", $COLOR_RED)
 		PushMsg("TakeBreak")
@@ -52,9 +51,21 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		;PushMsg("BreakEnding")
 		If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
 		If _ImageSearch($fnReload, 0, $x, $y, 80) Then
+			if $debugSetlog = 1 Then SetLog("Found reload at "&$x&"x"&$y, $COLOR_PURPLE);
 			PureClick($x, $y, 1, 0, "#0128")
 		Else
+			PureClickP($aReloadButton, 1, 0, "#0128")
+		EndIf
+		Return True
+	EndIf
+	If _ImageSearch($fnBreakExtended, 0, $x, $y, 80) Then
+		SetLog("Personal break extended, wait ...", $COLOR_RED)
+		;PushMsg("BreakEnding")
+		If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
+		If _ImageSearch($fnReload, 0, $x, $y, 80) Then
 			if $debugSetlog = 1 Then SetLog("Found reload at "&$x&"x"&$y, $COLOR_PURPLE);
+			PureClick($x, $y, 1, 0, "#0128")
+		Else
 			PureClickP($aReloadButton, 1, 0, "#0128")
 		EndIf
 		Return True

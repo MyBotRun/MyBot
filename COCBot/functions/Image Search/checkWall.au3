@@ -75,7 +75,7 @@ Func CheckWall()
 					EndIf
 					GemClick($WallX, $WallY, 1, 0, "#0122")
 					If _Sleep(500) Then Return
-					$aResult = BuildingInfo(250, 520) ; Get Unit name and level with OCR
+					$aResult = BuildingInfo(250, 520+60) ;jp ; Get Unit name and level with OCR
 					If $aResult[0] = 2 Then ; We found a valid building name
 						If StringInStr($aResult[1], "wall") = True Then ; we found a wall
 							If $aResult[2] = $icmbWalls + 4 Then Return True

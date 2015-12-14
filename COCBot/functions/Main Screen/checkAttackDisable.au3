@@ -20,7 +20,7 @@ Func checkAttackDisable($iSource, $Result = "")
 
 	Switch $iSource
 		Case $iTaBChkAttack  ; look at location 346, 182 for "disable", or "for" if checked early enough
-			If $Result = "" Then $Result = getAttackDisable(346, 182)
+			If $Result = "" Then $Result = getAttackDisable(346, 182+20) ;jp not sure
 			If _Sleep(1000) Then Return
 			If $Result = "" Or (StringLen($Result) < 3) Then $Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak 2nd time if not found due slow PC
 			If $debugSetlog = 1 Then Setlog("Attack Take-A-Break OCR result = " & $Result, $COLOR_PURPLE)
@@ -38,9 +38,9 @@ Func checkAttackDisable($iSource, $Result = "")
 				Return ; exit function, take a break text not found
 			EndIf
 		Case $iTaBChkIdle ; look at location 180, 167 for the have "been" online too long message
-			If $Result = "" Then getAttackDisable(180, 167)
+			If $Result = "" Then getAttackDisable(180, 167+20) ;jp
 			If _Sleep(500) Then Return ; short wait to not delay to much
-			If $Result = "" Or (StringLen($Result) < 3) Then $Result = getAttackDisable(180, 167) ; Grab Ocr for "Have Been" 2nd time if not found due slow PC
+			If $Result = "" Or (StringLen($Result) < 3) Then $Result = getAttackDisable(180, 167+20) ; Grab Ocr for "Have Been" 2nd time if not found due slow PC
 			If $debugSetlog = 1 Then Setlog("Online2Long OCR result = " & $Result, $COLOR_PURPLE)
 			If $Result <> "" Then ; fast test to see if have Take-A-Break
 				If StringInStr($Result, "been") <> 0 Then ; verify we have right text string
