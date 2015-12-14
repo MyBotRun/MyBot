@@ -37,7 +37,7 @@ Func BrewSpells()
 			WEnd
 			If isSpellFactory() Then
 				If $LightningSpellComp > 0 Then ; Lightning Spells
-					$TempLightningSpell = Number(getBarracksTroopQuantity(175 + 107 * 0, 296))
+					$TempLightningSpell = Number(getBarracksTroopQuantity(175 + 107 * 0, 296+28)) ;jp
 					Local $LightningSpell = $LightningSpellComp - ($CurLightningSpell + $TempLightningSpell)
 					If $debugSetlog = 1 Then SetLog("Making Lightning Spell: " & $LightningSpell)
 					If _sleep($iDelayTrain2) Then Return
@@ -59,7 +59,7 @@ Func BrewSpells()
 					EndIf
 				EndIf
 				If $HealSpellComp > 0 Then ; Heal Spells
-					$TempHealSpell = Number(getBarracksTroopQuantity(175 + 107 * 1, 296))
+					$TempHealSpell = Number(getBarracksTroopQuantity(175 + 107 * 1, 296+28)) ;jp
 					Local $HealSpell = $HealSpellComp - ($CurHealSpell + $TempHealSpell)
 					If $debugSetlog = 1 Then SetLog("Making Heal Spell: " & $HealSpell)
 					If _sleep($iDelayTrain2) Then Return
@@ -80,7 +80,7 @@ Func BrewSpells()
 						Setlog("Already done Heal Spell(s)")
 					EndIf
 				EndIf
-				If $RageSpellComp > 0 Then ; Rage Spells
+				If $RageSpellComp > 0 Then ; Rage Spells ;jp
 					$TempRageSpell = Number(getBarracksTroopQuantity(175 + 107 * 2, 296))
 					Local $RageSpell = $RageSpellComp - ($CurRageSpell + $TempRageSpell)
 					If $debugSetlog = 1 Then SetLog("Making Rage Spell: " & $RageSpell)
@@ -118,7 +118,7 @@ Func BrewSpells()
 			WEnd
 			If isDarkSpellFactory() Then
 				If $PoisonSpellComp > 0 Then ; Poison Spells
-					$TempPoisonSpell = Number(getBarracksTroopQuantity(175 + 107 * 0, 296))
+					$TempPoisonSpell = Number(getBarracksTroopQuantity(175 + 107 * 0, 296+28));jp
 					Local $PoisonSpell = $PoisonSpellComp - ($CurPoisonSpell + $TempPoisonSpell)
 					If $debugSetlog = 1 Then SetLog("Making Poision Spell: " & $PoisonSpell)
 					If _sleep($iDelayTrain2) Then Return
@@ -142,7 +142,7 @@ Func BrewSpells()
 				EndIf
 
 				If $HasteSpellComp > 0 Then ; Haste Spells
-					$TempHasteSpell = Number(getBarracksTroopQuantity(175 + 107 * 2, 296))
+					$TempHasteSpell = Number(getBarracksTroopQuantity(175 + 107 * 2, 296+28)) ;jp
 					Local $HasteSpell = $HasteSpellComp - ($CurHasteSpell + $TempHasteSpell)
 					If $debugSetlog = 1 Then SetLog("Making Haste Spell: " & $HasteSpell)
 					If _sleep($iDelayTrain2) Then Return

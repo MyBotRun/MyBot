@@ -21,10 +21,11 @@ Func Train()
 	Local $tempElixirSpent = 0
 	Local $tempDElixirSpent = 0
 	;jp
-	Local $arrowLoc = [595, 230]
+	Local $arrowLoc[2] = [595, 230]
 	Local $arrowGreen = 0xADD070
 	Local $arrowGray  = 0xD0D0C0
-	Local $minusLoc = [567, 210]
+	Local $minusLoc[2] = [567, 210]
+	Local $troupHeight[2] = [296+28, 404+28] ;jp height of barrack train buttons (was 296.404)
 	;jp
 
 	If $debugSetlog = 1 Then SetLog("Func Train ", $COLOR_PURPLE)
@@ -324,16 +325,16 @@ Func Train()
 			If $debugSetlog = 1 And Number(Eval($TroopDarkName[$i] & "Comp")) <> 0 Then SetLog("Need to train " & $TroopDarkName[$i] & ":" & Eval($TroopDarkName[$i] & "Comp"), $COLOR_PURPLE)
 		Next
 		If $debugSetlog = 1 Then SetLog("--------------AnotherTroops TOTAL to train:" & $anotherTroops, $COLOR_PURPLE)
-		$CurGobl += ($TotalCamp - $anotherTroops) * Eval("GoblComp") / 100
+		$CurGobl = ($TotalCamp - $anotherTroops) * Eval("GoblComp") / 100
 		$CurGobl = Round($CurGobl)
-		$CurBarb += ($TotalCamp - $anotherTroops) * Eval("BarbComp") / 100
+		$CurBarb = ($TotalCamp - $anotherTroops) * Eval("BarbComp") / 100
 		$CurBarb = Round($CurBarb)
-		$CurArch += ($TotalCamp - $anotherTroops) * Eval("ArchComp") / 100
+		$CurArch = ($TotalCamp - $anotherTroops) * Eval("ArchComp") / 100
 		$CurArch = Round($CurArch)
 		If $debugSetlog = 1 Then SetLog("Need to train (height) GOBL:" & $CurGobl & "% BARB: " & $CurBarb & "% ARCH: " & $CurArch & "% AND " & $anotherTroops & " other troops space", $COLOR_PURPLE)
 	EndIf
 
-	$TotalTrainedTroops += $anotherTroops + $CurGobl + $CurBarb + $CurArch ; Count of all troops required for training
+	$TotalTrainedTroops = $anotherTroops + $CurGobl + $CurBarb + $CurArch ; Count of all troops required for training
 	If $debugSetlog = 1 Then SetLog("Total Troops to be Trained= " & $TotalTrainedTroops, $COLOR_PURPLE)
 
 	;Local $GiantEBarrack ,$WallEBarrack ,$ArchEBarrack ,$BarbEBarrack ,$GoblinEBarrack,$HogEBarrack,$MinionEBarrack, $WizardEBarrack
@@ -476,10 +477,10 @@ Func Train()
 			If _Sleep($iDelayTrain1) Then ExitLoop
 			For $i = 0 To UBound($TroopName) - 1
 				If Eval($TroopName[$i] & "Comp") <> "0" Then
-					$heightTroop = 370; was 296 ;jp
+					$heightTroop = $troupHeight[0] ; was 296 ;jp
 					$positionTroop = $TroopNamePosition[$i]
 					If $TroopNamePosition[$i] > 4 Then
-						$heightTroop = 480 ; was 404 ;jp
+						$heightTroop = $troupHeight[1] ; was 404 ;jp
 						$positionTroop = $TroopNamePosition[$i] - 5
 					EndIf
 					If $debugSetlog = 1 And Number(getBarracksTroopQuantity(175 + 107 * $positionTroop, $heightTroop)) <> 0 Then SetLog("ASSIGN TroopFirst." & $TroopName[$i] & ": " & Number(getBarracksTroopQuantity(175 + 107 * $positionTroop, $heightTroop)), $COLOR_PURPLE)
@@ -556,10 +557,10 @@ Func Train()
 			If _Sleep($iDelayTrain1) Then ExitLoop
 			For $i = 0 To UBound($TroopName) - 1
 				If Eval($TroopName[$i] & "Comp") <> "0" Then
-					$heightTroop = 296
+					$heightTroop = $troupHeight[0] ;jp
 					$positionTroop = $TroopNamePosition[$i]
 					If $TroopNamePosition[$i] > 4 Then
-						$heightTroop = 404
+						$heightTroop = $troupHeight[1] ;jp
 						$positionTroop = $TroopNamePosition[$i] - 5
 					EndIf
 					If $debugSetlog = 1 And Number(getBarracksTroopQuantity(175 + 107 * $positionTroop, $heightTroop)) <> 0 Then SetLog(("troopSecond" & $TroopName[$i] & ": " & Number(getBarracksTroopQuantity(175 + 107 * $positionTroop, $heightTroop))), $COLOR_PURPLE)
@@ -707,10 +708,10 @@ Func Train()
 			If _Sleep($iDelayTrain1) Then ExitLoop
 			For $i = 0 To UBound($TroopDarkName) - 1
 				If Eval($TroopDarkName[$i] & "Comp") <> "0" Then
-					$heightTroop = 296
+					$heightTroop = $troupHeight[0] ;jp
 					$positionTroop = $TroopDarkNamePosition[$i]
 					If $TroopDarkNamePosition[$i] > 4 Then
-						$heightTroop = 404
+						$heightTroop = $troupHeight[1] ;jp
 						$positionTroop = $TroopDarkNamePosition[$i] - 5
 					EndIf
 
@@ -778,10 +779,10 @@ Func Train()
 			If _Sleep($iDelayTrain1) Then ExitLoop
 			For $i = 0 To UBound($TroopDarkName) - 1
 				If Eval($TroopDarkName[$i] & "Comp") <> "0" Then
-					$heightTroop = 296
+					$heightTroop = $troupHeight[0] ;jp
 					$positionTroop = $TroopDarkNamePosition[$i]
 					If $TroopDarkNamePosition[$i] > 4 Then
-						$heightTroop = 404
+						$heightTroop = $troupHeight[0] ;jp
 						$positionTroop = $TroopDarkNamePosition[$i] - 5
 					EndIf
 					If $debugSetlog = 1 Then SetLog(">>>troopSecond" & $TroopDarkName[$i] & " = " & Number(getBarracksTroopQuantity(175 + 107 * $positionTroop, $heightTroop)), $COLOR_PURPLE)
