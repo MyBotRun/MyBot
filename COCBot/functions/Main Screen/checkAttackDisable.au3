@@ -37,10 +37,10 @@ Func checkAttackDisable($iSource, $Result = "")
 			Else
 				Return ; exit function, take a break text not found
 			EndIf
-		Case $iTaBChkIdle ; look at location 180, 167 for the have "been" online too long message
-			If $Result = "" Then getAttackDisable(180, 167+20) ;jp
+		Case $iTaBChkIdle ; look at location 180, 167 for the "have been" online too long message
+			If $Result = "" Then getAttackDisable(180, 167+20) ;jp - confirmed works
 			If _Sleep(500) Then Return ; short wait to not delay to much
-			If $Result = "" Or (StringLen($Result) < 3) Then $Result = getAttackDisable(180, 167+20) ; Grab Ocr for "Have Been" 2nd time if not found due slow PC
+			If $Result = "" Or (StringLen($Result) < 3) Then $Result = getAttackDisable(180, 167+20) ;jp ; Grab Ocr for "have been" 2nd time if not found due slow PC
 			If $debugSetlog = 1 Then Setlog("Online2Long OCR result = " & $Result, $COLOR_PURPLE)
 			If $Result <> "" Then ; fast test to see if have Take-A-Break
 				If StringInStr($Result, "been") <> 0 Then ; verify we have right text string
@@ -63,11 +63,11 @@ Func checkAttackDisable($iSource, $Result = "")
 	Local $i = 0 ; Reset Loop counter
 	While 1
 		ControlFocus($Title, "", "") ; grab window focus
-		PureClick(50, 700, 1, 0, "#0116") ; Hit BS Back button for the confirm exit dialog to appear
+		PureClick(50, 700+60, 1, 0, "#0116") ;jp ; Hit BS Back button for the confirm exit dialog to appear
 		If _Sleep(1000) Then Return False
 		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
-		Global $ButtonPixel = _MultiPixelSearch(438, 372, 590, 404, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $debugSetlog = 1 Then Setlog("Exit btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_PURPLE)
+		Global $ButtonPixel = _MultiPixelSearch(438, 372+30, 590, 404+30, 1, 1, Hex(0x000000, 6), $offColors, 20) ;jp ; first vertical black pixel of Okay
+		If $debugSetlog = 1 Then Setlog("Exit btn chk-#1: " & _GetPixelColor(441, 374+30, True) & ", #2: " & _GetPixelColor(441 + 144, 374+30, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17+30, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10+30, True), $COLOR_PURPLE) ;jp
 		If IsArray($ButtonPixel) Then
 			If $debugSetlog = 1 Then
 				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug

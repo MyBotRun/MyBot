@@ -23,7 +23,7 @@ Global $aAttackButton[2]     = [ 60, 614+60]  ;jp             ; Attack Button, M
 Global $aFindMatchButton[2]  = [217, 510+60]               ; Find Multiplayer Match Button, Attack Screen
 Global $aAway[2]             = [  1,  40]               ; Away click, moved from 1,1 to prevent scroll window from top
 ;Global $aBreakShield[4]     = [513, 416, 0x5DAC10, 50] ; Break Shield Button, Attack Screen ;the 0x5DAC10 color value matches open grass use with caution
-Global $aSurrenderButton[4]  = [ 70, 545+60, 0xC10000, 30] ; Surrender Button, Attack Screen
+Global $aSurrenderButton[4]  = [ 70, 545+60, 0xC10000, 30] ;jp ; Surrender Button, Attack Screen
 Global $aConfirmSurrender[2] = [512, 394+60]               ; Confirm Surrender Button, Attack Screen (no color for button as it matches grass)
 Global $aCancelFight[4]      = [822,  48, 0xD80408, 20] ; Cancel Fight Scene
 Global $aCancelFight2[4]     = [830,  59, 0xD80408, 20] ; Cancel Fight Scene 2nd pixel
@@ -63,8 +63,8 @@ Global $aConfirmCoCExit[2]   = [515, 410] 				  ; CoC Confirm Exit button (no co
 ;Global $aKingHealth          = [ -1, 572, 0x4FD404,110] ; Attack Screen, Check King's Health, X coordinate is dynamic, not used from array
 ;Global $aQueenHealth         = [ -1, 573, 0x4FD404,110] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array
 
-Global $aKingHealth          = [ -1, 572, 0x00b29e, 15] ; Attack Screen, Check King's Health, X coordinate is dynamic, not used from array   ;  -> with slot compensation 0xbfb29e
-Global $aQueenHealth         = [ -1, 572, 0x008227, 15] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
+Global $aKingHealth          = [ -1, 572+60, 0x00b29e, 15] ; Attack Screen, Check King's Health, X coordinate is dynamic, not used from array   ;  -> with slot compensation 0xbfb29e
+Global $aQueenHealth         = [ -1, 572+60, 0x008227, 15] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
 
 
 ;attack report... stars won
