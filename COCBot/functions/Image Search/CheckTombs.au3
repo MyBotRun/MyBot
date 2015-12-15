@@ -15,9 +15,23 @@
 
 Func CheckTombs()
 
-	Local $TombX, $TombY
 	If $ichkTombstones <> 1 Then Return False
-	$tomb = @ScriptDir & "\images\tomb.png"
+
+	Local $result = CheckTombImage(@ScriptDir & "\images\tomb.png")
+	If $result <> False Then Return $result
+	$result = CheckTombImage(@ScriptDir & "\images\tomb1.png")
+	If $result <> False Then Return $result
+	$result = CheckTombImage(@ScriptDir & "\images\tomb2.png")
+	If $result <> False Then Return $result
+
+	If $DebugSetLog = 1 Then SetLog("Cannot find tombstones, Yard is clean!", $COLOR_PURPLE)
+	Return False
+
+EndFunc   ;==>CheckTombs
+
+Func CheckTombImage($tomb)
+
+	Local $TombX, $TombY
 	If Not FileExists($tomb) Then Return False
 	$TombLoc = 0
 	_CaptureRegion()
@@ -26,11 +40,11 @@ Func CheckTombs()
 		If $TombLoc = 0 Then
 			$TombX = 0
 			$TombY = 0
-			$TombLoc = _ImageSearch($tomb, 1, $TombX, $TombY, $TombTol) ; Getting Tree Location
+			$TombLoc = _ImageSearch($tomb, 1, $TombX, $TombY, $TombTol) ; Getting Tomb Location
 ;			If $TombLoc = 1 And $TombX > 35 And $TombY < 610 Then
 			If $TombLoc = 1 And isInsideDiamondXY($TombX, $TombY) Then
-				SetLog("Found tombstone ,  Removing...", $COLOR_GREEN)
-				If $DebugSetLog = 1 Then SetLog("Tombstone found (" & $TombX & "," & $TombY & ") tolerance:" & $TombTol, $COLOR_PURPLE)
+				SetLog("Found tombstone,  Removing...", $COLOR_GREEN)
+				If $DebugSetLog = 1 Then SetLog("Tombstone " & $tomb & " found (" & $TombX & "," & $TombY & ") tolerance:" & $TombTol, $COLOR_PURPLE)
 				Click($TombX, $TombY,1,0,"#0120")
 				If _Sleep($iDelayCheckTombs2) Then Return
 				ClickP($aAway,1,0,"#0121") ; click away
@@ -39,7 +53,6 @@ Func CheckTombs()
 			EndIf
 		EndIf
 	Next
-	If $DebugSetLog = 1 Then SetLog("Cannot find tombstones, Yard is clean!", $COLOR_PURPLE)
 	If _Sleep($iDelayCheckTombs1) Then Return
 	checkMainScreen(False) ; check for screen errors while function was running
 
