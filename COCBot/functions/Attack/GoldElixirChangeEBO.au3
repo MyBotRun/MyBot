@@ -35,7 +35,7 @@ Func GoldElixirChangeEBO()
 		$Trophies = getTrophyVillageSearch(48, 138)
 	EndIf
 
-	;CALCULATE WITCH TIMER TO USE
+	;CALCULATE WHICH TIMER TO USE
 	Local $iBegin = TimerInit(), $x = $sTimeStopAtk * 1000, $y = $sTimeStopAtk2 * 1000, $z
 	If Number($Gold1) < Number($stxtMinGoldStopAtk2) And Number($Elixir1) < Number($stxtMinElixirStopAtk2) And Number($DarkElixir1) < Number($stxtMinDarkElixirStopAtk2) And $iChkTimeStopAtk2 = 1 Then
 		$z = $y

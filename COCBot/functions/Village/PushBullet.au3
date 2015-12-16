@@ -282,7 +282,7 @@ Func PushMsg($Message, $Source = "")
 				SetLog("Pushbullet: Last Raid Text has been sent!", $COLOR_GREEN)
 			EndIf
 			If $pEnabled = 1 And $pLastRaidImg = 1 Then
-				_CaptureRegion(0, 0, 860, 675)
+				_CaptureRegion(0, 0, 860, 675+60)
 				;create a temporary file to send with pushbullet...
 				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 				Local $Time = @HOUR & "." & @MIN
