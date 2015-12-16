@@ -401,6 +401,7 @@ Func Train()
 			If $FirstStart Then
 				If _Sleep($iDelayTrain2) Then Return
 				$icount = 0
+				_PostMessage_ClickDrag($minusLoc[0], $minusLoc[1], 0, $minusLoc[1], "left", 100) ;jp
 				While Not _ColorCheck(_GetPixelColor($arrowLoc[0], $arrowLoc[1], True), Hex($arrowGray, 6), 20) ; while not disappears  green arrow
 					If Not (IsTrainPage()) Then Return
 					ClickP($minusLoc, 10, 0, "#0273") ; Remove Troops in training
@@ -463,6 +464,7 @@ Func Train()
 				;CLICK REMOVE TROOPS
 				If _Sleep($iDelayTrain2) Then Return
 				$icount = 0
+				_PostMessage_ClickDrag($minusLoc[0], $minusLoc[1], 0, $minusLoc[1], "left", 100) ;jp
 				;jp While Not _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xE8E8DE, 6), 20) ; while not disappears  green arrow
 				While Not _ColorCheck(_GetPixelColor($arrowLoc[0], $arrowLoc[1], True), Hex($arrowGray, 6), 20) ; while not disappears  green arrow
 					If $debugSetlog = 1 Then SetLog("Train green arrow: " & _GetPixelColor($arrowLoc[0], $arrowLoc[1], True) & ", Expected: 0xD0D0C0 (gray) or 0xADD070 (green)", $COLOR_PURPLE)
@@ -638,6 +640,7 @@ Func Train()
 							$brrNum += 1
 							If _Sleep($iDelayTrain1) Then Return
 							$icount = 0
+							_PostMessage_ClickDrag($minusLoc[0], $minusLoc[1], 0, $minusLoc[1], "left", 100) ;jp
 							While _ColorCheck(_GetPixelColor($arrowLoc[0], $arrowLoc[1], True), Hex($arrowGreen, 6), 20) ; while green arrow is there, delete
 								ClickP($minusLoc, 5, 0, "#0285") ; Remove Troops in training
 								$icount += 1
@@ -696,6 +699,7 @@ Func Train()
 			EndIf
 			If $fullarmy Or $FirstStart Then ; Delete Troops That is being trained
 				$icount = 0
+				_PostMessage_ClickDrag($minusLoc[0], $minusLoc[1], 0, $minusLoc[1], "left", 100) ;jp
 				While Not _ColorCheck(_GetPixelColor($arrowLoc[0], $arrowLoc[1], True), Hex($arrowGray, 6), 20) ; while not disappears  green arrow
 					If Not (IsTrainPage()) Then Return ;exit if no train page
 					ClickP($minusLoc, 10, 0, "#0287") ; Remove Troops in training
@@ -837,6 +841,7 @@ Func Train()
 						$i += 1
 						If _Sleep($iDelayTrain1) Then ExitLoop
 						$icount = 0
+						_PostMessage_ClickDrag($minusLoc[0], $minusLoc[1], 0, $minusLoc[1], "left", 100) ;jp
 						While _ColorCheck(_GetPixelColor($arrowLoc[0], $arrowLoc[1], True), Hex($arrowGreen, 6), 20) ; While Green Arrow is there, delete
 							ClickP($minusLoc, 5, 0, "#0288") ; Remove Troops in training
 							$icount += 1

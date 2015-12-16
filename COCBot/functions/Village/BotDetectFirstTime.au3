@@ -55,9 +55,9 @@ Func BotDetectFirstTime()
 	EndIf
 
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
-  ;jp removed clan check for now... can fix later
-	;jp Setlog("Finding your Clan Level, wait..")
-	;jp ClanLevel()
+
+	Setlog("Finding your Clan Level, wait..")
+	ClanLevel()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 
 	If GUICtrlRead($cmbQuantBoostBarracks) > 0 Then

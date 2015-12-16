@@ -42,15 +42,15 @@ Func BrewSpells()
 					If $debugSetlog = 1 Then SetLog("Making Lightning Spell: " & $LightningSpell)
 					If _sleep($iDelayTrain2) Then Return
 					If $TempLightningSpell = 0 Then
-						If _ColorCheck(_GetPixelColor(239, 375, True), Hex(0xFFFFFF, 6), 20) = False Then
+						If _ColorCheck(_GetPixelColor(239, 375+28, True), Hex(0xFFFFFF, 6), 20) = False Then
 							setlog("Not enough Elixir to create Spell", $COLOR_RED)
 							Return
-						ElseIf _ColorCheck(_GetPixelColor(200, 346, True), Hex(0x414141, 6), 20) Then
+						ElseIf _ColorCheck(_GetPixelColor(200, 346+28, True), Hex(0x414141, 6), 20) Then
 							setlog("Spell Factory Full", $COLOR_RED)
 							Return
 						Else
 							If $LightningSpell > 0 Then
-								GemClick(252, 354, $LightningSpell, $iDelayTrain7, "#0290")
+								GemClick(252, 354+28, $LightningSpell, $iDelayTrain7, "#0290")
 								SetLog("Created " & $LightningSpell & " Lightning Spell(s)", $COLOR_BLUE)
 							EndIf
 						EndIf
@@ -64,15 +64,15 @@ Func BrewSpells()
 					If $debugSetlog = 1 Then SetLog("Making Heal Spell: " & $HealSpell)
 					If _sleep($iDelayTrain2) Then Return
 					If $TempHealSpell = 0 Then
-						If _ColorCheck(_GetPixelColor(346, 375, True), Hex(0xFFFFFF, 6), 20) = False Then
+						If _ColorCheck(_GetPixelColor(346, 375+28, True), Hex(0xFFFFFF, 6), 20) = False Then
 							setlog("Not enough Elixir to create Spell", $COLOR_RED)
 							Return
-						ElseIf _ColorCheck(_GetPixelColor(200, 346, True), Hex(0x414141, 6), 20) Then
+						ElseIf _ColorCheck(_GetPixelColor(200, 346+28, True), Hex(0x414141, 6), 20) Then
 							setlog("Spell Factory Full", $COLOR_RED)
 							Return
 						Else
 							If $HealSpell > 0 Then
-								GemClick(334, 354, $HealSpell, $iDelayTrain7, "#0290")
+								GemClick(334, 354+28, $HealSpell, $iDelayTrain7, "#0290")
 								SetLog("Created " & $HealSpell & " Heal Spell(s)", $COLOR_BLUE)
 							EndIf
 						EndIf
@@ -81,20 +81,20 @@ Func BrewSpells()
 					EndIf
 				EndIf
 				If $RageSpellComp > 0 Then ; Rage Spells ;jp
-					$TempRageSpell = Number(getBarracksTroopQuantity(175 + 107 * 2, 296))
+					$TempRageSpell = Number(getBarracksTroopQuantity(175 + 107 * 2, 296+28))
 					Local $RageSpell = $RageSpellComp - ($CurRageSpell + $TempRageSpell)
 					If $debugSetlog = 1 Then SetLog("Making Rage Spell: " & $RageSpell)
 					If _sleep($iDelayTrain2) Then Return
 					If $TempRageSpell = 0 Then
-						If _ColorCheck(_GetPixelColor(453, 375, True), Hex(0xFFFFFF, 6), 20) = False Then
+						If _ColorCheck(_GetPixelColor(453, 375+28, True), Hex(0xFFFFFF, 6), 20) = False Then
 							setlog("Not enough Elixir to create Spell", $COLOR_RED)
 							Return
-						ElseIf _ColorCheck(_GetPixelColor(200, 346, True), Hex(0x414141, 6), 20) Then
+						ElseIf _ColorCheck(_GetPixelColor(200, 346+28, True), Hex(0x414141, 6), 20) Then
 							setlog("Spell Factory Full", $COLOR_RED)
 							Return
 						Else
 							If $RageSpell > 0 Then
-								GemClick(430, 354, $RageSpell, $iDelayTrain7, "#0290")
+								GemClick(430, 354+28, $RageSpell, $iDelayTrain7, "#0290")
 								SetLog("Created " & $RageSpell & " Rage Spell(s)", $COLOR_BLUE)
 							EndIf
 						EndIf
@@ -124,15 +124,15 @@ Func BrewSpells()
 					If _sleep($iDelayTrain2) Then Return
 					If $TempPoisonSpell = 0 Then
 						If _sleep($iDelayTrain2) Then Return
-						If _ColorCheck(_GetPixelColor(239, 375, True), Hex(0xFFFFFF, 6), 20) = False Then
+						If _ColorCheck(_GetPixelColor(239, 375+28, True), Hex(0xFFFFFF, 6), 20) = False Then
 							setlog("Not enough Elixir to create Spell", $COLOR_RED)
 							Return
-						ElseIf _ColorCheck(_GetPixelColor(200, 346, True), Hex(0x414141, 6), 20) Then
+						ElseIf _ColorCheck(_GetPixelColor(200, 346+28, True), Hex(0x414141, 6), 20) Then
 							setlog("Spell Factory Full", $COLOR_RED)
 							Return
 						Else
 							If $PoisonSpell > 0 Then
-								GemClick(252, 354, $PoisonSpell, $iDelayTrain7, "#0290")
+								GemClick(252, 354+28, $PoisonSpell, $iDelayTrain7, "#0290")
 								SetLog("Created " & $PoisonSpell & " Poison Spell(s)", $COLOR_BLUE)
 							EndIf
 						EndIf
@@ -148,15 +148,15 @@ Func BrewSpells()
 					If _sleep($iDelayTrain2) Then Return
 					If $TempHasteSpell = 0 Then
 						If _sleep($iDelayTrain2) Then Return
-						If _ColorCheck(_GetPixelColor(453, 375, True), Hex(0xFFFFFF, 6), 20) = False Then
+						If _ColorCheck(_GetPixelColor(453, 375+28, True), Hex(0xFFFFFF, 6), 20) = False Then
 							setlog("Not enough Elixir to create Spell", $COLOR_RED)
 							Return
-						ElseIf _ColorCheck(_GetPixelColor(200, 346, True), Hex(0x414141, 6), 20) Then
+						ElseIf _ColorCheck(_GetPixelColor(200, 346+28, True), Hex(0x414141, 6), 20) Then
 							setlog("Spell Factory Full", $COLOR_RED)
 							Return
 						Else
 							If $HasteSpell > 0 Then
-								GemClick(430, 354, $HasteSpell, $iDelayTrain7, "#0290")
+								GemClick(430, 354+28, $HasteSpell, $iDelayTrain7, "#0290")
 								SetLog("Created " & $HasteSpell & " Haste Spell(s)", $COLOR_BLUE)
 							EndIf
 						EndIf

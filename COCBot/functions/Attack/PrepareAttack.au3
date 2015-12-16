@@ -21,7 +21,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 	EndIf
 
 	_WinAPI_DeleteObject($hBitmapFirst)
-	$hBitmapFirst = _CaptureRegion2(0, 571, 859, 671)
+	$hBitmapFirst = _CaptureRegion2(0, 571+60, 859, 671+60) ;jp
 	If _Sleep($iDelayPrepareAttack1) Then Return
 	Local $result = DllCall($pFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
 	If $debugSetlog = 1 Then Setlog("DLL Troopsbar list: " & $result[0], $COLOR_PURPLE)
