@@ -2,6 +2,8 @@
 ; Name ..........: Screen Position Variables
 ; Description ...: Global variables for commonly used X|Y positions, screen check color, and tolerance
 ; Syntax ........: $aXXXXX[Y]  : XXXX is name of point or item being checked, Y = 2 for position only, or 4 when color/tolerance value included
+; Syntax ........: $bXXXXX[4]  : XXXX is name of point or item being checked, X_Top_Left, Y_Top_Left, X_Bottom_Right, Y_Bottom_Right
+; Syntax ........: $cXXXXX[4]  : XXXX is name of point or item being checked, X_Top_Left, Y_Top_Left, Width, Lebgth
 ; Author ........: Code Gorilla #1
 ; Modified ......:
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
@@ -11,9 +13,9 @@
 ;                                 x    y     color  tolerance
 Global $aIsMain[4]           = [284,  28, 0x41B1CD, 20] ; Main Screen, Builder Left Eye
 Global $aIsMainGrayed[4]     = [284,  28, 0x215B69, 15] ; Main Screen Grayed, Builder Left Eye
-Global $aTopLeftClient[4]    = [  1,   1, 0x000000,  0] ; TopLeftClient: Tolerance not needed
+Global $aTopLeftClient[4]    = [  1,   1, 0x000000,  20] ; TopLeftClient: Tolerance not needed		//changed tolerance from 0 to 20
 Global $aTopMiddleClient[4]  = [475,   1, 0x000000,  0] ; TopMiddleClient: Tolerance not needed
-Global $aTopRightClient[4]   = [850,   1, 0x000000,  0] ; TopRightClient: Tolerance not needed
+Global $aTopRightClient[4]   = [850,   1, 0x000000,  20] ; TopRightClient: Tolerance not needed		//changed tolerance from 0 to 20
 Global $aBottomRightClient[4]= [850, 675, 0x000000,  0] ; BottomRightClient: Tolerance not needed
 Global $aIsInactive[4]       = [457, 300, 0x33B5E5, 10] ; COC message : 'Anyone there?'
 Global $aReloadButton[2]     = [416, 399]               ; Reload Coc Button after Out of Sync
@@ -36,6 +38,8 @@ Global $aArmyCampSize[2]     = [586, 193]               ; Training Window, Overv
 Global $aIsCampNotFull[4] 	 = [149, 150, 0x761714, 20] ; Training Window, Overview screen Red pixel in Exclamation mark with camp is not full
 Global $aIsCampFull[4]  	 = [151, 154, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
 Global $aBarrackFull[4] 	 = [392, 154, 0xE84D50, 20] ; Training Window, Barracks Screen, Red pixel in Exclamation mark with Barrack is full
+Global $aBarrackTrain[4] 	 = [585, 205, 0xD0D0C0, 20] ; Training Window, Barracks Screen, Gray arrow when Barrack is NOT training  //new in 4.2.4
+Global $aBarrack1Troop[2] 	 = [550, 195] 				; Training Window, Barracks Screen, Red Minus to delete first training troop  //new in 4.2.4
 Global $aBuildersDigits[2]   = [324,  21]               ; Main Screen, Free/Total Builders
 Global $aLanguageCheck1[4]   = [326,   8, 0xF9FAF9, 20] ; Main Screen Test Language for word 'Builders'
 Global $aLanguageCheck2[4]   = [329,   9, 0x060706, 20] ; Main Screen Test Language for word 'Builders'
@@ -103,7 +107,7 @@ Global $TrainWitc[4]        = [ 646, 324, 0x3D3C65,     20] ;  Fix V4.0.1?
 
 Global $TrainLava[4]        = [ 220, 459, 0x4F4F40,     20] ;  Done
 
-Global $NextBtn[4]          = [ 780, 546, 0xD34300,     20] ;  Next Button
+Global $NextBtn[4]          = [ 815, 500, 0xF0AC28,     40] ;  Next Button used to be [ 780, 546, 0xD34300,     20] in 4.2.3
 ; Someone asking troops : Color 0xD0E978 in x = 121
 
 Global $aRequestTroopsAO[6]	= [705, 290, 0xD2EC80, 0x407D06, 0xD8D8D8, 20] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
@@ -160,3 +164,10 @@ Global Const $aRtnHomeCheck1[4]      = [ 363, 548, 0x78C11C, 20]
 Global Const $aRtnHomeCheck2[4]      = [ 497, 548, 0x79C326, 20]
 Global Const $aRtnHomeCheck3[4]      = [ 284,  28, 0x41B1CD, 20]
 
+; ===============================================================================================================================
+; Syntax ........: $bXXXXX[4]  : XXXX is name of point or item being checked, X_Top_Left, Y_Top_Left, X_Bottom_Right, Y_Bottom_Right
+Global $bArmyOverviewTroops[4]           = [128, 165, 738, 240] ; Location of troops trained in the army overview window //used to be 140,165,705,220 in ver 4.2.3
+
+; ===============================================================================================================================
+; Syntax ........: $cXXXXX[4]  : XXXX is name of point or item being checked, X_Top_Left, Y_Top_Left, Width, Lebgth
+Global $cArmyOverviewCampSize[4]           = [192, 144, 66, 14] ; Location of troops trained in the army overview window /used to be 212,144,66,14 in ver 4.2.3

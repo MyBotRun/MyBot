@@ -14,13 +14,14 @@
 ; ===============================================================================================================================
 ;
 Func CheckZoomOut()
-					 _CaptureRegion(0, 0, 860, 2)
-					 If _GetPixelColor(1, 1) <> Hex(0x000000, 6) And _GetPixelColor(850, 1) <> Hex(0x000000, 6) Then
-						   SetLog("Not Zoomed Out! Exiting to MainScreen...", $COLOR_RED)
-						   checkMainScreen() ;exit battle screen
-						   $Restart = True
-						   Return False
-						Else
-						   Return True
-						EndIf
+	_CaptureRegion(0, 0, 860, 2)
+	;If _GetPixelColor(1, 1) <> Hex(0x000000, 6) And _GetPixelColor(850, 1) <> Hex(0x000000, 6) Then ;//old line from 4.2.3
+	If _CheckPixel($aTopLeftClient, $bNoCapturePixel) = False And _CheckPixel($aTopRightClient, $bNoCapturePixel) = False Then
+		SetLog("Not Zoomed Out! Exiting to MainScreen...", $COLOR_RED)
+		checkMainScreen() ;exit battle screen
+		$Restart = True
+		Return False
+	Else
+		Return True
+	EndIf
 EndFunc

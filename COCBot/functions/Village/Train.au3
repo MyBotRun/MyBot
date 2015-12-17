@@ -394,9 +394,11 @@ Func Train()
 			If $FirstStart Then
 				If _Sleep($iDelayTrain2) Then Return
 				$icount = 0
-				While Not _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xE8E8DE, 6), 20) ; while not disappears  green arrow
+				;While Not _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xE8E8DE, 6), 20) //old line from 4.2.3
+				While Not _CheckPixel($aBarrackTrain, $bCapturePixel) ; while not disappears  green arrow
 					If Not (IsTrainPage()) Then Return
-					Click(496, 197, 10, 0, "#0273") ; Remove Troops in training
+					;Click(496, 197, 10, 0, "#0273")  //old line from 4.2.3
+					Click($aBarrack1Troop[0], $aBarrack1Troop[1], 10, 0, "#0284") ; Remove Troops in training
 					$icount += 1
 					If $icount = 100 Then ExitLoop
 				WEnd
@@ -456,9 +458,11 @@ Func Train()
 				;CLICK REMOVE TROOPS
 				If _Sleep($iDelayTrain2) Then Return
 				$icount = 0
-				While Not _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xE8E8DE, 6), 20) ; while not disappears  green arrow
+				;While Not _ColorCheck(_GetPixelColor(585, 205, True), Hex(0xD0D0C0, 6), 20) //old line from 4.2.3
+				While Not _CheckPixel($aBarrackTrain, $bCapturePixel) ; while not disappears  green arrow //used to be 565, 205, 0xE8E8DE in 4.2.3
 					If Not (IsTrainPage()) Then Return ;exit if no train page
-					Click(496, 197, 10, 0, "#0284") ; Remove Troops in training
+					;Click(496, 197, 10, 0, "#0273")  //old line from 4.2.3
+					Click($aBarrack1Troop[0], $aBarrack1Troop[1], 10, 0, "#0284") ; Remove Troops in training
 					$icount += 1
 					If $icount = 100 Then ExitLoop
 				WEnd
@@ -580,7 +584,8 @@ Func Train()
 			If $icmbTroopComp <> 8 And $fullarmy = False And $FirstStart = False Then
 
 				; Checks if there is Troops being trained in this barrack
-				If _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xa8d070, 6), 20) = False Then ;if no green arrow
+				;If _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xa8d070, 6), 20) = False Then // old line from 4.2.3
+				If _CheckPixel($aBarrackTrain, $bCapturePixel) = True Then ;if no green arrow
 					$BarrackStatus[$brrNum - 1] = False ; No troop is being trained in this barrack
 				Else
 					$BarrackStatus[$brrNum - 1] = True ; Troops are being trained in this barrack
@@ -626,8 +631,10 @@ Func Train()
 							$brrNum += 1
 							If _Sleep($iDelayTrain1) Then Return
 							$icount = 0
-							While _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xa8d070, 6), 20) ; while green arrow is there, delete
-								Click(496, 197, 5, 0, "#0285") ; Remove Troops in training
+							;While _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xa8d070, 6), 20) old line from 4.2.3
+							While Not _CheckPixel($aBarrackTrain, $bCapturePixel) ; while green arrow is there, delete
+								;Click(496, 197, 5, 0, "#0285") //old line from 4.2.3
+								Click($aBarrack1Troop[0], $aBarrack1Troop[1], 5, 0, "#0284") ; Remove Troops in training
 								$icount += 1
 								If $icount = 100 Then ExitLoop
 							WEnd
@@ -684,9 +691,11 @@ Func Train()
 			EndIf
 			If $fullarmy Or $FirstStart Then ; Delete Troops That is being trained
 				$icount = 0
-				While Not _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xE8E8DE, 6), 20) ; while not disappears  green arrow
+				;While Not _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xE8E8DE, 6), 20) //old line from 4.2.3
+				While Not _CheckPixel($aBarrackTrain, $bCapturePixel) ; while not disappears  green arrow
 					If Not (IsTrainPage()) Then Return ;exit if no train page
-					Click(496, 197, 10, 0, "#0287") ; Remove Troops in training
+					;Click(496, 197, 10, 0, "#0287") //old line from 4.2.3
+					Click($aBarrack1Troop[0], $aBarrack1Troop[1], 10, 0, "#0284") ; Remove Troops in training
 					$icount += 1
 					If $icount = 100 Then ExitLoop
 				WEnd
@@ -798,7 +807,8 @@ Func Train()
 			If $icmbTroopComp <> 8 And $fullarmy = False And $FirstStart = False Then
 
 				; Checks if there is Troops being trained in this Dark barrack
-				If _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xa8d070, 6), 20) = False Then ;if no green arrow
+				;If _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xa8d070, 6), 20) = False Then //old line from 4.2.3
+				If _CheckPixel($aBarrackTrain, $bCapturePixel) = True Then ;if no green arrow
 					$BarrackDarkStatus[$brrDarkNum - 1] = False ; No troop is being trained in this Dark barrack
 				Else
 					$BarrackDarkStatus[$brrDarkNum - 1] = True ; Troops are being trained in this Dark barrack
@@ -825,8 +835,10 @@ Func Train()
 						$i += 1
 						If _Sleep($iDelayTrain1) Then ExitLoop
 						$icount = 0
-						While _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xa8d070, 6), 20) ; While Green Arrow is there, delete
-							Click(496, 197, 5, 0, "#0288") ; Remove Troops in training
+						;While _ColorCheck(_GetPixelColor(565, 205, True), Hex(0xa8d070, 6), 20) //old line from 4.2.3
+						While Not _CheckPixel($aBarrackTrain, $bCapturePixel) ; While Green Arrow is there, delete
+							;Click(496, 197, 5, 0, "#0288") //old line from 4.2.3
+							Click($aBarrack1Troop[0], $aBarrack1Troop[1], 5, 0, "#0284") ; Remove Troops in training
 							$icount += 1
 							If $icount = 100 Then ExitLoop
 						WEnd
