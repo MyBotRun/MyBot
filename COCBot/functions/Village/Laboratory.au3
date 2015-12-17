@@ -233,13 +233,13 @@ Func LabUpgrade()
 
 EndFunc   ;==>Laboratory
 
-Func DebugRegionSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720)
+Func DebugRegionSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT)
 
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
 	SetLog("Taking debug snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
 	Local $Date = @MDAY & "." & @MON & "." & @YEAR
 	Local $Time = @HOUR & "." & @MIN & "." & @SEC
-	If $iLeft <> 0 And $iTop <> 0 And $iRight <> 860 And $iBottom <> 720 Then
+	If $iLeft <> 0 And $iTop <> 0 And $iRight <> $DEFAULT_WIDTH And $iBottom <> $DEFAULT_HEIGHT Then
 		Local $sName = $sTxtName & "_Left_" & $iLeft & "_Top_" & $iTop & "_Right_" & $iRight & "_Bottom_" & $iBottom & "_"
 	Else
 		$sName = $sTxtName

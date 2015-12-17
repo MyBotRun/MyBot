@@ -16,7 +16,8 @@
 Func MakeScreenshot($TargetDir, $type = "jpg")
 
 	If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
-		_CaptureRegionScreenshot(0, 0, 860, 675)
+		;GM _CaptureRegionScreenshot(0, 0, 860, 675)
+		_CaptureRegionScreenshot(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT-50)
 		Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($hBitmapScreenshot) ; Get graphics content from bitmap image
 		Local $hBrush = _GDIPlus_BrushCreateSolid(0xFF000029) ;create a brush AARRGGBB (using 0x000029 = Dark Blue)
 		If $ichkScreenshotHideName = 1 Then

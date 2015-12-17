@@ -106,7 +106,7 @@ Func getArmyTroopKind($x_start, $y_start);  -> Gets kind of troop on army camp o
 EndFunc   ;==>getArmyTroopKind
 
 Func getArmyCampCap($x_start, $y_start);  -> Gets army camp capacity --> train.au3
-	Return getOcrAndCapture("coc-army", $x_start, $y_start, 66, 14, True)
+	Return getOcrAndCapture("coc-army", $x_start, $y_start, $cArmyOverviewCampSize[2], $cArmyOverviewCampSize[3], True) ; changed from 66, 14 to global var
 EndFunc   ;==>getArmyCampCap
 
 Func getBarracksTroopQuantity($x_start, $y_start);  -> Gets quantity of troops in training --> train.au3

@@ -31,14 +31,14 @@ Func checkArmyCamp()
 	If _Sleep($iDelaycheckArmyCamp1) Then Return
 
 	$iTried = 0 ; reset loop safety exit counter
-	$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+	$sArmyInfo = getArmyCampCap($cArmyOverviewCampSize[0], $cArmyOverviewCampSize[1]) ; OCR read army trained and total //used to be 212,144 in ver 4.2.3
 	If $debugSetlog = 1 Then Setlog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
 
 	While $iTried < 100 ; 30 - 40 sec
 
 		$iTried += 1
 		If _Sleep($iDelaycheckArmyCamp5) Then Return ; Wait 250ms before reading again
-		$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+		$sArmyInfo = getArmyCampCap($cArmyOverviewCampSize[0], $cArmyOverviewCampSize[1]) ; OCR read army trained and total //used to be 212,144 in ver 4.2.3
 		If $debugSetlog = 1 Then Setlog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
 		If StringInStr($sArmyInfo, "#", 0, 1) < 2 Then ContinueLoop ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
 
@@ -94,7 +94,7 @@ Func checkArmyCamp()
 	EndIf
 
 	_WinAPI_DeleteObject($hBitmapFirst)
-	Local $hBitmapFirst = _CaptureRegion2(140, 165, 705, 220)
+	Local $hBitmapFirst = _CaptureRegion2($bArmyOverviewTroops[0], $bArmyOverviewTroops[1], $bArmyOverviewTroops[2], $bArmyOverviewTroops[3]) ;capture troops trained in the army overview window
 	If $debugSetlog = 1 Then SetLog("$hBitmapFirst made", $COLOR_PURPLE)
 	If _Sleep($iDelaycheckArmyCamp5) Then Return
 	If $debugSetlog = 1 Then SetLog("Calling MBRfunctions.dll/searchIdentifyTroopTrained ", $COLOR_PURPLE)
