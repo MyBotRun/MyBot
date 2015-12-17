@@ -1,6 +1,6 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: CompareResources
-; Description ...: Compaires Resources while searching for a village to attack
+; Description ...: Compares Resources while searching for a village to attack
 ; Syntax ........: CompareResources()
 ; Parameters ....:
 ; Return values .: True if compaired resources match the search conditions, False if not

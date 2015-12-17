@@ -26,3 +26,20 @@ Func DebugImageSave($TxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = $DEFA
 	If _Sleep($iDelayDebugImageSave1) Then Return
 
 EndFunc   ;==>DebugImageSave
+
+
+Func DebugImageSaveWithZoom($TxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT)
+	; jp zoom in a little to get a better snapshot
+	$Result0 = ControlFocus($Title, "","")
+	$Result1 = ControlSend($Title, "", "", "{UP}")
+	If _Sleep($iDelayZoomOut2) Then Return
+
+	DebugImageSave($TxtName&"Zoom_", $iLeft, $iTop, $iRight, $iBottom)
+
+	For $i = 1 To 3
+		$Result0 = ControlFocus($Title, "","")
+		$Result1 = ControlSend($Title, "", "", "{DOWN}")
+		If _Sleep($iDelayZoomOut2) Then Return
+	Next
+	DebugImageSave($TxtName, $iLeft, $iTop, $iRight, $iBottom)
+EndFunc   ;==>DebugImageSave
