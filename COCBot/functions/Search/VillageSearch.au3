@@ -180,22 +180,9 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			SetLog(_PadStringCenter(" Dead Base Found! ", 50, "~"), $COLOR_GREEN)
 			$iMatchMode = $DB
 			If $debugDeadBaseImage = 1 Then
-				; jp zoom in a little to get a better snapshot
-				$Result0 = ControlFocus($Title, "","")
-				$Result1 = ControlSend($Title, "", "", "{UP}")
-				If _Sleep($iDelayZoomOut2) Then Return
 
 				_CaptureRegion()
-				_GDIPlus_ImageSaveToFile($hBitmap, @ScriptDir & "\Zombies\" & $Date & " at " & $Time & "_zoom.jpg")
-				_WinAPI_DeleteObject($hBitmap)
-
-				For $i = 1 To 3
-					$Result0 = ControlFocus($Title, "","")
-					$Result1 = ControlSend($Title, "", "", "{DOWN}")
-					If _Sleep($iDelayZoomOut2) Then Return
-				Next
-				_CaptureRegion()
-				_GDIPlus_ImageSaveToFile($hBitmap, @ScriptDir & "\Zombies\" & $Date & " at " & $Time & ".jpg")
+				_GDIPlus_ImageSaveToFile($hBitmap, @ScriptDir & "\Zombies\" & $Date & " at " & $Time & ".png")
 				_WinAPI_DeleteObject($hBitmap)
 			EndIf
 			ExitLoop
@@ -226,22 +213,8 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		If $match[$DB] And Not $dbBase Then
 			$noMatchTxt &= ", Not a " & $sModeText[$DB]
 			If $debugDeadBaseImage = 1 Then
-				; jp zoom in a little to get a better snapshot
-				$Result0 = ControlFocus($Title, "","")
-				$Result1 = ControlSend($Title, "", "", "{UP}")
-				If _Sleep($iDelayZoomOut2) Then Return
-
 				_CaptureRegion()
-				_GDIPlus_ImageSaveToFile($hBitmap, @ScriptDir & "\SkippedZombies\" & $Date & " at " & $Time & "_zoom.jpg")
-				_WinAPI_DeleteObject($hBitmap)
-
-				For $i = 1 To 3
-					$Result0 = ControlFocus($Title, "","")
-					$Result1 = ControlSend($Title, "", "", "{DOWN}")
-					If _Sleep($iDelayZoomOut2) Then Return
-				Next
-				_CaptureRegion()
-				_GDIPlus_ImageSaveToFile($hBitmap, @ScriptDir & "\SkippedZombies\" & $Date & " at " & $Time & ".jpg")
+				_GDIPlus_ImageSaveToFile($hBitmap, @ScriptDir & "\SkippedZombies\" & $Date & " at " & $Time & ".png")
 				_WinAPI_DeleteObject($hBitmap)
 			EndIf
 		ElseIf $match[$LB] And $dbBase Then

@@ -22,6 +22,7 @@ Func checkDeadBase()
 	;	If _ColorCheck(_GetPixelColor(27, 29), Hex(0x5C5E60, 6), 20) And $NoLeague < 3 And $SearchCount >= 3 Then
 	;	   Return True ; Check if get 3x village which no league, its a false dead base because reset league features in CoC
 	;   Else
+	if ZombieSearch2() Then Return True
 	Return ZombieSearch() ; just so it compiles
 	;    EndIf
 EndFunc   ;==>checkDeadBase
@@ -95,8 +96,43 @@ $E[3][10] = @ScriptDir & "\images\ELIX4\E12F9.bmp"
 ;Returns True if it is, returns false if it is not a dead base
 ;--------------------------------------------------------------------------------------------------------------
 
-Func ZombieSearch()
+Func ZombieSearch2()
 	_CaptureRegion()
+
+	;jp testing
+	Local $location[2]
+	$ZombieCount = 0
+
+	Local $hSearch = FileFindFirstFile(@ScriptDir & "\images\Elix\*.bmp")
+	If $hSearch = -1 Then
+		SetLog("No files found: "& @ScriptDir & "\images\Elix\*.bmp", $COLOR_PURPLE)
+		Return False
+	EndIf
+	SetLog("FileFindFirstFile OK", $COLOR_PURPLE)
+
+    While 1
+        $sFileName = FileFindNextFile($hSearch)
+        ; If there is no more file matching the search.
+        If @error Then ExitLoop
+		If $debugSetlog = 1 Then SetLog("Checking zombie "& $sFileName, $COLOR_PURPLE)
+
+		If FileExists($sFileName) Then
+			$found = _ImageSearch($sFileName, 1, $location[0], $location[1], 10)
+			if $found = 1 And IsInsideDiamondXY($location[0], $location[1]) Then
+				If $debugSetlog = 1 Then SetLog("Zombie at "&$location[0]&","&$location[1]&" with "& $sFileName, $COLOR_PURPLE)
+				$ZombieCount += 1
+				ExitLoop
+			EndIf
+		EndIf
+	WEnd
+
+	If $ZombieCount > 0 Then
+		Return True
+	EndIf
+	Return False
+EndFunc   ;==>ZombieSearch2
+
+Func ZombieSearch()
 
 ;~ 	If $iTownHallLevel >= 9 Then
 ;~ 		$ZombieFileSets = 4 ;Variant Image to use organized as per Folder
@@ -107,6 +143,7 @@ Func ZombieSearch()
 ;~ 	EndIf
 
 	; If $debugSetlog = 1 Then SetLog("$ZSExclude :" & $ZSExclude, $COLOR_PURPLE)
+	_CaptureRegion()
 
 	$ZombieCount = 0
 	$ZC = 0
@@ -116,6 +153,7 @@ Func ZombieSearch()
 				$Area[$s][$p][0] = _ImageSearch($E[$s][$p], 1, $IS_x[$p][0], $IS_y[$p][0], $Tolerance[$s][$p] + $AdjustTolerance)
 				If $Area[$s][$p][0] > 0 Then
 					$ZC = 1
+					If $debugSetlog = 1 Then SetLog("Zombie at "&$IS_x[$p][0]&","&$IS_y[$p][0]&" with "& $E[$s][$p], $COLOR_PURPLE)
 					ExitLoop (2)
 				EndIf
 			Else

@@ -56,7 +56,7 @@ Func ReArm()
 		EndIf
 	EndIf
 
-	If Number($iTownHallLevel) > 8 Then
+	;If Number($iTownHallLevel) > 8 Then ;jp FIXME - uncomment after fixing TH detection
 		;Xbow
 		Local $offColors[3][3] = [[0x8F4B9E, 19, 20], [0xFB5CF4, 70, 7], [0xF0F1EC, 77, 0]]; xbow, elixir, edge
 		Local $XbowPixel = _MultiPixelSearch2(430, $y, 670, 600+60, 1, 1, Hex(0xF4F7F0, 6), $offColors, 30);jp ; button start
@@ -79,9 +79,9 @@ Func ReArm()
 			EndIf
 		EndIf
 
-	EndIf
+	;EndIf
 
-	If Number($iTownHallLevel) > 9 Then
+	;If Number($iTownHallLevel) > 9 Then ;jp FIXME - uncomment after fixing TH detection
 
 		;Inferno
 		Local $offColors[3][3] = [[0x8D7477, 19, 20], [0x574460, 70, 7], [0xF0F1EC, 77, 0]]; inferno, dark, edge
@@ -105,7 +105,7 @@ Func ReArm()
 			EndIf
 		EndIf
 
-	EndIf
+	;EndIf
 
 	ClickP($aAway, 1, 0, "#0234") ; Click away
 	If _Sleep($iDelayReArm5) Then Return

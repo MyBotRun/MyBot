@@ -38,36 +38,16 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		SetLog("Village must take a break, wait ...", $COLOR_RED)
 		PushMsg("TakeBreak")
 		If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
-		If _ImageSearch($fnReload, 0, $x, $y, 80) Then
-			if $debugSetlog = 1 Then SetLog("Found reload at "&$x&"x"&$y, $COLOR_PURPLE);
-			PureClick($x, $y, 1, 0, "#0128")
-		Else
-			PureClickP($aReloadButton, 1, 0, "#0128")
-		EndIf
+		;jp click anywhere to continue
+		PureClickP($aReloadButton, 1, 0, "#0128")
 		Return True
 	EndIf
-	If _ImageSearch($fnBreakEnding, 0, $x, $y, 80) Then
-		SetLog("Personal break ending, wait ...", $COLOR_RED)
+	If _ImageSearch($fnConnectionError, 0, $x, $y, 80) Then
+		SetLog("Connection Error, wait ...", $COLOR_RED)
 		;PushMsg("BreakEnding")
-		If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
-		If _ImageSearch($fnReload, 0, $x, $y, 80) Then
-			if $debugSetlog = 1 Then SetLog("Found reload at "&$x&"x"&$y, $COLOR_PURPLE);
-			PureClick($x, $y, 1, 0, "#0128")
-		Else
-			PureClickP($aReloadButton, 1, 0, "#0128")
-		EndIf
-		Return True
-	EndIf
-	If _ImageSearch($fnBreakExtended, 0, $x, $y, 80) Then
-		SetLog("Personal break extended, wait ...", $COLOR_RED)
-		;PushMsg("BreakEnding")
-		If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
-		If _ImageSearch($fnReload, 0, $x, $y, 80) Then
-			if $debugSetlog = 1 Then SetLog("Found reload at "&$x&"x"&$y, $COLOR_PURPLE);
-			PureClick($x, $y, 1, 0, "#0128")
-		Else
-			PureClickP($aReloadButton, 1, 0, "#0128")
-		EndIf
+		If _SleepStatus($iDelaycheckObstacles3) Then Return ; 5 seconds
+		;jp click anywhere to continue
+		PureClickP($aReloadButton, 1, 0, "#0128")
 		Return True
 	EndIf
 	;FIXME don't hard code coordinates

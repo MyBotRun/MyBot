@@ -36,7 +36,7 @@ Func DebugImageSaveWithZoom($TxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight
 
 	DebugImageSave($TxtName&"Zoom_", $iLeft, $iTop, $iRight, $iBottom)
 
-	For $i = 1 To 3
+	For $i = 1 To 4
 		$Result0 = ControlFocus($Title, "","")
 		$Result1 = ControlSend($Title, "", "", "{DOWN}")
 		If _Sleep($iDelayZoomOut2) Then Return

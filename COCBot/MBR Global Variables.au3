@@ -45,8 +45,6 @@
 
 ;debugging
 Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugDeadBaseImage = 0
-$debugSetlog = 1 ;jp
-$debugGetPixel = 0 ;jp
 
 ;Debug Click
 Global $debugClick = 0 ;jp
@@ -429,8 +427,8 @@ Global $collectorPos[17][2] ;Positions of each collectors
 Global $D[4] = [99, 111, 109, 47]
 
 Global $fnBreak = @ScriptDir & "\images\break.bmp" ;jp
-Global $fnBreakExtended = @ScriptDir & "\images\breakextended.bmp" ;jp
-Global $fnBreakEnding = @ScriptDir & "\images\breakending.bmp" ;jp
+;jp connection error or connection lost
+Global $fnConnectionError = @ScriptDir & "\images\connection.bmp" ;jp
 Global $fnReload = @ScriptDir & "\images\reload.bmp" ;jp
 Global $device = @ScriptDir & "\images\device.bmp"
 Global $CocStopped = @ScriptDir & "\images\CocStopped.bmp"
