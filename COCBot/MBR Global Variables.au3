@@ -45,6 +45,7 @@
 
 ;debugging
 Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugDeadBaseImage = 0
+Global $debugGetPixel = 0 ;jp
 
 ;Debug Click
 Global $debugClick = 0 ;jp
