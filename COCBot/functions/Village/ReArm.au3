@@ -58,7 +58,8 @@ Func ReArm()
 
 	;If Number($iTownHallLevel) > 8 Then ;jp FIXME - uncomment after fixing TH detection
 		;Xbow
-		Local $offColors[3][3] = [[0x8F4B9E, 19, 20], [0xFB5CF4, 70, 7], [0xF0F1EC, 77, 0]]; xbow, elixir, edge
+		;jp Local $offColors[3][3] = [[0x8F4B9E, 19, 20], [0xFB5CF4, 70, 7], [0xF0F1EC, 77, 0]]; xbow, elixir, edge
+		Local $offColors[3][3] = [[0xB838C8, 19, 20], [0xE0B0E2, 70, 7], [0xE0E1CC, 77, 0]];jp ; xbow, elixir, edge
 		Local $XbowPixel = _MultiPixelSearch2(430, $y, 670, 600+60, 1, 1, Hex(0xF4F7F0, 6), $offColors, 30);jp ; button start
 		If IsArray($XbowPixel) Then
 			Click($XbowPixel[0] + 20, $XbowPixel[1] + 20, 1, 0, "#0228") ; Click RearmButton

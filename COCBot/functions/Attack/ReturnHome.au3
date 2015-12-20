@@ -102,7 +102,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			If $counter > 40 Then ExitLoop
 		WEnd
 		If _Sleep($iDelayReturnHome3) Then Return ; wait for all report details
-		_CaptureRegion(0, 0, 860, 675)
+		_CaptureRegion(0, 0, 860, 675+60) ;jp
 		AttackReport()
 	EndIf
 
@@ -110,7 +110,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		SetLog("Taking snapshot of your loot", $COLOR_GREEN)
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 		Local $Time = @HOUR & "." & @MIN
-		_CaptureRegion(0, 0, 860, 675)
+		_CaptureRegion(0, 0, 860, 675+60) ;jp
 		$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
 		; screenshot filename according with new options around filenames
 		If $ScreenshotLootInfo = 1 Then

@@ -100,10 +100,12 @@ Global $TrainGiant[4]       = [ 442, 310+30, 0xFFCB8A,     40] ;jp ;  Done
 Global $TrainGobl[4]        = [ 546, 310+30, 0xA8F468,     40] ;jp ;  Done
 Global $TrainWall[4]        = [ 646, 310+30, 0x78D4F0,     40] ;jp ;  Done
 
-Global $TrainBall[4]        = [ 220, 459+30, 0x383831,     20] ;jp ;  Done
+;jp Global $TrainBall[4]        = [ 220, 459+30, 0x383831,     20] ;jp ;  Done
+Global $TrainBall[4]        = [ 220, 459+30, 0x1C150C,     20] ;jp ;  Done
 Global $TrainWiza[4]        = [ 319, 447+30, 0x000000,     40] ;jp ;  Done
 Global $TrainHeal[4]        = [ 442, 459+30, 0xD77E57,     20] ;jp ;  Done
-Global $TrainDrag[4]        = [ 546, 459+30, 0xBA1618,     20] ;jp ;  Done
+;jp Global $TrainDrag[4]        = [ 546, 459+30, 0xBA1618,     20] ;jp ;  Done
+Global $TrainDrag[4]        = [ 546, 459+30, 0xD04428,     20] ;jp ;  Done
 Global $TrainPekk[4]        = [ 646, 459+30, 0x406281,     20] ;jp ;  Done
 
 Global $TrainMini[4]        = [ 220, 310+30, 0x182340,     20] ;jp ;  Done

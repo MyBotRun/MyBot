@@ -105,21 +105,20 @@ Func ZombieSearch2()
 
 	Local $hSearch = FileFindFirstFile(@ScriptDir & "\images\Elix\*.bmp")
 	If $hSearch = -1 Then
-		SetLog("No files found: "& @ScriptDir & "\images\Elix\*.bmp", $COLOR_PURPLE)
+		If $debugSetlog = 1 Then SetLog("No files found: "& @ScriptDir & "\images\Elix\*.bmp", $COLOR_PURPLE)
 		Return False
 	EndIf
-	SetLog("FileFindFirstFile OK", $COLOR_PURPLE)
 
     While 1
         $sFileName = FileFindNextFile($hSearch)
         ; If there is no more file matching the search.
         If @error Then ExitLoop
-		If $debugSetlog = 1 Then SetLog("Checking zombie "& $sFileName, $COLOR_PURPLE)
+		;If $debugSetlog = 1 Then SetLog("Checking zombie "& @ScriptDir & "\images\Elix\" & $sFileName, $COLOR_PURPLE)
 
 		If FileExists($sFileName) Then
-			$found = _ImageSearch($sFileName, 1, $location[0], $location[1], 10)
-			if $found = 1 And IsInsideDiamondXY($location[0], $location[1]) Then
-				If $debugSetlog = 1 Then SetLog("Zombie at "&$location[0]&","&$location[1]&" with "& $sFileName, $COLOR_PURPLE)
+			$found = _ImageSearch(@ScriptDir & "\images\Elix\" & $sFileName, 1, $location[0], $location[1], 80)
+			if $found And IsInsideDiamondXY($location[0], $location[1]) Then
+				If $debugSetlog = 1 Then SetLog("Zombie at "&$location[0]&","&$location[1]&" with "& @ScriptDir & "\images\Elix\" & $sFileName, $COLOR_PURPLE)
 				$ZombieCount += 1
 				ExitLoop
 			EndIf

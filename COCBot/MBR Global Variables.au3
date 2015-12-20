@@ -44,7 +44,7 @@
 #include <Process.au3>
 
 ;debugging
-Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugDeadBaseImage = 0
+Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 1, $debugDeadBaseImage = 1 ;jp
 Global $debugGetPixel = 0 ;jp
 
 ;Debug Click

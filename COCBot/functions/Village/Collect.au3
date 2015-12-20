@@ -101,12 +101,13 @@ Func CollectItems($fn)
 	Local $count=0
 	While 1
 		If _Sleep($iDelayCollect1) Or $RunState = False Then ExitLoop
-		_CaptureRegion(0, 0, 780) ;jp why 780?
+		_CaptureRegion(0, 0, 780)
+		;_CaptureRegion(70, 54, 780, 600)
 		If _ImageSearch(@ScriptDir & $fn, 1, $collx, $colly, 30) Then
 			;jp prevent clicking the same location continuously
 			If $collx = $collx2 and $colly = $colly2 Then
 				$count += 1
-				if $count > 2 Then ExitLoop
+				if $count > 1 Then ExitLoop
 			EndIf
 			if isInsideDiamondXY($collx, $colly) Then
 				Click($collx, $colly,1,0,"#0330") ;Click resource
