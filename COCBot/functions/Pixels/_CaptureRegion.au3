@@ -1,6 +1,6 @@
 ;Saves a screenshot of the window into memory.
 
-Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720, $ReturnBMP = False)
+Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT, $ReturnBMP = False)
 	_GDIPlus_BitmapDispose($hBitmap)
 	_WinAPI_DeleteObject($hHBitmap)
 
@@ -30,7 +30,7 @@ Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720, $Retur
 	If $ReturnBMP Then Return $hBitmap
 EndFunc   ;==>_CaptureRegion
 
-Func _CaptureRegion2($iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720)
+Func _CaptureRegion2($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT)
 	Local $hHBitmap
 
 	If $ichkBackground = 1 Then
@@ -60,7 +60,7 @@ Func _CaptureRegion2($iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720)
 EndFunc   ;==>_CaptureRegion2
 
 
-Func _CaptureRegionScreenshot($iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720, $ReturnBMP = False)
+Func _CaptureRegionScreenshot($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT, $ReturnBMP = False)
 	_GDIPlus_BitmapDispose($hBitmapScreenshot)
 	_WinAPI_DeleteObject($hHBitmapScreenshot)
 

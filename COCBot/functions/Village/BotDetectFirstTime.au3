@@ -55,6 +55,7 @@ Func BotDetectFirstTime()
 	EndIf
 
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
+
 	Setlog("Finding your Clan Level, wait..")
 	ClanLevel()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return

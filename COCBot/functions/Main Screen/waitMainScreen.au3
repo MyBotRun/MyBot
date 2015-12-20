@@ -18,10 +18,14 @@ Func waitMainScreen() ;Waits for main screen to popup
 	SetLog("Waiting for Main Screen")
 	$iCount = 0
 	For $i = 0 To 105 ;105*2000 = 3.5 Minutes
-		If $debugsetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop
+		If $debugsetlog = 1 Then
+			Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop
+			DebugImageSave("waitMainScreen")
+		EndIf
 		$iCount += 1
 		_CaptureRegion()
 		If _CheckPixel($aIsMain, $bNoCapturepixel) = False Then ;Checks for Main Screen
+			If $debugsetlog = 1 Then Setlog("Main Screen pixel " & _GetPixelColor($aIsMain[0], $aIsMain[1], True) & " <> " & Hex($aIsMain[2],6), $COLOR_PURPLE)
 			If _Sleep($iDelaywaitMainScreen1) Then Return
 			If checkObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
 		Else

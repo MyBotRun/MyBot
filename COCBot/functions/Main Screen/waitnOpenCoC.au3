@@ -23,7 +23,7 @@ Func WaitnOpenCoC($iWaitTime, $bFullRestart = False)
 	If _Sleep($iDelayWaitnOpenCoC500) Then Return
 	WinActivate($HWnD) ; ensure bot has window focus
 	If _Sleep($iDelayWaitnOpenCoC500) Then Return
-	PureClick(126, 700, 2, 500, "#0126") ; click on BS home button twice to clear error and go home.
+	PureClick(126, 700+60, 2, 500, "#0126") ;jp ; click on BS home button twice to clear error and go home.
 	If _Sleep($iDelayWaitnOpenCoC500) Then Return
 	Local $RunApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "RunApp")
 	Run($RunApp & " Android com.supercell.clashofclans com.supercell.clashofclans.GameApp")

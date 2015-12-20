@@ -282,14 +282,14 @@ Func PushMsg($Message, $Source = "")
 				SetLog("Pushbullet: Last Raid Text has been sent!", $COLOR_GREEN)
 			EndIf
 			If $pEnabled = 1 And $pLastRaidImg = 1 Then
-				_CaptureRegion(0, 0, 860, 675)
+				_CaptureRegion(0, 0, 860, 675+60)
 				;create a temporary file to send with pushbullet...
 				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 				Local $Time = @HOUR & "." & @MIN
 				If $ScreenshotLootInfo = 1 Then
-					$AttackFile = $Date & "__" & $Time & " G" & $iGoldLast & " E" & $iElixirLast & " DE" & $iDarkLast & " T" & $iTrophyLast & " S" & StringFormat("%3s", $SearchCount) & ".jpg" ; separator __ is need  to not have conflict with saving other files if $TakeSS = 1 and $chkScreenshotLootInfo = 0
+					$AttackFile = $Date & "__" & $Time & " G" & $iGoldLast & " E" & $iElixirLast & " DE" & $iDarkLast & " T" & $iTrophyLast & " S" & StringFormat("%3s", $SearchCount) & ".png" ; separator __ is need  to not have conflict with saving other files if $TakeSS = 1 and $chkScreenshotLootInfo = 0
 				Else
-					$AttackFile = $Date & "__" & $Time & ".jpg" ; separator __ is need  to not have conflict with saving other files if $TakeSS = 1 and $chkScreenshotLootInfo = 0
+					$AttackFile = $Date & "__" & $Time & ".png" ; separator __ is need  to not have conflict with saving other files if $TakeSS = 1 and $chkScreenshotLootInfo = 0
 				EndIf
 				$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
 				_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirLoots & $AttackFile)
@@ -335,9 +335,9 @@ Func PushMsg($Message, $Source = "")
 		Case "RequestScreenshot"
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(0, 0, 860, 720)
+			_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT)
 			$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
-			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
+			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".png"
 			_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirTemp & $Screnshotfilename)
 			_GDIPlus_ImageDispose($hBitmap_Scaled)
 			_PushFile($Screnshotfilename, "Temp", "image/jpeg", $iOrigPushB & " | Screenshot of your village " & "\n" & $Screnshotfilename)

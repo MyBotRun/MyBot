@@ -31,14 +31,15 @@ Func ClanLevel()
 
 	If $debugSetlog = 1 Then SetLog("Wait until find the Info icon , max 5 seconds", $COLOR_GREEN)
 
-	If WaitforPixel(282, 55, 285, 57, Hex(0x2881c0, 6), 5, 10) Then
+	If WaitforPixel($aClanInfo[0], $aClanInfo[1], $aClanInfo[0]+3, $aClanInfo[1]+2, Hex(0x3088c4, 6), 5, 10) Then ;jp
 		If $debugSetlog = 1 Then SetLog("Click $aClanInfo", $COLOR_GREEN)
 		ClickP($aClanInfo, 1, 0, "#0470") ; click Info
 	Else
+		If $debugSetlog = 1 Then SetLog("Found " & _GetPixelColor($aClanInfo[0], $aClanInfo[1], True) & " at info icon " & $aClanInfo[0] & "," & $aClanInfo[1], $COLOR_GREEN)
 		SetLog("Please join a Clan ...", $COLOR_GREEN)
 		If _ColorCheck(_GetPixelColor($aCloseChat[0], $aCloseChat[1]), Hex($aCloseChat[2], 6), $aCloseChat[3]) Then
 			; Clicks chat thing
-			Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0470")
+			ClickP($aCloseChat, 1, 0, "#0470")
 		EndIf
 		Return
 	EndIf
@@ -48,8 +49,8 @@ Func ClanLevel()
 	If $debugSetlog = 1 Then SetLog("Wait until find the Clan Perk Button, max 5 seconds", $COLOR_GREEN)
 	; $iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation, $maxDelay = 10
 	; Wait until find the Clan Perk Button , max 5 seconds
-	If WaitforPixel(95, 243, 98, 244, Hex(0x7cd8e8, 6), 5, 10) Then
-		$iClanLevel = getOcrClanLevel(87, 101)
+	If WaitforPixel(95, 243+30, 98, 244+30, Hex(0x7cd8e8, 6), 5, 10) Then ;jp
+		$iClanLevel = getOcrClanLevel(87, 101+30) ;jp
 		If Not $iClanLevel = "" Then
 			SetLog("Found Clan Level: " & $iClanLevel, $COLOR_GREEN)
 		Else
@@ -59,7 +60,7 @@ Func ClanLevel()
 	EndIf
 
 	; click red cross to close the Clan Info Window
-	Click(830, 73)
+	Click(830, 73+30) ;jp
 
 	If _Sleep($iDelayDonateCC1) Then Return
 
@@ -69,7 +70,7 @@ Func ClanLevel()
 		If _Sleep(100) Then Return
 		If _ColorCheck(_GetPixelColor($aCloseChat[0], $aCloseChat[1], True), Hex($aCloseChat[2], 6), $aCloseChat[3]) Then
 			; Clicks chat thing
-			Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0470")
+			ClickP($aCloseChat, 1, 0, "#0470")
 			ExitLoop
 		Else
 			If _Sleep(100) Then Return

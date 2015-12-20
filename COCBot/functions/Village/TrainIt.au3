@@ -17,10 +17,13 @@
 Func TrainIt($troopKind, $howMuch = 1, $iSleep = 400)
 	;If $debugSetlog = 1 Then SetLog("Func TrainIt " & $troopKind & " " & $howMuch & " " & $iSleep, $COLOR_PURPLE)
 	Local $bDark = False
+	;;;Local $cTest
 	_CaptureRegion()
 	Local $pos = GetTrainPos($troopKind)
 	If IsArray($pos) Then
+		;;;$cTest = _GetPixelColor($pos[0], $pos[1], $bNoCapturePixel)
 		If _CheckPixel($pos, $bNoCapturePixel) Then
+			;;;Setlog("    Pixel "&$pos[0]&","&$pos[1]&"="&$cTest&" = "&Hex($pos[2],6), $COLOR_RED)
 			Local $GemName = GetGemName($troopKind)
 			If IsArray($GemName) Then
 				Local $FullName = GetFullName($troopKind)
@@ -49,6 +52,8 @@ Func TrainIt($troopKind, $howMuch = 1, $iSleep = 400)
 			Else
 				Setlog("Bad troop Gem position found in TrainIt", $COLOR_RED)
 			EndIf
+		;;;Else
+			;;;Setlog("-+- Pixel "&$pos[0]&","&$pos[1]&"="&$cTest&" <> "&Hex($pos[2],6), $COLOR_RED)
 		EndIf
 	EndIf
 EndFunc   ;==>TrainIt

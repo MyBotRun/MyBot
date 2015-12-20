@@ -117,7 +117,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 	EndIf
 	;End All Barracks Troops
 
-	SelectDropTroop($THtroop) ;Select Troop to be Droped
+	SelectDropTroop($THtroop) ;Select Troop to be Dropped
 
 	If _Sleep($iDelayAttackTHGrid1) Then Return
 

@@ -70,8 +70,8 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	$i = 0 ; Reset Loop counter
 	While 1  ; Look for Okay button on the confirm surrender window before clicking to avoid troop deployment, since button is green (same as grass) have to search for edges of the button
 		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
-		Global $ButtonPixel = _MultiPixelSearch(438, 372, 590, 404, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $debugSetlog = 1 Then Setlog("Confirm Surrender color #1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_PURPLE)
+		Global $ButtonPixel = _MultiPixelSearch(438, 372+30, 590, 404+30, 1, 1, Hex(0x000000, 6), $offColors, 20) ;jp ; first vertical black pixel of Okay
+		If $debugSetlog = 1 Then Setlog("Confirm Surrender color #1: " & _GetPixelColor(441, 374+30, True) & ", #2: " & _GetPixelColor(441 + 144, 374+30, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17+30, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10+30, True), $COLOR_PURPLE)
 		If IsArray($ButtonPixel) Then
 			If $debugSetlog = 1 Then
 				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
@@ -102,7 +102,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			If $counter > 40 Then ExitLoop
 		WEnd
 		If _Sleep($iDelayReturnHome3) Then Return ; wait for all report details
-		_CaptureRegion(0, 0, 860, 675)
+		_CaptureRegion(0, 0, 860, 675+60) ;jp
 		AttackReport()
 	EndIf
 
@@ -110,7 +110,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		SetLog("Taking snapshot of your loot", $COLOR_GREEN)
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 		Local $Time = @HOUR & "." & @MIN
-		_CaptureRegion(0, 0, 860, 675)
+		_CaptureRegion(0, 0, 860, 675+60) ;jp
 		$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
 		; screenshot filename according with new options around filenames
 		If $ScreenshotLootInfo = 1 Then

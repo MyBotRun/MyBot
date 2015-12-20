@@ -44,9 +44,14 @@
 #include <Process.au3>
 
 ;debugging
-Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugDeadBaseImage = 0
+Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 1, $debugDeadBaseImage = 1 ;jp
+Global $debugGetPixel = 0 ;jp
+
+;Debug Click
+Global $debugClick = 0 ;jp
 
 Global Const $COLOR_ORANGE = 0xFF7700
+Global Const $COLOR_CYAN = 0x00FFFF
 Global Const $bCapturePixel = True, $bNoCapturePixel = False
 
 Global $Compiled
@@ -422,7 +427,10 @@ Global $ichkBackground ; Background mode enabled disabled
 Global $collectorPos[17][2] ;Positions of each collectors
 Global $D[4] = [99, 111, 109, 47]
 
-Global $break = @ScriptDir & "\images\break.bmp"
+Global $fnBreak = @ScriptDir & "\images\break.bmp" ;jp
+;jp connection error or connection lost
+Global $fnConnectionError = @ScriptDir & "\images\connection.bmp" ;jp
+Global $fnReload = @ScriptDir & "\images\reload.bmp" ;jp
 Global $device = @ScriptDir & "\images\device.bmp"
 Global $CocStopped = @ScriptDir & "\images\CocStopped.bmp"
 Global $imgDivider = @ScriptDir & "\images\divider.bmp"
@@ -498,10 +506,6 @@ Global $hBitmapFirst
 Global Enum $eVectorLeftTop, $eVectorRightTop, $eVectorLeftBottom, $eVectorRightBottom
 
 
-;Debug CLick
-Global $debugClick = 0
-
-
 Global $DESTOLoc = ""
 
 Global $dropAllOnSide = 1
@@ -537,32 +541,33 @@ Global $aLabPos[2] = [-1, -1]
 Global $iChkLab, $iCmbLaboratory, $iFirstTimeLab
 
 ; Array to hold Laboratory Troop information [LocX of upper left corner of image, LocY of upper left corner of image, PageLocation, Troop "name", Icon # in DLL file]
+;jp
 Global Const $aLabTroops[25][5] = [ _
 		[-1, -1, -1, "None", $eIcnBlank], _
-		[123, 311, 0, "Barbarian", $eIcnBarbarian], _
-		[123, 417, 0, "Archer", $eIcnArcher], _
-		[230, 311, 0, "Giant", $eIcnGiant], _
-		[230, 417, 0, "Goblin", $eIcnGoblin], _
-		[336, 311, 0, "Wall Breaker", $eIcnWallBreaker], _
-		[336, 417, 0, "Balloon", $eIcnBalloon], _
-		[443, 311, 0, "Wizard", $eIcnWizard], _
-		[443, 417, 0, "Healer", $eIcnHealer], _
-		[550, 311, 0, "Dragon", $eIcnDragon], _
-		[550, 417, 0, "Pekka", $eIcnPekka], _
-		[657, 311, 0, "Lightning Spell", $eIcnLightSpell], _
-		[657, 417, 0, "Healing Spell", $eIcnHealSpell], _
-		[108, 311, 1, "Rage Spell", $eIcnRageSpell], _
-		[108, 417, 1, "Jump Spell", $eIcnJumpSpell], _
-		[214, 311, 1, "Freeze Spell", $eIcnFreezeSpell], _
-		[214, 417, 1, "Poison Spell", $eIcnPoisonSpell], _
-		[320, 311, 1, "Earthquake Spell", $eIcnEarthQuakeSpell], _
-		[320, 417, 1, "Haste Spell", $eIcnHasteSpell], _
-		[427, 311, 1, "Minion", $eIcnMinion], _
-		[427, 417, 1, "Hog Rider", $eIcnHogRider], _
-		[534, 311, 1, "Valkyrie", $eIcnValkyrie], _
-		[534, 417, 1, "Golem", $eIcnGolem], _
-		[640, 311, 1, "Witch", $eIcnWitch], _
-		[640, 417, 1, "Lava Hound", $eIcnLavaHound]]
+		[123, 311+40, 0, "Barbarian", $eIcnBarbarian], _
+		[123, 417+40, 0, "Archer", $eIcnArcher], _
+		[230, 311+40, 0, "Giant", $eIcnGiant], _
+		[230, 417+40, 0, "Goblin", $eIcnGoblin], _
+		[336, 311+40, 0, "Wall Breaker", $eIcnWallBreaker], _
+		[336, 417+40, 0, "Balloon", $eIcnBalloon], _
+		[443, 311+40, 0, "Wizard", $eIcnWizard], _
+		[443, 417+40, 0, "Healer", $eIcnHealer], _
+		[550, 311+40, 0, "Dragon", $eIcnDragon], _
+		[550, 417+40, 0, "Pekka", $eIcnPekka], _
+		[657, 311+40, 0, "Lightning Spell", $eIcnLightSpell], _
+		[657, 417+40, 0, "Healing Spell", $eIcnHealSpell], _
+		[108, 311+40, 1, "Rage Spell", $eIcnRageSpell], _
+		[108, 417+40, 1, "Jump Spell", $eIcnJumpSpell], _
+		[214, 311+40, 1, "Freeze Spell", $eIcnFreezeSpell], _
+		[214, 417+40, 1, "Poison Spell", $eIcnPoisonSpell], _
+		[320, 311+40, 1, "Earthquake Spell", $eIcnEarthQuakeSpell], _
+		[320, 417+40, 1, "Haste Spell", $eIcnHasteSpell], _
+		[427, 311+40, 1, "Minion", $eIcnMinion], _
+		[427, 417+40, 1, "Hog Rider", $eIcnHogRider], _
+		[534, 311+40, 1, "Valkyrie", $eIcnValkyrie], _
+		[534, 417+40, 1, "Golem", $eIcnGolem], _
+		[640, 311+40, 1, "Witch", $eIcnWitch], _
+		[640, 417+40, 1, "Lava Hound", $eIcnLavaHound]]
 
 Global Const $aSearchCost[10] = _
 		[10, _
@@ -637,8 +642,8 @@ Global $numFactorySpellAvaiables = 0
 Global $numFactoryDarkSpell = 0
 Global $numFactoryDarkSpellAvaiables = 0
 
-;position of barakcs
-Global $btnpos = [[114, 535], [228, 535], [288, 535], [348, 535], [409, 535], [494, 535], [555, 535], [637, 535], [698, 535]]
+;position of barack buttons on army training dialog
+Global $btnpos = [[114, 535+30], [228, 535+30], [288, 535+30], [348, 535+30], [409, 535+30], [494, 535+30], [555, 535+30], [637, 535+30], [698, 535+30]] ;jp
 ;barracks and spells avaiables
 Global $Trainavailable = [1, 0, 0, 0, 0, 0, 0, 0, 0]
 

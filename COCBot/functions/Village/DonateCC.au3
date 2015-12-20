@@ -39,12 +39,12 @@ Func DonateCC($Check = False)
 		EndIf
 	EndIf
 
-	Local $y = 119
+	Local $y = 119+30 ;jp
 
 	;check for new chats first
 	If $Check = True Then
 		_CaptureRegion()
-		If _ColorCheck(_GetPixelColor(34, 321), Hex(0xE00300, 6), 20) = False And $CommandStop <> 3 Then
+		If _ColorCheck(_GetPixelColor(34, 321+30), Hex(0xE00300, 6), 20) = False And $CommandStop <> 3 Then
 			Return ;exit if no new chats
 		EndIf
 	EndIf
@@ -68,7 +68,7 @@ Func DonateCC($Check = False)
 			$Donate = False
 			If $DonateTroop Then
 				If $ichkExtraAlphabets = 1 Then
-					; Chast Request , Latin + Turkish + Extra latin + Cyrillic Alphabets / three paragraphs.
+					; Chat Request , Latin + Turkish + Extra latin + Cyrillic Alphabets / three paragraphs.
 					Local $ClanString = ""
 					$ClanString = getChatString(30, $DonatePixel[1] - 44, "coc-latin-cyr")
 					If $ClanString = "" Then

@@ -34,7 +34,7 @@ Func getBSPos()
 		SetError (0,0,0)
 		OpenBS(True) ; Try to start BS if it is not running
 		Return
-	Else
+	ElseIf IsArray($aPos) Then ;jp - somehow this is sometimes not an array
 		DllStructSetData($tPoint, "X", $aPos[0])
 		If @error <> 0 Then Return SetError (0,0,0)
     	DllStructSetData($tPoint, "Y", $aPos[1])

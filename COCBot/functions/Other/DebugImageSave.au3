@@ -14,14 +14,32 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func DebugImageSave($TxtName = "Unknown")
+Func DebugImageSave($TxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT)
 
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
-	SetLog("Taking snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
 	$Date = @MDAY & "." & @MON & "." & @YEAR
 	$Time = @HOUR & "." & @MIN & "." & @SEC
-	_CaptureRegion()
-	_GDIPlus_ImageSaveToFile($hBitmap, $dirtemp & $TxtName & $Date & " at " & $Time & ".png")
+	$fn = $dirtemp & $TxtName & $Date & " at " & $Time & ".png" ;jp
+	SetLog("Taking snapshot for later review (" & $fn & ")", $COLOR_GREEN) ;Debug purposes only :)
+	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom) ;jp optionally specify size
+	_GDIPlus_ImageSaveToFile($hBitmap, $fn) ;jp
 	If _Sleep($iDelayDebugImageSave1) Then Return
 
+EndFunc   ;==>DebugImageSave
+
+
+Func DebugImageSaveWithZoom($TxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT)
+	; jp zoom in a little to get a better snapshot
+	$Result0 = ControlFocus($Title, "","")
+	$Result1 = ControlSend($Title, "", "", "{UP}")
+	If _Sleep($iDelayZoomOut2) Then Return
+
+	DebugImageSave($TxtName&"Zoom_", $iLeft, $iTop, $iRight, $iBottom)
+
+	For $i = 1 To 4
+		$Result0 = ControlFocus($Title, "","")
+		$Result1 = ControlSend($Title, "", "", "{DOWN}")
+		If _Sleep($iDelayZoomOut2) Then Return
+	Next
+	DebugImageSave($TxtName, $iLeft, $iTop, $iRight, $iBottom)
 EndFunc   ;==>DebugImageSave

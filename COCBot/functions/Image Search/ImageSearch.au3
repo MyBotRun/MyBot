@@ -16,8 +16,15 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func _ImageSearch($findImage, $resultPosition, ByRef $x, ByRef $y, $Tolerance)
-	Return _ImageSearchArea($findImage, $resultPosition, 0, 0, 840, 720, $x, $y, $Tolerance)
+	;jp Return _ImageSearchArea($findImage, $resultPosition, 0, 0, 840, 720, $x, $y, $Tolerance)
+	Return _ImageSearchArea($findImage, $resultPosition, 0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT, $x, $y, $Tolerance) ;jp
 EndFunc   ;==>_ImageSearch
+
+Func _ImageSearchWindow($findImage, $resultPosition, ByRef $x, ByRef $y, $x1, $y1, $right, $bottom, $Tolerance)
+	;jp Return _ImageSearchArea($findImage, $resultPosition, 0, 0, 840, 720, $x, $y, $Tolerance)
+	Return _ImageSearchArea($findImage, $resultPosition, $x1, $y1, $right, $bottom, $x, $y, $Tolerance) ;jp
+EndFunc   ;==>_ImageSearch
+
 ;
 ;
 ; #FUNCTION# ====================================================================================================================

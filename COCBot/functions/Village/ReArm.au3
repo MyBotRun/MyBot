@@ -17,7 +17,7 @@
 Func ReArm()
 
 	If $ichkTrap = 0 Then Return ; If re-arm is not enable in GUI return and skip this code
-	Local $y = 562
+	Local $y = 562+60 ;jp
 
 	SetLog("Checking if Village needs Rearming..", $COLOR_BLUE)
 
@@ -36,7 +36,7 @@ Func ReArm()
 
 	;Traps
 	Local $offColors[3][3] = [[0x887d79, 24, 34], [0xF3EC55, 69, 7], [0xECEEE9, 77, 0]] ; 2nd pixel brown wrench, 3rd pixel gold, 4th pixel edge of button
-	Global $RearmPixel = _MultiPixelSearch2(339, $y, 670, 620, 1, 1, Hex(0xF6F9F2, 6), $offColors, 30) ; first gray/white pixel of button
+	Global $RearmPixel = _MultiPixelSearch2(339, $y, 670, 620+60, 1, 1, Hex(0xF6F9F2, 6), $offColors, 30) ;jp ; first gray/white pixel of button
 	If IsArray($RearmPixel) Then
 		If $debugSetlog = 1 Then
 			Setlog("Traps ButtonPixel = " & $RearmPixel[0] & ", " & $RearmPixel[1], $COLOR_PURPLE) ;Debug
@@ -44,11 +44,11 @@ Func ReArm()
 		EndIf
 		Click($RearmPixel[0] + 20, $RearmPixel[1] + 20, 1, 0, "#0326") ; Click RearmButton
 		If _Sleep($iDelayReArm4) Then Return
-		Click(515, 400, 1, 0, "#0226")
+		Click(515, 400+30, 1, 0, "#0226") ;jp
 		If _Sleep($iDelayReArm4) Then Return
 		If isGemOpen(True) = True Then
 			Setlog("Not enough loot to rearm traps.....", $COLOR_RED)
-			Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
+			Click(585, 252+30, 1, 0, "#0227");jp ; Click close gem window "X"
 			If _Sleep($iDelayReArm5) Then Return
 		Else
 			SetLog("Rearmed Trap(s)", $COLOR_GREEN)
@@ -56,10 +56,11 @@ Func ReArm()
 		EndIf
 	EndIf
 
-	If Number($iTownHallLevel) > 8 Then
+	;If Number($iTownHallLevel) > 8 Then ;jp FIXME - uncomment after fixing TH detection
 		;Xbow
-		Local $offColors[3][3] = [[0x8F4B9E, 19, 20], [0xFB5CF4, 70, 7], [0xF0F1EC, 77, 0]]; xbow, elixir, edge
-		Local $XbowPixel = _MultiPixelSearch2(430, $y, 670, 600, 1, 1, Hex(0xF4F7F0, 6), $offColors, 30) ; button start
+		;jp Local $offColors[3][3] = [[0x8F4B9E, 19, 20], [0xFB5CF4, 70, 7], [0xF0F1EC, 77, 0]]; xbow, elixir, edge
+		Local $offColors[3][3] = [[0xB838C8, 19, 20], [0xE0B0E2, 70, 7], [0xE0E1CC, 77, 0]];jp ; xbow, elixir, edge
+		Local $XbowPixel = _MultiPixelSearch2(430, $y, 670, 600+60, 1, 1, Hex(0xF4F7F0, 6), $offColors, 30);jp ; button start
 		If IsArray($XbowPixel) Then
 			Click($XbowPixel[0] + 20, $XbowPixel[1] + 20, 1, 0, "#0228") ; Click RearmButton
 			If $debugSetlog = 1 Then
@@ -67,11 +68,11 @@ Func ReArm()
 				Setlog("Color #1: " & _GetPixelColor($XbowPixel[0], $XbowPixel[1], True) & ", #2: " & _GetPixelColor($XbowPixel[0] + 19, $XbowPixel[1] + 20, True) & ", #3: " & _GetPixelColor($XbowPixel[0] + 70, $XbowPixel[1] + 7, True) & ", #4: " & _GetPixelColor($XbowPixel[0] + 77, $XbowPixel[1], True), $COLOR_PURPLE)
 			EndIf
 			If _Sleep($iDelayReArm4) Then Return
-			Click(515, 400, 1, 0, "#0229")
+			Click(515, 400+30, 1, 0, "#0229") ;jp
 			If _Sleep($iDelayReArm4) Then Return
 			If isGemOpen(True) = True Then
 				Setlog(" Not enough Elixir to rearm x-bow.....", $COLOR_RED)
-				Click(585, 252, 1, 0, "#0230") ; Click close gem window "X"
+				Click(585, 252+30, 1, 0, "#0230") ;jp ; Click close gem window "X"
 				If _Sleep($iDelayReArm5) Then Return
 			Else
 				SetLog("Reloaded Xbow(s)", $COLOR_GREEN)
@@ -79,13 +80,13 @@ Func ReArm()
 			EndIf
 		EndIf
 
-	EndIf
+	;EndIf
 
-	If Number($iTownHallLevel) > 9 Then
+	;If Number($iTownHallLevel) > 9 Then ;jp FIXME - uncomment after fixing TH detection
 
 		;Inferno
 		Local $offColors[3][3] = [[0x8D7477, 19, 20], [0x574460, 70, 7], [0xF0F1EC, 77, 0]]; inferno, dark, edge
-		Global $InfernoPixel = _MultiPixelSearch2(525, $y, 670, 600, 1, 1, Hex(0xF4F7F0, 6), $offColors, 30)
+		Global $InfernoPixel = _MultiPixelSearch2(525, $y, 670, 600+60, 1, 1, Hex(0xF4F7F0, 6), $offColors, 30) ;jp
 		If IsArray($InfernoPixel) Then
 			If $debugSetlog = 1 Then
 				Setlog("Inferno ButtonPixel = " & $InfernoPixel[0] & ", " & $InfernoPixel[1], $COLOR_PURPLE) ;Debug
@@ -93,11 +94,11 @@ Func ReArm()
 			EndIf
 			Click($InfernoPixel[0] + 20, $InfernoPixel[1] + 20, 1, 0, "#0231") ; Click InfernoButton
 			If _Sleep($iDelayReArm4) Then Return
-			Click(515, 400, 1, 0, "#0232")
+			Click(515, 400+30, 1, 0, "#0232") ;jp
 			If _Sleep($iDelayReArm4) Then Return
 			If isGemOpen(True) = True Then
 				Setlog("Not enough Dark Elixir to rearm Inferno .....", $COLOR_RED)
-				Click(585, 252, 1, 0, "#0233") ; Click close gem window "X"
+				Click(585, 252+30, 1, 0, "#0233") ;jp ; Click close gem window "X"
 				If _Sleep($iDelayReArm5) Then Return
 			Else
 				SetLog("Reloaded Inferno(s)", $COLOR_GREEN)
@@ -105,7 +106,7 @@ Func ReArm()
 			EndIf
 		EndIf
 
-	EndIf
+	;EndIf
 
 	ClickP($aAway, 1, 0, "#0234") ; Click away
 	If _Sleep($iDelayReArm5) Then Return

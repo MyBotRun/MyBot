@@ -24,7 +24,7 @@ Func AttackReport()
 	$lootTrophies = ""
 
 	$iCount = 0 ; Reset loop counter
-	While _CheckPixel($aEndFightSceneAvl, True) = False ; check for light gold pixle in the Gold ribbon in End of Attack Scene before reading values
+	While _CheckPixel($aEndFightSceneAvl, True) = False ; check for light gold pixel in the Gold ribbon in End of Attack Scene before reading values
 		$iCount += 1
 		If _Sleep($iDelayAttackReport1) Then Return
 		If $debugSetlog = 1 Then Setlog("Waiting Attack Report Ready, " & ($iCount / 2) & " Seconds.", $COLOR_PURPLE)
@@ -33,7 +33,7 @@ Func AttackReport()
 	If $iCount > 30 Then Setlog("End of Attack scene slow to appear, attack values my not be correct", $COLOR_BLUE)
 
 	$iCount = 0 ; reset loop counter
-	While getResourcesLoot(333, 289) = "" ; check for gold value to be non-zero before reading other values as a secondary timer to make sure all values are available
+	While getResourcesLoot(333, 289+30) = "" ;jp ; check for gold value to be non-zero before reading other values as a secondary timer to make sure all values are available
 		$iCount += 1
 		If _Sleep($iDelayAttackReport1) Then Return
 		If $debugSetlog = 1 Then Setlog("Waiting Attack Report Ready, " & ($iCount / 2) & " Seconds.", $COLOR_PURPLE)
@@ -42,13 +42,13 @@ Func AttackReport()
 	If $iCount > 20 Then Setlog("End of Attack scene read gold error, attack values my not be correct", $COLOR_BLUE)
 
 	If _ColorCheck(_GetPixelColor($aAtkRprtDECheck[0], $aAtkRprtDECheck[1], True), Hex($aAtkRprtDECheck[2], 6), $aAtkRprtDECheck[3]) Then ; if the color of the DE drop detected
-		$iGoldLast = getResourcesLoot(333, 289)
+		$iGoldLast = getResourcesLoot(333, 289+30) ;jp
 		If _Sleep($iDelayAttackReport2) Then Return
-		$iElixirLast = getResourcesLoot(333, 328)
+		$iElixirLast = getResourcesLoot(333, 328+30) ;jp
 		If _Sleep($iDelayAttackReport2) Then Return
-		$iDarkLast = getResourcesLootDE(365, 365)
+		$iDarkLast = getResourcesLootDE(365, 365+30) ;jp
 		If _Sleep($iDelayAttackReport2) Then Return
-		$iTrophyLast = getResourcesLootT(403, 402)
+		$iTrophyLast = getResourcesLootT(403, 402+30) ;jp
 		If _ColorCheck(_GetPixelColor($aAtkRprtTrophyCheck[0], $aAtkRprtTrophyCheck[1], True), Hex($aAtkRprtTrophyCheck[2], 6), $aAtkRprtTrophyCheck[3]) Then
 			$iTrophyLast = -$iTrophyLast
 		EndIf

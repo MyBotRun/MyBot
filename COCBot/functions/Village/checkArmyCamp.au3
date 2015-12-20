@@ -31,14 +31,16 @@ Func checkArmyCamp()
 	If _Sleep($iDelaycheckArmyCamp1) Then Return
 
 	$iTried = 0 ; reset loop safety exit counter
-	$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+	;jp $sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+	$sArmyInfo = getArmyCampCap(212-20, 144+30) ; OCR read army trained and total
 	If $debugSetlog = 1 Then Setlog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
 
 	While $iTried < 100 ; 30 - 40 sec
 
 		$iTried += 1
 		If _Sleep($iDelaycheckArmyCamp5) Then Return ; Wait 250ms before reading again
-		$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+		;jp $sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+		$sArmyInfo = getArmyCampCap(212-20, 144+30) ;jp ; OCR read army trained and total
 		If $debugSetlog = 1 Then Setlog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
 		If StringInStr($sArmyInfo, "#", 0, 1) < 2 Then ContinueLoop ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
 
@@ -94,10 +96,17 @@ Func checkArmyCamp()
 	EndIf
 
 	_WinAPI_DeleteObject($hBitmapFirst)
-	Local $hBitmapFirst = _CaptureRegion2(140, 165, 705, 220)
-	If $debugSetlog = 1 Then SetLog("$hBitmapFirst made", $COLOR_PURPLE)
+	;jp Local $hBitmapFirst = _CaptureRegion2(140, 165, 705, 220)
+	Local $hBitmapFirst = _CaptureRegion2(140-15, 165+30, 705+15, 220+30) ;jp
+	;Local $x=-30
+	;Local $y=30
+
+	;While $x < 30
+
+	;$hBitmapFirst = _CaptureRegion2(140+$x, 165+$y, 705+$x, 220+$y) ;jp
+	;If $debugSetlog = 1 Then SetLog("$hBitmapFirst made x="&$x&", y="&$y, $COLOR_PURPLE)
 	If _Sleep($iDelaycheckArmyCamp5) Then Return
-	If $debugSetlog = 1 Then SetLog("Calling MBRfunctions.dll/searchIdentifyTroopTrained ", $COLOR_PURPLE)
+	;If $debugSetlog = 1 Then SetLog("Calling MBRfunctions.dll/searchIdentifyTroopTrained ", $COLOR_PURPLE)
 
 	$FullTemp = DllCall($LibDir & "\MBRfunctions.dll", "str", "searchIdentifyTroopTrained", "ptr", $hBitmapFirst)
 	If $debugSetlog = 1 Then SetLog("Dll return $FullTemp :" & $FullTemp[0], $COLOR_PURPLE)
@@ -107,6 +116,13 @@ Func checkArmyCamp()
 	EndIf
 
 	If $debugSetlog = 1 Then SetLog("$Trooptype split # : " & $TroopTypeT[0], $COLOR_PURPLE)
+	;$x += 1
+	;If $y > 30 Then
+	;	$x += 1
+	;	$y = 0
+	;EndIf
+	;WEnd ;jp
+
 	If $debugSetlog = 1 Then SetLog("Start the Loop", $COLOR_PURPLE)
 
 	If IsArray($TroopTypeT) Then
@@ -215,26 +231,36 @@ Func checkArmyCamp()
 		$ArmyComp = $CurCamp
 	EndIf
 
-	; VERIFY EXISTEN HEROES
+	; VERIFY EXISTING HEROES
 	$BarbarianKingAvailable = 0
 	$ArcherQueenAvailable = 0
-
-	If Not _ColorCheck(_GetPixelColor(485, 475, True), Hex(0xD3D3CA, 6), 10) Then
+    ;jp slots are 62 pixels wide
+	; TODO add new hero color
+	If Not _ColorCheck(_GetPixelColor(485-15, 475+30, True), Hex(0xD3D3CA, 6), 10) Then ;gray
 		; Slot 1
-		If _ColorCheck(_GetPixelColor(485, 475, True), Hex(0x808650, 6), 20) Then
+		If _ColorCheck(_GetPixelColor(485-15, 475+30, True), Hex(0x808650, 6), 20) Then ;greenish
 			Setlog(" - Archer Queen available")
 			$ArcherQueenAvailable = 1
 		EndIf
-		If _ColorCheck(_GetPixelColor(485, 475, True), Hex(0x503838, 6), 20) Then
+		If _ColorCheck(_GetPixelColor(485-15, 475+30, True), Hex(0x503838, 6), 20) Then ;red brownish
 			Setlog(" - Barbarian King available")
 			$BarbarianKingAvailable = 1
 		EndIf
 		; Slot 2
-		If _ColorCheck(_GetPixelColor(547, 475, True), Hex(0x808650, 6), 20) Then
+		If _ColorCheck(_GetPixelColor(547-15, 475+30, True), Hex(0x808650, 6), 20) Then
 			Setlog(" - Archer Queen available")
 			$ArcherQueenAvailable = 1
 		EndIf
-		If _ColorCheck(_GetPixelColor(547, 475, True), Hex(0x503838, 6), 20) Then
+		If _ColorCheck(_GetPixelColor(547-15, 475+30, True), Hex(0x503838, 6), 20) Then
+			Setlog(" - Barbarian King available")
+			$BarbarianKingAvailable = 1
+		EndIf
+		; Slot 3
+		If _ColorCheck(_GetPixelColor(547-15+62, 475+30, True), Hex(0x808650, 6), 20) Then
+			Setlog(" - Archer Queen available")
+			$ArcherQueenAvailable = 1
+		EndIf
+		If _ColorCheck(_GetPixelColor(547-15+62, 475+30, True), Hex(0x503838, 6), 20) Then
 			Setlog(" - Barbarian King available")
 			$BarbarianKingAvailable = 1
 		EndIf

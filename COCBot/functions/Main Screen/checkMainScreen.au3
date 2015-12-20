@@ -31,7 +31,7 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		If $debugsetlog = 1 Then Setlog("CheckObstacles Result = "&$Result, $COLOR_PURPLE)
 		If $Result = False Then ; Need to try to restart CoC
 			WinActivate($HWnD)  	; ensure bot has window focus
-			PureClick(126, 700, 2, 500,"#0126")  ; click on BS home button twice to clear error and go home.
+			PureClick(126, 700+60, 2, 500,"#0126") ;jp ; click on BS home button twice to clear error and go home.
 			Run($RunApp & " Android com.supercell.clashofclans com.supercell.clashofclans.GameApp")
 			SetLog("Please wait for CoC restart......", $COLOR_BLUE)   ; Let user know we need time...
 			If _SleepStatus($iDelaycheckMainScreen2) Then Return

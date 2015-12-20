@@ -26,19 +26,31 @@ Func Initiate()
 		Local $BSy = ($BSsize[0] > $BSsize[1]) ? $BSsize[1] : $BSsize[0]
 ;		$RunState = True
 	    DisposeWindows()
-		If $BSx <> 860 Or $BSy <> 720 Then
+		If $BSx <> $DEFAULT_WIDTH Or $BSy <> $DEFAULT_HEIGHT Then
+			SetLog("BlueStacks resolution is " & $BSx & "x" & $BSy & " but it should be " & $DEFAULT_WIDTH & "x" & $DEFAULT_HEIGHT, $COLOR_PURPLE)
+
+			CloseBS() 	 ; BS must die!
+			If _Sleep(1000) Then Return
+			RunWait("net stop BstHdAndroidSvc") ;jp restart bluestacks service
+			If _Sleep(500) Then Return
+
 			RegWrite($REGISTRY_KEY_DIRECTORY, "FullScreen", "REG_DWORD", "0")
 			RegWrite($REGISTRY_KEY_DIRECTORY, "GuestHeight", "REG_DWORD", $DEFAULT_HEIGHT)
 			RegWrite($REGISTRY_KEY_DIRECTORY, "GuestWidth", "REG_DWORD", $DEFAULT_WIDTH)
 			RegWrite($REGISTRY_KEY_DIRECTORY, "WindowHeight", "REG_DWORD", $DEFAULT_HEIGHT)
 			RegWrite($REGISTRY_KEY_DIRECTORY, "WindowWidth", "REG_DWORD", $DEFAULT_WIDTH)
-			SetLog("Please restart your computer for the applied changes to take effect.", $COLOR_ORANGE)
-			If _Sleep(3000) Then Return
-			$MsgRet = MsgBox(BitOR($MB_OKCANCEL, $MB_SYSTEMMODAL), "Restart Computer", "Restart your computer for the applied changes to take effect." & @CRLF & "If your BlueStacks is the correct size  (860 x 720), click OK.", 10)
-			If $MsgRet <> $IDOK Then
-				btnStop()
-				Return
-			EndIf
+
+			RunWait("net start BstHdAndroidSvc")
+			If _Sleep(500) Then Return
+			OpenBS(True) ; Open BS and restart CoC
+
+			;SetLog("BlueStacks doesn't appear to be the correct resolution.", $COLOR_ORANGE)
+			;If _Sleep(3000) Then Return
+			;$MsgRet = MsgBox(BitOR($MB_OKCANCEL, $MB_SYSTEMMODAL), "Change BS Resolution", "Click OK to change your BlueStacks resolution, or cancel to leave it as is.")
+			;If $MsgRet <> $IDOK Then
+			;	btnStop()
+			;	Return
+			;EndIf
 		EndIf
 
 		WinActivate($Title)

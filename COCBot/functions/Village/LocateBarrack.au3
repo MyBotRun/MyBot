@@ -66,7 +66,7 @@ Func LocateBarrack($ArmyCamp = False)
 							Return False
 					EndSelect
 				EndIf
-				$sArmyInfo = BuildingInfo(242, 520)
+				$sArmyInfo = BuildingInfo(242, 520+60) ;jp
 				If $sArmyInfo[0] > 1 Or $sArmyInfo[0] = "" Then
 					If StringInStr($sArmyInfo[1], "Army") = 0 Then
 						If $sArmyInfo[0] = "" Then
