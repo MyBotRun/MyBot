@@ -190,7 +190,7 @@ $sModeText[$TB] = "TH Bully"
 $sModeText[$DT] = "Drop Trophy"
 
 ;PushBullet---------------------------------------------------------------
-Global $PBRemoteControlInterval = 5000 ; 60 secs
+Global $PBRemoteControlInterval = 5000 ; 5 secs (60 default)
 Global $PBDeleteOldPushesInterval = 1800000 ; 30 mins
 Global $iOrigPushB
 Global $iLastAttack

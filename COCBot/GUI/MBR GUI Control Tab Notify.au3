@@ -136,6 +136,6 @@ Func _Restart()
 	Run(@TempDir & "restart.bat", @TempDir, @SW_HIDE)
 	ProcessClose("HD-Frontend.exe")
 	ProcessClose("HD-Agent.exe")
-	ProcessClose("CGB Bot.exe")
+	ProcessClose("MyBot.run.exe")
 	Exit
 EndFunc   ;==>_Restart

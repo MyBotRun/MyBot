@@ -21,7 +21,7 @@
 Func _RemoteControl()
    If $pEnabled=1 then
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
-	local $access_token = $PushToken
+	$access_token = $PushToken
 	Local $pushbulletApiUrl
     If $pushLastModified = 0 Then
     $pushbulletApiUrl = "https://api.pushbullet.com/v2/pushes?active=true&limit=1" ; if this is the first time looking for pushes, get the last one
@@ -408,7 +408,7 @@ EndFunc   ;==>_RemoteControl
 Func _PushBullet($pMessage = "")
       if $pEnabled=1 then
 	  	 $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
-		 local $access_token = $PushToken
+		 $access_token = $PushToken
 		 $oHTTP.Open("Get", "https://api.pushbullet.com/v2/devices", False)
 		 $oHTTP.SetCredentials($access_token, "", 0)
 		 $oHTTP.Send()
@@ -443,7 +443,7 @@ EndFunc   ;==>_PushBullet
 Func _Push($pMessage)
 	if $pEnabled=1 then
 	   	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
-		local $access_token = $PushToken
+		$access_token = $PushToken
 		 $oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
 		 $oHTTP.SetCredentials($access_token, "", 0)
 		 $oHTTP.SetRequestHeader("Content-Type", "application/json")
@@ -465,7 +465,7 @@ Func _PushFile($File, $Folder, $FileType, $body)
 	  if $pEnabled=1 then
 	    If FileExists($sProfilePath & "\" & $sCurrProfile & '\' & $Folder & '\' & $File) Then
 		$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
-	Local $access_token = $PushToken
+	$access_token = $PushToken
 		$oHTTP.Open("Post", "https://api.pushbullet.com/v2/upload-request", False)
 		$oHTTP.SetCredentials($access_token, "", 0)
 		$oHTTP.SetRequestHeader("Content-Type", "application/json")
@@ -549,7 +549,7 @@ EndFunc   ;==>ReportPushBullet
 Func _DeletePush($token)
    if $pEnabled = 1 then
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
-	local $access_token = $token
+	$access_token = $token
 	$oHTTP.Open("DELETE", "https://api.pushbullet.com/v2/pushes", False)
 	$oHTTP.SetCredentials($access_token, "", 0)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
@@ -560,7 +560,7 @@ EndFunc   ;==>_DeletePush
 Func _DeleteMessage($iden)
    if $pEnabled = 1 then
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
-	local $access_token = $PushToken
+	$access_token = $PushToken
 	$oHTTP.Open("Delete", "https://api.pushbullet.com/v2/pushes/" & $iden, False)
 	$oHTTP.SetCredentials($access_token, "", 0)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
@@ -582,7 +582,7 @@ Func PushMsg($Message, $Source = "")
 				_Push($Time & " - " & $iOrigPushB & " - Last Raid - [S]" & _NumberFormat($SearchCount) & "\n[G]" & _NumberFormat(Int($lootGold / 1000)) & "k [E]" & _NumberFormat(Int($lootElixir / 1000)) & "k [DE]" & _NumberFormat($lootDarkElixir) & " [T]" & _NumberFormat($lootTrophies))
 			EndIf
 			If ($pEnabled = 1 or $pEnabled2 = 1 ) And $pLastRaidImg = 1 Then
-				_CaptureRegion(0, 0, 860, 675)
+				_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT - 45)
 				;create a temporary file to send with pushbullet...
 				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 				Local $Time = @HOUR & "." & @MIN
@@ -592,7 +592,7 @@ Func PushMsg($Message, $Source = "")
 				Else
 					$AttackFile = $Date & "__" & $Time & ".jpg" ; separator __ is need  to not have conflict with saving other files if $TakeSS = 1 and $chkScreenshotLootInfo = 0
 				EndIf
-				$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
+				$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap), _GDIPlus_ImageGetHeight($hBitmap)) ;resize image
 				_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirLoots & $AttackFile)
 				_GDIPlus_ImageDispose($hBitmap_Scaled)
 				;push the file
@@ -636,7 +636,7 @@ Func PushMsg($Message, $Source = "")
 		Case "RequestScreenshot"
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(0, 0, 860, 720)
+			_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT)
 			$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap), _GDIPlus_ImageGetHeight($hBitmap)) ;resize image
 			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 			_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirTemp & $Screnshotfilename)
@@ -673,7 +673,7 @@ Func _DeleteOldPushes()
 	Local $timestamplimit = 0
 
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
-	local $access_token = $PushToken
+	$access_token = $PushToken
 	$oHTTP.Open("Get", "https://api.pushbullet.com/v2/pushes?active=true&modified_after=" & $timestamplimit, False) ; limit to 48h read push, antiban purpose
 	$oHTTP.SetCredentials($access_token, "", 0)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
