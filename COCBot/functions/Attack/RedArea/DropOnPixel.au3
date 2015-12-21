@@ -22,7 +22,7 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			debugRedArea("$arrPixel $UBound($arrPixel) : [" & UBound($arrPixel) & "] ")
 			If UBound($arrPixel) > 0 Then
 				Local $pixel = $arrPixel[0]
-				Click($pixel[0], $pixel[1], $number, $iDelayDropOnPixel2,"#0096")
+				If IsAttackPage() Then Click($pixel[0], $pixel[1], $number, $iDelayDropOnPixel2,"#0096")
 			EndIf
 			If _Sleep($iDelayDropOnPixel1) Then Return
 		Next
@@ -31,7 +31,7 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			Local $arrPixel = $listArrPixel[$i]
 			If UBound($arrPixel) > 0 Then
 				Local $pixel = $arrPixel[0]
-				Click($pixel[0], $pixel[1], $number,0,"#0097")
+				If IsAttackPage() Then Click($pixel[0], $pixel[1], $number,0,"#0097")
 				If _Sleep(SetSleep(0)) Then Return
 			EndIf
 			If _Sleep(SetSleep(1)) Then Return
@@ -65,7 +65,7 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 						$index = UBound($arrPixel) - 1
 					EndIf
 					Local $currentPixel = $arrPixel[Floor($index)]
-					Click($currentPixel[0], $currentPixel[1], $nbTroopByPixel,0,"#0098")
+					If IsAttackPage() Then Click($currentPixel[0], $currentPixel[1], $nbTroopByPixel,0,"#0098")
 					$nbTroopsLeft -= $nbTroopByPixel
 
 

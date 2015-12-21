@@ -17,7 +17,7 @@
 Func saveConfig() ;Saves the controls settings to the config
 	;General Settings--------------------------------------------------------------------------
 
-	FileOpen($config, $FO_UTF16_LE + $FO_OVERWRITE)
+	If $ichkExtraAlphabets = 1 Then	 FileOpen($config, $FO_UTF16_LE + $FO_OVERWRITE)
 
 	Local $frmBotPos = WinGetPos($sBotTitle)
 
@@ -196,6 +196,13 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWrite($config, "search", "reduceDark", GUICtrlRead($txtSearchReduceDark))
 	IniWrite($config, "search", "reduceTrophy", GUICtrlRead($txtSearchReduceTrophy))
 
+	If GUICtrlRead($ChkRestartSearchLimit) = $GUI_CHECKED Then
+		IniWrite($config, "search", "ChkRestartSearchLimit", 1)
+	Else
+		IniWrite($config, "search", "ChkRestartSearchLimit", 0)
+	EndIf
+	IniWrite($config, "search", "RestartSearchLimit", GUICtrlRead($TxtRestartSearchlimit))
+
 	;Attack Basic Settings-------------------------------------------------------------------------
 	IniWrite($config, "attack", "DBDeploy", _GUICtrlComboBox_GetCurSel($cmbDBDeploy))
 	IniWrite($config, "attack", "DBUnitD", _GUICtrlComboBox_GetCurSel($cmbDBUnitDelay))
@@ -289,6 +296,18 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "attack", "DBDropCC", 0)
 	EndIf
 
+	If GUICtrlRead($chkDBWardenAttack) = $GUI_CHECKED Then
+		IniWrite($config, "attack", "DBWardenAtk", 1)
+	Else
+		IniWrite($config, "attack", "DBWardenAtk", 0)
+	EndIf
+
+	If GUICtrlRead($chkABWardenAttack) = $GUI_CHECKED Then
+		IniWrite($config, "attack", "ABWardenAtk", 1)
+	Else
+		IniWrite($config, "attack", "ABWardenAtk", 0)
+	EndIf
+
 	If GUICtrlRead($chkABDropCC) = $GUI_CHECKED Then
 		IniWrite($config, "attack", "ABDropCC", 1)
 	Else
@@ -310,7 +329,14 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "attack", "ActivateKQ", "Auto")
 	EndIf
 
+	If GUICtrlRead($chkUseWardenAbility) = $GUI_CHECKED Then
+		IniWrite($config, "attack", "ActivateWarden", 1)
+	Else
+		IniWrite($config, "attack", "ActivateWarden", 0)
+	EndIf
+
 	IniWrite($config, "attack", "delayActivateKQ", GUICtrlRead($txtManAbilities))
+	IniWrite($config, "attack", "delayActivateW", GUICtrlRead($txtWardenAbility))
 
 	If GUICtrlRead($chkTakeLootSS) = $GUI_CHECKED Then
 		IniWrite($config, "attack", "TakeLootSnapShot", 1)
@@ -343,6 +369,35 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "endbattle", "chkEndNoResources", 0)
 	EndIf
+
+
+	If GUICtrlRead($chkDESideEB) = $GUI_CHECKED Then
+		IniWrite($config, "endbattle", "chkDESideEB", 1)
+	Else
+		IniWrite($config, "endbattle", "chkDESideEB", 0)
+	EndIf
+	IniWrite($config, "endbattle", "txtDELowEndMin", GUICtrlRead($txtDELowEndMin))
+	If GUICtrlRead($chkDisableOtherEBO) = $GUI_CHECKED Then
+		IniWrite($config, "endbattle", "chkDisableOtherEBO", 1)
+	Else
+		IniWrite($config, "endbattle", "chkDisableOtherEBO", 0)
+	EndIf
+	If GUICtrlRead($chkDEEndAq) = $GUI_CHECKED Then
+		IniWrite($config, "endbattle", "chkDEEndAq", 1)
+	Else
+		IniWrite($config, "endbattle", "chkDEEndAq", 0)
+	EndIf
+	If GUICtrlRead($chkDEEndBk) = $GUI_CHECKED Then
+		IniWrite($config, "endbattle", "chkDEEndBk", 1)
+	Else
+		IniWrite($config, "endbattle", "chkDEEndBk", 0)
+	EndIf
+	If GUICtrlRead($chkDEEndOneStar) = $GUI_CHECKED Then
+		IniWrite($config, "endbattle", "chkDEEndOneStar", 1)
+	Else
+		IniWrite($config, "endbattle", "chkDEEndOneStar", 0)
+	EndIf
+
 
 	;Advanced Settings--------------------------------------------------------------------------
 	If GUICtrlRead($chkAttackNow) = $GUI_CHECKED Then
@@ -383,6 +438,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWrite($config, "advanced", "AttackTHType", _GUICtrlComboBox_GetCurSel($cmbAttackTHType))
 	$txtAttackTHType = GUICtrlRead($cmbAttackTHType)
 	IniWrite($config, "advanced", "AttackBottomTHType", _GUICtrlComboBox_GetCurSel($cmbAttackbottomType))
+	IniWrite($config, "advanced", "AttackTHType", $scmbAttackTHType)
 
 
 	If GUICtrlRead($chkUseKingTH) = $GUI_CHECKED Then
@@ -793,6 +849,8 @@ Func saveConfig() ;Saves the controls settings to the config
 	EndIf
 
 	IniWrite($config, "other", "walllvl", _GUICtrlComboBox_GetCurSel($cmbWalls))
+	IniWrite($config, "other", "MaxNbWall", GUICtrlRead($sldMaxNbWall))
+
 	IniWrite($config, "other", "minwallgold", GUICtrlRead($txtWallMinGold))
 	IniWrite($config, "other", "minwallelixir", GUICtrlRead($txtWallMinElixir))
 
@@ -843,6 +901,19 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWrite($config, "upgrade", "upgradetroopname", _GUICtrlComboBox_GetCurSel($cmbLaboratory))
 	IniWrite($building, "upgrade", "LabPosX", $aLabPos[0])
 	IniWrite($building, "upgrade", "LabPosY", $aLabPos[1])
+;Heroes upgrade
+	If GUICtrlRead($chkUpgradeKing) = $GUI_CHECKED Then
+		IniWrite($config, "upgrade", "UpgradeKing", "1")
+	Else
+		IniWrite($config, "upgrade", "UpgradeKing", "0")
+	EndIf
+
+	If GUICtrlRead($chkUpgradeQueen) = $GUI_CHECKED Then
+		IniWrite($config, "upgrade", "UpgradeQueen", "1")
+	Else
+		IniWrite($config, "upgrade", "UpgradeQueen", "0")
+	EndIf
+
 	;
 
 	For $iz = 0 To 5 ; Save Upgrades data
@@ -902,6 +973,9 @@ Func saveConfig() ;Saves the controls settings to the config
 
 	IniWrite($building, "other", "xQueenAltarPos", $QueenAltarPos[0])
 	IniWrite($building, "other", "yQueenAltarPos", $QueenAltarPos[1])
+
+	IniWrite($building, "other", "xWardenAltarPos", $WardenAltarPos[0])
+	IniWrite($building, "other", "yWardenAltarPos", $WardenAltarPos[1])
 
 
 	;PushBullet Settings----------------------------------------
@@ -1118,9 +1192,21 @@ Func saveConfig() ;Saves the controls settings to the config
 		Else
 			IniWrite($config, "debug", "debugocr", 0)
 		EndIf
+		If GUICtrlRead($chkDebugImageSave) = $GUI_CHECKED Then
+			IniWrite($config, "debug", "debugimagesave", 1)
+		Else
+			IniWrite($config, "debug", "debugimagesave", 0)
+		EndIf
+		If GUICtrlRead($chkdebugBuildingPos) = $GUI_CHECKED Then
+			IniWrite($config, "debug", "debugbuildingpos", 1)
+		Else
+			IniWrite($config, "debug", "debugbuildingpos", 0)
+		EndIf
 	Else
 		IniDelete($config, "debug", "debugocr")
 		IniDelete($config, "debug", "debugsetlog")
+		IniDelete($config, "debug", "debugimagesave")
+		IniDelete($config, "debug", "debugbuildingpos")
 	EndIf
 
 	;forced Total Camp values
@@ -1144,6 +1230,24 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "General", "ChkVersion", 0)
 	EndIf
 
-	FileClose($config)
+
+	;Snipe While Train
+	If GUICtrlRead($chkSnipeWhileTrain) = $GUI_CHECKED Then
+		IniWrite($config, "SnipeWhileTrain", "chkSnipeWhileTrain", 1)
+	Else
+		IniWrite($config, "SnipeWhileTrain", "chkSnipeWhileTrain", 0)
+	EndIf
+	IniWrite($config, "SnipeWhileTrain", "txtSearchlimit", GUICtrlRead($txtSearchlimit))
+	IniWrite($config, "SnipeWhileTrain", "txtminArmyCapacityTHSnipe", GUICtrlRead($txtminArmyCapacityTHSnipe))
+	IniWrite($config, "SnipeWhileTrain", "SWTtiles", GUICtrlRead($txtSWTTiles))
+
+	;Multilanguage
+
+	IniWrite($config, "other", "language", $sLanguage)
+
+	If $ichkExtraAlphabets = 1 Then	FileClose($config)
+
+	SaveStatChkTownHall() ;call function save stats
+	SaveStatChkDeadBase() ;call function save stats
 
 EndFunc   ;==>saveConfig

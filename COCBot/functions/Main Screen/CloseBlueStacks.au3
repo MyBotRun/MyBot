@@ -14,8 +14,11 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func CloseBS()
+Func CloseBS() ; @deprecated, use CloseAndroid()
+   CloseBlueStacks()
+EndFunc
 
+Func CloseBlueStacks()
 	Local $iIndex, $bOops = False
 	Local $aServiceList[4] = ["BstHdAndroidSv", "BstHdLogRotatorSvc", "BstHdUpdaterSvc", "bthserv"]
 
@@ -45,13 +48,47 @@ Func CloseBS()
 		SetLog("BS stopped succesfully", $COLOR_GREEN)
 	EndIf
 
-	RemoveGhostTrayIcons()  ; Remove ghost BS icon if left behind due forced taskkill
+	RemoveGhostTrayIcons("BlueStacks")  ; Remove ghost BS icon if left behind due forced taskkill
 
 	If $bOops Then
 		SetError(1, @extended, -1)
 	EndIf
 
-EndFunc   ;==>CloseBS
+EndFunc   ;==>CloseBlueStacks
+
+Func CloseBlueStacks2()
+
+	Local $bOops = False
+
+	SetLog("Stopping " & $Android & "....", $COLOR_BLUE)
+
+    If Not InitBLueStacks2() Then Return
+
+	RunWait($__BlueStacks_Path & "HD-Quit.exe")
+	If @error <> 0 Then
+	   SetLog($Android & " failed to quit", $COLOR_RED)
+	   ;SetError(1, @extended, -1)
+	   ;Return False
+    EndIf
+
+	If _Sleep(2000) Then Return ; wait a bit
+
+    ; Check if HD-FrontEnd.exe terminated
+	$bOops = ProcessExists("HD-Frontend.exe") <> 0
+
+	If $debugsetlog = 1 And $bOops Then
+		SetLog($Android & " failed to quit all processes", $COLOR_RED)
+	ElseIf Not $bOops Then
+		SetLog($Android & " stopped succesfully", $COLOR_GREEN)
+	EndIf
+
+	RemoveGhostTrayIcons("BlueStacks Agent Online")  ; Remove ghost BS icon if left behind due forced taskkill
+
+	If $bOops Then
+		SetError(1, @extended, -1)
+	EndIf
+
+EndFunc
 
 Func KillBSProcess()
 

@@ -101,6 +101,10 @@ Func UpdateStats()
 		GUICtrlSetData($lblHourlyStatsElixir, "")
 		GUICtrlSetData($lblHourlyStatsDark, "")
 		GUICtrlSetData($lblHourlyStatsTrophy, "")
+		GUICtrlSetData($lblResultGoldHourNow, "")  ;GUI BOTTOM
+		GUICtrlSetData($lblResultElixirHourNow, "");GUI BOTTOM
+		GUICtrlSetData($lblResultDEHourNow, "")    ;GUI BOTTOM
+
 	EndIf
 
 	If $iOldFreeBuilderCount <> $iFreeBuilderCount Or $iOldTotalBuilderCount <> $iTotalBuilderCount Then
@@ -216,6 +220,7 @@ Func UpdateStats()
 
 	If $iOldSkippedVillageCount <> $iSkippedVillageCount Then
 		GUICtrlSetData($lblresultvillagesskipped, _NumberFormat($iSkippedVillageCount, True))
+		GUICtrlSetData($lblResultSkippedHourNow, _NumberFormat($iSkippedVillageCount, True))
 		$iOldSkippedVillageCount = $iSkippedVillageCount
 	EndIf
 
@@ -328,6 +333,7 @@ Func UpdateStats()
 
 	If $iOldAttackedCount <> $iAttackedCount Then
 		GUICtrlSetData($lblresultvillagesattacked, _NumberFormat($iAttackedCount, True))
+		GUICtrlSetData($lblResultAttackedHourNow, _NumberFormat($iAttackedCount, True))
 		$iOldAttackedCount = $iAttackedCount
 	EndIf
 
@@ -359,6 +365,13 @@ Func UpdateStats()
 			GUICtrlSetData($lblHourlyStatsDark, _NumberFormat(Round($iDarkTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) & " / h")
 		EndIf
 		GUICtrlSetData($lblHourlyStatsTrophy, _NumberFormat(Round($iTrophyTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) & " / h")
+
+		GUICtrlSetData($lblResultGoldHourNow, _NumberFormat(Round($iGoldTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & "K / h")              ;GUI BOTTOM
+		GUICtrlSetData($lblResultElixirHourNow, _NumberFormat(Round($iElixirTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & "K / h")           ;GUI BOTTOM
+		If $iDarkStart <> "" Then
+			GUICtrlSetData($lblResultDEHourNow, _NumberFormat(Round($iDarkTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) & " / h")      ;GUI BOTTOM
+		EndIf
+
 	EndIf
 
 	If $ResetStats = 1 Then
@@ -373,6 +386,7 @@ Func ResetStats()
 	$iTimePassed = 0
 	$sTimer = TimerInit()
 	GUICtrlSetData($lblresultruntime, "00:00:00")
+	GUICtrlSetData($lblResultRuntimeNow, "00:00:00")
 	GUICtrlSetState($lblLastAttackTemp, $GUI_SHOW)
 	GUICtrlSetState($lblLastAttackBonusTemp, $GUI_SHOW)
 	GUICtrlSetState($lblTotalLootTemp, $GUI_SHOW)

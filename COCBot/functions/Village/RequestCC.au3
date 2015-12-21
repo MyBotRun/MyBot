@@ -29,7 +29,7 @@ Func RequestCC()
 	SetLog("Requesting Clan Castle Troops", $COLOR_BLUE)
 
 	;open army overview
-	Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0334")
+	If IsMainPage() Then Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0334")
 	If _Sleep($iDelayRequestCC1) Then Return
 
 	checkAttackDisable($iTaBChkIdle)  ; Early Take-A-Break detection
@@ -106,6 +106,7 @@ Func _makerequest()
 		EndIf
 		ControlFocus($title, "", "")  ; make sure BS has window focus
 		PureClick($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], 1, 100, "#0256") ; click send button
+		$canRequestCC = False
 	EndIf
 
 EndFunc   ;==>_makerequest

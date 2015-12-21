@@ -1,7 +1,7 @@
 
 #cs new code for Troopsbar Identify, need to implement this somewhere
 
-Local $result = DllCall($pFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
+Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
     ConsoleWrite("result : "&$result[0])
 
 Return :
@@ -16,7 +16,7 @@ Barbarian|14-26|0#Archer|87-30|75#WallBreaker|303-34|1#Wizard|377-35|1#Minion|45
 
 Func IdentifyTroopKind($SlotPos = 0)
 	; capture troopbar
-	Local $x1 = 0, $y1 = 550, $x2 = 860, $y2 = 660, $SlotComp
+	Local $x1 = 0, $y1 = 550, $x2 = $DEFAULT_WIDTH, $y2 = $DEFAULT_HEIGHT - 60, $SlotComp
 	_CaptureRegion($x1, $y1, $x2, $y2)
 
 ;~   If _ColorCheck(_GetPixelColor(828, 573 - $y1), Hex(0x70B3D8, 6), 40) Then; Check pixelcolor for Slot 11 # same color for all troops or spells
@@ -195,7 +195,7 @@ EndFunc   ;==>IdentifyTroopKind
 
 Func IdentifyTroopKindCreate($SlotPos = 0)
 	; capture troopbar
-	Local $x1 = 0, $y1 = 550, $x2 = 860, $y2 = 660, $SlotComp
+	Local $x1 = 0, $y1 = 550, $x2 = $DEFAULT_WIDTH, $y2 = $DEFAULT_HEIGHT - 60, $SlotComp
 	_CaptureRegion($x1, $y1, $x2, $y2)
 
 ;~   If _ColorCheck(_GetPixelColor(828, 573 - $y1), Hex(0x70B3D8, 6), 40) Then; Check pixelcolor for Slot 11 # same color for all troops or spells

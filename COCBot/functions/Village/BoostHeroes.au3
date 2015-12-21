@@ -99,3 +99,45 @@ Func BoostQueen()
 	EndIf
 
 EndFunc   ;==>BoostQueen
+
+Func BoostWarden()
+	If $bTrainEnabled = False Then Return
+
+	If (GUICtrlRead($cmbBoostWarden) > 0) And ($boostsEnabled = 1) Then
+		SetLog("Boost Grand Warden...", $COLOR_BLUE)
+		If $WardenAltarPos[0] = -1 Then
+			LocateWardenAltar()
+			SaveConfig()
+			If _Sleep($iDelayBoostHeroes4) Then Return
+		Else
+			Click($WardenAltarPos[0], $WardenAltarPos[1])
+			If _Sleep($iDelayBoostHeroes2) Then Return
+			_CaptureRegion()
+			$Boost = _PixelSearch(382, 603, 440, 621, Hex(0xfffd70, 6), 10)
+			If IsArray($Boost) Then
+				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
+				Click($Boost[0], $Boost[1], 1, 0, "#0463")
+				If _Sleep($iDelayBoostHeroes1) Then Return
+				If _ColorCheck(_GetPixelColor(420, 375, True), Hex(0xD0E978, 6), 20) Then
+					Click(420, 375, 1, 0, "#0464")
+					If _Sleep($iDelayBoostHeroes4) Then Return
+					If _ColorCheck(_GetPixelColor(586, 267, True), Hex(0xd80405, 6), 20) Then
+						_GUICtrlComboBox_SetCurSel($cmbBoostWarden, 0)
+						SetLog("Not enough gems", $COLOR_RED)
+					Else
+						_GUICtrlComboBox_SetCurSel($cmbBoostWarden, (GUICtrlRead($cmbBoostWarden) - 1))
+						SetLog('Boost completed. Remaining :' & (GUICtrlRead($cmbBoostWarden)), $COLOR_GREEN)
+					EndIf
+				Else
+					SetLog("Grand Warden is already Boosted", $COLOR_RED)
+				EndIf
+				If _Sleep($iDelayBoostHeroes3) Then Return
+				ClickP($aAway, 1, 0, "#0465")
+			Else
+				SetLog("Grand Warden Boost Button not found", $COLOR_RED)
+				If _Sleep($iDelayBoostHeroes4) Then Return
+			EndIf
+		EndIf
+	EndIf
+
+EndFunc   ;==>BoostWarden
