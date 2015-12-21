@@ -16,89 +16,88 @@
 ;~ -------------------------------------------------------------
 ;~ Expert Tab
 ;~ -------------------------------------------------------------
-$tabExpert = GUICtrlCreateTabItem("Expert")
+$tabExpert = GUICtrlCreateTabItem(GetTranslated(10,1, "Expert"))
 Local $x = 30, $y = 150
-$grpOnLoadBot = GUICtrlCreateGroup("When Bot Loads", $x - 20, $y - 20, 205, 112)
-	$chkVersion = GUICtrlCreateCheckbox("Check for Updates", $x, $y, -1, -1)
-		$txtTip = "Check if you are running the latest version of the bot."
+$grpOnLoadBot = GUICtrlCreateGroup(GetTranslated(10,2, "When Bot Loads"), $x - 20, $y - 20, 205, 112)
+	$chkVersion = GUICtrlCreateCheckbox(GetTranslated(10,3, "Check for Updates"), $x, $y, -1, -1)
+		$txtTip = GetTranslated(10,4, "Check if you are running the latest version of the bot.")
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetState(-1, $GUI_CHECKED)
 	$y += 22
-	$chkDeleteLogs = GUICtrlCreateCheckbox("Delete Log Files:", $x, $y, -1, -1)
-		$txtTip = "Delete log files older than this specified No. of days."
+	$chkDeleteLogs = GUICtrlCreateCheckbox(GetTranslated(10,5, "Delete Log Files")& ":", $x, $y, -1, -1)
+		$txtTip = GetTranslated(10,6, "Delete log files older than this specified No. of days.")
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetOnEvent(-1, "chkDeleteLogs")
 	$txtDeleteLogsDays = GUICtrlCreateInput("7", $x + 120, $y, 25, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetLimit(-1, 2)
 		GUICtrlSetState(-1, $GUI_DISABLE)
-	$lblDeleteLogsDays = GUICtrlCreateLabel("days", $x + 150, $y + 4, 38, 15)
+	$lblDeleteLogsDays = GUICtrlCreateLabel(GetTranslated(10,7, "days"), $x + 150, $y + 4, 38, 15)
 	$y += 22
-	$chkDeleteTemp = GUICtrlCreateCheckbox("Delete Temp Files:", $x, $y, -1, -1)
-		$txtTip = "Delete temp files older than this specified No. of days."
+	$chkDeleteTemp = GUICtrlCreateCheckbox(GetTranslated(10,8, "Delete Temp Files") & ":", $x, $y, -1, -1)
+		$txtTip = GetTranslated(10,9, "Delete temp files older than this specified No. of days.")
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetOnEvent(-1, "chkDeleteTemp")
 	$txtDeleteTempDays = GUICtrlCreateInput("7", $x + 120, $y, 25, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetLimit(-1, 2)
 		GUICtrlSetState(-1, $GUI_DISABLE)
-	$lblDeleteTempDays = GUICtrlCreateLabel("days", $x + 150, $y + 4, 38, 15)
+	$lblDeleteTempDays = GUICtrlCreateLabel(GetTranslated(10,7, "days"), $x + 150, $y + 4, 38, 15)
 	$y += 22
-	$chkDeleteLoots = GUICtrlCreateCheckbox("Delete Loot Images:", $x, $y, -1, -1)
-		$txtTip = "Delete loot image files older than this specified No. of days."
+	$chkDeleteLoots = GUICtrlCreateCheckbox(GetTranslated(10,10, "Delete Loot Images"), $x, $y, -1, -1)
+		$txtTip = GetTranslated(10,11, "Delete loot image files older than this specified No. of days.")
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetOnEvent(-1, "chkDeleteLoots")
 	$txtDeleteLootsDays = GUICtrlCreateInput("7", $x + 120, $y, 25, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetLimit(-1, 2)
 		GUICtrlSetState(-1, $GUI_DISABLE)
-	$lblDeleteLootsDays = GUICtrlCreateLabel("days", $x + 150, $y + 4, 38, 15)
+	$lblDeleteLootsDays = GUICtrlCreateLabel(GetTranslated(10,7, "days"), $x + 150, $y + 4, 38, 15)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 
 Local $x = 30, $y = 265
-$grpOnStartBot = GUICtrlCreateGroup("When Bot Starts", $x - 20, $y - 20, 205, 118)
-	$chkAutostart = GUICtrlCreateCheckbox("Auto START after:", $x, $y, -1, -1)
-		GUICtrlSetTip(-1, "Auto START the Bot after this No. of seconds.")
+$grpOnStartBot = GUICtrlCreateGroup(GetTranslated(10,12, "When Bot Starts"), $x - 20, $y - 20, 205, 118)
+	$chkAutostart = GUICtrlCreateCheckbox(GetTranslated(10,13, "Auto START after") & ":", $x, $y, -1, -1)
+		GUICtrlSetTip(-1, GetTranslated(10,58, "Auto START the Bot after this No. of seconds."))
 		GUICtrlSetOnEvent(-1, "chkAutostart")
 	$txtAutostartDelay = GUICtrlCreateInput("10", $x + 120, $y, 25, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		GUICtrlSetState(-1, $GUI_DISABLE)
-	$lblAutostartSeconds = GUICtrlCreateLabel("sec.", $x + 150, $y + 4, 38, 18)
+	$lblAutostartSeconds = GUICtrlCreateLabel(GetTranslated(10,14, "sec."), $x + 150, $y + 4, 38, 18)
 	$y += 22
-	$chkLanguage = GUICtrlCreateCheckbox("Check Game Language (EN)", $x, $y, -1, -1)
-		GUICtrlSetTip(-1, "Check if the Game is set to the correct language (Must be set to English).")
+	$chkLanguage = GUICtrlCreateCheckbox(GetTranslated(10,15, "Check Game Language (EN)"), $x, $y, -1, -1)
+		GUICtrlSetTip(-1, GetTranslated(10,16, "Check if the Game is set to the correct language (Must be set to English)."))
 		GUICtrlSetState(-1, $GUI_CHECKED)
 	$y += 22
-	$chkDisposeWindows = GUICtrlCreateCheckbox("Auto Align", $x, $y, -1, -1)
-		$txtTip = "Reposition/Align Bluestacks and BOT windows on the screen."
+	$chkDisposeWindows = GUICtrlCreateCheckbox(GetTranslated(10,17, "Auto Align"), $x, $y, -1, -1)
+		$txtTip = GetTranslated(10,18, "Reposition/Align Bluestacks and BOT windows on the screen.")
 		GUICtrlSetOnEvent(-1, "chkDisposeWindows")
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetLimit(-1, 2)
-	$lblOffset = GUICtrlCreateLabel("Offset:", $x + 85, $y + 4, -1, -1)
+	$lblOffset = GUICtrlCreateLabel(GetTranslated(10,19, "Offset") & ":", $x + 85, $y + 4, -1, -1)
 	$txtWAOffsetx = GUICtrlCreateInput("10", $x + 120, $y, 25, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-		$txtTip = "Offset horizontal pixels between BlueStacks (BS) and BOT windows."
+		$txtTip = GetTranslated(10,20, "Offset horizontal pixels between BlueStacks (BS) and BOT windows.")
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetLimit(-1, 2)
 	$txtWAOffsety= GUICtrlCreateInput("0", $x + 150, $y, 25, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-		$txtTip = "Offset vertical pixels between BlueStacks (BS) and BOT windows."
+		$txtTip = GetTranslated(10,21, "Offset vertical pixels between BlueStacks (BS) and BOT windows.")
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetLimit(-1, 2)
 	$y += 23
 	$cmbDisposeWindowsCond = GUICtrlCreateCombo("", $x + 15, $y, 160, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-		GUICtrlSetData(-1, "0,0: BlueStacks-Bot|0,0: Bot-BlueStacks|SNAP: Bot TopRight to BS|SNAP: Bot TopLeft to BS|SNAP: Bot BottomRight to BS|SNAP: Bot BottomLeft to BS", "SNAP: Bot TopRight to BS")
-		$txtTip &= @CRLF & "0,0: Reposition BS screen to position 0,0 on windows desktop and align Bot window right or left to it." & @CRLF & _
-				"SNAP: Only reorder windows, Align Bot window to BlueStacks window at Top Right, Top Left, Bottom Right or Bottom Left."
+		GUICtrlSetData(-1, GetTranslated(10,22, "0,0: BlueStacks-Bot") & "|" & GetTranslated(10,23, "0,0: Bot-BlueStacks") & "|" & GetTranslated(10,24, "SNAP: Bot TopRight to BS") &"|" & GetTranslated(10,25, "SNAP: Bot TopLeft to BS") & "|" & GetTranslated(10,26, "SNAP: Bot BottomRight to BS") & "|" & GetTranslated(10,27, "SNAP: Bot BottomLeft to BS") , GetTranslated(10,24, "SNAP: Bot TopRight to BS"))
+		$txtTip &= @CRLF & GetTranslated(10,28, "0,0: Reposition BS screen to position 0,0 on windows desktop and align Bot window right or left to it.") & @CRLF & GetTranslated(10,29, "SNAP: Only reorder windows, Align Bot window to BlueStacks window at Top Right, Top Left, Bottom Right or Bottom Left.")
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 30, $y = 385
-$grpTiming = GUICtrlCreateGroup("Timing", $x - 20, $y - 20, 205, 50)
-	$lblTrainDelay = GUICtrlCreateLabel("Train Troops:", $x, $y, -1, -1)
-	$lbltxtTrainITDelay = GUICtrlCreateLabel("delay", $x + 70, $y - 5, 37, 50)
-		GUICtrlSetTip(-1, "Increase the delay if your PC is slow")
+$grpTiming = GUICtrlCreateGroup(GetTranslated(10,30, "Timing"), $x - 20, $y - 20, 205, 50)
+	$lblTrainDelay = GUICtrlCreateLabel(GetTranslated(10,31, "Train Troops") & ":", $x, $y, -1, -1)
+	$lbltxtTrainITDelay = GUICtrlCreateLabel(GetTranslated(10,32, "delay"), $x + 70, $y - 5, 37, 50)
+		GUICtrlSetTip(-1, GetTranslated(10,33, "Increase the delay if your PC is slow"))
 	$sldTrainITDelay = GUICtrlCreateSlider($x + 105, $y - 5, 70, 25, BitOR($TBS_TOOLTIPS, $TBS_AUTOTICKS))
-		GUICtrlSetTip(-1, "Increase the delay if your PC is slow")
+		GUICtrlSetTip(-1, GetTranslated(10,33, "Increase the delay if your PC is slow"))
 		GUICtrlSetBkColor(-1, $COLOR_WHITE)
 		_GUICtrlSlider_SetTipSide(-1, $TBTS_BOTTOM)
 		_GUICtrlSlider_SetTicFreq(-100, 100)
@@ -108,28 +107,38 @@ $grpTiming = GUICtrlCreateGroup("Timing", $x - 20, $y - 20, 205, 50)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 30, $y = 435
-$grpDebug = GUICtrlCreateGroup("Debug", $x - 20, $y - 20, 205, 40)
-	$chkDebugClick = GUICtrlCreateCheckbox("Debug Clicked Coordinates", $x, $y-5, -1, -1)
-		GUICtrlSetTip(-1, "Debug: Write the clicked (x,y) coordinates to the log.")
-	$y += 20
-	$chkDebugSetlog = GUICtrlCreateCheckbox("Enable Debug Setlog", $x, $y-5, -1, -1)
-		GUICtrlSetTip(-1, "Debug: Enables debug SetLog messages in code for Troubleshooting.")
+$grpDebug = GUICtrlCreateGroup(GetTranslated(10,34, "Debug"), $x - 20, $y - 20, 205, 40)
+	$chkDebugClick = GUICtrlCreateCheckbox(GetTranslated(10,40, "Coord."), $x, $y-5, -1, -1)
+		GUICtrlSetTip(-1, GetTranslated(10,35, "Debug: Write the clicked (x,y) coordinates to the log."))
+	;$y += 20
+	$chkDebugSetlog = GUICtrlCreateCheckbox(GetTranslated(10,41, "L"), $x +55 , $y-5, -1, -1)
+		GUICtrlSetTip(-1, GetTranslated(10,36, "Debug: Enables debug SetLog messages in code for Troubleshooting."))
 		GUICtrlSetState(-1, $GUI_DISABLE)
 		GUICtrlSetState(-1, $GUI_HIDE)
 		GUICtrlSetOnEvent(-1, "chkDebugSetlog")
-	$y += 20
-	$chkDebugOcr = GUICtrlCreateCheckbox("Enable Debug OCR", $x, $y-5, -1, -1)
-		GUICtrlSetTip(-1, "Debug: Enables Saving OCR images for troubleshooting.")
+	$chkDebugOcr = GUICtrlCreateCheckbox(GetTranslated(10,42, "O"), $x + 85, $y-5, -1, -1)
+		GUICtrlSetTip(-1, GetTranslated(10,37, "Debug: Enables Saving OCR images for troubleshooting."))
 		GUICtrlSetState(-1, $GUI_DISABLE)
 		GUICtrlSetState(-1, $GUI_HIDE)
 		GUICtrlSetOnEvent(-1, "chkDebugOcr")
+	$chkDebugImageSave = GUICtrlCreateCheckbox(GetTranslated(10,43, "I"), $x + 115, $y-5, -1, -1)
+		GUICtrlSetTip(-1, GetTranslated(10,38, "Debug: Enables Saving images for troubleshooting."))
+		GUICtrlSetState(-1, $GUI_DISABLE)
+		GUICtrlSetState(-1, $GUI_HIDE)
+		GUICtrlSetOnEvent(-1, "chkDebugImageSave")
+	$chkdebugBuildingPos = GUICtrlCreateCheckbox(GetTranslated(10,44, "B"), $x + 145, $y-5, -1, -1)
+		GUICtrlSetTip(-1, GetTranslated(10,39, "Debug: Enables showing positions of buildings in log."))
+		GUICtrlSetState(-1, $GUI_DISABLE)
+		GUICtrlSetState(-1, $GUI_HIDE)
+		GUICtrlSetOnEvent(-1, "chkdebugBuildingPos")
+
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 30, $y = 477
-$grpOtherExpert = GUICtrlCreateGroup("Other Options", $x - 20, $y - 20, 205, 48)
-	$chkTotalCampForced = GUICtrlCreateCheckbox("Force Total Army Camp:", $x, $y-5, -1, -1)
+$grpOtherExpert = GUICtrlCreateGroup(GetTranslated(10,45, "Other Options"), $x - 20, $y - 20, 205, 48)
+	$chkTotalCampForced = GUICtrlCreateCheckbox(GetTranslated(10,46, "Force Total Army Camp")&":", $x, $y-5, -1, -1)
 		GUICtrlSetOnEvent(-1, "chkTotalCampForced")
-		GUICtrlSetTip(-1, "If not detected set army camp values (instead ask)")
+		GUICtrlSetTip(-1, GetTranslated(10,47, "If not detected set army camp values (instead ask)"))
 	$txtTotalCampForced = GUICtrlCreateInput("200", $x + 135, $y-5, 35, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		GUICtrlSetLimit(-1, 3)
 		GUICtrlSetState(-1, $GUI_DISABLE)
@@ -137,8 +146,8 @@ $grpOtherExpert = GUICtrlCreateGroup("Other Options", $x - 20, $y - 20, 205, 48)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 240, $y = 150
-$grpScheduler = GUICtrlCreateGroup("Clan Castle Scheduler", $x - 20, $y - 20, 240, 225)
-	$chkDonateHours = GUICtrlCreateCheckbox("Donate CC only during these hours of day", $x-8, $y)
+$grpScheduler = GUICtrlCreateGroup(GetTranslated(10,48, "Clan Castle Scheduler"), $x - 20, $y - 20, 240, 225)
+	$chkDonateHours = GUICtrlCreateCheckbox(GetTranslated(10,49, "Donate CC only during these hours of day"), $x-8, $y)
 	GUICtrlSetOnEvent(-1, "chkDonateHours")
 	$y += 20
 	$x -= 8
@@ -196,10 +205,10 @@ $grpScheduler = GUICtrlCreateGroup("Clan Castle Scheduler", $x - 20, $y - 20, 24
 	$chkDonateHoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 	GUICtrlSetImage(-1, $pIconLib, $eIcnGoldStar, 0)
 	GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
-	$txtTip = "This button will clear or set the entire row of boxes"
+	$txtTip = GetTranslated(10,50, "This button will clear or set the entire row of boxes")
 	GUICtrlSetTip(-1, $txtTip)
 	GUICtrlSetOnEvent(-1, "chkDonateHoursE1")
-	$lbDonateHoursAM = GUICtrlCreateLabel("AM", $x + 10, $y)
+	$lbDonateHoursAM = GUICtrlCreateLabel(GetTranslated(10,59, "AM"), $x + 10, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$y += 15
 	$chkDonateHours12 = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)
@@ -229,13 +238,13 @@ $grpScheduler = GUICtrlCreateGroup("Clan Castle Scheduler", $x - 20, $y - 20, 24
 	$chkDonateHoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 	GUICtrlSetImage(-1, $pIconLib, $eIcnGoldStar, 0)
 	GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
-	$txtTip = "This button will clear or set the entire row of boxes"
+	$txtTip = GetTranslated(10,50, "This button will clear or set the entire row of boxes")
 	GUICtrlSetTip(-1, $txtTip)
 	GUICtrlSetOnEvent(-1, "chkDonateHoursE2")
-	$lbDonateHoursPM = GUICtrlCreateLabel("PM", $x + 10, $y)
+	$lbDonateHoursPM = GUICtrlCreateLabel(GetTranslated(10,60, "PM"), $x + 10, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$y += 16
-	$chkRequestCCHours = GUICtrlCreateCheckbox("Request CC only during these hours of day", $x, $y)
+	$chkRequestCCHours = GUICtrlCreateCheckbox(GetTranslated(10,51, "Request CC only during these hours of day"), $x, $y)
 	GUICtrlSetOnEvent(-1, "chkRequestCCHours")
 	$y += 20
 	$lbRequestCCHours1 = GUICtrlCreateLabel(" 0", $x + 30, $y)
@@ -292,10 +301,10 @@ $grpScheduler = GUICtrlCreateGroup("Clan Castle Scheduler", $x - 20, $y - 20, 24
 	$chkRequestCCHoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 	GUICtrlSetImage(-1, $pIconLib, $eIcnGoldStar, 0)
 	GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
-	$txtTip = "This button will clear or set the entire row of boxes"
+	$txtTip = GetTranslated(10,50, "This button will clear or set the entire row of boxes")
 	GUICtrlSetTip(-1, $txtTip)
 	GUICtrlSetOnEvent(-1, "chkRequestCCHoursE1")
-	$lbRequestCCHoursAM = GUICtrlCreateLabel("AM", $x + 10, $y)
+	$lbRequestCCHoursAM = GUICtrlCreateLabel(GetTranslated(10,59, "AM"), $x + 10, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$y += 15
 	$chkRequestCCHours12 = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)
@@ -325,13 +334,13 @@ $grpScheduler = GUICtrlCreateGroup("Clan Castle Scheduler", $x - 20, $y - 20, 24
 	$chkRequestCCHoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 	GUICtrlSetImage(-1, $pIconLib, $eIcnGoldStar, 0)
 	GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
-	$txtTip = "This button will clear or set the entire row of boxes"
+	$txtTip = GetTranslated(10,50, "This button will clear or set the entire row of boxes")
 	GUICtrlSetTip(-1, $txtTip)
 	GUICtrlSetOnEvent(-1, "chkRequestCCHoursE2")
-	$lbRequestCCHoursPM = GUICtrlCreateLabel("PM", $x + 10, $y)
+	$lbRequestCCHoursPM = GUICtrlCreateLabel(GetTranslated(10,60, "PM"), $x + 10, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$y += 18
-	$chkDropCCHours = GUICtrlCreateCheckbox("Drop CC only during these hours of day", $x, $y)
+	$chkDropCCHours = GUICtrlCreateCheckbox(GetTranslated(10,52, "Drop CC only during these hours of day"), $x, $y)
 	GUICtrlSetOnEvent(-1, "chkDropCCHours")
 	$y += 20
 	$lbDropCCHours1 = GUICtrlCreateLabel(" 0", $x + 30, $y)
@@ -388,10 +397,10 @@ $grpScheduler = GUICtrlCreateGroup("Clan Castle Scheduler", $x - 20, $y - 20, 24
 	$chkDropCCHoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 	GUICtrlSetImage(-1, $pIconLib, $eIcnGoldStar, 0)
 	GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
-	$txtTip = "This button will clear or set the entire row of boxes"
+	$txtTip = GetTranslated(10,50, "This button will clear or set the entire row of boxes")
 	GUICtrlSetTip(-1, $txtTip)
 	GUICtrlSetOnEvent(-1, "chkDropCCHoursE1")
-	$lbDropCCHoursAM = GUICtrlCreateLabel("AM", $x + 10, $y)
+	$lbDropCCHoursAM = GUICtrlCreateLabel(GetTranslated(10,59, "AM"), $x + 10, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$y += 15
 	$chkDropCCHours12 = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)
@@ -421,17 +430,17 @@ $grpScheduler = GUICtrlCreateGroup("Clan Castle Scheduler", $x - 20, $y - 20, 24
 	$chkDropCCHoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 	GUICtrlSetImage(-1, $pIconLib, $eIcnGoldStar, 0)
 	GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
-	$txtTip = "This button will clear or set the entire row of boxes"
+	$txtTip = GetTranslated(10,50, "This button will clear or set the entire row of boxes")
 	GUICtrlSetTip(-1, $txtTip)
 	GUICtrlSetOnEvent(-1, "chkDropCCHoursE2")
-	$lbDropCCHoursPM = GUICtrlCreateLabel("PM", $x + 10, $y)
+	$lbDropCCHoursPM = GUICtrlCreateLabel(GetTranslated(10,60, "PM"), $x + 10, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 240, $y = 377
 
-$grpScheduler2 = GUICtrlCreateGroup("Boost Barracks Scheduler", $x - 20, $y - 20, 240, 85)
-	$chkBoostBarracksHours = GUICtrlCreateCheckbox("Boost during these hours of day", $x-8, $y-7)
+$grpScheduler2 = GUICtrlCreateGroup(GetTranslated(10,53, "Boost Barracks Scheduler"), $x - 20, $y - 20, 240, 85)
+	$chkBoostBarracksHours = GUICtrlCreateCheckbox(GetTranslated(10,54, "Boost during these hours of day"), $x-8, $y-7)
 	GUICtrlSetOnEvent(-1, "chkBoostBarracksHours")
 	$y += 13
 	$x -= 8
@@ -489,10 +498,10 @@ $grpScheduler2 = GUICtrlCreateGroup("Boost Barracks Scheduler", $x - 20, $y - 20
 	$chkBoostBarracksHoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 	GUICtrlSetImage(-1, $pIconLib, $eIcnGoldStar, 0)
 	GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
-	$txtTip = "This button will clear or set the entire row of boxes"
+	$txtTip = GetTranslated(10,50, "This button will clear or set the entire row of boxes")
 	GUICtrlSetTip(-1, $txtTip)
 	GUICtrlSetOnEvent(-1, "chkBoostBarracksHoursE1")
-	$lbBoostBarracksHoursAM = GUICtrlCreateLabel("AM", $x + 10, $y)
+	$lbBoostBarracksHoursAM = GUICtrlCreateLabel(GetTranslated(10,59, "AM"), $x + 10, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 	$y += 15
 	$chkBoostBarracksHours12 = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)
@@ -522,19 +531,19 @@ $grpScheduler2 = GUICtrlCreateGroup("Boost Barracks Scheduler", $x - 20, $y - 20
 	$chkBoostBarracksHoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 	GUICtrlSetImage(-1, $pIconLib, $eIcnGoldStar, 0)
 	GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
-	$txtTip = "This button will clear or set the entire row of boxes"
+	$txtTip = GetTranslated(10,50, "This button will clear or set the entire row of boxes")
 	GUICtrlSetTip(-1, $txtTip)
 	GUICtrlSetOnEvent(-1, "chkBoostBarracksHoursE2")
-	$lbBoostBarracksHoursPM = GUICtrlCreateLabel("PM", $x + 10, $y)
+	$lbBoostBarracksHoursPM = GUICtrlCreateLabel(GetTranslated(10,60, "PM"), $x + 10, $y)
 	GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 240, $y = 463
-$grpOtherExpert = GUICtrlCreateGroup("Photo Screenshot Options", $x - 20, $y - 17, 240, 59)
-	$chkScreenshotType = GUICtrlCreateCheckbox("Make in PNG format", $x, $y, -1, -1)
+$grpOtherExpert = GUICtrlCreateGroup(GetTranslated(10,55, "Photo Screenshot Options"), $x - 20, $y - 17, 240, 59)
+	$chkScreenshotType = GUICtrlCreateCheckbox(GetTranslated(10,56, "Make in PNG format"), $x, $y, -1, -1)
 		GUICtrlSetOnEvent(-1, "chkScreenshotType")
 $y += 19
-	$chkScreenshotHideName = GUICtrlCreateCheckbox("Hide Village and Clan Castle Name", $x, $y, -1, -1)
+	$chkScreenshotHideName = GUICtrlCreateCheckbox(GetTranslated(10,57, "Hide Village and Clan Castle Name"), $x, $y, -1, -1)
 		GUICtrlSetOnEvent(-1, "chkScreenshotHideName")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")

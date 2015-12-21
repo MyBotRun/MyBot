@@ -11,34 +11,33 @@
 ; ===============================================================================================================================
 
 Func ClanLevel()
-
-	Local $aClanTab[2] = [200, 21]
+    Setlog("Finding your Clan Level, wait..",$COLOR_BLUE)
+	; Local $aClanTab[2] = [200, 21]
 
 	ClickP($aAway, 2, 20, "#0467") ;Click Away
 
-	If _Sleep($iDelayDonateCC1) Then Return
+	If _Sleep($iDelayClanLevel1) Then Return
 
 	If $debugSetlog = 1 Then SetLog("Click $aOpenChat", $COLOR_GREEN)
-	ClickP($aOpenChat, 1, 0, "#0468") ; clicking clan tab
+	If IsMainPage()  Then    ClickP($aOpenChat, 1, 0, "#0468") ; clicking clan tab
 
 	; WaitforPixel($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation, $maxDelay = 10)
 	; Wait until find the Info "i" icon , max 5 seconds
-
-	If WaitforPixel(308, 47, 309, 48, Hex(0x706c50, 6), 5, 10) Then
+;	If WaitforPixel(308, 47, 309, 48, Hex(0x706c50, 6), 5, $iDelayClanLevel1) Then
 		If $debugSetlog = 1 Then SetLog("Click $aClanTab", $COLOR_GREEN)
-		ClickP($aClanTab, 1, 0, "#0469") ; click Clan Tab
-	EndIf
+		If IsMainChatOpenPage() Then ClickP($aClanTab, 1, 0, "#0469") ; click Clan Tab
+;	EndIf
 
 	If $debugSetlog = 1 Then SetLog("Wait until find the Info icon , max 5 seconds", $COLOR_GREEN)
 
-	If WaitforPixel(282, 55, 285, 57, Hex(0x2881c0, 6), 5, 10) Then
+	If WaitforPixel(282, 55, 285, 57, Hex(0x3088c2, 6), 5, 10) Then
 		If $debugSetlog = 1 Then SetLog("Click $aClanInfo", $COLOR_GREEN)
-		ClickP($aClanInfo, 1, 0, "#0470") ; click Info
+		If IsMainChatOpenPage() Then ClickP($aClanInfo, 1, 0, "#0470") ; click Info
 	Else
 		SetLog("Please join a Clan ...", $COLOR_GREEN)
-		If _ColorCheck(_GetPixelColor($aCloseChat[0], $aCloseChat[1]), Hex($aCloseChat[2], 6), $aCloseChat[3]) Then
+		If _ColorCheck(_GetPixelColor($aCloseChat[0], $aCloseChat[1], true), Hex($aCloseChat[2], 6), $aCloseChat[3]) Then
 			; Clicks chat thing
-			Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0470")
+			If IsMainChatOpenPage() Then Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0471")
 		EndIf
 		Return
 	EndIf
@@ -48,8 +47,8 @@ Func ClanLevel()
 	If $debugSetlog = 1 Then SetLog("Wait until find the Clan Perk Button, max 5 seconds", $COLOR_GREEN)
 	; $iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation, $maxDelay = 10
 	; Wait until find the Clan Perk Button , max 5 seconds
-	If WaitforPixel(95, 243, 98, 244, Hex(0x7cd8e8, 6), 5, 10) Then
-		$iClanLevel = getOcrClanLevel(87, 101)
+	If WaitforPixel(95, 243 + $midOffsetY, 98, 244 + $midOffsetY, Hex(0x7cd8e8, 6), 5, $iDelayClanLevel1) Then
+		$iClanLevel = getOcrClanLevel(87, 101 + $midOffsetY)
 		If Not $iClanLevel = "" Then
 			SetLog("Found Clan Level: " & $iClanLevel, $COLOR_GREEN)
 		Else
@@ -59,7 +58,7 @@ Func ClanLevel()
 	EndIf
 
 	; click red cross to close the Clan Info Window
-	Click(830, 73)
+	If IsClanInfoPage() Then Click(830, 73,1,0, "#0473")
 
 	If _Sleep($iDelayDonateCC1) Then Return
 
@@ -69,7 +68,7 @@ Func ClanLevel()
 		If _Sleep(100) Then Return
 		If _ColorCheck(_GetPixelColor($aCloseChat[0], $aCloseChat[1], True), Hex($aCloseChat[2], 6), $aCloseChat[3]) Then
 			; Clicks chat thing
-			Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0470")
+			If IsMainChatOpenPage() Then Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0472")
 			ExitLoop
 		Else
 			If _Sleep(100) Then Return

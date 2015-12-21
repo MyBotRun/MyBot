@@ -1,10 +1,10 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: checkTownhall
+; Name ..........: checkTownhallAdv2
 ; Description ...: This file Includes the Variables and functions to detection the level of a TH
-; Syntax ........: checkTownhall()
+; Syntax ........: checkTownhallAdv2()
 ; Parameters ....: None
 ; Return values .: $THx, $THy
-; Author ........:
+; Author ........: Sardo
 ; Modified ......:
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
 ;                  MyBot is distributed under the terms of the GNU GPL
@@ -13,86 +13,189 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Global $atkTHADV[5][11]
+Func LoadTHImage()
+	; Load variables array $THimages0 - $THImages4
+	; $THImagesX[0]= numbers of n files
+	; $THImagesX[1..n] = name of file 1..n
+	Local $x
+	Local $path = @ScriptDir & "\images\TH\"
+	For $t = 0 To 5
+		;assign THImages0... THImages4  an array empty with THimagesx[0]=0
+		Assign("THImages" & $t, StringSplit("", ""))
+		;put in a temp array the list of files matching condition "*T*.bmp"
+		$x = _FileListToArrayRec(@ScriptDir & "\images\TH\" & $THText[$t] & "\", "*T*X*Y*.bmp", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
+		;assign value at THimages0... THImages4 if $x it's not empty
+		If UBound($x) Then Assign("THImages" & $t, $x)
+		;code to debug in console if need
+		For $i = 0 To UBound(Eval("THImages" & $t)) - 1
+			ConsoleWrite("$THImages" & $t & "[" & $i & "]:" & Execute("$THImages" & $t & "[" & $i & "]") & @CRLF)
+		Next
 
-$atkTHADV[0][0] = @ScriptDir & "\images\TH\6.bmp"
+		;make stats array and put values = 0
+		For $i = 0 To UBound($x) - 1
+			$x[$i] = "0"
+		Next
+		If UBound($x) Then Assign("THImagesStat" & $t, $x)
 
-$atkTHADV[1][0] = @ScriptDir & "\images\TH\7.bmp"
-$atkTHADV[1][1] = @ScriptDir & "\images\TH\th7b.bmp"
-$atkTHADV[1][2] = @ScriptDir & "\images\TH\th7c.bmp"
-$atkTHADV[1][3] = @ScriptDir & "\images\TH\th7d.bmp"
-$atkTHADV[1][4] = @ScriptDir & "\images\TH\th7e.bmp"
-$atkTHADV[1][5] = @ScriptDir & "\images\TH\th7f.bmp"
-$atkTHADV[1][6] = @ScriptDir & "\images\TH\th7g.bmp"
-$atkTHADV[1][7] = @ScriptDir & "\images\TH\th7h.bmp"
-$atkTHADV[1][8] = @ScriptDir & "\images\TH\th7i.bmp"
-$atkTHADV[1][9] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th7j.bmp"
-$atkTHADV[1][10] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th7k.bmp"
+		;read from ini file stats values
+		For $i = 1 To UBound(Eval("THImagesStat" & $t)) - 1
+			Local $tempvect = Eval("THImagesStat" & $t)
+			$tempvect[$i] = IniRead($statChkTownHall, $THText[$t], Execute("$THImages" & $t & "[" & $i & "]"), "0")
+			Assign("THImagesStat" & $t, $tempvect)
+			;SetLog ( "-$THImagesStat"& $t &"[" & $i & "] = " & Execute("$THImages"& $t &"[" & $i & "]") & " - " &  Execute("$THImagesStat"& $t &"[" & $i & "]") )
+		Next
 
-$atkTHADV[2][0] = @ScriptDir & "\images\TH\8.bmp"
-$atkTHADV[2][1] = @ScriptDir & "\images\TH\th8b.bmp"
-$atkTHADV[2][2] = @ScriptDir & "\images\TH\th8c.bmp"
-$atkTHADV[2][3] = @ScriptDir & "\images\TH\th8d.bmp"
-$atkTHADV[2][4] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th8e.bmp"
-$atkTHADV[2][5] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th8f.bmp"
-$atkTHADV[2][6] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th8g.bmp"
-
-$atkTHADV[3][0] = @ScriptDir & "\images\TH\9.bmp"
-$atkTHADV[3][1] = @ScriptDir & "\images\TH\th9b.bmp"
-$atkTHADV[3][2] = @ScriptDir & "\images\TH\th9c.bmp"
-$atkTHADV[3][3] = @ScriptDir & "\images\TH\th9d.bmp"
-$atkTHADV[3][4] = @ScriptDir & "\images\TH\th9e.bmp"
-$atkTHADV[3][5] = @ScriptDir & "\images\TH\th9f.bmp"
-$atkTHADV[3][6] = @ScriptDir & "\images\TH\th9g.bmp"
-$atkTHADV[3][7] = @ScriptDir & "\images\TH\th9h.bmp"
-$atkTHADV[3][8] = "*Trans0xED1C24 "& @ScriptDir & "\images\TH\th9i.bmp"
-$atkTHADV[3][9] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th9j.bmp"
-$atkTHADV[3][10] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th9k.bmp"
-
-$atkTHADV[4][0] = @ScriptDir & "\images\TH\10.bmp"
-$atkTHADV[4][1] = @ScriptDir & "\images\TH\th10b.bmp"
-$atkTHADV[4][2] = @ScriptDir & "\images\TH\th10c.bmp"
-$atkTHADV[4][3] = @ScriptDir & "\images\TH\th10d.bmp"
-$atkTHADV[4][4] = ""
-$atkTHADV[4][5] = @ScriptDir & "\images\TH\th10f.bmp"
-$atkTHADV[4][6] = @ScriptDir & "\images\TH\th10g.bmp"
-$atkTHADV[4][7] = @ScriptDir & "\images\TH\th10h.bmp"
-$atkTHADV[4][8] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th10i.bmp"
-$atkTHADV[4][9] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th10j.bmp"
-$atkTHADV[4][10] = "*Trans0xED1C24 "&@ScriptDir & "\images\TH\th10k.bmp"
-
-Global $atkTH[5]
-For $i = 0 To 4
-   $atkTH[$i] = @ScriptDir & "\images\TH\" & $i+6 & ".bmp"
-Next
-
-Local $Tolerance1[5] = [80, 80, 80, 80, 80]
-
-Global $ToleranceTH[5][11]=[ [70,0,0,0,0,0,0,0,0,0,0],[70,70,70,70,70,70,70,70,70,120,120],[70,70,70,70,120,120,120,0,0,0,0],[70,70,70,70,70, 70,70,70,120,120, 120],[70,70,70,70,70, 70,70,70,120,120, 120] ]
-
-
-Func checkTownhall()
-	   _CaptureRegion()
-	  For $i = 0 To 4
-	   $THLocation = _ImageSearch($atkTH[$i], 1, $THx, $THy, $Tolerance1[$i]) ; Getting TH Location
-	   If $THLocation = 1 Then
-		   If FilterTH()=True Then Return $THText[$i]
-	   EndIf
-	  Next
-   If $THLocation = 0 Then Return "-"
-   EndFunc
-
-   Func   checkTownhallADV()
-	_CaptureRegion()
-	For $t=0 to 4
-		 For $i = 0 To 10
-			   If FileExists($atkTHADV[$t][$i]) Then
-					 $THLocation = _ImageSearch($atkTHADV[$t][$i], 1, $THx, $THy, $ToleranceTH[$t][$i]) ; Getting TH Location
-					 If $THLocation = 1 Then
-						   If FilterTH()=True Then Return $THText[$t]
-					 EndIf
-			   EndIf
-		 Next
 	Next
-   If $THLocation = 0 Then Return "-"
-EndFunc
+EndFunc   ;==>LoadTHImage
+
+Func checkTownHallADV2($limit = 0, $tolerancefix = 0)
+	;variable limit: limit number of searches, limit = 0 disable limit search
+	;variable tolearnce: set a fixed tolearnce, tolerance = 0 disable fixed tolerance
+	Local $hTimer = TimerInit()
+	Local $count = 0
+
+
+	; calculate max number of files into folders
+	Local $max = 0, $tolerance
+	For $i = 0 To UBound($THText) - 1
+		If Int(Execute("$THImages" & $i & "[0]")) > $max Then $max = Int(Execute("$THImages" & $i & "[0]"))
+	Next
+	If $limit > 0 And $max > 0 And $limit <= $max Then $max = $limit
+
+;~ 	ConsoleWrite ("max value =  " & $max &  @CRLF)
+	Local $found = False
+	For $i = 1 To $max
+		_CaptureRegion(0,0,$DEFAULT_WIDTH,$DEFAULT_HEIGHT,true)
+		;For $t = 0 To UBound($THText) - 1		  ; check from th6 to th11
+		For $t = UBound($THText) - 1 To 0 Step -1 ; check from th11 to th6
+			If Int(Execute("$THImages" & $t & "[0]")) >= $i Then
+				$count += 1
+				If $tolerancefix > 0 Then
+					$tolerance = $tolerancefix
+				Else
+					$tolerance = Number(StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), ".bmp") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") - 1))
+				EndIf
+				ConsoleWrite("Examine image n." & $i)
+				ConsoleWrite(" for TH " & $THText[$t])
+				ConsoleWrite(" - image name: " & Execute("$THImages" & $t & "[" & $i & "]"))
+				ConsoleWrite(" - tolerance: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
+				ConsoleWrite(" - X compensation: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") - 1) & ">")
+				ConsoleWrite(" - Y compensation: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - 1) & ">")
+				ConsoleWrite(" - tolerancecalc: " & $tolerance)
+				ConsoleWrite(@CRLF)
+				$THLocation = _ImageSearch(@ScriptDir & "\images\TH\" & $THText[$t] & "\" & Execute("$THImages" & $t & "[" & $i & "]"), 1, $THx, $THy, $tolerance) ; Getting TH Location
+				ConsoleWrite("Imagesearch return: ")
+				ConsoleWrite("- THLocation : " & $THLocation)
+				ConsoleWrite("- THx : " & $THx)
+				ConsoleWrite("- $THy : " & $THy)
+				$THx += Int(StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") - 1))
+				$THy += Int(StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - 1))
+				ConsoleWrite("- with compensation (" & $THx & "," & $THy & ")")
+				ConsoleWrite(@CRLF)
+
+
+				If $THLocation = 1 Then
+					;add in stats-----
+					Local $tempvect = Eval("THImagesStat" & $t)
+					$tempvect[$i] += 1
+					Assign("THImagesStat" & $t, $tempvect)
+					;------------------
+					If $debugBuildingPos = 1 Then
+						Setlog("#*# checkTownhallADV2: ", $COLOR_TEAL)
+						Setlog("  - Position (" & $THx & "," & $THy & ")", $COLOR_TEAL)
+						Setlog("  - TownHall detected level " & $THText[$t], $COLOR_TEAL)
+						Setlog("  - Image Match " & Execute("$THImages" & $t & "[" & $i & "]"), $COLOR_TEAL)
+						Setlog("  - IsInsidediamond: " & isInsideDiamondXY($THx, $THy), $COLOR_TEAL)
+						SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
+						SetLog("  - Images checked: " & $count, $COLOR_TEAL)
+					EndIf
+					If isInsideDiamondXY($THx, $THy) = True Then
+						$found = True
+						$ImageInfo = String("TH" & $THText[$t] & "-" & $i)
+						SaveStatChkTownHall()
+						;If $debugImageSave = 1 Then CaptureTHwithInfo($THx, $THy, $ImageInfo)
+						Return $THText[$t]
+					Else
+						ContinueLoop
+					EndIf
+				EndIf
+			EndIf
+			If $found Then ExitLoop ;if found = true exit from second for...
+		Next
+	Next
+
+;~ 	If $found = False Then
+;~ 		$tolerance = 5 + Number(StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), ".bmp") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") - 1))
+;~ 		SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
+;~ 		For $t = (UBound($THText) - 1) To 0 Step -1
+;~ 			_CaptureRegion()
+;~ 			For $i = $max To 1 Step -1
+;~ 				If Int(Execute("$THImages" & $t & "[0]")) >= $i Then
+;~ 					$THLocation = _ImageSearch(@ScriptDir & "\images\TH\" & $THText[$t] & "\" & Execute("$THImages" & $t & "[" & $i & "]"), 1, $THx, $THy, $tolerance) ; Getting TH Location
+;~ 					If $THLocation = 1 Then
+;~ 						;add in stats-----
+;~ 						Local $tempvect = Eval("THImagesStat" & $t)
+;~ 						$tempvect[$i] += 1
+;~ 						Assign("THImagesStat" & $t, $tempvect)
+;~ 						If isInsideDiamondXY($THx, $THy) = True Then
+;~ 							$found = True
+;~ 							$ImageInfo = String("TH" & $THText[$t] & "-" & $i)
+;~ 							If $debugImageSave = 1 Then CaptureTHwithInfo($THx, $THy, $ImageInfo)
+;~ 							Return $THText[$t]
+;~ 						Else
+;~ 							ContinueLoop
+;~ 						EndIf
+;~ 					EndIf
+;~ 				EndIf
+;~ 				If $found Then ExitLoop
+;~ 			Next
+;~ 		Next
+;~ 	EndIf
+
+	ConsoleWrite("THLOCATION = <" & $THLocation & ">")
+	If $THLocation = 0 Then
+		If $debugBuildingPos = 1 Then
+			Setlog("#*# checkTownhallADV2: NONE ", $COLOR_TEAL)
+			SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
+			SetLog("  - Images checked: " & $count, $COLOR_TEAL)
+		EndIf
+		If $debugBuildingPos = 1 And ($limit <> 0 Or $tolerancefix <> 0) Then Setlog("#*# checkTownhallADV2: limit= " & $limit & ", tolerancefix=" & $tolerancefix, $COLOR_TEAL)
+		If $debugImageSave = 1 Then DebugImageSave("checkTownhallADV2_NoTHFound_", False)
+	EndIf
+
+	Return "-"
+
+EndFunc   ;==>checkTownHallADV2
+
+Func SaveStatChkTownHall()
+	FileOpen($statChkTownHall, $FO_UTF16_LE + $FO_OVERWRITE)
+	If FileExists($statChkTownHall) Then
+		For $t = 0 To 5
+			For $i = 1 To UBound(Eval("THImages" & $t)) - 1
+				IniWrite($statChkTownHall, $THText[$t], Execute("$THImages" & $t & "[" & $i & "]"), Execute("$THImagesStat" & $t & "[" & $i & "]"))
+			Next
+		Next
+	EndIf
+EndFunc   ;==>SaveStatChkTownHall
+
+;~ Func CaptureTHwithInfo($THx, $THy, $ImageInfo)
+;~ 	local $EditedImage
+
+;~ 	$EditedImage = $hBitmap
+
+;~ 	Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($EditedImage)
+;~ 	Local $hPen = _GDIPlus_PenCreate(0xFFFF0000, 2) ;create a pencil Color FF0000/RED
+
+;~ 	_GDIPlus_GraphicsDrawRect($hGraphic, $THx - 5, $THy - 5, 10, 10, $hPen)
+;~ 	_GDIPlus_GraphicsDrawString($hGraphic, $ImageInfo, 401, 63,"Arial",15)
+
+;~ 	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+;~ 	Local $Time = @HOUR & "." & @MIN & "." & @SEC
+;~ 	Local $filename = string("THDetected_" & $Date & "_" & $Time & "_" & $ImageInfo & ".jpg")
+
+;~ 	If $debugBuildingPos = 1 and $debugsetlog = 1 Then Setlog(" _GDIPlus_ImageSaveToFile", $COLOR_PURPLE)
+;~ 	_GDIPlus_ImageSaveToFile($EditedImage, $dirTemp & $filename)
+;~ 	_GDIPlus_BrushDispose($hPen)
+
+;~ EndFunc   ;==>CaptureTHwithInfo
+

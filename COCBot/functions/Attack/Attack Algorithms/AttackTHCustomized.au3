@@ -28,24 +28,82 @@
 	;							this is first wave of 3
 	; SpellTHGrid($S) = $S Options : $eLSpell , $eRSpell , $eHSpell
 
-Func AttackTHCustomized()
+;~ Func AttackTHCustomized()
 
-	Setlog("Sending 1st wave of Troops.")
-    ; Put Your Code here
+;~ 	Setlog("Sending 1st wave of Archers/Barbarians.")
+;~ 	AttackTHGrid($eBarb, 4, 1, Random(1500,2000,1), 1) ; deploys 4 barbarians - take out possible bombs
+;~ 	If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eArch, 6, 1, Random(800,1000,1), 1) ; deploys 6 archers
+;~ 	AttackTHGrid($eMini, 2, 2, Random(800,1000,1), 1) ; deploys 4 minion
 
-	; EX:
-	; AttackTHGrid($eArch, 4, 1, 2000, 1) ; deploys 4 archers - take out possible bombs
-	; AttackTHGrid($eArch, 3, Random(5, 6, 1), 1000, 1) ; deploys 15-18 archers   ### Random(from 5, to 6, steps of 1) ####
-	; SpellTHGrid($eRSpell)
-	; If CheckOneStar (5, true, true) then return
+;~ 	; if Gold/Elixr are changing ( any troop attacking the TH will change the G+E ) the bot wait max 15x3 seconds , prevent waste more troops..
+;~ 	; If not changing will continue to next wave of troops ..
+;~     GoldElixirChangeThSnipes(20)
+;~ 	If CheckOneStar() then return
 
-	Setlog("Sending 2nd wave of Troops.")
+;~ 	Setlog("Still no star - Let's send in more diverse troops!")
+;~ 	AttackTHGrid($eGiant, 4, 2, Random( 100,200,1), 2) ;deploys 8 giants to take heat
+;~ 	AttackTHGrid($eWall, 2, 5, Random( 50,100,1), 1) ;deploys 10 wallbreakers to break walls if we have
+;~ 	If CheckOneStar() Then Return
+;~ 	SpellTHGrid($eRSpell)
+;~ 	If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eBarb, 3, Random(4, 5, 1), Random( 800,1000,1), 1) ; deploys up to 12-15 barbarians
+;~ 	If CheckOneStar(30) Then Return
+;~ 	AttackTHGrid($eArch, 3, 8, Random( 500,600,1), 3) ; deploys 24 archers
+
+;~ 	GoldElixirChangeThSnipes(15)
+;~ 	If CheckOneStar() Then Return
+
+;~ 	Setlog("Hope the rest of your troops can finish the job!")
+;~ 	SpellTHGrid($eHSpell)
+;~ 	AttackTHGrid($eKing) ; deploys King
+;~     If CheckOneStar() Then Return
+;~     AttackTHGrid($eQueen) ; deploys Queen
+
+;~ 	GoldElixirChangeThSnipes(15)
+;~     If CheckOneStar() Then Return
+
+;~ 	AttackTHGrid($eGiant, 2, 9, Random( 500,600,1), 3) ;deploys 18 giants
+;~ 	If CheckOneStar() Then Return
+;~     AttackTHGrid($eHogs, Random( 5,6,1), 3, Random( 800,1000,1), 2) ;releases 15-18 Hogs
+;~ 	If CheckOneStar() Then Return
+;~     AttackTHGrid($eWall,2,1,Random( 500,600,1),1)    ; deploys 2 wallbreakers
+;~     If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eWall,2,1,Random( 500,600,1),1)    ; deploys 2 wallbreakers
+;~     If CheckOneStar() Then Return
+;~     AttackTHGrid($eHeal,2,1,Random( 500,600,1),4)    ; deploys 2 healer
+;~     If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eCastle) ; deploys CC
+
+;~ 	GoldElixirChangeThSnipes(15)
+;~     If CheckOneStar() Then Return
+
+;~ 	AttackTHGrid($eBarb, 4, 8, Random( 500,600,1), 2) ; deploys up to 32 barbarians
+;~ 	If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eArch, 3, 13, Random( 500,600,1), 4) ;deploys up to 39 archers
+;~ 	If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eBarb, 3, 11, Random( 500,600,1), 2) ; deploys up to 33 barbarians
+;~ 	If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eArch, 2, 20, Random( 500,600,1), 4) ;deploys up to 40 archers
+;~ 	If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eBarb, 4, 9, Random( 500,600,1), 2) ; deploys up to 36 barbarians
+;~ 	If CheckOneStar() Then Return
+;~ 	AttackTHGrid($eArch, 2, 20, Random( 500,600,1), 4) ;deploys up to 40 archers
+;~ 	If CheckOneStar() Then Return
+;~     AttackTHGrid($eBarb, 4, 9, Random( 500,600,1), 2) ; deploys up to 36 barbarians
+;~     If CheckOneStar() Then Return
+;~     AttackTHGrid($eArch, 2, 20, Random( 500,600,1), 4) ;deploys up to 40 archers
+;~     If CheckOneStar(25) Then Return
+
+;~ 	For $i = 1 To 5 ; struck TH by all lightning spells
+;~ 		If CheckOneStar() Then Return
+;~ 		CastSpell($eLSpell,$THx, $THy) ; on TH directly without offset
+;~ 	Next
+
+;~ 	SetLog("All Giants, Barbs, and Archers should be deployed, in addition to Heroes & CC (if options are selected). Other troops are not meant to be deployed in this algorithm.", $COLOR_GREEN)
+;~ 	If _Sleep(Random( 500,600,1)) Then Return
+;~ 	SetLog("~Finished Attacking, waiting to finish", $COLOR_GREEN)
+;~ 	If CheckOneStar(20) Then Return
 
 
-	Setlog("Sending 3rd wave of Troops.")
-
-
-	Setlog("Sending 4th wave of Troops.")
-
-
-EndFunc
+;~ EndFunc

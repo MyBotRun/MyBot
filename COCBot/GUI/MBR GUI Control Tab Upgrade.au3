@@ -17,6 +17,9 @@ Func chkWalls()
 	If GUICtrlRead($chkWalls) = $GUI_CHECKED Then
 		$ichkWalls = 1
 		GUICtrlSetState($UseGold, $GUI_ENABLE)
+		GUICtrlSetState($sldMaxNbWall, $GUI_ENABLE)
+		;GUICtrlSetState($sldToleranceWall, $GUI_ENABLE)
+		;GUICtrlSetState($btnFindWalls, $GUI_ENABLE)
 		;		GUICtrlSetState($UseElixir, $GUI_ENABLE)
 		;		GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
 		GUICtrlSetState($cmbWalls, $GUI_ENABLE)
@@ -32,9 +35,13 @@ Func chkWalls()
 		GUICtrlSetState($cmbWalls, $GUI_DISABLE)
 		GUICtrlSetState($txtWallMinGold, $GUI_DISABLE)
 		GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
+		GUICtrlSetState($sldMaxNbWall, $GUI_DISABLE)
+		;GUICtrlSetState($sldToleranceWall, $GUI_DISABLE)
+		;GUICtrlSetState($btnFindWalls, $GUI_DISABLE)
 
 	EndIf
 EndFunc   ;==>chkWalls
+
 
 Func chkSaveWallBldr()
 	If GUICtrlRead($chkSaveWallBldr) = $GUI_CHECKED Then
@@ -122,7 +129,7 @@ Func btnResetUpgrade()
 		GUICtrlSetData($txtUpgradeY[$i], "") ; Clear GUI Y position
 		GUICtrlSetData($txtUpgradeValue[$i], "") ; Clear Upgrade value in GUI
 		GUICtrlSetImage($picUpgradeType[$i], $pIconLib, $eIcnBlank) ; change GUI upgrade image to blank
-		$ipicUpgradeStatus[$i] =  $eIcnRedLight
+		$ipicUpgradeStatus[$i] = $eIcnRedLight
 		GUICtrlSetImage($picUpgradeStatus[$i], $pIconLib, $ipicUpgradeStatus[$i]) ; Change GUI upgrade status to not ready
 		GUICtrlSetState($chkbxUpgrade[$i], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
 		For $j = 0 To 2
@@ -153,3 +160,60 @@ Func cmbLab()
 	$icmbLaboratory = _GUICtrlComboBox_GetCurSel($cmbLaboratory)
 	GUICtrlSetImage($icnLabUpgrade, $pIconLib, $aLabTroops[$icmbLaboratory][4])
 EndFunc   ;==>cmbLab
+
+Func chkUpgradeKing()
+
+	If GUICtrlRead($chkUpgradeKing) = $GUI_CHECKED Then
+		$ichkUpgradeKing = 1
+	Else
+		$ichkUpgradeKing = 0
+	EndIf
+
+	If GUICtrlRead($cmbBoostBarbarianKing) > 0 Then
+		GUICtrlSetState($chkUpgradeKing, $GUI_DISABLE)
+		GUICtrlSetState($chkUpgradeKing, $GUI_UNCHECKED)
+		$ichkUpgradeKing = 0
+	Else
+		GUICtrlSetState($chkUpgradeKing, $GUI_ENABLE)
+	EndIf
+
+	IniWrite($config, "upgrade", "UpgradeKing", $ichkUpgradeKing)
+EndFunc   ;==>ichkUpgradeKing
+
+Func chkUpgradeQueen()
+
+	If GUICtrlRead($chkUpgradeQueen) = $GUI_CHECKED Then
+		$ichkUpgradeQueen = 1
+	Else
+		$ichkUpgradeQueen = 0
+	EndIf
+
+	If GUICtrlRead($cmbBoostArcherQueen) > 0 Then
+		GUICtrlSetState($chkUpgradeQueen, $GUI_DISABLE)
+		GUICtrlSetState($chkUpgradeQueen, $GUI_UNCHECKED)
+		$ichkUpgradeQueen = 0
+	Else
+		GUICtrlSetState($chkUpgradeQueen, $GUI_ENABLE)
+	EndIf
+
+	IniWrite($config, "upgrade", "UpgradeQueen", $ichkUpgradeQueen)
+EndFunc   ;==>chkUpgradeQueen
+
+Func chkUpgradeWarden()
+
+	If GUICtrlRead($chkUpgradeWarden) = $GUI_CHECKED Then
+		$ichkUpgradeWarden = 1
+	Else
+		$ichkUpgradeWarden = 0
+	EndIf
+
+	If GUICtrlRead($cmbBoostWarden) > 0 Then
+		GUICtrlSetState($chkUpgradeWarden, $GUI_DISABLE)
+		GUICtrlSetState($chkUpgradeWarden, $GUI_UNCHECKED)
+		$ichkUpgradeWarden = 0
+	Else
+		GUICtrlSetState($chkUpgradeWarden, $GUI_ENABLE)
+	EndIf
+
+	IniWrite($config, "upgrade", "UpgradeWarden", $ichkUpgradeWarden)
+EndFunc   ;==>chkUpgradeWarden

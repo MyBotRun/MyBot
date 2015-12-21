@@ -14,6 +14,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
+	If $debugSetlog = 1 Then SetLog("PrepareAttack",$COLOR_PURPLE)
 	If $Remaining Then
 		SetLog("Checking remaining unused troops for: " & $sModeText[$pMatchMode], $COLOR_BLUE)
 	Else
@@ -21,9 +22,9 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 	EndIf
 
 	_WinAPI_DeleteObject($hBitmapFirst)
-	$hBitmapFirst = _CaptureRegion2(0, 571, 859, 671)
+	$hBitmapFirst = _CaptureRegion2(0, 571 + $bottomOffsetY, 859, 671 + $bottomOffsetY)
 	If _Sleep($iDelayPrepareAttack1) Then Return
-	Local $result = DllCall($pFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
+	Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
 	If $debugSetlog = 1 Then Setlog("DLL Troopsbar list: " & $result[0], $COLOR_PURPLE)
 	Local $aTroopDataList = StringSplit($result[0], "#")
 	Local $aTemp[12][3]
@@ -88,6 +89,8 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 					$aTemp[$slotIndex][0] = $eHaSpell
 				Case "Castle"
 					$aTemp[$slotIndex][0] = $eCastle
+				Case "Warden"
+					$aTemp[$slotIndex][0] = $eWarden
 			EndSwitch
 		Next
 	EndIf
@@ -105,12 +108,12 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 			EndIf
 			If $troopKind = -1 Then
 				$atkTroops[$i][1] = 0
-			ElseIf ($troopKind = $eKing) Or ($troopKind = $eQueen) Or ($troopKind = $eCastle) Then
+			ElseIf ($troopKind = $eKing) Or ($troopKind = $eQueen) Or ($troopKind = $eCastle) Or ($troopKind = $eWarden) Then
 				$atkTroops[$i][1] = ""
 			Else
 				$atkTroops[$i][1] = $aTemp[$i][1]
 			EndIf
-			If $troopKind <> -1 Then SetLog("-" & NameOfTroop($atkTroops[$i][0]) & " " & $atkTroops[$i][1], $COLOR_GREEN)
+			If $troopKind <> -1 Then SetLog("-*-" & NameOfTroop($atkTroops[$i][0]) & " " & $atkTroops[$i][1], $COLOR_GREEN)
 		EndIf
 	Next
 EndFunc   ;==>PrepareAttack

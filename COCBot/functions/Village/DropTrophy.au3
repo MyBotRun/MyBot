@@ -39,7 +39,7 @@ Func DropTrophy()
 
 						If _Sleep($iDelayDropTrophy2) Then ExitLoop
 						$iCount = 0
-						While getGoldVillageSearch(48, 68) = "" ; Loops until gold is readable
+						While getGoldVillageSearch(48, 69) = "" ; Loops until gold is readable
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop (2)
 							$iCount += 1
 							If $iCount >= 35 Then ExitLoop (2) ; or Return
@@ -49,10 +49,11 @@ Func DropTrophy()
 						$iAimGold[$DB] = $iMinGold[$DB]
 						$iAimElixir[$DB] = $iMinElixir[$DB]
 						$iAimGoldPlusElixir[$DB] = $iMinGoldPlusElixir[$DB]
-
-						$searchGold = getGoldVillageSearch(48, 68)
-						$searchElixir = getElixirVillageSearch(48, 68 + 28)
-						$searchTrophy = getTrophyVillageSearch(48, 68 + 28 * 2 + 33)
+						$SearchCount = 0
+						GetResources()
+;~ 						$searchGold = getGoldVillageSearch(48, 68)
+;~ 						$searchElixir = getElixirVillageSearch(48, 68 + 28)
+;~ 						$searchTrophy = getTrophyVillageSearch(48, 68 + 28 * 2 + 33)
 
 						Local $G = (Number($searchGold) >= Number($iAimGold[$DB]))
 						Local $E = (Number($searchElixir) >= Number($iAimElixir[$DB]))
@@ -66,8 +67,16 @@ Func DropTrophy()
 								ReturnHome($TakeLootSnapShot)
 								$ReStart = True  ; Set restart flag after dead base attack to ensure troops are trained
 								ExitLoop ; or Return, Will end function, no troops left to drop Trophies, will need to Train new Troops first
-							EndIf
+						    EndIf
 						EndIf
+
+						If ( SearchTownHallLoc() and ( $iChkSnipeWhileTrain= 1 or  $OptTrophyMode= 1 ) ) Then
+							SetLog(_PadStringCenter(" TH Snipe Base Found while drop tropies!! ", 50, "~"), $COLOR_GREEN)
+							SwitchAttackTHType() ; launch attack
+							ReturnHome($TakeLootSnapShot)
+							$ReStart = True  ; Set restart flag after dead base attack to ensure troops are trained
+							ExitLoop ; or Return, Will end function, no troops left to drop Trophies, will need to Train new Troops first
+					    EndIf
 
 
 						If _Sleep($iDelayDropTrophy3) Then Return
@@ -88,26 +97,27 @@ Func DropTrophy()
 							If $DebugSetlog = 1 Then Setlog("Hero Loc = " & $RandomXY & ", X:Y= " & $RandomEdge[$RandomXY][0] & "|" & $RandomEdge[$RandomXY][1], $COLOR_PURPLE)
 							If $King <> -1 Then
 								SetLog("Deploying King", $COLOR_BLUE)
-								Click(GetXPosOfArmySlot($King, 68), 595, 1, 0, "#0177") ;Select King
+								Click(GetXPosOfArmySlot($King, 68), 595 + $bottomOffsetY, 1, 0, "#0177") ;Select King
 								_Sleep($iDelayDropTrophy1)
 								Click($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], 1, 0, "#0178") ;Drop King
-								$checkKPower = True
 								If _Sleep($iDelayDropTrophy1) Then ExitLoop
 								SetTrophyLoss()
+								If IsAttackPage() Then SelectDropTroop($King) ;If King was not activated: Boost King before EndBattle to restore some health
 								ReturnHome(False, False) ;Return home no screenshot
 								If _Sleep($iDelayDropTrophy1) Then ExitLoop
 							EndIf
 							If $King = -1 And $Queen <> -1 Then
 								SetLog("Deploying Queen", $COLOR_BLUE)
-								Click(GetXPosOfArmySlot($Queen, 68), 595, 1, 0, "#0179") ;Select Queen
+								Click(GetXPosOfArmySlot($Queen, 68), 595 + $bottomOffsetY, 1, 0, "#0179") ;Select Queen
 								_Sleep($iDelayDropTrophy1)
 								Click($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], 1, 0, "#0180") ;Drop Queen
-								$checkQPower = True
 								If _Sleep($iDelayDropTrophy1) Then ExitLoop
 								SetTrophyLoss()
+								If IsAttackPage() Then SelectDropTroop($Queen) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
 								ReturnHome(False, False) ;Return home no screenshot
 								If _Sleep($iDelayDropTrophy1) Then ExitLoop
 							EndIf
+
 						EndIf
 						If ($Queen = -1 And $King = -1) Or $iChkTrophyHeroes = 0 Then
 							$RandomEdge = $Edges[Round(Random(0, 3))]
@@ -179,7 +189,7 @@ Func DropTrophy()
 
 					If _Sleep($iDelayDropTrophy2) Then ExitLoop
 					$iCount = 0
-					While getGoldVillageSearch(48, 68) = "" ; Loops until gold is readable
+					While getGoldVillageSearch(48, 69) = "" ; Loops until gold is readable
 						If _Sleep($iDelayDropTrophy1) Then ExitLoop (2)
 						$iCount += 1
 						If $iCount >= 35 Then ExitLoop (2) ; or Return
@@ -204,23 +214,23 @@ Func DropTrophy()
 						If $DebugSetlog = 1 Then Setlog("Hero Loc = " & $RandomXY & ", X:Y= " & $RandomEdge[$RandomXY][0] & "|" & $RandomEdge[$RandomXY][1], $COLOR_PURPLE)
 						If $King <> -1 Then
 							SetLog("Deploying King", $COLOR_BLUE)
-							Click(GetXPosOfArmySlot($King, 68), 595, 1, 0, "#0187") ;Select King
+							Click(GetXPosOfArmySlot($King, 68), 595 + $bottomOffsetY, 1, 0, "#0187") ;Select King
 							_Sleep($iDelayDropTrophy1)
 							Click($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], 1, 0, "#0188") ;Drop King
-							$checkKPower = True
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop
 							SetTrophyLoss()
+							If IsAttackPage() Then SelectDropTroop($King) ;If King was not activated: Boost King before EndBattle to restore some health
 							ReturnHome(False, False) ;Return home no screenshot
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop
 						EndIf
 						If $King = -1 And $Queen <> -1 Then
 							SetLog("Deploying Queen", $COLOR_BLUE)
-							Click(GetXPosOfArmySlot($Queen, 68), 595, 1, 0, "#0189") ;Select Queen
+							Click(GetXPosOfArmySlot($Queen, 68), 595 + $bottomOffsetY, 1, 0, "#0189") ;Select Queen
 							_Sleep($iDelayDropTrophy1)
 							Click($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], 1, 0, "#0190") ;Drop Queen
-							$checkQPower = True
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop
 							SetTrophyLoss()
+							If IsAttackPage() Then SelectDropTroop($Queen) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
 							ReturnHome(False, False) ;Return home no screenshot
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop
 						EndIf

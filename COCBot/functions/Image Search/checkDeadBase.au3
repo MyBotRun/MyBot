@@ -14,17 +14,50 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
+Global $maxElixirLevel = 7
+Global $ElixirImages0,$ElixirImages1,$ElixirImages2,$ElixirImages3,$ElixirImages4, $ElixirImages5, $ElixirImages6
+Global $ElixirImagesStat0,$ElixirImagesStat1,$ElixirImagesStat2,$ElixirImagesStat3,$ElixirImagesStat4, $ElixirImagesStat5, $ElixirImagesStat6
+
+
+Func LoadElisirImage()
+
+	Local $x
+	Local $path = @ScriptDir & "\images\ELIXIR\"
+
+	For $t = 0 To $maxElixirLevel
+		;assign ElixirImages0... ElixirImages6  an array empty with Elixirimagesx[0]=0
+		Assign("ElixirImages" & $t, StringSplit("", ""))
+		;put in a temp array the list of files matching condition "*T*.bmp"
+		$x = _FileListToArrayRec(@ScriptDir & "\images\ELIXIR\" & $t+6 & "\", "*T*.bmp", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
+		;assign value at ElixirImages0... ElixirImages6 if $x it's not empty
+		If UBound($x) Then Assign("ElixirImages" & $t, $x)
+		;code to debug in console if need
+		For $i = 0 To UBound(Eval("ElixirImages" & $t)) - 1
+			ConsoleWrite("$ElixirImages" & $t & "[" & $i & "]:" & Execute("$ElixirImages" & $t & "[" & $i & "]") & @CRLF)
+		Next
+
+		;make stats array and put values = 0
+		For $i = 0 To UBound($x) - 1
+			$x[$i] = "0"
+		Next
+		If UBound($x) Then Assign("ElixirImagesStat" & $t, $x)
+
+		;read from ini file stats values
+		For $i = 1 To UBound(Eval("ElixirImagesStat" & $t)) - 1
+			Local $tempvect = Eval("ElixirImagesStat" & $t)
+			$tempvect[$i] = IniRead($statChkDeadBase, $t, Execute("$ElixirImages" & $t & "[" & $i & "]"), "0")
+			Assign("ElixirImagesStat" & $t, $tempvect)
+		Next
+	Next
+EndFunc   ;==>LoadElisirImage
+
+
 Func checkDeadBase()
-	;    _CaptureRegion()
-	;	If _ColorCheck(_GetPixelColor(27, 29), Hex(0x5C5E60, 6), 20) And $SearchCount <= 3 Then
-	;	   $NoLeague += 1
-	;   EndIf
-	;	If _ColorCheck(_GetPixelColor(27, 29), Hex(0x5C5E60, 6), 20) And $NoLeague < 3 And $SearchCount >= 3 Then
-	;	   Return True ; Check if get 3x village which no league, its a false dead base because reset league features in CoC
-	;   Else
-	Return ZombieSearch() ; just so it compiles
-	;    EndIf
+
+	Return ZombieSearch2() ; just so it compiles
+
 EndFunc   ;==>checkDeadBase
+
 
 ;checkDeadBase Variables:-------------===========================
 Global $AdjustTolerance = 0
@@ -131,3 +164,140 @@ Func ZombieSearch()
 	EndIf
 EndFunc   ;==>ZombieSearch
 #EndRegion ### Check Dead Base Functions ###
+
+
+
+
+
+
+
+Func ZombieSearch2($limit = 0, $tolerancefix = 0)
+	;variable limit: limit number of searches, limit = 0 disable limit search
+	;variable tolearnce: set a fixed tolearnce, tolerance = 0 disable fixed tolerance
+	Local $hTimer = TimerInit()
+	Local $count = 0
+	Local $ElixirLocation
+	Local $ElixirLocationx, $ElixirLocationy
+	Local $ZombieFound = False
+
+	; calculate max number of files into folders
+	Local $max = 0, $tolerance
+
+	For $i = 0 To $maxElixirLevel
+		If Int(Execute("$ElixirImages" & $i & "[0]")) > $max Then $max = Int(Execute("$ElixirImages" & $i & "[0]"))
+	Next
+	If $limit > 0 And $max > 0 And $limit <= $max Then $max = $limit
+
+
+;~ 	ConsoleWrite ("max value =  " & $max &  @CRLF)
+
+	_CaptureRegion(0,0,$DEFAULT_WIDTH,$DEFAULT_HEIGHT,true)
+
+	For $i = 1 To $max
+		For $t = 0 To $maxElixirLevel - 1
+			If Int(Execute("$ElixirImages" & $t & "[0]")) >= $i Then
+				$count += 1
+				If $tolerancefix > 0 Then
+					$tolerance = $tolerancefix
+				Else
+					$tolerance = Number(StringMid(Execute("$ElixirImages" & $t & "[" & $i & "]"), StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), ".bmp") - StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") - 1))
+				EndIf
+				ConsoleWrite("Examine image n." & $i)
+				ConsoleWrite(" for ElixirImage " & $t)
+				ConsoleWrite(" - image name: " & Execute("$ElixirImages" & $t & "[" & $i & "]"))
+				ConsoleWrite(" - tolerance: <" & StringMid(Execute("$ElixirImages" & $t & "[" & $i & "]"), StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"),".BMP") - StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
+				ConsoleWrite(" - tolerancecalc: " & $tolerance)
+				ConsoleWrite(@CRLF)
+				$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR\" & $t + 6& "\" & Execute("$ElixirImages" & $t & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $tolerance) ; Getting Elixir Location
+				ConsoleWrite("Imagesearch return: ")
+				ConsoleWrite("- ElixirLocation : " & $ElixirLocation)
+				ConsoleWrite("- ElixirLocationx : " & $ElixirLocationx)
+				ConsoleWrite("- TElixirLocationy : " & $ElixirLocationy)
+				ConsoleWrite(@CRLF)
+
+				If $ElixirLocation = 1 Then
+					;add in stats-----
+					Local $tempvect = Eval("ElixirImagesStat" & $t)
+					$tempvect[$i] += 1
+					Assign("ElixirImagesStat" & $t, $tempvect)
+					;------------------
+					If $debugBuildingPos = 1 Then
+						Setlog("#*# ZombieSearch2: ", $COLOR_TEAL)
+						Setlog("  - Position (" & $ElixirLocationx & "," & $ElixirLocationy & ")", $COLOR_TEAL)
+						Setlog("  - Elisir Collector level " & $t + 6, $COLOR_TEAL)
+						Setlog("  - Image Match " & Execute("$ElixirImages" & $t & "[" & $i & "]"), $COLOR_TEAL)
+						Setlog("  - IsInsidediamond: " & isInsideDiamondXY($ElixirLocationx, $ElixirLocationy), $COLOR_TEAL)
+						SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
+						SetLog("  - Images checked: " & $count, $COLOR_TEAL)
+					EndIf
+					If isInsideDiamondXY($ElixirLocationx, $ElixirLocationy) = True Then
+						$ZombieFound = True
+						Exitloop(2)
+					Else
+						ContinueLoop
+					EndIf
+				EndIf
+			EndIf
+		Next
+	Next
+
+
+	If $ZombieFound = False Then
+		If $debugBuildingPos = 1 Then
+
+			Setlog("#*# ZombieSearch2: NONE ", $COLOR_TEAL)
+			SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
+			SetLog("  - Images checked: " & $count, $COLOR_TEAL)
+		EndIf
+		If $debugBuildingPos = 1 And ($limit <> 0 Or $tolerancefix <> 0) Then Setlog("#*# ZombieSearch2: limit= " & $limit & ", tolerancefix=" & $tolerancefix, $COLOR_TEAL)
+		If $debugImageSave = 1 Then DebugImageSave("ZombieSearch2_NoDeadBaseFound_", True)
+
+		Return False
+	Else
+		If $debugBuildingPos = 1 Then
+			Setlog(" FOUND = " & $ZombieFound, $COLOR_TEAL)
+		EndIf
+
+		Return True
+	EndIf
+
+
+
+EndFunc   ;==>checkTownHallADV2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Func SaveStatChkDeadBase()
+	FileOpen($statChkDeadBase, $FO_UTF16_LE + $FO_OVERWRITE)
+	If FileExists($statChkDeadBase) Then
+		For $t = 0 To $maxElixirLevel
+			For $i = 1 To UBound(Eval("ElixirImages" & $t)) - 1
+				IniWrite($statChkDeadBase, $t, Execute("$ElixirImages" & $t & "[" & $i & "]"), Execute("$ElixirImagesStat" & $t & "[" & $i & "]"))
+			Next
+		Next
+	EndIf
+EndFunc   ;==>SaveStatChkDeadBase

@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: GoldElixirChangeEBO  (End Battle Options)
 ; Description ...: Checks if the gold/elixir changes , Returns True if changed.
@@ -13,6 +12,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+
 Func GoldElixirChangeEBO()
 	Local $Gold1, $Gold2
 	Local $GoldChange, $ElixirChange
@@ -22,20 +22,20 @@ Func GoldElixirChangeEBO()
 	Local $Trophies
 	Local $txtDiff
 	Local $exitOneStar = 0, $exitTwoStars = 0
-
+	$DarkLow = 0
 	;READ RESOURCES n.1
-	$Gold1 = getGoldVillageSearch(48, 68)
-	$Elixir1 = getElixirVillageSearch(48, 68 + 28)
-	$Trophies = getTrophyVillageSearch(48, 167)
+	$Gold1 = getGoldVillageSearch(48, 69)
+	$Elixir1 = getElixirVillageSearch(48, 69 + 29)
+	$Trophies = getTrophyVillageSearch(48, 69+99)
 	If $Trophies <> "" Then ; If trophy value found, then base has Dark Elixir
 		If _Sleep($iDelayGoldElixirChangeEBO1) Then Return
-		$DarkElixir1 = getDarkElixirVillageSearch(48, 125)
+		$DarkElixir1 = getDarkElixirVillageSearch(48, 69+57)
 	Else
 		$DarkElixir1 = ""
-		$Trophies = getTrophyVillageSearch(48, 138)
+		$Trophies = getTrophyVillageSearch(48, 69+69)
 	EndIf
 
-	;CALCULATE WITCH TIMER TO USE
+	;CALCULATE WHICH TIMER TO USE
 	Local $iBegin = TimerInit(), $x = $sTimeStopAtk * 1000, $y = $sTimeStopAtk2 * 1000, $z
 	If Number($Gold1) < Number($stxtMinGoldStopAtk2) And Number($Elixir1) < Number($stxtMinElixirStopAtk2) And Number($DarkElixir1) < Number($stxtMinDarkElixirStopAtk2) And $iChkTimeStopAtk2 = 1 Then
 		$z = $y
@@ -66,28 +66,34 @@ Func GoldElixirChangeEBO()
 
 	;MAIN LOOP
 	While TimerDiff($iBegin) < $z
-		;HEALT HEROES
+		;HEALTH HEROES
 		CheckHeroesHealth()
-		If $checkKPower Or $checkQPower Then
+
+		;DE SPECIAL END EARLY
+		If $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 And $DESideEB Then
+			If $dropQueen Or $dropKing Then DELow()
+			If $DarkLow = 1 Then ExitLoop
+		EndIf
+		If $checkKPower Or $checkQPower Or $DarkLow = 2 Then
 			If _Sleep($iDelayGoldElixirChangeEBO1) Then Return
 		Else
 			If _Sleep($iDelayGoldElixirChangeEBO2) Then Return
 		EndIf
 
 		;READ RESOURCE n.2
-		$Gold2 = getGoldVillageSearch(48, 68)
+		$Gold2 = getGoldVillageSearch(48, 69)
 		If $Gold2 = "" Then
 			If _Sleep($iDelayGoldElixirChangeEBO1) Then Return
-			$Gold2 = getGoldVillageSearch(48, 68)
+			$Gold2 = getGoldVillageSearch(48, 69)
 		EndIf
-		$Elixir2 = getElixirVillageSearch(48, 68 + 28)
-		$Trophies = getTrophyVillageSearch(48, 167)
+		$Elixir2 = getElixirVillageSearch(48, 69 + 29)
+		$Trophies = getTrophyVillageSearch(48, 69+99)
 		If $Trophies <> "" Then ; If trophy value found, then base has Dark Elixir
 			If _Sleep($iDelayGoldElixirChangeEBO1) Then Return
-			$DarkElixir2 = getDarkElixirVillageSearch(48, 125)
+			$DarkElixir2 = getDarkElixirVillageSearch(48, 69+57)
 		Else
 			$DarkElixir2 = ""
-			$Trophies = getTrophyVillageSearch(48, 138)
+			$Trophies = getTrophyVillageSearch(48, 69+69)
 		EndIf
 
 		;WRITE LOG
@@ -128,7 +134,7 @@ Func GoldElixirChangeEBO()
 		EndIf
 
 		;EXIT LOOP IF RESOURCES = "" ... battle end
-		If getGoldVillageSearch(48, 68) = "" And getElixirVillageSearch(48, 68 + 28) = "" And $DarkElixir2 = "" Then
+		If getGoldVillageSearch(48, 69) = "" And getElixirVillageSearch(48, 69 + 29) = "" And $DarkElixir2 = "" Then
 			ExitLoop
 		EndIf
 
@@ -139,6 +145,12 @@ Func GoldElixirChangeEBO()
 		EndIf
 
 	WEnd ; END MAIN LOOP
+
+	;Priority Check... Exit To protect Hero Health
+	If $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 And $DESideEB And $DarkLow = 1 Then
+		SetLog("Returning Now -DE-", $COLOR_GREEN)
+		Return False
+	EndIf
 
 	;FIRST CHECK... EXIT FOR ONE STAR REACH
 	If $ichkEndOneStar = 1 And $exitOneStar = 1 Then
@@ -180,3 +192,20 @@ Func GoldElixirChangeEBO()
 	EndIf
 
 EndFunc   ;==>GoldElixirChangeEBO
+
+
+Func OverallDamage($OverallDamage = 30, $SetLog = True)
+
+	Local $Damage = Number(getOcrOverAllDamage(780, 527 + $bottomOffsetY ))
+
+	If $SetLog = True Then
+		SetLog("Overall Damage: " & $Damage & "%")
+	EndIf
+
+	If $Damage >= $OverallDamage Then
+		Return True
+	Else
+		Return False
+	EndIf
+
+EndFunc   ;==>OverallDamage

@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 Func SearchTownHallLoc()
    If $searchTH <> "-" Then
- 		 If FilterTH()=False Then Return False
+ 		 If isInsideDiamondXY( $THx,$THy)=False Then Return False
 
 	  For $i=0 to 20
 
@@ -44,13 +44,13 @@ Func SearchTownHallLoc()
 	Return False
 EndFunc ;--- SearchTownHallLoc
 
-Func FilterTH()
-   	  For $i=0 to 20
-		 If $Thx<52+$i*19 And $Thy<315-$i*14 Then Return False
-		 If $Thx<52+$i*19 And $Thy>315+$i*14 Then Return False
- 		 If $Thx>802-$i*19 And $Thy<315-$i*14 Then Return False
-		 If $Thx>802-$i*19 And $Thy>315+$i*14 Then Return False
-	  Next
-			Return True
-EndFunc
+;~ Func FilterTH()
+;~    	  For $i=0 to 20
+;~ 		 If $Thx<52+$i*19 And $Thy<315-$i*14 Then Return False
+;~ 		 If $Thx<52+$i*19 And $Thy>315+$i*14 Then Return False
+;~  		 If $Thx>802-$i*19 And $Thy<315-$i*14 Then Return False
+;~ 		 If $Thx>802-$i*19 And $Thy>315+$i*14 Then Return False
+;~ 	  Next
+;~ 			Return True
+;~ EndFunc
 

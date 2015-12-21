@@ -137,3 +137,20 @@ Func MoveDivider()
 
 EndFunc   ;==>MoveDivider
 
+
+Func XPStyleToggle($Off = 1)
+	Local $XS_n
+     If Not StringInStr(@OSTYPE, "WIN32_NT") Then Return 0
+
+     If $Off Then
+        $XS_n = DllCall("uxtheme.dll", "int", "GetThemeAppProperties")
+         DllCall("uxtheme.dll", "none", "SetThemeAppProperties", "int", 0)
+         Return 1
+     ElseIf IsArray($XS_n) Then
+         DllCall("uxtheme.dll", "none", "SetThemeAppProperties", "int", $XS_n[0])
+         $XS_n = ""
+         Return 1
+     EndIf
+     Return 0
+ EndFunc
+

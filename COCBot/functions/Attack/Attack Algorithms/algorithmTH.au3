@@ -55,6 +55,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 			If $ichkUseKingTH = 0 Then Return
 			$checkKPower = True
 			SetLog("Dropping King", $COLOR_GREEN)
+			$THusedKing=1
 		EndIf
 
 		;Queen
@@ -62,6 +63,15 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 			If $ichkUseQueenTH = 0 Then Return
 			$checkQPower = True
 			SetLog("Dropping Queen", $COLOR_GREEN)
+			$THusedQueen=1
+		EndIf
+
+		;Warden
+		If $troopKind = $eWarden Then
+			If $ichkUseWardenTH = 0 Then Return
+			$checkWPower = True
+			SetLog("Dropping Grand Warden", $COLOR_GREEN)
+			$THusedWarden=1
 		EndIf
 
 		;CC
@@ -162,7 +172,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThx = 25 + $ii * 19
 					$aThy = 314 - $ii * 14
 					If CheckOneStar(0, False, False) Then Return
-					Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0019")
+					If IsAttackPage() Then Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0019")
 					If _Sleep(Random(20, 40,1)) Then Return
 				Next
 			Next
@@ -177,7 +187,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThx = 25 + $ii * 19
 					$aThy = 314 + $ii * 14
 					If CheckOneStar(0, False, False) Then Return
-					Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0020")
+					If IsAttackPage() Then Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0020")
 					If _Sleep(Random(20, 40,1)) Then Return
 				Next
 			Next
@@ -192,7 +202,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThx = 830 - $ii * 19
 					$aThy = 314 - $ii * 14
 					If CheckOneStar(0, False, False) Then Return
-					Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0021")
+					If IsAttackPage() Then Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0021")
 					If _Sleep(Random(20, 40,1)) Then Return
 				Next
 			Next
@@ -207,7 +217,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThx = 830 - $ii * 19
 					$aThy = 314 + $ii * 14
 					If CheckOneStar(0, False, False) Then Return
-					Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0022")
+					If IsAttackPage() Then Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0022")
 					If _Sleep(Random(20, 40,1)) Then Return
 				Next
 			Next
@@ -257,7 +267,7 @@ Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
 		If $debugSetlog = 1 Then Setlog("Center Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
 		For $count = 1 To $iAtEachSpot * $iNbOfSpots
 			If CheckOneStar(0, False, False) Then Return
-			Click(Random(480, 540, 1), Random(564, 566, 1))
+			If IsAttackPage() Then Click(Random(480, 540, 1), Random(564, 566, 1))
 			If _Sleep(Random(20, 40,1)) Then Return
 		Next
 
@@ -266,7 +276,7 @@ Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
 			If $debugSetlog = 1 Then Setlog("Left Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
 				If CheckOneStar(0, False, False) Then Return
-				Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
+				If IsAttackPage() Then Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
 				If _Sleep(Random(20, 40,1)) Then Return
 			Next
 		EndIf
@@ -275,7 +285,7 @@ Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
 			If $debugSetlog = 1 Then Setlog("Right Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
 				If CheckOneStar(0, False, False) Then Return
-				Click(Random(510, 580, 1), Random(564, 566, 1), 1, 0, "#0022")
+				If IsAttackPage() Then Click(Random(510, 580, 1), Random(564, 566, 1), 1, 0, "#0022")
 				If _Sleep(Random(20, 40,1)) Then Return
 			Next
 
@@ -296,11 +306,11 @@ Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
 		For $count = 1 To $iAtEachSpot * $iNbOfSpots
 			If $i = 0 Then
 				If CheckOneStar(0, False, False) Then Return
-				Click(Random(355, 365, 1), Random(564, 566, 1))
+				If IsAttackPage() Then Click(Random(355, 365, 1), Random(564, 566, 1))
 				$i = 1
 			Else
 				If CheckOneStar(0, False, False) Then Return
-				Click(Random(488, 500, 1), Random(564, 566, 1))
+				If IsAttackPage() Then Click(Random(488, 500, 1), Random(564, 566, 1))
 				$i = 0
 			EndIf
 			If _Sleep(Random(20, 40,1)) Then Return
@@ -312,7 +322,7 @@ Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
 			If $debugSetlog = 1 Then Setlog("Left Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
 				If CheckOneStar(0, False, False) Then Return
-				Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
+				If IsAttackPage() Then Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
 				If _Sleep(Random(20, 40,1)) Then Return
 			Next
 		EndIf
@@ -321,7 +331,7 @@ Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
 			If $debugSetlog = 1 Then Setlog("Right Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
 				If CheckOneStar(0, False, False) Then Return
-				Click(Random(510, 540, 1), Random(564, 566, 1), 1, 0, "#0022")
+				If IsAttackPage() Then Click(Random(510, 540, 1), Random(564, 566, 1), 1, 0, "#0022")
 				If _Sleep(Random(20, 40,1)) Then Return
 			Next
 		EndIf
@@ -384,7 +394,7 @@ Func CastSpell($THSpell, $x, $y)
 			SetLog("Dropping " & $name)
 			SelectDropTroop($Spell)
 			If _Sleep($iDelayCastSpell1) Then Return
-			Click($x, $y, 1, 0, "#0029")
+			If IsAttackPage() Then Click($x, $y, 1, 0, "#0029")
 		Else
 			If $debugSetlog = 1 Then SetLog("No " & $name & " Found")
 		EndIf

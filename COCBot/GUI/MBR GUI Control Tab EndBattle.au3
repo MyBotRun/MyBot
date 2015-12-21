@@ -50,6 +50,26 @@ Func chkTimeStopAtk2()
 	EndIf
 EndFunc   ;==>chkTimeStopAtk2
 
+Func chkDESideEB()
+	If _GUICtrlComboBox_GetCurSel($cmbABDeploy) = 4 Then
+		GUICtrlSetState($chkDESideEB, $GUI_ENABLE)
+		If GUICtrlRead($chkDESideEB) = $GUI_CHECKED Then
+			For $i = $txtDELowEndMin To $lblDEEndAq
+				GUICtrlSetState($i, $GUI_ENABLE)
+			Next
+		Else
+			For $i = $txtDELowEndMin To $lblDEEndAq
+			GUICtrlSetState($i, $GUI_DISABLE)
+			Next
+		EndIf
+	Else
+		For $i = $chkDESideEB To $lblDEEndAq
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc		;==>chkDESideEB
+
+
 Func chkShareAttack()
 	If GUICtrlRead($chkShareAttack) = $GUI_CHECKED Then
 		For $i = $lblShareMinGold To $txtShareMessage

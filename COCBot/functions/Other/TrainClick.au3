@@ -40,7 +40,7 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt = 
 					ExitLoop
 				EndIf
 
-				ControlClick($Title, "", "", "left", "1", $x, $y) ;Click once.
+				PureClick($x, $y) ;Click once.
 
 				If _Sleep($iSpeed, False) Then ExitLoop
 			Next
@@ -56,7 +56,7 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt = 
 				Return
 			EndIf
 
-			ControlClick($Title, "", "", "left", "1", $x, $y)
+			PureClick($x, $y)
 
 			If _Sleep($iSpeed, False) Then Return
 			If _CheckPixel($aLootSpot, True) = True Then ; Check to see if out of Elixir

@@ -28,7 +28,8 @@ Func LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 	Return True
 EndFunc   ;==>LauchTroop
 
-Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen)
+Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
+	If $debugSetlog =1 Then SetLog("LaunchTroop2 with CC " & $CC & ", K " & $King & ", Q " & $Queen & ", W " & $Warden , $COLOR_PURPLE)
 	Local $listListInfoDeployTroopPixel[0]
 
 	If ($iChkRedArea[$iMatchMode] = 1) Then
@@ -41,6 +42,7 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen)
 			$waveNb = $listInfoDeploy[$i][2]
 			$maxWaveNb = $listInfoDeploy[$i][3]
 			$slotsPerEdge = $listInfoDeploy[$i][4]
+			If $debugSetlog =1 Then SetLog("**ListInfoDeploy row " & $i & ": USE "  &$troopKind & " SIDES " &  $nbSides & " WAVE " & $waveNb & " XWAVE " & $maxWaveNb & " SLOTXEDGE " & $slotsPerEdge, $COLOR_PURPLE)
 			If (IsNumber($troopKind)) Then
 				For $j = 0 To UBound($atkTroops) - 1 ; identify the position of this kind of troop
 					If $atkTroops[$j][0] = $troopKind Then
@@ -95,7 +97,7 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen)
 						If ($infoPixelDropTroop[0] = "CC") Then
 							dropCC($pixelRandomDrop[0], $pixelRandomDrop[1], $CC)
 						ElseIf ($infoPixelDropTroop[0] = "HEROES") Then
-							dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $King, $Queen)
+							dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $King, $Queen, $Warden)
 							$isHeroesDropped = True
 						EndIf
 					Else
@@ -152,7 +154,7 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen)
 										dropCC($pixelRandomDrop[0], $pixelRandomDrop[1], $CC)
 										$isCCDropped = True
 									ElseIf ($isHeroesDropped = False And $infoTroopListArrPixel[0] = "HEROES" And $i = $numberSidesDropTroop - 1) Then
-										dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $King, $Queen)
+										dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $King, $Queen, $Warden)
 										$isHeroesDropped = True
 									EndIf
 								Else
@@ -198,12 +200,17 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen)
 	Else
 		For $i = 0 To UBound($listInfoDeploy) - 1
 			If (IsString($listInfoDeploy[$i][0]) And ($listInfoDeploy[$i][0] = "CC" Or $listInfoDeploy[$i][0] = "HEROES")) Then
-				Local $RandomEdge = $Edges[Round(Random(0, 3))]
-				Local $RandomXY = Round(Random(0, 4))
+				If $iMatchMode = $LB And $iChkDeploySettings[$LB] >= 4 Then ; Used for DE or TH side attack
+					Local $RandomEdge = $Edges[$BuildingEdge]
+					Local $RandomXY = 2
+				Else
+					Local $RandomEdge = $Edges[Round(Random(0, 3))]
+					Local $RandomXY = Round(Random(0, 4))
+				EndIf
 				If ($listInfoDeploy[$i][0] = "CC") Then
 					dropCC($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $CC)
 				ElseIf ($listInfoDeploy[$i][0] = "HEROES") Then
-					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $King, $Queen)
+					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $King, $Queen,$Warden)
 				EndIf
 			Else
 				If LauchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then

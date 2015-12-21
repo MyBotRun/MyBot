@@ -67,7 +67,7 @@ Func SetDPI()
 		If @error Then Return SetError(2, @extended, 0)
 		If $aRet = 0 Then
 			Setlog("Your Display DPI has been changed!!  Must logoff or restart to complete the chamge!", $COLOR_MAROON)
-			_Sleep(5000)
+			_Sleep(5000) ; dont use if .. then here!
 			Shutdown($SD_REBOOT)
 		Else
 		  Setlog("Your DPI has not been changed due some unknown error, Return= "&$aRet, $COLOR_MAROON)

@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 
 Func LocateUpgrades()
-	ControlGetPos($Title, "", "[CLASS:BlueStacksApp; INSTANCE:1]")  ;Check For valid BS position
+	ControlGetPos($Title, "", $AppClassInstance)  ;Check For valid BS position
 	If @error = 1 Then  ; If not found, BS is not open so exit politely
 		Setlog("BlueStacks in not open", $COLOR_RED)
 		SetError(1)
@@ -27,7 +27,7 @@ Func LocateUpgrades()
 	Local $MsgBox, $stext
 	Local $icount = 0
 	While 1
-		_CaptureRegion(0, 0, 860, 2)
+		_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 		If _GetPixelColor(1, 1) <> Hex(0x000000, 6) And _GetPixelColor(850, 1) <> Hex(0x000000, 6) Then ; Check for zoomout in case user tried to zoom in.
 			SetLog("Locate Oops, prep screen 1st", $COLOR_BLUE)
 			ZoomOut()
@@ -125,10 +125,11 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 	Click($aUpgrades[$inum][0], $aUpgrades[$inum][1],1,0,"#0212") ;Select upgrade trained
 	If _Sleep($iDelayUpgradeValue2) Then Return
 
-	If $bOopsFlag = True Then DebugImageSave("ButtonView")
+	If $bOopsFlag = True and  $debugImageSave= 1 Then DebugImageSave("ButtonView")
+
 
 	Local $offColors[3][3] = [[0xD6714B, 47, 37], [0xF0E850, 70, 0], [0xF4F8F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel gold, 4th pixel edge of button
-	Global $ButtonPixel = _MultiPixelSearch(240, 563, 670, 620, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
+	Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 620 + $bottomOffsetY, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
 	If $debugSetlog = 1 And IsArray($ButtonPixel) Then
 		Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
 		Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_PURPLE)
@@ -136,7 +137,7 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 
 	If IsArray($ButtonPixel) = 0 Then ; If its not normal gold upgrade, then try to find elixir upgrade button
 		Local $offColors[3][3] = [[0xBC5B31, 38, 32], [0xF84CF9, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel pink, 4th pixel edge of button
-		Global $ButtonPixel = _MultiPixelSearch(240, 563, 670, 620, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
+		Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 620 + $bottomOffsetY, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
 		If $debugSetlog = 1 And IsArray($ButtonPixel) Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
 			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 38, $ButtonPixel[1] + 32, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_PURPLE)
@@ -145,7 +146,7 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 
 	If IsArray($ButtonPixel) = 0 Then ; If its not upgrade, then try to find Hero upgrade button
 		Local $offColors[3][3] = [[0x9B4C28, 41, 23], [0x040009, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
-		Global $ButtonPixel = _MultiPixelSearch(240, 563, 670, 620, 1, 1, Hex(0xF6F9F3, 6), $offColors, 25) ; first gray/white pixel of button4
+		Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 620 + $bottomOffsetY, 1, 1, Hex(0xF6F9F3, 6), $offColors, 25) ; first gray/white pixel of button4
 		If $debugSetlog = 1 And IsArray($ButtonPixel) Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
 			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_PURPLE)
@@ -156,12 +157,12 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20,1,0,"#0213") ; Click Upgrade Button
 		If _Sleep($iDelayUpgradeValue3) Then Return
 
-		If $bOopsFlag = True Then DebugImageSave("UpgradeView")
+		If $bOopsFlag = True and $debugImageSave= 1 Then DebugImageSave("UpgradeView")
 		_CaptureRegion()
 
 		Select ;Ensure the right upgrade window is open!
-			Case _ColorCheck(_GetPixelColor(685, 150), Hex(0xE0080B, 6), 20) ; Check if the building Upgrade window is open
-				If _ColorCheck(_GetPixelColor(351, 485), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
+			Case _ColorCheck(_GetPixelColor(677, 150 + $midOffsetY), Hex(0xE00408, 6), 20) ; Check if the building Upgrade window is open
+				If _ColorCheck(_GetPixelColor(351, 485 + $midOffsetY), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
 					Setlog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_MAROON)
 					$aUpgrades[$inum][0] = -1 ; Clear upgrade location value as it is invalid
 					$aUpgrades[$inum][1] = -1 ; Clear upgrade location value as it  is invalid
@@ -170,14 +171,14 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 					ClickP($aAway, 2,0,"#0214") ;Click Away
 					Return False
 				EndIf
-				If _ColorCheck(_GetPixelColor(487, 479), Hex(0xF0E950, 6), 20) Then $aUpgrades[$inum][3] = "Gold" ;Check if Gold required and update type
-				If _ColorCheck(_GetPixelColor(490, 475), Hex(0xF031DD, 6), 20) Then $aUpgrades[$inum][3] = "Elixir" ;Check if Elixir required and update type
-				$aUpgrades[$inum][2] = Number(getResourcesBonus(384, 474)) ; Try to read white text.
-				If $aUpgrades[$inum][2] = "" Then $aUpgrades[$inum][2] = Number(getUpgradeResource(384, 474)) ;read RED upgrade text
+				If _ColorCheck(_GetPixelColor(477, 490 + $midOffsetY), Hex(0xF0E850, 6), 20) Then $aUpgrades[$inum][3] = "Gold" ;Check if Gold required and update type
+				If _ColorCheck(_GetPixelColor(483, 486 + $midOffsetY), Hex(0xF030D8, 6), 20) Then $aUpgrades[$inum][3] = "Elixir" ;Check if Elixir required and update type
+				$aUpgrades[$inum][2] = Number(getResourcesBonus(366, 487 + $midOffsetY)) ; Try to read white text.
+				If $aUpgrades[$inum][2] = "" Then $aUpgrades[$inum][2] = Number(getUpgradeResource(366, 487 + $midOffsetY)) ;read RED upgrade text
 				If $aUpgrades[$inum][2] = "" Then $bOopsFlag = True ; set error flag for user to set value if not repeat upgrade
 
-			Case _ColorCheck(_GetPixelColor(715, 147), Hex(0xE0080A, 6), 20) ; Check if the Hero Upgrade window is open
-				If _ColorCheck(_GetPixelColor(400, 485), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
+			Case _ColorCheck(_GetPixelColor(721, 118 + $midOffsetY), Hex(0xDF0408, 6), 20) ; Check if the Hero Upgrade window is open
+				If _ColorCheck(_GetPixelColor(400, 485 + $midOffsetY), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
 					Setlog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_RED)
 					$aUpgrades[$inum][0] = -1 ; Clear upgrade location value as it is invalid
 					$aUpgrades[$inum][1] = -1 ; Clear upgrade location value as it  is invalid
@@ -186,9 +187,9 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 					ClickP($aAway, 2,0,"#0215") ;Click Away
 					Return False
 				EndIf
-				If _ColorCheck(_GetPixelColor(575, 498), Hex(0x000000, 6), 20) Then $aUpgrades[$inum][3] = "Dark" ; Check if DE required and update type
-				$aUpgrades[$inum][2] = Number(getResourcesBonus(487, 478)) ; Try to read white text.
-				If $aUpgrades[$inum][2] = "" Then $aUpgrades[$inum][2] = Number(getUpgradeResource(487, 478)) ;read RED upgrade text
+				If _ColorCheck(_GetPixelColor(703, 535 + $midOffsetY), Hex(0x000000, 6), 20) Then $aUpgrades[$inum][3] = "Dark" ; Check if DE required and update type
+				$aUpgrades[$inum][2] = Number(getResourcesBonus(598, 519 + $midOffsetY)) ; Try to read white text.
+				If $aUpgrades[$inum][2] = "" Then $aUpgrades[$inum][2] = Number(getUpgradeResource(598, 519 + $midOffsetY)) ;read RED upgrade text
 				If $aUpgrades[$inum][2] = "" Then $bOopsFlag = True ; set error flag for user to set value
 
 			Case Else
@@ -215,7 +216,7 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 			$stext = "Save copy of upgrade image for developer analysis?"
 			$MsgBox = _ExtMsgBox(48, "YES|NO", "Notice!", $stext, 60, $frmBot)
-			If $MsgBox = 1 Then DebugImageSave("UpgradeReadError_")
+			If $MsgBox = 1 and $debugImageSave= 1 Then DebugImageSave("UpgradeReadError_")
 		EndIf
 		If $aUpgrades[$inum][3] = "" And $bOopsFlag = True Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)

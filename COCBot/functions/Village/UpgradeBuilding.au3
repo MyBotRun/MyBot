@@ -121,14 +121,14 @@ Func UpgradeNormal($inum)
 	If _Sleep($iDelayUpgradeNormal1) Then Return ; Wait for window to open
 	If $aUpgrades[$inum][3] = "Gold" Then
 		Local $offColors[3][3] = [[0xD6714B, 47, 37], [0xF0E850, 70, 0], [0xF4F8F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel gold, 4th pixel edge of button
-		Global $ButtonPixel = _MultiPixelSearch(240, 563, 670, 650, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
+		Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 650 + $bottomOffsetY, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
 		If $debugSetlog = 1 And IsArray($ButtonPixel) Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
 			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_PURPLE)
 		EndIf
 	Else ;Use elxir button
 		Local $offColors[3][3] = [[0xBC5B31, 38, 32], [0xF84CF9, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel pink, 4th pixel edge of button
-		Global $ButtonPixel = _MultiPixelSearch(240, 563, 670, 650, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
+		Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 650 + $bottomOffsetY, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
 		If $debugSetlog = 1 And IsArray($ButtonPixel) Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
 			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 38, $ButtonPixel[1] + 32, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_PURPLE)
@@ -138,18 +138,18 @@ Func UpgradeNormal($inum)
 		If _Sleep($iDelayUpgradeNormal2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20,1,0,"#0297") ; Click Upgrade Button
 		If _Sleep($iDelayUpgradeNormal3) Then Return ; Wait for window to open
-		If $debugSetlog = 1 Then DebugImageSave("UpgradeRegBtn1")
-		If _ColorCheck(_GetPixelColor(685, 150, True), Hex(0xE1090E, 6), 20) Then ; Check if the building Upgrade window is open
-			If _ColorCheck(_GetPixelColor(471, 478, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(471, 482), Hex(0xE70A12, 6), 20) And _
-					_ColorCheck(_GetPixelColor(471, 486, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
+		if $debugImageSave= 1 Then DebugImageSave("UpgradeRegBtn1")
+		If _ColorCheck(_GetPixelColor(677, 150 + $midOffsetY, True), Hex(0xE00408, 6), 20) Then ; Check if the building Upgrade window is open
+			If _ColorCheck(_GetPixelColor(459, 490 + $midOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(459, 494 + $midOffsetY), Hex(0xE70A12, 6), 20) And _
+					_ColorCheck(_GetPixelColor(459, 498 + $midOffsetY, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Upgrade Fail #" & $inum + 1 & " No Loot!", $COLOR_RED)
 				ClickP($aAway, 2,0,"#0298") ;Click Away
 				Return False
 			Else
-				Click(440, 480,1,0,"#0299") ; Click upgrade buttton
+				Click(440, 480 + $midOffsetY,1,0,"#0299") ; Click upgrade buttton
 				If _Sleep($iDelayUpgradeNormal3) Then Return
-				If $debugSetlog = 1 Then DebugImageSave("UpgradeRegBtn2")
-				If _ColorCheck(_GetPixelColor(573, 256, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
+				if $debugImageSave= 1 Then DebugImageSave("UpgradeRegBtn2")
+				If _ColorCheck(_GetPixelColor(573, 256 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Upgrade Fail #" & $inum + 1 & " No Loot!", $COLOR_RED)
 					ClickP($aAway, 2,0,"#0300") ;Click Away to close windows
 					Return False
@@ -179,7 +179,7 @@ Func UpgradeHero($inum)
 	Click($aUpgrades[$inum][0], $aUpgrades[$inum][1],1,0,"#0304") ; Select the item to be upgrade
 	If _Sleep($iDelayUpgradeHero1) Then Return ; Wait for window to open
 	Local $offColors[3][3] = [[0x9B4C28, 41, 23], [0x040009, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
-	Global $ButtonPixel = _MultiPixelSearch(240, 563, 670, 620, 1, 1, Hex(0xF6F9F3, 6), $offColors, 30) ; first gray/white pixel of button
+	Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 620 + $bottomOffsetY, 1, 1, Hex(0xF6F9F3, 6), $offColors, 30) ; first gray/white pixel of button
 	If IsArray($ButtonPixel) Then
 		If $debugSetlog = 1 And IsArray($ButtonPixel) Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
@@ -188,19 +188,19 @@ Func UpgradeHero($inum)
 		If _Sleep($iDelayUpgradeHero2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20,1,0,"#0305") ; Click Upgrade Button
 		If _Sleep($iDelayUpgradeHero3) Then Return ; Wait for window to open
-		If $debugSetlog = 1 Then DebugImageSave("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(715, 150, True), Hex(0xE1090E, 6), 20) Then ; Check if the Hero Upgrade window is open
-			If _ColorCheck(_GetPixelColor(557, 486, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(557, 490), Hex(0xE70A12, 6), 20) And _
-					_ColorCheck(_GetPixelColor(557, 494, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
+		if $debugImageSave= 1 Then DebugImageSave("UpgradeDarkBtn1")
+		If _ColorCheck(_GetPixelColor(715, 150 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Check if the Hero Upgrade window is open
+			If _ColorCheck(_GetPixelColor(557, 486 + $midOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(557, 490 + $midOffsetY), Hex(0xE70A12, 6), 20) And _
+					_ColorCheck(_GetPixelColor(557, 494 + $midOffsetY, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Hero Upgrade Fail #" & $inum + 1 & " No DE!", $COLOR_RED)
 				ClickP($aAway, 2,0,"#0306") ;Click Away to close window
 				Return False
 			Else
-				Click(540, 490,1,0,"#0307") ; Click upgrade buttton
+				Click(540, 490 + $midOffsetY,1,0,"#0307") ; Click upgrade buttton
 				ClickP($aAway, 1,0,"#0308") ;Click Away to close windows
 				If _Sleep($iDelayUpgradeHero1) Then Return
-				If $debugSetlog = 1 Then DebugImageSave("UpgradeDarkBtn2")
-				If _ColorCheck(_GetPixelColor(573, 256, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
+				if $debugImageSave= 1 Then DebugImageSave("UpgradeDarkBtn2")
+				If _ColorCheck(_GetPixelColor(573, 256 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Upgrade Fail #" & $inum + 1 & " No DE!", $COLOR_RED)
 					ClickP($aAway, 2,0,"#0309") ;Click Away to close windows
 					Return False

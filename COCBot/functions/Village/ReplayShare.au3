@@ -12,14 +12,14 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-
-
 Func ReplayShare($last = 1)
 
 	; remark: In sharing message "<n>" was replaced by numbers of searches
 	;         Use this option  with caution or risk being reported
-
 	Local $txtMessage, $tNew
+
+	If $iShareAttackNow = 0 Then Return  ; TEMP REVIEW LATER, need to fix for when village* files that exist due to the enableMBRdebug.txt
+
 	If $last = 1 Then
 		;--  open page of attacks -------------------------------------------------------------
 		ClickP($aAway,1,0,"#0235") ;Click Away
@@ -27,7 +27,7 @@ Func ReplayShare($last = 1)
 		SetLog("Share Replay: Opening Messages Page...", $COLOR_BLUE)
 		ClickP($aMessageButton, 1, 0, "#0236") ;Click Messages Button
 		If _Sleep($iDelayReplayShare3) Then Return
-		Click(380, 94,1,0,"#0237") ; Click Attack Log Tab
+		Click(380, 94 + $midOffsetY,1,0,"#0237") ; Click Attack Log Tab, move down 30 pixels for 860x780
 		If _Sleep($iDelayReplayShare3) Then Return
 
 		; publish last replay ----------------------------------------------------------------
@@ -35,11 +35,10 @@ Func ReplayShare($last = 1)
 
 		; check if exist replay queue ----------------------------------------------------
 		Local $FileListQueueName = _FileListToArray($dirTemp, "Village*.png", 1); list files to an array.
-
-		If _ColorCheck(_GetPixelColor(500, 156), Hex(0x78D4E8, 6), 6) = True And Not (IsArray($FileListQueueName)) Then
-			;button replay blue
+		If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0x78D4E8, 6), 6) = True And Not (IsArray($FileListQueueName)) Then
+			;button replay blue, moved down 30 for 860x780
 			Setlog("Ok, sharing!")
-			Click(500, 156,1,0,"#0238") ; Click Share Button
+			Click(500, 156 + $midOffsetY,1,0,"#0238") ; Click Share Button, moved down 30 for 860x780
 			If _Sleep($iDelayReplayShare1) Then Return
 			Click(300, 120,1,0,"#0239") ;Select text for write comment
 			If _Sleep($iDelayReplayShare1) Then Return
@@ -58,15 +57,14 @@ Func ReplayShare($last = 1)
 				$txtMessage = $smessagearray[Random(1, $smessagearray[0], 1)]
 			EndIf
 			$txtMessage = StringReplace($txtMessage, "<n>", StringFormat("%s", $SearchCount))
-
 			ControlSend($Title, "", "", $txtMessage, 0)
 			If _Sleep($iDelayReplayShare1) Then Return
-			Click(530, 210,1,0,"#0240") ;Click Send Button
+			Click(530, 210 + $midOffsetY,1,0,"#0240") ;Click Send Button, moved down 30 for 860x780
 			$tNew = _Date_Time_GetLocalTime()
 			$dLastShareDate = _Date_Time_SystemTimeToDateTimeStr($tNew, 1)
 		Else
-			If _ColorCheck(_GetPixelColor(500, 156), Hex(0xbbbbbb, 6), 6) = True Or IsArray($FileListQueueName) Then
-				;button replay gray.. insert village in queue
+			If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0xbbbbbb, 6), 6) = True Or IsArray($FileListQueueName) Then
+				;button replay gray.. insert village in queue, moved down 30 for 860x780
 				If IsArray($FileListQueueName) Then
 					SetLog("Others replay in queue, Share Later Last Replay")
 				Else
@@ -85,7 +83,6 @@ Func ReplayShare($last = 1)
 			EndIf
 		EndIf
 		$iShareAttackNow = 0 ;reset variable
-
 	Else
 		$tNew = _Date_Time_GetLocalTime()
 		If _DateDiff("n", $dLastShareDate, _Date_Time_SystemTimeToDateTimeStr($tNew, 1)) > 30 Then ; latest replay share >30 minutes
@@ -117,14 +114,12 @@ Func ReplayShare($last = 1)
 				If _Sleep($iDelayReplayShare2) Then Return ;
 				SetLog("Share Replay: Opening Messages Page...", $COLOR_BLUE)
 				ClickP($aMessageButton, 1, 0, "#0243") ; Click Messages Button
-
 				If _Sleep($iDelayReplayShare3) Then Return
-				Click(380, 94,1,0,"#0244") ; Click Attack Log Tab
+				Click(380, 94 + $midOffsetY,1,0,"#0244") ; Click Attack Log Tab, moved down 30 for 860x780
 				If _Sleep($iDelayReplayShare3) Then Return
-
 				_CaptureRegion()
-				If _ColorCheck(_GetPixelColor(500, 156), Hex(0x78D4E8, 6), 6) = True Then
-					;button replay blue
+				If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0x78D4E8, 6), 6) = True Then
+					;button replay blue,, moved down 30 for 860x780
 					Setlog("Ok, sharing!")
 					Local $VilLoc, $VilX, $VilY, $VilTol
 					For $VilTol = 0 To 20
@@ -158,10 +153,9 @@ Func ReplayShare($last = 1)
 									$txtMessage = $smessagearray[Random(1, $smessagearray[0], 1)]
 								EndIf
 								$txtMessage = StringReplace($txtMessage, "<n>", StringFormat("%s", $SearchCount))
-
 								ControlSend($Title, "", "", $txtMessage, 0)
 								If _Sleep($iDelayReplayShare1) Then Return
-								Click(500, 210,1,0,"#0247") ;Click Send Button
+								Click(500, 210 + $midOffsetY,1,0,"#0247") ;Click Send Button, moved down 30 for 860x780
 								$tNew = _Date_Time_GetLocalTime()
 								$dLastShareDate = _Date_Time_SystemTimeToDateTimeStr($tNew, 1)
 
@@ -187,8 +181,8 @@ Func ReplayShare($last = 1)
 					EndIf
 
 				Else
-					If _ColorCheck(_GetPixelColor(500, 156), Hex(0xbbbbbb, 6), 6) = True Then
-						;button replay gray.. insert village in queue
+					If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0xbbbbbb, 6), 6) = True Then
+						;button replay gray.. insert village in queue, , moved down 30 for 860x780
 						Setlog("Cannot Share Now... retry later.")
 						Click(763, 86,1,0,"#0248") ; Close  page
 						$tNew = _Date_Time_GetLocalTime()
