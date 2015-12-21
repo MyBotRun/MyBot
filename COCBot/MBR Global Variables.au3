@@ -177,6 +177,7 @@ Global $ScreenshotLootInfo = False
 Global $AlertSearch = True
 Global $iChkAttackNow, $iAttackNowDelay, $bBtnAttackNowPressed = False
 Global $PushToken = ""
+Global $PushToken2 = ""
 
 Global Enum $DB, $LB, $TS, $TB, $DT
 Global $iModeCount = 2
@@ -189,12 +190,20 @@ $sModeText[$TB] = "TH Bully"
 $sModeText[$DT] = "Drop Trophy"
 
 ;PushBullet---------------------------------------------------------------
-Global $PBRemoteControlInterval = 60000 ; 60 secs
+Global $PBRemoteControlInterval = 5000 ; 60 secs
 Global $PBDeleteOldPushesInterval = 1800000 ; 30 mins
 Global $iOrigPushB
 Global $iLastAttack
 Global $iAlertPBVillage
 Global $pEnabled
+
+;Telegramm mod
+Global $pEnabled2
+global $access_token2
+global $chat_id2 = 0
+Global $first = 0
+Global $lastremote = 0
+
 Global $pRemote
 Global $pMatchFound
 Global $pLastRaidImg
