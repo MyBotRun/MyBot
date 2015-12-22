@@ -219,6 +219,7 @@ Func runBot() ;Bot that runs everything in order
 			UpgradeWall()
 			If _Sleep($iDelayRunBot3) Then Return
 			If $Restart = True Then ContinueLoop
+			PushMsg("CheckBuilderIdle")
 			Idle()
 			If _Sleep($iDelayRunBot3) Then Return
 			If $Restart = True Then ContinueLoop

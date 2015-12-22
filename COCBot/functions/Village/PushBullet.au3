@@ -362,6 +362,19 @@ Func PushMsg($Message, $Source = "")
 					$ichkAlertPBCampFullTest = 1
 				EndIf
 			EndIf
+		Case "CheckBuilderIdle"
+			If $pEnabled = 1 Then
+				Local $iAvailBldr = $iFreeBuilderCount - $iSaveWallBldr
+				if $iAvailBldr > 0 Then
+					if $iReportIdleBuilder = 0 Then
+						_Push($iOrigPushB & " | You have "&$iAvailBldr&" builder(s) idle.")
+						SetLog("Pushbullet: You have "&$iAvailBldr&" builder(s) idle.", $COLOR_GREEN)
+						$iReportIdleBuilder = 1
+					EndIf
+				Else
+					$iReportIdleBuilder = 0
+				EndIf
+			EndIf
 	EndSwitch
 
 EndFunc   ;==>PushMsg
