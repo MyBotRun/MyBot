@@ -41,7 +41,7 @@ Func Collect()
 			if $ResourceLocations[$i] <> "" then
 				$pixel = StringSplit($ResourceLocations[$i],";")
 				If isInsideDiamondXY($pixel[1],$pixel[2]) Then
-					click($pixel[1],$pixel[2],1,0,"#0331")
+				   if IsMainPage() Then click($pixel[1],$pixel[2],1,0,"#0331")
 				Else
 					SetLog("Error in Mines/Collector locations found, finding positions again", $COLOR_RED)
 					IniDelete($building, "other", "listResource")
@@ -62,7 +62,7 @@ Func Collect()
 		If _Sleep($iDelayCollect1) Or $RunState = False Then ExitLoop
 		_CaptureRegion(0,0,780)
 		If _ImageSearch(@ScriptDir & "\images\collect.png", 1, $collx, $colly, 20) Then
-			Click($collx, $colly,1,0,"#0330") ;Click collector
+			If IsMainPage() Then Click($collx, $colly,1,0,"#0330") ;Click collector
 			If _Sleep($iDelayCollect1) Then Return
 			ClickP($aAway,1,0,"#0329") ;Click Away
 		Elseif $i >= 20 Then

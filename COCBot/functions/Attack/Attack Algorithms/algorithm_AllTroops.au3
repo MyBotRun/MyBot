@@ -14,9 +14,11 @@
 ; ===============================================================================================================================
 
 Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
+	If $debugSetlog=1 Then 		Setlog("algorithm_AllTroops",$COLOR_PURPLE)
 	$King = -1
 	$Queen = -1
 	$CC = -1
+	$Warden = -1
 	For $i = 0 To UBound($atkTroops) - 1
 		If $atkTroops[$i][0] = $eCastle Then
 			$CC = $i
@@ -24,12 +26,19 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			$King = $i
 		ElseIf $atkTroops[$i][0] = $eQueen Then
 			$Queen = $i
+		ElseIf $atkTroops[$i][0] = $eWarden Then
+			$Warden = $i
 		EndIf
 	Next
+	If $debugSetlog=1 Then SetLog("Use king  SLOT n° " & $King, $COLOR_PURPLE)
+	If $debugSetlog=1 Then SetLog("Use queen SLOT n° " & $Queen, $COLOR_PURPLE)
+	If $debugSetlog=1 Then SetLog("Use CC SLOT n° " & $CC, $COLOR_PURPLE)
+	If $debugSetlog=1 Then SetLog("Use Warden SLOT n° " & $Warden, $COLOR_PURPLE)
+
 
 	If _Sleep($iDelayalgorithm_AllTroops1) Then Return
 
-	If $iMatchMode = $TS Or ($chkATH = 1 And SearchTownHallLoc()) Then
+	If $iMatchMode = $TS  Then
 		SwitchAttackTHType()
 		If $zoomedin = True Then
 			ZoomOut()
@@ -40,16 +49,27 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	EndIf
 
 	;If $OptTrophyMode = 1 And SearchTownHallLoc() Then; Return ;Exit attacking if trophy hunting and not bullymode
-	If $iMatchMode = $TS Then; Return ;Exit attacking if trophy hunting and not bullymode
+	If $iMatchMode = $TS   Then; Return ;Exit attacking if trophy hunting and not bullymode
+	  If  ($THusedKing = 0 and $THusedQueen=0 ) Then
+		 Setlog("Wait few sec before close attack")
+		 If _Sleep(random(2,5,1)*1000) Then Return ;wait 2-5 second before exit if king and queen are not dropped
+	  Else
+		 SetLog("King and/or Queen dropped, close attack")
+	  EndIf
+
+		;close battle
 		For $i = 1 To 30
 			;_CaptureRegion()
 			If _ColorCheck(_GetPixelColor($aWonOneStar[0], $aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) = True Then ExitLoop ;exit if not 'no star'
-			_Sleep($iDelayalgorithm_AllTroops2)
+			If _Sleep($iDelayalgorithm_AllTroops2) Then Return
 		Next
 
-		ClickP($aSurrenderButton, 1, 0, "#0030") ;Click Surrender
+		If IsAttackPage() Then ClickP($aSurrenderButton, 1, 0, "#0030") ;Click Surrender
 		If _Sleep($iDelayalgorithm_AllTroops3) Then Return
-		ClickP($aConfirmSurrender, 1, 0, "#0031") ;Click Confirm
+		If IsEndBattlePage() Then
+		   ClickP($aConfirmSurrender, 1, 0, "#0031") ;Click Confirm
+		   If _Sleep($iDelayalgorithm_AllTroops1) Then Return
+		 EndIf
 		Return
 	EndIf
 
@@ -121,14 +141,40 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		Case 2 ;Three sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			SetLog("Attacking on three sides", $COLOR_BLUE)
 			$nbSides = 3
-		Case 3 ;Two sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		Case 3 ;All sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			SetLog("Attacking on all sides", $COLOR_BLUE)
 			$nbSides = 4
+		Case 4 ;DE Side - Live Base only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			SetLog("Attacking on Dark Elixir Side.", $COLOR_BLUE)
+			$nbSides = 1
+			If NOT ($iChkRedArea[$iMatchMode]) Then GetBuildingEdge($eSideBuildingDES) ; Get DE Storage side when Redline is not used.
+		Case 5 ;TH Side - Live Base only ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			SetLog("Attacking on Town Hall Side.", $COLOR_BLUE)
+			$nbSides = 1
+			If NOT ($iChkRedArea[$iMatchMode]) Then GetBuildingEdge($eSideBuildingTH) ; Get Townhall side when Redline is not used.
 	EndSwitch
 	If ($nbSides = 0) Then Return
 	If _Sleep($iDelayalgorithm_AllTroops2) Then Return
 
-	Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, 2] _
+	; $ListInfoDeploy = [Troop, No. of Sides, $WaveNb, $MaxWaveNb, $slotsPerEdge]
+	If $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 Then   ; Customise DE side wave deployment here
+		Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, 2] _
+			, [$eWall, $nbSides, 1, 1, 2] _
+			, [$eBarb, $nbSides, 1, 2, 2] _
+			, [$eArch, $nbSides, 1, 3, 3] _
+			, [$eBarb, $nbSides, 2, 2, 2] _
+			, [$eArch, $nbSides, 2, 3, 3] _
+			, ["CC", 1, 1, 1, 1] _
+			, ["HEROES", 1, 2, 1, 0] _
+			, [$eHogs, $nbSides, 1, 1, 1] _
+			, [$eWiza, $nbSides, 1, 1, 0] _
+			, [$eMini, $nbSides, 1, 1, 0] _
+			, [$eArch, $nbSides, 3, 3, 2] _
+			, [$eGobl, $nbSides, 1, 1, 1] _
+			]
+	Else
+		If $debugSetlog =1 Then SetLog("listdeploy standard for attack", $COLOR_PURPLE)
+		Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, 2] _
 			, [$eBarb, $nbSides, 1, 2, 0] _
 			, [$eWall, $nbSides, 1, 1, 1] _
 			, [$eArch, $nbSides, 1, 2, 0] _
@@ -142,9 +188,9 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			, [$eGobl, $nbSides, 2, 2, 0] _
 			, ["HEROES", 1, 2, 1, 1] _
 			]
+	EndIf
 
-
-	LaunchTroop2($listInfoDeploy, $CC, $King, $Queen)
+	LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 
 	If _Sleep($iDelayalgorithm_AllTroops4) Then Return
 	SetLog("Dropping left over troops", $COLOR_BLUE)
@@ -164,7 +210,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	;Activate KQ's power
 	If ($checkKPower Or $checkQPower) And $iActivateKQCondition = "Manual" Then
 		SetLog("Waiting " & $delayActivateKQ / 1000 & " seconds before activating Hero abilities", $COLOR_BLUE)
-		_Sleep($delayActivateKQ)
+		If _Sleep($delayActivateKQ) Then Return
 		If $checkKPower Then
 			SetLog("Activating King's power", $COLOR_BLUE)
 			SelectDropTroop($King)

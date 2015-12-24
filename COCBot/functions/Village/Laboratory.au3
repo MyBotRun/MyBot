@@ -40,7 +40,7 @@ Func Laboratory()
 	; Get updated village elixir and dark elixir values
 	If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then ; check if the village have a Dark Elixir Storage
 		$iElixirCount = getResourcesMainScreen(710, 74)
-		$iDarkCount =  getResourcesMainScreen(731, 123)
+		$iDarkCount =  getResourcesMainScreen(728, 123)
 		SetLog("Updating village values [E]: " & $iElixirCount & " [D]: " &  $iDarkCount, $COLOR_GREEN)
 	Else
 		$iElixirCount = getResourcesMainScreen(710, 74)
@@ -54,13 +54,13 @@ Func Laboratory()
 	If _Sleep($iDelayLaboratory1) Then Return ; Wait for window to open
 	; Find Research Button
 	Local $offColors[4][3] = [[0x708CB0, 37, 34], [0x603818, 50, 43], [0xD5FC58, 61, 8], [0x000000, 82, 0]] ; 2nd pixel Blue blade, 3rd pixel brown handle, 4th pixel Green cross, 5th black button edge
-	Global $ButtonPixel = _MultiPixelSearch(433, 565, 562, 619, 1, 1, Hex(0x000000, 6), $offColors, 30) ; Black pixel of button edge
+	Global $ButtonPixel = _MultiPixelSearch(433, 565 + $bottomOffsetY, 562, 619 + $bottomOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 30) ; Black pixel of button edge
 	If IsArray($ButtonPixel) Then
 		If $debugSetlog = 1 Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
 			Setlog("#1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 37, $ButtonPixel[1] + 34, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 50, $ButtonPixel[1] + 43, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 61, $ButtonPixel[1] + 8, True), $COLOR_PURPLE)
-			DebugImageSave("LabUpgrade_") ; Debug Only
 		EndIf
+		if $debugImageSave= 1 Then DebugImageSave("LabUpgrade_") ; Debug Only
 		Click($ButtonPixel[0] + 40, $ButtonPixel[1] + 25,1,0,"#0198") ; Click Research Button
 		If _Sleep($iDelayLaboratory1) Then Return ; Wait for window to open
 	Else
@@ -87,7 +87,7 @@ Func Laboratory()
 		$iFirstTimeLab = 1
 	EndIf
 	; check for upgrade in process
-	If _ColorCheck(_GetPixelColor(625, 280, True), Hex(0x60AC10, 6), 20) Or _ColorCheck(_GetPixelColor(660, 280, True), Hex(0x60AC10, 6), 20) Then
+	If _ColorCheck(_GetPixelColor(625, 250 + $midOffsetY, True), Hex(0x60AC10, 6), 20) Or _ColorCheck(_GetPixelColor(660, 250 + $midOffsetY, True), Hex(0x60AC10, 6), 20) Then
 		SetLog("Upgrade in progress, waiting for completion of other troops", $COLOR_MAROON)
 		If _Sleep($iDelayLaboratory2) Then Return
 		If $debugSetlog <> 1 Then
@@ -97,7 +97,7 @@ Func Laboratory()
 	EndIf
 
 	If $aLabTroops[$icmbLaboratory][2] > 0 Then ;Check if troop located on page 2 of lab window and Move to page 2 if needed
-		_PostMessage_ClickDrag(734, 393, 3, 393, "left", 2000)
+		_PostMessage_ClickDrag(734, 393 + $midOffsetY, 3, 393 + $midOffsetY, "left", 2000)
 		;_PostMessage_ClickDrag(734, 393, 643, 393, "left", 1500)
 		If _Sleep($iDelayLaboratory3) Then Return
 		If $debugSetlog = 1 Then LabTroopImages2() ; Debug Only
@@ -192,7 +192,7 @@ Func LabUpgrade()
 			; If we can't figure out if ok to upgrade with pixel checks before selecting the troop, do it the long/hard way.
 			Click($aLabTroops[$icmbLaboratory][0] + 40, $aLabTroops[$icmbLaboratory][1] + 40,1,0,"#0200") ; Click Upgrade troop button
 			If _Sleep($iDelayLabUpgrade1) Then Return
-			If $debugSetlog = 1 Then DebugImageSave("LabUpgrade_")
+			if $debugImageSave= 1 Then  DebugImageSave("LabUpgrade_")
 			If _ColorCheck(_GetPixelColor(258, 192, True), Hex(0xFF1919, 6), 20) And _ColorCheck(_GetPixelColor(272, 194, True), Hex(0xFF1919, 6), 20) Then
 				SetLog($aLabTroops[$icmbLaboratory][3] & " Previously maxxed, select another troop", $COLOR_RED) ; oops, we found the red warning message
 				If _Sleep($iDelayLabUpgrade2) Then Return
@@ -206,11 +206,11 @@ Func LabUpgrade()
 				Return False
 			EndIf
 
-			Click(525, 490,1,0,"#0202") ; Click the upgrade button
+			Click(660, 520 + $midOffsetY,1,0,"#0202") ; Click the upgrade button
 			If _Sleep($iDelayLabUpgrade1) Then Return
 
 			If isGemOpen(True) = False Then ; check for gem window
-				If Not(_ColorCheck(_GetPixelColor(625, 270, True), Hex(0x60AC10, 6), 20)) Or Not(_ColorCheck(_GetPixelColor(660, 270, True), Hex(0x60AC10, 6), 20)) Then
+				If Not(_ColorCheck(_GetPixelColor(625, 250 + $midOffsetY, True), Hex(0x60AC10, 6), 20)) Or Not(_ColorCheck(_GetPixelColor(660, 250 + $midOffsetY, True), Hex(0x60AC10, 6), 20)) Then
 					SetLog("Something went wrong with " & $aLabTroops[$icmbLaboratory][3] & " Upgrade, try again.", $COLOR_RED)
 					ClickP($aAway, 2, $iDelayLabUpgrade3,"#0360")
 					Return False
@@ -233,13 +233,13 @@ Func LabUpgrade()
 
 EndFunc   ;==>Laboratory
 
-Func DebugRegionSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720)
+Func DebugRegionSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT)
 
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
 	SetLog("Taking debug snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
 	Local $Date = @MDAY & "." & @MON & "." & @YEAR
 	Local $Time = @HOUR & "." & @MIN & "." & @SEC
-	If $iLeft <> 0 And $iTop <> 0 And $iRight <> 860 And $iBottom <> 720 Then
+	If $iLeft <> 0 And $iTop <> 0 And $iRight <> $DEFAULT_WIDTH And $iBottom <> $DEFAULT_HEIGHT Then
 		Local $sName = $sTxtName & "_Left_" & $iLeft & "_Top_" & $iTop & "_Right_" & $iRight & "_Bottom_" & $iBottom & "_"
 	Else
 		$sName = $sTxtName
@@ -251,7 +251,7 @@ Func DebugRegionSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = 860
 EndFunc   ;==>DebugRegionSave
 
 Func LabTroopImages1() ; Debug function to record pixel values for page 1 of lab troop window
-	DebugImageSave("LabUpgrade_")
+	if $debugImageSave= 1 Then DebugImageSave("LabUpgrade_")
 	For $i = 1 To 12
 		DebugRegionSave($aLabTroops[$i][3], $aLabTroops[$i][0], $aLabTroops[$i][1], $aLabTroops[$i][0] + 98, $aLabTroops[$i][1] + 98)
 		SetLog($aLabTroops[$i][3], $COLOR_FUCHSIA)
@@ -267,7 +267,7 @@ Func LabTroopImages1() ; Debug function to record pixel values for page 1 of lab
 EndFunc   ;==>LabTroopImages1
 
 Func LabTroopImages2() ; Debug function to record pixel values for page 2 of lab troop window
-	DebugImageSave("LabUpgrade_")
+	if $debugImageSave= 1 Then DebugImageSave("LabUpgrade_")
 	For $i = 13 To 24
 		DebugRegionSave($aLabTroops[$i][3], $aLabTroops[$i][0], $aLabTroops[$i][1], $aLabTroops[$i][0] + 98, $aLabTroops[$i][1] + 98)
 		SetLog($aLabTroops[$i][3], $COLOR_FUCHSIA)

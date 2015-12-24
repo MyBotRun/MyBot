@@ -16,7 +16,7 @@
 
 Func applyConfig() ;Applies the data from config to the controls in GUI
 	;General Settings--------------------------------------------------------------------------
-	If $frmBotPosX <> -32000 Then WinMove($sBotTitle, "", $frmBotPosX, $frmBotPosY)
+	If $frmBotPosX <> -32000 Then WinMove2($sBotTitle, "", $frmBotPosX, $frmBotPosY)
 
 	If $iVillageName = "" Then
 		GUICtrlSetData($txtVillageName, "MyVillage")
@@ -210,6 +210,14 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetData($txtSearchReduceDark, $ReduceDark)
 	GUICtrlSetData($txtSearchReduceTrophy, $ReduceTrophy)
 
+	If $iChkRestartSearchLimit = 1 Then
+		GUICtrlSetState($ChkRestartSearchLimit, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($ChkRestartSearchLimit, $GUI_UNCHECKED)
+	EndIf
+	GUICtrlSetData($txtRestartSearchlimit, $iRestartSearchlimit)
+	ChkRestartSearchLimit()
+
 	;Attack Settings-------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbDBDeploy, $iChkDeploySettings[$DB])
 	_GUICtrlComboBox_SetCurSel($cmbDBUnitDelay, $iCmbUnitDelay[$DB])
@@ -322,6 +330,18 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkABDropCC, $GUI_UNCHECKED)
 	EndIf
 
+	If $WardenAttack[$DB] = 1 Then
+		GUICtrlSetState($chkDBWardenAttack, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBWardenAttack, $GUI_UNCHECKED)
+	EndIf
+
+	If $WardenAttack[$LB] = 1 Then
+		GUICtrlSetState($chkABWardenAttack, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABWardenAttack, $GUI_UNCHECKED)
+	EndIf
+
 	If $iChkUseCCBalanced = 1 Then
 		GUICtrlSetState($chkUseCCBalanced, $GUI_CHECKED)
 	Else
@@ -340,7 +360,14 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 			GUICtrlSetState($radAutoAbilities, $GUI_CHECKED)
 	EndSwitch
 
+	If $iActivateWardenCondition = 1 Then
+		GUICtrlSetState($chkUseWardenAbility, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUseWardenAbility, $GUI_UNCHECKED)
+	EndIf
+
 	GUICtrlSetData($txtManAbilities, ($delayActivateKQ / 1000))
+	GUICtrlSetData($txtWardenAbility, ($delayActivateW / 1000))
 
 	If $TakeLootSnapShot = 1 Then
 		GUICtrlSetState($chkTakeLootSS, $GUI_CHECKED)
@@ -392,7 +419,7 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkTrophyMode, $GUI_UNCHECKED)
 	EndIf
 	GUICtrlSetData($txtTHaddTiles, $THaddTiles)
-	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, $icmbAttackTHType)
+;~ 	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, $icmbAttackTHType)
 	_GUICtrlComboBox_SetCurSel($cmbAttackbottomType, $icmbDeployBtmTHType)
 
 	If $ichkUseKingTH = 1 Then
@@ -507,14 +534,45 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkEndTwoStars, $GUI_UNCHECKED)
 	EndIf
 
-
-
 	If $ichkEndNoResources = 1 Then
 		GUICtrlSetState($chkEndNoResources, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkEndNoResources, $GUI_UNCHECKED)
 	EndIf
 
+
+
+	If $DESideEB = 1 Then
+		GUICtrlSetState($chkDESideEB, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDESideEB, $GUI_UNCHECKED)
+	EndIf
+	chkDESideEB()
+	GUICtrlSetData($txtDELowEndMin, $DELowEndMin)
+
+	If $DisableOtherEBO = 1 Then
+		GUICtrlSetState($chkDisableOtherEBO, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDisableOtherEBO, $GUI_UNCHECKED)
+	EndIf
+
+	If $DEEndOneStar = 1 Then
+		GUICtrlSetState($chkDEEndOneStar, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDEEndOneStar, $GUI_UNCHECKED)
+	EndIf
+
+	If $DEEndBk = 1 Then
+		GUICtrlSetState($chkDEEndBk, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDEEndBk, $GUI_UNCHECKED)
+	EndIf
+
+	If $DEEndAq = 1 Then
+		GUICtrlSetState($chkDEEndAq, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDEEndAq, $GUI_UNCHECKED)
+	EndIf
 
 	;Donate Settings-------------------------------------------------------------------------
 	If $ichkRequest = 1 Then
@@ -953,6 +1011,22 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetImage($icnLabUpgrade, $pIconLib, $aLabTroops[$iCmbLaboratory][4])
 	chkLab()
 
+	;Heroes upgrade
+	If $ichkUpgradeKing = 1 Then
+		GUICtrlSetState($chkUpgradeKing, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUpgradeKing, $GUI_UNCHECKED)
+	EndIf
+	If $ichkUpgradeQueen = 1 Then
+		GUICtrlSetState($chkUpgradeQueen, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUpgradeQueen, $GUI_UNCHECKED)
+	EndIf
+	If $ichkUpgradeWarden = 1 Then
+		GUICtrlSetState($chkUpgradeWarden, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUpgradeWarden, $GUI_UNCHECKED)
+	EndIf
 	_GUICtrlComboBox_SetCurSel($cmbWalls, $icmbWalls)
 	Switch $iUseStorage
 		Case 0
@@ -977,6 +1051,9 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkWalls, $GUI_UNCHECKED)
 	EndIf
 	chkWalls()
+
+	;Slider Upgrade Walls
+	GUICtrlSetData($sldMaxNbWall, $iMaxNbWall)
 
 	If $iSaveWallBldr = 1 Then
 		GUICtrlSetState($chkSaveWallBldr, $GUI_CHECKED)
@@ -1189,6 +1266,8 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	If $DevMode = 1 Then
 		GUICtrlSetState($chkDebugSetlog, $GUI_ENABLE)
 		GUICtrlSetState($chkDebugOcr, $GUI_ENABLE)
+		GUICtrlSetState($chkDebugImageSave, $GUI_ENABLE)
+		GUICtrlSetState($chkdebugBuildingPos, $GUI_ENABLE)
 	EndIf
 
 	If $DebugSetlog = 1 Then
@@ -1202,6 +1281,19 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	Else
 		GUICtrlSetState($chkDebugOcr, $GUI_UNCHECKED)
 	EndIf
+
+	If $DebugImageSave = 1 Then
+		GUICtrlSetState($chkDebugImageSave, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDebugImageSave, $GUI_UNCHECKED)
+	EndIf
+
+	If $debugBuildingPos = 1 Then
+		GUICtrlSetState($chkdebugBuildingPos, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkdebugBuildingPos, $GUI_UNCHECKED)
+	EndIf
+
 
 
 	;forced Total Camp values
@@ -1226,5 +1318,25 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	Else
 		GUICtrlSetState($chkVersion, $GUI_UNCHECKED)
 	EndIf
+
+;~ 	;Snipe While Train
+	If $iChkSnipeWhileTrain = 1 Then
+		GUICtrlSetState($ChkSnipeWhileTrain, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($ChkSnipeWhileTrain, $GUI_UNCHECKED)
+	EndIf
+	GUICtrlSetData($txtSearchlimit, $itxtSearchlimit)
+	GUICtrlSetData($txtminArmyCapacityTHSnipe, $itxtminArmyCapacityTHSnipe)
+	GUICtrlSetData($txtSWTTiles, $itxtSWTtiles)
+	ChkSnipeWhileTrain()
+
+	;multilanguage
+	LoadLanguagesComboBox() ; recreate combo box values
+	_GUICtrlComboBox_SetCurSel($cmbLanguage, _GUICtrlComboBox_FindStringExact($cmbLanguage, $sLanguage))
+	;th snipe custom attacks
+	LoadThSnipeAttacks() ; recreate combo box values
+	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, _GUICtrlComboBox_FindStringExact($cmbAttackTHType, $scmbAttackTHType))
+
+
 
 EndFunc   ;==>applyConfig

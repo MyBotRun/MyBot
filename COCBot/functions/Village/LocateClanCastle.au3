@@ -67,7 +67,7 @@ Func LocateClanCastle()
 			ClickP($aAway,1,0,"#0376")
 			Return
 		EndIf
-		$sInfo = BuildingInfo(242, 520)
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY) ; 860x768
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 			If  StringInStr($sInfo[1], "clan") = 0 Then
 				If $sInfo[0] = "" Then

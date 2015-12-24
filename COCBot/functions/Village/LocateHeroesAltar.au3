@@ -1,8 +1,8 @@
 
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: LocateQueenAltar & LocateKingAltar
+; Name ..........: LocateQueenAltar & LocateKingAltar & LocateWardenAltar
 ; Description ...:
-; Syntax ........: LocateKingAltar() & LocateQueenAltar()
+; Syntax ........: LocateKingAltar() & LocateQueenAltar() &  LocateWardenAltar()
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: ProMac 2015
@@ -78,11 +78,11 @@ Func LocateQueenAltar()
 		EndIf
 
 		;get Queen info
-		$sInfo = BuildingInfo(242, 520)
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While IsArray($sInfo) = False
-			$sInfo = BuildingInfo(242, 520)
+			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -202,11 +202,11 @@ Func LocateKingAltar()
 		EndIf
 
 		;Get King info
-		$sInfo = BuildingInfo(242, 520)
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While IsArray($sInfo) = False
-			$sInfo = BuildingInfo(242, 520)
+			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -266,3 +266,137 @@ Func LocateKingAltar()
 	IniWrite($building, "other", "yKingAltarPos", $KingAltarPos[1])
 
 EndFunc   ;==>LocateKingAltar
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Func LocateWardenAltar()
+	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo
+
+	If Number($iTownHallLevel) < 11 Then
+		SetLog("Grand Warden requires TH11, Cancel locate Altar!", $COLOR_RED)
+		Return
+	EndIf
+
+	$RunState = True
+	WinActivate($Title)
+	checkMainScreen(False)
+
+	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) And _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
+		Zoomout()
+		Collect()
+	EndIf
+
+	SetLog("Locating Grand Warden Altar... work in progress!", $COLOR_BLUE)
+	While 1
+		ClickP($aTopLeftClient)
+		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
+		$stext = $sErrorText & @CRLF & "Click OK then click on your Grand Warden Altar" & @CRLF & @CRLF & _
+				"Do not move mouse after clicking location" & @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
+		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Grand Warden Altar", $stext, 15, $frmBot)
+		If $MsgBox = 1 Then
+			$HWnD = WinGetHandle($Title)
+			WinActivate($HWnD)
+			$WardenAltarPos[0] = FindPos()[0]
+			$WardenAltarPos[1] = FindPos()[1]
+			If isInsideDiamond($WardenAltarPos) = False Then
+				$iStupid += 1
+				Select
+					Case $iStupid = 1
+						$sErrorText = "Grand Warden Altar Location Not Valid!" & @CRLF
+						SetLog("Location not valid, try again", $COLOR_RED)
+						ContinueLoop
+					Case $iStupid = 2
+						$sErrorText = "Please try to click inside the grass field!" & @CRLF
+						ContinueLoop
+					Case $iStupid = 3
+						$sErrorText = "This is not funny, why did you click @ (" & $WardenAltarPos[0] & "," & $WardenAltarPos[1] & ")?" & @CRLF & "  Please stop!" & @CRLF & @CRLF
+						ContinueLoop
+					Case $iStupid = 4
+						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
+						ContinueLoop
+					Case $iStupid > 4
+						SetLog(" Operator Error - Bad Grand Warden Altar Location: " & "(" & $WardenAltarPos[0] & "," & $WardenAltarPos[1] & ")", $COLOR_RED)
+						ClickP($aTopLeftClient)
+						Return False
+					Case Else
+						SetLog(" Operator Error - Bad Grand Warden Altar Location: " & "(" & $WardenAltarPos[0] & "," & $WardenAltarPos[1] & ")", $COLOR_RED)
+						$WardenAltarPos[0] = -1
+						$WardenAltarPos[1] = -1
+						ClickP($aTopLeftClient)
+						Return False
+				EndSelect
+			EndIf
+			SetLog("Grand Warden Altar: " & "(" & $WardenAltarPos[0] & "," & $WardenAltarPos[1] & ")", $COLOR_GREEN)
+		Else
+			SetLog("Locate Grand Warden Altar Cancelled", $COLOR_BLUE)
+			ClickP($aTopLeftClient)
+			Return
+		EndIf
+
+		;get GrandWarden info
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY) ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< need to work
+		If @error Then SetError(0, 0, 0)
+		Local $CountGetInfo = 0
+		While IsArray($sInfo) = False
+			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY)
+			If @error Then SetError(0, 0, 0)
+			Sleep(100)
+			$CountGetInfo += 1
+			If $CountGetInfo = 50 Then Return
+		WEnd
+		If $debugSetlog = 1 Then SetLog($sInfo[1] & $sInfo[2])
+		If @error Then Return SetError(0, 0, 0)
+
+		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
+			If @error Then Return SetError(0, 0, 0)
+
+			If StringInStr($sInfo[1], "Warden") = 0 Then
+				If $sInfo[0] = "" Then
+					$sLocMsg = "Nothing"
+				Else
+					$sLocMsg = $sInfo[1]
+				EndIf
+				$iSilly += 1
+				Select
+					Case $iSilly = 1
+						$sErrorText = "Wait, That is not the Grand Warden Altar?, It was a " & $sLocMsg & @CRLF
+						ContinueLoop
+					Case $iSilly = 2
+						$sErrorText = "Quit joking, That was " & $sLocMsg & @CRLF
+						ContinueLoop
+					Case $iSilly = 3
+						$sErrorText = "This is not funny, why did you click " & $sLocMsg & "? Please stop!" & @CRLF
+						ContinueLoop
+					Case $iSilly = 4
+						$sErrorText = $sLocMsg & " ?!?!?!" & @CRLF & @CRLF & "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
+						ContinueLoop
+					Case $iSilly > 4
+						SetLog("Quit joking, Click the Grand Warden Altar, or restart bot and try again", $COLOR_RED)
+						$WardenAltarPos[0] = -1
+						$WardenAltarPos[1] = -1
+						ClickP($aTopLeftClient)
+						Return False
+				EndSelect
+			EndIf
+		Else
+			SetLog(" Operator Error - Bad Grand Warden Altar Location: " & "(" & $WardenAltarPos[0] & "," & $WardenAltarPos[1] & ")", $COLOR_RED)
+			$WardenAltarPos[0] = -1
+			$WardenAltarPos[1] = -1
+			ClickP($aTopLeftClient)
+			Return False
+		EndIf
+		ExitLoop
+	WEnd
+
+	ClickP($aTopLeftClient, 1, 200, "#0327")
+	If _Sleep(1000) Then Return
+
+	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
+	$stext = "Now you can remove mouse out of bluestacks, Thanks!!"
+	$MsgBox = _ExtMsgBox(48, "OK", "Notice!", $stext, 15, $frmBot)
+
+	IniWrite($building, "other", "xWardenAltarPos", $WardenAltarPos[0])
+	IniWrite($building, "other", "yWardenAltarPos", $WardenAltarPos[1])
+
+
+EndFunc   ;==>LocateWardenAltar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

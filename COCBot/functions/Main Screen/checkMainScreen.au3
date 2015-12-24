@@ -7,7 +7,7 @@
 ; Parameters ....: $Check               - [optional] an unknown value. Default is True.
 ; Return values .: None
 ; Author ........:
-; Modified ......: KnowJack (July/Aug 2015)
+; Modified ......: KnowJack (July/Aug 2015) , TheMaster (2015)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkObstacles(), waitMainScreen()
@@ -15,38 +15,42 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func checkMainScreen($Check = True) ;Checks if in main screen
-	Local $iCount, $Result, $RunApp
+
+	Local $iCount, $Result
 	If $Check = True Then
 		SetLog("Trying to locate Main Screen")
 		_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce BlueStacks Memory Usage
 	Else
-		If $debugsetlog = 1 Then SetLog("checkMainScreen start quiet mode")
+		If $debugsetlog = 1 Then SetLog("checkMainScreen start quiet mode", $COLOR_PURPLE)
 	EndIf
+	If WinExists($Title) = False Then
+		OpenAndroid(True)
+		Return
+    EndIf
+	$HWnD = WinGetHandle($Title)
+	If $ichkBackground = 0 Then
+	    WinActivate($HWnD)  	; ensure bot has window focus
+    EndIf
 	$iCount = 0
-	$RunApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "RunApp")
 	While _CheckPixel($aIsMain, $bCapturePixel) = False
 		$HWnD = WinGetHandle($Title)
 		If _Sleep($iDelaycheckMainScreen1) Then Return
 		$Result = checkObstacles()
 		If $debugsetlog = 1 Then Setlog("CheckObstacles Result = "&$Result, $COLOR_PURPLE)
-		If $Result = False Then ; Need to try to restart CoC
-			WinActivate($HWnD)  	; ensure bot has window focus
-			PureClick(126, 700, 2, 500,"#0126")  ; click on BS home button twice to clear error and go home.
-			Run($RunApp & " Android com.supercell.clashofclans com.supercell.clashofclans.GameApp")
-			SetLog("Please wait for CoC restart......", $COLOR_BLUE)   ; Let user know we need time...
-			If _SleepStatus($iDelaycheckMainScreen2) Then Return
+
+		If ($Result = False And $MinorObstacle = True) Then
+			$MinorObstacle = False
+		ElseIf ($Result = False And $MinorObstacle = False) Then
+			 RestartAndroidCoC() ; Need to try to restart CoC
 		Else
 			$Restart = True
 		EndIf
 		waitMainScreen()  ; Due to differeneces in PC speed, let waitMainScreen test for CoC restart
-		If @extended Then
-			SetError(1, 1, -1)
-			Return
-		EndIf
+		If @extended Then Return SetError(1, 1, -1)
 		If @error Then $iCount += 1
 		If $iCount > 2 Then
 			SetLog("Unable to fix the window error", $COLOR_RED)
-			SetError(1, 0, 0)
+			CloseCoC(True)
 			ExitLoop
 		EndIf
 	WEnd
@@ -55,6 +59,9 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 	If $Check = True Then
 		SetLog("Main Screen Located", $COLOR_GREEN)
 	Else
-		If $debugsetlog = 1 Then SetLog("checkMainScreen exit quiet mode")
+		If $debugsetlog = 1 Then SetLog("checkMainScreen exit quiet mode", $COLOR_PURPLE)
 	EndIf
+
+    ;After checkscreen dispose windows
+	DisposeWindows()
 EndFunc   ;==>checkMainScreen

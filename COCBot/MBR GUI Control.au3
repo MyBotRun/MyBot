@@ -29,11 +29,8 @@ Local $aTxtBlacklistControls[17] = [$txtBlacklistBarbarians, $txtBlacklistArcher
 Local $aLblBtnControls[17] = [$lblBtnBarbarians, $lblBtnArchers, $lblBtnGiants, $lblBtnGoblins, $lblBtnWallBreakers, $lblBtnBalloons, $lblBtnWizards, $lblBtnHealers, $lblBtnDragons, $lblBtnPekkas, $lblBtnMinions, $lblBtnHogRiders, $lblBtnValkyries, $lblBtnGolems, $lblBtnWitches, $lblBtnLavaHounds, $lblBtnCustom]
 
 _GDIPlus_Startup()
-Global Const $64Bit = StringInStr(@OSArch, "64") > 0
-Global Const $DEFAULT_HEIGHT = 720
-Global Const $DEFAULT_WIDTH = 860
+
 Global $Initiate = 0
-Global Const $REGISTRY_KEY_DIRECTORY = "HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks\Guests\Android\FrameBuffer\0"
 Global $ichklanguageFirst = 0
 Global $ichklanguage = 1
 
@@ -71,12 +68,13 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 					_GDIPlus_ImageDispose($hBitmap)
 					_WinAPI_DeleteObject($hHBitmap)
 					_GDIPlus_Shutdown()
+					MBRFunc(False) ; close MBRFunctions dll
 					_GUICtrlRichEdit_Destroy($txtLog)
 					_GUICtrlRichEdit_Destroy($txtAtkLog)
 					SaveConfig()
 					Exit
 				Case $labelMyBotURL
-					ShellExecute("https://MyBot.run") ;open web site when clicking label
+					ShellExecute("https://MyBot.run/forums") ;open web site when clicking label
 				Case $labelForumURL
 					ShellExecute("https://MyBot.run/forums/forumdisplay.php?fid=2") ;open web site when clicking label
 				Case $btnStop
@@ -115,7 +113,8 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 							MakeScreenshot($dirTemp, "png")
 						EndIf
 					EndIf
-
+				Case $pic2arrow
+					If $RunState Then btnVillageStat()
 			EndSwitch
 		Case 274
 			Switch $wParam
@@ -134,6 +133,7 @@ EndFunc   ;==>GUIControl
 Func SetTime()
 	Local $time = _TicksToTime(Int(TimerDiff($sTimer) + $iTimePassed), $hour, $min, $sec)
 	If GUICtrlRead($tabMain, 1) = $tabStats Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+	If GUICtrlGetState($lblResultGoldNow) <> $GUI_ENABLE + $GUI_SHOW Then GUICtrlSetData($lblResultRuntimeNow, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 	;If $pEnabled = 1 And $pRemote = 1 And StringFormat("%02i", $sec) = "50" Then _RemoteControl()
 	;If $pEnabled = 1 And $ichkDeleteOldPushes = 1 And Mod($min + 1, 30) = 0 And $sec = "0" Then _DeleteOldPushes() ; check every 30 min if must to delete old pushbullet messages, increase delay time for anti ban pushbullet
 EndFunc   ;==>SetTime

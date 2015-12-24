@@ -15,19 +15,19 @@ Func getNameBuilding($x_start, $y_start); getNameBuilding(242,520) -> Gets compl
 	Return getOcrAndCapture("coc-build", $x_start, $y_start, 377, 27)
 EndFunc   ;==>getNameBuilding
 
-Func getGoldVillageSearch($x_start, $y_start);48 68 -> Gets complete value of gold xxx,xxx Getresources.au3
+Func getGoldVillageSearch($x_start, $y_start);48, 69 -> Gets complete value of gold xxx,xxx Getresources.au3
 	Return getOcrAndCapture("coc-v-g", $x_start, $y_start, 90, 16, True)
 EndFunc   ;==>getGoldVillageSearch
 
-Func getElixirVillageSearch($x_start, $y_start) ;+28 -> Gets complete value of Elixir xxx,xxx Getresources.au3
+Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete value of Elixir xxx,xxx Getresources.au3
 	Return getOcrAndCapture("coc-v-e", $x_start, $y_start, 90, 16, True)
 EndFunc   ;==>getElixirVillageSearch
 
-Func getDarkElixirVillageSearch($x_start, $y_start) ;+28  -> Gets complete value of Dark Elixir xxx,xxx Getresources.au3
+Func getDarkElixirVillageSearch($x_start, $y_start) ;48, 69+57 or 69+69  -> Gets complete value of Dark Elixir xxx,xxx Getresources.au3
 	Return getOcrAndCapture("coc-v-de", $x_start, $y_start, 75, 16, True)
 EndFunc   ;==>getDarkElixirVillageSearch
 
-Func getTrophyVillageSearch($x_start, $y_start) ;+33  -> Gets complete value of Trophies xxx,xxx Getresources.au3
+Func getTrophyVillageSearch($x_start, $y_start) ;48, 69+99 or 69+69 -> Gets complete value of Trophies xxx,xxx Getresources.au3
 	Return getOcrAndCapture("coc-v-t", $x_start, $y_start, 75, 16, True)
 EndFunc   ;==>getTrophyVillageSearch
 
@@ -40,7 +40,7 @@ Func getTrophyLossAttackScreen($x_start, $y_start) ; 48,214 or 48,184 WO/DE -> G
 EndFunc   ;==>getTrophyLossAttackScreen
 
 Func getUpgradeResource($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx "UpgradeBuildings.au3" to use in future function
-	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 92, 16, True)
+	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 98, 16, True)
 EndFunc   ;==>getUpgradeResource
 
 Func getResourcesMainScreen($x_start, $y_start) ; -> Gets complete value of Gold/Elixir/Dark Elixir/Trophies/Gems xxx,xxx "VillageReport.au3"
@@ -60,7 +60,7 @@ Func getResourcesLootT($x_start, $y_start) ; -> Gets complete value of Gold/Elix
 EndFunc   ;==>getResourcesLootT
 
 Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx "UpgradeBuildings.au3" to use in future function
-	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 92, 16, True)
+	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 98, 16, True)
 EndFunc   ;==>getResourcesBonus
 
 Func getLabUpgrdResourceWht($x_start, $y_start) ; -> Gets complete value of Elixir/DE xxx,xxx for "laboratory.au3" when white text
@@ -122,7 +122,7 @@ Func getOcrLanguage($x_start, $y_start);  -> Get english language - main screen 
 EndFunc   ;==>getOcrLanguage
 
 Func getOcrSpellDetection($x_start, $y_start);  -> Recognition of the Spells in Armyoverview window
-	Return getOcrAndCapture("coc-t-spells", $x_start, $y_start, 50, 10, True)
+	Return getOcrAndCapture("coc-t-spells", $x_start, $y_start, 50, 30, True)
 EndFunc   ;==>getOcrSpellDetection
 
 Func getOcrSpellQuantity($x_start, $y_start);  -> Get the Spells quantity in Armyoverview window
@@ -134,10 +134,16 @@ Func getOcrClanLevel($x_start, $y_start);  -> Get the Spells quantity in Armyove
 EndFunc   ;==>getOcrClanLevel
 
 Func getOcrSpaceCastleDonate($x_start, $y_start);  -> Get the space of castle request
-	Return getOcrAndCapture("coc-totalreq", $x_start, $y_start, 38, 11, True)
+	Return getOcrAndCapture("coc-totalreq", $x_start, $y_start, 40, 12, True)
 EndFunc   ;==>getOcrSpaceCastleDonate
 
+Func getOcrDonationTroopsDetection($x_start, $y_start);  -> Get the space of castle request
+	Return getOcrAndCapture("coc-donationtroop", $x_start, $y_start, 30, 15, True)
+EndFunc   ;==>getOcrDonationTroopsDetection
 
+Func getOcrOverAllDamage($x_start, $y_start);  -> Get the Overall Damage %
+	Return getOcrAndCapture("coc-overalldamage", $x_start, $y_start, 50, 20, True)
+EndFunc   ;==>getOcrOverAllDamage
 
 
 Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpace = False)
@@ -151,7 +157,7 @@ Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpa
 EndFunc   ;==>getOcrAndCapture
 
 Func getOcr($hBitmap, $language)
-	Local $result = DllCall($pFuncLib, "str", "ocr", "ptr", $hBitmap, "str", $language, "int", $debugOcr)
+	Local $result = DllCall($hFuncLib, "str", "ocr", "ptr", $hBitmap, "str", $language, "int", $debugOcr)
 	If IsArray($result) Then
 		Return $result[0]
 	Else

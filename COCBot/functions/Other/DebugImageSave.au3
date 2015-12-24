@@ -14,14 +14,15 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func DebugImageSave($TxtName = "Unknown")
+Func DebugImageSave($TxtName = "Unknown",$capturenew=True)
 
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
-	SetLog("Taking snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
+	;SetLog("Taking snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
 	$Date = @MDAY & "." & @MON & "." & @YEAR
 	$Time = @HOUR & "." & @MIN & "." & @SEC
-	_CaptureRegion()
+	If $capturenew Then _CaptureRegion()
 	_GDIPlus_ImageSaveToFile($hBitmap, $dirtemp & $TxtName & $Date & " at " & $Time & ".png")
+	If $debugsetlog=1 Then Setlog( $TxtName & $Date & " at " & $Time & ".png", $COLOR_purple)
 	If _Sleep($iDelayDebugImageSave1) Then Return
 
 EndFunc   ;==>DebugImageSave

@@ -39,7 +39,7 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 	If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then ; check if the village have a Dark Elixir Storage
 		$iGoldCurrent = getResourcesMainScreen(705, 23)
 		$iElixirCurrent = getResourcesMainScreen(705, 74)
-		$iDarkCurrent =  getResourcesMainScreen(731, 123)
+		$iDarkCurrent =  getResourcesMainScreen(728, 123)
 		$iGemAmount = getResourcesMainScreen(740, 171)
 		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($iGoldCurrent) & " [E]: " &  _NumberFormat($iElixirCurrent) & " [D]: " &  _NumberFormat($iDarkCurrent) & " [GEM]: " &  _NumberFormat($iGemAmount), $COLOR_GREEN)
 	Else

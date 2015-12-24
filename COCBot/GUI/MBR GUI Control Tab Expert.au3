@@ -98,7 +98,7 @@ Func chkDonateHoursE1()
 	EndIf
 	Sleep(300)
 	GUICtrlSetState($chkDonateHoursE1, $GUI_UNCHECKED)
-EndFunc  ;==>chkDonateHoursE1
+EndFunc   ;==>chkDonateHoursE1
 
 Func chkDonateHoursE2()
 	If GUICtrlRead($chkDonateHoursE2) = $GUI_CHECKED And GUICtrlRead($chkDonateHours12) = $GUI_CHECKED Then
@@ -112,7 +112,7 @@ Func chkDonateHoursE2()
 	EndIf
 	Sleep(300)
 	GUICtrlSetState($chkDonateHoursE2, $GUI_UNCHECKED)
-EndFunc  ;==>chkDonateHoursE2
+EndFunc   ;==>chkDonateHoursE2
 
 Func chkRequestCCHoursE1()
 	If GUICtrlRead($chkRequestCCHoursE1) = $GUI_CHECKED And GUICtrlRead($chkRequestCCHours0) = $GUI_CHECKED Then
@@ -126,7 +126,7 @@ Func chkRequestCCHoursE1()
 	EndIf
 	Sleep(300)
 	GUICtrlSetState($chkRequestCCHoursE1, $GUI_UNCHECKED)
-EndFunc  ;==>chkRequestCCHoursE1
+EndFunc   ;==>chkRequestCCHoursE1
 
 Func chkRequestCCHoursE2()
 	If GUICtrlRead($chkRequestCCHoursE2) = $GUI_CHECKED And GUICtrlRead($chkRequestCCHours12) = $GUI_CHECKED Then
@@ -140,7 +140,7 @@ Func chkRequestCCHoursE2()
 	EndIf
 	Sleep(300)
 	GUICtrlSetState($chkRequestCCHoursE2, $GUI_UNCHECKED)
-EndFunc  ;==>chkRequestCCHoursE2
+EndFunc   ;==>chkRequestCCHoursE2
 
 Func chkDropCCHoursE1()
 	If GUICtrlRead($chkDropCCHoursE1) = $GUI_CHECKED And GUICtrlRead($chkDropCCHours0) = $GUI_CHECKED Then
@@ -154,7 +154,7 @@ Func chkDropCCHoursE1()
 	EndIf
 	Sleep(300)
 	GUICtrlSetState($chkDropCCHoursE1, $GUI_UNCHECKED)
-EndFunc  ;==>chkDropCCHoursE1
+EndFunc   ;==>chkDropCCHoursE1
 
 Func chkDropCCHoursE2()
 	If GUICtrlRead($chkDropCCHoursE2) = $GUI_CHECKED And GUICtrlRead($chkDropCCHours12) = $GUI_CHECKED Then
@@ -168,7 +168,7 @@ Func chkDropCCHoursE2()
 	EndIf
 	Sleep(300)
 	GUICtrlSetState($chkDropCCHoursE2, $GUI_UNCHECKED)
-EndFunc  ;==>chkDropCCHoursE1
+EndFunc   ;==>chkDropCCHoursE2
 
 Func chkRequestCCHours()
 	If GUICtrlRead($chkRequestCCHours) = $GUI_CHECKED Then
@@ -192,9 +192,9 @@ Func chkDropCCHours()
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
- EndFunc   ;==>chkDropCCHours
+EndFunc   ;==>chkDropCCHours
 
- Func chkBoostBarracksHours()
+Func chkBoostBarracksHours()
 	If GUICtrlRead($chkBoostBarracksHours) = $GUI_CHECKED Then
 		For $i = $lbBoostBarracksHours1 To $lbBoostBarracksHoursPM
 			GUICtrlSetState($i, $GUI_ENABLE)
@@ -204,7 +204,7 @@ Func chkDropCCHours()
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
-EndFunc   ;==>chkDonateHours
+EndFunc   ;==>chkBoostBarracksHours
 
 Func chkBoostBarracksHoursE1()
 	If GUICtrlRead($chkBoostBarracksHoursE1) = $GUI_CHECKED And GUICtrlRead($chkBoostBarracksHours0) = $GUI_CHECKED Then
@@ -218,7 +218,7 @@ Func chkBoostBarracksHoursE1()
 	EndIf
 	Sleep(300)
 	GUICtrlSetState($chkBoostBarracksHoursE1, $GUI_UNCHECKED)
-EndFunc  ;==>chkDonateHoursE1
+EndFunc   ;==>chkBoostBarracksHoursE1
 
 Func chkBoostBarracksHoursE2()
 	If GUICtrlRead($chkBoostBarracksHoursE2) = $GUI_CHECKED And GUICtrlRead($chkBoostBarracksHours12) = $GUI_CHECKED Then
@@ -232,7 +232,7 @@ Func chkBoostBarracksHoursE2()
 	EndIf
 	Sleep(300)
 	GUICtrlSetState($chkBoostBarracksHoursE2, $GUI_UNCHECKED)
-EndFunc  ;==>chkDonateHoursE2
+EndFunc   ;==>chkBoostBarracksHoursE2
 
 Func chkTotalCampForced()
 	If GUICtrlRead($chkTotalCampForced) = $GUI_CHECKED Then
@@ -243,17 +243,33 @@ Func chkTotalCampForced()
 EndFunc   ;==>chkTotalCampForced
 
 Func chkDebugSetlog()
-		If GUICtrlRead($chkDebugSetlog) = $GUI_CHECKED Then
+	If GUICtrlRead($chkDebugSetlog) = $GUI_CHECKED Then
 		$DebugSetlog = 1
 	Else
 		$DebugSetlog = 0
 	EndIf
-EndFunc   ;==>chkDebugOcr
+EndFunc   ;==>chkDebugSetlog
 
 Func chkDebugOcr()
-		If GUICtrlRead($chkDebugOcr) = $GUI_CHECKED Then
+	If GUICtrlRead($chkDebugOcr) = $GUI_CHECKED Then
 		$DebugOcr = 1
 	Else
 		$DebugOcr = 0
 	EndIf
 EndFunc   ;==>chkDebugOcr
+
+Func chkDebugImageSave()
+	If GUICtrlRead($chkDebugImageSave) = $GUI_CHECKED Then
+		$DebugImageSave = 1
+	Else
+		$DebugImageSave = 0
+	EndIf
+EndFunc   ;==>chkDebugImageSave
+
+Func chkdebugBuildingPos()
+	If GUICtrlRead($chkdebugBuildingPos) = $GUI_CHECKED Then
+		$debugBuildingPos = 1
+	Else
+		$debugBuildingPos = 0
+	EndIf
+EndFunc   ;==>chkdebugBuildingPos

@@ -20,6 +20,7 @@
 #include "functions\Config\DelayTimes.au3"
 
 #include "functions\Attack\AttackReport.au3"
+#include "functions\Attack\BuildingSide.au3"
 #include "functions\Attack\CheckHeroesHealth.au3"
 #include "functions\Attack\dropCC.au3"
 #include "functions\Attack\dropHeroes.au3"
@@ -68,21 +69,28 @@
 #include "functions\Image Search\checkWall.au3"
 ;#include "functions\Image Search\checkDElixS.au3"
 #include "functions\Image Search\CheckTombs.au3"
+#include "functions\Image Search\THSearch.au3"
 
+#include "functions\Main Screen\BlueStacks1Shortcuts.au3"
 #include "functions\Main Screen\checkMainScreen.au3"
 #include "functions\Main Screen\checkObstacles.au3"
 #include "functions\Main Screen\GetDPI_Ratio.au3"
-#include "functions\Main Screen\CloseBlueStacks.au3"
 #include "functions\Main Screen\isGemOpen.au3"
 #include "functions\Main Screen\isNoUpgradeLoot.au3"
 #include "functions\Main Screen\isProblemAffect.au3"
 #include "functions\Main Screen\checkAttackDisable.au3"
-#include "functions\Main Screen\WaitnOpenCoC.au3"
-#include "functions\Main Screen\OpenBlueStacks.au3"
+
+#include "functions\Main Screen\Close_OpenCoC.au3"
+
 #include "functions\Main Screen\RemoveGhostTrayIcons.au3"
 #include "functions\Main Screen\waitMainScreen.au3"
 #include "functions\Main Screen\ZoomOut.au3"
 
+; Android support for BlueStacks, Droid4X ...
+#include "functions\Main Screen\OpenBlueStacks.au3"
+#include "functions\Main Screen\CloseBlueStacks.au3"
+#include "functions\Main Screen\OpenDroid4X.au3"
+#include "functions\Main Screen\CloseDroid4X.au3"
 
 #include "functions\Other\_NumberFormat.au3"
 #include "functions\Other\_PadStringCenter.au3"
@@ -92,7 +100,7 @@
 #include "functions\Other\_StatusUpdateTime.au3"
 #include "functions\Other\Click.au3"
 #include "functions\Other\CreateLogFile.au3"
-#include "functions\Other\debugMBRFunctions.au3"
+#include "functions\Other\MBRFunc.au3"
 #include "functions\Other\DebugImageSave.au3"
 #include "functions\Other\DebugSaveDesktopImage.au3"
 #include "functions\Other\FindPos.au3"
@@ -106,6 +114,7 @@
 #include "functions\Other\BlockInputEx.au3"
 #include "functions\Other\TogglePause.au3"
 #include "functions\Other\CheckPrerequisites.au3"
+#include "functions\Other\CheckDisplay.au3"
 #include "functions\Other\AutoStart.au3"
 #include "functions\Other\WindowsArrange.au3"
 #include "functions\Other\MakeScreenshot.au3"
@@ -116,6 +125,10 @@
 #include "functions\Other\CheckVersion.au3"
 #include "functions\Other\TrainClick.au3"
 #include "functions\Other\ComError.au3"
+#include "functions\Other\IsPage.au3"
+#include "functions\Other\MoveMouseOutBS.au3"
+#include "functions\Other\LaunchConsole.au3"
+#include "functions\Other\ADB.au3"
 
 #include "functions\Pixels\_CaptureRegion.au3"
 #include "functions\Pixels\_ColorCheck.au3"
@@ -150,6 +163,7 @@
 #include "functions\Search\VillageSearch.au3"
 #include "functions\Search\CheckZoomOut.au3"
 #include "functions\Search\SearchTownHallloc.au3"
+#include "functions\Search\SnipeWhileTrain.au3"
 
 #include "functions\Village\_TrainMoveBtn.au3"
 #include "functions\Village\BoostBarracks.au3"
@@ -185,6 +199,7 @@
 #include "functions\Village\ReplayShare.au3"
 #include "functions\Village\BarracksStatus.au3"
 #include "functions\Village\BoostHeroes.au3"
+#include "functions\Village\UpgradeHeroes.au3"
 #include "functions\Village\ClanLevel.au3"
 
 

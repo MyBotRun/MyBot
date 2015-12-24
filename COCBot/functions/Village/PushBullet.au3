@@ -165,7 +165,9 @@ Func _PushBullet($pMessage = "")
 	$oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
 	$oHTTP.SetCredentials($access_token, "", 0)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
-	Local $pPush = '{"type": "note", "body": "' & $pMessage & '"}'
+	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+	Local $Time = @HOUR & "." & @MIN
+	Local $pPush = '{"type": "note", "body": "' & $pMessage & "\n" & $Date & "__" & $Time & '"}'
 	$oHTTP.Send($pPush)
 
 EndFunc   ;==>_PushBullet
@@ -178,7 +180,9 @@ Func _Push($pMessage)
 	$oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
 	$oHTTP.SetCredentials($access_token, "", 0)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
-	Local $pPush = '{"type": "note", "body": "' & $pMessage & '"}'
+	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+	Local $Time = @HOUR & "." & @MIN
+	Local $pPush = '{"type": "note", "body": "' & $pMessage & "\n" & $Date & "__" & $Time & '"}'
 	$oHTTP.Send($pPush)
 
 EndFunc   ;==>_Push
@@ -282,7 +286,7 @@ Func PushMsg($Message, $Source = "")
 				SetLog("Pushbullet: Last Raid Text has been sent!", $COLOR_GREEN)
 			EndIf
 			If $pEnabled = 1 And $pLastRaidImg = 1 Then
-				_CaptureRegion(0, 0, 860, 675)
+				_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT - 45)
 				;create a temporary file to send with pushbullet...
 				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 				Local $Time = @HOUR & "." & @MIN
@@ -335,7 +339,7 @@ Func PushMsg($Message, $Source = "")
 		Case "RequestScreenshot"
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(0, 0, 860, 720)
+			_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT)
 			$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
 			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 			_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirTemp & $Screnshotfilename)

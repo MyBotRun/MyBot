@@ -17,7 +17,7 @@
 Func ReArm()
 
 	If $ichkTrap = 0 Then Return ; If re-arm is not enable in GUI return and skip this code
-	Local $y = 562
+	Local $y = 562 + $bottomOffsetY  ; Add 60 y pixel for 860x780 window
 
 	SetLog("Checking if Village needs Rearming..", $COLOR_BLUE)
 
@@ -29,14 +29,14 @@ Func ReArm()
 
 	ClickP($aAway, 1, 0, "#0224") ; Click away
 	If _Sleep($iDelayReArm2) Then Return
-	Click($TownHallPos[0], $TownHallPos[1] + 5, 1, 0, "#0225")
+	If IsMainPage() Then Click($TownHallPos[0], $TownHallPos[1] + 5, 1, 0, "#0225")
 	If _Sleep($iDelayReArm3) Then Return
 
 	;If $debugSetlog = 1 Then DebugImageSave("ReArmView")
 
 	;Traps
-	Local $offColors[3][3] = [[0x887d79, 24, 34], [0xF3EC55, 69, 7], [0xECEEE9, 77, 0]] ; 2nd pixel brown wrench, 3rd pixel gold, 4th pixel edge of button
-	Global $RearmPixel = _MultiPixelSearch2(339, $y, 670, 620, 1, 1, Hex(0xF6F9F2, 6), $offColors, 30) ; first gray/white pixel of button
+	Local $offColors[3][3] = [[0x0F0F0F, 24, 34], [0xF6EF57, 70,5], [0xF4F5F2, 79, 0]] ; 2nd pixel brown wrench, 3rd pixel gold, 4th pixel edge of button
+	Global $RearmPixel = _MultiPixelSearch2(339, $y, 670, $y + 58, 1, 1, Hex(0xF2F4F0, 6), $offColors, 30) ; first gray/white pixel of button
 	If IsArray($RearmPixel) Then
 		If $debugSetlog = 1 Then
 			Setlog("Traps ButtonPixel = " & $RearmPixel[0] & ", " & $RearmPixel[1], $COLOR_PURPLE) ;Debug
@@ -58,8 +58,8 @@ Func ReArm()
 
 	If Number($iTownHallLevel) > 8 Then
 		;Xbow
-		Local $offColors[3][3] = [[0x8F4B9E, 19, 20], [0xFB5CF4, 70, 7], [0xF0F1EC, 77, 0]]; xbow, elixir, edge
-		Local $XbowPixel = _MultiPixelSearch2(430, $y, 670, 600, 1, 1, Hex(0xF4F7F0, 6), $offColors, 30) ; button start
+		Local $offColors[3][3] = [[0xD050F0, 50, 17], [0xE955E0, 70, 7], [0xF4F6F2, 79, 0]]; xbow, elixir, edge
+		Local $XbowPixel = _MultiPixelSearch2(430, $y, 670, $y + 38, 1, 1, Hex(0xF3F5F1, 6), $offColors, 30)
 		If IsArray($XbowPixel) Then
 			Click($XbowPixel[0] + 20, $XbowPixel[1] + 20, 1, 0, "#0228") ; Click RearmButton
 			If $debugSetlog = 1 Then
@@ -84,8 +84,8 @@ Func ReArm()
 	If Number($iTownHallLevel) > 9 Then
 
 		;Inferno
-		Local $offColors[3][3] = [[0x8D7477, 19, 20], [0x574460, 70, 7], [0xF0F1EC, 77, 0]]; inferno, dark, edge
-		Global $InfernoPixel = _MultiPixelSearch2(525, $y, 670, 600, 1, 1, Hex(0xF4F7F0, 6), $offColors, 30)
+		Local $offColors[3][3] = [[0x202523, 19, 20], [0x202523, 70, 7], [0xF3F5F1, 79, 0]]; inferno, dark, edge
+		Global $InfernoPixel = _MultiPixelSearch2(525, $y, 720, $y + 38, 1, 1, Hex(0xF3F5F1, 6), $offColors, 30)
 		If IsArray($InfernoPixel) Then
 			If $debugSetlog = 1 Then
 				Setlog("Inferno ButtonPixel = " & $InfernoPixel[0] & ", " & $InfernoPixel[1], $COLOR_PURPLE) ;Debug

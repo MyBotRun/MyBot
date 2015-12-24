@@ -54,6 +54,8 @@ Func NameOfTroop($kind, $plurial = 0)
 			Return "Earthquake Spells"
 		Case $eHaSpell
 			Return "Haste Spells"
+		Case $eWarden
+			Return "Grand Warden"
 		Case Else
 			Return ""
 	EndSwitch
