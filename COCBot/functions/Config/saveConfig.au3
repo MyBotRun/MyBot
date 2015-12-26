@@ -980,6 +980,8 @@ Func saveConfig() ;Saves the controls settings to the config
 
 	;PushBullet Settings----------------------------------------
 	IniWrite($config, "pushbullet", "AccountToken", GUICtrlRead($PushBTokenValue))
+	IniWrite($config, "pushbullet", "AccountToken2", GUICtrlRead($PushBTokenValue2))
+	
 	IniWrite($config, "pushbullet", "OrigPushB", GUICtrlRead($txtVillageName))
 
 	If GUICtrlRead($chkAlertPBVillage) = $GUI_CHECKED Then
@@ -998,6 +1000,11 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "pushbullet", "PBEnabled", 1)
 	Else
 		IniWrite($config, "pushbullet", "PBEnabled", 0)
+	 EndIf
+	 	If GUICtrlRead($chkPBenabled2) = $GUI_CHECKED Then
+		IniWrite($config, "pushbullet", "PBEnabled2", 1)
+	Else
+		IniWrite($config, "pushbullet", "PBEnabled2", 0)
 	EndIf
 
 	If GUICtrlRead($chkPBRemote) = $GUI_CHECKED Then

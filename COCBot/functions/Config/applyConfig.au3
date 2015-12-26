@@ -907,6 +907,8 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	;PushBullet-----------------------------------------------------------------------------
 
 	GUICtrlSetData($PushBTokenValue, $PushToken)
+	GUICtrlSetData($PushBTokenValue2, $PushToken2)
+	
 	GUICtrlSetData($OrigPushB, $iOrigPushB)
 
 ;~ 	If $iOrigPushB = "" Then
@@ -935,6 +937,14 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		chkPBenabled()
 	EndIf
 
+	If $pEnabled2 = 1 Then
+		GUICtrlSetState($chkPBenabled2, $GUI_CHECKED)
+		chkPBenabled2()
+	ElseIf $pEnabled2 = 0 Then
+		GUICtrlSetState($chkPBenabled2, $GUI_UNCHECKED)
+		chkPBenabled2()
+	EndIf
+	
 	If $pRemote = 1 Then
 		GUICtrlSetState($chkPBRemote, $GUI_CHECKED)
 	ElseIf $pRemote = 0 Then

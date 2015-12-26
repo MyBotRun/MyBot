@@ -218,6 +218,7 @@ Func readConfig() ;Reads config and sets it to the variables
 		$icmbDeployBtmTHType = IniRead($config, "advanced", "AttackBottomTHType", "1")
 
 		$PushToken = IniRead($config, "advanced", "AccountToken", "")
+		$PushToken2 = IniRead($config, "advanced", "AccountToken2", "")
 
 		$iAlertPBVillage = IniRead($config, "advanced", "AlertPBVillage", "0")
 		$iLastAttack = IniRead($config, "advanced", "AlertPBLastAttack", "0")
@@ -472,6 +473,8 @@ Func readConfig() ;Reads config and sets it to the variables
 
 		;PushBullet Settings ---------------------------------------------
 		$PushToken = IniRead($config, "pushbullet", "AccountToken", "")
+		$PushToken2 = IniRead($config, "pushbullet", "AccountToken2", "")
+		
 		$iOrigPushB = IniRead($config, "pushbullet", "OrigPushB", "")
 
 		$iAlertPBVillage = IniRead($config, "pushbullet", "AlertPBVillage", "0")
@@ -480,6 +483,8 @@ Func readConfig() ;Reads config and sets it to the variables
 
 
 		$pEnabled = IniRead($config, "pushbullet", "PBEnabled", "0")
+		$pEnabled2 = IniRead($config, "pushbullet", "PBEnabled2", "0")
+		
 		$pRemote = IniRead($config, "pushbullet", "PBRemote", "0")
 		$iDeleteAllPushes = IniRead($config, "pushbullet", "DeleteAllPBPushes", "0")
 		$pMatchFound = IniRead($config, "pushbullet", "AlertPBVMFound", "0")

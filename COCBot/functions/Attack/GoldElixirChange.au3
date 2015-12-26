@@ -82,7 +82,7 @@ Func GoldElixirChangeThSnipes($x)
 
 		Local $iBegin = TimerInit()
 
-		While TimerDiff($iBegin) < 2000
+		While TimerDiff($iBegin) < 10000
 			CheckHeroesHealth()
 			If $checkKPower Or $checkQPower Then
 				If _Sleep($iDelayGoldElixirChange1) Then Return
