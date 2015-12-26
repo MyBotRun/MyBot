@@ -1,0 +1,3 @@
+[general]
+messagenew = "Herkese mutlu yýllar"
+messageold = "MyBot'un yeni bir sürümü çýktý!\nLütfen yeni sürümü aþaðýdaki adresten indirin:\nhttps://mybot.run"
