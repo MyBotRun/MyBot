@@ -25,7 +25,8 @@ Func waitMainScreen() ;Waits for main screen to popup
 		If WinExists($Title) = False Then
 			OpenAndroid(True)
 			Return
-		EndIf
+	    EndIf
+		getBSPos() ; Update $HWnd and Android Window Positions
 		_CaptureRegion()
 		If _CheckPixel($aIsMain, $bNoCapturepixel) = False Then ;Checks for Main Screen
 			If _Sleep($iDelaywaitMainScreen1) Then Return

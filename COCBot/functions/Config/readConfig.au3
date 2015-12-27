@@ -148,6 +148,10 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iChkRestartSearchLimit = IniRead($config, "search", "ChkRestartSearchLimit", "0")
 		$iRestartSearchlimit =  IniRead($config, "search", "RestartSearchLimit", "15")
 
+		$iDeadBase75percent =  IniRead($config, "search", "Enable75PercentDeadBase", "0")
+		$iDeadBase75percentStartLevel =  IniRead($config, "search", "Enable75PercentDeadBaseStartLevel", "6")
+
+
 		;Attack Basics Settings-------------------------------------------------------------------------
 		$iChkDeploySettings[$DB] = IniRead($config, "attack", "DBDeploy", "3")
 		$iCmbUnitDelay[$DB] = IniRead($config, "attack", "DBUnitD", "5")

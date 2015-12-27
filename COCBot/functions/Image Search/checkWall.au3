@@ -57,7 +57,7 @@ Func CheckWall()
 			For $j = 0 To 1 ; try compensation
 				GemClick($pixel[0] + $xCompensation, $pixel[1] + $yCompensation)
 				If _Sleep(500) Then Return
-				$aResult = BuildingInfo(245, 520 + $bottomOffsetY) ; Get Unit name and level with OCR 860x768
+				$aResult = BuildingInfo(245, 520 + $bottomOffsetY) ; Get Unit name and level with OCR 860x780
 				If $aResult[0] = 2 Then ; We found a valid building name
 					If StringInStr($aResult[1], "wall") = True And Number($aResult[2]) = ($icmbWalls + 4) Then ; we found a wall
 						Setlog("Position No: " & $i + 1 & " is a Wall Level: " & $icmbWalls + 4 & ".")

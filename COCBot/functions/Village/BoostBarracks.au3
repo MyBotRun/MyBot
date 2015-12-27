@@ -32,7 +32,7 @@ Func BoostBarracks()
 	If _Sleep($iDelaycheckArmyCamp1) Then Return
 
 	If $icmbQuantBoostBarracks > $numBarracksAvaiables Then
-		SetLog(" Hey Chef! I can not Boost more than: " & $numBarracksAvaiables & " Barracks .... ")
+		SetLog(" Hey Chief! I can not Boost more than: " & $numBarracksAvaiables & " Barracks .... ")
 		Return
 	EndIf
 
@@ -50,15 +50,15 @@ Func BoostBarracks()
 			Click($barrackPos[0][0], $barrackPos[0][1], 1, 0, "#0158")
 			If _Sleep($iDelayBoostBarracks1) Then ExitLoop
 			_CaptureRegion()
-			Local $Boost = _PixelSearch(410, 603, 493, 621, Hex(0xfffd70, 6), 10)
+			Local $Boost = _PixelSearch(410, 603 + $bottomOffsetY, 493, 621 + $bottomOffsetY, Hex(0xfffd70, 6), 10)
 			If IsArray($Boost) Then
 				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
 				Click($Boost[0], $Boost[1], 1, 0, "#0159")
 				If _Sleep($iDelayBoostBarracks1) Then Return
-				If _ColorCheck(_GetPixelColor(420, 375, True), Hex(0xD0E978, 6), 20) Then
-					Click(420, 375, 1, 0, "#0160")
+				If _ColorCheck(_GetPixelColor(420, 375 + $midOffsetY, True), Hex(0xD0E978, 6), 20) Then
+					Click(420, 375 + $midOffsetY, 1, 0, "#0160")
 					If _Sleep($iDelayBoostBarracks2) Then Return
-					If _ColorCheck(_GetPixelColor(586, 267, True), Hex(0xd80405, 6), 20) Then
+					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
 						_GUICtrlComboBox_SetCurSel($cmbBoostBarracks, 0)
 						SetLog("Not enough gems", $COLOR_RED)
 					Else
@@ -85,21 +85,21 @@ Func BoostBarracks()
 			If _Sleep($iDelayBoostBarracks2) Then Return
 		EndIf
 		For $i = 0 To ($icmbQuantBoostBarracks - 1)
-			SetLog("Boosting Barrack nº: " & $i + 1, $COLOR_BLUE)
+			SetLog("Boosting Barracks nº: " & $i + 1, $COLOR_BLUE)
 			ClickP($aAway, 1, 0, "#0157")
 			If _Sleep($iDelayBoostBarracks1) Then ExitLoop
 			Click($barrackPos[$i][0], $barrackPos[$i][1], 1, 0, "#0158")
 			If _Sleep($iDelayBoostBarracks1) Then ExitLoop
 			_CaptureRegion()
-			Local $Boost = _PixelSearch(355, 608, 362, 610, Hex(0xA0A386, 6), 10) ;Check Boost
+			Local $Boost = _PixelSearch(355, 608 + $bottomOffsetY, 362, 610 + $bottomOffsetY, Hex(0xA0A386, 6), 10) ;Check Boost
 			If IsArray($Boost) Then
 				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
 				Click($Boost[0], $Boost[1], 1, 0, "#0159")
 				If _Sleep($iDelayBoostBarracks1) Then Return
-				If _ColorCheck(_GetPixelColor(420, 375, True), Hex(0xD0E978, 6), 20) Then ;Confirm Message
-					Click(420, 375, 1, 0, "#0160")
+				If _ColorCheck(_GetPixelColor(420, 375 + $midOffsetY, True), Hex(0xD0E978, 6), 20) Then ;Confirm Message
+					Click(420, 375 + $midOffsetY, 1, 0, "#0160")
 					If _Sleep($iDelayBoostBarracks2) Then Return
-					If _ColorCheck(_GetPixelColor(586, 267, True), Hex(0xd80405, 6), 20) Then ;Not enough Gem
+					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then ;Not enough Gem
 						_GUICtrlComboBox_SetCurSel($cmbBoostBarracks, 0)
 						SetLog("Not enough gems", $COLOR_RED)
 					EndIf
@@ -141,15 +141,15 @@ Func BoostSpellFactory()
 			Click($SFPos[0], $SFPos[1], 1, 0, "#0162")
 			If _Sleep($iDelayBoostSpellFactory4) Then Return
 			_CaptureRegion()
-			$Boost = _PixelSearch(382, 603, 440, 621, Hex(0xfffd70, 6), 10)
+			$Boost = _PixelSearch(382, 603 + $bottomOffsetY, 440, 621 + $bottomOffsetY, Hex(0xfffd70, 6), 10)
 			If IsArray($Boost) Then
 				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
 				Click($Boost[0], $Boost[1], 1, 0, "#0163")
 				If _Sleep($iDelayBoostSpellFactory1) Then Return
-				If _ColorCheck(_GetPixelColor(420, 375, True), Hex(0xD0E978, 6), 20) Then
-					Click(420, 375, 1, 0, "#0164")
+				If _ColorCheck(_GetPixelColor(420, 375 + $midOffsetY, True), Hex(0xD0E978, 6), 20) Then
+					Click(420, 375 + $midOffsetY, 1, 0, "#0164")
 					If _Sleep($iDelayBoostSpellFactory2) Then Return
-					If _ColorCheck(_GetPixelColor(586, 267, True), Hex(0xd80405, 6), 20) Then
+					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
 						_GUICtrlComboBox_SetCurSel($cmbBoostSpellFactory, 0)
 						SetLog("Not enough gems", $COLOR_RED)
 					Else
@@ -185,15 +185,15 @@ Func BoostDarkSpellFactory()
 			Click($DSFPos[0], $DSFPos[1], 1, 0, "#0162")
 			If _Sleep($iDelayBoostSpellFactory4) Then Return
 			_CaptureRegion()
-			$Boost = _PixelSearch(382, 603, 440, 621, Hex(0xfffd70, 6), 10)
+			$Boost = _PixelSearch(382, 603 + $bottomOffsetY, 440, 621 + $bottomOffsetY, Hex(0xfffd70, 6), 10)
 			If IsArray($Boost) Then
 				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
 				Click($Boost[0], $Boost[1], 1, 0, "#0163")
 				If _Sleep($iDelayBoostSpellFactory1) Then Return
-				If _ColorCheck(_GetPixelColor(420, 375, True), Hex(0xD0E978, 6), 20) Then
-					Click(420, 375, 1, 0, "#0164")
+				If _ColorCheck(_GetPixelColor(420, 375 + $midOffsetY, True), Hex(0xD0E978, 6), 20) Then
+					Click(420, 375 + $midOffsetY, 1, 0, "#0164")
 					If _Sleep($iDelayBoostSpellFactory2) Then Return
-					If _ColorCheck(_GetPixelColor(586, 267, True), Hex(0xd80405, 6), 20) Then
+					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
 						_GUICtrlComboBox_SetCurSel($cmbBoostDarkSpellFactory, 0)
 						SetLog("Not enough gems", $COLOR_RED)
 					Else

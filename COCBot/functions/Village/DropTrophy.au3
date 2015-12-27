@@ -16,7 +16,7 @@
 Func DropTrophy()
 	Local $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 	If $DebugSetlog = 1 Then SetLog("Trophy Count : " & $iTrophyCurrent, $COLOR_PURPLE)
-
+    Local $dropSuccessful
 	Local $iCount, $RandomEdge, $RandomXY
 	Local $itxtMaxTrophyNeedCheck
 
@@ -33,7 +33,7 @@ Func DropTrophy()
 						$itxtMaxTrophyNeedCheck = $itxtdropTrophy ; $itxtMinTrophy = 1650
 						SetLog("Dropping Trophies to " & $itxtdropTrophy, $COLOR_BLUE)
 						If _Sleep($iDelayDropTrophy2) Then ExitLoop
-
+						$dropSuccessful = True
 						ZoomOut()
 						PrepareSearch()
 
@@ -64,19 +64,20 @@ Func DropTrophy()
 								; _BlockInputEx(0, "", "", $HWnD) ; block all keyboard keys
 								SetLog(_PadStringCenter(" Dead Base Found!! ", 50, "~"), $COLOR_GREEN)
 								Attack()
+								$FirstStart = True   ;reset barracks upon return when attacked a Dead Base with 70%~100% troops capacity
 								ReturnHome($TakeLootSnapShot)
 								$ReStart = True  ; Set restart flag after dead base attack to ensure troops are trained
 								ExitLoop ; or Return, Will end function, no troops left to drop Trophies, will need to Train new Troops first
 						    EndIf
 						EndIf
 
-						If ( SearchTownHallLoc() and ( $iChkSnipeWhileTrain= 1 or  $OptTrophyMode= 1 ) ) Then
-							SetLog(_PadStringCenter(" TH Snipe Base Found while drop tropies!! ", 50, "~"), $COLOR_GREEN)
-							SwitchAttackTHType() ; launch attack
-							ReturnHome($TakeLootSnapShot)
-							$ReStart = True  ; Set restart flag after dead base attack to ensure troops are trained
-							ExitLoop ; or Return, Will end function, no troops left to drop Trophies, will need to Train new Troops first
-					    EndIf
+						;If ( SearchTownHallLoc() and ( $iChkSnipeWhileTrain= 1 or  $OptTrophyMode= 1 ) ) Then
+						;	SetLog(_PadStringCenter(" TH Snipe found while dropping trophies!! ", 50, "~"), $COLOR_GREEN)
+						;	SwitchAttackTHType() ; launch attack
+						;	ReturnHome($TakeLootSnapShot)
+						;	$ReStart = True  ; Set restart flag after dead base attack to ensure troops are trained
+						;	ExitLoop ; or Return, Will end function, no troops left to drop Trophies, will need to Train new Troops first
+					    ;EndIf
 
 
 						If _Sleep($iDelayDropTrophy3) Then Return
@@ -156,9 +157,10 @@ Func DropTrophy()
 									SetLog("Deploying 1 Minion", $COLOR_BLUE)
 								Case Else
 									$itxtMaxTrophy += 50
-									SetLog("You Don´t have Tier 1/2 Troops, exit of dropping Trophies", $COLOR_BLUE) ; preventing of deploying Tier 2/3 expensive troops
+									SetLog("You don´t have Tier 1/2 Troops, stop dropping trophies", $COLOR_BLUE) ; preventing of deploying Tier 2/3 expensive troops
+									$dropSuccessful = False
 							EndSelect
-							SetTrophyLoss()
+							If $dropSuccessful Then SetTrophyLoss()
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop
 							ReturnHome(False, False) ;Return home no screenshot
 							If _Sleep($iDelayDropTrophy1) Then ExitLoop
@@ -170,8 +172,8 @@ Func DropTrophy()
 					EndIf
 				WEnd
 			Else
-				Setlog("Drop Thropies: Army is < 70% capacity")
-				Setlog("You selected Option Attack Dead Base if found..")
+				Setlog("Drop Trophies: Army is < 70% capacity")
+				Setlog("You have selected the option to attack dead bases while dropping trophies")
 			EndIf
 
 		Else
@@ -183,7 +185,7 @@ Func DropTrophy()
 					$itxtMaxTrophyNeedCheck = $itxtdropTrophy ; $itxtMinTrophy = 1650
 					SetLog("Dropping Trophies to " & $itxtdropTrophy, $COLOR_BLUE)
 					If _Sleep($iDelayDropTrophy2) Then ExitLoop
-
+				    $dropSuccessful = True
 					ZoomOut()
 					PrepareSearch()
 
@@ -273,8 +275,9 @@ Func DropTrophy()
 							Case Else
 								$itxtMaxTrophy += 50
 								SetLog("You don´t have Tier 1/2 Troops, exit of dropping Trophies", $COLOR_BLUE) ; preventing of deploying Tier 2/3 expensive troops
+								$dropSuccessful = False
 						EndSelect
-						SetTrophyLoss()
+						If $dropSuccessful Then SetTrophyLoss()
 						If _Sleep($iDelayDropTrophy1) Then ExitLoop
 						ReturnHome(False, False) ;Return home no screenshot
 						If _Sleep($iDelayDropTrophy1) Then ExitLoop
