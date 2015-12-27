@@ -552,7 +552,7 @@ Global $itxtRestartGold, $itxtRestartElixir, $itxtRestartDark
 ;Global $iWBMortar
 ;Global $iWBWizTower
 ;Global $iWBXbow
-Global $TroopGroup[10][3] = [["Arch", 1, 1], ["Giant", 2, 5], ["Wall", 4, 2], ["Barb", 0, 1], ["Gobl", 3, 1], ["Heal", 7, 14], ["Pekk", 9, 25], ["Ball", 5, 5], ["Wiza", 6, 4], ["Drag", 8, 20]]
+Global $TroopGroup[10][3] = [["Pekk", 9, 25], ["Drag", 8, 20], ["Heal", 7, 14], ["Wiza", 6, 4], ["Ball", 5, 5], ["Giant", 2, 5], ["Wall", 4, 2], ["Gobl", 3, 1], ["Arch", 1, 1], ["Barb", 0, 1]]
 Global $TroopName[UBound($TroopGroup, 1)]
 Global $TroopNamePosition[UBound($TroopGroup, 1)]
 Global $TroopHeight[UBound($TroopGroup, 1)]

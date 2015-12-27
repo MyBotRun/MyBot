@@ -56,7 +56,10 @@ Func CompareResources($pMode) ;Compares resources and returns true if conditions
 	;	endif
 	If $THL > -1 And $THL <= $YourTH And $searchTH <> "-" Then $SearchTHLResult = 1
 
-
+	If $iElixirCurrent >= 5500000 Then
+		$E = True
+		SetLog("Elixir > 5500000 ignore elixir check", $COLOR_GREEN, "Lucida Console", 7.5)
+	EndIf
 
 	If $iChkMeetOne[$pMode] = 1 Then
 		;		If $iChkWeakBase[$pMode] = 1 Then
