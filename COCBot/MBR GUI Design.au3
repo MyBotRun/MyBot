@@ -72,7 +72,7 @@ Local $x = 30, $y = 150
 		$y += 20
 		$txtCredits =	"Antidote, AtoZ, barracoda, cosote, didipe, Dinobot, DixonHill, DkEd, GkevinOD, "  & _
                         "Hervidero, HungLe, kaganus, knowjack, monkeyhunter, ProMac, safar46, sardo, "  & _
-						"Saviart, TheMaster1st, zengzeng and others" & @CRLF & @CRLF & _
+						"Saviart, TheMaster1st, zengzeng, paspiz85 and others" & @CRLF & @CRLF & _
 						"And to all forum members contributing to make this great software!" & @CRLF & _
 						"The latest release of the 'My Bot' can be found at:"
 		$lbltxtCredits = GUICtrlCreateEdit($txtCredits, $x - 5, $y, 400, 80, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_READONLY, $SS_LEFT),0)
