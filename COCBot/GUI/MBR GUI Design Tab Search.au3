@@ -160,10 +160,21 @@ $tabSearch = GUICtrlCreateTabItem(GetTranslated(2,1, "Search"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$picDBWeakWizTower = GUICtrlCreateIcon($pIconLib, $eIcnWizTower, $x + 131, $y - 2, 24, 24)
 			GUICtrlSetTip(-1, $txtTip)
-		$y += 30
+		$y += 21
 		$chkDBMeetOne = GUICtrlCreateCheckbox(GetTranslated(2,44, "Meet One Then Attack"), $x, $y, -1, -1)
 			$txtTip = GetTranslated(2,45, "Just meet only ONE of the above conditions, then Attack.")
 			GUICtrlSetTip(-1, $txtTip)
+		$y += 21
+		$chkenable75percent = GUICtrlCreateCheckbox(GetTranslated(2,99, "Collectors of"), $x, $y, -1, -1)
+			$txtTip = GetTranslated(2,100, "Enable this option to search for a deadbase with 75% full collectors (default is 90%+ full)")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "chkenable75percent")
+		$cmbenable75percent = GUICtrlCreateCombo("", $x + 80, $y, 50, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			$txtTip = GetTranslated(2,101, "Set the Min. level of the elixir collectors to detect.")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetData(-1, "Lvl 6|Lvl 7|Lvl 8|Lvl 9|Lvl10|Lvl11|Lvl12", "Lvl12")
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$lblenable75percent = GUICtrlCreateLabel(GetTranslated(2,102, "at 75% is DB"), $x + 135,$y+4,-1,-1)
 
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -281,7 +292,7 @@ $tabSearch = GUICtrlCreateTabItem(GetTranslated(2,1, "Search"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$picABWeakWizTower = GUICtrlCreateIcon($pIconLib, $eIcnWizTower, $x + 131, $y - 2, 24, 24)
 			GUICtrlSetTip(-1, $txtTip)
-		$y += 30
+		$y += 21
 		$chkABMeetOne = GUICtrlCreateCheckbox(GetTranslated(2,44, "Meet One Then Attack"), $x, $y, -1, -1)
 			$txtTip = GetTranslated(2,45, -1)
 			GUICtrlSetTip(-1, $txtTip)

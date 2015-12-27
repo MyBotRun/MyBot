@@ -78,11 +78,11 @@ Func LocateQueenAltar()
 		EndIf
 
 		;get Queen info
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While IsArray($sInfo) = False
-			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
@@ -202,11 +202,11 @@ Func LocateKingAltar()
 		EndIf
 
 		;Get King info
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While IsArray($sInfo) = False
-			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1

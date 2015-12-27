@@ -61,7 +61,7 @@ Func LocateSpellFactory()
 						Return False
 				EndSelect
 			EndIf
-			$sSpellInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+			$sSpellInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 			If $sSpellInfo[0] > 1 Or $sSpellInfo[0] = "" Then
 				If  StringInStr($sSpellInfo[1], "Spell") = 0 Then
 					If $sSpellInfo[0] = "" Then
@@ -161,7 +161,7 @@ Func LocateDarkSpellFactory()
 						Return False
 				EndSelect
 			EndIf
-			$sSpellInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+			$sSpellInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 			If $sSpellInfo[0] > 1 Or $sSpellInfo[0] = "" Then
 				If  StringInStr($sSpellInfo[1], "Spell") = 0 Then
 					If $sSpellInfo[0] = "" Then

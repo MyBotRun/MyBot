@@ -58,7 +58,7 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 				SetLog("Connection lost, Reloading CoC...", $COLOR_RED)
 			Case _CheckPixel($aIsCheckOOS, $bNoCapturePixel) ; Check OoS
 				SetLog("Out of Sync Error, Reloading CoC...", $COLOR_RED)
-				$Is_ClientSyncError = True
+				$Is_ClientSyncError = $fullarmy  ; If $fullarmy=true, set $Is_ClientSyncError=true for quick attack restart, if not full $Is_ClientSyncError=false
 				$iNbrOfOoS += 1
 				UpdateStats()
 			Case _CheckPixel($aIsMaintenance, $bNoCapturePixel) ; Check OoS
@@ -120,8 +120,9 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		Return True
 	EndIf
 	If _CheckPixel($aNoCloudsAttack, $bNoCapturePixel) Then ; Prevent drop of troops while searching
-		$Message = _PixelSearch(19, 565 + $bottomOffsetY, 104, 580 + $bottomOffsetY, Hex(0xD9DDCF, 6), 10)
+		$Message = _PixelSearch(23, 566 + $bottomOffsetY, 36, 580 + $bottomOffsetY, Hex(0xF4F7E3, 6), 10)
 		If IsArray($Message) Then
+			; If _ColorCheck(_GetPixelColor(67,  602 + $bottomOffsetY), Hex(0xDCCCA9, 6), 10) = False Then  ; add double check?
 			PureClick(67, 602 + $bottomOffsetY, 1, 0, "#0138");Check if Return Home button available
 			If _Sleep($iDelaycheckObstacles2) Then Return
 			Return True

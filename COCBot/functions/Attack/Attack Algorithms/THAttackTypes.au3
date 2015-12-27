@@ -379,59 +379,47 @@ Func AttackTHParseCSV($test=False)
 					Case $command = "TROOP"  or $command = ""
 						;Setlog("<<<<discard line>>>>")
 					Case $command = "TEXT"
-						If $test = True Then
-							Setlog(">> SETLOG(""" & $acommand[8] & """)")
-						Else
+						If $debugSetLog = True Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
+
 							SetLog($acommand[8] ,$COLOR_BLUE)
-						EndIf
+
 					Case StringInStr(StringUpper("-Barb-Arch-Giant-Gobl-Wall-Ball-Wiza-Heal-Drag-Pekk-Mini-Hogs-Valk-Gole-Witc-Lava-"), "-" & $command & "-") >0
-						If $test = True Then
-							Setlog(">> AttackTHGrid($e" &$command&", Random (" &  Int($acommand[2])&"," & int($acommand[3])&",1), Random("& int($acommand[4])&"," & int($acommand[5])&",1), Random(" & int($acommand[6]) &"," & int($acommand[7])& ",1) )" )
-						Else
+						If $debugSetLog = True Then Setlog(">> AttackTHGrid($e" &$command&", Random (" &  Int($acommand[2])&"," & int($acommand[3])&",1), Random("& int($acommand[4])&"," & int($acommand[5])&",1), Random(" & int($acommand[6]) &"," & int($acommand[7])& ",1) )" )
+
 							AttackTHGrid(Eval("e" &$command ) , Random ( Int($acommand[2]), Int($acommand[3]),1), Random( int($acommand[4]), int($acommand[5]),1), Random( int($acommand[6]) , int($acommand[7]),1) )
-						EndIf
+
 					Case $command = "WAIT"
-						If $test = True Then
-							Setlog(">> GoldElixirChangeThSnipes(" &int($acommand[7])  & ") " )
-						Else
+						If $debugSetLog = True Then Setlog(">> GoldElixirChangeThSnipes(" &int($acommand[7])  & ") " )
+
 							GoldElixirChangeThSnipes( Int($acommand[7]) )
-						EndIf
+
 					Case StringInStr(StringUpper("-King-Queen-Castle-"), "-" & $command & "-") >0
-						If $test = True Then
-							Setlog(">> AttackTHGrid($e"&$command & ")" )
-						Else
+						If $debugSetLog = True Then Setlog(">> AttackTHGrid($e"&$command & ")" )
+
 							AttackTHGrid( Eval("e"&$command ) )
-						EndIf
+
 					Case StringInStr(StringUpper("-HSpell-RSpell-"), "-" & $command & "-") >0
-						If $test = True Then
-							Setlog(">> SpellTHGrid($e"&$command & ")" )
-						Else
+						If $debugSetLog = True Then Setlog(">> SpellTHGrid($e"&$command & ")" )
+
 							SpellTHGrid( Eval("e"& $command ) )
-						EndIf
+
 					Case StringInStr(StringUpper("-LSpell-"), "-" & $command & "-") >0
-						If $test = True Then
-							Setlog(">> CastSpell($e"&$command & ",$THx, $THy)" )
-						Else
+						If $debugSetLog = True Then Setlog(">> CastSpell($e"&$command & ",$THx, $THy)" )
+
 							CastSpell(Eval("e"&$command) ,$THx, $THy )
-						EndIf
+
 					Case Else
 						Setlog("attack row bad, discard: " & $line,$COLOR_RED)
-				EndSelect
+				    EndSelect
 				   if $acommand[8] <> "" and $command <> "TEXT"  and $command <>"TROOP" then
-						If $test = True Then
-							Setlog(">> SETLOG(""" & $acommand[8] & """)")
-						Else
+						If $debugSetLog = True Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
 							SETLOG( $acommand[8] ,$COLOR_BLUE)
-						EndIf
 					EndIf
 			Else
 				if StringStripWS( $acommand[1],2  ) <>"" Then  Setlog("attack row error, discard: " & $line,$COLOR_RED)
 			EndIf
-			If $test = false then
+			If $debugsetlog = True then Setlog(">> CheckOneStar()")
 				If CheckOneStar()   Then ExitLoop
-			Else
-				Setlog(">> CheckOneStar()")
-			EndIf
 		WEnd
 		FileClose($f)
 	Else

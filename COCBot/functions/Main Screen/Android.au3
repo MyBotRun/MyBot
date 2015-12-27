@@ -126,10 +126,6 @@ Func CloseAndroid()
 	Return Execute("Close" & $Android & "()")
 EndFunc   ;==>CloseAndroid
 
-Func ZoomOut() ;Zooms out
-	Return Execute("ZoomOut" & $Android & "()")
-EndFunc   ;==>ZoomOut
-
 Func SetScreenAndroid()
 	Return Execute("SetScreen" & $Android & "()")
 EndFunc   ;==>SetScreenAndroid

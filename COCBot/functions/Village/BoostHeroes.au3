@@ -28,15 +28,15 @@ Func BoostKing()
 			Click($KingAltarPos[0], $KingAltarPos[1], 1, 0, "#0462")
 			If _Sleep($iDelayBoostHeroes2) Then Return
 			_CaptureRegion()
-			$Boost = _PixelSearch(382, 603, 440, 621, Hex(0xfffd70, 6), 10)
+			$Boost = _PixelSearch(382, 603 + $bottomOffsetY, 440, 621 + $bottomOffsetY, Hex(0xfffd70, 6), 10)
 			If IsArray($Boost) Then
 				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
 				Click($Boost[0], $Boost[1], 1, 0, "#0463")
 				If _Sleep($iDelayBoostHeroes1) Then Return
-				If _ColorCheck(_GetPixelColor(420, 375, True), Hex(0xD0E978, 6), 20) Then
-					Click(420, 375, 1, 0, "#0464")
+				If _ColorCheck(_GetPixelColor(420, 375 + $midOffsetY, True), Hex(0xD0E978, 6), 20) Then
+					Click(420, 375 + $midOffsetY, 1, 0, "#0464")
 					If _Sleep($iDelayBoostHeroes4) Then Return
-					If _ColorCheck(_GetPixelColor(586, 267, True), Hex(0xd80405, 6), 20) Then
+					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
 						_GUICtrlComboBox_SetCurSel($cmbBoostBarbarianKing, 0)
 						SetLog("Not enough gems", $COLOR_RED)
 					Else
@@ -71,15 +71,15 @@ Func BoostQueen()
 			Click($QueenAltarPos[0], $QueenAltarPos[1], 1, 0, "#0562")
 			If _Sleep($iDelayBoostHeroes2) Then Return
 			_CaptureRegion()
-			$Boost = _PixelSearch(382, 603, 440, 621, Hex(0xfffd70, 6), 10)
+			$Boost = _PixelSearch(382, 603 + $bottomOffsetY, 440, 621 + $bottomOffsetY, Hex(0xfffd70, 6), 10)
 			If IsArray($Boost) Then
 				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
 				Click($Boost[0], $Boost[1], 1, 0, "#0563")
 				If _Sleep($iDelayBoostHeroes1) Then Return
-				If _ColorCheck(_GetPixelColor(420, 375, True), Hex(0xD0E978, 6), 20) Then
-					Click(420, 375, 1, 0, "#0564")
+				If _ColorCheck(_GetPixelColor(420, 375 + $midOffsetY, True), Hex(0xD0E978, 6), 20) Then
+					Click(420, 375 + $midOffsetY, 1, 0, "#0564")
 					If _Sleep($iDelayBoostHeroes4) Then Return
-					If _ColorCheck(_GetPixelColor(586, 267, True), Hex(0xd80405, 6), 20) Then
+					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
 						_GUICtrlComboBox_SetCurSel($cmbBoostArcherQueen, 0)
 						SetLog("Not enough gems", $COLOR_RED)
 					Else
@@ -113,15 +113,15 @@ Func BoostWarden()
 			Click($WardenAltarPos[0], $WardenAltarPos[1])
 			If _Sleep($iDelayBoostHeroes2) Then Return
 			_CaptureRegion()
-			$Boost = _PixelSearch(382, 603, 440, 621, Hex(0xfffd70, 6), 10)
+			$Boost = _PixelSearch(382, 603 + $bottomOffsetY, 440, 621 + $bottomOffsetY, Hex(0xfffd70, 6), 10)
 			If IsArray($Boost) Then
 				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
 				Click($Boost[0], $Boost[1], 1, 0, "#0463")
 				If _Sleep($iDelayBoostHeroes1) Then Return
-				If _ColorCheck(_GetPixelColor(420, 375, True), Hex(0xD0E978, 6), 20) Then
-					Click(420, 375, 1, 0, "#0464")
+				If _ColorCheck(_GetPixelColor(420, 375 + $midOffsetY, True), Hex(0xD0E978, 6), 20) Then
+					Click(420, 375 + $midOffsetY, 1, 0, "#0464")
 					If _Sleep($iDelayBoostHeroes4) Then Return
-					If _ColorCheck(_GetPixelColor(586, 267, True), Hex(0xd80405, 6), 20) Then
+					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
 						_GUICtrlComboBox_SetCurSel($cmbBoostWarden, 0)
 						SetLog("Not enough gems", $COLOR_RED)
 					Else

@@ -12,7 +12,16 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+Func ZoomOut() ;Zooms out
+    getBSPos() ; Update $HWnd and Android Window Positions
+	Return Execute("ZoomOut" & $Android & "()")
+EndFunc   ;==>ZoomOut
+
 Func ZoomOutBlueStacks() ;Zooms out
+   Return DefaultZoomOut()
+EndFunc
+
+Func DefaultZoomOut($ZoomOutKey = "{DOWN}") ;Zooms out
 	Local $result0, $result1, $i = 0
 	_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1]) <> Hex($aTopLeftClient[2], 6) Or _
@@ -26,7 +35,7 @@ Func ZoomOutBlueStacks() ;Zooms out
 			If $debugsetlog = 1 Then Setlog("Index = "&$i, $COLOR_PURPLE) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 			If _Sleep($iDelayZoomOut2) Then Return
 			$Result0 = ControlFocus($Title, "","")
-			$Result1 = ControlSend($Title, "", "", "{DOWN}")
+			$Result1 = ControlSend($Title, "", "", $ZoomOutKey)
 			If $debugsetlog = 1 Then Setlog("ControlFocus Result = "&$Result0 & ", ControlSend Result = "&$Result1& "|" & "@error= " & @error, $COLOR_PURPLE)
 			If $Result1 = 1 Then
 				$i += 1
@@ -38,7 +47,7 @@ Func ZoomOutBlueStacks() ;Zooms out
 			EndIf
 			If $i > 80 Then Return
 			If IsProblemAffect(True) Then  ; added to catch errors during Zoomout
-				Setlog("BS Error window detected", $COLOR_RED)
+				Setlog($Android & " Error window detected", $COLOR_RED)
 				If checkObstacles() = True Then Setlog("Error window cleared, continue Zoom out", $COLOR_BLUE)  ; call to clear normal errors
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
@@ -49,6 +58,10 @@ EndFunc   ;==>ZoomOut
 
 Func ZoomOutBlueStacks2()
    return ZoomOutBlueStacks()
+EndFunc
+
+Func ZoomOutMEmu()
+   Return DefaultZoomOut("{F3}")
 EndFunc
 
 Func ZoomOutDroid4X()
@@ -97,7 +110,7 @@ Func ZoomOutDroid4X()
 			EndIf
 			If $i > 80 Then ExitLoop
 			If IsProblemAffect(True) Then  ; added to catch errors during Zoomout
-				Setlog("BS Error window detected", $COLOR_RED)
+				Setlog($Android & " Error window detected", $COLOR_RED)
 				If checkObstacles() = True Then Setlog("Error window cleared, continue Zoom out", $COLOR_BLUE)  ; call to clear normal errors
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails

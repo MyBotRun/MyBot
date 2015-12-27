@@ -66,7 +66,6 @@ Func saveConfig() ;Saves the controls settings to the config
 	;Search Settings------------------------------------------------------------------------
 
 	IniWrite($config, "search", "SearchMode", _GUICtrlComboBox_GetCurSel($cmbSearchMode))
-
 	If GUICtrlRead($chkAlertSearch) = $GUI_CHECKED Then
 		IniWrite($config, "search", "AlertSearch", 1)
 	Else
@@ -202,6 +201,14 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "search", "ChkRestartSearchLimit", 0)
 	EndIf
 	IniWrite($config, "search", "RestartSearchLimit", GUICtrlRead($TxtRestartSearchlimit))
+
+	If GUICtrlRead($chkenable75percent) = $GUI_CHECKED Then
+		IniWrite($config, "search", "Enable75PercentDeadBase", 1)
+	Else
+		IniWrite($config, "search", "Enable75PercentDeadBase", 0)
+	EndIf
+
+	IniWrite($config, "search", "Enable75PercentDeadBaseStartLevel", _GUICtrlComboBox_GetCurSel($cmbenable75percent))
 
 	;Attack Basic Settings-------------------------------------------------------------------------
 	IniWrite($config, "attack", "DBDeploy", _GUICtrlComboBox_GetCurSel($cmbDBDeploy))
