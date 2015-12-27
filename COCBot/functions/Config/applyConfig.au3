@@ -218,6 +218,15 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetData($txtRestartSearchlimit, $iRestartSearchlimit)
 	ChkRestartSearchLimit()
 
+	If $iDeadBase75percent = 1 Then
+		GUICtrlSetState($chkenable75percent, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkenable75percent, $GUI_UNCHECKED)
+	EndIf
+
+	_GUICtrlComboBox_SetCurSel($cmbenable75percent, $iDeadBase75percentStartLevel)
+	chkenable75percent()
+
 	;Attack Settings-------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbDBDeploy, $iChkDeploySettings[$DB])
 	_GUICtrlComboBox_SetCurSel($cmbDBUnitDelay, $iCmbUnitDelay[$DB])
@@ -1268,6 +1277,7 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkDebugOcr, $GUI_ENABLE)
 		GUICtrlSetState($chkDebugImageSave, $GUI_ENABLE)
 		GUICtrlSetState($chkdebugBuildingPos, $GUI_ENABLE)
+		GUICtrlSetState($btnTestVillage, $GUI_SHOW)
 	EndIf
 
 	If $DebugSetlog = 1 Then

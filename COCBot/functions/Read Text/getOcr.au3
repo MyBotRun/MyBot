@@ -2,7 +2,7 @@
 ; Name ..........: OCR
 ; Description ...: Gets complete value of gold/Elixir/DarkElixir/Trophy/Gem xxx,xxx
 ; Author ........: Didipe (2015)
-; Modified ......: ProMac (2015)
+; Modified ......: ProMac (2015), Hervidero (2015-12)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -59,9 +59,13 @@ Func getResourcesLootT($x_start, $y_start) ; -> Gets complete value of Gold/Elix
 	Return getOcrAndCapture("coc-loot", $x_start, $y_start, 37, 22, True)
 EndFunc   ;==>getResourcesLootT
 
-Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx "UpgradeBuildings.au3" to use in future function
+Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx "AttackReport.au3"
 	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 98, 16, True)
 EndFunc   ;==>getResourcesBonus
+
+Func getResourcesBonusPerc($x_start, $y_start) ; -> Gets complete value of Bonus % "AttackReport.au3"
+	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 48, 16, True)
+EndFunc   ;==>getResourcesBonusPerc
 
 Func getLabUpgrdResourceWht($x_start, $y_start) ; -> Gets complete value of Elixir/DE xxx,xxx for "laboratory.au3" when white text
 	Return getOcrAndCapture("coc-lab-w", $x_start, $y_start, 60, 14, True)

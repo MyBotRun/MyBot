@@ -5,7 +5,7 @@
 ; Syntax ........: AttackReport()
 ; Parameters ....: None
 ; Return values .: None
-; Author ........: Hervidero (2015-feb-10), Sardo (may-2015)
+; Author ........: Hervidero (2015-feb-10), Sardo (may-2015), Hervidero (2015-12)
 ; Modified ......: Sardo (may-2015), Hervidero (may-2015), Knowjack (July 2015)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
 ;                  MyBot is distributed under the terms of the GNU GPL
@@ -63,40 +63,71 @@ Func AttackReport()
 			$iTrophyLast = -$iTrophyLast
 		EndIf
 		$iDarkLast = ""
-		SetLog("Loot: [G]: " & _NumberFormat($iGoldLast) & " [E]: " & _NumberFormat($iElixirLast) & " [DE]: " & _NumberFormat($iDarkLast) & " [T]: " & $iTrophyLast, $COLOR_GREEN)
+		SetLog("Loot: [G]: " & _NumberFormat($iGoldLast) & " [E]: " & _NumberFormat($iElixirLast) & " [T]: " & $iTrophyLast, $COLOR_GREEN)
 	EndIf
 
 	If $iTrophyLast >= 0 Then
-		If _ColorCheck(_GetPixelColor($aAtkRprtDECheck2[0], $aAtkRprtDECheck2[1], True), Hex($aAtkRprtDECheck2[2], 6), $aAtkRprtDECheck2[3]) Then
-			If _Sleep($iDelayAttackReport2) Then Return
-			$iGoldLastBonus = getResourcesBonus(590, 340 + $midOffsetY)
-			$iGoldLastBonus = StringReplace($iGoldLastBonus, "+", "")
-			If _Sleep($iDelayAttackReport2) Then Return
-			$iElixirLastBonus = getResourcesBonus(590, 371 + $midOffsetY)
-			$iElixirLastBonus = StringReplace($iElixirLastBonus, "+", "")
-			If _Sleep($iDelayAttackReport2) Then Return
-			$iDarkLastBonus = getResourcesBonus(621, 402 + $midOffsetY)
-			$iDarkLastBonus = StringReplace($iDarkLastBonus, "+", "")
-			SetLog("Bonus [G]: " & _NumberFormat($iGoldLastBonus) & " [E]: " & _NumberFormat($iElixirLastBonus) & " [DE]: " & _NumberFormat($iDarkLastBonus), $COLOR_GREEN)
-		Else
-			If _Sleep($iDelayAttackReport2) Then Return
-			$iGoldLastBonus = getResourcesBonus(590, 340 + $midOffsetY)
-			$iGoldLastBonus = StringReplace($iGoldLastBonus, "+", "")
-			If _Sleep($iDelayAttackReport2) Then Return
-			$iElixirLastBonus = getResourcesBonus(590, 371 + $midOffsetY)
-			$iElixirLastBonus = StringReplace($iElixirLastBonus, "+", "")
-			$iDarkLastBonus = 0
-			SetLog("Bonus [G]: " & _NumberFormat($iGoldLastBonus) & " [E]: " & _NumberFormat($iElixirLastBonus), $COLOR_GREEN)
-		EndIf
-		$LeagueShort = "--"
-		For $i = 0 To 21
-			If _Sleep($iDelayAttackReport2) Then Return
-			If $League[$i][0] = $iGoldLastBonus Then
-				SetLog("Your league level is: " & $League[$i][1])
-				$LeagueShort = $League[$i][3]
-				ExitLoop
+		$iBonusLast = Number(getResourcesBonusPerc(570, 309 + $midOffsetY))
+		If $iBonusLast > 0 Then
+			SetLog("Bonus Percentage: " & $iBonusLast & "%")
+			Local $iCalcMaxBonus = 0, $iCalcMaxBonusDark = 0
+
+			If _ColorCheck(_GetPixelColor($aAtkRprtDECheck2[0], $aAtkRprtDECheck2[1], True), Hex($aAtkRprtDECheck2[2], 6), $aAtkRprtDECheck2[3]) Then
+				If _Sleep($iDelayAttackReport2) Then Return
+				$iGoldLastBonus = getResourcesBonus(590, 340 + $midOffsetY)
+				$iGoldLastBonus = StringReplace($iGoldLastBonus, "+", "")
+				If _Sleep($iDelayAttackReport2) Then Return
+				$iElixirLastBonus = getResourcesBonus(590, 371 + $midOffsetY)
+				$iElixirLastBonus = StringReplace($iElixirLastBonus, "+", "")
+				If _Sleep($iDelayAttackReport2) Then Return
+				$iDarkLastBonus = getResourcesBonus(621, 402 + $midOffsetY)
+				$iDarkLastBonus = StringReplace($iDarkLastBonus, "+", "")
+
+				If $iBonusLast = 100 Then
+					$iCalcMaxBonus = $iGoldLastBonus
+					SetLog("Bonus [G]: " & _NumberFormat($iGoldLastBonus) & " [E]: " & _NumberFormat($iElixirLastBonus) & " [DE]: " & _NumberFormat($iDarkLastBonus), $COLOR_GREEN)
+				Else
+					$iCalcMaxBonus = Number($iGoldLastBonus / ($iBonusLast / 100))
+					$iCalcMaxBonusDark = Number($iDarkLastBonus / ($iBonusLast / 100))
+
+					SetLog("Bonus [G]: " & _NumberFormat($iGoldLastBonus) & " out of " & _NumberFormat($iCalcMaxBonus) & " [E]: " & _NumberFormat($iElixirLastBonus) & " out of " & _NumberFormat($iCalcMaxBonus) & " [DE]: " & _NumberFormat($iDarkLastBonus) & " out of " & _NumberFormat($iCalcMaxBonusDark), $COLOR_GREEN)
+				EndIf
+			Else
+				If _Sleep($iDelayAttackReport2) Then Return
+				$iGoldLastBonus = getResourcesBonus(590, 340 + $midOffsetY)
+				$iGoldLastBonus = StringReplace($iGoldLastBonus, "+", "")
+				If _Sleep($iDelayAttackReport2) Then Return
+				$iElixirLastBonus = getResourcesBonus(590, 371 + $midOffsetY)
+				$iElixirLastBonus = StringReplace($iElixirLastBonus, "+", "")
+				$iDarkLastBonus = 0
+
+				If $iBonusLast = 100 Then
+					$iCalcMaxBonus = $iGoldLastBonus
+					SetLog("Bonus [G]: " & _NumberFormat($iGoldLastBonus) & " [E]: " & _NumberFormat($iElixirLastBonus), $COLOR_GREEN)
+				Else
+					$iCalcMaxBonus = Number($iGoldLastBonus / ($iBonusLast / 100))
+					SetLog("Bonus [G]: " & _NumberFormat($iGoldLastBonus) & " out of " & _NumberFormat($iCalcMaxBonus) & " [E]: " & _NumberFormat($iElixirLastBonus) & " out of " & _NumberFormat($iCalcMaxBonus), $COLOR_GREEN)
+				EndIf
 			EndIf
-		Next
+
+			$LeagueShort = "--"
+			For $i = 1 To 21 ; skip 0 = Bronze III, see "No Bonus" else section below
+				If _Sleep($iDelayAttackReport2) Then Return
+				If $League[$i][0] = $iCalcMaxBonus Then
+					SetLog("Your league level is: " & $League[$i][1])
+					$LeagueShort = $League[$i][3]
+					ExitLoop
+				EndIf
+			Next
+		Else
+			SetLog("No Bonus")
+
+			$LeagueShort = "--"
+			If $iTrophyCurrent + $iTrophyLast >= 400 And $iTrophyCurrent + $iTrophyLast < 500 Then ; Bronze III has no League bonus
+				SetLog("Your league level is: " & $League[0][1])
+				$LeagueShort = $League[0][3]
+			EndIf
+		EndIf
 	Else
 		$iGoldLastBonus = 0
 		$iElixirLastBonus = 0
@@ -123,24 +154,24 @@ Func AttackReport()
 	$AtkLogTxt &= StringFormat("%6d", $iGoldLastBonus) & "|"
 	$AtkLogTxt &= StringFormat("%6d", $iElixirLastBonus) & "|"
 	$AtkLogTxt &= StringFormat("%4d", $iDarkLastBonus) & "|"
-    $AtkLogTxt &= $LeagueShort & "|"
+	$AtkLogTxt &= $LeagueShort & "|"
 
 	Local $AtkLogTxtExtend
-	$AtkLogTxtExtend =  "|"
+	$AtkLogTxtExtend = "|"
 	$AtkLogTxtExtend &= $CurCamp & "/" & $TotalCamp & "|"
-	If Int($iTrophyLast) >=0 Then
-	  SetAtkLog($AtkLogTxt,$AtkLogTxtExtend, $COLOR_BLACK)
-    Else
-	  SetAtkLog($AtkLogTxt,$AtkLogTxtExtend, $COLOR_RED)
-    EndIf
+	If Int($iTrophyLast) >= 0 Then
+		SetAtkLog($AtkLogTxt, $AtkLogTxtExtend, $COLOR_BLACK)
+	Else
+		SetAtkLog($AtkLogTxt, $AtkLogTxtExtend, $COLOR_RED)
+	EndIf
 
 	; Share Replay
 	If $iShareAttack = 1 Then
 		If (Number($iGoldLast) >= Number($iShareminGold)) And (Number($iElixirLast) >= Number($iShareminElixir)) And (Number($iDarkLast) >= Number($iSharemindark)) Then
-			SetLog("reach miminum loots values... share Replay")
+			SetLog("Reached miminum Loot values... Share Replay")
 			$iShareAttackNow = 1
 		Else
-			SetLog("under miminum loots values... no share Replay")
+			SetLog("Below miminum Loot values... No Share Replay")
 			$iShareAttackNow = 0
 		EndIf
 	EndIf

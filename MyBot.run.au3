@@ -20,7 +20,7 @@
 #pragma compile(ProductName, My Bot)
 
 #pragma compile(ProductVersion, 5.0)
-#pragma compile(FileVersion, 5.0)
+#pragma compile(FileVersion, 5.0.2)
 #pragma compile(LegalCopyright, © https://mybot.run)
 
 Global $sBotDll = @ScriptDir & "\MBRPlugin.dll"
@@ -38,7 +38,7 @@ EndIf
 
 #include "COCBot\MBR Global Variables.au3"
 
-$sBotVersion = "v5.0" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+$sBotVersion = "v5.0.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " & $DEFAULT_WIDTH & "x" & $DEFAULT_HEIGHT & " "
 
 #include "COCBot\functions\Main Screen\Android.au3"
@@ -50,7 +50,7 @@ EndIf
 ; Update Bot title
 $sBotTitle = $sBotTitle & "(" & ($AndroidInstance <> "" ? $AndroidInstance : $Android) & ")"
 
-Local $cmdLineHelp = "Please specify with first command line paramemter a different Profile (01-06). With second a different Android Emulator and with third an Android Instamce. Supported Emulator are BlueStacks, BlueStacks2 and Droid4X. Only Droid4X supports running different instances at the same time."
+Local $cmdLineHelp = "Please specify as first command line parameter a different Profile (01-06). With second a different Android Emulator and with third an Android Instance. Supported Emulators are BlueStacks, BlueStacks2 and Droid4X. Only Droid4X supports running different instances at the same time."
 If _Singleton($sBotTitle, 1) = 0 Then
 	MsgBox(0, $sBotTitle, "Bot for " & $Android & ($AndroidInstance <> "" ? " (instance " & $AndroidInstance & ")" : "") & " is already running." & @CRLF & @CRLF & $cmdLineHelp)
 	Exit
@@ -63,8 +63,7 @@ EndIf
 
 ;multilanguage
 #include "COCBot\functions\Other\Multilanguage.au3"
-;read the selected language from profile ini
-$sLanguage = IniRead($config, "other", "language", $sDefaultLanguage)
+DetectLanguage()
 
 #include "COCBot\MBR GUI Design.au3"
 #include "COCBot\MBR GUI Control.au3"
@@ -108,7 +107,8 @@ AdlibRegister("PushBulletDeleteOldPushes", $PBDeleteOldPushesInterval)
 CheckDisplay()  ; verify display size and DPI (Dots Per Inch) setting
 
 LoadTHImage() ; Load TH images
-LoadElisirImage() ; Load Elixir images
+LoadElixirImage() ; Load Elixir images
+LoadElixirImage75Percent(); Load Elixir images full at 75%
 CheckVersion() ; check latest version on mybot.run site
 
 ;AutoStart Bot if request
@@ -153,12 +153,14 @@ Func runBot() ;Bot that runs everything in order
 				$OutOfGold = 0 ; reset out of gold flag
 				Setlog("Switching back to normal after no gold to search ...", $COLOR_RED)
 				$ichkBotStop = 0 ; reset halt attack variable
+				$icmbBotCond = _GUICtrlComboBox_GetCurSel($cmbBotCond)  ; Restore User GUI halt condition after modification for out of gold
 				ContinueLoop ; Restart bot loop to reset $CommandStop
 			EndIf
 			If $OutOfElixir = 1 And ($iElixirCurrent >= $itxtRestartElixir) And ($iDarkCurrent >= $itxtRestartDark) Then ; check if enough elixir to begin searching again
 				$OutOfElixir = 0 ; reset out of gold flag
 				Setlog("Switching back to normal setting after no elixir to train ...", $COLOR_RED)
 				$ichkBotStop = 0 ; reset halt attack variable
+				$icmbBotCond = _GUICtrlComboBox_GetCurSel($cmbBotCond)  ; Restore User GUI halt condition after modification for out of elixir
 				ContinueLoop ; Restart bot loop to reset $CommandStop
 			EndIf
 			If _Sleep($iDelayRunBot5) Then Return
@@ -269,7 +271,7 @@ Func runBot() ;Bot that runs everything in order
 			If _Sleep($iDelayRunBot3) Then Return
 			checkMainScreen(True)
 			If $Restart = True Then ContinueLoop
-				If $iTrophyCurrent >= ($itxtMaxTrophy + 100) And $CommandStop = -1 Then
+				If Number($iTrophyCurrent) >= Number($itxtMaxTrophy) And $CommandStop = -1 Then
 					DropTrophy()
 				Else
 					AttackMain()
@@ -297,13 +299,13 @@ Func Idle() ;Sequence that runs until Full Army
 		If _Sleep($iDelayIdle1) Then Return
 		If $CommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_GREEN)
 		Local $hTimer = TimerInit()
-		;Local $iReHere = 0
-		;While $iReHere < 7
-		;	$iReHere += 1
+		Local $iReHere = 0
+		While $iReHere < 7
+			$iReHere += 1
 			DonateCC(True)
-		;	If _Sleep($iDelayIdle2) Then ExitLoop
-		;	If $Restart = True Then ExitLoop
-		;WEnd
+			If _Sleep($iDelayIdle2) Then ExitLoop
+			If $Restart = True Then ExitLoop
+		WEnd
 		If _Sleep($iDelayIdle1) Then ExitLoop
 		checkMainScreen(False) ; required here due to many possible exits
 		If ($CommandStop = 3 Or $CommandStop = 0) Then

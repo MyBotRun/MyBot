@@ -64,11 +64,12 @@ EndFunc   ;==>CheckVersion
 
 
 Func CheckVersionHTML()
+	Local $versionfile = @ScriptDir & "\LastVersion.txt"
 	If FileExists(@ScriptDir & "\TestVersion.txt") Then
-		FileCopy(@ScriptDir & "\TestVersion.txt", @ScriptDir & "\LastVersion.txt", 1)
+		FileCopy(@ScriptDir & "\TestVersion.txt", $versionfile, 1)
 	Else
 		;download page from site contains last bot version
-		$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", @ScriptDir & "\LastVersion.txt")
+		$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", $versionfile)
 
 		; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
 		Local $i=0
@@ -81,15 +82,40 @@ Func CheckVersionHTML()
 	EndIf
 
 	;search version into downloaded page
-	Local $f, $line, $line2, $Casesense = 0, $chkvers = False, $chkmsg = False, $chkmsg2 = False, $i = 0, $versionfile = @ScriptDir & "\LastVersion.txt"
+	Local $f, $line, $line2, $Casesense = 0, $chkvers = False, $chkmsg = False, $chkmsg2 = False, $i = 0
 	$lastversion = ""
 	If FileExists($versionfile) Then
-		$f = FileOpen(@ScriptDir & "\LastVersion.txt", 0)
+		$f = FileOpen($versionfile, 0)
 		$lastversion = IniRead($versionfile,"general","version","")
-		$lastmessage  = IniRead($versionfile,"general","messagenew","")
-		$oldversmessage  = IniRead($versionfile,"general","messageold","")
+		;look for localized messages for the new and old versions
+		Local $versionfilelocalized = @ScriptDir & "\LastVersion_" & $sLanguage & ".txt";
+		If FileExists(@ScriptDir & "\TestVersion_" & $sLanguage & ".txt") Then
+			FileCopy(@ScriptDir & "\TestVersion_" & $sLanguage & ".txt", $versionfilelocalized, 1)
+		Else
+			;download page from site contains last bot version localized messages
+			$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion_" & $sLanguage & ".txt", $versionfilelocalized)
+
+			; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
+			Local $i=0
+			Do
+				Sleep($iDelayCheckVersionHTML1)
+				$i +=1
+			Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) or $i > 25
+
+			InetClose($hDownload)
+		EndIf
+		If FileExists($versionfilelocalized) Then
+			$f2 = FileOpen($versionfilelocalized, 0)
+			$lastmessage  = IniRead($versionfilelocalized,"general","messagenew","")
+			$oldversmessage  = IniRead($versionfilelocalized,"general","messageold","")
+			FileClose($f2)
+			FileDelete($versionfilelocalized)
+		Else
+			$lastmessage  = IniRead($versionfile,"general","messagenew","")
+			$oldversmessage  = IniRead($versionfile,"general","messageold","")
+		EndIf
 		FileClose($f)
-		FileDelete(@ScriptDir & "\LastVersion.txt")
+		FileDelete($versionfile)
 	EndIf
 EndFunc   ;==>CheckVersionHTML
 

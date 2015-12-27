@@ -395,3 +395,6 @@ Global Const $iDelaySearchLimit2 = 1000
 
 ;ClanLevel
 Global Const $iDelayClanLevel1 = 100
+
+;CheckImageType
+Global Const $iDelayImageType1 = 100
