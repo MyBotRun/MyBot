@@ -57,6 +57,8 @@ Func BotDetectFirstTime()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 	ClanLevel()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
+	CheckImageType()
+	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 
 	If GUICtrlRead($cmbQuantBoostBarracks) > 0 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return

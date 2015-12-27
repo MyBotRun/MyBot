@@ -12,9 +12,10 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+
 Func RequestCC()
 
-	If $ichkRequest <> 1 Or $bDonationEnabled = False Then
+	If $ichkRequest <> 1 Or $canRequestCC = False or $bDonationEnabled = False Then
 		Return
 	EndIf
 
@@ -54,6 +55,7 @@ Func RequestCC()
 	ElseIf _ColorCheck($color, Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
 		;clan full or not in clan
 		SetLog("Your Clan Castle is already full or you are not in a clan.")
+		$canRequestCC = False
 	Else
 		;no button request found
 		SetLog("Cannot detect button request troops.")

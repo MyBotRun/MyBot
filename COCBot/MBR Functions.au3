@@ -171,6 +171,7 @@
 #include "functions\Village\BotCommand.au3"
 #include "functions\Village\CheckFullArmy.au3"
 #include "functions\Village\CheckArmyCamp.au3"
+#include "functions\Village\CheckImageType.au3"
 #include "functions\Village\Collect.au3"
 #include "functions\Village\DonateCC.au3"
 #include "functions\Village\DropTrophy.au3"

@@ -27,7 +27,7 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		OpenAndroid(True)
 		Return
     EndIf
-	$HWnD = WinGetHandle($Title)
+	getBSPos() ; Update $HWnd and Android Window Positions
 	If $ichkBackground = 0 Then
 	    WinActivate($HWnD)  	; ensure bot has window focus
     EndIf

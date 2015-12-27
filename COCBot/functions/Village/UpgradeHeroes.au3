@@ -111,11 +111,11 @@ Func QueenUpgrade()
 	Click($QueenAltarPos[0], $QueenAltarPos[1]) ;Click Queen Altar
 
 	;Get Queen info and Level
-	Local $sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+	Local $sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Sleep(100)
 		$CountGetInfo += 1
@@ -210,11 +210,11 @@ Func KingUpgrade()
 	If _Sleep(500) Then Return
 
 	;Get King info
-	Local $sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+	Local $sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		If _Sleep(100) Then Return
 		$CountGetInfo += 1
@@ -315,11 +315,11 @@ Func WardenUpgrade()
 	If _Sleep($iDelayUpgradeHero2) Then Return
 
 	;Get Warden info
-	Local $sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+	Local $sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 	If @error Then SetError(0, 0, 0)
 	Local $CountGetInfo = 0
 	While IsArray($sInfo) = False
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x768
+		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		If _Sleep(100) Then Return
 		$CountGetInfo += 1

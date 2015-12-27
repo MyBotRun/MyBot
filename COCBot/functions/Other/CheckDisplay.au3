@@ -57,12 +57,13 @@ Func CheckDisplay()
 			ConsoleWrite('DisplayHandle: ' & $aMonitorData[$i][0] & ', DisplayX: ' & $aMonitorData[$i][3] & ', DisplayY: ' & $aMonitorData[$i][4] & @CRLF)
 			If $aMonitorData[$i][0] = $hMonitor Then ; find display with BS
 				$bDisplayFound = True
+				$bMonitorHeight800orBelow = ( $aMonitorData[$i][4] <= 800 )
 				$sBSDisplaySize = $aMonitorData[$i][3] & "x" & $aMonitorData[$i][4]
 				ConsoleWrite("DisplaySizeFound: " & $sBSDisplaySize & @CRLF)
 				If ($aMonitorData[$i][3] < $iDisplaySizeMin) Or ($aMonitorData[$i][4] < $iDisplaySizeMin) Then
 					SetLog(_PadStringCenter(" ERROR!! Display size too small = " & $sBSDisplaySize & " ", 53, "+"), $COLOR_RED)
 					SetLog(_PadStringCenter(" Visit MyBot.run forums for more information ", 53, "+"), $COLOR_RED)
-					SetLog(_PadStringCenter(" Sorry - Bot start button disabled", 53, "+"), $COLOR_RED)
+					;SetLog(_PadStringCenter(" Sorry - Bot start button disabled", 53, "+"), $COLOR_RED)
 					Setlog(" ")
 					; GUICtrlSetState($btnStart, $GUI_DISABLE)
 				Else

@@ -24,12 +24,12 @@ Func checkAttackDisable($iSource, $Result = "")
 			While $Result = "" Or (StringLen($Result) < 3)
 				$i += 1
 				If _Sleep(100) Then Return
-				$Result = getAttackDisable(346, 182 + $midOffsetY) ; Grab Ocr for TakeABreak if not found due slow PC
+				$Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak if not found due slow PC
 				If $i >= 3 Then ExitLoop
 			WEnd
 			If $debugSetlog = 1 Then Setlog("Attack Take-A-Break OCR result = " & $Result, $COLOR_PURPLE)
 			If $Result <> "" Then ; fast test to see if have Take-A-Break
-				If StringInStr($Result, "disable") <> 0 Or StringInStr($Result, "for") <> 0 Or StringInStr($Result, "after") <> 0 Then ; verify we have right text strings, 'after' added for Personal Break
+				If StringInStr($Result, "disable") <> 0 Or StringInStr($Result, "for") <> 0 Or StringInStr($Result, "after") <> 0 Or StringInStr($Result, "have") <> 0 Then ; verify we have right text strings, 'after' added for Personal Break
 					Setlog("Attacking disabled, Take-A-Break detected. Exiting CoC", $COLOR_MAROON)
 					If _CheckPixel($aSurrenderButton, $bCapturePixel) Then ; village search requires end battle 1s, so check for surrender/endbattle button
 						ReturnHome(False, False) ;If End battle is available
@@ -49,7 +49,7 @@ Func checkAttackDisable($iSource, $Result = "")
 			If $Result = "" Or (StringLen($Result) < 3) Then $Result = getAttackDisable(180, 156 + $midOffsetY) ; Grab Ocr for "Have Been" 2nd time if not found due slow PC
 			If $debugSetlog = 1 Then Setlog("Online2Long OCR result = " & $Result, $COLOR_PURPLE)
 			If $Result <> "" Then ; fast test to see if have Take-A-Break
-				If StringInStr($Result, "been") <> 0 Or StringInStr($Result, "after") <> 0 Then ; verify we have right text string, 'after' added for Personal Break
+				If StringInStr($Result, "been") <> 0 Or StringInStr($Result, "after") <> 0 Or StringInStr($Result, "have") <> 0 Then ; verify we have right text string, 'after' added for Personal Break
 					Setlog("Online too long, Take-A-Break detected. Exiting CoC", $COLOR_RED)
 					checkMainScreen()
 				Else
@@ -64,22 +64,6 @@ Func checkAttackDisable($iSource, $Result = "")
 			Return False
 	EndSwitch
 
-	If IsMainPage() Then  ; check for return to home screen
-		If $DebugSetlog = 1 Then SetLog("Checking CC , Troops, & collectors before exit", $COLOR_PURPLE)
-		RequestCC()
-		If _Sleep($iDelayRunBot1) Then Return
-		checkMainScreen(False) ; required here due to many possible exits
-		DonateCC()
-		If _Sleep($iDelayRunBot1) Then Return
-		checkMainScreen(False)  ; required here due to many possible function exits
-		CheckOverviewFullArmy(True)  ; Check if army needs to be trained due donations before exit
-		If Not($FullArmy) And $bTrainEnabled = True Then
-			Train()
-		EndIf
-		Collect()  ; empty collectors one last time before close CoC
-		If _Sleep($iDelayRunBot1) Then Return
-	EndIf
-
 	$Restart = True ; Set flag to restart the process at the bot main code when it returns
 
 	; Find and wait for the confirmation of exit "okay" button
@@ -92,7 +76,7 @@ Func checkAttackDisable($iSource, $Result = "")
 		If _Sleep(1000) Then Return False
 		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
 		Global $ButtonPixel = _MultiPixelSearch(438, 372 + $midOffsetY, 590, 404 + $midOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay, adjust down 30 pixel for 860x780
-		If $debugSetlog = 1 Then Setlog("Exit btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_PURPLE)
+		If $debugSetlog = 1 Then Setlog("Exit btn chk-#1: " & _GetPixelColor(441, 375+ $midOffsetY, True) & ", #2: " & _GetPixelColor(441 + 144, 375+ $midOffsetY, True) & ", #3: " & _GetPixelColor(441 + 54, 375 + 17+ $midOffsetY, True) & ", #4: " & _GetPixelColor(441 + 54, 375 + 10 + $midOffsetY, True), $COLOR_PURPLE)
 		If IsArray($ButtonPixel) Then
 			If $debugSetlog = 1 Then
 				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug

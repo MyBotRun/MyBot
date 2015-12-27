@@ -47,6 +47,7 @@ Global Const $DEFAULT_HEIGHT = 780
 Global Const $DEFAULT_WIDTH = 860
 Global Const $midOffsetY = ($DEFAULT_HEIGHT - 720) / 2
 Global Const $bottomOffsetY = $DEFAULT_HEIGHT - 720
+Global $bMonitorHeight800orBelow = False
 
 ;debugging
 Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugDeadBaseImage = 0, $debugImageSave = 0, $debugWalls = 0, $debugBuildingPos= 0, $debugVillageSearchImages = 0
@@ -72,10 +73,11 @@ Global Const $HKLM = "HKLM" & ($64Bit ? "64" : "")
 Global Const $Wow6432Node = ($64Bit ? "\Wow6432Node" : "")
 ;   0            |1               |2                          |3                                  |4            |5                  |6                   |7                  |8                   |9             |10               |11
 ;   $Android     |$AndroidInstance|$Title                     |$AppClassInstance                  |$AppPaneName |$AndroidClientWidth|$AndroidClientHeight|$AndroidWindowWidth|$AndroidWindowHeight|$ClientOffsetY|$AndroidAdbDevice|$AndroidSupportsBackgroundMode
-Global $AndroidAppConfig[3][12] = [ _
+Global $AndroidAppConfig[4][12] = [ _
    ["BlueStacks" ,""              ,"BlueStacks App Player"    ,"[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT     ,$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT     ,0             ,"emulator-5554"  ,True ], _ ; BlueStacks 0.9.x - 0.10.x (set registry to 860x720)
-   ["BlueStacks2",""              ,"BlueStacks Android Plugin","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT     ,0             ,"127.0.0.1:5555" ,True ], _ ; BlueStacks 2.x
-   ["Droid4X"    ,"droid4x"       ,"Droid4X 0.8.6 Beta"       ,"[CLASS:subWin; INSTANCE:1]"       ,""           ,$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50,0             ,"127.0.0.1:26944",False]  _ ; Droid4X 0.8.6 Beta
+   ["BlueStacks2",""              ,"BlueStacks Android Plugin","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT - 48,0             ,"127.0.0.1:5555" ,True ], _ ; BlueStacks 2.x
+   ["Droid4X"    ,"droid4x"       ,"Droid4X "                 ,"[CLASS:subWin; INSTANCE:1]"       ,""           ,$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50,0             ,"127.0.0.1:26944",False], _ ; Droid4X 0.8.6 Beta
+   ["MEmu"       ,""              ,"MEmu "                    ,"[CLASS:subWin; INSTANCE:1]"       ,""           ,$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT - 12,0                  ,0                   ,0             ,"127.0.0.1:21503",False]  _ ; Droid4X 0.8.6 Beta
 ]
 
 Global $FoundRunningAndroid = False
@@ -144,6 +146,7 @@ EndIf
 Global $config = $sProfilePath & "\" & $sCurrProfile & "\config.ini"
 Global $statChkTownHall = $sProfilePath & "\" & $sCurrProfile & "\stats_chktownhall.INI"
 Global $statChkDeadBase = $sProfilePath & "\" & $sCurrProfile & "\stats_chkelixir.INI"
+Global $statChkDeadBase75percent = $sProfilePath & "\" & $sCurrProfile & "\stats_chkelixir75percent.INI"
 Global $building = $sProfilePath & "\" & $sCurrProfile & "\building.ini"
 Global $dirLogs = $sProfilePath & "\" & $sCurrProfile & "\Logs\"
 Global $dirLoots = $sProfilePath & "\" & $sCurrProfile & "\Loots\"
@@ -229,6 +232,7 @@ Global $iGoldTotal, $iElixirTotal, $iDarkTotal, $iTrophyTotal ; total stats
 Global $iGoldCurrent, $iElixirCurrent, $iDarkCurrent, $iTrophyCurrent ; current stats
 Global $iGoldLast, $iElixirLast, $iDarkLast, $iTrophyLast ; loot and trophy gain from last raid
 Global $iGoldLastBonus, $iElixirLastBonus, $iDarkLastBonus ; bonus loot from last raid
+Global $iBonusLast = 0  ; last attack Bonus percentage
 Global $iSkippedVillageCount, $iDroppedTrophyCount ; skipped village and dropped trophy counts
 Global $iCostGoldWall, $iCostElixirWall, $iCostGoldBuilding, $iCostElixirBuilding, $iCostDElixirHero ; wall, building and hero upgrade costs
 Global $iNbrOfWallsUppedGold, $iNbrOfWallsUppedElixir, $iNbrOfBuildingsUppedGold, $iNbrOfBuildingsUppedElixir, $iNbrOfHeroesUpped ; number of wall, building, hero upgrades with gold, elixir, delixir
@@ -751,14 +755,14 @@ Global $Trainavailable = [1, 0, 0, 0, 0, 0, 0, 0, 0]
 ; Attack Report
 Global $BonusLeagueG, $BonusLeagueE, $BonusLeagueD, $LeagueShort
 Global $League[22][4] = [ _
-		["600", "Bronze III", "0", "B3"], ["800", "Bronze II", "0", "B2"], ["1000", "Bronze I", "0", "B1"], _
-		["2000", "Silver III", "0", "S3"], ["3000", "Silver II", "0", "S2"], ["4000", "Silver I", "0", "S1"], _
-		["8000", "Gold III", "0", "G3"], ["11000", "Gold II", "0", "G2"], ["14000", "Gold I", "0", "G1"], _
-		["35000", "Crystal III", "100", "c3"], ["50000", "Crystal II", "200", "c2"], ["65000", "Crystal I", "300", "c1"], _
-		["100000", "Master III", "500", "M3"], ["120000", "Master II", "700", "M2"], ["140000", "Master I", "900", "M1"], _
-		["180000", "Champion III", "1200", "C3"], ["190000", "Champion II", "1300", "C2"],["200000", "Champion I", "1400", "C1"], _
-		["210000", "Titan III", "1600", "T3"], ["220000", "Titan II", "1700", "T2"],["250000", "Titan I", "1800", "T1"], _
-		["250000", "Legend", "2000", "LE"]]
+		["0", "Bronze III", "0", "B3"], ["1000", "Bronze II", "0", "B2"], ["1300", "Bronze I", "0", "B1"], _
+		["2600", "Silver III", "0", "S3"], ["3700", "Silver II", "0", "S2"], ["4800", "Silver I", "0", "S1"], _
+		["10000", "Gold III", "0", "G3"], ["13500", "Gold II", "0", "G2"], ["15000", "Gold I", "0", "G1"], _
+		["40000", "Crystal III", "120", "c3"], ["55000", "Crystal II", "220", "c2"], ["70000", "Crystal I", "320", "c1"], _
+		["110000", "Master III", "560", "M3"], ["135000", "Master II", "740", "M2"], ["160000", "Master I", "920", "M1"], _
+		["200000", "Champion III", "1220", "C3"], ["225000", "Champion II", "1400", "C2"],["250000", "Champion I", "1580", "C1"], _
+		["280000", "Titan III", "1880", "T3"], ["300000", "Titan II", "2060", "T2"],["320000", "Titan I", "2240", "T1"], _
+		["340000", "Legend", "2400", "LE"]]
 
 Global $iTaBChkAttack = 0x01
 Global $iTaBChkIdle = 0x02 ; Define global variables for Take a Break early detection types
@@ -804,3 +808,16 @@ Global $aWardenUpgCost[20] = [6, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8,
 ; OpenCloseCoc
 Global $MinorObstacle = False
 
+;Languages
+Global Const $dirLanguages = @ScriptDir & "\Languages\"
+Global Const $sGUILanguagesINI = "Languages.ini"
+Global Const $sGUILanguages = $dirLanguages & $sGUILanguagesINI
+
+Global $sLanguage = "English"
+Global Const $sDefaultLanguage = "English"
+Global $aLanguage[1][1] ;undimmed language array
+
+;images
+Global $iDetectedImageType = 0
+Global $iDeadBase75percent = 0
+Global $iDeadBase75percentStartLevel = 0

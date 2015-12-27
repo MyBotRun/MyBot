@@ -277,7 +277,7 @@ Func LoadLanguagesComboBox()
 
 		If @error Then ExitLoop
 
-		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
+		If $NewFile <> $sGUILanguagesINI Then $output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
 
 	WEnd
 

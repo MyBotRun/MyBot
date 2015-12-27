@@ -81,6 +81,10 @@ Func DisposeWindows()
 				Case 5
 					WindowsArrange("SNAP-BL", $iWAOffsetX, $iWAOffsetY)
 			EndSwitch
+		Else
+			If $bMonitorHeight800orBelow Then
+				WindowsArrange("BS-BOT", 10, 0)
+			EndIf
 		EndIf
 EndFunc
 

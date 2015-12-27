@@ -23,7 +23,7 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 	If IsLaunchAttackPage() Then ClickP($aFindMatchButton, 1, 0, "#0150");Click Find a Match Button
 	If _Sleep($iDelayPrepareSearch2) Then Return
 
-	Local $Result = getAttackDisable(346, 182 + $midOffsetY) ; Grab Ocr for TakeABreak check
+	Local $Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check
 
 	If isGemOpen(True) = True Then ; Check for gem window open)
 		Setlog(" Not enough gold to start searching.....", $COLOR_RED)
