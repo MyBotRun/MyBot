@@ -491,6 +491,7 @@ Func readConfig() ;Reads config and sets it to the variables
 		$icmbHoursPushBullet = IniRead($config, "pushbullet", "HoursPushBullet", "4")
 		$ichkDeleteOldPushes = IniRead($config, "pushbullet", "DeleteOldPushes", "0")
 		$ichkAlertPBCampFull = IniRead($config, "pushbullet", "AlertCampFull", "0")
+		$ichkAlertBuilderIdle = IniRead($config, "pushbullet", "AlertBuilderIdle", "0")
 
 
 		$ichkDeleteLogs		= IniRead($config, "deletefiles", "DeleteLogs", "0")

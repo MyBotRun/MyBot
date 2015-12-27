@@ -503,6 +503,13 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "pushbullet", "AlertCampFull", 0)
 	EndIf
+
+	If GUICtrlRead($chkAlertBuilderIdle) = $GUI_CHECKED Then
+		IniWrite($config, "pushbullet", "AlertBuilderIdle", 1)
+	Else
+		IniWrite($config, "pushbullet", "AlertBuilderIdle", 0)
+	EndIf
+
 	;	If  GUICtrlRead($chkUnbreakable) = $GUI_CHECKED Then
 	;		IniWrite($config, "advanced", "chkUnbreakable", 1)
 	;	Else
