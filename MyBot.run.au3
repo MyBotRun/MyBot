@@ -20,7 +20,7 @@
 #pragma compile(ProductName, My Bot)
 
 #pragma compile(ProductVersion, 5.0)
-#pragma compile(FileVersion, 5.0.1)
+#pragma compile(FileVersion, 5.0.2)
 #pragma compile(LegalCopyright, © https://mybot.run)
 
 Global $sBotDll = @ScriptDir & "\MBRPlugin.dll"
@@ -38,7 +38,7 @@ EndIf
 
 #include "COCBot\MBR Global Variables.au3"
 
-$sBotVersion = "v5.0.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+$sBotVersion = "v5.0.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " & $DEFAULT_WIDTH & "x" & $DEFAULT_HEIGHT & " "
 
 #include "COCBot\functions\Main Screen\Android.au3"

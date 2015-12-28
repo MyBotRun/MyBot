@@ -70,7 +70,7 @@ Local $x = 30, $y = 150
 		$lblNextUpgrade = GUICtrlCreateLabel(GetTranslated(8,29, "Next") & ":", $x + 40 , $y + 21, -1, -1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$cmbLaboratory = GUICtrlCreateCombo("", $x + 73, $y + 18, 108, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			GUICtrlSetData(-1, $sTxtNames, $aLabTroops[0][3])
+			GUICtrlSetData(-1, $sTxtNames, GetTranslated(8,4, "None"))
 			$txtTip = GetTranslated(8,30, "Select the troop type to upgrade with this pull down menu") & @CRLF & GetTranslated(8,31, "The troop icon will appear on the left.") & @CRLF & GetTranslated(8,32, "Any Dark Spell/Troop have priority over Upg Heroes!")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_DISABLE)
