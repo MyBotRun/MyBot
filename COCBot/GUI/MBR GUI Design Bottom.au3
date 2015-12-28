@@ -129,9 +129,8 @@ $grpVillage = GUICtrlCreateGroup(GetTranslated(13,21, "Village"), $x - 20, $y - 
 	$x = 290
 	$lblVillageReportTemp = GUICtrlCreateLabel(GetTranslated(13,22, "Village Report") & @CRLF & GetTranslated(13,23, "will appear here") & @CRLF & GetTranslated(13,24, "on first run."), $x + 27, $y + 5, 100, 45, BITOR($SS_CENTER, $BS_MULTILINE))
 
-
-;~ 	$btnTestVillage = GUICtrlCreateButton("TEST VILLAGE", $x + 90 , $y -25, -1, -1)
-;~ 		GUICtrlSetOnEvent(-1, "btnVillageStat")
-		;GUICtrlSetState(-1, $GUI_HIDE)
+ 	$btnTestVillage = GUICtrlCreateButton("TEST VILLAGE", $x + 90 , $y -25, -1, -1)
+ 		GUICtrlSetOnEvent(-1, "btnTestDeadBase")
+		GUICtrlSetState(-1, $GUI_HIDE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 

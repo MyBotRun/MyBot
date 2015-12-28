@@ -62,12 +62,15 @@ Func isEveryFileInstalled()
 		Local $sText1, $sText2, $MsgBox
 		$sText1 = "Hey Chief, we are missing some files!"
 		$sText2 = "Please extract all files and folders and start this program again!"
+		$sText3 = "Sorry, Start button disabled until fixed!"
 
 		Setlog($sText1, $COLOR_RED)
 		Setlog($sText2, $COLOR_RED)
+		Setlog($sText3, $COLOR_RED)
 
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$MsgBox = _ExtMsgBox(48, "Ok", $sText1, $sText2, 0, $frmBot)
+		GUICtrlSetState($btnStart, $GUI_DISABLE)
 		;Exit
 	EndIf
 

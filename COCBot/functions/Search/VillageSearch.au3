@@ -36,7 +36,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 	_WinAPI_EmptyWorkingSet(WinGetProcess($Title))
 
 	If _Sleep($iDelayVillageSearch1) Then Return
-	$Result = getAttackDisable(346, 182 + $midOffsetY) ; Grab Ocr for TakeABreak check
+	$Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check
 	checkAttackDisable($iTaBChkAttack, $Result) ;last check to see If TakeABreak msg on screen for fast PC from PrepareSearch click
 	If $Restart = True Then Return ; exit func
 	For $x = 0 To $iModeCount - 1
@@ -284,7 +284,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		WEnd
 
 		If _Sleep($iDelayRespond) Then Return
-		$Result = getAttackDisable(346, 182 + $midOffsetY) ; Grab Ocr for TakeABreak check
+		$Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check
 		checkAttackDisable($iTaBChkAttack, $Result) ; check to see If TakeABreak msg on screen after next click
 		If $Restart = True Then Return ; exit func
 
@@ -371,7 +371,7 @@ EndFunc   ;==>IsSearchModeActive
  Func IsWeakBase($pMode)
 	_WinAPI_DeleteObject($hBitmapFirst)
 	$hBitmapFirst = _CaptureRegion2()
-	Local $resultHere = DllCall($pFuncLib, "str", "CheckConditionForWeakBase", "ptr", $hBitmapFirst, "int", ($iCmbWeakMortar[$pMode] + 1), "int", ($iCmbWeakWizTower[$pMode] + 1), "int", 10)
+	Local $resultHere = DllCall($hFuncLib, "str", "CheckConditionForWeakBase", "ptr", $hBitmapFirst, "int", ($iCmbWeakMortar[$pMode] + 1), "int", ($iCmbWeakWizTower[$pMode] + 1), "int", 10)
 	If @error Then  ; detect if DLL error and return weakbase not found
 		SetLog("Weakbase search DLL error", $COLOR_RED)
 		Return False

@@ -302,7 +302,8 @@ Func SetScreenBlueStacks2()
    RegWrite($REGISTRY_KEY_DIRECTORY, "WindowWidth", "REG_DWORD", $AndroidClientWidth)
    $REGISTRY_KEY_DIRECTORY = $HKLM & "\SOFTWARE\BlueStacks\Guests\Android\Config"
    ; Enable bottom action bar with Back- and Home-Button (Menu-Button has no function and don't click Full-Screen-Button at the right as you cannot go back - F11 is not working!)
-   RegWrite($REGISTRY_KEY_DIRECTORY, "FEControlBar", "REG_DWORD", "1")
+   ; 2015-12-24 cosote Disabled with "0" again because latest version 2.0.2.5623 doesn't support it anymore
+   RegWrite($REGISTRY_KEY_DIRECTORY, "FEControlBar", "REG_DWORD", "0")
 EndFunc
 
 Func RebootBlueStacksSetScreen()
@@ -350,6 +351,7 @@ EndFunc
 Func waitMainScreenMini()
 	Local $iCount = 0
 	Local $hTimer = TimerInit()
+	getBSPos() ; Update Android Window Positions
 	SetLog("Waiting for Main Screen after BS restart", $COLOR_BLUE)
 	For $i = 0 To 60 ;30*2000 = 1 Minutes
 		If $debugsetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop

@@ -9,7 +9,7 @@ Barb  | 4| 5| 2| 2|  800| 1000|                                      |deploys 8-
 Arch  | 2| 2| 5| 6|  800| 1000|                                      |deploys 10-12 archers
 Barb  | 4| 5| 2| 2|  800| 1000|                                      |deploys 8-10 barbarians
 Arch  | 4| 5| 3| 3|  800| 1000|                                      |deploys 12-15 archers
-Text  |  |  |  |  |     |     |Oh Shit! Seems like a trapped TH!     |
+Text  |  |  |  |  |     |     |Oh no! Seems like a trapped TH!       |
 Giant | 2| 2| 1| 1| 1000| 1200|                                      |deploys 2 giants for Traps
 HSpell|  |  |  |  |     |     |                                      |deploys healing spell
 Giant | 5| 6| 3| 3|  500|  600|                                      |deploys 15-18 giants
@@ -28,7 +28,7 @@ Arch  | 3| 3| 5| 6|  500|  600|                                      |deploys 15
 Barb  | 4| 4| 3| 4|  500|  600|                                      |deploys 12-16 barbarians
 Arch  | 4| 4| 5| 6|  500|  600|                                      |deploys 20-24 archers
 WAIT  |  |  |  |  |     |15000|                                      |
-Text  |  |  |  |  |     |     |Dammit! ALL IN!                       |
+Text  |  |  |  |  |     |     |ALL IN!                               |
 Giant | 3| 3|10|10|  500|  600|                                      |deploys 30 giants
 Arch  | 4| 4|10|10|  500|  600|                                      |deploys 40 archers
 Barb  | 4| 4|10|10|  500|  600|                                      |deploys 40 barbarians

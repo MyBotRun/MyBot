@@ -86,7 +86,7 @@ Func GetResources($nolog = False) ;Reads resources
 
 	Local $THString = ""
 	$searchTH = "-"
-	If ($OptBullyMode = 1 And $SearchCount >= $ATBullyMode) Or  ($iCmbSearchMode <> $LB And ($iChkMeetTH[$DB] = 1 Or  $iChkMeetTHO[$DB] = 1)) Or ($iCmbSearchMode <> $DB And ($iChkMeetTH[$LB] = 1 Or $iChkMeetTHO[$LB] = 1)) Then
+	If $OptTrophyMode = 1 Or ($OptBullyMode = 1 And $SearchCount >= $ATBullyMode) Or  ($iCmbSearchMode <> $LB And ($iChkMeetTH[$DB] = 1 Or  $iChkMeetTHO[$DB] = 1)) Or ($iCmbSearchMode <> $DB And ($iChkMeetTH[$LB] = 1 Or $iChkMeetTHO[$LB] = 1)) Then
 		;If $iChkMeetTH[$DB] = 1 or $iChkMeetTH[$LB]  = 1 or($OptBullyMode = 1 And $SearchCount >= $ATBullyMode) Or  ($iCmbSearchMode <> $LB And $iChkMeetTHO[$DB] = 1) Or ($iCmbSearchMode <> $DB And $iChkMeetTHO[$LB] = 1)  Then ;removed, search townhall it is fast, make no sense reduce images to check
 			  ; CODE TO DETECT TOWNHALL ONLY WITH AUTOIT IMAGESEARCH
 			$searchTH = checkTownHallADV2()

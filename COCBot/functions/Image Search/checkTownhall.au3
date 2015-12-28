@@ -19,11 +19,20 @@ Func LoadTHImage()
 	; $THImagesX[1..n] = name of file 1..n
 	Local $x
 	Local $path = @ScriptDir & "\images\TH\"
+    Local $useImages
+	If $iDetectedImageType = 0 Then ;all files, exlude snow
+	   $useImages = "*T*X*Y*.bmp|*SNOW*.bmp"
+    ElseIf $iDetectedImageType = 1 Then ;all files, exclude normal
+	   $useImages = "*T*X*Y*.bmp|*NORM*.bmp"
+    Else;all files
+	   $useImages = "*T*X*Y*.bmp"
+    EndIf
 	For $t = 0 To 5
 		;assign THImages0... THImages4  an array empty with THimagesx[0]=0
 		Assign("THImages" & $t, StringSplit("", ""))
 		;put in a temp array the list of files matching condition "*T*.bmp"
-		$x = _FileListToArrayRec(@ScriptDir & "\images\TH\" & $THText[$t] & "\", "*T*X*Y*.bmp", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
+		$x = _FileListToArrayRec(@ScriptDir & "\images\TH\" & $THText[$t] & "\", $useImages, $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
+		;_ArrayDisplay($x)
 		;assign value at THimages0... THImages4 if $x it's not empty
 		If UBound($x) Then Assign("THImages" & $t, $x)
 		;code to debug in console if need

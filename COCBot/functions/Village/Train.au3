@@ -216,7 +216,7 @@ Func Train()
 	If $debugSetlog = 1 Then SetLog("Total ArmyCamp :" & $TotalCamp, $COLOR_PURPLE)
 
 	If $fullarmy = True Then
-		SetLog("Build troops before attacking")
+		SetLog("Calculating Troops before Training new Army.", $COLOR_BLUE)
 		$anotherTroops = 0
 		$TotalTrainedTroops = 0
 		If $debugSetlog = 1 Then SetLog("--------- Calculating Troops / FullArmy true ---------", $COLOR_PURPLE)
