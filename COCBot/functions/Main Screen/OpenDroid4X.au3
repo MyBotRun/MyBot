@@ -71,7 +71,7 @@ Func OpenDroid4X($bRestart = False)
 
 	; Launch CcC
 	SetLog("Launch Clash of Clans now...", $COLOR_GREEN)
-    LaunchConsole($__Droid4X_Path & "adb.exe", "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans/.GameApp", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
+    LaunchConsole($__Droid4X_Path & "adb.exe", "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans.qihoo/.GameAppKunlun", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
 
    $HWnD = WinGetHandle($Title) ; get window Handle
    ;DisableBS($HWnD, $SC_MINIMIZE)
@@ -217,7 +217,7 @@ Func RestartDroid4XCoC()
    ;$connected_to = StringInStr($cmdOutput, "connected to")
 
    SetLog("Please wait for CoC restart......", $COLOR_BLUE)   ; Let user know we need time...
-   LaunchConsole($__Droid4X_Path & "adb.exe", "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans/.GameApp", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
+   LaunchConsole($__Droid4X_Path & "adb.exe", "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans.qihoo/.GameAppKunlun", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
 
    Return True
 EndFunc

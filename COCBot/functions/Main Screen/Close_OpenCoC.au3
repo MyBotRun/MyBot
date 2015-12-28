@@ -24,7 +24,7 @@ Func CloseCoC($ReOpenCoC = False)
 	BS1HomeButton()
 	;$Adb = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "Adb")
 	;ShellExecuteWait($Adb, "-s emulator-5554 shell am force-stop com.supercell.clashofclans", "", Default, @SW_HIDE) ; Close CoC ( Forcefull Kill )
-	SendAdbCommand("shell am force-stop com.supercell.clashofclans")
+	SendAdbCommand("shell am force-stop com.supercell.clashofclans.qihoo")
 
 	If $ReOpenCoC Then
         OpenCoC()
@@ -60,7 +60,7 @@ Func OpenCoC()
 	If _Sleep(250) Then Return
 	;$RunApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "RunApp")
 	;Run($RunApp & " Android com.supercell.clashofclans com.supercell.clashofclans.GameApp")
-    SendAdbCommand("shell am start -W -S -n com.supercell.clashofclans/.GameApp") ; "-S" not really required, but doesn't hurt restarting app
+    SendAdbCommand("shell am start -W -S -n com.supercell.clashofclans.qihoo/.GameAppKunlun") ; "-S" not really required, but doesn't hurt restarting app
 
 	While _CheckPixel($aIsMain, True) = False ; Wait for MainScreen
 		$iCount += 1
@@ -101,7 +101,7 @@ Func WaitnOpenCoC($iWaitTime, $bFullRestart = False)
 
 	;$RunApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "RunApp")
 	;Run($RunApp & " Android com.supercell.clashofclans com.supercell.clashofclans.GameApp")
-	SendAdbCommand("shell am start -W -S -n com.supercell.clashofclans/.GameApp") ; "-S" not really required, but doesn't hurt restarting app
+	SendAdbCommand("shell am start -W -S -n com.supercell.clashofclans.qihoo/.GameAppKunlun") ; "-S" not really required, but doesn't hurt restarting app
 
 	If $debugSetlog = 1 Then setlog("CoC Restarted, Waiting for completion", $COLOR_PURPLE)
 
