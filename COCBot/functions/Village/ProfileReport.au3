@@ -26,8 +26,8 @@ Func ProfileReport()
 	Click(220, 33, 1, 0, "#0222") ; Click Info Profile Button
 	If _Sleep($iDelayProfileReport2) Then Return
 
-	While _ColorCheck(_GetPixelColor(222, 56, True), Hex(0x000000, 6), 20) = False ; wait for Info Profile to open
-		If $Debugsetlog = 1 Then Setlog("Profile wait time: " & $iCount & ", color= "& _GetPixelColor(222, 56, True), $COLOR_PURPLE)
+	While _ColorCheck(_GetPixelColor(185, 104 + $midOffsetY, True), Hex(0xA2A6BE, 6), 20) = False ; wait for Info Profile to open
+		If $Debugsetlog = 1 Then Setlog("Profile wait time: " & $iCount & ", color= "& _GetPixelColor(185, 134, True), $COLOR_PURPLE)
 		$iCount += 1
 		If _Sleep($iDelayProfileReport1) Then Return
 		If $iCount >= 25 Then ExitLoop
@@ -35,20 +35,20 @@ Func ProfileReport()
 	If $Debugsetlog = 1 And $iCount >= 25 Then Setlog("Excess wait time for profile to open: "&$iCount, $COLOR_PURPLE)
 	If _Sleep($iDelayProfileReport1) Then Return
 	$AttacksWon = ""
-	$AttacksWon = getProfile(578, 268)
+	$AttacksWon = getProfile(578, 268 + $midOffsetY)
 	If $Debugsetlog = 1 Then  Setlog("$AttacksWon 1st read: " & $AttacksWon, $COLOR_PURPLE)
 	$iCount = 0
 	While $AttacksWon = ""  ; Wait for $attacksWon to be readable in case of slow PC
 		If _Sleep($iDelayProfileReport1) Then Return
-		$AttacksWon = getProfile(578, 268)
+		$AttacksWon = getProfile(578, 268 + $midOffsetY)
 		If $Debugsetlog = 1 Then Setlog("Read Loop $AttacksWon: " & $AttacksWon&", Count: "&$iCount, $COLOR_PURPLE)
 		$iCount += 1
 		If $iCount >= 20 Then ExitLoop
 	WEnd
-	If $Debugsetlog = 1 And $iCount >= 20 Then Setlog("Excess wait time for reading $AttacksWon: " & getProfile(578, 268), $COLOR_PURPLE)
-	$DefensesWon = getProfile(790, 268)
-	$TroopsDonated = getProfile(158, 268)
-	$TroopsReceived = getProfile(360, 268)
+	If $Debugsetlog = 1 And $iCount >= 20 Then Setlog("Excess wait time for reading $AttacksWon: " & getProfile(578, 268 + $midOffsetY), $COLOR_PURPLE)
+	$DefensesWon = getProfile(790, 268 + $midOffsetY)
+	$TroopsDonated = getProfile(158, 268 + $midOffsetY)
+	$TroopsReceived = getProfile(360, 268 + $midOffsetY)
 
 	SetLog(" [ATKW]: " & _NumberFormat($AttacksWon) & " [DEFW]: " & _NumberFormat($DefensesWon) & " [TDON]: " & _NumberFormat($TroopsDonated) & " [TREC]: " & _NumberFormat($TroopsReceived), $COLOR_GREEN)
 	Click(820, 40, 1, 0, "#0223") ; Close Profile page

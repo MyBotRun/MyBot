@@ -28,26 +28,26 @@ Func GetTownHallLevel($bFirstTime = False)
 		If _Sleep($iDelayGetTownHallLevel2) Then Return
 	EndIf
 
-	If $debugSetlog = 1 Then DebugImageSave("GetTHLevelView")
+	if $debugImageSave= 1 Then  DebugImageSave("GetTHLevelView")
 
 	$iTownHallLevel = 0 ; Reset Townhall level
-	$aTHInfo = BuildingInfo(242,520)
+	$aTHInfo = BuildingInfo(242,520 + $bottomOffsetY)
 	If $debugSetlog = 1 Then Setlog("$aTHInfo[0]="&$aTHInfo[0]&", $aTHInfo[1]="&$aTHInfo[1]&", $aTHInfo[2]="&$aTHInfo[2], $COLOR_PURPLE)
 	If $aTHInfo[0] > 1 Then
 		If  StringInStr($aTHInfo[1], "Town") = 0 Then
-			SetLog ("Hmm, Didn't find TownHall?, It was a " &$aTHInfo[1] & ", Please locate again!", $COLOR_Fuchsia)
+			SetLog ("Town Hall not found! I detected a " &$aTHInfo[1] & "! Please locate again!", $COLOR_Fuchsia)
 			Return $aTHInfo
 		EndIf
 		If $aTHInfo[2] <> "" Then
 			$iTownHallLevel = $aTHInfo[2]  ; grab building level from building info array
 			SetLog ("Your Town Hall Level read as: " & $iTownHallLevel, $COLOR_GREEN)
 		Else
-			SetLog ("Your Town Hall Village Level was not found! Please Manually Locate " & $iTownHallLevel, $COLOR_BLUE)
+			SetLog ("Your Town Hall Level was not found! Please Manually Locate", $COLOR_BLUE)
 			ClickP($aAway,1,0,"#0350")  ; Unselect TH
 			Return False
 		EndIf
 	Else
-	  SetLog ("Your Town Hall Village Level was not found! Please Manually Locate " & $iTownHallLevel, $COLOR_BLUE)
+	  SetLog ("Your Town Hall Level was not found! Please Manually Locate", $COLOR_BLUE)
 	  ClickP($aAway,1,0,"#0351")  ; Unselect TH
 	  Return False
 	EndIf

@@ -57,7 +57,7 @@ EndFunc   ;==>cmbProfile
 Func txtVillageName()
 	$iVillageName = GUICtrlRead($txtVillageName)
 	If $iVillageName = "" Then $iVillageName = "MyVillage"
-	GUICtrlSetData($grpVillage, "Village: " & $iVillageName)
+	GUICtrlSetData($grpVillage, GetTranslated(13,21, "Village")& ": " & $iVillageName)
 	GUICtrlSetData($OrigPushB, $iVillageName)
 	GUICtrlSetData($txtVillageName, $iVillageName)
 
@@ -133,6 +133,16 @@ Func btnLocateQueenAltar()
 	WEnd
 	$RunState = False
 EndFunc   ;==>btnLocateQueenAltar
+
+Func btnLocateWardenAltar()
+	$RunState = True
+	While 1
+		ZoomOut()
+		LocateWardenAltar()
+		ExitLoop
+	WEnd
+	$RunState = False
+EndFunc   ;==>btnLocateWardenAltar
 
 Func btnLocateTownHall()
 	$RunState = True
@@ -250,3 +260,42 @@ Func btnResetBuilding()
 	WEnd
 	$RunState = False
 EndFunc   ;==>btnResetBuilding
+
+
+
+Func LoadLanguagesComboBox()
+
+	Dim $FileSearch, $NewFile
+	$FileSearch = FileFindFirstFile($dirLanguages & "*.ini")
+
+	Dim $output = ""
+
+
+	While True
+
+		$NewFile = FileFindNextFile($FileSearch)
+
+		If @error Then ExitLoop
+
+		If $NewFile <> $sGUILanguagesINI Then $output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
+
+	WEnd
+
+	FileClose($FileSearch)
+
+	;remove last |
+	$output = StringLeft($output, StringLen($output) - 1)
+
+	;reset combo box
+	_GUICtrlComboBox_ResetContent($cmbLanguage)
+
+	;set combo box
+	GUICtrlSetData($cmbLanguage, $output)
+
+EndFunc   ;==>LoadLanguages
+
+Func cmbLanguage()
+	Local $aLanguage = _GUICtrlComboBox_GetListArray($cmbLanguage)
+	$sLanguage = $aLanguage[_GUICtrlComboBox_GetCurSel($cmbLanguage) + 1]
+	MsgBox("","","Restart Bot to load program with new language")
+EndFunc

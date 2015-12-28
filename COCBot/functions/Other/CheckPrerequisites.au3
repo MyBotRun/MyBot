@@ -18,8 +18,6 @@ Func isNetFramework4dot5Installed()
 	Return $success
 EndFunc   ;==>isNetFramework4dot5Installed
 
-
-
 Func isVC2010Installed()
 	Local $listRegistry[4] = ["HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\10.0\VC\VCRedist\x86", _
 			"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VisualStudio\10.0\VC\VCRedist\x86", _
@@ -39,6 +37,45 @@ Func isVC2010Installed()
 	Return $success
 EndFunc   ;==>isVC2010Installed
 
+Func isEveryFileInstalled()
+	Local $bResult = False, $iCount = 0
+
+	; folders and files needed checking
+	Local $aCheckFiles[9] = [@ScriptDir & "\COCBot", _
+							$LibDir, _
+							@ScriptDir & "\Images", _
+							@ScriptDir & "\Icons", _
+							$pFuncLib, _
+							$sBotDll, _
+							$pIconLib, _
+							$LibDir & "\opencv_core220.dll", _
+							$LibDir & "\opencv_imgproc220.dll"]
+
+	For $vElement In $aCheckFiles
+		$iCount += FileExists($vElement)
+	Next
+	If $iCount = UBound($aCheckFiles) - 1 Then
+		$bResult = True
+	Else
+		GUICtrlSetState($btnStart, $GUI_DISABLE)
+
+		Local $sText1, $sText2, $MsgBox
+		$sText1 = "Hey Chief, we are missing some files!"
+		$sText2 = "Please extract all files and folders and start this program again!"
+		$sText3 = "Sorry, Start button disabled until fixed!"
+
+		Setlog($sText1, $COLOR_RED)
+		Setlog($sText2, $COLOR_RED)
+		Setlog($sText3, $COLOR_RED)
+
+		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
+		$MsgBox = _ExtMsgBox(48, "Ok", $sText1, $sText2, 0, $frmBot)
+		GUICtrlSetState($btnStart, $GUI_DISABLE)
+		;Exit
+	EndIf
+
+	Return $bResult
+EndFunc   ;==>isEveryFileInstalled
 
 Func CheckPrerequisites()
 	Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
@@ -55,4 +92,5 @@ Func CheckPrerequisites()
 
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
 	EndIf
+	If isEveryFileInstalled() = False Then Exit
 EndFunc   ;==>CheckPrerequisites

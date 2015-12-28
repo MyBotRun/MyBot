@@ -31,7 +31,7 @@ Func CheckTombs()
 			If $TombLoc = 1 And isInsideDiamondXY($TombX, $TombY) Then
 				SetLog("Found tombstone ,  Removing...", $COLOR_GREEN)
 				If $DebugSetLog = 1 Then SetLog("Tombstone found (" & $TombX & "," & $TombY & ") tolerance:" & $TombTol, $COLOR_PURPLE)
-				Click($TombX, $TombY,1,0,"#0120")
+				If IsMainPage() Then Click($TombX, $TombY,1,0,"#0120")
 				If _Sleep($iDelayCheckTombs2) Then Return
 				ClickP($aAway,1,0,"#0121") ; click away
 				If _Sleep($iDelayCheckTombs1) Then Return

@@ -51,6 +51,8 @@ Func _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, $Button = "left", $Delay = 50)
 	$User32 = DllOpen("User32.dll")
 	If @error Then Return SetError(4, "", False)
 
+	MoveMouseOutBS()
+
 	DllCall($User32, "bool", "PostMessage", "hwnd", $Title, "int", $Button, "int", "0", "long", _MakeLong($X1, $Y1))
 	If @error Then Return SetError(5, "", False)
 

@@ -9,11 +9,13 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
+Global Const $iDelayRespond = 5 ; Just to make stop button more Responsive
 Global Const $iDelayRunBot1 = 1000
 Global Const $iDelayRunBot2 = 800
 Global Const $iDelayRunBot3 = 200
 Global Const $iDelayRunBot4 = 1500
 Global Const $iDelayRunBot5 = 500
+Global Const $iDelayRunBot6 = 100
 Global Const $iDelayIdle1 = 200
 Global Const $iDelayIdle2 = 1500
 Global Const $iDelayAttackMain1 = 1000
@@ -41,7 +43,7 @@ Global Const $iDelayCastSpell1 = 10
 ;algorithm_AllTroops
 Global Const $iDelayalgorithm_AllTroops1 = 2000
 Global Const $iDelayalgorithm_AllTroops2 = 1000
-Global Const $iDelayalgorithm_AllTroops3 = 3000
+Global Const $iDelayalgorithm_AllTroops3 = 1500
 Global Const $iDelayalgorithm_AllTroops4 = 100
 Global Const $iDelayalgorithm_AllTroops5 = 500
 
@@ -176,6 +178,8 @@ Global Const $iDelayBuildingInfo1 = 1500
 Global Const $iDelayGetResources1 = 250
 Global Const $iDelayGetResources2 = 500
 Global Const $iDelayGetResources3 = 150
+Global Const $iDelayGetResources4 = 300
+Global Const $iDelayGetResources5 = 2000
 
 ;PrepareSearch
 Global Const $iDelayPrepareSearch1 = 1000
@@ -190,6 +194,8 @@ Global Const $iDelayPrepareSearch7 = 50 ; click
 Global Const $iDelayVillageSearch1 = 1000
 Global Const $iDelayVillageSearch2 = 100
 Global Const $iDelayVillageSearch3 = 500
+Global Const $iDelayVillageSearch4 = 300
+Global Const $iDelayVillageSearch5 = 2000
 
 ;BarracksStatus
 Global Const $iDelayBarracksStatus1 = 50
@@ -380,3 +386,15 @@ Global Const $iDelayWaitnOpenCoC500 = 500
 Global Const $iDelayWaitnOpenCoC1000 = 1000
 Global Const $iDelayWaitnOpenCoC25000 = 25000
 
+;SWHTSearchLimit
+Global Const $iDelaySWHTSearchLimit1 = 200
+
+;SearchLimit
+Global Const $iDelaySearchLimit1 = 200
+Global Const $iDelaySearchLimit2 = 1000
+
+;ClanLevel
+Global Const $iDelayClanLevel1 = 100
+
+;CheckImageType
+Global Const $iDelayImageType1 = 100

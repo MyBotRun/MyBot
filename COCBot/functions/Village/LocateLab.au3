@@ -65,7 +65,7 @@ Func LocateLab()
 			ClickP($aAway,1,0,"#0382")
 			Return
 		EndIf
-		$sLabInfo = BuildingInfo(242, 520)
+		$sLabInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 		If $sLabInfo[0] > 1 Or $sLabInfo[0] = "" Then
 			If  StringInStr($sLabInfo[1], "Lab") = 0 Then
 				If $sLabInfo[0] = "" Then

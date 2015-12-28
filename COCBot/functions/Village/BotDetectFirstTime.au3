@@ -36,8 +36,8 @@ Func BotDetectFirstTime()
 			$TownHallPos[1] = $pixel[1]
 			If $debugSetlog = 1 Then SetLog("DLLc# Townhall: (" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_RED)
 		EndIf
-		If $TownHallPos[1] = "" Then
-			checkTownhallADV()
+		If $TownHallPos[1] = "" Or $TownHallPos[1] = -1 Then
+			checkTownhallADV2()
 			$TownHallPos[0] = $THx
 			$TownHallPos[1] = $THy
 			If $debugSetlog = 1 Then SetLog("OldDDL Townhall: (" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_RED)
@@ -55,16 +55,17 @@ Func BotDetectFirstTime()
 	EndIf
 
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
-	Setlog("Finding your Clan Level, wait..")
 	ClanLevel()
+	If _Sleep($iDelayBotDetectFirstTime1) Then Return
+	CheckImageType()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 
 	If GUICtrlRead($cmbQuantBoostBarracks) > 0 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		For $i = 0 To GUICtrlRead($cmbQuantBoostBarracks) - 1 ; verify if all barracks haves a valid position
-			If $barrackPos[$i][0] = "" or $barrackPos[$i][0] = -1 Then ;  Boost individual barracks with "button Boost 10 gems"
+			If $barrackPos[$i][0] = "" Or $barrackPos[$i][0] = -1 Then ;  Boost individual barracks with "button Boost 10 gems"
 				; Setlog("loop: "& $i+1 )
-				For $x = 0 to 3
+				For $x = 0 To 3
 					$barrackPos[$x][0] = -1
 					$barrackPos[$x][1] = -1
 				Next
@@ -91,7 +92,15 @@ Func BotDetectFirstTime()
 		EndIf
 	EndIf
 
-	If (GUICtrlRead($cmbBoostBarbarianKing) > 0) Then
+	If $ichkLab = 1 Then
+		If _Sleep($iDelayBotDetectFirstTime3) Then Return
+		If $aLabPos[0] = "" Or $aLabPos[0] = -1 Then
+			LocateLab()
+			SaveConfig()
+		EndIf
+	EndIf
+
+	If (GUICtrlRead($cmbBoostBarbarianKing) > 0) Or $ichkUpgradeKing = 1 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		If $KingAltarPos[0] = -1 Then
 			LocateKingAltar()
@@ -99,10 +108,18 @@ Func BotDetectFirstTime()
 		EndIf
 	EndIf
 
-	If (GUICtrlRead($cmbBoostArcherQueen) > 0) Then
+	If (GUICtrlRead($cmbBoostArcherQueen) > 0) Or $ichkUpgradeQueen = 1 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		If $QueenAltarPos[0] = -1 Then
 			LocateQueenAltar()
+			SaveConfig()
+		EndIf
+	EndIf
+
+	If Number($iTownHallLevel) > 10 And ((GUICtrlRead($cmbBoostWarden) > 0) Or $ichkUpgradeWarden = 1) Then
+		If _Sleep($iDelayBotDetectFirstTime3) Then Return
+		If $WardenAltarPos[0] = -1 Then
+			LocateWardenAltar()
 			SaveConfig()
 		EndIf
 	EndIf
@@ -111,7 +128,7 @@ Func BotDetectFirstTime()
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		While 1 ; Clear the collectors using old image find to reduce collector image finding errors
 			If _Sleep($iDelayBotDetectFirstTime3) Or $RunState = False Then ExitLoop
-			_CaptureRegion(0, 0, 780)
+			_CaptureRegion()
 			If _ImageSearch(@ScriptDir & "\images\collect.png", 1, $collx, $colly, 20) Then
 				Click($collx, $colly, 1, 0, "#0330") ;Click collector
 				If _Sleep($iDelayBotDetectFirstTime3) Then Return
@@ -122,34 +139,43 @@ Func BotDetectFirstTime()
 			$i += 1
 		WEnd
 		SetLog("Verifying your Mines/Extractors/Drills ...wait ...")
-		$PixelMineHere = GetLocationItem("getLocationMineExtractor")
+		;$PixelMineHere = GetLocationItem("getLocationMineExtractor")
+		$PixelMineHere = GetLocationMine()
 		If UBound($PixelMineHere) > 0 Then
 			SetLog("Total No. of Gold Mines: " & UBound($PixelMineHere))
 		EndIf
 		For $i = 0 To UBound($PixelMineHere) - 1
-			$pixel = $PixelMineHere[$i]
-			$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
-			If $debugSetlog = 1 Then SetLog("- Gold Mine " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+			If isInsideDiamond($PixelMineHere[$i]) Then
+				$pixel = $PixelMineHere[$i]
+				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
+				If $debugSetlog = 1 Then SetLog("- Gold Mine " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+			EndIf
 		Next
 		If _Sleep($iDelayBotDetectFirstTime1) Then Return
-		$PixelElixirHere = GetLocationItem("getLocationElixirExtractor")
+		;$PixelElixirHere = GetLocationItem("getLocationElixirExtractor")
+		$PixelElixirHere = GetLocationElixir()
 		If UBound($PixelElixirHere) > 0 Then
 			SetLog("Total No. of Elixir Collectors: " & UBound($PixelElixirHere))
 		EndIf
 		For $i = 0 To UBound($PixelElixirHere) - 1
-			$pixel = $PixelElixirHere[$i]
-			$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
-			If $debugSetlog = 1 Then SetLog("- Elixir Collector " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+			If isInsideDiamond($PixelElixirHere[$i]) Then
+				$pixel = $PixelElixirHere[$i]
+				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
+				If $debugSetlog = 1 Then SetLog("- Elixir Collector " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+			EndIf
 		Next
 		If _Sleep($iDelayBotDetectFirstTime1) Then Return
-		$PixelDarkElixirHere = GetLocationItem("getLocationDarkElixirExtractor")
+		;$PixelDarkElixirHere = GetLocationItem("getLocationDarkElixirExtractor")
+		$PixelDarkElixirHere = GetLocationDarkElixir()
 		If UBound($PixelDarkElixirHere) > 0 Then
 			SetLog("Total No. of Dark Elixir Drills: " & UBound($PixelDarkElixirHere))
 		EndIf
 		For $i = 0 To UBound($PixelDarkElixirHere) - 1
-			$pixel = $PixelDarkElixirHere[$i]
-			$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
-			If $debugSetlog = 1 Then SetLog("- Dark Ellxir Drill " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+			If isInsideDiamond($PixelDarkElixirHere[$i]) Then
+				$pixel = $PixelDarkElixirHere[$i]
+				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
+				If $debugSetlog = 1 Then SetLog("- Dark Ellxir Drill " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+			EndIf
 		Next
 	EndIf
 

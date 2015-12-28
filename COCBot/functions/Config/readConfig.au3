@@ -51,7 +51,10 @@ Func readConfig() ;Reads config and sets it to the variables
 		$QueenAltarPos[0] = IniRead($building, "other", "xQueenAltarPos", "-1")
 		$QueenAltarPos[1] = IniRead($building, "other", "yQueenAltarPos", "-1")
 
-		;$barrackNum = IniRead($building, "other", "barrackNum", "0")
+		$WardenAltarPos[0] = IniRead($building, "other", "xWardenAltarPos", "-1")
+		$WardenAltarPos[1] = IniRead($building, "other", "yWardenAltarPos", "-1")
+
+;$barrackNum = IniRead($building, "other", "barrackNum", "0")
 		;$barrackDarkNum = IniRead($building, "other", "barrackDarkNum", "0")
 
 		$listResourceLocation = IniRead($building, "other", "listResource", "")
@@ -142,6 +145,13 @@ Func readConfig() ;Reads config and sets it to the variables
 		$ReduceDark = IniRead($config, "search", "reduceDark", "100")
 		$ReduceTrophy = IniRead($config, "search", "reduceTrophy", "2")
 
+		$iChkRestartSearchLimit = IniRead($config, "search", "ChkRestartSearchLimit", "0")
+		$iRestartSearchlimit =  IniRead($config, "search", "RestartSearchLimit", "15")
+
+		$iDeadBase75percent =  IniRead($config, "search", "Enable75PercentDeadBase", "0")
+		$iDeadBase75percentStartLevel =  IniRead($config, "search", "Enable75PercentDeadBaseStartLevel", "6")
+
+
 		;Attack Basics Settings-------------------------------------------------------------------------
 		$iChkDeploySettings[$DB] = IniRead($config, "attack", "DBDeploy", "3")
 		$iCmbUnitDelay[$DB] = IniRead($config, "attack", "DBUnitD", "5")
@@ -178,12 +188,18 @@ Func readConfig() ;Reads config and sets it to the variables
 
 		$iDropCC[$DB] = IniRead($config, "attack", "DBDropCC", "0")
 		$iDropCC[$LB] = IniRead($config, "attack", "ABDropCC", "0")
+
+		$WardenAttack[$DB] = IniRead($config, "attack", "DBWardenAtk", "0")
+		$WardenAttack[$LB] = IniRead($config, "attack", "ABWardenAtk", "0")
+
 		$iChkUseCCBalanced = IniRead($config, "attack", "BalanceCC", "0")
 		$iCmbCCDonated = IniRead($config, "attack", "BalanceCCDonated", "1")
 		$iCmbCCReceived = IniRead($config, "attack", "BalanceCCReceived", "1")
 
 		$iActivateKQCondition = IniRead($config, "attack", "ActivateKQ", "Auto")
 		$delayActivateKQ = (1000 * IniRead($config, "attack", "delayActivateKQ", "9"))
+		$iActivateWardenCondition =  IniRead($config, "attack", "ActivateWarden", "1")
+		$delayActivateW = (1000 * IniRead($config, "attack", "delayActivateW", "9"))
 
 		$TakeLootSnapShot = IniRead($config, "attack", "TakeLootSnapShot", "0")
 		$ScreenshotLootInfo = IniRead($config, "attack", "ScreenshotLootInfo", "0")
@@ -201,7 +217,8 @@ Func readConfig() ;Reads config and sets it to the variables
 
 		$OptTrophyMode = IniRead($config, "advanced", "TrophyMode", "0")
 		$THaddtiles = IniRead($config, "advanced", "THaddTiles", "2")
-		$icmbAttackTHType = IniRead($config, "advanced", "AttackTHType", "3")
+		;$icmbAttackTHType = IniRead($config, "advanced", "AttackTHType", "3")
+		$scmbAttackTHType = IniRead($config, "advanced", "AttackTHType", "bam")
 		$icmbDeployBtmTHType = IniRead($config, "advanced", "AttackBottomTHType", "1")
 
 		$PushToken = IniRead($config, "advanced", "AccountToken", "")
@@ -243,6 +260,13 @@ Func readConfig() ;Reads config and sets it to the variables
 		$ichkEndTwoStars = IniRead($config, "endbattle", "chkEndTwoStars", "0")
 		$ichkEndNoResources = IniRead($config, "endbattle", "chkEndNoResources", "0")
 
+
+		$DESideEB = IniRead($config, "endbattle", "chkDESideEB", "0")
+		$DELowEndMin = IniRead($config, "endbattle", "txtDELowEndMin", "25")
+		$DisableOtherEBO = IniRead($config, "endbattle", "chkDisableOtherEBO", "0")
+		$DEEndOneStar = IniRead($config, "endbattle", "chkDEEndOneStar", "0")
+		$DEEndBk = IniRead($config, "endbattle", "chkDEEndBk", "0")
+		$DEEndAq = IniRead($config, "endbattle", "chkDEEndAq", "0")
 
 
 		;Donate Settings-------------------------------------------------------------------------
@@ -416,11 +440,18 @@ Func readConfig() ;Reads config and sets it to the variables
 		$aLabPos[0] = Int(IniRead($building, "upgrade", "LabPosX", "0"))
 		$aLabPos[1] = Int(IniRead($building, "upgrade", "LabPosY", "0"))
 
+		;Heroes upgrade
+		$ichkUpgradeKing = IniRead($config, "upgrade", "UpgradeKing", "0")
+		$ichkUpgradeQueen = IniRead($config, "upgrade", "UpgradeQueen", "0")
+		$ichkUpgradeWarden = IniRead($config, "upgrade", "UpgradeWarden", "0")
+
 		$ichkWalls = IniRead($config, "other", "auto-wall", "0")
 		$iSaveWallBldr = IniRead($config, "other", "savebldr", "0")
 		$iUseStorage = IniRead($config, "other", "use-storage", "0")
 
 		$icmbWalls = IniRead($config, "other", "walllvl", "0")
+		$iMaxNbWall = IniRead($config, "other", "MaxNbWall", "8")
+
 		$itxtWallMinGold = IniRead($config, "other", "minwallgold", "0")
 		$itxtWallMinElixir = IniRead($config, "other", "minwallelixir", "0")
 
@@ -477,8 +508,13 @@ Func readConfig() ;Reads config and sets it to the variables
 		If $DevMode = 1 Then
 			GUICtrlSetState($chkDebugSetlog, $GUI_SHOW)
 			GUICtrlSetState($chkDebugOcr, $GUI_SHOW)
+			GUICtrlSetState($chkDebugImageSave, $GUI_SHOW)
+			GUICtrlSetState($chkdebugBuildingPos, $GUI_SHOW)
 			$DebugSetlog = BitOR($DebugSetlog, IniRead($config, "debug", "debugsetlog", "0"))
 			$DebugOcr = BitOR($DebugOcr, IniRead($config, "debug", "debugocr", "0"))
+			$DebugImageSave = BitOR($DebugImageSave, IniRead($config, "debug", "debugimagesave", "0"))
+			$debugBuildingPos = BitOR($debugBuildingPos, IniRead($config, "debug", "debugbuildingpos", "0"))
+
 		EndIf
 
 		; Hours Planned
@@ -509,6 +545,12 @@ Func readConfig() ;Reads config and sets it to the variables
 
 		$ichkLanguage = IniRead($config, "General", "ChkLanguage", "1")
 		$ichkVersion = IniRead($config, "General", "ChkVersion", "1")
+
+		;Snipe While Train
+		$iChkSnipeWhileTrain = IniRead($config, "SnipeWhileTrain", "chkSnipeWhileTrain", "0")
+		$itxtSearchlimit = IniRead($config, "SnipeWhileTrain", "txtSearchlimit", "15")
+		$itxtminArmyCapacityTHSnipe = IniRead($config, "SnipeWhileTrain", "txtminArmyCapacityTHSnipe", "35")
+		$itxtSWTtiles = IniRead($config, "SnipeWhileTrain", "SWTtiles", "1")
 
 	Else
 		Return False

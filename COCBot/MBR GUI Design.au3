@@ -27,7 +27,6 @@ $tabMain = GUICtrlCreateTab(5, 85, 461, 425, $TCS_MULTILINE)
 ;~ Header Menu
 ;~ ------------------------------------------------------
 
-
 $DonateMenu = GUICtrlCreateMenu("&Paypal Donate?")
 $DonateConfig = GUICtrlCreateMenuItem("Support the development", $DonateMenu)
 GUICtrlSetOnEvent(-1, "")
@@ -52,7 +51,7 @@ GUICtrlSetOnEvent(-1, "")
 ;~ -------------------------------------------------------------
 ;~ About Us Tab
 ;~ -------------------------------------------------------------
-$tabAboutUs = GUICtrlCreateTabItem("About Us")
+$tabAboutUs = GUICtrlCreateTabItem(GetTranslated(12,1, "About Us"))
 Local $x = 30, $y = 150
 	$grpCredits = GUICtrlCreateGroup("Credits", $x - 20, $y - 20, 450, 375)
 		$txtCredits = "My Bot is brought to you by a worldwide team of open source"  & @CRLF & _
@@ -64,18 +63,17 @@ Local $x = 30, $y = 150
 		$txtCredits = "Please visit our web forums:"
 		$lblCredits2 = GUICtrlCreateLabel($txtCredits, $x - 5, $y, -1, -1)
 		$y += 20
-		$labelMyBotURL = GUICtrlCreateLabel("https://MyBot.run", $x - 5, $y, 150, 20)
+		$labelMyBotURL = GUICtrlCreateLabel("https://mybot.run/forums", $x - 5, $y, 150, 20)
 			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_BLUE)
 		$y += 25
 		$lblCredits3 = GUICtrlCreateLabel("Credits go to the following coders for donating their time:", $x - 5, $y , 400, 20)
 			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
 		$y += 20
-		$txtCredits =	"Antidote, AtoZ, barracoda, didipe, Dinobot, DixonHill, DkEd, Envyus, GkevinOD,"  & @CRLF & _
-                        "Hervidero, HungLe, kaganus, knowjack, ProMac, safar46, sardo, Saviart and others"  & @CRLF & _
-						"" & @CRLF & _
+		$txtCredits =	"Antidote, AtoZ, barracoda, cosote, didipe, Dinobot, DixonHill, DkEd, GkevinOD, "  & _
+                        "Hervidero, HungLe, kaganus, knowjack, monkeyhunter, ProMac, safar46, sardo, "  & _
+						"Saviart, TheMaster1st, zengzeng and others" & @CRLF & @CRLF & _
 						"And to all forum members contributing to make this great software!" & @CRLF & _
-						"" & @CRLF & _
 						"The latest release of the 'My Bot' can be found at:"
 		$lbltxtCredits = GUICtrlCreateEdit($txtCredits, $x - 5, $y, 400, 80, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_READONLY, $SS_LEFT),0)
 			GUICtrlSetBkColor(-1, $COLOR_WHITE)
@@ -83,7 +81,11 @@ Local $x = 30, $y = 150
 		$labelForumURL = GUICtrlCreateLabel("https://MyBot.run/latest", $x - 5, $y, 450, 20)
 			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_BLUE)
-		$y += 100
+		$y += 20
+		$sTxtCustom = GetTranslated(12,2, " ") & @crlf & GetTranslated(12,3, " ") & @crlf & GetTranslated(12,4, " ") & @crlf & GetTranslated(12,5, " ") & @crlf & GetTranslated(12,6, " ") & @crlf & GetTranslated(12,7, " ") & @crlf & GetTranslated(12,8, " ")
+		$lbltxtWarn = GUICtrlCreateEdit($sTxtCustom, $x - 5, $y, 410, 85, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_READONLY, $SS_LEFT),0)
+			GUICtrlSetBkColor(-1, $COLOR_WHITE)
+		$y += 90
 		$txtWarn =	"By running this program, the user accepts all responsibility that arises from the use of this software."  & @CRLF & _
 						"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even " & @CRLF & _
 						"the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General " & @CRLF & _

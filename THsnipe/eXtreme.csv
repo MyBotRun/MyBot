@@ -1,0 +1,41 @@
+TROOP |S1|S2|Q1|Q2|DEL1 |DEL2 |LOG_TEXT                                    |NOTES
+Text  |  |  |  |  |     |     |Extreme Attacking TH Outside with BAM PULSE!|
+Text  |  |  |  |  |     |     |Attacking TH with 1st wave of BAM COMBO     |
+Barb  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 barbarians
+Arch  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 archers
+Mini  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 minions
+WAIT  |  |  |  |  |     |20000|                                            |
+Text  |  |  |  |  |     |     |Attacking TH with 2nd wave of BAM COMBO     |
+Barb  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 barbarians
+Arch  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 archers
+Mini  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 minions
+WAIT  |  |  |  |  |     |20000|                                            |
+Text  |  |  |  |  |     |     |Attacking TH with 3rd wave of BAM COMBO     |
+Barb  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 barbarians
+Arch  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 archers
+Mini  | 5| 5| 1| 2|  800| 1000|                                            |deploys 5-10 minions
+WAIT  |  |  |  |  |     |20000|                                            |
+Text  |  |  |  |  |     |     |Extreme Attacking TH Outside in FULL!       |
+HSpell|  |  |  |  |     |     |                                            |deploys healing spell
+Giant | 5| 6| 2| 2|  500|  600|                                            |releases 10-12 giants
+Giant | 5| 6| 2| 2|  800| 1000|                                            |releases 10-12 giants
+Hogs  | 5| 6| 3| 3|  800| 1000|                                            |releases 15-18 Hogs
+Wall  | 2| 2| 1| 1|  500|  600|                                            |deploys 2 wallbreakers
+Wall  | 2| 2| 1| 1|  500|  600|                                            |deploys 2 wallbreakers
+King  |  |  |  |  |     |     |                                            |deploys king
+Queen |  |  |  |  |     |     |                                            |deploys queen
+Heal  | 2| 2| 1| 1|  500|  600|                                            |deploys 2 healer
+RSpell|  |  |  |  |     |     |                                            |drop rage spell
+Castle|  |  |  |  |     |     |                                            |deploys cc
+Barb  | 5| 5|20|20|  500|  600|                                            |release 100 barb
+Arch  | 5| 5|20|20|  500|  600|                                            |release 100 arch
+Mini  | 5| 5| 2| 2| 1000| 1200|                                            |deploys 10 minions
+Wiza  | 3| 3| 2| 2|  800| 1000|                                            |releases 6 wizards
+WAIT  |  |  |  |  |     |20000|                                            |
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Lspell|  |  |  |  |     |     |                                            |launch lighting spell
+Text  |  |  |  |  |     |     |~Finished Attacking, waiting to finish      |
+WAIT  |  |  |  |  |     |20000|                                            |

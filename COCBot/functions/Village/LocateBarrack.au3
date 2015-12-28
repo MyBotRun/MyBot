@@ -66,7 +66,7 @@ Func LocateBarrack($ArmyCamp = False)
 							Return False
 					EndSelect
 				EndIf
-				$sArmyInfo = BuildingInfo(242, 520)
+				$sArmyInfo = BuildingInfo(242, 520 + $bottomOffsetY) ; 860x780
 				If $sArmyInfo[0] > 1 Or $sArmyInfo[0] = "" Then
 					If StringInStr($sArmyInfo[1], "Army") = 0 Then
 						If $sArmyInfo[0] = "" Then
@@ -114,13 +114,13 @@ Func LocateBarrack($ArmyCamp = False)
 					$TEMPbarrackPos[$i][1] = FindPos()[1]
 					If isInsideDiamondXY($TEMPbarrackPos[$i][0], $TEMPbarrackPos[$i][1]) Then
 						If _Sleep($iDelayLocateBarrack2) Then Return
-						Local $TrainPos = _PixelSearch(512, 585, 641, 588, Hex(0x7895C2, 6), 10) ;Finds Train Troops button
+						Local $TrainPos = _PixelSearch(512, 585 + $bottomOffsetY, 641, 588 + $bottomOffsetY, Hex(0x7895C2, 6), 10) ;Finds Train Troops button
 						If IsArray($TrainPos) Then
 							Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
-							If WaitforPixel(715, 124, 718, 125, Hex(0xD80408, 6), 5, 10) Then ;wait until finds red Cross button in new Training popup window, max of 5 senconds / return True
+							If WaitforPixel(715, 124 + $midOffsetY, 718, 125 + $midOffsetY, Hex(0xD80408, 6), 5, 10) Then ;wait until finds red Cross button in new Training popup window, max of 5 senconds / return True
 								For $x = 0 To 3
 									If _Sleep($iDelayLocateBarrack2) Then Return
-									If _ColorCheck(_GetPixelColor(254 + (60 * $x), 540, True), Hex(0xE8E8E0, 6), 20) Then ; slot position 60 * $x
+									If _ColorCheck(_GetPixelColor(254 + (60 * $x), 540 + $midOffsetY, True), Hex(0xE8E8E0, 6), 20) Then ; slot position 60 * $x
 										$barrackPos[$x][0] = $TEMPbarrackPos[$i][0]
 										$barrackPos[$x][1] = $TEMPbarrackPos[$i][1]
 										SetLog("- Barrack " & $x  + 1 & ": (" & $barrackPos[$x][0] & "," & $barrackPos[$x][1] & ")", $COLOR_PURPLE)
@@ -173,11 +173,11 @@ Func LocateBarrack($ArmyCamp = False)
 		If _Sleep($iDelayLocateBarrack1) Then Return
 
 		$iCount = 0 ; reset loop counter
-		$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+		$sArmyInfo = getArmyCampCap(212, 144 + $midOffsetY) ; OCR read army trained and total
 		If $debugSetlog = 1 Then Setlog("$sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
 		While $sArmyInfo = "" ; In case the CC donations recieved msg are blocking, need to keep checking numbers for 10 seconds
 			If _Sleep($iDelayLocateBarrack2) Then Return
-			$sArmyInfo = getArmyCampCap(212, 144) ; OCR read army trained and total
+			$sArmyInfo = getArmyCampCap(212, 144 + $midOffsetY) ; OCR read army trained and total
 			If $debugSetlog = 1 Then Setlog(" $sArmyInfo = " & $sArmyInfo, $COLOR_PURPLE)
 			$iCount += 1
 			If $iCount > 4 Then ExitLoop
@@ -218,9 +218,9 @@ Func LocateBarrack2()
 		Collect()
 	EndIf
 
-	Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293") ;Click Army Camp
+	Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#9998") ;Click Army Camp
 
-	If WaitforPixel(715, 124, 718, 125, Hex(0xD80408, 6), 5, 10) Then
+	If WaitforPixel(715, 124 + $midOffsetY, 718, 125 + $midOffsetY, Hex(0xD80408, 6), 5, 10) Then
 		BarracksStatus(False) ; $numBarracksAvaiables
 	Else
 		SetLog("Error open the ArmyOverView Windows!..")
@@ -240,13 +240,13 @@ Func LocateBarrack2()
 				If isInsideDiamond($pixel) Then
 					Click($pixel[0], $pixel[1])
 					If _Sleep(1000) Then Return
-					Local $TrainPos = _PixelSearch(512, 585, 641, 588, Hex(0x7895C2, 6), 10) ;Finds Train Troops button
+					Local $TrainPos = _PixelSearch(512, 585+ $bottomOffsetY, 641, 588+ $bottomOffsetY, Hex(0x7895C2, 6), 10) ;Finds Train Troops button
 					If IsArray($TrainPos) Then
 						Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
-						If WaitforPixel(715, 124, 718, 125, Hex(0xD80408, 6), 5, 10) Then ;wait until finds red Cross button in new Training popup window, max of 5 senconds / return True
+						If WaitforPixel(715, 124 + $midOffsetY, 718, 125 + $midOffsetY, Hex(0xD80408, 6), 5, 10) Then ;wait until finds red Cross button in new Training popup window, max of 5 senconds / return True
 							For $x = 0 To 3
 								If _Sleep(100) Then Return
-								If _ColorCheck(_GetPixelColor(254 + (60 * $x), 540, True), Hex(0xE8E8E0, 6), 20) Then ; slot position 60 * $x
+								If _ColorCheck(_GetPixelColor(254 + (60 * $x), 540 + $bottomOffsetY, True), Hex(0xE8E8E0, 6), 20) Then ; slot position 60 * $x
 									$barrackPos[$x][0] = $pixel[0]
 									$barrackPos[$x][1] = $pixel[1]
 									SetLog("- Barrack " & $x + 1 & ": (" & $barrackPos[$x][0] & "," & $barrackPos[$x][1] & ")", $COLOR_PURPLE)

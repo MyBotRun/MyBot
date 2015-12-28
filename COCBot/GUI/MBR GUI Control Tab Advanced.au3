@@ -50,6 +50,28 @@ Func chkAttackNow()
 	EndIf
 EndFunc   ;==>chkAttackNow
 
+Func chkSnipeWhileTrain()
+	If GUICtrlRead($ChkSnipeWhileTrain) = $GUI_CHECKED Then
+		$iChkSnipeWhileTrain = 1
+		GUICtrlSetState($lblSearchlimit, $GUI_ENABLE)
+		GUICtrlSetState($txtSearchlimit, $GUI_ENABLE)
+		GUICtrlSetState($lblminArmyCapacityTHSnipe, $GUI_ENABLE)
+		GUICtrlSetState($txtminArmyCapacityTHSnipe, $GUI_ENABLE)
+		GUICtrlSetState($lblSWTTiles, $GUI_ENABLE)
+		GUICtrlSetState($txtSWTTiles, $GUI_ENABLE)
+	Else
+		$iChkSnipeWhileTrain = 0
+		GUICtrlSetState($lblSearchlimit, $GUI_DISABLE)
+		GUICtrlSetState($txtSearchlimit, $GUI_DISABLE)
+		GUICtrlSetState($lblminArmyCapacityTHSnipe, $GUI_DISABLE)
+		GUICtrlSetState($txtminArmyCapacityTHSnipe, $GUI_DISABLE)
+		GUICtrlSetState($lblSWTTiles, $GUI_DISABLE)
+		GUICtrlSetState($txtSWTTiles, $GUI_DISABLE)
+	EndIf
+	GUICtrlSetState($ChkSnipeWhileTrain, $GUI_ENABLE)
+
+EndFunc   ;==>chkSnipeWhileTrain
+
 #comments-start
 Func GUILightSpell()
 	If GUICtrlRead($chkLightSpell) = $GUI_CHECKED Then
@@ -107,3 +129,33 @@ Func chkSnipeMode()
 		GUICtrlSetState($chkUseLSpellsTH, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkSnipeMode
+
+
+Func LoadThSnipeAttacks()
+	Dim $FileSearch, $NewFile
+	$FileSearch = FileFindFirstFile($dirTHSnipesAttacks & "\*.csv")
+	Dim $output = ""
+	While True
+		$NewFile = FileFindNextFile($FileSearch)
+		If @error Then ExitLoop
+		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
+	WEnd
+	FileClose($FileSearch)
+	;remove last |
+	$output = StringLeft($output, StringLen($output) - 1)
+	;reset combo box
+	_GUICtrlComboBox_ResetContent($cmbAttackTHType)
+	;set combo box
+	GUICtrlSetData($cmbAttackTHType, $output)
+
+	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, _GUICtrlComboBox_FindStringExact($cmbAttackTHType, $scmbAttackTHType))
+EndFunc   ;==>LoadThSnipeAttacks
+
+Func cmbAttackTHType()
+	Local $arrayattack = _GUICtrlComboBox_GetListArray($cmbAttackTHType)
+	$scmbAttackTHType = $arrayattack[_GUICtrlComboBox_GetCurSel($cmbAttackTHType) + 1]
+EndFunc
+
+Func btnTestTHcsv()
+	AttackTHParseCSV(True) ; launch attach th parse CSV only for test in log
+EndFunc

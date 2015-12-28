@@ -1,4 +1,40 @@
-﻿* **V4.2.3**
+﻿* **V5.0.1**
+ * Improved support for BlueStacks 2 and Droid4X
+ * Added Auto detection of System Local to auto set the BOT GUI language on first run, manual change will be remembered.
+ * Fix BoostBarrack and BoostHeroes misclicks
+ * Fix Locate Barracks misclicks
+ * Improved Donate, added some time between clicks to wait for proper windows to open/close
+ * Improved Early Take-a-break detection
+ * Added Snow Theme detection (and Normal Theme too) for deadbase and Townhall image selection used on Search
+ * Added Building images with snow (Elixir collectors, Townhall)
+ * Added GUI option to search for 75%+ full collectors on deadbase (default is 90%+)
+ * Improved checking for Request CC troops when the bot is just used for Donating troops, not checking all the time
+ * Fix Unnecessary checks for TH location on Drop Trophy
+ * Fix No longer Trophy loss counted when no lvl1/2 tier troop was available to deploy on Drop Trophy
+ * Fix Return Home button detection and misclicks on Attack button
+ * Improved Drop Spell on DE/TH side Attack
+ * Fix Recover from OOS do not start Search/Attack again immediately unless you have a full army
+ * Fix Searching for TH when TH Snipe is enabled
+ * Fix Detection of League level after Attack
+
+
+* **V5.0** 
+ * GUI Multi Language
+ * Bluestacks v2 and Droid4x supported
+ * TH / DE Side Attack for Live Bases
+ * TH Snipes While Train (But maybe this wont be useful to you anymore..)
+ * Can make troops only to Donate , the bot will maintain that quantity select on GUI in army composition.
+ * Heroes Upgrade continuously 
+ * New System to personalize your TH Snipes attack : \THsnipe\ csv files
+ * New Walls Detection code - just need the new images
+ * New TH detection - just need the new images with snow - new system to add more images - user friendly 
+ * New Inactive Base detection - new system to add more images - user friendly 
+ * Train system with scroll left for queued troops
+ * A Lot of fixes to SC December Update and the Winter Theme!!
+ * 
+ * 
+
+* **V4.2.3**
  * Improve Smart Attack 4 sides, some times was reported 3 sides deploy instead of 4, prevent some troops to drop on red line
  * Prevent some error on Smart Attack
  * GUI stats alignment for negative Trophy count

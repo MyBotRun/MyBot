@@ -1,0 +1,49 @@
+TROOP |S1|S2|Q1|Q2|DEL1 |DEL2 |LOG_TEXT                              |NOTES
+Text  |  |  |  |  |     |     |Sniping TH with SmartBarch            |
+Text  |  |  |  |  |     |     |Attacking TH with 1st wave of BARCH   |
+Barb  | 4| 6| 1| 1| 1500| 2000|                                      |deploys 4-6 barbarians to take out traps waits 2 seconds for bombs to go off
+Arch  | 2| 2| 4| 6|  800| 1000|                                      |deploys 8-12 archers
+WAIT  |  |  |  |  |     |20000|                                      |
+Text  |  |  |  |  |     |     |Attacking TH with 2nd wave of BARCH   |
+Barb  | 4| 5| 2| 2|  800| 1000|                                      |deploys 8-10 barbarians
+Arch  | 2| 2| 5| 6|  800| 1000|                                      |deploys 10-12 archers
+Barb  | 4| 5| 2| 2|  800| 1000|                                      |deploys 8-10 barbarians
+Arch  | 4| 5| 3| 3|  800| 1000|                                      |deploys 12-15 archers
+Text  |  |  |  |  |     |     |Oh no! Seems like a trapped TH!       |
+Giant | 2| 2| 1| 1| 1000| 1200|                                      |deploys 2 giants for Traps
+HSpell|  |  |  |  |     |     |                                      |deploys healing spell
+Giant | 5| 6| 3| 3|  500|  600|                                      |deploys 15-18 giants
+Hogs  | 5| 6| 3| 3|  800| 1000|                                      |releases 15-18 Hogs
+Wall  | 2| 2| 1| 1|  500|  600|                                      |deploys 2 wallbreakers
+Wall  | 2| 2| 1| 1|  500|  600|                                      |deploys 2 wallbreakers
+King  |  |  |  |  |     |     |                                      |deploys king
+Queen |  |  |  |  |     |     |                                      |deploys queen
+Heal  | 2| 2| 1| 1|  500|  600|                                      |deploys 2 healer
+RSpell|  |  |  |  |     |     |                                      |drop rage spell
+Castle|  |  |  |  |     |     |                                      |deploys cc
+Barb  | 3| 3| 3| 4|  500|  600|                                      |deploys 9-12 barbarians
+Arch  | 3| 3| 4| 5|  500|  600|                                      |deploys 12-15 archers
+Barb  | 3| 3| 3| 4|  500|  600|                                      |deploys 9-12 barbarians
+Arch  | 3| 3| 5| 6|  500|  600|                                      |deploys 15-18 archers
+Barb  | 4| 4| 3| 4|  500|  600|                                      |deploys 12-16 barbarians
+Arch  | 4| 4| 5| 6|  500|  600|                                      |deploys 20-24 archers
+WAIT  |  |  |  |  |     |15000|                                      |
+Text  |  |  |  |  |     |     |ALL IN!                               |
+Giant | 3| 3|10|10|  500|  600|                                      |deploys 30 giants
+Arch  | 4| 4|10|10|  500|  600|                                      |deploys 40 archers
+Barb  | 4| 4|10|10|  500|  600|                                      |deploys 40 barbarians
+Gobl  | 4| 4|10|10|  500|  600|                                      |deploys 40 goblins
+Wiza  | 2| 2|10|10|  500|  600|                                      |deploys 20 wizards
+Mini  | 2| 2|10|10|  500|  600|                                      |deploys 20 minions
+Barb  | 4| 4|10|10|  500|  600|                                      |deploys 40 barbarians
+Arch  | 4| 4|10|10|  500|  600|                                      |deploys 40 archers
+Barb  | 4| 4|10|10|  500|  600|                                      |deploys 40 barbarians
+Arch  | 4| 4|10|10|  500|  600|                                      |deploys 40 archers
+WAIT  |  |  |  |  |     |15000|                                      |
+Lspell|  |  |  |  |     |     |                                      |launch lighting spell
+Lspell|  |  |  |  |     |     |                                      |launch lighting spell
+Lspell|  |  |  |  |     |     |                                      |launch lighting spell
+Lspell|  |  |  |  |     |     |                                      |launch lighting spell
+Lspell|  |  |  |  |     |     |                                      |launch lighting spell
+Text  |  |  |  |  |     |     |~Finished Attacking, waiting to finish|
+WAIT  |  |  |  |  |     |20000|                                      |

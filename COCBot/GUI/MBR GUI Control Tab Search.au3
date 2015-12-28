@@ -217,3 +217,19 @@ Func chkABWeakBase()
 		GUICtrlSetState($cmbABWeakWizTower, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkABWeakBase
+
+Func chkRestartSearchLimit()
+	If GUICtrlRead($ChkRestartSearchLimit) = $GUI_CHECKED Then
+		GUICtrlSetState($txtRestartSearchlimit, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($txtRestartSearchlimit, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkRestartSearchLimit
+
+Func chkenable75percent()
+	If GUICtrlRead($chkenable75percent) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbenable75percent, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbenable75percent, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkenable75percent

@@ -36,26 +36,26 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 		If Number( $BSx) > -30000 and Number($BSy ) > -30000 Then
 			Switch $position
 				Case "BS-BOT" ; position left bs, right adjacent BOT
-					$BSHandle = WinMove($Title, "", 0 + Number($offsetX) , 0 + number($offsetY))
+					$BSHandle = WinMove2($Title, "", 0 + Number($offsetX) , 0 + number($offsetY))
 					If _Sleep($iDelayWindowsArrange1) Then Return
-					$BOTHandle = WinMove($sBotTitle, "", Number($BSw) + Number($offsetX)*2, 0 + number($offsetY))
+					$BOTHandle = WinMove2($sBotTitle, "", Number($BSw) + Number($offsetX)*2, 0 + number($offsetY))
 					If _Sleep($iDelayWindowsArrange1) Then Return
 				Case "BOT-BS" ; position left BOT, right adjacent BS
-					$BOTHandle = WinMove($sBotTitle, "", 0 + Number($offsetX) , 0 + number($offsetY))
+					$BOTHandle = WinMove2($sBotTitle, "", 0 + Number($offsetX) , 0 + number($offsetY))
 					If _Sleep($iDelayWindowsArrange1) Then Return
-					$BSHandle = WinMove($Title, "", Number($BOTw) + Number($offsetX)*2, 0 + number($offsetY))
+					$BSHandle = WinMove2($Title, "", Number($BOTw) + Number($offsetX)*2, 0 + number($offsetY))
 					If _Sleep($iDelayWindowsArrange1) Then Return
 				Case "SNAP-TR" ; position BOT top right of BS, do not move BS
-					If $BSx + $BSw + number($offsetX) < @DesktopWidth Then $BOTHandle = WinMove($sBotTitle, "", $BSx + $BSw + Number($offsetX), $BSy )
+					If $BSx + $BSw + number($offsetX) < @DesktopWidth Then $BOTHandle = WinMove2($sBotTitle, "", $BSx + $BSw + Number($offsetX), $BSy )
 					If _Sleep($iDelayWindowsArrange1) Then Return
 				Case "SNAP-BR" ; position BOT botom right of BS, do not move BS
-					If $BSx + $BSw + number($offsetY) < @DesktopWidth Then $BOTHandle = WinMove($sBotTitle, "", $BSx + $BSw + Number($offsetX), $BSy + ( $BSh- $BOTh )  )
+					If $BSx + $BSw + number($offsetY) < @DesktopWidth Then $BOTHandle = WinMove2($sBotTitle, "", $BSx + $BSw + Number($offsetX), $BSy + ( $BSh- $BOTh )  )
 					If _Sleep(500) Then Return
 				Case "SNAP-TL" ; position BOT top left of BS, do not move BS
-					If $BSx  >=100 Then $BOTHandle = WinMove($sBotTitle, "", $BSx - $BOTw - Number($offsetX), $BSy )
+					If $BSx  >=100 Then $BOTHandle = WinMove2($sBotTitle, "", $BSx - $BOTw - Number($offsetX), $BSy )
 					If _Sleep($iDelayWindowsArrange1) Then Return
 				Case "SNAP-BL" ; position BOT bottom left of BS, do not move BS
-					If $BSx >= 100 Then $BOTHandle = WinMove($sBotTitle, "", $BSx - $BOTw - Number($offsetX), $BSy + ( $BSh- $BOTh ) )
+					If $BSx >= 100 Then $BOTHandle = WinMove2($sBotTitle, "", $BSx - $BOTw - Number($offsetX), $BSy + ( $BSh- $BOTh ) )
 					If _Sleep($iDelayWindowsArrange1) Then Return
 			EndSwitch
 		EndIf
@@ -65,7 +65,7 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 EndFunc   ;==>WindowsArrange
 
 Func DisposeWindows()
-   If $debugSetlog = 1 Then SetLog("Func DisposeWindows ", $COLOR_PURPLE)
+   ;If $debugSetlog = 1 Then SetLog("Func DisposeWindows ", $COLOR_PURPLE)
 		If $iDisposeWindows = 1 Then
 			Switch $icmbDisposeWindowsPos
 				Case 0
@@ -81,5 +81,47 @@ Func DisposeWindows()
 				Case 5
 					WindowsArrange("SNAP-BL", $iWAOffsetX, $iWAOffsetY)
 			EndSwitch
+		Else
+			If $bMonitorHeight800orBelow Then
+				WindowsArrange("BS-BOT", 10, 0)
+			EndIf
 		EndIf
+EndFunc
+
+; Replacement for WinMove ( "title", "text", x, y [, width [, height [, speed]]] )
+; Parameter [, speed] is not supported!
+Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $s = 0)
+   If $s <> 0 And $debugSetlog = 1 Then SetLog("WinMove2(" & $WinTitle & "," & $WinText & "," & $x & "," & $y & "," & $w & "," & $h & "," & $s & "): speed parameter '" & $s & "' is not supported!", $COLOR_RED);
+   Local $hWnd = WinGetHandle($WinTitle, $WinText)
+   Local $aPos = WinGetPos($hWnd)
+
+   If @error <> 0 Or Not IsArray($aPos) Then
+	  SetError(1, @extended, -1)
+	  Return 0
+   EndIF
+   If $x = -1 Or $y = -1 Or $w = -1 Or $h = -1 Then
+	  If $x = -1 Then $x = $aPos[0]
+	  If $y = -1 Then $y = $aPos[1]
+	  If $w = -1 Then $w = $aPos[2]
+	  If $h = -1 Then $h = $aPos[3]
+   EndIf
+
+   Local $NoMove = $x = $aPos[0] And $y = $aPos[1]
+   Local $NoResize = $w = $aPos[2] And $h = $aPos[3]
+
+   ;If $debugSetlog = 1 Then SetLog("Window " & $WinTitle & "(" & $hWnd & "): " & ($NoResize ? "no resize" : "resize to " & $w & " x " & $h) & ($NoMove ? ", no move" : ", move to " & $x & "," & $y), $COLOR_BLUE);
+   _WinAPI_SetWindowPos($hWnd, 0, $x, $y, $w, $h, BitOr(($NoMove ? BitOr($SWP_NOMOVE, $SWP_NOREPOSITION) : 0), $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $SWP_NOZORDER)) ; resize window without sending changing message to window
+
+   ; check width and height if it got changed...
+   $aPos = WinGetPos($hWnd)
+   If @error <> 0 Or Not IsArray($aPos) Then
+	  SetError(1, @extended, -1)
+	  Return 0
+   EndIf
+   If $w <> $aPos[2] or $h <>$aPos[3] Then
+	  If $debugSetlog = 1 Then SetLog("Window " & $WinTitle & "(" & $hWnd & ") got resized again to " & $aPos[2] & " x " & $aPos[3] & ", restore now " & $w & " x " & $y, $COLOR_ORANGE);
+	  _WinAPI_SetWindowPos($hWnd, 0, $x, $y, $w, $h, BitOr($SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $SWP_NOZORDER)) ; resize window without sending changing message to window
+   EndIf
+
+   Return $hWnd
 EndFunc

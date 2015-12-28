@@ -13,11 +13,11 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func _TrainMoveBtn($direction)
-	Local $NextPos = _PixelSearch(749, 311, 787, 322, Hex(0xF08C40, 6), 5)
-	Local $PrevPos = _PixelSearch(70, 311, 110, 322, Hex(0xF08C40, 6), 5)
+	Local $NextPos = _PixelSearch(749, 311 + $midOffsetY, 787, 322 + $midOffsetY, Hex(0xF08C40, 6), 5)
+	Local $PrevPos = _PixelSearch(70, 311 + $midOffsetY, 110, 322 + $midOffsetY, Hex(0xF08C40, 6), 5)
 
 	;where I am?
-	Local $tabpos = [[112, 530], [228, 530], [288, 530], [348, 530], [409, 530], [494, 530], [555, 530], [637, 530], [698, 530]]
+	Local $tabpos = [[112, 530 + $midOffsetY], [228, 530 + $midOffsetY], [288, 530 + $midOffsetY], [348, 530 + $midOffsetY], [409, 530 + $midOffsetY], [494, 530 + $midOffsetY], [555, 530 + $midOffsetY], [637, 530 + $midOffsetY], [698, 530 + $midOffsetY]]
 	Local $i = 0
 	While Not _ColorCheck(_GetPixelColor($tabpos[$i][0], $tabpos[$i][1], True), Hex(0xE8E8E0, 6), 20)
 		$i += 1

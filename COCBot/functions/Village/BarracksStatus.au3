@@ -33,7 +33,7 @@ Func BarracksStatus($showlog = false)
 	Local $i = 0
 	While Not _ColorCheck(_GetPixelColor($btnpos[0][0], $btnpos[0][1], True), Hex(0xE8E8E0, 6), 20)
 		if $debugSetlog= 1 Then Setlog("search color pos0 army overview... "  & $i, $COLOR_PURPLE)
-		_Sleep($iDelayBarracksStatus1)
+		If _Sleep($iDelayBarracksStatus1) Then Return
 		$i += 1
 		If $i > 10 Then ExitLoop
 	WEnd
@@ -44,7 +44,7 @@ Func BarracksStatus($showlog = false)
 			Setlog("OK, I'm in army overview", $COLOR_PURPLE)
 		EndIf
 	EndIf
-	_sleep($iDelayBarracksStatus2)
+	If _sleep($iDelayBarracksStatus2) Then Return
 
 	For $i = 1 To 4
 		If _ColorCheck(_GetPixelColor($btnpos[$i][0], $btnpos[$i][1], True), Hex($COLOR_AVAIABLE, 6), 20) Then
