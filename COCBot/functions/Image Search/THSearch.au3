@@ -17,11 +17,6 @@ Global $aTownHall[4] = [-1, -1, -1, -1] ; [LocX, LocY, BldgLvl, Quantity]
 
 Func THSearch($bReTest = False)
 
-    If $bReTest = False Then
-        SetLog("3rd attempt to detect the TownHall disabled", $COLOR_RED)
-        Return "-"
-    EndIf
-
 	SetLog("3rd attempt to detect the TownHall!", $COLOR_RED)
 	If $debugsetlog = 1 Then SetLog("TH search Start", $COLOR_PURPLE)
 	Local $hTimer = TimerInit()
