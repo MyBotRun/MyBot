@@ -213,14 +213,14 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 		If _Sleep($iDelayRespond) Then Return
 		If $OptTrophyMode = 1 Then ;Enables Triple Mode Settings ;---compare resources
-			$match[$TS] = True
+			$matchTS = True
 			If $icmbTHmatchBase = 1 Then
-				$match[$TS] = $match[$DB]
+				$matchTS = $match[$DB]
 			EndIf
 			If $icmbTHmatchBase = 2 Then
-				$match[$TS] = $match[$LB]
+				$matchTS = $match[$LB]
 			EndIf
-			If $match[$TS] And SearchTownHallLoc() Then ; attack this base anyway because outside TH found to snipe
+			If $matchTS And SearchTownHallLoc() Then ; attack this base anyway because outside TH found to snipe
 				SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
 				SetLog("      " & "TH Outside Found! ", $COLOR_GREEN, "Lucida Console", 7.5)
 				$logwrited = True
