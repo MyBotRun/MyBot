@@ -108,6 +108,7 @@ Func chkSnipeMode()
 	If GUICtrlRead($chkTrophyMode) = $GUI_CHECKED Then
 		$OptTrophyMode = 1
 		GUICtrlSetState($txtTHaddtiles, $GUI_ENABLE)
+		GUICtrlSetState($cmbTHmatchBase, $GUI_ENABLE)
 		GUICtrlSetState($cmbAttackTHType, $GUI_ENABLE)
 		GUICtrlSetState($cmbAttackbottomType, $GUI_ENABLE)
 		GUICtrlSetState($chkUseClastleTH, $GUI_ENABLE)
@@ -119,6 +120,7 @@ Func chkSnipeMode()
 	Else
 		$OptTrophyMode = 0
 		GUICtrlSetState($txtTHaddtiles, $GUI_DISABLE)
+		GUICtrlSetState($cmbTHmatchBase, $GUI_DISABLE)
 		GUICtrlSetState($cmbAttackTHType, $GUI_DISABLE)
 		GUICtrlSetState($cmbAttackbottomType, $GUI_DISABLE)
 		GUICtrlSetState($chkUseClastleTH, $GUI_DISABLE)

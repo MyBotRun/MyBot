@@ -279,6 +279,7 @@ Global $THImagesStat0,$THImagesStat1,$THImagesStat2,$THImagesStat3,$THImagesStat
 Global $SearchCount = 0 ;Number of searches
 
 Global $THaddtiles, $THside, $THi
+Global $icmbTHmatchBase
 Global $SearchTHLResult = 0
 Global $BullySearchCount = 0
 Global $OptBullyMode = 0

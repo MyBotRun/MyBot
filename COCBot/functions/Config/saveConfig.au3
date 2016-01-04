@@ -442,6 +442,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	EndIf
 
 	IniWrite($config, "advanced", "THaddTiles", GUICtrlRead($txtTHaddtiles))
+	IniWrite($config, "advanced", "THmatchBase", _GUICtrlComboBox_GetCurSel($cmbTHmatchBase))
 	IniWrite($config, "advanced", "AttackTHType", _GUICtrlComboBox_GetCurSel($cmbAttackTHType))
 	$txtAttackTHType = GUICtrlRead($cmbAttackTHType)
 	IniWrite($config, "advanced", "AttackBottomTHType", _GUICtrlComboBox_GetCurSel($cmbAttackbottomType))

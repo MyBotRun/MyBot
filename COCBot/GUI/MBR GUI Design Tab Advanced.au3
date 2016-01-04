@@ -92,7 +92,14 @@
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$y+= 50
+		$y+= 25
+		$lblTHmatchBase = GUICtrlCreateLabel(GetTranslated(4,30, "Attack TH Type") & ":", $x - 15 , $y + 5 , 90, -1, $SS_RIGHT)
+		$cmbTHmatchBase = GUICtrlCreateCombo("",  $x + 80, $y, 120, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			GUICtrlSetData(-1, "-|" & GetTranslated(4,74, "DeadBase Atk.") & "|" & GetTranslated(4,74, "LiveBase Atk."), "-")
+			$txtTip = GetTranslated(4,44, "Select your strategy to deploy troops when the TH is detected on the Bottom of the screen!") & @CRLF & GetTranslated(4,45, "Zoomed in • Zoom in first, then Attack from bottom.") & @CRLF & GetTranslated(4,46, "On Sides • Try to get the TH from the left and right without zooming in, your troops may pick another target!")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$y+= 25
 ;~ 		$lblAttackTHType = GUICtrlCreateLabel(GetTranslated(4,30, "Attack TH Type") & ":", $x - 8 , $y + 5 , -1, 17, $SS_RIGHT)
 ;~ 		$cmbAttackTHType = GUICtrlCreateCombo("",  $x + 80, $y, 120, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 ;~ 			GUICtrlSetData(-1, GetTranslated(4,31, "Attack: SmartBarch") & "|" & GetTranslated(4,32, "Attack: Bam") & "|" & GetTranslated(4,33, "Attack: eXtreme") & "|" & GetTranslated(4,34, "Attack: GBarch") & "|" & GetTranslated(4,35, "Attack: Custom"), GetTranslated(4,34, -1))
