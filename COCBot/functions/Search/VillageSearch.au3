@@ -213,7 +213,16 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 		If _Sleep($iDelayRespond) Then Return
 		If $OptTrophyMode = 1 Then ;Enables Triple Mode Settings ;---compare resources
-			If SearchTownHallLoc() Then ; attack this base anyway because outside TH found to snipe
+			$currTHmatchBase = True
+			If icmbDeployBtmTHType = 1 Then
+				SetLog("Using DeadBase for THsnipe")
+				$currTHmatchBase = $match[$DB]
+			EndIf
+			If icmbDeployBtmTHType = 2 Then
+				SetLog("Using LiveBase for THsnipe")
+				$currTHmatchBase = $match[$LB]
+			EndIf
+			If SearchTownHallLoc() And $currTHmatchBase Then ; attack this base anyway because outside TH found to snipe
 				SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
 				SetLog("      " & "TH Outside Found! ", $COLOR_GREEN, "Lucida Console", 7.5)
 				$logwrited = True
