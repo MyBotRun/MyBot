@@ -214,11 +214,11 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		If _Sleep($iDelayRespond) Then Return
 		If $OptTrophyMode = 1 Then ;Enables Triple Mode Settings ;---compare resources
 			$currTHmatchBase = True
-			If icmbDeployBtmTHType = 1 Then
+			If icmbTHmatchBase = 1 Then
 				SetLog("Using DeadBase for THsnipe")
 				$currTHmatchBase = $match[$DB]
 			EndIf
-			If icmbDeployBtmTHType = 2 Then
+			If icmbTHmatchBase = 2 Then
 				SetLog("Using LiveBase for THsnipe")
 				$currTHmatchBase = $match[$LB]
 			EndIf
