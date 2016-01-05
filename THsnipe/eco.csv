@@ -1,0 +1,6 @@
+TROOP |S1|S2|Q1|Q2|DEL1 |DEL2 |LOG_TEXT                   |NOTES
+Text  |  |  |  |  |     |     |--Attack customized--      |
+Barb  | 2| 2| 1| 1| 1500| 2000|                           |deploys barbs
+Arch  | 2| 2| 1| 1|  800| 1000|                           |deploys archers
+Gobl  | 2| 2| 1| 1|  800| 1000|                           |deploys goblins
+WAIT  |  |  |  |  |     |20000|                           |
