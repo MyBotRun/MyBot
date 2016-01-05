@@ -26,14 +26,11 @@ Func ReArm()
 		SaveConfig()
 		If _Sleep($iDelayReArm1) Then Return
 	EndIf
-	SetLog("PP ReArm 1", $COLOR_BLUE)
 
 	ClickP($aAway, 1, 0, "#0224") ; Click away
 	If _Sleep($iDelayReArm2) Then Return
-	SetLog("PP ReArm 2", $COLOR_BLUE)
 	If IsMainPage() Then Click($TownHallPos[0], $TownHallPos[1] + 5 + 60, 1, 0, "#0225")
 	If _Sleep($iDelayReArm3) Then Return
-	SetLog("PP ReArm 3", $COLOR_BLUE)
 
 	;If $debugSetlog = 1 Then DebugImageSave("ReArmView")
 
@@ -41,53 +38,42 @@ Func ReArm()
 	Local $offColors[3][3] = [[0x0F0F0F, 24, 34], [0xF6EF57, 70,5], [0xF4F5F2, 79, 0]] ; 2nd pixel brown wrench, 3rd pixel gold, 4th pixel edge of button
 	Global $RearmPixel = _MultiPixelSearch2(339, $y, 670, $y + 58, 1, 1, Hex(0xF2F4F0, 6), $offColors, 30) ; first gray/white pixel of button
 	If IsArray($RearmPixel) Then
-		SetLog("PP ReArm 4", $COLOR_BLUE)
 		If $debugSetlog = 1 Then
 			Setlog("Traps ButtonPixel = " & $RearmPixel[0] & ", " & $RearmPixel[1], $COLOR_PURPLE) ;Debug
 			Setlog("Color #1: " & _GetPixelColor($RearmPixel[0], $RearmPixel[1], True) & ", #2: " & _GetPixelColor($RearmPixel[0] + 24, $RearmPixel[1] + 34, True) & ", #3: " & _GetPixelColor($RearmPixel[0] + 69, $RearmPixel[1] + 7, True) & ", #4: " & _GetPixelColor($RearmPixel[0] + 77, $RearmPixel[1], True), $COLOR_PURPLE)
 		EndIf
 		Click($RearmPixel[0] + 20, $RearmPixel[1] + 20, 1, 0, "#0326") ; Click RearmButton
 		If _Sleep($iDelayReArm4) Then Return
-		SetLog("PP ReArm 5", $COLOR_BLUE)
 		Click(515, 400, 1, 0, "#0226")
 		If _Sleep($iDelayReArm4) Then Return
-		SetLog("PP ReArm 6", $COLOR_BLUE)
 		If isGemOpen(True) = True Then
-			SetLog("PP ReArm 7", $COLOR_BLUE)
 			Setlog("Not enough loot to rearm traps.....", $COLOR_RED)
 			Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
 			If _Sleep($iDelayReArm5) Then Return
 		Else
-			SetLog("PP ReArm 8", $COLOR_BLUE)
 			SetLog("Rearmed Trap(s)", $COLOR_GREEN)
 			If _Sleep($iDelayReArm5) Then Return
 		EndIf
 	EndIf
 
 	If Number($iTownHallLevel) > 8 Then
-		SetLog("PP ReArm B1", $COLOR_BLUE)
 		;Xbow
 		Local $offColors[3][3] = [[0xD050F0, 50, 17], [0xE955E0, 70, 7], [0xF4F6F2, 79, 0]]; xbow, elixir, edge
 		Local $XbowPixel = _MultiPixelSearch2(430, $y, 670, $y + 38, 1, 1, Hex(0xF3F5F1, 6), $offColors, 30)
 		If IsArray($XbowPixel) Then
-			SetLog("PP ReArm B2", $COLOR_BLUE)
 			Click($XbowPixel[0] + 20, $XbowPixel[1] + 20, 1, 0, "#0228") ; Click RearmButton
 			If $debugSetlog = 1 Then
 				Setlog("x-bow ButtonPixel = " & $XbowPixel[0] & ", " & $XbowPixel[1], $COLOR_PURPLE) ;Debug
 				Setlog("Color #1: " & _GetPixelColor($XbowPixel[0], $XbowPixel[1], True) & ", #2: " & _GetPixelColor($XbowPixel[0] + 19, $XbowPixel[1] + 20, True) & ", #3: " & _GetPixelColor($XbowPixel[0] + 70, $XbowPixel[1] + 7, True) & ", #4: " & _GetPixelColor($XbowPixel[0] + 77, $XbowPixel[1], True), $COLOR_PURPLE)
 			EndIf
 			If _Sleep($iDelayReArm4) Then Return
-			SetLog("PP ReArm B3", $COLOR_BLUE)
 			Click(515, 400, 1, 0, "#0229")
 			If _Sleep($iDelayReArm4) Then Return
-			SetLog("PP ReArm B4", $COLOR_BLUE)
 			If isGemOpen(True) = True Then
-				SetLog("PP ReArm B5", $COLOR_BLUE)
 				Setlog(" Not enough Elixir to rearm x-bow.....", $COLOR_RED)
 				Click(585, 252, 1, 0, "#0230") ; Click close gem window "X"
 				If _Sleep($iDelayReArm5) Then Return
 			Else
-				SetLog("PP ReArm B6", $COLOR_BLUE)
 				SetLog("Reloaded Xbow(s)", $COLOR_GREEN)
 				If _Sleep($iDelayReArm5) Then Return
 			EndIf
