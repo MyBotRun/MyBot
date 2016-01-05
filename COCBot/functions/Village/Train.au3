@@ -17,6 +17,9 @@ Global $LastDarkBarrackTrainDonatedTroop = 1
 
 Func Train()
 
+	ResourceTrain()
+	Return
+
 	Local $anotherTroops
 	Local $tempCounter = 0
 	Local $tempElixir = ""
