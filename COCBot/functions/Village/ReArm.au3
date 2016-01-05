@@ -31,7 +31,7 @@ Func ReArm()
 	ClickP($aAway, 1, 0, "#0224") ; Click away
 	If _Sleep($iDelayReArm2) Then Return
 	SetLog("PP ReArm 2", $COLOR_BLUE)
-	If IsMainPage() Then Click($TownHallPos[0], $TownHallPos[1] + 5, 1, 0, "#0225")
+	If IsMainPage() Then Click($TownHallPos[0], $TownHallPos[1] + 5 + 60, 1, 0, "#0225")
 	If _Sleep($iDelayReArm3) Then Return
 	SetLog("PP ReArm 3", $COLOR_BLUE)
 
