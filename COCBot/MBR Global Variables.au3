@@ -156,6 +156,8 @@ Global $pFuncLib = $LibDir & "\MBRFunctions.dll" ; functions library
 Global $hFuncLib ; handle to functions library
 Global $pIconLib = $LibDir & "\MBRBOT.dll" ; icon library
 Global Const $dirTHSnipesAttacks = @ScriptDir&"\THSnipe"
+Global Const $fileRecruitMessages = @ScriptDir&"\RecruitMessages.txt"
+Global iRecruitCount = 0
 
 ; enumerated Icons 1-based index to IconLib
 Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eIcnKingAbility, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant, _
