@@ -136,7 +136,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 10, $y = 605
 $grpRecruit = GUICtrlCreateGroup(GetTranslated(7,96, "Recruit new members"), $x, $y, 190, 85)
-	$chkRecruit = GUICtrlCreateCheckbox("", $x + 20, $y + 20, -1, -1)
+	$chkRecruit = GUICtrlCreateCheckbox("", $x + 20, $y + 20, 16, 16)
 			$txtTip = GetTranslated(7,97, "Check this to automatically recruit new clan members.")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
