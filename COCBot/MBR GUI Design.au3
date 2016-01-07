@@ -16,7 +16,7 @@
 ;~ ------------------------------------------------------
 ;~ Main GUI
 ;~ ------------------------------------------------------
-$frmBot = GUICreate($sBotTitle, 470, 750)
+$frmBot = GUICreate($sBotTitle, 470, 650)
 	GUISetIcon($pIconLib, $eIcnGUI)
 	TraySetIcon($pIconLib, $eIcnGUI)
 $tabMain = GUICtrlCreateTab(5, 85, 461, 425, $TCS_MULTILINE)
