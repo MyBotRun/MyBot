@@ -16,19 +16,14 @@
 Func CheckTombs()
 
 	Local $TombX, $TombY
-	SetLog("PP CheckTombs", $COLOR_GREEN)
 	If $ichkTombstones <> 1 Then Return False
-	SetLog("PP CheckTombs 1", $COLOR_GREEN)
 	$tomb = @ScriptDir & "\images\tomb.png"
 	If Not FileExists($tomb) Then Return False
-	SetLog("PP CheckTombs 2", $COLOR_GREEN)
 	$TombLoc = 0
 	_CaptureRegion()
 	If _Sleep($iDelayCheckTombs1) Then Return
-	SetLog("PP CheckTombs 3", $COLOR_GREEN)
 	For $TombTol = 0 To 20
 		If $TombLoc = 0 Then
-			SetLog("PP CheckTombs 4", $COLOR_GREEN)
 			$TombX = 0
 			$TombY = 0
 			$TombLoc = _ImageSearch($tomb, 1, $TombX, $TombY, $TombTol) ; Getting Tree Location
