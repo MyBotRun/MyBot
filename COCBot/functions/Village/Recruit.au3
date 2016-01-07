@@ -27,7 +27,7 @@ Func Recruit()
 			;Setlog("line content: " & $line)
 			If $lineCount = 0 Then $firstLine = $line
 			$lineCount += 1
-			If $lineCount = $iRecruitCount Then
+			If $lineCount = $iRecruitCount And Not StringLeft($line, 3) = "#" Then
 				$sRecruitMessage = $line
 				$iRecruitCount += 1
 			EndIf
