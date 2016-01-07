@@ -19,7 +19,7 @@ Func Recruit()
 	If FileExists($fileRecruitMessages) Then
 		$lineCount = 0
 		$selectedLine = ""
-		$f = FileOpen($dirTHSnipesAttacks & "\" &$scmbAttackTHType & ".csv", 0)
+		$f = FileOpen($fileRecruitMessages, 0)
 		; Read in lines of text until the EOF is reached
 		While 1
 			$line = FileReadLine($f)
