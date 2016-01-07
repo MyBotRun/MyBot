@@ -92,6 +92,7 @@ Func GetResources($nolog = False) ;Reads resources
 			$searchTH = checkTownHallADV2()
 
 				;2nd attempt
+; commented by paspiz85 because too slow
 ;			 If $searchTH = "-" Then ; retry with autoit search after $iDelayVillageSearch5 seconds
 ;			   If _Sleep($iDelayGetResources5) Then Return
 ;			   SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
@@ -99,6 +100,7 @@ Func GetResources($nolog = False) ;Reads resources
 ;			 EndIf
 
 			  ;3rd attempt c#
+; commented by paspiz85 because too slow
 ;			  If $searchTH = "-" Then ; retry search, matching could not have been caused by heroes that partially hid the townhall
 ;				If _Sleep($iDelayGetResources4) Then Return
 ;				If $debugImageSave = 1 Then DebugImageSave("GetResources_NoTHFound2try_", False)
