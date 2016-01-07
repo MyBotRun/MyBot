@@ -28,9 +28,6 @@ Func CheckTombs()
 			$TombY = 0
 			$TombLoc = _ImageSearch($tomb, 1, $TombX, $TombY, $TombTol) ; Getting Tree Location
 ;			If $TombLoc = 1 And $TombX > 35 And $TombY < 610 Then
-			SetLog("PP CheckTombs 4" & $TombLoc, $COLOR_GREEN)
-			SetLog("PP CheckTombs 4" & $TombX, $COLOR_GREEN)
-			SetLog("PP CheckTombs 4" & $TombY, $COLOR_GREEN)
 			If $TombLoc = 1 And isInsideDiamondXY($TombX, $TombY) Then
 				SetLog("Found tombstone ,  Removing...", $COLOR_GREEN)
 				If $DebugSetLog = 1 Then SetLog("Tombstone found (" & $TombX & "," & $TombY & ") tolerance:" & $TombTol, $COLOR_PURPLE)
