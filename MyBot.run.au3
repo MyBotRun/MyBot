@@ -202,6 +202,8 @@ Func runBot() ;Bot that runs everything in order
 			BoostWarden()
 			If $Restart = True Then ContinueLoop
 			RequestCC()
+			If $Restart = True Then ContinueLoop
+			Recruit()
 			If _Sleep($iDelayRunBot1) Then Return
 			checkMainScreen(False) ; required here due to many possible exits
 			If $Restart = True Then ContinueLoop
