@@ -337,9 +337,9 @@ SetLog("Composition calculations")
 	$newArmyComp[$iValkyrie] = Floor($darkMeleeCount/$UnitSize[$iValkyrie])
 	SetLog("Valks: " & $newArmyComp[$iValkyrie])
 
-	$darkMeleeCount -= $ValkComp*$UnitSize[$iValkyrie]
-	$meleeCount -= $ValkComp*$UnitSize[$iValkyrie]
-	$troopCount -= $ValkComp*$UnitSize[$iValkyrie]
+	$darkMeleeCount -= $newArmyComp[$iValkyrie]*$UnitSize[$iValkyrie]
+	$meleeCount -= $newArmyComp[$iValkyrie]*$UnitSize[$iValkyrie]
+	$troopCount -= $newArmyComp[$iValkyrie]*$UnitSize[$iValkyrie]
 
 	; check pekkas
 	Local $bigMeleeCount = Round($meleeCount * $weightedElixir)
