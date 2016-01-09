@@ -112,6 +112,7 @@ LoadElixirImage() ; Load Elixir images
 LoadElixirImage75Percent(); Load Elixir images full at 75%
 CheckVersion() ; check latest version on mybot.run site
 
+
 ;AutoStart Bot if request
 AutoStart()
 
@@ -129,6 +130,9 @@ WEnd
 
 Func runBot() ;Bot that runs everything in order
 	$TotalTrainedTroops = 0
+
+;runTest()
+
 	While 1
 		$Restart = False
 		$fullArmy = False
@@ -136,7 +140,6 @@ Func runBot() ;Bot that runs everything in order
 		If _Sleep($iDelayRunBot1) Then Return
 		checkMainScreen()
 		If $Restart = True Then ContinueLoop
-
 		If $Is_ClientSyncError = False and $Is_SearchLimit=false Then
 			If BotCommand() Then btnStop()
 			If _Sleep($iDelayRunBot2) Then Return
@@ -167,6 +170,9 @@ Func runBot() ;Bot that runs everything in order
 			EndIf
 			If _Sleep($iDelayRunBot5) Then Return
 			checkMainScreen(False)
+
+			; Train()
+			
 			If $Restart = True Then ContinueLoop
 			Collect()
 			If _Sleep($iDelayRunBot1) Then Return

@@ -170,3 +170,91 @@ Func ZeroArray(ByRef $array)
 EndFunc
 
 ;ConsoleWrite($iGolem)
+
+Func goHome($maxDelay = 5000)
+	ClickP($aAway, 2, $iDelayTrain5, "#0501"); Click away twice with 250ms delay
+	If WaitforPixel(28, 505, 30, 507, Hex(0xE4A438, 6), 5, $maxDelay/500) Then
+		Return True
+	EndIf
+	Return False
+EndFunc
+
+Func goArmyOverview($maxDelay = 5000)
+	Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#9998") ; Button Army Overview
+	
+	Local $icount = 0
+	While True
+		If IsTrainPage() Then Return True
+		If _Sleep(100) Then Return
+		$icount += 1
+		If $icount = $maxDelay/100 Then ExitLoop
+	WEnd
+	Return False
+EndFunc
+
+Func clearTroops()
+
+	Local $icount = 0
+
+	If _ColorCheck(_GetPixelColor(187, 212, True), Hex(0xD30005, 6), 10) Then ; check if the existe more then 6 slots troops on train bar
+		While Not _ColorCheck(_GetPixelColor(573, 212, True), Hex(0xD80001, 6), 10) ; while until appears the Red icon to delete troops
+			_PostMessage_ClickDrag(550, 240, 170, 240, "left", 1000)
+			$icount += 1
+			If _Sleep($iDelayTrain1) Then Return
+			If $icount = 7 Then ExitLoop
+		WEnd
+	EndIf
+
+	If _Sleep($iDelayTrain1) Then Return
+	
+	_CaptureRegion()
+	; $icount = 0
+	; SetLog("pre here")
+	; While _ColorCheck(_GetPixelColor(599, 202 + $midOffsetY, True), Hex(0xa8d070, 6), 20) ; while green arrow is there, delete
+	; 	SetLog("here")
+	; 	Click(568, 177 + $midOffsetY, 5, 0, "#0502") ; Remove Troops in training
+	; 	$icount += 1
+	; 	If $icount = 100 Then ExitLoop
+	; WEnd
+
+	; $icount = 0
+	; SetLog("Other way")
+	; While Not _ColorCheck(_GetPixelColor(599, 202 + $midOffsetY, True), Hex(0xD0D0C0, 6), 20) ; while not disappears  green arrow
+	; 	SetLog("other here")
+	; 	If Not (IsTrainPage()) Then Return
+	; 	Click(568, 177 + $midOffsetY, 10, 0, "#0273") ; Remove Troops in training
+	; 	$icount += 1
+	; 	If $icount = 100 Then ExitLoop
+	; WEnd
+
+
+	$icount = 0
+	SetLog("Yet another")
+	While Not _ColorCheck(_GetPixelColor(593, 200 + $midOffsetY, True), Hex(0xD0D0C0, 6), 20) ; while not disappears  green arrow
+		SetLog("Yet here")
+		If Not (IsTrainPage()) Then Return ;exit if no train page
+		Click(568, 177 + $midOffsetY, 10, 0, "#0284") ; Remove Troops in training
+		$icount += 1
+		If $icount = 100 Then ExitLoop
+	WEnd
+EndFunc
+
+; this relies on you being on the army overview
+Func goToBarracks($targetBarracks)
+	Local $currentBarracks = -1
+	While $currentBarracks < 6
+		_TrainMoveBtn(+1) ;click Next button
+		If _Sleep($iDelayTrain2) Then Return
+		$currentBarracks += 1
+		If $currentBarracks == $targetBarracks Then Return True
+	WEnd
+	Return False
+EndFunc
+
+; Func runTest()
+; 	SetLog("Lookin for a pixel")
+; 	If _CheckPixel($aIsMain, True) Then
+; 		SetLog("I have a pixel!!!")
+; 		SetLog(_GetPixelColor($aIsMain[0], $aIsMain[1], True))
+; 	EndIf
+; EndFunc

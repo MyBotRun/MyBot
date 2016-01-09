@@ -37,19 +37,9 @@ Func ResourceTrain()
 	EndIf
 
 	SetLog("Training Troops & Spells", $COLOR_BLUE)
-	If _Sleep($iDelayTrain1) Then Return
-	ClickP($aAway, 1, 0, "#0268") ;Click Away to clear open windows in case user interupted
-	If _Sleep($iDelayTrain4) Then Return
 
-	;OPEN ARMY OVERVIEW WITH NEW BUTTON
-	; WaitforPixel($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation, $maxDelay = 10)
-	If WaitforPixel(28, 505 + $bottomOffsetY, 30, 507 + $bottomOffsetY, Hex(0xE4A438, 6), 5, 10) Then
-		If $debugSetlog = 1 Then SetLog("Click $aArmyTrainButton", $COLOR_GREEN)
-		If IsMainPage() Then Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293") ; Button Army Overview
-	EndIf
-
-	If _Sleep($iDelayRunBot6) Then Return ; wait for window to open
-	If Not (IsTrainPage()) Then Return ; exit if I'm not in train page
+	If goHome() == False Then Return
+	If goArmyOverview() == False Then Return			
 
 	checkAttackDisable($iTaBChkIdle) ; Check for Take-A-Break after opening train page
 	
@@ -59,95 +49,125 @@ Func ResourceTrain()
 	;	a. figure out how much time is already in each barracks
 	; 3. Figure out what is left to train for our desired comp.
 	; 4. Assign troops to barracks.
-
-
+	;;;;;
 
 	; 1. Figure out what we've already trained. (This is done above in checkArmyCamp)
 
+SetLog("Currently trained:")
 	ZeroArray($ArmyTrained) ; Zero out the in-training array before we check the camp. checkArmyCamp populates this
 	checkArmyCamp()
-
-SetLog("Done checkArmyCamp")
-
-	; GO TO First NORMAL BARRACK
-	; Find First barrack $i
-	; This actually finds the last barracks
-	Local $Firstbarrack = 0, $i = 1
-	While $Firstbarrack = 0 And $i <= 4
-		If $Trainavailable[$i] = 1 Then $Firstbarrack = $i
-		$i += 1
-	WEnd
-
-	If $Firstbarrack = 0 Then
-		Setlog("No barrack available, cannot start train")
-		Return ;exit from train
-	EndIf
-	If $debugSetlog = 1 Then Setlog("First BARRACK = " & $Firstbarrack, $COLOR_PURPLE)
-
-	Local $j = 0
-	While Not _ColorCheck(_GetPixelColor($btnpos[0][0], $btnpos[0][1], True), Hex(0xE8E8E0, 6), 20)
-		If $debugSetlog = 1 Then Setlog("OverView TabColor=" & _GetPixelColor($btnpos[0][0], $btnpos[0][1], True), $COLOR_PURPLE)
-		If _Sleep($iDelayTrain1) Then Return ; wait for Train Window to be ready.
-		$j += 1
-		If $j > 15 Then ExitLoop
-	WEnd
-	If $j > 15 Then
-		SetLog("Training Overview Window didn't open", $COLOR_RED)
-		Return
-	EndIf
-	If Not (IsTrainPage()) Then Return ;exit if no train page
-
-	Click($btnpos[$Firstbarrack][0], $btnpos[$Firstbarrack][1], 1, $iDelayTrain5, "#0336") ; Select first tab
-	Local $j = 0
-	While Not _ColorCheck(_GetPixelColor($btnpos[$Firstbarrack][0], $btnpos[$Firstbarrack][1], True), Hex(0xE8E8E0, 6), 20)
-		If $debugSetlog = 1 Then Setlog("First Barrack TabColor=" & _GetPixelColor($btnpos[$Firstbarrack][0], $btnpos[$Firstbarrack][1], True), $COLOR_PURPLE)
-		If _Sleep($iDelayTrain1) Then Return
-		$j += 1
-		If $j > 15 Then ExitLoop
-	WEnd
-	If $j > 15 Then
-		SetLog("some error occurred, cannot open barrack", $COLOR_RED)
-	EndIf
-
-
-	If $debugSetlog = 1 Then SetLog("Total ArmyCamp :" & $TotalCamp, $COLOR_PURPLE)
-
-
-
-	$ArmyComposition = getArmyComposition()
-
 
 	; 2. Figure out what we have in training.
 	;	a. figure out how much time is already in each barracks
 
+SetLog("Currently in training:")
 	Local $barracksTrainingTime[$numBarracksAvaiables + $numDarkBarracksAvaiables]
+	Local $barracksTrainingSpace[$numBarracksAvaiables + $numDarkBarracksAvaiables]
 
-	Click($btnpos[$Firstbarrack][0], $btnpos[$Firstbarrack][1], 1, $iDelayTrain5, "#0336") ; Click on tab 
 	Local $barracksNumber = 0
+
+	Local $blockedBarracks[$numBarracksAvaiables+$numDarkBarracksAvaiables]
+	Local $numBlockedBarracks = 0
+
+	If goHome() == False Then Return
+	If goArmyOverview() == False Then Return	
+	goToBarracks(0)
 
 	ZeroArray($ArmyTraining)
 	While isBarrack() Or isDarkBarrack()
-		If Not (IsTrainPage()) Then Return
 		If _Sleep($iDelayTrain2) Then Return
 		If $barracksNumber >= $numBarracksAvaiables + $numDarkBarracksAvaiables Then ExitLoop
+
+		SetLog("Barracks " & $barracksNumber)
 
 		Local $darkBarracks = isDarkBarrack()
 		For $iUnit = 0 to $iArmyEnd-1
 			Local $num = getNumTraining($iUnit, $darkBarracks)
 			$ArmyTraining[$iUnit] += $num
 			$barracksTrainingTime[$barracksNumber] += $num*$UnitTime[$iUnit]
+			$barracksTrainingSpace[$barracksNumber] += $num*$UnitSize[$iUnit]
 
-			; If $ArmyTraining[$iUnit] > 0 Then
-			; 	SetLog("In training " & $ArmyTraining[$iUnit] & " " & $UnitName[$iUnit])
-			; EndIf
+			If $num > 0 Then
+				SetLog("  " & $num & " " & $UnitName[$iUnit])
+			EndIf
 		Next
+
+		; SetLog("Checking barracks " & $barracksNumber)
+		$blockedBarracks[$barracksNumber] = CheckFullBarrack()
+		If $blockedBarracks[$barracksNumber] Then
+			SetLog("Found blocked barracks: " & $barracksNumber)
+			$numBlockedBarracks += 1
+		EndIf
 
 		; SetLog("Barracks " & $barracksNumber & ":" & $barracksTrainingTime[$barracksNumber])
 
 		$barracksNumber += 1
-		; SetLog("Moving to barracks " & $barracksNumber+1 & "/" & numBarracksAvaiables + $numDarkBarracksAvaiables)
+		; SetLog("Moving to barracks " & $barracksNumber+1 & "/" & $numBarracksAvaiables + $numDarkBarracksAvaiables)
 		_TrainMoveBtn(+1) ;click Next button
 	WEnd
+
+SetLog("Check for deadlocks:")
+	; check for deadlock.
+	; A deadlock is when 1 or more barracks is blocked and all other barracks are not training.
+	; this is not a very aggressive check and could waste some time but it'll probably do for now.
+	If $numBlockedBarracks > 0 Then	
+		If $numBlockedBarracks == $numBarracksAvaiables Then ; Hard deadlock.
+			SetLog("Hard deadlock")
+			; Gotta stop training on something. Probably the barracks with the least training.
+			Local $bestBarracks
+			Local $bestBarracksSpace = 9999
+			SetLog("Finding best barracks to clean out")
+			For $barracksNumber = 0 To $numBarracksAvaiables-1
+				Local $blockedTrainingSpace = 0
+				; SetLog("Find blocked space in barracks " & $barracksNumber)
+				$blockedTrainingSpace += $barracksTrainingSpace[$barracksNumber]
+				; SetLog("Checking if this is the best one")
+				If $blockedTrainingSpace < $bestBarracksSpace Then
+					$bestBarracks = $barracksNumber
+					$bestBarracksSpace = $blockedTrainingSpace
+				EndIf
+			Next
+			; Stop training all troops in $bestBarracks
+
+			If goHome() == False Then Return
+			If goArmyOverview() == False Then Return			
+			goToBarracks($bestBarracks)
+			clearTroops()
+
+			; Set capacity to what we need for a full army.
+			SetLog("Train " & $TotalCamp - $CurCamp & " Archers")
+			If _Sleep($iDelayTrain1) Then Return
+			TrainIt($eArch, $TotalCamp - $CurCamp)
+		Else ; Possible deadlock
+			SetLog("Possible deadlock")
+			Local $unblockedTrainingSpace = 0
+			For $barracksNumber = 0 To $numBarracksAvaiables-1
+				If $blockedBarracks[$barracksNumber] == False Then ; check for troops training in unblocked barracks
+					; If there are we could leave it alone or we could check all of the barracks to
+					; see if we'll get an attackable army...
+
+					; ; Count up the space we have training in unblocked barracks
+					; For $iUnit = 0 To $iArmyEnd-1
+					; 	$unblockedTrainingSpace += $barracksTrainingSpace[$barracksNumber]
+					; Next
+					; Find out if there's a gap between what's training and a complete army
+					; If there is... fill it (by making a limited size army comp and training). 
+					; If there isn't ignore it.
+
+					SetLog("Train " & $TotalCamp - $CurCamp & " Archers")
+
+					If goHome() == False Then Return
+					If goArmyOverview() == False Then Return			
+					goToBarracks($barracksNumber)
+
+					TrainIt($eArch, $TotalCamp - $CurCamp)
+					If _Sleep($iDelayTrain1) Then Return
+					ExitLoop
+				EndIf	
+			Next
+		EndIf
+	EndIf
+
 
 	If _Sleep($iDelayTrain2) Then Return
 
@@ -157,20 +177,48 @@ SetLog("Done checkArmyCamp")
 	; Build what I was going to. It will build too much. Troop capacity will reach 200 with some leftover troops. Next pass through they'll either (likely since they'll probably be archers barbs or goblins) be absorbed into the proper composition or treated as "extras" but they're not "bad" since they're the tail end of a proper build.
 	; I'll do this in the above loop.
 
-	; remove already trained troops and troops in training
-	Local $ArmyToTrain = $ArmyComposition
-
+SetLog("Get army composition:")
+	; figure already trained troops and add the ones in training
+	Local $currentArmy = $ArmyTrained
 	For $i = 0 To $iArmyEnd-1
-		$ArmyToTrain[$i] -= $ArmyTraining[$i]
-		$ArmyToTrain[$i] -= $ArmyTrained[$i]
-		If $ArmyToTrain[$i] < 0 Then
-			SetLog("Found " & -$ArmyToTrain[$i] & " extra " & $UnitName[$i] &"(s)")
-		EndIf
-		If $ArmyToTrain[$i] > 0 Then
-			SetLog("+" & $ArmyToTrain[$i] & " " & $UnitName[$i])
-		EndIf
+		$currentArmy[$i] += $ArmyTraining[$i]
 	Next
 
+	$ArmyToTrain = getArmyComposition($currentArmy)
+
+	SetLog("Army to train: " & getArmySize($ArmyToTrain))
+	dumpUnitArray($ArmyToTrain)
+
+	$ArmyComposition = $ArmyToTrain
+	For $i = 0 To $iArmyEnd-1
+		$ArmyComposition[$i] += $currentArmy[$i]
+	Next
+
+	SetLog("Final army: " & getArmySize($ArmyComposition))
+	dumpUnitArray($ArmyComposition)
+
+SetLog("Figure troops to train:")
+	; remove already trained troops and troops in training
+	; Local $ArmyToTrain = $ArmyComposition
+
+	; For $i = 0 To $iArmyEnd-1
+	; 	$ArmyToTrain[$i] -= $ArmyTraining[$i]
+	; 	$ArmyToTrain[$i] -= $ArmyTrained[$i]
+	; 	If $ArmyToTrain[$i] < 0 Then
+	; 		SetLog("Found " & -$ArmyToTrain[$i] & " extra " & $UnitName[$i] &"(s)")
+	; 	EndIf
+	; Next
+
+
+
+
+
+	; If $ArmyToTrain[$i] > 0 Then
+	; 	SetLog("+" & $ArmyToTrain[$i] & " " & $UnitName[$i])
+	; EndIf
+
+
+SetLog("Assign to barracks:")
 	; 4. Assign troops to barracks.
 
 	; How about I find the barracks with the lowest train time and put the highest train time unit into it. Repeat until I'm out of units.
@@ -187,9 +235,13 @@ SetLog("Done checkArmyCamp")
 
 	If $fullarmy = True Then SetLog("Build troops before attacking.")
 
+SetLog("Train troops:")
+	If goHome() == False Then Return
+	If goArmyOverview() == False Then Return	
+	goToBarracks(0)
+
 	$barracksNumber = 0
-	Click($btnpos[$Firstbarrack][0], $btnpos[$Firstbarrack][1], 1, $iDelayTrain5, "#0336") ; Click on tab 
-	If _Sleep($iDelayTrain3) Then Return
+	If _Sleep($iDelayTrain2) Then Return
 	While isBarrack() Or isDarkBarrack()
 		If $debugSetlog = 1 Then SetLog("====== Checking available Barrack: " & $barracksNumber & " ======", $COLOR_PURPLE)
 
@@ -201,8 +253,8 @@ SetLog("Done checkArmyCamp")
 			If $barracksTraining[$barracksNumber][$iUnit] > 0 Then
 				SetLog("  " & $UnitName[$iUnit] & ": " & $barracksTraining[$barracksNumber][$iUnit])
 				TrainIt(Eval("e" & $UnitShortName[$iUnit]), $barracksTraining[$barracksNumber][$iUnit])
+				If _Sleep($iDelayTrain1) Then ExitLoop
 			EndIf
-			If _Sleep($iDelayTrain1) Then ExitLoop
 		Next
 
 		$barracksNumber += 1
@@ -211,6 +263,7 @@ SetLog("Done checkArmyCamp")
 		If _Sleep($iDelayTrain2) Then Return
 	WEnd
 
+SetLog("End train")
 
 	If _Sleep($iDelayTrain4) Then Return
 	BrewSpells() ; Create Spells
@@ -248,7 +301,8 @@ SetLog("Done checkArmyCamp")
 EndFunc
 
 ; this will figure out my target army based on 
-Func getArmyComposition($capacity = $TotalCamp)
+Func getArmyComposition($currentArmy)
+	Local $capacity = $TotalCamp
 	; Resource based troop comp
 	; Ok the code in here is pretty hacky and fragile.
 	; The [troop]Comp variables hold how many of the thing we want
@@ -256,15 +310,15 @@ Func getArmyComposition($capacity = $TotalCamp)
 	; set up some variables to use for testing
 
 
+	SetLog("Current army: "&getArmySize($currentArmy))
+	dumpUnitArray($currentArmy)
+
 	; army composition calculations
 
-	; tanks: Golem, Giant
-	; melee: Pekka, Valk, Barbs
-	; ranged: Wizard, Archer
-	; resource: Goblin
-
-
-SetLog("Composition calculations")
+	Local $TankUnits[2] = [$iGolem, $iGiant]
+	Local $MeleeUnits[3] = [$iPekka, $iValkyrie, $iBarbarian]
+	Local $RangedUnits[2] = [$iWizard, $iArcher]
+	Local $ResourceUnits[1] = [$iGoblin]
 
 	Local $newArmyComp[$iArmyEnd]
 	ZeroArray($newArmyComp)
@@ -272,15 +326,15 @@ SetLog("Composition calculations")
 	; resource calculations
 
 	Local $totalElixir = 6000000
-	Local $reserveElixir = 4000000
+	Local $reserveElixir = 2000000
 	Local $weightedElixir = (Number($iElixirCurrent) - $reserveElixir) / ($totalElixir - $reserveElixir)
 	Local $totalDarkElixir = 80000
 	Local $reserveDarkElixir = 40000
 	Local $weightedDarkElixir = (Number($iDarkCurrent) - $reserveDarkElixir) / ($totalDarkElixir - $reserveDarkElixir)
 	$weightedDarkElixir = $weightedDarkElixir / 3 ; This is an estimate of relative dark elixir value
 
-	SetLog("Weighted Elixir = " & $weightedElixir)
-	SetLog("Weighted Dark Elixir = " & $weightedDarkElixir)
+	SetLog("  Weighted Elixir = " & $weightedElixir)
+	SetLog("  Weighted Dark Elixir = " & $weightedDarkElixir)
 
 	Local $elixirRatio = $weightedElixir / ($weightedElixir + $weightedDarkElixir)
 	Local $darkElixirRatio = 1 - $elixirRatio
@@ -293,12 +347,34 @@ SetLog("Composition calculations")
 	Local $rangedPerc = .4
 	Local $resourcePerc = .1
 
-	Local $tankCount = Round($tankPerc * $capacity)
+	; Desired number of troops of each type for the army
+	Local $troopCount = $capacity
+	Local $tankCount = Round($tankPerc * $capacity) 	
 	Local $meleeCount = Round($meleePerc * $capacity)
 	Local $rangedCount = Round($rangedPerc * $capacity)
 	Local $resourceCount = Round($resourcePerc * $capacity)
 
-	Local $troopCount = $capacity
+	; reduce these by the number of each we already have in our army
+
+	For $iUnit = 0 To $iArmyEnd-1
+		If $currentArmy[$iUnit] > 0 Then
+			If _ArraySearch($TankUnits, $iUnit) <> -1 Then
+				$tankCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]				
+			ElseIf _ArraySearch($MeleeUnits, $iUnit) <> -1 Then
+				$meleeCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($RangedUnits, $iUnit) <> -1 Then
+				$rangedCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($ResourceUnits, $iUnit) <> -1 Then
+				$resourceCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]
+			EndIf
+			$troopCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]
+		EndIf
+	Next
+
+	If $tankCount < 0 Then $tankCount = 0
+	If $meleeCount < 0 Then $meleeCount = 0
+	If $rangedCount < 0 Then $rangedCount = 0
+	If $resourceCount < 0 Then $resourceCount = 0
 
 	Local $darkTankCount = Round($tankCount * $darkElixirRatio)	
 	Local $darkMeleeCount = Round($meleeCount * $darkElixirRatio)
@@ -314,28 +390,27 @@ SetLog("Composition calculations")
 
 	; Tank	
 	
+	SetLog("Type counts: [T]: " & $tankCount & " [M]: " & $meleeCount & " [R]: " & $rangedCount & " [r]:" & $resourceCount)
+
 	$newArmyComp[$iGolem] = Floor($darkTankCount/$UnitSize[$iGolem])
-	SetLog("Golems: " & $newArmyComp[$iGolem])
 
 	$darkTankCount -= $newArmyComp[$iGolem]*$UnitSize[$iGolem]
 	$tankCount -= $newArmyComp[$iGolem]*$UnitSize[$iGolem]
 	$troopCount -= $newArmyComp[$iGolem]*$UnitSize[$iGolem]
 
 	$newArmyComp[$iGiant] = Floor($tankCount/$UnitSize[$iGiant])
-	SetLog("Giants: " & $newArmyComp[$iGiant])
 
 	$tankCount -= $newArmyComp[$iGiant]*$UnitSize[$iGiant]
 	$troopCount -= $newArmyComp[$iGiant]*$UnitSize[$iGiant]
 
 	; Melee
 	; Apply left over slots to melee counts
-	SetLog("Leftover tank slots: T:" & $tankCount & " DE:" & $darkMeleeCount)
+	SetLog("    Leftover tank slots: T:" & $tankCount & " DE:" & $darkMeleeCount)
 	$darkMeleeCount += $darkTankCount
 	$meleeCount += $tankCount
 
 	; check valks	
 	$newArmyComp[$iValkyrie] = Floor($darkMeleeCount/$UnitSize[$iValkyrie])
-	SetLog("Valks: " & $newArmyComp[$iValkyrie])
 
 	$darkMeleeCount -= $newArmyComp[$iValkyrie]*$UnitSize[$iValkyrie]
 	$meleeCount -= $newArmyComp[$iValkyrie]*$UnitSize[$iValkyrie]
@@ -344,13 +419,11 @@ SetLog("Composition calculations")
 	; check pekkas
 	Local $bigMeleeCount = Round($meleeCount * $weightedElixir)
 	$newArmyComp[$iPekka] = Floor($bigMeleeCount/$UnitSize[$iPekka])
-	SetLog("Pekkas: " & $newArmyComp[$iPekka])
 
 	$meleeCount -= $newArmyComp[$iPekka]*$UnitSize[$iPekka]
 	$troopCount -= $newArmyComp[$iPekka]*$UnitSize[$iPekka]
 
 	$newArmyComp[$iBarbarian] = $meleeCount
-	SetLog("Barbs: " & $newArmyComp[$iBarbarian])
 
 	$troopCount -= $newArmyComp[$iBarbarian]
 
@@ -359,19 +432,17 @@ SetLog("Composition calculations")
 	
 	; check Wizards
 	$newArmyComp[$iWizard] = Floor($bigRangedCount/$UnitSize[$iWizard])
-	SetLog("Wizards: " & $newArmyComp[$iWizard])
 
 	$rangedCount -= $newArmyComp[$iWizard]*$UnitSize[$iWizard]
 	$troopCount -= $newArmyComp[$iWizard]*$UnitSize[$iWizard]
 
 	$newArmyComp[$iArcher] = $rangedCount ; remainder goes to archers
-	SetLog("Archers: " & $newArmyComp[$iArcher])
+	SetLog("  Archers: " & $newArmyComp[$iArcher])
 
 	$troopCount -= $newArmyComp[$iArcher]
 
 	; Gobbos ; I've done everything else so the rest goes into goblins.
 	$newArmyComp[$iGoblin] = $troopCount
-	SetLog("Gobbos: " & $newArmyComp[$iGoblin])
 
 	Return $newArmyComp
 EndFunc
@@ -409,11 +480,12 @@ Func getNumTraining($iUnit, $darkBarracks = False)
 	EndIf
 
 	Local $num = Number(getBarracksTroopQuantity(175 + 107 * $positionTroop, $heightTroop))			
-	
+
 	; There's a bug in the bot code resulting in reporting 222 healers being trained if the camp is full.
 	; Since the max capacity of a barracks is 75 we'll consider any reports higher than that as a misread.
 	; If they add support for larger barracks at some point this will have to be readdressed.
 	If $num > 75 Then
+		SetLog("Error reading " & $UnitName[$iUnit])
 		$num = 0
 	EndIf
 
@@ -426,7 +498,6 @@ Func getShortestBarracks($iUnit, $barracksTrainingTime)
 	If $UnitIsDark[$iUnit] Then
 		$bTime = _ArrayExtract($barracksTrainingTime, $numBarracksAvaiables, UBound($barracksTrainingTime)-1)
 		$offset = $numBarracksAvaiables 
-		SetLog("Offset " & $offset)
 	Else
 		$bTime = _ArrayExtract($barracksTrainingTime, 0, $numBarracksAvaiables-1)
 	EndIf
@@ -436,6 +507,16 @@ EndFunc
 
 Func dumpUnitArray($unitArray)
 	For $iUnit = 0 To $iArmyEnd-1
-		SetLog($UnitName[$iUnit] & " : " & $unitArray[$iUnit])
+		If $unitArray[$iUnit] > 0 Then
+			SetLog($UnitName[$iUnit] & " : " & $unitArray[$iUnit])
+		EndIf
 	Next
+EndFunc
+
+Func getArmySize($army)
+	Local $size = 0
+	For $iUnit = 0 To $iArmyEnd-1
+		$size += $army[$iUnit]*$UnitSize[$iUnit]
+	Next
+	Return $size
 EndFunc
