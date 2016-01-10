@@ -1,4 +1,5 @@
-#include "Array.au3"
+#include <Array.au3>
+#include <String.au3>
 ; I know a lot of this info is already defined in the bot but I like my format better :)
 
 Global Enum _
@@ -208,25 +209,6 @@ Func clearTroops()
 	If _Sleep($iDelayTrain1) Then Return
 	
 	_CaptureRegion()
-	; $icount = 0
-	; SetLog("pre here")
-	; While _ColorCheck(_GetPixelColor(599, 202 + $midOffsetY, True), Hex(0xa8d070, 6), 20) ; while green arrow is there, delete
-	; 	SetLog("here")
-	; 	Click(568, 177 + $midOffsetY, 5, 0, "#0502") ; Remove Troops in training
-	; 	$icount += 1
-	; 	If $icount = 100 Then ExitLoop
-	; WEnd
-
-	; $icount = 0
-	; SetLog("Other way")
-	; While Not _ColorCheck(_GetPixelColor(599, 202 + $midOffsetY, True), Hex(0xD0D0C0, 6), 20) ; while not disappears  green arrow
-	; 	SetLog("other here")
-	; 	If Not (IsTrainPage()) Then Return
-	; 	Click(568, 177 + $midOffsetY, 10, 0, "#0273") ; Remove Troops in training
-	; 	$icount += 1
-	; 	If $icount = 100 Then ExitLoop
-	; WEnd
-
 
 	$icount = 0
 	SetLog("Yet another")
