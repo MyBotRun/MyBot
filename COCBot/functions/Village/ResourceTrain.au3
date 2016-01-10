@@ -366,6 +366,8 @@ Func getArmyComposition($currentArmy)
 	Local $darkTankCount = Round($tankCount * $darkElixirRatio)	
 	Local $darkMeleeCount = Round($meleeCount * $darkElixirRatio)
 
+	SetLog("Type counts: [T]: " & $tankCount & " [M]: " & $meleeCount & " [R]: " & $rangedCount & " [r]:" & $resourceCount)
+
 	; I don't have a good solution for how to pick which troops but given that it's a closed set a semi-hard coded solution will do to start
 	; 1. Figure dark elixir troops
 	;	a. apply dark elixir ratio to each category with a dark elixir option to figure the dark elixir availability for the slot
@@ -377,7 +379,6 @@ Func getArmyComposition($currentArmy)
 
 	; Tank	
 	
-	SetLog("Type counts: [T]: " & $tankCount & " [M]: " & $meleeCount & " [R]: " & $rangedCount & " [r]:" & $resourceCount)
 
 	$newArmyComp[$iGolem] = Floor($darkTankCount/$UnitSize[$iGolem])
 
@@ -391,10 +392,7 @@ Func getArmyComposition($currentArmy)
 	$troopCount -= $newArmyComp[$iGiant]*$UnitSize[$iGiant]
 
 	; Melee
-	; Apply left over slots to melee counts
 	SetLog("    Leftover tank slots: T:" & $tankCount & " DE:" & $darkMeleeCount)
-	$darkMeleeCount += $darkTankCount
-	$meleeCount += $tankCount
 
 	; check valks	
 	$newArmyComp[$iValkyrie] = Floor($darkMeleeCount/$UnitSize[$iValkyrie])
