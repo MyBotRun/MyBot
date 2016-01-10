@@ -44,6 +44,13 @@ Func ResourceTrain()
 	checkAttackDisable($iTaBChkIdle) ; Check for Take-A-Break after opening train page
 	
 	; Determine training
+	; Note there WILL be errors in this caused by the detection not the algorithm.
+	; Since it checks what's trained then what's training and it takes time to check training
+	; Things could finish between these steps leaving GAPS. These can get pretty big if when it
+	; checks for trained troops there's nothing and before it checks for training a pekka finishes
+	; now I have a ghost pekka and my algorithm will try to fill the gap. It should recover every
+	; pass but just because the counts are a little off doesn't mean there's a bug.
+	; This of course makes finding real bugs trickier.
 	; 1. Figure out what we've already trained. (This is done above in checkArmyCamp)
 	; 2. Figure out what we have in training.
 	;	a. figure out how much time is already in each barracks
@@ -64,6 +71,8 @@ SetLog("Currently in training:")
 	Local $barracksTrainingTime[$numBarracksAvaiables + $numDarkBarracksAvaiables]
 	Local $barracksTrainingSpace[$numBarracksAvaiables + $numDarkBarracksAvaiables]
 
+	Local $barracksTrainingUnits[$numBarracksAvaiables + $numDarkBarracksAvaiables][$iArmyEnd]
+
 	Local $barracksNumber = 0
 
 	Local $blockedBarracks[$numBarracksAvaiables+$numDarkBarracksAvaiables]
@@ -77,18 +86,13 @@ SetLog("Currently in training:")
 	While isBarrack() Or isDarkBarrack()
 		If $barracksNumber >= $numBarracksAvaiables + $numDarkBarracksAvaiables Then ExitLoop
 
-		SetLog("Barracks " & $barracksNumber)
-
 		Local $darkBarracks = isDarkBarrack()
 		For $iUnit = 0 to $iArmyEnd-1
 			Local $num = getNumTraining($iUnit, $darkBarracks)
 			$ArmyTraining[$iUnit] += $num
 			$barracksTrainingTime[$barracksNumber] += $num*$UnitTime[$iUnit]
 			$barracksTrainingSpace[$barracksNumber] += $num*$UnitSize[$iUnit]
-
-			If $num > 0 Then
-				SetLog("  " & $num & " " & $UnitName[$iUnit])
-			EndIf
+			$barracksTrainingUnits[$barracksNumber][$iUnit] += $num
 		Next
 
 		; SetLog("Checking barracks " & $barracksNumber)
@@ -105,6 +109,8 @@ SetLog("Currently in training:")
 		_TrainMoveBtn(+1) ;click Next button
 		If _Sleep($iDelayTrain2) Then Return
 	WEnd
+
+	barracksReport($barracksTrainingUnits)
 
 SetLog("Check for deadlocks:")
 	; check for deadlock.
@@ -182,10 +188,12 @@ SetLog("Check for deadlocks:")
 
 SetLog("Get army composition:")
 	; figure already trained troops and add the ones in training
-	Local $currentArmy = $ArmyTrained
-	For $i = 0 To $iArmyEnd-1
-		$currentArmy[$i] += $ArmyTraining[$i]
-	Next
+	Local $currentArmy = $ArmyTraining
+	If $fullarmy <> True Then
+		For $i = 0 To $iArmyEnd-1
+			$currentArmy[$i] += $ArmyTrained[$i]
+		Next
+	EndIf
 
 	$ArmyToTrain = getArmyComposition($currentArmy)
 
@@ -220,7 +228,10 @@ SetLog("Assign to barracks:")
 	If $fullarmy = True Then SetLog("Build troops before attacking.")
 
 SetLog("Train troops:")
+
 	If $needTraining == True Then
+		barracksReport($barracksTraining)
+
 		If goHome() == False Then Return
 		If goArmyOverview() == False Then Return	
 		goToBarracks(0)
@@ -232,10 +243,8 @@ SetLog("Train troops:")
 			If Not (IsTrainPage()) Then Return
 			If $barracksNumber >= $numBarracksAvaiables + $numDarkBarracksAvaiables Then ExitLoop
 
-			SetLog("Barracks " & $barracksNumber)
 			For $iUnit In $UnitTrainOrder
 				If $barracksTraining[$barracksNumber][$iUnit] > 0 Then
-					SetLog("  " & $UnitName[$iUnit] & ": " & $barracksTraining[$barracksNumber][$iUnit])
 					TrainIt(Eval("e" & $UnitShortName[$iUnit]), $barracksTraining[$barracksNumber][$iUnit])
 					If _Sleep($iDelayTrain1) Then ExitLoop
 				EndIf
@@ -289,13 +298,11 @@ EndFunc
 Func getArmyComposition($currentArmy)
 	Local $capacity = $TotalCamp
 	; Resource based troop comp
-	; Ok the code in here is pretty hacky and fragile.
-	; The [troop]Comp variables hold how many of the thing we want
 
 	; set up some variables to use for testing
 
 
-	SetLog("Current army: "&getArmySize($currentArmy))
+	SetLog("Current army: " & getArmySize($currentArmy))
 	dumpUnitArray($currentArmy)
 
 	; army composition calculations
@@ -305,8 +312,31 @@ Func getArmyComposition($currentArmy)
 	Local $RangedUnits[2] = [$iWizard, $iArcher]
 	Local $ResourceUnits[1] = [$iGoblin]
 
-	Local $newArmyComp[$iArmyEnd]
-	ZeroArray($newArmyComp)
+	; dark vs elixir units are in globals but for syntax similarity I'll reproduce here.
+	; high value elixir units
+	local $deUnits[2] = [$iGolem, $iValkyrie]
+	Local $hvUnits[2] = [$iPekka, $iWizard]
+
+	; by resource type then by size
+	Local $unitEvalOrder[$iArmyEnd] = [ _
+		$iLavaHound, _
+		$iGolem, _
+		$iWitch, _
+		$iValkyrie, _
+		$iHogRider, _
+		$iMinion, _
+		$iPekka, _
+		$iDragon, _
+		$iHealer, _
+		$iGiant, _
+		$iBalloon, _
+		$iWizard, _
+		$iWallBreaker, _
+		$iArcher, _
+		$iBarbarian, _
+		$iGoblin _
+	]
+
 
 	; resource calculations
 
@@ -326,6 +356,14 @@ Func getArmyComposition($currentArmy)
 
 	SetLog("Elixir ratio = " & $elixirRatio)
 
+	; I need some buckets.
+	; The big bucket is the army size. Everything needs to fit in the army size.
+	; The second level is the troop types. The breakdown of how many tanks to how many ranged (etc) I'm going for.
+	; The third level is the resource breakdown. How many expensive troops vs cheap or dark elixir troops.
+	; 	This is where I don't have great answers. I'm using "expensive" vs "cheap" troops because that fits the buckets I've chosen for the troops that exist today. We'll proceed with this even though it's not a good generalized solution.
+
+	; For a good distribution I want to honor resource ratios within types for the first pass then ignore them for the second pass. This means I need to track both the internal resource breakdown for a type as well as the overall breakdown.
+	; actually I don't think I need to track internal resource buckets (just the initial calculation) since there's not more than one troop type for any sub bucket. I can merely assign the right number of units and then forget about it.
 
 	Local $tankPerc = .3
 	Local $meleePerc = .2
@@ -335,12 +373,24 @@ Func getArmyComposition($currentArmy)
 	; Desired number of troops of each type for the army
 	Local $troopCount = $capacity
 	SetLog("Capacity: " & $troopCount)
+
 	Local $tankCount = Round($tankPerc * $capacity) 	
 	Local $meleeCount = Round($meleePerc * $capacity)
 	Local $rangedCount = Round($rangedPerc * $capacity)
 	Local $resourceCount = Round($resourcePerc * $capacity)
 
+	Local $hvCount = Round($capacity*$weightedElixir)
+	Local $deCount = Round($capacity*$darkElixirRatio)
+
+	SetLog("Base counts: [T]: " & $tankCount & " [M]: " & $meleeCount & " [R]: " & $rangedCount & " [r]:" & $resourceCount)
+
 	; reduce these by the number of each we already have in our army
+	; we'll also track the total troopCount we need. These numbers won't line up as there
+	; could be stuff in our current army not in any of these buckets.
+	; I think this is ok. We know we have extra troops (one assumes for donation). If we attack before we get rid of them.
+	; we'll use them and the extras will just be in our next army.
+	; We just care if at the end there's leftover capacity we need to fill. We won't fill negative capacity
+	; and we don't use the $troopCount for building before then, just the bucket counts.
 
 	For $iUnit = 0 To $iArmyEnd-1
 		If $currentArmy[$iUnit] > 0 Then
@@ -353,81 +403,137 @@ Func getArmyComposition($currentArmy)
 			ElseIf _ArraySearch($ResourceUnits, $iUnit) <> -1 Then
 				$resourceCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]
 			EndIf
+			If _ArraySearch($deUnits, $iUnit) <> -1 Then
+				$deCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($hvUnits, $iUnit) <> -1 Then
+				$hvCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]
+			EndIf
 			$troopCount -= $currentArmy[$iUnit]*$UnitSize[$iUnit]
 		EndIf
 	Next
 
-	If $tankCount < 0 Then $tankCount = 0
-	If $meleeCount < 0 Then $meleeCount = 0
-	If $rangedCount < 0 Then $rangedCount = 0
-	If $resourceCount < 0 Then $resourceCount = 0
-	If $troopCount < 0 Then $troopcount = 0
+	; at this point $tankCount + $meleeCount + $rangeCount + $resourceCount should equal $troopCount (including negatives as we'll balance those against the counts in a minute.)
 
-	Local $darkTankCount = Round($tankCount * $darkElixirRatio)	
-	Local $darkMeleeCount = Round($meleeCount * $darkElixirRatio)
+	; get ready to figure what new troops we need for our army composition
+	Local $newArmyComp[$iArmyEnd]
+	ZeroArray($newArmyComp)
 
-	SetLog("Type counts: [T]: " & $tankCount & " [M]: " & $meleeCount & " [R]: " & $rangedCount & " [r]:" & $resourceCount)
+	If $troopCount <= 0 Then ; We're building too much already.	Return zeros.
+		Return $newArmyComp
+	EndIf
 
-	; I don't have a good solution for how to pick which troops but given that it's a closed set a semi-hard coded solution will do to start
-	; 1. Figure dark elixir troops
-	;	a. apply dark elixir ratio to each category with a dark elixir option to figure the dark elixir availability for the slot
-	;   b. build some dark elixir troops to fill that space.
-	;   c. subtract from the slot count
-	; 2. Figure elixir troops
-	;	a. After accounting for the dark elixir troops there's no more than 2 options for each category. Use the weightedElixir to figure how many slots for expensive troops vs cheap troops.
-	;	b. Build the expensive troops to fill the available slots then finish with cheap ones.
+	Local $extraCount = 0
+	If $tankCount < 0 Then 
+		$extraCount += $tankCount
+		$tankCount = 0
+	EndIf
+	If $meleeCount < 0 Then 
+		$extraCount += $meleeCount
+		$meleeCount = 0
+	EndIf
+	If $rangedCount < 0 Then 
+		$extraCount += $rangedCount
+		$rangedCount = 0
+	EndIf
+	If $resourceCount < 0 Then 
+		$extraCount += $resourceCount
+		$resourceCount = 0
+	EndIf
+	If $deCount < 0 Then $deCount = 0
+	If $hvCount < 0 Then $hvCount = 0
 
-	; Tank	
-	
+	$tankCount = $tankCount - $extraCount*$tankCount/($tankCount+$meleeCount+$rangedCount+$resourceCount)
+	$meleeCount = $meleeCount - $extraCount*$meleeCount/($tankCount+$meleeCount+$rangedCount+$resourceCount)
+	$rangedCount = $rangedCount - $extraCount*$rangedCount/($tankCount+$meleeCount+$rangedCount+$resourceCount)
+	$resourceCount = $resourceCount - $extraCount*$resourceCount/($tankCount+$meleeCount+$rangedCount+$resourceCount)
 
-	$newArmyComp[$iGolem] = Floor($darkTankCount/$UnitSize[$iGolem])
+	SetLog("Capacity: " & $troopCount)
+	SetLog("ToTrain counts: [T]: " & $tankCount & " [M]: " & $meleeCount & " [R]: " & $rangedCount & " [r]:" & $resourceCount)
 
-	$darkTankCount -= $newArmyComp[$iGolem]*$UnitSize[$iGolem]
-	$tankCount -= $newArmyComp[$iGolem]*$UnitSize[$iGolem]
-	$troopCount -= $newArmyComp[$iGolem]*$UnitSize[$iGolem]
+	; I think at this point $tankCount + $meleeCount + $rangeCount + $resourceCount should still equal $troopCount
+	; we should have balanced the negatives
 
-	$newArmyComp[$iGiant] = Floor($tankCount/$UnitSize[$iGiant])
+	; I'm thinking 2 passes evaluating units in order
+	; First pass: assign the base army
+	;	"type" and "resource" the troop and there's room in that type/resource assign the right number
+	;	Subtract the counts
+	; Second pass: This is to deal with leftovers
+	; 	Ignore the type and respect the resource only and assign more troops.
+	; 	Subtract the counts
 
-	$tankCount -= $newArmyComp[$iGiant]*$UnitSize[$iGiant]
-	$troopCount -= $newArmyComp[$iGiant]*$UnitSize[$iGiant]
+	For $iUnit In $unitEvalOrder
+		If _ArraySearch($deUnits, $iUnit) <> -1 Then
+			If _ArraySearch($TankUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($tankCount*$darkElixirRatio/$UnitSize[$iUnit])
+				$tankCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($MeleeUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($meleeCount*$darkElixirRatio/$UnitSize[$iUnit])
+				$meleeCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($RangedUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($rangedCount*$darkElixirRatio/$UnitSize[$iUnit])
+				$rangedCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($ResourceUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($resourceCount*$darkElixirRatio/$UnitSize[$iUnit])
+				$resourceCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			EndIf
+			$deCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+		ElseIf _ArraySearch($hvUnits, $iUnit) <> -1 Then
+			If _ArraySearch($TankUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($tankCount*$weightedElixir/$UnitSize[$iUnit])
+				$tankCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($MeleeUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($meleeCount*$weightedElixir/$UnitSize[$iUnit])
+				$meleeCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($RangedUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($rangedCount*$weightedElixir/$UnitSize[$iUnit])
+				$rangedCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($ResourceUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($resourceCount*$weightedElixir/$UnitSize[$iUnit])
+				$resourceCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			EndIf
+			$hvCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+		Else
+			If _ArraySearch($TankUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($tankCount/$UnitSize[$iUnit])
+				$tankCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($MeleeUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($meleeCount/$UnitSize[$iUnit])
+				$meleeCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($RangedUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($rangedCount/$UnitSize[$iUnit])
+				$rangedCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($ResourceUnits, $iUnit) <> -1 Then
+				$newArmyComp[$iUnit] = Floor($resourceCount/$UnitSize[$iUnit])
+				$resourceCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+			EndIf
+		EndIf
+		$troopCount -= $newArmyComp[$iUnit]*$UnitSize[$iUnit]
+	Next
 
-	; Melee
-	SetLog("    Leftover tank slots: T:" & $tankCount & " DE:" & $darkMeleeCount)
+	SetLog("Remaining capacity: " & $troopCount)
+	; I think the only scenario I would have leftovers is in the tank slot (with the current troops). Everything else should fill with 1 slot troops (barbs for melee, archers for ranged, goblins for resoruce.) If I decided I didn't want to use archers or something then this would be more common.
+	SetLog("Leftovers: [T]: " & $tankCount & " [M]: " & $meleeCount & " [R]: " & $rangedCount & " [r]:" & $resourceCount)
 
-	; check valks	
-	$newArmyComp[$iValkyrie] = Floor($darkMeleeCount/$UnitSize[$iValkyrie])
-
-	$darkMeleeCount -= $newArmyComp[$iValkyrie]*$UnitSize[$iValkyrie]
-	$meleeCount -= $newArmyComp[$iValkyrie]*$UnitSize[$iValkyrie]
-	$troopCount -= $newArmyComp[$iValkyrie]*$UnitSize[$iValkyrie]
-
-	; check pekkas
-	Local $bigMeleeCount = Round($meleeCount * $weightedElixir)
-	$newArmyComp[$iPekka] = Floor($bigMeleeCount/$UnitSize[$iPekka])
-
-	$meleeCount -= $newArmyComp[$iPekka]*$UnitSize[$iPekka]
-	$troopCount -= $newArmyComp[$iPekka]*$UnitSize[$iPekka]
-
-	$newArmyComp[$iBarbarian] = $meleeCount
-
-	$troopCount -= $newArmyComp[$iBarbarian]
-
-	; Ranged
-	Local $bigRangedCount = Round($rangedCount * $weightedElixir)	
-	
-	; check Wizards
-	$newArmyComp[$iWizard] = Floor($bigRangedCount/$UnitSize[$iWizard])
-
-	$rangedCount -= $newArmyComp[$iWizard]*$UnitSize[$iWizard]
-	$troopCount -= $newArmyComp[$iWizard]*$UnitSize[$iWizard]
-
-	$newArmyComp[$iArcher] = $rangedCount ; remainder goes to archers
-	SetLog("  Archers: " & $newArmyComp[$iArcher])
-
-	$troopCount -= $newArmyComp[$iArcher]
-
-	; Gobbos ; I've done everything else so the rest goes into goblins.
-	$newArmyComp[$iGoblin] = $troopCount
+	If $troopCount > 0 Then ; I've build my comp as best I can but I have some slots left over.
+		For $iUnit In $unitEvalOrder
+			If $deCount > $troopCount Then $deCount = $troopCount
+			If $hvCount > $troopCount Then $hvCount = $troopCount
+			Local $leftoverCount = 0
+			If _ArraySearch($deUnits, $iUnit) <> -1 Then
+				$leftoverCount = Floor($deCount/$UnitSize[$iUnit])
+				$newArmyComp[$iUnit] += $leftoverCount*$UnitSize[$iUnit]
+				$deCount -= $leftoverCount*$UnitSize[$iUnit]
+			ElseIf _ArraySearch($hvUnits, $iUnit) <> -1 Then
+				$leftoverCount = Floor($hvCount/$UnitSize[$iUnit])
+				$newArmyComp[$iUnit] += $leftoverCount*$UnitSize[$iUnit]
+				$hvCount -= $leftoverCount*$UnitSize[$iUnit]
+			Else
+				$leftoverCount = Floor($troopCount/$UnitSize[$iUnit])
+				$newArmyComp[$iUnit] += $leftoverCount*$UnitSize[$iUnit]
+			EndIf
+			$troopCount -= $leftoverCount*$UnitSize[$iUnit]
+		Next
+	EndIf
 
 	Return $newArmyComp
 EndFunc
@@ -504,4 +610,31 @@ Func getArmySize($army)
 		$size += $army[$iUnit]*$UnitSize[$iUnit]
 	Next
 	Return $size
+EndFunc
+
+; $barracks - 2D array of barracks and the units in each.
+Func barracksReport($barracks)
+	Local $barracksSpace = 4
+	Local $unitNameSpace = 13
+	Local $line = _StringRepeat(" ", $unitNameSpace)
+	For $barracksNumber = 0 To UBound($barracks)-1
+		$line = $line & $barracksNumber & _StringRepeat(" ", $barracksSpace-StringLen($barracksNumber))
+	Next
+	SetLog($line, $COLOR_PURPLE, "Lucida Console")
+	For $iUnit = 0 To $iArmyEnd-1
+		Local $needLine
+		$line = $UnitName[$iUnit] & _StringRepeat(" ", $unitNameSpace-StringLen($UnitName[$iUnit]))
+		$needLine = False
+		For $b = 0 To Ubound($barracks)-1
+			If $barracks[$b][$iUnit] > 0 Then
+				$line = $line & $barracks[$b][$iUnit] & _StringRepeat(" ", $barracksSpace-StringLen($barracks[$b][$iUnit]))
+				$needLine = True
+			Else
+				$line = $line & _StringRepeat(" ", $barracksSpace)
+			EndIf
+		Next
+		If $needLine Then
+			SetLog($line, $COLOR_PURPLE, "Lucida Console")
+		EndIf
+	Next
 EndFunc
