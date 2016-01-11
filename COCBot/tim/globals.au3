@@ -233,6 +233,17 @@ Func goToBarracks($targetBarracks)
 	Return False
 EndFunc
 
+
+Global $rtTankPerc
+Global $rtMeleePerc
+Global $rtRangedPerc
+Global $rtResourcePerc
+
+Global $rtElixirMax
+Global $rtElixirRes
+Global $rtDarkMax
+Global $rtDarkRes
+
 ; Func runTest()
 ; 	SetLog("Lookin for a pixel")
 ; 	If _CheckPixel($aIsMain, True) Then
@@ -240,3 +251,5 @@ EndFunc
 ; 		SetLog(_GetPixelColor($aIsMain[0], $aIsMain[1], True))
 ; 	EndIf
 ; EndFunc
+
+

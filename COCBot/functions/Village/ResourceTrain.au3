@@ -299,9 +299,6 @@ Func getArmyComposition($currentArmy)
 	Local $capacity = $TotalCamp
 	; Resource based troop comp
 
-	; set up some variables to use for testing
-
-
 	SetLog("Current army: " & getArmySize($currentArmy))
 	dumpUnitArray($currentArmy)
 
@@ -340,12 +337,8 @@ Func getArmyComposition($currentArmy)
 
 	; resource calculations
 
-	Local $totalElixir = 6000000
-	Local $reserveElixir = 2000000
-	Local $weightedElixir = (Number($iElixirCurrent) - $reserveElixir) / ($totalElixir - $reserveElixir)
-	Local $totalDarkElixir = 80000
-	Local $reserveDarkElixir = 40000
-	Local $weightedDarkElixir = (Number($iDarkCurrent) - $reserveDarkElixir) / ($totalDarkElixir - $reserveDarkElixir)
+	Local $weightedElixir = (Number($iElixirCurrent) - $rtElixirRes) / ($rtElixirMax - $rtElixirRes)
+	Local $weightedDarkElixir = (Number($iDarkCurrent) - $rtDarkRes) / ($rtDarkMax - $rtDarkRes)
 	$weightedDarkElixir = $weightedDarkElixir / 3 ; This is an estimate of relative dark elixir value
 
 	SetLog("  Weighted Elixir = " & $weightedElixir)
@@ -365,19 +358,14 @@ Func getArmyComposition($currentArmy)
 	; For a good distribution I want to honor resource ratios within types for the first pass then ignore them for the second pass. This means I need to track both the internal resource breakdown for a type as well as the overall breakdown.
 	; actually I don't think I need to track internal resource buckets (just the initial calculation) since there's not more than one troop type for any sub bucket. I can merely assign the right number of units and then forget about it.
 
-	Local $tankPerc = .3
-	Local $meleePerc = .2
-	Local $rangedPerc = .4
-	Local $resourcePerc = .1
-
 	; Desired number of troops of each type for the army
 	Local $troopCount = $capacity
 	SetLog("Capacity: " & $troopCount)
 
-	Local $tankCount = Round($tankPerc * $capacity) 	
-	Local $meleeCount = Round($meleePerc * $capacity)
-	Local $rangedCount = Round($rangedPerc * $capacity)
-	Local $resourceCount = Round($resourcePerc * $capacity)
+	Local $tankCount = Round($rtTankPerc/100 * $capacity) 	
+	Local $meleeCount = Round($rtMeleePerc/100 * $capacity)
+	Local $rangedCount = Round($rtRangedPerc/100 * $capacity)
+	Local $resourceCount = Round($rtResourcePerc/100 * $capacity)
 
 	Local $hvCount = Round($capacity*$weightedElixir)
 	Local $deCount = Round($capacity*$darkElixirRatio)
