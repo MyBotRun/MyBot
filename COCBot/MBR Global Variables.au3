@@ -312,7 +312,9 @@ Global $ichkUseHSpellsTH = 0
 Global $THusedKing = 0
 Global $THusedQueen = 0
 Global $THusedWarden = 0
-
+Global $TestLoots = False ;Noyax
+Global $iOptAttIfDB = 1 ; Noyax attack when TH Snipe found DB
+Global $iPercentThsn = 10 ; Noyax % loots to considere dead base in TH Snipe
 
 Global $TrainSpecial = 1 ;0=Only trains after atk. Setting is automatic
 Global $cBarbarian = 0, $cArcher = 0, $cGoblin = 0, $cGiant = 0, $cWallbreaker = 0, $cWizard = 0, $cBalloon = 0, $cDragon = 0, $cPekka = 0, $cMinion = 0, $cHogs = 0, $cValkyrie = 0, $cGolem = 0, $cWitch = 0, $cLavaHound = 0
@@ -374,6 +376,10 @@ $troopsToBeUsed[8] = $useBarcherGobGiant
 $troopsToBeUsed[9] = $useBarcherHog
 $troopsToBeUsed[10] = $useBarcherMinion
 
+
+Global $countFindPixCloser = 0 ;Noyax count collector exposed
+Global $countCollectorexposed = 0 ;Noyax count collector exposed	
+Global $MilkAtt, $NbTrpMilk ;Noyax for milking
 Global $KingAttack[$iModeCount] ;King attack settings
 Global $QueenAttack[$iModeCount] ;Queen attack settings
 Global $WardenAttack[$iModeCount] ;Grand Garden attack settings
@@ -402,6 +408,11 @@ Global $iUnbreakableMode = 0
 Global $iUnbreakableWait, $iUnBrkMinGold, $iUnBrkMinElixir, $iUnBrkMaxGold, $iUnBrkMaxElixir, $iUnBrkMinDark, $iUnBrkMaxDark
 Global $OutOfGold = 0 ; Flag for out of gold to search for attack
 Global $OutOfElixir = 0 ; Flag for out of elixir to train troops
+
+;noyax top
+;TH snipe settings
+Global 	$iMinGoldTHsn, $iMinElixirTHsn, $iMinGoldPlusElixirTHsn, $iMinDarkElixirTHSn, $iCmbMeetGETHsn
+;noyac bottom
 
 ;Zoom/scroll variables for TH snipe, bottom corner
 Global $zoomedin = False, $zCount = 0, $sCount = 0

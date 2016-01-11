@@ -43,5 +43,18 @@ Func _FindPixelCloser($arrPixel, $pixel, $nb = 1)
 		$arrPixelCloser[UBound($arrPixelCloser) - 1] = $PixelCloser
 
 	Next
+
+;Noyax Top
+	if $MilkAtt = 1 then
+		if $countFindPixCloser < UBound($PixelNearCollector) then
+			Local $DistancePixeltoPixCLoser = Sqrt(($PixelCloser[0]-$pixel[0])^2 + ($PixelCloser[1] - $pixel[1])^2)
+			setlog("Distance is " & $DistancePixeltoPixCLoser)	
+			if $DistancePixeltoPixCLoser < 100 then $countCollectorexposed += 1
+			$countFindPixCloser +=1
+		Endif
+	setlog("Exposed (if < 100 pixels)= " & $countCollectorexposed)	
+	Endif
+;Noyax bottom	
+
 	Return $arrPixelCloser
 EndFunc   ;==>_FindPixelCloser

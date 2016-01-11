@@ -304,7 +304,18 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	Else
 		GUICtrlSetState($chkABAttackNearDarkElixirDrill, $GUI_UNCHECKED)
 	EndIf
-
+	
+;Noyax top
+	GUICtrlSetData($txtDBAttMilk, $NbTrpMilk)
+	If $MilkAtt = 1 Then
+		GUICtrlSetState($chkDBAttMilk, $GUI_CHECKED)
+;		GUICtrlSetState($txtDBAttMilk, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($chkDBAttMilk, $GUI_UNCHECKED)
+;		GUICtrlSetState($txtDBAttMilk, $GUI_DISABLE)
+	EndIf
+;Noyax bottom	
+	
 	If $KingAttack[$DB] = 1 Then
 		GUICtrlSetState($chkDBKingAttack, $GUI_CHECKED)
 	Else
@@ -400,6 +411,17 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 
 	_GUICtrlComboBox_SetCurSel($cmbAttackNowDelay, $iAttackNowDelay - 1)
 
+;noyax top
+	_GUICtrlComboBox_SetCurSel($cmbTHsnMeetGE, $iCmbMeetGETHsn)
+	cmbTHsnGoldElixir()
+	If $iOptAttIfDB = 1 Then
+		GUICtrlSetState($chkAttIfDB, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkAttIfDB, $GUI_UNCHECKED)
+	EndIf
+	GUICtrlSetData($txtAttIfDB, $iPercentThsn)
+;noyax bottom
+
 	If $chkATH = 1 Then
 		GUICtrlSetState($chkAttackTH, $GUI_CHECKED)
 	Else
@@ -430,7 +452,12 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetData($txtTHaddTiles, $THaddTiles)
 ;~ 	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, $icmbAttackTHType)
 	_GUICtrlComboBox_SetCurSel($cmbAttackbottomType, $icmbDeployBtmTHType)
-
+;noyax top
+	GUICtrlSetData($txtTHsnMinGold, $iMinGoldTHsn)
+	GUICtrlSetData($txtTHsnMinElixir, $iMinElixirTHsn)
+	GUICtrlSetData($txtTHsnMinGoldPlusElixir, $iMinGoldPlusElixirTHsn)
+	GUICtrlSetData($txtTHSnMinDarkElixir, $iMinDarkElixirTHSn)
+;noyax bottom
 	If $ichkUseKingTH = 1 Then
 		GUICtrlSetState($chkUseKingTH, $GUI_CHECKED)
 	ElseIf $ichkUseKingTH = 0 Then

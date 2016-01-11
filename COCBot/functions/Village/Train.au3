@@ -107,6 +107,13 @@ Func Train()
 
 	checkArmyCamp()
 
+; noyax top, don't waste time before attackink in milking mode
+	If $fullArmy= True And $MilkAtt = 1 then
+		setlog("Don't waste time, go to attack", $COLOR_PURPLE)
+		return
+	EndIf
+;noyax bottom
+	
 	checkAttackDisable($iTaBChkIdle) ; Check for Take-A-Break after opening train page
 
 	; CHECK IF NEED TO MAKE TROOPS
@@ -214,7 +221,6 @@ Func Train()
 	; ########################################  2nd Stage : Calculating of Troops to Make ##############################################
 
 	If $debugSetlog = 1 Then SetLog("Total ArmyCamp :" & $TotalCamp, $COLOR_PURPLE)
-
 	If $fullarmy = True Then
 		SetLog("Calculating Troops before Training new Army.", $COLOR_BLUE)
 		$anotherTroops = 0
@@ -444,7 +450,7 @@ Func Train()
 		While isBarrack()
 			$brrNum += 1
 			_CaptureRegion()
-			If $FirstStart Then
+			If $FirstStart And $MilkAtt = 0 Then ;Noyax don't waste time in first start with milking mode
 				If _Sleep($iDelayTrain2) Then Return
 				$icount = 0
 				If _ColorCheck(_GetPixelColor(187, 212, True), Hex(0xD30005, 6), 10) Then ; check if the existe more then 6 slots troops on train bar
@@ -464,6 +470,7 @@ Func Train()
 				WEnd
 				If $debugSetlog = 1 And $icount = 100 Then SetLog("Train warning 6", $COLOR_PURPLE)
 			EndIf
+
 			If _Sleep($iDelayTrain2) Then ExitLoop
 			If Not (IsTrainPage()) Then Return ; exit from train if no train page
 			Switch $barrackTroop[$brrNum - 1]
@@ -517,7 +524,7 @@ Func Train()
 		While isBarrack() And $isNormalBuild
 			$brrNum += 1
 			If $debugSetlog = 1 Then SetLog("====== Checking available Barrack: " & $brrNum & " ======", $COLOR_PURPLE)
-			If ($fullarmy = True) Or $FirstStart Then
+			If ($fullarmy = True) Or $FirstStart = False Then
 				;CLICK REMOVE TROOPS
 				If _Sleep($iDelayTrain2) Then Return
 				$icount = 0

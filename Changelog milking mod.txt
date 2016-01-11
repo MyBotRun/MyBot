@@ -1,0 +1,40 @@
+V1.6.1:
+- fix error when running bot on Win XP, thanks to @shadow046
+- fix error found by @ezeck0001 in : https://mybot.run/forums/thread-13974.html
+
+
+V1.6:
+- Skip some functions to attack more faster
+- fix drop trophy
+- fix attack near redline in TH Snipe mode if % special thanks to @ezeck0001
+- If milking train max nb of gobs needed, if more => instant attack (now it's not needed to fix % to full camp)
+- re import images from @piervito10
+
+
+V1.5.5:
+- Fix another error in the calculation of % for launch DB Attack after snipe
+
+V1.5.4:
+- Fix timing to the end of DB attanck after TH Snipe
+- Fix error in the calculation of % for launch DB Attack after snipe
+
+V1.5.1 to 1.5.3:
+- Fixes mistake in code
+
+
+V1.5:
+- Fix I forget to put variable in global, sorry
+
+V1.4
+1) fixes issue when current trophy equals max trophy in GUI
+2) Fix issue when OOS happens during or immediately after trophy drop. Problem here is village trophy value is not updated due OOS skipping village report to update trophy value. 
+3) Add Check box in advanced tab to attack if loot < X % (at your choice but less 20%)
+
+For 1) and 2), thanls to monkeyhunter: https://mybot.run/forums/thread-13107-post-113833.html#pid113833
+
+V1.3
+1) add function to check when TH fall in TH snipe: if loots < 10% of total loots possible then => attack like dead base (like greedy mode). TH have 20% of global ressources il you take only 10% then it's dead base too ;)
+...
+
+V1...
+...

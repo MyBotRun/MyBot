@@ -140,7 +140,7 @@ Func GoldElixirChangeEBO()
 
 		;EXIT IF RESOURCES CHANGE DETECTEC
 		If ($Gold1 <> $Gold2 Or $Elixir1 <> $Elixir2 Or $DarkElixir1 <> $DarkElixir2) Then
-			;SetLog("Gold & Elixir & DE change detected, waiting... .", $COLOR_GREEN)
+			SetLog("Loot: Gold " & $Gold2 - $Gold1 & " Elixir " & $Elixir2 - $Elixir1, $COLOR_GREEN)
 			ExitLoop
 		EndIf
 
