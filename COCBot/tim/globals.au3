@@ -234,7 +234,7 @@ Func goToBarracks($targetBarracks)
 	Return False
 EndFunc
 
-
+; UI variables
 
 Global $rtTankPerc
 Global $rtMeleePerc
