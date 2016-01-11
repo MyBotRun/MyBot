@@ -63,7 +63,7 @@ Func DonateCC($Check = False)
 
 	Local $Scroll, $offColors[3][3] = [[0x010101, 0 , -4], [0xb8e050, 0, 13], [0xb0da49, 0, 16]]; $offColors[3][3] = [[0x000000, 0, -2], [0x262926, 0, 1], [0xF8FCF0, 0, 11]]
 	While $Donate
-		$debugOcr = 1
+		; $debugOcr = 1
 		If _Sleep($iDelayDonateCC2) Then ExitLoop
 		$DonatePixel = _MultiPixelSearch(202, $y, 203, 620 + $bottomOffsetY, 1, 1, Hex(0xc0e460, 6), $offColors, 15)
 		If IsArray($DonatePixel) Then
@@ -372,7 +372,7 @@ Func DonateCC($Check = False)
 			If _Sleep($iDelayDonateCC2) Then ExitLoop
 			ContinueLoop
 		EndIf
-		$debugOcr = 0
+		; $debugOcr = 0
 		$Donate = False
 	WEnd
 

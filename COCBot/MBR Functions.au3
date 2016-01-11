@@ -190,6 +190,7 @@
 #include "functions\Village\RequestCC.au3"
 #include "functions\Village\Spell.au3"
 #include "functions\Village\Train.au3"
+#include "functions\Village\ResourceTrain.au3"
 #include "functions\Village\TrainIt.au3"
 #include "functions\Village\VillageReport.au3"
 #include "functions\Village\isBarrack.au3"

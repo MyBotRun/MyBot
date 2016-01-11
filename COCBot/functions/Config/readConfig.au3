@@ -419,6 +419,18 @@ Func readConfig() ;Reads config and sets it to the variables
 			$barrackTroop[$i] = IniRead($config, "troop", "troop" & $i + 1, "0")
 		Next
 
+
+
+		$rtTankPerc = IniRead($config, "troop", "rtTank", "30")
+		$rtMeleePerc = IniRead($config, "troop", "rtMelee", "20")
+		$rtRangedPerc = IniRead($config, "troop", "rtRanged", "20")
+		$rtResourcePerc = 100 - $rtTankPerc - $rtMeleePerc - $rtRangedPerc
+
+		$rtElixirMax = IniRead($config, "troop", "rtElixirMax", 6000000)
+		$rtElixirRes = IniRead($config, "troop", "rtElixirRes", 1000000)
+		$rtDarkMax = IniRead($config, "troop", "rtDarkMax", 80000)
+		$rtDarkRes = IniRead($config, "troop", "rtDarkRes", 40000)
+
 		$fulltroop = IniRead($config, "troop", "fullTroop", "100")
 
 		$isldTrainITDelay = IniRead($config, "troop", "TrainITDelay", "20")

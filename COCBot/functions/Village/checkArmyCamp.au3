@@ -280,6 +280,11 @@ Func checkArmyCamp()
 				EndIf
 				If $TroopQ <> 0 Then SetLog(" - No. of " & $TroopName & ": " & $TroopQ)
 
+				; If there's no army this will be 0
+				If $TroopQ <> 0 Then
+					$ArmyTrained[getI($Troops[1])] = $Troops[3]
+				EndIf
+
 			EndIf
 
 		Next
@@ -466,6 +471,7 @@ Func IsTroopToDonateOnly($pTroopType)
 		Next
 	EndIf
 
+	SetLog($pTroopType & " is toop to donate only")
 	Return True
 
 EndFunc   ;==>IsTroopToDonateOnly

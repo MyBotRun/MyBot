@@ -892,6 +892,20 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetData(Eval("txtNum" & $TroopDarkName[$i]), Eval($TroopDarkName[$i] & "Comp"))
 	Next
 	SetComboTroopComp()
+
+	
+
+	GUICtrlSetData($rtTankPercTxt, $rtTankPerc)
+	GUICtrlSetData($rtMeleePercTxt, $rtMeleePerc)
+	GUICtrlSetData($rtRangedPercTxt, $rtRangedPerc)
+
+	GUICtrlSetData($rtElixirMaxTxt, $rtElixirMax)
+	GUICtrlSetData($rtElixirResTxt, $rtElixirRes)
+	GUICtrlSetData($rtDarkMaxTxt, $rtDarkMax)
+	GUICtrlSetData($rtDarkResTxt, $rtDarkRes)
+
+
+
 	lblTotalCount()
 
 	_GUICtrlComboBox_SetCurSel($cmbBarrack1, $barrackTroop[0])

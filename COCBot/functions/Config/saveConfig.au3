@@ -816,6 +816,16 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "troop", $TroopDarkName[$i], GUICtrlRead(Eval("txtNum" & $TroopDarkName[$i])))
 	Next
 
+	IniWrite($config, "troop", "rtTank", GUICtrlRead($rtTankPercTxt))
+	IniWrite($config, "troop", "rtMelee", GUICtrlRead($rtMeleePercTxt))
+	IniWrite($config, "troop", "rtRanged", GUICtrlRead($rtRangedPercTxt))
+
+	IniWrite($config, "troop", "rtElixirMax", GUICtrlRead($rtElixirMaxTxt))
+	IniWrite($config, "troop", "rtElixirRes", GUICtrlRead($rtElixirResTxt))
+	IniWrite($config, "troop", "rtDarkMax", GUICtrlRead($rtDarkMaxTxt))
+	IniWrite($config, "troop", "rtDarkRes", GUICtrlRead($rtDarkResTxt))
+
+
 	IniWrite($config, "troop", "troop1", _GUICtrlComboBox_GetCurSel($cmbBarrack1))
 	IniWrite($config, "troop", "troop2", _GUICtrlComboBox_GetCurSel($cmbBarrack2))
 	IniWrite($config, "troop", "troop3", _GUICtrlComboBox_GetCurSel($cmbBarrack3))

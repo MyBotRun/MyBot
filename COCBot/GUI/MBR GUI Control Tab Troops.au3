@@ -27,6 +27,13 @@ Func cmbTroopComp()
 EndFunc   ;==>cmbTroopComp
 
 Func SetComboTroopComp()
+	For $uiCtrl In $resourceTroopsUI
+		GUICtrlSetState($uiCtrl, $GUI_HIDE)
+	Next
+	For $uiCtrl In $resourceTroopConflicts
+		GUICtrlSetState($uiCtrl, $GUI_SHOW)
+	Next
+
 	Switch _GUICtrlComboBox_GetCurSel($cmbTroopComp)
 		Case 0
 			GUICtrlSetState($cmbBarrack1, $GUI_DISABLE)
@@ -318,19 +325,35 @@ Func SetComboTroopComp()
 			For $i = 0 To UBound($TroopDarkName) - 1
 				GUICtrlSetData(Eval("txtNum" & $TroopDarkName[$i]), Eval($TroopDarkName[$i] & "Comp"))
 			Next
+		Case 10
+			For $uiCtrl In $resourceTroopConflicts
+				GUICtrlSetState($uiCtrl, $GUI_HIDE)
+			Next
+			For $uiCtrl In $resourceTroopsUI
+				GUICtrlSetState($uiCtrl, $GUI_SHOW)
+			Next
 
 	EndSwitch
 	lblTotalCount()
 EndFunc   ;==>SetComboTroopComp
 
 Func lblTotalCount()
-	GUICtrlSetData($lblTotalCount, GUICtrlRead($txtNumBarb) + GUICtrlRead($txtNumArch) + GUICtrlRead($txtNumGobl))
-	If GUICtrlRead($lblTotalCount) = "100" Then
-		GUICtrlSetBkColor($lblTotalCount, $COLOR_MONEYGREEN)
-	ElseIf GUICtrlRead($lblTotalCount) = "0" Then
-		GUICtrlSetBkColor($lblTotalCount, $COLOR_ORANGE)
+	If _GUICtrlComboBox_GetCurSel($cmbTroopComp) == 10 Then
+		GUICtrlSetData($rtResourcePercTxt, 100 - GUICtrlRead($rtTankPercTxt) - GUICtrlRead($rtMeleePercTxt) - GUICtrlRead($rtRangedPercTxt))
+		If GUICtrlRead($rtResourcePercTxt) >= 0 Then
+			GUICtrlSetBkColor($rtResourcePercTxt, $COLOR_MONEYGREEN)
+		Else
+			GUICtrlSetBkColor($rtResourcePercTxt, $COLOR_RED)
+		EndIf
 	Else
-		GUICtrlSetBkColor($lblTotalCount, $COLOR_RED)
+		GUICtrlSetData($lblTotalCount, GUICtrlRead($txtNumBarb) + GUICtrlRead($txtNumArch) + GUICtrlRead($txtNumGobl))
+		If GUICtrlRead($lblTotalCount) = "100" Then
+			GUICtrlSetBkColor($lblTotalCount, $COLOR_MONEYGREEN)
+		ElseIf GUICtrlRead($lblTotalCount) = "0" Then
+			GUICtrlSetBkColor($lblTotalCount, $COLOR_ORANGE)
+		Else
+			GUICtrlSetBkColor($lblTotalCount, $COLOR_RED)
+		EndIf
 	EndIf
  EndFunc   ;==>lblTotalCount
 
