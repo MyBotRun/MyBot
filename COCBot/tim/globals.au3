@@ -196,7 +196,6 @@ Func goArmyOverview($maxDelay = 5000)
 EndFunc
 
 Func clearTroops()
-
 	Local $icount = 0
 
 	If _ColorCheck(_GetPixelColor(187, 212, True), Hex(0xD30005, 6), 10) Then ; check if the existe more then 6 slots troops on train bar
@@ -236,7 +235,6 @@ Func goToBarracks($targetBarracks)
 EndFunc
 
 
-; UI Variables
 
 Global $rtTankPerc
 Global $rtMeleePerc
