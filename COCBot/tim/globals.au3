@@ -1,3 +1,5 @@
+TEST
+
 #include <Array.au3>
 #include <String.au3>
 ; I know a lot of this info is already defined in the bot but I like my format better :)
