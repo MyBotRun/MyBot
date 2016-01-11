@@ -180,11 +180,6 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iChkSmartAttack[$LB][1] = IniRead($config, "attack", "ABSmartAttackElixirCollector", "0")
 		$iChkSmartAttack[$LB][2] = IniRead($config, "attack", "ABSmartAttackDarkElixirDrill", "0")
 
-;Noyax top
-		$MilkAtt = IniRead($config, "attack", "Milking", "0")
-		$NbTrpMilk = IniRead($config, "attack", "NbTrpMilk", "90")
-;Noyax bottom
-
 		$KingAttack[$DB] = IniRead($config, "attack", "DBKingAtk", "0")
 		$KingAttack[$LB] = IniRead($config, "attack", "ABKingAtk", "0")
 
@@ -225,15 +220,6 @@ Func readConfig() ;Reads config and sets it to the variables
 		;$icmbAttackTHType = IniRead($config, "advanced", "AttackTHType", "3")
 		$scmbAttackTHType = IniRead($config, "advanced", "AttackTHType", "bam")
 		$icmbDeployBtmTHType = IniRead($config, "advanced", "AttackBottomTHType", "1")
-;noyax top
-		$iCmbMeetGETHsn = IniRead($config, "advanced", "THsnMeetGE", "1")
-		$iMinGoldTHsn = IniRead($config, "advanced", "THsnipesearchgold", "60000")
-		$iMinElixirTHsn = IniRead($config, "advanced", "THsnipesearchElixir", "60000")
-		$iMinGoldPlusElixirTHsn = IniRead($config, "advanced", "THsnipesearchGoldPlusElixir", "120000")
-		$iOptAttIfDB = IniRead($config, "advanced", "THsnAttIfDB", "1")
-		$iPercentThsn = IniRead($config, "advanced", "THsnPercent", "10")
-		$iMinDarkElixirTHSn = IniRead($config, "advanced", "THsnipesearchDarkElixir", "60000")
-;noyax bottom
 
 		$PushToken = IniRead($config, "advanced", "AccountToken", "")
 

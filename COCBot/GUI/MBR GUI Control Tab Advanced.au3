@@ -116,15 +116,6 @@ Func chkSnipeMode()
 		GUICtrlSetState($chkUseRSpellsTH, $GUI_ENABLE)
 		GUICtrlSetState($chkUseHSpellsTH, $GUI_ENABLE)
 		GUICtrlSetState($chkUseLSpellsTH, $GUI_ENABLE)
-;Noyax top
-		GUICtrlSetState($cmbTHsnMeetGE, $GUI_ENABLE)
-		GUICtrlSetState($chkAttIfDB, $GUI_ENABLE)
-		GUICtrlSetState($txtAttIfDB, $GUI_ENABLE)
-		GUICtrlSetState($txtTHsnMinGold, $GUI_ENABLE)
-		GUICtrlSetState($txtTHsnMinElixir, $GUI_ENABLE)
-		GUICtrlSetState($txtTHsnMinGoldPlusElixir, $GUI_ENABLE)
-		GUICtrlSetState($txtTHSnMinDarkElixir, $GUI_ENABLE)
-; Noyax bottom
 	Else
 		$OptTrophyMode = 0
 		GUICtrlSetState($txtTHaddtiles, $GUI_DISABLE)
@@ -136,41 +127,9 @@ Func chkSnipeMode()
 		GUICtrlSetState($chkUseRSpellsTH, $GUI_DISABLE)
 		GUICtrlSetState($chkUseHSpellsTH, $GUI_DISABLE)
 		GUICtrlSetState($chkUseLSpellsTH, $GUI_DISABLE)
-; Noyax top
-		GUICtrlSetState($cmbTHsnMeetGE, $GUI_DISABLE)
-		GUICtrlSetState($chkAttIfDB, $GUI_DISABLE)
-		GUICtrlSetState($txtAttIfDB, $GUI_DISABLE)
-		GUICtrlSetState($txtTHsnMinGold, $GUI_DISABLE)
-		GUICtrlSetState($txtTHsnMinElixir, $GUI_DISABLE)
-		GUICtrlSetState($txtTHsnMinGoldPlusElixir, $GUI_DISABLE)
-		GUICtrlSetState($txtTHSnMinDarkElixir, $GUI_DISABLE)
-; Noyax bottom
 	EndIf
 EndFunc   ;==>chkSnipeMode
 
-;noyax top
-Func cmbTHsnGoldElixir()
-	If _GUICtrlComboBox_GetCurSel($cmbTHsnMeetGE) < 2 Then
-		GUICtrlSetState($txtTHsnMinGold, $GUI_SHOW)
-		GUICtrlSetState($picTHsnMinGold, $GUI_SHOW)
-		GUICtrlSetState($txtTHsnMinElixir, $GUI_SHOW)
-		GUICtrlSetState($picTHsnMinElixir, $GUI_SHOW)
-		GUICtrlSetState($txtTHsnMinGoldPlusElixir, $GUI_HIDE)
-		GUICtrlSetState($picTHsnMinGPEGold, $GUI_HIDE)
-		GUICtrlSetState($lblTHsnMinGPE, $GUI_HIDE)
-		GUICtrlSetState($picTHsnMinGPEElixir, $GUI_HIDE)
-	Else
-		GUICtrlSetState($txtTHsnMinGold, $GUI_HIDE)
-		GUICtrlSetState($picTHsnMinGold, $GUI_HIDE)
-		GUICtrlSetState($txtTHsnMinElixir, $GUI_HIDE)
-		GUICtrlSetState($picTHsnMinElixir, $GUI_HIDE)
-		GUICtrlSetState($txtTHsnMinGoldPlusElixir, $GUI_SHOW)
-		GUICtrlSetState($picTHsnMinGPEGold, $GUI_SHOW)
-		GUICtrlSetState($lblTHsnMinGPE, $GUI_SHOW)
-		GUICtrlSetState($picTHsnMinGPEElixir, $GUI_SHOW)
-	EndIf
-EndFunc   ;==>cmbTHsnGoldElixir
-;noyax bottom
 
 Func LoadThSnipeAttacks()
 	Dim $FileSearch, $NewFile

@@ -93,9 +93,7 @@ Func checkArmyCamp()
 		SetLog("Total Army Camp capacity: " & $CurCamp & "/" & $TotalCamp)
 	EndIf
 
-; Noyax, train only nb troops needed for milking
-;	If ($CurCamp >= ($TotalCamp * $fulltroop / 100)) And $CommandStop = -1 Then
-	If (($CurCamp >= ($TotalCamp * $fulltroop / 100)) Or ($CurCamp >= $NbTrpMilk And $MilkAtt = 1)) And $CommandStop = -1 Then ;Noyax
+	If ($CurCamp >= ($TotalCamp * $fulltroop / 100)) And $CommandStop = -1 Then
 		$fullArmy = True
 	EndIf
 

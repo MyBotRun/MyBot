@@ -24,7 +24,7 @@
 #pragma compile(LegalCopyright, © https://mybot.run)
 
 Global $sBotDll = @ScriptDir & "\MBRPlugin.dll"
-Local $MilkVer = "V1.6.2" ;Noyax
+
 If @AutoItX64 = 1 Then
 	MsgBox(0, "", "Don't Run/Compile the Script as (x64)! try to Run/Compile the Script as (x86) to get the bot to work." & @CRLF & _
 			"If this message still appears, try to re-install AutoIt.")
@@ -39,7 +39,7 @@ EndIf
 #include "COCBot\MBR Global Variables.au3"
 
 $sBotVersion = "v5.0.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
-$sBotTitle = "My Bot " & $sBotVersion & " "
+$sBotTitle = "My Bot " & $sBotVersion & " " & $DEFAULT_WIDTH & "x" & $DEFAULT_HEIGHT & " "
 
 #include "COCBot\functions\Main Screen\Android.au3"
 
@@ -48,7 +48,8 @@ If $CmdLine[0] < 2 Then
    If Not $FoundRunningAndroid Then DetectInstalledAndroid()
 EndIf
 ; Update Bot title
-$sBotTitle = $sBotTitle & " | MOD Milking " & $MilkVer ; Noyax
+$sBotTitle = $sBotTitle & "(" & ($AndroidInstance <> "" ? $AndroidInstance : $Android) & ")"
+
 Local $cmdLineHelp = "Please specify as first command line parameter a different Profile (01-06). With second a different Android Emulator and with third an Android Instance. Supported Emulators are BlueStacks, BlueStacks2 and Droid4X. Only Droid4X supports running different instances at the same time."
 If _Singleton($sBotTitle, 1) = 0 Then
 	MsgBox(0, $sBotTitle, "Bot for " & $Android & ($AndroidInstance <> "" ? " (instance " & $AndroidInstance & ")" : "") & " is already running." & @CRLF & @CRLF & $cmdLineHelp)
@@ -165,74 +166,61 @@ Func runBot() ;Bot that runs everything in order
 			If _Sleep($iDelayRunBot5) Then Return
 			checkMainScreen(False)
 			If $Restart = True Then ContinueLoop
-;Noyax top - this for don't waste time if full army in milking mode
-			ReplayShare($iShareAttackNow) ; moved to replay share if wanted before exit loop
+			Collect()
+			If _Sleep($iDelayRunBot1) Then Return
+			If $Restart = True Then ContinueLoop
+			CheckTombs()
 			If _Sleep($iDelayRunBot3) Then Return
+			If $Restart = True Then ContinueLoop
+			ReArm()
+			If _Sleep($iDelayRunBot3) Then Return
+			If $Restart = True Then ContinueLoop
+			ReplayShare($iShareAttackNow)
+			If _Sleep($iDelayRunBot3) Then Return
+			If $Restart = True Then ContinueLoop
+			ReportPushBullet()
+			If _Sleep($iDelayRunBot3) Then Return
+			If $Restart = True Then ContinueLoop
+			DonateCC()
+			If _Sleep($iDelayRunBot1) Then Return
+			checkMainScreen(False) ; required here due to many possible exits
 			If $Restart = True Then ContinueLoop
 			Train()
 			If _Sleep($iDelayRunBot1) Then Return
 			checkMainScreen(False)
-			If $fullArmy = True And $MilkAtt = 1 Then
-				If $debugsetlog = 1 Then Setlog("don't waste time with many functions before attacking")
-			Else
-				If $Restart = True Then ContinueLoop
-;Noyax bottom
-				Collect()
-				If _Sleep($iDelayRunBot1) Then Return
-				If $Restart = True Then ContinueLoop
-				CheckTombs()
-				If _Sleep($iDelayRunBot3) Then Return
-				If $Restart = True Then ContinueLoop
-				ReArm()
-				If _Sleep($iDelayRunBot3) Then Return
-				If $Restart = True Then ContinueLoop
-	; noyax			ReplayShare($iShareAttackNow)
-	; noyax			If _Sleep($iDelayRunBot3) Then Return
-	; noyax			If $Restart = True Then ContinueLoop
-				ReportPushBullet()
-				If _Sleep($iDelayRunBot3) Then Return
-				If $Restart = True Then ContinueLoop
-				DonateCC()
-				If _Sleep($iDelayRunBot1) Then Return
-				checkMainScreen(False) ; required here due to many possible exits
-				If $Restart = True Then ContinueLoop
-	;Noyax			Train()
-	;Noyax			If _Sleep($iDelayRunBot1) Then Return
-	;Noyax			checkMainScreen(False)
-	;Noyax			If $Restart = True Then ContinueLoop
-				BoostBarracks()
-				If $Restart = True Then ContinueLoop
-				BoostSpellFactory()
-				If $Restart = True Then ContinueLoop
-				BoostDarkSpellFactory()
-				If $Restart = True Then ContinueLoop
-				BoostKing()
-				If $Restart = True Then ContinueLoop
-				BoostQueen()
-				If $Restart = True Then ContinueLoop
-				BoostWarden()
-				If $Restart = True Then ContinueLoop
-				RequestCC()
-				If _Sleep($iDelayRunBot1) Then Return
-				checkMainScreen(False) ; required here due to many possible exits
-				If $Restart = True Then ContinueLoop
-				If $iUnbreakableMode >= 1 Then
-					If Unbreakable() = True Then ContinueLoop
-				EndIf
-				Laboratory()
-				If _Sleep($iDelayRunBot3) Then Return
-				checkMainScreen(False) ; required here due to many possible exits
-				If $Restart = True Then ContinueLoop
-				UpgradeHeroes()
-				If _Sleep($iDelayRunBot3) Then Return
-				If $Restart = True Then ContinueLoop
-				UpgradeBuilding()
-				If _Sleep($iDelayRunBot3) Then Return
-				If $Restart = True Then ContinueLoop
-				UpgradeWall()
-				If _Sleep($iDelayRunBot3) Then Return
-				If $Restart = True Then ContinueLoop
-			EndIf ;Noyax
+			If $Restart = True Then ContinueLoop
+			BoostBarracks()
+			If $Restart = True Then ContinueLoop
+			BoostSpellFactory()
+			If $Restart = True Then ContinueLoop
+			BoostDarkSpellFactory()
+			If $Restart = True Then ContinueLoop
+			BoostKing()
+			If $Restart = True Then ContinueLoop
+			BoostQueen()
+			If $Restart = True Then ContinueLoop
+			BoostWarden()
+			If $Restart = True Then ContinueLoop
+			RequestCC()
+			If _Sleep($iDelayRunBot1) Then Return
+			checkMainScreen(False) ; required here due to many possible exits
+			If $Restart = True Then ContinueLoop
+			If $iUnbreakableMode >= 1 Then
+				If Unbreakable() = True Then ContinueLoop
+			EndIf
+			Laboratory()
+			If _Sleep($iDelayRunBot3) Then Return
+			checkMainScreen(False) ; required here due to many possible exits
+			If $Restart = True Then ContinueLoop
+			UpgradeHeroes()
+			If _Sleep($iDelayRunBot3) Then Return
+			If $Restart = True Then ContinueLoop
+			UpgradeBuilding()
+			If _Sleep($iDelayRunBot3) Then Return
+			If $Restart = True Then ContinueLoop
+			UpgradeWall()
+			If _Sleep($iDelayRunBot3) Then Return
+			If $Restart = True Then ContinueLoop
 			Idle()
 			If _Sleep($iDelayRunBot3) Then Return
 			If $Restart = True Then ContinueLoop
@@ -271,7 +259,6 @@ Func runBot() ;Bot that runs everything in order
 				if not (  int($CurCamp) = int($TotalCamp) ) Then
 					checkArmyCamp()
 					if int($CurCamp) = int($TotalCamp) then
-;					if int($CurCamp) = int($TotalCamp) and $MilkAtt = 0 then ; Noyax don't spend time in milkink mode
 							;now army camps full.. train for next raid
 							train()
 							ContinueLoop
@@ -284,7 +271,7 @@ Func runBot() ;Bot that runs everything in order
 			If _Sleep($iDelayRunBot3) Then Return
 			checkMainScreen(True)
 			If $Restart = True Then ContinueLoop
-				If Number($iTrophyCurrent) > Number($itxtMaxTrophy) And $CommandStop = -1 Then
+				If Number($iTrophyCurrent) >= Number($itxtMaxTrophy) And $CommandStop = -1 Then
 					DropTrophy()
 				Else
 					AttackMain()
@@ -306,8 +293,7 @@ EndFunc   ;==>runBot
 Func Idle() ;Sequence that runs until Full Army
 	Local $TimeIdle = 0 ;In Seconds
 	If $debugSetlog = 1 Then SetLog("Func Idle ", $COLOR_PURPLE)
-; Noyax	If $iTrophyCurrent >= ($itxtMaxTrophy + 100) And $CommandStop = -1 Then DropTrophy()
-	If $iTrophyCurrent >= $itxtMaxTrophy And $CommandStop = -1 Then DropTrophy() ;noyax: correction to drop trophy
+	If $iTrophyCurrent >= ($itxtMaxTrophy + 100) And $CommandStop = -1 Then DropTrophy()
 	While $fullArmy = False
 		If $RequestScreenshot = 1 Then PushMsg("RequestScreenshot")
 		If _Sleep($iDelayIdle1) Then Return
@@ -411,10 +397,3 @@ Func Attack() ;Selects which algorithm
 	SetLog(" ====== Start Attack ====== ", $COLOR_GREEN)
 	algorithm_AllTroops()
 EndFunc   ;==>Attack
-
-;Noyax top
-Func AttackMilk() ;Selects which algorithm
-	SetLog(" ====== Start Attack Milking====== ", $COLOR_GREEN)
-	algorithm_milking()
-EndFunc   ;==>Attack
-;Noyax bottom

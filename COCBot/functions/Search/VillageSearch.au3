@@ -15,7 +15,6 @@
 ; ===============================================================================================================================
 Func VillageSearch() ;Control for searching a village that meets conditions
 	Local $Result
-	Local $ResultTHsn = False ;noyax
 	Local $logwrited = False
 	$iSkipped = 0
 
@@ -214,29 +213,13 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 		If _Sleep($iDelayRespond) Then Return
 		If $OptTrophyMode = 1 Then ;Enables Triple Mode Settings ;---compare resources
-;noyax top
-			$resultTHsn = False
-			Local $G = (Number($searchGold) >= Number($iMinGoldTHsn)), $E = (Number($searchElixir) >= Number($iMinElixirTHsn)), $GPE = ((Number($searchGold) + Number($searchElixir)) >= Number($iMinGoldPlusElixirTHsn)), $D = (Number($searchDark) >= Number($iMinDarkElixirTHSn))
-			If $iCmbMeetGETHsn = 0 then
-				If $G = True And $E = True And $D Then	$resultTHsn = True
+			If SearchTownHallLoc() Then ; attack this base anyway because outside TH found to snipe
+				SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
+				SetLog("      " & "TH Outside Found! ", $COLOR_GREEN, "Lucida Console", 7.5)
+				$logwrited = True
+				$iMatchMode = $TS
+				ExitLoop
 			EndIf
-			If $iCmbMeetGETHsn = 1 then
-				If ($G = True Or $E = True) And $D Then $resultTHsn = True
-			EndIf
-			If $iCmbMeetGETHsn = 2 then
-				If $GPE = True And $D Then $resultTHsn = True
-			EndIf
-					
-			If $resultTHsn = True Then
-;noyax bottom
-				If SearchTownHallLoc() Then ; attack this base anyway because outside TH found to snipe
-					SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
-					SetLog("      " & "TH Outside Found! ", $COLOR_GREEN, "Lucida Console", 7.5)
-					$logwrited = True
-					$iMatchMode = $TS
-					ExitLoop
-				EndIf
-			EndIf ;noyax
 		EndIf
 
 		If _Sleep($iDelayRespond) Then Return

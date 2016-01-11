@@ -30,7 +30,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 	Local $plural = 0
 	Local $waveName = "first"
 	Local $NumTroopDeployed = 0
-	
+
 	If _Sleep(5) Then Return
 	If $Restart = True Then Return
 	If CheckOneStar(0, False, True) Then Return
@@ -110,10 +110,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 
 	; All Barracks Troops
 	If $troopKind >= $eBarb And $troopKind <= $eLava Then
-		$troopNb = $iNbOfSpots * $iAtEachSpot ;noyax
-;		$iNbOfSpots = 1	;noyax
-;		$iAtEachSpot = 4	;noyax
-;		$troopNb = 4	;noyax
+		$troopNb = $iNbOfSpots * $iAtEachSpot
 		If $troopNb > 1 Then $plural = 1
 		$name = NameOfTroop($troopKind, $plural)
 

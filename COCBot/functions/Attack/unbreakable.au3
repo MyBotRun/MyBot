@@ -42,10 +42,8 @@ Return
 
 	Select
 		Case $iChkTrophyAtkDead = 1 ; If attack dead bases during trophy drop is enabled then make sure we have at least 70% full army
-;noyax			If ($CurCamp <= ($TotalCamp * 30 / 100)) Then
-			If ($CurCamp <= ($TotalCamp * 30 / 100)) Then ;noyax
-;noyax				SetLog("Oops, wait for 70% troops due attack dead base checked", $COLOR_RED)
-				SetLog("Oops, wait for 30% troops due attack dead base checked", $COLOR_RED) ;noyax
+			If ($CurCamp <= ($TotalCamp * 70 / 100)) Then
+				SetLog("Oops, wait for 70% troops due attack dead base checked", $COLOR_RED)
 				Return True ; no troops then cycle again
 			EndIf
 		Case $iChkTrophyAtkDead = 0 ; no deadbase attacks, then only a few troops needed to enable drop trophy to work

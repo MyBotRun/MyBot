@@ -275,15 +275,6 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "attack", "ABSmartAttackDarkElixirDrill", 0)
 	EndIf
 
-;Noyax top
-	If GUICtrlRead($chkDBAttMilk) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "Milking", 1)
-	Else
-		IniWrite($config, "attack", "Milking", 0)
-	EndIf
-	IniWrite($config, "attack", "NbTrpMilk", GUICtrlRead($txtDBAttMilk))
-;Noyax bottom
-
 	If GUICtrlRead($chkDBKingAttack) = $GUI_CHECKED Then
 		IniWrite($config, "attack", "DBKingAtk", 1)
 	Else
@@ -455,19 +446,6 @@ Func saveConfig() ;Saves the controls settings to the config
 	$txtAttackTHType = GUICtrlRead($cmbAttackTHType)
 	IniWrite($config, "advanced", "AttackBottomTHType", _GUICtrlComboBox_GetCurSel($cmbAttackbottomType))
 	IniWrite($config, "advanced", "AttackTHType", $scmbAttackTHType)
-;noyax top
-	IniWrite($config, "advanced", "THsnMeetGE", _GUICtrlComboBox_GetCurSel($cmbTHsnMeetGE))
-	IniWrite($config, "advanced", "THsnipesearchgold", GUICtrlRead($txtTHsnMinGold))
-	IniWrite($config, "advanced", "THsnipesearchElixir", GUICtrlRead($txtTHsnMinElixir))
-	IniWrite($config, "advanced", "THsnipesearchGoldPlusElixir", GUICtrlRead($txtTHsnMinGoldPlusElixir))
-	If GUICtrlRead($chkAttIfDB) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "THsnAttIfDB", 1)
-	Else
-		IniWrite($config, "advanced", "THsnAttIfDB", 0)
-	EndIf
-	IniWrite($config, "advanced", "THsnipesearchDarkElixir", GUICtrlRead($txtTHSnMinDarkElixir))
-	IniWrite($config, "advanced", "THsnPercent", GUICtrlRead($txtAttIfDB))
-;noyax bottom
 
 
 	If GUICtrlRead($chkUseKingTH) = $GUI_CHECKED Then

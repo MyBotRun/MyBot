@@ -49,16 +49,10 @@ $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 30) 
 $g_aEMB_Settings[12] += (($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0])) ; Compensate for small buttons in some themes
 $g_aEMB_TempArray = 0
 $g_aEMB_TempArray = DllCall("dwmapi.dll", "uint", "DwmIsCompositionEnabled", "int*", $g_aEMB_TempArray) ; Check for Aero enabled
-If @OSVersion = "WIN_XP" Then ;Noyax: modification by shadow046 to Win XP user https://mybot.run/forums/thread-13935-post-120434.html#pid120434
-    SetLog("Your windows is " & @OSVersion, $COLOR_RED) ;Noyax: modification by shadow046 to Win XP user
-Else ;Noyax: modification by shadow046 to Win XP user
 If Not @error And $g_aEMB_TempArray[1] = True Then
-    $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 7) ; GUI button frame width
-    $g_aEMB_Settings[12] += ($g_aEMB_TempArray[0] * 4) ; Add frames to compensate for incorrect Aero return
+	$g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 7) ; GUI button frame width
+	$g_aEMB_Settings[12] += ($g_aEMB_TempArray[0] * 4) ; Add frames to compensate for incorrect Aero return
 EndIf
-   SetLog("Your windows is " & @OSVersion, $COLOR_BLUE) ;Noyax: modification by shadow046 to Win XP user
-Endif ;Noyax: modification by shadow046 to Win XP user
-
 $g_aEMB_TempArray = 0
 
 ; Set current settings

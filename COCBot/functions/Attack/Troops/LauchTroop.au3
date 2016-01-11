@@ -1,20 +1,3 @@
-; #FUNCTION# ====================================================================================================================
-; Name ..........: Launchtroop
-; Description ...: This file contens all functions to launch troop
-; Syntax ........: LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
-; Syntax ........: LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
-; Syntax ........: LaunchTroop3($listInfoDeploy, $CC, $King, $Queen, $Warden)
-; Parameters ....: 
-; Return values .: 
-; Author ........: 
-; Modified ......: Noyax37 (01/2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
-;                  MyBot is distributed under the terms of the GNU GPL
-; Related .......:
-; Link ..........: https://github.com/MyBotRun/MyBot/wiki
-; Example .......: No
-; ===============================================================================================================================
-
 Func LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 	Local $troop = -1
 	Local $troopNb = 0
@@ -46,9 +29,6 @@ Func LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 EndFunc   ;==>LauchTroop
 
 Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
-;$debugSetlog =1
-	$countFindPixCloser = 0 ;noyax for count exposed collectors
-	$countCollectorexposed = 0 ;noyax for count exposed collectors
 	If $debugSetlog =1 Then SetLog("LaunchTroop2 with CC " & $CC & ", K " & $King & ", Q " & $Queen & ", W " & $Warden , $COLOR_PURPLE)
 	Local $listListInfoDeployTroopPixel[0]
 
@@ -57,7 +37,6 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 			Local $troop = -1
 			Local $troopNb = 0
 			Local $name = ""
-	; $ListInfoDeploy = [Troop, No. of Sides, $WaveNb, $MaxWaveNb, $slotsPerEdge]
 			$troopKind = $listInfoDeploy[$i][0]
 			$nbSides = $listInfoDeploy[$i][1]
 			$waveNb = $listInfoDeploy[$i][2]
@@ -68,15 +47,7 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 				For $j = 0 To UBound($atkTroops) - 1 ; identify the position of this kind of troop
 					If $atkTroops[$j][0] = $troopKind Then
 						$troop = $j
-						If $MilkAtt = 1 and $troopKind = $eGobl then ;Noyax if gobs set max troops to $NbTrpMilk
-							If $atkTroops[$j][1]> $NbTrpMilk Then ;Noyax
-								$troopNb = Ceiling($NbTrpMilk / $maxWaveNb) ;Noyax
-							Else ;Noyax
-								$troopNb = Ceiling($atkTroops[$j][1] / $maxWaveNb) ;Noyax
-							EndIf ;Noyax
-						Else ;Noyax
-							$troopNb = Ceiling($atkTroops[$j][1] / $maxWaveNb)
-						EndIf ;Noyax
+						$troopNb = Ceiling($atkTroops[$j][1] / $maxWaveNb)
 						Local $plural = 0
 						If $troopNb > 1 Then $plural = 1
 						$name = NameOfTroop($troopKind, $plural)
@@ -138,6 +109,8 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 						If $numWave + 1 = 3 Then $waveName = "third"
 						If $numWave + 1 = 0 Then $waveName = "last"
 						SetLog("Dropping " & $waveName & " wave of " & $infoPixelDropTroop[5] & " " & $infoPixelDropTroop[4], $COLOR_GREEN)
+
+
 						DropOnPixel($infoPixelDropTroop[0], $infoPixelDropTroop[1], $infoPixelDropTroop[2], $infoPixelDropTroop[3])
 					EndIf
 					If ($isHeroesDropped) Then
@@ -212,7 +185,6 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 				Local $infoPixelDropTroop = $listInfoDeployTroopPixel[$i]
 				If Not (IsString($infoPixelDropTroop[0]) And ($infoPixelDropTroop[0] = "CC" Or $infoPixelDropTroop[0] = "HEROES")) Then
 					Local $numberLeft = ReadTroopQuantity($infoPixelDropTroop[0])
-					If $MilkAtt = 1 Then $numberLeft = 0 ;Noyax
 					;SetLog("NumberLeft : " & $numberLeft)
 					If ($numberLeft > 0) Then
 						If _Sleep($iDelayLaunchTroop21) Then Return
@@ -227,7 +199,7 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 		Next
 	Else
 		For $i = 0 To UBound($listInfoDeploy) - 1
-			If (IsString($listInfoDeploy[$i][0]) And ($listInfoDeploy[$i][0] = "CC" Or $listInfoDeploy[$i][0] = "HEROES" or $listInfoDeploy[$i][0] = "SPELL" or $listInfoDeploy[$i][0] = "EARTH")) Then
+			If (IsString($listInfoDeploy[$i][0]) And ($listInfoDeploy[$i][0] = "CC" Or $listInfoDeploy[$i][0] = "HEROES")) Then
 				If $iMatchMode = $LB And $iChkDeploySettings[$LB] >= 4 Then ; Used for DE or TH side attack
 					Local $RandomEdge = $Edges[$BuildingEdge]
 					Local $RandomXY = 2
@@ -239,34 +211,6 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 					dropCC($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $CC)
 				ElseIf ($listInfoDeploy[$i][0] = "HEROES") Then
 					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $King, $Queen,$Warden)
-								   ElseIf ($listInfoDeploy[$i][0] = "SPELL") Then
-					If $iChkDEUseSpell = 1 Then
-					   If $iChkDEUseSpellType = 0 Then
-							local $spell = $eHSpell
-						ElseIf $iChkDEUseSpellType = 1 Then
-							local $spell = $eRSpell
-						 EndIf
-						 DESpellDP()
-						dropSpell($SpellDP[0], $SpellDP[1], $spell)
-					 EndIf
-					 ElseIf ($listInfoDeploy[$i][0] = "EARTH") Then
-					If $iChkUseEarthSpell = 1 Then
-					   If $iChkUseEarthSpellType = 0 Then
-							local $spell = $eESpell
-						    Local $SwitchtoProfile = ""
-						 EndIf
-						If $BuildingLoc = 1 Then
-					  ;drop spell towards the DE storage
-  				      dropEarth(ceiling((((100-$iDeSpellDistance)*$RandomEdge[$RandomXY][0])+($iDeSpellDistance*$BuildingLocx))/100), _
-					            ceiling((((100-$iDeSpellDistance)*$RandomEdge[$RandomXY][1])+($iDeSpellDistance*$BuildingLocy))/100), _
-								$spell)
-				   Else
-				      ;drop spell towards the center
-  				      dropEarth(ceiling((((100-$iDeSpellDistance)*430)+($iDeSpellDistance*$BuildingLocx))/100), _
-					            ceiling((((100-$iDeSpellDistance)*313)+($iDeSpellDistance*$BuildingLocy))/100), _
-								$spell)
-				      EndIf
-					EndIf
 				EndIf
 			Else
 				If LauchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then

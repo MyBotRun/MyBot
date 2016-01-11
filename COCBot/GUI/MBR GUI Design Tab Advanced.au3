@@ -92,49 +92,6 @@
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-;noyax top
-		$y += 21
-		$cmbTHsnMeetGE = GUICtrlCreateCombo("", $x , $y + 10, 65, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			$txtTip = GetTranslated(2,19, -1) & @CRLF & GetTranslated(2,20, -1) & @CRLF & GetTranslated(2,21, -1) & @CRLF & GetTranslated(2,22, -1)
-			GUICtrlSetData(-1, GetTranslated(2,23, -1) & "|" & GetTranslated(2,24, -1) & "|" & GetTranslated(2,25, -1), GetTranslated(2,25, -1))
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetOnEvent(-1, "cmbTHsnGoldElixir")
-		$txtTHsnMinGold = GUICtrlCreateInput("80000", $x + 80, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$txtTip = GetTranslated(2,26, -1)
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetLimit(-1, 6)
-			GUICtrlSetState (-1, $GUI_HIDE)
-		$picTHsnMinGold = GUICtrlCreateIcon($pIconLib, $eIcnGold, $x + 131, $y, 16, 16)
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetState (-1, $GUI_HIDE)
-		$y += 21
-		$txtTHsnMinElixir = GUICtrlCreateInput("80000", $x + 80, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$txtTip = GetTranslated(2,27, -1)
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetLimit(-1, 6)
-			GUICtrlSetState (-1, $GUI_HIDE)
-		$picTHsnMinElixir = GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x + 131, $y, 16, 16)
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetState (-1, $GUI_HIDE)
-		$y -= 11
-		$txtTHsnMinGoldPlusElixir = GUICtrlCreateInput("160000", $x + 80, $y, 50, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$txtTip = GetTranslated(2,28, -1)
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetLimit(-1, 6)
-		$picTHsnMinGPEGold = GUICtrlCreateIcon($pIconLib, $eIcnGold, $x + 131, $y + 1, 16, 16)
-			GUICtrlSetTip(-1, $txtTip)
-		$lblTHsnMinGPE = GUICtrlCreateLabel("+", $x + 147, $y + 1, -1, -1)
-			GUICtrlSetTip(-1, $txtTip)
-		$picTHsnMinGPEElixir = GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x + 153, $y + 1, 16, 16)
-			GUICtrlSetTip(-1, $txtTip)
-		$txtTHSnMinDarkElixir = GUICtrlCreateInput("0", $x + 80, $y + 31, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$txtTip = GetTranslated(2,31, "Set the Min. amount of Dark Elixir to search for on a village to attack.")
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetLimit(-1, 5)
-		$lblTHsnMinDarkElixir = GUICtrlCreateLabel("Dark Elixir", $x , $y + 31, -1, -1)
-			GUICtrlSetTip(-1, $txtTip)
-		
-;noyax bottom
 		$y+= 50
 ;~ 		$lblAttackTHType = GUICtrlCreateLabel(GetTranslated(4,30, "Attack TH Type") & ":", $x - 8 , $y + 5 , -1, 17, $SS_RIGHT)
 ;~ 		$cmbAttackTHType = GUICtrlCreateCombo("",  $x + 80, $y, 120, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
@@ -202,20 +159,6 @@
 
 
 		$y+= 30
-; Noyax top
-		$chkAttIfDB = GUICtrlCreateCheckbox("Attack if loots <", $x  , $y, -1, -1)
-			$txtTip = "Attack if TH Snipe found dead base"
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetState(-1, $GUI_DISABLE)
-		$lblAttIfDB = GUICtrlCreateLabel("% of total loots", $x + 125, $y+5, -1, 17)
-		    GUICtrlSetTip(-1, $txtTip)
-		$txtAttIfDB = GUICtrlCreateInput("10", $x + 95, $y + 1, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetLimit(-1, 2)
-			GUICtrlSetState(-1, $GUI_DISABLE)
-		
-
-;Noyax bottom		
 
 ;~ 		$btnTestTHcsv = GUICtrlCreateButton("Test TH attack in log", $x , $y + 45, -1, -1)
 ;~ 			$txtTip = "Click here to parse crv attack and show results in log"

@@ -27,7 +27,7 @@ $tabAttack = GUICtrlCreateTabItem(GetTranslated(3,1, "Attack"))
 		$y += 25
 		$lblDBSelectTroop=GUICtrlCreateLabel(GetTranslated(3,12, "Troops") & ":",$x, $y + 5, -1 , -1)
 		$cmbDBSelectTroop=GUICtrlCreateCombo("", $x + 55, $y, 120, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-		GUICtrlSetData(-1, GetTranslated(3,13, "Use All Troops") &"|"&GetTranslated(3,14, "Use Barracks")&"|"&GetTranslated(3,15, "Barb Only")&"|" & GetTranslated(3,16, "Arch Only") &"|"&GetTranslated(3,17, "B+A")&"|"&GetTranslated(3,18, "B+Gob")&"|"&GetTranslated(3,19, "A+Gob")&"|"&GetTranslated(3,20, "B+A+Gi")&"|"&GetTranslated(3,21, "B+A+Gob+Gi")&"|"&GetTranslated(3,22, "B+A+Hog Rider")&"|"&GetTranslated(3,23, "B+A+Minion") , GetTranslated(3,13, "Use All Troops"))
+			GUICtrlSetData(-1, GetTranslated(3,13, "Use All Troops") &"|"&GetTranslated(3,14, "Use Barracks")&"|"&GetTranslated(3,15, "Barb Only")&"|" & GetTranslated(3,16, "Arch Only") &"|"&GetTranslated(3,17, "B+A")&"|"&GetTranslated(3,18, "B+Gob")&"|"&GetTranslated(3,19, "A+Gob")&"|"&GetTranslated(3,20, "B+A+Gi")&"|"&GetTranslated(3,21, "B+A+Gob+Gi")&"|"&GetTranslated(3,22, "B+A+Hog Rider")&"|"&GetTranslated(3,23, "B+A+Minion") , GetTranslated(3,13, "Use All Troops"))
 		$y += 25
 		$lblDBUnitDelay = GUICtrlCreateLabel(GetTranslated(3,24, "Delay Unit") & ":", $x, $y + 5, -1, -1)
 			$txtTip = GetTranslated(3,25, "This delays the deployment of troops, 1 (fast) = like a Bot, 10 (slow) = Like a Human.") & @CRLF & GetTranslated(3,26, "Random will make bot more varied and closer to a person.")
@@ -44,8 +44,7 @@ $tabAttack = GUICtrlCreateTabItem(GetTranslated(3,1, "Attack"))
 		$chkDBRandomSpeedAtk = GUICtrlCreateCheckbox(GetTranslated(3,28, "Randomize delay for Units & Waves"), $x, $y, -1, -1)
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "chkDBRandomSpeedAtk")
-		$y += 22
-		$y = 250
+	$y = 250
 		$chkDBSmartAttackRedArea = GUICtrlCreateCheckbox(GetTranslated(3,29, "Use Smart Attack: Near Red Line."), $x, $y, -1, -1)
 			$txtTip = GetTranslated(3,30, "Use Smart Attack to detect the outer 'Red Line' of the village to attack. And drop your troops close to it.")
 			GUICtrlSetTip(-1, $txtTip)
@@ -77,21 +76,6 @@ $tabAttack = GUICtrlCreateTabItem(GetTranslated(3,1, "Attack"))
 		$picDBAttackNearDarkElixirDrill = GUICtrlCreateIcon($pIconLib, $eIcnDrill, $x + 20 , $y - 3, 24, 24)
  			GUICtrlSetTip(-1, $txtTip)
 	Local $x = 30, $y = 335
-;Noyax
-		$y -= 15
-		$chkDBAttMilk = GUICtrlCreateCheckbox( "Milking with", $x, $y, -1, -1)
-			$txtTip = "Use Gobelins Power to try Milking."
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetState(-1, $GUI_CHECKED)
-			GUICtrlSetOnEvent(-1, "chkDBAttMilk")
-		$txtDBAttMilk = GUICtrlCreateInput("90", $x + 80, $y + 3, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$txtTip = "Number of troops used for milking attack"
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetLimit(-1, 5)
-			_GUICtrlEdit_SetReadOnly(-1, False)
-		$lblDBAttMilkDB = GUICtrlCreateLabel("Gobs", $x + 108, $y + 3)
-		$y += 15
-;Noyax bottom
 		$lblUseInBattleDB = GUICtrlCreateLabel(GetTranslated(3,68, "Use in battle") & ":", $x, $y + 5, -1, -1)
 		$y +=27
 			GUICtrlCreateIcon($pIconLib, $eIcnKing, $x , $y, 24, 24)
@@ -130,7 +114,7 @@ $tabAttack = GUICtrlCreateTabItem(GetTranslated(3,1, "Attack"))
 		$y += 25
 		$lblABSelectTroop=GUICtrlCreateLabel(GetTranslated(3,12, -1) & ":",$x, $y + 5, -1 , -1)
 		$cmbABSelectTroop=GUICtrlCreateCombo("", $x + 55, $y, 120, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-		GUICtrlSetData(-1, GetTranslated(3,13, -1) & "|" & GetTranslated(3,14, -1)&"|"&GetTranslated(3,15, -1)&"|" & GetTranslated(3,16, -1) & "|" & GetTranslated(3,17, -1) & "|" & GetTranslated(3,18, -1) & "|" & GetTranslated(3,19, -1) & "|" & GetTranslated(3,20, -1) & "|" & GetTranslated(3,21, -1) & "|" & GetTranslated(3,22, -1) & "|" & GetTranslated(3,23, -1) , GetTranslated(3,13, -1))
+			GUICtrlSetData(-1, GetTranslated(3,13, -1) & "|" & GetTranslated(3,14, -1)&"|"&GetTranslated(3,15, -1)&"|" & GetTranslated(3,16, -1) & "|" & GetTranslated(3,17, -1) & "|" & GetTranslated(3,18, -1) & "|" & GetTranslated(3,19, -1) & "|" & GetTranslated(3,20, -1) & "|" & GetTranslated(3,21, -1) & "|" & GetTranslated(3,22, -1) & "|" & GetTranslated(3,23, -1) , GetTranslated(3,13, -1))
 		$y += 25
 		$lblABUnitDelay = GUICtrlCreateLabel(GetTranslated(3,24, "Delay Unit") & ":", $x, $y + 5, -1, -1)
 			$txtTip = GetTranslated(3,25, -1) & @CRLF & GetTranslated(3,26, -1)

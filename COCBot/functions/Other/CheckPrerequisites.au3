@@ -80,21 +80,17 @@ EndFunc   ;==>isEveryFileInstalled
 Func CheckPrerequisites()
 	Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
 	Local $isVC2010Installed = isVC2010Installed()
-	If @OSVersion = "WIN_XP" Then ;Noyax: modification by shadow046 to Win XP user https://mybot.run/forums/thread-13935-post-120434.html#pid120434
-		SetLog("Skip test version of framework", $COLOR_RED) ;Noyax: modification by shadow046 to Win XP user
-	Else ;Noyax: modification by shadow046 to Win XP user
-		If ($isNetFramework4dot5Installed = False Or $isVC2010Installed = False) Then
-			If ($isNetFramework4dot5Installed = False) Then
-				SetLog("The .Net Framework 4.5 is not installed", $COLOR_RED)
-				SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=30653", $COLOR_RED)
-			EndIf
-			If ($isVC2010Installed = False) Then
-				SetLog("The VC 2010 x86 is not installed", $COLOR_RED)
-				SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=5555", $COLOR_RED)
-			EndIf
-
-			GUICtrlSetState($btnStart, $GUI_DISABLE)
+	If ($isNetFramework4dot5Installed = False Or $isVC2010Installed = False) Then
+		If ($isNetFramework4dot5Installed = False) Then
+			SetLog("The .Net Framework 4.5 is not installed", $COLOR_RED)
+			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=30653", $COLOR_RED)
 		EndIf
-	EndIf ;Noyax: modification by shadow046 to Win XP user
-   If isEveryFileInstalled() = False Then Exit
+		If ($isVC2010Installed = False) Then
+			SetLog("The VC 2010 x86 is not installed", $COLOR_RED)
+			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=5555", $COLOR_RED)
+		EndIf
+
+		GUICtrlSetState($btnStart, $GUI_DISABLE)
+	EndIf
+	If isEveryFileInstalled() = False Then Exit
 EndFunc   ;==>CheckPrerequisites
