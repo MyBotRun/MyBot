@@ -174,20 +174,24 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			]
 	Else
 		If $debugSetlog =1 Then SetLog("listdeploy standard for attack", $COLOR_PURPLE)
-		Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[15][5] = [ _
+			  [$eGiant, $nbSides, 1, 1, 2] _
 			, [$eBarb, $nbSides, 1, 2, 0] _
+			, [$ePekk, $nbSides, 1, 1, 0] _
+			, [$eValk, $nbSides, 1, 1, 0] _
 			, [$eWall, $nbSides, 1, 1, 1] _
+			, ["CC", 1, 1, 1, 1] _
+			, ["HEROES", 1, 2, 1, 1] _
 			, [$eArch, $nbSides, 1, 2, 0] _
 			, [$eBarb, $nbSides, 2, 2, 0] _
 			, [$eGobl, $nbSides, 1, 2, 0] _
-			, ["CC", 1, 1, 1, 1] _
 			, [$eHogs, $nbSides, 1, 1, 1] _
 			, [$eWiza, $nbSides, 1, 1, 0] _
 			, [$eMini, $nbSides, 1, 1, 0] _
 			, [$eArch, $nbSides, 2, 2, 0] _
 			, [$eGobl, $nbSides, 2, 2, 0] _
-			, ["HEROES", 1, 2, 1, 1] _
 			]
+
 	EndIf
 
 	LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
