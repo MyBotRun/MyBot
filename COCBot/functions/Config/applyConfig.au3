@@ -428,6 +428,7 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkTrophyMode, $GUI_UNCHECKED)
 	EndIf
 	GUICtrlSetData($txtTHaddTiles, $THaddTiles)
+	_GUICtrlComboBox_SetCurSel($cmbTHmatchBase, $icmbTHmatchBase)
 ;~ 	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, $icmbAttackTHType)
 	_GUICtrlComboBox_SetCurSel($cmbAttackbottomType, $icmbDeployBtmTHType)
 

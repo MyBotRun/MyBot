@@ -217,6 +217,7 @@ Func readConfig() ;Reads config and sets it to the variables
 
 		$OptTrophyMode = IniRead($config, "advanced", "TrophyMode", "0")
 		$THaddtiles = IniRead($config, "advanced", "THaddTiles", "2")
+		$icmbTHmatchBase = IniRead($config, "advanced", "THmatchBase", "0")
 		;$icmbAttackTHType = IniRead($config, "advanced", "AttackTHType", "3")
 		$scmbAttackTHType = IniRead($config, "advanced", "AttackTHType", "bam")
 		$icmbDeployBtmTHType = IniRead($config, "advanced", "AttackBottomTHType", "1")
