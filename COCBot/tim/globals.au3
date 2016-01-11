@@ -1,3 +1,5 @@
+TEST
+
 #include <Array.au3>
 #include <String.au3>
 ; I know a lot of this info is already defined in the bot but I like my format better :)
@@ -234,6 +236,8 @@ Func goToBarracks($targetBarracks)
 EndFunc
 
 
+; UI Variables
+
 Global $rtTankPerc
 Global $rtMeleePerc
 Global $rtRangedPerc
@@ -243,13 +247,4 @@ Global $rtElixirMax
 Global $rtElixirRes
 Global $rtDarkMax
 Global $rtDarkRes
-
-; Func runTest()
-; 	SetLog("Lookin for a pixel")
-; 	If _CheckPixel($aIsMain, True) Then
-; 		SetLog("I have a pixel!!!")
-; 		SetLog(_GetPixelColor($aIsMain[0], $aIsMain[1], True))
-; 	EndIf
-; EndFunc
-
 
