@@ -16,9 +16,9 @@
 
 Func readConfig() ;Reads config and sets it to the variables
 	If FileExists($building) Then
-		$TownHallPos[0] = IniRead($building, "other", "xTownHall", "-1")
-		$TownHallPos[1] = IniRead($building, "other", "yTownHall", "-1")
-		$iTownHallLevel = IniRead($building, "other", "LevelTownHall", "0")
+;		$TownHallPos[0] = IniRead($building, "other", "xTownHall", "-1")
+;		$TownHallPos[1] = IniRead($building, "other", "yTownHall", "-1")
+;		$iTownHallLevel = IniRead($building, "other", "LevelTownHall", "0")
 
 		$aCCPos[0] = IniRead($building, "other", "xCCPos", "0")
 		$aCCPos[1] = IniRead($building, "other", "yCCPos", "0")
