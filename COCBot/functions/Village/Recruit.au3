@@ -37,7 +37,10 @@ Func Recruit()
 			$iRecruitCount = 0
 		EndIf
 		If $sRecruitMessage <> "" Then
+			SetLog("Recuitment enabled, sending message : " & $sRecruitMessage , $COLOR_BLUE)
 			_sendRecruitMessage($sRecruitMessage)
+		Else
+			SetLog("Recuitment failed: no message", $COLOR_ORANGE)
 		EndIf
 		FileClose($f)
 	Else
