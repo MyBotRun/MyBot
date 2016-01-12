@@ -15,22 +15,22 @@
 
 Func Recruit()
 
-	Local $f , $line, $firstLine, $lineCount, $sRecruitMessage
+	Local $f , $line, $firstLine = "", $lineCount = 0, $sRecruitMessage = ""
 	If FileExists($fileRecruitMessages) Then
-		$lineCount = 0
-		$selectedLine = ""
 		$f = FileOpen($fileRecruitMessages, 0)
 		; Read in lines of text until the EOF is reached
 		While 1
 			$line = FileReadLine($f)
 			If @error = -1 Then ExitLoop
 			;Setlog("line content: " & $line)
+			$line = StringStripWS($line, $STR_STRIPLEADING + $STR_STRIPTRAILING + $STR_STRIPSPACES)
+			If $line = "" Or StringLeft($line, 1) = "#" Then ContinueLoop
 			If $lineCount = 0 Then $firstLine = $line
-			$lineCount += 1
-			If $lineCount = $iRecruitCount And Not StringLeft($line, 1) = "#" Then
+			If $lineCount = $iRecruitCount Then
 				$sRecruitMessage = $line
 				$iRecruitCount += 1
 			EndIf
+			$lineCount += 1
 		WEnd
 		If $sRecruitMessage = "" Then
 			$sRecruitMessage = $firstLine
