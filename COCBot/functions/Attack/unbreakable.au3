@@ -6,7 +6,7 @@
 ; Return values .: False if regular farming is needed to refill storage
 ; Author ........: KnowJack (Jul/Aug 2015) updated for COC changes, added early Take-A-Break Detection
 ; Modified ......: Sardo (2015-08), MonkeyHunter (2015-12)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,10 +21,7 @@ Func Unbreakable()
 	; Set absolute minimum loot required to still farm for more loot in Farm Minimum setting, and Save Minimum setting loot that will atttact enemy attackers
 	;
 	Local $x, $y, $i, $iTime, $iCount
-; temp disable
-Setlog("unbreakable disabled,  work in progress")
-Return
-;
+
 	Switch $iUnbreakableMode
 		Case 2
 			If (Number($iGoldCurrent) > Number($iUnBrkMaxGold)) And (Number($iElixirCurrent) > Number($iUnBrkMaxElixir)) And (Number($iDarkCurrent) > Number($iUnBrkMaxDark)) Then
@@ -94,89 +91,12 @@ Return
 		$iCount += 1
 	WEnd
 	If $Restart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
-	;begin new code for Dec CoC Update to break shield and stop personal break time
-	If $debugSetlog = 1 Then Setlog("Have shield pixel color: " & _GetPixelColor($aHaveShield, $bCapturePixel), $COLOR_PURPLE)
-	If _CheckPixel($aHaveShield, $bCapturePixel) Then  ; check for shield
-		If IsMainPage() Then PureClickP($aRemoveShldButton)
-		If _Sleep($iDelayUnbreakable1) Then Return True ; wait for break shield confirm button
-		While 1 ; wait window with cancel shield button
-			Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
-			Global $ButtonPixel = _MultiPixelSearch(438, 372 + $midOffsetY, 590, 404 + $midOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay, adjust down 30 pixel for 860x780
-			If $debugSetlog = 1 Then Setlog("Shield btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_PURPLE)
-			If IsArray($ButtonPixel) Then
-				If $debugSetlog = 1 Then
-					Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
-					Setlog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_PURPLE)
-				EndIf
-				PureClick($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 2, 50) ; Click Okay Button
-				ExitLoop
-			EndIf
-			If $i > 15 Then
-				Setlog("Can not find Okay button to break shield, giving up", $COLOR_RED)
-				If $debugImageSave = 1 Then DebugImageSave("UnbreakableShieldButtonnCheck_")
-				SetError(1, @extended, False)
-				Return True
-			EndIf
-			$i += 1
-		WEnd
-	Else
-		If $debugSetlog = 1 Then Setlog("No shield to cancel", $COLOR_GREEN)
+
+	BreakPersonalShield()  ; break personal Shield and Personal Guard
+	If @error Then
+		If @extended <> "" Then Setlog("PersonalShield button problem: " & @extended, $COLOR_RED)
+		Return True ; return to runbot and try again
 	EndIf
-
-
-	If $debugSetlog = 1 Then Setlog("Have guard pixel color: " & _GetPixelColor($aHavePerGuard, $bCapturePixel), $COLOR_PURPLE)
-	If _CheckPixel($aHavePerGuard, $bCapturePixel) Then ; check for personal guard timer
-		If IsMainPage() Then PureClickP($aRemoveShldButton)
-		If _Sleep($iDelayUnbreakable1) Then Return True ; wait for break guard confirm button
-	While 1 ; look for cancel guard button
-		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
-		Global $ButtonPixel = _MultiPixelSearch(438, 372 + $midOffsetY, 590, 404 + $midOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay, adjust down 30 pixel for 860x780
-		If $debugSetlog = 1 Then Setlog("Guard btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_PURPLE)
-		If IsArray($ButtonPixel) Then
-			If $debugSetlog = 1 Then
-				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
-				Setlog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_PURPLE)
-			EndIf
-			PureClick($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 2, 50) ; Click Okay Button
-			ExitLoop
-		EndIf
-		If $i > 15 Then
-			Setlog("Can not find Okay button to end Personal Guard, giving up", $COLOR_RED)
-			If $debugImageSave = 1 Then DebugImageSave("UnbreakableGuardButtonnCheck_")
-			SetError(1, @extended, False)
-			Return True
-		EndIf
-		$i += 1
-		WEnd
-	Else
-		If $debugSetlog = 1 Then Setlog("No personal guard to cancel", $COLOR_GREEN)
-	EndIf
-
-#comments-start  REMOVE OLD SHIELD BREAK CODE
-	PrepareSearch() ; Break Shield
-	If _Sleep($iDelayUnbreakable3) Then Return
-
-	$i = 0
-	While _CheckPixel($aSurrenderButton, True) = False
-	If _Sleep($iDelayUnbreakable1) Then Return ; wait for clouds to disappear and the end battle button to appear
-	If $i > 45 Then
-	Setlog("Excess Cloud Watching Time, Try again", $COLOR_RED)
-	Return
-	EndIf
-	$i += 1
-	WEnd
-
-	SetLog("Returning Home For Defense", $COLOR_BLUE)
-	If _Sleep($iDelayUnbreakable1) Then Return
-
-	$i = 0
-	While _CheckPixel($aSurrenderButton, True) = True
-	PureClickP($aSurrenderButton, 1, 0, "#0114") ;Click End Battle
-	If _Sleep($iDelayUnbreakable1) Then Return ; wait for button to disappear
-	If $i > 15 Then ExitLoop
-	$i += 1
-	WEnd
-#comments-end
 
 	ClickP($aAway, 2, $iDelayUnbreakable8, "#0115") ;clear screen selections
 	If _Sleep($iDelayUnbreakable1) Then Return True

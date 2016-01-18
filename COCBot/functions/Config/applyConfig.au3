@@ -2,11 +2,11 @@
 ; Name ..........: applyConfig.au3
 ; Description ...: Applies all of the  variable to the GUI
 ; Syntax ........: applyConfig()
-; Parameters ....: NA
+; Parameters ....: $bRedrawAtExit = True, redraws bot window after config was applied
 ; Return values .: NA
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,9 +14,13 @@
 ; ===============================================================================================================================
 
 
-Func applyConfig() ;Applies the data from config to the controls in GUI
+Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the controls in GUI
+
 	;General Settings--------------------------------------------------------------------------
 	If $frmBotPosX <> -32000 Then WinMove2($sBotTitle, "", $frmBotPosX, $frmBotPosY)
+
+	; Move with redraw disabled causes ghost window in VMWare, so move first then disable redraw
+	SetRedrawBotWindow(False)
 
 	If $iVillageName = "" Then
 		GUICtrlSetData($txtVillageName, "MyVillage")
@@ -218,14 +222,7 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetData($txtRestartSearchlimit, $iRestartSearchlimit)
 	ChkRestartSearchLimit()
 
-	If $iDeadBase75percent = 1 Then
-		GUICtrlSetState($chkenable75percent, $GUI_CHECKED)
-	Else
-		GUICtrlSetState($chkenable75percent, $GUI_UNCHECKED)
-	EndIf
 
-	_GUICtrlComboBox_SetCurSel($cmbenable75percent, $iDeadBase75percentStartLevel)
-	chkenable75percent()
 
 	;Attack Settings-------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbDBDeploy, $iChkDeploySettings[$DB])
@@ -429,7 +426,18 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	EndIf
 	GUICtrlSetData($txtTHaddTiles, $THaddTiles)
 ;~ 	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, $icmbAttackTHType)
-	_GUICtrlComboBox_SetCurSel($cmbAttackbottomType, $icmbDeployBtmTHType)
+
+	If $iChkEnableAfter[$TS] = 1 Then
+		GUICtrlSetState($chkTSEnableAfter, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkTSEnableAfter, $GUI_UNCHECKED)
+	EndIf
+	chkTSEnableAfter()
+	GUICtrlSetData($txtTSEnableAfter, $iEnableAfterCount[$TS])
+	GUICtrlSetData($txtTSMinGold, $iMinGold[$TS])
+	GUICtrlSetData($txtTSMinElixir, $iMinElixir[$TS])
+	GUICtrlSetData($txtTSMinGoldPlusElixir, $iMinGoldPlusElixir[$TS])
+	GUICtrlSetData($txtTSMinDarkElixir, $iMinDark[$TS])
 
 	If $ichkUseKingTH = 1 Then
 		GUICtrlSetState($chkUseKingTH, $GUI_CHECKED)
@@ -736,6 +744,33 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetData($txtDonateLavaHounds, $sTxtDonateLavaHounds)
 	GUICtrlSetData($txtBlacklistLavaHounds, $sTxtBlacklistLavaHounds)
 
+	If $ichkDonatePoisonSpells = 1 Then
+		GUICtrlSetState($chkDonatePoisonSpells, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDonatePoisonSpells, $GUI_UNCHECKED)
+	EndIf
+	chkDonatePoisonSpells()
+	GUICtrlSetData($txtDonatePoisonSpells, $sTxtDonatePoisonSpells)
+	GUICtrlSetData($txtBlacklistPoisonSpells, $sTxtBlacklistPoisonSpells)
+
+	If $ichkDonateEarthQuakeSpells = 1 Then
+		GUICtrlSetState($chkDonateEarthQuakeSpells, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDonateEarthQuakeSpells, $GUI_UNCHECKED)
+	EndIf
+	chkDonateEarthQuakeSpells()
+	GUICtrlSetData($txtDonateEarthQuakeSpells, $sTxtDonateEarthQuakeSpells)
+	GUICtrlSetData($txtBlacklistEarthQuakeSpells, $sTxtBlacklistEarthQuakeSpells)
+
+	If $ichkDonateHasteSpells = 1 Then
+		GUICtrlSetState($chkDonateHasteSpells, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDonateHasteSpells, $GUI_UNCHECKED)
+	EndIf
+	chkDonateHasteSpells()
+	GUICtrlSetData($txtDonateHasteSpells, $sTxtDonateHasteSpells)
+	GUICtrlSetData($txtBlacklistHasteSpells, $sTxtBlacklistHasteSpells)
+
 	;;; Custom Combination Donate by ChiefM3
 	If $ichkDonateCustom = 1 Then
 		GUICtrlSetState($chkDonateCustom, $GUI_CHECKED)
@@ -868,6 +903,27 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkDonateAllLavaHounds, $GUI_UNCHECKED)
 	EndIf
 
+	If $ichkDonateAllPoisonSpells = 1 Then
+		GUICtrlSetState($chkDonateAllPoisonSpells, $GUI_CHECKED)
+		_DonateAllControlsSpell(0, True)
+	Else
+		GUICtrlSetState($chkDonateAllPoisonSpells, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkDonateAllEarthQuakeSpells = 1 Then
+		GUICtrlSetState($chkDonateAllEarthQuakeSpells, $GUI_CHECKED)
+		_DonateAllControlsSpell(1, True)
+	Else
+		GUICtrlSetState($chkDonateAllEarthQuakeSpells, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkDonateAllHasteSpells = 1 Then
+		GUICtrlSetState($chkDonateAllHasteSpells, $GUI_CHECKED)
+		_DonateAllControlsSpell(2, True)
+	Else
+		GUICtrlSetState($chkDonateAllHasteSpells, $GUI_UNCHECKED)
+	EndIf
+
 	If $ichkDonateAllCustom = 1 Then
 		GUICtrlSetState($chkDonateAllCustom, $GUI_CHECKED)
 		_DonateAllControls(16, True)
@@ -876,9 +932,9 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	EndIf
 
 	; Extra Alphabets , Cyrillic.
-	If $ichkExtraAlphabets = 0 then
+	If $ichkExtraAlphabets = 0 Then
 		GUICtrlSetState($chkExtraAlphabets, $GUI_UNCHECKED)
-	ElseIf $ichkExtraAlphabets = 1 then
+	ElseIf $ichkExtraAlphabets = 1 Then
 		GUICtrlSetState($chkExtraAlphabets, $GUI_CHECKED)
 	EndIf
 
@@ -905,12 +961,12 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	;barracks boost not saved (no use)
 
 	; Spells Creation  ---------------------------------------------------------------------
-	GUICtrlSetData ($txtNumLightningSpell, $LightningSpellComp)
-	GUICtrlSetData ($txtNumRageSpell, $RageSpellComp)
-    GUICtrlSetData ($txtNumHealSpell, $HealSpellComp)
-	GUICtrlSetData ($txtNumPoisonSpell, $PoisonSpellComp)
-	GUICtrlSetData ($txtNumHasteSpell, $HasteSpellComp)
-	GUICtrlSetData ($txtTotalCountSpell, $iTotalCountSpell)
+	GUICtrlSetData($txtNumLightningSpell, $LightningSpellComp)
+	GUICtrlSetData($txtNumRageSpell, $RageSpellComp)
+	GUICtrlSetData($txtNumHealSpell, $HealSpellComp)
+	GUICtrlSetData($txtNumPoisonSpell, $PoisonSpellComp)
+	GUICtrlSetData($txtNumHasteSpell, $HasteSpellComp)
+	GUICtrlSetData($txtTotalCountSpell, $iTotalCountSpell)
 	lblTotalCountSpell()
 
 	;PushBullet-----------------------------------------------------------------------------
@@ -1051,7 +1107,7 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	cmbwalls()
 
 	GUICtrlSetData($txtRestartGold, $itxtRestartGold)
-	GUICtrlSetData($txtRestartElixir , $itxtRestartElixir)
+	GUICtrlSetData($txtRestartElixir, $itxtRestartElixir)
 	GUICtrlSetData($txtRestartDark, $itxtRestartDark)
 
 	If $ichkWalls = 1 Then
@@ -1143,6 +1199,8 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	Else
 		GUICtrlSetState($chkTrophyAtkDead, $GUI_UNCHECKED)
 	EndIf
+	GUICtrlSetData($txtDTArmyMin, $itxtDTArmyMin)
+	chkTrophyAtkDead()
 
 	;location of TH, CC, Army Camp, Barrack and Spell Fact. not Applied, only read
 
@@ -1226,9 +1284,9 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		Else
 			GUICtrlSetState(Eval("chkDropCCHours" & $i), $GUI_UNCHECKED)
 		EndIf
-	 Next
+	Next
 
-	 For $i = 0 To 23
+	For $i = 0 To 23
 		If $iPlannedBoostBarracksHours[$i] = 1 Then
 			GUICtrlSetState(Eval("chkBoostBarracksHours" & $i), $GUI_CHECKED)
 		Else
@@ -1277,7 +1335,11 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkDebugOcr, $GUI_ENABLE)
 		GUICtrlSetState($chkDebugImageSave, $GUI_ENABLE)
 		GUICtrlSetState($chkdebugBuildingPos, $GUI_ENABLE)
+		GUICtrlSetState($chkmakeIMGCSV, $GUI_ENABLE)
 		GUICtrlSetState($btnTestVillage, $GUI_SHOW)
+		GUICtrlSetState($btnTestVillage, $GUI_SHOW)
+		GUICtrlSetState($chkmakeIMGCSV, $GUI_SHOW)
+
 	EndIf
 
 	If $DebugSetlog = 1 Then
@@ -1304,6 +1366,11 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkdebugBuildingPos, $GUI_UNCHECKED)
 	EndIf
 
+	If $makeIMGCSV = 1 Then
+		GUICtrlSetState($chkmakeIMGCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkmakeIMGCSV, $GUI_UNCHECKED)
+	EndIf
 
 
 	;forced Total Camp values
@@ -1342,11 +1409,208 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 
 	;multilanguage
 	LoadLanguagesComboBox() ; recreate combo box values
-	_GUICtrlComboBox_SetCurSel($cmbLanguage, _GUICtrlComboBox_FindStringExact($cmbLanguage, $sLanguage))
+	_GUICtrlComboBox_SetCurSel($cmbLanguage, _GUICtrlComboBox_FindStringExact($cmbLanguage, $aLanguageFile[_ArraySearch($aLanguageFile, $sLanguage)][1]))
+
 	;th snipe custom attacks
 	LoadThSnipeAttacks() ; recreate combo box values
 	_GUICtrlComboBox_SetCurSel($cmbAttackTHType, _GUICtrlComboBox_FindStringExact($cmbAttackTHType, $scmbAttackTHType))
 
+	;AttackCSV
+	If $KingAttackCSV[$DB] = 1 Then
+		GUICtrlSetState($chkDBKingAttackCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBKingAttackCSV, $GUI_UNCHECKED)
+	EndIf
+	If $KingAttackCSV[$LB] = 1 Then
+		GUICtrlSetState($chkABKingAttackCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABKingAttackCSV, $GUI_UNCHECKED)
+	EndIf
 
+	If $QueenAttackCSV[$DB] = 1 Then
+		GUICtrlSetState($chkDBQueenAttackCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBQueenAttackCSV, $GUI_UNCHECKED)
+	EndIf
+	If $QueenAttackCSV[$LB] = 1 Then
+		GUICtrlSetState($chkABQueenAttackCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABQueenAttackCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $iDropCCCSV[$DB] = 1 Then
+		GUICtrlSetState($chkDBDropCCCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBDropCCCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $iDropCCCSV[$LB] = 1 Then
+		GUICtrlSetState($chkABDropCCCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABDropCCCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $WardenAttackCSV[$DB] = 1 Then
+		GUICtrlSetState($chkDBWardenAttackCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBWardenAttackCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $WardenAttackCSV[$LB] = 1 Then
+		GUICtrlSetState($chkABWardenAttackCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABWardenAttackCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $iChkUseCCBalancedCSV = 1 Then
+		GUICtrlSetState($chkUseCCBalancedCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUseCCBalancedCSV, $GUI_UNCHECKED)
+	EndIf
+
+	_GUICtrlComboBox_SetCurSel($cmbCCDonatedCSV, $iCmbCCDonatedCSV - 1)
+	_GUICtrlComboBox_SetCurSel($cmbCCReceivedCSV, $iCmbCCReceivedCSV - 1)
+
+	chkBalanceDRCSV()
+
+	If $ichkLightSpell[$DB] = 1 Then
+		GUICtrlSetState($chkDBLightSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBLightSpellCSV, $GUI_UNCHECKED)
+	EndIf
+	If $ichkLightSpell[$LB] = 1 Then
+		GUICtrlSetState($chkABLightSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABLightSpellCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkHealSpell[$DB] = 1 Then
+		GUICtrlSetState($chkDBHealSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBHealSpellCSV, $GUI_UNCHECKED)
+	EndIf
+	If $ichkHealSpell[$LB] = 1 Then
+		GUICtrlSetState($chkABHealSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABHealSpellCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkRageSpell[$DB] = 1 Then
+		GUICtrlSetState($chkDBRageSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBRageSpellCSV, $GUI_UNCHECKED)
+	EndIf
+	If $ichkRageSpell[$LB] = 1 Then
+		GUICtrlSetState($chkABRageSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABRageSpellCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkJumpSpell[$DB] = 1 Then
+		GUICtrlSetState($chkDBJumpSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBJumpSpellCSV, $GUI_UNCHECKED)
+	EndIf
+	If $ichkJumpSpell[$LB] = 1 Then
+		GUICtrlSetState($chkABJumpSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABJumpSpellCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkFreezeSpell[$DB] = 1 Then
+		GUICtrlSetState($chkDBFreezeSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBFreezeSpellCSV, $GUI_UNCHECKED)
+	EndIf
+	If $ichkFreezeSpell[$LB] = 1 Then
+		GUICtrlSetState($chkABFreezeSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABFreezeSpellCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkPoisonSpell[$DB] = 1 Then
+		GUICtrlSetState($chkDBPoisonSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBPoisonSpellCSV, $GUI_UNCHECKED)
+	EndIf
+	If $ichkPoisonSpell[$LB] = 1 Then
+		GUICtrlSetState($chkABPoisonSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABPoisonSpellCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkEarthquakeSpell[$DB] = 1 Then
+		GUICtrlSetState($chkDBEarthquakeSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBEarthquakeSpellCSV, $GUI_UNCHECKED)
+	EndIf
+	If $ichkEarthquakeSpell[$LB] = 1 Then
+		GUICtrlSetState($chkABEarthquakeSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABEarthquakeSpellCSV, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkHasteSpell[$DB] = 1 Then
+		GUICtrlSetState($chkDBHasteSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBHasteSpellCSV, $GUI_UNCHECKED)
+	EndIf
+	If $ichkHasteSpell[$LB] = 1 Then
+		GUICtrlSetState($chkABHasteSpellCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABHasteSpellCSV, $GUI_UNCHECKED)
+	EndIf
+
+
+
+
+
+
+
+
+
+
+
+
+	Switch $iActivateKQConditionCSV
+		Case "Manual"
+			GUICtrlSetState($radManAbilitiesCSV, $GUI_CHECKED)
+		Case "Auto"
+			GUICtrlSetState($radAutoAbilitiesCSV, $GUI_CHECKED)
+	EndSwitch
+
+	If $iActivateWardenConditionCSV = 1 Then
+		GUICtrlSetState($chkUseWardenAbilityCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUseWardenAbilityCSV, $GUI_UNCHECKED)
+	EndIf
+
+	GUICtrlSetData($txtManAbilitiesCSV, ($delayActivateKQCSV / 1000))
+
+
+	;attackCSV
+	PopulateDBComboScriptsFiles() ; recreate combo box values
+	_GUICtrlComboBox_SetCurSel($cmbDBScriptName, _GUICtrlComboBox_FindStringExact($cmbDBScriptName, $scmbDBScriptName))
+	cmbDBScriptName()
+	If $ichkUseAttackDBCSV = 1 Then
+		GUICtrlSetState($chkUseAttackDBCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUseAttackDBCSV, $GUI_UNCHECKED)
+	EndIf
+	chkUseAttackDBCSV()
+
+	PopulateABComboScriptsFiles() ; recreate combo box values
+	_GUICtrlComboBox_SetCurSel($cmbABScriptName, _GUICtrlComboBox_FindStringExact($cmbABScriptName, $scmbABScriptName))
+	cmbABScriptName()
+	If $ichkUseAttackABCSV = 1 Then
+		GUICtrlSetState($chkUseAttackABCSV, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUseAttackABCSV, $GUI_UNCHECKED)
+	EndIf
+	chkUseAttackABCSV()
+
+
+	; Reenabling window redraw
+	If $bRedrawAtExit Then SetRedrawBotWindow(True)
 
 EndFunc   ;==>applyConfig

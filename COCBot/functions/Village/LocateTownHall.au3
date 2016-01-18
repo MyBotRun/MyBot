@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (July 2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,21 +20,25 @@ Func LocateTownHall($bLocationOnly = False)
 
 	SetLog("Locating Town Hall ...", $COLOR_BLUE)
 
+    WinGetAndroidHandle()
+    WinActivate($HWnD)
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) And _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 		Zoomout()
 		Collect()
 	EndIf
 
 	While 1
-		ClickP($aAway,1,0,"#0391")
 		_ExtMsgBoxSet(1 + 64, 1, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
 		$stext = $sErrorText & @CRLF & "Click OK then click on your TownHall" & @CRLF & @CRLF & _
 		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
 		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate TownHall", $stext, 30, $frmBot)
 		If $MsgBox = 1 Then
+		    WinGetAndroidHandle()
 			WinActivate($HWnD)
-			$TownHallPos[0] = FindPos()[0]
-			$TownHallPos[1] = FindPos()[1]
+			ClickP($aAway,1,0,"#0391")
+			Local $aPos = FindPos()
+			$TownHallPos[0] = $aPos[0]
+			$TownHallPos[1] = $aPos[1]
 			If _Sleep($iDelayLocateTownHall1) Then Return
 			If isInsideDiamond($TownHallPos) = False Then
 				$iStupid += 1

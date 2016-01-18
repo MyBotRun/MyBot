@@ -6,7 +6,7 @@
 ; Return values .: None, or $aTownHall if $bReTest = True
 ; Author ........: KnowJack (May 2015)
 ; Modified ......: Hervidero (okt 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -83,7 +83,7 @@ Func THSearch($bReTest = False)
 			$ImageInfo = "C# DLL"
 			;If $debugImageSave = 1 Then CaptureTHwithInfo($THx, $THy, $ImageInfo)
 			If $debugsetlog = 1 Then SetLog("TownHall: [" & $aTownHallLocal[0] & "," & $aTownHallLocal[1] & "], Level: " & $aTownHallLocal[2], $COLOR_BLUE)
-			Return $THText[Number($level) - 6]
+			Return $THText[$aTownHallLocal[2] < 6 ? 0 : $aTownHallLocal[2] - 6]
 		Else
 			If $debugsetlog = 1 Then SetLog("TownHall: [" & $pixel[0] & "," & $pixel[1] & "], Level: " & $level, $COLOR_PURPLE)
 			If $debugsetlog = 1 Then SetLog("Found TownHall with Invalid Location?", $COLOR_RED)

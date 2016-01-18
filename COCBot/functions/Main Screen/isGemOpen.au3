@@ -6,7 +6,7 @@
 ; Return values .: True if Gem window is open and it was closed with click to $aAway
 ; Author ........: KnowJack (May-2015)
 ; Modified ......: Sardo 2015-08, MonkeyHutner (2015-12)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

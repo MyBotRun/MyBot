@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GKevinOD (2014)
 ; Modified ......: DkEd, Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -38,16 +38,16 @@ Local $x = 30, $y = 150
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 30, $y = 205
-	$grpProfiles = GUICtrlCreateGroup(GetTranslated(7,26, "Switch Profiles"), $x - 20, $y - 20, 225, 55)
-		;$y -=5
+	$grpProfiles = GUICtrlCreateGroup(GetTranslated(7,26, "Switch Profiles"), $x - 20, $y - 20, 225, 45)
+		$y -=5
 		;$lblProfile = GUICtrlCreateLabel(GetTranslated(7,27, "Current Profile") & ":", $x, $y, -1, -1)
 		;$y += 15
-		$cmbProfile = GUICtrlCreateCombo("01", $x, $y, 40, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$cmbProfile = GUICtrlCreateCombo("01", $x - 3, $y, 40, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 		$txtTip = GetTranslated(7,28, "Use this to switch to a different profile")& @CRLF & GetTranslated(7,29, "Your profiles can be found in") & ": " & @CRLF & $sProfilePath
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetData(-1, "02|03|04|05|06", "01")
 		GUICtrlSetOnEvent(-1, "cmbProfile")
-		$txtVillageName = GUICtrlCreateInput(GetTranslated(7,30, "MyVillage"), $x + 50, $y, 130, 20, BitOR($SS_CENTER, $ES_AUTOHSCROLL))
+		$txtVillageName = GUICtrlCreateInput(GetTranslated(7,30, "MyVillage"), $x + 47, $y, 130, 20, BitOR($SS_CENTER, $ES_AUTOHSCROLL))
 		GUICtrlSetLimit (-1, 100, 0)
 		GUICtrlSetFont(-1, 9, 400, 1)
 		GUICtrlSetTip(-1, GetTranslated(7,31, "Your village/profile's name"))
@@ -55,8 +55,9 @@ Local $x = 30, $y = 205
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 260, $y = 205
-	$grpLanguages = GUICtrlCreateGroup(GetTranslated(7,32, "GUI Language"), $x - 20, $y - 20, 220, 55)
-		$cmbLanguage = GUICtrlCreateCombo("", $x , $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+	$grpLanguages = GUICtrlCreateGroup(GetTranslated(7,32, "GUI Language"), $x - 20, $y - 20, 220, 45)
+		$y -=5
+		$cmbLanguage = GUICtrlCreateCombo("", $x - 3 , $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 		$txtTip = GetTranslated(7,33, "Use this to switch to a different GUI language")
 		GUICtrlSetTip(-1, $txtTip)
 
@@ -66,8 +67,8 @@ Local $x = 260, $y = 205
 		GUICtrlSetOnEvent(-1, "cmbLanguage")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-Local $x = 30, $y = 265
-	$grpMisc = GUICtrlCreateGroup(GetTranslated(7,90, "Rearm, Collect, Clear"), $x -20, $y - 20 , 225, 100)
+Local $x = 30, $y = 253
+	$grpMisc = GUICtrlCreateGroup(GetTranslated(7,90, "Rearm, Collect, Clear"), $x -20, $y - 20 , 225, 115)
 	;$grpTraps = GUICtrlCreateGroup(GetTranslated(7,91, "Traps, X-bows && Infernos"), $x -20, $y - 20 , 225, 55)
 		GUICtrlCreateIcon($pIconLib, $eIcnTrap, $x - 5, $y, 24, 24)
 		GUICtrlCreateIcon($pIconLib, $eIcnXbow, $x + 20, $y, 24, 24)
@@ -77,7 +78,7 @@ Local $x = 30, $y = 265
 			GUICtrlSetOnEvent(-1, "chkTrap")
 			_ArrayConcatenate($G, $D)
 	;GUICtrlCreateGroup("", -99, -99, 1, 1)
-	$y += 25
+	$y += 28
 	;Local $x = 30, $y = 335
 	;$grpCollect = GUICtrlCreateGroup(GetTranslated(7,92, "Collecting Resources"), $x - 20, $y - 20 , 225, 60)
 		GUICtrlCreateIcon($pIconLib, $eIcnMine, $x - 5, $y, 24, 24)
@@ -88,7 +89,7 @@ Local $x = 30, $y = 265
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_CHECKED)
 	;GUICtrlCreateGroup("", -99, -99, 1, 1)
-	$y += 25
+	$y += 28
 	;Local $x = 30, $y = 400
 	;$grpTombstones = GUICtrlCreateGroup(GetTranslated(7,93, "Clear Tombstones"), $x - 20, $y - 20 , 225, 55)
 		GUICtrlCreateIcon($pIconLib, $eIcnTombstone, $x + 20, $y, 24, 24)
@@ -98,8 +99,8 @@ Local $x = 30, $y = 265
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-	Local $x = 30, $y = 375
-	$grpRestartMins = GUICtrlCreateGroup(GetTranslated(7,41, "Resume Bot"), $x - 20, $y - 20 , 225, 85)
+	Local $x = 30, $y = 371
+	$grpRestartMins = GUICtrlCreateGroup(GetTranslated(7,41, "Resume Bot"), $x - 20, $y - 20 , 225, 89)
 		$lblRestartMins = GUICtrlCreateLabel(GetTranslated(7,42, "Resume when reaching these minimal values, if Halted due to low resources."), $x, $y, 110, 50, $BS_MULTILINE)
 		$y -= 7
 		$lblRestartGold = GUICtrlCreateLabel(">", $x + 112, $y, -1, -1)
@@ -108,14 +109,14 @@ Local $x = 30, $y = 265
 			$txtTip = GetTranslated(7,43, "Minimum Gold value for the bot to resume attacking after halting because of low gold.")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 7)
-		$y += 20
+		$y += 22
 		$lblRestartElixir = GUICtrlCreateLabel(">", $x + 112, $y, -1, -1)
 		GUICtrlCreateIcon ($pIconLib, $eIcnElixir, $x + 175, $y, 16, 16)
 		$txtRestartElixir = GUICtrlCreateInput("25000", $x + 120, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$txtTip = GetTranslated(7,44, "Minimum Elixir value for the bot to resume attacking after halting because of low elixir.")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 7)
-		$y += 20
+		$y += 22
 		$lblRestartDark = GUICtrlCreateLabel(">", $x + 112, $y, -1, -1)
 		GUICtrlCreateIcon ($pIconLib, $eIcnDark, $x + 175, $y, 16, 16)
 		$txtRestartDark = GUICtrlCreateInput("500", $x + 120, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -124,9 +125,9 @@ Local $x = 30, $y = 265
 			GUICtrlSetLimit(-1, 6)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-	Local $x = 260, $y = 265
-	$grpTrophy = GUICtrlCreateGroup(GetTranslated(7,46, "Trophy Settings"), $x - 20, $y - 20, 220, 65)
-		GUICtrlCreateIcon($pIconLib, $eIcnTrophy, $x - 10, $y + 5, 24, 24)
+	Local $x = 260, $y = 253
+	$grpTrophy = GUICtrlCreateGroup(GetTranslated(7,46, "Trophy Settings"), $x - 20, $y - 20, 220, 88)
+		GUICtrlCreateIcon($pIconLib, $eIcnTrophy, $x - 12, $y + 17, 24, 24)
 		$lblTrophyRange = GUICtrlCreateLabel(GetTranslated(7,47, "Trophy range") & ":", $x + 20, $y, -1, -1)
 		$txtdropTrophy = GUICtrlCreateInput("5000", $x + 110, $y - 5, 35, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$txtTip = GetTranslated(7,48, "MIN: The Bot will drop trophies until below this value.")
@@ -137,23 +138,37 @@ Local $x = 30, $y = 265
 			$txtTip = GetTranslated(7,49, "MAX: The Bot will drop trophies if your trophy count is greater than this value.")
 			GUICtrlSetLimit(-1, 4)
 			GUICtrlSetTip(-1, $txtTip)
-		$chkTrophyHeroes = GUICtrlCreateCheckbox(GetTranslated(7,50, "Use Heroes"), $x + 20, $y + 20, -1, -1)
+		$y += 18
+		$x += 20
+		$chkTrophyHeroes = GUICtrlCreateCheckbox(GetTranslated(7,50, "Use Heroes"), $x, $y, -1, -1)
 			$txtTip = GetTranslated(7,51, "Use Heroes to drop Trophies if Heroes are available.")
 			GUICtrlSetTip(-1, $txtTip)
-		$chkTrophyAtkDead = GUICtrlCreateCheckbox(GetTranslated(7,52, "Atk Dead Bases"), $x + 100, $y + 20, -1, -1)
+		$chkTrophyAtkDead = GUICtrlCreateCheckbox(GetTranslated(7,52, "Atk Dead Bases"), $x + 80, $y, -1, -1)
 			$txtTip = GetTranslated(7,53, "Attack a Deadbase found on the first search while dropping Trophies.")
 			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "chkTrophyAtkDead")
+		$y += 24
+		$x += 10
+		$lblDTArmyMin = GUICtrlCreateLabel(GetTranslated(7,96, "Drop Trophy Army Min") & ":", $x - 10, $y + 2, -1, -1)
+		$txtTip = GetTranslated(7,97, "Enter the percent of full army required for dead base attack before starting trophy drop.")
+			GUICtrlSetTip(-1, $txtTip)
+		$txtDTArmyMin = GUICtrlCreateInput("70", $x + 100, $y - 1, 27, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetLimit(-1, 2)
+			GUICtrlSetState (-1, $GUI_DISABLE)
+		$lblDTArmypercent = GUICtrlCreateLabel(GetTranslated(7,98, "%"), $x + 130, $y + 2, -1, -1)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-	Local $x = 260, $y = 335
-	$grpTimeWakeUp = GUICtrlCreateGroup(GetTranslated(7,54, "Remote Device"), $x - 20, $y - 20 , 220, 50)
-		$lblTimeWakeUp = GUICtrlCreateLabel(GetTranslated(7,55, "When 'Another Device' wait") & ":", $x, $y + 2, -1, -1)
+	Local $x = 260, $y = 343
+	$grpTimeWakeUp = GUICtrlCreateGroup(GetTranslated(7,54, "Remote Device"), $x - 20, $y - 20 , 220, 42)
+		$y -= 5
+		$lblTimeWakeUp = GUICtrlCreateLabel(GetTranslated(7,55, "When 'Another Device' wait") & ":", $x - 10, $y + 2, -1, -1)
 		$txtTip = GetTranslated(7,56, "Enter the time to wait (in seconds) before the Bot reconnects when another device took control.")
 			GUICtrlSetTip(-1, $txtTip)
-		$txtTimeWakeUp = GUICtrlCreateInput("120", $x + 138, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$txtTimeWakeUp = GUICtrlCreateInput("120", $x + 127, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 3)
-		$lblTimeWakeUpSec = GUICtrlCreateLabel(GetTranslated(7,57, "sec."), $x + 175, $y + 2, -1, -1)
+		$lblTimeWakeUpSec = GUICtrlCreateLabel(GetTranslated(7,57, "sec."), $x + 165, $y + 2, -1, -1)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	Local $x = 260, $y = 388
