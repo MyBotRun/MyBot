@@ -1,8 +1,28 @@
-;Uses multiple pixels with coordinates of each color in a certain region, works for memory BMP
 
-;$xSkip and $ySkip for numbers of pixels skip
-;$offColor[2][COLOR/OFFSETX/OFFSETY] offset relative to firstColor coordination
-
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _MultiPixelSearch
+; Description ...: Uses multiple pixels with coordinates of each color in a certain region, works for memory BMP
+; Syntax ........: _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
+; 						$xSkip and $ySkip for numbers of pixels skip
+;						$offColor[2][COLOR/OFFSETX/OFFSETY] offset relative to firstColor coordination
+; Parameters ....: $iLeft               - an integer value.
+;                  $iTop                - an integer value.
+;                  $iRight              - an integer value.
+;                  $iBottom             - an integer value.
+;                  $xSkip               - an unknown value.
+;                  $ySkip               - an unknown value.
+;                  $firstColor          - 1st pixel to find
+;                  $offColor            - array of pixel location, and color
+;                  $iColorVariation     - an integer value.
+; Return values .: None
+; Author ........: Your Name
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 ; rotate y first, x second: search in columns
 Func _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)

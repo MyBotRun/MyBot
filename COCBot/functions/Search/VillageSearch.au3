@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Code Monkey #6
 ; Modified ......: kaganus (Jun/Aug 2015), Sardo 2015-07, KnowJack(Aug 2015) , The Master (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -115,7 +115,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 
 	While 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;### Main Search Loop ###;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-		if $debugVillageSearchImages=1 Then DebugImageSave("villagesearch")
+		If $debugVillageSearchImages = 1 Then DebugImageSave("villagesearch")
 		$logwrited = False
 		$bBtnAttackNowPressed = False
 		If $iVSDelay > 0 And $iMaxVSDelay > 0 Then ; Check if village delay values are set
@@ -130,7 +130,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		Local $Time = @HOUR & "." & @MIN & "." & @SEC
 
 		If $Restart = True Then Return ; exit func
-		GetResources(True) ;Reads Resource Values
+		GetResources(False) ;Reads Resource Values
 		If $Restart = True Then Return ; exit func
 
 		If Mod(($iSkipped + 1), 100) = 0 Then
@@ -156,7 +156,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			$isModeActive[$LB] = True
 			$match[$LB] = CompareResources($LB)
 		ElseIf $iCmbSearchMode = 2 Then
-			For $i = 0 To $iModeCount - 1
+			For $i = 0 To $iModeCount - 2
 				$isModeActive[$i] = IsSearchModeActive($i)
 				If $isModeActive[$i] Then
 					$match[$i] = CompareResources($i)
@@ -165,7 +165,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 
 		If _Sleep($iDelayRespond) Then Return
-		For $i = 0 To $iModeCount - 1
+		For $i = 0 To $iModeCount - 2
 			If ($match[$i] And $iChkWeakBase[$i] = 1 And $iChkMeetOne[$i] <> 1) Or ($isModeActive[$i] And Not $match[$i] And $iChkWeakBase[$i] = 1 And $iChkMeetOne[$i] = 1) Then
 				If IsWeakBase($i) Then
 					$match[$i] = True
@@ -212,13 +212,17 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 
 		If _Sleep($iDelayRespond) Then Return
-		If $OptTrophyMode = 1 Then ;Enables Triple Mode Settings ;---compare resources
-			If SearchTownHallLoc() Then ; attack this base anyway because outside TH found to snipe
-				SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
-				SetLog("      " & "TH Outside Found! ", $COLOR_GREEN, "Lucida Console", 7.5)
-				$logwrited = True
-				$iMatchMode = $TS
-				ExitLoop
+		If $OptTrophyMode = 1 Then ;Enables Combo Mode Settings
+			If SearchTownHallLoc() And IsSearchModeActive($TS) Then ; attack this base anyway because outside TH found to snipe
+				If CompareResources($TS) Then
+					SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
+					SetLog("      " & "TH Outside Found! ", $COLOR_GREEN, "Lucida Console", 7.5)
+					$logwrited = True
+					$iMatchMode = $TS
+					ExitLoop
+				Else
+					$noMatchTxt &= ", Not a " & $sModeText[$TS] & ", fails resource min"
+				EndIf
 			EndIf
 		EndIf
 
@@ -272,11 +276,13 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 				$Is_ClientSyncError = True
 				checkMainScreen()
 				If $Restart Then
+					$iNbrOfOoS += 1
+					UpdateStats()
 					SetLog("Couldn't locate Next button", $COLOR_RED)
 					PushMsg("OoSResources")
 				Else
 					SetLog("Have strange problem Couldn't locate Next button, Restarting CoC and Bot...", $COLOR_RED)
-					$Is_ClientSyncError = False  ; disable fast OOS restart if not simple error and restarting CoC
+					$Is_ClientSyncError = False ; disable fast OOS restart if not simple error and try restarting CoC
 					CloseCoC(True)
 				EndIf
 				Return
@@ -335,16 +341,16 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 	If $OptBullyMode = 0 And $OptTrophyMode = 0 And $iChkMeetTH[$iMatchMode] = 0 And $iChkMeetTHO[$iMatchMode] = 0 And $chkATH = 1 Then
 		$searchTH = checkTownHallADV2()
 
-		 If $searchTH = "-" Then ; retry with autoit search after $iDelayVillageSearch5 seconds
-		   If _Sleep($iDelayVillageSearch5) Then Return
-		   SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
-		   $searchTH = checkTownhallADV2()
-		 EndIf
+		If $searchTH = "-" Then ; retry with autoit search after $iDelayVillageSearch5 seconds
+			If _Sleep($iDelayVillageSearch5) Then Return
+			SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
+			$searchTH = checkTownhallADV2()
+		EndIf
 
 
-		 If $searchTH = "-" Then ; retry with c# search, matching could not have been caused by heroes that partially hid the townhall
-		   If _Sleep($iDelayVillageSearch4) Then Return
-		   If $debugImageSave = 1 Then DebugImageSave("VillageSearch_NoTHFound2try_", False)
+		If $searchTH = "-" Then ; retry with c# search, matching could not have been caused by heroes that partially hid the townhall
+			If _Sleep($iDelayVillageSearch4) Then Return
+			If $debugImageSave = 1 Then DebugImageSave("VillageSearch_NoTHFound2try_", False)
 			THSearch()
 		EndIf
 
@@ -368,21 +374,21 @@ Func IsSearchModeActive($pMode)
 	Return False
 EndFunc   ;==>IsSearchModeActive
 
- Func IsWeakBase($pMode)
+Func IsWeakBase($pMode)
 	_WinAPI_DeleteObject($hBitmapFirst)
 	$hBitmapFirst = _CaptureRegion2()
 	Local $resultHere = DllCall($hFuncLib, "str", "CheckConditionForWeakBase", "ptr", $hBitmapFirst, "int", ($iCmbWeakMortar[$pMode] + 1), "int", ($iCmbWeakWizTower[$pMode] + 1), "int", 10)
-	If @error Then  ; detect if DLL error and return weakbase not found
+	If @error Then ; detect if DLL error and return weakbase not found
 		SetLog("Weakbase search DLL error", $COLOR_RED)
 		Return False
 	EndIf
-	If $debugsetlog = 1 Then Setlog("Weakbase result= " &  $resultHere[0], $COLOR_PURPLE)  ;debug
+	If $debugsetlog = 1 Then Setlog("Weakbase result= " & $resultHere[0], $COLOR_PURPLE) ;debug
 	If $resultHere[0] = "Y" Then
 		Return True
 	Else
 		Return False
 	EndIf
- EndFunc   ;==>IsWeakBase
+EndFunc   ;==>IsWeakBase
 
 Func SearchLimit($iSkipped)
 	If $iChkRestartSearchLimit = 1 And $iSkipped >= Number($iRestartSearchlimit) Then
@@ -390,17 +396,17 @@ Func SearchLimit($iSkipped)
 		While _CheckPixel($aSurrenderButton, $bCapturePixel) = False
 			If _Sleep($iDelaySWHTSearchLimit1) Then Return
 			$Wcount += 1
-			If $DebugSetLog = 1 Then setlog("wait surrender button " & $Wcount, $COLOR_PURPLE)
+			If $debugsetlog = 1 Then setlog("wait surrender button " & $Wcount, $COLOR_PURPLE)
 			If $Wcount >= 50 Or isProblemAffect(True) Then
 				checkMainScreen()
-				$Is_ClientSyncError = False  ; reset OOS flag for long restart
-				$Restart = True  ; set force runbot restart flag
+				$Is_ClientSyncError = False ; reset OOS flag for long restart
+				$Restart = True ; set force runbot restart flag
 				Return True
 			EndIf
 		WEnd
 		ReturnHome(False, False) ;If End battle is available
-		$Restart = True  ; set force runbot restart flag
-		$Is_ClientSyncError = True  ; set OOS flag for fast restart
+		$Restart = True ; set force runbot restart flag
+		$Is_ClientSyncError = True ; set OOS flag for fast restart
 		Return True
 	Else
 		Return False

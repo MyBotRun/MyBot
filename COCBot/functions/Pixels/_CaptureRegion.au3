@@ -1,5 +1,23 @@
-;Saves a screenshot of the window into memory.
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _CaptureRegion
+; Description ...: Saves a screenshot of the window into memory.
+; Syntax ........: _CaptureRegion([$iLeft = 0[, $iTop = 0[, $iRight = $DEFAULT_WIDTH[, $iBottom = $DEFAULT_HEIGHT[,
+;                  $ReturnBMP = False]]]]])
+; Parameters ....: $iLeft               - [optional] an integer value. Default is 0.
+;                  $iTop                - [optional] an integer value. Default is 0.
+;                  $iRight              - [optional] an integer value. Default is $DEFAULT_WIDTH.
+;                  $iBottom             - [optional] an integer value. Default is $DEFAULT_HEIGHT.
+;                  $ReturnBMP           - [optional] an unknown value. Default is False.
+; Return values .: None
+; Author ........:
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT, $ReturnBMP = False)
 	_GDIPlus_BitmapDispose($hBitmap)
 	_WinAPI_DeleteObject($hHBitmap)

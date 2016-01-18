@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: AtoZ (2015)
 ; Modified ......: Barracoda (July 2015), TheMaster 2015-10
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -131,9 +131,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 
 	If _Sleep($iDelayAttackTHGrid1) Then Return
 
-	If $THi <= 15 Or $THside = 0 Or $THside = 2 Then DeployTHNormal($iAtEachSpot, $iNbOfSpots)
-
-	If $THi > 15 And ($THside = 1 Or $THside = 3) Then SwitchDeployBtmTH($iAtEachSpot, $iNbOfSpots)
+	DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 
 	If $troopKind >= $eBarb And $troopKind <= $eLava Then
 		If $TroopCountBeg <> Number(ReadTroopQuantity($THtroop)) Then
@@ -225,120 +223,120 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 
 EndFunc   ;==>DeployTHNormal
 
-Func SwitchDeployBtmTH($iAtEachSpot, $iNbOfSpots)
+;~ Func SwitchDeployBtmTH($iAtEachSpot, $iNbOfSpots)
 
-	Switch ($icmbDeployBtmTHType + 1)
-		Case 1
-			DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
-		Case 2
-			DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
-	EndSwitch
+;~ 	Switch ($icmbDeployBtmTHType + 1)
+;~ 		Case 1
+;~ 			DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
+;~ 		Case 2
+;~ 			DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
+;~ 	EndSwitch
 
-EndFunc   ;==>SwitchDeployBtmTH
+;~ EndFunc   ;==>SwitchDeployBtmTH
 
-Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
-	Opt("SendKeyDownDelay", 50)
+;~ Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
+;~ 	Opt("SendKeyDownDelay", 50)
 
-	;;;;;;;;;;;;; Few zooming and Scrolling to The Bottom ;;;;;;;;;;;;;;;;;;;;;;;
-	If ($THside = 1 Or $THside = 3) And $zoomedin = False Then
-		SetLog("Zooming in a little and scrolling to bottom ...")
+;~ 	;;;;;;;;;;;;; Few zooming and Scrolling to The Bottom ;;;;;;;;;;;;;;;;;;;;;;;
+;~ 	If ($THside = 1 Or $THside = 3) And $zoomedin = False Then
+;~ 		SetLog("Zooming in a little and scrolling to bottom ...")
 
-		While $zCount < 2 And $sCount < 2
-			ControlSend($Title, "", "", "{UP}")
-			If _Sleep(300) Then Return
-			ControlSend($Title, "", "", "{CTRLDOWN}{UP}{CTRLUP}")
-			If _Sleep(400) Then Return
-			$zCount += 1
-			$sCount += 1
-		WEnd
+;~ 		While $zCount < 2 And $sCount < 2
+;~ 			ControlSend($Title, "", "", "{UP}")
+;~ 			If _Sleep(300) Then Return
+;~ 			ControlSend($Title, "", "", "{CTRLDOWN}{UP}{CTRLUP}")
+;~ 			If _Sleep(400) Then Return
+;~ 			$zCount += 1
+;~ 			$sCount += 1
+;~ 		WEnd
 
-		ControlSend($Title, "", "", "{CTRLDOWN}{UP}{CTRLUP}")
+;~ 		ControlSend($Title, "", "", "{CTRLDOWN}{UP}{CTRLUP}")
 
 
-		If $debugSetlog = 1 Then SetLog("Done zooming and Scrolling.")
-		If _Sleep(5000) Then Return
-		$zoomedin = True
-	EndIf
-	;;;;;;;;;;;;; End zooming and scrolling to The Bottom ;;;;;;;;;;;;;;;;;;;;;;;
+;~ 		If $debugSetlog = 1 Then SetLog("Done zooming and Scrolling.")
+;~ 		If _Sleep(5000) Then Return
+;~ 		$zoomedin = True
+;~ 	EndIf
+;~ 	;;;;;;;;;;;;; End zooming and scrolling to The Bottom ;;;;;;;;;;;;;;;;;;;;;;;
 
-	;;;;;;;;;;;;; Deploying Troops ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	If $THi = 17 And $Thx > 400 And $Thx < 455 And $Thy > 450 And $Thy < 580 Then
+;~ 	;;;;;;;;;;;;; Deploying Troops ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;~ 	If $THi = 17 And $Thx > 400 And $Thx < 455 And $Thy > 450 And $Thy < 580 Then
 
-		If $debugSetlog = 1 Then Setlog("Center Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-		For $count = 1 To $iAtEachSpot * $iNbOfSpots
-			If CheckOneStar(0, False, False) Then Return
-			If IsAttackPage() Then Click(Random(480, 540, 1), Random(564, 566, 1))
-			If _Sleep(Random(20, 40,1)) Then Return
-		Next
+;~ 		If $debugSetlog = 1 Then Setlog("Center Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
+;~ 		For $count = 1 To $iAtEachSpot * $iNbOfSpots
+;~ 			If CheckOneStar(0, False, False) Then Return
+;~ 			If IsAttackPage() Then Click(Random(480, 540, 1), Random(564, 566, 1))
+;~ 			If _Sleep(Random(20, 40,1)) Then Return
+;~ 		Next
 
-	Else
-		If $THside = 1 Then
-			If $debugSetlog = 1 Then Setlog("Left Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-			For $count = 1 To $iAtEachSpot * $iNbOfSpots
-				If CheckOneStar(0, False, False) Then Return
-				If IsAttackPage() Then Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
-				If _Sleep(Random(20, 40,1)) Then Return
-			Next
-		EndIf
+;~ 	Else
+;~ 		If $THside = 1 Then
+;~ 			If $debugSetlog = 1 Then Setlog("Left Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
+;~ 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
+;~ 				If CheckOneStar(0, False, False) Then Return
+;~ 				If IsAttackPage() Then Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
+;~ 				If _Sleep(Random(20, 40,1)) Then Return
+;~ 			Next
+;~ 		EndIf
 
-		If $THside = 3 Then
-			If $debugSetlog = 1 Then Setlog("Right Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-			For $count = 1 To $iAtEachSpot * $iNbOfSpots
-				If CheckOneStar(0, False, False) Then Return
-				If IsAttackPage() Then Click(Random(510, 580, 1), Random(564, 566, 1), 1, 0, "#0022")
-				If _Sleep(Random(20, 40,1)) Then Return
-			Next
+;~ 		If $THside = 3 Then
+;~ 			If $debugSetlog = 1 Then Setlog("Right Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
+;~ 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
+;~ 				If CheckOneStar(0, False, False) Then Return
+;~ 				If IsAttackPage() Then Click(Random(510, 580, 1), Random(564, 566, 1), 1, 0, "#0022")
+;~ 				If _Sleep(Random(20, 40,1)) Then Return
+;~ 			Next
 
-		EndIf
+;~ 		EndIf
 
-	EndIf
- Opt("SendKeyDownDelay", 5)
-EndFunc   ;==>DeployBtmTHFewZooms
+;~ 	EndIf
+;~  Opt("SendKeyDownDelay", 5)
+;~ EndFunc   ;==>DeployBtmTHFewZooms
 
-Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
+;~ Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
 
-	; No Zoom used in this attack
-	Local $i = 0
+;~ 	; No Zoom used in this attack
+;~ 	Local $i = 0
 
-	If $THi = 17 And $Thx > 400 And $Thx < 455 And $Thy > 450 And $Thy < 580 Then
+;~ 	If $THi = 17 And $Thx > 400 And $Thx < 455 And $Thy > 450 And $Thy < 580 Then
 
-		If $debugSetlog = 1 Then Setlog("Center Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-		For $count = 1 To $iAtEachSpot * $iNbOfSpots
-			If $i = 0 Then
-				If CheckOneStar(0, False, False) Then Return
-				If IsAttackPage() Then Click(Random(355, 365, 1), Random(564, 566, 1))
-				$i = 1
-			Else
-				If CheckOneStar(0, False, False) Then Return
-				If IsAttackPage() Then Click(Random(488, 500, 1), Random(564, 566, 1))
-				$i = 0
-			EndIf
-			If _Sleep(Random(20, 40,1)) Then Return
-		Next
+;~ 		If $debugSetlog = 1 Then Setlog("Center Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
+;~ 		For $count = 1 To $iAtEachSpot * $iNbOfSpots
+;~ 			If $i = 0 Then
+;~ 				If CheckOneStar(0, False, False) Then Return
+;~ 				If IsAttackPage() Then Click(Random(355, 365, 1), Random(564, 566, 1))
+;~ 				$i = 1
+;~ 			Else
+;~ 				If CheckOneStar(0, False, False) Then Return
+;~ 				If IsAttackPage() Then Click(Random(488, 500, 1), Random(564, 566, 1))
+;~ 				$i = 0
+;~ 			EndIf
+;~ 			If _Sleep(Random(20, 40,1)) Then Return
+;~ 		Next
 
-	Else
+;~ 	Else
 
-		If $THside = 1 Then
-			If $debugSetlog = 1 Then Setlog("Left Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-			For $count = 1 To $iAtEachSpot * $iNbOfSpots
-				If CheckOneStar(0, False, False) Then Return
-				If IsAttackPage() Then Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
-				If _Sleep(Random(20, 40,1)) Then Return
-			Next
-		EndIf
+;~ 		If $THside = 1 Then
+;~ 			If $debugSetlog = 1 Then Setlog("Left Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
+;~ 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
+;~ 				If CheckOneStar(0, False, False) Then Return
+;~ 				If IsAttackPage() Then Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
+;~ 				If _Sleep(Random(20, 40,1)) Then Return
+;~ 			Next
+;~ 		EndIf
 
-		If $THside = 3 Then
-			If $debugSetlog = 1 Then Setlog("Right Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-			For $count = 1 To $iAtEachSpot * $iNbOfSpots
-				If CheckOneStar(0, False, False) Then Return
-				If IsAttackPage() Then Click(Random(510, 540, 1), Random(564, 566, 1), 1, 0, "#0022")
-				If _Sleep(Random(20, 40,1)) Then Return
-			Next
-		EndIf
+;~ 		If $THside = 3 Then
+;~ 			If $debugSetlog = 1 Then Setlog("Right Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
+;~ 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
+;~ 				If CheckOneStar(0, False, False) Then Return
+;~ 				If IsAttackPage() Then Click(Random(510, 540, 1), Random(564, 566, 1), 1, 0, "#0022")
+;~ 				If _Sleep(Random(20, 40,1)) Then Return
+;~ 			Next
+;~ 		EndIf
 
-	EndIf
+;~ 	EndIf
 
-EndFunc   ;==>DeployBtmTHOnSides
+;~ EndFunc   ;==>DeployBtmTHOnSides
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

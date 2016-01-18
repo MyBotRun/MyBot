@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: saviart
 ; Modified ......: KnowJack (June 2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -30,9 +30,11 @@ Func LocateSpellFactory()
 		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
 		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Spell Factory", $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
+		    WinGetAndroidHandle()
 			WinActivate($HWnD)
-			$SFPos[0] = FindPos()[0]
-			$SFPos[1] = FindPos()[1]
+			Local $aPos = FindPos()
+			$SFPos[0] = $aPos[0]
+			$SFPos[1] = $aPos[1]
 			If isInsideDiamond($SFPos) = False Then
 				$iStupid += 1
 				Select
@@ -124,15 +126,17 @@ Func LocateDarkSpellFactory()
 	EndIf
 
 	While 1
-		ClickP($aAway,1,0,"#0385")
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$stext = $sErrorText & @CRLF & "Click OK then click on your Dark Spell Factory" & @CRLF & @CRLF & _
 		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
 		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Dark Spell Factory", $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
+		    WinGetAndroidHandle()
 			WinActivate($HWnD)
-			$DSFPos[0] = FindPos()[0]
-			$DSFPos[1] = FindPos()[1]
+			ClickP($aAway,1,0,"#0385")
+			Local $aPos = FindPos()
+			$DSFPos[0] = $aPos[0]
+			$DSFPos[1] = $aPos[1]
 			If isInsideDiamond($DSFPos) = False Then
 				$iStupid += 1
 				Select

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: @z0mbie (2015)
 ; Modified ......: Master1st (Set2015) - ProMac (Oct2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -133,6 +133,10 @@ Func QueenUpgrade()
 			If $sInfo[2] <> "" Then
 				$aHeroLevel = Number($sInfo[2]) ; grab hero level from building info array
 				SetLog("Your Queen Level read as: " & $aHeroLevel, $COLOR_GREEN)
+				If $aHeroLevel = 40 Then; max hero
+					SetLog("Your AQ is max, cannot upgrade!", $COLOR_BLUE)
+					Return
+				EndIf
 			Else
 				SetLog("Your Queen Level was not found!", $COLOR_BLUE)
 				Return
@@ -167,7 +171,7 @@ Func QueenUpgrade()
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep($iDelayUpgradeHero3) Then Return ; Wait for window to open
 		If $DebugImageSave = 1 Then DebugImageSave("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(721, 118 + $midOffsetY, True), Hex(0xDF0408, 6), 20) Then ; Check if the Hero Upgrade window is open
+		If _ColorCheck(_GetPixelColor(721, 118 + $midOffsetY, True), Hex(0xE00408, 6), 20) Then ; Check if the Hero Upgrade window is open
 			If _ColorCheck(_GetPixelColor(691, 523 + $midOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(691, 527 + $midOffsetY), Hex(0xE70A12, 6), 20) And _
 					_ColorCheck(_GetPixelColor(691, 531 + $midOffsetY, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Queen Upgrade Fail! No DE!", $COLOR_RED)
@@ -178,7 +182,7 @@ Func QueenUpgrade()
 				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
 				If _Sleep($iDelayUpgradeHero1) Then Return
 				If $DebugImageSave = 1 Then DebugImageSave("UpgradeDarkBtn2")
-				If _ColorCheck(_GetPixelColor(573, 256 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
+				If _ColorCheck(_GetPixelColor(573, 256 + $midOffsetY, True), Hex(0xDB0408, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Queen Upgrade Fail! No DE!", $COLOR_RED)
 					ClickP($aAway, 2, 0, "#0309") ;Click Away to close windows
 					Return
@@ -231,6 +235,10 @@ Func KingUpgrade()
 			If $sInfo[2] <> "" Then
 				$aHeroLevel = Number($sInfo[2]) ; grab hero level from building info array
 				SetLog("Your King Level read as: " & $aHeroLevel, $COLOR_GREEN)
+				If $aHeroLevel = 40 Then; max hero
+					SetLog("Your BK is max, cannot upgrade!", $COLOR_BLUE)
+					Return
+				EndIf
 			Else
 				SetLog("Your King Level was not found!", $COLOR_BLUE)
 				Return
@@ -266,18 +274,18 @@ Func KingUpgrade()
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep($iDelayUpgradeHero3) Then Return ; Wait for window to open
 		If $DebugImageSave = 1 Then DebugImageSave("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(715, 150 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Check if the Hero Upgrade window is open
-			If _ColorCheck(_GetPixelColor(557, 486 + $midOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(557, 490 + $midOffsetY), Hex(0xE70A12, 6), 20) And _
-					_ColorCheck(_GetPixelColor(557, 494 + $midOffsetY, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
+		If _ColorCheck(_GetPixelColor(715, 120 + $midOffsetY, True), Hex(0xE01C20, 6), 20) Then ; Check if the Hero Upgrade window is open
+			If _ColorCheck(_GetPixelColor(691, 523 + $midOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(691, 527 + $midOffsetY), Hex(0xE70A12, 6), 20) And _
+					_ColorCheck(_GetPixelColor(691, 531 + $midOffsetY, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
 				SetLog("King Upgrade Fail! No DE!", $COLOR_RED)
 				ClickP($aAway, 2, 0, "#0306") ;Click Away to close window
 				Return
 			Else
-				Click(540, 490 + $midOffsetY, 1, 0, "#0307") ; Click upgrade buttton
+				Click(660, 515 + $midOffsetY, 1, 0, "#0307") ; Click upgrade buttton
 				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
 				If _Sleep($iDelayUpgradeHero1) Then Return
 				If $DebugImageSave = 1 Then DebugImageSave("UpgradeDarkBtn2")
-				If _ColorCheck(_GetPixelColor(573, 256 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
+				If _ColorCheck(_GetPixelColor(573, 256 + $midOffsetY, True), Hex(0xDB0408, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("King Upgrade Fail! No DE!", $COLOR_RED)
 					ClickP($aAway, 2, 0, "#0309") ;Click Away to close windows
 					Return
@@ -336,6 +344,10 @@ Func WardenUpgrade()
 			If $sInfo[2] <> "" Then
 				$aHeroLevel = Number($sInfo[2]) ; grab hero level from building info array
 				SetLog("Your Warden Level read as: " & $aHeroLevel, $COLOR_GREEN)
+				If $aHeroLevel = 20 Then; max hero
+					SetLog("Your GW is max, cannot upgrade!", $COLOR_BLUE)
+					Return
+				EndIf
 			Else
 				SetLog("Your Warden Level was not found!", $COLOR_BLUE)
 				Return
@@ -346,9 +358,16 @@ Func WardenUpgrade()
 	If _Sleep($iDelayUpgradeHero1) Then Return
 
 	;##### Get updated village elixir values
+	If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then ; check if the village have a Dark Elixir Storage
+		$iElixirCurrent = getResourcesMainScreen(705, 74)
+		If $debugSetlog = 1 Then SetLog("Updating village values [E]: " & $iElixirCurrent, $COLOR_PURPLE)
+	Else
+		$iElixirCurrent = getResourcesMainScreen(710, 74)
+	EndIf
+	If _Sleep(100) Then Return
 
-	If $iElixirCurrent < ($aWardenUpgCost[$aHeroLevel] * 1000) + $itxtUpgrMinElixir Then
-		SetLog("Insufficient Elixir for Warden Upgrade, requires: " & ($aWardenUpgCost[$aHeroLevel] * 1000) & " + " &$itxtUpgrMinElixir, $COLOR_BLUE)
+	If $iElixirCurrent < ($aWardenUpgCost[$aHeroLevel] * 1000000) + $itxtUpgrMinElixir Then
+		SetLog("Insufficient Elixir for Warden Upgrade, requires: " & ($aWardenUpgCost[$aHeroLevel] * 1000000) & " + " &$itxtUpgrMinElixir, $COLOR_BLUE)
 		Return
 	EndIf
 	If _Sleep($iDelayUpgradeHero2) Then Return
@@ -375,7 +394,7 @@ Func WardenUpgrade()
 				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
 				If _Sleep($iDelayUpgradeHero1) Then Return
 				If $debugSetlog = 1 Then DebugImageSave("UpgradeElixirBtn2")
-				If _ColorCheck(_GetPixelColor(573, 256 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
+				If _ColorCheck(_GetPixelColor(573, 256 + $midOffsetY, True), Hex(0xDB0408, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Warden Upgrade Fail! No Elixir!", $COLOR_RED)
 					ClickP($aAway, 1, 0, "#0309") ;Click Away to close windows
 					Return

@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -26,72 +26,13 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 	If _Sleep($iDelayPrepareAttack1) Then Return
 	Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
 	If $debugSetlog = 1 Then Setlog("DLL Troopsbar list: " & $result[0], $COLOR_PURPLE)
-	Local $aTroopDataList = StringSplit($result[0], "#")
+	Local $aTroopDataList = StringSplit($result[0], "|")
 	Local $aTemp[12][3]
 	If $result[0] <> "" Then
 		For $i = 1 To $aTroopDataList[0]
-			Local $troopData = StringSplit($aTroopDataList[$i], "|", $STR_NOCOUNT)
-			Local $xCoord = Number(StringSplit($troopData[1], "-", $STR_NOCOUNT)[0])
-			Local $slotIndex = GetSlotIndexFromXPos($xCoord)
-			$aTemp[$slotIndex][1] = Number($troopData[2])
-			Switch $troopData[0]
-				Case "Barbarian"
-					$aTemp[$slotIndex][0] = $eBarb
-				Case "Archer"
-					$aTemp[$slotIndex][0] = $eArch
-				Case "Giant"
-					$aTemp[$slotIndex][0] = $eGiant
-				Case "Goblin"
-					$aTemp[$slotIndex][0] = $eGobl
-				Case "WallBreaker"
-					$aTemp[$slotIndex][0] = $eWall
-				Case "Balloon"
-					$aTemp[$slotIndex][0] = $eBall
-				Case "Wizard"
-					$aTemp[$slotIndex][0] = $eWiza
-				Case "Healer"
-					$aTemp[$slotIndex][0] = $eHeal
-				Case "Dragon"
-					$aTemp[$slotIndex][0] = $eDrag
-				Case "Pekka"
-					$aTemp[$slotIndex][0] = $ePekk
-				Case "Minion"
-					$aTemp[$slotIndex][0] = $eMini
-				Case "HogRider"
-					$aTemp[$slotIndex][0] = $eHogs
-				Case "Valkyrie"
-					$aTemp[$slotIndex][0] = $eValk
-				Case "Golem"
-					$aTemp[$slotIndex][0] = $eGole
-				Case "Witch"
-					$aTemp[$slotIndex][0] = $eWitc
-				Case "LavaHound"
-					$aTemp[$slotIndex][0] = $eLava
-				Case "King"
-					$aTemp[$slotIndex][0] = $eKing
-				Case "Queen"
-					$aTemp[$slotIndex][0] = $eQueen
-				Case "LightSpell"
-					$aTemp[$slotIndex][0] = $eLSpell
-				Case "HealSpell"
-					$aTemp[$slotIndex][0] = $eHSpell
-				Case "RageSpell"
-					$aTemp[$slotIndex][0] = $eRSpell
-				Case "JumpSpell"
-					$aTemp[$slotIndex][0] = $eJSpell
-				Case "FreezeSpell"
-					$aTemp[$slotIndex][0] = $eFSpell
-				Case "PoisonSpell"
-					$aTemp[$slotIndex][0] = $ePSpell
-				Case "EarthquakeSpell"
-					$aTemp[$slotIndex][0] = $eESpell
-				Case "HasteSpell"
-					$aTemp[$slotIndex][0] = $eHaSpell
-				Case "Castle"
-					$aTemp[$slotIndex][0] = $eCastle
-				Case "Warden"
-					$aTemp[$slotIndex][0] = $eWarden
-			EndSwitch
+			Local $troopData = StringSplit($aTroopDataList[$i], "#", $STR_NOCOUNT)
+			$aTemp[Number($troopData[1])][0] = $troopData[0]
+			$aTemp[Number($troopData[1])][1] = Number($troopData[2])
 		Next
 	EndIf
 	For $i = 0 To UBound($aTemp) - 1

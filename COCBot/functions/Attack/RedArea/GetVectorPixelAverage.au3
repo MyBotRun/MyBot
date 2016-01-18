@@ -1,4 +1,19 @@
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: GetVectorPixelAverage
+; Description ...:
+; Syntax ........: GetVectorPixelAverage($arrPixel, $vectorDirection)
+; Parameters ....: $arrPixel            - an array of unknowns.
+;                  $vectorDirection     - a variant value.
+; Return values .: None
+; Author ........: didipe
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 Func GetVectorPixelAverage($arrPixel, $vectorDirection)
 	Local $vectorPixelAverage[1]
 	debugRedArea("GetVectorPixelAverage IN $vectorDirection [" & $vectorDirection & "]")

@@ -1,3 +1,19 @@
+; #FUNCTION# ====================================================================================================================
+; Name ..........: OldDropTroop
+; Description ...:
+; Syntax ........: OldDropTroop($troop, $position, $nbperspot)
+; Parameters ....: $troop               - a dll struct value.
+;                  $position            - a pointer value.
+;                  $nbperspot           - a general number value.
+; Return values .: None
+; Author ........:
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 Func OldDropTroop($troop, $position, $nbperspot)
 	SelectDropTroop($troop) ;Select Troop
 	If _Sleep($iDelayOldDropTroop1) Then Return

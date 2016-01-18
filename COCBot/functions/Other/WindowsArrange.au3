@@ -7,7 +7,7 @@
 ; Author ........: Sardo (2015-06) (2015-09)
 ; Modified ......:
 ;
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,6 +15,7 @@
 ; ===============================================================================================================================
 
 Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
+	WinGetAndroidHandle()
 	Local $BSHandle, $BOTHandle
 	;Local $BSsize = [ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")[2], ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")[3]]
 	Local $BSPos = WinGetPos($Title)
@@ -88,6 +89,7 @@ Func DisposeWindows()
 		EndIf
 EndFunc
 
+; WinMove2 resizes Window without triggering a change event in target process.
 ; Replacement for WinMove ( "title", "text", x, y [, width [, height [, speed]]] )
 ; Parameter [, speed] is not supported!
 Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $s = 0)

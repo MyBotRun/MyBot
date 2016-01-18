@@ -1,4 +1,20 @@
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: GetVectorPixelOnEachSide
+; Description ...:
+; Syntax ........: GetVectorPixelOnEachSide($arrPixel, $vectorDirection)
+; Parameters ....: $arrPixel            - an array of unknowns.
+;                  $vectorDirection     - a variant value.
+; Return values .: None
+; Author ........:
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+
 Func GetVectorPixelOnEachSide($arrPixel, $vectorDirection)
 	Local $vectorPixelEachSide[2]
 	If (UBound($arrPixel) > 1) Then

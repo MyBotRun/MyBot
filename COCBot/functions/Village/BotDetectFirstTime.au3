@@ -3,7 +3,7 @@
 ; Description ...: This script detects your builings on the first run
 ; Author ........: HungLe (april-2015)
 ; Modified ......: Hervidero (april-2015),(may-2015), HungLe (may-2015), KnowJack(July 2015), Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -54,8 +54,8 @@ Func BotDetectFirstTime()
 		Setlog("Proceed with caution as errors may occur.", $COLOR_RED)
 	EndIf
 
-	If _Sleep($iDelayBotDetectFirstTime1) Then Return
-	ClanLevel()
+	;If _Sleep($iDelayBotDetectFirstTime1) Then Return
+	;ClanLevel()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 	CheckImageType()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
@@ -130,15 +130,18 @@ Func BotDetectFirstTime()
 			If _Sleep($iDelayBotDetectFirstTime3) Or $RunState = False Then ExitLoop
 			_CaptureRegion()
 			If _ImageSearch(@ScriptDir & "\images\collect.png", 1, $collx, $colly, 20) Then
-				Click($collx, $colly, 1, 0, "#0330") ;Click collector
-				If _Sleep($iDelayBotDetectFirstTime3) Then Return
+				If isInsideDiamondXY($collx, $colly) Then
+					If IsMainPage() Then Click($collx, $colly, 1, 0, "#0330") ;Click collector
+					If _Sleep($iDelayBotDetectFirstTime3) Then Return
+				EndIf
 				ClickP($aAway, 1, 0, "#0329") ;Click Away
-			ElseIf $i >= 20 Then
+			Else
 				ExitLoop
 			EndIf
+			If $i >= 20 Then ExitLoop
 			$i += 1
 		WEnd
-		SetLog("Verifying your Mines/Extractors/Drills ...wait ...")
+		SetLog("Verifying your Mines/Collectors/Drills ...wait ...")
 		;$PixelMineHere = GetLocationItem("getLocationMineExtractor")
 		$PixelMineHere = GetLocationMine()
 		If UBound($PixelMineHere) > 0 Then
