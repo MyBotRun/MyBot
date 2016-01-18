@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -108,8 +108,16 @@ Func chkSnipeMode()
 	If GUICtrlRead($chkTrophyMode) = $GUI_CHECKED Then
 		$OptTrophyMode = 1
 		GUICtrlSetState($txtTHaddtiles, $GUI_ENABLE)
+		GUICtrlSetState($chkTSEnableAfter, $GUI_ENABLE)
+		GUICtrlSetState($txtTSEnableAfter, $GUI_ENABLE)
+		GUICtrlSetState($cmbTSMeetGE, $GUI_ENABLE)
+		GUICtrlSetState($txtTSMinGold, $GUI_ENABLE)
+		GUICtrlSetState($txtTSMinElixir, $GUI_ENABLE)
+		GUICtrlSetState($txtTSMinGoldPlusElixir, $GUI_ENABLE)
+		GUICtrlSetState($lblTSMinGPE, $GUI_ENABLE)
+		GUICtrlSetState($chkTSMeetDE, $GUI_ENABLE)
+		GUICtrlSetState($txtTSMinDarkElixir, $GUI_ENABLE)
 		GUICtrlSetState($cmbAttackTHType, $GUI_ENABLE)
-		GUICtrlSetState($cmbAttackbottomType, $GUI_ENABLE)
 		GUICtrlSetState($chkUseClastleTH, $GUI_ENABLE)
 		GUICtrlSetState($chkUseQueenTH, $GUI_ENABLE)
 		GUICtrlSetState($chkUseKingTH, $GUI_ENABLE)
@@ -119,8 +127,16 @@ Func chkSnipeMode()
 	Else
 		$OptTrophyMode = 0
 		GUICtrlSetState($txtTHaddtiles, $GUI_DISABLE)
+		GUICtrlSetState($chkTSEnableAfter, $GUI_DISABLE)
+		GUICtrlSetState($txtTSEnableAfter, $GUI_DISABLE)
+		GUICtrlSetState($cmbTSMeetGE, $GUI_DISABLE)
+		GUICtrlSetState($txtTSMinGold, $GUI_DISABLE)
+		GUICtrlSetState($txtTSMinElixir, $GUI_DISABLE)
+		GUICtrlSetState($txtTSMinGoldPlusElixir, $GUI_DISABLE)
+		GUICtrlSetState($lblTSMinGPE, $GUI_DISABLE)
+		GUICtrlSetState($chkTSMeetDE, $GUI_DISABLE)
+		GUICtrlSetState($txtTSMinDarkElixir, $GUI_DISABLE)
 		GUICtrlSetState($cmbAttackTHType, $GUI_DISABLE)
-		GUICtrlSetState($cmbAttackbottomType, $GUI_DISABLE)
 		GUICtrlSetState($chkUseClastleTH, $GUI_DISABLE)
 		GUICtrlSetState($chkUseQueenTH, $GUI_DISABLE)
 		GUICtrlSetState($chkUseKingTH, $GUI_DISABLE)
@@ -159,3 +175,41 @@ EndFunc
 Func btnTestTHcsv()
 	AttackTHParseCSV(True) ; launch attach th parse CSV only for test in log
 EndFunc
+
+Func chkTSEnableAfter()
+	If GUICtrlRead($chkTSEnableAfter) = $GUI_CHECKED Then
+		_GUICtrlEdit_SetReadOnly($txtTSEnableAfter, False)
+	Else
+		_GUICtrlEdit_SetReadOnly($txtTSEnableAfter, True)
+	EndIf
+EndFunc   ;==>chkTSEnableAfter
+
+Func cmbTSGoldElixir()
+	If _GUICtrlComboBox_GetCurSel($cmbTSMeetGE) < 2 Then
+		GUICtrlSetState($txtTSMinGold, $GUI_SHOW)
+		GUICtrlSetState($picTSMinGold, $GUI_SHOW)
+		GUICtrlSetState($txtTSMinElixir, $GUI_SHOW)
+		GUICtrlSetState($picTSMinElixir, $GUI_SHOW)
+		GUICtrlSetState($txtTSMinGoldPlusElixir, $GUI_HIDE)
+		GUICtrlSetState($picTSMinGPEGold, $GUI_HIDE)
+		GUICtrlSetState($lblTSMinGPE, $GUI_HIDE)
+		GUICtrlSetState($picTSMinGPEElixir, $GUI_HIDE)
+	Else
+		GUICtrlSetState($txtTSMinGold, $GUI_HIDE)
+		GUICtrlSetState($picTSMinGold, $GUI_HIDE)
+		GUICtrlSetState($txtTSMinElixir, $GUI_HIDE)
+		GUICtrlSetState($picTSMinElixir, $GUI_HIDE)
+		GUICtrlSetState($txtTSMinGoldPlusElixir, $GUI_SHOW)
+		GUICtrlSetState($picTSMinGPEGold, $GUI_SHOW)
+		GUICtrlSetState($lblTSMinGPE, $GUI_SHOW)
+		GUICtrlSetState($picTSMinGPEElixir, $GUI_SHOW)
+	EndIf
+EndFunc   ;==>cmbTSGoldElixir
+
+Func chkTSMeetDE()
+	If GUICtrlRead($chkTSMeetDE) = $GUI_CHECKED Then
+		_GUICtrlEdit_SetReadOnly($txtTSMinDarkElixir, False)
+	Else
+		_GUICtrlEdit_SetReadOnly($txtTSMinDarkElixir, True)
+	EndIf
+EndFunc   ;==>chkTSMeetDE

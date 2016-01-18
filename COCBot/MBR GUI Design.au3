@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GKevinOD (2014)
 ; Modified ......: DkEd, Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,8 +20,8 @@ $frmBot = GUICreate($sBotTitle, 470, 650)
 	GUISetIcon($pIconLib, $eIcnGUI)
 	TraySetIcon($pIconLib, $eIcnGUI)
 $tabMain = GUICtrlCreateTab(5, 85, 461, 425, $TCS_MULTILINE)
-	GUICtrlSetOnEvent(-1, "tabMain")
-	GUICtrlCreatePic (@ScriptDir & "\Icons\logo.jpg", 0, 0, 470, 80)
+	;GUICtrlSetOnEvent(-1, "tabMain") ; moved to Func GUIControl()
+	GUICtrlCreatePic (@ScriptDir & "\Images\logo.jpg", 0, 0, 470, 80)
 
 ;~ ------------------------------------------------------
 ;~ Header Menu
@@ -39,6 +39,7 @@ GUICtrlSetOnEvent(-1, "")
 #include "GUI\MBR GUI Design Tab Troops.au3"
 #include "GUI\MBR GUI Design Tab Search.au3"
 #include "GUI\MBR GUI Design Tab Attack.au3"
+#include "GUI\MBR GUI Design Tab AttackCSV.au3"
 #include "GUI\MBR GUI Design Tab Advanced.au3"
 #include "GUI\MBR GUI Design Tab EndBattle.au3"
 #include "GUI\MBR GUI Design Tab Donate.au3"
@@ -47,7 +48,7 @@ GUICtrlSetOnEvent(-1, "")
 #include "GUI\MBR GUI Design Tab Notify.au3"
 #include "GUI\MBR GUI Design Tab Expert.au3"
 #include "GUI\MBR GUI Design Tab Stats.au3" ; includes '$LastControlToHide" on GUI
-
+#include "GUI\MBR GUI Design Collectors.au3"
 ;~ -------------------------------------------------------------
 ;~ About Us Tab
 ;~ -------------------------------------------------------------

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -118,6 +118,25 @@ Func btnDonateLavaHounds()
 		_DonateBtn($grpLavaHounds, $txtBlacklistLavaHounds)
 	EndIf
 EndFunc   ;==>btnDonateLavaHounds
+
+Func btnDonatePoisonSpells()
+	If GUICtrlGetState($grpPoisonSpells) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpPoisonSpells, $txtBlacklistPoisonSpells)
+	EndIf
+EndFunc   ;==>btnDonatePoisonSpells
+
+Func btnDonateEarthQuakeSpells()
+	If GUICtrlGetState($grpEarthQuakeSpells) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpEarthQuakeSpells, $txtBlacklistEarthQuakeSpells)
+	EndIf
+EndFunc   ;==>btnDonateEarthQuakeSpells
+
+Func btnDonateHasteSpells()
+	If GUICtrlGetState($grpHasteSpells) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpHasteSpells, $txtBlacklistHasteSpells)
+	EndIf
+EndFunc   ;==>btnDonateHasteSpells
+
 
 ;;; Custom Combination Donate by ChiefM3
 Func btnDonateCustom()
@@ -260,6 +279,30 @@ Func chkDonateAllLavaHounds()
 	EndIf
 EndFunc   ;==>chkDonateAllLavaHounds
 
+Func chkDonateAllPoisonSpells()
+	If GUICtrlRead($chkDonateAllPoisonSpells) = $GUI_CHECKED Then
+		_DonateAllControlsSpell(0, True)
+	Else
+		_DonateAllControlsSpell(0, False)
+	EndIf
+EndFunc   ;==>chkDonateAllPoisonSpells
+
+Func chkDonateAllEarthQuakeSpells()
+	If GUICtrlRead($chkDonateAllEarthQuakeSpells) = $GUI_CHECKED Then
+		_DonateAllControlsSpell(1, True)
+	Else
+		_DonateAllControlsSpell(1, False)
+	EndIf
+EndFunc   ;==>chkDonateAllEarthQuakeSpells
+
+Func chkDonateAllHasteSpells()
+	If GUICtrlRead($chkDonateAllHasteSpells) = $GUI_CHECKED Then
+		_DonateAllControlsSpell(2, True)
+	Else
+		_DonateAllControlsSpell(2, False)
+	EndIf
+EndFunc   ;==>chkDonateAllHasteSpells
+
 ;;; Custom Combination Donate by ChiefM3
 Func chkDonateAllCustom()
 	If GUICtrlRead($chkDonateAllCustom) = $GUI_CHECKED Then
@@ -396,6 +439,30 @@ Func chkDonateLavaHounds()
 		GUICtrlSetBkColor($lblBtnLavaHounds, $GUI_BKCOLOR_TRANSPARENT)
 	EndIf
 EndFunc   ;==>chkDonateLavaHounds
+
+Func chkDonatePoisonSpells()
+	If GUICtrlRead($chkDonatePoisonSpells) = $GUI_CHECKED Then
+		_DonateControlsSpell(0)
+	Else
+		GUICtrlSetBkColor($lblBtnPoisonSpells, $GUI_BKCOLOR_TRANSPARENT)
+	EndIf
+EndFunc   ;==>chkDonatePoisonSpells
+
+Func chkDonateEarthQuakeSpells()
+	If GUICtrlRead($chkDonateEarthQuakeSpells) = $GUI_CHECKED Then
+		_DonateControlsSpell(1)
+	Else
+		GUICtrlSetBkColor($lblBtnEarthQuakeSpells, $GUI_BKCOLOR_TRANSPARENT)
+	EndIf
+EndFunc   ;==>chkDonateEarthQuakeSpells
+
+Func chkDonateHasteSpells()
+	If GUICtrlRead($chkDonateHasteSpells) = $GUI_CHECKED Then
+		_DonateControlsSpell(2)
+	Else
+		GUICtrlSetBkColor($lblBtnHasteSpells, $GUI_BKCOLOR_TRANSPARENT)
+	EndIf
+EndFunc   ;==>chkDonateHasteSpells
 
 ;;; Custom Combination Donate by ChiefM3
 Func chkDonateCustom()

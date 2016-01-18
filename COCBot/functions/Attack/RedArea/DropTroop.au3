@@ -1,4 +1,22 @@
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: DropTroop
+; Description ...:
+; Syntax ........: DropTroop($troop, $nbSides, $number[, $slotsPerEdge = 0[, $indexToAttack = -1]])
+; Parameters ....: $troop               - a dll struct value.
+;                  $nbSides             - a general number value.
+;                  $number              - a general number value.
+;                  $slotsPerEdge        - [optional] a string value. Default is 0.
+;                  $indexToAttack       - [optional] an integer value. Default is -1.
+; Return values .: None
+; Author ........: didipe
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1)
 
 	If isProblemAffect(True) Then Return
@@ -133,7 +151,7 @@ Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
 			If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini or $troop = $eBarb) Then
 				$troopFurther = True
 			EndIf
-			Local $centerPixel[2] = [430, 313]
+			Local $centerPixel[2] = [430, 338]
 			For $i = $startIndex To $maxElementNearCollector
 				$pixel = $PixelNearCollector[$i]
 				ReDim $listInfoPixelDropTroop[UBound($listInfoPixelDropTroop) + 1]

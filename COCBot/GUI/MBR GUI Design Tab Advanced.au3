@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GKevinOD (2014)
 ; Modified ......: DkEd, Hervidero (2015), Promac (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -77,7 +77,7 @@
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 2)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$y +=22
+		$y +=27
 		$chkTrophyMode = GUICtrlCreateCheckbox(GetTranslated(4,23, "Snipe Combo"), $x-10, $y, -1, -1)
 			$txtTip = GetTranslated(4,24, "Adds the TH Snipe combination to the current search settings. (Example: Deadbase OR TH Snipe)")
 			GUICtrlSetTip(-1, $txtTip)
@@ -92,7 +92,76 @@
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$y+= 50
+
+		$x += 18
+		$y += 25
+		$chkTSEnableAfter = GUICtrlCreateCheckbox(GetTranslated(4,99, "Delay Start"), $x, $y, -1, -1)
+			$txtTip = GetTranslated(4,100, "Search for a TH Snipe after this No. of searches, start searching for Live Bases first..")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "chkTSEnableAfter")
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$txtTSEnableAfter = GUICtrlCreateInput("50", $x + 80, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$txtTip = GetTranslated(4,101, "No. of searches to wait before activating this mode.")
+			GUICtrlSetLimit(-1, 3)
+			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlEdit_SetReadOnly(-1, True)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$lblTSEnableAfter = GUICtrlCreateLabel(GetTranslated(4,102, "search(es)."), $x + 132, $y + 4, -1, -1)
+			GUICtrlSetTip(-1, $txtTip)
+		$y += 21
+		$cmbTSMeetGE = GUICtrlCreateCombo("", $x , $y + 10, 65, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			$txtTip = GetTranslated(4,103, "Search for a base that meets the values set for Gold And/Or/Plus Elixir.") & @CRLF & GetTranslated(4,104, "AND: Both conditions must meet, Gold and Elixir.") & @CRLF & GetTranslated(4,105, "OR: One condition must meet, Gold or Elixir.") & @CRLF & GetTranslated(4,106, "+ (PLUS): Total amount of Gold + Elixir must meet.")
+			GUICtrlSetData(-1, GetTranslated(4,107, "G And E") &"|" & GetTranslated(4,108, "G Or E") & "|" & GetTranslated(4,109, "G + E"), GetTranslated(4,107, "G And E"))
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "cmbTSGoldElixir")
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$txtTSMinGold = GUICtrlCreateInput("80000", $x + 80, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$txtTip = GetTranslated(4,110, "Set the Min. amount of Gold to search for on a village to attack.")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetLimit(-1, 6)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$picTSMinGold = GUICtrlCreateIcon($pIconLib, $eIcnGold, $x + 131, $y, 16, 16)
+			GUICtrlSetTip(-1, $txtTip)
+		$y += 21
+		$txtTSMinElixir = GUICtrlCreateInput("80000", $x + 80, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$txtTip = GetTranslated(4,111, "Set the Min. amount of Elixir to search for on a village to attack.")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetLimit(-1, 6)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$picTSMinElixir = GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x + 131, $y, 16, 16)
+			GUICtrlSetTip(-1, $txtTip)
+		$y -= 11
+		$txtTSMinGoldPlusElixir = GUICtrlCreateInput("160000", $x + 80, $y, 50, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$txtTip = GetTranslated(4,112, "Set the Min. amount of Gold + Elixir to search for on a village to attack.")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetLimit(-1, 6)
+			GUICtrlSetState (-1, $GUI_HIDE)
+		$picTSMinGPEGold = GUICtrlCreateIcon($pIconLib, $eIcnGold, $x + 131, $y + 1, 16, 16)
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetState (-1, $GUI_HIDE)
+		$lblTSMinGPE = GUICtrlCreateLabel("+", $x + 147, $y + 1, -1, -1)
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetState (-1, $GUI_HIDE)
+		$picTSMinGPEElixir = GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x + 153, $y + 1, 16, 16)
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetState (-1, $GUI_HIDE)
+		$y += 31
+		$chkTSMeetDE = GUICtrlCreateCheckbox(GetTranslated(4,113, "Dark Elixir"), $x , $y, -1, -1)
+			$txtTip = GetTranslated(4,114, "Search for a base that meets the value set for Min. Dark Elixir.")
+			GUICtrlSetOnEvent(-1, "chkTSMeetDE")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$txtTSMinDarkElixir = GUICtrlCreateInput("600", $x + 80, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$txtTip = GetTranslated(4,115, "Set the Min. amount of Dark Elixir to search for on a village to attack.")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetLimit(-1, 5)
+			_GUICtrlEdit_SetReadOnly(-1, True)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$picTSMinDarkElixir = GUICtrlCreateIcon($pIconLib, $eIcnDark, $x + 131, $y, 16, 16)
+			GUICtrlSetTip(-1, $txtTip)
+
+		$x -= 18
+		$y += 30
 ;~ 		$lblAttackTHType = GUICtrlCreateLabel(GetTranslated(4,30, "Attack TH Type") & ":", $x - 8 , $y + 5 , -1, 17, $SS_RIGHT)
 ;~ 		$cmbAttackTHType = GUICtrlCreateCombo("",  $x + 80, $y, 120, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 ;~ 			GUICtrlSetData(-1, GetTranslated(4,31, "Attack: SmartBarch") & "|" & GetTranslated(4,32, "Attack: Bam") & "|" & GetTranslated(4,33, "Attack: eXtreme") & "|" & GetTranslated(4,34, "Attack: GBarch") & "|" & GetTranslated(4,35, "Attack: Custom"), GetTranslated(4,34, -1))
@@ -108,19 +177,18 @@
 		$cmbAttackTHType = GUICtrlCreateCombo("",  $x + 80, $y, 120, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetData(-1, "")
             $txtTip = GetTranslated(4,98, "You can add/edit attack editing csv settings files in THSnipe folder")
-
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "cmbAttackTHType")
 			LoadThSnipeAttacks()
 
         $y +=25
-		$lblAttackBottomType = GUICtrlCreateLabel(GetTranslated(4,41, "If TH is at bottom") & ":", $x -15 , $y + 5, 90, -1, $SS_RIGHT)
-		$cmbAttackbottomType = GUICtrlCreateCombo("",  $x + 80, $y, 120, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			GUICtrlSetData(-1, GetTranslated(4,42, "Deploy: Zoomed In")&"|" & GetTranslated(4,43, "Deploy: On Sides"), GetTranslated(4,43, -1))
-			$txtTip = GetTranslated(4,44, "Select your strategy to deploy troops when the TH is detected on the Bottom of the screen!") & @CRLF & GetTranslated(4,45, "Zoomed in • Zoom in first, then Attack from bottom.") & @CRLF & GetTranslated(4,46, "On Sides • Try to get the TH from the left and right without zooming in, your troops may pick another target!")
-			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetState(-1, $GUI_DISABLE)
+;~ 		$lblAttackBottomType = GUICtrlCreateLabel(GetTranslated(4,41, "If TH is at bottom") & ":", $x -15 , $y + 5, 90, -1, $SS_RIGHT)
+;~ 		$cmbAttackbottomType = GUICtrlCreateCombo("",  $x + 80, $y, 120, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+;~ 			GUICtrlSetData(-1, GetTranslated(4,42, "Deploy: Zoomed In")&"|" & GetTranslated(4,43, "Deploy: On Sides"), GetTranslated(4,43, -1))
+;~ 			$txtTip = GetTranslated(4,44, "Select your strategy to deploy troops when the TH is detected on the Bottom of the screen!") & @CRLF & GetTranslated(4,45, "Zoomed in • Zoom in first, then Attack from bottom.") & @CRLF & GetTranslated(4,46, "On Sides • Try to get the TH from the left and right without zooming in, your troops may pick another target!")
+;~ 			GUICtrlSetTip(-1, $txtTip)
+;~ 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$y += 30
 		GUICtrlCreateIcon($pIconLib, $eIcnKing, $x - 16 , $y, 24, 24)
 		$chkUseKingTH = GUICtrlCreateCheckbox(GetTranslated(4,47, "Use King"), $x + 12 , $y+1, -1, -1)

@@ -4,8 +4,10 @@
 ; Syntax ........: $aXXXXX[Y]  : XXXX is name of point or item being checked, Y = 2 for position only, or 4 when color/tolerance value included
 ; Author ........: Code Gorilla #1
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 ;                                 x    y     color  tolerance
@@ -21,16 +23,17 @@ Global $aIsConnectLost[4]    = [255, 271 + $midOffsetY, 0x33B5E5, 20] ; COC mess
 Global $aIsCheckOOS[4]   	  = [223, 272 + $midOffsetY, 0x33B5E5, 20] ; COC message : 'Connection Lost' network error or annother device
 Global $aIsMaintenance[4]    = [350, 271 + $midOffsetY, 0x33B5E5, 20] ; COC message : 'Anyone there?'
 Global $aReloadButton[4]     = [443, 408 + $midOffsetY, 0x282828, 10] ; Reload Coc Button after Out of Sync, 860x780
-
 Global $aAttackButton[2]     = [ 60, 614 + $bottomOffsetY]               ; Attack Button, Main Screen
-Global $aFindMatchButton[4]  = [140, 540 + $bottomOffsetY, 0xD84400, 10] ; Find Multiplayer Match Button, Attack Screen 860x780
+Global $aFindMatchButton[4]  = [195, 480+$bottomOffsetY, 0xF0B028, 10] ; Find Multiplayer Match Button, Attack Screen 860x780 without shield
+Global $aFindMatchButton2[4] = [195, 480+$bottomOffsetY, 0xE8A428, 10] ; Find Multiplayer Match Button, Attack Screen 860x780 with shield
 Global $aIsAttackShield[4]   = [250, 415 + $midOffsetY, 0xE8E8E0, 10] ; Attack window, white shield verification window
 Global $aAway[2]             = [  1,  40]               ; Away click, moved from 1,1 to prevent scroll window from top
-;Global $aBreakShield[4]     = [513, 416, 0x5DAC10, 50] ; Break Shield Button, Attack Screen ;the 0x5DAC10 color value matches open grass use with caution
+Global $aRemoveShldButton[4] = [470,  18, 0xA80408, 10] ; Legacy - Main Screen, Red pixel lower part of Minus sign to remove shield, used to validate latest COC installed
 Global $aNoShield[4]  	  	  = [448,  20, 0x43484B, 10] ; Main Screen, charcoal pixel center of shield when no shield is present
 Global $aHaveShield[4]  	  = [455,  23, 0xEEF4F8, 10] ; Main Screen, Silver pixel center of shield
 Global $aHavePerGuard[4]  	  = [455,  23, 0x010102, 10] ; Main Screen, black pixel in sword outline center of shield
-Global $aRemoveShldButton[4] = [470,  18, 0xA80408, 10] ; Main Screen, Red pixel lower part of Minus sign to remove shield
+Global $aShieldInfoButton[4] = [472,  11, 0x6DB0D3, 10] ; Main Screen, Blue pixel upper part of "i"
+Global $aIsShieldInfo[4]     = [645, 195, 0xE00408, 20] ; Main Screen, Shield Info window, red pixel right of X
 Global $aSurrenderButton[4]  = [ 70, 545 + $bottomOffsetY, 0xC00000, 40] ; Surrender Button, Attack Screen
 Global $aConfirmSurrender[4] = [500, 415 + $midOffsetY, 0x60AC10, 20] ; Confirm Surrender Button, Attack Screen (no color for button as it matches grass)
 Global $aCancelFight[4]      = [822,  48, 0xD80408, 20] ; Cancel Fight Scene
@@ -44,7 +47,7 @@ Global $aClanTab[2]          = [189,  24]               ; Clan Tab, Chat Window,
 Global $aClanInfo[2]         = [282,  55]  				; Clan Info Icon
 Global $aArmyCampSize[2]     = [586, 193 + $midOffsetY]               ; Training Window, Overview screen, Current Size/Total Size
 Global $aIsCampNotFull[4] 	 = [149, 150 + $midOffsetY, 0x761714, 20] ; Training Window, Overview screen Red pixel in Exclamation mark with camp is not full
-Global $aIsCampFull[4]  	 = [151, 154 + $midOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
+Global $aIsCampFull[4]  	 = [128, 151 + $midOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
 Global $aBarrackFull[4] 	 = [392, 154 + $midOffsetY, 0xE84D50, 20] ; Training Window, Barracks Screen, Red pixel in Exclamation mark with Barrack is full
 Global $aBuildersDigits[2]   = [324,  21]               ; Main Screen, Free/Total Builders
 Global $aLanguageCheck1[4]   = [326,   8, 0xF9FAF9, 20] ; Main Screen Test Language for word 'Builders'

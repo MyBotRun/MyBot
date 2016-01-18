@@ -1,0 +1,62 @@
+TROOP |S1|S2|Q1|Q2|DEL1 |DEL2 |LOG_TEXT                                                            |NOTES
+Text  |  |  |  |  |     |     |--Example Plan-Create your own attack!--                                           |
+Text  |  |  |  |  |     |     |Wave1: Barb,arch,minions and wait 20 seconds                        |
+Barb  | 4| 4| 1| 1| 1500| 2000|                                                                    |deploys 4 spot x 1 qty of barbarians - take out possible ground bombs
+Arch  | 6| 6| 1| 1|  800| 1000|                                                                    |deploys 6x1 archers
+Mini  | 2| 2| 2| 2|  800| 1000|                                                                    |deploys 2x2 minions  - take out possible air bombs
+WAIT  |  |  |  |  |     |20000|                                                                    |check for gold/elixir changes for max 20 seconds
+Text  |  |  |  |  |     |     |Wave2: Giants,wallbreakers,rage,barb,arch, mini  and wait 15 seconds|
+Giant | 4| 4| 2| 2|  100|  200|                                                                    |deploys 4x2 giants
+Wall  | 2| 2| 4| 5|  100|  200|                                                                    |deploys 2x(4~5) wallbreakers
+RSpell|  |  |  |  |     |     |                                                                    |drop rage spell
+Barb  | 3| 3| 4| 5|  800| 1000|                                                                    |deploys 3x(4~5) barbarians
+Arch  | 3| 3| 7| 8|  800| 1000|                                                                    |deploys 3x(7~8) archers
+Mini  | 2| 2| 5| 6|  800| 1000|                                                                    |deploys 2x(5~6) minions
+WAIT  |  |  |  |  |     |15000|                                                                    |check for gold/elixir changes for max 15 seconds
+Text  |  |  |  |  |     |     |Wave3: healing speels and heroes  and wait 15 seconds               |
+HSpell|  |  |  |  |     |     |                                                                    |drop healing spell
+King  |  |  |  |  |     |     |                                                                    |drop king
+Queen |  |  |  |  |     |     |                                                                    |drop queen
+WAIT  |  |  |  |  |     |15000|                                                                    |check for gold/elixir changes for max 15 seconds
+Text  |  |  |  |  |     |     |Wave4: Giants, hogs, wall, castle, wait 15 seconds                  |
+Giant | 2| 2| 9| 9|  500|  600|                                                                    |deploys 2x9 giants
+Hogs  | 5| 6| 3| 4|  800| 1000|                                                                    |deploys (5~6)x(3~4) hogs
+Wall  | 2| 2| 1| 1|  500|  600|                                                                    |deploys 2x1 wallbreakers
+Wall  | 2| 2| 1| 1|  500|  600|                                                                    |deploys 2x1 wallbreakers
+Heal  | 2| 2| 1| 1|  500|  600|                                                                    |deploys 2x1 healers
+Castle|  |  |  |  |     |     |                                                                    |deploys castle
+WAIT  |  |  |  |  |     |15000|                                                                    |check for gold/elixir changes for max 15 seconds
+Text  |  |  |  |  |     |     |Wave6: rest of barbarians and archers and wait max 25 seconds       |
+Barb  | 4| 4| 8| 8|  500|  600|                                                                    |deploys 4x8 barbarians
+Arch  | 3| 3|13|13|  500|  600|                                                                    |deploys 3x13 archers
+Barb  | 3| 3|11|11|  500|  600|                                                                    |deploys 3x11 barbarians
+Arch  | 2| 2|20|20|  500|  600|                                                                    |deploys 2x20 archers
+Barb  | 4| 4| 9| 9|  500|  600|                                                                    |deploys 4x9 barbarians
+Arch  | 2| 2|20|20|  500|  600|                                                                    |deploys 2x20 archers
+Barb  | 4| 4| 9| 9|  500|  600|                                                                    |deploys 4x9 barbarians
+Arch  | 2| 2|20|20|  500|  600|                                                                    |deploys 2x20 archers
+WAIT  |  |  |  |  |     |25000|                                                                    |check for gold/elixir changes for max 25 seconds
+Text  |  |  |  |  |     |     |Wave6: lighting spells                                              |
+LSpell|  |  |  |  |     |     |                                                                    |drop lightning spell
+LSpell|  |  |  |  |     |     |                                                                    |drop lightning spell
+LSpell|  |  |  |  |     |     |                                                                    |drop lightning spell
+LSpell|  |  |  |  |     |     |                                                                    |drop lightning spell
+LSpell|  |  |  |  |     |     |                                                                    |drop lightning spell
+WAIT  |  |  |  |  |     | 2000|                                                                    |check for gold/elixir changes for max 2 seconds
+Text  |  |  |  |  |     |     |Wave7: All IN!!!!!                                                  |
+Gole  | 2| 2|99|99|  100|  200|                                                                    |
+Giant | 2| 2|99|99|  100|  200|                                                                    |
+Lava  | 2| 2|99|99|  100|  200|                                                                    |
+Wall  | 2| 2|99|99|  100|  200|                                                                    |
+Drag  | 2| 2|99|99|  100|  200|                                                                    |
+Pekk  | 2| 2|99|99|  100|  200|                                                                    |
+Hogs  | 2| 2|99|99|  100|  200|                                                                    |
+Valk  | 2| 2|99|99|  100|  200|                                                                    |
+Barb  | 2| 2|99|99|  100|  200|                                                                    |
+Arch  | 2| 2|99|99|  100|  200|                                                                    |
+Mini  | 2| 2|99|99|  100|  200|                                                                    |
+Gobl  | 2| 2|99|99|  100|  200|                                                                    |
+Ball  | 2| 2|99|99|  100|  200|                                                                    |
+Witc  | 2| 2|99|99|  100|  200|                                                                    |
+Text  |  |  |  |  |     |     |~Finished Attacking, waiting to finish                              |
+WAIT  |  |  |  |  |     |20000|                                                                    |

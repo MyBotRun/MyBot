@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: summoner
 ; Modified ......: KnowJack (June2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -245,7 +245,7 @@ Func DebugRegionSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = $DE
 		$sName = $sTxtName
 	EndIf
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
-	_GDIPlus_ImageSaveToFile($hBitmap, $dirloots & $sName & $Date & " at " & $Time & ".png")
+	_GDIPlus_ImageSaveToFile($hBitmap, $dirTempDebug& $sName & $Date & " at " & $Time & ".png")
 	If _Sleep($iDelayLaboratory2) Then Return
 
 EndFunc   ;==>DebugRegionSave

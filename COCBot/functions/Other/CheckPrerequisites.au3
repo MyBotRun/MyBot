@@ -1,3 +1,35 @@
+; #FUNCTION# ====================================================================================================================
+; Name ..........: CheckPrerequisites
+; Description ...:
+; Syntax ........: CheckPrerequisites()
+; Parameters ....:
+; Return values .: None
+; Author ........:
+; Modified ......: Heridero, Zengzeng (2015)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+Func CheckPrerequisites()
+	Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
+	Local $isVC2010Installed = isVC2010Installed()
+	If ($isNetFramework4dot5Installed = False Or $isVC2010Installed = False) Then
+		If ($isNetFramework4dot5Installed = False) Then
+			SetLog("The .Net Framework 4.5 is not installed", $COLOR_RED)
+			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=30653", $COLOR_RED)
+		EndIf
+		If ($isVC2010Installed = False) Then
+			SetLog("The VC 2010 x86 is not installed", $COLOR_RED)
+			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=5555", $COLOR_RED)
+		EndIf
+
+		GUICtrlSetState($btnStart, $GUI_DISABLE)
+	EndIf
+	If isEveryFileInstalled() = False Then Exit
+EndFunc   ;==>CheckPrerequisites
+
 Func isNetFramework4Installed()
 	Local $z = 0, $sKeyName, $success = False
 	Do
@@ -41,12 +73,11 @@ Func isEveryFileInstalled()
 	Local $bResult = False, $iCount = 0
 
 	; folders and files needed checking
-	Local $aCheckFiles[9] = [@ScriptDir & "\COCBot", _
+	Local $aCheckFiles[8] = [@ScriptDir & "\COCBot", _
 							$LibDir, _
 							@ScriptDir & "\Images", _
-							@ScriptDir & "\Icons", _
 							$pFuncLib, _
-							$sBotDll, _
+							$pImageLib, _
 							$pIconLib, _
 							$LibDir & "\opencv_core220.dll", _
 							$LibDir & "\opencv_imgproc220.dll"]
@@ -54,7 +85,7 @@ Func isEveryFileInstalled()
 	For $vElement In $aCheckFiles
 		$iCount += FileExists($vElement)
 	Next
-	If $iCount = UBound($aCheckFiles) - 1 Then
+	If $iCount = UBound($aCheckFiles) Then
 		$bResult = True
 	Else
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
@@ -73,24 +104,22 @@ Func isEveryFileInstalled()
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
 		;Exit
 	EndIf
+	If @Compiled Then;if .exe
+		If Not StringInStr(@ScriptFullPath, "MyBot.run.exe", 1) Then; if filename isn't MyBot.run.exe
+			Local $sText1, $sText2, $MsgBox
+			$sText1 = "Hey Chief, file name incorrect!"
+			$sText2 = 'You have renamed the file "MyBot.run.exe"! Please change it back to MyBot.run.exe and restart the bot!'
+			$sText3 = "Sorry, Start button disabled until fixed!"
 
+			Setlog($sText1, $COLOR_RED)
+			Setlog($sText2, $COLOR_RED)
+			Setlog($sText3, $COLOR_RED)
+
+			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
+			$MsgBox = _ExtMsgBox(48, "Ok", $sText1, $sText2, 0, $frmBot)
+			GUICtrlSetState($btnStart, $GUI_DISABLE)
+			$bResult = False
+		EndIf
+	EndIf
 	Return $bResult
 EndFunc   ;==>isEveryFileInstalled
-
-Func CheckPrerequisites()
-	Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
-	Local $isVC2010Installed = isVC2010Installed()
-	If ($isNetFramework4dot5Installed = False Or $isVC2010Installed = False) Then
-		If ($isNetFramework4dot5Installed = False) Then
-			SetLog("The .Net Framework 4.5 is not installed", $COLOR_RED)
-			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=30653", $COLOR_RED)
-		EndIf
-		If ($isVC2010Installed = False) Then
-			SetLog("The VC 2010 x86 is not installed", $COLOR_RED)
-			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=5555", $COLOR_RED)
-		EndIf
-
-		GUICtrlSetState($btnStart, $GUI_DISABLE)
-	EndIf
-	If isEveryFileInstalled() = False Then Exit
-EndFunc   ;==>CheckPrerequisites

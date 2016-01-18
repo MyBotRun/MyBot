@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (Jun/Aug2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -66,50 +66,25 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 
 
    If not (IsReturnHomeBattlePage(True,False) ) Then
-
 	  ; ---- CLICK SURRENDER BUTTON ----
  	   $i = 0 ; Reset Loop counter
 	   While 1
 		   If _CheckPixel($aSurrenderButton, $bCapturePixel) Then
-			   If IsAttackPage() Then ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
-			   ExitLoop
+			   If IsAttackPage() Then
+					ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
+					If _Sleep($iDelayReturnHome2) Then Return ; short wait for confirm button to appear
+					ClickOkay("SurrenderOkay")  ; Click Okay to Confirm surrender
+					ExitLoop
+				EndIf
 		   Else
 			   $i += 1
 		   EndIf
-		   If $i > 10 Then ExitLoop  ; if end battle or surrender button are not found in 10*200mms or 2 seconds, then give up.
+		   If $i > 5 Then ExitLoop  ; if end battle or surrender button are not found in 5*(200+200)ms or 2 seconds, then give up.
 		   If _Sleep($iDelayReturnHome5) Then Return
-	   WEnd
-	   If _Sleep($iDelayReturnHome2) Then Return ; short wait for confirm button to appear
-
-	   ; ---- CLICK OK CLOSE BATTLE (SURRENDER)
-	   $i = 0 ; Reset Loop counter
-	   While 1  ; Look for Okay button on the confirm surrender window before clicking to avoid troop deployment, since button is green (same as grass) have to search for edges of the button
-		   Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
-		   Global $ButtonPixel = _MultiPixelSearch(438, 372 + $midOffsetY, 590, 404 + $midOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		   If $debugSetlog = 1 Then Setlog("Confirm Surrender color #1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_PURPLE)
-		   If IsArray($ButtonPixel) Then
-			   If $debugSetlog = 1 Then
-				   Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
-				   Setlog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_PURPLE)
-			   EndIf
-			   ControlFocus($Title, "", "") ; grab window focus
-			   If IsReturnHomeBattlePage() Then PureClick($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 2, 50,"#0398") ; Click Okay Button
-			   ExitLoop
-		   EndIf
-		   If $i > 5 Then  ; if okay button not found in 5*300-400ms search time or 1.5-2 seconds, then stop searching
-			   If $DebugSetlog = 1 Then
-				   Setlog("Can not find Okay to surrender button, giving up", $COLOR_PURPLE)
-				   if $debugImageSave= 1 Then DebugImageSave("ReturnHomeSurrenderButtonCheck_")
-			   EndIf
-			   ExitLoop ;
-		   EndIf
-		   $i += 1
 	   WEnd
     Else
 		If $debugsetlog=1 Then Setlog("Battle already over.",$COLOR_PURPLE)
 	EndIf
-
-
 
 	If _Sleep($iDelayReturnHome2) Then Return ; short wait for return
 
