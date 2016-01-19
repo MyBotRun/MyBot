@@ -20,8 +20,9 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func SetLog($String, $Color = $COLOR_BLACK, $Font = "Verdana", $FontSize = 7.5, $statusbar = 1, $time = Time(), $bConsoleWrite = True) ;Sets the text for the log
+	If $hLogFileHandle = "" Then CreateLogFile()
     If $bConsoleWrite And $String <> "" Then ConsoleWrite("SetLog: " & $String  & @CRLF) ; Always write any log to console
-    If $SilentSetLog Then
+    If $SilentSetLog = True Then
 	   ; Silent mode is active, only write to log file, not to log control
 	   _FileWriteLog($hLogFileHandle, $String)
 	   Return
@@ -70,10 +71,10 @@ Func _ColorConvert($nColor);RGB to BGR or BGR to RGB
 EndFunc   ;==>_ColorConvert
 
 Func SetAtkLog($String1, $String2 = "", $Color = $COLOR_BLACK, $Font = "Lucida Console", $FontSize = 7.5) ;Sets the text for the log
-   ;string1 see in video, string1&string2 put in file
+	If $hAttackLogFileHandle = "" Then CreateAttackLogFile()
+	;string1 see in video, string1&string2 put in file
 	_GUICtrlRichEdit_SetFont($txtAtkLog, $FontSize, $Font)
 	_GUICtrlRichEdit_AppendTextColor($txtAtkLog, $String1 & @CRLF, _ColorConvert($Color))
-	If $hAttackLogFileHandle = "" Then CreateAttackLogFile()
 	_FileWriteLog($hAttackLogFileHandle,  $String1 & $String2)
 EndFunc   ;==>SetAtkLog
 
