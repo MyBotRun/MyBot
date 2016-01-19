@@ -22,8 +22,8 @@ Func LocateUpgrades()
 		SetError(1)
 		Return
 	EndIf
-	If $hLogFileHandle = "" Then CreateLogFile()
-	If $hAttackLogFileHandle = "" Then CreateAttackLogFile()
+	;If $hLogFileHandle = "" Then CreateLogFile()
+	;If $hAttackLogFileHandle = "" Then CreateAttackLogFile()
 	Setlog("Upgrade Buildings and Auto Wall Upgrade Can Not Use same Loot Type!", $COLOR_GREEN)
 	Local $MsgBox, $stext
 	Local $icount = 0

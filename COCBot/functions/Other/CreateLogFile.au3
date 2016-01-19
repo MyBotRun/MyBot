@@ -13,7 +13,10 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func CreateLogFile()
-    FileClose($hLogFileHandle)
+    if $hLogFileHandle<>"" Then
+		FileClose($hLogFileHandle)
+		$hLogFileHandle = ""
+	EndIf
     $sLogFName = @YEAR & "-" & @MON & "-" & @MDAY & "_" & @HOUR & "." & @MIN & "." & @SEC & ".log"
 	$sLogPath = $dirLogs & $sLogFName
 	$hLogFileHandle = FileOpen($sLogPath, $FO_APPEND)
@@ -34,7 +37,10 @@ EndFunc   ;==>CreateLogFile
 ; Example .......: No
 ; ===============================================================================================================================
 Func CreateAttackLogFile()
-    FileClose($hAttackLogFileHandle)
+    If $hAttackLogFileHandle <>"" Then
+		FileClose($hAttackLogFileHandle)
+		$hAttackLogFileHandle=""
+	EndIf
     $sAttackLogFName = "AttackLog" & "-"& @YEAR & "-" & @MON & ".log"
 	$sAttackLogPath = $dirLogs & $sAttackLogFName
 	$hAttackLogFileHandle = FileOpen($sAttackLogPath, $FO_APPEND)

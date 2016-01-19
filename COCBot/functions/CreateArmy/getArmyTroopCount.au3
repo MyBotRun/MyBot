@@ -78,7 +78,7 @@ Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		$aDTtroopsToBeUsed[$i][1] = 0
 	Next
 
-	If IsArray($TroopTypeT) Then
+	If IsArray($TroopTypeT) And $TroopTypeT[1] <> "" Then
 
 		For $i = 1 To $TroopTypeT[0]
 
@@ -88,7 +88,7 @@ Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 			Local $Troops = StringSplit($TroopTypeT[$i], "#", $STR_NOCOUNT)
 			If $debugSetlog = 1 Then SetLog("$TroopTypeT[$i] split : " & $i, $COLOR_PURPLE)
 
-			If IsArray($Troops) Then
+			If IsArray($Troops) And $Troops[0] <> "" Then
 
 				If $Troops[0] = $eBarb Then
 					$TroopQ = $Troops[2]

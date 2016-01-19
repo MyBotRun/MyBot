@@ -283,7 +283,9 @@ Func btnStop()
 			AdlibUnRegister("SetTime")
 			$Restart = True
 			FileClose($hLogFileHandle)
+			$hLogFileHandle = ""
 			FileClose($hAttackLogFileHandle)
+			$hAttackLogFileHandle = ""
 		Else
 			$bSearchMode = False
 		EndIf

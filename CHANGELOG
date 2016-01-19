@@ -1,4 +1,8 @@
-﻿* **V5.1**
+﻿* **V5.1.1**
+ * Fixed a log bug where the logfiles were not properly closed and the attacklog contained parts of the normal log.
+ * Fixed a subscript error that occurs when the bot starts and the village has no trained troops in army camps.
+
+* **V5.1**
  * Added MEmu 2.2.1 support
  * Added check and log message if user has renamed program
  * Added Grand Warden to available heroes for trophy drop
