@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Code Monkey #4
 ; Modified ......: KnowJack (Aug 2015), MonkeyHunter(2015-12)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,23 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 	If IsMainPage() Then ClickP($aAttackButton, 1, 0, "#0149") ; Click Attack Button
 	If _Sleep($iDelayPrepareSearch1) Then Return
 
-	If IsLaunchAttackPage() Then ClickP($aFindMatchButton, 1, 0, "#0150");Click Find a Match Button
+	;If IsLaunchAttackPage() Then ClickP($aFindMatchButton, 1, 0, "#0150");Click Find a Match Button
+
+	Local $j = 0
+	While Not ( IsLaunchAttackPage() )
+			If _Sleep($iDelayPrepareSearch1) Then Return ; wait for Train Window to be ready.
+			$j += 1
+			If $j > 15 Then ExitLoop
+	WEnd
+	If $j > 15 Then
+		SetLog("Launch attack Page Fail", $COLOR_RED)
+		checkMainScreen()
+		Return
+	Else
+		 ClickP($aFindMatchButton, 1, 0, "#0150");Click Find a Match Button
+	EndIf
+
+
 	If _Sleep($iDelayPrepareSearch2) Then Return
 
 	Local $Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check

@@ -7,10 +7,10 @@
 ; Return values .: Returns True if both DPI and display are above minimum requirement, returns False otherwise.
 ; Author ........: MonkeyHunter (12-2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: None
-; Link ..........: https://www.autoitscript.com/forum/topic/154885-autoit-and-dpi-awareness/
+; Link ..........: https://www.autoitscript.com/forum/topic/154885-autoit-and-dpi-awareness/, https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 ;
@@ -61,11 +61,12 @@ Func CheckDisplay()
 				$sBSDisplaySize = $aMonitorData[$i][3] & "x" & $aMonitorData[$i][4]
 				ConsoleWrite("DisplaySizeFound: " & $sBSDisplaySize & @CRLF)
 				If ($aMonitorData[$i][3] < $iDisplaySizeMin) Or ($aMonitorData[$i][4] < $iDisplaySizeMin) Then
-					SetLog(_PadStringCenter(" ERROR!! Display size too small = " & $sBSDisplaySize & " ", 53, "+"), $COLOR_RED)
-					SetLog(_PadStringCenter(" Visit MyBot.run forums for more information ", 53, "+"), $COLOR_RED)
-					;SetLog(_PadStringCenter(" Sorry - Bot start button disabled", 53, "+"), $COLOR_RED)
+					SetLog(_PadStringCenter(" Warning!! Display size smaller than recommended = " & $sBSDisplaySize & " ", 53, "+"), $COLOR_RED)
+					SetLog(_PadStringCenter(" Remove Hide BS system bar or Full Screen App now ", 53, "+"), $COLOR_RED)
+					SetLog(_PadStringCenter(" MBR will attempt auto adjust BS size ", 53, "+"), $COLOR_RED)
+					SetLog(_PadStringCenter(" Close all BS process and restart may be required ", 53, "+"), $COLOR_RED)
+					SetLog(_PadStringCenter(" Search MyBot.run forums if any problems ", 53, "+"), $COLOR_RED)
 					Setlog(" ")
-					; GUICtrlSetState($btnStart, $GUI_DISABLE)
 				Else
 					ConsoleWrite("Display Check Pass!" & @CRLF)
 					If $Debugsetlog = 1 Then SetLog(_PadStringCenter(" Display size= " & $sBSDisplaySize & " ", 50, "+"), $COLOR_Blue)

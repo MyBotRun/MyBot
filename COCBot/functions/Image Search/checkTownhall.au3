@@ -6,7 +6,7 @@
 ; Return values .: $THx, $THy
 ; Author ........: Sardo
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -36,9 +36,9 @@ Func LoadTHImage()
 		;assign value at THimages0... THImages4 if $x it's not empty
 		If UBound($x) Then Assign("THImages" & $t, $x)
 		;code to debug in console if need
-		For $i = 0 To UBound(Eval("THImages" & $t)) - 1
-			ConsoleWrite("$THImages" & $t & "[" & $i & "]:" & Execute("$THImages" & $t & "[" & $i & "]") & @CRLF)
-		Next
+;~ 		For $i = 0 To UBound(Eval("THImages" & $t)) - 1
+;~ 			ConsoleWrite("$THImages" & $t & "[" & $i & "]:" & Execute("$THImages" & $t & "[" & $i & "]") & @CRLF)
+;~ 		Next
 
 		;make stats array and put values = 0
 		For $i = 0 To UBound($x) - 1
@@ -57,7 +57,7 @@ Func LoadTHImage()
 	Next
 EndFunc   ;==>LoadTHImage
 
-Func checkTownHallADV2($limit = 0, $tolerancefix = 0)
+Func checkTownHallADV2($limit = 0, $tolerancefix = 0, $captureRegion=True)
 	;variable limit: limit number of searches, limit = 0 disable limit search
 	;variable tolearnce: set a fixed tolearnce, tolerance = 0 disable fixed tolerance
 	Local $hTimer = TimerInit()
@@ -74,7 +74,7 @@ Func checkTownHallADV2($limit = 0, $tolerancefix = 0)
 ;~ 	ConsoleWrite ("max value =  " & $max &  @CRLF)
 	Local $found = False
 	For $i = 1 To $max
-		_CaptureRegion(0,0,$DEFAULT_WIDTH,$DEFAULT_HEIGHT,true)
+		if $captureRegion Then _CaptureRegion(0,0,$DEFAULT_WIDTH,$DEFAULT_HEIGHT,true)
 		;For $t = 0 To UBound($THText) - 1		  ; check from th6 to th11
 		For $t = UBound($THText) - 1 To 0 Step -1 ; check from th11 to th6
 			If Int(Execute("$THImages" & $t & "[0]")) >= $i Then
@@ -84,23 +84,23 @@ Func checkTownHallADV2($limit = 0, $tolerancefix = 0)
 				Else
 					$tolerance = Number(StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), ".bmp") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") - 1))
 				EndIf
-				ConsoleWrite("Examine image n." & $i)
-				ConsoleWrite(" for TH " & $THText[$t])
-				ConsoleWrite(" - image name: " & Execute("$THImages" & $t & "[" & $i & "]"))
-				ConsoleWrite(" - tolerance: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
-				ConsoleWrite(" - X compensation: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") - 1) & ">")
-				ConsoleWrite(" - Y compensation: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - 1) & ">")
-				ConsoleWrite(" - tolerancecalc: " & $tolerance)
-				ConsoleWrite(@CRLF)
+;~ 				ConsoleWrite("Examine image n." & $i)
+;~ 				ConsoleWrite(" for TH " & $THText[$t])
+;~ 				ConsoleWrite(" - image name: " & Execute("$THImages" & $t & "[" & $i & "]"))
+;~ 				ConsoleWrite(" - tolerance: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
+;~ 				ConsoleWrite(" - X compensation: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") - 1) & ">")
+;~ 				ConsoleWrite(" - Y compensation: <" & StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - 1) & ">")
+;~ 				ConsoleWrite(" - tolerancecalc: " & $tolerance)
+;~ 				ConsoleWrite(@CRLF)
 				$THLocation = _ImageSearch(@ScriptDir & "\images\TH\" & $THText[$t] & "\" & Execute("$THImages" & $t & "[" & $i & "]"), 1, $THx, $THy, $tolerance) ; Getting TH Location
-				ConsoleWrite("Imagesearch return: ")
-				ConsoleWrite("- THLocation : " & $THLocation)
-				ConsoleWrite("- THx : " & $THx)
-				ConsoleWrite("- $THy : " & $THy)
+;~ 				ConsoleWrite("Imagesearch return: ")
+;~ 				ConsoleWrite("- THLocation : " & $THLocation)
+;~ 				ConsoleWrite("- THx : " & $THx)
+;~ 				ConsoleWrite("- $THy : " & $THy)
 				$THx += Int(StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "X") - 1))
 				$THy += Int(StringMid(Execute("$THImages" & $t & "[" & $i & "]"), StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") + 1, StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$THImages" & $t & "[" & $i & "]"), "Y") - 1))
-				ConsoleWrite("- with compensation (" & $THx & "," & $THy & ")")
-				ConsoleWrite(@CRLF)
+;~ 				ConsoleWrite("- with compensation (" & $THx & "," & $THy & ")")
+;~ 				ConsoleWrite(@CRLF)
 
 
 				If $THLocation = 1 Then
@@ -177,7 +177,7 @@ Func checkTownHallADV2($limit = 0, $tolerancefix = 0)
 EndFunc   ;==>checkTownHallADV2
 
 Func SaveStatChkTownHall()
-	FileOpen($statChkTownHall, $FO_UTF16_LE + $FO_OVERWRITE)
+	Local $hFile = FileOpen($statChkTownHall, $FO_UTF16_LE + $FO_OVERWRITE)
 	If FileExists($statChkTownHall) Then
 		For $t = 0 To 5
 			For $i = 1 To UBound(Eval("THImages" & $t)) - 1
@@ -185,6 +185,7 @@ Func SaveStatChkTownHall()
 			Next
 		Next
 	EndIf
+	FileClose($hFile)
 EndFunc   ;==>SaveStatChkTownHall
 
 ;~ Func CaptureTHwithInfo($THx, $THy, $ImageInfo)
@@ -203,7 +204,7 @@ EndFunc   ;==>SaveStatChkTownHall
 ;~ 	Local $filename = string("THDetected_" & $Date & "_" & $Time & "_" & $ImageInfo & ".jpg")
 
 ;~ 	If $debugBuildingPos = 1 and $debugsetlog = 1 Then Setlog(" _GDIPlus_ImageSaveToFile", $COLOR_PURPLE)
-;~ 	_GDIPlus_ImageSaveToFile($EditedImage, $dirTemp & $filename)
+;~ 	_GDIPlus_ImageSaveToFile($EditedImage, $dirTempDebug & $filename)
 ;~ 	_GDIPlus_BrushDispose($hPen)
 
 ;~ EndFunc   ;==>CaptureTHwithInfo

@@ -1,4 +1,72 @@
-﻿* **V5.0.1**
+﻿* **V5.1.1**
+ * Fixed a log bug where the logfiles were not properly closed and the attacklog contained parts of the normal log.
+ * Fixed a subscript error that occurs when the bot starts and the village has no trained troops in army camps.
+
+* **V5.1**
+ * Added MEmu 2.2.1 support
+ * Added check and log message if user has renamed program
+ * Added Grand Warden to available heroes for trophy drop
+ * Added Chinese, French, and Russian GUI translations (@user provided)
+ * Added Spell Donations, Poison, Earthquake and Haste available to donate
+ * Added Minimum resource settings and delayed start features in TH Snipe combo settings
+ * Fix Dragon, Pekka, Hogs, Valkyrie, Witch images to enable Donate capability
+ * Fix wait time to work properly in TH Attack CSV code
+ * Fix King Upgrade and building upgrade features to use new upgrade button location
+ * Fix resource collection opening base edit window
+ * Fix Donate feature missing donation button at bottom of screen
+ * Fix Clan level check when not in clan
+ * Fix Clan level check if chat set to Global instead of Clan
+ * Fix endless loop when dropping trophy after OOS restart
+ * Fix Drop Trophy not staying in user set range during some conditions
+ * Change Drop Trophy behavior - checks trophy level and adjusts before every attack
+ * Change minimum troop requirement for drop trophy to start, now needs only 5 spaces full or 1 Hero if enabled
+ * Add user adjustable setting for minimum troops required when attacking dead base enabled during trophy drop
+ * Fix immediate attack without full army after drop trophy dead base attack due OOS condition
+ * Enable Unbreakable mode to use new PB information window (requires latest CoC APK)
+ * Fixed Grand Warden Upgrade cost check and log message
+ * Fix Train Page loop error when user steals window focus and train page is not opened
+ * Updated display check message now that MBR will properly resize BS for displays below 1400x900
+ * Updated some previously missed location data in troop deployment for new 44x44 map and new BS size
+ * Improve reliability of OCR reading "1" in donation page
+ * Fix bot not attacking if shielded
+ * Fix if surrender is not clicked due to not on Attack page, do not check for Okay button.
+ * Fix buildup of debug files due to debugOCR enabled on Donate function.
+ * Fix on TH Snipe CSV function gave an error when troop or delay values were identical.
+ * Fix BlueStacks 1 shutdown routine that caused crash or freeze of bot under Windows 10 [440a12e]
+ * Fix BlueStacks 2 in traditional "BlueStacks App Player" mode, add support for system bar [440a12e]
+ * FIx Pause-HotKey when multiple bots running is only available in first launched bot [02e2f54]
+ * Fix Droid4X and MEmu multi instance support
+ * Fix zoom-out for BlueStacks 2 that sometimes ignores arrow-down-key by falling back to Ctrl-MouseWheelDown [a5fbb2a]
+ * Fix ADB return and home send key when Adb connection lost or Adb wasn't connected
+ * Improved support for BlueStacks 2 and Droid4X
+ * Fix Open ClashOfClans not to force restart of app
+ * Add ability to choose which collectors to include in dead base checking
+ * Fix BS1 CoC restart when checking for CoC main screen
+ * Fix Bot Restarting after 2 OoS
+ * Update Spells Detection on ArmyOverView
+ * Fix Random Android Restart after Pressing Start Button
+ * Updated functions missing UDF headers, update MBR copyright for 2016
+ * Fix bot controls flickering when Start Bot is pressed [0c1e8d9]
+ * Fix missing log redraw when bot window restored [7185828]
+ * Fix randomly required additional click when structures are selected for upgrade [b1720c7]
+ * Fix missing upgrades due to resource flags stealing the structure selection [b1720c7]
+ * Fix Hide-Button executed after Stop-Button pressed when used while bot in run mode [9551833]
+ * Update/Fix ShareReplay feature to work with latest updates
+ * Fix bot never resuming attacking after out of gold or out of elixir
+ * Fix for misclick on Donate button when request was already filled
+ * Improve Donate, combine Donating Troops to keywords with Donate All Spells (no keyword read) and vice versa
+ * Fix to properly close file handles on log files
+ * Fix Stop-Button not stopping some Android activities like start/restart CoC [3511917], [f225a63]
+ * Fix Bot exit/close properly closing resources [9d79365], [34f4bee]
+ * Updated GUI language file handling, filenames are in English, displaynames are in native language name
+ * Fix bot continuing to train even if camps full when Halt Attack enabled
+ * Add new accelerator key: Esc will stop the bot, but only when the bot is the active window
+ * Add new system to customize normal attacks: CSV files in CSV\Attack
+ 
+* **V5.0.2**
+ * Fixed subscript error due to Multi Language support
+
+* **V5.0.1**
  * Improved support for BlueStacks 2 and Droid4X
  * Added Auto detection of System Local to auto set the BOT GUI language on first run, manual change will be remembered.
  * Fix BoostBarrack and BoostHeroes misclicks
@@ -17,22 +85,19 @@
  * Fix Searching for TH when TH Snipe is enabled
  * Fix Detection of League level after Attack
 
-
-* **V5.0** 
+* **V5.0**
  * GUI Multi Language
  * Bluestacks v2 and Droid4x supported
  * TH / DE Side Attack for Live Bases
  * TH Snipes While Train (But maybe this wont be useful to you anymore..)
  * Can make troops only to Donate , the bot will maintain that quantity select on GUI in army composition.
- * Heroes Upgrade continuously 
+ * Heroes Upgrade continuously
  * New System to personalize your TH Snipes attack : \THsnipe\ csv files
  * New Walls Detection code - just need the new images
- * New TH detection - just need the new images with snow - new system to add more images - user friendly 
- * New Inactive Base detection - new system to add more images - user friendly 
+ * New TH detection - just need the new images with snow - new system to add more images - user friendly
+ * New Inactive Base detection - new system to add more images - user friendly
  * Train system with scroll left for queued troops
  * A Lot of fixes to SC December Update and the Winter Theme!!
- * 
- * 
 
 * **V4.2.3**
  * Improve Smart Attack 4 sides, some times was reported 3 sides deploy instead of 4, prevent some troops to drop on red line
@@ -49,7 +114,7 @@
  * Fix the Spells creation , reset the variables and Stop/Start Bot
  * Minor GUI glitch, redline near Mine checkbox contained a text, now it is blank
  * Fix some spelling setlogs
- * Force random to put integer values in Attack algorithm 
+ * Force random to put integer values in Attack algorithm
  * Fix the Armycamp size error because the Clan Chat is Open
  * Improve the Train System , now goes from Left to Right ArmyOverView window to Dark Spell Factory.
  * Locate manually now with all available barracks
@@ -95,7 +160,7 @@
  * Collecting Mines/pumps with Collect resources disabled
  * Bot not clearing shield after Take-A-Break, and not attacking loop
  * Barracks mode with an additional dark troops training issues
- * Slow close of Profile Report window creating errors and not attacking loops 
+ * Slow close of Profile Report window creating errors and not attacking loops
  * Bot doesn't pre-cook dark troops
  * Training troops capacity problem, trouble reading number "2"
  * Balloons in First slot position during attack returning the incorrect number
@@ -214,7 +279,7 @@
  * Add option exit if one or two stars earned
  * Enable sharing replay
  * Donate custom troops
- * Latin Alphabetic + Numbers + special characters ( like ñ , ç and ã ) , special Turkish and Russian characters. 
+ * Latin Alphabetic + Numbers + special characters ( like ñ , ç and ã ) , special Turkish and Russian characters.
  * Moved here halt attack options from log tab
  * Multiple profiles
  * Added option auto clear Tombstones
@@ -240,7 +305,7 @@
  * Minor bug fix
  * Anti-gem spend fix : rearm, walls, build, spells, search,requestCC, ugrade heroes, train
  * New OCR recognition improved - Latin Alphabetic + special letters + numbers / Russian / Turkish
- * Debug code add 
+ * Debug code add
 
 * **V3.1.8**
  * Fix - Hide BlueStacks screen not working for some
@@ -409,7 +474,7 @@ It mean, when see camp nearly full: ex: 210/200 , it will not do other process(d
 
 *  **V1.1**
  * Hog Riders added
- * Raid when camp > 90% 
+ * Raid when camp > 90%
  * Upgrade wall function fixed and optimized
  * Implemented a pause/un-pause function (activate using keyboard key "pause")
  * Adjustable slider to change the time between clicking "Next" when searching to eliminate out of sync issues

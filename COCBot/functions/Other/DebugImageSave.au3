@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: KnowJack (Aug 2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,7 +21,7 @@ Func DebugImageSave($TxtName = "Unknown",$capturenew=True)
 	$Date = @MDAY & "." & @MON & "." & @YEAR
 	$Time = @HOUR & "." & @MIN & "." & @SEC
 	If $capturenew Then _CaptureRegion()
-	_GDIPlus_ImageSaveToFile($hBitmap, $dirtemp & $TxtName & $Date & " at " & $Time & ".png")
+	_GDIPlus_ImageSaveToFile($hBitmap, $dirTempDebug & $TxtName & $Date & " at " & $Time & ".png")
 	If $debugsetlog=1 Then Setlog( $TxtName & $Date & " at " & $Time & ".png", $COLOR_purple)
 	If _Sleep($iDelayDebugImageSave1) Then Return
 

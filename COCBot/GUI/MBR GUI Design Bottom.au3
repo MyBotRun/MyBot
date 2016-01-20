@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GKevinOD (2014)
 ; Modified ......: DkEd, Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -27,19 +27,19 @@ $grpButtons = GUICtrlCreateGroup("https://mybot.run" & GetTranslated(13,26, "- f
 		IF $btnColor then GUICtrlSetBkColor(-1, 0x5CAD85)
 	    GUICtrlSetState(-1, $GUI_DISABLE)
 	$btnStop = GUICtrlCreateButton(GetTranslated(13,2, "Stop Bot"), -1, -1, 90, 40-5)
-		GUICtrlSetOnEvent(-1, "btnStop")
+		;GUICtrlSetOnEvent(-1, "btnStop")
 		IF $btnColor then GUICtrlSetBkColor(-1, 0xDB4D4D)
 		GUICtrlSetState(-1, $GUI_HIDE)
  	$btnPause = GUICtrlCreateButton(GetTranslated(13,3, "Pause"), $x + 90, -1, 90, 40-5)
 		$txtTip = GetTranslated(13,4, "Use this to PAUSE all actions of the bot until you Resume.")
 		GUICtrlSetTip(-1, $txtTip)
-		GUICtrlSetOnEvent(-1, "btnPause")
+		;GUICtrlSetOnEvent(-1, "btnPause")
  		IF $btnColor then GUICtrlSetBkColor(-1,  0xFFA500)
 		GUICtrlSetState(-1, $GUI_HIDE)
 	$btnResume = GUICtrlCreateButton(GetTranslated(13,5, "Resume"), -1, -1, 90, 40-5)
  		$txtTip = GetTranslated(13,6, "Use this to RESUME a paused Bot.")
 		GUICtrlSetTip(-1, $txtTip)
-		GUICtrlSetOnEvent(-1, "btnResume")
+		;GUICtrlSetOnEvent(-1, "btnResume")
 		IF $btnColor then GUICtrlSetBkColor(-1,  0xFFA500)
 		GUICtrlSetState(-1, $GUI_HIDE)
 	$btnSearchMode = GUICtrlCreateButton(GetTranslated(13,7, "Search Mode"), -1, -1, 90, 40-5)
@@ -51,12 +51,12 @@ $grpButtons = GUICtrlCreateGroup("https://mybot.run" & GetTranslated(13,26, "- f
 	$btnMakeScreenshot = GUICtrlCreateButton(GetTranslated(13,9, "Photo"), $x , $y + 45, 40, -1)
 		$txtTip = GetTranslated(13,10, "Click here to take a snaphot of your village and save it to a file.")
 		GUICtrlSetTip(-1, $txtTip)
-		GUICtrlSetOnEvent(-1, "btnMakeScreenshot")
+		;GUICtrlSetOnEvent(-1, "btnMakeScreenshot")
 		IF $btnColor then GUICtrlSetBkColor(-1, 0x5CAD85)
 	$btnHide = GUICtrlCreateButton(GetTranslated(13,11, "Hide"), $x + 40, $y + 45, 50, -1)
 		$txtTip = GetTranslated(13,12, "Use this to move the Android Window out of sight.") & @CRLF & GetTranslated(13,13, "(Not minimized, but hidden)")
 		GUICtrlSetTip(-1, $txtTip)
-		GUICtrlSetOnEvent(-1, "btnHide")
+		;GUICtrlSetOnEvent(-1, "btnHide")
 		IF $btnColor Then GUICtrlSetBkColor(-1, 0x22C4F5)
 		GUICtrlSetState(-1, $GUI_DISABLE)
 	$chkBackground = GUICtrlCreateCheckbox(GetTranslated(13,14, "Background") & @CRLF & GetTranslated(13,15, "Mode"), $x + 100, $y + 48, 70, 20, BITOR($BS_MULTILINE, $BS_CENTER))
@@ -66,17 +66,17 @@ $grpButtons = GUICtrlCreateGroup("https://mybot.run" & GetTranslated(13,26, "- f
 		GUICtrlSetOnEvent(-1, "chkBackground")
 		GUICtrlSetState(-1, $GUI_UNCHECKED)
 	$btnAttackNowDB = GUICtrlCreateButton(GetTranslated(13,18, "DB Attack!"), $x + 190, $y - 4, 60, -1)
-		GUICtrlSetOnEvent(-1, "btnAttackNowDB")
+		;GUICtrlSetOnEvent(-1, "btnAttackNowDB")
 		GUICtrlSetState(-1, $GUI_HIDE)
 	$btnAttackNowLB = GUICtrlCreateButton(GetTranslated(13,19, "LB Attack!"), $x + 190, $y + 23, 60, -1)
-		GUICtrlSetOnEvent(-1, "btnAttackNowLB")
+		;GUICtrlSetOnEvent(-1, "btnAttackNowLB")
 		GUICtrlSetState(-1, $GUI_HIDE)
 	$btnAttackNowTS = GUICtrlCreateButton(GetTranslated(13,20, "TH Snipe!"), $x + 190, $y + 50, 60, -1)
-		GUICtrlSetOnEvent(-1, "btnAttackNowTS")
+		;GUICtrlSetOnEvent(-1, "btnAttackNowTS")
 		GUICtrlSetState(-1, $GUI_HIDE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$pic2arrow = GUICtrlCreatePic(@ScriptDir & "\Icons\2arrow.jpg", $x + 187, $y + 10, 50, 45)
+$pic2arrow = GUICtrlCreatePic(@ScriptDir & "\Images\2arrow.jpg", $x + 187, $y + 10, 50, 45)
 GUICtrlSetOnEvent(-1, "btnVillageStat")
 $lblVersion = GUICtrlCreateLabel($sBotVersion, 205, $y + 60, 60, 17, $SS_CENTER)
 	GUICtrlSetColor(-1, $COLOR_MEDGRAY)
@@ -129,8 +129,10 @@ $grpVillage = GUICtrlCreateGroup(GetTranslated(13,21, "Village"), $x - 20, $y - 
 	$x = 290
 	$lblVillageReportTemp = GUICtrlCreateLabel(GetTranslated(13,22, "Village Report") & @CRLF & GetTranslated(13,23, "will appear here") & @CRLF & GetTranslated(13,24, "on first run."), $x + 27, $y + 5, 100, 45, BITOR($SS_CENTER, $BS_MULTILINE))
 
- 	$btnTestVillage = GUICtrlCreateButton("TEST VILLAGE", $x + 90 , $y -25, -1, -1)
- 		GUICtrlSetOnEvent(-1, "btnTestDeadBase")
+ 	$btnTestVillage = GUICtrlCreateButton("TEST BUTTON", $x + 90 , $y -25, -1, -1)
+ 		GUICtrlSetOnEvent(-1, "btnTestDonate")
 		GUICtrlSetState(-1, $GUI_HIDE)
+
+
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 

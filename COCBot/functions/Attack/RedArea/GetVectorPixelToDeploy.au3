@@ -1,14 +1,24 @@
-
-
-; Param : 	$arrPixel : Array of pixel where troop are deploy
-;			$vectorDirection : The vector direction => 0 = Left To Right (x asc) / 1 = Top to Bottom (y asc)
-;			$sizeVector : Number of pixel for the vector
-; Return : 	The vector of pixel
+; #FUNCTION# ====================================================================================================================
+; Name ..........: GetVectorPixelToDeploy
+; Description ...:
+; Syntax ........: GetVectorPixelToDeploy($arrPixel, $vectorDirection, $sizeVector)
+; Parameters ....: $arrPixel            - Array of pixel where troop are deploy
+;                  $vectorDirection     - The vector direction => 0 = Left To Right (x asc) / 1 = Top to Bottom (y asc)
+;                  $sizeVector          - Number of pixel for the vector
+; Return values .: vector of pixel
+; Author ........: didipe
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 ; Strategy :
 ; 			Get min / max pixel of array pixel
 ;			Get min / max value of x or y (depends vector direction)
 ;			Get the offset to browse the array pixel (depends of size vector)
 ;			For min to max with offset , get pixel closer and add to the vector
+
 Func GetVectorPixelToDeploy($arrPixel, $vectorDirection, $sizeVector)
 	Local $vectorPixel[0]
 	debugRedArea("GetVectorPixelToDeploy IN")

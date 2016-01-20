@@ -1,0 +1,125 @@
+NOTE  |Author: Sardo - ver. 1.0 - 05.01.2016 
+NOTE  |
+NOTE  |Attack: FF Barch, +2 tile from redline
+NOTE  |Make these Troops: Barbarians 50%, Archers 50%
+NOTE  |Will drop Barb, Arch, All Heroes and Castle if enabled from GUI
+
+      |---------------------------------------- four fingers barch start -----------------------------|
+
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|
+SIDE  |           |           |           |           |           |           |           |RANDOM     |Main side it's useless, random choice
+
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|MAKE BARBARIAN VECTORS
+MAKE  |A          |FRONT-RIGHT|10         |1          |EXT-INT    |2          |2          |           |from vertex sx and dx to middle sides (10 drop points), 1 tile from red line
+MAKE  |B          |RIGHT-FRONT|10         |1          |EXT-INT    |2          |2          |           |
+MAKE  |C          |LEFT-BACK  |10         |1          |EXT-INT    |2          |2          |           |
+MAKE  |D          |BACK-LEFT  |10         |1          |EXT-INT    |2          |2          |           |
+MAKE  |E          |FRONT-LEFT |10         |1          |INT-EXT    |2          |2          |           |from middle sides sx and dx to up and down vertex (10 drop points), 1 tile from red line
+MAKE  |F          |RIGHT-BACK |10         |1          |INT-EXT    |2          |2          |           |
+MAKE  |G          |LEFT-FRONT |10         |1          |INT-EXT    |2          |2          |           |
+MAKE  |H          |BACK-RIGHT |10         |1          |INT-EXT    |2          |2          |           |
+MAKE  |I          |FRONT-LEFT |5          |1          |EXT-INT    |2          |2          |           |from top and down vertex to middle sides (5 drop points), 1 tile from red line
+MAKE  |J          |RIGHT-BACK |5          |1          |EXT-INT    |2          |2          |           |
+MAKE  |K          |LEFT-FRONT |5          |1          |EXT-INT    |2          |2          |           |
+MAKE  |L          |BACK-RIGHT |5          |1          |EXT-INT    |2          |2          |           |
+MAKE  |M          |FRONT-RIGHT|5          |1          |INT-EXT    |2          |2          |           |from middle sides to sx and dx vertex (5 drop points), 1 tile from red line
+MAKE  |N          |RIGHT-FRONT|5          |1          |INT-EXT    |2          |2          |           |
+MAKE  |O          |LEFT-BACK  |5          |1          |INT-EXT    |2          |2          |           |
+MAKE  |P          |BACK-LEFT  |5          |1          |INT-EXT    |2          |2          |           |
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS 
+DROP  |A-B-C-D    |6-10       |4-5        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             20-25 barb
+DROP  |E-F-G-H    |1-4        |4-5        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             16-20 barb
+DROP  |I-J-K-L    |3-5        |3-4        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             20-25 barb
+DROP  |M-N-O-P    |1-3        |3-4        |barb       |0          |0          |500-1000   |           |launch barbarians using all 4 vectors concurrently...             16-20 barb
+
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|MAKE ARCHERS VECTORS
+MAKE  |A          |FRONT-RIGHT|10         |2          |EXT-INT    |5          |5          |           |from vertex sx and dx to middle sides (10 drop points)
+MAKE  |B          |RIGHT-FRONT|10         |2          |EXT-INT    |5          |5          |           |
+MAKE  |C          |LEFT-BACK  |10         |2          |EXT-INT    |5          |5          |           |
+MAKE  |D          |BACK-LEFT  |10         |2          |EXT-INT    |5          |5          |           |
+MAKE  |E          |FRONT-LEFT |10         |2          |INT-EXT    |5          |5          |           |from middle sides sx and dx to up and down vertex (10 drop points)
+MAKE  |F          |RIGHT-BACK |10         |2          |INT-EXT    |5          |5          |           |
+MAKE  |G          |LEFT-FRONT |10         |2          |INT-EXT    |5          |5          |           |
+MAKE  |H          |BACK-RIGHT |10         |2          |INT-EXT    |5          |5          |           |
+MAKE  |I          |FRONT-LEFT |5          |2          |EXT-INT    |5          |5          |           |from top and down vertex to middle sides (5 drop points)
+MAKE  |J          |RIGHT-BACK |5          |2          |EXT-INT    |5          |5          |           |
+MAKE  |K          |LEFT-FRONT |5          |2          |EXT-INT    |5          |5          |           |
+MAKE  |L          |BACK-RIGHT |5          |2          |EXT-INT    |5          |5          |           |
+MAKE  |M          |FRONT-RIGHT|5          |2          |INT-EXT    |5          |5          |           |from middle sides to sx and dx vertex (5 drop points)
+MAKE  |N          |RIGHT-FRONT|5          |2          |INT-EXT    |5          |5          |           |
+MAKE  |O          |LEFT-BACK  |5          |2          |INT-EXT    |5          |5          |           |
+MAKE  |P          |BACK-LEFT  |5          |2          |INT-EXT    |5          |5          |           |
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP ARCHERS
+DROP  |A-B-C-D    |6-10       |4-5        |arch       |0          |0          |0          |           |launch archers using all 4 vectors concurrently...                20-25 arch
+DROP  |E-F-G-H    |1-4        |4-5        |arch       |0          |0          |0          |           |launch archers using all 4 vectors concurrently...                16-20 arch
+DROP  |I-J-K-L    |3-5        |3-4        |arch       |0          |0          |0          |           |launch archers using all 4 vectors concurrently...                20-25 arch
+DROP  |M-N-O-P    |1-3        |3-4        |arch       |0          |0          |0          |           |launch archers using all 4 vectors concurrently...                16-20 arch
+
+WAIT  |500-1000   |           |           |           |           |           |           |           |Add a wait time; during wait time also CHECK exit values (exit if no resource left, exit if one or two starts reach)
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|MAKE VECTORS TO DROP KINK, QUEEN and CASTLE
+MAKE  |Q          |RANDOM     |70         |1          |INT-EXT    |2          |2          |           |random side to drop king, at 1 tile from redarea
+MAKE  |R          |RANDOM     |70         |3          |INT-EXT    |2          |2          |           |random side to drop queen and castle, at 3 tiles from redarea
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS 
+DROP  |Q          |3          |10         |king       |0          |0          |100-500    |           |launch King                                                       king
+DROP  |R          |8          |15         |castle     |0          |0          |500-1000   |           |launch Castle                                                     castle
+DROP  |R          |3          |2          |queen      |0          |0          |100-500    |           |launch Queen                                                      queen
+DROP  |R          |3          |2          |Warden     |0          |0          |0          |           |launch Grand Warden                                               queen
+
+RECALC|           |           |           |           |           |           |           |           |recalculate remaining troops and then launch...
+WAIT  |100-300    |           |           |           |           |           |           |           |Add a wait time; during wait time also CHECK exit values (exit if no resource left, exit if one or two starts reach)
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|MAKE BARBARIAN VECTORS
+MAKE  |A          |FRONT-RIGHT|10         |1          |EXT-INT    |2          |2          |           |from vertex sx and dx to middle sides (10 drop points), 1 tile from red line
+MAKE  |B          |RIGHT-FRONT|10         |1          |EXT-INT    |2          |2          |           |
+MAKE  |C          |LEFT-BACK  |10         |1          |EXT-INT    |2          |2          |           |
+MAKE  |D          |BACK-LEFT  |10         |1          |EXT-INT    |2          |2          |           |
+MAKE  |E          |FRONT-LEFT |10         |1          |INT-EXT    |2          |2          |           |from middle sides sx and dx to up and down vertex (10 drop points), 1 tile from red line
+MAKE  |F          |RIGHT-BACK |10         |1          |INT-EXT    |2          |2          |           |
+MAKE  |G          |LEFT-FRONT |10         |1          |INT-EXT    |2          |2          |           |
+MAKE  |H          |BACK-RIGHT |10         |1          |INT-EXT    |2          |2          |           |
+MAKE  |I          |FRONT-LEFT |5          |1          |EXT-INT    |2          |2          |           |from top and down vertex to middle sides (5 drop points), 1 tile from red line
+MAKE  |J          |RIGHT-BACK |5          |1          |EXT-INT    |2          |2          |           |
+MAKE  |K          |LEFT-FRONT |5          |1          |EXT-INT    |2          |2          |           |
+MAKE  |L          |BACK-RIGHT |5          |1          |EXT-INT    |2          |2          |           |
+MAKE  |M          |FRONT-RIGHT|5          |1          |INT-EXT    |2          |2          |           |from middle sides to sx and dx vertex (5 drop points), 1 tile from red line
+MAKE  |N          |RIGHT-FRONT|5          |1          |INT-EXT    |2          |2          |           |
+MAKE  |O          |LEFT-BACK  |5          |1          |INT-EXT    |2          |2          |           |
+MAKE  |P          |BACK-LEFT  |5          |1          |INT-EXT    |2          |2          |           |
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS 
+DROP  |A-B-C-D    |6-10       |5-7        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             25-35 barb
+DROP  |E-F-G-H    |1-4        |5-7        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             20-30 barb
+DROP  |I-J-K-L    |3-5        |4-5        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             25-35 barb
+DROP  |M-N-O-P    |1-3        |4-5        |barb       |0          |0          |500-1000   |           |launch barbarians using all 4 vectors concurrently...             20-30 barb
+WAIT  |50-100     |           |           |           |           |           |           |           |Add a wait time; during wait time also CHECK exit values (exit if no resource left, exit if one or two starts reach)
+
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|MAKE ARCHERS VECTORS
+MAKE  |A          |FRONT-RIGHT|10         |2          |EXT-INT    |5          |5          |           |from vertex sx and dx to middle sides (10 drop points)
+MAKE  |B          |RIGHT-FRONT|10         |2          |EXT-INT    |5          |5          |           |
+MAKE  |C          |LEFT-BACK  |10         |2          |EXT-INT    |5          |5          |           |
+MAKE  |D          |BACK-LEFT  |10         |2          |EXT-INT    |5          |5          |           |
+MAKE  |E          |FRONT-LEFT |10         |2          |INT-EXT    |5          |5          |           |from middle sides sx and dx to up and down vertex (10 drop points)
+MAKE  |F          |RIGHT-BACK |10         |2          |INT-EXT    |5          |5          |           |
+MAKE  |G          |LEFT-FRONT |10         |2          |INT-EXT    |5          |5          |           |
+MAKE  |H          |BACK-RIGHT |10         |2          |INT-EXT    |5          |5          |           |
+MAKE  |I          |FRONT-LEFT |5          |2          |EXT-INT    |5          |5          |           |from top and down vertex to middle sides (5 drop points)
+MAKE  |J          |RIGHT-BACK |5          |2          |EXT-INT    |5          |5          |           |
+MAKE  |K          |LEFT-FRONT |5          |2          |EXT-INT    |5          |5          |           |
+MAKE  |L          |BACK-RIGHT |5          |2          |EXT-INT    |5          |5          |           |
+MAKE  |M          |FRONT-RIGHT|5          |2          |INT-EXT    |5          |5          |           |from middle sides to sx and dx vertex (5 drop points)
+MAKE  |N          |RIGHT-FRONT|5          |2          |INT-EXT    |5          |5          |           |
+MAKE  |O          |LEFT-BACK  |5          |2          |INT-EXT    |5          |5          |           |
+MAKE  |P          |BACK-LEFT  |5          |2          |INT-EXT    |5          |5          |           |
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP ARCHERS
+DROP  |A-B-C-D    |6-10       |5-7        |arch       |0          |0          |0          |           |launch archers using all 4 vectors concurrently...                25-35 arch
+DROP  |E-F-G-H    |1-4        |5-7        |arch       |0          |0          |0          |           |launch archers using all 4 vectors concurrently...                20-30 arch
+DROP  |I-J-K-L    |3-5        |4-5        |arch       |0          |0          |0          |           |launch archers using all 4 vectors concurrently...                25-35 arch
+DROP  |M-N-O-P    |1-3        |4-5        |arch       |0          |0          |500-1000   |           |launch archers using all 4 vectors concurrently...                20-30 arch
+
+      |                                                                                               |
+      |------------------------------------- four fingers barch end-----------------------------------|
+
+

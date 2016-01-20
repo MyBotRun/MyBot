@@ -1,12 +1,26 @@
-
-; Param : 	$troop : Troop to deploy
-;			$arrPixel : Array of pixel where troop are deploy
-;			$number : Number of troop to deploy
+; #FUNCTION# ====================================================================================================================
+; Name ..........: DropOnPixel
+; Description ...:
+; Syntax ........: DropOnPixel($troop, $listArrPixel, $number[, $slotsPerEdge = 0])
+; Parameters ....: $troop               - Troop to deploy
+;                  $listArrPixel        - Array of pixel where troop are deploy
+;                  $number              - Number of troop to deploy
+;                  $slotsPerEdge        - [optional] a string value. Default is 0.
+; Return values .: None
+; Author ........:
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 ; Strategy :
 ; While troop left :
 ;	If number of troop > number of pixel => Search the number of troop to deploy by pixel
 ;	Else Search the offset to browse the tab of pixel
 ;	Browse the tab of pixel and send troop
+
 Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 
 	If isProblemAffect(True) Then Return
@@ -22,7 +36,17 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			debugRedArea("$arrPixel $UBound($arrPixel) : [" & UBound($arrPixel) & "] ")
 			If UBound($arrPixel) > 0 Then
 				Local $pixel = $arrPixel[0]
-				If IsAttackPage() Then Click($pixel[0], $pixel[1], $number, $iDelayDropOnPixel2,"#0096")
+				If $i = int(UBound($arrPixel)/2) And $isHeroesDropped = False Then
+					$DeployHeroesPosition[0] = $pixel[0]
+					$DeployHeroesPosition[1] = $pixel[1]
+					debugRedArea("Heroes : $slotsPerEdge = 1 ")
+				EndIf
+				If $i = int(UBound($arrPixel)/2) And $isCCDropped = False Then
+					$DeployCCPosition[0] = $pixel[0]
+					$DeployCCPosition[1] = $pixel[1]
+					debugRedArea("CC : $slotsPerEdge = 1 ")
+				EndIf
+				If IsAttackPage() Then Click($pixel[0], $pixel[1], $number, $iDelayDropOnPixel2, "#0096")
 			EndIf
 			If _Sleep($iDelayDropOnPixel1) Then Return
 		Next
@@ -31,7 +55,17 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			Local $arrPixel = $listArrPixel[$i]
 			If UBound($arrPixel) > 0 Then
 				Local $pixel = $arrPixel[0]
-				If IsAttackPage() Then Click($pixel[0], $pixel[1], $number,0,"#0097")
+				If $i = int(UBound($arrPixel)/2) And $isHeroesDropped = False Then
+					$DeployHeroesPosition[0] = $pixel[0]
+					$DeployHeroesPosition[1] = $pixel[1]
+					debugRedArea("Heroes : $slotsPerEdge = 2 ")
+				EndIf
+				If $i = int(UBound($arrPixel)/2) And $isCCDropped = False Then
+					$DeployCCPosition[0] = $pixel[0]
+					$DeployCCPosition[1] = $pixel[1]
+					debugRedArea("CC : $slotsPerEdge = 2 ")
+				EndIf
+				If IsAttackPage() Then Click($pixel[0], $pixel[1], $number, 0, "#0097")
 				If _Sleep(SetSleep(0)) Then Return
 			EndIf
 			If _Sleep(SetSleep(1)) Then Return
@@ -43,7 +77,7 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			Local $offset = 1
 			Local $nbTroopByPixel = 1
 			Local $arrPixel = $listArrPixel[$i]
-			;	SetLog("UBound($edge) " & UBound($arrPixel) & "$number :"& $number , $COLOR_GREEN)
+				debugRedArea("UBound($arrPixel) " & UBound($arrPixel) & "$number :"& $number)
 			While ($nbTroopsLeft > 0)
 				If (UBound($arrPixel) = 0) Then
 					ExitLoop
@@ -65,10 +99,20 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 						$index = UBound($arrPixel) - 1
 					EndIf
 					Local $currentPixel = $arrPixel[Floor($index)]
-					If IsAttackPage() Then Click($currentPixel[0], $currentPixel[1], $nbTroopByPixel,0,"#0098")
+					If $j >= Round(UBound($arrPixel)/2) and $j <= Round((UBound($arrPixel)/2) + $offset) And $isHeroesDropped = False Then
+						$DeployHeroesPosition[0] = $currentPixel[0]
+						$DeployHeroesPosition[1] = $currentPixel[1]
+						debugRedArea("Heroes : $slotsPerEdge = else ")
+						debugRedArea("$offset: " & $offset )
+					EndIf
+					If $j >= Round(UBound($arrPixel)/2) and $j <= Round((UBound($arrPixel)/2) + $offset)  And $isCCDropped = False Then
+						$DeployCCPosition[0] = $currentPixel[0]
+						$DeployCCPosition[1] = $currentPixel[1]
+						debugRedArea("CC : $slotsPerEdge = else ")
+						debugRedArea("$offset: " & $offset )
+					EndIf
+					If IsAttackPage() Then Click($currentPixel[0], $currentPixel[1], $nbTroopByPixel, 0, "#0098")
 					$nbTroopsLeft -= $nbTroopByPixel
-
-
 					If _Sleep(SetSleep(0)) Then Return
 				Next
 			WEnd

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: (2014)
 ; Modified ......: HungLe (may-2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkMainscreen, isProblemAffect
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -220,7 +220,7 @@ Func _DecodeDebug($message)
 		Case "#0173"
 			Return $separator & "Donate - Click Chat"
 		Case "#0174"
-			Return $separator & "Donate - Donate Selected Troop"
+			Return $separator & "Donate - Click Donate Button"
 		Case "#0175"
 			Return $separator & "Donate - Donate Selected Troop"
 			;TEST LANGUAGE
