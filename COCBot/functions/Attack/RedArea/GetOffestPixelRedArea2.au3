@@ -1,5 +1,19 @@
-
-
+; #FUNCTION# ====================================================================================================================
+; Name ..........: GetOffestPixelRedArea2
+; Description ...:
+; Syntax ........: GetOffestPixelRedArea2($pixel, $eVectorType[, $offset = 3])
+; Parameters ....: $pixel               - The pixel to add an offset
+;                  $eVectorType         - an unknown value.
+;                  $offset              - [optional] an object. Default is 3.
+; Return values .: The pixel with offset
+; Author ........: didipe
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 ; Param : 	$pixel : The pixel to add an offset
 ;			$xSign : The translation on X
 ;			$ySign : The translation on Y
@@ -8,6 +22,8 @@
 ; Strategy :
 ; 			According to the type of translation search the color of pixels around the current pixel
 ;			With the different of red color, we know how to make the offset (top,bottom,left,right)
+
+
 Func GetOffestPixelRedArea2($pixel, $eVectorType, $offset = 3)
 	; $nameFunc = "[GetOffestPixelRedArea] "
 	;  debugRedArea($nameFunc&" IN")

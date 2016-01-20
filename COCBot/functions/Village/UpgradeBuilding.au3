@@ -7,7 +7,7 @@
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (June-2015) edited for V3.x Bot and SC updates
 ;                  Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -117,6 +117,10 @@ Func UpgradeBuilding()
 EndFunc   ;==>UpgradeBuilding
 ;
 Func UpgradeNormal($inum)
+	Click($aUpgrades[$inum][0], $aUpgrades[$inum][1],1,0,"#0296") ; Select the item to be upgrade (clean field)
+	If _Sleep($iDelayUpgradeValue1) Then Return
+	ClickP($aAway,1,0, "#0211") ;Click Away to close the upgrade window
+	If _Sleep($iDelayUpgradeValue1) Then Return
 	Click($aUpgrades[$inum][0], $aUpgrades[$inum][1],1,0,"#0296") ; Select the item to be upgrade
 	If _Sleep($iDelayUpgradeNormal1) Then Return ; Wait for window to open
 	If $aUpgrades[$inum][3] = "Gold" Then
@@ -189,14 +193,14 @@ Func UpgradeHero($inum)
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20,1,0,"#0305") ; Click Upgrade Button
 		If _Sleep($iDelayUpgradeHero3) Then Return ; Wait for window to open
 		if $debugImageSave= 1 Then DebugImageSave("UpgradeDarkBtn1")
-		If _ColorCheck(_GetPixelColor(715, 150 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Check if the Hero Upgrade window is open
-			If _ColorCheck(_GetPixelColor(557, 486 + $midOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(557, 490 + $midOffsetY), Hex(0xE70A12, 6), 20) And _
-					_ColorCheck(_GetPixelColor(557, 494 + $midOffsetY, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
+		If _ColorCheck(_GetPixelColor(715, 120 + $midOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Check if the Hero Upgrade window is open
+			If _ColorCheck(_GetPixelColor(691, 523 + $midOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(691, 527 + $midOffsetY), Hex(0xE70A12, 6), 20) And _
+					_ColorCheck(_GetPixelColor(691, 531 + $midOffsetY, True), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Hero Upgrade Fail #" & $inum + 1 & " No DE!", $COLOR_RED)
 				ClickP($aAway, 2,0,"#0306") ;Click Away to close window
 				Return False
 			Else
-				Click(540, 490 + $midOffsetY,1,0,"#0307") ; Click upgrade buttton
+				Click(660, 515 + $midOffsetY, 1, 0, "#0307") ; Click upgrade buttton
 				ClickP($aAway, 1,0,"#0308") ;Click Away to close windows
 				If _Sleep($iDelayUpgradeHero1) Then Return
 				if $debugImageSave= 1 Then DebugImageSave("UpgradeDarkBtn2")

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (2015-12)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,18 +15,18 @@
 
 Func OpenDroid4X($bRestart = False)
 
-	Local $PID, $hTimer, $iCount = 0, $process_killed, $cmdOutput, $connected_to, $cmdExe, $cmdPar
+   Local $PID, $hTimer, $iCount = 0, $process_killed, $cmdOutput, $connected_to, $launchAndroid, $cmdPar
 
-	SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
+   SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
 
-	If Not InitDroid4X() Then Return
+   If Not InitDroid4X() Then Return
 
-   $cmdExe = $__Droid4X_Path & "Droid4X.exe"
-   $cmdPar = ($AndroidInstance = "" ? "" : "-o " & $AndroidInstance)
-   If ProcessExists2($cmdExe & ($cmdPar = "" ? "" : " " & $cmdPar)) = 0 Then
+   $launchAndroid = WinGetAndroidHandle() = 0
+   If $launchAndroid Then
 	  ; Launch Droid4X
-	  SetDebugLog("ShellExecute: " & $cmdExe & " " & $cmdPar)
-	  $PID = ShellExecute($cmdExe, $cmdPar)
+	  $cmdPar = GetAndroidProgramParameter()
+	  SetDebugLog("ShellExecute: " & $AndroidProgramPath & " " & $cmdPar)
+	  $PID = ShellExecute($AndroidProgramPath, $cmdPar)
 	  If _Sleep(1000) Then Return
 	  If $PID <> 0 Then $PID = ProcessExists($PID)
 	  SetDebugLog("$PID= "&$PID)
@@ -36,17 +36,17 @@ Func OpenDroid4X($bRestart = False)
 		btnStop()
 		SetError(1, 1, -1)
 		Return
-	  EndIf
+	 EndIf
    EndIf
 
    ; Test ADB is connected
-   $cmdOutput = LaunchConsole($__Droid4X_Path & "adb.exe", "connect " & $AndroidAdbDevice, $process_killed)
-   $connected_to = StringInStr($cmdOutput, "connected to")
+   $connected_to = IsAdbConnected()
+   If Not $RunState Then Return
 
    SetLog("Please wait while " & $Android & " and CoC starts...", $COLOR_GREEN)
    $hTimer = TimerInit()
    ; Wait for device
-   $cmdOutput = LaunchConsole($__Droid4X_Path & "adb.exe", "-s " & $AndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)
+   $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)
    If Not $RunState Then Return
 
    ; Wair for Activity Manager
@@ -57,6 +57,7 @@ Func OpenDroid4X($bRestart = False)
    ;  If _Sleep(500) Then Return
    ;WEnd
 
+    If Not $RunState Then Return
 	If TimerDiff($hTimer) >= $AndroidLaunchWaitSec * 1000 Then ; if it took 4 minutes, Android/PC has major issue so exit
 	  SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
 	  SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for window", $COLOR_RED)
@@ -71,9 +72,16 @@ Func OpenDroid4X($bRestart = False)
 
 	; Launch CcC
 	SetLog("Launch Clash of Clans now...", $COLOR_GREEN)
-    LaunchConsole($__Droid4X_Path & "adb.exe", "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans/.GameApp", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
+    $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans/.GameApp", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
+	If StringInStr($cmdOutput, "Error:") > 0 Then
+		SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_RED)
+		SetLog("Unable to continue........", $COLOR_MAROON)
+		btnStop()
+		SetError(1, 1, -1)
+		Return
+	EndIf
 
-   $HWnD = WinGetHandle($Title) ; get window Handle
+   WinGetAndroidHandle()
    ;DisableBS($HWnD, $SC_MINIMIZE)
    ;DisableBS($HWnD, $SC_CLOSE)
    If $bRestart = False Then
@@ -82,7 +90,6 @@ Func OpenDroid4X($bRestart = False)
 	  Zoomout()
 	  If Not $RunState Then Return
 	  Initiate()
-	  If Not $RunState Then Return
    Else
 	  WaitMainScreenMini()
 	  If Not $RunState Then Return
@@ -92,10 +99,18 @@ Func OpenDroid4X($bRestart = False)
 		  Return
 	  EndIf
 	  Zoomout()
-	  If Not $RunState Then Return
    EndIf
 
 EndFunc   ;==>OpenDroid4X
+
+Func GetDroid4XProgramParameter($bAlternative = False)
+   If Not $bAlternative Or $AndroidInstance <> $AndroidAppConfig[$AndroidConfig][1] Then
+	  ; should be launched with these parameter
+	  Return "-o " & ($AndroidInstance = "" ? $AndroidAppConfig[$AndroidConfig][1] : $AndroidInstance)
+   EndIf
+   ; default instance gets launched when no parameter was specified (this is the alternative way)
+   Return ""
+EndFunc
 
 Func InitDroid4X($bCheckOnly = False)
     Local $process_killed, $vmInfo, $aRegExResult, $AndroidAdbDeviceHost, $AndroidAdbDevicePort, $oops = 0
@@ -174,8 +189,21 @@ Func InitDroid4X($bCheckOnly = False)
 		 SetLog("Using ADB default device " & $AndroidAdbDevice & " for " & $Android, $COLOR_RED)
 	  EndIf
 	  ; update global variables
+	  $AndroidProgramPath = $__Droid4X_Path & "Droid4X.exe"
 	  $AndroidAdbPath = $__Droid4X_Path & "adb.exe"
 	  $AndroidVersion = $__Droid4X_Version
+	  $__VBoxManage_Path = $__VirtualBox_Path & "VBoxManage.exe"
+	  ; Update Window Title if instance has been configured
+	  If $AndroidInstance = "" Or StringCompare($AndroidInstance, $AndroidAppConfig[$AndroidConfig][1]) = 0 Then
+		 ; Default title, nothing to do
+	  Else
+		 ; Update title (only if not updated yet)
+		 If $Title = $AndroidAppConfig[$AndroidConfig][2] Then
+			$Title = StringReplace($AndroidAppConfig[$AndroidConfig][2], "Droid4X", $AndroidInstance)
+		 EndIf
+	  EndIf
+
+	  WinGetAndroidHandle()
    EndIf
 
    Return True
@@ -187,9 +215,10 @@ Func WaitForAmDroid4X($WaitInSec, $hTimer = 0) ; doesn't work yet!!!
 	; Wait for Activity Manager
 	$hMyTimer = ($hTimer = 0 ? TimerInit() : $hTimer)
 	While True
+	  If Not $RunState Then Return
 	  ; Test ADB is connected
-	  $cmdOutput = LaunchConsole($AndroidAdbPath, "connect " & $AndroidAdbDevice, $process_killed)
-	  $connected_to = StringInStr($cmdOutput, "connected to")
+	  $connected_to = IsAdbConnected()
+	  If Not $RunState Then Return
 	  $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am display-size reset", $process_killed)
 	  If $hTimer <> 0 Then _StatusUpdateTime($hTimer)
 	  $am_ready = StringLen($cmdOutput) < 4
@@ -206,24 +235,31 @@ Func WaitForAmDroid4X($WaitInSec, $hTimer = 0) ; doesn't work yet!!!
 EndFunc
 
 Func RestartDroid4XCoC()
-
+   If Not $RunState Then Return False
    If Not InitDroid4X() Then Return False
 
    Local $cmdOutput, $process_killed, $connected_to
-   WinActivate($HWnD)  	; ensure bot has window focus
+   ;WinActivate($HWnD)  	; ensure bot has window focus
 
    ; Test ADB is connected
-   ;$cmdOutput = LaunchConsole($__Droid4X_Path & "adb.exe", "connect " & $AndroidAdbDevice, $process_killed)
+   ;$cmdOutput = LaunchConsole($AndroidAdbPath, "connect " & $AndroidAdbDevice, $process_killed)
    ;$connected_to = StringInStr($cmdOutput, "connected to")
 
    SetLog("Please wait for CoC restart......", $COLOR_BLUE)   ; Let user know we need time...
-   LaunchConsole($__Droid4X_Path & "adb.exe", "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans/.GameApp", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
+   $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans/.GameApp", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
+   If StringInStr($cmdOutput, "Error:") > 0 Then
+	  SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_RED)
+	  SetLog("Unable to continue........", $COLOR_MAROON)
+	  btnStop()
+	  SetError(1, 1, -1)
+	  Return False
+   EndIf
 
    Return True
 EndFunc
 
 Func SetScreenDroid4X()
-
+   If Not $RunState Then Return False
    If Not InitDroid4X() Then Return False
 
    Local $cmdOutput, $process_killed
@@ -240,6 +276,40 @@ EndFunc
 
 Func RebootDroid4XSetScreen()
 
-   RebootAndroidSetScreenDefault()
+   Return RebootAndroidSetScreenDefault()
+
+EndFunc
+
+Func CheckScreenDroid4X($bSetLog = True)
+
+   If Not InitDroid4X() Then Return False
+
+   Local $aValues[2][2] = [ _
+	  ["vbox_dpi", "160"], _
+	  ["vbox_graph_mode", $AndroidClientWidth & "x" & $AndroidClientHeight & "-16"] _
+   ]
+   Local $i, $Value, $iErrCnt = 0, $process_killed, $aRegExResult
+   For $i = 0 To UBound($aValues) -1
+	  $Value = LaunchConsole($__VBoxManage_Path, "guestproperty get " & $AndroidInstance & " " & $aValues[$i][0], $process_killed)
+	  $aRegExResult = StringRegExp($Value, "Value: (.+)", $STR_REGEXPARRAYMATCH)
+	  If @error = 0 Then $Value = $aRegExResult[0]
+	  If $Value <> $aValues[$i][1] Then
+		 If $iErrCnt = 0 Then
+			If $bSetLog Then
+			   SetLog("MyBot doesn't work with " & $Android & " screen configuration!", $COLOR_RED)
+			Else
+			   SetDebugLog("MyBot doesn't work with " & $Android & " screen configuration!", $COLOR_RED)
+			EndIf
+		 EndIf
+		 If $bSetLog Then
+			SetLog("Setting of " & $aValues[$i][0] & " is " & $Value & " and will be changed to " & $aValues[$i][1], $COLOR_RED)
+		 Else
+			SetDebugLog("Setting of " & $aValues[$i][0] & " is " & $Value & " and will be changed to " & $aValues[$i][1], $COLOR_RED)
+		 EndIf
+		 $iErrCnt += 1
+	  EndIf
+   Next
+   If $iErrCnt > 0 Then Return False
+   Return True
 
 EndFunc

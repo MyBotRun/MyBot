@@ -1,18 +1,24 @@
-
 ;==========================================================================
-; Function name: GoldElixirChange
-; Authored by:
-; Edited by: Samota,
-;
-; Description: Checks if the gold/elixir changes values within 20 seconds, Returns True if changed. Also
-; checks every 5 seconds if gold/elixir = "", meaning battle is over. If either condition is met, return
-; false.
-;
+; #FUNCTION# ====================================================================================================================
+; Name ..........: GoldElixirChange
+; Description....: Checks if the gold/elixir changes values within 20 seconds, Returns True if changed. Also
+; 					    checks every 5 seconds if gold/elixir = "", meaning battle is over. If either condition is met, return
+; 					    false
+; Syntax ........: GoldElixirChange()
+; Parameters ....:
+; Return values .: None
+; Author ........: Samota,
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 ; Notes: If all troops are used, the battle will end when they are all dead, the timer runs out, or the
 ; base has been 3-starred. When the battle ends, it is detected within 5 seconds, otherwise it takes up
 ; to 20 seconds.
-;
-;==========================================================================
+
 Func GoldElixirChange()
 	Local $Gold1, $Gold2
 	Local $GoldChange, $ElixirChange

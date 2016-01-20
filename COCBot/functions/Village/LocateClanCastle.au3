@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Code Monkey #69
 ; Modified ......: KnowJack (June 2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -24,15 +24,17 @@ Func LocateClanCastle()
 	EndIf
 
 	While 1
-		ClickP($aAway,1,0,"#0373")
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$stext =  $sErrorText & @CRLF & "Click OK then click on your Clan Castle" & @CRLF & @CRLF & _
 		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
 		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Clan Castle", $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
+			WinGetAndroidHandle()
 			WinActivate($HWnD)
-			$aCCPos[0] = FindPos()[0]
-			$aCCPos[1] = FindPos()[1]
+			ClickP($aAway,1,0,"#0373")
+			Local $aPos = FindPos()
+			$aCCPos[0] = $aPos[0]
+			$aCCPos[1] = $aPos[1]
 			If isInsideDiamond($aCCPos) = False Then
 				$iStupid += 1
 				Select

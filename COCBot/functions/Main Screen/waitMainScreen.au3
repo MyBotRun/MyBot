@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (July/Aug 2015), TheMaster (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,14 +15,16 @@
 ; ===============================================================================================================================
 
 Func waitMainScreen() ;Waits for main screen to popup
-
+    If Not $RunState Then Return
     Local $iCount
 	SetLog("Waiting for Main Screen")
 	$iCount = 0
 	For $i = 0 To 105 ;105*2000 = 3.5 Minutes
+	    If Not $RunState Then Return
 		If $debugsetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop
 		$iCount += 1
-		If WinExists($Title) = False Then
+		WinGetAndroidHandle()
+		If $HWnD = 0 Then
 			OpenAndroid(True)
 			Return
 	    EndIf
@@ -46,6 +48,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 	; If mainscreen is not found, then fix it
 	$iCount = 0
 	While 1
+	    If Not $RunState Then Return
 		SetLog("Unable to load CoC, attempt to fix it...", $COLOR_RED)
 		If $debugsetlog = 1 Then Setlog("Restart Loop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop data
 		CloseAndroid() 	 ; BS must die!

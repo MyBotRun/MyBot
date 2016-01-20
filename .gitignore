@@ -22,6 +22,14 @@
 # Exclusion Curl (used for PushBullet)
 ![Cc]url.exe
 
+# Exclusion Language .ini's
+![Ll]anguages/*.ini
+
+# Exclusion Images/Icon
+![Ii]mages/logo.jpg
+![Ii]mages/2arrow.jpg
+![Ii]mages/MyBot.ico
+
 # Debug
 [Ll]ib/[Dd]ebug/
 [Ll]ib/[Tt]est.txt
@@ -35,5 +43,5 @@ EnableMBRDebug.txt
 TestVersion.txt
 
 # Exclusion Release
-!LastVersion.txt
+!LastVersion*.txt
 !MyBot.run.exe

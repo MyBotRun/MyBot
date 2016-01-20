@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -96,8 +96,6 @@ Func _Restart()
 	FileWrite(@TempDir & "restart.bat", $sCmdFile)
 	IniWrite($config, "general", "Restarted", 1)
 	Run(@TempDir & "restart.bat", @TempDir, @SW_HIDE)
-	ProcessClose("HD-Frontend.exe")
-	ProcessClose("HD-Agent.exe")
-	ProcessClose("MyBot.run.exe")
-	Exit
+	CloseAndroid()
+	BotClose()
 EndFunc   ;==>_Restart

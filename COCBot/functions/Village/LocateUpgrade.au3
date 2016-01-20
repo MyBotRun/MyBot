@@ -7,7 +7,7 @@
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (June-2015) edited for V3.X bot and SC updates
 ;				   Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,14 +15,15 @@
 ; ===============================================================================================================================
 
 Func LocateUpgrades()
+    WinGetAndroidHandle()
 	ControlGetPos($Title, "", $AppClassInstance)  ;Check For valid BS position
-	If @error = 1 Then  ; If not found, BS is not open so exit politely
-		Setlog("BlueStacks in not open", $COLOR_RED)
+	If $HWnD = 0 Or @error = 1 Then  ; If not found, BS is not open so exit politely
+		Setlog($Android & " is not open", $COLOR_RED)
 		SetError(1)
 		Return
 	EndIf
-	If $hLogFileHandle = "" Then CreateLogFile()
-	If $hAttackLogFileHandle = "" Then CreateAttackLogFile()
+	;If $hLogFileHandle = "" Then CreateLogFile()
+	;If $hAttackLogFileHandle = "" Then CreateAttackLogFile()
 	Setlog("Upgrade Buildings and Auto Wall Upgrade Can Not Use same Loot Type!", $COLOR_GREEN)
 	Local $MsgBox, $stext
 	Local $icount = 0
@@ -31,7 +32,9 @@ Func LocateUpgrades()
 		If _GetPixelColor(1, 1) <> Hex(0x000000, 6) And _GetPixelColor(850, 1) <> Hex(0x000000, 6) Then ; Check for zoomout in case user tried to zoom in.
 			SetLog("Locate Oops, prep screen 1st", $COLOR_BLUE)
 			ZoomOut()
+			$bDisableBreakCheck = True  ; stop early PB log off when locating upgrades
 			Collect()
+			$bDisableBreakCheck = False  ; restore flag
 		EndIf
 		For $icount = 0 To 5
 			$stext = "Click 'Locate Building' button then click on your Building/Hero to upgrade." & @CRLF & @CRLF & "Click 'Finished' button when done locating all upgrades." & @CRLF & @CRLF & "Click on Cancel to exit finding buildings." & @CRLF & @CRLF
@@ -39,8 +42,10 @@ Func LocateUpgrades()
 			$MsgBox = _ExtMsgBox(0, "Locate Building|Finished|Cancel", "Locate Upgrades", $stext, 0, $frmBot)
 			Switch $MsgBox
 				Case 1 ; YES! we want to find a building.
-					$aUpgrades[$icount][0] = FindPos()[0]
-					$aUpgrades[$icount][1] = FindPos()[1]
+					WinActivate($HWnD) ; Activate Android Window
+					Local $aPos = FindPos()
+					$aUpgrades[$icount][0] = $aPos[0]
+					$aUpgrades[$icount][1] = $aPos[1]
 					If _Sleep(500) Then Return
 					If isInsideDiamondXY($aUpgrades[$icount][0], $aUpgrades[$icount][1]) Then ; Check value to make sure its valid.
 						GUICtrlSetImage($picUpgradeStatus[$icount], $pIconLib, $eIcnYellowLight) ; Set GUI Status to Yellow showing ready for upgrade
@@ -121,6 +126,10 @@ Func UpgradeValue($inum) ;function to find the value and type of the upgrade.
 	$aUpgrades[$inum][3] = "" ; Clear previous loot type if run before
 	ClickP($aAway, 1,0,"#0211") ;Click Away to close windows
 	SetLog("-$Upgrade #" & $inum + 1 & " Location =  " & "(" & $aUpgrades[$inum][0] & "," & $aUpgrades[$inum][1] & ")", $COLOR_TEAL) ;Debug
+	If _Sleep($iDelayUpgradeValue1) Then Return
+	Click($aUpgrades[$inum][0], $aUpgrades[$inum][1],1,0,"#0212") ;Select upgrade trained (clean field)
+	If _Sleep($iDelayUpgradeValue1) Then Return
+	ClickP($aAway,1,0, "#0211") ;Click Away to close the upgrade window
 	If _Sleep($iDelayUpgradeValue1) Then Return
 	Click($aUpgrades[$inum][0], $aUpgrades[$inum][1],1,0,"#0212") ;Select upgrade trained
 	If _Sleep($iDelayUpgradeValue2) Then Return

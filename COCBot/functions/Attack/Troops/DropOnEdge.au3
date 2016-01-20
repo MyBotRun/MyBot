@@ -1,4 +1,24 @@
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: DropOnEdge
+; Description ...:
+; Syntax ........: DropOnEdge($troop, $edge, $number[, $slotsPerEdge = 0[, $edge2 = -1[, $x = -1]]])
+; Parameters ....: $troop               - a dll struct value.
+;                  $edge                - an unknown value.
+;                  $number              - a general number value.
+;                  $slotsPerEdge        - [optional] a string value. Default is 0.
+;                  $edge2               - [optional] an unknown value. Default is -1.
+;                  $x                   - [optional] an unknown value. Default is -1.
+; Return values .: None
+; Author ........: Your Name
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+
 Func DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1, $x = -1)
 
 	If isProblemAffect(True) Then Return

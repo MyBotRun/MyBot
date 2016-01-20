@@ -5,8 +5,8 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Sardo (2015-06)
-; Modified ......: Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Modified ......: Sardo 2015-08, MonkeyHunter(2106-1)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,13 +18,14 @@ Func ReplayShare($last = 1)
 	;         Use this option  with caution or risk being reported
 	Local $txtMessage, $tNew
 
-	If $iShareAttackNow = 0 Then Return  ; TEMP REVIEW LATER, need to fix for when village* files that exist due to the enableMBRdebug.txt
+	If $iShareAttackNow = 0 Then Return
 
 	If $last = 1 Then
 		;--  open page of attacks -------------------------------------------------------------
 		ClickP($aAway,1,0,"#0235") ;Click Away
 		If _Sleep($iDelayReplayShare2) Then Return ;
 		SetLog("Share Replay: Opening Messages Page...", $COLOR_BLUE)
+		If $DebugSetlog = 1 Then Setlog("$last= " & $last, $COLOR_PURPLE)
 		ClickP($aMessageButton, 1, 0, "#0236") ;Click Messages Button
 		If _Sleep($iDelayReplayShare3) Then Return
 		Click(380, 94 + $midOffsetY,1,0,"#0237") ; Click Attack Log Tab, move down 30 pixels for 860x780
@@ -35,7 +36,8 @@ Func ReplayShare($last = 1)
 
 		; check if exist replay queue ----------------------------------------------------
 		Local $FileListQueueName = _FileListToArray($dirTemp, "Village*.png", 1); list files to an array.
-		If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0x78D4E8, 6), 6) = True And Not (IsArray($FileListQueueName)) Then
+		If $DebugSetlog = 1 Then Setlog("Top share button pixel color 70D4E8 or BBBBBB: " & _GetPixelColor(500, 156 + $midOffsetY), $COLOR_PURPLE)
+		If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0x70D4E8, 6), 10) = True And Not (IsArray($FileListQueueName)) Then
 			;button replay blue, moved down 30 for 860x780
 			Setlog("Ok, sharing!")
 			Click(500, 156 + $midOffsetY,1,0,"#0238") ; Click Share Button, moved down 30 for 860x780
@@ -70,12 +72,12 @@ Func ReplayShare($last = 1)
 				Else
 					Setlog("Cannot Share Now... retry later.")
 				EndIf
-				_CaptureRegion(87, 149, 87 + 100, 149 + 20)
+				_CaptureRegion(87, 149+ $midOffsetY, 87 + 100, 149 + 20+ $midOffsetY)
 				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 				Local $Time = @HOUR & "." & @MIN
 				Local $iSaveFile = _GDIPlus_ImageSaveToFile($hBitmap, $dirTemp & "Village_" & $Date & "_" & $Time & "^" & StringFormat("%s", $SearchCount) & ".png")
 				If Not ($iSaveFile) Then SetLog("An error occurred putting screenshot in queue", $COLOR_RED)
-				Click(763, 86,1,0,"#0241") ; Close  page
+				Click(763, 86 + $midOffsetY,1,0,"#0241") ; Close  page
 				If _Sleep($iDelayReplayShare2) Then Return ;
 			Else
 				;button not found, abort
@@ -113,12 +115,14 @@ Func ReplayShare($last = 1)
 				ClickP($aAway,1,0,"#0242") ;Click Away
 				If _Sleep($iDelayReplayShare2) Then Return ;
 				SetLog("Share Replay: Opening Messages Page...", $COLOR_BLUE)
+				If $DebugSetlog = 1 Then Setlog("$last= " & $last, $COLOR_PURPLE)
 				ClickP($aMessageButton, 1, 0, "#0243") ; Click Messages Button
 				If _Sleep($iDelayReplayShare3) Then Return
 				Click(380, 94 + $midOffsetY,1,0,"#0244") ; Click Attack Log Tab, moved down 30 for 860x780
 				If _Sleep($iDelayReplayShare3) Then Return
 				_CaptureRegion()
-				If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0x78D4E8, 6), 6) = True Then
+				If $DebugSetlog = 1 Then Setlog("Top share button pixel color 70D4E8 or BBBBBB: " & _GetPixelColor(500, 156 + $midOffsetY), $COLOR_PURPLE)
+				If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0x70D4E8, 6), 10) = True Then
 					;button replay blue,, moved down 30 for 860x780
 					Setlog("Ok, sharing!")
 					Local $VilLoc, $VilX, $VilY, $VilTol
@@ -184,14 +188,14 @@ Func ReplayShare($last = 1)
 					If _ColorCheck(_GetPixelColor(500, 156 + $midOffsetY), Hex(0xbbbbbb, 6), 6) = True Then
 						;button replay gray.. insert village in queue, , moved down 30 for 860x780
 						Setlog("Cannot Share Now... retry later.")
-						Click(763, 86,1,0,"#0248") ; Close  page
+						Click(763, 86 + $midOffsetY,1,0,"#0248") ; Close  page
 						$tNew = _Date_Time_GetLocalTime()
 						$dLastShareDate = _DateAdd("n", -20, _Date_Time_SystemTimeToDateTimeStr($tNew, 1))
 						If _Sleep($iDelayReplayShare2) Then Return ;
 					Else
 						;button not found, abort
 						Setlog("Button Share not found, abort.", $COLOR_RED)
-						Click(763, 86,1,0,"#0249") ; Close  page
+						Click(763, 86 + $midOffsetY,1,0,"#0249") ; Close  page
 						If _Sleep($iDelayReplayShare2) Then Return ;
 					EndIf
 				EndIf
@@ -204,6 +208,3 @@ Func ReplayShare($last = 1)
 	checkMainScreen(False) ; check for screen errors while running function
 
 EndFunc   ;==>ReplayShare
-
-
-

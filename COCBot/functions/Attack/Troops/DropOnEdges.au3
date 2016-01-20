@@ -1,4 +1,22 @@
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: DropOnEdges
+; Description ...:
+; Syntax ........: DropOnEdges($troop, $nbSides, $number[, $slotsPerEdge = 0])
+; Parameters ....: $troop               - a dll struct value.
+;                  $nbSides             - a general number value.
+;                  $number              - a general number value.
+;                  $slotsPerEdge        - [optional] a string value. Default is 0.
+; Return values .: None
+; Author ........:
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+;
 Func DropOnEdges($troop, $nbSides, $number, $slotsPerEdge = 0)
 	If $nbSides = 0 Or $number = 1 Then
 		OldDropTroop($troop, $Edges[0], $number);

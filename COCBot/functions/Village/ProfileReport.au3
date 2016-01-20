@@ -8,7 +8,7 @@
 ; Author ........: Sardo
 ; Modified ......: KnowJack (July 2015) add wait loop for slow PC read of OCR
 ;                  Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

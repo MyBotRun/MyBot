@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: KnowJack (June 2015)
 ; Modified ......: Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,15 +23,17 @@ Func LocateLab()
 	EndIf
 
 	While 1
-		ClickP($aAway,1,0,"#0379")
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
 		$stext =  $sErrorText & @CRLF& "Click OK then click on your Laboratory building" & @CRLF & @CRLF & _
 		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
 		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Laboratory", $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
+		    WinGetAndroidHandle()
 			WinActivate($HWnD)
-			$aLabPos[0] = Int(FindPos()[0])
-			$aLabPos[1] = Int(FindPos()[1])
+			ClickP($aAway,1,0,"#0379")
+			Local $aPos = FindPos()
+			$aLabPos[0] = Int($aPos[0])
+			$aLabPos[1] = Int($aPos[1])
 			If isInsideDiamond($aLabPos) = False Then
 				$iStupid += 1
 				Select

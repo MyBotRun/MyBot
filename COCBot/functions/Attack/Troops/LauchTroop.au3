@@ -1,3 +1,22 @@
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: LauchTroop
+; Description ...:
+; Syntax ........: LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb[, $slotsPerEdge = 0])
+; Parameters ....: $troopKind           - a dll struct value.
+;                  $nbSides             - a general number value.
+;                  $waveNb              - an unknown value.
+;                  $maxWaveNb           - a map.
+;                  $slotsPerEdge        - [optional] a string value. Default is 0.
+; Return values .: None
+; Author ........:
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 Func LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 	Local $troop = -1
 	Local $troopNb = 0
@@ -29,8 +48,10 @@ Func LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 EndFunc   ;==>LauchTroop
 
 Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
-	If $debugSetlog =1 Then SetLog("LaunchTroop2 with CC " & $CC & ", K " & $King & ", Q " & $Queen & ", W " & $Warden , $COLOR_PURPLE)
+	If $debugSetlog = 1 Then SetLog("LaunchTroop2 with CC " & $CC & ", K " & $King & ", Q " & $Queen & ", W " & $Warden, $COLOR_PURPLE)
 	Local $listListInfoDeployTroopPixel[0]
+	Local $pixelRandomDrop[2]
+	Local $pixelRandomDropcc[2]
 
 	If ($iChkRedArea[$iMatchMode] = 1) Then
 		For $i = 0 To UBound($listInfoDeploy) - 1
@@ -42,7 +63,7 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 			$waveNb = $listInfoDeploy[$i][2]
 			$maxWaveNb = $listInfoDeploy[$i][3]
 			$slotsPerEdge = $listInfoDeploy[$i][4]
-			If $debugSetlog =1 Then SetLog("**ListInfoDeploy row " & $i & ": USE "  &$troopKind & " SIDES " &  $nbSides & " WAVE " & $waveNb & " XWAVE " & $maxWaveNb & " SLOTXEDGE " & $slotsPerEdge, $COLOR_PURPLE)
+			If $debugSetlog = 1 Then SetLog("**ListInfoDeploy row " & $i & ": USE " & $troopKind & " SIDES " & $nbSides & " WAVE " & $waveNb & " XWAVE " & $maxWaveNb & " SLOTXEDGE " & $slotsPerEdge, $COLOR_PURPLE)
 			If (IsNumber($troopKind)) Then
 				For $j = 0 To UBound($atkTroops) - 1 ; identify the position of this kind of troop
 					If $atkTroops[$j][0] = $troopKind Then
@@ -74,10 +95,9 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 				$listListInfoDeployTroopPixel[$waveNb - 1] = $listInfoDeployTroopPixel
 			EndIf
 		Next
-		Local $isCCDropped = False
-		Local $isHeroesDropped = False
-		If ( ($iChkSmartAttack[$iMatchMode][0] = 1 Or $iChkSmartAttack[$iMatchMode][1] = 1 Or $iChkSmartAttack[$iMatchMode][2] = 1) And UBound($PixelNearCollector) = 0) Then
-				SetLog("Error, no pixel found near collector => Normal attack near red line")
+
+		If (($iChkSmartAttack[$iMatchMode][0] = 1 Or $iChkSmartAttack[$iMatchMode][1] = 1 Or $iChkSmartAttack[$iMatchMode][2] = 1) And UBound($PixelNearCollector) = 0) Then
+			SetLog("Error, no pixel found near collector => Normal attack near red line")
 		EndIf
 		If ($iCmbSmartDeploy[$iMatchMode] = 0) Then
 			For $numWave = 0 To UBound($listListInfoDeployTroopPixel) - 1
@@ -85,17 +105,29 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 				For $i = 0 To UBound($listInfoDeployTroopPixel) - 1
 					Local $infoPixelDropTroop = $listInfoDeployTroopPixel[$i]
 					If (IsString($infoPixelDropTroop[0]) And ($infoPixelDropTroop[0] = "CC" Or $infoPixelDropTroop[0] = "HEROES")) Then
-						;TEMP FIX NEED TO IMPROVED... IF NO PIXELREDAREA DEPLOY IN A PRECISE POINT
-						;Local $pixelRandomDrop = $PixelRedArea[Round(Random(0, UBound($PixelRedArea) - 1))]
-						If Ubound($PixelRedArea) > 0 Then
-							Local $pixelRandomDrop = $PixelRedArea[Random(0, UBound($PixelRedArea) - 1,1)]
+
+						If $DeployHeroesPosition[0] <> -1 Then
+							$pixelRandomDrop[0] = $DeployHeroesPosition[0]
+							$pixelRandomDrop[1] = $DeployHeroesPosition[1]
+							If $debugSetlog = 1 Then SetLog("Deploy Heroes $DeployHeroesPosition")
 						Else
-							Local $pixelRandomDrop = [747,367] ;
+							$pixelRandomDrop[0] = $BottomRight[2][0]
+							$pixelRandomDrop[1] = $BottomRight[2][1] ;
+							If $debugSetlog = 1 Then SetLog("Deploy Heroes $BottomRight")
 						EndIf
-						;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+						If $DeployCCPosition[0] <> -1 Then
+							$pixelRandomDropcc[0] = $DeployCCPosition[0]
+							$pixelRandomDropcc[1] = $DeployCCPosition[1]
+							If $debugSetlog = 1 Then SetLog("Deploy CC $DeployHeroesPosition")
+						Else
+							$pixelRandomDrop[0] = $BottomRight[2][0]
+							$pixelRandomDrop[1] = $BottomRight[2][1] ;
+							If $debugSetlog = 1 Then SetLog("Deploy CC $BottomRight")
+						EndIf
 
 						If ($infoPixelDropTroop[0] = "CC") Then
-							dropCC($pixelRandomDrop[0], $pixelRandomDrop[1], $CC)
+							dropCC($pixelRandomDropcc[0], $pixelRandomDropcc[1], $CC)
+							$isCCDropped = True
 						ElseIf ($infoPixelDropTroop[0] = "HEROES") Then
 							dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $King, $Queen, $Warden)
 							$isHeroesDropped = True
@@ -114,7 +146,7 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 						DropOnPixel($infoPixelDropTroop[0], $infoPixelDropTroop[1], $infoPixelDropTroop[2], $infoPixelDropTroop[3])
 					EndIf
 					If ($isHeroesDropped) Then
-						If _Sleep($iDelayLaunchTroop22) then return ; delay Queen Image  has to be at maximum size : CheckHeroesHealth checks the y = 573
+						If _Sleep($iDelayLaunchTroop22) Then Return ; delay Queen Image  has to be at maximum size : CheckHeroesHealth checks the y = 573
 						CheckHeroesHealth()
 					EndIf
 					If _Sleep(SetSleep(1)) Then Return
@@ -141,14 +173,25 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 							For $j = 0 To UBound($listInfoDeployTroopPixel) - 1
 								$infoTroopListArrPixel = $listInfoDeployTroopPixel[$j]
 								If (IsString($infoTroopListArrPixel[0]) And ($infoTroopListArrPixel[0] = "CC" Or $infoTroopListArrPixel[0] = "HEROES")) Then
-									;TEMP FIX NEED TO IMPROVED... IF NO PIXELREDAREA DEPLOY IN A PRECISE POINT
-									;Local $pixelRandomDrop = $PixelRedArea[Round(Random(0, UBound($PixelRedArea) - 1))]
-									If Ubound($PixelRedArea) > 0 Then
-										Local $pixelRandomDrop = $PixelRedArea[Random(0, UBound($PixelRedArea) - 1,1)]
+
+									If $DeployHeroesPosition[0] <> -1 Then
+										$pixelRandomDrop[0] = $DeployHeroesPosition[0]
+										$pixelRandomDrop[1] = $DeployHeroesPosition[1]
+										If $debugSetlog = 1 Then SetLog("Deploy Heroes $DeployHeroesPosition")
 									Else
-										Local $pixelRandomDrop = [747,367] ;
+										$pixelRandomDrop[0] = $BottomRight[2][0]
+										$pixelRandomDrop[1] = $BottomRight[2][1] ;
+										If $debugSetlog = 1 Then SetLog("Deploy Heroes $BottomRight")
 									EndIf
-									;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+									If $DeployCCPosition[0] <> -1 Then
+										$pixelRandomDropcc[0] = $DeployCCPosition[0]
+										$pixelRandomDropcc[1] = $DeployCCPosition[1]
+										If $debugSetlog = 1 Then SetLog("Deploy CC $DeployHeroesPosition")
+									Else
+										$pixelRandomDrop[0] = $BottomRight[2][0]
+										$pixelRandomDrop[1] = $BottomRight[2][1] ;
+										If $debugSetlog = 1 Then SetLog("Deploy CC $BottomRight")
+									EndIf
 
 									If ($isCCDropped = False And $infoTroopListArrPixel[0] = "CC") Then
 										dropCC($pixelRandomDrop[0], $pixelRandomDrop[1], $CC)
@@ -169,7 +212,7 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 									DropOnPixel($infoTroopListArrPixel[0], $pixelDropTroop, $infoTroopListArrPixel[2], $infoTroopListArrPixel[3])
 								EndIf
 								If ($isHeroesDropped) Then
-									If _sleep (1000) then return ; delay Queen Image  has to be at maximum size : CheckHeroesHealth checks the y = 573
+									If _sleep(1000) Then Return ; delay Queen Image  has to be at maximum size : CheckHeroesHealth checks the y = 573
 									CheckHeroesHealth()
 								EndIf
 							Next
@@ -205,12 +248,12 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 					Local $RandomXY = 2
 				Else
 					Local $RandomEdge = $Edges[Round(Random(0, 3))]
-					Local $RandomXY = Round(Random(0, 4))
+					Local $RandomXY = Round(Random(1, 3))
 				EndIf
 				If ($listInfoDeploy[$i][0] = "CC") Then
 					dropCC($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $CC)
 				ElseIf ($listInfoDeploy[$i][0] = "HEROES") Then
-					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $King, $Queen,$Warden)
+					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $King, $Queen, $Warden)
 				EndIf
 			Else
 				If LauchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then

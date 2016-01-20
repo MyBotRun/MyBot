@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Code Monkey #73
 ; Modified ......: (2015-06) Sardo, KnowJack(Jul/Aug 2015), Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -22,7 +22,7 @@ Func RequestCC()
 	If $iPlannedRequestCCHoursEnable = 1 Then
 		Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 		If $iPlannedRequestCCHours[$hour[0]] = 0 Then
-			SetLog("Request CC not Planned, Skipped..", $COLOR_GREEN)
+			SetLog("Request Clan Castle troops not planned, Skipped..", $COLOR_ORANGE)
 			Return ; exit func if no planned donate checkmarks
 		EndIf
 	EndIf

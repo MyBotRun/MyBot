@@ -1,12 +1,27 @@
-; TogglePause
 
-HotKeySet("{PAUSE}", "TogglePause")
+; #FUNCTION# ====================================================================================================================
+; Name ..........: TogglePause
+; Description ...:
+; Syntax ........: TogglePause()
+; Parameters ....:
+; Return values .: None
+; Author ........:
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+
+If $OnlyInstance Then HotKeySet("{PAUSE}", "TogglePause")
 
 Func TogglePause()
 	TogglePauseImpl("Button")
 EndFunc
 
 Func TogglePauseImpl($Source)
+   SetRedrawBotWindow(True)
    Local $BlockInputPausePrev
 	$TPaused = NOT $TPaused
 	If $TPaused and $Runstate = True Then
@@ -37,6 +52,7 @@ Func TogglePauseImpl($Source)
 		GUICtrlSetState($btnPause, $GUI_SHOW)
 		GUICtrlSetState($btnResume, $GUI_HIDE)
 		;GUICtrlSetState($btnMakeScreenshot, $GUI_DISABLE)
+		ZoomOut()
 	EndIf
 	Local $counter = 0
 	While $TPaused ; Actual Pause loop
@@ -48,6 +64,6 @@ Func TogglePauseImpl($Source)
 		EndIf
 	WEnd
 	; everything below this WEnd is executed when unpaused!
-	ZoomOut()
+	;ZoomOut() ; moved to resume
 	If _Sleep($iDelayTogglePause2) Then Return
 EndFunc
