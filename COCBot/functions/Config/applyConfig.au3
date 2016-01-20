@@ -938,6 +938,22 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 		GUICtrlSetState($chkExtraAlphabets, $GUI_CHECKED)
 	EndIf
 
+	;Messaging Settings--------------------------------------------------------------------------
+	If $ichkGlobalChatEnable = 1 Then
+		GUICtrlSetState($chkGlobalChatEnable, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkGlobalChatEnable, $GUI_UNCHECKED)
+	EndIf
+	GUICtrlSetData($txtGlobalChatMessages, $sTxtGlobalChatMessages)
+	chkGlobalChatEnable()
+	If $ichkClanChatEnable = 1 Then
+		GUICtrlSetState($chkClanChatEnable, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkClanChatEnable, $GUI_UNCHECKED)
+	EndIf
+	GUICtrlSetData($txtClanChatMessages, $sTxtClanChatMessages)
+	chkClanChatEnable()
+
 	;Troop Settings--------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbTroopComp, $iCmbTroopComp)
 

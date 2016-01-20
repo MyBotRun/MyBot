@@ -428,6 +428,12 @@ Func readConfig() ;Reads config and sets it to the variables
 		; Extra Alphabets , Cyrillic.
 		$ichkExtraAlphabets = IniRead($config, "donate", "chkExtraAlphabets", "0")
 
+		;Messaging Settings-------------------------------------------------------------------------
+		$ichkGlobalChatEnable = IniRead($config, "messaging", "chkGlobalChatEnable", "0")
+		$sTxtGlobalChatMessages = StringReplace(IniRead($config, "messaging", "txtGlobalChatMessages", "hello|hi"), "|", @CRLF)
+		$ichkClanChatEnable = IniRead($config, "messaging", "chkClanChatEnable", "0")
+		$sTxtClanChatMessages = StringReplace(IniRead($config, "messaging", "txtClanChatMessages", "hello|hi"), "|", @CRLF)
+
 		;Troop Settings--------------------------------------------------------------------------
 		$iCmbTroopComp = IniRead($config, "troop", "TroopComposition", "0")
 

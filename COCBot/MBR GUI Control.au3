@@ -53,6 +53,7 @@ AtkLogHead()
 #include "GUI\MBR GUI Control Tab Advanced.au3"
 #include "GUI\MBR GUI Control Tab EndBattle.au3"
 #include "GUI\MBR GUI Control Tab Donate.au3"
+#include "GUI\MBR GUI Control Tab Messaging.au3"
 #include "GUI\MBR GUI Control Tab Misc.au3"
 #include "GUI\MBR GUI Control Tab Upgrade.au3"
 #include "GUI\MBR GUI Control Tab Notify.au3"

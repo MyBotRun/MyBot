@@ -519,6 +519,10 @@ Global $ichkExtraAlphabets = 0 ; extra alphabets
 Global $DonBarb = 0, $DonArch = 0, $DonGiant = 0, $DonGobl = 0, $DonWall = 0, $DonBall = 0, $DonWiza = 0, $DonHeal = 0
 Global $DonMini = 0, $DonHogs = 0, $DonValk = 0, $DonGole = 0, $DonWitc = 0, $DonLava = 0, $DonDrag = 0, $DonPekk = 0
 
+;Messaging Settings
+Global $ichkGlobalChatEnable = 0, $sTxtGlobalChatMessages = ""
+Global $ichkClanChatEnable = 0, $sTxtClanChatMessages = ""
+
 ;Troop Settings
 Global $icmbTroopComp ;Troop Composition
 Global $icmbTroopCap ;Troop Capacity
