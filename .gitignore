@@ -30,6 +30,7 @@ EnableMBRDebug.txt
 # SQL (not in use)
 *.sqlite3
 *.db
+*.DS_Store
 
 # Release files
 TestVersion.txt
