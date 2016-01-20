@@ -29,7 +29,7 @@ Func ReArm()
 
 	ClickP($aAway, 1, 0, "#0224") ; Click away
 	If _Sleep($iDelayReArm2) Then Return
-	If IsMainPage() Then Click($TownHallPos[0], $TownHallPos[1] + 5 + 60, 1, 0, "#0225")
+	If IsMainPage() Then Click($TownHallPos[0], $TownHallPos[1] + 5, 1, 0, "#0225")
 	If _Sleep($iDelayReArm3) Then Return
 
 	;If $debugSetlog = 1 Then DebugImageSave("ReArmView")

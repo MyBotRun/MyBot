@@ -187,6 +187,7 @@
 #include "functions\Village\LocateHeroesAltar.au3"
 #include "functions\Village\ProfileReport.au3"
 #include "functions\Village\ReArm.au3"
+#include "functions\Village\Recruit.au3"
 #include "functions\Village\RequestCC.au3"
 #include "functions\Village\Spell.au3"
 #include "functions\Village\Train.au3"

@@ -38,7 +38,7 @@ EndIf
 
 #include "COCBot\MBR Global Variables.au3"
 
-$sBotVersion = "v5.0.2pp03" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+$sBotVersion = "v5.0.2pp04" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " & $DEFAULT_WIDTH & "x" & $DEFAULT_HEIGHT & " "
 
 #include "COCBot\functions\Main Screen\Android.au3"
@@ -202,6 +202,8 @@ Func runBot() ;Bot that runs everything in order
 			BoostWarden()
 			If $Restart = True Then ContinueLoop
 			RequestCC()
+			If $Restart = True Then ContinueLoop
+			Recruit()
 			If _Sleep($iDelayRunBot1) Then Return
 			checkMainScreen(False) ; required here due to many possible exits
 			If $Restart = True Then ContinueLoop
