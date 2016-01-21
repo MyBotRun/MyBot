@@ -186,8 +186,6 @@ Global $hFuncLib ; handle to functions library
 Global $pIconLib = $LibDir & "\MBRBOT.dll" ; icon library
 Global Const $dirTHSnipesAttacks = @ScriptDir & "\CSV\THSnipe"
 Global Const $dirAttacksCSV = @ScriptDir & "\CSV\Attack"
-Global Const $fileRecruitMessages = @ScriptDir&"\RecruitMessages.txt"
-Global $iRecruitCount = 0
 
 ; Improve GUI interations by disabling bot window redraw
 Global $bRedrawBotWindow[3] = [True, False, False] ; [0] = window redraw enabled, [1] = window redraw required, [2] = window redraw requird by some controls, see CheckRedrawControls()
@@ -520,8 +518,8 @@ Global $DonBarb = 0, $DonArch = 0, $DonGiant = 0, $DonGobl = 0, $DonWall = 0, $D
 Global $DonMini = 0, $DonHogs = 0, $DonValk = 0, $DonGole = 0, $DonWitc = 0, $DonLava = 0, $DonDrag = 0, $DonPekk = 0
 
 ;Messaging Settings
-Global $ichkGlobalChatEnable = 0, $sTxtGlobalChatMessages = ""
-Global $ichkClanChatEnable = 0, $sTxtClanChatMessages = ""
+Global $ichkGlobalChatEnable = 0, $sTxtGlobalChatMessages = "", $iGlobalChatCounter = -1
+Global $ichkClanChatEnable = 0, $sTxtClanChatMessages = "", $iClanChatCounter = -1
 
 ;Troop Settings
 Global $icmbTroopComp ;Troop Composition

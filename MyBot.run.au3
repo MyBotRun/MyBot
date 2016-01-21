@@ -219,7 +219,7 @@ Func runBot() ;Bot that runs everything in order
 				If $Restart = True Then ContinueLoop
 			RequestCC()
 				If $Restart = True Then ContinueLoop
-			Recruit()
+			Messaging()
 				If _Sleep($iDelayRunBot1) Then Return
 				checkMainScreen(False) ; required here due to many possible exits
 				If $Restart = True Then ContinueLoop

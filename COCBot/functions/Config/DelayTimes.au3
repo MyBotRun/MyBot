@@ -321,7 +321,7 @@ Global Const $iDelayReArm3 = 1500
 Global Const $iDelayReArm4 = 700
 Global Const $iDelayReArm5 = 500
 
-;Recruit
+;Messaging
 Global Const $iDelayRecruit1 = 200
 Global Const $iDelayRecruit2 = 250
 

@@ -1,7 +1,7 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: Recruit
+; Name ..........: Messaging
 ; Description ...:
-; Syntax ........: Recruit()
+; Syntax ........: Messaging()
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: paspiz85
@@ -13,44 +13,40 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func Recruit()
+Func Messaging()
 
-	Local $f , $line, $firstLine = "", $lineCount = 0, $sRecruitMessage = ""
-	If FileExists($fileRecruitMessages) Then
-		$f = FileOpen($fileRecruitMessages, 0)
-		; Read in lines of text until the EOF is reached
-		While 1
-			$line = FileReadLine($f)
-			If @error = -1 Then ExitLoop
-			;Setlog("line content: " & $line)
-			$line = StringStripWS($line, $STR_STRIPLEADING + $STR_STRIPTRAILING + $STR_STRIPSPACES)
-			If $line = "" Or StringLeft($line, 1) = "#" Then ContinueLoop
-			If $lineCount = 0 Then $firstLine = $line
-			If $lineCount = $iRecruitCount Then
-				$sRecruitMessage = $line
-				$iRecruitCount += 1
-			EndIf
-			$lineCount += 1
-		WEnd
-		If $sRecruitMessage = "" Then
-			$sRecruitMessage = $firstLine
-			$iRecruitCount = 0
+	Local $aMessages, $sMessage = ""
+	If $ichkGlobalChatEnable = 1 Then
+		$aMessages = StringSplit($sTxtGlobalChatMessages, @CRLF, $STR_ENTIRESPLIT + $STR_NOCOUNT)
+		If @error = 0 Then
+			$iGlobalChatCounter = Mod($iGlobalChatCounter + 1, UBound($aMessages))
+			$sMessage = $aMessages[$iGlobalChatCounter]
 		EndIf
-		If $sRecruitMessage <> "" Then
-			SetLog("Sending recruit message: " & $sRecruitMessage , $COLOR_BLUE)
-			_sendRecruitMessage($sRecruitMessage)
+		If $sMessage <> "" Then
+			SetLog("Sending Global chat message: " & $sMessage , $COLOR_BLUE)
+			_sendChatMessage($sMessage, False)
 		Else
-			SetLog("Recuitment failed: no message", $COLOR_ORANGE)
+			SetLog("Sending Global chat message failed", $COLOR_ORANGE)
 		EndIf
-		FileClose($f)
-	Else
-		SetLog("Recuitment disabled, file not found " & $fileRecruitMessages , $COLOR_ORANGE)
+	EndIf
+	If $ichkClanChatEnable = 1 Then
+		$aMessages = StringSplit($sTxtClanChatMessages, @CRLF, $STR_ENTIRESPLIT + $STR_NOCOUNT)
+		If @error = 0 Then
+			$iClanChatCounter = Mod($iClanChatCounter + 1, UBound($aMessages))
+			$sMessage = $aMessages[$iClanChatCounter]
+		EndIf
+		If $sMessage <> "" Then
+			SetLog("Sending Clan chat message: " & $sMessage , $COLOR_BLUE)
+			_sendChatMessage($sMessage, True)
+		Else
+			SetLog("Sending Clan chat message failed", $COLOR_ORANGE)
+		EndIf
 	EndIf
 
-EndFunc   ;==>Recruit
+EndFunc   ;==>Messaging
 
 
-Func _sendRecruitMessage($sTxtMessage)
+Func _sendChatMessage($sTxtMessage, $bClanMessage)
 
 	ControlFocus($Title,"", "")
 
@@ -58,7 +54,11 @@ Func _sendRecruitMessage($sTxtMessage)
 	If _CheckPixel($aChatTab, $bCapturePixel) = False Then ClickP($aOpenChat, 1, 0, "#0168") ; Clicks chat tab
 	If _Sleep($iDelayRecruit1) Then Return
 
-	ClickP($aGlobalTab, 1, 0) ; clicking global tab
+	If $bClanMessage Then
+		ClickP($aClanTab, 1, 0) ; clicking clan tab
+	Else
+		ClickP($aGlobalTab, 1, 0) ; clicking global tab
+	EndIf
 	If _Sleep($iDelayRecruit2) Then Return
 
 	ClickP($aGlobalChatBox, 1, 0) ; clicking chat box
@@ -92,5 +92,5 @@ Func _sendRecruitMessage($sTxtMessage)
 
 	If _Sleep($iDelayRecruit2) Then Return
 
-EndFunc   ;==>_sendRecruitMessage
+EndFunc   ;==>_sendChatMessage
 

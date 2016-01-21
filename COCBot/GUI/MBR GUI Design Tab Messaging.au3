@@ -27,7 +27,7 @@ $tabMessaging = GUICtrlCreateTabItem(GetTranslated(16,1, "Messaging"))
 
 	$y += 190
 	$grpClanChat = GUICtrlCreateGroup(GetTranslated(16,5, "Clan chat messages"), $x - 20, $y - 20, 450, 180)
-		$chkClanChatEnable = GUICtrlCreateCheckbox(GetTranslated(16,6, "Enable messages in Global chat"), $x - 5, $y - 5, -1, -1)
+		$chkClanChatEnable = GUICtrlCreateCheckbox(GetTranslated(16,6, "Enable messages in Clan chat"), $x - 5, $y - 5, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkClanChatEnable")
 		$txtClanChatMessages = GUICtrlCreateEdit("", $x - 5, $y + 20, 420, 125, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
 			GUICtrlSetData(-1, StringFormat(GetTranslated(16,7, "hello\r\nhi")))
