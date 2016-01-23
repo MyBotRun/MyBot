@@ -733,7 +733,7 @@ $y += 75
 			GUICtrlSetState(-1, $GUI_HIDE)
 			GUICtrlSetBkColor ( -1, 0x505050)
 			GUICtrlSetColor ( -1, $COLOR_WHITE)
-			GUICtrlSetData(-1, StringFormat(GetTranslated(6,91, "no haste\r\nhaste no")))
+			GUICtrlSetData(-1, StringFormat(GetTranslated(6,92, "no haste\r\nhaste no")))
 			GUICtrlSetTip(-1, $sTxtKeywordsNoTip & " " & $sTxtHasteSpells)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 

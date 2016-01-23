@@ -135,15 +135,15 @@ Func DonateCC($Check = False)
 			RemainingCCcapacity()
 
 			If $iTotalDonateCapacity <= 0 Then
-				Setlog("ClanCastle Full for Troops, skip Troop Donation ...", $COLOR_ORANGE)
+				Setlog("Clan Castle troops are full, skip troop donation...", $COLOR_ORANGE)
 				$bSkipDonTroops = True
 			EndIf
 			If $iTotalDonateSpellCapacity = 0 Then
-				Setlog("ClanCastle Full for Spells, skip Spell Donation ...", $COLOR_ORANGE)
+				Setlog("Clan Castle spells are full, skip spell donation...", $COLOR_ORANGE)
 				$bSkipDonSpells = True
 			ElseIf $iTotalDonateSpellCapacity = -1 Then
 				; no message, this CC has no Spell capability
-				If $debugSetlog = 1 Then Setlog("This CC has no Spell capability, skip Spell Donation.", $COLOR_PURPLE)
+				If $debugSetlog = 1 Then Setlog("This CC cannot accept spells, skip spell donation...", $COLOR_PURPLE)
 				$bSkipDonSpells = True
 			EndIf
 
