@@ -1,6 +1,6 @@
 [general]
 
-version    = "v5.1.1"
+version    = "v5.1.2"
 
 messagenew = "Lots of improvements and new scripted attack in this version.\nBe sure to check out the changelog on our forums.\n\n- Don't be a stranger, stop by our community forums and join in on the revolution\n\nhttps://mybot.run\n\n Always free and open source."
-messageold = "A new version of MyBot (v5.1.1) is available!\nPlease download the latest from:\nhttps://mybot.run"
+messageold = "A new version of MyBot (v5.1.2) is available!\nPlease download the latest from:\nhttps://mybot.run"
