@@ -92,7 +92,7 @@ Local $x = 30, $y = 150
 						"the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General " & @CRLF & _
 						"Public License for more details. The license can be found in the main code folder location."  & @CRLF & _
 						"Copyright (C) 2015 MyBot.run"
-		$lbltxtWarn = GUICtrlCreateEdit($txtWarn, $x - 5, $y, 410, 56, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_READONLY, $SS_LEFT, $ES_CENTER),0)
+		$lbltxtWarn1 = GUICtrlCreateEdit($txtWarn, $x - 5, $y, 410, 56, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_READONLY, $SS_LEFT, $ES_CENTER),0)
 			GUICtrlSetColor(-1, 0x000053)
 			GUICtrlSetBkColor(-1, $COLOR_WHITE)
 			GUICtrlSetFont(-1, 6, $FW_BOLD)

@@ -573,7 +573,6 @@ Func btnWalls()
 
 EndFunc
 
-
 Func btnTestDeadBase()
 	local $test = 0
 	LoadTHImage()

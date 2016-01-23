@@ -82,8 +82,8 @@ Func btnDeletePBMessages()
 	$iDeleteAllPushesNow = True
 EndFunc   ;==>btnDeletePBMessages
 
-; Script by wewawe
-Func _Restart()
+; Script by wewawe, renamed&disabled by Cosote 2016-01
+Func _Restart_()
 	Local $sCmdFile
 	FileDelete(@TempDir & "restart.bat")
 	$sCmdFile = 'tasklist /FI "IMAGENAME eq ' & @ScriptFullPath & '" | find /i "' & @ScriptFullPath & '"' & @CRLF _
@@ -98,4 +98,34 @@ Func _Restart()
 	Run(@TempDir & "restart.bat", @TempDir, @SW_HIDE)
 	CloseAndroid()
 	BotClose()
+ EndFunc   ;==>_Restart_
+
+ ; Restart Bot
+ Func _Restart()
+	SetDebugLog("Restart " & $sBotTitle)
+	Local $sCmdLine = ProcessGetCommandLine(@AutoItPID)
+	If @error <> 0 Then
+	   SetLog("Cannot prepare to restart " & $sBotTitle & ", error code " & @error, $COLOR_RED)
+	   Return SetError(1, 0, 0)
+    EndIf
+	IniWrite($config, "general", "Restarted", 1)
+
+	; add restart option (if not already there)
+	If StringRight($sCmdLine, 9) <> " /Restart" Then
+	   $sCmdLine &= " /Restart"
+	EndIf
+
+	; Restart My Bot
+	Local $pid = Run("cmd.exe /c start """" " & $sCmdLine, $WorkingDir, @SW_HIDE) ; cmd.exe only used to support launched like "..\AutoIt3\autoit3.exe" from console
+	If @error = 0 Then
+	   CloseAndroid()
+	   SetLog("Restarting " & $sBotTitle)
+	   ; Wait 1 Minute to get closed
+	   _SleepStatus(60 * 1000)
+    Else
+	   SetLog("Cannot restart " & $sBotTitle, $COLOR_RED)
+    EndIf
+
+	Return SetError(2, 0, 0)
 EndFunc   ;==>_Restart
+

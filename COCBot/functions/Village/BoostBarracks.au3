@@ -6,7 +6,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Code Monkey #11
-; Modified ......: ProMac ( 2015 ), Sardo 2015-08
+; Modified ......: ProMac ( 2015-16 ), Sardo 2015-08
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -37,7 +37,7 @@ Func BoostBarracks()
 	EndIf
 
 
-	If $icmbQuantBoostBarracks = $numBarracksAvaiables Then ;  Boost All barracks with "button Boost All" 40 gems"
+	If $icmbQuantBoostBarracks = $numBarracks Then ;  Boost All barracks with "button Boost All" 40 gems"
 		If $barrackPos[0][0] = "" Then
 			LocateBarrack()
 			SaveConfig()
@@ -79,22 +79,28 @@ Func BoostBarracks()
 		WEnd
 
 	Else
-		If $barrackPos[$icmbQuantBoostBarracks - 1][0] = "" Then ;  Boost individual barracks with "button Boost 10 gems"
+		If $barrackPos[$icmbQuantBoostBarracks - 1][0] = "" or $barrackPos[$icmbQuantBoostBarracks - 1][0] = "-1" Then ;  Boost individual barracks with "button Boost 10 gems"
 			LocateBarrack2()
 			SaveConfig()
 			If _Sleep($iDelayBoostBarracks2) Then Return
 		EndIf
-		For $i = 0 To ($icmbQuantBoostBarracks - 1)
+		Local $BoostedBarrack = 0
+		For $i = 0 To ($numBarracks - 1)
 			SetLog("Boosting Barracks nº: " & $i + 1, $COLOR_BLUE)
 			ClickP($aAway, 1, 0, "#0157")
 			If _Sleep($iDelayBoostBarracks1) Then ExitLoop
 			Click($barrackPos[$i][0], $barrackPos[$i][1], 1, 0, "#0158")
 			If _Sleep($iDelayBoostBarracks1) Then ExitLoop
-			_CaptureRegion()
-			Local $Boost = _PixelSearch(355, 608 + $bottomOffsetY, 362, 610 + $bottomOffsetY, Hex(0xA0A386, 6), 10) ;Check Boost
+
+			Local $offColors[3][3] = [[0x88c23e, 63, 8], [0x000000, 58, 8], [0xFFFE8E, 35, 13]] ; 2nd pixel Green gem, 3rd pixel black 5 number , 4th pixel yellow from watch
+			Local $Boost = _MultiPixelSearch(240, 559 + $bottomOffsetY, 670, 573 + $bottomOffsetY, 1, 1, Hex(0xF3F3F1, 6), $offColors, 20) ; first gray/white pixel of button
 			If IsArray($Boost) Then
-				If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1] & ", color = " & _GetPixelColor($Boost[0], $Boost[1]), $COLOR_PURPLE)
-				Click($Boost[0], $Boost[1], 1, 0, "#0159")
+				If $debugSetlog = 1 Then
+					Setlog("Button $Boost = " & $Boost[0] & ", " & $Boost[1], $COLOR_PURPLE) ;Debug
+					Setlog("Color #Butoon: " & _GetPixelColor($Boost[0], $Boost[1], True) & ", #Off 1: " & _GetPixelColor($Boost[0] + 68, $Boost[1] + 8, True) & ", #2: " & _GetPixelColor($Boost[0] + 58, $Boost[1] + 8, True) & ", #3: " & _GetPixelColor($Boost[0] + 35, $Boost[1] + 13, True), $COLOR_PURPLE)
+				EndIf
+
+				Click($Boost[0] + 25 , $Boost[1] + 25, 1, 0, "#0159")
 				If _Sleep($iDelayBoostBarracks1) Then Return
 				If _ColorCheck(_GetPixelColor(420, 375 + $midOffsetY, True), Hex(0xD0E978, 6), 20) Then ;Confirm Message
 					Click(420, 375 + $midOffsetY, 1, 0, "#0160")
@@ -102,21 +108,41 @@ Func BoostBarracks()
 					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then ;Not enough Gem
 						_GUICtrlComboBox_SetCurSel($cmbBoostBarracks, 0)
 						SetLog("Not enough gems", $COLOR_RED)
+						ExitLoop
 					EndIf
-					If Not $i = ($icmbQuantBoostBarracks - 1) Then
-						SetLog("Boost " & $i + 1 & " Barrack(s) completed. Remaining :" & ($icmbQuantBoostBarracks - 1) - $i & " Barracks to Boost.", $COLOR_GREEN)
+					If Not $BoostedBarrack = ($icmbQuantBoostBarracks - 1) Then
+						$BoostedBarrack += 1
+						SetLog("Boost " & $BoostedBarrack & " Barrack(s) completed. Remaining :" & ($icmbQuantBoostBarracks - $BoostedBarrack)& " Barracks to Boost.", $COLOR_GREEN)
+						If $BoostedBarrack >= $icmbQuantBoostBarracks then Exitloop
 					Else
 						_GUICtrlComboBox_SetCurSel($cmbBoostBarracks, ($icmbBoostBarracks - 1))
-						SetLog("Boost " & $i + 1 & " Barrack(s) completed. Remaining :" & ($icmbQuantBoostBarracks - 1) - $i & " Barracks to Boost.", $COLOR_GREEN)
+						$BoostedBarrack += 1
+						SetLog("Boost " & $BoostedBarrack & " Barrack(s) completed. Remaining :" & ($icmbQuantBoostBarracks - $BoostedBarrack) & " Barracks to Boost.", $COLOR_GREEN)
 						SetLog("Remaining :" & $icmbBoostBarracks - 1 & " times ", $COLOR_GREEN)
+						If $BoostedBarrack >= $icmbQuantBoostBarracks then Exitloop
 					EndIf
 				Else
-					SetLog("Barrack nº: " & $i + 1 & " is already Boosted.", $COLOR_RED)
+					SetLog("Barrack nº: " & $i + 1 & " the Confirm Message not open!", $COLOR_RED)
 				EndIf
 				If _Sleep($iDelayBoostBarracks3) Then ExitLoop
 				ClickP($aAway, 1, 0, "#0161")
 			Else
-				SetLog("Barrack nº: " & $i & " Boost Button not found.", $COLOR_RED)
+				Local $Boosted = _PixelSearch(360, 615 + $bottomOffsetY, 425, 625 + $bottomOffsetY, Hex(0xd5ff95, 6), 5) ;Check Boosted Button color of remain time!
+				If IsArray($Boosted) Then
+					SetLog("Barrack nº: " & $i + 1 & " is already Boosted.", $COLOR_RED)
+					$BoostedBarrack += 1
+					ClickP($aAway, 1, 0, "#0161")
+					If $BoostedBarrack = $icmbQuantBoostBarracks then Exitloop
+				Else
+					$Upgrading = _PixelSearch(529, 604 + $bottomOffsetY, 536, 609 + $bottomOffsetY, Hex(0x2e5c01, 6), 5) ;Check Gem Button to complete the upgrade
+					If IsArray($Upgrading) then
+						ClickP($aAway, 1, 0, "#0161")
+						SetLog("Barrack nº: " & $i + 1  & " Is Upgrading.", $COLOR_RED)
+					Else
+						ClickP($aAway, 1, 0, "#0161")
+						SetLog("Barrack nº: " & $i + 1  & " Boost Button not found.", $COLOR_RED)
+					EndIf
+				EndIf
 				If _Sleep($iDelayBoostBarracks1) Then Return
 			EndIf
 		Next

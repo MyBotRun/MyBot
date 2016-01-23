@@ -17,6 +17,11 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 
 	SetLog("Going to Attack...", $COLOR_BLUE)
 
+    ChkAttackCSVConfig()
+
+
+
+
 	If IsMainPage() Then ClickP($aAttackButton, 1, 0, "#0149") ; Click Attack Button
 	If _Sleep($iDelayPrepareSearch1) Then Return
 

@@ -142,9 +142,40 @@ Global $__VirtualBox_Path
 Global $__MEmu_Path
 Global $__VBoxManage_Path ; Path to executable VBoxManage.exe
 
-; Handle Command Line Parameters
+Global $bBotLaunchOption_Restart = False ; If true previous instance is closed when found by window title, see bot launch options below
+Global $aCmdLine[1] = [0] ; Clone of $CmdLine without options, please use instead of $CmdLine
+Global $WorkingDir = @WorkingDir ; Working Directory at bot launch
+
+; Mutex Handles
+Global $hMutex_BotTitle = 0
+Global $hMutex_Profile = 0
+Global $hMutex_MyBot = 0
+
+; Debug Output of launch parameter
+SetDebugLog("@AutoItExe: " & @AutoItExe)
+SetDebugLog("@ScriptFullPath: " & @ScriptFullPath)
+SetDebugLog("@WorkingDir: " & @WorkingDir)
+SetDebugLog("@AutoItPID: " & @AutoItPID)
+
+; Handle Command Line Launch Options and fill $aCmdLine
 If $CmdLine[0] > 0 Then
-	$sCurrProfile = $CmdLine[1]
+   Local $i
+   For $i = 1 To $CmdLine[0]
+	  Switch $CmdLine[$i]
+		 ; terminate bot if it exists (by window title!)
+		 Case "/restart", "/r", "-restart", "-r"
+			$bBotLaunchOption_Restart = True
+		 Case Else
+			$aCmdLine[0] += 1
+			ReDim $aCmdLine[$aCmdLine[0] + 1]
+			$aCmdLine[$aCmdLine[0]] = $CmdLine[$i]
+	  EndSwitch
+   Next
+EndIf
+
+; Handle Command Line Parameters
+If $aCmdLine[0] > 0 Then
+	$sCurrProfile = $aCmdLine[1]
 ElseIf FileExists($sProfilePath & "\profile.ini") Then
 	Global $sCurrProfile = IniRead($sProfilePath & "\profile.ini", "general", "defaultprofile", "01")
 Else
@@ -152,15 +183,15 @@ Else
 EndIf
 
 ; Change Android type and update variable
-If $CmdLine[0] > 1 Then
+If $aCmdLine[0] > 1 Then
 	Local $i
 	For $i = 0 To UBound($AndroidAppConfig) - 1
-		If StringCompare($AndroidAppConfig[$i][0], $CmdLine[2]) = 0 Then
+		If StringCompare($AndroidAppConfig[$i][0], $aCmdLine[2]) = 0 Then
 			$AndroidConfig = $i
 
-			If $AndroidAppConfig[$i][1] <> "" And $CmdLine[0] > 2 Then
+			If $AndroidAppConfig[$i][1] <> "" And $aCmdLine[0] > 2 Then
 				; Use Instance Name
-				UpdateAndroidConfig($CmdLine[3])
+				UpdateAndroidConfig($aCmdLine[3])
 			Else
 				UpdateAndroidConfig()
 			EndIf
@@ -197,7 +228,7 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnPushBullet, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack, _
 		$eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes, _
 		$eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnQueen, $eIcnKing, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenAbility, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost, _
-		$eIcnQueenBoost, $eIcnWardenBoost, $eIcnWardenUpgr
+		$eIcnQueenBoost, $eIcnWardenBoost, $eIcnWardenUpgr, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $aDonIcons[17] = [$eIcnDonBarbarian, $eIcnDonArcher, $eIcnDonGiant, $eIcnDonGoblin, $eIcnDonWallBreaker, $eIcnDonBalloon, $eIcnDonWizard, $eIcnDonHealer, $eIcnDonDragon, $eIcnDonPekka, $eIcnDonMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnDonGolem, $eIcnDonWitch, $eIcnDonLavaHound, $eIcnDonBlank]
@@ -307,8 +338,18 @@ $THText[2] = "8"
 $THText[3] = "9"
 $THText[4] = "10"
 $THText[5] = "11"
+
 Global $THImages0, $THImages1, $THImages2, $THImages3, $THImages4, $THImages5
 Global $THImagesStat0, $THImagesStat1, $THImagesStat2, $THImagesStat3, $THImagesStat4, $THImagesStat5
+
+Global $maxElixirLevel = 6
+Global $ElixirImages0, $ElixirImages1, $ElixirImages2, $ElixirImages3, $ElixirImages4, $ElixirImages5, $ElixirImages6
+Global $ElixirImagesStat0, $ElixirImagesStat1, $ElixirImagesStat2, $ElixirImagesStat3, $ElixirImagesStat4, $ElixirImagesStat5, $ElixirImagesStat6
+Global $ElixirImages0_75percent, $ElixirImages1_75percent, $ElixirImages2_75percent, $ElixirImages3_75percent, $ElixirImages4_75percent, $ElixirImages5_75percent, $ElixirImages6_75percent
+Global $ElixirImagesStat0_75percent, $ElixirImagesStat1_75percent, $ElixirImagesStat2_75percent, $ElixirImagesStat3_75percent, $ElixirImagesStat4_75percent, $ElixirImagesStat5_75percent, $ElixirImagesStat6_75percent
+Global $ElixirImages0_50percent, $ElixirImages1_50percent, $ElixirImages2_50percent, $ElixirImages3_50percent, $ElixirImages4_50percent, $ElixirImages5_50percent, $ElixirImages6_50percent
+Global $ElixirImagesStat0_50percent, $ElixirImagesStat1_50percent, $ElixirImagesStat2_50percent, $ElixirImagesStat3_50percent, $ElixirImagesStat4_50percent, $ElixirImagesStat5_50percent, $ElixirImagesStat6_50percent
+
 Global $SearchCount = 0 ;Number of searches
 
 Global $THaddtiles, $THside, $THi
@@ -913,8 +954,8 @@ Global $iDeadBase75percentStartLevel = 4
 
 
 ;attackCSV
-Global $scmbDBScriptName = "attack2"
-Global $scmbABScriptName = "attack2"
+Global $scmbDBScriptName = "Barch four fingers"
+Global $scmbABScriptName = "Barch four fingers"
 Global $ichkUseAttackDBCSV = 0
 Global $ichkUseAttackABCSV = 0
 Global $attackcsv_locate_mine = 0

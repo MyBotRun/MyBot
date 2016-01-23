@@ -50,7 +50,7 @@ Func OpenDroid4X($bRestart = False)
    If Not $RunState Then Return
 
    ; Wair for Activity Manager
-   If WaitForAmDroid4X($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
+   If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
 
    ; Wait for UI Control, then CoC can be launched
    ;While Not IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) And TimerDiff($hTimer) <= $AndroidLaunchWaitSec * 1000
@@ -208,30 +208,6 @@ Func InitDroid4X($bCheckOnly = False)
 
    Return True
 
-EndFunc
-
-Func WaitForAmDroid4X($WaitInSec, $hTimer = 0) ; doesn't work yet!!!
-   Local $cmdOutput, $connected_to, $am_ready, $process_killed, $hMyTimer
-	; Wait for Activity Manager
-	$hMyTimer = ($hTimer = 0 ? TimerInit() : $hTimer)
-	While True
-	  If Not $RunState Then Return
-	  ; Test ADB is connected
-	  $connected_to = IsAdbConnected()
-	  If Not $RunState Then Return
-	  $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am display-size reset", $process_killed)
-	  If $hTimer <> 0 Then _StatusUpdateTime($hTimer)
-	  $am_ready = StringLen($cmdOutput) < 4
-	  If $am_ready Then ExitLoop
-	  If TimerDiff($hMyTimer) > $WaitInSec * 1000 Then ; if no device available in 4 minutes, Android/PC has major issue so exit
-		 SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
-		 SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for activity manager", $COLOR_RED)
-		 SetError(1, @extended, False)
-		 Return True
-	  EndIf
-	  If _Sleep(1000) Then Return True
-    WEnd
-	Return False
 EndFunc
 
 Func RestartDroid4XCoC()

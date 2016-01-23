@@ -20,7 +20,7 @@
 #pragma compile(ProductName, My Bot)
 
 #pragma compile(ProductVersion, 5.1)
-#pragma compile(FileVersion, 5.1.1)
+#pragma compile(FileVersion, 5.1.2)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe)  ; Required
 
@@ -35,36 +35,49 @@ If Not FileExists(@ScriptDir & "\License.txt") Then
 	InetClose($license)
 EndIf
 
+;~ ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 #include "COCBot\MBR Global Variables.au3"
 
-$sBotVersion = "v5.1.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+$sBotVersion = "v5.1.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " & $DEFAULT_WIDTH & "x" & $DEFAULT_HEIGHT & " "
 
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
 #include "COCBot\functions\Main Screen\Android.au3"
 
-If $CmdLine[0] < 2 Then
+If $aCmdLine[0] < 2 Then
 	DetectRunningAndroid()
 	If Not $FoundRunningAndroid Then DetectInstalledAndroid()
 EndIf
 ; Update Bot title
 $sBotTitle = $sBotTitle & "(" & ($AndroidInstance <> "" ? $AndroidInstance : $Android) & ")"
 
+If $bBotLaunchOption_Restart = True Then
+   If CloseRunningBot($sBotTitle) = True Then
+	  ; wait for Mutexes to get disposed
+	  ;Sleep(1000) ; slow systems
+   EndIf
+EndIF
+
 Local $cmdLineHelp = "With the first command line parameter, specify the Profile(01-06). " & _
 					 "With the second, specify the name of the Emulator and with the third, an Android Instance (only for Droid4x & MEmu). " & _
 					 "Supported Emulators are BlueStacks, BlueStacks2, Droid4X and MEmu. " & _
 					 @CRLF&"Example: this command will start the bot with BlueStacks2 and profile 01: "&@CRLF &"MyBot.run.exe BlueStacks2 01"
-If _Singleton($sBotTitle, 1) = 0 Then
-	MsgBox(0, $sBotTitle, "Bot for " & $Android & ($AndroidInstance <> "" ? " (instance " & $AndroidInstance & ")" : "") & " is already running." & @CRLF & @CRLF & $cmdLineHelp)
+
+$hMutex_BotTitle = _Singleton($sBotTitle, 1)
+If $hMutex_BotTitle = 0 Then
+	MsgBox(0, $sBotTitle, "My Bot for " & $Android & ($AndroidInstance <> "" ? " (instance " & $AndroidInstance & ")" : "") & " is already running." & @CRLF & @CRLF & $cmdLineHelp)
 	Exit
 EndIf
 
-If _Singleton(StringReplace($sProfilePath & "\" & $sCurrProfile, "\", "-"), 1) = 0 Then
-	MsgBox(0, $sBotTitle, "Bot with Profile " & $sCurrProfile & " is already running in " & $sProfilePath & "\" & $sCurrProfile & "." & @CRLF & @CRLF & $cmdLineHelp)
+$hMutex_Profile = _Singleton(StringReplace($sProfilePath & "\" & $sCurrProfile, "\", "-"), 1)
+If $hMutex_Profile = 0 Then
+   _WinAPI_CloseHandle($hMutex_BotTitle)
+	MsgBox(0, $sBotTitle, "My Bot with Profile " & $sCurrProfile & " is already running in " & $sProfilePath & "\" & $sCurrProfile & "." & @CRLF & @CRLF & $cmdLineHelp)
 	Exit
 EndIf
 
-$OnlyInstance = _Singleton("MyBot.run", 1) <> 0 ; And False
+$hMutex_MyBot = _Singleton("MyBot.run", 1)
+$OnlyInstance = $hMutex_MyBot <> 0 ; And False
 SetDebugLog("My Bot is " & ($OnlyInstance ? "" : "not ") & "the only running instance")
 
 ;multilanguage
@@ -115,13 +128,6 @@ AdlibRegister("PushBulletDeleteOldPushes", $PBDeleteOldPushesInterval)
 
 CheckDisplay() ; verify display size and DPI (Dots Per Inch) setting
 
-
-readCollectorConfig();initialize collector fullness variables before loading images
-
-LoadTHImage() ; Load TH images
-LoadElixirImage() ; Load Elixir images
-LoadElixirImage75Percent(); Load Elixir images full at 75%
-LoadElixirImage50Percent(); Load Elixir images full at 50%
 CheckVersion() ; check latest version on mybot.run site
 
 ;AutoStart Bot if request
