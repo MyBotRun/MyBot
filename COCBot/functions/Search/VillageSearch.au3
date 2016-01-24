@@ -33,7 +33,8 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		Next
 	EndIf
 
-	_WinAPI_EmptyWorkingSet(WinGetProcess($Title))
+	_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce Working Set of Android Process
+	_WinAPI_EmptyWorkingSet(@AutoItPID) ; Reduce Working Set of Bot
 
 	If _Sleep($iDelayVillageSearch1) Then Return
 	$Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check
@@ -344,14 +345,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		If $searchTH = "-" Then ; retry with autoit search after $iDelayVillageSearch5 seconds
 			If _Sleep($iDelayVillageSearch5) Then Return
 			SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
-			$searchTH = checkTownhallADV2()
-		EndIf
-
-
-		If $searchTH = "-" Then ; retry with c# search, matching could not have been caused by heroes that partially hid the townhall
-			If _Sleep($iDelayVillageSearch4) Then Return
-			If $debugImageSave = 1 Then DebugImageSave("VillageSearch_NoTHFound2try_", False)
-			THSearch()
+			$searchTH = THSearch()
 		EndIf
 
 		If SearchTownHallLoc() = False And $searchTH <> "-" Then

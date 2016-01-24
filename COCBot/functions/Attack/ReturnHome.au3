@@ -73,8 +73,10 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			   If IsAttackPage() Then
 					ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
 					If _Sleep($iDelayReturnHome2) Then Return ; short wait for confirm button to appear
-					ClickOkay("SurrenderOkay")  ; Click Okay to Confirm surrender
-					ExitLoop
+					If IsEndBattlePage(False) Then
+						ClickOkay("SurrenderOkay")  ; Click Okay to Confirm surrender
+						ExitLoop
+					EndIf
 				EndIf
 		   Else
 			   $i += 1

@@ -145,6 +145,12 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 EndFunc   ;==>GUIControl
 
 Func BotClose()
+   SetLog("Closing " & $sBotTitle & " ...")
+   SaveConfig()
+   ; Close Mutexes
+   If $hMutex_BotTitle <> 0 Then _WinAPI_CloseHandle($hMutex_BotTitle)
+   If $hMutex_Profile <> 0 Then _WinAPI_CloseHandle($hMutex_Profile)
+   If $hMutex_MyBot <> 0 Then _WinAPI_CloseHandle($hMutex_MyBot)
    ; Clean up resources
    _GDIPlus_ImageDispose($hBitmap)
    _WinAPI_DeleteObject($hHBitmap)
@@ -152,7 +158,6 @@ Func BotClose()
    MBRFunc(False) ; close MBRFunctions dll
    _GUICtrlRichEdit_Destroy($txtLog)
    _GUICtrlRichEdit_Destroy($txtAtkLog)
-   SaveConfig()
    Exit
 EndFunc
 

@@ -6,21 +6,20 @@
 
 The Latest Version
   ------------------
-- Details of the latest version can be found on the MyBot forum under https://mybot.run/forums/thread-6924.html
+- Details of the latest version can be found on the MyBot forum under https://mybot.run/forums/index.php?/forum/4-official-releases/
 
 Documentation
   -------------
-- How to Start Bot - https://mybot.run/forums/showthread.php?tid=4
-- How to Report Bug/Help - https://mybot.run/forums/showthread.php?tid=211
+- How to Start Bot - https://mybot.run/forums/index.php?/topic/4978-guide-how-to-use-the-bot/
+- How to Report Bug/Help - https://mybot.run/forums/index.php?/forum/20-bug-reporting/
 
 Installation
   ------------
 Essential software :
-- Windows Vista/7/8/8.1
-- {Note - MyBot does not support Windows 10 at this time!} https://mybot.run/forums/thread-7296.html
+- Windows Vista/7/8/8.1/10
 - Microsoft Visual C++ 2010 Redistributable Package (x86)
 - Microsoft .NET Framework 4.5
-- BlueStacks App Player 0.9.24.5311 Superuser BSEasy ROOT by @swvr (Recommended)
+- BlueStacks 0.9.x - 0.10.x OR Bluestacks 2 OR Droid4x 0.8.6 OR MEmu 2.2.1
 - The latest drivers for your graphics device
 - MyBot last version avaiable
 - DON´T USE THE OLD CONFIG FILES
@@ -41,4 +40,4 @@ Mybot uses non-GPL 3rd party libraries for extension (#SystemLibraryException):
 
 Contacts
   --------
-- https://mybot.run/forums/contact.php
+- https://mybot.run/forums/index.php?/contact/

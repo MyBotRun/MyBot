@@ -291,6 +291,31 @@ Func IsAdbTCP()
    Return StringInStr($AndroidAdbDevice, ":") > 0
 EndFunc
 
+Func WaitForAndroidBootCompleted($WaitInSec = 120, $hTimer = 0) ; doesn't work yet!!!
+   If Not $RunState Then Return True
+   Local $cmdOutput, $connected_to, $booted, $process_killed, $hMyTimer
+	; Wait for boot completed
+	$hMyTimer = ($hTimer = 0 ? TimerInit() : $hTimer)
+	While True
+	  If Not $RunState Then Return
+	  $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell getprop sys.boot_completed", $process_killed)
+	  ; Test ADB is connected
+	  $connected_to = IsAdbConnected($cmdOutput)
+	  If Not $connected_to Then ConnectAndroidAdb()
+	  If Not $RunState Then Return True
+	  $booted = StringLeft($cmdOutput, 1) = "1"
+	  If $booted Then ExitLoop
+	  If $hTimer <> 0 Then _StatusUpdateTime($hTimer)
+	  If TimerDiff($hMyTimer) > $WaitInSec * 1000 Then ; if no device available in 4 minutes, Android/PC has major issue so exit
+		 SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
+		 SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for boot completed", $COLOR_RED)
+		 SetError(1, @extended, False)
+		 Return True
+	  EndIf
+    WEnd
+	Return False
+EndFunc
+
 Func IsAdbConnected($cmdOutput = Default)
    If Not $RunState Then Return True
    Local $process_killed, $connected_to

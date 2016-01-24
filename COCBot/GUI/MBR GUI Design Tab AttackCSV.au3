@@ -29,28 +29,38 @@ $tabAttackCSV = GUICtrlCreateTabItem(GetTranslated(14,1, "Attack Scripted"))
 			GUICtrlSetTip(-1, $txtTip)
 
 		$chkUseAttackDBCSV = GUICtrlCreateCheckbox(GetTranslated(14,3, "Use Scripted attack for Dead Bases"), $x, $y, -1, -1)
-			$txtTip = GetTranslated(14,4, "Use scripted attack for dead bases, this disable standard attack")
+			$txtTip = GetTranslated(14,4, "Use scripted attack for dead bases, this disables standard attack")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "chkUseAttackDBCSV")
 		$y +=25
 			$cmbDBScriptName=GUICtrlCreateCombo("", $x-10 , $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			$txtTip = GetTranslated(14,5, "Choose the script; You can edit/add new script placed in folder 'Attack-Script'")
+			$txtTip = GetTranslated(14,5, "Choose the script; You can edit/add new scripts located in folder: 'CSV/Attack'")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "cmbDBScriptName")
 
-			GUICtrlCreateIcon($pIconLib, $eIcnGreenLight, $x +182, $y +2, 16, 16)
-			$txtTip =  GetTranslated(14,6, "Update combo box Script Files")
+			$picreloadDBScripts = GUICtrlCreateIcon($pIconLib, $eIcnReload, $x + 182, $y + 2, 16, 16)
+			$txtTip =  GetTranslated(14,6, "Reload Script Files")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "UpdateComboScriptName")
 		$y +=25
 			$lblNotesDBScript =  GUICtrlCreateLabel("", $x, $y + 5, 180, 118)
 			PopulateDBComboScriptsFiles() ; populate
-			GUICtrlCreateIcon($pIconLib, $eIcnGreenLight, $x +182, $y +2, 16, 16)
-			$txtTip =  GetTranslated(14,15, "Show/Edit Attack Script Commands")
+			$picreloadDBScripts = GUICtrlCreateIcon($pIconLib, $eIcnEdit, $x + 182, $y + 2, 16, 16)
+			$txtTip =  GetTranslated(14,15, "Show/Edit current Attack Script")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "EditDBScript")
+		$y +=25
+			$picnewDBScripts = GUICtrlCreateIcon($pIconLib, $eIcnAddcvs, $x + 182, $y + 2, 16, 16)
+			$txtTip =  GetTranslated(14,16, "Create a new Attack Script")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "NewDBScript")
+		$y +=25
+			$picduplicateDBScripts = GUICtrlCreateIcon($pIconLib, $eIcnCopy, $x + 182, $y + 2, 16, 16)
+			$txtTip =  GetTranslated(14,19, "Copy current Attack Script to a new name")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "DuplicateDBScript")
 
 	Local $x = 30, $y = 330
 		$lblUseInBattleDBCSV = GUICtrlCreateLabel(GetTranslated(14,7, "Use in battle") & ":", $x, $y + 5, -1, -1)
@@ -137,7 +147,7 @@ $tabAttackCSV = GUICtrlCreateTabItem(GetTranslated(14,1, "Attack Scripted"))
 
 
 		$chkUseAttackABCSV = GUICtrlCreateCheckbox(GetTranslated(14,13, "Use Scripted attack for Live Bases"), $x, $y, -1, -1)
-			$txtTip = GetTranslated(14,14, "Use scripted attack for live bases, this disable standard attack")
+			$txtTip = GetTranslated(14,14, "Use scripted attack for live bases, this disables standard attack")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "chkUseAttackABCSV")
@@ -148,7 +158,7 @@ $tabAttackCSV = GUICtrlCreateTabItem(GetTranslated(14,1, "Attack Scripted"))
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "cmbABScriptName")
 
-			GUICtrlCreateIcon($pIconLib, $eIcnGreenLight, $x +182, $y +2, 16, 16)
+			$picreloadABScripts = GUICtrlCreateIcon($pIconLib, $eIcnReload, $x + 182, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(14,6, -1)
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "UpdateComboScriptName")
@@ -156,10 +166,20 @@ $tabAttackCSV = GUICtrlCreateTabItem(GetTranslated(14,1, "Attack Scripted"))
 			$lblNotesABScript =  GUICtrlCreateLabel("", $x, $y + 5, 180, 118)
 			PopulateABComboScriptsFiles() ; populate
 			AttackCSVAssignDefaultScriptName();
-			GUICtrlCreateIcon($pIconLib, $eIcnGreenLight, $x +182, $y +2, 16, 16)
+			$picreloadABScripts = GUICtrlCreateIcon($pIconLib, $eIcnEdit, $x + 182, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(14,15, -1)
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "EditABScript")
+		$y +=25
+			$picnewABScripts = GUICtrlCreateIcon($pIconLib, $eIcnAddcvs, $x + 182, $y + 2, 16, 16)
+			$txtTip =  GetTranslated(14,16, -1)
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "NewABScript")
+		$y +=25
+			$picduplicateABScripts = GUICtrlCreateIcon($pIconLib, $eIcnCopy, $x + 182, $y + 2, 16, 16)
+			$txtTip =  GetTranslated(14,19,-1)
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "DuplicateABScript")
 
 
 
@@ -262,7 +282,7 @@ $tabAttackCSV = GUICtrlCreateTabItem(GetTranslated(14,1, "Attack Scripted"))
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 
-		$txtManAbilitiesCSV = GUICtrlCreateInput("9", $x + 80, $y+1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$txtManAbilitiesCSV = GUICtrlCreateInput("9", $x + 80, $y+3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$txtTip = GetTranslated(14,34, "Set the time in seconds for Timed Activation of Hero Abilities.")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 2)
@@ -300,7 +320,7 @@ $tabAttackCSV = GUICtrlCreateTabItem(GetTranslated(14,1, "Attack Scripted"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "cmbBalanceDRCSV")
 		$lblDRRatioCSV = GUICtrlCreateLabel("/", $x + 76, $y + 5, -1, -1)
-			$txtTip = GetTranslated(14,26, "Wanted donated / received ratio") & @CRLF & GetTranslated(14,52, "1/1 means donated = received, 1/2 means donated = half the received etc.")
+			$txtTip = GetTranslated(14,26, "Wanted donated / received ratio") & @CRLF & GetTranslated(14,54, "1/1 means donated = received, 1/2 means donated = half the received etc.")
 			GUICtrlSetTip(-1, $txtTip)
 		$cmbCCReceivedCSV = GUICtrlCreateCombo("", $x +84, $y, 30, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetTip(-1, GetTranslated(14,27, "Received ratio"))
