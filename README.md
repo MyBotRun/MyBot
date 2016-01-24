@@ -41,4 +41,4 @@ Mybot uses non-GPL 3rd party libraries for extension (#SystemLibraryException):
 
 Contacts
   --------
-- https://mybot.run/forums/contact.php
+- https://mybot.run/forums/index.php?/contact/
