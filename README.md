@@ -6,7 +6,7 @@
 
 The Latest Version
   ------------------
-- Details of the latest version can be found on the MyBot forum under https://mybot.run/forums/thread-6924.html
+- Details of the latest version can be found on the MyBot forum under https://mybot.run/forums/index.php?/forum/4-official-releases/
 
 Documentation
   -------------
