@@ -185,22 +185,22 @@ Func DonateCC($Check = False)
 						Next
 					EndIf
 
+					If $iChkDonateLavaHounds = 1 And $bSkipDonTroops = False And CheckDonateTroop($eLava, $aDonLavaHounds, $aBlkLavaHounds, $aBlackList, $ClanString) Then DonateTroopType($eLava)
+					If $iChkDonateGolems = 1 And $bSkipDonTroops = False And CheckDonateTroop($eGole, $aDonGolems, $aBlkGolems, $aBlackList, $ClanString) Then DonateTroopType($eGole)
+					If $iChkDonatePekkas = 1 And $bSkipDonTroops = False And CheckDonateTroop($ePekk, $aDonPekkas, $aBlkPekkas, $aBlackList, $ClanString) Then DonateTroopType($ePekk)
+					If $iChkDonateDragons = 1 And $bSkipDonTroops = False And CheckDonateTroop($eDrag, $aDonDragons, $aBlkDragons, $aBlackList, $ClanString) Then DonateTroopType($eDrag)
+					If $iChkDonateWitches = 1 And $bSkipDonTroops = False And CheckDonateTroop($eWitc, $aDonWitches, $aBlkWitches, $aBlackList, $ClanString) Then DonateTroopType($eWitc)
+					If $iChkDonateHealers = 1 And $bSkipDonTroops = False And CheckDonateTroop($eHeal, $aDonHealers, $aBlkHealers, $aBlackList, $ClanString) Then DonateTroopType($eHeal)
+					If $iChkDonateValkyries = 1 And $bSkipDonTroops = False And CheckDonateTroop($eValk, $aDonValkyries, $aBlkValkyries, $aBlackList, $ClanString) Then DonateTroopType($eValk)
+					If $iChkDonateGiants = 1 And $bSkipDonTroops = False And CheckDonateTroop($eGiant, $aDonGiants, $aBlkGiants, $aBlackList, $ClanString) Then DonateTroopType($eGiant)
+					If $iChkDonateBalloons = 1 And $bSkipDonTroops = False And CheckDonateTroop($eBall, $aDonBalloons, $aBlkBalloons, $aBlackList, $ClanString) Then DonateTroopType($eBall)
+					If $iChkDonateHogRiders = 1 And $bSkipDonTroops = False And CheckDonateTroop($eHogs, $aDonHogRiders, $aBlkHogRiders, $aBlackList, $ClanString) Then DonateTroopType($eHogs)
+					If $iChkDonateWizards = 1 And $bSkipDonTroops = False And CheckDonateTroop($eWiza, $aDonWizards, $aBlkWizards, $aBlackList, $ClanString) Then DonateTroopType($eWiza)
+					If $iChkDonateWallBreakers = 1 And $bSkipDonTroops = False And CheckDonateTroop($eWall, $aDonWallBreakers, $aBlkWallBreakers, $aBlackList, $ClanString) Then DonateTroopType($eWall)
+					If $iChkDonateMinions = 1 And $bSkipDonTroops = False And CheckDonateTroop($eMini, $aDonMinions, $aBlkMinions, $aBlackList, $ClanString) Then DonateTroopType($eMini)
 					If $iChkDonateBarbarians = 1 And $bSkipDonTroops = False And CheckDonateTroop($eBarb, $aDonBarbarians, $aBlkBarbarians, $aBlackList, $ClanString) Then DonateTroopType($eBarb)
 					If $iChkDonateArchers = 1 And $bSkipDonTroops = False And CheckDonateTroop($eArch, $aDonArchers, $aBlkArchers, $aBlackList, $ClanString) Then DonateTroopType($eArch)
-					If $iChkDonateGiants = 1 And $bSkipDonTroops = False And CheckDonateTroop($eGiant, $aDonGiants, $aBlkGiants, $aBlackList, $ClanString) Then DonateTroopType($eGiant)
 					If $iChkDonateGoblins = 1 And $bSkipDonTroops = False And CheckDonateTroop($eGobl, $aDonGoblins, $aBlkGoblins, $aBlackList, $ClanString) Then DonateTroopType($eGobl)
-					If $iChkDonateWallBreakers = 1 And $bSkipDonTroops = False And CheckDonateTroop($eWall, $aDonWallBreakers, $aBlkWallBreakers, $aBlackList, $ClanString) Then DonateTroopType($eWall)
-					If $iChkDonateBalloons = 1 And $bSkipDonTroops = False And CheckDonateTroop($eBall, $aDonBalloons, $aBlkBalloons, $aBlackList, $ClanString) Then DonateTroopType($eBall)
-					If $iChkDonateWizards = 1 And $bSkipDonTroops = False And CheckDonateTroop($eWiza, $aDonWizards, $aBlkWizards, $aBlackList, $ClanString) Then DonateTroopType($eWiza)
-					If $iChkDonateHealers = 1 And $bSkipDonTroops = False And CheckDonateTroop($eHeal, $aDonHealers, $aBlkHealers, $aBlackList, $ClanString) Then DonateTroopType($eHeal)
-					If $iChkDonateDragons = 1 And $bSkipDonTroops = False And CheckDonateTroop($eDrag, $aDonDragons, $aBlkDragons, $aBlackList, $ClanString) Then DonateTroopType($eDrag)
-					If $iChkDonatePekkas = 1 And $bSkipDonTroops = False And CheckDonateTroop($ePekk, $aDonPekkas, $aBlkPekkas, $aBlackList, $ClanString) Then DonateTroopType($ePekk)
-					If $iChkDonateMinions = 1 And $bSkipDonTroops = False And CheckDonateTroop($eMini, $aDonMinions, $aBlkMinions, $aBlackList, $ClanString) Then DonateTroopType($eMini)
-					If $iChkDonateHogRiders = 1 And $bSkipDonTroops = False And CheckDonateTroop($eHogs, $aDonHogRiders, $aBlkHogRiders, $aBlackList, $ClanString) Then DonateTroopType($eHogs)
-					If $iChkDonateValkyries = 1 And $bSkipDonTroops = False And CheckDonateTroop($eValk, $aDonValkyries, $aBlkValkyries, $aBlackList, $ClanString) Then DonateTroopType($eValk)
-					If $iChkDonateGolems = 1 And $bSkipDonTroops = False And CheckDonateTroop($eGole, $aDonGolems, $aBlkGolems, $aBlackList, $ClanString) Then DonateTroopType($eGole)
-					If $iChkDonateWitches = 1 And $bSkipDonTroops = False And CheckDonateTroop($eWitc, $aDonWitches, $aBlkWitches, $aBlackList, $ClanString) Then DonateTroopType($eWitc)
-					If $iChkDonateLavaHounds = 1 And $bSkipDonTroops = False And CheckDonateTroop($eLava, $aDonLavaHounds, $aBlkLavaHounds, $aBlackList, $ClanString) Then DonateTroopType($eLava)
 
 				EndIf
 
@@ -240,38 +240,38 @@ Func DonateCC($Check = False)
 								EndIf
 								DonateTroopType($varDonateCustom[$i][0], $varDonateCustom[$i][1], $iChkDonateAllCustom, $bDonateAllTroop) ;;; Donate Custom Troop using DonateTroopType2
 							Next
+						Case $iChkDonateAllLavaHounds = 1
+							DonateTroopType($eLava, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllGolems = 1
+							DonateTroopType($eGole, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllPekkas = 1
+							DonateTroopType($ePekk, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllDragons = 1
+							DonateTroopType($eDrag, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllWitches = 1
+							DonateTroopType($eWitc, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllHealers = 1
+							DonateTroopType($eHeal, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllValkyries = 1
+							DonateTroopType($eValk, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllGiants = 1
+							DonateTroopType($eGiant, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllBalloons = 1
+							DonateTroopType($eBall, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllHogRiders = 1
+							DonateTroopType($eHogs, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllWizards = 1
+							DonateTroopType($eWiza, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllWallBreakers = 1
+							DonateTroopType($eWall, 0, False, $bDonateAllTroop)
+						Case $iChkDonateAllMinions = 1
+							DonateTroopType($eMini, 0, False, $bDonateAllTroop)
 						Case $iChkDonateAllBarbarians = 1
 							DonateTroopType($eBarb, 0, False, $bDonateAllTroop)
 						Case $iChkDonateAllArchers = 1
 							DonateTroopType($eArch, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllGiants = 1
-							DonateTroopType($eGiant, 0, False, $bDonateAllTroop)
 						Case $iChkDonateAllGoblins = 1
 							DonateTroopType($eGobl, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllWallBreakers = 1
-							DonateTroopType($eWall, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllBalloons = 1
-							DonateTroopType($eBall, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllWizards = 1
-							DonateTroopType($eWiza, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllHealers = 1
-							DonateTroopType($eHeal, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllDragons = 1
-							DonateTroopType($eDrag, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllPekkas = 1
-							DonateTroopType($ePekk, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllMinions = 1
-							DonateTroopType($eMini, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllHogRiders = 1
-							DonateTroopType($eHogs, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllValkyries = 1
-							DonateTroopType($eValk, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllGolems = 1
-							DonateTroopType($eGole, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllWitches = 1
-							DonateTroopType($eWitc, 0, False, $bDonateAllTroop)
-						Case $iChkDonateAllLavaHounds = 1
-							DonateTroopType($eLava, 0, False, $bDonateAllTroop)
 					EndSelect
 				EndIf
 
