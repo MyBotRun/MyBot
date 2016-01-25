@@ -17,7 +17,6 @@ Global $aTownHall[4] = [-1, -1, -1, -1] ; [LocX, LocY, BldgLvl, Quantity]
 
 Func THSearch($bReTest = False)
 
-	SetLog("3rd attempt to detect the TownHall!", $COLOR_RED)
 	If $debugsetlog = 1 Then SetLog("TH search Start", $COLOR_PURPLE)
 	Local $hTimer = TimerInit()
 
@@ -80,10 +79,10 @@ Func THSearch($bReTest = False)
 			$aTownHallLocal[2] = Number($level)
 			$THx = $aTownHallLocal[0]
 			$THy = $aTownHallLocal[1]
-			$ImageInfo = "C# DLL"
-			;If $debugImageSave = 1 Then CaptureTHwithInfo($THx, $THy, $ImageInfo)
+			$ImageInfo = String("C# DLL_" & $aTownHallLocal[2])
+			If $debugImageSave = 1 Then CaptureTHwithInfo($THx, $THy, $ImageInfo)
 			If $debugsetlog = 1 Then SetLog("TownHall: [" & $aTownHallLocal[0] & "," & $aTownHallLocal[1] & "], Level: " & $aTownHallLocal[2], $COLOR_BLUE)
-			Return $THText[$aTownHallLocal[2] < 6 ? 0 : $aTownHallLocal[2] - 6]
+			Return $THText[($aTownHallLocal[2] < 6 ? 0 : $aTownHallLocal[2] - 6)]
 		Else
 			If $debugsetlog = 1 Then SetLog("TownHall: [" & $pixel[0] & "," & $pixel[1] & "], Level: " & $level, $COLOR_PURPLE)
 			If $debugsetlog = 1 Then SetLog("Found TownHall with Invalid Location?", $COLOR_RED)

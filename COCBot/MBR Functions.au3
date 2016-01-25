@@ -48,6 +48,7 @@
 #include "functions\Attack\AttackCSV\ParseAttackCSV_Read_SIDE_variables.au3"
 #include "functions\Attack\AttackCSV\Slice8.au3"
 #include "functions\Attack\AttackCSV\CleanRedArea.au3"
+#include "functions\Attack\AttackCSV\ChkAttackCSVConfig.au3"
 
 #include "functions\Attack\RedArea\_FindPixelCloser.au3"
 #include "functions\Attack\RedArea\_GetOffsetTroopFurther.au3"
@@ -156,6 +157,7 @@
 #include "functions\Other\DeleteFiles.au3"
 #include "functions\Other\UpdateStats.au3"
 #include "functions\Other\CheckVersion.au3"
+#include "functions\Other\CloseRunningBot.au3"
 
 #include "functions\Other\ComError.au3"
 #include "functions\Other\IsPage.au3"

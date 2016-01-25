@@ -123,7 +123,7 @@ Func GUI2()
 
 	$lblTolerance = GUICtrlCreateLabel("-15" & _PadStringCenter(GetTranslated(15,11, "Tolerance"), 80, " ") & "15", 5, $y - 15)
 	$sldCollectorTolerance = GUICtrlCreateSlider(5, $y, 290, 20, BITOR($TBS_TOOLTIPS, $TBS_AUTOTICKS)) ;,
-	$txtTip = GetTranslated(15,12, "Use this slider to adjust the tolerance of ALL images.") &@CRLF& GetTranslated(15,13, "If you want to adjust individual images, you must edit the files.")
+	$txtTip = GetTranslated(15,12, "Use this slider to adjust the tolerance of ALL images.") &@CRLF& GetTranslated(15,13, "If you want to adjust individual images, you must edit the files.")&@CRLF&GetTranslated(15,31,"WARNING: Do not change this setting unless you know what you are doing. Set it to 0 if you're not sure.")
 		GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 		GUICtrlSetTip(-1, $txtTip)
 		_GUICtrlSlider_SetTipSide(-1, $TBTS_BOTTOM)

@@ -1606,7 +1606,13 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 
 	;attackCSV
 	PopulateDBComboScriptsFiles() ; recreate combo box values
-	_GUICtrlComboBox_SetCurSel($cmbDBScriptName, _GUICtrlComboBox_FindStringExact($cmbDBScriptName, $scmbDBScriptName))
+	Local $tempindex = _GUICtrlComboBox_FindStringExact($cmbDBScriptName, $scmbDBScriptName)
+	If $tempindex=-1 Then
+	   $tempindex=0
+	   Setlog("Previous saved Scripted Attack not found (deleted, renamed?)",$color_red)
+	   Setlog("Automatically setted a default script, please check your config",$color_red)
+   EndIf
+	_GUICtrlComboBox_SetCurSel($cmbDBScriptName, $tempindex)
 	cmbDBScriptName()
 	If $ichkUseAttackDBCSV = 1 Then
 		GUICtrlSetState($chkUseAttackDBCSV, $GUI_CHECKED)
@@ -1616,7 +1622,13 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	chkUseAttackDBCSV()
 
 	PopulateABComboScriptsFiles() ; recreate combo box values
-	_GUICtrlComboBox_SetCurSel($cmbABScriptName, _GUICtrlComboBox_FindStringExact($cmbABScriptName, $scmbABScriptName))
+	$tempindex = _GUICtrlComboBox_FindStringExact($cmbABScriptName, $scmbABScriptName)
+	If $tempindex=-1 Then
+	   $tempindex=0
+	   Setlog("Previous saved Scripted Attack not found (deleted, renamed?)",$color_red)
+	   Setlog("Automatically setted a default script, please check your config.",$color_red)
+   EndIf
+	_GUICtrlComboBox_SetCurSel($cmbABScriptName, $tempindex)
 	cmbABScriptName()
 	If $ichkUseAttackABCSV = 1 Then
 		GUICtrlSetState($chkUseAttackABCSV, $GUI_CHECKED)

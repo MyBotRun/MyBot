@@ -1,4 +1,20 @@
-﻿* **V5.1.1**
+﻿* **V5.1.2**
+ * Fix pushbullet bot restart
+ * Fix Droid4X launching CoC too early
+ * Improve TH Detection
+ * Fix Elixir Images 90% overwritten Load 75% and 50%
+ * Prevent messing up with Tolerances in Dead bases Images
+ * Fix Stats file .ini
+ * Fix Load correct Images for Snow Theme and regular Theme
+ * Improve CC detection on slot attack
+ * Change Donate CC log
+ * Fix the Variable error on TH5 detection
+ * Improve the Upgrade Walls level 6 and 9
+ * Fix mistake in tool tip in stats tab
+ * Fix Barracks Boost when exist one Upgrading barrack
+ * Improve bot memory working set consumption
+
+* **V5.1.1**
  * Fixed a log bug where the logfiles were not properly closed and the attacklog contained parts of the normal log.
  * Fixed a subscript error that occurs when the bot starts and the village has no trained troops in army camps.
 

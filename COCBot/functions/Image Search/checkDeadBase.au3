@@ -14,15 +14,6 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Global $maxElixirLevel = 7
-Global $ElixirImages0, $ElixirImages1, $ElixirImages2, $ElixirImages3, $ElixirImages4, $ElixirImages5, $ElixirImages6
-Global $ElixirImagesStat0, $ElixirImagesStat1, $ElixirImagesStat2, $ElixirImagesStat3, $ElixirImagesStat4, $ElixirImagesStat5, $ElixirImagesStat6
-
-Global $ElixirImages0_75percent, $ElixirImages1_75percent, $ElixirImages2_75percent, $ElixirImages3_75percent, $ElixirImages4_75percent, $ElixirImages5_75percent, $ElixirImages6_75percent
-Global $ElixirImagesStat0_75percent, $ElixirImagesStat1_75percent, $ElixirImagesStat2_75percent, $ElixirImagesStat3_75percent, $ElixirImagesStat4_75percent, $ElixirImagesStat5_75percent, $ElixirImagesStat6_75percent
-
-Global $ElixirImages0_50percent, $ElixirImages1_50percent, $ElixirImages2_50percent, $ElixirImages3_50percent, $ElixirImages4_50percent, $ElixirImages5_50percent, $ElixirImages6_50percent
-Global $ElixirImagesStat0_50percent, $ElixirImagesStat1_50percent, $ElixirImagesStat2_50percent, $ElixirImagesStat3_50percent, $ElixirImagesStat4_50percent, $ElixirImagesStat5_50percent, $ElixirImagesStat6_50percent
 Func LoadElixirImage()
 
 	Local $x
@@ -49,14 +40,14 @@ Func LoadElixirImage()
 		;assign value at ElixirImages0... ElixirImages6 if $x it's not empty
 		If UBound($x) Then Assign("ElixirImages" & $t, $x)
 		;code to debug in console if need
-;~ 		For $i = 0 To UBound(Eval("ElixirImages" & $t)) - 1
-;~ 			ConsoleWrite("$ElixirImages" & $t & "[" & $i & "]:" & Execute("$ElixirImages" & $t & "[" & $i & "]") & @CRLF)
-;~ 		Next
+		For $i = 0 To UBound(Eval("ElixirImages" & $t)) - 1
+			ConsoleWrite("$ElixirImages" & $t & "[" & $i & "]:" & Execute("$ElixirImages" & $t & "[" & $i & "]") & @CRLF)
+		Next
 
 		;make stats array and put values = 0
-		For $i = 0 To UBound($x) - 1
-			$x[$i] = "0"
-		Next
+;~ 		For $i = 0 To UBound($x) - 1
+;~ 			$x[$i] = "0"
+;~ 		Next
 		If UBound($x) Then Assign("ElixirImagesStat" & $t, $x)
 
 		;read from ini file stats values
@@ -67,6 +58,8 @@ Func LoadElixirImage()
 		Next
 	Next
 EndFunc   ;==>LoadElixirImage
+
+
 Func LoadElixirImage75Percent()
 
 	Local $x
@@ -81,7 +74,7 @@ Func LoadElixirImage75Percent()
 	EndIf
 	For $t = 0 To $maxElixirLevel
 		If Eval("chkLvl" & $t + 6 & "Enabled") <> "1" Or Eval("cmbLvl" & $t + 6 & "Fill") > 1 Then ;If Configure Collectors checkbox not checked OR value of combobox is larger then 1(60%full)
-			Assign("ElixirImages" & $t, StringSplit("", ""))
+			Assign("ElixirImages" & $t & "_75percent", StringSplit("", ""))
 			ContinueLoop
 		EndIf
 		;assign ElixirImages0... ElixirImages6  an array empty with Elixirimagesx[0]=0
@@ -92,14 +85,14 @@ Func LoadElixirImage75Percent()
 		;assign value at ElixirImages0... ElixirImages6 if $x it's not empty
 		If UBound($x) Then Assign("ElixirImages" & $t & "_75percent", $x)
 		;code to debug in console if need
-;~ 		For $i = 0 To UBound(Eval("ElixirImages" & $t & "_75percent")) - 1
-;~ 			ConsoleWrite("$ElixirImages" & $t & "_75percent" & "[" & $i & "]:" & Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]") & @CRLF)
-;~ 		Next
+		For $i = 0 To UBound(Eval("ElixirImages" & $t & "_75percent")) - 1
+			ConsoleWrite("$ElixirImages" & $t & "_75percent" & "[" & $i & "]:" & Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]") & @CRLF)
+		Next
 
 		;make stats array and put values = 0
-		For $i = 0 To UBound($x) - 1
-			$x[$i] = "0"
-		Next
+;~ 		For $i = 0 To UBound($x) - 1
+;~ 			$x[$i] = "0"
+;~ 		Next
 		If UBound($x) Then Assign("ElixirImagesStat" & $t & "_75percent", $x)
 
 		;read from ini file stats values
@@ -110,6 +103,8 @@ Func LoadElixirImage75Percent()
 		Next
 	Next
 EndFunc   ;==>LoadElixirImage75Percent
+
+
 Func LoadElixirImage50Percent()
 	Local $x
 	Local $path = @ScriptDir & "\images\ELIXIR50PERCENT\"
@@ -123,7 +118,7 @@ Func LoadElixirImage50Percent()
 	EndIf
 	For $t = 0 To $maxElixirLevel
 		If Eval("chkLvl" & $t + 6 & "Enabled") <> "1" Or Eval("cmbLvl" & $t + 6 & "Fill") > 0 Then ;If Configure Collectors checkbox not checked OR value of combobox is larger then 0(40%full)
-			Assign("ElixirImages" & $t, StringSplit("", "")) ;then skip this folder
+			Assign("ElixirImages" & $t & "_50percent", StringSplit("", "")) ;then skip this folder
 			ContinueLoop
 		EndIf
 		;assign ElixirImages0... ElixirImages6  an array empty with Elixirimagesx[0]=0
@@ -139,9 +134,9 @@ Func LoadElixirImage50Percent()
 		Next
 
 		;make stats array and put values = 0
-		For $i = 0 To UBound($x) - 1
-			$x[$i] = "0"
-		Next
+;~ 		For $i = 0 To UBound($x) - 1
+;~ 			$x[$i] = "0"
+;~ 		Next
 		If UBound($x) Then Assign("ElixirImagesStat" & $t & "_50percent", $x)
 
 		;read from ini file stats values
@@ -300,7 +295,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 	;CHECK ELIXIR COLLECTORS 50%
 
 	For $i = 1 To $max50
-		For $t = 0 To $maxElixirLevel - 1
+		For $t = 0 To $maxElixirLevel
 			If Int(Execute("$ElixirImages" & $t & "_50percent" & "[0]")) >= $i Then
 				$count += 1
 				If $tolerancefix > 0 Then
@@ -314,7 +309,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 				ConsoleWrite(" - tolerance: <" & StringMid(Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), StringInStr(Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
 				ConsoleWrite(" - tolerancecalc: " & $Tolerance)
 				ConsoleWrite(@CRLF)
-				$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR50PERCENT\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance+Number($toleranceoffset)) ; Getting Elixir Location
+				$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR50PERCENT\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + Number($toleranceoffset)) ; Getting Elixir Location
 				ConsoleWrite("Imagesearch return: ")
 				ConsoleWrite("- ElixirLocation : " & $ElixirLocation)
 				ConsoleWrite("- ElixirLocationx : " & $ElixirLocationx)
@@ -322,11 +317,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 				ConsoleWrite(@CRLF)
 
 				If $ElixirLocation = 1 Then
-					;add in stats-----
-					Local $tempvect = Eval("ElixirImagesStat" & $t & "_50percent")
-					$tempvect[$i] += 1
-					Assign("ElixirImagesStat" & $t & "_50percent", $tempvect)
-					;------------------
+
 					If $debugBuildingPos = 1 Then
 						Setlog("#*# ZombieSearch2: ", $COLOR_TEAL)
 						Setlog("  - Position (" & $ElixirLocationx & "," & $ElixirLocationy & ")", $COLOR_TEAL)
@@ -337,7 +328,13 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 						SetLog("  - Images checked: " & $count, $COLOR_TEAL)
 					EndIf
 					If isInsideDiamondXY($ElixirLocationx, $ElixirLocationy) = True Then
+						;add in stats-----
+						Local $tempvect = Eval("ElixirImagesStat" & $t & "_50percent")
+						$tempvect[$i] += 1
+						Assign("ElixirImagesStat" & $t & "_50percent", $tempvect)
+						;------------------
 						$ZombieFound = True
+						SaveStatChkDeadBase()
 						ExitLoop (2)
 					Else
 						ContinueLoop
@@ -350,7 +347,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 	;CHECK ELIXIR COLLECTORS 75%
 	If $ZombieFound = False Then
 		For $i = 1 To $max75
-			For $t = 0 To $maxElixirLevel - 1
+			For $t = 0 To $maxElixirLevel
 				If Int(Execute("$ElixirImages" & $t & "_75percent" & "[0]")) >= $i Then
 					$count += 1
 					If $tolerancefix > 0 Then
@@ -365,7 +362,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 					ConsoleWrite(" - tolerance: <" & StringMid(Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), StringInStr(Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
 					ConsoleWrite(" - tolerancecalc: " & $Tolerance)
 					ConsoleWrite(@CRLF)
-					$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR75PERCENT\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance+Number($toleranceoffset)) ; Getting Elixir Location
+					$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR75PERCENT\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + Number($toleranceoffset)) ; Getting Elixir Location
 					ConsoleWrite("Imagesearch return: ")
 					ConsoleWrite("- ElixirLocation : " & $ElixirLocation)
 					ConsoleWrite("- ElixirLocationx : " & $ElixirLocationx)
@@ -373,11 +370,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 					ConsoleWrite(@CRLF)
 
 					If $ElixirLocation = 1 Then
-						;add in stats-----
-						Local $tempvect = Eval("ElixirImagesStat" & $t & "_75percent")
-						$tempvect[$i] += 1
-						Assign("ElixirImagesStat" & $t & "_75percent", $tempvect)
-						;------------------
+
 						If $debugBuildingPos = 1 Then
 							Setlog("#*# ZombieSearch2: ", $COLOR_TEAL)
 							Setlog("  - Position (" & $ElixirLocationx & "," & $ElixirLocationy & ")", $COLOR_TEAL)
@@ -388,7 +381,13 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 							SetLog("  - Images checked: " & $count, $COLOR_TEAL)
 						EndIf
 						If isInsideDiamondXY($ElixirLocationx, $ElixirLocationy) = True Then
+							;add in stats-----
+							Local $tempvect = Eval("ElixirImagesStat" & $t & "_75percent")
+							$tempvect[$i] += 1
+							Assign("ElixirImagesStat" & $t & "_75percent", $tempvect)
+							;------------------
 							$ZombieFound = True
+							SaveStatChkDeadBase()
 							ExitLoop (2)
 						Else
 							ContinueLoop
@@ -403,7 +402,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 	; CHECK ELIXIR COLLECTORS 100%
 	If $ZombieFound = False Then
 		For $i = 1 To $max100
-			For $t = 0 To $maxElixirLevel - 1
+			For $t = 0 To $maxElixirLevel
 				If Int(Execute("$ElixirImages" & $t & "[0]")) >= $i Then
 					$count += 1
 					If $tolerancefix > 0 Then
@@ -417,7 +416,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 					ConsoleWrite(" - tolerance: <" & StringMid(Execute("$ElixirImages" & $t & "[" & $i & "]"), StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
 					ConsoleWrite(" - tolerancecalc: " & $Tolerance)
 					ConsoleWrite(@CRLF)
-					$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance+Number($toleranceoffset)) ; Getting Elixir Location
+					$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + Number($toleranceoffset)) ; Getting Elixir Location
 					ConsoleWrite("Imagesearch return: ")
 					ConsoleWrite("- ElixirLocation : " & $ElixirLocation)
 					ConsoleWrite("- ElixirLocationx : " & $ElixirLocationx)
@@ -425,11 +424,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 					ConsoleWrite(@CRLF)
 
 					If $ElixirLocation = 1 Then
-						;add in stats-----
-						Local $tempvect = Eval("ElixirImagesStat" & $t)
-						$tempvect[$i] += 1
-						Assign("ElixirImagesStat" & $t, $tempvect)
-						;------------------
+
 						If $debugBuildingPos = 1 Then
 							Setlog("#*# ZombieSearch2: ", $COLOR_TEAL)
 							Setlog("  - Position (" & $ElixirLocationx & "," & $ElixirLocationy & ")", $COLOR_TEAL)
@@ -440,7 +435,13 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 							SetLog("  - Images checked: " & $count, $COLOR_TEAL)
 						EndIf
 						If isInsideDiamondXY($ElixirLocationx, $ElixirLocationy) = True Then
+							;add in stats-----
+							Local $tempvect = Eval("ElixirImagesStat" & $t)
+							$tempvect[$i] += 1
+							Assign("ElixirImagesStat" & $t, $tempvect)
+							;------------------
 							$ZombieFound = True
+							SaveStatChkDeadBase()
 							ExitLoop (2)
 						Else
 							ContinueLoop

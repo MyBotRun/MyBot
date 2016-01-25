@@ -97,20 +97,12 @@ Func GetResources($bLog = True, $pMatchMode = -1) ;Reads resources
 			$searchTH = checkTownHallADV2()
 
 			;2nd attempt
-; commented by paspiz85 because too slow
-;			If $searchTH = "-" Then ; retry with autoit search after $iDelayVillageSearch5 seconds
-;				If _Sleep($iDelayGetResources5) Then Return
-;				SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
-;				$searchTH = checkTownhallADV2()
-;			EndIf
+			If $searchTH = "-" Then ; retry with autoit search after $iDelayVillageSearch5 seconds
+				If _Sleep($iDelayGetResources5) Then Return
+				SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
+				$searchTH = THSearch()
+			EndIf
 
-			;3rd attempt c#
-; commented by paspiz85 because too slow
-;			If $searchTH = "-" Then ; retry search, matching could not have been caused by heroes that partially hid the townhall
-;				If _Sleep($iDelayGetResources4) Then Return
-;				If $debugImageSave = 1 Then DebugImageSave("GetResources_NoTHFound2try_", False)
-;				THSearch()
-;			EndIf
 			If SearchTownHallLoc() = False And $searchTH <> "-" Then
 				$THLoc = "In"
 			ElseIf $searchTH <> "-" Then
