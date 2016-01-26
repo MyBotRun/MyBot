@@ -445,7 +445,7 @@ $y += 17
 GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x - 15, $y - 4, 16, 16)
 GUICtrlCreateLabel(GetTranslated(11,74, "gain") & ":", $x + 3, $y - 2, -1, 17)
 $lblTotalElixirGain[$TS] = GUICtrlCreateLabel("0", $x + 2, $y - 2, 80, 17, $SS_RIGHT)
-$txtTip = GetTranslated(11,82, "The amount of Dark Elixir gained from Live Bases attacked by the Bot.")
+$txtTip = GetTranslated(11,92, "The amount of Elixir gained from TH Snipe bases attacked by the Bot.")
 GUICtrlSetTip(-1, $txtTip)
 $y += 17
 GUICtrlCreateIcon($pIconLib, $eIcnDark, $x - 15, $y - 4, 16, 16)
