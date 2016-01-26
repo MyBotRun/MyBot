@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func PushBulletRemoteControl()
-	If GUICtrlRead($chkPBenabled) = $GUI_CHECKED And GUICtrlRead($chkPBRemote) = $GUI_CHECKED Then _RemoteControl()
+	If $pEnabled And $pRemote Then _RemoteControl()
 EndFunc   ;==>PushBulletRemoteControl
 
 Func PushBulletDeleteOldPushes()

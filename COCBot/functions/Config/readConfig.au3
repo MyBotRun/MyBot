@@ -222,6 +222,7 @@ Func readConfig() ;Reads config and sets it to the variables
 		$iMinElixir[$TS] = IniRead($config, "search", "TSsearchElixir", "80000")
 		$iMinGoldPlusElixir[$TS] = IniRead($config, "search", "TSsearchGoldPlusElixir", "160000")
 		$iMinDark[$TS] = IniRead($config, "search", "TSsearchDark", "600")
+		$iCmbMeetGE[$TS] = IniRead($config, "search", "TSMeetGE", "1")
 
 		$PushToken = IniRead($config, "advanced", "AccountToken", "")
 
