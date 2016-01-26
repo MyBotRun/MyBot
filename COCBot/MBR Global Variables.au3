@@ -42,11 +42,16 @@
 #include <String.au3>
 #include <IE.au3>
 #include <Process.au3>
-
-Global Const $DEFAULT_HEIGHT = 780
+;2016 Jan Loot Crate Update
+Global Const $DEFAULT_HEIGHT = 732
 Global Const $DEFAULT_WIDTH = 860
-Global Const $midOffsetY = ($DEFAULT_HEIGHT - 720) / 2
-Global Const $bottomOffsetY = $DEFAULT_HEIGHT - 720
+Global Const $midOffsetY = 30
+Global Const $bottomOffsetY = 60
+;Original
+;Global Const $DEFAULT_HEIGHT = 780
+;Global Const $DEFAULT_WIDTH = 860
+;Global Const $midOffsetY = ($DEFAULT_HEIGHT - 720) / 2
+;Global Const $bottomOffsetY = $DEFAULT_HEIGHT - 720
 Global $bMonitorHeight800orBelow = False
 
 ;debugging
