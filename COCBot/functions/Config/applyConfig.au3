@@ -438,6 +438,8 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	GUICtrlSetData($txtTSMinElixir, $iMinElixir[$TS])
 	GUICtrlSetData($txtTSMinGoldPlusElixir, $iMinGoldPlusElixir[$TS])
 	GUICtrlSetData($txtTSMinDarkElixir, $iMinDark[$TS])
+	_GUICtrlComboBox_SetCurSel($cmbTSMeetGE, $iCmbMeetGE[$TS])
+	cmbTSGoldElixir()
 
 	If $ichkUseKingTH = 1 Then
 		GUICtrlSetState($chkUseKingTH, $GUI_CHECKED)
