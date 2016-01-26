@@ -445,6 +445,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "search", "TSEnableAfter", 0)
 	EndIf
+	IniWrite($config, "search", "TSMeetGE", _GUICtrlComboBox_GetCurSel($cmbTSMeetGE))
 	IniWrite($config, "search", "TSEnableAfterCount", GUICtrlRead($txtTSEnableAfter))
 	IniWrite($config, "search", "TSsearchGold", GUICtrlRead($txtTSMinGold))
 	IniWrite($config, "search", "TSsearchElixir", GUICtrlRead($txtTSMinElixir))

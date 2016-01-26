@@ -539,7 +539,7 @@ $grpScheduler2 = GUICtrlCreateGroup(GetTranslated(10,53, "Boost Barracks Schedul
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 240, $y = 463
-$grpOtherExpert = GUICtrlCreateGroup(GetTranslated(10,55, "Photo Screenshot Options"), $x - 20, $y - 17, 240, 59)
+$grpPhotoExpert = GUICtrlCreateGroup(GetTranslated(10,55, "Photo Screenshot Options"), $x - 20, $y - 17, 240, 59)
 	$chkScreenshotType = GUICtrlCreateCheckbox(GetTranslated(10,56, "Make in PNG format"), $x, $y, -1, -1)
 		GUICtrlSetOnEvent(-1, "chkScreenshotType")
 $y += 19
