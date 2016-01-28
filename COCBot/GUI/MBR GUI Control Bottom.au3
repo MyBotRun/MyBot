@@ -42,6 +42,9 @@ Func Initiate()
 			$sTimer = TimerInit()
 		EndIf
 
+	    AndroidBotStartEvent() ; signal android that bot is now running
+	    If Not $RunState Then Return
+
 ;		$RunState = True
 
 		If Not $bSearchMode Then
@@ -164,7 +167,6 @@ EndFunc
 
 Func btnStart()
 	If $RunState = False Then
-		$RunState = True
 	    ;GUICtrlSetState($chkBackground, $GUI_DISABLE) ; will be disbaled after check if Android supports Background Mode
 		GUICtrlSetState($btnStart, $GUI_HIDE)
 		GUICtrlSetState($btnStop, $GUI_SHOW)
@@ -216,6 +218,7 @@ Func btnStart()
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 
+		$RunState = True
 	    SetRedrawBotWindow(True)
 
 	    WinGetAndroidHandle()
@@ -239,13 +242,14 @@ Func btnStart()
 		Else  ; If Android is not open, then wait for it to open
 			OpenAndroid()
 			;If @error Then GUICtrlSetState($btnStart, $GUI_DISABLE)  ; Disable start button, force bot close/open by user.
-		EndIf
+	    EndIf
+
 	EndIf
 EndFunc   ;==>btnStart
 
 Func btnStop()
 	If $RunState Then ; Or BitOr(GUICtrlGetState($btnStop), $GUI_SHOW) Then ; $btnStop check added for strange $RunState inconsistencies
-		$RunState = False
+
 		GUICtrlSetState($chkBackground, $GUI_ENABLE)
 		GUICtrlSetState($btnStart, $GUI_SHOW)
 		GUICtrlSetState($btnStop, $GUI_HIDE)
@@ -277,6 +281,9 @@ Func btnStop()
 			GUICtrlSetState($i, $iPrevState[$i])
 		Next
 
+		AndroidBotStopEvent() ; signal android that bot is now stoppting
+		$RunState = False
+
 		_BlockInputEx(0, "", "", $HWnD)
 		If Not $bSearchMode Then
 			If Not $TPaused Then $iTimePassed += Int(TimerDiff($sTimer))
@@ -291,6 +298,7 @@ Func btnStop()
 		EndIf
 		SetLog(_PadStringCenter(" Bot Stop ", 50, "="), $COLOR_ORANGE)
 		SetRedrawBotWindow(True) ; must be here at bottom, after SetLog, so Log refreshes. You could also use SetRedrawBotWindow(True, False) and let the events handle the refresh.
+
 	EndIf
 EndFunc   ;==>btnStop
 
