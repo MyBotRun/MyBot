@@ -146,6 +146,7 @@ EndFunc   ;==>GUIControl
 
 Func BotClose()
    SetLog("Closing " & $sBotTitle & " ...")
+   If $RunState = True Then AndroidBotStopEvent() ; signal android that bot is now stoppting
    SaveConfig()
    ; Close Mutexes
    If $hMutex_BotTitle <> 0 Then _WinAPI_CloseHandle($hMutex_BotTitle)

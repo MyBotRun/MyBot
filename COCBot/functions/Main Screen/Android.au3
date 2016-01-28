@@ -223,6 +223,18 @@ Func GetAndroidProgramParameter($bAlternative = False)
    Return $Parameter
 EndFunc
 
+Func AndroidBotStartEvent()
+   Local $Result = Execute($Android & "BotStartEvent()")
+   If $Result = "" And @error <> 0 Then $Result = "" ; Not implemented
+   Return $Result
+EndFunc
+
+Func AndroidBotStopEvent()
+   Local $Result = Execute($Android & "BotStopEvent()")
+   If $Result = "" And @error <> 0 Then $Result = "" ; Not implemented
+   Return $Result
+EndFunc
+
 Func OpenAndroid($bRestart = False)
     If Not $RunState Then Return False
 	Return Execute("Open" & $Android & "(" & $bRestart & ")")
@@ -429,4 +441,18 @@ Func CheckScreenAndroid($ClientWidth, $ClientHeight, $bSetLog = True)
    If $ok = "" And @error <> 0 Then Return True ; Not implemented
    Return $ok
 
+EndFunc
+
+Func AndroidCloseSystemBar()
+   Local $cmdOutput, $process_killed
+   $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell service call activity 42 s16 com.android.systemui", $process_killed)
+   Local $Result = StringLeft($cmdOutput, 6) = "Result"
+   Return $Result
+EndFunc
+
+Func AndroidOpenSystemBar()
+   Local $cmdOutput, $process_killed
+   $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am startservice -n com.android.systemui/.SystemUIService", $process_killed)
+   Local $Result = StringLeft($cmdOutput, 16) = "Starting service"
+   Return $Result
 EndFunc
