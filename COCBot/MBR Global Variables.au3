@@ -117,6 +117,7 @@ Global $AndroidAdbDevice = $AndroidAppConfig[$AndroidConfig][10]
 Global $AndroidSupportsBackgroundMode = $AndroidAppConfig[$AndroidConfig][11]
 
 Global $AndroidProgramPath = ""
+Global $AndroidHasSystemBar = False
 Global $AndroidClientWidth_Configured = 0 ; Android configured Screen Width
 Global $AndroidClientHeight_Configured = 0 ; Android configured Screen Height
 Global $AndroidLaunchWaitSec = 240 ; Seconds to wait for launching Android Simulator
@@ -150,12 +151,6 @@ Global $hMutex_BotTitle = 0
 Global $hMutex_Profile = 0
 Global $hMutex_MyBot = 0
 
-; Debug Output of launch parameter
-SetDebugLog("@AutoItExe: " & @AutoItExe)
-SetDebugLog("@ScriptFullPath: " & @ScriptFullPath)
-SetDebugLog("@WorkingDir: " & @WorkingDir)
-SetDebugLog("@AutoItPID: " & @AutoItPID)
-
 ; Handle Command Line Launch Options and fill $aCmdLine
 If $CmdLine[0] > 0 Then
    Local $i
@@ -179,23 +174,6 @@ ElseIf FileExists($sProfilePath & "\profile.ini") Then
 	Global $sCurrProfile = IniRead($sProfilePath & "\profile.ini", "general", "defaultprofile", "01")
 Else
 	Global $sCurrProfile = "01"
-EndIf
-
-; Change Android type and update variable
-If $aCmdLine[0] > 1 Then
-	Local $i
-	For $i = 0 To UBound($AndroidAppConfig) - 1
-		If StringCompare($AndroidAppConfig[$i][0], $aCmdLine[2]) = 0 Then
-			$AndroidConfig = $i
-
-			If $AndroidAppConfig[$i][1] <> "" And $aCmdLine[0] > 2 Then
-				; Use Instance Name
-				UpdateAndroidConfig($aCmdLine[3])
-			Else
-				UpdateAndroidConfig()
-			EndIf
-		EndIf
-	Next
 EndIf
 
 Global $config = $sProfilePath & "\" & $sCurrProfile & "\config.ini"
@@ -969,7 +947,28 @@ Global $attackcsv_locate_townhall = 0
 Global $hCollectorGUI
 $gui2open = 0
 
-
 Global $iDeadBase75percent = 1
 Global $iDeadBase75percentStartLevel = 4
 
+; Debug Output of launch parameter
+SetDebugLog("@AutoItExe: " & @AutoItExe)
+SetDebugLog("@ScriptFullPath: " & @ScriptFullPath)
+SetDebugLog("@WorkingDir: " & @WorkingDir)
+SetDebugLog("@AutoItPID: " & @AutoItPID)
+
+; Change Android type and update variable
+If $aCmdLine[0] > 1 Then
+	Local $i
+	For $i = 0 To UBound($AndroidAppConfig) - 1
+		If StringCompare($AndroidAppConfig[$i][0], $aCmdLine[2]) = 0 Then
+			$AndroidConfig = $i
+
+			If $AndroidAppConfig[$i][1] <> "" And $aCmdLine[0] > 2 Then
+				; Use Instance Name
+				UpdateAndroidConfig($aCmdLine[3])
+			Else
+				UpdateAndroidConfig()
+			EndIf
+		EndIf
+	Next
+EndIf
