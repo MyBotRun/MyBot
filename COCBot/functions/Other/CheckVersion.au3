@@ -23,6 +23,9 @@ Func CheckVersion()
 			SetLog("PLEASE DOWNLOAD THE LATEST(" & $lastversion & ") FROM https://MyBot.run               ", $COLOR_RED)
 			SetLog(" ")
 			_PrintLogVersion($oldversmessage)
+			If MsgBox($MB_OKCANCEL, "MyBot.Run Auto Update Experimental Feature", "Press OK to auto update, Cancel to do it manually") = 1 Then
+				_DownloadProgress("https://github.com/MyBotRun/MyBot/archive/master.zip", "master.zip", "MyBot.Run")
+			EndIf
 		ElseIf VersionNumFromVersionTXT($sBotVersion) > VersionNumFromVersionTXT($lastversion) Then
 			SetLog("YOU ARE USING A FUTURE VERSION OF MYBOT CHIEF!", $COLOR_GREEN)
 			SetLog("YOUR VERSION: " & $sBotVersion, $COLOR_GREEN)
@@ -178,3 +181,16 @@ Func _PrintLogVersion($message)
 		Next
 	EndIf
 EndFunc   ;==>_PrintLogVersion
+
+Func _DownloadProgress($FileURL, $FileName, $ProgramName)
+    $FileSaveLocation = @DesktopDir & "\" & $FileName
+    $FileSize = InetGetSize($FileURL)
+    $FileDownload = InetGet($FileURL, $FileSaveLocation, 1, 1)
+    ProgressOn("", "", "", -1, 5, 18)
+    Do
+        $Percentage = InetGetInfo($FileDownload, 0) * 100 / $FileSize
+        ProgressSet($Percentage, Round($Percentage, 0) & "% Downloaded " & Round(InetGetInfo($FileDownload, 0) / 1048576, 2) & " of " & Round($FileSize / 1048576, 2) & " MB", "Downloading " & $ProgramName)
+        Sleep(250)
+    Until InetGetInfo($FileDownload, 2)
+
+EndFunc   ;==>_DownloadProgress
