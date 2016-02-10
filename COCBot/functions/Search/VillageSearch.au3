@@ -398,6 +398,7 @@ Func SearchLimit($iSkipped)
 				Return True
 			EndIf
 		WEnd
+		$Is_SearchLimit = True
 		ReturnHome(False, False) ;If End battle is available
 		$Restart = True ; set force runbot restart flag
 		$Is_ClientSyncError = True ; set OOS flag for fast restart
