@@ -55,47 +55,47 @@ Func cmbWalls()
 	Switch _GUICtrlComboBox_GetCurSel($cmbWalls)
 		Case 0
 			$WallCost = 30000
-			GUICtrlSetData($lblWallCost, StringRegExpReplace($WallCost, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 "))
+			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseGold, $GUI_CHECKED)
 			GUICtrlSetState($UseElixir, $GUI_DISABLE)
 			GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
 			GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
 		Case 1
 			$WallCost = 75000
-			GUICtrlSetData($lblWallCost, StringRegExpReplace($WallCost, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 "))
+			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseGold, $GUI_CHECKED)
 			GUICtrlSetState($UseElixir, $GUI_DISABLE)
 			GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
 			GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
 		Case 2
 			$WallCost = 200000
-			GUICtrlSetData($lblWallCost, StringRegExpReplace($WallCost, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 "))
+			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseGold, $GUI_CHECKED)
 			GUICtrlSetState($UseElixir, $GUI_DISABLE)
 			GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
 			GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
 		Case 3
 			$WallCost = 500000
-			GUICtrlSetData($lblWallCost, StringRegExpReplace($WallCost, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 "))
+			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseGold, $GUI_CHECKED)
 			GUICtrlSetState($UseElixir, $GUI_DISABLE)
 			GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
 			GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
 		Case 4
 			$WallCost = 1000000
-			GUICtrlSetData($lblWallCost, StringRegExpReplace($WallCost, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 "))
+			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseElixir, $GUI_ENABLE)
 			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
 			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
 		Case 5
 			$WallCost = 3000000
-			GUICtrlSetData($lblWallCost, StringRegExpReplace($WallCost, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 "))
+			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseElixir, $GUI_ENABLE)
 			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
 			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
 		Case 6
 			$WallCost = 4000000
-			GUICtrlSetData($lblWallCost, StringRegExpReplace($WallCost, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 "))
+			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseElixir, $GUI_ENABLE)
 			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
 			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
