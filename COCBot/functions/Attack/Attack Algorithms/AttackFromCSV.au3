@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Global $MAINSIDE = "DOWN-RIGHT"
+Global $MAINSIDE = "BOTTOM-RIGHT"
 Global $FRONT_LEFT = "BOTTOM-RIGHT-DOWN"
 Global $FRONT_RIGHT = "BOTTOM-RIGHT-UP"
 Global $RIGHT_FRONT = "TOP-RIGHT-DOWN"

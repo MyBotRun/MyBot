@@ -387,7 +387,7 @@ Func ParseAttackCSV($debug = False)
 							$MAINSIDE = $sidename
 						EndIf
 						Switch $MAINSIDE
-							Case "DOWN-RIGHT"
+							Case "BOTTOM-RIGHT"
 								$FRONT_LEFT = "BOTTOM-RIGHT-DOWN"
 								$FRONT_RIGHT = "BOTTOM-RIGHT-UP"
 								$RIGHT_FRONT = "TOP-RIGHT-DOWN"
@@ -396,7 +396,7 @@ Func ParseAttackCSV($debug = False)
 								$LEFT_BACK = "BOTTOM-LEFT-UP"
 								$BACK_LEFT = "TOP-LEFT-DOWN"
 								$BACK_RIGHT = "TOP-LEFT-UP"
-							Case "DOWN-LEFT"
+							Case "BOTTOM-LEFT"
 								$FRONT_LEFT = "BOTTOM-LEFT-UP"
 								$FRONT_RIGHT = "BOTTOM-LEFT-DOWN"
 								$RIGHT_FRONT = "BOTTOM-RIGHT-DOWN"

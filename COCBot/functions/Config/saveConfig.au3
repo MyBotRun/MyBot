@@ -985,6 +985,11 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "upgrade", "UpgradeQueen", "0")
 	EndIf
 
+	If GUICtrlRead($chkUpgradeWarden) = $GUI_CHECKED Then
+		IniWrite($config, "upgrade", "UpgradeWarden", "1")
+	Else
+		IniWrite($config, "upgrade", "UpgradeWarden", "0")
+	EndIf
 	;
 
 	For $iz = 0 To 5 ; Save Upgrades data

@@ -38,7 +38,7 @@ Func OpenBlueStacks($bRestart = False)
 	EndIf
 
 	$hTimer = TimerInit()  ; start a timer for tracking BS start up time
-	SetLog("Please wait while BS/CoC starts....", $COLOR_GREEN)
+	SetLog("Please wait while BS/CoC start....", $COLOR_GREEN)
 	WinGetAndroidHandle()
 	While IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) = False
 		If _Sleep(1000) Then ExitLoop
@@ -90,7 +90,7 @@ Func OpenBlueStacks2($bRestart = False)
 
    If Not InitBlueStacks2() Then Return
 
-   SetLog("Please wait while " & $Android & " and CoC starts...", $COLOR_GREEN)
+   SetLog("Please wait while " & $Android & " and CoC start...", $COLOR_GREEN)
 
    CloseUnsupportedBlueStacks2()
 

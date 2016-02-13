@@ -231,3 +231,4 @@
 #include "functions\Village\BoostHeroes.au3"
 #include "functions\Village\UpgradeHeroes.au3"
 #include "functions\Village\ClanLevel.au3"
+#include "functions\Village\StarBonus.au3"

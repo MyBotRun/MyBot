@@ -1,4 +1,13 @@
-﻿* **V5.1.4**
+﻿* **V5.1.5**
+ * Fix TH11 traps rearm button not working (due SC Jan Treasury update)
+ * Add 5 Star Bonus window check and close (new feature in SC Jan Treasury update)
+ * Add German translation (@leak1337 provided)
+ * Fix the Train page not found
+ * Fix upgrade Grand Warden GUI setting not being saved
+ * Fix drop hero in AttackCSV
+ * Fix issue 2nd chat request being skipped when previous request filled
+ 
+* **V5.1.4**
  * Fix BlueStacks 2 screen size when system bar is visible
  * Improved close BlueStacks System Bar when bot starts and open again when bot stops
  * Close BlueStacks 1 System Bar when bot starts and open again when bot stops
