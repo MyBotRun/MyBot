@@ -6,7 +6,7 @@
 ;                  $GoldChangeCheck     - [optional] an unknown value. Default is True.
 ; Return values .: None
 ; Author ........:
-; Modified ......: KnowJack (Jun/Aug2015)
+; Modified ......: KnowJack (Jun/Aug2015), MonkeyHunter (2106-01)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -14,7 +14,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
-   If $DebugSetLog  = 1 Then Setlog("ReturnHome function... (from matchmode=" & $iMatchMode & " - " &  $sModeText[$iMatchMode] & ")" , $COLOR_PURPLE)
+	If $DebugSetLog = 1 Then Setlog("ReturnHome function... (from matchmode=" & $iMatchMode & " - " & $sModeText[$iMatchMode] & ")", $COLOR_PURPLE)
 	Local $counter = 0
 	Local $hBitmap_Scaled
 	Local $i
@@ -26,28 +26,28 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	If $GoldChangeCheck = True Then
 
 
-	     If not(IsReturnHomeBattlePage(True,False) ) Then ; if already in return home battle page do not wait and try to activate Hero Ability and close battle
-		   SetLog("Checking if the battle has finished", $COLOR_BLUE)
-		   While GoldElixirChangeEBO()
-			   If _Sleep($iDelayReturnHome1) Then Return
-		   WEnd
-		   ;If Heroes were not activated: Hero Ability activation before End of Battle to restore health
-		   If ($checkKPower = True Or $checkQPower = True) And $iActivateKQCondition = "Auto" Then
-			   ;_CaptureRegion()
-			   If _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False Then ; If not already at Return Homescreen
-				   If $checkKPower = True Then
-					   SetLog("Activating King's power to restore some health before EndBattle", $COLOR_BLUE)
-					   If IsAttackPage() Then SelectDropTroop($King) ;If King was not activated: Boost King before EndBattle to restore some health
-				   EndIf
-				   If $checkQPower = True Then
-					   SetLog("Activating Queen's power to restore some health before EndBattle", $COLOR_BLUE)
-					   If IsAttackPage() Then SelectDropTroop($Queen) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
-				   EndIf
-			   EndIf
+		If Not (IsReturnHomeBattlePage(True, False)) Then ; if already in return home battle page do not wait and try to activate Hero Ability and close battle
+			SetLog("Checking if the battle has finished", $COLOR_BLUE)
+			While GoldElixirChangeEBO()
+				If _Sleep($iDelayReturnHome1) Then Return
+			WEnd
+			;If Heroes were not activated: Hero Ability activation before End of Battle to restore health
+			If ($checkKPower = True Or $checkQPower = True) And $iActivateKQCondition = "Auto" Then
+				;_CaptureRegion()
+				If _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False Then ; If not already at Return Homescreen
+					If $checkKPower = True Then
+						SetLog("Activating King's power to restore some health before EndBattle", $COLOR_BLUE)
+						If IsAttackPage() Then SelectDropTroop($King) ;If King was not activated: Boost King before EndBattle to restore some health
+					EndIf
+					If $checkQPower = True Then
+						SetLog("Activating Queen's power to restore some health before EndBattle", $COLOR_BLUE)
+						If IsAttackPage() Then SelectDropTroop($Queen) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
+					EndIf
+				EndIf
 			EndIf
-		 Else
-			If $debugsetlog=1 Then Setlog("Battle already over",$COLOR_PURPLE)
-		 EndIf
+		Else
+			If $DebugSetLog = 1 Then Setlog("Battle already over", $COLOR_PURPLE)
+		EndIf
 
 	EndIf
 
@@ -65,27 +65,27 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	If $RunState = False Then Return
 
 
-   If not (IsReturnHomeBattlePage(True,False) ) Then
-	  ; ---- CLICK SURRENDER BUTTON ----
- 	   $i = 0 ; Reset Loop counter
-	   While 1
-		   If _CheckPixel($aSurrenderButton, $bCapturePixel) Then
-			   If IsAttackPage() Then
+	If Not (IsReturnHomeBattlePage(True, False)) Then
+		; ---- CLICK SURRENDER BUTTON ----
+		$i = 0 ; Reset Loop counter
+		While 1
+			If _CheckPixel($aSurrenderButton, $bCapturePixel) Then
+				If IsAttackPage() Then
 					ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
 					If _Sleep($iDelayReturnHome2) Then Return ; short wait for confirm button to appear
 					If IsEndBattlePage(False) Then
-						ClickOkay("SurrenderOkay")  ; Click Okay to Confirm surrender
+						ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
 						ExitLoop
 					EndIf
 				EndIf
-		   Else
-			   $i += 1
-		   EndIf
-		   If $i > 5 Then ExitLoop  ; if end battle or surrender button are not found in 5*(200+200)ms or 2 seconds, then give up.
-		   If _Sleep($iDelayReturnHome5) Then Return
-	   WEnd
-    Else
-		If $debugsetlog=1 Then Setlog("Battle already over.",$COLOR_PURPLE)
+			Else
+				$i += 1
+			EndIf
+			If $i > 5 Then ExitLoop ; if end battle or surrender button are not found in 5*(200+200)ms or 2 seconds, then give up.
+			If _Sleep($iDelayReturnHome5) Then Return
+		WEnd
+	Else
+		If $DebugSetLog = 1 Then Setlog("Battle already over.", $COLOR_PURPLE)
 	EndIf
 
 	If _Sleep($iDelayReturnHome2) Then Return ; short wait for return
@@ -127,13 +127,13 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 
 	$i = 0 ; Reset Loop counter
 	While 1
-		If _CheckPixel($aEndFightSceneAvl, $bCapturePixel) Then  ; check for the gold ribbon in the end of battle data screen
+		If _CheckPixel($aEndFightSceneAvl, $bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
 			If IsReturnHomeBattlePage() Then ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
 			ExitLoop
 		Else
 			$i += 1
 		EndIf
-		If $i > 10 Then ExitLoop  ; if end battle window is not found in 10*200mms or 2 seconds, then give up.
+		If $i > 10 Then ExitLoop ; if end battle window is not found in 10*200mms or 2 seconds, then give up.
 		If _Sleep($iDelayReturnHome5) Then Return
 	WEnd
 	If _Sleep($iDelayReturnHome2) Then Return ; short wait for screen to close
@@ -141,16 +141,14 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	$counter = 0
 	While 1
 		If _Sleep($iDelayReturnHome4) Then Return
-		_CaptureRegion()
-		If _ColorCheck(_GetPixelColor($aIsMain[0], $aIsMain[1]), Hex($aIsMain[2], 6), $aIsMain[3]) Then
+		If StarBonus() = True Then Setlog("Star Bonus window closed chief!", $COLOR_BLUE)  ; Check for Star Bonus window to fill treasury (2016-01) update
+		If IsMainPage() Then
 			_GUICtrlEdit_SetText($txtLog, _PadStringCenter(" BOT LOG ", 71, "="))
 			_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")
 			_GUICtrlRichEdit_AppendTextColor($txtLog, "" & @CRLF, _ColorConvert($Color_Black))
 			Return
 		EndIf
-
 		$counter += 1
-
 		If $counter >= 50 Or isProblemAffect(True) Then
 			SetLog("Cannot return home.", $COLOR_RED)
 			checkMainScreen()

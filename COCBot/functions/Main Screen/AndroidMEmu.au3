@@ -44,7 +44,7 @@ Func OpenMEmu($bRestart = False)
    $connected_to = StringInStr($cmdOutput, "connected to")
    If Not $RunState Then Return
 
-   SetLog("Please wait while " & $Android & " and CoC starts...", $COLOR_GREEN)
+   SetLog("Please wait while " & $Android & " and CoC start...", $COLOR_GREEN)
    $hTimer = TimerInit()
    ; Wait for device
    $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)

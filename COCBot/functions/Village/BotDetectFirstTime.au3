@@ -12,7 +12,7 @@
 
 Func BotDetectFirstTime()
 
-	Local $collx, $colly, $Result, $i = 0
+	Local $collx, $colly, $Result, $i = 0 , $t =0
 
 	If $Is_ClientSyncError = True Then Return ; if restart after OOS, and User stop/start bot, skip this.
 
@@ -142,44 +142,51 @@ Func BotDetectFirstTime()
 			$i += 1
 		WEnd
 		SetLog("Verifying your Mines/Collectors/Drills ...wait ...")
-		;$PixelMineHere = GetLocationItem("getLocationMineExtractor")
+		$t =0
 		$PixelMineHere = GetLocationMine()
-		If UBound($PixelMineHere) > 0 Then
-			SetLog("Total No. of Gold Mines: " & UBound($PixelMineHere))
-		EndIf
 		For $i = 0 To UBound($PixelMineHere) - 1
 			If isInsideDiamond($PixelMineHere[$i]) Then
 				$pixel = $PixelMineHere[$i]
 				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
 				If $debugSetlog = 1 Then SetLog("- Gold Mine " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+				$t +=1
 			EndIf
 		Next
-		If _Sleep($iDelayBotDetectFirstTime1) Then Return
-		;$PixelElixirHere = GetLocationItem("getLocationElixirExtractor")
-		$PixelElixirHere = GetLocationElixir()
-		If UBound($PixelElixirHere) > 0 Then
-			SetLog("Total No. of Elixir Collectors: " & UBound($PixelElixirHere))
+		If $t > 0 Then
+			SetLog("Total No. of Gold Mines: " & $t)
 		EndIf
+		$t =0
+		If _Sleep($iDelayBotDetectFirstTime1) Then Return
+
+
+		$PixelElixirHere = GetLocationElixir()
 		For $i = 0 To UBound($PixelElixirHere) - 1
 			If isInsideDiamond($PixelElixirHere[$i]) Then
 				$pixel = $PixelElixirHere[$i]
 				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
 				If $debugSetlog = 1 Then SetLog("- Elixir Collector " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+				$t +=1
 			EndIf
 		Next
-		If _Sleep($iDelayBotDetectFirstTime1) Then Return
-		;$PixelDarkElixirHere = GetLocationItem("getLocationDarkElixirExtractor")
-		$PixelDarkElixirHere = GetLocationDarkElixir()
-		If UBound($PixelDarkElixirHere) > 0 Then
-			SetLog("Total No. of Dark Elixir Drills: " & UBound($PixelDarkElixirHere))
+		If $t > 0 Then
+			SetLog("Total No. of Elixir Collectors: " & $t)
 		EndIf
+		$t =0
+		If _Sleep($iDelayBotDetectFirstTime1) Then Return
+
+		$PixelDarkElixirHere = GetLocationDarkElixir()
 		For $i = 0 To UBound($PixelDarkElixirHere) - 1
 			If isInsideDiamond($PixelDarkElixirHere[$i]) Then
 				$pixel = $PixelDarkElixirHere[$i]
 				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
 				If $debugSetlog = 1 Then SetLog("- Dark Ellxir Drill " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_PURPLE)
+				$t +=1
 			EndIf
 		Next
+		If $t > 0 Then
+			SetLog("Total No. of Dark Elixir Drills: " & $t)
+		EndIf
+		$t =0
 	EndIf
 
 EndFunc   ;==>BotDetectFirstTime

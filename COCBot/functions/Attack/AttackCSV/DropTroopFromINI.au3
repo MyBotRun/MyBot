@@ -129,11 +129,23 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $qtaMin, $qtaMax, $troop
 							Else
 								dropHeroes($pixel[0], $pixel[1], $King, $Queen, $Warden)
 							EndIf
-						Case $eCastle
+						Case $eKing
 							If $debug = True Then
-								Setlog("dropCC(" & $pixel[0] & ", " & $pixel[1] & ", " & $CC & ")")
+								Setlog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", " & $King & ", -1, -1) ")
 							Else
-								dropCC($pixel[0], $pixel[1], $CC)
+								dropHeroes($pixel[0], $pixel[1], $King, -1, -1)
+							EndIf
+						Case $eQueen
+							If $debug = True Then
+								Setlog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ",-1," & $Queen & ", -1) ")
+							Else
+								dropHeroes($pixel[0], $pixel[1],  -1, $Queen , -1)
+							EndIf
+						Case $eWarden
+							If $debug = True Then
+								Setlog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", -1, -1," & $Warden & ") ")
+							Else
+								dropHeroes($pixel[0], $pixel[1], -1, -1,$Warden)
 							EndIf
 						Case $eLSpell To $eHaSpell
 							If $debug = True Then
