@@ -1,3 +1,4 @@
 [general]
-messagenew = "Herkese mutlu yıllar!\n\nBundan sonra botu Türkçe kullandığınız sürece ve Versiyon Kontrolü aktif olduğu sürece, yeniliklerden bu şekilde haberdar olabileceksiniz."
-messageold = "MyBot'un yeni bir sürümü (v5.1.5) çıktı!\nLütfen yeni sürümü web sayfamızdan indirin:\nhttps://mybot.run"
+version = "v5.1.5"
+messagenew = "Herkese mutlu yÄ±llar!\n\nBundan sonra botu TÃ¼rkÃ§e kullandÄ±ÄŸÄ±nÄ±z sÃ¼rece ve Versiyon KontrolÃ¼ aktif olduÄŸu sÃ¼rece, yeniliklerden bu ÅŸekilde haberdar olabileceksiniz."
+messageold = "MyBot'un yeni bir sÃ¼rÃ¼mÃ¼ (v5.1.5) Ã§Ä±ktÄ±!\nLÃ¼tfen yeni sÃ¼rÃ¼mÃ¼ web sayfamÄ±zdan indirin:\nhttps://mybot.run"
