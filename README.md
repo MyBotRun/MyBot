@@ -33,9 +33,10 @@ Please see the file called LICENSE.
 - Curl.exe - curl is an open source command line tool and library for transferring data with URL syntax, supporting DICT, FILE, FTP, FTPS, Gopher, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMTP, SMTPS, Telnet and TFTP. curl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP form based upload, proxies, HTTP/2, cookies, user+password authentication (Basic, Plain, Digest, CRAM-MD5, NTLM, Negotiate and Kerberos), file transfer resume, proxy tunneling and more. This executable is used in our software because Pushbullet.
   http://curl.haxx.se/
 
-Mybot uses non-GPL 3rd party libraries for extension (#SystemLibraryException): 
+Mybot uses non-GPL/GPL 3rd party libraries for extension (#SystemLibraryException): 
 - OpenCV - BSD license - repository : https://github.com/MyBotRun/Libraries
 - ImageSearch - GNU license - repository : https://github.com/MyBotRun/Libraries
+- ImgLoc - LGPL v3 License - A customized AForge.Imaging - library source : https://code.google.com/archive/p/aforge/
 - Functional library MBRfunctions.dll - Proprietary library from the Developer Didipe 2015
 
 Contacts

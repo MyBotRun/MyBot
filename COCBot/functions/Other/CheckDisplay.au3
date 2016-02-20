@@ -25,13 +25,7 @@ Func CheckDisplay()
 
 	Local $iDPIRatio = GetDPI_Ratio()
 	If $iDPIRatio <> 1 Then
-		SetLog(_PadStringCenter(" ERROR!! Display DPI setting INCORRECT = " & $iDPIRatio, 53, "+"), $COLOR_RED)
-		SetLog(_PadStringCenter(" Set DPI to 1 or 100% for proper operation ", "+"), $COLOR_RED)
-		SetLog(_PadStringCenter(" If you need help, search Google with these keywords", 53, "+"), $COLOR_RED)
-		SetLog(_PadStringCenter(" windows # set dpi, replace # with your OS # ", 53, "+"), $COLOR_RED)
-		SetLog(_PadStringCenter(" Bot start button disabled till fixed", 53, "+"), $COLOR_RED)
-		Setlog(" ")
-		GUICtrlSetState($btnStart, $GUI_DISABLE)
+		ShowDPIHelp($iDPIRatio*100)
 	Else
 		If $Debugsetlog = 1 Then SetLog(_PadStringCenter("  Display DPI setting = " & $iDPIRatio & "  ", 53, "+"), $COLOR_BLUE)
 		ConsoleWrite('DPI= ' & $iDPIRatio & @CRLF)
@@ -84,5 +78,29 @@ Func CheckDisplay()
 	Return $bDisplayDPI And $bDisplayFound
 
 EndFunc   ;==>CheckDisplay
-;
+Func ShowDPIHelp($currentDPI)
+	$text = "Your DPI is incorrect. It is set to "&$currentDPI&"%. You must set it to 100% for this bot to work."&@CRLF& _
+				"When you have changed the DPI to the correct value, reboot your computer and run the bot again."&@CRLF& _
+				"You won't be able to use the bot until you make this change."&@CRLF&@CRLF& _
+				"Click OK to view instructions on how to change DPI"
+	Local $button = MsgBox($MB_OKCANCEL + $MB_ICONWARNING, "DPI incorrect", $text)
+	If $button = $IDOK Then
+		Switch @OSVersion
+			Case "WIN_10"
+				ShellExecute("https://mybot.run/forums/index.php?/topic/15137-change-dpi-to-100/#comment-141136")
+			Case "WIN_8", "WIN_81"
+				ShellExecute("https://mybot.run/forums/index.php?/topic/15137-change-dpi-to-100/#comment-141160")
+			Case "WIN_7"
+				ShellExecute("https://mybot.run/forums/index.php?/topic/15137-change-dpi-to-100/#comment-141159")
+			Case "WIN_VISTA"
+				ShellExecute("https://mybot.run/forums/index.php?/topic/15137-change-dpi-to-100/#comment-141161")
+			Case "WIN_2012"
+				ShellExecute("https://mybot.run/forums/index.php?/topic/15137-change-dpi-to-100/#comment-141160")
+			Case Else
+				MsgBox($MB_OK, "Unsupported", "Sorry, your operating system isn't supported by the bot.")
+		EndSwitch
+	EndIf
+	btnStop()
+	GUICtrlSetState($btnStart, $GUI_DISABLE)
+EndFunc
 

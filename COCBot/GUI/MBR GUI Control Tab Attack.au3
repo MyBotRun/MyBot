@@ -81,3 +81,108 @@ Func chkABRandomSpeedAtk()
 		GUICtrlSetState($cmbABWaveDelay, $GUI_ENABLE)
 	EndIf
 EndFunc   ;==>chkABRandomSpeedAtk
+
+Func btnMilkingOptions()
+	OpenGUIMilk2()
+EndFunc
+
+Func cmbABDeploy()
+	chkDESideEB()
+	If _GUICtrlComboBox_GetCurSel($cmbABDeploy) = 6 Then ; 6 it is milking attack strategy
+		GUICtrlSetState($btnMilkingOptions, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($btnMilkingOptions, $GUI_DISABLE)
+	EndIf
+EndFunc
+
+Func chkDBHeroWait()
+
+	If GUICtrlRead($chkDBKingWait) = $GUI_CHECKED Then
+		If GUICtrlRead($chkUpgradeKing) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkDBKingAttack, $GUI_CHECKED)
+		Else
+			GUICtrlSetState($chkDBKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	Else
+		If GUICtrlRead($chkUpgradeKing) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkDBKingWait, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($chkDBKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	EndIf
+
+	If GUICtrlRead($chkDBQueenWait) = $GUI_CHECKED Then
+		If GUICtrlRead($chkUpgradeQueen) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkDBQueenAttack, $GUI_CHECKED)
+		Else
+			GUICtrlSetState($chkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	Else
+		If GUICtrlRead($chkUpgradeQueen) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkDBQueenWait, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($chkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	EndIf
+
+	If GUICtrlRead($chkDBWardenWait) = $GUI_CHECKED Then
+		If GUICtrlRead($chkUpgradeWarden) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkDBWardenAttack, $GUI_CHECKED)
+		Else
+			GUICtrlSetState($chkDBWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	Else
+		If GUICtrlRead($chkUpgradeWarden) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkDBWardenWait, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($chkDBWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	EndIf
+
+EndFunc
+
+Func chkABHeroWait()
+
+	If GUICtrlRead($chkABKingWait) = $GUI_CHECKED Then
+		If GUICtrlRead($chkUpgradeKing) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkABKingAttack, $GUI_CHECKED)
+		Else
+			GUICtrlSetState($chkABKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	Else
+		If GUICtrlRead($chkUpgradeKing) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkABKingWait, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($chkABKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	EndIf
+
+	If GUICtrlRead($chkABQueenWait) = $GUI_CHECKED Then
+		If GUICtrlRead($chkUpgradeQueen) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkABQueenAttack, $GUI_CHECKED)
+		Else
+			GUICtrlSetState($chkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	Else
+		If GUICtrlRead($chkUpgradeQueen) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkABQueenWait, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($chkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	EndIf
+
+	If GUICtrlRead($chkABWardenWait) = $GUI_CHECKED Then
+		If GUICtrlRead($chkUpgradeWarden) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkABWardenAttack, $GUI_CHECKED)
+		Else
+			GUICtrlSetState($chkABWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	Else
+		If GUICtrlRead($chkUpgradeWarden) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkABWardenWait, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($chkABWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+	EndIf
+
+EndFunc

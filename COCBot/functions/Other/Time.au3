@@ -15,3 +15,7 @@
 Func Time() ;Gives the time in '[00:00:00 AM/PM]' format
 	Return "[" & _NowTime(3) & "] "
 EndFunc   ;==>Time
+
+Func TimeDebug() ;Gives the time in '[14:00:00.000]' format
+	Return "[" & @YEAR & "-" & @MON & "-" & @MDAY & " " & _NowTime(5) & "." & @MSEC & "] "
+EndFunc   ;==>Time

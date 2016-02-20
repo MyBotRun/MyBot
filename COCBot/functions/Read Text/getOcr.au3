@@ -11,35 +11,35 @@
 ; ===============================================================================================================================
 
 
-Func getNameBuilding($x_start, $y_start); getNameBuilding(242,520) -> Gets complete name and level of the buildings - to use in future features
+Func getNameBuilding($x_start, $y_start); getNameBuilding(242,520) -> Gets complete name and level of the buildings, bottom of screen
 	Return getOcrAndCapture("coc-build", $x_start, $y_start, 377, 27)
 EndFunc   ;==>getNameBuilding
 
-Func getGoldVillageSearch($x_start, $y_start);48, 69 -> Gets complete value of gold xxx,xxx Getresources.au3
+Func getGoldVillageSearch($x_start, $y_start);48, 69 -> Gets complete value of gold xxx,xxx while searching, top left, Getresources.au3
 	Return getOcrAndCapture("coc-v-g", $x_start, $y_start, 90, 16, True)
 EndFunc   ;==>getGoldVillageSearch
 
-Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete value of Elixir xxx,xxx Getresources.au3
+Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete value of Elixir xxx,xxx, top left,  Getresources.au3
 	Return getOcrAndCapture("coc-v-e", $x_start, $y_start, 90, 16, True)
 EndFunc   ;==>getElixirVillageSearch
 
-Func getDarkElixirVillageSearch($x_start, $y_start) ;48, 69+57 or 69+69  -> Gets complete value of Dark Elixir xxx,xxx Getresources.au3
+Func getDarkElixirVillageSearch($x_start, $y_start) ;48, 69+57 or 69+69  -> Gets complete value of Dark Elixir xxx,xxx, top left,  Getresources.au3
 	Return getOcrAndCapture("coc-v-de", $x_start, $y_start, 75, 16, True)
 EndFunc   ;==>getDarkElixirVillageSearch
 
-Func getTrophyVillageSearch($x_start, $y_start) ;48, 69+99 or 69+69 -> Gets complete value of Trophies xxx,xxx Getresources.au3
+Func getTrophyVillageSearch($x_start, $y_start) ;48, 69+99 or 69+69 -> Gets complete value of Trophies xxx,xxx , top left, Getresources.au3
 	Return getOcrAndCapture("coc-v-t", $x_start, $y_start, 75, 16, True)
 EndFunc   ;==>getTrophyVillageSearch
 
-Func getTrophyMainScreen($x_start, $y_start) ; -> Gets complete value of Gold/Elixir/Dark Elixir/Trophies/Gems xxx,xxx "VillageReport.au3"
+Func getTrophyMainScreen($x_start, $y_start) ; -> Gets trophy value, top left of main screen "VillageReport.au3"
 	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 50, 16, True)
 EndFunc   ;==>getTrophyMainScreen
 
-Func getTrophyLossAttackScreen($x_start, $y_start) ; 48,214 or 48,184 WO/DE -> Gets complete value trophy loss from attack screen
+Func getTrophyLossAttackScreen($x_start, $y_start) ; 48,214 or 48,184 WO/DE -> Gets red number of trophy loss from attack screen, top left
 	Return getOcrAndCapture("coc-t-p", $x_start, $y_start, 50, 16, True)
 EndFunc   ;==>getTrophyLossAttackScreen
 
-Func getUpgradeResource($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx "UpgradeBuildings.au3" to use in future function
+Func getUpgradeResource($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
 	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 98, 16, True)
 EndFunc   ;==>getUpgradeResource
 
@@ -47,31 +47,31 @@ Func getResourcesMainScreen($x_start, $y_start) ; -> Gets complete value of Gold
 	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 100, 16, True)
 EndFunc   ;==>getResourcesMainScreen
 
-Func getResourcesLoot($x_start, $y_start) ; -> Gets complete value of Gold/Elixir/Dark Elixir/Trophies xxx,xxx "AttackReport"
+Func getResourcesLoot($x_start, $y_start) ; -> Gets complete value of Gold/Elixir after attack xxx,xxx "AttackReport"
 	Return getOcrAndCapture("coc-loot", $x_start, $y_start, 107, 22, True)
 EndFunc   ;==>getResourcesLoot
 
-Func getResourcesLootDE($x_start, $y_start) ; -> Gets complete value of Gold/Elixir/Dark Elixir/Trophies xxx,xxx "AttackReport"
+Func getResourcesLootDE($x_start, $y_start) ; -> Gets complete value of Dark Elixir after attack xxx,xxx "AttackReport"
 	Return getOcrAndCapture("coc-loot", $x_start, $y_start, 75, 22, True)
 EndFunc   ;==>getResourcesLootDE
 
-Func getResourcesLootT($x_start, $y_start) ; -> Gets complete value of Gold/Elixir/Dark Elixir/Trophies xxx,xxx "AttackReport"
+Func getResourcesLootT($x_start, $y_start) ; -> Gets complete value of Trophies after attack. xxx,xxx "AttackReport"
 	Return getOcrAndCapture("coc-loot", $x_start, $y_start, 37, 22, True)
 EndFunc   ;==>getResourcesLootT
 
-Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx "AttackReport.au3"
+Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
 	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 98, 16, True)
 EndFunc   ;==>getResourcesBonus
 
-Func getResourcesBonusPerc($x_start, $y_start) ; -> Gets complete value of Bonus % "AttackReport.au3"
+Func getResourcesBonusPerc($x_start, $y_start) ; -> Gets complete value of Bonus % in "AttackReport.au3"
 	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 48, 16, True)
 EndFunc   ;==>getResourcesBonusPerc
 
-Func getLabUpgrdResourceWht($x_start, $y_start) ; -> Gets complete value of Elixir/DE xxx,xxx for "laboratory.au3" when white text
+Func getLabUpgrdResourceWht($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons, xxx,xxx for "laboratory.au3" when white text
 	Return getOcrAndCapture("coc-lab-w", $x_start, $y_start, 60, 14, True)
 EndFunc   ;==>getLabUpgrdResourceWht
 
-Func getLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir/DE xxx,xxx for "laboratory.au3" when red text
+Func getLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons,  xxx,xxx for "laboratory.au3" when red text
 	Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 60, 14, True)
 EndFunc   ;==>getLabUpgrdResourceRed
 
@@ -113,7 +113,7 @@ Func getArmyCampCap($x_start, $y_start);  -> Gets army camp capacity --> train.a
 	Return getOcrAndCapture("coc-army", $x_start, $y_start, 66, 14, True)
 EndFunc   ;==>getArmyCampCap
 
-Func getCastleDonateCap($x_start, $y_start);  -> Gets army camp capacity --> train.au3
+Func getCastleDonateCap($x_start, $y_start);  -> Gets clan castle capacity,  --> donatecc.au3
 	Return getOcrAndCapture("coc-army", $x_start, $y_start, 30, 14, True)
 EndFunc   ;==>getArmyCampCap
 
@@ -121,11 +121,11 @@ Func getBarracksTroopQuantity($x_start, $y_start);  -> Gets quantity of troops i
 	Return getOcrAndCapture("coc-train", $x_start, $y_start, 52, 16, True)
 EndFunc   ;==>getBarracksTroopQuantity
 
-Func getAttackDisable($x_start, $y_start);  -> 346, 182 - Gets red text disabled for early warning of Take-A-Break
+Func getAttackDisable($x_start, $y_start);  -> 346, 182 - Gets red text disabled for early warning of Personal Break
 	Return getOcrAndCapture("coc-dis", $x_start, $y_start, 118, 24, True)
 EndFunc   ;==>getAttackDisable
 
-Func getOcrLanguage($x_start, $y_start);  -> Get english language - main screen --> getLanguage(324,6)
+Func getOcrLanguage($x_start, $y_start);  -> Get english language - main screen - "Builder" text at top--> getLanguage(324,6)
 	Return getOcrAndCapture("coc-ms-testl", $x_start, $y_start, 43, 11, True)
 EndFunc   ;==>getOcrLanguage
 
@@ -137,15 +137,15 @@ Func getOcrSpellQuantity($x_start, $y_start);  -> Get the Spells quantity in Arm
 	Return getOcrAndCapture("coc-t-t", $x_start, $y_start, 25, 12, True)
 EndFunc   ;==>getOcrSpellQuantity
 
-Func getOcrClanLevel($x_start, $y_start);  -> Get the Spells quantity in Armyoverview window
+Func getOcrClanLevel($x_start, $y_start);  -> Get the clan level from clan info page
 	Return getOcrAndCapture("coc-clanlevel", $x_start, $y_start, 20, 19, True)
 EndFunc   ;==>getOcrClanLevel
 
-Func getOcrSpaceCastleDonate($x_start, $y_start);  -> Get the space of castle request
+Func getOcrSpaceCastleDonate($x_start, $y_start);  -> Get the number of troops donated/capacity from a request
 	Return getOcrAndCapture("coc-totalreq", $x_start, $y_start, 40, 12, True)
 EndFunc   ;==>getOcrSpaceCastleDonate
 
-Func getOcrDonationTroopsDetection($x_start, $y_start);  -> Get the space of castle request
+Func getOcrDonationTroopsDetection($x_start, $y_start);  -> Get the type of troop from the donate window
 	Return getOcrAndCapture("coc-donationtroop", $x_start, $y_start, 30, 15, True)
 EndFunc   ;==>getOcrDonationTroopsDetection
 
@@ -153,9 +153,13 @@ Func getOcrOverAllDamage($x_start, $y_start);  -> Get the Overall Damage %
 	Return getOcrAndCapture("coc-overalldamage", $x_start, $y_start, 50, 20, True)
 EndFunc   ;==>getOcrOverAllDamage
 
-Func getOcrGuardShield($x_start, $y_start);  -> Get the Overall Damage %
+Func getOcrGuardShield($x_start, $y_start);  -> Get the guard/shield time left, middle top of the screen
 	Return getOcrAndCapture("coc-guardshield", $x_start, $y_start, 68, 15)
 EndFunc   ;==>getOcrGuardShield
+
+Func getOcrPBTtime($x_start, $y_start);  -> Get the Time until PBT starts from PBT info window
+	Return getOcrAndCapture("coc-pbttime", $x_start, $y_start, 59, 15)
+EndFunc   ;==>getOcrPBTtime
 
 
 Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpace = False)

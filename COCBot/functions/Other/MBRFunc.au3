@@ -29,7 +29,33 @@ Func MBRFunc($Start = True)
 				GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
 			EndIf
 		Case False
+			$Pid = WinGetProcess($hFuncLib)
+			If $debugSetlog = 1 Then Setlog("MBRFunction.dll PID = " & $Pid, $COLOR_PURPLE)
 			DllClose($hFuncLib)
+			Sleep(250)
+			If ProcessExists($Pid) Then
+				ConsoleWrite("MBRFunction.dll process slow close, PID= " & $Pid & @CRLF)
+				If $debugSetlog = 1 Then Setlog("MBRFunction.dll process slow close, attempting fix", $COLOR_PURPLE)
+				If ProcessClose($Pid) = 0 Then
+					Switch @error
+						Case 1
+							$sMsg = "OpenProcess failed"
+						Case 2
+							$sMsg = "AdjustTokenPrivileges Failed"
+						Case 3
+							$sMsg = "TerminateProcess Failed"
+						Case 4
+							$sMsg = "Cannot verify if process exists"
+						Case Else
+							$sMsg = "Unknown Error"
+					EndSwitch
+					ConsoleWrite("MBRFunctions.dll process close error: " & @error & " = " & $sMsg & " Extended error= " & @extended & @CRLF)
+					If $debugSetlog = 1 Then Setlog("MBRFunctions.dll process close error: " & @error & " = " & $sMsg, $COLOR_PURPLE)
+				Else
+					ConsoleWrite("MBRFunction.dll process Killed" & @CRLF)
+					If $debugSetlog = 1 Then Setlog("MBRfunctions.dll Process killed.", $COLOR_PURPLE)
+				EndIf
+			EndIf
 			If $debugSetlog = 1 Then Setlog("MBRfunctions.dll closed.", $COLOR_PURPLE)
 	EndSwitch
 EndFunc   ;==>MBRFunc

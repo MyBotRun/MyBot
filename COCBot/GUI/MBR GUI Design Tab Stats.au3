@@ -28,12 +28,12 @@ Local $x = 30, $y = 145
 $grpResourceOnStart = GUICtrlCreateGroup(GetTranslated(11, 2, "Started with"), $x - 20, $y - 15, 90, 90)
 $lblResultStatsTemp = GUICtrlCreateLabel(GetTranslated(11, 3, "Report") & @CRLF & GetTranslated(11, 4, "will appear") & @CRLF & GetTranslated(11, 5, "here on") & @CRLF & GetTranslated(11, 6, "first run."), $x - 15, $y + 5, 100, 65, BitOR($SS_LEFT, $BS_MULTILINE))
 GUICtrlCreateIcon($pIconLib, $eIcnGold, $x + 50, $y, 16, 16)
-$lblResultGoldStart = GUICtrlCreateLabel("", $x - 10, $y + 2, 55, 17, $SS_RIGHT)
+$lblResultGoldStart = GUICtrlCreateLabel("", $x - 15, $y + 2, 60, 17, $SS_RIGHT)
 $txtTip = GetTranslated(11, 7, "The amount of Gold you had when the bot started.")
 GUICtrlSetTip(-1, $txtTip)
 $y += 17
 GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x + 50, $y, 16, 16)
-$lblResultElixirStart = GUICtrlCreateLabel("", $x - 10, $y + 2, 55, 17, $SS_RIGHT)
+$lblResultElixirStart = GUICtrlCreateLabel("", $x - 15, $y + 2, 60, 17, $SS_RIGHT)
 $txtTip = GetTranslated(11, 8, "The amount of Elixir you had when the bot started.")
 GUICtrlSetTip(-1, $txtTip)
 $y += 17

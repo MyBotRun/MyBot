@@ -84,13 +84,13 @@ $lblVersion = GUICtrlCreateLabel($sBotVersion, 205, $y + 60, 60, 17, $SS_CENTER)
 ;~ Village
 Local $x = 290, $y = 535
 $grpVillage = GUICtrlCreateGroup(GetTranslated(13,21, "Village"), $x - 20, $y - 20, 190, 85)
-	$lblResultGoldNow = GUICtrlCreateLabel("", $x, $y + 2, 55, 15, $SS_RIGHT)
+	$lblResultGoldNow = GUICtrlCreateLabel("", $x - 5, $y + 2, 60, 15, $SS_RIGHT)
 	$lblResultGoldHourNow = GUICtrlCreateLabel("", $x, $y + 2, 50, 15, $SS_RIGHT)
 		GUICtrlSetState(-1, $GUI_HIDE)
 	$picResultGoldNow = GUICtrlCreateIcon ($pIconLib, $eIcnGold, $x + 60, $y, 16, 16)
 		GUICtrlSetState(-1, $GUI_HIDE)
 	$picResultGoldTemp = GUICtrlCreateIcon ($pIconLib, $eIcnGold, $x - 5, $y, 16, 16)
-	$lblResultElixirNow = GUICtrlCreateLabel("", $x, $y + 22, 55, 15, $SS_RIGHT)
+	$lblResultElixirNow = GUICtrlCreateLabel("", $x - 5, $y + 22, 60, 15, $SS_RIGHT)
 	$lblResultElixirHourNow = GUICtrlCreateLabel("", $x, $y + 22, 50, 15, $SS_RIGHT)
 		GUICtrlSetState(-1, $GUI_HIDE)
 	$picResultElixirNow = GUICtrlCreateIcon ($pIconLib, $eIcnElixir, $x + 60, $y + 20, 16, 16)
@@ -129,10 +129,12 @@ $grpVillage = GUICtrlCreateGroup(GetTranslated(13,21, "Village"), $x - 20, $y - 
 	$x = 290
 	$lblVillageReportTemp = GUICtrlCreateLabel(GetTranslated(13,22, "Village Report") & @CRLF & GetTranslated(13,23, "will appear here") & @CRLF & GetTranslated(13,24, "on first run."), $x + 27, $y + 5, 100, 45, BITOR($SS_CENTER, $BS_MULTILINE))
 
- 	$btnTestVillage = GUICtrlCreateButton("TEST BUTTON", $x + 90 , $y -25, -1, -1)
- 		GUICtrlSetOnEvent(-1, "btnTestDeadBase")
-		GUICtrlSetState(-1, $GUI_HIDE)
+	$btnQuickStats = GUICtrlCreateButton(GetTranslated(13,28, "Stats"), $x + 125 , $y -25, 40, -1)
+		GUICtrlSetOnEvent(-1, "btnVillageStat")
 
+ 	$btnTestVillage = GUICtrlCreateButton("TEST BUTTON", $x + 25 , $y + 54, 100, 18)
+ 		GUICtrlSetOnEvent(-1, "ButtonBoost")
+		GUICtrlSetState(-1, $GUI_HIDE)
 
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 

@@ -135,6 +135,7 @@ Func QueenUpgrade()
 				SetLog("Your Queen Level read as: " & $aHeroLevel, $COLOR_GREEN)
 				If $aHeroLevel = 40 Then; max hero
 					SetLog("Your AQ is max, cannot upgrade!", $COLOR_BLUE)
+					$ichkUpgradeQueen = 0 ; turn Off the Queen´s upgrade
 					Return
 				EndIf
 			Else
@@ -237,6 +238,7 @@ Func KingUpgrade()
 				SetLog("Your King Level read as: " & $aHeroLevel, $COLOR_GREEN)
 				If $aHeroLevel = 40 Then; max hero
 					SetLog("Your BK is max, cannot upgrade!", $COLOR_BLUE)
+					$ichkUpgradeKing = 0 ; Turn Off the King's Upgrade
 					Return
 				EndIf
 			Else
@@ -346,6 +348,7 @@ Func WardenUpgrade()
 				SetLog("Your Warden Level read as: " & $aHeroLevel, $COLOR_GREEN)
 				If $aHeroLevel = 20 Then; max hero
 					SetLog("Your GW is max, cannot upgrade!", $COLOR_BLUE)
+					$ichkUpgradeWarden = 0 ; turn OFF the Wardn's Upgrade
 					Return
 				EndIf
 			Else
