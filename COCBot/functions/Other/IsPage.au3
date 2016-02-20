@@ -45,7 +45,7 @@ Func IsAttackPage()
 	Else
 		If $DebugSetlog = 1 Or $DebugClick = 1 then
 			SetLog("**Attack Window FAIL**", $COLOR_ORANGE)
-			SetLog("expected in (" & $aIsAttackPage & "," &$aIsAttackPage &")  = " & Hex($aIsAttackPage[2],6) & " - Found " & $colorRead , $COLOR_ORANGE)
+			SetLog("expected in (" & $aIsAttackPage[0] & "," &$aIsAttackPage[1] &")  = " & Hex($aIsAttackPage[2],6) & " - Found " & $colorRead , $COLOR_ORANGE)
 		EndIf
 		if $debugImageSave= 1 Then DebugImageSave("IsAttackPage_")
 		Return False
@@ -53,7 +53,7 @@ Func IsAttackPage()
 
 EndFunc   ;==>IsAttackPage
 
-Func IsAttackWhileShieldPage()
+Func IsAttackWhileShieldPage($makeDebugImageSave=True)
 	Local $result
 
 	$result = _CheckPixel($aIsAttackShield, $bCapturePixel)
@@ -63,7 +63,7 @@ Func IsAttackWhileShieldPage()
 		Return True
 	Else
 		If $DebugSetlog = 1 Or $DebugClick = 1 then SetLog("**Attack Shield Window not open**", $COLOR_ORANGE)
-		if $debugImageSave = 1 Then	DebugImageSave("IsAttackWhileShieldPage_")
+		if $debugImageSave = 1  and $makeDebugImageSave = True Then	DebugImageSave("IsAttackWhileShieldPage_")
 		Return False
 	EndIf
 

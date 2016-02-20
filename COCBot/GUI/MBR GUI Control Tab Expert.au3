@@ -15,7 +15,7 @@
 
 Func sldTrainITDelay()
 	$isldTrainITDelay = GUICtrlRead($sldTrainITDelay)
-	GUICtrlSetData($lbltxtTrainITDelay, GetTranslated(10,32, "delay")&" " & $isldTrainITDelay & " ms.")
+	GUICtrlSetData($lbltxtTrainITDelay, GetTranslated(10, 32, "delay") & " " & $isldTrainITDelay & " ms.")
 EndFunc   ;==>sldTrainITDelay
 
 Func chkScreenshotType()
@@ -245,6 +245,36 @@ Func chkTotalCampForced()
 		GUICtrlSetState($txtTotalCampForced, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkTotalCampForced
+
+Func chkSinglePBTForced()
+	If GUICtrlRead($chkSinglePBTForced) = $GUI_CHECKED Then
+		GUICtrlSetState($txtSinglePBTimeForced, $GUI_ENABLE)
+		GUICtrlSetState($txtPBTimeForcedExit, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($txtSinglePBTimeForced, $GUI_DISABLE)
+		GUICtrlSetState($txtPBTimeForcedExit, $GUI_DISABLE)
+	EndIf
+	txtSinglePBTimeForced()
+EndFunc   ;==>chkSinglePBTForced
+
+Func txtSinglePBTimeForced()
+	Switch Int(GUICtrlRead($txtSinglePBTimeForced))
+		Case 0 To 14
+			GUICtrlSetBkColor($txtSinglePBTimeForced, $COLOR_RED)
+		Case 15
+			GUICtrlSetBkColor($txtSinglePBTimeForced, $COLOR_YELLOW)
+		Case 16 To 999
+			GUICtrlSetBkColor($txtSinglePBTimeForced, $COLOR_MONEYGREEN)
+	EndSwitch
+	Switch Int(GUICtrlRead($txtPBTimeForcedExit))
+		Case 0 To 10
+			GUICtrlSetBkColor($txtPBTimeForcedExit, $COLOR_RED)
+		Case 11 To 14
+			GUICtrlSetBkColor($txtPBTimeForcedExit, $COLOR_YELLOW)
+		Case 15 To 999
+			GUICtrlSetBkColor($txtPBTimeForcedExit, $COLOR_MONEYGREEN)
+	EndSwitch
+EndFunc   ;==>txtSinglePBTimeForced
 
 Func chkDebugSetlog()
 	If GUICtrlRead($chkDebugSetlog) = $GUI_CHECKED Then

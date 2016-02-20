@@ -73,11 +73,12 @@ Func isEveryFileInstalled()
 	Local $bResult = False, $iCount = 0
 
 	; folders and files needed checking
-	Local $aCheckFiles[8] = [@ScriptDir & "\COCBot", _
+	Local $aCheckFiles[9] = [@ScriptDir & "\COCBot", _
 							$LibDir, _
 							@ScriptDir & "\Images", _
 							$pFuncLib, _
 							$pImageLib, _
+							$pImgLib, _
 							$pIconLib, _
 							$LibDir & "\opencv_core220.dll", _
 							$LibDir & "\opencv_imgproc220.dll"]

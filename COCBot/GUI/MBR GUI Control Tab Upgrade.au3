@@ -165,8 +165,14 @@ Func chkUpgradeKing()
 
 	If GUICtrlRead($chkUpgradeKing) = $GUI_CHECKED Then
 		$ichkUpgradeKing = 1
+		GUICtrlSetState($chkDBKingWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkABKingWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBKingWait, $GUI_DISABLE)
+		GUICtrlSetState($chkABKingWait, $GUI_DISABLE)
 	Else
 		$ichkUpgradeKing = 0
+		GUICtrlSetState($chkDBKingWait, $GUI_ENABLE)
+		GUICtrlSetState($chkABKingWait, $GUI_ENABLE)
 	EndIf
 
 	If GUICtrlRead($cmbBoostBarbarianKing) > 0 Then
@@ -177,15 +183,20 @@ Func chkUpgradeKing()
 		GUICtrlSetState($chkUpgradeKing, $GUI_ENABLE)
 	EndIf
 
-	IniWrite($config, "upgrade", "UpgradeKing", $ichkUpgradeKing)
-EndFunc   ;==>ichkUpgradeKing
+EndFunc   ;==>chkUpgradeKing
 
 Func chkUpgradeQueen()
 
 	If GUICtrlRead($chkUpgradeQueen) = $GUI_CHECKED Then
 		$ichkUpgradeQueen = 1
+		GUICtrlSetState($chkDBQueenWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkABQueenWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBQueenWait, $GUI_DISABLE)
+		GUICtrlSetState($chkABQueenWait, $GUI_DISABLE)
 	Else
 		$ichkUpgradeQueen = 0
+		GUICtrlSetState($chkDBQueenWait, $GUI_ENABLE)
+		GUICtrlSetState($chkABQueenWait, $GUI_ENABLE)
 	EndIf
 
 	If GUICtrlRead($cmbBoostArcherQueen) > 0 Then
@@ -196,15 +207,20 @@ Func chkUpgradeQueen()
 		GUICtrlSetState($chkUpgradeQueen, $GUI_ENABLE)
 	EndIf
 
-	IniWrite($config, "upgrade", "UpgradeQueen", $ichkUpgradeQueen)
 EndFunc   ;==>chkUpgradeQueen
 
 Func chkUpgradeWarden()
 
 	If GUICtrlRead($chkUpgradeWarden) = $GUI_CHECKED Then
 		$ichkUpgradeWarden = 1
+		GUICtrlSetState($chkDBWardenWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkABWardenWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBWardenWait, $GUI_DISABLE)
+		GUICtrlSetState($chkABWardenWait, $GUI_DISABLE)
 	Else
 		$ichkUpgradeWarden = 0
+		GUICtrlSetState($chkDBWardenWait, $GUI_ENABLE)
+		GUICtrlSetState($chkABWardenWait, $GUI_ENABLE)
 	EndIf
 
 	If GUICtrlRead($cmbBoostWarden) > 0 Then
@@ -215,5 +231,4 @@ Func chkUpgradeWarden()
 		GUICtrlSetState($chkUpgradeWarden, $GUI_ENABLE)
 	EndIf
 
-	IniWrite($config, "upgrade", "UpgradeWarden", $ichkUpgradeWarden)
 EndFunc   ;==>chkUpgradeWarden

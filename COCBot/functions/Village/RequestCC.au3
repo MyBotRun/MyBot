@@ -86,10 +86,10 @@ Func _makerequest()
 		If _Sleep($iDelaymakerequest2) Then Return
 	Else
 		If $sTxtRequest <> "" Then
-			ControlFocus($Title,"", "")
+			If $ichkBackground = 0 And $NoFocusTampering = False Then ControlFocus($Title,"", "")
 			PureClick($atxtRequestCCBtn[0], $atxtRequestCCBtn[1], 1, 0, "#0254") ;Select text for request $atxtRequestCCBtn[2] = [430, 140]
 			_Sleep($iDelaymakerequest2)
-			If ControlSend($Title, "", "", $sTxtRequest, 0) = 0 Then
+			If SendText($sTxtRequest) = 0 Then
 				Setlog(" Request text entry failed, try again", $COLOR_RED)
 				Return
 			EndIf
@@ -106,7 +106,7 @@ Func _makerequest()
 		If $debugSetlog = 1 Then SetLog("Send request button not found", $COLOR_PURPLE)
 			CheckMainScreen(False) ;emergency exit
 		EndIf
-		ControlFocus($title, "", "")  ; make sure BS has window focus
+		If $ichkBackground = 0 And $NoFocusTampering = False Then ControlFocus($title, "", "")  ; make sure BS has window focus
 		PureClick($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], 1, 100, "#0256") ; click send button
 		$canRequestCC = False
 	EndIf

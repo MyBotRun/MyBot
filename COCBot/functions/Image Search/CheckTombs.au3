@@ -15,32 +15,128 @@
 
 Func CheckTombs()
 
-	Local $TombX, $TombY
 	If $ichkTombstones <> 1 Then Return False
-	$tomb = @ScriptDir & "\images\tomb.png"
-	If Not FileExists($tomb) Then Return False
-	$TombLoc = 0
-	_CaptureRegion()
-	If _Sleep($iDelayCheckTombs1) Then Return
-	For $TombTol = 0 To 20
-		If $TombLoc = 0 Then
-			$TombX = 0
-			$TombY = 0
-			$TombLoc = _ImageSearch($tomb, 1, $TombX, $TombY, $TombTol) ; Getting Tree Location
-;			If $TombLoc = 1 And $TombX > 35 And $TombY < 610 Then
-			If $TombLoc = 1 And isInsideDiamondXY($TombX, $TombY) Then
-				SetLog("Found tombstone ,  Removing...", $COLOR_GREEN)
-				If $DebugSetLog = 1 Then SetLog("Tombstone found (" & $TombX & "," & $TombY & ") tolerance:" & $TombTol, $COLOR_PURPLE)
-				If IsMainPage() Then Click($TombX, $TombY,1,0,"#0120")
-				If _Sleep($iDelayCheckTombs2) Then Return
-				ClickP($aAway,1,0,"#0121") ; click away
+
+	Local $CleanTombs[3]
+	$CleanTombs[0] = @ScriptDir & "\images\Resources\tomb.png"
+	$CleanTombs[1] = @ScriptDir & "\images\Resources\tomb1.png"
+	$CleanTombs[2] = @ScriptDir & "\images\Resources\tomb2.png"
+	Local $aToleranceImgLoc = 0.92
+	Local $CleanTombsX, $CleanTombsY
+
+	For $i = 0 To 2
+		_WinAPI_DeleteObject($hBitmapFirst)
+		$hBitmapFirst = _CaptureRegion2()
+		If FileExists($CleanTombs[$i]) Then
+			Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hBitmapFirst, "str", $CleanTombs[$i], "float", $aToleranceImgLoc, "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
+			If IsArray($res) Then
+				If $DebugSetLog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
+				If $res[0] = "0" Then
+					; failed to find a tomb on the field
+					If $i = 2 then SetLog("No Tombstone found, Yard is clean!", $COLOR_PURPLE)
+				ElseIf $res[0] = "-1" Then
+					SetLog("DLL Error", $COLOR_RED)
+				ElseIf $res[0] = "-2" Then
+					SetLog("Invalid Resolution", $COLOR_RED)
+				Else
+					$expRet = StringSplit($res[0], "|", 2)
+					For $j = 1 To UBound($expRet) - 1 Step 2
+						$CleanTombsX = Int($expRet[$j])
+						$CleanTombsY = Int($expRet[$j + 1])
+						If $DebugSetLog = 1 Then SetLog("Tombs found (" & $CleanTombsX & "," & $CleanTombsY & ")", $COLOR_GREEN)
+						If IsMainPage() Then Click($CleanTombsX, $CleanTombsY, 1, 0, "#0432")
+						If _Sleep($iDelayCheckTombs2) Then Return
+						ClickP($aAway, 2, 300, "#0329") ;Click Away
+						SetLog("Tombstones Cleaned ... !", $COLOR_GREEN)
+						ExitLoop (2)
+					Next
+				EndIf
+			Else
+				SetLog("No Tombstone found, Yard is clean!", $COLOR_PURPLE)
 				If _Sleep($iDelayCheckTombs1) Then Return
-				Return True
 			EndIf
 		EndIf
 	Next
-	If $DebugSetLog = 1 Then SetLog("Cannot find tombstones, Yard is clean!", $COLOR_PURPLE)
-	If _Sleep($iDelayCheckTombs1) Then Return
+
 	checkMainScreen(False) ; check for screen errors while function was running
 
 EndFunc   ;==>CheckTombs
+
+Func CleanYard()
+
+	If $ichkCleanYard = 0 Then Return
+
+	$aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
+	If IsArray($aGetBuilders) Then
+		$iFreeBuilderCount = $aGetBuilders[0]
+		$TotalBuilders = $aGetBuilders[1]
+	EndIf
+
+	Local $CleanYard[7]
+	$CleanYard[0] = @ScriptDir & "\images\Resources\bush.png"
+	$CleanYard[1] = @ScriptDir & "\images\Resources\mushroom.png"
+	$CleanYard[2] = @ScriptDir & "\images\Resources\tree.png"
+	$CleanYard[3] = @ScriptDir & "\images\Resources\tree2.png"
+	$CleanYard[4] = @ScriptDir & "\images\Resources\trunk.png"
+	$CleanYard[5] = @ScriptDir & "\images\Resources\trunk2.png"
+	$CleanYard[6] = @ScriptDir & "\images\Resources\gembox.png"
+
+	Local $CleanYardX, $CleanYardY
+	Local $aToleranceImgLoc[7] = [0.92, 0.91, 0.91, 0.90, 0.91, 0.93, 0.89]
+
+	Local $aGetBuilders = ""
+	Local $TotalBuilders = ""
+
+	If $iFreeBuilderCount > 0 Then
+		For $i = 0 To 6
+			_WinAPI_DeleteObject($hBitmapFirst)
+			$hBitmapFirst = _CaptureRegion2()
+			If FileExists($CleanYard[$i]) Then
+				Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hBitmapFirst, "str", $CleanYard[$i], "float", $aToleranceImgLoc[$i], "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
+				If IsArray($res) Then
+					If $DebugSetLog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
+					If $res[0] = "0" Then
+						; failed to find a loot cart on the field
+						If $DebugSetLog = 1 Then SetLog("No Resource found")
+					ElseIf $res[0] = "-1" Then
+						SetLog("DLL Error", $COLOR_RED)
+					ElseIf $res[0] = "-2" Then
+						SetLog("Invalid Resolution", $COLOR_RED)
+					Else
+						$expRet = StringSplit($res[0], "|", 2)
+						For $j = 1 To UBound($expRet) - 1 Step 2
+							$CleanYardX = Int($expRet[$j])
+							$CleanYardY = Int($expRet[$j + 1])
+							If isInsideDiamondXY($CleanYardX, $CleanYardY) = True Then
+							   If $DebugSetLog = 1 Then SetLog("Resource found (" & $CleanYardX & "," & $CleanYardY & ")", $COLOR_GREEN)
+							   If IsMainPage() Then Click($CleanYardX, $CleanYardY, 1, 0, "#0430")
+							   If _Sleep($iDelayCollect3) Then Return
+							   If IsMainPage() Then Click($aCleanYard[0], $aCleanYard[1], 1, 0, "#0431") ;Click loot cart button
+							   If _Sleep($iDelayCheckTombs2) Then Return
+							   ClickP($aAway, 2, 300, "#0329") ;Click Away
+							   If _Sleep($iDelayCheckTombs1) Then Return
+							   $aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
+							   If IsArray($aGetBuilders) Then
+								   $iFreeBuilderCount = $aGetBuilders[0]
+								   $TotalBuilders = $aGetBuilders[1]
+							   EndIf
+							   If $iFreeBuilderCount = 0 Then
+								   Setlog("No More Builders available")
+								   If _Sleep(2000) Then Return
+								   ExitLoop (2)
+							   EndIf
+						    EndIf
+						Next
+					EndIf
+				EndIf
+			EndIf
+		Next
+	EndIf
+	_WinAPI_DeleteObject($hBitmapFirst)
+
+	UpdateStats()
+	ClickP($aAway, 1, 300, "#0329") ;Click Away
+
+EndFunc   ;==>CleanYard
+
+

@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 
 Func CloseBS() ; @deprecated, use CloseAndroid()
-   CloseBlueStacks()
+   CloseAndroid()
 EndFunc
 
 Func CloseBlueStacks()
@@ -24,7 +24,7 @@ Func CloseBlueStacks()
 
 	SetLog("Stopping BlueStacks ....", $COLOR_BLUE)
 
-	If Not InitBLueStacks() Then Return
+	If Not InitAndroid() Then Return
 
 	RunWait($__BlueStacks_Path & "HD-Quit.exe")
 	If @error <> 0 Then
@@ -64,7 +64,7 @@ Func CloseBlueStacks()
 	If $debugsetlog = 1 And $bOops Then
 		SetLog("BS Kill Failed to stop service", $COLOR_RED)
 	ElseIf Not $bOops Then
-		SetLog("BS stopped succesfully", $COLOR_GREEN)
+		SetLog("BS stopped successfully", $COLOR_GREEN)
 	EndIf
 
 	RemoveGhostTrayIcons("BlueStacks")  ; Remove ghost BS icon if left behind due forced taskkill
@@ -81,7 +81,7 @@ Func CloseBlueStacks2()
 
 	SetLog("Stopping " & $Android & "....", $COLOR_BLUE)
 
-    If Not InitBLueStacks2() Then Return
+    If Not InitAndroid() Then Return
 
 	RunWait($__BlueStacks_Path & "HD-Quit.exe")
 	If @error <> 0 Then
@@ -98,7 +98,7 @@ Func CloseBlueStacks2()
 	If $debugsetlog = 1 And $bOops Then
 		SetLog($Android & " failed to quit all processes", $COLOR_RED)
 	ElseIf Not $bOops Then
-		SetLog($Android & " stopped succesfully", $COLOR_GREEN)
+		SetLog($Android & " stopped successfully", $COLOR_GREEN)
 	EndIf
 
 	;RemoveGhostTrayIcons("BlueStacks Agent Online")  ; Remove ghost BS icon if left behind due forced taskkill, early BS2 version
@@ -175,7 +175,7 @@ Func ServiceStop($sServiceName)
 	If $debugsetlog = 1 And $svcWaitIterations > 15 Then
 		SetLog("Failed to stop service " & $sServiceName, $COLOR_RED)
 	Else
-		If $debugsetlog = 1 Then SetLog($sServiceName & "Service stopped succesfully", $COLOR_GREEN)
+		If $debugsetlog = 1 Then SetLog($sServiceName & "Service stopped successfully", $COLOR_GREEN)
 	EndIf
 EndFunc   ;==>ServiceStop
 
