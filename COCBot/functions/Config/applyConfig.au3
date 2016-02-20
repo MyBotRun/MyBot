@@ -22,12 +22,14 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	; Move with redraw disabled causes ghost window in VMWare, so move first then disable redraw
 	SetRedrawBotWindow(False)
 
+#cs Not needed with new profile system
 	If $iVillageName = "" Then
 		GUICtrlSetData($txtVillageName, "MyVillage")
 	Else
 		GUICtrlSetData($txtVillageName, $iVillageName)
 	EndIf
 	txtVillageName()
+#ce
 
 	_GUICtrlComboBox_SetCurSel($cmbLog, $iCmbLog)
 	cmbLogImpl(True)
@@ -51,6 +53,8 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	Else
 		GUICtrlSetState($chkBotStop, $GUI_UNCHECKED)
 	EndIf
+	chkBotStop()
+
 	_GUICtrlComboBox_SetCurSel($cmbBotCommand, $icmbBotCommand)
 	_GUICtrlComboBox_SetCurSel($cmbBotCond, $icmbBotCond)
 	_GUICtrlComboBox_SetCurSel($cmbHoursStop, $icmbHoursStop)
@@ -302,26 +306,48 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 		GUICtrlSetState($chkABAttackNearDarkElixirDrill, $GUI_UNCHECKED)
 	EndIf
 
-	If $KingAttack[$DB] = 1 Then
+	If BitAND($iHeroAttack[$DB], $HERO_KING) = $HERO_KING Then
 		GUICtrlSetState($chkDBKingAttack, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDBKingAttack, $GUI_UNCHECKED)
 	EndIf
-	If $KingAttack[$LB] = 1 Then
+	If BitAND($iHeroAttack[$LB], $HERO_KING) = $HERO_KING Then
 		GUICtrlSetState($chkABKingAttack, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkABKingAttack, $GUI_UNCHECKED)
 	EndIf
 
-	If $QueenAttack[$DB] = 1 Then
+	If BitAND($iHeroWait[$DB], $HERO_KING) = $HERO_KING Then
+		GUICtrlSetState($chkDBKingWait, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBKingWait, $GUI_UNCHECKED)
+	EndIf
+	If BitAND($iHeroWait[$LB], $HERO_KING) = $HERO_KING Then
+		GUICtrlSetState($chkABKingWait, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABKingWait, $GUI_UNCHECKED)
+	EndIf
+
+	If BitAND($iHeroAttack[$DB], $HERO_QUEEN) = $HERO_QUEEN Then
 		GUICtrlSetState($chkDBQueenAttack, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDBQueenAttack, $GUI_UNCHECKED)
 	EndIf
-	If $QueenAttack[$LB] = 1 Then
+	If BitAND($iHeroAttack[$LB], $HERO_QUEEN) = $HERO_QUEEN Then
 		GUICtrlSetState($chkABQueenAttack, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkABQueenAttack, $GUI_UNCHECKED)
+	EndIf
+
+	If BitAND($iHeroWait[$DB], $HERO_QUEEN) = $HERO_QUEEN Then
+		GUICtrlSetState($chkDBQueenWait, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBQueenWait, $GUI_UNCHECKED)
+	EndIf
+	If BitAND($iHeroWait[$LB], $HERO_QUEEN) = $HERO_QUEEN Then
+		GUICtrlSetState($chkABQueenWait, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABQueenWait, $GUI_UNCHECKED)
 	EndIf
 
 	If $iDropCC[$DB] = 1 Then
@@ -329,24 +355,35 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	Else
 		GUICtrlSetState($chkDBDropCC, $GUI_UNCHECKED)
 	EndIf
-
 	If $iDropCC[$LB] = 1 Then
 		GUICtrlSetState($chkABDropCC, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkABDropCC, $GUI_UNCHECKED)
 	EndIf
 
-	If $WardenAttack[$DB] = 1 Then
+	If BitAND($iHeroAttack[$DB], $HERO_WARDEN) = $HERO_WARDEN Then
 		GUICtrlSetState($chkDBWardenAttack, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDBWardenAttack, $GUI_UNCHECKED)
 	EndIf
-
-	If $WardenAttack[$LB] = 1 Then
+	If BitAND($iHeroAttack[$LB], $HERO_WARDEN) = $HERO_WARDEN Then
 		GUICtrlSetState($chkABWardenAttack, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkABWardenAttack, $GUI_UNCHECKED)
 	EndIf
+
+	If BitAND($iHeroWait[$DB], $HERO_WARDEN) = $HERO_WARDEN Then
+		GUICtrlSetState($chkDBWardenWait, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDBWardenWait, $GUI_UNCHECKED)
+	EndIf
+	If BitAND($iHeroWait[$LB], $HERO_WARDEN) = $HERO_WARDEN Then
+		GUICtrlSetState($chkABWardenWait, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkABWardenWait, $GUI_UNCHECKED)
+	EndIf
+	chkDBHeroWait()
+	chkABHeroWait()
 
 	If $iChkUseCCBalanced = 1 Then
 		GUICtrlSetState($chkUseCCBalanced, $GUI_CHECKED)
@@ -431,6 +468,12 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 		GUICtrlSetState($chkTSEnableAfter, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkTSEnableAfter, $GUI_UNCHECKED)
+	EndIf
+
+	If $iChkMeetDE[$TS] = 1 Then
+		GUICtrlSetState($chkTSMeetDE, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkTSMeetDE, $GUI_UNCHECKED)
 	EndIf
 	chkTSEnableAfter()
 	GUICtrlSetData($txtTSEnableAfter, $iEnableAfterCount[$TS])
@@ -942,7 +985,7 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 
 	;Troop Settings--------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbTroopComp, $iCmbTroopComp)
-
+	_GUICtrlComboBox_SetCurSel($cmbDarkTroopComp, $iCmbDarkTroopComp)
 	For $i = 0 To UBound($TroopName) - 1
 		GUICtrlSetData(Eval("txtNum" & $TroopName[$i]), Eval($TroopName[$i] & "Comp"))
 	Next
@@ -950,6 +993,7 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 		GUICtrlSetData(Eval("txtNum" & $TroopDarkName[$i]), Eval($TroopDarkName[$i] & "Comp"))
 	Next
 	SetComboTroopComp()
+	SetComboDarkTroopComp()
 	lblTotalCount()
 
 	_GUICtrlComboBox_SetCurSel($cmbBarrack1, $barrackTroop[0])
@@ -957,30 +1001,37 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	_GUICtrlComboBox_SetCurSel($cmbBarrack3, $barrackTroop[2])
 	_GUICtrlComboBox_SetCurSel($cmbBarrack4, $barrackTroop[3])
 
+	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack1, $darkBarrackTroop[0])
+	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack2, $darkBarrackTroop[1])
+
 	GUICtrlSetData($txtFullTroop, $fulltroop)
 	GUICtrlSetData($sldTrainITDelay, $isldTrainITDelay)
 	GUICtrlSetData($lbltxtTrainITDelay, "delay " & $isldTrainITDelay & " ms.")
 	;barracks boost not saved (no use)
 
 	; Spells Creation  ---------------------------------------------------------------------
-	GUICtrlSetData($txtNumLightningSpell, $LightningSpellComp)
-	GUICtrlSetData($txtNumRageSpell, $RageSpellComp)
-	GUICtrlSetData($txtNumHealSpell, $HealSpellComp)
-	GUICtrlSetData($txtNumPoisonSpell, $PoisonSpellComp)
-	GUICtrlSetData($txtNumHasteSpell, $HasteSpellComp)
+	GUICtrlSetData($txtNumLightningSpell, $iLightningSpellComp)
+	GUICtrlSetData($txtNumRageSpell, $iRageSpellComp)
+	GUICtrlSetData($txtNumHealSpell, $iHealSpellComp)
+	GUICtrlSetData($txtNumJumpSpell, $iJumpSpellComp)
+	GUICtrlSetData($txtNumFreezeSpell, $iFreezeSpellComp)
+	GUICtrlSetData($txtNumPoisonSpell, $iPoisonSpellComp)
+	GUICtrlSetData($txtNumEarthSpell, $iEarthSpellComp)
+	GUICtrlSetData($txtNumHasteSpell, $iHasteSpellComp)
 	GUICtrlSetData($txtTotalCountSpell, $iTotalCountSpell)
 	lblTotalCountSpell()
+	btnHideElixir()
 
 	;PushBullet-----------------------------------------------------------------------------
 
 	GUICtrlSetData($PushBTokenValue, $PushToken)
 	GUICtrlSetData($OrigPushB, $iOrigPushB)
 
-;~ 	If $iOrigPushB = "" Then
-;~ 		GUICtrlSetData($OrigPushB, $txtVillageName)
-;~ 	Else
-;~ 		GUICtrlSetData($OrigPushB, $iOrigPushB)
-;~ 	EndIf
+ 	If $iOrigPushB = "" Then
+ 		GUICtrlSetData($OrigPushB, $sCurrProfile)
+	Else
+ 		GUICtrlSetData($OrigPushB, $iOrigPushB)
+ 	EndIf
 
 	If $iAlertPBVillage = 1 Then
 		GUICtrlSetState($chkAlertPBVillage, $GUI_CHECKED)
@@ -1081,19 +1132,43 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	;Heroes upgrade
 	If $ichkUpgradeKing = 1 Then
 		GUICtrlSetState($chkUpgradeKing, $GUI_CHECKED)
+		GUICtrlSetState($chkDBKingWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkABKingWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBKingWait, $GUI_DISABLE)
+		GUICtrlSetState($chkABKingWait, $GUI_DISABLE)
 	Else
 		GUICtrlSetState($chkUpgradeKing, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBKingWait, $GUI_ENABLE)
+		GUICtrlSetState($chkABKingWait, $GUI_ENABLE)
 	EndIf
+	chkUpgradeKing()
+
 	If $ichkUpgradeQueen = 1 Then
 		GUICtrlSetState($chkUpgradeQueen, $GUI_CHECKED)
+		GUICtrlSetState($chkDBQueenWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkABQueenWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBQueenWait, $GUI_DISABLE)
+		GUICtrlSetState($chkABQueenWait, $GUI_DISABLE)
 	Else
 		GUICtrlSetState($chkUpgradeQueen, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBQueenWait, $GUI_ENABLE)
+		GUICtrlSetState($chkABQueenWait, $GUI_ENABLE)
 	EndIf
+	chkUpgradeQueen()
+
 	If $ichkUpgradeWarden = 1 Then
 		GUICtrlSetState($chkUpgradeWarden, $GUI_CHECKED)
+		GUICtrlSetState($chkDBWardenWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkABWardenWait, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBWardenWait, $GUI_DISABLE)
+		GUICtrlSetState($chkABWardenWait, $GUI_DISABLE)
 	Else
 		GUICtrlSetState($chkUpgradeWarden, $GUI_UNCHECKED)
+		GUICtrlSetState($chkDBWardenWait, $GUI_ENABLE)
+		GUICtrlSetState($chkABWardenWait, $GUI_ENABLE)
 	EndIf
+	chkUpgradeWarden()
+
 	_GUICtrlComboBox_SetCurSel($cmbWalls, $icmbWalls)
 	Switch $iUseStorage
 		Case 0
@@ -1177,6 +1252,12 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 		GUICtrlSetState($chkTombstones, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkTombstones, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkCleanYard = 1 Then
+		GUICtrlSetState($chkCleanYard, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkCleanYard, $GUI_UNCHECKED)
 	EndIf
 
 	GUICtrlSetData($txtTimeWakeUp, $sTimeWakeUp)
@@ -1384,7 +1465,14 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	GUICtrlSetData($txtTotalCampForced, $iValueTotalCampForced)
 	chkTotalCampForced()
 
-
+	If $ichkSinglePBTForced = 1 Then
+		GUICtrlSetState($chkSinglePBTForced, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkSinglePBTForced, $GUI_UNCHECKED)
+	EndIf
+	GUICtrlSetData($txtSinglePBTimeForced, $iValueSinglePBTimeForced)
+	GUICtrlSetData($txtPBTimeForcedExit , $iValuePBTimeForcedExit)
+	chkSinglePBTForced()
 
 	If $ichkLanguage = 1 Then
 		GUICtrlSetState($chkLanguage, $GUI_CHECKED)

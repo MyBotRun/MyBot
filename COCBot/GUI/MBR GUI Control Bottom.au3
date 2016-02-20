@@ -136,14 +136,12 @@ Func InitiateLayout()
 EndFunc
 
 Func DisableBS($HWnD, $iButton)
-	ConsoleWrite('+ Window Handle: ' & $HWnD & @CRLF)
 	$hSysMenu = _GUICtrlMenu_GetSystemMenu($HWnD, 0)
 	_GUICtrlMenu_RemoveMenu($hSysMenu, $iButton, False)
 	_GUICtrlMenu_DrawMenuBar($HWnD)
 EndFunc   ;==>DisableBS
 
 Func EnableBS($HWnD, $iButton)
-	ConsoleWrite('+ Window Handle: ' & $HWnD & @CRLF)
 	$hSysMenu = _GUICtrlMenu_GetSystemMenu($HWnD, 1)
 	_GUICtrlMenu_RemoveMenu($hSysMenu, $iButton, False)
 	_GUICtrlMenu_DrawMenuBar($HWnD)
@@ -166,6 +164,7 @@ Func IsStopped()
 EndFunc
 
 Func btnStart()
+    ResumeAndroid()
 	If $RunState = False Then
 	    ;GUICtrlSetState($chkBackground, $GUI_DISABLE) ; will be disbaled after check if Android supports Background Mode
 		GUICtrlSetState($btnStart, $GUI_HIDE)
@@ -192,11 +191,12 @@ Func btnStart()
 		_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")
 		_GUICtrlRichEdit_AppendTextColor($txtLog, "" & @CRLF, _ColorConvert($Color_Black))
 
+		SetupProfile()
 	    SaveConfig()
 		readConfig()
 		applyConfig(False) ; bot window redraw stays disabled!
 
-	    If Not $AndroidSupportsBackgroundMode And $ichkBackground = 1 Then
+	    If BitAND($AndroidSupportFeature, 1+2) = 0 And $ichkBackground = 1 Then
 		   GUICtrlSetState($chkBackground, $GUI_UNCHECKED)
 		   chkBackground() ; Invoke Event manually
 		   SetLog("Background Mode not supported for " & $Android & " and has been disabled", $COLOR_RED)
@@ -223,12 +223,15 @@ Func btnStart()
 
 	    WinGetAndroidHandle()
 		If $HWnD <> 0 Then  ;Is Android open?
+		    Local $hWndActive = $HWnD
 			; check if window can be activated
-			Local $hTimer = TimerInit(), $hWndActive = -1
-			While TimerDiff($hTimer) < 1000 And $hWndActive <> $HWnD And Not _Sleep(100)
-			   $hWndActive = WinActivate($HWnD) ; ensure bot has window focus
-			WEnd
-
+			If $NoFocusTampering = False Then
+			   Local $hTimer = TimerInit()
+			   $hWndActive = -1
+			   While TimerDiff($hTimer) < 1000 And $hWndActive <> $HWnD And Not _Sleep(100)
+				  $hWndActive = WinActivate($HWnD) ; ensure bot has window focus
+			   WEnd
+			EndIf
 			If Not $RunState Then Return
 		    If IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) And $hWndActive = $HWnD  Then ; Really?
 			   If Not InitiateLayout() Then
@@ -248,6 +251,7 @@ Func btnStart()
 EndFunc   ;==>btnStart
 
 Func btnStop()
+    ResumeAndroid()
 	If $RunState Then ; Or BitOr(GUICtrlGetState($btnStop), $GUI_SHOW) Then ; $btnStop check added for strange $RunState inconsistencies
 
 		GUICtrlSetState($chkBackground, $GUI_ENABLE)
@@ -281,8 +285,8 @@ Func btnStop()
 			GUICtrlSetState($i, $iPrevState[$i])
 		Next
 
-		AndroidBotStopEvent() ; signal android that bot is now stoppting
 		$RunState = False
+		AndroidBotStopEvent() ; signal android that bot is now stopping
 
 		_BlockInputEx(0, "", "", $HWnD)
 		If Not $bSearchMode Then
@@ -334,7 +338,7 @@ Func btnAttackNowTS()
 EndFunc   ;==>btnAttackNowTS
 
 Func btnHide()
-
+    ResumeAndroid()
 	WinGetPos($Title)
 	If @error <> 0 Then Return SetError(0,0,0)
 
@@ -554,6 +558,8 @@ Func btnWalls()
 			 GUICtrlSetState( $picResultRuntimeNow , $GUI_ENABLE +$GUI_SHOW)
 			 GUICtrlSetState( $picResultAttackedHourNow , $GUI_ENABLE +$GUI_SHOW)
 			 GUICtrlSetState( $picResultSkippedHourNow , $GUI_ENABLE +$GUI_SHOW)
+			 ;change text
+			 GUICtrlSetData($btnQuickStats,  GetTranslated(13,29, "Vill."))
 		 Else
 			 ;show normal values
 			 GUICtrlSetState( $lblResultGoldNow , $GUI_ENABLE +$GUI_SHOW)
@@ -577,6 +583,9 @@ Func btnWalls()
 			 GUICtrlSetState( $picResultRuntimeNow , $GUI_ENABLE +$GUI_HIDE)
 			 GUICtrlSetState( $picResultAttackedHourNow , $GUI_ENABLE +$GUI_HIDE)
 			 GUICtrlSetState( $picResultSkippedHourNow , $GUI_ENABLE +$GUI_HIDE)
+ 			 ;change text
+			 GUICtrlSetData($btnQuickStats,GetTranslated(13,28, -1))
+
 		EndIf
 
 EndFunc
@@ -609,4 +618,162 @@ Func btnTestDonate()
 		DonateCC()
 		SETLOG("DONATE TEST..................STOP")
 	$RunState = False
+EndFunc
+
+Func btnTestButtons()
+
+	$RunState = True
+	Local $ButtonX, $ButtonY
+	Local $hTimer = TimerInit()
+	Local $res
+	Local $ImagesToUse[3]
+		$ImagesToUse[0] = @ScriptDir & "\images\Button\Traps.png"
+		$ImagesToUse[1] = @ScriptDir & "\images\Button\Xbow.png"
+		$ImagesToUse[2] = @ScriptDir & "\images\Button\Inferno.png"
+	Local $x = 1
+	Local $y = 1
+	Local $w = 615
+	Local $h = 105
+
+	$ToleranceImgLoc = 0.950
+
+	SETLOG("SearchTile TEST..................START")
+	;;;;;; Use the Polygon to a rectangle or Square search zone ;;;;;;;;;;
+	$SearchArea = String($x & "|" & $y & "|" & $w & "|" & $h) ; x|y|Width|Height
+	; form a polygon " top(x,y) | Right (w,y) | Bottom(w,h) | Left(x,h) "
+	Local $AreaInRectangle = String($x + 1 & "," & $y + 1 & "|" & $w - 1 & "," & $y + 1 & "|" & $w - 1 & "," & $h - 1 & "|" & $x + 1 & "," & $h - 1)
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	$hBitmapFirst = _CaptureRegion(125, 610, 740, 715)
+	For $i = 0 To 2
+		If FileExists($ImagesToUse[$i]) Then
+			$res = DllCall($pImgLib, "str", "SearchTile", "handle", $hBitmapFirst, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc, "str", $SearchArea, "str", $AreaInRectangle)
+			If IsArray($res) Then
+				If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
+				If $res[0] = "0" Then
+					; failed to find a loot cart on the field
+					SetLog("No Button found")
+				ElseIf $res[0] = "-1" Then
+					SetLog("DLL Error", $COLOR_RED)
+				ElseIf $res[0] = "-2" Then
+					SetLog("Invalid Resolution", $COLOR_RED)
+				Else
+					$expRet = StringSplit($res[0], "|", 2)
+					$ButtonX = 125 + Int($expRet[1])
+					$ButtonY = 610 + Int($expRet[2])
+					SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_GREEN)
+					;If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
+					If _Sleep(200) Then Return
+					;Click(515, 400, 1, 0, "#0226")
+					If _Sleep(200) Then Return
+					If isGemOpen(True) = True Then
+						Setlog("Not enough loot to rearm traps.....", $COLOR_RED)
+						Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
+						If _Sleep(200) Then Return
+					Else
+						If $i = 0 then SetLog("Rearmed Trap(s)", $COLOR_GREEN)
+						If $i = 1 then SetLog("Reloaded XBow(s)", $COLOR_GREEN)
+						If $i = 2 then SetLog("Reloaded Inferno(s)", $COLOR_GREEN)
+						If _Sleep(200) Then Return
+					EndIf
+				EndIf
+			EndIf
+		EndIf
+	Next
+	_WinAPI_DeleteObject($hBitmapFirst)
+	SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
+	SETLOG("SearchTile TEST..................STOP")
+
+	Local $hTimer = TimerInit()
+	SETLOG("MBRSearchImage TEST..................STOP")
+
+	$hBitmapFirst = _CaptureRegion2(125, 610, 740, 715)
+	For $i = 0 To 2
+		If FileExists($ImagesToUse[$i]) Then
+			$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hBitmapFirst, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+			If IsArray($res) Then
+				If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
+				If $res[0] = "0" Then
+					; failed to find a loot cart on the field
+					SetLog("No Button found")
+				ElseIf $res[0] = "-1" Then
+					SetLog("DLL Error", $COLOR_RED)
+				ElseIf $res[0] = "-2" Then
+					SetLog("Invalid Resolution", $COLOR_RED)
+				Else
+					$expRet = StringSplit($res[0], "|", 2)
+					$ButtonX = 125 + Int($expRet[1])
+					$ButtonY = 610 + Int($expRet[2])
+					SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_GREEN)
+					;If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
+					If _Sleep(200) Then Return
+					;Click(515, 400, 1, 0, "#0226")
+					If _Sleep(200) Then Return
+					If isGemOpen(True) = True Then
+						Setlog("Not enough loot to rearm traps.....", $COLOR_RED)
+						Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
+						If _Sleep(200) Then Return
+					Else
+						If $i = 0 then SetLog("Rearmed Trap(s)", $COLOR_GREEN)
+						If $i = 1 then SetLog("Reloaded XBow(s)", $COLOR_GREEN)
+						If $i = 2 then SetLog("Reloaded Inferno(s)", $COLOR_GREEN)
+						If _Sleep(200) Then Return
+					EndIf
+				EndIf
+			EndIf
+		EndIf
+	Next
+	_WinAPI_DeleteObject($hBitmapFirst)
+	SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
+	SETLOG("MBRSearchImage TEST..................STOP")
+	$RunState = False
+
+EndFunc   ;==>btnTestButtons
+
+Func ButtonBoost()
+
+	$RunState = True
+	Local $ButtonX, $ButtonY
+	Local $hTimer = TimerInit()
+	Local $res
+	Local $ImagesToUse[2]
+		$ImagesToUse[0] = @ScriptDir & "\images\Button\BoostBarrack.png"
+		$ImagesToUse[1] = @ScriptDir & "\images\Button\BarrackBoosted.png"
+	$ToleranceImgLoc = 0.90
+	SETLOG("MBRSearchImage TEST..................STARTED")
+	$hBitmapFirst = _CaptureRegion2(125, 610, 740, 715)
+	For $i = 0 To 1
+		If FileExists($ImagesToUse[$i]) Then
+			$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hBitmapFirst, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+			If IsArray($res) Then
+				If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
+				If $res[0] = "0" Then
+					; failed to find a loot cart on the field
+					if $i = 1 then SetLog("No Button found")
+				ElseIf $res[0] = "-1" Then
+					SetLog("DLL Error", $COLOR_RED)
+				ElseIf $res[0] = "-2" Then
+					SetLog("Invalid Resolution", $COLOR_RED)
+				Else
+					If _Sleep(200) Then Return
+					If $i = 0 Then
+						SetLog ("Found the Button to Boost individual")
+						$expRet = StringSplit($res[0], "|", 2)
+						$ButtonX = 125 + Int($expRet[1])
+						$ButtonY = 610 + Int($expRet[2])
+						SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_GREEN)
+						;If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
+						ExitLoop
+					Else
+						SetLog ("The Barrack is already boosted!")
+					EndIf
+				EndIf
+			EndIf
+		EndIf
+	Next
+	_WinAPI_DeleteObject($hBitmapFirst)
+	SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
+	SETLOG("MBRSearchImage TEST..................STOP")
+	$RunState = False
+
 EndFunc

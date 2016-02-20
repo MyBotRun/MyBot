@@ -97,7 +97,7 @@ Func Laboratory()
 	EndIf
 
 	If $aLabTroops[$icmbLaboratory][2] > 0 Then ;Check if troop located on page 2 of lab window and Move to page 2 if needed
-		_PostMessage_ClickDrag(734, 393 + $midOffsetY, 3, 393 + $midOffsetY, "left", 2000)
+		ClickDrag(734, 393 + $midOffsetY, 3, 393 + $midOffsetY, 2000)
 		;_PostMessage_ClickDrag(734, 393, 643, 393, "left", 1500)
 		If _Sleep($iDelayLaboratory3) Then Return
 		If $debugSetlog = 1 Then LabTroopImages2() ; Debug Only

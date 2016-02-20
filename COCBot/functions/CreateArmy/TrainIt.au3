@@ -38,7 +38,7 @@ Func TrainIt($troopKind, $howMuch = 1, $iSleep = 400)
 						If Not $bDark Then Setlog("Not enough Elixir to train troops!", $COLOR_RED)
 						Setlog("Switching to Halt Attack, Stay Online Mode...", $COLOR_RED)
 						$ichkBotStop = 1 ; set halt attack variable
-						$icmbBotCond = 16 ; set stay online
+						$icmbBotCond = 18; set stay online
 						If Not ($fullarmy = true)  Then $Restart = True ;If the army camp is full, If yes then use it to refill storages
 						Return ; We are out of Elixir stop training.
 					EndIf

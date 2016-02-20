@@ -142,6 +142,9 @@ Func BotDetectFirstTime()
 			$i += 1
 		WEnd
 		SetLog("Verifying your Mines/Collectors/Drills ...wait ...")
+
+		_WinAPI_DeleteObject($hBitmapFirst)
+		$hBitmapFirst = _CaptureRegion2()
 		$t =0
 		$PixelMineHere = GetLocationMine()
 		For $i = 0 To UBound($PixelMineHere) - 1
@@ -155,10 +158,9 @@ Func BotDetectFirstTime()
 		If $t > 0 Then
 			SetLog("Total No. of Gold Mines: " & $t)
 		EndIf
+
 		$t =0
 		If _Sleep($iDelayBotDetectFirstTime1) Then Return
-
-
 		$PixelElixirHere = GetLocationElixir()
 		For $i = 0 To UBound($PixelElixirHere) - 1
 			If isInsideDiamond($PixelElixirHere[$i]) Then
@@ -171,9 +173,9 @@ Func BotDetectFirstTime()
 		If $t > 0 Then
 			SetLog("Total No. of Elixir Collectors: " & $t)
 		EndIf
+
 		$t =0
 		If _Sleep($iDelayBotDetectFirstTime1) Then Return
-
 		$PixelDarkElixirHere = GetLocationDarkElixir()
 		For $i = 0 To UBound($PixelDarkElixirHere) - 1
 			If isInsideDiamond($PixelDarkElixirHere[$i]) Then

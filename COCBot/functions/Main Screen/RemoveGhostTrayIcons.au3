@@ -36,7 +36,7 @@ Func RemoveGhostTrayIcons($IconTextPart)
 	If $iTrayVisibleCount > 1 Then
 		For $i = $iTrayVisibleCount - 1 To 0 Step -1 ; Loop through the icons and look for ghost with PID = -1
 			$IconText = _GUICtrlToolbar_GetButtonText($hTrayVisible, $i)
-			If StringInStr($IconText, $IconTextPart) Then
+			If ($IconTextPart <> "" And StringInStr($IconText, $IconTextPart)) Or $IconTextPart = $IconText Then
 				$bResult = _GUICtrlToolbar_DeleteButton($hTrayVisible, $i)
 				If @error Then
 					If $debugsetlog = 1 Then Setlog("$bResult = " & $bResult, $COLOR_PURPLE)
@@ -55,7 +55,7 @@ Func RemoveGhostTrayIcons($IconTextPart)
 		For $i = $iTrayHiddenCount - 1 To 0 Step -1 ; Loop through the icons and look for ghost with PID = -1
 			$IconText = _GUICtrlToolbar_GetButtonText($hTrayHidden, $i)
 			If $debugsetlog = 1 Then Setlog("$IconText = " & $IconText, $COLOR_PURPLE)
-			If StringInStr($IconText, $IconTextPart) Then
+			If ($IconTextPart <> "" And StringInStr($IconText, $IconTextPart)) Or $IconTextPart = $IconText Then
 				$bResult = _GUICtrlToolbar_DeleteButton($hTrayHidden, $i)
 				If @error Then
 					If $debugsetlog = 1 Then Setlog("$bResult = " & $bResult, $COLOR_PURPLE)

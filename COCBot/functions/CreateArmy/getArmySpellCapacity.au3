@@ -16,11 +16,14 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 
 	If $debugSetlog = 1 Then SETLOG("Begin getArmySpellCapacity:", $COLOR_PURPLE)
 
-	If IsTrainPage() = False And $bOpenArmyWindow = False Then ; check for train page
+	If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
 		SetError(1)
 		Return ; not open, not requested to be open - error.
 	ElseIf $bOpenArmyWindow = True Then
-		openArmyOverview()
+		If openArmyOverview() = False Then
+			SetError(2)
+			Return ; not open, requested to be open - error.
+		EndIf
 		If _Sleep($iDelaycheckArmyCamp5) Then Return
 	EndIf
 
@@ -59,6 +62,10 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		EndIf
 
 		SetLog("Total Spell(s) Capacity: " & $CurSFactory & "/" & $TotalSFactory)
+	EndIf
+
+	If $TotalSFactory  <> $iTotalCountSpell Then
+		Setlog("Note: Spell Factory Size read not same User Input Value.", $COLOR_MAROON) ; log if there difference between user input and OCR
 	EndIf
 
 	If $bCloseArmyWindow = True Then

@@ -30,12 +30,19 @@ Func waitMainScreen() ;Waits for main screen to popup
 	    EndIf
 		getBSPos() ; Update $HWnd and Android Window Positions
 		_CaptureRegion()
-		If _CheckPixel($aIsMain, $bNoCapturepixel) = False Then ;Checks for Main Screen
-			If _Sleep($iDelaywaitMainScreen1) Then Return
-			If checkObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
-		Else
+		If _CheckPixel($aIsMain, $bNoCapturepixel) = True Then ;Checks for Main Screen
 			If $debugsetlog = 1 Then Setlog("Screen cleared, WaitMainScreen exit", $COLOR_PURPLE)
 			Return
+		ElseIf _CheckPixel($aIsDPI125, $bNoCapturepixel) = True Then
+			ShowDPIHelp(125)
+		ElseIf _CheckPixel($aIsDPI150, $bNoCapturepixel) = True Then
+			ShowDPIHelp(150)
+		Else
+			If _Sleep($iDelaywaitMainScreen1) Then Return
+			If checkObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
+		EndIf
+		If Mod($i, 5) = 0 Then;every 10 seconds
+			If $debugImageSave = 1 Then DebugImageSave("WaitMainScreen_", False)
 		EndIf
 		If ($i > 105) Or ($iCount > 120) Then ExitLoop  ; If CheckObstacles forces reset, limit total time to 4 minutes
 	Next

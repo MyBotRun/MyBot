@@ -20,7 +20,6 @@ Global $sldCollectorTolerance
 Func GUI2()
 	$hCollectorGUI = GUICreate(GetTranslated(15,1, "Choose Collectors"), 305, 300, 85, 60, -1, $WS_EX_MDICHILD, $frmbot)
 	GUISetIcon($pIconLib, $eIcnGUI)
-	$gui2Open = 1
 	GUISetOnEvent($GUI_EVENT_CLOSE, "CloseGUI2") ; Run this function when the secondary GUI [X] is clicked
 	GUICtrlCreateLabel(GetTranslated(15,2, "Choose which collectors to search for while looking for a dead base. Also, choose how full they must be."), 5, 5, 290, 28)
 	$x = 5

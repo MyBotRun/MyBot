@@ -67,6 +67,7 @@ Func chkUseAttackABCSV()
 		EndIf
 	Next
 	chkABSmartAttackRedArea()
+	cmbABDeploy()
 ;~ 	IF GUICtrlRead($chkUseAttackDBCSV) = $GUI_CHECKED and GUICtrlRead($chkUseAttackDBCSV) = $GUI_CHECKED Then
 ;~ 		For $i=$grpClanCastleBal To $cmbCCReceived
 ;~ 			GUICtrlSetState($i, $GUI_DISABLE)
