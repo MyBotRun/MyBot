@@ -211,16 +211,18 @@ Func applyCollectorConfig()
 	GUICtrlSetData($sldCollectorTolerance, $toleranceOffset)
 EndFunc
 Func OpenGUI2()
-	GUI2()
-	readCollectorConfig()
-	applyCollectorConfig()
-	GUISetState(@SW_SHOW, $hCollectorGUI)
-	GUISetState(@SW_DISABLE, $frmBot)
+    If $hCollectorGUI = 0 Then
+	   GUI2()
+	   readCollectorConfig()
+	   applyCollectorConfig()
+	   GUISetState(@SW_SHOW, $hCollectorGUI)
+	   GUISetState(@SW_DISABLE, $frmBot)
+    EndIf
 EndFunc
 Func CloseGUI2()
-	$gui2open = 0
 	saveCollectorConfig()
 	GUIDelete($hCollectorGUI)
+	$hCollectorGUI = 0
 	GUISetState(@SW_ENABLE, $frmBot)
 	WinActivate($frmBot)
 EndFunc

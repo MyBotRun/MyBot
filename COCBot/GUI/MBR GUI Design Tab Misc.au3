@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: GKevinOD (2014)
-; Modified ......: DkEd, Hervidero (2015)
+; Modified ......: DkEd, Hervidero (2015),MonkeyHunter (2106-2)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -22,14 +22,23 @@ Local $x = 30, $y = 150
 		$chkBotStop = GUICtrlCreateCheckbox("", $x - 5, $y, 16, 16)
 			$txtTip = GetTranslated(7,3, "Use these options to set when the bot will stop attacking.")
 			GUICtrlSetTip(-1, $txtTip)
-		$cmbBotCommand = GUICtrlCreateCombo("", $x + 20, $y - 3, 90, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			GUICtrlSetOnEvent(-1, "chkBotStop")
+		$cmbBotCommand = GUICtrlCreateCombo("", $x + 20, $y - 3, 95, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetData(-1, GetTranslated(7,4, "Halt Attack") & "|" & GetTranslated(7,5, "Shutdown PC") & "|" & GetTranslated(7,6, "Sleep PC") & "|" & GetTranslated(7,7, "Reboot PC"), GetTranslated(7,4, -1))
-		$lblBotCond = GUICtrlCreateLabel(GetTranslated(7,88, "When..."), $x + 125, $y, 45, 17)
+			GUICtrlSetData(-1, GetTranslated(7,4, "Halt Attack") & "|" & GetTranslated(7,155, "Stop Bot") & "|" & GetTranslated(7,156, "Close Bot") & "|" & GetTranslated(7,157, "Close CoC+Bot") & "|" & GetTranslated(7,5, "Shutdown PC") & "|" & GetTranslated(7,6, "Sleep PC") & "|" & GetTranslated(7,7, "Reboot PC"), GetTranslated(7,4, -1))
+			GUICtrlSetState (-1, $GUI_DISABLE)
+		$lblBotCond = GUICtrlCreateLabel(GetTranslated(7,88, "When..."), $x + 128, $y, 45, 17)
 		$cmbBotCond = GUICtrlCreateCombo("", $x + 175, $y - 3, 160, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetTip(-1, $txtTip)
-			GUICtrlSetData(-1, GetTranslated(7,8, "G and E Full and Max.Trophy") & "|" & GetTranslated(7,9, "(G and E) Full or Max.Trophy") & "|" & GetTranslated(7,10, "(G or E) Full and Max.Trophy") & "|" & GetTranslated(7,11, "G or E Full or Max.Trophy") & "|" & GetTranslated(7,12, "Gold and Elixir Full") & "|" & GetTranslated(7,13, "Gold or Elixir Full") & "|" & GetTranslated(7,14, "Gold Full and Max.Trophy") & "|" & GetTranslated(7,15, "Elixir Full and Max.Trophy") & "|" & GetTranslated(7,16, "Gold Full or Max.Trophy") & "|" & GetTranslated(7,17, "Elixir Full or Max.Trophy") & "|" & GetTranslated(7,18, "Gold Full") & "|" & GetTranslated(7,19, "Elixir Full") & "|" & GetTranslated(7,20, "Reach Max. Trophy") & "|" & GetTranslated(7,21, "Bot running for...") & "|" & GetTranslated(7,89, "Now (Train/Donate Only)") & "|" & GetTranslated(7,22, "Now (Donate Only)") & "|" & GetTranslated(7,23, "Now (Only stay online)") , GetTranslated(7,89, -1))
+			GUICtrlSetData(-1, GetTranslated(7,8, "G and E Full and Max.Trophy") & "|" & GetTranslated(7,9, "(G and E) Full or Max.Trophy") & "|" & GetTranslated(7,10, "(G or E) Full and Max.Trophy") & "|" & _
+			GetTranslated(7,11, "G or E Full or Max.Trophy") & "|" & GetTranslated(7,12, "Gold and Elixir Full") & "|" & GetTranslated(7,13, "Gold or Elixir Full") & "|" & GetTranslated(7,14, "Gold Full and Max.Trophy") & "|" & _
+			GetTranslated(7,15, "Elixir Full and Max.Trophy") & "|" & GetTranslated(7,16, "Gold Full or Max.Trophy") & "|" & GetTranslated(7,17, "Elixir Full or Max.Trophy") & "|" & GetTranslated(7,18, "Gold Full") & "|" & _
+			GetTranslated(7,19, "Elixir Full") & "|" & GetTranslated(7,20, "Reach Max. Trophy") & "|" & GetTranslated(7,153, "Dark Elixir Full") & "|" & GetTranslated(7,154, "All Storage (G+E+DE) Full") & "|" & _
+			GetTranslated(7,21, "Bot running for...") & "|" & GetTranslated(7,89, "Now (Train/Donate Only)") & "|" & _
+			GetTranslated(7,22, "Now (Donate Only)") & "|" & GetTranslated(7,23, "Now (Only stay online)") & "|" & GetTranslated(7,150, "W/Shield (Train/Donate Only)") & "|" & GetTranslated(7,151, "W/Shield (Donate Only)") & "|" & _
+			GetTranslated(7,152, "W/Shield (Only stay online)"), GetTranslated(7,89, -1))
 			GUICtrlSetOnEvent(-1, "cmbBotCond")
+			GUICtrlSetState (-1, $GUI_DISABLE)
 		$cmbHoursStop = GUICtrlCreateCombo("", $x + 335, $y - 3, 80, 35, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetTip(-1, $txtTip)
 			$sTxtHours = GetTranslated(7,25, "Hours")
@@ -38,33 +47,43 @@ Local $x = 30, $y = 150
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 30, $y = 205
-	$grpProfiles = GUICtrlCreateGroup(GetTranslated(7,26, "Switch Profiles"), $x - 20, $y - 20, 225, 45)
-		$y -=5
+	$grpProfiles = GUICtrlCreateGroup(GetTranslated(7,26, "Switch Profiles"), $x - 20, $y - 20, 250, 45)
+		$y -= 5
 		;$lblProfile = GUICtrlCreateLabel(GetTranslated(7,27, "Current Profile") & ":", $x, $y, -1, -1)
 		;$y += 15
-		$cmbProfile = GUICtrlCreateCombo("01", $x - 3, $y, 40, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-		$txtTip = GetTranslated(7,28, "Use this to switch to a different profile")& @CRLF & GetTranslated(7,29, "Your profiles can be found in") & ": " & @CRLF & $sProfilePath
-		GUICtrlSetTip(-1, $txtTip)
-		GUICtrlSetData(-1, "02|03|04|05|06", "01")
-		GUICtrlSetOnEvent(-1, "cmbProfile")
-		$txtVillageName = GUICtrlCreateInput(GetTranslated(7,30, "MyVillage"), $x + 47, $y, 130, 20, BitOR($SS_CENTER, $ES_AUTOHSCROLL))
-		GUICtrlSetLimit (-1, 100, 0)
-		GUICtrlSetFont(-1, 9, 400, 1)
-		GUICtrlSetTip(-1, GetTranslated(7,31, "Your village/profile's name"))
-		GUICtrlSetOnEvent(-1, "txtVillageName")
+		$cmbProfile = GUICtrlCreateCombo("", $x - 3, $y + 1, 130, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			$txtTip = GetTranslated(7,28, "Use this to switch to a different profile")& @CRLF & GetTranslated(7,29, "Your profiles can be found in") & ": " & @CRLF & $sProfilePath
+			GUICtrlSetTip(-1, $txtTip)
+			setupProfileComboBox()
+			GUICtrlSetState(-1, $GUI_SHOW)
+			GUICtrlSetOnEvent(-1, "cmbProfile")
+		$txtVillageName = GUICtrlCreateInput(GetTranslated(7,30, "MyVillage"), $x - 3, $y, 130, 20, BitOR($SS_CENTER, $ES_AUTOHSCROLL))
+			GUICtrlSetLimit (-1, 100, 0)
+			GUICtrlSetFont(-1, 9, 400, 1)
+			GUICtrlSetTip(-1, GetTranslated(7,31, "Your village/profile's name"))
+			GUICtrlSetState(-1, $GUI_HIDE)
+			; GUICtrlSetOnEvent(-1, "txtVillageName") - No longer needed
+		$btnAddConfirm = GUICtrlCreateButton("Add", $x + 132, $y, 45, 24)
+			GUICtrlSetOnEvent(-1, "btnAddConfirm")
+		$btnDeleteCancel = GUICtrlCreateButton("Delete", $x + 178, $y, 45, 24)
+			GUICtrlSetOnEvent(-1, "btnDeleteCancel")
+			If GUICtrlRead($cmbProfile) = "<No Profiles>" Then
+				GUICtrlSetState(-1, $GUI_DISABLE)
+			Else
+				GUICtrlSetState(-1, $GUI_ENABLE)
+			EndIf
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-Local $x = 260, $y = 205
-	$grpLanguages = GUICtrlCreateGroup(GetTranslated(7,32, "GUI Language"), $x - 20, $y - 20, 220, 45)
-		$y -=5
-		$cmbLanguage = GUICtrlCreateCombo("", $x - 3 , $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-		$txtTip = GetTranslated(7,33, "Use this to switch to a different GUI language")
-		GUICtrlSetTip(-1, $txtTip)
+Local $x = 285, $y = 205
+	$grpLanguages = GUICtrlCreateGroup(GetTranslated(7,32, "GUI Language"), $x - 20, $y - 20, 195, 45)
+		$cmbLanguage = GUICtrlCreateCombo("", $x - 10 , $y - 5, 177, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			$txtTip = GetTranslated(7,33, "Use this to switch to a different GUI language")
+			GUICtrlSetTip(-1, $txtTip)
 
-		LoadLanguagesComboBox() ; full combo box languages reading from languages folders
+			LoadLanguagesComboBox() ; full combo box languages reading from languages folders
 
-		GUICtrlSetData(-1, "English", "English") ;default set english language
-		GUICtrlSetOnEvent(-1, "cmbLanguage")
+			GUICtrlSetData(-1, "English", "English") ;default set english language
+			GUICtrlSetOnEvent(-1, "cmbLanguage")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $x = 30, $y = 253
@@ -84,17 +103,23 @@ Local $x = 30, $y = 253
 		GUICtrlCreateIcon($pIconLib, $eIcnMine, $x - 5, $y, 24, 24)
 		GUICtrlCreateIcon($pIconLib, $eIcnCollector, $x + 20, $y, 24, 24)
 		GUICtrlCreateIcon($pIconLib, $eIcnDrill, $x + 45, $y, 24, 24)
-		$chkCollect = GUICtrlCreateCheckbox(GetTranslated(7,36, "Collect Resources"), $x + 75, $y + 2, -1, -1)
-			$txtTip = GetTranslated(7,37, "Check this to automatically collect the Village's Resources") & @CRLF & GetTranslated(7,38, "from Gold Mines, Elixir Collectors and Dark Elixir Drills.")
+		$chkCollect = GUICtrlCreateCheckbox(GetTranslated(7,36, "Collect Resources") & @CRLF & "            && " & GetTranslated(7,99, "Loot Cart"), $x + 75, $y + 2, -1, 30, $BS_MULTILINE)
+			$txtTip = GetTranslated(7,37, "Check this to automatically collect the Village's Resources") & @CRLF & GetTranslated(7,38, "from Gold Mines, Elixir Collectors and Dark Elixir Drills.") & @CRLF & GetTranslated(7,100, "This will also search for a Loot Cart in your village and collect it.")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_CHECKED)
 	;GUICtrlCreateGroup("", -99, -99, 1, 1)
 	$y += 28
 	;Local $x = 30, $y = 400
 	;$grpTombstones = GUICtrlCreateGroup(GetTranslated(7,93, "Clear Tombstones"), $x - 20, $y - 20 , 225, 55)
-		GUICtrlCreateIcon($pIconLib, $eIcnTombstone, $x + 20, $y, 24, 24)
-		$chkTombstones = GUICtrlCreateCheckbox(GetTranslated(7,39, "Clear Tombstones"), $x + 75, $y + 2, -1, -1)
+		GUICtrlCreateIcon($pIconLib, $eIcnTombstone, $x - 5 , $y + 4, 24, 24)
+		$chkTombstones = GUICtrlCreateCheckbox(GetTranslated(7,39, "Tombs"), $x + 23, $y + 6, -1, -1)
 			$txtTip = GetTranslated(7,40, "Check this to automatically clear tombstones after enemy attack.")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
+
+		GUICtrlCreateIcon($pIconLib, $eIcnCleanYard, $x + 80, $y + 4, 24, 24)
+		$chkCleanYard = GUICtrlCreateCheckbox(GetTranslated(7,101, "Obstacles"), $x + 108, $y + 6, -1, -1)
+			$txtTip = GetTranslated(7,102, "Check this to automatically clear Yard from Trees, Trunks, etc.")
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)

@@ -15,11 +15,11 @@
 
 Func OpenMEmu($bRestart = False)
 
-	Local $PID, $hTimer, $iCount = 0, $process_killed, $cmdOutput, $connected_to, $cmdPar
+   Local $PID, $hTimer, $iCount = 0, $process_killed, $cmdOutput, $connected_to, $cmdPar
 
-	SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
+   SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
 
-	If Not InitMEmu() Then Return
+   If Not InitAndroid() Then Return
 
    $launchAndroid = WinGetAndroidHandle() = 0
    If $launchAndroid Then
@@ -51,7 +51,8 @@ Func OpenMEmu($bRestart = False)
    If Not $RunState Then Return
 
    ; Wair for Activity Manager
-   If WaitForAmMEmu($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
+   ;If WaitForAmMEmu($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
+   If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
 
    ; Wait for UI Control, then CoC can be launched
    ;While Not IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) And TimerDiff($hTimer) <= $AndroidLaunchWaitSec * 1000
@@ -68,7 +69,7 @@ Func OpenMEmu($bRestart = False)
     SetLog($Android & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
 
     ; Check Android screen size, position windows
-    if InitiateLayout() Then Return; can also call OpenMEmu again when screen size is adjusted
+    If InitiateLayout() Then Return; can also call OpenMEmu again when screen size is adjusted
 
 	; Launch CcC
 	SetLog("Launch Clash of Clans now...", $COLOR_GREEN)
@@ -105,14 +106,8 @@ Func GetMEmuProgramParameter($bAlternative = False)
    Return ""
 EndFunc
 
-Func InitMEmu($bCheckOnly = False)
-   Local $process_killed, $vmInfo, $aRegExResult, $AndroidAdbDeviceHost, $AndroidAdbDevicePort, $oops = 0
-
-   Local $MEmuVersion = RegRead($HKLM & "\SOFTWARE" & $Wow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\MEmu\", "DisplayVersion")
-   SetError(0, 0, 0)
-   ; Could also read MEmu paths from environment variables MEmu_Path and MEmuHyperv_Path
+Func GetMEmuPath()
    Local $MEmu_Path = EnvGet("MEmu_Path") & "\MEmu\" ;RegRead($HKLM & "\SOFTWARE\MEmu\", "InstallDir") ; Doesn't exist (yet)
-   Local $MEmu_Manage_Path = EnvGet("MEmuHyperv_Path") & "\MEmuManage.exe"
    If $MEmu_Path = "\MEmu\" Then ; work-a-round
 	  Local $DisplayIcon = RegRead($HKLM & "\SOFTWARE" & $Wow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\MEmu\", "DisplayIcon")
 	  If @error = 0 Then
@@ -124,6 +119,22 @@ Func InitMEmu($bCheckOnly = False)
 		 SetError(0, 0, 0)
 	  EndIf
    EndIf
+   Return $MEmu_Path
+EndFunc
+
+Func GetMEmuAdbPath()
+   Local $adbPath = GetMEmuPath() & "adb.exe"
+   If FileExists($adbPath) Then Return $adbPath
+   Return ""
+EndFunc
+
+Func InitMEmu($bCheckOnly = False)
+   Local $process_killed, $aRegExResult, $AndroidAdbDeviceHost, $AndroidAdbDevicePort, $oops = 0
+   Local $MEmuVersion = RegRead($HKLM & "\SOFTWARE" & $Wow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\MEmu\", "DisplayVersion")
+   SetError(0, 0, 0)
+   ; Could also read MEmu paths from environment variables MEmu_Path and MEmuHyperv_Path
+   Local $MEmu_Path = GetMEmuPath()
+   Local $MEmu_Manage_Path = EnvGet("MEmuHyperv_Path") & "\MEmuManage.exe"
    If $MEmu_Manage_Path = "\MEmuManage.exe" Then
 	  $MEmu_Manage_Path = $MEmu_Path & "..\MEmuHyperv" & $MEmu_Manage_Path
    EndIf
@@ -157,14 +168,20 @@ Func InitMEmu($bCheckOnly = False)
 
    ; Read ADB host and Port
    If Not $bCheckOnly Then
+	  $__VBoxVMinfo = LaunchConsole($MEmu_Manage_Path, "showvminfo " & $AndroidInstance, $process_killed)
+	  ; check if instance is known
+	  If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
+		 ; Unknown vm
+		 Return False
+	  EndIf
 	  ; update global variables
 	  $AndroidProgramPath = $MEmu_Path & "MEmu.exe"
-	  $AndroidAdbPath = $MEmu_Path & "adb.exe"
+	  $AndroidAdbPath = FindPreferredAdbPath()
+	  If $AndroidAdbPath = "" Then $AndroidAdbPath = $MEmu_Path & "adb.exe"
 	  $AndroidVersion = $MEmuVersion
 	  $__MEmu_Path = $MEmu_Path
 	  $__VBoxManage_Path = $MEmu_Manage_Path
-	  $vmInfo = LaunchConsole($__VBoxManage_Path, "showvminfo " & $AndroidInstance, $process_killed)
-	  $aRegExResult = StringRegExp($vmInfo, "name = ADB.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)
+	  $aRegExResult = StringRegExp($__VBoxVMinfo, "name = ADB.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)
 	  If Not @error Then
 		 $AndroidAdbDeviceHost = $aRegExResult[0]
 		 If $debugSetlog = 1 Then Setlog("Func LaunchConsole: Read $AndroidAdbDeviceHost = " & $AndroidAdbDeviceHost, $COLOR_PURPLE)
@@ -173,7 +190,7 @@ Func InitMEmu($bCheckOnly = False)
 		 SetLog("Cannot read " & $Android & "(" & $AndroidInstance & ") ADB Device Host", $COLOR_RED)
 	  EndIF
 
-	  $aRegExResult = StringRegExp($vmInfo, "name = ADB.*host port = (\d{3,5}),", $STR_REGEXPARRAYMATCH)
+	  $aRegExResult = StringRegExp($__VBoxVMinfo, "name = ADB.*host port = (\d{3,5}),", $STR_REGEXPARRAYMATCH)
 	  If Not @error Then
 		 $AndroidAdbDevicePort = $aRegExResult[0]
 		 If $debugSetlog = 1 Then Setlog("Func LaunchConsole: Read $AndroidAdbDevicePort = " & $AndroidAdbDevicePort, $COLOR_PURPLE)
@@ -187,6 +204,19 @@ Func InitMEmu($bCheckOnly = False)
 	  Else ; use defaults
 		 SetLog("Using ADB default device " & $AndroidAdbDevice & " for " & $Android, $COLOR_RED)
 	  EndIf
+
+	  ; get screencap paths: Name: 'picture', Host path: 'C:\Users\Administrator\Pictures\MEmu Photo' (machine mapping), writable
+	  $AndroidPicturesPath = "/mnt/shell/emulated/0/Pictures/"
+	  $aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'picture', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
+	  If Not @error Then
+		 $AndroidAdbScreencap = True
+		 $AndroidPicturesHostPath = $aRegExResult[0] & "\"
+	  Else
+		 $AndroidAdbScreencap = False
+		 SetLog($Android & " Background Mode is not available", $COLOR_RED)
+	  EndIf
+
+	  $__VBoxGuestProperties = LaunchConsole($__VBoxManage_Path, "guestproperty enumerate " & $AndroidInstance, $process_killed)
 
 	  ; Update Android Screen and Window
 	  UpdateMEmuConfig()
@@ -222,7 +252,7 @@ EndFunc
 
 Func RestartMEmuCoC()
 
-   If Not InitMEmu() Then Return False
+   If Not InitAndroid() Then Return False
 
    Local $cmdOutput, $process_killed, $connected_to
    ;WinActivate($HWnD)  	; ensure bot has window focus
@@ -244,7 +274,7 @@ EndFunc
 
 Func SetScreenMEmu()
 
-   If Not InitMEmu() Then Return False
+   If Not InitAndroid() Then Return False
 
    Local $cmdOutput, $process_killed
 
@@ -289,7 +319,7 @@ Func CloseMEmu()
 	Next
 	If $bOops Then
 		If $debugsetlog = 1 Then Setlog("Service Stop issues, Stopping MEmu 2nd time", $COLOR_MAROON)
-		KillDroid4XProcess()
+		KillMEmuProcess()
 		If _SleepStatus(5000) Then Return
 	EndIf
 
@@ -300,10 +330,10 @@ Func CloseMEmu()
 	If $debugsetlog = 1 And $bOops Then
 		SetLog("MEmu Kill Failed to stop service", $COLOR_RED)
 	ElseIf Not $bOops Then
-		SetLog("MEmu stopped succesfully", $COLOR_GREEN)
+		SetLog("MEmu stopped successfully", $COLOR_GREEN)
 	EndIf
 
-	RemoveGhostTrayIcons($Title)  ; Remove ghost icon if left behind due forced taskkill
+	RemoveGhostTrayIcons("MEmu.exe")  ; Remove ghost icon if left behind due forced taskkill
 
 	If $bOops Then
 		SetError(1, @extended, -1)
@@ -312,7 +342,7 @@ Func CloseMEmu()
 EndFunc   ;==>CloseDroid4X
 
 Func KillMEmuProcess()
-
+#cs
 	Local $iIndex, $iCount, $bOops = False
 	Local $aFileNames[2][2] = [['MEmu.exe', 0], ['adb.exe', 0]]
 
@@ -339,12 +369,28 @@ Func KillMEmuProcess()
 	Next
 
 	Return $bOops
+#ce
+
+   ; kill only my instances
+   Local $pid = WinGetProcess(WinGetAndroidHandle())
+   If $pid <> -1 Then
+	  If ProcessClose($pid) = 0 Then
+		 ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $pid, "", Default, @SW_HIDE)
+	  EndIf
+   EndIf
+   If ProcessExists($AndroidAdbPid) Then
+	  If ProcessClose($AndroidAdbPid) = 0 Then
+		 ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $AndroidAdbPid, "", Default, @SW_HIDE)
+	  EndIf
+   EndIF
+
+   If _Sleep(5000) Then Return ; Give OS time to work
 
 EndFunc   ;==>KillMEmuProcess
 
 Func CheckScreenMEmu($bSetLog = True)
 
-   If Not InitMEmu() Then Return False
+   If Not InitAndroid() Then Return False
 
    Local $aValues[4][2] = [ _
 	  ["is_full_screen", "0"], _
@@ -353,11 +399,9 @@ Func CheckScreenMEmu($bSetLog = True)
 	  ["resolution_width", $AndroidClientWidth] _
    ]
    Local $i, $Value, $iErrCnt = 0, $process_killed, $aRegExResult
+
    For $i = 0 To UBound($aValues) -1
-	  If IsStopped() Then Return True
-	  $Value = LaunchConsole($__VBoxManage_Path, "guestproperty get " & $AndroidInstance & " " & $aValues[$i][0], $process_killed)
-	  If IsStopped() Then Return True
-	  $aRegExResult = StringRegExp($Value, "Value: (.+)", $STR_REGEXPARRAYMATCH)
+	  $aRegExResult = StringRegExp($__VBoxGuestProperties, "Name: " & $aValues[$i][0] & ", value: (.+), timestamp:", $STR_REGEXPARRAYMATCH)
 	  If @error = 0 Then $Value = $aRegExResult[0]
 	  If $Value <> $aValues[$i][1] Then
 		 If $iErrCnt = 0 Then
@@ -468,4 +512,4 @@ Func UpdateMEmuWindowState()
    Next
 
    Return $bChanged
-EndFUnc
+EndFunc

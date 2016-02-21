@@ -17,15 +17,10 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 
 	SetLog("Going to Attack...", $COLOR_BLUE)
 
-    ChkAttackCSVConfig()
-
-
-
+   ChkAttackCSVConfig()
 
 	If IsMainPage() Then ClickP($aAttackButton, 1, 0, "#0149") ; Click Attack Button
 	If _Sleep($iDelayPrepareSearch1) Then Return
-
-	;If IsLaunchAttackPage() Then ClickP($aFindMatchButton, 1, 0, "#0150");Click Find a Match Button
 
 	Local $j = 0
 	While Not ( IsLaunchAttackPage() )
@@ -75,7 +70,7 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 		Click($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 1, 0, "#0153") ; Click Okay Button
 	EndIf
 #ce
-	If IsAttackWhileShieldPage() Then  ; check for shield window and then button to lose time due attack and click okay
+	If IsAttackWhileShieldPage(False) Then  ; check for shield window and then button to lose time due attack and click okay
 		Local $offColors[3][3] = [[0x000000, 144, 1], [0xFFFFFF, 54, 17], [0xFFFFFF, 54, 28]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
 		Global $ButtonPixel = _MultiPixelSearch(359, 404 + $midOffsetY, 510, 445 + $midOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
 		If $debugSetlog = 1 Then Setlog("Shield btn clr chk-#1: " & _GetPixelColor(441, 344 + $midOffsetY, True) & ", #2: " & _GetPixelColor(441 + 144, 344 + $midOffsetY, True) & ", #3: " & _GetPixelColor(441 + 54, 344 + 17 + $midOffsetY, True) & ", #4: " & _GetPixelColor(441 + 54, 344 + 10 + $midOffsetY, True), $COLOR_PURPLE)

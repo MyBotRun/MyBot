@@ -1,18 +1,53 @@
-﻿* **V5.1.5**
+﻿* **V5.2.1** (Do not use old config files!)
+ * Fix missing images of 5.2 release
+ 
+* **V5.2** (Do not use old config files!)
+ * Add Ability to train all spells
+ * Add Milk Farm Attack
+ * Add Collect Loot Cart
+ * Add barracks mode for Dark barracks
+ * Add wait for hero before attack capabilities
+ * Add expert option to allow Personal Break log off for single time (avoid 3 separate breaks)
+ * Add Halt - When Shielded modes
+ * Add Halt - When Dark Elixir full and All Storage full modes
+ * Add Remove all Obstacles from your village
+ * Add MEmu and Droid4X *** True *** Background Mode (close laptop lid, Windows Lock Session/Switch User all supported now)
+ * Add new profile system. Allows profile names and the addition and deletion of profiles in the GUI.
+ * Skip Donating Spells if you are not at least a TH8 or your Factory is Upgrading
+ * Improve the ReArm and Reload Function
+ * Improve Error Msg MBRFunc Close
+ * Improve train troops click speed
+ * Improve zoom-out stability ("zoom-out over waters" edition)
+ * Improve "stealing mouse"/focus in Background Mode
+ * Improve Battle preparation not loosing time by pausing and resuming Android Emulator (window will be unresponsive!)
+ * Improved DPI detection and error message
+ * Fix not returning home from trophy drop in some cases
+ * Fix the Castle ratio on CSV attack
+ * Fix Status Dark Spells Factory
+ * Fix the Gold 1 League Bonus
+ * Fix the Donate Button click and the join request problem
+ * Fix TH Snipe DE checkbox not being saved
+ * Fix multiple bots using different emulators with incompatible adb
+ * Fix Droid4X window detection when manually launched
+ * Fix Clean yard touching obstacles too close to clan button
+
+* **V5.1.5**
  * Fix TH11 traps rearm button not working (due SC Jan Treasury update)
+ * Fix not returning home from trophy drop
  * Add 5 Star Bonus window check and close (new feature in SC Jan Treasury update)
  * Add German translation (@leak1337 provided)
  * Fix the Train page not found
  * Fix upgrade Grand Warden GUI setting not being saved
  * Fix drop hero in AttackCSV
+ * Fix rearm when TH is being upgraded
  * Fix issue 2nd chat request being skipped when previous request filled
- 
+
 * **V5.1.4**
  * Fix BlueStacks 2 screen size when system bar is visible
  * Improved close BlueStacks System Bar when bot starts and open again when bot stops
  * Close BlueStacks 1 System Bar when bot starts and open again when bot stops
  * Improve the Rearm Function
- 
+
 * **V5.1.3**
  * Fix GUI for Villages with 10.000.000 Gold or Elixir not properly displayed
  * Updated French and Portuguese language files for GUI
@@ -101,7 +136,7 @@
  * Fix bot continuing to train even if camps full when Halt Attack enabled
  * Add new accelerator key: Esc will stop the bot, but only when the bot is the active window
  * Add new system to customize normal attacks: CSV files in CSV\Attack
- 
+
 * **V5.0.2**
  * Fixed subscript error due to Multi Language support
 
