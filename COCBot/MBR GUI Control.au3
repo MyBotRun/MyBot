@@ -59,6 +59,7 @@ AtkLogHead()
 #include "GUI\MBR GUI Control Tab Expert.au3"
 #include "GUI\MBR GUI Control Tab Stats.au3"
 #include "GUI\MBR GUI Control Collectors.au3"
+#include "GUI\MBR GUI Control Milking.au3"
 
 ; Accelerator Key, more responsive than buttons in run-mode
 Local $aAccelKeys[1][2] = [["{ESC}", $btnStop]]
@@ -69,10 +70,9 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 	Local $nID = BitAND($wParam, 0x0000FFFF)
 	Local $hCtrl = $lParam
 	#forceref $hWind, $iMsg, $wParam, $lParam
-	;If $debugSetlog = 1 Then ConsoleWrite("GUIControl: $hWind=" & $hWind & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $frmBot=" & $frmBot & @CRLF)
+	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWind=" & $hWind & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $frmBot=" & $frmBot & @CRLF)
 
     ; WM_SYSCOMAND msdn: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646360(v=vs.85).aspx
-
     Switch $iMsg
 		Case $WM_NOTIFY ; 78
 			Switch $nID
@@ -91,7 +91,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 				Case $labelMyBotURL
 					ShellExecute("https://MyBot.run/forums") ;open web site when clicking label
 				Case $labelForumURL
-					ShellExecute("https://MyBot.run/forums/forumdisplay.php?fid=2") ;open web site when clicking label
+					ShellExecute("https://mybot.run/forums/index.php?/forum/4-official-releases/") ;open web site when clicking label
 				Case $btnStop
 					btnStop()
 				Case $btnPause
@@ -130,15 +130,25 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 					EndIf
 				Case $pic2arrow
 					If $RunState Then btnVillageStat()
+				Case $btnQuickStats
+					If $RunState Then btnVillageStat()
 			EndSwitch
 	   Case $WM_SYSCOMMAND ; 274
-			Switch $wParam
-			    Case $SC_RESTORE ; 0xf120
-				    ; set redraw controls flag that require addition redraw if visible
-				    $bRedrawBotWindow[2] = True
-			    Case $SC_CLOSE ; 0xf060
-				    If Not $gui2open Then BotClose()
-			EndSwitch
+			If $__TEST_ERROR = True Then SetDebugLog("Bot WM_SYSCOMMAND: " & Hex($wParam, 4))
+            If $hWind = $frmBot Then ; Only close Bot when Bot Window sends Close Message
+			   Switch $wParam
+				   Case $SC_MINIMIZE
+					   $FrmBotMinimized = True
+				   Case $SC_RESTORE ; 0xf120
+					   ; set redraw controls flag to check if after restore visibile controls require redraw
+					   If $FrmBotMinimized = True Then
+						  $FrmBotMinimized = False ; prevents "flickering" due to DLL hanging of bot
+						  $bRedrawBotWindow[2] = True
+					   EndIf
+				   Case $SC_CLOSE ; 0xf060
+					   BotClose()
+			   EndSwitch
+			EndIf
 	EndSwitch
 
 	Return $GUI_RUNDEFMSG
@@ -147,7 +157,9 @@ EndFunc   ;==>GUIControl
 Func BotClose()
    SetLog("Closing " & $sBotTitle & " ...")
    If $RunState = True Then AndroidBotStopEvent() ; signal android that bot is now stoppting
+   setupProfile()
    SaveConfig()
+   AndroidAdbTerminateShellInstance()
    ; Close Mutexes
    If $hMutex_BotTitle <> 0 Then _WinAPI_CloseHandle($hMutex_BotTitle)
    If $hMutex_Profile <> 0 Then _WinAPI_CloseHandle($hMutex_Profile)
@@ -159,6 +171,7 @@ Func BotClose()
    MBRFunc(False) ; close MBRFunctions dll
    _GUICtrlRichEdit_Destroy($txtLog)
    _GUICtrlRichEdit_Destroy($txtAtkLog)
+   GUIDelete($frmBot)
    Exit
 EndFunc
 
@@ -187,7 +200,7 @@ Func CheckRedrawBotWindow($bForceRedraw = False)
     ; check if bot window redraw is enabled and required
 	If ($bRedrawBotWindow[0] And $bRedrawBotWindow[1]) Or $bForceRedraw Then
 	   ; enable logging to debug GUI redraw
-	   ;SetDebugLog("Redraw MyBot Window" & ($bForceRedraw ? " (forced)" : "")) ; enable logging to debug GUI redraw
+	   SetDebugLog("Redraw MyBot Window" & ($bForceRedraw ? " (forced)" : "")) ; enable logging to debug GUI redraw
 	   ; Redraw bot window
 	   _WinAPI_RedrawWindow($frmBot)
 	   $bRedrawBotWindow[1] = False
@@ -385,7 +398,7 @@ EndFunc   ;==>_DonateBtn
 
 ;---------------------------------------------------
 ;~ If FileExists($sProfilePath & "\profile.ini") Then
-	_GUICtrlComboBox_SetCurSel($cmbProfile, Int($sCurrProfile) - 1)
+selectProfile() ; Choose the profile
 ;~ EndIf
 If FileExists($config) Or FileExists($building) Then
 	readConfig()

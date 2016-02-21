@@ -1,0 +1,44 @@
+NOTE  |Army Composition: Preset: B.Arch
+NOTE  |For th7-11: Max 240 troops
+NOTE  |Half Barbarians and Half Archers
+NOTE  |Heroes and Castle if selected
+NOTE  |
+NOTE  |Version 1.0 (Feb. 12th 2016)
+
+
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE |USE RED LINE
+SIDE  |           |           |           |           |           |           |           |BOTTOM-RIGHT|NO
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|____________|MAKE VECTORS FOR TROOPS
+MAKE  |A          |FRONT-RIGHT|14         |10         |EXT-INT    |0          |0          |            |
+MAKE  |B          |RIGHT-FRONT|14         |10         |EXT-INT    |0          |0          |            |
+MAKE  |C          |LEFT-BACK  |14         |10         |EXT-INT    |0          |0          |            |
+MAKE  |D          |BACK-LEFT  |14         |10         |EXT-INT    |0          |0          |            |
+MAKE  |E          |FRONT-LEFT |14         |10         |INT-EXT    |0          |0          |            |
+MAKE  |F          |RIGHT-BACK |14         |10         |INT-EXT    |0          |0          |            |
+MAKE  |G          |LEFT-FRONT |14         |10         |INT-EXT    |0          |0          |            |
+MAKE  |H          |BACK-RIGHT |14         |10         |INT-EXT    |0          |0          |            |
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|____________|MAKE VECTORS FOR HEROES AND CASTLE
+MAKE  |W          |BACK-RIGHT |10         |10         |INT-EXT    |5          |5          |            |
+MAKE  |X          |RIGHT-BACK |10         |10         |INT-EXT    |5          |5          |            |
+MAKE  |Y          |FRONT-RIGHT|10         |10         |INT-EXT    |5          |5          |            |
+MAKE  |Z          |LEFT-BACK  |10         |10         |INT-EXT    |5          |5          |            |
+
+      |Drop original FF attack troops
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|____________|
+DROP  |A-B-C-D    |2-14       |13         |Barb       |0          |0          |0          |            |Drop Barb
+DROP  |E-F-G-H    |1-13       |13         |Barb       |0          |0          |0          |            |
+DROP  |A-B-C-D    |2-14       |13         |Arch       |0          |0          |0          |            |Drop Arch
+DROP  |E-F-G-H    |1-13       |13         |Arch       |0          |0          |0          |            |
+DROP  |A-B-C-D    |2-14       |18         |Barb       |0          |0          |0          |            |Drop Barb (repeat)
+DROP  |E-F-G-H    |1-13       |18       |Barb       |0          |0          |0          |            |
+DROP  |A-B-C-D    |2-14       |18         |Arch       |0          |0          |0          |            |Drop Arch (repeat)
+DROP  |E-F-G-H    |1-13       |18         |Arch       |0          |0          |0          |            |
+
+DROP  |W          |1          |1          |Castle     |0          |0          |0          |            |Drop Castle
+
+      |Drop heroes
+DROP  |X          |1          |1          |King       |0          |0          |0          |            |Drop King
+DROP  |Y          |1          |1          |Queen      |0          |0          |0          |            |Drop Queen
+DROP  |Z          |1          |1          |Warden     |0          |0          |0          |            |Drop Warden

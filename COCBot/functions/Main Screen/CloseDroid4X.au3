@@ -40,13 +40,13 @@ Func CloseDroid4X()
 	EndIf
 
     ; also stop virtualbox instance
-	LaunchConsole($__VirtualBox_Path & "VBoxManage.exe", "controlvm " & $AndroidInstance & " poweroff", $process_killed)
+	LaunchConsole($__VBoxManage_Path, "controlvm " & $AndroidInstance & " poweroff", $process_killed)
 	If _SleepStatus(3000) Then Return
 
 	If $debugsetlog = 1 And $bOops Then
 		SetLog("Droid4X Kill Failed to stop service", $COLOR_RED)
 	ElseIf Not $bOops Then
-		SetLog("Droid4X stopped succesfully", $COLOR_GREEN)
+		SetLog("Droid4X stopped successfully", $COLOR_GREEN)
 	EndIf
 
 	RemoveGhostTrayIcons($Title)  ; Remove ghost icon if left behind due forced taskkill
@@ -58,7 +58,7 @@ Func CloseDroid4X()
 EndFunc   ;==>CloseDroid4X
 
 Func KillDroid4XProcess()
-
+#cs
 	Local $iIndex, $iCount, $bOops = False
 	Local $aFileNames[2][2] = [['Droid4X.exe', 0], ['adb.exe', 0]]
 
@@ -84,6 +84,19 @@ Func KillDroid4XProcess()
 	Next
 
 	Return $bOops
+#ce
+   ; kill only my instances
+   Local $pid = WinGetProcess(WinGetAndroidHandle())
+   If $pid <> -1 Then
+	  If ProcessClose($pid) = 0 Then
+		 ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $pid, "", Default, @SW_HIDE)
+	  EndIf
+   EndIf
+   If ProcessExists($AndroidAdbPid) Then
+	  If ProcessClose($AndroidAdbPid) = 0 Then
+		 ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $AndroidAdbPid, "", Default, @SW_HIDE)
+	  EndIf
+   EndIF
 
 EndFunc   ;==>KillDroid4XProcess
 

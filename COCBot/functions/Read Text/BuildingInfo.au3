@@ -24,6 +24,7 @@ Func BuildingInfo($iXstart, $iYstart)
 		$sBldgText = getNameBuilding($iXstart, $iYstart) ; Get Unit name and level with OCR
 	EndIf
 	If $debugSetlog = 1 Then Setlog("Read building Name String = " & $sBldgText, $COLOR_PURPLE) ;debug
+	If StringInStr($sBldgText, "Cart") Then $sBldgText &= " (FakeLevel 100)"
 	If StringInStr($sBldgText, "Tree") Then $sBldgText &= " (FakeLevel 99)"
 	If StringInStr($sBldgText, "Mush") Then $sBldgText &= " (FakeLevel 98)"
 	If StringInStr($sBldgText, "Trunk") Then $sBldgText &= " (FakeLevel 97)"

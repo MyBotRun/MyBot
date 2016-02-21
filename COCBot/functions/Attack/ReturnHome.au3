@@ -76,7 +76,9 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 					If IsEndBattlePage(False) Then
 						ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
 						ExitLoop
-					EndIf
+					 EndIf
+			    Else
+				    $i += 1
 				EndIf
 			Else
 				$i += 1

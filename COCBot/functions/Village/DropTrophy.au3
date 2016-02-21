@@ -35,8 +35,8 @@ Func DropTrophy()
 		EndIf
 	Next
 	; if heroes enabled, check them and reset drop trophy disable
-	If $iChkTrophyHeroes = 1 And ($BarbarianKingAvailable Or $ArcherQueenAvailable Or $GrandWardenAvailable) Then
-		If $DebugSetlog = 1 Then SetLog("Drop Trophy Found Hero BK|AQ|GW: " & $BarbarianKingAvailable & "|" & $ArcherQueenAvailable & "|" & $GrandWardenAvailable, $COLOR_PURPLE)
+	If $iChkTrophyHeroes = 1 And $iHeroAvailable > 0 Then
+		If $DebugSetlog = 1 Then SetLog("Drop Trophy Found Hero BK|AQ|GW: " & BitOR($iHeroAvailable, $HERO_KING) & "|" & BitOR($iHeroAvailable, $HERO_QUEEN) & "|" & BitOR($iHeroAvailable, $HERO_WARDEN), $COLOR_PURPLE)
 		$bDisableDropTrophy = False
 		$bHaveTroops = True
 	EndIf
@@ -67,7 +67,7 @@ Func DropTrophy()
 						ExitLoop ; no troops then cycle again
 					EndIf
 				Case 0 ; no deadbase attacks enabled, then only 1 giant or hero needed to enable drop trophy to work
-					If ($CurCamp < 5) And ($iChkTrophyHeroes = 1 And ($BarbarianKingAvailable Or $ArcherQueenAvailable Or $GrandWardenAvailable)) = False Then
+					If ($CurCamp < 5) And ($iChkTrophyHeroes = 1 And $iHeroAvailable = $HERO_NOHERO) Then
 						SetLog("No troops available to use on Drop Trophy", $COLOR_RED)
 						If $DebugSetlog = 1 Then SetLog("Drop Trophy END: Drop Trophy skipped, no army.", $COLOR_PURPLE)
 						ExitLoop ; no troops then cycle again

@@ -49,52 +49,60 @@ GUICtrlSetOnEvent(-1, "")
 #include "GUI\MBR GUI Design Tab Expert.au3"
 #include "GUI\MBR GUI Design Tab Stats.au3" ; includes '$LastControlToHide" on GUI
 #include "GUI\MBR GUI Design Collectors.au3"
+#include "GUI\MBR GUI Design Milking.au3"
 ;~ -------------------------------------------------------------
 ;~ About Us Tab
 ;~ -------------------------------------------------------------
 $tabAboutUs = GUICtrlCreateTabItem(GetTranslated(12,1, "About Us"))
 Local $x = 30, $y = 150
 	$grpCredits = GUICtrlCreateGroup("Credits", $x - 20, $y - 20, 450, 375)
+		$lblBckGrnd = GUICtrlCreateLabel("", $x - 20, $y - 20, 450, 375)  ; adds fixed white background for entire tab, if using "Labels"
+		GUICtrlSetBkColor(-1, $COLOR_WHITE)
 		$txtCredits = "My Bot is brought to you by a worldwide team of open source"  & @CRLF & _
 						"programmers and a vibrant community of forum members!"
-		$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 400, 50)
-			GUICtrlSetFont(-1, 9, $FW_BOLD)
+		$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y - 5, 400, 30)
+			GUICtrlSetFont(-1, 10, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_NAVY)
-		$y += 35
+		$y += 38
 		$txtCredits = "Please visit our web forums:"
-		$lblCredits2 = GUICtrlCreateLabel($txtCredits, $x - 5, $y, -1, -1)
-		$y += 20
-		$labelMyBotURL = GUICtrlCreateLabel("https://mybot.run/forums", $x - 5, $y, 150, 20)
-			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
+		$lblCredits2 = GUICtrlCreateLabel($txtCredits, $x+20, $y, 180, 30)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+		$labelMyBotURL = GUICtrlCreateLabel("https://mybot.run/forums", $x + 198, $y, 150, 20)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_BLUE)
+		$y += 27
+		$lblCredits3 = GUICtrlCreateLabel("Credits belong to following programmers for donating their time:", $x - 5, $y , 420, 20)
+			GUICtrlSetFont(-1,10, $FW_BOLD)
 		$y += 25
-		$lblCredits3 = GUICtrlCreateLabel("Credits go to the following coders for donating their time:", $x - 5, $y , 400, 20)
-			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
+		$txtCredits =	"Active developers: "  &  @CRLF & _
+						"Cosote, Hervidero, Kaganus, MonkeyHunter, ProMac, Sardo, Zengzeng"  &  @CRLF & @CRLF & _
+                        "Developers no longer active: "  &  @CRLF & _
+						"Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, Knowjack, Safar46, Saviart, TheMaster1st, and others"
+		$lbltxtCredits1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410,95, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1,9, $FW_MEDIUM)
+;			GUICtrlSetBkColor(-1, $COLOR_WHITE)
+		$y += 100
+		$txtCredits = "Special thanks to all contributing forum members helping " & @CRLF & "to make this software better! "
+		$lbltxtCredits2 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 390,30, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER),0)
+			GUICtrlSetFont(-1,9, $FW_MEDIUM)
+		$y += 45
+		$txtCredits =	"The latest release of 'My Bot' can be found at:"
+		$lbltxtNewVer = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 400,15, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1, 10, $FW_BOLD)
+;			GUICtrlSetBkColor(-1, $COLOR_WHITE)
 		$y += 20
-		$txtCredits =	"Antidote, AtoZ, barracoda, cosote, didipe, Dinobot, DixonHill, DkEd, GkevinOD, "  & _
-                        "Hervidero, HungLe, kaganus, knowjack, monkeyhunter, ProMac, safar46, sardo, "  & _
-						"Saviart, TheMaster1st, zengzeng and others" & @CRLF & @CRLF & _
-						"And to all forum members contributing to make this great software!" & @CRLF & _
-						"The latest release of the 'My Bot' can be found at:"
-		$lbltxtCredits = GUICtrlCreateEdit($txtCredits, $x - 5, $y, 400, 80, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_READONLY, $SS_LEFT),0)
-			GUICtrlSetBkColor(-1, $COLOR_WHITE)
-		$y += 85
-		$labelForumURL = GUICtrlCreateLabel("https://MyBot.run/latest", $x - 5, $y, 450, 20)
-			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
+		$labelForumURL = GUICtrlCreateLabel("https://mybot.run/forums/index.php?/forum/4-official-releases/", $x+25, $y, 450, 20)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_BLUE)
-		$y += 20
-		$sTxtCustom = GetTranslated(12,2, " ") & @crlf & GetTranslated(12,3, " ") & @crlf & GetTranslated(12,4, " ") & @crlf & GetTranslated(12,5, " ") & @crlf & GetTranslated(12,6, " ") & @crlf & GetTranslated(12,7, " ") & @crlf & GetTranslated(12,8, " ")
-		$lbltxtWarn = GUICtrlCreateEdit($sTxtCustom, $x - 5, $y, 410, 85, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_READONLY, $SS_LEFT),0)
-			GUICtrlSetBkColor(-1, $COLOR_WHITE)
-		$y += 90
+		$y = 440
 		$txtWarn =	"By running this program, the user accepts all responsibility that arises from the use of this software."  & @CRLF & _
 						"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even " & @CRLF & _
 						"the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General " & @CRLF & _
 						"Public License for more details. The license can be found in the main code folder location."  & @CRLF & _
 						"Copyright (C) 2015-2016 MyBot.run"
-		$lbltxtWarn1 = GUICtrlCreateEdit($txtWarn, $x - 5, $y, 410, 56, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_READONLY, $SS_LEFT, $ES_CENTER),0)
+		$lbltxtWarn1 = GUICtrlCreateLabel($txtWarn, $x - 5, $y, 410, 56, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT, $ES_CENTER),0)
 			GUICtrlSetColor(-1, 0x000053)
-			GUICtrlSetBkColor(-1, $COLOR_WHITE)
+;			GUICtrlSetBkColor(-1, $COLOR_WHITE)
 			GUICtrlSetFont(-1, 6, $FW_BOLD)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
@@ -103,6 +111,7 @@ GUICtrlCreateTabItem("")
 ;~ Bottom status bar
 ;~ -------------------------------------------------------------
 GUISetState(@SW_SHOW)
+$frmBotMinimized = False
 
 $statLog = _GUICtrlStatusBar_Create($frmBot)
 _ArrayConcatenate($G, $y)

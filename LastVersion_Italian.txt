@@ -1,4 +1,4 @@
 [general]
-version = "v5.1.5"
-messagenew = "Lots of improvements and new scripted attack in this version.\nBe sure to check out the changelog on our forums.\n\n- Don't be a stranger, stop by our community forums and join in on the revolution\n\nhttps://mybot.run\n\n Always free and open source."
-messageold = "A new version of MyBot (v5.1.5) is available!\nPlease download the latest from:\nhttps://mybot.run"
+version    = "v5.2.1"
+messagenew = "Lots of improvements and new True Background Mode in this version.\nhttps://github.com/MyBotRun/MyBot/wiki/ChangeLog\n\n- Don't be a stranger, stop by our community forums and join in on the revolution\n\nhttps://mybot.run\n\n Always free and open source."
+messageold = "A new version of MyBot (v5.2.1) is available!\nPlease download the latest from:\nhttps://mybot.run"

@@ -19,8 +19,8 @@
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
 
-#pragma compile(ProductVersion, 5.1)
-#pragma compile(FileVersion, 5.1.5)
+#pragma compile(ProductVersion, 5.2.1)
+#pragma compile(FileVersion, 5.2.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe)  ; Required
 
@@ -32,14 +32,13 @@ EndIf
 
 If Not FileExists(@ScriptDir & "\License.txt") Then
 	$license = InetGet("http://www.gnu.org/licenses/gpl-3.0.txt", @ScriptDir & "\License.txt")
-	InetClose($license)
 EndIf
 
 ;~ ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 #include "COCBot\MBR Global Variables.au3"
 
-$sBotVersion = "v5.1.5" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
-$sBotTitle = "My Bot " & $sBotVersion & " "
+$sBotVersion = "v5.2.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+$sBotTitle = "My Bot " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
 #include "COCBot\functions\Main Screen\Android.au3"
@@ -58,7 +57,7 @@ If $bBotLaunchOption_Restart = True Then
    EndIf
 EndIF
 
-Local $cmdLineHelp = "With the first command line parameter, specify the Profile(01-06). " & _
+Local $cmdLineHelp = "With the first command line parameter, specify the Profile Name (you can create profiles in the Misc tab). " & _
 					 "With the second, specify the name of the Emulator and with the third, an Android Instance (only for Droid4x & MEmu). " & _
 					 "Supported Emulators are BlueStacks, BlueStacks2, Droid4X and MEmu. " & _
 					 @CRLF&"Example: this command will start the bot with BlueStacks2 and profile 01: "&@CRLF &"MyBot.run.exe BlueStacks2 01"
@@ -128,6 +127,16 @@ AdlibRegister("PushBulletDeleteOldPushes", $PBDeleteOldPushesInterval)
 
 CheckDisplay() ; verify display size and DPI (Dots Per Inch) setting
 
+
+
+readCollectorConfig();initialize collector fullness variables before loading images
+
+LoadTHImage() ; Load TH images
+LoadElixirImage() ; Load Elixir images
+LoadElixirImage75Percent(); Load Elixir images full at 75%
+LoadElixirImage50Percent(); Load Elixir images full at 50%
+LoadAmountOfResourcesImages()
+
 CheckVersion() ; check latest version on mybot.run site
 
 ;AutoStart Bot if request
@@ -152,6 +161,8 @@ Func runBot() ;Bot that runs everything in order
 		$CommandStop = -1
 		If _Sleep($iDelayRunBot1) Then Return
 		checkMainScreen()
+		If $Restart = True Then ContinueLoop
+		chkShieldStatus()
 		If $Restart = True Then ContinueLoop
 		If $Is_ClientSyncError = False And $Is_SearchLimit = False Then
 			If BotCommand() Then btnStop()
@@ -253,7 +264,7 @@ Func runBot() ;Bot that runs everything in order
 				If $OutOfGold = 1 Then
 					Setlog("Switching to Halt Attack, Stay Online/Collect mode ...", $COLOR_RED)
 					$ichkBotStop = 1 ; set halt attack variable
-					$icmbBotCond = 16 ; set stay online/collect only mode
+					$icmbBotCond = 18 ; set stay online/collect only mode
 					$FirstStart = True ; reset First time flag to ensure army balancing when returns to training
 					ContinueLoop
 				EndIf
@@ -275,7 +286,7 @@ Func runBot() ;Bot that runs everything in order
 			If $OutOfGold = 1 Then
 				Setlog("Switching to Halt Attack, Stay Online/Collect mode ...", $COLOR_RED)
 				$ichkBotStop = 1 ; set halt attack variable
-				$icmbBotCond = 16 ; set stay online/collect only mode
+				$icmbBotCond = 18 ; set stay online/collect only mode
 				$FirstStart = True ; reset First time flag to ensure army balancing when returns to training
 				$Is_ClientSyncError = False ; reset fast restart flag to stop OOS mode and start collecting resources
 				ContinueLoop
@@ -289,7 +300,7 @@ EndFunc   ;==>runBot
 Func Idle() ;Sequence that runs until Full Army
 	Local $TimeIdle = 0 ;In Seconds
 	;If $debugsetlog = 1 Then SetLog("Func Idle ", $COLOR_PURPLE)
-	While $fullArmy = False
+	While $fullArmy = False Or $bFullArmyHero = False
 		If $RequestScreenshot = 1 Then PushMsg("RequestScreenshot")
 		If _Sleep($iDelayIdle1) Then Return
 		If $CommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_GREEN)
@@ -305,6 +316,8 @@ Func Idle() ;Sequence that runs until Full Army
 		checkMainScreen(False) ; required here due to many possible exits
 		If ($CommandStop = 3 Or $CommandStop = 0) Then
 			CheckOverviewFullArmy(True)
+			If _Sleep($iDelayIdle1) Then Return
+			getArmyHeroCount(True, True)
 			If Not ($fullArmy) And $bTrainEnabled = True Then
 				SetLog("Army Camp and Barracks are not full, Training Continues...", $COLOR_ORANGE)
 				$CommandStop = 0
@@ -312,6 +325,7 @@ Func Idle() ;Sequence that runs until Full Army
 		EndIf
 		ReplayShare($iShareAttackNow)
 		If _Sleep($iDelayIdle1) Then Return
+		CleanYard()
 		If $Restart = True Then ExitLoop
 		If $iCollectCounter > $COLLECTATCOUNT Then ; This is prevent from collecting all the time which isn't needed anyway
 			Collect()
@@ -362,7 +376,7 @@ Func Idle() ;Sequence that runs until Full Army
 EndFunc   ;==>Idle
 
 Func AttackMain() ;Main control for attack functions
-	If $iChkUseCCBalanced = 1 Then ;launch profilereport() only if option balance D/R it's activated
+	If $iChkUseCCBalanced = 1 or $iChkUseCCBalancedCSV = 1 Then ;launch profilereport() only if option balance D/R it's activated
 		ProfileReport()
 		If _Sleep($iDelayAttackMain1) Then Return
 		checkMainScreen(False)
@@ -374,6 +388,29 @@ Func AttackMain() ;Main control for attack functions
 		If _Sleep($iDelayAttackMain1) Then Return
 		Return ; return to runbot, refill armycamps
 	EndIf
+	If $debugsetlog = 1 Then
+		SetLog(_PadStringCenter(" Hero status check" & BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) & "|" & $iHeroAttack[$DB] & "|" & $iHeroAvailable, 54, "="), $COLOR_PURPLE)
+		SetLog(_PadStringCenter(" Hero status check" & BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) & "|" & $iHeroAttack[$LB] & "|" & $iHeroAvailable, 54, "="), $COLOR_PURPLE)
+	EndIf
+	Switch $iCmbSearchMode
+		Case 0  ; Dead base
+			If (BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) <> $iHeroWait[$DB]) And ($OptBullyMode = 0 And $OptTrophyMode = 0) Then
+				Setlog("Heroes not ready for dead base attack, return to wait!", $COLOR_BLUE)
+				Return
+			EndIf
+		Case 1  ; Live base
+			If (BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) <> $iHeroWait[$LB]) And ($OptBullyMode = 0 And $OptTrophyMode = 0) Then
+				Setlog("Heroes not ready for live base attack, return to wait!", $COLOR_BLUE)
+				Return
+			EndIf
+		Case 2 ; Both Dead and Live bases
+			If (BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) <> $iHeroWait[$DB]) And _
+				(BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) <> $iHeroWait[$LB]) And _
+				($OptBullyMode = 0 And $OptTrophyMode = 0) Then
+				Setlog("Heroes not ready for attack, return to wait!", $COLOR_BLUE)
+				Return
+			EndIf
+	EndSwitch
 	PrepareSearch()
 		If $OutOfGold = 1 Then Return ; Check flag for enough gold to search
 		If $Restart = True Then Return
@@ -396,7 +433,36 @@ Func Attack() ;Selects which algorithm
 	SetLog(" ====== Start Attack ====== ", $COLOR_GREEN)
 	If  ($iMatchMode = $DB and $ichkUseAttackDBCSV = 1) or ($iMatchMode = $LB and $ichkUseAttackABCSV = 1) Then
 		Algorithm_AttackCSV()
-	Else
+	Elseif $iMatchMode= $LB and  $iChkDeploySettings[$LB] = 6 Then
+	    Alogrithm_MilkingAttack()
+		; check if can snipe external TH
+		If $OptTrophyMode = 1 Then ;Enables Combo Mode Settings
+			If SearchTownHallLoc() And IsSearchModeActive($TS) Then ; attack this base anyway because outside TH found to snipe
+
+
+				Local $originalGold = $iAimGold[$TS]
+				Local $originalElixir = $iAimElixir[$TS]
+				Local $originalDark = $iAimDark[$TS]
+				Local $originalGoldPlusElixir = $iAimGoldPlusElixir[$TS]
+				$iAimGold[$TS]  = 0
+				$iAimElixir[$TS] = 0
+				$iAimDark[$TS]  = 0
+				$iAimGoldPlusElixir[$TS] = 0
+				If CompareResources($TS) Then
+					SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
+					SetLog("      " & "TH Outside Found!!! ", $COLOR_GREEN, "Lucida Console", 7.5)
+					$iMatchMode = $TS
+					PrepareAttack($iMatchMode,True)
+					algorithm_AllTroops()
+				EndIf
+				$iAimGold[$TS]  = $originalGold
+				$iAimElixir[$TS] = $originalElixir
+				$iAimDark[$TS]  = $originalDark
+				$iAimGoldPlusElixir[$TS] = $originalGoldPlusElixir
+			EndIf
+		EndIf
+
+    Else
 		algorithm_AllTroops()
 	EndIf
 EndFunc   ;==>Attack

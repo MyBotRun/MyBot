@@ -21,6 +21,7 @@ Func TogglePause()
 EndFunc
 
 Func TogglePauseImpl($Source)
+   ResumeAndroid()
    SetRedrawBotWindow(True)
    Local $BlockInputPausePrev
 	$TPaused = NOT $TPaused

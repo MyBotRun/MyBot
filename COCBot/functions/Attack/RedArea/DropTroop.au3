@@ -107,7 +107,6 @@ Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
 	debugRedArea("troop : [" & $troop & "] / nbSides : [" & $nbSides & "] / number : [" & $number & "] / slotsPerEdge [" & $slotsPerEdge & "]")
 	Local $listInfoPixelDropTroop[0]
 
-
 	If ($iChkRedArea[$iMatchMode]) Then
 		If $slotsPerEdge = 0 Or $number < $slotsPerEdge Then $slotsPerEdge = $number
 		;If _Sleep($iDelayDropTroop1) Then Return
@@ -137,8 +136,6 @@ Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
 					EndIf
 				Next
 			EndIf
-
-
 
 		Else
 			Local $listEdgesPixelToDrop[0]
@@ -191,8 +188,8 @@ Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
 		DropOnEdges($troop, $nbSides, $number, $slotsPerEdge)
 	EndIf
 
-	Local $infoDropTroop[6] = [$troop, $listInfoPixelDropTroop, $nbTroopsPerEdge, $slotsPerEdge, $number, $name]
-	Return $infoDropTroop
+    Local $infoDropTroop[6] = [$troop, $listInfoPixelDropTroop, $nbTroopsPerEdge, $slotsPerEdge, $number, $name]
 	debugRedArea($nameFunc & " OUT ")
 
+	Return $infoDropTroop
 EndFunc   ;==>DropTroop2
