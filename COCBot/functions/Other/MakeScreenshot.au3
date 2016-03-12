@@ -1,11 +1,12 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: MakeScreenshot
 ; Description ...: This file creates a snapshot of the user base
-; Syntax ........: MakeScreenshot()
-; Parameters ....: None
+; Syntax ........: MakeScreenshot($TargetDir[, $type = "jpg"])
+; Parameters ....: $TargetDir           - required - location to save file
+;                  $type                - [optional] string - type of image to save ("jpg", "png", "bmp"). Default is "jpg".
 ; Return values .: None
 ; Author ........: Sardo (2015-06)
-; Modified ......: Hervidero, ProMac (2015-10)
+; Modified ......: Hervidero, ProMac (2015-10), MonkeyHunter (2016-2)
 ; Remarks .......: This file is part of MyBot Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -14,11 +15,48 @@
 ; ===============================================================================================================================
 
 Func MakeScreenshot($TargetDir, $type = "jpg")
-    WinGetAndroidHandle()
+	WinGetAndroidHandle()
 	If IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) Then
-		_CaptureRegionScreenshot(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT - 45)
-		Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($hBitmapScreenshot) ; Get graphics content from bitmap image
-		Local $hBrush = _GDIPlus_BrushCreateSolid(0xFF000029) ;create a brush AARRGGBB (using 0x000029 = Dark Blue)
+
+		Local $SuspendMode
+		Local $iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT - 25 ; set size if screen to save
+		Local $iW = Number($iRight) - Number($iLeft)
+		Local $iH = Number($iBottom) - Number($iTop)
+		Local $hHBitmapScreenshot, $hDC_Capture, $hMemDC, $hObjectOld, $hBitmapScreenshot
+		Local $hGraphic, $hBrush
+
+		; Get local screen capture from BS to not interfer with other graphics captures
+		If $ichkBackground = 1 Then
+			If $AndroidAdbScreencap = True Then
+				$hHBitmapScreenshot = AndroidScreencap($iLeft, $iTop, $iW, $iH)
+			Else
+				$SuspendMode = ResumeAndroid(False)
+				$hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($Title, "", $AppClassInstance)) ; get device context (DC) of emulator windpow
+				$hMemDC = _WinAPI_CreateCompatibleDC($hDC_Capture) ; create compatible copy of emulator DC
+				$hHBitmapScreenshot = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH) ; create handle to DC compatible bitmap
+				$hObjectOld = _WinAPI_SelectObject($hMemDC, $hHBitmapScreenshot) ; selects new DC handle, and saves existing DC object
+
+				DllCall("user32.dll", "int", "PrintWindow", "hwnd", $HWnD, "handle", $hMemDC, "int", 0)
+				_WinAPI_SelectObject($hMemDC, $hHBitmapScreenshot)
+				_WinAPI_BitBlt($hMemDC, 0, 0, $iW, $iH, $hDC_Capture, $iLeft, $iTop, $SRCCOPY) ; copy screen shot to DC
+
+				_WinAPI_DeleteDC($hMemDC)
+				_WinAPI_SelectObject($hMemDC, $hObjectOld) ; select old graphics object
+				_WinAPI_ReleaseDC($HWnD, $hDC_Capture) ; delete new DC
+				SuspendAndroid($SuspendMode, False)
+			EndIf
+			$hBitmapScreenshot = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmapScreenshot)
+		Else
+			getBSPos()
+			$SuspendMode = ResumeAndroid(False)
+			$hHBitmapScreenshot = _ScreenCapture_Capture("", $iLeft + $BSpos[0], $iTop + $BSpos[1], $iRight + $BSpos[0] - 1, $iBottom + $BSpos[1] - 1, False)
+			$hBitmapScreenshot = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmapScreenshot)
+			SuspendAndroid($SuspendMode, False)
+		EndIf
+		$ForceCapture = False
+
+		$hGraphic = _GDIPlus_ImageGetGraphicsContext($hBitmapScreenshot) ; Get graphics content from bitmap image
+		$hBrush = _GDIPlus_BrushCreateSolid(0xFF000029) ;create a brush AARRGGBB (using 0x000029 = Dark Blue)
 		If $ichkScreenshotHideName = 1 Then
 			If $aCCPos[0] = -1 Or $aCCPos[1] = -1 Then
 				Setlog("Screenshot warning: Locate the Clan Castle to hide the clanname!", $COLOR_RED)
@@ -28,7 +66,7 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 		EndIf
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 		Local $Time = @HOUR & "." & @MIN & "." & @SEC
-		Local $filename = $Date & "_" & $Time & "." & $type
+		Local $filename = $Date & "_" & $Time & "." & $type  ; most systems support type = png, jpg, bmp, gif, tif
 		_GDIPlus_ImageSaveToFile($hBitmapScreenshot, $TargetDir & $filename)
 		If $dirTemp = $TargetDir Then
 			SetLog("Screenshot saved: .\Profiles\" & $sCurrProfile & "\Temp\" & $filename)
@@ -47,3 +85,5 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 	EndIf
 
 EndFunc   ;==>MakeScreenshot
+
+

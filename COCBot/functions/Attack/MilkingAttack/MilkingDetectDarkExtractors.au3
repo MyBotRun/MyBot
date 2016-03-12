@@ -14,8 +14,9 @@
 ; ===============================================================================================================================
 
 Func MilkingDetectDarkExtractors()
-		Local $MilkFarmAtkPixelListDRILLSTR = ""
+	Local $MilkFarmAtkPixelListDRILLSTR = ""
 	If $MilkFarmLocateDrill = 1 Then
+		_CaptureRegion2(80, 70, 785, 530)
 		Local $hTimer = TimerInit()
 		;03.01 locate extractors
 		Local $DrillVect = StringSplit(GetLocationDarkElixirWithLevel(), "~", 2) ; ["6#527-209" , "6#421-227" , "6#600-264" , "6#299-331" , "6#511-404" , "6#511-453"]
@@ -29,6 +30,9 @@ Func MilkingDetectDarkExtractors()
 			If UBound($temp) = 2 Then
 				$pixel = StringSplit($temp[1], "-", 2) ;PIXEL ["404","325"]
 				If UBound($pixel) = 2 Then
+					Local $tempPixel[2] = [$pixel[0] + 80, $pixel[1] + 70]
+					$pixel = $tempPixel
+					$temp[1] = String($pixel[0]& "-" & $pixel[1])
 					If isInsideDiamond($pixel) Then
 						;debug if need
 						If $debugresourcesoffset = 1 Then
@@ -54,7 +58,7 @@ Func MilkingDetectDarkExtractors()
 						;ok add if conditions satisfied
 						If AmountOfResourcesInStructure("drill", $pixel, $temp[0]) Then
 							$MilkFarmAtkPixelListDRILLSTR &= $temp[1] & "|"
-							If MilkFarmObjectivesSTR_INSERT("ddrill", $temp[0], $temp[1]) >0 Then
+							If MilkFarmObjectivesSTR_INSERT("ddrill", $temp[0], $temp[1]) > 0 Then
 								$Drillmatch += 1
 							Else
 								$Drilldiscard += 1
@@ -81,11 +85,11 @@ Func MilkingDetectDarkExtractors()
 		Local $htimerLocateDrill = Round(TimerDiff($hTimer) / 1000, 2)
 		If $debugsetlog = 1 Then Setlog("> Drill Extractors found: " & $Drillfounds & " | match conditions: " & $Drillmatch & " | discard " & $Drilldiscard, $color_blue)
 		If $debugsetlog = 1 Then SetLog("> Drill Extractors position detectecd in " & $htimerLocateDrill & " seconds", $color_blue)
-		return $Drillmatch
+		Return $Drillmatch
 	Else
-		return 0
+		Return 0
 	EndIf
 
 
 
-EndFunc
+EndFunc   ;==>MilkingDetectDarkExtractors

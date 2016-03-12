@@ -25,15 +25,15 @@ Func CheckTombs()
 	Local $CleanTombsX, $CleanTombsY
 
 	For $i = 0 To 2
-		_WinAPI_DeleteObject($hBitmapFirst)
-		$hBitmapFirst = _CaptureRegion2()
+		_CaptureRegion2()
 		If FileExists($CleanTombs[$i]) Then
-			Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hBitmapFirst, "str", $CleanTombs[$i], "float", $aToleranceImgLoc, "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
+			Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hHBitmap2, "str", $CleanTombs[$i], "float", $aToleranceImgLoc, "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
+			If @error Then _logErrorDLLCall($pImgLib, @error)
 			If IsArray($res) Then
 				If $DebugSetLog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
 				If $res[0] = "0" Then
 					; failed to find a tomb on the field
-					If $i = 2 then SetLog("No Tombstone found, Yard is clean!", $COLOR_PURPLE)
+					If $i = 2 then SetLog("No Tombstone found, Yard is clean!", $COLOR_GREEN)
 				ElseIf $res[0] = "-1" Then
 					SetLog("DLL Error", $COLOR_RED)
 				ElseIf $res[0] = "-2" Then
@@ -52,7 +52,7 @@ Func CheckTombs()
 					Next
 				EndIf
 			Else
-				SetLog("No Tombstone found, Yard is clean!", $COLOR_PURPLE)
+				SetLog("No Tombstone found, Yard is clean!", $COLOR_GREEN)
 				If _Sleep($iDelayCheckTombs1) Then Return
 			EndIf
 		EndIf
@@ -89,10 +89,10 @@ Func CleanYard()
 
 	If $iFreeBuilderCount > 0 Then
 		For $i = 0 To 6
-			_WinAPI_DeleteObject($hBitmapFirst)
-			$hBitmapFirst = _CaptureRegion2()
+			_CaptureRegion2()
 			If FileExists($CleanYard[$i]) Then
-				Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hBitmapFirst, "str", $CleanYard[$i], "float", $aToleranceImgLoc[$i], "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
+				Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hHBitmap2, "str", $CleanYard[$i], "float", $aToleranceImgLoc[$i], "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
+				If @error Then _logErrorDLLCall($pImgLib, @error)
 				If IsArray($res) Then
 					If $DebugSetLog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
 					If $res[0] = "0" Then
@@ -132,7 +132,6 @@ Func CleanYard()
 			EndIf
 		Next
 	EndIf
-	_WinAPI_DeleteObject($hBitmapFirst)
 
 	UpdateStats()
 	ClickP($aAway, 1, 300, "#0329") ;Click Away

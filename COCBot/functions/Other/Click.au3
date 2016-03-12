@@ -32,7 +32,7 @@ Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 	$y = $y  + $BSrpos[1]
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
-			If isProblemAffectBeforeClick() Then
+			If isProblemAffectBeforeClick($i) Then
 				If $debugClick = 1 Then Setlog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_RED, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
@@ -60,8 +60,8 @@ Func _ControlClick($x, $y)
    Return ControlClick($Title, "", "", "left", "1", $x, $y)
 EndFunc
 
-Func isProblemAffectBeforeClick()
-   If FastCaptureRegion() Then Return isProblemAffect(True)
+Func isProblemAffectBeforeClick($iCount = 0)
+   If NeedCaptureRegion($iCount) = True Then Return isProblemAffect(True)
    Return False
 EndFunc
 
@@ -77,7 +77,7 @@ Func PureClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 	EndIf
 
     If $AndroidAdbClick = True Then
-	   AndroidClick($x, $y, $times, $speed)
+	   AndroidClick($x, $y, $times, $speed, False)
 	EndIf
 	If $AndroidAdbClick = True Then
 	   Return
@@ -132,7 +132,7 @@ Func GemClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 			   SuspendAndroid($SuspendMode)
 			   Return False
 			EndIf
-			If isProblemAffectBeforeClick() Then
+			If isProblemAffectBeforeClick($i) Then
 				If $debugClick = 1 Then Setlog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_RED, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
@@ -171,6 +171,14 @@ EndFunc   ;==>GemClick
 Func GemClickP($point, $howMuch = 1, $speed = 0, $debugtxt = "")
 	Return GemClick($point[0], $point[1], $howMuch, $speed, $debugtxt = "")
 EndFunc   ;==>GemClickP
+
+Func AttackClick($x, $y, $times = 1, $speed = 0, $afterDelay = 0, $debugtxt = "")
+   Local $timer = TimerInit()
+   Local $result = Click($x, $y, $times, $speed, $debugtxt)
+   Local $delay = $times * $speed + $afterDelay - TimerDiff($timer)
+   If IsKeepClicksActive() = False And $delay > 0 Then _Sleep($delay, False)
+   Return $result
+EndFunc
 
 Func _DecodeDebug($message)
 	Local $separator = " | "

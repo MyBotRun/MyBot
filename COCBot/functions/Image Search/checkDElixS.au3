@@ -111,14 +111,10 @@ EndFunc
 Func DEAttack()
 
 	If $iChkLightSpell = 1 Then
-		;SetLog("Start Function ")
-		_WinAPI_DeleteObject($hBitmapFirst)
-		$hBitmapFirst = _CaptureRegion2(230, 170, 630, 440)
-		;SetLog("BitmapFirst done")
+		_CaptureRegion2(230, 170, 630, 440)
 
 		$DESTOLoc = GetLocationDarkElixirStorage()
 
-		;SetLog("Dll Return location")
 		If (UBound($DESTOLoc) > 1) Then
 			Local $centerPixel[2] = [430, 313]
 			Local $arrPixelCloser = _FindPixelCloser($DESTOLoc, $centerPixel, 1)

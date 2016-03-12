@@ -1203,17 +1203,17 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 		GUICtrlSetState($chkSaveWallBldr, $GUI_UNCHECKED)
 	EndIf
 
-	For $iz = 0 To 5 ; Apply the buildings upgrade varaible to GUI
-		GUICtrlSetImage($picUpgradeStatus[$iz], $pIconLib, $ipicUpgradeStatus[$iz]) ; Set GUI status pic
+	For $iz = 0 To UBound($aUpgrades, 1) - 1 ; Apply the buildings upgrade variable to GUI
+		GUICtrlSetImage($picUpgradeStatus[$iz], $pIconLib, $ipicUpgradeStatus[$iz])  ; Set GUI status pic
 		If $aUpgrades[$iz][2] > 0 Then
 			GUICtrlSetData($txtUpgradeValue[$iz], _NumberFormat($aUpgrades[$iz][2])) ; Set GUI loot value to match $aUpgrades variable
-			GUICtrlSetData($txtUpgradeX[$iz], $aUpgrades[$iz][0]) ; Set GUI X Position to match $aUpgrades variable
-			GUICtrlSetData($txtUpgradeY[$iz], $aUpgrades[$iz][1]) ; Set GUI Y Position to match $aUpgrades variable
 		Else
 			GUICtrlSetData($txtUpgradeValue[$iz], "") ; Set GUI loot value to blank
-			GUICtrlSetData($txtUpgradeX[$iz], "") ; Set GUI X Position to match $aUpgrades variable
-			GUICtrlSetData($txtUpgradeY[$iz], "") ; Set GUI Y Position to match $aUpgrades variable
 		EndIf
+		GUICtrlSetData($txtUpgradeName[$iz], $aUpgrades[$iz][4]) ; Set GUI unit name $aUpgrades variable
+		GUICtrlSetData($txtUpgradeLevel[$iz], $aUpgrades[$iz][5]) ; Set GUI unit level to match $aUpgrades variable
+		GUICtrlSetData($txtUpgradeTime[$iz], $aUpgrades[$iz][6]) ; Set GUI upgrade time to match $aUpgrades variable
+
 		Switch $aUpgrades[$iz][3] ;Set GUI Upgrade Type to match $aUpgrades variable
 			Case "Gold"
 				GUICtrlSetImage($picUpgradeType[$iz], $pIconLib, $eIcnGold)
@@ -1228,6 +1228,11 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 			GUICtrlSetState($chkbxUpgrade[$iz], $GUI_CHECKED)
 		Else
 			GUICtrlSetState($chkbxUpgrade[$iz], $GUI_UNCHECKED)
+		EndIf
+		If $ichkUpgrdeRepeat[$iz] = 1 Then
+			GUICtrlSetState($chkUpgrdeRepeat[$iz], $GUI_CHECKED)
+		Else
+			GUICtrlSetState($chkUpgrdeRepeat[$iz], $GUI_UNCHECKED)
 		EndIf
 	Next
 	GUICtrlSetData($txtUpgrMinGold, $itxtUpgrMinGold)

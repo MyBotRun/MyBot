@@ -6,7 +6,7 @@
 ; Parameters ....: $bWindowOpen         - [optional] a boolean flag if we need to open the Amry training window. Default is False.
 ; Return values .: None
 ; Author ........: KnowJack (July 2015)
-; Modified ......:
+; Modified ......: MonkeyHunter (2016-3)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -50,6 +50,9 @@ Func CheckOverviewFullArmy($bWindowOpen = False)
 	If $Pixel Then
 		$fullArmy = True
 	EndIf
+
+	$canRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5])
+	If $debugSetlog = 1 Then Setlog("Can Request CC: " & $canRequestCC, $COLOR_PURPLE)
 
 	If $bWindowOpen = True Then
 		ClickP($aAway,1,0,"#0348") ;Click Away

@@ -21,7 +21,7 @@ Func LocateBarrack($ArmyCamp = False)
 	If $ArmyCamp Then $choice = "Army Camp"
 	SetLog("Locating " & $choice & "...", $COLOR_BLUE)
 
-	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) And _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
+	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) Or _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 		Zoomout()
 		Collect()
 	EndIf

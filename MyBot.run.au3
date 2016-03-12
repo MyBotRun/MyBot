@@ -19,8 +19,8 @@
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
 
-#pragma compile(ProductVersion, 5.2.1)
-#pragma compile(FileVersion, 5.2.1)
+#pragma compile(ProductVersion, 5.3)
+#pragma compile(FileVersion, 5.3)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe)  ; Required
 
@@ -37,7 +37,7 @@ EndIf
 ;~ ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 #include "COCBot\MBR Global Variables.au3"
 
-$sBotVersion = "v5.2.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+$sBotVersion = "v5.3" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
@@ -48,7 +48,7 @@ If $aCmdLine[0] < 2 Then
 	If Not $FoundRunningAndroid Then DetectInstalledAndroid()
 EndIf
 ; Update Bot title
-$sBotTitle = $sBotTitle & "(" & ($AndroidInstance <> "" ? $AndroidInstance : $Android) & ")"
+$sBotTitle = $sBotTitle & "(" & ($AndroidInstance <> "" ? $AndroidInstance : $Android) & ")" ;Do not change this. If you do, multiple instances will not work.
 
 If $bBotLaunchOption_Restart = True Then
    If CloseRunningBot($sBotTitle) = True Then
@@ -57,21 +57,26 @@ If $bBotLaunchOption_Restart = True Then
    EndIf
 EndIF
 
-Local $cmdLineHelp = "With the first command line parameter, specify the Profile Name (you can create profiles in the Misc tab). " & _
-					 "With the second, specify the name of the Emulator and with the third, an Android Instance (only for Droid4x & MEmu). " & _
-					 "Supported Emulators are BlueStacks, BlueStacks2, Droid4X and MEmu. " & _
-					 @CRLF&"Example: this command will start the bot with BlueStacks2 and profile 01: "&@CRLF &"MyBot.run.exe BlueStacks2 01"
+Local $cmdLineHelp = "By using the commandline (or a shortcut) you can start multiple Bots:" & @CRLF & _
+					 "     MyBot.run.exe [ProfileName] [EmulatorName] [InstanceName]" & @CRLF & @CRLF & _
+					 "With the first command line parameter, specify the Profilename (you can create profiles on the Misc tab, if a " & _
+					 "profilename contains a {space}, then enclose the profilename in double quotes). " & _
+					 "With the second, specify the name of the Emulator and with the third, an Android Instance (only for Droid4x & MEmu). " & @CRLF & _
+					 "Supported Emulators are BlueStacks, BlueStacks2, Droid4X and MEmu." & @CRLF & @CRLF & _
+					 "Examples:" & @CRLF & _
+					 "     MyBot.run.exe MyVillage BlueStacks2" & @CRLF & _
+					 '     MyBot.run.exe "My Second Village" MEmu MEmu_1'
 
 $hMutex_BotTitle = _Singleton($sBotTitle, 1)
 If $hMutex_BotTitle = 0 Then
-	MsgBox(0, $sBotTitle, "My Bot for " & $Android & ($AndroidInstance <> "" ? " (instance " & $AndroidInstance & ")" : "") & " is already running." & @CRLF & @CRLF & $cmdLineHelp)
+	MsgBox($MB_OK + $MB_ICONINFORMATION, $sBotTitle, "My Bot for " & $Android & ($AndroidInstance <> "" ? " (instance " & $AndroidInstance & ")" : "") & " is already running." & @CRLF & @CRLF & $cmdLineHelp)
 	Exit
 EndIf
 
 $hMutex_Profile = _Singleton(StringReplace($sProfilePath & "\" & $sCurrProfile, "\", "-"), 1)
 If $hMutex_Profile = 0 Then
    _WinAPI_CloseHandle($hMutex_BotTitle)
-	MsgBox(0, $sBotTitle, "My Bot with Profile " & $sCurrProfile & " is already running in " & $sProfilePath & "\" & $sCurrProfile & "." & @CRLF & @CRLF & $cmdLineHelp)
+	MsgBox($MB_OK + $MB_ICONINFORMATION, $sBotTitle, "My Bot with Profile " & $sCurrProfile & " is already running in " & $sProfilePath & "\" & $sCurrProfile & "." & @CRLF & @CRLF & $cmdLineHelp)
 	Exit
 EndIf
 
@@ -163,6 +168,8 @@ Func runBot() ;Bot that runs everything in order
 		checkMainScreen()
 		If $Restart = True Then ContinueLoop
 		chkShieldStatus()
+		If $Restart = True Then ContinueLoop
+	    checkAndroidTimeLag()
 		If $Restart = True Then ContinueLoop
 		If $Is_ClientSyncError = False And $Is_SearchLimit = False Then
 			If BotCommand() Then btnStop()
@@ -370,6 +377,10 @@ Func Idle() ;Sequence that runs until Full Army
 		If $canRequestCC = True Then RequestCC()
 
 		SetLog("Time Idle: " & StringFormat("%02i", Floor(Floor($TimeIdle / 60) / 60)) & ":" & StringFormat("%02i", Floor(Mod(Floor($TimeIdle / 60), 60))) & ":" & StringFormat("%02i", Floor(Mod($TimeIdle, 60))))
+
+		checkAndroidTimeLag()
+		If $Restart = True Then ExitLoop
+
 		If $OutOfGold = 1 Or $OutOfElixir = 1 Then Return  ; Halt mode due low resources, only 1 idle loop
 		If $iChkSnipeWhileTrain = 1 Then SnipeWhileTrain()  ;snipe while train
 	WEnd
@@ -389,24 +400,30 @@ Func AttackMain() ;Main control for attack functions
 		Return ; return to runbot, refill armycamps
 	EndIf
 	If $debugsetlog = 1 Then
-		SetLog(_PadStringCenter(" Hero status check" & BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) & "|" & $iHeroAttack[$DB] & "|" & $iHeroAvailable, 54, "="), $COLOR_PURPLE)
-		SetLog(_PadStringCenter(" Hero status check" & BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) & "|" & $iHeroAttack[$LB] & "|" & $iHeroAvailable, 54, "="), $COLOR_PURPLE)
+		SetLog(_PadStringCenter(" Hero status check" & BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) & "|" & $iHeroWait[$DB] & "|" & $iHeroAvailable, 54, "="), $COLOR_PURPLE)
+		SetLog(_PadStringCenter(" Hero status check" & BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) & "|" & $iHeroWait[$LB] & "|" & $iHeroAvailable, 54, "="), $COLOR_PURPLE)
+		Setlog("BullyMode: " & $OptBullyMode & ", Bully Hero: " & BitAND($iHeroAttack[$iTHBullyAttackMode], $iHeroWait[$iTHBullyAttackMode], $iHeroAvailable) & "|" & $iHeroWait[$iTHBullyAttackMode] & "|" & $iHeroAvailable, $COLOR_PURPLE)
 	EndIf
 	Switch $iCmbSearchMode
 		Case 0  ; Dead base
-			If (BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) <> $iHeroWait[$DB]) And ($OptBullyMode = 0 And $OptTrophyMode = 0) Then
+			If (BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) <> $iHeroWait[$DB]) And _
+				($OptBullyMode = 0 Or ($OptBullyMode = 1 And (BitAND($iHeroAttack[$iTHBullyAttackMode], $iHeroWait[$iTHBullyAttackMode], $iHeroAvailable) <> $iHeroWait[$iTHBullyAttackMode]))) And _
+				($OptTrophyMode = 0 Or ($OptTrophyMode = 1 And $iEnableAfterCount[$TS] > 0))  Then
 				Setlog("Heroes not ready for dead base attack, return to wait!", $COLOR_BLUE)
 				Return
 			EndIf
 		Case 1  ; Live base
-			If (BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) <> $iHeroWait[$LB]) And ($OptBullyMode = 0 And $OptTrophyMode = 0) Then
+			If (BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) <> $iHeroWait[$LB]) And _
+				($OptBullyMode = 0 Or ($OptBullyMode = 1 And (BitAND($iHeroAttack[$iTHBullyAttackMode], $iHeroWait[$iTHBullyAttackMode], $iHeroAvailable) <> $iHeroWait[$iTHBullyAttackMode]))) And _
+				($OptTrophyMode = 0 Or ($OptTrophyMode = 1 And $iEnableAfterCount[$TS] > 0))  Then
 				Setlog("Heroes not ready for live base attack, return to wait!", $COLOR_BLUE)
 				Return
 			EndIf
 		Case 2 ; Both Dead and Live bases
 			If (BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) <> $iHeroWait[$DB]) And _
 				(BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) <> $iHeroWait[$LB]) And _
-				($OptBullyMode = 0 And $OptTrophyMode = 0) Then
+				($OptBullyMode = 0 Or ($OptBullyMode = 1 And (BitAND($iHeroAttack[$iTHBullyAttackMode], $iHeroWait[$iTHBullyAttackMode], $iHeroAvailable) <> $iHeroWait[$iTHBullyAttackMode]))) And _
+				($OptTrophyMode = 0 Or ($OptTrophyMode = 1 And $iEnableAfterCount[$TS] > 0))  Then
 				Setlog("Heroes not ready for attack, return to wait!", $COLOR_BLUE)
 				Return
 			EndIf

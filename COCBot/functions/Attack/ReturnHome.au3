@@ -64,6 +64,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	SetLog("Returning Home", $COLOR_BLUE)
 	If $RunState = False Then Return
 
+	checkAndroidTimeLag(False)
 
 	If Not (IsReturnHomeBattlePage(True, False)) Then
 		; ---- CLICK SURRENDER BUTTON ----

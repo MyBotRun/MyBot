@@ -85,15 +85,14 @@ Func Collect()
 
 	$ToleranceImgLoc = 0.850
 
-	$hBitmapFirst = _CaptureRegion2()
-	Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hBitmapFirst, "str", $LootCart, "float", $ToleranceImgLoc, "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
-	_WinAPI_DeleteObject($hBitmapFirst)
-
+	_CaptureRegion2()
+	Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hHBitmap2, "str", $LootCart, "float", $ToleranceImgLoc, "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
+	If @error Then _logErrorDLLCall($pImgLib, @error)
 	If IsArray($res) Then
 		If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
 		If $res[0] = "0" Then
 			; failed to find a loot cart on the field
-			SetLog("No Loot Cart found, Yard is clean!", $COLOR_PURPLE)
+			SetLog("No Loot Cart found, Yard is clean!", $COLOR_GREEN)
 		ElseIf $res[0] = "-1" Then
 			SetLog("DLL Error", $COLOR_RED)
 		ElseIf $res[0] = "-2" Then

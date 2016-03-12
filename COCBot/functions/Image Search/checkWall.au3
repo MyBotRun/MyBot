@@ -26,11 +26,10 @@ Func CheckWall()
 
 
 	For $i = 0 To UBound($listLvlMask) - 1
-		Local $hBitmap = _CaptureRegion2()
+		_CaptureRegion2()
 		SetLog("Searching for Wall(s) level: " & $levelWall & ". Using Mask: " & $NameLvlMask[$i], $COLOR_GREEN)
-		Local $result = DllCall($hFuncLib, "str", "findWall", "ptr", $hBitmap, "int", $listLvlMask[$i], "int", $levelWall, "double", $Walltolerance[$icmbWalls], "int", $iMaxNbWall, "int", $debugWalls)
+		Local $result = DllCall($hFuncLib, "str", "findWall", "ptr", $hHBitmap2, "int", $listLvlMask[$i], "int", $levelWall, "double", $Walltolerance[$icmbWalls], "int", $iMaxNbWall, "int", $debugWalls)
 		ClickP($aAway, 1, 0, "#0505") ; to prevent bot 'Anyone there ?'
-		_WinAPI_DeleteObject($hBitmap)
 		If Not $result[0] = "" And UBound($result) > 0 Then
 			Local $listPixelTemp = GetListPixel($result[0])
 			_ArrayAdd($listPixel, $listPixelTemp)

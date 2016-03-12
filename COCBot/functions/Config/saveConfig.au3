@@ -347,7 +347,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	EndIf
 
 	If GUICtrlRead($chkUseCCBalanced) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "BalanceCC", 0)
+		IniWrite($config, "attack", "BalanceCC", 1)
 	Else
 		IniWrite($config, "attack", "BalanceCC", 0)
 	EndIf
@@ -1007,6 +1007,7 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "upgrade", "upgradetroops", 0)
 	EndIf
 	IniWrite($config, "upgrade", "upgradetroopname", _GUICtrlComboBox_GetCurSel($cmbLaboratory))
+	IniWrite($building, "upgrade", "upgradelabtime", $sLabUpgradeTime)
 	IniWrite($building, "upgrade", "LabPosX", $aLabPos[0])
 	IniWrite($building, "upgrade", "LabPosY", $aLabPos[1])
 
@@ -1030,16 +1031,26 @@ Func saveConfig() ;Saves the controls settings to the config
 	EndIf
 	;
 
-	For $iz = 0 To 5 ; Save Upgrades data
+	For $iz = 0 To UBound($aUpgrades, 1) - 1 ; Save Upgrades data
 		IniWrite($building, "upgrade", "xupgrade" & $iz, $aUpgrades[$iz][0])
 		IniWrite($building, "upgrade", "yupgrade" & $iz, $aUpgrades[$iz][1])
 		IniWrite($building, "upgrade", "upgradevalue" & $iz, $aUpgrades[$iz][2])
 		IniWrite($building, "upgrade", "upgradetype" & $iz, $aUpgrades[$iz][3])
+		IniWrite($building, "upgrade", "upgradename" & $iz, $aUpgrades[$iz][4])
+		IniWrite($building, "upgrade", "upgradelevel" & $iz, $aUpgrades[$iz][5])
+		IniWrite($building, "upgrade", "upgradetime" & $iz, $aUpgrades[$iz][6])
+		IniWrite($building, "upgrade", "upgradeend" & $iz, $aUpgrades[$iz][7])
+
 		IniWrite($building, "upgrade", "upgradestatusicon" & $iz, $ipicUpgradeStatus[$iz])
 		If GUICtrlRead($chkbxUpgrade[$iz]) = $GUI_CHECKED Then
 			IniWrite($building, "upgrade", "upgradechk" & $iz, 1)
 		Else
 			IniWrite($building, "upgrade", "upgradechk" & $iz, 0)
+		EndIf
+		If GUICtrlRead($chkUpgrdeRepeat[$iz]) = $GUI_CHECKED Then
+			IniWrite($building, "upgrade", "upgraderepeat" & $iz, 1)
+		Else
+			IniWrite($building, "upgrade", "upgraderepeat" & $iz, 0)
 		EndIf
 	Next
 	IniWrite($building, "upgrade", "minupgrgold", GUICtrlRead($txtUpgrMinGold))

@@ -18,6 +18,8 @@
 #include <EditConstants.au3>
 #include <FileConstants.au3>
 #include <GUIConstantsEx.au3>
+#include <GuiButton.au3> ; Added for Profiles
+#include <GuiImageList.au3> ; Added for Profiles
 #include <GuiStatusBar.au3>
 #include <GUIEdit.au3>
 #include <GUIComboBox.au3>
@@ -63,19 +65,29 @@ Else
 	$Compiled = @ScriptName & " Script"
 EndIf
 
-Global $hBitmap; Image for pixel functions
-Global $hHBitmap; Handle Image for pixel functions
-Global $hBitmapScreenshot; Image for screenshot functions
-Global $hHBitmapScreenshot; Handle Image for screenshot functions
+Global $hBitmap ; Image for pixel functions
+Global $hHBitmap ; Handle Image for pixel functions
+;Global $hBitmap2  ; Handle to bitmap object with image captured by _captureregion2()  Bitmap object not used when use _captureregion2()
+Global $hHBitmap2  ; handle to Device Context (DC) with graphics captured by _captureregion2()
+
 ;Global $sFile = @ScriptDir & "\Icons\logo.gif"
 
 Global Const $64Bit = StringInStr(@OSArch, "64") > 0
 Global Const $HKLM = "HKLM" & ($64Bit ? "64" : "")
 Global Const $Wow6432Node = ($64Bit ? "\Wow6432Node" : "")
 
+Global $AndroidGamePackage = "com.supercell.clashofclans"
+Global $AndroidGameClass = ".GameApp"
+Global $AndroidCheckTimeLagEnabled = True ; Checks every 60 Seconds or later in main loops (Bot Run, Idle and SearchVillage) is Android needs reboot due to time lag (see $AndroidTimeLagThreshold)
+Global $AndroidAdbScreencapEnabled = True ; Use Android ADB to capture screenshots in RGBA raw format
+Global $AndroidAdbZoomoutEnabled = True ; Use Android ADB zoom-out script
+Global $AndroidAdbInputEnabled = True ; Enable Android ADB swipe and send text (CC requests)
+Global $AndroidAdbClickEnabled = True ; Enable Android ADB mouse click
+Global $AndroidAdbClicksEnabled = False ; (Experimental & Dangerous!) Enable Android KeepClicks() and ReleaseClicks() to fire collected clicks all at once, only available when also $AndroidAdbClick = True
+Global $AndroidAdbClicksTroopDeploySize = 0 ; (Experimental & Dangerous!) Deploy more troops at once, 0 = deploy group, only available when also $AndroidAdbClicksEnabled = True (currently only just in CSV Deploy)
+Global $AndroidAdbInstanceEnabled = True ; Enable Android steady ADB shell instance when available
+Global $AndroidSuspendedEnabled = False ; Enable Android Suspend & Resume during Search and Attack
 Global $NoFocusTampering = False ; If enabled, no ControlFocus or WinActivate is called, except when really required (like Zoom-Out for Droid4X, might break restart stability when Android Window not responding)
-Global $OnlyInstance = True
-Global $SilentSetLog = False
 
 ; Android Configutions
 Global $__BS_Idx = 0 ; BlueStacks 0.9.x - 0.10.x
@@ -92,15 +104,16 @@ Global $__MEmu_PhoneLayout = "0"
 ;   0            |1               |2                       |3                                 |4            |5                  |6                   |7                  |8                   |9             |10               |11                    |12                 |13
 ;   $Android     |$AndroidInstance|$Title                  |$AppClassInstance                 |$AppPaneName |$AndroidClientWidth|$AndroidClientHeight|$AndroidWindowWidth|$AndroidWindowHeight|$ClientOffsetY|$AndroidAdbDevice|$AndroidSupportFeature|$AndroidShellPrompt|$AndroidMouseDevice
 ;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |1 = Normal background mode                |
-;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |2 = New ADB screencap mode                |
-;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |4 = New ADB mouse click                   |
-;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |8 = New ADB input text and swipe          |
-Global $AndroidAppConfig[4][14] = [ _ ;                    |                                  |             |                   |                    |                   |                    |              |                 |                      |                   |
-   ["BlueStacks", "",              "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8               ,'$ ',               ''], _
+;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |2 = ADB screencap mode|                   |
+;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |4 = ADB mouse click   |                   |
+;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |8 = ADB input text and swipe              |
+Global $AndroidAppConfig[4][14] = [ _ ;                    |                                  |             |                   |                    |                   |                    |              |                 |16 = ADB use steady shell instance        |
+   ["BlueStacks", "",              "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8               ,'$ ',               'BlueStacks Virtual Touch'], _
    ["BlueStacks2","",              "BlueStacks ",          "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8               ,'$ ',               'BlueStacks Virtual Touch'], _
-   ["Droid4X",    "droid4x",       "Droid4X 0.",           "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50,0,             "127.0.0.1:26944",0+2+4+8               ,'# ',               'droid4x Virtual Input'], _
-   ["MEmu",       "MEmu",          "MEmu 2.",              "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 12,$DEFAULT_WIDTH + 51,$DEFAULT_HEIGHT + 24,0,             "127.0.0.1:21503",0+2+4+8               ,'# ',               'Microvirt Virtual Input'] _
+   ["Droid4X",    "droid4x",       "Droid4X 0.",           "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50,0,             "127.0.0.1:26944",0+2+4+8+16            ,'# ',               'droid4x Virtual Input'], _
+   ["MEmu",       "MEmu",          "MEmu 2.",              "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 12,$DEFAULT_WIDTH + 51,$DEFAULT_HEIGHT + 24,0,             "127.0.0.1:21503",0+2+4+8+16            ,'# ',               'Microvirt Virtual Input'] _
 ]
+Global $OnlyInstance = True
 Global $FoundRunningAndroid = False
 Global $FoundInstalledAndroid = False
 
@@ -123,9 +136,10 @@ Global $AndroidAdbDevice = $AndroidAppConfig[$AndroidConfig][10] ; full device n
 Global $AndroidSupportFeature = $AndroidAppConfig[$AndroidConfig][11] ; 0 = Not available, 1 = Available, 2 = Available using ADB (experimental!)
 Global $AndroidShellPrompt = $AndroidAppConfig[$AndroidConfig][12] ; empty string not available, '# ' for rooted and '$ ' for not rooted android
 Global $AndroidMouseDevice = $AndroidAppConfig[$AndroidConfig][13] ; empty string not available, can be direct device '/dev/input/event2' or name by getevent -p
-Global $AndroidAdbScreencap = BitAND($AndroidSupportFeature, 2) = 2 ; Use android ADB to capture screenshots in RGBA raw format
-Global $AndroidAdbClick =  BitAND($AndroidSupportFeature, 4) = 4 ; Enable Android ADB mouse click
-Global $AndroidAdbInput = BitAND($AndroidSupportFeature, 8) = 8 ; Enable Android ADB swipe and send text (CC requests)
+Global $AndroidAdbScreencap = $AndroidAdbScreencapEnabled = True And BitAND($AndroidSupportFeature, 2) = 2 ; Use Android ADB to capture screenshots in RGBA raw format
+Global $AndroidAdbClick = $AndroidAdbClickEnabled = True And BitAND($AndroidSupportFeature, 4) = 4 ; Enable Android ADB mouse click
+Global $AndroidAdbInput = $AndroidAdbInputEnabled = True And BitAND($AndroidSupportFeature, 8) = 8 ; Enable Android ADB swipe and send text (CC requests)
+Global $AndroidAdbInstance = $AndroidAdbInstanceEnabled = True And BitAND($AndroidSupportFeature, 16) = 16 ; Enable Android steady ADB shell instance when available
 EndFunc
 InitAndroidConfig()
 
@@ -136,14 +150,17 @@ Global $AndroidClientHeight_Configured = 0 ; Android configured Screen Height
 Global $AndroidLaunchWaitSec = 240 ; Seconds to wait for launching Android Simulator
 
 Global $AndroidAdbPid = 0 ; Single instance of ADB used for screencap (and sendevent in future)
+Global $AndroidAdbPrompt = "mybot.run:" ; Single instance of ADB PS1 prompt
 Global $AndroidPicturesPath ; Android mounted path to pictures on host
 GLobal $AndroidPicturesHostPath ; Windows host path to mounted pictures in android
 Global $AndroidPicturesHostFolder = "mybot.run\" ; Subfolder for host and android, can be "", must end with "\" when used
 Global $AndroidPicturesPathAutoConfig = True ; Try to configure missing shared folder if missing
 ; Special ADB modes for screencap, mouse clicks and input text
 Global $AndroidAdbScreencapBuffer = DllStructCreate("byte[" & ($DEFAULT_WIDTH * $DEFAULT_HEIGHT * 4) & "]") ; Holds the android screencap BGRA buffer for caching
+GLobal $AndroidAdbScreencapWaitAdbTimeout = 10000 ; Timeout to wait for Adb screencap command
+GLobal $AndroidAdbScreencapWaitFileTimeout = 10000 ; Timeout to wait for file to be accessible for bot
 Global $AndroidAdbScreencapTimer = 0 ; Timer handle to use last captured screenshot to improve performance
-Global $AndroidAdbScreencapTimeoutMin = 200 ; Milliseconds the last screenshot is used in $ForceCapture = True mode (for upgrades etc.), also minimum allowed timeout
+Global $AndroidAdbScreencapTimeoutMin = 200 ; Minimum Milliseconds the last screenshot is used
 Global $AndroidAdbScreencapTimeoutMax = 1000 ; Maximum Milliseconds the last screenshot is used
 Global $AndroidAdbScreencapTimeout = $AndroidAdbScreencapTimeoutMax ; Milliseconds the last screenshot is used, dynamically calculated: $AndroidAdbScreencapTimeoutMin < 3 x last capture duration < $AndroidAdbScreencapTimeoutMax
 Global $AndroidAdbScreencapTimeoutDynamic = 3 ; Calculate dynamic timeout multiply of last duration; if 0 $AndroidAdbScreencapTimeoutMax is used as fix timeout
@@ -151,13 +168,33 @@ Global $AndroidAdbScreencapWidth = 0 ; Width of last captured screenshot (always
 Global $AndroidAdbScreencapHeight = 0 ; Height of last captured screenshot (always full size)
 Global $AndroidAdbClickGroup = 10 ; 1 Disables grouping clicks; > 1 number of clicks fired at once (e.g. when Click with $times > 1 used) (Experimental as some clicks might get lost!)
 Global $AndroidAdbClickGroupDelay = 50 ; Additional delay in Milliseconds after group of ADB clicks sent (sleep in Android is executed!)
-Global $AndroidAdbClicksEnabled = False ; Enable Android KeepClicks() and ReleaseClicks() to fire collected clicks all at once (Experimental as some clicks might get lost!), only available when also $AndroidAdbClick = True
+Global $AndroidAdbKeepClicksActive = False ; Track KeepClicks mode regardless of enabled or not (poor mans deploy troops detection)
 Global $AndroidAdbClicks[1] = [-1] ; Stores clicks after KeepClicks() called, fired and emptied with ReleaseClicks()
+Global $AndroidAdbStatsTotal[2][2] = [ _
+   [0,0], _ ; Total of screencap duration, 0 is count, 1 is sum of durations
+   [0,0] _  ; Total of click duration, 0 is count, 1 is sum of durations
+]
+Global $AndroidAdbStatsLast[2][12] ; Last 10 durations, 0 is sum of durations, 1 is index to oldest, 2-11 last 10 durations
+       $AndroidAdbStatsLast[0][0] = 0 ; screencap sum of durations
+	   $AndroidAdbStatsLast[0][1] = -1 ; screencap index to oldest
+       $AndroidAdbStatsLast[1][0] = 0 ; click sum of durations
+	   $AndroidAdbStatsLast[1][1] = -1 ; click index to oldest
+Global $AndroidTimeLag[4] ; Timer varibales for time lag calculation
+Func InitAndroidTimeLag()
+	   $AndroidTimeLag[0] = 0 ; Time lag in Secodns determined
+	   $AndroidTimeLag[1] = 0 ; UTC time of Android in Seconds
+	   $AndroidTimeLag[2] = 0 ; AutoIt TimerHandle
+	   $AndroidTimeLag[3] = 0 ; Suspended time of Android in Milliseconds
+EndFunc
+InitAndroidTimeLag()
+Global $AndroidTimeLagThreshold = 5 ; Time lag Seconds per Minute when CoC gets restarted
 Global $ForceCapture = False ; Force android ADB screencap to run and not provide last screenshot if available
+Global $ScreenshotTime = 0; Last duration in Milliseconds it took to get screenshot
 
 Global $HWnD = 0 ; Handle for Android window
-Global $AndroidSuspendedEnabled = False ; Enable Android Suspend & Resume during Search and Attack
+Global $AndroidSvcPid = 0 ; Android Backend Process
 Global $AndroidSuspended = False ; Android window is suspended flag
+Global $AndroidSuspendedTimer = 0; Android Suspended Timer
 Global $InitAndroid = True ; Used to cache android config, is set to False once initialized, new emulator window handle resets it to True
 Global $FrmBotMinimized = False ; prevents bot flickering
 
@@ -167,6 +204,7 @@ Global $sTemplates = @ScriptDir & "\Templates"
 Global $aTxtLogInitText[0][6] = [[]]
 
 Global $iMoveMouseOutBS = 0 ; If enabled moves mouse out of Android window when bot is running
+Global $SilentSetLog = False ; No logs to Log Control when enabled
 Global $DevMode = 0
 If FileExists(@ScriptDir & "\EnableMBRDebug.txt") Then $DevMode = 1
 
@@ -744,7 +782,6 @@ Global $PixelNearCollector[0]
 Global $PixelRedArea[0]
 Global $PixelRedAreaFurther[0]
 
-Global $hBitmapFirst
 Global Enum $eVectorLeftTop, $eVectorRightTop, $eVectorLeftBottom, $eVectorRightBottom
 
 Global $isCCDropped = False
@@ -779,17 +816,34 @@ Global $stxtMinGoldStopAtk2 = 1000, $stxtMinElixirStopAtk2 = 1000, $stxtMinDarkE
 Global $ichkEndOneStar = 0, $ichkEndTwoStars = 0
 
 ;ImprovedUpgradeBuildingHero
-Global $aUpgrades[6][4] = [[-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""]] ;Store upgrade position x&y, value, and loot type
-Global $picUpgradeStatus[6], $ipicUpgradeStatus[6] ;Add indexable array variables for accessing the Upgrades GUI
-Global $picUpgradeType[6], $txtUpgradeX[6], $txtUpgradeY[6], $chkbxUpgrade[6], $txtUpgradeValue[6]
-Global $ichkbxUpgrade[6], $itxtUpgrMinGold, $itxtUpgrMinElixir, $txtUpgrMinDark, $itxtUpgrMinDark
+Global $iUpgradeSlots = 8
+Global $aUpgrades[$iUpgradeSlots][8]
+
+;Fill empty array [8] to store upgrade data
+For $i = 0 To $iUpgradeSlots - 1
+	$aUpgrades[$i][0] = -1  ; position x
+	$aUpgrades[$i][1] = -1  ; position y
+	$aUpgrades[$i][2] = -1  ; upgrade value
+	$aUpgrades[$i][3] = ""  ; string loot type required
+	$aUpgrades[$i][4] = ""  ; string Bldg Name
+	$aUpgrades[$i][5] = ""  ; string Bldg level
+	$aUpgrades[$i][6] = ""  ; string upgrade time
+	$aUpgrades[$i][7] = ""  ; string upgrade end date/time (_datediff compatible)
+Next
+
+Global $picUpgradeStatus[$iUpgradeSlots], $ipicUpgradeStatus[$iUpgradeSlots] ;Add indexable array variables for accessing the Upgrades GUI
+Global $picUpgradeType[$iUpgradeSlots], $txtUpgradeX[$iUpgradeSlots], $txtUpgradeY[$iUpgradeSlots], $chkbxUpgrade[$iUpgradeSlots]
+Global $txtUpgradeValue[$iUpgradeSlots], $chkUpgrdeRepeat[$iUpgradeSlots], $ichkUpgrdeRepeat[$iUpgradeSlots],$txtUpgradeLevel[$iUpgradeSlots]
+Global $itxtUpgradeLevel[$iUpgradeSlots], $ichkbxUpgrade[$iUpgradeSlots ], $txtUpgradeName[$iUpgradeSlots ],$txtUpgradeTime[$iUpgradeSlots]
+Global $itxtUpgrMinGold, $itxtUpgrMinElixir, $txtUpgrMinDark, $itxtUpgrMinDark
+
 Global $chkSaveWallBldr, $iSaveWallBldr
 Global $pushLastModified = 0
-
 
 ;UpgradeTroops
 Global $aLabPos[2] = [-1, -1]
 Global $iChkLab, $iCmbLaboratory, $iFirstTimeLab
+Global $sLabUpgradeTime = ""
 
 ; Array to hold Laboratory Troop information [LocX of upper left corner of image, LocY of upper left corner of image, PageLocation, Troop "name", Icon # in DLL file]
 Global Const $aLabTroops[25][5] = [ _
@@ -879,8 +933,10 @@ Global $ichkSinglePBTForced = 0
 Global $iValueSinglePBTimeForced = 18
 Global $iValuePBTimeForcedExit = 15
 Global $bWaitShield = False
+Global $bGForcePBTUpdate = False
 
 Global $iMakeScreenshotNow = False
+
 
 Global $lastversion = "" ;latest version from GIT
 Global $lastmessage = "" ;message for last version
@@ -895,6 +951,7 @@ Global $numDarkBarracksAvaiables = 0
 Global $numFactorySpell = 0
 Global $numFactorySpellAvaiables = 0
 Global $numFactoryDarkSpell = 0
+
 Global $numFactoryDarkSpellAvaiables = 0
 
 ;position of barakcs
@@ -925,7 +982,7 @@ Global $aShieldStatus = ["","",""] ; string shield type, string shield time, str
 ;Building Side (DES/TH) Switch and DESide End Early
 Global Enum $eSideBuildingDES, $eSideBuildingTH
 Global $BuildingLoc, $BuildingLocX = 0, $BuildingLocY = 0
-Global $dropQueen, $dropKing
+Global $dropQueen, $dropKing, $dropWarden
 Global $BuildingEdge, $BuildingToLoc = ""
 Global $saveiChkTimeStopAtk, $saveiChkTimeStopAtk2, $saveichkEndOneStar, $saveichkEndTwoStars
 Global $DarkLow
@@ -941,6 +998,8 @@ Global $PixelNearCollectorTopLeft[0]
 Global $PixelNearCollectorBottomLeft[0]
 Global $PixelNearCollectorTopRight[0]
 Global $PixelNearCollectorBottomRight[0]
+Global $GoldStoragePos
+Global $ElixirStoragePos
 Global $darkelixirStoragePos
 
 
@@ -986,7 +1045,6 @@ Global $iDetectedImageType = 0
 
 Global $iDeadBase75percent = 1
 Global $iDeadBase75percentStartLevel = 4
-
 
 ;attackCSV
 Global $scmbDBScriptName = "Barch four fingers"
