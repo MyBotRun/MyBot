@@ -1,0 +1,61 @@
+# MyBot.run AUTOIT .gitignore file
+
+# Global Files
+/.project
+*.ini
+*.log
+*.orig
+*.png
+*.jpg
+*.exe
+
+# Global Folders
+[Pp]rofiles/
+[Tt]emplates/
+[Tt]emp/
+[Bb]ackup/
+
+# Obsolete Files and Folders
+[Ll]oots/
+[Aa]llTowns/
+
+# Exclusion Curl (used for PushBullet)
+![Cc]url.exe
+
+# Exclusion Language .ini's
+![Ll]anguages/*.ini
+
+# Exclusion Images/Icon
+![Ii]mages/logo.jpg
+![Ii]mages/2arrow.jpg
+![Ii]mages/MyBot.ico
+![Ii]mages/Button/Traps.png
+![Ii]mages/Button/Xbow.png
+![Ii]mages/Button/Inferno.png
+![Ii]mages/Button/BoostBarrack.png
+![Ii]mages/Button/BoostAllBarracks.png
+![Ii]mages/Resources/Collect.png
+![Ii]mages/Resources/loot_cart.png
+![Ii]mages/Resources/Tomb.png
+![Ii]mages/Resources/Tomb1.png
+![Ii]mages/Resources/Tomb2.png
+![Ii]mages/Resources/bush.png
+![Ii]mages/Resources/mushroom.png
+![Ii]mages/Resources/tree.png
+![Ii]mages/Resources/tree2.png
+![Ii]mages/Resources/trunk.png
+![Ii]mages/Resources/trunk2.png
+![Ii]mages/Resources/gembox.png
+
+# Debug
+[Ll]ib/[Dd]ebug/
+[Ll]ib/[Tt]est.txt
+EnableMBRDebug.txt
+
+# SQL (not in use)
+*.sqlite3
+*.db
+
+# Release files
+LastVersion*.txt
+TestVersion*.txt
