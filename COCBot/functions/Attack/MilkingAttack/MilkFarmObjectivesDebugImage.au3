@@ -21,7 +21,6 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 	Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($EditedImage)
 	Local $hBrush = _GDIPlus_BrushCreateSolid(0xFFFFFFFF)
 
-
 	;-- DRAW REDAREA PATH
 	Local $hPen = _GDIPlus_PenCreate(0xFFFF0000, 2)
 	For $i = 0 To UBound($PixelTopLeft) - 1
@@ -41,23 +40,16 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 		_GDIPlus_GraphicsDrawEllipse($hGraphic, $pixel[0], $pixel[1], 2, 2, $hPen)
 	Next
 
-
 	;DRAW
 	Local $testx = StringSplit($vector, "|", 2)
-	;ddrill.3.283-277.237-280.241-277
-
 
 	For $i = 0 To UBound($testx) - 1
-		;If $debugsetlog=1 Then Setlog("<" & $testx[$i])
 		Local $pixel1 = StringSplit($testx[$i], ".", 2)
 		If UBound($pixel1) >= 2 Then
 			Local $level = $pixel1[1]
 		Else
 			Local $level = 0
 		EndIf
-;~ 		   For $j=0 to Ubound($pixel1) -1
-;~ 				If $debugsetlog=1 Then Setlog("<<" & $j & ": " & $pixel1[$j])
-;~ 		   Next
 
 		Local $resourceoffsetx = 0
 		Local $resourceoffsety = 0
@@ -78,19 +70,14 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 		If UBound($pixel1) >= 2 Then
 			$pixel = StringSplit($pixel1[2], "-", 2)
 			If UBound($pixel) = 2 Then
-				;If $debugsetlog=1 Then Setlog ("<<< " & $PIXEL[0] & " " & $pixel[1])
-				;_GDIPlus_GraphicsDrawEllipse($hGraphic, $pixel[2], $pixel[3], 6, 6, $hPen)
 				Local $hPen = _GDIPlus_PenCreate(0xFFFF0000, 1)
-				;Local $multiplier = 1
-				;_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety - $MilkFarmOffsetX - $MilkFarmOffsetXStep * $multiplier, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + $MilkFarmOffsetY + $MilkFarmOffsetYStep * $multiplier, $hPen)
-				;_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx - $MilkFarmOffsetX - $MilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $pixel[0] + $resourceoffsetx + $MilkFarmOffsetY + $MilkFarmOffsetYStep * $multiplier, $pixel[1] + $resourceoffsety, $hPen)
 				Local $x = 20
-				_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety - $x, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety -10, $hPen)
-				_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety +10, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + $x, $hPen)
-				_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx - $x, $pixel[1] + $resourceoffsety, $pixel[0] + $resourceoffsetx -10, $pixel[1] + $resourceoffsety, $hPen)
-				_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx +10, $pixel[1] + $resourceoffsety, $pixel[0] + $resourceoffsetx + $x, $pixel[1] + $resourceoffsety, $hPen)
+				_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety - $x, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety - 10, $hPen)
+				_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + 10, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + $x, $hPen)
+				_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx - $x, $pixel[1] + $resourceoffsety, $pixel[0] + $resourceoffsetx - 10, $pixel[1] + $resourceoffsety, $hPen)
+				_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx + 10, $pixel[1] + $resourceoffsety, $pixel[0] + $resourceoffsetx + $x, $pixel[1] + $resourceoffsety, $hPen)
 
-				;rettangolo dist 0
+				;rectangle dist 0
 				If $maxtiles >= 0 Then
 					Local $hPen = _GDIPlus_PenCreate(0xFF0026FF, 1)
 					Local $multiplier = 0
@@ -99,7 +86,7 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 					_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety - $MilkFarmOffsetY - $MilkFarmOffsetYStep * $multiplier, $pixel[0] + $resourceoffsetx + $MilkFarmOffsetX + $MilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $hPen)
 					_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + $MilkFarmOffsetY + $MilkFarmOffsetYStep * $multiplier, $pixel[0] + $resourceoffsetx + $MilkFarmOffsetX + $MilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $hPen)
 				EndIf
-				If $maxtiles >= 1 Then ;rettangolo dist 1
+				If $maxtiles >= 1 Then ;rectangle dist 1
 					Local $hPen = _GDIPlus_PenCreate(0xFF00FFFF, 1)
 					Local $multiplier = 1
 					_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx - $MilkFarmOffsetX - $MilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety - $MilkFarmOffsetY - $MilkFarmOffsetYStep * $multiplier, $hPen)
@@ -107,7 +94,7 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 					_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety - $MilkFarmOffsetY - $MilkFarmOffsetYStep * $multiplier, $pixel[0] + $resourceoffsetx + $MilkFarmOffsetX + $MilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $hPen)
 					_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + $MilkFarmOffsetY + $MilkFarmOffsetYStep * $multiplier, $pixel[0] + $resourceoffsetx + $MilkFarmOffsetX + $MilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $hPen)
 				EndIf
-				If $maxtiles >= 2 Then ;rettangolo dist 2
+				If $maxtiles >= 2 Then ;rectangle dist 2
 					Local $hPen = _GDIPlus_PenCreate(0xFFFFD800, 1)
 					Local $multiplier = 2
 					_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx - $MilkFarmOffsetX - $MilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety - $MilkFarmOffsetY - $MilkFarmOffsetYStep * $multiplier, $hPen)
@@ -126,7 +113,7 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 
 	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 	Local $Time = @HOUR & "." & @MIN & "." & @SEC
-	Local $savefolder = $dirTempDebug& "MilkFarmDebug_" & "\"
+	Local $savefolder = $dirTempDebug & "MilkFarmDebug_" & "\"
 	DirCreate($savefolder)
 
 	Local $filename = String("MilkFarmDebug_" & $Date & "_" & $Time)

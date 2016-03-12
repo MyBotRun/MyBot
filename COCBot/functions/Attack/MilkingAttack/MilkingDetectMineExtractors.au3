@@ -15,10 +15,11 @@
 
 Func MilkingDetectMineExtractors()
 	Local $MilkFarmAtkPixelListMINESTR = ""
+	$debugresourcesoffset = 1
 	If $MilkFarmLocateMine = 1 Then
 		Local $hTimer = TimerInit()
 		;03.01 locate extractors
-		$hBitmapFirst = _CaptureRegion2()
+		_CaptureRegion2(80, 70, 785, 530)
 		Local $MineVect = StringSplit(GetLocationMineWithLevel(), "~", 2) ; ["6#527-209" , "6#421-227" , "6#600-264" , "6#299-331" , "6#511-404" , "6#511-453"]
 		Local $Minefounds = 0
 		Local $Minematch = 0
@@ -30,6 +31,9 @@ Func MilkingDetectMineExtractors()
 			If UBound($temp) = 2 Then
 				$pixel = StringSplit($temp[1], "-", 2) ;PIXEL ["404","325"]
 				If UBound($pixel) = 2 Then
+					Local $tempPixel[2] = [$pixel[0] + 80, $pixel[1] + 70]
+					$pixel = $tempPixel
+					$temp[1] = String($pixel[0] & "-" & $pixel[1])
 					If isInsideDiamond($pixel) Then
 						$Minefounds += 1
 						;debug if need
@@ -86,4 +90,4 @@ Func MilkingDetectMineExtractors()
 	Else
 		Return 0
 	EndIf
-EndFunc
+EndFunc   ;==>MilkingDetectMineExtractors

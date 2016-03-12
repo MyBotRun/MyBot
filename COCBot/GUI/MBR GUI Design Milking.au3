@@ -78,21 +78,21 @@ Func GUIMilk()
 	$lblRedlineResDistance = GUICtrlCreateLabel(GetTranslated(16,17, "Distance between red line and collectors <"), $x,$y)
  	$cmbRedlineResDistance = GUICtrlCreateCombo("", 235, $y-4 , 51,20,BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 		GUICtrlSetData(-1, "0 tile|1 tile|2 tiles","0")
-	$x +=27
+	$x +=10
 	$y +=20
-	$chkAttackMinesifGold = GUICtrlCreateCheckbox(GetTranslated(16,18, "Attack Gold Mines If Gold Over"), $x, $y)
+	$chkAttackMinesifGold = GUICtrlCreateCheckbox(GetTranslated(16,18, "Attack Gold Mines If Gold Under"), $x, $y)
 		GUICtrlSetOnEvent(-1, "chkAttackMinesifGold")
 	$txtAttackMinesIfGold = GUICtrlCreateInput("9950000", 235, $y, 60-8,21)
 		GUICtrlSetState(-1,$GUI_DISABLE)
 	$y += 20
-	$chkAttackMinesifElixir = GUICtrlCreateCheckbox(GetTranslated(16,19, "Attack Elixir Collectors If Elixir Over"), $x, $y)
+	$chkAttackMinesifElixir = GUICtrlCreateCheckbox(GetTranslated(16,19, "Attack Elixir Collectors If Elixir Under"), $x, $y)
 		GUICtrlSetOnEvent(-1, "chkAttackMinesifElixir")
 	$txtAttackMinesIfElixir = GUICtrlCreateInput("9950000", 235, $y, 60-8,21)
 		GUICtrlSetState(-1,$GUI_DISABLE)
 	$y += 20
-	$chkAttackMinesifDarkElixir = GUICtrlCreateCheckbox(GetTranslated(16,20, "Attack Dark Elixir Drills If Dark Over"), $x, $y)
+	$chkAttackMinesifDarkElixir = GUICtrlCreateCheckbox(GetTranslated(16,20, "Attack Dark Elixir Drills If Dark Under"), $x, $y)
 		GUICtrlSetOnEvent(-1, "chkAttackMinesifDarkElixir")
-	$txtAttackMinesIfDarkElixir = GUICtrlCreateInput("9950000", 235, $y, 60-8,21)
+	$txtAttackMinesIfDarkElixir = GUICtrlCreateInput("195000", 235, $y, 60-8,21)
 		GUICtrlSetState(-1,$GUI_DISABLE)
 
 	$grpTroopsToUse = GUICtrlCreateGroup(GetTranslated(16,21, "4. Troops To Use For Each Resource"), 9, 343,280,96)

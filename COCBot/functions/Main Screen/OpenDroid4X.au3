@@ -41,14 +41,14 @@ Func OpenDroid4X($bRestart = False)
    EndIf
 
    ; Test ADB is connected
-   $connected_to = IsAdbConnected()
+   $connected_to = ConnectAndroidAdb(False, 60 * 1000)
    If Not $RunState Then Return
 
    SetLog("Please wait while " & $Android & " and CoC start...", $COLOR_GREEN)
    $hTimer = TimerInit()
    ; Wait for device
-   $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)
-   If Not $RunState Then Return
+   ;$cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)
+   ;If Not $RunState Then Return
 
    ; Wair for Activity Manager
    If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return

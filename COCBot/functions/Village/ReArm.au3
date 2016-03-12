@@ -46,16 +46,16 @@ Func ReArm()
 	If Number($iTownHallLevel) > 8 Then $t = 1
 	If Number($iTownHallLevel) > 9 Then $t = 2
 
-	;- Capture a Region From Bottom -
-	$hBitmapFirst = _CaptureRegion2(125, 610, 740, 715)
 	For $i = 0 To $t
 		If FileExists($ImagesToUse[$i]) Then
-			$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hBitmapFirst, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+			_CaptureRegion2(125, 610, 740, 715)
+			$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hHBitmap2, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+			If @error Then _logErrorDLLCall($pImgLib, @error)
 			If IsArray($res) Then
 				If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
 				If $res[0] = "0" Then
 					; failed to find a loot cart on the field
-					If $DebugSetlog then SetLog("No Button found")
+					If $DebugSetlog Then SetLog("No Button found")
 				ElseIf $res[0] = "-1" Then
 					SetLog("DLL Error", $COLOR_RED)
 				ElseIf $res[0] = "-2" Then
@@ -82,7 +82,6 @@ Func ReArm()
 			EndIf
 		EndIf
 	Next
-	_WinAPI_DeleteObject($hBitmapFirst)
 
 	ClickP($aAway, 1, 0, "#0234") ; Click away
 	If _Sleep($iDelayReArm2) Then Return

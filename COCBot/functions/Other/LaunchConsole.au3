@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 0)
+Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000)
 
    Local $data, $pid, $hTimer
 
@@ -31,6 +31,15 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 0)
    EndIf
 
    $data = ""
+   ;#cs
+   Local $timeout_sec = Round($timeout / 1000)
+   If $timeout > 0 And $timeout_sec = 0 Then $timeout_sec = 1
+   ProcessWaitClose($pid, $timeout_sec)
+   $data &= StdoutRead($pid)
+   $data &= StderrRead($pid)
+   CleanLaunchOutput($data)
+   ;#ce
+   #cs
    ; Wait here if no timeout defined
    If $timeout < 1 Then
 	  ProcessWaitClose($pid)
@@ -49,6 +58,7 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 0)
 		 If $debugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead loop", $COLOR_PURPLE)
 	  WEnd
    EndIf
+   #ce
 
    If ProcessExists($pid) Then
 	 If ProcessClose($pid) = 1 Then
@@ -56,7 +66,7 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 0)
 		$process_killed = True
 	 EndIf
    EndIf
-   ProcessWaitClose($pid)
+   ProcessWaitClose($pid, $timeout_sec)
    StdioClose($pid)
    If $debugSetlog = 1 Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_PURPLE) ; Debug Run Output
    Return $data
@@ -81,15 +91,23 @@ Func ProcessExists2($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $str
   Local $iLastBS = StringInStr($exe, "\", 0, -1)
   If $iLastBS > 0 Then $exe = StringMid($exe, $iLastBS + 1)
   ; Win32_Process: https://msdn.microsoft.com/en-us/library/windows/desktop/aa394372(v=vs.85).aspx
-  Local $commandLine = ($ProgramPath <> "" ? ('"' & $ProgramPath & '"' & ($ProgramParameter = "" ? "" : " " & $ProgramParameter)) : "")
+  Local $commandLine = ($ProgramPath <> "" ? ('"' & $ProgramPath & '"' & ($ProgramParameter = "" ? "" : " " & $ProgramParameter)) : $ProgramParameter)
   Local $commandLineCompare = StringReplace(StringReplace(StringReplace(StringReplace($commandLine, ".exe", "" , 1), " ", ""), '"', ""), "'", "")
-  Local $query = "Select * from Win32_Process where ExecutablePath like ""%" & StringReplace($ProgramPath,"\","\\") & "%""" ; replaced CommandLine with ExecutablePath
+  Local $query = "Select * from Win32_Process" ; replaced CommandLine with ExecutablePath
+  If StringLen($commandLine) > 0 Then
+	 $query &= " where "
+	 If StringLen($ProgramPath) > 0 Then
+		$query &= "ExecutablePath like ""%" & StringReplace($ProgramPath,"\","\\") & "%"""
+		If StringLen($ProgramParameter) > 0 Then $query &= " And "
+     EndIf
+     If StringLen($ProgramParameter) > 0 Then $query &= "CommandLine like ""%" & StringReplace($ProgramParameter,"\","\\") & "%"""
+  EndIf
   SetDebugLog("WMI Query: " & $query)
   Local $oProcessColl = $oWMI.ExecQuery($query)
   Local $Process, $PID = 0, $i = 0
 
   For $Process In $oProcessColl
-    SetDebugLog($Process.Handle & " = " & $Process.ExecutablePath)
+    SetDebugLog($Process.Handle & " = " & $Process.ExecutablePath & " (" & $Process.CommandLine & ")")
 	If $PID = 0 Then
 	   Local $processCommandLineCompare = StringReplace(StringReplace(StringReplace(StringReplace($Process.CommandLine, ".exe", "" , 1), " ", ""), '"', ""), "'", "")
 	   If ($CompareMode = 0 And $commandLineCompare = $processCommandLineCompare) Or _
@@ -102,9 +120,9 @@ Func ProcessExists2($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $str
 	$i += 1
   Next
   If $PID = 0 Then
-	 SetDebugLog("Process by CommandLine not found: " & $ProgramPath & ($ProgramParameter = "" ? "" : " " & $ProgramParameter))
+	 SetDebugLog("Process by CommandLine not found: " & $ProgramPath & ($ProgramParameter = "" ? "" : ($ProgramPath <> "" ? " " : "") & $ProgramParameter))
   Else
-     SetDebugLog("Found Process " & $PID & " by CommandLine: " & $ProgramPath & ($ProgramParameter = "" ? "" : " " & $ProgramParameter))
+     SetDebugLog("Found Process " & $PID & " by CommandLine: " & $ProgramPath & ($ProgramParameter = "" ? "" : ($ProgramPath <> "" ? " " : "") & $ProgramParameter))
   EndIf
 
   Return $PID
@@ -129,7 +147,7 @@ Func ProcessesExist($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $str
   Local $iLastBS = StringInStr($exe, "\", 0, -1)
   If $iLastBS > 0 Then $exe = StringMid($exe, $iLastBS + 1)
   ; Win32_Process: https://msdn.microsoft.com/en-us/library/windows/desktop/aa394372(v=vs.85).aspx
-  Local $commandLine = ($ProgramPath <> "" ? ('"' & $ProgramPath & '"' & ($ProgramParameter = "" ? "" : " " & $ProgramParameter)) : "")
+  Local $commandLine = ($ProgramPath <> "" ? ('"' & $ProgramPath & '"' & ($ProgramParameter = "" ? "" : " " & $ProgramParameter)) : $ProgramParameter)
   Local $commandLineCompare = StringReplace(StringReplace(StringReplace(StringReplace($commandLine, ".exe", "" , 1), " ", ""), '"', ""), "'", "")
   Local $query = "Select * from Win32_Process where ExecutablePath like ""%" & StringReplace($ProgramPath,"\","\\") & "%""" ; replaced CommandLine with ExecutablePath
   SetDebugLog("WMI Query: " & $query)
@@ -184,3 +202,11 @@ Func ProcessGetCommandLine($PID, $strComputer = ".")
   SetDebugLog("Process not found with PID " & $PID)
   Return SetError(1, 0, -1)
 EndFunc ;==>ProcessExists2
+
+Func CleanLaunchOutput(ByRef $output)
+   ;$output = StringReplace($output, @LF & @LF, "")
+   $output = StringReplace($output,  @CR & @CR, "")
+   $output = StringReplace($output,  @CRLF & @CRLF, "")
+   If StringRight($output, 1) = @LF Then $output = StringLeft($output, StringLen($output) - 1)
+   If StringRight($output, 1) = @CR Then $output = StringLeft($output, StringLen($output) - 1)
+EndFunc

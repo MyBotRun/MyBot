@@ -29,13 +29,13 @@ Func _GetRedArea()
 	Local $ySkip = 5
 
 	If $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 Then ; Used for DES Side Attack (need to know the side the DES is on)
-		Local $result = DllCall($hFuncLib, "str", "getRedAreaSideBuilding", "ptr", $hBitmapFirst, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingDES)
+		Local $result = DllCall($hFuncLib, "str", "getRedAreaSideBuilding", "ptr", $hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingDES)
 		If $debugSetlog Then Setlog("Debug: Redline with DES Side chosen")
 	ElseIf $iMatchMode = $LB And $iChkDeploySettings[$LB] = 5 Then ; Used for TH Side Attack (need to know the side the TH is on)
-		Local $result = DllCall($hFuncLib, "str", "getRedAreaSideBuilding", "ptr", $hBitmapFirst, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingTH)
+		Local $result = DllCall($hFuncLib, "str", "getRedAreaSideBuilding", "ptr", $hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingTH)
 		If $debugSetlog Then Setlog("Debug: Redline with TH Side chosen")
 	Else ; Normal getRedArea
-		Local $result = DllCall($hFuncLib, "str", "getRedArea", "ptr", $hBitmapFirst, "int", $xSkip, "int", $ySkip, "int", $colorVariation)
+		Local $result = DllCall($hFuncLib, "str", "getRedArea", "ptr", $hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation)
 		If $debugSetlog Then Setlog("Debug: Redline chosen")
 	EndIf
 	Local $listPixelBySide = StringSplit($result[0], "#")
@@ -49,38 +49,43 @@ Func _GetRedArea()
 	ReDim $PixelRedArea[UBound($PixelTopLeft) + UBound($PixelBottomLeft) + UBound($PixelTopRight) + UBound($PixelBottomRight)]
 	ReDim $PixelRedAreaFurther[UBound($PixelTopLeft) + UBound($PixelBottomLeft) + UBound($PixelTopRight) + UBound($PixelBottomRight)]
 
-
-	$count = 0
-	ReDim $PixelTopLeftFurther[UBound($PixelTopLeft)]
-	For $i = 0 To UBound($PixelTopLeft) - 1
-		$PixelTopLeftFurther[$i] = _GetOffsetTroopFurther($PixelTopLeft[$i], $eVectorLeftTop, $offsetArcher)
-		$PixelRedArea[$count] = $PixelTopLeft[$i]
-		$PixelRedAreaFurther[$count] = $PixelTopLeftFurther[$i]
-		$count += 1
-	Next
-	ReDim $PixelBottomLeftFurther[UBound($PixelBottomLeft)]
-	For $i = 0 To UBound($PixelBottomLeft) - 1
-		$PixelBottomLeftFurther[$i] = _GetOffsetTroopFurther($PixelBottomLeft[$i], $eVectorLeftBottom, $offsetArcher)
-		$PixelRedArea[$count] = $PixelBottomLeft[$i]
-		$PixelRedAreaFurther[$count] = $PixelBottomLeftFurther[$i]
-		$count += 1
-	Next
-	ReDim $PixelTopRightFurther[UBound($PixelTopRight)]
-	For $i = 0 To UBound($PixelTopRight) - 1
-		$PixelTopRightFurther[$i] = _GetOffsetTroopFurther($PixelTopRight[$i], $eVectorRightTop, $offsetArcher)
-		$PixelRedArea[$count] = $PixelTopRight[$i]
-		$PixelRedAreaFurther[$count] = $PixelTopRightFurther[$i]
-		$count += 1
-	Next
-	ReDim $PixelBottomRightFurther[UBound($PixelBottomRight)]
-	For $i = 0 To UBound($PixelBottomRight) - 1
-		$PixelBottomRightFurther[$i] = _GetOffsetTroopFurther($PixelBottomRight[$i], $eVectorRightBottom, $offsetArcher)
-		$PixelRedArea[$count] = $PixelBottomRight[$i]
-		$PixelRedAreaFurther[$count] = $PixelBottomRightFurther[$i]
-		$count += 1
-	Next
-	debugRedArea("PixelTopLeftFurther " + UBound($PixelTopLeftFurther))
-
+	If ($iMatchMode = $LB And $iChkDeploySettings[$LB] = 6) OR ($iMatchMode = $DB and $ichkUseAttackDBCSV = 1) OR ($iMatchMode = $LB and $ichkUseAttackABCSV = 1) Then
+		ReDim $PixelTopLeftFurther[UBound($PixelTopLeft)]
+		ReDim $PixelBottomLeftFurther[UBound($PixelBottomLeft)]
+		ReDim $PixelTopRightFurther[UBound($PixelTopRight)]
+		ReDim $PixelBottomRightFurther[UBound($PixelBottomRight)]
+	Else
+		$count = 0
+		ReDim $PixelTopLeftFurther[UBound($PixelTopLeft)]
+		For $i = 0 To UBound($PixelTopLeft) - 1
+			$PixelTopLeftFurther[$i] = _GetOffsetTroopFurther($PixelTopLeft[$i], $eVectorLeftTop, $offsetArcher)
+			$PixelRedArea[$count] = $PixelTopLeft[$i]
+			$PixelRedAreaFurther[$count] = $PixelTopLeftFurther[$i]
+			$count += 1
+		Next
+		ReDim $PixelBottomLeftFurther[UBound($PixelBottomLeft)]
+		For $i = 0 To UBound($PixelBottomLeft) - 1
+			$PixelBottomLeftFurther[$i] = _GetOffsetTroopFurther($PixelBottomLeft[$i], $eVectorLeftBottom, $offsetArcher)
+			$PixelRedArea[$count] = $PixelBottomLeft[$i]
+			$PixelRedAreaFurther[$count] = $PixelBottomLeftFurther[$i]
+			$count += 1
+		Next
+		ReDim $PixelTopRightFurther[UBound($PixelTopRight)]
+		For $i = 0 To UBound($PixelTopRight) - 1
+			$PixelTopRightFurther[$i] = _GetOffsetTroopFurther($PixelTopRight[$i], $eVectorRightTop, $offsetArcher)
+			$PixelRedArea[$count] = $PixelTopRight[$i]
+			$PixelRedAreaFurther[$count] = $PixelTopRightFurther[$i]
+			$count += 1
+		Next
+		ReDim $PixelBottomRightFurther[UBound($PixelBottomRight)]
+		For $i = 0 To UBound($PixelBottomRight) - 1
+			$PixelBottomRightFurther[$i] = _GetOffsetTroopFurther($PixelBottomRight[$i], $eVectorRightBottom, $offsetArcher)
+			$PixelRedArea[$count] = $PixelBottomRight[$i]
+			$PixelRedAreaFurther[$count] = $PixelBottomRightFurther[$i]
+			$count += 1
+		Next
+		debugRedArea("PixelTopLeftFurther " & UBound($PixelTopLeftFurther))
+	EndIf
 
 	If UBound($PixelTopLeft) < 10 Then
 		$PixelTopLeft = _GetVectorOutZone($eVectorLeftTop)

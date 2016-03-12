@@ -87,8 +87,8 @@ Func Algorithm_AttackCSV($testattack = False)
 	Local $hTimerTOTAL = TimerInit()
 	;02.01 - REDAREA -----------------------------------------------------------------------------------------------------------------------------------------
 	Local $hTimer = TimerInit()
-	_WinAPI_DeleteObject($hBitmapFirst)
-	$hBitmapFirst = _CaptureRegion2()
+
+	_CaptureRegion2()
 	_GetRedArea()
 
 	Local $htimerREDAREA = Round(TimerDiff($hTimer) / 1000, 2)
@@ -189,12 +189,12 @@ Func Algorithm_AttackCSV($testattack = False)
 	If $searchTH = "" Then
 
 		If $attackcsv_locate_townhall = 1 Then
-		    SuspendAndroid()
+			SuspendAndroid()
 			$hTimer = TimerInit()
 			Local $searchTH = checkTownHallADV2(0, 0, False)
 			If $searchTH = "-" Then ; retry with autoit search after $iDelayVillageSearch5 seconds
 				If _Sleep($iDelayAttackCSV1) Then Return
-				If $debugsetlog=1 Then SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
+				If $debugsetlog = 1 Then SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
 				$searchTH = checkTownhallADV2()
 			EndIf
 			If $searchTH = "-" Then ; retry with c# search, matching could not have been caused by heroes that partially hid the townhall
@@ -211,7 +211,7 @@ Func Algorithm_AttackCSV($testattack = False)
 		Setlog("> Townhall has already been located in while searching for an image", $COLOR_BLUE)
 	EndIf
 
-	_CaptureRegion() ;
+	_CaptureRegion2() ;
 
 	;04 - MINES, COLLECTORS, DRILLS -----------------------------------------------------------------------------------------------------------------------
 
@@ -354,28 +354,33 @@ Func Algorithm_AttackCSV($testattack = False)
 	$PixelNearCollectorBottomRight = GetListPixel3($PixelNearCollectorBottomRightSTR)
 
 
+	If $attackcsv_locate_gold_storage = 1 Then
+		SuspendAndroid()
+		$GoldStoragePos = GetLocationGoldStorage()
+		ResumeAndroid()
+	EndIf
+
+	If $attackcsv_locate_elixir_storage = 1 Then
+		SuspendAndroid()
+		$ElixirStoragePos = GetLocationElixirStorage()
+		ResumeAndroid()
+	EndIf
+
+
 	; 05 - DARKELIXIRSTORAGE ------------------------------------------------------------------------
 	If $attackcsv_locate_dark_storage = 1 Then
 		$hTimer = TimerInit()
 		SuspendAndroid()
-		Local $PixelDarkElixir = GetLocationDarkElixirStorageWithLevel()
+		Local $PixelDarkElixirStorage = GetLocationDarkElixirStorageWithLevel()
 		ResumeAndroid()
-		CleanRedArea($PixelDarkElixir)
-		;SetLog("Locating Dark Elixir Storage")
-		;SetLog("Located  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
-		;Setlog($PixelDarkElixir)
-		Local $pixel = StringSplit($PixelDarkElixir, "#", 2)
+		CleanRedArea($PixelDarkElixirStorage)
+		Local $pixel = StringSplit($PixelDarkElixirStorage, "#", 2)
 		If UBound($pixel) >= 2 Then
 			Local $pixellevel = $pixel[0]
 			Local $pixelpos = StringSplit($pixel[1], "-", 2)
 			If UBound($pixelpos) >= 2 Then
-				;SetLog("level " & $pixellevel & " (" & $pixelpos[0] & "," & $pixelpos[1] & ")")
-				Local $temp = [$pixelpos[0], $pixelpos[1]]
+				Local $temp = [Int($pixelpos[0]), Int($pixelpos[1])]
 				$darkelixirStoragePos = $temp
-;~ 			   If $makeIMGCSV = 1 Then
-;~ 				  Local $hPen = _GDIPlus_PenCreate(0xFFFFCC00, 2) ;create a pencil Color FF0000/RED
-;~ 				  _GDIPlus_GraphicsDrawRect($hGraphic, $pixelpos[0] - 15, $pixelpos[1] - 15, 30, 30, $hPen)
-;~ 			   EndIf
 			EndIf
 		EndIf
 		Setlog("> Dark Elixir Storage located in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_BLUE)

@@ -37,7 +37,9 @@ Func MBRFunc($Start = True)
 				ConsoleWrite("MBRFunction.dll process slow close, PID= " & $Pid & @CRLF)
 				If $debugSetlog = 1 Then Setlog("MBRFunction.dll process slow close, attempting fix", $COLOR_PURPLE)
 				If ProcessClose($Pid) = 0 Then
-					Switch @error
+					Local $holderror = @error
+					Local $holdextended = @extended
+					Switch $holderror
 						Case 1
 							$sMsg = "OpenProcess failed"
 						Case 2
@@ -49,8 +51,8 @@ Func MBRFunc($Start = True)
 						Case Else
 							$sMsg = "Unknown Error"
 					EndSwitch
-					ConsoleWrite("MBRFunctions.dll process close error: " & @error & " = " & $sMsg & " Extended error= " & @extended & @CRLF)
-					If $debugSetlog = 1 Then Setlog("MBRFunctions.dll process close error: " & @error & " = " & $sMsg, $COLOR_PURPLE)
+					ConsoleWrite("MBRFunctions.dll process close error: " & $holderror & " = " & $sMsg & " Extended error= " & $holdextended & @CRLF)
+					If $debugSetlog = 1 Then Setlog("MBRFunctions.dll process close error: " & $holderror & " = " & $sMsg, $COLOR_PURPLE)
 				Else
 					ConsoleWrite("MBRFunction.dll process Killed" & @CRLF)
 					If $debugSetlog = 1 Then Setlog("MBRfunctions.dll Process killed.", $COLOR_PURPLE)
@@ -63,6 +65,7 @@ EndFunc   ;==>MBRFunc
 Func debugMBRFunctions($debugSearchArea = 0, $debugRedArea = 0, $debugOcr = 0)
 
 	Local $result = DllCall($hFuncLib, "str", "setGlobalVar", "int", $debugSearchArea, "int", $debugRedArea, "int", $debugOcr)
+	If @error Then _logErrorDLLCall($pFuncLib, @error)
 	;dll return 0 on success, -1 on error
 	If IsArray($result) Then
 		If $debugSetlog = 1 And $result[0] = -1 Then setlog("MBRfunctions.dll error setting Global vars.", $COLOR_PURPLE)

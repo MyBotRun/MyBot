@@ -27,6 +27,7 @@
 ; Link ..........:
 ; Example .......: Yes
 ; ===============================================================================================================================
+
 Func _RandomUnique($iCount, $nMin, $nMax, $iInt = 0, $nSeed = Default)
 	; error checking
 	Select

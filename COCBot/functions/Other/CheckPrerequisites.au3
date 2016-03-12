@@ -28,6 +28,7 @@ Func CheckPrerequisites()
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
 	EndIf
 	If isEveryFileInstalled() = False Then Exit
+	If Not checkAutoitVersion() Then Exit
 EndFunc   ;==>CheckPrerequisites
 
 Func isNetFramework4Installed()
@@ -124,3 +125,19 @@ Func isEveryFileInstalled()
 	EndIf
 	Return $bResult
 EndFunc   ;==>isEveryFileInstalled
+
+Func checkAutoitVersion()
+	If @Compiled = True Then Return 1
+	Local $requiredAutoit = "3.3.14.2"
+	Local $result = _VersionCompare(@AutoItVersion, $requiredAutoit)
+	If $result = 0 Or $result = 1 Then Return 1
+	Local $sText1, $sText2, $MsgBox
+	$sText1 = "Hey Chief, your AutoIt version is out of date!"
+	$sText3 = "Click OK to download the latest version of AutoIt."
+	$sText2 = "The bot requires AutoIt version "&$requiredAutoit&" or above. Your version of AutoIt is "&@AutoItVersion&"." & @CRLF & $sText3 & @CRLF &"After installing the new version, open the bot again."
+	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
+	$MsgBox = _ExtMsgBox(48, "OK|Cancel", $sText1, $sText2, 0, $frmBot)
+	If $MsgBox = 1 Then ShellExecute("https://www.autoitscript.com/site/autoit/downloads/")
+	Return 0
+EndFunc
+

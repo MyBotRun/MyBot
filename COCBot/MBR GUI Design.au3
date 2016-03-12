@@ -121,4 +121,14 @@ $tiAbout = TrayCreateItem("About")
 TrayCreateItem("")
 $tiExit = TrayCreateItem("Exit")
 
+; Create profile if specified by command line parameter does not exist
+If $sCurrProfile <> "<No Profiles>" And Not FileExists($sProfilePath & "\" & $sCurrProfile) Then
+	createProfile()
+	setupProfileComboBox()
+	selectProfile()
+ElseIf $sCurrProfile = "<No Profiles>" Then ; Create profile if there are no profiles
+	setupProfile()
+	setupProfileComboBox()
+	selectProfile()
+EndIf
 ;~ -------------------------------------------------------------
