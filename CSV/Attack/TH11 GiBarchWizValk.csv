@@ -1,0 +1,74 @@
+NOTE  |Author: ProMac - v1.1
+NOTE  |
+NOTE  |Objective: TH11 One Side, +1 tile from redline
+NOTE  |Troops: 20 Giants, 8 WallBs, 8 Wizards, Barb 50%, Arch 50% , 4 Valks
+NOTE  |Spells: RageSpell
+NOTE  |Attack: Live Bases =< TH10
+
+      |-----------------------------------------------------------------------------------------------|
+
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|
+SIDE  |0          |0          |0          |2          |2          |2          |1          |           |chooses main side
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |A          |FRONT-LEFT |5          |1          |INT-EXT    |2          |2          |           |
+MAKE  |B          |FRONT-LEFT |5          |1          |EXT-INT    |2          |2          |           |
+MAKE  |C          |FRONT-RIGHT|5          |1          |INT-EXT    |2          |2          |           |
+MAKE  |D          |FRONT-RIGHT|5          |1          |EXT-INT    |2          |2          |           |
+MAKE  |Y          |FRONT-LEFT |6          |2          |INT-EXT    |2          |2          |           |
+MAKE  |Z          |FRONT-RIGHT|6          |2          |INT-EXT    |2          |2          |           |
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A-C        |1-5        |2          |barb       |40-65      |50-70      |0          |           |launch barbs 
+DROP  |B-D        |1-5        |2          |barb       |40-65      |50-70      |0          |           |launch barbs 
+WAIT  |3000-6000  |           |           |           |           |           |           |           |
+DROP  |A-C        |1-5        |2          |giant      |40-65      |50-70      |0          |           |launch giants 
+DROP  |B-D        |4          |10         |giant      |40-65      |50-70      |400-650    |           |launch giants 
+DROP  |Y          |1          |4          |wall       |40-65      |50-70      |400-650    |           |launch WALL
+DROP  |Z          |2          |4          |wall       |40-65      |50-70      |400-650    |           |launch WALL
+
+WAIT  |4000-6000  |           |           |           |           |           |           |           |
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |A          |FRONT-LEFT |10         |-6         |INT-EXT    |0          |0          |           |
+MAKE  |C          |FRONT-RIGHT|10         |-6         |INT-EXT    |0          |0          |           |
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A          |2          |1          |RSpell     |40-65      |0          |300-500    |           |Rage Spell at -6 tiles from redarea
+WAIT  |3000       |           |           |           |           |           |           |           |
+DROP  |C          |3          |1          |RSpell     |400-650    |0          |300-500    |           |Rage Spell at -7 tiles from redarea
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |A          |FRONT-LEFT |20         |1          |INT-EXT    |2          |2          |           |
+MAKE  |B          |FRONT-LEFT |20         |2          |EXT-INT    |2          |2          |           |
+MAKE  |C          |FRONT-RIGHT|20         |1          |INT-EXT    |2          |2          |           |
+MAKE  |D          |FRONT-RIGHT|20         |2          |EXT-INT    |2          |2          |           |
+MAKE  |E          |FRONT-LEFT |10         |2          |INT-EXT    |2          |2          |           |
+MAKE  |F          |FRONT-RIGHT|10         |2          |INT-EXT    |2          |2          |           |
+MAKE  |G          |FRONT-LEFT |10         |2          |INT-EXT    |2          |2          |           |
+MAKE  |H          |FRONT-RIGHT|10         |2          |INT-EXT    |2          |2          |           |
+MAKE  |R          |FRONT-LEFT |70         |2          |INT-EXT    |2          |2          |           |
+MAKE  |Q          |FRONT-RIGHT|70         |2          |INT-EXT    |2          |2          |           |
+MAKE  |Y          |FRONT-LEFT |6          |2          |INT-EXT    |2          |2          |           |
+MAKE  |Z          |FRONT-RIGHT|6          |2          |INT-EXT    |2          |2          |           |
+
+WAIT  |4000-8000  |           |           |           |           |           |           |           |
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBS
+DROP  |A-C        |1-14       |8-14       |barb       |40-65      |50-70      |0          |           |launch barbs 
+DROP  |B-D        |8-20       |8-14       |barb       |40-65      |50-70      |400-650    |           |launch barbs
+DROP  |Y-Z        |3          |1          |wall       |40-65      |50-70      |400-650    |           |launch WALL
+DROP  |Y-Z        |2-3        |8          |wiza       |40-65      |50-70      |400-650    |           |launch Wizards
+DROP  |Y-Z        |3          |4          |valk       |40-65      |50-70      |400-650    |           |launch valks
+DROP  |A-C        |1-14       |10-15      |arch       |40-65      |50-70      |0          |           |launch arch
+DROP  |B-D        |8-20       |10-15      |arch       |40-65      |50-70      |300-550    |           |launch arch
+DROP  |R          |8          |1          |castle     |0          |0          |100-500    |           |launch Castle
+DROP  |Q          |3          |1          |king       |0          |0          |100-500    |           |launch King 
+DROP  |R          |3          |1          |queen      |0          |0          |100-500    |           |launch Queen 
+DROP  |R          |3          |1          |Warden     |0          |0          |0          |           |launch Grand Warden      
+
+
+      |                                                                                               |
+      |-----------------------------------------------------------------------------------------------|
+
+

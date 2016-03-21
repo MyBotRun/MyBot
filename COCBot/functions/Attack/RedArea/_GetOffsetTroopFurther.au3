@@ -89,7 +89,7 @@ Func _GetOffsetTroopFurther($pixel, $eVectorType, $offset)
 	If $pixelOffset[1] > 547 + $bottomOffsetY Then
 		$pixelOffset[1] = 547 + $bottomOffsetY
 	EndIf
-	debugRedArea("$pixelOffset x : [" + $pixelOffset[0] + "] / y : [" + $pixelOffset[1] + "]")
+	debugRedArea("$pixelOffset x : [" & $pixelOffset[0] & "] / y : [" & $pixelOffset[1] & "]")
 
 	Return $pixelOffset
 EndFunc   ;==>_GetOffsetTroopFurther

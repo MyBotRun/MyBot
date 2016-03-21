@@ -143,24 +143,3 @@ Func getPBTime()
 	EndIf
 
 EndFunc   ;==>getPBTime
-
-
-#cs  Example usage of getPBTime
-$DebugSetlog = 1
-		Local $sResult = GetPBTime()
-		If @error Then Setlog("strange, error= " &@error& "Extended= " & @extended, $COLOR_RED)
-		If IsString($sResult) Then
-			Local $iTimeTillPBTstartSec = Int(_DateDiff('s', $sResult, _NowCalc())) ; time in seconds
-			If $debugSetlog = 1 Then
-				Setlog("GetPBTime() return: " & $sResult, $COLOR_PURPLE)
-				Setlog("PB starts in: " & $iTimeTillPBTstartSec & " Seconds", $COLOR_PURPLE)
-			Endif
-			If $iTimeTillPBTStartsec >= 0 Then  ; test if PBT date/time in past
-				; Do Something useful!!
-				Setlog("Start Personal Break Now!", $COLOR_RED)
-			Endif
-		Else
-			If $debugSetlog = 1 Then Setlog("?? GetPBtime() returned: " & $sResult , $COLOR_RED)
-		EndIf
-$DebugSetlog = 0
-#ce

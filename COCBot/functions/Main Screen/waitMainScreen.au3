@@ -77,3 +77,28 @@ Func waitMainScreen() ;Waits for main screen to popup
 	WEnd
 
 EndFunc   ;==>waitMainScreen
+
+Func waitMainScreenMini()
+    If Not $RunState Then Return
+	Local $iCount = 0
+	Local $hTimer = TimerInit()
+	getBSPos() ; Update Android Window Positions
+	SetLog("Waiting for Main Screen after " & $Android & " restart", $COLOR_BLUE)
+	For $i = 0 To 60 ;30*2000 = 1 Minutes
+	    If Not $RunState Then Return
+	    If WinGetAndroidHandle() = 0 Then ExitLoop ; sets @error to 1
+		If $debugsetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop
+		$iCount += 1
+		_CaptureRegion()
+		If _CheckPixel($aIsMain, $bNoCapturepixel) = False Then ;Checks for Main Screen
+			If _Sleep(1000) Then Return
+			If CheckObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
+		Else
+			SetLog("CoC main window took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_GREEN)
+			Return
+		EndIf
+		_StatusUpdateTime($hTimer, "Main Screen")
+		If ($i > 60) Or ($iCount > 80) Then ExitLoop  ; If CheckObstacles forces reset, limit total time to 6 minute before Force restart BS
+	Next
+	Return SetError( 1, 0, -1)
+EndFunc

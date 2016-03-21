@@ -18,8 +18,8 @@ Func SetSleep($type)
 	Local $factor1 = 100
 	If $AndroidAdbClick = True Then
 	   ; adjust for slow ADB clicks the delay factor
-	   $factor0 = 1
-	   $factor1 = 10
+	   $factor0 = 10
+	   $factor1 = 100
     EndIf
 	Switch $type
 		Case 0

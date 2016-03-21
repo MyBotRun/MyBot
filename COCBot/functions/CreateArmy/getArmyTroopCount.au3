@@ -40,13 +40,12 @@ Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	Local $TroopQ = 0
 	Local $TroopTypeT = ""
 
-	_WinAPI_DeleteObject($hBitmapFirst)
-	Local $hBitmapFirst = _CaptureRegion2(120, 165 + $midOffsetY, 740, 220 + $midOffsetY)
-	If $debugSetlog = 1 Then SetLog("$hBitmapFirst made", $COLOR_PURPLE)
+	_CaptureRegion2(120, 165 + $midOffsetY, 740, 220 + $midOffsetY)
+	If $debugSetlog = 1 Then SetLog("$hHBitmap2 made", $COLOR_PURPLE)
 	If _Sleep($iDelaycheckArmyCamp5) Then Return
 	If $debugSetlog = 1 Then SetLog("Calling MBRfunctions.dll/searchIdentifyTroopTrained ", $COLOR_PURPLE)
 
-	$FullTemp = DllCall($hFuncLib, "str", "searchIdentifyTroopTrained", "ptr", $hBitmapFirst)
+	$FullTemp = DllCall($hFuncLib, "str", "searchIdentifyTroopTrained", "ptr", $hHBitmap2)
 	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response
 	If $debugSetlog = 1 Then
 		If IsArray($FullTemp) Then
