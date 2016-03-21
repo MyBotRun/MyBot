@@ -133,6 +133,7 @@
 #include "functions\Main Screen\ZoomOut.au3"
 
 ; Android support for BlueStacks, Droid4X, MEmu...
+#include "functions\Android\checkAndroidTimeLag.au3"
 #include "functions\Main Screen\OpenBlueStacks.au3"
 #include "functions\Main Screen\CloseBlueStacks.au3"
 #include "functions\Main Screen\OpenDroid4X.au3"
@@ -153,6 +154,7 @@
 #include "functions\Other\MBRFunc.au3"
 #include "functions\Other\DebugImageSave.au3"
 #include "functions\Other\DebugSaveDesktopImage.au3"
+#include "functions\Other\ExtendedErrorInfo.au3"
 #include "functions\Other\FindPos.au3"
 #include "functions\Other\getBSPos.au3"
 #include "functions\Other\ExtMsgBox.au3"

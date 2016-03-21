@@ -44,7 +44,7 @@ Func getUpgradeResource($x_start, $y_start) ; -> Gets complete value of Gold/Eli
 EndFunc   ;==>getUpgradeResource
 
 Func getResourcesMainScreen($x_start, $y_start) ; -> Gets complete value of Gold/Elixir/Dark Elixir/Trophies/Gems xxx,xxx "VillageReport.au3"
-	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 100, 16, True)
+	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 110, 16, True)
 EndFunc   ;==>getResourcesMainScreen
 
 Func getResourcesLoot($x_start, $y_start) ; -> Gets complete value of Gold/Elixir after attack xxx,xxx "AttackReport"
@@ -74,6 +74,14 @@ EndFunc   ;==>getLabUpgrdResourceWht
 Func getLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elixir/DE on the troop buttons,  xxx,xxx for "laboratory.au3" when red text
 	Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 60, 14, True)
 EndFunc   ;==>getLabUpgrdResourceRed
+
+Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building upgrade time
+	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 40, 16) ; 40 is enougth xxx : 2 numbers and one letter at max
+EndFunc   ;==>getBldgUpgradeTime
+
+Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V2 for Dec2015 update
+	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 40, 20) ; 40 is enougth xxx : 2 numbers and one letter at max
+EndFunc   ;==>getLabUpgradeTime
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
 	Return getOcrAndCapture($language, $x_start, $y_start, 280, 18)
@@ -115,7 +123,7 @@ EndFunc   ;==>getArmyCampCap
 
 Func getCastleDonateCap($x_start, $y_start);  -> Gets clan castle capacity,  --> donatecc.au3
 	Return getOcrAndCapture("coc-army", $x_start, $y_start, 30, 14, True)
-EndFunc   ;==>getArmyCampCap
+EndFunc   ;==>getCastleDonateCap
 
 Func getBarracksTroopQuantity($x_start, $y_start);  -> Gets quantity of troops in training --> train.au3
 	Return getOcrAndCapture("coc-train", $x_start, $y_start, 52, 16, True)
@@ -163,12 +171,11 @@ EndFunc   ;==>getOcrPBTtime
 
 
 Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpace = False)
-	Local $hBmp = _CaptureRegion2($x_start, $y_start, $x_start + $width, $y_start + $height)
-	Local $result = getOcr($hBmp, $language)
+	_CaptureRegion2($x_start, $y_start, $x_start + $width, $y_start + $height)
+	Local $result = getOcr($hHBitmap2, $language)
 	If ($removeSpace) Then
 		$result = StringReplace($result, " ", "")
 	EndIf
-	_WinAPI_DeleteObject($hBmp)
 	Return $result
 EndFunc   ;==>getOcrAndCapture
 

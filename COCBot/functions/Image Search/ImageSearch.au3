@@ -63,6 +63,7 @@ Func _ImageSearchArea($findImage, $resultPosition, $x1, $y1, $right, $bottom, By
 	Else
 		$result = DllCall($pImageLib, "str", "ImageSearchExt", "int", $x1, "int", $y1, "int", $right, "int", $bottom, "int", $Tolerance, "ptr", $findImage, "ptr", $HBMP)
 	EndIf
+	If @error Then _logErrorDLLCall($pImageLib, @error)
 
 	; If error exit
 	If IsArray($result) Then

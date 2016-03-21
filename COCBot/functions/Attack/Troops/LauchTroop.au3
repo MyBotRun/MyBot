@@ -120,8 +120,8 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 							$pixelRandomDropcc[1] = $DeployCCPosition[1]
 							If $debugSetlog = 1 Then SetLog("Deploy CC $DeployHeroesPosition")
 						Else
-							$pixelRandomDrop[0] = $BottomRight[2][0]
-							$pixelRandomDrop[1] = $BottomRight[2][1] ;
+							$pixelRandomDropcc[0] = $BottomRight[2][0]
+							$pixelRandomDropcc[1] = $BottomRight[2][1] ;
 							If $debugSetlog = 1 Then SetLog("Deploy CC $BottomRight")
 						EndIf
 
@@ -188,13 +188,13 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 										$pixelRandomDropcc[1] = $DeployCCPosition[1]
 										If $debugSetlog = 1 Then SetLog("Deploy CC $DeployHeroesPosition")
 									Else
-										$pixelRandomDrop[0] = $BottomRight[2][0]
-										$pixelRandomDrop[1] = $BottomRight[2][1] ;
+										$pixelRandomDropcc[0] = $BottomRight[2][0]
+										$pixelRandomDropcc[1] = $BottomRight[2][1] ;
 										If $debugSetlog = 1 Then SetLog("Deploy CC $BottomRight")
 									EndIf
 
 									If ($isCCDropped = False And $infoTroopListArrPixel[0] = "CC") Then
-										dropCC($pixelRandomDrop[0], $pixelRandomDrop[1], $CC)
+										dropCC($pixelRandomDropcc[0], $pixelRandomDropcc[1], $CC)
 										$isCCDropped = True
 									ElseIf ($isHeroesDropped = False And $infoTroopListArrPixel[0] = "HEROES" And $i = $numberSidesDropTroop - 1) Then
 										dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $King, $Queen, $Warden)

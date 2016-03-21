@@ -109,7 +109,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 				Case $btnAttackNowTS
 					btnAttackNowTS()
 				Case $DonateConfig
-					ShellExecute("https://MyBot.run/forums/misc.php?action=mydonations")
+					ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
 				Case $btnDeletePBMessages
 					If $RunState Then
 						btnDeletePBMessages() ; call with flag when bot is running to execute on _sleep() idle
@@ -167,6 +167,7 @@ Func BotClose()
    ; Clean up resources
    _GDIPlus_ImageDispose($hBitmap)
    _WinAPI_DeleteObject($hHBitmap)
+	_WinAPI_DeleteObject($hHBitmap2)
    _GDIPlus_Shutdown()
    MBRFunc(False) ; close MBRFunctions dll
    _GUICtrlRichEdit_Destroy($txtLog)

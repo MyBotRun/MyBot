@@ -102,7 +102,7 @@ Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1
 EndFunc   ;==>DropTroop
 
 Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
-	$nameFunc = "[DropTroop]"
+	$nameFunc = "[DropTroop2]"
 	debugRedArea($nameFunc & " IN ")
 	debugRedArea("troop : [" & $troop & "] / nbSides : [" & $nbSides & "] / number : [" & $number & "] / slotsPerEdge [" & $slotsPerEdge & "]")
 	Local $listInfoPixelDropTroop[0]

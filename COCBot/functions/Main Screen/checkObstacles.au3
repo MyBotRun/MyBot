@@ -40,6 +40,7 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 			If _SleepStatus($sTimeWakeUp * 1000) Then Return ; Wait as long as user setting in GUI, default 120 seconds
 			PureClickP($aReloadButton, 1, 0, "#0127");Check for "Another device" message
 			If _Sleep(2000) Then Return
+			If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 			Return True
 		EndIf
 		;;;;;;;##### 2- Take a break #####;;;;;;;
@@ -48,18 +49,21 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 			PushMsg("TakeBreak")
 			If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
 			PureClickP($aReloadButton, 1, 0, "#0128");Click on reload button
+			If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 			Return True
 		EndIf
 		;;;;;;;##### Connection Lost & OoS & Inactive & Maintenance #####;;;;;;;
 		Select
 			Case _CheckPixel($aIsInactive, $bNoCapturePixel) ; Inactive only
 				SetLog("Village was Inactive, Reloading CoC...", $COLOR_RED)
+				If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 			Case _CheckPixel($aIsConnectLost, $bNoCapturePixel) ; Connection Lost
 				SetLog("Connection lost, Reloading CoC...", $COLOR_RED)
 			Case _CheckPixel($aIsCheckOOS, $bNoCapturePixel) ; Check OoS
 				SetLog("Out of Sync Error, Reloading CoC...", $COLOR_RED)
 			Case _CheckPixel($aIsMaintenance, $bNoCapturePixel) ; Check OoS
 				SetLog("Maintenance Break, waiting...", $COLOR_RED)
+				If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 				If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
 		EndSelect
 		PureClickP($aReloadButton, 1, 0, "#0131"); Click for out of sync or inactivity or connection lost or maintenance
