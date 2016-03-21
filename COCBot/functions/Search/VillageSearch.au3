@@ -45,8 +45,8 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			SetLog(_PadStringCenter(" Skip " & $sModeText[$x] & " - Hero Not Ready " & BitAND($iHeroAttack[$x], $iHeroWait[$x], $iHeroAvailable) & "|" & $iHeroAvailable, 54, "="), $COLOR_RED)
 			ContinueLoop ; check if herowait selected and hero available for each search mode
 		EndIf
-		If $x = $iCmbSearchMode Or $iCmbSearchMode = 2 Then
-
+		; Fixed TS info displaying when snipe was not selected by LunaEclipse
+		If (($x = $LB Or $x = $DB) And ($x = $iCmbSearchMode Or $iCmbSearchMode = 2)) Or ($x = $TS And ($OptTrophyMode = 1 Or $iChkSnipeWhileTrain = 1)) Then
 			If Not ($Is_SearchLimit) Then SetLog(_PadStringCenter(" Searching For " & $sModeText[$x] & " ", 54, "="), $COLOR_BLUE)
 
 			Local $MeetGxEtext = "", $MeetGorEtext = "", $MeetGplusEtext = "", $MeetDEtext = "", $MeetTrophytext = "", $MeetTHtext = "", $MeetTHOtext = "", $MeetWeakBasetext = "", $EnabledAftertext = ""
@@ -160,24 +160,24 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		If _Sleep($iDelayRespond) Then Return
 		Switch $iCmbSearchMode
 			Case 0 ; check Dead Base only
-				If $iHeroWait[$DB] = 0  Or ($iHeroWait[$DB] > 0 And BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) = $iHeroWait[$DB]) Then ; check hero wait/avail
+				If $iHeroWait[$DB] = 0 Or ($iHeroWait[$DB] > 0 And BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable) = $iHeroWait[$DB]) Then ; check hero wait/avail
 					$isModeActive[$DB] = True
 					$match[$DB] = CompareResources($DB)
 					;$noMatchTxt &= ", DB compare " & BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $iHeroAvailable)  ; use for debug
 				Else
 					$noMatchTxt &= ", DB Hero Not Ready, "
 				EndIf
-			Case 1  ; Check Live Base only
-				If $iHeroWait[$LB] = 0  Or ($iHeroWait[$LB] > 0 And BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) = $iHeroWait[$LB]) Then  ; check hero wait/avail
+			Case 1 ; Check Live Base only
+				If $iHeroWait[$LB] = 0 Or ($iHeroWait[$LB] > 0 And BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) = $iHeroWait[$LB]) Then ; check hero wait/avail
 					$isModeActive[$LB] = True
 					$match[$LB] = CompareResources($LB)
 					;$noMatchTxt &= ", LB compare " & BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $iHeroAvailable) ; use for debug
 				Else
 					$noMatchTxt &= ", LB Hero Not Ready, "
 				EndIf
-			Case  2
+			Case 2
 				For $i = 0 To $iModeCount - 2
-					If $iHeroWait[$i] = 0  Or ($iHeroWait[$i] > 0 And BitAND($iHeroAttack[$i],$iHeroWait[$i], $iHeroAvailable) = $iHeroWait[$i]) Then  ; check hero wait/avail
+					If $iHeroWait[$i] = 0 Or ($iHeroWait[$i] > 0 And BitAND($iHeroAttack[$i], $iHeroWait[$i], $iHeroAvailable) = $iHeroWait[$i]) Then ; check hero wait/avail
 						$isModeActive[$i] = IsSearchModeActive($i)
 						If $isModeActive[$i] Then
 							$match[$i] = CompareResources($i)
@@ -193,7 +193,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		For $i = 0 To $iModeCount - 2
 			If $isModeActive[$i] Then $bSearchSafe = True
 		Next
-		If $bSearchSafe = False And ($OptBullyMode = 0 And $OptTrophyMode = 0) Then  ; no search modes are active.
+		If $bSearchSafe = False And ($OptBullyMode = 0 And $OptTrophyMode = 0) Then ; no search modes are active.
 			Setlog("ERROR - Check Hero Wait & Search Start Values!!", $COLOR_RED)
 			If _Sleep($iDelayRespond) Then Return
 			Setlog("Search Logic Error occured and will NEVER find base!!!", $COLOR_RED)
@@ -225,34 +225,29 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 		If $match[$DB] Or $match[$LB] Then
 			$dbBase = checkDeadBase()
-	    EndIf
+		EndIf
 
-	    Local $MilkingExtractorsMatch = 0
+		Local $MilkingExtractorsMatch = 0
 		$MilkFarmObjectivesSTR = ""
-		If $match[$LB] and $iChkDeploySettings[$LB] = 6 Then ;MilkingAttack
-			If $debugsetlog=1 Then Setlog("Check Milking...",$COLOR_BLUE)
+		If $match[$LB] And $iChkDeploySettings[$LB] = 6 Then ;MilkingAttack
+			If $debugsetlog = 1 Then Setlog("Check Milking...", $COLOR_BLUE)
 			MilkingDetectRedArea()
 			$MilkingExtractorsMatch = MilkingDetectElixirExtractors()
-			If $MilkingExtractorsMatch >0 Then
+			If $MilkingExtractorsMatch > 0 Then
 				$MilkingExtractorsMatch += MilkingDetectMineExtractors() + MilkingDetectDarkExtractors()
 			EndIf
-			If StringLen($MilkFarmObjectivesSTR) >0 and $debugsetlog=1 Then
-				Setlog("Match for Milking",$COLOR_BLUE)
+			If StringLen($MilkFarmObjectivesSTR) > 0 And $debugsetlog = 1 Then
+				Setlog("Match for Milking", $COLOR_BLUE)
 			Else
-				Setlog("Not a Match for Milking",$COLOR_BLUE)
+				$noMatchTxt &= ", No match for Milking"
 			EndIf
 		EndIf
 
-	    ResumeAndroid()
+		ResumeAndroid()
 
 		If _Sleep($iDelayRespond) Then Return
-		If $match[$LB] and $iChkDeploySettings[$LB]=6  and StringLen($MilkFarmObjectivesSTR) >0  Then
-					SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
-					SetLog("      " & "Milking Attack! ", $COLOR_GREEN, "Lucida Console", 7.5)
-					$logwrited = True
-					$iMatchMode = $LB
-					ExitLoop
-		ElseIf $match[$DB] And $dbBase Then
+
+		If $match[$DB] And $dbBase Then
 			SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
 			SetLog("      " & "Dead Base Found! ", $COLOR_GREEN, "Lucida Console", 7.5)
 			$logwrited = True
@@ -263,13 +258,19 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 				_WinAPI_DeleteObject($hBitmap)
 			EndIf
 			ExitLoop
-		ElseIf $match[$LB] And Not $dbBase and $iChkDeploySettings[$LB]<>6 Then
+		ElseIf $match[$LB] And $iChkDeploySettings[$LB] = 6 And StringLen($MilkFarmObjectivesSTR) > 0 Then
+			SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
+			SetLog("      " & "Milking on: " & $MilkingExtractorsMatch &" resources!", $COLOR_GREEN, "Lucida Console", 7.5)
+			$logwrited = True
+			$iMatchMode = $LB
+			ExitLoop
+		ElseIf $match[$LB] And Not $dbBase And $iChkDeploySettings[$LB] <> 6 Then
 			SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
 			SetLog("      " & "Live Base Found!", $COLOR_GREEN, "Lucida Console", 7.5)
 			$logwrited = True
 			$iMatchMode = $LB
 			ExitLoop
-		ElseIf $match[$LB] Or $match[$DB]  and $iChkDeploySettings[$LB]<>6 Then
+		ElseIf $match[$LB] Or $match[$DB] And $iChkDeploySettings[$LB] <> 6 Then
 			If $OptBullyMode = 1 And ($SearchCount >= $ATBullyMode) Then
 				If $SearchTHLResult = 1 Then
 					SetLog($GetResourcesTXT, $COLOR_GREEN, "Lucida Console", 7.5)
@@ -278,7 +279,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 					$iMatchMode = $iTHBullyAttackMode
 					ExitLoop
 				EndIf
-			 EndIf
+			EndIf
 		EndIf
 
 		If _Sleep($iDelayRespond) Then Return
@@ -295,6 +296,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 				EndIf
 			EndIf
 		EndIf
+
 
 		If _Sleep($iDelayRespond) Then Return
 		If $match[$DB] And Not $dbBase Then
@@ -331,6 +333,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		; Return Home on Search limit
 		If SearchLimit($iSkipped + 1) Then Return True
 
+		checkAndroidTimeLag(False)
 
 		Local $i = 0
 		While $i < 100
@@ -380,6 +383,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			$iGoldTotal -= $aSearchCost[$iTownHallLevel - 1]
 		EndIf
 		UpdateStats()
+
 	WEnd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;### Main Search Loop End ###;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	If $bBtnAttackNowPressed = True Then
@@ -413,7 +417,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 		If $searchTH = "-" Then ; retry with autoit search after $iDelayVillageSearch5 seconds
 			If _Sleep($iDelayVillageSearch5) Then Return
-			If $debugsetlog=1 Then SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
+			If $debugsetlog = 1 Then SetLog("2nd attempt to detect the TownHall!", $COLOR_RED)
 			$searchTH = THSearch()
 		EndIf
 
@@ -438,9 +442,8 @@ Func IsSearchModeActive($pMode)
 EndFunc   ;==>IsSearchModeActive
 
 Func IsWeakBase($pMode)
-	_WinAPI_DeleteObject($hBitmapFirst)
-	$hBitmapFirst = _CaptureRegion2()
-	Local $resultHere = DllCall($hFuncLib, "str", "CheckConditionForWeakBase", "ptr", $hBitmapFirst, "int", ($iCmbWeakMortar[$pMode] + 1), "int", ($iCmbWeakWizTower[$pMode] + 1), "int", 10)
+	_CaptureRegion2()
+	Local $resultHere = DllCall($hFuncLib, "str", "CheckConditionForWeakBase", "ptr", $hHBitmap2, "int", ($iCmbWeakMortar[$pMode] + 2), "int", ($iCmbWeakWizTower[$pMode] + 2), "int", 10)
 	If @error Then ; detect if DLL error and return weakbase not found
 		SetLog("Weakbase search DLL error", $COLOR_RED)
 		Return False

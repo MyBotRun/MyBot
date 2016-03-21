@@ -57,6 +57,7 @@ Func ParseAttackCSV($debug = False)
 					Case ""
 						debugAttackCSV("comment line")
 					Case "MAKE"
+						ReleaseClicks()
 						If CheckCsvValues("MAKE", 2, $value2) Then
 							Local $sidex = StringReplace($value2, "-", "_")
 							If $sidex = "RANDOM" Then
@@ -106,6 +107,7 @@ Func ParseAttackCSV($debug = False)
 							debugAttackCSV("Discard row, bad value2 parameter:row " & $rownum)
 						EndIf
 					Case "DROP"
+						KeepClicks()
 						;index...
 						Local $index1, $index2, $indexvect
 						$indexvect = StringSplit($value2, "-", 2)
@@ -207,7 +209,9 @@ Func ParseAttackCSV($debug = False)
 							EndIf
 						EndIf
 						DropTroopFromINI($value1, $index1, $index2, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
+						ReleaseClicks($AndroidAdbClicksTroopDeploySize)
 					Case "WAIT"
+						ReleaseClicks()
 						;sleep time
 						Local $sleep1, $sleep2, $sleepvect
 						$sleepvect = StringSplit($value1, "-", 2)
@@ -254,7 +258,7 @@ Func ParseAttackCSV($debug = False)
 								$DarkElixir = ""
 								$Trophies = getTrophyVillageSearch(48, 69 + 69)
 							EndIf
-							SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_BLUE)
+							If $DebugSetLog = 1 Then SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_BLUE)
 							;EXIT IF RESOURCES = 0
 							If $ichkEndNoResources = 1 And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
 								If $DebugSetLog = 1 Then Setlog("From Attackcsv: Gold & Elixir & DE = 0, end battle ", $COLOR_PURPLE)
@@ -279,8 +283,10 @@ Func ParseAttackCSV($debug = False)
 						If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop ;stop parse CSV file, start exit battle procedure
 
 					Case "RECALC"
+						ReleaseClicks()
 						PrepareAttack($iMatchMode, True)
 					Case "SIDE"
+						ReleaseClicks()
 						Setlog("Calculate main side... ")
 						If StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
 							$MAINSIDE = StringUpper($value8)
@@ -339,8 +345,41 @@ Func ParseAttackCSV($debug = False)
 								EndIf
 							Next
 
-							If Int($value4) > 0 Then SetLog("find gold storage: work in progress...");
-							If Int($value5) > 0 Then SetLog("find elixir storage: work in progress...");
+							If IsArray($GoldStoragePos) Then
+								For $i = 0 To UBound($GoldStoragePos) - 1
+									Local $pixel = $GoldStoragePos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value4)
+											Case 3, 4
+												$heightTopRight += Int($value4)
+											Case 5, 6
+												$heightTopLeft += Int($value4)
+											Case 7, 8
+												$heightBottomLeft += Int($value4)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
+
+							If IsArray($ElixirStoragePos) Then
+								For $i = 0 To UBound($ElixirStoragePos) - 1
+									Local $pixel = $ElixirStoragePos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value5)
+											Case 3, 4
+												$heightTopRight += Int($value5)
+											Case 5, 6
+												$heightTopLeft += Int($value5)
+											Case 7, 8
+												$heightBottomLeft += Int($value5)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
 
 							Switch StringLeft(Slice8($darkelixirStoragePos), 1)
 								Case 1, 2
@@ -433,6 +472,7 @@ Func ParseAttackCSV($debug = False)
 			EndIf
 			CheckHeroesHealth()
 		WEnd
+		ReleaseClicks()
 		FileClose($f)
 	Else
 		SetLog("Cannot find attack file " & $dirAttacksCSV & "\" & $filename & ".csv", $color_red)

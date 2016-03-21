@@ -145,29 +145,3 @@ Func getPBTInfo()
 	EndIf
 
 EndFunc   ;==>getPBTinfo
-
-#comments-start
-	; Begin Test code example for using PBT time,can be used to implement smart PB management
-
-$DebugSetlog = 1
-		Local $aResult = GetPBTInfo() ; Get PBT information
-		If @error Then Setlog("strange PBT error= " &@error& ", Extended= " & @extended, $COLOR_RED)
-		If IsArray($aResult) Then
-			Local $iTimeTillPBTstartSec = Int(_DateDiff('s', $aResult[2], _NowCalc())) ; time in seconds
-			If $debugSetlog = 1 Then
-				Setlog("GetPBTinfo() return String|String|String : " & $aResult[0] &"|" & $aResult[1] & "|" & $aResult[2], $COLOR_PURPLE)
-				Setlog("Have shield type: " & $aResult[0], $COLOR_PURPLE)
-				Setlog("Remaining time till PBT: " & $aResult[1], $COLOR_PURPLE)
-				Setlog("PBT starts on: " & $iTimeTillPBTstartSec & " Seconds", $COLOR_PURPLE)
-			Endif
-			If $iTimeTillPBTStartsec >= 0 Then  ; test if PBT date/time in past
-				Setlog("Start Personal Break Now!", $COLOR_GREEN)
-				; Do Something useful!!
-			Endif
-		Else
-			If $debugSetlog = 1 Then Setlog("?? GetPBTtime returned: " & $aResult , $COLOR_RED)
-		EndIf
-$DebugSetlog = 0
-
-	; End Test code
-#comments-end

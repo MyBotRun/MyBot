@@ -21,13 +21,12 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 		SetLog("Initiating attack for: " & $sModeText[$pMatchMode], $COLOR_RED)
 	EndIf
 
-	_WinAPI_DeleteObject($hBitmapFirst)
-	$hBitmapFirst = _CaptureRegion2(0, 571 + $bottomOffsetY, 859, 671 + $bottomOffsetY)
+	_CaptureRegion2(0, 571 + $bottomOffsetY, 859, 671 + $bottomOffsetY)
 	If _Sleep($iDelayPrepareAttack1) Then Return
 
-    SuspendAndroid()
+    ;SuspendAndroid()
 
-	Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
+	Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hHBitmap2)
 	If $debugSetlog = 1 Then Setlog("DLL Troopsbar list: " & $result[0], $COLOR_PURPLE)
 	Local $aTroopDataList = StringSplit($result[0], "|")
 	Local $aTemp[12][3]
@@ -61,7 +60,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 		EndIf
     Next
 
-    ResumeAndroid()
+    ;ResumeAndroid()
 
 EndFunc   ;==>PrepareAttack
 

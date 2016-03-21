@@ -98,7 +98,7 @@ Func LoadElixirImage75Percent()
 		;read from ini file stats values
 		For $i = 1 To UBound(Eval("ElixirImagesStat" & $t & "_75percent")) - 1
 			Local $tempvect = Eval("ElixirImagesStat" & $t & "_75percent")
-			$tempvect[$i] = IniRead($statChkDeadBase, $t, Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), "0")
+			$tempvect[$i] = IniRead($statChkDeadBase75percent, $t, Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), "0")
 			Assign("ElixirImagesStat" & $t & "_75percent", $tempvect)
 		Next
 	Next
@@ -142,7 +142,7 @@ Func LoadElixirImage50Percent()
 		;read from ini file stats values
 		For $i = 1 To UBound(Eval("ElixirImagesStat" & $t & "_50percent")) - 1
 			Local $tempvect = Eval("ElixirImagesStat" & $t & "_50percent")
-			$tempvect[$i] = IniRead($statChkDeadBase, $t, Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), "0")
+			$tempvect[$i] = IniRead($statChkDeadBase50percent, $t, Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), "0")
 			Assign("ElixirImagesStat" & $t & "_50percent", $tempvect)
 		Next
 	Next

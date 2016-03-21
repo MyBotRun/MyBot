@@ -191,7 +191,6 @@ Func btnStart()
 		_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")
 		_GUICtrlRichEdit_AppendTextColor($txtLog, "" & @CRLF, _ColorConvert($Color_Black))
 
-		SetupProfile()
 	    SaveConfig()
 		readConfig()
 		applyConfig(False) ; bot window redraw stays disabled!
@@ -289,6 +288,8 @@ Func btnStop()
 		AndroidBotStopEvent() ; signal android that bot is now stopping
 
 		_BlockInputEx(0, "", "", $HWnD)
+		SetLog(_PadStringCenter(" Bot Stop ", 50, "="), $COLOR_ORANGE)
+		SetRedrawBotWindow(True) ; must be here at bottom, after SetLog, so Log refreshes. You could also use SetRedrawBotWindow(True, False) and let the events handle the refresh.
 		If Not $bSearchMode Then
 			If Not $TPaused Then $iTimePassed += Int(TimerDiff($sTimer))
 			AdlibUnRegister("SetTime")
@@ -300,9 +301,6 @@ Func btnStop()
 		Else
 			$bSearchMode = False
 		EndIf
-		SetLog(_PadStringCenter(" Bot Stop ", 50, "="), $COLOR_ORANGE)
-		SetRedrawBotWindow(True) ; must be here at bottom, after SetLog, so Log refreshes. You could also use SetRedrawBotWindow(True, False) and let the events handle the refresh.
-
 	EndIf
 EndFunc   ;==>btnStop
 
@@ -443,8 +441,8 @@ Func btnWalls()
     Setlog("--------------------------------------------------------------", $COLOR_TEAL)
 	$debugBuildingPos = 0
 	$debugDeadBaseImage = 0
-;~ 	$hBitmapFirst = _CaptureRegion2(0, 630, 859, 730)
-;~ 	Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
+;~ 	_CaptureRegion2(0, 630, 859, 730)
+;~ 	Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmap2)
 ;~ 	If $debugSetlog = 1 Then Setlog("DLL Troopsbar list: " & $result[0], $COLOR_PURPLE)
 ;~ 	Local $aTroopDataList = StringSplit($result[0], "#")
 ;~ 	Local $aTemp[12][3]
@@ -644,10 +642,11 @@ Func btnTestButtons()
 	Local $AreaInRectangle = String($x + 1 & "," & $y + 1 & "|" & $w - 1 & "," & $y + 1 & "|" & $w - 1 & "," & $h - 1 & "|" & $x + 1 & "," & $h - 1)
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	$hBitmapFirst = _CaptureRegion(125, 610, 740, 715)
+	_CaptureRegion(125, 610, 740, 715)
 	For $i = 0 To 2
 		If FileExists($ImagesToUse[$i]) Then
-			$res = DllCall($pImgLib, "str", "SearchTile", "handle", $hBitmapFirst, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc, "str", $SearchArea, "str", $AreaInRectangle)
+			$res = DllCall($pImgLib, "str", "SearchTile", "handle", $hHBitmap2, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc, "str", $SearchArea, "str", $AreaInRectangle)
+			If @error Then _logErrorDLLCall($pImgLib, @error)
 			If IsArray($res) Then
 				If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
 				If $res[0] = "0" Then
@@ -680,17 +679,17 @@ Func btnTestButtons()
 			EndIf
 		EndIf
 	Next
-	_WinAPI_DeleteObject($hBitmapFirst)
 	SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
 	SETLOG("SearchTile TEST..................STOP")
 
 	Local $hTimer = TimerInit()
 	SETLOG("MBRSearchImage TEST..................STOP")
 
-	$hBitmapFirst = _CaptureRegion2(125, 610, 740, 715)
 	For $i = 0 To 2
 		If FileExists($ImagesToUse[$i]) Then
-			$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hBitmapFirst, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+			_CaptureRegion2(125, 610, 740, 715)
+			$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hHBitmap2, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+			If @error Then _logErrorDLLCall($pImgLib, @error)
 			If IsArray($res) Then
 				If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
 				If $res[0] = "0" Then
@@ -723,7 +722,6 @@ Func btnTestButtons()
 			EndIf
 		EndIf
 	Next
-	_WinAPI_DeleteObject($hBitmapFirst)
 	SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
 	SETLOG("MBRSearchImage TEST..................STOP")
 	$RunState = False
@@ -741,10 +739,11 @@ Func ButtonBoost()
 		$ImagesToUse[1] = @ScriptDir & "\images\Button\BarrackBoosted.png"
 	$ToleranceImgLoc = 0.90
 	SETLOG("MBRSearchImage TEST..................STARTED")
-	$hBitmapFirst = _CaptureRegion2(125, 610, 740, 715)
+	_CaptureRegion2(125, 610, 740, 715)
 	For $i = 0 To 1
 		If FileExists($ImagesToUse[$i]) Then
-			$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hBitmapFirst, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+			$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hHBitmap2, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+			If @error Then _logErrorDLLCall($pImgLib, @error)
 			If IsArray($res) Then
 				If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
 				If $res[0] = "0" Then
@@ -771,7 +770,6 @@ Func ButtonBoost()
 			EndIf
 		EndIf
 	Next
-	_WinAPI_DeleteObject($hBitmapFirst)
 	SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
 	SETLOG("MBRSearchImage TEST..................STOP")
 	$RunState = False

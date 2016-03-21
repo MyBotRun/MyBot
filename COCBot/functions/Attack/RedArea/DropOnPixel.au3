@@ -48,9 +48,8 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 					$DeployCCPosition[1] = $pixel[1]
 					debugRedArea("CC : $slotsPerEdge = 1 ")
 				EndIf
-				Click($pixel[0], $pixel[1], $number, $iDelayDropOnPixel2, "#0096")
+				AttackClick($pixel[0], $pixel[1], $number, $iDelayDropOnPixel2, $iDelayDropOnPixel1, "#0096")
 			EndIf
-			If _SleepAttack($iDelayDropOnPixel1) Then Return ReleaseClicks()
 		Next
 	ElseIf $slotsPerEdge = 2 Then ; Drop on 2 points per edge
 		For $i = 0 To UBound($listArrPixel) - 1
@@ -67,10 +66,8 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 					$DeployCCPosition[1] = $pixel[1]
 					debugRedArea("CC : $slotsPerEdge = 2 ")
 				EndIf
-				Click($pixel[0], $pixel[1], $number, 0, "#0097")
-				If _SleepAttack(SetSleep(0)) Then Return ReleaseClicks()
+				AttackClick($pixel[0], $pixel[1], $number, SetSleep(0), SetSleep(1), "#0097")
 			EndIf
-			If _SleepAttack(SetSleep(1)) Then Return ReleaseClicks()
 		Next
 	Else
 		For $i = 0 To UBound($listArrPixel) - 1
@@ -113,9 +110,8 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 						debugRedArea("CC : $slotsPerEdge = else ")
 						debugRedArea("$offset: " & $offset )
 					EndIf
-					Click($currentPixel[0], $currentPixel[1], $nbTroopByPixel, 0, "#0098")
+					AttackClick($currentPixel[0], $currentPixel[1], $nbTroopByPixel, SetSleep(0), 0, "#0098")
 					$nbTroopsLeft -= $nbTroopByPixel
-					If _SleepAttack(SetSleep(0)) Then Return ReleaseClicks()
 				Next
 			WEnd
 		Next

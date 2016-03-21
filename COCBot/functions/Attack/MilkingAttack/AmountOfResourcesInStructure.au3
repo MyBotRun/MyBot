@@ -17,17 +17,17 @@ Func AmountOfResourcesInStructure($type, $coordinate, $level)
 	Switch $type
 		Case "elixir"
 			If $level <= 8 And $level >= 0 Then
-				Local $temp = int($MilkFarmElixirParam[$level])
-					If $temp >= 0 Then
-						Local $capacity = DetectAmountOfResourceInStructure($type, $coordinate, $level, $temp)
-						If $capacity >= $temp Then
-							Return True
-						Else
-							If $debugsetlog = 1 Then Setlog("Discard, capacity of structure under settings:  liv " & $level &" cap " & $temp, $color_purple)
-						EndIf
+				Local $temp = Int($MilkFarmElixirParam[$level])
+				If $temp >= 0 Then
+					Local $capacity = DetectAmountOfResourceInStructure($type, $coordinate, $level, $temp)
+					If $capacity >= $temp Then
+						Return True
 					Else
-						If $debugsetlog = 1 Then Setlog("Discard, level settings discard this structure", $color_purple)
+						If $debugsetlog = 1 Then Setlog("Discard, capacity of structure under settings:  liv " & $level & " cap " & $temp, $color_purple)
 					EndIf
+				Else
+					If $debugsetlog = 1 Then Setlog("Discard, level settings discard this structure", $color_purple)
+				EndIf
 			Else
 				If $debugsetlog = 1 Then Setlog("Discard, out of bounds", $color_purple)
 			EndIf

@@ -20,7 +20,7 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
 	Local $Result, $iTimeTillPBTstartSec, $ichkTime = 0, $ichkSTime = 0, $ichkPBTime = 0
 
-	If $bChkShield Or $aShieldStatus[0] = "" Or $aShieldStatus[1] = "" Or $aShieldStatus[2] = "" Or $sPBStartTime = "" Then ; almost always get shield information
+	If $bChkShield Or $aShieldStatus[0] = "" Or $aShieldStatus[1] = "" Or $aShieldStatus[2] = "" Or $sPBStartTime = "" Or $bGForcePBTUpdate = True Then ; almost always get shield information
 
 		$Result = getShieldInfo() ; get expire time of shield
 
@@ -82,7 +82,9 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 		EndIf
 	EndIf
 
-	If $bForceChkPBT Or $sPBStartTime = "" Then
+	If $bForceChkPBT Or $bGForcePBTUpdate Or $sPBStartTime = "" Then
+
+		$bGForcePBTUpdate = False  ; Reset global flag to force PB update
 
 		$Result = getPBTime() ; Get time in future that PBT starts
 

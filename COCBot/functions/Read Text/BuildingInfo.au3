@@ -39,6 +39,7 @@ Func BuildingInfo($iXstart, $iYstart)
 			$sBldgLevel = $aString[2] ; store level text
 			$aString = StringSplit($sBldgLevel, ")") ;split off the closing parenthesis
 			If $aString[0] = 2 Then ; Check If we have "level XX" cleaned up
+				If StringInStr($aString[1], "Broken") Then $aString[1] &= " 200" ; Broken Clan Castle (not rebuild yet): add fake level
 				If $debugSetlog = 1 Then Setlog("2nd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_PURPLE) ;debug
 				If $aString[1] <> "" Then $sBldgLevel = $aString[1] ; store "level XX"
 			EndIf
@@ -51,7 +52,13 @@ Func BuildingInfo($iXstart, $iYstart)
 	EndIf
 	If $aResult[1] <> "" Then $aResult[0] = 1
 	If $aResult[2] <> "" Then $aResult[0] += 1
-	If $aResult[2] > 90 Then $aResult[2] = ""
+	If $aResult[2] > 90 Then
+		If $aResult[2] = 200 Then
+			$aResult[2] = "Broken"  ; Broken Clan Castle (not rebuild yet): report 'Broken' as Level
+		Else
+			$aResult[2] = ""
+		EndIf
+	EndIf
 
 	Return $aResult
 

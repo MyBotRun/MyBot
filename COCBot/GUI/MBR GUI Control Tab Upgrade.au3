@@ -112,7 +112,7 @@ Func btnLocateUpgrades()
 EndFunc   ;==>btnLocateUpgrades
 
 Func btnchkbxUpgrade()
-	For $i = 0 To 5
+	For $i = 0 To UBound($aUpgrades, 1) - 1
 		If GUICtrlRead($chkbxUpgrade[$i]) = $GUI_CHECKED Then
 			$ichkbxUpgrade[$i] = 1
 		Else
@@ -121,20 +121,36 @@ Func btnchkbxUpgrade()
 	Next
 EndFunc   ;==>btnchkbxUpgrade
 
+Func btnchkbxRepeat()
+	For $i = 0 To UBound($aUpgrades, 1) - 1
+		If GUICtrlRead($chkUpgrdeRepeat[$i]) = $GUI_CHECKED Then
+			$ichkUpgrdeRepeat[$i] = 1
+		Else
+			$ichkUpgrdeRepeat[$i] = 0
+		EndIf
+	Next
+EndFunc   ;==>btnchkbxRepeat
+
 Func btnResetUpgrade()
-	; Reset Condition $aUpgrades[4][4] = [[-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""], [-1, -1, -1, ""]]
-	For $i = 0 To 5
+	For $i = 0 To UBound($aUpgrades, 1) - 1
+		If GUICtrlRead($chkUpgrdeRepeat[$i]) = $GUI_CHECKED Then ContinueLoop
+		$aUpgrades[$i][0] = -1 ; clear location and loot value in $aUpgrades variable
+		$aUpgrades[$i][1] = -1 ; clear location and loot value in $aUpgrades variable
+		$aUpgrades[$i][2] = -1 ; clear location and loot value in $aUpgrades variable
 		$aUpgrades[$i][3] = "" ;Clear Upgrade Type
-		GUICtrlSetData($txtUpgradeX[$i], "") ; Clear GUI X position
-		GUICtrlSetData($txtUpgradeY[$i], "") ; Clear GUI Y position
+		$aUpgrades[$i][4] = "" ;Clear Upgrade Unit Name
+		$aUpgrades[$i][5] = "" ;Clear Upgrade Level
+		$aUpgrades[$i][6] = "" ;Clear Upgrade Time
+		$aUpgrades[$i][7] = "" ;Clear Upgrade Starting Time
+		GUICtrlSetData($txtUpgradeName[$i], "") ; Clear GUI Unit Name
+		GUICtrlSetData($txtUpgradeLevel[$i], "") ; Clear GUI Unit Level
 		GUICtrlSetData($txtUpgradeValue[$i], "") ; Clear Upgrade value in GUI
+		GUICtrlSetData($txtUpgradeTime[$i], "") ; Clear Upgrade time in GUI
 		GUICtrlSetImage($picUpgradeType[$i], $pIconLib, $eIcnBlank) ; change GUI upgrade image to blank
-		$ipicUpgradeStatus[$i] = $eIcnRedLight
+		$ipicUpgradeStatus[$i] = $eIcnTroops
 		GUICtrlSetImage($picUpgradeStatus[$i], $pIconLib, $ipicUpgradeStatus[$i]) ; Change GUI upgrade status to not ready
 		GUICtrlSetState($chkbxUpgrade[$i], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
-		For $j = 0 To 2
-			$aUpgrades[$i][$j] = -1 ; clear location and loot value in $aUpgrades variable
-		Next
+		GUICtrlSetState($chkUpgrdeRepeat[$i], $GUI_UNCHECKED) ; Change repeat box to unchecked
 	Next
 EndFunc   ;==>btnResetUpgrade
 
@@ -154,12 +170,52 @@ Func chkLab()
 		GUICtrlSetState($btnLocateLaboratory, $GUI_HIDE)
 		GUICtrlSetImage($icnLabUpgrade, $pIconLib, $aLabTroops[0][4])
 	EndIf
+	If _DateIsValid($sLabUpgradeTime) Then
+		$txtTip = GetTranslated(8, 107, "Visible Red button means that laboratory upgrade in process") & @CRLF & _
+				GetTranslated(8, 108, "This will automatically disappear when near time for upgrade to be completed.") & @CRLF & _
+				GetTranslated(8, 109, "If upgrade has been manually finished with gems before normal end time,") & @CRLF & _
+				GetTranslated(8, 110, "Click red button to reset internal upgrade timer BEFORE STARTING NEW UPGRADE") & @CRLF & _
+				GetTranslated(8, 118, "Caution - Unnecessary timer reset will force constant checks for lab status") & @CRLF & @CRLF & _
+				GetTranslated(8, 119, "Troop Upgrade started") & ", " & _
+				GetTranslated(8, 120, "Will begin to check completion at:") & " " & $sLabUpgradeTime & @CRLF & " "
+		GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
+		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_SHOW)
+		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_HIDE)
+		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_DISABLE)
+	EndIf
 EndFunc   ;==>chkLab
 
 Func cmbLab()
 	$icmbLaboratory = _GUICtrlComboBox_GetCurSel($cmbLaboratory)
 	GUICtrlSetImage($icnLabUpgrade, $pIconLib, $aLabTroops[$icmbLaboratory][4])
 EndFunc   ;==>cmbLab
+
+Func ResetLabUpgradeTime()
+	; Display are you sure message
+	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
+	Local $stext = @CRLF & GetTranslated(8, 112, "Are you 100% sure you want to reset lab upgrade timer?") & @CRLF & _
+			GetTranslated(8, 113, "Click OK to reset") & @CRLF & GetTranslated(8, 114, "Or Click Cancel to exit") & @CRLF
+	Local $MsgBox = _ExtMsgBox(0, GetTranslated(8, 115, "Reset timer") & "|" & GetTranslated(8, 116, "Cancel and Return"), GetTranslated(8, 117, "Reset laboratory upgrade timer?"), $stext, 120, $frmBot)
+	If $DebugSetlog = 1 Then Setlog("$MsgBox= " & $MsgBox, $COLOR_PURPLE)
+	If $MsgBox = 1 Then ; if yes then Reset troop upgrade check time and text tip
+		$sLabUpgradeTime = ""
+		$txtTip = GetTranslated(8, 107, "Visible Red button means that laboratory upgrade in process") & @CRLF & _
+				GetTranslated(8, 108, "This will automatically disappear when near time for upgrade to be completed.") & @CRLF & _
+				GetTranslated(8, 109, "If upgrade has been manually finished with gems before normal end time,") & @CRLF & _
+				GetTranslated(8, 110, "Click red button to reset internal upgrade timer BEFORE STARTING NEW UPGRADE") & @CRLF & _
+				GetTranslated(8, 118, "Caution - Unnecessary timer reset will force constant checks for lab status")
+		GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
+	EndIf
+	If _DateIsValid($sLabUpgradeTime) Then
+		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_SHOW)
+		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_HIDE)
+		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>ResetLabUpgradeTime
 
 Func chkUpgradeKing()
 

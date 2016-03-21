@@ -15,6 +15,8 @@
 Func CheckHeroesHealth()
 
 	If $checkKPower Or $checkQPower or $checkWPower Then
+		ForceCaptureRegion() ; ensure no screenshot caching kicks in
+
 		Local $aKingHealthCopy = $aKingHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
 		$aKingHealthCopy[0] = GetXPosOfArmySlot($King, 68)
 		Local $aQueenHealthCopy = $aQueenHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition

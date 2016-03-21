@@ -53,8 +53,7 @@ EndFunc   ;==>GetBuildingEdge
 Func BuildingXY($TypeBuilding = $eSideBuildingDES)
 	Local $TypeBuildingName
 
-	_WinAPI_DeleteObject($hBitmapFirst)
-	$hBitmapFirst = _CaptureRegion2(230, 170, 630, 440)
+	_CaptureRegion2(230, 170, 630, 440)
 	Switch $TypeBuilding
 		Case $eSideBuildingDES
 			$TypeBuildingName = "DE Storage"

@@ -19,7 +19,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 
 	If _Sleep($iDelayalgorithm_AllTroops1) Then Return
 
-	If $iMatchMode = $TS Then
+	If $iMatchMode = $TS or ($chkATH = 1 And SearchTownHallLoc()) Then
 		SwitchAttackTHType()
 		If $zoomedin = True Then
 			ZoomOut()
@@ -46,8 +46,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	If ($iChkRedArea[$iMatchMode]) Then
 		SetLog("Calculating Smart Attack Strategy", $COLOR_BLUE)
 		Local $hTimer = TimerInit()
-		_WinAPI_DeleteObject($hBitmapFirst)
-		$hBitmapFirst = _CaptureRegion2()
+		_CaptureRegion2()
 		_GetRedArea()
 
 		SetLog("Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")

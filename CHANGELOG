@@ -1,6 +1,61 @@
-﻿* **V5.2.1** (Do not use old config files!)
- * Fix missing images of 5.2 release
+﻿* **V5.3**
+ * Add 2 more slots to building upgrades tab (8 total now available)
+ * Add auto repeat capability to enable continuous upgrade of buildings
+ * Improve building upgrade GUI to show useful data on upgrade selected
+ * Add upgrade time awareness to building upgrades to reduce checking of upgrades in process
+ * Add upgrade time awareness to lab upgrades to reduce unnecessary checking of upgrade in process
  
+* **V5.2.2**
+ * Fix "wait when other device" connects for MEmu/Droid4X and BS1/2 in non background mode (manual Roboto-Regular.ttf replace still required!) *1* see notes below
+ * Fix Barracks Boost issue when not all barracks boosted with missing image
+ * Fix Halt Mode stop immediately when time option used
+ * Fix Halt Mode not resume normal operation when stop condition is no longer valid
+ * Fix bot not requesting CC troops when using Halt Mode - Donate Only
+ * Fix dead base stats .ini file being overwritten every time Bot is launched
+ * Fix problem of creating extra log file containing only "Bot Stop"
+ * Fix GUI milking labels
+ * Fix Clan Castle Balance not save properly
+ * Fix TH search condition always logged
+ * Fix improper local declaration on $dropKing & $dropQueen that may prevent hero power activation
+ * Fix Heroes health check for MEmu/Droid4X (screenshot caching problem fix)
+ * Fix Heroes health check for MEmu/Droid4X in new background mode (screenshot caching problem fix)
+ * Fix Village not found for MEmu/Droid4X in new background mode (screenshot not read)
+ * Fix rare issue on PC with limited memory: where BS buildings would disappear, AND log shows DLL ERROR message during resource collection; because of inconsistent deletion of graphics capture.
+ * Fix donate link at top of bot
+ * Fix GUI problem with custom troops and custom dark troops (the Dark troops GUI are not enable).
+ * Fix DebugRedArea conacatenation operator
+ * Fix Drop CC positions to deploy
+ * Fix milking error with waves x quantity of troops
+ * Fix Army Camp input value message popup when size changes due to upgrade or OCR read error
+ * Fix attack exposed TH check box not working
+ * Fix shield reading function to properly support shields longer than 24 hours
+ * Fix "Wait for Hero" not waiting with Bully mode combo whne wait for hero used on selected bully attack type
+ * Fix "Wait for Hero" not waiting when using Th Snipe and delayed search count selected.
+ * Fix Android MEmu "time lag" problem when running multiple instances or even single on slow computer by rebooting instance automatically when more than 5 Seconds delay per Minute detected
+ * Improve single logoff Personal Break feature in case of maintainence or other long breaks
+ * Improve troop deploy delay time for MEmu/Droid4X
+ * Improve Android ADB initialization when running multiple instances
+ * Improve MEmu/Droid4X true background mode not disabling the mode when Android responses get slow or not responding anymore
+ * Improve message helptext on command line usage, to start multiple instances of the bot
+ * Improve the milking search times
+ * Improve Android ADB debug logging and reduced log frequencies
+ * Add MEmu/Droid4X check & set font scale to normal to improve system message detection (manual Roboto-Regular.ttf replace still required!) *1* see notes below
+ * Add Clan Castle locate if hide name on screen photo enabled on expert tab
+ * Add Gold & Elixir Storage finding and enabled use by AttackCSV feature
+ * Add prerequisite check for current verion of AutoIt when running MyBot.run.au3 file
+ * Add location selection check for "Clan Castle (Broken)", for villages without a Clan Castle (not rebuild yet)
+ * Updated Turkish language file for GUI
+ * Updated Portuguese language file for GUI
+ * Updated Chinese language file (from @mitoomi)
+ * Updated MBRfunctions.dll with new weakbase images
+
+ Notes:
+ *1* MEmu and Droid4X come with a different Roboto-Regular.ttf Android System Font for displaying messages. MyBot.run cannot detected these messages.
+     We point to forum thread how-to easily update a supported font file in release announcement.
+
+* **V5.2.1**
+ * Add the folder Images
+
 * **V5.2** (Do not use old config files!)
  * Add Ability to train all spells
  * Add Milk Farm Attack
