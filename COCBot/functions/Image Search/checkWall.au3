@@ -18,8 +18,8 @@ Func CheckWall()
 	;$icmbWalls = _GUICtrlComboBox_GetCurSel($cmbWalls)
 
 	If _Sleep(500) Then Return
-	Local $listLvlMask[4] = [3, 5, 8, -1] ; Mask levels, added value from center of base, largest mask (3) is tested first, -1 is entire village.
-	Local $NameLvlMask[4] = ["Core of Base", "Middle/Center of Base", "Most of Base", "All of Base"] ; Mask Names for easier understanding
+	Local $listLvlMask[5] = [2.3, 2.95, 5, 8, -1] ; Mask levels, added value from center of base, largest mask (2.3) is tested first, -1 is entire village.
+	Local $NameLvlMask[5] = ["Core of Base", "Center of Base", "Middle of the Base", "Most of Base", "All of Base"] ; Mask Names for easier understanding
 	Local $levelWall = $icmbWalls + 4
 	Local $listPixel[0]
 	;$Walltolerance = Number(GUICtrlRead($sldToleranceWall)) * 5
@@ -28,7 +28,7 @@ Func CheckWall()
 	For $i = 0 To UBound($listLvlMask) - 1
 		_CaptureRegion2()
 		SetLog("Searching for Wall(s) level: " & $levelWall & ". Using Mask: " & $NameLvlMask[$i], $COLOR_GREEN)
-		Local $result = DllCall($hFuncLib, "str", "findWall", "ptr", $hHBitmap2, "int", $listLvlMask[$i], "int", $levelWall, "double", $Walltolerance[$icmbWalls], "int", $iMaxNbWall, "int", $debugWalls)
+		Local $result = DllCall($hFuncLib, "str", "findWall", "ptr", $hHBitmap2, "double", $listLvlMask[$i], "int", $levelWall, "double", $Walltolerance[$icmbWalls], "int", $iMaxNbWall, "int", $debugWalls)
 		ClickP($aAway, 1, 0, "#0505") ; to prevent bot 'Anyone there ?'
 		If Not $result[0] = "" And UBound($result) > 0 Then
 			Local $listPixelTemp = GetListPixel($result[0])

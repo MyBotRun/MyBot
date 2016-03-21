@@ -1,10 +1,27 @@
-﻿* **V5.3**
+﻿* **V5.3.1**
+ * Added Android support for Nox 3.1.0.0 (http://en.bignox.com/)
+ * Fix removal of ghost tray icons when rebooting MEmu
+ * Fix bot window double redraw using start/stop buttons
+ * Fix Request Button check (Requires CoC version 8.212.3)
+ * Fix Open Profile page (Requires CoC version 8.212.3)
+ * Fix The DE/Trophies OCR on search villages (Requires CoC version 8.212.3)
+ * Fix Read Shield status when Guard shield is present (Requires CoC version 8.212.3)
+ * Updated Wall upgrades, masking the core and center of the base is now more precise
+ * Updated Russian language file (from @rulesss)
+ * Updated German language file (from @fliegerfaust)
+ * Updated Italian language file (from @davideroma)
+ * Improve Android ADB error handling for screencap and send mouse
+ * Improve Android time lag logic rebooting earlier and during village search
+ * Improve Android detect running instance and reboot handling
+ * Improve OCR for names and level of the Buildings (Requires CoC version 8.212.3)
+ 
+* **V5.3**
  * Add 2 more slots to building upgrades tab (8 total now available)
  * Add auto repeat capability to enable continuous upgrade of buildings
  * Improve building upgrade GUI to show useful data on upgrade selected
  * Add upgrade time awareness to building upgrades to reduce checking of upgrades in process
  * Add upgrade time awareness to lab upgrades to reduce unnecessary checking of upgrade in process
- 
+
 * **V5.2.2**
  * Fix "wait when other device" connects for MEmu/Droid4X and BS1/2 in non background mode (manual Roboto-Regular.ttf replace still required!) *1* see notes below
  * Fix Barracks Boost issue when not all barracks boosted with missing image

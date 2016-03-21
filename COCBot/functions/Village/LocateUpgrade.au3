@@ -16,7 +16,7 @@
 Func LocateUpgrades()
 
 	WinGetAndroidHandle()
-	ControlGetPos($Title, "", $AppClassInstance)  ;Check For valid BS position
+	ControlGetPos($HWnD, "", $AppClassInstance)  ;Check For valid BS position
 	If $HWnD = 0 Or @error = 1 Then  ; If not found, BS is not open so exit politely
 		Setlog($Android & " is not open", $COLOR_RED)
 		SetError(1)

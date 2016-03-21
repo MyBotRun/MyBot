@@ -33,7 +33,7 @@ Global $aAway[2]             = [  1,  40]               ; Away click, moved from
 Global $aRemoveShldButton[4] = [470,  18, 0xA80408, 10] ; Legacy - Main Screen, Red pixel lower part of Minus sign to remove shield, used to validate latest COC installed
 Global $aNoShield[4]  	  	  = [448,  20, 0x43484B, 10] ; Main Screen, charcoal pixel center of shield when no shield is present
 Global $aHaveShield[4]  	  = [455,  23, 0xEEF4F8, 10] ; Main Screen, Silver pixel center of shield
-Global $aHavePerGuard[4]  	  = [455,  23, 0x010102, 10] ; Main Screen, black pixel in sword outline center of shield
+Global $aHavePerGuard[4]  	  = [451,  20, 0x7848D1, 10] ; Main Screen, black pixel in sword outline center of shield
 Global $aShieldInfoButton[4] = [472,  11, 0x6DB0D3, 10] ; Main Screen, Blue pixel upper part of "i"
 Global $aIsShieldInfo[4]     = [645, 195, 0xE00408, 20] ; Main Screen, Shield Info window, red pixel right of X
 Global $aSurrenderButton[4]  = [ 70, 545 + $bottomOffsetY, 0xC00000, 40] ; Surrender Button, Attack Screen
@@ -134,7 +134,7 @@ Global $TrainLava[4]        = [ 220, 459 + $midOffsetY, 0x4F4F40,     40] ;  Don
 Global $NextBtn[4]          = [ 780, 546 + $bottomOffsetY, 0xD34300,  20] ;  Next Button
 ; Someone asking troops : Color 0xD0E978 in x = 121
 
-Global $aRequestTroopsAO[6]	= [706, 290 + $midOffsetY, 0xD8EC80, 0x12130B, 0xDADADA, 20] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
+Global $aRequestTroopsAO[6]	= [707, 290 + $midOffsetY, 0xD8EC80, 0x12130B, 0xDADADA, 20] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
 
 Global Const $FullBarb[4]   = [ 253, 375 + $midOffsetY, 0x8F8F8F, 45]  ; Location of Elixir check pixel with normal color and Barrack Full color
 Global Const $FullArch[4]   = [ 360, 375 + $midOffsetY, 0x8D8D8D, 45]

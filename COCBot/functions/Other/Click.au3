@@ -56,8 +56,8 @@ Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 EndFunc   ;==>Click
 
 Func _ControlClick($x, $y)
-   $AndroidAdbScreencapTimer = 0 ; invalidate ADB screencap timer/timeout
-   Return ControlClick($Title, "", "", "left", "1", $x, $y)
+   ;$AndroidAdbScreencapTimer = 0 ; invalidate ADB screencap timer/timeout
+   Return ControlClick($HWnD, "", "", "left", "1", $x, $y)
 EndFunc
 
 Func isProblemAffectBeforeClick($iCount = 0)

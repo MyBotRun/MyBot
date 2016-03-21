@@ -86,7 +86,7 @@ Func _makerequest()
 		If _Sleep($iDelaymakerequest2) Then Return
 	Else
 		If $sTxtRequest <> "" Then
-			If $ichkBackground = 0 And $NoFocusTampering = False Then ControlFocus($Title,"", "")
+			If $ichkBackground = 0 And $NoFocusTampering = False Then ControlFocus($HWnD,"", "")
 			PureClick($atxtRequestCCBtn[0], $atxtRequestCCBtn[1], 1, 0, "#0254") ;Select text for request $atxtRequestCCBtn[2] = [430, 140]
 			_Sleep($iDelaymakerequest2)
 			If SendText($sTxtRequest) = 0 Then
@@ -106,7 +106,7 @@ Func _makerequest()
 		If $debugSetlog = 1 Then SetLog("Send request button not found", $COLOR_PURPLE)
 			CheckMainScreen(False) ;emergency exit
 		EndIf
-		If $ichkBackground = 0 And $NoFocusTampering = False Then ControlFocus($title, "", "")  ; make sure BS has window focus
+		If $ichkBackground = 0 And $NoFocusTampering = False Then ControlFocus($HWnD, "", "")  ; make sure Android has window focus
 		PureClick($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], 1, 100, "#0256") ; click send button
 		$canRequestCC = False
 	EndIf

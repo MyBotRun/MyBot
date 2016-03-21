@@ -176,6 +176,8 @@ Func InitDroid4X($bCheckOnly = False)
 
    ; Read ADB host and Port
    If Not $bCheckOnly Then
+	  InitAndroidConfig(True) ; Restore default config
+
 	  $__VBoxManage_Path = $VirtualBox_Path & "VBoxManage.exe"
 	  $__VBoxVMinfo = LaunchConsole($__VBoxManage_Path, "showvminfo " & $AndroidInstance, $process_killed)
 	  $aRegExResult = StringRegExp($__VBoxVMinfo, "ADB_PORT.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)
@@ -221,10 +223,10 @@ Func InitDroid4X($bCheckOnly = False)
 	  $AndroidPicturesPath = "/mnt/shared/picture/"
 	  $aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'picture', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
 	  If Not @error Then
-		 $AndroidAdbScreencap = True
 		 $AndroidPicturesHostPath = $aRegExResult[0] & "\"
 	  Else
-		 ;SetLog($Android & " Background Mode is not available", $COLOR_RED)
+		 SetLog($Android & " Background Mode is not available", $COLOR_RED)
+		 $AndroidPicturesHostPath = ""
 		 $AndroidAdbScreencap = False
 	  EndIf
 
@@ -318,8 +320,7 @@ Func CheckScreenDroid4X($bSetLog = True)
    Next
    If $iErrCnt > 0 Then Return False
 
-   ; check if shared folder exists for background mode
-
+   ; check if shared folder exists for background mode and mouse events
    If $ichkBackground = 1 And $AndroidAdbScreencap = False And $AndroidPicturesPathAutoConfig = True And BitAND($AndroidSupportFeature, 2) = 2 Then
 	  Local $myPictures = RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\", "My Pictures")
 	  If @error = 0 And FileExists($myPictures) = 1 Then

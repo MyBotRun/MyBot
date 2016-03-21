@@ -827,7 +827,7 @@ Func DetectSlotTroop($Type)
 				If $Type = $eHeal And $FullTemp = "healer" Then
 					Return $Slot
 				EndIf
-				If $Type = $eDrag And $FullTemp = "dragon" Then
+				If $Type = $eDrag And ($FullTemp = "dragon" Or $FullTemp = "dragon2") Then
 					Return $Slot
 				EndIf
 				If $Type = $ePekk And $FullTemp = "pekka" Then
@@ -846,6 +846,9 @@ Func DetectSlotTroop($Type)
 					Return $Slot
 				EndIf
 				If $Type = $eGole And $FullTemp = "golem" Then
+					Return $Slot
+				EndIf
+				If $Type = $eLava And $FullTemp = "lava" Then
 					Return $Slot
 				EndIf
 			EndIf

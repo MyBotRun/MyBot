@@ -155,7 +155,7 @@ Func LocateKingAltar()
 	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo
 	$RunState = True
 	WinGetAndroidHandle()
-	WinActivate($Title)
+	WinActivate($HWnD)
 	checkMainScreen(False)
 	$bDisableBreakCheck = True  ; stop early PB log off when locating upgrades
 	Collect()

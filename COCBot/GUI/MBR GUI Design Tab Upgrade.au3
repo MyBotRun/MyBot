@@ -127,12 +127,12 @@ Local $x = 305, $y = 150
 	$grpUpgrade = GUICtrlCreateGroup(GetTranslated(8,42, "Buildings or Heroes"), $x - 20, $y - 15, 450, 186)
 ; table header
 	$y -= 3
-		$lblUpgradeUp1 = GUICtrlCreateLabel("Unit Name", $x+74, $y, 70, 18)
-		$lblUpgradeUp2 = GUICtrlCreateLabel("Lvl", $x+160, $y, 40, 18)
-		$lblUpgradeUp3 = GUICtrlCreateLabel("Type", $x+178, $y, 50, 18)
-		$lblUpgradeUp4 = GUICtrlCreateLabel("Cost", $x+226, $y, 50, 18)
-		$lblUpgradeUp5 = GUICtrlCreateLabel("Time", $x+276, $y, 50, 18)
-		$lblUpgradeUp6 = GUICtrlCreateLabel("Repeat", $x+310, $y, 50, 18)
+		$lblUpgradeUp1 = GUICtrlCreateLabel(GetTranslated(8,121,"Unit Name"), $x+74, $y, 70, 18)
+		$lblUpgradeUp2 = GUICtrlCreateLabel(GetTranslated(8,122,"Lvl"), $x+160, $y, 40, 18)
+		$lblUpgradeUp3 = GUICtrlCreateLabel(GetTranslated(8,123,"Type"), $x+178, $y, 50, 18)
+		$lblUpgradeUp4 = GUICtrlCreateLabel(GetTranslated(8,124,"Cost"), $x+226, $y, 50, 18)
+		$lblUpgradeUp5 = GUICtrlCreateLabel(GetTranslated(8,125,"Time"), $x+276, $y, 50, 18)
+		$lblUpgradeUp6 = GUICtrlCreateLabel(GetTranslated(8,126,"Repeat"), $x+310, $y, 50, 18)
 
 	$y+=16
 ; Locate/reset buttons

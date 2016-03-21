@@ -30,7 +30,7 @@ Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = 
 			$hHBitmap = AndroidScreencap($iLeft, $iTop, $iW, $iH)
 		Else
 			$SuspendMode = ResumeAndroid(False)
-			Local $hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($Title, "", $AppClassInstance))
+			Local $hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($HWnD, $AppPaneName, $AppClassInstance))
 			Local $hMemDC = _WinAPI_CreateCompatibleDC($hDC_Capture)
 			$hHBitmap = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH)
 			Local $hObjectOld = _WinAPI_SelectObject($hMemDC, $hHBitmap)
@@ -88,7 +88,7 @@ Func _CaptureRegion2($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom =
 			$hHBitmap2 = AndroidScreencap($iLeft, $iTop, $iW, $iH)
 		Else
 			$SuspendMode = ResumeAndroid(False)
-			$hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($Title, "", $AppClassInstance)) ; Get emulator DC information
+			$hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($HWnD, $AppPaneName, $AppClassInstance)) ; Get emulator DC information
 			$hMemDC = _WinAPI_CreateCompatibleDC($hDC_Capture) ; create local compatible DC to emultor window
 			$hHBitmap2 = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH) ; create bitmap object with same DC as emulator
 			$hObjectOld = _WinAPI_SelectObject($hMemDC, $hHBitmap2) ; Save previous graphics object, select new one
