@@ -154,7 +154,7 @@ Func getOcrSpaceCastleDonate($x_start, $y_start);  -> Get the number of troops d
 EndFunc   ;==>getOcrSpaceCastleDonate
 
 Func getOcrDonationTroopsDetection($x_start, $y_start);  -> Get the type of troop from the donate window
-	Return getOcrAndCapture("coc-donationtroop", $x_start, $y_start, 30, 15, True)
+	Return getOcrAndCapture("coc-donationtroop", $x_start, $y_start, 45, 30, True)
 EndFunc   ;==>getOcrDonationTroopsDetection
 
 Func getOcrOverAllDamage($x_start, $y_start);  -> Get the Overall Damage %

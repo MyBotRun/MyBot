@@ -129,10 +129,19 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 
 	If $bRepeat = True Or $ichkUpgrdeRepeat[$inum] = 1 Then ; check for upgrade in process when continiously upgrading
 		ClickP($aAway, 1, 0, "#0999") ;Click Away to close windows
-		If _Sleep(200) Then Return
+		If _Sleep($iDelayUpgradeValue1) Then Return
 		Click($aUpgrades[$inum][0], $aUpgrades[$inum][1]) ;Select upgrade trained
-		If _Sleep(1000) Then Return
+		If _Sleep($iDelayUpgradeValue4) Then Return
 		If $bOopsFlag = True Then DebugImageSave("ButtonView")
+		; check if upgrading collector type building, and reselect in case previous click only collect resource
+		If StringInStr($aUpgrades[$inum][4], "collect", $STR_NOCASESENSEBASIC) Or _
+		StringInStr($aUpgrades[$inum][4], "mine", $STR_NOCASESENSEBASIC) Or _
+		StringInStr($aUpgrades[$inum][4], "drill", $STR_NOCASESENSEBASIC) Then
+			ClickP($aAway, 1, 0, "#0999") ;Click away to deselect collector if was not full, and collected with previous click
+			If _Sleep($iDelayUpgradeValue1) Then Return
+			Click($aUpgrades[$inum][0], $aUpgrades[$inum][1]) ;Select collector upgrade trained
+			If _Sleep($iDelayUpgradeValue4) Then Return
+		EndIf
 		; check for upgrade in process
 		Local $offColors[3][3] = [[0x000000, 44, 17], [0xE07740, 69, 31], [0xF2F7F1, 81, 0]] ; 2nd pixel black broken hammer, 3rd pixel lt brown handle, 4th pixel white edge of button
 		Global $ButtonPixel = _MultiPixelSearch(284, 572, 570, 615, 1, 1, Hex(0x000000, 6), $offColors, 25) ; first pixel blackon side of button

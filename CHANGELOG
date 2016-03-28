@@ -1,4 +1,10 @@
-﻿* **V5.3.1**
+﻿* **V5.3.2**
+ * Updated Italian language file (from @davideroma)
+ * Improve Troops&Spells Detection army overview
+ * Fix Hero Status detection
+ * Fix Lab Upgrade OCR
+
+* **V5.3.1**
  * Added Android support for Nox 3.1.0.0 (http://en.bignox.com/)
  * Fix removal of ghost tray icons when rebooting MEmu
  * Fix bot window double redraw using start/stop buttons

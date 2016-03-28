@@ -303,6 +303,7 @@ Global Const $iDelayCheckUpgrades1 = 1000
 Global Const $iDelayUpgradeValue1 = 200
 Global Const $iDelayUpgradeValue2 = 800
 Global Const $iDelayUpgradeValue3 = 750
+Global Const $iDelayUpgradeValue4 = 1000
 
 ;DebugImageSave
 Global Const $iDelayDebugImageSave1 = 200

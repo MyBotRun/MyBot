@@ -77,7 +77,7 @@ $grpButtons = GUICtrlCreateGroup("https://mybot.run" & GetTranslated(13,26, "- f
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $pic2arrow = GUICtrlCreatePic(@ScriptDir & "\Images\2arrow.jpg", $x + 187, $y + 10, 50, 45)
-GUICtrlSetOnEvent(-1, "btnVillageStat")
+GUICtrlSetOnEvent(-1, "ArrowTest")
 $lblVersion = GUICtrlCreateLabel($sBotVersion, 205, $y + 60, 60, 17, $SS_CENTER)
 	GUICtrlSetColor(-1, $COLOR_MEDGRAY)
 
