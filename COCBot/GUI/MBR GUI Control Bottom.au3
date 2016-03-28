@@ -782,3 +782,7 @@ Func ButtonBoost()
 	$RunState = False
 
 EndFunc
+
+Func ArrowTest()
+	;getArmyHeroCount(False,False)
+EndFunc
