@@ -79,11 +79,12 @@ Func DonateCC($Check = False)
 			;reset every run
 			$bDonate = False
 			$bSkipDonTroops = False
-			If $iTownHallLevel < 8 or $numFactoryDarkSpellAvaiables = 0 Then ; if you are a < TH8 you don't have a Dark Spells Factory OR Dark Spells Factory is Upgrading
-				$bSkipDonSpells = True
-			Else
+			;removed because we can launch donateCC previous to read TH level and status of dark spell factory
+;~ 			If $iTownHallLevel < 8 or $numFactoryDarkSpellAvaiables = 0 Then ; if you are a < TH8 you don't have a Dark Spells Factory OR Dark Spells Factory is Upgrading
+;~ 				$bSkipDonSpells = True
+;~ 			Else
 				$bSkipDonSpells = False
-			EndIf
+;~ 			EndIf
 
 
 			;Read chat request for DonateTroop and DonateSpell
@@ -400,6 +401,8 @@ EndFunc   ;==>CheckDonateString
 Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 	If $debugSetlog = 1 Then Setlog("$DonateTroopType Start: " & NameOfTroop($Type), $COLOR_PURPLE)
 
+	Local $debugDetect = 0
+
 	Local $Slot = -1, $YComp = 0, $sTextToAll = ""
 
 	If $iTotalDonateCapacity = 0 And $iTotalDonateSpellCapacity = 0 Then Return
@@ -456,7 +459,9 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 	EndIf
 
 	; Detect the Troops Slot
+	If $debugDetect = 1 Then $debugOcr = 1
 	$Slot = DetectSlotTroop($Type)
+	If $debugDetect = 1 Then $debugOcr = 0
 
 	If $Slot = -1 Then Return
 
@@ -480,12 +485,12 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 				If $Quant > 1 Then $plural = 1
 				If $bDonateAll Then $sTextToAll = " (to all requests)"
 				SetLog("Donating " & $Quant & " " & NameOfTroop($Type, $plural) & $sTextToAll, $COLOR_GREEN)
-				Click(365 + ($Slot * 68), $DonationWindowY + 100 + $YComp, $Quant, $iDelayDonateCC3, "#0175")
+				If $debugDetect = 0 Then Click(365 + ($Slot * 68), $DonationWindowY + 100 + $YComp, $Quant, $iDelayDonateCC3, "#0175")
 			Else
 				If $iDonTroopsQuantity > 1 Then $plural = 1
 				If $bDonateAll Then $sTextToAll = " (to all requests)"
 				SetLog("Donating " & $iDonTroopsQuantity & " " & NameOfTroop($Type, $plural) & $sTextToAll, $COLOR_GREEN)
-				Click(365 + ($Slot * 68), $DonationWindowY + 100 + $YComp, $iDonTroopsQuantity, $iDelayDonateCC3, "#0175")
+				If $debugDetect = 0 Then Click(365 + ($Slot * 68), $DonationWindowY + 100 + $YComp, $iDonTroopsQuantity, $iDelayDonateCC3, "#0175")
 			EndIf
 
 			$bDonate = True
@@ -527,7 +532,7 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 				_ColorCheck(_GetPixelColor(360 + ($Slot * 68), $DonationWindowY + 107 + $YComp, True), Hex(0x6038B0, 6), 20) Then ; check for 'purple'
 			If $bDonateAll Then $sTextToAll = " (to all requests)"
 			SetLog("Donating " & $iDonSpellsQuantity & " " & NameOfTroop($Type) & $sTextToAll, $COLOR_GREEN)
-			Click(365 + ($Slot * 68), $DonationWindowY + 100 + $YComp, $iDonSpellsQuantity, $iDelayDonateCC3, "#0175")
+			If $debugDetect = 0 Then Click(365 + ($Slot * 68), $DonationWindowY + 100 + $YComp, $iDonSpellsQuantity, $iDelayDonateCC3, "#0175")
 
 			$bDonate = True
 
@@ -768,7 +773,7 @@ Func DetectSlotTroop($Type)
 				If $Type = $eBall And $FullTemp = "balloon" Then
 					Return $Slot
 				EndIf
-				If $Type = $eWiza And $FullTemp = "wizard" Then
+				If $Type = $eWiza And ($FullTemp = "wizard" Or $FullTemp = "wizard1") Then
 					Return $Slot
 				EndIf
 				If $Type = $eHeal And $FullTemp = "healer" Then
