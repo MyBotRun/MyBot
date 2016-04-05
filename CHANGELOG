@@ -3,6 +3,11 @@
  * Improve Troops&Spells Detection army overview
  * Fix Hero Status detection
  * Fix Lab Upgrade OCR
+ * 
+ * Changes from @bonetail (4/5/16)
+ * -- Improve 'waiting for full army' time from 10.5 seconds to 30 seconds
+ * -- Add new boost amount options for Barracks and Spell Factory. Boosting forever (999 option) is now available.
+
 
 * **V5.3.1**
  * Added Android support for Nox 3.1.0.0 (http://en.bignox.com/)

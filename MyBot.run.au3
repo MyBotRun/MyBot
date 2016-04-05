@@ -320,7 +320,7 @@ Func Idle() ;Sequence that runs until Full Army
 		If $CommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_GREEN)
 		Local $hTimer = TimerInit()
 		Local $iReHere = 0
-		While $iReHere < 7
+		While $iReHere < 30
 			$iReHere += 1
 			DonateCC(True)
 			If _Sleep($iDelayIdle2) Then ExitLoop
