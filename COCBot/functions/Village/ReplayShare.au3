@@ -59,7 +59,7 @@ Func ReplayShare($last = 1)
 				$txtMessage = $smessagearray[Random(1, $smessagearray[0], 1)]
 			EndIf
 			$txtMessage = StringReplace($txtMessage, "<n>", StringFormat("%s", $SearchCount))
-			ControlSend($Title, "", "", $txtMessage, 0)
+			ControlSend($HWnD, "", "", $txtMessage, 0)
 			If _Sleep($iDelayReplayShare1) Then Return
 			Click(530, 210 + $midOffsetY,1,0,"#0240") ;Click Send Button, moved down 30 for 860x780
 			$tNew = _Date_Time_GetLocalTime()
@@ -157,7 +157,7 @@ Func ReplayShare($last = 1)
 									$txtMessage = $smessagearray[Random(1, $smessagearray[0], 1)]
 								EndIf
 								$txtMessage = StringReplace($txtMessage, "<n>", StringFormat("%s", $SearchCount))
-								ControlSend($Title, "", "", $txtMessage, 0)
+								ControlSend($HWnD, "", "", $txtMessage, 0)
 								If _Sleep($iDelayReplayShare1) Then Return
 								Click(500, 210 + $midOffsetY,1,0,"#0247") ;Click Send Button, moved down 30 for 860x780
 								$tNew = _Date_Time_GetLocalTime()

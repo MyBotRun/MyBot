@@ -155,6 +155,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 EndFunc   ;==>GUIControl
 
 Func BotClose()
+   ResumeAndroid()
    SetLog("Closing " & $sBotTitle & " ...")
    If $RunState = True Then AndroidBotStopEvent() ; signal android that bot is now stoppting
    setupProfile()
@@ -176,48 +177,66 @@ Func BotClose()
    Exit
 EndFunc
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: SetRedrawBotWindow
+; Description ...: Enables and disables bot window automatic redraw on GUI changes
+; Syntax ........:
+; Parameters ....: $bEnableRedraw : Boolean enables/disables
+;                  $bCheckRedrawBotWindow : Boolean to check when redraw gets enabled if bot window needs to be redrawn
+;                  $bForceRedraw : Boolean to always redraw bot window when redraw is enabled again
+; Return values .: Boolean of former redraw state
+; Author ........: Cosote (2015)
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: Local $bWasRedraw = SetRedrawBotWindow(False)
+;                  [...]
+;                  SetRedrawBotWindow($bWasRedraw)
+; ===============================================================================================================================
 Func SetRedrawBotWindow($bEnableRedraw, $bCheckRedrawBotWindow = True, $bForceRedraw = False)
-    ; speed up GUI changes by disabling window redraw
+	; speed up GUI changes by disabling window redraw
+	Local $bWasRedraw = $bRedrawBotWindow[0]
 	If $bRedrawBotWindow[0] = $bEnableRedraw Then
-	   ; nothing to do
-	   Return False
-    EndIF
+		; nothing to do
+		Return $bWasRedraw
+	EndIf
 	; enable logging to debug GUI redraw
 	;SetDebugLog(($bEnableRedraw ? "Enable" : "Disable") & " MyBot Window Redraw")
 	_SendMessage($frmBot, $WM_SETREDRAW, $bEnableRedraw, 0)
 	$bRedrawBotWindow[0] = $bEnableRedraw
 	If $bEnableRedraw Then
-	   If $bCheckRedrawBotWindow Then
-		  CheckRedrawBotWindow($bForceRedraw)
-	   EndIf
-    Else
-	  ; set dirty redraw flag
-	  $bRedrawBotWindow[1] = True
-    EndIf
-    Return True
-EndFunc
+		If $bCheckRedrawBotWindow Then
+			CheckRedrawBotWindow($bForceRedraw)
+		EndIf
+	Else
+		; set dirty redraw flag
+		$bRedrawBotWindow[1] = True
+	EndIf
+	Return $bWasRedraw
+EndFunc   ;==>SetRedrawBotWindow
 
 Func CheckRedrawBotWindow($bForceRedraw = False)
-    ; check if bot window redraw is enabled and required
-	If ($bRedrawBotWindow[0] And $bRedrawBotWindow[1]) Or $bForceRedraw Then
-	   ; enable logging to debug GUI redraw
-	   SetDebugLog("Redraw MyBot Window" & ($bForceRedraw ? " (forced)" : "")) ; enable logging to debug GUI redraw
-	   ; Redraw bot window
-	   _WinAPI_RedrawWindow($frmBot)
-	   $bRedrawBotWindow[1] = False
-	   $bRedrawBotWindow[2] = False
-    Else
-	   CheckRedrawControls()
-    EndIF
-EndFunc
+	; check if bot window redraw is enabled and required
+	If $bRedrawBotWindow[0] And ($bRedrawBotWindow[1] Or $bForceRedraw) Then
+		; enable logging to debug GUI redraw
+		$bRedrawBotWindow[1] = False
+		$bRedrawBotWindow[2] = False
+		SetDebugLog("Redraw MyBot Window" & ($bForceRedraw ? " (forced)" : "")) ; enable logging to debug GUI redraw
+		; Redraw bot window
+		_WinAPI_RedrawWindow($frmBot)
+	Else
+		CheckRedrawControls()
+	EndIf
+EndFunc   ;==>CheckRedrawBotWindow
 
 Func CheckRedrawControls() ; ... that require additional redraw is executed like restore from minimized state
     If Not $bRedrawBotWindow[2] Then Return False
 	If GUICtrlRead($tabMain, 1) = $tabGeneral Then
-	   CheckRedrawBotWindow(True)
-	   $bRedrawBotWindow[2] = False
-	   Return True
-    EndIf
+		CheckRedrawBotWindow(True)
+		Return True
+	EndIf
 	$bRedrawBotWindow[2] = False
 	Return False
 EndFunc

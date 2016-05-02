@@ -16,7 +16,7 @@
 
 Func MakeScreenshot($TargetDir, $type = "jpg")
 	WinGetAndroidHandle()
-	If IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) Then
+	If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) Then
 
 		Local $SuspendMode
 		Local $iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT - 25 ; set size if screen to save
@@ -31,7 +31,7 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 				$hHBitmapScreenshot = AndroidScreencap($iLeft, $iTop, $iW, $iH)
 			Else
 				$SuspendMode = ResumeAndroid(False)
-				$hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($Title, "", $AppClassInstance)) ; get device context (DC) of emulator windpow
+				$hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($HWnD, "", $AppClassInstance)) ; get device context (DC) of emulator windpow
 				$hMemDC = _WinAPI_CreateCompatibleDC($hDC_Capture) ; create compatible copy of emulator DC
 				$hHBitmapScreenshot = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH) ; create handle to DC compatible bitmap
 				$hObjectOld = _WinAPI_SelectObject($hMemDC, $hHBitmapScreenshot) ; selects new DC handle, and saves existing DC object

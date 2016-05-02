@@ -23,7 +23,7 @@ Func ProfileReport()
 
 	SetLog("Profile Report", $COLOR_BLUE)
 	SetLog("Opening Profile page to read atk, def, donated ad received...", $COLOR_BLUE)
-	Click(220, 33, 1, 0, "#0222") ; Click Info Profile Button
+	Click(190, 33, 1, 0, "#0222") ; Click Info Profile Button
 	If _Sleep($iDelayProfileReport2) Then Return
 
 	While _ColorCheck(_GetPixelColor(185, 104 + $midOffsetY, True), Hex(0xA2A6BE, 6), 20) = False ; wait for Info Profile to open

@@ -56,12 +56,13 @@ Func GetResources($bLog = True, $pMatchMode = -1) ;Reads resources
 	If _Sleep($iDelayRespond) Then Return
 	$searchElixir = getElixirVillageSearch(48, 69 + 29)
 	If _Sleep($iDelayRespond) Then Return
-	If _ColorCheck(_GetPixelColor(30, 142, True), Hex(0x07010D, 6), 10) Then ; check if the village have a Dark Elixir Storage
-		$searchDark = getDarkElixirVillageSearch(48, 69 + 57)
-		$searchTrophy = getTrophyVillageSearch(48, 69 + 99)
+	If $debugSetlog then SetLog("_GetPixelColor: 31/144: " & _GetPixelColor(31, 144, True))  ; 0F0617(15,6,23) / 06000E(6,0,14) / 000003(0,0,3) / 000000(0,0,0) 
+	If _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x0a050a, 6), 10) or _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x0F0617, 6), 5) Then ; check if the village have a Dark Elixir Storage
+		$searchDark = getDarkElixirVillageSearch(45, 125)
+		$searchTrophy = getTrophyVillageSearch(45, 167)
 	Else
 		$searchDark = "N/A"
-		$searchTrophy = getTrophyVillageSearch(48, 69 + 69)
+		$searchTrophy = getTrophyVillageSearch(45, 69 + 69)
 	EndIf
 
 	If $searchGold = $searchGold2 And $searchElixir = $searchElixir2 Then $iStuck += 1

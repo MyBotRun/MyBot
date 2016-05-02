@@ -19,13 +19,17 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 	Local $iCount, $Result
 	If $Check = True Then
 		SetLog("Trying to locate Main Screen")
-		_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce BlueStacks Memory Usage
+		_WinAPI_EmptyWorkingSet(WinGetProcess($HWnD)) ; Reduce Android Memory Usage
 	Else
 		;If $debugsetlog = 1 Then SetLog("checkMainScreen start quiet mode", $COLOR_PURPLE)
     EndIf
-	WinGetAndroidHandle()
-	If $HWnD = 0 Then
-		OpenAndroid(True)
+	Local $hWin = $HWnD
+	If WinGetAndroidHandle() = 0 Then
+		If $hWin = 0 Then
+		   OpenAndroid(True)
+		Else
+		   RebootAndroid()
+	    EndIf
 		Return
     EndIf
 	getBSPos() ; Update $HWnd and Android Window Positions

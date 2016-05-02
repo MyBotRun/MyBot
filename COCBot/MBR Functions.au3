@@ -139,6 +139,7 @@
 #include "functions\Main Screen\OpenDroid4X.au3"
 #include "functions\Main Screen\CloseDroid4X.au3"
 #include "functions\Main Screen\AndroidMEmu.au3"
+#include "functions\Android\AndroidNox.au3"
 
 #include "functions\Other\_NumberFormat.au3"
 #include "functions\Other\_PadStringCenter.au3"
