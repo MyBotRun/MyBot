@@ -892,6 +892,20 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "donate", "chkExtraAlphabets", 0)
 	EndIf
 
+	;Messaging Settings-------------------------------------------------------------------------
+	If GUICtrlRead($chkGlobalChatEnable) = $GUI_CHECKED Then
+		IniWrite($config, "messaging", "chkGlobalChatEnable", 1)
+	Else
+		IniWrite($config, "messaging", "chkGlobalChatEnable", 0)
+	EndIf
+	IniWrite($config, "messaging", "txtGlobalChatMessages", StringReplace(GUICtrlRead($txtGlobalChatMessages), @CRLF, "|"))
+	If GUICtrlRead($chkClanChatEnable) = $GUI_CHECKED Then
+		IniWrite($config, "messaging", "chkClanChatEnable", 1)
+	Else
+		IniWrite($config, "messaging", "chkClanlChatEnable", 0)
+	EndIf
+	IniWrite($config, "messaging", "txtClanChatMessages", StringReplace(GUICtrlRead($txtClanChatMessages), @CRLF, "|"))
+
 	;Troop Settings--------------------------------------------------------------------------
 	IniWrite($config, "troop", "TroopComposition", _GUICtrlComboBox_GetCurSel($cmbTroopComp))
 	IniWrite($config, "troop", "DarkTroopComposition", _GUICtrlComboBox_GetCurSel($cmbDarkTroopComp))

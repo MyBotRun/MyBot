@@ -43,6 +43,7 @@ GUICtrlSetOnEvent(-1, "")
 #include "GUI\MBR GUI Design Tab Advanced.au3"
 #include "GUI\MBR GUI Design Tab EndBattle.au3"
 #include "GUI\MBR GUI Design Tab Donate.au3"
+#include "GUI\MBR GUI Design Tab Messaging.au3"
 #include "GUI\MBR GUI Design Tab Misc.au3"
 #include "GUI\MBR GUI Design Tab Upgrade.au3"
 #include "GUI\MBR GUI Design Tab Notify.au3"
@@ -75,7 +76,7 @@ Local $x = 30, $y = 150
 			GUICtrlSetFont(-1,10, $FW_BOLD)
 		$y += 25
 		$txtCredits =	"Active developers: "  &  @CRLF & _
-						"Cosote, Hervidero, Kaganus, MonkeyHunter, ProMac, Sardo, Zengzeng"  &  @CRLF & @CRLF & _
+						"Cosote, Hervidero, Kaganus, MonkeyHunter, ProMac, Sardo, Zengzeng, paspiz85"  &  @CRLF & @CRLF & _
                         "Developers no longer active: "  &  @CRLF & _
 						"Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, Knowjack, Safar46, Saviart, TheMaster1st, and others"
 		$lbltxtCredits1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410,95, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)

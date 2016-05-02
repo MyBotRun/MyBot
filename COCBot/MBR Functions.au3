@@ -242,6 +242,7 @@
 #include "functions\Village\LocateTownHall.au3"
 #include "functions\Village\LocateSpell.au3"
 #include "functions\Village\LocateHeroesAltar.au3"
+#include "functions\Village\Messaging.au3"
 #include "functions\Village\ProfileReport.au3"
 #include "functions\Village\ReArm.au3"
 #include "functions\Village\RequestCC.au3"

@@ -16,9 +16,9 @@
 
 Func readConfig() ;Reads config and sets it to the variables
 	If FileExists($building) Then
-		$TownHallPos[0] = IniRead($building, "other", "xTownHall", "-1")
-		$TownHallPos[1] = IniRead($building, "other", "yTownHall", "-1")
-		$iTownHallLevel = IniRead($building, "other", "LevelTownHall", "0")
+;		$TownHallPos[0] = IniRead($building, "other", "xTownHall", "-1")
+;		$TownHallPos[1] = IniRead($building, "other", "yTownHall", "-1")
+;		$iTownHallLevel = IniRead($building, "other", "LevelTownHall", "0")
 
 		$aCCPos[0] = IniRead($building, "other", "xCCPos", "0")
 		$aCCPos[1] = IniRead($building, "other", "yCCPos", "0")
@@ -440,6 +440,12 @@ Func readConfig() ;Reads config and sets it to the variables
 
 		; Extra Alphabets , Cyrillic.
 		$ichkExtraAlphabets = IniRead($config, "donate", "chkExtraAlphabets", "0")
+
+		;Messaging Settings-------------------------------------------------------------------------
+		$ichkGlobalChatEnable = IniRead($config, "messaging", "chkGlobalChatEnable", "0")
+		$sTxtGlobalChatMessages = StringReplace(IniRead($config, "messaging", "txtGlobalChatMessages", "hello|hi"), "|", @CRLF)
+		$ichkClanChatEnable = IniRead($config, "messaging", "chkClanChatEnable", "0")
+		$sTxtClanChatMessages = StringReplace(IniRead($config, "messaging", "txtClanChatMessages", "hello|hi"), "|", @CRLF)
 
 		;Troop Settings--------------------------------------------------------------------------
 		$iCmbTroopComp = IniRead($config, "troop", "TroopComposition", "0")

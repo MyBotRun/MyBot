@@ -326,6 +326,10 @@ Global Const $iDelayReArm2 = 1500
 Global Const $iDelayReArm3 = 700
 Global Const $iDelayReArm4 = 200
 
+;Messaging
+Global Const $iDelayRecruit1 = 200
+Global Const $iDelayRecruit2 = 250
+
 ;ReplayShare
 Global Const $iDelayReplayShare1 = 250
 Global Const $iDelayReplayShare2 = 500
