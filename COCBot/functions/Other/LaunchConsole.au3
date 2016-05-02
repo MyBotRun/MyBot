@@ -76,7 +76,9 @@ EndFunc   ;==>LaunchConsole
 ; Supports also PID as $ProgramPath parameter
 ; $CompareMode = 0 Path with parameter is compared (" ", '"' and "'" removed!)
 ; $CompareMode = 1 Any Command Line containing path and parameter is used
-Func ProcessExists2($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $strComputer = ".")
+; $SearchMode = 0 Search only for $ProgramPath
+; $SearchMode = 1 Search for $ProgramPath and $ProgramParameter
+Func ProcessExists2($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $SearchMode = 0, $strComputer = ".")
 
   If IsNumber($ProgramPath) Then Return ProcessExists($ProgramPath) ; Be compatible with ProcessExists
 
@@ -98,11 +100,12 @@ Func ProcessExists2($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $str
 	 $query &= " where "
 	 If StringLen($ProgramPath) > 0 Then
 		$query &= "ExecutablePath like ""%" & StringReplace($ProgramPath,"\","\\") & "%"""
-		If StringLen($ProgramParameter) > 0 Then $query &= " And "
+		If $SearchMode = 1 And StringLen($ProgramParameter) > 0 Then $query &= " And "
      EndIf
-     If StringLen($ProgramParameter) > 0 Then $query &= "CommandLine like ""%" & StringReplace($ProgramParameter,"\","\\") & "%"""
+     If $SearchMode = 1 And StringLen($ProgramParameter) > 0 Then $query &= "CommandLine like ""%" & StringReplace($ProgramParameter,"\","\\") & "%"""
   EndIf
   SetDebugLog("WMI Query: " & $query)
+  ; https://msdn.microsoft.com/en-us/library/aa393866(v=vs.85).aspx
   Local $oProcessColl = $oWMI.ExecQuery($query)
   Local $Process, $PID = 0, $i = 0
 

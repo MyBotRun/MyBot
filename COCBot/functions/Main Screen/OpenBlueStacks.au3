@@ -460,7 +460,7 @@ Func RebootBlueStacks2SetScreen($bOpenAndroid = True)
 
    If $bOpenAndroid Then
 	  ; Start Android
-	  OpenAndroid()
+	  OpenAndroid(True)
    EndIf
 
    Return True

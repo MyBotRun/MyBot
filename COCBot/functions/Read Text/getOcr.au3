@@ -24,11 +24,11 @@ Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete valu
 EndFunc   ;==>getElixirVillageSearch
 
 Func getDarkElixirVillageSearch($x_start, $y_start) ;48, 69+57 or 69+69  -> Gets complete value of Dark Elixir xxx,xxx, top left,  Getresources.au3
-	Return getOcrAndCapture("coc-v-de", $x_start, $y_start, 75, 16, True)
+	Return getOcrAndCapture("coc-v-de", $x_start, $y_start, 75, 18, True)
 EndFunc   ;==>getDarkElixirVillageSearch
 
 Func getTrophyVillageSearch($x_start, $y_start) ;48, 69+99 or 69+69 -> Gets complete value of Trophies xxx,xxx , top left, Getresources.au3
-	Return getOcrAndCapture("coc-v-t", $x_start, $y_start, 75, 16, True)
+	Return getOcrAndCapture("coc-v-t", $x_start, $y_start, 75, 18, True)
 EndFunc   ;==>getTrophyVillageSearch
 
 Func getTrophyMainScreen($x_start, $y_start) ; -> Gets trophy value, top left of main screen "VillageReport.au3"
@@ -154,7 +154,7 @@ Func getOcrSpaceCastleDonate($x_start, $y_start);  -> Get the number of troops d
 EndFunc   ;==>getOcrSpaceCastleDonate
 
 Func getOcrDonationTroopsDetection($x_start, $y_start);  -> Get the type of troop from the donate window
-	Return getOcrAndCapture("coc-donationtroop", $x_start, $y_start, 30, 15, True)
+	Return getOcrAndCapture("coc-donationtroop", $x_start, $y_start, 45, 30, True)
 EndFunc   ;==>getOcrDonationTroopsDetection
 
 Func getOcrOverAllDamage($x_start, $y_start);  -> Get the Overall Damage %

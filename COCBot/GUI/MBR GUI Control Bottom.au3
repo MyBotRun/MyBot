@@ -15,8 +15,8 @@
 
 Func Initiate()
     WinGetAndroidHandle()
-	If $HWnD <> 0 And IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) Then
-		;WinActivate($Title)
+	If $HWnD <> 0 And IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) Then
+		;WinActivate($HWnD)
 		SetLog(_PadStringCenter(" " & $sBotTitle & " Powered by MyBot.run ", 50, "~"), $COLOR_PURPLE)
 		SetLog($Compiled & " running on " & @OSVersion & " " & @OSServicePack & " " & @OSArch)
 		If Not $bSearchMode Then
@@ -220,7 +220,8 @@ Func btnStart()
 		$RunState = True
 	    SetRedrawBotWindow(True)
 
-	    WinGetAndroidHandle()
+	    Local $hWin = $HWnD
+		SetDebugLog("btnStart: Current Android Window Handle: " & WinGetAndroidHandle())
 		If $HWnD <> 0 Then  ;Is Android open?
 		    Local $hWndActive = $HWnD
 			; check if window can be activated
@@ -232,17 +233,21 @@ Func btnStart()
 			   WEnd
 			EndIf
 			If Not $RunState Then Return
-		    If IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) And $hWndActive = $HWnD  Then ; Really?
+		    If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) And $hWndActive = $HWnD  Then ; Really?
 			   If Not InitiateLayout() Then
 				  Initiate()
 			   EndIf
 			Else
 			   ; Not really
 			   SetLog("Current " & $Android & " Window not supported by MyBot", $COLOR_RED)
-			   RebootAndroid()
+			   RebootAndroid(False)
 			EndIf
 		Else  ; If Android is not open, then wait for it to open
-			OpenAndroid()
+			If $hWin = 0 Then
+			   OpenAndroid(False)
+			Else
+			   RebootAndroid(False)
+			EndIf
 			;If @error Then GUICtrlSetState($btnStart, $GUI_DISABLE)  ; Disable start button, force bot close/open by user.
 	    EndIf
 
@@ -337,23 +342,25 @@ EndFunc   ;==>btnAttackNowTS
 
 Func btnHide()
     ResumeAndroid()
-	WinGetPos($Title)
+	WinGetAndroidHandle()
+	WinGetPos($HWnD)
 	If @error <> 0 Then Return SetError(0,0,0)
 
 	If $Hide = False Then
 		GUICtrlSetData($btnHide, GetTranslated(13,25, "Show"))
-		$botPos[0] = WinGetPos($Title)[0]
-		$botPos[1] = WinGetPos($Title)[1]
-		WinMove2($Title, "", -32000, -32000)
+		Local $a = WinGetPos($HWnD)
+		$botPos[0] = $a[0]
+		$botPos[1] = $a[1]
+		WinMove2($HWnD, "", -32000, -32000)
 		$Hide = True
 	Else
 		GUICtrlSetData($btnHide, GetTranslated(13,11, "Hide"))
 
 		If $botPos[0] = -32000 Then
-			WinMove2($Title, "", 0, 0)
+			WinMove2($HWnD, "", 0, 0)
 		Else
-			WinMove2($Title, "", $botPos[0], $botPos[1])
-			WinActivate($Title)
+			WinMove2($HWnD, "", $botPos[0], $botPos[1])
+			WinActivate($HWnD)
 		EndIf
 		$Hide = False
 	EndIf
@@ -774,4 +781,8 @@ Func ButtonBoost()
 	SETLOG("MBRSearchImage TEST..................STOP")
 	$RunState = False
 
+EndFunc
+
+Func ArrowTest()
+	;getArmyHeroCount(False,False)
 EndFunc

@@ -23,9 +23,13 @@ Func waitMainScreen() ;Waits for main screen to popup
 	    If Not $RunState Then Return
 		If $debugsetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop
 		$iCount += 1
-		WinGetAndroidHandle()
-		If $HWnD = 0 Then
-			OpenAndroid(True)
+		Local $hWin = $HWnD
+		If WinGetAndroidHandle() = 0 Then
+			If $hWin = 0 Then
+				OpenAndroid(True)
+			Else
+				RebootAndroid()
+			EndIf
 			Return
 	    EndIf
 		getBSPos() ; Update $HWnd and Android Window Positions
@@ -82,6 +86,7 @@ Func waitMainScreenMini()
     If Not $RunState Then Return
 	Local $iCount = 0
 	Local $hTimer = TimerInit()
+	SetDebugLog("waitMainScreenMini")
 	getBSPos() ; Update Android Window Positions
 	SetLog("Waiting for Main Screen after " & $Android & " restart", $COLOR_BLUE)
 	For $i = 0 To 60 ;30*2000 = 1 Minutes

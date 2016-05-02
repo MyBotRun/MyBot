@@ -16,6 +16,7 @@
 ; Update Global Android variables based on $AndroidConfig index
 ; Calls "Update" & $Android & "Config()"
 Func UpdateAndroidConfig($instance = Default)
+    If $instance = "" Then $instance = Default
     If $instance = Default Then $instance = $AndroidAppConfig[$AndroidConfig][1]
     SetDebugLog("UpdateAndroidConfig(""" & $instance & """)")
 
@@ -40,42 +41,66 @@ EndFunc
 ; Returns Android Window Handle or 0 if Window not found
 Func WinGetAndroidHandle()
    ; Default WinTitleMatchMode should be 3 (exact match)
-   Local $hWin = WinGetHandle($Title)
-   If $hWin <> 0 Then
-	  ; early exit
-	  If $HWnD <> $hWin Then SetDebugLog("Found " & $Android & " Window " & $hWin & " by matching title '" & $Title & "'")
-	  If $HWnD <> 0 And $HWnD <> $hWin Then $InitAndroid = True ; change window, re-initialize Android config
-	  $HWnD = $hWin
-	  Return $hWin
+   Local $hWin = WinGetHandle($HWnD)
+   If $hWin > 0 And $hWin = $HWnD Then Return $HWnD
+   ; Find all controls by title and check which contains the android control (required for Nox)
+   Local $i
+   Local $t
+   Local $ReInitAndroid = $HWnD <> 0
+   SetDebugLog("Searching " & $Android & " Window: Title = '" & $Title & "', Class = '" & $AppClassInstance & "', Text = '" & $AppPaneName & "'")
+   Local $aWinList = WinList($Title)
+   If $aWinList[0][0] > 0 Then
+	  For $i = 1 To $aWinList[0][0]
+		 ; early exit if control exists
+		 $hWin = $aWinList[$i][1]
+		 $t = $aWinList[$i][0]
+		 If $Title = $t Then
+			Local $hCtrl = ControlGetHandle($hWin, $AppPaneName, $AppClassInstance)
+			If $hCtrl <> 0 Then
+			   SetDebugLog("Found " & $Android & " Window '" & $t & "' (" & $hWin & ") by matching title '" & $Title & "' (#1)")
+			   $HWnD = $hWin
+			   $Title = $t
+			   If $ReInitAndroid = True And $InitAndroid = False Then ; Only initialize Android when not currently running
+				  $InitAndroid = True ; change window, re-initialize Android config
+				  InitAndroid()
+			   EndIf
+			   Return $hWin
+			EndIf
+		 EndIf
+	  Next
    EndIf
 
    ; search for window
    Local $iMode
    $iMode = Opt("WinTitleMatchMode", -1)
-   Local $hWin = WinGetHandle($Title), $t
+   Local $hWin = WinGetHandle($Title)
    Local $error = @error
    Opt("WinTitleMatchMode", $iMode)
    If $error = 0 Then
 	  ; window found, check title for case insensitive match
 	  $t = WinGetTitle($hWin)
-	  If $Title = $t Then
+	  If $Title = $t And ControlGetHandle($hWin, $AppPaneName, $AppClassInstance) <> 0 Then
 		 ; all good, update $HWnD and exit
-		 If $HWnD <> $hWin Then SetDebugLog("Found " & $Android & " Window " & $hWin & " by matching title '" & $Title & "'")
-		 If $HWnD <> 0 And $HWnD <> $hWin Then $InitAndroid = True ; change window, re-initialize Android config
+		 If $HWnD <> $hWin Then SetDebugLog("Found " & $Android & " Window '" & $t & "' (" & $hWin & ") by matching title '" & $Title & "' (#2)")
 		 $HWnD = $hWin
+		 $Title = $t
+		 If $ReInitAndroid = True And $InitAndroid = False Then ; Only initialize Android when not currently running
+			$InitAndroid = True ; change window, re-initialize Android config
+			InitAndroid()
+		 EndIf
 		 Return $hWin
 	  Else
-		 SetDebugLog($Android & " Window title '" & $t & "' not matching '" & $Title & "'")
+		 SetDebugLog($Android & " Window title '" & $t & "' not matching '" & $Title & "' or control")
 	  EndIf
    EndIf
 
    ; Check for multiple windows
    $iMode = Opt("WinTitleMatchMode", -1)
-   Local $aWinList = WinList($Title), $i
+   $aWinList = WinList($Title)
    Opt("WinTitleMatchMode", $iMode)
    If $aWinList[0][0] = 0 Then
 	  SetDebugLog($Android & " Window not found")
-	  If $HWnD <> 0 Then $InitAndroid = True ; no window anymore, re-initialize Android config
+	  If $ReInitAndroid = True Then $InitAndroid = True ; no window anymore, re-initialize Android config
 	  $HWnD = 0
 	  Return 0
    EndIF
@@ -88,12 +113,15 @@ Func WinGetAndroidHandle()
 	  For $i = 1 To $aWinList[0][0]
 		 $t = $aWinList[$i][0]
 		 $hWin = $aWinList[$i][1]
-		 If StringRight($t, StringLen($AndroidInstance)) = $AndroidInstance Then
+		 If StringRight($t, StringLen($AndroidInstance)) = $AndroidInstance And ControlGetHandle($hWin, $AppPaneName, $AppClassInstance) <> 0 Then
 			; looks good, update $HWnD, $Title and exit
-			SetDebugLog("Found " & $Android & " Window " & $hWin & ", title '" & $t & "' for instance " & $AndroidInstance)
-			If $HWnD <> 0 And $HWnD <> $hWin Then $InitAndroid = True ; change window, re-initialize Android config
+			SetDebugLog("Found " & $Android & " Window '" & $t & "' (" & $hWin & ") for instance " & $AndroidInstance)
 			$HWnD = $hWin
 			$Title = $t
+			If $ReInitAndroid = True And $InitAndroid = False Then ; Only initialize Android when not currently running
+			   $InitAndroid = True ; change window, re-initialize Android config
+			   InitAndroid()
+			EndIf
 			Return $hWin
 		 EndIf
 	  Next
@@ -113,11 +141,14 @@ Func WinGetAndroidHandle()
 		 For $i = 1 To $aWinList[0][0]
 			$t = $aWinList[$i][0]
 			$hWin = $aWinList[$i][1]
-			If $pid = WinGetProcess($hWin) Then
-			   SetDebugLog("Found " & $Android & " Window " & $hWin & ", title '" & $t & "' by PID " & $pid & " ('" & $commandLine & "')")
-			   If $HWnD <> 0 And $HWnD <> $hWin Then $InitAndroid = True ; change window, re-initialize Android config
+			If $pid = WinGetProcess($hWin) And ControlGetHandle($hWin, $AppPaneName, $AppClassInstance) <> 0 Then
+			   SetDebugLog("Found " & $Android & " Window '" & $t & "' (" & $hWin & ") by PID " & $pid & " ('" & $commandLine & "')")
 			   $HWnD = $hWin
 			   $Title = $t
+			   If $ReInitAndroid = True And $InitAndroid = False Then ; Only initialize Android when not currently running
+				  $InitAndroid = True ; change window, re-initialize Android config
+				  InitAndroid()
+			   EndIf
 			   Return $hWin
 			EndIf
 		 Next
@@ -126,7 +157,7 @@ Func WinGetAndroidHandle()
    EndIf
 
    SetDebugLog($Android & ($AndroidInstance = "" ? "" : " (" & $AndroidInstance & ")") & " Window not found in list")
-   If $HWnD <> 0 Then $InitAndroid = True ; no window anymore, re-initialize Android config
+   If $ReInitAndroid = True Then $InitAndroid = True ; no window anymore, re-initialize Android config
    $HWnD = 0
    Return 0
 EndFunc
@@ -161,7 +192,7 @@ Func GetVBoxAndroidSvcPid()
    EndIf
 
    ; find process PID
-   Local $pid = ProcessExists2("", $uuid, 1)
+   Local $pid = ProcessExists2("", $uuid, 1, 1)
    Return $pid
 
 EndFunc
@@ -181,7 +212,9 @@ Func GetAndroidRunningInstance($bStrictCheck = True)
 		 SetDebugLog("GetAndroidRunningInstance: Found """ & $commandLine & """ by PID=" & $pid)
 		 Local $lastSpace = StringInStr($commandLine, " ", 0, -1)
 		 If $lastSpace > 0 Then
-			$AndroidInstance = StringMid($commandLine, $lastSpace + 1)
+			$AndroidInstance = StringStripWS(StringMid($commandLine, $lastSpace + 1), 3)
+			; Check that $AndroidInstance default instance is used for ""
+			If $AndroidInstance = "" Then $AndroidInstance = $AndroidAppConfig[$AndroidConfig][1]
 			SetDebugLog("Running " & $Android & " instance is """ & $AndroidInstance & """")
 		 EndIf
 		 ; validate
@@ -266,6 +299,8 @@ Func FindPreferredAdbPath()
    Local $adbPath
    $adbPath = Execute("GetMEmuAdbPath()")
    If $adbPath <> "" Then Return $adbPath
+   $adbPath = Execute("GetNoxAdbPath()")
+   If $adbPath <> "" Then Return $adbPath
    $adbPath = Execute("GetDroid4XAdbPath()")
    If $adbPath <> "" Then Return $adbPath
    Return ""
@@ -277,6 +312,10 @@ Func InitAndroid($bCheckOnly = False)
 	   Return True
     EndIF
     SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $Android)
+	If Not $bCheckOnly Then
+	   ; Check that $AndroidInstance default instance is used for ""
+	   If $AndroidInstance = "" Then $AndroidInstance = $AndroidAppConfig[$AndroidConfig][1]
+    EndIf
    	Local $Result = Execute("Init" & $Android & "(" & $bCheckOnly & ")")
 	If Not $bCheckOnly And $Result Then
 	   SetDebugLog("Android: " & $Android)
@@ -416,6 +455,29 @@ EndFunc   ;==>RebootAndroidSetScreen
 
 Func IsAdbTCP()
    Return StringInStr($AndroidAdbDevice, ":") > 0
+EndFunc
+
+Func WaitForRunningVMS($WaitInSec = 120, $hTimer = 0)
+   ResumeAndroid()
+   If Not $RunState Then Return True
+   Local $cmdOutput, $connected_to, $running, $process_killed, $hMyTimer
+   $hMyTimer = ($hTimer = 0 ? TimerInit() : $hTimer)
+   While True
+	  If Not $RunState Then Return
+	  $cmdOutput = LaunchConsole($__VBoxManage_Path, "list runningvms", $process_killed)
+	  If Not $RunState Then Return True
+	  $running = StringInStr($cmdOutput, """" & $AndroidInstance & """") > 0
+	  If $running = True Then ExitLoop
+	  If $hTimer <> 0 Then _StatusUpdateTime($hTimer)
+	  _Sleep(3000) ; Sleep 3 Seconds
+	  If TimerDiff($hMyTimer) > $WaitInSec * 1000 Then ; if no device available in 4 minutes, Android/PC has major issue so exit
+		 SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
+		 SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for boot completed", $COLOR_RED)
+		 SetError(1, @extended, False)
+		 Return True
+	  EndIf
+   WEnd
+   Return False
 EndFunc
 
 Func WaitForAndroidBootCompleted($WaitInSec = 120, $hTimer = 0)
@@ -626,6 +688,7 @@ EndFunc
 Func AndroidAdbLaunchShellInstance($wasRunState = $RunState)
    If $AndroidAdbPid = 0 Or ProcessExists($AndroidAdbPid) <> $AndroidAdbPid Then
 	  Local $SuspendMode = ResumeAndroid()
+	  InitAndroid()
 	  Local $s
 	  If $AndroidAdbInstance = True Then
 		 ConnectAndroidAdb()
@@ -644,7 +707,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $RunState)
 		 $s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
 		 If StringInStr($s, "not found") > 0 Then
 			$renice = "renice -- -20 "
-			$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState) ; increase shell priority to maximum
+			$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
 		 EndIf
 		 $s &= AndroidAdbSendShellCommand("stop media", Default, $wasRunState, False) ; stop media service as it can consume up to 30% Android CPU
 		 Local $error = @error
@@ -653,6 +716,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $RunState)
 			SuspendAndroid($SuspendMode)
 			Return
 		 EndIf
+
 	  EndIf
 	  ; check mouse device
 	  If StringLen($AndroidMouseDevice) > 0 And $AndroidMouseDevice = $AndroidAppConfig[$AndroidConfig][13] Then
@@ -754,6 +818,10 @@ Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState
    Local $error = (($RunState = False Or TimerDiff($hTimer) < $timeout Or $timeout < 1) ? 0 : 1)
    If $error <> 0 Then SetDebugLog("ADB shell command error " & $error & ": " & $s)
    If $__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY > 0 Then Sleep($__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY)
+   $AndroidAdbAutoTerminateCount += 1
+   If Mod($AndroidAdbAutoTerminateCount, $AndroidAdbAutoTerminate) = 0 And $EnsureShellInstance = True Then
+	  AndroidAdbTerminateShellInstance()
+   EndIF
    Return SetError($error, Int(TimerDiff($hTimer)) & "ms,#" & $loopCount, $s)
 EndFunc
 
@@ -865,7 +933,39 @@ Func AndroidAdbSendShellCommandScript($scriptFile, $combine = true, $timeout = D
    Return SetError(0, Int(TimerDiff($hTimer)) & "ms,#" & $loopCount, $s)
 EndFunc
 
-Func AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $bRetry = True)
+;==================================================================================================================================
+; Author ........: UEZ
+; Modified.......: progandy, cosote
+;===================================================================================================================================
+Func __GDIPlus_BitmapCreateFromMemory($dImage, $bHBITMAP = False)
+	If Not IsBinary($dImage) Then Return SetError(1, 0, 0)
+	Local $aResult = 0
+	Local Const $dMemBitmap = Binary($dImage) ;load image saved in variable (memory) and convert it to binary
+	Local Const $iLen = BinaryLen($dMemBitmap) ;get binary length of the image
+	Local Const $GMEM_MOVEABLE = 0x0002
+	$aResult = DllCall("kernel32.dll", "handle", "GlobalAlloc", "uint", $GMEM_MOVEABLE, "ulong_ptr", $iLen) ;allocates movable memory ($GMEM_MOVEABLE = 0x0002)
+	If @error Then Return SetError(4, 0, 0)
+	Local Const $hData = $aResult[0]
+	$aResult = DllCall("kernel32.dll", "ptr", "GlobalLock", "handle", $hData)
+	If @error Then Return SetError(5, 0, 0)
+	Local $tMem = DllStructCreate("byte[" & $iLen & "]", $aResult[0]) ;create struct
+	DllStructSetData($tMem, 1, $dMemBitmap) ;fill struct with image data
+	DllCall("kernel32.dll", "bool", "GlobalUnlock", "handle", $hData) ;decrements the lock count associated with a memory object that was allocated with GMEM_MOVEABLE
+	If @error Then Return SetError(6, 0, 0)
+	Local Const $hStream = _WinAPI_CreateStreamOnHGlobal($hData) ;creates a stream object that uses an HGLOBAL memory handle to store the stream contents
+	If @error Then Return SetError(2, 0, 0)
+	Local Const $hBitmap = _GDIPlus_BitmapCreateFromStream($hStream) ;creates a Bitmap object based on an IStream COM interface
+	If @error Then Return SetError(3, 0, 0)
+	DllCall("oleaut32.dll", "long", "DispCallFunc", "ptr", $hStream, "ulong_ptr", 8 * (1 + @AutoItX64), "uint", 4, "ushort", 23, "uint", 0, "ptr", 0, "ptr", 0, "str", "") ;release memory from $hStream to avoid memory leak
+	If $bHBITMAP Then
+		Local Const $hHBmp = _GDIPlus_BitmapCreateDIBFromBitmap($hBitmap) ;supports GDI transparent color format
+		_GDIPlus_BitmapDispose($hBitmap)
+		Return $hHBmp
+	EndIf
+	Return $hBitmap
+EndFunc   ;==>_GDIPlus_BitmapCreateFromMemory
+
+Func AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
    Local $startTimer = TimerInit()
    Local $hostPath = $AndroidPicturesHostPath & $AndroidPicturesHostFolder
    Local $androidPath = $AndroidPicturesPath & StringReplace($AndroidPicturesHostFolder, "\", "/")
@@ -876,23 +976,35 @@ Func AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $bRetry = True)
    If @error <> 0 Then Return SetError(2, 0)
 
    Local $filename = $sBotTitle & ".rgba"
+   If $AndroidAdbScreencapPngEnabled = True Then $filename = $sBotTitle & ".png"
    Local $s
 
    ; Create 32 bits-per-pixel device-independent bitmap (DIB)
-   Local $tBIV5HDR = DllStructCreate($tagBITMAPV5HEADER)
-   DllStructSetData($tBIV5HDR, 'bV5Size', DllStructGetSize($tBIV5HDR))
-   DllStructSetData($tBIV5HDR, 'bV5Width', $iWidth)
-   DllStructSetData($tBIV5HDR, 'bV5Height', -$iHeight)
-   DllStructSetData($tBIV5HDR, 'bV5Planes', 1)
-   DllStructSetData($tBIV5HDR, 'bV5BitCount', 32)
-   DllStructSetData($tBIV5HDR, 'biCompression', $BI_RGB)
+   Local $tBIV5HDR = 0
+   If $AndroidAdbScreencapPngEnabled = False Then
+	  $tBIV5HDR = DllStructCreate($tagBITMAPV5HEADER)
+	  DllStructSetData($tBIV5HDR, 'bV5Size', DllStructGetSize($tBIV5HDR))
+	  DllStructSetData($tBIV5HDR, 'bV5Width', $iWidth)
+	  DllStructSetData($tBIV5HDR, 'bV5Height', -$iHeight)
+	  DllStructSetData($tBIV5HDR, 'bV5Planes', 1)
+	  DllStructSetData($tBIV5HDR, 'bV5BitCount', 32)
+	  DllStructSetData($tBIV5HDR, 'biCompression', $BI_RGB)
+   EndIf
+   Local $pBits = 0
+   Local $hHBitmap = 0
 
-   Local $pBits
-   Local $hHBitmap = _WinAPI_CreateDIBSection(0, $tBIV5HDR, $DIB_RGB_COLORS, $pBits)
-
-   If $AndroidAdbScreencapTimer <> 0 And $ForceCapture = False And TimerDiff($AndroidAdbScreencapTimer) < $AndroidAdbScreencapTimeout And $RunState = True And $bRetry = True Then
-	  DLLCall($LibDir & "\helper_functions.dll", "none:cdecl", "RGBA2BGRA", "ptr", DllStructGetPtr($AndroidAdbScreencapBuffer), "ptr", $pBits, "int", $iLeft, "int", $iTop, "int", $iWidth, "int", $iHeight, "int", $AndroidAdbScreencapWidth, "int", $AndroidAdbScreencapHeight)
-	  Return $hHBitmap
+   If $AndroidAdbScreencapTimer <> 0 And $ForceCapture = False And TimerDiff($AndroidAdbScreencapTimer) < $AndroidAdbScreencapTimeout And $RunState = True And $iRetryCount = 0 Then
+	  If $AndroidAdbScreencapPngEnabled = False Then
+		 $hHBitmap = _WinAPI_CreateDIBSection(0, $tBIV5HDR, $DIB_RGB_COLORS, $pBits)
+		 $tBIV5HDR = 0 ; Release the resources used by the structure
+		 DLLCall($LibDir & "\helper_functions.dll", "none:cdecl", "RGBA2BGRA", "ptr", DllStructGetPtr($AndroidAdbScreencapBuffer), "ptr", $pBits, "int", $iLeft, "int", $iTop, "int", $iWidth, "int", $iHeight, "int", $AndroidAdbScreencapWidth, "int", $AndroidAdbScreencapHeight)
+		 Return $hHBitmap
+	  ElseIf $AndroidAdbScreencapBufferPngHandle <> 0 Then
+		 If $iWidth > $AndroidAdbScreencapWidth - $iLeft Then $iWidth = $AndroidAdbScreencapWidth - $iLeft
+		 If $iHeight > $AndroidAdbScreencapHeight - $iTop Then $iHeight = $AndroidAdbScreencapHeight - $iTop
+		 Local $hClone = _GDIPlus_BitmapCloneArea($AndroidAdbScreencapBufferPngHandle, $iLeft, $iTop, $iWidth, $iHeight, $GDIP_PXF32ARGB)
+		 Return _GDIPlus_BitmapCreateDIBFromBitmap($hClone)
+	  EndIf
    EndIf
 
    FileDelete($hostPath & $filename)
@@ -901,99 +1013,210 @@ Func AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $bRetry = True)
    If $__TEST_ERROR_SLOW_ADB_SCREENCAP_DELAY > 0 Then Sleep($__TEST_ERROR_SLOW_ADB_SCREENCAP_DELAY)
    Local $shellLogInfo = @extended
 
-   ; Android screencap see:
-   ; https://android.googlesource.com/platform/frameworks/base/+/jb-release/cmds/screencap/screencap.cpp
-   ; http://androidsource.top/code/source/system/core/include/system/graphics.h
-   ; http://androidsource.top/code/source/frameworks/base/include/ui/PixelFormat.h
-   Local $tHeader = DllStructCreate("int w;int h;int f")
-   Local $iHeaderSize = DllStructGetSize($tHeader)
-   Local $iDataSize = DllStructGetSize($AndroidAdbScreencapBuffer)
-
-   ; wait for file (required for Droid4X)
+   Local $hTimer = TimerInit()
    Local $hFile = 0
    Local $iSize = 0
    Local $iLoopCountFile = 0
-   Local $ExpectedFileSize = $AndroidClientWidth * $AndroidClientHeight * 4 + $iHeaderSize
-   #cs
-   While TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout And FileGetSize($hostPath & $filename) < $ExpectedFileSize ; wait max. 5 seconds
-	  Sleep(10)
-	  If $wasRunState = True And $RunState = False Then Return SetError(1, 0)
-	  $iLoopCountFile += 1
-   WEnd
-   #ce
-
-   Local $hTimer = TimerInit()
-   While $iSize < $ExpectedFileSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
-	  If $hFile = 0 Then $hFile = _WinAPI_CreateFile($hostPath & $filename, 2, 2)
-	  If $hFile <> 0 Then $iSize = _WinAPI_GetFileSizeEx($hFile)
-	  If $iSize >= $ExpectedFileSize Then ExitLoop
-	  Sleep(10)
-	  If $wasRunState = True And $RunState = False Then Return SetError(1, 0)
-	  $iLoopCountFile += 1
-   WEnd
-
    Local $AdbStatsType = 0 ; screencap stats
-   Local $iReadHeader = 0
-   Local $iReadData = 0
-   $AndroidAdbScreencapWidth = 0
-   $AndroidAdbScreencapHeight = 0
    Local $iF = 0
-   If $hFile <> 0 Then
-	  If $iSize >= $ExpectedFileSize Then
-		 $hTimer = TimerInit()
-		 While $iReadHeader < $iHeaderSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
-			If _WinAPI_ReadFile($hFile, $tHeader, $iHeaderSize, $iReadHeader) = True And $iReadHeader = $iHeaderSize Then
-			   ExitLoop
-			Else
-			   SetDebugLog("Error " & _WinAPI_GetLastError() & ", read " & $iReadHeader & " header bytes, file: " & $hostPath & $filename, $COLOR_RED)
-			   If $iReadHeader > 0 Then _WinAPI_SetFilePointer($hFile, 0)
-			   Sleep(10)
-			EndIf
-		 WEnd
-		 $AndroidAdbScreencapWidth = DllStructGetData($tHeader, "w")
-		 $AndroidAdbScreencapHeight = DllStructGetData($tHeader, "h")
-		 $iF = DllStructGetData($tHeader, "f")
-		 $hTimer = TimerInit()
-		 If $iSize - $iHeaderSize < $iDataSize Then $iDataSize = $iSize - $iHeaderSize
-		 While $iReadData < $iDataSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
-			If _WinAPI_ReadFile($hFile, $AndroidAdbScreencapBuffer, $iDataSize, $iReadData) = True And $iReadData = $iDataSize Then
-			   ExitLoop
-			Else
-			   SetDebugLog("Error " & _WinAPI_GetLastError() & ", read " & $iReadData & " data bytes, file: " & $hostPath & $filename, $COLOR_RED)
-			   If $iReadData > 0 Then _WinAPI_SetFilePointer($hFile, $iHeaderSize)
-			   Sleep(10)
-			EndIf
-		 WEnd
+   Local $ExpectedFileSize = 1500 ; all blank png is approx 1.5 KByte
+   Local $iReadData = 0
 
-		 _WinAPI_CloseHandle($hFile)
-		 DLLCall($LibDir & "\helper_functions.dll", "none:cdecl", "RGBA2BGRA", "ptr", DllStructGetPtr($AndroidAdbScreencapBuffer), "ptr", $pBits, "int", $iLeft, "int", $iTop, "int", $iWidth, "int", $iHeight, "int", $AndroidAdbScreencapWidth, "int", $AndroidAdbScreencapHeight)
-	  Else
-		 SetDebugLog("File too small (" & $iSize & " < " & $ExpectedFileSize & "): " & $hostPath & $filename, $COLOR_RED)
-		 _WinAPI_CloseHandle($hFile)
+   If $AndroidAdbScreencapPngEnabled = False Then
+	  ; default raw RGBA mode
+
+	  ; Android screencap see:
+	  ; https://android.googlesource.com/platform/frameworks/base/+/jb-release/cmds/screencap/screencap.cpp
+	  ; http://androidsource.top/code/source/system/core/include/system/graphics.h
+	  ; http://androidsource.top/code/source/frameworks/base/include/ui/PixelFormat.h
+	  Local $tHeader = DllStructCreate("int w;int h;int f")
+	  Local $iHeaderSize = DllStructGetSize($tHeader)
+	  Local $iDataSize = DllStructGetSize($AndroidAdbScreencapBuffer)
+
+	  ; wait for file (required for Droid4X)
+	  $ExpectedFileSize = $AndroidClientWidth * $AndroidClientHeight * 4 + $iHeaderSize
+	  #cs
+	  While TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout And FileGetSize($hostPath & $filename) < $ExpectedFileSize ; wait max. 5 seconds
+		 Sleep(10)
+		 If $wasRunState = True And $RunState = False Then Return SetError(1, 0)
+		 $iLoopCountFile += 1
+	  WEnd
+	  #ce
+
+	  While $iSize < $ExpectedFileSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
+		 If $hFile = 0 Then $hFile = _WinAPI_CreateFile($hostPath & $filename, 2, 2)
+		 If $hFile <> 0 Then $iSize = _WinAPI_GetFileSizeEx($hFile)
+		 If $iSize >= $ExpectedFileSize Then ExitLoop
+		 Sleep(10)
+		 If $wasRunState = True And $RunState = False Then Return SetError(1, 0)
+		 $iLoopCountFile += 1
+	  WEnd
+
+	  Local $iReadHeader = 0
+	  $AndroidAdbScreencapWidth = 0
+	  $AndroidAdbScreencapHeight = 0
+
+	  If $hFile <> 0 Then
+		 If $iSize >= $ExpectedFileSize Then
+			$hTimer = TimerInit()
+			While $iReadHeader < $iHeaderSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
+			   If _WinAPI_ReadFile($hFile, $tHeader, $iHeaderSize, $iReadHeader) = True And $iReadHeader = $iHeaderSize Then
+				  ExitLoop
+			   Else
+				  SetDebugLog("Error " & _WinAPI_GetLastError() & ", read " & $iReadHeader & " header bytes, file: " & $hostPath & $filename, $COLOR_RED)
+				  If $iReadHeader > 0 Then _WinAPI_SetFilePointer($hFile, 0)
+				  Sleep(10)
+			   EndIf
+			WEnd
+			$AndroidAdbScreencapWidth = DllStructGetData($tHeader, "w")
+			$AndroidAdbScreencapHeight = DllStructGetData($tHeader, "h")
+			$iF = DllStructGetData($tHeader, "f")
+			$hTimer = TimerInit()
+			If $iSize - $iHeaderSize < $iDataSize Then $iDataSize = $iSize - $iHeaderSize
+			While $iReadData < $iDataSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
+			   If _WinAPI_ReadFile($hFile, $AndroidAdbScreencapBuffer, $iDataSize, $iReadData) = True And $iReadData = $iDataSize Then
+				  ExitLoop
+			   Else
+				  SetDebugLog("Error " & _WinAPI_GetLastError() & ", read " & $iReadData & " data bytes, file: " & $hostPath & $filename, $COLOR_RED)
+				  If $iReadData > 0 Then _WinAPI_SetFilePointer($hFile, $iHeaderSize)
+				  Sleep(10)
+			   EndIf
+			WEnd
+
+			_WinAPI_CloseHandle($hFile)
+			$hHBitmap = _WinAPI_CreateDIBSection(0, $tBIV5HDR, $DIB_RGB_COLORS, $pBits)
+			DLLCall($LibDir & "\helper_functions.dll", "none:cdecl", "RGBA2BGRA", "ptr", DllStructGetPtr($AndroidAdbScreencapBuffer), "ptr", $pBits, "int", $iLeft, "int", $iTop, "int", $iWidth, "int", $iHeight, "int", $AndroidAdbScreencapWidth, "int", $AndroidAdbScreencapHeight)
+		 Else
+			SetDebugLog("File too small (" & $iSize & " < " & $ExpectedFileSize & "): " & $hostPath & $filename, $COLOR_RED)
+			_WinAPI_CloseHandle($hFile)
+		 EndIf
 	  EndIf
-   EndIf
-   If $hFile = 0 Or $iSize < $ExpectedFileSize Or $iReadHeader < $iHeaderSize Or $iReadData < $iDataSize Then
-	  If $bRetry = True Then
-		 SetDebugLog("ADB retry screencap in 1000 ms. (restarting ADB session)", $COLOR_ORANGE)
-		 _Sleep(1000)
-		 AndroidAdbTerminateShellInstance()
-		 AndroidAdbLaunchShellInstance($wasRunState)
-		 Return AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, False)
+	  If $hFile = 0 Or $iSize < $ExpectedFileSize Or $iReadHeader < $iHeaderSize Or $iReadData < $iDataSize Then
+		 If $hFile = 0 Then
+			SetLog("File not found: " & $hostPath & $filename, $COLOR_RED)
+		 Else
+			If $iSize <> $ExpectedFileSize Then SetDebugLog("File size " & $iSize & " is not " & $ExpectedFileSize & " for " & $hostPath & $filename, $COLOR_RED)
+			SetDebugLog("Captured screen size " & $AndroidAdbScreencapWidth & " x " & $AndroidAdbScreencapHeight, $COLOR_RED)
+			SetDebugLog("Captured screen bytes read (header/datata): " & $iReadHeader & " / " & $iReadData, $COLOR_RED)
+		 EndIf
+		 If $iRetryCount < 10 Then
+			SetDebugLog("ADB retry screencap in 1000 ms. (restarting ADB session)", $COLOR_ORANGE)
+			_Sleep(1000)
+			AndroidAdbTerminateShellInstance()
+			AndroidAdbLaunchShellInstance($wasRunState)
+			Return AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount + 1)
+		 EndIf
+		 SetLog($Android & " screen not captured using ADB", $COLOR_RED)
+		 If $AndroidAdbStatsTotal[$AdbStatsType][0] < 50 Then
+			SetLog($Android & " ADB screen capture disabled", $COLOR_RED)
+			If BitAND($AndroidSupportFeature, 1) = 0 Then $ichkBackground = 0 ; disable also background mode the hard way
+			$AndroidAdbScreencap = False
+		 Else
+			; reboot Android
+			SetLog("Rebooting " & $Android & " due to problems capturing screen", $COLOR_RED)
+			Local $_NoFocusTampering = $NoFocusTampering
+			$NoFocusTampering = True
+			RebootAndroid()
+			$NoFocusTampering = $_NoFocusTampering
+		 EndIf
+		 Return SetError(3, 0)
 	  EndIf
-	  SetLog($Android & " screen not captured using ADB", $COLOR_RED)
-	  If $hFile = 0 Then
-		 SetLog("File not found: " & $hostPath & $filename, $COLOR_RED)
-	  Else
-		 If $iSize <> $ExpectedFileSize Then SetDebugLog("File size " & $iSize & " is not " & $ExpectedFileSize & " for " & $hostPath & $filename, $COLOR_RED)
-		 SetDebugLog("Captured screen size " & $AndroidAdbScreencapWidth & " x " & $AndroidAdbScreencapHeight, $COLOR_RED)
-		 SetDebugLog("Captured screen bytes read (header/datata): " & $iReadHeader & " / " & $iReadData, $COLOR_RED)
+
+   Else
+
+	  ; slower compatible PNG mode for BlueStacks
+	  If $AndroidAdbScreencapBufferPngHandle <> 0 Then
+		 _GDIPlus_ImageDispose($AndroidAdbScreencapBufferPngHandle)
+		 _GDIPlus_BitmapDispose($AndroidAdbScreencapBufferPngHandle) ; dispose old cache
+		 _WinAPI_DeleteObject($AndroidAdbScreencapBufferPngHandle)
+		 $AndroidAdbScreencapBufferPngHandle = 0
 	  EndIf
-	  If $AndroidAdbStatsTotal[$AdbStatsType][0] < 50 Then
+	  Local $hBitmap = 0
+	  #cs causes open file handles
+	  While $hBitmap = 0 And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
+		 ;$hBitmap = _GDIPlus_ImageLoadFromFile($hostPath & $filename)
+		 $hBitmap = _GDIPlus_BitmapCreateFromFile($hostPath & $filename)
+		 If $hBitmap = 0 Then Sleep(10)
+	  WEnd
+	  #ce
+
+	  While $iSize < $ExpectedFileSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
+		 If $hFile = 0 Then $hFile = _WinAPI_CreateFile($hostPath & $filename, 2, 2)
+		 If $hFile <> 0 Then $iSize = _WinAPI_GetFileSizeEx($hFile)
+		 If $iSize >= $ExpectedFileSize Then ExitLoop
+		 Sleep(10)
+		 If $wasRunState = True And $RunState = False Then Return SetError(1, 0)
+		 $iLoopCountFile += 1
+	  WEnd
+
+
+		 Local $hData = _MemGlobalAlloc($iSize, $GMEM_MOVEABLE)
+		 Local $pData = _MemGlobalLock($hData)
+		 Local $tData = DllStructCreate('byte[' & $iSize & ']', $pData)
+
+	  While $iSize > 0 And $iReadData < $iSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
+		 If _WinAPI_ReadFile($hFile, $tData, $iSize, $iReadData) = True And $iReadData = $iSize Then
+			ExitLoop
+		 Else
+			SetDebugLog("Error " & _WinAPI_GetLastError() & ", read " & $iReadData & " data bytes, file: " & $hostPath & $filename, $COLOR_RED)
+			If $iReadData > 0 Then _WinAPI_SetFilePointer($hFile, 0)
+			Sleep(10)
+		 EndIf
+	  WEnd
+	  _WinAPI_CloseHandle($hFile)
+	  SetDebugLog($iSize, $COLOR_RED)
+
+Local $testTimer = TimerInit()
+Local $msg = ""
+		 _MemGlobalUnlock($hData)
+		 Local $pStream = _WinAPI_CreateStreamOnHGlobal($hData)
+
+		 $hBitmap = _GDIPlus_BitmapCreateFromStream($pStream)
+		 ;Local $hBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hImage)
+		 ;Local $iWidth = _GDIPlus_ImageGetWidth($hImage)
+		 ;Local $iHeight = _GDIPlus_ImageGetHeight($hImage)
+		 _WinAPI_ReleaseStream($pStream)
+$msg &= ", " & Round(TimerDiff($testTimer), 2)
+		 ;_GDIPlus_ImageDispose($hImage)
+
+
+	  ;_GDIPlus_BitmapCreateFromMemory
+	  If $hBitmap = 0 Then
+		 ; problem creating Bitmap
+		 If $iRetryCount < 10 Then
+			SetDebugLog("ADB retry screencap in 1000 ms. (restarting ADB session)", $COLOR_ORANGE)
+			_Sleep(1000)
+			AndroidAdbTerminateShellInstance()
+			AndroidAdbLaunchShellInstance($wasRunState)
+			Return AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount + 1)
+		 EndIf
+		 SetLog($Android & " screen not captured using ADB", $COLOR_RED)
+		 If FileExists($hostPath & $filename) = 0 Then SetLog("File not found: " & $hostPath & $filename, $COLOR_RED)
 		 SetLog($Android & " ADB screen capture disabled", $COLOR_RED)
-		 If BitAND($AndroidSupportFeature, 1) = 0 Then $ichkBackground = 0 ; disable also background mode the hard way
 		 $AndroidAdbScreencap = False
+		 Return SetError(5, 0)
+	  Else
+		 $AndroidAdbScreencapWidth = _GDIPlus_ImageGetWidth($hBitmap)
+		 $AndroidAdbScreencapHeight = _GDIPlus_ImageGetHeight($hBitmap)
+$msg &= ", " & Round(TimerDiff($testTimer), 2)
+		 ;$hImage = _GDIPlus_BitmapCreateFromHBITMAP($hBitmap)
+		 If $iWidth > $AndroidAdbScreencapWidth - $iLeft Then $iWidth = $AndroidAdbScreencapWidth - $iLeft
+		 If $iHeight > $AndroidAdbScreencapHeight - $iTop Then $iHeight = $AndroidAdbScreencapHeight - $iTop
+		 Local $hClone = _GDIPlus_BitmapCloneArea($hBitmap, $iLeft, $iTop, $iWidth, $iHeight, $GDIP_PXF32ARGB)
+$msg &= ", " & Round(TimerDiff($testTimer), 2)
+		 If $hClone = 0 Then
+			SetDebugLog($Android & " error using " & $AndroidAdbScreencapWidth & "x" & $AndroidAdbScreencapHeight & " on _GDIPlus_BitmapCloneArea(" & $hBitmap & "," & $iLeft & "," & $iTop & "," & $iWidth & "," & $iHeight, $COLOR_RED)
+			SetLog($Android & " screenshot not available", $COLOR_RED)
+			SetLog($Android & " ADB screen capture disabled", $COLOR_RED)
+			$AndroidAdbScreencap = False
+			Return SetError(6, 0)
+		 EndIf
+		 $AndroidAdbScreencapBufferPngHandle = $hBitmap
+		 ;_GDIPlus_ImageDispose($hBitmap)
+$msg &= ", " & Round(TimerDiff($testTimer), 2)
+		 $hHBitmap = _GDIPlus_BitmapCreateDIBFromBitmap($hClone)
+		 ;$hHBitmap = _GDIPlus_BitmapCreateDIBFromBitmap($hBitmap)
 	  EndIf
-	  Return SetError(3, 0)
    EndIf
 
    Local $duration = Int(TimerDiff($startTimer))
@@ -1029,6 +1252,7 @@ Func AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $bRetry = True)
 	  EndIf
    EndIf
    $ScreenshotTime = $duration ; set current screenshot duration
+   $tBIV5HDR = 0 ; Release the resources used by the structure
    Return $hHBitmap
 EndFunc
 
@@ -1154,7 +1378,7 @@ Func AndroidMoveMouseAnywhere()
 
 EndFunc
 
-Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True, $bRetry = True)
+Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True, $iRetryCount = 0)
    Local $_SilentSetLog = $SilentSetLog
    Local $hDuration = TimerInit()
    If $times < 1 Then Return SetError(0, 0)
@@ -1182,6 +1406,7 @@ Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True
    Local $hostPath = $AndroidPicturesHostPath & $AndroidPicturesHostFolder
    Local $androidPath = $AndroidPicturesPath & StringReplace($AndroidPicturesHostFolder, "\", "/")
    AndroidAdbLaunchShellInstance($wasRunState)
+   #cs
    If @error <> 0 Then
 	  Local $error = @error
 	  ;SetDebugLog("Disabled " & $Android & " ADB fast mouse click, error " & $error & " (AndroidAdbLaunchShellInstance)" , $COLOR_RED)
@@ -1191,6 +1416,7 @@ Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True
 	  $SilentSetLog = $_SilentSetLog
 	  Return SetError($error, 0)
    EndIf
+   #ce
    Local $filename = $sBotTitle & ".click"
    Local $record = "byte[16];"
    Local $records = ""
@@ -1274,10 +1500,14 @@ Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True
 		 If $hFileOpen = 0 Then
 			Local $error = _WinAPI_GetLastError()
 			SetLog("Error creating " & $hostPath & $filename, $COLOR_RED)
+			SetError($error)
+			ExitLoop
+			#cs
 			SetLog("Disabled " & $Android & " ADB fast mouse click due to error " & $error & " (#Err0002)", $COLOR_RED)
 			$AndroidAdbClick = False
 			_WinAPI_CloseHandle($hFileOpen)
 			Return SetError($error, 0)
+			#ce
 		 EndIf
 		 ;SetDebugLog("AndroidFastClick: $times=" & $times & ", $loops=" & $loops & ", $remaining=" & $remaining)
 		 For $j = 0 To $recordsClicks - 1
@@ -1294,9 +1524,13 @@ Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True
 		 If $hFileOpen = 0 Then
 			Local $error = _WinAPI_GetLastError()
 			SetLog("Error writing " & $hostPath & $filename, $COLOR_RED)
+			SetError($error)
+			ExitLoop
+			#cs
 			SetLog("Disabled " & $Android & " ADB fast mouse click due to error " & $error & " (#Err0003)", $COLOR_RED)
 			$AndroidAdbClick = False
 			Return SetError($error, 0)
+			#ce
 		 EndIf
 		 _WinAPI_CloseHandle($hFileOpen)
 	  EndIf
@@ -1311,7 +1545,7 @@ Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True
 		 Local $sleepTimer = TimerInit()
 		 AndroidAdbSendShellCommand($sleep)
 		 Local $sleepTime = $speed - TimerDiff($sleepTimer)
-		 If $sleepTime > 0 Then Sleep($sleepTime)
+		 If $sleepTime > 0 Then _Sleep($sleepTime, False)
 	  EndIf
 	  If $adjustSpeed > 0 Then
 		 ; wait remaining time
@@ -1330,17 +1564,26 @@ Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True
 	  ;If $speed > 0 Then Sleep($speed)
    Next
    If @error <> 0 Then
-	  If $bRetry = True Then
+	  Local $error = @error
+	  If $iRetryCount < 10 Then
 		 SetError(0, 0, 0)
 		 SetDebugLog("ADB retry sending mouse click in 1000 ms. (restarting ADB session)", $COLOR_ORANGE)
 		 _Sleep(1000)
 		 AndroidAdbTerminateShellInstance()
 		 AndroidAdbLaunchShellInstance($wasRunState)
-		 Return AndroidFastClick($x, $y, $times, $speed, $checkProblemAffect, False)
+		 Return AndroidFastClick($x, $y, $times, $speed, $checkProblemAffect, $iRetryCount + 1)
 	  EndIF
-	  Local $error = @error
-	  SetLog("Disabled " & $Android & " ADB fast mouse click due to error " & $error & " (#Err0004)", $COLOR_RED)
-	  $AndroidAdbClick = False
+	  If $AndroidAdbStatsTotal[$AdbStatsType][0] < 10 Then
+		 SetLog("Disabled " & $Android & " ADB fast mouse click due to error " & $error & " (#Err0004)", $COLOR_RED)
+		 $AndroidAdbClick = False
+	  Else
+		 ; reboot Android
+		 SetLog("Rebooting " & $Android & " due to problems sending mouse click", $COLOR_RED)
+		 Local $_NoFocusTampering = $NoFocusTampering
+		 $NoFocusTampering = True
+		 RebootAndroid()
+		 $NoFocusTampering = $_NoFocusTampering
+	  EndIf
 	  Return SetError($error, 0)
    EndIf
    If IsKeepClicksActive(False) = False Then ; Invalidate ADB screencap (not when troops are deployed to speed up clicks)
@@ -1455,5 +1698,12 @@ Func AndroidOpenSystemBar()
    EndIf
    Local $cmdOutput = AndroidAdbSendShellCommand("am startservice -n com.android.systemui/.SystemUIService", Default, $wasRunState)
    Local $Result = StringLeft($cmdOutput, 16) = "Starting service"
+   Return $Result
+EndFunc
+
+
+Func RedrawAndroidWindow()
+   Local $Result = Execute("Redraw" & $Android & "Window()")
+   If $Result = "" And @error <> 0 Then Return ; Not implemented
    Return $Result
 EndFunc

@@ -49,11 +49,11 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40)
 			   If $debugsetlog = 1 Then Setlog("Index = "&$i, $COLOR_PURPLE) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 			   If _Sleep($iDelayZoomOut2) Then Return
 			   If $ichkBackground = 0 And $NoFocusTampering = False Then
-				  $Result0 = ControlFocus($Title, "", "")
+				  $Result0 = ControlFocus($HWnD, "", "")
 			   Else
 				  $Result0 = 1
 			   EndIf
-			   $Result1 = ControlSend($Title, "", "", $ZoomOutKey)
+			   $Result1 = ControlSend($HWnD, "", "", $ZoomOutKey)
 			   If $debugsetlog = 1 Then Setlog("ControlFocus Result = "&$Result0 & ", ControlSend Result = "&$Result1& "|" & "@error= " & @error, $COLOR_PURPLE)
 			   If $Result1 = 1 Then
 				   $i += 1
@@ -95,6 +95,11 @@ Func ZoomOutDroid4X()
    Return ZoomOutCtrlWheelScroll(True, True, True)
 EndFunc
 
+Func ZoomOutNox()
+   Return ZoomOutCtrlWheelScroll(True, True, True)
+   ;Return DefaultZoomOut("{CTRLDOWN}{DOWN}{CTRLUP}", 0)
+EndFunc
+
 Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel = True, $AlwaysControlFocus = False, $AndroidZoomOut = True)
    ;AutoItSetOption ( "SendKeyDownDelay", 3000)
 	Local $exitCount = 80
@@ -125,12 +130,12 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 			   If $debugsetlog = 1 Then Setlog("Index = " & $i, $COLOR_PURPLE) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 			   If _Sleep($iDelayZoomOut2) Then ExitLoop
 			   If ($ichkBackground = 0 And $NoFocusTampering = False) Or $AlwaysControlFocus Then
-				  $Result[0] = ControlFocus($Title, "", "")
+				  $Result[0] = ControlFocus($HWnD, "", "")
 			   Else
 				  $Result[0] = 1
 			   EndIf
 
-			   $Result[1] = ControlSend($Title, "", "", "{CTRLDOWN}")
+			   $Result[1] = ControlSend($HWnD, "", "", "{CTRLDOWN}")
 			   If $CenterMouseWhileZooming Then MouseMove($BSpos[0] + Int($DEFAULT_WIDTH / 2), $BSpos[1] + Int($DEFAULT_HEIGHT / 2), 0)
 			   If $GlobalMouseWheel Then
 				  $Result[2] = MouseWheel("down", 5) ; can't find $MOUSE_WHEEL_DOWN constant, couldn't include AutoItConstants.au3 either
@@ -141,7 +146,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 				  _SendMessage($HWnD, $WM_WHEELMOUSE, $wParam, $lParam)
 				  $Result[2] = (@error = 0 ? 1 : 0)
 			   EndIf
-			   $Result[3] = ControlSend($Title, "", "", "{CTRLUP}")
+			   $Result[3] = ControlSend($HWnD, "", "", "{CTRLUP}")
 
 			   If $debugsetlog = 1 Then Setlog("ControlFocus Result = " & $Result[0] & _
 					  ", " & $ZoomActions[1] & " = " & $Result[1] & _

@@ -33,7 +33,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		Next
 	EndIf
 
-	_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce Working Set of Android Process
+	_WinAPI_EmptyWorkingSet(WinGetProcess($HWnD)) ; Reduce Working Set of Android Process
 	_WinAPI_EmptyWorkingSet(@AutoItPID) ; Reduce Working Set of Bot
 
 	If _Sleep($iDelayVillageSearch1) Then Return
@@ -141,7 +141,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		If $Restart = True Then Return ; exit func
 
 		If Mod(($iSkipped + 1), 100) = 0 Then
-			_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; reduce BS memory
+			_WinAPI_EmptyWorkingSet(WinGetProcess($HWnD)) ; reduce Android memory
 			If _Sleep($iDelayRespond) Then Return
 			If CheckZoomOut() = False Then Return
 		EndIf
@@ -333,7 +333,11 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		; Return Home on Search limit
 		If SearchLimit($iSkipped + 1) Then Return True
 
-		checkAndroidTimeLag(False)
+		If checkAndroidTimeLag() = True Then
+		   $Restart = True
+		   $Is_ClientSyncError = True
+		   Return
+	    EndIF
 
 		Local $i = 0
 		While $i < 100
