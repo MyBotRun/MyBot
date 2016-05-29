@@ -1,4 +1,4 @@
 [general]
-version    = "v5.3.2"
-messagenew = "Training/donating/lab not working due to Clash update!\nPlease download the hotfix and check for news on\n\nhttps://mybot.run\n\n Always free and open source."
-messageold = "A new version of MyBot (v5.3.2) is available!\nPlease download the latest from:\nhttps://mybot.run"
+version    = "v6.0.0"
+messagenew = "Fully working with May update\nNew GUI and lots of new features\nFor more information, go to \nhttps://mybot.run\n\n Always free and open source."
+messageold = "A new version of MyBot (v6.0) is available!\nPlease download the latest from:\nhttps://mybot.run"
