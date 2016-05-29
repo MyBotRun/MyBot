@@ -16,7 +16,7 @@
 ; ===============================================================================================================================
 Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
-	If ($ichkSinglePBTForced = 0 And ($iChkBotStop = 1 And $icmbBotCond >= 19) = False) Or Not(IsMainPage()) Then Return ; return if force single PB or wait for shield not enabled.
+	If ($ichkSinglePBTForced = 0 And ($iChkBotStop = 1 And $icmbBotCond >= 19) = False) Or Not (IsMainPage()) Then Return ; return if force single PB or wait for shield not enabled.
 
 	Local $Result, $iTimeTillPBTstartSec, $ichkTime = 0, $ichkSTime = 0, $ichkPBTime = 0
 
@@ -33,10 +33,10 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 				Setlog("Shield expires in: " & _DateDiff('n', $Result[2], _NowCalc()) & " Minutes", $COLOR_PURPLE)
 			EndIf
 
-			If _DateIsValid($aShieldStatus[2]) Then  ; if existing global shield time is valid
+			If _DateIsValid($aShieldStatus[2]) Then ; if existing global shield time is valid
 				$ichkTime = Abs(Int(_DateDiff('s', $aShieldStatus[2], $Result[2]))) ; compare old and new time
-				If $ichkTime > 60 Then   ; test if more than 60 seconds different in case of attack while shield has reduced time
-					$bForceChkPBT = True  ; update PB time
+				If $ichkTime > 60 Then ; test if more than 60 seconds different in case of attack while shield has reduced time
+					$bForceChkPBT = True ; update PB time
 					If $debugSetlog = 1 Then Setlog("Shield time changed: " & $ichkTime & " Sec, Force PBT OCR: " & $bForceChkPBT, $COLOR_MAROON)
 				EndIf
 			EndIf
@@ -47,8 +47,8 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 				If $aShieldStatus[0] = "shield" Then ; verify shield
 					Setlog("Shield found, Halt Attack Now!", $COLOR_BLUE)
 					$bWaitShield = True
-					$Is_ClientSyncError = False  ; cancel OOS restart to enable BotCommand to process Halt mode
-					$Is_SearchLimit = False  ; reset search limit flag to enable BotCommand to process Halt mode
+					$Is_ClientSyncError = False ; cancel OOS restart to enable BotCommand to process Halt mode
+					$Is_SearchLimit = False ; reset search limit flag to enable BotCommand to process Halt mode
 				Else
 					$bWaitShield = False
 					If $MeetCondStop = True Then
@@ -97,13 +97,13 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 			If $debugSetlog = 1 Then Setlog("Personal Break starts in: " & $iTimeTillPBTstartMin & "Minutes", $COLOR_PURPLE)
 
 			If $iTimeTillPBTstartMin < -(Int($iValuePBTimeForcedExit)) Then
-				$sPBStartTime = _DateAdd('n', -(Int($iValuePBTimeForcedExit)), $Result)  ; subtract GUI time setting from PB start time to set early forced break time
-			ElseIf $iTimeTillPBTstartMin < 0 Then  ; Might have missed it if less 15 min, but try anyway
+				$sPBStartTime = _DateAdd('n', -(Int($iValuePBTimeForcedExit)), $Result) ; subtract GUI time setting from PB start time to set early forced break time
+			ElseIf $iTimeTillPBTstartMin < 0 Then ; Might have missed it if less 15 min, but try anyway
 				$sPBStartTime = $Result
 			Else
-				$sPBStartTime = ""  ; clear value, can not log off ealy.
+				$sPBStartTime = "" ; clear value, can not log off ealy.
 			EndIf
-			If $debugSetlog = 1 Then Setlog("Early Log Off time=" & $sPBStartTime & ", In " & _DateDiff('n', $sPBStartTime, _NowCalc()) & " Minutes" , $COLOR_PURPLE)
+			If $debugSetlog = 1 Then Setlog("Early Log Off time=" & $sPBStartTime & ", In " & _DateDiff('n', $sPBStartTime, _NowCalc()) & " Minutes", $COLOR_PURPLE)
 		Else
 			Setlog("Bad getPBTtime() return value: " & $Result, $COLOR_RED)
 			$sPBStartTime = "" ; reset to force update next pass

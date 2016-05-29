@@ -1,7 +1,7 @@
 # Swipe top to top
 input swipe 100 600 600 100
 input swipe 100 600 600 100
-input swipe 100 600 600 100
+#input swipe 100 600 600 100
 # 1. zoom out
 {$AndroidMouseDevice}: 0001 014a 00000001
 {$AndroidMouseDevice}: 0003 003a 00000001

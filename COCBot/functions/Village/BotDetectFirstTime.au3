@@ -58,9 +58,9 @@ Func BotDetectFirstTime()
 	CheckImageType()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 
-	If GUICtrlRead($cmbQuantBoostBarracks) > 0 Then
+	If $icmbQuantBoostBarracks > 0 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
-		For $i = 0 To GUICtrlRead($cmbQuantBoostBarracks) - 1 ; verify if all barracks haves a valid position
+		For $i = 0 To $icmbQuantBoostBarracks - 1 ; verify if all barracks haves a valid position
 			If $barrackPos[$i][0] = "" Or $barrackPos[$i][0] = -1 Then ;  Boost individual barracks with "button Boost 10 gems"
 				; Setlog("loop: "& $i+1 )
 				For $x = 0 To 3
@@ -129,6 +129,31 @@ Func BotDetectFirstTime()
 			SaveConfig()
 		EndIf
 	EndIf
+
+	;Boju Display TH Level in Stats
+
+	_GUI_Value_STATE("HIDE",$groupListTHLevels)
+		If $debugsetlog = 1 Then Setlog("Select TH Level:" & Number($iTownHallLevel), $COLOR_PURPLE)
+		Switch Number($iTownHallLevel)
+			Case 4
+				GUICtrlSetState($THLevels04,$GUI_SHOW)
+			Case 5
+				GUICtrlSetState($THLevels05,$GUI_SHOW)
+			Case 6
+				GUICtrlSetState($THLevels06,$GUI_SHOW)
+			Case 7
+				GUICtrlSetState($THLevels07,$GUI_SHOW)
+			Case 8
+				GUICtrlSetState($THLevels08,$GUI_SHOW)
+			Case 9
+				GUICtrlSetState($THLevels09,$GUI_SHOW)
+			Case 10
+				GUICtrlSetState($THLevels10,$GUI_SHOW)
+			Case 11
+				GUICtrlSetState($THLevels11,$GUI_SHOW)
+		EndSwitch
+	GUICtrlSetState(Eval("$THLevels" + Number($iTownHallLevel)),$GUI_SHOW)
+	;-->Display TH Level in Stats
 
 	If $iChkCollect = 1 And $listResourceLocation = "" Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return

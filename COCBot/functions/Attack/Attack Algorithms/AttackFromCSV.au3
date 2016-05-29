@@ -73,7 +73,7 @@ Global $InternalArea[8][3] = [[73, 336, "LEFT"], _
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func Algorithm_AttackCSV($testattack = False)
+Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 
 	;00 read attack file SIDE row and valorize variables
 	ParseAttackCSV_Read_SIDE_variables()
@@ -89,7 +89,7 @@ Func Algorithm_AttackCSV($testattack = False)
 	Local $hTimer = TimerInit()
 
 	_CaptureRegion2()
-	_GetRedArea()
+	if $captureredarea then _GetRedArea()
 
 	Local $htimerREDAREA = Round(TimerDiff($hTimer) / 1000, 2)
 	debugAttackCSV("Calculated  (in " & $htimerREDAREA & " seconds) :")
@@ -186,7 +186,7 @@ Func Algorithm_AttackCSV($testattack = False)
 	Setlog("> Drop Lines located in  " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_BLUE)
 
 	; 03 - TOWNHALL ------------------------------------------------------------------------
-	If $searchTH = "" Then
+	If $searchTH = "-" Then
 
 		If $attackcsv_locate_townhall = 1 Then
 			SuspendAndroid()
@@ -393,7 +393,24 @@ Func Algorithm_AttackCSV($testattack = False)
 	; 06 - DEBUGIMAGE ------------------------------------------------------------------------
 	If $makeIMGCSV = 1 Then AttackCSVDEBUGIMAGE() ;make IMG debug
 
-	; 07 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
+	; 07 - START TH SNIPE BEFORE ATTACK CSV IF NEED ------------------------------------------
+	If $THSnipeBeforeDBEnable = 1 and $searchTH = "-" Then  FindTownHall(True) ;search townhall if no previous detect
+	If $THSnipeBeforeDBEnable = 1 Then
+		If $searchTH <> "-" Then
+			If 	SearchTownHallLoc()  Then
+				Setlog(_PadStringCenter(" TH snipe Before Scripted Attack ", 54,"="),$color_blue)
+				$THusedKing = 0
+				$THusedQueen = 0
+				AttackTHParseCSV()
+			Else
+				If $debugsetlog=1 Then Setlog("TH snipe before scripted attack skip, th internal village",$color_purple)
+			EndIf
+		Else
+			If $debugsetlog=1 Then Setlog("TH snipe before scripted attack skip, no th found",$color_purple)
+		EndIf
+	EndIf
+
+	; 08 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
 	SetSlotSpecialTroops()
 	ParseAttackCSV($testattack)
 

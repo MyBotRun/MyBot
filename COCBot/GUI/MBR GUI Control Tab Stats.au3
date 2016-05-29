@@ -23,4 +23,4 @@ EndFunc   ;==>btnLogs
 
 Func btnResetStats()
 	ResetStats()
-EndFunc
+EndFunc   ;==>btnResetStats

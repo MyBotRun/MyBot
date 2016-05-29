@@ -143,8 +143,11 @@ Global Const $iDelaycheckMainScreen2 = 20000
 Global Const $iDelaycheckObstacles1 = 1000
 Global Const $iDelaycheckObstacles2 = 2000
 Global Const $iDelaycheckObstacles3 = 5000
-Global Const $iDelaycheckObstacles4 = 120000
+Global Const $iDelaycheckObstacles4 = 120000 ; 2 minutes
 Global Const $iDelaycheckObstacles5 = 500 ; click
+Global Const $iDelaycheckObstacles6 = 300000 ; 5 minutes
+Global Const $iDelaycheckObstacles7 = 600000 ; 10 minutes
+Global Const $iDelaycheckObstacles8 = 900000 ; 15 minutes
 
 
 ;isGemOpen
@@ -433,3 +436,7 @@ Global Const $iDelayStarBonus500 = 500
 Global Const $iDelayAttackDisable100 = 100
 Global Const $iDelayAttackDisable500 = 500
 Global Const $iDelayAttackDisable1000 = 1000
+
+;Attack Scheduler
+Global Const $iDelayWaitAttack = 120000
+

@@ -109,9 +109,10 @@ Func ParseAttackCSV($debug = False)
 					Case "DROP"
 						KeepClicks()
 						;index...
-						Local $index1, $index2, $indexvect
+						Local $index1, $index2, $indexArray, $indexvect
 						$indexvect = StringSplit($value2, "-", 2)
 						If UBound($indexvect) > 1 Then
+							$indexArray = 0
 							If Int($indexvect[0]) > 0 And Int($indexvect[1]) > 0 Then
 								$index1 = Int($indexvect[0])
 								$index2 = Int($indexvect[1])
@@ -120,12 +121,19 @@ Func ParseAttackCSV($debug = False)
 								$index2 = 1
 							EndIf
 						Else
-							If Int($value2) > 0 Then
-								$index1 = Int($value2)
-								$index2 = Int($value2)
+							$indexArray = StringSplit($value2, ",", 2)
+							If UBound($indexArray) > 1 Then
+								$index1 = 0
+								$index2 = UBound($indexArray) - 1
 							Else
-								$index1 = 1
-								$index2 = 1
+								$indexArray = 0
+								If Int($value2) > 0 Then
+									$index1 = Int($value2)
+									$index2 = Int($value2)
+								Else
+									$index1 = 1
+									$index2 = 1
+								EndIf
 							EndIf
 						EndIf
 						;qty...
@@ -208,7 +216,7 @@ Func ParseAttackCSV($debug = False)
 								$sleepdrop2 = 1
 							EndIf
 						EndIf
-						DropTroopFromINI($value1, $index1, $index2, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
+						DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
 						ReleaseClicks($AndroidAdbClicksTroopDeploySize)
 					Case "WAIT"
 						ReleaseClicks()
@@ -260,19 +268,19 @@ Func ParseAttackCSV($debug = False)
 							EndIf
 							If $DebugSetLog = 1 Then SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_BLUE)
 							;EXIT IF RESOURCES = 0
-							If $ichkEndNoResources = 1 And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
+							If $ichkEndNoResources[$iMatchMode] = 1 And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
 								If $DebugSetLog = 1 Then Setlog("From Attackcsv: Gold & Elixir & DE = 0, end battle ", $COLOR_PURPLE)
 								$exitNoResources = 1
 								ExitLoop
 							EndIf
 							;CALCULATE TWO STARS REACH
-							If $ichkEndTwoStars = 1 And _CheckPixel($aWonTwoStar, True) Then
+							If $ichkEndTwoStars[$iMatchMode] = 1 And _CheckPixel($aWonTwoStar, True) Then
 								If $DebugSetLog = 1 Then Setlog("From Attackcsv: Two Star Reach, exit", $COLOR_GREEN)
 								$exitTwoStars = 1
 								ExitLoop
 							EndIf
 							;CALCULATE ONE STARS REACH
-							If $ichkEndOneStar = 1 And _CheckPixel($aWonOneStar, True) Then
+							If $ichkEndOneStar[$iMatchMode] = 1 And _CheckPixel($aWonOneStar, True) Then
 								If $DebugSetLog = 1 Then Setlog("From Attackcsv: One Star Reach, exit", $COLOR_GREEN)
 								$exitOneStar = 1
 								ExitLoop
@@ -289,7 +297,7 @@ Func ParseAttackCSV($debug = False)
 						ReleaseClicks()
 						Setlog("Calculate main side... ")
 						If StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
-							$MAINSIDE = StringUpper($value8)
+							$MAINSIDEMAINSIDE = StringUpper($value8)
 							Setlog("Forced side: " & StringUpper($value8))
 						Else
 							Local $heightTopLeft = 0, $heightTopRight = 0, $heightBottomLeft = 0, $heightBottomRight = 0

@@ -16,4 +16,4 @@
 Func _CheckPixel($aScreenCode, $bNeedCapture = False, $Ignore = "")
 	If _ColorCheck(_GetPixelColor($aScreenCode[0], $aScreenCode[1], $bNeedCapture), Hex($aScreenCode[2], 6), $aScreenCode[3], $Ignore) Then Return True
 	Return False;
-EndFunc   ;==>CheckPixel
+EndFunc   ;==>_CheckPixel

@@ -25,20 +25,17 @@
 ; Example .......: No
 ;=================================================================================================
 Func _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, $Button = "left", $Delay = 50)
-	If Not IsHWnd($HWnD) Then
-		$HWnD = WinGetAndroidHandle()
-	EndIf
+
+	; adjust coordinates based on Android control offset
+    $X1 = Int($X1) + $BSrpos[0]
+	$Y1 = Int($Y1) + $BSrpos[1]
+    $X2 = Int($X2) + $BSrpos[0]
+	$Y2 = Int($Y2) + $BSrpos[1]
+
+	WinGetAndroidHandle()
 
 	If Not IsHWnd($HWnD) Then
 		Return SetError(1, "", False)
-	EndIf
-
-	If Not IsInt($X1) Or Not IsInt($Y1) Then
-		Return SetError(2, "", False)
-	EndIf
-
-	If Not IsInt($X2) Or Not IsInt($Y2) Then
-		Return SetError(3, "", False)
 	EndIf
 
 	If StringLower($Button) == "left" Then
@@ -59,37 +56,48 @@ Func _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, $Button = "left", $Delay = 50)
 	MoveMouseOutBS()
 
 	DllCall($User32, "bool", "PostMessage", "hwnd", $HWnD, "int", $Button, "int", "0", "long", _MakeLong($X1, $Y1))
-	If @error Then Return SetError(5, "", False)
+	If @error Then
+		DllClose($User32)
+		Return SetError(5, "", False)
+	EndIf
 
 	If _Sleep($Delay / 2) Then Return SetError(-1, "", False)
 
 	DllCall($User32, "bool", "PostMessage", "hwnd", $HWnD, "int", $WM_MOUSEMOVE, "int", $Pressed, "long", _MakeLong($X2, $Y2))
-	If @error Then Return SetError(6, "", False)
+	If @error Then
+		DllClose($User32)
+		Return SetError(6, "", False)
+	EndIf
 
 	If _Sleep($Delay / 2) Then Return SetError(-1, "", False)
 
 	DllCall($User32, "bool", "PostMessage", "hwnd", $HWnD, "int", $Button + 1, "int", "0", "long", _MakeLong($X2, $Y2))
-	If @error Then Return SetError(7, "", False)
+	If @error Then
+		DllClose($User32)
+		Return SetError(7, "", False)
+	EndIf
 
 	DllClose($User32)
 	Return SetError(0, 0, True)
-EndFunc
+EndFunc   ;==>_PostMessage_ClickDrag
 
 Func _MakeLong($LowWORD, $HiWORD)
-    Return BitOR($HiWORD * 0x10000, BitAND($LowWORD, 0xFFFF))
-EndFunc
+	Return BitOR($HiWORD * 0x10000, BitAND($LowWORD, 0xFFFF))
+EndFunc   ;==>_MakeLong
 
 Func ClickDrag($X1, $Y1, $X2, $Y2, $Delay = 50)
-   Local $error = 0
-   If $AndroidAdbInput = True Then
-	  AndroidSwipe($X1, $Y1, $X2, $Y2, $RunState)
-	  If _Sleep($Delay / 5) Then Return SetError(-1, "", False)
-	  $error = @error
-   EndIf
-   If $AndroidAdbInput = False Or $error <> 0 Then
-	  Return _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, "left", $Delay)
-   EndIf
-   Return SetError(0, 0, True)
-EndFunc
+	;Return _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, "left", $Delay)
+	Local $error = 0
+	If $AndroidAdbClickDrag = True Then
+		;AndroidSwipe($X1, $Y1, $X2, $Y2, $RunState)
+		AndroidClickDrag($X1, $Y1, $X2, $Y2, $RunState)
+		$error = @error
+		If _Sleep($Delay / 5) Then Return SetError(-1, "", False)
+	EndIf
+	If $AndroidAdbClickDrag = False Or $error <> 0 Then
+		Return _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, "left", $Delay)
+	EndIf
+	Return SetError(0, 0, ($error = 0 ? True : False))
+EndFunc   ;==>ClickDrag
 
 

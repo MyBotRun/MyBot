@@ -26,7 +26,7 @@ Func SnipeWhileTrain()
 			Return False
 		EndIf
 
-		If $fullArmy = False And ($CurCamp /$TotalCamp >=  ($itxtminArmyCapacityTHSnipe / 100) )  = True Then
+		If $fullArmy = False And ($CurCamp / $TotalCamp >= ($itxtminArmyCapacityTHSnipe / 100)) = True Then
 
 			; Swap variables to pure TH snipe mode
 			$tempSnipeWhileTrain[0] = $iChkMeetTrophy[$DB]
@@ -35,7 +35,6 @@ Func SnipeWhileTrain()
 			$tempSnipeWhileTrain[3] = $iMinTrophy[$LB]
 			$tempSnipeWhileTrain[4] = $iChkMeetOne[$LB]
 			$tempSnipeWhileTrain[5] = $iChkMeetOne[$DB]
-			$tempSnipeWhileTrain[6] = $OptTrophyMode
 			$tempSnipeWhileTrain[7] = $THaddtiles
 
 
@@ -46,7 +45,6 @@ Func SnipeWhileTrain()
 			$iMinTrophy[$LB] = 99
 			$iChkMeetOne[$LB] = 0
 			$iChkMeetOne[$DB] = 0
-			$OptTrophyMode = 1
 			$THaddtiles = $itxtSWTtiles
 
 
@@ -95,10 +93,10 @@ Func SWHTSearchLimit($iSkipped)
 	If $isSnipeWhileTrain And $iSkipped >= Number($itxtSearchlimit) Then
 
 		Local $Wcount = 0
-		While not(_CheckPixel($aSurrenderButton, $bCapturepixel))
-			If _Sleep($iDelaySWHTSearchLimit1) Then Return
+		While Not (_CheckPixel($aSurrenderButton, $bCapturepixel))
+			;If _Sleep($iDelaySWHTSearchLimit1) Then Return
 			$Wcount += 1
-			If $debugSetlog = 1 Then setlog("wait surrender button " & $Wcount, $COLOR_PURPLE)
+			If $DebugSetLog = 1 Then setlog("wait surrender button " & $Wcount, $COLOR_PURPLE)
 			If $Wcount >= 50 Then ExitLoop
 		WEnd
 
@@ -111,7 +109,7 @@ Func SWHTSearchLimit($iSkipped)
 		While Not (_CheckPixel($aIsMain, $bCapturepixel))
 			If _Sleep($iDelaySearchLimit2) Then Return
 			$mCcount += 1
-			If $debugSetlog = 1 Then setlog("Wait main screen " & $mCcount, $COLOR_PURPLE)
+			If $DebugSetLog = 1 Then setlog("Wait main screen " & $mCcount, $COLOR_PURPLE)
 			If $mCount >= 50 Then ExitLoop
 		WEnd
 

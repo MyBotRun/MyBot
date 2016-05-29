@@ -14,7 +14,6 @@
 ; ===============================================================================================================================
 
 Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
-
 	$pixel = StringSplit($coordinate, "-", 2)
 	Switch $type ;adjust coordinate
 		Case "gomine"
@@ -35,18 +34,30 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 	$pixel[1] += $px[1]
 	If UBound($pixel) = 2 Then
 		_CaptureRegion($pixel[0] - 15, $pixel[1] - 15, $pixel[0] + 15, $pixel[1] + 15)
+
+		;----------
 		Local $found = 0
 		Local $posx, $posy
 		If $debugsetlog = 1 Then Setlog("##start search in vector Destroyed" & $name & "IMG" & $level & ": numbers of files=" & UBound(Eval("Destroyed" & $name & "IMG" & $level)), $color_green)
+;~ 		 For $t = 1 To ubound(Eval("Destroyed" & $name & "IMG" & $level)) - 1
+;~ 			   If $debugsetlog=1 Then Setlog("°-°" &  Execute("$Destroyed" & $name & "IMG"& $level & "[" & $t & "]"),$color_aqua)
+;~ 		 Next
 		For $t = UBound(Eval("Destroyed" & $name & "IMG" & $level)) - 1 To 1 Step -1 ;
 			$filename = Execute("$Destroyed" & $name & "IMG" & $level & "[" & $t & "]")
-			$tolerance = StringMid($filename, StringInStr($filename, "_", 0, 3) + 1, StringInStr($filename, "_", 0, 4) - StringInStr($filename, "_", 0, 3) - 1)
+			;If $debugsetlog=1 Then Setlog(">>filename = " & $filename)
+			$tolerance = Int(StringMid($filename, StringInStr($filename, "_", 0, 3) + 1, StringInStr($filename, "_", 0, 4) - StringInStr($filename, "_", 0, 3) - 1))
+			If $MilkFarmForcetolerance = 1 Then $tolerance = Int($MilkFarmForcetolerancedestroyed)
+
+			;If $debugsetlog=1 Then Setlog(">>tol " & $tolerance)
 			$found = _ImageSearch(@ScriptDir & "\images\CapacityStructure\" & Execute("$Destroyed" & $name & "IMG" & $level & "[" & $t & "]"), 1, $posx, $posy, $tolerance)
 			If $found = 1 Then
 				If $debugsetlog = 1 Then Setlog("IMAGECKECK OK " & $filename, $COLOR_purple)
-				If $debugsetlog = 1 Then SetLog(">>Structure Destroyed! (" & $name & "," & $level & ")", $color_RED)
+				If $debugsetlog = 1 Then SetLog(">>Structure Destroyed! (" & $name & "," & $level & "," & $tolerance & ")", $color_RED)
+				;Msgbox("","","destroyed")
 				Return True
 				ExitLoop
+			Else
+;~ 					If $debugsetlog = 1 Then Setlog(">>IMAGECHECK FAIL " & $filename, $COLOR_GRAY)
 			EndIf
 		Next
 		If $found = 0 Then
@@ -56,5 +67,4 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 	Else
 		If $debugsetlog = 1 Then Setlog("error MilkingAttackStructureDestroyed #1")
 	EndIf
-
 EndFunc   ;==>MilkingAttackStructureDestroyed

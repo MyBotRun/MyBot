@@ -1,82 +1,82 @@
 #Region Header
 
 #CS UDF Info
-;Extended (advanced) function to block mouse & keyboard inputs.
-;
-; This UDF supports few features that built-in BlockInput() function does not.
-; Here is a quick "features list":
-;----------------------------------------------------------------------
-;* Block seperately mouse or keyboard input.
-;* Block specific keyboard/mouse keys/clicks.
-;     [+] Not only hex keys are supported, string keys (such as {ENTER}) is also valid.
-;* Block all keyboard/mouse keys *except* specific keys/events.
-;* Block keys by CLASS Name (see UDF documentation).
-;* Block inputs only for specific window.
-;* BlockInput does not re-enables input after pressing Ctrl+Alt+Del.
-;----------------------------------------------------------------------
-;
-; AutoIt Version: 3.2.12.1+
-; Author: G.Sandler (a.k.a MrCreatoR). Initial idea and hooks example by rasim.
-;
-; Remarks: This UDF, same as built-in BlockInput function, can not block Ctrl+Alt+Del, however, it will not re-enable the input.
-;
-;
-;==================
-; History version:
-;==================
-; [v1.8 - 12.05.2013, 12:16]
-; * Fixed issue when some numeric keyboard keys was not blocked.
-; * Fixed issue when ALT+Tab was not blocked.
+	;Extended (advanced) function to block mouse & keyboard inputs.
+	;
+	; This UDF supports few features that built-in BlockInput() function does not.
+	; Here is a quick "features list":
+	;----------------------------------------------------------------------
+	;* Block seperately mouse or keyboard input.
+	;* Block specific keyboard/mouse keys/clicks.
+	;     [+] Not only hex keys are supported, string keys (such as {ENTER}) is also valid.
+	;* Block all keyboard/mouse keys *except* specific keys/events.
+	;* Block keys by CLASS Name (see UDF documentation).
+	;* Block inputs only for specific window.
+	;* BlockInput does not re-enables input after pressing Ctrl+Alt+Del.
+	;----------------------------------------------------------------------
+	;
+	; AutoIt Version: 3.2.12.1+
+	; Author: G.Sandler (a.k.a MrCreatoR). Initial idea and hooks example by rasim.
+	;
+	; Remarks: This UDF, same as built-in BlockInput function, can not block Ctrl+Alt+Del, however, it will not re-enable the input.
+	;
+	;
+	;==================
+	; History version:
+	;==================
+	; [v1.8 - 12.05.2013, 12:16]
+	; * Fixed issue when some numeric keyboard keys was not blocked.
+	; * Fixed issue when ALT+Tab was not blocked.
 
-; [v1.7 - 04.05.2012, 18:45]
-; * Now by default the UDF affects only on user-input, the same as standard BlockInput function. Can be changed with additional parameter $iBlockAllInput, if set to 1, then all input will be blocked, not just the user's.
-; * Added optional parameter $iBlockAllInput to allow block only user-input (default 0, block only user-input).
-; * Minor fixes.
-;
-; [v1.6 - 04.04.2011, 22:30]
-; * Fixed (again, caused by fix with re-enabled input) an issue with held down "Alt + Ctrl" keys after the user was called "Alt + Ctrl + Del".
-; * Fixed an issue with wrong parameter passed to _WinAPI_CallNextHookEx. Thanks to Ascend4nt.
-; + Added remarks to the UDF header.
-; + Added "Example - Block TaskMan.au3".
-;
-; [v1.5 - 11.10.2010, 22:20]
-; * Fixed an issue with re-enabled input after pressing Ctrl+Alt+Del.
-; * Now the $hWindows parameter can be used for mouse blocking.
-;    For that reason the $i_MouseHookGetAncestorHwnd variable was added to the UDF,
-;    if user sets it to 0, then the $hWindows is compared to currently hovered window handle, otherwise (1 - default) it's compared to ancestor of the hovered window/control.
-;
-; [v1.4 - 03.08.2010, 12:00]
-; + AutoIt 3.3.6.1 support.
-; * Fixed an issue with held down "Alt + Ctrl" keys after the user was called "Alt + Ctrl + Del". It was causing a problems to use HotKeySet later.
-; * Fixed examples to be compatible with AutoIt 3.3.6.1.
-; * Minor "cosmetic" changes.
-;
-; [v1.3 - 24.09.2009, 23:00]
-; + Added _BlockInputEx Example (Pass Lock)
-; * Fixed few examples.
-; * Fixed spell mistakes in the UDF.
-;
-; [v1.2 - 16.01.2009, 21:00]
-; + Added key strings support.
-;    Now users can set simple hotkey strings for Exclude/Include parameters + Group chars, i.e: "[Group]|{UP}|{DOWN}"
-;    (See UDF documentation)
-; + Added mouse events blocking support to the $sExclude/$sInclude parameters.
-; + Added example for mouse events blocking.
-;
-; [v1.1 - 16.01.2009]
-; + Added CLASSes support (see UDF documentation), thanks to FireFox for the idea and the keys lists.
-; + Added example for CLASS usage.
-; * Changed behaviour of $iBlockMode parameter as following:
-;
-;    1  - Block All
-; <= 0  - UnBlock all
-;    2  - Block only mouse
-;    3  - Block only keyboard.
-;
-; * Fixed hard-crash that related to incorrect BlockInput releasing process (only callbacks was released, not the window hooks).
-;
-; [v1.0 - 15.01.2009]
-; First release.
+	; [v1.7 - 04.05.2012, 18:45]
+	; * Now by default the UDF affects only on user-input, the same as standard BlockInput function. Can be changed with additional parameter $iBlockAllInput, if set to 1, then all input will be blocked, not just the user's.
+	; * Added optional parameter $iBlockAllInput to allow block only user-input (default 0, block only user-input).
+	; * Minor fixes.
+	;
+	; [v1.6 - 04.04.2011, 22:30]
+	; * Fixed (again, caused by fix with re-enabled input) an issue with held down "Alt + Ctrl" keys after the user was called "Alt + Ctrl + Del".
+	; * Fixed an issue with wrong parameter passed to _WinAPI_CallNextHookEx. Thanks to Ascend4nt.
+	; + Added remarks to the UDF header.
+	; + Added "Example - Block TaskMan.au3".
+	;
+	; [v1.5 - 11.10.2010, 22:20]
+	; * Fixed an issue with re-enabled input after pressing Ctrl+Alt+Del.
+	; * Now the $hWindows parameter can be used for mouse blocking.
+	;    For that reason the $i_MouseHookGetAncestorHwnd variable was added to the UDF,
+	;    if user sets it to 0, then the $hWindows is compared to currently hovered window handle, otherwise (1 - default) it's compared to ancestor of the hovered window/control.
+	;
+	; [v1.4 - 03.08.2010, 12:00]
+	; + AutoIt 3.3.6.1 support.
+	; * Fixed an issue with held down "Alt + Ctrl" keys after the user was called "Alt + Ctrl + Del". It was causing a problems to use HotKeySet later.
+	; * Fixed examples to be compatible with AutoIt 3.3.6.1.
+	; * Minor "cosmetic" changes.
+	;
+	; [v1.3 - 24.09.2009, 23:00]
+	; + Added _BlockInputEx Example (Pass Lock)
+	; * Fixed few examples.
+	; * Fixed spell mistakes in the UDF.
+	;
+	; [v1.2 - 16.01.2009, 21:00]
+	; + Added key strings support.
+	;    Now users can set simple hotkey strings for Exclude/Include parameters + Group chars, i.e: "[Group]|{UP}|{DOWN}"
+	;    (See UDF documentation)
+	; + Added mouse events blocking support to the $sExclude/$sInclude parameters.
+	; + Added example for mouse events blocking.
+	;
+	; [v1.1 - 16.01.2009]
+	; + Added CLASSes support (see UDF documentation), thanks to FireFox for the idea and the keys lists.
+	; + Added example for CLASS usage.
+	; * Changed behaviour of $iBlockMode parameter as following:
+	;
+	;    1  - Block All
+	; <= 0  - UnBlock all
+	;    2  - Block only mouse
+	;    3  - Block only keyboard.
+	;
+	; * Fixed hard-crash that related to incorrect BlockInput releasing process (only callbacks was released, not the window hooks).
+	;
+	; [v1.0 - 15.01.2009]
+	; First release.
 #CE
 
 #include-once
@@ -174,7 +174,7 @@ Global $i_MouseHookGetAncestorHwnd = 1
 ; Example .......; Yes
 ; ===============================================================================================================================
 Func _BlockInputEx($iBlockMode = -1, $sExclude = "", $sInclude = "", $hWindows = "", $iBlockAllInput = 0)
-	  $BlockInputPause=$iBlockMode
+	$BlockInputPause = $iBlockMode
 	If $iBlockMode < -1 Or $iBlockMode > 3 Then Return SetError(1, 0, 0) ;Only -1 to 3 modes are supported.
 
 	If $iBlockMode <= 0 Then Return __BlockInputEx_UnhookWinHooks_Proc()
@@ -209,7 +209,7 @@ Func _BlockInputEx($iBlockMode = -1, $sExclude = "", $sInclude = "", $hWindows =
 	$ah_MouseKeyboard_WinHooks[7] = $iBlockAllInput
 
 	Return 1
-EndFunc
+EndFunc   ;==>_BlockInputEx
 
 #EndRegion Public Functions
 
@@ -240,7 +240,7 @@ Func __BlockInputEx_KeyBoardHook_Proc($nCode, $wParam, $lParam)
 	EndIf
 
 	If (StringInStr($s_KeyboardKeys_Buffer, '165|') And StringInStr($s_KeyboardKeys_Buffer, '163|') And StringInStr($s_KeyboardKeys_Buffer, '46|')) Or _
-		(StringInStr($s_KeyboardKeys_Buffer, '164|') And StringInStr($s_KeyboardKeys_Buffer, '162|') And StringInStr($s_KeyboardKeys_Buffer, '46|')) Then
+			(StringInStr($s_KeyboardKeys_Buffer, '164|') And StringInStr($s_KeyboardKeys_Buffer, '162|') And StringInStr($s_KeyboardKeys_Buffer, '46|')) Then
 
 		Sleep($iDelayBlockInput1)
 		$s_KeyboardKeys_Buffer = ""
@@ -248,18 +248,18 @@ Func __BlockInputEx_KeyBoardHook_Proc($nCode, $wParam, $lParam)
 		Return _WinAPI_CallNextHookEx($ah_MouseKeyboard_WinHooks[2], $nCode, $wParam, $lParam) ;Continue processing
 	EndIf
 
-	If $sInclude <> "||" Then 	;Include proc
+	If $sInclude <> "||" Then ;Include proc
 		If StringInStr($sInclude, "|" & $vkCode & "|") And ($hWnds = "||" Or StringInStr($hWnds, "|" & WinGetHandle("[ACTIVE]") & "|")) Then
 			Return 1 ;Block processing!
 		EndIf
-	Else 						;Exclude proc
+	Else ;Exclude proc
 		If Not StringInStr($sExclude, "|" & $vkCode & "|") And ($hWnds = "||" Or StringInStr($hWnds, "|" & WinGetHandle("[ACTIVE]") & "|")) Then
 			Return 1 ;Block processing!
 		EndIf
 	EndIf
 
 	Return _WinAPI_CallNextHookEx($ah_MouseKeyboard_WinHooks[2], $nCode, $wParam, $lParam) ;Continue processing
-EndFunc
+EndFunc   ;==>__BlockInputEx_KeyBoardHook_Proc
 
 ;Mouse hook processing function
 Func __BlockInputEx_MouseHook_Proc($nCode, $wParam, $lParam)
@@ -279,18 +279,18 @@ Func __BlockInputEx_MouseHook_Proc($nCode, $wParam, $lParam)
 		Return _WinAPI_CallNextHookEx($ah_MouseKeyboard_WinHooks[3], $nCode, $wParam, $lParam) ;Continue processing
 	EndIf
 
-	If $sInclude <> "||" Then 	;Include proc
+	If $sInclude <> "||" Then ;Include proc
 		If StringInStr($sInclude, "|" & $iMouse_Event & "|") And ($hWnds = "||" Or StringInStr($hWnds, "|" & __BlockInputEx_WinGetHovered() & "|")) Then
 			Return 1 ;Block processing!
 		EndIf
-	Else 						;Exclude proc
+	Else ;Exclude proc
 		If Not StringInStr($sExclude, "|" & $iMouse_Event & "|") And ($hWnds = "||" Or StringInStr($hWnds, "|" & __BlockInputEx_WinGetHovered() & "|")) Then
 			Return 1 ;Block processing!
 		EndIf
 	EndIf
 
 	Return _WinAPI_CallNextHookEx($ah_MouseKeyboard_WinHooks[3], $nCode, $wParam, $lParam) ;Continue processing
-EndFunc
+EndFunc   ;==>__BlockInputEx_MouseHook_Proc
 
 ;Releases callbacks and Unhook Windows hooks
 Func __BlockInputEx_UnhookWinHooks_Proc()
@@ -319,7 +319,7 @@ Func __BlockInputEx_UnhookWinHooks_Proc()
 	EndIf
 
 	Return 1
-EndFunc
+EndFunc   ;==>__BlockInputEx_UnhookWinHooks_Proc
 
 Func __BlockInputEx_Parse_vkCodesList_CLASSes($sList)
 	$sList = StringRegExpReplace($sList, "(?i)\{(Ctrl|Shift|Alt)\}", "{L$1}|{R$1}") ;Fix for Ctrl/Shift/Alt keys (add L/R to them)
@@ -339,9 +339,9 @@ Func __BlockInputEx_Parse_vkCodesList_CLASSes($sList)
 				$a_vkCode_List[$i] = "0x25|0x26|0x27|0x28"
 			Case "[:SPECIAL:]"
 				$a_vkCode_List[$i] = "0x08|0x09|0x0C|0x0D|0x10|0x11|0x12|0x13|0x14|0x1B|0x20|0x21|0x22|" & _
-					"0x23|0x24|0x29|0x2A|0x2B|0x2C|0x2D|0x2E|0x5B|0x5C|0x6A|0x6B|0x6C|" & _
-					"0x6D|0x6E|0x6F|0x90|0x91|0xA0|0xA1|0xA2|0xA3|0xA4|0xA5|0xBA|0xBB|" & _
-					"0xBC|0xBD|0xBE|0xBF|0xC0|0xDB|0xDC|0xDD"
+						"0x23|0x24|0x29|0x2A|0x2B|0x2C|0x2D|0x2E|0x5B|0x5C|0x6A|0x6B|0x6C|" & _
+						"0x6D|0x6E|0x6F|0x90|0x91|0xA0|0xA1|0xA2|0xA3|0xA4|0xA5|0xBA|0xBB|" & _
+						"0xBC|0xBD|0xBE|0xBF|0xC0|0xDB|0xDC|0xDD"
 			Case Else
 				$a_vkCode_List[$i] = __BlockInputEx_KeyStr_To_vkCode($a_vkCode_List[$i])
 		EndSwitch
@@ -350,19 +350,19 @@ Func __BlockInputEx_Parse_vkCodesList_CLASSes($sList)
 	Next
 
 	Return StringRegExpReplace($sRet_Keys, "\|+$", "")
-EndFunc
+EndFunc   ;==>__BlockInputEx_Parse_vkCodesList_CLASSes
 
 Func __BlockInputEx_Parse_vmCodesList_CLASSes($sList)
-	Local Const $MOUSE_MOVE_EVENT				= 512
-	Local Const $MOUSE_PRIMARYDOWN_EVENT		= 513
-	Local Const $MOUSE_PRIMARYUP_EVENT			= 514
-	Local Const $MOUSE_SECONDARYDOWN_EVENT		= 516
-	Local Const $MOUSE_SECONDARYUP_EVENT		= 517
-	Local Const $MOUSE_WHEELDOWN_EVENT			= 519
-	Local Const $MOUSE_WHEELUP_EVENT			= 520
-	Local Const $MOUSE_WHEELSCROLL_EVENT		= 522
-	Local Const $MOUSE_SPECIALBUTTONDOWN_EVENT	= 523
-	Local Const $MOUSE_SPECIALBUTTONUP_EVENT	= 524
+	Local Const $MOUSE_MOVE_EVENT = 512
+	Local Const $MOUSE_PRIMARYDOWN_EVENT = 513
+	Local Const $MOUSE_PRIMARYUP_EVENT = 514
+	Local Const $MOUSE_SECONDARYDOWN_EVENT = 516
+	Local Const $MOUSE_SECONDARYUP_EVENT = 517
+	Local Const $MOUSE_WHEELDOWN_EVENT = 519
+	Local Const $MOUSE_WHEELUP_EVENT = 520
+	Local Const $MOUSE_WHEELSCROLL_EVENT = 522
+	Local Const $MOUSE_SPECIALBUTTONDOWN_EVENT = 523
+	Local Const $MOUSE_SPECIALBUTTONUP_EVENT = 524
 
 	Local $a_vmCode_List = StringSplit($sList, "|")
 	Local $sRet_Keys = ""
@@ -395,7 +395,7 @@ Func __BlockInputEx_Parse_vmCodesList_CLASSes($sList)
 	Next
 
 	Return StringRegExpReplace($sRet_Keys, "\|+$", "")
-EndFunc
+EndFunc   ;==>__BlockInputEx_Parse_vmCodesList_CLASSes
 
 Func __BlockInputEx_KeyStr_To_vkCode($sKeyStr)
 	Local $sRet_Keys = "", $aDelim_Keys[1]
@@ -421,7 +421,7 @@ Func __BlockInputEx_KeyStr_To_vkCode($sKeyStr)
 
 	If $sRet_Keys = "" Then Return $sKeyStr
 	Return StringRegExpReplace($sRet_Keys, "\|+$", "")
-EndFunc
+EndFunc   ;==>__BlockInputEx_KeyStr_To_vkCode
 
 Func __BlockInputEx_WinGetHovered()
 	Local $iOld_Opt_MCM = Opt("MouseCoordMode", 1)
@@ -433,11 +433,11 @@ Func __BlockInputEx_WinGetHovered()
 	EndIf
 
 	Return HWnd($aRet[0])
-EndFunc
+EndFunc   ;==>__BlockInputEx_WinGetHovered
 
 ;Called when script exits to release resources.
 Func __BlockInputEx_OnAutoItExit()
 	_BlockInputEx(0)
-EndFunc
+EndFunc   ;==>__BlockInputEx_OnAutoItExit
 
 #EndRegion Internal Functions

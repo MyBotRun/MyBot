@@ -30,10 +30,10 @@ Func getBSPos()
 		If Not $RunState Then Return
 		If @error = 1 Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
-			$stext = @CRLF & "MyBot has experienced a serious error" & @CRLF & @CRLF & _
-					"Unable to find or start up " & $Android & @CRLF & @CRLF & "Reboot PC and try again," & _
-					"and search www.mybot.run forums for more help" & @CRLF
-			$MsgBox = _ExtMsgBox(0, "Close MyBot!", "Okay - Must Exit Program", $stext, 15, $frmBot)
+            $stext = @CRLF & GetTranslated(640,17,"MyBot has experienced a serious error") & @CRLF & @CRLF & _
+                    GetTranslated(640,18,"Unable to find or start up ") & $Android & @CRLF & @CRLF & GetTranslated(640,22,"Reboot PC and try again,") & _
+                    GetTranslated(640,19,"and search www.mybot.run forums for more help") & @CRLF
+            $MsgBox = _ExtMsgBox(0, GetTranslated(640,20,"Close MyBot!"), GetTranslated(640,21,"Okay - Must Exit Program"), $stext, 15, $frmBot)
 			If $MsgBox = 1 Then
 				BotClose()
 			EndIf
@@ -64,10 +64,10 @@ Func getBSPos()
 	  If Not $RunState Then Return
 	  If @error = 1 Then
 		  _ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
-		  $stext = @CRLF & "MyBot has experienced a serious error" & @CRLF & @CRLF & _
-				  "Unable to find or start up " & $Android & @CRLF & @CRLF & "Reboot PC and try again," & _
-				  "and search www.mybot.run forums for more help" & @CRLF
-		  $MsgBox = _ExtMsgBox(0, "Close MyBot!", "Okay - Must Exit Program", $stext, 15, $frmBot)
+		  $stext = @CRLF & GetTranslated(640,17,"MyBot has experienced a serious error") & @CRLF & @CRLF & _
+			  GetTranslated(640,18,"Unable to find or start up") & " " & $Android & @CRLF & @CRLF & GetTranslated(640,22,"Reboot PC and try again,") & _
+			  GetTranslated(640,19,"and search www.mybot.run forums for more help") & @CRLF
+		  $MsgBox = _ExtMsgBox(0, GetTranslated(640,20,"Close MyBot!"), GetTranslated(640,21,"Okay - Must Exit Program"), $stext, 15, $frmBot)
 		  If $MsgBox = 1 Then
 			  BotClose()
 		  EndIf
@@ -97,7 +97,7 @@ Func getBSPos()
     SuspendAndroid($SuspendMode, False)
 EndFunc   ;==>getBSPos
 
-Func getAndroidPos()
+Func getAndroidPos($RetryCount = 0)
    Local $BSsize = ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)
    If Not $RunState Then Return $BSsize
    If IsArray($BSsize) Then ; Is Android Client Control available?
@@ -167,6 +167,14 @@ Func getAndroidPos()
 
 			Else
 			   SetDebugLog("WARNING: Cannot resize " & $Android & " window to " & $aAndroidWindow[0] & " x " & $aAndroidWindow[1], $COLOR_RED)
+			EndIf
+
+		Else
+
+			; added for Nox that reports during launch a client size of 1x1
+			If $RetryCount < 5 Then
+				If _Sleep(250) = True Then Return $BSsize
+				Return getAndroidPos($RetryCount + 1)
 			EndIf
 
 		EndIf

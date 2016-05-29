@@ -14,26 +14,52 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func DebugImageSave($TxtName = "Unknown",$capturenew=True,$extensionpng="png",$makesubfolder = True)
+Func DebugImageSave($TxtName = "Unknown", $capturenew = True, $extensionpng = "png", $makesubfolder = True)
 
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
 	;SetLog("Taking snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
 	$Date = @MDAY & "." & @MON & "." & @YEAR
 	$Time = @HOUR & "." & @MIN & "." & @SEC
-	Local $savefolder =$dirTempDebug
-	If $makesubfolder=True Then
-		$savefolder = $dirTempDebug& $TxtName & "\"
+	Local $savefolder = $dirTempDebug
+	If $makesubfolder = True Then
+		$savefolder = $dirTempDebug & $TxtName & "\"
 		DirCreate($savefolder)
 	EndIf
 
-	If $capturenew Then _CaptureRegion()
-	IF $extensionpng = "png" Then
-		_GDIPlus_ImageSaveToFile($hBitmap, $savefolder & $TxtName & $Date & " at " & $Time & ".png")
-		If $debugsetlog=1 Then Setlog( $TxtName & $Date & " at " & $Time & ".png", $COLOR_purple)
+	Local $extension
+	If $extensionpng = "png" then
+		$extension = "png"
 	Else
-		_GDIPlus_ImageSaveToFile($hBitmap, $savefolder & $TxtName & $Date & " at " & $Time & ".jpg")
-		If $debugsetlog=1 Then Setlog( $TxtName & $Date & " at " & $Time & ".jpg", $COLOR_purple)
+		$extension = "jpg"
 	EndIf
+
+	Local $exist = true
+	local $i = 1
+	Local $first = True
+	Local $filename = ""
+	While $exist
+		If $first Then
+			$first = False
+			$filename = $savefolder & $TxtName & $Date & " at " & $Time & "." & $extension
+			If FileExists($filename) = 1 Then
+				$exist = True
+			Else
+				$exist = False
+
+			EndIf
+		Else
+			$filename = $savefolder & $TxtName & $Date & " at " & $Time & " (" & $i & ")." & $extension
+			If FileExists($filename) = 1 Then
+				$i +=1
+			Else
+				$exist = False
+			EndIf
+		EndIf
+	WEnd
+
+	If $capturenew Then _CaptureRegion()
+	_GDIPlus_ImageSaveToFile($hBitmap,$filename)
+	If $debugsetlog = 1 Then Setlog($filename, $COLOR_purple)
 
 	If _Sleep($iDelayDebugImageSave1) Then Return
 

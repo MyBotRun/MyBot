@@ -1,4 +1,58 @@
-﻿* **V5.3.2**
+﻿* **V6.0**
+ * New GUI interface, more user friendly
+ * Updated elixir troop training barracks positions for May 2016 update
+ * Updated donation for May 2016 update
+ * Improve donation when no spells are available to skip spell donation
+ * Improve multiple bot instances grouped in taskbar
+ * Improve bot launch time
+ * Strategies, load and save your train/search/attack settings
+ * Add search options: numbers of searches, cup ranges, army camps %
+ * End battle options split for dead bases, active bases, th snipes
+ * Add Number of Walls in statistics (needs to be manually entered and updated)
+ * Milking Attack improved, now also usable by LOW performance computers
+ * Fix profilereport read attacks and defenses
+ * Fix bot window double redraw using start/stop buttons
+ * Fix random Wizard training issue due training window icon change in recent update
+ * Improve maintainence break detection with OCR remaining time and adjust reload click frequency
+ * Improve Spell training to ensure training of spells for next attack when camp is full
+ * Improve Hero activation reliability when CSV scripts use long SLEEPAFTER values
+ * Add detection for Rate CoC message and click never to close window
+ * Add detection for Game Update available, and stop bot when found.
+ * Change troop donation order to donate largest troop space first (Donate Big First forum MOD)
+ * Add "click to find" ability in upgrade GUI to enable locating which building is selected for upgrade (loot type is now locate button)
+ * Change order of preferred Android to MEmu, Droid4X, Nox, BlueStacks2 and BlueStacks
+ * Add BlueStacks support for new "plus" engine that is based on VirtualBox hypervisor
+ * Add Nox 3.3 & 3.5.1 support of OpenGL and DirectX modes (window resizing for low monitor resolution not working for 3.3 but could work for 3.5.1!)
+ * Improve Android script for zoom-out over waters and ADB initialization
+ * Improve BlueStacks zoom-out over waters, replaced ADB script with AutoIt click&drag and ctrl mouse-click (not for BlueStacks2!)
+ * Improve BlueStacks / BlueStacks2 time to connect ADB
+ * Fix Android restart preserving hidden Window State and System Bar State
+ * Fix BlueStacks / BlueStacks2 ADB Mouse Event Device not found
+ * Fix Click & Drag scrolling (swipe) for Android Emulator (Laboratory 2nd and 3rd page fix!)
+ * Fix MakeScreenshot using Android client height of 732 pixel
+ * Wall upgrades using Elixir are now allowed when Laboratory requires Elixir by checking if Elixir will last after Wall upgrade
+ * Fix earthquake detection issues
+ * Update barrack mode training for new barrack levels with more troops
+ * Add attack scheduler (hours of day AND days of week)
+ * Add seperate option to remove gem box
+ * Updated OCR spell detection in train window
+
+* **V5.3.3** (Never released)
+ * Fix ADB Path problem killing all processes when empty String
+ * Fix ADB initialization that caused android crashes in MEmu (and possibly others)
+ * Fix Lava Hound not donate in 1st row of donation window
+ * Fix Balloon not training
+ * Fix lab upgrade time OCR for hours
+ * Fix Laboratory upgrade feature not upgrading proper troop selected in GUI (due March update for Bowler troop)
+ * Fix sending text to Android (non ADB input method for non ASCII characters)
+ * Fix Droid4X 0.10.0 Beta resizing Android Window
+ * Fix MEmu 2.6.1 resizing Android Window
+ * Fix MEmu find program folder after re-install without reboot
+ * Fix MEmu ADB re-initialization problem (infinite ADB clicks not working loop)
+ * Fix dark barracks mode not filling up level 7 barracks on first run
+ * Improve healing spell detection during training
+
+* **V5.3.2**
  * Updated Italian language file (from @davideroma)
  * Improve Troops&Spells Detection army overview
  * Fix Hero Status detection
@@ -20,7 +74,7 @@
  * Improve Android time lag logic rebooting earlier and during village search
  * Improve Android detect running instance and reboot handling
  * Improve OCR for names and level of the Buildings (Requires CoC version 8.212.3)
- 
+
 * **V5.3**
  * Add 2 more slots to building upgrades tab (8 total now available)
  * Add auto repeat capability to enable continuous upgrade of buildings
@@ -38,6 +92,7 @@
  * Fix problem of creating extra log file containing only "Bot Stop"
  * Fix GUI milking labels
  * Fix Clan Castle Balance not save properly
+ * Fix improper local declaration on $dropKing & $dropQueen that may prevent hero power activation
  * Fix TH search condition always logged
  * Fix improper local declaration on $dropKing & $dropQueen that may prevent hero power activation
  * Fix Heroes health check for MEmu/Droid4X (screenshot caching problem fix)
@@ -69,6 +124,7 @@
  * Add location selection check for "Clan Castle (Broken)", for villages without a Clan Castle (not rebuild yet)
  * Updated Turkish language file for GUI
  * Updated Portuguese language file for GUI
+ * Updated the AttackCSV with Gold & Elixir Storages sides
  * Updated Chinese language file (from @mitoomi)
  * Updated MBRfunctions.dll with new weakbase images
 
@@ -87,6 +143,7 @@
  * Add wait for hero before attack capabilities
  * Add expert option to allow Personal Break log off for single time (avoid 3 separate breaks)
  * Add Halt - When Shielded modes
+ * Add new BOT stop and Bot Close "Halt" options
  * Add Halt - When Dark Elixir full and All Storage full modes
  * Add Remove all Obstacles from your village
  * Add MEmu and Droid4X *** True *** Background Mode (close laptop lid, Windows Lock Session/Switch User all supported now)

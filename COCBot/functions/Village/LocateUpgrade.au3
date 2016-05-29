@@ -16,8 +16,8 @@
 Func LocateUpgrades()
 
 	WinGetAndroidHandle()
-	ControlGetPos($HWnD, "", $AppClassInstance)  ;Check For valid BS position
-	If $HWnD = 0 Or @error = 1 Then  ; If not found, BS is not open so exit politely
+	ControlGetPos($HWnD, "", $AppClassInstance) ;Check For valid BS position
+	If $HWnD = 0 Or @error = 1 Then ; If not found, BS is not open so exit politely
 		Setlog($Android & " is not open", $COLOR_RED)
 		SetError(1)
 		Return
@@ -32,19 +32,22 @@ Func LocateUpgrades()
 		If _GetPixelColor(1, 1) <> Hex(0x000000, 6) Or _GetPixelColor(850, 1) <> Hex(0x000000, 6) Then ; Check for zoomout in case user tried to zoom in.
 			SetLog("Locate Oops, prep screen 1st", $COLOR_BLUE)
 			ZoomOut()
+			$bDisableBreakCheck = True ; stop early PB log off when locating upgrades
+			Collect()
+			$bDisableBreakCheck = False ; restore flag
 		EndIf
-		$bDisableBreakCheck = True  ; stop early PB log off when locating upgrades
-		Collect()  ; must collect or clicking on collectors will fail 1st time
-		$bDisableBreakCheck = False  ; restore flag
+		$bDisableBreakCheck = True ; stop early PB log off when locating upgrades
+		Collect() ; must collect or clicking on collectors will fail 1st time
+		$bDisableBreakCheck = False ; restore flag
 		For $icount = 0 To UBound($aUpgrades, 1) - 1
 			If $ichkUpgrdeRepeat[$icount] = 1 And (GUICtrlRead($txtUpgradeName[$icount]) <> "") Then ; check for repeat upgrade
 				GUICtrlSetImage($picUpgradeStatus[$icount], $pIconLib, $eIcnYellowLight) ; Set GUI Status to Yellow showing ready for upgrade
 				GUICtrlSetState($chkbxUpgrade[$icount], $GUI_CHECKED) ; Change upgrade selection box to checked again
 				ContinueLoop
 			EndIf
-			$stext = "Click 'Locate Building' button then click on your Building/Hero to upgrade." & @CRLF & @CRLF & "Click 'Finished' button when done locating all upgrades." & @CRLF & @CRLF & "Click on Cancel to exit finding buildings." & @CRLF & @CRLF
+			$stext = GetTranslated(640, 51, "Click 'Locate Building' button then click on your Building/Hero to upgrade.") & @CRLF & @CRLF & GetTranslated(640, 52, "Click 'Finished' button when done locating all upgrades.") & @CRLF & @CRLF & GetTranslated(640, 53, "Click on Cancel to exit finding buildings.") & @CRLF & @CRLF
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
-			$MsgBox = _ExtMsgBox(0, "Locate Building|Finished|Cancel All", "Locate Upgrades", $stext, 0, $frmBot)
+			$MsgBox = _ExtMsgBox(0, GetTranslated(640, 54, "Locate Building|Finished|Cancel"), GetTranslated(640, 55, "Locate Upgrades"), $stext, 0, $frmBot)
 			Switch $MsgBox
 				Case 1 ; YES! we want to find a building.
 					WinActivate($HWnD) ; Activate Android Window
@@ -90,8 +93,8 @@ Func CheckUpgrades() ; Valdiate and determine the cost and type of the upgrade a
 	Local $MsgBox
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-	$stext = "Keep Mouse OUT of BlueStacks Window " & @CRLF & "While I Check Your Upgrades." & @CRLF & " Thanks!! "
-	$MsgBox = _ExtMsgBox(0, "OK", "Notice!", $stext, 15, $frmBot)
+	$stext = GetTranslated(640, 56, "Keep Mouse OUT of Android Emulator Window While I Check Your Upgrades, Thanks!!")
+	$MsgBox = _ExtMsgBox(48, GetTranslated(640, 36, "OK"), GetTranslated(640, 37, "Notice"), $stext, 15, $frmBot)
 	If _Sleep($iDelayCheckUpgrades1) Then Return
 	If $MsgBox <> 1 Then
 		Setlog("Something weird happened in getting upgrade values, try again", $COLOR_RED)
@@ -135,8 +138,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		If $bOopsFlag = True Then DebugImageSave("ButtonView")
 		; check if upgrading collector type building, and reselect in case previous click only collect resource
 		If StringInStr($aUpgrades[$inum][4], "collect", $STR_NOCASESENSEBASIC) Or _
-		StringInStr($aUpgrades[$inum][4], "mine", $STR_NOCASESENSEBASIC) Or _
-		StringInStr($aUpgrades[$inum][4], "drill", $STR_NOCASESENSEBASIC) Then
+				StringInStr($aUpgrades[$inum][4], "mine", $STR_NOCASESENSEBASIC) Or _
+				StringInStr($aUpgrades[$inum][4], "drill", $STR_NOCASESENSEBASIC) Then
 			ClickP($aAway, 1, 0, "#0999") ;Click away to deselect collector if was not full, and collected with previous click
 			If _Sleep($iDelayUpgradeValue1) Then Return
 			Click($aUpgrades[$inum][0], $aUpgrades[$inum][1]) ;Select collector upgrade trained
@@ -171,7 +174,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		If $bOopsFlag = True Then DebugImageSave("ButtonView")
 	EndIf
 
-	If $bOopsFlag = True and  $debugImageSave= 1 Then DebugImageSave("ButtonView")
+	If $bOopsFlag = True And $debugImageSave = 1 Then DebugImageSave("ButtonView")
 
 	$aResult = BuildingInfo(242, 520 + $bottomOffsetY)
 	If $aResult[0] > 1 Then
@@ -219,17 +222,16 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0213") ; Click Upgrade Button
 		If _Sleep($iDelayUpgradeValue3) Then Return
 
-		If $bOopsFlag = True and $debugImageSave= 1 Then DebugImageSave("UpgradeView")
+		If $bOopsFlag = True And $debugImageSave = 1 Then DebugImageSave("UpgradeView")
 
 		_CaptureRegion()
 		Select ;Ensure the right upgrade window is open!
 			Case _ColorCheck(_GetPixelColor(677, 150 + $midOffsetY), Hex(0xE00408, 6), 20) ; Check if the building Upgrade window is open
 				If _ColorCheck(_GetPixelColor(351, 485 + $midOffsetY), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
-
 					If $ichkUpgrdeRepeat[$inum] = 1 Then
 						Setlog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_RED)
 						$ichkUpgrdeRepeat[$inum] = 0
-						GUICtrlSetState($chkUpgrdeRepeat[$inum],$GUI_UNCHECKED) ; Change repeat selection box to unchecked
+						GUICtrlSetState($chkUpgrdeRepeat[$inum], $GUI_UNCHECKED) ; Change repeat selection box to unchecked
 					Else
 						Setlog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_RED)
 					EndIf
@@ -290,7 +292,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			$iLoot = $aUpgrades[$inum][2]
 			If $iLoot = "" Then $iLoot = 8000000
 			Local $aBotLoc = WinGetPos($frmbot)
-			$inputbox = InputBox("Text Read Error", "Enter the cost of the upgrade", $iLoot, "", -1, -1, $aBotLoc[0] + 125, $aBotLoc[1] + 225, -1, $frmbot)
+
+			$inputbox = InputBox(GetTranslated(640, 56, "Text Read Error"), GetTranslated(640, 57, "Enter the cost of the upgrade"), $iLoot, "", -1, -1, $aBotLoc[0] + 125, $aBotLoc[1] + 225, -1, $frmbot)
 			If @error Then
 				Setlog("InputBox error, data reset. Try again", $COLOR_RED)
 				ClearUpgradeInfo($inum) ; clear upgrade information
@@ -299,13 +302,13 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			$aUpgrades[$inum][2] = Int($inputbox)
 			Setlog("User input value = " & $aUpgrades[$inum][2], $COLOR_PURPLE)
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-			$stext = "Save copy of upgrade image for developer analysis?"
-			$MsgBox = _ExtMsgBox(48, "YES|NO", "Notice!", $stext, 60, $frmBot)
-			If $MsgBox = 1 and $debugImageSave= 1 Then DebugImageSave("UpgradeReadError_")
+			$stext = GetTranslated(640, 58, "Save copy of upgrade image for developer analysis?")
+			$MsgBox = _ExtMsgBox(48, GetTranslated(640, 59, "YES|NO"), GetTranslated(640, 37, "Notice"), $stext, 60, $frmBot)
+			If $MsgBox = 1 And $debugImageSave = 1 Then DebugImageSave("UpgradeReadError_")
 		EndIf
 		If $aUpgrades[$inum][3] = "" And $bOopsFlag = True And $bRepeat = False Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
-			$inputbox = _ExtMsgBox(0, "   GOLD   |  ELIXIR  |DARK ELIXIR", "Need User Help", "Select Upgrade Type:", 0, $frmBot)
+			$inputbox = _ExtMsgBox(0, GetTranslated(640, 60, "   GOLD   |  ELIXIR  |DARK ELIXIR"), GetTranslated(640, 61, "Need User Help"), GetTranslated(640, 62, "Select Upgrade Type:"), 0, $frmBot)
 			If $debugSetlog = 1 Then Setlog(" _MsgBox returned = " & $inputbox, $COLOR_PURPLE)
 			Switch $inputbox
 				Case 1

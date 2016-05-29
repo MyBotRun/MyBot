@@ -17,6 +17,7 @@ Func MBRFunc($Start = True)
 	Switch $Start
 		Case True
 			$hFuncLib = DllOpen($pFuncLib)
+			$hImgLib = DllOpen($pImgLib)
 			If $hFuncLib = -1 Then
 				Setlog("MBRfunctions.dll not found.", $COLOR_RED)
 				Return False
@@ -32,6 +33,7 @@ Func MBRFunc($Start = True)
 			$Pid = WinGetProcess($hFuncLib)
 			If $debugSetlog = 1 Then Setlog("MBRFunction.dll PID = " & $Pid, $COLOR_PURPLE)
 			DllClose($hFuncLib)
+			Dllclose($hImgLib)
 			Sleep(250)
 			If ProcessExists($Pid) Then
 				ConsoleWrite("MBRFunction.dll process slow close, PID= " & $Pid & @CRLF)
@@ -63,7 +65,7 @@ Func MBRFunc($Start = True)
 EndFunc   ;==>MBRFunc
 
 Func debugMBRFunctions($debugSearchArea = 0, $debugRedArea = 0, $debugOcr = 0)
-
+	Local $activeHWnD = WinGetHandle("")
 	Local $result = DllCall($hFuncLib, "str", "setGlobalVar", "int", $debugSearchArea, "int", $debugRedArea, "int", $debugOcr)
 	If @error Then _logErrorDLLCall($pFuncLib, @error)
 	;dll return 0 on success, -1 on error
@@ -72,5 +74,5 @@ Func debugMBRFunctions($debugSearchArea = 0, $debugRedArea = 0, $debugOcr = 0)
 	Else
 		If $debugSetlog = 1 Then setlog("MBRfunctions.dll not found.")
 	EndIf
-
+	WinActivate($activeHWnD) ; restore current active window
 EndFunc   ;==>debugMBRFunctions

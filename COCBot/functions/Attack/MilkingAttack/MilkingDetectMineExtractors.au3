@@ -14,12 +14,21 @@
 ; ===============================================================================================================================
 
 Func MilkingDetectMineExtractors()
+
+	If $MilkFarmAttackGoldMines = 1 and $iGoldCurrent >= $MilkFarmLimitGold Then
+		If $debugsetlog=1 Then setlog("skip attack of gold mines, current gold (" & $iGoldCurrent & ") >= limit (" & $MilkFarmLimitGold & ")",$color_purple)
+		return 0
+	Else
+		If $debugsetlog=1 Then setlog("current gold (" & $iGoldCurrent & ") < limit (" & $MilkFarmLimitGold & ")",$color_purple)
+	EndIf
+
+
 	Local $MilkFarmAtkPixelListMINESTR = ""
-	$debugresourcesoffset = 1
 	If $MilkFarmLocateMine = 1 Then
 		Local $hTimer = TimerInit()
 		;03.01 locate extractors
-		_CaptureRegion2(80, 70, 785, 530)
+		;_CaptureRegion2(80, 70, 785, 530)
+		_CaptureRegion2()
 		Local $MineVect = StringSplit(GetLocationMineWithLevel(), "~", 2) ; ["6#527-209" , "6#421-227" , "6#600-264" , "6#299-331" , "6#511-404" , "6#511-453"]
 		Local $Minefounds = 0
 		Local $Minematch = 0
@@ -29,12 +38,12 @@ Func MilkingDetectMineExtractors()
 			;03.02 check isinsidediamond
 			Local $temp = StringSplit($MineVect[$i], "#", 2) ;TEMP ["2", "404-325"]
 			If UBound($temp) = 2 Then
-				$pixel = StringSplit($temp[1], "-", 2) ;PIXEL ["404","325"]
+				Local $pixel = StringSplit($temp[1], "-", 2) ;PIXEL ["404","325"]
 				If UBound($pixel) = 2 Then
-					Local $tempPixel[2] = [$pixel[0] + 80, $pixel[1] + 70]
+					Local $tempPixel[2] = [$pixel[0] , $pixel[1] ]
 					$pixel = $tempPixel
 					$temp[1] = String($pixel[0] & "-" & $pixel[1])
-					If isInsideDiamond($pixel) Then
+					If isInsideDiamondRedArea($pixel) Then
 						$Minefounds += 1
 						;debug if need
 						If $debugresourcesoffset = 1 Then
@@ -55,7 +64,7 @@ Func MilkingDetectMineExtractors()
 							_GDIPlus_PenDispose($hPen)
 							_GDIPlus_BrushDispose($hBrush)
 							_GDIPlus_GraphicsDispose($hGraphic)
-							DebugImageSave("debugresourcesoffset_" & $type & "_" & $level & "_", False)
+							DebugImageSave("debugresourcesoffset_" & $type & "_" & $level & "_" , False)
 						EndIf
 
 						;ok add if conditions satisfied

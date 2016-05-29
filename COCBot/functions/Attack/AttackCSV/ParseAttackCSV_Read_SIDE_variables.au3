@@ -54,51 +54,19 @@ Func ParseAttackCSV_Read_SIDE_variables()
 				If $command = "SIDE" Then
 					;forced side
 					If StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
-						$attackcsv_locate_mine = 0
-						$attackcsv_locate_elixir = 0
-						$attackcsv_locate_drill = 0
-						$attackcsv_locate_gold_storage = 0
-						$attackcsv_locate_elixir_storage = 0
-						$attackcsv_locate_dark_storage = 0
-						$attackcsv_locate_townhall = 0
+						;keep original values
 					Else
-						If Int($value1) > 0 Then
-							$attackcsv_locate_mine = 1
-						Else
-							$attackcsv_locate_mine = 0
-						EndIf
-						If Int($value2) > 0 Then
-							$attackcsv_locate_elixir = 1
-						Else
-							$attackcsv_locate_elixir = 0
-						EndIf
-						If Int($value3) > 0 Then
-							$attackcsv_locate_drill = 1
-						Else
-							$attackcsv_locate_drill = 0
-						EndIf
-						If Int($value4) > 0 Then
-							$attackcsv_locate_gold_storage = 1
-						Else
-							$attackcsv_locate_gold_storage = 0
-						EndIf
-						If Int($value5) > 0 Then
-							$attackcsv_locate_elixir_storage = 1
-						Else
-							$attackcsv_locate_elixir_storage = 0
-						EndIf
-						If Int($value6) > 0 Then
-							$attackcsv_locate_dark_storage = 1
-						Else
-							$attackcsv_locate_dark_storage = 0
-						EndIf
-						If Int($value7) > 0 Then
-							$attackcsv_locate_townhall = 1
-						Else
-							$attackcsv_locate_townhall = 0
-						EndIf
+						;if this line uses a building, then it must be detected
+						If Int($value1) > 0 Then $attackcsv_locate_mine = 1
+						If Int($value2) > 0 Then $attackcsv_locate_elixir = 1
+						If Int($value3) > 0 Then $attackcsv_locate_drill = 1
+						If Int($value4) > 0 Then $attackcsv_locate_gold_storage = 1
+						If Int($value5) > 0 Then $attackcsv_locate_elixir_storage = 1
+						If Int($value6) > 0 Then $attackcsv_locate_dark_storage = 1
+						If Int($value7) > 0 Then $attackcsv_locate_townhall = 1
+
 					EndIf
-					ExitLoop
+
 				EndIf
 			EndIf
 		WEnd

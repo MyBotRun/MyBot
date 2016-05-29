@@ -19,7 +19,7 @@
 ;			Get the offset to browse the array pixel (depends of size vector)
 ;			For min to max with offset , get pixel closer and add to the vector
 
-Func GetVectorPixelToDeploy($arrPixel, $vectorDirection, $sizeVector)
+Func GetVectorPixelToDeploy($arrPixel, $vectorDirection , $sizeVector)
 	Local $vectorPixel[0]
 	debugRedArea("GetVectorPixelToDeploy IN")
 	debugRedArea("size " & UBound($arrPixel))

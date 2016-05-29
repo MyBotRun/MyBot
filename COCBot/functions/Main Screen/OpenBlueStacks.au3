@@ -20,8 +20,7 @@ EndFunc
 Func OpenBlueStacks($bRestart = False)
 
 	Local $hTimer, $iCount = 0
-	Local $PID, $ErrorResult, $connected_to
-
+	Local $PID, $ErrorResult
 	SetLog("Starting BlueStacks and Clash Of Clans", $COLOR_GREEN)
 
     If Not InitAndroid() Then Return
@@ -58,11 +57,7 @@ Func OpenBlueStacks($bRestart = False)
 	WEnd
 
 	If IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) Then
-	    $connected_to = ConnectAndroidAdb(False, 60 * 1000)
-
 		SetLog("BlueStacks Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
-		AndroidAdbLaunchShellInstance()
-
 	    ; Check Android screen size, position windows
 		If InitiateLayout() Then Return; can also call this recursively again when screen size is adjusted
 		DisableBS($HWnD, $SC_MINIMIZE)
@@ -90,7 +85,7 @@ EndFunc   ;==>OpenBlueStacks
 
 Func OpenBlueStacks2($bRestart = False)
 
-   Local $hTimer, $iCount = 0, $cmdOutput, $process_killed, $i, $connected_to
+   Local $hTimer, $iCount = 0, $cmdOutput, $process_killed, $i
    SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
 
    If Not InitAndroid() Then Return
@@ -134,15 +129,12 @@ Func OpenBlueStacks2($bRestart = False)
    _WinAPI_SetWindowLong($HWnd, $GWL_STYLE, $lCurStyle)
    ;_WinAPI_SetWindowPos($HWnd, 0, 0, 0, 0, 0, BitOr($SWP_NOMOVE, $SWP_NOSIZE, $SWP_FRAMECHANGED)) ; redraw
 
-   $connected_to = ConnectAndroidAdb(False, 60 * 1000)
-
    ;If WaitForDeviceBlueStacks2($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
    If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
    If Not $RunState Then Return
 
    If IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) Then
 	 SetLog($Android & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
-     AndroidAdbLaunchShellInstance()
 
      ConfigeBlueStacks2WindowManager()
 	 If Not $RunState Then Return
@@ -311,7 +303,6 @@ Func InitBlueStacks2($bCheckOnly = False)
    Return $bInstalled
 EndFunc
 
-#cs
 Func WaitForDeviceBlueStacks2($WaitInSec, $hTimer = 0)
    Local $cmdOutput, $connected_to, $am_ready, $process_killed, $hMyTimer
 	; Wait for Activity Manager
@@ -334,7 +325,6 @@ Func WaitForDeviceBlueStacks2($WaitInSec, $hTimer = 0)
     WEnd
 	Return False
 EndFunc
-#ce
 
 ; Called from checkMainScreen
 Func RestartBlueStacksXCoC()
@@ -438,9 +428,6 @@ Func ConfigeBlueStacks2WindowManager()
 
    ; Set expected dpi
    $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell wm density 160", $process_killed)
-
-   ; Set font size to normal
-   AndroidSetFontSizeNormal()
 EndFunc
 
 Func RebootBlueStacks2SetScreen($bOpenAndroid = True)
@@ -460,7 +447,7 @@ Func RebootBlueStacks2SetScreen($bOpenAndroid = True)
 
    If $bOpenAndroid Then
 	  ; Start Android
-	  OpenAndroid(True)
+	  OpenAndroid()
    EndIf
 
    Return True
@@ -469,20 +456,16 @@ EndFunc
 
 Func GetBlueStacksRunningInstance($bStrictCheck = True)
    WinGetAndroidHandle()
-   Local $a[2] = [$HWnD, ""]
-   Return $a
+   If $HWnD <> 0 Then Return ""
+   Return False
 EndFunc
 
 Func GetBlueStacks2RunningInstance($bStrictCheck = True)
    WinGetAndroidHandle()
-   Local $a[2] = [$HWnD, ""]
-   If $HWnD <> 0 Then Return $a
+   If $HWnD <> 0 Then Return ""
    If $bStrictCheck Then Return False
-   Local $h = WinGetHandle("Bluestacks App Player", "") ; Need fixing as BS2 Emulator can have that title when configured in registry
-   If @error = 0 Then
-	  $a[0] = $h
-   EndIf
-   Return $a
+   Local $unsupportedWindow = IsArray(ControlGetPos("Bluestacks App Player", "", "")) ; Need fixing as BS2 Emulator can have that title when configured in registry
+   Return ($unsupportedWindow ? "" : False)
 EndFunc
 
 Func GetBlueStacksProgramParameter($bAlternative = False)
@@ -517,6 +500,30 @@ Func BlueStacks2AdjustClickCoordinates(ByRef $x, ByRef $y)
    ;Local $Num = 32728
    ;$x = Int(($Num * $x) / $AndroidClientWidth)
    ;$y = Int(($Num * $y) / $AndroidClientHeight)
+EndFunc
+
+Func waitMainScreenMini()
+    If Not $RunState Then Return
+	Local $iCount = 0
+	Local $hTimer = TimerInit()
+	getBSPos() ; Update Android Window Positions
+	SetLog("Waiting for Main Screen after " & $Android & " restart", $COLOR_BLUE)
+	For $i = 0 To 60 ;30*2000 = 1 Minutes
+	    If Not $RunState Then Return
+		If $debugsetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop
+		$iCount += 1
+		_CaptureRegion()
+		If _CheckPixel($aIsMain, $bNoCapturepixel) = False Then ;Checks for Main Screen
+			If _Sleep(1000) Then Return
+			If CheckObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
+		Else
+			SetLog("CoC main window took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_GREEN)
+			Return
+		EndIf
+		_StatusUpdateTime($hTimer, "Main Screen")
+		If ($i > 60) Or ($iCount > 80) Then ExitLoop  ; If CheckObstacles forces reset, limit total time to 6 minute before Force restart BS
+	Next
+	Return SetError( 1, 0, -1)
 EndFunc
 
 #comments-start

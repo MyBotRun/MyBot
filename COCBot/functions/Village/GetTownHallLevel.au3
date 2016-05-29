@@ -16,43 +16,43 @@ Func GetTownHallLevel($bFirstTime = False)
 
 	Local $aTHInfo[3] = ["", "", ""]
 
-	If $debugSetlog = 1 Then SetLog("Town Hall Position: " & $TownHallPos[0]& ", "& $TownHallPos[1], $COLOR_PURPLE)
-	If isInsideDiamond($TownHallPos) = False Then  ; If TH pos is not known or is outside village then get new position
-		LocateTownHall(True)  ; Set flag = true for location only, or repeated loop happens
-		If isInsideDiamond($TownHallPos) Then SaveConfig()  ; save new location
+	If $debugSetlog = 1 Then SetLog("Town Hall Position: " & $TownHallPos[0] & ", " & $TownHallPos[1], $COLOR_PURPLE)
+	If isInsideDiamond($TownHallPos) = False Then ; If TH pos is not known or is outside village then get new position
+		LocateTownHall(True) ; Set flag = true for location only, or repeated loop happens
+		If isInsideDiamond($TownHallPos) Then SaveConfig() ; save new location
 		If _Sleep($iDelayGetTownHallLevel1) Then Return
 	EndIf
 
 	If $bFirstTime = True Then
-		Click($TownHallPos[0], $TownHallPos[1] + 5,1,0,"#0349")
+		Click($TownHallPos[0], $TownHallPos[1] + 5, 1, 0, "#0349")
 		If _Sleep($iDelayGetTownHallLevel2) Then Return
 	EndIf
 
-	if $debugImageSave= 1 Then  DebugImageSave("GetTHLevelView")
+	If $debugImageSave = 1 Then DebugImageSave("GetTHLevelView")
 
 	$iTownHallLevel = 0 ; Reset Townhall level
-	$aTHInfo = BuildingInfo(242,520 + $bottomOffsetY)
-	If $debugSetlog = 1 Then Setlog("$aTHInfo[0]="&$aTHInfo[0]&", $aTHInfo[1]="&$aTHInfo[1]&", $aTHInfo[2]="&$aTHInfo[2], $COLOR_PURPLE)
+	$aTHInfo = BuildingInfo(242, 520 + $bottomOffsetY)
+	If $debugSetlog = 1 Then Setlog("$aTHInfo[0]=" & $aTHInfo[0] & ", $aTHInfo[1]=" & $aTHInfo[1] & ", $aTHInfo[2]=" & $aTHInfo[2], $COLOR_PURPLE)
 	If $aTHInfo[0] > 1 Then
-		If  StringInStr($aTHInfo[1], "Town") = 0 Then
-			SetLog ("Town Hall not found! I detected a " &$aTHInfo[1] & "! Please locate again!", $COLOR_Fuchsia)
+		If StringInStr($aTHInfo[1], "Town") = 0 Then
+			SetLog("Town Hall not found! I detected a " & $aTHInfo[1] & "! Please locate again!", $COLOR_Fuchsia)
 			Return $aTHInfo
 		EndIf
 		If $aTHInfo[2] <> "" Then
-			$iTownHallLevel = $aTHInfo[2]  ; grab building level from building info array
-			SetLog ("Your Town Hall Level read as: " & $iTownHallLevel, $COLOR_GREEN)
+			$iTownHallLevel = $aTHInfo[2] ; grab building level from building info array
+			SetLog("Your Town Hall Level read as: " & $iTownHallLevel, $COLOR_GREEN)
 		Else
-			SetLog ("Your Town Hall Level was not found! Please Manually Locate", $COLOR_BLUE)
-			ClickP($aAway,1,0,"#0350")  ; Unselect TH
+			SetLog("Your Town Hall Level was not found! Please Manually Locate", $COLOR_BLUE)
+			ClickP($aAway, 1, 0, "#0350") ; Unselect TH
 			Return False
 		EndIf
 	Else
-	  SetLog ("Your Town Hall Level was not found! Please Manually Locate", $COLOR_BLUE)
-	  ClickP($aAway,1,0,"#0351")  ; Unselect TH
-	  Return False
+		SetLog("Your Town Hall Level was not found! Please Manually Locate", $COLOR_BLUE)
+		ClickP($aAway, 1, 0, "#0351") ; Unselect TH
+		Return False
 	EndIf
 
-	ClickP($aAway, 2, $iDelayGetTownHallLevel3,"#0352")  ; Unselect TH
+	ClickP($aAway, 2, $iDelayGetTownHallLevel3, "#0352") ; Unselect TH
 	Return True
 
-	EndFunc
+EndFunc   ;==>GetTownHallLevel

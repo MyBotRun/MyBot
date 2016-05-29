@@ -18,7 +18,7 @@
 Func BoostKing()
 	If $bTrainEnabled = False Then Return
 
-	If (GUICtrlRead($cmbBoostBarbarianKing) > 0) And ($boostsEnabled = 1) Then
+	If $icmbBoostBarbarianKing > 0 And ($boostsEnabled = 1) Then
 		SetLog("Boost Barbarian King...", $COLOR_BLUE)
 		If $KingAltarPos[0] = -1 Then
 			LocateKingAltar()
@@ -37,11 +37,11 @@ Func BoostKing()
 					Click(420, 375 + $midOffsetY, 1, 0, "#0464")
 					If _Sleep($iDelayBoostHeroes4) Then Return
 					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
-						_GUICtrlComboBox_SetCurSel($cmbBoostBarbarianKing, 0)
+						$icmbBoostBarbarianKing = 0
 						SetLog("Not enough gems", $COLOR_RED)
 					Else
-						_GUICtrlComboBox_SetCurSel($cmbBoostBarbarianKing, (GUICtrlRead($cmbBoostBarbarianKing) - 1))
-						SetLog('Boost completed. Remaining :' & (GUICtrlRead($cmbBoostBarbarianKing)), $COLOR_GREEN)
+						$icmbBoostBarbarianKing -= 1
+						SetLog('Boost completed. Remaining :' & $icmbBoostBarbarianKing, $COLOR_GREEN)
 					EndIf
 				Else
 					SetLog("Barbarian King is already Boosted", $COLOR_RED)
@@ -61,7 +61,7 @@ EndFunc   ;==>BoostKing
 Func BoostQueen()
 	If $bTrainEnabled = False Then Return
 
-	If (GUICtrlRead($cmbBoostArcherQueen) > 0) And ($boostsEnabled = 1) Then
+	If $icmbBoostArcherQueen > 0 And ($boostsEnabled = 1) Then
 		SetLog("Boost Archer Queen...", $COLOR_BLUE)
 		If $QueenAltarPos[0] = -1 Then
 			LocateQueenAltar()
@@ -80,11 +80,11 @@ Func BoostQueen()
 					Click(420, 375 + $midOffsetY, 1, 0, "#0564")
 					If _Sleep($iDelayBoostHeroes4) Then Return
 					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
-						_GUICtrlComboBox_SetCurSel($cmbBoostArcherQueen, 0)
+						$icmbBoostArcherQueen = 0
 						SetLog("Not enough gems", $COLOR_RED)
 					Else
-						_GUICtrlComboBox_SetCurSel($cmbBoostArcherQueen, (GUICtrlRead($cmbBoostArcherQueen) - 1))
-						SetLog('Boost completed. Remaining :' & (GUICtrlRead($cmbBoostArcherQueen)), $COLOR_GREEN)
+						$icmbBoostArcherQueen -= 1
+						SetLog('Boost completed. Remaining :' & $icmbBoostArcherQueen, $COLOR_GREEN)
 					EndIf
 				Else
 					SetLog("Archer Queen is already Boosted", $COLOR_RED)
@@ -103,7 +103,7 @@ EndFunc   ;==>BoostQueen
 Func BoostWarden()
 	If $bTrainEnabled = False Then Return
 
-	If (GUICtrlRead($cmbBoostWarden) > 0) And ($boostsEnabled = 1) Then
+	If $icmbBoostWarden > 0 And ($boostsEnabled = 1) Then
 		SetLog("Boost Grand Warden...", $COLOR_BLUE)
 		If $WardenAltarPos[0] = -1 Then
 			LocateWardenAltar()
@@ -122,11 +122,11 @@ Func BoostWarden()
 					Click(420, 375 + $midOffsetY, 1, 0, "#0464")
 					If _Sleep($iDelayBoostHeroes4) Then Return
 					If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
-						_GUICtrlComboBox_SetCurSel($cmbBoostWarden, 0)
+						$cmbBoostWarden = 0
 						SetLog("Not enough gems", $COLOR_RED)
 					Else
-						_GUICtrlComboBox_SetCurSel($cmbBoostWarden, (GUICtrlRead($cmbBoostWarden) - 1))
-						SetLog('Boost completed. Remaining :' & (GUICtrlRead($cmbBoostWarden)), $COLOR_GREEN)
+						$cmbBoostWarden -= 1
+						SetLog('Boost completed. Remaining :' & $icmbBoostWarden, $COLOR_GREEN)
 					EndIf
 				Else
 					SetLog("Grand Warden is already Boosted", $COLOR_RED)

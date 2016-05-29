@@ -18,8 +18,8 @@ Func CheckWall()
 	;$icmbWalls = _GUICtrlComboBox_GetCurSel($cmbWalls)
 
 	If _Sleep(500) Then Return
-	Local $listLvlMask[5] = [2.3, 2.95, 5, 8, -1] ; Mask levels, added value from center of base, largest mask (2.3) is tested first, -1 is entire village.
-	Local $NameLvlMask[5] = ["Core of Base", "Center of Base", "Middle of the Base", "Most of Base", "All of Base"] ; Mask Names for easier understanding
+	Local $listLvlMask[5] = [2.3, 2.95, 5, 8, -1] ; Mask levels, added value from center of base, largest mask (3) is tested first, -1 is entire village.
+	Local $NameLvlMask[5] = ["Core of Base", "Center of Base", "Middle of Base", "Most of Base", "All of Base"] ; Mask Names for easier understanding
 	Local $levelWall = $icmbWalls + 4
 	Local $listPixel[0]
 	;$Walltolerance = Number(GUICtrlRead($sldToleranceWall)) * 5

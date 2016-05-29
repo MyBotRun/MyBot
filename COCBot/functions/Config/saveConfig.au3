@@ -15,6 +15,966 @@
 
 
 Func saveConfig() ;Saves the controls settings to the config
+
+	;from GUI donate fields to variables  ----------------------------------------
+	If GUICtrlRead($chkDonateBarbarians) = $GUI_CHECKED Then
+		$ichkDonateBarbarians = 1
+	Else
+		$ichkDonateBarbarians = 0
+	EndIf
+	$sTxtDonateBarbarians = GUICtrlRead($txtDonateBarbarians)
+	$sTxtBlacklistBarbarians = GUICtrlRead($txtBlacklistBarbarians)
+	If GUICtrlRead($chkDonateArchers) = $GUI_CHECKED Then
+		$ichkDonateArchers = 1
+	Else
+		$ichkDonateArchers = 0
+	EndIf
+	$sTxtDonateArchers = GUICtrlRead($txtDonateArchers)
+	$sTxtBlacklistArchers = GUICtrlRead($txtBlacklistArchers)
+	If GUICtrlRead($chkDonateGiants) = $GUI_CHECKED Then
+		$ichkDonateGiants = 1
+	Else
+		$ichkDonateGiants = 0
+	EndIf
+	$sTxtDonateGiants = GUICtrlRead($txtDonateGiants)
+	$sTxtBlacklistGiants = GUICtrlRead($txtBlacklistGiants)
+	If GUICtrlRead($chkDonateGoblins) = $GUI_CHECKED Then
+		$ichkDonateGoblins = 1
+	Else
+		$ichkDonateGoblins = 0
+	EndIf
+	$sTxtDonateGoblins = GUICtrlRead($txtDonateGoblins)
+	$sTxtBlacklistGoblins = GUICtrlRead($txtBlacklistGoblins)
+	If GUICtrlRead($chkDonateWallBreakers) = $GUI_CHECKED Then
+		$ichkDonateWallBreakers = 1
+	Else
+		$ichkDonateWallBreakers = 0
+	EndIf
+	$sTxtDonateWallBreakers = GUICtrlRead($txtDonateWallBreakers)
+	$sTxtBlacklistWallBreakers = GUICtrlRead($txtBlacklistWallBreakers)
+	If GUICtrlRead($chkDonateBalloons) = $GUI_CHECKED Then
+		$ichkDonateBalloons = 1
+	Else
+		$ichkDonateBalloons = 0
+	EndIf
+	$sTxtDonateBalloons = GUICtrlRead($txtDonateBalloons)
+	$sTxtBlacklistBalloons = GUICtrlRead($txtBlacklistBalloons)
+	If GUICtrlRead($chkDonateWizards) = $GUI_CHECKED Then
+		$ichkDonateWizards = 1
+	Else
+		$ichkDonateWizards = 0
+	EndIf
+	$sTxtDonateWizards = GUICtrlRead($txtDonateWizards)
+	$sTxtBlacklistWizards = GUICtrlRead($txtBlacklistWizards)
+	If GUICtrlRead($chkDonateHealers) = $GUI_CHECKED Then
+		$ichkDonateHealers = 1
+	Else
+		$ichkDonateHealers = 0
+	EndIf
+	$sTxtDonateHealers = GUICtrlRead($txtDonateHealers)
+	$sTxtBlacklistHealers = GUICtrlRead($txtBlacklistHealers)
+	If GUICtrlRead($chkDonateDragons) = $GUI_CHECKED Then
+		$ichkDonateDragons = 1
+	Else
+		$ichkDonateDragons = 0
+	EndIf
+	$sTxtDonateDragons = GUICtrlRead($txtDonateDragons)
+	$sTxtBlacklistDragons = GUICtrlRead($txtBlacklistDragons)
+	If GUICtrlRead($chkDonatePekkas) = $GUI_CHECKED Then
+		$ichkDonatePekkas = 1
+	Else
+		$ichkDonatePekkas = 0
+	EndIf
+	$sTxtDonatePekkas = GUICtrlRead($txtDonatePekkas)
+	$sTxtBlacklistPekkas = GUICtrlRead($txtBlacklistPekkas)
+	If GUICtrlRead($chkDonateMinions) = $GUI_CHECKED Then
+		$ichkDonateMinions = 1
+	Else
+		$ichkDonateMinions = 0
+	EndIf
+	$sTxtDonateMinions = GUICtrlRead($txtDonateMinions)
+	$sTxtBlacklistMinions = GUICtrlRead($txtBlacklistMinions)
+	If GUICtrlRead($chkDonateHogRiders) = $GUI_CHECKED Then
+		$ichkDonateHogRiders = 1
+	Else
+		$ichkDonateHogRiders = 0
+	EndIf
+	$sTxtDonateHogRiders = GUICtrlRead($txtDonateHogRiders)
+	$sTxtBlacklistHogRiders = GUICtrlRead($txtBlacklistHogRiders)
+	If GUICtrlRead($chkDonateValkyries) = $GUI_CHECKED Then
+		$ichkDonateValkyries = 1
+	Else
+		$ichkDonateValkyries = 0
+	EndIf
+	$sTxtDonateValkyries = GUICtrlRead($txtDonateValkyries)
+	$sTxtBlacklistValkyries = GUICtrlRead($txtBlacklistValkyries)
+	If GUICtrlRead($chkDonateGolems) = $GUI_CHECKED Then
+		$ichkDonateGolems = 1
+	Else
+		$ichkDonateGolems = 0
+	EndIf
+	$sTxtDonateGolems = GUICtrlRead($txtDonateGolems)
+	$sTxtBlacklistGolems = GUICtrlRead($txtBlacklistGolems)
+	If GUICtrlRead($chkDonateWitches) = $GUI_CHECKED Then
+		$ichkDonateWitches = 1
+	Else
+		$ichkDonateWitches = 0
+	EndIf
+	$sTxtDonateWitches = GUICtrlRead($txtDonateWitches)
+	$sTxtBlacklistWitches = GUICtrlRead($txtBlacklistWitches)
+	If GUICtrlRead($chkDonateLavaHounds) = $GUI_CHECKED Then
+		$ichkDonateLavaHounds = 1
+	Else
+		$ichkDonateLavaHounds = 0
+	EndIf
+	$sTxtDonateLavaHounds = GUICtrlRead($txtDonateLavaHounds)
+	$sTxtBlacklistLavaHounds = GUICtrlRead($txtBlacklistLavaHounds)
+	If GUICtrlRead($chkDonatePoisonSpells) = $GUI_CHECKED Then
+		$ichkDonatePoisonSpells = 1
+	Else
+		$ichkDonatePoisonSpells = 0
+	EndIf
+	$sTxtDonatePoisonSpells = GUICtrlRead($txtDonatePoisonSpells)
+	$sTxtBlacklistPoisonSpells = GUICtrlRead($txtBlacklistPoisonSpells)
+	If GUICtrlRead($chkDonateEarthQuakeSpells) = $GUI_CHECKED Then
+		$ichkDonateEarthQuakeSpells = 1
+	Else
+		$ichkDonateEarthQuakeSpells = 0
+	EndIf
+	$sTxtDonateEarthQuakeSpells = GUICtrlRead($txtDonateEarthQuakeSpells)
+	$sTxtBlacklistEarthQuakeSpells = GUICtrlRead($txtBlacklistEarthQuakeSpells)
+	If GUICtrlRead($chkDonateHasteSpells) = $GUI_CHECKED Then
+		$ichkDonateHasteSpells = 1
+	Else
+		$ichkDonateHasteSpells = 0
+	EndIf
+	$sTxtDonateHasteSpells = GUICtrlRead($txtDonateHasteSpells)
+	$sTxtBlacklistHasteSpells = GUICtrlRead($txtBlacklistHasteSpells)
+	;;; Custom Combination Donate by ChiefM3
+	If GUICtrlRead($chkDonateCustom) = $GUI_CHECKED Then
+		$ichkDonateCustom = 1
+	Else
+		$ichkDonateCustom = 0
+	EndIf
+	$sTxtDonateCustom = GUICtrlRead($txtDonateCustom)
+	$sTxtBlacklistCustom = GUICtrlRead($txtBlacklistCustom)
+
+	$varDonateCustom[0][0] = _GUICtrlComboBox_GetCurSel($cmbDonateCustom1)
+	$varDonateCustom[0][1] = GUICtrlRead($txtDonateCustom1)
+	$varDonateCustom[1][0] = _GUICtrlComboBox_GetCurSel($cmbDonateCustom2)
+	$varDonateCustom[1][1] = GUICtrlRead($txtDonateCustom2)
+	$varDonateCustom[2][0] = _GUICtrlComboBox_GetCurSel($cmbDonateCustom3)
+	$varDonateCustom[2][1] = GUICtrlRead($txtDonateCustom3)
+	$sTxtBlacklist = GUICtrlRead($txtBlacklist)
+
+	If GUICtrlRead($chkDonateAllBarbarians) = $GUI_CHECKED Then
+		$ichkDonateAllBarbarians = 1
+	Else
+		$ichkDonateAllBarbarians = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllArchers) = $GUI_CHECKED Then
+		$ichkDonateAllArchers = 1
+	Else
+		$ichkDonateAllArchers = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllGiants) = $GUI_CHECKED Then
+		$ichkDonateAllGiants = 1
+	Else
+		$ichkDonateAllGiants = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllGoblins) = $GUI_CHECKED Then
+		$ichkDonateAllGoblins = 1
+	Else
+		$ichkDonateAllGoblins = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllWallBreakers) = $GUI_CHECKED Then
+		$ichkDonateAllWallBreakers = 1
+	Else
+		$ichkDonateAllWallBreakers = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllBalloons) = $GUI_CHECKED Then
+		$ichkDonateAllBalloons = 1
+	Else
+		$ichkDonateAllBalloons = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllWizards) = $GUI_CHECKED Then
+		$ichkDonateAllWizards = 1
+	Else
+		$ichkDonateAllWizards = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllHealers) = $GUI_CHECKED Then
+		$ichkDonateAllHealers = 1
+	Else
+		$ichkDonateAllHealers = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllDragons) = $GUI_CHECKED Then
+		$ichkDonateAllDragons = 1
+	Else
+		$ichkDonateAllDragons = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllPekkas) = $GUI_CHECKED Then
+		$ichkDonateAllPekkas = 1
+	Else
+		$ichkDonateAllPekkas = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllMinions) = $GUI_CHECKED Then
+		$ichkDonateAllMinions = 1
+	Else
+		$ichkDonateAllMinions = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllHogRiders) = $GUI_CHECKED Then
+		$ichkDonateAllHogRiders = 1
+	Else
+		$ichkDonateAllHogRiders = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllValkyries) = $GUI_CHECKED Then
+		$ichkDonateAllValkyries = 1
+	Else
+		$ichkDonateAllValkyries = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllGolems) = $GUI_CHECKED Then
+		$ichkDonateAllGolems = 1
+	Else
+		$ichkDonateAllGolems = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllWitches) = $GUI_CHECKED Then
+		$ichkDonateAllWitches = 1
+	Else
+		$ichkDonateAllWitches = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllLavaHounds) = $GUI_CHECKED Then
+		$ichkDonateAllLavaHounds = 1
+	Else
+		$ichkDonateAllLavaHounds = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllPoisonSpells) = $GUI_CHECKED Then
+		$ichkDonateAllPoisonSpells = 1
+	Else
+		$ichkDonateAllPoisonSpells = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllEarthQuakeSpells) = $GUI_CHECKED Then
+		$ichkDonateAllEarthQuakeSpells = 1
+	Else
+		$ichkDonateAllEarthQuakeSpells = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllHasteSpells) = $GUI_CHECKED Then
+		$ichkDonateAllHasteSpells = 1
+	Else
+		$ichkDonateAllHasteSpells = 0
+	EndIf
+	If GUICtrlRead($chkDonateAllCustom) = $GUI_CHECKED Then
+		$ichkDonateAllCustom = 1
+	Else
+		$ichkDonateAllCustom = 0
+	EndIf
+
+	; Extra Alphabets , Cyrillic.
+	If GUICtrlRead($chkExtraAlphabets) = $GUI_CHECKED Then
+		$ichkExtraAlphabets = 1
+	Else
+		$ichkExtraAlphabets = 0
+	EndIf
+
+
+	; save notify GUI -> variables -----------------------------------------------
+	;PushBullet
+	If GUICtrlRead($chkPBenabled) = $GUI_CHECKED Then
+		$PushBulletEnabled = 1
+	Else
+		$PushBulletEnabled = 0
+	EndIf
+
+	If GUICtrlRead($chkPBRemote) = $GUI_CHECKED Then
+		$pRemote = 1
+	Else
+		$pRemote = 0
+	EndIf
+
+	If GUICtrlRead($chkDeleteAllPBPushes) = $GUI_CHECKED Then
+		$iDeleteAllPBPushes = 1
+	Else
+		$iDeleteAllPBPushes = 0
+	EndIf
+
+	If GUICtrlRead($chkDeleteOldPBPushes) = $GUI_CHECKED Then
+		$ichkDeleteOldPBPushes = 1
+	Else
+		$ichkDeleteOldPBPushes = 0
+	EndIf
+
+
+	If GUICtrlRead($chkDeleteOldPBPushes) = $GUI_CHECKED Then
+		$ichkDeleteOldPBPushes = 1
+	Else
+		$ichkDeleteOldPBPushes = 0
+	EndIf
+
+	$icmbHoursPushBullet = _GUICtrlComboBox_GetCurSel($cmbHoursPushBullet)
+
+	If GUICtrlRead($chkAlertPBVMFound) = $GUI_CHECKED Then
+		$pMatchFound = 1
+	Else
+		$pMatchFound = 0
+	EndIf
+
+	If GUICtrlRead($chkAlertPBLastRaid) = $GUI_CHECKED Then
+		$pLastRaidImg = 1
+	Else
+		$pLastRaidImg = 0
+	EndIf
+
+
+	If GUICtrlRead($chkAlertPBWallUpgrade) = $GUI_CHECKED Then
+		$pWallUpgrade = 1
+	Else
+		$pWallUpgrade = 0
+	EndIf
+
+	If GUICtrlRead($chkAlertPBOOS) = $GUI_CHECKED Then
+		$pOOS = 1
+	Else
+		$pOOS = 0
+	EndIf
+
+	If GUICtrlRead($chkAlertPBOtherDevice) = $GUI_CHECKED Then
+		$pAnotherDevice = 1
+	Else
+		$pAnotherDevice = 0
+	EndIf
+
+	If GUICtrlRead($chkDeleteOldPBPushes) = $GUI_CHECKED Then
+		$ichkDeleteOldPBPushes = 1
+	Else
+		$ichkDeleteOldPBPushes = 0
+	EndIf
+
+	$PushBulletToken = GUICtrlRead($PushBulletTokenValue)
+	$iOrigPushBullet = GUICtrlRead($OrigPushBullet)
+
+
+	If GUICtrlRead($chkAlertPBLastRaidTxt) = $GUI_CHECKED Then
+		$iAlertPBLastRaidTxt = 1
+	Else
+		$iAlertPBLastRaidTxt = 0
+	EndIf
+
+	If GUICtrlRead($chkAlertPBLastAttack) = $GUI_CHECKED Then
+		$iLastAttackPB = 1
+	Else
+		$iLastAttackPB = 0
+	EndIf
+
+	If GUICtrlRead($chkAlertPBCampFull) = $GUI_CHECKED Then
+		$ichkAlertPBCampFull = 1
+	Else
+		$ichkAlertPBCampFull = 0
+	EndIf
+
+	If GUICtrlRead($chkAlertPBVillage) = $GUI_CHECKED Then
+		$iAlertPBVillage = 1
+	Else
+		$iAlertPBVillage = 0
+	EndIf
+
+	If GUICtrlRead($chkAlertPBLastAttack) = $GUI_CHECKED Then
+		$iLastAttackPB = 1
+	Else
+		$iLastAttackPB = 0
+	EndIf
+
+	If GUICtrlRead($chkAlertPBVBreak) = $GUI_CHECKED Then
+		$pTakeAbreak = 1
+	Else
+		$pTakeAbreak = 0
+	EndIf
+
+	; save upgrade buildings GUI -> Variables ------------------------------------------------------------------
+
+	If GUICtrlRead($chkLab) = $GUI_CHECKED Then
+		$ichkLab = 1
+	Else
+		$ichkLab = 0
+	EndIf
+	$icmbLaboratory = _GUICtrlComboBox_GetCurSel($cmbLaboratory)
+
+	If GUICtrlRead($chkUpgradeKing) = $GUI_CHECKED Then
+		$ichkUpgradeKing = 1
+	Else
+		$ichkUpgradeKing = 0
+	EndIf
+
+	If GUICtrlRead($chkUpgradeQueen) = $GUI_CHECKED Then
+		$ichkUpgradeQueen = 1
+	Else
+		$ichkUpgradeQueen = 0
+	EndIf
+
+	If GUICtrlRead($chkUpgradeWarden) = $GUI_CHECKED Then
+		$ichkUpgradeWarden = 1
+	Else
+		$ichkUpgradeWarden = 0
+	EndIf
+
+
+	For $iz = 0 To UBound($aUpgrades, 1) - 1 ; Apply the buildings upgrade varaible to GUI
+		If GUICtrlRead($chkbxUpgrade[$iz]) = $GUI_CHECKED Then
+			$ichkbxUpgrade[$iz] = 1
+		Else
+			$ichkbxUpgrade[$iz] = 0
+		EndIf
+		If GUICtrlRead($chkUpgrdeRepeat[$iz]) = $GUI_CHECKED Then
+			$ichkUpgrdeRepeat[$iz] = 1
+		Else
+			$ichkUpgrdeRepeat[$iz] = 0
+		EndIf
+	Next
+
+	$itxtUpgrMinGold = GUICtrlRead($txtUpgrMinGold)
+	$itxtUpgrMinElixir = GUICtrlRead($txtUpgrMinElixir)
+	$itxtUpgrMinDark = GUICtrlRead($txtUpgrMinDark)
+
+	; upgrade walls GUI -> variables ----------------------------------------------------
+
+	If GUICtrlRead($chkWalls) = $GUI_CHECKED Then
+		$ichkWalls = 1
+	Else
+		$ichkWalls = 0
+	EndIf
+
+	$itxtWallMinGold = GUICtrlRead($txtWallMinGold)
+	$itxtWallMinElixir = GUICtrlRead($txtWallMinElixir)
+
+	$iMaxNbWall = GUICtrlRead($sldMaxNbWall)
+
+	If GUICtrlRead($UseGold) = $GUI_CHECKED Then
+		$iUseStorage = 0
+	ElseIf GUICtrlRead($UseElixir) = $GUI_CHECKED Then
+		$iUseStorage = 1
+	ElseIf GUICtrlRead($UseElixirGold) = $GUI_CHECKED Then
+		$iUseStorage = 2
+	EndIf
+
+	$itxtWall04ST = GUICtrlRead($txtWall04ST)
+	$itxtWall05ST = GUICtrlRead($txtWall05ST)
+	$itxtWall06ST = GUICtrlRead($txtWall06ST)
+	$itxtWall07ST = GUICtrlRead($txtWall07ST)
+	$itxtWall08ST = GUICtrlRead($txtWall08ST)
+	$itxtWall09ST = GUICtrlRead($txtWall09ST)
+	$itxtWall10ST = GUICtrlRead($txtWall10ST)
+	$itxtWall11ST = GUICtrlRead($txtWall11ST)
+
+	If GUICtrlRead($chkSaveWallBldr) = $GUI_CHECKED Then
+		$iSaveWallBldr = 1
+	Else
+		$iSaveWallBldr = 0
+	EndIf
+
+	$icmbWalls = _GUICtrlComboBox_GetCurSel($cmbWalls)
+
+
+	; unbreakable gui -> variables ---------------------------------------------------
+	$iUnbreakableWait = GUICtrlRead($txtUnbreakable)
+	$iUnBrkMinGold = GUICtrlRead($txtUnBrkMinGold)
+	$iUnBrkMinElixir = GUICtrlRead($txtUnBrkMinElixir)
+	$iUnBrkMinDark = GUICtrlRead($txtUnBrkMinDark)
+	$iUnBrkMaxGold = GUICtrlRead($txtUnBrkMaxGold)
+	$iUnBrkMaxElixir = GUICtrlRead($txtUnBrkMaxElixir)
+	$iUnBrkMaxDark = GUICtrlRead($txtUnBrkMaxDark)
+	If GUICtrlRead($chkUnbreakable) = $GUI_CHECKED Then
+		$iUnbreakableMode = 1
+	Else
+		$iUnbreakableMode = 0
+	EndIf
+
+	; halt&resume gui -> variables ---------------------------------------------------
+	If GUICtrlRead($chkBotStop) = $GUI_CHECKED Then
+		$ichkBotStop = 1
+	Else
+		$ichkBotStop = 0
+	EndIf
+	$icmbBotCommand = _GUICtrlComboBox_GetCurSel($cmbBotCommand)
+	$icmbBotCond = _GUICtrlComboBox_GetCurSel($cmbBotCond)
+	$icmbHoursStop = _GUICtrlComboBox_GetCurSel($cmbHoursStop)
+
+	$sTimeWakeUp = GUICtrlRead($txtTimeWakeUp)
+
+	$itxtRestartGold = GUICtrlRead($txtRestartGold)
+	$itxtRestartElixir = GUICtrlRead($txtRestartElixir)
+	$itxtRestartDark = GUICtrlRead($txtRestartDark)
+
+	; bot options gui -> variables ----------------------------------------------------
+	If GUICtrlRead($chkVersion) = $GUI_CHECKED Then
+		$ichkVersion = 1
+	Else
+		$ichkVersion = 0
+	EndIf
+	If GUICtrlRead($chkDeleteLogs) = $GUI_CHECKED Then
+		$ichkDeleteLogs = 1
+	Else
+		$ichkDeleteLogs = 0
+	EndIf
+	$iDeleteLogsDays = GUICtrlRead($txtDeleteLogsDays)
+	If GUICtrlRead($chkDeleteTemp) = $GUI_CHECKED Then
+		$ichkDeleteTemp = 1
+	Else
+		$ichkDeleteTemp = 0
+	EndIf
+	$iDeleteTempDays = GUICtrlRead($txtDeleteTempDays)
+	If GUICtrlRead($chkDeleteLoots) = $GUI_CHECKED Then
+		$ichkDeleteLoots = 1
+	Else
+		$ichkDeleteLoots = 0
+	EndIf
+	$iDeleteLootsDays = GUICtrlRead($txtDeleteLootsDays)
+
+	If GUICtrlRead($chkAutoStart) = $GUI_CHECKED Then
+		$ichkAutoStart = 1
+	Else
+		$ichkAutoStart = 0
+	EndIf
+	$ichkAutoStartDelay = GUICtrlRead($txtAutoStartDelay)
+	If GUICtrlRead($ChkLanguage) = $GUI_CHECKED Then
+		$ichkLanguage = 1
+	Else
+		$ichkLanguage = 0
+	EndIf
+	If GUICtrlRead($chkDisposeWindows) = $GUI_CHECKED Then
+		$iDisposeWindows = 1
+	Else
+		$iDisposeWindows = 0
+	EndIf
+	$icmbDisposeWindowsPos = _GUICtrlComboBox_GetCurSel($cmbDisposeWindowsCond)
+	$iWAOffsetX = GUICtrlRead($txtWAOffsetX)
+	$iWAOffsetY = GUICtrlRead($txtWAOffsetY)
+
+	If GUICtrlRead($chkDebugClick) = $GUI_CHECKED Then
+		$debugClick = 1
+	Else
+		$debugClick = 0
+	EndIf
+	If $devmode = 1 Then
+		If GUICtrlRead($chkDebugSetlog) = $GUI_CHECKED Then
+			$DebugSetlog = 1
+		Else
+			$DebugSetlog = 0
+		EndIf
+		If GUICtrlRead($chkDebugOcr) = $GUI_CHECKED Then
+			$debugOcr = 1
+		Else
+			$debugOcr = 0
+		EndIf
+		If GUICtrlRead($chkDebugImageSave) = $GUI_CHECKED Then
+			$DebugImageSave = 1
+		Else
+			$DebugImageSave = 0
+		EndIf
+		If GUICtrlRead($chkdebugBuildingPos) = $GUI_CHECKED Then
+			$debugBuildingPos = 1
+		Else
+			$debugBuildingPos = 0
+		EndIf
+		If GUICtrlRead($chkdebugTrain) = $GUI_CHECKED Then
+			$debugsetlogTrain = 1
+		Else
+			$debugsetlogTrain = 0
+		EndIf
+	Else
+		$DebugSetlog = 0
+		$debugOcr = 0
+		$DebugImageSave = 0
+		$debugBuildingPos = 0
+		$debugsetlogTrain = 0
+	EndIf
+
+	If GUICtrlRead($chkTotalCampForced) = $GUI_CHECKED Then
+		$ichkTotalCampForced = 1
+	Else
+		$ichkTotalCampForced = 0
+	EndIf
+	$iValueTotalCampForced = GUICtrlRead($txtTotalCampForced)
+
+	If GUICtrlRead($chkSinglePBTForced) = $GUI_CHECKED Then
+		$ichkSinglePBTForced = 1
+	Else
+		$ichkSinglePBTForced = 0
+	EndIf
+	$iValueSinglePBTimeForced = GUICtrlRead($txtSinglePBTimeForced)
+	$iValuePBTimeForcedExit = GUICtrlRead($txtPBTimeForcedExit)
+
+	If GUICtrlRead($chkScreenshotType) = $GUI_CHECKED Then
+		$iScreenshotType = 1
+	Else
+		$iScreenshotType = 0
+	EndIf
+	If GUICtrlRead($chkScreenshotHideName) = $GUI_CHECKED Then
+		$ichkScreenshotHideName = 1
+	Else
+		$ichkScreenshotHideName = 0
+	EndIf
+	$iVSDelay = GUICtrlRead($sldVSDelay)
+	$iMaxVSDelay = GUICtrlRead($sldMaxVSDelay)
+	$isldTrainITDelay = GUICtrlRead($sldTrainITDelay)
+
+	If GUICtrlRead($chkAlertSearch) = $GUI_CHECKED Then
+		$AlertSearch = 1
+	Else
+		$AlertSearch = 0
+	EndIf
+
+	; boost barracks gui -> variables -------------------------------------------------
+	$icmbQuantBoostBarracks = GUICtrlRead($cmbQuantBoostBarracks)
+	$icmbBoostBarracks = GUICtrlRead($cmbBoostBarracks)
+	$icmbBoostSpellFactory = GUICtrlRead($cmbBoostSpellFactory)
+	$icmbBoostDarkSpellFactory = GUICtrlRead($cmbBoostDarkSpellFactory)
+	$icmbBoostBarbarianKing = GUICtrlRead($cmbBoostBarbarianKing)
+	$icmbBoostArcherQueen = GUICtrlRead($cmbBoostArcherQueen)
+	$icmbBoostWarden = GUICtrlRead($cmbBoostWarden)
+
+	For $i = 0 To 23
+		If GUICtrlRead(Eval("chkBoostBarracksHours" & $i)) = $GUI_CHECKED Then
+			$iPlannedBoostBarracksHours[$i] = 1
+		Else
+			$iPlannedBoostBarracksHours[$i] = 0
+		EndIf
+	Next
+
+	; reduction gui -> variables ------------------------------------------------------
+	$ReduceCount = GUICtrlRead($txtSearchReduceCount)
+	$ReduceGold = GUICtrlRead($txtSearchReduceGold)
+	$ReduceElixir = GUICtrlRead($txtSearchReduceElixir)
+	$ReduceGoldPlusElixir = GUICtrlRead($txtSearchReduceGoldPlusElixir)
+	$ReduceDark = GUICtrlRead($txtSearchReduceDark)
+	$ReduceTrophy = GUICtrlRead($txtSearchReduceTrophy)
+
+	; th bully gui -> variables -------------------------------------------------------
+	$ATBullyMode = GUICtrlRead($txtATBullyMode)
+	$YourTH = _GUICtrlComboBox_GetCurSel($cmbYourTH)
+	If GUICtrlRead($radUseDBAttack) = $GUI_CHECKED Then
+		$iTHBullyAttackMode = 0
+	Else
+		$iTHBullyAttackMode = 1
+	EndIf
+	; tropies gui -> variables ---------------------------------------------------------
+	$itxtMaxTrophy = GUICtrlRead($txtMaxTrophy)
+	$itxtdropTrophy = GUICtrlRead($txtdropTrophy)
+	If GUICtrlRead($chkTrophyRange) = $GUI_CHECKED Then
+		$iChkTrophyRange = 1
+	Else
+		$iChkTrophyRange = 0
+	EndIf
+	If GUICtrlRead($chkTrophyHeroes) = $GUI_CHECKED Then
+		$iChkTrophyHeroes = 1
+	Else
+		$iChkTrophyHeroes = 0
+	EndIf
+	If GUICtrlRead($chkTrophyAtkDead) = $GUI_CHECKED Then
+		$iChkTrophyAtkDead = 1
+	Else
+		$iChkTrophyAtkDead = 0
+	EndIf
+	$itxtDTArmyMin = GUICtrlRead($txtDTArmyMin)
+
+	; weak base gui -> variables ----------------------------------------------------
+	$iCmbWeakMortar[$DB] = _GUICtrlComboBox_GetCurSel($cmbDBWeakMortar)
+	$iCmbWeakWizTower[$DB] = _GUICtrlComboBox_GetCurSel($cmbDBWeakWizTower)
+	$iCmbWeakMortar[$LB] = _GUICtrlComboBox_GetCurSel($cmbABWeakMortar)
+	$iCmbWeakWizTower[$LB] = _GUICtrlComboBox_GetCurSel($cmbABWeakWizTower)
+
+	; end battle AB options gui -> variables ----------------------------------------
+	If GUICtrlRead($chkDESideEB) = $GUI_CHECKED Then
+		$DESideEB = 1
+	Else
+		$DESideEB = 0
+	EndIf
+	$DELowEndMin = GUICtrlRead($txtDELowEndMin)
+	If GUICtrlRead($chkDisableOtherEBO) = $GUI_CHECKED Then
+		$DisableOtherEBO = 1
+	Else
+		$DisableOtherEBO = 0
+	EndIf
+	If GUICtrlRead($chkDEEndAq) = $GUI_CHECKED Then
+		$DEEndAq = 1
+	Else
+		$DEEndAq = 0
+	EndIf
+	If GUICtrlRead($chkDEEndBk) = $GUI_CHECKED Then
+		$DEEndBk = 1
+	Else
+		$DEEndBk = 0
+	EndIf
+	If GUICtrlRead($chkDEEndOneStar) = $GUI_CHECKED Then
+		$DEEndOneStar = 1
+	Else
+		$DEEndOneStar = 0
+	EndIf
+
+	; Milking GUI -> variables ------------------------------------------------------
+	;1 Elixir Collectors Minimum Level
+	Local $TempMilkFarmElixirParam = ""
+	For $i = 0 To 8
+		$TempMilkFarmElixirParam &= _GUICtrlComboBox_GetCurSel(Eval("cmbMilkLvl" & $i + 4)) - 1 & "|"
+	Next
+	$MilkFarmElixirParam = StringSplit(StringLeft($TempMilkFarmElixirParam, StringLen($TempMilkFarmElixirParam) - 1), "|", 2)
+
+	;2. If Elixir Collectors Found, Then
+	If GUICtrlRead($chkAtkElixirExtractors) = $GUI_CHECKED Then
+		$MilkFarmLocateElixir = 1
+	Else
+		$MilkFarmLocateElixir = 0
+	EndIf
+
+	If GUICtrlRead($chkAtkGoldMines) = $GUI_CHECKED Then
+		$MilkFarmLocateMine = 1
+	Else
+		$MilkFarmLocateMine = 0
+	EndIf
+
+	$MilkFarmMineParam = _GUICtrlComboBox_GetCurSel($cmbAtkGoldMinesLevel) + 1
+
+	If GUICtrlRead($chkAtkDarkDrills) = $GUI_CHECKED Then
+		$MilkFarmLocateDrill = 1
+	Else
+		$MilkFarmLocateDrill = 0
+	EndIf
+
+	$MilkFarmAttackDarkDrills = _GUICtrlComboBox_GetCurSel($cmbAtkDarkDrillsLevel) + 1
+
+	;3. Only Attack If
+	$MilkFarmResMaxTilesFromBorder = _GUICtrlComboBox_GetCurSel($cmbRedlineResDistance)
+
+	If GUICtrlRead($chkAttackMinesifGold) = $GUI_CHECKED Then
+		$MilkFarmAttackGoldMines = 1
+	Else
+		$MilkFarmAttackGoldMines = 0
+	EndIf
+
+	If GUICtrlRead($chkAttackMinesifElixir) = $GUI_CHECKED Then
+		$MilkFarmAttackElixirExtractors = 1
+	Else
+		$MilkFarmAttackElixirExtractors = 0
+	EndIf
+
+	If GUICtrlRead($chkAttackMinesifDarkElixir) = $GUI_CHECKED Then
+		$MilkFarmAttackDarkDrills = 1
+	Else
+		$MilkFarmAttackDarkDrills = 0
+	EndIf
+
+	$MilkFarmLimitGold = GUICtrlRead($txtAttackMinesIfGold)
+	$MilkFarmLimitElixir = GUICtrlRead($txtAttackMinesifElixir)
+	$MilkFarmLimitDark = GUICtrlRead($txtAttackMinesifDarkElixir)
+
+	;4 Troops to Use For Each Resource
+	$MilkFarmTroopForWaveMin = GUICtrlRead($txtLowerXWave)
+	$MilkFarmTroopForWaveMax = GUICtrlRead($txtUpperXWave)
+	$MilkFarmTroopMaxWaves = GUICtrlRead($txtMaxWaves)
+	$MilkFarmDelayFromWavesMin = GUICtrlRead($txtLowerDelayWaves)
+	$MilkFarmDelayFromWavesMax = GUICtrlRead($txtUpperDelayWaves)
+
+	;5 Snipe Outside TH
+
+
+	$MilkFarmTHMaxTilesFromBorder = GUICtrlRead($txtMaxTilesMilk)
+
+	$MilkFarmAlgorithmTh = GUICtrlRead($cmbMilkSnipeAlgorithm)
+
+	If GUICtrlRead($chkSnipeIfNoElixir) = $GUI_CHECKED Then
+		$MilkFarmSnipeEvenIfNoExtractorsFound = 1
+	Else
+		$MilkFarmSnipeEvenIfNoExtractorsFound = 0
+	EndIf
+
+	If $devmode = 1 Then
+
+		If GUICtrlRead($chkMilkingDebugIMG) = $GUI_CHECKED Then
+			$debugresourcesoffset = 1
+		Else
+			$debugresourcesoffset = 0
+		EndIf
+
+		If GUICtrlRead($chkMilkingDebugVillage) = $GUI_CHECKED Then
+			$debugMilkingIMGmake = 1
+		Else
+			$debugMilkingIMGmake = 0
+		EndIf
+
+		If GUICtrlRead($chkMilkingDebugFullSearch) = $GUI_CHECKED Then
+			$continuesearchelixirdebug = 1
+		Else
+			$continuesearchelixirdebug = 0
+		EndIf
+
+
+	EndIf
+
+	If GUICtrlRead($chkMilkFarmForcetolerance) = $GUI_CHECKED Then
+		$MilkFarmForcetolerance = 1
+	Else
+		$MilkFarmForcetolerance = 0
+	EndIf
+	$MilkFarmForcetolerancenormal = GUICtrlRead($txtMilkFarmForcetolerancenormal)
+	$MilkFarmForcetoleranceboosted = GUICtrlRead($txtMilkFarmForcetoleranceboosted)
+	$MilkFarmForcetolerancedestroyed = GUICtrlRead($txtMilkFarmForcetolerancedestroyed)
+
+
+	$MilkAttackType = _GUICtrlComboBox_GetCurSel($cmbMilkAttackType)
+
+	If GUICtrlRead($chkStructureDestroyedBeforeAttack) = $GUI_CHECKED Then
+		$MilkingAttackCheckStructureDestroyedBeforeAttack = 1
+	Else
+		$MilkingAttackCheckStructureDestroyedBeforeAttack = 0
+	EndIf
+
+	If GUICtrlRead($chkStructureDestroyedAfterAttack) = $GUI_CHECKED Then
+		$MilkingAttackCheckStructureDestroyedAfterAttack = 1
+	Else
+		$MilkingAttackCheckStructureDestroyedAfterAttack = 0
+	EndIf
+
+	$MilkingAttackDropGoblinAlgorithm = _GUICtrlComboBox_GetCurSel($cmbMilkingAttackDropGoblinAlgorithm)
+	$MilkingAttackStructureOrder = _GUICtrlComboBox_GetCurSel($cmbStructureOrder)
+
+
+
+	;scripted attack save
+	If GUICtrlRead($chkMilkAfterAttackScripted) = $GUI_CHECKED Then
+		$MilkAttackAfterScriptedAtk = 1
+	Else
+		$MilkAttackAfterScriptedAtk = 0
+	EndIf
+
+	Local $indexofscript = _GUICtrlComboBox_GetCurSel($cmbMilkingCSVScriptName)
+	Local $scriptname
+	_GUICtrlComboBox_GetLBText($cmbMilkingCSVScriptName, $indexofscript, $scriptname)
+	$MilkAttackCSVscript = $scriptname
+
+	If GUICtrlRead($chkMilkAfterAttackTHSnipe) = $GUI_CHECKED Then
+		$MilkAttackAfterTHSnipe = 1
+	Else
+		$MilkAttackAfterTHSnipe = 0
+	EndIf
+
+	; standard attack options ----------------------------------------------------------------
+	$iCmbStandardAlgorithm[$DB] = _GUICtrlComboBox_GetCurSel($cmbStandardAlgorithmDB)
+	$iChkDeploySettings[$DB] = _GUICtrlComboBox_GetCurSel($cmbDeployDB)
+	$iCmbUnitDelay[$DB] = _GUICtrlComboBox_GetCurSel($cmbUnitDelayDB)
+	$iCmbWaveDelay[$DB] = _GUICtrlComboBox_GetCurSel($cmbWaveDelayDB)
+	If GUICtrlRead($chkRandomSpeedAtkDB) = $GUI_CHECKED Then
+		$iChkRandomspeedatk[$DB] = 1
+	Else
+		$iChkRandomspeedatk[$DB] = 0
+	EndIf
+	If GUICtrlRead($chkSmartAttackRedAreaDB) = $GUI_CHECKED Then
+		$iChkRedArea[$DB] = 1
+	Else
+		$iChkRedArea[$DB] = 0
+	EndIf
+
+	$iCmbSmartDeploy[$DB] = _GUICtrlComboBox_GetCurSel($cmbSmartDeployDB)
+
+	If GUICtrlRead($chkAttackNearGoldMinEDB) = $GUI_CHECKED Then
+		$iChkSmartAttack[$DB][0] = 1
+	Else
+		$iChkSmartAttack[$DB][0] = 0
+	EndIf
+	If GUICtrlRead($chkAttackNearElixirCollectorDB) = $GUI_CHECKED Then
+		$iChkSmartAttack[$DB][1] = 1
+	Else
+		$iChkSmartAttack[$DB][1] = 0
+	EndIf
+	If GUICtrlRead($chkAttackNearDarkElixirDrillDB) = $GUI_CHECKED Then
+		$iChkSmartAttack[$DB][2] = 1
+	Else
+		$iChkSmartAttack[$DB][2] = 0
+	EndIf
+
+	If GUICtrlRead($chkAttackTH) = $GUI_CHECKED Then
+		$chkATH = 1
+	Else
+		$chkATH = 0
+	EndIf
+
+	$iCmbStandardAlgorithm[$LB] = _GUICtrlComboBox_GetCurSel($cmbStandardAlgorithmAB)
+	$iChkDeploySettings[$LB] = _GUICtrlComboBox_GetCurSel($cmbDeployAB)
+	$iCmbUnitDelay[$LB] = _GUICtrlComboBox_GetCurSel($cmbUnitDelayAB)
+	$iCmbWaveDelay[$LB] = _GUICtrlComboBox_GetCurSel($cmbWaveDelayAB)
+	If GUICtrlRead($chkRandomSpeedAtkAB) = $GUI_CHECKED Then
+		$iChkRandomspeedatk[$LB] = 1
+	Else
+		$iChkRandomspeedatk[$LB] = 0
+	EndIf
+	If GUICtrlRead($chkSmartAttackRedAreaAB) = $GUI_CHECKED Then
+		$iChkRedArea[$LB] = 1
+	Else
+		$iChkRedArea[$LB] = 0
+	EndIf
+
+	$iCmbSmartDeploy[$LB] = _GUICtrlComboBox_GetCurSel($cmbSmartDeployAB)
+
+	If GUICtrlRead($chkAttackNearGoldMineAB) = $GUI_CHECKED Then
+		$iChkSmartAttack[$LB][0] = 1
+	Else
+		$iChkSmartAttack[$LB][0] = 0
+	EndIf
+	If GUICtrlRead($chkAttackNearElixirCollectorAB) = $GUI_CHECKED Then
+		$iChkSmartAttack[$LB][1] = 1
+	Else
+		$iChkSmartAttack[$LB][1] = 0
+	EndIf
+	If GUICtrlRead($chkAttackNearDarkElixirDrillAB) = $GUI_CHECKED Then
+		$iChkSmartAttack[$LB][2] = 1
+	Else
+		$iChkSmartAttack[$LB][2] = 0
+	EndIf
+
+	; attackcsv gui -> variables--------------------------------------------------------
+	Local $indexofscript = _GUICtrlComboBox_GetCurSel($cmbScriptNameDB)
+	Local $scriptname
+	_GUICtrlComboBox_GetLBText($cmbScriptNameDB, $indexofscript, $scriptname)
+	$scmbDBScriptName = $scriptname
+
+	Local $indexofscript = _GUICtrlComboBox_GetCurSel($cmbScriptNameAB)
+	Local $scriptname
+	_GUICtrlComboBox_GetLBText($cmbScriptNameAB, $indexofscript, $scriptname)
+	$scmbABScriptName = $scriptname
+
+	If $devmode = 1 Then
+		If GUICtrlRead($chkmakeIMGCSV) = $GUI_CHECKED Then
+			$makeIMGCSV = 1
+		Else
+			$makeIMGCSV = 0
+		EndIf
+	EndIf
+
+	SetDebugLog("Save Config " & $config)
+
+	; collectors gui -> variables --------------------------------------------------
+	IniWriteS($config, "collectors", "lvl6Enabled", $chkLvl6Enabled)
+	IniWriteS($config, "collectors", "lvl7Enabled", $chkLvl7Enabled)
+	IniWriteS($config, "collectors", "lvl8Enabled", $chkLvl8Enabled)
+	IniWriteS($config, "collectors", "lvl9Enabled", $chkLvl9Enabled)
+	IniWriteS($config, "collectors", "lvl10Enabled", $chkLvl10Enabled)
+	IniWriteS($config, "collectors", "lvl11Enabled", $chkLvl11Enabled)
+	IniWriteS($config, "collectors", "lvl12Enabled", $chkLvl12Enabled)
+	IniWriteS($config, "collectors", "lvl6fill", $cmbLvl6Fill)
+	IniWriteS($config, "collectors", "lvl7fill", $cmbLvl7Fill)
+	IniWriteS($config, "collectors", "lvl8fill", $cmbLvl8Fill)
+	IniWriteS($config, "collectors", "lvl9fill", $cmbLvl9Fill)
+	IniWriteS($config, "collectors", "lvl10fill", $cmbLvl10Fill)
+	IniWriteS($config, "collectors", "lvl11fill", $cmbLvl11Fill)
+	IniWriteS($config, "collectors", "lvl12fill", $cmbLvl12Fill)
+	IniWriteS($config, "collectors", "tolerance", $toleranceOffset)
+
+	; replayshare GUI -> variables -------------------------------------------------
+	$iShareminGold = GUICtrlRead($txtShareMinGold)
+	$iShareminElixir = GUICtrlRead($txtShareMinElixir)
+	$iShareminDark = GUICtrlRead($txtShareMinDark)
+	$sShareMessage = GUICtrlRead($txtShareMessage)
+
+	; Write the stats arrays to the stat files
+	saveWeakBaseStats()
+
+
 	;General Settings--------------------------------------------------------------------------
 
 	Local $hFile = -1
@@ -22,328 +982,391 @@ Func saveConfig() ;Saves the controls settings to the config
 
 	Local $frmBotPos = WinGetPos($sBotTitle)
 
-	;IniWrite($config, "general", "cmbProfile", _GUICtrlComboBox_GetCurSel($cmbProfile)) ; Not needed with new profile system
-	IniWrite($config, "general", "frmBotPosX", $frmBotPos[0])
-	IniWrite($config, "general", "frmBotPosY", $frmBotPos[1])
-	;IniWrite($config, "general", "villageName", GUICtrlRead($txtVillageName)) ; Not needed with new profile system
+	IniWriteS($config, "general", "cmbProfile", _GUICtrlComboBox_GetCurSel($cmbProfile))
+	IniWriteS($config, "general", "frmBotPosX", $frmBotPos[0])
+	IniWriteS($config, "general", "frmBotPosY", $frmBotPos[1])
+	IniWriteS($config, "general", "villageName", GUICtrlRead($txtVillageName))
 
-	IniWrite($config, "general", "logstyle", _GUICtrlComboBox_GetCurSel($cmbLog))
-	$DPos = ControlGetPos($frmBot, "", $divider)
-	IniWrite($config, "general", "LogDividerY", $DPos[1])
+	IniWriteS($config, "general", "logstyle", _GUICtrlComboBox_GetCurSel($cmbLog))
+	$DPos = ControlGetPos($hGUI_LOG, "", $divider)
+	IniWriteS($config, "general", "LogDividerY", $DPos[1] - $_GUI_CHILD_TOP)
 
-	If GUICtrlRead($chkAutoStart) = $GUI_CHECKED Then
-		IniWrite($config, "general", "AutoStart", 1)
-	Else
-		IniWrite($config, "general", "AutoStart", 0)
-	EndIf
-	IniWrite($config, "general", "AutoStartDelay", GUICtrlRead($txtAutostartDelay))
+	IniWriteS($config, "general", "AutoStart", $ichkAutoStart)
+	IniWriteS($config, "general", "AutoStartDelay", $ichkAutoStartDelay)
 
 
 
 	If GUICtrlRead($chkBackground) = $GUI_CHECKED Then
-		IniWrite($config, "general", "Background", 1)
+		IniWriteS($config, "general", "Background", 1)
 	Else
-		IniWrite($config, "general", "Background", 0)
+		IniWriteS($config, "general", "Background", 0)
 	EndIf
 
-	If GUICtrlRead($chkBotStop) = $GUI_CHECKED Then
-		IniWrite($config, "general", "BotStop", 1)
-	Else
-		IniWrite($config, "general", "BotStop", 0)
-	EndIf
+	;Halt bot conditions
+	IniWriteS($config, "general", "BotStop", $ichkBotStop)
+	IniWriteS($config, "general", "Command", $icmbBotCommand)
+	IniWriteS($config, "general", "Cond", $icmbBotCond)
+	IniWriteS($config, "general", "Hour", $icmbHoursStop)
 
-	If GUICtrlRead($chkDisposeWindows) = $GUI_CHECKED Then
-		IniWrite($config, "general", "DisposeWindows", 1)
-	Else
-		IniWrite($config, "general", "DisposeWindows", 0)
-	EndIf
-	IniWrite($config, "general", "DisposeWindowsPos", _GUICtrlComboBox_GetCurSel($cmbDisposeWindowsCond))
 
-	IniWrite($config, "general", "Command", _GUICtrlComboBox_GetCurSel($cmbBotCommand))
-	IniWrite($config, "general", "Cond", _GUICtrlComboBox_GetCurSel($cmbBotCond))
-	IniWrite($config, "general", "Hour", _GUICtrlComboBox_GetCurSel($cmbHoursStop))
+	IniWriteS($config, "general", "DisposeWindows", $iDisposeWindows)
+	IniWriteS($config, "general", "DisposeWindowsPos", $icmbDisposeWindowsPos)
+
+	IniWriteS($config, "general", "GUIStyle", $iGUIStyle)
+
 
 
 	;Search Settings------------------------------------------------------------------------
 
-	IniWrite($config, "search", "SearchMode", _GUICtrlComboBox_GetCurSel($cmbSearchMode))
-	If GUICtrlRead($chkAlertSearch) = $GUI_CHECKED Then
-		IniWrite($config, "search", "AlertSearch", 1)
-	Else
-		IniWrite($config, "search", "AlertSearch", 0)
-	EndIf
+	IniWriteS($config, "general", "AlertSearch", $AlertSearch)
 
-	; deadbase
-	If GUICtrlRead($chkDBEnableAfter) = $GUI_CHECKED Then
-		IniWrite($config, "search", "DBEnableAfter", 1)
-	Else
-		IniWrite($config, "search", "DBEnableAfter", 0)
-	EndIf
-
-	IniWrite($config, "search", "DBMeetGE", _GUICtrlComboBox_GetCurSel($cmbDBMeetGE))
+	IniWriteS($config, "search", "DBMeetGE", _GUICtrlComboBox_GetCurSel($cmbDBMeetGE))
 
 	If GUICtrlRead($chkDBMeetDE) = $GUI_CHECKED Then
-		IniWrite($config, "search", "DBMeetDE", 1)
+		IniWriteS($config, "search", "DBMeetDE", 1)
 	Else
-		IniWrite($config, "search", "DBMeetDE", 0)
+		IniWriteS($config, "search", "DBMeetDE", 0)
 	EndIf
 
 	If GUICtrlRead($chkDBMeetTrophy) = $GUI_CHECKED Then
-		IniWrite($config, "search", "DBMeetTrophy", 1)
+		IniWriteS($config, "search", "DBMeetTrophy", 1)
 	Else
-		IniWrite($config, "search", "DBMeetTrophy", 0)
+		IniWriteS($config, "search", "DBMeetTrophy", 0)
 	EndIf
 
 	If GUICtrlRead($chkDBMeetTH) = $GUI_CHECKED Then
-		IniWrite($config, "search", "DBMeetTH", 1)
+		IniWriteS($config, "search", "DBMeetTH", 1)
 	Else
-		IniWrite($config, "search", "DBMeetTH", 0)
+		IniWriteS($config, "search", "DBMeetTH", 0)
 	EndIf
 
 	If GUICtrlRead($chkDBMeetTHO) = $GUI_CHECKED Then
-		IniWrite($config, "search", "DBMeetTHO", 1)
+		IniWriteS($config, "search", "DBMeetTHO", 1)
 	Else
-		IniWrite($config, "search", "DBMeetTHO", 0)
+		IniWriteS($config, "search", "DBMeetTHO", 0)
 	EndIf
 
 	If GUICtrlRead($chkDBWeakBase) = $GUI_CHECKED Then
-		IniWrite($config, "search", "DBWeakBase", 1)
+		IniWriteS($config, "search", "DBWeakBase", 1)
 	Else
-		IniWrite($config, "search", "DBWeakBase", 0)
+		IniWriteS($config, "search", "DBWeakBase", 0)
 	EndIf
 
 	If GUICtrlRead($chkDBMeetOne) = $GUI_CHECKED Then
-		IniWrite($config, "search", "DBMeetOne", 1)
+		IniWriteS($config, "search", "DBMeetOne", 1)
 	Else
-		IniWrite($config, "search", "DBMeetOne", 0)
+		IniWriteS($config, "search", "DBMeetOne", 0)
 	EndIf
 
-	IniWrite($config, "search", "DBEnableAfterCount", GUICtrlRead($txtDBEnableAfter))
-	IniWrite($config, "search", "DBsearchGold", GUICtrlRead($txtDBMinGold))
-	IniWrite($config, "search", "DBsearchElixir", GUICtrlRead($txtDBMinElixir))
-	IniWrite($config, "search", "DBsearchGoldPlusElixir", GUICtrlRead($txtDBMinGoldPlusElixir))
-	IniWrite($config, "search", "DBsearchDark", GUICtrlRead($txtDBMinDarkElixir))
-	IniWrite($config, "search", "DBsearchTrophy", GUICtrlRead($txtDBMinTrophy))
-	IniWrite($config, "search", "DBTHLevel", _GUICtrlComboBox_GetCurSel($cmbDBTH))
-	IniWrite($config, "search", "DBWeakMortar", _GUICtrlComboBox_GetCurSel($cmbDBWeakMortar))
-	IniWrite($config, "search", "DBWeakWizTower", _GUICtrlComboBox_GetCurSel($cmbDBWeakWizTower))
+	IniWriteS($config, "search", "DBEnableAfterCount", GUICtrlRead($txtDBSearchesMin))
+	IniWriteS($config, "search", "DBEnableBeforeCount", GUICtrlRead($txtDBSearchesMax))
+	IniWriteS($config, "search", "DBEnableAfterTropies", GUICtrlRead($txtDBTropiesMin))
+	IniWriteS($config, "search", "DBEnableBeforeTropies", GUICtrlRead($txtDBTropiesMax))
+	IniWriteS($config, "search", "DBEnableAfterArmyCamps", GUICtrlRead($txtDBArmyCamps))
+	IniWriteS($config, "search", "DBsearchGold", GUICtrlRead($txtDBMinGold))
+	IniWriteS($config, "search", "DBsearchElixir", GUICtrlRead($txtDBMinElixir))
+	IniWriteS($config, "search", "DBsearchGoldPlusElixir", GUICtrlRead($txtDBMinGoldPlusElixir))
+	IniWriteS($config, "search", "DBsearchDark", GUICtrlRead($txtDBMinDarkElixir))
+	IniWriteS($config, "search", "DBsearchTrophy", GUICtrlRead($txtDBMinTrophy))
+	IniWriteS($config, "search", "DBTHLevel", _GUICtrlComboBox_GetCurSel($cmbDBTH))
 
-	;any base
-	If GUICtrlRead($chkABEnableAfter) = $GUI_CHECKED Then
-		IniWrite($config, "search", "ABEnableAfter", 1)
+	IniWriteS($config, "search", "DBWeakMortar", $iCmbWeakMortar[$DB])
+	IniWriteS($config, "search", "DBWeakWizTower", $iCmbWeakWizTower[$DB])
+	IniWriteS($config, "search", "DBWeakXBow", $iCmbWeakXBow[$DB])
+	IniWriteS($config, "search", "DBWeakInferno", $iCmbWeakInferno[$DB])
+	IniWriteS($config, "search", "DBWeakEagle", $iCmbWeakEagle[$DB])
+	IniWriteS($config, "search", "DBCheckMortar", $iChkChkMortar[$DB])
+	IniWriteS($config, "search", "DBCheckWizTower", $iChkChkWizTower[$DB])
+	IniWriteS($config, "search", "DBCheckXBow", $iChkChkXBow[$DB])
+	IniWriteS($config, "search", "DBCheckInferno", $iChkChkInferno[$DB])
+	IniWriteS($config, "search", "DBCheckEagle", $iChkChkEagle[$DB])
+
+	If GUICtrlRead($DBcheck) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "DBcheck", 1)
 	Else
-		IniWrite($config, "search", "ABEnableAfter", 0)
+		IniWriteS($config, "search", "DBcheck", 0)
 	EndIf
 
-	IniWrite($config, "search", "ABMeetGE", _GUICtrlComboBox_GetCurSel($cmbABMeetGE))
+	If GUICtrlRead($ABcheck) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ABcheck", 1)
+	Else
+		IniWriteS($config, "search", "ABcheck", 0)
+	EndIf
+
+	If GUICtrlRead($TScheck) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "TScheck", 1)
+	Else
+		IniWriteS($config, "search", "TScheck", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBActivateSearches) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkDBSearchSearches", 1)
+	Else
+		IniWriteS($config, "search", "ChkDBSearchSearches", 0)
+	EndIf
+
+	If GUICtrlRead($chkABActivateSearches) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkABSearchSearches", 1)
+	Else
+		IniWriteS($config, "search", "ChkABSearchSearches", 0)
+	EndIf
+
+	If GUICtrlRead($chkTSActivateSearches) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkTSSearchSearches", 1)
+	Else
+		IniWriteS($config, "search", "ChkTSSearchSearches", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBActivateTropies) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkDBSearchTropies", 1)
+	Else
+		IniWriteS($config, "search", "ChkDBSearchTropies", 0)
+	EndIf
+
+	If GUICtrlRead($chkABActivateTropies) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkABSearchTropies", 1)
+	Else
+		IniWriteS($config, "search", "ChkABSearchTropies", 0)
+	EndIf
+
+	If GUICtrlRead($chkTSActivateTropies) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkTSSearchTropies", 1)
+	Else
+		IniWriteS($config, "search", "ChkTSSearchTropies", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBActivateCamps) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkDBSearchCamps", 1)
+	Else
+		IniWriteS($config, "search", "ChkDBSearchCamps", 0)
+	EndIf
+
+	If GUICtrlRead($chkABActivateCamps) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkABSearchCamps", 1)
+	Else
+		IniWriteS($config, "search", "ChkABSearchCamps", 0)
+	EndIf
+
+	If GUICtrlRead($chkTSActivateCamps) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "ChkTSSearchCamps", 1)
+	Else
+		IniWriteS($config, "search", "ChkTSSearchCamps", 0)
+	EndIf
+
+	IniWriteS($config, "search", "ABMeetGE", _GUICtrlComboBox_GetCurSel($cmbABMeetGE))
 
 	If GUICtrlRead($chkABMeetDE) = $GUI_CHECKED Then
-		IniWrite($config, "search", "ABMeetDE", 1)
+		IniWriteS($config, "search", "ABMeetDE", 1)
 	Else
-		IniWrite($config, "search", "ABMeetDE", 0)
+		IniWriteS($config, "search", "ABMeetDE", 0)
 	EndIf
 
 	If GUICtrlRead($chkABMeetTrophy) = $GUI_CHECKED Then
-		IniWrite($config, "search", "ABMeetTrophy", 1)
+		IniWriteS($config, "search", "ABMeetTrophy", 1)
 	Else
-		IniWrite($config, "search", "ABMeetTrophy", 0)
+		IniWriteS($config, "search", "ABMeetTrophy", 0)
 	EndIf
 
 	If GUICtrlRead($chkABMeetTH) = $GUI_CHECKED Then
-		IniWrite($config, "search", "ABMeetTH", 1)
+		IniWriteS($config, "search", "ABMeetTH", 1)
 	Else
-		IniWrite($config, "search", "ABMeetTH", 0)
+		IniWriteS($config, "search", "ABMeetTH", 0)
 	EndIf
 
 	If GUICtrlRead($chkABMeetTHO) = $GUI_CHECKED Then
-		IniWrite($config, "search", "ABMeetTHO", 1)
+		IniWriteS($config, "search", "ABMeetTHO", 1)
 	Else
-		IniWrite($config, "search", "ABMeetTHO", 0)
+		IniWriteS($config, "search", "ABMeetTHO", 0)
 	EndIf
 
 	If GUICtrlRead($chkABWeakBase) = $GUI_CHECKED Then
-		IniWrite($config, "search", "ABWeakBase", 1)
+		IniWriteS($config, "search", "ABWeakBase", 1)
 	Else
-		IniWrite($config, "search", "ABWeakBase", 0)
+		IniWriteS($config, "search", "ABWeakBase", 0)
 	EndIf
 
 	If GUICtrlRead($chkABMeetOne) = $GUI_CHECKED Then
-		IniWrite($config, "search", "ABMeetOne", 1)
+		IniWriteS($config, "search", "ABMeetOne", 1)
 	Else
-		IniWrite($config, "search", "ABMeetOne", 0)
+		IniWriteS($config, "search", "ABMeetOne", 0)
 	EndIf
 
-	IniWrite($config, "search", "ABEnableAfterCount", GUICtrlRead($txtABEnableAfter))
-	IniWrite($config, "search", "ABsearchGold", GUICtrlRead($txtABMinGold))
-	IniWrite($config, "search", "ABsearchElixir", GUICtrlRead($txtABMinElixir))
-	IniWrite($config, "search", "ABsearchGoldPlusElixir", GUICtrlRead($txtABMinGoldPlusElixir))
-	IniWrite($config, "search", "ABsearchDark", GUICtrlRead($txtABMinDarkElixir))
-	IniWrite($config, "search", "ABsearchTrophy", GUICtrlRead($txtABMinTrophy))
-	IniWrite($config, "search", "ABTHLevel", _GUICtrlComboBox_GetCurSel($cmbABTH))
-	IniWrite($config, "search", "ABWeakMortar", _GUICtrlComboBox_GetCurSel($cmbABWeakMortar))
-	IniWrite($config, "search", "ABWeakWizTower", _GUICtrlComboBox_GetCurSel($cmbABWeakWizTower))
+	IniWriteS($config, "search", "ABEnableAfterCount", GUICtrlRead($txtABSearchesMin))
+	IniWriteS($config, "search", "ABEnableBeforeCount", GUICtrlRead($txtABSearchesMax))
+	IniWriteS($config, "search", "ABEnableAfterTropies", GUICtrlRead($txtABTropiesMin))
+	IniWriteS($config, "search", "ABEnableBeforeTropies", GUICtrlRead($txtABTropiesMax))
+	IniWriteS($config, "search", "ABEnableAfterArmyCamps", GUICtrlRead($txtABArmyCamps))
+
+	IniWriteS($config, "search", "ABsearchGold", GUICtrlRead($txtABMinGold))
+	IniWriteS($config, "search", "ABsearchElixir", GUICtrlRead($txtABMinElixir))
+	IniWriteS($config, "search", "ABsearchGoldPlusElixir", GUICtrlRead($txtABMinGoldPlusElixir))
+	IniWriteS($config, "search", "ABsearchDark", GUICtrlRead($txtABMinDarkElixir))
+	IniWriteS($config, "search", "ABsearchTrophy", GUICtrlRead($txtABMinTrophy))
+	IniWriteS($config, "search", "ABTHLevel", _GUICtrlComboBox_GetCurSel($cmbABTH))
+
+	IniWriteS($config, "search", "ABWeakMortar", $iCmbWeakMortar[$LB])
+	IniWriteS($config, "search", "ABWeakWizTower", $iCmbWeakWizTower[$LB])
+	IniWriteS($config, "search", "ABWeakXBow", $iCmbWeakXBow[$LB])
+	IniWriteS($config, "search", "ABWeakInferno", $iCmbWeakInferno[$LB])
+	IniWriteS($config, "search", "ABWeakEagle", $iCmbWeakEagle[$LB])
+	IniWriteS($config, "search", "ABCheckMortar", $iChkChkMortar[$LB])
+	IniWriteS($config, "search", "ABCheckWizTower", $iChkChkWizTower[$LB])
+	IniWriteS($config, "search", "ABCheckXBow", $iChkChkXBow[$LB])
+	IniWriteS($config, "search", "ABCheckInferno", $iChkChkInferno[$LB])
+	IniWriteS($config, "search", "ABCheckEagle", $iChkChkEagle[$LB])
 
 	If GUICtrlRead($chkSearchReduction) = $GUI_CHECKED Then
-		IniWrite($config, "search", "reduction", 1)
+		IniWriteS($config, "search", "reduction", 1)
 	Else
-		IniWrite($config, "search", "reduction", 0)
+		IniWriteS($config, "search", "reduction", 0)
 	EndIf
 
-	IniWrite($config, "search", "reduceCount", GUICtrlRead($txtSearchReduceCount))
-	IniWrite($config, "search", "reduceGold", GUICtrlRead($txtSearchReduceGold))
-	IniWrite($config, "search", "reduceElixir", GUICtrlRead($txtSearchReduceElixir))
-	IniWrite($config, "search", "reduceGoldPlusElixir", GUICtrlRead($txtSearchReduceGoldPlusElixir))
-	IniWrite($config, "search", "reduceDark", GUICtrlRead($txtSearchReduceDark))
-	IniWrite($config, "search", "reduceTrophy", GUICtrlRead($txtSearchReduceTrophy))
+	IniWriteS($config, "search", "reduceCount", $ReduceCount)
+	IniWriteS($config, "search", "reduceGold", $ReduceGold)
+	IniWriteS($config, "search", "reduceElixir", $ReduceElixir)
+	IniWriteS($config, "search", "reduceGoldPlusElixir", $ReduceGoldPlusElixir)
+	IniWriteS($config, "search", "reduceDark", $ReduceDark)
+	IniWriteS($config, "search", "reduceTrophy", $ReduceTrophy)
+
 
 	If GUICtrlRead($ChkRestartSearchLimit) = $GUI_CHECKED Then
-		IniWrite($config, "search", "ChkRestartSearchLimit", 1)
+		IniWriteS($config, "search", "ChkRestartSearchLimit", 1)
 	Else
-		IniWrite($config, "search", "ChkRestartSearchLimit", 0)
+		IniWriteS($config, "search", "ChkRestartSearchLimit", 0)
 	EndIf
-	IniWrite($config, "search", "RestartSearchLimit", GUICtrlRead($TxtRestartSearchlimit))
+	IniWriteS($config, "search", "RestartSearchLimit", GUICtrlRead($TxtRestartSearchlimit))
 
 
 	;Attack Basic Settings-------------------------------------------------------------------------
-	IniWrite($config, "attack", "DBDeploy", _GUICtrlComboBox_GetCurSel($cmbDBDeploy))
-	IniWrite($config, "attack", "DBUnitD", _GUICtrlComboBox_GetCurSel($cmbDBUnitDelay))
-	IniWrite($config, "attack", "DBWaveD", _GUICtrlComboBox_GetCurSel($cmbDBWaveDelay))
-	IniWrite($config, "attack", "DBRandomSpeedAtk", GUICtrlRead($chkDBRandomSpeedAtk))
-	IniWrite($config, "attack", "DBSelectTroop", _GUICtrlComboBox_GetCurSel($cmbDBSelectTroop))
 
-	If GUICtrlRead($chkDBSmartAttackRedArea) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBSmartAttackRedArea", 1)
-	Else
-		IniWrite($config, "attack", "DBSmartAttackRedArea", 0)
-	EndIf
+	IniWriteS($config, "attack", "DBAtkAlgorithm", _GUICtrlComboBox_GetCurSel($cmbDBAlgorithm))
+	IniWriteS($config, "attack", "ABAtkAlgorithm", _GUICtrlComboBox_GetCurSel($cmbABAlgorithm))
 
-	IniWrite($config, "attack", "DBSmartAttackDeploy", _GUICtrlComboBox_GetCurSel($cmbDBSmartDeploy))
+	IniWriteS($config, "attack", "DBSelectTroop", _GUICtrlComboBox_GetCurSel($cmbDBSelectTroop))
+	IniWriteS($config, "attack", "ABSelectTroop", _GUICtrlComboBox_GetCurSel($cmbABSelectTroop))
+	IniWriteS($config, "attack", "TSSelectTroop", _GUICtrlComboBox_GetCurSel($cmbTSSelectTroop))
 
-	If GUICtrlRead($chkDBAttackNearGoldMine) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBSmartAttackGoldMine", 1)
-	Else
-		IniWrite($config, "attack", "DBSmartAttackGoldMine", 0)
-	EndIf
+	IniWriteS($config, "attack", "DBStandardAlgorithm", $icmbStandardAlgorithm[$DB])
+	IniWriteS($config, "attack", "LBStandardAlgorithm", $icmbStandardAlgorithm[$LB])
 
-	If GUICtrlRead($chkDBAttackNearElixirCollector) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBSmartAttackElixirCollector", 1)
-	Else
-		IniWrite($config, "attack", "DBSmartAttackElixirCollector", 0)
-	EndIf
+	IniWriteS($config, "attack", "DBDeploy", $iChkDeploySettings[$DB])
+	IniWriteS($config, "attack", "DBUnitD", $iCmbUnitDelay[$DB])
+	IniWriteS($config, "attack", "DBWaveD", $iCmbWaveDelay[$DB])
+	IniWriteS($config, "attack", "DBRandomSpeedAtk", $iChkRandomspeedatk[$DB])
+	IniWriteS($config, "attack", "DBSmartAttackGoldMine", $iChkSmartAttack[$DB][0])
+	IniWriteS($config, "attack", "DBSmartAttackElixirCollector", $iChkSmartAttack[$DB][1])
+	IniWriteS($config, "attack", "DBSmartAttackDarkElixirDrill", $iChkSmartAttack[$DB][2])
+	IniWriteS($config, "attack", "DBSmartAttackRedArea", $iChkRedArea[$DB])
+	IniWriteS($config, "attack", "DBSmartAttackGoldMine", $iChkSmartAttack[$DB][0])
+	IniWriteS($config, "attack", "$chkDBAttackNearElixirCollector", $iChkSmartAttack[$DB][1])
+	IniWriteS($config, "attack", "$chkDBAttackNearDarkElixirDrill", $iChkSmartAttack[$DB][2])
+	IniWriteS($config, "attack", "DBSmartAttackDeploy", $iCmbSmartDeploy[$DB])
 
-	If GUICtrlRead($chkDBAttackNearDarkElixirDrill) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBSmartAttackDarkElixirDrill", 1)
-	Else
-		IniWrite($config, "attack", "DBSmartAttackDarkElixirDrill", 0)
-	EndIf
-
-	IniWrite($config, "attack", "ABDeploy", _GUICtrlComboBox_GetCurSel($cmbABDeploy))
-	IniWrite($config, "attack", "ABUnitD", _GUICtrlComboBox_GetCurSel($cmbABUnitDelay))
-	IniWrite($config, "attack", "ABWaveD", _GUICtrlComboBox_GetCurSel($cmbABWaveDelay))
-	IniWrite($config, "attack", "ABRandomSpeedAtk", GUICtrlRead($chkABRandomSpeedAtk))
-	IniWrite($config, "attack", "ABSelectTroop", _GUICtrlComboBox_GetCurSel($cmbABSelectTroop))
-
-	If GUICtrlRead($chkABSmartAttackRedArea) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABSmartAttackRedArea", 1)
-	Else
-		IniWrite($config, "attack", "ABSmartAttackRedArea", 0)
-	EndIf
-
-	IniWrite($config, "attack", "ABSmartAttackDeploy", _GUICtrlComboBox_GetCurSel($cmbABSmartDeploy))
-
-	If GUICtrlRead($chkABAttackNearGoldMine) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABSmartAttackGoldMine", 1)
-	Else
-		IniWrite($config, "attack", "ABSmartAttackGoldMine", 0)
-	EndIf
-
-	If GUICtrlRead($chkABAttackNearElixirCollector) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABSmartAttackElixirCollector", 1)
-	Else
-		IniWrite($config, "attack", "ABSmartAttackElixirCollector", 0)
-	EndIf
-
-	If GUICtrlRead($chkABAttackNearDarkElixirDrill) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABSmartAttackDarkElixirDrill", 1)
-	Else
-		IniWrite($config, "attack", "ABSmartAttackDarkElixirDrill", 0)
-	EndIf
+	IniWriteS($config, "attack", "ABDeploy", $iChkDeploySettings[$LB])
+	IniWriteS($config, "attack", "ABUnitD", $iCmbUnitDelay[$LB])
+	IniWriteS($config, "attack", "ABWaveD", $iCmbWaveDelay[$LB])
+	IniWriteS($config, "attack", "ABRandomSpeedAtk", $iChkRandomspeedatk[$LB])
+	IniWriteS($config, "attack", "ABSmartAttackGoldMine", $iChkSmartAttack[$LB][0])
+	IniWriteS($config, "attack", "ABSmartAttackElixirCollector", $iChkSmartAttack[$LB][1])
+	IniWriteS($config, "attack", "ABSmartAttackDarkElixirDrill", $iChkSmartAttack[$LB][2])
+	IniWriteS($config, "attack", "ABSmartAttackRedArea", $iChkRedArea[$LB])
+	IniWriteS($config, "attack", "ABSmartAttackGoldMine", $iChkSmartAttack[$LB][0])
+	IniWriteS($config, "attack", "$chkABAttackNearElixirCollector", $iChkSmartAttack[$LB][1])
+	IniWriteS($config, "attack", "$chkABAttackNearDarkElixirDrill", $iChkSmartAttack[$LB][2])
+	IniWriteS($config, "attack", "ABSmartAttackDeploy", $iCmbSmartDeploy[$LB])
 
 	If GUICtrlRead($chkDBKingAttack) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBKingAtk", $HERO_KING)
+		IniWriteS($config, "attack", "DBKingAtk", $HERO_KING)
 	Else
-		IniWrite($config, "attack", "DBKingAtk", $HERO_NOHERO)
+		IniWriteS($config, "attack", "DBKingAtk", $HERO_NOHERO)
 	EndIf
 	If GUICtrlRead($chkDBKingWait) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBKingWait", $HERO_KING)
+		IniWriteS($config, "attack", "DBKingWait", $HERO_KING)
 	Else
-		IniWrite($config, "attack", "DBKingWait", $HERO_NOHERO)
+		IniWriteS($config, "attack", "DBKingWait", $HERO_NOHERO)
 	EndIf
 
 	If GUICtrlRead($chkABKingAttack) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABKingAtk", $HERO_KING)
+		IniWriteS($config, "attack", "ABKingAtk", $HERO_KING)
 	Else
-		IniWrite($config, "attack", "ABKingAtk", $HERO_NOHERO)
+		IniWriteS($config, "attack", "ABKingAtk", $HERO_NOHERO)
 	EndIf
 	If GUICtrlRead($chkABKingWait) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABKingWait", $HERO_KING)
+		IniWriteS($config, "attack", "ABKingWait", $HERO_KING)
 	Else
-		IniWrite($config, "attack", "ABKingWait", $HERO_NOHERO)
+		IniWriteS($config, "attack", "ABKingWait", $HERO_NOHERO)
+	EndIf
+	If GUICtrlRead($chkTSKingAttack) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSKingAtk", 1)
+	Else
+		IniWriteS($config, "attack", "TSKingAtk", 0)
 	EndIf
 
 	If GUICtrlRead($chkDBQueenAttack) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBQueenAtk", $HERO_QUEEN)
+		IniWriteS($config, "attack", "DBQueenAtk", $HERO_QUEEN)
 	Else
-		IniWrite($config, "attack", "DBQueenAtk", $HERO_NOHERO)
+		IniWriteS($config, "attack", "DBQueenAtk", $HERO_NOHERO)
 	EndIf
 	If GUICtrlRead($chkDBQueenWait) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBQueenWait", $HERO_QUEEN)
+		IniWriteS($config, "attack", "DBQueenWait", $HERO_QUEEN)
 	Else
-		IniWrite($config, "attack", "DBQueenWait", $HERO_NOHERO)
+		IniWriteS($config, "attack", "DBQueenWait", $HERO_NOHERO)
 	EndIf
 	If GUICtrlRead($chkABQueenAttack) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABQueenAtk", $HERO_QUEEN)
+		IniWriteS($config, "attack", "ABQueenAtk", $HERO_QUEEN)
 	Else
-		IniWrite($config, "attack", "ABQueenAtk", $HERO_NOHERO)
+		IniWriteS($config, "attack", "ABQueenAtk", $HERO_NOHERO)
 	EndIf
 	If GUICtrlRead($chkABQueenWait) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABQueenWait", $HERO_QUEEN)
+		IniWriteS($config, "attack", "ABQueenWait", $HERO_QUEEN)
 	Else
-		IniWrite($config, "attack", "ABQueenWait", $HERO_NOHERO)
+		IniWriteS($config, "attack", "ABQueenWait", $HERO_NOHERO)
+	EndIf
+	If GUICtrlRead($chkTSQueenAttack) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSQueenAtk", 1)
+	Else
+		IniWriteS($config, "attack", "TSQueenAtk", 0)
 	EndIf
 
 	If GUICtrlRead($chkDBDropCC) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBDropCC", 1)
+		IniWriteS($config, "attack", "DBDropCC", 1)
 	Else
-		IniWrite($config, "attack", "DBDropCC", 0)
+		IniWriteS($config, "attack", "DBDropCC", 0)
 	EndIf
 
+
 	If GUICtrlRead($chkDBWardenAttack) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBWardenAtk", $HERO_WARDEN)
+		IniWriteS($config, "attack", "DBWardenAtk", $HERO_WARDEN)
 	Else
-		IniWrite($config, "attack", "DBWardenAtk", $HERO_NOHERO)
+		IniWriteS($config, "attack", "DBWardenAtk", $HERO_NOHERO)
 	EndIf
 	If GUICtrlRead($chkDBWardenWait) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "DBWardenWait", $HERO_WARDEN)
+		IniWriteS($config, "attack", "DBWardenWait", $HERO_WARDEN)
 	Else
-		IniWrite($config, "attack", "DBWardenWait", $HERO_NOHERO)
+		IniWriteS($config, "attack", "DBWardenWait", $HERO_NOHERO)
 	EndIf
 
 	If GUICtrlRead($chkABWardenAttack) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABWardenAtk", $HERO_WARDEN)
+		IniWriteS($config, "attack", "ABWardenAtk", $HERO_WARDEN)
 	Else
-		IniWrite($config, "attack", "ABWardenAtk", $HERO_NOHERO)
+		IniWriteS($config, "attack", "ABWardenAtk", $HERO_NOHERO)
 	EndIf
 	If GUICtrlRead($chkABWardenWait) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABWardenWait", $HERO_WARDEN)
+		IniWriteS($config, "attack", "ABWardenWait", $HERO_WARDEN)
 	Else
-		IniWrite($config, "attack", "ABWardenWait", $HERO_NOHERO)
+		IniWriteS($config, "attack", "ABWardenWait", $HERO_NOHERO)
+	EndIf
+
+	If GUICtrlRead($chkTSWardenAttack) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSWardenAtk", $HERO_WARDEN)
+	Else
+		IniWriteS($config, "attack", "TSWardenAtk", $HERO_NOHERO)
 	EndIf
 
 	If GUICtrlRead($chkABDropCC) = $GUI_CHECKED Then
-		IniWrite($config, "attack", "ABDropCC", 1)
+		IniWriteS($config, "attack", "ABDropCC", 1)
 	Else
-		IniWrite($config, "attack", "ABDropCC", 0)
+		IniWriteS($config, "attack", "ABDropCC", 0)
 	EndIf
 
 	If GUICtrlRead($chkUseCCBalanced) = $GUI_CHECKED Then
@@ -382,654 +1405,476 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "attack", "ScreenshotLootInfo", 0)
 	EndIf
 
+	If GUICtrlRead($chkTSDropCC) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSDropCC", 1)
+	Else
+		IniWriteS($config, "attack", "TSDropCC", 0)
+	EndIf
+
+	If GUICtrlRead($chkUseCCBalanced) = $GUI_CHECKED Then
+		IniWriteS($config, "ClanClastle", "BalanceCC", 1)
+	Else
+		IniWriteS($config, "ClanClastle", "BalanceCC", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBLightSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "DBLightSpell", 1)
+	Else
+		IniWriteS($config, "attack", "DBLightSpell", 0)
+	EndIf
+	If GUICtrlRead($chkABLightSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ABLightSpell", 1)
+	Else
+		IniWriteS($config, "attack", "ABLightSpell", 0)
+	EndIf
+	If GUICtrlRead($chkTSLightSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSLightSpell", 1)
+	Else
+		IniWriteS($config, "attack", "TSLightSpell", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBHealSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "DBHealSpell", 1)
+	Else
+		IniWriteS($config, "attack", "DBHealSpell", 0)
+	EndIf
+	If GUICtrlRead($chkABHealSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ABHealSpell", 1)
+	Else
+		IniWriteS($config, "attack", "ABHealSpell", 0)
+	EndIf
+	If GUICtrlRead($chkTSHealSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSHealSpell", 1)
+	Else
+		IniWriteS($config, "attack", "TSHealSpell", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBRageSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "DBRageSpell", 1)
+	Else
+		IniWriteS($config, "attack", "DBRageSpell", 0)
+	EndIf
+	If GUICtrlRead($chkABRageSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ABRageSpell", 1)
+	Else
+		IniWriteS($config, "attack", "ABRageSpell", 0)
+	EndIf
+	If GUICtrlRead($chkTSRageSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSRageSpell", 1)
+	Else
+		IniWriteS($config, "attack", "TSRageSpell", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBJumpSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "DBJumpSpell", 1)
+	Else
+		IniWriteS($config, "attack", "DBJumpSpell", 0)
+	EndIf
+	If GUICtrlRead($chkABJumpSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ABJumpSpell", 1)
+	Else
+		IniWriteS($config, "attack", "ABJumpSpell", 0)
+	EndIf
+	If GUICtrlRead($chkTSJumpSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSJumpSpell", 1)
+	Else
+		IniWriteS($config, "attack", "TSJumpSpell", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBFreezeSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "DBFreezeSpell", 1)
+	Else
+		IniWriteS($config, "attack", "DBFreezeSpell", 0)
+	EndIf
+	If GUICtrlRead($chkABFreezeSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ABFreezeSpell", 1)
+	Else
+		IniWriteS($config, "attack", "ABFreezeSpell", 0)
+	EndIf
+	If GUICtrlRead($chkTSFreezeSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSFreezeSpell", 1)
+	Else
+		IniWriteS($config, "attack", "TSFreezeSpell", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBPoisonSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "DBPoisonSpell", 1)
+	Else
+		IniWriteS($config, "attack", "DBPoisonSpell", 0)
+	EndIf
+	If GUICtrlRead($chkABPoisonSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ABPoisonSpell", 1)
+	Else
+		IniWriteS($config, "attack", "ABPoisonSpell", 0)
+	EndIf
+	If GUICtrlRead($chkTSPoisonSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSPoisonSpell", 1)
+	Else
+		IniWriteS($config, "attack", "TSPoisonSpell", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBEarthquakeSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "DBEarthquakeSpell", 1)
+	Else
+		IniWriteS($config, "attack", "DBEarthquakeSpell", 0)
+	EndIf
+	If GUICtrlRead($chkABEarthquakeSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ABEarthquakeSpell", 1)
+	Else
+		IniWriteS($config, "attack", "ABEarthquakeSpell", 0)
+	EndIf
+	If GUICtrlRead($chkTSEarthquakeSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSEarthquakeSpell", 1)
+	Else
+		IniWriteS($config, "attack", "TSEarthquakeSpell", 0)
+	EndIf
+
+	If GUICtrlRead($chkDBHasteSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "DBHasteSpell", 1)
+	Else
+		IniWriteS($config, "attack", "DBHasteSpell", 0)
+	EndIf
+	If GUICtrlRead($chkABHasteSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ABHasteSpell", 1)
+	Else
+		IniWriteS($config, "attack", "ABHasteSpell", 0)
+	EndIf
+	If GUICtrlRead($chkTSHasteSpell) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TSHasteSpell", 1)
+	Else
+		IniWriteS($config, "attack", "TSHasteSpell", 0)
+	EndIf
+
+	;TH SNIPE AFTER DB AND LB ATTACK
+	If GUICtrlRead($chkTHSnipeBeforeDBEnable) = $GUI_CHECKED Then
+		$THSnipeBeforeDBEnable = 1
+	Else
+		$THSnipeBeforeDBEnable = 0
+	EndIf
+	If GUICtrlRead($chkTHSnipeBeforeLBEnable) = $GUI_CHECKED Then
+		$THSnipeBeforeLBEnable = 1
+	Else
+		$THSnipeBeforeLBEnable = 0
+	EndIf
+	$THSnipeBeforeDBTiles = GUICtrlRead($txtTHSnipeBeforeDBTiles)
+	$THSnipeBeforeLBTiles = GUICtrlRead($txtTHSnipeBeforeLBTiles)
+	$THSnipeBeforeDBScript = GUICtrlRead($cmbTHSnipeBeforeDBScript)
+	$THSnipeBeforeLBScript = GUICtrlRead($cmbTHSnipeBeforeLBScript)
+	IniWriteS($config, "attack", "THSnipeBeforeDBEnable", $THSnipeBeforeDBEnable)
+	IniWriteS($config, "attack", "THSnipeBeforeLBEnable", $THSnipeBeforeLBEnable)
+	IniWriteS($config, "attack", "THSnipeBeforeDBTiles", $THSnipeBeforeDBTiles)
+	IniWriteS($config, "attack", "THSnipeBeforeLBTiles", $THSnipeBeforeLBTiles)
+	IniWriteS($config, "attack", "THSnipeBeforeDBScript", $THSnipeBeforeDBScript)
+	IniWriteS($config, "attack", "THSnipeBeforeLBScript", $THSnipeBeforeLBScript)
+
+	If GUICtrlRead($chkUseCCBalanced) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "BalanceCC", 1)
+	Else
+		IniWriteS($config, "attack", "BalanceCC", 0)
+	EndIf
+
+	IniWriteS($config, "ClanClastle", "BalanceCCDonated", _GUICtrlComboBox_GetCurSel($cmbCCDonated) + 1)
+	IniWriteS($config, "ClanClastle", "BalanceCCReceived", _GUICtrlComboBox_GetCurSel($cmbCCReceived) + 1)
+
+	If GUICtrlRead($radManAbilities) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ActivateKQ", "Manual")
+	ElseIf GUICtrlRead($radAutoAbilities) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ActivateKQ", "Auto")
+	EndIf
+
+	If GUICtrlRead($chkUseWardenAbility) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ActivateWarden", 1)
+	Else
+		IniWriteS($config, "attack", "ActivateWarden", 0)
+	EndIf
+
+	IniWriteS($config, "attack", "delayActivateKQ", GUICtrlRead($txtManAbilities))
+	IniWriteS($config, "attack", "delayActivateW", GUICtrlRead($txtWardenAbility))
+
+	If GUICtrlRead($chkTakeLootSS) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "TakeLootSnapShot", 1)
+	Else
+		IniWriteS($config, "attack", "TakeLootSnapShot", 0)
+	EndIf
+
+	If GUICtrlRead($chkScreenshotLootInfo) = $GUI_CHECKED Then
+		IniWriteS($config, "attack", "ScreenshotLootInfo", 1)
+	Else
+		IniWriteS($config, "attack", "ScreenshotLootInfo", 0)
+	EndIf
+
 	;End Battle Settings------------------------------------------------------------------------
-	IniWrite($config, "endbattle", "txtTimeStopAtk", GUICtrlRead($txtTimeStopAtk))
-	IniWrite($config, "endbattle", "chkTimeStopAtk", GUICtrlRead($chkTimeStopAtk))
-
-	IniWrite($config, "endbattle", "txtTimeStopAtk2", GUICtrlRead($txtTimeStopAtk2))
-	IniWrite($config, "endbattle", "chkTimeStopAtk2", GUICtrlRead($chkTimeStopAtk2))
-
-	IniWrite($config, "endbattle", "txtMinGoldStopAtk2", GUICtrlRead($txtMinGoldStopAtk2))
-	IniWrite($config, "endbattle", "txtMinElixirStopAtk2", GUICtrlRead($txtMinElixirStopAtk2))
-	IniWrite($config, "endbattle", "txtMinDarkElixirStopAtk2", GUICtrlRead($txtMinDarkElixirStopAtk2))
-
-	IniWrite($config, "endbattle", "chkEndOneStar", GUICtrlRead($chkEndOneStar))
-	IniWrite($config, "endbattle", "chkEndTwoStars", GUICtrlRead($chkEndTwoStars))
-
-	If GUICtrlRead($chkEndNoResources) = $GUI_CHECKED Then
-		IniWrite($config, "endbattle", "chkEndNoResources", 1)
+	IniWriteS($config, "endbattle", "txtDBTimeStopAtk", GUICtrlRead($txtDBTimeStopAtk))
+	IniWriteS($config, "endbattle", "chkDBTimeStopAtk", GUICtrlRead($chkDBTimeStopAtk))
+	IniWriteS($config, "endbattle", "txtDBTimeStopAtk2", GUICtrlRead($txtDBTimeStopAtk2))
+	IniWriteS($config, "endbattle", "chkDBTimeStopAtk2", GUICtrlRead($chkDBTimeStopAtk2))
+	IniWriteS($config, "endbattle", "txtDBMinGoldStopAtk2", GUICtrlRead($txtDBMinGoldStopAtk2))
+	IniWriteS($config, "endbattle", "txtDBMinElixirStopAtk2", GUICtrlRead($txtDBMinElixirStopAtk2))
+	IniWriteS($config, "endbattle", "txtDBMinDarkElixirStopAtk2", GUICtrlRead($txtDBMinDarkElixirStopAtk2))
+	IniWriteS($config, "endbattle", "chkDBEndOneStar", GUICtrlRead($chkDBEndOneStar))
+	IniWriteS($config, "endbattle", "chkDBEndTwoStars", GUICtrlRead($chkDBEndTwoStars))
+	If GUICtrlRead($chkDBEndNoResources) = $GUI_CHECKED Then
+		IniWriteS($config, "endbattle", "chkDBEndNoResources", 1)
 	Else
-		IniWrite($config, "endbattle", "chkEndNoResources", 0)
+		IniWriteS($config, "endbattle", "chkDBEndNoResources", 0)
 	EndIf
 
-
-	If GUICtrlRead($chkDESideEB) = $GUI_CHECKED Then
-		IniWrite($config, "endbattle", "chkDESideEB", 1)
+	IniWriteS($config, "endBattle", "txtABTimeStopAtk", GUICtrlRead($txtABTimeStopAtk))
+	IniWriteS($config, "endBattle", "chkABTimeStopAtk", GUICtrlRead($chkABTimeStopAtk))
+	IniWriteS($config, "endBattle", "txtABTimeStopAtk2", GUICtrlRead($txtABTimeStopAtk2))
+	IniWriteS($config, "endBattle", "chkABTimeStopAtk2", GUICtrlRead($chkABTimeStopAtk2))
+	IniWriteS($config, "endBattle", "txtABMinGoldStopAtk2", GUICtrlRead($txtABMinGoldStopAtk2))
+	IniWriteS($config, "endBattle", "txtABMinElixirStopAtk2", GUICtrlRead($txtABMinElixirStopAtk2))
+	IniWriteS($config, "endBattle", "txtABMinDarkElixirStopAtk2", GUICtrlRead($txtABMinDarkElixirStopAtk2))
+	IniWriteS($config, "endBattle", "chkABEndOneStar", GUICtrlRead($chkABEndOneStar))
+	IniWriteS($config, "endBattle", "chkABEndTwoStars", GUICtrlRead($chkABEndTwoStars))
+	If GUICtrlRead($chkABEndNoResources) = $GUI_CHECKED Then
+		IniWriteS($config, "endBattle", "chkABEndNoResources", 1)
 	Else
-		IniWrite($config, "endbattle", "chkDESideEB", 0)
-	EndIf
-	IniWrite($config, "endbattle", "txtDELowEndMin", GUICtrlRead($txtDELowEndMin))
-	If GUICtrlRead($chkDisableOtherEBO) = $GUI_CHECKED Then
-		IniWrite($config, "endbattle", "chkDisableOtherEBO", 1)
-	Else
-		IniWrite($config, "endbattle", "chkDisableOtherEBO", 0)
-	EndIf
-	If GUICtrlRead($chkDEEndAq) = $GUI_CHECKED Then
-		IniWrite($config, "endbattle", "chkDEEndAq", 1)
-	Else
-		IniWrite($config, "endbattle", "chkDEEndAq", 0)
-	EndIf
-	If GUICtrlRead($chkDEEndBk) = $GUI_CHECKED Then
-		IniWrite($config, "endbattle", "chkDEEndBk", 1)
-	Else
-		IniWrite($config, "endbattle", "chkDEEndBk", 0)
-	EndIf
-	If GUICtrlRead($chkDEEndOneStar) = $GUI_CHECKED Then
-		IniWrite($config, "endbattle", "chkDEEndOneStar", 1)
-	Else
-		IniWrite($config, "endbattle", "chkDEEndOneStar", 0)
+		IniWriteS($config, "endBattle", "chkABEndNoResources", 0)
 	EndIf
 
+	IniWriteS($config, "endBattle", "txtTSTimeStopAtk", GUICtrlRead($txtTSTimeStopAtk))
+	IniWriteS($config, "endBattle", "chkTSTimeStopAtk", GUICtrlRead($chkTSTimeStopAtk))
+	IniWriteS($config, "endBattle", "txtTSTimeStopAtk2", GUICtrlRead($txtTSTimeStopAtk2))
+	IniWriteS($config, "endBattle", "chkTSTimeStopAtk2", GUICtrlRead($chkTSTimeStopAtk2))
+	IniWriteS($config, "endBattle", "txtTSMinGoldStopAtk2", GUICtrlRead($txtTSMinGoldStopAtk2))
+	IniWriteS($config, "endBattle", "txtTSMinElixirStopAtk2", GUICtrlRead($txtTSMinElixirStopAtk2))
+	IniWriteS($config, "endBattle", "txtTSMinDarkElixirStopAtk2", GUICtrlRead($txtTSMinDarkElixirStopAtk2))
+	IniWriteS($config, "endBattle", "chkTSEndOneStar", GUICtrlRead($chkTSEndOneStar))
+	IniWriteS($config, "endBattle", "chkTSEndTwoStars", GUICtrlRead($chkTSEndTwoStars))
+	If GUICtrlRead($chkTSEndNoResources) = $GUI_CHECKED Then
+		IniWriteS($config, "endBattle", "chkTSEndNoResources", 1)
+	Else
+		IniWriteS($config, "endBattle", "chkTSEndNoResources", 0)
+	EndIf
+
+	; end battle de side
+	IniWriteS($config, "endbattle", "chkDESideEB", $DESideEB)
+	IniWriteS($config, "endbattle", "txtDELowEndMin", $DELowEndMin)
+	IniWriteS($config, "endbattle", "chkDisableOtherEBO", $DisableOtherEBO)
+	IniWriteS($config, "endbattle", "chkDEEndAq", $DEEndAq)
+	IniWriteS($config, "endbattle", "chkDEEndBk", $DEEndBk)
+	IniWriteS($config, "endbattle", "chkDEEndOneStar", $DEEndOneStar)
 
 	;Advanced Settings--------------------------------------------------------------------------
 	If GUICtrlRead($chkAttackNow) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "attacknow", 1)
+		IniWriteS($config, "general", "attacknow", 1)
 	Else
-		IniWrite($config, "advanced", "attacknow", 0)
+		IniWriteS($config, "general", "attacknow", 0)
 	EndIf
-	IniWrite($config, "advanced", "attacknowdelay", _GUICtrlComboBox_GetCurSel($cmbAttackNowDelay) + 1)
+	IniWriteS($config, "general", "attacknowdelay", _GUICtrlComboBox_GetCurSel($cmbAttackNowDelay))
 
-	If GUICtrlRead($chkAttackTH) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "townhall", 1)
+	If GUICtrlRead($chkbtnScheduler) = $GUI_CHECKED Then
+		IniWriteS($config, "general", "BtnScheduler", 1)
 	Else
-		IniWrite($config, "advanced", "townhall", 0)
+		IniWriteS($config, "general", "BtnScheduler", 0)
 	EndIf
 
-	If GUICtrlRead($chkBullyMode) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "BullyMode", 1)
+
+	If GUICtrlRead($BullyCheck) = $GUI_CHECKED Then
+		IniWriteS($config, "search", "BullyMode", 1)
 	Else
-		IniWrite($config, "advanced", "BullyMode", 0)
+		IniWriteS($config, "search", "BullyMode", 0)
 	EndIf
 
-	IniWrite($config, "advanced", "ATBullyMode", GUICtrlRead($txtATBullyMode))
-	IniWrite($config, "advanced", "YourTH", _GUICtrlComboBox_GetCurSel($cmbYourTH))
+	IniWriteS($config, "search", "ATBullyMode", $ATBullyMode)
+	IniWriteS($config, "search", "YourTH", $YourTH)
 
-	If GUICtrlRead($radUseDBAttack) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "THBullyAttackMode", 0)
-	ElseIf GUICtrlRead($radUseLBAttack) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "THBullyAttackMode", 1)
-	EndIf
+	IniWriteS($config, "search", "THBullyAttackMode", $iTHBullyAttackMode)
 
-	If GUICtrlRead($chkTrophyMode) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "TrophyMode", 1)
-	Else
-		IniWrite($config, "advanced", "TrophyMode", 0)
-	EndIf
-
-	IniWrite($config, "advanced", "THaddTiles", GUICtrlRead($txtTHaddtiles))
-	IniWrite($config, "advanced", "AttackTHType", _GUICtrlComboBox_GetCurSel($cmbAttackTHType))
+	IniWriteS($config, "search", "THaddTiles", GUICtrlRead($txtTHaddtiles))
+	;	IniWriteS($config, "attack", "AttackTHType", _GUICtrlComboBox_GetCurSel($cmbAttackTHType))
 	$txtAttackTHType = GUICtrlRead($cmbAttackTHType)
-	IniWrite($config, "advanced", "AttackTHType", $scmbAttackTHType)
+	IniWriteS($config, "attack", "AttackTHType", $scmbAttackTHType)
 
-	If GUICtrlRead($chkTSEnableAfter) = $GUI_CHECKED Then
-		IniWrite($config, "search", "TSEnableAfter", 1)
-	Else
-		IniWrite($config, "search", "TSEnableAfter", 0)
-	EndIf
-	If GUICtrlRead($chkTSMeetDE) = $GUI_CHECKED Then
-		IniWrite($config, "search", "TSMeetDE", 1)
-	Else
-		IniWrite($config, "search", "TSMeetDE", 0)
-	EndIf
-	IniWrite($config, "search", "TSMeetGE", _GUICtrlComboBox_GetCurSel($cmbTSMeetGE))
-	IniWrite($config, "search", "TSEnableAfterCount", GUICtrlRead($txtTSEnableAfter))
-	IniWrite($config, "search", "TSsearchGold", GUICtrlRead($txtTSMinGold))
-	IniWrite($config, "search", "TSsearchElixir", GUICtrlRead($txtTSMinElixir))
-	IniWrite($config, "search", "TSsearchGoldPlusElixir", GUICtrlRead($txtTSMinGoldPlusElixir))
-	IniWrite($config, "search", "TSsearchDark", GUICtrlRead($txtTSMinDarkElixir))
+	IniWriteS($config, "search", "TSMeetGE", _GUICtrlComboBox_GetCurSel($cmbTSMeetGE))
+	IniWriteS($config, "search", "TSEnableAfterCount", GUICtrlRead($txtTSSearchesMin))
+	IniWriteS($config, "search", "TSEnableBeforeCount", GUICtrlRead($txtTSSearchesMax))
+	IniWriteS($config, "search", "TSEnableAfterTropies", GUICtrlRead($txtTSTropiesMin))
+	IniWriteS($config, "search", "TSEnableBeforeTropies", GUICtrlRead($txtTSTropiesMax))
+	IniWriteS($config, "search", "TSEnableAfterArmyCamps", GUICtrlRead($txtTSArmyCamps))
 
+	IniWriteS($config, "search", "TSsearchGold", GUICtrlRead($txtTSMinGold))
+	IniWriteS($config, "search", "TSsearchElixir", GUICtrlRead($txtTSMinElixir))
+	IniWriteS($config, "search", "TSsearchGoldPlusElixir", GUICtrlRead($txtTSMinGoldPlusElixir))
+	IniWriteS($config, "search", "TSsearchDark", GUICtrlRead($txtTSMinDarkElixir))
 
-	If GUICtrlRead($chkUseKingTH) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "UseKingTH", 1)
-	Else
-		IniWrite($config, "advanced", "UseKingTH", 0)
-	EndIf
+	IniWriteS($config, "Unbreakable", "chkUnbreakable", $iUnbreakableMode)
+	IniWriteS($config, "Unbreakable", "UnbreakableWait", $iUnbreakableWait)
+	IniWriteS($config, "Unbreakable", "minUnBrkgold", $iUnBrkMinGold)
+	IniWriteS($config, "Unbreakable", "minUnBrkelixir", $iUnBrkMinElixir)
+	IniWriteS($config, "Unbreakable", "minUnBrkdark", $iUnBrkMinDark)
+	IniWriteS($config, "Unbreakable", "maxUnBrkgold", $iUnBrkMaxGold)
+	IniWriteS($config, "Unbreakable", "maxUnBrkelixir", $iUnBrkMaxElixir)
+	IniWriteS($config, "Unbreakable", "maxUnBrkdark", $iUnBrkMaxDark)
 
-	If GUICtrlRead($chkUseQueenTH) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "UseQueenTH", 1)
-	Else
-		IniWrite($config, "advanced", "UseQueenTH", 0)
-	EndIf
-
-	If GUICtrlRead($chkUseClastleTH) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "UseCastleTH", 1)
-	Else
-		IniWrite($config, "advanced", "UseCastleTH", 0)
-	EndIf
-
-	If GUICtrlRead($chkUseLSpellsTH) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "UseLspellTH", 1)
-	Else
-		IniWrite($config, "advanced", "UseLspellTH", 0)
-	EndIf
-
-	If GUICtrlRead($chkUseRSpellsTH) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "UseRspellTH", 1)
-	Else
-		IniWrite($config, "advanced", "UseRspellTH", 0)
-	EndIf
-
-	If GUICtrlRead($chkUseHSpellsTH) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "UseHspellTH", 1)
-	Else
-		IniWrite($config, "advanced", "UseHspellTH", 0)
-	EndIf
-
-
-	If GUICtrlRead($chkAlertPBVillage) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "AlertPBVillage", 1)
-	Else
-		IniWrite($config, "advanced", "AlertPBVillage", 0)
-	EndIf
-
-	If GUICtrlRead($chkAlertPBLastRaidTxt) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBLastRaidTxt", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBLastRaidTxt", 0)
-	EndIf
-
-
-	If GUICtrlRead($chkAlertPBLastAttack) = $GUI_CHECKED Then
-		IniWrite($config, "advanced", "AlertPBLastAttack", 1)
-	Else
-		IniWrite($config, "advanced", "AlertPBLastAttack", 0)
-	EndIf
-
-
-	If GUICtrlRead($chkAlertPBCampFull) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertCampFull", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertCampFull", 0)
-	EndIf
-	;	If  GUICtrlRead($chkUnbreakable) = $GUI_CHECKED Then
-	;		IniWrite($config, "advanced", "chkUnbreakable", 1)
-	;	Else
-	;		IniWrite($config, "advanced", "chkUnbreakable", 0)
-	;	EndIf
-	IniWrite($config, "advanced", "UnbreakableWait", GUICtrlRead($txtUnbreakable))
-	IniWrite($config, "advanced", "minUnBrkgold", GUICtrlRead($txtUnBrkMinGold))
-	IniWrite($config, "advanced", "minUnBrkelixir", GUICtrlRead($txtUnBrkMinElixir))
-	IniWrite($config, "advanced", "minUnBrkdark", GUICtrlRead($txtUnBrkMinDark))
-
-	IniWrite($config, "advanced", "maxUnBrkgold", GUICtrlRead($txtUnBrkMaxGold))
-	IniWrite($config, "advanced", "maxUnBrkelixir", GUICtrlRead($txtUnBrkMaxElixir))
-	IniWrite($config, "advanced", "maxUnBrkdark", GUICtrlRead($txtUnBrkMaxDark))
 
 	;atk their king
 	;attk their queen
 
 	;Donate Settings-------------------------------------------------------------------------
-	If GUICtrlRead($chkRequest) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkRequest", 1)
-	Else
-		IniWrite($config, "donate", "chkRequest", 0)
-	EndIf
 
-	IniWrite($config, "donate", "txtRequest", GUICtrlRead($txtRequest))
-
-	If GUICtrlRead($chkDonateBarbarians) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateBarbarians", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateBarbarians", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllBarbarians) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllBarbarians", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllBarbarians", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateBarbarians", StringReplace(GUICtrlRead($txtDonateBarbarians), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistBarbarians", StringReplace(GUICtrlRead($txtBlacklistBarbarians), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateArchers) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateArchers", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateArchers", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllArchers) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllArchers", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllArchers", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateArchers", StringReplace(GUICtrlRead($txtDonateArchers), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistArchers", StringReplace(GUICtrlRead($txtBlacklistArchers), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateGiants) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateGiants", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateGiants", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllGiants) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllGiants", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllGiants", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateGiants", StringReplace(GUICtrlRead($txtDonateGiants), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistGiants", StringReplace(GUICtrlRead($txtBlacklistGiants), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateGoblins) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateGoblins", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateGoblins", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllGoblins) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllGoblins", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllGoblins", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateGoblins", StringReplace(GUICtrlRead($txtDonateGoblins), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistGoblins", StringReplace(GUICtrlRead($txtBlacklistGoblins), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateWallBreakers) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateWallBreakers", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateWallBreakers", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllWallBreakers) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllWallBreakers", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllWallBreakers", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateWallBreakers", StringReplace(GUICtrlRead($txtDonateWallBreakers), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistWallBreakers", StringReplace(GUICtrlRead($txtBlacklistWallBreakers), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateBalloons) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateBalloons", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateBalloons", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllBalloons) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllBalloons", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllBalloons", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateBalloons", StringReplace(GUICtrlRead($txtDonateBalloons), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistBalloons", StringReplace(GUICtrlRead($txtBlacklistBalloons), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateWizards) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateWizards", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateWizards", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllWizards) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllWizards", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllWizards", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateWizards", StringReplace(GUICtrlRead($txtDonateWizards), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistWizards", StringReplace(GUICtrlRead($txtBlacklistWizards), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateHealers) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateHealers", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateHealers", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllHealers) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllHealers", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllHealers", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateHealers", StringReplace(GUICtrlRead($txtDonateHealers), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistHealers", StringReplace(GUICtrlRead($txtBlacklistHealers), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateDragons) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateDragons", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateDragons", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllDragons) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllDragons", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllDragons", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateDragons", StringReplace(GUICtrlRead($txtDonateDragons), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistDragons", StringReplace(GUICtrlRead($txtBlacklistDragons), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonatePekkas) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonatePekkas", 1)
-	Else
-		IniWrite($config, "donate", "chkDonatePekkas", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllPekkas) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllPekkas", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllPekkas", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonatePekkas", StringReplace(GUICtrlRead($txtDonatePekkas), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistPekkas", StringReplace(GUICtrlRead($txtBlacklistPekkas), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateMinions) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateMinions", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateMinions", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllMinions) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllMinions", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllMinions", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateMinions", StringReplace(GUICtrlRead($txtDonateMinions), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistMinions", StringReplace(GUICtrlRead($txtBlacklistMinions), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateHogRiders) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateHogRiders", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateHogRiders", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllHogRiders) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllHogRiders", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllHogRiders", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateHogRiders", StringReplace(GUICtrlRead($txtDonateHogRiders), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistHogRiders", StringReplace(GUICtrlRead($txtBlacklistHogRiders), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateValkyries) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateValkyries", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateValkyries", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllValkyries) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllValkyries", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllValkyries", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateValkyries", StringReplace(GUICtrlRead($txtDonateValkyries), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistValkyries", StringReplace(GUICtrlRead($txtBlacklistValkyries), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateGolems) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateGolems", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateGolems", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllGolems) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllGolems", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllGolems", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateGolems", StringReplace(GUICtrlRead($txtDonateGolems), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistGolems", StringReplace(GUICtrlRead($txtBlacklistGolems), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateWitches) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateWitches", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateWitches", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllWitches) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllWitches", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllWitches", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateWitches", StringReplace(GUICtrlRead($txtDonateWitches), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistWitches", StringReplace(GUICtrlRead($txtBlacklistWitches), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateLavaHounds) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateLavaHounds", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateLavaHounds", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllLavaHounds) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllLavaHounds", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllLavaHounds", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateLavaHounds", StringReplace(GUICtrlRead($txtDonateLavaHounds), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistLavaHounds", StringReplace(GUICtrlRead($txtBlacklistLavaHounds), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonatePoisonSpells) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonatePoisonSpells", 1)
-	Else
-		IniWrite($config, "donate", "chkDonatePoisonSpells", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllPoisonSpells) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllPoisonSpells", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllPoisonSpells", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonatePoisonSpells", StringReplace(GUICtrlRead($txtDonatePoisonSpells), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistPoisonSpells", StringReplace(GUICtrlRead($txtBlacklistPoisonSpells), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateEarthQuakeSpells) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateEarthQuakeSpells", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateEarthQuakeSpells", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllEarthQuakeSpells) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllEarthQuakeSpells", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllEarthQuakeSpells", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateEarthQuakeSpells", StringReplace(GUICtrlRead($txtDonateEarthQuakeSpells), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistEarthQuakeSpells", StringReplace(GUICtrlRead($txtBlacklistEarthQuakeSpells), @CRLF, "|"))
-
-	If GUICtrlRead($chkDonateHasteSpells) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateHasteSpells", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateHasteSpells", 0)
-	EndIf
-
-	If GUICtrlRead($chkDonateAllHasteSpells) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllHasteSpells", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllHasteSpells", 0)
-	EndIf
-
-	IniWrite($config, "donate", "txtDonateHasteSpells", StringReplace(GUICtrlRead($txtDonateHasteSpells), @CRLF, "|"))
-	IniWrite($config, "donate", "txtBlacklistHasteSpells", StringReplace(GUICtrlRead($txtBlacklistHasteSpells), @CRLF, "|"))
-
+;~ 	IniWriteS($config, "donate", "chkRequest", $iChkRequest)
+	IniWriteS($config, "donate", "txtRequest", GUICtrlRead($txtRequestCC))
+	IniWriteS($config, "donate", "chkDonateBarbarians", $ichkDonateBarbarians)
+	IniWriteS($config, "donate", "chkDonateAllBarbarians", $ichkDonateAllBarbarians)
+	IniWriteS($config, "donate", "txtDonateBarbarians", StringReplace($sTxtDonateBarbarians, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistBarbarians", StringReplace($sTxtBlacklistBarbarians, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateArchers", $ichkDonateArchers)
+	IniWriteS($config, "donate", "chkDonateAllArchers", $ichkDonateAllArchers)
+	IniWriteS($config, "donate", "txtDonateArchers", StringReplace($sTxtDonateArchers, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistArchers", StringReplace($sTxtBlacklistArchers, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateGiants", $ichkDonateGiants)
+	IniWriteS($config, "donate", "chkDonateAllGiants", $ichkDonateAllGiants)
+	IniWriteS($config, "donate", "txtDonateGiants", StringReplace($sTxtDonateGiants, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistGiants", StringReplace($sTxtBlacklistGiants, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateGoblins", $ichkDonateGoblins)
+	IniWriteS($config, "donate", "chkDonateAllGoblins", $ichkDonateAllGoblins)
+	IniWriteS($config, "donate", "txtDonateGoblins", StringReplace($sTxtDonateGoblins, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistGoblins", StringReplace($sTxtBlacklistGoblins, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateWallBreakers", $ichkDonateWallBreakers)
+	IniWriteS($config, "donate", "chkDonateAllWallBreakers", $ichkDonateAllWallBreakers)
+	IniWriteS($config, "donate", "txtDonateWallBreakers", StringReplace($sTxtDonateWallBreakers, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistWallBreakers", StringReplace($sTxtBlacklistWallBreakers, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateBalloons", $ichkDonateBalloons)
+	IniWriteS($config, "donate", "chkDonateAllBalloons", $ichkDonateAllBalloons)
+	IniWriteS($config, "donate", "txtDonateBalloons", StringReplace($sTxtDonateBalloons, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistBalloons", StringReplace($sTxtBlacklistBalloons, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateWizards", $ichkDonateWizards)
+	IniWriteS($config, "donate", "chkDonateAllWizards", $ichkDonateAllWizards)
+	IniWriteS($config, "donate", "txtDonateWizards", StringReplace($sTxtDonateWizards, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistWizards", StringReplace($sTxtBlacklistWizards, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateHealers", $ichkDonateHealers)
+	IniWriteS($config, "donate", "chkDonateAllHealers", $ichkDonateAllHealers)
+	IniWriteS($config, "donate", "txtDonateHealers", StringReplace($sTxtDonateHealers, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistHealers", StringReplace($sTxtBlacklistHealers, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateDragons", $ichkDonateDragons)
+	IniWriteS($config, "donate", "chkDonateAllDragons", $ichkDonateAllDragons)
+	IniWriteS($config, "donate", "txtDonateDragons", StringReplace($sTxtDonateDragons, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistDragons", StringReplace($sTxtBlacklistDragons, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonatePekkas", $ichkDonatePekkas)
+	IniWriteS($config, "donate", "chkDonateAllPekkas", $ichkDonateAllPekkas)
+	IniWriteS($config, "donate", "txtDonatePekkas", StringReplace($sTxtDonatePekkas, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistPekkas", StringReplace($sTxtBlacklistPekkas, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateMinions", $ichkDonateMinions)
+	IniWriteS($config, "donate", "chkDonateAllMinions", $ichkDonateAllMinions)
+	IniWriteS($config, "donate", "txtDonateMinions", StringReplace($sTxtDonateMinions, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistMinions", StringReplace($sTxtBlacklistMinions, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateHogRiders", $ichkDonateHogRiders)
+	IniWriteS($config, "donate", "chkDonateAllHogRiders", $ichkDonateAllHogRiders)
+	IniWriteS($config, "donate", "txtDonateHogRiders", StringReplace($sTxtDonateHogRiders, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistHogRiders", StringReplace($sTxtBlacklistHogRiders, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateValkyries", $ichkDonateValkyries)
+	IniWriteS($config, "donate", "chkDonateAllValkyries", $ichkDonateAllValkyries)
+	IniWriteS($config, "donate", "txtDonateValkyries", StringReplace($sTxtDonateValkyries, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistValkyries", StringReplace($sTxtBlacklistValkyries, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateGolems", $ichkDonateGolems)
+	IniWriteS($config, "donate", "chkDonateAllGolems", $ichkDonateAllGolems)
+	IniWriteS($config, "donate", "txtDonateGolems", StringReplace($sTxtDonateGolems, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistGolems", StringReplace($sTxtBlacklistGolems, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateWitches", $ichkDonateWitches)
+	IniWriteS($config, "donate", "chkDonateAllWitches", $ichkDonateAllWitches)
+	IniWriteS($config, "donate", "txtDonateWitches", StringReplace($sTxtDonateWitches, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistWitches", StringReplace($sTxtBlacklistWitches, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateLavaHounds", $ichkDonateLavaHounds)
+	IniWriteS($config, "donate", "chkDonateAllLavaHounds", $ichkDonateAllLavaHounds)
+	IniWriteS($config, "donate", "txtDonateLavaHounds", StringReplace($sTxtDonateLavaHounds, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistLavaHounds", StringReplace($sTxtBlacklistLavaHounds, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonatePoisonSpells", $ichkDonatePoisonSpells)
+	IniWriteS($config, "donate", "chkDonateAllPoisonSpells", $ichkDonateAllPoisonSpells)
+	IniWriteS($config, "donate", "txtDonatePoisonSpells", StringReplace($sTxtDonatePoisonSpells, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistPoisonSpells", StringReplace($sTxtBlacklistPoisonSpells, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateEarthQuakeSpells", $ichkDonateEarthQuakeSpells)
+	IniWriteS($config, "donate", "chkDonateAllEarthQuakeSpells", $ichkDonateAllEarthQuakeSpells)
+	IniWriteS($config, "donate", "txtDonateEarthQuakeSpells", StringReplace($sTxtDonateEarthQuakeSpells, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistEarthQuakeSpells", StringReplace($sTxtBlacklistEarthQuakeSpells, @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateHasteSpells", $ichkDonateHasteSpells)
+	IniWriteS($config, "donate", "chkDonateAllHasteSpells", $ichkDonateAllHasteSpells)
+	IniWriteS($config, "donate", "txtDonateHasteSpells", StringReplace($sTxtDonateHasteSpells, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistHasteSpells", StringReplace($sTxtBlacklistHasteSpells, @CRLF, "|"))
 	;;; Custom Combination Donate by ChiefM3
-	If GUICtrlRead($chkDonateCustom) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateCustom", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateCustom", 0)
-	EndIf
-	If GUICtrlRead($chkDonateAllCustom) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkDonateAllCustom", 1)
-	Else
-		IniWrite($config, "donate", "chkDonateAllCustom", 0)
-	EndIf
-	IniWrite($config, "donate", "txtDonateCustom", StringReplace(GUICtrlRead($txtDonateCustom), @CRLF, "|"))
-
-	IniWrite($config, "donate", "txtBlacklistCustom", StringReplace(GUICtrlRead($txtBlacklistCustom), @CRLF, "|"))
-
-	IniWrite($config, "donate", "cmbDonateCustom1", _GUICtrlComboBox_GetCurSel($cmbDonateCustom1))
-	IniWrite($config, "donate", "txtDonateCustom1", GUICtrlRead($txtDonateCustom1))
-	IniWrite($config, "donate", "cmbDonateCustom2", _GUICtrlComboBox_GetCurSel($cmbDonateCustom2))
-	IniWrite($config, "donate", "txtDonateCustom2", GUICtrlRead($txtDonateCustom2))
-	IniWrite($config, "donate", "cmbDonateCustom3", _GUICtrlComboBox_GetCurSel($cmbDonateCustom3))
-	IniWrite($config, "donate", "txtDonateCustom3", GUICtrlRead($txtDonateCustom3))
-	IniWrite($config, "donate", "txtBlacklist", StringReplace(GUICtrlRead($txtBlacklist), @CRLF, "|"))
+	IniWriteS($config, "donate", "chkDonateCustom", $ichkDonateCustom)
+	IniWriteS($config, "donate", "chkDonateAllCustom", $ichkDonateAllCustom)
+	IniWriteS($config, "donate", "txtDonateCustom", StringReplace($sTxtDonateCustom, @CRLF, "|"))
+	IniWriteS($config, "donate", "txtBlacklistCustom", StringReplace($sTxtBlacklistCustom, @CRLF, "|"))
+	IniWriteS($config, "donate", "cmbDonateCustom1", $varDonateCustom[0][0])
+	IniWriteS($config, "donate", "txtDonateCustom1", $varDonateCustom[0][1])
+	IniWriteS($config, "donate", "cmbDonateCustom2", $varDonateCustom[1][0])
+	IniWriteS($config, "donate", "txtDonateCustom2", $varDonateCustom[1][1])
+	IniWriteS($config, "donate", "cmbDonateCustom3", $varDonateCustom[2][0])
+	IniWriteS($config, "donate", "txtDonateCustom3", $varDonateCustom[2][1])
+	IniWriteS($config, "donate", "txtBlacklist", StringReplace($sTxtBlacklist, @CRLF, "|"))
 
 	; Extra Alphabets , Cyrillic.
-	If GUICtrlRead($chkExtraAlphabets) = $GUI_CHECKED Then
-		IniWrite($config, "donate", "chkExtraAlphabets", 1)
-	Else
-		IniWrite($config, "donate", "chkExtraAlphabets", 0)
-	EndIf
+
+	IniWriteS($config, "donate", "chkExtraAlphabets", $ichkExtraAlphabets)
+
 
 	;Troop Settings--------------------------------------------------------------------------
-	IniWrite($config, "troop", "TroopComposition", _GUICtrlComboBox_GetCurSel($cmbTroopComp))
-	IniWrite($config, "troop", "DarkTroopComposition", _GUICtrlComboBox_GetCurSel($cmbDarkTroopComp))
+	IniWriteS($config, "troop", "TroopComposition", _GUICtrlComboBox_GetCurSel($cmbTroopComp))
+	IniWriteS($config, "troop", "DarkTroopComposition", _GUICtrlComboBox_GetCurSel($cmbDarkTroopComp))
 	For $i = 0 To UBound($TroopName) - 1
-		IniWrite($config, "troop", $TroopName[$i], GUICtrlRead(Eval("txtNum" & $TroopName[$i])))
+		IniWriteS($config, "troop", $TroopName[$i], GUICtrlRead(Eval("txtNum" & $TroopName[$i])))
 	Next
 	For $i = 0 To UBound($TroopDarkName) - 1
-		IniWrite($config, "troop", $TroopDarkName[$i], GUICtrlRead(Eval("txtNum" & $TroopDarkName[$i])))
+		IniWriteS($config, "troop", $TroopDarkName[$i], GUICtrlRead(Eval("txtNum" & $TroopDarkName[$i])))
 	Next
 
-	IniWrite($config, "troop", "troop1", _GUICtrlComboBox_GetCurSel($cmbBarrack1))
-	IniWrite($config, "troop", "troop2", _GUICtrlComboBox_GetCurSel($cmbBarrack2))
-	IniWrite($config, "troop", "troop3", _GUICtrlComboBox_GetCurSel($cmbBarrack3))
-	IniWrite($config, "troop", "troop4", _GUICtrlComboBox_GetCurSel($cmbBarrack4))
+	IniWriteS($config, "troop", "troop1", _GUICtrlComboBox_GetCurSel($cmbBarrack1))
+	IniWriteS($config, "troop", "troop2", _GUICtrlComboBox_GetCurSel($cmbBarrack2))
+	IniWriteS($config, "troop", "troop3", _GUICtrlComboBox_GetCurSel($cmbBarrack3))
+	IniWriteS($config, "troop", "troop4", _GUICtrlComboBox_GetCurSel($cmbBarrack4))
 
-	IniWrite($config, "troop", "Darktroop1", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack1))
-	IniWrite($config, "troop", "Darktroop2", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack2))
+	IniWriteS($config, "troop", "Darktroop1", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack1))
+	IniWriteS($config, "troop", "Darktroop2", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack2))
 
 
-	IniWrite($config, "troop", "fulltroop", GUICtrlRead($txtFullTroop))
-	IniWrite($config, "troop", "TrainITDelay", GUICtrlRead($sldTrainITDelay))
+	IniWriteS($config, "troop", "fulltroop", GUICtrlRead($txtFullTroop))
+	IniWriteS($config, "other", "TrainITDelay", $isldTrainITDelay)
 
 	;barracks boost not saved (no use)
 
 	; Spells Creation  ---------------------------------------------------------------------
-	IniWrite($config, "Spells", "LightningSpell", GUICtrlRead($txtNumLightningSpell))
-	IniWrite($config, "Spells", "RageSpell", GUICtrlRead($txtNumRageSpell))
-	IniWrite($config, "Spells", "HealSpell", GUICtrlRead($txtNumHealSpell))
-	IniWrite($config, "Spells", "JumpSpell", GUICtrlRead($txtNumJumpSpell))
-	IniWrite($config, "Spells", "FreezeSpell", GUICtrlRead($txtNumFreezeSpell))
-	IniWrite($config, "Spells", "PoisonSpell", GUICtrlRead($txtNumPoisonSpell))
-	IniWrite($config, "Spells", "EarthSpell", GUICtrlRead($txtNumEarthSpell))
-	IniWrite($config, "Spells", "HasteSpell", GUICtrlRead($txtNumHasteSpell))
-	IniWrite($config, "Spells", "SpellFactory", GUICtrlRead($txtTotalCountSpell))
+	IniWriteS($config, "Spells", "LightningSpell", GUICtrlRead($txtNumLightningSpell))
+	IniWriteS($config, "Spells", "RageSpell", GUICtrlRead($txtNumRageSpell))
+	IniWriteS($config, "Spells", "HealSpell", GUICtrlRead($txtNumHealSpell))
+	IniWriteS($config, "Spells", "JumpSpell", GUICtrlRead($txtNumJumpSpell))
+	IniWriteS($config, "Spells", "FreezeSpell", GUICtrlRead($txtNumFreezeSpell))
+	IniWriteS($config, "Spells", "PoisonSpell", GUICtrlRead($txtNumPoisonSpell))
+	IniWriteS($config, "Spells", "EarthSpell", GUICtrlRead($txtNumEarthSpell))
+	IniWriteS($config, "Spells", "HasteSpell", GUICtrlRead($txtNumHasteSpell))
+	IniWriteS($config, "Spells", "SpellFactory", GUICtrlRead($txtTotalCountSpell))
 
-	;Misc Settings--------------------------------------------------------------------------
-	If $ichkWalls = 1 Then
-		IniWrite($config, "other", "auto-wall", 1)
-	Else
-		IniWrite($config, "other", "auto-wall", 0)
-	EndIf
-
-	If GUICtrlRead($UseGold) = $GUI_CHECKED Then
-		IniWrite($config, "other", "use-storage", 0)
-	ElseIf GUICtrlRead($UseElixir) = $GUI_CHECKED Then
-		IniWrite($config, "other", "use-storage", 1)
-	ElseIf GUICtrlRead($UseElixirGold) = $GUI_CHECKED Then
-		IniWrite($config, "other", "use-storage", 2)
-	EndIf
-
-	If $iSaveWallBldr = 1 Then
-		IniWrite($config, "other", "savebldr", 1)
-	Else
-		IniWrite($config, "other", "savebldr", 0)
-	EndIf
-
-	IniWrite($config, "other", "walllvl", _GUICtrlComboBox_GetCurSel($cmbWalls))
-	IniWrite($config, "other", "MaxNbWall", GUICtrlRead($sldMaxNbWall))
-
-	IniWrite($config, "other", "minwallgold", GUICtrlRead($txtWallMinGold))
-	IniWrite($config, "other", "minwallelixir", GUICtrlRead($txtWallMinElixir))
-
-	IniWrite($config, "other", "minrestartgold", GUICtrlRead($txtRestartGold))
-	IniWrite($config, "other", "minrestartelixir", GUICtrlRead($txtRestartElixir))
-	IniWrite($config, "other", "minrestartdark", GUICtrlRead($txtRestartDark))
-
-
-	If GUICtrlRead($chkTrap) = $GUI_CHECKED Then
-		IniWrite($config, "other", "chkTrap", 1)
-	Else
-		IniWrite($config, "other", "chkTrap", 0)
-	EndIf
-	If GUICtrlRead($chkCollect) = $GUI_CHECKED Then
-		IniWrite($config, "other", "chkCollect", 1)
-	Else
-		IniWrite($config, "other", "chkCollect", 0)
-	EndIf
-	If GUICtrlRead($chkTombstones) = $GUI_CHECKED Then
-		IniWrite($config, "other", "chkTombstones", 1)
-	Else
-		IniWrite($config, "other", "chkTombstones", 0)
-	EndIf
-
-	If GUICtrlRead($chkCleanYard) = $GUI_CHECKED Then
-		IniWrite($config, "other", "chkCleanYard", 1)
-	Else
-		IniWrite($config, "other", "chkCleanYard", 0)
-	EndIf
-
-	IniWrite($config, "other", "txtTimeWakeUp", GUICtrlRead($txtTimeWakeUp))
-	IniWrite($config, "other", "VSDelay", GUICtrlRead($sldVSDelay))
-	IniWrite($config, "other", "MaxVSDelay", GUICtrlRead($sldMaxVSDelay))
-
-	IniWrite($config, "other", "MaxTrophy", GUICtrlRead($txtMaxTrophy))
-	IniWrite($config, "other", "MinTrophy", GUICtrlRead($txtdropTrophy))
-	If GUICtrlRead($chkTrophyHeroes) = $GUI_CHECKED Then
-		IniWrite($config, "other", "chkTrophyHeroes", 1)
-	Else
-		IniWrite($config, "other", "chkTrophyHeroes", 0)
-	EndIf
-
-	If GUICtrlRead($chkTrophyAtkDead) = $GUI_CHECKED Then
-		IniWrite($config, "other", "chkTrophyAtkDead", 1)
-	Else
-		IniWrite($config, "other", "chkTrophyAtkDead", 0)
-	EndIf
-	IniWrite($config, "other", "DTArmyMin", GUICtrlRead($txtDTArmyMin))
-
-	;laboratory
-	If GUICtrlRead($chkLab) = $GUI_CHECKED Then
-		IniWrite($config, "upgrade", "upgradetroops", 1)
-	Else
-		IniWrite($config, "upgrade", "upgradetroops", 0)
-	EndIf
-	IniWrite($config, "upgrade", "upgradetroopname", _GUICtrlComboBox_GetCurSel($cmbLaboratory))
+	;Upgrades
+	IniWriteS($building, "upgrade", "upgradetroops", $ichkLab)
+	IniWriteS($building, "upgrade", "upgradetroopname", $icmbLaboratory)
 	IniWrite($building, "upgrade", "upgradelabtime", $sLabUpgradeTime)
-	IniWrite($building, "upgrade", "LabPosX", $aLabPos[0])
-	IniWrite($building, "upgrade", "LabPosY", $aLabPos[1])
+	IniWriteS($building, "upgrade", "LabPosX", $aLabPos[0])
+	IniWriteS($building, "upgrade", "LabPosY", $aLabPos[1])
+	IniWriteS($config, "upgrade", "UpgradeKing", $ichkUpgradeKing)
+	IniWriteS($config, "upgrade", "UpgradeQueen", $ichkUpgradeQueen)
+	IniWriteS($config, "upgrade", "UpgradeWarden", $ichkUpgradeWarden)
+	IniWriteS($config, "upgrade", "auto-wall", $ichkWalls)
+	IniWriteS($config, "upgrade", "savebldr", $iSaveWallBldr)
+	IniWriteS($config, "upgrade", "use-storage", $iUseStorage)
+	IniWriteS($config, "upgrade", "walllvl", $icmbWalls)
+	IniWriteS($config, "upgrade", "MaxNbWall", $iMaxNbWall)
+	IniWriteS($config, "upgrade", "minwallgold", $itxtWallMinGold)
+	IniWriteS($config, "upgrade", "minwallelixir", $itxtWallMinElixir)
+	IniWriteS($config, "upgrade", "minupgrgold", $itxtUpgrMinGold)
+	IniWriteS($config, "upgrade", "minupgrelixir", $itxtUpgrMinElixir)
+	IniWriteS($config, "upgrade", "minupgrdark", $itxtUpgrMinDark)
+	IniWriteS($config, "upgrade", "WallCost", $WallCost)
 
-	;Heroes upgrade
-	If GUICtrlRead($chkUpgradeKing) = $GUI_CHECKED Then
-		IniWrite($config, "upgrade", "UpgradeKing", "1")
-	Else
-		IniWrite($config, "upgrade", "UpgradeKing", "0")
-	EndIf
-
-	If GUICtrlRead($chkUpgradeQueen) = $GUI_CHECKED Then
-		IniWrite($config, "upgrade", "UpgradeQueen", "1")
-	Else
-		IniWrite($config, "upgrade", "UpgradeQueen", "0")
-	EndIf
-
-	If GUICtrlRead($chkUpgradeWarden) = $GUI_CHECKED Then
-		IniWrite($config, "upgrade", "UpgradeWarden", "1")
-	Else
-		IniWrite($config, "upgrade", "UpgradeWarden", "0")
-	EndIf
-	;
+	IniWriteS($config, "Walls", "Wall04", $itxtWall04ST)
+	IniWriteS($config, "Walls", "Wall05", $itxtWall05ST)
+	IniWriteS($config, "Walls", "Wall06", $itxtWall06ST)
+	IniWriteS($config, "Walls", "Wall07", $itxtWall07ST)
+	IniWriteS($config, "Walls", "Wall08", $itxtWall08ST)
+	IniWriteS($config, "Walls", "Wall09", $itxtWall09ST)
+	IniWriteS($config, "Walls", "Wall10", $itxtWall10ST)
+	IniWriteS($config, "Walls", "Wall11", $itxtWall11ST)
 
 	For $iz = 0 To UBound($aUpgrades, 1) - 1 ; Save Upgrades data
 		IniWrite($building, "upgrade", "xupgrade" & $iz, $aUpgrades[$iz][0])
@@ -1040,194 +1885,153 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($building, "upgrade", "upgradelevel" & $iz, $aUpgrades[$iz][5])
 		IniWrite($building, "upgrade", "upgradetime" & $iz, $aUpgrades[$iz][6])
 		IniWrite($building, "upgrade", "upgradeend" & $iz, $aUpgrades[$iz][7])
-
 		IniWrite($building, "upgrade", "upgradestatusicon" & $iz, $ipicUpgradeStatus[$iz])
-		If GUICtrlRead($chkbxUpgrade[$iz]) = $GUI_CHECKED Then
-			IniWrite($building, "upgrade", "upgradechk" & $iz, 1)
-		Else
-			IniWrite($building, "upgrade", "upgradechk" & $iz, 0)
-		EndIf
-		If GUICtrlRead($chkUpgrdeRepeat[$iz]) = $GUI_CHECKED Then
-			IniWrite($building, "upgrade", "upgraderepeat" & $iz, 1)
-		Else
-			IniWrite($building, "upgrade", "upgraderepeat" & $iz, 0)
-		EndIf
+		IniWrite($building, "upgrade", "upgradechk" & $iz, $ichkbxUpgrade[$iz])
+		IniWrite($building, "upgrade", "upgraderepeat" & $iz, $ichkUpgrdeRepeat[$iz])
 	Next
-	IniWrite($building, "upgrade", "minupgrgold", GUICtrlRead($txtUpgrMinGold))
-	IniWrite($building, "upgrade", "minupgrelixir", GUICtrlRead($txtUpgrMinElixir))
-	IniWrite($building, "upgrade", "minupgrdark", GUICtrlRead($txtUpgrMinDark))
-
-	IniWrite($building, "other", "xTownHall", $TownHallPos[0])
-	IniWrite($building, "other", "yTownHall", $TownHallPos[1])
-	IniWrite($building, "other", "LevelTownHall", $iTownHallLevel)
-
-	IniWrite($building, "other", "xCCPos", $aCCPos[0])
-	IniWrite($building, "other", "yCCPos", $aCCPos[1])
-
-	IniWrite($building, "other", "xArmy", $ArmyPos[0])
-	IniWrite($building, "other", "yArmy", $ArmyPos[1])
-	IniWrite($building, "other", "totalcamp", $TotalCamp)
-
-	;IniWrite($building, "other", "barrackNum", $barrackNum)
-	;IniWrite($building, "other", "barrackDarkNum", $barrackDarkNum)
-
-	IniWrite($building, "other", "listResource", $listResourceLocation)
 
 
-	IniWrite($building, "other", "xBarrack1", $barrackPos[0][0])
-	IniWrite($building, "other", "yBarrack1", $barrackPos[0][1])
-
-	IniWrite($building, "other", "xBarrack2", $barrackPos[1][0])
-	IniWrite($building, "other", "yBarrack2", $barrackPos[1][1])
-
-	IniWrite($building, "other", "xBarrack3", $barrackPos[2][0])
-	IniWrite($building, "other", "yBarrack3", $barrackPos[2][1])
-
-	IniWrite($building, "other", "xBarrack4", $barrackPos[3][0])
-	IniWrite($building, "other", "yBarrack4", $barrackPos[3][1])
+	;Misc Settings--------------------------------------------------------------------------
 
 
-	IniWrite($building, "other", "xspellfactory", $SFPos[0])
-	IniWrite($building, "other", "yspellfactory", $SFPos[1])
+	IniWriteS($config, "other", "minrestartgold", $itxtRestartGold)
+	IniWriteS($config, "other", "minrestartelixir", $itxtRestartElixir)
+	IniWriteS($config, "other", "minrestartdark", $itxtRestartDark)
 
-	IniWrite($building, "other", "xDspellfactory", $DSFPos[0])
-	IniWrite($building, "other", "yDspellfactory", $DSFPos[1])
 
-	IniWrite($building, "other", "xKingAltarPos", $KingAltarPos[0])
-	IniWrite($building, "other", "yKingAltarPos", $KingAltarPos[1])
+	If GUICtrlRead($chkTrap) = $GUI_CHECKED Then
+		IniWriteS($config, "other", "chkTrap", 1)
+	Else
+		IniWriteS($config, "other", "chkTrap", 0)
+	EndIf
+	If GUICtrlRead($chkCollect) = $GUI_CHECKED Then
+		IniWriteS($config, "other", "chkCollect", 1)
+	Else
+		IniWriteS($config, "other", "chkCollect", 0)
+	EndIf
+	If GUICtrlRead($chkTombstones) = $GUI_CHECKED Then
+		IniWriteS($config, "other", "chkTombstones", 1)
+	Else
+		IniWriteS($config, "other", "chkTombstones", 0)
+	EndIf
+	IniWriteS($config, "other", "txtTimeWakeUp", $sTimeWakeUp)
+	IniWriteS($config, "other", "VSDelay", $iVSDelay)
+	IniWriteS($config, "other", "MaxVSDelay", $iMaxVSDelay)
 
-	IniWrite($building, "other", "xQueenAltarPos", $QueenAltarPos[0])
-	IniWrite($building, "other", "yQueenAltarPos", $QueenAltarPos[1])
 
-	IniWrite($building, "other", "xWardenAltarPos", $WardenAltarPos[0])
-	IniWrite($building, "other", "yWardenAltarPos", $WardenAltarPos[1])
+	If GUICtrlRead($chkCleanYard) = $GUI_CHECKED Then
+		IniWriteS($config, "other", "chkCleanYard", 1)
+	Else
+		IniWriteS($config, "other", "chkCleanYard", 0)
+	EndIf
+
+	;Boju Only clear GemBox
+	If GUICtrlRead($chkGemsBox) = $GUI_CHECKED Then
+		IniWriteS($config, "other", "chkGemsBox", 1)
+	Else
+		IniWriteS($config, "other", "chkGemsBox", 0)
+	EndIf
+	;Only clear GemBox
+
+
+	IniWriteS($config, "search", "TrophyRange", $iChkTrophyRange)
+	IniWriteS($config, "search", "MaxTrophy", $itxtMaxTrophy)
+	IniWriteS($config, "search", "MinTrophy", $itxtdropTrophy)
+	IniWriteS($config, "search", "chkTrophyHeroes", $iChkTrophyHeroes)
+	IniWriteS($config, "search", "chkTrophyAtkDead", $iChkTrophyAtkDead)
+	IniWriteS($config, "search", "DTArmyMin", $itxtDTArmyMin)
+
+	SetDebugLog("Save Building Config " & $building)
+
+	IniWriteS($building, "other", "xTownHall", $TownHallPos[0])
+	IniWriteS($building, "other", "yTownHall", $TownHallPos[1])
+	IniWriteS($building, "other", "LevelTownHall", $iTownHallLevel)
+
+	IniWriteS($building, "other", "xCCPos", $aCCPos[0])
+	IniWriteS($building, "other", "yCCPos", $aCCPos[1])
+
+	IniWriteS($building, "other", "xArmy", $ArmyPos[0])
+	IniWriteS($building, "other", "yArmy", $ArmyPos[1])
+	IniWriteS($building, "other", "totalcamp", $TotalCamp)
+
+	;IniWriteS($building, "other", "barrackNum", $barrackNum)
+	;IniWriteS($building, "other", "barrackDarkNum", $barrackDarkNum)
+
+	IniWriteS($building, "other", "listResource", $listResourceLocation)
+
+
+	IniWriteS($building, "other", "xBarrack1", $barrackPos[0][0])
+	IniWriteS($building, "other", "yBarrack1", $barrackPos[0][1])
+
+	IniWriteS($building, "other", "xBarrack2", $barrackPos[1][0])
+	IniWriteS($building, "other", "yBarrack2", $barrackPos[1][1])
+
+	IniWriteS($building, "other", "xBarrack3", $barrackPos[2][0])
+	IniWriteS($building, "other", "yBarrack3", $barrackPos[2][1])
+
+	IniWriteS($building, "other", "xBarrack4", $barrackPos[3][0])
+	IniWriteS($building, "other", "yBarrack4", $barrackPos[3][1])
+
+
+	IniWriteS($building, "other", "xspellfactory", $SFPos[0])
+	IniWriteS($building, "other", "yspellfactory", $SFPos[1])
+
+	IniWriteS($building, "other", "xDspellfactory", $DSFPos[0])
+	IniWriteS($building, "other", "yDspellfactory", $DSFPos[1])
+
+	IniWriteS($building, "other", "xKingAltarPos", $KingAltarPos[0])
+	IniWriteS($building, "other", "yKingAltarPos", $KingAltarPos[1])
+
+	IniWriteS($building, "other", "xQueenAltarPos", $QueenAltarPos[0])
+	IniWriteS($building, "other", "yQueenAltarPos", $QueenAltarPos[1])
+
+	IniWriteS($building, "other", "xWardenAltarPos", $WardenAltarPos[0])
+	IniWriteS($building, "other", "yWardenAltarPos", $WardenAltarPos[1])
 
 
 	;PushBullet Settings----------------------------------------
-	IniWrite($config, "pushbullet", "AccountToken", GUICtrlRead($PushBTokenValue))
-	IniWrite($config, "pushbullet", "OrigPushB", $sCurrProfile)
+	IniWriteS($config, "pushbullet", "AccountToken", $PushBulletToken)
+	IniWriteS($config, "pushbullet", "OrigPushBullet", $iOrigPushBullet)
+	IniWriteS($config, "pushbullet", "PBEnabled", $PushBulletEnabled)
+	IniWriteS($config, "pushbullet", "PBRemote", $pRemote)
+	IniWriteS($config, "pushbullet", "DeleteAllPBPushes", $iDeleteAllPBPushes)
+	IniWriteS($config, "pushbullet", "DeleteOldPBPushes", $ichkDeleteOldPBPushes)
+	IniWriteS($config, "pushbullet", "HoursPushBullet", $icmbHoursPushBullet)
+	IniWriteS($config, "pushbullet", "AlertPBVMFound", $pMatchFound)
+	IniWriteS($config, "pushbullet", "AlertPBLastRaid", $pLastRaidImg)
+	IniWriteS($config, "pushbullet", "AlertPBWallUpgrade", $pWallUpgrade)
+	IniWriteS($config, "pushbullet", "AlertPBOOS", $pOOS)
+	IniWriteS($config, "pushbullet", "AlertPBOtherDevice", $pAnotherDevice)
+	IniWriteS($config, "pushbullet", "AlertPBLastRaidTxt", $iAlertPBLastRaidTxt)
+	IniWriteS($config, "pushbullet", "AlertPBCampFull", $ichkAlertPBCampFull)
+	IniWriteS($config, "pushbullet", "AlertPBVillage", $iAlertPBVillage)
+	IniWriteS($config, "pushbullet", "AlertPBLastAttack", $iLastAttackPB)
+	IniWriteS($config, "pushbullet", "AlertPBVBreak", $pTakeAbreak)
 
-	If GUICtrlRead($chkAlertPBVillage) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBVillage", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBVillage", 0)
-	EndIf
-
-	If GUICtrlRead($chkAlertPBLastAttack) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBLastAttack", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBLastAttack", 0)
-	EndIf
-
-	If GUICtrlRead($chkPBenabled) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "PBEnabled", 1)
-	Else
-		IniWrite($config, "pushbullet", "PBEnabled", 0)
-	EndIf
-
-	If GUICtrlRead($chkPBRemote) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "PBRemote", 1)
-	Else
-		IniWrite($config, "pushbullet", "PBRemote", 0)
-	EndIf
-
-	If GUICtrlRead($chkDeleteAllPushes) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "DeleteAllPBPushes", 1)
-	Else
-		IniWrite($config, "pushbullet", "DeleteAllPBPushes", 0)
-	EndIf
-
-	If GUICtrlRead($chkAlertPBVMFound) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBVMFound", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBVMFound", 0)
-	EndIf
-
-	If GUICtrlRead($chkAlertPBLastRaid) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBLastRaid", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBLastRaid", 0)
-	EndIf
-
-	If GUICtrlRead($chkAlertPBWallUpgrade) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBWallUpgrade", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBWallUpgrade", 0)
-	EndIf
-
-	If GUICtrlRead($chkAlertPBOOS) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBOOS", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBOOS", 0)
-	EndIf
-
-	If GUICtrlRead($chkAlertPBVBreak) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBVBreak", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBVBreak", 0)
-	EndIf
-
-	If GUICtrlRead($chkAlertPBOtherDevice) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "AlertPBOtherDevice", 1)
-	Else
-		IniWrite($config, "pushbullet", "AlertPBOtherDevice", 0)
-	EndIf
-
-	IniWrite($config, "pushbullet", "HoursPushBullet", _GUICtrlComboBox_GetCurSel($cmbHoursPushBullet) + 1)
-
-	If GUICtrlRead($chkDeleteOldPushes) = $GUI_CHECKED Then
-		IniWrite($config, "pushbullet", "DeleteOldPushes", 1)
-	Else
-		IniWrite($config, "pushbullet", "DeleteOldPushes", 0)
-	EndIf
-
-	IniWrite($config, "other", "WAOffsetX", GUICtrlRead($txtWAOffsetX))
-	IniWrite($config, "other", "WAOffsetY", GUICtrlRead($txtWAOffsetY))
+	IniWriteS($config, "other", "WAOffsetX", $iWAOffsetX)
+	IniWriteS($config, "other", "WAOffsetY", $iWAOffsetY)
 
 
 	; delete Files
-	If GUICtrlRead($chkDeleteLogs) = $GUI_CHECKED Then
-		IniWrite($config, "deletefiles", "DeleteLogs", 1)
-	Else
-		IniWrite($config, "deletefiles", "DeleteLogs", 0)
-	EndIf
-	IniWrite($config, "deletefiles", "DeleteLogsDays", GUICtrlRead($txtDeleteLogsDays))
+	IniWriteS($config, "deletefiles", "DeleteLogs", $ichkDeleteLogs)
+	IniWriteS($config, "deletefiles", "DeleteLogsDays", $iDeleteLogsDays)
 
-	If GUICtrlRead($chkDeleteTemp) = $GUI_CHECKED Then
-		IniWrite($config, "deletefiles", "DeleteTemp", 1)
-	Else
-		IniWrite($config, "deletefiles", "DeleteTemp", 0)
-	EndIf
-	IniWrite($config, "deletefiles", "DeleteTempDays", GUICtrlRead($txtDeleteTempDays))
+	IniWriteS($config, "deletefiles", "DeleteTemp", $ichkDeleteTemp)
+	IniWriteS($config, "deletefiles", "DeleteTempDays", $iDeleteTempDays)
 
-	If GUICtrlRead($chkDeleteLoots) = $GUI_CHECKED Then
-		IniWrite($config, "deletefiles", "DeleteLoots", 1)
-	Else
-		IniWrite($config, "deletefiles", "DeleteLoots", 0)
-	EndIf
-	IniWrite($config, "deletefiles", "DeleteLootsDays", GUICtrlRead($txtDeleteLootsDays))
+	IniWriteS($config, "deletefiles", "DeleteLoots", $ichkDeleteLoots)
+	IniWriteS($config, "deletefiles", "DeleteLootsDays", $iDeleteLootsDays)
 
 	; planned
 	If GUICtrlRead($chkRequestCCHours) = $GUI_CHECKED Then
-		IniWrite($config, "planned", "RequestHoursEnable", 1)
+		IniWriteS($config, "planned", "RequestHoursEnable", 1)
 	Else
-		IniWrite($config, "planned", "RequestHoursEnable", 0)
+		IniWriteS($config, "planned", "RequestHoursEnable", 0)
 	EndIf
 	If GUICtrlRead($chkDonateHours) = $GUI_CHECKED Then
-		IniWrite($config, "planned", "DonateHoursEnable", 1)
+		IniWriteS($config, "planned", "DonateHoursEnable", 1)
 	Else
-		IniWrite($config, "planned", "DonateHoursEnable", 0)
-	EndIf
-	If GUICtrlRead($chkDropCCHours) = $GUI_CHECKED Then
-		IniWrite($config, "planned", "DropCCEnable", 1)
-	Else
-		IniWrite($config, "planned", "DropCCEnable", 0)
-	EndIf
-
-	If GUICtrlRead($chkBoostBarracksHours) = $GUI_CHECKED Then
-		IniWrite($config, "planned", "BoostBarracksHoursEnable", 1)
-	Else
-		IniWrite($config, "planned", "BoostBarracksHoursEnable", 0)
+		IniWriteS($config, "planned", "DonateHoursEnable", 0)
 	EndIf
 
 	Local $string = ""
@@ -1238,7 +2042,7 @@ Func saveConfig() ;Saves the controls settings to the config
 			$string &= "0|"
 		EndIf
 	Next
-	IniWrite($config, "planned", "DonateHours", $string)
+	IniWriteS($config, "planned", "DonateHours", $string)
 
 	Local $string = ""
 	For $i = 0 To 23
@@ -1248,7 +2052,7 @@ Func saveConfig() ;Saves the controls settings to the config
 			$string &= "0|"
 		EndIf
 	Next
-	IniWrite($config, "planned", "RequestHours", $string)
+	IniWriteS($config, "planned", "RequestHours", $string)
 
 	Local $string = ""
 	For $i = 0 To 23
@@ -1258,352 +2062,183 @@ Func saveConfig() ;Saves the controls settings to the config
 			$string &= "0|"
 		EndIf
 	Next
-	IniWrite($config, "planned", "DropCCHours", $string)
+	IniWriteS($config, "planned", "DropCCHours", $string)
 
 	Local $string = ""
 	For $i = 0 To 23
-		If GUICtrlRead(Eval("chkBoostBarracksHours" & $i)) = $GUI_CHECKED Then
+		If $iPlannedBoostBarracksHours[$i] = 1 Then
 			$string &= "1|"
 		Else
 			$string &= "0|"
 		EndIf
 	Next
-	IniWrite($config, "planned", "BoostBarracksHours", $string)
+	IniWriteS($config, "planned", "BoostBarracksHours", $string)
 
+	Local $string = ""
+	For $i = 0 To 23
+		If GUICtrlRead(Eval("chkattackHours" & $i)) = $GUI_CHECKED Then
+			$string &= "1|"
+		Else
+			$string &= "0|"
+		EndIf
+	Next
+	IniWriteS($config, "planned", "attackHours", $string)
+
+	Local $string = ""
+	For $i = 0 To 7
+		If GUICtrlRead(Eval("chkAttackWeekdays" & $i)) = $GUI_CHECKED Then
+			$string &= "1|"
+		Else
+			$string &= "0|"
+		EndIf
+	Next
+	IniWriteS($config, "planned", "attackDays", $string)
 
 	;Share Attack Settings----------------------------------------
-	IniWrite($config, "shareattack", "minGold", GUICtrlRead($txtShareMinGold))
-	IniWrite($config, "shareattack", "minElixir", GUICtrlRead($txtShareMinElixir))
-	IniWrite($config, "shareattack", "minDark", GUICtrlRead($txtShareMinDark))
-	IniWrite($config, "shareattack", "Message", StringReplace(GUICtrlRead($txtShareMessage), @CRLF, "|"))
+	IniWriteS($config, "shareattack", "minGold", $iShareminGold)
+	IniWriteS($config, "shareattack", "minElixir", $iShareminElixir)
+	IniWriteS($config, "shareattack", "minDark", $iShareminDark)
+	IniWriteS($config, "shareattack", "Message", StringReplace($sShareMessage, @CRLF, "|"))
 	If GUICtrlRead($chkShareAttack) = $GUI_CHECKED Then
-		IniWrite($config, "shareattack", "ShareAttack", 1)
+		IniWriteS($config, "shareattack", "ShareAttack", 1)
 	Else
-		IniWrite($config, "shareattack", "ShareAttack", 0)
+		IniWriteS($config, "shareattack", "ShareAttack", 0)
 	EndIf
-
-
-
 
 	;screenshot
-	If GUICtrlRead($chkScreenshotType) = $GUI_CHECKED Then
-		IniWrite($config, "other", "ScreenshotType", 1)
-	Else
-		IniWrite($config, "other", "ScreenshotType", 0)
-	EndIf
-
-	If GUICtrlRead($chkScreenshotHideName) = $GUI_CHECKED Then
-		IniWrite($config, "other", "ScreenshotHideName", 1)
-	Else
-		IniWrite($config, "other", "ScreenshotHideName", 0)
-	EndIf
-
+	IniWriteS($config, "other", "ScreenshotType", $iScreenshotType)
+	IniWriteS($config, "other", "ScreenshotHideName", $ichkScreenshotHideName)
 
 	; debug
-	If GUICtrlRead($chkDebugClick) = $GUI_CHECKED Then
-		IniWrite($config, "debug", "debugClick", 1)
-	Else
-		IniWrite($config, "debug", "debugClick", 0)
-	EndIf
 
-	If $DevMode = 1 Then
-		If GUICtrlRead($chkDebugSetLog) = $GUI_CHECKED Then
-			IniWrite($config, "debug", "debugsetlog", 1)
-		Else
-			IniWrite($config, "debug", "debugsetlog", 0)
-		EndIf
-		If GUICtrlRead($chkDebugOcr) = $GUI_CHECKED Then
-			IniWrite($config, "debug", "debugocr", 1)
-		Else
-			IniWrite($config, "debug", "debugocr", 0)
-		EndIf
-		If GUICtrlRead($chkDebugImageSave) = $GUI_CHECKED Then
-			IniWrite($config, "debug", "debugimagesave", 1)
-		Else
-			IniWrite($config, "debug", "debugimagesave", 0)
-		EndIf
-		If GUICtrlRead($chkdebugBuildingPos) = $GUI_CHECKED Then
-			IniWrite($config, "debug", "debugbuildingpos", 1)
-		Else
-			IniWrite($config, "debug", "debugbuildingpos", 0)
-		EndIf
-		If GUICtrlRead($chkmakeIMGCSV) = $GUI_CHECKED Then
-			IniWrite($config, "debug", "debugmakeimgcsv", 1)
-		Else
-			IniWrite($config, "debug", "debugmakeimgcsv", 0)
-	    EndIf
-		IniWrite($config, "debug", "debugresourcesoffset", $debugresourcesoffset)
-		IniWrite($config, "debug", "continuesearchelixirdebug", $continuesearchelixirdebug)
+	IniWriteS($config, "debug", "debugsetclick", $debugClick)
+	If $devmode = 1 Then
+		IniWriteS($config, "debug", "debugsetlog", $DebugSetlog)
+		IniWriteS($config, "debug", "debugocr", $debugOcr)
+		IniWriteS($config, "debug", "debugimagesave", $DebugImageSave)
+		IniWriteS($config, "debug", "debugbuildingpos", $debugBuildingPos)
+		IniWriteS($config, "debug", "debugtrain", $debugsetlogTrain)
+		IniWriteS($config, "debug", "debugmakeimgcsv", $makeIMGCSV)
+		IniWriteS($config, "debug", "debugresourcesoffset", $debugresourcesoffset)
+		IniWriteS($config, "debug", "continuesearchelixirdebug", $continuesearchelixirdebug)
+		IniWriteS($config, "debug", "debugMilkingIMGmake", $debugMilkingIMGmake)
 
 	Else
 		IniDelete($config, "debug", "debugocr")
 		IniDelete($config, "debug", "debugsetlog")
 		IniDelete($config, "debug", "debugimagesave")
 		IniDelete($config, "debug", "debugbuildingpos")
+		IniDelete($config, "debug", "debugtrain")
 		IniDelete($config, "debug", "debugresourcesoffset")
 		IniDelete($config, "debug", "continuesearchelixirdebug")
 	EndIf
 
 	;forced Total Camp values
-	If GUICtrlRead($ChkTotalCampForced) = $GUI_CHECKED Then
-		IniWrite($config, "other", "ChkTotalCampForced", 1)
-	Else
-		IniWrite($config, "other", "ChkTotalCampForced", 0)
-	EndIf
-	IniWrite($config, "other", "ValueTotalCampForced", GUICtrlRead($txtTotalCampForced))
+	IniWriteS($config, "other", "ChkTotalCampForced", $ichkTotalCampForced)
+	IniWriteS($config, "other", "ValueTotalCampForced", $iValueTotalCampForced)
 
-	If GUICtrlRead($chkSinglePBTForced) = $GUI_CHECKED Then
-		IniWrite($config, "other", "chkSinglePBTForced", 1)
-	Else
-		IniWrite($config, "other", "chkSinglePBTForced", 0)
-	EndIf
-	IniWrite($config, "other", "ValueSinglePBTimeForced", GUICtrlRead($txtSinglePBTimeForced))
-	IniWrite($config, "other", "ValuePBTimeForcedExit", GUICtrlRead($txtPBTimeForcedExit))
+	IniWriteS($config, "other", "chkSinglePBTForced", $ichkSinglePBTForced)
+	IniWriteS($config, "other", "ValueSinglePBTimeForced", $iValueSinglePBTimeForced)
+	IniWriteS($config, "other", "ValuePBTimeForcedExit", $iValuePBTimeForcedExit)
 
-	If GUICtrlRead($ChkLanguage) = $GUI_CHECKED Then
-		IniWrite($config, "General", "ChkLanguage", 1)
-	Else
-		IniWrite($config, "General", "ChkLanguage", 0)
-	EndIf
+	IniWriteS($config, "General", "ChkLanguage", $ichkLanguage)
 
-	If GUICtrlRead($chkVersion) = $GUI_CHECKED Then
-		IniWrite($config, "General", "ChkVersion", 1)
-	Else
-		IniWrite($config, "General", "ChkVersion", 0)
-	EndIf
+	IniWriteS($config, "General", "ChkVersion", $ichkVersion)
 
 
-	;Snipe While Train
-	If GUICtrlRead($chkSnipeWhileTrain) = $GUI_CHECKED Then
-		IniWrite($config, "SnipeWhileTrain", "chkSnipeWhileTrain", 1)
-	Else
-		IniWrite($config, "SnipeWhileTrain", "chkSnipeWhileTrain", 0)
-	EndIf
-	IniWrite($config, "SnipeWhileTrain", "txtSearchlimit", GUICtrlRead($txtSearchlimit))
-	IniWrite($config, "SnipeWhileTrain", "txtminArmyCapacityTHSnipe", GUICtrlRead($txtminArmyCapacityTHSnipe))
-	IniWrite($config, "SnipeWhileTrain", "SWTtiles", GUICtrlRead($txtSWTTiles))
+
+	IniWriteS($config, "search", "SWTtiles", GUICtrlRead($txtSWTTiles))
 
 	;Multilanguage
-
-	IniWrite($config, "other", "language", $sLanguage)
+	IniWriteS($config, "other", "language", $sLanguage)
 
 	If $ichkExtraAlphabets = 1 Then FileClose($config)
 
 	SaveStatChkTownHall() ;call function save stats
 	SaveStatChkDeadBase() ;call function save stats
 
-	;AttackCSV
-	If GUICtrlRead($chkDBKingAttackCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBKingAtk", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBKingAtk", 0)
-	EndIf
-	If GUICtrlRead($chkABKingAttackCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABKingAtk", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABKingAtk", 0)
-	EndIf
+	IniWriteS($config, "attack", "ScriptDB", $scmbDBScriptName)
 
-	If GUICtrlRead($chkDBQueenAttackCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBQueenAtk", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBQueenAtk", 0)
-	EndIf
-	If GUICtrlRead($chkABQueenAttackCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABQueenAtk", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABQueenAtk", 0)
-	EndIf
+	IniWriteS($config, "attack", "ScriptAB", $scmbABScriptName)
 
-	If GUICtrlRead($chkDBDropCCCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBDropCC", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBDropCC", 0)
-	EndIf
-
-	If GUICtrlRead($chkDBWardenAttackCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBWardenAtk", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBWardenAtk", 0)
-	EndIf
-
-	If GUICtrlRead($chkABWardenAttackCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABWardenAtk", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABWardenAtk", 0)
-	EndIf
-
-	If GUICtrlRead($chkABDropCCCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABDropCC", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABDropCC", 0)
-	EndIf
-
-	If GUICtrlRead($chkUseCCBalancedCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "BalanceCC", 1)
-	Else
-		IniWrite($config, "attackCSV", "BalanceCC", 0)
-	EndIf
-
-
-
-	If GUICtrlRead($chkDBLightSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBLightSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBLightSpell", 0)
-	EndIf
-	If GUICtrlRead($chkABLightSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABLightSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABLightSpell", 0)
-	EndIf
-
-
-	If GUICtrlRead($chkDBHealSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBHealSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBHealSpell", 0)
-	EndIf
-	If GUICtrlRead($chkABHealSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABHealSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABHealSpell", 0)
-	EndIf
-
-
-	If GUICtrlRead($chkDBRageSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBRageSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBRageSpell", 0)
-	EndIf
-	If GUICtrlRead($chkABRageSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABRageSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABRageSpell", 0)
-	EndIf
-
-	If GUICtrlRead($chkDBJumpSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBJumpSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBJumpSpell", 0)
-	EndIf
-	If GUICtrlRead($chkABJumpSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABJumpSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABJumpSpell", 0)
-	EndIf
-
-	If GUICtrlRead($chkDBFreezeSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBFreezeSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBFreezeSpell", 0)
-	EndIf
-	If GUICtrlRead($chkABFreezeSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABFreezeSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABFreezeSpell", 0)
-	EndIf
-
-	If GUICtrlRead($chkDBPoisonSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBPoisonSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBPoisonSpell", 0)
-	EndIf
-	If GUICtrlRead($chkABPoisonSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABPoisonSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABPoisonSpell", 0)
-	EndIf
-
-	If GUICtrlRead($chkDBEarthquakeSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBEarthquakeSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBEarthquakeSpell", 0)
-	EndIf
-	If GUICtrlRead($chkABEarthquakeSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABEarthquakeSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABEarthquakeSpell", 0)
-	EndIf
-
-	If GUICtrlRead($chkDBHasteSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "DBHasteSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "DBHasteSpell", 0)
-	EndIf
-	If GUICtrlRead($chkABHasteSpellCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ABHasteSpell", 1)
-	Else
-		IniWrite($config, "attackCSV", "ABHasteSpell", 0)
-	EndIf
-
-
-	IniWrite($config, "attackCSV", "BalanceCCDonated", _GUICtrlComboBox_GetCurSel($cmbCCDonatedCSV) + 1)
-	IniWrite($config, "attackCSV", "BalanceCCReceived", _GUICtrlComboBox_GetCurSel($cmbCCReceivedCSV) + 1)
-
-	If GUICtrlRead($radManAbilitiesCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ActivateKQ", "Manual")
-	ElseIf GUICtrlRead($radAutoAbilities) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ActivateKQ", "Auto")
-	EndIf
-
-	If GUICtrlRead($chkUseWardenAbilityCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "ActivateWarden", 1)
-	Else
-		IniWrite($config, "attackCSV", "ActivateWarden", 0)
-	EndIf
-
-	IniWrite($config, "attackCSV", "delayActivateKQ", GUICtrlRead($txtManAbilitiesCSV))
-	IniWrite($config, "attackCSV", "delayActivateW", GUICtrlRead($txtWardenAbilityCSV))
-
-
-	IniWrite($config, "attackCSV", "ScriptDB", $scmbDBScriptName)
-
-	If GUICtrlRead($chkUseAttackDBCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "EnableScriptDB", 1)
-	Else
-		IniWrite($config, "attackCSV", "EnableScriptDB", 0)
-	EndIf
-
-	IniWrite($config, "attackCSV", "ScriptAB", $scmbABScriptName)
-
-	If GUICtrlRead($chkUseAttackABCSV) = $GUI_CHECKED Then
-		IniWrite($config, "attackCSV", "EnableScriptAB", 1)
-	Else
-		IniWrite($config, "attackCSV", "EnableScriptAB", 0)
-    EndIf
-
-    ;MilkingAttack Options
-    IniWrite($config, "MilkingAttack", "LocateMine", $MilkFarmLocateMine)
-    IniWrite($config, "MilkingAttack", "LocateElixir", $MilkFarmLocateElixir)
-    IniWrite($config, "MilkingAttack", "LocateDrill", $MilkFarmLocateDrill)
+	;MilkingAttack Options
+	IniWriteS($config, "MilkingAttack", "LocateMine", $MilkFarmLocateMine)
+	IniWriteS($config, "MilkingAttack", "LocateElixir", $MilkFarmLocateElixir)
+	IniWriteS($config, "MilkingAttack", "LocateDrill", $MilkFarmLocateDrill)
 	Local $tempElixirParam = ""
-	For $i = 0 To Ubound($MilkFarmElixirParam) -1
-	   $tempElixirParam  &= $MilkFarmElixirParam[$i] & "|"
-    Next
-	$tempElixirParam = StringLeft($tempElixirParam,StringLen($tempElixirParam) -1 )
-    IniWrite($config, "MilkingAttack", "LocateElixirLevel", $tempElixirParam)
-    IniWrite($config, "MilkingAttack", "MineParam", $MilkFarmMineParam)
-    IniWrite($config, "MilkingAttack", "DrillParam", $MilkFarmDrillParam)
+	For $i = 0 To UBound($MilkFarmElixirParam) - 1
+		$tempElixirParam &= $MilkFarmElixirParam[$i] & "|"
+	Next
+	$tempElixirParam = StringLeft($tempElixirParam, StringLen($tempElixirParam) - 1)
+	IniWriteS($config, "MilkingAttack", "LocateElixirLevel", $tempElixirParam)
+	IniWriteS($config, "MilkingAttack", "MineParam", $MilkFarmMineParam)
+	IniWriteS($config, "MilkingAttack", "DrillParam", $MilkFarmDrillParam)
 
-    IniWrite($config, "MilkingAttack", "AttackElixir", $MilkFarmAttackElixirExtractors)
-    IniWrite($config, "MilkingAttack", "AttackMine", $MilkFarmAttackGoldMines)
-    IniWrite($config, "MilkingAttack", "AttackDrill", $MilkFarmAttackDarkDrills)
-    IniWrite($config, "MilkingAttack", "LimitGold", $MilkFarmLimitGold)
-    IniWrite($config, "MilkingAttack", "LimitElixir", $MilkFarmLimitElixir)
-    IniWrite($config, "MilkingAttack", "LimitDark", $MilkFarmLimitDark)
-    IniWrite($config, "MilkingAttack", "MaxTiles", $MilkFarmResMaxTilesFromBorder)
+	IniWriteS($config, "MilkingAttack", "AttackElixir", $MilkFarmAttackElixirExtractors)
+	IniWriteS($config, "MilkingAttack", "AttackMine", $MilkFarmAttackGoldMines)
+	IniWriteS($config, "MilkingAttack", "AttackDrill", $MilkFarmAttackDarkDrills)
+	IniWriteS($config, "MilkingAttack", "LimitGold", $MilkFarmLimitGold)
+	IniWriteS($config, "MilkingAttack", "LimitElixir", $MilkFarmLimitElixir)
+	IniWriteS($config, "MilkingAttack", "LimitDark", $MilkFarmLimitDark)
+	IniWriteS($config, "MilkingAttack", "MaxTiles", $MilkFarmResMaxTilesFromBorder)
 
-    IniWrite($config, "MilkingAttack", "TroopForWaveMin", $MilkFarmTroopForWaveMin)
-    IniWrite($config, "MilkingAttack", "TroopForWaveMax", $MilkFarmTroopForWaveMax)
-    IniWrite($config, "MilkingAttack", "MaxWaves", $MilkFarmTroopMaxWaves)
-    IniWrite($config, "MilkingAttack", "DelayBetweenWavesMin", $MilkFarmDelayFromWavesMin)
-    IniWrite($config, "MilkingAttack", "DelayBetweenWavesMax", $MilkFarmDelayFromWavesMax)
-;~     IniWrite($config, "MilkingAttack", "SnipeTownHall", $MilkFarmSnipeTh)
-;~     IniWrite($config, "MilkingAttack", "TownhallTiles", $MilkFarmTHMaxTilesFromBorder)
-;~     IniWrite($config, "MilkingAttack", "TownHallAlgorithm", $MilkFarmAlgorithmTh)
-;~     IniWrite($config, "MilkingAttack", "TownHallHitAnyway", $MilkFarmSnipeEvenIfNoExtractorsFound)
+	IniWriteS($config, "MilkingAttack", "TroopForWaveMin", $MilkFarmTroopForWaveMin)
+	IniWriteS($config, "MilkingAttack", "TroopForWaveMax", $MilkFarmTroopForWaveMax)
+	IniWriteS($config, "MilkingAttack", "MaxWaves", $MilkFarmTroopMaxWaves)
+	IniWriteS($config, "MilkingAttack", "DelayBetweenWavesMin", $MilkFarmDelayFromWavesMin)
+	IniWriteS($config, "MilkingAttack", "DelayBetweenWavesMax", $MilkFarmDelayFromWavesMax)
+	IniWriteS($config, "MilkingAttack", "TownhallTiles", $MilkFarmTHMaxTilesFromBorder)
+	IniWriteS($config, "MilkingAttack", "TownHallAlgorithm", $MilkFarmAlgorithmTh)
+	IniWriteS($config, "MilkingAttack", "TownHallHitAnyway", $MilkFarmSnipeEvenIfNoExtractorsFound)
+
+	IniWriteS($config, "MilkingAttack", "MilkFarmForceTolerance", $MilkFarmForcetolerance)
+	IniWriteS($config, "MilkingAttack", "MilkFarmForcetolerancenormal", $MilkFarmForcetolerancenormal)
+	IniWriteS($config, "MilkingAttack", "MilkFarmForcetoleranceboosted", $MilkFarmForcetoleranceboosted)
+	IniWriteS($config, "MilkingAttack", "MilkFarmForcetolerancedestroyed", $MilkFarmForcetolerancedestroyed)
+
+	IniWriteS($config, "MilkingAttack", "CheckStructureDestroyedBeforeAttack", $MilkingAttackCheckStructureDestroyedBeforeAttack)
+	IniWriteS($config, "MilkingAttack", "CheckStructureDestroyedAfterAttack", $MilkingAttackCheckStructureDestroyedAfterAttack)
+
+	IniWriteS($config, "MilkingAttack", "DropRandomPlace", $MilkingAttackDropGoblinAlgorithm)
+	IniWriteS($config, "MilkingAttack", "StructureOrder", $MilkingAttackStructureOrder)
+
+	IniWriteS($config, "MilkingAttack", "MilkAttackAfterTHSnipe", $MilkAttackAfterTHSnipe)
+	IniWriteS($config, "MilkingAttack", "MilkAttackAfterScriptedAtk", $MilkAttackAfterScriptedAtk)
+
+;~ 	IniWriteS($config, "MilkingAttack", "MAStandardAlgorithm",$iCmbStandardAlgorithm[$MA])
+;~ 	IniWriteS($config, "MilkingAttack", "MADeploy", $iChkDeploySettings[$MA])
+;~ 	IniWriteS($config, "MilkingAttack", "MAUnitD", $iCmbUnitDelay[$MA])
+;~ 	IniWriteS($config, "MilkingAttack", "MAWaveD", $iCmbWaveDelay[$MA])
+;~ 	IniWriteS($config, "MilkingAttack", "MARandomSpeedAtk", $iChkRandomspeedatk[$MA])
+;~ 	IniWriteS($config, "MilkingAttack", "MASmartAttackRedArea", $iChkRedArea[$MA])
+;~ 	IniWriteS($config, "MilkingAttack", "MASmartAttackGoldMine", $iChkSmartAttack[$MA][0])
+;~ 	IniWriteS($config, "MilkingAttack", "MASmartAttackElixirCollector", $iChkSmartAttack[$MA][1])
+;~ 	IniWriteS($config, "MilkingAttack", "MASmartAttackDarkElixirDrill", $iChkSmartAttack[$MA][2])
+
+	IniWriteS($config, "MilkingAttack", "MilkAttackCSVscript", $MilkAttackCSVscript)
+	IniWriteS($config, "MilkingAttack", "MilkAttackType", $MilkAttackType)
+
+	IniWriteS($config, "collectors", "lvl6Enabled", $chkLvl6Enabled)
+	IniWriteS($config, "collectors", "lvl7Enabled", $chkLvl7Enabled)
+	IniWriteS($config, "collectors", "lvl8Enabled", $chkLvl8Enabled)
+	IniWriteS($config, "collectors", "lvl9Enabled", $chkLvl9Enabled)
+	IniWriteS($config, "collectors", "lvl10Enabled", $chkLvl10Enabled)
+	IniWriteS($config, "collectors", "lvl11Enabled", $chkLvl11Enabled)
+	IniWriteS($config, "collectors", "lvl12Enabled", $chkLvl12Enabled)
+	IniWriteS($config, "collectors", "lvl6fill", $cmbLvl6Fill)
+	IniWriteS($config, "collectors", "lvl7fill", $cmbLvl7Fill)
+	IniWriteS($config, "collectors", "lvl8fill", $cmbLvl8Fill)
+	IniWriteS($config, "collectors", "lvl9fill", $cmbLvl9Fill)
+	IniWriteS($config, "collectors", "lvl10fill", $cmbLvl10Fill)
+	IniWriteS($config, "collectors", "lvl11fill", $cmbLvl11Fill)
+	IniWriteS($config, "collectors", "lvl12fill", $cmbLvl12Fill)
+	IniWriteS($config, "collectors", "tolerance", $toleranceOffset)
+
+	; Android Configuration
+	IniWriteS($config, "android", "adb.clicks.enabled", ($AndroidAdbClicksEnabled ? "1" : "0"))
+	IniWriteS($config, "android", "adb.clicks.troop.deploy.size", $AndroidAdbClicksTroopDeploySize)
 
 	If $hFile <> -1 Then FileClose($hFile)
 
 EndFunc   ;==>saveConfig
+

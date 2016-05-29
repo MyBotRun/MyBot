@@ -1,0 +1,25 @@
+echo Android Steady Shell PID=$PPID
+if [ -f /system/xbin/renice ]
+then
+	RENICE="/system/xbin/renice -20"
+else
+	if [ -f /system/bin/renice ]
+	then
+		RENICE="/system/bin/renice -- -20"
+	else
+		RENICE="renice -20"
+	fi
+fi
+
+echo $RENICE $PPID
+$RENICE $PPID
+
+#echo $RENICE $(pidof com.supercell.clashofclans)
+#$RENICE $(pidof com.supercell.clashofclans)
+ps|grep com.supercell.clashofclans|awk '{print $2}'|xargs echo $RENICE
+ps|grep com.supercell.clashofclans|awk '{print $2}'|xargs $RENICE
+
+#stop media service as it can consume up to 30% Android CPU
+#disabled as it can cause also strange sound problems and crashes
+#echo stop media
+#stop media

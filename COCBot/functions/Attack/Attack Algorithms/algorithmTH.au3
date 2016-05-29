@@ -52,31 +52,35 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 
 		;King
 		If $troopKind = $eKing Then
-			If $ichkUseKingTH = 0 Then Return
+			If $duringMilkingAttack = 0 and $KingAttack[$TS] = 0 Then Return
+			If $duringMilkingAttack = 1 and $KingAttack[$DB] = 0 Then Return
 			$checkKPower = True
 			SetLog("Dropping King", $COLOR_GREEN)
-			$THusedKing=1
+			$THusedKing = 1
 		EndIf
 
 		;Queen
 		If $troopKind = $eQueen Then
-			If $ichkUseQueenTH = 0 Then Return
+			If $duringMilkingAttack = 0 and $QueenAttack[$TS] = 0 Then Return
+			If $duringMilkingAttack = 1 and $QueenAttack[$DB] = 0 Then Return
 			$checkQPower = True
 			SetLog("Dropping Queen", $COLOR_GREEN)
-			$THusedQueen=1
+			$THusedQueen = 1
 		EndIf
 
 		;Warden
 		If $troopKind = $eWarden Then
-			If $ichkUseWardenTH = 0 Then Return
+			If  $duringMilkingAttack = 0 and $WardenAttack[$TS] = 0 Then Return
+			If $duringMilkingAttack = 1 and $WardenAttack[$DB] = 0 Then Return
 			$checkWPower = True
 			SetLog("Dropping Grand Warden", $COLOR_GREEN)
-			$THusedWarden=1
+			$THusedWarden = 1
 		EndIf
 
 		;CC
 		If $troopKind = $eCastle Then
-			If $ichkUseClastleTH = 0 Then Return
+			If $duringMilkingAttack = 0 and $iDropCC[$TS] = 0 Then Return
+			If $duringMilkingAttack = 1 and $iDropCC[$DB] = 0 Then Return
 
 			If $iPlannedDropCCHoursEnable = 1 Then
 				Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
@@ -171,7 +175,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThy = 314 - $ii * 14
 					If CheckOneStar(0, False, False) Then Return
 					If IsAttackPage() Then Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0019")
-					If _Sleep(Random(20, 40,1)) Then Return
+					If _Sleep(Random(20, 40, 1)) Then Return
 				Next
 			Next
 		Case 1 ;LL
@@ -186,7 +190,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThy = 314 + $ii * 14
 					If CheckOneStar(0, False, False) Then Return
 					If IsAttackPage() Then Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0020")
-					If _Sleep(Random(20, 40,1)) Then Return
+					If _Sleep(Random(20, 40, 1)) Then Return
 				Next
 			Next
 		Case 2 ;UR
@@ -201,7 +205,7 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThy = 314 - $ii * 14
 					If CheckOneStar(0, False, False) Then Return
 					If IsAttackPage() Then Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0021")
-					If _Sleep(Random(20, 40,1)) Then Return
+					If _Sleep(Random(20, 40, 1)) Then Return
 				Next
 			Next
 		Case 3 ;LR
@@ -216,133 +220,19 @@ Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 					$aThy = 314 + $ii * 14
 					If CheckOneStar(0, False, False) Then Return
 					If IsAttackPage() Then Click(Random($aThx - 5, $aThx + 5, 1), Random($aThy - 5, $aThy + 5, 1), 1, 0, "#0022")
-					If _Sleep(Random(20, 40,1)) Then Return
+					If _Sleep(Random(20, 40, 1)) Then Return
 				Next
 			Next
 	EndSwitch
 
 EndFunc   ;==>DeployTHNormal
 
-;~ Func SwitchDeployBtmTH($iAtEachSpot, $iNbOfSpots)
-
-;~ 	Switch ($icmbDeployBtmTHType + 1)
-;~ 		Case 1
-;~ 			DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
-;~ 		Case 2
-;~ 			DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
-;~ 	EndSwitch
-
-;~ EndFunc   ;==>SwitchDeployBtmTH
-
-;~ Func DeployBtmTHFewZooms($iAtEachSpot, $iNbOfSpots)
-;~ 	Opt("SendKeyDownDelay", 50)
-
-;~ 	;;;;;;;;;;;;; Few zooming and Scrolling to The Bottom ;;;;;;;;;;;;;;;;;;;;;;;
-;~ 	If ($THside = 1 Or $THside = 3) And $zoomedin = False Then
-;~ 		SetLog("Zooming in a little and scrolling to bottom ...")
-
-;~ 		While $zCount < 2 And $sCount < 2
-;~ 			ControlSend($Title, "", "", "{UP}")
-;~ 			If _Sleep(300) Then Return
-;~ 			ControlSend($Title, "", "", "{CTRLDOWN}{UP}{CTRLUP}")
-;~ 			If _Sleep(400) Then Return
-;~ 			$zCount += 1
-;~ 			$sCount += 1
-;~ 		WEnd
-
-;~ 		ControlSend($Title, "", "", "{CTRLDOWN}{UP}{CTRLUP}")
-
-
-;~ 		If $debugSetlog = 1 Then SetLog("Done zooming and Scrolling.")
-;~ 		If _Sleep(5000) Then Return
-;~ 		$zoomedin = True
-;~ 	EndIf
-;~ 	;;;;;;;;;;;;; End zooming and scrolling to The Bottom ;;;;;;;;;;;;;;;;;;;;;;;
-
-;~ 	;;;;;;;;;;;;; Deploying Troops ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;~ 	If $THi = 17 And $Thx > 400 And $Thx < 455 And $Thy > 450 And $Thy < 580 Then
-
-;~ 		If $debugSetlog = 1 Then Setlog("Center Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-;~ 		For $count = 1 To $iAtEachSpot * $iNbOfSpots
-;~ 			If CheckOneStar(0, False, False) Then Return
-;~ 			If IsAttackPage() Then Click(Random(480, 540, 1), Random(564, 566, 1))
-;~ 			If _Sleep(Random(20, 40,1)) Then Return
-;~ 		Next
-
-;~ 	Else
-;~ 		If $THside = 1 Then
-;~ 			If $debugSetlog = 1 Then Setlog("Left Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-;~ 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
-;~ 				If CheckOneStar(0, False, False) Then Return
-;~ 				If IsAttackPage() Then Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
-;~ 				If _Sleep(Random(20, 40,1)) Then Return
-;~ 			Next
-;~ 		EndIf
-
-;~ 		If $THside = 3 Then
-;~ 			If $debugSetlog = 1 Then Setlog("Right Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-;~ 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
-;~ 				If CheckOneStar(0, False, False) Then Return
-;~ 				If IsAttackPage() Then Click(Random(510, 580, 1), Random(564, 566, 1), 1, 0, "#0022")
-;~ 				If _Sleep(Random(20, 40,1)) Then Return
-;~ 			Next
-
-;~ 		EndIf
-
-;~ 	EndIf
-;~  Opt("SendKeyDownDelay", 5)
-;~ EndFunc   ;==>DeployBtmTHFewZooms
-
-;~ Func DeployBtmTHOnSides($iAtEachSpot, $iNbOfSpots)
-
-;~ 	; No Zoom used in this attack
-;~ 	Local $i = 0
-
-;~ 	If $THi = 17 And $Thx > 400 And $Thx < 455 And $Thy > 450 And $Thy < 580 Then
-
-;~ 		If $debugSetlog = 1 Then Setlog("Center Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-;~ 		For $count = 1 To $iAtEachSpot * $iNbOfSpots
-;~ 			If $i = 0 Then
-;~ 				If CheckOneStar(0, False, False) Then Return
-;~ 				If IsAttackPage() Then Click(Random(355, 365, 1), Random(564, 566, 1))
-;~ 				$i = 1
-;~ 			Else
-;~ 				If CheckOneStar(0, False, False) Then Return
-;~ 				If IsAttackPage() Then Click(Random(488, 500, 1), Random(564, 566, 1))
-;~ 				$i = 0
-;~ 			EndIf
-;~ 			If _Sleep(Random(20, 40,1)) Then Return
-;~ 		Next
-
-;~ 	Else
-
-;~ 		If $THside = 1 Then
-;~ 			If $debugSetlog = 1 Then Setlog("Left Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-;~ 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
-;~ 				If CheckOneStar(0, False, False) Then Return
-;~ 				If IsAttackPage() Then Click(Random(310, 340, 1), Random(564, 566, 1), 1, 0, "#0022")
-;~ 				If _Sleep(Random(20, 40,1)) Then Return
-;~ 			Next
-;~ 		EndIf
-
-;~ 		If $THside = 3 Then
-;~ 			If $debugSetlog = 1 Then Setlog("Right Bottom deployment THi = " & $THi & " ,x = " & $Thx & " ,y = " & $Thy)
-;~ 			For $count = 1 To $iAtEachSpot * $iNbOfSpots
-;~ 				If CheckOneStar(0, False, False) Then Return
-;~ 				If IsAttackPage() Then Click(Random(510, 540, 1), Random(564, 566, 1), 1, 0, "#0022")
-;~ 				If _Sleep(Random(20, 40,1)) Then Return
-;~ 			Next
-;~ 		EndIf
-
-;~ 	EndIf
-
-;~ EndFunc   ;==>DeployBtmTHOnSides
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 Func SpellTHGrid($S)
 
-	If ($S = $eHSpell And $ichkUseHSpellsTH = 1) Or ($S = $eLSpell And $ichkUseLSpellsTH = 1) Or ($S = $eRSpell And $ichkUseRSpellsTH = 1) Then
+
+	If 	$duringMilkingAttack = 0 and ( ($S = $eHSpell And $ichkHealSpell[$TS] = 1) Or ($S = $eLSpell And $ichkLightSpell[$TS] = 1) Or ($S = $eRSpell And $ichkRageSpell[$TS] = 1) Or ($S = $eJSpell And $ichkJumpSpell[$TS] = 1) Or ($S = $eFSpell And $ichkFreezeSpell[$TS] = 1) Or ($S = $ePSpell And $ichkPoisonSpell[$TS] = 1) Or ($S = $eHaSpell And $ichkHasteSpell[$TS] = 1) Or ($S = $eESpell And $ichkEarthquakeSpell[$TS] = 1)) or _
+		$duringMilkingAttack = 1 and ( ($S = $eHSpell And $ichkHealSpell[$DB] = 1) Or ($S = $eLSpell And $ichkLightSpell[$DB] = 1) Or ($S = $eRSpell And $ichkRageSpell[$DB] = 1) Or ($S = $eJSpell And $ichkJumpSpell[$DB] = 1) Or ($S = $eFSpell And $ichkFreezeSpell[$DB] = 1) Or ($S = $ePSpell And $ichkPoisonSpell[$DB] = 1) Or ($S = $eHaSpell And $ichkHasteSpell[$DB] = 1) Or ($S = $eESpell And $ichkEarthquakeSpell[$DB] = 1)) _
+		Then
 
 		If _Sleep(10) Then Return
 		If $Restart = True Then Return
@@ -400,8 +290,6 @@ Func CastSpell($THSpell, $x, $y)
 	EndIf
 
 EndFunc   ;==>CastSpell
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Func CheckOneStar($DelayInSec = 0, $Log = True, $CheckHeroes = True)
 

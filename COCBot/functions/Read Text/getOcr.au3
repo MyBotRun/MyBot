@@ -19,6 +19,10 @@ Func getGoldVillageSearch($x_start, $y_start);48, 69 -> Gets complete value of g
 	Return getOcrAndCapture("coc-v-g", $x_start, $y_start, 90, 16, True)
 EndFunc   ;==>getGoldVillageSearch
 
+Func getRemainTrainTimer($x_start, $y_start);48, 69 -> Gets complete value of gold xxx,xxx while searching, top left, Getresources.au3
+	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 70, 11, True)
+EndFunc   ;==>getRemainTrainTimer
+
 Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete value of Elixir xxx,xxx, top left,  Getresources.au3
 	Return getOcrAndCapture("coc-v-e", $x_start, $y_start, 90, 16, True)
 EndFunc   ;==>getElixirVillageSearch
@@ -84,7 +88,7 @@ Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade
 EndFunc   ;==>getLabUpgradeTime
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
-	Return getOcrAndCapture($language, $x_start, $y_start, 280, 18)
+	Return getOcrAndCapture($language, $x_start, $y_start, 280, 16)
 EndFunc   ;==>getChatString
 
 Func getBuilders($x_start, $y_start);  -> Gets Builders number - main screen --> getBuilders(324,23)  coc-profile
@@ -138,7 +142,15 @@ Func getOcrLanguage($x_start, $y_start);  -> Get english language - main screen 
 EndFunc   ;==>getOcrLanguage
 
 Func getOcrSpellDetection($x_start, $y_start);  -> Recognition of the Spells in Armyoverview window
-	Return getOcrAndCapture("coc-t-spells", $x_start, $y_start, 50, 30, True)
+	;remove text after § (if dll return heal§2 we return heal, if dll return heal§3 we return heal, if dll return heal we return heal)
+	Local $result = getOcrAndCapture("coc-t-spells2", $x_start, $y_start, 50, 30, True)
+	Local $PositionSpecialCaracter = 0 ; search position of § into result, if no found return 0
+	$PositionSpecialCaracter = StringInStr($result, "§")
+	If $PositionSpecialCaracter > 0 Then
+		Return StringLeft($result, $PositionSpecialCaracter - 1)
+	Else
+		Return $result
+	EndIf
 EndFunc   ;==>getOcrSpellDetection
 
 Func getOcrSpellQuantity($x_start, $y_start);  -> Get the Spells quantity in Armyoverview window
@@ -150,7 +162,7 @@ Func getOcrClanLevel($x_start, $y_start);  -> Get the clan level from clan info 
 EndFunc   ;==>getOcrClanLevel
 
 Func getOcrSpaceCastleDonate($x_start, $y_start);  -> Get the number of troops donated/capacity from a request
-	Return getOcrAndCapture("coc-totalreq", $x_start, $y_start, 40, 12, True)
+	Return getOcrAndCapture("coc-totalreq", $x_start, $y_start, 45, 12, True)
 EndFunc   ;==>getOcrSpaceCastleDonate
 
 Func getOcrDonationTroopsDetection($x_start, $y_start);  -> Get the type of troop from the donate window
@@ -168,6 +180,18 @@ EndFunc   ;==>getOcrGuardShield
 Func getOcrPBTtime($x_start, $y_start);  -> Get the Time until PBT starts from PBT info window
 	Return getOcrAndCapture("coc-pbttime", $x_start, $y_start, 59, 15)
 EndFunc   ;==>getOcrPBTtime
+
+Func getOcrMaintenanceTime($x_start, $y_start);  -> Get the Text with time till maintenance is over from reload msg(171, 375)
+	Return getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
+EndFunc   ;==>getOcrMaintenanceTime
+
+Func getOcrRateCoc($x_start, $y_start);  -> Get the Text with time till maintenance is over from reload msg(228, 402)
+	Return getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 18, True)
+EndFunc   ;==>getOcrRateCoc
+
+Func getRemainTLaboratory($x_start, $y_start)
+	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 192, 22, True)
+EndFunc   ;==>getRemainTLaboratory
 
 
 Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpace = False)

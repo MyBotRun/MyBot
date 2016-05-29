@@ -92,7 +92,7 @@ Func Unbreakable()
 	WEnd
 	If $Restart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
 
-	BreakPersonalShield()  ; break personal Shield and Personal Guard
+	BreakPersonalShield() ; break personal Shield and Personal Guard
 	If @error Then
 		If @extended <> "" Then Setlog("PersonalShield button problem: " & @extended, $COLOR_RED)
 		Return True ; return to runbot and try again
@@ -108,7 +108,7 @@ Func Unbreakable()
 
 	$i = 0
 	While 1
-		BS1BackButton()
+		AndroidBackButton()
 		;PureClickP($aBSBackButton, 1, 0, "#0116") ; Hit BS Back button for the confirm exit dialog to appear
 		If _Sleep($iDelayUnbreakable1) Then Return True
 		; New button search as old pixel check matched grass color sometimes
@@ -129,8 +129,8 @@ Func Unbreakable()
 
 	$iTime = Number($iUnbreakableWait)
 	If $iTime < 1 Then $iTime = 1 ;error check user time input
-	Local Const $iGracePeriodTime = 5  ; 5 minutes for server to acknowledge log off.
-	$iTime = ($iTime + $iGracePeriodTime) * 60 * 1000  ; add server grace time and convert to milliseconds
+	Local Const $iGracePeriodTime = 5 ; 5 minutes for server to acknowledge log off.
+	$iTime = ($iTime + $iGracePeriodTime) * 60 * 1000 ; add server grace time and convert to milliseconds
 
 	WaitnOpenCoC($iTime, False) ;Tell ClosenOpenCoC False to not cleanup windows
 

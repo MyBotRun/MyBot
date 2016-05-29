@@ -14,11 +14,21 @@
 ; ===============================================================================================================================
 
 Func MilkingDetectDarkExtractors()
+
+	If $MilkFarmAttackDarkDrills = 1 and Number($iDarkCurrent) >= number($MilkFarmLimitDark) Then
+		If $debugsetlog=1  and $MilkFarmAttackDarkDrills = 1 Then setlog("skip attack of dark drills, current dark (" & $iDarkCurrent & ") >= limit (" & $MilkFarmLimitDark & ")",$color_purple)
+		If $debugsetlog=1  and $MilkFarmAttackDarkDrills = 0 Then setlog("skip attack of dark drills",$color_purple)
+		return 0
+	Else
+		If $debugsetlog=1 Then setlog("current dark (" & $iDarkCurrent & ") < limit (" & $MilkFarmLimitDark & ")",$color_purple)
+	EndIf
+
+
 	Local $MilkFarmAtkPixelListDRILLSTR = ""
 	If $MilkFarmLocateDrill = 1 Then
-		_CaptureRegion2(80, 70, 785, 530)
 		Local $hTimer = TimerInit()
 		;03.01 locate extractors
+		_CaptureRegion2()
 		Local $DrillVect = StringSplit(GetLocationDarkElixirWithLevel(), "~", 2) ; ["6#527-209" , "6#421-227" , "6#600-264" , "6#299-331" , "6#511-404" , "6#511-453"]
 		Local $Drillfounds = UBound($DrillVect)
 		Local $Drillmatch = 0
@@ -30,10 +40,7 @@ Func MilkingDetectDarkExtractors()
 			If UBound($temp) = 2 Then
 				$pixel = StringSplit($temp[1], "-", 2) ;PIXEL ["404","325"]
 				If UBound($pixel) = 2 Then
-					Local $tempPixel[2] = [$pixel[0] + 80, $pixel[1] + 70]
-					$pixel = $tempPixel
-					$temp[1] = String($pixel[0]& "-" & $pixel[1])
-					If isInsideDiamond($pixel) Then
+					If isInsideDiamondRedArea($pixel) Then
 						;debug if need
 						If $debugresourcesoffset = 1 Then
 							Local $level = $temp[0]
@@ -53,7 +60,7 @@ Func MilkingDetectDarkExtractors()
 							_GDIPlus_PenDispose($hPen)
 							_GDIPlus_BrushDispose($hBrush)
 							_GDIPlus_GraphicsDispose($hGraphic)
-							DebugImageSave("debugresourcesoffset_" & $type & "_" & $level & "_", False)
+							DebugImageSave("debugresourcesoffset_" & $type & "_" & $level & "_" , False)
 						EndIf
 						;ok add if conditions satisfied
 						If AmountOfResourcesInStructure("drill", $pixel, $temp[0]) Then

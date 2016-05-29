@@ -13,12 +13,12 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func LocateBarrack($ArmyCamp = False)
-	Local $choice = "Barrack"
+	Local $choice = GetTranslated(640,23,"Barrack")
 	Local $stext, $MsgBox, $iCount, $iStupid = 0, $iSilly = 0, $sErrorText = "", $sLocMsg = "", $sInfo, $sArmyInfo
 	Local $aGetArmySize[3] = ["", "", ""]
 	Local $sArmyInfo = ""
 
-	If $ArmyCamp Then $choice = "Army Camp"
+	If $ArmyCamp Then $choice = GetTranslated(640,24,"Army Camp")
 	SetLog("Locating " & $choice & "...", $COLOR_BLUE)
 
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) Or _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
@@ -29,9 +29,9 @@ Func LocateBarrack($ArmyCamp = False)
 	While 1
 		ClickP($aAway, 1, 0, "#0361")
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$stext = $sErrorText & @CRLF & "Click OK then click on one of your " & $choice & "'s." & @CRLF & @CRLF & _
-				"Do not move mouse quickly after clicking location" & @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
-		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate " & $choice, $stext, 15, $frmBot)
+		$stext = $sErrorText & @CRLF & GetTranslated(640,25,"Click OK then click on one of your") & " " & $choice & "'s." & @CRLF & @CRLF & _
+				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,28,"Locate") & " " & $choice, $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
 			WinActivate($HWnD)
 			If $ArmyCamp Then
@@ -106,7 +106,7 @@ Func LocateBarrack($ArmyCamp = False)
 				EndIf
 				SetLog($choice & ": " & "(" & $ArmyPos[0] & "," & $ArmyPos[1] & ")", $COLOR_GREEN)
 			Else
-				$sInputbox = InputBox("Question", "How many barracks you have?", "4", "", Default, Default, Default, Default, 240, $frmbot)
+				$sInputbox = InputBox(GetTranslated(640,29,"Question"), GetTranslated(640,30,"How many barracks you have?"), "4", "", Default, Default, Default, Default, 240, $frmbot)
 				Local $numBarracksAvaiables = Number($sInputbox)
 				Local $TEMPbarrackPos[4][2]
 				For $i = 0 To ($numBarracksAvaiables - 1)
@@ -140,11 +140,16 @@ Func LocateBarrack($ArmyCamp = False)
 							EndIf
 						Else
 							SetLog("- Barrack " & $i + 1 & " Don´t exist the Button to train!", $COLOR_PURPLE)
-							$sInputbox = InputBox("Question", "Enter the ArmyOverView Tab Position of this Barrack [1|2|3|4] :", "1", "", Default, Default, Default, Default, 240, $frmbot)
+							$sInputbox = InputBox("Question", "Enter the ArmyOverView Tab Position of this Barrack [1|2|3|4] :", "1", " M1", Default, Default, Default, Default, 240, $frmbot)
 							Local $BarrackTabPosition = Number($sInputbox)
-							$barrackPos[$BarrackTabPosition - 1][0] = $TEMPbarrackPos[$i][0]
-							$barrackPos[$BarrackTabPosition - 1][1] = $TEMPbarrackPos[$i][1]
-							SetLog("- Barrack " & $i + 1 & ": (" & $barrackPos[$BarrackTabPosition - 1][0] & "," & $barrackPos[$BarrackTabPosition - 1][1] & ")", $COLOR_PURPLE)
+							If $BarrackTabPosition >= 1 And $BarrackTabPosition <= 4 Then
+							   $barrackPos[$BarrackTabPosition - 1][0] = $TEMPbarrackPos[$i][0]
+							   $barrackPos[$BarrackTabPosition - 1][1] = $TEMPbarrackPos[$i][1]
+							   SetLog("- Barrack " & $i + 1 & ": (" & $barrackPos[$BarrackTabPosition - 1][0] & "," & $barrackPos[$BarrackTabPosition - 1][1] & ")", $COLOR_PURPLE)
+							Else
+							   ; cancel so do again
+							   $i -= 1
+							EndIf
 						EndIf
 					Else
 						SetLog("Quit joking, Click the Barracks, or restart bot and try again", $COLOR_RED)
@@ -164,7 +169,7 @@ Func LocateBarrack($ArmyCamp = False)
 	If $ArmyCamp Then
 		$TotalCamp = 0 ; reset total camp number to get it updated
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$stext = "Keep Mouse OUT of BlueStacks Window While I Update Army Camp Number, Thanks!!"
+		$stext = "Keep Mouse OUT of Android Emulator Window While I Update Army Camp Number, Thanks!!"
 		$MsgBox = _ExtMsgBox(48, "OK", "Notice!", $stext, 15, $frmBot)
 		If _Sleep($iDelayLocateBarrack1) Then Return
 
@@ -172,6 +177,7 @@ Func LocateBarrack($ArmyCamp = False)
 		If _Sleep($iDelayLocateBarrack3) Then Return
 
 		Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0372") ;Click Army Camp
+
 		If _Sleep($iDelayLocateBarrack1) Then Return
 
 		$iCount = 0 ; reset loop counter
@@ -232,7 +238,6 @@ Func LocateBarrack2()
 	ClickP($aAway, 1, 0, "#0295") ;Click Away
 
 	If $barrackPos[$numBarracksAvaiables - 1][0] = "" Or $barrackPos[$numBarracksAvaiables - 1][0] = -1 Then
-		_captureRegion2()
 		Local $PixelBarrackHere = GetLocationItem("getLocationBarrack")
 		$barrackNum = UBound($PixelBarrackHere)
 		SetLog("Total No. of Barracks: " & $barrackNum, $COLOR_PURPLE)
@@ -282,13 +287,13 @@ Func LocateBarrack2()
 				$TEMPbarrackPos[$i][1] = FindPos()[1]
 				If isInsideDiamondXY($TEMPbarrackPos[$i][0], $TEMPbarrackPos[$i][1]) Then
 					If _Sleep($iDelayLocateBarrack2) Then Return
-					Local $TrainPos = _PixelSearch(512, 585 + $bottomOffsetY, 641, 588 + $bottomOffsetY, Hex(0x7895C2, 6), 10) ;Finds Train Troops button
+					Local $TrainPos = _PixelSearch(512, 585, 641, 588, Hex(0x7895C2, 6), 10) ;Finds Train Troops button
 					If IsArray($TrainPos) Then
 						Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
-						If WaitforPixel(715, 124 + $midOffsetY, 718, 125 + $midOffsetY, Hex(0xD80408, 6), 5, 10) Then ;wait until finds red Cross button in new Training popup window, max of 5 senconds / return True
+						If WaitforPixel(715, 124, 718, 125, Hex(0xD80408, 6), 5, 10) Then ;wait until finds red Cross button in new Training popup window, max of 5 senconds / return True
 							For $x = 0 To 3
 								If _Sleep($iDelayLocateBarrack2) Then Return
-								If _ColorCheck(_GetPixelColor(254 + (60 * $x), 540 + $bottomOffsetY, True), Hex(0xE8E8E0, 6), 20) Then ; slot position 60 * $x
+								If _ColorCheck(_GetPixelColor(254 + (60 * $x), 540, True), Hex(0xE8E8E0, 6), 20) Then ; slot position 60 * $x
 									$barrackPos[$x][0] = $TEMPbarrackPos[$i][0]
 									$barrackPos[$x][1] = $TEMPbarrackPos[$i][1]
 									SetLog("- Barrack " & $i + 1 & ": (" & $barrackPos[$x][0] & "," & $barrackPos[$x][1] & ")", $COLOR_PURPLE)
@@ -298,7 +303,7 @@ Func LocateBarrack2()
 							Next
 						Else
 							SetLog("- Barrack " & $i + 1 & " Error open the ArmyOverView Window!", $COLOR_PURPLE)
-							$sInputbox = InputBox("Question", "Enter the ArmyOverView Tab Position of this Barrack [1|2|3|4] :", "1", "", Default, Default, Default, Default, 240, $frmbot)
+							$sInputbox = InputBox(GetTranslated(640,29,"Question"), GetTranslated(640,30,"Enter the ArmyOverView Tab Position of this Barrack [1|2|3|4] :"), "1", "", Default, Default, Default, Default, 240, $frmbot)
 							Local $BarrackTabPosition = Number($sInputbox)
 							$barrackPos[$BarrackTabPosition - 1][0] = $TEMPbarrackPos[$i][0]
 							$barrackPos[$BarrackTabPosition - 1][1] = $TEMPbarrackPos[$i][1]
@@ -306,7 +311,7 @@ Func LocateBarrack2()
 						EndIf
 					Else
 						SetLog("- Barrack " & $i + 1 & " Don´t exist the Button to train!", $COLOR_PURPLE)
-						$sInputbox = InputBox("Question", "Enter the ArmyOverView Tab Position of this Barrack [1|2|3|4] :", "1", "", Default, Default, Default, Default, 240, $frmbot)
+						$sInputbox = InputBox(GetTranslated(640,29,"Question"), GetTranslated(640,30,"Enter the ArmyOverView Tab Position of this Barrack [1|2|3|4] :"), "1", "", Default, Default, Default, Default, 240, $frmbot)
 						Local $BarrackTabPosition = Number($sInputbox)
 						$barrackPos[$BarrackTabPosition - 1][0] = $TEMPbarrackPos[$i][0]
 						$barrackPos[$BarrackTabPosition - 1][1] = $TEMPbarrackPos[$i][1]

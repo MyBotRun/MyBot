@@ -13,18 +13,18 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func ChkAttackCSVConfig()
-   	;check if exists attackscript Files
-    If not( FileExists($dirAttacksCSV&"\" & $scmbDBScriptName & ".csv")) Then
-	   Setlog("Dead base scripted attack file do not exists (renamed, deleted?)",$COLOR_RED)
-	   SetLog("Please select a new scripted algorithm from 'scripted attack' tab", $COLOR_RED)
-	   PopulateDBComboScriptsFiles()
-	   btnStop()
-    EndIf
-    If not( FileExists($dirAttacksCSV&"\" & $scmbABScriptName & ".csv")) Then
-	   Setlog("Dead base scripted attack file do not exists (renamed, deleted?)",$COLOR_RED)
-	   SetLog("Please select a new scripted algorithm from 'scripted attack' tab", $COLOR_RED)
-	   PopulateDBComboScriptsFiles()
-	   btnStop()
-    EndIf
+	;check if exists attackscript Files
+	If Not (FileExists($dirAttacksCSV & "\" & $scmbDBScriptName & ".csv")) Then
+		Setlog("Dead base scripted attack file do not exists (renamed, deleted?)", $COLOR_RED)
+		SetLog("Please select a new scripted algorithm from 'scripted attack' tab", $COLOR_RED)
+		PopulateComboScriptsFilesDB()
+		btnStop()
+	EndIf
+	If Not (FileExists($dirAttacksCSV & "\" & $scmbABScriptName & ".csv")) Then
+		Setlog("Dead base scripted attack file do not exists (renamed, deleted?)", $COLOR_RED)
+		SetLog("Please select a new scripted algorithm from 'scripted attack' tab", $COLOR_RED)
+		PopulateComboScriptsFilesAB()
+		btnStop()
+	EndIf
 
 EndFunc   ;==>ChkAttackCSVConfig

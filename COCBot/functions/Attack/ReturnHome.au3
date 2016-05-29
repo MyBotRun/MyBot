@@ -77,9 +77,9 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 					If IsEndBattlePage(False) Then
 						ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
 						ExitLoop
-					 EndIf
-			    Else
-				    $i += 1
+					EndIf
+				Else
+					$i += 1
 				EndIf
 			Else
 				$i += 1
@@ -90,23 +90,23 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	Else
 		If $DebugSetLog = 1 Then Setlog("Battle already over.", $COLOR_PURPLE)
 	EndIf
-
 	If _Sleep($iDelayReturnHome2) Then Return ; short wait for return
 
 	TrayTip($sBotTitle, "", BitOR($TIP_ICONASTERISK, $TIP_NOSOUND)) ; clear village search match found message
 
 	If $GoldChangeCheck = True Then
-		$counter = 0
-		While _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False ; test for Return Home Button
-			If _Sleep($iDelayReturnHome2) Then ExitLoop
-			$counter += 1
-			If $counter > 40 Then ExitLoop
-		WEnd
+		If IsAttackPage() Then
+			$counter = 0
+			While _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False ; test for Return Home Button
+				If _Sleep($iDelayReturnHome2) Then ExitLoop
+				$counter += 1
+				If $counter > 40 Then ExitLoop
+			WEnd
+		EndIf
 		If _Sleep($iDelayReturnHome3) Then Return ; wait for all report details
 		_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT - 45)
 		AttackReport()
 	EndIf
-
 	If $TakeSS = 1 And $GoldChangeCheck = True Then
 		SetLog("Taking snapshot of your loot", $COLOR_GREEN)
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
@@ -144,7 +144,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	$counter = 0
 	While 1
 		If _Sleep($iDelayReturnHome4) Then Return
-		If StarBonus() = True Then Setlog("Star Bonus window closed chief!", $COLOR_BLUE)  ; Check for Star Bonus window to fill treasury (2016-01) update
+		If StarBonus() = True Then Setlog("Star Bonus window closed chief!", $COLOR_BLUE) ; Check for Star Bonus window to fill treasury (2016-01) update
 		If IsMainPage() Then
 			_GUICtrlEdit_SetText($txtLog, _PadStringCenter(" BOT LOG ", 71, "="))
 			_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")

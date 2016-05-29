@@ -146,20 +146,20 @@ Func DELow()
 EndFunc   ;==>DELow
 
 Func SaveandDisableEBO()
-	$saveichkEndOneStar = $ichkEndOneStar
-	$saveichkEndTwoStars = $ichkEndTwoStars
-	$saveichkTimeStopAtk = $ichkTimeStopAtk
-	$saveiChkTimeStopAtk2 = $iChkTimeStopAtk2
-	$ichkEndOneStar = 0
-	$ichkEndTwoStars = 0
-	$ichkTimeStopAtk = 0
-	$iChkTimeStopAtk2 = 0
+	$saveichkEndOneStar[$iMatchMode] = $ichkEndOneStar[$iMatchMode]
+	$saveichkEndTwoStars[$iMatchMode] = $ichkEndTwoStars[$iMatchMode]
+	$saveichkTimeStopAtk[$iMatchMode] = $ichkTimeStopAtk[$iMatchMode]
+	$saveiChkTimeStopAtk2[$iMatchMode] = $iChkTimeStopAtk2[$iMatchMode]
+	$ichkEndOneStar[$iMatchMode] = 0
+	$ichkEndTwoStars[$iMatchMode] = 0
+	$ichkTimeStopAtk[$iMatchMode] = 0
+	$iChkTimeStopAtk2[$iMatchMode] = 0
 EndFunc   ;==>SaveandDisableEBO
 
 Func RevertEBO()
-	$ichkEndOneStar = $saveichkEndOneStar
-	$ichkEndTwoStars = $saveichkEndTwoStars
-	$ichkTimeStopAtk = $saveichkTimeStopAtk
-	$iChkTimeStopAtk2 = $saveiChkTimeStopAtk2
+	$ichkEndOneStar[$iMatchMode] = $saveichkEndOneStar
+	$ichkEndTwoStars[$iMatchMode] = $saveichkEndTwoStars
+	$ichkTimeStopAtk[$iMatchMode] = $saveichkTimeStopAtk
+	$iChkTimeStopAtk2[$iMatchMode] = $saveiChkTimeStopAtk2
 EndFunc   ;==>RevertEBO
 

@@ -41,12 +41,12 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 		$iElixirCurrent = getResourcesMainScreen(696, 74)
 		$iDarkCurrent =  getResourcesMainScreen(728, 123)
 		$iGemAmount = getResourcesMainScreen(740, 171)
-		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($iGoldCurrent) & " [E]: " &  _NumberFormat($iElixirCurrent) & " [D]: " &  _NumberFormat($iDarkCurrent) & " [GEM]: " &  _NumberFormat($iGemAmount), $COLOR_GREEN)
+		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($iGoldCurrent) & " [E]: " & _NumberFormat($iElixirCurrent) & " [D]: " & _NumberFormat($iDarkCurrent) & " [GEM]: " & _NumberFormat($iGemAmount), $COLOR_GREEN)
 	Else
 		$iGoldCurrent = getResourcesMainScreen(701, 23)
 		$iElixirCurrent = getResourcesMainScreen(701, 74)
 		$iGemAmount = getResourcesMainScreen(719, 123)
-		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($iGoldCurrent) & " [E]: " &  _NumberFormat($iElixirCurrent) & " [GEM]: " &  _NumberFormat($iGemAmount), $COLOR_GREEN)
+		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($iGoldCurrent) & " [E]: " & _NumberFormat($iElixirCurrent) & " [GEM]: " & _NumberFormat($iGemAmount), $COLOR_GREEN)
 	EndIf
 	If $bBypass = False Then ; update stats
 		UpdateStats()

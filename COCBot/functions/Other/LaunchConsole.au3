@@ -78,7 +78,17 @@ EndFunc   ;==>LaunchConsole
 ; $CompareMode = 1 Any Command Line containing path and parameter is used
 ; $SearchMode = 0 Search only for $ProgramPath
 ; $SearchMode = 1 Search for $ProgramPath and $ProgramParameter
-Func ProcessExists2($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $SearchMode = 0, $strComputer = ".")
+; $CompareParameterFunc is func that returns True or False if parameter is matching, "" not used
+Func ProcessExists2($ProgramPath, $ProgramParameter = Default, $CompareMode = Default, $SearchMode = 0, $CompareCommandLineFunc = "", $strComputer = ".")
+
+  If $ProgramParameter = Default Then
+	 $ProgramParameter = ""
+	 If $CompareMode = Default Then $CompareMode = 1
+  EndIf
+
+  If $CompareMode = Default Then
+	 $CompareMode = 0
+  EndIf
 
   If IsNumber($ProgramPath) Then Return ProcessExists($ProgramPath) ; Be compatible with ProcessExists
 
@@ -115,6 +125,7 @@ Func ProcessExists2($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $Sea
 	   Local $processCommandLineCompare = StringReplace(StringReplace(StringReplace(StringReplace($Process.CommandLine, ".exe", "" , 1), " ", ""), '"', ""), "'", "")
 	   If ($CompareMode = 0 And $commandLineCompare = $processCommandLineCompare) Or _
 		  ($CompareMode = 0 And StringRight($commandLineCompare, StringLen($processCommandLineCompare)) = $processCommandLineCompare) Or _
+		  ($CompareMode = 0 And $CompareCommandLineFunc <> "" and Execute($CompareCommandLineFunc & "(""" & StringReplace($Process.CommandLine,"""","") & """)") = True) Or _
 		   $CompareMode = 1 Then
 		 $PID = Number($Process.Handle)
 		 ;ExitLoop

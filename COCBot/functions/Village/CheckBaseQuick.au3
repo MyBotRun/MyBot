@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 Func CheckBaseQuick()
 
-	If IsMainPage() Then  ; check for main page
+	If IsMainPage() Then ; check for main page
 
 		If $Debugsetlog = 1 Then Setlog("CheckBaseQuick now...", $COLOR_RED)
 

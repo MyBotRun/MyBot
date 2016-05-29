@@ -14,7 +14,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func _Sleep($iDelay, $iSleep = True)
-	If $iDeleteAllPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
+	If $iDeleteAllPBPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
 	If $iMakeScreenshotNow = True Then
 		If $iScreenshotType = 0 Then
 			MakeScreenshot($dirTemp, "jpg")
@@ -22,17 +22,17 @@ Func _Sleep($iDelay, $iSleep = True)
 			MakeScreenshot($dirTemp, "png")
 		EndIf
 	EndIf
-    If $RunState = False Then
-	    ResumeAndroid()
-	    Return True
-    EndIf
+	If $RunState = False Then
+		ResumeAndroid()
+		Return True
+	EndIf
 	Local $iBegin = TimerInit()
 	While TimerDiff($iBegin) < $iDelay
 		If $RunState = False Then
-		   ResumeAndroid()
-		   Return True
+			ResumeAndroid()
+			Return True
 		EndIf
-		tabMain()
+		;tabMain()
 		If $iSleep = True Then Sleep(50)
 	WEnd
 	Return False

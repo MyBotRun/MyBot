@@ -62,4 +62,4 @@ Func BuildingInfo($iXstart, $iYstart)
 
 	Return $aResult
 
-EndFunc
+EndFunc   ;==>BuildingInfo

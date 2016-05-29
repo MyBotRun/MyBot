@@ -21,23 +21,23 @@ Func SendAdbCommand($cmd, $EnsureConnected = True)
 	Local $error_device_not_found = (StringInStr($data, "device not found") > 0) Or $process_killed
 
 	If $error_device_not_found Then
-	   SetDebugLog("ADB connection error, device " & $AndroidAdbDevice & " not available")
-	   If Not $EnsureConnected Then
-		  SetDebugLog("Connect will not be initiated")
-		  SetLog("ADB command not executed or interrupted: " & $cmd, $COLOR_RED)
-		  Return False
-	   EndIf
-	   ; connect and try again
-	   If ConnectAndroidAdb() Then
-		  ; execute command again
-		  $data = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " " & $cmd, $process_killed)
-		  $error_device_not_found = (StringInStr($data, "device not found") > 0) Or $process_killed
-	   EndIf
-	   If $error_device_not_found Then
-		  SetLog("ADB command not executed: " & $cmd, $COLOR_RED)
-		  Return False
-	   EndIf
-    EndIf
+		SetDebugLog("ADB connection error, device " & $AndroidAdbDevice & " not available")
+		If Not $EnsureConnected Then
+			SetDebugLog("Connect will not be initiated")
+			SetLog("ADB command not executed or interrupted: " & $cmd, $COLOR_RED)
+			Return False
+		EndIf
+		; connect and try again
+		If ConnectAndroidAdb() Then
+			; execute command again
+			$data = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " " & $cmd, $process_killed)
+			$error_device_not_found = (StringInStr($data, "device not found") > 0) Or $process_killed
+		EndIf
+		If $error_device_not_found Then
+			SetLog("ADB command not executed: " & $cmd, $COLOR_RED)
+			Return False
+		EndIf
+	EndIf
 
-    Return True ; ADB command executed
-EndFunc
+	Return True ; ADB command executed
+EndFunc   ;==>SendAdbCommand

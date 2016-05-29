@@ -89,11 +89,12 @@ Func UpgradeWallGold()
 				SetLog("Upgrade stopped due no loot", $COLOR_RED)
 				Return False
 			EndIf
-			Click(440, 480 + $midOffsetY,1,0,"#0317")
+			Click(440, 480 + $midOffsetY, 1, 0, "#0317")
 			If _Sleep($iDelayUpgradeWallGold3) Then Return
 			SetLog("Upgrade complete", $COLOR_GREEN)
 			PushMsg("UpgradeWithGold")
 			$iNbrOfWallsUppedGold += 1
+			$iNbrOfWallsUpped += 1
 			$iCostGoldWall += $WallCost
 			UpdateStats()
 			Return True
@@ -122,11 +123,12 @@ Func UpgradeWallElixir()
 				SetLog("Upgrade stopped due to insufficient loot", $COLOR_RED)
 				Return False
 			EndIf
-			Click(440, 480 + $midOffsetY,1,0,"#0318")
+			Click(440, 480 + $midOffsetY, 1, 0, "#0318")
 			If _Sleep($iDelayUpgradeWallElixir3) Then Return
 			SetLog("Upgrade complete", $COLOR_GREEN)
 			PushMsg("UpgradeWithElixir")
 			$iNbrOfWallsUppedElixir += 1
+			$iNbrOfWallsUpped += 1
 			$iCostElixirWall += $WallCost
 			UpdateStats()
 			Return True
@@ -144,8 +146,9 @@ Func SkipWallUpgrade() ; Dynamic Upgrades
 	If _Sleep(500) Then Return
 	checkMainScreen(False)
 	If $Restart = True Then Return
-	$iUseStorage = IniRead($config, "other", "use-storage", "0") ; Reset Variable to User Selection
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; $iUseStorage = IniRead($config, "other", "use-storage", "0") ; Reset Variable to User Selection
+	InireadS($iUseStorage,$config, "upgrade", "use-storage", "0")
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	;;;;;;;;;;;;;;;;;;;;##### Verify Builders available For Building Upgrades, If builder is available then buildings upgrade have priority #####;;;;;;;;;;;;;;;;;;;;
 	Local $iUpgradeAction = 0
@@ -160,11 +163,11 @@ Func SkipWallUpgrade() ; Dynamic Upgrades
 	EndIf
 	If $debugSetlog = 1 Then Setlog("No. of Free/Total Builders: " & $iFreeBuilderCount & "/" & $TotalBuilders, $COLOR_PURPLE)
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	For $iz = 0 To 5
+	For $iz = 0 To UBound($aUpgrades, 1) - 1
 		If $ichkbxUpgrade[$iz] = 1 Then $iUpgradeAction += 1
 	Next
 	If $iFreeBuilderCount > $iSaveWallBldr And $iUpgradeAction > 0 Then
-		For $iz = 0 To 5
+		For $iz = 0 To UBound($aUpgrades, 1) - 1
 			Switch $aUpgrades[$iz][3]
 				Case "Gold"
 					$BuildingsNeedGold += 1
@@ -206,7 +209,8 @@ Func SkipWallUpgrade() ; Dynamic Upgrades
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;##### Verify the Upgrade troop kind in Laboratory , if is elixir Spell/Troop , the Lab have priority #####;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	If $ichkLab = 1 And $icmbLaboratory >= 1 And $icmbLaboratory <= 15 Then
+	Local $MinWallElixir = Number($iElixirCurrent - $WallCost) > Number($iLaboratoryElixirCost) ; Check if enough Elixir
+	If $ichkLab = 1 And $icmbLaboratory >= 1 And $icmbLaboratory <= 15 And $MinWallElixir = False Then
 		For $i = 1 To 15
 			If $icmbLaboratory = $i Then
 				Local $name = $aLabTroops[$i][3]

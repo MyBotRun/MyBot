@@ -12,7 +12,7 @@
 ; ===============================================================================================================================
 
 Func MoveMouseOutBS()
-    If $iMoveMouseOutBS = 0 Then Return
+	If $iMoveMouseOutBS = 0 Then Return
 	Local $hWindow, $txtTitleW, $hControl, $aMousePos
 	$aMousePos = MouseGetPos()
 	If IsArray($aMousePos) Then

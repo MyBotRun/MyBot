@@ -25,13 +25,13 @@ Func LocateClanCastle()
 
 	While 1
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$stext =  $sErrorText & @CRLF & "Click OK then click on your Clan Castle" & @CRLF & @CRLF & _
-		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
-		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Clan Castle", $stext, 15, $frmBot)
+		$stext = $sErrorText & @CRLF & GetTranslated(640,32,"Click OK then click on your Clan Castle") & @CRLF & @CRLF & _
+				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,33,"Locate Clan Castle"), $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
 			WinActivate($HWnD)
-			ClickP($aAway,1,0,"#0373")
+			ClickP($aAway, 1, 0, "#0373")
 			Local $aPos = FindPos()
 			$aCCPos[0] = $aPos[0]
 			$aCCPos[1] = $aPos[1]
@@ -39,7 +39,7 @@ Func LocateClanCastle()
 				$iStupid += 1
 				Select
 					Case $iStupid = 1
-						$sErrorText = "Clan Castle Location Not Valid!"&@CRLF
+						$sErrorText = "Clan Castle Location Not Valid!" & @CRLF
 						SetLog("Location not valid, try again", $COLOR_RED)
 						ContinueLoop
 					Case $iStupid = 2
@@ -49,29 +49,29 @@ Func LocateClanCastle()
 						$sErrorText = "This is not funny, why did you click @ (" & $aCCPos[0] & "," & $aCCPos[1] & ")?" & @CRLF & "  Please stop!" & @CRLF & @CRLF
 						ContinueLoop
 					Case $iStupid = 4
-						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
+						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
 						ContinueLoop
 					Case $iStupid > 4
 						SetLog(" Operator Error - Bad Clan Castle Location: " & "(" & $aCCPos[0] & "," & $aCCPos[1] & ")", $COLOR_RED)
-						ClickP($aAway,1,0,"#0374")
+						ClickP($aAway, 1, 0, "#0374")
 						Return False
 					Case Else
 						SetLog(" Operator Error - Bad Clan Castle Location: " & "(" & $aCCPos[0] & "," & $aCCPos[1] & ")", $COLOR_RED)
 						$aCCPos[0] = -1
 						$aCCPos[1] = -1
-						ClickP($aAway,1,0,"#0375")
+						ClickP($aAway, 1, 0, "#0375")
 						Return False
 				EndSelect
 			EndIf
 			SetLog("Clan Castle: " & "(" & $aCCPos[0] & "," & $aCCPos[1] & ")", $COLOR_GREEN)
 		Else
 			SetLog("Locate Clan Castle Cancelled", $COLOR_BLUE)
-			ClickP($aAway,1,0,"#0376")
+			ClickP($aAway, 1, 0, "#0376")
 			Return
 		EndIf
 		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY) ; 860x780
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
-			If  StringInStr($sInfo[1], "clan") = 0 Then
+			If StringInStr($sInfo[1], "clan") = 0 Then
 				If $sInfo[0] = "" Then
 					$sLocMsg = "Nothing"
 				Else
@@ -89,13 +89,13 @@ Func LocateClanCastle()
 						$sErrorText = "This is not funny, why did you click " & $sLocMsg & "? Please stop!" & @CRLF
 						ContinueLoop
 					Case $iSilly = 4
-						$sErrorText = $sLocMsg&" ?!?!?!"&@CRLF&@CRLF&"Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
+						$sErrorText = $sLocMsg & " ?!?!?!" & @CRLF & @CRLF & "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
 						ContinueLoop
 					Case $iSilly > 4
 						SetLog("Quit joking, Click the Clan Castle, or restart bot and try again", $COLOR_RED)
 						$aCCPos[0] = -1
 						$aCCPos[1] = -1
-						ClickP($aAway,1,0,"#0377")
+						ClickP($aAway, 1, 0, "#0377")
 						Return False
 				EndSelect
 			EndIf
@@ -108,7 +108,7 @@ Func LocateClanCastle()
 			SetLog(" Operator Error - Bad Clan Castle Location: " & "(" & $aCCPos[0] & "," & $aCCPos[1] & ")", $COLOR_RED)
 			$aCCPos[0] = -1
 			$aCCPos[1] = -1
-			ClickP($aAway,1,0,"#0378")
+			ClickP($aAway, 1, 0, "#0378")
 			Return False
 		EndIf
 		ExitLoop

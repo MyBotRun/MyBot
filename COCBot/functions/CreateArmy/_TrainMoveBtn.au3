@@ -24,7 +24,7 @@ Func _TrainMoveBtn($direction)
 		If $i >= UBound($tabpos) Then ExitLoop
 	WEnd
 
-	If $debugSetlog = 1 Then
+	If $debugsetlogTrain = 1 Then
 		Switch $i
 			Case 0
 				Setlog("Move from Army Overview", $COLOR_PURPLE)
@@ -46,12 +46,12 @@ Func _TrainMoveBtn($direction)
 		If $direction = -1 And IsArray($PrevPos) Then
 			Click($PrevPos[0], $PrevPos[1], 1, $iDelayTrainMoveBtn1, "#0337")
 		Else
-			If $debugSetlog = 1 And Not (IsArray($PrevPos)) Then Setlog("CANNOT FIND PREV BUTTON", $COLOR_RED)
+			If $debugsetlogTrain = 1 And Not (IsArray($PrevPos)) Then Setlog("CANNOT FIND PREV BUTTON", $COLOR_RED)
 		EndIf
 		If $direction = +1 And IsArray($NextPos) Then
 			Click($NextPos[0], $NextPos[1], 1, $iDelayTrainMoveBtn1, "#0338")
 		Else
-			If $debugSetlog = 1 And Not (IsArray($NextPos)) Then Setlog("CANNOT FIND PREV BUTTON", $COLOR_RED)
+			If $debugsetlogTrain = 1 And Not (IsArray($NextPos)) Then Setlog("CANNOT FIND PREV BUTTON", $COLOR_RED)
 
 		EndIf
 	Else

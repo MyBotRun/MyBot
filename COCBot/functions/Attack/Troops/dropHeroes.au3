@@ -17,60 +17,26 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drops for king and queen and Grand Warden
-	If $debugSetLog = 1 Then SetLog("dropHeroes KingSlot " & $KingSlot & " QueenSlot " & $QueenSlot & " WardenSlot " & $WardenSlot, $Color_Purple)
+	If $debugSetLog = 1 Then SetLog("dropHeroes KingSlot " & $KingSlot & " QueenSlot " & $QueenSlot & " WardenSlot " & $WardenSlot & " matchmode " & $iMatchMode, $Color_Purple)
 	If _Sleep($iDelaydropHeroes1) Then Return
 	$dropKing = False
 	$dropQueen = False
 	$dropWarden = False
 
-	If $iMatchMode = $DB Then
-		If $ichkUseAttackDBCSV = 1 Then
-			;scripted attack
-			If $KingSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $KingAttackCSV[$iMatchMode] = 1) Then
-				$dropKing = True
-			EndIf
-			If $QueenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $QueenAttackCSV[$iMatchMode] = 1) Then
-				$dropQueen = True
-			EndIf
-			If $WardenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $WardenAttackCSV[$iMatchMode] = 1) Then
-				$dropWarden = True
-			EndIf
-		Else
-			If $KingSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_KING) = $HERO_KING) Then
-				$dropKing = True
-			EndIf
-			If $QueenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_QUEEN) = $HERO_QUEEN) Then
-				$dropQueen = True
-			EndIf
-			If $WardenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_WARDEN) = $HERO_WARDEN) Then
-				$dropWarden = True
-			EndIf
-		EndIf
-	EndIf
-	If $iMatchMode = $LB Then
-		If $ichkUseAttackABCSV = 1 Then
-			;scripted attack
-			If $KingSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $KingAttackCSV[$iMatchMode] = 1) Then
-				$dropKing = True
-			EndIf
-			If $QueenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $QueenAttackCSV[$iMatchMode] = 1) Then
-				$dropQueen = True
-			EndIf
-			If $WardenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $WardenAttackCSV[$iMatchMode] = 1) Then
-				$dropWarden = True
-			EndIf
-		Else
-			If $KingSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_KING) = $HERO_KING) Then
-				$dropKing = True
-			EndIf
-			If $QueenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_QUEEN) = $HERO_QUEEN) Then
-				$dropQueen = True
-			EndIf
-			If $WardenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_WARDEN) = $HERO_WARDEN) Then
-				$dropWarden = True
-			EndIf
-		EndIf
-	EndIf
+
+
+   ;Force to check settings of matchmode =$DB if you attack $TS after milkingattack
+   Local $MatchMode
+   If $iMatchMode = $TS and $duringMilkingAttack = 1 Then
+	  $MatchMode = $DB
+   Else
+	  $MatchMode = $iMatchMode
+   EndIf
+
+   ;use hero if  slot (detected ) and ( (matchmode <>DB and <>LB  ) or (check user GUI settings) )
+   If $KingSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($iHeroAttack[$MatchMode], $HERO_KING) = $HERO_KING) Then $dropKing = True
+   If $QueenSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($iHeroAttack[$MatchMode], $HERO_QUEEN) = $HERO_QUEEN) Then $dropQueen = True
+   If $WardenSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($iHeroAttack[$MatchMode], $HERO_WARDEN) = $HERO_WARDEN) Then $dropWarden = True
 
 	If $debugSetLog = 1 Then SetLog("drop KING = " & $dropKing, $Color_Purple)
 	If $debugSetLog = 1 Then SetLog("drop QUEEN = " & $dropQueen, $Color_Purple)

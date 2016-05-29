@@ -53,7 +53,7 @@ Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = 
 		SuspendAndroid($SuspendMode, False)
 	EndIf
 
-	$ForceCapture = False
+    $ForceCapture = False
 	If $ReturnBMP Then Return $hBitmap
 EndFunc   ;==>_CaptureRegion
 
@@ -118,10 +118,11 @@ Func FastCaptureRegion()
 EndFunc   ;==>FastCaptureRegion
 
 Func NeedCaptureRegion($iCount)
-	Local $bNeedCaptureRegion = FastCaptureRegion() Or Mod($iCount, 10) = 0
-	Return $bNeedCaptureRegion
-EndFunc   ;==>NeedCaptureRegion
+   Local $bNeedCaptureRegion = FastCaptureRegion() Or Mod($iCount, 10) = 0
+   Return $bNeedCaptureRegion
+EndFunc
 
 Func ForceCaptureRegion()
-	$ForceCapture = True
-EndFunc   ;==>ForceCaptureRegion
+   $ForceCapture = True
+EndFunc
+

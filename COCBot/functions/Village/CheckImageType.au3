@@ -31,7 +31,7 @@ Func CheckImageType()
 		Setlog("Default Theme detected")
 	EndIf
 
-	readCollectorConfig();initialize collector fullness variables before loading images
+;~ 	readCollectorConfig();initialize collector fullness variables before loading images
 
 	LoadTHImage() ; Load TH images
 	LoadElixirImage() ; Load Elixir images

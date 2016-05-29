@@ -64,34 +64,19 @@ Func OpenNox($bRestart = False)
 
    SetLog($Android & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
 
-   ; Check Android screen size, position windows
-   If InitiateLayout() Then Return; can also call OpenAndroid again when screen size is adjusted
-
-   ; Launch CcC
-   SetLog("Launch Clash of Clans now...", $COLOR_GREEN)
-   LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans/.GameApp", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
-
-   WinGetAndroidHandle() ; get window Handle
-   ;DisableBS($HWnD, $SC_MINIMIZE)
-   ;DisableBS($HWnD, $SC_CLOSE)
-   If $bRestart = False Then
-	  waitMainScreenMini()
-	  If Not $RunState Then Return
-	  Zoomout()
-	  If Not $RunState Then Return
-	  Initiate()
-   Else
-	  WaitMainScreenMini()
-	  If Not $RunState Then Return
-	  If @error = 1 Then
-		  $Restart = True
-		  $Is_ClientSyncError = False
-		  Return
-	  EndIf
-	  Zoomout()
-   EndIf
-
 EndFunc   ;==>OpenNox
+
+Func IsNoxCommandLine($CommandLine)
+   SetDebugLog($CommandLine)
+   $CommandLine = StringReplace($CommandLine, GetNoxRtPath(), "")
+   $CommandLine = StringReplace($CommandLine, "Nox.exe", "")
+   Local $param1 = StringReplace(GetNoxProgramParameter(), """", "")
+   Local $param2 = StringReplace(GetNoxProgramParameter(True), """", "")
+   If StringInStr($CommandLine, $param1 & " ") > 0 Or StringRight($CommandLine, StringLen($param1)) = $param1 Then Return True
+   If StringInStr($CommandLine, $param2 & " ") > 0 Or StringRight($CommandLine, StringLen($param2)) = $param2 Then Return True
+   If StringInStr($CommandLine, "-clone:") = 0 And $param2 = "" Then Return True
+   Return False
+EndFunc
 
 Func GetNoxProgramParameter($bAlternative = False)
    ; see http://en.bignox.com/blog/?p=354
@@ -204,9 +189,9 @@ Func InitNox($bCheckOnly = False)
 
 	  ;$AndroidPicturesPath = "/mnt/shell/emulated/0/Download/other/"
 	  $AndroidPicturesPath = "/mnt/shared/Other/"
-	  $aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'Other', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
+	  $aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'Other', Host path: '(.*)'.*", $STR_REGEXPARRAYGLOBALMATCH)
 	  If Not @error Then
-		 $AndroidPicturesHostPath = $aRegExResult[0] & "\"
+		 $AndroidPicturesHostPath = $aRegExResult[UBound($aRegExResult) - 1] & "\"
 	  Else
 		 $AndroidAdbScreencap = False
 		 $AndroidPicturesHostPath = ""
@@ -223,28 +208,6 @@ Func InitNox($bCheckOnly = False)
 
 EndFunc
 
-Func RestartNoxCoC()
-
-   If Not InitAndroid() Then Return False
-
-   Local $cmdOutput, $process_killed, $connected_to
-   ;WinActivate($HWnD)  	; ensure bot has window focus
-
-   ; Test ADB is connected
-   $cmdOutput = LaunchConsole($AndroidAdbPath, "connect " & $AndroidAdbDevice, $process_killed)
-   $connected_to = StringInStr($cmdOutput, "connected to")
-
-   If Not $connected_to Then
-	  SetDebugLog("ADB not connected, restart " & $Android)
-	  RebootAndroid()
-	  Return False
-   EndIf
-   SetLog("Please wait for CoC restart......", $COLOR_BLUE)   ; Let user know we need time...
-   $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am start -S -n com.supercell.clashofclans/.GameApp", $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
-
-   Return True
-EndFunc
-
 Func SetScreenNox()
 
    If Not InitAndroid() Then Return False
@@ -257,9 +220,8 @@ Func SetScreenNox()
    ; Set dpi
    ;$cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $AndroidInstance & " vbox_dpi 160", $process_killed)
 
-   ;vboxmanage sharedfolder add droid4x --name picture --hostpath "C:\Users\Administrator\Pictures\Droid4X Photo" --automount
-   If $ichkBackground = 1 And $AndroidAdbScreencap = False And $AndroidPicturesPathAutoConfig = True And BitAND($AndroidSupportFeature, 2) = 2 and FileExists($AndroidPicturesHostPath) = 1 Then
-	  $cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $AndroidInstance & " --name picture --hostpath """ & $AndroidPicturesHostPath & """  --automount", $process_killed)
+   If $AndroidPicturesPathAutoConfig = True and FileExists($AndroidPicturesHostPath) = 1 Then
+	  $cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $AndroidInstance & " --name Other --hostpath """ & $AndroidPicturesHostPath & """  --automount", $process_killed)
    EndIf
 
    Return True
@@ -394,19 +356,36 @@ Func CheckScreenNox($bSetLog = True)
 	  EndIf
    Next
 
-   ; check if shared folder exists for background mode and mouse events
-   If $ichkBackground = 1 And $AndroidAdbScreencap = False And $AndroidPicturesPathAutoConfig = True And BitAND($AndroidSupportFeature, 2) = 2 Then
-	  Local $path = @MyDocumentsDir
-	  If FileExists($path) = 1 Then
-		 $AndroidPicturesHostPath = $path & "\Nox_share\Other"
-		 If FileExists($AndroidPicturesHostPath) = 1 Then
-			SetLog("Configure " & $Android & " to support Background Mode", $COLOR_GREEN)
-			SetLog("Folder exists: " & $AndroidPicturesHostPath, $COLOR_GREEN)
-			SetLog("This shared folder will be added to " & $Android, $COLOR_GREEN)
-			Return False
+   ; check if shared folder exists
+   If $AndroidPicturesPathAutoConfig = True Then
+	  If $AndroidPicturesHostPath = "" Then
+		 Local $path = @MyDocumentsDir
+		 If FileExists($path) = 1 Then
+			$AndroidPicturesHostPath = $path & "\Nox_share\Other"
+			If FileExists($AndroidPicturesHostPath) = 1 Then
+			   SetLog("Configure " & $Android & " to support Background Mode", $COLOR_GREEN)
+			   SetLog("Folder exists: " & $AndroidPicturesHostPath, $COLOR_GREEN)
+			   SetLog("This shared folder will be added to " & $Android, $COLOR_GREEN)
+			   Return False
+			EndIf
+			If DirCreate($AndroidPicturesHostPath) = 1 Then
+			   SetLog("Configure " & $Android & " to support Background Mode", $COLOR_GREEN)
+			   SetLog("Folder created: " & $AndroidPicturesHostPath, $COLOR_GREEN)
+			   SetLog("This shared folder will be added to " & $Android, $COLOR_GREEN)
+			   Return False
+			Else
+			   SetLog("Cannot configure " & $Android & " Background Mode", $COLOR_GREEN)
+			   SetLog("Cannot create folder: " & $AndroidPicturesHostPath, $COLOR_RED)
+			   $AndroidPicturesPathAutoConfig = False
+			EndIf
+		 Else
+			SetLog("Cannot configure " & $Android & " Background Mode", $COLOR_GREEN)
+			SetLog("Cannot find current user 'Documents' folder", $COLOR_RED)
+			$AndroidPicturesPathAutoConfig = False
 		 EndIf
+	  ElseIf FileExists($AndroidPicturesHostPath) = 0 Then
 		 If DirCreate($AndroidPicturesHostPath) = 1 Then
-			SetLog("Configure " & $Android & " to support Background Mode", $COLOR_GREEN)
+			SetLog("Configure " & $Android & " to support ADB", $COLOR_GREEN)
 			SetLog("Folder created: " & $AndroidPicturesHostPath, $COLOR_GREEN)
 			SetLog("This shared folder will be added to " & $Android, $COLOR_GREEN)
 			Return False
@@ -415,10 +394,6 @@ Func CheckScreenNox($bSetLog = True)
 			SetLog("Cannot create folder: " & $AndroidPicturesHostPath, $COLOR_RED)
 			$AndroidPicturesPathAutoConfig = False
 		 EndIf
-	  Else
-		 SetLog("Cannot configure " & $Android & " Background Mode", $COLOR_GREEN)
-		 SetLog("Cannot find current user 'My Pictures' folder", $COLOR_RED)
-		 $AndroidPicturesPathAutoConfig = False
 	  EndIf
    EndIf
 

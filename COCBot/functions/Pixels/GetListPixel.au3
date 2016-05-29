@@ -36,7 +36,7 @@ EndFunc   ;==>GetListPixel
 
 
 Func GetLocationItem($functionName)
-	If $debugSetLog = 1 or $debugBuildingPos = 1 Then
+	If $debugSetLog = 1 Or $debugBuildingPos = 1 Then
 		Local $hTimer = TimerInit()
 		Setlog("GetLocationItem(" & $functionName & ")", $COLOR_PURPLE)
 	EndIf
