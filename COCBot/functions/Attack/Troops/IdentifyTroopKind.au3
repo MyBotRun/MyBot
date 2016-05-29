@@ -1,7 +1,7 @@
 
 #cs new code for Troopsbar Identify, need to implement this somewhere
 
-Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hBitmapFirst)
+Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hHBitmap2)
     ConsoleWrite("result : "&$result[0])
 
 Return :

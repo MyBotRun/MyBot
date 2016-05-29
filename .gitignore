@@ -8,6 +8,7 @@
 *.png
 *.jpg
 *.exe
+*.bmp
 
 # Global Folders
 [Pp]rofiles/
@@ -34,18 +35,26 @@
 ![Ii]mages/Button/Inferno.png
 ![Ii]mages/Button/BoostBarrack.png
 ![Ii]mages/Button/BoostAllBarracks.png
-![Ii]mages/Resources/Collect.png
-![Ii]mages/Resources/loot_cart.png
-![Ii]mages/Resources/Tomb.png
-![Ii]mages/Resources/Tomb1.png
-![Ii]mages/Resources/Tomb2.png
-![Ii]mages/Resources/bush.png
-![Ii]mages/Resources/mushroom.png
-![Ii]mages/Resources/tree.png
-![Ii]mages/Resources/tree2.png
-![Ii]mages/Resources/trunk.png
-![Ii]mages/Resources/trunk2.png
-![Ii]mages/Resources/gembox.png
+![Ii]mages/Button/BarrackBoosted.png
+![Ii]mages/Resources/Collect/*.png
+![Ii]mages/Resources/Collect/*.bmp
+![Ii]mages/Resources/LootCart/loot_cart.png
+![Ii]mages/Resources/Obstacles/*.png
+![Ii]mages/Resources/Tombs/*.png
+![Ii]mages/Resources/GemBox/*.png
+![Ii]mages/WeakBase/Eagle/*.png
+![Ii]mages/WeakBase/Infernos/*.png
+![Ii]mages/WeakBase/Mortars/*.png
+![Ii]mages/WeakBase/WTower/*.png
+![Ii]mages/WeakBase/Xbow/*.png
+![Ii]mages/Walls/*.jpg
+![Ss]trategies/*.ini
+# ignore test strategies
+[Ss]trategies/[Tt]est*.ini
+[Ss]trategies/[Ss]trategy 2016*.ini
+
+![Ii]mages/Storages/Gold/*.png
+![Ii]mages/Storages/Elixir/*.png
 
 # Debug
 [Ll]ib/[Dd]ebug/
