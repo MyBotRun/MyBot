@@ -23,7 +23,7 @@
 # Exclusion Curl (used for PushBullet)
 ![Cc]url.exe
 
-# Exclusion Language .ini's
+# Exclusion language ini files
 ![Ll]anguages/*.ini
 
 # Exclusion Images/Icon
