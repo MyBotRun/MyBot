@@ -1,4 +1,5 @@
 
+
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: BrewSpells
 ; Description ...: Create Normal Spells and Dark Spells
@@ -45,7 +46,7 @@ Func BrewSpells()
 				If _sleep($iDelayTrain2) Then Return
 				If $iLightningSpell > 0 Then
 					If _ColorCheck(_GetPixelColor(235 + 107 * 0, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then ; White into number 0
-						setlog("Not enough Elixir to create Spell", $COLOR_RED)
+						setlog("Not enough Elixir to create Lightning Spell", $COLOR_RED)
 						Return
 					ElseIf _ColorCheck(_GetPixelColor(200, 346 + $midOffsetY, True), Hex(0x414141, 6), 20) Then
 						setlog("Spell Factory Full", $COLOR_RED)
@@ -75,7 +76,7 @@ Func BrewSpells()
 				If _sleep($iDelayTrain2) Then Return
 				If $iHealSpell > 0 Then
 					If _ColorCheck(_GetPixelColor(235 + 107 * 1, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then
-						setlog("Not enough Elixir to create Spell", $COLOR_RED)
+						setlog("Not enough Elixir to create Heal Spell", $COLOR_RED)
 						Return
 					ElseIf _ColorCheck(_GetPixelColor(200, 346 + $midOffsetY, True), Hex(0x414141, 6), 20) Then
 						setlog("Spell Factory Full", $COLOR_RED)
@@ -105,7 +106,7 @@ Func BrewSpells()
 				If _sleep($iDelayTrain2) Then Return
 				If $iRageSpell > 0 Then
 					If _ColorCheck(_GetPixelColor(235 + 107 * 2, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then
-						setlog("Not enough Elixir to create Spell", $COLOR_RED)
+						setlog("Not enough Elixir to create Rage Spell", $COLOR_RED)
 						Return
 					ElseIf _ColorCheck(_GetPixelColor(200, 346 + $midOffsetY, True), Hex(0x414141, 6), 20) Then
 						setlog("Spell Factory Full", $COLOR_RED)
@@ -135,7 +136,7 @@ Func BrewSpells()
 				If _sleep($iDelayTrain2) Then Return
 				If $iJumpSpell > 0 Then
 					If _ColorCheck(_GetPixelColor(235 + 107 * 3, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then ; White into number 0
-						setlog("Not enough Elixir to create Spell", $COLOR_RED)
+						setlog("Not enough Elixir to create Jump Spell", $COLOR_RED)
 						Return
 					ElseIf _ColorCheck(_GetPixelColor(200, 346 + $midOffsetY, True), Hex(0x414141, 6), 20) Then
 						setlog("Spell Factory Full", $COLOR_RED)
@@ -165,7 +166,7 @@ Func BrewSpells()
 				If _sleep($iDelayTrain2) Then Return
 				If $iFreezeSpell > 0 Then
 					If _ColorCheck(_GetPixelColor(235 + 107 * 4, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then ; White into number 0
-						setlog("Not enough Elixir to create Spell", $COLOR_RED)
+						setlog("Not enough Elixir to create Freeze Spell", $COLOR_RED)
 						Return
 					ElseIf _ColorCheck(_GetPixelColor(200, 346 + $midOffsetY, True), Hex(0x414141, 6), 20) Then
 						setlog("Spell Factory Full", $COLOR_RED)
@@ -210,8 +211,10 @@ Func BrewSpells()
 				If _sleep($iDelayTrain2) Then Return
 				If $iPoisonSpell > 0 Then
 					If _sleep($iDelayTrain2) Then Return
-					If _ColorCheck(_GetPixelColor(239, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then
-						setlog("Not enough Elixir to create Spell", $COLOR_RED)
+						If _ColorCheck(_GetPixelColor(233 + 107 * 0, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False And _; White into number 0
+						   _ColorCheck(_GetPixelColor(235 + 107 * 0, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then ; White into number 5
+						setlog("Not enough Elixir to create Poison Spell", $COLOR_RED)
+						If $debugsetlogTrain = 1 Then setlog("colorceck: " & 233 + 107 * 0& "," &  375 + $midOffsetY,$COLOR_RED)
 						Return
 					ElseIf _ColorCheck(_GetPixelColor(200, 346 + $midOffsetY, True), Hex(0x414141, 6), 20) Then
 						setlog("Spell Factory Full", $COLOR_RED)
@@ -242,8 +245,9 @@ Func BrewSpells()
 				If _sleep($iDelayTrain2) Then Return
 				If $iEarthSpell > 0 Then
 					If _sleep($iDelayTrain2) Then Return
-					If _ColorCheck(_GetPixelColor(346, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then ; black pixel in number 5
-						setlog("Not enough Elixir to create Spell", $COLOR_RED)
+						If _ColorCheck(_GetPixelColor(233 + 107 * 1, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False And _; White into number 0
+						   _ColorCheck(_GetPixelColor(235 + 107 * 1, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then ; White into number 5
+						setlog("Not enough Elixir to create Earthquake Spell", $COLOR_RED)
 						Return
 					ElseIf _ColorCheck(_GetPixelColor(200, 346 + $midOffsetY, True), Hex(0x414141, 6), 20) Then
 						setlog("Spell Factory Full", $COLOR_RED)
@@ -274,8 +278,9 @@ Func BrewSpells()
 				If _sleep($iDelayTrain2) Then Return
 				If $iHasteSpell > 0 Then
 					If _sleep($iDelayTrain2) Then Return
-					If _ColorCheck(_GetPixelColor(453, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then ; black pixel in number 5
-						setlog("Not enough Elixir to create Spell", $COLOR_RED)
+						If _ColorCheck(_GetPixelColor(233 + 107 * 2, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False And _; White into number 0
+						   _ColorCheck(_GetPixelColor(235 + 107 * 2, 375 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) = False Then ; White into number 5
+						setlog("Not enough Elixir to create Haste Spell", $COLOR_RED)
 						Return
 					ElseIf _ColorCheck(_GetPixelColor(200, 346 + $midOffsetY, True), Hex(0x414141, 6), 20) Then
 						setlog("Spell Factory Full", $COLOR_RED)
