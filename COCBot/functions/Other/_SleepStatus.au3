@@ -36,7 +36,7 @@ Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True)
 		$iSecCalc = Int($iSecCalc / 1000)
 		$sString = "Waiting Time= " & StringFormat("%02u" & ":" & "%02u", $iDelayMinCalc, $iDelaySecCalc) & ",  Time Left= " & StringFormat("%02u" & ":" & "%02u", $iMinCalc, $iSecCalc)
 		_GUICtrlStatusBar_SetText($statLog, " Status: " & $sString)
-		tabMain()
+		;tabMain()
 		If $iSleep = True Then Sleep(500)
 	WEnd
 	Return False

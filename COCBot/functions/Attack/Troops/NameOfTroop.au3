@@ -49,6 +49,8 @@ Func NameOfTroop($iKind, $iPlural = 0)
 			$sTroopname = "Golem"
 		Case $eLava
 			$sTroopname = "Lava Hound"
+		Case $eBowl
+			$sTroopname = "Bowler"
 		Case $eKing
 			$sTroopname = "King"
 			$iPlural = 0 ; safety reset, $sTroopname of $eKing cannot be plural

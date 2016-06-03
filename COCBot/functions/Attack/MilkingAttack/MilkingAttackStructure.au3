@@ -35,23 +35,30 @@ Func MilkingAttackStructure($vectstr)
 			$skipdelay = False
 			If IsAttackPage() Then
 
-				If $MilkingAttackDropGoblinAlgorithm = 0 Then
+				If $MilkingAttackCheckStructureDestroyedBeforeAttack = 1 Then
+					If MilkingAttackStructureDestroyed($vect[0], $vect[1], $vect[2]) Then
+						$skipdelay = True
+						ExitLoop ; exit if allready destroyed by other wave
+					EndIf
+				EndIf
+
+				If $MilkingAttackDropGoblinAlgorithm = 1 Then
 					;DROP EACH GOBLIN IN A DIFFERENT PLACE
 					For $j = 1 To $troopxwave
+
 						;select random drop point
 						If UBound($vect) = 4 Then
 							Local $rndpos = 3
 						Else
 							Local $rndpos = Random(3, UBound($vect) - 1, 1)
 						EndIf
+
+						;If $debugsetlog=1 Then Setlog(">drop using position " & $rndpos & ": " & $vect[$rndpos] )
 						$pixel = StringSplit($vect[$rndpos], "-", 2)
 						Local $delaypoint = 0
-						If MilkingAttackStructureDestroyed($vect[0], $vect[1], $vect[2]) Then
-							$skipdelay = True
-							ExitLoop ; exit if allready destroyed by other wave
-						EndIf
 
 						If UBound($pixel) = 2 Then
+							;If $debugsetlog=1 Then etlog("Click( " & $pixel[0] & ", " & $pixel[1] & " , 1, " & $delayPoint & ",#0777)")
 							Click($pixel[0], $pixel[1], 1, $delaypoint, "#0777")
 						Else
 							If $debugsetlog = 1 Then Setlog("MilkingAttackStructure error #1")
@@ -66,12 +73,9 @@ Func MilkingAttackStructure($vectstr)
 						Local $rndpos = Random(3, UBound($vect) - 1, 1)
 					EndIf
 					$pixel = StringSplit($vect[$rndpos], "-", 2)
-					If MilkingAttackStructureDestroyed($vect[0], $vect[1], $vect[2]) Then
-						$skipdelay = True
-						ExitLoop ; exit if allready destroyed by other wave
-					EndIf
 
 					If UBound($pixel) = 2 Then
+						;If $debugsetlog=1 Then Setlog("Click( " & $pixel[0] & ", " & $pixel[1] & " ," &  $troopxwave& ", "0,#0778)")
 						Click($pixel[0], $pixel[1], $troopxwave, Random(2, 7, 1), "#0778")
 					Else
 						If $debugsetlog = 1 Then Setlog("MilkingAttackStructure error #1")
@@ -91,10 +95,11 @@ Func MilkingAttackStructure($vectstr)
 				EndIf
 				If $debugsetlog = 1 Then Setlog("wait " & $delayfromwaves)
 				If _Sleep($delayfromwaves) Then Return ;wait before attack new structure.
-				If MilkingAttackStructureDestroyed($vect[0], $vect[1], $vect[2]) Then ExitLoop ;exit from loop if resource it is destroyed
 			EndIf
 		Next
-		If MilkingAttackStructureDestroyed($vect[0], $vect[1], $vect[2]) Then Return ; only to make debug image
+		If $MilkingAttackCheckStructureDestroyedAfterAttack = 1 Then
+			If MilkingAttackStructureDestroyed($vect[0], $vect[1], $vect[2]) Then Return ; only to make debug image
+		EndIf
 	EndIf
 
 EndFunc   ;==>MilkingAttackStructure

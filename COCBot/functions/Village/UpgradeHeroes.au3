@@ -96,7 +96,7 @@ Func UpgradeHeroes()
 	EndIf
 
 	;##### Upg Warden
-		WardenUpgrade()
+	WardenUpgrade()
 
 EndFunc   ;==>UpgradeHeroes
 
@@ -321,7 +321,7 @@ Func WardenUpgrade()
 	Local $aHeroLevel = 0
 
 	SetLog("Upgrade Grand Warden")
-	ClickP($WardenAltarPos,1,0,"#8888") ;Click Warden Altar
+	ClickP($WardenAltarPos, 1, 0, "#8888") ;Click Warden Altar
 	If _Sleep($iDelayUpgradeHero2) Then Return
 
 	;Get Warden info
@@ -370,7 +370,7 @@ Func WardenUpgrade()
 	If _Sleep(100) Then Return
 
 	If $iElixirCurrent < ($aWardenUpgCost[$aHeroLevel] * 1000000) + $itxtUpgrMinElixir Then
-		SetLog("Insufficient Elixir for Warden Upgrade, requires: " & ($aWardenUpgCost[$aHeroLevel] * 1000000) & " + " &$itxtUpgrMinElixir, $COLOR_BLUE)
+		SetLog("Insufficient Elixir for Warden Upgrade, requires: " & ($aWardenUpgCost[$aHeroLevel] * 1000000) & " + " & $itxtUpgrMinElixir, $COLOR_BLUE)
 		Return
 	EndIf
 	If _Sleep($iDelayUpgradeHero2) Then Return
@@ -385,14 +385,14 @@ Func WardenUpgrade()
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep($iDelayUpgradeHero3) Then Return ; Wait for window to open
 		If $debugSetlog = 1 Then DebugImageSave("UpgradeElixirBtn1")
-		If $debugSetlog = 1 Then Setlog( "pixel: "& _GetPixelColor(718, 120 + $midOffsetY, True) & " expected " &  Hex(0xDD0408, 6) & " result: " & _ColorCheck(_GetPixelColor(718, 120 + $midOffsetY, True), Hex(0xDD0408, 6), 20), $COLOR_PURPLE)
+		If $debugSetlog = 1 Then Setlog("pixel: " & _GetPixelColor(718, 120 + $midOffsetY, True) & " expected " & Hex(0xDD0408, 6) & " result: " & _ColorCheck(_GetPixelColor(718, 120 + $midOffsetY, True), Hex(0xDD0408, 6), 20), $COLOR_PURPLE)
 		If _ColorCheck(_GetPixelColor(718, 120 + $midOffsetY, True), Hex(0xDD0408, 6), 20) Then ; Check if the Hero Upgrade window is open
-			If $debugSetlog = 1 Then Setlog( "pixel1: "& _GetPixelColor(692, 525 + $midOffsetY, True) & " expected " &  Hex(0xFFFFFF, 6) & " result: " & (_ColorCheck(_GetPixelColor(692, 525 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) ) , $COLOR_PURPLE)
-			If not (_ColorCheck(_GetPixelColor(692, 525 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) )  Then ; Check for Red Zero = means not enough loot!
+			If $debugSetlog = 1 Then Setlog("pixel1: " & _GetPixelColor(692, 525 + $midOffsetY, True) & " expected " & Hex(0xFFFFFF, 6) & " result: " & (_ColorCheck(_GetPixelColor(692, 525 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20)), $COLOR_PURPLE)
+			If Not (_ColorCheck(_GetPixelColor(692, 525 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20)) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Warden Upgrade Fail! No Elixir!", $COLOR_RED)
 				ClickP($aAway, 1, 0, "#0306") ;Click Away to close window
 				Return
-			 Else
+			Else
 				Click(660, 515 + $midOffsetY, 1, 0, "#0307") ; Click upgrade buttton
 				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
 				If _Sleep($iDelayUpgradeHero1) Then Return
@@ -417,4 +417,4 @@ Func WardenUpgrade()
 
 	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
 
-EndFunc
+EndFunc   ;==>WardenUpgrade

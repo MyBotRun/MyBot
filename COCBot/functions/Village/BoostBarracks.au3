@@ -29,14 +29,11 @@ Func BoostBarracks()
 
 	$ToleranceImgLoc = 0.92 ; similarity 0.00 to 1
 
-	;	Get from GUI the values
-	Local $icmbQuantBoostBarracks = GUICtrlRead($cmbQuantBoostBarracks)
-	Local $icmbBoostBarracks = GUICtrlRead($cmbBoostBarracks)
-
 	;	Verifying existent Variables to run this routine
 	If $bTrainEnabled = False Then Return
 	If $icmbQuantBoostBarracks = 0 Or $icmbBoostBarracks = 0 Then Return
-	If $iPlannedBoostBarracksEnable = 1 Then
+
+	If True Then
 		Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 		If $iPlannedBoostBarracksHours[$hour[0]] = 0 Then
 			SetLog("Boost Barracks are not Planned, Skipped..", $COLOR_GREEN)
@@ -71,7 +68,7 @@ Func BoostBarracks()
 		_CaptureRegion2(125, 610, 740, 715)
 		For $i = 0 To 1
 			If FileExists($ImagesToUse[$i]) Then
-				$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hHBitmap2, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc)
+				$res = DllCall($hImgLib, "str", "SearchTile", "handle", $hHBitmap2, "str", $ImagesToUse[$i], "float", $ToleranceImgLoc, "str", "FV", "int", 1)
 				If @error Then _logErrorDLLCall($pImgLib, @error)
 				If IsArray($res) Then
 					If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
@@ -85,9 +82,9 @@ Func BoostBarracks()
 						If _Sleep($iDelayBoostBarracks5) Then Return
 						If $i = 0 Then
 							If $DebugSetlog Then SetLog("Found the Button to Boost All")
-							$expRet = StringSplit($res[0], "|", 2)
-							$ButtonX = 125 + Int($expRet[1])
-							$ButtonY = 610 + Int($expRet[2])
+							$expRet = StringSplit(StringSplit($res[0], "|", 2)[1], ",", 2)
+							$ButtonX = 125 + Int($expRet[0])
+							$ButtonY = 610 + Int($expRet[1])
 							If $DebugSetlog Then SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_GREEN)
 							If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
 							If _Sleep($iDelayBoostBarracks1) Then Return
@@ -95,12 +92,12 @@ Func BoostBarracks()
 								Click(420, 375 + $midOffsetY, 1, 0, "#0160")
 								If _Sleep($iDelayBoostBarracks2) Then Return
 								If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
-									_GUICtrlComboBox_SetCurSel($cmbBoostBarracks, 0)
+									$icmbBoostBarracks = 0
 									SetLog("Not enough gems", $COLOR_RED)
 									ClickP($aAway, 1, 0, "#0161")
 									ExitLoop
 								Else
-									_GUICtrlComboBox_SetCurSel($cmbBoostBarracks, ($icmbBoostBarracks - 1))
+									$icmbBoostBarracks -=1
 									SetLog('Boost completed. Remaining :' & $icmbBoostBarracks, $COLOR_GREEN)
 								EndIf
 							EndIf
@@ -121,25 +118,26 @@ Func BoostBarracks()
 			SaveConfig()
 			If _Sleep($iDelayBoostBarracks2) Then Return
 		EndIf
-		If $DebugSetlog = 1 Then  SetLog("Boosting Barracks individually", $COLOR_BLUE)
+		If $DebugSetlog = 1 Then SetLog("Boosting Barracks individually", $COLOR_BLUE)
 		Local $BoostedBarrack = 0
 		For $i = 0 To ($numBarracks - 1)
 			SetLog("Boosting Barracks nº: " & $i + 1, $COLOR_BLUE)
 			ClickP($aAway, 1, 0, "#0157")
 			If _Sleep($iDelayBoostBarracks1) Then Return
 			Click($barrackPos[$i][0], $barrackPos[$i][1], 1, 0, "#0158")
+
 			If _Sleep($iDelayBoostBarracks1) Then Return
 
 			_CaptureRegion2(125, 610, 740, 715)
 			For $t = 0 To 1
 				If FileExists($ImagesToUse1[$t]) Then
-					$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hHBitmap2, "str", $ImagesToUse1[$t], "float", $ToleranceImgLoc)
+					$res = DllCall($hImgLib, "str", "SearchTile", "handle", $hHBitmap2, "str", $ImagesToUse1[$t], "float", $ToleranceImgLoc, "str", "FV", "int", 1)
 					If @error Then _logErrorDLLCall($pImgLib, @error)
 					If IsArray($res) Then
 						If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
 						If $res[0] = "0" Then
 							ClickP($aAway, 1, 0, "#0161")
-							If $t = 1 then SetLog("Barrack nº: " & $i + 1 & " Boost Button not found.", $COLOR_RED)
+							If $t = 1 Then SetLog("Barrack nº: " & $i + 1 & " Boost Button not found.", $COLOR_RED)
 						ElseIf $res[0] = "-1" Then
 							SetLog("DLL Error", $COLOR_RED)
 						ElseIf $res[0] = "-2" Then
@@ -148,9 +146,9 @@ Func BoostBarracks()
 							If _Sleep($iDelayBoostBarracks5) Then Return
 							If $t = 0 Then
 								If $DebugSetlog = 1 Then SetLog("Found the Button to Boost individual")
-								$expRet = StringSplit($res[0], "|", 2)
-								$ButtonX = 125 + Int($expRet[1])
-								$ButtonY = 610 + Int($expRet[2])
+								$expRet = StringSplit(StringSplit($res[0], "|", 2)[1], ",", 2)
+								$ButtonX = 125 + Int($expRet[0])
+								$ButtonY = 610 + Int($expRet[1])
 								If $DebugSetlog = 1 Then SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_GREEN)
 								If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
 								If _Sleep($iDelayBoostBarracks1) Then Return
@@ -158,20 +156,20 @@ Func BoostBarracks()
 									Click(420, 375 + $midOffsetY, 1, 0, "#0160")
 									If _Sleep($iDelayBoostBarracks2) Then Return
 									If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then ;Not enough Gem
-										_GUICtrlComboBox_SetCurSel($cmbBoostBarracks, 0)
+										$icmbBoostBarracks = 0
 										SetLog("Not enough gems", $COLOR_RED)
-										ExitLoop(2)
+										ExitLoop (2)
 									EndIf
 									If Not $BoostedBarrack = ($icmbQuantBoostBarracks - 1) Then
 										$BoostedBarrack += 1
 										SetLog("Boost " & $BoostedBarrack & " Barrack(s) completed. Remaining :" & ($icmbQuantBoostBarracks - $BoostedBarrack) & " Barracks to Boost.", $COLOR_GREEN)
-										If $BoostedBarrack >= $icmbQuantBoostBarracks Then ExitLoop(2)
+										If $BoostedBarrack >= $icmbQuantBoostBarracks Then ExitLoop (2)
 									Else
-										_GUICtrlComboBox_SetCurSel($cmbBoostBarracks, ($icmbBoostBarracks - 1))
+										$icmbBoostBarracks -= 1
 										$BoostedBarrack += 1
 										SetLog("Boost " & $BoostedBarrack & " Barrack(s) completed. Remaining :" & ($icmbQuantBoostBarracks - $BoostedBarrack) & " Barracks to Boost.", $COLOR_GREEN)
 										SetLog("Remaining :" & $icmbBoostBarracks - 1 & " times ", $COLOR_GREEN)
-										If $BoostedBarrack >= $icmbQuantBoostBarracks Then ExitLoop(2)
+										If $BoostedBarrack >= $icmbQuantBoostBarracks Then ExitLoop (2)
 									EndIf
 								Else
 									SetLog("Barrack nº: " & $i + 1 & " the Confirm Message not open!", $COLOR_RED)
@@ -183,12 +181,13 @@ Func BoostBarracks()
 								SetLog("Barrack nº: " & $i + 1 & " is already Boosted.", $COLOR_RED)
 								$BoostedBarrack += 1
 								ClickP($aAway, 1, 0, "#0161")
-								If $BoostedBarrack = $icmbQuantBoostBarracks Then ExitLoop(2)
+								If $BoostedBarrack = $icmbQuantBoostBarracks Then ExitLoop (2)
 							EndIf
 						EndIf
 					Else
 						SetLog("Problem with Image Search/DllCall", $COLOR_RED)
 						ClickP($aAway, 1, 0, "#0161")
+						SetLog("Barrack nº: " & $i + 1 & " Boost Button not found.", $COLOR_RED)
 					EndIf
 				EndIf
 			Next
@@ -213,7 +212,7 @@ Func BoostSpellFactory()
 	$ImagesToUse1[1] = @ScriptDir & "\images\Button\BarrackBoosted.png"
 	$ToleranceImgLoc = 0.90 ; similarity 0.00 to 1
 
-	If (GUICtrlRead($cmbBoostSpellFactory) > 0) And ($boostsEnabled = 1) Then
+	If $icmbBoostSpellFactory > 0 And ($boostsEnabled = 1) Then
 		SetLog("Boost Spell Factory...", $COLOR_BLUE)
 
 		; Confirm the Spell Factory Position
@@ -229,7 +228,7 @@ Func BoostSpellFactory()
 		_CaptureRegion2(125, 610, 740, 715)
 		For $i = 0 To 1
 			If FileExists($ImagesToUse1[$i]) Then
-				$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hHBitmap2, "str", $ImagesToUse1[$i], "float", $ToleranceImgLoc)
+				$res = DllCall($hImgLib, "str", "SearchTile", "handle", $hHBitmap2, "str", $ImagesToUse1[$i], "float", $ToleranceImgLoc, "str", "FV", "int", 1)
 				If @error Then _logErrorDLLCall($pImgLib, @error)
 				If IsArray($res) Then
 					If $DebugSetlog Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
@@ -243,9 +242,9 @@ Func BoostSpellFactory()
 						If _Sleep($iDelayBoostBarracks5) Then Return
 						If $i = 0 Then
 							If $DebugSetlog = 1 Then SetLog("Found the Button to Boost Spell Factory")
-							$expRet = StringSplit($res[0], "|", 2)
-							$ButtonX = 125 + Int($expRet[1])
-							$ButtonY = 610 + Int($expRet[2])
+							$expRet = StringSplit(StringSplit($res[0], "|", 2)[1], ",", 2)
+							$ButtonX = 125 + Int($expRet[0])
+							$ButtonY = 610 + Int($expRet[1])
 							If $DebugSetlog Then SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_GREEN)
 							If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
 							If _Sleep($iDelayBoostSpellFactory1) Then Return
@@ -253,13 +252,13 @@ Func BoostSpellFactory()
 								Click(420, 375 + $midOffsetY, 1, 0, "#0160")
 								If _Sleep($iDelayBoostSpellFactory2) Then Return
 								If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
-									_GUICtrlComboBox_SetCurSel($cmbBoostSpellFactory, 0)
+									$icmbBoostSpellFactory = 0
 									SetLog("Not enough gems", $COLOR_RED)
 									ClickP($aAway, 1, 0, "#0161")
 									ExitLoop
 								Else
-									_GUICtrlComboBox_SetCurSel($cmbBoostSpellFactory, (GUICtrlRead($cmbBoostSpellFactory) - 1))
-									SetLog('Boost completed. Remaining :' & (GUICtrlRead($cmbBoostSpellFactory)), $COLOR_GREEN)
+									$cmbBoostSpellFactory -= 1
+									SetLog('Boost completed. Remaining :' & $icmbBoostSpellFactory, $COLOR_GREEN)
 								EndIf
 							EndIf
 							If _Sleep($iDelayBoostSpellFactory3) Then Return
@@ -295,7 +294,7 @@ Func BoostDarkSpellFactory()
 	$ToleranceImgLoc = 0.90 ; similarity 0.00 to 1
 
 
-	If (GUICtrlRead($cmbBoostDarkSpellFactory) > 0) And ($boostsEnabled = 1) Then
+	If $icmbBoostDarkSpellFactory > 0 And ($boostsEnabled = 1) Then
 		SetLog("Boost Dark Spell Factory...", $COLOR_BLUE)
 
 		If $DSFPos[0] = -1 Then
@@ -311,7 +310,7 @@ Func BoostDarkSpellFactory()
 		_CaptureRegion2(125, 610, 740, 715)
 		For $i = 0 To 1
 			If FileExists($ImagesToUse1[$i]) Then
-				$res = DllCall($pImgLib, "str", "MBRSearchImage", "handle", $hHBitmap2, "str", $ImagesToUse1[$i], "float", $ToleranceImgLoc)
+				$res = DllCall($hImgLib, "str", "SearchTile", "handle", $hHBitmap2, "str", $ImagesToUse1[$i], "float", $ToleranceImgLoc, "str", "FV", "int", 1)
 				If @error Then _logErrorDLLCall($pImgLib, @error)
 				If IsArray($res) Then
 					If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
@@ -325,9 +324,9 @@ Func BoostDarkSpellFactory()
 						If _Sleep($iDelayBoostBarracks5) Then Return
 						If $i = 0 Then
 							If $DebugSetlog Then SetLog("Found the Button to Boost Dark Spell Factory")
-							$expRet = StringSplit($res[0], "|", 2)
-							$ButtonX = 125 + Int($expRet[1])
-							$ButtonY = 610 + Int($expRet[2])
+							$expRet = StringSplit(StringSplit($res[0], "|", 2)[1], ",", 2)
+							$ButtonX = 125 + Int($expRet[0])
+							$ButtonY = 610 + Int($expRet[1])
 							If $DebugSetlog Then SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_GREEN)
 							If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
 							If _Sleep($iDelayBoostSpellFactory1) Then Return
@@ -335,13 +334,13 @@ Func BoostDarkSpellFactory()
 								Click(420, 375 + $midOffsetY, 1, 0, "#0160")
 								If _Sleep($iDelayBoostSpellFactory2) Then Return
 								If _ColorCheck(_GetPixelColor(586, 267 + $midOffsetY, True), Hex(0xd80405, 6), 20) Then
-									_GUICtrlComboBox_SetCurSel($cmbBoostSpellFactory, 0)
+									$icmbBoostSpellFactory = 0
 									SetLog("Not enough gems", $COLOR_RED)
 									ClickP($aAway, 1, 0, "#0161")
 									ExitLoop
 								Else
-									_GUICtrlComboBox_SetCurSel($cmbBoostSpellFactory, (GUICtrlRead($cmbBoostSpellFactory) - 1))
-									SetLog('Boost completed. Remaining :' & (GUICtrlRead($cmbBoostSpellFactory)), $COLOR_GREEN)
+									$icmbBoostSpellFactory -= 1
+									SetLog('Boost completed. Remaining :' & $icmbBoostSpellFactory, $COLOR_GREEN)
 								EndIf
 							EndIf
 							If _Sleep($iDelayBoostSpellFactory3) Then Return
@@ -361,7 +360,3 @@ Func BoostDarkSpellFactory()
 	checkMainScreen(False) ; Check for errors during function
 
 EndFunc   ;==>BoostDarkSpellFactory
-
-
-
-

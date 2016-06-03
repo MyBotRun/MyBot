@@ -17,13 +17,13 @@ Func setupProfileComboBox()
 	Else
 		; Lets create a new array without the first entry which is a count for populating the combo box
 		Local $aProfileList[$aProfiles[0]]
-		For $i = 1 to $aProfiles[0]
+		For $i = 1 To $aProfiles[0]
 			$aProfileList[$i - 1] = $aProfiles[$i]
 		Next
 
 		; Convert the array into a string
 		$profileString = _ArrayToString($aProfileList, "|")
-	EndIF
+	EndIf
 
 	; Clear the combo box current data in case profiles were deleted
 	GUICtrlSetData($cmbProfile, "", "")
@@ -71,8 +71,6 @@ Func createProfile()
 	IniWrite($sProfilePath & "\profile.ini", "general", "defaultprofile", $sCurrProfile)
 	; Store the location of the profile's config.ini file
 	$config = $sProfilePath & "\" & $sCurrProfile & "\config.ini"
-	; Store the location of the MOD's configuration file
-	$modConfig = $sProfilePath & "\" & $sCurrProfile & "\modSettings.ini"
 	; Store the other profile files
 	$building = $sProfilePath & "\" & $sCurrProfile & "\building.ini"
 	$dirLogs = $sProfilePath & "\" & $sCurrProfile & "\Logs\"
@@ -97,8 +95,8 @@ Func setupProfile()
 	; Create the profile if needed, this also sets the variables if the profile exists.
 	createProfile()
 	; Set the profile name on the village info group.
-	GUICtrlSetData($grpVillage, GetTranslated(13, 21, "Village") & ": " & $sCurrProfile)
-	GUICtrlSetData($OrigPushB, $sCurrProfile)
+	GUICtrlSetData($grpVillage, GetTranslated(603, 32, "Village") & ": " & $sCurrProfile)
+	GUICtrlSetData($OrigPushBullet, $sCurrProfile)
 EndFunc   ;==>setupProfile
 
 Func selectProfile()
@@ -117,6 +115,6 @@ Func selectProfile()
 	EndIf
 
 	; Set the profile name on the village info group.
-	GUICtrlSetData($grpVillage, GetTranslated(13, 21, "Village") & ": " & $sCurrProfile)
-	GUICtrlSetData($OrigPushB, $sCurrProfile)
+	GUICtrlSetData($grpVillage, GetTranslated(603, 32, "Village") & ": " & $sCurrProfile)
+	GUICtrlSetData($OrigPushBullet, $sCurrProfile)
 EndFunc   ;==>selectProfile

@@ -26,9 +26,9 @@ Global $iOldSearchCost, $iOldTrainCostElixir, $iOldTrainCostDElixir ; search and
 Global $iOldNbrOfOoS ; number of Out of Sync occurred
 Global $iOldNbrOfTHSnipeFails, $iOldNbrOfTHSnipeSuccess ; number of fails and success while TH Sniping
 Global $iOldGoldFromMines, $iOldElixirFromCollectors, $iOldDElixirFromDrills ; number of resources gain by collecting mines, collectors, drills
-Global $iOldAttackedCount, $iOldAttackedVillageCount[$iModeCount+1] ; number of attack villages for DB, LB, TB, TS
-Global $iOldTotalGoldGain[$iModeCount+1], $iOldTotalElixirGain[$iModeCount+1], $iOldTotalDarkGain[$iModeCount+1], $iOldTotalTrophyGain[$iModeCount+1] ; total resource gains for DB, LB, TB, TS
-Global $iOldNbrOfDetectedMines[$iModeCount+1], $iOldNbrOfDetectedCollectors[$iModeCount+1], $iOldNbrOfDetectedDrills[$iModeCount+1] ; number of mines, collectors, drills detected for DB, LB, TB
+Global $iOldAttackedCount, $iOldAttackedVillageCount[$iModeCount + 1] ; number of attack villages for DB, LB, TB, TS
+Global $iOldTotalGoldGain[$iModeCount + 1], $iOldTotalElixirGain[$iModeCount + 1], $iOldTotalDarkGain[$iModeCount + 1], $iOldTotalTrophyGain[$iModeCount + 1] ; total resource gains for DB, LB, TB, TS
+Global $iOldNbrOfDetectedMines[$iModeCount + 1], $iOldNbrOfDetectedCollectors[$iModeCount + 1], $iOldNbrOfDetectedDrills[$iModeCount + 1] ; number of mines, collectors, drills detected for DB, LB, TB
 
 Func UpdateStats()
 	If $FirstRun = 1 Then
@@ -101,9 +101,9 @@ Func UpdateStats()
 		GUICtrlSetData($lblHourlyStatsElixir, "")
 		GUICtrlSetData($lblHourlyStatsDark, "")
 		GUICtrlSetData($lblHourlyStatsTrophy, "")
-		GUICtrlSetData($lblResultGoldHourNow, "")  ;GUI BOTTOM
+		GUICtrlSetData($lblResultGoldHourNow, "") ;GUI BOTTOM
 		GUICtrlSetData($lblResultElixirHourNow, "");GUI BOTTOM
-		GUICtrlSetData($lblResultDEHourNow, "")    ;GUI BOTTOM
+		GUICtrlSetData($lblResultDEHourNow, "") ;GUI BOTTOM
 
 	EndIf
 
@@ -232,11 +232,13 @@ Func UpdateStats()
 	If $iOldNbrOfWallsUppedGold <> $iNbrOfWallsUppedGold Then
 		GUICtrlSetData($lblWallgoldmake, $iNbrOfWallsUppedGold)
 		$iOldNbrOfWallsUppedGold = $iNbrOfWallsUppedGold
+		WallsStatsMAJ()
 	EndIf
 
 	If $iOldNbrOfWallsUppedElixir <> $iNbrOfWallsUppedElixir Then
 		GUICtrlSetData($lblWallelixirmake, $iNbrOfWallsUppedElixir)
 		$iOldNbrOfWallsUppedElixir = $iNbrOfWallsUppedElixir
+		WallsStatsMAJ()
 	EndIf
 
 	If $iOldNbrOfBuildingsUppedGold <> $iNbrOfBuildingsUppedGold Then
@@ -366,10 +368,10 @@ Func UpdateStats()
 		EndIf
 		GUICtrlSetData($lblHourlyStatsTrophy, _NumberFormat(Round($iTrophyTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) & " / h")
 
-		GUICtrlSetData($lblResultGoldHourNow, _NumberFormat(Round($iGoldTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & "K / h")              ;GUI BOTTOM
-		GUICtrlSetData($lblResultElixirHourNow, _NumberFormat(Round($iElixirTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & "K / h")           ;GUI BOTTOM
+		GUICtrlSetData($lblResultGoldHourNow, _NumberFormat(Round($iGoldTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & "K / h") ;GUI BOTTOM
+		GUICtrlSetData($lblResultElixirHourNow, _NumberFormat(Round($iElixirTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & "K / h") ;GUI BOTTOM
 		If $iDarkStart <> "" Then
-			GUICtrlSetData($lblResultDEHourNow, _NumberFormat(Round($iDarkTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) & " / h")      ;GUI BOTTOM
+			GUICtrlSetData($lblResultDEHourNow, _NumberFormat(Round($iDarkTotal / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) & " / h") ;GUI BOTTOM
 		EndIf
 
 	EndIf
@@ -378,7 +380,7 @@ Func UpdateStats()
 		$ResetStats = 0
 	EndIf
 
-EndFunc
+EndFunc   ;==>UpdateStats
 
 Func ResetStats()
 	$ResetStats = 1
@@ -438,4 +440,4 @@ Func ResetStats()
 		$iNbrOfDetectedDrills[$i] = 0
 	Next
 	UpdateStats()
-EndFunc
+EndFunc   ;==>ResetStats

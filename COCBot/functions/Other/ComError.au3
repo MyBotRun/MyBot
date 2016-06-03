@@ -13,23 +13,23 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Global $oMyError = ObjEvent("AutoIt.Error","BotComError")    ; Initialize a COM error handler
+Global $oMyError = ObjEvent("AutoIt.Error", "BotComError") ; Initialize a COM error handler
 
 ; This is my custom defined error handler
 Func BotComError()
 
-	SetError(0,0,0)
-	If $debugsetlog=1 Then
-	  Setlog  ("We intercepted a COM Error !"                      ,$COLOR_RED)
-	  Setlog  ("err.description is: "  &  $oMyError.description    ,$COLOR_RED)
-	  Setlog  ("err.windescription:"   &  $oMyError.windescription ,$COLOR_RED)
-	  Setlog  ("err.number is: "       &  hex($oMyError.number,8)  ,$COLOR_RED)
-	  Setlog  ("err.lastdllerror is: " &  $oMyError.lastdllerror   ,$COLOR_RED)
-	  Setlog  ("err.scriptline is: "   &  $oMyError.scriptline     ,$COLOR_RED)
-	  Setlog  ("err.source is: "       &  $oMyError.source         ,$COLOR_RED)
-	  Setlog  ("err.helpfile is: "     &  $oMyError.helpfile       ,$COLOR_RED)
-	  Setlog  ("err.helpcontext is: "  &  $oMyError.helpcontext    ,$COLOR_RED)
+	SetError(0, 0, 0)
+	If $debugsetlog = 1 Then
+		Setlog("We intercepted a COM Error !", $COLOR_RED)
+		Setlog("err.description is: " & $oMyError.description, $COLOR_RED)
+		Setlog("err.windescription:" & $oMyError.windescription, $COLOR_RED)
+		Setlog("err.number is: " & Hex($oMyError.number, 8), $COLOR_RED)
+		Setlog("err.lastdllerror is: " & $oMyError.lastdllerror, $COLOR_RED)
+		Setlog("err.scriptline is: " & $oMyError.scriptline, $COLOR_RED)
+		Setlog("err.source is: " & $oMyError.source, $COLOR_RED)
+		Setlog("err.helpfile is: " & $oMyError.helpfile, $COLOR_RED)
+		Setlog("err.helpcontext is: " & $oMyError.helpcontext, $COLOR_RED)
 	EndIf
-	SetError(0,0,0)
+	SetError(0, 0, 0)
 
-Endfunc
+EndFunc   ;==>BotComError

@@ -14,7 +14,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func LocateSpellFactory()
-	Local $stext, $MsgBox, $iStupid = 0, $iSilly = 0,  $sErrorText = ""
+	Local $stext, $MsgBox, $iStupid = 0, $iSilly = 0, $sErrorText = ""
 
 	SetLog("Locating Spell Factory...", $COLOR_BLUE)
 
@@ -24,13 +24,13 @@ Func LocateSpellFactory()
 	EndIf
 
 	While 1
-		ClickP($aAway,1,0,"#0385")
+		ClickP($aAway, 1, 0, "#0385")
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$stext = $sErrorText & @CRLF & "Click OK then click on your Spell Factory" & @CRLF & @CRLF & _
-		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
-		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Spell Factory", $stext, 15, $frmBot)
+		$stext = $sErrorText & @CRLF & GetTranslated(640,45,"Click OK then click on your Spell Factory") & @CRLF & @CRLF & _
+				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,46,"Locate Spell Factory"), $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
-		    WinGetAndroidHandle()
+			WinGetAndroidHandle()
 			WinActivate($HWnD)
 			Local $aPos = FindPos()
 			$SFPos[0] = $aPos[0]
@@ -39,7 +39,7 @@ Func LocateSpellFactory()
 				$iStupid += 1
 				Select
 					Case $iStupid = 1
-						$sErrorText = "Spell Factory Location Not Valid!"&@CRLF
+						$sErrorText = "Spell Factory Location Not Valid!" & @CRLF
 						SetLog("Location not valid, try again", $COLOR_RED)
 						ContinueLoop
 					Case $iStupid = 2
@@ -49,23 +49,23 @@ Func LocateSpellFactory()
 						$sErrorText = "This is not funny, why did you click @ (" & $SFPos[0] & "," & $SFPos[1] & ")?" & @CRLF & "  Please stop!" & @CRLF & @CRLF
 						ContinueLoop
 					Case $iStupid = 4
-						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
+						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
 						ContinueLoop
 					Case $iStupid > 4
-						SetLog(" Operator Error - Bad Spell Factory Location: " & "(" & $SFPos[0] & "," &$SFPos[1] & ")", $COLOR_RED)
-						ClickP($aAway,1,0,"#0386")
+						SetLog(" Operator Error - Bad Spell Factory Location: " & "(" & $SFPos[0] & "," & $SFPos[1] & ")", $COLOR_RED)
+						ClickP($aAway, 1, 0, "#0386")
 						Return False
 					Case Else
-						SetLog(" Operator Error - Bad Spell Factory Location: " & "(" & $SFPos[0] & "," &$SFPos[1] & ")", $COLOR_RED)
+						SetLog(" Operator Error - Bad Spell Factory Location: " & "(" & $SFPos[0] & "," & $SFPos[1] & ")", $COLOR_RED)
 						$SFPos[0] = -1
 						$SFPos[1] = -1
-						ClickP($aAway,1,0,"#0387")
+						ClickP($aAway, 1, 0, "#0387")
 						Return False
 				EndSelect
 			EndIf
 			$sSpellInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 			If $sSpellInfo[0] > 1 Or $sSpellInfo[0] = "" Then
-				If  StringInStr($sSpellInfo[1], "Spell") = 0 Then
+				If StringInStr($sSpellInfo[1], "Spell") = 0 Then
 					If $sSpellInfo[0] = "" Then
 						$sLocMsg = "Nothing"
 					Else
@@ -83,13 +83,13 @@ Func LocateSpellFactory()
 							$sErrorText = "This is not funny, why did you click " & $sLocMsg & "? Please stop!" & @CRLF
 							ContinueLoop
 						Case $iSilly = 4
-							$sErrorText = $sLocMsg&" ?!?!?!"&@CRLF&@CRLF&"Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
+							$sErrorText = $sLocMsg & " ?!?!?!" & @CRLF & @CRLF & "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
 							ContinueLoop
 						Case $iSilly > 4
 							SetLog("Quit joking, Click the Army Camp, or restart bot and try again", $COLOR_RED)
 							$SFPos[0] = -1
 							$SFPos[1] = -1
-							ClickP($aAway,1,0,"#0388")
+							ClickP($aAway, 1, 0, "#0388")
 							Return False
 					EndSelect
 				EndIf
@@ -97,13 +97,13 @@ Func LocateSpellFactory()
 				SetLog(" Operator Error - Bad Spell Factory Location: " & "(" & $SFPos[0] & "," & $SFPos[1] & ")", $COLOR_RED)
 				$SFPos[0] = -1
 				$SFPos[1] = -1
-				ClickP($aAway,1,0,"#0389")
+				ClickP($aAway, 1, 0, "#0389")
 				Return False
 			EndIf
 			SetLog("Locate Spell Factory Success: " & "(" & $SFPos[0] & "," & $SFPos[1] & ")", $COLOR_GREEN)
 		Else
 			SetLog("Locate Spell Factory Cancelled", $COLOR_BLUE)
-			ClickP($aAway,1,0,"#0390")
+			ClickP($aAway, 1, 0, "#0390")
 			Return
 		EndIf
 		ExitLoop
@@ -116,7 +116,7 @@ EndFunc   ;==>LocateSpellFactory
 
 
 Func LocateDarkSpellFactory()
-	Local $stext, $MsgBox, $iStupid = 0, $iSilly = 0,  $sErrorText = ""
+	Local $stext, $MsgBox, $iStupid = 0, $iSilly = 0, $sErrorText = ""
 
 	SetLog("Locating Dark Spell Factory...", $COLOR_BLUE)
 
@@ -127,13 +127,13 @@ Func LocateDarkSpellFactory()
 
 	While 1
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$stext = $sErrorText & @CRLF & "Click OK then click on your Dark Spell Factory" & @CRLF & @CRLF & _
-		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
-		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Dark Spell Factory", $stext, 15, $frmBot)
+		$stext = $sErrorText & @CRLF & GetTranslated(640,48,"Click OK then click on your Dark Spell Factory") & @CRLF & @CRLF & _
+				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,47,"Locate Dark Spell Factory"), $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
-		    WinGetAndroidHandle()
+			WinGetAndroidHandle()
 			WinActivate($HWnD)
-			ClickP($aAway,1,0,"#0385")
+			ClickP($aAway, 1, 0, "#0385")
 			Local $aPos = FindPos()
 			$DSFPos[0] = $aPos[0]
 			$DSFPos[1] = $aPos[1]
@@ -141,7 +141,7 @@ Func LocateDarkSpellFactory()
 				$iStupid += 1
 				Select
 					Case $iStupid = 1
-						$sErrorText = "Dark Spell Factory Location Not Valid!"&@CRLF
+						$sErrorText = "Dark Spell Factory Location Not Valid!" & @CRLF
 						SetLog("Location not valid, try again", $COLOR_RED)
 						ContinueLoop
 					Case $iStupid = 2
@@ -151,23 +151,23 @@ Func LocateDarkSpellFactory()
 						$sErrorText = "This is not funny, why did you click @ (" & $DSFPos[0] & "," & $DSFPos[1] & ")?" & @CRLF & "  Please stop!" & @CRLF & @CRLF
 						ContinueLoop
 					Case $iStupid = 4
-						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
+						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
 						ContinueLoop
 					Case $iStupid > 4
-						SetLog(" Operator Error - Bad Dark Spell Factory Location: " & "(" & $DSFPos[0] & "," &$DSFPos[1] & ")", $COLOR_RED)
-						ClickP($aAway,1,0,"#0386")
+						SetLog(" Operator Error - Bad Dark Spell Factory Location: " & "(" & $DSFPos[0] & "," & $DSFPos[1] & ")", $COLOR_RED)
+						ClickP($aAway, 1, 0, "#0386")
 						Return False
 					Case Else
-						SetLog(" Operator Error - Bad Dark Spell Factory Location: " & "(" & $DSFPos[0] & "," &$DSFPos[1] & ")", $COLOR_RED)
+						SetLog(" Operator Error - Bad Dark Spell Factory Location: " & "(" & $DSFPos[0] & "," & $DSFPos[1] & ")", $COLOR_RED)
 						$DSFPos[0] = -1
 						$DSFPos[1] = -1
-						ClickP($aAway,1,0,"#0387")
+						ClickP($aAway, 1, 0, "#0387")
 						Return False
 				EndSelect
 			EndIf
 			$sSpellInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
 			If $sSpellInfo[0] > 1 Or $sSpellInfo[0] = "" Then
-				If  StringInStr($sSpellInfo[1], "Spell") = 0 Then
+				If StringInStr($sSpellInfo[1], "Spell") = 0 Then
 					If $sSpellInfo[0] = "" Then
 						$sLocMsg = "Nothing"
 					Else
@@ -185,13 +185,13 @@ Func LocateDarkSpellFactory()
 							$sErrorText = "This is not funny, why did you click " & $sLocMsg & "? Please stop!" & @CRLF
 							ContinueLoop
 						Case $iSilly = 4
-							$sErrorText = $sLocMsg&" ?!?!?!"&@CRLF&@CRLF&"Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
+							$sErrorText = $sLocMsg & " ?!?!?!" & @CRLF & @CRLF & "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
 							ContinueLoop
 						Case $iSilly > 4
 							SetLog("Quit joking, Click the Army Camp, or restart bot and try again", $COLOR_RED)
 							$DSFPos[0] = -1
 							$DSFPos[1] = -1
-							ClickP($aAway,1,0,"#0388")
+							ClickP($aAway, 1, 0, "#0388")
 							Return False
 					EndSelect
 				EndIf
@@ -199,13 +199,13 @@ Func LocateDarkSpellFactory()
 				SetLog(" Operator Error - Bad Spell Factory Location: " & "(" & $DSFPos[0] & "," & $DSFPos[1] & ")", $COLOR_RED)
 				$DSFPos[0] = -1
 				$DSFPos[1] = -1
-				ClickP($aAway,1,0,"#0389")
+				ClickP($aAway, 1, 0, "#0389")
 				Return False
 			EndIf
 			SetLog("Locate Dark Spell Factory Success: " & "(" & $DSFPos[0] & "," & $DSFPos[1] & ")", $COLOR_GREEN)
 		Else
 			SetLog("Locate Dark Spell Factory Cancelled", $COLOR_BLUE)
-			ClickP($aAway,1,0,"#0390")
+			ClickP($aAway, 1, 0, "#0390")
 			Return
 		EndIf
 		ExitLoop

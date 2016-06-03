@@ -262,7 +262,7 @@ EndFunc   ;==>ZombieSearch
 
 Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 	;variable limit: limit number of searches, limit = 0 disable limit search
-	;variable tolearnce: set a fixed tolearnce, tolerance = 0 disable fixed tolerance
+	;variable tolerance: set a fixed tolerance, tolerance = 0 disable fixed tolerance
 	Local $hTimer = TimerInit()
 	Local $count = 0
 	Local $ElixirLocation
@@ -309,7 +309,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 				ConsoleWrite(" - tolerance: <" & StringMid(Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), StringInStr(Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
 				ConsoleWrite(" - tolerancecalc: " & $Tolerance)
 				ConsoleWrite(@CRLF)
-				$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR50PERCENT\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + Number($toleranceoffset)) ; Getting Elixir Location
+				$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR50PERCENT\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "_50percent" & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + ($DevMode = 1 ? Number($toleranceoffset) : 0)) ; Getting Elixir Location
 				ConsoleWrite("Imagesearch return: ")
 				ConsoleWrite("- ElixirLocation : " & $ElixirLocation)
 				ConsoleWrite("- ElixirLocationx : " & $ElixirLocationx)
@@ -362,7 +362,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 					ConsoleWrite(" - tolerance: <" & StringMid(Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), StringInStr(Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
 					ConsoleWrite(" - tolerancecalc: " & $Tolerance)
 					ConsoleWrite(@CRLF)
-					$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR75PERCENT\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + Number($toleranceoffset)) ; Getting Elixir Location
+					$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR75PERCENT\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "_75percent" & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + ($DevMode = 1 ? Number($toleranceoffset) : 0)) ; Getting Elixir Location
 					ConsoleWrite("Imagesearch return: ")
 					ConsoleWrite("- ElixirLocation : " & $ElixirLocation)
 					ConsoleWrite("- ElixirLocationx : " & $ElixirLocationx)
@@ -416,7 +416,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 					ConsoleWrite(" - tolerance: <" & StringMid(Execute("$ElixirImages" & $t & "[" & $i & "]"), StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") + 1, StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), ".BMP") - StringInStr(Execute("$ElixirImages" & $t & "[" & $i & "]"), "T") - 1) & ">")
 					ConsoleWrite(" - tolerancecalc: " & $Tolerance)
 					ConsoleWrite(@CRLF)
-					$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + Number($toleranceoffset)) ; Getting Elixir Location
+					$ElixirLocation = _ImageSearch(@ScriptDir & "\images\ELIXIR\" & $t + 6 & "\" & Execute("$ElixirImages" & $t & "[" & $i & "]"), 1, $ElixirLocationx, $ElixirLocationy, $Tolerance + ($DevMode = 1 ? Number($toleranceoffset) : 0)) ; Getting Elixir Location
 					ConsoleWrite("Imagesearch return: ")
 					ConsoleWrite("- ElixirLocation : " & $ElixirLocation)
 					ConsoleWrite("- ElixirLocationx : " & $ElixirLocationx)
@@ -462,13 +462,13 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 		EndIf
 		If $debugBuildingPos = 1 And ($limit <> 0 Or $tolerancefix <> 0) Then Setlog("#*# ZombieSearch2: limit= " & $limit & ", tolerancefix=" & $tolerancefix, $COLOR_TEAL)
 		If $debugImageSave = 1 Then DebugImageSave("ZombieSearch2_NoDeadBaseFound_", True)
-
+	    If $debugsetlog=1 then Setlog("Collectors NO match, dead base not found",$color_purple)
 		Return False
 	Else
 		If $debugBuildingPos = 1 Then
 			Setlog(" FOUND = " & $ZombieFound, $COLOR_TEAL)
 		EndIf
-
+	    If $debugsetlog=1 then Setlog("Collectors match, dead base found",$color_purple)
 		Return True
 	EndIf
 

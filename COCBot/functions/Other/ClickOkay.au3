@@ -17,10 +17,10 @@
 Func ClickOkay($FeatureName = "Okay", $bCheckOneTime = False)
 	Local $i = 0
 	If _Sleep($iSpecialClick1) Then Return False ; Wait for Okay button window
-	While 1  ; Wait for window with Okay Button
+	While 1 ; Wait for window with Okay Button
 		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
 		Global $ButtonPixel = _MultiPixelSearch(438, 372 + $midOffsetY, 590, 404 + $midOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $debugSetlog = 1 Then Setlog($FeatureName &" btn chk-#1: " & _GetPixelColor(441, 374 + $midOffsetY, True) & ", #2: " & _GetPixelColor(441 + 144, 374 + $midOffsetY, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17 + $midOffsetY, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10 + $midOffsetY, True), $COLOR_PURPLE)
+		If $debugSetlog = 1 Then Setlog($FeatureName & " btn chk-#1: " & _GetPixelColor(441, 374 + $midOffsetY, True) & ", #2: " & _GetPixelColor(441 + 144, 374 + $midOffsetY, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17 + $midOffsetY, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10 + $midOffsetY, True), $COLOR_PURPLE)
 		If IsArray($ButtonPixel) Then
 			If $debugSetlog = 1 Then
 				Setlog("ButtonPixelLocation = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_PURPLE) ;Debug
@@ -40,4 +40,4 @@ Func ClickOkay($FeatureName = "Okay", $bCheckOneTime = False)
 		If _Sleep($iSpecialClick2) Then Return False ; improve pause button response
 	WEnd
 	Return True
-EndFunc
+EndFunc   ;==>ClickOkay

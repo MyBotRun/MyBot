@@ -16,7 +16,7 @@
 Func LocateTownHall($bLocationOnly = False)
 
 	Local $stext, $MsgBox, $Success, $sLocMsg
-	Local	$iStupid = 0, $iSilly = 0, $sErrorText = ""
+	Local $iStupid = 0, $iSilly = 0, $sErrorText = ""
 
 	SetLog("Locating Town Hall ...", $COLOR_BLUE)
 
@@ -29,13 +29,13 @@ Func LocateTownHall($bLocationOnly = False)
 
 	While 1
 		_ExtMsgBoxSet(1 + 64, 1, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
-		$stext = $sErrorText & @CRLF & "Click OK then click on your TownHall" & @CRLF & @CRLF & _
-		"Do not move mouse quickly after clicking location"& @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
-		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate TownHall", $stext, 30, $frmBot)
+		$stext = $sErrorText & @CRLF & GetTranslated(640,49,"Click OK then click on your Town Hall") & @CRLF & @CRLF & _
+				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,50,"Locate TownHall"), $stext, 30, $frmBot)
 		If $MsgBox = 1 Then
-		    WinGetAndroidHandle()
+			WinGetAndroidHandle()
 			WinActivate($HWnD)
-			ClickP($aAway,1,0,"#0391")
+			ClickP($aAway, 1, 0, "#0391")
 			Local $aPos = FindPos()
 			$TownHallPos[0] = $aPos[0]
 			$TownHallPos[1] = $aPos[1]
@@ -44,7 +44,7 @@ Func LocateTownHall($bLocationOnly = False)
 				$iStupid += 1
 				Select
 					Case $iStupid = 1
-						$sErrorText = "TownHall Location not valid!"&@CRLF
+						$sErrorText = "TownHall Location not valid!" & @CRLF
 						SetLog("Location not valid, try again", $COLOR_RED)
 						ContinueLoop
 					Case $iStupid = 2
@@ -54,20 +54,20 @@ Func LocateTownHall($bLocationOnly = False)
 						$sErrorText = "This is not funny, why did you click @ (" & $TownHallPos[0] & "," & $TownHallPos[1] & ")?" & @CRLF & "Please stop!" & @CRLF
 						ContinueLoop
 					Case $iStupid = 4
-						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
+						$sErrorText = "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
 						ContinueLoop
 					Case $iStupid > 4
 						SetLog(" Operator Error - Bad Townhall Location: " & "(" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_RED)
 						$TownHallPos[0] = -1
 						$TownHallPos[1] = -1
-						ClickP($aAway,1,0,"#0392")
+						ClickP($aAway, 1, 0, "#0392")
 						Return False
 				EndSelect
 			EndIf
 			SetLog("Townhall: " & "(" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_GREEN)
 		Else
 			SetLog("Locate TownHall Cancelled", $COLOR_BLUE)
-			ClickP($aAway,1,0,"#0393")
+			ClickP($aAway, 1, 0, "#0393")
 			Return
 		EndIf
 		If $bLocationOnly = False Then
@@ -90,13 +90,13 @@ Func LocateTownHall($bLocationOnly = False)
 						$sErrorText = "This is not funny, why did you click " & $sLocMsg & "? Please stop!" & @CRLF
 						ContinueLoop
 					Case $iSilly = 4
-						$sErrorText = $sLocMsg&" ?!?!?!" & @CRLF & @CRLF & "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!"& @CRLF
+						$sErrorText = $sLocMsg & " ?!?!?!" & @CRLF & @CRLF & "Last Chance, DO NOT MAKE ME ANGRY, or" & @CRLF & "I will give ALL of your gold to Barbarian King," & @CRLF & "And ALL of your Gems to the Archer Queen!" & @CRLF
 						ContinueLoop
 					Case $iSilly > 4
 						SetLog("Quit joking, Click on the TH, or restart bot and try again", $COLOR_RED)
 						$TownHallPos[0] = -1
 						$TownHallPos[1] = -1
-						ClickP($aAway,1,0,"#0394")
+						ClickP($aAway, 1, 0, "#0394")
 						Return False
 				EndSelect
 			Else

@@ -35,6 +35,7 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 	getBSPos() ; Update $HWnd and Android Window Positions
 	If $ichkBackground = 0 And $NoFocusTampering = False Then
 	    Local $hTimer = TimerInit(), $hWndActive = -1
+		Local $activeHWnD = WinGetHandle("")
 		While TimerDiff($hTimer) < 1000 And $hWndActive <> $HWnD And Not _Sleep(100)
 		   getBSPos() ; update $HWnD
 		   $hWndActive = WinActivate($HWnD) ; ensure bot has window focus
@@ -44,6 +45,7 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		   RebootAndroid()
 		   Return
 	    EndIf
+		WinActivate($activeHWnD) ; restore current active window
     EndIf
 	$iCount = 0
 	While _CheckPixel($aIsMain, $bCapturePixel) = False

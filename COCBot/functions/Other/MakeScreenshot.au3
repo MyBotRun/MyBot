@@ -19,7 +19,7 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 	If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) Then
 
 		Local $SuspendMode
-		Local $iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT - 25 ; set size if screen to save
+		Local $iLeft = 0, $iTop = 0, $iRight = $AndroidClientWidth, $iBottom = $AndroidClientHeight ; set size if screen to save
 		Local $iW = Number($iRight) - Number($iLeft)
 		Local $iH = Number($iBottom) - Number($iTop)
 		Local $hHBitmapScreenshot, $hDC_Capture, $hMemDC, $hObjectOld, $hBitmapScreenshot

@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 Func StarBonus()
 
-	If $debugSetlog = 1 Then Setlog("Begin Star Bonus window check" , $COLOR_PURPLE)
+	If $debugSetlog = 1 Then Setlog("Begin Star Bonus window check", $COLOR_PURPLE)
 
 	; Verify is Star bonus window open?
 	If _CheckPixel($aIsMainGrayed, $bCapturePixel) = False Then Return ; Star bonus window opens on main base view, and grays page.

@@ -24,13 +24,13 @@
 Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 
 	If isProblemAffect(True) Then Return
-    If Not IsAttackPage() Then Return
+	If Not IsAttackPage() Then Return
 
 	$nameFunc = "[DropOnPixel]"
 	debugRedArea($nameFunc & " IN ")
 	debugRedArea("troop : [" & $troop & "] / size arrPixel [" & UBound($listArrPixel) & "] / number [" & $number & "]/ $slotsPerEdge [" & $slotsPerEdge & "] ")
 	If ($number = 0 Or UBound($listArrPixel) = 0) Then Return
-    KeepClicks()
+	KeepClicks()
 	If $number = 1 Or $slotsPerEdge = 1 Then ; Drop on a single point per edge => on the middle
 		For $i = 0 To UBound($listArrPixel) - 1
 			debugRedArea("$listArrPixel $i : [" & $i & "] ")
@@ -38,12 +38,12 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			debugRedArea("$arrPixel $UBound($arrPixel) : [" & UBound($arrPixel) & "] ")
 			If UBound($arrPixel) > 0 Then
 				Local $pixel = $arrPixel[0]
-				If $i = int(UBound($arrPixel)/2) And $isHeroesDropped = False Then
+				If $i = Int(UBound($arrPixel) / 2) And $isHeroesDropped = False Then
 					$DeployHeroesPosition[0] = $pixel[0]
 					$DeployHeroesPosition[1] = $pixel[1]
 					debugRedArea("Heroes : $slotsPerEdge = 1 ")
 				EndIf
-				If $i = int(UBound($arrPixel)/2) And $isCCDropped = False Then
+				If $i = Int(UBound($arrPixel) / 2) And $isCCDropped = False Then
 					$DeployCCPosition[0] = $pixel[0]
 					$DeployCCPosition[1] = $pixel[1]
 					debugRedArea("CC : $slotsPerEdge = 1 ")
@@ -56,12 +56,12 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			Local $arrPixel = $listArrPixel[$i]
 			If UBound($arrPixel) > 0 Then
 				Local $pixel = $arrPixel[0]
-				If $i = int(UBound($arrPixel)/2) And $isHeroesDropped = False Then
+				If $i = Int(UBound($arrPixel) / 2) And $isHeroesDropped = False Then
 					$DeployHeroesPosition[0] = $pixel[0]
 					$DeployHeroesPosition[1] = $pixel[1]
 					debugRedArea("Heroes : $slotsPerEdge = 2 ")
 				EndIf
-				If $i = int(UBound($arrPixel)/2) And $isCCDropped = False Then
+				If $i = Int(UBound($arrPixel) / 2) And $isCCDropped = False Then
 					$DeployCCPosition[0] = $pixel[0]
 					$DeployCCPosition[1] = $pixel[1]
 					debugRedArea("CC : $slotsPerEdge = 2 ")
@@ -76,7 +76,7 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			Local $offset = 1
 			Local $nbTroopByPixel = 1
 			Local $arrPixel = $listArrPixel[$i]
-			debugRedArea("UBound($arrPixel) " & UBound($arrPixel) & "$number :"& $number)
+			debugRedArea("UBound($arrPixel) " & UBound($arrPixel) & "$number :" & $number)
 			While ($nbTroopsLeft > 0)
 				If (UBound($arrPixel) = 0) Then
 					ExitLoop
@@ -98,17 +98,17 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 						$index = UBound($arrPixel) - 1
 					EndIf
 					Local $currentPixel = $arrPixel[Floor($index)]
-					If $j >= Round(UBound($arrPixel)/2) and $j <= Round((UBound($arrPixel)/2) + $offset) And $isHeroesDropped = False Then
+					If $j >= Round(UBound($arrPixel) / 2) And $j <= Round((UBound($arrPixel) / 2) + $offset) And $isHeroesDropped = False Then
 						$DeployHeroesPosition[0] = $currentPixel[0]
 						$DeployHeroesPosition[1] = $currentPixel[1]
 						debugRedArea("Heroes : $slotsPerEdge = else ")
-						debugRedArea("$offset: " & $offset )
+						debugRedArea("$offset: " & $offset)
 					EndIf
-					If $j >= Round(UBound($arrPixel)/2) and $j <= Round((UBound($arrPixel)/2) + $offset)  And $isCCDropped = False Then
+					If $j >= Round(UBound($arrPixel) / 2) And $j <= Round((UBound($arrPixel) / 2) + $offset) And $isCCDropped = False Then
 						$DeployCCPosition[0] = $currentPixel[0]
 						$DeployCCPosition[1] = $currentPixel[1]
 						debugRedArea("CC : $slotsPerEdge = else ")
-						debugRedArea("$offset: " & $offset )
+						debugRedArea("$offset: " & $offset)
 					EndIf
 					AttackClick($currentPixel[0], $currentPixel[1], $nbTroopByPixel, SetSleep(0), 0, "#0098")
 					$nbTroopsLeft -= $nbTroopByPixel
@@ -116,7 +116,7 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 			WEnd
 		Next
 	EndIf
-    ReleaseClicks()
+	ReleaseClicks()
 	debugRedArea($nameFunc & " OUT ")
 EndFunc   ;==>DropOnPixel
 

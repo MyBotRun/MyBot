@@ -38,7 +38,7 @@ Func LoadTHImage()
 
 		;code to debug in console if need
 		For $i = 0 To UBound(Eval("THImages" & $t)) - 1
-			ConsoleWrite("THImages_" & $t + 6  & "[" & $i & "]:" & Execute("$THImages" & $t & "[" & $i & "]") & @CRLF)
+			ConsoleWrite("THImages_" & $t + 6 & "[" & $i & "]:" & Execute("$THImages" & $t & "[" & $i & "]") & @CRLF)
 		Next
 
 		;make stats array and put values = 0
@@ -164,7 +164,7 @@ Func CaptureTHwithInfo($THx, $THy, $ImageInfo)
 	Local $filename = String("THDetected_" & $Date & "_" & $Time & "_" & $ImageInfo & ".png")
 
 	If $debugBuildingPos = 1 And $debugsetlog = 1 Then Setlog(" _GDIPlus_ImageSaveToFile", $COLOR_PURPLE)
-	Local $savefolder = $dirTempDebug& "THDetected_" & "\"
+	Local $savefolder = $dirTempDebug & "THDetected_" & "\"
 	DirCreate($savefolder)
 	_GDIPlus_ImageSaveToFile($EditedImage, $savefolder & $filename)
 	_GDIPlus_PenDispose($hPen)

@@ -76,7 +76,7 @@ Func checkAttackDisable($iSource, $Result = "")
 			EndIf
 		Case $iTaBChkTime
 			If $iSource = $iTaBChkAttack Then ; If from village search, need to return home
-				While _CheckPixel($aIsAttackPage, $bCapturePixel) = False  ; Wait for attack page ready
+				While _CheckPixel($aIsAttackPage, $bCapturePixel) = False ; Wait for attack page ready
 					If _Sleep($iDelayAttackDisable500) Then Return
 					$iCount += 1
 					If $debugSetlog = 1 Then setlog("wait end battle button " & $iCount, $COLOR_PURPLE)
@@ -125,7 +125,7 @@ Func checkAttackDisable($iSource, $Result = "")
 	Local $i = 0 ; Reset Loop counter
 	While 1
 		checkObstacles()
-		BS1BackButton()
+		AndroidBackButton()
 		If _Sleep($iDelayAttackDisable1000) Then Return ; wait for window to open
 		If ClickOkay("ExitCoCokay", True) = True Then ExitLoop ; Confirm okay to exit
 		If $i > 10 Then

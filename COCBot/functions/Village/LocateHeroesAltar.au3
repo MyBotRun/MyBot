@@ -28,19 +28,19 @@ Func LocateQueenAltar()
 
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) Or _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 		Zoomout()
-		$bDisableBreakCheck = True  ; stop early PB log off when locating upgrades
+		$bDisableBreakCheck = True ; stop early PB log off when locating upgrades
 		Collect()
-		$bDisableBreakCheck = False  ; restore flag
+		$bDisableBreakCheck = False ; restore flag
 	EndIf
 
 	SetLog("Locating Queen Altar...", $COLOR_BLUE)
 	While 1
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$stext = $sErrorText & @CRLF & "Click OK then click on your Queen Altar" & @CRLF & @CRLF & _
-				"Do not move mouse after clicking location" & @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
-		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Queen Altar", $stext, 15, $frmBot)
+		$stext = $sErrorText & @CRLF & GetTranslated(640,34,"Click OK then click on your Queen Altar") & @CRLF & @CRLF & _
+				GetTranslated(640,26,"Do not move mouse after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,35,"Locate Queen Altar"), $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
-		    WinGetAndroidHandle()
+			WinGetAndroidHandle()
 			WinActivate($HWnD)
 			ClickP($aTopLeftClient)
 			Local $aPos = FindPos()
@@ -140,8 +140,8 @@ Func LocateQueenAltar()
 	If _Sleep(1000) Then Return
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-	$stext = "Now you can remove mouse out of bluestacks, Thanks!!"
-	$MsgBox = _ExtMsgBox(48, "OK", "Notice!", $stext, 15, $frmBot)
+	$stext = GetTranslated(640,38,"Now you can remove mouse out of Android Emulator, Thanks!!")
+	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15, $frmBot)
 
 	IniWrite($building, "other", "xQueenAltarPos", $QueenAltarPos[0])
 	IniWrite($building, "other", "yQueenAltarPos", $QueenAltarPos[1])
@@ -157,17 +157,17 @@ Func LocateKingAltar()
 	WinGetAndroidHandle()
 	WinActivate($HWnD)
 	checkMainScreen(False)
-	$bDisableBreakCheck = True  ; stop early PB log off when locating upgrades
+	$bDisableBreakCheck = True ; stop early PB log off when locating upgrades
 	Collect()
-	$bDisableBreakCheck = False  ; restore flag
+	$bDisableBreakCheck = False ; restore flag
 
 	SetLog("Locating King Altar...", $COLOR_BLUE)
 	While 1
 		ClickP($aTopLeftClient)
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$stext = $sErrorText & @CRLF & "Click OK then click on your King Altar" & @CRLF & @CRLF & _
-				"Do not move mouse after clicking location" & @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
-		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate King Altar", $stext, 15, $frmBot)
+		$stext = $sErrorText & @CRLF & GetTranslated(640,39,"Click OK then click on your King Altar") & @CRLF & @CRLF & _
+				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,40,"Locate King Altar"), $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
 			WinActivate($HWnD)
@@ -267,8 +267,8 @@ Func LocateKingAltar()
 	If _Sleep(1000) Then Return
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-	$stext = "Now you can remove mouse out of bluestacks, Thanks!!"
-	$MsgBox = _ExtMsgBox(48, "OK", "Notice!", $stext, 15, $frmBot)
+	$stext = GetTranslated(640,38,"Now you can remove mouse out of Android Emulator, Thanks!!")
+	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15, $frmBot)
 
 	IniWrite($building, "other", "xKingAltarPos", $KingAltarPos[0])
 	IniWrite($building, "other", "yKingAltarPos", $KingAltarPos[1])
@@ -291,18 +291,18 @@ Func LocateWardenAltar()
 
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) And _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 		Zoomout()
-		$bDisableBreakCheck = True  ; stop early PB log off when locating upgrades
+		$bDisableBreakCheck = True ; stop early PB log off when locating upgrades
 		Collect()
-		$bDisableBreakCheck = False  ; restore flag
+		$bDisableBreakCheck = False ; restore flag
 	EndIf
 
 	SetLog("Locating Grand Warden Altar... work in progress!", $COLOR_BLUE)
 	While 1
 		ClickP($aTopLeftClient)
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$stext = $sErrorText & @CRLF & "Click OK then click on your Grand Warden Altar" & @CRLF & @CRLF & _
-				"Do not move mouse after clicking location" & @CRLF & @CRLF & "Make sure the building name is visible for me!" & @CRLF
-		$MsgBox = _ExtMsgBox(0, "Ok|Cancel", "Locate Grand Warden Altar", $stext, 15, $frmBot)
+		$stext = $sErrorText & @CRLF & GetTranslated(640,41,"Click OK then click on your Grand Warden Altar") & @CRLF & @CRLF & _
+				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,42,"Locate Grand Warden Altar"), $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
 			WinActivate($HWnD)
@@ -403,8 +403,8 @@ Func LocateWardenAltar()
 	If _Sleep(1000) Then Return
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-	$stext = "Now you can remove mouse out of bluestacks, Thanks!!"
-	$MsgBox = _ExtMsgBox(48, "OK", "Notice!", $stext, 15, $frmBot)
+	$stext = GetTranslated(640,38,"Now you can remove mouse out of Android Emulator, Thanks!!")
+	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15, $frmBot)
 
 	IniWrite($building, "other", "xWardenAltarPos", $WardenAltarPos[0])
 	IniWrite($building, "other", "yWardenAltarPos", $WardenAltarPos[1])

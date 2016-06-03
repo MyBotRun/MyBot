@@ -30,4 +30,4 @@ Func _NumberFormat($Number, $NullToZero = False) ; pad numbers with spaces as th
 		Return StringRegExpReplace($Number, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 ")
 	EndIf
 
-EndFunc
+EndFunc   ;==>_NumberFormat

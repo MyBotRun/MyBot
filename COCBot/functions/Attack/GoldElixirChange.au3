@@ -82,7 +82,7 @@ Func GoldElixirChangeThSnipes($x)
 
 	SetLog("Checking if the Gold6Elixir are changing...", $COLOR_BLUE)
 
-	For $y = 0 to $x
+	For $y = 0 To $x
 		$Gold1 = getGoldVillageSearch(48, 69)
 		$Elixir1 = getElixirVillageSearch(48, 69 + 29)
 
@@ -115,6 +115,7 @@ Func GoldElixirChangeThSnipes($x)
 
 				If getGoldVillageSearch(48, 69) = "" And getElixirVillageSearch(48, 69 + 29) = "" Then
 					SetLog("Battle has finished", $COLOR_GREEN)
+					Return True
 					ExitLoop
 				EndIf
 			EndIf
@@ -126,7 +127,8 @@ Func GoldElixirChangeThSnipes($x)
 			SetLog("Gold & Elixir change detected, waiting...", $COLOR_GREEN)
 			ContinueLoop
 		EndIf
-		$x +=1
-		If Sleep(1000) then return
+		$x += 1
+		If Sleep(1000) Then Return
+		Return False
 	Next
-EndFunc   ;==>GoldElixirChange
+EndFunc   ;==>GoldElixirChangeThSnipes

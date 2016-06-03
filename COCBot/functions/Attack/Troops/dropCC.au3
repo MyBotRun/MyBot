@@ -17,8 +17,16 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func dropCC($x, $y, $slot) ;Drop clan castle
-	If $slot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $iDropCC[$iMatchMode] = 1  or $iDropCCCSV[$iMatchMode]=1) Then
+	;If $slot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $iDropCC[$iMatchMode] = 1 Or $iDropCCCSV[$iMatchMode] = 1) Then
 
+	Local $test1 = false
+	Local $test2 = false
+	If $iMatchMode = $MA and $iDropCC[$DB] = 1  then $test1= True
+	if $iMatchMode <>$MA Then
+		If ($iMatchMode <> $DB And $iMatchMode <> $LB and $iMatchMode <> $MA) Or $iDropCC[$iMatchMode] = 1 Or $iDropCCCSV[$iMatchMode] = 1  Then $test2 = True
+	EndIf
+
+	If $slot <> -1 and ( $test1 or $test2 )	Then
 		If $iPlannedDropCCHoursEnable = 1 Then
 			Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 			If $iPlannedDropCCHours[$hour[0]] = 0 Then
@@ -27,62 +35,34 @@ Func dropCC($x, $y, $slot) ;Drop clan castle
 			EndIf
 		EndIf
 
-	    If $ichkUseAttackDBCSV = 1 or $ichkUseAttackABCSV = 1 Then
-		   ;scripted attack
-		   If $iChkUseCCBalancedCSV = 1 Then
-			   If Number($TroopsReceived) <> 0 Then
-				   If Number(Number($TroopsDonated) / Number($TroopsReceived)) >= (Number($iCmbCCDonatedCSV) / Number($iCmbCCReceivedCSV)) Then
-					   SetLog("Dropping Clan Castle, donated (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") >= " & $iCmbCCDonatedCSV & "/" & $iCmbCCReceivedCSV, $COLOR_BLUE)
-					   Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2,"#9999")
-					   If _Sleep($iDelaydropCC1) Then Return
-					   Click($x, $y,1,0,"#9999")
-				   Else
-					   SetLog("No Dropping Clan Castle, donated  (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") < " & $iCmbCCDonatedCSV & "/" & $iCmbCCReceivedCSV, $COLOR_BLUE)
-				   EndIf
-			   Else
-				   If Number(Number($TroopsDonated) / 1) >= (Number($iCmbCCDonatedCSV) / Number($iCmbCCReceivedCSV)) Then
-					   SetLog("Dropping Clan Castle, donated (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") >= " & $iCmbCCDonatedCSV & "/" & $iCmbCCReceivedCSV, $COLOR_BLUE)
-					   Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2,"#0088")
-					   If _Sleep($iDelaydropCC1) Then Return
-					   Click($x, $y,1,0,"#9999")
-				   Else
-					   SetLog("No Dropping Clan Castle, donated  (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") < " & $iCmbCCDonatedCSV & "/" & $iCmbCCReceivedCSV, $COLOR_BLUE)
-				   EndIf
-			   EndIf
-		   Else
-			   SetLog("Dropping Clan Castle", $COLOR_BLUE)
-			   Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2,"#9999")
-			   If _Sleep($iDelaydropCC1) Then Return
-			   Click($x, $y,1,0,"#9999")
-		   EndIf
-	    Else
-		   ;standard attack
-		   If $iChkUseCCBalanced = 1 Then
-			   If Number($TroopsReceived) <> 0 Then
-				   If Number(Number($TroopsDonated) / Number($TroopsReceived)) >= (Number($iCmbCCDonated) / Number($iCmbCCReceived)) Then
-					   SetLog("Dropping Clan Castle, donated (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") >= " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_BLUE)
-					   Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2,"#0086")
-					   If _Sleep($iDelaydropCC1) Then Return
-					   Click($x, $y,1,0,"#0087")
-				   Else
-					   SetLog("No Dropping Clan Castle, donated  (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") < " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_BLUE)
-				   EndIf
-			   Else
-				   If Number(Number($TroopsDonated) / 1) >= (Number($iCmbCCDonated) / Number($iCmbCCReceived)) Then
-					   SetLog("Dropping Clan Castle, donated (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") >= " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_BLUE)
-					   Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2,"#0088")
-					   If _Sleep($iDelaydropCC1) Then Return
-					   Click($x, $y,1,0,"#0089")
-				   Else
-					   SetLog("No Dropping Clan Castle, donated  (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") < " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_BLUE)
-				   EndIf
-			   EndIf
-		   Else
-			   SetLog("Dropping Clan Castle", $COLOR_BLUE)
-			   Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2,"#0090")
-			   If _Sleep($iDelaydropCC1) Then Return
-			   Click($x, $y,1,0,"#0091")
+
+		;standard attack
+		If $iChkUseCCBalanced = 1 Then
+			If Number($TroopsReceived) <> 0 Then
+				If Number(Number($TroopsDonated) / Number($TroopsReceived)) >= (Number($iCmbCCDonated) / Number($iCmbCCReceived)) Then
+					SetLog("Dropping Clan Castle, donated (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") >= " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_BLUE)
+					Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2, "#0086")
+					If _Sleep($iDelaydropCC1) Then Return
+					Click($x, $y, 1, 0, "#0087")
+				Else
+					SetLog("No Dropping Clan Castle, donated  (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") < " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_BLUE)
+				EndIf
+			Else
+				If Number(Number($TroopsDonated) / 1) >= (Number($iCmbCCDonated) / Number($iCmbCCReceived)) Then
+					SetLog("Dropping Clan Castle, donated (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") >= " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_BLUE)
+					Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2, "#0088")
+					If _Sleep($iDelaydropCC1) Then Return
+					Click($x, $y, 1, 0, "#0089")
+				Else
+					SetLog("No Dropping Clan Castle, donated  (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") < " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_BLUE)
+				EndIf
 			EndIf
-		 EndIf
+		Else
+			SetLog("Dropping Clan Castle", $COLOR_BLUE)
+			Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2, "#0090")
+			If _Sleep($iDelaydropCC1) Then Return
+			Click($x, $y, 1, 0, "#0091")
+		EndIf
 	EndIf
+
 EndFunc   ;==>dropCC

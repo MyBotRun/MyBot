@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 
-	If $debugSetlog = 1 Then SETLOG("Begin getArmySpellCapacity:", $COLOR_PURPLE)
+	If $debugsetlogTrain = 1 Then SETLOG("Begin getArmySpellCapacity:", $COLOR_PURPLE)
 
 	If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
 		SetError(1)
@@ -31,6 +31,8 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	Local $iCount
 	Local $sSpellsInfo = ""
 
+	$bFullSpell = False
+
 	; Verify spell current and total capacity
 	If $iTotalCountSpell > 0 Then ; only use this code if the user had input spells to brew ... and assign the spells quantity
 		$sSpellsInfo = getArmyCampCap(184, 391 + $midOffsetY) ; OCR read Spells and total capacity
@@ -43,7 +45,7 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 			If _Sleep($iDelaycheckArmyCamp5) Then Return ; Wait 250ms
 		WEnd
 
-		If $debugSetlog = 1 Then Setlog("$sSpellsInfo = " & $sSpellsInfo, $COLOR_PURPLE)
+		If $debugsetlogTrain = 1 Then Setlog("$sSpellsInfo = " & $sSpellsInfo, $COLOR_PURPLE)
 		$aGetSFactorySize = StringSplit($sSpellsInfo, "#") ; split the existen Spells from the total Spell factory capacity
 
 		If IsArray($aGetSFactorySize) Then
@@ -62,9 +64,15 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		EndIf
 
 		SetLog("Total Spell(s) Capacity: " & $CurSFactory & "/" & $TotalSFactory)
+
+		If $CurSFactory >= $TotalSFactory Then
+			$bFullSpell = True
+		Else
+			$bFullSpell = False
+		EndIf
 	EndIf
 
-	If $TotalSFactory  <> $iTotalCountSpell Then
+	If $TotalSFactory <> $iTotalCountSpell Then
 		Setlog("Note: Spell Factory Size read not same User Input Value.", $COLOR_MAROON) ; log if there difference between user input and OCR
 	EndIf
 

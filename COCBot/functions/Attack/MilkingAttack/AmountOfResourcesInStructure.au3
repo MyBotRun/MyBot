@@ -18,15 +18,23 @@ Func AmountOfResourcesInStructure($type, $coordinate, $level)
 		Case "elixir"
 			If $level <= 8 And $level >= 0 Then
 				Local $temp = Int($MilkFarmElixirParam[$level])
-				If $temp >= 0 Then
-					Local $capacity = DetectAmountOfResourceInStructure($type, $coordinate, $level, $temp)
-					If $capacity >= $temp Then
-						Return True
+				If $temp > 0 Then
+					If $MilkAttackType = 0 Then
+						;detect amount of resource in structure and check with settings
+						Local $capacity = DetectAmountOfResourceInStructure($type, $coordinate, $level, $temp)
+						If $capacity >= $temp Then
+							If $debugsetlog=1 Then Setlog("elixir " & $type & " " & $coordinate & " " & $level & " " & $capacity ,$color_purple)
+							Return True
+						Else
+							If $debugsetlog = 1 Then Setlog("Discard, capacity of structure under settings:  liv " & $level & " cap " & $temp  & " detected "& $capacity, $color_purple)
+						EndIf
 					Else
-						If $debugsetlog = 1 Then Setlog("Discard, capacity of structure under settings:  liv " & $level & " cap " & $temp, $color_purple)
+						;do not run check of amount of elixir in structure but accept (low cpu)
+						If $debugsetlog=1 Then Setlog("elixir " & $type & " " & $coordinate & " " & $level & " PASSED LOW CPU SETTINGS" ,$color_purple)
+						Return True
 					EndIf
 				Else
-					If $debugsetlog = 1 Then Setlog("Discard, level settings discard this structure", $color_purple)
+					If $debugsetlog = 1 Then Setlog("Discard, level settings discard this structure (requested min. " & Int($MilkFarmElixirParam[$level]) & ")", $color_purple)
 				EndIf
 			Else
 				If $debugsetlog = 1 Then Setlog("Discard, out of bounds", $color_purple)

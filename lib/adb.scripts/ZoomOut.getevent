@@ -1,88 +1,62 @@
-# Swipe top to top
-input swipe 100 600 600 100
-input swipe 100 600 600 100
-input swipe 100 600 600 100
+#!/bin/sh
+# Swipe bottom left (100 600) to top right (600 100), 3 times
+#input swipe 100 600 600 100
+#input swipe 100 600 600 100
+#input swipe 100 600 600 100
+sendevent {$AndroidMouseDevice} 1 330 1
+#sendevent {$AndroidMouseDevice} 3 58 1
+sendevent {$AndroidMouseDevice} 3 53 0
+sendevent {$AndroidMouseDevice} 3 54 731
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sendevent {$AndroidMouseDevice} 3 53 2000
+sendevent {$AndroidMouseDevice} 3 54 -2000
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sendevent {$AndroidMouseDevice} 1 330 0
+#sendevent {$AndroidMouseDevice} 3 58 0
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+
 # 1. zoom out
-{$AndroidMouseDevice}: 0001 014a 00000001
-{$AndroidMouseDevice}: 0003 003a 00000001
-{$AndroidMouseDevice}: 0003 0035 00000129
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 00000061
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0003 0035 00000061
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 00000129
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0003 0035 0000006d
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 0000011d
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0003 0035 0000007a
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 00000110
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0003 0035 00000086
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 00000104
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0001 014a 00000000
-{$AndroidMouseDevice}: 0003 003a 00000000
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-# 2. zoom out
-{$AndroidMouseDevice}: 0001 014a 00000001
-{$AndroidMouseDevice}: 0003 003a 00000001
-{$AndroidMouseDevice}: 0003 0035 00000129
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 00000061
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0003 0035 00000061
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 00000129
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0003 0035 0000006d
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 0000011d
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0003 0035 0000007a
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 00000110
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0003 0035 00000086
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0003 0035 00000104
-{$AndroidMouseDevice}: 0003 0036 00000258
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
-{$AndroidMouseDevice}: 0001 014a 00000000
-{$AndroidMouseDevice}: 0003 003a 00000000
-{$AndroidMouseDevice}: 0000 0002 00000000
-{$AndroidMouseDevice}: 0000 0000 00000000
+sendevent {$AndroidMouseDevice} 1 330 1
+sendevent {$AndroidMouseDevice} 3 58 1
+sendevent {$AndroidMouseDevice} 3 53 297
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 3 53 97
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sendevent {$AndroidMouseDevice} 3 53 97
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 3 53 297
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sendevent {$AndroidMouseDevice} 3 53 109
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 3 53 285
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sendevent {$AndroidMouseDevice} 3 53 122
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 3 53 272
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sendevent {$AndroidMouseDevice} 3 53 134
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 3 53 260
+sendevent {$AndroidMouseDevice} 3 54 600
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sendevent {$AndroidMouseDevice} 1 330 0
+sendevent {$AndroidMouseDevice} 3 58 0
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0

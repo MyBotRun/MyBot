@@ -14,7 +14,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func ClickRemove($FeatureName = "Remove")
-	If _CheckPixel($aIsShieldInfo, $bCapturePixel)  Then  ; check for open shield info window
+	If _CheckPixel($aIsShieldInfo, $bCapturePixel) Then ; check for open shield info window
 		Local $i = 0
 		While 1 ; wait window with remove button
 			Local $offColors[3][3] = [[0x111111, 109, 0], [0xFFFFFF, 65, 10], [0xC00000, 55, 20]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel Red in bottom center
@@ -42,4 +42,4 @@ Func ClickRemove($FeatureName = "Remove")
 		If $debugSetlog = 1 Then Setlog($FeatureName & " remove button found", $COLOR_BLUE)
 		Return False
 	EndIf
-EndFunc
+EndFunc   ;==>ClickRemove

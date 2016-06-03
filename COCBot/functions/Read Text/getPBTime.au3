@@ -119,9 +119,6 @@ Func getPBTime()
 				EndIf
 		EndSwitch
 
-;		$sPBTReturnResult = StringFormat("%02s", $iHour) & ":" & StringFormat("%02s", $iMin) & ":" & StringFormat("%02s", $iSec)
-;		If $debugSetlog = 1 Then Setlog("PBT Time String = " & $sPBTReturnResult, $COLOR_PURPLE)
-
 		$iPBTSeconds = ($iHour * 3600) + ($iMin * 60) + $iSec ; convert PB time into total seconds
 		If $debugSetlog = 1 Then Setlog("Computed PBT Seconds = " & $iPBTSeconds, $COLOR_PURPLE)
 

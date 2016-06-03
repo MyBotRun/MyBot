@@ -13,54 +13,74 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
+#include "Functions\other\AppUserModelId.au3"
+
+Global Const $TCM_SETITEM = 0x1306
+
+Global Const $_GUI_MAIN_WIDTH = 470
+Global Const $_GUI_MAIN_HEIGHT = 650
+Global Const $_GUI_CHILD_LEFT = 10
+Global Const $_GUI_CHILD_TOP = 110
+
+Global $hImageList = 0
+
 ;~ ------------------------------------------------------
 ;~ Main GUI
 ;~ ------------------------------------------------------
-$frmBot = GUICreate($sBotTitle, 470, 650)
-	GUISetIcon($pIconLib, $eIcnGUI)
-	TraySetIcon($pIconLib, $eIcnGUI)
-$tabMain = GUICtrlCreateTab(5, 85, 461, 425, $TCS_MULTILINE)
-	;GUICtrlSetOnEvent(-1, "tabMain") ; moved to Func GUIControl()
-	GUICtrlCreatePic (@ScriptDir & "\Images\logo.jpg", 0, 0, 470, 80)
+
+$frmBot = GUICreate($sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT)
+; group multiple bot windows using _WindowAppId
+_WindowAppId($frmBot, "MyBot.run")
+GUISetIcon($pIconLib, $eIcnGUI)
+TraySetIcon($pIconLib, $eIcnGUI)
+TraySetToolTip($sBotTitle)
+$frmBot_MAIN_PIC = GUICtrlCreatePic(@ScriptDir & "\Images\logo.jpg", 0, 0, $_GUI_MAIN_WIDTH, 80)
+$hToolTip = _GUIToolTip_Create($frmBot) ; tool tips for URL links etc
 
 ;~ ------------------------------------------------------
 ;~ Header Menu
 ;~ ------------------------------------------------------
 
-$DonateMenu = GUICtrlCreateMenu("&Paypal Donate?")
-$DonateConfig = GUICtrlCreateMenuItem("Support the development", $DonateMenu)
+$idMENU_DONATE = GUICtrlCreateMenu("&" & GetTranslated(601,18,"Paypal Donate?"))
+$idMENU_DONATE_SUPPORT = GUICtrlCreateMenuItem(GetTranslated(601,19,"Support the development"), $idMENU_DONATE)
 GUICtrlSetOnEvent(-1, "")
+;$idMENU_OPTIONS = GUICtrlCreateMenu("&Options")
+;GUICtrlSetOnEvent(-1, "")
+;$idMENU_ABOUT = GUICtrlCreateMenu("&About Us")
+;GUICtrlSetOnEvent(-1, "")
 
 ;~ ------------------------------------------------------
-;~ Tab Files
+;~ GUI Bottom
 ;~ ------------------------------------------------------
 #include "GUI\MBR GUI Design Bottom.au3"
-#include "GUI\MBR GUI Design Tab General.au3" ; includes '$FirstControlToHide" on GUI
-#include "GUI\MBR GUI Design Tab Troops.au3"
-#include "GUI\MBR GUI Design Tab Search.au3"
-#include "GUI\MBR GUI Design Tab Attack.au3"
-#include "GUI\MBR GUI Design Tab AttackCSV.au3"
-#include "GUI\MBR GUI Design Tab Advanced.au3"
-#include "GUI\MBR GUI Design Tab EndBattle.au3"
-#include "GUI\MBR GUI Design Tab Donate.au3"
-#include "GUI\MBR GUI Design Tab Misc.au3"
-#include "GUI\MBR GUI Design Tab Upgrade.au3"
-#include "GUI\MBR GUI Design Tab Notify.au3"
-#include "GUI\MBR GUI Design Tab Expert.au3"
-#include "GUI\MBR GUI Design Tab Stats.au3" ; includes '$LastControlToHide" on GUI
-#include "GUI\MBR GUI Design Collectors.au3"
-#include "GUI\MBR GUI Design Milking.au3"
+
+
+;~ ------------------------------------------------------
+;~ GUI Child Files
+;~ ------------------------------------------------------
+#include "GUI\MBR GUI Design Child General.au3" ; includes '$FirstControlToHide" on GUI
+#include "GUI\MBR GUI Design Child Village.au3"
+#include "GUI\MBR GUI Design Child Attack.au3"
+#include "GUI\MBR GUI Design Child Bot.au3"
+;GUISetState()
+GUISwitch($frmBot)
+$tabMain = GUICtrlCreateTab(5, 85, $_GUI_MAIN_WIDTH - 9, $_GUI_MAIN_HEIGHT - 225); , $TCS_MULTILINE)
+$tabGeneral = GUICtrlCreateTabItem(GetTranslated(600,1, "Log"))
+$tabVillage = GUICtrlCreateTabItem(GetTranslated(600,2, "Village")) ; Village
+$tabAttack = GUICtrlCreateTabItem(GetTranslated(600,3,"Attack Plan"))
+$tabBot = GUICtrlCreateTabItem(GetTranslated(600,4,"Bot"))
+
 ;~ -------------------------------------------------------------
 ;~ About Us Tab
 ;~ -------------------------------------------------------------
-$tabAboutUs = GUICtrlCreateTabItem(GetTranslated(12,1, "About Us"))
+$tabAboutUs = GUICtrlCreateTabItem(GetTranslated(600,5, "About Us"))
 Local $x = 30, $y = 150
 	$grpCredits = GUICtrlCreateGroup("Credits", $x - 20, $y - 20, 450, 375)
-		$lblBckGrnd = GUICtrlCreateLabel("", $x - 20, $y - 20, 450, 375)  ; adds fixed white background for entire tab, if using "Labels"
+		$lblCreditsBckGrnd = GUICtrlCreateLabel("", $x - 20, $y - 20, 450, 375)  ; adds fixed white background for entire tab, if using "Labels"
 		GUICtrlSetBkColor(-1, $COLOR_WHITE)
 		$txtCredits = "My Bot is brought to you by a worldwide team of open source"  & @CRLF & _
 						"programmers and a vibrant community of forum members!"
-		$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y - 5, 400, 30)
+		$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y - 5, 400, 35)
 			GUICtrlSetFont(-1, 10, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_NAVY)
 		$y += 38
@@ -75,13 +95,13 @@ Local $x = 30, $y = 150
 			GUICtrlSetFont(-1,10, $FW_BOLD)
 		$y += 25
 		$txtCredits =	"Active developers: "  &  @CRLF & _
-						"Cosote, Hervidero, Kaganus, MonkeyHunter, ProMac, Sardo, Zengzeng"  &  @CRLF & @CRLF & _
-                        "Developers no longer active: "  &  @CRLF & _
+						"Boju, Cosote, Hervidero, Kaganus, LunaEclipse, MonkeyHunter, ProMac, Sardo, Trlopes, Zengzeng" & @CRLF & @CRLF & _
+                        "Retired developers: "  &  @CRLF & _
 						"Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, Knowjack, Safar46, Saviart, TheMaster1st, and others"
-		$lbltxtCredits1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410,95, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+		$lbltxtCredits1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410,110, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 			GUICtrlSetFont(-1,9, $FW_MEDIUM)
 ;			GUICtrlSetBkColor(-1, $COLOR_WHITE)
-		$y += 100
+		$y += 110
 		$txtCredits = "Special thanks to all contributing forum members helping " & @CRLF & "to make this software better! "
 		$lbltxtCredits2 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 390,30, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER),0)
 			GUICtrlSetFont(-1,9, $FW_MEDIUM)
@@ -106,6 +126,32 @@ Local $x = 30, $y = 150
 			GUICtrlSetFont(-1, 6, $FW_BOLD)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
+
+;~ -------------------------------------------------------------
+;~ GUI init
+;~ -------------------------------------------------------------
+
+#Region ; Bind Icon images to all Tabs in all GUI windows (main and children)
+Bind_ImageList($tabMain)
+Bind_ImageList($hGUI_VILLAGE_TAB)
+Bind_ImageList($hGUI_ARMY_TAB)
+Bind_ImageList($hGUI_DONATE_TAB)
+Bind_ImageList($hGUI_UPGRADE_TAB)
+Bind_ImageList($hGUI_NOTIFY_TAB)
+Bind_ImageList($hGUI_ATTACK_TAB)
+Bind_ImageList($hGUI_SEARCH_TAB)
+Bind_ImageList($hGUI_DEADBASE_TAB)
+Bind_ImageList($hGUI_ACTIVEBASE_TAB)
+Bind_ImageList($hGUI_AttackOption_TAB)
+Bind_ImageList($hGUI_THSNIPE_TAB)
+Bind_ImageList($hGUI_BOT_TAB)
+Bind_ImageList($hGUI_STRATEGIES_TAB)
+Bind_ImageList($hGUI_STATS_TAB)
+#EndRegion ; Bind Icon images to all Tabs in all GUI windows (main and children)
+
+#Region ; Show GUI and activate Tab LOG
+GUICtrlSetState($hGUI_LOG, $GUI_SHOW)
+#EndRegion ; Show GUI and activate Tab LOG
 
 ;~ -------------------------------------------------------------
 ;~ Bottom status bar

@@ -14,7 +14,11 @@
 ; ===============================================================================================================================
 
 Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
+
+	Local $sDefaultText, $sLanguageText
+
 	;If GetTranslated was called without correct parameters return value -2 to show the coder there is a mistake made somewhere (debug)
+	If $debugMultilanguage = 1 Then Return ($iSection & "-" & $iKey)
 	If $iSection = -1 Or $iKey = -1 Or $sText = "" Then Return "-2"
 
 	Local $bOutBound = False
@@ -24,11 +28,16 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
 	If $aLanguage[$iSection][$iKey] <> "" Then Return $aLanguage[$iSection][$iKey] ; Return from array if it was already parsed.
 
 	If $sLanguage = $sDefaultLanguage Then ; default English
-		Local $sDefaultText = IniRead($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, $sText)
 
-		If $sText = "-1" Then
-			$aLanguage[$iSection][$iKey] = $sDefaultText
-			Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
+		$sDefaultText = IniRead($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, "-3")
+
+		If $sText = "-1" Then  ; check for "-1" if text repeated
+			If $sDefaultText <> "-3" Then  ; check if text exists inside file
+				$aLanguage[$iSection][$iKey] = $sDefaultText
+				Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
+			Else
+				Return "-3"  ; Show -3 error code in GUI to show read error and no text in file
+			EndIf
 		EndIf
 
 		If $sDefaultText <> $sText Then
@@ -40,11 +49,11 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
 			Return $sDefaultText
 		EndIf
 	Else ; translated language
-		Local $sLanguageText = IniRead($dirLanguages & $sLanguage & ".ini", $iSection, $iKey, "-3")
+		$sLanguageText = IniRead($dirLanguages & $sLanguage & ".ini", $iSection, $iKey, "-3")
 
 		If $sText = "-1" Then
-			Local $sDefaultText = IniRead($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, $sText)
 			If $sLanguageText = "-3" Then
+				$sDefaultText = IniRead($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, $sText)
 				$aLanguage[$iSection][$iKey] = $sDefaultText
 				Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
 			Else
@@ -66,9 +75,8 @@ EndFunc   ;==>GetTranslated
 
 ;DetectLanguage()
 Func DetectLanguage()
-	$firstBotStart = IniRead($config, "other", "detectLanguage", "1")
-	If $firstBotStart = "1" Then
-		IniWrite($config, "other", "detectLanguage", "0");bot will only detect language on first start, after first detect, bot will use value in config
+	$sLanguage = IniRead($config, "other", "language", "")
+	If $sLanguage = "" Then
 		$OSLang = @OSLang
 		If $debugSetLog Then SetLog("Detected language code: " & $OSLang)
 		Switch $OSLang;get language

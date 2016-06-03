@@ -69,14 +69,14 @@ Func CheckVersionHTML()
 		FileCopy(@ScriptDir & "\TestVersion.txt", $versionfile, 1)
 	Else
 		;download page from site contains last bot version
-		$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", $versionfile,0,1)
+		$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", $versionfile, 0, 1)
 
 		; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
-		Local $i=0
+		Local $i = 0
 		Do
 			Sleep($iDelayCheckVersionHTML1)
-			$i +=1
-		Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) or $i > 25
+			$i += 1
+		Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) Or $i > 25
 
 		InetClose($hDownload)
 	EndIf
@@ -86,33 +86,33 @@ Func CheckVersionHTML()
 	$lastversion = ""
 	If FileExists($versionfile) Then
 		$f = FileOpen($versionfile, 0)
-		$lastversion = IniRead($versionfile,"general","version","")
+		$lastversion = IniRead($versionfile, "general", "version", "")
 		;look for localized messages for the new and old versions
 		Local $versionfilelocalized = @ScriptDir & "\LastVersion_" & $sLanguage & ".txt";
 		If FileExists(@ScriptDir & "\TestVersion_" & $sLanguage & ".txt") Then
 			FileCopy(@ScriptDir & "\TestVersion_" & $sLanguage & ".txt", $versionfilelocalized, 1)
 		Else
 			;download page from site contains last bot version localized messages
-			$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion_" & $sLanguage & ".txt", $versionfilelocalized,0,1)
+			$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion_" & $sLanguage & ".txt", $versionfilelocalized, 0, 1)
 
 			; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
-			Local $i=0
+			Local $i = 0
 			Do
 				Sleep($iDelayCheckVersionHTML1)
-				$i +=1
-			Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) or $i > 25
+				$i += 1
+			Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) Or $i > 25
 
 			InetClose($hDownload)
 		EndIf
 		If FileExists($versionfilelocalized) Then
 			$f2 = FileOpen($versionfilelocalized, 0)
-			$lastmessage  = IniRead($versionfilelocalized,"general","messagenew","")
-			$oldversmessage  = IniRead($versionfilelocalized,"general","messageold","")
+			$lastmessage = IniRead($versionfilelocalized, "general", "messagenew", "")
+			$oldversmessage = IniRead($versionfilelocalized, "general", "messageold", "")
 			FileClose($f2)
 			FileDelete($versionfilelocalized)
 		Else
-			$lastmessage  = IniRead($versionfile,"general","messagenew","")
-			$oldversmessage  = IniRead($versionfile,"general","messageold","")
+			$lastmessage = IniRead($versionfile, "general", "messagenew", "")
+			$oldversmessage = IniRead($versionfile, "general", "messageold", "")
 		EndIf
 		FileClose($f)
 		FileDelete($versionfile)

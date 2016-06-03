@@ -16,7 +16,7 @@
 Func BotCommand()
 	If $iChkBotStop = 1 Then
 
-		$MeetCondStop = False  ; reset flags so bot can restart farming when conditions change.
+		$MeetCondStop = False ; reset flags so bot can restart farming when conditions change.
 		$bTrainEnabled = True
 		$bDonationEnabled = True
 
@@ -75,14 +75,14 @@ Func BotCommand()
 				$MeetCondStop = True
 				$bTrainEnabled = False
 				$bDonationEnabled = False
-			Case 19  ; Have shield - Online/Train/Collect/Donate
+			Case 19 ; Have shield - Online/Train/Collect/Donate
 				If $bWaitShield = True Then $MeetCondStop = True
-			Case 20  ; Have shield - Online/Collect/Donate
+			Case 20 ; Have shield - Online/Collect/Donate
 				If $bWaitShield = True Then
 					$MeetCondStop = True
 					$bTrainEnabled = False
 				EndIf
-			Case 21  ; Have shield - Online/Collect
+			Case 21 ; Have shield - Online/Collect
 				If $bWaitShield = True Then
 					$MeetCondStop = True
 					$bTrainEnabled = False
@@ -114,28 +114,28 @@ Func BotCommand()
 					SetLog("MyBot.run Close Bot as requested!!", $COLOR_BLUE)
 					If _Sleep($iDelayBotCommand1) Then Return
 					BotClose()
-					Return True  ; HaHa - No Return possible!
+					Return True ; HaHa - No Return possible!
 				Case 3
 					SetLog("Close Android and Bot as requested!!", $COLOR_BLUE)
 					If _Sleep($iDelayBotCommand1) Then Return
 					CloseAndroid()
 					BotClose()
-					Return True  ; HaHa - No Return possible!
+					Return True ; HaHa - No Return possible!
 				Case 4
 					SetLog("Force Shutdown of PC...", $COLOR_BLUE)
 					If _Sleep($iDelayBotCommand1) Then Return
 					Shutdown(BitOR($SD_SHUTDOWN, $SD_FORCE)) ; Force Shutdown
-					Return True  ; HaHa - No Return possible!
+					Return True ; HaHa - No Return possible!
 				Case 5
 					SetLog("PC Sleep Mode Start now ...", $COLOR_BLUE)
 					If _Sleep($iDelayBotCommand1) Then Return
 					Shutdown($SD_STANDBY) ; Sleep / Stand by
-					Return True  ; HaHa - No Return possible!
+					Return True ; HaHa - No Return possible!
 				Case 6
 					SetLog("Rebooting PC...", $COLOR_BLUE)
 					If _Sleep($iDelayBotCommand1) Then Return
-					Shutdown(BitOR($SD_REBOOT, $SD_FORCE) ) ; Reboot
-					Return True  ; HaHa - No Return possible!
+					Shutdown(BitOR($SD_REBOOT, $SD_FORCE)) ; Reboot
+					Return True ; HaHa - No Return possible!
 			EndSwitch
 		EndIf
 	EndIf

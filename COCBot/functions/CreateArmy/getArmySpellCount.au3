@@ -14,9 +14,9 @@
 ; Example .......: No
 ; ===============================================================================================================================
 ;
-Func getArmySpellCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
+Func getArmySpellCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $test = False)
 
-	If $debugSetlog = 1 Then SETLOG("Begin getArmySpellCount:", $COLOR_PURPLE)
+	If $debugsetlogTrain = 1 Then SETLOG("Begin getArmySpellCount:", $COLOR_PURPLE)
 
 	If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
 		SetError(1)
@@ -29,7 +29,7 @@ Func getArmySpellCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		If _Sleep($iDelaycheckArmyCamp5) Then Return
 	EndIf
 
-	If $iTotalCountSpell > 0 Then ; only use this code if the user had input spells to brew ... and assign the spells quantity
+	If $iTotalCountSpell > 0 or $test = True Then ; only use this code if the user had input spells to brew ... and assign the spells quantity
 
 		$CurLightningSpell = 0 ; reset Global variables
 		$CurHealSpell = 0
@@ -40,46 +40,48 @@ Func getArmySpellCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		$CurHasteSpell = 0
 		$CurEarthSpell = 0
 
+		$CurTotalSpell = True
+
 		For $i = 0 To 4 ; 5 visible slots in ArmyoverView window
-			If $debugSetlog = 1 Then Setlog(" Slot : " & $i + 1, $COLOR_PURPLE)
+			If $debugsetlogTrain = 1 Then Setlog(" Slot : " & $i + 1, $COLOR_PURPLE)
 			Local $FullTemp = getOcrSpellDetection(125 + (62 * $i), 450 + $midOffsetY)
-			If $debugSetlog = 1 Then Setlog(" getOcrSpellDetection: " & $FullTemp, $COLOR_PURPLE)
+			If $debugsetlogTrain = 1 Then Setlog(" getOcrSpellDetection: " & $FullTemp, $COLOR_PURPLE)
 			Local $Result = getOcrSpellQuantity(146 + (62 * $i), 414 + $midOffsetY)
 			Local $SpellQ = StringReplace($Result, "x", "")
-			If $debugSetlog = 1 Then Setlog(" getOcrSpellQuantity: " & $SpellQ, $COLOR_PURPLE)
+			If $debugsetlogTrain = 1 Then Setlog(" getOcrSpellQuantity: " & $SpellQ, $COLOR_PURPLE)
 			If $FullTemp = "Lightning" Then
 				$CurLightningSpell = $SpellQ
-				Setlog(" - No. of LightningSpell: " & $SpellQ)
+				Setlog(" - No. of Lightning Spells: " & $SpellQ)
 			EndIf
 			If $FullTemp = "Heal" Then
 				$CurHealSpell = $SpellQ
-				Setlog(" - No. of HealSpell: " & $SpellQ)
+				Setlog(" - No. of Heal Spells: " & $SpellQ)
 			EndIf
 			If $FullTemp = "Rage" Then
 				$CurRageSpell = $SpellQ
-				Setlog(" - No. of RageSpell: " & $SpellQ)
+				Setlog(" - No. of Rage Spells: " & $SpellQ)
 			EndIf
 			If $FullTemp = "Jump" Then
 				$CurJumpSpell = $SpellQ
-				Setlog(" - No. of JumpSpell: " & $SpellQ)
+				Setlog(" - No. of Jump Spells: " & $SpellQ)
 			EndIf
 			If $FullTemp = "Freeze" Then
 				$CurFreezeSpell = $SpellQ
-				Setlog(" - No. of FreezeSpell: " & $SpellQ)
+				Setlog(" - No. of Freeze Spells: " & $SpellQ)
 			EndIf
 			If $FullTemp = "Poison" Then
 				$CurPoisonSpell = $SpellQ
-				Setlog(" - No. of PoisonSpell: " & $SpellQ)
+				Setlog(" - No. of Poison Spells: " & $SpellQ)
 			EndIf
 			If $FullTemp = "Haste" Then
 				$CurHasteSpell = $SpellQ
-				Setlog(" - No. of HasteSpell: " & $SpellQ)
+				Setlog(" - No. of Haste Spells: " & $SpellQ)
 			EndIf
 			If $FullTemp = "Earth" Then
 				$CurEarthSpell = $SpellQ
-				Setlog(" - No. of EarthquakeSpell: " & $SpellQ)
+				Setlog(" - No. of Earthquake Spells: " & $SpellQ)
 			EndIf
-			If $FullTemp = "" And $debugSetlog = 1 Then
+			If $FullTemp = "" And $debugsetlogTrain = 1 Then
 				Setlog(" - was not detected anything in slot: " & $i + 1, $COLOR_PURPLE)
 			EndIf
 		Next
@@ -91,3 +93,20 @@ Func getArmySpellCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	EndIf
 
 EndFunc   ;==>getArmySpellCount
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: GetCurTotalSpell
+; Description ...: Returns total count of spells available after call to getArmySpellCount()
+; Return values .: Total current spell count or -1 when not yet read
+; ===============================================================================================================================
+Func GetCurTotalSpell()
+	If $CurTotalSpell = False And $iTotalCountSpell > 0 Then Return -1
+	Return $CurLightningSpell + _
+		   $CurHealSpell + _
+		   $CurRageSpell + _
+		   $CurJumpSpell + _
+		   $CurFreezeSpell + _
+		   $CurPoisonSpell + _
+		   $CurHasteSpell + _
+		   $CurEarthSpell
+EndFunc   ;==>GetCurTotalSpell
