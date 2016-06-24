@@ -31,9 +31,9 @@ Global $aFindMatchButton2[4] = [195, 480 + $bottomOffsetY, 0xD84D00, 10] ; Find 
 Global $aIsAttackShield[4] = [250, 415 + $midOffsetY, 0xE8E8E0, 10] ; Attack window, white shield verification window
 Global $aAway[2] = [1, 40] ; Away click, moved from 1,1 to prevent scroll window from top
 Global $aRemoveShldButton[4] = [470, 18, 0xA80408, 10] ; Legacy - Main Screen, Red pixel lower part of Minus sign to remove shield, used to validate latest COC installed
-Global $aNoShield[4] = [448, 20, 0x43484B, 10] ; Main Screen, charcoal pixel center of shield when no shield is present
-Global $aHaveShield[4] = [455, 23, 0xEEF4F8, 10] ; Main Screen, Silver pixel center of shield
-Global $aHavePerGuard[4] = [455, 23, 0x010102, 10] ; Main Screen, black pixel in sword outline center of shield
+Global $aNoShield[4] = [448, 20, 0x43484B, 15] ; Main Screen, charcoal pixel center of shield when no shield is present
+Global $aHaveShield[4] = [455, 19, 0xF0F8FB, 15] ; Main Screen, Silver pixel top center of shield
+Global $aHavePerGuard[4] = [455, 19, 0x12120E, 15] ; Main Screen, black pixel in sword outline top center of shield
 Global $aShieldInfoButton[4] = [472, 11, 0x6DB0D3, 10] ; Main Screen, Blue pixel upper part of "i"
 Global $aIsShieldInfo[4] = [645, 195, 0xE00408, 20] ; Main Screen, Shield Info window, red pixel right of X
 Global $aSurrenderButton[4] = [70, 545 + $bottomOffsetY, 0xC00000, 40] ; Surrender Button, Attack Screen
@@ -50,7 +50,7 @@ Global $aClanInfo[2] = [282, 55] ; Clan Info Icon
 Global $aArmyCampSize[2] = [586, 193 + $midOffsetY] ; Training Window, Overview screen, Current Size/Total Size
 Global $aIsCampNotFull[4] = [149, 150 + $midOffsetY, 0x761714, 20] ; Training Window, Overview screen Red pixel in Exclamation mark with camp is not full
 Global $aIsCampFull[4] = [128, 151 + $midOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
-Global $aBarrackFull[4] = [392, 154 + $midOffsetY, 0xE84D50, 20] ; Training Window, Barracks Screen, Red pixel in Exclamation mark with Barrack is full
+Global $aBarrackFull[4] = [388, 154 + $midOffsetY, 0xE84D50, 20] ; Training Window, Barracks Screen, Red pixel in Exclamation mark with Barrack is full
 Global $aBuildersDigits[2] = [324, 21] ; Main Screen, Free/Total Builders
 Global $aLanguageCheck1[4] = [326, 8, 0xF9FAF9, 20] ; Main Screen Test Language for word 'Builders'
 Global $aLanguageCheck2[4] = [329, 9, 0x060706, 20] ; Main Screen Test Language for word 'Builders'
@@ -110,26 +110,29 @@ Global $aWonThreeStarAtkRprt[4] = [534, 180 + $midOffsetY, 0xC8CAC7, 30] ; Cente
 
 	;Global $DropTrophiesStartPoint = [34, 310]
 #ce
+;	pixel color: location information								BS 850MB (Reg GFX), BS 500MB (Med GFX) : location
+Global $TrainBarb[4] = [166, 310 + $midOffsetY, 0xFFB620, 40] ; FFB620, FFB620
+Global $TrainArch[4] = [245, 315 + $midOffsetY, 0x882852, 40] ; 882857, 882852
+Global $TrainGiant[4]= [370, 310 + $midOffsetY, 0xFFCE94, 40] ; FFCE94, FFCE94
+Global $TrainGobl[4] = [482, 310 + $midOffsetY, 0xA9F36B, 40] ; A9F36A, A9F36B
+Global $TrainWall[4] = [557, 310 + $midOffsetY, 0x786C8A, 40] ; 7B6E8F, 786C8A
+Global $TrainBall[4] = [682, 310 + $midOffsetY, 0x7C1C10, 40] ; 781C10, 7C1C10
 
-Global $TrainBarb[4] = [166, 310 + $midOffsetY, 0xFFB620, 40]
-Global $TrainArch[4] = [245, 315 + $midOffsetY, 0x882852, 40]
-Global $TrainGiant[4]= [370, 310 + $midOffsetY, 0xFFCE94, 40]
-Global $TrainGobl[4] = [482, 310 + $midOffsetY, 0xA9F36B, 40]
-Global $TrainWall[4] = [557, 310 + $midOffsetY, 0x786C8A, 40]
-Global $TrainBall[4] = [682, 310 + $midOffsetY, 0x7C1C10, 40]
+Global $TrainWiza[4] = [183, 446 + $midOffsetY, 0xE3937C, 40] ; E19179, E3937C
+Global $TrainHeal[4] = [263, 459 + $midOffsetY, 0xD67244, 40] ; D67244, D67244
+Global $TrainDrag[4] = [383, 459 + $midOffsetY, 0x493153, 40] ; 473254, 493153
+Global $TrainPekk[4] = [474, 459 + $midOffsetY, 0x395671, 40] ; 385470, 395671
+Global $TrainBaby[4] = [557, 436 + $midOffsetY, 0x88D464, 40] ; 88D464, 88D461, middle of snout
+Global $TrainMine[4] = [663, 425 + $midOffsetY, 0x1A1815, 40] ; 1A1815, 1B1814, right eye brow under hat
 
-Global $TrainWiza[4] = [183, 446 + $midOffsetY, 0xE3937C, 40]
-Global $TrainHeal[4] = [263, 459 + $midOffsetY, 0xD67244, 40]
-Global $TrainDrag[4] = [383, 459 + $midOffsetY, 0x493153, 40]
-Global $TrainPekk[4] = [474, 459 + $midOffsetY, 0x395671, 40]
+Global $TrainMini[4] = [220, 310 + $midOffsetY, 0x182340, 40] ; 15203A, 172039, Dark blue botton of horn
+Global $TrainHogs[4] = [305, 318 + $midOffsetY, 0x3A2620, 40] ; 3A2620, 3B2720, brown above right ear
+Global $TrainValk[4] = [415, 315 + $midOffsetY, 0xFF6E18, 40] ; FF6E18, FF6D18, orange right hair curl above eye
+Global $TrainGole[4] = [546, 310 + $midOffsetY, 0xDEC3A8, 40] ; E1C8AD, E3C8AC, top of head
+Global $TrainWitc[4] = [646, 324 + $midOffsetY, 0x3D3C65, 40] ; 403C68, 403D68, middle of purple hood
 
-Global $TrainMini[4] = [220, 310 + $midOffsetY, 0x182340, 40] ;  Done
-Global $TrainHogs[4] = [301, 310 + $midOffsetY, 0x72D0E8, 40] ;  Done 71D0E8
-Global $TrainValk[4] = [442, 310 + $midOffsetY, 0xA64002, 40] ;  Done A33D08
-Global $TrainGole[4] = [546, 310 + $midOffsetY, 0xDEC3A8, 40] ;  Done D8C0A5
-Global $TrainWitc[4] = [646, 324 + $midOffsetY, 0x3D3C65, 40] ;  Fix V4.0.1?  383865
-
-Global $TrainLava[4] = [220, 459 + $midOffsetY, 0x4F4F40, 40] ;  Done  4A4D3F
+Global $TrainLava[4] = [220, 459 + $midOffsetY, 0x4F4F40, 40] ; 4C4C3C, 4B4C3C, center of brown nose
+Global $TrainBowl[4] = [311, 448 + $midOffsetY, 0x6060E8, 40] ; 6060E7, 6060E5 ,purple on cheek
 
 Global $NextBtn[4] = [780, 546 + $bottomOffsetY, 0xD34300, 20] ;  Next Button
 ; Someone asking troops : Color 0xD0E978 in x = 121

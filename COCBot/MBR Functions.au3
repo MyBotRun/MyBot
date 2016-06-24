@@ -146,6 +146,7 @@
 #include "functions\Android\AndroidNox.au3"
 #include "functions\Android\getBSPos.au3"
 
+#include "functions\Other\WerFaultClose.au3"
 #include "functions\Other\_NumberFormat.au3"
 #include "functions\Other\_PadStringCenter.au3"
 #include "functions\Other\_ReduceMemory.au3"

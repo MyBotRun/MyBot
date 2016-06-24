@@ -103,6 +103,10 @@ Func chkLab()
 		GUICtrlSetState($btnLocateLaboratory, $GUI_HIDE)
 		GUICtrlSetImage($icnLabUpgrade, $pIconLib, $aLabTroops[0][4])
 	EndIf
+	LabStatusGUIUpdate()
+EndFunc   ;==>chkLab
+
+Func LabStatusGUIUpdate()
 	If _DateIsValid($sLabUpgradeTime) Then
 		$txtTip = GetTranslated(614, 8, "Visible Red button means that laboratory upgrade in process") & @CRLF & _
 				GetTranslated(614, 9, "This will automatically disappear when near time for upgrade to be completed.") & @CRLF & _
@@ -118,7 +122,7 @@ Func chkLab()
 		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_HIDE) ; comment this line out to edit GUI
 		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_DISABLE)
 	EndIf
-EndFunc   ;==>chkLab
+EndFunc   ;==>LabStatusGUIUpdate
 
 Func cmbLab()
 	$icmbLaboratory = _GUICtrlComboBox_GetCurSel($cmbLaboratory)

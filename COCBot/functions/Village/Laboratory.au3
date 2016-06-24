@@ -17,7 +17,7 @@ Func Laboratory()
 
 	;Create local static array to hold upgrade values
 	Static $aUpgradeValue[30] = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $iAvailElixir, $iAvailDark, $iElixirCount, $iDarkCount, $TimeDiff
+	Local $iAvailElixir, $iAvailDark, $iElixirCount, $iDarkCount, $TimeDiff, $aArray, $Result
 	$itxtUpgrMinElixir = Number($itxtUpgrMinElixir)
 	$itxtUpgrMinDark = Number($itxtUpgrMinDark)
 
@@ -37,7 +37,9 @@ Func Laboratory()
 		EndIf
 	EndIf
 
-	If $sLabUpgradeTime <> "" Then $TimeDiff = _DateDiff("n", _NowCalc, $sLabUpgradeTime) ; what is difference between end time and now in minutes?
+	If $sLabUpgradeTime <> "" Then $TimeDiff = _DateDiff("n", _NowCalc(), $sLabUpgradeTime) ; what is difference between end time and now in minutes?
+	If @error Then _logErrorDateDiff(@error)
+	If $debugSetlog = 1 Then SetLog($aLabTroops[$icmbLaboratory][3] & " Lab end time: " & $sLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_PURPLE)
 
 	If $RunState = False Then Return
 	If $TimeDiff <= 0 Then
@@ -99,7 +101,7 @@ Func Laboratory()
 		$iFirstTimeLab = 1
 	EndIf
 
-	If $aLabTroops[$icmbLaboratory][2] >= 1 Then ;Check if troop located on page 2 of lab window and Move to one square 105 pixels to get spells
+	If $aLabTroops[$icmbLaboratory][2] >= 1 Then ;Check if troop located on page 2 of lab window and Move to three icon squares to get spells
 		;_PostMessage_ClickDrag(650, 423 + $midOffsetY, 545, 423 + $midOffsetY, "left", 1000)
 		ClickDrag(650, 423 + $midOffsetY, 323, 423 + $midOffsetY, 1000)
 		;_PostMessage_ClickDrag(734, 393, 643, 393, "left", 1500)
@@ -159,8 +161,45 @@ Func Laboratory()
 
 	; check for upgrade in process - look for green in finish upgrade with gems button
 	If _ColorCheck(_GetPixelColor(625, 250 + $midOffsetY, True), Hex(0x60AC10, 6), 20) Or _ColorCheck(_GetPixelColor(660, 250 + $midOffsetY, True), Hex(0x60AC10, 6), 20) Then
-		SetLog("Upgrade in progress, waiting for completion of other troops", $COLOR_MAROON)
+		SetLog("Upgrade in progress, waiting for completion of other troops", $COLOR_BLUE)
 		If _Sleep($iDelayLaboratory2) Then Return
+		; upgrade in process and time not recorded?  Then update completion time!
+		If $sLabUpgradeTime = ""  Or $TimeDiff <= 0 Then
+			$Result = getRemainTLaboratory(336, 260)      ; Try to read white text showing actual time left for upgrade
+			If $debugSetlog = 1 Then Setlog($aLabTroops[$icmbLaboratory][3] & " OCR Remaining Lab Time = " & $Result, $COLOR_PURPLE)
+			$aArray = StringSplit($Result, ' ', BitOR($STR_CHRSPLIT, $STR_NOCOUNT))  ;separate days, hours, minutes, seconds
+			If IsArray($aArray) Then
+				$iRemainingTimeMin = 0
+				For $i = 0 To UBound($aArray) - 1  ; step through array and compute minutes remaining
+					$sTime = ""
+					Select
+						Case StringInStr($aArray[$i], "d", $STR_NOCASESENSEBASIC) > 0
+							$sTime = StringTrimRight($aArray[$i], 1) ; removing the "d"
+							$iRemainingTimeMin += (Int($sTime) * 24 * 60) ; change days to minutes and add
+						Case StringInStr($aArray[$i], "h", $STR_NOCASESENSEBASIC) > 0
+							$sTime = StringTrimRight($aArray[$i], 1) ; removing the "h"
+							$iRemainingTimeMin += (Int($sTime) * 60) ; change hours to minutes and add
+						Case StringInStr($aArray[$i], "m", $STR_NOCASESENSEBASIC) > 0
+							$sTime = StringTrimRight($aArray[$i], 1) ; removing the "m"
+							$iRemainingTimeMin += Int($sTime) ; add minutes
+						Case StringInStr($aArray[$i], "s", $STR_NOCASESENSEBASIC) > 0
+							$sTime = StringTrimRight($aArray[$i], 1) ; removing the "s"
+							$iRemainingTimeMin += Int($sTime) / 60  ; Add seconds
+						Case Else
+							Setlog("Remaining lab time OCR invalid:" & $aArray[$i], $COLOR_FUCHSIA)
+							ClickP($aAway, 2, $iDelayLaboratory4, "#0328")
+							Return False
+					EndSelect
+					If $debugSetlog = 1 Then Setlog("Remain Lab Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_PURPLE)
+				Next
+				$sLabUpgradeTime = _DateAdd('n', Ceiling($iRemainingTimeMin), _NowCalc()) ; add the time required to NOW to finish the upgrade
+				If @error Then _logErrorDateAdd(@error)
+				SetLog($aLabTroops[$icmbLaboratory][3] & "Updated Lab finishing time: " & $sLabUpgradeTime, $COLOR_GREEN)
+				LabStatusGUIUpdate()  ; Update GUI flag
+			Else
+				If $debugSetlog = 1 Then Setlog("Invalid getRemainTLaboratory OCR", $COLOR_PURPLE)
+			EndIf
+		EndIf
 		;If $debugSetlog <> 1 Then
 		ClickP($aAway, 2, $iDelayLaboratory4, "#0328")
 		Return False

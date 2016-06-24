@@ -215,7 +215,35 @@ Func ProcessGetCommandLine($PID, $strComputer = ".")
   Next
   SetDebugLog("Process not found with PID " & $PID)
   Return SetError(1, 0, -1)
-EndFunc ;==>ProcessExists2
+EndFunc ;==>ProcessGetCommandLine
+
+; Get Wmi Process Object for process
+Func ProcessGetWmiProcess($PID, $strComputer = ".")
+
+  If Not IsNumber($PID) Then Return SetError(2, 0, -1)
+
+  Local $oWMI=ObjGet("winmgmts:{impersonationLevel=impersonate}!\\" & $strComputer & "\root\cimv2") ; ""
+  SetDebugLog("ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2"")")
+  If @error <> 0 Then
+	 SetDebugLog("Cannot create ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2")
+	 Return SetError(3, 0, -1)
+  EndIf
+
+  ; Win32_Process: https://msdn.microsoft.com/en-us/library/windows/desktop/aa394372(v=vs.85).aspx
+  Local $commandLine
+  Local $query = "Select * from Win32_Process where Handle = " & $PID
+  SetDebugLog("WMI Query: " & $query)
+  Local $oProcessColl = $oWMI.ExecQuery($query)
+  Local $Process, $i = 0
+
+  For $Process In $oProcessColl
+    SetDebugLog($Process.Handle & " = " & $Process.CommandLine)
+	SetError(0, 0, 0)
+	Return $Process
+  Next
+  SetDebugLog("Process not found with PID " & $PID)
+  Return SetError(1, 0, -1)
+EndFunc ;==>ProcessGetWmiProcess
 
 Func CleanLaunchOutput(ByRef $output)
    ;$output = StringReplace($output, @LF & @LF, "")

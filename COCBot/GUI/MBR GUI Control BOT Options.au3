@@ -280,11 +280,15 @@ Func btnTestTrain()
 		$RunState = 1
  		ForceCaptureRegion()
 		DebugImageSave("train_")
-		SetLog(_PadStringCenter(" Test Train begin ", 54, "="), $COLOR_BLUE)
+		SetLog(_PadStringCenter(" Test Train begin (" & $sBotVersion &  ")", 54, "="), $COLOR_BLUE)
 		getArmyTroopCount(false,false,true)
 		getArmySpellCount(false,false,true)
 		getArmyHeroCount(false,false)
 		SetLog(_PadStringCenter(" Test Train end ", 54, "="), $COLOR_BLUE)
+		Run("Explorer.exe " & $LibDir & "\debug\ocr\" )
+		Run("Explorer.exe " & $dirTempDebug & "train_" )
+
+
 		$debugOcr = $currentOCR
 		$RunState = $currentRunState
 EndFunc
@@ -300,9 +304,9 @@ Func btnTestDonateCC()
 		$RunState = 1
 		$debugsetlog = 1
  		ForceCaptureRegion()
-		DebugImageSave("donateCC_")
+		;DebugImageSave("donateCC_")
 
-		SetLog(_PadStringCenter(" Test DonateCC begin ", 54, "="), $COLOR_BLUE)
+		SetLog(_PadStringCenter(" Test DonateCC begin (" & $sBotVersion &  ")", 54, "="), $COLOR_BLUE)
 		$DonationWindowY = 0
 		Local $aDonWinOffColors[2][3] = [[0xFFFFFF, 0, 2], [0xc7c5bc, 0, 209]]
 		Local $aDonationWindow = _MultiPixelSearch(409, 0, 410, $DEFAULT_HEIGHT, 1, 1, Hex(0xFFFFFF, 6), $aDonWinOffColors, 10)
@@ -320,6 +324,8 @@ Func btnTestDonateCC()
 		Setlog("Detecting Spells...")
 		DetectSlotTroop($eHaSpell)
 		SetLog(_PadStringCenter(" Test DonateCC end ", 54, "="), $COLOR_BLUE)
+		Run("Explorer.exe " & $LibDir & "\debug\ocr\" )
+
 
 		$debugOcr = $currentOCR
 		$RunState = $currentRunState
@@ -334,8 +340,7 @@ Func btnTestAttackBar()
 		$debugOcr = 1
 		$RunState = 1
  		ForceCaptureRegion()
-		DebugImageSave("AttackBar_")
-		SetLog(_PadStringCenter(" Test Attack Bar begin ", 54, "="), $COLOR_BLUE)
+		SetLog(_PadStringCenter(" Test Attack Bar begin (" & $sBotVersion &  ")", 54, "="), $COLOR_BLUE)
 
 		$DonationWindowY = 0
 
@@ -354,7 +359,21 @@ Func btnTestAttackBar()
 				Setlog("position: " & $troopData[1] & " | troop code: " & $troopData[0] & " troop name:" & NameOfTroop($troopData[0]) & " | qty: " & $troopData[2])
  			Next
  		EndIf
+
+		;make snapshot start
+		_CaptureRegion(0,630,$DEFAULT_WIDTH)
+		Local $savefolder = $dirTempDebug
+		$savefolder = $dirTempDebug & "Test_Attack_Bar\"
+		DirCreate($savefolder)
+		Local $debugfile
+		$Date = @MDAY & "." & @MON & "." & @YEAR
+		$Time = @HOUR & "." & @MIN & "." & @SEC
+		$debugfile = "Test_Attack_Bar_" & $sBotVersion & "_" & $Date & "_" & $Time & ".png"
+		_GDIPlus_ImageSaveToFile($hBitmap,$savefolder & $debugfile)
+		;make snapshot end
+
 		SetLog(_PadStringCenter(" Test Attack Bar end ", 54, "="), $COLOR_BLUE)
+		Run("Explorer.exe " & $savefolder )
 
 		$debugOcr = $currentOCR
 		$RunState = $currentRunState

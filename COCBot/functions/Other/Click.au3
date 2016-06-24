@@ -177,7 +177,7 @@ EndFunc   ;==>GemClickP
 
 Func AttackClick($x, $y, $times = 1, $speed = 0, $afterDelay = 0, $debugtxt = "")
    Local $timer = TimerInit()
-   Local $result = Click($x, $y, $times, $speed, $debugtxt)
+   Local $result = PureClick($x, $y, $times, $speed, $debugtxt)
    Local $delay = $times * $speed + $afterDelay - TimerDiff($timer)
    If IsKeepClicksActive() = False And $delay > 0 Then _Sleep($delay, False)
    Return $result

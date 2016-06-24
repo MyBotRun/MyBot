@@ -24,11 +24,9 @@ Func OpenBlueStacks($bRestart = False)
 
 	SetLog("Starting BlueStacks and Clash Of Clans", $COLOR_GREEN)
 
-    If Not InitAndroid() Then Return
-
 	;$PID = ShellExecute($__BlueStacks_Path & "HD-RunApp.exe", "-p " & $AndroidGamePackage & " -a " & $AndroidGamePackage & $AndroidGameClass)  ;Start BS and CoC with command line
 	$PID = ShellExecute($__BlueStacks_Path & "HD-Frontend.exe", "Android")  ;Start BS and CoC with command line
-	If _Sleep(1000) Then Return
+	If _Sleep(1000) Then Return False
 	$ErrorResult = ControlGetHandle("BlueStacks Error", "", "") ; Check for BS error window handle if it opens
 	If $debugsetlog = 1 Then Setlog("$PID= "&$PID & ", $ErrorResult = " &$ErrorResult, $COLOR_PURPLE)
 	If $PID = 0 Or $ErrorResult <> 0  Then  ; IF ShellExecute failed or BS opens error window = STOP
@@ -36,7 +34,7 @@ Func OpenBlueStacks($bRestart = False)
 		SetLog("Unable to continue........", $COLOR_MAROON)
 		btnstop()
 		SetError(1, 1, -1)
-		Return
+		Return False
 	EndIf
 
 	SetLog("Please wait while " & $Android & "/CoC start....", $COLOR_GREEN)
@@ -52,7 +50,7 @@ Func OpenBlueStacks($bRestart = False)
 			SetLog("Unable to continue........", $COLOR_MAROON)
 			btnstop()
 			SetError(1, 1, -1)
-			Return
+			Return False
 		EndIf
 	    WinGetAndroidHandle()
 	WEnd
@@ -62,7 +60,11 @@ Func OpenBlueStacks($bRestart = False)
 
 		SetLog("BlueStacks Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
 
+		Return True
+
 	EndIf
+
+	Return False
 
 EndFunc   ;==>OpenBlueStacks
 
@@ -71,7 +73,7 @@ Func OpenBlueStacks2($bRestart = False)
    Local $hTimer, $iCount = 0, $cmdOutput, $process_killed, $i, $connected_to
    SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
 
-   If Not InitAndroid() Then Return
+   If Not InitAndroid() Then Return False
 
    SetLog("Please wait while " & $Android & " and CoC start...", $COLOR_GREEN)
 
@@ -80,17 +82,17 @@ Func OpenBlueStacks2($bRestart = False)
    $hTimer = TimerInit()
    WinGetAndroidHandle()
    While IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) = False
-	  If Not $RunState Then Return
+	  If Not $RunState Then Return False
 	  ; check that HD-Frontend.exe process is really there
 	  Local $pid = ProcessExists2($AndroidProgramPath)
 	  If $pid <= 0 Then
 		 $pid = ShellExecute($AndroidProgramPath, GetBlueStacks2ProgramParameter())
-		 If _Sleep(1000) Then Return
+		 If _Sleep(1000) Then Return False
 	  EndIf
 	  If $pid > 0 Then $pid = ProcessExists2($AndroidProgramPath)
 	  If $pid <= 0 Then
 		 CloseAndroid()
-		 If _Sleep(1000) Then Return
+		 If _Sleep(1000) Then Return False
 	  EndIf
 
 	 _StatusUpdateTime($hTimer)
@@ -98,9 +100,9 @@ Func OpenBlueStacks2($bRestart = False)
 		 SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
 		 SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_RED)
 		 SetError(1, @extended, False)
-		 Return
+		 Return False
 	 EndIf
-	 If _Sleep(3000) Then Return
+	 If _Sleep(3000) Then Return False
      _StatusUpdateTime($hTimer, $Android & "/CoC Start")
      WinGetAndroidHandle()
    WEnd
@@ -118,22 +120,26 @@ Func OpenBlueStacks2($bRestart = False)
 
      ;If WaitForDeviceBlueStacks2($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
      If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
-	 If Not $RunState Then Return
+	 If Not $RunState Then Return False
 
 	 SetLog($Android & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
      AndroidAdbLaunchShellInstance()
 
-	 If Not $RunState Then Return
+	 If Not $RunState Then Return False
      ConfigeBlueStacks2WindowManager()
+
+	 Return True
 
    EndIf
 
+   Return False
+
 EndFunc   ;==>OpenBlueStacks
 
-Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False)
+Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMode = False)
 
 	; more recent BlueStacks 2 version install VirtualBox based "plus" mode by default
-	Local $plusMode = RegRead($HKLM & "\SOFTWARE\BlueStacks\", "Engine") = "plus"
+	Local $plusMode = RegRead($HKLM & "\SOFTWARE\BlueStacks\", "Engine") = "plus" And $bLegacyMode = False
 	Local $frontend_exe = "HD-Frontend.exe"
 	If $plusMode = True Then $frontend_exe = "HD-Plus-Frontend.exe"
 
@@ -157,6 +163,12 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False)
 
 	  Local $File = $__BlueStacks_Path & $aFiles[$i]
 	  If Not FileExists($File) Then
+		 If $plusMode And $aFiles[$i] = $frontend_exe Then
+			; try legacy mode
+			SetLog("Cannot find " & $Android & " file:" & $File, $COLOR_ORANGE)
+			SetLog("Try legacy mode", $COLOR_ORANGE)
+			Return InitBlueStacksX($bCheckOnly, $bAdjustResolution, True)
+		 EndIf
 		 If Not $bCheckOnly Then
 			SetLog("Serious error has occurred: Cannot find " & $Android & ":", $COLOR_RED)
 			SetLog($File, $COLOR_RED)
@@ -433,10 +445,12 @@ Func GetBlueStacks2RunningInstance($bStrictCheck = True)
    Local $a[2] = [$HWnD, ""]
    If $HWnD <> 0 Then Return $a
    If $bStrictCheck Then Return False
+   Local $WinTitleMatchMode = Opt("WinTitleMatchMode", -3) ; in recent 2.3.x can be also "BlueStacks App Player"
    Local $h = WinGetHandle("Bluestacks App Player", "") ; Need fixing as BS2 Emulator can have that title when configured in registry
    If @error = 0 Then
 	  $a[0] = $h
    EndIf
+   Opt("WinTitleMatchMode", $WinTitleMatchMode)
    Return $a
 EndFunc
 

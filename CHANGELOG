@@ -1,3 +1,30 @@
+ * **V6.1.3**
+ * Improve troop deploy click speed
+ * Improve click speed for MEmu, Droid4X and Nox (adb.click.enabled now by default disabled (0) in config.ini, ensure mouse is not over Android Window!)
+ * Improve Android Emulator launch by closing Windows WerFault AppCrash Window preventing launch of emulator
+ * Fix "full barracks" pixel check fail that created minor troop train problems
+ * Updated French language translation by @Boju
+ * Improve text tips on new "search start if" features to reduce confusion with existing features
+ * Fix Lab upgrade bug where code was constantly checking busy lab when it already had end time of current upgrade.
+ * Improve Lab upgrade feature to update troop completion when erased due to bot upgrade, or reset of building data.
+ * Fix upgrade problem randomly not detecting window is open when locating hero upgrades
+ * Fix upgrade building feature to properly read upgrade time when used on heroes
+ * Fix continuous Hero upgrade feature stopping hero upgrades when lab needed elixir but code thought it needed DE
+ * Fix unreliable detection on "Another Device Connecting" error in BlueStacks.
+ * Fix Android infinite loop trying to start Android that cannot be launched
+ * Fix BlueStacks 2.3.x relaunch when started as "BlueStacks App Player"
+ * Improve bot stop not changing window focus
+ * Fix detection issues on shield or guard that caused errors in PBT management and Unbreakable mode
+ * Improve manual TH detection process to allow user to reset bot when locating TH due upgrade
+ * Fix dark elixir spell training issues caused by pixel check issue
+ * Change "|" and "n°" characters in several functions creating compile errors in non-English Windows OS
+ * Fix random issues training Valkyrie & Hog with changes to train pixel locations & values
+ * Fix BlueStacks2 in plus engine mode not launching latest BlueStacks 2.3.x
+ * Add Language Bahasa Indonesia (@TheRevenor)
+ * Update German.ini file (@Lindwurm2k/@Cosote)
+ * Improve rage spell detection in training overview window when using BS medium Gfx mode
+ * Adjust some default bot values. Some to help behave less like a bot: added 20ms to training click delay, added random village search delay 1-4 seconds.  
+
 * **V6.1.2**
  * Add taiwan language translation by @flowclouds
  * Add turkish language translation by @LadyBluee
@@ -10,7 +37,6 @@
  * Fix Wrong donation first troop when troop to donate do not fit in castle
  * Add button open strategy folder
  * Add persian language translation by Raad and Ali Faraji
-
 
 * **V6.1.1**
  * Improve BlueStacks2 zoom-out over waters, replaced ADB script with AutoIt click&drag and ctrl mouse-click (same as BlueStacks now)

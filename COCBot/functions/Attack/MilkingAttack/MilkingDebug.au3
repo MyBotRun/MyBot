@@ -88,7 +88,7 @@ Func CheckMilkingBaseTest()
 			Local $temp = StringSplit($ElixirVect[$i], "#", 2) ;TEMP ["2", "404-325"]
 			If UBound($temp) = 2 Then
 
-				Setlog("examine elixir vector n°" & $i & " placed in " & $ElixirVect[$i],$COLOR_RED)
+				Setlog("examine elixir vector #" & $i & " placed in " & $ElixirVect[$i],$COLOR_RED)
 				Local $pixelTemp = StringSplit($ElixirVect[$i],"-",2)
 				$pixelTemp[0] += 0
 				$pixelTemp[1] += 10
@@ -154,7 +154,7 @@ Func CheckMilkingBaseTest()
 ;~ 							Next
 ;~ 						EndIf
 ;~ 	;~ 					Local $tmpDist = _GetPixelCloserDistance($arrPixelsCloser, $pixelTemp)
-;~ 	;~  					Setlog ("Elixir n° " & $i & " distance = " & $tmpDist )
+;~ 	;~  					Setlog ("Elixir # " & $i & " distance = " & $tmpDist )
 ;~ 	;~ 					If $tmpDist > 0 And $tmpDist < Number($NbPixelmaxExposed) Then
 ;~ 	;~ 						Local $tmpArrayOfPixel[1]
 ;~ 	;~ 						$tmpArrayOfPixel[0] = $pixelTemp

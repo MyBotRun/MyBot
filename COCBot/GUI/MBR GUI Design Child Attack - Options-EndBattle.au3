@@ -58,7 +58,7 @@ Global $hReplayShareGUI, $txtShareMinGold, $txtShareMinElixir, $txtShareMinDark,
 	$grpTakeLootSS = GUICtrlCreateGroup(GetTranslated(633,11,"Take Loot Snapshot"), $x-15, $y-20, 420, 67)
 		$chkTakeLootSS = GUICtrlCreateCheckbox(GetTranslated(633,11, -1), $x, $y, -1, -1)
 			GUICtrlSetTip(-1, GetTranslated(633,12, "Check this if you want to save a Loot snapshot of the Village that was attacked."))
-			GUICtrlSetState(-1, $GUI_CHECKED)
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "chkTakeLootSS")
 	  $y += 18
 		$chkScreenshotLootInfo = GUICtrlCreateCheckbox(GetTranslated(633,13, "Include loot info in filename"), $x  , $y , -1, -1)

@@ -60,6 +60,8 @@
 [Ll]ib/[Dd]ebug/
 [Ll]ib/[Tt]est.txt
 EnableMBRDebug.txt
+ImgLocDebug.txt
+ImgLocDebugNoob.txt
 
 # SQL (not in use)
 *.sqlite3

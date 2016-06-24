@@ -251,10 +251,10 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 				If $aUpgrades[$inum][2] = "" Then $aUpgrades[$inum][2] = Number(getUpgradeResource(366, 487 + $midOffsetY)) ;read RED upgrade text
 				If $aUpgrades[$inum][2] = "" And $ichkUpgrdeRepeat[$inum] <> 1 Then $bOopsFlag = True ; set error flag for user to set value if not repeat upgrade
 
-				$aUpgrades[$inum][6] = getBldgUpgradeTime(196, 334); Try to read white text showing time for upgrade
+				$aUpgrades[$inum][6] = getBldgUpgradeTime(196, 304 + $midOffsetY); Try to read white text showing time for upgrade
 				Setlog("Upgrade #" & $inum + 1 & " Time = " & $aUpgrades[$inum][6], $COLOR_BLUE)
 
-			Case _ColorCheck(_GetPixelColor(721, 118 + $midOffsetY), Hex(0xDF0408, 6), 20) ; Check if the Hero Upgrade window is open
+			Case _ColorCheck(_GetPixelColor(719, 118 + $midOffsetY), Hex(0xDF0408, 6), 20) ; Check if the Hero Upgrade window is open
 				If _ColorCheck(_GetPixelColor(400, 485 + $midOffsetY), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
 					If $ichkUpgrdeRepeat[$inum] = 1 Then
 						Setlog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_RED)
@@ -275,7 +275,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 				$aUpgrades[$inum][2] = Number(getResourcesBonus(598, 519 + $midOffsetY)) ; Try to read white text.
 				If $aUpgrades[$inum][2] = "" Then $aUpgrades[$inum][2] = Number(getUpgradeResource(598, 519 + $midOffsetY)) ;read RED upgrade text
 				If $aUpgrades[$inum][2] = "" And $ichkUpgrdeRepeat[$inum] <> 1 Then $bOopsFlag = True ; set error flag for user to set value
-				$aUpgrades[$inum][6] = getBldgUpgradeTime(475, 558) ; Try to read white text showing time for upgrade
+				$aUpgrades[$inum][6] = getHeroUpgradeTime(464, 527 + $midOffsetY) ; Try to read white text showing time for upgrade
 				Setlog("Upgrade #" & $inum + 1 & " Time = " & $aUpgrades[$inum][6], $COLOR_BLUE)
 
 			Case Else
@@ -356,7 +356,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			GUICtrlSetImage($picUpgradeType[$inum], $pIconLib, $eIcnBlank)
 	EndSwitch
 	GUICtrlSetData($txtUpgradeValue[$inum], _NumberFormat($aUpgrades[$inum][2])) ; Show Upgrade value in GUI
-	GUICtrlSetData($txtUpgradeTime[$inum], $aUpgrades[$inum][6]) ; Set GUI time to match $aUpgrades variable
+	GUICtrlSetData($txtUpgradeTime[$inum], StringStripWS($aUpgrades[$inum][6], $STR_STRIPALL)) ; Set GUI time to match $aUpgrades variable
 
 	Return True
 

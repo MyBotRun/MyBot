@@ -26,7 +26,9 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		If $debugsetlog = 1 Then SetLog("(Maintenance=" & _GetPixelColor($aIsMaintenance[0], $aIsMaintenance[1]) & ")(RateCoC=" & ")", $COLOR_PURPLE)
 		If $debugsetlog = 1 Then SetLog("33B5E5=>true, 282828=>false", $COLOR_PURPLE)
 		;;;;;;;##### 1- Another device #####;;;;;;;
-		If _ImageSearchArea($device, 0, 237, 321 + $midOffsetY, 293, 346 + $midOffsetY, $x, $y, 80) Then
+		$result = getOcrMaintenanceTime(184, 325 + $midOffsetY) ; OCR text to find Another device message
+		If StringInStr($result, "device", $STR_NOCASESENSEBASIC) Or _
+			_ImageSearchArea($device, 0, 237, 321 + $midOffsetY, 293, 346 + $midOffsetY, $x, $y, 80) Then
 			If $sTimeWakeUp > 3600 Then
 				SetLog("Another Device has connected, waiting " & Floor(Floor($sTimeWakeUp / 60) / 60) & " hours " & Floor(Mod(Floor($sTimeWakeUp / 60), 60)) & " minutes " & Floor(Mod($sTimeWakeUp, 60)) & " seconds", $COLOR_RED)
 				PushMsg("AnotherDevice3600")

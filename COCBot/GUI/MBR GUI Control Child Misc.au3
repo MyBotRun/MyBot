@@ -240,6 +240,24 @@ Func btnLocateTownHall()
 		LocateTownHall()
 		ExitLoop
 	WEnd
+	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
+	Local $stext = @CRLF & GetTranslated(640, 72, "If you locating your TH because you upgraded,") & @CRLF & _
+			GetTranslated(640, 73, "then you must restart bot!!!") & @CRLF & @CRLF & _
+			GetTranslated(640, 74, "Click OK to restart bot, ") & @CRLF & @CRLF & GetTranslated(640, 65, "Or Click Cancel to exit") & @CRLF
+	Local $MsgBox = _ExtMsgBox(0, GetTranslated(640, 75, "Exit|Cancel"), GetTranslated(640, 76, "Close Bot Please!"), $stext, 120, $frmBot)
+	If $DebugSetlog = 1 Then Setlog("$MsgBox= " & $MsgBox, $COLOR_PURPLE)
+	If $MsgBox = 1 Then
+		Local $stext = @CRLF & GetTranslated(640, 77, "Are you 100% sure you want to restart bot ?") & @CRLF & @CRLF & _
+				GetTranslated(640, 78, "Click OK to close bot and then restart the bot (manually)") & @CRLF & @CRLF & GetTranslated(640, 65, "Or Click Cancel to exit") & @CRLF
+		Local $MsgBox = _ExtMsgBox(0, GetTranslated(640, 75, -1), GetTranslated(640, 76, -1), $stext, 120, $frmBot)
+		If $DebugSetlog = 1 Then Setlog("$MsgBox= " & $MsgBox, $COLOR_PURPLE)
+		If $MsgBox = 1 Then
+			Local $BotProcess = WinGetProcess($frmBot)
+			If $DebugSetlog = 1 Then Setlog("$BotProcess= " & $BotProcess, $COLOR_PURPLE)
+			ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -PID " & $BotProcess, "", Default, @SW_HIDE)
+			Setlog("Error closing bot, please use manual method!", $COLOR_RED)
+		EndIf
+	EndIf
 	$RunState = False
 EndFunc   ;==>btnLocateTownHall
 

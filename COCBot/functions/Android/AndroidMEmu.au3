@@ -19,15 +19,13 @@ Func OpenMEmu($bRestart = False)
 
    SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
 
-   If Not InitAndroid() Then Return
-
    $launchAndroid = WinGetAndroidHandle() = 0
    If $launchAndroid Then
 	  ; Launch MEmu
 	  $cmdPar = GetAndroidProgramParameter()
 	  SetDebugLog("ShellExecute: " & $AndroidProgramPath & " " & $cmdPar)
 	  $PID = ShellExecute($AndroidProgramPath, $cmdPar, $__MEmu_Path)
-	  If _Sleep(1000) Then Return
+	  If _Sleep(1000) Then Return False
 	  If $PID <> 0 Then $PID = ProcessExists($PID)
 	  SetDebugLog("$PID= "&$PID)
 	  If $PID = 0 Then  ; IF ShellExecute failed
@@ -35,7 +33,7 @@ Func OpenMEmu($bRestart = False)
 		SetLog("Unable to continue........", $COLOR_MAROON)
 		btnStop()
 		SetError(1, 1, -1)
-		Return
+		Return False
 	 EndIf
    EndIf
 
@@ -44,7 +42,7 @@ Func OpenMEmu($bRestart = False)
 
    ; Test ADB is connected
    $connected_to = ConnectAndroidAdb(False, 60 * 1000)
-   If Not $RunState Then Return
+   If Not $RunState Then Return False
 
    ; Wait for device
    ;$cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)
@@ -52,7 +50,7 @@ Func OpenMEmu($bRestart = False)
 
    ; Wair for Activity Manager
    ;If WaitForAmMEmu($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
-   If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
+   If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return False
 
    ; Wait for UI Control, then CoC can be launched
    ;While Not IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) And TimerDiff($hTimer) <= $AndroidLaunchWaitSec * 1000
@@ -63,10 +61,12 @@ Func OpenMEmu($bRestart = False)
 	  SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
 	  SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for window", $COLOR_RED)
 	  SetError(1, @extended, False)
-	  Return
+	  Return False
 	EndIf
 
     SetLog($Android & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
+
+	Return True
 
 EndFunc   ;==>OpenMEmu
 

@@ -1573,7 +1573,7 @@ EndIf
 		EndIf
 		GUICtrlSetData($txtUpgradeName[$iz], $aUpgrades[$iz][4]) ; Set GUI unit name $aUpgrades variable
 		GUICtrlSetData($txtUpgradeLevel[$iz], $aUpgrades[$iz][5]) ; Set GUI unit level to match $aUpgrades variable
-		GUICtrlSetData($txtUpgradeTime[$iz], $aUpgrades[$iz][6]) ; Set GUI upgrade time to match $aUpgrades variable
+		GUICtrlSetData($txtUpgradeTime[$iz], StringStripWS($aUpgrades[$iz][6], $STR_STRIPALL)) ; Set GUI upgrade time to match $aUpgrades variable
 
 		Switch $aUpgrades[$iz][3] ;Set GUI Upgrade Type to match $aUpgrades variable
 			Case "Gold"

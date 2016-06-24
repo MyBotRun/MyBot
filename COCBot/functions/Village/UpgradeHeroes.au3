@@ -39,15 +39,9 @@ Func UpgradeHeroes()
 	EndIf
 
 	;##### Verify the Upgrade troop kind in Laboratory , if is a Dark Spell/Troop , the Lab haves priority #####;
-	If $ichkLab = 1 And $icmbLaboratory >= 16 Then
-		For $i = 15 To 24
-			If $icmbLaboratory = $i Then
-				Local $name = $aLabTroops[$i][3]
-				Setlog("Laboratory needs DE to Upgrade :  " & $name)
-				SetLog("Skipping the Heroes Upgrade!")
-				ExitLoop
-			EndIf
-		Next
+	If $ichkLab = 1 And $icmbLaboratory >= 19 Then
+		Setlog("Laboratory needs DE to Upgrade :  " & $aLabTroops[$icmbLaboratory][3])
+		SetLog("Skipping the Heroes Upgrade!")
 		Return
 	EndIf
 

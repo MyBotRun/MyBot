@@ -112,7 +112,7 @@ $grpVSDelay = GUICtrlCreateGroup(GetTranslated(636,75, "Village Search Delay"), 
 		_GUICtrlSlider_SetTipSide(-1, $TBTS_BOTTOM)
 		_GUICtrlSlider_SetTicFreq(-1, 1)
 		GUICtrlSetLimit(-1, 10, 0) ; change max/min value
-		GUICtrlSetData(-1, 0) ; default value
+		GUICtrlSetData(-1, 1) ; default value
 		GUICtrlSetOnEvent(-1, "sldVSDelay")
 	$y += 25
 	$lblMaxVSDelay0 = GUICtrlCreateLabel(GetTranslated(636,80, "Max"), $x-12, $y-2, 19, 15, $SS_RIGHT)
@@ -126,7 +126,7 @@ $grpVSDelay = GUICtrlCreateGroup(GetTranslated(636,75, "Village Search Delay"), 
 		_GUICtrlSlider_SetTipSide(-1, $TBTS_BOTTOM)
 		_GUICtrlSlider_SetTicFreq(-1, 1)
 		GUICtrlSetLimit(-1, 12, 0) ; change max/min value
-		GUICtrlSetData(-1, 0) ; default value
+		GUICtrlSetData(-1, 4) ; default value
 		GUICtrlSetOnEvent(-1, "sldMaxVSDelay")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -146,9 +146,11 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 	$y += 69
 $grpPhotoExpert = GUICtrlCreateGroup(GetTranslated(636,55, "Photo Screenshot Options"), $x - 20, $y - 17, 225, 59)
 	$chkScreenshotType = GUICtrlCreateCheckbox(GetTranslated(636,56, "Make in PNG format"), $x, $y, -1, -1)
+		GUICtrlSetState(-1, $GUI_CHECKED)
 		GUICtrlSetOnEvent(-1, "chkScreenshotType")
 	$y += 19
 	$chkScreenshotHideName = GUICtrlCreateCheckbox(GetTranslated(636,57, "Hide Village and Clan Castle Name"), $x, $y, -1, -1)
+		GUICtrlSetState(-1, $GUI_CHECKED)
 		GUICtrlSetOnEvent(-1, "chkScreenshotHideName")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -180,7 +182,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 		$lblTimeWakeUp = GUICtrlCreateLabel(GetTranslated(636,86, "When 'Another Device' wait") & ":", $x - 10, $y + 2, -1, -1)
 		$txtTip = GetTranslated(636,87, "Enter the time to wait (in seconds) before the Bot reconnects when another device took control.")
 			GUICtrlSetTip(-1, $txtTip)
-		$txtTimeWakeUp = GUICtrlCreateInput("120", $x + 127, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$txtTimeWakeUp = GUICtrlCreateInput("240", $x + 127, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 3)
 		$lblTimeWakeUpSec = GUICtrlCreateLabel(GetTranslated(603,6, "sec."), $x + 165, $y + 2, -1, -1)
@@ -191,7 +193,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 	$chkSinglePBTForced = GUICtrlCreateCheckbox(GetTranslated(636,61, "Force Single PB logoff"), $x-5, $y, -1, -1)
 		GUICtrlSetOnEvent(-1, "chkSinglePBTForced")
 		GUICtrlSetTip(-1, GetTranslated(636,62, "This forces bot to exit CoC only one time prior to normal start of PB"))
-	$txtSinglePBTimeForced = GUICtrlCreateInput("17", $x + 130, $y-1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	$txtSinglePBTimeForced = GUICtrlCreateInput("18", $x + 130, $y-1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		GUICtrlSetTip(-1, GetTranslated(636,63, "Type in number of minutes to keep CoC closed. Set to 15 minimum to reset PB timer!"))
 		GUICtrlSetOnEvent(-1, "txtSinglePBTimeForced")
 		GUICtrlSetLimit(-1, 3)
@@ -201,7 +203,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 	$lblPBTimeForcedExit = GUICtrlCreateLabel( GetTranslated(636,65, "Subtract time for early PB exit"), $x-10, $y+3)
 		$txtTip = GetTranslated(636,66, "Type in number of minutes to quit CoC early! Setting below 10 minutes may not function!")
 		GUICtrlSetTip(-1, $txtTip)
-	$txtPBTimeForcedExit = GUICtrlCreateInput("15", $x + 130, $y, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	$txtPBTimeForcedExit = GUICtrlCreateInput("16", $x + 130, $y, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetOnEvent(-1, "txtSinglePBTimeForced")
 		GUICtrlSetLimit(-1, 3)

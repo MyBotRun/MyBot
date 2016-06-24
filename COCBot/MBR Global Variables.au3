@@ -93,7 +93,7 @@ Global $AndroidAdbZoomoutEnabled = True ; Use Android ADB zoom-out script
 Global $AndroidAdbClickDragEnabled = True ; Use Android ADB click drag script
 Global $AndroidAdbInputEnabled = True ; Enable Android ADB send text (CC requests), swipe not used as click drag anymore
 Global $AndroidAdbInputWordsCharLimit = 0 ; Android ADB send text words (split by space) with this limit of specified characters per command (0 = disabled and entire text is sent at once)
-Global $AndroidAdbClickEnabled = True ; Enable Android ADB mouse click
+Global $AndroidAdbClickEnabled = False ; Enable Android ADB mouse click
 Global $AndroidAdbClicksEnabled = False ; (Experimental & Dangerous!) Enable Android KeepClicks() and ReleaseClicks() to fire collected clicks all at once, only available when also $AndroidAdbClick = True
 Global $AndroidAdbClicksTroopDeploySize = 0 ; (Experimental & Dangerous!) Deploy more troops at once, 0 = deploy group, only available when also $AndroidAdbClicksEnabled = True (currently only just in CSV Deploy)
 Global $AndroidAdbInstanceEnabled = True ; Enable Android steady ADB shell instance when available
@@ -141,6 +141,8 @@ Global $AndroidAppConfig[5][14] = [ _ ;                    |                    
 Global $OnlyInstance = True
 Global $FoundRunningAndroid = False
 Global $FoundInstalledAndroid = False
+Global $OpenAndroidActive = 0 ; Recursive count of OpenAndroid() call to launch Android
+Global $OpenAndroidActiveMaxTry = 3 ; Try recursively 3 times to open Android
 
 Global $AndroidConfig = 0 ; Default selected Android Config of $AndroidAppConfig array
 Global $AndroidVersion ; Identified version of Android Emulator

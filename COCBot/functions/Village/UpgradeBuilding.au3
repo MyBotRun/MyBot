@@ -24,6 +24,7 @@ Func UpgradeBuilding()
 	;  $aCheckFrequency[($iTownHallLevel < 3 ? 0 : $iTownHallLevel - 3)]  ; returns dwell time based on user THlevel, range from 3=[0] to 11=[7]
 	Local $iDTDiff
 	Local $bChkAllRptUpgrade = False
+	Local $sTime
 
 	Static Local $sNextCheckTime = _DateAdd("n", -1, _NowCalc()) ; initialize with date/time of NOW minus one minute
 	If @error Then _logErrorDateAdd(@error)
@@ -163,33 +164,28 @@ Func UpgradeBuilding()
 
 		$aUpgrades[$iz][7] = _NowCalc() ; what is date:time now
 		If $debugSetlog = 1 Then SetLog("Upgrade #" & $iz + 1 & " " & $aUpgrades[$iz][4] & " Started @ " & $aUpgrades[$iz][7], $COLOR_GREEN)
-		$Endtime = ""
-		$Endperiod = ""
-		$TimeAdd = 0
-		$aArray = StringRegExp($aUpgrades[$iz][6], '\d+', 1) ; get the digits
+		$aArray = StringSplit($aUpgrades[$iz][6], ' ', BitOR($STR_CHRSPLIT, $STR_NOCOUNT))  ;separate days, hours
 		If IsArray($aArray) Then
-			If $debugSetlog = 1 Then
-				For $i = 0 To UBound($aArray) - 1
-					Setlog("Stripped Time Value $aArray[" & $i & "] = " & $aArray[$i], $COLOR_PURPLE)
-				Next
-			EndIf
-			$Endtime = $aArray[0]
-			$Endperiod = StringReplace($aUpgrades[$iz][6], $Endtime, "") ; get the time period
-			$Endperiod = StringReplace($Endperiod, " ", "") ;remove extra spaces
-			Switch $Endperiod
-				Case "D"
-					$TimeAdd = (Int($Endtime) * 24 * 60) - 10 ; change days to minutes, minus 10 minute
-					$aUpgrades[$iz][7] = _DateAdd('n', $TimeAdd, $aUpgrades[$iz][7]) ; add the time required to finish the  upgrade
-				Case "H"
-					$TimeAdd = (Int($Endtime) * 60) - 3 ; change hours to minutes, minus 3 minutes
-					$aUpgrades[$iz][7] = _DateAdd('n', $TimeAdd, $aUpgrades[$iz][7]) ; add the time required to finish the  upgrade
-				Case "M"
-					$TimeAdd = Int($Endtime) ; change to minutes
-					$aUpgrades[$iz][7] = _DateAdd('n', $TimeAdd, $aUpgrades[$iz][7]) ; add the time required to finish the  upgrade
-				Case Else
-					Setlog("Upgrade #" & $iz + 1 & " time period invalid, try again!", $COLOR_RED)
-			EndSwitch
-			If $debugSetlog = 1 Then Setlog("$EndTime = " & $Endtime & " , $EndPeriod = " & $Endperiod & ", $timeadd = " & $TimeAdd, $COLOR_PURPLE)
+			Local $iRemainingTimeMin = 0
+			For $i = 0 To UBound($aArray) - 1  ; step through array and compute minutes remaining
+				$sTime = ""
+				Select
+					Case StringInStr($aArray[$i], "d", $STR_NOCASESENSEBASIC) > 0
+						$sTime = StringTrimRight($aArray[$i], 1) ; removing the "d"
+						$iRemainingTimeMin += (Int($sTime) * 24 * 60) - 7 ; change days to minutes and add, minus 7 minutes for early checking
+					Case StringInStr($aArray[$i], "h", $STR_NOCASESENSEBASIC) > 0
+						$sTime = StringTrimRight($aArray[$i], 1) ; removing the "h"
+						$iRemainingTimeMin += (Int($sTime) * 60) - 3  ; change hours to minutes and add, minus 3 minutes
+					Case StringInStr($aArray[$i], "m", $STR_NOCASESENSEBASIC) > 0
+						$sTime = StringTrimRight($aArray[$i], 1) ; removing the "m"
+						$iRemainingTimeMin += Int($sTime) ; add minutes
+					Case Else
+						Setlog("Upgrade #" & $iz + 1 & " OCR time invalid" & $aArray[$i], $COLOR_FUCHSIA)
+				EndSelect
+				If $debugSetlog = 1 Then Setlog("Upgrade Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_PURPLE)
+			Next
+			$aUpgrades[$iz][7] = _DateAdd('n', Floor($iRemainingTimeMin), _NowCalc()) ; add the time required to NOW to finish the upgrade
+			If @error Then _logErrorDateAdd(@error)
 			SetLog("Upgrade #" & $iz + 1 & " " & $aUpgrades[$iz][4] & " Finishes @ " & $aUpgrades[$iz][7], $COLOR_GREEN)
 		Else
 			Setlog("Non critical error processing upgrade time for " & "#" & $iz + 1 & ": " & $aUpgrades[$iz][4], $COLOR_FUCHSIA)

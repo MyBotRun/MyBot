@@ -374,14 +374,40 @@ Func AndroidBotStopEvent()
 EndFunc
 
 Func OpenAndroid($bRestart = False)
+	If $OpenAndroidActive >= $OpenAndroidActiveMaxTry Then
+		SetLog("Cannot open " & $Android & ", tried " & $OpenAndroidActive & " times...", $COLOR_RED)
+		Return False
+	EndIf
+	$OpenAndroidActive += 1
+	If $OpenAndroidActive > 1 Then
+		SetDebugLog("Opening " & $Android & " recursively " & $OpenAndroidActive & ". time...")
+	EndIf
+	Local $Result = _OpenAndroid($bRestart)
+	$OpenAndroidActive -= 1
+	Return $Result
+EndFunc   ;==>OpenAndroid
+
+Func _OpenAndroid($bRestart = False)
     ResumeAndroid()
+
+	If Not InitAndroid() Then
+		SetLog("Unable to open " & $Android & ($AndroidInstance = "" ? "" : "(" & $AndroidInstance & ")") & ", please check emulator/installation.", $COLOR_RED)
+		SetLog("Unable to continue........", $COLOR_MAROON)
+		btnStop()
+		SetError(1, 1, -1)
+		Return False
+	EndIf
+
     AndroidAdbTerminateShellInstance()
     If Not $RunState Then Return False
 
-	Execute("Open" & $Android & "(" & $bRestart & ")")
+	; Close any existing WerFault windows for this emulator
+	WerFaultClose($AndroidProgramPath)
+
+	If Not Execute("Open" & $Android & "(" & $bRestart & ")") Then Return False
 
     ; Check Android screen size, position windows
-    If InitiateLayout() Then Return True; can also call OpenAndroid again when screen size is adjusted
+    If Not InitiateLayout() Then Return False ; recursive call to OpenAndroid() possible
 
 	WinGetAndroidHandle() ; get window Handle
 
@@ -397,9 +423,6 @@ Func OpenAndroid($bRestart = False)
 		waitMainScreenMini()
 		If Not $RunState Then Return False
 		Zoomout()
-		If Not $RunState Then Return False
-		; Initiate returns only on stop
-		Initiate()
 	Else
 		WaitMainScreenMini()
 		If Not $RunState Then Return False
@@ -411,8 +434,9 @@ Func OpenAndroid($bRestart = False)
 		Zoomout()
 	EndIf
 
+	If Not $RunState Then Return False
 	Return True
-EndFunc   ;==>OpenAndroid
+EndFunc   ;==>_OpenAndroid
 
 Func StartAndroidCoC()
    Return RestartAndroidCoC(False, False)
@@ -596,6 +620,12 @@ Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $RunState, $timeout = 15000)
    EndIf
    ResumeAndroid()
 
+   ; check if Android is running
+   If WinGetAndroidHandle() = 0 And $rebootAndroidIfNeccessary = True Then
+	  ; Android is not running
+	  OpenAndroid(True)
+   EndIf
+
    Local $hMutex = AquireAdbDaemonMutex()
 
    Local $process_killed, $cmdOutput
@@ -661,9 +691,7 @@ Func RebootAndroid($bRestart = True)
 	If _Sleep(1000) Then Return False
 
 	; Start Android
-	OpenAndroid($bRestart)
-
-	Return True
+	Return OpenAndroid($bRestart)
 EndFunc   ;==>RebootAndroid
 
 Func RebootAndroidSetScreenDefault()
@@ -672,17 +700,17 @@ Func RebootAndroidSetScreenDefault()
 
     ; Set font size to normal
     AndroidSetFontSizeNormal()
+    If Not $RunState Then Return False
 
 	; Close Android
 	CloseAndroid()
 	If _Sleep(1000) Then Return False
 
 	SetScreenAndroid()
+    If Not $RunState Then Return False
 
 	; Start Android
-	OpenAndroid()
-
-	Return True
+	Return OpenAndroid(True)
 
 EndFunc   ;==>RebootAndroidSetScreenDefault
 

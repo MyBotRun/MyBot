@@ -78,6 +78,7 @@ EndFunc   ;==>Initiate
 
 Func InitiateLayout()
 
+	Local $AdjustScreenIfNecessarry = True
 	WinGetAndroidHandle()
 	Local $BSsize = getAndroidPos()
 
@@ -89,21 +90,28 @@ Func InitiateLayout()
 		SetDebugLog("InitiateLayout: " & $title & " Android-ClientSize: " & $BSx & " x " & $BSy, $COLOR_BLUE)
 
 		If Not CheckScreenAndroid($BSx, $BSy) Then ; Is Client size now correct?
-			Local $MsgRet = $IDOK
-			;If _Sleep(3000) Then Return False
-			;Local $MsgRet = MsgBox(BitOR($MB_OKCANCEL, $MB_SYSTEMMODAL), "Change the resolution and restart " & $Android & "?", _
-			;	"Click OK to adjust the screen size of " & $Android & " and restart the emulator." & @CRLF & _
-			;	"If your " & $Android & " really has the correct size (" & $DEFAULT_WIDTH & " x " & $DEFAULT_HEIGHT & "), click CANCEL." & @CRLF & _
-			;	"(Automatically Cancel in 15 Seconds)", 15)
+			If $AdjustScreenIfNecessarry = True Then
+				Local $MsgRet = $IDOK
+				;If _Sleep(3000) Then Return False
+				;Local $MsgRet = MsgBox(BitOR($MB_OKCANCEL, $MB_SYSTEMMODAL), "Change the resolution and restart " & $Android & "?", _
+				;	"Click OK to adjust the screen size of " & $Android & " and restart the emulator." & @CRLF & _
+				;	"If your " & $Android & " really has the correct size (" & $DEFAULT_WIDTH & " x " & $DEFAULT_HEIGHT & "), click CANCEL." & @CRLF & _
+				;	"(Automatically Cancel in 15 Seconds)", 15)
 
-			If $MsgRet = $IDOK Then
-				RebootAndroidSetScreen() ; recursive call!
+				If $MsgRet = $IDOK Then
+					Return RebootAndroidSetScreen() ; recursive call!
+					;Return "RebootAndroidSetScreen()"
+				EndIf
+			Else
+				SetLog("Cannot use " & $Android & ".", $COLOR_RED)
+				SetLog("Please set its screen size manually to " & $AndroidClientWidth & " x " & $AndroidClientHeight, $COLOR_RED)
 				btnStop()
-				Return True
+				Return False
 			EndIf
 		EndIf
 
 		DisposeWindows()
+		Return True
 
 	EndIf
 
@@ -181,9 +189,28 @@ Func btnStart()
 		$RunState = True
 		SetRedrawBotWindow(True)
 
+		Local $Result = False
 	    Local $hWin = $HWnD
 		SetDebugLog("btnStart: Current Android Window Handle: " & WinGetAndroidHandle())
+		If $HWnD = 0 Then
+			If $hWin = 0 Then
+				$Result = OpenAndroid(False)
+			Else
+				$Result = RebootAndroid(False)
+			EndIf
+		EndIf
 		If $HWnD <> 0 Then ;Is Android open?
+			If Not $RunState Then Return
+		    If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance))  Then ; Really?
+				If Not $Result Then
+					$Result = InitiateLayout()
+				EndIf
+			Else
+				; Not really
+				SetLog("Current " & $Android & " Window not supported by MyBot", $COLOR_RED)
+				$Result = RebootAndroid(False)
+			EndIf
+			If Not $RunState Then Return
 			Local $hWndActive = $HWnD
 			; check if window can be activated
 			If $NoFocusTampering = False Then
@@ -196,22 +223,15 @@ Func btnStart()
 				WinActivate($activeHWnD) ; restore current active window
 			EndIf
 			If Not $RunState Then Return
-		    If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) And $hWndActive = $HWnD  Then ; Really?
-				If Not InitiateLayout() Then
-					Initiate()
-				EndIf
+			If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) And $hWndActive = $HWnD  Then ; Really?
+				Initiate() ; Initiate and run bot
 			Else
-				; Not really
-				SetLog("Current " & $Android & " Window not supported by MyBot", $COLOR_RED)
-			   RebootAndroid(False)
+				SetLog("Cannot use " & $Android & ", please check log", $COLOR_RED)
+				btnStop()
 			EndIf
-		Else ; If Android is not open, then wait for it to open
-			If $hWin = 0 Then
-			   OpenAndroid(False)
-			Else
-			   RebootAndroid(False)
-			EndIf
-			;If @error Then GUICtrlSetState($btnStart, $GUI_DISABLE)  ; Disable start button, force bot close/open by user.
+		Else
+			SetLog("Cannot start " & $Android & ", please check log", $COLOR_RED)
+			btnStop()
 		EndIf
 
 	EndIf
@@ -256,7 +276,7 @@ Func btnStop()
 		$RunState = False
 		AndroidBotStopEvent() ; signal android that bot is now stopping
 
-		_BlockInputEx(0, "", "", $HWnD)
+		;_BlockInputEx(0, "", "", $HWnD)
 		SetLog(_PadStringCenter(" Bot Stop ", 50, "="), $COLOR_ORANGE)
 		SetRedrawBotWindow(True) ; must be here at bottom, after SetLog, so Log refreshes. You could also use SetRedrawBotWindow(True, False) and let the events handle the refresh.
 		If Not $bSearchMode Then
@@ -321,7 +341,7 @@ Func btnHide()
 	If @error <> 0 Then Return SetError(0, 0, 0)
 
 	If $Hide = False Then
-		GUICtrlSetData($btnHide, GetTranslated(602, 25, "Show"))
+		GUICtrlSetData($btnHide, GetTranslated(602, 26, "Show"))
 		Local $a = WinGetPos($HWnD)
 		$botPos[0] = $a[0]
 		$botPos[1] = $a[1]

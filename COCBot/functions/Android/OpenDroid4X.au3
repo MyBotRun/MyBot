@@ -19,8 +19,6 @@ Func OpenDroid4X($bRestart = False)
 
    SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
 
-   If Not InitAndroid() Then Return
-
    $launchAndroid = WinGetAndroidHandle() = 0
    If $launchAndroid Then
 	  ; TODO as Droid4X crashes quite often, check if vm ist not running in background...
@@ -28,7 +26,7 @@ Func OpenDroid4X($bRestart = False)
 	  $cmdPar = GetAndroidProgramParameter()
 	  SetDebugLog("ShellExecute: " & $AndroidProgramPath & " " & $cmdPar)
 	  $PID = ShellExecute($AndroidProgramPath, $cmdPar)
-	  If _Sleep(1000) Then Return
+	  If _Sleep(1000) Then Return False
 	  If $PID <> 0 Then $PID = ProcessExists($PID)
 	  SetDebugLog("$PID= "&$PID)
 	  If $PID = 0 Then  ; IF ShellExecute failed
@@ -36,13 +34,13 @@ Func OpenDroid4X($bRestart = False)
 		SetLog("Unable to continue........", $COLOR_MAROON)
 		btnStop()
 		SetError(1, 1, -1)
-		Return
+		Return False
 	 EndIf
    EndIf
 
    ; Test ADB is connected
    $connected_to = ConnectAndroidAdb(False, 60 * 1000)
-   If Not $RunState Then Return
+   If Not $RunState Then Return False
 
    SetLog("Please wait while " & $Android & " and CoC start...", $COLOR_GREEN)
    $hTimer = TimerInit()
@@ -51,22 +49,23 @@ Func OpenDroid4X($bRestart = False)
    ;If Not $RunState Then Return
 
    ; Wair for Activity Manager
-   If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return
+   If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return False
 
    ; Wait for UI Control, then CoC can be launched
    ;While Not IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) And TimerDiff($hTimer) <= $AndroidLaunchWaitSec * 1000
    ;  If _Sleep(500) Then Return
    ;WEnd
 
-    If Not $RunState Then Return
+    If Not $RunState Then Return False
 	If TimerDiff($hTimer) >= $AndroidLaunchWaitSec * 1000 Then ; if it took 4 minutes, Android/PC has major issue so exit
 	  SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
 	  SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for window", $COLOR_RED)
 	  SetError(1, @extended, False)
-	  Return
+	  Return False
 	EndIf
 
     SetLog($Android & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
+	Return True
 
 EndFunc   ;==>OpenDroid4X
 

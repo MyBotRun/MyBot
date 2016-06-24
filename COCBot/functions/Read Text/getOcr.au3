@@ -19,8 +19,8 @@ Func getGoldVillageSearch($x_start, $y_start);48, 69 -> Gets complete value of g
 	Return getOcrAndCapture("coc-v-g", $x_start, $y_start, 90, 16, True)
 EndFunc   ;==>getGoldVillageSearch
 
-Func getRemainTrainTimer($x_start, $y_start);48, 69 -> Gets complete value of gold xxx,xxx while searching, top left, Getresources.au3
-	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 70, 11, True)
+Func getRemainTrainTimer($x_start, $y_start);
+	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 70, 12, True)
 EndFunc   ;==>getRemainTrainTimer
 
 Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete value of Elixir xxx,xxx, top left,  Getresources.au3
@@ -80,12 +80,16 @@ Func getLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of Elix
 EndFunc   ;==>getLabUpgrdResourceRed
 
 Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building upgrade time
-	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 40, 16) ; 40 is enougth xxx : 2 numbers and one letter at max
+	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 42, 18) ; 42 is enougth xxx : 2 numbers and one letter at max
 EndFunc   ;==>getBldgUpgradeTime
 
 Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V2 for Dec2015 update
 	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 40, 20) ; 40 is enougth xxx : 2 numbers and one letter at max
 EndFunc   ;==>getLabUpgradeTime
+
+Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for heroes 464, 527 + $midOffsetY
+	Return getOcrAndCapture("coc-uptime2", $x_start, $y_start, 68, 20) ; 68 is required to days & hours for young hero
+EndFunc   ;==>getHeroUpgradeTime
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
 	Return getOcrAndCapture($language, $x_start, $y_start, 280, 16)
@@ -196,8 +200,8 @@ Func getOcrRateCoc($x_start, $y_start);  -> Get the Text with time till maintena
 	Return getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 18, True)
 EndFunc   ;==>getOcrRateCoc
 
-Func getRemainTLaboratory($x_start, $y_start)
-	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 192, 22, True)
+Func getRemainTLaboratory($x_start, $y_start) ; read actual time remaining in Lab for current upgrade (336,260)
+	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 192, 24)
 EndFunc   ;==>getRemainTLaboratory
 
 

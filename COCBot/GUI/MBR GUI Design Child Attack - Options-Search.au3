@@ -87,32 +87,32 @@ Local $x = 25, $y = 45
    	$grpAtkOptions = GUICtrlCreateGroup(GetTranslated(630,16, "Search Options"), $x - 20, $y - 20, 420, 85)
 		$x -= 5
 	   $chkAttackNow = GUICtrlCreateCheckbox(GetTranslated(630,17, "Attack Now! option."), $x-10, $y -8, -1, -1)
-			   $txtTip = GetTranslated(630,18, "Check this if you want the option to have an 'Attack Now!' button next to") & @CRLF & GetTranslated(630,25, "the Start and Pause buttons to bypass the dead base or all base search values.") & @CRLF & GetTranslated(630,26, "The Attack Now! button will only appear when searching for villages to Attack.")
-			   GUICtrlSetTip(-1, $txtTip)
-			   GUICtrlSetOnEvent(-1, "chkAttackNow")
-		   $lblAttackNow = GUICtrlCreateLabel(GetTranslated(630,19, "Add") & ":", $x +5 , $y + 16, 27, -1, $SS_RIGHT)
-			   $txtTip = GetTranslated(630,20, "Add this amount of reaction time to slow down the search.")
-			   GUICtrlSetTip(-1, $txtTip)
-			   GUICtrlSetState(-1, $GUI_DISABLE)
-		   $cmbAttackNowDelay = GUICtrlCreateCombo("", $x + 35, $y + 13, 35, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			   GUICtrlSetTip(-1, $txtTip)
-			   GUICtrlSetData(-1, "0|1|2|3|4|5", "3") ; default value 3
-			   GUICtrlSetState(-1, $GUI_DISABLE)
-		   $lblAttackNowSec = GUICtrlCreateLabel(GetTranslated(603,6, "sec."), $x + 75, $y + 16, -1, -1)
-			   GUICtrlSetTip(-1, $txtTip)
-			   GUICtrlSetState(-1, $GUI_DISABLE)
+			$txtTip = GetTranslated(630,18, "Check this if you want the option to have an 'Attack Now!' button next to") & @CRLF & GetTranslated(630,25, "the Start and Pause buttons to bypass the dead base or all base search values.") & @CRLF & GetTranslated(630,26, "The Attack Now! button will only appear when searching for villages to Attack.")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetOnEvent(-1, "chkAttackNow")
+		$lblAttackNow = GUICtrlCreateLabel(GetTranslated(630,19, "Add") & ":", $x +5 , $y + 16, 27, -1, $SS_RIGHT)
+			$txtTip = GetTranslated(630,20, "Add this amount of reaction time to slow down the search.")
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$cmbAttackNowDelay = GUICtrlCreateCombo("", $x + 35, $y + 13, 35, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetData(-1, "0|1|2|3|4|5", "3") ; default value 3
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$lblAttackNowSec = GUICtrlCreateLabel(GetTranslated(603,6, "sec."), $x + 75, $y + 16, -1, -1)
+			GUICtrlSetTip(-1, $txtTip)
+			GUICtrlSetState(-1, $GUI_DISABLE)
 		$x +=110
 		$chkRestartSearchLimit = GUICtrlCreateCheckbox( GetTranslated(630,21, "Restart every") & ":", $x, $y-8, -1, -1)
 			$txtTip = GetTranslated(630,22, "Return To Base after x searches and restart to search enemy villages.")
 			Global $txtrestartsearchlimit, $chkbtnscheduler, $btnscheduler
 			GUICtrlSetTip(-1, $txtTip)
-			 GUICtrlSetOnEvent(-1, "chkRestartSearchLimit")
-			 $txtRestartSearchlimit = GUICtrlCreateInput("15", $x, $y + 15, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			GUICtrlSetState(-1, $GUI_CHECKED)
+			GUICtrlSetOnEvent(-1, "chkRestartSearchLimit")
+			$txtRestartSearchlimit = GUICtrlCreateInput("50", $x, $y + 15, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 3)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$lblRestartSearchLimit = GUICtrlCreateLabel( GetTranslated(603,5, -1), $x + 37, $y + 17, -1, -1)
-
 
 		$x = 25
 		$y +=37

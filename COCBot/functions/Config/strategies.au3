@@ -17,7 +17,7 @@
 Func IniReadS(ByRef $variable, $PrimaryInputFile, $section, $key, $defaultvalue)
 	;read from standard config ini file but, if variable $SecondaryInputFile <>"" (valorized by button read strategy), if exists
 	;section->key override values from ini files with values in $SecondaryInputFile
-	Local $defaultvalueTest = "¦"
+	Local $defaultvalueTest = "?"
 	Local $ChoosedConfigFile
 	Local $readValue = IniRead($SecondaryInputFile, $section, $key, $defaultvalueTest)
 	If $readValue <> $defaultvalueTest Then

@@ -103,7 +103,7 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		IniReadS($ichkAutoStart, $config, "general", "AutoStart", "0")
 		IniReadS($ichkAutoStartDelay, $config, "general", "AutoStartDelay", "10")
 		IniReadS($restarted, $config, "general", "Restarted", "0")
-		IniReadS($ichkBackground, $config, "general", "Background", "0")
+		IniReadS($ichkBackground, $config, "general", "Background", "1")
 		IniReadS($ichkBotStop, $config, "general", "BotStop", "0")
 		IniReadS($icmbBotCommand, $config, "general", "Command", "0")
 		IniReadS($icmbBotCond, $config, "general", "Cond", "0")
@@ -146,8 +146,8 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		IniReadS($itxtWall10ST, $config, "Walls", "Wall10", "0")
 		IniReadS($itxtWall11ST, $config, "Walls", "Wall11", "0")
 
-		IniReadS($itxtRestartGold, $config, "other", "minrestartgold", "10000")
-		IniReadS($itxtRestartElixir, $config, "other", "minrestartelixir", "25000")
+		IniReadS($itxtRestartGold, $config, "other", "minrestartgold", "50000")
+		IniReadS($itxtRestartElixir, $config, "other", "minrestartelixir", "50000")
 		IniReadS($itxtRestartDark, $config, "other", "minrestartdark", "500")
 
 
@@ -177,7 +177,7 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 
 		IniReadS($fulltroop, $config, "troop", "fullTroop", "100")
 
-		IniReadS($isldTrainITDelay, $config, "other", "TrainITDelay", "20")
+		IniReadS($isldTrainITDelay, $config, "other", "TrainITDelay", "40")
 
 		;Army training - Spells Creation  -----------------------------------------------------
 		Local $tempQtaSpell
@@ -277,7 +277,7 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		IniReadS($ReduceTrophy, $config, "search", "reduceTrophy", "2")
 
 		IniReadS($iChkRestartSearchLimit, $config, "search", "ChkRestartSearchLimit", "1")
-		IniReadS($iRestartSearchlimit, $config, "search", "RestartSearchLimit", "25")
+		IniReadS($iRestartSearchlimit, $config, "search", "RestartSearchLimit", "50")
 
 		IniReadS($iDBcheck, $config, "search", "DBcheck", "1")
 		IniReadS($iABcheck, $config, "search", "ABcheck", "0")
@@ -312,8 +312,8 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		IniReadS($iCmbMeetGE[$TS], $config, "search", "TSMeetGE", "1")
 
 		IniReadS($iChkTrophyRange, $config, "search", "TrophyRange", "0")
-		IniReadS($itxtdropTrophy, $config, "search", "MinTrophy", "800")
-		IniReadS($itxtMaxTrophy, $config, "search", "MaxTrophy", "1200")
+		IniReadS($itxtdropTrophy, $config, "search", "MinTrophy", "5000")
+		IniReadS($itxtMaxTrophy, $config, "search", "MaxTrophy", "5000")
 		IniReadS($iChkTrophyHeroes, $config, "search", "chkTrophyHeroes", "0")
 		IniReadS($iChkTrophyAtkDead, $config, "search", "chkTrophyAtkDead", "0")
 		IniReadS($itxtDTArmyMin, $config, "search", "DTArmyMin", "70")
@@ -325,14 +325,14 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		IniReadS($iAtkAlgorithm[$DB], $config, "attack", "DBAtkAlgorithm", "0")
 		IniReadS($iAtkAlgorithm[$LB], $config, "attack", "ABAtkAlgorithm", "0")
 		IniReadS($iChkDeploySettings[$DB], $config, "attack", "DBDeploy", "3")
-		IniReadS($iCmbUnitDelay[$DB], $config, "attack", "DBUnitD", "5")
-		IniReadS($iCmbWaveDelay[$DB], $config, "attack", "DBWaveD", "5")
-		IniReadS($iChkRandomspeedatk[$DB], $config, "attack", "DBRandomSpeedAtk", "0")
+		IniReadS($iCmbUnitDelay[$DB], $config, "attack", "DBUnitD", "6")
+		IniReadS($iCmbWaveDelay[$DB], $config, "attack", "DBWaveD", "4")
+		IniReadS($iChkRandomspeedatk[$DB], $config, "attack", "DBRandomSpeedAtk", "1")
 
 		IniReadS($iChkDeploySettings[$LB], $config, "attack", "ABDeploy", "0")
-		IniReadS($iCmbUnitDelay[$LB], $config, "attack", "ABUnitD", "5")
-		IniReadS($iCmbWaveDelay[$LB], $config, "attack", "ABWaveD", "5")
-		IniReadS($iChkRandomspeedatk[$LB], $config, "attack", "ABRandomSpeedAtk", "0")
+		IniReadS($iCmbUnitDelay[$LB], $config, "attack", "ABUnitD", "6")
+		IniReadS($iCmbWaveDelay[$LB], $config, "attack", "ABWaveD", "4")
+		IniReadS($iChkRandomspeedatk[$LB], $config, "attack", "ABRandomSpeedAtk", "1")
 
 		IniReadS($iCmbSelectTroop[$DB], $config, "attack", "DBSelectTroop", "0")
 		IniReadS($iCmbSelectTroop[$LB], $config, "attack", "ABSelectTroop", "0")
@@ -347,7 +347,7 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		IniReadS($iChkSmartAttack[$DB][2], $config, "attack", "DBSmartAttackDarkElixirDrill", "0")
 
 		IniReadS($iChkRedArea[$LB], $config, "attack", "ABSmartAttackRedArea", "1")
-		IniReadS($iCmbSmartDeploy[$LB], $config, "attack", "ABSmartAttackDeploy", "0")
+		IniReadS($iCmbSmartDeploy[$LB], $config, "attack", "ABSmartAttackDeploy", "1")
 
 		IniReadS($iChkSmartAttack[$LB][0], $config, "attack", "ABSmartAttackGoldMine", "0")
 		IniReadS($iChkSmartAttack[$LB][1], $config, "attack", "ABSmartAttackElixirCollector", "0")
@@ -581,16 +581,16 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 
 
 
-		IniReadS($ichkTrap, $config, "other", "chkTrap", "0")
+		IniReadS($ichkTrap, $config, "other", "chkTrap", "1")
 		IniReadS($iChkCollect, $config, "other", "chkCollect", "1")
-		IniReadS($ichkTombstones, $config, "other", "chkTombstones", "0")
+		IniReadS($ichkTombstones, $config, "other", "chkTombstones", "1")
 		IniReadS($ichkCleanYard, $config, "other", "chkCleanYard", "0")
 		;Boju Only clear GemBox
 		IniReadS($ichkGemsBox, $config, "other", "chkGemsBox", "0")
 		;Only clear GemBox
 		IniReadS($sTimeWakeUp, $config, "other", "txtTimeWakeUp", "0")
 		IniReadS($iVSDelay, $config, "other", "VSDelay", "0")
-		IniReadS($iMaxVSDelay, $config, "other", "MaxVSDelay", "0")
+		IniReadS($iMaxVSDelay, $config, "other", "MaxVSDelay", "4")
 
 		IniReadS($iWAOffsetX, $config, "other", "WAOffsetX", "0")
 		IniReadS($iWAOffsetY, $config, "other", "WAOffsetY", "0")
@@ -1009,8 +1009,18 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		InireadS($toleranceOffset,$config, "collectors", "tolerance", "0")
 
 		; Android Configuration
+		$AndroidGamePackage = IniRead($config, "android", "game.package", $AndroidGamePackage)
+		$AndroidGameClass = IniRead($config, "android", "game.class", $AndroidGameClass)
+		$AndroidCheckTimeLagEnabled = IniRead($config, "android", "check.time.lag.enabled", ($AndroidCheckTimeLagEnabled ? "1" : "0")) = "1"
+		$AndroidAdbScreencapTimeoutMin = Int(IniRead($config, "android", "adb.screencap.timeout.min", $AndroidAdbScreencapTimeoutMin))
+		$AndroidAdbScreencapTimeoutMax = Int(IniRead($config, "android", "adb.screencap.timeout.max", $AndroidAdbScreencapTimeoutMax))
+		$AndroidAdbScreencapTimeoutDynamic = Int(IniRead($config, "android", "adb.screencap.timeout.dynamic", $AndroidAdbScreencapTimeoutDynamic))
+		$AndroidAdbInputEnabled = IniRead($config, "android", "adb.input.enabled", ($AndroidAdbInputEnabled ? "1" : "0")) = "1"
+		$AndroidAdbClickEnabled = IniRead($config, "android", "adb.click.enabled", ($AndroidAdbClickEnabled ? "1" : "0")) = "1"
+		$AndroidAdbClickGroup = Int(IniRead($config, "android", "adb.click.group", $AndroidAdbClickGroup))
 		$AndroidAdbClicksEnabled = IniRead($config, "android", "adb.clicks.enabled", ($AndroidAdbClicksEnabled ? "1" : "0")) = "1"
 		$AndroidAdbClicksTroopDeploySize = Int(IniRead($config, "android", "adb.clicks.troop.deploy.size", $AndroidAdbClicksTroopDeploySize))
+		$NoFocusTampering = IniRead($config, "android", "no.focus.tampering", ($NoFocusTampering ? "1" : "0")) = "1"
 
 	Else
 		Return False
