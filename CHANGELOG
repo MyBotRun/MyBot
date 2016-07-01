@@ -1,3 +1,11 @@
+  * **V6.1.4**
+ * Improve Freeze, Poison, and Haste spell training detection
+ * Improved donaton detection images for Healer, Barbarian, Lava Hound, Wizard, Poison, Earthquake, Haste. 
+ * Fix manual TH locate warning error creating confusion on proper button to choose
+ * Fix variable not declared error in attack planner
+ * Reduce (hopefully fixed) resource collection errors with new match images
+ * Updated Taiwan language file (from @flowclouds)
+
  * **V6.1.3**
  * Improve troop deploy click speed
  * Improve click speed for MEmu, Droid4X and Nox (adb.click.enabled now by default disabled (0) in config.ini, ensure mouse is not over Android Window!)
@@ -23,7 +31,7 @@
  * Add Language Bahasa Indonesia (@TheRevenor)
  * Update German.ini file (@Lindwurm2k/@Cosote)
  * Improve rage spell detection in training overview window when using BS medium Gfx mode
- * Adjust some default bot values. Some to help behave less like a bot: added 20ms to training click delay, added random village search delay 1-4 seconds.  
+ * Adjust some default bot values. Some to help behave less like a bot: added 20ms to training click delay, others added random village search delay 1-4 seconds.  
 
 * **V6.1.2**
  * Add taiwan language translation by @flowclouds

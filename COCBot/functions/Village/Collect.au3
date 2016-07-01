@@ -46,13 +46,16 @@ Func Collect()
 		For $i = 1 To UBound($aResult) - 1
 			$Filename = $aResult[$i][1] ; Filename
 			$CollectXY = $aResult[$i][5] ; Coords
-			If IsArray($CollectXY) Then
-				For $t = 0 To UBound($CollectXY) - 1 ; each filename can have several positions
-					If $DebugSetLog = 1 Then SetLog($Filename & " found (" & $CollectXY[$t][0] & "," & $CollectXY[$t][1] & ")", $COLOR_GREEN)
-					If IsMainPage() Then Click($CollectXY[$t][0], $CollectXY[$t][1], 1, 0, "#0430")
-					If _Sleep($iDelayCollect2) Then Return
-				Next
-			EndIf 
+			If IsMainPage() Then
+				If IsArray($CollectXY) Then
+					For $t = 0 To UBound($CollectXY) - 1 ; each filename can have several positions
+						If $DebugSetLog = 1 Then SetLog($Filename & " found (" & $CollectXY[$t][0] & "," & $CollectXY[$t][1] & ")", $COLOR_GREEN)
+						;If IsMainPage() Then Click($CollectXY[$t][0], $CollectXY[$t][1], 1, 0, "#0430")
+						Click($CollectXY[$t][0], $CollectXY[$t][1], 1, 0, "#0430")
+						If _Sleep($iDelayCollect2) Then Return
+					Next
+				EndIf 
+			EndIf
 		Next 
 	EndIf 
 

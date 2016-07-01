@@ -93,28 +93,28 @@ Local $x = 30, $y = 150
 		$y += 27
 		$lblCredits3 = GUICtrlCreateLabel("Credits belong to following programmers for donating their time:", $x - 5, $y , 420, 20)
 			GUICtrlSetFont(-1,10, $FW_BOLD)
-		$y += 25
+		$y += 20
 		$txtCredits =	"Active developers: "  &  @CRLF & _
-						"Boju, Cosote, Hervidero, Kaganus, LunaEclipse, MonkeyHunter, ProMac, Sardo, Trlopes, Zengzeng" & @CRLF & @CRLF & _
+						"Boju, Cosote, Hervidero, Kaganus, MonkeyHunter, Sardo, Trlopes, Zengzeng" & @CRLF & @CRLF & _
                         "Retired developers: "  &  @CRLF & _
-						"Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, Knowjack, Safar46, Saviart, TheMaster1st, and others"
-		$lbltxtCredits1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410,110, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+						"Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, Knowjack, LunaEclipse, ProMac, Safar46, Saviart, TheMaster1st, and others"
+		$lbltxtCredits1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410,120, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 			GUICtrlSetFont(-1,9, $FW_MEDIUM)
 ;			GUICtrlSetBkColor(-1, $COLOR_WHITE)
-		$y += 110
+		$y += 125
 		$txtCredits = "Special thanks to all contributing forum members helping " & @CRLF & "to make this software better! "
 		$lbltxtCredits2 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 390,30, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER),0)
 			GUICtrlSetFont(-1,9, $FW_MEDIUM)
-		$y += 45
+		$y += 44
 		$txtCredits =	"The latest release of 'My Bot' can be found at:"
 		$lbltxtNewVer = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 400,15, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 			GUICtrlSetFont(-1, 10, $FW_BOLD)
 ;			GUICtrlSetBkColor(-1, $COLOR_WHITE)
-		$y += 20
+		$y += 18
 		$labelForumURL = GUICtrlCreateLabel("https://mybot.run/forums/index.php?/forum/4-official-releases/", $x+25, $y, 450, 20)
 			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_BLUE)
-		$y = 440
+		$y = 445
 		$txtWarn =	"By running this program, the user accepts all responsibility that arises from the use of this software."  & @CRLF & _
 						"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even " & @CRLF & _
 						"the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General " & @CRLF & _

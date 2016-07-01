@@ -155,6 +155,7 @@ Func BotDetectFirstTime()
 	GUICtrlSetState(Eval("$THLevels" + Number($iTownHallLevel)),$GUI_SHOW)
 	;-->Display TH Level in Stats
 
+#comments-start  removed due replacement by imgloc collect
 	If $iChkCollect = 1 And $listResourceLocation = "" Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		While 1 ; Clear the collectors using old image find to reduce collector image finding errors
@@ -221,5 +222,6 @@ Func BotDetectFirstTime()
 		EndIf
 		$t =0
 	EndIf
+#comments-end
 
 EndFunc   ;==>BotDetectFirstTime

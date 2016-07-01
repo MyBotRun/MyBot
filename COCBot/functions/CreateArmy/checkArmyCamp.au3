@@ -15,7 +15,7 @@
 
 Func checkArmyCamp()
 
-	If $debugsetlogTrain = 1 Then SETLOG("Begin checkArmyCamp:", $COLOR_aqua)
+	If $debugsetlogTrain = 1 Then SETLOG("Begin checkArmyCamp:", $COLOR_PURPLE)
 
 	GetArmyCapacity()
 	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response

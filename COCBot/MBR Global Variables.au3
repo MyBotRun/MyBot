@@ -1085,8 +1085,8 @@ Global $iPlannedattackHours[24]
 For $i = 0 To 23
 	$iPlannedattackHours[$i] = 1
 Next
-Global $iPlannedAttackWeekDays[8]
-For $i = 0 To 7
+Global $iPlannedAttackWeekDays[7]
+For $i = 0 To 6
 	$iPlannedAttackWeekDays[$i] = 1
 Next
 Global $hourLoot

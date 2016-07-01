@@ -2080,7 +2080,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWriteS($config, "planned", "attackHours", $string)
 
 	Local $string = ""
-	For $i = 0 To 7
+	For $i = 0 To 6
 		If GUICtrlRead(Eval("chkAttackWeekdays" & $i)) = $GUI_CHECKED Then
 			$string &= "1|"
 		Else
