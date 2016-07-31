@@ -42,21 +42,34 @@ Func renameProfile()
 		; Remove the directory and all files and sub folders.
 		DirMove($originalPath, $newPath, $FC_NOOVERWRITE)
 	EndIf
-EndFunc   ;==>deleteProfile
+EndFunc   ;==>renameProfile
 
 Func deleteProfile()
-	Local $deletePath = $sProfilePath & "\" & GUICtrlRead($cmbProfile)
+	Local $sProfile = GUICtrlRead($cmbProfile)
+	Local $deletePath = $sProfilePath & "\" & $sProfile
 	If FileExists($deletePath) Then
-		; Close the logs to ensure all files can be deleted.
-		FileClose($hLogFileHandle)
-		FileClose($hAttackLogFileHandle)
-
+		If $sProfile = $sCurrProfile Then
+			; Close the logs to ensure all files can be deleted.
+			FileClose($hLogFileHandle)
+			FileClose($hAttackLogFileHandle)
+		EndIf
 		; Remove the directory and all files and sub folders.
 		DirRemove($deletePath, $DIR_REMOVE)
 	EndIf
 EndFunc   ;==>deleteProfile
 
-Func createProfile()
+Func createProfile($bCreateNew = False)
+
+	If $bCreateNew = True Then
+		; create new profile (recursive call from setupProfile() and selectProfile() !!!)
+		setupProfileComboBox()
+		setupProfile()
+		saveConfig()
+		setupProfileComboBox()
+		selectProfile()
+		Return
+	EndIf
+
 	; create the profile directory if it doesn't already exist.
 	DirCreate($sProfilePath & "\" & $sCurrProfile)
 
@@ -69,19 +82,14 @@ Func createProfile()
 
 	; Set the current profile as the default profile.
 	IniWrite($sProfilePath & "\profile.ini", "general", "defaultprofile", $sCurrProfile)
-	; Store the location of the profile's config.ini file
-	$config = $sProfilePath & "\" & $sCurrProfile & "\config.ini"
-	; Store the other profile files
-	$building = $sProfilePath & "\" & $sCurrProfile & "\building.ini"
-	$dirLogs = $sProfilePath & "\" & $sCurrProfile & "\Logs\"
-	$dirLoots = $sProfilePath & "\" & $sCurrProfile & "\Loots\"
-	$dirTemp = $sProfilePath & "\" & $sCurrProfile & "\Temp\"
-	$dirTempDebug = $sProfilePath & "\" & $sCurrProfile & "\Temp\Debug\"
+	SetupProfileFolder()
 	; Create the profiles sub-folders
 	DirCreate($dirLogs)
 	DirCreate($dirLoots)
 	DirCreate($dirTemp)
 	DirCreate($dirTempDebug)
+
+	If FileExists($config) = 0 Then SetLog("New Profile '" & $sCurrProfile & "' created")
 EndFunc   ;==>createProfile
 
 Func setupProfile()

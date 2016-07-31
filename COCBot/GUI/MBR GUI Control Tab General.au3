@@ -25,36 +25,21 @@ Func btnAtkLogCopyClipboard()
 EndFunc   ;==>btnAtkLogCopyClipboard
 
 Func cmbLog()
-	cmbLogImpl(False)
-EndFunc   ;==>cmbLog
-
-Func cmbLogImpl($ApplyConfig)
-	;Local $x = 30, $y = 150, $w = 450, $h = 170 ; default GUI values, used as reference
-	Local $x = 0, $y = 0, $w = $_GUI_MAIN_WIDTH - 20, $h = $_GUI_MAIN_HEIGHT - 470 ; default GUI values, used as reference
-	;$x -= 20
-	;$y -= 20
+	Local $x = 0, $y = 0, $w = $_GUI_MAIN_WIDTH - 20, $h = $_GUI_MAIN_HEIGHT - 470 + Int($frmBotAddH / 2) ; default GUI values, used as reference
+	If ($iDividerY > $h + Int($h / 2) + $y And $iDividerY < $h * 2 + $iDividerHeight + $y) Or $iDividerY > $h * 2 + $iDividerHeight + $y Then $iDividerY = $h + Int($h / 2) + $y
+	If ($iDividerY < Int($h / 2) + $y And $iDividerY > 0) Or $iDividerY < 0 Then $iDividerY = Int($h / 2)
+	_SendMessage($txtLog, $WM_SETREDRAW, False, 0) ; disable redraw so disabling has no visiual effect
+	_WINAPI_EnableWindow($txtLog, False) ; disable RichEdit
+	_SendMessage($txtAtkLog, $WM_SETREDRAW, False, 0) ; disable redraw so disabling has no visiual effect
+	_WINAPI_EnableWindow($txtAtkLog, False) ; disable RichEdit
 	Switch _GUICtrlComboBox_GetCurSel($cmbLog)
 		Case 0
-			If $ApplyConfig Then ; If bot was closed using Divider, use its Y coordinate to restore logs' and divider's positions
-				ControlMove($hGUI_LOG, "", $divider, $x, $iDividerY, $w, $iDividerHeight)
-				ControlMove($hGUI_LOG, "", $txtLog, $x, $y, $w, $iDividerY - $y)
-				ControlMove($hGUI_LOG, "", $txtAtkLog, $x, $iDividerY + $iDividerHeight, $w, ($h * 2) - ($iDividerY - $y))
-			Else
-				$TPos = ControlGetPos($hGUI_LOG, "", $txtLog)
-				$BPos = ControlGetPos($hGUI_LOG, "", $txtAtkLog)
-				$totalHeight = $h * 2 + $iDividerHeight
-				If $TPos[3] = $totalHeight Then ; If Attack Log is hidden
-					$iDividerY = $TPos[1] + $totalHeight - $iDividerHeight
-					ControlMove($hGUI_LOG, "", $txtLog, $x, $TPos[1], $w, $TPos[3] - $iDividerHeight)
-				ElseIf $BPos[3] = $totalHeight Then ; If Bot Log is hidden
-					$iDividerY = $y
-					ControlMove($hGUI_LOG, "", $txtAtkLog, $x, $BPos[1] + $iDividerHeight, $w, $BPos[3] - $iDividerHeight)
-				Else ; If Divider is visible
-					$iDividerY = $BPos[1] - $iDividerHeight
-				EndIf
-				ControlShow($hGUI_LOG, "", $divider)
-				ControlMove($hGUI_LOG, "", $divider, $x, $iDividerY, $w, $iDividerHeight)
-			EndIf
+			ControlShow($hGUI_LOG, "", $divider)
+			ControlMove($hGUI_LOG, "", $divider, $x, $iDividerY - $y, $w, $iDividerHeight)
+			ControlShow($hGUI_LOG, "", $txtLog)
+			ControlMove($hGUI_LOG, "", $txtLog, $x, $y, $w, $iDividerY - $y)
+			ControlShow($hGUI_LOG, "", $txtAtkLog)
+			ControlMove($hGUI_LOG, "", $txtAtkLog, $x, $iDividerY + $iDividerHeight, $w, ($h * 2) - ($iDividerY - $y))
 		Case 1
 			ControlShow($hGUI_LOG, "", $txtLog)
 			ControlMove($hGUI_LOG, "", $txtLog, $x, $y, $w, $h)
@@ -90,14 +75,25 @@ Func cmbLogImpl($ApplyConfig)
 			ControlMove($hGUI_LOG, "", $txtAtkLog, $x, $y, $w, $h * 2 + $iDividerHeight)
 			ControlHide($hGUI_LOG, "", $divider)
 	EndSwitch
-EndFunc   ;==>cmbLogImpl
+	_SendMessage($txtLog, $WM_SETREDRAW, True, 0) ; enabled RechEdit redraw again
+	_WINAPI_EnableWindow($txtLog, True) ; enable RichEdit
+	;_WinAPI_RedrawWindow($txtLog, 0, 0, $RDW_INVALIDATE + $RDW_ALLCHILDREN) ; redraw RichEdit
+	;_WinAPI_UpdateWindow($txtLog)
+	_SendMessage($txtAtkLog, $WM_SETREDRAW, True, 0) ; enabled RechEdit redraw again
+	_WINAPI_EnableWindow($txtAtkLog, True) ; enable RichEdit
+	;_WinAPI_RedrawWindow($txtAtkLog, 0, 0, $RDW_INVALIDATE + $RDW_ALLCHILDREN) ; redraw RichEdit
+	;_WinAPI_UpdateWindow($txtAtkLog)
+
+	CheckRedrawControls(True)
+EndFunc   ;==>cmbLog
 
 Func MoveDivider()
 
+	Local $PPos = ControlGetPos($frmBot, "", $hGUI_LOG)
 	$TPos = ControlGetPos($hGUI_LOG, "", $txtLog)
 	$BPos = ControlGetPos($hGUI_LOG, "", $txtAtkLog)
 	$DPos = ControlGetPos($hGUI_LOG, "", $divider)
-	$logAndDividerX = $TPos[0] - $_GUI_CHILD_LEFT
+	$logAndDividerX = $TPos[0] - $PPos[0]
 	$logAndDividerWidth = $TPos[2]
 	$totalLogsHeight = $TPos[3] + $BPos[3]
 	$minVisibleHeight = Ceiling($totalLogsHeight / 4)
@@ -106,35 +102,38 @@ Func MoveDivider()
 	$halfDividerBottomHeight = Floor($iDividerHeight / 2)
 	$startLogsY = $TPos[1] - $_GUI_CHILD_TOP
 	$endLogsY = $BPos[1] - $_GUI_CHILD_TOP + $BPos[3]
-	GUISetState(@SW_DISABLE, $hGUI_LOG)
+
+	;SetDebugLog("Devider: " & $iDividerY & ", " & $logAndDividerX & ", " & $logAndDividerWidth & ", " & $totalLogsHeight & ", " & $minVisibleHeight & ", " & $snapToMinMax & ", " & $halfDividerTopHeight & ", " & $halfDividerBottomHeight & ", " & $halfDividerBottomHeight & ", " & $startLogsY & ", " & $endLogsY)
+
 	Do
 		$pos = GUIGetCursorInfo($hGUI_LOG)
-		ControlMove($hGUI_LOG, "", $divider, $DPos[0] - $_GUI_CHILD_LEFT, $pos[1] - $halfDividerTopHeight, $logAndDividerWidth, $iDividerHeight)
+		$clickY = $pos[1]
+
+		; adjust $clickY to final value
+		If $clickY - $halfDividerTopHeight <= $startLogsY + $snapToMinMax Then
+			$clickY = $startLogsY + $halfDividerTopHeight
+		ElseIf $clickY + $halfDividerBottomHeight >= $endLogsY - $snapToMinMax Then
+			$clickY = $endLogsY - $halfDividerBottomHeight
+		ElseIf $clickY - $halfDividerTopHeight > $startLogsY + $snapToMinMax And $clickY - $halfDividerTopHeight <= $startLogsY + $minVisibleHeight Then
+			$clickY = $startLogsY + $minVisibleHeight + $halfDividerTopHeight
+		ElseIf $clickY + $halfDividerBottomHeight < $endLogsY - $snapToMinMax And $clickY + $halfDividerBottomHeight >= $endLogsY - $minVisibleHeight Then
+			$clickY = $endLogsY - $minVisibleHeight - $halfDividerBottomHeight
+		EndIf
+		$iDividerY = $clickY - $halfDividerTopHeight
+		ControlMove($hGUI_LOG, "", $divider, $logAndDividerX, $iDividerY, $logAndDividerWidth, $iDividerHeight)
+		ControlMove($hGUI_LOG, "", $txtLog, $logAndDividerX, $startLogsY, $logAndDividerWidth, $clickY - $startLogsY - $halfDividerTopHeight)
+		If $endLogsY - ($clickY + $halfDividerBottomHeight) < 0 Then
+			ControlMove($hGUI_LOG, "", $txtAtkLog, $logAndDividerX, $endLogsY, $logAndDividerWidth, 0)
+		Else
+			ControlMove($hGUI_LOG, "", $txtAtkLog, $logAndDividerX, $clickY + $halfDividerBottomHeight, $logAndDividerWidth, $endLogsY - $clickY - $halfDividerBottomHeight)
+		EndIf
+
+		_WinAPI_UpdateWindow(WinGetHandle($hGUI_LOG))
+
 	Until $pos[2] = 0
-	$clickY = $pos[1]
-	If $clickY - $halfDividerTopHeight <= $startLogsY + $snapToMinMax Then
-		ControlMove($hGUI_LOG, "", $divider, $logAndDividerX, $startLogsY, $logAndDividerWidth, $iDividerHeight)
-		$clickY = $startLogsY + $halfDividerTopHeight
-	ElseIf $clickY + $halfDividerBottomHeight >= $endLogsY - $snapToMinMax Then
-		ControlMove($hGUI_LOG, "", $divider, $logAndDividerX, $endLogsY - $iDividerHeight, $logAndDividerWidth, $iDividerHeight)
-		$clickY = $endLogsY - $halfDividerBottomHeight
-	ElseIf $clickY - $halfDividerTopHeight > $startLogsY + $snapToMinMax And $clickY - $halfDividerTopHeight <= $startLogsY + $minVisibleHeight Then
-		ControlMove($hGUI_LOG, "", $divider, $logAndDividerX, $startLogsY + $minVisibleHeight, $logAndDividerWidth, $iDividerHeight)
-		$clickY = $startLogsY + $minVisibleHeight + $halfDividerTopHeight
-	ElseIf $clickY + $halfDividerBottomHeight < $endLogsY - $snapToMinMax And $clickY + $halfDividerBottomHeight >= $endLogsY - $minVisibleHeight Then
-		ControlMove($hGUI_LOG, "", $divider, $logAndDividerX, $endLogsY - $minVisibleHeight - $iDividerHeight, $logAndDividerWidth, $iDividerHeight)
-		$clickY = $endLogsY - $minVisibleHeight - $halfDividerBottomHeight
-	EndIf
-	ControlMove($hGUI_LOG, "", $txtLog, $logAndDividerX, $startLogsY, $logAndDividerWidth, $clickY - $startLogsY - $halfDividerTopHeight)
-	If $endLogsY - ($clickY + $halfDividerBottomHeight) < 0 Then
-		ControlMove($hGUI_LOG, "", $txtAtkLog, $logAndDividerX, $endLogsY, $logAndDividerWidth, 0)
-	Else
-		ControlMove($hGUI_LOG, "", $txtAtkLog, $logAndDividerX, $clickY + $halfDividerBottomHeight, $logAndDividerWidth, $endLogsY - $clickY - $halfDividerBottomHeight)
-	EndIf
-	ControlShow($hGUI_LOG, "", $txtLog)
-	ControlShow($hGUI_LOG, "", $txtAtkLog)
-	GUISetState(@SW_ENABLE, $hGUI_LOG)
-	GUICtrlSetState($divider, $GUI_FOCUS)
+
+	_GUICtrlRichEdit_SetSel($txtLog, - 1, -1) ; select end
+	_GUICtrlRichEdit_SetSel($txtAtkLog, - 1, -1) ; select end
 
 EndFunc   ;==>MoveDivider
 

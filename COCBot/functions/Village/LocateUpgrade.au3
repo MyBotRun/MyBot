@@ -16,12 +16,26 @@
 Func LocateUpgrades()
 
 	WinGetAndroidHandle()
-	ControlGetPos($HWnD, "", $AppClassInstance) ;Check For valid BS position
-	If $HWnD = 0 Or @error = 1 Then ; If not found, BS is not open so exit politely
+
+	If $HWnD <> 0 And $AndroidBackgroundLaunched = True Then ; Android is running in background mode, so restart Android
+		Setlog("Reboot " & $Android & " for Window access", $COLOR_RED)
+		RebootAndroid(True)
+	EndIf
+
+	If $HWnD = 0 Then ; If not found, Android is not open so exit politely
 		Setlog($Android & " is not open", $COLOR_RED)
 		SetError(1)
 		Return
 	EndIf
+
+	AndroidShield("LocateUpgrades") ; Update shield status due to manual $RunState
+
+	Local $hGraphic = AndroidGraphicsGdiBegin()
+	Local $hPen = AndroidGraphicsGdiAddObject("Pen", _GDIPlus_PenCreate(0xFFFFFF00, 2))
+	SetDebugLog("LocateUpgrades: $hGraphic=" & $hGraphic & ", $hPen=" & $hPen)
+
+	Local $wasDown = AndroidShieldForcedDown()
+
 	;If $hLogFileHandle = "" Then CreateLogFile()
 	;If $hAttackLogFileHandle = "" Then CreateAttackLogFile()
 	Setlog("Upgrade Buildings and Auto Wall Upgrade Can Not Use same Loot Type!", $COLOR_GREEN)
@@ -45,6 +59,7 @@ Func LocateUpgrades()
 				GUICtrlSetState($chkbxUpgrade[$icount], $GUI_CHECKED) ; Change upgrade selection box to checked again
 				ContinueLoop
 			EndIf
+			AndroidShieldForceDown(True, True)
 			$stext = GetTranslated(640, 51, "Click 'Locate Building' button then click on your Building/Hero to upgrade.") & @CRLF & @CRLF & GetTranslated(640, 52, "Click 'Finished' button when done locating all upgrades.") & @CRLF & @CRLF & GetTranslated(640, 53, "Click on Cancel to exit finding buildings.") & @CRLF & @CRLF
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
 			$MsgBox = _ExtMsgBox(0, GetTranslated(640, 54, "Locate Building|Finished|Cancel"), GetTranslated(640, 55, "Locate Upgrades"), $stext, 0, $frmBot)
@@ -54,10 +69,13 @@ Func LocateUpgrades()
 					Local $aPos = FindPos()
 					$aUpgrades[$icount][0] = $aPos[0]
 					$aUpgrades[$icount][1] = $aPos[1]
-					If _Sleep(500) Then Return
 					If isInsideDiamondXY($aUpgrades[$icount][0], $aUpgrades[$icount][1]) Then ; Check value to make sure its valid.
+						Local $Result = _GDIPlus_GraphicsDrawEllipse($hGraphic, $aUpgrades[$icount][0] - 10, $aUpgrades[$icount][1] - 10, 20, 20, $hPen)
+						AndroidGraphicsGdiUpdate()
+						SetDebugLog("Updgrade #" & $icount & " added at " & $aUpgrades[$icount][0] & "/" & $aUpgrades[$icount][1] & ", marker drawn: " & $Result)
 						GUICtrlSetImage($picUpgradeStatus[$icount], $pIconLib, $eIcnYellowLight) ; Set GUI Status to Yellow showing ready for upgrade
 						$ipicUpgradeStatus[$icount] = $eIcnYellowLight
+						_Sleep(750)
 					Else
 						Setlog("Bad location recorded, location skipped?", $COLOR_RED)
 						$aUpgrades[$icount][0] = -1
@@ -68,15 +86,19 @@ Func LocateUpgrades()
 					If $icount = 0 Then ; if no upgrades located, reset all values and return
 						Setlog("Locate Upgrade Cancelled", $COLOR_FUCHSIA)
 						btnResetUpgrade()
+						AndroidGraphicsGdiEnd()
+						AndroidShieldForceDown($wasDown)
 						Return False
 					EndIf
 					ExitLoop
 				Case 3 ; cancel all upgrades
 					Setlog("Locate Upgrade Cancelled", $COLOR_FUCHSIA)
 					btnResetUpgrade()
+					AndroidGraphicsGdiEnd()
+					AndroidShieldForceDown($wasDown)
 					Return False
 				Case Else
-					Setlog("Impossible value from Msgbox, you have been a bad programmer!", $COLOR_PURPLE)
+					Setlog("Impossible value (" & $MsgBox & ") from Msgbox, you have been a bad programmer!", $COLOR_PURPLE)
 			EndSwitch
 
 			ClickP($aAway, 1, 0, "#0210") ;Click Away to close windows
@@ -85,6 +107,9 @@ Func LocateUpgrades()
 		ExitLoop
 	WEnd
 
+	AndroidGraphicsGdiEnd()
+	AndroidShieldForceDown($wasDown)
+
 	CheckUpgrades()
 
 EndFunc   ;==>LocateUpgrades
@@ -92,13 +117,15 @@ EndFunc   ;==>LocateUpgrades
 Func CheckUpgrades() ; Valdiate and determine the cost and type of the upgrade and change GUI boxes/pics to match
 	Local $MsgBox
 
-	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-	$stext = GetTranslated(640, 56, "Keep Mouse OUT of Android Emulator Window While I Check Your Upgrades, Thanks!!")
-	$MsgBox = _ExtMsgBox(48, GetTranslated(640, 36, "OK"), GetTranslated(640, 37, "Notice"), $stext, 15, $frmBot)
-	If _Sleep($iDelayCheckUpgrades1) Then Return
-	If $MsgBox <> 1 Then
-		Setlog("Something weird happened in getting upgrade values, try again", $COLOR_RED)
-		Return False
+	If AndroidShielded() = False Then
+		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
+		$stext = GetTranslated(640, 38, "Keep Mouse OUT of Android Emulator Window While I Check Your Upgrades, Thanks!!")
+		$MsgBox = _ExtMsgBox(48, GetTranslated(640, 36, "OK"), GetTranslated(640, 37, "Notice"), $stext, 15, $frmBot)
+		If _Sleep($iDelayCheckUpgrades1) Then Return
+		If $MsgBox <> 1 Then
+			Setlog("Something weird happened in getting upgrade values, try again", $COLOR_RED)
+			Return False
+		EndIf
 	EndIf
 	For $iz = 0 To UBound($aUpgrades, 1) - 1
 		If isInsideDiamondXY($aUpgrades[$iz][0], $aUpgrades[$iz][1]) = False Then ; check for location off grass.
@@ -116,6 +143,7 @@ Func CheckUpgrades() ; Valdiate and determine the cost and type of the upgrade a
 			GUICtrlSetData($txtUpgradeLevel[$iz], "") ; Clear GUI Level
 			GUICtrlSetData($txtUpgradeValue[$iz], "") ; Clear Upgrade value in GUI
 			GUICtrlSetData($txtUpgradeTime[$iz], "") ; Clear Upgrade time in GUI
+			GUICtrlSetData($txtUpgradeEndTime[$iz], "") ; Clear Upgrade End time in GUI
 			GUICtrlSetImage($picUpgradeType[$iz], $pIconLib, $eIcnBlank)
 			If $ichkUpgrdeRepeat[$iz] = 1 Then GUICtrlSetState($chkUpgrdeRepeat[$iz], $GUI_UNCHECKED) ; Change repeat selection box to unchecked
 			ContinueLoop
@@ -161,11 +189,17 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 	Else ; If upgrade not in process
 		If $aUpgrades[$inum][0] <= 0 Or $aUpgrades[$inum][1] <= 0 Then Return False
 		$aUpgrades[$inum][2] = 0 ; Clear previous upgrade value if run before
+		GUICtrlSetData($txtUpgradeValue[$inum], "") ; Clear Upgrade value in GUI
 		$aUpgrades[$inum][3] = "" ; Clear previous loot type if run before
+		GUICtrlSetImage($picUpgradeType[$inum], $pIconLib, $eIcnBlank)
 		$aUpgrades[$inum][4] = "" ; Clear upgrade name if run before
+		GUICtrlSetData($txtUpgradeName[$inum], "") ; Set GUI name to match $aUpgrades variable
 		$aUpgrades[$inum][5] = "" ; Clear upgrade level if run before
+		GUICtrlSetData($txtUpgradeLevel[$inum], "") ; Set GUI level to match $aUpgrades variable
 		$aUpgrades[$inum][6] = "" ; Clear upgrade time if run before
+		GUICtrlSetData($txtUpgradeTime[$inum], "") ; Set GUI time to match $aUpgrades variable
 		$aUpgrades[$inum][7] = "" ; Clear upgrade end date/time if run before
+		GUICtrlSetData($txtUpgradeEndTime[$inum], "") ; Set GUI time to match $aUpgrades variable
 		ClickP($aAway, 1, 0, "#0211") ;Click Away to close windows
 		SetLog("-$Upgrade #" & $inum + 1 & " Location =  " & "(" & $aUpgrades[$inum][0] & "," & $aUpgrades[$inum][1] & ")", $COLOR_TEAL) ;Debug
 		If _Sleep($iDelayUpgradeValue1) Then Return
@@ -240,6 +274,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					GUICtrlSetImage($picUpgradeStatus[$inum], $pIconLib, $eIcnTroops) ; change to needs trained indicator
 					$ichkbxUpgrade[$inum] = 0
 					GUICtrlSetState($chkbxUpgrade[$inum], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
+					$aUpgrades[$inum][7] = "" ; Clear upgrade end date/time if run before
+					GUICtrlSetData($txtUpgradeEndTime[$inum], "") ; Set GUI time to match $aUpgrades variable
 					ClickP($aAway, 1, 0, "#0214") ;Click Away
 					Return False
 				EndIf
@@ -253,6 +289,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 
 				$aUpgrades[$inum][6] = getBldgUpgradeTime(196, 304 + $midOffsetY); Try to read white text showing time for upgrade
 				Setlog("Upgrade #" & $inum + 1 & " Time = " & $aUpgrades[$inum][6], $COLOR_BLUE)
+				If  $aUpgrades[$inum][6]  <> "" Then $aUpgrades[$inum][7] = ""  ; Clear old upgrade end time
 
 			Case _ColorCheck(_GetPixelColor(719, 118 + $midOffsetY), Hex(0xDF0408, 6), 20) ; Check if the Hero Upgrade window is open
 				If _ColorCheck(_GetPixelColor(400, 485 + $midOffsetY), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
@@ -268,6 +305,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					GUICtrlSetImage($picUpgradeStatus[$inum], $pIconLib, $eIcnTroops) ; change to needs trained indicator
 					$ichkbxUpgrade[$inum] = 0
 					GUICtrlSetState($chkbxUpgrade[$inum], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
+					$aUpgrades[$inum][7] = "" ; Clear upgrade end date/time if run before
+					GUICtrlSetData($txtUpgradeEndTime[$inum], "") ; Set GUI time to match $aUpgrades variable
 					ClickP($aAway, 1, 0, "#0215") ;Click Away
 					Return False
 				EndIf
@@ -277,6 +316,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 				If $aUpgrades[$inum][2] = "" And $ichkUpgrdeRepeat[$inum] <> 1 Then $bOopsFlag = True ; set error flag for user to set value
 				$aUpgrades[$inum][6] = getHeroUpgradeTime(464, 527 + $midOffsetY) ; Try to read white text showing time for upgrade
 				Setlog("Upgrade #" & $inum + 1 & " Time = " & $aUpgrades[$inum][6], $COLOR_BLUE)
+				If  $aUpgrades[$inum][6]  <> "" Then $aUpgrades[$inum][7] = ""  ; Clear old upgrade end time
 
 			Case Else
 				If isGemOpen(True) Then ClickP($aAway, 1, 0, "#0216")
@@ -357,6 +397,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 	EndSwitch
 	GUICtrlSetData($txtUpgradeValue[$inum], _NumberFormat($aUpgrades[$inum][2])) ; Show Upgrade value in GUI
 	GUICtrlSetData($txtUpgradeTime[$inum], StringStripWS($aUpgrades[$inum][6], $STR_STRIPALL)) ; Set GUI time to match $aUpgrades variable
+	GUICtrlSetData($txtUpgradeEndTime[$inum], $aUpgrades[$inum][7]) ; Set GUI time to match $aUpgrades variable
 
 	Return True
 

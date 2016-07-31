@@ -20,7 +20,11 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 	ChkAttackCSVConfig()
 
 	If IsMainPage() Then
-		ClickP($aAttackButton, 1, 0, "#0149") ; Click Attack Button
+		If $iUseRandomClick = 0 then
+			ClickP($aAttackButton, 1, 0, "#0149") ; Click Attack Button
+		Else
+			ClickR($aAttackButtonRND, $aAttackButton[0], $aAttackButton[1], 1, 0)
+		EndIF
 	EndIF
 	If _Sleep($iDelayPrepareSearch1) Then Return
 
@@ -35,7 +39,11 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 		checkMainScreen()
 		Return
 	Else
-		ClickP($aFindMatchButton, 1, 0, "#0150");Click Find a Match Button
+		If $iUseRandomClick = 0 then
+			ClickP($aFindMatchButton, 1, 0, "#0150");Click Find a Match Button
+		Else
+			ClickR($aFindMatchButtonRND, $aFindMatchButton[0], $aFindMatchButton[1], 1, 0)
+		EndIF	
 	EndIf
 
 

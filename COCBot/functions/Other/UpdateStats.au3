@@ -301,7 +301,7 @@ Func UpdateStats()
 		$iOldDElixirFromDrills = $iDElixirFromDrills
 	EndIf
 
-	Local $iAttackedCount = 0
+	$iAttackedCount = 0
 
 	For $i = 0 To $iModeCount
 

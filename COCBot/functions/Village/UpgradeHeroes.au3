@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: @z0mbie (2015)
-; Modified ......: Master1st (Set2015) - ProMac (Oct2015)
+; Modified ......: Master1st (Set2015) - ProMac (Oct2015), MonkeyHunter (6-2016)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -48,15 +48,10 @@ Func UpgradeHeroes()
 	SetLog("Upgrading Heroes", $COLOR_BLUE)
 	;;;;;;;;;;;;;;;;;;;;;;;;##### Archer Queen #####;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	;##### Verify Builders available #####;
-	Local $aGetBuilders = ""
-	$aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
-	If IsArray($aGetBuilders) Then
-		$iFreeBuilderCount = $aGetBuilders[0] ; Upgrade value
-		$iTotalBuilderCount = $aGetBuilders[1]
-	EndIf
-	If $debugSetlog = 1 Then Setlog("No. of Free/Total Builders: " & $iFreeBuilderCount & "/" & $iTotalBuilderCount, $COLOR_PURPLE)
+	If getBuilderCount() = False Then Return  ; update builder data, return if problem
+	If _Sleep($iDelayRespond) Then Return
 	If $iFreeBuilderCount < 1 + $iSaveWallBldr Then
-		SetLog("Not Enough Builders", $COLOR_RED)
+		SetLog("Not Enough Builders for Queen", $COLOR_RED)
 		Return
 	EndIf
 	;#### upgrade queen ####;
@@ -64,14 +59,10 @@ Func UpgradeHeroes()
 	If _Sleep($iDelayUpgradeHero1) Then Return
 	;;;;;;;;;;;;;;;;;;;;;;;;##### Barbarian King #####;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	;##### Verify Builders available #####;
-	$aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
-	If IsArray($aGetBuilders) Then
-		$iFreeBuilderCount = $aGetBuilders[0] ; Upgrade value
-		$iTotalBuilderCount = $aGetBuilders[1]
-	EndIf
-	If $debugSetlog = 1 Then Setlog("No. of Free/Total Builders: " & $iFreeBuilderCount & "/" & $iTotalBuilderCount, $COLOR_PURPLE)
+	If getBuilderCount() = False Then Return  ; update builder data, return if problem
+	If _Sleep($iDelayRespond) Then Return
 	If $iFreeBuilderCount < 1 + $iSaveWallBldr Then
-		SetLog("Not Enough Builder", $COLOR_RED)
+		SetLog("Not Enough Builders for King", $COLOR_RED)
 		Return
 	EndIf
 	;##### Upgrade King #####;
@@ -79,16 +70,12 @@ Func UpgradeHeroes()
 	If _Sleep($iDelayUpgradeHero1) Then Return
 	;;;;;;;;;;;;;;;;;;;;;;;;##### Grand Warden #####;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	;##### Verify Builders available
-	Local $aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
-	Local $FreeBuilder = $aGetBuilders[0]
-	Local $TotalBuilders = $aGetBuilders[1]
-	If $debugSetlog = 1 Then Setlog("No. of Free/Total Builders: " & $FreeBuilder & "/" & $TotalBuilders, $COLOR_GREEN)
-
-	If $FreeBuilder < 1 + $iSaveWallBldr Then
-		SetLog("Not Enough Builder", $COLOR_RED)
+	If getBuilderCount() = False Then Return  ; update builder data, return if problem
+	If _Sleep($iDelayRespond) Then Return
+	If $iFreeBuilderCount < 1 + $iSaveWallBldr Then
+		SetLog("Not Enough Builder for Warden", $COLOR_RED)
 		Return
 	EndIf
-
 	;##### Upg Warden
 	WardenUpgrade()
 

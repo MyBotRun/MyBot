@@ -23,6 +23,9 @@ Func checkArmyCamp()
 	getArmyTroopCount()
 	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response
 
+	getArmyTroopTime()
+	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response
+
 	getArmyHeroCount()
 	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response
 
@@ -32,10 +35,11 @@ Func checkArmyCamp()
 	getArmySpellCount()
 	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response
 
-	;verify can make requestCC
-	$canRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5])
-	If $debugsetlogTrain = 1 Then SETLOG("Can Request CC: " & $canRequestCC, $COLOR_PURPLE)
+	getArmySpellTime()
+	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response
 
+	getArmyCCStatus()
+	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response
 
 	;call BarracksStatus() to read barracks num
 	If $FirstStart Then
@@ -48,7 +52,7 @@ Func checkArmyCamp()
 
 	$FirstCampView = True
 
-	If $debugsetlogTrain = 1 Then SETLOG("End checkArmyCamp:" & $canRequestCC, $COLOR_PURPLE)
+	If $debugsetlogTrain = 1 Then SETLOG("End checkArmyCamp: canRequestCC= " & $canRequestCC & ", fullArmy= " & $fullArmy, $COLOR_PURPLE)
 
 EndFunc   ;==>checkArmyCamp
 

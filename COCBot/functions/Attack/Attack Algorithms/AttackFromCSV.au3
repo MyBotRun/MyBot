@@ -77,6 +77,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 
 	;00 read attack file SIDE row and valorize variables
 	ParseAttackCSV_Read_SIDE_variables()
+	If _Sleep($iDelayRespond) Then Return
 
 	;01 - TROOPS ------------------------------------------------------------------------------------------------------------------------------------------
 	debugAttackCSV("Troops to be used (purged from troops) ")
@@ -90,6 +91,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 
 	_CaptureRegion2()
 	if $captureredarea then _GetRedArea()
+	If _Sleep($iDelayRespond) Then Return
 
 	Local $htimerREDAREA = Round(TimerDiff($hTimer) / 1000, 2)
 	debugAttackCSV("Calculated  (in " & $htimerREDAREA & " seconds) :")
@@ -108,6 +110,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 	debugAttackCSV("	[" & UBound($PixelTopRight) & "] pixels TopRight")
 	debugAttackCSV("	[" & UBound($PixelBottomLeft) & "] pixels BottomLeft")
 	debugAttackCSV("	[" & UBound($PixelBottomRight) & "] pixels BottomRight")
+	If _Sleep($iDelayRespond) Then Return
 
 	;02.03 - MAKE FULL DROP LINE EDGE--------------------------------------------------------------------------------------------------------------------------
 	$PixelTopLeftDropLine = MakeDropLine($PixelTopLeft, StringSplit($InternalArea[0][0] - 30 & "-" & $InternalArea[0][1], "-", $STR_NOCOUNT), StringSplit($InternalArea[2][0] & "-" & $InternalArea[2][1] - 25, "-", $STR_NOCOUNT))
@@ -184,6 +187,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 	$PixelBottomRightDOWNDropLine = GetListPixel($tempvectstr1)
 	$PixelBottomRightUPDropLine = GetListPixel($tempvectstr2)
 	Setlog("> Drop Lines located in  " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_BLUE)
+	If _Sleep($iDelayRespond) Then Return
 
 	; 03 - TOWNHALL ------------------------------------------------------------------------
 	If $searchTH = "-" Then
@@ -210,6 +214,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 	Else
 		Setlog("> Townhall has already been located in while searching for an image", $COLOR_BLUE)
 	EndIf
+	If _Sleep($iDelayRespond) Then Return
 
 	_CaptureRegion2() ;
 
@@ -234,6 +239,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 		SuspendAndroid()
 		$PixelMine = GetLocationMine()
 		ResumeAndroid()
+		If _Sleep($iDelayRespond) Then Return
 		CleanRedArea($PixelMine)
 		Local $htimerMine = Round(TimerDiff($hTimer) / 1000, 2)
 		If (IsArray($PixelMine)) Then
@@ -265,6 +271,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 	Else
 		Setlog("> Mines detection not needed, skip", $COLOR_BLUE)
 	EndIf
+	If _Sleep($iDelayRespond) Then Return
 
 	;04.02  If drop troop near elisir
 	If $attackcsv_locate_elixir = 1 Then
@@ -273,6 +280,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 		SuspendAndroid()
 		$PixelElixir = GetLocationElixir()
 		ResumeAndroid()
+		If _Sleep($iDelayRespond) Then Return
 		CleanRedArea($PixelElixir)
 		Local $htimerMine = Round(TimerDiff($hTimer) / 1000, 2)
 		If (IsArray($PixelElixir)) Then
@@ -304,6 +312,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 	Else
 		Setlog("> Elixir collectors detection not needed, skip", $COLOR_BLUE)
 	EndIf
+	If _Sleep($iDelayRespond) Then Return
 
 	;04.03 If drop troop near drill
 	If $attackcsv_locate_drill = 1 Then
@@ -312,6 +321,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 		SuspendAndroid()
 		$PixelDarkElixir = GetLocationDarkElixir()
 		ResumeAndroid()
+		If _Sleep($iDelayRespond) Then Return
 		CleanRedArea($PixelDarkElixir)
 		Local $htimerMine = Round(TimerDiff($hTimer) / 1000, 2)
 		If (IsArray($PixelDarkElixir)) Then
@@ -343,6 +353,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 	Else
 		Setlog("> Drills detection not needed, skip", $COLOR_BLUE)
 	EndIf
+	If _Sleep($iDelayRespond) Then Return
 
 	If StringLen($PixelNearCollectorTopLeftSTR) > 0 Then $PixelNearCollectorTopLeftSTR = StringLeft($PixelNearCollectorTopLeftSTR, StringLen($PixelNearCollectorTopLeftSTR) - 1)
 	If StringLen($PixelNearCollectorTopRightSTR) > 0 Then $PixelNearCollectorTopRightSTR = StringLeft($PixelNearCollectorTopRightSTR, StringLen($PixelNearCollectorTopRightSTR) - 1)
@@ -352,7 +363,6 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 	$PixelNearCollectorTopRight = GetListPixel3($PixelNearCollectorTopRightSTR)
 	$PixelNearCollectorBottomLeft = GetListPixel3($PixelNearCollectorBottomLeftSTR)
 	$PixelNearCollectorBottomRight = GetListPixel3($PixelNearCollectorBottomRightSTR)
-
 
 	If $attackcsv_locate_gold_storage = 1 Then
 		SuspendAndroid()
@@ -373,6 +383,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 		SuspendAndroid()
 		Local $PixelDarkElixirStorage = GetLocationDarkElixirStorageWithLevel()
 		ResumeAndroid()
+		If _Sleep($iDelayRespond) Then Return
 		CleanRedArea($PixelDarkElixirStorage)
 		Local $pixel = StringSplit($PixelDarkElixirStorage, "#", 2)
 		If UBound($pixel) >= 2 Then
@@ -412,6 +423,7 @@ Func Algorithm_AttackCSV($testattack = False,$captureredarea=true)
 
 	; 08 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
 	SetSlotSpecialTroops()
+	If _Sleep($iDelayRespond) Then Return
 	ParseAttackCSV($testattack)
 
 EndFunc   ;==>Algorithm_AttackCSV

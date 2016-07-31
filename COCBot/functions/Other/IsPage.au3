@@ -151,14 +151,17 @@ EndFunc   ;==>IsLaunchAttackPage
 
 Func IsEndBattlePage($writelog = True)
 	Local $result
-
-	$result = _ColorCheck(_GetPixelColor($aConfirmSurrender[0], $aConfirmSurrender[1], True), Hex($aConfirmSurrender[2], 6), $aConfirmSurrender[3])
+	Local $colorRead = _GetPixelColor($aConfirmSurrender[0], $aConfirmSurrender[1], True)
+	$result = _ColorCheck($colorRead, Hex($aConfirmSurrender[2], 6), $aConfirmSurrender[3])
 
 	If $result Then
 		If ($DebugSetlog = 1 Or $DebugClick = 1) And $writelog = True Then SetLog("**End Battle Window OK**", $COLOR_ORANGE)
 		Return True
 	Else
-		If ($DebugSetlog = 1 Or $DebugClick = 1) And $writelog = True Then SetLog("**End Battle Window FAIL**", $COLOR_ORANGE)
+		If ($DebugSetlog = 1 Or $DebugClick = 1) And $writelog = True Then
+			SetLog("**End Battle Window FAIL**", $COLOR_ORANGE)
+			SetLog("expected in (" & $aConfirmSurrender[0] & "," & $aConfirmSurrender[1] & ")  = " & Hex($aConfirmSurrender[2], 6) & " - Found " & $colorRead, $COLOR_ORANGE)
+		EndIf
 		If $debugImageSave = 1 And $writelog = True Then DebugImageSave("IsEndBattlePage_")
 		Return False
 	EndIf

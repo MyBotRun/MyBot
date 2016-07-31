@@ -359,7 +359,7 @@ Func LabUpgrade()
 							GetTranslated(614, 12, "Caution - Unnecessary timer reset will force constant checks for lab status") & @CRLF & @CRLF & _
 							GetTranslated(614, 19, "Troop Upgrade started") & ": " & $StartTime & ", " & _
 							GetTranslated(614, 20, "Will begin to check completion at:") & " " & $sLabUpgradeTime & @CRLF & " "
-					GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
+					_GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
 				EndIf
 
 				Click(660, 520 + $midOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button

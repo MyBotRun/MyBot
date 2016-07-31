@@ -12,6 +12,7 @@
 ; ===============================================================================================================================
 
 ;General Delay Times
+Global Const $iDelaySleep = 100 ; For larger sleep time this is the max. Sleep() call
 Global Const $iDelayWaitForPopup = 1500 ; An action was just clicked and waiting for popup
 
 Global Const $iDelayRespond = 5 ; Just to make stop button more Responsive
@@ -148,7 +149,8 @@ Global Const $iDelaycheckObstacles5 = 500 ; click
 Global Const $iDelaycheckObstacles6 = 300000 ; 5 minutes
 Global Const $iDelaycheckObstacles7 = 600000 ; 10 minutes
 Global Const $iDelaycheckObstacles8 = 900000 ; 15 minutes
-
+Global Const $iDelaycheckObstacles9 = 1200000 ; 20 minutes
+Global Const $iDelaycheckObstacles10 = 1800000 ; 30 minutes
 
 ;isGemOpen
 Global Const $iDelayisGemOpen1 = 350
@@ -399,6 +401,7 @@ Global Const $iDelayTrainMoveBtn1 = 250
 ; WaitnOpenCoC
 Global Const $iDelayWaitnOpenCoC500 = 500
 Global Const $iDelayWaitnOpenCoC1000 = 1000
+Global Const $iDelayWaitnOpenCoC10000 = 10000
 Global Const $iDelayWaitnOpenCoC25000 = 25000
 
 ;SWHTSearchLimit
@@ -439,4 +442,6 @@ Global Const $iDelayAttackDisable1000 = 1000
 
 ;Attack Scheduler
 Global Const $iDelayWaitAttack = 120000
+Global Const $iDelayWaitAttack1 = 60000
+Global Const $iDelayWaitAttack2 = 300000
 

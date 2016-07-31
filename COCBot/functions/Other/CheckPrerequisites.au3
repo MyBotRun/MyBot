@@ -13,6 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func CheckPrerequisites()
+	Local $isAllOK = True
 	Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
 	Local $isVC2010Installed = isVC2010Installed()
 	If ($isNetFramework4dot5Installed = False Or $isVC2010Installed = False) Then
@@ -24,11 +25,16 @@ Func CheckPrerequisites()
 			SetLog("The VC 2010 x86 is not installed", $COLOR_RED)
 			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=5555", $COLOR_RED)
 		EndIf
+		$isAllOK = False
+	EndIf
+	If isEveryFileInstalled() = False Then $isAllOK = False
+	If Not checkAutoitVersion() Then $isAllOK = False
+	checkIsAdmin()
 
+	If $isAllOK = False Then
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
 	EndIf
-	If isEveryFileInstalled() = False Then Exit
-	If Not checkAutoitVersion() Then Exit
+	Return $isAllOK
 EndFunc   ;==>CheckPrerequisites
 
 Func isNetFramework4Installed()
@@ -104,7 +110,6 @@ Func isEveryFileInstalled()
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$MsgBox = _ExtMsgBox(48, GetTranslated(640,14,"Ok"), $sText1, $sText2, 0, $frmBot)
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
-		;Exit
 	EndIf
 	If @Compiled Then;if .exe
 		If Not StringInStr(@ScriptFullPath, "MyBot.run.exe", 1) Then; if filename isn't MyBot.run.exe
@@ -139,5 +144,11 @@ Func checkAutoitVersion()
 	$MsgBox = _ExtMsgBox(48, "OK|Cancel", $sText1, $sText2, 0, $frmBot)
 	If $MsgBox = 1 Then ShellExecute("https://www.autoitscript.com/site/autoit/downloads/")
 	Return 0
+EndFunc
+
+Func checkIsAdmin()
+	If IsAdmin() Then Return True
+	SetLog("My Bot running without admin privileges", $COLOR_RED)
+	Return False
 EndFunc
 

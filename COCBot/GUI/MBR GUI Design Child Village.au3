@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-$hGUI_VILLAGE = GUICreate("", $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, BitOR($WS_CHILD, $WS_TABSTOP), -1, $frmBot)
+$hGUI_VILLAGE = GUICreate("", $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, BitOR($WS_CHILD, $WS_TABSTOP), -1, $frmBotEx)
 ;GUISetBkColor($COLOR_WHITE, $hGUI_VILLAGE)
 
 ;creating subchilds first!
@@ -50,7 +50,7 @@ Global $txtUnbreakable, $txtUnBrkMinGold,$txtUnBrkMaxGold,$txtUnBrkMinElixir, $t
 		$y +=10
 			$chkUnbreakable = GUICtrlCreateCheckbox(GetTranslated(618,2, "Enable Unbreakable"), $x - 10, $y, -1, -1)
 			$TxtTip = GetTranslated(618,3, "Enable farming Defense Wins for Unbreakable achievement.") ;& @CRLF & "TIP: Set your trophy range on the Misc Tab to '600 - 800' for best results. WARNING: Doing so will DROP you Trophies!"
-			GUICtrlSetTip(-1, $TxtTip)
+			_GUICtrlSetTip(-1, $TxtTip)
 			GUICtrlSetOnEvent(-1, "chkUnbreakable")
 	$picUnbreakable1 = GUICtrlCreateIcon($pIconLib, $eIcnGoldStar, $x + 10, $y + 51, 32, 32)
 	$picUnbreakable2 = GUICtrlCreateIcon($pIconLib, $eIcnGoldStar, $x + 42, $y + 36, 48, 48)
@@ -60,7 +60,7 @@ Global $txtUnbreakable, $txtUnBrkMinGold,$txtUnBrkMaxGold,$txtUnBrkMinElixir, $t
 		$txtUnbreakable = GUICtrlCreateInput("5", $x + 80, $y, 30, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$TxtTip = GetTranslated(618,5, "Set the amount of time to stop CoC and wait for enemy attacks to gain defense wins. (1-99 minutes)")
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 2)
 		$lblUnbreakable2 = GUICtrlCreateLabel(GetTranslated(618,6, "Minutes"), $x + 113, $y+3, -1, -1)
 		$y += 28
@@ -69,34 +69,34 @@ Global $txtUnbreakable, $txtUnBrkMinGold,$txtUnBrkMaxGold,$txtUnBrkMinElixir, $t
 		$y += 16
 		$txtUnBrkMinGold = GUICtrlCreateInput("50000", $x + 20, $y, 58, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetTip(-1, GetTranslated(618,9, "Amount of Gold that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,10, "Set this value to amount of Gold you need for searching or upgrades."))
+			_GUICtrlSetTip(-1, GetTranslated(618,9, "Amount of Gold that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,10, "Set this value to amount of Gold you need for searching or upgrades."))
 			GUICtrlSetLimit(-1, 7)
 		GUICtrlCreateIcon($pIconLib, $eIcnGold, $x + 80, $y + 2, 16, 16)
 		$txtUnBrkMaxGold = GUICtrlCreateInput("600000", $x + 110, $y, 58, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetTip(-1, GetTranslated(618,11, "Amount of Gold in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,12, "Input amount of Gold you need to attract enemy or for upgrades."))
+			_GUICtrlSetTip(-1, GetTranslated(618,11, "Amount of Gold in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,12, "Input amount of Gold you need to attract enemy or for upgrades."))
 			GUICtrlSetLimit(-1, 7)
 		GUICtrlCreateIcon($pIconLib, $eIcnGold, $x + 170, $y + 2, 16, 16)
 		$y += 26
 		$txtUnBrkMinElixir = GUICtrlCreateInput("50000", $x + 20, $y, 58, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetTip(-1, GetTranslated(618,13, "Amount of Elixir that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,14, "Set this value to amount of Elixir you need for making troops or upgrades."))
+			_GUICtrlSetTip(-1, GetTranslated(618,13, "Amount of Elixir that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,14, "Set this value to amount of Elixir you need for making troops or upgrades."))
 			GUICtrlSetLimit(-1, 7)
 		GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x + 80, $y, 16, 16)
 		$txtUnBrkMaxElixir = GUICtrlCreateInput("600000", $x + 110, $y, 58, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetTip(-1, GetTranslated(618,15, "Amount of Elixir in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,16, "Input amount of Elixir you need to attract enemy or for upgrades."))
+			_GUICtrlSetTip(-1, GetTranslated(618,15, "Amount of Elixir in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,16, "Input amount of Elixir you need to attract enemy or for upgrades."))
 			GUICtrlSetLimit(-1, 7)
 		GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x + 170, $y, 16, 16)
 		$y += 24
 		$txtUnBrkMinDark = GUICtrlCreateInput("5000", $x + 20, $y, 58, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetTip(-1, GetTranslated(618,17, "Amount of Dark Elixir that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,18, "Set this value to amount of Dark Elixir you need for making troops or upgrades."))
+			_GUICtrlSetTip(-1, GetTranslated(618,17, "Amount of Dark Elixir that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,18, "Set this value to amount of Dark Elixir you need for making troops or upgrades."))
 			GUICtrlSetLimit(-1, 6)
 		GUICtrlCreateIcon($pIconLib, $eIcnDark, $x + 80, $y, 16, 16)
 		$txtUnBrkMaxDark = GUICtrlCreateInput("6000", $x + 110, $y, 58, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetTip(-1, GetTranslated(618,19, "Amount of Dark Elixir in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,20, "Input amount of Dark Elixir you need to attract enemy or for upgrades."))
+			_GUICtrlSetTip(-1, GetTranslated(618,19, "Amount of Dark Elixir in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,20, "Input amount of Dark Elixir you need to attract enemy or for upgrades."))
 			GUICtrlSetLimit(-1, 6)
 		GUICtrlCreateIcon($pIconLib, $eIcnDark, $x + 170, $y, 16, 16)
     GUICtrlCreateGroup("", -99, -99, 1, 1)

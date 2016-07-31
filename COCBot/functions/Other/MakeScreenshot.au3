@@ -16,7 +16,7 @@
 
 Func MakeScreenshot($TargetDir, $type = "jpg")
 	WinGetAndroidHandle()
-	If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) Then
+	If $HWnD <> 0 Then
 
 		Local $SuspendMode
 		Local $iLeft = 0, $iTop = 0, $iRight = $AndroidClientWidth, $iBottom = $AndroidClientHeight ; set size if screen to save
@@ -68,10 +68,14 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 		Local $Time = @HOUR & "." & @MIN & "." & @SEC
 		Local $filename = $Date & "_" & $Time & "." & $type  ; most systems support type = png, jpg, bmp, gif, tif
 		_GDIPlus_ImageSaveToFile($hBitmapScreenshot, $TargetDir & $filename)
-		If $dirTemp = $TargetDir Then
-			SetLog("Screenshot saved: .\Profiles\" & $sCurrProfile & "\Temp\" & $filename)
+		If FileExists($TargetDir & $filename) = 1 Then
+			If $dirTemp = $TargetDir Then
+				SetLog("Screenshot saved: .\Profiles\" & $sCurrProfile & "\Temp\" & $filename)
+			Else
+				SetLog("Screenshot saved: " & $TargetDir & $filename)
+			EndIf
 		Else
-			SetLog("Screenshot saved: " & $TargetDir & $filename)
+			SetLog("Screenshot file not created!", $COLOR_RED)
 		EndIf
 		$iMakeScreenshotNow = False
 		;reduce mem

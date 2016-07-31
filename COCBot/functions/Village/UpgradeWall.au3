@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: ProMac (2015), HungLe (2015)
-; Modified ......: Sardo 2015-08, KnowJack (Aug 2105)
+; Modified ......: Sardo 2015-08, KnowJack (Aug 2105), MonkeyHunter(06-2016)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkwall.au3
@@ -152,16 +152,12 @@ Func SkipWallUpgrade() ; Dynamic Upgrades
 
 	;;;;;;;;;;;;;;;;;;;;##### Verify Builders available For Building Upgrades, If builder is available then buildings upgrade have priority #####;;;;;;;;;;;;;;;;;;;;
 	Local $iUpgradeAction = 0
-	Local $aGetBuilders = ""
-	Local $TotalBuilders = ""
 	Local $BuildingsNeedGold = 0
 	Local $BuildingsNeedElixir = 0
-	$aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
-	If IsArray($aGetBuilders) Then
-		$iFreeBuilderCount = $aGetBuilders[0] ; Upgrade value
-		$TotalBuilders = $aGetBuilders[1]
-	EndIf
-	If $debugSetlog = 1 Then Setlog("No. of Free/Total Builders: " & $iFreeBuilderCount & "/" & $TotalBuilders, $COLOR_PURPLE)
+
+	If getBuilderCount() = False Then Return True ; update builder data, return true to skip if problem
+	If _Sleep($iDelayRespond) Then Return True
+
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	For $iz = 0 To UBound($aUpgrades, 1) - 1
 		If $ichkbxUpgrade[$iz] = 1 Then $iUpgradeAction += 1

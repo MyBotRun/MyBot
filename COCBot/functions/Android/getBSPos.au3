@@ -17,7 +17,11 @@ Func getBSPos()
     Local $Changed = False, $aOldValues[4]
 	Local $hWin = $HWnD
 	WinGetAndroidHandle()
-	ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)
+    If $AndroidBackgroundLaunched = False Then
+        getAndroidPos(True)
+    Else
+        SetError($HWnd = 0 ? 1 : 0)
+    EndIf
 	If Not $RunState Then Return
 	If @error = 1 Then
 		SetError (0,0,0)
@@ -26,7 +30,11 @@ Func getBSPos()
 		Else
 			RebootAndroid()
 		EndIf
-	    ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)
+        If $AndroidBackgroundLaunched = False Then
+           getAndroidPos(True)
+        Else
+           SetError($HWnd = 0 ? 1 : 0)
+        EndIf
 		If Not $RunState Then Return
 		If @error = 1 Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
@@ -47,6 +55,10 @@ Func getBSPos()
 			RebootAndroid()
 		EndIf
 		Return
+    EndIf
+    If $AndroidBackgroundLaunched = True Then
+		SuspendAndroid($SuspendMode, False)
+		Return
 	EndIf
 	$aOldValues[0] = $BSpos[0]
 	$aOldValues[1] = $BSpos[1]
@@ -60,7 +72,7 @@ Func getBSPos()
 		Else
 			RebootAndroid()
 		EndIf
-	  $aPos = ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)
+	  $aPos = getAndroidPos(True)
 	  If Not $RunState Then Return
 	  If @error = 1 Then
 		  _ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
@@ -70,6 +82,7 @@ Func getBSPos()
 		  $MsgBox = _ExtMsgBox(0, GetTranslated(640,20,"Close MyBot!"), GetTranslated(640,21,"Okay - Must Exit Program"), $stext, 15, $frmBot)
 		  If $MsgBox = 1 Then
 			  BotClose()
+			  Return
 		  EndIf
 	   EndIf
 	EndIf
@@ -81,7 +94,7 @@ Func getBSPos()
 		If @error <> 0 Then Return SetError (0,0,0)
 		DllStructSetData($tPoint, "Y", $aPos[1])
 		If @error <> 0 Then Return SetError (0,0,0)
-		_WinAPI_ClientToScreen($HWnD, $tPoint)
+		_WinAPI_ClientToScreen(($AndroidEmbedded = False ? $HWnD : $frmBot), $tPoint)
 		If @error <> 0 Then Return SetError (0,0,0)
 		$BSpos[0] = DllStructGetData($tPoint, "X")
 		If @error <> 0 Then Return SetError (0,0,0)
@@ -97,9 +110,12 @@ Func getBSPos()
     SuspendAndroid($SuspendMode, False)
 EndFunc   ;==>getBSPos
 
-Func getAndroidPos($RetryCount = 0)
-   Local $BSsize = ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)
-   If Not $RunState Then Return $BSsize
+Func getAndroidPos($FastCheck = False, $RetryCount = 0)
+   Local $BSsize = ControlGetPos(($AndroidEmbedded = False ? $HWnD : $frmBot), $AppPaneName, $AppClassInstance)
+
+   ;If Not $RunState Or $FastCheck Then Return $BSsize
+   If $FastCheck Then Return $BSsize
+
    If IsArray($BSsize) Then ; Is Android Client Control available?
 
 	 Local $BSx = $BSsize[2] ; ($BSsize[2] > $BSsize[3]) ? $BSsize[2] : $BSsize[3]
@@ -145,12 +161,12 @@ Func getAndroidPos($RetryCount = 0)
 
 			   RedrawAndroidWindow()
 
-			   If _Sleep(500) Then Return False ; Just wait, not really required...
+			   If _Sleep(500, True, False) Then Return False ; Just wait, not really required...
 			   ; wait 5 Sec. till window client content is resized also
 			   Local $hTimer = TimerInit()
 			   Do
-				  If _Sleep(100) Then Return False
-				  Local $new_BSsize = ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)
+				  If _Sleep(100, True, False) Then Return False
+				  Local $new_BSsize = getAndroidPos(True)
 			   Until TimerDiff($hTimer) > 5000 Or ($BSsize[2] = $AndroidClientWidth And $BSsize[3] <> $AndroidClientHeight)
 
 			   ; reload size
@@ -173,8 +189,8 @@ Func getAndroidPos($RetryCount = 0)
 
 			; added for Nox that reports during launch a client size of 1x1
 			If $RetryCount < 5 Then
-				If _Sleep(250) = True Then Return $BSsize
-				Return getAndroidPos($RetryCount + 1)
+				If _Sleep(250, True, False) = True Then Return $BSsize
+				Return getAndroidPos($FastCheck, $RetryCount + 1)
 			EndIf
 
 		EndIf

@@ -13,12 +13,10 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func btnLocateUpgrades()
+	Local $wasRunState = $RunState
 	$RunState = True
-	While 1
-		LocateUpgrades()
-		ExitLoop
-	WEnd
-	$RunState = False
+	LocateUpgrades()
+	$RunState = $wasRunState
 EndFunc   ;==>btnLocateUpgrades
 
 Func btnchkbxUpgrade()
@@ -83,6 +81,7 @@ Func btnResetUpgrade()
 		$ipicUpgradeStatus[$i] = $eIcnTroops
 		GUICtrlSetImage($picUpgradeStatus[$i], $pIconLib, $ipicUpgradeStatus[$i]) ; Change GUI upgrade status to not ready
 		GUICtrlSetState($chkbxUpgrade[$i], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
+		GUICtrlSetData($txtUpgradeEndTime[$i], "") ; Clear Upgrade time in GUI
 		GUICtrlSetState($chkUpgrdeRepeat[$i], $GUI_UNCHECKED) ; Change repeat box to unchecked
 	Next
 EndFunc   ;==>btnResetUpgrade
@@ -115,7 +114,7 @@ Func LabStatusGUIUpdate()
 				GetTranslated(614, 12, "Caution - Unnecessary timer reset will force constant checks for lab status") & @CRLF & @CRLF & _
 				GetTranslated(614, 19, "Troop Upgrade started") & ", " & _
 				GetTranslated(614, 20, "Will begin to check completion at:") & " " & $sLabUpgradeTime & @CRLF & " "
-		GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
+		_GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
 		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_SHOW)
 		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_ENABLE)
 	Else
@@ -143,7 +142,7 @@ Func ResetLabUpgradeTime()
 				GetTranslated(614, 10, "If upgrade has been manually finished with gems before normal end time,") & @CRLF & _
 				GetTranslated(614, 11, "Click red button to reset internal upgrade timer BEFORE STARTING NEW UPGRADE") & @CRLF & _
 				GetTranslated(614, 12, "Caution - Unnecessary timer reset will force constant checks for lab status")
-		GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
+		_GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
 	EndIf
 	If _DateIsValid($sLabUpgradeTime) Then
 		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_SHOW)
@@ -343,11 +342,13 @@ Func cmbWalls()
 EndFunc   ;==>cmbWalls
 
 Func btnWalls()
+	Local $wasRunState = $RunState
 	$RunState = True
 	Zoomout()
 	$icmbWalls = _GUICtrlComboBox_GetCurSel($cmbWalls)
 	;$debugWalls = 1
 	If CheckWall() Then Setlog("Hei Chef! We found the Wall!")
 	;$debugWalls = 0
-	$RunState = False
+	$RunState = $wasRunState
+	AndroidShield("btnWalls") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnWalls

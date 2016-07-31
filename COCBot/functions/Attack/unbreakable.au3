@@ -102,7 +102,7 @@ Func Unbreakable()
 	If _Sleep($iDelayUnbreakable1) Then Return True
 
 	If CheckObstacles() = True Then Setlog("Window clean required, but no problem for MyBot!", $COLOR_BLUE)
-	_WinAPI_EmptyWorkingSet(WinGetProcess($HWnD)) ; Reduce Android memory usage
+	_WinAPI_EmptyWorkingSet(GetAndroidPid()) ; Reduce Android memory usage
 
 	SetLog("Closing Clash Of Clans", $COLOR_BLUE)
 

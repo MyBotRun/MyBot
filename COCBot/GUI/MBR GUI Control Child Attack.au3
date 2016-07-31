@@ -61,12 +61,12 @@ Func btnABAttackConfigure()
 EndFunc   ;==>btnABAttackConfigure
 
 Func cmbDBAlgorithm()
-	Local $iCmbValue =  _GUICtrlComboBox_GetCurSel($cmbDBAlgorithm)
+	Local $iCmbValue = _GUICtrlComboBox_GetCurSel($cmbDBAlgorithm)
 	; Algorithm Alltroops
-	If $iCmbValue = 1 or $iCmbValue = 2 Then  ;show spells if milking because after milking you can continue to attack with thsnipe or standard attack where you can use spells
-		_GUI_Value_STATE("SHOW", $groupAttackDBSpell&"#"&$groupIMGAttackDBSpell)
+	If $iCmbValue = 1 Or $iCmbValue = 2 Then ;show spells if milking because after milking you can continue to attack with thsnipe or standard attack where you can use spells
+		_GUI_Value_STATE("SHOW", $groupAttackDBSpell & "#" & $groupIMGAttackDBSpell)
 	Else
-		_GUI_Value_STATE("HIDE", $groupAttackDBSpell&"#"&$groupIMGAttackDBSpell)
+		_GUI_Value_STATE("HIDE", $groupAttackDBSpell & "#" & $groupIMGAttackDBSpell)
 	EndIf
 	Select
 		Case $iCmbValue = 0 ; Standard Attack
@@ -86,14 +86,14 @@ Func cmbDBAlgorithm()
 			GUISetState(@SW_HIDE, $hGUI_DEADBASE_ATTACK_SCRIPTED)
 			GUISetState(@SW_HIDE, $hGUI_DEADBASE_ATTACK_MILKING)
 	EndSelect
-EndFunc
+EndFunc   ;==>cmbDBAlgorithm
 
 Func cmbABAlgorithm()
-	Local $iCmbValue =  _GUICtrlComboBox_GetCurSel($cmbABAlgorithm)
+	Local $iCmbValue = _GUICtrlComboBox_GetCurSel($cmbABAlgorithm)
 	If $iCmbValue = 1 Then
-		_GUI_Value_STATE("SHOW", $groupAttackABSpell&"#"&$groupIMGAttackABSpell)
+		_GUI_Value_STATE("SHOW", $groupAttackABSpell & "#" & $groupIMGAttackABSpell)
 	Else
-		_GUI_Value_STATE("HIDE", $groupAttackABSpell&"#"&$groupIMGAttackABSpell)
+		_GUI_Value_STATE("HIDE", $groupAttackABSpell & "#" & $groupIMGAttackABSpell)
 	EndIf
 	Select
 		Case $iCmbValue = 0 ; Standard Attack
@@ -106,7 +106,7 @@ Func cmbABAlgorithm()
 			GUISetState(@SW_HIDE, $hGUI_ACTIVEBASE_ATTACK_STANDARD)
 			GUISetState(@SW_HIDE, $hGUI_ACTIVEBASE_ATTACK_SCRIPTED)
 	EndSelect
-EndFunc
+EndFunc   ;==>cmbABAlgorithm
 
 Func chkAttackNow()
 	If GUICtrlRead($chkAttackNow) = $GUI_CHECKED Then
@@ -237,7 +237,7 @@ Func chkTHSnipeBeforeDBEnable()
 		GUICtrlSetState($txtTHSnipeBeforeDBTiles, $GUI_DISABLE)
 		GUICtrlSetState($cmbTHSnipeBeforeDBScript, $GUI_DISABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>chkTHSnipeBeforeDBEnable
 
 Func chkTHSnipeBeforeLBEnable()
 	If GUICtrlRead($chkTHSnipeBeforeLBEnable) = $GUI_CHECKED Then
@@ -249,10 +249,10 @@ Func chkTHSnipeBeforeLBEnable()
 		GUICtrlSetState($txtTHSnipeBeforeLBTiles, $GUI_DISABLE)
 		GUICtrlSetState($cmbTHSnipeBeforeLBScript, $GUI_DISABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>chkTHSnipeBeforeLBEnable
 
 Func chkattackHoursE1()
-	If GUICtrlRead($chkattackHoursE1) = $GUI_CHECKED And GUICtrlRead($chkattackHours0) = $GUI_CHECKED Then
+	If GUICtrlRead($chkattackHoursE1) = $GUI_CHECKED And IschkattackHoursE1() Then
 		For $i = $chkattackHours0 To $chkattackHours11
 			GUICtrlSetState($i, $GUI_UNCHECKED)
 		Next
@@ -265,8 +265,15 @@ Func chkattackHoursE1()
 	GUICtrlSetState($chkattackHoursE1, $GUI_UNCHECKED)
 EndFunc   ;==>chkattackHoursE1
 
+Func IschkattackHoursE1()
+	For $i = $chkattackHours0 To $chkattackHours11
+		If GUICtrlRead($i) = $GUI_CHECKED Then Return True
+	Next
+	Return False
+EndFunc   ;==>IschkattackHoursE1
+
 Func chkattackHoursE2()
-	If GUICtrlRead($chkattackHoursE2) = $GUI_CHECKED And GUICtrlRead($chkattackHours12) = $GUI_CHECKED Then
+	If GUICtrlRead($chkattackHoursE2) = $GUI_CHECKED And IschkattackHoursE2() Then
 		For $i = $chkattackHours12 To $chkattackHours23
 			GUICtrlSetState($i, $GUI_UNCHECKED)
 		Next
@@ -278,6 +285,192 @@ Func chkattackHoursE2()
 	Sleep(300)
 	GUICtrlSetState($chkattackHoursE2, $GUI_UNCHECKED)
 EndFunc   ;==>chkattackHoursE2
+
+Func IschkattackHoursE2()
+	For $i = $chkattackHours12 To $chkattackHours23
+		If GUICtrlRead($i) = $GUI_CHECKED Then Return True
+	Next
+	Return False
+EndFunc   ;==>IschkattackHoursE2
+
+Func chkattackWeekDaysE()
+	If GUICtrlRead($chkattackWeekDaysE) = $GUI_CHECKED And IschkAttackWeekdays() Then
+		For $i = $chkAttackWeekdays0 To $chkAttackWeekdays6
+			GUICtrlSetState($i, $GUI_UNCHECKED)
+		Next
+	Else
+		For $i = $chkAttackWeekdays0 To $chkAttackWeekdays6
+			GUICtrlSetState($i, $GUI_CHECKED)
+		Next
+	EndIf
+	Sleep(300)
+	GUICtrlSetState($chkattackWeekDaysE, $GUI_UNCHECKED)
+EndFunc   ;==>chkattackWeekDaysE
+
+Func IschkAttackWeekdays()
+	For $i = $chkAttackWeekdays0 To $chkAttackWeekdays6
+		If GUICtrlRead($i) = $GUI_CHECKED Then Return True
+	Next
+	Return False
+EndFunc   ;==>IschkAttackWeekdays
+
+Func chkAttackPlannerEnable()
+	If GUICtrlRead($chkAttackPlannerEnable) = $GUI_CHECKED Then
+		$ichkAttackPlannerEnable = 1
+		If GUICtrlRead($chkAttackPlannerCloseAll) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkAttackPlannerCloseAll, $GUI_ENABLE)
+			GUICtrlSetState($chkAttackPlannerCloseCoC, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($chkAttackPlannerCloseAll, $GUI_ENABLE)
+			GUICtrlSetState($chkAttackPlannerCloseCoC, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		EndIf
+		GUICtrlSetState($chkAttackPlannerRandom, $GUI_ENABLE)
+		GUICtrlSetState($chkAttackPlannerDayLimit, $GUI_ENABLE)
+		chkAttackPlannerDayLimit()
+		cmbAttackPlannerRandom() ; check and update label is needed
+		If GUICtrlRead($chkAttackPlannerRandom) = $GUI_CHECKED Then
+			GUICtrlSetState($cmbAttackPlannerRandom, $GUI_ENABLE)
+			GUICtrlSetState($lbAttackPlannerRandom, $GUI_ENABLE)
+			For $i = $chkAttackWeekdays0 To $chkattackWeekDaysE
+				GUICtrlSetState($i, $GUI_DISABLE)
+			Next
+			For $i = $chkattackHours0 To $chkattackHoursE1
+				GUICtrlSetState($i, $GUI_DISABLE)
+			Next
+			For $i = $chkAttackHours12 To $chkattackHoursE2
+				GUICtrlSetState($i, $GUI_DISABLE)
+			Next
+		Else
+			GUICtrlSetState($cmbAttackPlannerRandom, $GUI_DISABLE)
+			GUICtrlSetState($lbAttackPlannerRandom, $GUI_DISABLE)
+			For $i = $chkAttackWeekdays0 To $chkattackWeekDaysE
+				GUICtrlSetState($i, $GUI_ENABLE)
+			Next
+			For $i = $chkattackHours0 To $chkattackHoursE1
+				GUICtrlSetState($i, $GUI_ENABLE)
+			Next
+			For $i = $chkAttackHours12 To $chkattackHoursE2
+				GUICtrlSetState($i, $GUI_ENABLE)
+			Next
+		EndIf
+	Else
+		$ichkAttackPlannerEnable = 0
+		GUICtrlSetState($chkAttackPlannerCloseCoC, $GUI_DISABLE)
+		GUICtrlSetState($chkAttackPlannerCloseAll, $GUI_DISABLE)
+		GUICtrlSetState($chkAttackPlannerRandom, $GUI_DISABLE)
+		GUICtrlSetState($cmbAttackPlannerRandom, $GUI_DISABLE)
+		GUICtrlSetState($lbAttackPlannerRandom, $GUI_DISABLE)
+		GUICtrlSetState($chkAttackPlannerDayLimit, $GUI_DISABLE)
+		GUICtrlSetState($cmbAttackPlannerDayMin, $GUI_DISABLE)
+		GUICtrlSetState($cmbAttackPlannerDayMax, $GUI_DISABLE)
+		For $i = $chkAttackWeekdays0 To $chkattackWeekDaysE
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+		For $i = $chkattackHours0 To $chkattackHoursE1
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+		For $i = $chkAttackHours12 To $chkattackHoursE2
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc   ;==>chkAttackPlannerEnable
+
+Func chkAttackPlannerCloseCoC()
+	If GUICtrlRead($chkAttackPlannerCloseCoC) = $GUI_CHECKED Then
+		$ichkAttackPlannerCloseCoC = 1
+	Else
+		$ichkAttackPlannerCloseCoC = 0
+	EndIf
+EndFunc   ;==>chkAttackPlannerCloseCoC
+
+Func chkAttackPlannerCloseAll()
+	If GUICtrlRead($chkAttackPlannerCloseAll) = $GUI_CHECKED Then
+		$ichkAttackPlannerCloseAll = 1
+		GUICtrlSetState($chkAttackPlannerCloseCoC, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+	Else
+		$ichkAttackPlannerCloseAll = 0
+		GUICtrlSetState($chkAttackPlannerCloseCoC, $GUI_ENABLE)
+	EndIf
+EndFunc   ;==>chkAttackPlannerCloseAll
+
+Func chkAttackPlannerRandom()
+	If GUICtrlRead($chkAttackPlannerRandom) = $GUI_CHECKED Then
+		$ichkAttackPlannerRandom = 1
+		GUICtrlSetState($cmbAttackPlannerRandom, $GUI_ENABLE)
+		GUICtrlSetState($lbAttackPlannerRandom, $GUI_ENABLE)
+		For $i = $chkAttackWeekdays0 To $chkattackWeekDaysE
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+		For $i = $chkattackHours0 To $chkattackHoursE1
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+		For $i = $chkAttackHours12 To $chkattackHoursE2
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	Else
+		$ichkAttackPlannerRandom = 0
+		chkAttackPlannerEnable()
+	EndIf
+EndFunc   ;==>chkAttackPlannerRandom
+
+Func cmbAttackPlannerRandom()
+	$icmbAttackPlannerRandom = Int(_GUICtrlComboBox_GetCurSel($cmbAttackPlannerRandom))
+	If $icmbAttackPlannerRandom > 0 Then
+		GUICtrlSetData($lbAttackPlannerRandom, GetTranslated(603, 37, -1))
+	Else
+		GUICtrlSetData($lbAttackPlannerRandom, GetTranslated(603, 38, "hr"))
+	EndIf
+EndFunc   ;==>cmbAttackPlannerRandom
+
+Func chkAttackPlannerDayLimit()
+	If GUICtrlRead($chkAttackPlannerDayLimit) = $GUI_CHECKED Then
+		$ichkAttackPlannerDayLimit = 1
+		GUICtrlSetState($cmbAttackPlannerDayMin, $GUI_ENABLE)
+		GUICtrlSetState($lbAttackPlannerDayLimit, $GUI_ENABLE)
+		GUICtrlSetState($cmbAttackPlannerDayMax, $GUI_ENABLE)
+	Else
+		$ichkAttackPlannerDayLimit = 0
+		GUICtrlSetState($cmbAttackPlannerDayMin, $GUI_DISABLE)
+		GUICtrlSetState($lbAttackPlannerDayLimit, $GUI_DISABLE)
+		GUICtrlSetState($cmbAttackPlannerDayMax, $GUI_DISABLE)
+	EndIf
+	_cmbAttackPlannerDayLimit()
+EndFunc   ;==>chkAttackPlannerDayLimit
+
+Func cmbAttackPlannerDayMin()
+	If Int(GUICtrlRead($cmbAttackPlannerDayMax)) < Int(GUICtrlRead($cmbAttackPlannerDayMin)) Then
+		GUICtrlSetData($cmbAttackPlannerDayMin, GUICtrlRead($cmbAttackPlannerDayMax))
+	EndIf
+	$icmbAttackPlannerDayMin = Int(GUICtrlRead($cmbAttackPlannerDayMin))
+	_cmbAttackPlannerDayLimit()
+EndFunc   ;==>cmbAttackPlannerDayMin
+
+Func cmbAttackPlannerDayMax()
+	If Int(GUICtrlRead($cmbAttackPlannerDayMax)) < Int(GUICtrlRead($cmbAttackPlannerDayMin)) Then
+		GUICtrlSetData($cmbAttackPlannerDayMax, GUICtrlRead($cmbAttackPlannerDayMin))
+	EndIf
+	$icmbAttackPlannerDayMax = Int(GUICtrlRead($cmbAttackPlannerDayMax))
+	_cmbAttackPlannerDayLimit()
+EndFunc   ;==>cmbAttackPlannerDayMax
+
+Func _cmbAttackPlannerDayLimit()
+	Switch Int(GUICtrlRead($cmbAttackPlannerDayMin))
+		Case 0 To 15
+			GUICtrlSetBkColor($cmbAttackPlannerDayMin, $COLOR_MONEYGREEN)
+		Case 16 To 20
+			GUICtrlSetBkColor($cmbAttackPlannerDayMin, $COLOR_YELLOW)
+		Case 21 To 999
+			GUICtrlSetBkColor($cmbAttackPlannerDayMin, $COLOR_RED)
+	EndSwitch
+	Switch Int(GUICtrlRead($cmbAttackPlannerDayMax))
+		Case 0 To 15
+			GUICtrlSetBkColor($cmbAttackPlannerDayMax, $COLOR_MONEYGREEN)
+		Case 16 To 25
+			GUICtrlSetBkColor($cmbAttackPlannerDayMax, $COLOR_YELLOW)
+		Case 26 To 999
+			GUICtrlSetBkColor($cmbAttackPlannerDayMax, $COLOR_RED)
+	EndSwitch
+EndFunc   ;==>_cmbAttackPlannerDayLimit
 
 Func chkShareAttack()
 	If GUICtrlRead($chkShareAttack) = $GUI_CHECKED Then
@@ -310,21 +503,61 @@ Func chkSearchReduction()
 EndFunc   ;==>chkSearchReduction
 
 ; Func chkBullyMode()
-	; If GUICtrlRead($Bullycheck) = $GUI_CHECKED Then
-		; GUISetState(@SW_SHOW, $grpBullyAtkCombo)
-		; GUISetState(@SW_SHOW, $lblBullyMode)
-		; GUISetState(@SW_SHOW, $txtATBullyMode)
-		; GUISetState(@SW_SHOW, $lblATBullyMode)
-		; GUISetState(@SW_SHOW, $cmbYourTH)
-		; GUISetState(@SW_SHOW, $radUseDBAttack)
-		; GUISetState(@SW_SHOW, $radUseLBAttack)
-	; Else
-		; GUISetState(@SW_HIDE, $grpBullyAtkCombo)
-		; GUISetState(@SW_HIDE, $lblBullyMode)
-		; GUISetState(@SW_HIDE, $txtATBullyMode)
-		; GUISetState(@SW_HIDE, $lblATBullyMode)
-		; GUISetState(@SW_HIDE, $cmbYourTH)
-		; GUISetState(@SW_HIDE, $radUseDBAttack)
-		; GUISetState(@SW_HIDE, $radUseLBAttack)
-	; EndIf
+; If GUICtrlRead($Bullycheck) = $GUI_CHECKED Then
+; GUISetState(@SW_SHOW, $grpBullyAtkCombo)
+; GUISetState(@SW_SHOW, $lblBullyMode)
+; GUISetState(@SW_SHOW, $txtATBullyMode)
+; GUISetState(@SW_SHOW, $lblATBullyMode)
+; GUISetState(@SW_SHOW, $cmbYourTH)
+; GUISetState(@SW_SHOW, $radUseDBAttack)
+; GUISetState(@SW_SHOW, $radUseLBAttack)
+; Else
+; GUISetState(@SW_HIDE, $grpBullyAtkCombo)
+; GUISetState(@SW_HIDE, $lblBullyMode)
+; GUISetState(@SW_HIDE, $txtATBullyMode)
+; GUISetState(@SW_HIDE, $lblATBullyMode)
+; GUISetState(@SW_HIDE, $cmbYourTH)
+; GUISetState(@SW_HIDE, $radUseDBAttack)
+; GUISetState(@SW_HIDE, $radUseLBAttack)
+; EndIf
 ; EndFunc   ;==>chkBullyMode
+
+Func sldMaxVSDelay()
+	$iMaxVSDelay = GUICtrlRead($sldMaxVSDelay)
+	GUICtrlSetData($lblMaxVSDelay, $iMaxVSDelay)
+	If $iMaxVSDelay < $iVSDelay Then
+		GUICtrlSetData($lblVSDelay, $iMaxVSDelay)
+		GUICtrlSetData($sldVSDelay, $iMaxVSDelay)
+		$iVSDelay = $iMaxVSDelay
+	EndIf
+	If $iVSDelay = 1 Then
+		GUICtrlSetData($lbltxtVSDelay, GetTranslated(603, 7, "second"))
+	Else
+		GUICtrlSetData($lbltxtVSDelay, GetTranslated(603, 8, "seconds"))
+	EndIf
+	If $iMaxVSDelay = 1 Then
+		GUICtrlSetData($lbltxtMaxVSDelay, GetTranslated(603, 7, "second"))
+	Else
+		GUICtrlSetData($lbltxtMaxVSDelay, GetTranslated(603, 8, "seconds"))
+	EndIf
+EndFunc   ;==>sldMaxVSDelay
+
+Func sldVSDelay()
+	$iVSDelay = GUICtrlRead($sldVSDelay)
+	GUICtrlSetData($lblVSDelay, $iVSDelay)
+	If $iVSDelay > $iMaxVSDelay Then
+		GUICtrlSetData($lblMaxVSDelay, $iVSDelay)
+		GUICtrlSetData($sldMaxVSDelay, $iVSDelay)
+		$iMaxVSDelay = $iVSDelay
+	EndIf
+	If $iVSDelay = 1 Then
+		GUICtrlSetData($lbltxtVSDelay, GetTranslated(603, 7, "second"))
+	Else
+		GUICtrlSetData($lbltxtVSDelay, GetTranslated(603, 8, "seconds"))
+	EndIf
+	If $iMaxVSDelay = 1 Then
+		GUICtrlSetData($lbltxtMaxVSDelay, GetTranslated(603, 7, "second"))
+	Else
+		GUICtrlSetData($lbltxtMaxVSDelay, GetTranslated(603, 8, "seconds"))
+	EndIf
+EndFunc   ;==>sldVSDelay

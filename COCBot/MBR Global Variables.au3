@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........:
-; Modified ......:
+; Modified ......: Everyone all the time  :)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -26,6 +26,7 @@
 #include <GUIComboBox.au3>
 #include <GuiSlider.au3>
 #include <GuiToolBar.au3>
+#include <ProgressConstants.au3> ; Added for Splash
 #include <StaticConstants.au3>
 #include <TabConstants.au3>
 ;#include <WindowsConstants.au3> ; included on MBR Bot.au3
@@ -48,11 +49,14 @@
 #include <GuiListView.au3>
 #include <GUIToolTip.au3>
 
+Global Const $GAME_WIDTH = 860
+Global Const $GAME_HEIGHT = 732
 Global Const $DEFAULT_HEIGHT = 780
 Global Const $DEFAULT_WIDTH = 860
 Global Const $midOffsetY = Int(($DEFAULT_HEIGHT - 720) / 2)
 Global Const $bottomOffsetY = $DEFAULT_HEIGHT - 720
 Global $bMonitorHeight800orBelow = False
+Global $ichkDisableSplash = 0 ; Splash screen disabled = 1
 
 ;debugging
 Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugDeadBaseImage = 0, $debugImageSave = 0, $debugWalls = 0, $debugBuildingPos = 0, $debugVillageSearchImages = 0
@@ -61,6 +65,8 @@ Global $debugMultilanguage = 0
 Global $debugsetlogTrain = 0
 Global $debugGetLocation = 0 ;make a image of each structure detected with getlocation
 Global $debugOCRdonate = 0 ; when 1 make OCR and simulate but do not donate
+Global $debugAndroidEmbedded = 1
+Global $debugWindowMessages = 0
 
 Global Const $COLOR_ORANGE = 0xFF7700
 Global Const $bCapturePixel = True, $bNoCapturePixel = False
@@ -85,6 +91,22 @@ Global Const $Wow6432Node = ($64Bit ? "\Wow6432Node" : "")
 
 Global $AndroidGamePackage = "com.supercell.clashofclans"
 Global $AndroidGameClass = ".GameApp"
+Global $AndroidEmbedEnabled = True
+Global $AndroidEmbedded = False
+Global $AndroidEmbeddedCtrlTarget[9]
+Global $AndroidEmbeddedRedraw = False
+Global $AndroidShieldEnabled = True
+Global $AndroidShieldPreWin8 = StringRegExp(@OSVersion, "WIN_VISTA|WIN_7|WIN_2008") = 1 ; Layered Child Window only support for WIN_8 and later
+Global $AndroidShieldStatus[3] = [Default, 0, 0] ; Current Android Shield status (0: True = Shield Up, False = Shield Down, Default only for init; 1: Color; 2: Transparency = 0-255)
+Global $AndroidShieldDelay[4] = [0, 0, Default, Default] ; Delay shield call: 0=TimerInit Handle, 1=Delay in ms., 2=AndroidShield action: True, False, Default
+Global $AndroidShieldForceDown = False ; Have shield down in Default mode even if it should be on e.g. in run state
+Global $AndroidShieldColor = $COLOR_WHITE
+Global $AndroidShieldTransparency = 48
+Global $AndroidActiveColor = $COLOR_BLACK
+Global $AndroidActiveTransparency = 1
+Global $AndroidInactiveColor = $COLOR_WHITE
+Global $AndroidInactiveTransparency = 24
+Global $AndroidBackgroundLaunchEnabled = False ; Headless mode not finished yet (2016-07-13, cosote)
 Global $AndroidCheckTimeLagEnabled = True ; Checks every 60 Seconds or later in main loops (Bot Run, Idle and SearchVillage) is Android needs reboot due to time lag (see $AndroidTimeLagThreshold)
 Global $AndroidAdbAutoTerminate = 0 ; Steady ADB shell instance is automatically closed after this number of executed commands, 0 = disabled (test for BS to fix frozen screen situation!)
 Global $AndroidAdbScreencapEnabled = True ; Use Android ADB to capture screenshots in RGBA raw format
@@ -131,12 +153,13 @@ Global $__Droid4X_Window[3][3] = _ ; Alternative window sizes (array must be ord
 ;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |4 = ADB mouse click   |                   |
 ;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |8 = ADB input text    |                   |
 ;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |16 = ADB shell is steady                  |
-Global $AndroidAppConfig[5][14] = [ _ ;                    |                                  |             |                   |                    |                   |                    |              |                 |32 = ADB click drag   |
-   ["MEmu",       "MEmu",          "MEmu 2.",              "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 12,$DEFAULT_WIDTH + 51,$DEFAULT_HEIGHT + 24,0,             "127.0.0.1:21503",0+2+4+8+16+32         ,'# ',               'Microvirt Virtual Input'], _
-   ["Droid4X",    "droid4x",       "Droid4X 0.",           "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50,0,             "127.0.0.1:26944",0+2+4+8+16+32         ,'# ',               'droid4x Virtual Input'], _
+;                |                |                        |                                  |             |                   |                    |                   |                    |              |                 |32 = ADB click drag   |                   |
+Global $AndroidAppConfig[5][14] = [ _ ;                    |                                  |             |                   |                    |                   |                    |              |                 |64 = Dock mode support|                   |
+   ["MEmu",       "MEmu",          "MEmu 2.",              "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 12,$DEFAULT_WIDTH + 51,$DEFAULT_HEIGHT + 24,0,             "127.0.0.1:21503",0+2+4+8+16+32+64      ,'# ',               'Microvirt Virtual Input'], _
+   ["Droid4X",    "droid4x",       "Droid4X 0.",           "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50,0,             "127.0.0.1:26944",0+2+4+8+16+32+64      ,'# ',               'droid4x Virtual Input'], _
    ["Nox",        "nox",           "No",                   "[CLASS:Qt5QWindowIcon;INSTANCE:4]","",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH +  4,$DEFAULT_HEIGHT - 10,0,             "127.0.0.1:62001",0+2+4+8+16+32         ,'# ',               'nox Virtual Input'], _
-   ["BlueStacks2","",              "BlueStacks ",          "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8               ,'$ ',               'BlueStacks Virtual Touch'], _
-   ["BlueStacks", "",              "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8               ,'$ ',               'BlueStacks Virtual Touch'] _
+   ["BlueStacks2","",              "BlueStacks ",          "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8+16   +64      ,'$ ',               'BlueStacks Virtual Touch'], _
+   ["BlueStacks", "",              "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8+16   +64      ,'$ ',               'BlueStacks Virtual Touch'] _
 ]
 Global $OnlyInstance = True
 Global $FoundRunningAndroid = False
@@ -146,34 +169,68 @@ Global $OpenAndroidActiveMaxTry = 3 ; Try recursively 3 times to open Android
 
 Global $AndroidConfig = 0 ; Default selected Android Config of $AndroidAppConfig array
 Global $AndroidVersion ; Identified version of Android Emulator
-; Updated in UpdateAndroidConfig() as well
-Func InitAndroidConfig($bRestart = False)
-Global $Android = $AndroidAppConfig[$AndroidConfig][0] ; Emulator used (BS, BS2, Droid4X, MEmu or Nox)
+
+Global $Android ; Emulator used (BS, BS2, Droid4X, MEmu or Nox)
 Global $AndroidInstance ; Clone or instance of emulator or "" if not supported
 Global $Title ; Emulator Window Title
-If $bRestart = False Then
-   $AndroidInstance = $AndroidAppConfig[$AndroidConfig][1]
-   $Title = $AndroidAppConfig[$AndroidConfig][2]
-EndIf
-Global $AppClassInstance = $AndroidAppConfig[$AndroidConfig][3] ; Control Class and instance of android rendering
-Global $AppPaneName = $AndroidAppConfig[$AndroidConfig][4] ; Control name of android rendering TODO check is still required
-Global $AndroidClientWidth = $AndroidAppConfig[$AndroidConfig][5] ; Expected width of android rendering control
-Global $AndroidClientHeight = $AndroidAppConfig[$AndroidConfig][6] ; Expected height of android rendering control
-Global $AndroidWindowWidth = $AndroidAppConfig[$AndroidConfig][7] ; Expected Width of android window
-Global $AndroidWindowHeight = $AndroidAppConfig[$AndroidConfig][8] ; Expected height of android window
-Global $ClientOffsetY = $AndroidAppConfig[$AndroidConfig][9] ; not used/required anymore
-Global $AndroidAdbPath = "" ; Path to executable HD-Adb.exe or adb.exe
-Global $AndroidAdbDevice = $AndroidAppConfig[$AndroidConfig][10] ; full device name ADB connects to
-Global $AndroidSupportFeature = $AndroidAppConfig[$AndroidConfig][11] ; 0 = Not available, 1 = Available, 2 = Available using ADB (experimental!)
-Global $AndroidShellPrompt = $AndroidAppConfig[$AndroidConfig][12] ; empty string not available, '# ' for rooted and '$ ' for not rooted android
-Global $AndroidMouseDevice = $AndroidAppConfig[$AndroidConfig][13] ; empty string not available, can be direct device '/dev/input/event2' or name by getevent -p
-Global $AndroidAdbScreencap = $AndroidAdbScreencapEnabled = True And BitAND($AndroidSupportFeature, 2) = 2 ; Use Android ADB to capture screenshots in RGBA raw format
-Global $AndroidAdbClick = $AndroidAdbClickEnabled = True And BitAND($AndroidSupportFeature, 4) = 4 ; Enable Android ADB mouse click
-Global $AndroidAdbInput = $AndroidAdbInputEnabled = True And BitAND($AndroidSupportFeature, 8) = 8 ; Enable Android ADB send text (CC requests)
-Global $AndroidAdbInstance = $AndroidAdbInstanceEnabled = True And BitAND($AndroidSupportFeature, 16) = 16 ; Enable Android steady ADB shell instance when available
-Global $AndroidAdbClickDrag = $AndroidAdbClickDragEnabled = True And BitAND($AndroidSupportFeature, 32) = 32 ; Enable Android ADB Click Drag script
+Global $AppClassInstance ; Control Class and instance of android rendering
+Global $AppPaneName ; Control name of android rendering TODO check is still required
+Global $AndroidClientWidth ; Expected width of android rendering control
+Global $AndroidClientHeight ; Expected height of android rendering control
+Global $AndroidWindowWidth ; Expected Width of android window
+Global $AndroidWindowHeight ; Expected height of android window
+Global $ClientOffsetY ; not used/required anymore
+Global $AndroidAdbPath ; Path to executable HD-Adb.exe or adb.exe
+Global $AndroidAdbDevice ; full device name ADB connects to
+Global $AndroidSupportFeature ; 0 = Not available, 1 = Available, 2 = Available using ADB (experimental!)
+Global $AndroidShellPrompt ; empty string not available, '# ' for rooted and '$ ' for not rooted android
+Global $AndroidMouseDevice ; empty string not available, can be direct device '/dev/input/event2' or name by getevent -p
+Global $AndroidAdbScreencap ; Use Android ADB to capture screenshots in RGBA raw format
+Global $AndroidAdbClick ; Enable Android ADB mouse click
+Global $AndroidAdbInput ; Enable Android ADB send text (CC requests)
+Global $AndroidAdbInstance ; Enable Android steady ADB shell instance when available
+Global $AndroidAdbClickDrag ; Enable Android ADB Click Drag script
+Global $AndroidEmbed ; Enable Android Dock Mode
+Global $AndroidBackgroundLaunch ; Enabled Android Background launch using Windows Scheduled Task
+Global $AndroidBackgroundLaunched ; True when Android was launched in headless mode without a window
+
+Func AndroidAdbClickSupported()
+	Return BitAND($AndroidSupportFeature, 4) = 4
 EndFunc
-InitAndroidConfig()
+; Updated in UpdateAndroidConfig() and $Android&Init() as well
+Global $InitAndroidActive = False
+Func InitAndroidConfig($bRestart = False)
+	If $bRestart = False Then
+	   $Android = $AndroidAppConfig[$AndroidConfig][0]
+	   $AndroidInstance = $AndroidAppConfig[$AndroidConfig][1]
+	   $Title = $AndroidAppConfig[$AndroidConfig][2]
+	EndIf
+	$AppClassInstance = $AndroidAppConfig[$AndroidConfig][3] ; Control Class and instance of android rendering
+	$AppPaneName = $AndroidAppConfig[$AndroidConfig][4] ; Control name of android rendering TODO check is still required
+	$AndroidClientWidth = $AndroidAppConfig[$AndroidConfig][5] ; Expected width of android rendering control
+	$AndroidClientHeight = $AndroidAppConfig[$AndroidConfig][6] ; Expected height of android rendering control
+	$AndroidWindowWidth = $AndroidAppConfig[$AndroidConfig][7] ; Expected Width of android window
+	$AndroidWindowHeight = $AndroidAppConfig[$AndroidConfig][8] ; Expected height of android window
+	$ClientOffsetY = $AndroidAppConfig[$AndroidConfig][9] ; not used/required anymore
+	$AndroidAdbPath = "" ; Path to executable HD-Adb.exe or adb.exe
+	$AndroidAdbDevice = $AndroidAppConfig[$AndroidConfig][10] ; full device name ADB connects to
+	$AndroidSupportFeature = $AndroidAppConfig[$AndroidConfig][11] ; 0 = Not available, 1 = Available, 2 = Available using ADB (experimental!)
+	$AndroidShellPrompt = $AndroidAppConfig[$AndroidConfig][12] ; empty string not available, '# ' for rooted and '$ ' for not rooted android
+	$AndroidMouseDevice = $AndroidAppConfig[$AndroidConfig][13] ; empty string not available, can be direct device '/dev/input/event2' or name by getevent -p
+	$AndroidAdbScreencap = $AndroidAdbScreencapEnabled = True And BitAND($AndroidSupportFeature, 2) = 2 ; Use Android ADB to capture screenshots in RGBA raw format
+	$AndroidAdbClick = $AndroidAdbClickEnabled = True And AndroidAdbClickSupported() ; Enable Android ADB mouse click
+	$AndroidAdbInput = $AndroidAdbInputEnabled = True And BitAND($AndroidSupportFeature, 8) = 8 ; Enable Android ADB send text (CC requests)
+	$AndroidAdbInstance = $AndroidAdbInstanceEnabled = True And BitAND($AndroidSupportFeature, 16) = 16 ; Enable Android steady ADB shell instance when available
+	$AndroidAdbClickDrag = $AndroidAdbClickDragEnabled = True And BitAND($AndroidSupportFeature, 32) = 32 ; Enable Android ADB Click Drag script
+	$AndroidEmbed = $AndroidEmbedEnabled = True And BitAND($AndroidSupportFeature, 64) = 64 ; Enable Android Dock Mode
+	$AndroidBackgroundLaunch = $AndroidBackgroundLaunchEnabled = True And True ; Enabled Android Background launch using Windows Scheduled Task
+	$AndroidBackgroundLaunched = False ; True when Android was launched in headless mode without a window
+	; screencap might have disabled backgroundmode
+	If $AndroidAdbScreencap And IsDeclared("chkBackground") Then
+		chkBackground()
+	EndIf
+EndFunc
+InitAndroidConfig() ; also called at end of file for supporting loaded config.ini
 
 Global $AndroidProgramPath = "" ; Program path and executable to launch android emulator
 Global $AndroidHasSystemBar = False ; BS2 System Bar can be entirely disabled in Windows Registry
@@ -225,9 +282,11 @@ Global $AndroidTimeLagThreshold = 5 ; Time lag Seconds per Minute when CoC gets 
 Global $ForceCapture = False ; Force android ADB screencap to run and not provide last screenshot if available
 Global $ScreenshotTime = 0; Last duration in Milliseconds it took to get screenshot
 
+Global $WinGetAndroidHandleActive = False ; Prevent recursion in WinGetAndroidHandle()
 Global $HWnD = 0 ; Handle for Android window
 Global $AndroidSvcPid = 0 ; Android Backend Process
 Global $AndroidSuspended = False ; Android window is suspended flag
+Global $AndroidQueueReboot = False ; Reboot Android as soon as possible
 Global $AndroidSuspendedTimer = 0; Android Suspended Timer
 Global $InitAndroid = True ; Used to cache android config, is set to False once initialized, new emulator window handle resets it to True
 Global $FrmBotMinimized = False ; prevents bot flickering
@@ -287,7 +346,6 @@ If $aCmdLine[0] > 0 Then
 	$sCurrProfile = StringRegExpReplace($aCmdLine[1], '[/:*?"<>|]', '_')
 ElseIf FileExists($sProfilePath & "\profile.ini") Then
 	$sCurrProfile = StringRegExpReplace(IniRead($sProfilePath & "\profile.ini", "general", "defaultprofile", ""), '[/:*?"<>|]', '_')
-
 	If $sCurrProfile = "" Or Not FileExists($sProfilePath & "\" & $sCurrProfile) Then $sCurrProfile = "<No Profiles>"
 Else
 	$sCurrProfile = "<No Profiles>"
@@ -296,18 +354,22 @@ EndIf
 ; Arrays to hold stat information
 Global $aWeakBaseStats
 
-Global $config = $sProfilePath & "\" & $sCurrProfile & "\config.ini"
-Global $InputConfigFile = $sProfilePath & "\" & $sCurrProfile & "\InputConfig.ini"
-Global $statChkWeakBase = $sProfilePath & "\" & $sCurrProfile & "\stats_chkweakbase.INI"
-Global $statChkTownHall = $sProfilePath & "\" & $sCurrProfile & "\stats_chktownhall.INI"
-Global $statChkDeadBase = $sProfilePath & "\" & $sCurrProfile & "\stats_chkelixir.INI"
-Global $statChkDeadBase75percent = $sProfilePath & "\" & $sCurrProfile & "\stats_chkelixir75percent.INI"
-Global $statChkDeadBase50percent = $sProfilePath & "\" & $sCurrProfile & "\stats_chkelixir50percent.INI"
-Global $building = $sProfilePath & "\" & $sCurrProfile & "\building.ini"
-Global $dirLogs = $sProfilePath & "\" & $sCurrProfile & "\Logs\"
-Global $dirLoots = $sProfilePath & "\" & $sCurrProfile & "\Loots\"
-Global $dirTemp = $sProfilePath & "\" & $sCurrProfile & "\Temp\"
-Global $dirTempDebug = $sProfilePath & "\" & $sCurrProfile & "\Temp\Debug\"
+Func SetupProfileFolder()
+	Global $config = $sProfilePath & "\" & $sCurrProfile & "\config.ini"
+	Global $InputConfigFile = $sProfilePath & "\" & $sCurrProfile & "\InputConfig.ini"
+	Global $statChkWeakBase = $sProfilePath & "\" & $sCurrProfile & "\stats_chkweakbase.INI"
+	Global $statChkTownHall = $sProfilePath & "\" & $sCurrProfile & "\stats_chktownhall.INI"
+	Global $statChkDeadBase = $sProfilePath & "\" & $sCurrProfile & "\stats_chkelixir.INI"
+	Global $statChkDeadBase75percent = $sProfilePath & "\" & $sCurrProfile & "\stats_chkelixir75percent.INI"
+	Global $statChkDeadBase50percent = $sProfilePath & "\" & $sCurrProfile & "\stats_chkelixir50percent.INI"
+	Global $building = $sProfilePath & "\" & $sCurrProfile & "\building.ini"
+	Global $dirLogs = $sProfilePath & "\" & $sCurrProfile & "\Logs\"
+	Global $dirLoots = $sProfilePath & "\" & $sCurrProfile & "\Loots\"
+	Global $dirTemp = $sProfilePath & "\" & $sCurrProfile & "\Temp\"
+	Global $dirTempDebug = $sProfilePath & "\" & $sCurrProfile & "\Temp\Debug\"
+EndFunc   ;==>SetupProfileFolder
+SetupProfileFolder()
+
 Global $LibDir = @ScriptDir & "\lib" ;lib directory contains dll's
 Global $pCurl = $LibDir & "\curl\curl.exe" ; Curl used on PushBullet
 Global $AdbScriptsDir = $LibDir & "\adb.scripts" ; ADD script and event files folder
@@ -321,6 +383,7 @@ Global Const $dirTHSnipesAttacks = @ScriptDir & "\CSV\THSnipe"
 Global Const $dirAttacksCSV = @ScriptDir & "\CSV\Attack"
 
 ; Improve GUI interations by disabling bot window redraw
+Global $RedrawBotWindowMode = 2 ; 0 = disabled, 1 = Redraw always entire bot window, 2 = Redraw only required bot window area (or entire bot if control not specified)
 Global $bRedrawBotWindow[3] = [True, False, False] ; [0] = window redraw enabled, [1] = window redraw required, [2] = window redraw requird by some controls, see CheckRedrawControls()
 
 ; enumerated Icons 1-based index to IconLib
@@ -331,14 +394,14 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes, _
 		$eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnQueen, $eIcnKing, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenAbility, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost, _
 		$eIcnQueenBoost, $eIcnWardenBoost, $eIcnWardenUpgr, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain, _
-		$eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden
+		$eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner, _
+		$eIcnNoShield, $eIcnDonCustomB
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
 Global $eIcnAchievements = $eIcnMain
 Global $eIcnStrategies = $eIcnBlank
 
-Global $aDonIcons[17] = [$eIcnDonBarbarian, $eIcnDonArcher, $eIcnDonGiant, $eIcnDonGoblin, $eIcnDonWallBreaker, $eIcnDonBalloon, $eIcnDonWizard, $eIcnDonHealer, $eIcnDonDragon, $eIcnDonPekka, $eIcnDonMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnDonGolem, $eIcnDonWitch, $eIcnDonLavaHound, $eIcnDonBlank]
 Global $sLogPath ; `Will create a new log file every time the start button is pressed
 Global $sAttackLogPath ; `Will create a new log file every time the start button is pressed
 Global $hLogFileHandle
@@ -443,6 +506,7 @@ Global $lblAttacked[$iModeCount + 3], $lblTotalGoldGain[$iModeCount + 3], $lblTo
 Global $lblNbrOfDetectedMines[$iModeCount + 3], $lblNbrOfDetectedCollectors[$iModeCount + 3], $lblNbrOfDetectedDrills[$iModeCount + 3]
 Global $ArmyCapacity = 0
 Global $iLaboratoryElixirCost
+Global $iAttackedCount = 0 ; convert to global from UpdateStats to enable daily attack limits
 ;Global $costspell
 
 ;Search Settings
@@ -451,7 +515,12 @@ Global $Is_ClientSyncError = False ;If true means while searching Client Out Of 
 Global $searchGold, $searchElixir, $searchDark, $searchTrophy, $searchTH ;Resources of bases when searching
 Global $SearchGold2 = 0, $SearchElixir2 = 0, $iStuck = 0, $iNext = 0
 Global $iCmbSearchMode
-Global $iMinGold[$iModeCount], $iMinElixir[$iModeCount], $iMinGoldPlusElixir[$iModeCount], $iMinDark[$iModeCount], $iMinTrophy[$iModeCount], $iMaxTH[$iModeCount], $iEnableAfterCount[$iModeCount], $iEnableBeforeCount[$iModeCount], $iCmbWeakMortar[$iModeCount], $iCmbWeakWizTower[$iModeCount], $iCmbWeakXBow[$iModeCount], $iCmbWeakInferno[$iModeCount], $icmbWeakEagle[$iModeCount], $iChkChkMortar[$iModeCount], $iChkChkWizTower[$iModeCount], $iChkChkXBow[$iModeCount], $iChkChkInferno[$iModeCount], $iChkChkEagle[$iModeCount], $iEnableAfterTropies[$iModeCount], $iEnableBeforeTropies[$iModeCount], $iEnableAfterArmyCamps[$iModeCount] ; Search conditions
+Global $iMinGold[$iModeCount], $iMinElixir[$iModeCount], $iMinGoldPlusElixir[$iModeCount], $iMinDark[$iModeCount], $iMinTrophy[$iModeCount], $iMaxTH[$iModeCount], $iEnableAfterCount[$iModeCount], $iEnableBeforeCount[$iModeCount]
+Global $ChkMaxMortar[$iModeCount], $ChkMaxWizTower[$iModeCount], $ChkMaxXBow[$iModeCount], $ChkMaxInferno[$iModeCount], $ChkMaxEagle[$iModeCount]
+Global $iChkMaxMortar[$iModeCount], $iChkMaxWizTower[$iModeCount], $iChkMaxXBow[$iModeCount], $iChkMaxInferno[$iModeCount], $iChkMaxEagle[$iModeCount]
+Global $CmbWeakMortar[$iModeCount], $CmbWeakWizTower[$iModeCount], $CmbWeakXBow[$iModeCount], $CmbWeakInferno[$iModeCount], $cmbWeakEagle[$iModeCount]
+Global $iCmbWeakMortar[$iModeCount], $iCmbWeakWizTower[$iModeCount], $iCmbWeakXBow[$iModeCount], $iCmbWeakInferno[$iModeCount], $iCmbWeakEagle[$iModeCount]
+Global $iEnableAfterTropies[$iModeCount], $iEnableBeforeTropies[$iModeCount], $iEnableAfterArmyCamps[$iModeCount] ; Search conditions
 Global $iAimGold[$iModeCount], $iAimElixir[$iModeCount], $iAimGoldPlusElixir[$iModeCount], $iAimDark[$iModeCount], $iAimTrophy[$iModeCount], $iAimTHtext[$iModeCount] ; Aiming Resource values
 Global $iEnableSearchSearches[$iModeCount], $iEnableSearchTropies[$iModeCount], $iEnableSearchCamps[$iModeCount]
 Global $iDBcheck = 1
@@ -466,7 +535,7 @@ Global $iChkSearchReduction = 0
 Global $ReduceCount = 20, $ReduceGold = 2000, $ReduceElixir = 2000, $ReduceGoldPlusElixir = 4000, $ReduceDark = 100, $ReduceTrophy = 2 ; Reducing values
 ;Global $chkConditions[7], $ichkMeetOne ;Conditions (meet gold...)
 ;Global $icmbTH
-Global $iChkEnableAfter[$iModeCount], $iCmbMeetGE[$iModeCount], $iChkMeetDE[$iModeCount], $iChkMeetTrophy[$iModeCount], $iChkMeetTH[$iModeCount], $iChkMeetTHO[$iModeCount], $iChkMeetOne[$iModeCount], $iCmbTH[$iModeCount], $iChkWeakBase[$iModeCount]
+Global $iChkEnableAfter[$iModeCount], $iCmbMeetGE[$iModeCount], $iChkMeetDE[$iModeCount], $iChkMeetTrophy[$iModeCount], $iChkMeetTH[$iModeCount], $iChkMeetTHO[$iModeCount], $iChkMeetOne[$iModeCount], $iCmbTH[$iModeCount]
 Global $chkDBMeetTHO, $chkABMeetTHO
 Global $THLocation
 Global $THx = 0, $THy = 0
@@ -530,9 +599,11 @@ Global $THusedWarden = 0
 
 
 Global $TrainSpecial = 1 ;0=Only trains after atk. Setting is automatic
-Global $cBarbarian = 0, $cArcher = 0, $cGoblin = 0, $cGiant = 0, $cWallbreaker = 0, $cWizard = 0, $cBalloon = 0, $cDragon = 0, $cPekka = 0, $cMinion = 0, $cHogs = 0, $cValkyrie = 0, $cGolem = 0, $cWitch = 0, $cLavaHound = 0
+Global $cBarbarian = 0, $cArcher = 0, $cGoblin = 0, $cGiant = 0, $cWallbreaker = 0, $cWizard = 0, $cBalloon = 0, $cDragon = 0, $cPekka = 0, $cBabyDragon = 0, $cMiner = 0, $cMinion = 0, $cHogs = 0, $cValkyrie = 0, $cGolem = 0, $cWitch = 0, $cLavaHound = 0, $cBowl = 0
 ;Troop types
-Global Enum $eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell
+Global Enum $eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, _
+	$eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eKing, $eQueen, $eWarden, $eCastle, _
+	$eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell
 ;wall
 Global $WallCost = 0
 Global $WallCosts[7] = [30000, 75000, 200000, 500000, 1000000, 3000000, 4000000]
@@ -571,17 +642,17 @@ $iChkRedArea[$LB] = 1
 $iChkRedArea[$MA] = 1
 
 Global $troopsToBeUsed[12]
-Global $useAllTroops[28] = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useBarracks[22] = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useBarbs[13] = [$eBarb, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useArchs[13] = [$eArch, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useBarcher[14] = [$eBarb, $eArch, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useBarbGob[14] = [$eBarb, $eGobl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useArchGob[14] = [$eArch, $eGobl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useBarcherGiant[15] = [$eBarb, $eArch, $eGiant, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useBarcherGobGiant[16] = [$eBarb, $eArch, $eGiant, $eGobl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useBarcherHog[15] = [$eBarb, $eArch, $eHogs, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
-Global $useBarcherMinion[15] = [$eBarb, $eArch, $eMini, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $ePSpell, $eESpell, $eHaSpell]
+Global $useAllTroops[33] = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, $eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell]
+Global $useBarracks[26] = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useBarbs[15] = [$eBarb, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useArchs[15] = [$eArch, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useBarcher[16] = [$eBarb, $eArch, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useBarbGob[16] = [$eBarb, $eGobl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useArchGob[16] = [$eArch, $eGobl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useBarcherGiant[17] = [$eBarb, $eArch, $eGiant, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useBarcherGobGiant[18] = [$eBarb, $eArch, $eGiant, $eGobl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useBarcherHog[17] = [$eBarb, $eArch, $eHogs, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
+Global $useBarcherMinion[17] = [$eBarb, $eArch, $eMini, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
 Global $usegoblin[1] = [$eGobl]
 $troopsToBeUsed[0] = $useAllTroops
 $troopsToBeUsed[1] = $useBarracks
@@ -646,7 +717,6 @@ Global $iChkUseCCBalancedCSV ; Use Clan Castle Balanced settings
 Global $iCmbCCDonatedCSV, $iCmbCCReceivedCSV ; Use Clan Castle Balanced ratio settings
 
 Global $THLoc
-Global $ichkATH, $ichkLightSpell
 
 Global $King, $Queen, $CC, $Barb, $Arch, $LSpell, $LSpellQ, $Warden
 Global $LeftTHx, $RightTHx, $BottomTHy, $TopTHy
@@ -698,122 +768,67 @@ Global $LastBarrackTrainDonatedTroop = 1
 Global $LastDarkBarrackTrainDonatedTroop = 1
 
 Global $sTxtRequest = ""
+Global $ichkDonateAllBarbarians, $ichkDonateBarbarians, $sTxtDonateBarbarians, $sTxtBlacklistBarbarians, $aDonBarbarians, $aBlkBarbarians
+Global $ichkDonateAllArchers, $ichkDonateArchers, $sTxtDonateArchers, $sTxtBlacklistArchers, $aDonArchers, $aBlkArchers
+Global $ichkDonateAllGiants, $ichkDonateGiants, $sTxtDonateGiants, $sTxtBlacklistGiants, $aDonGiants, $aBlkGiants
+Global $ichkDonateAllGoblins, $ichkDonateGoblins, $sTxtDonateGoblins, $sTxtBlacklistGoblins, $aDonGoblins, $aBlkGoblins
+Global $ichkDonateAllWallBreakers, $ichkDonateWallBreakers, $sTxtDonateWallBreakers, $sTxtBlacklistWallBreakers, $aDonWallBreakers, $aBlkWallBreakers
+Global $ichkDonateAllBalloons, $ichkDonateBalloons, $sTxtDonateBalloons, $sTxtBlacklistBalloons, $aDonBalloons, $aBlkBalloons
+Global $ichkDonateAllWizards, $ichkDonateWizards, $sTxtDonateWizards, $sTxtBlacklistWizards, $aDonWizards, $aBlkWizards
+Global $ichkDonateAllHealers, $ichkDonateHealers, $sTxtDonateHealers, $sTxtBlacklistHealers, $aDonHealers, $aBlkHealers
+Global $ichkDonateAllDragons, $ichkDonateDragons, $sTxtDonateDragons, $sTxtBlacklistDragons, $aDonDragons, $aBlkDragons
+Global $ichkDonateAllPekkas, $ichkDonatePekkas, $sTxtDonatePekkas, $sTxtBlacklistPekkas, $aDonPekkas, $aBlkPekkas
+Global $ichkDonateAllBabyDragons, $ichkDonateBabyDragons, $sTxtDonateBabyDragons, $sTxtBlacklistBabyDragons, $aDonBabyDragons, $aBlkBabyDragons
+Global $ichkDonateAllMiners, $ichkDonateMiners, $sTxtDonateMiners, $sTxtBlacklistMiners, $aDonMiners, $aBlkMiners
+Global $ichkDonateAllMinions, $ichkDonateMinions, $sTxtDonateMinions, $sTxtBlacklistMinions, $aDonMinions, $aBlkMinions
+Global $ichkDonateAllHogRiders, $ichkDonateHogRiders, $sTxtDonateHogRiders, $sTxtBlacklistHogRiders, $aDonHogRiders, $aBlkHogRiders
+Global $ichkDonateAllValkyries, $ichkDonateValkyries, $sTxtDonateValkyries, $sTxtBlacklistValkyries, $aDonValkyries, $aBlkValkyries
+Global $ichkDonateAllGolems, $ichkDonateGolems, $sTxtDonateGolems, $sTxtBlacklistGolems, $aDonGolems, $aBlkGolems
+Global $ichkDonateAllWitches, $ichkDonateWitches, $sTxtDonateWitches, $sTxtBlacklistWitches, $aDonWitches, $aBlkWitches
+Global $ichkDonateAllLavaHounds, $ichkDonateLavaHounds, $sTxtDonateLavaHounds, $sTxtBlacklistLavaHounds, $aDonLavaHounds, $aBlkLavaHounds
+Global $ichkDonateAllBowlers, $ichkDonateBowlers, $sTxtDonateBowlers, $sTxtBlacklistBowlers, $aDonBowlers, $aBlkBowlers
+Global $ichkDonateAllPoisonSpells, $ichkDonatePoisonSpells, $sTxtDonatePoisonSpells, $sTxtBlacklistPoisonSpells, $aDonPoisonSpells, $aBlkPoisonSpells
+Global $ichkDonateAllEarthQuakeSpells, $ichkDonateEarthQuakeSpells, $sTxtDonateEarthQuakeSpells, $sTxtBlacklistEarthQuakeSpells, $aDonEarthQuakeSpells, $aBlkEarthQuakeSpells
+Global $ichkDonateAllHasteSpells, $ichkDonateHasteSpells, $sTxtDonateHasteSpells, $sTxtBlacklistHasteSpells, $aDonHasteSpells, $aBlkHasteSpells
+Global $ichkDonateAllSkeletonSpells, $ichkDonateSkeletonSpells, $sTxtDonateSkeletonSpells, $sTxtBlacklistSkeletonSpells, $aDonSkeletonSpells, $aBlkSkeletonSpells
+;;; Custom Combination Donate by ChiefM3, converted to ground support by MonkeyHunter
+Global $ichkDonateAllCustomA, $ichkDonateCustomA, $sTxtDonateCustomA,$sTxtBlacklistCustomA, $aDonCustomA, $aBlkCustomA, $varDonateCustomA[3][2]
+; 2nd custom troop combo added for air support
+Global $ichkDonateAllCustomB, $ichkDonateCustomB, $sTxtDonateCustomB, $sTxtBlacklistCustomB, $aDonCustomB, $aBlkCustomB, $varDonateCustomB[3][2]
 
-Global $ichkDonateAllBarbarians = 0, $ichkDonateBarbarians = 0
-Global $sTxtDonateBarbarians = StringReplace("barbarians|barb|any", "|", @CRLF)
-Global $sTxtBlacklistBarbarians = StringReplace("no barbarians|no barb|barbarians no|barb no", "|", @CRLF)
-Global $aDonBarbarians, $aBlkBarbarians
-Global $ichkDonateAllArchers = 0, $ichkDonateArchers = 0
-Global $sTxtDonateArchers = StringReplace("archers|arch|any", "|", @CRLF)
-Global $sTxtBlacklistArchers = StringReplace("no archers|no arch|archers no|arch no", "|", @CRLF)
-Global $aDonArchers, $aBlkArchers
-Global $ichkDonateAllGiants = 0, $ichkDonateGiants = 0
-Global $sTxtDonateGiants = StringReplace("giants|giant|any", "|", @CRLF)
-Global $sTxtBlacklistGiants = StringReplace("no giants|giants no", "|", @CRLF)
-Global $aDonGiants, $aBlkGiants
-Global $ichkDonateAllGoblins = 0, $ichkDonateGoblins = 0
-Global $sTxtDonateGoblins = StringReplace("goblins|goblin", "|", @CRLF)
-Global $sTxtBlacklistGoblins = StringReplace("no goblins|goblins no", "|", @CRLF)
-Global $aDonGoblins, $aBlkGoblins
-Global $ichkDonateAllWallBreakers = 0, $ichkDonateWallBreakers = 0
-Global $sTxtDonateWallBreakers = StringReplace("wall breakers|wb", "|", @CRLF)
-Global $sTxtBlacklistWallBreakers = StringReplace("no wallbreakers|wb no", "|", @CRLF)
-Global $aDonWallBreakers, $aBlkWallBreakers
-Global $ichkDonateAllBalloons = 0, $ichkDonateBalloons = 0
-Global $sTxtDonateBalloons = StringReplace("balloons|balloon", "|", @CRLF)
-Global $sTxtBlacklistBalloons = StringReplace("no balloons|balloons no", "|", @CRLF)
-Global $aDonBalloons, $aBlkBalloons
-Global $ichkDonateAllWizards = 0, $ichkDonateWizards = 0
-Global $sTxtDonateWizards = StringReplace("wizards|wizard", "|", @CRLF)
-Global $sTxtBlacklistWizards = StringReplace("no wizards|wizards no", "|", @CRLF)
-Global $aDonWizards, $aBlkWizards
-Global $ichkDonateAllHealers = 0, $ichkDonateHealers = 0
-Global $sTxtDonateHealers = StringReplace("healer", "|", @CRLF)
-Global $sTxtBlacklistHealers = StringReplace("no healer|healer no", "|", @CRLF)
-Global $aDonHealers, $aBlkHealers
-Global $ichkDonateAllDragons = 0, $ichkDonateDragons = 0
-Global $sTxtDonateDragons = StringReplace("dragon", "|", @CRLF)
-Global $sTxtBlacklistDragons = StringReplace("no dragon|dragon no", "|", @CRLF)
-Global $aDonDragons, $aBlkDragons
-Global $ichkDonateAllPekkas = 0, $ichkDonatePekkas = 0
-Global $sTxtDonatePekkas = StringReplace("pekka", "|", @CRLF)
-Global $sTxtBlacklistPekkas = StringReplace("no pekka|pekka no", "|", @CRLF)
-Global $aDonPekkas, $aBlkPekkas
-Global $ichkDonateAllMinions = 0, $ichkDonateMinions = 0
-Global $sTxtDonateMinions = StringReplace("minions|minion", "|", @CRLF)
-Global $sTxtBlacklistMinions = StringReplace("no minions|minions no", "|", @CRLF)
-Global $aDonMinions, $aBlkMinions
-Global $ichkDonateAllHogRiders = 0, $ichkDonateHogRiders = 0
-Global $sTxtDonateHogRiders = StringReplace("hogriders|hogs|hog", "|", @CRLF)
-Global $sTxtBlacklistHogRiders = StringReplace("no hogriders|hogriders no|no hogs|hogs no", "|", @CRLF)
-Global $aDonHogRiders, $aBlkHogRiders
-Global $ichkDonateAllValkyries = 0, $ichkDonateValkyries = 0
-Global $sTxtDonateValkyries = StringReplace("valkyries|valkyrie", "|", @CRLF)
-Global $sTxtBlacklistValkyries = StringReplace("no valkyries|valkyries no", "|", @CRLF)
-Global $aDonValkyries, $aBlkValkyries
-Global $ichkDonateAllGolems = 0, $ichkDonateGolems = 0
-Global $sTxtDonateGolems = StringReplace("golem", "|", @CRLF)
-Global $sTxtBlacklistGolems = StringReplace("no golem|golem no", "|", @CRLF)
-Global $aDonGolems, $aBlkGolems
-Global $ichkDonateAllWitches = 0, $ichkDonateWitches = 0
-Global $sTxtDonateWitches = StringReplace("witches|witch", "|", @CRLF)
-Global $sTxtBlacklistWitches = StringReplace("no witches|witches no", "|", @CRLF)
-Global $aDonWitches, $aBlkWitches
-Global $ichkDonateAllLavaHounds = 0, $ichkDonateLavaHounds = 0
-Global $sTxtDonateLavaHounds = StringReplace("lavahounds|hound|lava", "|", @CRLF)
-Global $sTxtBlacklistLavaHounds = StringReplace("no lavahound|hound no", "|", @CRLF)
-Global $aDonLavaHounds, $aBlkLavaHounds
-Global $ichkDonateAllPoisonSpells = 0, $ichkDonatePoisonSpells = 0
-Global $sTxtDonatePoisonSpells = StringReplace("poison", "|", @CRLF)
-Global $sTxtBlacklistPoisonSpells = StringReplace("no poison|poison no", "|", @CRLF)
-Global $aDonPoisonSpells, $aBlkPoisonSpells
-Global $ichkDonateAllEarthQuakeSpells = 0, $ichkDonateEarthQuakeSpells = 0
-Global $sTxtDonateEarthQuakeSpells = StringReplace("earthquake|quake", "|", @CRLF)
-Global $sTxtBlacklistEarthQuakeSpells = StringReplace("no earthquake|quake no", "|", @CRLF)
-Global $aDonEarthQuakeSpells, $aBlkEarthQuakeSpells
-Global $ichkDonateAllHasteSpells = 0, $ichkDonateHasteSpells = 0
-Global $sTxtDonateHasteSpells = StringReplace("haste", "|", @CRLF)
-Global $sTxtBlacklistHasteSpells = StringReplace("no haste|haste no", "|", @CRLF)
-Global $aDonHasteSpells, $aBlkHasteSpells
-Global $ichkDonateAllCustom = 0, $ichkDonateCustom = 0
-Global $sTxtDonateCustom = StringReplace("any|need", "|", @CRLF)
-Global $sTxtBlacklistCustom = StringReplace("only|just", "|", @CRLF)
-Global $aDonCustom, $aBlkCustom, $varDonateCustom[3][2] ;;; Custom Combination Donate by ChiefM3
-$varDonateCustom[0][0] = 6; wizards
-$varDonateCustom[0][1] = 2; qta2
-$varDonateCustom[1][0] = 1; archers
-$varDonateCustom[1][1] = 3; qta3
-$varDonateCustom[2][0] = 0; barbarians
-$varDonateCustom[2][1] = 1; qta1
-
-Global $sTxtBlacklist = StringReplace("clan war|war|cw", "|", @CRLF)
-Global $aBlacklist
+Global $sTxtBlacklist, $aBlacklist
 Global $B[6] = [116, 111, 98, 111, 116, 46]
 Global $F[8] = [112, 58, 47, 47, 119, 119, 119, 46]
 Global $ichkExtraAlphabets = 0 ; extra alphabets
 
 Global $DonBarb = 0, $DonArch = 0, $DonGiant = 0, $DonGobl = 0, $DonWall = 0, $DonBall = 0, $DonWiza = 0, $DonHeal = 0
-Global $DonMini = 0, $DonHogs = 0, $DonValk = 0, $DonGole = 0, $DonWitc = 0, $DonLava = 0, $DonDrag = 0, $DonPekk = 0
+Global $DonMini = 0, $DonHogs = 0, $DonValk = 0, $DonGole = 0, $DonWitc = 0, $DonLava = 0, $DonBowl = 0, $DonDrag = 0, $DonPekk = 0, $DonBabyD = 0, $DonMine = 0
 
 ;Troop Settings
 Global $icmbTroopComp ;Troop Composition
 Global $icmbDarkTroopComp = 1
 Global $icmbTroopCap ;Troop Capacity
 Global $BarbComp = 30, $ArchComp = 60, $GoblComp = 10, $GiantComp = 4, $WallComp = 4, $WizaComp = 0, $MiniComp = 0, $HogsComp = 0
-Global $DragComp = 0, $BallComp = 0, $PekkComp = 0, $HealComp = 0, $ValkComp = 0, $GoleComp = 0, $WitcComp = 0, $LavaComp = 0
+Global $DragComp = 0, $BallComp = 0, $PekkComp = 0, $HealComp = 0, $ValkComp = 0, $GoleComp = 0, $WitcComp = 0, $LavaComp = 0, $BowlComp = 0
+Global $BabyDComp = 0, $MineComp = 0
 Global $CurBarb = 0, $CurArch = 0, $CurGiant = 0, $CurGobl = 0, $CurWall = 0, $CurBall = 0, $CurWiza = 0, $CurHeal = 0
-Global $CurMini = 0, $CurHogs = 0, $CurValk = 0, $CurGole = 0, $CurWitc = 0, $CurLava = 0, $CurDrag = 0, $CurPekk = 0
+Global $CurMini = 0, $CurHogs = 0, $CurValk = 0, $CurGole = 0, $CurWitc = 0, $CurLava = 0, $CurBowl = 0, $CurDrag = 0, $CurPekk = 0, $CurBabyD = 0, $CurMine = 0
 Global $T[1] = [97]
 Global $ArmyComp
 
 ;Spell Settings
-Global $DonPois = 0, $DonEart = 0, $DonHast = 0
-Global $iLightningSpellComp = 0, $iHealSpellComp = 0, $iRageSpellComp = 0, $iJumpSpellComp = 0, $iFreezeSpellComp = 0, $iPoisonSpellComp = 0, $iEarthSpellComp = 0, $iHasteSpellComp = 0
+Global $DonPois = 0, $DonEart = 0, $DonHast = 0, $DonSkel
+Global $iLightningSpellComp = 0, $iHealSpellComp = 0, $iRageSpellComp = 0, $iJumpSpellComp = 0, $iFreezeSpellComp = 0,$iCloneSpellComp = 0, $iPoisonSpellComp = 0, $iEarthSpellComp = 0, $iHasteSpellComp = 0, $iSkeletonSpellComp = 0
 Global $CurTotalSpell = False ; True when spell count haa been read
-Global $CurLightningSpell = 0, $CurHealSpell = 0, $CurRageSpell = 0, $CurJumpSpell = 0, $CurFreezeSpell = 0, $CurPoisonSpell = 0, $CurHasteSpell = 0, $CurEarthSpell = 0
+Global $CurLightningSpell = 0, $CurHealSpell = 0, $CurRageSpell = 0, $CurJumpSpell = 0, $CurFreezeSpell = 0, $CurCloneSpell = 0, $CurPoisonSpell = 0, $CurHasteSpell = 0, $CurEarthSpell = 0, $CurSkeletonSpell = 0
 Global $iTotalCountSpell = 0
+Global $iTotalTrainSpaceSpell = 0
 Global $TotalSFactory = 0
 Global $CurSFactory = 0
+
+;Wait For Spells
+Global $iEnableSpellsWait[$iModeCount]
+Global $bFullArmySpells = False  ; true when $iTotalTrainSpaceSpell = $iTotalSpellSpace in getArmySpellCount
 
 Global $barrackPos[4][2] ;Positions of each barracks
 
@@ -830,8 +845,8 @@ Global $itxtWallMinGold = 250000
 Global $itxtWallMinElixir = 250000
 Global $iVSDelay = 0
 Global $iMaxVSDelay = 0
-Global $isldTrainITDelay = 10
-Global $ichkTrap, $iChkCollect, $ichkTombstones, $ichkCleanYard
+Global $isldTrainITDelay = 40
+Global $ichkTrap, $iChkCollect, $ichkTombstones, $ichkCleanYard, $ichkTrapAfter
 ;Boju Only clear GemBox
 Global $ichkGemsBox
 ;Only clear GemBox
@@ -858,10 +873,20 @@ Global $iChkTrophyHeroes, $iChkTrophyAtkDead, $itxtDTArmyMin = 70
 Global $Walltolerance[7] = [35, 35, 45, 35, 45, 40, 35]
 
 ;General Settings
-Global $botPos[2] ; Position of bot used for Hide function
-Global $frmBotPosX ; Position X of the GUI
-Global $frmBotPosY ; Position Y of the GUI
+Global $frmBotPosX = -1 ; Position X of the GUI
+Global $frmBotPosY = -1 ; Position Y of the GUI
+Global $AndroidPosX = -1 ; Position X of the Android Window (undocked)
+Global $AndroidPosY = -1 ; Position Y of the Android Window (undocked)
+Global $frmBotDockedPosX = -1 ; Position X of the docked GUI
+Global $frmBotDockedPosY = -1 ; Position Y of the docked GUI
+Global $iUpdatingWhenMinimized = 1 ; Alternative Minimize Window routine for bot that enables window updates when minimized
+Global $chkUpdatingWhenMinimized
+Global $iHideWhenMinimized = 0 ; Hide bot window in taskbar when minimized
+Global $chkHideWhenMinimized
+Global $frmBotAddH = 0; Additional Height of GUI (e.g. when Android docked)
 Global $Hide = False ; If hidden or not
+Global $iDividerY = 243
+Global $iDividerHeight = 4
 
 Global $ichkBotStop, $icmbBotCommand, $icmbBotCond, $icmbHoursStop
 Global $C[6] = [98, 117, 103, 115, 51, 46]
@@ -907,19 +932,31 @@ Global $itxtRestartGold = 10000
 Global $itxtRestartElixir = 25000
 Global $itxtRestartDark = 500
 
-
-;Global $iWBMortar
-;Global $iWBWizTower
-;Global $iWBXbow
-Global $TroopGroup[10][3] = [["Arch", 1, 1], ["Giant", 2, 5], ["Wall", 4, 2], ["Barb", 0, 1], ["Gobl", 3, 1], ["Heal", 7, 14], ["Pekk", 9, 25], ["Ball", 5, 5], ["Wiza", 6, 4], ["Drag", 8, 20]]
+;Create troop training variables
+Global $DefaultTroopGroup[12][3] = [["Arch", 1, 1], ["Giant", 2, 5], ["Wall", 4, 2], ["Barb", 0, 1], ["Gobl", 3, 1], ["Heal", 7, 14], ["Pekk", 9, 25], ["Ball", 5, 5], ["Wiza", 6, 4], ["Drag", 8, 20], ["BabyD", 10, 10],["Mine", 11, 5]]
+Global $TroopGroup[12][3]  ; Actual training order values determined dynamically based on GUI.
 Global $TroopName[UBound($TroopGroup, 1)]
 Global $TroopNamePosition[UBound($TroopGroup, 1)]
 Global $TroopHeight[UBound($TroopGroup, 1)]
-Global $TroopGroupDark[6][3] = [["Mini", 0, 2], ["Hogs", 1, 5], ["Valk", 2, 8], ["Gole", 3, 30], ["Witc", 4, 12], ["Lava", 5, 30]]
+SetDefaultTroopGroup(False)
+
+; Create custom train order GUI variables
+Global $chkTroopOrder, $ichkTroopOrder, $btnTroopOrderSet
+Global $aTroopOrderIcon[13] = [$eIcnOptions, $eIcnBarbarian, $eIcnArcher, $eIcnGiant, $eIcnGoblin, $eIcnWallBreaker, $eIcnBalloon, $eIcnWizard, $eIcnHealer, $eIcnDragon, $eIcnPekka, $eIcnBabyDragon, $eIcnMiner]
+Global $cmbTroopOrder[UBound($aTroopOrderIcon)], $icmbTroopOrder[UBound($aTroopOrderIcon)], $lblTroopOrder[UBound($aTroopOrderIcon)], $ImgTroopOrder[UBound($aTroopOrderIcon)]
+Global $chkDarkTroopOrder, $ichkDarkTroopOrder, $btnDarkTroopOrderSet
+Global $aDarkTroopOrderIcon[8] = [$eIcnOptions, $eIcnMinion, $eIcnHogRider, $eIcnValkyrie, $eIcnGolem, $eIcnWitch, $eIcnLavaHound, $eIcnBowler]
+Global $cmbDarkTroopOrder[UBound($aDarkTroopOrderIcon)], $icmbDarkTroopOrder[UBound($aDarkTroopOrderIcon)], $lblDarkTroopOrder[UBound($aDarkTroopOrderIcon)], $ImgDarkTroopOrder[UBound($aDarkTroopOrderIcon)]
+
+;Create dark troop training variables
+Global $DefaultTroopGroupDark[7][3] = [["Mini", 0, 2], ["Hogs", 1, 5], ["Valk", 2, 8], ["Gole", 3, 30], ["Witc", 4, 12], ["Lava", 5, 30], ["Bowl", 6, 6]]
+Global $TroopGroupDark[7][3]
 Global $TroopDarkName[UBound($TroopGroupDark, 1)]
 Global $TroopDarkNamePosition[UBound($TroopGroupDark, 1)]
 Global $TroopDarkHeight[UBound($TroopGroupDark, 1)]
-Global $SpellGroup[3][3] = [["PSpell", 0, 1], ["ESpell", 1, 1], ["HaSpell", 2, 1]]
+SetDefaultTroopGroupDark(False)
+
+Global $SpellGroup[4][3] = [["PSpell", 0, 1], ["ESpell", 1, 1], ["HaSpell", 2, 1], ["SkSpell", 3, 1]]
 Global $SpellName[UBound($SpellGroup, 1)]
 Global $SpellNamePosition[UBound($SpellGroup, 1)]
 Global $SpellHeight[UBound($SpellGroup, 1)]
@@ -931,17 +968,6 @@ Global $listResourceLocation = ""
 Global $isNormalBuild = ""
 Global $isDarkBuild = ""
 Global $TotalTrainedTroops = 0
-
-For $i = 0 To UBound($TroopGroup, 1) - 1
-	$TroopName[$i] = $TroopGroup[$i][0]
-	$TroopNamePosition[$i] = $TroopGroup[$i][1]
-	$TroopHeight[$i] = $TroopGroup[$i][2]
-Next
-For $i = 0 To UBound($TroopGroupDark, 1) - 1
-	$TroopDarkName[$i] = $TroopGroupDark[$i][0]
-	$TroopDarkNamePosition[$i] = $TroopGroupDark[$i][1]
-	$TroopDarkHeight[$i] = $TroopGroupDark[$i][2]
-Next
 For $i = 0 To UBound($SpellGroup, 1) - 1
 	$SpellName[$i] = $SpellGroup[$i][0]
 	$SpellNamePosition[$i] = $SpellGroup[$i][1]
@@ -1025,6 +1051,7 @@ Global $picUpgradeStatus[$iUpgradeSlots], $ipicUpgradeStatus[$iUpgradeSlots] ;Ad
 Global $picUpgradeType[$iUpgradeSlots], $txtUpgradeX[$iUpgradeSlots], $txtUpgradeY[$iUpgradeSlots], $chkbxUpgrade[$iUpgradeSlots]
 Global $txtUpgradeValue[$iUpgradeSlots], $chkUpgrdeRepeat[$iUpgradeSlots], $ichkUpgrdeRepeat[$iUpgradeSlots],$txtUpgradeLevel[$iUpgradeSlots]
 Global $itxtUpgradeLevel[$iUpgradeSlots], $ichkbxUpgrade[$iUpgradeSlots ], $txtUpgradeName[$iUpgradeSlots ],$txtUpgradeTime[$iUpgradeSlots]
+Global $txtUpgradeEndTime[$iUpgradeSlots]
 Global $itxtUpgrMinGold, $itxtUpgrMinElixir, $txtUpgrMinDark, $itxtUpgrMinDark
 
 $itxtUpgrMinGold = 250000
@@ -1105,6 +1132,7 @@ Global $iShareAttackNow = 0
 Global $dLastShareDateApp = _Date_Time_GetLocalTime()
 Global $dLastShareDate = _DateAdd("n", -60, _Date_Time_SystemTimeToDateTimeStr($dLastShareDateApp, 1))
 
+Global $iUseRandomClick = 0
 Global $iScreenshotType = 0
 Global $ichkScreenshotHideName = 1
 
@@ -1382,23 +1410,11 @@ SetDebugLog("@AutoItExe: " & @AutoItExe)
 SetDebugLog("@ScriptFullPath: " & @ScriptFullPath)
 SetDebugLog("@WorkingDir: " & @WorkingDir)
 SetDebugLog("@AutoItPID: " & @AutoItPID)
-
-; Change Android type and update variable
-If $aCmdLine[0] > 1 Then
-	Local $i
-	For $i = 0 To UBound($AndroidAppConfig) - 1
-		If StringCompare($AndroidAppConfig[$i][0], $aCmdLine[2]) = 0 Then
-			$AndroidConfig = $i
-
-			If $AndroidAppConfig[$i][1] <> "" And $aCmdLine[0] > 2 Then
-				; Use Instance Name
-				UpdateAndroidConfig($aCmdLine[3])
-			Else
-				UpdateAndroidConfig()
-			EndIf
-		EndIf
-	Next
-EndIf
+SetDebugLog("@OSArch: " & @OSArch)
+SetDebugLog("@OSVersion: " & @OSVersion)
+SetDebugLog("@OSBuild: " & @OSBuild)
+SetDebugLog("@OSServicePack: " & @OSServicePack)
+SetDebugLog("Primary Display: " & @DesktopWidth & " x " & @DesktopHeight & " - " & @DesktopDepth & "bit")
 
 ; DO NOT ENABLE ! ! ! Only for testing Error behavior ! ! !
 Global $__TEST_ERROR_ADB_DEVICE_NOT_FOUND = False
@@ -1432,4 +1448,42 @@ Global $THSnipeBeforeDBEnable = 0 , $THSnipeBeforeLBEnable = 0
 Global $THSnipeBeforeDBTiles = 0 , $THSnipeBeforeLBTiles = 0
 Global $THSnipeBeforeDBScript = 0 , $THSnipeBeforeLBScript = 0
 
+; Close game while train
+Global $ichkCloseWaitTrain = 0, $ichkCloseWaitSpell, $ichkCloseWaitHero, $ibtnCloseWaitStop = 0, $ibtnCloseWaitStopRandom, $ibtnCloseWaitExact, $ibtnCloseWaitRandom, $icmbCloseWaitRdmPercent, $ichkCloseWaitEnable = 1
+Global $aTimeTrain[3] = [0, 0, 0] ; [Troop remaining time], [Spells remaining time], [Hero remaining time - when possible]
+Global $iCCRemainTime = 0  ; Time remaining until can request CC again
 
+;Walls
+Global $iNbrOfWallsUpped = 0
+Global $itxtWall04ST=0, $itxtWall05ST=0, $itxtWall06ST=0, $itxtWall07ST=0, $itxtWall08ST=0, $itxtWall09ST=0, $itxtWall10ST=0, $itxtWall11ST=0
+
+;Collectors
+Global $chkLvl6Enabled = 1
+Global $chkLvl7Enabled = 1
+Global $chkLvl8Enabled = 1
+Global $chkLvl9Enabled = 1
+Global $chkLvl10Enabled = 1
+Global $chkLvl11Enabled = 1
+Global $chkLvl12Enabled = 1
+Global $cmbLvl6Fill
+Global $cmbLvl7Fill
+Global $cmbLvl8Fill
+Global $cmbLvl9Fill
+Global $cmbLvl10Fill
+Global $cmbLvl11Fill
+Global $cmbLvl12Fill
+Global $toleranceOffset
+
+
+;Apply to switch Attack Standard after THSnipe End ==>
+Global $ichkTSActivateCamps2, $iEnableAfterArmyCamps2
+;==> Apply to switch Attack Standard after THSnipe End
+
+Global $iShouldRearm = True
+
+;=== No variables below ! ================================================
+
+; early load of config
+If FileExists($config) Or FileExists($building) Then
+	readConfig()
+EndIf

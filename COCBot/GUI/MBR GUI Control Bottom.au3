@@ -15,7 +15,7 @@
 
 Func Initiate()
 	WinGetAndroidHandle()
-	If $HWnD <> 0 And IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) Then
+    If $HWnD <> 0 And ($AndroidBackgroundLaunched = True Or AndroidControlAvailable()) Then
 		;WinActivate($HWnD)
 		SetLog(_PadStringCenter(" " & $sBotTitle & " Powered by MyBot.run ", 50, "~"), $COLOR_PURPLE)
 		SetLog($Compiled & " running on " & @OSVersion & " " & @OSServicePack & " " & @OSArch)
@@ -54,6 +54,7 @@ Func Initiate()
 		EndIf
 		If Not $RunState Then Return
 
+		AndroidShield("Initiate", True)
 		checkMainScreen()
 		If Not $RunState Then Return
 
@@ -122,10 +123,10 @@ EndFunc   ;==>InitiateLayout
 Func chkBackground()
 	If GUICtrlRead($chkBackground) = $GUI_CHECKED Then
 		$ichkBackground = 1
-		GUICtrlSetState($btnHide, $GUI_ENABLE)
+		updateBtnHideState($GUI_ENABLE)
 	Else
 		$ichkBackground = 0
-		GUICtrlSetState($btnHide, $GUI_DISABLE)
+		updateBtnHideState($GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkBackground
 
@@ -136,164 +137,35 @@ Func IsStopped()
 EndFunc   ;==>IsStopped
 
 Func btnStart()
-	ResumeAndroid()
-	If $RunState = False Then
-		;GUICtrlSetState($chkBackground, $GUI_DISABLE) ; will be disbaled after check if Android supports Background Mode
-		GUICtrlSetState($btnStart, $GUI_HIDE)
-		GUICtrlSetState($btnStop, $GUI_SHOW)
-		GUICtrlSetState($btnPause, $GUI_SHOW)
-		GUICtrlSetState($btnResume, $GUI_HIDE)
-		GUICtrlSetState($btnSearchMode, $GUI_HIDE)
-		;GUICtrlSetState($btnMakeScreenshot, $GUI_DISABLE)
-		;$FirstAttack = 0
-
-		$bTrainEnabled = True
-		$bDonationEnabled = True
-		$MeetCondStop = False
-		$Is_ClientSyncError = False
-		$bDisableBreakCheck = False ; reset flag to check for early warning message when bot start/restart in case user stopped in middle
-		$bDisableDropTrophy = False ; Reset Disabled Drop Trophy because the user has no Tier 1 or 2 Troops
-
-		If Not $bSearchMode Then
-			CreateLogFile()
-			CreateAttackLogFile()
-			If $FirstRun = -1 Then $FirstRun = 1
-		EndIf
-		_GUICtrlEdit_SetText($txtLog, _PadStringCenter(" BOT LOG ", 71, "="))
-		_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")
-		_GUICtrlRichEdit_AppendTextColor($txtLog, "" & @CRLF, _ColorConvert($Color_Black))
-
-	    SaveConfig()
-		readConfig()
-		applyConfig(False) ; bot window redraw stays disabled!
-
-		If BitAND($AndroidSupportFeature, 1 + 2) = 0 And $ichkBackground = 1 Then
-			GUICtrlSetState($chkBackground, $GUI_UNCHECKED)
-			chkBackground() ; Invoke Event manually
-			SetLog("Background Mode not supported for " & $Android & " and has been disabled", $COLOR_RED)
-		EndIf
-		GUICtrlSetState($chkBackground, $GUI_DISABLE)
-		SetDebugLog("Disable GUI Controls")
-
-		$GUIControl_Disabled = True
-		For $i = $FirstControlToHide To $LastControlToHide ; Save state of all controls on tabs
-			If IsTab($i) Or IsDebugControl($i) Then ContinueLoop
-			If $PushBulletEnabled And $i = $btnDeletePBmessages Then ContinueLoop ; exclude the DeleteAllMesages button when PushBullet is enabled
-			If $i = $btnMakeScreenshot Then ContinueLoop ; exclude
-			If $i = $divider Then ContinueLoop ; exclude divider
-			$iPrevState[$i] = GUICtrlGetState($i)
- 			GUICtrlSetState($i, $GUI_DISABLE)
-		Next
-		$GUIControl_Disabled = False
-
-		$RunState = True
-		SetRedrawBotWindow(True)
-
-		Local $Result = False
-	    Local $hWin = $HWnD
-		SetDebugLog("btnStart: Current Android Window Handle: " & WinGetAndroidHandle())
-		If $HWnD = 0 Then
-			If $hWin = 0 Then
-				$Result = OpenAndroid(False)
-			Else
-				$Result = RebootAndroid(False)
-			EndIf
-		EndIf
-		If $HWnD <> 0 Then ;Is Android open?
-			If Not $RunState Then Return
-		    If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance))  Then ; Really?
-				If Not $Result Then
-					$Result = InitiateLayout()
-				EndIf
-			Else
-				; Not really
-				SetLog("Current " & $Android & " Window not supported by MyBot", $COLOR_RED)
-				$Result = RebootAndroid(False)
-			EndIf
-			If Not $RunState Then Return
-			Local $hWndActive = $HWnD
-			; check if window can be activated
-			If $NoFocusTampering = False Then
-				Local $hTimer = TimerInit()
-				$hWndActive = -1
-				Local $activeHWnD = WinGetHandle("")
-				While TimerDiff($hTimer) < 1000 And $hWndActive <> $HWnD And Not _Sleep(100)
-					$hWndActive = WinActivate($HWnD) ; ensure bot has window focus
-				WEnd
-				WinActivate($activeHWnD) ; restore current active window
-			EndIf
-			If Not $RunState Then Return
-			If IsArray(ControlGetPos($HWnD, $AppPaneName, $AppClassInstance)) And $hWndActive = $HWnD  Then ; Really?
-				Initiate() ; Initiate and run bot
-			Else
-				SetLog("Cannot use " & $Android & ", please check log", $COLOR_RED)
-				btnStop()
-			EndIf
-		Else
-			SetLog("Cannot start " & $Android & ", please check log", $COLOR_RED)
-			btnStop()
-		EndIf
-
+	; decide when to run
+	EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
+	Local $RunNow = $BotAction <> $eBotNoAction
+	If $RunNow Then
+		BotStart()
+	Else
+		$BotAction = $eBotStart
 	EndIf
-
 EndFunc   ;==>btnStart
 
 Func btnStop()
-	ResumeAndroid()
-	If $RunState Then ; Or BitOr(GUICtrlGetState($btnStop), $GUI_SHOW) Then ; $btnStop check added for strange $RunState inconsistencies
-
-		GUICtrlSetState($chkBackground, $GUI_ENABLE)
-		GUICtrlSetState($btnStart, $GUI_SHOW)
-		GUICtrlSetState($btnStop, $GUI_HIDE)
-		GUICtrlSetState($btnPause, $GUI_HIDE)
-		GUICtrlSetState($btnResume, $GUI_HIDE)
-		If $iTownHallLevel > 2 Then GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
-		GUICtrlSetState($btnSearchMode, $GUI_SHOW)
-		;GUICtrlSetState($btnMakeScreenshot, $GUI_ENABLE)
-
-		; hide attack buttons if show
-		GUICtrlSetState($btnAttackNowDB, $GUI_HIDE)
-		GUICtrlSetState($btnAttackNowLB, $GUI_HIDE)
-		GUICtrlSetState($btnAttackNowTS, $GUI_HIDE)
-		GUICtrlSetState($pic2arrow, $GUI_SHOW)
-		GUICtrlSetState($lblVersion, $GUI_SHOW)
-
-		;$FirstStart = true
-
-		SetDebugLog("Enable GUI Controls")
-		SetRedrawBotWindow(False)
-
-		$GUIControl_Disabled = True
-		For $i = $FirstControlToHide To $LastControlToHide ; Restore previous state of controls
-			If IsTab($i) Or IsDebugControl($i) Then ContinueLoop
-			If $PushBulletEnabled And $i = $btnDeletePBmessages Then ContinueLoop ; exclude the DeleteAllMesages button when PushBullet is enabled
-			If $i = $btnMakeScreenshot Then ContinueLoop ; exclude
-			If $i = $divider Then ContinueLoop ; exclude divider
-			GUICtrlSetState($i, $iPrevState[$i])
-		Next
-		$GUIControl_Disabled = False
-
-		$RunState = False
-		AndroidBotStopEvent() ; signal android that bot is now stopping
-
-		;_BlockInputEx(0, "", "", $HWnD)
-		SetLog(_PadStringCenter(" Bot Stop ", 50, "="), $COLOR_ORANGE)
-		SetRedrawBotWindow(True) ; must be here at bottom, after SetLog, so Log refreshes. You could also use SetRedrawBotWindow(True, False) and let the events handle the refresh.
-		If Not $bSearchMode Then
-			If Not $TPaused Then $iTimePassed += Int(TimerDiff($sTimer))
-			AdlibUnRegister("SetTime")
-			$Restart = True
-			FileClose($hLogFileHandle)
-			$hLogFileHandle = ""
-			FileClose($hAttackLogFileHandle)
-			$hAttackLogFileHandle = ""
-		Else
-			$bSearchMode = False
-		EndIf
-	EndIf
+	; always invoked in MyBot.run.au3!
+	EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
+	$RunState = False ; Exit BotStart()
+	$BotAction = $eBotStop
 EndFunc   ;==>btnStop
 
-Func btnPause()
+Func btnSearchMode()
+	; decide when to run
+	EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
+	Local $RunNow = $BotAction <> $eBotNoAction
+	If $RunNow Then
+		BotSearchMode()
+	Else
+		$BotAction = $eBotSearchMode
+	EndIf
+EndFunc   ;==>btnSearchMode
+
+Func btnPause($RunNow = True)
 	;Send("{PAUSE}")
 	TogglePause()
 EndFunc   ;==>btnPause
@@ -327,61 +199,73 @@ EndFunc   ;==>btnAttackNowTS
 ;~ Hide Android Window again without overwriting $botPos[0] and [1]
 Func reHide()
 	WinGetAndroidHandle()
-	If $Hide = True And $HWnD <> 0 Then
+	If $Hide = True And $HWnD <> 0 And $AndroidEmbedded = False Then
 		SetDebugLog("Hide " & $Android & " Window after restart")
 		Return WinMove2($HWnD, "", -32000, -32000)
 	EndIf
 	Return 0
 EndFunc   ;==>reHide
 
+Func updateBtnHideState($newState = $GUI_ENABLE)
+	Local $hideState = GUICtrlGetState($btnHide)
+	Local $newHideState = ($AndroidEmbedded = True ? $GUI_DISABLE : $newState)
+	If $hideState <> $newHideState Then GUICtrlSetState($btnHide, $newHideState)
+EndFunc	  ;==>updateBtnHideState
+
 Func btnHide()
 	ResumeAndroid()
-	WinGetAndroidHandle()
+	WinGetAndroidHandle() ; updates android position
 	WinGetPos($HWnD)
 	If @error <> 0 Then Return SetError(0, 0, 0)
 
 	If $Hide = False Then
 		GUICtrlSetData($btnHide, GetTranslated(602, 26, "Show"))
 		Local $a = WinGetPos($HWnD)
-		$botPos[0] = $a[0]
-		$botPos[1] = $a[1]
 		WinMove2($HWnD, "", -32000, -32000)
 		$Hide = True
 	Else
 		GUICtrlSetData($btnHide, GetTranslated(602, 11, "Hide"))
 
-		If $botPos[0] = -32000 Then
-			WinMove2($HWnD, "", 0, 0)
-		Else
-			WinMove2($HWnD, "", $botPos[0], $botPos[1])
-			WinActivate($HWnD)
-		EndIf
+		WinMove2($HWnD, "", $AndroidPosX, $AndroidPosY)
+		WinActivate($HWnD)
 		$Hide = False
 	EndIf
+EndFunc   ;==>btnHide
+
+Func updateBtnEmbed()
+	If IsDeclared("btnEmbed") = $DECLARED_UNKNOWN Then Return False
+	UpdateFrmBotStyle()
+	Local $state = GUICtrlGetState($btnEmbed)
+	If $HWnD = 0 Or $AndroidBackgroundLaunched = True Or $AndroidEmbed = False Then
+		If $state <> $GUI_DISABLE Then GUICtrlSetState($btnEmbed, $GUI_DISABLE)
+		Return False
+	EndIf
+
+	Local $text = GUICtrlRead($btnEmbed)
+	Local $newText
+	If $AndroidEmbedded = True Then
+		$newText = GetTranslated(602, 28, "Undock")
+	Else
+		$newText = GetTranslated(602, 27, "Dock")
+	EndIf
+	If $text <> $newText Then GUICtrlSetData($btnEmbed, $newText)
+	If $state <> $GUI_ENABLE Then GUICtrlSetState($btnEmbed, $GUI_ENABLE)
+	; also update hide button
+	updateBtnHideState()
+	Return True
+EndFunc   ;==>updateBtnEmbed
+
+Func btnEmbed()
+	ResumeAndroid()
+	WinGetAndroidHandle()
+	WinGetPos($HWnD)
+	If @error <> 0 Then Return SetError(0, 0, 0)
+	AndroidEmbed(Not $AndroidEmbedded)
 EndFunc   ;==>btnHide
 
 Func btnMakeScreenshot()
 	If $RunState Then $iMakeScreenshotNow = True
 EndFunc   ;==>btnMakeScreenshot
-
-Func btnSearchMode()
-	$bSearchMode = True
-	$Restart = False
-	$Is_ClientSyncError = False
-	If $FirstRun = 1 Then $FirstRun = -1
-	btnStart()
-	checkMainScreen(False)
-	If _Sleep(100) Then Return
-	$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1]) ; get OCR to read current Village Trophies
-	If _Sleep(100) Then Return
-	getArmyCapacity(True, True)
-	If _Sleep(100) Then Return
-	PrepareSearch()
-	If _Sleep(1000) Then Return
-	VillageSearch()
-	If _Sleep(100) Then Return
-	btnStop()
-EndFunc   ;==>btnSearchMode
 
 Func GetFont()
 	Local $i, $sText = "", $DefaultFont
@@ -436,11 +320,11 @@ Func btnAnalyzeVillage()
 	SetLog("WEAK BASE C#.....................", $COLOR_TEAL)
 	; Weak Base Detection modified by LunaEclipse
 	Local $weakBaseValues
-	If $iChkWeakBase[$DB] = 1 Or $iChkWeakBase[$LB] = 1 Then
+	If IsWeakBaseActive($DB) Or IsWeakBaseActive($LB) Then
 		$weakBaseValues = IsWeakBase()
 	EndIf
 	For $i = 0 To $iModeCount - 2
-		If $iChkWeakBase[$i] = 1 Then
+		If IsWeakBaseActive($i) Then
 			If getIsWeak($weakBaseValues, $i) Then
 				SetLog(StringUpper($sModeText[$i]) & " IS A WEAK BASE: TRUE", $COLOR_PURPLE)
 			Else
@@ -700,3 +584,37 @@ EndFunc
 Func arrows()
 	getArmyHeroCount()
 EndFunc
+
+Func EnableGuiControls($OptimizedRedraw = True)
+	Return ToggleGuiControls(True, $OptimizedRedraw)
+EndFunc   ;==>EnableGuiControls
+
+Func DisableGuiControls($OptimizedRedraw = True)
+	Return ToggleGuiControls(False, $OptimizedRedraw)
+EndFunc   ;==>DisableGuiControls
+
+Func ToggleGuiControls($Enable, $OptimizedRedraw = True)
+	If $OptimizedRedraw = True Then SetRedrawBotWindow(False)
+	If $Enable = False Then
+		SetDebugLog("Disable GUI Controls")
+	Else
+		SetDebugLog("Enable GUI Controls")
+	EndIf
+	$GUIControl_Disabled = True
+	For $i = $FirstControlToHide To $LastControlToHide
+		If IsTab($i) Or IsAlwaysEnabledControl($i) Then ContinueLoop
+		If $PushBulletEnabled And $i = $btnDeletePBmessages Then ContinueLoop ; exclude the DeleteAllMesages button when PushBullet is enabled
+		If $i = $btnMakeScreenshot Then ContinueLoop ; exclude
+		If $i = $divider Then ContinueLoop ; exclude divider
+		If $Enable = False Then
+			; Save state of all controls on tabs
+			$iPrevState[$i] = GUICtrlGetState($i)
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Else
+			; Restore previous state of controls
+			GUICtrlSetState($i, $iPrevState[$i])
+		EndIf
+	Next
+	$GUIControl_Disabled = False
+	If $OptimizedRedraw = True Then SetRedrawBotWindow(True)
+EndFunc   ;==>ToggleGuiControls

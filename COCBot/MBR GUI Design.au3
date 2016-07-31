@@ -14,57 +14,82 @@
 ; ===============================================================================================================================
 
 #include "Functions\other\AppUserModelId.au3"
+#include "Functions\GUI\_GUICtrlSetTip.au3"
 
 Global Const $TCM_SETITEM = 0x1306
 
 Global Const $_GUI_MAIN_WIDTH = 470
 Global Const $_GUI_MAIN_HEIGHT = 650
+Global Const $_GUI_MAIN_TOP = 5
+Global Const $_GUI_BOTTOM_HEIGHT = 135
 Global Const $_GUI_CHILD_LEFT = 10
-Global Const $_GUI_CHILD_TOP = 110
+Global Const $_GUI_CHILD_TOP = 110 + $_GUI_MAIN_TOP
 
 Global $hImageList = 0
 
 ;~ ------------------------------------------------------
 ;~ Main GUI
 ;~ ------------------------------------------------------
-
-$frmBot = GUICreate($sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT)
+SplashStep(GetTranslated(500, 23, "Loading Main GUI..."))
+$frmBot = GUICreate($sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP, $frmBotPosX, $frmBotPosY, BitOr($WS_MINIMIZEBOX, $WS_CAPTION, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS))
 ; group multiple bot windows using _WindowAppId
 _WindowAppId($frmBot, "MyBot.run")
 GUISetIcon($pIconLib, $eIcnGUI)
 TraySetIcon($pIconLib, $eIcnGUI)
 TraySetToolTip($sBotTitle)
-$frmBot_MAIN_PIC = GUICtrlCreatePic(@ScriptDir & "\Images\logo.jpg", 0, 0, $_GUI_MAIN_WIDTH, 80)
+
+; Need $frmBotEx for embedding Android
+$frmBotEx = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
+GUICtrlCreateLabel("", 0, 0, $_GUI_MAIN_WIDTH, 5)
+GUICtrlSetBkColor(-1, $COLOR_WHITE)
+$frmBot_MAIN_PIC = GUICtrlCreatePic(@ScriptDir & "\Images\logo.jpg", 0, $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH, 80)
 $hToolTip = _GUIToolTip_Create($frmBot) ; tool tips for URL links etc
+_GUIToolTip_SetMaxTipWidth($hToolTip, $_GUI_MAIN_WIDTH) ; support multiple lines
+
+GUISwitch($frmBot)
+
+$frmBotBottom = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_BOTTOM_HEIGHT, 0, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
+$frmBotBottomCtrlState = 0
+;$frmBotEmbeddedRecorder = GUICreate("", 32, 32, 0, 0, $WS_CHILD, -1, $frmBot) ; Android Recorder of mouse clicks and moves
+$frmBotEmbeddedShield = GUICreate("", 32, 32, 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), BitOR($WS_EX_TOPMOST, ($AndroidShieldPreWin8 ? $WS_EX_TRANSPARENT : 0)), $frmBot) ; Android Shield for mouse
+$frmBotEmbeddedGarphics = GUICreate("", 32, 32, 0, 0, $WS_CHILD, BitOR($WS_EX_LAYERED, $WS_EX_TOPMOST), $frmBot)
+GUISwitch($frmBotEmbeddedShield)
+$frmBotEmbeddedShieldInput = GUICtrlCreateInput("", 0, 0, -1, -1, $WS_TABSTOP)
+GUICtrlSetState($frmBotEmbeddedShieldInput, $GUI_HIDE)
 
 ;~ ------------------------------------------------------
 ;~ Header Menu
 ;~ ------------------------------------------------------
 
-$idMENU_DONATE = GUICtrlCreateMenu("&" & GetTranslated(601,18,"Paypal Donate?"))
-$idMENU_DONATE_SUPPORT = GUICtrlCreateMenuItem(GetTranslated(601,19,"Support the development"), $idMENU_DONATE)
-GUICtrlSetOnEvent(-1, "")
-;$idMENU_OPTIONS = GUICtrlCreateMenu("&Options")
-;GUICtrlSetOnEvent(-1, "")
-;$idMENU_ABOUT = GUICtrlCreateMenu("&About Us")
+GUISwitch($frmBot)
+;$idMENU_DONATE = GUICtrlCreateMenu("&" & GetTranslated(601,18,"Paypal Donate?"))
+;_GUICtrlMenu_SetItemType(_GUICtrlMenu_GetMenu($frmBot), 0, $MFT_RIGHTJUSTIFY) ; move to right
+;$idMENU_DONATE_SUPPORT = GUICtrlCreateMenuItem(GetTranslated(601,19,"Support the development"), $idMENU_DONATE)
 ;GUICtrlSetOnEvent(-1, "")
 
 ;~ ------------------------------------------------------
 ;~ GUI Bottom
 ;~ ------------------------------------------------------
+SplashStep(GetTranslated(500, 24, "Loading GUI Bottom..."))
+GUISwitch($frmBotBottom)
 #include "GUI\MBR GUI Design Bottom.au3"
-
+GUISwitch($frmBotEx)
 
 ;~ ------------------------------------------------------
 ;~ GUI Child Files
 ;~ ------------------------------------------------------
+SplashStep(GetTranslated(500, 25, "Loading General tab..."))
 #include "GUI\MBR GUI Design Child General.au3" ; includes '$FirstControlToHide" on GUI
+SplashStep(GetTranslated(500, 26, "Loading Village tab..."))
 #include "GUI\MBR GUI Design Child Village.au3"
+SplashStep(GetTranslated(500, 27, "Loading Attack tab..."))
 #include "GUI\MBR GUI Design Child Attack.au3"
+SplashStep(GetTranslated(500, 28, "Loading Bot tab..."))
 #include "GUI\MBR GUI Design Child Bot.au3"
 ;GUISetState()
-GUISwitch($frmBot)
-$tabMain = GUICtrlCreateTab(5, 85, $_GUI_MAIN_WIDTH - 9, $_GUI_MAIN_HEIGHT - 225); , $TCS_MULTILINE)
+GUISwitch($frmBotEx)
+$tabMain = GUICtrlCreateTab(5, 85 + $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH - 9, $_GUI_MAIN_HEIGHT - 225); , $TCS_MULTILINE)
+GUICtrlSetResizing(-1, $GUI_DOCKBORDERS)
 $tabGeneral = GUICtrlCreateTabItem(GetTranslated(600,1, "Log"))
 $tabVillage = GUICtrlCreateTabItem(GetTranslated(600,2, "Village")) ; Village
 $tabAttack = GUICtrlCreateTabItem(GetTranslated(600,3,"Attack Plan"))
@@ -73,8 +98,9 @@ $tabBot = GUICtrlCreateTabItem(GetTranslated(600,4,"Bot"))
 ;~ -------------------------------------------------------------
 ;~ About Us Tab
 ;~ -------------------------------------------------------------
+SplashStep(GetTranslated(500, 29, "Loading About Us tab..."))
 $tabAboutUs = GUICtrlCreateTabItem(GetTranslated(600,5, "About Us"))
-Local $x = 30, $y = 150
+Local $x = 30, $y = 150 + $_GUI_MAIN_TOP
 	$grpCredits = GUICtrlCreateGroup("Credits", $x - 20, $y - 20, 450, 375)
 		$lblCreditsBckGrnd = GUICtrlCreateLabel("", $x - 20, $y - 20, 450, 375)  ; adds fixed white background for entire tab, if using "Labels"
 		GUICtrlSetBkColor(-1, $COLOR_WHITE)
@@ -131,6 +157,7 @@ GUICtrlCreateTabItem("")
 ;~ GUI init
 ;~ -------------------------------------------------------------
 
+SplashStep(GetTranslated(500, 30, "Initializing GUI..."))
 #Region ; Bind Icon images to all Tabs in all GUI windows (main and children)
 Bind_ImageList($tabMain)
 Bind_ImageList($hGUI_VILLAGE_TAB)
@@ -154,27 +181,53 @@ GUICtrlSetState($hGUI_LOG, $GUI_SHOW)
 #EndRegion ; Show GUI and activate Tab LOG
 
 ;~ -------------------------------------------------------------
-;~ Bottom status bar
+;~ Show bot
 ;~ -------------------------------------------------------------
-GUISetState(@SW_SHOW)
+
+cmbLog()
+
+If IsHWnd($hSplash) Then GUIDelete($hSplash) ; Delete the splash screen since we don't need it anymore
+If Not $NoFocusTampering Then
+	; normal
+	GUISetState(@SW_SHOW, $frmBot)
+Else
+	GUISetState(@SW_SHOW, $frmBot)
+	;GUISetState(@SW_SHOWNOACTIVATE, $frmBot)
+	;Local $lCurExStyle = _WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE)
+	;_WinAPI_SetWindowLong($HWnd, $GWL_EXSTYLE, BitOR($lCurExStyle, $WS_EX_TOPMOST))
+	;_WinAPI_SetWindowLong($HWnd, $GWL_EXSTYLE, $lCurExStyle)
+EndIf
+
+GUISetState(@SW_SHOWNOACTIVATE, $frmBotEx)
+GUISetState(@SW_SHOWNOACTIVATE, $frmBotBottom)
+GUISwitch($frmBotEx)
 $frmBotMinimized = False
 
-$statLog = _GUICtrlStatusBar_Create($frmBot)
+$frmBotPosInit = WinGetPos($frmBot)
+ReDim $frmBotPosInit[7]
+$frmBotPosInit[4] = _WinAPI_GetClientWidth($frmBot)
+$frmBotPosInit[5] = _WinAPI_GetClientHeight($frmBot)
+$frmBotPosInit[6] = ControlGetPos($frmBot, "", $frmBotEx)[3]
+
+;~ -------------------------------------------------------------
+;~ Bottom status bar
+;~ -------------------------------------------------------------
+
+$statLog = _GUICtrlStatusBar_Create($frmBotBottom)
 _ArrayConcatenate($G, $y)
 _GUICtrlStatusBar_SetSimple($statLog)
 _GUICtrlStatusBar_SetText($statLog, "Status : Idle")
-$tiAbout = TrayCreateItem("About")
+$tiShow = TrayCreateItem(GetTranslated(500,31,"Show bot"))
+TrayItemSetOnEvent($tiShow, "tiShow")
+$tiHide = TrayCreateItem(GetTranslated(500,32, "Hide when minimized"))
+TrayItemSetOnEvent($tiHide, "tiHide")
 TrayCreateItem("")
-$tiExit = TrayCreateItem("Exit")
+$tiDonate = TrayCreateItem(GetTranslated(500,33, "Support Development"))
+TrayItemSetOnEvent($tiDonate, "tiDonate")
+$tiAbout = TrayCreateItem(GetTranslated(500,34, "About"))
+TrayItemSetOnEvent($tiAbout, "tiAbout")
+TrayCreateItem("")
+$tiExit = TrayCreateItem(GetTranslated(500,35, "Exit"))
+TrayItemSetOnEvent($tiExit, "tiExit")
 
-; Create profile if specified by command line parameter does not exist
-If $sCurrProfile <> "<No Profiles>" And Not FileExists($sProfilePath & "\" & $sCurrProfile) Then
-	createProfile()
-	setupProfileComboBox()
-	selectProfile()
-ElseIf $sCurrProfile = "<No Profiles>" Then ; Create profile if there are no profiles
-	setupProfile()
-	setupProfileComboBox()
-	selectProfile()
-EndIf
 ;~ -------------------------------------------------------------

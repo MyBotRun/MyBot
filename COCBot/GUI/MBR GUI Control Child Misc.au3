@@ -25,7 +25,7 @@ Func cmbProfile()
 	applyConfig()
 	saveConfig()
 
-	SetLog(_PadStringCenter("Profile " & $sCurrProfile & " loaded from " & $config, 50, "="), $COLOR_GREEN)
+	SetLog("Profile " & $sCurrProfile & " loaded from " & $config, $COLOR_GREEN)
 EndFunc   ;==>cmbProfile
 
 Func btnAddConfirm()
@@ -42,7 +42,7 @@ Func btnAddConfirm()
 		Case $btnConfirmAdd
 			Local $newProfileName = StringRegExpReplace(GUICtrlRead($txtVillageName), '[/:*?"<>|]', '_')
 			If FileExists($sProfilePath & "\" & $newProfileName) Then
-				MsgBox($MB_ICONWARNING, GetTranslated(637, 11, "Profile Already Exists"), $newProfileName & " " & GetTranslated(637, 12, "already exists.") & @CRLF & GetTranslated(637, 13, "Please choose another name for your profile"))
+				MsgBox($MB_ICONWARNING, GetTranslated(637, 11, "Profile Already Exists"), GetTranslated(637, 12, "%s already exists.\r\nPlease choose another name for your profile.", $newProfileName))
 				Return
 			EndIf
 
@@ -70,12 +70,20 @@ EndFunc   ;==>btnAddConfirm
 Func btnDeleteCancel()
 	Switch @GUI_CtrlId
 		Case $btnDelete
-			Local $msgboxAnswer = MsgBox($MB_ICONWARNING + $MB_OKCANCEL, GetTranslated(7, 111, "Delete Profile"), GetTranslated(7, 112, "Are you sure you really want to delete the profile?") & @CRLF & GetTranslated(7, 113, "This action can not be undone."))
+			Local $msgboxAnswer = MsgBox($MB_ICONWARNING + $MB_OKCANCEL, GetTranslated(637, 8, "Delete Profile"), GetTranslated(637, 14, "Are you sure you really want to delete the profile?\r\nThis action can not be undone."))
 			If $msgboxAnswer = $IDOK Then
 				; Confirmed profile deletion so delete it.
 				deleteProfile()
-				setupProfileComboBox()
-				selectProfile()
+				; reset inputtext
+				GUICtrlSetData($txtVillageName, GetTranslated(637,4, "MyVillage"))
+				If _GUICtrlComboBox_GetCount($cmbProfile) > 1 Then
+					; select existing profile
+					setupProfileComboBox()
+					selectProfile()
+				Else
+					; create new default profile
+					createProfile(True)
+				EndIf
 			EndIf
 		Case $btnCancel
 			GUICtrlSetState($txtVillageName, $GUI_HIDE)
@@ -153,93 +161,68 @@ Func chkBotStop()
 	EndIf
 EndFunc   ;==>chkBotStop
 Func btnLocateBarracks()
+	Local $wasRunState = $RunState
 	$RunState = True
-	While 1
-		ZoomOut()
-		LocateBarrack()
-		ExitLoop
-	WEnd
-	$RunState = False
+	ZoomOut()
+	LocateBarrack()
+	$RunState = $wasRunState
+	AndroidShield("btnLocateBarracks") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnLocateBarracks
 
 Func btnLocateArmyCamp()
+	Local $wasRunState = $RunState
 	$RunState = True
-	While 1
-		ZoomOut()
-		LocateBarrack(True)
-		ExitLoop
-	WEnd
-	$RunState = False
+	ZoomOut()
+	LocateBarrack(True)
+	$RunState = $wasRunState
+	AndroidShield("btnLocateArmyCamp") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnLocateArmyCamp
 
 Func btnLocateClanCastle()
+	Local $wasRunState = $RunState
 	$RunState = True
-	While 1
-		ZoomOut()
-		LocateClanCastle()
-		ExitLoop
-	WEnd
-	$RunState = False
+	ZoomOut()
+	LocateClanCastle()
+	$RunState = $wasRunState
+	AndroidShield("btnLocateClanCastle") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnLocateClanCastle
 
 Func btnLocateSpellfactory()
+	Local $wasRunState = $RunState
 	$RunState = True
-	While 1
-		ZoomOut()
-		LocateSpellFactory()
-		ExitLoop
-	WEnd
-	$RunState = False
+	ZoomOut()
+	LocateSpellFactory()
+	$RunState = $wasRunState
+	AndroidShield("btnLocateSpellfactory") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnLocateSpellfactory
 
 Func btnLocateDarkSpellfactory()
+	Local $wasRunState = $RunState
 	$RunState = True
-	While 1
-		ZoomOut()
-		LocateDarkSpellFactory()
-		ExitLoop
-	WEnd
-	$RunState = False
+	ZoomOut()
+	LocateDarkSpellFactory()
+	$RunState = $wasRunState
+	AndroidShield("btnLocateDarkSpellfactory") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnLocateDarkSpellfactory
 
 Func btnLocateKingAltar()
-	$RunState = True
-	While 1
-		ZoomOut()
-		LocateKingAltar()
-		ExitLoop
-	WEnd
-	$RunState = False
+	LocateKingAltar()
 EndFunc   ;==>btnLocateKingAltar
 
 
 Func btnLocateQueenAltar()
-	$RunState = True
-	While 1
-		ZoomOut()
-		LocateQueenAltar()
-		ExitLoop
-	WEnd
-	$RunState = False
+	LocateQueenAltar()
 EndFunc   ;==>btnLocateQueenAltar
 
 Func btnLocateWardenAltar()
-	$RunState = True
-	While 1
-		ZoomOut()
-		LocateWardenAltar()
-		ExitLoop
-	WEnd
-	$RunState = False
+	LocateWardenAltar()
 EndFunc   ;==>btnLocateWardenAltar
 
 Func btnLocateTownHall()
+	Local $wasRunState = $RunState
 	$RunState = True
-	While 1
-		ZoomOut()
-		LocateTownHall()
-		ExitLoop
-	WEnd
+	ZoomOut()
+	LocateTownHall()
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
 	Local $stext = @CRLF & GetTranslated(640, 72, "If you locating your TH because you upgraded,") & @CRLF & _
 			GetTranslated(640, 73, "then you must restart bot!!!") & @CRLF & @CRLF & _
@@ -251,19 +234,16 @@ Func btnLocateTownHall()
 				GetTranslated(640, 78, "Click OK to close bot and then restart the bot (manually)") & @CRLF & @CRLF & GetTranslated(640, 65, -1) & @CRLF
 		Local $MsgBox = _ExtMsgBox(0, GetTranslated(640, 1, -1), GetTranslated(640, 76, -1), $stext, 120, $frmBot)
 		If $DebugSetlog = 1 Then Setlog("$MsgBox= " & $MsgBox, $COLOR_PURPLE)
-		If $MsgBox = 1 Then
-			Local $BotProcess = WinGetProcess($frmBot)
-			If $DebugSetlog = 1 Then Setlog("$BotProcess= " & $BotProcess, $COLOR_PURPLE)
-			ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -PID " & $BotProcess, "", Default, @SW_HIDE)
-			Setlog("Error closing bot, please use manual method!", $COLOR_RED)
-		EndIf
+		If $MsgBox = 1 Then BotClose(False)
 	EndIf
-	$RunState = False
+	$RunState = $wasRunState
+	AndroidShield("btnLocateTownHall") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnLocateTownHall
 
 
 
 Func btnResetBuilding()
+	Local $wasRunState = $RunState
 	$RunState = True
 	While 1
 		If _Sleep(500) Then Return ; add small delay before display message window
@@ -283,11 +263,7 @@ Func btnResetBuilding()
 					If $Result = 0 Then
 						Setlog("Unable to remove building.ini file, please use manual method", $COLOR_RED)
 					Else
-						; File Deleted close the bot with taskkill so it does not save a new one
-						Local $BotProcess = WinGetProcess($frmBot)
-						If $DebugSetlog = 1 Then Setlog("$BotProcess= " & $BotProcess, $COLOR_PURPLE)
-						ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -PID " & $BotProcess, "", Default, @SW_HIDE)
-						Setlog("Error removing building.ini, please use manual method", $COLOR_RED)
+						BotClose(False)
 					EndIf
 				EndIf
 			EndIf
@@ -296,17 +272,17 @@ Func btnResetBuilding()
 		EndIf
 		ExitLoop
 	WEnd
-	$RunState = False
+	$RunState = $wasRunState
+	AndroidShield("btnResetBuilding") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnResetBuilding
 
 Func btnLab()
+	Local $wasRunState = $RunState
 	$RunState = True
-	While 1
-		ZoomOut()
-		LocateLab()
-		ExitLoop
-	WEnd
-	$RunState = False
+	ZoomOut()
+	LocateLab()
+	$RunState = $wasRunState
+	AndroidShield("btnLab") ; Update shield status due to manual $RunState
 EndFunc   ;==>btnLab
 
 Func chkTrophyAtkDead()

@@ -17,32 +17,66 @@ Func ZoomOut() ;Zooms out
     WinGetAndroidHandle()
 	getBSPos() ; Update $HWnd and Android Window Positions
 	If Not $RunState Then Return
-	Return Execute("ZoomOut" & $Android & "()")
+	If $AndroidEmbedded = False Then
+		; default zoomout
+		Return Execute("ZoomOut" & $Android & "()")
+	EndIf
+	; Android embedded, only use Android zoomout
+	AndroidOnlyZoomOut()
 EndFunc   ;==>ZoomOut
 
 Func ZoomOutBlueStacks() ;Zooms out
-   ;Return DefaultZoomOut()
-   Return ZoomOutCtrlClick(True, False, False, False)
+	Return ZoomOutCtrlClick(True, False, False, True)
+   ;Return DefaultZoomOut("{DOWN}", 0)
+   ; ZoomOutCtrlClick doesn't cause moving buildings, but uses global Ctrl-Key and has taking focus problems
+   ;Return ZoomOutCtrlClick(True, False, False, False)
 EndFunc
 
-Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40) ;Zooms out
+Func ZoomOutBlueStacks2()
+	Return ZoomOutCtrlClick(True, False, False, True)
+   ;Return DefaultZoomOut("{DOWN}", 0)
+   ; ZoomOutCtrlClick doesn't cause moving buildings, but uses global Ctrl-Key and has taking focus problems
+   ;Return ZoomOutCtrlClick(True, False, False, False)
+EndFunc
+
+Func ZoomOutMEmu()
+   ;ClickP($aAway) ; activate window first with Click Away (when not clicked zoom might not work)
+   Return DefaultZoomOut("{F3}", 0)
+EndFunc
+
+Func ZoomOutDroid4X()
+   Return ZoomOutCtrlWheelScroll(True, True, True)
+EndFunc
+
+Func ZoomOutNox()
+   Return ZoomOutCtrlWheelScroll(True, True, True)
+   ;Return DefaultZoomOut("{CTRLDOWN}{DOWN}{CTRLUP}", 0)
+EndFunc
+
+Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40, $AndroidZoomOut = True) ;Zooms out
 	Local $result0, $result1, $i = 0
 	Local $exitCount = 80
 	Local $delayCount = 20
-	Local $AndroidZoomOut = True
+	ForceCaptureRegion()
 	_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1]) <> Hex($aTopLeftClient[2], 6) Or _
 	_GetPixelColor($aTopMiddleClient[0], $aTopMiddleClient[1]) <> Hex($aTopMiddleClient[2], 6) Or _
 	_GetPixelColor($aTopRightClient[0], $aTopRightClient[1]) <> Hex($aTopRightClient[2], 6) Then
 		SetLog("Zooming Out", $COLOR_BLUE)
 		If _Sleep($iDelayZoomOut1) Then Return
+		If $AndroidZoomOut = True Then
+			AndroidZoomOut(True) ; use new ADB zoom-out
+			ForceCaptureRegion()
+			_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
+		EndIf
 	    Local $tryCtrlWheelScroll = False
 		While (_GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1]) <> Hex($aTopLeftClient[2], 6) Or _
 		_GetPixelColor($aTopMiddleClient[0], $aTopMiddleClient[1]) <> Hex($aTopMiddleClient[2], 6) Or _
 		_GetPixelColor($aTopRightClient[0], $aTopRightClient[1]) <> Hex($aTopRightClient[2], 6)) And Not $tryCtrlWheelScroll
 
+			AndroidShield("DefaultZoomOut") ; Update shield status
 			If $AndroidZoomOut = True Then
-			   AndroidZoomOut($i) ; use new ADB zoom-out
+			   AndroidZoomOut(False, $i) ; use new ADB zoom-out
 			   If @error <> 0 Then $AndroidZoomOut = False
 			EndIf
 			If $AndroidZoomOut = False Then
@@ -74,6 +108,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40)
 				If checkObstacles() = True Then Setlog("Error window cleared, continue Zoom out", $COLOR_BLUE)  ; call to clear normal errors
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
+			ForceCaptureRegion()
 			_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 		WEnd
 		If $tryCtrlWheelScroll Then
@@ -83,31 +118,13 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40)
 	EndIf
 EndFunc   ;==>ZoomOut
 
-Func ZoomOutBlueStacks2()
-   ;Return DefaultZoomOut()
-   Return ZoomOutCtrlClick(True, False, False, False)
-EndFunc
-
-Func ZoomOutMEmu()
-   ;ClickP($aAway) ; activate window first with Click Away (when not clicked zoom might not work)
-   Return DefaultZoomOut("{F3}", 0)
-EndFunc
-
-Func ZoomOutDroid4X()
-   Return ZoomOutCtrlWheelScroll(True, True, True)
-EndFunc
-
-Func ZoomOutNox()
-   Return ZoomOutCtrlWheelScroll(True, True, True)
-   ;Return DefaultZoomOut("{CTRLDOWN}{DOWN}{CTRLUP}", 0)
-EndFunc
-
 Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel = True, $AlwaysControlFocus = False, $AndroidZoomOut = True)
    ;AutoItSetOption ( "SendKeyDownDelay", 3000)
 	Local $exitCount = 80
 	Local $delayCount = 20
 	Local $result[4], $i = 0, $j
 	Local $ZoomActions[4] = ["ControlFocus", "Ctrl Down", "Mouse Wheel Scroll Down", "Ctrl Up"]
+	ForceCaptureRegion()
 	_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1]) <> Hex($aTopLeftClient[2], 6) Or _
@@ -116,7 +133,13 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 
 	    SetLog("Zooming Out", $COLOR_BLUE)
 
+		AndroidShield("ZoomOutCtrlWheelScroll") ; Update shield status
 		If _Sleep($iDelayZoomOut1) Then Return
+		If $AndroidZoomOut = True Then
+			AndroidZoomOut(True) ; use new ADB zoom-out
+			ForceCaptureRegion()
+			_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
+		EndIf
 		Local $aMousePos = MouseGetPos()
 
 		While _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1]) <> Hex($aTopLeftClient[2], 6) Or _
@@ -124,7 +147,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 			_GetPixelColor($aTopRightClient[0], $aTopRightClient[1]) <> Hex($aTopRightClient[2], 6)
 
 			If $AndroidZoomOut = True Then
-			   AndroidZoomOut($i) ; use new ADB zoom-out
+			   AndroidZoomOut(False, $i) ; use new ADB zoom-out
 			   If @error <> 0 Then $AndroidZoomOut = False
 			EndIf
 			If $AndroidZoomOut = False Then
@@ -178,10 +201,11 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 				If checkObstacles() = True Then Setlog("Error window cleared, continue Zoom out", $COLOR_BLUE)  ; call to clear normal errors
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
+			ForceCaptureRegion()
 			_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 		 WEnd
 
-		 If $CenterMouseWhileZooming Then MouseMove($aMousePos[0], $aMousePos[1], 0)
+		 If $CenterMouseWhileZooming And $AndroidZoomOut = False Then MouseMove($aMousePos[0], $aMousePos[1], 0)
 
 	EndIf
  EndFunc
@@ -193,6 +217,7 @@ Func ZoomOutCtrlClick($ZoomOutOverWaters = True, $CenterMouseWhileZooming = Fals
 	Local $result[4], $i, $j
 	Local $SendCtrlUp = False
 	Local $ZoomActions[4] = ["ControlFocus", "Ctrl Down", "Click", "Ctrl Up"]
+	ForceCaptureRegion()
 	_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1]) <> Hex($aTopLeftClient[2], 6) Or _
@@ -201,12 +226,20 @@ Func ZoomOutCtrlClick($ZoomOutOverWaters = True, $CenterMouseWhileZooming = Fals
 
 	    SetLog("Zooming Out", $COLOR_BLUE)
 
+		AndroidShield("ZoomOutCtrlClick") ; Update shield status
+
 		If $ZoomOutOverWaters = True Then
-			For $i = 1 To 3
-			   ; scroll to waters
-			   _PostMessage_ClickDrag(100, 600, 600, 100, "left")
-			Next
 			; zoom out over waters
+			If $AndroidZoomOut = True Then
+				AndroidZoomOut(True) ; use new ADB zoom-out
+				ForceCaptureRegion()
+				_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
+			Else
+				For $i = 1 To 3
+				   ; scroll to waters
+				   _PostMessage_ClickDrag(100, 600, 600, 100, "left")
+				Next
+			EndIf
 		EndIf
 
 		If _Sleep($iDelayZoomOut1) Then Return
@@ -218,7 +251,7 @@ Func ZoomOutCtrlClick($ZoomOutOverWaters = True, $CenterMouseWhileZooming = Fals
 			_GetPixelColor($aTopRightClient[0], $aTopRightClient[1]) <> Hex($aTopRightClient[2], 6)
 
 			If $AndroidZoomOut = True Then
-			   AndroidZoomOut($i) ; use new ADB zoom-out
+			   AndroidZoomOut(False, $i) ; use new ADB zoom-out
 			   If @error <> 0 Then $AndroidZoomOut = False
 			EndIf
 			If $AndroidZoomOut = False Then
@@ -266,6 +299,7 @@ Func ZoomOutCtrlClick($ZoomOutOverWaters = True, $CenterMouseWhileZooming = Fals
 				If checkObstacles() = True Then Setlog("Error window cleared, continue Zoom out", $COLOR_BLUE)  ; call to clear normal errors
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
+			ForceCaptureRegion()
 			_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 		 WEnd
 
@@ -275,3 +309,34 @@ Func ZoomOutCtrlClick($ZoomOutOverWaters = True, $CenterMouseWhileZooming = Fals
 
 	EndIf
  EndFunc
+
+Func AndroidOnlyZoomOut() ;Zooms out
+	Local $i = 0
+	Local $exitCount = 80
+	ForceCaptureRegion()
+	_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
+	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1]) <> Hex($aTopLeftClient[2], 6) Or _
+	_GetPixelColor($aTopMiddleClient[0], $aTopMiddleClient[1]) <> Hex($aTopMiddleClient[2], 6) Or _
+	_GetPixelColor($aTopRightClient[0], $aTopRightClient[1]) <> Hex($aTopRightClient[2], 6) Then
+		SetLog("Zooming Out", $COLOR_BLUE)
+		AndroidZoomOut(True) ; use new ADB zoom-out
+		ForceCaptureRegion()
+		_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
+		While (_GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1]) <> Hex($aTopLeftClient[2], 6) Or _
+		_GetPixelColor($aTopMiddleClient[0], $aTopMiddleClient[1]) <> Hex($aTopMiddleClient[2], 6) Or _
+		_GetPixelColor($aTopRightClient[0], $aTopRightClient[1]) <> Hex($aTopRightClient[2], 6))
+
+			AndroidShield("AndroidOnlyZoomOut") ; Update shield status
+			AndroidZoomOut(False, $i) ; use new ADB zoom-out
+			If $i > $exitCount Then Return
+			If $RunState = False Then ExitLoop
+			If IsProblemAffect(True) Then  ; added to catch errors during Zoomout
+				Setlog($Android & " Error window detected", $COLOR_RED)
+				If checkObstacles() = True Then Setlog("Error window cleared, continue Zoom out", $COLOR_BLUE)  ; call to clear normal errors
+			EndIf
+			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
+			ForceCaptureRegion()
+			_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
+		WEnd
+	EndIf
+EndFunc   ;==>AndroidOnlyZoomOut

@@ -13,6 +13,34 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
+SplashStep(GetTranslated(500, 21, "Initializing Android..."))
+
+; initialize Android config
+InitAndroidConfig(True)
+
+; Change Android type and update variable
+If $aCmdLine[0] > 1 Then
+	Local $i
+	For $i = 0 To UBound($AndroidAppConfig) - 1
+		If StringCompare($AndroidAppConfig[$i][0], $aCmdLine[2]) = 0 Then
+			$AndroidConfig = $i
+
+			If $AndroidAppConfig[$i][1] <> "" And $aCmdLine[0] > 2 Then
+				; Use Instance Name
+				UpdateAndroidConfig($aCmdLine[3])
+			Else
+				UpdateAndroidConfig()
+			EndIf
+		EndIf
+	Next
+EndIf
+
+SplashStep(GetTranslated(500, 22, "Detecting Android..."))
+If $aCmdLine[0] < 2 Then
+	DetectRunningAndroid()
+	If Not $FoundRunningAndroid Then DetectInstalledAndroid()
+EndIf
+
 ; Update Global Android variables based on $AndroidConfig index
 ; Calls "Update" & $Android & "Config()"
 Func UpdateAndroidConfig($instance = Default)
@@ -36,10 +64,143 @@ Func UpdateAndroidWindowState()
    Return $bChanged
 EndFunc
 
+Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
+	If $bInitAndroid = Default Then $bInitAndroid = $InitAndroidActive = False
+	If $WinGetAndroidHandleActive = True Then
+		Return $HWnD
+	EndIf
+	$WinGetAndroidHandleActive = True
+	Local $currHWnD = $HWnD
+
+	If $HWnD = 0 Or $AndroidBackgroundLaunched = False Then _WinGetAndroidHandle()
+	If IsHWnd($HWnD) = 1 Then
+		; Android Window found
+		Local $aPos = WinGetPos($HWnD)
+		AndroidQueueReboot(False)
+		If $currHWnD = 0 Or $currHWnD <> $HWnD Then
+			; Restore original Android Window position
+			If $AndroidEmbedded = False And IsArray($aPos) = 1 And ($Hide = False Or ($aPos[0] > -30000 Or $aPos[1] > -30000)) Then
+				SetDebugLog("Move Android Window '" & $Title & "' to position: " & $AndroidPosX & ", " & $AndroidPosY)
+				WinMove2($HWnD, "", $AndroidPosX, $AndroidPosY)
+				$aPos[0] = $AndroidPosX
+				$aPos[1] = $AndroidPosY
+			EndIf
+			Local $instance = ($AndroidInstance = "" ? "" : " (" & $AndroidInstance & ")")
+			SetLog($Android & $instance & " running in window mode", $COLOR_ORANGE)
+			If $currHWnD <> 0 And $currHWnD <> $HWnD Then
+				$InitAndroid = True
+				If $bInitAndroid = True Then InitAndroid(True)
+			EndIf
+		EndIf
+		; update Android Window position
+		If $AndroidEmbedded = False And IsArray($aPos) = 1 Then
+			Local $posX = $AndroidPosX
+			Local $posY = $AndroidPosY
+			$AndroidPosX = ($aPos[0] > -30000 ? $aPos[0] : $AndroidPosX)
+			$AndroidPosY = ($aPos[1] > -30000 ? $aPos[1] : $AndroidPosY)
+			If $posX <> $AndroidPosX Or $posY <> $AndroidPosY Then
+				SetDebugLog("Updating Android Window '" & $Title & "' position: " & $AndroidPosX & ", " & $AndroidPosY)
+			EndIf
+			If $Hide = True And ($aPos[0] > -30000 Or $aPos[1] > -30000) Then
+				; rehide Android
+				WinMove2($HWnD, "", -32000, -32000)
+			EndIf
+		EndIf
+		$WinGetAndroidHandleActive = False
+		Return $HWnD
+	EndIf
+
+	If $AndroidBackgroundLaunch = False And $bTestPid = False Then
+		; Headless mode support not enabled
+		$WinGetAndroidHandleActive = False
+		Return $HWnD
+	EndIf
+
+	; Now check headless mode
+	If $HWnD <> 0 Then
+		If $HWnD = ProcessExists($HWnD) Then
+			; Android Headless process found
+			;$AndroidBackgroundLaunched = True
+		Else
+			Local $instance = ($AndroidInstance = "" ? "" : " (" & $AndroidInstance & ")")
+			SetDebugLog($Android & $instance & " process with PID = " & $HWnD & " not found")
+			$HWnD = 0
+		EndIf
+	EndIf
+
+	If $HWnD = 0 Then
+		If $AndroidProgramPath <> "" Then
+			Local $parameter = GetAndroidProgramParameter(False)
+			Local $parameter2 = GetAndroidProgramParameter(True)
+			Local $pid = ProcessExists2($AndroidProgramPath, $parameter, 0, 0, "Is" & $Android & "CommandLine")
+			If $pid = 0 And $parameter <> $parameter2 Then
+				; try alternative parameter
+				$parameter = $parameter2
+				$pid = ProcessExists2($AndroidProgramPath, $parameter, 0, 0, "Is" & $Android & "CommandLine")
+			EndIf
+			Local $commandLine = $AndroidProgramPath & ($parameter = "" ? "" : " " & $parameter)
+			Local $instance = ($AndroidInstance = "" ? "" : " (" & $AndroidInstance & ")")
+			If $pid <> 0 Then
+				SetDebugLog("Found " & $Android & $instance & " process " & $pid & " ('" & $commandLine & "')")
+				If $bTestPid = True Then
+					$WinGetAndroidHandleActive = False
+					Return $pid
+				EndIf
+				If $AndroidAdbScreencap = True And $AndroidAdbClick = False And AndroidAdbClickSupported() = True Then
+					SetLog("Enabled ADB Click to support background mode", $COLOR_ORANGE)
+					$AndroidAdbClick = True
+				EndIf
+				If $AndroidAdbClick = False Or $AndroidAdbScreencap = False Then
+					If $AndroidQueueReboot = False Then
+						SetLog("Headless Android not supported because", $COLOR_RED)
+						Local $reason = ""
+						If $AndroidAdbClick = False Then $reason &= "ADB Click " & ($AndroidAdbScreencap = False ? "and " : "")
+						If $AndroidAdbScreencap = False Then $reason &= "ADB Screencap "
+						$reason &= "not available!"
+						SetLog($reason, $COLOR_RED)
+						;$HWnD = 0
+						AndroidQueueReboot(True)
+					EndIf
+					$HWnD = $pid
+					If $currHWnD <> 0 And $currHWnD <> $HWnD Then
+						$InitAndroid = True
+						If $bInitAndroid = True Then InitAndroid(True)
+					EndIf
+				Else
+					SetLog($Android & $instance & " running in headless mode", $COLOR_ORANGE)
+					$HWnD = $pid
+					If $currHWnD <> 0 And $currHWnD <> $HWnD Then
+						$InitAndroid = True
+						If $bInitAndroid = True Then InitAndroid(True)
+					EndIf
+					$AndroidBackgroundLaunched = True
+				EndIf
+			Else
+				SetDebugLog($Android & $instance & " process not found")
+			EndIf
+		EndIf
+	EndIf
+
+	If $HWnD = 0 Then
+		$InitAndroid = True
+		$AndroidBackgroundLaunched = False
+	EndIf
+
+	$WinGetAndroidHandleActive = False
+	Return $HWnD
+
+EndFunc
+
+Func GetAndroidPid()
+   Local $h = WinGetAndroidHandle(Default, True)
+   If IsHWnd($h) Then Return WinGetProcess($h)
+   Return $h
+EndFunc
+
 ; Find Android Window defined by $Title in WinTitleMatchMode -1 and updates $HWnD and $Title when found.
 ; Uses different strategies to find best matching Window.
 ; Returns Android Window Handle or 0 if Window not found
-Func WinGetAndroidHandle()
+Func _WinGetAndroidHandle()
    ; Default WinTitleMatchMode should be 3 (exact match)
    Local $hWin = WinGetHandle($HWnD)
    If $hWin > 0 And $hWin = $HWnD Then Return $HWnD
@@ -64,6 +225,7 @@ Func WinGetAndroidHandle()
 				  $InitAndroid = True ; change window, re-initialize Android config
 				  InitAndroid()
 			   EndIf
+			   AndroidEmbed(False, False)
 			   Return $hWin
 			EndIf
 		 EndIf
@@ -88,6 +250,7 @@ Func WinGetAndroidHandle()
 			$InitAndroid = True ; change window, re-initialize Android config
 			InitAndroid()
 		 EndIf
+		 AndroidEmbed(False, False)
 		 Return $hWin
 	  Else
 		 SetDebugLog($Android & " Window title '" & $t & "' not matching '" & $Title & "' or control")
@@ -102,6 +265,7 @@ Func WinGetAndroidHandle()
 	  SetDebugLog($Android & " Window not found")
 	  If $ReInitAndroid = True Then $InitAndroid = True ; no window anymore, re-initialize Android config
 	  $HWnD = 0
+	  AndroidEmbed(False, False)
 	  Return 0
    EndIF
    SetDebugLog("Found " & $aWinList[0][0] & " possible " & $Android & " windows by title '" & $Title & "':")
@@ -122,6 +286,7 @@ Func WinGetAndroidHandle()
 			   $InitAndroid = True ; change window, re-initialize Android config
 			   InitAndroid()
 			EndIf
+			AndroidEmbed(False, False)
 			Return $hWin
 		 EndIf
 	  Next
@@ -149,6 +314,7 @@ Func WinGetAndroidHandle()
 				  $InitAndroid = True ; change window, re-initialize Android config
 				  InitAndroid()
 			   EndIf
+			   AndroidEmbed(False, False)
 			   Return $hWin
 			EndIf
 		 Next
@@ -159,7 +325,15 @@ Func WinGetAndroidHandle()
    SetDebugLog($Android & ($AndroidInstance = "" ? "" : " (" & $AndroidInstance & ")") & " Window not found in list")
    If $ReInitAndroid = True Then $InitAndroid = True ; no window anymore, re-initialize Android config
    $HWnD = 0
+   AndroidEmbed(False, False)
    Return 0
+EndFunc
+
+Func AndroidControlAvailable()
+	If $AndroidBackgroundLaunched = True Then
+		Return 0
+	EndIf
+	Return IsArray(GetAndroidPos(True))
 EndFunc
 
 Func GetAndroidSvcPid()
@@ -201,30 +375,38 @@ EndFunc
 ; $bStrictCheck = False includes "unsupported" ways of launching Android (like BlueStacks2 default launch shortcut)
 Func GetAndroidRunningInstance($bStrictCheck = True)
    Local $runningInstance = Execute("Get" & $Android & "RunningInstance(" & $bStrictCheck & ")")
+   Local $i
    If $runningInstance = "" And @error <> 0 Then ; Not implemented
 	  Local $a[2] = [0, ""]
 	  SetDebugLog("GetAndroidRunningInstance: Try to find """ & $AndroidProgramPath & """")
-	  Local $pid = ProcessExists2($AndroidProgramPath, "", 1) ; find any process
-	  If $pid <> 0 Then
+	  Local $pids = ProcessesExist($AndroidProgramPath, "", 1) ; find any process
+	  If UBound($pids) > 0 Then
 		 Local $currentInstance = $AndroidInstance
-		 ; assume last parameter is instance
-		 Local $commandLine = ProcessGetCommandLine($pid)
-		 SetDebugLog("GetAndroidRunningInstance: Found """ & $commandLine & """ by PID=" & $pid)
-		 Local $lastSpace = StringInStr($commandLine, " ", 0, -1)
-		 If $lastSpace > 0 Then
-			$AndroidInstance = StringStripWS(StringMid($commandLine, $lastSpace + 1), 3)
-			; Check that $AndroidInstance default instance is used for ""
-			If $AndroidInstance = "" Then $AndroidInstance = $AndroidAppConfig[$AndroidConfig][1]
-			SetDebugLog("Running " & $Android & " instance is """ & $AndroidInstance & """")
-		 EndIf
-		 ; validate
-		 If WinGetAndroidHandle() <> 0 Then
-			$a[0] = $HWnD
-			$a[1] = $AndroidInstance
-		 Else
-			$AndroidInstance = $currentInstance
-		 EndIf
+		 For $i = 0 To UBound($pids) - 1
+			 Local $pid = $pids[$i]
+			 ; assume last parameter is instance
+			 Local $commandLine = ProcessGetCommandLine($pid)
+			 SetDebugLog("GetAndroidRunningInstance: Found """ & $commandLine & """ by PID=" & $pid)
+			 Local $lastSpace = StringInStr($commandLine, " ", 0, -1)
+			 If $lastSpace > 0 Then
+				$AndroidInstance = StringStripWS(StringMid($commandLine, $lastSpace + 1), 3)
+				; Check that $AndroidInstance default instance is used for ""
+				If $AndroidInstance = "" Then $AndroidInstance = $AndroidAppConfig[$AndroidConfig][1]
+			 EndIf
+			 ; validate
+			 If WinGetAndroidHandle() <> 0 Then
+				SetDebugLog("Running " & $Android & " instance found: """ & $AndroidInstance & """")
+				If $a[0] = 0 Or $AndroidInstance = $currentInstance Then
+					$a[0] = $HWnD
+					$a[1] = $AndroidInstance
+					If $AndroidInstance = $currentInstance Then ExitLoop
+				EndIf
+			 Else
+				$AndroidInstance = $currentInstance
+			 EndIf
+		 Next
 	  EndIf
+	  If $a[0] <> 0 Then SetDebugLog("Running " & $Android & " instance is """ & $AndroidInstance & """")
 	  Return $a
    EndIf
    Return $runningInstance
@@ -309,6 +491,7 @@ Func InitAndroid($bCheckOnly = False)
 	   ;SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $Android & " is already initialized");
 	   Return True
     EndIF
+	$InitAndroidActive = True
     SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $Android)
 	If Not $bCheckOnly Then
 	   ; Check that $AndroidInstance default instance is used for ""
@@ -341,14 +524,17 @@ Func InitAndroid($bCheckOnly = False)
 	   SetDebugLog("Android ADB input command enabled: " & $AndroidAdbInput)
 	   SetDebugLog("Android ADB Mouse Click enabled: " & $AndroidAdbClick)
 	   SetDebugLog("Android ADB Click Drag enabled: " & $AndroidAdbClickDrag)
+	   SetDebugLog("Bot Background Mode for screen capture: " & ($ichkBackground = 1 ? "enabled" : "disabled"))
+	   SetDebugLog("No Focus Tampering: " & $NoFocusTampering)
 	   ;$HWnD = WinGetHandle($Title) ;Handle for Android window
 	   WinGetAndroidHandle() ; Set $HWnD and $Title for Android window
 	   InitAndroidTimeLag()
 	   $InitAndroid = Not $successful
     Else
-	   $InitAndroid = False
+	   If $bCheckOnly = False Then $InitAndroid = True
     EndIf
-    SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $Android & " END, initialization successful = " & $successful)
+    SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $Android & " END, initialization successful = " & $successful & ", result = " & $Result)
+	$InitAndroidActive = False
 	Return $Result
 EndFunc   ;==>InitAndroid
 
@@ -376,6 +562,7 @@ EndFunc
 Func OpenAndroid($bRestart = False)
 	If $OpenAndroidActive >= $OpenAndroidActiveMaxTry Then
 		SetLog("Cannot open " & $Android & ", tried " & $OpenAndroidActive & " times...", $COLOR_RED)
+		btnStop()
 		Return False
 	EndIf
 	$OpenAndroidActive += 1
@@ -391,8 +578,9 @@ Func _OpenAndroid($bRestart = False)
     ResumeAndroid()
 
 	If Not InitAndroid() Then
-		SetLog("Unable to open " & $Android & ($AndroidInstance = "" ? "" : "(" & $AndroidInstance & ")") & ", please check emulator/installation.", $COLOR_RED)
-		SetLog("Unable to continue........", $COLOR_MAROON)
+		SetLog("Unable to open " & $Android & ($AndroidInstance = "" ? "" : " instance '" & $AndroidInstance & "'"), $COLOR_RED)
+		SetLog("Please check emulator/installation", $COLOR_RED)
+		SetLog("Unable to continue........", $COLOR_RED)
 		btnStop()
 		SetError(1, 1, -1)
 		Return False
@@ -404,12 +592,17 @@ Func _OpenAndroid($bRestart = False)
 	; Close any existing WerFault windows for this emulator
 	WerFaultClose($AndroidProgramPath)
 
+	; Close crashed android when $AndroidBackgroundLaunch = False
+	If $AndroidBackgroundLaunch = False And WinGetAndroidHandle(Default, True) <> 0 Then
+		CloseAndroid()
+	EndIf
+
 	If Not Execute("Open" & $Android & "(" & $bRestart & ")") Then Return False
 
     ; Check Android screen size, position windows
     If Not InitiateLayout() Then Return False ; recursive call to OpenAndroid() possible
 
-	WinGetAndroidHandle() ; get window Handle
+	WinGetAndroidHandle(False) ; get window Handle
 
 	If Not $RunState Then Return False
     ; Better create a func AndroidCoCStartEvent
@@ -488,11 +681,55 @@ EndFunc   ;==>RestartAndroidCoC
 Func CloseAndroid()
     ResumeAndroid()
 
-    AndroidAdbTerminateShellInstance()
+	SetLog("Stopping " & $Android & "....", $COLOR_BLUE)
+
+	AndroidAdbTerminateShellInstance()
 
     If Not $RunState Then Return False
-	Return Execute("Close" & $Android & "()")
+
+	SetLog("Please wait for full " & $Android & " shutdown...", $COLOR_GREEN)
+	Local $pid = GetAndroidPid()
+	If ProcessExists($pid) Then
+		KillProcess($pid, "CloseAndroid")
+		If _SleepStatus(1000) Then Return False
+	EndIf
+
+	; Call special Android close
+	Local $Result = Execute("Close" & $Android & "()")
+
+	If ProcessExists($pid) Then
+		SetLog("Failed to stop " & $Android, $COLOR_RED)
+	Else
+		SetLog($Android & " stopped successfully", $COLOR_GREEN)
+	EndIf
+
+	RemoveGhostTrayIcons()  ; Remove ghost icon if left behind
+
 EndFunc   ;==>CloseAndroid
+
+Func CloseVboxAndroidSvc()
+	Local $process_killed
+    If Not $RunState Then Return
+    ; stop virtualbox instance
+	LaunchConsole($__VBoxManage_Path, "controlvm " & $AndroidInstance & " poweroff", $process_killed)
+	If _SleepStatus(3000) Then Return
+EndFunc
+
+Func CheckAndroidRunning($bQuickCheck = True, $bStartIfRequired = True)
+	Local $hWin = $HWnD
+	If WinGetAndroidHandle() = 0 Or ($bQuickCheck = False And $AndroidBackgroundLaunched = False And AndroidControlAvailable() = 0) Then
+		SetDebugLog($Android & " not running")
+		If $bStartIfRequired = True Then
+			If $hWin = 0 Then
+			   OpenAndroid(True)
+			Else
+			   RebootAndroid()
+			EndIf
+		EndIf
+		Return False
+    EndIf
+	Return True
+EndFunc	  ;==>CheckAndroidRunning
 
 Func SetScreenAndroid()
     ResumeAndroid()
@@ -621,9 +858,12 @@ Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $RunState, $timeout = 15000)
    ResumeAndroid()
 
    ; check if Android is running
-   If WinGetAndroidHandle() = 0 And $rebootAndroidIfNeccessary = True Then
-	  ; Android is not running
-	  OpenAndroid(True)
+   If $rebootAndroidIfNeccessary = True Then
+	  WinGetAndroidHandle()
+	  If AndroidInvalidState() Then
+		 ; Android is not running
+		 RebootAndroid()
+	  EndIf
    EndIf
 
    Local $hMutex = AquireAdbDaemonMutex()
@@ -714,15 +954,6 @@ Func RebootAndroidSetScreenDefault()
 
 EndFunc   ;==>RebootAndroidSetScreenDefault
 
-Func GetVersionNormalized($VersionString, $Chars = 5)
-   Local $a = StringSplit($VersionString, ".", 2)
-   Local $i
-   For $i = 0 To UBound($a) - 1
-	  If StringLen($a[$i]) < $Chars Then $a[$i] = _StringRepeat("0", $Chars - StringLen($a[$i])) & $a[$i]
-	  Next
-   Return _ArrayToString($a, ".")
-EndFunc
-
 Func CheckScreenAndroid($ClientWidth, $ClientHeight, $bSetLog = True)
    ResumeAndroid()
    If Not $RunState Then Return True
@@ -776,17 +1007,17 @@ EndFunc
 
 Func AndroidSetFontSizeNormal()
    ResumeAndroid()
-   AndroidAdbLaunchShellInstance()
+   AndroidAdbLaunchShellInstance($RunState, False)
    AndroidAdbSendShellCommand("settings put system font_scale 1.0")
 EndFunc
 
-Func AndroidAdbLaunchShellInstance($wasRunState = $RunState)
+Func AndroidAdbLaunchShellInstance($wasRunState = $RunState, $rebootAndroidIfNeccessary = $RunState)
    If $AndroidAdbPid = 0 Or ProcessExists($AndroidAdbPid) <> $AndroidAdbPid Then
 	  Local $SuspendMode = ResumeAndroid()
 	  InitAndroid()
 	  Local $s
 	  If $AndroidAdbInstance = True Then
-		 If ConnectAndroidAdb() = False Then
+		 If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
 			Return SetError(3, 0)
 		 EndIf
 		 $AndroidAdbPid = Run($AndroidAdbPath & " -s " & $AndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED))
@@ -863,9 +1094,10 @@ Func AndroidAdbTerminateShellInstance()
    SuspendAndroid($SuspendMode)
 EndFunc
 
-Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = $RunState, $EnsureShellInstance = True)
+Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True)
    Local $_SilentSetLog = $SilentSetLog
    If $timeout = Default Then $timeout = 3000 ; default is 3 sec.
+   If $wasRunState = Default Then $wasRunState = $RunState
    Local $sentBytes = 0
    Local $SuspendMode = ResumeAndroid()
    SetError(0, 0, 0)
@@ -937,7 +1169,7 @@ Func AndroidAdbSendShellCommandScript($scriptFile, $variablesArray = Default, $c
    Local $hostPath = $AndroidPicturesHostPath & $AndroidPicturesHostFolder
    Local $androidPath = $AndroidPicturesPath & StringReplace($AndroidPicturesHostFolder, "\", "/")
 
-   If $HwND <> WinGetHandle($HwND) Then Return SetError(2, 0) ; Window gone
+   ;If $HwND <> WinGetHandle($HwND) Then Return SetError(2, 0) ; Window gone
    AndroidAdbLaunchShellInstance()
    If @error <> 0 Then Return SetError(3, 0)
 
@@ -1002,6 +1234,24 @@ Func AndroidAdbSendShellCommandScript($scriptFile, $variablesArray = Default, $c
 	  EndIf
    Next
 
+	; create sh file in shared folder
+	If FileExists($hostPath) = 0 Then
+		SetLog($Android & " ADB script file folder doesn't exist:", $COLOR_RED)
+		SetLog($hostPath, $COLOR_RED)
+		Return SetError(6, 0)
+	EndIf
+
+	; copy additional files required for script
+	$i = 1
+	While FileExists($AdbScriptsDir & "\" & $scriptFile & "." & $i) = 1
+		Local $srcFile = $AdbScriptsDir & "\" & $scriptFile & "." & $i
+		Local $dstFile = $hostPath & $scriptFile & "." & $i
+		If FileGetTime($srcFile, $FT_MODIFIED, $FT_STRING) <> FileGetTime($dstFile, $FT_MODIFIED, $FT_STRING) Then
+			FileCopy($srcFile, $dstFile, $FC_OVERWRITE)
+		EndIf
+		$i += 1
+	WEnd
+
    Local $loopCount = 0
    If $combine = True And StringLen($cmds) <= 1024 Then
 	  ; invoke commands now
@@ -1010,12 +1260,7 @@ Func AndroidAdbSendShellCommandScript($scriptFile, $variablesArray = Default, $c
 	  Local $a = StringSplit(@extended, "#")
 	  If $a[0] > 1 Then $loopCount += Number($a[2])
    Else
-	  ; create sh file in shared folder
-	  If FileExists($hostPath) = 0 Then
-		 SetLog($Android & " ADB script file folder doesn't exist:", $COLOR_RED)
-		 SetLog($hostPath, $COLOR_RED)
-		 Return SetError(6, 0)
-	  EndIf
+      ; create sh file in shared folder
 	  If $scriptModifiedTime <> FileGetTime($hostPath & $scriptFileSh, $FT_MODIFIED, $FT_STRING) Then
 		 FileDelete($hostPath & $scriptFileSh) ; delete existing file as new version is available
 	  EndIf
@@ -1099,7 +1344,7 @@ Func AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 	  $AndroidAdbScreencap = False
    EndIf
 
-   If $HwND <> WinGetHandle($HwND) Then Return SetError(4, 0) ; Window gone
+   ;If $HwND <> WinGetHandle($HwND) Then Return SetError(4, 0) ; Window gone
    Local $wasRunState = $RunState
    AndroidAdbLaunchShellInstance($wasRunState)
    If @error <> 0 Then Return SetError(2, 0)
@@ -1238,7 +1483,7 @@ Func AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 			Return AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount + 1)
 		 EndIf
 		 SetLog($Android & " screen not captured using ADB", $COLOR_RED)
-		 If $AndroidAdbStatsTotal[$AdbStatsType][0] < 50 Then
+		 If $AndroidAdbStatsTotal[$AdbStatsType][0] < 50 And AndroidControlAvailable() Then
 			SetLog($Android & " ADB screen capture disabled", $COLOR_RED)
 			If BitAND($AndroidSupportFeature, 1) = 0 Then $ichkBackground = 0 ; disable also background mode the hard way
 			$AndroidAdbScreencap = False
@@ -1387,18 +1632,23 @@ $msg &= ", " & Round(TimerDiff($testTimer), 2)
    Return $hHBitmap
 EndFunc
 
-Func AndroidZoomOut($loopCount = 0, $timeout = Default, $wasRunState = $RunState)
+Func AndroidZoomOut($overWaters = False, $loopCount = 0, $timeout = Default, $wasRunState = $RunState)
+	If $overWaters = True Then AndroidAdbScript("OverWaters", $timeout, $wasRunState)
+	Return AndroidAdbScript("ZoomOut", $timeout, $wasRunState)
+EndFunc
+
+Func AndroidAdbScript($scriptTag, $timeout = Default, $wasRunState = $RunState)
    ResumeAndroid()
    If $AndroidAdbZoomoutEnabled = False Then Return SetError(4, 0)
-   If $HwND <> WinGetHandle($HwND) Then Return SetError(3, 0) ; Window gone
+   ;If $HwND <> WinGetHandle($HwND) Then Return SetError(3, 0) ; Window gone
    AndroidAdbLaunchShellInstance($wasRunState)
    If @error <> 0 Then Return SetError(2, 0)
-
    If StringInStr($AndroidMouseDevice, "/dev/input/event") = 0 Then Return SetError(2, 0, 0)
-
    Local $scriptFile = ""
-   If $scriptFile = "" And FileExists($AdbScriptsDir & "\ZoomOut." & $Android & ".getevent") = 1 Then $scriptFile = "ZoomOut." & $Android & ".getevent"
-   If $scriptFile = "" Then $scriptFile = "ZoomOut.getevent"
+   If $scriptFile = "" And FileExists($AdbScriptsDir & "\" & $scriptTag & "." & $Android & ".script") = 1 Then $scriptFile = $scriptTag & "." & $Android & ".script"
+   If $scriptFile = "" And FileExists($AdbScriptsDir & "\" & $scriptTag & "." & $Android & ".getevent") = 1 Then $scriptFile = $scriptTag & "." & $Android & ".getevent"
+   If $scriptFile = "" And FileExists($AdbScriptsDir & "\" & $scriptTag & ".script") = 1 Then $scriptFile = $scriptTag & ".script"
+   If $scriptFile = "" Then $scriptFile = $scriptTag & ".getevent"
    If FileExists($AdbScriptsDir & "\" & $scriptFile) = 0 Then SetError(1, 0, 0)
    AndroidAdbSendShellCommandScript($scriptFile, Default, Default, $timeout, $wasRunState)
    Return SetError(@error, @extended, (@error = 0 ? 1 : 0))
@@ -1407,7 +1657,7 @@ EndFunc
 Func AndroidClickDrag($x1, $y1, $x2, $y2, $wasRunState = $RunState)
    ResumeAndroid()
    If $AndroidAdbClickDrag = False Then Return SetError(4, 0)
-   If $HwND <> WinGetHandle($HwND) Then Return SetError(3, 0) ; Window gone
+   ;If $HwND <> WinGetHandle($HwND) Then Return SetError(3, 0) ; Window gone
    AndroidAdbLaunchShellInstance($wasRunState)
    If @error <> 0 Then Return SetError(2, 0)
 
@@ -1901,12 +2151,12 @@ Func AndroidInputSwipe($x1, $y1, $x2, $y2, $wasRunState = $RunState) ; Not used 
    EndIf
 EndFunc
 
-Func SuspendAndroid($SuspendMode = True, $bDebugLog = True)
-   If $AndroidSuspendedEnabled = False Then Return False
-   If $SuspendMode = False Then Return ResumeAndroid($bDebugLog)
+Func SuspendAndroid($SuspendMode = True, $bDebugLog = True, $bForceSuspendAndroid = False)
+   If $AndroidSuspendedEnabled = False And $bForceSuspendAndroid = False Then Return False
+   If $SuspendMode = False Then Return ResumeAndroid($bDebugLog, $bForceSuspendAndroid)
    If $AndroidSuspended = True Then Return True
    Local $pid = GetAndroidSvcPid()
-   If $pid = -1 Or $pid = 0 Then $pid = WinGetProcess($HWnD)
+   If $pid = -1 Or $pid = 0 Then $pid = GetAndroidPid()
    If $pid = -1 Or $pid = 0 Then Return False
    $AndroidSuspended = True
    _ProcessSuspendResume($pid, True) ; suspend Android
@@ -1915,11 +2165,11 @@ Func SuspendAndroid($SuspendMode = True, $bDebugLog = True)
    Return False
 EndFunc
 
-Func ResumeAndroid($bDebugLog = True)
-   If $AndroidSuspendedEnabled = False Then Return False
+Func ResumeAndroid($bDebugLog = True, $bForceSuspendAndroid = False)
+   If $AndroidSuspendedEnabled = False And $bForceSuspendAndroid = False Then Return False
    If $AndroidSuspended = False Then Return False
    Local $pid = GetAndroidSvcPid()
-   If $pid = -1 Or $pid = 0 Then $pid = WinGetProcess($HWnD)
+   If $pid = -1 Or $pid = 0 Then $pid = GetAndroidPid()
    If $pid = -1 Or $pid = 0 Then Return False
    $AndroidSuspended = False
    _ProcessSuspendResume($pid, False) ; resume Android
@@ -1935,7 +2185,7 @@ Func AndroidCloseSystemBar()
 	  SetLog("Cannot close " & $Android & " System Bar", $COLOR_RED)
 	  Return False
    EndIf
-   Local $cmdOutput = AndroidAdbSendShellCommand("service call activity 42 s16 com.android.systemui", Default, $wasRunState)
+   Local $cmdOutput = AndroidAdbSendShellCommand("service call activity 42 s16 com.android.systemui", Default, $wasRunState, False)
    Local $Result = StringLeft($cmdOutput, 6) = "Result"
    SetDebugLog("Closed " & $Android & " System Bar: " & $Result)
    Return $Result
@@ -1948,7 +2198,7 @@ Func AndroidOpenSystemBar()
 	  SetLog("Cannot open " & $Android & " System Bar", $COLOR_RED)
 	  Return False
    EndIf
-   Local $cmdOutput = AndroidAdbSendShellCommand("am startservice -n com.android.systemui/.SystemUIService", Default, $wasRunState)
+   Local $cmdOutput = AndroidAdbSendShellCommand("am startservice -n com.android.systemui/.SystemUIService", Default, $wasRunState, False)
    Local $Result = StringLeft($cmdOutput, 16) = "Starting service"
    SetDebugLog("Opened " & $Android & " System Bar: " & $Result)
    Return $Result
@@ -1958,4 +2208,29 @@ Func RedrawAndroidWindow()
    Local $Result = Execute("Redraw" & $Android & "Window()")
    If $Result = "" And @error <> 0 Then Return ; Not implemented
    Return $Result
+EndFunc
+
+Func AndroidQueueReboot($bQueueReboot = True)
+	$AndroidQueueReboot = $bQueueReboot
+EndFunc   ;==>AndroidQueueReboot
+
+Func AndroidInvalidState()
+   If $HWnD = 0 Then
+	  SetDebugLog("AndroidInvalidState: No Window Handle", $COLOR_RED)
+	  Return True
+   EndIf
+   If IsHWnd($HWnD) And WinGetHandle($HWnD, "") = 0 Then
+	  SetDebugLog("AndroidInvalidState: Window Handle " & $HWnD & " doesn't exist", $COLOR_RED)
+	  Return True
+   EndIf
+   If  IsHWnd($HWnD) = False And IsNumber($HWnD) And $AndroidBackgroundLaunched = False Then
+	  SetDebugLog("AndroidInvalidState: PID " & $HWnD & " not supported for Headless Mode", $COLOR_RED)
+	  Return True
+   EndIf
+   If $AndroidBackgroundLaunched = True And ProcessExists($HWnD) = 0 Then
+	  SetDebugLog("AndroidInvalidState: PID " & $HWnD & " doesn't exist", $COLOR_RED)
+	  Return True
+   EndIf
+   ; all seems ok
+   Return False
 EndFunc

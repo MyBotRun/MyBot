@@ -59,8 +59,13 @@ Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 EndFunc   ;==>Click
 
 Func _ControlClick($x, $y)
-   ;$AndroidAdbScreencapTimer = 0 ; invalidate ADB screencap timer/timeout
-   Return ControlClick($HWnD, "", "", "left", "1", $x, $y)
+   	Local $hWin = ($AndroidEmbedded = False ? $HWnD : $AndroidEmbeddedCtrlTarget[1])
+	;Return ControlClick($hWin, "", "", "left", "1", $x, $y)
+	Local $WM_LBUTTONDOWN = 0x0201, $WM_LBUTTONUP = 0x0202
+	Local $lParam =  BitOR(Int($y) * 0x10000, BitAND(Int($x), 0xFFFF)) ; HiWord = y-coordinate, LoWord = x-coordinate
+	_WinAPI_PostMessage($hWin, $WM_LBUTTONDOWN, 0x0001, $lParam)
+	_WinAPI_PostMessage($hWin, $WM_LBUTTONUP, 0x0000, $lParam)
+	_Sleep(10)
 EndFunc
 
 Func isProblemAffectBeforeClick($iCount = 0)
@@ -284,6 +289,12 @@ Func _DecodeDebug($message)
 			Return $separator & "Train - Select Prev Barrack/SP"
 		Case "#0340"
 			Return $separator & "Train - Click Next Barrack/SP"
+		Case "#0341"
+			Return $separator & "Train - Train Bowler"
+		Case "#0342"
+			Return $separator & "Train - Train Baby Dragon"
+		Case "#0343"
+			Return $separator & "Train - Train Miner"
 
 			;DONATE
 		Case "#0168"

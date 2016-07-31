@@ -154,6 +154,7 @@ Func InitNox($bCheckOnly = False)
 	  ; check if instance is known
 	  If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
 		 ; Unknown vm
+		 SetLog("Cannot find " & $Android & " instance " & $AndroidInstance, $COLOR_RED)
 		 Return False
 	  EndIf
 	  ; update global variables
@@ -235,96 +236,10 @@ Func RebootNoxSetScreen()
 EndFunc
 
 Func CloseNox()
-    If Not $RunState Then Return
 
-	Local $iIndex, $bOops = False, $process_killed
-	Local $aServiceList[0] = [] ; ["BstHdAndroidSv", "BstHdLogRotatorSvc", "BstHdUpdaterSvc", "bthserv"]
+	Return CloseVboxAndroidSvc()
 
-	SetLog("Stopping Nox...", $COLOR_BLUE)
-
-	$bOops = KillNoxProcess()
-
-    SetLog("Please wait for full Nox shutdown...", $COLOR_GREEN)
-
-	If _Sleep(1000) Then Return ; wait a bit
-
-	For $iIndex = 0 To UBound($aServiceList) - 1
-		ServiceStop($aServiceList[$iIndex])
-		If @error Then
-			$bOops = True
-			If $debugsetlog = 1 Then Setlog($aServiceList[$iIndex] & " errored trying to stop", $COLOR_MAROON)
-		EndIf
-	Next
-	If $bOops Then
-		If $debugsetlog = 1 Then Setlog("Service Stop issues, stopping Nox 2nd time", $COLOR_MAROON)
-		KillNoxProcess()
-		If _SleepStatus(5000) Then Return
-	EndIf
-
-    ; also stop virtualbox instance
-	LaunchConsole($__VBoxManage_Path, "controlvm """ & $AndroidInstance & """ poweroff", $process_killed)
-	If _SleepStatus(3000) Then Return
-
-	If $debugsetlog = 1 And $bOops Then
-		SetLog("Nox Kill Failed to stop service", $COLOR_RED)
-	ElseIf Not $bOops Then
-		SetLog("Nox stopped successfully", $COLOR_GREEN)
-	EndIf
-
-	RemoveGhostTrayIcons($Title)  ; Remove ghost icon if left behind due forced taskkill
-
-	If $bOops Then
-		SetError(1, @extended, -1)
-	EndIf
-
-EndFunc   ;==>CloseDroid4X
-
-Func KillNoxProcess()
-#cs
-	Local $iIndex, $iCount, $bOops = False
-	Local $aFileNames[2][2] = [['Nox.exe', 0], ['nox_adb.exe', 0]]
-
-	For $iIndex = 0 To UBound($aFileNames) - 1
-	   $iCount = 0
-	   While ProcessExists($aFileNames[$iIndex][0]) And $iCount < 3
-		 If Not $RunState Then Return False
-		 $aFileNames[$iIndex][1] = ProcessExists($aFileNames[$iIndex][0]) ; Find the PID for each file name that is running
-		 If $debugsetlog = 1 Then Setlog($aFileNames[$iIndex][0] & " PID = " & $aFileNames[$iIndex][1], $COLOR_PURPLE)
-		 If $aFileNames[$iIndex][1] > 0 Then ; If it is running, then kill it
-			ShellExecute(@WindowsDir & "\System32\taskkill.exe", " -pid " & $aFileNames[$iIndex][1], "", Default, @SW_HIDE)
-			If _Sleep(5000) Then Return ; Give OS time to work
-		 EndIf
-		 If ProcessExists($aFileNames[$iIndex][1]) Then ; If it is still running, then force kill it
-			If $debugsetlog = 1 Then Setlog($aFileNames[$iIndex][0] & " 1st Kill failed, trying again", $COLOR_PURPLE)
-			ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $aFileNames[$iIndex][1], "", Default, @SW_HIDE)
-			If _Sleep(5000) Then Return ; Give OS time to work
-		 EndIf
-		 $iCount += 1
-	    WEnd
-		If ProcessExists($aFileNames[$iIndex][0]) Then
-		   $bOops = True
-	    EndIf
-	Next
-
-	Return $bOops
-#ce
-
-   ; kill only my instances
-   Local $pid = WinGetProcess(WinGetAndroidHandle())
-   If $pid <> -1 Then
-	  If ProcessClose($pid) = 0 Then
-		 ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $pid, "", Default, @SW_HIDE)
-	  EndIf
-   EndIf
-   If ProcessExists($AndroidAdbPid) Then
-	  If ProcessClose($AndroidAdbPid) = 0 Then
-		 ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $AndroidAdbPid, "", Default, @SW_HIDE)
-	  EndIf
-   EndIF
-
-   If _Sleep(5000) Then Return ; Give OS time to work
-
-EndFunc   ;==>KillNoxProcess
+EndFunc   ;==>CloseNox
 
 Func CheckScreenNox($bSetLog = True)
 

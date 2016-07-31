@@ -6,8 +6,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Hervidero (2015-feb-10)
-; Modified ......: Safar46 (2015), Hervidero (2015, KnowJack - added statistics bypasss (June-2015) , ProMac (2015)
-;                  Sardo 2015-08
+; Modified ......: Safar46 (2015), Hervidero (2015), KnowJack (June-2015) , ProMac (2015), Sardo 2015-08, MonkeyHunter(6-2106)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -28,10 +27,8 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 			If Not $bSuppressLog Then SetLog("Village Report Error, You have been a BAD programmer!", $COLOR_RED)
 	EndSwitch
 
-	Local $aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
-	$iFreeBuilderCount = $aGetBuilders[0]
-	$iTotalBuilderCount = $aGetBuilders[1]
-	If Not $bSuppressLog Then Setlog("No. of Free/Total Builders: " & $iFreeBuilderCount & "/" & $iTotalBuilderCount, $COLOR_GREEN)
+	getBuilderCount($bSuppressLog) ; update builder data
+	If _Sleep($iDelayRespond) Then Return
 
 	$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 	If Not $bSuppressLog Then Setlog(" [T]: " & _NumberFormat($iTrophyCurrent), $COLOR_GREEN)

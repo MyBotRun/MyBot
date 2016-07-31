@@ -112,6 +112,29 @@ Func chkDonateHoursE2()
 	GUICtrlSetState($chkDonateHoursE2, $GUI_UNCHECKED)
 EndFunc   ;==>chkDonateHoursE2
 
+Func chkDropCCHoursEnable()
+	If GUICtrlRead($chkDropCCHoursEnable) = $GUI_CHECKED Then
+		$ichkDropCCHoursEnable = 1
+		For $i = $chkDropCCHours0 To $chkDropCCHours11
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+		For $i = $chkDropCCHours12 To $chkDropCCHours23
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+		GUICtrlSetState($chkDropCCHoursE1, $GUI_ENABLE)
+		GUICtrlSetState($chkDropCCHoursE2, $GUI_ENABLE)
+	Else
+		$ichkDropCCHoursEnable = 0
+		For $i = $chkDropCCHours0 To $chkDropCCHours11
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+		For $i = $chkDropCCHours12 To $chkDropCCHours23
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+		GUICtrlSetState($chkDropCCHoursE1, $GUI_DISABLE)
+		GUICtrlSetState($chkDropCCHoursE2, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkDropCCHoursEnable
 
 Func chkDropCCHoursE1()
 	If GUICtrlRead($chkDropCCHoursE1) = $GUI_CHECKED And GUICtrlRead($chkDropCCHours0) = $GUI_CHECKED Then

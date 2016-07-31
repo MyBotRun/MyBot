@@ -588,7 +588,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 
 	; Create icon or countdown timer
 	If $fCountdown = True Then
-		Local $cCountdown_Label = GUICtrlCreateLabel(StringFormat("%2s", $iTimeOut), 10, 20, 32, 32)
+		Local $cCountdown_Label = GUICtrlCreateLabel(StringFormat("%3s", $iTimeOut), 10, 20, 48, 32)
 		GUICtrlSetFont(-1, 18, Default, Default, $g_aEMB_Settings[5])
 		GUICtrlSetColor(-1, $g_aEMB_Settings[3])
 	Else
@@ -596,6 +596,10 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 	EndIf
 
 	; Create buttons
+	If IsArray($aButton_Text) = 1 Then
+		Local $aButtons[$aButton_Text[0]][2]
+	EndIf
+
 	Local $cAccel_Key = 9999 ; Placeholder to prevent firing if no buttons
 	If $vButton <> " " Then
 
@@ -671,9 +675,14 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 						ExitLoop
 					EndIf
 				Case $aMsg[0] > $cAccel_Key
-					; Button handle minus Accel key handle will give button index
-					$iRet_Value = $aMsg[0] - $cAccel_Key
-					ExitLoop
+					Local $sButton = GUICtrlRead($aMsg[0])
+					; find button
+					For $i = 1 To $aButton_Text[0]
+						If $aButton_Text[$i] = $sButton Then
+							$iRet_Value = $i
+							ExitLoop 2
+						EndIf
+					Next
 			EndSelect
 		EndIf
 

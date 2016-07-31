@@ -1,0 +1,9 @@
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+# Click Drag
+dd obs=16 if=$SCRIPTPATH/OverWaters.script.1 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/OverWaters.script.2 of={$AndroidMouseDevice}
+sleep 1
+dd obs=16 if=$SCRIPTPATH/OverWaters.script.3 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay

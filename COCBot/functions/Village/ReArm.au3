@@ -17,6 +17,8 @@
 Func ReArm()
 
 	If $ichkTrap = 0 Then Return ; If re-arm is not enable in GUI return and skip this code
+	If $iShouldRearm = False Then Return
+	$iShouldRearm = False
 	;	Local $y = 562 + $bottomOffsetY ; Add 60 y pixel for 860x780 window
 
 	SetLog("Checking if Village needs Rearming..", $COLOR_BLUE)

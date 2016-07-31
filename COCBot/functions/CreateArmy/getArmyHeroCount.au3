@@ -6,7 +6,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Separated from checkArmyCamp()
-; Modified ......:
+; Modified ......: MonkeyHunter (06-2016)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -31,117 +31,67 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 
 	$iHeroAvailable = $HERO_NOHERO ; Reset hero available data
 	$bFullArmyHero = False
+	Local $debugArmyHeroCount = 0 ; local debug flag
 
-	;detection by pixels
-;~ 	If Not _ColorCheck(_GetPixelColor(428, 447 + $midOffsetY, True), Hex(0xd0cfc5, 6), 10) Then
-;~ 		; Slot 1
-;~ 		If _ColorCheck(_GetPixelColor(426, 447 + $midOffsetY, True), Hex(0xf6bc20, 6), 15) Then
-;~ 			Setlog(" - Grand Warden available")
-;~ 			$iHeroAvailable = BitOR($iHeroAvailable, $HERO_WARDEN)
-;~ 		EndIf
-;~ 		If _ColorCheck(_GetPixelColor(426, 447 + $midOffsetY, True), Hex(0x812612, 6), 15) Then
-;~ 			Setlog(" - Archer Queen available")
-;~ 			$iHeroAvailable = BitOR($iHeroAvailable, $HERO_QUEEN)
-;~ 		EndIf
-;~ 		If _ColorCheck(_GetPixelColor(428, 447 + $midOffsetY, True), Hex(0x4e3d33, 6), 15) Then
-;~ 			Setlog(" - Barbarian King available")
-;~ 			$iHeroAvailable = BitOR($iHeroAvailable, $HERO_KING)
-;~ 		EndIf
-;~ 		; Slot 2
-;~ 		If _ColorCheck(_GetPixelColor(490, 447 + $midOffsetY, True), Hex(0xf2bb1f, 6), 15) Then
-;~ 			Setlog(" - Grand Warden available")
-;~ 			$iHeroAvailable = BitOR($iHeroAvailable, $HERO_WARDEN)
-;~ 		EndIf
-;~ 		If _ColorCheck(_GetPixelColor(490, 447 + $midOffsetY, True), Hex(0xa81c08, 6), 15) Then
-;~ 			Setlog(" - Archer Queen available")
-;~ 			$iHeroAvailable = BitOR($iHeroAvailable, $HERO_QUEEN)
-;~ 		EndIf
-;~ 		; Slot 3
-;~ 		If _ColorCheck(_GetPixelColor(558, 447 + $midOffsetY, True), Hex(0xfecc1d, 6), 15) Then
-;~ 			Setlog(" - Grand Warden available")
-;~ 			$iHeroAvailable = BitOR($iHeroAvailable, $HERO_WARDEN)
-;~ 		EndIf
-;~ 	EndIf
+	; Detection by OCR
+	Local $sResult
+	Local Const $HeroSlots[3][2] = [[464, 446], [526, 446], [588, 446]] ; Location of hero status check tile
+	Local $sMessage = ""
 
-
-	;Detection by images
-	Local $debugArmyHeroCount = 0 ; put = 1 to make debug images
-
-	Local $capture_x = 420 ; capture a portion of screen starting from ($capture_x,$capture_y)
-	Local $capture_y = 390 + $midOffsetY
-	Local $capture_width = 200
-	Local $capture_height = 100
-
-	_CaptureRegion()
-	If $debugArmyHeroCount = 1 Then ; make debug image
-		$Date = @MDAY & "." & @MON & "." & @YEAR
-		$Time = @HOUR & "." & @MIN & "." & @SEC
-		_GDIPlus_ImageSaveToFile($hBitmap, $dirTempDebug & "getArmyHeroCount_" & $capture_x & "," & $capture_y & "_W"&$capture_width &"H"&$capture_height & "_"  & $Date & " at " & $Time & ".png")
-	EndIf
-
-	Local $found = 0
-	Local $tolerance = 70
-	Local $xpos, $ypos
-
-	;search King
-	$xpos = 0
-	$ypos = 0
-
-	$found = _ImageSearchArea(@ScriptDir & "\images\HeroesArmy\king.bmp", 1, $capture_x, $capture_y, $capture_x + $capture_width, $capture_y + $capture_height, $xpos, $ypos, $tolerance)
-	If $found = 1 Then
-		Setlog(" - Barbarian King available", $color_blue)
-		If $debugArmyHeroCount = 1 Then Setlog("- detected in position (" & $xpos & "+" & $capture_x & "," & $ypos & "+" & $capture_y & ")")
-		$iHeroAvailable = BitOR($iHeroAvailable, $HERO_KING)
-	Else
-		If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then Setlog(" - Barbarian King not found", $color_blue)
-	EndIf
-
-	;search Queen
-	$xpos = 0
-	$ypos = 0
-	$found = _ImageSearchArea(@ScriptDir & "\images\HeroesArmy\queen.bmp", 1, $capture_x, $capture_y, $capture_x + $capture_width, $capture_y + $capture_height, $xpos, $ypos, $tolerance)
-	If $found = 1 Then
-		Setlog(" - Archer Queen available", $color_blue)
-		If $debugArmyHeroCount = 1 Then Setlog("- detected in position (" & $xpos & "+" & $capture_x & "," & $ypos & "+" & $capture_y & ")")
-		$iHeroAvailable = BitOR($iHeroAvailable, $HERO_QUEEN)
-	Else
-		$xpos = 0
-		$ypos = 0
-		$found = _ImageSearchArea(@ScriptDir & "\images\HeroesArmy\queen2.bmp", 1, $capture_x, $capture_y, $capture_x + $capture_width, $capture_y + $capture_height, $xpos, $ypos, $tolerance)
-		If $found = 1 Then
-			Setlog(" - Archer Queen available.", $color_blue)
-			If $debugArmyHeroCount = 1 Then Setlog("- detected in position (" & $xpos & "+" & $capture_x & "," & $ypos & "+" & $capture_y & ")")
-			$iHeroAvailable = BitOR($iHeroAvailable, $HERO_QUEEN)
+	For $i = 0 To UBound($HeroSlots) - 1
+		$sResult = getHeroStatus($HeroSlots[$i][0], $HeroSlots[$i][1]) ; OCR slot for information
+		If $sResult <> "" Then ; we found something, figure out what?
+			Select
+				Case StringInStr($sResult, "king", $STR_NOCASESENSEBASIC)
+					Setlog(" - Barbarian King available")
+					$iHeroAvailable = BitOR($iHeroAvailable, $HERO_KING)
+				Case StringInStr($sResult, "queen", $STR_NOCASESENSEBASIC)
+					Setlog(" - Archer Queen available")
+					$iHeroAvailable = BitOR($iHeroAvailable, $HERO_QUEEN)
+				Case StringInStr($sResult, "warden", $STR_NOCASESENSEBASIC)
+					Setlog(" - Grand Warden available")
+					$iHeroAvailable = BitOR($iHeroAvailable, $HERO_WARDEN)
+				Case StringInStr($sResult, "heal", $STR_NOCASESENSEBASIC)
+					If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then
+						Switch $i
+							Case 0
+								$sMessage = "-Barbarian King"
+							Case 1
+								$sMessage = "-Archer Queen"
+							Case 2
+								$sMessage = "-Grand Warden"
+							Case Else
+								$sMessage = "-Very Bad Monkey Needs"
+						EndSwitch
+						SetLog("Hero slot#" & $i + 1 & $sMessage & " Healing", $COLOR_PURPLE)
+					EndIf
+				Case StringInStr($sResult, "upgrade", $STR_NOCASESENSEBASIC)
+					If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then
+						Switch $i
+							Case 0
+								$sMessage = "-Barbarian King"
+							Case 1
+								$sMessage = "-Archer Queen"
+							Case 2
+								$sMessage = "-Grand Warden"
+							Case Else
+								$sMessage = "-Need to Get Monkey"
+						EndSwitch
+						SetLog("Hero slot#" & $i + 1 & $sMessage & " Upgrade in Process", $COLOR_PURPLE)
+					EndIf
+				Case StringInStr($sResult, "none", $STR_NOCASESENSEBASIC)
+					If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then SetLog("Hero slot#" & $i + 1 & " Empty, stop count", $COLOR_PURPLE)
+					ExitLoop ; when we find empty slots, done looking for heroes
+				Case Else
+					SetLog("Hero slot#" & $i + 1 & " bad OCR string returned!", $COLOR_RED)
+			EndSelect
 		Else
-					If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then Setlog(" - Archer Queen not found", $color_blue)
+			SetLog("Hero slot#" & $i + 1 & " status read problem!", $COLOR_RED)
 		EndIf
-
-	EndIf
-
-	;search Grand Warden
-	$xpos = 0
-	$ypos = 0
-	$found = _ImageSearchArea(@ScriptDir & "\images\HeroesArmy\warden.bmp", 1, $capture_x, $capture_y, $capture_x + $capture_width, $capture_y + $capture_height, $xpos, $ypos, $tolerance)
-	If $found = 1 Then
-		Setlog(" - Grand Warden available", $color_blue)
-		If $debugArmyHeroCount = 1 Then Setlog("- detected in position (" & $xpos & "+" & $capture_x & "," & $ypos & "+" & $capture_y & ")")
-		$iHeroAvailable = BitOR($iHeroAvailable, $HERO_WARDEN)
-	Else
-		$xpos = 0
-		$ypos = 0
-		$found = _ImageSearchArea(@ScriptDir & "\images\HeroesArmy\warden2.bmp", 1, $capture_x, $capture_y, $capture_x + $capture_width, $capture_y + $capture_height, $xpos, $ypos, $tolerance)
-		If $found = 1 Then
-			Setlog(" - Grand Warden available.", $color_blue)
-			If $debugArmyHeroCount = 1 Then Setlog("- detected in position (" & $xpos & "+" & $capture_x & "," & $ypos & "+" & $capture_y & ")")
-			$iHeroAvailable = BitOR($iHeroAvailable, $HERO_WARDEN)
-		Else
-			If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then Setlog(" - Grand Warden not found", $color_blue)
-		EndIf
-	EndIf
-
+	Next
 
 	If BitAND($iHeroWait[$DB], $iHeroAvailable) > 0 Or BitAND($iHeroWait[$LB], $iHeroAvailable) > 0 Or _
-			($iHeroWait[$DB] = $HERO_NOHERO And $iHeroWait[$DB] = $HERO_NOHERO) Then
+			($iHeroWait[$DB] = $HERO_NOHERO And $iHeroWait[$LB] = $HERO_NOHERO) Then
 		$bFullArmyHero = True
 		If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then SetLog("$bFullArmyHero= " & $bFullArmyHero, $COLOR_PURPLE)
 	EndIf

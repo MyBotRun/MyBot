@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
+Func GetTranslated($iSection = -1, $iKey = -1, $sText = "", $var1 = Default, $var2 = Default, $var3 = Default)
 
 	Local $sDefaultText, $sLanguageText
 
@@ -33,6 +33,7 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
 
 		If $sText = "-1" Then  ; check for "-1" if text repeated
 			If $sDefaultText <> "-3" Then  ; check if text exists inside file
+				$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
 				$aLanguage[$iSection][$iKey] = $sDefaultText
 				Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
 			Else
@@ -42,9 +43,11 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
 
 		If $sDefaultText <> $sText Then
 			IniWrite($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, $sText) ; Rewrite Default English.ini with new text value
+			$sText = GetTranslatedParsedText($sText, $var1, $var2, $var3)
 			$aLanguage[$iSection][$iKey] = $sText
 			Return $sText
 		Else
+			$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
 			$aLanguage[$iSection][$iKey] = $sDefaultText
 			Return $sDefaultText
 		EndIf
@@ -54,9 +57,11 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
 		If $sText = "-1" Then
 			If $sLanguageText = "-3" Then
 				$sDefaultText = IniRead($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, $sText)
+				$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
 				$aLanguage[$iSection][$iKey] = $sDefaultText
 				Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
 			Else
+				$sLanguageText = GetTranslatedParsedText($sLanguageText, $var1, $var2, $var3)
 				$aLanguage[$iSection][$iKey] = $sLanguageText
 				Return $sLanguageText
 			EndIf
@@ -64,14 +69,24 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
 
 		If $sLanguageText = "-3" Then
 			IniWrite($dirLanguages & $sLanguage & ".ini", $iSection, $iKey, $sText) ; Rewrite Language.ini with new untranslated Default text value
+			$sText = GetTranslatedParsedText($sText, $var1, $var2, $var3)
 			$aLanguage[$iSection][$iKey] = $sText
 			Return $sText
 		EndIf
 
+		$sLanguageText = GetTranslatedParsedText($sLanguageText, $var1, $var2, $var3)
 		$aLanguage[$iSection][$iKey] = $sLanguageText
 		Return $sLanguageText
 	EndIf
 EndFunc   ;==>GetTranslated
+
+Func GetTranslatedParsedText($sText, $var1 = Default, $var2 = Default, $var3 = Default)
+	Local $s = StringReplace($sText, "\r\n", @CRLF)
+	If $var1 = Default Then Return $s
+	If $var2 = Default Then Return StringFormat($sText, $var1)
+	If $var3 = Default Then Return StringFormat($sText, $var1, $var2)
+	Return StringFormat($sText, $var1, $var2, $var3)
+EndFunc   ;==>GetTranslatedParsedText
 
 ;DetectLanguage()
 Func DetectLanguage()

@@ -34,7 +34,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		Next
 	EndIf
 
-	_WinAPI_EmptyWorkingSet(WinGetProcess($HWnD)) ; Reduce Working Set of Android Process
+	_WinAPI_EmptyWorkingSet(GetAndroidPid()) ; Reduce Working Set of Android Process
 	_WinAPI_EmptyWorkingSet(@AutoItPID) ; Reduce Working Set of Bot
 
 	If _Sleep($iDelayVillageSearch1) Then Return
@@ -68,6 +68,15 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 	If $Is_SearchLimit = True Then $Is_SearchLimit = False
 
+#comments-start
+	;mikemikemikecoc - Wait For Spells
+	For $i = 0 To $iModeCount - 2 ;check if DB and LB are active or not
+		If IsSearchModeActive($i) = False Then
+			Setlog("Search conditions not satisfied for " & $sModeText[$i] & ", skipping mode:", $COLOR_BLUE)
+			Setlog(" - wait troops, heroes and/or spells according to search settings", $COLOR_BLUE)
+		EndIf
+	Next
+#comments-end
 
 	While 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;### Main Search Loop ###;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		If $debugVillageSearchImages = 1 Then DebugImageSave("villagesearch")
@@ -167,12 +176,11 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 
 		; ----------------- CHECK WEAK BASE -------------------------------------------------
-		; Weak Base Detection modified by LunaEclipse
-		If ($isModeActive[$DB] And $iChkWeakBase[$DB] = 1 And $dbBase And ($match[$DB] Or $iChkMeetOne[$DB] = 1)) Or _
-			($isModeActive[$LB] And $iChkWeakBase[$LB] = 1 And ($match[$LB] Or $iChkMeetOne[$LB] = 1)) Then
+		If ($isModeActive[$DB] And IsWeakBaseActive($DB) And $dbBase And ($match[$DB] Or $iChkMeetOne[$DB] = 1)) Or _
+			($isModeActive[$LB] And IsWeakBaseActive($LB) And ($match[$LB] Or $iChkMeetOne[$LB] = 1)) Then
 			$weakBaseValues = IsWeakBase()
 			For $i = 0 To $iModeCount - 2
-				If $iChkWeakBase[$i] = 1 And (($i = $DB And $dbBase) Or $i <> $DB) And ($match[$i] Or $iChkMeetOne[$i] = 1) Then
+				If IsWeakBaseActive($i) And (($i = $DB And $dbBase) Or $i <> $DB) And ($match[$i] Or $iChkMeetOne[$i] = 1) Then
 					If getIsWeak($weakBaseValues, $i) Then
 						$match[$i] = True
 					Else
@@ -300,7 +308,11 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			If _Sleep($iDelayVillageSearch2) Then Return
 			$i += 1
 			If ( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1], True), Hex($NextBtn[2], 6), $NextBtn[3])) And IsAttackPage() Then
-				ClickP($NextBtn, 1, 0, "#0155") ;Click Next
+				If $iUseRandomClick = 0 then
+					ClickP($NextBtn, 1, 0, "#0155") ;Click Next
+				Else
+					ClickR($NextBtnRND, $NextBtn[0], $NextBtn[1], 1, 0)
+				EndIF
 				ExitLoop
 			Else
 				If $debugsetlog = 1 Then SetLog("Wait to see Next Button... " & $i, $COLOR_PURPLE)
@@ -443,7 +455,7 @@ Func WriteLogVillageSearch ($x)
 	If $iChkMeetTrophy[$x] = 1 Then $MeetTrophytext = "- Trophy"
 	If $iChkMeetTH[$x] = 1 Then $MeetTHtext = "- Max TH " & $iMaxTH[$x] ;$icmbTH
 	If $iChkMeetTHO[$x] = 1 Then $MeetTHOtext = "- TH Outside"
-	If $iChkWeakBase[$x] = 1 Then $MeetWeakBasetext = "- Weak Base(Mortar: " & $iCmbWeakMortar[$x] & ", WizTower: " & $iCmbWeakWizTower[$x] & ")"
+	If IsWeakBaseActive($x) Then $MeetWeakBasetext = "- Weak Base"
 	If Not ($Is_SearchLimit) And $debugsetlog = 1 Then
 		SetLog(_PadStringCenter(" Searching For " & $sModeText[$x] & " ", 54, "="), $COLOR_BLUE)
 		Setlog("Enable " & $sModeText[$x] & " search IF ", $COLOR_BLUE)

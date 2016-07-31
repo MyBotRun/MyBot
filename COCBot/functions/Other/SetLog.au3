@@ -29,11 +29,24 @@ Func SetLog($String, $Color = $COLOR_BLACK, $Font = "Verdana", $FontSize = 7.5, 
 		Return
 	EndIf
 	If IsDeclared("txtLog") Then
+		Local $activeBot = _WinAPI_GetActiveWindow() = $frmBot ; different scroll to bottom when bot not active to fix strange bot activation flickering
+		Local $hCtrl = _WinAPI_GetFocus() ; RichEdit tampers with focus so remember and restore
+		_SendMessage($txtLog, $WM_SETREDRAW, False, 0) ; disable redraw so disabling has no visiual effect
+		_WINAPI_EnableWindow($txtLog, False) ; disable RichEdit
+		;If $activeBot Then _GUICtrlRichEdit_SetSel($txtLog, -1, -1) ; select end
+		_GUICtrlRichEdit_SetSel($txtLog, -1, -1) ; select end
 		_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")
-		_GUICtrlRichEdit_AppendTextColor($txtLog, $time, 0x000000)
+		_GUICtrlRichEdit_AppendTextColor($txtLog, $time, 0x000000, False)
 		_GUICtrlRichEdit_SetFont($txtLog, $FontSize, $Font)
-		_GUICtrlRichEdit_AppendTextColor($txtLog, $String & @CRLF, _ColorConvert($Color))
+		_GUICtrlRichEdit_AppendTextColor($txtLog, $String & @CRLF, _ColorConvert($Color), False)
 		If $statusbar = 1 And IsDeclared("statLog") Then _GUICtrlStatusBar_SetText($statLog, "Status : " & $String)
+		_WINAPI_EnableWindow($txtLog, True) ; enabled RichEdit again
+		;If $activeBot  Then _GUICtrlRichEdit_SetSel($txtLog, -1, -1) ; select end (scroll to end)
+		_GUICtrlRichEdit_SetSel($txtLog, -1, -1) ; select end (scroll to end)
+		_SendMessage($txtLog, $WM_SETREDRAW, True, 0) ; enabled RechEdit redraw again
+		_WinAPI_RedrawWindow($txtLog, 0, 0, $RDW_INVALIDATE) ; redraw RichEdit
+		If $activeBot And $hCtrl <> $txtLog Then _WinAPI_SetFocus($hCtrl) ; Restore Focus
+		;If $activeBot = False Then _GUICtrlRichEdit_ScrollLineOrPage($txtLog, "pd")
 		__FileWriteLog($hLogFileHandle, $log)
 	Else
 		; log it to RichEdit later...
@@ -48,11 +61,12 @@ Func SetLog($String, $Color = $COLOR_BLACK, $Font = "Verdana", $FontSize = 7.5, 
 	EndIf
 EndFunc   ;==>SetLog
 
-Func SetDebugLog($String, $Color = $COLOR_PURPLE, $Font = "Verdana", $FontSize = 7.5, $statusbar = 1)
+Func SetDebugLog($String, $Color = Default, $bSilentSetLog = False, $Font = "Verdana", $FontSize = 7.5, $statusbar = 0)
+	If $Color = Default Then $Color = $COLOR_PURPLE
 	Local $LogPrefix = "D "
 	Local $log = $LogPrefix & TimeDebug() & $String
 	If $String <> "" Then ConsoleWrite($log & @CRLF) ; Always write any log to console
-	If $debugSetlog = 1 Then
+	If $debugSetlog = 1 And $bSilentSetLog = False Then
 		SetLog($String, $Color, $Font, $FontSize, $statusbar, Time(), False, $LogPrefix)
 	Else
 		If $hLogFileHandle = "" Then CreateLogFile()
@@ -60,13 +74,10 @@ Func SetDebugLog($String, $Color = $COLOR_PURPLE, $Font = "Verdana", $FontSize =
 	EndIf
 EndFunc   ;==>SetDebugLog
 
-Func _GUICtrlRichEdit_AppendTextColor($hWnd, $sText, $iColor)
-	Local $iLength = _GUICtrlRichEdit_GetTextLength($hWnd, True, True)
-	Local $iCp = _GUICtrlRichEdit_GetCharPosOfNextWord($hWnd, $iLength)
-	_GUICtrlRichEdit_AppendText($hWnd, $sText)
-	_GUICtrlRichEdit_SetSel($hWnd, $iCp - 1, $iLength + StringLen($sText))
+Func _GUICtrlRichEdit_AppendTextColor($hWnd, $sText, $iColor, $bGotoEnd = True)
+	If $bGotoEnd Then _GUICtrlRichEdit_SetSel($hWnd, -1, -1)
 	_GUICtrlRichEdit_SetCharColor($hWnd, $iColor)
-	_GUICtrlRichEdit_Deselect($hWnd)
+	_GUICtrlRichEdit_AppendText($hWnd, $sText)
 EndFunc   ;==>_GUICtrlRichEdit_AppendTextColor
 
 Func _ColorConvert($nColor);RGB to BGR or BGR to RGB

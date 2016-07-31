@@ -51,12 +51,12 @@ EndFunc   ;==>chkRandomSpeedAtkDB
 
 Func chkSmartAttackRedAreaDB()
 	If GUICtrlRead($chkSmartAttackRedAreaDB) = $GUI_CHECKED Then
-		$iChkRedArea[$LB] = 1
+		$iChkRedArea[$DB] = 1
 		For $i = $lblSmartDeployDB To $picAttackNearDarkElixirDrillDB
 			GUICtrlSetState($i, $GUI_SHOW)
 		Next
 	Else
-		$iChkRedArea[$LB] = 0
+		$iChkRedArea[$DB] = 0
 		For $i = $lblSmartDeployDB To $picAttackNearDarkElixirDrillDB
 			GUICtrlSetState($i, $GUI_HIDE)
 		Next

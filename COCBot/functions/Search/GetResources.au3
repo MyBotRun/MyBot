@@ -25,7 +25,7 @@ Func GetResources($bLog = True, $pMatchMode = -1) ;Reads resources
 	While _CheckPixel($aNoCloudsAttack, $bCapturePixel) = False ; wait for clouds to be gone
 		If _Sleep($iDelayGetResources1) Then Return
 		$i += 1
-		If $i >= 180 Or isProblemAffect(True) Then ; Wait 45 sec max then restart bot and CoC
+		If $i >= 720 Or isProblemAffect(True) Then ; Wait 3 min then restart bot and CoC
 			$Is_ClientSyncError = True
 			checkMainScreen()
 			If $Restart Then

@@ -25,33 +25,33 @@ Local $x = 25, $y = 20
 			$txtTip = GetTranslated(607,3, "Make IMG with extra info in Profile -> Temp Folder")
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetState(-1, $GUI_HIDE)
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 		$y +=15
 		$cmbScriptNameDB=GUICtrlCreateCombo("", $x, $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			$txtTip = GetTranslated(607,4, "Choose the script; You can edit/add new scripts located in folder: 'CSV/Attack'")
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "cmbScriptNameDB")
 		$picreloadScriptsDB = GUICtrlCreateIcon($pIconLib, $eIcnReload, $x + 192, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(607,5, "Reload Script Files")
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, 'UpdateComboScriptNameDB') ; Run this function when the secondary GUI [X] is clicked
 		$y +=25
 		$lblNotesScriptDB =  GUICtrlCreateLabel("", $x, $y + 5, 180, 118)
 			PopulateComboScriptsFilesDB() ; populate
 		$picreloadScripts = GUICtrlCreateIcon($pIconLib, $eIcnEdit, $x + 192, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(607,6, "Show/Edit current Attack Script")
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "EditScriptDB")
 		$y +=25
 		$picnewScriptsDB = GUICtrlCreateIcon($pIconLib, $eIcnAddcvs, $x + 192, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(607,7, "Create a new Attack Script")
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "NewScriptDB")
 		$y +=25
 		$picduplicateScriptsDB = GUICtrlCreateIcon($pIconLib, $eIcnCopy, $x + 192, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(607,8, "Copy current Attack Script to a new name")
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "DuplicateScriptDB")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 

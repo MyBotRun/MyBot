@@ -479,6 +479,10 @@ Func ParseAttackCSV($debug = False)
 				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard.: " & $line, $COLOR_RED)
 			EndIf
 			CheckHeroesHealth()
+			If _Sleep($iDelayRespond) Then ; check for pause/stop after each line of CSV, close file before retutn
+				FileClose($f)
+				Return
+			EndIf
 		WEnd
 		ReleaseClicks()
 		FileClose($f)

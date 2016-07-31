@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-$hGUI_ATTACK = GUICreate("", $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, BitOR($WS_CHILD, $WS_TABSTOP), -1, $frmBot)
+$hGUI_ATTACK = GUICreate("", $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, BitOR($WS_CHILD, $WS_TABSTOP), -1, $frmBotEx)
 ;GUISetBkColor($COLOR_WHITE, $hGUI_ATTACK)
 
 ;creating subchilds first!

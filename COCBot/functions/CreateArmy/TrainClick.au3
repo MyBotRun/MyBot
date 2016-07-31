@@ -12,7 +12,7 @@
 ;						 $sdebugtxt				 - String with click debug text
 ; Return values .: None
 ; Author ........: KnowJack (July 2015)
-; Modified ......: Sardo 2015-08
+; Modified ......: Sardo 2015-08, Boju 2016-06
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -20,7 +20,8 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt = "")
+Global $TypeTroops[4] = [1, 10, 20, 0]
+Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt, $TypeTroops)
 	If IsTrainPage() Then
 		If $debugClick = 1 Then
 			Local $txt = _DecodeDebug($sdebugtxt)
@@ -31,7 +32,7 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt = 
 			If FastCaptureRegion() = True Then
 				For $i = 0 To ($iTimes - 1)
 					If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
-					;If $DebugSetlog = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], True), $COLOR_PURPLE)
+					If $debugsetlogTrain = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], True), $COLOR_PURPLE)
 					If _CheckPixel($aWatchSpot, True) = True Then ExitLoop ; Check to see if barrack full
 					If _CheckPixel($aLootSpot, True) = True Then ; Check to see if out of Elixir
 						SetLog("Elixir Check Fail: Color = " & _GetPixelColor($aLootSpot[0], $aLootSpot[1], False), $COLOR_PURPLE)
@@ -40,12 +41,16 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt = 
 						If IsGemOpen(True) = True Then ClickP($aAway) ;Click Away
 						ExitLoop
 					EndIf
-					PureClick($x, $y) ;Click once.
+					If $iUseRandomClick = 0 then
+						PureClick($x, $y) ;Click once.
+					Else
+						PureClickR($TypeTroops, $x, $y) ;Click once.
+					EndIf
 					If _Sleep($iSpeed, False) Then ExitLoop
 				Next
 			Else
 				If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
-				;If $DebugSetlog = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], True), $COLOR_PURPLE)
+				If $debugsetlogTrain = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], True), $COLOR_PURPLE)
 				If _CheckPixel($aWatchSpot, False) = True Then Return ; Check to see if barrack full
 				If _CheckPixel($aLootSpot, False) = True Then ; Check to see if out of Elixir
 					SetLog("Elixir Check Fail: Color = " & _GetPixelColor($aLootSpot[0], $aLootSpot[1], False), $COLOR_PURPLE)
@@ -54,13 +59,17 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt = 
 					If IsGemOpen(False) = True Then ClickP($aAway) ;Click Away
 					Return
 				EndIf
-				PureClick($x, $y, $iTimes) ;Click $iTimes.
+				If $iUseRandomClick = 0 then
+					PureClick($x, $y, $iTimes) ;Click $iTimes.
+				Else
+					PureClickR($TypeTroops, $x, $y, $iTimes) ;Click $iTimes.
+				EndIf
 				If _Sleep($iSpeed, False) Then Return
 			EndIf
 		Else
 			If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
+			If $debugsetlogTrain = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], False), $COLOR_PURPLE)
 			If _CheckPixel($aWatchSpot, True) = True Then Return ; Check to see if barrack full
-			;If $DebugSetlog = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], False), $COLOR_PURPLE)
 			If _CheckPixel($aLootSpot, False) = True Then ; Check to see if out of Elixir
 				SetLog("Elixir Check Fail: Color = " & _GetPixelColor($aLootSpot[0], $aLootSpot[1], False), $COLOR_PURPLE)
 				$OutOfElixir = 1
@@ -69,7 +78,11 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt = 
 				Return
 			EndIf
 
-			PureClick($x, $y)
+			If $iUseRandomClick = 0 then
+				PureClick($x, $y)
+			Else
+				PureClickR($TypeTroops, $x, $y)
+			EndIF
 
 			If _Sleep($iSpeed, False) Then Return
 			If _CheckPixel($aLootSpot, True) = True Then ; Check to see if out of Elixir
@@ -86,7 +99,6 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt = 
 	EndIf
 EndFunc   ;==>TrainClick
 
-; TrainClickP : takes an array[2] (or array[4]) as a parameter [x,y]
-Func TrainClickP($point, $howMany, $speed, $aWatchSpot, $aLootSpot, $debugtxt = "")
-	Return TrainClick($point[0], $point[1], $howMany, $speed, $aWatchSpot, $aLootSpot, $debugtxt)
+Func TrainClickP($point, $howMany, $speed, $aWatchSpot, $aLootSpot, $debugtxt, $TypeTroops)
+	Return TrainClick($point[0], $point[1], $howMany, $speed, $aWatchSpot, $aLootSpot, $debugtxt, $TypeTroops)
 EndFunc   ;==>TrainClickP

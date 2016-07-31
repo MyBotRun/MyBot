@@ -308,8 +308,8 @@ Func RestartBlueStacksXCoC()
    If Not $RunState Then Return False
    Local $cmdOutput, $process_killed
    If Not InitAndroid() Then Return False
-   $HWnD = WinGetHandle($Title)
-   If @error <> 0 Then Return False
+   ;$HWnD = WinGetHandle($Title)
+   If WinGetAndroidHandle() = 0 Then Return False
    ;WinActivate($HWnD)  	; ensure bot has window focus
    ;WaitForDeviceBlueStacks2(30)
    $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am start -W -S -n " & $AndroidGamePackage & "/" & $AndroidGameClass, $process_killed)
@@ -463,31 +463,39 @@ Func GetBlueStacks2ProgramParameter($bAlternative = False)
 EndFunc
 
 Func BlueStacksBotStartEvent()
-   SetDebugLog("Disable " & $Android & " minimize/maximize Window Buttons")
-   DisableBS($HWnD, $SC_MINIMIZE)
-   DisableBS($HWnD, $SC_MAXIMIZE)
+   If $AndroidEmbedded = False Then
+	   SetDebugLog("Disable " & $Android & " minimize/maximize Window Buttons")
+	   DisableBS($HWnD, $SC_MINIMIZE)
+	   DisableBS($HWnD, $SC_MAXIMIZE)
+   EndIf
    Return AndroidCloseSystemBar()
 EndFunc
 
 Func BlueStacksBotStopEvent()
-   SetDebugLog("Enable " & $Android & " minimize/maximize Window Buttons")
-   EnableBS($HWnD, $SC_MINIMIZE)
-   EnableBS($HWnD, $SC_MAXIMIZE)
+   If $AndroidEmbedded = False Then
+	   SetDebugLog("Enable " & $Android & " minimize/maximize Window Buttons")
+	   EnableBS($HWnD, $SC_MINIMIZE)
+	   EnableBS($HWnD, $SC_MAXIMIZE)
+   EndIf
    Return AndroidOpenSystemBar()
 EndFunc
 
 Func BlueStacks2BotStartEvent()
-   SetDebugLog("Disable " & $Android & " minimize/maximize Window Buttons")
-   DisableBS($HWnD, $SC_MINIMIZE)
-   DisableBS($HWnD, $SC_MAXIMIZE)
+   If $AndroidEmbedded = False Then
+	   SetDebugLog("Disable " & $Android & " minimize/maximize Window Buttons")
+	   DisableBS($HWnD, $SC_MINIMIZE)
+	   DisableBS($HWnD, $SC_MAXIMIZE)
+   EndIf
    If $AndroidHasSystemBar Then Return AndroidCloseSystemBar()
    Return False
 EndFunc
 
 Func BlueStacks2BotStopEvent()
-   SetDebugLog("Enable " & $Android & " minimize/maximize Window Buttons")
-   EnableBS($HWnD, $SC_MINIMIZE)
-   EnableBS($HWnD, $SC_MAXIMIZE)
+   If $AndroidEmbedded = False Then
+	   SetDebugLog("Enable " & $Android & " minimize/maximize Window Buttons")
+	   EnableBS($HWnD, $SC_MINIMIZE)
+	   EnableBS($HWnD, $SC_MAXIMIZE)
+   EndIf
    If $AndroidHasSystemBar Then Return AndroidOpenSystemBar()
    Return False
 EndFunc
@@ -516,6 +524,14 @@ Func EnableBS($HWnD, $iButton)
 	_GUICtrlMenu_RemoveMenu($hSysMenu, $iButton, False)
 	_GUICtrlMenu_DrawMenuBar($HWnD)
 EndFunc   ;==>EnableBS
+
+Func GetBlueStacksSvcPid()
+
+   ; find process PID
+   Local $pid = ProcessExists2("HD-Service.exe")
+   Return $pid
+
+EndFunc
 
 #comments-start
 $connect = _GetNetworkConnect()

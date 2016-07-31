@@ -113,7 +113,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 	EndIf
 
 	; All Barracks Troops
-	If $troopKind >= $eBarb And $troopKind <= $eLava Then
+	If $troopKind >= $eBarb And $troopKind <= $eBowl Then
 		$troopNb = $iNbOfSpots * $iAtEachSpot
 		If $troopNb > 1 Then $plural = 1
 		$name = NameOfTroop($troopKind, $plural)
@@ -137,7 +137,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 
 	DeployTHNormal($iAtEachSpot, $iNbOfSpots)
 
-	If $troopKind >= $eBarb And $troopKind <= $eLava Then
+	If $troopKind >= $eBarb And $troopKind <= $eBowl Then
 		If $TroopCountBeg <> Number(ReadTroopQuantity($THtroop)) Then
 			$NumTroopDeployed = $TroopCountBeg - Number(ReadTroopQuantity($THtroop))
 			SetLog("Deployment of " & $NumTroopDeployed & " " & $name & " was Successful!")

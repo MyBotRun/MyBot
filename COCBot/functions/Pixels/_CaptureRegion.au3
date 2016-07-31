@@ -23,6 +23,8 @@ Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = 
 	_GDIPlus_BitmapDispose($hBitmap)
 	_WinAPI_DeleteObject($hHBitmap)
 
+	If $RunState Then CheckAndroidRunning() ; Ensure Android is running
+
 	If $ichkBackground = 1 Then
 		Local $iW = Number($iRight) - Number($iLeft), $iH = Number($iBottom) - Number($iTop)
 
@@ -83,6 +85,8 @@ Func _CaptureRegion2($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom =
 
 	_WinAPI_DeleteObject($hHBitmap2) ; delete previous DC object using global handle
 
+	If $RunState Then CheckAndroidRunning() ; Ensure Android is running
+
 	If $ichkBackground = 1 Then
 		If $AndroidAdbScreencap = True Then ; do this when using screencap capture for background mode
 			$hHBitmap2 = AndroidScreencap($iLeft, $iTop, $iW, $iH)
@@ -122,7 +126,7 @@ Func NeedCaptureRegion($iCount)
    Return $bNeedCaptureRegion
 EndFunc
 
-Func ForceCaptureRegion()
-   $ForceCapture = True
+Func ForceCaptureRegion($bForceCapture = True)
+   $ForceCapture = $bForceCapture
 EndFunc
 

@@ -56,12 +56,34 @@ Func chkDBMeetTH()
 EndFunc   ;==>chkDBMeetTH
 
 Func chkDBWeakBase()
-	If GUICtrlRead($chkDBWeakBase) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbDBWeakMortar, $GUI_ENABLE)
-		GUICtrlSetState($cmbDBWeakWizTower, $GUI_ENABLE)
+	If GUICtrlRead($chkMaxMortar[$DB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakMortar[$DB], $GUI_ENABLE)
 	Else
-		GUICtrlSetState($cmbDBWeakMortar, $GUI_DISABLE)
-		GUICtrlSetState($cmbDBWeakWizTower, $GUI_DISABLE)
+		GUICtrlSetState($cmbWeakMortar[$DB], $GUI_DISABLE)
+	EndIf
+
+	If GUICtrlRead($chkMaxWizTower[$DB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakWizTower[$DB], $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbWeakWizTower[$DB], $GUI_DISABLE)
+	EndIf
+
+	If GUICtrlRead($chkMaxXBow[$DB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakXBow[$DB], $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbWeakXBow[$DB], $GUI_DISABLE)
+	EndIf
+
+	If GUICtrlRead($chkMaxInferno[$DB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakInferno[$DB], $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbWeakInferno[$DB], $GUI_DISABLE)
+	EndIf
+
+	If GUICtrlRead($chkMaxEagle[$DB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakEagle[$DB], $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbWeakEagle[$DB], $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkDBWeakBase
 
@@ -108,12 +130,34 @@ Func chkABMeetTH()
 EndFunc   ;==>chkABMeetTH
 
 Func chkABWeakBase()
-	If GUICtrlRead($chkABWeakBase) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbABWeakMortar, $GUI_ENABLE)
-		GUICtrlSetState($cmbABWeakWizTower, $GUI_ENABLE)
+	If GUICtrlRead($chkMaxMortar[$LB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakMortar[$LB], $GUI_ENABLE)
 	Else
-		GUICtrlSetState($cmbABWeakMortar, $GUI_DISABLE)
-		GUICtrlSetState($cmbABWeakWizTower, $GUI_DISABLE)
+		GUICtrlSetState($cmbWeakMortar[$LB], $GUI_DISABLE)
+	EndIf
+
+	If GUICtrlRead($chkMaxWizTower[$LB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakWizTower[$LB], $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbWeakWizTower[$LB], $GUI_DISABLE)
+	EndIf
+
+	If GUICtrlRead($chkMaxXBow[$LB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakXBow[$LB], $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbWeakXBow[$LB], $GUI_DISABLE)
+	EndIf
+
+	If GUICtrlRead($chkMaxInferno[$LB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakInferno[$LB], $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbWeakInferno[$LB], $GUI_DISABLE)
+	EndIf
+
+	If GUICtrlRead($chkMaxEagle[$LB]) = $GUI_CHECKED Then
+		GUICtrlSetState($cmbWeakEagle[$LB], $GUI_ENABLE)
+	Else
+		GUICtrlSetState($cmbWeakEagle[$LB], $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkABWeakBase
 
@@ -203,6 +247,7 @@ Func chkDBActivateCamps()
 	dbCheckall()
 EndFunc   ;==>chkDBActivateCamps
 
+#cs
 Func DBPanel($Style_GUI)
 	GUICtrlSetState($grpDBFilter, $Style_GUI)
 	GUICtrlSetState($cmbDBMeetGE, $Style_GUI)
@@ -228,16 +273,21 @@ Func DBPanel($Style_GUI)
 	GUICtrlSetState($picDBWeakMortar, $Style_GUI)
 	GUICtrlSetState($cmbDBWeakWizTower, $Style_GUI)
 	GUICtrlSetState($picDBWeakWizTower, $Style_GUI)
-EndFunc   ;==>DBPanel
+
+EndFunc   ;==>
+#ce
 
 Func EnableSearchPanels($mode)
 	;_GUI_Value_STATE("HIDE", $groupAttackDBSpell&"#"&$groupIMGAttackDBSpell&"#"&$groupAttackABSpell&"#"&$groupIMGAttackABSpell)
 	Switch $mode
 		Case $DB
-			If GUICtrlRead($chkDBActivateSearches) = $GUI_CHECKED Or GUICtrlRead($chkDBActivateTropies) = $GUI_CHECKED Or GUICtrlRead($chkDBActivateCamps) = $GUI_CHECKED Or GUICtrlRead($chkDBKingWait) = $GUI_CHECKED Or GUICtrlRead($chkDBQueenWait) = $GUI_CHECKED Or GUICtrlRead($chkDBWardenWait) = $GUI_CHECKED Then
+			If GUICtrlRead($chkDBActivateSearches) = $GUI_CHECKED Or GUICtrlRead($chkDBActivateTropies) = $GUI_CHECKED Or GUICtrlRead($chkDBActivateCamps) = $GUI_CHECKED Or GUICtrlRead($chkDBKingWait) = $GUI_CHECKED Or GUICtrlRead($chkDBQueenWait) = $GUI_CHECKED Or GUICtrlRead($chkDBWardenWait) = $GUI_CHECKED Or GUICtrlRead($chkDBSpellsWait) = $GUI_CHECKED Then
 				_GUI_Value_STATE("SHOW", $groupHerosDB)
 				;search
 				_GUI_Value_STATE("SHOW", $groupSearchDB)
+				;spells
+				_GUI_Value_STATE("SHOW", $groupSpellsDB)
+
 				cmbDBGoldElixir()
 				;attack
 				;_GUI_Value_STATE("SHOW", $groupAttackDB)
@@ -250,16 +300,23 @@ Func EnableSearchPanels($mode)
 				;search
 				_GUI_Value_STATE("HIDE", $groupSearchDB)
 				;attack
+
+				;Spells
+				_GUI_Value_STATE("HIDE", $groupSpellsDB)
+
 				;_GUI_Value_STATE("HIDE", $groupAttackDB)
 				;_GUI_Value_STATE("HIDE", $groupIMGAttackDB)
 				;end battle
 				;_GUI_Value_STATE("HIDE", $groupEndBattkeDB)
 			EndIf
 		Case $LB
-			If GUICtrlRead($chkABActivateSearches) = $GUI_CHECKED Or GUICtrlRead($chkABActivateTropies) = $GUI_CHECKED Or GUICtrlRead($chkABActivateCamps) = $GUI_CHECKED Or GUICtrlRead($chkABKingWait) = $GUI_CHECKED Or GUICtrlRead($chkABQueenWait) = $GUI_CHECKED Or GUICtrlRead($chkABWardenWait) = $GUI_CHECKED Then
+			If GUICtrlRead($chkABActivateSearches) = $GUI_CHECKED Or GUICtrlRead($chkABActivateTropies) = $GUI_CHECKED Or GUICtrlRead($chkABActivateCamps) = $GUI_CHECKED Or GUICtrlRead($chkABKingWait) = $GUI_CHECKED Or GUICtrlRead($chkABQueenWait) = $GUI_CHECKED Or GUICtrlRead($chkABWardenWait) = $GUI_CHECKED Or GUICtrlRead($chkABSpellsWait) = $GUI_CHECKED Then
 				_GUI_Value_STATE("SHOW", $groupHerosAB)
 				;search
 				_GUI_Value_STATE("SHOW", $groupSearchAB)
+				;Spells
+				_GUI_Value_STATE("SHOW", $groupSpellsAB)
+
 				cmbABGoldElixir()
 				;attack
 				;_GUI_Value_STATE("SHOW", $groupAttackAB)
@@ -272,6 +329,10 @@ Func EnableSearchPanels($mode)
 				;search
 				_GUI_Value_STATE("HIDE", $groupSearchAB)
 				;attack
+
+				;Spells
+				_GUI_Value_STATE("HIDE", $groupSpellsAB)
+
 				;_GUI_Value_STATE("HIDE", $groupAttackAB)
 				;_GUI_Value_STATE("HIDE", $groupIMGAttackAB)
 				;end battle
@@ -537,3 +598,150 @@ Func chkABWardenWait()
 		GUICtrlSetState($chkABWardenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkABWardenWait
+
+Func chkDBSpellsWait()
+	If $iTownHallLevel > 4 Or $iTownHallLevel = 0 Then ; Must be TH5+ to have spells
+		For $i = $IMGchkDBLightSpellWait To $IMGchkDBHasteSpellWait
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+		If GUICtrlRead($chkDBSpellsWait) = $GUI_CHECKED Then
+			$iEnableSpellsWait[$DB] = 1
+			chkSpellWaitError()
+			If @error Then
+				GUICtrlSetState($chkDBSpellsWait, $GUI_UNCHECKED)
+				$iEnableSpellsWait[$DB] = 0
+				Setlog("Wait for Spells disabled due training count error", $COLOR_RED)
+			EndIf
+		Else
+			$iEnableSpellsWait[$DB] = 0
+		EndIf
+	Else
+		GUICtrlSetState($chkDBSpellsWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		For $i = $IMGchkDBLightSpellWait To $IMGchkDBHasteSpellWait
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc
+
+Func chkABSpellsWait()
+	If $iTownHallLevel > 4 Or $iTownHallLevel = 0 Then ; Must be TH5+ to have spells
+		For $i = $IMGchkABLightSpellWait To $IMGchkABHasteSpellWait
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+		If GUICtrlRead($chkABSpellsWait) = $GUI_CHECKED Then
+			$iEnableSpellsWait[$LB] = 1
+			chkSpellWaitError()
+			If @error Then
+				GUICtrlSetState($chkABSpellsWait, $GUI_UNCHECKED)
+				$iEnableSpellsWait[$LB] = 0
+				Setlog("Wait for Spells disabled due training count error", $COLOR_RED)
+			EndIf
+		Else
+			$iEnableSpellsWait[$LB] = 0
+		EndIf
+	Else
+		GUICtrlSetState($chkABSpellsWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		For $i = $IMGchkABLightSpellWait To $IMGchkABHasteSpellWait
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc
+
+Func chkSpellWaitError()
+
+	Local Static $bHaveBeenWarned = False
+	Local $bErrorCondition = False
+	Local $sErrorText, $sText, $MsgBox1, $MsgBox2, $MsgBox3
+
+	; Check if spell total GUI is larger than spell count trained for wait for spells to work properly!
+	If $iTotalTrainSpaceSpell > GUICtrlRead($txtTotalCountSpell) Then  ; we have an error!
+		$sErrorText = GetTranslated(625,110, "Total number of trained spells exceeds total set in GUI!") & @CRLF & _
+			GetTranslated(625,111, "Reduce number of trained spells,") & @CRLF & _
+			GetTranslated(625,112, "OR ELSE BOT WILL NEVER ATTACK!!") & @CRLF
+		$bErrorCondition = True
+	Else
+		Return
+	EndIf
+
+	If $bHaveBeenWarned = True And $bErrorCondition = True Then
+		SetError(1)
+		Return
+	ElseIf $bErrorCondition = False Then
+		Return
+	EndIf
+
+	Local $iCount = 0
+	While 1
+		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xE00000, 0xFFFF00, 12, "Comic Sans MS", 480)
+		$sText = $sErrorText & @CRLF & GetTranslated(625,113,"Click YES to close this warning message") & @CRLF
+		$MsgBox1 = _ExtMsgBox(48, GetTranslated(625,114,"YES, I Understand Warning|No"), GetTranslated(625,115,"Wait for Spells Warning!"), $sText, 30, $frmBot)
+		Switch $MsgBox1
+			Case 1
+				$bHaveBeenWarned = True
+				ExitLoop
+			Case Else
+				_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xFFFF00 , 0xE00000, 12, "Comic Sans MS", 480)
+				$stext = GetTranslated(625,116,"Sorry, must understand warning and click Yes!") & @CRLF
+				$MsgBox2 = _ExtMsgBox(16, GetTranslated(625,117,"OK"), GetTranslated(625,118,"User Input Error"), $stext, 15, $frmBot)
+				If $iCount = 1 And $MsgBox1 = 9 And $MsgBox2 = 9 Then ExitLoop  ; If time out on both error messages happens twice then exit loop to avoid stuck
+		EndSwitch
+		$iCount += 1
+		If $iCount > 2 Then  ; You want to be crazy?  OK, then start the madness
+			$sText = GetTranslated(625,119,"CONGRATULATIONS!!") & @CRLF & GetTranslated(625,120,"You found the secret message in Bot!") & @CRLF & _
+				GetTranslated(625,121,"Can you find the randomly selected button to close this message?") & @CRLF & _
+				GetTranslated(625,122, "HaHaHaHa...") & @CRLF & @CRLF & @CRLF
+			$sFunnyText = $sText
+			$iCount = 1
+			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 480)
+			While 1
+				$MsgBox3 = _ExtMsgBox(128, "1|2|3|4|5|6|7", GetTranslated(625,123,"You are a WINNER!!"), $sFunnyText, 900, $frmBot)
+				If @error Then Setlog("_ExtMsgBox error: " & @error, $COLOR_RED)
+				If $iCount > 7 And Int($MsgBox3) = Random(1,8,1) Then
+					ExitLoop
+				Else
+					If $iCount <= 7 Then
+						$iControl = $iCount
+					Else
+						$iControl = $MsgBox3
+					EndIf
+					Switch $iControl
+						Case 1
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x61FF00, 0x020028, 12, "Arial", 480)
+							$sFunnyText = $sText & GetTranslated(625,124,"Sorry not that button!") & @CRLF
+						Case 2
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xDC00FF, 0x011E00, 12, "Comic Sans MS", 480)
+							$sFunnyText = $sText & GetTranslated(625,125,"Donate £5000 to MyBot.run while you wait 15 minutes for this to time out?") & @CRLF
+						Case 3
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x000000, 0xFFFFFF, 12, "Tahoma", 480)
+							$sFunnyText = $sText & GetTranslated(625,126,"Having trouble finding the exit button?") & @CRLF
+						Case 4
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x4800FF, 0xD800FF, 12, "Comic Sans MS", 480)
+							$sFunnyText = $sText & GetTranslated(625,127,"This is fun, can we keep going all day?") & @CRLF
+						Case 5
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Times New Roman", 480)
+							$sFunnyText = $sText & GetTranslated(625,128,"Try four more times, you have to get lucky sooner or later!") & @CRLF
+						Case 6
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x00FFED, 0x010051, 12, "Comic Sans MS", 480)
+							$sFunnyText = $sText & GetTranslated(625,129,"Do you have a Banana? This code monkey is Hungry!") & @CRLF
+						Case 7
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xFF6600, 0x013000, 12, "Lucida Console", 480)
+							$sFunnyText = $sText & GetTranslated(625,130,"Maybe try hitting same button till you and Mr. Random pick same?") & @CRLF
+						Case 0
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x000000, 0xFFFFFF, 12, "Tahoma", 480)
+							$sFunnyText = $sText & GetTranslated(625,131,"Sorry, can not 'escape' from this!") & @CRLF
+						Case Else
+							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 480)
+							$sFunnyText = $sText & GetTranslated(625,132,"Program error! Programmers can ruin a good joke.") & @CRLF
+							ExitLoop 2
+					EndSwitch
+					$iCount += 1
+				EndIf
+			WEnd
+		EndIf
+	WEnd
+	If $bErrorCondition = True Then
+		SetError(1)
+		Return
+	EndIf
+EndFunc
+

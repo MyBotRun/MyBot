@@ -185,7 +185,7 @@ $tabMilkingDrop = GUICtrlCreateTabItem(GetTranslated(600,46,"C - Attack"))
 		$y +=20
 		$lblMaxWave = GUICtrlCreateLabel(GetTranslated(631,23, "- Max Waves:"),$x, $y)
 		$txtMaxWaves = GUICtrlCreateInput("3", 180-10, $y-7, 37,21)
-			GUICtrlSetTip(-1,  GetTranslated(631,85,"Choose the maximum number of waves of troops to drop at each collector.")&@CRLF& GetTranslated(631,86,"If the collector gets destroyed, then no more waves will be dropped at it."))
+			_GUICtrlSetTip(-1,  GetTranslated(631,85,"Choose the maximum number of waves of troops to drop at each collector.")&@CRLF& GetTranslated(631,86,"If the collector gets destroyed, then no more waves will be dropped at it."))
 		$y +=20
 		$lblDelayBtwnWaves = GUICtrlCreateLabel(GetTranslated(631,24, "- Delay Between Waves (ms):"),$x, $y)
 		$txtLowerDelayWaves = GUICtrlCreateInput("3000", 180-10, $y-7, 37,21)
@@ -209,11 +209,11 @@ $tabMilkingDrop = GUICtrlCreateTabItem(GetTranslated(600,46,"C - Attack"))
 		$x += 5
 		$chkStructureDestroyedBeforeAttack = GUICtrlCreateCheckbox(GetTranslated(631,62, "Check Structure Destruction Before Wave"), $x, $y)
 		 $txtTip = GetTranslated(631,63, "Before attacking a structure, check to see if it has been destroyed by another wave.") & @crlf &  GetTranslated(631,64,"You must have a high delay between waves to use this option")
-		 GUICtrlSetTip(-1, $txtTip)
+		 _GUICtrlSetTip(-1, $txtTip)
 		$y += 20
 		$chkStructureDestroyedAfterAttack = GUICtrlCreateCheckbox(GetTranslated(631,65, "Check Structure Destruction After Wave"), $x, $y)
 		 $txtTip = GetTranslated(631,66, "After attacking a structure, check to see if it has been destroyed by another wave.") & @crlf & GetTranslated(631,67,"You must have a high delay between waves to use this option")
-		 GUICtrlSetTip(-1, $txtTip)
+		 _GUICtrlSetTip(-1, $txtTip)
 	GUICtrlCreateTabItem("")
 
 
@@ -230,7 +230,7 @@ $tabMilkingDrop = GUICtrlCreateTabItem(GetTranslated(600,46,"C - Attack"))
 
 
 		$chkMilkAfterAttackTHSnipe = GUICtrlCreateCheckbox(GetTranslated(631,82,"Enable TH Snipe"), $x, $y, -1, -1)
-				GUICtrlSetTip(-1, $txtTip)
+				_GUICtrlSetTip(-1, $txtTip)
 				GUICtrlSetOnEvent(-1, "chkMilkAfterAttackTHSnipe")
 		$y+=21
 
@@ -257,7 +257,7 @@ $tabMilkingDrop = GUICtrlCreateTabItem(GetTranslated(600,46,"C - Attack"))
 		$grpDeploy = GUICtrlCreateGroup(GetTranslated(631,84,"5b. Continue With An Scripted Attack"), $x , $y - 20, 260, 70)
 		$x+=15
 		$chkMilkAfterAttackScripted = GUICtrlCreateCheckbox(GetTranslated(631,83,"Enable Scripted Attack"), $x, $y, -1, -1)
-				GUICtrlSetTip(-1, $txtTip)
+				_GUICtrlSetTip(-1, $txtTip)
 				;GUICtrlSetOnEvent(-1, "chkMilkAfterAttackStandard")
 		$y+=21
 		$cmbMilkingCSVScriptName = GUICtrlCreateCombo("", $x-10 , $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
@@ -276,10 +276,10 @@ $tabMilkingDrop = GUICtrlCreateTabItem(GetTranslated(600,46,"C - Attack"))
 ;~ 			$lblDeploy = GUICtrlCreateLabel(GetTranslated(3,3, "Attack on")&":", $x, $y + 5, -1, -1)
 ;~ 			$cmbDeploy = GUICtrlCreateCombo("", $x + 55, $y, 120, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 ;~ 			 IF $mode = $DB Then
-;~ 				GUICtrlSetTip(-1, GetTranslated(3,4, "Attack on a single side, penetrates through base") & @CRLF & GetTranslated(3,5, "Attack on two sides, penetrates through base") & @CRLF & GetTranslated(3,6, "Attack on three sides, gets outer and some inside of base"), GetTranslated(3,7,"Select the No. of sides to attack on."))
+;~ 				_GUICtrlSetTip(-1, GetTranslated(3,4, "Attack on a single side, penetrates through base") & @CRLF & GetTranslated(3,5, "Attack on two sides, penetrates through base") & @CRLF & GetTranslated(3,6, "Attack on three sides, gets outer and some inside of base"), GetTranslated(3,7,"Select the No. of sides to attack on."))
 ;~ 				GUICtrlSetData(-1, GetTranslated(3,8, "one side") & "|" & GetTranslated(3,9, "two sides") & "|" & GetTranslated(3,10, "three sides") &"|" & GetTranslated(3,11,"all sides equally" ), GetTranslated(3,11, "all sides equally"))
 ;~ 			 Else
-;~ 				GUICtrlSetTip(-1, GetTranslated(3,4, -1) & @CRLF & GetTranslated(3,5, -1) & @CRLF & GetTranslated(3,6, -1) & @CRLF & GetTranslated(3,63, -1) & @CRLF & GetTranslated(3,64, "Attack on the single side closest to the Dark Elixir Storage") & @CRLF & GetTranslated(3,65, "Attack on the single side closest to the Townhall"), GetTranslated(3,7, -1))
+;~ 				_GUICtrlSetTip(-1, GetTranslated(3,4, -1) & @CRLF & GetTranslated(3,5, -1) & @CRLF & GetTranslated(3,6, -1) & @CRLF & GetTranslated(3,63, -1) & @CRLF & GetTranslated(3,64, "Attack on the single side closest to the Dark Elixir Storage") & @CRLF & GetTranslated(3,65, "Attack on the single side closest to the Townhall"), GetTranslated(3,7, -1))
 ;~ 				GUICtrlSetData(-1, GetTranslated(3,8, -1) & "|" & GetTranslated(3,9, -1) & "|" & GetTranslated(3,10, -1) & "|" & GetTranslated(3,11, -1) & "|" & GetTranslated(3,66, "DE Side Attack") & "|" & GetTranslated(3,67, "TH Side Attack"), GetTranslated(3,11, -1))
 ;~ 				;GUICtrlSetOnEvent(-1, "chkDESideEB")
 ;~ 			 EndIf
@@ -287,50 +287,50 @@ $tabMilkingDrop = GUICtrlCreateTabItem(GetTranslated(600,46,"C - Attack"))
 ;~ 			$y += 25
 ;~ 			$lblUnitDelay = GUICtrlCreateLabel(GetTranslated(3,24, "Delay Unit") & ":", $x, $y + 5, -1, -1)
 ;~ 				$txtTip = GetTranslated(3,25, "This delays the deployment of troops, 1 (fast) = like a Bot, 10 (slow) = Like a Human.") & @CRLF & GetTranslated(3,26, "Random will make bot more varied and closer to a person.")
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$cmbUnitDelay = GUICtrlCreateCombo("", $x + 55, $y, 36, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 				GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10", "5")
 ;~ 			$lblWaveDelay = GUICtrlCreateLabel(GetTranslated(3,27, "Wave") & ":", $x + 100, $y + 5, -1, -1)
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$cmbWaveDelay = GUICtrlCreateCombo("", $x + 140, $y, 36, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 				GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10", "5")
 ;~ 			$y += 22
 ;~ 			$chkRandomSpeedAtk = GUICtrlCreateCheckbox(GetTranslated(3,28, "Randomize delay for Units & Waves"), $x, $y, -1, -1)
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 				GUICtrlSetOnEvent(-1, "chkRandomSpeedAtk")
 ;~ 		$y +=22
 ;~ 			$chkSmartAttackRedArea = GUICtrlCreateCheckbox(GetTranslated(3,29, "Use Smart Attack: Near Red Line."), $x, $y, -1, -1)
 ;~ 				$txtTip = GetTranslated(3,30, "Use Smart Attack to detect the outer 'Red Line' of the village to attack. And drop your troops close to it.")
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 				GUICtrlSetState(-1, $GUI_CHECKED)
 ;~ 				GUICtrlSetOnEvent(-1, "chkSmartAttackRedArea")
 ;~ 			$y += 22
 ;~ 			$lblSmartDeploy = GUICtrlCreateLabel(GetTranslated(3,31, "Drop Type") & ":", $x, $y + 5, -1, -1)
 ;~ 				$txtTip = GetTranslated(3,32, "Select the Deploy Mode for the waves of Troops.") & @CRLF & GetTranslated(3,33, "Type 1: Drop a single wave of troops on each side then switch troops, OR") & @CRLF & GetTranslated(3,34, "Type 2: Drop a full wave of all troops (e.g. giants, barbs and archers) on each side then switch sides.")
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$cmbSmartDeploy = GUICtrlCreateCombo("", $x + 55, $y, 120, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 ;~ 				GUICtrlSetData(-1, GetTranslated(3,35, "Sides, then Troops") & "|" & GetTranslated(3,36, "Troops, then Sides") , GetTranslated(3,35, "Sides, then Troops"))
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$y += 26
 ;~ 			$chkAttackNearGoldMine = GUICtrlCreateCheckbox("", $x + 20, $y, 17, 17)
 ;~ 				$txtTip = GetTranslated(3,37, "Drop troops near Gold Mines")
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$picAttackNearGoldMine = GUICtrlCreateIcon($pIconLib, $eIcnMine, $x + 40 , $y - 3 , 24, 24)
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$x += 75
 ;~ 			$chkAttackNearElixirCollector = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 ;~ 				$txtTip = GetTranslated(3,38, "Drop troops near Elixir Collectors")
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$picAttackNearElixirCollector = GUICtrlCreateIcon($pIconLib, $eIcnCollector, $x + 20 , $y - 3 , 24, 24)
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$x += 55
 ;~ 			$chkAttackNearDarkElixirDrill = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 ;~ 				$txtTip = GetTranslated(3,39, "Drop troops near Dark Elixir Drills")
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 ;~ 			$picAttackNearDarkElixirDrill = GUICtrlCreateIcon($pIconLib, $eIcnDrill, $x + 20 , $y - 3, 24, 24)
-;~ 				GUICtrlSetTip(-1, $txtTip)
+;~ 				_GUICtrlSetTip(-1, $txtTip)
 
 
 			$y +=20
@@ -385,7 +385,7 @@ GUICtrlCreateTabItem("")
 		$y += 20
 		$chkMilkingDebugFullSearch = GUICtrlCreateCheckbox(GetTranslated(631,39, "fullsearch, only for debug purpose (very slow)"), $x, $y)
 		$txtTip = GetTranslated(631,81,"with this options you can detect images of undetected Elixir Extractors")
-		GUICtrlSetTip(-1, $txtTip)
+		_GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetState(-1, $GUI_HIDE)
 
 	GUICtrlCreateTabItem("")

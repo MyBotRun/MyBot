@@ -17,21 +17,28 @@ Opt("GUIOnEventMode", 1)
 Opt("MouseClickDelay", 10)
 Opt("MouseClickDownDelay", 10)
 Opt("TrayMenuMode", 3)
+Opt("TrayOnEventMode", 1)
 
 #include-once
 #include "functions\Other\GUICtrlGetBkColor.au3" ; Included here to use on GUI Control
 #include "MBR GUI Control Variables.au3"
+#include "MBR GUI Action.au3"
+
+; MBR Actions invoked in MyBot.run.au3
+Global Enum $eBotNoAction, $eBotStart, $eBotStop, $eBotSearchMode
+Global $BotAction = $eBotNoAction
+
 ;Dynamic declaration of Array controls, cannot be on global variables because the GUI has to be created first for these control-id's to be known.
-Global $aChkDonateControls[17] = [$chkDonateBarbarians, $chkDonateArchers, $chkDonateGiants, $chkDonateGoblins, $chkDonateWallBreakers, $chkDonateBalloons, $chkDonateWizards, $chkDonateHealers, $chkDonateDragons, $chkDonatePekkas, $chkDonateMinions, $chkDonateHogRiders, $chkDonateValkyries, $chkDonateGolems, $chkDonateWitches, $chkDonateLavaHounds, $chkDonateCustom]
-Global $aChkDonateControlsSpell[3] = [$chkDonatePoisonSpells, $chkDonateEarthQuakeSpells, $chkDonateHasteSpells]
-Global $aChkDonateAllControls[17] = [$chkDonateAllBarbarians, $chkDonateAllArchers, $chkDonateAllGiants, $chkDonateAllGoblins, $chkDonateAllWallBreakers, $chkDonateAllBalloons, $chkDonateAllWizards, $chkDonateAllHealers, $chkDonateAllDragons, $chkDonateAllPekkas, $chkDonateAllMinions, $chkDonateAllHogRiders, $chkDonateAllValkyries, $chkDonateAllGolems, $chkDonateAllWitches, $chkDonateAllLavaHounds, $chkDonateAllCustom]
-Global $aChkDonateAllControlsSpell[3] = [$chkDonateAllPoisonSpells, $chkDonateAllEarthQuakeSpells, $chkDonateAllHasteSpells]
-Global $aTxtDonateControls[17] = [$txtDonateBarbarians, $txtDonateArchers, $txtDonateGiants, $txtDonateGoblins, $txtDonateWallBreakers, $txtDonateBalloons, $txtDonateWizards, $txtDonateHealers, $txtDonateDragons, $txtDonatePekkas, $txtDonateMinions, $txtDonateHogRiders, $txtDonateValkyries, $txtDonateGolems, $txtDonateWitches, $txtDonateLavaHounds, $txtDonateCustom]
-Global $aTxtDonateControlsSpell[3] = [$txtDonatePoisonSpells, $txtDonateEarthQuakeSpells, $txtDonateHasteSpells]
-Global $aTxtBlacklistControls[17] = [$txtBlacklistBarbarians, $txtBlacklistArchers, $txtBlacklistGiants, $txtBlacklistGoblins, $txtBlacklistWallBreakers, $txtBlacklistBalloons, $txtBlacklistWizards, $txtBlacklistHealers, $txtBlacklistDragons, $txtBlacklistPekkas, $txtBlacklistMinions, $txtBlacklistHogRiders, $txtBlacklistValkyries, $txtBlacklistGolems, $txtBlacklistWitches, $txtBlacklistLavaHounds, $txtBlacklistCustom]
-Global $aTxtBlacklistControlsSpell[3] = [$txtBlacklistPoisonSpells, $txtBlacklistEarthQuakeSpells, $txtBlacklistHasteSpells]
-Global $aLblBtnControls[17] = [$lblBtnBarbarians, $lblBtnArchers, $lblBtnGiants, $lblBtnGoblins, $lblBtnWallBreakers, $lblBtnBalloons, $lblBtnWizards, $lblBtnHealers, $lblBtnDragons, $lblBtnPekkas, $lblBtnMinions, $lblBtnHogRiders, $lblBtnValkyries, $lblBtnGolems, $lblBtnWitches, $lblBtnLavaHounds, $lblBtnCustom]
-Global $aLblBtnControlsSpell[3] = [$lblBtnPoisonSpells, $lblBtnEarthQuakeSpells, $lblBtnHasteSpells]
+Global $aChkDonateControls[21] = [$chkDonateBarbarians, $chkDonateArchers, $chkDonateGiants, $chkDonateGoblins, $chkDonateWallBreakers, $chkDonateBalloons, $chkDonateWizards, $chkDonateHealers, $chkDonateDragons, $chkDonatePekkas, $chkDonateBabyDragons, $chkDonateMiners, $chkDonateMinions, $chkDonateHogRiders, $chkDonateValkyries, $chkDonateGolems, $chkDonateWitches, $chkDonateLavaHounds, $chkDonateBowlers, $chkDonateCustomA, $chkDonateCustomB]
+Global $aChkDonateControlsSpell[4] = [$chkDonatePoisonSpells, $chkDonateEarthQuakeSpells, $chkDonateHasteSpells, $chkDonateSkeletonSpells]
+Global $aChkDonateAllControls[21] = [$chkDonateAllBarbarians, $chkDonateAllArchers, $chkDonateAllGiants, $chkDonateAllGoblins, $chkDonateAllWallBreakers, $chkDonateAllBalloons, $chkDonateAllWizards, $chkDonateAllHealers, $chkDonateAllDragons, $chkDonateAllPekkas,  $chkDonateAllBabyDragons,  $chkDonateAllMiners, $chkDonateAllMinions, $chkDonateAllHogRiders, $chkDonateAllValkyries, $chkDonateAllGolems, $chkDonateAllWitches, $chkDonateAllLavaHounds, $chkDonateAllBowlers, $chkDonateAllCustomA, $chkDonateAllCustomB]
+Global $aChkDonateAllControlsSpell[4] = [$chkDonateAllPoisonSpells, $chkDonateAllEarthQuakeSpells, $chkDonateAllHasteSpells, $chkDonateAllSkeletonSpells]
+Global $aTxtDonateControls[21] = [$txtDonateBarbarians, $txtDonateArchers, $txtDonateGiants, $txtDonateGoblins, $txtDonateWallBreakers, $txtDonateBalloons, $txtDonateWizards, $txtDonateHealers, $txtDonateDragons, $txtDonatePekkas, $txtDonateBabyDragons, $txtDonateMiners, $txtDonateMinions, $txtDonateHogRiders, $txtDonateValkyries, $txtDonateGolems, $txtDonateWitches, $txtDonateLavaHounds, $txtDonateBowlers, $txtDonateCustomA, $txtDonateCustomB]
+Global $aTxtDonateControlsSpell[4] = [$txtDonatePoisonSpells, $txtDonateEarthQuakeSpells, $txtDonateHasteSpells, $txtDonateSkeletonSpells]
+Global $aTxtBlacklistControls[21] = [$txtBlacklistBarbarians, $txtBlacklistArchers, $txtBlacklistGiants, $txtBlacklistGoblins, $txtBlacklistWallBreakers, $txtBlacklistBalloons, $txtBlacklistWizards, $txtBlacklistHealers, $txtBlacklistDragons, $txtBlacklistPekkas, $txtBlacklistBabyDragons, $txtBlacklistMiners, $txtBlacklistMinions, $txtBlacklistHogRiders, $txtBlacklistValkyries, $txtBlacklistGolems, $txtBlacklistWitches, $txtBlacklistLavaHounds, $txtBlacklistBowlers, $txtBlacklistCustomA, $txtBlacklistCustomB]
+Global $aTxtBlacklistControlsSpell[4] = [$txtBlacklistPoisonSpells, $txtBlacklistEarthQuakeSpells, $txtBlacklistHasteSpells, $txtBlacklistSkeletonSpells]
+Global $aLblBtnControls[21] = [$lblBtnBarbarians, $lblBtnArchers, $lblBtnGiants, $lblBtnGoblins, $lblBtnWallBreakers, $lblBtnBalloons, $lblBtnWizards, $lblBtnHealers, $lblBtnDragons, $lblBtnPekkas, $lblBtnBabyDragons, $lblBtnMiners, $lblBtnMinions, $lblBtnHogRiders, $lblBtnValkyries, $lblBtnGolems, $lblBtnWitches, $lblBtnLavaHounds, $lblBtnBowlers, $lblBtnCustomA, $lblBtnCustomB]
+Global $aLblBtnControlsSpell[4] = [$lblBtnPoisonSpells, $lblBtnEarthQuakeSpells, $lblBtnHasteSpells, $lblBtnSkeletonSpells]
 
 Global $aMainTabItems[7] = [$tabMain, $tabGeneral, $tabVillage, $tabAttack, $tabBot, $tabAboutUs]
 
@@ -41,7 +48,7 @@ Global $aTabControlsUpgrade[5] = [$hGUI_UPGRADE_TAB, $hGUI_UPGRADE_TAB_ITEM1, $h
 Global $aTabControlsNotify[3] = [$hGUI_NOTIFY_TAB, $hGUI_NOTIFY_TAB_ITEM2, $hGUI_NOTIFY_TAB_ITEM4]
 
 Global $aTabControlsAttack[4] = [$hGUI_ATTACK_TAB, $hGUI_ATTACK_TAB_ITEM1, $hGUI_ATTACK_TAB_ITEM2, $hGUI_ATTACK_TAB_ITEM3]
-Global $aTabControlsArmy[4] = [$hGUI_ARMY_TAB, $hGUI_ARMY_TAB_ITEM1, $hGUI_ARMY_TAB_ITEM2, $hGUI_ARMY_TAB_ITEM3]
+Global $aTabControlsArmy[5] = [$hGUI_ARMY_TAB, $hGUI_ARMY_TAB_ITEM1, $hGUI_ARMY_TAB_ITEM2, $hGUI_ARMY_TAB_ITEM3, $hGUI_ARMY_TAB_ITEM4]
 Global $aTabControlsSearch[6] = [$hGUI_SEARCH_TAB, $hGUI_SEARCH_TAB_ITEM1, $hGUI_SEARCH_TAB_ITEM2, $hGUI_SEARCH_TAB_ITEM3, $hGUI_SEARCH_TAB_ITEM4, $hGUI_SEARCH_TAB_ITEM5]
 Global $aTabControlsDeadbase[5] = [$hGUI_DEADBASE_TAB, $hGUI_DEADBASE_TAB_ITEM1, $hGUI_DEADBASE_TAB_ITEM2, $hGUI_DEADBASE_TAB_ITEM3, $hGUI_DEADBASE_TAB_ITEM4]
 Global $aTabControlsActivebase[4] = [$hGUI_ACTIVEBASE_TAB, $hGUI_ACTIVEBASE_TAB_ITEM1, $hGUI_ACTIVEBASE_TAB_ITEM2, $hGUI_ACTIVEBASE_TAB_ITEM3]
@@ -49,10 +56,59 @@ Global $aTabControlsTHSnipe[4] = [$hGUI_THSNIPE_TAB, $hGUI_THSNIPE_TAB_ITEM1, $h
 Global $aTabControlsAttackOptions[5] = [$hGUI_AttackOption_TAB, $hGUI_AttackOption_TAB_ITEM1, $hGUI_AttackOption_TAB_ITEM2, $hGUI_AttackOption_TAB_ITEM3,  $hGUI_AttackOption_TAB_ITEM4]
 Global $aTabControlsStrategies[3] = [$hGUI_STRATEGIES_TAB, $hGUI_STRATEGIES_TAB_ITEM1, $hGUI_STRATEGIES_TAB_ITEM2]
 
-Global $aTabControlsBot[5] = [$hGUI_BOT_TAB, $hGUI_BOT_TAB_ITEM1, $hGUI_BOT_TAB_ITEM4, $hGUI_BOT_TAB_ITEM2, $hGUI_BOT_TAB_ITEM3]
+Global $aTabControlsBot[5] = [$hGUI_BOT_TAB, $hGUI_BOT_TAB_ITEM1, $hGUI_BOT_TAB_ITEM2, $hGUI_BOT_TAB_ITEM3, $hGUI_BOT_TAB_ITEM4]
 Global $aTabControlsStats[4] = [$hGUI_STATS_TAB, $hGUI_STATS_TAB_ITEM1, $hGUI_STATS_TAB_ITEM2, $hGUI_STATS_TAB_ITEM3]
 
-Global $aDebugControlItems[10] = [$chkDebugClick, $chkDebugSetlog, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestAttackBar]
+Global $aAlwaysEnabledControls[12] = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestAttackBar]
+
+Func AcquireMutex($mutexName, $scope = Default, $timout = Default)
+   Local $timer = TimerInit()
+   Local $hMutex_MyBot = 0
+   If $scope = Default then
+	   $scope = @AutoItPID + "/"
+   ElseIf $scope <> "" Then
+	   $scope += "/"
+   EndIf
+   If $timout = Default Then $timeout = 30000
+   While $hMutex_MyBot = 0 And ($timout = 0 Or TimerDiff($timer) < $timout)
+	  $hMutex_MyBot = _Singleton("MyBot.run/" + $scope + $mutexName, 1)
+	  If $hMutex_MyBot <> 0 Then ExitLoop
+	  If $timout = 0 Then ExitLoop
+	  If Sleep($iDelaySleep) Then ExitLoop
+   WEnd
+   Return $hMutex_MyBot
+EndFunc   ;==>AcquireMutex
+
+Func ReleaseMutex($hMutex, $ReturnValue = Default)
+   _WinAPI_CloseHandle($hMutex)
+   If $ReturnValue = Default Then Return
+   Return $ReturnValue
+EndFunc   ;==>ReleaseMutex
+
+Func UpdateFrmBotStyle()
+	#cs Works but causes bot window not to get activated anymore
+	Local $ShowMinimize = $AndroidBackgroundLaunched = True Or $AndroidEmbedded = False Or ($AndroidEmbedded = True And $AndroidAdbScreencap = True And $ichkBackground = 1)
+	WindowSystemMenu($frmBot, $SC_MINIMIZE, $ShowMinimize, "Minimize")
+	Return
+	#ce
+	;Local $ShowMinimize = $AndroidBackgroundLaunched = True Or $AndroidEmbedded = False Or ($AndroidEmbedded = True And $AndroidAdbScreencap = True And $ichkBackground = 1)
+	Local $ShowMinimize = $AndroidBackgroundLaunched = True Or $AndroidEmbedded = False Or ($AndroidEmbedded = True And $ichkBackground = 1) ; now bot is not really minimized anymore
+	Local $lStyle = $WS_MINIMIZEBOX
+	Local $lNewStyle = ($ShowMinimize ? $lStyle : 0)
+	Local $lCurStyle = _WinAPI_GetWindowLong($frmBot, $GWL_STYLE)
+	If BitAND($lCurStyle, $lStyle) <> $lNewStyle Then
+		If $ShowMinimize Then
+			$lNewStyle = BitOR($lCurStyle, $lStyle)
+			SetDebugLog("Show Bot Minimize Button")
+		Else
+			$lNewStyle = BitAND($lCurStyle, BitNOT($lStyle))
+			SetDebugLog("Hide Bot Minimize Button")
+		EndIf
+		_WinAPI_SetWindowLong($frmBot, $GWL_STYLE, $lNewStyle)
+		Return True
+	EndIf
+	Return False
+EndFunc   ;==>UpdateFrmBotStyle
 
 Func IsTab($controlID)
 	If _ArraySearch($aMainTabItems, $controlID) <> -1 Or _
@@ -75,12 +131,12 @@ Func IsTab($controlID)
 	Return False
 EndFunc   ;==>IsTab
 
-Func IsDebugControl($controlID)
-	If _ArraySearch($aDebugControlItems, $controlID) <> -1 Then
+Func IsAlwaysEnabledControl($controlID)
+	If _ArraySearch($aAlwaysEnabledControls, $controlID) <> -1 Then
 		Return True
 	EndIf
 	Return False
-EndFunc   ;==>IsDebugControl
+EndFunc   ;==>IsAlwaysEnabledControl
 
 _GDIPlus_Startup()
 
@@ -117,141 +173,303 @@ AtkLogHead()
 
 ; Accelerator Key, more responsive than buttons in run-mode
 Local $aAccelKeys[1][2] = [["{ESC}", $btnStop]]
-GUISetAccelerators($aAccelKeys)
+;GUISetAccelerators($aAccelKeys)
 
-Func GUIControl($hWind, $iMsg, $wParam, $lParam)
+Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
+	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_NCACTIVATE: $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
+	Local $iActive = BitAND($wParam, 0x0000FFFF)
+	If $hWin = $frmBot Then
+		If $AndroidEmbedded And AndroidShieldActiveDelay() = False Then
+			If $iActive = 0 Then
+				AndroidShield("GUIControl_WM_NCACTIVATE not active", Default, False, 0, False, False)
+			Else
+				AndroidShield("GUIControl_WM_NCACTIVATE active", Default, False)
+			EndIf
+		EndIf
+		If $iActive = 0 Then
+			; bot deactivated
+			;SetDebugLog("WM_ACTIVATE: Deactivate Bot", Default, True)
+		Else
+			If $iHideWhenMinimized = 0 Then BotRestore("GUIControl_WM_NCACTIVATE")
+			;SetDebugLog("WM_ACTIVATE: Activate Bot", Default, True)
+		EndIf
+	EndIf
+    Return $GUI_RUNDEFMSG
+EndFunc   ;==>GUIControl_WM_NCACTIVATE
+
+Func GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
+	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_FOCUS: $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
+	Local $iActive = BitAND($wParam, 0x0000FFFF)
+	Switch $hWin
+		Case $frmBot
+			If $AndroidEmbedded And AndroidShieldActiveDelay() = False Then
+				AndroidShield("GUIControl_WM_FOCUS", Default, False)
+			EndIf
+		#cs
+		Case $frmBotEmbeddedShield
+			If $lParam = $frmBotEmbeddedShieldInput Then
+				Local $hInput = GUICtrlGetHandle($frmBotEmbeddedShieldInput)
+				If _WinAPI_GetFocus() <> $hInput Then
+					;_SendMessage($frmBotEmbeddedShield, $WM_SETFOCUS, 1, $frmBotEmbeddedShieldInput)
+					;_WinAPI_SetFocus($hInput)
+				EndIf
+			EndIf
+		#ce
+	EndSwitch
+    Return $GUI_RUNDEFMSG
+EndFunc   ;==>GUIControl_WM_NCACTIVATE
+
+Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
+    If $hWin <> $frmBotEmbeddedShield Or $AndroidEmbedded = False Or $AndroidShieldStatus[0] = True Then
+        Return $GUI_RUNDEFMSG
+    EndIf
+	;ConsoleWrite("GUIControl_WM_MOUSE: FORWARD $hWind=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam & @CRLF)
+	Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
+	Local $Result = _WinAPI_PostMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
+	;Local $Result = _SendMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
+
+	If $iMSG = $WM_LBUTTONDOWN Then
+		If $debugWindowMessages Then SetDebugLog("GUIControl_WM_MOUSE: WM_LBUTTONDOWN $hWind=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+		If AndroidShieldHasFocus() = False Then
+			Local $hInput = GUICtrlGetHandle($frmBotEmbeddedShieldInput)
+			_WinAPI_SetFocus($hInput)
+			AndroidShield("GUIControl_WM_MOUSE", Default, False, 0, True)
+		EndIf
+	EndIf
+	Return $GUI_RUNDEFMSG
+EndFunc
+
+Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
+	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	;#forceref $hWind, $iMsg, $wParam, $lParam
 	If $GUIControl_Disabled = True Then Return $GUI_RUNDEFMSG
 	Local $nNotifyCode = BitShift($wParam, 16)
 	Local $nID = BitAND($wParam, 0x0000FFFF)
 	Local $hCtrl = $lParam
-	#forceref $hWind, $iMsg, $wParam, $lParam
 	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWind=" & $hWind & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $frmBot=" & $frmBot & @CRLF)
 
-	; WM_SYSCOMAND msdn: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646360(v=vs.85).aspx
-	Switch $iMsg
-		Case $WM_NOTIFY ; 78
-			Switch $nID
-				Case $tabMain
-					; Handle RichText controls
-					tabMain()
-				Case $hGUI_VILLAGE_TAB
-					tabVillage()
-				Case $hGUI_ATTACK_TAB
-					tabAttack()
-				Case $hGUI_SEARCH_TAB
-					tabSEARCH()
-				Case $hGUI_DEADBASE_TAB
-					tabDeadbase()
-				Case $hGUI_ACTIVEBASE_TAB
-					tabActivebase()
-				Case $hGUI_THSNIPE_TAB
-					tabTHSnipe()
-				Case $hGUI_BOT_TAB
-					tabBot()
-			EndSwitch
-		Case $WM_COMMAND ; 273
-			CheckRedrawBotWindow()
-			Switch $nID
-				Case $divider
-					MoveDivider()
-				Case $GUI_EVENT_CLOSE
-					; Clean up resources
-					BotClose()
-				Case $lblCreditsBckGrnd, $lblUnbreakableHelp
-					; Handle open URL clicks when label of link is over another background label
-					Local $CursorInfo = GUIGetCursorInfo($frmBot)
-					If IsArray($CursorInfo) = 1 Then
-						Switch $CursorInfo[4]
-							Case $labelMyBotURL, $labelForumURL, $lblUnbreakableLink
-								OpenURL_Label($CursorInfo[4])
-						EndSwitch
-					EndIf
-				Case $labelMyBotURL, $labelForumURL, $lblUnbreakableLink
-					; Handle open URL when label fires the event normally
-					OpenURL_Label($nID)
-				Case $btnStop
-					btnStop()
-				Case $btnPause
-					btnPause()
-				Case $btnResume
-					btnResume()
-				Case $btnHide
-					btnHide()
-				Case $btnResetStats
-					btnResetStats()
-				Case $btnAttackNowDB
-					btnAttackNowDB()
-				Case $btnAttackNowLB
-					btnAttackNowLB()
-				Case $btnAttackNowTS
-					btnAttackNowTS()
-				Case $idMENU_DONATE_SUPPORT
-					ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
-				Case $btnDeletePBMessages
-					If $RunState Then
-						btnDeletePBMessages() ; call with flag when bot is running to execute on _sleep() idle
-					Else
-						PushMsg("DeleteAllPBMessages") ; call directly when bot is stopped
-					EndIf
-				Case $btnMakeScreenshot
-					If $RunState Then
-						; call with flag when bot is running to execute on _sleep() idle
-						btnMakeScreenshot()
-					Else
-						; call directly when bot is stopped
-						If $iScreenshotType = 0 Then
-							MakeScreenshot($dirTemp, "jpg")
-						Else
-							MakeScreenshot($dirTemp, "png")
-						EndIf
-					EndIf
-				Case $pic2arrow
-					btnVillageStat()
-				Case $arrowleft, $arrowright
-					btnVillageStat()
+	; check shield status
+	If $hWind <> $frmBotEmbeddedShield Then
+		If AndroidShieldHasFocus() = True Then
+			; update shield with inactive state
+			AndroidShield("GUIControl_WM_COMMAND", Default, False, 150, False)
+		EndIf
+	EndIf
 
-				; debug checkboxes and buttons
-				Case $chkDebugClick
-					chkDebugClick()
-				Case $chkDebugSetlog
-					chkDebugSetlog()
-				Case $chkDebugOcr
-					chkDebugOcr()
-				Case $chkDebugImageSave
-					chkDebugImageSave()
-				Case $chkdebugBuildingPos
-					chkDebugBuildingPos()
-				Case $chkDebugTrain
-					chkDebugTrain()
-				Case $chkdebugOCRDonate
-					chkdebugOCRDonate()
-				Case $btnTestTrain
-					btnTestTrain()
-				Case $btnTestDonateCC
-					btnTestDonateCC()
-				Case $btnTestAttackBar
-					btnTestAttackBar()
-			EndSwitch
-		Case $WM_SYSCOMMAND ; 274
-			If $__TEST_ERROR = True Then SetDebugLog("Bot WM_SYSCOMMAND: " & Hex($wParam, 4))
-			If $hWind = $frmBot Then ; Only close Bot when Bot Window sends Close Message
-				Switch $wParam
-					Case $SC_MINIMIZE
-						$FrmBotMinimized = True
-					Case $SC_RESTORE ; 0xf120
-						; set redraw controls flag to check if after restore visibile controls require redraw
-						If $FrmBotMinimized = True Then
-							$FrmBotMinimized = False ; prevents "flickering" due to DLL hanging of bot
-							$bRedrawBotWindow[2] = True
-						EndIf
-					Case $SC_CLOSE ; 0xf060
-						BotClose()
+	; WM_SYSCOMAND msdn: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646360(v=vs.85).aspx
+	CheckRedrawBotWindow()
+	Switch $nID
+		Case $divider
+			MoveDivider()
+		Case $GUI_EVENT_CLOSE
+			; Clean up resources
+			BotClose()
+		Case $lblCreditsBckGrnd, $lblUnbreakableHelp
+			; Handle open URL clicks when label of link is over another background label
+			Local $CursorInfo = GUIGetCursorInfo($frmBot)
+			If IsArray($CursorInfo) = 1 Then
+				Switch $CursorInfo[4]
+					Case $labelMyBotURL, $labelForumURL, $lblUnbreakableLink
+						OpenURL_Label($CursorInfo[4])
 				EndSwitch
 			EndIf
+		Case $labelMyBotURL, $labelForumURL, $lblUnbreakableLink
+			; Handle open URL when label fires the event normally
+			OpenURL_Label($nID)
+		Case $lblDonate
+			; Donate URL is not in text nor tooltip
+			ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
+		Case $btnStop
+			btnStop()
+		Case $btnPause
+			btnPause()
+		Case $btnResume
+			btnResume()
+		Case $btnHide
+			btnHide()
+		Case $btnEmbed
+			btnEmbed()
+		Case $btnResetStats
+			btnResetStats()
+		Case $btnAttackNowDB
+			btnAttackNowDB()
+		Case $btnAttackNowLB
+			btnAttackNowLB()
+		Case $btnAttackNowTS
+			btnAttackNowTS()
+		;Case $idMENU_DONATE_SUPPORT
+		;	ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
+		Case $btnDeletePBMessages
+			If $RunState Then
+				btnDeletePBMessages() ; call with flag when bot is running to execute on _sleep() idle
+			Else
+				PushMsg("DeleteAllPBMessages") ; call directly when bot is stopped
+			EndIf
+		Case $btnMakeScreenshot
+			If $RunState Then
+				; call with flag when bot is running to execute on _sleep() idle
+				btnMakeScreenshot()
+			Else
+				; call directly when bot is stopped
+				If $iScreenshotType = 0 Then
+					MakeScreenshot($dirTemp, "jpg")
+				Else
+					MakeScreenshot($dirTemp, "png")
+				EndIf
+			EndIf
+		Case $pic2arrow
+			btnVillageStat()
+		Case $arrowleft, $arrowright
+			btnVillageStat()
+
+		; debug checkboxes and buttons
+		Case $chkDebugClick
+			chkDebugClick()
+		Case $chkDebugSetlog
+			chkDebugSetlog()
+		Case $chkDebugOcr
+			chkDebugOcr()
+		Case $chkDebugImageSave
+			chkDebugImageSave()
+		Case $chkdebugBuildingPos
+			chkDebugBuildingPos()
+		Case $chkDebugTrain
+			chkDebugTrain()
+		Case $chkdebugOCRDonate
+			chkdebugOCRDonate()
+		Case $btnTestTrain
+			btnTestTrain()
+		Case $btnTestDonateCC
+			btnTestDonateCC()
+		Case $btnTestAttackBar
+			btnTestAttackBar()
 	EndSwitch
 
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl
+
+Func GUIControl_WM_MOVE($hWind, $iMsg, $wParam, $lParam)
+	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_MOVE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	If $hWind = $frmBot Then
+		If $iUpdatingWhenMinimized = 1 And BotWindowCheck() = False And _WinAPI_IsIconic($frmBot) Then
+			; ensure bot is not really minimized (e.g. when you minimize all windows)
+			BotMinimize("GUIControl_WM_MOVE")
+			Return $GUI_RUNDEFMSG
+		EndIf
+
+		; update bot pos variables
+		Local $frmBotPos = WinGetPos($frmBot)
+		If $AndroidEmbedded = False Then
+			$frmBotPosX = ($frmBotPos[0] > -30000 ? $frmBotPos[0] : $frmBotPosX)
+			$frmBotPosY = ($frmBotPos[1] > -30000 ? $frmBotPos[1] : $frmBotPosY)
+		Else
+			$frmBotDockedPosX = ($frmBotPos[0] > -30000 ? $frmBotPos[0] : $frmBotDockedPosX)
+			$frmBotDockedPosY = ($frmBotPos[1] > -30000 ? $frmBotPos[1] : $frmBotDockedPosY)
+		EndIf
+	EndIf
+
+	; required for screen change
+	If AndroidEmbedArrangeActive() = False And AndroidEmbedCheck(True) = True Then
+		; reposition docked android
+		AndroidEmbedCheck()
+		; redraw bot also
+		_WinAPI_RedrawWindow($frmBotEx, 0, 0, $RDW_INVALIDATE)
+		_WinAPI_RedrawWindow($frmBotBottom, 0, 0, $RDW_INVALIDATE)
+	EndIf
+
+	Return $GUI_RUNDEFMSG
+EndFunc   ;==>GUIControl_WM_MOVE
+
+Func GUIControl_WM_SYSCOMMAND($hWind, $iMsg, $wParam, $lParam)
+	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_SYSCOMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	;If $__TEST_ERROR = True Then SetDebugLog("Bot WM_SYSCOMMAND: " & Hex($wParam, 4))
+	If $hWind = $frmBot Then ; Only close Bot when Bot Window sends Close Message
+		Switch $wParam
+			Case $SC_MINIMIZE
+				BotMinimize("GUIControl_WM_SYSCOMMAND")
+			Case $SC_RESTORE ; 0xf120
+				; set redraw controls flag to check if after restore visibile controls require redraw
+				BotRestore("GUIControl_WM_SYSCOMMAND")
+			Case $SC_CLOSE ; 0xf060
+				BotClose()
+		EndSwitch
+	EndIf
+    Return $GUI_RUNDEFMSG
+EndFunc   ;==>GUIControl_WM_SYSCOMMAND
+
+Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
+	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	Local $nNotifyCode = BitShift($wParam, 16)
+	Local $nID = BitAND($wParam, 0x0000FFFF)
+	Local $hCtrl = $lParam
+
+	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWind=" & $hWind & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $frmBot=" & $frmBot & @CRLF)
+	;GUIControl_WM_NOTIFY: $hWind=0x0055A084,$iMsg=78,$wParam=0x00000008,$lParam=0x0108BB30
+	; WM_SYSCOMAND msdn: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646360(v=vs.85).aspx
+
+	Local $bCheckEmbeddedShield = True
+
+	Switch $nID
+		Case $tabMain
+			; Handle RichText controls
+			tabMain()
+		Case $hGUI_VILLAGE_TAB
+			tabVillage()
+		Case $hGUI_ATTACK_TAB
+			tabAttack()
+		Case $hGUI_SEARCH_TAB
+			tabSEARCH()
+		Case $hGUI_DEADBASE_TAB
+			tabDeadbase()
+		Case $hGUI_ACTIVEBASE_TAB
+			tabActivebase()
+		Case $hGUI_THSNIPE_TAB
+			tabTHSnipe()
+		Case $hGUI_BOT_TAB
+			tabBot()
+		Case Else
+			$bCheckEmbeddedShield = False
+	EndSwitch
+
+	If $bCheckEmbeddedShield Then
+		; check shield status
+		If $hWind <> $frmBotEmbeddedShield Then
+			If AndroidShieldHasFocus() = True Then
+				; update shield with inactive state
+				AndroidShield("GUIControl_WM_NOTIFY", Default, False, 150, False)
+			EndIf
+		EndIf
+	EndIf
+
+	Return $GUI_RUNDEFMSG
+EndFunc   ;==>GUIControl_WM_NOTIFY
+
+Func GUIEvents()
+	;@GUI_WinHandle
+	Local $GUI_CtrlId = @GUI_CtrlId
+	If $FrmBotMinimized And $GUI_CtrlId = $GUI_EVENT_MINIMIZE Then
+		; restore
+		If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_MINIMIZE changed to $GUI_EVENT_RESTORE", Default, True)
+		$GUI_CtrlId = $GUI_EVENT_RESTORE
+	EndIf
+    Switch $GUI_CtrlId
+		Case $GUI_EVENT_CLOSE
+			If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_CLOSE", Default, True)
+			BotClose()
+
+        Case $GUI_EVENT_MINIMIZE
+			If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_MINIMIZE", Default, True)
+			BotMinimize("GUIEvents")
+			;Return 0
+
+        Case $GUI_EVENT_RESTORE
+			If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_RESTORE", Default, True)
+			BotRestore("GUIEvents")
+
+		Case Else
+			If $debugWindowMessages Then SetDebugLog("$GUI_EVENT: " & @GUI_CtrlId, Default, True)
+    EndSwitch
+EndFunc   ;==>SpecialEvents
 
 ; Open URL in default browser using ShellExecute
 ; URL is retrieved from label text or an existing ToolTip Control
@@ -268,12 +486,17 @@ Func OpenURL_Label($LabelCtrlID)
 	EndIf
 EndFunc   ;==>OpenURL_Label
 
-Func BotClose()
+Func BotClose($SaveConfig = Default, $bExit = True)
+   If $SaveConfig = Default Then $SaveConfig = $iBotLaunchTime > 0
    ResumeAndroid()
    SetLog("Closing " & $sBotTitle & " ...")
+   AndroidEmbed(False) ; detach Android Window
+   AndroidShieldDestroy() ; destroy Shield Hooks
    If $RunState = True Then AndroidBotStopEvent() ; signal android that bot is now stoppting
-   setupProfile()
-   SaveConfig()
+   If $SaveConfig = True Then
+      setupProfile()
+      SaveConfig()
+   EndIf
    AndroidAdbTerminateShellInstance()
    ; Close Mutexes
    If $hMutex_BotTitle <> 0 Then _WinAPI_CloseHandle($hMutex_BotTitle)
@@ -288,9 +511,97 @@ Func BotClose()
    _GUICtrlRichEdit_Destroy($txtLog)
    _GUICtrlRichEdit_Destroy($txtAtkLog)
    DllCall("comctl32.dll", "int", "ImageList_Destroy", "hwnd", $hImageList)
+   If $HWnD <> 0 Then ControlFocus($HWnD, "", $HWnD) ; show bot in taskbar again
    GUIDelete($frmBot)
-   Exit
+   If $bExit = True Then Exit
+EndFunc   ;==>BotClose
+
+Func BotMinimize($sCaller, $iForceUpdatingWhenMinimized = False)
+	Local $hMutex = AcquireMutex("MinimizeRestore")
+	SetDebugLog("Minimize bot window, caller: " & $sCaller, Default, True)
+	$FrmBotMinimized = True
+	If $iUpdatingWhenMinimized = 1 Or $iForceUpdatingWhenMinimized = True Then
+		If $iHideWhenMinimized = 1 Then
+			WinMove2($frmBot, "", -32000, -32000, -1, -1, 0, $SWP_HIDEWINDOW, False)
+			_WinAPI_SetWindowLong($frmBot, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE), $WS_EX_TOOLWINDOW))
+		EndIf
+		If _WinAPI_IsIconic($frmBot) Then WinSetState($frmBot, "", @SW_RESTORE)
+		WinMove2($frmBot, "", -32000, -32000, -1, -1, 0, $SWP_SHOWWINDOW, False)
+	Else
+		If $iHideWhenMinimized = 1 Then
+			WinMove2($frmBot, "", -1, -1, -1, -1, 0, $SWP_HIDEWINDOW, False)
+			_WinAPI_SetWindowLong($frmBot, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE), $WS_EX_TOOLWINDOW))
+		EndIf
+		WinSetState($frmBot, "", @SW_MINIMIZE)
+	EndIf
+	ReleaseMutex($hMutex)
+EndFunc   ;==BotMinimize
+
+Func BotRestore($sCaller)
+	Local $hMutex = AcquireMutex("MinimizeRestore")
+	$FrmBotMinimized = False
+	Local $botPosX = ($AndroidEmbedded = False ? $frmBotPosX : $frmBotDockedPosX)
+	Local $botPosY = ($AndroidEmbedded = False ? $frmBotPosY : $frmBotDockedPosY)
+	SetDebugLog("Restore bot window to " & $botPosX & ", " & $botPosY & ", caller: " & $sCaller, Default, True)
+	Local $iExStyle = _WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE)
+	If BitAND($iExStyle, $WS_EX_TOOLWINDOW) Then
+		WinMove2($frmBot, "", -1, -1, -1, -1, 0, $SWP_HIDEWINDOW, False)
+		_WinAPI_SetWindowLong($frmBot, $GWL_EXSTYLE, BitAND($iExStyle, BitNOT($WS_EX_TOOLWINDOW)))
+	EndIf
+	If _WinAPI_IsIconic($frmBot) Then WinSetState($frmBot, "", @SW_RESTORE)
+	WinMove2($frmBot, "", $botPosX, $botPosY, -1, -1, $HWND_TOP, $SWP_SHOWWINDOW)
+	_WinAPI_SetActiveWindow($frmBot)
+	_WinAPI_SetFocus($frmBot)
+	ReleaseMutex($hMutex)
+EndFunc   ;==BotRestore
+
+; Ensure bot window state (fix minimize not working sometimes)
+Func BotWindowCheck()
+	If $FrmBotMinimized Then
+		Local $aPos = WinGetPos($frmBot)
+		If IsArray($aPos) And $aPos[0] > -30000 Or $aPos[0] > -30000 Then
+			BotMinimize("BotWindowCheck")
+			Return True
+		EndIf
+	EndIf
+	Return False
 EndFunc
+
+;---------------------------------------------------
+; Tray Item Functions
+;---------------------------------------------------
+Func tiShow()
+	BotRestore("tiShow")
+EndFunc   ;==>tiShow
+
+Func tiHide()
+	$iHideWhenMinimized = ($iHideWhenMinimized = 1 ? 0 : 1)
+	TrayItemSetState($tiHide, ($iHideWhenMinimized = 1 ? $TRAY_CHECKED : $TRAY_UNCHECKED))
+	GUICtrlSetState($chkHideWhenMinimized, ($iHideWhenMinimized = 1 ? $GUI_CHECKED : $GUI_UNCHECKED))
+	If $FrmBotMinimized = True Then
+		If $iHideWhenMinimized = 0 Then
+			BotRestore("tiHide")
+		Else
+			BotMinimize("tiHide")
+		EndIf
+	EndIf
+EndFunc   ;==>tiHide
+
+Func tiAbout()
+	Local $sMsg = "Clash of Clans Bot" & @CRLF & @CRLF & _
+		"Version: " & $sBotVersion & @CRLF & _
+		"Released under the GNU GPLv3 license." & @CRLF & _
+		"Visit www.MyBot.run"
+	MsgBox(64 + $MB_APPLMODAL + $MB_TOPMOST, $sBotTitle, $sMsg, 0, $frmBot)
+EndFunc   ;==>tiAbout
+
+Func tiDonate()
+	ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
+EndFunc   ;==>tiDonate
+
+Func tiExit()
+	BotClose()
+EndFunc   ;==>tiExit
 
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: SetRedrawBotWindow
@@ -311,6 +622,8 @@ EndFunc
 ;                  SetRedrawBotWindow($bWasRedraw)
 ; ===============================================================================================================================
 Func SetRedrawBotWindow($bEnableRedraw, $bCheckRedrawBotWindow = True, $bForceRedraw = False, $RedrawControlIDs = Default)
+	If $RedrawBotWindowMode = 0 Then Return False ; disabled
+	If $RedrawBotWindowMode = 1 Then $RedrawControlIDs = Default ; always redraw entire bot window
 	; speed up GUI changes by disabling window redraw
 	Local $bWasRedraw = $bRedrawBotWindow[0]
 	If $bRedrawBotWindow[0] = $bEnableRedraw Then
@@ -319,7 +632,7 @@ Func SetRedrawBotWindow($bEnableRedraw, $bCheckRedrawBotWindow = True, $bForceRe
 	EndIf
 	; enable logging to debug GUI redraw
 	;SetDebugLog(($bEnableRedraw ? "Enable" : "Disable") & " MyBot Window Redraw")
-	_SendMessage($frmBot, $WM_SETREDRAW, $bEnableRedraw, 0)
+	_SendMessage($frmBotEx, $WM_SETREDRAW, $bEnableRedraw, 0)
 	$bRedrawBotWindow[0] = $bEnableRedraw
 	If $bEnableRedraw Then
 		If $bCheckRedrawBotWindow Then
@@ -338,6 +651,8 @@ Func SetRedrawBotWindowControls($bEnableRedraw, $RedrawControlIDs)
 EndFunc   ;==>SetRedrawBotWindowControls
 
 Func CheckRedrawBotWindow($bForceRedraw = False, $RedrawControlIDs = Default)
+	If $RedrawBotWindowMode = 0 Then Return False ; disabled
+	If $RedrawBotWindowMode = 1 Then $RedrawControlIDs = Default ; always redraw entire bot window
 	; check if bot window redraw is enabled and required
 	If Not $bRedrawBotWindow[0] Then Return False
 	If $bRedrawBotWindow[1] Or $bForceRedraw Then
@@ -348,25 +663,27 @@ Func CheckRedrawBotWindow($bForceRedraw = False, $RedrawControlIDs = Default)
 		If $RedrawControlIDs = Default Then
 			; redraw entire window
 			SetDebugLog("Redraw MyBot Window" & ($bForceRedraw ? " (forced)" : "")) ; enable logging to debug GUI redraw
-			_WinAPI_RedrawWindow($frmBot, 0, 0, $RDW_INVALIDATE)
+			_WinAPI_RedrawWindow($frmBotEx, 0, 0, $RDW_INVALIDATE)
 		Else
 			; redraw only specified control(s)
 			If IsArray($RedrawControlIDs) Then
 				SetDebugLog("Redraw MyBot ControlIds" & ($bForceRedraw ? " (forced)" : "") & ": " & _ArrayToString($RedrawControlIDs, ", "))
 				Local $c
 				For $c in $RedrawControlIDs
-					If ControlRedraw($frmBot, $c) = 0 Then
-						_WinAPI_RedrawWindow($frmBot, 0, 0, $RDW_INVALIDATE)
+					If ControlRedraw($frmBotEx, $c) = 0 Then
+						_WinAPI_RedrawWindow($frmBotEx, 0, 0, $RDW_INVALIDATE)
 						ExitLoop
 					EndIf
 				Next
 			Else
 				SetDebugLog("Redraw MyBot ControlId" & ($bForceRedraw ? " (forced)" : "") & ": " & $RedrawControlIDs)
-				If ControlRedraw($frmBot, $RedrawControlIDs) = 0 Then
-					_WinAPI_RedrawWindow($frmBot, 0, 0, $RDW_INVALIDATE)
+				If ControlRedraw($frmBotEx, $RedrawControlIDs) = 0 Then
+					_WinAPI_RedrawWindow($frmBotEx, 0, 0, $RDW_INVALIDATE)
 				EndIf
 			EndIf
 		EndIf
+		_WinAPI_UpdateWindow($frmBotEx)
+		; check if android need redraw as well
 		Return True
 	Else
 		Return CheckRedrawControls()
@@ -374,8 +691,9 @@ Func CheckRedrawBotWindow($bForceRedraw = False, $RedrawControlIDs = Default)
 	Return False
 EndFunc   ;==>CheckRedrawBotWindow
 
-Func CheckRedrawControls() ; ... that require additional redraw is executed like restore from minimized state
-	If Not $bRedrawBotWindow[2] Then Return False
+Func CheckRedrawControls($ForceCheck = False) ; ... that require additional redraw is executed like restore from minimized state
+	If $RedrawBotWindowMode = 0 Then Return False ; disabled
+	If Not $bRedrawBotWindow[2] And Not $ForceCheck Then Return False
 	If GUICtrlRead($tabMain, 1) = $tabGeneral Then
 		Local $a = [$txtLog, $txtAtkLog]
 		Return CheckRedrawBotWindow(True, $a)
@@ -384,20 +702,42 @@ Func CheckRedrawControls() ; ... that require additional redraw is executed like
 	Return False
 EndFunc   ;==>CheckRedrawControls
 
+; Just redraw the bot window with using any dedicated global variables... Use it only in special cases!
+Func RedrawBotWindowNow()
+	_WinAPI_RedrawWindow($frmBot, 0, 0, $RDW_INVALIDATE)
+	_WinAPI_UpdateWindow($frmBot)
+EndFunc   ;==>RedrawBotWindowNow
+
 ; Redraw only specified control
-Func ControlRedraw($hWnd, $ConrolId)
-	Local $a = ControlGetPos($hWnd, "", $ConrolId)
+Func ControlRedraw($hWin, $ConrolId)
+	Local $a = ControlGetPos($hWin, "", $ConrolId)
 	If IsArray($a) = 0 Then
 		SetDebugLog("ControlRedraw: Invalid ControlId: " & $ConrolId)
 		Return 0
 	EndIf
+	SetDebugLog("Control ID " & $ConrolId & " Pos: " & $a[0] & ", " & $a[1] & ", " & $a[2] & ", " & $a[3], Default, True)
+	Local $left = $a[0]
+	Local $top = $a[1]
+	Local $width = $a[2]
+	Local $height = $a[3]
+	Local $hCtrl = (IsHWnd($ConrolId) ? $ConrolId : GUICtrlGetHandle($ConrolId))
+	Local $hWinParent = _WinAPI_GetParent($hCtrl)
+	If $hWinParent <> $frmBot Then
+		; compensate parent
+		$a = ControlGetPos($hWin, "", $hWinParent)
+		If IsArray($a) Then
+			;SetDebugLog("Control ID " & $ConrolId & " Parent (" & $hWinParent & ") Pos: " & $a[0] & ", " & $a[1] & ", " & $a[2] & ", " & $a[3], Default, True)
+			$left -= $a[0]
+			$top -= $a[1]
+		EndIf
+	EndIf
 	Local $tRECT = DllStructCreate($tagRECT)
 	Local $groupBorder = 0
-	DllStructSetData($tRECT, "Left", $a[0] + $groupBorder)
-	DllStructSetData($tRECT, "Top", $a[1] + $groupBorder)
-	DllStructSetData($tRECT, "Right", $a[0] + $a[2] - $groupBorder)
-	DllStructSetData($tRECT, "Bottom", $a[1] + $a[3] - $groupBorder)
-	_WinAPI_RedrawWindow($frmBot, $tRECT, 0, $RDW_INVALIDATE)
+	DllStructSetData($tRECT, "Left", $left + $groupBorder)
+	DllStructSetData($tRECT, "Top", $top + $groupBorder)
+	DllStructSetData($tRECT, "Right", $left + $width - $groupBorder)
+	DllStructSetData($tRECT, "Bottom", $top + $height - $groupBorder)
+	_WinAPI_RedrawWindow($frmBotEx, $tRECT, 0, $RDW_INVALIDATE)
 	Return 1
 EndFunc   ;==>ControlRedraw
 
@@ -597,26 +937,14 @@ EndFunc   ;==>tabSEARCH
 Func tabBot()
 	$tabidx = GUICtrlRead($hGUI_BOT_TAB)
 		Select
+			Case $tabidx = 0 ; Options tab
+				GUISetState(@SW_HIDE, $hGUI_STATS)
+			Case $tabidx = 1 ; Options Debug
+				GUISetState(@SW_HIDE, $hGUI_STATS)
 			Case $tabidx = 2 ; Strategies tab
 				GUISetState(@SW_HIDE, $hGUI_STATS)
-				GUISetState(@SW_SHOWNOACTIVATE, $hGUI_Profiles)
-				GUISetState(@SW_HIDE, $hGUI_BotOptions)
-				GUISetState(@SW_HIDE, $hGUI_BotDebug)
 			Case $tabidx = 3 ; Stats tab
-				GUISetState(@SW_HIDE, $hGUI_Profiles)
 				GUISetState(@SW_SHOWNOACTIVATE, $hGUI_STATS)
-				GUISetState(@SW_HIDE, $hGUI_BotOptions)
-				GUISetState(@SW_HIDE, $hGUI_BotDebug)
-			Case $tabidx = 0 ; Options tab
-				GUISetState(@SW_HIDE, $hGUI_Profiles)
-				GUISetState(@SW_HIDE, $hGUI_STATS)
-				GUISetState(@SW_SHOWNOACTIVATE, $hGUI_BotOptions)
-				GUISetState(@SW_HIDE, $hGUI_BotDebug)
-			Case $tabidx = 1 ; Options Debug
-				GUISetState(@SW_HIDE, $hGUI_Profiles)
-				GUISetState(@SW_HIDE, $hGUI_STATS)
-				GUISetState(@SW_HIDE, $hGUI_BotOptions)
-				GUISetState(@SW_SHOWNOACTIVATE, $hGUI_BotDebug)
 		EndSelect
 EndFunc   ;==>tabBot
 
@@ -674,7 +1002,7 @@ EndFunc   ;==>tabTHSnipe
 
 Func dbCheck()
 	If $iBotLaunchTime > 0 Then _GUICtrlTab_SetCurFocus($hGUI_SEARCH_TAB, 0) ; activate deadbase tab
-	If BitAND(GUICtrlRead($chkDBActivateSearches), GUICtrlRead($chkDBActivateTropies), GUICtrlRead($chkDBActivateCamps)) = $GUI_UNCHECKED Then
+	If BitAND(GUICtrlRead($chkDBActivateSearches), GUICtrlRead($chkDBActivateTropies), GUICtrlRead($chkDBActivateCamps), GUICtrlRead($chkDBSpellsWait)) = $GUI_UNCHECKED Then
 		GUICtrlSetState($chkDBActivateSearches, $GUI_CHECKED)
 		chkDBActivateSearches() ; this includes a call to dbCheckall() -> tabSEARCH()
 	Else
@@ -683,7 +1011,7 @@ Func dbCheck()
 EndFunc
 
 Func dbCheckAll()
-	If BitAND(GUICtrlRead($chkDBActivateSearches), GUICtrlRead($chkDBActivateTropies), GUICtrlRead($chkDBActivateCamps)) = $GUI_UNCHECKED Then
+		If BitAND(GUICtrlRead($chkDBActivateSearches), GUICtrlRead($chkDBActivateTropies), GUICtrlRead($chkDBActivateCamps), GUICtrlRead($chkDBSpellsWait)) = $GUI_UNCHECKED Then
 		GUICtrlSetState($DBcheck, $GUI_UNCHECKED)
 	Else
 		GUICtrlSetState($DBcheck, $GUI_CHECKED)
@@ -693,7 +1021,7 @@ EndFunc
 
 Func abCheck()
 	If $iBotLaunchTime > 0 Then _GUICtrlTab_SetCurFocus($hGUI_SEARCH_TAB, 1)
-	If BitAND(GUICtrlRead($chkABActivateSearches), GUICtrlRead($chkABActivateTropies), GUICtrlRead($chkABActivateCamps)) = $GUI_UNCHECKED Then
+	If BitAND(GUICtrlRead($chkABActivateSearches), GUICtrlRead($chkABActivateTropies), GUICtrlRead($chkABActivateCamps), GUICtrlRead($chkABSpellsWait)) = $GUI_UNCHECKED Then
 		GUICtrlSetState($chkABActivateSearches, $GUI_CHECKED)
 		chkABActivateSearches() ; this includes a call to abCheckall() -> tabSEARCH()
 	Else
@@ -702,7 +1030,7 @@ Func abCheck()
 EndFunc
 
 Func abCheckAll()
-	If BitAND(GUICtrlRead($chkABActivateSearches), GUICtrlRead($chkABActivateTropies), GUICtrlRead($chkABActivateCamps)) = $GUI_UNCHECKED Then
+	If BitAND(GUICtrlRead($chkABActivateSearches), GUICtrlRead($chkABActivateTropies), GUICtrlRead($chkABActivateCamps), GUICtrlRead($chkABSpellsWait)) = $GUI_UNCHECKED Then
 		GUICtrlSetState($ABcheck, $GUI_UNCHECKED)
 	Else
 		GUICtrlSetState($ABcheck, $GUI_CHECKED)
@@ -861,7 +1189,7 @@ Func Bind_ImageList($nCtrl)
 
 		Case $hGUI_ARMY_TAB
 			; the icons for army tab
-			Local $aIconIndex[3] = [$eIcnBarbarian, $eIcnLightSpell, $eIcnGem]
+			Local $aIconIndex[4] = [$eIcnBarbarian, $eIcnLightSpell, $eIcnGem, $eIcnOptions]
 
 		Case $hGUI_DONATE_TAB
 			 ; the icons for donate tab
@@ -980,6 +1308,47 @@ Func _GUICtrlListView_GetHeightToFitRows( $hListView, $iRows )
   Return ( $aItemRect[3] - $aItemRect[1] ) * $iRows + $iHdrHeight + 8
 EndFunc
 
+Func EnableControls($hWin, $Enable, ByRef $avArr, $bGUIControl_Disabled = True, $i = 0)
+	Local $initalCall = $i = 0
+    If UBound($avArr, 0) <> 2 Then
+        Local $avTmp[1][2] = [[0]]
+        $avArr = $avTmp
+    EndIf
+	If $initalCall And $bGUIControl_Disabled Then
+		_SendMessage($hWin, $WM_SETREDRAW, False, 0)
+		Local $GUIControl_Disabled_ = $GUIControl_Disabled
+		$GUIControl_Disabled = True
+	EndIf
+	Local $hChild = _WinAPI_GetWindow($hWin, $GW_CHILD)
+    While $hChild
+		$i += 1
+        If $avArr[0][0]+1 > UBound($avArr, 1)-1 Then
+			ReDim $avArr[$avArr[0][0]+2][2]
+			$avArr[$avArr[0][0]+1][0] = $hChild
+			$avArr[$avArr[0][0]+1][1] = BitAND(WinGetState($hChild), 4) > 0
+		EndIf
+		If $Enable = Default Then
+			WinSetState($hChild, "", ($avArr[$i][1] = True ? @SW_ENABLE : @SW_DISABLE))
+		Else
+			WinSetState($hChild, "", ($Enable ? @SW_ENABLE : @SW_DISABLE))
+		EndIf
+        $avArr[0][0] += 1
+        $i = EnableControls($hChild, $Enable, $avArr, $bGUIControl_Disabled, $i)
+        $hChild = _WinAPI_GetWindow($hChild, $GW_HWNDNEXT)
+    WEnd
+
+	If $initalCall And $Enable = Default Then $avArr = 0
+
+	If $initalCall And $bGUIControl_Disabled Then
+		_SendMessage($hWin, $WM_SETREDRAW, True, 0)
+		_WinAPI_RedrawWindow($hWin, 0, 0, $RDW_INVALIDATE)
+		$GUIControl_Disabled = $GUIControl_Disabled_
+	EndIf
+
+	Return $i
+EndFunc
+;---------------------------------------------------
+
 ;~ Show Default Tab
 tabMain()
 
@@ -999,10 +1368,19 @@ If $devmode = 1 Then
 	GUICtrlSetState($chkdebugTrain, $GUI_SHOW + $GUI_ENABLE)
 	GUICtrlSetState($chkdebugOCRDonate, $GUI_SHOW + $GUI_ENABLE)
 EndIf
-GUIRegisterMsg($WM_COMMAND, "GUIControl")
-GUIRegisterMsg($WM_SYSCOMMAND, "GUIControl")
-GUIRegisterMsg($WM_NOTIFY, "GUIControl")
-;GUISetOnEvent($GUI_EVENT_RESTORE, "tabMain")
+GUIRegisterMsg($WM_NCACTIVATE, "GUIControl_WM_NCACTIVATE")
+GUIRegisterMsg($WM_SETFOCUS, "GUIControl_WM_FOCUS")
+GUIRegisterMsg($WM_KILLFOCUS, "GUIControl_WM_FOCUS")
+GUIRegisterMsg($WM_MOVE, "GUIControl_WM_MOVE")
+GUIRegisterMsg($WM_COMMAND, "GUIControl_WM_COMMAND")
+;GUIRegisterMsg($WM_SYSCOMMAND, "GUIControl_WM_SYSCOMMAND")
+GUISetOnEvent($GUI_EVENT_CLOSE, "GUIEvents", $frmBot)
+GUIRegisterMsg($WM_NOTIFY, "GUIControl_WM_NOTIFY")
+For $i = $WM_MOUSEFIRST To $WM_MOUSEHWHEEL
+	GUIRegisterMsg($i, "GUIControl_WM_MOUSE")
+Next
+GUISetOnEvent($GUI_EVENT_MINIMIZE, "GUIEvents", $frmBot)
+GUISetOnEvent($GUI_EVENT_RESTORE, "GUIEvents", $frmBot)
 
 ;Moved to applyConfig
 ;chkDBActivateSearches()

@@ -149,9 +149,9 @@ Func getMaxUISetting($settingArray, $defenseType)
 
 	If IsArray($settingArray) Then
 		; Check if dead base search is active and dead base weak base detection is active, use setting if active, 0 if not active
-		$maxDB = (($iCmbSearchMode = 0 Or $iCmbSearchMode = 2) And $iChkWeakBase[$DB] = 1) ? $settingArray[$DB] : 0
+		$maxDB = (($iCmbSearchMode = 0 Or $iCmbSearchMode = 2) And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
 		; Check if live base search is active and live base weak base detection is active, use setting if active, 0 if not active
-		$maxLB = (($iCmbSearchMode = 1 Or $iCmbSearchMode = 2) And $iChkWeakBase[$LB] = 1) ? $settingArray[$LB] : 0
+		$maxLB = (($iCmbSearchMode = 1 Or $iCmbSearchMode = 2) And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
 
 		; Get the value that is highest
 		$result = _Max(Number($maxDB), Number($maxLB))
@@ -167,9 +167,9 @@ Func getMinUISetting($settingArray, $defenseType)
 
 	If IsArray($settingArray) Then
 		; Check if dead base search is active and dead base weak base detection is active, use setting if active, 0 if not active
-		$minDB = (($iCmbSearchMode = 0 Or $iCmbSearchMode = 2) And $iChkWeakBase[$DB] = 1) ? $settingArray[$DB] : 0
+		$minDB = (($iCmbSearchMode = 0 Or $iCmbSearchMode = 2) And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
 		; Check if live base search is active and live base weak base detection is active, use setting if active, 0 if not active
-		$minLB = (($iCmbSearchMode = 1 Or $iCmbSearchMode = 2) And $iChkWeakBase[$LB] = 1) ? $settingArray[$LB] : 0
+		$minLB = (($iCmbSearchMode = 1 Or $iCmbSearchMode = 2) And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
 
 		; Get the value that is highest
 		$result = _Min(Number($minDB), Number($minLB))
@@ -187,6 +187,10 @@ Func getIsWeak($aResults, $searchType)
 	   And $aResults[$eWeakMortar][2] <= Number($iCmbWeakMortar[$searchType])
 EndFunc   ;==>getIsWeak
 
+Func IsWeakBaseActive($type)
+	Return $iChkMaxEagle[$type] Or $iChkMaxInferno[$type] Or $iChkMaxXBow[$type] Or $iChkMaxWizTower[$type] Or $iChkMaxMortar[$type]
+EndFunc   ;==>IsWeakBaseActive
+
 Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $defenseType, ByRef $performSearch, $guiEnabledArray)
 	; Setup default return coords of 0,0
 	Local $defaultCoords[1][2] = [[0, 0]]
@@ -203,9 +207,10 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $d
 
 	; Only do the search if its required
 	If $performSearch Then
+		; Start the timer for individual defense searches
+		Local $defenseTimer = TimerInit()
+
 		If $guiCheckDefense And $maxSearchLevel >= $minSearchLevel Then
-			; Start the timer for individual defense searches
-			Local $defenseTimer = TimerInit()
 			; Check the defense.
 			$aDefenseResult = returnHighestLevelSingleMatch($directory, $aResult[0][0], $statChkWeakBase, $minSearchLevel, $maxSearchLevel)
 			; Store the redlines retrieved for use in the later searches, if you don't currently have redlines saved.
@@ -239,11 +244,11 @@ Func weakBaseCheck($townHallLevel = 11, $redlines = "")
 	Local $hWeakTimer = TimerInit()
 
 	; Check Eagle Artillery first as there is less images to process, mortars may not be needed.
-	$aEagleResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\Eagle", $townHallLevel, $iCmbWeakEagle, $eWeakEagle, $performSearch, $iChkChkEagle)
-	$aInfernoResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\Infernos", $townHallLevel, $iCmbWeakInferno, $eWeakInferno, $performSearch, $iChkChkInferno)
-	$aXBowResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\Xbow", $townHallLevel, $iCmbWeakXBow, $eWeakXBow, $performSearch, $iChkChkXBow)
-	$aWizardTowerResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\WTower", $townHallLevel, $iCmbWeakWizTower, $eWeakWizard, $performSearch, $iChkChkWizTower)
-	$aMortarResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\Mortars", $townHallLevel, $iCmbWeakMortar, $eWeakMortar, $performSearch, $iChkChkMortar)
+	$aEagleResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\Eagle", $townHallLevel, $iCmbWeakEagle, $eWeakEagle, $performSearch, $iChkMaxEagle)
+	$aInfernoResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\Infernos", $townHallLevel, $iCmbWeakInferno, $eWeakInferno, $performSearch, $iChkMaxInferno)
+	$aXBowResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\Xbow", $townHallLevel, $iCmbWeakXBow, $eWeakXBow, $performSearch, $iChkMaxXBow)
+	$aWizardTowerResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\WTower", $townHallLevel, $iCmbWeakWizTower, $eWeakWizard, $performSearch, $iChkMaxWizTower)
+	$aMortarResults = defenseSearch($aResult, @ScriptDir & "\images\WeakBase\Mortars", $townHallLevel, $iCmbWeakMortar, $eWeakMortar, $performSearch, $iChkMaxMortar)
 
 	; Fill the array that will be returned with the various results, only store the results if its a valid array
 	For $i = 1 To UBound($aResult) - 1

@@ -17,15 +17,14 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	If $DebugSetLog = 1 Then Setlog("ReturnHome function... (from matchmode=" & $iMatchMode & " - " & $sModeText[$iMatchMode] & ")", $COLOR_PURPLE)
 	Local $counter = 0
 	Local $hBitmap_Scaled
-	Local $i
+	Local $i, $j
 
 	If $DisableOtherEBO And $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 And $DESideEB And ($dropQueen Or $dropKing) Then
 		SaveandDisableEBO()
 		SetLog("Disabling Normal End Battle Options", $COLOR_GREEN)
 	EndIf
+
 	If $GoldChangeCheck = True Then
-
-
 		If Not (IsReturnHomeBattlePage(True, False)) Then ; if already in return home battle page do not wait and try to activate Hero Ability and close battle
 			SetLog("Checking if the battle has finished", $COLOR_BLUE)
 			While GoldElixirChangeEBO()
@@ -48,7 +47,6 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		Else
 			If $DebugSetLog = 1 Then Setlog("Battle already over", $COLOR_PURPLE)
 		EndIf
-
 	EndIf
 
 	If $DisableOtherEBO And $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 And $DESideEB And ($dropQueen Or $dropKing) Then
@@ -64,35 +62,41 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	SetLog("Returning Home", $COLOR_BLUE)
 	If $RunState = False Then Return
 
-	checkAndroidTimeLag(False)
-
-	If Not (IsReturnHomeBattlePage(True, False)) Then
-		; ---- CLICK SURRENDER BUTTON ----
+	; ---- CLICK SURRENDER BUTTON ----
+	If Not (IsReturnHomeBattlePage(True, False)) Then  ; check if battle is already over
 		$i = 0 ; Reset Loop counter
-		While 1
-			If _CheckPixel($aSurrenderButton, $bCapturePixel) Then
-				If IsAttackPage() Then
+		While 1 ; dynamic wait loop for surrender button to appear
+			If _CheckPixel($aSurrenderButton, $bCapturePixel) Then  ;is surrender button is visible?
+				If IsAttackPage() Then  ; verify still on attack page, and battle has not ended magically before clicking
 					ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
-					If _Sleep($iDelayReturnHome2) Then Return ; short wait for confirm button to appear
-					If IsEndBattlePage(False) Then
-						ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
-						ExitLoop
-					EndIf
+					$j = 0
+					While 1 ; dynamic wait for Okay button
+						If IsEndBattlePage(False) Then
+							ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
+							ExitLoop 2
+						Else
+							$j += 1
+						EndIf
+						If $j > 10 Then ExitLoop ; if Okay button not found in 10*(200)ms or 2 seconds, then give up.
+						If _Sleep($iDelayReturnHome5) Then Return
+					WEnd
 				Else
 					$i += 1
 				EndIf
 			Else
 				$i += 1
 			EndIf
-			If $i > 5 Then ExitLoop ; if end battle or surrender button are not found in 5*(200+200)ms or 2 seconds, then give up.
+			If $i > 5 Then ExitLoop ; if end battle or surrender button are not found in 5*(200)ms + 10*(200)ms or 3 seconds, then give up.
 			If _Sleep($iDelayReturnHome5) Then Return
 		WEnd
 	Else
 		If $DebugSetLog = 1 Then Setlog("Battle already over.", $COLOR_PURPLE)
 	EndIf
-	If _Sleep($iDelayReturnHome2) Then Return ; short wait for return
+	If _Sleep($iDelayReturnHome2) Then Return ; short wait for return to main
 
 	TrayTip($sBotTitle, "", BitOR($TIP_ICONASTERISK, $TIP_NOSOUND)) ; clear village search match found message
+
+	checkAndroidTimeLag(False)
 
 	If $GoldChangeCheck = True Then
 		If IsAttackPage() Then

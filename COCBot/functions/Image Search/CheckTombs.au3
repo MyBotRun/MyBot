@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: False if regular farming is needed to refill storage
 ; Author ........: barracoda/KnowJack (2015)
-; Modified ......: sardo 2015-06 2015-08 , ProMac (04-2016)
+; Modified ......: sardo 2015-06 2015-08 , ProMac (04-2016), MonkeyHuner (06-2015)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -70,17 +70,12 @@ Func CleanYard()
 	If $ichkCleanYard = 0 And $ichkGemsBox = 0 Then Return
 	;Only clear GemBox
 
-
 	; Timer
 	Local $hObstaclesTimer = TimerInit()
 
-
 	; Get Builders available
-	$aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
-	If IsArray($aGetBuilders) Then
-		$iFreeBuilderCount = $aGetBuilders[0]
-		$TotalBuilders = $aGetBuilders[1]
-	EndIf
+	If getBuilderCount() = False Then Return  ; update builder data, return if problem
+	If _Sleep($iDelayRespond) Then Return
 
 	; Obstacles function to Parallel Search , will run all pictures inside the directory
 	Local $directory = @ScriptDir & "\images\Resources\Obstacles"
@@ -91,7 +86,6 @@ Func CleanYard()
 	Local $CleanYardXY
 	Local $maxReturnPoints = $iFreeBuilderCount
 
-	If $DebugSetLog = 1 Then SetLog("$iFreeBuilderCount :" & $iFreeBuilderCount, $COLOR_GREEN)
 	If $iFreeBuilderCount > 0 And $ichkCleanYard = 1 Then
 		Local $aResult = returnMultipleMatchesOwnVillage($directory, $maxReturnPoints)
 		If UBound($aResult) > 1 Then
@@ -109,11 +103,8 @@ Func CleanYard()
 							If _Sleep($iDelayCheckTombs2) Then Return
 							ClickP($aAway, 2, 300, "#0329") ;Click Away
 							If _Sleep($iDelayCheckTombs1) Then Return
-							$aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
-							If IsArray($aGetBuilders) Then
-								$iFreeBuilderCount = $aGetBuilders[0]
-								$TotalBuilders = $aGetBuilders[1]
-							EndIf
+							If getBuilderCount() = False Then Return  ; update builder data, return if problem
+							If _Sleep($iDelayRespond) Then Return
 							If $iFreeBuilderCount = 0 Then
 								Setlog("No More Builders available")
 								If _Sleep(2000) Then Return
@@ -167,11 +158,8 @@ Func CleanYard()
 						If _Sleep($iDelayCheckTombs2) Then Return
 						ClickP($aAway, 2, 300, "#0329") ;Click Away
 						If _Sleep($iDelayCheckTombs1) Then Return
-						$aGetBuilders = StringSplit(getBuilders($aBuildersDigits[0], $aBuildersDigits[1]), "#", $STR_NOCOUNT)
-						If IsArray($aGetBuilders) Then
-							$iFreeBuilderCount = $aGetBuilders[0]
-							$TotalBuilders = $aGetBuilders[1]
-						EndIf
+						If getBuilderCount() = False Then Return  ; update builder data, return if problem
+						If _Sleep($iDelayRespond) Then Return
 						If $iFreeBuilderCount = 0 Then
 							Setlog("No More Builders available")
 							If _Sleep(2000) Then Return

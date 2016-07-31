@@ -1,6 +1,43 @@
+* **V6.2**
+ * New *** Dock Mode *** for MEmu, BlueStacks, BlueStacks2 and Droid4X with Android Shield to protected Android from user mouse and keyboard input when bot is running
+   Use Dock/Undock button to dock & undock or Bot Options / Auto Align "DOCK: Android into Bot" for persistent docking (Offset can be blank so no re-positioning happens)
+   For Windows 8 and later shield layer marks Android screen when shield is active or inactive (with and without focus) using transparent overlay
+   Upgrades during locate are marked with yellow circle
+ * Add smart "idle" training time time management to reduce online time.
+   Can close CoC and/or emulator while training based on shield status, troops train time remaining, spells wait time, and/or hero wait time.  Bot checks Clan Castle remaining time till next donation and will reduce "close CoC" time to help keep CC full.  Bot GUI controls are enabled when app or emulator are closed.
+ * New and improved weak base search capabilties.
+   Uses new ImgLoc image detection DLL and image library. Adds X-Bow, Inferno, and Eagle defense options.
+ * Add new feature to allow users to create custom elixir and dark troop training order in GUI
+ * Add upgrade, train, donate, and deploy support for all new troops/spells: Bowler[bowl], Baby Dragon[babyd], Miner[mine], Clone Spell[cspell], & Skeleton Spell[skspell].
+ * Add ability to enable random click button locations (ArmyTrainButton, AttackButton, FindMatchButton, NextBtn)
+ * Add "Wait for Spells" search start filter (Based on MOD feature from @mikemikemikecoc)
+ * Add Close CoC or emulator to Attack Scheduler feature
+ * Add random time feature to disable attacks in Attack Scheduler feature
+ * Add Daily Attack controls for user to limit attacks per day (Part of new Attack Scheduler)
+ * Add estimated completion time data for all active upgrades in Upgrade Buildings tab
+ * Add splash screen during bot initialization by @mikemikemikecoc
+ * Updated barracks mode training and troop removal clicking to use existing GUI train click delay to allow users ability to reduce click speed for more human like troop training
+ * Improve pause/stop button response during CSV attacks
+ * Improve OCR on maintenance break time to include "hour" (or more) maintenance break messages
+ * Fix Android True Background Mode screencap when temp. disabled due to errors (caused bot to stop working after Android reboot)
+ * Fix pause behavior when stopped in pause state and started again
+ * Fix drop CC Schedule to operate properly due missing enable check box
+ * Fix Dead Base smart attack always enabled, now operates based on GUI setting
+ * Fix "Restart Every" search limit GUI setting not enabled properly at first start
+ * Fix Profile handling for fresh bot install and deleting existing profile
+ * Improve bot log not changing font of existing logged text
+ * Improve bot launch and close time
+ * Improve GUI refresh of divider resizing general log and attack log
+ * Improve Android Window arrangement by restoring last window position
+ * Improve restarting Android when process terminates (now also check when taking screen shot from Android)
+ * Improve error logs when Android instance not found as specified via command line arguments
+ * Improve drop trophy cycle time when using hero to reduce damage received. Changed return home delay to dynamic loop, reversed hero drop order to optimize for TH10/11, and reduce delays between drop & activation.
+ * Minor User Interface changes to Bot Options tab: Moved "Village Search Delay" to Search & Attack Options tab, Moved "Train Click Delay" to Train Army Options tab; as they seem better aligned with those tabs.
+ * New scroll to waters and zoom-out ADB scripts for slower computer
+
   * **V6.1.4**
  * Improve Freeze, Poison, and Haste spell training detection
- * Improved donaton detection images for Healer, Barbarian, Lava Hound, Wizard, Poison, Earthquake, Haste. 
+ * Improved donaton detection images for Healer, Barbarian, Lava Hound, Wizard, Poison, Earthquake, Haste.
  * Fix manual TH locate warning error creating confusion on proper button to choose
  * Fix variable not declared error in attack planner
  * Reduce (hopefully fixed) resource collection errors with new match images
@@ -10,6 +47,9 @@
  * Improve troop deploy click speed
  * Improve click speed for MEmu, Droid4X and Nox (adb.click.enabled now by default disabled (0) in config.ini, ensure mouse is not over Android Window!)
  * Improve Android Emulator launch by closing Windows WerFault AppCrash Window preventing launch of emulator
+ * Improve bot stop not changing window focus
+ * Fix Android infinite loop trying to start Android that cannot be launched
+ * Fix BlueStacks 2.3.x relaunch when started as "BlueStacks App Player"
  * Fix "full barracks" pixel check fail that created minor troop train problems
  * Updated French language translation by @Boju
  * Improve text tips on new "search start if" features to reduce confusion with existing features
@@ -19,9 +59,6 @@
  * Fix upgrade building feature to properly read upgrade time when used on heroes
  * Fix continuous Hero upgrade feature stopping hero upgrades when lab needed elixir but code thought it needed DE
  * Fix unreliable detection on "Another Device Connecting" error in BlueStacks.
- * Fix Android infinite loop trying to start Android that cannot be launched
- * Fix BlueStacks 2.3.x relaunch when started as "BlueStacks App Player"
- * Improve bot stop not changing window focus
  * Fix detection issues on shield or guard that caused errors in PBT management and Unbreakable mode
  * Improve manual TH detection process to allow user to reset bot when locating TH due upgrade
  * Fix dark elixir spell training issues caused by pixel check issue
@@ -31,7 +68,7 @@
  * Add Language Bahasa Indonesia (@TheRevenor)
  * Update German.ini file (@Lindwurm2k/@Cosote)
  * Improve rage spell detection in training overview window when using BS medium Gfx mode
- * Adjust some default bot values. Some to help behave less like a bot: added 20ms to training click delay, others added random village search delay 1-4 seconds.  
+ * Adjust some default bot values. Some to help behave less like a bot: added 20ms to training click delay, others added random village search delay 1-4 seconds.
 
 * **V6.1.2**
  * Add taiwan language translation by @flowclouds

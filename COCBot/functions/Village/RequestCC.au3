@@ -31,7 +31,11 @@ Func RequestCC()
 
 	;open army overview
 	If IsMainPage() Then
-		Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0334")
+		If $iUseRandomClick = 0 then
+			Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0334")
+		Else
+			ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
+		EndIF
 	EndIf
 	If _Sleep($iDelayRequestCC1) Then Return
 

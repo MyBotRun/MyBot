@@ -25,33 +25,33 @@ Local $x = 25, $y = 20
 			$txtTip = GetTranslated(607,3, -1)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetState(-1, $GUI_HIDE)
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 		$y +=15
 		$cmbScriptNameAB=GUICtrlCreateCombo("", $x , $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			$txtTip = GetTranslated(607,4, -1)
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "cmbScriptNameAB")
 		$picreloadScriptsAB = GUICtrlCreateIcon($pIconLib, $eIcnReload, $x + 192, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(607,5, -1)
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, 'UpdateComboScriptNameAB') ; Run this function when the secondary GUI [X] is clicked
 		$y +=25
 			$lblNotesScriptAB =  GUICtrlCreateLabel("", $x, $y + 5, 180, 118)
 			PopulateComboScriptsFilesAB() ; populate
 			$picreloadScriptsAB = GUICtrlCreateIcon($pIconLib, $eIcnEdit, $x + 192, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(607,6, -1)
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "EditScriptAB")
 		$y +=25
 			$picnewScriptsAB = GUICtrlCreateIcon($pIconLib, $eIcnAddcvs, $x + 192, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(607,7, -1)
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "NewScriptAB")
 		$y +=25
 			$picduplicateScriptsAB = GUICtrlCreateIcon($pIconLib, $eIcnCopy, $x + 192, $y + 2, 16, 16)
 			$txtTip =  GetTranslated(607,8, -1)
-			GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetOnEvent(-1, "DuplicateScriptAB")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 

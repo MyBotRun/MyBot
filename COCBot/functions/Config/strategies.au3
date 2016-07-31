@@ -14,29 +14,36 @@
 ; ===============================================================================================================================
 
 
-Func IniReadS(ByRef $variable, $PrimaryInputFile, $section, $key, $defaultvalue)
+Func IniReadS(ByRef $variable, $PrimaryInputFile, $section, $key, $defaultvalue, $valueType = Default)
 	;read from standard config ini file but, if variable $SecondaryInputFile <>"" (valorized by button read strategy), if exists
 	;section->key override values from ini files with values in $SecondaryInputFile
 	Local $defaultvalueTest = "?"
-	Local $ChoosedConfigFile
 	Local $readValue = IniRead($SecondaryInputFile, $section, $key, $defaultvalueTest)
-	If $readValue <> $defaultvalueTest Then
-		$ChoosedConfigFile = $SecondaryInputFile
-	Else
-		$ChoosedConfigFile = $PrimaryInputFile
+	If $readValue = $defaultvalueTest Then
+		$readValue = IniRead($PrimaryInputFile, $section, $key, $defaultvalue)
 	EndIf
-	$variable = IniRead($ChoosedConfigFile, $section, $key, $defaultvalue)
+	Switch $valueType
+		Case Default
+			; no conversion
+			$variable = $readValue
+		Case "Int"
+			; convert to Int
+			$variable = Int($readValue)
+		Case Else
+			; Unsupported type
+			$variable = $readValue
+	EndSwitch
 EndFunc   ;==>IniReadS
 
 
 Func IniWriteS($filename, $section, $key, $value)
 	;save in standard config files and also save settings in strategy ini file (save strategy button valorize variable $SecondaryOutputFile )
-	Local $s = StringLower($section)
+	Local $s = $section
+	Local $k = $key
 	IniWrite($filename, $section, $key, $value)
 	If $SecondaryOutputFile <> "" Then
-		If $s = "search" Or $s = "attack" Or $s = "troop" Or $s = "spells" Or $s = "milkingattack" Or $s = "endbattle" or $s = "collectors" Then
+		If $s = "search" Or $s = "attack" Or $s = "troop" Or $s = "spells" Or $s = "milkingattack" Or $s = "endbattle" or $s = "collectors" or ($s = "general" And $k = "version") Then
 			IniWrite($SecondaryOutputFile, $section, $key, $value)
-			;Setlog("write " &  $SecondaryOutputFile & " " &$section & $key & $value)
 		EndIf
 	EndIf
 EndFunc   ;==>IniWriteS

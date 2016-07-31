@@ -19,8 +19,8 @@ Global $sTxtGolems = GetTranslated(604,16, "Golems")
 Global $sTxtWitches = GetTranslated(604,17, "Witches")
 Global $sTxtLavaHounds = GetTranslated(604,18, "Lava Hounds")
 Global $sTxtBowlers = GetTranslated(604, 19, "Bowlers")
-Global $sTxtBDragons = GetTranslated(604,20, "Baby Dragon")
-Global $sTxtMiners = GetTranslated(604,21, "Miner")
+Global $sTxtBabyDragons = GetTranslated(604,20, "Baby Dragons")
+Global $sTxtMiners = GetTranslated(604,21, "Miners")
 
 Global $sTxtLiSpell = GetTranslated(605,1, "Lightning Spell")
 Global $sTxtHeSpell = GetTranslated(605,2, "Healing Spell")
@@ -35,6 +35,9 @@ Global $sTxtEarthquakeSpells = GetTranslated(605,10, "EarthQuake")
 Global $sTxtHasteSpells = GetTranslated(605,11, "Haste")
 Global $sTxtClSpell = GetTranslated(605,12, "Clone Spell")
 Global $sTxtSkSpell = GetTranslated(605,13, "Skeleton Spell")
+Global $sTxtSkeletonSpells = GetTranslated(605,14, "Skeleton")
+
+Global $sTxtElixirTroops =  $sTxtBarbarians & "|" & $sTxtArchers & "|" & $sTxtGiants & "|" & $sTxtGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtHealers &"|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtMiners
 
 ; Array to hold Laboratory Troop information [LocX of upper left corner of image, LocY of upper left corner of image, PageLocation, Troop "name", Icon # in DLL file]
 Global Const $aLabTroops[30][5] = [ _
@@ -49,18 +52,18 @@ Global Const $aLabTroops[30][5] = [ _
 		[443, 427 + $midOffsetY, 0, $sTxtHealers, $eIcnHealer], _
 		[550, 320 + $midOffsetY, 0, $sTxtDragons, $eIcnDragon], _
 		[550, 427 + $midOffsetY, 0, $sTxtPekkas, $eIcnPekka], _
-		[657, 320 + $midOffsetY, 0, $sTxtBDragons, $eIcnTroops], _  ; Need Baby Dragon Icon
-		[657, 427 + $midOffsetY, 0, $sTxtMiners, $eIcnTroops], _  	; Need Miner Icon
+		[657, 320 + $midOffsetY, 0, $sTxtBabyDragons, $eIcnBabyDragon], _
+		[657, 427 + $midOffsetY, 0, $sTxtMiners, $eIcnMiner], _
 		[433, 320 + $midOffsetY, 1, $sTxtLiSpell, $eIcnLightSpell], _
 		[433, 427 + $midOffsetY, 1, $sTxtHeSpell, $eIcnHealSpell], _
 		[540, 320 + $midOffsetY, 1, $sTxtRaSpell, $eIcnRageSpell], _
 		[540, 427 + $midOffsetY, 1, $sTxtJuSPell, $eIcnJumpSpell], _
 		[647, 320 + $midOffsetY, 1, $sTxtFrSpell, $eIcnFreezeSpell], _
-		[647, 427 + $midOffsetY, 1, $sTxtClSpell, $eIcnTroops], _  ; Need Clone Spell Icon
+		[647, 427 + $midOffsetY, 1, $sTxtClSpell, $eIcnCloneSpell], _
 		[109, 320 + $midOffsetY, 2, $sTxtPoSpell, $eIcnPoisonSpell], _
 		[109, 427 + $midOffsetY, 2, $sTxtEaSpell, $eIcnEarthQuakeSpell], _
 		[216, 320 + $midOffsetY, 2, $sTxtHaSpell, $eIcnHasteSpell], _
-		[216, 427 + $midOffsetY, 2, $sTxtSkSpell, $eIcnTroops], _  ; Need Skeleton Spell Icon
+		[216, 427 + $midOffsetY, 2, $sTxtSkSpell, $eIcnSkeletonSpell], _
 		[322, 320 + $midOffsetY, 2, $sTxtMinions, $eIcnMinion], _
 		[322, 427 + $midOffsetY, 2, $sTxtHogRiders, $eIcnHogRider], _
 		[429, 320 + $midOffsetY, 2, $sTxtValkyries, $eIcnValkyrie], _

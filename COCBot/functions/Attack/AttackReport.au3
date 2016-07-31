@@ -128,6 +128,37 @@ Func AttackReport()
 				$LeagueShort = $League[0][3]
 			EndIf
 		EndIf
+		;Display League in Stats ==>
+		GUICtrlSetData($lblLeague, "")
+		
+		If StringInStr($LeagueShort, "1") > 1 Then
+			GUICtrlSetData($lblLeague, "1")
+		ElseIf StringInStr($LeagueShort, "2") > 1 Then
+			GUICtrlSetData($lblLeague, "2")
+		ElseIf StringInStr($LeagueShort, "3") > 1 Then
+			GUICtrlSetData($lblLeague, "3")
+		EndIf
+		_GUI_Value_STATE("HIDE",$groupLeague)
+		If StringInStr($LeagueShort, "B") > 0 Then
+			GUICtrlSetState($BronzeLeague,$GUI_SHOW)
+		ElseIf StringInStr($LeagueShort, "S") > 0 Then
+			GUICtrlSetState($SilverLeague,$GUI_SHOW)
+		ElseIf StringInStr($LeagueShort, "G") > 0 Then
+			GUICtrlSetState($GoldLeague,$GUI_SHOW)
+		ElseIf StringInStr($LeagueShort, "c") > 0 Then
+			GUICtrlSetState($CrystalLeague,$GUI_SHOW)
+		ElseIf StringInStr($LeagueShort, "M") > 0 Then
+			GUICtrlSetState($MasterLeague,$GUI_SHOW)
+		ElseIf StringInStr($LeagueShort, "C") > 0 Then
+			GUICtrlSetState($ChampionLeague,$GUI_SHOW)
+		ElseIf StringInStr($LeagueShort, "T") > 0 Then
+			GUICtrlSetState($TitanLeague,$GUI_SHOW)
+		ElseIf StringInStr($LeagueShort, "LE") > 0 Then
+			GUICtrlSetState($LegendLeague,$GUI_SHOW)
+		Else
+			GUICtrlSetState($UnrankedLeague,$GUI_SHOW)
+		EndIf
+		;==> Display League in Stats
 	Else
 		$iGoldLastBonus = 0
 		$iElixirLastBonus = 0

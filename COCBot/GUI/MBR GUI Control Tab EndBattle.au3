@@ -98,7 +98,7 @@ Func chkTSMeetDE()
 		_GUICtrlEdit_SetReadOnly($txtTSMinDarkElixir, True)
 	EndIf
 EndFunc   ;==>chkTSMeetDE
-
+#CS
 Func chkTSTimeStopAtk()
 	If GUICtrlRead($chkTSTimeStopAtk) = $GUI_CHECKED Then
 		$ichkTimeStopAtk[$TS] = 1
@@ -131,7 +131,7 @@ Func chkTSTimeStopAtk2()
 
 	EndIf
 EndFunc   ;==>chkTSTimeStopAtk2
-
+#CE
 Func btnConfigureReplayShare()
 ;~ 	OpenGUIReplayShare()
 EndFunc   ;==>btnConfigureReplayShare
@@ -143,3 +143,15 @@ Func chkTakeLootSS()
 		GUICtrlSetState($chkScreenshotLootInfo, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkTakeLootSS
+
+;Apply to switch Attack Standard after THSnipe End ==>
+Func chkTSActivateCamps2()
+	If GUICtrlRead($chkTSActivateCamps2) = $GUI_CHECKED Then
+		GUICtrlSetState($lblTSArmyCamps2, $GUI_ENABLE)
+		GUICtrlSetState($txtTSArmyCamps2, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($lblTSArmyCamps2, $GUI_DISABLE)
+		GUICtrlSetState($txtTSArmyCamps2, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkTSActivateCamps2
+;==> Apply to switch Attack Standard after THSnipe End

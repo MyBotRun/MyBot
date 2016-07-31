@@ -87,12 +87,16 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 			If $ichkJumpSpell[$iMatchMode] = 0 Then $usespell = False
 		Case $eFSpell
 			If $ichkFreezeSpell[$iMatchMode] = 0 Then $usespell = False
+;		Case $eCSpell
+;			If $ichkCloneSpell[$iMatchMode] = 0 Then $usespell = False
 		Case $ePSpell
 			If $ichkPoisonSpell[$iMatchMode] = 0 Then $usespell = False
 		Case $eESpell
 			If $ichkEarthquakeSpell[$iMatchMode] = 0 Then $usespell = False
 		Case $eHaSpell
 			If $ichkHasteSpell[$iMatchMode] = 0 Then $usespell = False
+;		Case $eSkSpell
+;			If $ichkSkeletonSpell[$iMatchMode] = 0 Then $usespell = False
 	EndSwitch
 
 	If $troopPosition = -1 Or $usespell = False Then
@@ -145,7 +149,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 					EndIf
 
 					Switch Eval("e" & $troopName)
-						Case $eBarb To $eLava ; drop normal troops
+						Case $eBarb To $eBowl ; drop normal troops
 							If $debug = True Then
 								Setlog("AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else
@@ -175,7 +179,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 							Else
 								dropCC($pixel[0], $pixel[1], $CC)
 							EndIf
-						Case $eLSpell To $eHaSpell
+						Case $eLSpell To $eSkSpell
 							If $debug = True Then
 								Setlog("Drop Spell AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else

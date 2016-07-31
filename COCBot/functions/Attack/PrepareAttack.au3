@@ -245,7 +245,30 @@ Func IsSpecialTroopToBeUsed($pMatchMode, $pTroopType)
 					Case $MA
 						 If $ichkHasteSpell[$DB] = 1 Then Return True
 				EndSwitch
-
+#comments-start	; add new spells when ready
+				Case $eCSpell
+				Switch $pmatchMode
+					Case $DB
+						 If $ichkCloneSpell[$DB] = 1 Then Return True
+					Case $LB
+						 If $ichkCloneSpell[$LB] = 1 Then Return True
+					Case $TS
+						 If $ichkCloneSpell[$TS] = 1 Then Return True
+					Case $MA
+						 If $ichkCloneSpell[$DB] = 1 Then Return True
+				EndSwitch
+				Case  $eSkSpell
+				Switch $pmatchMode
+					Case $DB
+						 If $ichkSkeletonSpell[$DB] = 1 Then Return True
+					Case $LB
+						 If $ichkSkeletonSpell[$LB] = 1 Then Return True
+					Case $TS
+						 If $ichkSkeletonSpell[$TS] = 1 Then Return True
+					Case $MA
+						 If $ichkSkeletonSpell[$DB] = 1 Then Return True
+				EndSwitch
+#comments-end
 			Case Else
 				Return False
 		EndSwitch

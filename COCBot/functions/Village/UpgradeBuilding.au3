@@ -187,6 +187,7 @@ Func UpgradeBuilding()
 			$aUpgrades[$iz][7] = _DateAdd('n', Floor($iRemainingTimeMin), _NowCalc()) ; add the time required to NOW to finish the upgrade
 			If @error Then _logErrorDateAdd(@error)
 			SetLog("Upgrade #" & $iz + 1 & " " & $aUpgrades[$iz][4] & " Finishes @ " & $aUpgrades[$iz][7], $COLOR_GREEN)
+			GUICtrlSetData($txtUpgradeEndTime[$iz], $aUpgrades[$iz][7])
 		Else
 			Setlog("Non critical error processing upgrade time for " & "#" & $iz + 1 & ": " & $aUpgrades[$iz][4], $COLOR_FUCHSIA)
 		EndIf
@@ -389,5 +390,6 @@ Func SetlogUpgradeValues($i)
 	Setlog("$picUpgradeType= " & $ipicUpgradeStatus[$i], $COLOR_PURPLE) ; status image
 	Setlog("$txtUpgradeValue= " & $aUpgrades[$i][2], $COLOR_PURPLE) ; Upgrade value
 	Setlog("$txtUpgradeTime= " & $aUpgrades[$i][6], $COLOR_PURPLE) ; Upgrade time
+	Setlog("$txtUpgradeEndTime= " & $aUpgrades[$i][7], $COLOR_PURPLE) ; Upgrade End time
 	Setlog("$chkUpgrdeRepeat= " & $ichkUpgrdeRepeat, $COLOR_PURPLE) ; repeat box
 EndFunc   ;==>SetlogUpgradeValues

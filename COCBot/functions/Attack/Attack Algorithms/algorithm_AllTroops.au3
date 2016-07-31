@@ -44,9 +44,13 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			SetLog("King and/or Queen dropped, close attack.")
 		EndIf
 
-		;close battle
-		CloseBattle()
-		Return
+		;Apply to switch Attack Standard after THSnipe End  ==>
+		If CompareResources($DB) And $iAtkAlgorithm[$DB] = 0 And $ichkTSActivateCamps2 = 1 And Int($CurCamp / $TotalCamp * 100) >= Int($iEnableAfterArmyCamps2) then
+			$iMatchMode = $DB
+		Else
+			CloseBattle()
+			Return
+		EndIf
 	EndIf
 
 
@@ -84,13 +88,16 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	If $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 Then ; Customise DE side wave deployment here
 		Switch $icmbStandardAlgorithm[$iMatchMode]
 			Case 0
-				Local $listInfoDeploy[18][5] = [[$eGole, $nbSides, 1, 1, 2] _
+				Local $listInfoDeploy[21][5] = [[$eGole, $nbSides, 1, 1, 2] _
 						, [$eLava, $nbSides, 1, 1, 2] _
 						, [$eGiant, $nbSides, 1, 1, 2] _
 						, [$eDrag, $nbSides, 1, 1, 0] _
 						, [$eBall, $nbSides, 1, 1, 0] _
+						, [$eBabyD, $nbSides, 1, 1, 1] _
 						, [$eHogs, $nbSides, 1, 1, 1] _
 						, [$eValk, $nbSides, 1, 1, 0] _
+						, [$eBowl, $nbSides, 1, 1, 0] _
+						, [$eMine, $nbSides, 1, 1, 0] _
 						, [$eBarb, $nbSides, 1, 1, 0] _
 						, [$eWall, $nbSides, 1, 1, 1] _
 						, [$eArch, $nbSides, 1, 1, 0] _
@@ -131,13 +138,16 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		If $debugSetlog = 1 Then SetLog("listdeploy standard for attack", $COLOR_PURPLE)
 		Switch $icmbStandardAlgorithm[$iMatchMode]
 			Case 0
-				Local $listInfoDeploy[18][5] = [[$eGole, $nbSides, 1, 1, 2] _
+				Local $listInfoDeploy[21][5] = [[$eGole, $nbSides, 1, 1, 2] _
 						, [$eLava, $nbSides, 1, 1, 2] _
 						, [$eGiant, $nbSides, 1, 1, 2] _
 						, [$eDrag, $nbSides, 1, 1, 0] _
 						, [$eBall, $nbSides, 1, 1, 0] _
+						, [$eBabyD, $nbSides, 1, 1, 0] _
 						, [$eHogs, $nbSides, 1, 1, 1] _
 						, [$eValk, $nbSides, 1, 1, 0] _
+						, [$eBowl, $nbSides, 1, 1, 0] _
+						, [$eMine, $nbSides, 1, 1, 0] _
 						, [$eBarb, $nbSides, 1, 1, 0] _
 						, [$eWall, $nbSides, 1, 1, 1] _
 						, [$eArch, $nbSides, 1, 1, 0] _
@@ -208,7 +218,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			If $debugsetlog = 1 Then Setlog("No Wast time... exit, no troops usable left",$COLOR_PURPLE)
 			ExitLoop ;Check remaining quantities
 		EndIf
-		For $i = $eBarb To $eLava ; lauch all remaining troops
+		For $i = $eBarb To $eBowl ; lauch all remaining troops
 			;If $i = $eBarb Or $i = $eArch Then
 			LauchTroop($i, $nbSides, 0, 1)
 			CheckHeroesHealth()

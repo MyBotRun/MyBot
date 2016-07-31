@@ -1,0 +1,12 @@
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+dd obs=16 if=$SCRIPTPATH/ZoomOut.BlueStacks.script.1 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/ZoomOut.BlueStacks.script.2 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/ZoomOut.BlueStacks.script.3 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/ZoomOut.BlueStacks.script.4 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/ZoomOut.BlueStacks.script.5 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay

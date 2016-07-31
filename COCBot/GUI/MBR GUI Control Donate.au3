@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......:
+; Modified ......: MonkeyHunter (07-2016)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -73,6 +73,18 @@ Func btnDonatePekkas()
 	EndIf
 EndFunc   ;==>btnDonatePekkas
 
+Func btnDonateBabyDragons()
+	If GUICtrlGetState($grpBabyDragons) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpBabyDragons, $txtBlacklistBabyDragons)
+	EndIf
+EndFunc   ;==>btnDonateBabyDragons
+
+Func btnDonateMiners()
+	If GUICtrlGetState($grpMiners) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpMiners, $txtBlacklistMiners)
+	EndIf
+EndFunc   ;==>btnDonateMiners
+
 Func btnDonateMinions()
 	If GUICtrlGetState($grpMinions) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
 		_DonateBtn($grpMinions, $txtBlacklistMinions)
@@ -109,6 +121,12 @@ Func btnDonateLavaHounds()
 	EndIf
 EndFunc   ;==>btnDonateLavaHounds
 
+Func btnDonateBowlers()
+	If GUICtrlGetState($grpBowlers) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpBowlers, $txtBlacklistBowlers)
+	EndIf
+EndFunc   ;==>btnDonateBowlers
+
 Func btnDonatePoisonSpells()
 	If GUICtrlGetState($grpPoisonSpells) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
 		_DonateBtn($grpPoisonSpells, $txtBlacklistPoisonSpells)
@@ -127,13 +145,25 @@ Func btnDonateHasteSpells()
 	EndIf
 EndFunc   ;==>btnDonateHasteSpells
 
+Func btnDonateSkeletonSpells()
+	If GUICtrlGetState($grpSkeletonSpells) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpSkeletonSpells, $txtBlacklistSkeletonSpells)
+	EndIf
+EndFunc   ;==>btnDonateSkeletonSpells
+
 
 ;;; Custom Combination Donate by ChiefM3
-Func btnDonateCustom()
-	If GUICtrlGetState($grpCustom) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
-		_DonateBtn($grpCustom, $txtBlacklistCustom)
+Func btnDonateCustomA()
+	If GUICtrlGetState($grpCustomA) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpCustomA, $txtBlacklistCustomA)
 	EndIf
 EndFunc   ;==>btnDonateCustom
+
+Func btnDonateCustomB()
+	If GUICtrlGetState($grpCustomB) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
+		_DonateBtn($grpCustomB, $txtBlacklistCustomB)
+	EndIf
+EndFunc   ;==>btnDonateCustomB
 
 Func btnDonateBlacklist()
 	If GUICtrlGetState($grpBlacklist) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
@@ -221,6 +251,22 @@ Func chkDonateAllPekkas()
 	EndIf
 EndFunc   ;==>chkDonateAllPekkas
 
+Func chkDonateAllBabyDragons()
+	If GUICtrlRead($chkDonateAllBabyDragons) = $GUI_CHECKED Then
+		_DonateAllControls($eBabyD, True)
+	Else
+		_DonateAllControls($eBabyD, False)
+	EndIf
+EndFunc   ;==>chkDonateAllBabyDragons
+
+Func chkDonateAllMiners()
+	If GUICtrlRead($chkDonateAllMiners) = $GUI_CHECKED Then
+		_DonateAllControls($eMine, True)
+	Else
+		_DonateAllControls($eMine, False)
+	EndIf
+EndFunc   ;==>chkDonateAllMiners
+
 Func chkDonateAllMinions()
 	If GUICtrlRead($chkDonateAllMinions) = $GUI_CHECKED Then
 		_DonateAllControls($eMini, True)
@@ -269,6 +315,14 @@ Func chkDonateAllLavaHounds()
 	EndIf
 EndFunc   ;==>chkDonateAllLavaHounds
 
+Func chkDonateAllBowlers()
+	If GUICtrlRead($chkDonateAllBowlers) = $GUI_CHECKED Then
+		_DonateAllControls($eBowl, True)
+	Else
+		_DonateAllControls($eBowl, False)
+	EndIf
+EndFunc   ;==>chkDonateAllBowlers
+
 Func chkDonateAllPoisonSpells()
 	If GUICtrlRead($chkDonateAllPoisonSpells) = $GUI_CHECKED Then
 		_DonateAllControlsSpell(0, True)
@@ -293,14 +347,30 @@ Func chkDonateAllHasteSpells()
 	EndIf
 EndFunc   ;==>chkDonateAllHasteSpells
 
-;;; Custom Combination Donate by ChiefM3
-Func chkDonateAllCustom()
-	If GUICtrlRead($chkDonateAllCustom) = $GUI_CHECKED Then
-		_DonateAllControls(16, True)
+Func chkDonateAllSkeletonSpells()
+	If GUICtrlRead($chkDonateAllSkeletonSpells) = $GUI_CHECKED Then
+		_DonateAllControlsSpell(3, True)
 	Else
-		_DonateAllControls(16, False)
+		_DonateAllControlsSpell(3, False)
 	EndIf
-EndFunc   ;==>chkDonateAllCustom
+EndFunc   ;==>chkDonateAllSkeletonSpells
+
+;;; Custom Combination Donate by ChiefM3
+Func chkDonateAllCustomA()
+	If GUICtrlRead($chkDonateAllCustomA) = $GUI_CHECKED Then
+		_DonateAllControls(19, True)
+	Else
+		_DonateAllControls(19, False)
+	EndIf
+EndFunc   ;==>chkDonateAllCustomA
+
+Func chkDonateAllCustomB()
+	If GUICtrlRead($chkDonateAllCustomB) = $GUI_CHECKED Then
+		_DonateAllControls(20, True)
+	Else
+		_DonateAllControls(20, False)
+	EndIf
+EndFunc   ;==>chkDonateAllCustomB
 
 Func chkDonateBarbarians()
 	If GUICtrlRead($chkDonateBarbarians) = $GUI_CHECKED Then
@@ -382,6 +452,22 @@ Func chkDonatePekkas()
 	EndIf
 EndFunc   ;==>chkDonatePekkas
 
+Func chkDonateBabyDragons()
+	If GUICtrlRead($chkDonateBabyDragons) = $GUI_CHECKED Then
+		_DonateControls($eBabyD)
+	Else
+		GUICtrlSetBkColor($lblBtnBabyDragons, $GUI_BKCOLOR_TRANSPARENT)
+	EndIf
+EndFunc   ;==>chkDonateBabyDragons
+
+Func chkDonateMiners()
+	If GUICtrlRead($chkDonateMiners) = $GUI_CHECKED Then
+		_DonateControls($eMine)
+	Else
+		GUICtrlSetBkColor($lblBtnMiners, $GUI_BKCOLOR_TRANSPARENT)
+	EndIf
+EndFunc   ;==>chkDonateMiners
+
 Func chkDonateMinions()
 	If GUICtrlRead($chkDonateMinions) = $GUI_CHECKED Then
 		_DonateControls($eMini)
@@ -430,6 +516,14 @@ Func chkDonateLavaHounds()
 	EndIf
 EndFunc   ;==>chkDonateLavaHounds
 
+Func chkDonateBowlers()
+	If GUICtrlRead($chkDonateBowlers) = $GUI_CHECKED Then
+		_DonateControls($eBowl)
+	Else
+		GUICtrlSetBkColor($lblBtnBowlers, $GUI_BKCOLOR_TRANSPARENT)
+	EndIf
+EndFunc   ;==>chkDonateBowlers
+
 Func chkDonatePoisonSpells()
 	If GUICtrlRead($chkDonatePoisonSpells) = $GUI_CHECKED Then
 		_DonateControlsSpell(0)
@@ -454,24 +548,50 @@ Func chkDonateHasteSpells()
 	EndIf
 EndFunc   ;==>chkDonateHasteSpells
 
-;;; Custom Combination Donate by ChiefM3
-Func chkDonateCustom()
-	If GUICtrlRead($chkDonateCustom) = $GUI_CHECKED Then
-		_DonateControls(16)
+Func chkDonateSkeletonSpells()
+	If GUICtrlRead($chkDonateSkeletonSpells) = $GUI_CHECKED Then
+		_DonateControlsSpell(3)
 	Else
-		GUICtrlSetBkColor($lblBtnCustom, $GUI_BKCOLOR_TRANSPARENT)
+		GUICtrlSetBkColor($lblBtnSkeletonSpells, $GUI_BKCOLOR_TRANSPARENT)
 	EndIf
-EndFunc   ;==>chkDonateCustom
+EndFunc   ;==>chkDonateSkeletonSpells
 
-Func cmbDonateCustom()
-	Local $combo1 = _GUICtrlComboBox_GetCurSel($cmbDonateCustom1)
-	Local $combo2 = _GUICtrlComboBox_GetCurSel($cmbDonateCustom2)
-	Local $combo3 = _GUICtrlComboBox_GetCurSel($cmbDonateCustom3)
-	GUICtrlSetImage($picDonateCustom1, $pIconLib, $aDonIcons[$combo1])
-	GUICtrlSetImage($picDonateCustom2, $pIconLib, $aDonIcons[$combo2])
-	GUICtrlSetImage($picDonateCustom3, $pIconLib, $aDonIcons[$combo3])
-EndFunc   ;==>cmbDonateCustom
+;;; CustomA Combination Donate by ChiefM3
+Func chkDonateCustomA()
+	If GUICtrlRead($chkDonateCustomA) = $GUI_CHECKED Then
+		_DonateControls(19)
+	Else
+		GUICtrlSetBkColor($lblBtnCustomA, $GUI_BKCOLOR_TRANSPARENT)
+	EndIf
+EndFunc   ;==>chkDonateCustomA
 
+Func chkDonateCustomB()
+	If GUICtrlRead($chkDonateCustomB) = $GUI_CHECKED Then
+		_DonateControls(20)
+	Else
+		GUICtrlSetBkColor($lblBtnCustomB, $GUI_BKCOLOR_TRANSPARENT)
+	EndIf
+EndFunc   ;==>chkDonateCustomB
+
+Func cmbDonateCustomA()
+	Local $aDonIcons[20] = [$eIcnDonBarbarian, $eIcnDonArcher, $eIcnDonGiant, $eIcnDonGoblin, $eIcnDonWallBreaker, $eIcnDonBalloon, $eIcnDonWizard, $eIcnDonHealer, $eIcnDonDragon, $eIcnDonPekka, $eIcnDonBabyDragon, $eIcnDonMiner, $eIcnDonMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnDonGolem, $eIcnDonWitch, $eIcnDonLavaHound, $eIcnDonBowler, $eIcnDonBlank]
+	Local $combo1 = _GUICtrlComboBox_GetCurSel($cmbDonateCustomA1)
+	Local $combo2 = _GUICtrlComboBox_GetCurSel($cmbDonateCustomA2)
+	Local $combo3 = _GUICtrlComboBox_GetCurSel($cmbDonateCustomA3)
+	GUICtrlSetImage($picDonateCustomA1, $pIconLib, $aDonIcons[$combo1])
+	GUICtrlSetImage($picDonateCustomA2, $pIconLib, $aDonIcons[$combo2])
+	GUICtrlSetImage($picDonateCustomA3, $pIconLib, $aDonIcons[$combo3])
+EndFunc   ;==>cmbDonateCustomA
+
+Func cmbDonateCustomB()
+	Local $aDonIcons[20] = [$eIcnDonBarbarian, $eIcnDonArcher, $eIcnDonGiant, $eIcnDonGoblin, $eIcnDonWallBreaker, $eIcnDonBalloon, $eIcnDonWizard, $eIcnDonHealer, $eIcnDonDragon, $eIcnDonPekka, $eIcnDonBabyDragon, $eIcnDonMiner, $eIcnDonMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnDonGolem, $eIcnDonWitch, $eIcnDonLavaHound, $eIcnDonBowler, $eIcnDonBlank]
+	Local $combo1 = _GUICtrlComboBox_GetCurSel($cmbDonateCustomB1)
+	Local $combo2 = _GUICtrlComboBox_GetCurSel($cmbDonateCustomB2)
+	Local $combo3 = _GUICtrlComboBox_GetCurSel($cmbDonateCustomB3)
+	GUICtrlSetImage($picDonateCustomB1, $pIconLib, $aDonIcons[$combo1])
+	GUICtrlSetImage($picDonateCustomB2, $pIconLib, $aDonIcons[$combo2])
+	GUICtrlSetImage($picDonateCustomB3, $pIconLib, $aDonIcons[$combo3])
+EndFunc   ;==>cmbDonateCustomB
 
 Func _DonateBtn($FirstControl, $LastControl)
 	; Hide Controls
@@ -496,6 +616,7 @@ EndFunc   ;==>_DonateBtn
 
 Func _DonateControls($TroopType)
 	Local $bWasRedraw = SetRedrawBotWindow(False)
+
 	For $i = 0 To UBound($aLblBtnControls) - 1
 		If $i = $TroopType Then
 			GUICtrlSetBkColor($aLblBtnControls[$i], $COLOR_GREEN)

@@ -138,7 +138,7 @@ Func MakeSavePresetMessage()
 	If $iCmbTroopComp = 8 Then
 		;$message &="- Elixir Troops: Barracks" & @CRLF
 		$message &= "- Barracks: "
-		Local $troopelixirname = StringSplit($sTxtBarbarians & "|" & $sTxtArchers & "|" & $sTxtGiants & "|" & $sTxtGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas, "|", 2)
+		Local $troopelixirname = StringSplit($sTxtElixirTroops, "|", 2)
 		For $i = 1 To 4
 			$message &= $troopelixirname[$barrackTroop[$i - 1]]
 			If $i < 4 Then $message &= ", "
@@ -216,7 +216,7 @@ Func MakeSavePresetMessage()
 			If $iChkMeetTrophy[$i] = 1 Then $message &= " TR >= " & $iMinTrophy[$i] & "  "
 			If $iChkMeetTH[$i] = 1 Then $message &= " TH >= " & $iCmbTH[$i] + 6 & "  "
 			If $iChkMeetTHO[$i] = 1 Then $message &= " THO" & "  "
-			If $iChkWeakBase[$i] = 1 Then $message &= " WB" & "  "
+			If IsWeakBaseActive($i) Then $message &= " WB" & "  "
 			If $iChkMeetOne[$i] = 1 Then $message &= " MeetOne" & "  "
 			$message &= @CRLF
 		EndIf

@@ -145,10 +145,6 @@ Func VersionNumFromVersionTXT($versionTXT)
 	Return $resultnumber
 EndFunc   ;==>VersionNumFromVersionTXT
 
-
-
-
-
 Func _PrintLogVersion($message)
 	Local $messagevet = StringSplit($message, "\n", 1)
 	If Not (IsArray($messagevet)) Then
@@ -178,3 +174,13 @@ Func _PrintLogVersion($message)
 		Next
 	EndIf
 EndFunc   ;==>_PrintLogVersion
+
+Func GetVersionNormalized($VersionString, $Chars = 5)
+	If StringLeft($VersionString, 1) = "v" Then $VersionString = StringMid($VersionString, 2)
+	Local $a = StringSplit($VersionString, ".", 2)
+	Local $i
+	For $i = 0 To UBound($a) - 1
+		If StringLen($a[$i]) < $Chars Then $a[$i] = _StringRepeat("0", $Chars - StringLen($a[$i])) & $a[$i]
+	Next
+	Return _ArrayToString($a, ".")
+EndFunc   ;==>GetVersionNormalized

@@ -3,8 +3,9 @@
 ; Description ...:
 ; Syntax ........: _Sleep($iDelay[, $iSleep = True])
 ; Parameters ....: $iDelay              - an integer value.
-;                  $iSleep              - [optional] an integer value. Default is True.
-; Return values .: None
+;                  $iSleep              - [optional] an integer value. Default is True. unused and deprecated
+;                  $$CheckRunState      - Exit and returns True if $RunState is False
+; Return values .: True when $RunState is False otherwise True (also True if $CheckRunState=False)
 ; Author ........:
 ; Modified ......:
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
@@ -13,27 +14,38 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func _Sleep($iDelay, $iSleep = True)
-	If $iDeleteAllPBPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
-	If $iMakeScreenshotNow = True Then
-		If $iScreenshotType = 0 Then
-			MakeScreenshot($dirTemp, "jpg")
-		Else
-			MakeScreenshot($dirTemp, "png")
+Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True)
+	Local $iBegin = TimerInit()
+	If $iDelay > 0 Then
+		If $iDeleteAllPBPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
+		If $iMakeScreenshotNow = True Then
+			If $iScreenshotType = 0 Then
+				MakeScreenshot($dirTemp, "jpg")
+			Else
+				MakeScreenshot($dirTemp, "png")
+			EndIf
 		EndIf
 	EndIf
-	If $RunState = False Then
+	AndroidEmbedCheck()
+	AndroidShieldCheck()
+	If $CheckRunState = True And $RunState = False Then
 		ResumeAndroid()
 		Return True
 	EndIf
-	Local $iBegin = TimerInit()
-	While TimerDiff($iBegin) < $iDelay
-		If $RunState = False Then
+	Local $iRemaining = $iDelay - TimerDiff($iBegin)
+	While $iRemaining > 0
+		If $CheckRunState = True And $RunState = False Then
 			ResumeAndroid()
 			Return True
 		EndIf
-		;tabMain()
-		If $iSleep = True Then Sleep(50)
+		If $iRemaining >= $iDelaySleep Then
+			Sleep($iDelaySleep)
+		ElseIf $iRemaining >= 10 Then
+			Sleep($iRemaining)
+		EndIf
+		$iRemaining = $iDelay - TimerDiff($iBegin)
+		AndroidEmbedCheck()
+		AndroidShieldCheck()
 	WEnd
 	Return False
 EndFunc   ;==>_Sleep

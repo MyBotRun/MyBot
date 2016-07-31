@@ -14,12 +14,19 @@
 ; ===============================================================================================================================
 Func FindPos()
 	getBSPos()
-	Local $Pos[2]
+	Local $wasDown = AndroidShieldForceDown(True, True)
 	While 1
-		If _IsPressed("01") Then
-			$Pos[0] = MouseGetPos()[0] - $BSpos[0]
-			$Pos[1] = MouseGetPos()[1] - $BSpos[1]
+		If _IsPressed("01") Or _IsPressed("02") Then
+			Local $Pos = MouseGetPos()
+			$Pos[0] -= $BSpos[0]
+			$Pos[1] -= $BSpos[1]
+			; wait till released
+			While _IsPressed("01") Or _IsPressed("02")
+				Sleep(10)
+			WEnd
+			AndroidShieldForceDown($wasDown, True)
 			Return $Pos
 		EndIf
+		Sleep(10)
 	WEnd
 EndFunc   ;==>FindPos
