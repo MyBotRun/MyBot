@@ -21,29 +21,29 @@ Global $weakDefenseNames[6] = ["None", "Eagle Artillery", "Inferno Tower", "XBow
 Global $weakDefenseMaxLevels[6] = [0, 2, 4, 4, 9, 9]
 
 Func createWeakBaseStats()
-    ; Get the directory file contents as keys for the stats file
+	; Get the directory file contents as keys for the stats file
 	Local $aKeys = _FileListToArrayRec(@ScriptDir & "\images\WeakBase", "*.png", $FLTAR_FILES, $FLTAR_RECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 	; Create our return array
 	Local $return[UBound($aKeys) - 1][2]
 
 	; If the stats file doesn't exist, create it
-    If Not FileExists($statChkWeakBase) Then _FileCreate($statChkWeakBase)
+	If Not FileExists($statChkWeakBase) Then _FileCreate($statChkWeakBase)
 
 	; Loop through the keys
-    For $i = 1 To UBound($aKeys) - 1
+	For $i = 1 To UBound($aKeys) - 1
 		; Set the return array values
 		$return[$i - 1][0] = $aKeys[$i] ; Filename
 		$return[$i - 1][1] = 0 ; Number
 
 		; Write the entry to the stats file
-        IniWrite($statChkWeakBase, "WeakBase", $aKeys[$i], "0")
-    Next
+		IniWrite($statChkWeakBase, "WeakBase", $aKeys[$i], "0")
+	Next
 
 	Return $return
 EndFunc   ;==>createWeakBaseStats
 
 Func readWeakBaseStats()
-    ; Get the directory file contents as keys for the stats file
+	; Get the directory file contents as keys for the stats file
 	Local $aKeys = _FileListToArrayRec(@ScriptDir & "\images\WeakBase", "*.png", $FLTAR_FILES, $FLTAR_RECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 	; Create our return array
 	Local $return[UBound($aKeys) - 1][2]
@@ -74,7 +74,7 @@ Func saveWeakBaseStats()
 		IniWrite($statChkWeakBase, "WeakBase", $aWeakBaseStats[$j][0], $aWeakBaseStats[$j][1])
 	Next
 
-    ; Don't forget to close the file handle now that we are finished with it
+	; Don't forget to close the file handle now that we are finished with it
 	FileClose($hFile)
 EndFunc   ;==>saveWeakBaseStats
 
@@ -85,7 +85,7 @@ Func updateWeakBaseStats($aResult)
 			; Loop through the current stats
 			For $j = 0 To UBound($aWeakBaseStats) - 1
 				; Check to see if the current stat is for the found tile
-				If $aWeakBaseStats[$j][0] = $aResult[$i][0] then
+				If $aWeakBaseStats[$j][0] = $aResult[$i][0] Then
 					; Update the counter
 					$aWeakBaseStats[$j][1] = Number($aWeakBaseStats[$j][1]) + 1
 				EndIf
@@ -149,9 +149,9 @@ Func getMaxUISetting($settingArray, $defenseType)
 
 	If IsArray($settingArray) Then
 		; Check if dead base search is active and dead base weak base detection is active, use setting if active, 0 if not active
-		$maxDB = (($iCmbSearchMode = 0 Or $iCmbSearchMode = 2) And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
+		$maxDB = ($iDBcheck = 1 And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
 		; Check if live base search is active and live base weak base detection is active, use setting if active, 0 if not active
-		$maxLB = (($iCmbSearchMode = 1 Or $iCmbSearchMode = 2) And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
+		$maxLB = ($iABcheck = 1 And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
 
 		; Get the value that is highest
 		$result = _Max(Number($maxDB), Number($maxLB))
@@ -167,9 +167,9 @@ Func getMinUISetting($settingArray, $defenseType)
 
 	If IsArray($settingArray) Then
 		; Check if dead base search is active and dead base weak base detection is active, use setting if active, 0 if not active
-		$minDB = (($iCmbSearchMode = 0 Or $iCmbSearchMode = 2) And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
+		$minDB = ($iDBcheck = 1 And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
 		; Check if live base search is active and live base weak base detection is active, use setting if active, 0 if not active
-		$minLB = (($iCmbSearchMode = 1 Or $iCmbSearchMode = 2) And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
+		$minLB = ($iABcheck = 1 And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
 
 		; Get the value that is highest
 		$result = _Min(Number($minDB), Number($minLB))
@@ -181,10 +181,10 @@ EndFunc   ;==>getMinUISetting
 
 Func getIsWeak($aResults, $searchType)
 	Return $aResults[$eWeakEagle][2] <= Number($iCmbWeakEagle[$searchType]) _
-  	   And $aResults[$eWeakInferno][2] <= Number($iCmbWeakInferno[$searchType]) _
-	   And $aResults[$eWeakXBow][2] <= Number($iCmbWeakXBow[$searchType]) _
-	   And $aResults[$eWeakWizard][2] <= Number($iCmbWeakWizTower[$searchType]) _
-	   And $aResults[$eWeakMortar][2] <= Number($iCmbWeakMortar[$searchType])
+			And $aResults[$eWeakInferno][2] <= Number($iCmbWeakInferno[$searchType]) _
+			And $aResults[$eWeakXBow][2] <= Number($iCmbWeakXBow[$searchType]) _
+			And $aResults[$eWeakWizard][2] <= Number($iCmbWeakWizTower[$searchType]) _
+			And $aResults[$eWeakMortar][2] <= Number($iCmbWeakMortar[$searchType])
 EndFunc   ;==>getIsWeak
 
 Func IsWeakBaseActive($type)
@@ -225,18 +225,18 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $d
 	EndIf
 
 	Return $aDefenseResult
-EndFunc
+EndFunc   ;==>defenseSearch
 
 Func weakBaseCheck($townHallLevel = 11, $redlines = "")
 	; Setup default return coords of 0,0
 	Local $defaultCoords[1][2] = [[0, 0]]
 	; Setup Empty Results in case to avoid errors, levels are set to max level of each type
 	Local $aResult[6][6] = [[$redlines, 0, 0, "Seconds", "", ""], _
-							["Skipped", "Skipped", 2, 0, 0, $defaultCoords], _
-							["Skipped", "Skipped", 4, 0, 0, $defaultCoords], _
-							["Skipped", "Skipped", 4, 0, 0, $defaultCoords], _
-							["Skipped", "Skipped", 9, 0, 0, $defaultCoords], _
-							["Skipped", "Skipped", 9, 0, 0, $defaultCoords]]
+			["Skipped", "Skipped", 2, 0, 0, $defaultCoords], _
+			["Skipped", "Skipped", 4, 0, 0, $defaultCoords], _
+			["Skipped", "Skipped", 4, 0, 0, $defaultCoords], _
+			["Skipped", "Skipped", 9, 0, 0, $defaultCoords], _
+			["Skipped", "Skipped", 9, 0, 0, $defaultCoords]]
 
 	Local $aEagleResults, $aInfernoResults, $aMortarResults, $aWizardTowerResults, $aXBowResults
 	Local $performSearch = True

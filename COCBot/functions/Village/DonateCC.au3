@@ -153,7 +153,7 @@ Func DonateCC($Check = False)
 				; no message, this CC has no Spell capability
 				If $debugsetlog = 1 Then Setlog("This CC cannot accept spells, skip spell donation...", $COLOR_PURPLE)
 				$bSkipDonSpells = True
-			ElseIf GetCurTotalSpell() = 0 Then
+			ElseIf GetCurTotalDarkSpell() = 0 Then
 				If $debugsetlog = 1 Then Setlog("No spells available, skip spell donation...", $COLOR_PURPLE)
 				$bSkipDonSpells = True
 			EndIf

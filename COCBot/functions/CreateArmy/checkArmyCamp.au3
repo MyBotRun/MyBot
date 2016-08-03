@@ -58,7 +58,7 @@ EndFunc   ;==>checkArmyCamp
 
 Func IsTroopToDonateOnly($pTroopType)
 
-	If $iCmbSearchMode = 0 Then
+	If $iDBcheck = 1 Then
 		$pMatchMode = $DB
 		Local $tempArr = $troopsToBeUsed[$iCmbSelectTroop[$pMatchMode]]
 		For $x = 0 To UBound($tempArr) - 1
@@ -66,23 +66,8 @@ Func IsTroopToDonateOnly($pTroopType)
 				Return False
 			EndIf
 		Next
-
-	ElseIf $iCmbSearchMode = 1 Then
-		$pMatchMode = $LB
-		Local $tempArr = $troopsToBeUsed[$iCmbSelectTroop[$pMatchMode]]
-		For $x = 0 To UBound($tempArr) - 1
-			If $tempArr[$x] = $pTroopType Then
-				Return False
-			EndIf
-		Next
-	ElseIf $iCmbSearchMode = 2 Then
-		$pMatchMode = $DB
-		Local $tempArr = $troopsToBeUsed[$iCmbSelectTroop[$pMatchMode]]
-		For $x = 0 To UBound($tempArr) - 1
-			If $tempArr[$x] = $pTroopType Then
-				Return False
-			EndIf
-		Next
+	EndIf
+	If $iABcheck = 1 Then
 		$pMatchMode = $LB
 		Local $tempArr = $troopsToBeUsed[$iCmbSelectTroop[$pMatchMode]]
 		For $x = 0 To UBound($tempArr) - 1

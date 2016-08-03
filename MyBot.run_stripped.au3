@@ -2,8 +2,8 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 6.2)
-#pragma compile(FileVersion, 6.2)
+#pragma compile(ProductVersion, 6.2.1)
+#pragma compile(FileVersion, 6.2.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe)  ; Required
 Global Const $WC_ANIMATE = 'SysAnimate32'
@@ -3419,7 +3419,7 @@ Local $iBotProcessPriority = _ProcessGetPriority(@AutoItPID)
 ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 Global $iBotLaunchTime = 0
 Local $hBotLaunchTime = TimerInit()
-$sBotVersion = "v6.2"
+$sBotVersion = "v6.2.1"
 $sBotTitle = "My Bot " & $sBotVersion & " "
 Global Const $iDelaySleep = 100
 Global Const $iDelayWaitForPopup = 1500
@@ -31210,7 +31210,6 @@ Global $bSearchMode = False
 Global $Is_ClientSyncError = False
 Global $searchGold, $searchElixir, $searchDark, $searchTrophy, $searchTH
 Global $SearchGold2 = 0, $SearchElixir2 = 0, $iStuck = 0, $iNext = 0
-Global $iCmbSearchMode
 Global $iMinGold[$iModeCount], $iMinElixir[$iModeCount], $iMinGoldPlusElixir[$iModeCount], $iMinDark[$iModeCount], $iMinTrophy[$iModeCount], $iMaxTH[$iModeCount], $iEnableAfterCount[$iModeCount], $iEnableBeforeCount[$iModeCount]
 Global $ChkMaxMortar[$iModeCount], $ChkMaxWizTower[$iModeCount], $ChkMaxXBow[$iModeCount], $ChkMaxInferno[$iModeCount], $ChkMaxEagle[$iModeCount]
 Global $iChkMaxMortar[$iModeCount], $iChkMaxWizTower[$iModeCount], $iChkMaxXBow[$iModeCount], $iChkMaxInferno[$iModeCount], $iChkMaxEagle[$iModeCount]
@@ -41922,7 +41921,7 @@ Global $groupPoison =$lblPoisonIcon&"#"&$lblPoisonSpell&"#"&$txtNumPoisonSpell&"
 Global $groupEarthquake =$lblEarthquakeIcon&"#"&$lblEarthquakeSpell&"#"&$txtNumEarthSpell&"#"&$lblTimesEarthquakeS
 Global $groupHaste =$lblHasteIcon&"#"&$lblHasteSpell&"#"&$txtNumHasteSpell&"#"&$lblTimesHasteS
 Global $groupSkeleton =$lblSkeletonIcon&"#"&$lblSkeletonSpell&"#"&$txtNumSkeletonSpell&"#"&$lblTimesSkeletonS
-Global $groupListSpells=$groupLightning&"#"&$groupHeal&"#"&$groupRage&"#"&$groupJumpSpell&"#"&$groupFreeze&"#"&$groupPoison&"#"&$groupEarthquake&"#"&$groupHaste
+Global $groupListSpells=$groupLightning&"#"&$groupHeal&"#"&$groupRage&"#"&$groupJumpSpell&"#"&$groupFreeze&"#"&$groupClone&"#"&$groupPoison&"#"&$groupEarthquake&"#"&$groupHaste&"#"&$groupSkeleton
 Global $groupListTHLevels=$THLevels04&"#"&$THLevels05&"#"&$THLevels06&"#"&$THLevels07&"#"&$THLevels08&"#"&$THLevels09&"#"&$THLevels10&"#"&$THLevels11
 Global $groupLeague=$UnrankedLeague&"#"&$BronzeLeague&"#"&$SilverLeague&"#"&$GoldLeague &"#"&$CrystalLeague&"#"&$MasterLeague&"#"&$ChampionLeague&"#"&$TitanLeague&"#"&$LegendLeague
 Func BotStart()
@@ -49136,13 +49135,13 @@ GUICtrlSetState($chkDonateAllSkeletonSpells, $GUI_UNCHECKED)
 EndIf
 If $ichkDonateAllCustomA = 1 Then
 GUICtrlSetState($chkDonateAllCustomA, $GUI_CHECKED)
-_DonateAllControls(16, True)
+_DonateAllControls(19, True)
 Else
 GUICtrlSetState($chkDonateAllCustomA, $GUI_UNCHECKED)
 EndIf
 If $ichkDonateAllCustomB = 1 Then
 GUICtrlSetState($chkDonateAllCustomB, $GUI_CHECKED)
-_DonateAllControls(16, True)
+_DonateAllControls(20, True)
 Else
 GUICtrlSetState($chkDonateAllCustomB, $GUI_UNCHECKED)
 EndIf
@@ -58947,7 +58946,7 @@ $FirstCampView = True
 If $debugsetlogTrain = 1 Then SETLOG("End checkArmyCamp: canRequestCC= " & $canRequestCC & ", fullArmy= " & $fullArmy, $COLOR_PURPLE)
 EndFunc
 Func IsTroopToDonateOnly($pTroopType)
-If $iCmbSearchMode = 0 Then
+If $iDBcheck = 1 Then
 $pMatchMode = $DB
 Local $tempArr = $troopsToBeUsed[$iCmbSelectTroop[$pMatchMode]]
 For $x = 0 To UBound($tempArr) - 1
@@ -58955,22 +58954,8 @@ If $tempArr[$x] = $pTroopType Then
 Return False
 EndIf
 Next
-ElseIf $iCmbSearchMode = 1 Then
-$pMatchMode = $LB
-Local $tempArr = $troopsToBeUsed[$iCmbSelectTroop[$pMatchMode]]
-For $x = 0 To UBound($tempArr) - 1
-If $tempArr[$x] = $pTroopType Then
-Return False
 EndIf
-Next
-ElseIf $iCmbSearchMode = 2 Then
-$pMatchMode = $DB
-Local $tempArr = $troopsToBeUsed[$iCmbSelectTroop[$pMatchMode]]
-For $x = 0 To UBound($tempArr) - 1
-If $tempArr[$x] = $pTroopType Then
-Return False
-EndIf
-Next
+If $iABcheck = 1 Then
 $pMatchMode = $LB
 Local $tempArr = $troopsToBeUsed[$iCmbSelectTroop[$pMatchMode]]
 For $x = 0 To UBound($tempArr) - 1
@@ -59521,6 +59506,10 @@ EndFunc
 Func GetCurTotalSpell()
 If $CurTotalSpell = False And $iTotalCountSpell > 0 Then Return -1
 Return $CurLightningSpell +  $CurHealSpell +  $CurRageSpell +  $CurJumpSpell +  $CurFreezeSpell +  $CurCloneSpell +  $CurPoisonSpell +  $CurHasteSpell +  $CurSkeletonSpell +  $CurEarthSpell
+EndFunc
+Func GetCurTotalDarkSpell()
+If $CurTotalSpell = False And $iTotalCountSpell > 0 Then Return -1
+Return $CurPoisonSpell +  $CurHasteSpell +  $CurSkeletonSpell +  $CurEarthSpell
 EndFunc
 Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then Setlog("Begin getArmySpellTime:", $COLOR_PURPLE)
@@ -60565,11 +60554,11 @@ If _Sleep($iDelayTrain4) Then Return
 If WaitforPixel(28, 505 + $bottomOffsetY, 30, 507 + $bottomOffsetY, Hex(0xE4A438, 6), 5, 10) Then
 If $debugsetlogTrain = 1 Then SetLog("Click $aArmyTrainButton", $COLOR_GREEN)
 If IsMainPage() Then
-If $iUseRandomClick = 0 then
+If $iUseRandomClick = 0 Then
 Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293")
 Else
 ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
-EndIF
+EndIf
 EndIf
 EndIf
 If WaitforPixel(762, 328 + $midOffsetY, 763, 329 + $midOffsetY, Hex(0xF18439, 6), 10, 10) Then
@@ -60947,7 +60936,7 @@ If $debugsetlogTrain = 1 And $tmpNumber <> 0 Then SetLog("ASSIGN TroopFirst." & 
 Assign(("troopFirst" & $TroopName[$i]), $tmpNumber)
 If Eval("troopFirst" & $TroopName[$i]) = 0 Then
 If _Sleep($iDelayTrain1) Then Return
-If $debugsetlogTrain = 1 And $tmpNumber  <> 0 Then SetLog("ASSIGN TroopFirst." & $TroopName[$i] & ": " & $tmpNumber, $COLOR_PURPLE)
+If $debugsetlogTrain = 1 And $tmpNumber <> 0 Then SetLog("ASSIGN TroopFirst." & $TroopName[$i] & ": " & $tmpNumber, $COLOR_PURPLE)
 Assign(("troopFirst" & $TroopName[$i]), $tmpNumber)
 EndIf
 EndIf
@@ -61041,18 +61030,6 @@ EndIf
 If $RunState = False Then Return
 Next
 If $icmbTroopComp <> 8 And $fullarmy = False And $FirstStart = False Then
-If _ColorCheck(_GetPixelColor(599, 202 + $midOffsetY, True), Hex(0xa8d070, 6), 20) = False Then
-$BarrackStatus[$brrNum - 1] = False
-Else
-$BarrackStatus[$brrNum - 1] = True
-EndIf
-If $debugsetlogTrain = 1 Then SetLog("Available BARRACK " & $brrNum & " STATUS: " & $BarrackStatus[$brrNum - 1], $COLOR_PURPLE)
-If CheckFullBarrack() Then
-$BarrackFull[$brrNum - 1] = True
-Else
-$BarrackFull[$brrNum - 1] = False
-EndIf
-If $debugsetlogTrain = 1 Then SetLog("Available BARRACK " & $brrNum & " Full: " & $BarrackFull[$brrNum - 1], $COLOR_PURPLE)
 If $LastBarrackTrainDonatedTroop = $brrNum Then
 For $i = 0 To UBound($TroopName) - 1
 If Eval("Don" & $TroopName[$i]) > 0 Then
@@ -61069,17 +61046,29 @@ Next
 If $debugsetlogTrain = 1 Then Setlog("$LastBarrackTrainDonatedTroop: " & $LastBarrackTrainDonatedTroop)
 If $debugsetlogTrain = 1 Then Setlog("Barrack: " & $brrNum)
 EndIf
+If _ColorCheck(_GetPixelColor(599, 202 + $midOffsetY, True), Hex(0xa8d070, 6), 20) = False Then
+$BarrackStatus[$brrNum - 1] = False
+Else
+$BarrackStatus[$brrNum - 1] = True
+EndIf
+If $debugsetlogTrain = 1 Then SetLog("Available BARRACK " & $brrNum & " STATUS: " & $BarrackStatus[$brrNum - 1], $COLOR_PURPLE)
+If CheckFullBarrack() Then
+$BarrackFull[$brrNum - 1] = True
+Else
+$BarrackFull[$brrNum - 1] = False
+EndIf
+If $debugsetlogTrain = 1 Then SetLog("Available BARRACK " & $brrNum & " Full: " & $BarrackFull[$brrNum - 1], $COLOR_PURPLE)
 If ($BarrackFull[0] = True Or $BarrackStatus[0] = False) And ($BarrackFull[1] = True Or $BarrackStatus[1] = False) And ($BarrackFull[2] = True Or $BarrackStatus[2] = False) And ($BarrackFull[3] = True Or $BarrackStatus[3] = False) Then
 If (Not $isDarkBuild) Or (($BarrackDarkFull[0] = True Or $BarrackDarkStatus[0] = False) And ($BarrackDarkFull[1] = True Or $BarrackDarkStatus[1] = False)) Then
 If _Sleep($iDelayTrain1) Then Return
 ClickP($aAway, 2, $iDelayTrain5, "#0501")
 If WaitforPixel(28, 505 + $bottomOffsetY, 30, 507 + $bottomOffsetY, Hex(0xE4A438, 6), 5, 10) Then
 If $debugsetlogTrain = 1 Then SetLog("Click $aArmyTrainButton", $COLOR_GREEN)
-If $iUseRandomClick = 0 then
+If $iUseRandomClick = 0 Then
 Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#9998")
 Else
 ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
-EndIF
+EndIf
 EndIf
 $icount = 0
 While IsTrainPage() = False
@@ -61248,7 +61237,7 @@ $positionTroop = $TroopDarkNamePosition[$i] - 5
 EndIf
 $tmpNumber = Number(getBarracksTroopQuantity(174 + 107 * $positionTroop, $heightTroop))
 If _Sleep($iDelayTrain1) Then Return
-If $debugsetlogTrain = 1 And $tmpNumber  <> 0 Then SetLog("ASSIGN TroopFirst.." & $TroopDarkName[$i] & ": " & $tmpNumber, $COLOR_PURPLE)
+If $debugsetlogTrain = 1 And $tmpNumber <> 0 Then SetLog("ASSIGN TroopFirst.." & $TroopDarkName[$i] & ": " & $tmpNumber, $COLOR_PURPLE)
 Assign(("troopFirst" & $TroopDarkName[$i]), $tmpNumber)
 If Eval("troopFirst" & $TroopDarkName[$i]) = 0 Then
 If _Sleep($iDelayTrain1) Then Return
@@ -61341,18 +61330,6 @@ EndIf
 EndIf
 Next
 If $icmbTroopComp <> 8 And $fullarmy = False And $FirstStart = False Then
-If _ColorCheck(_GetPixelColor(599, 202 + $midOffsetY, True), Hex(0xa8d070, 6), 20) = False Then
-$BarrackDarkStatus[$brrDarkNum - 1] = False
-Else
-$BarrackDarkStatus[$brrDarkNum - 1] = True
-EndIf
-If $debugsetlogTrain = 1 Then SetLog("Available Dark BARRACK " & $brrDarkNum & " STATUS: " & $BarrackDarkStatus[$brrDarkNum - 1], $COLOR_PURPLE)
-If CheckFullBarrack() Then
-$BarrackDarkFull[$brrDarkNum - 1] = True
-Else
-$BarrackDarkFull[$brrDarkNum - 1] = False
-EndIf
-If $debugsetlogTrain = 1 Then SetLog("Available Dark BARRACK " & $brrDarkNum & " Full: " & $BarrackDarkFull[$brrDarkNum - 1], $COLOR_PURPLE)
 If $LastDarkBarrackTrainDonatedTroop = $brrDarkNum Then
 For $i = 0 To UBound($TroopDarkName) - 1
 If Eval("Don" & $TroopDarkName[$i]) > 0 Then
@@ -61369,6 +61346,18 @@ If $debugsetlogTrain = 1 Then Setlog("Dark Barrack: " & $brrDarkNum)
 If $debugsetlogTrain = 1 Then Setlog("$LastDarkBarrackTrainDonatedTroop: " & $LastDarkBarrackTrainDonatedTroop)
 If $RunState = False Then Return
 EndIf
+If _ColorCheck(_GetPixelColor(599, 202 + $midOffsetY, True), Hex(0xa8d070, 6), 20) = False Then
+$BarrackDarkStatus[$brrDarkNum - 1] = False
+Else
+$BarrackDarkStatus[$brrDarkNum - 1] = True
+EndIf
+If $debugsetlogTrain = 1 Then SetLog("Available Dark BARRACK " & $brrDarkNum & " STATUS: " & $BarrackDarkStatus[$brrDarkNum - 1], $COLOR_PURPLE)
+If CheckFullBarrack() Then
+$BarrackDarkFull[$brrDarkNum - 1] = True
+Else
+$BarrackDarkFull[$brrDarkNum - 1] = False
+EndIf
+If $debugsetlogTrain = 1 Then SetLog("Available Dark BARRACK " & $brrDarkNum & " Full: " & $BarrackDarkFull[$brrDarkNum - 1], $COLOR_PURPLE)
 If (Not $isNormalBuild) And (($BarrackDarkFull[0] = True Or $BarrackDarkStatus[0] = False) And ($BarrackDarkFull[1] = True Or $BarrackDarkStatus[1] = False)) Then
 Local $i = 0
 While isDarkBarrack()
@@ -70475,7 +70464,7 @@ Func updateWeakBaseStats($aResult)
 If IsArray($aResult) Then
 For $i = 1 To UBound($aResult) - 1
 For $j = 0 To UBound($aWeakBaseStats) - 1
-If $aWeakBaseStats[$j][0] = $aResult[$i][0] then
+If $aWeakBaseStats[$j][0] = $aResult[$i][0] Then
 $aWeakBaseStats[$j][1] = Number($aWeakBaseStats[$j][1]) + 1
 EndIf
 Next
@@ -70523,8 +70512,8 @@ EndFunc
 Func getMaxUISetting($settingArray, $defenseType)
 Local $result = 0, $maxDB = 0, $maxLB = 0
 If IsArray($settingArray) Then
-$maxDB = (($iCmbSearchMode = 0 Or $iCmbSearchMode = 2) And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
-$maxLB = (($iCmbSearchMode = 1 Or $iCmbSearchMode = 2) And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
+$maxDB = ($iDBcheck = 1 And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
+$maxLB = ($iABcheck = 1 And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
 $result = _Max(Number($maxDB), Number($maxLB))
 EndIf
 If $debugSetLog = 1 Then SetLog("Max " & $weakDefenseNames[$defenseType] & " Level: " & $result, $COLOR_BLUE)
@@ -70533,8 +70522,8 @@ EndFunc
 Func getMinUISetting($settingArray, $defenseType)
 Local $result = 0, $minDB = 0, $minLB = 0
 If IsArray($settingArray) Then
-$minDB = (($iCmbSearchMode = 0 Or $iCmbSearchMode = 2) And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
-$minLB = (($iCmbSearchMode = 1 Or $iCmbSearchMode = 2) And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
+$minDB = ($iDBcheck = 1 And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
+$minLB = ($iABcheck = 1 And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
 $result = _Min(Number($minDB), Number($minLB))
 EndIf
 If $debugSetLog = 1 Then SetLog("Min " & $weakDefenseNames[$defenseType] & " Level: " & $result, $COLOR_BLUE)
@@ -72494,7 +72483,7 @@ $bSkipDonSpells = True
 ElseIf $iTotalDonateSpellCapacity = -1 Then
 If $debugsetlog = 1 Then Setlog("This CC cannot accept spells, skip spell donation...", $COLOR_PURPLE)
 $bSkipDonSpells = True
-ElseIf GetCurTotalSpell() = 0 Then
+ElseIf GetCurTotalDarkSpell() = 0 Then
 If $debugsetlog = 1 Then Setlog("No spells available, skip spell donation...", $COLOR_PURPLE)
 $bSkipDonSpells = True
 EndIf

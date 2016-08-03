@@ -1,3 +1,10 @@
+* **V6.2.1**
+ * Fix GUI display of clone/skeleton spells for TH level where they are not available
+ * Fix old training bug (@Promac submitted)
+ * Fix Donate all custom troops not saving GUI properly
+ * Fix search error where weak base was being applied to all attack types
+ * Improve donate code to only attempt donation when dark spells available (was running if any spell was available)
+
 * **V6.2**
  * New *** Dock Mode *** for MEmu, BlueStacks, BlueStacks2 and Droid4X with Android Shield to protected Android from user mouse and keyboard input when bot is running
    Use Dock/Undock button to dock & undock or Bot Options / Auto Align "DOCK: Android into Bot" for persistent docking (Offset can be blank so no re-positioning happens)

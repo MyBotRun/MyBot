@@ -1619,14 +1619,14 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 
 	If $ichkDonateAllCustomA = 1 Then
 		GUICtrlSetState($chkDonateAllCustomA, $GUI_CHECKED)
-		_DonateAllControls(16, True)
+		_DonateAllControls(19, True)
 	Else
 		GUICtrlSetState($chkDonateAllCustomA, $GUI_UNCHECKED)
 	EndIf
 
 	If $ichkDonateAllCustomB = 1 Then
 		GUICtrlSetState($chkDonateAllCustomB, $GUI_CHECKED)
-		_DonateAllControls(16, True)
+		_DonateAllControls(20, True)
 	Else
 		GUICtrlSetState($chkDonateAllCustomB, $GUI_UNCHECKED)
 	EndIf
