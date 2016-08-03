@@ -1,4 +1,4 @@
-[general]
-version    = "v6.2"
+﻿[general]
+version    = "v6.2.1"
 messagenew = "针对5月更新制作了新界面和新功能\n可访问官网 https://mybot.run 了解详细情况\n MYBOT是个免费开源软件\n若您是购买的那么你上当受骗了，请举报卖家"
-messageold = " MyBot (v6.2) 已经上线!\n请从官网下载最新版本 https://mybot.run"
+messageold = " MyBot (v6.2.1) 已经上线!\n请从官网下载最新版本 https://mybot.run"
