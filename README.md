@@ -19,7 +19,7 @@ Essential software :
 - Windows Vista/7/8/8.1/10
 - Microsoft Visual C++ 2010 Redistributable Package (x86)
 - Microsoft .NET Framework 4.5
-- BlueStacks 0.9.x - 0.10.x OR Bluestacks 2 OR Droid4x 0.8.6 - 0.10.3 OR MEmu 2.2.1 - 2.8.0 OR Nox 3.1.0 - 3.7.0
+- MEmu 2.2.1 - 2.8.0 OR BlueStacks 0.9.x - 0.10.x OR Bluestacks 2 OR Droid4x 0.8.6 - 0.10.3 OR Nox 3.1.0 - 3.7.0
 - The latest drivers for your graphics device
 - MyBot latest version available
 - DON'T USE THE OLD CONFIG FILES!
