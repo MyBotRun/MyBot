@@ -16,7 +16,7 @@
 ;
 Func getArmySpellCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $test = False)
 
-	If $debugsetlogTrain = 1 Then SETLOG("Begin getArmySpellCount:", $COLOR_PURPLE)
+	If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmySpellCount:", $COLOR_PURPLE)
 
 	If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
 		SetError(1)

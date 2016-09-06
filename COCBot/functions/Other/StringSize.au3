@@ -5,9 +5,13 @@
 ; AutoIt Version : v3.2.12.1 or higher
 ; Language ......: English
 ; Description ...: Returns size of rectangle required to display string - maximum width can be chosen
-; Remarks .......:
-; Note ..........:
 ; Author(s) .....:  Melba23 - thanks to trancexx for the default DC code
+; Link ..........: https://www.autoitscript.com/forum/topic/109096-extended-message-box-bugfix-version-9-aug-16/
+;
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; ====================================================================================================================
 
 ;#AutoIt3Wrapper_Au3Check_Parameters=-d -w 1 -w 2 -w 3 -w 4 -w 5 -w 6
@@ -63,7 +67,7 @@ Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = ""
 	If $iSize = Default Then $iSize = 8.5
 	If $iWeight = Default Then $iWeight = 400
 	If $iAttrib = Default Then $iAttrib = 0
-	If $sName = "" Or $sName = Default Then $sName = _StringSize_DefaultFontName()
+	If $sName = "" Or $sName = Default Then	$sName = _StringSize_DefaultFontName()
 
 	; Check parameters are correct type
 	If Not IsString($sText) Then Return SetError(1, 1, 0)
@@ -72,14 +76,14 @@ Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = ""
 	If Not IsInt($iAttrib) Then Return SetError(1, 4, 0)
 	If Not IsString($sName) Then Return SetError(1, 5, 0)
 	If Not IsNumber($iMaxWidth) Then Return SetError(1, 6, 0)
-	If Not IsHWnd($hWnd) And $hWnd <> 0 Then Return SetError(1, 7, 0)
+	If Not IsHwnd($hWnd) And $hWnd <> 0 Then Return SetError(1, 7, 0)
 
 	Local $aRet, $hDC, $hFont, $hLabel = 0, $hLabel_Handle
 
 	; Check for tab expansion flag
-	Local $iExpTab = BitAND($iAttrib, 1)
+	Local $iExpTab = BitAnd($iAttrib, 1)
 	; Remove possible tab expansion flag from font attribute value
-	$iAttrib = BitAND($iAttrib, BitNOT(1))
+	$iAttrib = BitAnd($iAttrib, BitNot(1))
 
 	; If GUI handle was passed
 	If IsHWnd($hWnd) Then
@@ -110,8 +114,8 @@ Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = ""
 		If @error Or $aRet[0] = 0 Then Return SetError(2, _StringSize_Error_Close(3, $hDC), 0)
 		Local $iInfo = $aRet[0]
 		$aRet = DllCall("gdi32.dll", "handle", "CreateFontW", "int", -$iInfo * $iSize / 72, "int", 0, "int", 0, "int", 0, _
-				"int", $iWeight, "dword", BitAND($iAttrib, 2), "dword", BitAND($iAttrib, 4), "dword", BitAND($iAttrib, 8), "dword", 0, "dword", 0, _
-				"dword", 0, "dword", 5, "dword", 0, "wstr", $sName)
+			"int", $iWeight, "dword", BitAND($iAttrib, 2), "dword", BitAND($iAttrib, 4), "dword", BitAND($iAttrib, 8), "dword", 0, "dword", 0, _
+			"dword", 0, "dword", 5, "dword", 0, "wstr", $sName)
 		If @error Or $aRet[0] = 0 Then Return SetError(2, _StringSize_Error_Close(4, $hDC), 0)
 		$hFont = $aRet[0]
 	EndIf
@@ -122,7 +126,7 @@ Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = ""
 	Local $hPrevFont = $aRet[0]
 
 	; Declare variables
-	Local $avSize_Info[4], $iLine_Length, $iLine_Height = 0, $iLine_Count = 0, $iLine_Width = 0, $iWrap_Count, $iLast_Word, $sTest_Line
+    Local $avSize_Info[4], $iLine_Length, $iLine_Height = 0, $iLine_Count = 0, $iLine_Width = 0, $iWrap_Count, $iLast_Word, $sTest_Line
 	; Declare and fill Size structure
 	Local $tSize = DllStructCreate("int X;int Y")
 	DllStructSetData($tSize, "X", 0)
@@ -222,14 +226,14 @@ Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = ""
 	EndIf
 
 	; Clear up
-	DllCall("gdi32.dll", "handle", "SelectObject", "handle", $hDC, "handle", $hPrevFont)
+    DllCall("gdi32.dll", "handle", "SelectObject", "handle", $hDC, "handle", $hPrevFont)
 	DllCall("gdi32.dll", "bool", "DeleteObject", "handle", $hFont)
 	DllCall("user32.dll", "int", "ReleaseDC", "hwnd", 0, "handle", $hDC)
 	If $hLabel Then GUICtrlDelete($hLabel)
 
 	Return $avSize_Info
 
-EndFunc   ;==>_StringSize
+EndFunc ;==>_StringSize
 
 ; #INTERNAL_USE_ONLY#============================================================================================================
 ; Name...........: _StringSize_Error_Close
@@ -250,7 +254,7 @@ Func _StringSize_Error_Close($iExtCode, $hDC = 0, $hFont = 0, $hLabel = 0)
 
 	Return $iExtCode
 
-EndFunc   ;==>_StringSize_Error_Close
+EndFunc ;=>_StringSize_Error_Close
 
 ; #INTERNAL_USE_ONLY#============================================================================================================
 ; Name...........: _StringSize_DefaultFontName
@@ -267,13 +271,13 @@ Func _StringSize_DefaultFontName()
 
 	; Get default system font data
 	Local $tNONCLIENTMETRICS = DllStructCreate("uint;int;int;int;int;int;byte[60];int;int;byte[60];int;int;byte[60];byte[60];byte[60]")
-	DllStructSetData($tNONCLIENTMETRICS, 1, DllStructGetSize($tNONCLIENTMETRICS))
-	DllCall("user32.dll", "int", "SystemParametersInfo", "int", 41, "int", DllStructGetSize($tNONCLIENTMETRICS), "ptr", DllStructGetPtr($tNONCLIENTMETRICS), "int", 0)
-	Local $tLOGFONT = DllStructCreate("long;long;long;long;long;byte;byte;byte;byte;byte;byte;byte;byte;char[32]", DllStructGetPtr($tNONCLIENTMETRICS, 13))
+	DLLStructSetData($tNONCLIENTMETRICS, 1, DllStructGetSize($tNONCLIENTMETRICS))
+	DLLCall("user32.dll", "int", "SystemParametersInfo", "int", 41, "int", DllStructGetSize($tNONCLIENTMETRICS), "ptr", DllStructGetPtr($tNONCLIENTMETRICS), "int", 0)
+	Local $tLOGFONT = DllStructCreate("long;long;long;long;long;byte;byte;byte;byte;byte;byte;byte;byte;char[32]", DLLStructGetPtr($tNONCLIENTMETRICS, 13))
 	If IsString(DllStructGetData($tLOGFONT, 14)) Then
 		Return DllStructGetData($tLOGFONT, 14)
 	Else
 		Return "Tahoma"
 	EndIf
 
-EndFunc   ;==>_StringSize_DefaultFontName
+EndFunc ;=>_StringSize_DefaultFontName

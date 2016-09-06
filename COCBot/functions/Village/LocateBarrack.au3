@@ -35,7 +35,6 @@ Func LocateBarrack($ArmyCamp = False)
 				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
 		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,28,"Locate") & " " & $choice, $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
-			WinActivate($HWnD)
 			If $ArmyCamp Then
 				Local $aPos = FindPos()
 				$ArmyPos[0] = $aPos[0]

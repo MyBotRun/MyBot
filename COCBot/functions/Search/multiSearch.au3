@@ -53,7 +53,7 @@ Func captureDebugImage($aResult, $subDirectory)
 		DirCreate($dirTempDebug & $subDirectory)
 
 		; Capture the screen for comparison
-		_CaptureRegion(0, 0, 860, 737)
+		_CaptureRegion()
 
 		; Store a copy of the image handle
 		Local $editedImage = $hBitmap

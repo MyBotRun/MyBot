@@ -5,9 +5,9 @@
 ; AutoIt Version : v3.2.12.1 or higher
 ; Language ......: English
 ; Description ...: Generates user defined message boxes centred on a GUI, on screen or at defined coordinates
-; Remarks .......:
-; Note ..........:
+;
 ; Author(s) .....: Melba23, based on some original code by photonbuddy & YellowLab, and KaFu (default font data)
+; Link ..........: https://www.autoitscript.com/forum/topic/109096-extended-message-box-bugfix-version-9-aug-16/
 ;
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
@@ -52,7 +52,7 @@ $g_aEMB_Settings[9] = BitAND(BitShift(String(Binary($g_aEMB_TempArray[0])), 8), 
 $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 11) ; Title bar icon width
 $g_aEMB_Settings[12] = $g_aEMB_TempArray[0]
 $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 30) ; Title bar button width
-$g_aEMB_Settings[12] += (($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0])) ; Compensate for small buttons in some themes
+$g_aEMB_Settings[12] += ( ($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0]) ) ; Compensate for small buttons in some themes
 $g_aEMB_TempArray = 0
 $g_aEMB_TempArray = DllCall("dwmapi.dll", "uint", "DwmIsCompositionEnabled", "int*", $g_aEMB_TempArray) ; Check for Aero enabled
 If Not @error And $g_aEMB_TempArray[1] = True Then
@@ -288,7 +288,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 
 	; Declare local variables
 	Local $iParent_Win = 0, $fCountdown = False, $cCheckbox, $aLabel_Size, $aRet, $iRet_Value, $iHpos
-	Local $sButton_Text, $iButton_Width_Req, $iButton_Width, $iButton_Xpos
+	Local $sButton_Text, $iButton_Width, $iButton_Xpos
 
 	; Validate timeout value
 	$iTimeOut = Int(Number($iTimeOut))
@@ -358,10 +358,14 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 		EndSwitch
 	EndIf
 
+	; Set default values
+	Local $aButton_Text[1] = [0]
+	Local $iButton_Width_Req = 0
 	; Get required button size
 	If $vButton <> " " Then
 		; Split button text into individual strings
-		Local $aButton_Text = StringSplit($vButton, "|")
+		$aButton_Text = StringSplit($vButton, "|")
+
 		; Get absolute available width for each button
 		Local $iButton_Width_Abs = Floor((($iMsg_Width_Max - 10) / $aButton_Text[0]) - 10)
 		; Error if below min button size
@@ -409,8 +413,6 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 		EndIf
 		; Determine GUI width required for all buttons at this width
 		$iButton_Width_Req = (($iButton_Width + 10) * $aButton_Text[0]) + 10
-	Else
-		$iButton_Width_Req = 0
 	EndIf
 
 	; Set tab expansion flag if required
@@ -452,18 +454,11 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 	; Size title
 	Local $aTitleSize = _StringSize($sTitle, $g_aEMB_Settings[10], Default, Default, $g_aEMB_Settings[11])
 
-	;ConsoleWrite(142 & " - " & $aTitleSize[2] & @CRLF)
-	;ConsoleWrite(80 & " - " & $iMsg_Width - 70 & @CRLF)
-	;ConsoleWrite(500 & " - " & $g_aEMB_Settings[7] & @CRLF)
-	;ConsoleWrite(83 & " - " & $g_aEMB_Settings[12] & @CRLF)
-
 	; Check if title wider than text
 	If $aTitleSize[2] > ($iMsg_Width - 70) Then ; Assume icon reduction of 50 regardless of icon setting
 		; Adjust dialog width up to absolute dialog width value
-		$iDialog_Width = (($aTitleSize[2] < ($g_aEMB_Settings[7] - $g_aEMB_Settings[12])) ? ($aTitleSize[2] + $g_aEMB_Settings[12]) : ($g_aEMB_Settings[7]))
+		$iDialog_Width = ( ($aTitleSize[2] < ($g_aEMB_Settings[7] - $g_aEMB_Settings[12])) ? ($aTitleSize[2] + $g_aEMB_Settings[12]) : ($g_aEMB_Settings[7]) )
 	EndIf
-
-	;ConsoleWrite($iDialog_Width & @CRLF)
 
 	Local $iMsg_Height = $iLabel_Height + 35
 	; Increase height if buttons present
@@ -588,7 +583,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 
 	; Create icon or countdown timer
 	If $fCountdown = True Then
-		Local $cCountdown_Label = GUICtrlCreateLabel(StringFormat("%3s", $iTimeOut), 10, 20, 48, 32)
+		Local $cCountdown_Label = GUICtrlCreateLabel(StringFormat("%2s", $iTimeOut), 10, 20, 32, 32)
 		GUICtrlSetFont(-1, 18, Default, Default, $g_aEMB_Settings[5])
 		GUICtrlSetColor(-1, $g_aEMB_Settings[3])
 	Else
@@ -596,56 +591,52 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 	EndIf
 
 	; Create buttons
-	If IsArray($aButton_Text) = 1 Then
-		Local $aButtons[$aButton_Text[0]][2]
-	EndIf
+	Local $aButtonCID[$aButton_Text[0] + 1] = [9999] ; Placeholder to prevent accel key firing if no buttons
+    If $vButton <> " " Then
 
-	Local $cAccel_Key = 9999 ; Placeholder to prevent firing if no buttons
-	If $vButton <> " " Then
+        ; Create dummy control for Accel key
+        $aButtonCID[0] = GUICtrlCreateDummy()
+        ; Set Space key as Accel key
+        Local $aAccel_Key[1][2] = [["{SPACE}", $aButtonCID[0]]]
+        GUISetAccelerators($aAccel_Key)
 
-		; Create dummy control for Accel key
-		$cAccel_Key = GUICtrlCreateDummy()
-		; Set Space key as Accel key
-		Local $aAccel_Key[1][2] = [["{SPACE}", $cAccel_Key]]
-		GUISetAccelerators($aAccel_Key)
-
-		; Calculate button horizontal start
-		If $aButton_Text[0] = 1 Then
-			If BitAND($g_aEMB_Settings[1], 4) = 4 Then
-				; Single centred button
-				$iButton_Xpos = ($iDialog_Width - $iButton_Width) / 2
-			Else
-				; Single offset button
-				$iButton_Xpos = $iDialog_Width - $iButton_Width - 10
-			EndIf
-		Else
-			; Multiple centred buttons
-			$iButton_Xpos = ($iDialog_Width - ($iButton_Width_Req - 20)) / 2
-		EndIf
-		; Set default button code
-		Local $iDefButton_Code = 0
-		; Set default button style
-		Local $iDef_Button_Style = 0
-		; Work through button list
-		For $i = 0 To $aButton_Text[0] - 1
-			Local $iButton_Text = $aButton_Text[$i + 1]
-			; Set default button
-			If $aButton_Text[0] = 1 Then ; Only 1 button
-				$iDef_Button_Style = 0x0001
-			ElseIf StringLeft($iButton_Text, 1) = "&" Then ; Look for &
-				$iDef_Button_Style = 0x0001
-				$aButton_Text[$i + 1] = StringTrimLeft($iButton_Text, 1)
-				; Set default button code for Accel key return
-				$iDefButton_Code = $i + 1
-			EndIf
-			; Draw button
-			GUICtrlCreateButton($aButton_Text[$i + 1], $iButton_Xpos + ($i * ($iButton_Width + 10)), $iMsg_Height - 35, $iButton_Width, 25, $iDef_Button_Style)
-			; Set font if required
-			If Not BitAND($g_aEMB_Settings[0], 4) Then GUICtrlSetFont(-1, $g_aEMB_Settings[4], 400, 0, $g_aEMB_Settings[5])
-			; Reset default style parameter
-			$iDef_Button_Style = 0
-		Next
-	EndIf
+        ; Calculate button horizontal start
+        If $aButton_Text[0] = 1 Then
+            If BitAND($g_aEMB_Settings[1], 4) = 4 Then
+                ; Single centred button
+                $iButton_Xpos = ($iMsg_Width - $iButton_Width) / 2
+            Else
+                ; Single offset button
+                $iButton_Xpos = $iMsg_Width - $iButton_Width - 10
+            EndIf
+        Else
+            ; Multiple centred buttons
+            $iButton_Xpos = ($iMsg_Width - ($iButton_Width_Req - 20)) / 2
+        EndIf
+        ; Set default button code
+        Local $iDefButton_Code = 0
+        ; Set default button style
+        Local $iDef_Button_Style = 0
+        ; Work through button list
+        For $i = 0 To $aButton_Text[0] - 1
+            Local $iButton_Text = $aButton_Text[$i + 1]
+            ; Set default button
+            If $aButton_Text[0] = 1 Then ; Only 1 button
+                $iDef_Button_Style = 0x0001
+            ElseIf StringLeft($iButton_Text, 1) = "&" Then ; Look for &
+                $iDef_Button_Style = 0x0001
+                $aButton_Text[$i + 1] = StringTrimLeft($iButton_Text, 1)
+                ; Set default button code for Accel key return
+                $iDefButton_Code = $i + 1
+            EndIf
+            ; Draw button
+            $aButtonCID[$i + 1] = GUICtrlCreateButton($aButton_Text[$i + 1], $iButton_Xpos + ($i * ($iButton_Width + 10)), $iMsg_Height - 35, $iButton_Width, 25, $iDef_Button_Style)
+            ; Set font if required
+            If Not BitAND($g_aEMB_Settings[0], 4) Then GUICtrlSetFont(-1, $g_aEMB_Settings[4], 400, 0, $g_aEMB_Settings[5])
+            ; Reset default style parameter
+            $iDef_Button_Style = 0
+        Next
+    EndIf
 
 	; Show GUI
 	GUISetState(@SW_SHOW, $hMsgGUI)
@@ -668,18 +659,18 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 				Case $aMsg[0] = -3 ; $GUI_EVENT_CLOSE
 					$iRet_Value = 0
 					ExitLoop
-				Case $aMsg[0] = $cAccel_Key
-					; Accel key pressed so return default button code
-					If $iDefButton_Code Then
-						$iRet_Value = $iDefButton_Code
-						ExitLoop
-					EndIf
-				Case $aMsg[0] > $cAccel_Key
-					Local $sButton = GUICtrlRead($aMsg[0])
-					; find button
-					For $i = 1 To $aButton_Text[0]
-						If $aButton_Text[$i] = $sButton Then
+				Case $aMsg[0] = $aButtonCID[0]
+                    ; Accel key pressed so return default button code
+                    If $iDefButton_Code Then
+                        $iRet_Value = $iDefButton_Code
+                        ExitLoop
+                    EndIf
+                Case Else
+					; Check for other buttons
+					For $i = 1 To UBound($aButtonCID) - 1
+						If $aMsg[0] = $aButtonCID[$i] Then
 							$iRet_Value = $i
+							; No point in looking further
 							ExitLoop 2
 						EndIf
 					Next

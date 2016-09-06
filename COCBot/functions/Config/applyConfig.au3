@@ -730,9 +730,11 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 
 	If $ibtnCloseWaitExact = 1 Then
 		GUICtrlSetState($btnCloseWaitExact, $GUI_CHECKED)
+		GUICtrlSetState($btnCloseWaitRandom, $GUI_UNCHECKED)
 	EndIf
 	If $ibtnCloseWaitRandom = 1 Then
 		GUICtrlSetState($btnCloseWaitRandom, $GUI_CHECKED)
+		GUICtrlSetState($btnCloseWaitExact, $GUI_UNCHECKED)
 	EndIf
 
 	_GUICtrlComboBox_SetCurSel($cmbCloseWaitRdmPercent, $icmbCloseWaitRdmPercent)
@@ -1900,7 +1902,7 @@ Func applyConfig($bRedrawAtExit = True) ;Applies the data from config to the con
 	_GUICtrlComboBox_SetCurSel($cmbHoursStop, $icmbHoursStop)
 	cmbBotCond()
 
-	GUICtrlSetData($txtTimeWakeUp, $sTimeWakeUp)
+	GUICtrlSetData($txtTimeWakeUp, Int(Int($sTimeWakeUp) / 60))
 
 	GUICtrlSetData($txtRestartGold, $itxtRestartGold)
 	GUICtrlSetData($txtRestartElixir, $itxtRestartElixir)

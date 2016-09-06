@@ -639,7 +639,8 @@ $y = $yStart + 45
 			GUICtrlSetOnEvent(-1, "chkTroopOrder2")
 
 	Local $sComboData = ""
-	Local $aTroopOrderList[13] = [ "", $sTxtBarbarians, $sTxtArchers, $sTxtGiants, $sTxtGoblins, $sTxtWallBreakers, $sTxtBalloons, $sTxtWizards, $sTxtHealers, $sTxtDragons, $sTxtPekkas, $sTxtBabyDragons, $sTxtMiners]
+	; Do Not Use translated names here or ChangeTroopTrainOrder() code breaks
+	Local $aTroopOrderList[13] = [ "", "Barbarians", "Archers", "Giants", "Goblins", "Wall Breakers", "Balloons", "Wizards", "Healers", "Dragons", "Pekkas", "Baby Dragons", "Miners"]
 
 	; Create translated list of Troops for combo box
 	For $j = 0 To UBound($aTroopOrderList) - 1
@@ -679,7 +680,8 @@ $y = $yStart + 45
 		GUICtrlSetOnEvent(-1, "chkDarkTroopOrder2")
 
 	Local $sComboData = ""
-	Local $aDarkTroopOrderList[8] = [ "", $sTxtMinions, $sTxtHogRiders, $sTxtValkyries, $sTxtGolems, $sTxtWitches, $sTxtLavaHounds, $sTxtBowlers]
+	; Do Not Use translated names here or ChangeDarkTroopTrainOrder()code breaks
+	Local $aDarkTroopOrderList[8] = [ "", "Minions", "Hog Riders", "Valkyries", "Golems", "Witches", "Lava Hounds", "Bowlers"]
 
 	; Create translated list of Troops for combo box
 	For $j = 0 To UBound($aDarkTroopOrderList) - 1

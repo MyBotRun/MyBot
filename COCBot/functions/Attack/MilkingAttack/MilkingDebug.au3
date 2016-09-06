@@ -71,7 +71,7 @@ Func CheckMilkingBaseTest()
 	$hTimer = TimerInit()
 
 	_CaptureRegion2()
-	_CaptureRegion(0,0,$DEFAULT_WIDTH,$DEFAULT_HEIGHT,true)
+	_CaptureRegion()
 	$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
 
 	Local $MilkFarmAtkPixelListSTR = ""

@@ -2,10 +2,10 @@
 ; Name ..........: LaunchConsole
 ; Description ...: Runs console application and returns output of STDIN and STDOUT
 ; Syntax ........:
-; Parameters ....: $cmd, $param, ByRef $process_killed, $timeout = 0
+; Parameters ....: $cmd, $param, ByRef $process_killed, $timeout = 0, $bUseSemaphore = False
 ; Return values .: None
 ; Author ........: Cosote (2015-12)
-; Modified ......:
+; Modified ......: Cosote (2016-08)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -13,63 +13,68 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000)
+Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
 
-   Local $data, $pid, $hTimer
+	If $bUseSemaphore = True Then
+		WaitForSemaphore(StringReplace($cmd, "\", "/"))
+	EndIf
 
-   If StringLen($param) > 0 Then $cmd &= " " & $param
+	Local $data, $pid, $hTimer
 
-   $hTimer = TimerInit()
-   $process_killed = False
+	If StringLen($param) > 0 Then $cmd &= " " & $param
 
-   If $debugSetlog = 1 Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_PURPLE) ; Debug Run
-   $pid = Run($cmd, "", @SW_HIDE, $STDERR_MERGED)
-   If $debugSetlog = 1 Then Setlog("Func LaunchConsole: command launched", $COLOR_PURPLE)
-   If $pid = 0 Then
-	  SetLog("Launch faild: " & $cmd, $COLOR_RED)
-	  Return
-   EndIf
+	$hTimer = TimerInit()
+	$process_killed = False
 
-   $data = ""
-   ;#cs
-   Local $timeout_sec = Round($timeout / 1000)
-   If $timeout > 0 And $timeout_sec = 0 Then $timeout_sec = 1
-   ProcessWaitClose($pid, $timeout_sec)
-   $data &= StdoutRead($pid)
-   $data &= StderrRead($pid)
-   CleanLaunchOutput($data)
-   ;#ce
-   #cs
-   ; Wait here if no timeout defined
-   If $timeout < 1 Then
-	  ProcessWaitClose($pid)
-	  $data &= StdoutRead($pid)
-	  $data &= StderrRead($pid)
-   Else
-	  While True
-		 _StatusUpdateTime($hTimer)
-		 If $debugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead...", $COLOR_PURPLE)
-		 $data &= StdoutRead($pid)
-		 If @error Then ExitLoop
-		 $data &= StderrRead($pid)
-		 If _Sleep(1000) Or ($timeout > 0 And TimerDiff($hTimer) > $timeout) Then
-			ExitLoop
-		 EndIf
-		 If $debugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead loop", $COLOR_PURPLE)
-	  WEnd
-   EndIf
-   #ce
+	If $debugSetlog = 1 Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_PURPLE) ; Debug Run
+	$pid = Run($cmd, "", @SW_HIDE, $STDERR_MERGED)
+	If $debugSetlog = 1 Then Setlog("Func LaunchConsole: command launched", $COLOR_PURPLE)
+	If $pid = 0 Then
+		SetLog("Launch faild: " & $cmd, $COLOR_RED)
+		Return
+	EndIf
 
-   If ProcessExists($pid) Then
-	 If ProcessClose($pid) = 1 Then
-		If $debugSetlog = 1 Then SetLog("Process killed: " & $cmd, $COLOR_RED)
-		$process_killed = True
-	 EndIf
-   EndIf
-   ProcessWaitClose($pid, $timeout_sec)
-   StdioClose($pid)
-   If $debugSetlog = 1 Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_PURPLE) ; Debug Run Output
-   Return $data
+	Local $hProcess
+	If _WinAPI_GetVersion() >= 6.0 Then
+		$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_LIMITED_INFORMATION, 0, $pid)
+	Else
+		$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_INFORMATION, 0, $pid)
+	EndIf
+
+	$data = ""
+	Local $timeout_sec = Round($timeout / 1000)
+
+	While True
+		If $hProcess Then
+			_WinAPI_WaitForSingleObject($hProcess, $iDelaySleep)
+		Else
+			Sleep($iDelaySleep)
+		EndIf
+		;_StatusUpdateTime($hTimer)
+		;If $debugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead...", $COLOR_PURPLE)
+		$data &= StdoutRead($pid)
+		If @error Then ExitLoop
+		;$data &= StderrRead($pid)
+		If ($timeout > 0 And TimerDiff($hTimer) > $timeout) Then ExitLoop
+		;If $debugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead loop", $COLOR_PURPLE)
+	WEnd
+
+	If $hProcess Then
+		_WinAPI_CloseHandle($hProcess)
+		$hProcess = 0
+	EndIF
+
+	CleanLaunchOutput($data)
+
+	If ProcessExists($pid) Then
+		If ProcessClose($pid) = 1 Then
+			If $debugSetlog = 1 Then SetLog("Process killed: " & $cmd, $COLOR_RED)
+			$process_killed = True
+		EndIf
+	EndIf
+	StdioClose($pid)
+	If $debugSetlog = 1 Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_PURPLE) ; Debug Run Output
+	Return $data
 EndFunc   ;==>LaunchConsole
 
 ; Special version of ProcessExists that checks process based on full process image path AND parameters
@@ -81,6 +86,19 @@ EndFunc   ;==>LaunchConsole
 ; $CompareParameterFunc is func that returns True or False if parameter is matching, "" not used
 Func ProcessExists2($ProgramPath, $ProgramParameter = Default, $CompareMode = Default, $SearchMode = 0, $CompareCommandLineFunc = "", $strComputer = ".")
 
+  If IsNumber($ProgramPath) Then ;Return ProcessExists($ProgramPath) ; Be compatible with ProcessExists
+	Local $hProcess, $pid = $ProgramPath
+	If _WinAPI_GetVersion() >= 6.0 Then
+		$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_LIMITED_INFORMATION, 0, $pid)
+	Else
+		$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_INFORMATION, 0, $pid)
+	EndIf
+	If $hProcess Then
+		_WinAPI_CloseHandle($hProcess)
+	EndIf
+	Return (($hProcess) ? $pid : 0)
+  EndIf
+
   If $ProgramParameter = Default Then
 	 $ProgramParameter = ""
 	 If $CompareMode = Default Then $CompareMode = 1
@@ -89,8 +107,6 @@ Func ProcessExists2($ProgramPath, $ProgramParameter = Default, $CompareMode = De
   If $CompareMode = Default Then
 	 $CompareMode = 0
   EndIf
-
-  If IsNumber($ProgramPath) Then Return ProcessExists($ProgramPath) ; Be compatible with ProcessExists
 
   Local $oWMI=ObjGet("winmgmts:{impersonationLevel=impersonate}!\\" & $strComputer & "\root\cimv2") ; ""
   SetDebugLog("ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2"")")

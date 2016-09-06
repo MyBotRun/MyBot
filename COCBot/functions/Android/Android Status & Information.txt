@@ -5,30 +5,11 @@ List of Supported Android Emulator
 MEmu
 ====
 http://www.memuplay.com/
-Versions 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 
 Known issues/bugs: None
-
-Droid4X
-=======
-http://www.droid4x.com/
-Versions 0.10.1 Beta, 0.10.0 Beta, 0.9.0 Beta, 0.8.7 Beta, 0.8.6 Beta
-MyBot Command Line Key: Droid4X
-Default Instance Key: droid4x
-
-Known issues/bugs: None
-
-Nox
-===
-http://en.bignox.com/
-Versions 3.5.1.0, 3.3.0.0, 3.1.0.0
-MyBot Command Line Key: Nox
-Default Instance Key: nox
-
-Known issues/bugs: Only low screen resultions and when Android Window doesn't have android screen size of 860x732
-due to different window size, MyBot resizing fails for any version (3.5.1 and 3.1 resize is quite unstable but could work).
 
 BlueStacks
 ==========
@@ -38,23 +19,54 @@ MyBot Command Line Key (0.8.x - 0.11.x): BlueStacks
 MyBot Command Line Key (2.x): BlueStacks2
 Default Instance Key: N/A (internally empty String "" or "Android" is used)
 
-Known issues/bugs: True Backgrond mode using ADB not available (no ADB screencap & no ADB mouse click).
-ADB only used for standard interaction and steady ADB shell not used.
+Known issues/bugs: True Background mode using ADB not available (no ADB screencap & no ADB mouse click).
+ADB only used for standard interaction and zoom-out.
+ADB connection for BlueStacks2 can require one-time ADB daemon restart (initiated automatically by bot).
+
+Droid4X
+=======
+http://www.droid4x.com/
+Versions 0.10.3 Beta, 0.10.2 Beta, 0.10.1 Beta, 0.10.0 Beta, 0.9.0 Beta, 0.8.7 Beta, 0.8.6 Beta
+MyBot Command Line Key: Droid4X
+Default Instance Key: droid4x
+
+Known issues/bugs: None
+
+LeapDroid
+=========
+http://www.leapdroid.com/
+Version 1.5.0, 1.4.0, 1.3.1
+MyBot Command Line Key: LeapDroid
+Default Instance Key: vm1
+
+Known issues/bugs: When docked, mouse outside bot window is not submitted to LeapDroid and if mouse state chances
+outside bot window when used for LeapDroid, mouse handling inside LeapDroid stops working, so be careful!
+ADB connection problems when mixed with other Emulators. Work-a-round: Close all LeadDroid instances at start bot again.
+As of version 1.5.0 only vm1 and vm2 support keyboard input, future versions should have that fixed.
+
+Nox
+===
+http://en.bignox.com/
+Versions 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.3.0, 3.1.0
+MyBot Command Line Key: Nox
+Default Instance Key: nox
+
+Known issues/bugs: Only in low computer screen resolutions and when Android Window doesn't have android screen size of 860x732
+due to different window size, MyBot resizing fails for any version (3.5.1 and 3.1 resize is quite unstable but could work).
 
 
 MyBot Internal Feature & Functions Matrix (not complete yet!)
 =========================================
 
-Feature/Function       | MEmu          | Droid4X       | Nox           | BlueStacks    | BlueStacks2   |
------------------------|---------------|---------------|---------------|---------------|---------------|
-AndroidZoomOut         | Yes           | Yes           | Yes           | Yes           | Yes           |
-AndroidScreencap       | Yes           | Yes           | Yes           | No            | No            |
-AndroidClick           | Yes           | Yes           | Yes           | No            | No            |
-_ControlClick          | Yes, not used | Yes, not used | Yes, not used | Yes           | Yes           |
-AndroidClickDrag       | Yes           | Yes           | Yes           | Yes, not used | Yes, not used |
-_PostMessage_ClickDrag | No            | No            | No            | Yes           | Yes           |
-AndroidSendText*       | Yes           | Yes           | Yes           | Yes           | Yes           |
-                       | Yes           | Yes           | Yes           | Yes           | Yes           |
+Feature/Function       | MEmu          | BlueStacks    | BlueStacks2   | Droid4X       | LeapDroid     | Nox           |
+-----------------------|---------------|---------------|---------------|---------------|---------------|---------------|
+AndroidZoomOut         | Yes           | Yes           | Yes           | Yes           | Yes           | Yes           |
+AndroidScreencap       | Yes           | No            | No            | Yes           | No            | Yes           |
+AndroidClick           | Yes           | No            | No            | Yes           | No            | Yes           |
+_ControlClick          | Yes, not used | Yes           | Yes           | Yes, not used | Yes           | Yes, not used |
+AndroidClickDrag       | Yes           | Yes, not used | Yes, not used | Yes           | Yes           | Yes           |
+_PostMessage_ClickDrag | No            | Yes           | Yes           | No            | No            | No            |
+AndroidSendText*       | Yes           | Yes           | Yes           | Yes           | Yes           | Yes           |
 
 Feature & Functions Notes
-AndroidSendText* Works only for ASCII Characters, now Umlauts etc.
+AndroidSendText* Works only for ASCII Characters, no Umlauts etc.

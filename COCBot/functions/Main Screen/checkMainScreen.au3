@@ -19,12 +19,12 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 	Local $iCount, $Result
 	If $Check = True Then
 		SetLog("Trying to locate Main Screen")
-		_WinAPI_EmptyWorkingSet(GetAndroidPid()) ; Reduce Android Memory Usage
 	Else
 		;If $debugsetlog = 1 Then SetLog("checkMainScreen start quiet mode", $COLOR_PURPLE)
     EndIf
 	If CheckAndroidRunning(False) = False Then Return
 	getBSPos() ; Update $HWnd and Android Window Positions
+	#cs
 	If $ichkBackground = 0 And $NoFocusTampering = False And $AndroidEmbedded = False Then
 	    Local $hTimer = TimerInit(), $hWndActive = -1
 		Local $activeHWnD = WinGetHandle("")
@@ -39,6 +39,13 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 	    EndIf
 		WinActivate($activeHWnD) ; restore current active window
     EndIf
+	#ce
+	WinGetAndroidHandle()
+	If $ichkBackground = 0 And $HWnD <> 0 Then
+		; ensure android is top
+		BotToFront()
+	EndIf
+	If $AndroidAdbScreencap = False And _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
 	$iCount = 0
 	While _CheckPixel($aIsMain, $bCapturePixel) = False
 		WinGetAndroidHandle()

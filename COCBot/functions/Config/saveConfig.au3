@@ -567,7 +567,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	$icmbBotCond = _GUICtrlComboBox_GetCurSel($cmbBotCond)
 	$icmbHoursStop = _GUICtrlComboBox_GetCurSel($cmbHoursStop)
 
-	$sTimeWakeUp = GUICtrlRead($txtTimeWakeUp)
+	$sTimeWakeUp = Int(GUICtrlRead($txtTimeWakeUp)) * 60 ; Minutes are entered
 
 	$itxtRestartGold = GUICtrlRead($txtRestartGold)
 	$itxtRestartElixir = GUICtrlRead($txtRestartElixir)

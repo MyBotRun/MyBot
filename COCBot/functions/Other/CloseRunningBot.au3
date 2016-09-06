@@ -22,8 +22,8 @@ Func CloseRunningBot($sBotWindowTitle)
 		If WinClose($otherHWnD) = 1 Then
 			SetDebugLog("Existing bot window closed")
 		EndIf
-		If WinWaitClose($otherHWnD, "", 5) = 0 Then
-			; bot didn't close in 5 secodns, force close now
+		If WinWaitClose($otherHWnD, "", 10) = 0 Then
+			; bot didn't close in 10 secodns, force close now
 			SetDebugLog("Existing bot window still there...")
 			WinKill($otherHWnD)
 			SetDebugLog("Existing bot window killed")

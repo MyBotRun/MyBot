@@ -76,7 +76,7 @@ Func checkTownHallADV2($limit = 0, $tolerancefix = 0, $captureRegion = True)
 ;~ 	ConsoleWrite ("max value =  " & $max &  @CRLF)
 	Local $found = False
 	For $i = 1 To $max
-		If $captureRegion Then _CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT, True)
+		If $captureRegion Then _CaptureRegion()
 		;For $t = 0 To UBound($THText) - 1		  ; check from th6 to th11
 		For $t = UBound($THText) - 1 To 0 Step -1 ; check from th11 to th6
 			If Int(Execute("$THImages" & $t & "[0]")) >= $i Then

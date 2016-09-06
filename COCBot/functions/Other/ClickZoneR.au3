@@ -64,12 +64,12 @@ Func ClickR($boundingBox, $x, $y, $times = 1, $speed = 0, $OutScreen = (680 + $b
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
 			If $debugClick = 1 Then SetLog("_ControlClick " & "X=" & $x & " Y=" & $y & " ,t" & $times & ",s" & $speed & $AncVal, $COLOR_ORANGE, "Verdana", "7.5", 0)
-			_ControlClick($x, $y)
+			Click($x, $y)
 			If _Sleep($speed, False) Then ExitLoop
 		Next
 	Else
 		If $debugClick = 1 Then SetLog("_ControlClick " & "X=" & $x & " Y=" & $y & $AncVal, $COLOR_ORANGE, "Verdana", "7.5", 0)
-		_ControlClick($x, $y)
+		Click($x, $y)
 	EndIf
 EndFunc   ;==>ClickR
 

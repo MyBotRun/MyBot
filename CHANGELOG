@@ -1,3 +1,47 @@
+* **V6.2.2**
+ * Add Android support for LeapDroid 1.5.0 - 1.3.0 (http://www.leapdroid.com/)
+ * Fix bot stop working and freezing sometimes (bot buttons did disappear as well)
+ * Fix OCR sometimes not working at all (English language detection...)
+ * Fix ADB connect problems
+ * Fix Android ADB screencap performance issues for some Windows installations
+ * Fix Android ADB screencap protocol error when bot stopped
+ * Fix deactivation of "Bot Tab" controls when bot is running
+ * Fix BlueStacks manual mouse clicks little off when undocked after being docked
+ * Fix BlueStacks2 docking/undocking issues
+ * Fix Android Window search (not using title anymore)
+ * Fix zoom-out for Nox 3.7.0 and 3.7.1
+ * Fix not finding home screen when docked in non background mode
+ * Fix close while training GUI errors
+ * Fix random click not adding window offset and reduce zone size on collectors to remove errors
+ * Fix typo in CSV forced side code that prevent proper operation
+ * Fix saving photo when bot stopped and Android Window moved
+ * Fix Dock Mode when Windows Screen Size changes
+ * Fix Android Window minimize when bot stopped or paused
+ * Fix restarting bot with /restart parameter
+ * Fix Training idle time log off without a shield error due old shield time value
+ * Fix Pause causing bot crashes and unwanted error messages/behavior
+ * Fix BlueStacks memory problems when in halt mode
+ * Fix launching bot with profile command line parameter not creating profile
+ * Fix Random start of attack when army is not full when search start army size filter enabled or zero value
+ * Fix search IF filter to require ALL enabled filter conditions as true to start search, instead of only one.
+ * Fix rare issue of fast re-starting attack immediately after personal break without checking Heroes
+ * Fix share replay feature not working after working for awhile (@Samkie provided)
+ * Adjust Training idle time feature to allow users to disable anti-ban smartwait when shielded
+ * Improve hero activation when more than 11 slots occupied (from @Promac post in forums)
+ * Improve Android Shield support in Window 7
+ * Improve non background mode not stealing focus to bring android to front
+ * Improve train order log message
+ * Add warning message when heroes are found being upgraded and wait for hero is enabled in GUI
+ * Add check of reload CoC messages for banned accounts and stop bot
+ * Remove forced bot repositioning on low screen resolution
+ * Change Android priority order to MEmu, BlueStacks2, BlueStacks, Droid4X, LeapDroid, Nox
+ * Change default zoom-out for BlueStacks/BlueStacks2 to use WinAPI Ctrl-Click when un-docked
+ * Change wait when another device connects from Seconds to Minutes in bot option input box
+ * Change Spell training to automatically pre-train spells for next attack, when army full (@mikemikemikecoc)
+ * Enable Accelerator Key (not global hotkeys!) that work when bot window is active:
+   Pause/Break Key = Pause/Resume bot
+   ESC = Stop bot
+
 * **V6.2.1**
  * Fix GUI display of clone/skeleton spells for TH level where they are not available
  * Fix old training bug (@Promac submitted)
@@ -42,7 +86,7 @@
  * Minor User Interface changes to Bot Options tab: Moved "Village Search Delay" to Search & Attack Options tab, Moved "Train Click Delay" to Train Army Options tab; as they seem better aligned with those tabs.
  * New scroll to waters and zoom-out ADB scripts for slower computer
 
-  * **V6.1.4**
+* **V6.1.4**
  * Improve Freeze, Poison, and Haste spell training detection
  * Improved donaton detection images for Healer, Barbarian, Lava Hound, Wizard, Poison, Earthquake, Haste.
  * Fix manual TH locate warning error creating confusion on proper button to choose
@@ -50,7 +94,7 @@
  * Reduce (hopefully fixed) resource collection errors with new match images
  * Updated Taiwan language file (from @flowclouds)
 
- * **V6.1.3**
+* **V6.1.3**
  * Improve troop deploy click speed
  * Improve click speed for MEmu, Droid4X and Nox (adb.click.enabled now by default disabled (0) in config.ini, ensure mouse is not over Android Window!)
  * Improve Android Emulator launch by closing Windows WerFault AppCrash Window preventing launch of emulator
@@ -161,7 +205,6 @@
  * Improve healing spell detection during training
 
 * **V5.3.2**
->>>>>>> release/MBR_v.6.1
  * Updated Italian language file (from @davideroma)
  * Improve Troops&Spells Detection army overview
  * Fix Hero Status detection

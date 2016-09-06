@@ -308,10 +308,7 @@ Func RestartBlueStacksXCoC()
    If Not $RunState Then Return False
    Local $cmdOutput, $process_killed
    If Not InitAndroid() Then Return False
-   ;$HWnD = WinGetHandle($Title)
    If WinGetAndroidHandle() = 0 Then Return False
-   ;WinActivate($HWnD)  	; ensure bot has window focus
-   ;WaitForDeviceBlueStacks2(30)
    $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am start -W -S -n " & $AndroidGamePackage & "/" & $AndroidGameClass, $process_killed)
    SetLog("Please wait for CoC restart......", $COLOR_BLUE)   ; Let user know we need time...
    Return True

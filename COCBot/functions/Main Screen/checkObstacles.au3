@@ -6,7 +6,7 @@
 ; Parameters ....:
 ; Return values .: Returns True when there is something blocking
 ; Author ........: Hungle (2014)
-; Modified ......: KnowJack (2015), Sardo 2015-08, The Master 2015-10
+; Modified ......: KnowJack (2015), Sardo 2015-08, The Master 2015-10, MonkeyHunter (08-2016)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -34,7 +34,8 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		;;;;;;;##### 1- Another device #####;;;;;;;
 		$result = getOcrMaintenanceTime(184, 325 + $midOffsetY) ; OCR text to find Another device message
 		If StringInStr($result, "device", $STR_NOCASESENSEBASIC) Or _
-			_ImageSearchArea($device, 0, 237, 321 + $midOffsetY, 293, 346 + $midOffsetY, $x, $y, 80) Then
+			_ImageSearchAreaImgLoc($device, 0, 220, 300 + $midOffsetY, 300, 360 + $midOffsetY, $x, $y, 95) Then
+			;_ImageSearchArea($device, 0, 237, 321 + $midOffsetY, 293, 346 + $midOffsetY, $x, $y, 80) Then
 			If $sTimeWakeUp > 3600 Then
 				SetLog("Another Device has connected, waiting " & Floor(Floor($sTimeWakeUp / 60) / 60) & " hours " & Floor(Mod(Floor($sTimeWakeUp / 60), 60)) & " minutes " & Floor(Mod($sTimeWakeUp, 60)) & " seconds", $COLOR_RED)
 				PushMsg("AnotherDevice3600")
@@ -46,18 +47,21 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 				PushMsg("AnotherDevice")
 			EndIf
 			If _SleepStatus($sTimeWakeUp * 1000) Then Return ; Wait as long as user setting in GUI, default 120 seconds
-			PureClickP($aReloadButton, 1, 0, "#0127");Check for "Another device" message
+			checkObstacles_ReloadCoC($aReloadButton, "#0127")
 			If _Sleep(2000) Then Return
 			If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
+			checkObstacles_ResetSearch()
 			Return True
 		EndIf
 		;;;;;;;##### 2- Take a break #####;;;;;;;
-		If _ImageSearchArea($break, 0, 165, 257 + $midOffsetY, 335, 295 + $midOffsetY, $x, $y, 100) Then ; used for all 3 different break messages
+		;If _ImageSearchArea($break, 0, 165, 257 + $midOffsetY, 335, 295 + $midOffsetY, $x, $y, 100) Then ; used for all 3 different break messages
+		If _ImageSearchAreaImgLoc($break, 0, 165, 257 + $midOffsetY, 335, 295 + $midOffsetY, $x, $y, 95) Then ; used for all 3 different break messages
 			SetLog("Village must take a break, wait ...", $COLOR_RED)
 			PushMsg("TakeBreak")
 			If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
-			PureClickP($aReloadButton, 1, 0, "#0128");Click on reload button
+			checkObstacles_ReloadCoC($aReloadButton, "#0128");Click on reload button
 			If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
+			checkObstacles_ResetSearch()
 			Return True
 		EndIf
 		;;;;;;;##### Connection Lost & OoS & Inactive & Maintenance #####;;;;;;;
@@ -66,11 +70,26 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 				SetLog("Village was Inactive, Reloading CoC...", $COLOR_RED)
 				If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 			Case _CheckPixel($aIsConnectLost, $bNoCapturePixel) ; Connection Lost
+				;  Add check for banned account :(
+				$result = getOcrMaintenanceTime(171, 358 + $midOffsetY, "Check Obstacles OCR 'policy at super'=") ; OCR text for "policy at super"
+				If StringInStr($result, "policy", $STR_NOCASESENSEBASIC) Then
+					SetLog("Sorry but account has been banned, Bot must stop!!", $COLOR_RED)
+					BanMsgBox()
+					Btnstop() ; stop bot
+					Return True
+				EndIf
+				$result = getOcrMaintenanceTime(171, 337 + $midOffsetY, "Check Obstacles OCR 'prohibited 3rd'= ") ; OCR text for "prohibited 3rd party"
+				If StringInStr($result, "3rd", $STR_NOCASESENSEBASIC) Then
+					SetLog("Sorry but account has been banned, Bot must stop!!", $COLOR_RED)
+					BanMsgBox()
+					Btnstop() ; stop bot
+					Return True
+				EndIf
 				SetLog("Connection lost, Reloading CoC...", $COLOR_RED)
 			Case _CheckPixel($aIsCheckOOS, $bNoCapturePixel) ; Check OoS
 				SetLog("Out of Sync Error, Reloading CoC...", $COLOR_RED)
 			Case _CheckPixel($aIsMaintenance, $bNoCapturePixel) ; Check Maintenance
-				$result = getOcrMaintenanceTime(171, 345 + $midOffsetY) ; OCR text to find wait time
+				$result = getOcrMaintenanceTime(171, 345 + $midOffsetY, "Check Obstacles OCR Maintenance Break=") ; OCR text to find wait time
 				Local $iMaintenanceWaitTime = 0
 				Select
 					Case $result = ""
@@ -96,27 +115,43 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 				SetLog("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....", $COLOR_RED)
 				If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 				If _SleepStatus($iMaintenanceWaitTime) Then Return
+				checkObstacles_ResetSearch()
 			Case Else
-				;  Add check for game update and Rate CoC error messages
-				If $debugImageSave = 1 Then DebugImageSave("ChkObstaclesReloadMsg_")  ; debug only
-				$result = getOcrMaintenanceTime(171, 325 + $midOffsetY) ; OCR text for "Good News!"
-				If $debugsetlog = 1 Then SetLog("Check Obstacles getOCRMaintenanceTime= " & $result, $COLOR_PURPLE)  ; debug only
+				;  Add check for misc error messages
+				If $debugImageSave = 1 Then DebugImageSave("ChkObstaclesReloadMsg_") ; debug only
+				$result = getOcrMaintenanceTime(171, 325 + $midOffsetY, "Check Obstacles OCR 'Good News!'=") ; OCR text for "Good News!"
 				If StringInStr($result, "new", $STR_NOCASESENSEBASIC) Then
 					SetLog("Game Update is required, Bot must stop!!", $COLOR_RED)
 					Btnstop() ; stop bot
 					Return True
 				EndIf
 				$result = getOcrRateCoc(228, 380 + $midOffsetY)
-				If $debugsetlog = 1 Then SetLog("Check Obstacles getOCRRateCoC= " & $result, $COLOR_PURPLE)  ; debug only
+				If $debugsetlog = 1 Then SetLog("Check Obstacles getOCRRateCoC=" & $result, $COLOR_PURPLE) ; debug only
 				If StringInStr($result, "never", $STR_NOCASESENSEBASIC) Then
 					SetLog("Clash feedback window found, permanently closed!", $COLOR_RED)
 					PureClick(248, 408 + $midOffsetY, 1, 0, "#9999") ; Click on never to close window and stop reappear. Never=248,408 & Later=429,408
 					$MinorObstacle = True
 					Return True
 				EndIf
+				;  Add check for banned account :(
+				$result = getOcrMaintenanceTime(171, 358 + $midOffsetY, "Check Obstacles OCR 'policy at super'=") ; OCR text for "policy at super"
+				If StringInStr($result, "policy", $STR_NOCASESENSEBASIC) Then
+					SetLog("Sorry but account has been banned, Bot must stop!!", $COLOR_RED)
+					BanMsgBox()
+					Btnstop() ; stop bot
+					Return True
+				EndIf
+				$result = getOcrMaintenanceTime(171, 337 + $midOffsetY, "Check Obstacles OCR 'prohibited 3rd'= ") ; OCR text for "prohibited 3rd party"
+				If StringInStr($result, "3rd", $STR_NOCASESENSEBASIC) Then
+					SetLog("Sorry but account has been banned, Bot must stop!!", $COLOR_RED)
+					BanMsgBox()
+					Btnstop() ; stop bot
+					Return True
+				EndIf
 				SetLog("Warning: Can not find type of Reload error message", $COLOR_RED)
+				SetDebugLog("OCR Text: " & $result)
 		EndSelect
-		PureClickP($aReloadButton, 1, 0, "#0131"); Click for out of sync or inactivity or connection lost or maintenance
+		checkObstacles_ReloadCoC($aReloadButton, "#0131"); Click for out of sync or inactivity or connection lost or maintenance
 		If _Sleep($iDelaycheckObstacles3) Then Return
 		Return True
 	EndIf
@@ -162,7 +197,8 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		ReturnHome(False, False) ;If End battle is available
 		Return True
 	EndIf
-	If _ImageSearchArea($CocStopped, 0, 250, 328 + $midOffsetY, 618, 402 + $midOffsetY, $x, $y, 70) Then
+	;If _ImageSearchArea($CocStopped, 0, 250, 328 + $midOffsetY, 618, 402 + $midOffsetY, $x, $y, 70) Then
+	If _ImageSearchAreaImgLoc($CocStopped, 0, 250, 328 + $midOffsetY, 618, 402 + $midOffsetY, $x, $y, 95) Then
 		SetLog("CoC Has Stopped Error .....", $COLOR_RED)
 		PushMsg("CoCError")
 		If _Sleep($iDelaycheckObstacles1) Then Return
@@ -190,3 +226,30 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 	EndIf
 	Return False
 EndFunc   ;==>checkObstacles
+
+; It's more stable to restart CoC app than click the message restarting the game
+Func checkObstacles_ReloadCoC($point, $debugtxt = "")
+	;PureClickP($point, 1, 0, $debugtxt)
+	CloseCoC(True)
+EndFunc   ;==>checkObstacles_ReloadCoC
+
+Func checkObstacles_ResetSearch()
+	; reset fast restart flags to ensure base is rearmed after error event that has base offline for long duration, like PB or Maintenance
+	$Is_ClientSyncError = False
+	$Is_SearchLimit = False
+	$Quickattack = False
+	$Restart = True ; signal all calling functions to return to runbot
+EndFunc   ;==>checkObstacles_ResetSearch
+
+Func BanMsgBox()
+	Local $MsgBox
+	Local $stext = "Sorry, youy account is banned!!" & @CRLF & "Bot will stop now..."
+	While 1
+		_ExtMsgBoxSet(4, 1, 0x004080, 0xFFFF00, 20, "Comic Sans MS", 600)
+		$MsgBox = _ExtMsgBox(48, "Ok", "Banned", $stext, 1, $frmBot)
+		If $MsgBox = 1 Then Return
+		_ExtMsgBoxSet(4, 1, 0xFFFF00, 0x004080, 20, "Comic Sans MS", 600)
+		$MsgBox = _ExtMsgBox(48, "Ok", "Banned", $stext, 1, $frmBot)
+		If $MsgBox = 1 Then Return
+	WEnd
+EndFunc   ;==>BanMsgBox

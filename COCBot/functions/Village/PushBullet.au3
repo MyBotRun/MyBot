@@ -262,7 +262,7 @@ Func PushMsgToPushBullet($Message, $Source = "")
 				SetLog("Pushbullet: Last Raid Text has been sent!", $COLOR_GREEN)
 			EndIf
 			If $PushBulletEnabled = 1 And $pLastRaidImg = 1 Then
-				_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT - 45)
+				_CaptureRegion()
 				;create a temporary file to send with pushbullet...
 				Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 				Local $Time = @HOUR & "." & @MIN
@@ -315,7 +315,7 @@ Func PushMsgToPushBullet($Message, $Source = "")
 		Case "RequestScreenshot"
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT)
+			_CaptureRegion()
 			$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
 			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 			_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirTemp & $Screnshotfilename)

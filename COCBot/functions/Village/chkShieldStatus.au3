@@ -16,7 +16,8 @@
 ; ===============================================================================================================================
 Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
-	If ($ichkSinglePBTForced = 0 And ($iChkBotStop = 1 And $icmbBotCond >= 19) = False) Or Not (IsMainPage()) Then Return ; return if force single PB or wait for shield not enabled.
+	; skip shield data collection if force single PB, wait for shield, or close while training not enabled, or window is not on main base
+	If ($ichkSinglePBTForced = 0 And ($iChkBotStop = 1 And $icmbBotCond >= 19) = False) And $ichkCloseWaitEnable = 0 Or Not (IsMainPage()) Then Return
 
 	Local $Result, $iTimeTillPBTstartSec, $ichkTime = 0, $ichkSTime = 0, $ichkPBTime = 0
 

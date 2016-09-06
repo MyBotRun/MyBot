@@ -30,7 +30,6 @@ Func LocateClanCastle()
 		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,33,"Locate Clan Castle"), $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			WinActivate($HWnD)
 			ClickP($aAway, 1, 0, "#0373")
 			Local $aPos = FindPos()
 			$aCCPos[0] = $aPos[0]

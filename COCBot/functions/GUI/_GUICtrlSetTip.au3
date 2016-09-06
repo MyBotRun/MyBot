@@ -1,6 +1,6 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: _GUICtrlSetTip
-; Description ...: Replacement for GUICtrlSetTip because doesn't create a tool tip control everytime
+; Description ...: Replacement for GUICtrlSetTip because doesn't create a tool tip window control everytime
 ; Syntax ........:
 ; Parameters ....: See GUICtrlSetTip
 ; Return values .: See _GUIToolTip_AddTool

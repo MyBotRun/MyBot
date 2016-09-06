@@ -40,7 +40,7 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 		Local $posx, $posy
 		If $debugsetlog = 1 Then Setlog("##start search in vector Destroyed" & $name & "IMG" & $level & ": numbers of files=" & UBound(Eval("Destroyed" & $name & "IMG" & $level)), $color_green)
 ;~ 		 For $t = 1 To ubound(Eval("Destroyed" & $name & "IMG" & $level)) - 1
-;~ 			   If $debugsetlog=1 Then Setlog("°-°" &  Execute("$Destroyed" & $name & "IMG"& $level & "[" & $t & "]"),$color_aqua)
+;~ 			   If $debugsetlog=1 Then Setlog("-" &  Execute("$Destroyed" & $name & "IMG"& $level & "[" & $t & "]"),$color_aqua)
 ;~ 		 Next
 		For $t = UBound(Eval("Destroyed" & $name & "IMG" & $level)) - 1 To 1 Step -1 ;
 			$filename = Execute("$Destroyed" & $name & "IMG" & $level & "[" & $t & "]")

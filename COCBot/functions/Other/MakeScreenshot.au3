@@ -15,45 +15,18 @@
 ; ===============================================================================================================================
 
 Func MakeScreenshot($TargetDir, $type = "jpg")
-	WinGetAndroidHandle()
-	If $HWnD <> 0 Then
+
+	If WinGetAndroidHandle() <> 0 Then
 
 		Local $SuspendMode
-		Local $iLeft = 0, $iTop = 0, $iRight = $AndroidClientWidth, $iBottom = $AndroidClientHeight ; set size if screen to save
+		Local $iLeft = 0, $iTop = 0, $iRight = $AndroidClientWidth, $iBottom = $AndroidClientHeight ; set size of ENTIRE screen to save
 		Local $iW = Number($iRight) - Number($iLeft)
 		Local $iH = Number($iBottom) - Number($iTop)
-		Local $hHBitmapScreenshot, $hDC_Capture, $hMemDC, $hObjectOld, $hBitmapScreenshot
+		Local $hBitmapScreenshot
 		Local $hGraphic, $hBrush
 
-		; Get local screen capture from BS to not interfer with other graphics captures
-		If $ichkBackground = 1 Then
-			If $AndroidAdbScreencap = True Then
-				$hHBitmapScreenshot = AndroidScreencap($iLeft, $iTop, $iW, $iH)
-			Else
-				$SuspendMode = ResumeAndroid(False)
-				$hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($HWnD, "", $AppClassInstance)) ; get device context (DC) of emulator windpow
-				$hMemDC = _WinAPI_CreateCompatibleDC($hDC_Capture) ; create compatible copy of emulator DC
-				$hHBitmapScreenshot = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH) ; create handle to DC compatible bitmap
-				$hObjectOld = _WinAPI_SelectObject($hMemDC, $hHBitmapScreenshot) ; selects new DC handle, and saves existing DC object
-
-				DllCall("user32.dll", "int", "PrintWindow", "hwnd", $HWnD, "handle", $hMemDC, "int", 0)
-				_WinAPI_SelectObject($hMemDC, $hHBitmapScreenshot)
-				_WinAPI_BitBlt($hMemDC, 0, 0, $iW, $iH, $hDC_Capture, $iLeft, $iTop, $SRCCOPY) ; copy screen shot to DC
-
-				_WinAPI_DeleteDC($hMemDC)
-				_WinAPI_SelectObject($hMemDC, $hObjectOld) ; select old graphics object
-				_WinAPI_ReleaseDC($HWnD, $hDC_Capture) ; delete new DC
-				SuspendAndroid($SuspendMode, False)
-			EndIf
-			$hBitmapScreenshot = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmapScreenshot)
-		Else
-			getBSPos()
-			$SuspendMode = ResumeAndroid(False)
-			$hHBitmapScreenshot = _ScreenCapture_Capture("", $iLeft + $BSpos[0], $iTop + $BSpos[1], $iRight + $BSpos[0] - 1, $iBottom + $BSpos[1] - 1, False)
-			$hBitmapScreenshot = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmapScreenshot)
-			SuspendAndroid($SuspendMode, False)
-		EndIf
-		$ForceCapture = False
+		$hHBitmapScreenshot = _CaptureRegion($iLeft, $iTop, $iRight, $iBottom, False, True)
+		$hBitmapScreenshot = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmapScreenshot)
 
 		$hGraphic = _GDIPlus_ImageGetGraphicsContext($hBitmapScreenshot) ; Get graphics content from bitmap image
 		$hBrush = _GDIPlus_BrushCreateSolid(0xFF000029) ;create a brush AARRGGBB (using 0x000029 = Dark Blue)

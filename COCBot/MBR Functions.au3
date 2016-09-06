@@ -13,12 +13,11 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
+#include "functions\Other\Synchronization.au3"
 #include "functions\Other\OnAutoItErrorRegisterBot.au3"
-#include "functions\GUI\GUI_State.au3"
-#include "functions\GUI\SplashStep.au3"
 #include "functions\Other\UpdateStatsWall.au3"
-#include "functions\Config\profileFunctions.au3"
 
+#include "functions\Config\profileFunctions.au3"
 #include "functions\Config\applyConfig.au3"
 #include "functions\Config\strategies.au3"
 #include "functions\Config\readConfig.au3"
@@ -121,7 +120,6 @@
 #include "functions\CreateArmy\Train.au3"
 #include "functions\CreateArmy\TrainIt.au3"
 
-
 #include "functions\Image Search\ImageSearch.au3"
 #include "functions\Image Search\checkDeadBase.au3"
 #include "functions\Image Search\checkTownhall.au3"
@@ -139,7 +137,7 @@
 #include "functions\Main Screen\RemoveGhostTrayIcons.au3"
 #include "functions\Main Screen\waitMainScreen.au3"
 
-; Android support for MEmu, Droid4X, Nox, BlueStacks...
+; Android support for MEmu, LeapDroid, Droid4X, Nox, BlueStacks...
 #include "functions\Android\AndroidMenuShortcuts.au3"
 #include "functions\Android\Close_OpenCoC.au3"
 #include "functions\Android\ZoomOut.au3"
@@ -149,6 +147,7 @@
 #include "functions\Android\OpenDroid4X.au3"
 #include "functions\Android\CloseDroid4X.au3"
 #include "functions\Android\AndroidMEmu.au3"
+#include "functions\Android\AndroidLeapDroid.au3"
 #include "functions\Android\AndroidNox.au3"
 #include "functions\Android\getBSPos.au3"
 #include "functions\Android\UniversalCloseWaitOpenCoC.au3"
@@ -166,7 +165,7 @@
 #include "functions\Other\ClickOkay.au3"
 #include "functions\Other\ClickRemove.au3"
 #include "functions\Other\CreateLogFile.au3"
-#include "functions\Other\MBRFunc.au3"
+;#include "functions\Other\MBRFunc.au3"
 #include "functions\Other\DebugImageSave.au3"
 #include "functions\Other\DebugSaveDesktopImage.au3"
 #include "functions\Other\ExtendedErrorInfo.au3"
@@ -189,6 +188,7 @@
 #include "functions\Other\CheckVersion.au3"
 #include "functions\Other\CloseRunningBot.au3"
 #include "functions\Other\WindowSystemMenu.au3"
+#include "functions\Other\image_get_info.au3"
 
 #include "functions\Other\ComError.au3"
 #include "functions\Other\IsPage.au3"

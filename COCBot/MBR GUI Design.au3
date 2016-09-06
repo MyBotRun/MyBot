@@ -13,8 +13,11 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-#include "Functions\other\AppUserModelId.au3"
+#include "Functions\Other\AppUserModelId.au3"
 #include "Functions\GUI\_GUICtrlSetTip.au3"
+#include "functions\GUI\_GUICtrlCreatePic.au3"
+#include "functions\GUI\GUI_State.au3"
+#include "functions\GUI\SplashStep.au3"
 
 Global Const $TCM_SETITEM = 0x1306
 
@@ -42,20 +45,23 @@ TraySetToolTip($sBotTitle)
 $frmBotEx = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
 GUICtrlCreateLabel("", 0, 0, $_GUI_MAIN_WIDTH, 5)
 GUICtrlSetBkColor(-1, $COLOR_WHITE)
-$frmBot_MAIN_PIC = GUICtrlCreatePic(@ScriptDir & "\Images\logo.jpg", 0, $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH, 80)
+Local $sLogoPath = @ScriptDir & "\Images\logo.jpg"
+$frmBot_MAIN_PIC = _GUICtrlCreatePic(@ScriptDir & "\Images\logo.jpg", 0, $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH, 80)
 $hToolTip = _GUIToolTip_Create($frmBot) ; tool tips for URL links etc
 _GUIToolTip_SetMaxTipWidth($hToolTip, $_GUI_MAIN_WIDTH) ; support multiple lines
 
 GUISwitch($frmBot)
+$frmBotEmbeddedShieldInput = GUICtrlCreateInput("", 0, 0, -1, -1, $WS_TABSTOP)
+;$frmBotEmbeddedShieldInput = GUICtrlCreateLabel("", 0, 0, 0, 0, $WS_TABSTOP)
+;$frmBotEmbeddedShieldInput = GUICtrlCreateDummy()
+GUICtrlSetState($frmBotEmbeddedShieldInput, $GUI_HIDE)
 
 $frmBotBottom = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_BOTTOM_HEIGHT, 0, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
 $frmBotBottomCtrlState = 0
-;$frmBotEmbeddedRecorder = GUICreate("", 32, 32, 0, 0, $WS_CHILD, -1, $frmBot) ; Android Recorder of mouse clicks and moves
-$frmBotEmbeddedShield = GUICreate("", 32, 32, 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), BitOR($WS_EX_TOPMOST, ($AndroidShieldPreWin8 ? $WS_EX_TRANSPARENT : 0)), $frmBot) ; Android Shield for mouse
-$frmBotEmbeddedGarphics = GUICreate("", 32, 32, 0, 0, $WS_CHILD, BitOR($WS_EX_LAYERED, $WS_EX_TOPMOST), $frmBot)
-GUISwitch($frmBotEmbeddedShield)
-$frmBotEmbeddedShieldInput = GUICtrlCreateInput("", 0, 0, -1, -1, $WS_TABSTOP)
-GUICtrlSetState($frmBotEmbeddedShieldInput, $GUI_HIDE)
+$frmBotEmbeddedShield = 0
+$frmBotEmbeddedMouse = 0
+$frmBotEmbeddedGarphics = 0
+
 
 ;~ ------------------------------------------------------
 ;~ Header Menu
@@ -106,41 +112,56 @@ Local $x = 30, $y = 150 + $_GUI_MAIN_TOP
 		GUICtrlSetBkColor(-1, $COLOR_WHITE)
 		$txtCredits = "My Bot is brought to you by a worldwide team of open source"  & @CRLF & _
 						"programmers and a vibrant community of forum members!"
-		$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y - 5, 400, 35)
+		$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y - 10, 400, 35)
 			GUICtrlSetFont(-1, 10, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_NAVY)
-		$y += 38
+		$y += 30
 		$txtCredits = "Please visit our web forums:"
 		$lblCredits2 = GUICtrlCreateLabel($txtCredits, $x+20, $y, 180, 30)
 			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 		$labelMyBotURL = GUICtrlCreateLabel("https://mybot.run/forums", $x + 198, $y, 150, 20)
 			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_BLUE)
-		$y += 27
+		$y += 22
 		$lblCredits3 = GUICtrlCreateLabel("Credits belong to following programmers for donating their time:", $x - 5, $y , 420, 20)
 			GUICtrlSetFont(-1,10, $FW_BOLD)
 		$y += 20
-		$txtCredits =	"Active developers: "  &  @CRLF & _
-						"Boju, Cosote, Hervidero, Kaganus, MonkeyHunter, Sardo, Trlopes, Zengzeng" & @CRLF & @CRLF & _
-                        "Retired developers: "  &  @CRLF & _
-						"Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, Knowjack, LunaEclipse, ProMac, Safar46, Saviart, TheMaster1st, and others"
-		$lbltxtCredits1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410,120, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+		$txtCredits =	"Active developers: "
+		$lbltxtCreditsA1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_NAVY)
+		$txtCredits = "Boju, Cosote, MonkeyHunter, Trlopes, Zengzeng"
+		$lbltxtCreditsA2 = GUICtrlCreateLabel($txtCredits, $x+10, $y+15, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 			GUICtrlSetFont(-1,9, $FW_MEDIUM)
-;			GUICtrlSetBkColor(-1, $COLOR_WHITE)
-		$y += 125
+		$y += 35
+		$txtCredits =	"Inactive developers: "
+		$lbltxtCreditsMIA1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_NAVY)
+		$txtCredits = "Hervidero, Kaganus, Sardo"
+		$lbltxtCreditsMIA2 = GUICtrlCreateLabel($txtCredits, $x+10, $y+15, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1,9, $FW_MEDIUM)
+		$y += 35
+		$txtCredits =	"Retired developers: "
+		$lbltxtCreditsDead1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_NAVY)
+		$txtCredits = "Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, KnowJack, LunaEclipse, ProMac, Safar46, Saviart, TheMaster1st, and others"
+		$lbltxtCreditsDead2 = GUICtrlCreateLabel($txtCredits, $x+10, $y+15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1,9, $FW_MEDIUM)
+		$y += 66
 		$txtCredits = "Special thanks to all contributing forum members helping " & @CRLF & "to make this software better! "
 		$lbltxtCredits2 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 390,30, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER),0)
 			GUICtrlSetFont(-1,9, $FW_MEDIUM)
-		$y += 44
+		$y += 40
 		$txtCredits =	"The latest release of 'My Bot' can be found at:"
 		$lbltxtNewVer = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 400,15, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 			GUICtrlSetFont(-1, 10, $FW_BOLD)
-;			GUICtrlSetBkColor(-1, $COLOR_WHITE)
 		$y += 18
 		$labelForumURL = GUICtrlCreateLabel("https://mybot.run/forums/index.php?/forum/4-official-releases/", $x+25, $y, 450, 20)
 			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 			GUICtrlSetColor(-1, $COLOR_BLUE)
-		$y = 445
+		$y = 450
 		$txtWarn =	"By running this program, the user accepts all responsibility that arises from the use of this software."  & @CRLF & _
 						"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even " & @CRLF & _
 						"the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General " & @CRLF & _
@@ -230,4 +251,19 @@ TrayCreateItem("")
 $tiExit = TrayCreateItem(GetTranslated(500,35, "Exit"))
 TrayItemSetOnEvent($tiExit, "tiExit")
 
+
+If $hFuncLib <> -1 Then
+	;enable buttons start and search mode only if MRBfunctions.dll loaded, prevent click of buttons before dll loaded in memory
+	GUICtrlSetState($btnStart, $GUI_ENABLE)
+	; enable search only button when TH level variable has valid level, to avoid posts from users not pressing start first
+	If $iTownHallLevel > 2 Then
+		GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
+	EndIf
+EndIf
+
 ;~ -------------------------------------------------------------
+SetDebugLog("$frmBot=" & $frmBot, Default, True)
+SetDebugLog("$frmBotEx=" & $frmBotEx, Default, True)
+SetDebugLog("$frmBotBottom=" & $frmBotBottom, Default, True)
+SetDebugLog("$frmBotEmbeddedShield=" & $frmBotEmbeddedShield, Default, True)
+SetDebugLog("$frmBotEmbeddedGarphics=" & $frmBotEmbeddedGarphics, Default, True)

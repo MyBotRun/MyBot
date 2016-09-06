@@ -21,7 +21,6 @@ Func LocateTownHall($bLocationOnly = False)
 	SetLog("Locating Town Hall ...", $COLOR_BLUE)
 
     WinGetAndroidHandle()
-    WinActivate($HWnD)
 	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) Or _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 		Zoomout()
 		Collect()
@@ -34,7 +33,6 @@ Func LocateTownHall($bLocationOnly = False)
 		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,50,"Locate TownHall"), $stext, 30, $frmBot)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			WinActivate($HWnD)
 			ClickP($aAway, 1, 0, "#0391")
 			Local $aPos = FindPos()
 			$TownHallPos[0] = $aPos[0]

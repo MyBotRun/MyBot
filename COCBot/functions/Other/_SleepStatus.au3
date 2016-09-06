@@ -5,6 +5,7 @@
 ; Parameters ....: $iDelay              - an integer value.
 ;                  $iSleep              - [optional] an integer value. Default is True.
 ;                  $bDirection          - [optional] a boolean value. Default is True.
+;                  $CheckRunState       - [optional] a boolean value. Default is True to check for $RunState.
 ; Return values .: None
 ; Author ........: KnowJack (June-2015)
 ; Modified ......:
@@ -14,7 +15,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True)
+Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = True)
 	;
 	; $bDirection: True equals count down display, False equals count up display
 	;
@@ -28,7 +29,7 @@ Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True)
 	$iDelaySecCalc = $iDelay - ($iDelayMinCalc * 60 * 1000)
 	$iDelaySecCalc = Int($iDelaySecCalc / 1000)
 	While TimerDiff($iBegin) < $iDelay
-		If $RunState = False Then Return True
+		If $RunState = False And $CheckRunState = True Then Return True
 		If $bUpdate Then
 			$iCurTime = TimerDiff($iBegin)
 			$iTime = $iCurTime ; display count up timer
@@ -43,6 +44,6 @@ Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True)
 		If $iSleep = True Then _Sleep($iDelaySleep)
 		$bUpdate = TimerDiff($hLastUpdate) > 500
 	WEnd
-	If $RunState = False Then Return True
+	If $RunState = False And $CheckRunState = True Then Return True
 	Return False
 EndFunc   ;==>_SleepStatus

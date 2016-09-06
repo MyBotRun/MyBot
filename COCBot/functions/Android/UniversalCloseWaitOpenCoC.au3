@@ -77,8 +77,8 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 			If $iWaitTime > 0 Then
 				If $iWaitTime > 30000 Then
 					AndroidShieldForceDown(True)
-					EnableGuiControls() ; enable emulator menu controls is more than 30 seconds wait time
-					SetLog("Enable emulator menu controls due long wait time!", $COLOR_GREEN)
+					EnableGuiControls() ; enable bot controls is more than 30 seconds wait time
+					SetLog("Enabled bot controls due to long wait time", $COLOR_GREEN)
 				EndIf
 				WaitnOpenCoC($iWaitTime, $bFullRestart)
 				AndroidShieldForceDown(False)
@@ -101,8 +101,8 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 			If $iWaitTime > 0 Then
 				SetLog("Waiting " & $sWaitTime & "before starting CoC", $COLOR_GREEN)
 				If $iWaitTime > 30000 Then
-					EnableGuiControls() ; enable emulator menu controls is more than 30 seconds wait time
-					SetLog("Enable emulator menu controls due long wait time!", $COLOR_GREEN)
+					EnableGuiControls() ; enable bot controls is more than 30 seconds wait time
+					SetLog("Enabled bot controls due to long wait time", $COLOR_GREEN)
 				EndIf
 				If _SleepStatus($iWaitTime) Then Return False ; Wait for set requested
 				If $iWaitTime > 30000 Then

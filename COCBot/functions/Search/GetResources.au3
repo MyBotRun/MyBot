@@ -40,7 +40,7 @@ Func GetResources($bLog = True, $pMatchMode = -1) ;Reads resources
 			EndIf
 			Return
 		EndIf
-		If $debugSetlog = 1 Then SetLog("Loop to clean screen without Clouds , nº :" & $i, $COLOR_PURPLE)
+		If $debugSetlog = 1 Then SetLog("Loop to clean screen without Clouds, # " & $i, $COLOR_PURPLE)
 		ForceCaptureRegion() ; ensure screenshots are not cached
 	WEnd
 

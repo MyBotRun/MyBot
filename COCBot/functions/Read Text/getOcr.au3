@@ -186,12 +186,28 @@ Func getOcrPBTtime($x_start, $y_start);  -> Get the Time until PBT starts from P
 	Return getOcrAndCapture("coc-pbttime", $x_start, $y_start, 59, 15)
 EndFunc   ;==>getOcrPBTtime
 
-Func getOcrMaintenanceTime($x_start, $y_start);  -> Get the Text with time till maintenance is over from reload msg(171, 375)
-	Return getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
+Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
+	;  -> Get the Text with time till maintenance is over from reload msg(171, 375)
+	Local $result = getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
+	Local $String = $sLogText & " " & $result
+	If $debugSetlog = 1 And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
+		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
+	ElseIf $result <> "" Then ;
+		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
+	EndIF
+	Return $result
 EndFunc   ;==>getOcrMaintenanceTime
 
-Func getOcrRateCoc($x_start, $y_start);  -> Get the Text with time till maintenance is over from reload msg(228, 402)
-	Return getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 18, True)
+Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
+	;  -> Get the Text with time till maintenance is over from reload msg(228, 402)
+	Local $result = getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 18, True)
+	Local $String = $sLogText & " " & $result
+	If $debugSetlog = 1 And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
+		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
+	ElseIf $result <> "" Then ;
+		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
+	EndIf
+	Return $result
 EndFunc   ;==>getOcrRateCoc
 
 Func getRemainTLaboratory($x_start, $y_start) ; read actual time remaining in Lab for current upgrade (336,260)

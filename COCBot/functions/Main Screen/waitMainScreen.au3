@@ -49,6 +49,11 @@ Func waitMainScreen() ;Waits for main screen to popup
 			If $debugImageSave = 1 Then DebugImageSave("WaitMainScreen_", False)
 		EndIf
 		If ($i > 105) Or ($iCount > 120) Then ExitLoop ; If CheckObstacles forces reset, limit total time to 4 minutes
+
+		If TestCapture() Then
+			Return "Main screen not available"
+		EndIf
+
 	Next
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -104,6 +109,9 @@ Func waitMainScreenMini()
 		EndIf
 		_StatusUpdateTime($hTimer, "Main Screen")
 		If ($i > 60) Or ($iCount > 80) Then ExitLoop  ; If CheckObstacles forces reset, limit total time to 6 minute before Force restart BS
+		If TestCapture() Then
+			Return "Main screen not available"
+		EndIf
 	Next
 	Return SetError( 1, 0, -1)
 EndFunc

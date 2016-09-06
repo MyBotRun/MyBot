@@ -65,7 +65,6 @@ Func LocateUpgrades()
 			$MsgBox = _ExtMsgBox(0, GetTranslated(640, 54, "Locate Building|Finished|Cancel"), GetTranslated(640, 55, "Locate Upgrades"), $stext, 0, $frmBot)
 			Switch $MsgBox
 				Case 1 ; YES! we want to find a building.
-					WinActivate($HWnD) ; Activate Android Window
 					Local $aPos = FindPos()
 					$aUpgrades[$icount][0] = $aPos[0]
 					$aUpgrades[$icount][1] = $aPos[1]

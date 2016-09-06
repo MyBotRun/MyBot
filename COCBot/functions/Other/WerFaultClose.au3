@@ -23,46 +23,54 @@ Func WerFaultClose($programFile, $tryCount = 0)
 	If $iLastBS > 0 Then $title = StringMid($title, $iLastBS + 1)
 
 	Local $aList = WinList($title)
+	Opt("WinTitleMatchMode", $WinTitleMatchMode)
+
 	Local $closed = 0
 	Local $i
 
 	SetDebugLog("Found " & $aList[0][0] & " WerFault Windows with title '" & $title & "'")
 
-	For $i = 1 To $aList[0][0]
+	If $aList[0][0] > 0 Then
+		For $i = 1 To $aList[0][0]
 
-		Local $HWnD = $aList[$i][1]
-		Local $pid = WinGetProcess($HWnD)
+			Local $HWnD = $aList[$i][1]
+			Local $pid = WinGetProcess($HWnD)
 
-		Local $process = ProcessGetWmiProcess($pid)
-		If IsObj($process) Then
-			Local $werfault = $process.ExecutablePath
-			$iLastBS = StringInStr($werfault, "\", 0, -1)
-			$werfault = StringMid($werfault, $iLastBS + 1)
+			Local $process = ProcessGetWmiProcess($pid)
+			If IsObj($process) Then
+				Local $werfault = $process.ExecutablePath
+				$iLastBS = StringInStr($werfault, "\", 0, -1)
+				$werfault = StringMid($werfault, $iLastBS + 1)
 
-			If $werfault = "WerFault.exe" Then
-				SetDebugLog("Found WerFault Process " & $pid)
-				If WinClose($HWnD) Then
-					SetDebugLog("Closed " & $werfault & " Window " & $HWnD)
-					$closed += 1
-				Else
-					If WinKill($HWnD) Then
-						SetDebugLog("Killed " & $werfault & " Window " & $HWnD)
+				If $werfault = "WerFault.exe" Then
+					SetDebugLog("Found WerFault Process " & $pid)
+					If WinClose($HWnD) Then
+						SetDebugLog("Closed " & $werfault & " Window " & $HWnD)
 						$closed += 1
 					Else
-						SetDebugLog("Cannot close " & $werfault & " Window " & $HWnD, $COLOR_RED)
+						If WinKill($HWnD) Then
+							SetDebugLog("Killed " & $werfault & " Window " & $HWnD)
+							$closed += 1
+						Else
+							SetDebugLog("Cannot close " & $werfault & " Window " & $HWnD, $COLOR_RED)
+						EndIf
 					EndIf
+				Else
+					SetDebugLog("Process " & $pid & " is not WerFault, " & $process.CommandLine, $COLOR_RED)
 				EndIf
-			Else
-				SetDebugLog("Process " & $pid & " is not WerFault, " & $process.CommandLine, $COLOR_RED)
-			EndIf
-		ELse
-			SetDebugLog("Wmi Object for process " & $pid & " not found")
-		EndIF
+			ELse
+				SetDebugLog("Wmi Object for process " & $pid & " not found")
+			EndIF
 
-	Next
-
-
-	Opt("WinTitleMatchMode", $WinTitleMatchMode)
+		Next
+	ElseIf FileExists($programFile) = 1 Then
+		; try program FileDescription
+		Local $pFileVersionInfo
+		If _WinAPI_GetFileVersionInfo($programFile, $pFileVersionInfo) Then
+			Local $FileDescription = _WinAPI_VerQueryValue($pFileVersionInfo, $FV_FILEDESCRIPTION)
+			If $FileDescription <> "" Then Return WerFaultClose($FileDescription, $tryCount)
+		EndIf
+	EndIf
 
 	If $closed > 0 And $tryCount < 10 Then
 

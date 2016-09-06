@@ -17,23 +17,30 @@ Func ZoomOut() ;Zooms out
     WinGetAndroidHandle()
 	getBSPos() ; Update $HWnd and Android Window Positions
 	If Not $RunState Then Return
+	Local $Result
 	If $AndroidEmbedded = False Then
 		; default zoomout
-		Return Execute("ZoomOut" & $Android & "()")
+		$Result = Execute("ZoomOut" & $Android & "()")
+		If $Result = "" And @error <> 0 Then
+			; Not implemented or other error
+			$Result = AndroidOnlyZoomOut()
+		EndIf
+		Return $Result
 	EndIf
+
 	; Android embedded, only use Android zoomout
 	AndroidOnlyZoomOut()
 EndFunc   ;==>ZoomOut
 
 Func ZoomOutBlueStacks() ;Zooms out
-	Return ZoomOutCtrlClick(True, False, False, True)
+	Return ZoomOutCtrlClick(True, False, False, False)
    ;Return DefaultZoomOut("{DOWN}", 0)
    ; ZoomOutCtrlClick doesn't cause moving buildings, but uses global Ctrl-Key and has taking focus problems
    ;Return ZoomOutCtrlClick(True, False, False, False)
 EndFunc
 
 Func ZoomOutBlueStacks2()
-	Return ZoomOutCtrlClick(True, False, False, True)
+	Return ZoomOutCtrlClick(True, False, False, False)
    ;Return DefaultZoomOut("{DOWN}", 0)
    ; ZoomOutCtrlClick doesn't cause moving buildings, but uses global Ctrl-Key and has taking focus problems
    ;Return ZoomOutCtrlClick(True, False, False, False)
@@ -43,6 +50,13 @@ Func ZoomOutMEmu()
    ;ClickP($aAway) ; activate window first with Click Away (when not clicked zoom might not work)
    Return DefaultZoomOut("{F3}", 0)
 EndFunc
+
+#cs
+Func ZoomOutLeapDroid()
+	Local $hCtrl = ControlGetHandle($HWnD, $AppPaneName, $AppClassInstance)
+	Return ZoomOutCtrlWheelScroll(True, True, True, False, $hCtrl)
+EndFunc
+#ce
 
 Func ZoomOutDroid4X()
    Return ZoomOutCtrlWheelScroll(True, True, True)
@@ -115,10 +129,12 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 		    Setlog($Android & " zoom-out with key " & $ZoomOutKey & " didn't work, try now Ctrl+MouseWheel...", $COLOR_BLUE)
 			Return ZoomOutCtrlWheelScroll(False, False, False, False)
 	    EndIf
+		Return True
 	EndIf
+	Return False
 EndFunc   ;==>ZoomOut
 
-Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel = True, $AlwaysControlFocus = False, $AndroidZoomOut = True)
+Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel = True, $AlwaysControlFocus = False, $AndroidZoomOut = True, $hWin = $HWnD, $ScrollSteps = -5, $ClickDelay = 250)
    ;AutoItSetOption ( "SendKeyDownDelay", 3000)
 	Local $exitCount = 80
 	Local $delayCount = 20
@@ -160,18 +176,19 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 				  $Result[0] = 1
 			   EndIf
 
-			   $Result[1] = ControlSend($HWnD, "", "", "{CTRLDOWN}")
+			   $Result[1] = ControlSend($hWin, "", "", "{CTRLDOWN}")
 			   If $CenterMouseWhileZooming Then MouseMove($BSpos[0] + Int($DEFAULT_WIDTH / 2), $BSpos[1] + Int($DEFAULT_HEIGHT / 2), 0)
 			   If $GlobalMouseWheel Then
-				  $Result[2] = MouseWheel("down", 5) ; can't find $MOUSE_WHEEL_DOWN constant, couldn't include AutoItConstants.au3 either
+                  $Result[2] = MouseWheel(($ScrollSteps < 0 ? "down" : "up"), Abs($ScrollSteps)) ; can't find $MOUSE_WHEEL_DOWN constant, couldn't include AutoItConstants.au3 either
 			   Else
 				  Local $WM_WHEELMOUSE = 0x020A, $MK_CONTROL = 0x0008
-				  Local $wParam = BitOR(-5 * 0x10000, BitAND($MK_CONTROL, 0xFFFF)) ; HiWord = -120 WheelScrollDown, LoWord = $MK_CONTROL
+				  Local $wParam = BitOR($ScrollSteps * 0x10000, BitAND($MK_CONTROL, 0xFFFF)) ; HiWord = -120 WheelScrollDown, LoWord = $MK_CONTROL
 				  Local $lParam =  BitOR(($BSpos[1] + Int($DEFAULT_HEIGHT / 2)) * 0x10000, BitAND(($BSpos[0] + Int($DEFAULT_WIDTH / 2)), 0xFFFF)) ; ; HiWord = y-coordinate, LoWord = x-coordinate
 				  _SendMessage($HWnD, $WM_WHEELMOUSE, $wParam, $lParam)
 				  $Result[2] = (@error = 0 ? 1 : 0)
 			   EndIf
-			   $Result[3] = ControlSend($HWnD, "", "", "{CTRLUP}")
+			   If _Sleep($ClickDelay) Then ExitLoop
+			   $Result[3] = ControlSend($hWin, "", "", "{CTRLUP}{SPACE}")
 
 			   If $debugsetlog = 1 Then Setlog("ControlFocus Result = " & $Result[0] & _
 					  ", " & $ZoomActions[1] & " = " & $Result[1] & _
@@ -206,8 +223,10 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 		 WEnd
 
 		 If $CenterMouseWhileZooming And $AndroidZoomOut = False Then MouseMove($aMousePos[0], $aMousePos[1], 0)
+		Return True
 
 	EndIf
+	Return False
  EndFunc
 
 Func ZoomOutCtrlClick($ZoomOutOverWaters = True, $CenterMouseWhileZooming = False, $AlwaysControlFocus = False, $AndroidZoomOut = True, $ClickDelay = 250)
@@ -307,7 +326,9 @@ Func ZoomOutCtrlClick($ZoomOutOverWaters = True, $CenterMouseWhileZooming = Fals
 
 		 If $CenterMouseWhileZooming Then MouseMove($aMousePos[0], $aMousePos[1], 0)
 
+		Return True
 	EndIf
+	Return False
  EndFunc
 
 Func AndroidOnlyZoomOut() ;Zooms out
@@ -338,5 +359,7 @@ Func AndroidOnlyZoomOut() ;Zooms out
 			ForceCaptureRegion()
 			_CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 		WEnd
+		Return True
 	EndIf
+	Return False
 EndFunc   ;==>AndroidOnlyZoomOut

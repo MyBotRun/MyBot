@@ -24,8 +24,7 @@ Global $chkSinglePBTForced, $txtSinglePBTimeForced, $txtPBTimeForcedExit
 $hGUI_BOT = GUICreate("", $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, BitOR($WS_CHILD, $WS_TABSTOP), -1, $frmBotEx)
 ;GUISetBkColor($COLOR_WHITE, $hGUI_BOT)
 
-#include "MBR GUI Design Child Bot - Stats.au3"
-
+$hGUI_STATS = GUICreate("", $_GUI_MAIN_WIDTH - 28, $_GUI_MAIN_HEIGHT - 255 - 28, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $hGUI_BOT)
 GUISwitch($hGUI_BOT)
 
 $hGUI_BOT_TAB = GUICtrlCreateTab(0, 0, $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
@@ -41,3 +40,5 @@ GUICtrlCreateTabItem("")
 ; this tab will be empty because it is only used to display a child GUI
 $hGUI_BOT_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600,37, "Stats"))
 GUICtrlCreateTabItem("")
+; create stats last because of $LastControlToHide
+#include "MBR GUI Design Child Bot - Stats.au3"

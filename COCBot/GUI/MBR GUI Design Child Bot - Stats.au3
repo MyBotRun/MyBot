@@ -20,7 +20,6 @@ Global $LastControlToHide = GUICtrlCreateDummy()
 Global $iPrevState[$LastControlToHide + 1]
 ;~ -------------------------------------------------------------
 
-$hGUI_STATS = GUICreate("", $_GUI_MAIN_WIDTH - 28, $_GUI_MAIN_HEIGHT - 255 - 28, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $hGUI_BOT)
 ;GUISetBkColor($COLOR_WHITE, $hGUI_STATS)
 
 GUISwitch($hGUI_STATS)
@@ -206,7 +205,7 @@ $hGUI_STATS_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslated(600,38,"Gain"))
 			GUICtrlSetState(-1,$GUI_HIDE)
 			$LegendLeague = GUICtrlCreateIcon(@ScriptDir & "\images\League\Legend.ico",-1, $x - 2, $y - 2, 64, 64)
 			GUICtrlSetState(-1,$GUI_HIDE)
-			
+
 			$lblLeague = GUICtrlCreateLabel("", $x + 20, $y + 50, 64, 64, $SS_CENTER)
 			GUICtrlSetFont($lblLeague, 12, $FW_BOLD)
 			GUICtrlSetColor($lblLeague, $COLOR_BLACK)

@@ -21,18 +21,28 @@ Func TogglePause()
 EndFunc   ;==>TogglePause
 
 Func TogglePauseImpl($Source)
+	If Not $RunState Then Return
 	ResumeAndroid()
-	SetRedrawBotWindow(True)
-	Local $BlockInputPausePrev
 	$TPaused = Not $TPaused
-	If $TPaused And $Runstate = True Then
+	If $TogglePauseAllowed = False Then
+		$TogglePauseUpdateState = True
+		Return
+	EndIf
+	TogglePauseUpdateState($Source)
+	TogglePauseSleep()
+EndFunc   ;==>TogglePauseImpl
+
+Func TogglePauseUpdateState($Source)
+	$TogglePauseUpdateState = False
+	;Local $BlockInputPausePrev
+	If $TPaused Then
 		AndroidShield("TogglePauseImpl paused", False)
 		TrayTip($sBotTitle, "", 1)
 		TrayTip($sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
 		Setlog("Bot was Paused!", $COLOR_RED)
 		If Not $bSearchMode Then
 			$iTimePassed += Int(TimerDiff($sTimer))
-			AdlibUnRegister("SetTime")
+			;AdlibUnRegister("SetTime")
 		EndIf
 		PushMsg("Pause", $Source)
 		;If $BlockInputPause > 0 Then $BlockInputPausePrev = $BlockInputPause
@@ -40,14 +50,14 @@ Func TogglePauseImpl($Source)
 		GUICtrlSetState($btnPause, $GUI_HIDE)
 		GUICtrlSetState($btnResume, $GUI_SHOW)
 		;GUICtrlSetState($btnMakeScreenshot, $GUI_ENABLE)
-	ElseIf $TPaused = False And $Runstate = True Then
+	Else
 		AndroidShield("TogglePauseImpl resumed")
 		TrayTip($sBotTitle, "", 1)
 		TrayTip($sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
 		Setlog("Bot was Resumed.", $COLOR_GREEN)
 		If Not $bSearchMode Then
 			$sTimer = TimerInit()
-			AdlibRegister("SetTime", 1000)
+			;AdlibRegister("SetTime", 1000)
 		EndIf
 		PushMsg("Resume", $Source)
 		;If $BlockInputPausePrev > 0 Then _BlockInputEx($BlockInputPausePrev, "", "", $HWnD)
@@ -57,9 +67,13 @@ Func TogglePauseImpl($Source)
 		;GUICtrlSetState($btnMakeScreenshot, $GUI_DISABLE)
 		;ZoomOut()
 	EndIf
+	SetRedrawBotWindow(True)
+EndFunc	  ;==>TogglePauseUpdateState
+
+Func TogglePauseSleep()
 	Local $counter = 0
 	While $TPaused ; Actual Pause loop
-		If _Sleep($iDelayTogglePause1) Then ExitLoop
+		If _Sleep($iDelayTogglePause1, True, True, False) Then ExitLoop
 		$counter = $counter + 1
 		If $PushBulletEnabled = 1 And $pRemote = 1 And $counter = 200 Then
 			_RemoteControl()
@@ -68,5 +82,5 @@ Func TogglePauseImpl($Source)
 	WEnd
 	; everything below this WEnd is executed when unpaused!
 	;ZoomOut() ; moved to resume
-	If _Sleep($iDelayTogglePause2) Then Return
-EndFunc   ;==>TogglePauseImpl
+	If _Sleep($iDelayTogglePause2, True, True, False) Then Return
+EndFUnc	  ;==>TogglePauseSleep

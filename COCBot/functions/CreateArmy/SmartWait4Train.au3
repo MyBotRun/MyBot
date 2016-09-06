@@ -31,6 +31,8 @@ Func SmartWait4Train()
 		EndIf
 	WEnd
 
+	If BitOR($ichkCloseWaitEnable, $ichkCloseWaitTrain) = 0 Then  Return ; skip if nothing selected in GUI
+
 	Local $aResult, $iActiveHero
 	Local $aHeroResult[3]
 	Local Const $TRAINWAIT_NOWAIT = 0x00 ; default no waiting
@@ -54,8 +56,6 @@ Func SmartWait4Train()
 	If IsArray($aShieldStatus) And (StringInStr($aShieldStatus[0], "shield", $STR_NOCASESENSEBASIC) Or StringInStr($aShieldStatus[0], "guard", $STR_NOCASESENSEBASIC)) Then
 		If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SetLog("Have shield till " & $aShieldStatus[2] & ", close game while wait for train)", $COLOR_PURPLE)
 		$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) ; close if we have a shield
-	ElseIf BitOR($ichkCloseWaitEnable, $ichkCloseWaitTrain) = 0 Then
-		Return ; skip if nothing selected in GUI
 	EndIf
 	If _Sleep($iDelayRespond) Then Return
 
@@ -239,6 +239,7 @@ Func SmartWait4Train()
 			; close game = $iShieldTime because less than train time remaining
 			Setlog("Smart wait while shield time= " & StringFormat("%.2f", $iShieldTime / 60) & " Minutes", $COLOR_BLUE)
 			UniversalCloseWaitOpenCoC($iShieldTime * 1000, "SmartWait4Train_", $StopEmulator)
+			$Restart = True  ; Set flag to exit idle loop to deal with potential user changes to GUI
 			For $i = 0 To UBound($aTimeTrain) - 1 ; reset remaining time array
 				$aTimeTrain[$i] = 0
 			Next
@@ -246,6 +247,7 @@ Func SmartWait4Train()
 			; close game  = $iTrainWaitTime because shield is larger than train time
 			Setlog("Smart wait train time= " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_BLUE)
 			UniversalCloseWaitOpenCoC($iTrainWaitTime * 1000, "SmartWait4Train_", $StopEmulator)
+			$Restart = True  ; Set flag to exit idle loop to deal with potential user changes to GUI
 			For $i = 0 To UBound($aTimeTrain) - 1 ; reset remaining time array
 				$aTimeTrain[$i] = 0
 			Next
@@ -255,6 +257,7 @@ Func SmartWait4Train()
 		;when no shield close game for $iTrainWaitTime time
 		Setlog("Smart Wait time= " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_BLUE)
 		UniversalCloseWaitOpenCoC($iTrainWaitTime * 1000, "SmartWait4TrainNoShield_", $StopEmulator)
+		$Restart = True  ; Set flag to exit idle loop to deal with potential user changes to GUI
 		For $i = 0 To UBound($aTimeTrain) - 1 ; reset remaining time array
 			$aTimeTrain[$i] = 0
 		Next

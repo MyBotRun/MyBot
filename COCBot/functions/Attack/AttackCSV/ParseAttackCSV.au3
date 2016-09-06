@@ -218,6 +218,10 @@ Func ParseAttackCSV($debug = False)
 						EndIf
 						DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
 						ReleaseClicks($AndroidAdbClicksTroopDeploySize)
+						If _Sleep($iDelayRespond) Then ; check for pause/stop, close file before return
+							FileClose($f)
+							Return
+						EndIf
 					Case "WAIT"
 						ReleaseClicks()
 						;sleep time
@@ -259,6 +263,10 @@ Func ParseAttackCSV($debug = False)
 							;READ RESOURCES
 							$Gold = getGoldVillageSearch(48, 69)
 							$Elixir = getElixirVillageSearch(48, 69 + 29)
+							If _Sleep($iDelayRespond) Then ; check for pause/stop, close file before return
+								FileClose($f)
+								Return
+							EndIf
 							$Trophies = getTrophyVillageSearch(48, 69 + 99)
 							If $Trophies <> "" Then ; If trophy value found, then base has Dark Elixir
 								$DarkElixir = getDarkElixirVillageSearch(48, 69 + 57)
@@ -285,7 +293,10 @@ Func ParseAttackCSV($debug = False)
 								$exitOneStar = 1
 								ExitLoop
 							EndIf
-							If _sleep($iDelayAttackCSV3) Then Return ;wait 5 ms to read commands from GUI
+							If _Sleep($iDelayRespond) Then ; check for pause/stop, close file before return
+								FileClose($f)
+								Return
+							EndIf
 							CheckHeroesHealth()
 						WEnd
 						If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop ;stop parse CSV file, start exit battle procedure
@@ -297,7 +308,7 @@ Func ParseAttackCSV($debug = False)
 						ReleaseClicks()
 						Setlog("Calculate main side... ")
 						If StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
-							$MAINSIDEMAINSIDE = StringUpper($value8)
+							$MAINSIDE = StringUpper($value8)
 							Setlog("Forced side: " & StringUpper($value8))
 						Else
 							Local $heightTopLeft = 0, $heightTopRight = 0, $heightBottomLeft = 0, $heightBottomRight = 0
@@ -479,7 +490,7 @@ Func ParseAttackCSV($debug = False)
 				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard.: " & $line, $COLOR_RED)
 			EndIf
 			CheckHeroesHealth()
-			If _Sleep($iDelayRespond) Then ; check for pause/stop after each line of CSV, close file before retutn
+			If _Sleep($iDelayRespond) Then ; check for pause/stop after each line of CSV, close file before return
 				FileClose($f)
 				Return
 			EndIf

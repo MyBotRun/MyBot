@@ -289,7 +289,7 @@ Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 
 ;~ 	ConsoleWrite ("max value =  " & $max &  @CRLF)
 
-	_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT, True)
+	_CaptureRegion()
 
 
 	;CHECK ELIXIR COLLECTORS 50%

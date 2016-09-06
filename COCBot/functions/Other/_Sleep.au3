@@ -14,9 +14,38 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True)
+Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = True)
 	Local $iBegin = TimerInit()
 	If $iDelay > 0 Then
+
+		If $RunState And Not $bSearchMode And Not $TPaused And ($hTimer_SetTime = 0 Or TimerDiff($hTimer_SetTime) >= 1000) Then
+			SetTime()
+			$hTimer_SetTime = TimerInit()
+		EndIf
+		If $hTimer_PBRemoteControlInterval = 0 Or TimerDiff($hTimer_PBRemoteControlInterval) >= $PBRemoteControlInterval Then
+			PushBulletRemoteControl()
+			$hTimer_PBRemoteControlInterval = TimerInit()
+		EndIf
+		If $hTimer_PBDeleteOldPushesInterval = 0 Or TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $PBDeleteOldPushesInterval Then
+			PushBulletDeleteOldPushes()
+			$hTimer_PBDeleteOldPushesInterval = TimerInit()
+		EndIf
+		If $hTimer_EmptyWorkingSetAndroid = 0 Or TimerDiff($hTimer_EmptyWorkingSetAndroid) >= $iEmptyWorkingSetAndroid Then
+			_WinAPI_EmptyWorkingSet(GetAndroidPid()) ; Reduce Working Set of Android Process
+			$hTimer_EmptyWorkingSetAndroid = TimerInit()
+		EndIf
+		If $hTimer_EmptyWorkingSetBot = 0 Or TimerDiff($hTimer_EmptyWorkingSetBot) >= $iEmptyWorkingSetBot Then
+			_WinAPI_EmptyWorkingSet(@AutoItPID) ; Reduce Working Set of Bot
+			$hTimer_EmptyWorkingSetBot = TimerInit()
+		EndIF
+		If $TogglePauseUpdateState Then TogglePauseUpdateState("_Sleep") ; Update Pause GUI states
+		If $TPaused And $SleepWhenPaused And $TogglePauseAllowed Then TogglePauseSleep() ; Bot is paused
+
+		If $bMoveDivider Then
+			MoveDivider()
+			$bMoveDivider = False
+		EndIf
+
 		If $iDeleteAllPBPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
 		If $iMakeScreenshotNow = True Then
 			If $iScreenshotType = 0 Then
@@ -26,8 +55,8 @@ Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True)
 			EndIf
 		EndIf
 	EndIf
-	AndroidEmbedCheck()
-	AndroidShieldCheck()
+	;AndroidEmbedCheck()
+	;AndroidShieldCheck()
 	If $CheckRunState = True And $RunState = False Then
 		ResumeAndroid()
 		Return True

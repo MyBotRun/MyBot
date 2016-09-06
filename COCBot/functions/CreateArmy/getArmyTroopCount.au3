@@ -22,7 +22,7 @@ Global $SlotInArmyPekk = -1, $SlotInArmyBabyD = -1, $SlotInArmyMine = -1
 
 Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $test = false)
 
-	If $debugsetlogTrain = 1 Then SETLOG("Begin getArmyTroopCount:", $COLOR_PURPLE)
+	If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmyTroopCount:", $COLOR_PURPLE)
 
 	If $test = false  Then
 		If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page

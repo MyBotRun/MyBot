@@ -29,7 +29,6 @@ Func LocateLab()
 		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,44,"Locate Laboratory"), $stext, 15, $frmBot)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			WinActivate($HWnD)
 			ClickP($aAway, 1, 0, "#0379")
 			Local $aPos = FindPos()
 			$aLabPos[0] = Int($aPos[0])

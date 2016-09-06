@@ -25,7 +25,7 @@ Opt("TrayOnEventMode", 1)
 #include "MBR GUI Action.au3"
 
 ; MBR Actions invoked in MyBot.run.au3
-Global Enum $eBotNoAction, $eBotStart, $eBotStop, $eBotSearchMode
+Global Enum $eBotNoAction, $eBotStart, $eBotStop, $eBotSearchMode, $eBotClose
 Global $BotAction = $eBotNoAction
 
 ;Dynamic declaration of Array controls, cannot be on global variables because the GUI has to be created first for these control-id's to be known.
@@ -59,31 +59,9 @@ Global $aTabControlsStrategies[3] = [$hGUI_STRATEGIES_TAB, $hGUI_STRATEGIES_TAB_
 Global $aTabControlsBot[5] = [$hGUI_BOT_TAB, $hGUI_BOT_TAB_ITEM1, $hGUI_BOT_TAB_ITEM2, $hGUI_BOT_TAB_ITEM3, $hGUI_BOT_TAB_ITEM4]
 Global $aTabControlsStats[4] = [$hGUI_STATS_TAB, $hGUI_STATS_TAB_ITEM1, $hGUI_STATS_TAB_ITEM2, $hGUI_STATS_TAB_ITEM3]
 
-Global $aAlwaysEnabledControls[12] = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestAttackBar]
+Global $aAlwaysEnabledControls[14] = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestAttackBar, $btnTestClickDrag, $btnTestImage]
 
-Func AcquireMutex($mutexName, $scope = Default, $timout = Default)
-   Local $timer = TimerInit()
-   Local $hMutex_MyBot = 0
-   If $scope = Default then
-	   $scope = @AutoItPID + "/"
-   ElseIf $scope <> "" Then
-	   $scope += "/"
-   EndIf
-   If $timout = Default Then $timeout = 30000
-   While $hMutex_MyBot = 0 And ($timout = 0 Or TimerDiff($timer) < $timout)
-	  $hMutex_MyBot = _Singleton("MyBot.run/" + $scope + $mutexName, 1)
-	  If $hMutex_MyBot <> 0 Then ExitLoop
-	  If $timout = 0 Then ExitLoop
-	  If Sleep($iDelaySleep) Then ExitLoop
-   WEnd
-   Return $hMutex_MyBot
-EndFunc   ;==>AcquireMutex
-
-Func ReleaseMutex($hMutex, $ReturnValue = Default)
-   _WinAPI_CloseHandle($hMutex)
-   If $ReturnValue = Default Then Return
-   Return $ReturnValue
-EndFunc   ;==>ReleaseMutex
+Global $frmBot_WNDPROC = 0
 
 Func UpdateFrmBotStyle()
 	#cs Works but causes bot window not to get activated anymore
@@ -138,8 +116,6 @@ Func IsAlwaysEnabledControl($controlID)
 	Return False
 EndFunc   ;==>IsAlwaysEnabledControl
 
-_GDIPlus_Startup()
-
 Global $Initiate = 0
 Global $GUIControl_Disabled = False
 Global $ichklanguageFirst = 0
@@ -172,10 +148,27 @@ AtkLogHead()
 #include "GUI\MBR GUI Control Child Misc.au3"
 
 ; Accelerator Key, more responsive than buttons in run-mode
-Local $aAccelKeys[1][2] = [["{ESC}", $btnStop]]
-;GUISetAccelerators($aAccelKeys)
+Local $aAccelKeys[2][2] = [["{ESC}", $btnStop],["{PAUSE}", $btnPause]]
+Local $aAccelKeys_DockedUnshieledFocus[1][2] = [["{PAUSE}", $btnPause]] ; used in docked mode when android has focus to support ESC for android
+
+Func SetAccelerators($bDockedUnshieledFocus = False)
+	GUISetAccelerators(0, $frmBot) ; Remove all accelerators
+	If $bDockedUnshieledFocus = False Then
+		GUISetAccelerators($aAccelKeys, $frmBot)
+	Else
+		GUISetAccelerators($aAccelKeys_DockedUnshieledFocus, $frmBot)
+	EndIf
+EndFunc   ;==>SetAccelerators
+
+Func BotToFront()
+	;SetDebugLog("BotToFront")
+	WinMove2(GetCurrentAndroidHWnD(), "", -1, -1, -1, -1, $HWND_TOPMOST, 0, False)
+	WinMove2(GetCurrentAndroidHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+EndFunc
 
 Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
 	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_NCACTIVATE: $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
 	Local $iActive = BitAND($wParam, 0x0000FFFF)
 	If $hWin = $frmBot Then
@@ -188,22 +181,33 @@ Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
 		EndIf
 		If $iActive = 0 Then
 			; bot deactivated
-			;SetDebugLog("WM_ACTIVATE: Deactivate Bot", Default, True)
+			SetDebugLog("GUIControl_WM_NCACTIVATE: Deactivate Bot", Default, True)
+			_WinAPI_SetFocus(0)
 		Else
 			If $iHideWhenMinimized = 0 Then BotRestore("GUIControl_WM_NCACTIVATE")
-			;SetDebugLog("WM_ACTIVATE: Activate Bot", Default, True)
+			SetDebugLog("GUIControl_WM_NCACTIVATE: Activate Bot", Default, True)
+		EndIf
+		If $AndroidEmbedded And $AndroidEmbedMode = 1 And AndroidShieldActiveDelay() = False Then
+			AndroidEmbedCheck(False, $iActive <> 0, 1) ; Always update z-order
+			AndroidShield("GUIControl_WM_NCACTIVATE", Default, False)
 		EndIf
 	EndIf
+	$TogglePauseAllowed = $wasAllowed
     Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_NCACTIVATE
 
 Func GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
 	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_FOCUS: $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
 	Local $iActive = BitAND($wParam, 0x0000FFFF)
 	Switch $hWin
 		Case $frmBot
 			If $AndroidEmbedded And AndroidShieldActiveDelay() = False Then
 				AndroidShield("GUIControl_WM_FOCUS", Default, False)
+				If $AndroidEmbedMode = 1 Then
+					AndroidEmbedCheck(False, Default, 1) ; Always update z-order
+				EndIf
 			EndIf
 		#cs
 		Case $frmBotEmbeddedShield
@@ -216,42 +220,107 @@ Func GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
 			EndIf
 		#ce
 	EndSwitch
+	$TogglePauseAllowed = $wasAllowed
     Return $GUI_RUNDEFMSG
-EndFunc   ;==>GUIControl_WM_NCACTIVATE
+EndFunc   ;==>GUIControl_WM_FOCUS
 
 Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
-    If $hWin <> $frmBotEmbeddedShield Or $AndroidEmbedded = False Or $AndroidShieldStatus[0] = True Then
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
+	Local $hWinMouse = $frmBotEmbeddedMouse
+	If $frmBotEmbeddedMouse = 0 Then $hWinMouse = (($AndroidEmbedMode = 0) ? $frmBotEmbeddedShield : $frmBot)
+	If $debugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_MOUSE: $hWin=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam & ",$hWinMouse=" & $hWinMouse, Default, True)
+    If $hWin <> $hWinMouse Or $AndroidEmbedded = False Or $AndroidShieldStatus[0] = True Then
+		$TogglePauseAllowed = $wasAllowed
         Return $GUI_RUNDEFMSG
     EndIf
-	;ConsoleWrite("GUIControl_WM_MOUSE: FORWARD $hWind=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam & @CRLF)
-	Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
-	Local $Result = _WinAPI_PostMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
-	;Local $Result = _SendMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
 
-	If $iMSG = $WM_LBUTTONDOWN Then
-		If $debugWindowMessages Then SetDebugLog("GUIControl_WM_MOUSE: WM_LBUTTONDOWN $hWind=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
-		If AndroidShieldHasFocus() = False Then
+	Switch $iMSG
+		Case $WM_LBUTTONDOWN, $WM_LBUTTONUP, $WM_RBUTTONDOWN, $WM_RBUTTONUP
+			; ensure text box still has focus
 			Local $hInput = GUICtrlGetHandle($frmBotEmbeddedShieldInput)
 			_WinAPI_SetFocus($hInput)
-			AndroidShield("GUIControl_WM_MOUSE", Default, False, 0, True)
-		EndIf
+	EndSwitch
+
+	Switch $iMSG
+		Case $WM_LBUTTONUP, $WM_RBUTTONUP
+			If $debugWindowMessages Then
+				Local $x = BitAND($lParam, 0xFFFF)
+				Local $y = BitAND($lParam, 0xFFFF0000) / 0x10000
+				SetDebugLog("GUIControl_WM_MOUSE: " & ($iMSG = $WM_LBUTTONUP ? "$WM_LBUTTONUP" : "$WM_RBUTTONUP") & " $hWin=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam & ", X=" & $x & ", Y=" & $y, Default, True)
+			EndIf
+			If AndroidShieldHasFocus() = False Then
+				; set focus to text box
+				Local $hInput = GUICtrlGetHandle($frmBotEmbeddedShieldInput)
+				_WinAPI_SetFocus($hInput)
+				AndroidShield("GUIControl_WM_MOUSE", Default, False, 0, True)
+				$TogglePauseAllowed = $wasAllowed
+				Return $GUI_RUNDEFMSG
+			EndIf
+#cs
+		Case $WM_LBUTTONDOWN, $WM_RBUTTONDOWN
+			If AndroidShieldHasFocus() = True Then
+				Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
+				_SendMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
+			EndIf
+#ce
+	EndSwitch
+	;#cs
+	If AndroidShieldHasFocus() = False Then
+		$TogglePauseAllowed = $wasAllowed
+		Return $GUI_RUNDEFMSG
 	EndIf
+	Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
+	;Local $Result = _WinAPI_PostMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
+	Local $Result = _SendMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
+	;#ce
+	$TogglePauseAllowed = $wasAllowed
 	Return $GUI_RUNDEFMSG
 EndFunc
 
+Func GUIControl_AndroidEmbedded($hWin, $iMsg, $wParam, $lParam)
+	If $AndroidEmbedded = False Or $AndroidShieldStatus[0] = True Then
+		Return $GUI_RUNDEFMSG
+	EndIf
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
+	Switch $iMsg
+		Case $WM_KEYDOWN, $WM_KEYUP, $WM_SYSKEYDOWN, $WM_SYSKEYUP, $WM_MOUSEWHEEL ; $WM_KEYFIRST To $WM_KEYLAST
+			If $debugAndroidEmbedded Then SetDebugLog("GUIControl_AndroidEmbedded: FORWARD $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
+			Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
+			If $iMsg = $WM_KEYUP And $wParam = 27 Then
+				; send ESC as ADB back
+				Local $wasSilentSetLog = $SilentSetLog
+				$SilentSetLog = True
+				AndroidBackButton(False)
+				$SilentSetLog = $wasSilentSetLog
+				;_WinAPI_SetFocus(GUICtrlGetHandle($frmBotEmbeddedShieldInput))
+				If $debugAndroidEmbedded Then AndroidShield("GUIControl_AndroidEmbedded WM_SETFOCUS", Default, False, 0, True)
+				;AndroidShield(Default, False, 10, AndroidShieldHasFocus())
+			Else
+				_WinAPI_PostMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
+			EndIf
+	EndSwitch
+	$TogglePauseAllowed = $wasAllowed
+	Return $GUI_RUNDEFMSG
+EndFunc   ;==>ShieldInputProc
+
 Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
-	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
-	;#forceref $hWind, $iMsg, $wParam, $lParam
 	If $GUIControl_Disabled = True Then Return $GUI_RUNDEFMSG
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
+	If $debugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	;#forceref $hWind, $iMsg, $wParam, $lParam
 	Local $nNotifyCode = BitShift($wParam, 16)
 	Local $nID = BitAND($wParam, 0x0000FFFF)
 	Local $hCtrl = $lParam
 	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWind=" & $hWind & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $frmBot=" & $frmBot & @CRLF)
 
 	; check shield status
-	If $hWind <> $frmBotEmbeddedShield Then
+	If $hWind <> $frmBotEmbeddedShield And $hWind <> $frmBotEmbeddedGarphics And $hWinD <> $frmBotEmbeddedMouse Then
 		If AndroidShieldHasFocus() = True Then
 			; update shield with inactive state
+			If $debugWindowMessages Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 			AndroidShield("GUIControl_WM_COMMAND", Default, False, 150, False)
 		EndIf
 	EndIf
@@ -260,10 +329,12 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 	CheckRedrawBotWindow()
 	Switch $nID
 		Case $divider
-			MoveDivider()
+			;MoveDivider()
+			$bMoveDivider = True
+			SetDebugLog("MoveDivider active", Default, True)
 		Case $GUI_EVENT_CLOSE
 			; Clean up resources
-			BotClose()
+			BotCloseRequest()
 		Case $lblCreditsBckGrnd, $lblUnbreakableHelp
 			; Handle open URL clicks when label of link is over another background label
 			Local $CursorInfo = GUIGetCursorInfo($frmBot)
@@ -343,17 +414,25 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnTestDonateCC()
 		Case $btnTestAttackBar
 			btnTestAttackBar()
+		Case $btnTestClickDrag
+			btnTestClickDrag()
+		Case $btnTestImage
+			btnTestImage()
 	EndSwitch
 
+	$TogglePauseAllowed = $wasAllowed
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl
 
 Func GUIControl_WM_MOVE($hWind, $iMsg, $wParam, $lParam)
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
 	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_MOVE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 	If $hWind = $frmBot Then
 		If $iUpdatingWhenMinimized = 1 And BotWindowCheck() = False And _WinAPI_IsIconic($frmBot) Then
 			; ensure bot is not really minimized (e.g. when you minimize all windows)
 			BotMinimize("GUIControl_WM_MOVE")
+			$TogglePauseAllowed = $wasAllowed
 			Return $GUI_RUNDEFMSG
 		EndIf
 
@@ -366,21 +445,37 @@ Func GUIControl_WM_MOVE($hWind, $iMsg, $wParam, $lParam)
 			$frmBotDockedPosX = ($frmBotPos[0] > -30000 ? $frmBotPos[0] : $frmBotDockedPosX)
 			$frmBotDockedPosY = ($frmBotPos[1] > -30000 ? $frmBotPos[1] : $frmBotDockedPosY)
 		EndIf
+
+		; required for screen change
+		If $AndroidEmbedded And AndroidEmbedArrangeActive() = False Then
+			Local $iAction = AndroidEmbedCheck(True)
+			If $iAction > 0 Then
+				; reposition docked android
+				AndroidEmbedCheck(False, Default, $iAction)
+				; redraw bot also
+				;temp;_WinAPI_RedrawWindow($frmBotEx, 0, 0, $RDW_INVALIDATE)
+				;temp;_WinAPI_RedrawWindow($frmBotBottom, 0, 0, $RDW_INVALIDATE)
+			EndIf
+			If $debugWindowMessages Then
+				Local $a = $frmBotPos
+				SetDebugLog("Bot Position: " & $a[0] & "," & $a[1] & " " & $a[2] & "x" & $a[3])
+				$a = WinGetPos($HWnD)
+				SetDebugLog("Android Position: " & $a[0] & "," & $a[1] & " " & $a[2] & "x" & $a[3])
+				If $frmBotEmbeddedMouse <> 0 Then
+					$a = WinGetPos($frmBotEmbeddedMouse)
+					SetDebugLog("Mouse Window Position: " & $a[0] & "," & $a[1] & " " & $a[2] & "x" & $a[3])
+				EndIf
+			EndIf
+		EndIf
 	EndIf
 
-	; required for screen change
-	If AndroidEmbedArrangeActive() = False And AndroidEmbedCheck(True) = True Then
-		; reposition docked android
-		AndroidEmbedCheck()
-		; redraw bot also
-		_WinAPI_RedrawWindow($frmBotEx, 0, 0, $RDW_INVALIDATE)
-		_WinAPI_RedrawWindow($frmBotBottom, 0, 0, $RDW_INVALIDATE)
-	EndIf
-
+	$TogglePauseAllowed = $wasAllowed
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_MOVE
 
 Func GUIControl_WM_SYSCOMMAND($hWind, $iMsg, $wParam, $lParam)
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
 	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_SYSCOMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 	;If $__TEST_ERROR = True Then SetDebugLog("Bot WM_SYSCOMMAND: " & Hex($wParam, 4))
 	If $hWind = $frmBot Then ; Only close Bot when Bot Window sends Close Message
@@ -391,14 +486,17 @@ Func GUIControl_WM_SYSCOMMAND($hWind, $iMsg, $wParam, $lParam)
 				; set redraw controls flag to check if after restore visibile controls require redraw
 				BotRestore("GUIControl_WM_SYSCOMMAND")
 			Case $SC_CLOSE ; 0xf060
-				BotClose()
+				BotCloseRequest()
 		EndSwitch
 	EndIf
+	$TogglePauseAllowed = $wasAllowed
     Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_SYSCOMMAND
 
 Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
-	If $debugWindowMessages Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
+	If $debugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 	Local $nNotifyCode = BitShift($wParam, 16)
 	Local $nID = BitAND($wParam, 0x0000FFFF)
 	Local $hCtrl = $lParam
@@ -433,19 +531,30 @@ Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
 
 	If $bCheckEmbeddedShield Then
 		; check shield status
-		If $hWind <> $frmBotEmbeddedShield Then
+		If $hWind <> $frmBotEmbeddedShield And $hWind <> $frmBotEmbeddedGarphics And $hWinD <> $frmBotEmbeddedMouse Then
 			If AndroidShieldHasFocus() = True Then
 				; update shield with inactive state
+				If $debugWindowMessages Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 				AndroidShield("GUIControl_WM_NOTIFY", Default, False, 150, False)
 			EndIf
 		EndIf
 	EndIf
 
+	$TogglePauseAllowed = $wasAllowed
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_NOTIFY
 
+Func GUIControl_WM_CLOSE($hWind, $iMsg, $wParam, $lParam)
+	If $debugWindowMessages > 0 Then SetDebugLog("GUIControl_WM_CLOSE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	If $hWind = $frmBot Then
+		BotCloseRequest()
+	EndIf
+EndFunc   ;==>GUIControl_WM_CLOSE
+
 Func GUIEvents()
 	;@GUI_WinHandle
+	Local $wasAllowed = $TogglePauseAllowed
+	$TogglePauseAllowed = False
 	Local $GUI_CtrlId = @GUI_CtrlId
 	If $FrmBotMinimized And $GUI_CtrlId = $GUI_EVENT_MINIMIZE Then
 		; restore
@@ -455,7 +564,7 @@ Func GUIEvents()
     Switch $GUI_CtrlId
 		Case $GUI_EVENT_CLOSE
 			If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_CLOSE", Default, True)
-			BotClose()
+			BotCloseRequest()
 
         Case $GUI_EVENT_MINIMIZE
 			If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_MINIMIZE", Default, True)
@@ -469,6 +578,7 @@ Func GUIEvents()
 		Case Else
 			If $debugWindowMessages Then SetDebugLog("$GUI_EVENT: " & @GUI_CtrlId, Default, True)
     EndSwitch
+	$TogglePauseAllowed = $wasAllowed
 EndFunc   ;==>SpecialEvents
 
 ; Open URL in default browser using ShellExecute
@@ -486,13 +596,28 @@ Func OpenURL_Label($LabelCtrlID)
 	EndIf
 EndFunc   ;==>OpenURL_Label
 
+Func BotCloseRequest()
+	If $BotAction = $eBotClose Then
+		; already requested to close, but user is impatient, so close now
+		BotClose()
+	Else
+		SetLog("Closing " & $sBotTitle & ", please wait ...")
+	EndIf
+	$RunState = False
+	$TPaused = False
+	$BotAction = $eBotClose
+EndFunc   ;==>BotCloseRequest
+
 Func BotClose($SaveConfig = Default, $bExit = True)
    If $SaveConfig = Default Then $SaveConfig = $iBotLaunchTime > 0
+   $RunState = False
+   $TPaused = False
    ResumeAndroid()
-   SetLog("Closing " & $sBotTitle & " ...")
+   SetLog("Closing " & $sBotTitle & " now ...")
    AndroidEmbed(False) ; detach Android Window
    AndroidShieldDestroy() ; destroy Shield Hooks
-   If $RunState = True Then AndroidBotStopEvent() ; signal android that bot is now stoppting
+   AndroidBotStopEvent() ; signal android that bot is now stoppting
+
    If $SaveConfig = True Then
       setupProfile()
       SaveConfig()
@@ -526,6 +651,7 @@ Func BotMinimize($sCaller, $iForceUpdatingWhenMinimized = False)
 			_WinAPI_SetWindowLong($frmBot, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE), $WS_EX_TOOLWINDOW))
 		EndIf
 		If _WinAPI_IsIconic($frmBot) Then WinSetState($frmBot, "", @SW_RESTORE)
+		If _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
 		WinMove2($frmBot, "", -32000, -32000, -1, -1, 0, $SWP_SHOWWINDOW, False)
 	Else
 		If $iHideWhenMinimized = 1 Then
@@ -533,6 +659,7 @@ Func BotMinimize($sCaller, $iForceUpdatingWhenMinimized = False)
 			_WinAPI_SetWindowLong($frmBot, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE), $WS_EX_TOOLWINDOW))
 		EndIf
 		WinSetState($frmBot, "", @SW_MINIMIZE)
+		;WinSetState($HWnD, "", @SW_MINIMIZE)
 	EndIf
 	ReleaseMutex($hMutex)
 EndFunc   ;==BotMinimize
@@ -549,6 +676,7 @@ Func BotRestore($sCaller)
 		_WinAPI_SetWindowLong($frmBot, $GWL_EXSTYLE, BitAND($iExStyle, BitNOT($WS_EX_TOOLWINDOW)))
 	EndIf
 	If _WinAPI_IsIconic($frmBot) Then WinSetState($frmBot, "", @SW_RESTORE)
+	If $AndroidAdbScreencap = False And $RunState = True And $TPaused = False And _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
 	WinMove2($frmBot, "", $botPosX, $botPosY, -1, -1, $HWND_TOP, $SWP_SHOWWINDOW)
 	_WinAPI_SetActiveWindow($frmBot)
 	_WinAPI_SetFocus($frmBot)
@@ -600,7 +728,7 @@ Func tiDonate()
 EndFunc   ;==>tiDonate
 
 Func tiExit()
-	BotClose()
+	BotCloseRequest()
 EndFunc   ;==>tiExit
 
 ; #FUNCTION# ====================================================================================================================
@@ -1353,9 +1481,16 @@ EndFunc
 tabMain()
 
 ;---------------------------------------------------
-;~ If FileExists($sProfilePath & "\profile.ini") Then
+
+If FileExists($config) = 0 And $aCmdLine[0] > 0 Then
+	; create new profile when doesn't exit but specified via command line
+	createProfile()
+	saveConfig()
+	setupProfileComboBox()
+EndIf
+
 selectProfile() ; Choose the profile
-;~ EndIf
+
 If FileExists($config) Or FileExists($building) Then
 	readConfig()
 	applyConfig()
@@ -1368,26 +1503,42 @@ If $devmode = 1 Then
 	GUICtrlSetState($chkdebugTrain, $GUI_SHOW + $GUI_ENABLE)
 	GUICtrlSetState($chkdebugOCRDonate, $GUI_SHOW + $GUI_ENABLE)
 EndIf
-GUIRegisterMsg($WM_NCACTIVATE, "GUIControl_WM_NCACTIVATE")
-GUIRegisterMsg($WM_SETFOCUS, "GUIControl_WM_FOCUS")
-GUIRegisterMsg($WM_KILLFOCUS, "GUIControl_WM_FOCUS")
-GUIRegisterMsg($WM_MOVE, "GUIControl_WM_MOVE")
-GUIRegisterMsg($WM_COMMAND, "GUIControl_WM_COMMAND")
-;GUIRegisterMsg($WM_SYSCOMMAND, "GUIControl_WM_SYSCOMMAND")
+
 GUISetOnEvent($GUI_EVENT_CLOSE, "GUIEvents", $frmBot)
-GUIRegisterMsg($WM_NOTIFY, "GUIControl_WM_NOTIFY")
-For $i = $WM_MOUSEFIRST To $WM_MOUSEHWHEEL
-	GUIRegisterMsg($i, "GUIControl_WM_MOUSE")
-Next
 GUISetOnEvent($GUI_EVENT_MINIMIZE, "GUIEvents", $frmBot)
 GUISetOnEvent($GUI_EVENT_RESTORE, "GUIEvents", $frmBot)
 
-;Moved to applyConfig
-;chkDBActivateSearches()
-;chkABActivateSearches()
-;chkTSActivateSearches()
-cmbDBAlgorithm()
-cmbABAlgorithm()
+GUIRegisterMsg($WM_COMMAND, "GUIControl_WM_COMMAND")
+GUIRegisterMsg($WM_NOTIFY, "GUIControl_WM_NOTIFY")
+For $i = $WM_MOUSEMOVE To $WM_MBUTTONDBLCLK
+	GUIRegisterMsg($i, "GUIControl_WM_MOUSE")
+Next
 
+Func frmBot_WNDPROC($hWin, $iMsg, $wParam, $lParam)
+
+	If $debugWindowMessages > 1 Then SetDebugLog("frmBot_WNDPROC: FORWARD $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg) & ", $wParam=" & Hex($wParam) & ", $lParam=" & $lParam, Default, True)
+
+	Switch $iMsg
+		Case $WM_NCACTIVATE
+			GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
+		Case $WM_SETFOCUS, $WM_KILLFOCUS
+			GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
+		Case $WM_MOVE
+			GUIControl_WM_MOVE($hWin, $iMsg, $wParam, $lParam)
+		Case $WM_KEYDOWN, $WM_KEYUP, $WM_SYSKEYDOWN, $WM_SYSKEYUP, $WM_MOUSEWHEEL, $WM_MOUSEHWHEEL
+			GUIControl_AndroidEmbedded($hWin, $iMsg, $wParam, $lParam)
+	EndSwitch
+
+	Return _WinAPI_CallWindowProc($frmBot_WNDPROC, $hWin, $iMsg, $wParam, $lParam)
+EndFunc
+
+; Register Windows Procedure to support Mouse and Keyboard in docked mode
+Local $frmBot_WNDPROC_ptr = DllCallbackGetPtr(DllCallbackRegister("frmBot_WNDPROC", "ptr", "hwnd;uint;long;ptr"))
+_WinAPI_SetWindowLong(ControlGetHandle($frmBot, "", $frmBotEmbeddedShieldInput), $GWL_WNDPROC, $frmBot_WNDPROC_ptr)
+$frmBot_WNDPROC = _WinAPI_SetWindowLong($frmBot, $GWL_WNDPROC, $frmBot_WNDPROC_ptr)
 
 ;---------------------------------------------------
+
+cmbDBAlgorithm()
+cmbABAlgorithm()
+SetAccelerators()

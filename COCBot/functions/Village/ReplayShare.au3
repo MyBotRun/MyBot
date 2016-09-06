@@ -18,7 +18,7 @@ Func ReplayShare($last = 1)
 	;         Use this option  with caution or risk being reported
 	Local $txtMessage, $tNew
 
-	If $iShareAttackNow = 0 Then Return
+	If $iShareAttack = 0 Then Return
 
 	If $last = 1 Then
 		;--  open page of attacks -------------------------------------------------------------

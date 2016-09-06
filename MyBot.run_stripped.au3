@@ -2,8 +2,8 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 6.2.1)
-#pragma compile(FileVersion, 6.2.1)
+#pragma compile(ProductVersion, 6.2.2)
+#pragma compile(FileVersion, 6.2.2)
 #pragma compile(LegalCopyright, Â© https://mybot.run)
 #pragma compile(Out, MyBot.run.exe)  ; Required
 Global Const $WC_ANIMATE = 'SysAnimate32'
@@ -3419,7 +3419,7 @@ Local $iBotProcessPriority = _ProcessGetPriority(@AutoItPID)
 ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 Global $iBotLaunchTime = 0
 Local $hBotLaunchTime = TimerInit()
-$sBotVersion = "v6.2.1"
+$sBotVersion = "v6.2.2"
 $sBotTitle = "My Bot " & $sBotVersion & " "
 Global Const $iDelaySleep = 100
 Global Const $iDelayWaitForPopup = 1500
@@ -9248,316 +9248,246 @@ Local $aRet = DllCall('kernel32.dll', 'bool', 'UserHandleGrantAccess', 'handle',
 If @error Then Return SetError(@error, @extended, False)
 Return $aRet[0]
 EndFunc
-Global Const $GDIP_DASHCAPFLAT = 0
-Global Const $GDIP_DASHCAPROUND = 2
-Global Const $GDIP_DASHCAPTRIANGLE = 3
-Global Const $GDIP_DASHSTYLESOLID = 0
-Global Const $GDIP_DASHSTYLEDASH = 1
-Global Const $GDIP_DASHSTYLEDOT = 2
-Global Const $GDIP_DASHSTYLEDASHDOT = 3
-Global Const $GDIP_DASHSTYLEDASHDOTDOT = 4
-Global Const $GDIP_DASHSTYLECUSTOM = 5
-Global Const $GDIP_EPGCHROMINANCETABLE = '{F2E455DC-09B3-4316-8260-676ADA32481C}'
-Global Const $GDIP_EPGCOLORDEPTH = '{66087055-AD66-4C7C-9A18-38A2310B8337}'
-Global Const $GDIP_EPGCOMPRESSION = '{E09D739D-CCD4-44EE-8EBA-3FBF8BE4FC58}'
-Global Const $GDIP_EPGLUMINANCETABLE = '{EDB33BCE-0266-4A77-B904-27216099E717}'
-Global Const $GDIP_EPGQUALITY = '{1D5BE4B5-FA4A-452D-9CDD-5DB35105E7EB}'
-Global Const $GDIP_EPGRENDERMETHOD = '{6D42C53A-229A-4825-8BB7-5C99E2B9A8B8}'
-Global Const $GDIP_EPGSAVEFLAG = '{292266FC-AC40-47BF-8CFC-A85B89A655DE}'
-Global Const $GDIP_EPGSCANMETHOD = '{3A4E2661-3109-4E56-8536-42C156E7DCFA}'
-Global Const $GDIP_EPGTRANSFORMATION = '{8D0EB2D1-A58E-4EA8-AA14-108074B7B6F9}'
-Global Const $GDIP_EPGVERSION = '{24D18C76-814A-41A4-BF53-1C219CCCF797}'
-Global Const $GDIP_EPTBYTE = 1
-Global Const $GDIP_EPTASCII = 2
-Global Const $GDIP_EPTSHORT = 3
-Global Const $GDIP_EPTLONG = 4
-Global Const $GDIP_EPTRATIONAL = 5
-Global Const $GDIP_EPTLONGRANGE = 6
-Global Const $GDIP_EPTUNDEFINED = 7
-Global Const $GDIP_EPTRATIONALRANGE = 8
-Global Const $GDIP_ERROK = 0
-Global Const $GDIP_ERRGENERICERROR = 1
-Global Const $GDIP_ERRINVALIDPARAMETER = 2
-Global Const $GDIP_ERROUTOFMEMORY = 3
-Global Const $GDIP_ERROBJECTBUSY = 4
-Global Const $GDIP_ERRINSUFFICIENTBUFFER = 5
-Global Const $GDIP_ERRNOTIMPLEMENTED = 6
-Global Const $GDIP_ERRWIN32ERROR = 7
-Global Const $GDIP_ERRWRONGSTATE = 8
-Global Const $GDIP_ERRABORTED = 9
-Global Const $GDIP_ERRFILENOTFOUND = 10
-Global Const $GDIP_ERRVALUEOVERFLOW = 11
-Global Const $GDIP_ERRACCESSDENIED = 12
-Global Const $GDIP_ERRUNKNOWNIMAGEFORMAT = 13
-Global Const $GDIP_ERRFONTFAMILYNOTFOUND = 14
-Global Const $GDIP_ERRFONTSTYLENOTFOUND = 15
-Global Const $GDIP_ERRNOTTRUETYPEFONT = 16
-Global Const $GDIP_ERRUNSUPPORTEDGDIVERSION = 17
-Global Const $GDIP_ERRGDIPLUSNOTINITIALIZED = 18
-Global Const $GDIP_ERRPROPERTYNOTFOUND = 19
-Global Const $GDIP_ERRPROPERTYNOTSUPPORTED = 20
-Global Const $GDIP_EVTCOMPRESSIONLZW = 2
-Global Const $GDIP_EVTCOMPRESSIONCCITT3 = 3
-Global Const $GDIP_EVTCOMPRESSIONCCITT4 = 4
-Global Const $GDIP_EVTCOMPRESSIONRLE = 5
-Global Const $GDIP_EVTCOMPRESSIONNONE = 6
-Global Const $GDIP_EVTTRANSFORMROTATE90 = 13
-Global Const $GDIP_EVTTRANSFORMROTATE180 = 14
-Global Const $GDIP_EVTTRANSFORMROTATE270 = 15
-Global Const $GDIP_EVTTRANSFORMFLIPHORIZONTAL = 16
-Global Const $GDIP_EVTTRANSFORMFLIPVERTICAL = 17
-Global Const $GDIP_EVTMULTIFRAME = 18
-Global Const $GDIP_EVTLASTFRAME = 19
-Global Const $GDIP_EVTFLUSH = 20
-Global Const $GDIP_EVTFRAMEDIMENSIONPAGE = 23
-Global Const $GDIP_ICFENCODER = 0x00000001
-Global Const $GDIP_ICFDECODER = 0x00000002
-Global Const $GDIP_ICFSUPPORTBITMAP = 0x00000004
-Global Const $GDIP_ICFSUPPORTVECTOR = 0x00000008
-Global Const $GDIP_ICFSEEKABLEENCODE = 0x00000010
-Global Const $GDIP_ICFBLOCKINGDECODE = 0x00000020
-Global Const $GDIP_ICFBUILTIN = 0x00010000
-Global Const $GDIP_ICFSYSTEM = 0x00020000
-Global Const $GDIP_ICFUSER = 0x00040000
-Global Const $GDIP_ILMREAD = 0x0001
-Global Const $GDIP_ILMWRITE = 0x0002
-Global Const $GDIP_ILMUSERINPUTBUF = 0x0004
-Global Const $GDIP_LINECAPFLAT = 0x00
-Global Const $GDIP_LINECAPSQUARE = 0x01
-Global Const $GDIP_LINECAPROUND = 0x02
-Global Const $GDIP_LINECAPTRIANGLE = 0x03
-Global Const $GDIP_LINECAPNOANCHOR = 0x10
-Global Const $GDIP_LINECAPSQUAREANCHOR = 0x11
-Global Const $GDIP_LINECAPROUNDANCHOR = 0x12
-Global Const $GDIP_LINECAPDIAMONDANCHOR = 0x13
-Global Const $GDIP_LINECAPARROWANCHOR = 0x14
-Global Const $GDIP_LINECAPCUSTOM = 0xFF
-Global Const $GDIP_PXF01INDEXED = 0x00030101
-Global Const $GDIP_PXF04INDEXED = 0x00030402
-Global Const $GDIP_PXF08INDEXED = 0x00030803
-Global Const $GDIP_PXF16GRAYSCALE = 0x00101004
-Global Const $GDIP_PXF16RGB555 = 0x00021005
-Global Const $GDIP_PXF16RGB565 = 0x00021006
-Global Const $GDIP_PXF16ARGB1555 = 0x00061007
-Global Const $GDIP_PXF24RGB = 0x00021808
-Global Const $GDIP_PXF32RGB = 0x00022009
-Global Const $GDIP_PXF32ARGB = 0x0026200A
-Global Const $GDIP_PXF32PARGB = 0x000E200B
-Global Const $GDIP_PXF48RGB = 0x0010300C
-Global Const $GDIP_PXF64ARGB = 0x0034400D
-Global Const $GDIP_PXF64PARGB = 0x001A400E
-Global Const $GDIP_IMAGEFORMAT_UNDEFINED = "{B96B3CA9-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_MEMORYBMP = "{B96B3CAA-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_BMP = "{B96B3CAB-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_EMF = "{B96B3CAC-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_WMF = "{B96B3CAD-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_JPEG = "{B96B3CAE-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_PNG = "{B96B3CAF-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_GIF = "{B96B3CB0-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_TIFF = "{B96B3CB1-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_EXIF = "{B96B3CB2-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGEFORMAT_ICON = "{B96B3CB5-0728-11D3-9D7B-0000F81EF32E}"
-Global Const $GDIP_IMAGETYPE_UNKNOWN = 0
-Global Const $GDIP_IMAGETYPE_BITMAP = 1
-Global Const $GDIP_IMAGETYPE_METAFILE = 2
-Global Const $GDIP_IMAGEFLAGS_NONE = 0x0
-Global Const $GDIP_IMAGEFLAGS_SCALABLE = 0x0001
-Global Const $GDIP_IMAGEFLAGS_HASALPHA = 0x0002
-Global Const $GDIP_IMAGEFLAGS_HASTRANSLUCENT = 0x0004
-Global Const $GDIP_IMAGEFLAGS_PARTIALLYSCALABLE = 0x0008
-Global Const $GDIP_IMAGEFLAGS_COLORSPACE_RGB = 0x0010
-Global Const $GDIP_IMAGEFLAGS_COLORSPACE_CMYK = 0x0020
-Global Const $GDIP_IMAGEFLAGS_COLORSPACE_GRAY = 0x0040
-Global Const $GDIP_IMAGEFLAGS_COLORSPACE_YCBCR = 0x0080
-Global Const $GDIP_IMAGEFLAGS_COLORSPACE_YCCK = 0x0100
-Global Const $GDIP_IMAGEFLAGS_HASREALDPI = 0x1000
-Global Const $GDIP_IMAGEFLAGS_HASREALPIXELSIZE = 0x2000
-Global Const $GDIP_IMAGEFLAGS_READONLY = 0x00010000
-Global Const $GDIP_IMAGEFLAGS_CACHING = 0x00020000
-Global Const $GDIP_SMOOTHINGMODE_INVALID = -1
-Global Const $GDIP_SMOOTHINGMODE_DEFAULT = 0
-Global Const $GDIP_SMOOTHINGMODE_HIGHSPEED = 1
-Global Const $GDIP_SMOOTHINGMODE_HIGHQUALITY = 2
-Global Const $GDIP_SMOOTHINGMODE_NONE = 3
-Global Const $GDIP_SMOOTHINGMODE_ANTIALIAS8X4 = 4
-Global Const $GDIP_SMOOTHINGMODE_ANTIALIAS = $GDIP_SMOOTHINGMODE_ANTIALIAS8X4
-Global Const $GDIP_SMOOTHINGMODE_ANTIALIAS8X8 = 5
-Global Const $GDIP_RLUM = 0.3086
-Global Const $GDIP_GLUM = 0.6094
-Global Const $GDIP_BLUM = 0.0820
-Global Const $GDIP_INTERPOLATIONMODE_INVALID = -1
-Global Const $GDIP_INTERPOLATIONMODE_DEFAULT = 0
-Global Const $GDIP_INTERPOLATIONMODE_LOWQUALITY = 1
-Global Const $GDIP_INTERPOLATIONMODE_HIGHQUALITY = 2
-Global Const $GDIP_INTERPOLATIONMODE_BILINEAR = 3
-Global Const $GDIP_INTERPOLATIONMODE_BICUBIC = 4
-Global Const $GDIP_INTERPOLATIONMODE_NEARESTNEIGHBOR = 5
-Global Const $GDIP_INTERPOLATIONMODE_HIGHQUALITYBILINEAR = 6
-Global Const $GDIP_INTERPOLATIONMODE_HIGHQUALITYBICUBIC = 7
-Global Const $GDIP_TEXTRENDERINGHINT_SYSTEMDEFAULT = 0
-Global Const $GDIP_TEXTRENDERINGHINT_SINGLEBITPERPIXELGRIDFIT = 1
-Global Const $GDIP_TEXTRENDERINGHINT_SINGLEBITPERPIXEL = 2
-Global Const $GDIP_TEXTRENDERINGHINT_ANTIALIASGRIDFIT = 3
-Global Const $GDIP_TEXTRENDERINGHINT_ANTIALIAS = 4
-Global Const $GDIP_TEXTRENDERINGHINT_CLEARTYPEGRIDFIT = 5
-Global Const $GDIP_PIXELOFFSETMODE_INVALID = -1
-Global Const $GDIP_PIXELOFFSETMODE_DEFAULT = 0
-Global Const $GDIP_PIXELOFFSETMODE_HIGHSPEED = 1
-Global Const $GDIP_PIXELOFFSETMODE_HIGHQUALITY = 2
-Global Const $GDIP_PIXELOFFSETMODE_NONE = 3
-Global Const $GDIP_PIXELOFFSETMODE_HALF = 4
-Global Const $GDIP_PENSETLINEJOIN_MITER = 0
-Global Const $GDIP_PENSETLINEJOIN_BEVEL = 1
-Global Const $GDIP_PENSETLINEJOIN_ROUND = 2
-Global Const $GDIP_PENSETLINEJOIN_MITERCLIPPED = 3
-Global Const $GDIP_FillModeAlternate = 0
-Global Const $GDIP_FillModeWinding = 1
-Global Const $GDIP_QUALITYMODEINVALID = -1
-Global Const $GDIP_QUALITYMODEDEFAULT = 0
-Global Const $GDIP_QUALITYMODELOW = 1
-Global Const $GDIP_QUALITYMODEHIGH = 2
-Global Const $GDIP_COMPOSITINGMODESOURCEOVER = 0
-Global Const $GDIP_COMPOSITINGMODESOURCECOPY = 1
-Global Const $GDIP_COMPOSITINGQUALITYINVALID = $GDIP_QUALITYMODEINVALID
-Global Const $GDIP_COMPOSITINGQUALITYDEFAULT = $GDIP_QUALITYMODEDEFAULT
-Global Const $GDIP_COMPOSITINGQUALITYHIGHSPEED = $GDIP_QUALITYMODELOW
-Global Const $GDIP_COMPOSITINGQUALITYHIGHQUALITY = $GDIP_QUALITYMODEHIGH
-Global Const $GDIP_COMPOSITINGQUALITYGAMMACORRECTED = 3
-Global Const $GDIP_COMPOSITINGQUALITYASSUMELINEAR = 4
-Global Const $GDIP_HATCHSTYLE_HORIZONTAL = 0
-Global Const $GDIP_HATCHSTYLE_VERTICAL = 1
-Global Const $GDIP_HATCHSTYLE_FORWARDDIAGONAL = 2
-Global Const $GDIP_HATCHSTYLE_BACKWARDDIAGONAL = 3
-Global Const $GDIP_HATCHSTYLE_CROSS = 4
-Global Const $GDIP_HATCHSTYLE_DIAGONALCROSS = 5
-Global Const $GDIP_HATCHSTYLE_05PERCENT = 6
-Global Const $GDIP_HATCHSTYLE_10PERCENT = 7
-Global Const $GDIP_HATCHSTYLE_20PERCENT = 8
-Global Const $GDIP_HATCHSTYLE_25PERCENT = 9
-Global Const $GDIP_HATCHSTYLE_30PERCENT = 10
-Global Const $GDIP_HATCHSTYLE_40PERCENT = 11
-Global Const $GDIP_HATCHSTYLE_50PERCENT = 12
-Global Const $GDIP_HATCHSTYLE_60PERCENT = 13
-Global Const $GDIP_HATCHSTYLE_70PERCENT = 14
-Global Const $GDIP_HATCHSTYLE_75PERCENT = 15
-Global Const $GDIP_HATCHSTYLE_80PERCENT = 16
-Global Const $GDIP_HATCHSTYLE_90PERCENT = 17
-Global Const $GDIP_HATCHSTYLE_LIGHTDOWNWARDDIAGONAL = 18
-Global Const $GDIP_HATCHSTYLE_LIGHTUPWARDDIAGONAL = 19
-Global Const $GDIP_HATCHSTYLE_DARKDOWNWARDDIAGONAL = 20
-Global Const $GDIP_HATCHSTYLE_DARKUPWARDDIAGONAL = 21
-Global Const $GDIP_HATCHSTYLE_WIDEDOWNWARDDIAGONAL = 22
-Global Const $GDIP_HATCHSTYLE_WIDEUPWARDDIAGONAL = 23
-Global Const $GDIP_HATCHSTYLE_LIGHTVERTICAL = 24
-Global Const $GDIP_HATCHSTYLE_LIGHTHORIZONTAL = 25
-Global Const $GDIP_HATCHSTYLE_NARROWVERTICAL = 26
-Global Const $GDIP_HATCHSTYLE_NARROWHORIZONTAL = 27
-Global Const $GDIP_HATCHSTYLE_DARKVERTICAL = 28
-Global Const $GDIP_HATCHSTYLE_DARKHORIZONTAL = 29
-Global Const $GDIP_HATCHSTYLE_DASHEDDOWNWARDDIAGONAL = 30
-Global Const $GDIP_HATCHSTYLE_DASHEDUPWARDDIAGONAL = 31
-Global Const $GDIP_HATCHSTYLE_DASHEDHORIZONTAL = 32
-Global Const $GDIP_HATCHSTYLE_DASHEDVERTICAL = 33
-Global Const $GDIP_HATCHSTYLE_SMALLCONFETTI = 34
-Global Const $GDIP_HATCHSTYLE_LARGECONFETTI = 35
-Global Const $GDIP_HATCHSTYLE_ZIGZAG = 36
-Global Const $GDIP_HATCHSTYLE_WAVE = 37
-Global Const $GDIP_HATCHSTYLE_DIAGONALBRICK = 38
-Global Const $GDIP_HATCHSTYLE_HORIZONTALBRICK = 39
-Global Const $GDIP_HATCHSTYLE_WEAVE = 40
-Global Const $GDIP_HATCHSTYLE_PLAID = 41
-Global Const $GDIP_HATCHSTYLE_DIVOT = 42
-Global Const $GDIP_HATCHSTYLE_DOTTEDGRID = 43
-Global Const $GDIP_HATCHSTYLE_DOTTEDDIAMOND = 44
-Global Const $GDIP_HATCHSTYLE_SHINGLE = 45
-Global Const $GDIP_HATCHSTYLE_TRELLIS = 46
-Global Const $GDIP_HATCHSTYLE_SPHERE = 47
-Global Const $GDIP_HATCHSTYLE_SMALLGRID = 48
-Global Const $GDIP_HATCHSTYLE_SMALLCHECKERBOARD = 49
-Global Const $GDIP_HATCHSTYLE_LARGECHECKERBOARD = 50
-Global Const $GDIP_HATCHSTYLE_OUTLINEDDIAMOND = 51
-Global Const $GDIP_HATCHSTYLE_SOLIDDIAMOND = 52
-Global Const $GDIP_HATCHSTYLE_TOTAL = 53
-Global Const $GDIP_HATCHSTYLE_LARGEGRID = $GDIP_HATCHSTYLE_CROSS
-Global Const $GDIP_HATCHSTYLE_MIN = $GDIP_HATCHSTYLE_HORIZONTAL
-Global Const $GDIP_HATCHSTYLE_MAX = $GDIP_HATCHSTYLE_TOTAL - 1
-Global Const $GDIP_BlurEffectGuid = '{633C80A4-1843-482b-9EF2-BE2834C5FDD4}'
-Global Const $GDIP_SharpenEffectGuid = '{63CBF3EE-C526-402c-8F71-62C540BF5142}'
-Global Const $GDIP_ColorMatrixEffectGuid = '{718F2615-7933-40e3-A511-5F68FE14DD74}'
-Global Const $GDIP_ColorLUTEffectGuid = '{A7CE72A9-0F7F-40d7-B3CC-D0C02D5C3212}'
-Global Const $GDIP_BrightnessContrastEffectGuid = '{D3A1DBE1-8EC4-4c17-9F4C-EA97AD1C343D}'
-Global Const $GDIP_HueSaturationLightnessEffectGuid = '{8B2DD6C3-EB07-4d87-A5F0-7108E26A9C5F}'
-Global Const $GDIP_LevelsEffectGuid = '{99C354EC-2A31-4f3a-8C34-17A803B33A25}'
-Global Const $GDIP_TintEffectGuid = '{1077AF00-2848-4441-9489-44AD4C2D7A2C}'
-Global Const $GDIP_ColorBalanceEffectGuid = '{537E597D-251E-48da-9664-29CA496B70F8}'
-Global Const $GDIP_RedEyeCorrectionEffectGuid = '{74D29D05-69A4-4266-9549-3CC52836B632}'
-Global Const $GDIP_ColorCurveEffectGuid = '{DD6A0022-58E4-4a67-9D9B-D48EB881A53D}'
-Global Const $GDIP_AdjustExposure = 0
-Global Const $GDIP_AdjustDensity = 1
-Global Const $GDIP_AdjustContrast = 2
-Global Const $GDIP_AdjustHighlight = 3
-Global Const $GDIP_AdjustShadow = 4
-Global Const $GDIP_AdjustMidtone = 5
-Global Const $GDIP_AdjustWhiteSaturation = 6
-Global Const $GDIP_AdjustBlackSaturation = 7
-Global Const $GDIP_CurveChannelAll = 0
-Global Const $GDIP_CurveChannelRed = 1
-Global Const $GDIP_CurveChannelGreen = 2
-Global Const $GDIP_CurveChannelBlue = 3
-Global Const $GDIP_PaletteTypeCustom = 0
-Global Const $GDIP_PaletteTypeOptimal = 1
-Global Const $GDIP_PaletteTypeFixedBW = 2
-Global Const $GDIP_PaletteTypeFixedHalftone8 = 3
-Global Const $GDIP_PaletteTypeFixedHalftone27 = 4
-Global Const $GDIP_PaletteTypeFixedHalftone64 = 5
-Global Const $GDIP_PaletteTypeFixedHalftone125 = 6
-Global Const $GDIP_PaletteTypeFixedHalftone216 = 7
-Global Const $GDIP_PaletteTypeFixedHalftone252 = 8
-Global Const $GDIP_PaletteTypeFixedHalftone256 = 9
-Global Const $GDIP_PaletteFlagsHasAlpha = 0x0001
-Global Const $GDIP_PaletteFlagsGrayScale = 0x0002
-Global Const $GDIP_PaletteFlagsHalftone = 0x0004
-Global Const $GDIP_DitherTypeNone = 0
-Global Const $GDIP_DitherTypeSolid = 1
-Global Const $GDIP_DitherTypeOrdered4x4 = 2
-Global Const $GDIP_DitherTypeOrdered8x8 = 3
-Global Const $GDIP_DitherTypeOrdered16x16 = 4
-Global Const $GDIP_DitherTypeOrdered91x91 = 5
-Global Const $GDIP_DitherTypeSpiral4x4 = 6
-Global Const $GDIP_DitherTypeSpiral8x8 = 7
-Global Const $GDIP_DitherTypeDualSpiral4x4 = 8
-Global Const $GDIP_DitherTypeDualSpiral8x8 = 9
-Global Const $GDIP_DitherTypeErrorDiffusion = 10
-Global Const $GDIP_DitherTypeMax = 10
-Global Const $GDIP_HistogramFormatARGB = 0
-Global Const $GDIP_HistogramFormatPARGB = 1
-Global Const $GDIP_HistogramFormatRGB = 2
-Global Const $GDIP_HistogramFormatGray = 3
-Global Const $GDIP_HistogramFormatB = 4
-Global Const $GDIP_HistogramFormatG = 5
-Global Const $GDIP_HistogramFormatR = 6
-Global Const $GDIP_HistogramFormatA = 7
-Global Const $GDIP_TextRenderingHintSystemDefault = 0
-Global Const $GDIP_TextRenderingHintSingleBitPerPixelGridFit = 1
-Global Const $GDIP_TextRenderingHintSingleBitPerPixel = 2
-Global Const $GDIP_TextRenderingHintAntialiasGridFit = 3
-Global Const $GDIP_TextRenderingHintAntialias = 4
-Global Const $GDIP_TextRenderingHintClearTypeGridFit = 5
-Global Const $GDIP_RotateNoneFlipNone = 0
-Global Const $GDIP_Rotate90FlipNone = 1
-Global Const $GDIP_Rotate180FlipNone = 2
-Global Const $GDIP_Rotate270FlipNone = 3
-Global Const $GDIP_RotateNoneFlipX = 4
-Global Const $GDIP_Rotate90FlipX = 5
-Global Const $GDIP_Rotate180FlipX = 6
-Global Const $GDIP_Rotate270FlipX = 7
-Global Const $GDIP_RotateNoneFlipY = $GDIP_Rotate180FlipX
-Global Const $GDIP_Rotate90FlipY = $GDIP_Rotate270FlipX
-Global Const $GDIP_Rotate180FlipY = $GDIP_RotateNoneFlipX
-Global Const $GDIP_Rotate270FlipY = $GDIP_Rotate90FlipX
-Global Const $GDIP_RotateNoneFlipXY = $GDIP_Rotate180FlipNone
-Global Const $GDIP_Rotate90FlipXY = $GDIP_Rotate270FlipNone
-Global Const $GDIP_Rotate270FlipXY = $GDIP_Rotate90FlipNone
+Global Const $LINGUISTIC_IGNORECASE = 0x00000010
+Global Const $LINGUISTIC_IGNOREDIACRITIC = 0x00000020
+Global Const $NORM_IGNORECASE = 0x00000001
+Global Const $NORM_IGNOREKANATYPE = 0x00010000
+Global Const $NORM_IGNORENONSPACE = 0x00000002
+Global Const $NORM_IGNORESYMBOLS = 0x00000004
+Global Const $NORM_IGNOREWIDTH = 0x00020000
+Global Const $NORM_LINGUISTIC_CASING = 0x08000000
+Global Const $SORT_DIGITSASNUMBERS = 0x00000008
+Global Const $SORT_STRINGSORT = 0x00001000
+Global Const $CSTR_LESS_THAN = 1
+Global Const $CSTR_EQUAL = 2
+Global Const $CSTR_GREATER_THAN = 3
+Global Const $MUI_LANGUAGE_ID = 0x0004
+Global Const $MUI_LANGUAGE_NAME = 0x0008
+Global Const $DATE_AUTOLAYOUT = 0x40
+Global Const $DATE_LONGDATE = 0x02
+Global Const $DATE_LTRREADING = 0x10
+Global Const $DATE_SHORTDATE = 0x01
+Global Const $DATE_RTLREADING = 0x20
+Global Const $DATE_USE_ALT_CALENDAR = 0x04
+Global Const $DATE_YEARMONTH = 0x08
+Global Const $GEO_NATION = 1
+Global Const $GEO_LATITUDE = 2
+Global Const $GEO_LONGITUDE = 3
+Global Const $GEO_ISO2 = 4
+Global Const $GEO_ISO3 = 5
+Global Const $GEO_RFC1766 = 6
+Global Const $GEO_LCID = 7
+Global Const $GEO_FRIENDLYNAME = 8
+Global Const $GEO_OFFICIALNAME = 9
+Global Const $GEO_TIMEZONES = 10
+Global Const $GEO_OFFICIALLANGUAGES = 11
+Global Const $GEO_ISO_UN_NUMBER = 12
+Global Const $GEO_PARENT = 13
+Global Const $LOCALE_ILANGUAGE = 0x0001
+Global Const $LOCALE_SLANGUAGE = 0x0002
+Global Const $LOCALE_SENGLANGUAGE = 0x1001
+Global Const $LOCALE_SABBREVLANGNAME = 0x0003
+Global Const $LOCALE_SNATIVELANGNAME = 0x0004
+Global Const $LOCALE_ICOUNTRY = 0x0005
+Global Const $LOCALE_SCOUNTRY = 0x0006
+Global Const $LOCALE_SENGCOUNTRY = 0x1002
+Global Const $LOCALE_SABBREVCTRYNAME = 0x0007
+Global Const $LOCALE_SNATIVECTRYNAME = 0x0008
+Global Const $LOCALE_IDEFAULTLANGUAGE = 0x0009
+Global Const $LOCALE_IDEFAULTCOUNTRY = 0x000A
+Global Const $LOCALE_IDEFAULTCODEPAGE = 0x000B
+Global Const $LOCALE_IDEFAULTANSICODEPAGE = 0x1004
+Global Const $LOCALE_IDEFAULTMACCODEPAGE = 0x1011
+Global Const $LOCALE_SLIST = 0x000C
+Global Const $LOCALE_IMEASURE = 0x000D
+Global Const $LOCALE_SDECIMAL = 0x000E
+Global Const $LOCALE_STHOUSAND = 0x000F
+Global Const $LOCALE_SGROUPING = 0x0010
+Global Const $LOCALE_IDIGITS = 0x0011
+Global Const $LOCALE_ILZERO = 0x0012
+Global Const $LOCALE_INEGNUMBER = 0x1010
+Global Const $LOCALE_SNATIVEDIGITS = 0x0013
+Global Const $LOCALE_SCURRENCY = 0x0014
+Global Const $LOCALE_SINTLSYMBOL = 0x0015
+Global Const $LOCALE_SMONDECIMALSEP = 0x0016
+Global Const $LOCALE_SMONTHOUSANDSEP = 0x0017
+Global Const $LOCALE_SMONGROUPING = 0x0018
+Global Const $LOCALE_ICURRDIGITS = 0x0019
+Global Const $LOCALE_IINTLCURRDIGITS = 0x001A
+Global Const $LOCALE_ICURRENCY = 0x001B
+Global Const $LOCALE_INEGCURR = 0x001C
+Global Const $LOCALE_SDATE = 0x001D
+Global Const $LOCALE_STIME = 0x001E
+Global Const $LOCALE_SSHORTDATE = 0x001F
+Global Const $LOCALE_SLONGDATE = 0x0020
+Global Const $LOCALE_STIMEFORMAT = 0x1003
+Global Const $LOCALE_IDATE = 0x0021
+Global Const $LOCALE_ILDATE = 0x0022
+Global Const $LOCALE_ITIME = 0x0023
+Global Const $LOCALE_ITIMEMARKPOSN = 0x1005
+Global Const $LOCALE_ICENTURY = 0x0024
+Global Const $LOCALE_ITLZERO = 0x0025
+Global Const $LOCALE_IDAYLZERO = 0x0026
+Global Const $LOCALE_IMONLZERO = 0x0027
+Global Const $LOCALE_S1159 = 0x0028
+Global Const $LOCALE_S2359 = 0x0029
+Global Const $LOCALE_ICALENDARTYPE = 0x1009
+Global Const $LOCALE_IOPTIONALCALENDAR = 0x100B
+Global Const $LOCALE_IFIRSTDAYOFWEEK = 0x100C
+Global Const $LOCALE_IFIRSTWEEKOFYEAR = 0x100D
+Global Const $LOCALE_SDAYNAME1 = 0x002A
+Global Const $LOCALE_SDAYNAME2 = 0x002B
+Global Const $LOCALE_SDAYNAME3 = 0x002C
+Global Const $LOCALE_SDAYNAME4 = 0x002D
+Global Const $LOCALE_SDAYNAME5 = 0x002E
+Global Const $LOCALE_SDAYNAME6 = 0x002F
+Global Const $LOCALE_SDAYNAME7 = 0x0030
+Global Const $LOCALE_SABBREVDAYNAME1 = 0x0031
+Global Const $LOCALE_SABBREVDAYNAME2 = 0x0032
+Global Const $LOCALE_SABBREVDAYNAME3 = 0x0033
+Global Const $LOCALE_SABBREVDAYNAME4 = 0x0034
+Global Const $LOCALE_SABBREVDAYNAME5 = 0x0035
+Global Const $LOCALE_SABBREVDAYNAME6 = 0x0036
+Global Const $LOCALE_SABBREVDAYNAME7 = 0x0037
+Global Const $LOCALE_SMONTHNAME1 = 0x0038
+Global Const $LOCALE_SMONTHNAME2 = 0x0039
+Global Const $LOCALE_SMONTHNAME3 = 0x003A
+Global Const $LOCALE_SMONTHNAME4 = 0x003B
+Global Const $LOCALE_SMONTHNAME5 = 0x003C
+Global Const $LOCALE_SMONTHNAME6 = 0x003D
+Global Const $LOCALE_SMONTHNAME7 = 0x003E
+Global Const $LOCALE_SMONTHNAME8 = 0x003F
+Global Const $LOCALE_SMONTHNAME9 = 0x0040
+Global Const $LOCALE_SMONTHNAME10 = 0x0041
+Global Const $LOCALE_SMONTHNAME11 = 0x0042
+Global Const $LOCALE_SMONTHNAME12 = 0x0043
+Global Const $LOCALE_SMONTHNAME13 = 0x100E
+Global Const $LOCALE_SABBREVMONTHNAME1 = 0x0044
+Global Const $LOCALE_SABBREVMONTHNAME2 = 0x0045
+Global Const $LOCALE_SABBREVMONTHNAME3 = 0x0046
+Global Const $LOCALE_SABBREVMONTHNAME4 = 0x0047
+Global Const $LOCALE_SABBREVMONTHNAME5 = 0x0048
+Global Const $LOCALE_SABBREVMONTHNAME6 = 0x0049
+Global Const $LOCALE_SABBREVMONTHNAME7 = 0x004A
+Global Const $LOCALE_SABBREVMONTHNAME8 = 0x004B
+Global Const $LOCALE_SABBREVMONTHNAME9 = 0x004C
+Global Const $LOCALE_SABBREVMONTHNAME10 = 0x004D
+Global Const $LOCALE_SABBREVMONTHNAME11 = 0x004E
+Global Const $LOCALE_SABBREVMONTHNAME12 = 0x004F
+Global Const $LOCALE_SABBREVMONTHNAME13 = 0x100F
+Global Const $LOCALE_SPOSITIVESIGN = 0x0050
+Global Const $LOCALE_SNEGATIVESIGN = 0x0051
+Global Const $LOCALE_IPOSSIGNPOSN = 0x0052
+Global Const $LOCALE_INEGSIGNPOSN = 0x0053
+Global Const $LOCALE_IPOSSYMPRECEDES = 0x0054
+Global Const $LOCALE_IPOSSEPBYSPACE = 0x0055
+Global Const $LOCALE_INEGSYMPRECEDES = 0x0056
+Global Const $LOCALE_INEGSEPBYSPACE = 0x0057
+Global Const $LOCALE_FONTSIGNATURE = 0x0058
+Global Const $LOCALE_SISO639LANGNAME = 0x0059
+Global Const $LOCALE_SISO3166CTRYNAME = 0x005A
+Global Const $LOCALE_IDEFAULTEBCDICCODEPAGE = 0x1012
+Global Const $LOCALE_IPAPERSIZE = 0x100A
+Global Const $LOCALE_SENGCURRNAME = 0x1007
+Global Const $LOCALE_SNATIVECURRNAME = 0x1008
+Global Const $LOCALE_SYEARMONTH = 0x1006
+Global Const $LOCALE_SSORTNAME = 0x1013
+Global Const $LOCALE_IDIGITSUBSTITUTION = 0x1014
+Global Const $LOCALE_CUSTOM_DEFAULT = 0x0C00
+Global Const $LOCALE_CUSTOM_UI_DEFAULT = 0x1400
+Global Const $LOCALE_CUSTOM_UNSPECIFIED = 0x1000
+Global Const $LOCALE_INVARIANT = 0x007F
+Global Const $LOCALE_SYSTEM_DEFAULT = 0x0800
+Global Const $LOCALE_USER_DEFAULT = 0x0400
+Global Const $TIME_FORCE24HOURFORMAT = 0x08
+Global Const $TIME_NOMINUTESORSECONDS = 0x01
+Global Const $TIME_NOSECONDS = 0x02
+Global Const $TIME_NOTIMEMARKER = 0x04
+Global Const $LCID_INSTALLED = 1
+Global Const $LCID_SUPPORTED = 2
+Global Const $RT_ACCELERATOR = 9
+Global Const $RT_ANICURSOR = 21
+Global Const $RT_ANIICON = 22
+Global Const $RT_BITMAP = 2
+Global Const $RT_CURSOR = 1
+Global Const $RT_DIALOG = 5
+Global Const $RT_DLGINCLUDE = 17
+Global Const $RT_FONT = 8
+Global Const $RT_FONTDIR = 7
+Global Const $RT_GROUP_CURSOR = 12
+Global Const $RT_GROUP_ICON = 14
+Global Const $RT_HTML = 23
+Global Const $RT_ICON = 3
+Global Const $RT_MANIFEST = 24
+Global Const $RT_MENU = 4
+Global Const $RT_MESSAGETABLE = 11
+Global Const $RT_PLUGPLAY = 19
+Global Const $RT_RCDATA = 10
+Global Const $RT_STRING = 6
+Global Const $RT_VERSION = 16
+Global Const $RT_VXD = 20
+Global Const $FILE_VER_GET_LOCALISED = 0x01
+Global Const $FILE_VER_GET_NEUTRAL = 0x02
+Global Const $FILE_VER_GET_PREFETCHED = 0x04
+Global Const $OCR_NORMAL = 32512
+Global Const $OCR_IBEAM = 32513
+Global Const $OCR_WAIT = 32514
+Global Const $OCR_CROSS = 32515
+Global Const $OCR_UP = 32516
+Global Const $OCR_SIZE = 32640
+Global Const $OCR_ICON = 32641
+Global Const $OCR_SIZENWSE = 32642
+Global Const $OCR_SIZENESW = 32643
+Global Const $OCR_SIZEWE = 32644
+Global Const $OCR_SIZENS = 32645
+Global Const $OCR_SIZEALL = 32646
+Global Const $OCR_ICOCUR = 32647
+Global Const $OCR_NO = 32648
+Global Const $OCR_HAND = 32649
+Global Const $OCR_APPSTARTING = 32650
+Global Const $OCR_HELP = 32651
+Global Const $VS_FF_DEBUG = 0x00000001
+Global Const $VS_FF_INFOINFERRED = 0x00000010
+Global Const $VS_FF_PATCHED = 0x00000004
+Global Const $VS_FF_PRERELEASE = 0x00000002
+Global Const $VS_FF_PRIVATEBUILD = 0x00000008
+Global Const $VS_FF_SPECIALBUILD = 0x00000020
+Global Const $VOS_DOS = 0x00010000
+Global Const $VOS_NT = 0x00040000
+Global Const $VOS__WINDOWS16 = 0x00000001
+Global Const $VOS__WINDOWS32 = 0x00000004
+Global Const $VOS_OS216 = 0x00020000
+Global Const $VOS_OS232 = 0x00030000
+Global Const $VOS__PM16 = 0x00000002
+Global Const $VOS__PM32 = 0x00000003
+Global Const $VOS_UNKNOWN = 0x00000000
+Global Const $VOS_DOS_WINDOWS16 = 0x00010001
+Global Const $VOS_DOS_WINDOWS32 = 0x00010004
+Global Const $VOS_NT_WINDOWS32 = 0x00040004
+Global Const $VOS_OS216_PM16 = 0x00020002
+Global Const $VOS_OS232_PM32 = 0x00030003
+Global Const $VFT_APP = 0x00000001
+Global Const $VFT_DLL = 0x00000002
+Global Const $VFT_DRV = 0x00000003
+Global Const $VFT_FONT = 0x00000004
+Global Const $VFT_STATIC_LIB = 0x00000007
+Global Const $VFT_UNKNOWN = 0x00000000
+Global Const $VFT_VXD = 0x00000005
+Global Const $VFT2_DRV_COMM = 0x0000000A
+Global Const $VFT2_DRV_DISPLAY = 0x00000004
+Global Const $VFT2_DRV_INSTALLABLE = 0x00000008
+Global Const $VFT2_DRV_KEYBOARD = 0x00000002
+Global Const $VFT2_DRV_LANGUAGE = 0x00000003
+Global Const $VFT2_DRV_MOUSE = 0x00000005
+Global Const $VFT2_DRV_NETWORK = 0x00000006
+Global Const $VFT2_DRV_PRINTER = 0x00000001
+Global Const $VFT2_DRV_SOUND = 0x00000009
+Global Const $VFT2_DRV_SYSTEM = 0x00000007
+Global Const $VFT2_DRV_VERSIONED_PRINTER = 0x0000000C
+Global Const $VFT2_UNKNOWN = 0x00000000
+Global Const $VFT2_FONT_RASTER = 0x00000001
+Global Const $VFT2_FONT_TRUETYPE = 0x00000003
+Global Const $VFT2_FONT_VECTOR = 0x00000002
 Global Const $FR_PRIVATE = 0x10
 Global Const $FR_NOT_ENUM = 0x20
 Global Const $COMPRESSION_BITMAP_PNG = 0
@@ -12660,6 +12590,894 @@ Else
 Return 1
 EndIf
 EndFunc
+Global $__g_vVal
+Global Const $tagVS_FIXEDFILEINFO = 'dword Signature;dword StrucVersion;dword FileVersionMS;dword FileVersionLS;dword ProductVersionMS;dword ProductVersionLS;dword FileFlagsMask;dword FileFlags;dword FileOS;dword FileType;dword FileSubtype;dword FileDateMS;dword FileDateLS'
+Func _WinAPI_AddIconTransparency($hIcon, $iPercent = 50, $bDelete = False)
+Local $tBITMAP, $hDib = 0, $hResult = 0
+Local $ahBitmap[2]
+Local $tICONINFO = DllStructCreate($tagICONINFO)
+Local $aRet = DllCall('user32.dll', 'bool', 'GetIconInfo', 'handle', $hIcon, 'struct*', $tICONINFO)
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+For $i = 0 To 1
+$ahBitmap[$i] = DllStructGetData($tICONINFO, $i + 4)
+Next
+Local $iError = 0
+Do
+$hDib = _WinAPI_CopyBitmap($ahBitmap[1])
+If Not $hDib Then
+$iError = 20
+ExitLoop
+EndIf
+$tBITMAP = DllStructCreate($tagBITMAP)
+If (Not _WinAPI_GetObject($hDib, DllStructGetSize($tBITMAP), $tBITMAP)) Or (DllStructGetData($tBITMAP, 'bmBitsPixel') <> 32) Then
+$iError = 21
+ExitLoop
+EndIf
+$aRet = DllCall('user32.dll', 'lresult', 'CallWindowProc', 'PTR', __TransparencyProc(), 'hwnd', 0,  'uint', $iPercent, 'wparam', DllStructGetPtr($tBITMAP), 'lparam', 0)
+If @error Or Not $aRet[0] Then
+$iError = @error + 30
+ExitLoop
+EndIf
+If $aRet[0] = -1 Then
+$hResult = _WinAPI_CreateEmptyIcon(DllStructGetData($tBITMAP, 'bmWidth'), DllStructGetData($tBITMAP, 'bmHeight'))
+Else
+$hResult = _WinAPI_CreateIconIndirect($hDib, $ahBitmap[0])
+EndIf
+If Not $hResult Then $iError = 22
+Until 1
+If $hDib Then
+_WinAPI_DeleteObject($hDib)
+EndIf
+For $i = 0 To 1
+If $ahBitmap[$i] Then
+_WinAPI_DeleteObject($ahBitmap[$i])
+EndIf
+Next
+If $iError Then Return SetError($iError, 0, 0)
+If $bDelete Then
+_WinAPI_DestroyIcon($hIcon)
+EndIf
+Return $hResult
+EndFunc
+Func _WinAPI_BeginUpdateResource($sFilePath, $bDelete = False)
+Local $aRet = DllCall('kernel32.dll', 'handle', 'BeginUpdateResourceW', 'wstr', $sFilePath, 'bool', $bDelete)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_ClipCursor($tRECT)
+Local $aRet = DllCall('user32.dll', 'bool', 'ClipCursor', 'struct*', $tRECT)
+If @error Then Return SetError(@error, @extended, False)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_CopyCursor($hCursor)
+Return _WinAPI_CopyIcon($hCursor)
+EndFunc
+Func _WinAPI_CreateCaret($hWnd, $hBitmap, $iWidth = 0, $iHeight = 0)
+Local $aRet = DllCall('user32.dll', 'bool', 'CreateCaret', 'hwnd', $hWnd, 'handle', $hBitmap, 'int', $iWidth, 'int', $iHeight)
+If @error Then Return SetError(@error, @extended, False)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_CreateIcon($hInstance, $iWidth, $iHeight, $iPlanes, $iBitsPixel, $pANDBits, $pXORBits)
+Local $aRet = DllCall('user32.dll', 'handle', 'CreateIcon', 'handle', $hInstance, 'int', $iWidth, 'int', $iHeight,  'byte', $iPlanes, 'byte', $iBitsPixel, 'struct*', $pANDBits, 'struct*', $pXORBits)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_CreateIconFromResourceEx($pData, $iSize, $bIcon = True, $iXDesiredPixels = 0, $iYDesiredPixels = 0, $iFlags = 0)
+Local $aRet = DllCall('user32.dll', 'handle', 'CreateIconFromResourceEx', 'ptr', $pData, 'dword', $iSize, 'bool', $bIcon,  'dword', 0x00030000, 'int', $iXDesiredPixels, 'int', $iYDesiredPixels, 'uint', $iFlags)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_DestroyCaret()
+Local $aRet = DllCall('user32.dll', 'bool', 'DestroyCaret')
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_DestroyCursor($hCursor)
+Local $aRet = DllCall('user32.dll', 'bool', 'DestroyCursor', 'handle', $hCursor)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_EndUpdateResource($hUpdate, $bDiscard = False)
+Local $aRet = DllCall('kernel32.dll', 'bool', 'EndUpdateResourceW', 'handle', $hUpdate, 'bool', $bDiscard)
+If @error Then Return SetError(@error, @extended, False)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_EnumResourceLanguages($hModule, $sType, $sName)
+Local $iLibrary = 0, $sTypeOfType = 'int', $sTypeOfName = 'int'
+If IsString($hModule) Then
+If StringStripWS($hModule, $STR_STRIPLEADING + $STR_STRIPTRAILING) Then
+$hModule = _WinAPI_LoadLibraryEx($hModule, 0x00000003)
+If Not $hModule Then Return SetError(1, 0, 0)
+$iLibrary = 1
+Else
+$hModule = 0
+EndIf
+EndIf
+If IsString($sType) Then
+$sTypeOfType = 'wstr'
+EndIf
+If IsString($sName) Then
+$sTypeOfName = 'wstr'
+EndIf
+Dim $__g_vEnum[101] = [0]
+Local $hEnumProc = DllCallbackRegister('__EnumResLanguagesProc', 'bool', 'handle;ptr;ptr;word;long_ptr')
+Local $aRet = DllCall('kernel32.dll', 'bool', 'EnumResourceLanguagesW', 'handle', $hModule, $sTypeOfType, $sType,  $sTypeOfName, $sName, 'ptr', DllCallbackGetPtr($hEnumProc), 'long_ptr', 0)
+If @error Or Not $aRet[0] Or Not $__g_vEnum[0] Then
+$__g_vEnum = @error + 10
+EndIf
+If $iLibrary Then
+_WinAPI_FreeLibrary($hModule)
+EndIf
+DllCallbackFree($hEnumProc)
+If $__g_vEnum Then Return SetError($__g_vEnum, 0, 0)
+__Inc($__g_vEnum, -1)
+Return $__g_vEnum
+EndFunc
+Func _WinAPI_EnumResourceNames($hModule, $sType)
+Local $aRet, $hEnumProc, $iLibrary = 0, $sTypeOfType = 'int'
+If IsString($hModule) Then
+If StringStripWS($hModule, $STR_STRIPLEADING + $STR_STRIPTRAILING) Then
+$hModule = _WinAPI_LoadLibraryEx($hModule, 0x00000003)
+If Not $hModule Then Return SetError(1, 0, 0)
+$iLibrary = 1
+Else
+$hModule = 0
+EndIf
+EndIf
+If IsString($sType) Then
+$sTypeOfType = 'wstr'
+EndIf
+Dim $__g_vEnum[101] = [0]
+$hEnumProc = DllCallbackRegister('__EnumResNamesProc', 'bool', 'handle;ptr;ptr;long_ptr')
+$aRet = DllCall('kernel32.dll', 'bool', 'EnumResourceNamesW', 'handle', $hModule, $sTypeOfType, $sType,  'ptr', DllCallbackGetPtr($hEnumProc), 'long_ptr', 0)
+If @error Or Not $aRet[0] Or (Not $__g_vEnum[0]) Then
+$__g_vEnum = @error + 10
+EndIf
+If $iLibrary Then
+_WinAPI_FreeLibrary($hModule)
+EndIf
+DllCallbackFree($hEnumProc)
+If $__g_vEnum Then Return SetError($__g_vEnum, 0, 0)
+__Inc($__g_vEnum, -1)
+Return $__g_vEnum
+EndFunc
+Func _WinAPI_EnumResourceTypes($hModule)
+Local $iLibrary = 0
+If IsString($hModule) Then
+If StringStripWS($hModule, $STR_STRIPLEADING + $STR_STRIPTRAILING) Then
+$hModule = _WinAPI_LoadLibraryEx($hModule, 0x00000003)
+If Not $hModule Then Return SetError(1, 0, 0)
+$iLibrary = 1
+Else
+$hModule = 0
+EndIf
+EndIf
+Dim $__g_vEnum[101] = [0]
+Local $hEnumProc = DllCallbackRegister('__EnumResTypesProc', 'bool', 'handle;ptr;long_ptr')
+Local $aRet = DllCall('kernel32.dll', 'bool', 'EnumResourceTypesW', 'handle', $hModule,  'ptr', DllCallbackGetPtr($hEnumProc), 'long_ptr', 0)
+If @error Or Not $aRet[0] Or (Not $__g_vEnum[0]) Then
+$__g_vEnum = @error + 10
+EndIf
+If $iLibrary Then
+_WinAPI_FreeLibrary($hModule)
+EndIf
+DllCallbackFree($hEnumProc)
+If $__g_vEnum Then Return SetError($__g_vEnum, 0, 0)
+__Inc($__g_vEnum, -1)
+Return $__g_vEnum
+EndFunc
+Func _WinAPI_ExtractIcon($sIcon, $iIndex, $bSmall = False)
+Local $pLarge, $pSmall, $tPtr = DllStructCreate('ptr')
+If $bSmall Then
+$pLarge = 0
+$pSmall = DllStructGetPtr($tPtr)
+Else
+$pLarge = DllStructGetPtr($tPtr)
+$pSmall = 0
+EndIf
+DllCall('shell32.dll', 'uint', 'ExtractIconExW', 'wstr', $sIcon, 'int', $iIndex, 'ptr', $pLarge, 'ptr', $pSmall, 'uint', 1)
+If @error Then Return SetError(@error, @extended, 0)
+Return DllStructGetData($tPtr, 1)
+EndFunc
+Func _WinAPI_FileIconInit($bRestore = True)
+Local $aRet = DllCall('shell32.dll', 'int', 660, 'int', $bRestore)
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+Return 1
+EndFunc
+Func _WinAPI_FindResource($hInstance, $sType, $sName)
+Local $sTypeOfType = 'int', $sTypeOfName = 'int'
+If IsString($sType) Then
+$sTypeOfType = 'wstr'
+EndIf
+If IsString($sName) Then
+$sTypeOfName = 'wstr'
+EndIf
+Local $aRet = DllCall('kernel32.dll', 'handle', 'FindResourceW', 'handle', $hInstance, $sTypeOfName, $sName, $sTypeOfType, $sType)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_FindResourceEx($hInstance, $sType, $sName, $iLanguage)
+Local $sTypeOfType = 'int', $sTypeOfName = 'int'
+If IsString($sType) Then
+$sTypeOfType = 'wstr'
+EndIf
+If IsString($sName) Then
+$sTypeOfName = 'wstr'
+EndIf
+Local $aRet = DllCall('kernel32.dll', 'handle', 'FindResourceExW', 'handle', $hInstance, $sTypeOfType, $sType,  $sTypeOfName, $sName, 'ushort', $iLanguage)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_FreeResource($hData)
+Local $aRet = DllCall('kernel32.dll', 'bool', 'FreeResource', 'handle', $hData)
+If @error Then Return SetError(@error, @extended, False)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_GetCaretBlinkTime()
+Local $aRet = DllCall('user32.dll', 'uint', 'GetCaretBlinkTime')
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_GetCaretPos()
+Local $tPOINT = DllStructCreate($tagPOINT)
+Local $aRet = DllCall('user32.dll', 'bool', 'GetCaretPos', 'struct*', $tagPOINT)
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+Local $aResult[2]
+For $i = 0 To 1
+$aResult[$i] = DllStructGetData($tPOINT, $i + 1)
+Next
+Return $aResult
+EndFunc
+Func _WinAPI_GetClipCursor()
+Local $tRECT = DllStructCreate($tagRECT)
+Local $aRet = DllCall('user32.dll', 'bool', 'GetClipCursor', 'struct*', $tRECT)
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+Return $tRECT
+EndFunc
+Func _WinAPI_GetCursor()
+Local $aRet = DllCall('user32.dll', 'handle', 'GetCursor')
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_GetFileVersionInfo($sFilePath, ByRef $pBuffer, $iFlags = 0)
+Local $aRet
+If $__WINVER >= 0x0600 Then
+$aRet = DllCall('version.dll', 'dword', 'GetFileVersionInfoSizeExW', 'dword', BitAND($iFlags, 0x03), 'wstr', $sFilePath,  'ptr', 0)
+Else
+$aRet = DllCall('version.dll', 'dword', 'GetFileVersionInfoSizeW', 'wstr', $sFilePath, 'ptr', 0)
+EndIf
+If @error Or Not $aRet[0] Then Return SetError(@error, @extended, 0)
+$pBuffer = __HeapReAlloc($pBuffer, $aRet[0], 1)
+If @error Then Return SetError(@error + 100, @extended, 0)
+Local $iNbByte = $aRet[0]
+If $__WINVER >= 0x0600 Then
+$aRet = DllCall('version.dll', 'bool', 'GetFileVersionInfoExW', 'dword', BitAND($iFlags, 0x07), 'wstr', $sFilePath,  'dword', 0, 'dword', $iNbByte, 'ptr', $pBuffer)
+Else
+$aRet = DllCall('version.dll', 'bool', 'GetFileVersionInfoW', 'wstr', $sFilePath,  'dword', 0, 'dword', $iNbByte, 'ptr', $pBuffer)
+EndIf
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+Return $iNbByte
+EndFunc
+Func _WinAPI_GetIconInfoEx($hIcon)
+Local $tIIEX = DllStructCreate('dword;int;dword;dword;ptr;ptr;ushort;wchar[260];wchar[260]')
+DllStructSetData($tIIEX, 1, DllStructGetSize($tIIEX))
+Local $aRet = DllCall('user32.dll', 'bool', 'GetIconInfoExW', 'handle', $hIcon, 'struct*', $tIIEX)
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+Local $aResult[8]
+For $i = 0 To 7
+$aResult[$i] = DllStructGetData($tIIEX, $i + 2)
+Next
+Return $aResult
+EndFunc
+Func _WinAPI_HideCaret($hWnd)
+Local $aRet = DllCall('user32.dll', 'int', 'HideCaret', 'hwnd', $hWnd)
+If @error Then Return SetError(@error, @extended, False)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_LoadCursor($hInstance, $sName)
+Local $sTypeOfName = 'int'
+If IsString($sName) Then
+$sTypeOfName = 'wstr'
+EndIf
+Local $aRet = DllCall('user32.dll', 'handle', 'LoadCursorW', 'handle', $hInstance, $sTypeOfName, $sName)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_LoadCursorFromFile($sFilePath)
+Local $aRet = DllCall('user32.dll', 'handle', 'LoadCursorFromFileW', 'wstr', $sFilePath)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_LoadIcon($hInstance, $sName)
+Local $sTypeOfName = 'int'
+If IsString($sName) Then
+$sTypeOfName = 'wstr'
+EndIf
+Local $aRet = DllCall('user32.dll', 'handle', 'LoadIconW', 'handle', $hInstance, $sTypeOfName, $sName)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_LoadIndirectString($sStrIn)
+Local $aRet = DllCall('shlwapi.dll', 'uint', 'SHLoadIndirectString', 'wstr', $sStrIn, 'wstr', '', 'uint', 4096, 'ptr*', 0)
+If @error Then Return SetError(@error, @extended, '')
+If $aRet[0] Then Return SetError(10, $aRet[0], '')
+Return $aRet[2]
+EndFunc
+Func _WinAPI_LoadResource($hInstance, $hResource)
+Local $aRet = DllCall('kernel32.dll', 'handle', 'LoadResource', 'handle', $hInstance, 'handle', $hResource)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_LoadStringEx($hModule, $iID, $iLanguage = $LOCALE_USER_DEFAULT)
+Local $iLibrary = 0
+If IsString($hModule) Then
+If StringStripWS($hModule, $STR_STRIPLEADING + $STR_STRIPTRAILING) Then
+$hModule = _WinAPI_LoadLibraryEx($hModule, 0x00000003)
+If Not $hModule Then Return SetError(@error + 20, @extended, '')
+$iLibrary = 1
+Else
+$hModule = 0
+EndIf
+EndIf
+Local $sResult = ''
+Local $pData = __ResLoad($hModule, 6, Floor($iID / 16) + 1, $iLanguage)
+If Not @error Then
+Local $iOffset = 0
+For $i = 0 To Mod($iID, 16) - 1
+$iOffset += 2 * (DllStructGetData(DllStructCreate('ushort', $pData + $iOffset), 1) + 1)
+Next
+$sResult = DllStructGetData(DllStructCreate('ushort;wchar[' & DllStructGetData(DllStructCreate('ushort', $pData + $iOffset), 1) & ']', $pData + $iOffset), 2)
+If @error Then $sResult = ''
+Else
+Return SetError(10, 0, '')
+EndIf
+If $iLibrary Then
+_WinAPI_FreeLibrary($hModule)
+EndIf
+Return SetError(Number(Not $sResult), 0, $sResult)
+EndFunc
+Func _WinAPI_LockResource($hData)
+Local $aRet = DllCall('kernel32.dll', 'ptr', 'LockResource', 'handle', $hData)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_LookupIconIdFromDirectoryEx($pData, $bIcon = True, $iXDesiredPixels = 0, $iYDesiredPixels = 0, $iFlags = 0)
+Local $aRet = DllCall('user32.dll', 'int', 'LookupIconIdFromDirectoryEx', 'ptr', $pData, 'bool', $bIcon,  'int', $iXDesiredPixels, 'int', $iYDesiredPixels, 'uint', $iFlags)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_SetCaretBlinkTime($iDuration)
+Local $iPrev = _WinAPI_GetCaretBlinkTime()
+If Not $iPrev Then Return SetError(@error + 20, @extended, 0)
+Local $aRet = DllCall('user32.dll', 'bool', 'SetCaretBlinkTime', 'uint', $iDuration)
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+Return $iPrev
+EndFunc
+Func _WinAPI_SetCaretPos($iX, $iY)
+Local $aRet = DllCall('user32.dll', 'int', 'SetCaretPos', 'int', $iX, 'int', $iY)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_SetSystemCursor($hCursor, $iID, $bCopy = False)
+If $bCopy Then
+$hCursor = _WinAPI_CopyCursor($hCursor)
+EndIf
+Local $aRet = DllCall('user32.dll', 'bool', 'SetSystemCursor', 'handle', $hCursor, 'dword', $iID)
+If @error Then Return SetError(@error, @extended, False)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_ShowCaret($hWnd)
+Local $aRet = DllCall('user32.dll', 'bool', 'ShowCaret', 'hwnd', $hWnd)
+If @error Then Return SetError(@error, @extended, False)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_SizeOfResource($hInstance, $hResource)
+Local $aRet = DllCall('kernel32.dll', 'dword', 'SizeofResource', 'handle', $hInstance, 'handle', $hResource)
+If @error Or Not $aRet[0] Then Return SetError(@error, @extended, 0)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_UpdateResource($hUpdate, $sType, $sName, $iLanguage, $pData, $iSize)
+Local $sTypeOfType = 'int', $sTypeOfName = 'int'
+If IsString($sType) Then
+$sTypeOfType = 'wstr'
+EndIf
+If IsString($sName) Then
+$sTypeOfName = 'wstr'
+EndIf
+Local $aRet = DllCall('kernel32.dll', 'bool', 'UpdateResourceW', 'handle', $hUpdate, $sTypeOfType, $sType, $sTypeOfName, $sName,  'word', $iLanguage, 'ptr', $pData, 'dword', $iSize)
+If @error Then Return SetError(@error, @extended, False)
+Return $aRet[0]
+EndFunc
+Func _WinAPI_VerQueryRoot($pData)
+Local $aRet = DllCall('version.dll', 'bool', 'VerQueryValueW', 'ptr', $pData, 'wstr', '\', 'ptr*', 0, 'uint*', 0)
+If @error Or Not $aRet[0] Or Not $aRet[4] Then Return SetError(@error + 10, @extended, 0)
+Local $tVFFI = DllStructCreate($tagVS_FIXEDFILEINFO)
+If Not _WinAPI_MoveMemory($tVFFI, $aRet[3], $aRet[4]) Then Return SetError(@error + 20, @extended, 0)
+Return $tVFFI
+EndFunc
+Func _WinAPI_VerQueryValue($pData, $sValues = '')
+$sValues = StringRegExpReplace($sValues, '\A[\s\|]*|[\s\|]*\Z', '')
+If Not $sValues Then
+$sValues = 'Comments|CompanyName|FileDescription|FileVersion|InternalName|LegalCopyright|LegalTrademarks|OriginalFilename|ProductName|ProductVersion|PrivateBuild|SpecialBuild'
+EndIf
+$sValues = StringSplit($sValues, '|', $STR_NOCOUNT)
+Local $aRet = DllCall('version.dll', 'bool', 'VerQueryValueW', 'ptr', $pData, 'wstr', '\VarFileInfo\Translation', 'ptr*', 0,  'uint*', 0)
+If @error Or Not $aRet[0] Or Not $aRet[4] Then Return SetError(@error + 10, 0, 0)
+Local $iLength = Floor($aRet[4] / 4)
+Local $tLang = DllStructCreate('dword[' & $iLength & ']', $aRet[3])
+If @error Then Return SetError(@error + 20, 0, 0)
+Local $sCP, $aInfo[101][UBound($sValues) + 1] = [[0]]
+For $i = 1 To $iLength
+__Inc($aInfo)
+$aInfo[$aInfo[0][0]][0] = _WinAPI_LoWord(DllStructGetData($tLang, 1, $i))
+$sCP = Hex(_WinAPI_MakeLong(_WinAPI_HiWord(DllStructGetData($tLang, 1, $i)), _WinAPI_LoWord(DllStructGetData($tLang, 1, $i))), 8)
+For $j = 0 To UBound($sValues) - 1
+$aRet = DllCall('version.dll', 'bool', 'VerQueryValueW', 'ptr', $pData, 'wstr', '\StringFileInfo\' & $sCP & '\' & $sValues[$j],  'ptr*', 0, 'uint*', 0)
+If Not @error And $aRet[0] And $aRet[4] Then
+$aInfo[$aInfo[0][0]][$j + 1] = DllStructGetData(DllStructCreate('wchar[' & $aRet[4] & ']', $aRet[3]), 1)
+Else
+$aInfo[$aInfo[0][0]][$j + 1] = ''
+EndIf
+Next
+Next
+__Inc($aInfo, -1)
+Return $aInfo
+EndFunc
+Func _WinAPI_VerQueryValueEx($hModule, $sValues = '', $iLanguage = 0x0400)
+$__g_vVal = StringRegExpReplace($sValues, '\A[\s\|]*|[\s\|]*\Z', '')
+If Not $__g_vVal Then
+$__g_vVal = 'Comments|CompanyName|FileDescription|FileVersion|InternalName|LegalCopyright|LegalTrademarks|OriginalFilename|ProductName|ProductVersion|PrivateBuild|SpecialBuild'
+EndIf
+$__g_vVal = StringSplit($__g_vVal, '|')
+If Not IsArray($__g_vVal) Then Return SetError(1, 0, 0)
+Local $iLibrary = 0
+If IsString($hModule) Then
+If StringStripWS($hModule, $STR_STRIPLEADING + $STR_STRIPTRAILING) Then
+$hModule = _WinAPI_LoadLibraryEx($hModule, 0x00000003)
+If Not $hModule Then
+Return SetError(@error + 10, @extended, 0)
+EndIf
+$iLibrary = 1
+Else
+$hModule = 0
+EndIf
+EndIf
+Dim $__g_vEnum[101][$__g_vVal[0] + 1] = [[0]]
+Local $hEnumProc = DllCallbackRegister('__EnumVerValuesProc', 'bool', 'ptr;ptr;ptr;word;long_ptr')
+Local $aRet = DllCall('kernel32.dll', 'bool', 'EnumResourceLanguagesW', 'handle', $hModule, 'int', 16, 'int', 1,  'ptr', DllCallbackGetPtr($hEnumProc), 'long_ptr', $iLanguage)
+Do
+If @error Then
+$__g_vEnum = @error + 20
+Else
+If Not $aRet[0] Then
+Switch _WinAPI_GetLastError()
+Case 0, 15106
+ExitLoop
+Case Else
+$__g_vEnum = 20
+EndSwitch
+Else
+ExitLoop
+EndIf
+EndIf
+Until 1
+If $iLibrary Then
+_WinAPI_FreeLibrary($hModule)
+EndIf
+DllCallbackFree($hEnumProc)
+If Not $__g_vEnum[0][0] Then $__g_vEnum = 230
+If $__g_vEnum Then Return SetError($__g_vEnum, 0, 0)
+__Inc($__g_vEnum, -1)
+Return $__g_vEnum
+EndFunc
+Func __TransparencyProc()
+Static $pProc = 0
+If Not $pProc Then
+If @AutoItX64 Then
+$pProc = __Init(Binary(  '0x48894C240848895424104C894424184C894C24205541574831C0505050505050' &  '4883EC284883BC24800000000074054831C0EB0748C7C0010000004821C07522' &  '488BAC248000000048837D180074054831C0EB0748C7C0010000004821C07502' &  'EB0948C7C001000000EB034831C04821C0740B4831C04863C0E93C0100004C63' &  '7C24784983FF647E0F48C7C0010000004863C0E9220100004C637C24784D21FF' &  '7D08C74424780000000048C74424280100000048C74424300000000048C74424' &  '3800000000488BAC24800000004C637D04488BAC2480000000486345084C0FAF' &  'F849C1E7024983C7FC4C3B7C24380F8C88000000488BAC24800000004C8B7D18' &  '4C037C24384983C7034C897C2440488B6C2440480FB64500505888442448807C' &  '244800744B4C0FB67C244848634424784C0FAFF84C89F848C7C1640000004899' &  '48F7F94989C74C89F850488B6C244858884500488B6C2440807D0000740948C7' &  '4424280000000048C7442430010000004883442438040F8149FFFFFF48837C24' &  '3000741148837C242800740948C7C001000000EB034831C04821C0740E48C7C0' &  'FFFFFFFF4863C0EB11EB0C48C7C0010000004863C0EB034831C04883C458415F' &  '5DC3'))
+Else
+$pProc = __Init(Binary(  '0x555331C05050505050837C242800740431C0EB05B80100000021C075198B6C24' &  '28837D1400740431C0EB05B80100000021C07502EB07B801000000EB0231C021' &  'C0740731C0E9E50000008B5C242483FB647E0AB801000000E9D20000008B5C24' &  '2421DB7D08C744242400000000C7042401000000C744240400000000C7442408' &  '000000008B6C24288B5D048B6C24280FAF5D08C1E30283C3FC3B5C24087C648B' &  '6C24288B5D14035C240883C303895C240C8B6C240C0FB6450088442410807C24' &  '100074380FB65C24100FAF5C242489D8B96400000099F7F989C3538B6C241058' &  '8845008B6C240C807D00007407C7042400000000C74424040100000083442408' &  '047181837C240400740D833C24007407B801000000EB0231C021C07409B8FFFF' &  'FFFFEB0BEB07B801000000EB0231C083C4145B5DC21000'))
+EndIf
+EndIf
+Return $pProc
+EndFunc
+Func __EnumResLanguagesProc($hModule, $iType, $iName, $iLanguage, $lParam)
+#forceref $hModule, $iType, $iName, $lParam
+__Inc($__g_vEnum)
+$__g_vEnum[$__g_vEnum[0]] = $iLanguage
+Return 1
+EndFunc
+Func __EnumResNamesProc($hModule, $iType, $iName, $lParam)
+#forceref $hModule, $iType, $lParam
+Local $iLength = _WinAPI_StrLen($iName)
+__Inc($__g_vEnum)
+If $iLength Then
+$__g_vEnum[$__g_vEnum[0]] = DllStructGetData(DllStructCreate('wchar[' & ($iLength + 1) & ']', $iName), 1)
+Else
+$__g_vEnum[$__g_vEnum[0]] = Number($iName)
+EndIf
+Return 1
+EndFunc
+Func __EnumResTypesProc($hModule, $iType, $lParam)
+#forceref $hModule, $lParam
+Local $iLength = _WinAPI_StrLen($iType)
+__Inc($__g_vEnum)
+If $iLength Then
+$__g_vEnum[$__g_vEnum[0]] = DllStructGetData(DllStructCreate('wchar[' & ($iLength + 1) & ']', $iType), 1)
+Else
+$__g_vEnum[$__g_vEnum[0]] = Number($iType)
+EndIf
+Return 1
+EndFunc
+Func __EnumVerValuesProc($hModule, $iType, $iName, $iLanguage, $iDefault)
+Local $aRet, $iEnum = 1, $iError = 0
+Switch $iDefault
+Case -1
+Case 0x0400
+$iLanguage = 0x0400
+$iEnum = 0
+Case Else
+If $iLanguage <> $iDefault Then
+Return 1
+EndIf
+$iEnum = 0
+EndSwitch
+Do
+Local $pData = __ResLoad($hModule, $iType, $iName, $iLanguage)
+If @error Then
+$iError = @error + 10
+ExitLoop
+EndIf
+$aRet = DllCall('version.dll', 'bool', 'VerQueryValueW', 'ptr', $pData, 'wstr', '\VarFileInfo\Translation', 'ptr*', 0, 'uint*', 0)
+If @error Or Not $aRet[0] Or Not $aRet[4] Then
+$iError = @error + 20
+ExitLoop
+EndIf
+Local $tData = DllStructCreate('ushort;ushort', $aRet[3])
+If @error Then
+$iError = @error + 30
+ExitLoop
+EndIf
+Until 1
+If Not $iError Then
+__Inc($__g_vEnum)
+$__g_vEnum[$__g_vEnum[0][0]][0] = DllStructGetData($tData, 1)
+Local $sCP = Hex(_WinAPI_MakeLong(DllStructGetData($tData, 2), DllStructGetData($tData, 1)), 8)
+For $i = 1 To $__g_vVal[0]
+$aRet = DllCall('version.dll', 'bool', 'VerQueryValueW', 'ptr', $pData, 'wstr', '\StringFileInfo\' & $sCP & '\' & $__g_vVal[$i],  'ptr*', 0, 'uint*', 0)
+If Not @error And $aRet[0] And $aRet[4] Then
+$__g_vEnum[$__g_vEnum[0][0]][$i] = DllStructGetData(DllStructCreate('wchar[' & $aRet[4] & ']', $aRet[3]), 1)
+Else
+$__g_vEnum[$__g_vEnum[0][0]][$i] = ''
+EndIf
+Next
+Else
+$__g_vEnum = @error + 40
+EndIf
+If $__g_vEnum Then Return SetError($iError, 0, 0)
+Return $iEnum
+EndFunc
+Func __ResLoad($hInstance, $sType, $sName, $iLanguage)
+Local $hInfo = _WinAPI_FindResourceEx($hInstance, $sType, $sName, $iLanguage)
+If Not $hInfo Then Return SetError(@error + 10, @extended, 0)
+Local $iSize = _WinAPI_SizeOfResource($hInstance, $hInfo)
+If Not $iSize Then Return SetError(@error + 20, @extended, 0)
+Local $hData = _WinAPI_LoadResource($hInstance, $hInfo)
+If Not $hData Then Return SetError(@error + 30, @extended, 0)
+Local $pData = _WinAPI_LockResource($hData)
+If Not $pData Then Return SetError(@error + 40, @extended, 0)
+Return SetExtended($iSize, $pData)
+EndFunc
+Global Const $GDIP_DASHCAPFLAT = 0
+Global Const $GDIP_DASHCAPROUND = 2
+Global Const $GDIP_DASHCAPTRIANGLE = 3
+Global Const $GDIP_DASHSTYLESOLID = 0
+Global Const $GDIP_DASHSTYLEDASH = 1
+Global Const $GDIP_DASHSTYLEDOT = 2
+Global Const $GDIP_DASHSTYLEDASHDOT = 3
+Global Const $GDIP_DASHSTYLEDASHDOTDOT = 4
+Global Const $GDIP_DASHSTYLECUSTOM = 5
+Global Const $GDIP_EPGCHROMINANCETABLE = '{F2E455DC-09B3-4316-8260-676ADA32481C}'
+Global Const $GDIP_EPGCOLORDEPTH = '{66087055-AD66-4C7C-9A18-38A2310B8337}'
+Global Const $GDIP_EPGCOMPRESSION = '{E09D739D-CCD4-44EE-8EBA-3FBF8BE4FC58}'
+Global Const $GDIP_EPGLUMINANCETABLE = '{EDB33BCE-0266-4A77-B904-27216099E717}'
+Global Const $GDIP_EPGQUALITY = '{1D5BE4B5-FA4A-452D-9CDD-5DB35105E7EB}'
+Global Const $GDIP_EPGRENDERMETHOD = '{6D42C53A-229A-4825-8BB7-5C99E2B9A8B8}'
+Global Const $GDIP_EPGSAVEFLAG = '{292266FC-AC40-47BF-8CFC-A85B89A655DE}'
+Global Const $GDIP_EPGSCANMETHOD = '{3A4E2661-3109-4E56-8536-42C156E7DCFA}'
+Global Const $GDIP_EPGTRANSFORMATION = '{8D0EB2D1-A58E-4EA8-AA14-108074B7B6F9}'
+Global Const $GDIP_EPGVERSION = '{24D18C76-814A-41A4-BF53-1C219CCCF797}'
+Global Const $GDIP_EPTBYTE = 1
+Global Const $GDIP_EPTASCII = 2
+Global Const $GDIP_EPTSHORT = 3
+Global Const $GDIP_EPTLONG = 4
+Global Const $GDIP_EPTRATIONAL = 5
+Global Const $GDIP_EPTLONGRANGE = 6
+Global Const $GDIP_EPTUNDEFINED = 7
+Global Const $GDIP_EPTRATIONALRANGE = 8
+Global Const $GDIP_ERROK = 0
+Global Const $GDIP_ERRGENERICERROR = 1
+Global Const $GDIP_ERRINVALIDPARAMETER = 2
+Global Const $GDIP_ERROUTOFMEMORY = 3
+Global Const $GDIP_ERROBJECTBUSY = 4
+Global Const $GDIP_ERRINSUFFICIENTBUFFER = 5
+Global Const $GDIP_ERRNOTIMPLEMENTED = 6
+Global Const $GDIP_ERRWIN32ERROR = 7
+Global Const $GDIP_ERRWRONGSTATE = 8
+Global Const $GDIP_ERRABORTED = 9
+Global Const $GDIP_ERRFILENOTFOUND = 10
+Global Const $GDIP_ERRVALUEOVERFLOW = 11
+Global Const $GDIP_ERRACCESSDENIED = 12
+Global Const $GDIP_ERRUNKNOWNIMAGEFORMAT = 13
+Global Const $GDIP_ERRFONTFAMILYNOTFOUND = 14
+Global Const $GDIP_ERRFONTSTYLENOTFOUND = 15
+Global Const $GDIP_ERRNOTTRUETYPEFONT = 16
+Global Const $GDIP_ERRUNSUPPORTEDGDIVERSION = 17
+Global Const $GDIP_ERRGDIPLUSNOTINITIALIZED = 18
+Global Const $GDIP_ERRPROPERTYNOTFOUND = 19
+Global Const $GDIP_ERRPROPERTYNOTSUPPORTED = 20
+Global Const $GDIP_EVTCOMPRESSIONLZW = 2
+Global Const $GDIP_EVTCOMPRESSIONCCITT3 = 3
+Global Const $GDIP_EVTCOMPRESSIONCCITT4 = 4
+Global Const $GDIP_EVTCOMPRESSIONRLE = 5
+Global Const $GDIP_EVTCOMPRESSIONNONE = 6
+Global Const $GDIP_EVTTRANSFORMROTATE90 = 13
+Global Const $GDIP_EVTTRANSFORMROTATE180 = 14
+Global Const $GDIP_EVTTRANSFORMROTATE270 = 15
+Global Const $GDIP_EVTTRANSFORMFLIPHORIZONTAL = 16
+Global Const $GDIP_EVTTRANSFORMFLIPVERTICAL = 17
+Global Const $GDIP_EVTMULTIFRAME = 18
+Global Const $GDIP_EVTLASTFRAME = 19
+Global Const $GDIP_EVTFLUSH = 20
+Global Const $GDIP_EVTFRAMEDIMENSIONPAGE = 23
+Global Const $GDIP_ICFENCODER = 0x00000001
+Global Const $GDIP_ICFDECODER = 0x00000002
+Global Const $GDIP_ICFSUPPORTBITMAP = 0x00000004
+Global Const $GDIP_ICFSUPPORTVECTOR = 0x00000008
+Global Const $GDIP_ICFSEEKABLEENCODE = 0x00000010
+Global Const $GDIP_ICFBLOCKINGDECODE = 0x00000020
+Global Const $GDIP_ICFBUILTIN = 0x00010000
+Global Const $GDIP_ICFSYSTEM = 0x00020000
+Global Const $GDIP_ICFUSER = 0x00040000
+Global Const $GDIP_ILMREAD = 0x0001
+Global Const $GDIP_ILMWRITE = 0x0002
+Global Const $GDIP_ILMUSERINPUTBUF = 0x0004
+Global Const $GDIP_LINECAPFLAT = 0x00
+Global Const $GDIP_LINECAPSQUARE = 0x01
+Global Const $GDIP_LINECAPROUND = 0x02
+Global Const $GDIP_LINECAPTRIANGLE = 0x03
+Global Const $GDIP_LINECAPNOANCHOR = 0x10
+Global Const $GDIP_LINECAPSQUAREANCHOR = 0x11
+Global Const $GDIP_LINECAPROUNDANCHOR = 0x12
+Global Const $GDIP_LINECAPDIAMONDANCHOR = 0x13
+Global Const $GDIP_LINECAPARROWANCHOR = 0x14
+Global Const $GDIP_LINECAPCUSTOM = 0xFF
+Global Const $GDIP_PXF01INDEXED = 0x00030101
+Global Const $GDIP_PXF04INDEXED = 0x00030402
+Global Const $GDIP_PXF08INDEXED = 0x00030803
+Global Const $GDIP_PXF16GRAYSCALE = 0x00101004
+Global Const $GDIP_PXF16RGB555 = 0x00021005
+Global Const $GDIP_PXF16RGB565 = 0x00021006
+Global Const $GDIP_PXF16ARGB1555 = 0x00061007
+Global Const $GDIP_PXF24RGB = 0x00021808
+Global Const $GDIP_PXF32RGB = 0x00022009
+Global Const $GDIP_PXF32ARGB = 0x0026200A
+Global Const $GDIP_PXF32PARGB = 0x000E200B
+Global Const $GDIP_PXF48RGB = 0x0010300C
+Global Const $GDIP_PXF64ARGB = 0x0034400D
+Global Const $GDIP_PXF64PARGB = 0x001A400E
+Global Const $GDIP_IMAGEFORMAT_UNDEFINED = "{B96B3CA9-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_MEMORYBMP = "{B96B3CAA-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_BMP = "{B96B3CAB-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_EMF = "{B96B3CAC-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_WMF = "{B96B3CAD-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_JPEG = "{B96B3CAE-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_PNG = "{B96B3CAF-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_GIF = "{B96B3CB0-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_TIFF = "{B96B3CB1-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_EXIF = "{B96B3CB2-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGEFORMAT_ICON = "{B96B3CB5-0728-11D3-9D7B-0000F81EF32E}"
+Global Const $GDIP_IMAGETYPE_UNKNOWN = 0
+Global Const $GDIP_IMAGETYPE_BITMAP = 1
+Global Const $GDIP_IMAGETYPE_METAFILE = 2
+Global Const $GDIP_IMAGEFLAGS_NONE = 0x0
+Global Const $GDIP_IMAGEFLAGS_SCALABLE = 0x0001
+Global Const $GDIP_IMAGEFLAGS_HASALPHA = 0x0002
+Global Const $GDIP_IMAGEFLAGS_HASTRANSLUCENT = 0x0004
+Global Const $GDIP_IMAGEFLAGS_PARTIALLYSCALABLE = 0x0008
+Global Const $GDIP_IMAGEFLAGS_COLORSPACE_RGB = 0x0010
+Global Const $GDIP_IMAGEFLAGS_COLORSPACE_CMYK = 0x0020
+Global Const $GDIP_IMAGEFLAGS_COLORSPACE_GRAY = 0x0040
+Global Const $GDIP_IMAGEFLAGS_COLORSPACE_YCBCR = 0x0080
+Global Const $GDIP_IMAGEFLAGS_COLORSPACE_YCCK = 0x0100
+Global Const $GDIP_IMAGEFLAGS_HASREALDPI = 0x1000
+Global Const $GDIP_IMAGEFLAGS_HASREALPIXELSIZE = 0x2000
+Global Const $GDIP_IMAGEFLAGS_READONLY = 0x00010000
+Global Const $GDIP_IMAGEFLAGS_CACHING = 0x00020000
+Global Const $GDIP_SMOOTHINGMODE_INVALID = -1
+Global Const $GDIP_SMOOTHINGMODE_DEFAULT = 0
+Global Const $GDIP_SMOOTHINGMODE_HIGHSPEED = 1
+Global Const $GDIP_SMOOTHINGMODE_HIGHQUALITY = 2
+Global Const $GDIP_SMOOTHINGMODE_NONE = 3
+Global Const $GDIP_SMOOTHINGMODE_ANTIALIAS8X4 = 4
+Global Const $GDIP_SMOOTHINGMODE_ANTIALIAS = $GDIP_SMOOTHINGMODE_ANTIALIAS8X4
+Global Const $GDIP_SMOOTHINGMODE_ANTIALIAS8X8 = 5
+Global Const $GDIP_RLUM = 0.3086
+Global Const $GDIP_GLUM = 0.6094
+Global Const $GDIP_BLUM = 0.0820
+Global Const $GDIP_INTERPOLATIONMODE_INVALID = -1
+Global Const $GDIP_INTERPOLATIONMODE_DEFAULT = 0
+Global Const $GDIP_INTERPOLATIONMODE_LOWQUALITY = 1
+Global Const $GDIP_INTERPOLATIONMODE_HIGHQUALITY = 2
+Global Const $GDIP_INTERPOLATIONMODE_BILINEAR = 3
+Global Const $GDIP_INTERPOLATIONMODE_BICUBIC = 4
+Global Const $GDIP_INTERPOLATIONMODE_NEARESTNEIGHBOR = 5
+Global Const $GDIP_INTERPOLATIONMODE_HIGHQUALITYBILINEAR = 6
+Global Const $GDIP_INTERPOLATIONMODE_HIGHQUALITYBICUBIC = 7
+Global Const $GDIP_TEXTRENDERINGHINT_SYSTEMDEFAULT = 0
+Global Const $GDIP_TEXTRENDERINGHINT_SINGLEBITPERPIXELGRIDFIT = 1
+Global Const $GDIP_TEXTRENDERINGHINT_SINGLEBITPERPIXEL = 2
+Global Const $GDIP_TEXTRENDERINGHINT_ANTIALIASGRIDFIT = 3
+Global Const $GDIP_TEXTRENDERINGHINT_ANTIALIAS = 4
+Global Const $GDIP_TEXTRENDERINGHINT_CLEARTYPEGRIDFIT = 5
+Global Const $GDIP_PIXELOFFSETMODE_INVALID = -1
+Global Const $GDIP_PIXELOFFSETMODE_DEFAULT = 0
+Global Const $GDIP_PIXELOFFSETMODE_HIGHSPEED = 1
+Global Const $GDIP_PIXELOFFSETMODE_HIGHQUALITY = 2
+Global Const $GDIP_PIXELOFFSETMODE_NONE = 3
+Global Const $GDIP_PIXELOFFSETMODE_HALF = 4
+Global Const $GDIP_PENSETLINEJOIN_MITER = 0
+Global Const $GDIP_PENSETLINEJOIN_BEVEL = 1
+Global Const $GDIP_PENSETLINEJOIN_ROUND = 2
+Global Const $GDIP_PENSETLINEJOIN_MITERCLIPPED = 3
+Global Const $GDIP_FillModeAlternate = 0
+Global Const $GDIP_FillModeWinding = 1
+Global Const $GDIP_QUALITYMODEINVALID = -1
+Global Const $GDIP_QUALITYMODEDEFAULT = 0
+Global Const $GDIP_QUALITYMODELOW = 1
+Global Const $GDIP_QUALITYMODEHIGH = 2
+Global Const $GDIP_COMPOSITINGMODESOURCEOVER = 0
+Global Const $GDIP_COMPOSITINGMODESOURCECOPY = 1
+Global Const $GDIP_COMPOSITINGQUALITYINVALID = $GDIP_QUALITYMODEINVALID
+Global Const $GDIP_COMPOSITINGQUALITYDEFAULT = $GDIP_QUALITYMODEDEFAULT
+Global Const $GDIP_COMPOSITINGQUALITYHIGHSPEED = $GDIP_QUALITYMODELOW
+Global Const $GDIP_COMPOSITINGQUALITYHIGHQUALITY = $GDIP_QUALITYMODEHIGH
+Global Const $GDIP_COMPOSITINGQUALITYGAMMACORRECTED = 3
+Global Const $GDIP_COMPOSITINGQUALITYASSUMELINEAR = 4
+Global Const $GDIP_HATCHSTYLE_HORIZONTAL = 0
+Global Const $GDIP_HATCHSTYLE_VERTICAL = 1
+Global Const $GDIP_HATCHSTYLE_FORWARDDIAGONAL = 2
+Global Const $GDIP_HATCHSTYLE_BACKWARDDIAGONAL = 3
+Global Const $GDIP_HATCHSTYLE_CROSS = 4
+Global Const $GDIP_HATCHSTYLE_DIAGONALCROSS = 5
+Global Const $GDIP_HATCHSTYLE_05PERCENT = 6
+Global Const $GDIP_HATCHSTYLE_10PERCENT = 7
+Global Const $GDIP_HATCHSTYLE_20PERCENT = 8
+Global Const $GDIP_HATCHSTYLE_25PERCENT = 9
+Global Const $GDIP_HATCHSTYLE_30PERCENT = 10
+Global Const $GDIP_HATCHSTYLE_40PERCENT = 11
+Global Const $GDIP_HATCHSTYLE_50PERCENT = 12
+Global Const $GDIP_HATCHSTYLE_60PERCENT = 13
+Global Const $GDIP_HATCHSTYLE_70PERCENT = 14
+Global Const $GDIP_HATCHSTYLE_75PERCENT = 15
+Global Const $GDIP_HATCHSTYLE_80PERCENT = 16
+Global Const $GDIP_HATCHSTYLE_90PERCENT = 17
+Global Const $GDIP_HATCHSTYLE_LIGHTDOWNWARDDIAGONAL = 18
+Global Const $GDIP_HATCHSTYLE_LIGHTUPWARDDIAGONAL = 19
+Global Const $GDIP_HATCHSTYLE_DARKDOWNWARDDIAGONAL = 20
+Global Const $GDIP_HATCHSTYLE_DARKUPWARDDIAGONAL = 21
+Global Const $GDIP_HATCHSTYLE_WIDEDOWNWARDDIAGONAL = 22
+Global Const $GDIP_HATCHSTYLE_WIDEUPWARDDIAGONAL = 23
+Global Const $GDIP_HATCHSTYLE_LIGHTVERTICAL = 24
+Global Const $GDIP_HATCHSTYLE_LIGHTHORIZONTAL = 25
+Global Const $GDIP_HATCHSTYLE_NARROWVERTICAL = 26
+Global Const $GDIP_HATCHSTYLE_NARROWHORIZONTAL = 27
+Global Const $GDIP_HATCHSTYLE_DARKVERTICAL = 28
+Global Const $GDIP_HATCHSTYLE_DARKHORIZONTAL = 29
+Global Const $GDIP_HATCHSTYLE_DASHEDDOWNWARDDIAGONAL = 30
+Global Const $GDIP_HATCHSTYLE_DASHEDUPWARDDIAGONAL = 31
+Global Const $GDIP_HATCHSTYLE_DASHEDHORIZONTAL = 32
+Global Const $GDIP_HATCHSTYLE_DASHEDVERTICAL = 33
+Global Const $GDIP_HATCHSTYLE_SMALLCONFETTI = 34
+Global Const $GDIP_HATCHSTYLE_LARGECONFETTI = 35
+Global Const $GDIP_HATCHSTYLE_ZIGZAG = 36
+Global Const $GDIP_HATCHSTYLE_WAVE = 37
+Global Const $GDIP_HATCHSTYLE_DIAGONALBRICK = 38
+Global Const $GDIP_HATCHSTYLE_HORIZONTALBRICK = 39
+Global Const $GDIP_HATCHSTYLE_WEAVE = 40
+Global Const $GDIP_HATCHSTYLE_PLAID = 41
+Global Const $GDIP_HATCHSTYLE_DIVOT = 42
+Global Const $GDIP_HATCHSTYLE_DOTTEDGRID = 43
+Global Const $GDIP_HATCHSTYLE_DOTTEDDIAMOND = 44
+Global Const $GDIP_HATCHSTYLE_SHINGLE = 45
+Global Const $GDIP_HATCHSTYLE_TRELLIS = 46
+Global Const $GDIP_HATCHSTYLE_SPHERE = 47
+Global Const $GDIP_HATCHSTYLE_SMALLGRID = 48
+Global Const $GDIP_HATCHSTYLE_SMALLCHECKERBOARD = 49
+Global Const $GDIP_HATCHSTYLE_LARGECHECKERBOARD = 50
+Global Const $GDIP_HATCHSTYLE_OUTLINEDDIAMOND = 51
+Global Const $GDIP_HATCHSTYLE_SOLIDDIAMOND = 52
+Global Const $GDIP_HATCHSTYLE_TOTAL = 53
+Global Const $GDIP_HATCHSTYLE_LARGEGRID = $GDIP_HATCHSTYLE_CROSS
+Global Const $GDIP_HATCHSTYLE_MIN = $GDIP_HATCHSTYLE_HORIZONTAL
+Global Const $GDIP_HATCHSTYLE_MAX = $GDIP_HATCHSTYLE_TOTAL - 1
+Global Const $GDIP_BlurEffectGuid = '{633C80A4-1843-482b-9EF2-BE2834C5FDD4}'
+Global Const $GDIP_SharpenEffectGuid = '{63CBF3EE-C526-402c-8F71-62C540BF5142}'
+Global Const $GDIP_ColorMatrixEffectGuid = '{718F2615-7933-40e3-A511-5F68FE14DD74}'
+Global Const $GDIP_ColorLUTEffectGuid = '{A7CE72A9-0F7F-40d7-B3CC-D0C02D5C3212}'
+Global Const $GDIP_BrightnessContrastEffectGuid = '{D3A1DBE1-8EC4-4c17-9F4C-EA97AD1C343D}'
+Global Const $GDIP_HueSaturationLightnessEffectGuid = '{8B2DD6C3-EB07-4d87-A5F0-7108E26A9C5F}'
+Global Const $GDIP_LevelsEffectGuid = '{99C354EC-2A31-4f3a-8C34-17A803B33A25}'
+Global Const $GDIP_TintEffectGuid = '{1077AF00-2848-4441-9489-44AD4C2D7A2C}'
+Global Const $GDIP_ColorBalanceEffectGuid = '{537E597D-251E-48da-9664-29CA496B70F8}'
+Global Const $GDIP_RedEyeCorrectionEffectGuid = '{74D29D05-69A4-4266-9549-3CC52836B632}'
+Global Const $GDIP_ColorCurveEffectGuid = '{DD6A0022-58E4-4a67-9D9B-D48EB881A53D}'
+Global Const $GDIP_AdjustExposure = 0
+Global Const $GDIP_AdjustDensity = 1
+Global Const $GDIP_AdjustContrast = 2
+Global Const $GDIP_AdjustHighlight = 3
+Global Const $GDIP_AdjustShadow = 4
+Global Const $GDIP_AdjustMidtone = 5
+Global Const $GDIP_AdjustWhiteSaturation = 6
+Global Const $GDIP_AdjustBlackSaturation = 7
+Global Const $GDIP_CurveChannelAll = 0
+Global Const $GDIP_CurveChannelRed = 1
+Global Const $GDIP_CurveChannelGreen = 2
+Global Const $GDIP_CurveChannelBlue = 3
+Global Const $GDIP_PaletteTypeCustom = 0
+Global Const $GDIP_PaletteTypeOptimal = 1
+Global Const $GDIP_PaletteTypeFixedBW = 2
+Global Const $GDIP_PaletteTypeFixedHalftone8 = 3
+Global Const $GDIP_PaletteTypeFixedHalftone27 = 4
+Global Const $GDIP_PaletteTypeFixedHalftone64 = 5
+Global Const $GDIP_PaletteTypeFixedHalftone125 = 6
+Global Const $GDIP_PaletteTypeFixedHalftone216 = 7
+Global Const $GDIP_PaletteTypeFixedHalftone252 = 8
+Global Const $GDIP_PaletteTypeFixedHalftone256 = 9
+Global Const $GDIP_PaletteFlagsHasAlpha = 0x0001
+Global Const $GDIP_PaletteFlagsGrayScale = 0x0002
+Global Const $GDIP_PaletteFlagsHalftone = 0x0004
+Global Const $GDIP_DitherTypeNone = 0
+Global Const $GDIP_DitherTypeSolid = 1
+Global Const $GDIP_DitherTypeOrdered4x4 = 2
+Global Const $GDIP_DitherTypeOrdered8x8 = 3
+Global Const $GDIP_DitherTypeOrdered16x16 = 4
+Global Const $GDIP_DitherTypeOrdered91x91 = 5
+Global Const $GDIP_DitherTypeSpiral4x4 = 6
+Global Const $GDIP_DitherTypeSpiral8x8 = 7
+Global Const $GDIP_DitherTypeDualSpiral4x4 = 8
+Global Const $GDIP_DitherTypeDualSpiral8x8 = 9
+Global Const $GDIP_DitherTypeErrorDiffusion = 10
+Global Const $GDIP_DitherTypeMax = 10
+Global Const $GDIP_HistogramFormatARGB = 0
+Global Const $GDIP_HistogramFormatPARGB = 1
+Global Const $GDIP_HistogramFormatRGB = 2
+Global Const $GDIP_HistogramFormatGray = 3
+Global Const $GDIP_HistogramFormatB = 4
+Global Const $GDIP_HistogramFormatG = 5
+Global Const $GDIP_HistogramFormatR = 6
+Global Const $GDIP_HistogramFormatA = 7
+Global Const $GDIP_TextRenderingHintSystemDefault = 0
+Global Const $GDIP_TextRenderingHintSingleBitPerPixelGridFit = 1
+Global Const $GDIP_TextRenderingHintSingleBitPerPixel = 2
+Global Const $GDIP_TextRenderingHintAntialiasGridFit = 3
+Global Const $GDIP_TextRenderingHintAntialias = 4
+Global Const $GDIP_TextRenderingHintClearTypeGridFit = 5
+Global Const $GDIP_RotateNoneFlipNone = 0
+Global Const $GDIP_Rotate90FlipNone = 1
+Global Const $GDIP_Rotate180FlipNone = 2
+Global Const $GDIP_Rotate270FlipNone = 3
+Global Const $GDIP_RotateNoneFlipX = 4
+Global Const $GDIP_Rotate90FlipX = 5
+Global Const $GDIP_Rotate180FlipX = 6
+Global Const $GDIP_Rotate270FlipX = 7
+Global Const $GDIP_RotateNoneFlipY = $GDIP_Rotate180FlipX
+Global Const $GDIP_Rotate90FlipY = $GDIP_Rotate270FlipX
+Global Const $GDIP_Rotate180FlipY = $GDIP_RotateNoneFlipX
+Global Const $GDIP_Rotate270FlipY = $GDIP_Rotate90FlipX
+Global Const $GDIP_RotateNoneFlipXY = $GDIP_Rotate180FlipNone
+Global Const $GDIP_Rotate90FlipXY = $GDIP_Rotate270FlipNone
+Global Const $GDIP_Rotate270FlipXY = $GDIP_Rotate90FlipNone
 Global $__g_hGDIPBrush = 0
 Global $__g_hGDIPDll = 0
 Global $__g_hGDIPPen = 0
@@ -17611,163 +18429,6 @@ Global Const $DTN_FORMATW = $DTN_FIRST - 3
 Global Const $DTN_FORMATQUERYW = $DTN_FIRST - 2
 Global Const $GUI_SS_DEFAULT_DATE = $DTS_LONGDATEFORMAT
 Global Const $GUI_SS_DEFAULT_MONTHCAL = 0
-Global Const $LINGUISTIC_IGNORECASE = 0x00000010
-Global Const $LINGUISTIC_IGNOREDIACRITIC = 0x00000020
-Global Const $NORM_IGNORECASE = 0x00000001
-Global Const $NORM_IGNOREKANATYPE = 0x00010000
-Global Const $NORM_IGNORENONSPACE = 0x00000002
-Global Const $NORM_IGNORESYMBOLS = 0x00000004
-Global Const $NORM_IGNOREWIDTH = 0x00020000
-Global Const $NORM_LINGUISTIC_CASING = 0x08000000
-Global Const $SORT_DIGITSASNUMBERS = 0x00000008
-Global Const $SORT_STRINGSORT = 0x00001000
-Global Const $CSTR_LESS_THAN = 1
-Global Const $CSTR_EQUAL = 2
-Global Const $CSTR_GREATER_THAN = 3
-Global Const $MUI_LANGUAGE_ID = 0x0004
-Global Const $MUI_LANGUAGE_NAME = 0x0008
-Global Const $DATE_AUTOLAYOUT = 0x40
-Global Const $DATE_LONGDATE = 0x02
-Global Const $DATE_LTRREADING = 0x10
-Global Const $DATE_SHORTDATE = 0x01
-Global Const $DATE_RTLREADING = 0x20
-Global Const $DATE_USE_ALT_CALENDAR = 0x04
-Global Const $DATE_YEARMONTH = 0x08
-Global Const $GEO_NATION = 1
-Global Const $GEO_LATITUDE = 2
-Global Const $GEO_LONGITUDE = 3
-Global Const $GEO_ISO2 = 4
-Global Const $GEO_ISO3 = 5
-Global Const $GEO_RFC1766 = 6
-Global Const $GEO_LCID = 7
-Global Const $GEO_FRIENDLYNAME = 8
-Global Const $GEO_OFFICIALNAME = 9
-Global Const $GEO_TIMEZONES = 10
-Global Const $GEO_OFFICIALLANGUAGES = 11
-Global Const $GEO_ISO_UN_NUMBER = 12
-Global Const $GEO_PARENT = 13
-Global Const $LOCALE_ILANGUAGE = 0x0001
-Global Const $LOCALE_SLANGUAGE = 0x0002
-Global Const $LOCALE_SENGLANGUAGE = 0x1001
-Global Const $LOCALE_SABBREVLANGNAME = 0x0003
-Global Const $LOCALE_SNATIVELANGNAME = 0x0004
-Global Const $LOCALE_ICOUNTRY = 0x0005
-Global Const $LOCALE_SCOUNTRY = 0x0006
-Global Const $LOCALE_SENGCOUNTRY = 0x1002
-Global Const $LOCALE_SABBREVCTRYNAME = 0x0007
-Global Const $LOCALE_SNATIVECTRYNAME = 0x0008
-Global Const $LOCALE_IDEFAULTLANGUAGE = 0x0009
-Global Const $LOCALE_IDEFAULTCOUNTRY = 0x000A
-Global Const $LOCALE_IDEFAULTCODEPAGE = 0x000B
-Global Const $LOCALE_IDEFAULTANSICODEPAGE = 0x1004
-Global Const $LOCALE_IDEFAULTMACCODEPAGE = 0x1011
-Global Const $LOCALE_SLIST = 0x000C
-Global Const $LOCALE_IMEASURE = 0x000D
-Global Const $LOCALE_SDECIMAL = 0x000E
-Global Const $LOCALE_STHOUSAND = 0x000F
-Global Const $LOCALE_SGROUPING = 0x0010
-Global Const $LOCALE_IDIGITS = 0x0011
-Global Const $LOCALE_ILZERO = 0x0012
-Global Const $LOCALE_INEGNUMBER = 0x1010
-Global Const $LOCALE_SNATIVEDIGITS = 0x0013
-Global Const $LOCALE_SCURRENCY = 0x0014
-Global Const $LOCALE_SINTLSYMBOL = 0x0015
-Global Const $LOCALE_SMONDECIMALSEP = 0x0016
-Global Const $LOCALE_SMONTHOUSANDSEP = 0x0017
-Global Const $LOCALE_SMONGROUPING = 0x0018
-Global Const $LOCALE_ICURRDIGITS = 0x0019
-Global Const $LOCALE_IINTLCURRDIGITS = 0x001A
-Global Const $LOCALE_ICURRENCY = 0x001B
-Global Const $LOCALE_INEGCURR = 0x001C
-Global Const $LOCALE_SDATE = 0x001D
-Global Const $LOCALE_STIME = 0x001E
-Global Const $LOCALE_SSHORTDATE = 0x001F
-Global Const $LOCALE_SLONGDATE = 0x0020
-Global Const $LOCALE_STIMEFORMAT = 0x1003
-Global Const $LOCALE_IDATE = 0x0021
-Global Const $LOCALE_ILDATE = 0x0022
-Global Const $LOCALE_ITIME = 0x0023
-Global Const $LOCALE_ITIMEMARKPOSN = 0x1005
-Global Const $LOCALE_ICENTURY = 0x0024
-Global Const $LOCALE_ITLZERO = 0x0025
-Global Const $LOCALE_IDAYLZERO = 0x0026
-Global Const $LOCALE_IMONLZERO = 0x0027
-Global Const $LOCALE_S1159 = 0x0028
-Global Const $LOCALE_S2359 = 0x0029
-Global Const $LOCALE_ICALENDARTYPE = 0x1009
-Global Const $LOCALE_IOPTIONALCALENDAR = 0x100B
-Global Const $LOCALE_IFIRSTDAYOFWEEK = 0x100C
-Global Const $LOCALE_IFIRSTWEEKOFYEAR = 0x100D
-Global Const $LOCALE_SDAYNAME1 = 0x002A
-Global Const $LOCALE_SDAYNAME2 = 0x002B
-Global Const $LOCALE_SDAYNAME3 = 0x002C
-Global Const $LOCALE_SDAYNAME4 = 0x002D
-Global Const $LOCALE_SDAYNAME5 = 0x002E
-Global Const $LOCALE_SDAYNAME6 = 0x002F
-Global Const $LOCALE_SDAYNAME7 = 0x0030
-Global Const $LOCALE_SABBREVDAYNAME1 = 0x0031
-Global Const $LOCALE_SABBREVDAYNAME2 = 0x0032
-Global Const $LOCALE_SABBREVDAYNAME3 = 0x0033
-Global Const $LOCALE_SABBREVDAYNAME4 = 0x0034
-Global Const $LOCALE_SABBREVDAYNAME5 = 0x0035
-Global Const $LOCALE_SABBREVDAYNAME6 = 0x0036
-Global Const $LOCALE_SABBREVDAYNAME7 = 0x0037
-Global Const $LOCALE_SMONTHNAME1 = 0x0038
-Global Const $LOCALE_SMONTHNAME2 = 0x0039
-Global Const $LOCALE_SMONTHNAME3 = 0x003A
-Global Const $LOCALE_SMONTHNAME4 = 0x003B
-Global Const $LOCALE_SMONTHNAME5 = 0x003C
-Global Const $LOCALE_SMONTHNAME6 = 0x003D
-Global Const $LOCALE_SMONTHNAME7 = 0x003E
-Global Const $LOCALE_SMONTHNAME8 = 0x003F
-Global Const $LOCALE_SMONTHNAME9 = 0x0040
-Global Const $LOCALE_SMONTHNAME10 = 0x0041
-Global Const $LOCALE_SMONTHNAME11 = 0x0042
-Global Const $LOCALE_SMONTHNAME12 = 0x0043
-Global Const $LOCALE_SMONTHNAME13 = 0x100E
-Global Const $LOCALE_SABBREVMONTHNAME1 = 0x0044
-Global Const $LOCALE_SABBREVMONTHNAME2 = 0x0045
-Global Const $LOCALE_SABBREVMONTHNAME3 = 0x0046
-Global Const $LOCALE_SABBREVMONTHNAME4 = 0x0047
-Global Const $LOCALE_SABBREVMONTHNAME5 = 0x0048
-Global Const $LOCALE_SABBREVMONTHNAME6 = 0x0049
-Global Const $LOCALE_SABBREVMONTHNAME7 = 0x004A
-Global Const $LOCALE_SABBREVMONTHNAME8 = 0x004B
-Global Const $LOCALE_SABBREVMONTHNAME9 = 0x004C
-Global Const $LOCALE_SABBREVMONTHNAME10 = 0x004D
-Global Const $LOCALE_SABBREVMONTHNAME11 = 0x004E
-Global Const $LOCALE_SABBREVMONTHNAME12 = 0x004F
-Global Const $LOCALE_SABBREVMONTHNAME13 = 0x100F
-Global Const $LOCALE_SPOSITIVESIGN = 0x0050
-Global Const $LOCALE_SNEGATIVESIGN = 0x0051
-Global Const $LOCALE_IPOSSIGNPOSN = 0x0052
-Global Const $LOCALE_INEGSIGNPOSN = 0x0053
-Global Const $LOCALE_IPOSSYMPRECEDES = 0x0054
-Global Const $LOCALE_IPOSSEPBYSPACE = 0x0055
-Global Const $LOCALE_INEGSYMPRECEDES = 0x0056
-Global Const $LOCALE_INEGSEPBYSPACE = 0x0057
-Global Const $LOCALE_FONTSIGNATURE = 0x0058
-Global Const $LOCALE_SISO639LANGNAME = 0x0059
-Global Const $LOCALE_SISO3166CTRYNAME = 0x005A
-Global Const $LOCALE_IDEFAULTEBCDICCODEPAGE = 0x1012
-Global Const $LOCALE_IPAPERSIZE = 0x100A
-Global Const $LOCALE_SENGCURRNAME = 0x1007
-Global Const $LOCALE_SNATIVECURRNAME = 0x1008
-Global Const $LOCALE_SYEARMONTH = 0x1006
-Global Const $LOCALE_SSORTNAME = 0x1013
-Global Const $LOCALE_IDIGITSUBSTITUTION = 0x1014
-Global Const $LOCALE_CUSTOM_DEFAULT = 0x0C00
-Global Const $LOCALE_CUSTOM_UI_DEFAULT = 0x1400
-Global Const $LOCALE_CUSTOM_UNSPECIFIED = 0x1000
-Global Const $LOCALE_INVARIANT = 0x007F
-Global Const $LOCALE_SYSTEM_DEFAULT = 0x0800
-Global Const $LOCALE_USER_DEFAULT = 0x0400
-Global Const $TIME_FORCE24HOURFORMAT = 0x08
-Global Const $TIME_NOMINUTESORSECONDS = 0x01
-Global Const $TIME_NOSECONDS = 0x02
-Global Const $TIME_NOTIMEMARKER = 0x04
-Global Const $LCID_INSTALLED = 1
-Global Const $LCID_SUPPORTED = 2
 Global Const $tagNUMBERFMT = 'uint NumDigits;uint LeadingZero;uint Grouping;ptr DecimalSep;ptr ThousandSep;uint NegativeOrder'
 Func _WinAPI_CompareString($iLCID, $sString1, $sString2, $iFlags = 0)
 Local $aRet = DllCall('kernel32.dll', 'int', 'CompareStringW', 'dword', $iLCID, 'dword', $iFlags, 'wstr', $sString1,  'int', -1, 'wstr', $sString2, 'int', -1)
@@ -30870,6 +31531,7 @@ $Compiled = @ScriptName & " Executable"
 Else
 $Compiled = @ScriptName & " Script"
 EndIf
+Global $hHBitmapTest = 0
 Global $hBitmap
 Global $hHBitmap
 Global $hHBitmap2
@@ -30880,11 +31542,11 @@ Global $AndroidGamePackage = "com.supercell.clashofclans"
 Global $AndroidGameClass = ".GameApp"
 Global $AndroidEmbedEnabled = True
 Global $AndroidEmbedded = False
-Global $AndroidEmbeddedCtrlTarget[9]
+Global $AndroidEmbeddedCtrlTarget[10] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $AndroidEmbeddedRedraw = False
 Global $AndroidShieldEnabled = True
-Global $AndroidShieldPreWin8 = StringRegExp(@OSVersion, "WIN_VISTA|WIN_7|WIN_2008") = 1
-Global $AndroidShieldStatus[3] = [Default, 0, 0]
+Global $AndroidShieldPreWin8 = _WinAPI_GetVersion() < 6.2
+Global $AndroidShieldStatus[5] = [Default, 0, 0, Default, Default]
 Global $AndroidShieldDelay[4] = [0, 0, Default, Default]
 Global $AndroidShieldForceDown = False
 Global $AndroidShieldColor = $COLOR_WHITE
@@ -30909,10 +31571,11 @@ Global $AndroidAdbInstanceEnabled = True
 Global $AndroidSuspendedEnabled = False
 Global $NoFocusTampering = False
 Global $__MEmu_Idx = 0
-Global $__Droid4X_Idx = 1
-Global $__Nox_Idx = 2
-Global $__BS2_Idx = 3
-Global $__BS_Idx = 4
+Global $__BS2_Idx = 1
+Global $__BS_Idx = 2
+Global $__Droid4X_Idx = 3
+GLobal $__LeapDroid_IDx = 4
+Global $__Nox_Idx = 5
 Global $__BlueStacks_SystemBar = 48
 Global $__MEmu_Adjust_Width = 6
 Global $__MEmu_ToolBar_Width = 45
@@ -30920,7 +31583,7 @@ Global $__MEmu_SystemBar = 36
 Global $__MEmu_PhoneLayout = "0"
 Global $__MEmu_Window[3][4] =  [  ["2.6.2",$DEFAULT_WIDTH + 48,$DEFAULT_HEIGHT + 26,40],  ["2.5.0",$DEFAULT_WIDTH + 51,$DEFAULT_HEIGHT + 24,40],  ["2.2.1",$DEFAULT_WIDTH + 51,$DEFAULT_HEIGHT + 24,45]  ]
 Global $__Droid4X_Window[3][3] =  [  ["0.10.0",$DEFAULT_WIDTH +  6,$DEFAULT_HEIGHT + 53],  ["0.8.6" ,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50]  ]
-Global $AndroidAppConfig[5][14] = [  ["MEmu",       "MEmu",          "MEmu 2.",              "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 12,$DEFAULT_WIDTH + 51,$DEFAULT_HEIGHT + 24,0,             "127.0.0.1:21503",0+2+4+8+16+32+64      ,'# ',               'Microvirt Virtual Input'],  ["Droid4X",    "droid4x",       "Droid4X 0.",           "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50,0,             "127.0.0.1:26944",0+2+4+8+16+32+64      ,'# ',               'droid4x Virtual Input'],  ["Nox",        "nox",           "No",                   "[CLASS:Qt5QWindowIcon;INSTANCE:4]","",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH +  4,$DEFAULT_HEIGHT - 10,0,             "127.0.0.1:62001",0+2+4+8+16+32         ,'# ',               'nox Virtual Input'],  ["BlueStacks2","",              "BlueStacks ",          "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8+16   +64      ,'$ ',               'BlueStacks Virtual Touch'],  ["BlueStacks", "",              "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8+16   +64      ,'$ ',               'BlueStacks Virtual Touch']  ]
+Global $AndroidAppConfig[6][15] = [  ["MEmu",       "MEmu",          "MEmu ",                "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 12,$DEFAULT_WIDTH + 51,$DEFAULT_HEIGHT + 24,0,             "127.0.0.1:21503",0+2+4+8+16+32         ,'# ',               'Microvirt Virtual Input',           0],  ["BlueStacks2","",              "BlueStacks ",          "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8+16            ,'$ ',               'BlueStacks Virtual Touch',          0],  ["BlueStacks", "",              "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window",$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1    +8+16            ,'$ ',               'BlueStacks Virtual Touch',          0],  ["Droid4X",    "droid4x",       "Droid4X ",             "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH + 10,$DEFAULT_HEIGHT + 50,0,             "127.0.0.1:26944",0+2+4+8+16+32         ,'# ',               'droid4x Virtual Input',             0],  ["LeapDroid",  "vm1",           "Leapd",                "[CLASS:subWin; INSTANCE:1]",       "",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH     ,$DEFAULT_HEIGHT - 48,0,             "emulator-5554",  1+  4+8+16+32         ,'# ',               'qwerty2',                           1],  ["Nox",        "nox",           "No",                   "[CLASS:Qt5QWindowIcon;INSTANCE:4]","",           $DEFAULT_WIDTH,     $DEFAULT_HEIGHT - 48,$DEFAULT_WIDTH +  4,$DEFAULT_HEIGHT - 10,0,             "127.0.0.1:62001",0+2+4+8+16+32         ,'# ',               '(nox Virtual Input|Android Input)',-1]  ]
 Global $OnlyInstance = True
 Global $FoundRunningAndroid = False
 Global $FoundInstalledAndroid = False
@@ -30931,6 +31594,7 @@ Global $AndroidVersion
 Global $Android
 Global $AndroidInstance
 Global $Title
+Global $UpdateAndroidWindowTitle = False
 Global $AppClassInstance
 Global $AppPaneName
 Global $AndroidClientWidth
@@ -30949,6 +31613,7 @@ Global $AndroidAdbInput
 Global $AndroidAdbInstance
 Global $AndroidAdbClickDrag
 Global $AndroidEmbed
+Global $AndroidEmbedMode
 Global $AndroidBackgroundLaunch
 Global $AndroidBackgroundLaunched
 Func AndroidAdbClickSupported()
@@ -30973,20 +31638,23 @@ $AndroidAdbDevice = $AndroidAppConfig[$AndroidConfig][10]
 $AndroidSupportFeature = $AndroidAppConfig[$AndroidConfig][11]
 $AndroidShellPrompt = $AndroidAppConfig[$AndroidConfig][12]
 $AndroidMouseDevice = $AndroidAppConfig[$AndroidConfig][13]
+$AndroidEmbedMode = $AndroidAppConfig[$AndroidConfig][14]
 $AndroidAdbScreencap = $AndroidAdbScreencapEnabled = True And BitAND($AndroidSupportFeature, 2) = 2
 $AndroidAdbClick = $AndroidAdbClickEnabled = True And AndroidAdbClickSupported()
 $AndroidAdbInput = $AndroidAdbInputEnabled = True And BitAND($AndroidSupportFeature, 8) = 8
 $AndroidAdbInstance = $AndroidAdbInstanceEnabled = True And BitAND($AndroidSupportFeature, 16) = 16
 $AndroidAdbClickDrag = $AndroidAdbClickDragEnabled = True And BitAND($AndroidSupportFeature, 32) = 32
-$AndroidEmbed = $AndroidEmbedEnabled = True And BitAND($AndroidSupportFeature, 64) = 64
+$AndroidEmbed = $AndroidEmbedEnabled = True And $AndroidEmbedMode > -1
 $AndroidBackgroundLaunch = $AndroidBackgroundLaunchEnabled = True And True
 $AndroidBackgroundLaunched = False
+$UpdateAndroidWindowTitle = False
 If $AndroidAdbScreencap And IsDeclared("chkBackground") Then
 chkBackground()
 EndIf
 EndFunc
 InitAndroidConfig()
 Global $AndroidProgramPath = ""
+Global $AndroidProgramFileVersionInfo = 0
 Global $AndroidHasSystemBar = False
 Global $AndroidClientWidth_Configured = 0
 Global $AndroidClientHeight_Configured = 0
@@ -31037,11 +31705,20 @@ Global $AndroidSuspended = False
 Global $AndroidQueueReboot = False
 Global $AndroidSuspendedTimer = 0
 Global $InitAndroid = True
+Global $frmBot = 0
 Global $FrmBotMinimized = False
 Global $iVillageName
 Global $sProfilePath = @ScriptDir & "\Profiles"
 Global $sPreset = @ScriptDir & "\Strategies"
 Global $aTxtLogInitText[0][6] = [[]]
+Global $hTimer_SetTime = 0
+Global $hTimer_PBRemoteControlInterval = 0
+Global $hTimer_PBDeleteOldPushesInterval = 0
+Global $hTimer_EmptyWorkingSetAndroid = 0
+Global $iEmptyWorkingSetAndroid = 60000
+Global $iEmptyWorkingSetBot = 60000
+Global $hTimer_EmptyWorkingSetBot = 0
+Global $bMoveDivider = False
 Global $iMoveMouseOutBS = 0
 Global $SilentSetLog = False
 Global $DevMode = 0
@@ -31051,6 +31728,7 @@ Global $__BlueStacks_Path
 Global $__Droid4X_Version
 Global $__Droid4X_Path
 Global $__MEmu_Path
+Global $__LeapDroid_Path
 Global $__Nox_Path
 Global $__VBoxManage_Path
 Global $__VBoxVMinfo
@@ -31105,7 +31783,7 @@ Global $AdbScriptsDir = $LibDir & "\adb.scripts"
 Global $pImageLib = $LibDir & "\ImageSearchDLL.dll"
 Global $pImgLib = $LibDir & "\ImgLoc.dll"
 Global $pFuncLib = $LibDir & "\MBRFunctions.dll"
-Global $hFuncLib
+Global $hFuncLib = -1
 Global $hImgLib
 Global $pIconLib = $LibDir & "\MBRBOT.dll"
 Global Const $dirTHSnipesAttacks = @ScriptDir & "\CSV\THSnipe"
@@ -31544,6 +32222,8 @@ Global $CurCamp, $TotalCamp = 0
 Global $NoLeague
 Global $FirstStart = True
 Global $TPaused, $BlockInputPause = 0
+Global $TogglePauseUpdateState = False
+Global $TogglePauseAllowed = True
 Global $itxtRestartGold = 10000
 Global $itxtRestartElixir = 25000
 Global $itxtRestartDark = 500
@@ -31941,25 +32621,24 @@ Global $iShouldRearm = True
 If FileExists($config) Or FileExists($building) Then
 readConfig()
 EndIf
+_GDIPlus_Startup()
 Global $hSplash = 0, $hSplashProgress, $lSplashStatus, $lSplashTitle
-Global $iTotalSteps = 10, $iCurrentStep = 0
+Global $iTotalSteps = 11, $iCurrentStep = 0
 Local $sSplashImg = @ScriptDir & "\Images\logo.jpg"
 Local $hImage, $iX, $iY
 Local $iT = 20
 Local $iB = 10
 If $ichkDisableSplash = 0 Then
-_GDIPlus_Startup()
-$hImage = _GDIPlus_ImageLoadFromFile($sSplashImg)
-$iX = _GDIPlus_ImageGetWidth($hImage)
-$iY = _GDIPlus_ImageGetHeight($hImage)
-_GDIPlus_ImageDispose($hImage)
-_GDIPlus_Shutdown()
+Local $hSplashImg = _GDIPlus_BitmapCreateFromFile($sSplashImg)
+$iX = _GDIPlus_ImageGetWidth($hSplashImg)
+$iY = _GDIPlus_ImageGetHeight($hSplashImg)
 $hSplash = GUICreate("", $iX, $iY + $iT + $iB + 60, -1, -1, BitOR($WS_POPUP, $WS_BORDER), BitOR($WS_EX_TOPMOST, $WS_EX_WINDOWEDGE, $WS_EX_TOOLWINDOW))
 GUISetBkColor($COLOR_WHITE, $hSplash)
-GUICtrlCreatePic($sSplashImg, 0, $iT, $iX, $iY)
+_GUICtrlCreatePic($hSplashImg, 0, $iT)
 $lSplashTitle = GUICtrlCreateLabel($sBotTitle, 15, $iY + $iT + $iB + 3, $iX - 30, 15, $SS_CENTER)
 $hSplashProgress = GUICtrlCreateProgress(15, $iY + $iT + $iB + 20, $iX - 30, 10, $PBS_SMOOTH, BitOR($WS_EX_TOPMOST, $WS_EX_WINDOWEDGE, $WS_EX_TOOLWINDOW))
 $lSplashStatus = GUICtrlCreateLabel("", 15, $iY + $iT + $iB + 38, $iX - 30, 15, $SS_CENTER)
+_GDIPlus_BitmapDispose($hSplashImg)
 GUISetState(@SW_SHOWNOACTIVATE, $hSplash)
 EndIf
 Global $aIsReloadError[4] = [457, 301 + $midOffsetY, 0x33B5E5, 10]
@@ -32151,17 +32830,17 @@ Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = ""
 If $iSize = Default Then $iSize = 8.5
 If $iWeight = Default Then $iWeight = 400
 If $iAttrib = Default Then $iAttrib = 0
-If $sName = "" Or $sName = Default Then $sName = _StringSize_DefaultFontName()
+If $sName = "" Or $sName = Default Then	$sName = _StringSize_DefaultFontName()
 If Not IsString($sText) Then Return SetError(1, 1, 0)
 If Not IsNumber($iSize) Then Return SetError(1, 2, 0)
 If Not IsInt($iWeight) Then Return SetError(1, 3, 0)
 If Not IsInt($iAttrib) Then Return SetError(1, 4, 0)
 If Not IsString($sName) Then Return SetError(1, 5, 0)
 If Not IsNumber($iMaxWidth) Then Return SetError(1, 6, 0)
-If Not IsHWnd($hWnd) And $hWnd <> 0 Then Return SetError(1, 7, 0)
+If Not IsHwnd($hWnd) And $hWnd <> 0 Then Return SetError(1, 7, 0)
 Local $aRet, $hDC, $hFont, $hLabel = 0, $hLabel_Handle
-Local $iExpTab = BitAND($iAttrib, 1)
-$iAttrib = BitAND($iAttrib, BitNOT(1))
+Local $iExpTab = BitAnd($iAttrib, 1)
+$iAttrib = BitAnd($iAttrib, BitNot(1))
 If IsHWnd($hWnd) Then
 $hLabel = GUICtrlCreateLabel("", -10, -10, 10, 10)
 $hLabel_Handle = GUICtrlGetHandle(-1)
@@ -32268,9 +32947,9 @@ Return $iExtCode
 EndFunc
 Func _StringSize_DefaultFontName()
 Local $tNONCLIENTMETRICS = DllStructCreate("uint;int;int;int;int;int;byte[60];int;int;byte[60];int;int;byte[60];byte[60];byte[60]")
-DllStructSetData($tNONCLIENTMETRICS, 1, DllStructGetSize($tNONCLIENTMETRICS))
-DllCall("user32.dll", "int", "SystemParametersInfo", "int", 41, "int", DllStructGetSize($tNONCLIENTMETRICS), "ptr", DllStructGetPtr($tNONCLIENTMETRICS), "int", 0)
-Local $tLOGFONT = DllStructCreate("long;long;long;long;long;byte;byte;byte;byte;byte;byte;byte;byte;char[32]", DllStructGetPtr($tNONCLIENTMETRICS, 13))
+DLLStructSetData($tNONCLIENTMETRICS, 1, DllStructGetSize($tNONCLIENTMETRICS))
+DLLCall("user32.dll", "int", "SystemParametersInfo", "int", 41, "int", DllStructGetSize($tNONCLIENTMETRICS), "ptr", DllStructGetPtr($tNONCLIENTMETRICS), "int", 0)
+Local $tLOGFONT = DllStructCreate("long;long;long;long;long;byte;byte;byte;byte;byte;byte;byte;byte;char[32]", DLLStructGetPtr($tNONCLIENTMETRICS, 13))
 If IsString(DllStructGetData($tLOGFONT, 14)) Then
 Return DllStructGetData($tLOGFONT, 14)
 Else
@@ -32292,7 +32971,7 @@ $g_aEMB_Settings[9] = BitAND(BitShift(String(Binary($g_aEMB_TempArray[0])), 8), 
 $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 11)
 $g_aEMB_Settings[12] = $g_aEMB_TempArray[0]
 $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 30)
-$g_aEMB_Settings[12] += (($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0]))
+$g_aEMB_Settings[12] += ( ($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0]) )
 $g_aEMB_TempArray = 0
 $g_aEMB_TempArray = DllCall("dwmapi.dll", "uint", "DwmIsCompositionEnabled", "int*", $g_aEMB_TempArray)
 If Not @error And $g_aEMB_TempArray[1] = True Then
@@ -32401,7 +33080,7 @@ Local $iMsg_Width_Max = $g_aEMB_Settings[6], $iMsg_Width_Min = 150, $iMsg_Width_
 Local $iMsg_Height_Min = 100
 Local $iButton_Width_Def = 80, $iButton_Width_Min = 50
 Local $iParent_Win = 0, $fCountdown = False, $cCheckbox, $aLabel_Size, $aRet, $iRet_Value, $iHpos
-Local $sButton_Text, $iButton_Width_Req, $iButton_Width, $iButton_Xpos
+Local $sButton_Text, $iButton_Width, $iButton_Xpos
 $iTimeOut = Int(Number($iTimeOut))
 If $vButton == " " And $iTimeOut = 0 Then
 $iTimeOut = 5
@@ -32461,8 +33140,10 @@ Case Else
 Return SetError(3, 0, -1)
 EndSwitch
 EndIf
+Local $aButton_Text[1] = [0]
+Local $iButton_Width_Req = 0
 If $vButton <> " " Then
-Local $aButton_Text = StringSplit($vButton, "|")
+$aButton_Text = StringSplit($vButton, "|")
 Local $iButton_Width_Abs = Floor((($iMsg_Width_Max - 10) / $aButton_Text[0]) - 10)
 If $iButton_Width_Abs < $iButton_Width_Min Then
 Return SetError(4, 0, -1)
@@ -32494,8 +33175,6 @@ $iButton_Width = $iButton_Width_Min
 EndIf
 EndIf
 $iButton_Width_Req = (($iButton_Width + 10) * $aButton_Text[0]) + 10
-Else
-$iButton_Width_Req = 0
 EndIf
 Local $iExpTab = Default
 If BitAND($g_aEMB_Settings[0], 8) Then
@@ -32525,7 +33204,7 @@ EndIf
 Local $iDialog_Width = $iMsg_Width
 Local $aTitleSize = _StringSize($sTitle, $g_aEMB_Settings[10], Default, Default, $g_aEMB_Settings[11])
 If $aTitleSize[2] > ($iMsg_Width - 70) Then
-$iDialog_Width = (($aTitleSize[2] < ($g_aEMB_Settings[7] - $g_aEMB_Settings[12])) ? ($aTitleSize[2] + $g_aEMB_Settings[12]) : ($g_aEMB_Settings[7]))
+$iDialog_Width = ( ($aTitleSize[2] < ($g_aEMB_Settings[7] - $g_aEMB_Settings[12])) ? ($aTitleSize[2] + $g_aEMB_Settings[12]) : ($g_aEMB_Settings[7]) )
 EndIf
 Local $iMsg_Height = $iLabel_Height + 35
 If $vButton <> " " Then
@@ -32613,28 +33292,25 @@ $iY = ($iY + 10) - ($aLabel_Size[3] - 4) / 2
 ControlMove($hMsgGUI, "", $cCheckLabel, 30 + $iIcon_Reduction, $iY, $iMsg_Width - (30 + $iIcon_Reduction), $aLabel_Size[3])
 EndIf
 If $fCountdown = True Then
-Local $cCountdown_Label = GUICtrlCreateLabel(StringFormat("%3s", $iTimeOut), 10, 20, 48, 32)
+Local $cCountdown_Label = GUICtrlCreateLabel(StringFormat("%2s", $iTimeOut), 10, 20, 32, 32)
 GUICtrlSetFont(-1, 18, Default, Default, $g_aEMB_Settings[5])
 GUICtrlSetColor(-1, $g_aEMB_Settings[3])
 Else
 If $iIcon_Reduction Then GUICtrlCreateIcon($sDLL, $iIcon_Style, 10, 20)
 EndIf
-If IsArray($aButton_Text) = 1 Then
-Local $aButtons[$aButton_Text[0]][2]
-EndIf
-Local $cAccel_Key = 9999
+Local $aButtonCID[$aButton_Text[0] + 1] = [9999]
 If $vButton <> " " Then
-$cAccel_Key = GUICtrlCreateDummy()
-Local $aAccel_Key[1][2] = [["{SPACE}", $cAccel_Key]]
+$aButtonCID[0] = GUICtrlCreateDummy()
+Local $aAccel_Key[1][2] = [["{SPACE}", $aButtonCID[0]]]
 GUISetAccelerators($aAccel_Key)
 If $aButton_Text[0] = 1 Then
 If BitAND($g_aEMB_Settings[1], 4) = 4 Then
-$iButton_Xpos = ($iDialog_Width - $iButton_Width) / 2
+$iButton_Xpos = ($iMsg_Width - $iButton_Width) / 2
 Else
-$iButton_Xpos = $iDialog_Width - $iButton_Width - 10
+$iButton_Xpos = $iMsg_Width - $iButton_Width - 10
 EndIf
 Else
-$iButton_Xpos = ($iDialog_Width - ($iButton_Width_Req - 20)) / 2
+$iButton_Xpos = ($iMsg_Width - ($iButton_Width_Req - 20)) / 2
 EndIf
 Local $iDefButton_Code = 0
 Local $iDef_Button_Style = 0
@@ -32647,7 +33323,7 @@ $iDef_Button_Style = 0x0001
 $aButton_Text[$i + 1] = StringTrimLeft($iButton_Text, 1)
 $iDefButton_Code = $i + 1
 EndIf
-GUICtrlCreateButton($aButton_Text[$i + 1], $iButton_Xpos + ($i * ($iButton_Width + 10)), $iMsg_Height - 35, $iButton_Width, 25, $iDef_Button_Style)
+$aButtonCID[$i + 1] = GUICtrlCreateButton($aButton_Text[$i + 1], $iButton_Xpos + ($i * ($iButton_Width + 10)), $iMsg_Height - 35, $iButton_Width, 25, $iDef_Button_Style)
 If Not BitAND($g_aEMB_Settings[0], 4) Then GUICtrlSetFont(-1, $g_aEMB_Settings[4], 400, 0, $g_aEMB_Settings[5])
 $iDef_Button_Style = 0
 Next
@@ -32664,15 +33340,14 @@ Select
 Case $aMsg[0] = -3
 $iRet_Value = 0
 ExitLoop
-Case $aMsg[0] = $cAccel_Key
+Case $aMsg[0] = $aButtonCID[0]
 If $iDefButton_Code Then
 $iRet_Value = $iDefButton_Code
 ExitLoop
 EndIf
-Case $aMsg[0] > $cAccel_Key
-Local $sButton = GUICtrlRead($aMsg[0])
-For $i = 1 To $aButton_Text[0]
-If $aButton_Text[$i] = $sButton Then
+Case Else
+For $i = 1 To UBound($aButtonCID) - 1
+If $aMsg[0] = $aButtonCID[$i] Then
 $iRet_Value = $i
 ExitLoop 2
 EndIf
@@ -33728,8 +34403,62 @@ DetectLanguage()
 Local $sMsg
 $sMsg = GetTranslated(500, 1, "Don't Run/Compile the Script as (x64)! Try to Run/Compile the Script as (x86) to get the bot to work.\r\n" & "If this message still appears, try to re-install AutoIt.")
 If @AutoItX64 = 1 Then
+If IsHWnd($hSplash) Then GUIDelete($hSplash)
 MsgBox(0, "", $sMsg)
+_GDIPlus_Shutdown()
 Exit
+EndIf
+Func MBRFunc($Start = True)
+Switch $Start
+Case True
+$hFuncLib = DllOpen($pFuncLib)
+$hImgLib = DllOpen($pImgLib)
+If $hFuncLib = -1 Then
+Setlog("MBRfunctions.dll not found.", $COLOR_RED)
+Return False
+EndIf
+SetDebugLog("MBRfunctions.dll opened.")
+Case False
+DllClose($hFuncLib)
+DllClose($hImgLib)
+SetDebugLog("MBRfunctions.dll closed.")
+EndSwitch
+EndFunc
+Func debugMBRFunctions($debugSearchArea = 0, $debugRedArea = 0, $debugOcr = 0)
+SetDebugLog("debugMBRFunctions: $debugSearchArea=" & $debugSearchArea & ", $debugRedArea=" & $debugRedArea & ", $debugOcr=" & $debugOcr)
+Local $activeHWnD = WinGetHandle("")
+Local $result = DllCall($hFuncLib, "str", "setGlobalVar", "int", $debugSearchArea, "int", $debugRedArea, "int", $debugOcr)
+If @error Then
+_logErrorDLLCall($pFuncLib & ", setGlobalVar:", @error)
+Return SetError(@error)
+EndIf
+If IsArray($result) Then
+If $debugSetlog = 1 And $result[0] = -1 Then SetLog("MBRfunctions.dll error setting Global vars.", $COLOR_PURPLE)
+Else
+SetDebugLog("MBRfunctions.dll not found.", $COLOR_RED)
+EndIf
+WinActivate($activeHWnD)
+EndFunc
+Func setAndroidPID($pid)
+SetDebugLog("setAndroidPID: $pid=" & $pid)
+Local $result = DllCall($hFuncLib, "str", "setAndroidPID", "int", $pid)
+If @error Then
+_logErrorDLLCall($pFuncLib & ", setAndroidPID:", @error)
+Return SetError(@error)
+EndIf
+If IsArray($result) Then
+If $result[0] = "" Then
+SetDebugLog("MBRfunctions.dll error setting Android PID.")
+Else
+SetDebugLog("Android PID=" & $pid & " initialized: " & $result[0])
+debugMBRFunctions($debugSearchArea, $debugRedArea, $debugOcr)
+EndIf
+Else
+SetDebugLog("MBRfunctions.dll not found.", $COLOR_RED)
+EndIf
+EndFunc
+If CheckPrerequisites() Then
+MBRFunc(True)
 EndIf
 SplashStep(GetTranslated(500, 21, "Initializing Android..."))
 InitAndroidConfig(True)
@@ -33811,7 +34540,7 @@ $WinGetAndroidHandleActive = False
 Return $HWnD
 EndIf
 If $HWnD <> 0 Then
-If $HWnD = ProcessExists($HWnD) Then
+If $HWnD = ProcessExists2($HWnD) Then
 Else
 Local $instance = ($AndroidInstance = "" ? "" : " (" & $AndroidInstance & ")")
 SetDebugLog($Android & $instance & " process with PID = " & $HWnD & " not found")
@@ -33863,6 +34592,7 @@ If $bInitAndroid = True Then InitAndroid(True)
 EndIf
 $AndroidBackgroundLaunched = True
 EndIf
+setAndroidPID($pid)
 Else
 SetDebugLog($Android & $instance & " process not found")
 EndIf
@@ -33880,14 +34610,16 @@ Local $h = WinGetAndroidHandle(Default, True)
 If IsHWnd($h) Then Return WinGetProcess($h)
 Return $h
 EndFunc
-Func _WinGetAndroidHandle()
+Func _WinGetAndroidHandle($bFindByTitle = False)
 Local $hWin = WinGetHandle($HWnD)
 If $hWin > 0 And $hWin = $HWnD Then Return $HWnD
 Local $i
 Local $t
 Local $ReInitAndroid = $HWnD <> 0
 SetDebugLog("Searching " & $Android & " Window: Title = '" & $Title & "', Class = '" & $AppClassInstance & "', Text = '" & $AppPaneName & "'")
-Local $aWinList = WinList($Title)
+Local $aWinList
+If $bFindByTitle = True Then
+$aWinList = WinList($Title)
 If $aWinList[0][0] > 0 Then
 For $i = 1 To $aWinList[0][0]
 $hWin = $aWinList[$i][1]
@@ -33897,20 +34629,20 @@ Local $hCtrl = ControlGetHandle($hWin, $AppPaneName, $AppClassInstance)
 If $hCtrl <> 0 Then
 SetDebugLog("Found " & $Android & " Window '" & $t & "' (" & $hWin & ") by matching title '" & $Title & "' (#1)")
 $HWnD = $hWin
-$Title = $t
+$Title = UpdateAndroidWindowTitle($HWnD, $t)
 If $ReInitAndroid = True And $InitAndroid = False Then
 $InitAndroid = True
 InitAndroid()
 EndIf
 AndroidEmbed(False, False)
+setAndroidPID(GetAndroidPid())
 Return $hWin
 EndIf
 EndIf
 Next
 EndIf
-Local $iMode
-$iMode = Opt("WinTitleMatchMode", -1)
-Local $hWin = WinGetHandle($Title)
+Local $iMode = Opt("WinTitleMatchMode", -1)
+$hWin = WinGetHandle($Title)
 Local $error = @error
 Opt("WinTitleMatchMode", $iMode)
 If $error = 0 Then
@@ -33918,12 +34650,13 @@ $t = WinGetTitle($hWin)
 If $Title = $t And ControlGetHandle($hWin, $AppPaneName, $AppClassInstance) <> 0 Then
 If $HWnD <> $hWin Then SetDebugLog("Found " & $Android & " Window '" & $t & "' (" & $hWin & ") by matching title '" & $Title & "' (#2)")
 $HWnD = $hWin
-$Title = $t
+$Title = UpdateAndroidWindowTitle($HWnD, $t)
 If $ReInitAndroid = True And $InitAndroid = False Then
 $InitAndroid = True
 InitAndroid()
 EndIf
 AndroidEmbed(False, False)
+setAndroidPID(GetAndroidPid())
 Return $hWin
 Else
 SetDebugLog($Android & " Window title '" & $t & "' not matching '" & $Title & "' or control")
@@ -33938,7 +34671,7 @@ If $ReInitAndroid = True Then $InitAndroid = True
 $HWnD = 0
 AndroidEmbed(False, False)
 Return 0
-EndIF
+EndIf
 SetDebugLog("Found " & $aWinList[0][0] & " possible " & $Android & " windows by title '" & $Title & "':")
 For $i = 1 To $aWinList[0][0]
 SetDebugLog($aWinList[$i][1] & ": " & $aWinList[$i][0])
@@ -33950,15 +34683,17 @@ $hWin = $aWinList[$i][1]
 If StringRight($t, StringLen($AndroidInstance)) = $AndroidInstance And ControlGetHandle($hWin, $AppPaneName, $AppClassInstance) <> 0 Then
 SetDebugLog("Found " & $Android & " Window '" & $t & "' (" & $hWin & ") for instance " & $AndroidInstance)
 $HWnD = $hWin
-$Title = $t
+$Title = UpdateAndroidWindowTitle($HWnD, $t)
 If $ReInitAndroid = True And $InitAndroid = False Then
 $InitAndroid = True
 InitAndroid()
 EndIf
 AndroidEmbed(False, False)
+setAndroidPID(GetAndroidPid())
 Return $hWin
 EndIf
 Next
+EndIf
 EndIf
 If $AndroidProgramPath <> "" Then
 Local $parameter = GetAndroidProgramParameter(False)
@@ -33970,21 +34705,35 @@ $pid = ProcessExists2($AndroidProgramPath, $parameter, 0, 0, "Is" & $Android & "
 EndIf
 Local $commandLine = $AndroidProgramPath & ($parameter = "" ? "" : " " & $parameter)
 If $pid <> 0 Then
+If IsArray($aWinList) = 0 Then
+Local $aWinList2 = _WinAPI_EnumProcessWindows($pid, True)
+If IsArray($aWinList2) = 1 And $aWinList2[0][0] > 0 Then
+Local $aWinList[$aWinList2[0][0] + 1][2]
+$aWinList[0][0] = $aWinList2[0][0]
+For $i = 1 To $aWinList2[0][0]
+$aWinList[$i][0] = WinGetTitle($aWinList2[$i][0])
+$aWinList[$i][1] = $aWinList2[$i][0]
+Next
+EndIf
+EndIf
+If IsArray($aWinList) = 1 Then
 For $i = 1 To $aWinList[0][0]
 $t = $aWinList[$i][0]
 $hWin = $aWinList[$i][1]
 If $pid = WinGetProcess($hWin) And ControlGetHandle($hWin, $AppPaneName, $AppClassInstance) <> 0 Then
 SetDebugLog("Found " & $Android & " Window '" & $t & "' (" & $hWin & ") by PID " & $pid & " ('" & $commandLine & "')")
 $HWnD = $hWin
-$Title = $t
+$Title = UpdateAndroidWindowTitle($HWnD, $t)
 If $ReInitAndroid = True And $InitAndroid = False Then
 $InitAndroid = True
 InitAndroid()
 EndIf
 AndroidEmbed(False, False)
+setAndroidPID(GetAndroidPid())
 Return $hWin
 EndIf
 Next
+EndIf
 SetDebugLog($Android & ($AndroidInstance = "" ? "" : " (" & $AndroidInstance & ")") & " Window not found for PID " & $pid)
 EndIf
 EndIf
@@ -33994,6 +34743,13 @@ $HWnD = 0
 AndroidEmbed(False, False)
 Return 0
 EndFunc
+Func UpdateAndroidWindowTitle($HWin, $t)
+If $UpdateAndroidWindowTitle = True And $AndroidInstance <> "" And StringInStr($t, $AndroidInstance) = 0 Then
+$t &= " (" & $AndroidInstance & ")"
+_WinAPI_SetWindowText($HWin, $t)
+EndIf
+Return $t
+EndFunc
 Func AndroidControlAvailable()
 If $AndroidBackgroundLaunched = True Then
 Return 0
@@ -34001,7 +34757,7 @@ EndIf
 Return IsArray(GetAndroidPos(True))
 EndFunc
 Func GetAndroidSvcPid()
-If $AndroidSvcPid <> 0 And $AndroidSvcPid = ProcessExists($AndroidSvcPid) Then
+If $AndroidSvcPid <> 0 And $AndroidSvcPid = ProcessExists2($AndroidSvcPid) Then
 Return $AndroidSvcPid
 EndIf
 SetError(0, 0, 0)
@@ -34120,15 +34876,24 @@ EndFunc
 Func InitAndroid($bCheckOnly = False)
 If $bCheckOnly = False And $InitAndroid = False Then
 Return True
-EndIF
+EndIf
 $InitAndroidActive = True
 SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $Android)
 If Not $bCheckOnly Then
 If $AndroidInstance = "" Then $AndroidInstance = $AndroidAppConfig[$AndroidConfig][1]
 EndIf
 Local $Result = Execute("Init" & $Android & "(" & $bCheckOnly & ")")
+If $Result = "" And @error <> 0 Then
+SetLog("Android support for " & $Android & " is not available", $COLOR_RED)
+EndIf
 Local $successful = @error = 0
 If Not $bCheckOnly And $Result Then
+Local $pAndroidFileVersionInfo
+If _WinAPI_GetFileVersionInfo($AndroidProgramPath, $pAndroidFileVersionInfo) Then
+$AndroidProgramFileVersionInfo = _WinAPI_VerQueryValue($pAndroidFileVersionInfo)
+Else
+$AndroidProgramFileVersionInfo = 0
+EndIf
 SetDebugLog("Android: " & $Android)
 SetDebugLog("Android Config: " & $AndroidConfig)
 SetDebugLog("Android Version: " & $AndroidVersion)
@@ -34136,6 +34901,7 @@ SetDebugLog("Android Instance: " & $AndroidInstance)
 SetDebugLog("Android Window Title: " & $Title)
 SetDebugLog("Android Program Path: " & $AndroidProgramPath)
 SetDebugLog("Android Program Parameter: " & GetAndroidProgramParameter())
+SetDebugLog("Android Program FileVersionInfo: " & ((IsArray($AndroidProgramFileVersionInfo) ? _ArrayToString($AndroidProgramFileVersionInfo, ",", 1) : "not available")))
 SetDebugLog("Android ADB Path: " & $AndroidAdbPath)
 SetDebugLog("Android ADB Device: " & $AndroidAdbDevice)
 SetDebugLog("Android ADB Shared Folder: " & $AndroidPicturesPath)
@@ -34165,9 +34931,9 @@ $InitAndroidActive = False
 Return $Result
 EndFunc
 Func GetAndroidProgramParameter($bAlternative = False)
-Local $Parameter = Execute("Get" & $Android & "ProgramParameter(" & $bAlternative & ")")
-If $Parameter = "" And @error <> 0 Then $Parameter = ""
-Return $Parameter
+Local $parameter = Execute("Get" & $Android & "ProgramParameter(" & $bAlternative & ")")
+If $parameter = "" And @error <> 0 Then $parameter = ""
+Return $parameter
 EndFunc
 Func AndroidBotStartEvent()
 reHide()
@@ -34252,10 +35018,11 @@ Else
 SetLog("Launch Clash of Clans now...", $COLOR_GREEN)
 EndIf
 ConnectAndroidAdb()
+If Not $RunState Then Return False
 AndroidAdbTerminateShellInstance()
+If Not $RunState Then Return False
 $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell am start " & $sRestart & "-n " & $AndroidGamePackage & "/" & $AndroidGameClass, $process_killed, 30 * 1000)
-If Not $RunState Then Return
-If StringInStr($cmdOutput, "Error:") > 0 and StringInStr($cmdOutput, $AndroidGamePackage) > 0 Then
+If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $AndroidGamePackage) > 0 Then
 SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_RED)
 SetLog("Unable to continue........", $COLOR_MAROON)
 btnStop()
@@ -34265,6 +35032,7 @@ EndIf
 If Not IsAdbConnected($cmdOutput) Then
 If Not ConnectAndroidAdb() Then Return False
 EndIf
+If Not $RunState Then Return False
 AndroidAdbLaunchShellInstance()
 Return True
 EndFunc
@@ -34275,16 +35043,18 @@ AndroidAdbTerminateShellInstance()
 If Not $RunState Then Return False
 SetLog("Please wait for full " & $Android & " shutdown...", $COLOR_GREEN)
 Local $pid = GetAndroidPid()
-If ProcessExists($pid) Then
+If ProcessExists2($pid) Then
 KillProcess($pid, "CloseAndroid")
 If _SleepStatus(1000) Then Return False
 EndIf
 Local $Result = Execute("Close" & $Android & "()")
-If ProcessExists($pid) Then
+If Not $RunState Then Return False
+If ProcessExists2($pid) Then
 SetLog("Failed to stop " & $Android, $COLOR_RED)
 Else
 SetLog($Android & " stopped successfully", $COLOR_GREEN)
 EndIf
+If Not $RunState Then Return False
 RemoveGhostTrayIcons()
 EndFunc
 Func CloseVboxAndroidSvc()
@@ -34341,7 +35111,7 @@ If Not $RunState Then Return True
 Local $cmdOutput, $connected_to, $running, $process_killed, $hMyTimer
 $hMyTimer = ($hTimer = 0 ? TimerInit() : $hTimer)
 While True
-If Not $RunState Then Return
+If Not $RunState Then Return True
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "list runningvms", $process_killed)
 If Not $RunState Then Return True
 $running = StringInStr($cmdOutput, """" & $AndroidInstance & """") > 0
@@ -34363,8 +35133,9 @@ If Not $RunState Then Return True
 Local $cmdOutput, $connected_to, $booted, $process_killed, $hMyTimer
 $hMyTimer = ($hTimer = 0 ? TimerInit() : $hTimer)
 While True
-If Not $RunState Then Return
+If Not $RunState Then Return True
 $cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " shell getprop sys.boot_completed", $process_killed)
+If Not $RunState Then Return True
 $connected_to = IsAdbConnected($cmdOutput)
 If Not $RunState Then Return True
 If Not $connected_to Then ConnectAndroidAdb(False)
@@ -34372,7 +35143,7 @@ If Not $RunState Then Return True
 $booted = StringLeft($cmdOutput, 1) = "1"
 If $booted = True Then ExitLoop
 If $hTimer <> 0 Then _StatusUpdateTime($hTimer)
-_Sleep(3000)
+If _Sleep(3000) Then Return True
 If TimerDiff($hMyTimer) > $WaitInSec * 1000 Then
 SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
 SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for boot completed", $COLOR_RED)
@@ -34387,7 +35158,7 @@ ResumeAndroid()
 If $__TEST_ERROR_ADB_DEVICE_NOT_FOUND Then Return False
 Local $process_killed, $connected_to
 If $cmdOutput = Default Then
-if IsAdbTCP() Then
+If IsAdbTCP() Then
 $cmdOutput = LaunchConsole($AndroidAdbPath, "connect " & $AndroidAdbDevice, $process_killed)
 $connected_to = StringInStr($cmdOutput, "connected to") > 0
 Else
@@ -34512,7 +35283,7 @@ Else
 Switch $Android
 Case "BlueStacks", "BlueStacks2"
 Case Else
-SetLog($Android & " Display Font Scale cannot be verified", $COLOR_RED)
+SetDebugLog($Android & " Display Font Scale cannot be verified", $COLOR_RED)
 EndSwitch
 EndIf
 SetError(0, 0, 0)
@@ -34523,10 +35294,11 @@ EndFunc
 Func AndroidSetFontSizeNormal()
 ResumeAndroid()
 AndroidAdbLaunchShellInstance($RunState, False)
+SetLog("Set " & $Android & " Display Font Scale to normal", $COLOR_BLUE)
 AndroidAdbSendShellCommand("settings put system font_scale 1.0")
 EndFunc
 Func AndroidAdbLaunchShellInstance($wasRunState = $RunState, $rebootAndroidIfNeccessary = $RunState)
-If $AndroidAdbPid = 0 Or ProcessExists($AndroidAdbPid) <> $AndroidAdbPid Then
+If $AndroidAdbPid = 0 Or ProcessExists2($AndroidAdbPid) <> $AndroidAdbPid Then
 Local $SuspendMode = ResumeAndroid()
 InitAndroid()
 Local $s
@@ -34535,7 +35307,7 @@ If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
 Return SetError(3, 0)
 EndIf
 $AndroidAdbPid = Run($AndroidAdbPath & " -s " & $AndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED))
-If $AndroidAdbPid = 0 Or ProcessExists($AndroidAdbPid) <> $AndroidAdbPid Then
+If $AndroidAdbPid = 0 Or ProcessExists2($AndroidAdbPid) <> $AndroidAdbPid Then
 SetLog($Android & " error launching ADB for background mode, zoom-out, mouse click and input", $COLOR_RED)
 $AndroidAdbScreencap = False
 $AndroidAdbClick = False
@@ -34594,6 +35366,13 @@ EndIf
 SuspendAndroid($SuspendMode)
 EndFunc
 Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True)
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
+Local $Result = _AndroidAdbSendShellCommand($cmd, $timeout, $wasRunState, $EnsureShellInstance)
+$TogglePauseAllowed = $wasAllowed
+Return SetError(@error, @extended, $Result)
+EndFunc
+Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True)
 Local $_SilentSetLog = $SilentSetLog
 If $timeout = Default Then $timeout = 3000
 If $wasRunState = Default Then $wasRunState = $RunState
@@ -34645,6 +35424,12 @@ If StringRight($s, StringLen($AndroidAdbPrompt) + 1) = @LF & $AndroidAdbPrompt T
 CleanLaunchOutput($s)
 If StringLeft($s, 1) = @LF Then $s = StringMid($s, 2)
 EndIf
+Local $sRemove = "WARNING: linker: libdvm.so has text relocations. This is wasting memory and is a security risk. Please fix."
+If StringLen($s) >= StringLen($sRemove) And StringLeft($s, StringLen($sRemove)) = $sRemove Then
+$s = StringMid($s, StringLen($sRemove) + 1)
+If StringLeft($s, 1) = @LF Then $s = StringMid($s, 2)
+EndIf
+If $AndroidAdbInstance = True And $debugSetlog = 1 And StringLen($s) > 0 Then SetDebugLog("ADB shell command output: " & $s)
 SuspendAndroid($SuspendMode)
 Local $error = (($RunState = False Or TimerDiff($hTimer) < $timeout Or $timeout < 1) ? 0 : 1)
 If $error <> 0 Then SetDebugLog("ADB shell command error " & $error & ": " & $s)
@@ -34652,7 +35437,7 @@ If $__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY > 0 Then Sleep($__TEST_ERROR_SLOW_
 $AndroidAdbAutoTerminateCount += 1
 If Mod($AndroidAdbAutoTerminateCount, $AndroidAdbAutoTerminate) = 0 And $EnsureShellInstance = True Then
 AndroidAdbTerminateShellInstance()
-EndIF
+EndIf
 Return SetError($error, Int(TimerDiff($hTimer)) & "ms,#" & $loopCount, $s)
 EndFunc
 Func AndroidAdbSendShellCommandScript($scriptFile, $variablesArray = Default, $combine = Default, $timeout = Default, $wasRunState = $RunState, $EnsureShellInstance = True)
@@ -34698,7 +35483,7 @@ Local $hTimer = TimerInit()
 Local $s = ""
 SetError(0, 0)
 Local $cmds = ""
-For $i = 1 to $aCmds[0]
+For $i = 1 To $aCmds[0]
 Local $cmd = $aCmds[$i]
 If StringInStr($cmd, "/dev/input/") = 1 Then
 Local $aElem = StringSplit($cmd, " ")
@@ -34712,7 +35497,7 @@ EndIf
 $cmd = StringStripWS($aCmds[$i], 3)
 If $combine = True And StringLen($cmd) > 0 Then
 $cmds &= $cmd
-if $i < $aCmds[0] Then $cmds &= ";"
+If $i < $aCmds[0] Then $cmds &= ";"
 EndIf
 Next
 If FileExists($hostPath) = 0 Then
@@ -34741,8 +35526,8 @@ FileDelete($hostPath & $scriptFileSh)
 EndIf
 If FileExists($hostPath & $scriptFileSh) = 0 Then
 $script = "#!/bin/sh"
-For $i = 1 to $aCmds[0]
-If $i = 1 And $aCmds[$i] = $cmds  Then
+For $i = 1 To $aCmds[0]
+If $i = 1 And $aCmds[$i] = $cmds Then
 $script = ""
 Else
 $script &= @LF
@@ -34795,6 +35580,13 @@ EndIf
 Return $hBitmap
 EndFunc
 Func AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
+Local $Result = _AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount)
+$TogglePauseAllowed = $wasAllowed
+Return SetError(@error, @extended, $Result)
+EndFunc
+Func _AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 Local $startTimer = TimerInit()
 Local $hostPath = $AndroidPicturesHostPath & $AndroidPicturesHostFolder
 Local $androidPath = $AndroidPicturesPath & StringReplace($AndroidPicturesHostFolder, "\", "/")
@@ -34831,7 +35623,7 @@ If $AndroidAdbScreencapTimer <> 0 And $ForceCapture = False And TimerDiff($Andro
 If $AndroidAdbScreencapPngEnabled = False Then
 $hHBitmap = _WinAPI_CreateDIBSection(0, $tBIV5HDR, $DIB_RGB_COLORS, $pBits)
 $tBIV5HDR = 0
-DLLCall($LibDir & "\helper_functions.dll", "none:cdecl", "RGBA2BGRA", "ptr", DllStructGetPtr($AndroidAdbScreencapBuffer), "ptr", $pBits, "int", $iLeft, "int", $iTop, "int", $iWidth, "int", $iHeight, "int", $AndroidAdbScreencapWidth, "int", $AndroidAdbScreencapHeight)
+DllCall($LibDir & "\helper_functions.dll", "none:cdecl", "RGBA2BGRA", "ptr", DllStructGetPtr($AndroidAdbScreencapBuffer), "ptr", $pBits, "int", $iLeft, "int", $iTop, "int", $iWidth, "int", $iHeight, "int", $AndroidAdbScreencapWidth, "int", $AndroidAdbScreencapHeight)
 Return $hHBitmap
 ElseIf $AndroidAdbScreencapBufferPngHandle <> 0 Then
 If $iWidth > $AndroidAdbScreencapWidth - $iLeft Then $iWidth = $AndroidAdbScreencapWidth - $iLeft
@@ -34858,11 +35650,14 @@ Local $iHeaderSize = DllStructGetSize($tHeader)
 Local $iDataSize = DllStructGetSize($AndroidAdbScreencapBuffer)
 $ExpectedFileSize = $AndroidClientWidth * $AndroidClientHeight * 4 + $iHeaderSize
 While $iSize < $ExpectedFileSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
-If $hFile = 0 Then $hFile = _WinAPI_CreateFile($hostPath & $filename, 2, 7)
+If $hFile = 0 Then $hFile = _WinAPI_CreateFile($hostPath & $filename, 2, 2, 7)
 If $hFile <> 0 Then $iSize = _WinAPI_GetFileSizeEx($hFile)
 If $iSize >= $ExpectedFileSize Then ExitLoop
 Sleep(10)
-If $wasRunState = True And $RunState = False Then Return SetError(1, 0)
+If $wasRunState = True And $RunState = False Then
+If $hFile <> 0 Then _WinAPI_CloseHandle($hFile)
+Return SetError(1, 0)
+EndIf
 $iLoopCountFile += 1
 WEnd
 Local $iReadHeader = 0
@@ -34896,7 +35691,7 @@ EndIf
 WEnd
 _WinAPI_CloseHandle($hFile)
 $hHBitmap = _WinAPI_CreateDIBSection(0, $tBIV5HDR, $DIB_RGB_COLORS, $pBits)
-DLLCall($LibDir & "\helper_functions.dll", "none:cdecl", "RGBA2BGRA", "ptr", DllStructGetPtr($AndroidAdbScreencapBuffer), "ptr", $pBits, "int", $iLeft, "int", $iTop, "int", $iWidth, "int", $iHeight, "int", $AndroidAdbScreencapWidth, "int", $AndroidAdbScreencapHeight)
+DllCall($LibDir & "\helper_functions.dll", "none:cdecl", "RGBA2BGRA", "ptr", DllStructGetPtr($AndroidAdbScreencapBuffer), "ptr", $pBits, "int", $iLeft, "int", $iTop, "int", $iWidth, "int", $iHeight, "int", $AndroidAdbScreencapWidth, "int", $AndroidAdbScreencapHeight)
 Else
 _WinAPI_CloseHandle($hFile)
 SetDebugLog("File too small (" & $iSize & " < " & $ExpectedFileSize & "): " & $hostPath & $filename, $COLOR_RED)
@@ -34906,7 +35701,6 @@ If $hFile = 0 Or $iSize < $ExpectedFileSize Or $iReadHeader < $iHeaderSize Or $i
 If $hFile = 0 Then
 SetLog("File not found: " & $hostPath & $filename, $COLOR_RED)
 Else
-_WinAPI_CloseHandle($hFile)
 If $iSize <> $ExpectedFileSize Then SetDebugLog("File size " & $iSize & " is not " & $ExpectedFileSize & " for " & $hostPath & $filename, $COLOR_RED)
 SetDebugLog("Captured screen size " & $AndroidAdbScreencapWidth & " x " & $AndroidAdbScreencapHeight, $COLOR_RED)
 SetDebugLog("Captured screen bytes read (header/datata): " & $iReadHeader & " / " & $iReadData, $COLOR_RED)
@@ -34941,7 +35735,7 @@ $AndroidAdbScreencapBufferPngHandle = 0
 EndIf
 Local $hBitmap = 0
 While $iSize < $ExpectedFileSize And TimerDiff($hTimer) < $AndroidAdbScreencapWaitFileTimeout
-If $hFile = 0 Then $hFile = _WinAPI_CreateFile($hostPath & $filename, 2, 2)
+If $hFile = 0 Then $hFile = _WinAPI_CreateFile($hostPath & $filename, 2, 2, 7)
 If $hFile <> 0 Then $iSize = _WinAPI_GetFileSizeEx($hFile)
 If $iSize >= $ExpectedFileSize Then ExitLoop
 Sleep(10)
@@ -35033,39 +35827,29 @@ $tBIV5HDR = 0
 Return $hHBitmap
 EndFunc
 Func AndroidZoomOut($overWaters = False, $loopCount = 0, $timeout = Default, $wasRunState = $RunState)
-If $overWaters = True Then AndroidAdbScript("OverWaters", $timeout, $wasRunState)
-Return AndroidAdbScript("ZoomOut", $timeout, $wasRunState)
+If $overWaters = True Then AndroidAdbScript("OverWaters", Default, $timeout, $wasRunState)
+Return AndroidAdbScript("ZoomOut", Default, $timeout, $wasRunState)
 EndFunc
-Func AndroidAdbScript($scriptTag, $timeout = Default, $wasRunState = $RunState)
+Func AndroidAdbScript($scriptTag, $variablesArray = Default, $timeout = Default, $wasRunState = $RunState)
 ResumeAndroid()
 If $AndroidAdbZoomoutEnabled = False Then Return SetError(4, 0)
 AndroidAdbLaunchShellInstance($wasRunState)
-If @error <> 0 Then Return SetError(2, 0)
+If @error <> 0 Then Return SetError(2, 0, 0)
 If StringInStr($AndroidMouseDevice, "/dev/input/event") = 0 Then Return SetError(2, 0, 0)
 Local $scriptFile = ""
 If $scriptFile = "" And FileExists($AdbScriptsDir & "\" & $scriptTag & "." & $Android & ".script") = 1 Then $scriptFile = $scriptTag & "." & $Android & ".script"
 If $scriptFile = "" And FileExists($AdbScriptsDir & "\" & $scriptTag & "." & $Android & ".getevent") = 1 Then $scriptFile = $scriptTag & "." & $Android & ".getevent"
 If $scriptFile = "" And FileExists($AdbScriptsDir & "\" & $scriptTag & ".script") = 1 Then $scriptFile = $scriptTag & ".script"
 If $scriptFile = "" Then $scriptFile = $scriptTag & ".getevent"
-If FileExists($AdbScriptsDir & "\" & $scriptFile) = 0 Then SetError(1, 0, 0)
-AndroidAdbSendShellCommandScript($scriptFile, Default, Default, $timeout, $wasRunState)
+If FileExists($AdbScriptsDir & "\" & $scriptFile) = 0 Then Return SetError(1, 0, 0)
+AndroidAdbSendShellCommandScript($scriptFile, $variablesArray, Default, $timeout, $wasRunState)
 Return SetError(@error, @extended, (@error = 0 ? 1 : 0))
 EndFunc
 Func AndroidClickDrag($x1, $y1, $x2, $y2, $wasRunState = $RunState)
-ResumeAndroid()
-If $AndroidAdbClickDrag = False Then Return SetError(4, 0)
-AndroidAdbLaunchShellInstance($wasRunState)
-If @error <> 0 Then Return SetError(2, 0)
-If StringInStr($AndroidMouseDevice, "/dev/input/event") = 0 Then Return SetError(2, 0, 0)
-Local $scriptFile = ""
-If $scriptFile = "" And FileExists($AdbScriptsDir & "\clickdrag." & $Android & ".getevent") = 1 Then $scriptFile = "clickdrag." & $Android & ".getevent"
-If $scriptFile = "" Then $scriptFile = "clickdrag.getevent"
-If FileExists($AdbScriptsDir & "\" & $scriptFile) = 0 Then SetError(1, 0, 0)
 Execute($Android & "AdjustClickCoordinates($x1,$y1)")
 Execute($Android & "AdjustClickCoordinates($x2,$y2)")
 Local $swipe_coord[4][2] = [["{$x1}", $x1], ["{$y1}", $y1], ["{$x2}", $x2], ["{$y2}", $y2]]
-AndroidAdbSendShellCommandScript($scriptFile, $swipe_coord, Default, Default, $wasRunState)
-Return SetError(@error, @extended, (@error = 0 ? 1 : 0))
+Return AndroidAdbScript("clickdrag", $swipe_coord, Default, $wasRunState)
 EndFunc
 Func IsKeepClicksActive($Really = True)
 If $Really = True Then
@@ -35141,8 +35925,8 @@ $records &= $record
 Next
 Local $data = DllStructCreate($records)
 $i = 0
-DllStructSetData($data, 1 + $i * $recordsNum, Binary("0x000000000000000003003500" & StringRight(Hex($x, 4),2) & StringLeft(Hex($x, 4),2) & "0000"))
-DllStructSetData($data, 2 + $i * $recordsNum, Binary("0x000000000000000003003600" & StringRight(Hex($y, 4),2) & StringLeft(Hex($y, 4),2) & "0000"))
+DllStructSetData($data, 1 + $i * $recordsNum, Binary("0x000000000000000003003500" & StringRight(Hex($x, 4), 2) & StringLeft(Hex($x, 4), 2) & "0000"))
+DllStructSetData($data, 2 + $i * $recordsNum, Binary("0x000000000000000003003600" & StringRight(Hex($y, 4), 2) & StringLeft(Hex($y, 4), 2) & "0000"))
 DllStructSetData($data, 3 + $i * $recordsNum, Binary("0x00000000000000000000020000000000"))
 DllStructSetData($data, 4 + $i * $recordsNum, Binary("0x00000000000000000000000000000000"))
 Local $data2 = DllStructCreate("byte[" & DllStructGetSize($data) & "]", DllStructGetPtr($data))
@@ -35161,6 +35945,13 @@ AndroidAdbSendShellCommand("dd if=""" & $androidPath & $filename & """ of=" & $A
 $SilentSetLog = $_SilentSetLog
 EndFunc
 Func AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True, $iRetryCount = 0)
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
+Local $Result = _AndroidFastClick($x, $y, $times, $speed, $checkProblemAffect, $iRetryCount)
+$TogglePauseAllowed = $wasAllowed
+Return SetError(@error, @extended, $Result)
+EndFunc
+Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True, $iRetryCount = 0)
 Local $_SilentSetLog = $SilentSetLog
 Local $hDuration = TimerInit()
 If $times < 1 Then Return SetError(0, 0)
@@ -35234,7 +36025,7 @@ DllStructSetData($data, 6 + $i * $recordsNum, Binary("0x000000000000000000000000
 DllStructSetData($data, 7 + $i * $recordsNum, Binary("0x000000000000000001004a0100000000"))
 DllStructSetData($data, 8 + $i * $recordsNum, Binary("0x000000000000000003003a0000000000"))
 DllStructSetData($data, 9 + $i * $recordsNum, Binary("0x00000000000000000000020000000000"))
-DllStructSetData($data,10 + $i * $recordsNum, Binary("0x00000000000000000000000000000000"))
+DllStructSetData($data, 10 + $i * $recordsNum, Binary("0x00000000000000000000000000000000"))
 Next
 Local $AdbStatsType = 1
 Local $data2 = DllStructCreate("byte[" & DllStructGetSize($data) & "]", DllStructGetPtr($data))
@@ -35246,7 +36037,7 @@ Local $timeSlept = 0
 If $speed > 0 Then
 $sleep = "/system/xbin/sleep " & ($speed / 1000)
 EndIf
-For $i = 1 to $loops
+For $i = 1 To $loops
 If IsKeepClicksActive(False) = False Then
 If $checkProblemAffect = True Then
 If isProblemAffect(True) Then
@@ -35294,8 +36085,8 @@ Else
 DllStructSetData($data, 1 + $j * $recordsNum, Binary("0x00000000000000000000020000000000"))
 DllStructSetData($data, 2 + $j * $recordsNum, Binary("0x00000000000000000000000000000000"))
 EndIf
-DllStructSetData($data, 3 + $j * $recordsNum, Binary("0x000000000000000003003500" & StringRight(Hex($x, 4),2) & StringLeft(Hex($x, 4),2) & "0000"))
-DllStructSetData($data, 4 + $j * $recordsNum, Binary("0x000000000000000003003600" & StringRight(Hex($y, 4),2) & StringLeft(Hex($y, 4),2) & "0000"))
+DllStructSetData($data, 3 + $j * $recordsNum, Binary("0x000000000000000003003500" & StringRight(Hex($x, 4), 2) & StringLeft(Hex($x, 4), 2) & "0000"))
+DllStructSetData($data, 4 + $j * $recordsNum, Binary("0x000000000000000003003600" & StringRight(Hex($y, 4), 2) & StringLeft(Hex($y, 4), 2) & "0000"))
 If $BTN_TOUCH_UP Then
 Else
 DllStructSetData($data, 7 + $j * $recordsNum, Binary("0x00000000000000000000020000000000"))
@@ -35346,7 +36137,7 @@ _Sleep(1000)
 AndroidAdbTerminateShellInstance()
 AndroidAdbLaunchShellInstance($wasRunState)
 Return AndroidFastClick($x, $y, $times, $speed, $checkProblemAffect, $iRetryCount + 1)
-EndIF
+EndIf
 If $AndroidAdbStatsTotal[$AdbStatsType][0] < 10 Then
 SetLog("Disabled " & $Android & " ADB fast mouse click due to error " & $error & " (#Err0004)", $COLOR_RED)
 $AndroidAdbClick = False
@@ -35391,10 +36182,10 @@ Local $error = @error
 If $error = 0 Then
 Local $newText = StringReplace($sText, " ", "%s")
 $newText = StringRegExpReplace($newText, "[^A-Za-z0-9\.,\?""!@#\$%\^&\*\(\)-_=\+;:<>\/\\\|\}\{\[\]`~]", ".")
-If @extended  <> 0 Then
+If @extended <> 0 Then
 If $SymbolFix = False Then SetDebugLog("Cannot use ADB to send input text, use Windows method", $COLOR_RED)
 Return SetError(10, 0)
-EndIF
+EndIf
 If $SymbolFix = False Then
 If $AndroidAdbInputWordsCharLimit = 0 Then
 AndroidAdbSendShellCommand("input text " & $newText, Default, $wasRunState)
@@ -35436,17 +36227,17 @@ If @error = 0 Then
 ReleaseClicks()
 ReDim $AndroidAdbClicks[11]
 $AndroidAdbClicks[0] = 10
-Local $click = [$x1, $y1, "down"]
-$AndroidAdbClicks[1] = $click
+Local $Click = [$x1, $y1, "down"]
+$AndroidAdbClicks[1] = $Click
 For $i = 1 To 8
-Local $click = [$x1 + Int($i * ($x2 - $x1) / 9), $y1 + Int($i * ($y2 - $y1) / 9), ""]
-$AndroidAdbClicks[$i + 1] = $click
+Local $Click = [$x1 + Int($i * ($x2 - $x1) / 9), $y1 + Int($i * ($y2 - $y1) / 9), ""]
+$AndroidAdbClicks[$i + 1] = $Click
 Next
-Local $click = [$x2, $y2, "up"]
-$AndroidAdbClicks[10] = $click
+Local $Click = [$x2, $y2, "up"]
+$AndroidAdbClicks[10] = $Click
 SetDebugLog("AndroidSwipe: " & $x1 & "," & $y1 & "," & $x2 & "," & $y2)
 ReleaseClicks(0, True)
-return SetError(@error, 0)
+Return SetError(@error, 0)
 Else
 Local $error = @error
 Return SetError($error, 0)
@@ -35490,6 +36281,7 @@ If $bDebugLog = True Then SetDebugLog("Android Resumed (total time " & Round($An
 Return True
 EndFunc
 Func AndroidCloseSystemBar()
+If AndroidInvalidState() Then Return False
 Local $wasRunState = $RunState
 AndroidAdbLaunchShellInstance($wasRunState)
 If @error <> 0 Then
@@ -35502,6 +36294,7 @@ SetDebugLog("Closed " & $Android & " System Bar: " & $Result)
 Return $Result
 EndFunc
 Func AndroidOpenSystemBar()
+If AndroidInvalidState() Then Return False
 Local $wasRunState = $RunState
 AndroidAdbLaunchShellInstance($wasRunState)
 If @error <> 0 Then
@@ -35530,11 +36323,11 @@ If IsHWnd($HWnD) And WinGetHandle($HWnD, "") = 0 Then
 SetDebugLog("AndroidInvalidState: Window Handle " & $HWnD & " doesn't exist", $COLOR_RED)
 Return True
 EndIf
-If  IsHWnd($HWnD) = False And IsNumber($HWnD) And $AndroidBackgroundLaunched = False Then
+If IsHWnd($HWnD) = False And IsNumber($HWnD) And $AndroidBackgroundLaunched = False Then
 SetDebugLog("AndroidInvalidState: PID " & $HWnD & " not supported for Headless Mode", $COLOR_RED)
 Return True
 EndIf
-If $AndroidBackgroundLaunched = True And ProcessExists($HWnD) = 0 Then
+If $AndroidBackgroundLaunched = True And ProcessExists2($HWnD) = 0 Then
 SetDebugLog("AndroidInvalidState: PID " & $HWnD & " doesn't exist", $COLOR_RED)
 Return True
 EndIf
@@ -35543,9 +36336,12 @@ EndFunc
 $sBotTitle = $sBotTitle & "(" & ($AndroidInstance <> "" ? $AndroidInstance : $Android) & ")"
 UpdateSplashTitle($sBotTitle & GetTranslated(500, 20, ", Profile: %s", $sCurrProfile))
 If $bBotLaunchOption_Restart = True Then
+If WinGetHandle($sBotTitle) Then SplashStep(GetTranslated(500, 36, "Closing previous bot..."))
 If CloseRunningBot($sBotTitle) = True Then
 Sleep(3000)
 EndIf
+Else
+SplashStep("")
 EndIF
 Local $cmdLineHelp = GetTranslated(500, 2, "By using the commandline (or a shortcut) you can start multiple Bots:\r\n" & "     MyBot.run.exe [ProfileName] [EmulatorName] [InstanceName]\r\n\r\n" & "With the first command line parameter, specify the Profilename (you can create profiles on the Misc tab, if a " & "profilename contains a {space}, then enclose the profilename in double quotes). " & "With the second, specify the name of the Emulator and with the third, an Android Instance (not for BlueStacks). \r\n" & "Supported Emulators are MEmu, Droid4X, Nox, BlueStacks2 and BlueStacks.\r\n\r\n" & "Examples:\r\n" & "     MyBot.run.exe MyVillage BlueStacks2\r\n" & "     MyBot.run.exe ""My Second Village"" MEmu MEmu_1")
 $hMutex_BotTitle = _Singleton($sBotTitle, 1)
@@ -35556,14 +36352,18 @@ $sAndroidInfo = $sAndroidInfo2
 EndIf
 $sMsg = GetTranslated(500, 5, "My Bot for %s is already running.\r\n\r\n", $sAndroidInfo)
 If $hMutex_BotTitle = 0 Then
+If IsHWnd($hSplash) Then GUIDelete($hSplash)
 MsgBox(BitOR($MB_OK, $MB_ICONINFORMATION, $MB_TOPMOST), $sBotTitle, $sMsg & $cmdLineHelp)
+_GDIPlus_Shutdown()
 Exit
 EndIf
 $hMutex_Profile = _Singleton(StringReplace($sProfilePath & "\" & $sCurrProfile, "\", "-"), 1)
 $sMsg = GetTranslated(500, 6, "My Bot with Profile %s is already running in %s.\r\n\r\n", $sCurrProfile, $sProfilePath & "\" & $sCurrProfile)
 If $hMutex_Profile = 0 Then
 _WinAPI_CloseHandle($hMutex_BotTitle)
+If IsHWnd($hSplash) Then GUIDelete($hSplash)
 MsgBox(BitOR($MB_OK, $MB_ICONINFORMATION, $MB_TOPMOST), $sBotTitle, $sMsg & $cmdLineHelp)
+_GDIPlus_Shutdown()
 Exit
 EndIf
 $hMutex_MyBot = _Singleton("MyBot.run", 1)
@@ -35720,6 +36520,68 @@ Func _GUICtrlGetControlID($hCtrl = -1)
 Local $aRet = DllCall("user32.dll", "int", "GetDlgCtrlID", "hwnd", ($hCtrl = -1 ? GUICtrlGetHandle(-1) : $hCtrl))
 Return (IsArray($aRet) ? $aRet[0] : -1)
 EndFunc
+Func _GUICtrlCreatePic($sFilename_or_hBitmap, $iLeft, $iTop, $iWidth = -1, $iHeight = -1, $iStyle = -1, $iExStyle = -1)
+Local $idPic = GUICtrlCreatePic("", $iLeft, $iTop, $iWidth, $iHeight, $iStyle, $iExStyle)
+Local $hBMP
+If IsPtr($sFilename_or_hBitmap) Then
+$hBMP = $sFilename_or_hBitmap
+Else
+$hBMP = _GDIPlus_BitmapCreateFromFile($sFilename_or_hBitmap)
+EndIf
+Local $iBmpWidth = _GDIPlus_ImageGetWidth($hBMP)
+Local $iBmpHeight = _GDIPlus_ImageGetHeight($hBMP)
+Local $hBitmap_Resized = 0
+Local $hBMP_Ctxt = 0
+If $iWidth = -1 Then $iWidth = $iBmpWidth
+If $iHeight = -1 Then $iHeight = $iBmpHeight
+If $iWidth <> $iBmpWidth Or $iHeight <> $iBmpHeight Then
+$hBitmap_Resized = _GDIPlus_BitmapCreateFromScan0($iWidth, $iHeight)
+$hBMP_Ctxt = _GDIPlus_ImageGetGraphicsContext($hBitmap_Resized)
+_GDIPlus_GraphicsSetInterpolationMode($hBMP_Ctxt, $GDIP_INTERPOLATIONMODE_HIGHQUALITYBICUBIC)
+_GDIPlus_GraphicsDrawImageRect($hBMP_Ctxt, $hBMP, 0, 0, $iWidth, $iHeight)
+EndIf
+Local $hHBMP = _GDIPlus_BitmapCreateDIBFromBitmap(($hBitmap_Resized ? $hBitmap_Resized : $hBMP))
+Local $hPrevImage = GUICtrlSendMsg($idPic, $STM_SETIMAGE, 0, $hHBMP)
+_WinAPI_DeleteObject($hPrevImage)
+If IsPtr($sFilename_or_hBitmap) = 0 Then _GDIPlus_BitmapDispose($hBMP)
+If $hBitmap_Resized Then _GDIPlus_BitmapDispose($hBitmap_Resized)
+If $hBMP_Ctxt Then _GDIPlus_GraphicsDispose($hBMP_Ctxt)
+_WinAPI_DeleteObject($hHBMP)
+Return $idPic
+EndFunc
+Func _GUI_Value_STATE($action_groupe, $group_de_controle)
+$liste_controle = StringSplit($group_de_controle, "#")
+If IsArray($liste_controle) Then
+For $i = 1 To $liste_controle[0]
+Switch StringUpper($action_groupe)
+Case "HIDE"
+GUICtrlSetState($liste_controle[$i], $GUI_HIDE)
+Case "SHOW"
+GUICtrlSetState($liste_controle[$i], $GUI_SHOW)
+Case "ENABLE"
+GUICtrlSetState($liste_controle[$i], $GUI_ENABLE)
+Case "DISABLE"
+GUICtrlSetState($liste_controle[$i], $GUI_DISABLE)
+Case "UNCHECKED"
+GUICtrlSetState($liste_controle[$i], $GUI_UNCHECKED)
+Case "CHECKED"
+GUICtrlSetState($liste_controle[$i], $GUI_CHECKED)
+EndSwitch
+Next
+EndIf
+EndFunc
+Func SplashStep($status)
+$iCurrentStep += 1
+If $ichkDisableSplash = 0 Then
+GUICtrlSetData($hSplashProgress, ($iCurrentStep / $iTotalSteps) * 100)
+GUICtrlSetData($lSplashStatus, $status)
+EndIf
+EndFunc
+Func UpdateSplashTitle($title)
+If $ichkDisableSplash = 0 Then
+GUICtrlSetData($lSplashTitle, $title)
+EndIf
+EndFunc
 Global Const $TCM_SETITEM = 0x1306
 Global Const $_GUI_MAIN_WIDTH = 470
 Global Const $_GUI_MAIN_HEIGHT = 650
@@ -35737,17 +36599,18 @@ TraySetToolTip($sBotTitle)
 $frmBotEx = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
 GUICtrlCreateLabel("", 0, 0, $_GUI_MAIN_WIDTH, 5)
 GUICtrlSetBkColor(-1, $COLOR_WHITE)
-$frmBot_MAIN_PIC = GUICtrlCreatePic(@ScriptDir & "\Images\logo.jpg", 0, $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH, 80)
+Local $sLogoPath = @ScriptDir & "\Images\logo.jpg"
+$frmBot_MAIN_PIC = _GUICtrlCreatePic(@ScriptDir & "\Images\logo.jpg", 0, $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH, 80)
 $hToolTip = _GUIToolTip_Create($frmBot)
 _GUIToolTip_SetMaxTipWidth($hToolTip, $_GUI_MAIN_WIDTH)
 GUISwitch($frmBot)
-$frmBotBottom = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_BOTTOM_HEIGHT, 0, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
-$frmBotBottomCtrlState = 0
-$frmBotEmbeddedShield = GUICreate("", 32, 32, 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), BitOR($WS_EX_TOPMOST, ($AndroidShieldPreWin8 ? $WS_EX_TRANSPARENT : 0)), $frmBot)
-$frmBotEmbeddedGarphics = GUICreate("", 32, 32, 0, 0, $WS_CHILD, BitOR($WS_EX_LAYERED, $WS_EX_TOPMOST), $frmBot)
-GUISwitch($frmBotEmbeddedShield)
 $frmBotEmbeddedShieldInput = GUICtrlCreateInput("", 0, 0, -1, -1, $WS_TABSTOP)
 GUICtrlSetState($frmBotEmbeddedShieldInput, $GUI_HIDE)
+$frmBotBottom = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_BOTTOM_HEIGHT, 0, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
+$frmBotBottomCtrlState = 0
+$frmBotEmbeddedShield = 0
+$frmBotEmbeddedMouse = 0
+$frmBotEmbeddedGarphics = 0
 GUISwitch($frmBot)
 SplashStep(GetTranslated(500, 24, "Loading GUI Bottom..."))
 GUISwitch($frmBotBottom)
@@ -35756,19 +36619,23 @@ Local $y_bottom = 0
 Local $x = 15, $y = $y_bottom + 10
 $grpButtons = GUICtrlCreateGroup("https://mybot.run " & GetTranslated(602,0, "- freeware bot -"), $x - 5, $y - 10, 190, 108)
 $btnStart = GUICtrlCreateButton(GetTranslated(602,1, "Start Bot"), $x, $y + 2 +5, 90, 40-5)
+$txtTip = GetTranslated(602,30, "Use this to START the bot.")
+_GUICtrlSetTip(-1, $txtTip)
 GUICtrlSetOnEvent(-1, "btnStart")
 IF $btnColor then GUICtrlSetBkColor(-1, 0x5CAD85)
 GUICtrlSetState(-1, $GUI_DISABLE)
 $btnStop = GUICtrlCreateButton(GetTranslated(602,2, "Stop Bot"), -1, -1, 90, 40-5)
+$txtTip = GetTranslated(602,31, "Use this to STOP the bot (or ESC key).")
+_GUICtrlSetTip(-1, $txtTip)
 IF $btnColor then GUICtrlSetBkColor(-1, 0xDB4D4D)
 GUICtrlSetState(-1, $GUI_HIDE)
 $btnPause = GUICtrlCreateButton(GetTranslated(602,3, "Pause"), $x + 90, -1, 90, 40-5)
-$txtTip = GetTranslated(602,4, "Use this to PAUSE all actions of the bot until you Resume.")
+$txtTip = GetTranslated(602,4, "Use this to PAUSE all actions of the bot until you Resume (or Pause/Break key).")
 _GUICtrlSetTip(-1, $txtTip)
 IF $btnColor then GUICtrlSetBkColor(-1,  0xFFA500)
 GUICtrlSetState(-1, $GUI_HIDE)
 $btnResume = GUICtrlCreateButton(GetTranslated(602,5, "Resume"), -1, -1, 90, 40-5)
-$txtTip = GetTranslated(602,6, "Use this to RESUME a paused Bot.")
+$txtTip = GetTranslated(602,6, "Use this to RESUME a paused Bot (or Pause/Break key).")
 _GUICtrlSetTip(-1, $txtTip)
 IF $btnColor then GUICtrlSetBkColor(-1,  0xFFA500)
 GUICtrlSetState(-1, $GUI_HIDE)
@@ -38364,7 +39231,7 @@ GUICtrlSetState(-1, $GUI_UNCHECKED)
 _GUICtrlSetTip(-1, $txtTip)
 GUICtrlSetOnEvent(-1, "chkTroopOrder2")
 Local $sComboData = ""
-Local $aTroopOrderList[13] = [ "", $sTxtBarbarians, $sTxtArchers, $sTxtGiants, $sTxtGoblins, $sTxtWallBreakers, $sTxtBalloons, $sTxtWizards, $sTxtHealers, $sTxtDragons, $sTxtPekkas, $sTxtBabyDragons, $sTxtMiners]
+Local $aTroopOrderList[13] = [ "", "Barbarians", "Archers", "Giants", "Goblins", "Wall Breakers", "Balloons", "Wizards", "Healers", "Dragons", "Pekkas", "Baby Dragons", "Miners"]
 For $j = 0 To UBound($aTroopOrderList) - 1
 $sComboData &= $aTroopOrderList[$j] & "|"
 Next
@@ -38395,7 +39262,7 @@ GUICtrlSetState(-1, $GUI_UNCHECKED)
 _GUICtrlSetTip(-1, $txtTip)
 GUICtrlSetOnEvent(-1, "chkDarkTroopOrder2")
 Local $sComboData = ""
-Local $aDarkTroopOrderList[8] = [ "", $sTxtMinions, $sTxtHogRiders, $sTxtValkyries, $sTxtGolems, $sTxtWitches, $sTxtLavaHounds, $sTxtBowlers]
+Local $aDarkTroopOrderList[8] = [ "", "Minions", "Hog Riders", "Valkyries", "Golems", "Witches", "Lava Hounds", "Bowlers"]
 For $j = 0 To UBound($aDarkTroopOrderList) - 1
 $sComboData &= $aDarkTroopOrderList[$j] & "|"
 Next
@@ -40994,9 +41861,299 @@ Global $sldVSDelay, $sldMaxVSDelay, $lblVSDelay, $lblMaxVSDelay, $lbltxtVSDelay,
 Global $sldTrainITDelay ,  $lbltxtTrainITDelay, $chkAlertSearch
 Global $chkSinglePBTForced, $txtSinglePBTimeForced, $txtPBTimeForcedExit
 $hGUI_BOT = GUICreate("", $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, BitOR($WS_CHILD, $WS_TABSTOP), -1, $frmBotEx)
+$hGUI_STATS = GUICreate("", $_GUI_MAIN_WIDTH - 28, $_GUI_MAIN_HEIGHT - 255 - 28, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $hGUI_BOT)
+GUISwitch($hGUI_BOT)
+$hGUI_BOT_TAB = GUICtrlCreateTab(0, 0, $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
+$hGUI_BOT_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslated(600,35,"Options"))
+Local $x = 25, $y = 45
+$grpLanguages = GUICtrlCreateGroup(GetTranslated(636,83, "GUI Language"), $x - 20, $y - 20, 210, 47)
+$y -=2
+$cmbLanguage = GUICtrlCreateCombo("", $x - 8 , $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+$txtTip = GetTranslated(636,84, "Use this to switch to a different GUI language")
+_GUICtrlSetTip(-1, $txtTip)
+LoadLanguagesComboBox()
+GUICtrlSetData(-1, "English", "English")
+GUICtrlSetOnEvent(-1, "cmbLanguage")
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$y += 54
+$grpOnLoadBot = GUICtrlCreateGroup(GetTranslated(636,2, "When Bot Loads"), $x - 20, $y - 20, 210, 120)
+$y -= 4
+$chkDisableSplash = GUICtrlCreateCheckbox(GetTranslated(636,100, "Disable Splash Screen"), $x, $y, -1, -1)
+$txtTip = GetTranslated(636,101, "Disables the splash screen on startup.")
+GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetState(-1, $GUI_UNCHECKED)
+$y += 20
+$chkVersion = GUICtrlCreateCheckbox(GetTranslated(636,3, "Check for Updates"), $x, $y, -1, -1)
+$txtTip = GetTranslated(636,4, "Check if you are running the latest version of the bot.")
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetState(-1, $GUI_CHECKED)
+$y += 20
+$chkDeleteLogs = GUICtrlCreateCheckbox(GetTranslated(636,5, "Delete Log Files")& ":", $x, $y, -1, -1)
+$txtTip = GetTranslated(636,6, "Delete log files older than this specified No. of days.")
+GUICtrlSetState(-1, $GUI_CHECKED)
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetOnEvent(-1, "chkDeleteLogs")
+$txtDeleteLogsDays = GUICtrlCreateInput("2", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetLimit(-1, 2)
+GUICtrlSetFont(-1, 8)
+$lblDeleteLogsDays = GUICtrlCreateLabel(GetTranslated(636,7, "days"), $x + 150, $y + 4, 27, 15)
+$y += 20
+$chkDeleteTemp = GUICtrlCreateCheckbox(GetTranslated(636,8, "Delete Temp Files") & ":", $x, $y, -1, -1)
+$txtTip = GetTranslated(636,9, "Delete temp files older than this specified No. of days.")
+GUICtrlSetState(-1, $GUI_CHECKED)
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetOnEvent(-1, "chkDeleteTemp")
+$txtDeleteTempDays = GUICtrlCreateInput("2", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetLimit(-1, 2)
+GUICtrlSetFont(-1, 8)
+$lblDeleteTempDays = GUICtrlCreateLabel(GetTranslated(636,7, "days"), $x + 150, $y + 4, 27, 15)
+$y += 20
+$chkDeleteLoots = GUICtrlCreateCheckbox(GetTranslated(636,10, "Delete Loot Images"), $x, $y, -1, -1)
+$txtTip = GetTranslated(636,11, "Delete loot image files older than this specified No. of days.")
+GUICtrlSetState(-1, $GUI_CHECKED)
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetOnEvent(-1, "chkDeleteLoots")
+$txtDeleteLootsDays = GUICtrlCreateInput("2", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetLimit(-1, 2)
+GUICtrlSetFont(-1, 8)
+$lblDeleteLootsDays = GUICtrlCreateLabel(GetTranslated(636,7, "days"), $x + 150, $y + 4, 27, 15)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$y += 48
+$grpOnStartBot = GUICtrlCreateGroup(GetTranslated(636,12, "When Bot Starts"), $x - 20, $y - 20, 210, 112)
+$y -= 5
+$chkAutostart = GUICtrlCreateCheckbox(GetTranslated(636,13, "Auto START after") & ":", $x, $y, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,58, "Auto START the Bot after this No. of seconds."))
+GUICtrlSetOnEvent(-1, "chkAutostart")
+$txtAutostartDelay = GUICtrlCreateInput("10", $x + 120, $y + 2, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+GUICtrlSetFont(-1, 8)
+GUICtrlSetState(-1, $GUI_DISABLE)
+$lblAutostartSeconds = GUICtrlCreateLabel(GetTranslated(603,6, "sec."), $x + 150, $y + 4, 27, 18)
+$y += 22
+$chkLanguage = GUICtrlCreateCheckbox(GetTranslated(636,15, "Check Game Language (EN)"), $x, $y, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,16, "Check if the Game is set to the correct language (Must be set to English)."))
+GUICtrlSetState(-1, $GUI_CHECKED)
+$y += 22
+$chkDisposeWindows = GUICtrlCreateCheckbox(GetTranslated(636,17, "Auto Align"), $x, $y, -1, -1)
+$txtTip = GetTranslated(636,18, "Reposition/Align Android Emulator and BOT windows on the screen.")
+GUICtrlSetOnEvent(-1, "chkDisposeWindows")
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetLimit(-1, 2)
+$lblOffset = GUICtrlCreateLabel(GetTranslated(636,19, "Offset") & ":", $x + 85, $y + 4, -1, -1)
+$txtWAOffsetx = GUICtrlCreateInput("10", $x + 120, $y + 2, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$txtTip = GetTranslated(636,20, "Offset horizontal pixels between Android Emulator and BOT windows.")
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetLimit(-1, 2)
+GUICtrlSetFont(-1, 8)
+$txtWAOffsety= GUICtrlCreateInput("0", $x + 150, $y + 2, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$txtTip = GetTranslated(636,21, "Offset vertical pixels between Android Emulator and BOT windows.")
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetLimit(-1, 2)
+GUICtrlSetFont(-1, 8)
+$y += 23
+$cmbDisposeWindowsCond = GUICtrlCreateCombo("", $x, $y, 175, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+GUICtrlSetData(-1, GetTranslated(636,22, "0,0: Android Emulator-Bot") & "|" &  GetTranslated(636,23, "0,0: Bot-Android Emulator") & "|" &  GetTranslated(636,24, "SNAP: Bot TopRight to Android") &"|" &  GetTranslated(636,25, "SNAP: Bot TopLeft to Android") & "|" &  GetTranslated(636,26, "SNAP: Bot BottomRight to Android") & "|" &  GetTranslated(636,27, "SNAP: Bot BottomLeft to Android") & "|" &  GetTranslated(636,95, "DOCK: Android into Bot"),  GetTranslated(636,24, "SNAP: Bot TopRight to Android"))
+$txtTip &= @CRLF & GetTranslated(636,28, "0,0: Reposition Android Emulator screen to position 0,0 on windows desktop and align Bot window right or left to it.") & @CRLF &  GetTranslated(636,29, "SNAP: Only reorder windows, Align Bot window to Android Emulator window at Top Right, Top Left, Bottom Right or Bottom Left.\r\n" &  "DOCK: Integrate Android Screen into bot window.")
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+Local $x = 240, $y = 45
+$grpAdvanced = GUICtrlCreateGroup(GetTranslated(636,93, "Advanced"), $x - 20, $y - 20, 225, 82)
+$chkUpdatingWhenMinimized = GUICtrlCreateCheckbox(GetTranslated(636,96, "Updating when minimized"), $x, $y, -1, -1)
+GUICtrlSetOnEvent(-1, "chkUpdatingWhenMinimized")
+_GUICtrlSetTip(-1, GetTranslated(636,97, "Enable different minimize routine for bot window.\r\nWhen bot is minimized, screen updates are shown in taskbar preview."))
+$y += 19
+$chkHideWhenMinimized = GUICtrlCreateCheckbox(GetTranslated(636,98, "Hide when minimized"), $x, $y, -1, -1)
+GUICtrlSetOnEvent(-1, "chkHideWhenMinimized")
+_GUICtrlSetTip(-1, GetTranslated(636,99, "Hide bot window in taskbar when minimized.\r\nUse trayicon 'Show bot' to display bot window again."))
+$y += 19
+$chkUseRandomClick = GUICtrlCreateCheckbox(GetTranslated(636,94, "Random Click"), $x, $y, -1, -1)
+GUICtrlSetOnEvent(-1, "chkUseRandomClick")
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$y += 47
+$grpPhotoExpert = GUICtrlCreateGroup(GetTranslated(636,55, "Photo Screenshot Options"), $x - 20, $y - 17, 225, 60)
+$chkScreenshotType = GUICtrlCreateCheckbox(GetTranslated(636,56, "Make in PNG format"), $x, $y, -1, -1)
+GUICtrlSetState(-1, $GUI_CHECKED)
+GUICtrlSetOnEvent(-1, "chkScreenshotType")
+$y += 19
+$chkScreenshotHideName = GUICtrlCreateCheckbox(GetTranslated(636,57, "Hide Village and Clan Castle Name"), $x, $y, -1, -1)
+GUICtrlSetState(-1, $GUI_CHECKED)
+GUICtrlSetOnEvent(-1, "chkScreenshotHideName")
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$y +=48
+$grpTimeWakeUp = GUICtrlCreateGroup(GetTranslated(636,85, "Remote Device"), $x - 20, $y - 20 , 225, 42)
+$y -= 5
+$lblTimeWakeUp = GUICtrlCreateLabel(GetTranslated(636,86, "When 'Another Device' wait") & ":", $x - 10, $y + 2, -1, -1)
+$txtTip = GetTranslated(636,87, "Enter the time to wait (in Minutes) before the Bot reconnects when another device took control.")
+_GUICtrlSetTip(-1, $txtTip)
+$txtTimeWakeUp = GUICtrlCreateInput("2", $x + 127, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetLimit(-1, 3)
+$lblTimeWakeUpSec = GUICtrlCreateLabel(GetTranslated(603,10, "min."), $x + 165, $y + 2, -1, -1)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$y+= 51
+$grpOtherExpert = GUICtrlCreateGroup(GetTranslated(636,45, "Other Options"), $x - 20, $y - 20, 225, 90)
+$chkSinglePBTForced = GUICtrlCreateCheckbox(GetTranslated(636,61, "Force Single PB logoff"), $x-5, $y, -1, -1)
+GUICtrlSetOnEvent(-1, "chkSinglePBTForced")
+_GUICtrlSetTip(-1, GetTranslated(636,62, "This forces bot to exit CoC only one time prior to normal start of PB"))
+$txtSinglePBTimeForced = GUICtrlCreateInput("18", $x + 130, $y-1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+_GUICtrlSetTip(-1, GetTranslated(636,63, "Type in number of minutes to keep CoC closed. Set to 15 minimum to reset PB timer!"))
+GUICtrlSetOnEvent(-1, "txtSinglePBTimeForced")
+GUICtrlSetLimit(-1, 3)
+GUICtrlSetState(-1, $GUI_DISABLE)
+$lblSinglePBTimeForced = GUICtrlCreateLabel( GetTranslated(603,9, "Min"), $x+162, $y+2, 27, 15)
+$y += 20
+$lblPBTimeForcedExit = GUICtrlCreateLabel( GetTranslated(636,65, "Subtract time for early PB exit"), $x-10, $y+3)
+$txtTip = GetTranslated(636,66, "Type in number of minutes to quit CoC early! Setting below 10 minutes may not function!")
+_GUICtrlSetTip(-1, $txtTip)
+$txtPBTimeForcedExit = GUICtrlCreateInput("16", $x + 130, $y, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+_GUICtrlSetTip(-1, $txtTip)
+GUICtrlSetOnEvent(-1, "txtSinglePBTimeForced")
+GUICtrlSetLimit(-1, 3)
+GUICtrlSetState(-1, $GUI_DISABLE)
+$lblPBTimeForcedExit1 = GUICtrlCreateLabel( GetTranslated(603,9, -1), $x+162, $y+1, 27, 15)
+$y +=30
+$chkTotalCampForced = GUICtrlCreateCheckbox(GetTranslated(636,46, "Force Total Army Camp")&":", $x-5, $y-5, -1, -1)
+GUICtrlSetOnEvent(-1, "chkTotalCampForced")
+_GUICtrlSetTip(-1, GetTranslated(636,47, "If not detected set army camp values (instead ask)"))
+$txtTotalCampForced = GUICtrlCreateInput("200", $x + 130, $y - 5, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+GUICtrlSetLimit(-1, 3)
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+GUICtrlCreateTabItem("")
+$hGUI_BOT_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslated(600,51,"Debug"))
+Local $x = 25, $y = 45
+$grpDebug = GUICtrlCreateGroup(GetTranslated(636,34, "Debug"), $x - 20, $y - 20, 440, 360)
+$chkDebugClick = GUICtrlCreateCheckbox(GetTranslated(636,40, "Click"), $x, $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,35, "Debug: Write the clicked (x,y) coordinates to the log."))
+$y += 20
+$chkDebugSetlog = GUICtrlCreateCheckbox(GetTranslated(636,41, "Messages"), $x  , $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,36, "Debug: Enables debug SetLog messages in code for Troubleshooting."))
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlSetState(-1, $GUI_HIDE)
+$y += 20
+$chkDebugOcr = GUICtrlCreateCheckbox(GetTranslated(636,42, "OCR"), $x , $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,37, "Debug: Enables Saving OCR images for troubleshooting."))
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlSetState(-1, $GUI_HIDE)
+$y += 20
+$chkDebugImageSave = GUICtrlCreateCheckbox(GetTranslated(636,43, "Images"), $x , $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,38, "Debug: Enables Saving images for troubleshooting."))
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlSetState(-1, $GUI_HIDE)
+$y += 20
+$chkdebugBuildingPos = GUICtrlCreateCheckbox(GetTranslated(636,44, "Buildings"), $x  , $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,39, "Debug: Enables showing positions of buildings in log."))
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlSetState(-1, $GUI_HIDE)
+$y += 20
+$chkdebugTrain = GUICtrlCreateCheckbox(GetTranslated(636,73, "Training"), $x , $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,74, "Debug: Enables showing debug during training."))
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlSetState(-1, $GUI_HIDE)
+$y += 20
+$chkdebugOCRDonate = GUICtrlCreateCheckbox(GetTranslated(636,91, "Online debug donations"), $x , $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,92, "Debug: make ocr of donations and simulate only donate but no donate any troop"))
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlSetState(-1, $GUI_HIDE)
+Local $x = 295
+$y = 45
+$btnTestTrain = GUICtrlCreateButton(GetTranslated(636,88, "Test Train"), $x  , $y , 140, 30)
+$y += 35
+$btnTestDonateCC = GUICtrlCreateButton(GetTranslated(636,89, "Test Donate"), $x  , $y , 140, 30)
+$y += 35
+$btnTestAttackBar = GUICtrlCreateButton(GetTranslated(636,90, "Test Attack Bar"), $x  , $y , 140, 30)
+$y += 35
+$btnTestClickDrag = GUICtrlCreateButton(GetTranslated(636,102, "Test Click Drag (scrolling)"), $x  , $y , 140, 30)
+$y += 35
+$btnTestImage = GUICtrlCreateButton(GetTranslated(636,103, "Test Image"), $x  , $y , 140, 30)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+GUICtrlCreateTabItem("")
+$hGUI_BOT_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,36,"Profiles"))
+Global $txtPresetSaveFilename, $txtSavePresetMessage, $lblLoadPresetMessage,$btnGUIPresetDeleteConf, $chkCheckDeleteConf
+Global $cmbPresetList, $txtPresetMessage,$btnGUIPresetLoadConf,  $lblLoadPresetMessage,$btnGUIPresetDeleteConf, $chkCheckDeleteConf
+Local $x = 25, $y = 45
+$grpProfiles = GUICtrlCreateGroup(GetTranslated(637,1, "Switch Profiles"), $x - 20, $y - 20, 440, 360)
+$x -= 5
+$cmbProfile = GUICtrlCreateCombo("", $x - 3, $y + 1, 130, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+$txtTip = GetTranslated(637,2, "Use this to switch to a different profile")& @CRLF & GetTranslated(637,3, "Your profiles can be found in") & ": " & @CRLF & $sProfilePath
+_GUICtrlSetTip(-1, $txtTip)
+setupProfileComboBox()
+PopulatePresetComboBox()
+GUICtrlSetState(-1, $GUI_SHOW)
+GUICtrlSetOnEvent(-1, "cmbProfile")
+$txtVillageName = GUICtrlCreateInput(GetTranslated(637,4, "MyVillage"), $x - 3, $y, 130, 22, $ES_AUTOHSCROLL)
+GUICtrlSetLimit (-1, 100, 0)
+GUICtrlSetFont(-1, 9, 400, 1)
+_GUICtrlSetTip(-1, GetTranslated(637,5, "Your village/profile's name"))
+GUICtrlSetState(-1, $GUI_HIDE)
+$bIconAdd = _GUIImageList_Create(22, 22, 4)
+_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd.bmp")
+_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_2.bmp")
+_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_2.bmp")
+_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_4.bmp")
+_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd.bmp")
+$bIconConfirm = _GUIImageList_Create(22, 22, 4)
+_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm.bmp")
+_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_2.bmp")
+_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_2.bmp")
+_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_4.bmp")
+_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm.bmp")
+$bIconDelete = _GUIImageList_Create(22, 22, 4)
+_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete.bmp")
+_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_2.bmp")
+_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_2.bmp")
+_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_4.bmp")
+_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete.bmp")
+$bIconCancel = _GUIImageList_Create(22, 22, 4)
+_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel.bmp")
+_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_2.bmp")
+_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_2.bmp")
+_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_4.bmp")
+_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel.bmp")
+$bIconEdit = _GUIImageList_Create(22, 22, 4)
+_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit.bmp")
+_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_2.bmp")
+_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_2.bmp")
+_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_4.bmp")
+_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit.bmp")
+$btnAdd = GUICtrlCreateButton("", $x + 135, $y, 22, 22)
+_GUICtrlButton_SetImageList($btnAdd, $bIconAdd, 4)
+GUICtrlSetOnEvent(-1, "btnAddConfirm")
+GUICtrlSetState(-1, $GUI_SHOW)
+_GUICtrlSetTip(-1, GetTranslated(637,6, "Add New Profile"))
+$btnConfirmAdd = GUICtrlCreateButton("", $x + 135, $y, 22, 22)
+_GUICtrlButton_SetImageList($btnConfirmAdd, $bIconConfirm, 4)
+GUICtrlSetOnEvent(-1, "btnAddConfirm")
+GUICtrlSetState(-1, $GUI_HIDE)
+_GUICtrlSetTip(-1, GetTranslated(637,7, "Confirm"))
+$btnConfirmRename = GUICtrlCreateButton("", $x + 135, $y, 22, 22)
+_GUICtrlButton_SetImageList($btnConfirmRename, $bIconConfirm, 4)
+GUICtrlSetOnEvent(-1, "btnRenameConfirm")
+GUICtrlSetState(-1, $GUI_HIDE)
+_GUICtrlSetTip(-1, GetTranslated(637,7, -1))
+$btnDelete = GUICtrlCreateButton("", $x + 162, $y, 22, 22)
+_GUICtrlButton_SetImageList($btnDelete, $bIconDelete, 4)
+GUICtrlSetOnEvent(-1, "btnDeleteCancel")
+GUICtrlSetState(-1, $GUI_SHOW)
+_GUICtrlSetTip(-1, GetTranslated(637,8, "Delete Profile"))
+$btnCancel = GUICtrlCreateButton("", $x + 162, $y, 22, 22)
+_GUICtrlButton_SetImageList($btnCancel, $bIconCancel, 4)
+GUICtrlSetOnEvent(-1, "btnDeleteCancel")
+GUICtrlSetState(-1, $GUI_HIDE)
+_GUICtrlSetTip(-1, GetTranslated(637,9, "Cancel"))
+$btnRename = GUICtrlCreateButton("", $x + 190, $y, 22, 22)
+_GUICtrlButton_SetImageList($btnRename, $bIconEdit, 4)
+GUICtrlSetOnEvent(-1, "btnRenameConfirm")
+_GUICtrlSetTip(-1, GetTranslated(637,10, "Rename Profile"))
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+GUICtrlCreateTabItem("")
+$hGUI_BOT_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600,37, "Stats"))
+GUICtrlCreateTabItem("")
 Global $LastControlToHide = GUICtrlCreateDummy()
 Global $iPrevState[$LastControlToHide + 1]
-$hGUI_STATS = GUICreate("", $_GUI_MAIN_WIDTH - 28, $_GUI_MAIN_HEIGHT - 255 - 28, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $hGUI_BOT)
 GUISwitch($hGUI_STATS)
 $hGUI_STATS_TAB = GUICtrlCreateTab(0, 0, $_GUI_MAIN_WIDTH - 30, $_GUI_MAIN_HEIGHT - 255 - 30, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
 Local $x = 375, $y = 0
@@ -41477,292 +42634,6 @@ $lblNbrOfDetectedDrills[$TB] = GUICtrlCreateLabel("0", $x + 54, $y - 2, 18, 17, 
 GUICtrlCreateIcon($pIconLib, $eIcnDrill, $x + 73, $y - 4, 16, 16)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
-GUISwitch($hGUI_BOT)
-$hGUI_BOT_TAB = GUICtrlCreateTab(0, 0, $_GUI_MAIN_WIDTH - 20, $_GUI_MAIN_HEIGHT - 255, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
-$hGUI_BOT_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslated(600,35,"Options"))
-Local $x = 25, $y = 45
-$grpLanguages = GUICtrlCreateGroup(GetTranslated(636,83, "GUI Language"), $x - 20, $y - 20, 210, 47)
-$y -=2
-$cmbLanguage = GUICtrlCreateCombo("", $x - 8 , $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-$txtTip = GetTranslated(636,84, "Use this to switch to a different GUI language")
-_GUICtrlSetTip(-1, $txtTip)
-LoadLanguagesComboBox()
-GUICtrlSetData(-1, "English", "English")
-GUICtrlSetOnEvent(-1, "cmbLanguage")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$y += 54
-$grpOnLoadBot = GUICtrlCreateGroup(GetTranslated(636,2, "When Bot Loads"), $x - 20, $y - 20, 210, 120)
-$y -= 4
-$chkDisableSplash = GUICtrlCreateCheckbox(GetTranslated(636,100, "Disable Splash Screen"), $x, $y, -1, -1)
-$txtTip = GetTranslated(636,101, "Disables the splash screen on startup.")
-GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetState(-1, $GUI_UNCHECKED)
-$y += 20
-$chkVersion = GUICtrlCreateCheckbox(GetTranslated(636,3, "Check for Updates"), $x, $y, -1, -1)
-$txtTip = GetTranslated(636,4, "Check if you are running the latest version of the bot.")
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetState(-1, $GUI_CHECKED)
-$y += 20
-$chkDeleteLogs = GUICtrlCreateCheckbox(GetTranslated(636,5, "Delete Log Files")& ":", $x, $y, -1, -1)
-$txtTip = GetTranslated(636,6, "Delete log files older than this specified No. of days.")
-GUICtrlSetState(-1, $GUI_CHECKED)
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetOnEvent(-1, "chkDeleteLogs")
-$txtDeleteLogsDays = GUICtrlCreateInput("2", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetLimit(-1, 2)
-GUICtrlSetFont(-1, 8)
-$lblDeleteLogsDays = GUICtrlCreateLabel(GetTranslated(636,7, "days"), $x + 150, $y + 4, 27, 15)
-$y += 20
-$chkDeleteTemp = GUICtrlCreateCheckbox(GetTranslated(636,8, "Delete Temp Files") & ":", $x, $y, -1, -1)
-$txtTip = GetTranslated(636,9, "Delete temp files older than this specified No. of days.")
-GUICtrlSetState(-1, $GUI_CHECKED)
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetOnEvent(-1, "chkDeleteTemp")
-$txtDeleteTempDays = GUICtrlCreateInput("2", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetLimit(-1, 2)
-GUICtrlSetFont(-1, 8)
-$lblDeleteTempDays = GUICtrlCreateLabel(GetTranslated(636,7, "days"), $x + 150, $y + 4, 27, 15)
-$y += 20
-$chkDeleteLoots = GUICtrlCreateCheckbox(GetTranslated(636,10, "Delete Loot Images"), $x, $y, -1, -1)
-$txtTip = GetTranslated(636,11, "Delete loot image files older than this specified No. of days.")
-GUICtrlSetState(-1, $GUI_CHECKED)
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetOnEvent(-1, "chkDeleteLoots")
-$txtDeleteLootsDays = GUICtrlCreateInput("2", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetLimit(-1, 2)
-GUICtrlSetFont(-1, 8)
-$lblDeleteLootsDays = GUICtrlCreateLabel(GetTranslated(636,7, "days"), $x + 150, $y + 4, 27, 15)
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$y += 48
-$grpOnStartBot = GUICtrlCreateGroup(GetTranslated(636,12, "When Bot Starts"), $x - 20, $y - 20, 210, 112)
-$y -= 5
-$chkAutostart = GUICtrlCreateCheckbox(GetTranslated(636,13, "Auto START after") & ":", $x, $y, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,58, "Auto START the Bot after this No. of seconds."))
-GUICtrlSetOnEvent(-1, "chkAutostart")
-$txtAutostartDelay = GUICtrlCreateInput("10", $x + 120, $y + 2, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-GUICtrlSetFont(-1, 8)
-GUICtrlSetState(-1, $GUI_DISABLE)
-$lblAutostartSeconds = GUICtrlCreateLabel(GetTranslated(603,6, "sec."), $x + 150, $y + 4, 27, 18)
-$y += 22
-$chkLanguage = GUICtrlCreateCheckbox(GetTranslated(636,15, "Check Game Language (EN)"), $x, $y, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,16, "Check if the Game is set to the correct language (Must be set to English)."))
-GUICtrlSetState(-1, $GUI_CHECKED)
-$y += 22
-$chkDisposeWindows = GUICtrlCreateCheckbox(GetTranslated(636,17, "Auto Align"), $x, $y, -1, -1)
-$txtTip = GetTranslated(636,18, "Reposition/Align Android Emulator and BOT windows on the screen.")
-GUICtrlSetOnEvent(-1, "chkDisposeWindows")
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetLimit(-1, 2)
-$lblOffset = GUICtrlCreateLabel(GetTranslated(636,19, "Offset") & ":", $x + 85, $y + 4, -1, -1)
-$txtWAOffsetx = GUICtrlCreateInput("10", $x + 120, $y + 2, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-$txtTip = GetTranslated(636,20, "Offset horizontal pixels between Android Emulator and BOT windows.")
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetLimit(-1, 2)
-GUICtrlSetFont(-1, 8)
-$txtWAOffsety= GUICtrlCreateInput("0", $x + 150, $y + 2, 25, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-$txtTip = GetTranslated(636,21, "Offset vertical pixels between Android Emulator and BOT windows.")
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetLimit(-1, 2)
-GUICtrlSetFont(-1, 8)
-$y += 23
-$cmbDisposeWindowsCond = GUICtrlCreateCombo("", $x, $y, 175, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, GetTranslated(636,22, "0,0: Android Emulator-Bot") & "|" &  GetTranslated(636,23, "0,0: Bot-Android Emulator") & "|" &  GetTranslated(636,24, "SNAP: Bot TopRight to Android") &"|" &  GetTranslated(636,25, "SNAP: Bot TopLeft to Android") & "|" &  GetTranslated(636,26, "SNAP: Bot BottomRight to Android") & "|" &  GetTranslated(636,27, "SNAP: Bot BottomLeft to Android") & "|" &  GetTranslated(636,95, "DOCK: Android into Bot"),  GetTranslated(636,24, "SNAP: Bot TopRight to Android"))
-$txtTip &= @CRLF & GetTranslated(636,28, "0,0: Reposition Android Emulator screen to position 0,0 on windows desktop and align Bot window right or left to it.") & @CRLF &  GetTranslated(636,29, "SNAP: Only reorder windows, Align Bot window to Android Emulator window at Top Right, Top Left, Bottom Right or Bottom Left.\r\n" &  "DOCK: Integrate Android Screen into bot window.")
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-Local $x = 240, $y = 45
-$grpAdvanced = GUICtrlCreateGroup(GetTranslated(636,93, "Advanced"), $x - 20, $y - 20, 225, 82)
-$chkUpdatingWhenMinimized = GUICtrlCreateCheckbox(GetTranslated(636,96, "Updating when minimized"), $x, $y, -1, -1)
-GUICtrlSetOnEvent(-1, "chkUpdatingWhenMinimized")
-_GUICtrlSetTip(-1, GetTranslated(636,97, "Enable different minimize routine for bot window.\r\nWhen bot is minimized, screen updates are shown in taskbar preview."))
-$y += 19
-$chkHideWhenMinimized = GUICtrlCreateCheckbox(GetTranslated(636,98, "Hide when minimized"), $x, $y, -1, -1)
-GUICtrlSetOnEvent(-1, "chkHideWhenMinimized")
-_GUICtrlSetTip(-1, GetTranslated(636,99, "Hide bot window in taskbar when minimized.\r\nUse trayicon 'Show bot' to display bot window again."))
-$y += 19
-$chkUseRandomClick = GUICtrlCreateCheckbox(GetTranslated(636,94, "Random Click"), $x, $y, -1, -1)
-GUICtrlSetOnEvent(-1, "chkUseRandomClick")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$y += 47
-$grpPhotoExpert = GUICtrlCreateGroup(GetTranslated(636,55, "Photo Screenshot Options"), $x - 20, $y - 17, 225, 60)
-$chkScreenshotType = GUICtrlCreateCheckbox(GetTranslated(636,56, "Make in PNG format"), $x, $y, -1, -1)
-GUICtrlSetState(-1, $GUI_CHECKED)
-GUICtrlSetOnEvent(-1, "chkScreenshotType")
-$y += 19
-$chkScreenshotHideName = GUICtrlCreateCheckbox(GetTranslated(636,57, "Hide Village and Clan Castle Name"), $x, $y, -1, -1)
-GUICtrlSetState(-1, $GUI_CHECKED)
-GUICtrlSetOnEvent(-1, "chkScreenshotHideName")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$y +=48
-$grpTimeWakeUp = GUICtrlCreateGroup(GetTranslated(636,85, "Remote Device"), $x - 20, $y - 20 , 225, 42)
-$y -= 5
-$lblTimeWakeUp = GUICtrlCreateLabel(GetTranslated(636,86, "When 'Another Device' wait") & ":", $x - 10, $y + 2, -1, -1)
-$txtTip = GetTranslated(636,87, "Enter the time to wait (in seconds) before the Bot reconnects when another device took control.")
-_GUICtrlSetTip(-1, $txtTip)
-$txtTimeWakeUp = GUICtrlCreateInput("240", $x + 127, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetLimit(-1, 3)
-$lblTimeWakeUpSec = GUICtrlCreateLabel(GetTranslated(603,6, "sec."), $x + 165, $y + 2, -1, -1)
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$y+= 51
-$grpOtherExpert = GUICtrlCreateGroup(GetTranslated(636,45, "Other Options"), $x - 20, $y - 20, 225, 90)
-$chkSinglePBTForced = GUICtrlCreateCheckbox(GetTranslated(636,61, "Force Single PB logoff"), $x-5, $y, -1, -1)
-GUICtrlSetOnEvent(-1, "chkSinglePBTForced")
-_GUICtrlSetTip(-1, GetTranslated(636,62, "This forces bot to exit CoC only one time prior to normal start of PB"))
-$txtSinglePBTimeForced = GUICtrlCreateInput("18", $x + 130, $y-1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-_GUICtrlSetTip(-1, GetTranslated(636,63, "Type in number of minutes to keep CoC closed. Set to 15 minimum to reset PB timer!"))
-GUICtrlSetOnEvent(-1, "txtSinglePBTimeForced")
-GUICtrlSetLimit(-1, 3)
-GUICtrlSetState(-1, $GUI_DISABLE)
-$lblSinglePBTimeForced = GUICtrlCreateLabel( GetTranslated(603,9, "Min"), $x+162, $y+2, 27, 15)
-$y += 20
-$lblPBTimeForcedExit = GUICtrlCreateLabel( GetTranslated(636,65, "Subtract time for early PB exit"), $x-10, $y+3)
-$txtTip = GetTranslated(636,66, "Type in number of minutes to quit CoC early! Setting below 10 minutes may not function!")
-_GUICtrlSetTip(-1, $txtTip)
-$txtPBTimeForcedExit = GUICtrlCreateInput("16", $x + 130, $y, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-_GUICtrlSetTip(-1, $txtTip)
-GUICtrlSetOnEvent(-1, "txtSinglePBTimeForced")
-GUICtrlSetLimit(-1, 3)
-GUICtrlSetState(-1, $GUI_DISABLE)
-$lblPBTimeForcedExit1 = GUICtrlCreateLabel( GetTranslated(603,9, -1), $x+162, $y+1, 27, 15)
-$y +=30
-$chkTotalCampForced = GUICtrlCreateCheckbox(GetTranslated(636,46, "Force Total Army Camp")&":", $x-5, $y-5, -1, -1)
-GUICtrlSetOnEvent(-1, "chkTotalCampForced")
-_GUICtrlSetTip(-1, GetTranslated(636,47, "If not detected set army camp values (instead ask)"))
-$txtTotalCampForced = GUICtrlCreateInput("200", $x + 130, $y - 5, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-GUICtrlSetLimit(-1, 3)
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-GUICtrlCreateTabItem("")
-$hGUI_BOT_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslated(600,51,"Debug"))
-Local $x = 25, $y = 45
-$grpDebug = GUICtrlCreateGroup(GetTranslated(636,34, "Debug"), $x - 20, $y - 20, 440, 360)
-$chkDebugClick = GUICtrlCreateCheckbox(GetTranslated(636,40, "Click"), $x, $y-5, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,35, "Debug: Write the clicked (x,y) coordinates to the log."))
-$y += 20
-$chkDebugSetlog = GUICtrlCreateCheckbox(GetTranslated(636,41, "Messages"), $x  , $y-5, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,36, "Debug: Enables debug SetLog messages in code for Troubleshooting."))
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlSetState(-1, $GUI_HIDE)
-$y += 20
-$chkDebugOcr = GUICtrlCreateCheckbox(GetTranslated(636,42, "OCR"), $x , $y-5, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,37, "Debug: Enables Saving OCR images for troubleshooting."))
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlSetState(-1, $GUI_HIDE)
-$y += 20
-$chkDebugImageSave = GUICtrlCreateCheckbox(GetTranslated(636,43, "Images"), $x , $y-5, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,38, "Debug: Enables Saving images for troubleshooting."))
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlSetState(-1, $GUI_HIDE)
-$y += 20
-$chkdebugBuildingPos = GUICtrlCreateCheckbox(GetTranslated(636,44, "Buildings"), $x  , $y-5, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,39, "Debug: Enables showing positions of buildings in log."))
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlSetState(-1, $GUI_HIDE)
-$y += 20
-$chkdebugTrain = GUICtrlCreateCheckbox(GetTranslated(636,73, "Training"), $x , $y-5, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,74, "Debug: Enables showing debug during training."))
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlSetState(-1, $GUI_HIDE)
-$y += 20
-$chkdebugOCRDonate = GUICtrlCreateCheckbox(GetTranslated(636,91, "Online debug donations"), $x , $y-5, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,92, "Debug: make ocr of donations and simulate only donate but no donate any troop"))
-GUICtrlSetState(-1, $GUI_DISABLE)
-GUICtrlSetState(-1, $GUI_HIDE)
-Local $x = 305
-$y = 45
-$btnTestTrain = GUICtrlCreateButton(GetTranslated(636,88, "Test Train"), $x  , $y , 120, 30)
-$y += 50
-$btnTestDonateCC = GUICtrlCreateButton(GetTranslated(636,89, "Test Donate"), $x  , $y , 120, 30)
-$y += 50
-$btnTestAttackBar = GUICtrlCreateButton(GetTranslated(636,90, "Test Attack Bar"), $x  , $y , 120, 30)
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-GUICtrlCreateTabItem("")
-$hGUI_BOT_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,36,"Profiles"))
-Global $txtPresetSaveFilename, $txtSavePresetMessage, $lblLoadPresetMessage,$btnGUIPresetDeleteConf, $chkCheckDeleteConf
-Global $cmbPresetList, $txtPresetMessage,$btnGUIPresetLoadConf,  $lblLoadPresetMessage,$btnGUIPresetDeleteConf, $chkCheckDeleteConf
-Local $x = 25, $y = 45
-$grpProfiles = GUICtrlCreateGroup(GetTranslated(637,1, "Switch Profiles"), $x - 20, $y - 20, 440, 360)
-$x -= 5
-$cmbProfile = GUICtrlCreateCombo("", $x - 3, $y + 1, 130, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-$txtTip = GetTranslated(637,2, "Use this to switch to a different profile")& @CRLF & GetTranslated(637,3, "Your profiles can be found in") & ": " & @CRLF & $sProfilePath
-_GUICtrlSetTip(-1, $txtTip)
-setupProfileComboBox()
-PopulatePresetComboBox()
-GUICtrlSetState(-1, $GUI_SHOW)
-GUICtrlSetOnEvent(-1, "cmbProfile")
-$txtVillageName = GUICtrlCreateInput(GetTranslated(637,4, "MyVillage"), $x - 3, $y, 130, 22, $ES_AUTOHSCROLL)
-GUICtrlSetLimit (-1, 100, 0)
-GUICtrlSetFont(-1, 9, 400, 1)
-_GUICtrlSetTip(-1, GetTranslated(637,5, "Your village/profile's name"))
-GUICtrlSetState(-1, $GUI_HIDE)
-$bIconAdd = _GUIImageList_Create(22, 22, 4)
-_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd.bmp")
-_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_2.bmp")
-_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_2.bmp")
-_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_4.bmp")
-_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd.bmp")
-$bIconConfirm = _GUIImageList_Create(22, 22, 4)
-_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm.bmp")
-_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_2.bmp")
-_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_2.bmp")
-_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_4.bmp")
-_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm.bmp")
-$bIconDelete = _GUIImageList_Create(22, 22, 4)
-_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete.bmp")
-_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_2.bmp")
-_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_2.bmp")
-_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_4.bmp")
-_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete.bmp")
-$bIconCancel = _GUIImageList_Create(22, 22, 4)
-_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel.bmp")
-_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_2.bmp")
-_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_2.bmp")
-_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_4.bmp")
-_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel.bmp")
-$bIconEdit = _GUIImageList_Create(22, 22, 4)
-_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit.bmp")
-_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_2.bmp")
-_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_2.bmp")
-_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_4.bmp")
-_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit.bmp")
-$btnAdd = GUICtrlCreateButton("", $x + 135, $y, 22, 22)
-_GUICtrlButton_SetImageList($btnAdd, $bIconAdd, 4)
-GUICtrlSetOnEvent(-1, "btnAddConfirm")
-GUICtrlSetState(-1, $GUI_SHOW)
-_GUICtrlSetTip(-1, GetTranslated(637,6, "Add New Profile"))
-$btnConfirmAdd = GUICtrlCreateButton("", $x + 135, $y, 22, 22)
-_GUICtrlButton_SetImageList($btnConfirmAdd, $bIconConfirm, 4)
-GUICtrlSetOnEvent(-1, "btnAddConfirm")
-GUICtrlSetState(-1, $GUI_HIDE)
-_GUICtrlSetTip(-1, GetTranslated(637,7, "Confirm"))
-$btnConfirmRename = GUICtrlCreateButton("", $x + 135, $y, 22, 22)
-_GUICtrlButton_SetImageList($btnConfirmRename, $bIconConfirm, 4)
-GUICtrlSetOnEvent(-1, "btnRenameConfirm")
-GUICtrlSetState(-1, $GUI_HIDE)
-_GUICtrlSetTip(-1, GetTranslated(637,7, -1))
-$btnDelete = GUICtrlCreateButton("", $x + 162, $y, 22, 22)
-_GUICtrlButton_SetImageList($btnDelete, $bIconDelete, 4)
-GUICtrlSetOnEvent(-1, "btnDeleteCancel")
-GUICtrlSetState(-1, $GUI_SHOW)
-_GUICtrlSetTip(-1, GetTranslated(637,8, "Delete Profile"))
-$btnCancel = GUICtrlCreateButton("", $x + 162, $y, 22, 22)
-_GUICtrlButton_SetImageList($btnCancel, $bIconCancel, 4)
-GUICtrlSetOnEvent(-1, "btnDeleteCancel")
-GUICtrlSetState(-1, $GUI_HIDE)
-_GUICtrlSetTip(-1, GetTranslated(637,9, "Cancel"))
-$btnRename = GUICtrlCreateButton("", $x + 190, $y, 22, 22)
-_GUICtrlButton_SetImageList($btnRename, $bIconEdit, 4)
-GUICtrlSetOnEvent(-1, "btnRenameConfirm")
-_GUICtrlSetTip(-1, GetTranslated(637,10, "Rename Profile"))
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-GUICtrlCreateTabItem("")
-$hGUI_BOT_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600,37, "Stats"))
-GUICtrlCreateTabItem("")
 GUISwitch($frmBotEx)
 $tabMain = GUICtrlCreateTab(5, 85 + $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH - 9, $_GUI_MAIN_HEIGHT - 225)
 GUICtrlSetResizing(-1, $GUI_DOCKBORDERS)
@@ -41777,28 +42648,48 @@ $grpCredits = GUICtrlCreateGroup("Credits", $x - 20, $y - 20, 450, 375)
 $lblCreditsBckGrnd = GUICtrlCreateLabel("", $x - 20, $y - 20, 450, 375)
 GUICtrlSetBkColor(-1, $COLOR_WHITE)
 $txtCredits = "My Bot is brought to you by a worldwide team of open source"  & @CRLF &  "programmers and a vibrant community of forum members!"
-$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y - 5, 400, 35)
+$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y - 10, 400, 35)
 GUICtrlSetFont(-1, 10, $FW_BOLD)
 GUICtrlSetColor(-1, $COLOR_NAVY)
-$y += 38
+$y += 30
 $txtCredits = "Please visit our web forums:"
 $lblCredits2 = GUICtrlCreateLabel($txtCredits, $x+20, $y, 180, 30)
 GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 $labelMyBotURL = GUICtrlCreateLabel("https://mybot.run/forums", $x + 198, $y, 150, 20)
 GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 GUICtrlSetColor(-1, $COLOR_BLUE)
-$y += 27
+$y += 22
 $lblCredits3 = GUICtrlCreateLabel("Credits belong to following programmers for donating their time:", $x - 5, $y , 420, 20)
 GUICtrlSetFont(-1,10, $FW_BOLD)
 $y += 20
-$txtCredits =	"Active developers: "  &  @CRLF &  "Boju, Cosote, Hervidero, Kaganus, MonkeyHunter, Sardo, Trlopes, Zengzeng" & @CRLF & @CRLF &  "Retired developers: "  &  @CRLF &  "Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, Knowjack, LunaEclipse, ProMac, Safar46, Saviart, TheMaster1st, and others"
-$lbltxtCredits1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410,120, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+$txtCredits =	"Active developers: "
+$lbltxtCreditsA1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+GUICtrlSetColor(-1, $COLOR_NAVY)
+$txtCredits = "Boju, Cosote, MonkeyHunter, Trlopes, Zengzeng"
+$lbltxtCreditsA2 = GUICtrlCreateLabel($txtCredits, $x+10, $y+15, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 GUICtrlSetFont(-1,9, $FW_MEDIUM)
-$y += 125
+$y += 35
+$txtCredits =	"Inactive developers: "
+$lbltxtCreditsMIA1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+GUICtrlSetColor(-1, $COLOR_NAVY)
+$txtCredits = "Hervidero, Kaganus, Sardo"
+$lbltxtCreditsMIA2 = GUICtrlCreateLabel($txtCredits, $x+10, $y+15, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+GUICtrlSetFont(-1,9, $FW_MEDIUM)
+$y += 35
+$txtCredits =	"Retired developers: "
+$lbltxtCreditsDead1 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+GUICtrlSetColor(-1, $COLOR_NAVY)
+$txtCredits = "Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, KnowJack, LunaEclipse, ProMac, Safar46, Saviart, TheMaster1st, and others"
+$lbltxtCreditsDead2 = GUICtrlCreateLabel($txtCredits, $x+10, $y+15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+GUICtrlSetFont(-1,9, $FW_MEDIUM)
+$y += 66
 $txtCredits = "Special thanks to all contributing forum members helping " & @CRLF & "to make this software better! "
 $lbltxtCredits2 = GUICtrlCreateLabel($txtCredits, $x+5, $y, 390,30, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER),0)
 GUICtrlSetFont(-1,9, $FW_MEDIUM)
-$y += 44
+$y += 40
 $txtCredits =	"The latest release of 'My Bot' can be found at:"
 $lbltxtNewVer = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 400,15, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 GUICtrlSetFont(-1, 10, $FW_BOLD)
@@ -41806,7 +42697,7 @@ $y += 18
 $labelForumURL = GUICtrlCreateLabel("https://mybot.run/forums/index.php?/forum/4-official-releases/", $x+25, $y, 450, 20)
 GUICtrlSetFont(-1, 9.5, $FW_BOLD)
 GUICtrlSetColor(-1, $COLOR_BLUE)
-$y = 445
+$y = 450
 $txtWarn =	"By running this program, the user accepts all responsibility that arises from the use of this software."  & @CRLF &  "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even " & @CRLF &  "the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General " & @CRLF &  "Public License for more details. The license can be found in the main code folder location."  & @CRLF &  "Copyright (C) 2015-2016 MyBot.run"
 $lbltxtWarn1 = GUICtrlCreateLabel($txtWarn, $x - 5, $y, 410, 56, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT, $ES_CENTER),0)
 GUICtrlSetColor(-1, 0x000053)
@@ -41862,6 +42753,17 @@ TrayItemSetOnEvent($tiAbout, "tiAbout")
 TrayCreateItem("")
 $tiExit = TrayCreateItem(GetTranslated(500,35, "Exit"))
 TrayItemSetOnEvent($tiExit, "tiExit")
+If $hFuncLib <> -1 Then
+GUICtrlSetState($btnStart, $GUI_ENABLE)
+If $iTownHallLevel > 2 Then
+GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
+EndIf
+EndIf
+SetDebugLog("$frmBot=" & $frmBot, Default, True)
+SetDebugLog("$frmBotEx=" & $frmBotEx, Default, True)
+SetDebugLog("$frmBotBottom=" & $frmBotBottom, Default, True)
+SetDebugLog("$frmBotEmbeddedShield=" & $frmBotEmbeddedShield, Default, True)
+SetDebugLog("$frmBotEmbeddedGarphics=" & $frmBotEmbeddedGarphics, Default, True)
 Opt("GUIOnEventMode", 1)
 Opt("MouseClickDelay", 10)
 Opt("MouseClickDownDelay", 10)
@@ -41927,6 +42829,7 @@ Global $groupLeague=$UnrankedLeague&"#"&$BronzeLeague&"#"&$SilverLeague&"#"&$Gol
 Func BotStart()
 ResumeAndroid()
 $RunState = True
+$TogglePauseAllowed = True
 EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
 $bTrainEnabled = True
 $bDonationEnabled = True
@@ -42005,6 +42908,7 @@ Func BotStop()
 ResumeAndroid()
 $RunState = False
 $TPaused = False
+$TogglePauseAllowed = True
 Local $aCtrlState
 EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
 EnableGuiControls()
@@ -42026,7 +42930,6 @@ GUICtrlSetState($lblVersion, $GUI_SHOW)
 SetLog(_PadStringCenter(" Bot Stop ", 50, "="), $COLOR_ORANGE)
 If Not $bSearchMode Then
 If Not $TPaused Then $iTimePassed += Int(TimerDiff($sTimer))
-AdlibUnRegister("SetTime")
 $Restart = True
 FileClose($hLogFileHandle)
 $hLogFileHandle = ""
@@ -42054,7 +42957,7 @@ VillageSearch()
 If _Sleep(100) Then Return
 btnStop()
 EndFunc
-Global Enum $eBotNoAction, $eBotStart, $eBotStop, $eBotSearchMode
+Global Enum $eBotNoAction, $eBotStart, $eBotStop, $eBotSearchMode, $eBotClose
 Global $BotAction = $eBotNoAction
 Global $aChkDonateControls[21] = [$chkDonateBarbarians, $chkDonateArchers, $chkDonateGiants, $chkDonateGoblins, $chkDonateWallBreakers, $chkDonateBalloons, $chkDonateWizards, $chkDonateHealers, $chkDonateDragons, $chkDonatePekkas, $chkDonateBabyDragons, $chkDonateMiners, $chkDonateMinions, $chkDonateHogRiders, $chkDonateValkyries, $chkDonateGolems, $chkDonateWitches, $chkDonateLavaHounds, $chkDonateBowlers, $chkDonateCustomA, $chkDonateCustomB]
 Global $aChkDonateControlsSpell[4] = [$chkDonatePoisonSpells, $chkDonateEarthQuakeSpells, $chkDonateHasteSpells, $chkDonateSkeletonSpells]
@@ -42081,29 +42984,8 @@ Global $aTabControlsAttackOptions[5] = [$hGUI_AttackOption_TAB, $hGUI_AttackOpti
 Global $aTabControlsStrategies[3] = [$hGUI_STRATEGIES_TAB, $hGUI_STRATEGIES_TAB_ITEM1, $hGUI_STRATEGIES_TAB_ITEM2]
 Global $aTabControlsBot[5] = [$hGUI_BOT_TAB, $hGUI_BOT_TAB_ITEM1, $hGUI_BOT_TAB_ITEM2, $hGUI_BOT_TAB_ITEM3, $hGUI_BOT_TAB_ITEM4]
 Global $aTabControlsStats[4] = [$hGUI_STATS_TAB, $hGUI_STATS_TAB_ITEM1, $hGUI_STATS_TAB_ITEM2, $hGUI_STATS_TAB_ITEM3]
-Global $aAlwaysEnabledControls[12] = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestAttackBar]
-Func AcquireMutex($mutexName, $scope = Default, $timout = Default)
-Local $timer = TimerInit()
-Local $hMutex_MyBot = 0
-If $scope = Default then
-$scope = @AutoItPID + "/"
-ElseIf $scope <> "" Then
-$scope += "/"
-EndIf
-If $timout = Default Then $timeout = 30000
-While $hMutex_MyBot = 0 And ($timout = 0 Or TimerDiff($timer) < $timout)
-$hMutex_MyBot = _Singleton("MyBot.run/" + $scope + $mutexName, 1)
-If $hMutex_MyBot <> 0 Then ExitLoop
-If $timout = 0 Then ExitLoop
-If Sleep($iDelaySleep) Then ExitLoop
-WEnd
-Return $hMutex_MyBot
-EndFunc
-Func ReleaseMutex($hMutex, $ReturnValue = Default)
-_WinAPI_CloseHandle($hMutex)
-If $ReturnValue = Default Then Return
-Return $ReturnValue
-EndFunc
+Global $aAlwaysEnabledControls[14] = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestAttackBar, $btnTestClickDrag, $btnTestImage]
+Global $frmBot_WNDPROC = 0
 Func UpdateFrmBotStyle()
 Local $ShowMinimize = $AndroidBackgroundLaunched = True Or $AndroidEmbedded = False Or ($AndroidEmbedded = True And $ichkBackground = 1)
 Local $lStyle = $WS_MINIMIZEBOX
@@ -42134,7 +43016,6 @@ Return True
 EndIf
 Return False
 EndFunc
-_GDIPlus_Startup()
 Global $Initiate = 0
 Global $GUIControl_Disabled = False
 Global $ichklanguageFirst = 0
@@ -42164,7 +43045,6 @@ EndIf
 AndroidBotStartEvent()
 If Not $RunState Then Return
 If Not $bSearchMode Then
-AdlibRegister("SetTime", 1000)
 If $restarted = 1 Then
 $restarted = 0
 IniWrite($config, "general", "Restarted", 0)
@@ -42239,9 +43119,11 @@ $BotAction = $eBotStart
 EndIf
 EndFunc
 Func btnStop()
+If $RunState Then
 EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
 $RunState = False
 $BotAction = $eBotStop
+EndIf
 EndFunc
 Func btnSearchMode()
 EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
@@ -42744,6 +43626,7 @@ _WinAPI_UpdateWindow(WinGetHandle($hGUI_LOG))
 Until $pos[2] = 0
 _GUICtrlRichEdit_SetSel($txtLog, - 1, -1)
 _GUICtrlRichEdit_SetSel($txtAtkLog, - 1, -1)
+SetDebugLog("MoveDivider exit", Default, True)
 EndFunc
 Func XPStyleToggle($Off = 1)
 Local $XS_n
@@ -43103,7 +43986,7 @@ $ibtnCloseWaitStop = 0
 GUICtrlSetState($btnCloseWaitStop, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 Else
 $ibtnCloseWaitStopRandom = 0
-GUICtrlSetState($btnCloseWaitStop, $GUI_ENABLE)
+If GUICtrlRead($chkCloseWaitEnable) = $GUI_CHECKED Then GUICtrlSetState($btnCloseWaitStop, $GUI_ENABLE)
 EndIf
 EndFunc
 Func btnCloseWaitRandom()
@@ -43148,6 +44031,7 @@ Local $sNewTrainList = ""
 For $i = 0 To UBound($DefaultTroopGroup) - 1
 $sNewTrainList &= $TroopName[$i] & ", "
 Next
+$sNewTrainList = StringLeft($sNewTrainList, StringLen($sNewTrainList)-2)
 Setlog("Current train order= " & $sNewTrainList, $COLOR_BLUE)
 EndIf
 EndIf
@@ -43175,6 +44059,7 @@ Local $sNewTrainList = ""
 For $i = 0 To UBound($DefaultTroopGroupDark) - 1
 $sNewTrainList &= $TroopDarkName[$i] & ", "
 Next
+$sNewTrainList = StringLeft($sNewTrainList, StringLen($sNewTrainList)-2)
 Setlog("Current train order= " & $sNewTrainList, $COLOR_BLUE)
 EndIf
 EndIf
@@ -46366,6 +47251,45 @@ Run("Explorer.exe " & $savefolder )
 $debugOcr = $currentOCR
 $RunState = $currentRunState
 EndFunc
+Func btnTestClickDrag()
+Local $i
+SetLog("Testing Click drag functionality...", $COLOR_BLUE)
+For $i = 0 To 4
+SetLog("Click x1/y1=100/600 and drag to x2/y2=150/600", $COLOR_BLUE)
+ClickDrag(100, 600, 150, 600)
+Next
+SetDebugLog("Waiting 3 Seconds...")
+_SleepStatus(3000, True, True, False)
+For $i = 0 To 4
+SetLog("Click x1/y1=150/600 and drag to x2/y2=100/600", $COLOR_BLUE)
+ClickDrag(150, 600, 100, 600)
+Next
+EndFunc
+Func btnTestImage()
+Local $sImageFile = FileOpenDialog("Select CoC screenshot to test", $dirTemp, "Image (*.png)", $FD_FILEMUSTEXIST, "", $frmBot)
+SetLog("Testing image " & $sImageFile, $COLOR_BLUE)
+Local $currentRunState = $RunState
+$RunState = True
+Local $hBMP = _GDIPlus_BitmapCreateFromFile($sImageFile)
+Local $hHBMP = _GDIPlus_BitmapCreateDIBFromBitmap($hBMP)
+TestCapture($hHBMP)
+SetLog("Testing image hHBitmap = " & $hHBMP)
+Local $Result
+SetLog("Testing checkObstacles", $COLOR_GREEN)
+$Result = checkObstacles()
+SetLog("Testing checkObstacles DONE, $Result=" & $Result, $COLOR_GREEN)
+SetLog("Testing waitMainScreen...", $COLOR_GREEN)
+$Result = waitMainScreen()
+SetLog("Testing waitMainScreen DONE, $Result=" & $Result, $COLOR_GREEN)
+SetLog("Testing waitMainScreenMini", $COLOR_GREEN)
+$Result = waitMainScreenMini()
+SetLog("Testing waitMainScreenMini DONE, $Result=" & $Result, $COLOR_GREEN)
+_GDIPlus_BitmapDispose($hBMP)
+_WinAPI_DeleteObject($hHBMP)
+TestCapture(0)
+SetLog("Testing finished", $COLOR_BLUE)
+$RunState = $currentRunState
+EndFunc
 Func PopulatePresetComboBox()
 Dim $FileSearch, $NewFile
 $FileSearch = FileFindFirstFile($sPreset & "\*.ini")
@@ -46854,8 +47778,23 @@ GUICtrlSetState($lblDTArmyMin, $GUI_DISABLE)
 GUICtrlSetState($lblDTArmypercent, $GUI_DISABLE)
 EndIf
 EndFunc
-Local $aAccelKeys[1][2] = [["{ESC}", $btnStop]]
+Local $aAccelKeys[2][2] = [["{ESC}", $btnStop],["{PAUSE}", $btnPause]]
+Local $aAccelKeys_DockedUnshieledFocus[1][2] = [["{PAUSE}", $btnPause]]
+Func SetAccelerators($bDockedUnshieledFocus = False)
+GUISetAccelerators(0, $frmBot)
+If $bDockedUnshieledFocus = False Then
+GUISetAccelerators($aAccelKeys, $frmBot)
+Else
+GUISetAccelerators($aAccelKeys_DockedUnshieledFocus, $frmBot)
+EndIf
+EndFunc
+Func BotToFront()
+WinMove2(GetCurrentAndroidHWnD(), "", -1, -1, -1, -1, $HWND_TOPMOST, 0, False)
+WinMove2(GetCurrentAndroidHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+EndFunc
 Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
 If $debugWindowMessages Then SetDebugLog("GUIControl_WM_NCACTIVATE: $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
 Local $iActive = BitAND($wParam, 0x0000FFFF)
 If $hWin = $frmBot Then
@@ -46867,56 +47806,120 @@ AndroidShield("GUIControl_WM_NCACTIVATE active", Default, False)
 EndIf
 EndIf
 If $iActive = 0 Then
+SetDebugLog("GUIControl_WM_NCACTIVATE: Deactivate Bot", Default, True)
+_WinAPI_SetFocus(0)
 Else
 If $iHideWhenMinimized = 0 Then BotRestore("GUIControl_WM_NCACTIVATE")
+SetDebugLog("GUIControl_WM_NCACTIVATE: Activate Bot", Default, True)
+EndIf
+If $AndroidEmbedded And $AndroidEmbedMode = 1 And AndroidShieldActiveDelay() = False Then
+AndroidEmbedCheck(False, $iActive <> 0, 1)
+AndroidShield("GUIControl_WM_NCACTIVATE", Default, False)
 EndIf
 EndIf
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndFunc
 Func GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
 If $debugWindowMessages Then SetDebugLog("GUIControl_WM_FOCUS: $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
 Local $iActive = BitAND($wParam, 0x0000FFFF)
 Switch $hWin
 Case $frmBot
 If $AndroidEmbedded And AndroidShieldActiveDelay() = False Then
 AndroidShield("GUIControl_WM_FOCUS", Default, False)
+If $AndroidEmbedMode = 1 Then
+AndroidEmbedCheck(False, Default, 1)
+EndIf
 EndIf
 EndSwitch
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndFunc
 Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
-If $hWin <> $frmBotEmbeddedShield Or $AndroidEmbedded = False Or $AndroidShieldStatus[0] = True Then
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
+Local $hWinMouse = $frmBotEmbeddedMouse
+If $frmBotEmbeddedMouse = 0 Then $hWinMouse = (($AndroidEmbedMode = 0) ? $frmBotEmbeddedShield : $frmBot)
+If $debugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_MOUSE: $hWin=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam & ",$hWinMouse=" & $hWinMouse, Default, True)
+If $hWin <> $hWinMouse Or $AndroidEmbedded = False Or $AndroidShieldStatus[0] = True Then
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndIf
-Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
-Local $Result = _WinAPI_PostMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
-If $iMSG = $WM_LBUTTONDOWN Then
-If $debugWindowMessages Then SetDebugLog("GUIControl_WM_MOUSE: WM_LBUTTONDOWN $hWind=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+Switch $iMSG
+Case $WM_LBUTTONDOWN, $WM_LBUTTONUP, $WM_RBUTTONDOWN, $WM_RBUTTONUP
+Local $hInput = GUICtrlGetHandle($frmBotEmbeddedShieldInput)
+_WinAPI_SetFocus($hInput)
+EndSwitch
+Switch $iMSG
+Case $WM_LBUTTONUP, $WM_RBUTTONUP
+If $debugWindowMessages Then
+Local $x = BitAND($lParam, 0xFFFF)
+Local $y = BitAND($lParam, 0xFFFF0000) / 0x10000
+SetDebugLog("GUIControl_WM_MOUSE: " & ($iMSG = $WM_LBUTTONUP ? "$WM_LBUTTONUP" : "$WM_RBUTTONUP") & " $hWin=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam & ", X=" & $x & ", Y=" & $y, Default, True)
+EndIf
 If AndroidShieldHasFocus() = False Then
 Local $hInput = GUICtrlGetHandle($frmBotEmbeddedShieldInput)
 _WinAPI_SetFocus($hInput)
 AndroidShield("GUIControl_WM_MOUSE", Default, False, 0, True)
+$TogglePauseAllowed = $wasAllowed
+Return $GUI_RUNDEFMSG
 EndIf
+EndSwitch
+If AndroidShieldHasFocus() = False Then
+$TogglePauseAllowed = $wasAllowed
+Return $GUI_RUNDEFMSG
 EndIf
+Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
+Local $Result = _SendMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
+$TogglePauseAllowed = $wasAllowed
+Return $GUI_RUNDEFMSG
+EndFunc
+Func GUIControl_AndroidEmbedded($hWin, $iMsg, $wParam, $lParam)
+If $AndroidEmbedded = False Or $AndroidShieldStatus[0] = True Then
+Return $GUI_RUNDEFMSG
+EndIf
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
+Switch $iMsg
+Case $WM_KEYDOWN, $WM_KEYUP, $WM_SYSKEYDOWN, $WM_SYSKEYUP, $WM_MOUSEWHEEL
+If $debugAndroidEmbedded Then SetDebugLog("GUIControl_AndroidEmbedded: FORWARD $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
+Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
+If $iMsg = $WM_KEYUP And $wParam = 27 Then
+Local $wasSilentSetLog = $SilentSetLog
+$SilentSetLog = True
+AndroidBackButton(False)
+$SilentSetLog = $wasSilentSetLog
+If $debugAndroidEmbedded Then AndroidShield("GUIControl_AndroidEmbedded WM_SETFOCUS", Default, False, 0, True)
+Else
+_WinAPI_PostMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
+EndIf
+EndSwitch
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndFunc
 Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
-If $debugWindowMessages Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 If $GUIControl_Disabled = True Then Return $GUI_RUNDEFMSG
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
+If $debugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 Local $nNotifyCode = BitShift($wParam, 16)
 Local $nID = BitAND($wParam, 0x0000FFFF)
 Local $hCtrl = $lParam
-If $hWind <> $frmBotEmbeddedShield Then
+If $hWind <> $frmBotEmbeddedShield And $hWind <> $frmBotEmbeddedGarphics And $hWinD <> $frmBotEmbeddedMouse Then
 If AndroidShieldHasFocus() = True Then
+If $debugWindowMessages Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 AndroidShield("GUIControl_WM_COMMAND", Default, False, 150, False)
 EndIf
 EndIf
 CheckRedrawBotWindow()
 Switch $nID
 Case $divider
-MoveDivider()
+$bMoveDivider = True
+SetDebugLog("MoveDivider active", Default, True)
 Case $GUI_EVENT_CLOSE
-BotClose()
+BotCloseRequest()
 Case $lblCreditsBckGrnd, $lblUnbreakableHelp
 Local $CursorInfo = GUIGetCursorInfo($frmBot)
 If IsArray($CursorInfo) = 1 Then
@@ -46987,14 +47990,22 @@ Case $btnTestDonateCC
 btnTestDonateCC()
 Case $btnTestAttackBar
 btnTestAttackBar()
+Case $btnTestClickDrag
+btnTestClickDrag()
+Case $btnTestImage
+btnTestImage()
 EndSwitch
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndFunc
 Func GUIControl_WM_MOVE($hWind, $iMsg, $wParam, $lParam)
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
 If $debugWindowMessages Then SetDebugLog("GUIControl_WM_MOVE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 If $hWind = $frmBot Then
 If $iUpdatingWhenMinimized = 1 And BotWindowCheck() = False And _WinAPI_IsIconic($frmBot) Then
 BotMinimize("GUIControl_WM_MOVE")
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndIf
 Local $frmBotPos = WinGetPos($frmBot)
@@ -47005,15 +48016,29 @@ Else
 $frmBotDockedPosX = ($frmBotPos[0] > -30000 ? $frmBotPos[0] : $frmBotDockedPosX)
 $frmBotDockedPosY = ($frmBotPos[1] > -30000 ? $frmBotPos[1] : $frmBotDockedPosY)
 EndIf
+If $AndroidEmbedded And AndroidEmbedArrangeActive() = False Then
+Local $iAction = AndroidEmbedCheck(True)
+If $iAction > 0 Then
+AndroidEmbedCheck(False, Default, $iAction)
 EndIf
-If AndroidEmbedArrangeActive() = False And AndroidEmbedCheck(True) = True Then
-AndroidEmbedCheck()
-_WinAPI_RedrawWindow($frmBotEx, 0, 0, $RDW_INVALIDATE)
-_WinAPI_RedrawWindow($frmBotBottom, 0, 0, $RDW_INVALIDATE)
+If $debugWindowMessages Then
+Local $a = $frmBotPos
+SetDebugLog("Bot Position: " & $a[0] & "," & $a[1] & " " & $a[2] & "x" & $a[3])
+$a = WinGetPos($HWnD)
+SetDebugLog("Android Position: " & $a[0] & "," & $a[1] & " " & $a[2] & "x" & $a[3])
+If $frmBotEmbeddedMouse <> 0 Then
+$a = WinGetPos($frmBotEmbeddedMouse)
+SetDebugLog("Mouse Window Position: " & $a[0] & "," & $a[1] & " " & $a[2] & "x" & $a[3])
 EndIf
+EndIf
+EndIf
+EndIf
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndFunc
 Func GUIControl_WM_SYSCOMMAND($hWind, $iMsg, $wParam, $lParam)
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
 If $debugWindowMessages Then SetDebugLog("GUIControl_WM_SYSCOMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 If $hWind = $frmBot Then
 Switch $wParam
@@ -47022,13 +48047,16 @@ BotMinimize("GUIControl_WM_SYSCOMMAND")
 Case $SC_RESTORE
 BotRestore("GUIControl_WM_SYSCOMMAND")
 Case $SC_CLOSE
-BotClose()
+BotCloseRequest()
 EndSwitch
 EndIf
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndFunc
 Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
-If $debugWindowMessages Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
+If $debugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 Local $nNotifyCode = BitShift($wParam, 16)
 Local $nID = BitAND($wParam, 0x0000FFFF)
 Local $hCtrl = $lParam
@@ -47054,15 +48082,25 @@ Case Else
 $bCheckEmbeddedShield = False
 EndSwitch
 If $bCheckEmbeddedShield Then
-If $hWind <> $frmBotEmbeddedShield Then
+If $hWind <> $frmBotEmbeddedShield And $hWind <> $frmBotEmbeddedGarphics And $hWinD <> $frmBotEmbeddedMouse Then
 If AndroidShieldHasFocus() = True Then
+If $debugWindowMessages Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 AndroidShield("GUIControl_WM_NOTIFY", Default, False, 150, False)
 EndIf
 EndIf
 EndIf
+$TogglePauseAllowed = $wasAllowed
 Return $GUI_RUNDEFMSG
 EndFunc
+Func GUIControl_WM_CLOSE($hWind, $iMsg, $wParam, $lParam)
+If $debugWindowMessages > 0 Then SetDebugLog("GUIControl_WM_CLOSE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+If $hWind = $frmBot Then
+BotCloseRequest()
+EndIf
+EndFunc
 Func GUIEvents()
+Local $wasAllowed = $TogglePauseAllowed
+$TogglePauseAllowed = False
 Local $GUI_CtrlId = @GUI_CtrlId
 If $FrmBotMinimized And $GUI_CtrlId = $GUI_EVENT_MINIMIZE Then
 If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_MINIMIZE changed to $GUI_EVENT_RESTORE", Default, True)
@@ -47071,7 +48109,7 @@ EndIf
 Switch $GUI_CtrlId
 Case $GUI_EVENT_CLOSE
 If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_CLOSE", Default, True)
-BotClose()
+BotCloseRequest()
 Case $GUI_EVENT_MINIMIZE
 If $debugWindowMessages Then SetDebugLog("$GUI_EVENT_MINIMIZE", Default, True)
 BotMinimize("GUIEvents")
@@ -47081,6 +48119,7 @@ BotRestore("GUIEvents")
 Case Else
 If $debugWindowMessages Then SetDebugLog("$GUI_EVENT: " & @GUI_CtrlId, Default, True)
 EndSwitch
+$TogglePauseAllowed = $wasAllowed
 EndFunc
 Func OpenURL_Label($LabelCtrlID)
 Local $url = GUICtrlRead($LabelCtrlID)
@@ -47094,13 +48133,25 @@ Else
 SetDebugLog("Cannot open URL for Control ID " & $LabelCtrlID, $COLOR_RED)
 EndIf
 EndFunc
+Func BotCloseRequest()
+If $BotAction = $eBotClose Then
+BotClose()
+Else
+SetLog("Closing " & $sBotTitle & ", please wait ...")
+EndIf
+$RunState = False
+$TPaused = False
+$BotAction = $eBotClose
+EndFunc
 Func BotClose($SaveConfig = Default, $bExit = True)
 If $SaveConfig = Default Then $SaveConfig = $iBotLaunchTime > 0
+$RunState = False
+$TPaused = False
 ResumeAndroid()
-SetLog("Closing " & $sBotTitle & " ...")
+SetLog("Closing " & $sBotTitle & " now ...")
 AndroidEmbed(False)
 AndroidShieldDestroy()
-If $RunState = True Then AndroidBotStopEvent()
+AndroidBotStopEvent()
 If $SaveConfig = True Then
 setupProfile()
 SaveConfig()
@@ -47131,6 +48182,7 @@ WinMove2($frmBot, "", -32000, -32000, -1, -1, 0, $SWP_HIDEWINDOW, False)
 _WinAPI_SetWindowLong($frmBot, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE), $WS_EX_TOOLWINDOW))
 EndIf
 If _WinAPI_IsIconic($frmBot) Then WinSetState($frmBot, "", @SW_RESTORE)
+If _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
 WinMove2($frmBot, "", -32000, -32000, -1, -1, 0, $SWP_SHOWWINDOW, False)
 Else
 If $iHideWhenMinimized = 1 Then
@@ -47153,6 +48205,7 @@ WinMove2($frmBot, "", -1, -1, -1, -1, 0, $SWP_HIDEWINDOW, False)
 _WinAPI_SetWindowLong($frmBot, $GWL_EXSTYLE, BitAND($iExStyle, BitNOT($WS_EX_TOOLWINDOW)))
 EndIf
 If _WinAPI_IsIconic($frmBot) Then WinSetState($frmBot, "", @SW_RESTORE)
+If $AndroidAdbScreencap = False And $RunState = True And $TPaused = False And _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
 WinMove2($frmBot, "", $botPosX, $botPosY, -1, -1, $HWND_TOP, $SWP_SHOWWINDOW)
 _WinAPI_SetActiveWindow($frmBot)
 _WinAPI_SetFocus($frmBot)
@@ -47191,7 +48244,7 @@ Func tiDonate()
 ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
 EndFunc
 Func tiExit()
-BotClose()
+BotCloseRequest()
 EndFunc
 Func SetRedrawBotWindow($bEnableRedraw, $bCheckRedrawBotWindow = True, $bForceRedraw = False, $RedrawControlIDs = Default)
 If $RedrawBotWindowMode = 0 Then Return False
@@ -47748,6 +48801,11 @@ EndIf
 Return $i
 EndFunc
 tabMain()
+If FileExists($config) = 0 And $aCmdLine[0] > 0 Then
+createProfile()
+saveConfig()
+setupProfileComboBox()
+EndIf
 selectProfile()
 If FileExists($config) Or FileExists($building) Then
 readConfig()
@@ -47761,20 +48819,90 @@ GUICtrlSetState($chkdebugBuildingPos, $GUI_SHOW + $GUI_ENABLE)
 GUICtrlSetState($chkdebugTrain, $GUI_SHOW + $GUI_ENABLE)
 GUICtrlSetState($chkdebugOCRDonate, $GUI_SHOW + $GUI_ENABLE)
 EndIf
-GUIRegisterMsg($WM_NCACTIVATE, "GUIControl_WM_NCACTIVATE")
-GUIRegisterMsg($WM_SETFOCUS, "GUIControl_WM_FOCUS")
-GUIRegisterMsg($WM_KILLFOCUS, "GUIControl_WM_FOCUS")
-GUIRegisterMsg($WM_MOVE, "GUIControl_WM_MOVE")
-GUIRegisterMsg($WM_COMMAND, "GUIControl_WM_COMMAND")
 GUISetOnEvent($GUI_EVENT_CLOSE, "GUIEvents", $frmBot)
-GUIRegisterMsg($WM_NOTIFY, "GUIControl_WM_NOTIFY")
-For $i = $WM_MOUSEFIRST To $WM_MOUSEHWHEEL
-GUIRegisterMsg($i, "GUIControl_WM_MOUSE")
-Next
 GUISetOnEvent($GUI_EVENT_MINIMIZE, "GUIEvents", $frmBot)
 GUISetOnEvent($GUI_EVENT_RESTORE, "GUIEvents", $frmBot)
+GUIRegisterMsg($WM_COMMAND, "GUIControl_WM_COMMAND")
+GUIRegisterMsg($WM_NOTIFY, "GUIControl_WM_NOTIFY")
+For $i = $WM_MOUSEMOVE To $WM_MBUTTONDBLCLK
+GUIRegisterMsg($i, "GUIControl_WM_MOUSE")
+Next
+Func frmBot_WNDPROC($hWin, $iMsg, $wParam, $lParam)
+If $debugWindowMessages > 1 Then SetDebugLog("frmBot_WNDPROC: FORWARD $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg) & ", $wParam=" & Hex($wParam) & ", $lParam=" & $lParam, Default, True)
+Switch $iMsg
+Case $WM_NCACTIVATE
+GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
+Case $WM_SETFOCUS, $WM_KILLFOCUS
+GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
+Case $WM_MOVE
+GUIControl_WM_MOVE($hWin, $iMsg, $wParam, $lParam)
+Case $WM_KEYDOWN, $WM_KEYUP, $WM_SYSKEYDOWN, $WM_SYSKEYUP, $WM_MOUSEWHEEL, $WM_MOUSEHWHEEL
+GUIControl_AndroidEmbedded($hWin, $iMsg, $wParam, $lParam)
+EndSwitch
+Return _WinAPI_CallWindowProc($frmBot_WNDPROC, $hWin, $iMsg, $wParam, $lParam)
+EndFunc
+Local $frmBot_WNDPROC_ptr = DllCallbackGetPtr(DllCallbackRegister("frmBot_WNDPROC", "ptr", "hwnd;uint;long;ptr"))
+_WinAPI_SetWindowLong(ControlGetHandle($frmBot, "", $frmBotEmbeddedShieldInput), $GWL_WNDPROC, $frmBot_WNDPROC_ptr)
+$frmBot_WNDPROC = _WinAPI_SetWindowLong($frmBot, $GWL_WNDPROC, $frmBot_WNDPROC_ptr)
 cmbDBAlgorithm()
 cmbABAlgorithm()
+SetAccelerators()
+Func AcquireMutex($mutexName, $scope = Default, $timout = Default)
+Local $timer = TimerInit()
+Local $hMutex_MyBot = 0
+If $scope = Default Then
+$scope = @AutoItPID + "/"
+ElseIf $scope <> "" Then
+$scope += "/"
+EndIf
+If $timout = Default Then $timeout = 30000
+While $hMutex_MyBot = 0 And ($timout = 0 Or TimerDiff($timer) < $timout)
+$hMutex_MyBot = _Singleton("MyBot.run/" + $scope + $mutexName, 1)
+If $hMutex_MyBot <> 0 Then ExitLoop
+If $timout = 0 Then ExitLoop
+Sleep($iDelaySleep)
+WEnd
+Return $hMutex_MyBot
+EndFunc
+Func ReleaseMutex($hMutex, $ReturnValue = Default)
+_WinAPI_CloseHandle($hMutex)
+If $ReturnValue = Default Then Return
+Return $ReturnValue
+EndFunc
+Func WaitForSemaphore($sSemaphore, $iInitial = 4096, $iMaximum = 4096, $tSecurity = 0)
+Local $bAquired = False
+While $bAquired = False
+Local $hSemaphore = _WinAPI_CreateSemaphore($sSemaphore, $iInitial, $iMaximum, $tSecurity)
+$bAquired = _WinAPI_WaitForSingleObject($hSemaphore, 0) <> -1
+If $bAquired = True Then
+_WinAPI_ReleaseSemaphore($hSemaphore)
+_WinAPI_CloseHandle($hSemaphore)
+ExitLoop
+EndIf
+_Sleep($iDelaySleep, True, False)
+WEnd
+EndFunc
+Func LockSemaphore($sSemaphore)
+Local $bAquired = False
+While $bAquired = False
+Local $hSemaphore = _WinAPI_CreateSemaphore($sSemaphore, 0, 1)
+$bAquired = _WinAPI_WaitForSingleObject($hSemaphore, 0) <> -1
+If $bAquired = True And _WinAPI_WaitForSingleObject($hSemaphore, 0) = -1 Then
+Return $hSemaphore
+ExitLoop
+EndIf
+_WinAPI_ReleaseSemaphore($hSemaphore)
+_WinAPI_CloseHandle($hSemaphore)
+_Sleep($iDelaySleep, True, False)
+WEnd
+EndFunc
+Func UnlockSemaphore($hSemaphore)
+If $hSemaphore <> 0 And $hSemaphore <> -1 Then
+_WinAPI_ReleaseSemaphore($hSemaphore)
+Return _WinAPI_CloseHandle($hSemaphore)
+EndIf
+Return False
+EndFunc
 Global Enum  $iOAER_bSet_ErrLine, $iOAER_bIn_Proc, $iOAER_bUse_StdOut, $iOAER_iPID, $iOAER_hErr_Callback, $iOAER_hErr_WinHook, $iOAER_sUserFunc, $iOAER_vUserParams, $iOAER_iCOMErrorNumber, $iOAER_sCOMErrorDesc,  $iOAER_Total
 Global $aOAER_DATA[$iOAER_Total]
 Func _OnAutoItErrorRegister()
@@ -47822,39 +48950,6 @@ BotClose(Default, False)
 _WinAPI_FatalAppExit($sError_Msg)
 EndSwitch
 Return _WinAPI_CallNextHookEx($aOAER_DATA[$iOAER_hErr_WinHook], $nCode, $wParam, $lParam)
-EndFunc
-Func _GUI_Value_STATE($action_groupe, $group_de_controle)
-$liste_controle = StringSplit($group_de_controle, "#")
-If IsArray($liste_controle) Then
-For $i = 1 To $liste_controle[0]
-Switch StringUpper($action_groupe)
-Case "HIDE"
-GUICtrlSetState($liste_controle[$i], $GUI_HIDE)
-Case "SHOW"
-GUICtrlSetState($liste_controle[$i], $GUI_SHOW)
-Case "ENABLE"
-GUICtrlSetState($liste_controle[$i], $GUI_ENABLE)
-Case "DISABLE"
-GUICtrlSetState($liste_controle[$i], $GUI_DISABLE)
-Case "UNCHECKED"
-GUICtrlSetState($liste_controle[$i], $GUI_UNCHECKED)
-Case "CHECKED"
-GUICtrlSetState($liste_controle[$i], $GUI_CHECKED)
-EndSwitch
-Next
-EndIf
-EndFunc
-Func SplashStep($status)
-$iCurrentStep += 1
-If $ichkDisableSplash = 0 Then
-GUICtrlSetData($hSplashProgress, ($iCurrentStep / $iTotalSteps) * 100)
-GUICtrlSetData($lSplashStatus, $status)
-EndIf
-EndFunc
-Func UpdateSplashTitle($title)
-If $ichkDisableSplash = 0 Then
-GUICtrlSetData($lSplashTitle, $title)
-EndIf
 EndFunc
 Func WallsStatsMAJ()
 Local $sVarNameOld = "itxtwall" & ($icmbWalls + 4 < 10 ? "0" : "") & ($icmbWalls + 4) & "ST"
@@ -48452,9 +49547,11 @@ EndIf
 btnCloseWaitStopRandom()
 If $ibtnCloseWaitExact = 1 Then
 GUICtrlSetState($btnCloseWaitExact, $GUI_CHECKED)
+GUICtrlSetState($btnCloseWaitRandom, $GUI_UNCHECKED)
 EndIf
 If $ibtnCloseWaitRandom = 1 Then
 GUICtrlSetState($btnCloseWaitRandom, $GUI_CHECKED)
+GUICtrlSetState($btnCloseWaitExact, $GUI_UNCHECKED)
 EndIf
 _GUICtrlComboBox_SetCurSel($cmbCloseWaitRdmPercent, $icmbCloseWaitRdmPercent)
 btnCloseWaitRandom()
@@ -49364,7 +50461,7 @@ _GUICtrlComboBox_SetCurSel($cmbBotCommand, $icmbBotCommand)
 _GUICtrlComboBox_SetCurSel($cmbBotCond, $icmbBotCond)
 _GUICtrlComboBox_SetCurSel($cmbHoursStop, $icmbHoursStop)
 cmbBotCond()
-GUICtrlSetData($txtTimeWakeUp, $sTimeWakeUp)
+GUICtrlSetData($txtTimeWakeUp, Int(Int($sTimeWakeUp) / 60))
 GUICtrlSetData($txtRestartGold, $itxtRestartGold)
 GUICtrlSetData($txtRestartElixir, $itxtRestartElixir)
 GUICtrlSetData($txtRestartDark, $itxtRestartDark)
@@ -50127,15 +51224,15 @@ IniReadS($iChkMeetTH[$DB], $config, "search", "DBMeetTH", "0")
 IniReadS($iChkMeetTHO[$DB], $config, "search", "DBMeetTHO", "0")
 IniReadS($iChkMeetOne[$DB], $config, "search", "DBMeetOne", "0")
 IniReadS($iEnableAfterCount[$DB], $config, "search", "DBEnableAfterCount", "1")
-IniReadS($iEnableBeforeCount[$DB], $config, "search", "DBEnableBeforeCount", "9999")
-IniReadS($iEnableAfterTropies[$DB], $config, "search", "DBEnableAfterTropies", "100")
-IniReadS($iEnableBeforeTropies[$DB], $config, "search", "DBEnableBeforeTropies", "6000")
-IniReadS($iEnableAfterArmyCamps[$DB], $config, "search", "DBEnableAfterArmyCamps", "100")
-IniReadS($iMinGold[$DB], $config, "search", "DBsearchGold", "80000")
+IniReadS($iEnableBeforeCount[$DB], $config, "search", "DBEnableBeforeCount", "9999", "Int")
+IniReadS($iEnableAfterTropies[$DB], $config, "search", "DBEnableAfterTropies", "100", "Int")
+IniReadS($iEnableBeforeTropies[$DB], $config, "search", "DBEnableBeforeTropies", "6000", "Int")
+IniReadS($iEnableAfterArmyCamps[$DB], $config, "search", "DBEnableAfterArmyCamps", "100", "Int")
+IniReadS($iMinGold[$DB], $config, "search", "DBsearchGold", "80000", "Int")
 IniReadS($iMinElixir[$DB], $config, "search", "DBsearchElixir", "80000")
-IniReadS($iMinGoldPlusElixir[$DB], $config, "search", "DBsearchGoldPlusElixir", "160000")
-IniReadS($iMinDark[$DB], $config, "search", "DBsearchDark", "0")
-IniReadS($iMinTrophy[$DB], $config, "search", "DBsearchTrophy", "0")
+IniReadS($iMinGoldPlusElixir[$DB], $config, "search", "DBsearchGoldPlusElixir", "160000", "Int")
+IniReadS($iMinDark[$DB], $config, "search", "DBsearchDark", "0", "Int")
+IniReadS($iMinTrophy[$DB], $config, "search", "DBsearchTrophy", "0", "Int")
 IniReadS($iCmbTH[$DB], $config, "search", "DBTHLevel", "0")
 IniReadS($iCmbWeakMortar[$DB], $config, "search", "DBWeakMortar", "5")
 IniReadS($iCmbWeakWizTower[$DB], $config, "search", "DBWeakWizTower", "4")
@@ -50155,15 +51252,15 @@ IniReadS($iChkMeetTH[$LB], $config, "search", "ABMeetTH", "0")
 IniReadS($iChkMeetTHO[$LB], $config, "search", "ABMeetTHO", "0")
 IniReadS($iChkMeetOne[$LB], $config, "search", "ABMeetOne", "0")
 IniReadS($iEnableAfterCount[$LB], $config, "search", "ABEnableAfterCount", "1")
-IniReadS($iEnableBeforeCount[$LB], $config, "search", "ABEnableBeforeCount", "9999")
-IniReadS($iEnableAfterTropies[$LB], $config, "search", "ABEnableAfterTropies", "100")
-IniReadS($iEnableBeforeTropies[$LB], $config, "search", "ABEnableBeforeTropies", "6000")
-IniReadS($iEnableAfterArmyCamps[$LB], $config, "search", "ABEnableAfterArmyCamps", "100")
-IniReadS($iMinGold[$LB], $config, "search", "ABsearchGold", "80000")
+IniReadS($iEnableBeforeCount[$LB], $config, "search", "ABEnableBeforeCount", "9999", "Int")
+IniReadS($iEnableAfterTropies[$LB], $config, "search", "ABEnableAfterTropies", "100", "Int")
+IniReadS($iEnableBeforeTropies[$LB], $config, "search", "ABEnableBeforeTropies", "6000", "Int")
+IniReadS($iEnableAfterArmyCamps[$LB], $config, "search", "ABEnableAfterArmyCamps", "100", "Int")
+IniReadS($iMinGold[$LB], $config, "search", "ABsearchGold", "80000", "Int")
 IniReadS($iMinElixir[$LB], $config, "search", "ABsearchElixir", "80000")
-IniReadS($iMinGoldPlusElixir[$LB], $config, "search", "ABsearchGoldPlusElixir", "160000")
-IniReadS($iMinDark[$LB], $config, "search", "ABsearchDark", "0")
-IniReadS($iMinTrophy[$LB], $config, "search", "ABsearchTrophy", "0")
+IniReadS($iMinGoldPlusElixir[$LB], $config, "search", "ABsearchGoldPlusElixir", "160000", "Int")
+IniReadS($iMinDark[$LB], $config, "search", "ABsearchDark", "0", "Int")
+IniReadS($iMinTrophy[$LB], $config, "search", "ABsearchTrophy", "0", "Int")
 IniReadS($iCmbTH[$LB], $config, "search", "ABTHLevel", "0")
 IniReadS($iCmbWeakMortar[$LB], $config, "search", "ABWeakMortar", "5")
 IniReadS($iCmbWeakWizTower[$LB], $config, "search", "ABWeakWizTower", "4")
@@ -50202,18 +51299,18 @@ IniReadS($YourTH, $config, "search", "YourTH", "0")
 IniReadS($iTHBullyAttackMode, $config, "search", "THBullyAttackMode", "0")
 IniReadS($THaddtiles, $config, "search", "THaddTiles", "2")
 IniReadS($iEnableAfterCount[$TS], $config, "search", "TSEnableAfterCount", "1")
-IniReadS($iEnableBeforeCount[$TS], $config, "search", "TSEnableBeforeCount", "9999")
-IniReadS($iEnableAfterTropies[$TS], $config, "search", "TSEnableAfterTropies", "100")
-IniReadS($iEnableBeforeTropies[$TS], $config, "search", "TSEnableBeforeTropies", "6000")
-IniReadS($iEnableAfterArmyCamps[$TS], $config, "search", "TSEnableAfterArmyCamps", "100")
-IniReadS($iMinGold[$TS], $config, "search", "TSsearchGold", "80000")
-IniReadS($iMinElixir[$TS], $config, "search", "TSsearchElixir", "80000")
-IniReadS($iMinGoldPlusElixir[$TS], $config, "search", "TSsearchGoldPlusElixir", "160000")
-IniReadS($iMinDark[$TS], $config, "search", "TSsearchDark", "600")
+IniReadS($iEnableBeforeCount[$TS], $config, "search", "TSEnableBeforeCount", "9999", "Int")
+IniReadS($iEnableAfterTropies[$TS], $config, "search", "TSEnableAfterTropies", "100", "Int")
+IniReadS($iEnableBeforeTropies[$TS], $config, "search", "TSEnableBeforeTropies", "6000", "Int")
+IniReadS($iEnableAfterArmyCamps[$TS], $config, "search", "TSEnableAfterArmyCamps", "100", "Int")
+IniReadS($iMinGold[$TS], $config, "search", "TSsearchGold", "80000", "Int")
+IniReadS($iMinElixir[$TS], $config, "search", "TSsearchElixir", "80000", "Int")
+IniReadS($iMinGoldPlusElixir[$TS], $config, "search", "TSsearchGoldPlusElixir", "160000", "Int")
+IniReadS($iMinDark[$TS], $config, "search", "TSsearchDark", "600", "Int")
 IniReadS($iCmbMeetGE[$TS], $config, "search", "TSMeetGE", "1")
 IniReadS($iChkTrophyRange, $config, "search", "TrophyRange", "0")
-IniReadS($itxtdropTrophy, $config, "search", "MinTrophy", "5000")
-IniReadS($itxtMaxTrophy, $config, "search", "MaxTrophy", "5000")
+IniReadS($itxtdropTrophy, $config, "search", "MinTrophy", "5000", "Int")
+IniReadS($itxtMaxTrophy, $config, "search", "MaxTrophy", "5000", "Int")
 IniReadS($iChkTrophyHeroes, $config, "search", "chkTrophyHeroes", "0")
 IniReadS($iChkTrophyAtkDead, $config, "search", "chkTrophyAtkDead", "0")
 IniReadS($itxtDTArmyMin, $config, "search", "DTArmyMin", "70")
@@ -51168,7 +52265,7 @@ EndIf
 $icmbBotCommand = _GUICtrlComboBox_GetCurSel($cmbBotCommand)
 $icmbBotCond = _GUICtrlComboBox_GetCurSel($cmbBotCond)
 $icmbHoursStop = _GUICtrlComboBox_GetCurSel($cmbHoursStop)
-$sTimeWakeUp = GUICtrlRead($txtTimeWakeUp)
+$sTimeWakeUp = Int(GUICtrlRead($txtTimeWakeUp)) * 60
 $itxtRestartGold = GUICtrlRead($txtRestartGold)
 $itxtRestartElixir = GUICtrlRead($txtRestartElixir)
 $itxtRestartDark = GUICtrlRead($txtRestartDark)
@@ -53572,14 +54669,14 @@ If $counter > 40 Then ExitLoop
 WEnd
 EndIf
 If _Sleep($iDelayReturnHome3) Then Return
-_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT - 45)
+_CaptureRegion()
 AttackReport()
 EndIf
 If $TakeSS = 1 And $GoldChangeCheck = True Then
 SetLog("Taking snapshot of your loot", $COLOR_GREEN)
 Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 Local $Time = @HOUR & "." & @MIN
-_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT - 45)
+_CaptureRegion()
 $hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2)
 If $ScreenshotLootInfo = 1 Then
 $LootFileName = $Date & "_" & $Time & " G" & $iGoldLast & " E" & $iElixirLast & " DE" & $iDarkLast & " T" & $iTrophyLast & " S" & StringFormat("%3s", $SearchCount) & ".jpg"
@@ -53772,7 +54869,6 @@ EndIf
 ClickP($aAway, 2, $iDelayUnbreakable8, "#0115")
 If _Sleep($iDelayUnbreakable1) Then Return True
 If CheckObstacles() = True Then Setlog("Window clean required, but no problem for MyBot!", $COLOR_BLUE)
-_WinAPI_EmptyWorkingSet(GetAndroidPid())
 SetLog("Closing Clash Of Clans", $COLOR_BLUE)
 $i = 0
 While 1
@@ -55710,6 +56806,10 @@ EndIf
 EndIf
 DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
 ReleaseClicks($AndroidAdbClicksTroopDeploySize)
+If _Sleep($iDelayRespond) Then
+FileClose($f)
+Return
+EndIf
 Case "WAIT"
 ReleaseClicks()
 Local $sleep1, $sleep2, $sleepvect
@@ -55748,6 +56848,10 @@ Local $hSleepTimer = TimerInit()
 While TimerDiff($hSleepTimer) < $sleep
 $Gold = getGoldVillageSearch(48, 69)
 $Elixir = getElixirVillageSearch(48, 69 + 29)
+If _Sleep($iDelayRespond) Then
+FileClose($f)
+Return
+EndIf
 $Trophies = getTrophyVillageSearch(48, 69 + 99)
 If $Trophies <> "" Then
 $DarkElixir = getDarkElixirVillageSearch(48, 69 + 57)
@@ -55771,7 +56875,10 @@ If $DebugSetLog = 1 Then Setlog("From Attackcsv: One Star Reach, exit", $COLOR_G
 $exitOneStar = 1
 ExitLoop
 EndIf
-If _sleep($iDelayAttackCSV3) Then Return
+If _Sleep($iDelayRespond) Then
+FileClose($f)
+Return
+EndIf
 CheckHeroesHealth()
 WEnd
 If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop
@@ -55782,7 +56889,7 @@ Case "SIDE"
 ReleaseClicks()
 Setlog("Calculate main side... ")
 If StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
-$MAINSIDEMAINSIDE = StringUpper($value8)
+$MAINSIDE = StringUpper($value8)
 Setlog("Forced side: " & StringUpper($value8))
 Else
 Local $heightTopLeft = 0, $heightTopRight = 0, $heightBottomLeft = 0, $heightBottomRight = 0
@@ -57083,7 +58190,7 @@ EndIf
 Setlog("Locate Elixir..." )
 $hTimer = TimerInit()
 _CaptureRegion2()
-_CaptureRegion(0,0,$DEFAULT_WIDTH,$DEFAULT_HEIGHT,true)
+_CaptureRegion()
 $sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
 Local $MilkFarmAtkPixelListSTR = ""
 Local $ElixirVect = StringSplit(GetLocationElixirWithLevel(), "~", 2)
@@ -58102,6 +59209,7 @@ Local $aQueenHealthCopy = $aQueenHealth
 $aQueenHealthCopy[0] = GetXPosOfArmySlot($Queen, 68)
 Local $aWardenHealthCopy = $aWardenHealth
 $aWardenHealthCopy[0] = GetXPosOfArmySlot($Warden, 68)
+If _Sleep($iDelayRespond) Then Return
 If $debugSetlog = 1 Then
 Setlog(" CheckHeroesHealth started ")
 Local $KingPixelColor = _GetPixelColor($aKingHealthCopy[0], $aKingHealthCopy[1], $bCapturePixel)
@@ -58132,6 +59240,7 @@ SelectDropTroop($Warden)
 $checkWPower = False
 EndIf
 EndIf
+If _Sleep($iDelayRespond) Then Return
 EndIf
 EndFunc
 Func dropCC($x, $y, $slot)
@@ -58305,19 +59414,27 @@ ReleaseClicks()
 Next
 EndFunc
 Func GetXPosOfArmySlot($slotNumber, $xOffsetFor11Slot)
-Local $iAmount
+Local $SlotPixelColor, $SlotPixelColorTemp, $SlotPixelColor1
+$xOffsetFor11Slot -= 8
 Switch $slotNumber
-Case 0 To 1
+Case 0 To 4
 $SlotComp = 0
-Case 2 To 5
+Case 5
 $SlotComp = 1
 Case Else
 $SlotComp = 2
 EndSwitch
-If $atkTroops[11][0] = -1 Then
+If $slotNumber = $King Or $slotNumber = $Queen Or $slotNumber = $Warden Then $xOffsetFor11Slot += 8
+$SlotPixelColor = _ColorCheck(_GetPixelColor(834, 588 + $bottomOffsetY, True), Hex(0x040c0a, 6), 15)
+If $debugSetlog = 1 Then
+Setlog(" Slot 0  _ColorCheck 0x040c0a at (834," & 588 + $bottomOffsetY & "): " & $SlotPixelColor, $COLOR_PURPLE)
+$SlotPixelColorTemp = _GetPixelColor(834, 588 + $bottomOffsetY, $bCapturePixel)
+Setlog(" Slot 0  _GetPixelColo(834," & 588 + $bottomOffsetY & "): " & $SlotPixelColorTemp, $COLOR_PURPLE)
+EndIf
+If $SlotPixelColor = True Then
 Return $xOffsetFor11Slot + $SlotComp + ($slotNumber * 72)
 Else
-Return $xOffsetFor11Slot + $SlotComp + ($slotNumber * 72) - 30
+Return $xOffsetFor11Slot + $SlotComp + ($slotNumber * 72) - 13
 EndIf
 EndFunc
 Func GetSlotIndexFromXPos($xPos)
@@ -58868,8 +59985,8 @@ Next
 SetLog("Trainavailable = " & $txt, $COLOR_PURPLE)
 EndIf
 EndFunc
-Func CheckOverviewFullArmy($bWindowOpen = False)
-If $bWindowOpen = True Then
+Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
+If $bOpenArmyWindow = True Then
 ClickP($aAway, 1, 0, "#0346")
 If _Sleep($iDelayCheckFullArmy1) Then Return
 If $iUseRandomClick = 0 then
@@ -58902,7 +60019,7 @@ $fullArmy = True
 EndIf
 $canRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5])
 If $debugSetlog = 1 Then Setlog("Can Request CC: " & $canRequestCC, $COLOR_PURPLE)
-If $bWindowOpen = True Then
+If $bCloseArmyWindow = True Then
 ClickP($aAway, 1, 0, "#0348")
 If _Sleep($iDelayCheckFullArmy3) Then Return
 EndIf
@@ -59051,7 +60168,7 @@ Click(505, 411 + $midOffsetY)
 EndIf
 EndFunc
 Func getArmyCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
-If $debugsetlogTrain = 1 Then SETLOG("Begin getArmyCapacity:", $COLOR_PURPLE)
+If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmyCapacity:", $COLOR_PURPLE)
 If $bOpenArmyWindow = False And IsTrainPage() = False Then
 SetError(1)
 Return
@@ -59189,7 +60306,7 @@ If _Sleep($iDelaycheckArmyCamp4) Then Return
 EndIf
 EndFunc
 Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
-If $debugsetlogTrain = 1 Then SETLOG("Begin getArmyTHeroCount:", $COLOR_PURPLE)
+If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmyTHeroCount:", $COLOR_PURPLE)
 If $bOpenArmyWindow = False And IsTrainPage() = False Then
 SetError(1)
 Return
@@ -59234,19 +60351,29 @@ EndSwitch
 SetLog("Hero slot#" & $i + 1 & $sMessage & " Healing", $COLOR_PURPLE)
 EndIf
 Case StringInStr($sResult, "upgrade", $STR_NOCASESENSEBASIC)
-If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then
 Switch $i
 Case 0
 $sMessage = "-Barbarian King"
+If BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $HERO_KING) = $HERO_KING Or BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $HERO_KING) = $HERO_KING Then
+_GUI_Value_STATE("SHOW", $groupKingSleeping)
+SetLog("Warning: King Upgrading & Wait enabled, Disable Wait for King or may never attack!", $COLOR_RED)
+EndIf
 Case 1
 $sMessage = "-Archer Queen"
+If BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $HERO_QUEEN) = $HERO_QUEEN Or BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $HERO_QUEEN) = $HERO_QUEEN Then
+_GUI_Value_STATE("SHOW", $groupQueenSleeping)
+SetLog("Warning: Queen Upgrading & Wait enabled, Disable Wait for Queen or may never attack!", $COLOR_RED)
+EndIf
 Case 2
 $sMessage = "-Grand Warden"
+If BitAND($iHeroAttack[$DB], $iHeroWait[$DB], $HERO_WARDEN) = $HERO_WARDEN Or BitAND($iHeroAttack[$LB], $iHeroWait[$LB], $HERO_WARDEN) = $HERO_WARDEN Then
+_GUI_Value_STATE("SHOW", $groupWardenSleeping)
+SetLog("Warning: Warden Upgrading & Wait enabled, Disable Wait for Warden or may never attack!", $COLOR_RED)
+EndIf
 Case Else
 $sMessage = "-Need to Get Monkey"
 EndSwitch
-SetLog("Hero slot#" & $i + 1 & $sMessage & " Upgrade in Process", $COLOR_PURPLE)
-EndIf
+If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then SetLog("Hero slot#" & $i + 1 & $sMessage & " Upgrade in Process", $COLOR_PURPLE)
 Case StringInStr($sResult, "none", $STR_NOCASESENSEBASIC)
 If $debugsetlogTrain = 1 Or $debugArmyHeroCount = 1 Then SetLog("Hero slot#" & $i + 1 & " Empty, stop count", $COLOR_PURPLE)
 ExitLoop
@@ -59347,7 +60474,7 @@ Return $iResultHeroes
 EndIf
 EndFunc
 Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
-If $debugsetlogTrain = 1 Then SETLOG("Begin getArmySpellCapacity:", $COLOR_PURPLE)
+If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmySpellCapacity:", $COLOR_PURPLE)
 If $bOpenArmyWindow = False And IsTrainPage() = False Then
 SetError(1)
 Return
@@ -59388,7 +60515,7 @@ $CurSFactory = 0
 $TotalSFactory = $iTotalCountSpell
 EndIf
 SetLog("Total Spell(s) Capacity: " & $CurSFactory & "/" & $TotalSFactory)
-If $CurSFactory >= $TotalSFactory Then
+If $CurSFactory >= $iTotalCountSpell Then
 $bFullSpell = True
 Else
 $bFullSpell = False
@@ -59403,7 +60530,7 @@ If _Sleep($iDelaycheckArmyCamp4) Then Return
 EndIf
 EndFunc
 Func getArmySpellCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $test = False)
-If $debugsetlogTrain = 1 Then SETLOG("Begin getArmySpellCount:", $COLOR_PURPLE)
+If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmySpellCount:", $COLOR_PURPLE)
 If $bOpenArmyWindow = False And IsTrainPage() = False Then
 SetError(1)
 Return
@@ -59554,7 +60681,7 @@ Global $SlotInArmyBarb = -1, $SlotInArmyArch = -1, $SlotInArmyGiant = -1, $SlotI
 Global $SlotInArmyMini = -1, $SlotInArmyHogs = -1, $SlotInArmyValk = -1, $SlotInArmyGole = -1, $SlotInArmyWitc = -1, $SlotInArmyLava = -1, $SlotInArmyBowl = -1, $SlotInArmyDrag = -1
 Global $SlotInArmyPekk = -1, $SlotInArmyBabyD = -1, $SlotInArmyMine = -1
 Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $test = false)
-If $debugsetlogTrain = 1 Then SETLOG("Begin getArmyTroopCount:", $COLOR_PURPLE)
+If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmyTroopCount:", $COLOR_PURPLE)
 If $test = false  Then
 If $bOpenArmyWindow = False And IsTrainPage() = False Then
 SetError(1)
@@ -59852,7 +60979,7 @@ WEnd
 If isSpellFactory() Then
 If $iLightningSpellComp > 0 Then
 Local $iTempLightningSpell = Number(getBarracksTroopQuantity(175 + 107 * 0, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempLightningSpell = $iLightningSpellComp Then
 $iLightningSpell = 0
 Else
@@ -59882,7 +61009,7 @@ EndIf
 EndIf
 If $iHealSpellComp > 0 Then
 Local $iTempHealSpell = Number(getBarracksTroopQuantity(175 + 107 * 1, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempHealSpell = $iHealSpellComp Then
 $iHealSpell = 0
 Else
@@ -59912,7 +61039,7 @@ EndIf
 EndIf
 If $iRageSpellComp > 0 Then
 Local $iTempRageSpell = Number(getBarracksTroopQuantity(175 + 107 * 2, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempRageSpell = $iRageSpellComp Then
 $iRageSpell = 0
 Else
@@ -59942,7 +61069,7 @@ EndIf
 EndIf
 If $iJumpSpellComp > 0 Then
 Local $iTempJumpSpell = Number(getBarracksTroopQuantity(175 + 107 * 3, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempJumpSpell = $iJumpSpellComp Then
 $iJumpSpell = 0
 Else
@@ -59972,7 +61099,7 @@ EndIf
 EndIf
 If $iFreezeSpellComp > 0 Then
 Local $iTempFreezeSpell = Number(getBarracksTroopQuantity(175 + 107 * 4, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempFreezeSpell = $iFreezeSpellComp Then
 $iFreezeSpell = 0
 Else
@@ -60002,7 +61129,7 @@ EndIf
 EndIf
 If $iCloneSpellComp > 0 Then
 Local $iTempCloneSpell = Number(getBarracksTroopQuantity(175 + 107 * 1, 401 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempCloneSpell = $iCloneSpellComp Then
 $iCloneSpell = 0
 Else
@@ -60046,7 +61173,7 @@ WEnd
 If isDarkSpellFactory() Then
 If $iPoisonSpellComp > 0 Then
 Local $iTempPoisonSpell = Number(getBarracksTroopQuantity(175 + 107 * 0, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempPoisonSpell = $iPoisonSpellComp Then
 $iPoisonSpell = 0
 Else
@@ -60078,7 +61205,7 @@ EndIf
 EndIf
 If $iEarthSpellComp > 0 Then
 Local $iTempEarthSpell = Number(getBarracksTroopQuantity(175 + 107 * 1, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempEarthSpell = $iEarthSpellComp Then
 $iEarthSpell = 0
 Else
@@ -60109,7 +61236,7 @@ EndIf
 EndIf
 If $iHasteSpellComp > 0 Then
 Local $iTempHasteSpell = Number(getBarracksTroopQuantity(175 + 107 * 2, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempHasteSpell = $iHasteSpellComp Then
 $iHasteSpell = 0
 Else
@@ -60140,7 +61267,7 @@ EndIf
 EndIf
 If $iSkeletonSpellComp > 0 Then
 Local $iTempSkeletonSpell = Number(getBarracksTroopQuantity(175 + 107 * 3, 295 + $midOffsetY))
-If $bFullSpell = True Then
+If $bFullSpell = True and $Fullarmy Then
 If $iTempSkeletonSpell = $iSkeletonSpellComp Then
 $iSkeletonSpell = 0
 Else
@@ -60186,6 +61313,7 @@ Setlog("SmartWait4Train not finding Main Page, skip function!", $COLOR_RED)
 Return
 EndIf
 WEnd
+If BitOR($ichkCloseWaitEnable, $ichkCloseWaitTrain) = 0 Then  Return
 Local $aResult, $iActiveHero
 Local $aHeroResult[3]
 Local Const $TRAINWAIT_NOWAIT = 0x00
@@ -60204,8 +61332,6 @@ If $ibtnCloseWaitStop = 1 Then $StopEmulator = True
 If IsArray($aShieldStatus) And (StringInStr($aShieldStatus[0], "shield", $STR_NOCASESENSEBASIC) Or StringInStr($aShieldStatus[0], "guard", $STR_NOCASESENSEBASIC)) Then
 If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SetLog("Have shield till " & $aShieldStatus[2] & ", close game while wait for train)", $COLOR_PURPLE)
 $iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD)
-ElseIf BitOR($ichkCloseWaitEnable, $ichkCloseWaitTrain) = 0 Then
-Return
 EndIf
 If _Sleep($iDelayRespond) Then Return
 If IsArray($aShieldStatus) = 0 Or $aShieldStatus[0] = "" Or $aShieldStatus[0] = "none" Then
@@ -60361,12 +61487,14 @@ If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then Setlog("Time Train:Shield:Diff
 If $iDiffTime <= 0 And $iShieldTime > 120 Then
 Setlog("Smart wait while shield time= " & StringFormat("%.2f", $iShieldTime / 60) & " Minutes", $COLOR_BLUE)
 UniversalCloseWaitOpenCoC($iShieldTime * 1000, "SmartWait4Train_", $StopEmulator)
+$Restart = True
 For $i = 0 To UBound($aTimeTrain) - 1
 $aTimeTrain[$i] = 0
 Next
 Else
 Setlog("Smart wait train time= " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_BLUE)
 UniversalCloseWaitOpenCoC($iTrainWaitTime * 1000, "SmartWait4Train_", $StopEmulator)
+$Restart = True
 For $i = 0 To UBound($aTimeTrain) - 1
 $aTimeTrain[$i] = 0
 Next
@@ -60374,6 +61502,7 @@ EndIf
 ElseIf ($ichkCloseWaitTrain = 1 And $aTimeTrain[0] > 0) Or ($ichkCloseWaitSpell = 1 And $aTimeTrain[1] > 0) Or ($ichkCloseWaitHero = 1 And $aTimeTrain[2] > 0) Then
 Setlog("Smart Wait time= " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_BLUE)
 UniversalCloseWaitOpenCoC($iTrainWaitTime * 1000, "SmartWait4TrainNoShield_", $StopEmulator)
+$Restart = True
 For $i = 0 To UBound($aTimeTrain) - 1
 $aTimeTrain[$i] = 0
 Next
@@ -61586,12 +62715,42 @@ If $resultPosition = 1 Then
 $x = $x + Int(Number($array[4]) / 2)
 $y = $y + Int(Number($array[5]) / 2)
 EndIf
-If $Hide = False Then
 $x -= $x1
 $y -= $y1
-EndIf
 Return 1
 EndIf
+EndFunc
+Func _ImageSearchAreaImgLoc($findImage, $resultPosition, $x1, $y1, $right, $bottom, ByRef $x, ByRef $y, $Tolerance)
+Local $ToleranceImgLoc = Number($Tolerance) / 100
+Local $sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
+Local $MaxReturnPoints = 1
+Local $res = DllCall($hImgLib, "str", "SearchTile", "handle", $hHBitmap, "str", $findImage, "float", $ToleranceImgLoc, "str", $sArea, "Int", $MaxReturnPoints)
+If @error Then _logErrorDLLCall($pImgLib, @error)
+If IsArray($res) Then
+If $res[0] = "0" Or $res[0] = "" Then
+ElseIf StringLeft($res[0], 2) = "-1" Then
+SetLog("DLL Error: " & $res[0] & ", " & $findImage, $COLOR_RED)
+Else
+Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
+Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+If UBound($posPoint) >= 2 Then
+$x = Int($posPoint[0])
+$y = Int($posPoint[1])
+If $resultPosition = 1 Then
+Local $sImgInfo = _ImageGetInfo($findImage)
+Local $iTileWidth = _ImageGetParam($sImgInfo, "Width")
+Local $iTileHeight = _ImageGetParam($sImgInfo, "Height")
+$x = $x + Int(Number($iTileWidth) / 2)
+$y = $y + Int(Number($iTileHeight) / 2)
+EndIf
+$x -= $x1
+$y -= $y1
+Return 1
+Else
+EndIf
+EndIf
+EndIf
+Return 0
 EndFunc
 Func LoadElixirImage()
 Local $x
@@ -61740,7 +62899,7 @@ For $i = 0 To $maxElixirLevel
 If Int(Execute("$ElixirImages" & $i & "_50percent" & "[0]")) > $max50 Then $max50 = Int(Execute("$ElixirImages" & $i & "_50percent" & "[0]"))
 Next
 If $limit > 0 And $max50 > 0 And $limit <= $max50 Then $max50 = $limit
-_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT, True)
+_CaptureRegion()
 For $i = 1 To $max50
 For $t = 0 To $maxElixirLevel
 If Int(Execute("$ElixirImages" & $t & "_50percent" & "[0]")) >= $i Then
@@ -61968,7 +63127,7 @@ Next
 If $limit > 0 And $max > 0 And $limit <= $max Then $max = $limit
 Local $found = False
 For $i = 1 To $max
-If $captureRegion Then _CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT, True)
+If $captureRegion Then _CaptureRegion()
 For $t = UBound($THText) - 1 To 0 Step -1
 If Int(Execute("$THImages" & $t & "[0]")) >= $i Then
 $count += 1
@@ -62303,24 +63462,15 @@ Func checkMainScreen($Check = True)
 Local $iCount, $Result
 If $Check = True Then
 SetLog("Trying to locate Main Screen")
-_WinAPI_EmptyWorkingSet(GetAndroidPid())
 Else
 EndIf
 If CheckAndroidRunning(False) = False Then Return
 getBSPos()
-If $ichkBackground = 0 And $NoFocusTampering = False And $AndroidEmbedded = False Then
-Local $hTimer = TimerInit(), $hWndActive = -1
-Local $activeHWnD = WinGetHandle("")
-While TimerDiff($hTimer) < 1000 And $hWndActive <> $HWnD And Not _Sleep(100)
-getBSPos()
-$hWndActive = WinActivate($HWnD)
-WEnd
-If $hWndActive <> $HWnD Then
-RebootAndroid()
-Return
+WinGetAndroidHandle()
+If $ichkBackground = 0 And $HWnD <> 0 Then
+BotToFront()
 EndIf
-WinActivate($activeHWnD)
-EndIf
+If $AndroidAdbScreencap = False And _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
 $iCount = 0
 While _CheckPixel($aIsMain, $bCapturePixel) = False
 WinGetAndroidHandle()
@@ -62365,7 +63515,7 @@ If $debugsetlog = 1 Then SetLog("(Inactive=" & _GetPixelColor($aIsInactive[0], $
 If $debugsetlog = 1 Then SetLog("(Maintenance=" & _GetPixelColor($aIsMaintenance[0], $aIsMaintenance[1]) & ")(RateCoC=" & ")", $COLOR_PURPLE)
 If $debugsetlog = 1 Then SetLog("33B5E5=>true, 282828=>false", $COLOR_PURPLE)
 $result = getOcrMaintenanceTime(184, 325 + $midOffsetY)
-If StringInStr($result, "device", $STR_NOCASESENSEBASIC) Or  _ImageSearchArea($device, 0, 237, 321 + $midOffsetY, 293, 346 + $midOffsetY, $x, $y, 80) Then
+If StringInStr($result, "device", $STR_NOCASESENSEBASIC) Or  _ImageSearchAreaImgLoc($device, 0, 220, 300 + $midOffsetY, 300, 360 + $midOffsetY, $x, $y, 95) Then
 If $sTimeWakeUp > 3600 Then
 SetLog("Another Device has connected, waiting " & Floor(Floor($sTimeWakeUp / 60) / 60) & " hours " & Floor(Mod(Floor($sTimeWakeUp / 60), 60)) & " minutes " & Floor(Mod($sTimeWakeUp, 60)) & " seconds", $COLOR_RED)
 PushMsg("AnotherDevice3600")
@@ -62377,17 +63527,19 @@ SetLog("Another Device has connected, waiting " & Floor(Mod($sTimeWakeUp, 60)) &
 PushMsg("AnotherDevice")
 EndIf
 If _SleepStatus($sTimeWakeUp * 1000) Then Return
-PureClickP($aReloadButton, 1, 0, "#0127")
+checkObstacles_ReloadCoC($aReloadButton, "#0127")
 If _Sleep(2000) Then Return
 If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
+checkObstacles_ResetSearch()
 Return True
 EndIf
-If _ImageSearchArea($break, 0, 165, 257 + $midOffsetY, 335, 295 + $midOffsetY, $x, $y, 100) Then
+If _ImageSearchAreaImgLoc($break, 0, 165, 257 + $midOffsetY, 335, 295 + $midOffsetY, $x, $y, 95) Then
 SetLog("Village must take a break, wait ...", $COLOR_RED)
 PushMsg("TakeBreak")
 If _SleepStatus($iDelaycheckObstacles4) Then Return
-PureClickP($aReloadButton, 1, 0, "#0128")
+checkObstacles_ReloadCoC($aReloadButton, "#0128")
 If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
+checkObstacles_ResetSearch()
 Return True
 EndIf
 Select
@@ -62395,11 +63547,25 @@ Case _CheckPixel($aIsInactive, $bNoCapturePixel)
 SetLog("Village was Inactive, Reloading CoC...", $COLOR_RED)
 If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 Case _CheckPixel($aIsConnectLost, $bNoCapturePixel)
+$result = getOcrMaintenanceTime(171, 358 + $midOffsetY, "Check Obstacles OCR 'policy at super'=")
+If StringInStr($result, "policy", $STR_NOCASESENSEBASIC) Then
+SetLog("Sorry but account has been banned, Bot must stop!!", $COLOR_RED)
+BanMsgBox()
+Btnstop()
+Return True
+EndIf
+$result = getOcrMaintenanceTime(171, 337 + $midOffsetY, "Check Obstacles OCR 'prohibited 3rd'= ")
+If StringInStr($result, "3rd", $STR_NOCASESENSEBASIC) Then
+SetLog("Sorry but account has been banned, Bot must stop!!", $COLOR_RED)
+BanMsgBox()
+Btnstop()
+Return True
+EndIf
 SetLog("Connection lost, Reloading CoC...", $COLOR_RED)
 Case _CheckPixel($aIsCheckOOS, $bNoCapturePixel)
 SetLog("Out of Sync Error, Reloading CoC...", $COLOR_RED)
 Case _CheckPixel($aIsMaintenance, $bNoCapturePixel)
-$result = getOcrMaintenanceTime(171, 345 + $midOffsetY)
+$result = getOcrMaintenanceTime(171, 345 + $midOffsetY, "Check Obstacles OCR Maintenance Break=")
 Local $iMaintenanceWaitTime = 0
 Select
 Case $result = ""
@@ -62425,26 +63591,41 @@ EndSelect
 SetLog("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....", $COLOR_RED)
 If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 If _SleepStatus($iMaintenanceWaitTime) Then Return
+checkObstacles_ResetSearch()
 Case Else
 If $debugImageSave = 1 Then DebugImageSave("ChkObstaclesReloadMsg_")
-$result = getOcrMaintenanceTime(171, 325 + $midOffsetY)
-If $debugsetlog = 1 Then SetLog("Check Obstacles getOCRMaintenanceTime= " & $result, $COLOR_PURPLE)
+$result = getOcrMaintenanceTime(171, 325 + $midOffsetY, "Check Obstacles OCR 'Good News!'=")
 If StringInStr($result, "new", $STR_NOCASESENSEBASIC) Then
 SetLog("Game Update is required, Bot must stop!!", $COLOR_RED)
 Btnstop()
 Return True
 EndIf
 $result = getOcrRateCoc(228, 380 + $midOffsetY)
-If $debugsetlog = 1 Then SetLog("Check Obstacles getOCRRateCoC= " & $result, $COLOR_PURPLE)
+If $debugsetlog = 1 Then SetLog("Check Obstacles getOCRRateCoC=" & $result, $COLOR_PURPLE)
 If StringInStr($result, "never", $STR_NOCASESENSEBASIC) Then
 SetLog("Clash feedback window found, permanently closed!", $COLOR_RED)
 PureClick(248, 408 + $midOffsetY, 1, 0, "#9999")
 $MinorObstacle = True
 Return True
 EndIf
+$result = getOcrMaintenanceTime(171, 358 + $midOffsetY, "Check Obstacles OCR 'policy at super'=")
+If StringInStr($result, "policy", $STR_NOCASESENSEBASIC) Then
+SetLog("Sorry but account has been banned, Bot must stop!!", $COLOR_RED)
+BanMsgBox()
+Btnstop()
+Return True
+EndIf
+$result = getOcrMaintenanceTime(171, 337 + $midOffsetY, "Check Obstacles OCR 'prohibited 3rd'= ")
+If StringInStr($result, "3rd", $STR_NOCASESENSEBASIC) Then
+SetLog("Sorry but account has been banned, Bot must stop!!", $COLOR_RED)
+BanMsgBox()
+Btnstop()
+Return True
+EndIf
 SetLog("Warning: Can not find type of Reload error message", $COLOR_RED)
+SetDebugLog("OCR Text: " & $result)
 EndSelect
-PureClickP($aReloadButton, 1, 0, "#0131")
+checkObstacles_ReloadCoC($aReloadButton, "#0131")
 If _Sleep($iDelaycheckObstacles3) Then Return
 Return True
 EndIf
@@ -62488,7 +63669,7 @@ If _CheckPixel($aSurrenderButton, $bNoCapturePixel) Then
 ReturnHome(False, False)
 Return True
 EndIf
-If _ImageSearchArea($CocStopped, 0, 250, 328 + $midOffsetY, 618, 402 + $midOffsetY, $x, $y, 70) Then
+If _ImageSearchAreaImgLoc($CocStopped, 0, 250, 328 + $midOffsetY, 618, 402 + $midOffsetY, $x, $y, 95) Then
 SetLog("CoC Has Stopped Error .....", $COLOR_RED)
 PushMsg("CoCError")
 If _Sleep($iDelaycheckObstacles1) Then Return
@@ -62514,6 +63695,27 @@ Return True
 EndIf
 EndIf
 Return False
+EndFunc
+Func checkObstacles_ReloadCoC($point, $debugtxt = "")
+CloseCoC(True)
+EndFunc
+Func checkObstacles_ResetSearch()
+$Is_ClientSyncError = False
+$Is_SearchLimit = False
+$Quickattack = False
+$Restart = True
+EndFunc
+Func BanMsgBox()
+Local $MsgBox
+Local $stext = "Sorry, youy account is banned!!" & @CRLF & "Bot will stop now..."
+While 1
+_ExtMsgBoxSet(4, 1, 0x004080, 0xFFFF00, 20, "Comic Sans MS", 600)
+$MsgBox = _ExtMsgBox(48, "Ok", "Banned", $stext, 1, $frmBot)
+If $MsgBox = 1 Then Return
+_ExtMsgBoxSet(4, 1, 0xFFFF00, 0x004080, 20, "Comic Sans MS", 600)
+$MsgBox = _ExtMsgBox(48, "Ok", "Banned", $stext, 1, $frmBot)
+If $MsgBox = 1 Then Return
+WEnd
 EndFunc
 Global $iDPI_Ratio = 1
 Func GetDPI_Ratio()
@@ -63005,6 +64207,9 @@ If Mod($i, 5) = 0 Then
 If $debugImageSave = 1 Then DebugImageSave("WaitMainScreen_", False)
 EndIf
 If ($i > 105) Or ($iCount > 120) Then ExitLoop
+If TestCapture() Then
+Return "Main screen not available"
+EndIf
 Next
 CloseCoC(True)
 If _CheckPixel($aIsMain, True) Then Return
@@ -63053,6 +64258,9 @@ Return
 EndIf
 _StatusUpdateTime($hTimer, "Main Screen")
 If ($i > 60) Or ($iCount > 80) Then ExitLoop
+If TestCapture() Then
+Return "Main screen not available"
+EndIf
 Next
 Return SetError( 1, 0, -1)
 EndFunc
@@ -63151,16 +64359,21 @@ ResumeAndroid()
 WinGetAndroidHandle()
 getBSPos()
 If Not $RunState Then Return
+Local $Result
 If $AndroidEmbedded = False Then
-Return Execute("ZoomOut" & $Android & "()")
+$Result = Execute("ZoomOut" & $Android & "()")
+If $Result = "" And @error <> 0 Then
+$Result = AndroidOnlyZoomOut()
+EndIf
+Return $Result
 EndIf
 AndroidOnlyZoomOut()
 EndFunc
 Func ZoomOutBlueStacks()
-Return ZoomOutCtrlClick(True, False, False, True)
+Return ZoomOutCtrlClick(True, False, False, False)
 EndFunc
 Func ZoomOutBlueStacks2()
-Return ZoomOutCtrlClick(True, False, False, True)
+Return ZoomOutCtrlClick(True, False, False, False)
 EndFunc
 Func ZoomOutMEmu()
 Return DefaultZoomOut("{F3}", 0)
@@ -63226,9 +64439,11 @@ If $tryCtrlWheelScroll Then
 Setlog($Android & " zoom-out with key " & $ZoomOutKey & " didn't work, try now Ctrl+MouseWheel...", $COLOR_BLUE)
 Return ZoomOutCtrlWheelScroll(False, False, False, False)
 EndIf
+Return True
 EndIf
+Return False
 EndFunc
-Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel = True, $AlwaysControlFocus = False, $AndroidZoomOut = True)
+Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel = True, $AlwaysControlFocus = False, $AndroidZoomOut = True, $hWin = $HWnD, $ScrollSteps = -5, $ClickDelay = 250)
 Local $exitCount = 80
 Local $delayCount = 20
 Local $result[4], $i = 0, $j
@@ -63258,18 +64473,19 @@ $Result[0] = ControlFocus($HWnD, "", "")
 Else
 $Result[0] = 1
 EndIf
-$Result[1] = ControlSend($HWnD, "", "", "{CTRLDOWN}")
+$Result[1] = ControlSend($hWin, "", "", "{CTRLDOWN}")
 If $CenterMouseWhileZooming Then MouseMove($BSpos[0] + Int($DEFAULT_WIDTH / 2), $BSpos[1] + Int($DEFAULT_HEIGHT / 2), 0)
 If $GlobalMouseWheel Then
-$Result[2] = MouseWheel("down", 5)
+$Result[2] = MouseWheel(($ScrollSteps < 0 ? "down" : "up"), Abs($ScrollSteps))
 Else
 Local $WM_WHEELMOUSE = 0x020A, $MK_CONTROL = 0x0008
-Local $wParam = BitOR(-5 * 0x10000, BitAND($MK_CONTROL, 0xFFFF))
+Local $wParam = BitOR($ScrollSteps * 0x10000, BitAND($MK_CONTROL, 0xFFFF))
 Local $lParam =  BitOR(($BSpos[1] + Int($DEFAULT_HEIGHT / 2)) * 0x10000, BitAND(($BSpos[0] + Int($DEFAULT_WIDTH / 2)), 0xFFFF))
 _SendMessage($HWnD, $WM_WHEELMOUSE, $wParam, $lParam)
 $Result[2] = (@error = 0 ? 1 : 0)
 EndIf
-$Result[3] = ControlSend($HWnD, "", "", "{CTRLUP}")
+If _Sleep($ClickDelay) Then ExitLoop
+$Result[3] = ControlSend($hWin, "", "", "{CTRLUP}{SPACE}")
 If $debugsetlog = 1 Then Setlog("ControlFocus Result = " & $Result[0] &  ", " & $ZoomActions[1] & " = " & $Result[1] &  ", " & $ZoomActions[2] & " = " & $Result[2] &  ", " & $ZoomActions[3] & " = " & $Result[3] &  " | " & "@error= " & @error, $COLOR_PURPLE)
 For $j = 1 To 3
 If $Result[$j] = 1 Then
@@ -63297,7 +64513,9 @@ ForceCaptureRegion()
 _CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 WEnd
 If $CenterMouseWhileZooming And $AndroidZoomOut = False Then MouseMove($aMousePos[0], $aMousePos[1], 0)
+Return True
 EndIf
+Return False
 EndFunc
 Func ZoomOutCtrlClick($ZoomOutOverWaters = True, $CenterMouseWhileZooming = False, $AlwaysControlFocus = False, $AndroidZoomOut = True, $ClickDelay = 250)
 Local $exitCount = 80
@@ -63371,7 +64589,9 @@ _CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 WEnd
 If $SendCtrlUp Then ControlSend($HWnD, "", "", "{CTRLUP}{SPACE}")
 If $CenterMouseWhileZooming Then MouseMove($aMousePos[0], $aMousePos[1], 0)
+Return True
 EndIf
+Return False
 EndFunc
 Func AndroidOnlyZoomOut()
 Local $i = 0
@@ -63396,7 +64616,9 @@ $i += 1
 ForceCaptureRegion()
 _CaptureRegion(0, 0, $DEFAULT_WIDTH, 2)
 WEnd
+Return True
 EndIf
+Return False
 EndFunc
 Func checkAndroidTimeLag($bRebootAndroid = True)
 SetError(0, 0)
@@ -63825,8 +65047,6 @@ EndIf
 EndIf
 If $debugsetlog = 1 And $bOops Then
 SetLog("BS Kill Failed to stop service", $COLOR_RED)
-ElseIf Not $bOops Then
-SetLog("BS stopped successfully", $COLOR_GREEN)
 EndIf
 If $bOops Then
 SetError(1, @extended, -1)
@@ -63840,12 +65060,6 @@ If @error <> 0 Then
 SetLog($Android & " failed to quit", $COLOR_RED)
 EndIf
 If _Sleep(2000) Then Return
-$bOops = ProcessExists2($AndroidProgramPath) <> 0
-If $debugsetlog = 1 And $bOops Then
-SetLog($Android & " failed to quit all processes", $COLOR_RED)
-ElseIf Not $bOops Then
-SetLog($Android & " stopped successfully", $COLOR_GREEN)
-EndIf
 If $bOops Then
 SetError(1, @extended, -1)
 EndIf
@@ -64459,6 +65673,209 @@ EndIf
 Next
 Return $bChanged
 EndFunc
+Func OpenLeapDroid($bRestart = False)
+Local $PID, $hTimer, $iCount = 0, $process_killed, $cmdOutput, $connected_to, $cmdPar
+SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
+$launchAndroid = WinGetAndroidHandle() = 0
+If $launchAndroid Then
+$cmdPar = GetAndroidProgramParameter()
+SetDebugLog("ShellExecute: " & $AndroidProgramPath & " " & $cmdPar)
+$PID = ShellExecute($AndroidProgramPath, $cmdPar, $__LeapDroid_Path)
+If _Sleep(1000) Then Return False
+If $PID <> 0 Then $PID = ProcessExists($PID)
+SetDebugLog("$PID= " & $PID)
+If $PID = 0 Then
+SetLog("Unable to load " & $Android & ($AndroidInstance = "" ? "" : "(" & $AndroidInstance & ")") & ", please check emulator/installation.", $COLOR_RED)
+SetLog("Unable to continue........", $COLOR_MAROON)
+btnStop()
+SetError(1, 1, -1)
+Return False
+EndIf
+EndIf
+SetLog("Please wait while " & $Android & " and CoC start...", $COLOR_GREEN)
+$hTimer = TimerInit()
+$connected_to = ConnectAndroidAdb(False, 60 * 1000)
+If Not $RunState Then Return False
+If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return False
+If TimerDiff($hTimer) >= $AndroidLaunchWaitSec * 1000 Then
+SetLog("Serious error has occurred, please restart PC and try again", $COLOR_RED)
+SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for window", $COLOR_RED)
+SetError(1, @extended, False)
+Return False
+EndIf
+SetLog($Android & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_GREEN)
+Return True
+EndFunc
+Func GetLeapDroidProgramParameter($bAlternative = False)
+Local $sInstance = ($AndroidInstance = "" ? $AndroidAppConfig[$AndroidConfig][1] : $AndroidInstance)
+If Not $bAlternative Or $AndroidInstance <> $AndroidAppConfig[$AndroidConfig][1] Then
+Return "-vfiber -novtcheck -w " & $AndroidClientWidth & " -h " & $AndroidClientHeight & " -s " & $sInstance
+EndIf
+Return "-s " & $sInstance
+EndFunc
+Func GetLeapDroidPath()
+Local $LeapDroid_Path = RegRead($HKLM & "\SOFTWARE\Leapdroid\Leapdroid VM\", "InstallDir")
+If $LeapDroid_Path <> "" And FileExists($LeapDroid_Path & "\LeapdroidVM.exe") = 0 Then
+$LeapDroid_Path = ""
+EndIf
+Local $InstallLocation = RegRead($HKLM & "\SOFTWARE" & $Wow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\LeapdroidVM\", "InstallLocation")
+If $LeapDroid_Path = "" And FileExists($InstallLocation & "\leapdroidvm.ini") = 1 Then
+$LeapDroid_Path = IniRead($InstallLocation & "\leapdroidvm.ini", "main", "install_path", "")
+If FileExists($LeapDroid_Path & "\LeapdroidVM.exe") = 0 Then
+$LeapDroid_Path = ""
+EndIf
+EndIf
+If $LeapDroid_Path = "" And FileExists($InstallLocation & "\LeapdroidVM.exe") = 1 Then
+$LeapDroid_Path = $InstallLocation
+EndIf
+If $LeapDroid_Path = "" And FileExists(@ProgramFilesDir & "\Leapdroid\VM\LeapdroidVM.exe") = 1 Then
+$LeapDroid_Path = @ProgramFilesDir & "\Leapdroid\VM"
+EndIf
+SetError(0, 0, 0)
+If $LeapDroid_Path <> "" And StringRight($LeapDroid_Path, 1) <> "\" Then $LeapDroid_Path &= "\"
+Return $LeapDroid_Path
+EndFunc
+Func GetLeapDroidAdbPath()
+Local $adbPath = GetLeapDroidPath() & "adb.exe"
+If FileExists($adbPath) Then Return $adbPath
+Return ""
+EndFunc
+Func InitLeapDroid($bCheckOnly = False)
+Local $process_killed, $aRegExResult, $AndroidAdbDeviceHost, $AndroidAdbDevicePort, $oops = 0
+Local $LeapDroidVersion = RegRead($HKLM & "\SOFTWARE" & $Wow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\LeapDroid\", "DisplayVersion")
+SetError(0, 0, 0)
+Local $LeapDroid_Path = GetLeapDroidPath()
+Local $LeapDroid_Manage_Path = GetLeapDroidPath() & "VBoxManage.exe"
+If FileExists($LeapDroid_Path) = 0 Then
+If Not $bCheckOnly Then
+SetLog("Serious error has occurred: Cannot find " & $Android, $COLOR_RED)
+SetLog("installation directory", $COLOR_RED)
+SetError(1, @extended, False)
+Else
+SetDebugLog($Android & ": Cannot find installation directory")
+EndIf
+Return False
+EndIf
+If FileExists($LeapDroid_Path & "LeapdroidVM.exe") = 0 Then
+If Not $bCheckOnly Then
+SetLog("Serious error has occurred: Cannot find " & $Android & ":", $COLOR_RED)
+SetLog($LeapDroid_Path & "LeapdroidVM.exe", $COLOR_RED)
+Else
+SetDebugLog($Android & ": Cannot find " & $LeapDroid_Path & "LeapdroidVM.exe")
+SetError(1, @extended, False)
+EndIf
+Return False
+EndIf
+If FileExists($LeapDroid_Path & "adb.exe") = 0 Then
+If Not $bCheckOnly Then
+SetLog("Serious error has occurred: Cannot find " & $Android & ":", $COLOR_RED)
+SetLog($LeapDroid_Path & "adb.exe", $COLOR_RED)
+SetError(1, @extended, False)
+Else
+SetDebugLog($Android & ": Cannot find " & $LeapDroid_Path & "adb.exe")
+EndIf
+Return False
+EndIf
+If FileExists($LeapDroid_Manage_Path) = 0 Then
+If Not $bCheckOnly Then
+SetLog("Serious error has occurred: Cannot find " & $Android & ":", $COLOR_RED)
+SetLog($LeapDroid_Manage_Path, $COLOR_RED)
+SetError(1, @extended, False)
+Else
+SetDebugLog($Android & ": Cannot find " & $LeapDroid_Manage_Path)
+EndIf
+Return False
+EndIf
+Local $ops = 0
+If Not $bCheckOnly Then
+InitAndroidConfig(True)
+$__VBoxVMinfo = LaunchConsole($LeapDroid_Manage_Path, "showvminfo " & $AndroidInstance, $process_killed)
+If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
+SetLog("Cannot find " & $Android & " instance " & $AndroidInstance, $COLOR_RED)
+Return False
+EndIf
+$__VBoxGuestProperties = LaunchConsole($LeapDroid_Manage_Path, "guestproperty enumerate " & $AndroidInstance, $process_killed)
+$AndroidProgramPath = $LeapDroid_Path & "LeapdroidVM.exe"
+$AndroidAdbPath = FindPreferredAdbPath()
+If $AndroidAdbPath = "" Then $AndroidAdbPath = $LeapDroid_Path & "adb.exe"
+$AndroidVersion = $LeapDroidVersion
+$__LeapDroid_Path = $LeapDroid_Path
+$__VBoxManage_Path = $LeapDroid_Manage_Path
+$aRegExResult = StringRegExp($__VBoxGuestProperties, "Name: adb_port, value: (\d{3,5}),", $STR_REGEXPARRAYMATCH)
+If Not @error Then
+$AndroidAdbDeviceHost = "127.0.0.1"
+$AndroidAdbDevicePort = $aRegExResult[0]
+If $debugSetlog = 1 Then Setlog("InitLeapDroid: Read $AndroidAdbDevicePort = " & $AndroidAdbDevicePort, $COLOR_PURPLE)
+Else
+$oops = 1
+SetLog("Cannot read " & $Android & "(" & $AndroidInstance & ") ADB Device Port", $COLOR_RED)
+EndIf
+If $oops = 0 Then
+$AndroidAdbDevice = "emulator-" & ($AndroidAdbDevicePort - 1)
+Else
+SetLog("Using ADB default device " & $AndroidAdbDevice & " for " & $Android, $COLOR_RED)
+EndIf
+$AndroidPicturesPath = "/mnt/shared/yw_shared/"
+$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'yw_shared', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
+If Not @error Then
+$AndroidPicturesHostPath = $aRegExResult[0] & "\"
+Else
+$oops = 1
+$AndroidAdbScreencap = False
+$AndroidPicturesHostPath = ""
+SetLog($Android & " Background Mode is not available", $COLOR_RED)
+EndIf
+$UpdateAndroidWindowTitle = True
+EndIf
+Return SetError($oops, 0, True)
+EndFunc
+Func SetScreenLeapDroid()
+If Not InitAndroid() Then Return False
+Local $cmdOutput, $process_killed
+Return True
+EndFunc
+Func RebootLeapDroidSetScreen()
+Return RebootAndroidSetScreenDefault()
+EndFunc
+Func CloseLeapDroid()
+Return CloseVboxAndroidSvc()
+EndFunc
+Func CheckScreenLeapDroid($bSetLog = True)
+If Not InitAndroid() Then Return False
+Return True
+EndFunc
+Func EmbedLeapDroid($bEmbed = Default)
+If $bEmbed = Default Then $bEmbed = $AndroidEmbedded
+Local $aWin = _WinAPI_EnumProcessWindows(GetAndroidPid(), False)
+Local $i
+Local $hQTool = 0
+For $i = 1 To UBound($aWin) - 1
+Local $h = $aWin[$i][0]
+Local $c = $aWin[$i][1]
+If $c = "QTool" Then
+$hQTool = $h
+ExitLoop
+EndIf
+Next
+If $hQTool = 0 Then
+SetDebugLog("EmbedLeapDroid(" & $bEmbed & "): QTool Window not found, list of windows:" & $c, Default, True)
+For $i = 1 To UBound($aWin) - 1
+Local $h = $aWin[$i][0]
+Local $c = $aWin[$i][1]
+SetDebugLog("EmbedLeapDroid(" & $bEmbed & "): Handle = " & $h & ", Class = " & $c, Default, True)
+Next
+Else
+SetDebugLog("EmbedLeapDroid(" & $bEmbed & "): $hQTool=" & $hQTool, Default, True)
+WinMove2($hQTool, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+_WinAPI_ShowWindow($hQTool, ($bEmbed ? @SW_HIDE : @SW_SHOWNOACTIVATE))
+EndIf
+EndFunc
+Func LeapDroidBotStartEvent()
+Return AndroidCloseSystemBar()
+EndFunc
+Func LeapDroidBotStopEvent()
+Return AndroidOpenSystemBar()
+EndFunc
 Func OpenNox($bRestart = False)
 Local $PID, $hTimer, $iCount = 0, $process_killed, $cmdOutput, $connected_to, $cmdPar
 SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_GREEN)
@@ -64733,8 +66150,8 @@ getAndroidPos(True)
 Else
 SetError($HWnd = 0 ? 1 : 0)
 EndIf
-If Not $RunState Then Return
 If @error = 1 Then
+If Not $RunState Then Return
 SetError (0,0,0)
 If $hWin = 0 Then
 OpenAndroid(True)
@@ -64757,6 +66174,7 @@ EndIf
 EndIf
 EndIf
 If @error = 1 Then
+If Not $RunState Then Return
 SetError (0,0,0)
 If $hWin = 0 Then
 OpenAndroid(True)
@@ -64775,6 +66193,7 @@ $aOldValues[2] = $BSrpos[0]
 $aOldValues[3] = $BSrpos[1]
 Local $aPos = getAndroidPos()
 If Not IsArray($aPos) Then
+If Not $RunState Then Return
 If $hWin = 0 Then
 OpenAndroid(True)
 Else
@@ -64793,13 +66212,12 @@ EndIf
 EndIf
 EndIf
 If IsArray($aPos) Then
-If Not $RunState Then Return
 Local $tPoint = DllStructCreate("int X;int Y")
 DllStructSetData($tPoint, "X", $aPos[0])
 If @error <> 0 Then Return SetError (0,0,0)
 DllStructSetData($tPoint, "Y", $aPos[1])
 If @error <> 0 Then Return SetError (0,0,0)
-_WinAPI_ClientToScreen(($AndroidEmbedded = False ? $HWnD : $frmBot), $tPoint)
+_WinAPI_ClientToScreen(GetCurrentAndroidHWnD(), $tPoint)
 If @error <> 0 Then Return SetError (0,0,0)
 $BSpos[0] = DllStructGetData($tPoint, "X")
 If @error <> 0 Then Return SetError (0,0,0)
@@ -64813,7 +66231,7 @@ EndIf
 SuspendAndroid($SuspendMode, False)
 EndFunc
 Func getAndroidPos($FastCheck = False, $RetryCount = 0)
-Local $BSsize = ControlGetPos(($AndroidEmbedded = False ? $HWnD : $frmBot), $AppPaneName, $AppClassInstance)
+Local $BSsize = ControlGetPos(GetCurrentAndroidHWnD(), $AppPaneName, $AppClassInstance)
 If $FastCheck Then Return $BSsize
 If IsArray($BSsize) Then
 Local $BSx = $BSsize[2]
@@ -64839,17 +66257,20 @@ If $debugSetlog = 1 Then SetLog($title & " Adjusted Window Size: " & $aAndroidWi
 Else
 SetDebugLog("WARNING: Cannot determine " & $Android & " Window Client Area!", $COLOR_RED)
 EndIf
+WinMove($HWnD, "", $AndroidWinPos[0], $AndroidWinPos[1], $aAndroidWindow[0] - 4, $aAndroidWindow[1] - 4)
+$AndroidWinPos = WinGetPos($HWnD)
+Local $WinWidth = $AndroidWinPos[2]
+Local $WinHeight = $AndroidWinPos[3]
 If $AndroidWindowWidth > 0 And $AndroidWindowHeight > 0 And ($WinWidth <> $aAndroidWindow[0] Or $WinHeight <> $aAndroidWindow[1]) Then
 WinMove2($HWnD, "", $AndroidWinPos[0], $AndroidWinPos[1], $aAndroidWindow[0], $aAndroidWindow[1])
 If @error = 0 Then
 SetDebugLog($Android & " window resized to " & $aAndroidWindow[0] & " x " & $aAndroidWindow[1], $COLOR_GREEN)
 RedrawAndroidWindow()
-If _Sleep(500, True, False) Then Return False
 Local $hTimer = TimerInit()
 Do
-If _Sleep(100, True, False) Then Return False
+Sleep($iDelaySleep)
 Local $new_BSsize = getAndroidPos(True)
-Until TimerDiff($hTimer) > 5000 Or ($BSsize[2] = $AndroidClientWidth And $BSsize[3] <> $AndroidClientHeight)
+Until TimerDiff($hTimer) > 5000 Or ($BSsize[2] <> $new_BSsize[2] And $BSsize[3] <> $new_BSsize[3])
 $BSsize[2] = $new_BSsize[2]
 $BSsize[3] = $new_BSsize[3]
 $BSx = $BSsize[2]
@@ -64864,7 +66285,7 @@ SetDebugLog("WARNING: Cannot resize " & $Android & " window to " & $aAndroidWind
 EndIf
 Else
 If $RetryCount < 5 Then
-If _Sleep(250, True, False) = True Then Return $BSsize
+Sleep(250)
 Return getAndroidPos($FastCheck, $RetryCount + 1)
 EndIf
 EndIf
@@ -64929,7 +66350,7 @@ If $iWaitTime > 0 Then
 If $iWaitTime > 30000 Then
 AndroidShieldForceDown(True)
 EnableGuiControls()
-SetLog("Enable emulator menu controls due long wait time!", $COLOR_GREEN)
+SetLog("Enabled bot controls due to long wait time", $COLOR_GREEN)
 EndIf
 WaitnOpenCoC($iWaitTime, $bFullRestart)
 AndroidShieldForceDown(False)
@@ -64952,7 +66373,7 @@ If $iWaitTime > 0 Then
 SetLog("Waiting " & $sWaitTime & "before starting CoC", $COLOR_GREEN)
 If $iWaitTime > 30000 Then
 EnableGuiControls()
-SetLog("Enable emulator menu controls due long wait time!", $COLOR_GREEN)
+SetLog("Enabled bot controls due to long wait time", $COLOR_GREEN)
 EndIf
 If _SleepStatus($iWaitTime) Then Return False
 If $iWaitTime > 30000 Then
@@ -64969,18 +66390,21 @@ Case Else
 SetLog("Code Monkey is drinking banana liqueur again!", $COLOR_RED)
 EndSwitch
 EndFunc
-Global Const $tagCWPRETSTRUCT = "LRESULT lResult;LPARAM  lParam;WPARAM  wParam;UINT message;HWND hwnd"
 Global $g_hProcShieldInput[5] = [0, 0, False, False, 0]
 Global $aAndroidEmbeddedGraphics[0][2]
-Func AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True)
+Func GetCurrentAndroidHWnD()
+Local $h = (($AndroidEmbedded = False Or $AndroidEmbedMode = 1) ? $HWnD : $frmBot)
+Return $h
+EndFunc
+Func AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed = False)
 If $AndroidEmbed = False Then Return False
 Local $hMutex = AcquireMutex("AndroidEmbed", Default, 1000)
 If $hMutex <> 0 Then
-Return ReleaseMutex($hMutex, _AndroidEmbed($Embed, $CallWinGetAndroidHandle))
+Return ReleaseMutex($hMutex, _AndroidEmbed($Embed, $CallWinGetAndroidHandle, $bForceEmbed))
 EndIf
 Return False
 EndFunc
-Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True)
+Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed = False)
 If ($CallWinGetAndroidHandle = False And $HWnD = 0) Or ($CallWinGetAndroidHandle = True And WinGetAndroidHandle() = 0) Then
 SetDebugLog("Android Emulator not launched", $COLOR_RED)
 If $AndroidEmbedded = False Then
@@ -65018,7 +66442,8 @@ $Embed = False
 EndIf
 EndIf
 EndIf
-Local $hCtrl, $aPosFrmBotEx, $aPosLog
+Local $hCtrl = ControlGetHandle(GetCurrentAndroidHWnD(), $AppPaneName, $AppClassInstance)
+Local $aPosFrmBotEx, $aPosLog
 Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
 Local $hCtrlTargetParent = $AndroidEmbeddedCtrlTarget[1]
 Local $HWnDParent = $AndroidEmbeddedCtrlTarget[2]
@@ -65027,19 +66452,32 @@ Local $lCurStyle = $AndroidEmbeddedCtrlTarget[4]
 Local $lCurExStyle = $AndroidEmbeddedCtrlTarget[5]
 Local $aPosCtl = $AndroidEmbeddedCtrlTarget[6]
 Local $lCurStyleTarget = $AndroidEmbeddedCtrlTarget[8]
+Local $hThumbnail = $AndroidEmbeddedCtrlTarget[9]
 Local $targetIsHWnD = $hCtrlTarget = $HWnD
 Local $activeHWnD = WinGetHandle("")
 If $Embed = False Then
 If $AndroidEmbedded = True Then
+SetDebugLog("Undocking Android Control...")
 If _WinAPI_IsIconic($frmBot) Then BotMinimize("_AndroidEmbed (1)", True)
-AndroidShield("AndroidEmbed undock", False, $CallWinGetAndroidHandle)
+If $AndroidShieldEnabled = True Then
+AndroidShield("AndroidEmbed undock", False, $CallWinGetAndroidHandle, 100)
+GUIDelete($frmBotEmbeddedShield)
+$frmBotEmbeddedShield = 0
+If $frmBotEmbeddedMouse Then
+GUIDelete($frmBotEmbeddedMouse)
+$frmBotEmbeddedMouse = 0
+EndIf
+$AndroidShieldStatus[0] = Default
+EndIf
 SetRedrawBotWindow(False)
+If $hThumbnail <> 0 Then
+_WinAPI_DwmUnregisterThumbnail($hThumbnail)
+$AndroidEmbeddedCtrlTarget[9] = 0
+EndIf
 $aPos = $AndroidEmbeddedCtrlTarget[7]
 $g_hProcShieldInput[3] = True
-If $targetIsHWnD = False Then
-ControlMove($hCtrlTarget, "", "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3])
-EndIf
-WinMove2($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3])
+Switch $AndroidEmbedMode
+Case 0
 If $targetIsHWnD = False Then
 _WinAPI_SetParent($hCtrlTarget, $hCtrlTargetParent)
 EndIf
@@ -65047,9 +66485,16 @@ _WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, $lCurExStyle)
 _WinAPI_SetParent($HWnD, $HWnDParent)
 _WinAPI_SetWindowLong($HWnD, $GWL_HWNDPARENT, $HWnDParent)
 _WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $lCurStyle)
-_WinAPI_EnableWindow($HWnD, True)
-_WinAPI_EnableWindow($hCtrlTarget, True)
-getAndroidPos()
+WinMove($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3] - 1)
+WinMove2($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3])
+Case 1
+_WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, $lCurExStyle)
+_WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $lCurStyle)
+WinMove($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3] - 1)
+WinMove($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3])
+EndSwitch
+WinMove(($targetIsHWnD ? $hCtrl : $hCtrlTarget), "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3])
+WinMove2(($targetIsHWnD ? $hCtrl : $hCtrlTarget), "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3], 0, 0, False)
 ControlHide($hGUI_LOG, "", $divider)
 $aPosFrmBotEx = ControlGetPos($frmBot, "", $frmBotEx)
 ControlMove($frmBot, "", $frmBotEx, 0, 0, $aPosFrmBotEx[2], $aPosFrmBotEx[3] - $frmBotAddH)
@@ -65060,26 +66505,35 @@ ControlMove($frmBotEx, "", $hGUI_LOG, Default, Default, $aPosLog[2], $aPosLog[3]
 $AndroidEmbedded = False
 WinMove2($frmBot, "", $frmBotPosX, $frmBotPosY, $frmBotPosInit[2], $frmBotPosInit[3], 0, 0, False)
 updateBtnEmbed()
-SetDebugLog("Undocked Android Window", Default, True)
 $iDividerY -= $frmBotAddH
 $frmBotAddH = 0
 cmbLog()
 SetRedrawBotWindow(True)
 _SendMessage($HWnD, $WM_SETREDRAW, False, 0)
-WinSetState($HWnD, "", @SW_HIDE)
+_WinAPI_ShowWindow($HWnD, @SW_HIDE)
 _WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, BitOR($lCurExStyle, $WS_EX_APPWINDOW))
-_WinAPI_RedrawWindow($HWnD, 0, 0, $RDW_INVALIDATE)
-WinSetState($HWnD, "", @SW_SHOW)
+_WinAPI_ShowWindow($HWnD, @SW_SHOWNOACTIVATE)
 _SendMessage($HWnD, $WM_SETREDRAW, True, 0)
 _WinAPI_UpdateWindow($HWnD)
+_WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, $lCurExStyle)
+_WinAPI_EnableWindow($HWnD, True)
+_WinAPI_EnableWindow($hCtrlTarget, True)
+WinMove2(($targetIsHWnD ? $hCtrl : $hCtrlTarget), "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3], 0, 0, False)
+getAndroidPos()
 getBSPos()
+Execute("Embed" & $Android & "(False)")
+If $AndroidEmbedMode = 1 Then
+WinMove2($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3], $HWND_TOPMOST)
+WinMove2($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3], $HWND_NOTOPMOST, 0, False)
+EndIf
+SetDebugLog("Undocked Android Window")
 $g_hProcShieldInput[3] = False
 Return True
 EndIf
 updateBtnEmbed()
 Return False
 EndIf
-If $AndroidEmbedded = True Then
+If $AndroidEmbedded = True And $bForceEmbed = False Then
 If $HWnD = $HWnD2 Then
 If $targetIsHWnD = False Then
 WinMove2($HWnD, "", $aPosCtl[2] + 2, $frmBotPosInit[5], -1, -1, $HWND_BOTTOM)
@@ -65090,7 +66544,14 @@ SetDebugLog("Docked Android Window gone", $COLOR_RED)
 AndroidEmbed(False)
 Return AndroidEmbed(True)
 EndIf
+Local $bAlreadyEmbedded = $AndroidEmbedded = True
 SetDebugLog("Docking Android Control...")
+If _WinAPI_DwmEnableComposition(True) = 1 Then
+SetDebugLog("Desktop Window Manager available", $COLOR_GREEN)
+Else
+SetDebugLog("Desktop Window Manager not available!", $COLOR_RED)
+SetDebugLog("Android Shield will be invisible!", $COLOR_RED)
+EndIf
 If _WinAPI_IsIconic($frmBot) Then BotMinimize("_AndroidEmbed (2)", True)
 If _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
 getAndroidPos()
@@ -65103,10 +66564,12 @@ If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPos[] = " & $aPos[0] 
 $lCurStyle = _WinAPI_GetWindowLong($HWnD, $GWL_STYLE)
 $lCurExStyle = _WinAPI_GetWindowLong($HWnD, $GWL_EXSTYLE)
 $HWnDParent = _WinAPI_GetParent($HWnD)
-$hCtrl = ControlGetHandle($HWnD, $AppPaneName, $AppClassInstance)
 $hCtrlTarget = _WinAPI_GetParent($hCtrl)
 $lCurStyleTarget = _WinAPI_GetWindowLong($hCtrlTarget, $GWL_STYLE)
 $targetIsHWnD = $hCtrlTarget = $HWnD
+If $bAlreadyEmbedded = True Then
+$g_hProcShieldInput[3] = True
+Else
 $aPosCtl = ControlGetPos($HWnD, "", ($targetIsHWnD ? $hCtrl : $hCtrlTarget))
 If $hCtrlTarget = 0 Or IsArray($aPosCtl) = 0 Or @error <> 0 Then
 updateBtnEmbed()
@@ -65134,17 +66597,6 @@ If $frmBotAddH < 0 Then $frmBotAddH = 0
 Local $frmBotWidth = $frmBotPosInit[2] + $aPosCtl[2] + 2
 Local $frmBotHeight = $frmBotPosInit[3] + $frmBotAddH
 $g_hProcShieldInput[3] = True
-_SendMessage($frmBot, $WM_SETREDRAW, False, 0)
-WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM)
-$aPosFrmBotEx = ControlGetPos($frmBot, "", $frmBotEx)
-$aPosFrmBotEx[3] = $frmBotPosInit[6]
-If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosFrmBotEx[] = " & $aPosFrmBotEx[0] & ", " & $aPosFrmBotEx[1] & ", " & $aPosFrmBotEx[2] & ", " & $aPosFrmBotEx[3], Default, True)
-WinMove($frmBotEx, "", $aPosCtl[2] + 2, 0, $aPosFrmBotEx[2], $aPosFrmBotEx[3] + $frmBotAddH)
-WinMove($frmBotBottom, "", $aPosCtl[2] + 2, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP + $frmBotAddH)
-WinSetTrans($frmBotBottom, "", 254)
-$aPosLog = ControlGetPos($frmBotEx, "", $hGUI_LOG)
-If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosLog[] = " & $aPosLog[0] & ", " & $aPosLog[1] & ", " & $aPosLog[2] & ", " & $aPosLog[3], Default, True)
-WinMove($hGUI_LOG, "", $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, $aPosLog[2], $aPosLog[3] + $frmBotAddH)
 $AndroidEmbedded = True
 If $frmBotDockedPosX = -1 And $frmBotDockedPosY = -1 Then
 If $frmBotPosX < $AndroidPosX Then
@@ -65155,20 +66607,21 @@ $frmBotDockedPosX = $AndroidPosX
 $frmBotDockedPosY = $AndroidPosY
 EndIf
 EndIf
-WinMove2($frmBot, "", $frmBotDockedPosX, $frmBotDockedPosY, $frmBotWidth, $frmBotHeight, 0, 0, False)
-_WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, $WS_EX_MDICHILD)
-_WinAPI_SetWindowLong($HWnD, $GWL_HWNDPARENT, $frmBot)
-_WinAPI_SetParent($HWnD, $frmBot)
-Local $newStyle = BitOR($WS_CHILD, BitAND($lCurStyle, BitNOT(BitOR($WS_POPUP, $WS_CAPTION, $WS_SYSMENU))))
-_WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $newStyle)
-If $targetIsHWnD = False Then
-_WinAPI_SetParent($hCtrlTarget, $frmBot)
-EndIf
-_WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $newStyle)
+WinMove2($frmBot, "", $frmBotDockedPosX, $frmBotDockedPosY, -1, -1, 0, 0, False)
+_SendMessage($frmBot, $WM_SETREDRAW, False, 0)
+If $AndroidEmbedMode = 0 Then
 WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM)
-If $targetIsHWnD = False Then
-WinMove2($HWnD, "", $aPosCtl[2] + 2, $botClientHeight, -1, -1, $HWND_BOTTOM)
 EndIf
+$aPosFrmBotEx = ControlGetPos($frmBot, "", $frmBotEx)
+$aPosFrmBotEx[3] = $frmBotPosInit[6]
+If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosFrmBotEx[] = " & $aPosFrmBotEx[0] & ", " & $aPosFrmBotEx[1] & ", " & $aPosFrmBotEx[2] & ", " & $aPosFrmBotEx[3], Default, True)
+WinMove($frmBotEx, "", $aPosCtl[2] + 2, 0, $aPosFrmBotEx[2], $aPosFrmBotEx[3] + $frmBotAddH)
+WinMove($frmBotBottom, "", $aPosCtl[2] + 2, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP + $frmBotAddH)
+WinSetTrans($frmBotBottom, "", 254)
+$aPosLog = ControlGetPos($frmBotEx, "", $hGUI_LOG)
+If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosLog[] = " & $aPosLog[0] & ", " & $aPosLog[1] & ", " & $aPosLog[2] & ", " & $aPosLog[3], Default, True)
+WinMove($hGUI_LOG, "", $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, $aPosLog[2], $aPosLog[3] + $frmBotAddH)
+WinMove2($frmBot, "", $frmBotDockedPosX, $frmBotDockedPosY, $frmBotWidth, $frmBotHeight, 0, 0, False)
 $AndroidEmbeddedCtrlTarget[0] = $hCtrlTarget
 $AndroidEmbeddedCtrlTarget[1] = $hCtrlTargetParent
 $AndroidEmbeddedCtrlTarget[2] = $HWnDParent
@@ -65180,129 +66633,234 @@ $aPosCtl[1] = $aPosParentCtl[1] - $aPosCtl[1]
 $AndroidEmbeddedCtrlTarget[6] = $aPosCtl
 $AndroidEmbeddedCtrlTarget[7] = $aPos
 $AndroidEmbeddedCtrlTarget[8] = $lCurStyleTarget
+EndIf
+Local $newStyle = AndroidEmbed_GWL_STYLE()
+SetDebugLog("AndroidEmbed_GWL_STYLE=" & Get_GWL_STYLE_Text($newStyle))
+Local $a = AndroidEmbed_HWnD_Position()
+Switch $AndroidEmbedMode
+Case 0
+_WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, $WS_EX_MDICHILD)
+_WinAPI_SetWindowLong($HWnD, $GWL_HWNDPARENT, $frmBot)
+_WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $newStyle)
+_WinAPI_SetParent($HWnD, $frmBot)
+If $targetIsHWnD = False Then
+_WinAPI_SetParent($hCtrlTarget, $frmBot)
+EndIf
+_WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $newStyle)
+WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3] - 1, $HWND_BOTTOM, 0, False)
+WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM, 0, False)
+If $targetIsHWnD = False Then
+WinMove2($HWnD, "", $a[0], $a[1], -1, -1, $HWND_BOTTOM, 0, False)
+EndIf
+Case 1
+_WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $newStyle)
+WinMove2($HWnD, "", -1, -1, -1, -1, 0, $SWP_HIDEWINDOW, False)
+_WinAPI_ShowWindow($HWnD, @SW_HIDE)
+_WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($HWnD, $GWL_EXSTYLE), $WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE))
+_WinAPI_ShowWindow($HWnD, @SW_SHOWNOACTIVATE)
+_SendMessage($HWnD, $WM_SETREDRAW, True, 0)
+_WinAPI_UpdateWindow($HWnD)
+_WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($HWnD, $GWL_EXSTYLE), $WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE))
+WinMove($HWnD, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3] - 1)
+WinMove($HWnD, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3])
+If _WinAPI_DwmIsCompositionEnabled() And $hThumbnail = 0 Then
+$hThumbnail = _WinAPI_DwmRegisterThumbnail($frmBot, $HWnD)
+Local $tSIZE = _WinAPI_DwmQueryThumbnailSourceSize($hThumbnail)
+Local $iWidth = DllStructGetData($tSIZE, 1)
+Local $iHeight = DllStructGetData($tSIZE, 2)
+Local $tDestRect = _WinAPI_CreateRectEx(0, 0, $iWidth, $iHeight)
+Local $tSrcRect = _WinAPI_CreateRectEx(0, 0, $iWidth, $iHeight)
+_WinAPI_DwmUpdateThumbnailProperties($hThumbnail, 1, 0, 255, $tDestRect, $tSrcRect)
+$AndroidEmbeddedCtrlTarget[9] = $hThumbnail
+EndIf
+WinMove2($HWnD, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM, $SWP_SHOWWINDOW, False)
+EndSwitch
+Execute("Embed" & $Android & "(True)")
 updateBtnEmbed()
-SetDebugLog("Android Window docked", Default, True)
 $iDividerY += $frmBotAddH
 cmbLog()
+_WinAPI_EnableWindow($hCtrlTarget, False)
+_WinAPI_EnableWindow($HWnD, False)
+Local $aCheck = WinGetPos($HWnD)
+If IsArray($aCheck) Then
+If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: Android Window Pos: " & $aCheck[0] & ", " & $aCheck[1] & ", " & $aCheck[2] & ", " & $aCheck[3], Default, True)
+Else
+SetDebugLog("AndroidEmbed: Android Window not found", $COLOR_RED)
+EndIf
+Local $aCheck = ControlGetPos(GetCurrentAndroidHWnD(), $AppPaneName, $AppClassInstance)
+If IsArray($aCheck) Then
+If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: Android Control Pos: " & $aCheck[0] & ", " & $aCheck[1] & ", " & $aCheck[2] & ", " & $aCheck[3], Default, True)
+Else
+SetDebugLog("AndroidEmbed: Android Control not found", $COLOR_RED)
+EndIf
+getBSPos()
 _SendMessage($frmBot, $WM_SETREDRAW, True, 0)
 _WinAPI_RedrawWindow($frmBot, 0, 0, $RDW_INVALIDATE + $RDW_ALLCHILDREN + $RDW_ERASE)
 _WinAPI_RedrawWindow($frmBotBottom, 0, 0, $RDW_INVALIDATE + $RDW_ALLCHILDREN + $RDW_ERASE)
 _WinAPI_UpdateWindow($frmBot)
 _WinAPI_UpdateWindow($frmBotBottom)
-If $FrmBotMinimized = False And $activeHWnD = $frmBot Then WinActivate($activeHWnD)
-getBSPos()
-If $targetIsHWnD = False Then
-_WinAPI_EnableWindow($hCtrlTarget, False)
-EndIf
-_WinAPI_EnableWindow($HWnD, False)
+SetDebugLog("Android Window docked")
 $g_hProcShieldInput[3] = False
 $g_hProcShieldInput[4] = 0
-AndroidShield("AndroidEmbed dock", Default, $CallWinGetAndroidHandle)
+AndroidShield("AndroidEmbed dock", Default, $CallWinGetAndroidHandle, 100)
 Return True
 EndFunc
-Func AndroidEmbedCheck($bTestIfRequired = False)
+Func Get_GWL_STYLE_Text($iGWL_STYLE)
+Local $s = ""
+Local $a[20][2] = [[$WS_MAXIMIZEBOX, "$WS_MAXIMIZEBOX"]  , [$WS_MINIMIZEBOX, "$WS_MINIMIZEBOX"]  , [$WS_TABSTOP, "$WS_TABSTOP"]  , [$WS_GROUP, "$WS_GROUP"]  , [$WS_SIZEBOX, "$WS_SIZEBOX"]  , [$WS_SYSMENU, "$WS_SYSMENU"]  , [$WS_HSCROLL, "$WS_HSCROLL"]  , [$WS_VSCROLL, "$WS_VSCROLL"]  , [$WS_DLGFRAME, "$WS_DLGFRAME"]  , [$WS_BORDER, "$WS_BORDER"]  , [$WS_CAPTION, "$WS_CAPTION"]  , [$WS_MAXIMIZE, "$WS_MAXIMIZE"]  , [$WS_CLIPCHILDREN, "$WS_CLIPCHILDREN"]  , [$WS_CLIPSIBLINGS, "$WS_CLIPSIBLINGS"]  , [$WS_DISABLED, "$WS_DISABLED"]  , [$WS_VISIBLE, "$WS_VISIBLE"]  , [$WS_MINIMIZE, "$WS_MINIMIZE"]  , [$WS_CHILD, "$WS_CHILD"]  , [$WS_POPUP, "$WS_POPUP"]  , [$WS_POPUPWINDOW, "$WS_POPUPWINDOW"]  ]
+Local $i
+For $i = 0 To UBound($a) - 1
+If BitAND($iGWL_STYLE, $a[$i][0]) > 0 Then
+If $s <> "" Then $s &= ", "
+$s &= $a[$i][1]
+$iGWL_STYLE -= $a[$i][0]
+EndIf
+Next
+If $iGWL_STYLE > 0 Then
+If $s <> "" Then $s &= ","
+$s &= Hex($iGWL_STYLE, 8)
+EndIf
+Return $s
+EndFunc
+Func AndroidEmbed_GWL_STYLE()
+If $AndroidEmbedded = True Then
+Local $lCurStyle = $AndroidEmbeddedCtrlTarget[4]
+Local $newStyle = BitOR($WS_CHILD, BitAND($lCurStyle, BitNOT(BitOR($WS_POPUP, $WS_CAPTION, $WS_SYSMENU, $WS_MINIMIZEBOX, $WS_MAXIMIZEBOX, $WS_SIZEBOX, $WS_BORDER, $WS_THICKFRAME))))
+If $AndroidEmbedMode = 1 Then
+$newStyle = BitOR($WS_POPUP, BitAND($newStyle, BitNOT($WS_CHILD)))
+EndIf
+Return $newStyle
+EndIf
+Return ""
+EndFunc
+Func AndroidEmbed_HWnD_Position($bForShield = False, $bDetachedShield = Default, $hCtrlTarget = Default, $aPosCtl = Default)
+Local $aPos[2]
+If $bDetachedShield = Default Then
+$bDetachedShield = $AndroidShieldStatus[4]
+EndIf
+If $AndroidEmbedMode = 1 Or ($bForShield = True And $bDetachedShield = True) Then
+Local $tPoint = DllStructCreate("int X;int Y")
+DllStructSetData($tPoint, "X", 0)
+DllStructSetData($tPoint, "Y", 0)
+_WinAPI_ClientToScreen($frmBot, $tPoint)
+$aPos[0] = DllStructGetData($tPoint, "X")
+$aPos[1] = DllStructGetData($tPoint, "Y")
+ElseIf $AndroidEmbedMode = 0 And $bForShield = False Then
+If $hCtrlTarget = Default Then
+$hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
+EndIf
+If $aPosCtl = Default Then
+$aPosCtl = $AndroidEmbeddedCtrlTarget[6]
+EndIf
+Local $targetIsHWnD = $hCtrlTarget = $HWnD
+If $targetIsHWnD = False Then
+$aPos[0] = $aPosCtl[2] + 2
+$aPos[1] = $frmBotPosInit[5]
+Else
+$aPos[0] = 0
+$aPos[1] = 0
+EndIf
+ElseIf $bForShield = True And $bDetachedShield = False Then
+$aPos[0] = 0
+$aPos[1] = 0
+Else
+SetDebugLog("AndroidEmbed_HWnD_Position: Wrong window state:" & @CRLF &  "$bForShield=" & $bForShield & @CRLF &  "$AndroidEmbedMode=" & $AndroidEmbedMode & @CRLF &  "$bDetachedShield=" & $bDetachedShield)
+EndIf
+Return $aPos
+EndFunc
+Func AndroidEmbedCheck($bTestIfRequired = Default, $bHasFocus = Default, $iAction = 6)
+If $bHasFocus = Default Then $bHasFocus = WinActive($frmBot) <> 0
+If $bTestIfRequired = Default Then
+$iAction = AndroidEmbedCheck(True, $bHasFocus)
+If $iAction > 0 Then
+Return AndroidEmbedCheck(False, $bHasFocus, $iAction)
+EndIf
+EndIf
 If $AndroidEmbedded = True And AndroidEmbedArrangeActive() = False Then
 Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
-Local $lCurStyle = $AndroidEmbeddedCtrlTarget[4]
 Local $aPosCtl = $AndroidEmbeddedCtrlTarget[6]
 Local $targetIsHWnD = $hCtrlTarget = $HWnD
-Local $newStyle = BitOR($WS_CHILD, BitAND($lCurStyle, BitNOT(BitOR($WS_POPUP, $WS_CAPTION, $WS_SYSMENU))))
+Local $aPos = AndroidEmbed_HWnD_Position()
+Local $aPosShield = AndroidEmbed_HWnD_Position(True)
+Local $newStyle = AndroidEmbed_GWL_STYLE()
+Local $bDetachedShield = $AndroidShieldStatus[4]
 If $bTestIfRequired = False Then
+SetDebugLog("AndroidEmbedCheck: $iAction=" & $iAction, Default, True)
+If BitAND($iAction, 2) > 0 Then
+AndroidEmbedArrangeActive(True)
 _WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $newStyle)
-If $targetIsHWnD = False Then
-WinMove2($HWnD, "", $aPosCtl[2] + 2, $frmBotPosInit[5], -1, -1, $HWND_BOTTOM, 0, False)
-Else
-WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM, 0, False)
+AndroidEmbed(True, False, True)
+EndIf
+If BitAND($iAction, 1) Or BitAND($iAction, 4) > 0 Then
+WinMove2($HWnD, "", $aPos[0], $aPos[1], -1, -1, $HWND_BOTTOM, 0, True)
+EndIf
+If $AndroidShieldEnabled = True And $bDetachedShield = True Then
+If BitAND($iAction, 1) > 0 Or BitAND($iAction, 4) > 0 Then
+If BitAND($iAction, 4) > 0 Then
+WinMove2($frmBotEmbeddedShield, "", $aPosShield[0], $aPosShield[1], $aPosCtl[2], $aPosCtl[3], ($bHasFocus ? $HWND_TOPMOST : $HWND_NOTOPMOST), 0, False)
+If $frmBotEmbeddedGarphics Then
+WinMove2($frmBotEmbeddedGarphics, "", $aPosShield[0], $aPosShield[1], $aPosCtl[2], $aPosCtl[3], ($bHasFocus ? $HWND_TOPMOST : $HWND_NOTOPMOST), 0, False)
+EndIf
+EndIf
+If $bHasFocus = False Then
+WinMove2($frmBotEmbeddedShield, "", -1, -1, -1, -1, $frmBot, 0, False)
+WinMove2($frmBot, "", -1, -1, -1, -1, $frmBotEmbeddedShield, 0, False)
+EndIf
+EndIf
 EndIf
 Return True
 EndIf
+Local $iZorder = 0
+If $AndroidShieldEnabled = True And $bDetachedShield = True And $bHasFocus = False Then
+If $AndroidShieldEnabled = True Then
+Local $h = _WinAPI_GetWindow($frmBotEmbeddedShield, $GW_HWNDNEXT)
+If $h <> $frmBot Then $iZorder = 1
+EndIf
+EndIf
 Local $style = _WinAPI_GetWindowLong($HWnD, $GWL_STYLE)
-Local $moved = False
-If $targetIsHWnD = False Then
-Local $a = ControlGetPos($frmBot, "", $HWnD)
-$moved = $a[0] <> $aPosCtl[2] + 2 Or $a[1] <> $frmBotPosInit[5]
-Else
-Local $a = ControlGetPos($frmBot, "", $hCtrlTarget)
-$moved = $a[0] <> 0 Or $a[1] <> 0
+If BitAND($style, $WS_DISABLED) > 0 Then $newStyle = BitOR($newStyle, $WS_DISABLED)
+Local $iStyle = (($style <> $newStyle) ? 2 : 0)
+If $iStyle > 0 Then
+SetDebugLog("AndroidEmbedCheck: Android Window GWL_STYLE changed: " & Get_GWL_STYLE_Text($newStyle) & " to " & Get_GWL_STYLE_Text($style), Default, True)
 EndIf
-Return $style <> $newStyle Or $moved
+Local $a1[2] = [$aPos[0], $aPos[1]]
+Local $a2 = $aPos
+Switch $AndroidEmbedMode
+Case 0
+Local $a1 = ControlGetPos($frmBot, "", $HWnD)
+Case 1
+Local $a1 = WinGetPos($HWnD)
+EndSwitch
+Local $iPos = ((IsArray($a1) And ($a1[0] <> $a2[0] Or $a1[1] <> $a2[1])) ? 4 : 0)
+If $iPos > 0 Then
+SetDebugLog("AndroidEmbedCheck: Android Window Position changed: X: " & $a1[0] & " <> " & $a2[0] & ", Y: " & $a1[1] & " <> " & $a2[1], Default, True)
 EndIf
-Return False
+If $iPos = 0 And $bDetachedShield = True Then
+$a1 = WinGetPos($frmBotEmbeddedShield)
+$a2 = $aPosShield
+$iPos = ((IsArray($a1) And ($a1[0] <> $a2[0] Or $a1[1] <> $a2[1])) ? 4 : 0)
+If $iPos > 0 Then
+SetDebugLog("AndroidEmbedCheck: Android Shield Position changed: X: " & $a1[0] & " <> " & $a2[0] & ", Y: " & $a1[1] & " <> " & $a2[1], Default, True)
+EndIf
+EndIf
+Return BitOR($iZorder, $iStyle, $iPos)
+EndIf
+Return 0
 EndFunc
 Func AndroidEmbedded()
 Return $AndroidEmbedded
 EndFunc
-Func AndroidShieldActiveDelay($bIsStillWaiting = False)
-Return $AndroidShieldDelay[0] <> 0 And $AndroidShieldDelay[1] > 0 And ($bIsStillWaiting = False Or TimerDiff($AndroidShieldDelay[0]) < $AndroidShieldDelay[1])
-EndFunc
-Func AndroidEmbedArrangeActive()
-Return $g_hProcShieldInput[3]
-EndFunc
-Func AndroidShieldCheck()
-If AndroidShieldActiveDelay(True) = True Then Return False
-Return AndroidShield("AndroidShieldCheck")
-EndFunc
-Func ShieldInputProc($hWin, $iMsg, $wParam, $lParam)
-If $AndroidEmbedded = False Or $AndroidShieldStatus[0] = True Then
-Return _WinAPI_CallWindowProc($g_hProcShieldInput[1], $hWin, $iMsg, $wParam, $lParam)
-EndIf
-Switch $iMsg
-Case $WM_KEYDOWN, $WM_KEYUP, $WM_SYSKEYDOWN, $WM_SYSKEYUP, $WM_MOUSEWHEEL
-If $debugAndroidEmbedded Then SetDebugLog("ShieldInputProc: FORWARD $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
-Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
-Local $Result = 0
-$g_hProcShieldInput[4] = $wParam
-If $iMsg = $WM_KEYUP And $wParam = 27 Then
-Local $wasSilentSetLog = $SilentSetLog
-$SilentSetLog = True
-AndroidBackButton(False)
-$SilentSetLog = $wasSilentSetLog
-If $debugAndroidEmbedded Then AndroidShield("ShieldInputProc WM_SETFOCUS", Default, False, 0, True)
-Else
-$Result = _WinAPI_PostMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
-$Result = _WinAPI_CallWindowProc($g_hProcShieldInput[1], $hWin, $iMsg, $wParam, $lParam)
-_GUICtrlEdit_SetText($hWin, "")
-EndIf
-Return $Result
-Case $WM_SETFOCUS
-If $debugAndroidEmbedded Then SetDebugLog("ShieldInputProc: WM_SETFOCUS $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
-AndroidShield("ShieldInputProc WM_SETFOCUS", Default, False, 0, True)
-Case $WM_KILLFOCUS
-If $debugAndroidEmbedded Then SetDebugLog("ShieldInputProc: KILLFOCUS $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
-If $g_hProcShieldInput[4] <> 27 Then
-$g_hProcShieldInput[4] = 0
-If $debugAndroidEmbedded Then AndroidShield("ShieldInputProc KILLFOCUS", Default, False, 50, AndroidShieldHasFocus())
-EndIf
-Case Else
-If $debugAndroidEmbedded Then SetDebugLog("ShieldInputProc: SKIP $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & Hex($wParam, 8) & ", $lParam=" & Hex($lParam, 8), Default, True)
-EndSwitch
-Return _WinAPI_CallWindowProc($g_hProcShieldInput[1], $hWin, $iMsg, $wParam, $lParam)
+Func AndroidEmbedArrangeActive($bActive = Default)
+If $bActive = Default Then Return $g_hProcShieldInput[3]
+Local $bWasActive = $g_hProcShieldInput[3]
+$g_hProcShieldInput[3] = $bActive
+Return $bWasActive
 EndFunc
 Func AndroidShieldStartup()
-AndroidShieldHook(True)
 _OnAutoItErrorRegister()
 EndFunc
 Func AndroidShieldDestroy()
 _OnAutoItErrorUnRegister()
-AndroidShieldHook(False)
-EndFunc
-Func AndroidShieldHook($bInstallHooks = True)
-If $AndroidShieldEnabled = False Then Return False
-Local $Result = False
-If $bInstallHooks = True Then
-If $g_hProcShieldInput[1] = 0 Then
-If $g_hProcShieldInput[0] = 0 Then $g_hProcShieldInput[0] = DllCallbackRegister("ShieldInputProc", "ptr", "hwnd;uint;long;ptr")
-$g_hProcShieldInput[1] = _WinAPI_SetWindowLong(ControlGetHandle($frmBotEmbeddedShield, "", $frmBotEmbeddedShieldInput), $GWL_WNDPROC, DllCallbackGetPtr($g_hProcShieldInput[0]))
-$Result = True
-EndIf
-Else
-If $g_hProcShieldInput[1] <> 0 Then
-_WinAPI_SetWindowLong(ControlGetHandle($frmBotEmbeddedShield, "", $frmBotEmbeddedShieldInput), $GWL_WNDPROC, $g_hProcShieldInput[1])
-$g_hProcShieldInput[1] = 0
-$Result = True
-EndIf
-EndIf
-Return $Result
 EndFunc
 Func AndroidShieldForceDown($bForceDown = True, $AndroidHasFocus = False)
 Local $wasDown = $AndroidShieldForceDown
@@ -65314,20 +66872,35 @@ Func AndroidShieldForcedDown()
 Return $AndroidShieldForceDown
 EndFunc
 Func AndroidShieldHasFocus()
-Return $g_hProcShieldInput[2]
+Return $g_hProcShieldInput[2] = True
 EndFunc
 Func AndroidShielded()
-Return $AndroidShieldStatus[0]
+Return $AndroidShieldStatus[0] = True
+EndFunc
+Func AndroidShieldActiveDelay($bIsStillWaiting = False)
+Return $AndroidShieldDelay[0] <> 0 And $AndroidShieldDelay[1] > 0 And ($bIsStillWaiting = False Or TimerDiff($AndroidShieldDelay[0]) < $AndroidShieldDelay[1])
+EndFunc
+Func AndroidShieldCheck()
+If AndroidShieldActiveDelay(True) = True Then Return False
+Return AndroidShield("AndroidShieldCheck")
 EndFunc
 Func AndroidShield($sCaller, $Enable = Default, $CallWinGetAndroidHandle = True, $iDelay = 0, $AndroidHasFocus = Default, $AndroidUpdateFocus = True)
-If $g_hProcShieldInput[3] = True Then Return False
+If $AndroidShieldEnabled = False Or $g_hProcShieldInput[3] = True Then Return False
+If $iDelay > 0 Then
+Return _AndroidShield($sCaller, $Enable, $CallWinGetAndroidHandle, $iDelay, $AndroidHasFocus, $AndroidUpdateFocus)
+EndIf
 Local $hMutex = AcquireMutex("AndroidShield", Default, 1000)
 If $hMutex <> 0 Then
-Return ReleaseMutex($hMutex, _AndroidShield($sCaller, $Enable, $CallWinGetAndroidHandle, $iDelay, $AndroidHasFocus, $AndroidUpdateFocus))
+Local $Result = _AndroidShield($sCaller, $Enable, $CallWinGetAndroidHandle, $iDelay, $AndroidHasFocus, $AndroidUpdateFocus)
+ReleaseMutex($hMutex)
+Return $Result
+Else
+SetDebugLog("AndroidShield, failed acquire mutex, caller: " & $sCaller, Default, True)
 EndIf
 Return False
 EndFunc
 Func _AndroidShield($sCaller, $Enable = Default, $CallWinGetAndroidHandle = True, $iDelay = 0, $AndroidHasFocus = Default, $AndroidUpdateFocus = True)
+Local $bForceUpdate = False
 If AndroidShieldActiveDelay() Then
 If AndroidShieldActiveDelay(True) = False Then
 If $Enable = Default Then $Enable = $AndroidShieldDelay[2]
@@ -65345,6 +66918,7 @@ $AndroidShieldDelay[0] = TimerInit()
 $AndroidShieldDelay[1] = $iDelay
 $AndroidShieldDelay[2] = $Enable
 $AndroidShieldDelay[3] = $AndroidHasFocus
+SetDebugLog("ShieldAndroid: Delayed update $iDelay=" & $iDelay & ", $Enable=" & $Enable & ", $AndroidHasFocus=" & $AndroidHasFocus & ", caller: " & $sCaller, Default, True)
 Return False
 EndIf
 $AndroidShieldDelay[0] = 0
@@ -65368,22 +66942,28 @@ If _WinAPI_GetActiveWindow() = $frmBot And $AndroidHasFocus Then
 $shieldState = "disabled-focus"
 $color = $AndroidActiveColor
 $trans = $AndroidActiveTransparency
+SetAccelerators(True)
 Else
 $shieldState = "disabled-nofocus"
 $color = $AndroidInactiveColor
 $trans = $AndroidInactiveTransparency
+SetAccelerators(False)
 EndIf
+Else
+SetAccelerators(False)
 EndIf
-If $AndroidShieldStatus[0] = $Enable And $AndroidShieldStatus[1] = $color And $AndroidShieldStatus[2] = $trans Then
-Return False
-EndIf
+Local $bNoVisibleShield = $ichkBackground = 0
+Local $bDetachedShield = $bNoVisibleShield = False And ($AndroidShieldPreWin8 = True Or $AndroidEmbedMode = 1)
 If $AndroidEmbedded = False Then
 Return False
 EndIf
-If ($CallWinGetAndroidHandle = False And $HWnD = 0) Or ($CallWinGetAndroidHandle = True And WinGetAndroidHandle() = 0) Then
+If $AndroidBackgroundLaunched = True Then
 Return False
 EndIf
-If $AndroidBackgroundLaunched = True Then
+If $bForceUpdate = False And $AndroidShieldStatus[0] = $Enable And $AndroidShieldStatus[1] = $color And $AndroidShieldStatus[2] = $trans And $AndroidShieldStatus[3] = $bNoVisibleShield And $AndroidShieldStatus[4] = $bDetachedShield Then
+Return False
+EndIf
+If ($CallWinGetAndroidHandle = False And $HWnD = 0) Or ($CallWinGetAndroidHandle = True And WinGetAndroidHandle() = 0) Then
 Return False
 EndIf
 Local $aPos = WinGetPos($HWnD)
@@ -65393,36 +66973,53 @@ EndIf
 Local $hCtrlTarget = $AndroidEmbeddedCtrlTarget[0]
 Local $aPosCtl = $AndroidEmbeddedCtrlTarget[6]
 Local $targetIsHWnD = $hCtrlTarget = $HWnD
-If $AndroidShieldEnabled = True Then
-If $Enable <> $AndroidShieldStatus[0] Then
+If $frmBotEmbeddedShield <> 0 And ($AndroidShieldStatus[3] <> $bNoVisibleShield Or $AndroidShieldStatus[4] <> $bDetachedShield) Then
+GUIDelete($frmBotEmbeddedShield)
+$frmBotEmbeddedShield = 0
+EndIf
+$g_hProcShieldInput[3] = True
+Local $show_shield = @SW_SHOWNOACTIVATE
+If $Enable <> $AndroidShieldStatus[0] Or $frmBotEmbeddedShield = 0 Then
 If $Enable = True Then
 SetDebugLog("Shield Android Control (" & $aPosCtl[2] & "x" & $aPosCtl[3] & ")", Default, True)
 Else
 SetDebugLog("Unshield Android Control", Default, True)
 EndIf
-WinMove2($hCtrlTarget, "", -1, -1, -1, -1, $HWND_BOTTOM)
+If $bDetachedShield = False Then
+If $frmBotEmbeddedShield = 0 Then
+$frmBotEmbeddedShield = GUICreate("", $aPosCtl[2], $aPosCtl[3], 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), BitOR($WS_EX_TOPMOST, ($bNoVisibleShield ? $WS_EX_TRANSPARENT : 0)), $frmBot)
+Else
 WinMove($frmBotEmbeddedShield, "", 0, 0, $aPosCtl[2], $aPosCtl[3])
-If $targetIsHWnD = False Then
-_WinAPI_EnableWindow($hCtrlTarget, False)
 EndIf
-_WinAPI_EnableWindow($HWnD, False)
+WinMove2($hCtrlTarget, "", -1, -1, -1, -1, $HWND_BOTTOM)
+Else
+Local $bHasFocus = WinActive($frmBot) <> 0
+Local $a = AndroidEmbed_HWnD_Position(True, $bDetachedShield)
+If $frmBotEmbeddedShield = 0 Then
+$frmBotEmbeddedShield = GUICreate("", $aPosCtl[2], $aPosCtl[3], $a[0], $a[1], BitOR($WS_POPUP, $WS_TABSTOP), BitOR($WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE, $WS_EX_TOPMOST, $WS_EX_TRANSPARENT), $frmBot)
+_WinAPI_EnableWindow($frmBotEmbeddedShield, False)
+$frmBotEmbeddedMouse = GUICreate("", $aPosCtl[2], $aPosCtl[3], 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), BitOR($WS_EX_TOPMOST, $WS_EX_TRANSPARENT), $frmBot)
 EndIf
-If $AndroidShieldPreWin8 = False Then
+WinMove2($frmBotEmbeddedShield, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3], ($bHasFocus ? $HWND_TOPMOST : $HWND_BOTTOM), 0, False)
+WinMove2($frmBotEmbeddedMouse, "", 0, 0, $aPosCtl[2], $aPosCtl[3], ($bHasFocus ? $HWND_TOPMOST : $HWND_BOTTOM), 0, False)
+WinMove2($hCtrlTarget, "", -1, -1, -1, -1, $HWND_BOTTOM)
+SetDebugLog("$frmBotEmbeddedShield Position: " & $a[0] & ", " & $a[1] & ", " & $aPosCtl[2] & ", " & $aPosCtl[3], Default, True)
+EndIf
+EndIf
+If $bNoVisibleShield = False Then
 WinSetTrans($frmBotEmbeddedShield, "", $trans)
 GUISetBkColor($color, $frmBotEmbeddedShield)
 EndIf
-GUISetState(@SW_SHOWNOACTIVATE, $frmBotEmbeddedShield)
-Else
-If $targetIsHWnD = False Then
-_WinAPI_EnableWindow($hCtrlTarget, Not $Enable)
-EndIf
-_WinAPI_EnableWindow($HWnD, Not $Enable)
-EndIf
+GUISetState($show_shield, $frmBotEmbeddedShield)
+GUISetState($show_shield, $frmBotEmbeddedMouse)
+$g_hProcShieldInput[3] = False
 $AndroidShieldStatus[0] = $Enable
 $AndroidShieldStatus[1] = $color
 $AndroidShieldStatus[2] = $trans
+$AndroidShieldStatus[3] = $bNoVisibleShield
+$AndroidShieldStatus[4] = $bDetachedShield
 AndroidShieldStartup()
-SetDebugLog("AndroidShield updated to " & $shieldState & ", caller: " & $sCaller, Default, True)
+SetDebugLog("AndroidShield updated to " & $shieldState & "(handle=" & $frmBotEmbeddedShield & ", color=" & Hex($color, 6) & "), caller: " & $sCaller, Default, True)
 Return True
 EndFunc
 Func AndroidGraphicsGdiBegin()
@@ -65435,11 +67032,20 @@ If IsArray($aPosCtl) = 1 Then
 $iW = $aPosCtl[2]
 $iH = $aPosCtl[3]
 EndIf
+Local $a[2] = [0, 0]
 If $AndroidEmbedded = True Then
-GUISetState(@SW_SHOWNOACTIVATE, $frmBotEmbeddedGarphics)
-WinMove($frmBotEmbeddedGarphics, "", 0, 0, $iW, $iH)
+If $frmBotEmbeddedGarphics = 0 Then
+Local $bDetachedShield = $AndroidShieldStatus[4]
+If $bDetachedShield = False Then
+$frmBotEmbeddedGarphics = GUICreate("", $iW, $iH, 0, 0, $WS_CHILD, BitOR($WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE, $WS_EX_LAYERED, $WS_EX_TOPMOST), $frmBot)
+Else
+Local $a = AndroidEmbed_HWnD_Position(True, $bDetachedShield)
+$frmBotEmbeddedGarphics = GUICreate("", $iW, $iH, $a[0], $a[1], $WS_POPUP, BitOR($WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE, $WS_EX_LAYERED, $WS_EX_TOPMOST), $frmBot)
 EndIf
-Local $hDC = _WinAPI_GetDC($frmBot)
+EndIf
+GUISetState(@SW_SHOWNOACTIVATE, $frmBotEmbeddedGarphics)
+EndIf
+Local $hDC = _WinAPI_GetDC($frmBotEmbeddedGarphics)
 Local $hMDC = AndroidGraphicsGdiAddObject("hMDC", _WinAPI_CreateCompatibleDC($hDC))
 Local $hBitmap = AndroidGraphicsGdiAddObject("hBitmap", _WinAPI_CreateCompatibleBitmap($hDC, $iW, $iH))
 _WinAPI_SelectObject($hMDC, $hBitmap)
@@ -65447,11 +67053,11 @@ AndroidGraphicsGdiAddObject("hDC", $hDC)
 Local $hGraphics = AndroidGraphicsGdiAddObject("Graphics", _GDIPlus_GraphicsCreateFromHDC($hMDC))
 _GDIPlus_GraphicsSetSmoothingMode($hGraphics, $GDIP_SMOOTHINGMODE_HIGHQUALITY)
 _GDIPlus_GraphicsClear($hGraphics)
-Local $tSize = DllStructCreate($tagSIZE)
-AndroidGraphicsGdiAddObject("DllStruct", $tSize)
-Local $pSize = DllStructGetPtr($tSize)
-DllStructSetData($tSize, "X", $iW)
-DllStructSetData($tSize, "Y", $iH)
+Local $tSIZE = DllStructCreate($tagSIZE)
+AndroidGraphicsGdiAddObject("DllStruct", $tSIZE)
+Local $pSize = DllStructGetPtr($tSIZE)
+DllStructSetData($tSIZE, "X", $iW)
+DllStructSetData($tSIZE, "Y", $iH)
 Local $tSource = DllStructCreate($tagPOINT)
 AndroidGraphicsGdiAddObject("DllStruct", $tSource)
 Local $pSource = DllStructGetPtr($tSource)
@@ -65463,8 +67069,8 @@ DllStructSetData($tBlend, "Format", 1)
 Local $tPoint = DllStructCreate($tagPOINT)
 AndroidGraphicsGdiAddObject("DllStruct", $tPoint)
 Local $pPoint = DllStructGetPtr($tPoint)
-DllStructSetData($tPoint, "X", 0)
-DllStructSetData($tPoint, "Y", 0)
+DllStructSetData($tPoint, "X", $a[0])
+DllStructSetData($tPoint, "Y", $a[1])
 AndroidGraphicsGdiUpdate()
 SetDebugLog("AndroidGraphicsGdiBegin: Graphics " & $hGraphics)
 Return $hGraphics
@@ -65476,6 +67082,11 @@ Local $pSize = DllStructGetPtr($aAndroidEmbeddedGraphics[4][1])
 Local $pSource = DllStructGetPtr($aAndroidEmbeddedGraphics[5][1])
 Local $pBlend = DllStructGetPtr($aAndroidEmbeddedGraphics[6][1])
 Local $pPoint = DllStructGetPtr($aAndroidEmbeddedGraphics[7][1])
+Local $tPoint = DllStructCreate($tagPOINT, $pPoint)
+Local $bDetachedShield = $AndroidShieldStatus[4]
+Local $a = AndroidEmbed_HWnD_Position(True, $bDetachedShield)
+DllStructSetData($tPoint, "X", $a[0])
+DllStructSetData($tPoint, "Y", $a[1])
 _WinAPI_UpdateLayeredWindow($frmBotEmbeddedGarphics, $hDC, $pPoint, $pSize, $hMDC, $pSource, 0, $pBlend, $ULW_ALPHA)
 EndFunc
 Func AndroidGraphicsGdiAddObject($sType, $hHandle)
@@ -65512,7 +67123,8 @@ SetDebugLog("Unknown GDI Type: " & $sType)
 EndSwitch
 Next
 ReDim $aAndroidEmbeddedGraphics[0][2]
-GUISetState(@SW_HIDE, $frmBotEmbeddedGarphics)
+GUIDelete($frmBotEmbeddedGarphics)
+$frmBotEmbeddedGarphics = 0
 EndIf
 Return $Result
 EndFunc
@@ -65522,9 +67134,11 @@ Local $title = $programFile
 Local $iLastBS = StringInStr($title, "\", 0, -1)
 If $iLastBS > 0 Then $title = StringMid($title, $iLastBS + 1)
 Local $aList = WinList($title)
+Opt("WinTitleMatchMode", $WinTitleMatchMode)
 Local $closed = 0
 Local $i
 SetDebugLog("Found " & $aList[0][0] & " WerFault Windows with title '" & $title & "'")
+If $aList[0][0] > 0 Then
 For $i = 1 To $aList[0][0]
 Local $HWnD = $aList[$i][1]
 Local $pid = WinGetProcess($HWnD)
@@ -65553,7 +67167,13 @@ ELse
 SetDebugLog("Wmi Object for process " & $pid & " not found")
 EndIF
 Next
-Opt("WinTitleMatchMode", $WinTitleMatchMode)
+ElseIf FileExists($programFile) = 1 Then
+Local $pFileVersionInfo
+If _WinAPI_GetFileVersionInfo($programFile, $pFileVersionInfo) Then
+Local $FileDescription = _WinAPI_VerQueryValue($pFileVersionInfo, $FV_FILEDESCRIPTION)
+If $FileDescription <> "" Then Return WerFaultClose($FileDescription, $tryCount)
+EndIf
+EndIf
 If $closed > 0 And $tryCount < 10 Then
 If _Sleep(1000) = False Then
 $closed += WerFaultClose($programFile, $tryCount + 1)
@@ -65617,9 +67237,35 @@ Else
 DllCall('kernel32.dll', 'ptr', 'DebugActiveProcessStop', 'int', $iPIDorName)
 EndIf
 EndFunc
-Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True)
+Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = True)
 Local $iBegin = TimerInit()
 If $iDelay > 0 Then
+If $RunState And Not $bSearchMode And Not $TPaused And ($hTimer_SetTime = 0 Or TimerDiff($hTimer_SetTime) >= 1000) Then
+SetTime()
+$hTimer_SetTime = TimerInit()
+EndIf
+If $hTimer_PBRemoteControlInterval = 0 Or TimerDiff($hTimer_PBRemoteControlInterval) >= $PBRemoteControlInterval Then
+PushBulletRemoteControl()
+$hTimer_PBRemoteControlInterval = TimerInit()
+EndIf
+If $hTimer_PBDeleteOldPushesInterval = 0 Or TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $PBDeleteOldPushesInterval Then
+PushBulletDeleteOldPushes()
+$hTimer_PBDeleteOldPushesInterval = TimerInit()
+EndIf
+If $hTimer_EmptyWorkingSetAndroid = 0 Or TimerDiff($hTimer_EmptyWorkingSetAndroid) >= $iEmptyWorkingSetAndroid Then
+_WinAPI_EmptyWorkingSet(GetAndroidPid())
+$hTimer_EmptyWorkingSetAndroid = TimerInit()
+EndIf
+If $hTimer_EmptyWorkingSetBot = 0 Or TimerDiff($hTimer_EmptyWorkingSetBot) >= $iEmptyWorkingSetBot Then
+_WinAPI_EmptyWorkingSet(@AutoItPID)
+$hTimer_EmptyWorkingSetBot = TimerInit()
+EndIF
+If $TogglePauseUpdateState Then TogglePauseUpdateState("_Sleep")
+If $TPaused And $SleepWhenPaused And $TogglePauseAllowed Then TogglePauseSleep()
+If $bMoveDivider Then
+MoveDivider()
+$bMoveDivider = False
+EndIf
 If $iDeleteAllPBPushesNow = True Then PushMsg("DeleteAllPBMessages")
 If $iMakeScreenshotNow = True Then
 If $iScreenshotType = 0 Then
@@ -65629,8 +67275,6 @@ MakeScreenshot($dirTemp, "png")
 EndIf
 EndIf
 EndIf
-AndroidEmbedCheck()
-AndroidShieldCheck()
 If $CheckRunState = True And $RunState = False Then
 ResumeAndroid()
 Return True
@@ -65652,7 +67296,7 @@ AndroidShieldCheck()
 WEnd
 Return False
 EndFunc
-Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True)
+Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = True)
 Local $iCurTime, $iMinCalc, $iSecCalc, $iTime, $iBegin, $sString, $hLastUpdate
 Local $iDelayMinCalc, $iDelaySecCalc, $iDelaySecCalc
 Local Const $Font = "Verdana"
@@ -65663,7 +67307,7 @@ $iDelayMinCalc = Int($iDelay / (60 * 1000))
 $iDelaySecCalc = $iDelay - ($iDelayMinCalc * 60 * 1000)
 $iDelaySecCalc = Int($iDelaySecCalc / 1000)
 While TimerDiff($iBegin) < $iDelay
-If $RunState = False Then Return True
+If $RunState = False And $CheckRunState = True Then Return True
 If $bUpdate Then
 $iCurTime = TimerDiff($iBegin)
 $iTime = $iCurTime
@@ -65678,7 +67322,7 @@ EndIf
 If $iSleep = True Then _Sleep($iDelaySleep)
 $bUpdate = TimerDiff($hLastUpdate) > 500
 WEnd
-If $RunState = False Then Return True
+If $RunState = False And $CheckRunState = True Then Return True
 Return False
 EndFunc
 Func _StatusUpdateTime($hTimer, $sWhyWait = "")
@@ -67648,65 +69292,6 @@ $sAttackLogFName = "AttackLog" & "-" & @YEAR & "-" & @MON & ".log"
 $sAttackLogPath = $dirLogs & $sAttackLogFName
 $hAttackLogFileHandle = FileOpen($sAttackLogPath, $FO_APPEND)
 EndFunc
-Func MBRFunc($Start = True)
-Switch $Start
-Case True
-$hFuncLib = DllOpen($pFuncLib)
-$hImgLib = DllOpen($pImgLib)
-If $hFuncLib = -1 Then
-Setlog("MBRfunctions.dll not found.", $COLOR_RED)
-Return False
-EndIf
-If $debugSetlog = 1 Then Setlog("MBRfunctions.dll opened.", $COLOR_PURPLE)
-GUICtrlSetState($btnStart, $GUI_ENABLE)
-If $iTownHallLevel > 2 Then
-GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
-EndIf
-Case False
-$Pid = WinGetProcess($hFuncLib)
-If $debugSetlog = 1 Then Setlog("MBRFunction.dll PID = " & $Pid, $COLOR_PURPLE)
-DllClose($hFuncLib)
-Dllclose($hImgLib)
-Sleep(250)
-If ProcessExists($Pid) Then
-ConsoleWrite("MBRFunction.dll process slow close, PID= " & $Pid & @CRLF)
-If $debugSetlog = 1 Then Setlog("MBRFunction.dll process slow close, attempting fix", $COLOR_PURPLE)
-If ProcessClose($Pid) = 0 Then
-Local $holderror = @error
-Local $holdextended = @extended
-Switch $holderror
-Case 1
-$sMsg = "OpenProcess failed"
-Case 2
-$sMsg = "AdjustTokenPrivileges Failed"
-Case 3
-$sMsg = "TerminateProcess Failed"
-Case 4
-$sMsg = "Cannot verify if process exists"
-Case Else
-$sMsg = "Unknown Error"
-EndSwitch
-ConsoleWrite("MBRFunctions.dll process close error: " & $holderror & " = " & $sMsg & " Extended error= " & $holdextended & @CRLF)
-If $debugSetlog = 1 Then Setlog("MBRFunctions.dll process close error: " & $holderror & " = " & $sMsg, $COLOR_PURPLE)
-Else
-ConsoleWrite("MBRFunction.dll process Killed" & @CRLF)
-If $debugSetlog = 1 Then Setlog("MBRfunctions.dll Process killed.", $COLOR_PURPLE)
-EndIf
-EndIf
-If $debugSetlog = 1 Then Setlog("MBRfunctions.dll closed.", $COLOR_PURPLE)
-EndSwitch
-EndFunc
-Func debugMBRFunctions($debugSearchArea = 0, $debugRedArea = 0, $debugOcr = 0)
-Local $activeHWnD = WinGetHandle("")
-Local $result = DllCall($hFuncLib, "str", "setGlobalVar", "int", $debugSearchArea, "int", $debugRedArea, "int", $debugOcr)
-If @error Then _logErrorDLLCall($pFuncLib, @error)
-If IsArray($result) Then
-If $debugSetlog = 1 And $result[0] = -1 Then setlog("MBRfunctions.dll error setting Global vars.", $COLOR_PURPLE)
-Else
-If $debugSetlog = 1 Then setlog("MBRfunctions.dll not found.")
-EndIf
-WinActivate($activeHWnD)
-EndFunc
 Func DebugImageSave($TxtName = "Unknown", $capturenew = True, $extensionpng = "png", $makesubfolder = True)
 $Date = @MDAY & "." & @MON & "." & @YEAR
 $Time = @HOUR & "." & @MIN & "." & @SEC
@@ -67805,6 +69390,7 @@ Setlog("_DateAdd error code = " & $sEmsg, $COLOR_RED)
 EndFunc
 Func FindPos()
 getBSPos()
+WinActivate(((AndroidEmbedded = False) ? $HWnD : $frmBot))
 Local $wasDown = AndroidShieldForceDown(True, True)
 While 1
 If _IsPressed("01") Or _IsPressed("02") Then
@@ -68117,46 +69703,55 @@ Func TogglePause()
 TogglePauseImpl("Button")
 EndFunc
 Func TogglePauseImpl($Source)
+If Not $RunState Then Return
 ResumeAndroid()
-SetRedrawBotWindow(True)
-Local $BlockInputPausePrev
 $TPaused = Not $TPaused
-If $TPaused And $Runstate = True Then
+If $TogglePauseAllowed = False Then
+$TogglePauseUpdateState = True
+Return
+EndIf
+TogglePauseUpdateState($Source)
+TogglePauseSleep()
+EndFunc
+Func TogglePauseUpdateState($Source)
+$TogglePauseUpdateState = False
+If $TPaused Then
 AndroidShield("TogglePauseImpl paused", False)
 TrayTip($sBotTitle, "", 1)
 TrayTip($sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
 Setlog("Bot was Paused!", $COLOR_RED)
 If Not $bSearchMode Then
 $iTimePassed += Int(TimerDiff($sTimer))
-AdlibUnRegister("SetTime")
 EndIf
 PushMsg("Pause", $Source)
 GUICtrlSetState($btnPause, $GUI_HIDE)
 GUICtrlSetState($btnResume, $GUI_SHOW)
-ElseIf $TPaused = False And $Runstate = True Then
+Else
 AndroidShield("TogglePauseImpl resumed")
 TrayTip($sBotTitle, "", 1)
 TrayTip($sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
 Setlog("Bot was Resumed.", $COLOR_GREEN)
 If Not $bSearchMode Then
 $sTimer = TimerInit()
-AdlibRegister("SetTime", 1000)
 EndIf
 PushMsg("Resume", $Source)
 GUICtrlSetState($btnPause, $GUI_SHOW)
 GUICtrlSetState($btnResume, $GUI_HIDE)
 EndIf
+SetRedrawBotWindow(True)
+EndFunc
+Func TogglePauseSleep()
 Local $counter = 0
 While $TPaused
-If _Sleep($iDelayTogglePause1) Then ExitLoop
+If _Sleep($iDelayTogglePause1, True, True, False) Then ExitLoop
 $counter = $counter + 1
 If $PushBulletEnabled = 1 And $pRemote = 1 And $counter = 200 Then
 _RemoteControl()
 $counter = 0
 EndIf
 WEnd
-If _Sleep($iDelayTogglePause2) Then Return
-EndFunc
+If _Sleep($iDelayTogglePause2, True, True, False) Then Return
+EndFUnc
 Func CheckPrerequisites()
 Local $isAllOK = True
 Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
@@ -68350,53 +69945,96 @@ EndIf
 EndFunc
 Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 WinGetAndroidHandle()
-Local $BSHandle, $BOTHandle
-Local $BSPos = WinGetPos($HWnD)
-Local $BOTPos = WinGetPos($frmBot)
-If IsArray($BSPos) And IsArray($BOTPos) Then
+Local $AndroidPos = WinGetPos($HWnD)
+Local $BotPos = WinGetPos($frmBot)
+If IsArray($AndroidPos) And IsArray($BotPos) Then
 Local $hTimer = TimerInit()
 WinSetState($HWnD, "", @SW_RESTORE)
-While IsArray($BSPos) And TimerDiff($hTimer) < 3000 And $BSPos[0] < -30000 And $BSPos[1] < -30000
-$BSPos = WinGetPos($HWnD)
+While IsArray($AndroidPos) And TimerDiff($hTimer) < 3000 And $AndroidPos[0] < -30000 And $AndroidPos[1] < -30000
+$AndroidPos = WinGetPos($HWnD)
 If _Sleep($iDelaySleep) Then Return False
 WEnd
-Local $BSx = $BSPos[0]
-Local $BSy = $BSPos[1]
-Local $BSw = $BSPos[2]
-Local $BSh = $BSPos[3]
-Local $BOTx = $BOTPos[0]
-Local $BOTy = $BOTPos[1]
-Local $BOTw = $BOTPos[2]
-Local $BOTh = $BOTPos[3]
-If Number($BSx) > -30000 and Number($BSy) > -30000 Then
+Local $AndroidX = $AndroidPos[0]
+Local $AndroidY = $AndroidPos[1]
+Local $AndroidW = $AndroidPos[2]
+Local $AndroidH = $AndroidPos[3]
+Local $BotX = $BotPos[0]
+Local $BotY = $BotPos[1]
+Local $BotW = $BotPos[2]
+Local $BotH = $BotPos[3]
+If Number($AndroidX) > -30000 And Number($AndroidY) > -30000 Then
+Local $bAdjusted = False
+If $position = "EMBED" Then
+AndroidEmbed(True)
+If Not ($offsetX == "" Or $offsetY == "") Then
+$bAdjusted = $BotX <> $offsetX Or $BotY <> $offsetY
+If $bAdjusted = True Then WinMove2($frmBot, "", $offsetX, $offsetY)
+EndIf
+Else
+If $AndroidEmbedded = True Then
+Return
+EndIf
+Local $x = $offsetX
+Local $y = $offsetY
 Switch $position
 Case "BS-BOT"
-$BSHandle = WinMove2($HWnD, "", 0 + Number($offsetX) , 0 + number($offsetY))
-If _Sleep($iDelayWindowsArrange1) Then Return
-$BOTHandle = WinMove2($sBotTitle, "", Number($BSw) + Number($offsetX)*2, 0 + number($offsetY))
-If _Sleep($iDelayWindowsArrange1) Then Return
+If $offsetX == "" Then
+$x = $AndroidX
+$offsetX = 0
+EndIf
+If $offsetY == "" Then
+$y = $AndroidY
+$offsetY = 0
+EndIf
+$bAdjusted = $AndroidX <> $x Or $AndroidY <> $y
+If $bAdjusted Then
+WinMove2($HWnD, "", $x, $y)
+_Sleep($iDelayWindowsArrange1, True, False)
+EndIf
+$bAdjusted = $bAdjusted = True Or $BotX <> $AndroidW + $offsetX * 2 Or $BotY <> $y
+If $bAdjusted Then WinMove2($frmBot, "", $x + $AndroidW + $offsetX, $y)
 Case "BOT-BS"
-$BOTHandle = WinMove2($sBotTitle, "", 0 + Number($offsetX) , 0 + number($offsetY))
-If _Sleep($iDelayWindowsArrange1) Then Return
-$BSHandle = WinMove2($HWnD, "", Number($BOTw) + Number($offsetX)*2, 0 + number($offsetY))
-If _Sleep($iDelayWindowsArrange1) Then Return
+If $offsetX == "" Then
+$x = $BotX
+$offsetX = 0
+EndIf
+If $offsetY == "" Then
+$y = $BotY
+$offsetY = 0
+EndIf
+$bAdjusted = $BotX <> $x Or $BotY <> $y
+If $bAdjusted Then
+WinMove2($frmBot, "", $x, $y)
+_Sleep($iDelayWindowsArrange1, True, False)
+EndIf
+$bAdjusted = $bAdjusted Or $AndroidX <> $x + $BotW + $offsetX Or $AndroidY <> $y
+If $bAdjusted Then WinMove2($HWnD, "", $x + $BotW + $offsetX, $y)
 Case "SNAP-TR"
-If $BSx + $BSw + number($offsetX) < @DesktopWidth Then $BOTHandle = WinMove2($sBotTitle, "", $BSx + $BSw + Number($offsetX), $BSy )
-If _Sleep($iDelayWindowsArrange1) Then Return
+If $offsetX == "" Then $offsetX = 0
+If $offsetY == "" Then $offsetY = 0
+$bAdjusted = $BotX <> $AndroidX + $AndroidW + $offsetX Or $BotY <> $AndroidY + $offsetY
+If $bAdjusted Then WinMove2($frmBot, "", $AndroidX + $AndroidW + $offsetX, $AndroidY + $offsetY)
 Case "SNAP-BR"
-If $BSx + $BSw + number($offsetY) < @DesktopWidth Then $BOTHandle = WinMove2($sBotTitle, "", $BSx + $BSw + Number($offsetX), $BSy + ( $BSh- $BOTh )  )
-If _Sleep(500) Then Return
+If $offsetX == "" Then $offsetX = 0
+If $offsetY == "" Then $offsetY = 0
+$bAdjusted = $AndroidX <> $AndroidX + $AndroidW + $offsetX Or $AndroidY <> $AndroidY + ($AndroidH - $BotH) + $offsetY
+If $bAdjusted Then WinMove2($frmBot, "", $AndroidX + $AndroidW + $offsetX, $AndroidY + ($AndroidH - $BotH) + $offsetY)
 Case "SNAP-TL"
-If $BSx  >=100 Then $BOTHandle = WinMove2($sBotTitle, "", $BSx - $BOTw - Number($offsetX), $BSy )
-If _Sleep($iDelayWindowsArrange1) Then Return
+If $offsetX == "" Then $offsetX = 0
+If $offsetY == "" Then $offsetY = 0
+$bAdjusted = $BotX <> $AndroidX - $BotW - $offsetX Or $BotY <> $AndroidY + $offsetY
+If $bAdjusted Then WinMove2($frmBot, "", $AndroidX - $BotW - $offsetX, $AndroidY + $offsetY)
 Case "SNAP-BL"
-If $BSx >= 100 Then $BOTHandle = WinMove2($sBotTitle, "", $BSx - $BOTw - Number($offsetX), $BSy + ( $BSh- $BOTh ) )
-If _Sleep($iDelayWindowsArrange1) Then Return
-Case "EMBED"
-If $offsetX <> "" and $offsetY <> "" Then $BOTHandle = WinMove2($sBotTitle, "", 0 + Number($offsetX) , 0 + number($offsetY))
-AndroidEmbed(True)
-If _Sleep($iDelayWindowsArrange1) Then Return
+If $offsetX == "" Then $offsetX = 0
+If $offsetY == "" Then $offsetY = 0
+$bAdjusted = $BotX <> $AndroidX - $BotW - $offsetX Or $BotY <> $AndroidY + ($AndroidH - $BotH) + $offsetY
+If $bAdjusted Then WinMove2($frmBot, "", $AndroidX - $BotW - $offsetX, $AndroidY + ($AndroidH - $BotH) + $offsetY)
 EndSwitch
+EndIf
+If $bAdjusted = True Then
+SetDebugLog("WindowsArrange: " & $position & ", offsetX=" & $offsetX & ", offsetY=" & $offsetY & ", X=" & $x & ", Y=" & $y)
+_Sleep($iDelayWindowsArrange1, True, False)
+EndIf
 EndIf
 EndIf
 EndFunc
@@ -68405,9 +70043,9 @@ updateBtnEmbed()
 If $iDisposeWindows = 1 Then
 Switch $icmbDisposeWindowsPos
 Case 0
-WindowsArrange("BS-BOT",  $iWAOffsetX, $iWAOffsetY)
+WindowsArrange("BS-BOT", $iWAOffsetX, $iWAOffsetY)
 Case 1
-WindowsArrange("BOT-BS",  $iWAOffsetX, $iWAOffsetY)
+WindowsArrange("BOT-BS", $iWAOffsetX, $iWAOffsetY)
 Case 2
 WindowsArrange("SNAP-TR", $iWAOffsetX, $iWAOffsetY)
 Case 3
@@ -68419,21 +70057,26 @@ WindowsArrange("SNAP-BL", $iWAOffsetX, $iWAOffsetY)
 Case 6
 WindowsArrange("EMBED", $iWAOffsetX, $iWAOffsetY)
 EndSwitch
-Else
-If $bMonitorHeight800orBelow Then
-WindowsArrange("BS-BOT", 10, 0)
-EndIf
 EndIf
 EndFunc
 Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter = 0, $iFlags = 0, $bCheckAfterPos = True)
-Local $hWnd = WinGetHandle($WinTitle, $WinText)
-Local $aPos = WinGetPos($hWnd)
+Local $hWin = WinGetHandle($WinTitle, $WinText)
+If _WinAPI_IsIconic($hWin) Then
+SetDebugLog("Window " & $WinTitle & (($WinTitle <> $hWin) ? "(" & $hWin & ")" : "") & " restored", $COLOR_ORANGE)
+WinSetState($hWin, "", @SW_RESTORE)
+EndIf
+Local $aPos = WinGetPos($hWin)
 If @error <> 0 Or Not IsArray($aPos) Then
 SetError(1, @extended, -1)
 Return 0
-EndIF
-Local $NoMove = $x = -1 Or $y = -1
-Local $NoResize = $w = -1 Or $h = -1
+EndIf
+Local $aPPos = WinGetClientPos(_WinAPI_GetParent($hWin))
+If IsArray($aPPos) Then
+$aPos[0] -= $aPPos[0]
+$aPos[1] -= $aPPos[1]
+EndIf
+Local $NoMove = $x = -1 And $y = -1
+Local $NoResize = $w = -1 And $h = -1
 Local $NOZORDER = ($hAfter = 0 ? $SWP_NOZORDER : 0)
 If $x = -1 Or $y = -1 Or $w = -1 Or $h = -1 Then
 If $x = -1 Then $x = $aPos[0]
@@ -68443,19 +70086,34 @@ If $h = -1 Then $h = $aPos[3]
 EndIf
 $NoMove = $NoMove Or ($x = $aPos[0] And $y = $aPos[1])
 $NoResize = $NoResize Or ($w = $aPos[2] And $h = $aPos[3])
-_WinAPI_SetWindowPos($hWnd, $hAfter, $x, $y, $w, $h, BitOr(($NoMove ? BitOr($SWP_NOMOVE, $SWP_NOREPOSITION) : 0), $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags))
+_WinAPI_SetWindowPos($hWin, $hAfter, $x, $y, $w, $h, BitOR(($NoMove ? BitOR($SWP_NOMOVE, $SWP_NOREPOSITION) : 0), $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags))
 If $bCheckAfterPos Then
-$aPos = WinGetPos($hWnd)
+$aPos = WinGetPos($hWin)
 If @error <> 0 Or Not IsArray($aPos) Then
 SetError(1, @extended, -1)
 Return 0
 EndIf
-If $w <> $aPos[2] or $h <>$aPos[3] Then
-If $debugSetlog = 1 Then SetLog("Window " & $WinTitle & "(" & $hWnd & ") got resized again to " & $aPos[2] & " x " & $aPos[3] & ", restore now " & $w & " x " & $y, $COLOR_ORANGE)
-_WinAPI_SetWindowPos($hWnd, $hAfter, $x, $y, $w, $h, BitOr($SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags))
+Local $aPPos = WinGetClientPos(_WinAPI_GetParent($hWin))
+If IsArray($aPPos) Then
+$aPos[0] -= $aPPos[0]
+$aPos[1] -= $aPPos[1]
+EndIf
+If $x <> $aPos[0] Or $y <> $aPos[1] Or $w <> $aPos[2] Or $h <> $aPos[3] Then
+SetDebugLog("Window " & $WinTitle & (($WinTitle <> $hWin) ? "(" & $hWin & ")" : "") & " got resized/moved again to " & $aPos[0] & "/" & $aPos[1] & " " & $aPos[2] & "x" & $aPos[3] & ", restore now " & $x & "/" & $y & " " & $w & "x" & $h, $COLOR_ORANGE)
+WinMove($hWin, "", $x, $y, $w, $h - 1)
+_WinAPI_SetWindowPos($hWin, $hAfter, $x, $y, $w, $h, BitOR($SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags))
 EndIf
 EndIf
-Return $hWnd
+Return $hWin
+EndFunc
+Func WinGetClientPos($hWin, $x = 0, $y = 0)
+Local $tPoint = DllStructCreate("int x;int y")
+DllStructSetData($tPoint, "x", $x)
+DllStructSetData($tPoint, "y", $y)
+_WinAPI_ClientToScreen($hWin, $tPoint)
+If @error Then Return SetError(1, 0, 0)
+Local $a[2] = [DllStructGetData($tPoint, "x"), DllStructGetData($tPoint, "y")]
+Return $a
 EndFunc
 Func WinGetPos2($title, $text = "")
 Local $aPos = 0
@@ -68476,40 +70134,15 @@ WEnd
 Return $aPos
 EndFunc
 Func MakeScreenshot($TargetDir, $type = "jpg")
-WinGetAndroidHandle()
-If $HWnD <> 0 Then
+If WinGetAndroidHandle() <> 0 Then
 Local $SuspendMode
 Local $iLeft = 0, $iTop = 0, $iRight = $AndroidClientWidth, $iBottom = $AndroidClientHeight
 Local $iW = Number($iRight) - Number($iLeft)
 Local $iH = Number($iBottom) - Number($iTop)
-Local $hHBitmapScreenshot, $hDC_Capture, $hMemDC, $hObjectOld, $hBitmapScreenshot
+Local $hBitmapScreenshot
 Local $hGraphic, $hBrush
-If $ichkBackground = 1 Then
-If $AndroidAdbScreencap = True Then
-$hHBitmapScreenshot = AndroidScreencap($iLeft, $iTop, $iW, $iH)
-Else
-$SuspendMode = ResumeAndroid(False)
-$hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($HWnD, "", $AppClassInstance))
-$hMemDC = _WinAPI_CreateCompatibleDC($hDC_Capture)
-$hHBitmapScreenshot = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH)
-$hObjectOld = _WinAPI_SelectObject($hMemDC, $hHBitmapScreenshot)
-DllCall("user32.dll", "int", "PrintWindow", "hwnd", $HWnD, "handle", $hMemDC, "int", 0)
-_WinAPI_SelectObject($hMemDC, $hHBitmapScreenshot)
-_WinAPI_BitBlt($hMemDC, 0, 0, $iW, $iH, $hDC_Capture, $iLeft, $iTop, $SRCCOPY)
-_WinAPI_DeleteDC($hMemDC)
-_WinAPI_SelectObject($hMemDC, $hObjectOld)
-_WinAPI_ReleaseDC($HWnD, $hDC_Capture)
-SuspendAndroid($SuspendMode, False)
-EndIf
+$hHBitmapScreenshot = _CaptureRegion($iLeft, $iTop, $iRight, $iBottom, False, True)
 $hBitmapScreenshot = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmapScreenshot)
-Else
-getBSPos()
-$SuspendMode = ResumeAndroid(False)
-$hHBitmapScreenshot = _ScreenCapture_Capture("", $iLeft + $BSpos[0], $iTop + $BSpos[1], $iRight + $BSpos[0] - 1, $iBottom + $BSpos[1] - 1, False)
-$hBitmapScreenshot = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmapScreenshot)
-SuspendAndroid($SuspendMode, False)
-EndIf
-$ForceCapture = False
 $hGraphic = _GDIPlus_ImageGetGraphicsContext($hBitmapScreenshot)
 $hBrush = _GDIPlus_BrushCreateSolid(0xFF000029)
 If $ichkScreenshotHideName = 1 Then
@@ -69130,7 +70763,7 @@ SetDebugLog("Found existing " & $sBotTitle & " instance to close, PID " & $other
 If WinClose($otherHWnD) = 1 Then
 SetDebugLog("Existing bot window closed")
 EndIf
-If WinWaitClose($otherHWnD, "", 5) = 0 Then
+If WinWaitClose($otherHWnD, "", 10) = 0 Then
 SetDebugLog("Existing bot window still there...")
 WinKill($otherHWnD)
 SetDebugLog("Existing bot window killed")
@@ -69189,6 +70822,626 @@ _GUICtrlMenu_RemoveMenu($hSysMenu, $i)
 EndIf
 Next
 EndIf
+EndFunc
+Global Const $__FILE_BEGIN   = 0
+Global Const $__FILE_CURRENT = 1
+Func _ImageGetInfo($sFile)
+Local $sInfo = "", $hFile, $nClr, $error
+Local $nFileSize = FileGetSize($sFile)
+Local $ret = DllCall("kernel32.dll","int","CreateFile",  "str",$sFile,  "int",0x80000000,  "int",0,  "ptr",0,  "int",3,  "int",0x80,  "ptr",0)
+If @error OR ($ret[0] = 0) Then Return SetError(1, 0, "")
+$hFile = $ret[0]
+Local $asIdent[7] = ["0xFFD8", "0x424D", "0x89504E470D0A1A0A", "0x4749463839", "0x4749463837", "0x4949", "0x4D4D"]
+Local $p = _FileReadToStructAtOffset("ubyte[54]", $hFile, 0)
+For $i = 0 To UBound($asIdent) - 1
+If BinaryMid(DllStructGetData($p, 1), 1, BinaryLen($asIdent[$i])) = $asIdent[$i] Then
+Switch $i
+Case 0
+$sInfo = _ParseJPEG($hFile, $nFileSize)
+$error = @error
+Case 1
+Local $t = DllStructCreate("int;int;short;short;dword;dword;dword;dword", DllStructGetPtr($p) + 18)
+_Add($sInfo, "Width",  DllStructGetData($t, 1))
+_Add($sInfo, "Height", DllStructGetData($t, 2))
+_Add($sInfo, "ColorDepth", DllStructGetData($t, 4))
+_Add($sInfo, "XResolution", Round(DllStructGetData($t, 7)/39.37))
+_Add($sInfo, "YResolution", Round(DllStructGetData($t, 8)/39.37))
+_Add($sInfo, "ResolutionUnit", "Inch")
+Case 2
+$sInfo = _ParsePNG($hFile, $nFileSize)
+$error = @error
+Case 3, 4
+$t = DllStructCreate("short;short;ubyte", DllStructGetPtr($p) + 6)
+_Add($sInfo, "Width",  DllStructGetData($t, 1))
+_Add($sInfo, "Height", DllStructGetData($t, 2))
+$nClr = DllStructGetData($t, 3)
+_Add($sInfo, "ColorDepth", _IsBitSet($nClr, 0) + _IsBitSet($nClr, 1)*2 + _IsBitSet($nClr, 2)*4 + 1)
+Case 5, 6
+$sInfo = _ParseTIFF($hFile, 0)
+EndSwitch
+Exitloop
+Endif
+Next
+DllCall("kernel32.dll","int","CloseHandle","int", $hFile)
+Return SetError($error, 0, $sInfo)
+EndFunc
+Func _ImageGetParam($sInfo, $sParam)
+Local $aParam = StringRegExp($sInfo, "(?m)^" & $sParam & "=(.*)$", 1)
+If IsArray($aParam) Then
+Return $aParam[0]
+Else
+SetError(1, 0, "")
+EndIf
+EndFunc
+Func _ParsePNG($hFile, $nFileSize)
+Local $sInfo = "", $nBlockSize, $nID = 0, $t
+Local $nBPP, $nCol, $sAlpha = ""
+Local $nXRes, $nYRes
+Local $sKeyword, $nKWLen
+Local $pBlockID = DllStructCreate("ulong;ulong")
+_FileSetPointer($hFile, 8, $__FILE_BEGIN)
+While $nID <> 0x49454E44
+$pBlockID = _FileReadToStruct($pBlockID, $hFile)
+$nBlockSize = _IntR32(DllStructGetData($pBlockID, 1))
+If $nBlockSize > $nFileSize Then Return SetError(2, 0, $sInfo)
+$nID = _IntR32(DllStructGetData($pBlockID, 2))
+Switch $nID
+Case 0x49484452
+$t = _FileReadToStruct("align 1;ulong;ulong;byte;byte;byte;byte;byte", $hFile)
+_Add($sInfo, "Width",  _IntR32(DllStructGetData($t, 1)))
+_Add($sInfo, "Height", _IntR32(DllStructGetData($t, 2)))
+$nBPP = DllStructGetData($t, 3)
+$nCol = DllStructGetData($t, 4)
+If $nCol > 3 Then
+$nCol = $nCol - 4
+$sAlpha = " + alpha"
+Endif
+If $nCol < 3 Then $nBPP = ($nCol + 1) * $nBPP
+_Add($sInfo, "ColorDepth", $nBPP & $sAlpha)
+_Add($sInfo, "Interlace", DllStructGetData($t, 7))
+Case 0x70485973
+$t = _FileReadToStruct("align 1;ulong;ulong;ubyte", $hFile)
+$nXRes = _IntR32(DllStructGetData($t, 1))
+$nYRes = _IntR32(DllStructGetData($t, 2))
+If DllStructGetData($t, 3) = 1 Then
+$nXRes = Round($nXRes/39.37)
+$nYRes = Round($nYRes/39.37)
+Endif
+_Add($sInfo, "XResolution", $nXRes)
+_Add($sInfo, "YResolution", $nYRes)
+_Add($sInfo, "ResolutionUnit", "Inch")
+Case 0x74455874
+$t = _FileReadToStruct("char[80]", $hFile)
+$sKeyword = DllStructGetData($t, 1)
+$nKWLen = StringLen($sKeyword) + 1
+_FileSetPointer($hFile, -80 + $nKWLen, $__FILE_CURRENT)
+$t = _FileReadToStruct("char[" & $nBlockSize - $nKWLen & "]", $hFile)
+_Add($sInfo, $sKeyword, DllStructGetData($t, 1))
+Case 0x74494D45
+$t = _FileReadToStruct("align 1;ushort;ubyte;ubyte;ubyte;ubyte;ubyte", $hFile)
+_Add($sInfo, "DateTime", StringFormat("%4d-%02d-%02d %02d:%02d:%02d",  DllStructGetData($t, 1), DllStructGetData($t, 2),  DllStructGetData($t, 3), DllStructGetData($t, 4),  DllStructGetData($t, 5), DllStructGetData($t, 6)))
+Case Else
+_FileSetPointer($hFile, $nBlockSize + 4, $__FILE_CURRENT)
+ContinueLoop
+EndSwitch
+_FileSetPointer($hFile, 4, $__FILE_CURRENT)
+Wend
+Return $sInfo
+EndFunc
+Func _ParseJPEG($hFile, $nFileSize)
+Local $nPos = 2, $nMarker = 0, $sInfo = ""
+Local $nSegSize, $pSegment, $t
+_FileSetPointer($hFile, 2, $__FILE_BEGIN)
+Local $p = DllStructCreate("align 1;ubyte;ubyte;ushort")
+While ($nMarker <> 0xDA) and ($nPos < $nFileSize)
+$p = _FileReadToStruct($p, $hFile)
+If DllStructGetData($p, 1) = 0xFF Then
+$nMarker = DllStructGetData($p, 2)
+$nSegSize = _IntR16(DllStructGetData($p, 3))
+$pSegment = _FileReadToStruct("byte[" & $nSegSize - 2 & "]", $hFile)
+Switch $nMarker
+Case 0xC0 To 0xC3, 0xC5 To 0xC7, 0xCB, 0xCD To 0xCF
+Switch $nMarker
+Case 0xC2, 0xC6, 0xCA, 0xCE
+_Add($sInfo, "Progressive", "True")
+Case 0xC3, 0xC7, 0xCB, 0xCF
+_Add($sInfo, "Lossless", "True")
+EndSwitch
+Switch $nMarker
+Case 0xC0 To 0xC3, 0xC5 To 0xC7
+_Add($sInfo, "Compression", "Huffman")
+Case 0xC9 To 0xCB, 0xCD To 0xCF
+_Add($sInfo, "Compression", "Arithmetic")
+EndSwitch
+$t = DllStructCreate("align 1;byte;ushort;ushort", DllStructGetPtr($pSegment))
+_Add($sInfo, "Width",  _IntR16(DllStructGetData($t, 3)))
+_Add($sInfo, "Height", _IntR16(DllStructGetData($t, 2)))
+Case 0xE0
+$t = DllStructCreate("byte[5];byte;byte;ubyte;ushort;ushort", DllStructGetPtr($pSegment))
+_Add($sInfo, "XResolution", _IntR16(DllStructGetData($t, 5)))
+_Add($sInfo, "YResolution", _IntR16(DllStructGetData($t, 6)))
+_AddArray($sInfo, "ResolutionUnit", _IntR16(DllStructGetData($t, 4)), "Pixel;Inch;Cm")
+Case 0xE1
+$sInfo = $sInfo & _ParseTIFF($hFile, $nPos + 10)
+_FileSetPointer($hFile, $nPos + $nSegSize + 2, $__FILE_BEGIN)
+Case 0xFE
+$t = DllStructCreate("char[" & $nSegSize - 2 & "]", DllStructGetPtr($pSegment))
+_Add($sInfo, "Comment", StringStripWS(DllStructGetData($t, 1), 3))
+EndSwitch
+$nPos= $nPos + $nSegSize + 2
+Else
+Return SetError(2, 0, $sInfo)
+Endif
+Wend
+Return($sInfo)
+EndFunc
+Func _ParseTIFF($hFile, $nTiffHdrOffset = 0)
+Local $pHdr, $nIFDOffset, $pCnt, $nIFDCount, $pTag, $nCnt, $nID, $nEIFDCount
+Local $ByteOrder = 0, $sInfo = ""
+Local $nEIFDOffset, $nSubID
+$pHdr = _FileReadToStructAtOffset("short;short;dword", $hFile, $nTiffHdrOffset)
+If DllStructGetData($pHdr, 1) = 0x4D4D then $ByteOrder = 1
+$nIFDOffset = _IntR32(DllStructGetData($pHdr, 3), $ByteOrder)
+$pCnt = _FileReadToStructAtOffset("ushort", $hFile, $nTiffHdrOffset + $nIFDOffset)
+$nIFDCount = _IntR16(DllStructGetData($pCnt, 1), $ByteOrder)
+$pTag = DllStructCreate("ushort;ushort;ulong;ulong")
+For $nCnt = 0 To $nIFDCount - 1
+$pTag = _FileReadToStructAtOffset($pTag, $hFile, $nTiffHdrOffset + $nIFDOffset + 2 + $nCnt * 12)
+$nID = _IntR16(DllStructGetData($pTag, 1), $ByteOrder)
+Switch $nID
+Case 0x8769, 0x8825
+$nEIFDOffset = _ReadTag($hFile, $pTag, $nTiffHdrOffset, $ByteOrder)
+$pCnt = _FileReadToStructAtOffset($pCnt, $hFile, $nTiffHdrOffset + $nEIFDOffset)
+$nEIFDCount = _IntR16(DllStructGetData($pCnt, 1), $ByteOrder)
+For $i = 0 To $nEIFDCount - 1
+$pTag = _FileReadToStructAtOffset($pTag, $hFile, $nTiffHdrOffset + $nEIFDOffset + 2 + $i * 12)
+$nSubID = _IntR16(DllStructGetData($pTag, 1), $ByteOrder)
+Switch $nID
+Case 0x8769
+_AddExifTag($sInfo, $nSubID, _ReadTag($hFile, $pTag, $nTiffHdrOffset, $ByteOrder))
+Case 0x8825
+_AddGpsTag($sInfo, $nSubID, _ReadTag($hFile, $pTag, $nTiffHdrOffset, $ByteOrder))
+EndSwitch
+Next
+Case 0xA005
+Case 0x014A
+Case 0x0190
+Case Else
+_AddTiffTag($sInfo, $nID, _ReadTag($hFile, $pTag, $nTiffHdrOffset, $ByteOrder))
+EndSwitch
+Next
+Return($sInfo)
+EndFunc
+Func _ReadTag($hFile, $pTag, $nHdrOffset, $ByteOrder)
+Local $nType   = _IntR16(DllStructGetData($pTag, 2), $ByteOrder)
+Local $nCount  = _IntR32(DllStructGetData($pTag, 3), $ByteOrder)
+Local $nOffset = _IntR32(DllStructGetData($pTag, 4), $ByteOrder) + $nHdrOffset
+Local $p
+Switch $nType
+Case 2
+$p = _FileReadToStructAtOffset("char[" & $nCount & "]", $hFile, $nOffset)
+Return DllStructGetData($p, 1)
+Case 1
+Return BitAND(DllStructGetData($pTag, 4), 0xFF)
+Case 3
+If $nCount > 1 Then
+If $nCount > 2 Then
+$p = _FileReadToStructAtOffset("short[" & $nCount & "]", $hFile, $nOffset)
+Else
+$p = DllStructCreate("short[2]", DllStructGetPtr($pTag, 4))
+EndIf
+Local $aRet[$nCount]
+For $i = 1 To $nCount
+$aRet[$i-1] = _IntR16(DllStructGetData($p, 1, $i), $ByteOrder)
+Next
+Return $aRet
+Else
+Return _IntR16(BitAND(DllStructGetData($pTag, 4), 0xFFFF), $ByteOrder)
+EndIf
+Case 4
+If $nCount > 1 Then
+$p = _FileReadToStructAtOffset("short[" & $nCount & "]", $hFile, $nOffset)
+Local $aRet[$nCount]
+For $i = 1 To $nCount
+$aRet[$i-1] = _IntR32(DllStructGetData($p, 1, $i), $ByteOrder)
+Next
+Return $aRet
+Else
+Return _IntR32(DllStructGetData($pTag, 4), $ByteOrder)
+EndIf
+Case 5
+$p = _FileReadToStructAtOffset("ulong;ulong", $hFile, $nOffset)
+Return _IntR32(DllStructGetData($p, 1), $ByteOrder) / _IntR32(DllStructGetData($p, 2), $ByteOrder)
+Case 7
+$p = _FileReadToStructAtOffset("byte[" & $nCount & "]", $hFile, $nOffset)
+Return DllStructGetData($p, 1)
+Case 9
+$p = DllStructCreate("long", DllStructGetPtr($pTag, 4))
+Return _IntR32(DllStructGetData($p, 1), $ByteOrder)
+Case 10
+$p = _FileReadToStructAtOffset("dword;dword", $hFile, $nOffset)
+Return _IntR32(DllStructGetData($p, 1), $ByteOrder) / _IntR32(DllStructGetData($p, 2), $ByteOrder)
+Case Else
+Return SetError(1, 0, "")
+EndSwitch
+EndFunc
+Func _AddTiffTag(ByRef $sInfo, $nID, $vTag)
+Local $p, $vTemp = ""
+Switch $nID
+Case 0x00FE
+Select
+Case _IsBitSet($vTag, 0)
+$vTemp = "Reduced image"
+Case _IsBitSet($vTag, 1)
+$vTemp = "Page"
+Case _IsBitSet($vTag, 2)
+$vTemp = "Mask"
+EndSelect
+_Add($sInfo, "NewSubfileType", $vTemp)
+Case 0x0100
+_Add($sInfo, "Width", $vTag)
+Case 0x0101
+_Add($sInfo, "Height", $vTag)
+Case 0x0102
+If IsArray($vTag) Then
+$vTemp = 0
+For $i = 0 To UBound($vTag) - 1
+$vTemp += $vTag[$i]
+Next
+_Add($sInfo, "Colordepth", $vTemp)
+Else
+_Add($sInfo, "Colordepth", $vTag)
+EndIf
+Case 0x0103
+Switch $vTag
+Case 32773
+_Add($sInfo, "Compression", "Packbits")
+Case Else
+_AddArray($sInfo, "Compression", $vTag, ";No compression;CCITT modified Huffman RLE;CCITT Group 3 fax encoding;" &  "CCITT Group 4 fax encoding;LZW;JPEG (old);JPEG;Deflate;JBIG on B/W;JBIG on color","Unknown")
+EndSwitch
+Case 0x0106
+Switch $vTag
+Case 32803
+_Add($sInfo, "PhotometricInterpretation", "LOGL")
+$vTemp = "LOGL"
+Case 34892
+_Add($sInfo, "PhotometricInterpretation", "LOGLUV")
+Case Else
+_AddArray($sInfo, "PhotometricInterpretation", $vTag, "MINISWHITE;MINISBLACK;RGB;PALETTE;MASK;SEPARATED;YCBCR;CIELAB;ICCLAB;ITULAB")
+EndSwitch
+Case 0x0107
+_AddArray($sInfo, "Threshholding", $vTag, ";BiLevel;Halftone;Error Diffusion")
+Case 0x0108
+_Add($sInfo, "CellWidth", $vTemp)
+Case 0x0109
+_Add($sInfo, "CellLength", $vTemp)
+Case 0x010E
+_Add($sInfo, "ImageDescription", $vTag)
+Case 0x010F
+_Add($sInfo, "Make", $vTag)
+Case 0x0110
+_Add($sInfo, "Model", $vTag)
+Case 0x0112
+_AddArray($sInfo, "Orientation", $vTag, ";Normal;Mirrored;180°;180° and mirrored;90° left and mirrored;90° right;90° right and mirrored;90° left")
+Case 0x0115
+_Add($sInfo, "SamplesPerPixel", $vTag)
+Case 0x011A
+_Add($sInfo, "XResolution", $vTag)
+Case 0x011B
+_Add($sInfo, "YResolution", $vTag)
+Case 0x0128
+_AddArray($sInfo, "ResolutionUnit", $vTag, ";;Inch;Centimeter")
+Case 0x0131
+_Add($sInfo, "Software", $vTag)
+Case 0x0132
+_Add($sInfo, "DateTime", $vTag)
+Case 0x013B
+_Add($sInfo, "Artist", $vTag)
+Case 0x013C
+_Add($sInfo, "HostComputer", $vTag)
+Case 0x0152
+_AddArray($sInfo, "ExtraSamples", $vTag, ";Associated alpha;Unassociated alpha","Unspecified")
+Case 0x8298
+_Add($sInfo, "Copyright", $vTag)
+Case 0x010D
+_Add($sInfo, "DocumentName", $vTag)
+Case 0x011D
+_Add($sInfo, "PageName", $vTag)
+Case 0x011E
+_Add($sInfo, "XPosition", $vTag)
+Case 0x011F
+_Add($sInfo, "YPosition", $vTag)
+Case 0x0129
+If IsArray($vTag) Then
+_Add($sInfo, "PageNumber", $vTag[0] & "/" & $vTag[1])
+EndIf
+Case 0x013E
+_Add($sInfo, "WhitePoint", $vTag)
+Case 0x0146
+_Add($sInfo, "BadFaxLines", $vTag)
+Case 0x0147
+_AddArray($sInfo, "CleanFaxData", $vTag, "Clean;Regenerated;Unclean")
+Case 0x0148
+_Add($sInfo, "ConsecutiveBadFaxLines", $vTag)
+Case 0x014C
+_AddArray($sInfo, "InkSet", $vTag, ";CMYK", "No CMYK")
+Case 0x014E
+_Add($sInfo, "NumberOfInks", $vTag)
+Case 0x0151
+_Add($sInfo, "TargetPrinter", $vTag)
+Case 0x015A
+_AddArray($sInfo, "Indexed", $vTag, "Not indexed;Indexed")
+Case 0x0191
+_AddArray($sInfo, "ProfileType", $vTag, ";Group 3 fax","Unspecified")
+Case 0x02BC
+_Add($sInfo, "XMP", $vTag)
+EndSwitch
+EndFunc
+Func _AddExifTag(ByRef $sInfo, $nID, $vTag)
+Local $vTemp = ""
+Switch $nID
+Case 0x829A
+_Add($sInfo, "ExposureTime", $vTag)
+Case 0x829D
+_Add($sInfo, "FNumber", $vTag)
+Case 0x8822
+_AddArray($sInfo, "ExposureProgram", $vTag, "Undefined;Manual;Normal;Aperture priority;Shutter priority;Creative;Action;Portrait mode;Landscape mode")
+Case 0x8824
+_Add($sInfo, "SpectralSensitivity", $vTag)
+Case 0x8827
+_Add($sInfo, "ISO", $vTag)
+Case 0x9000
+_Add($sInfo, "ExifVersion", $vTag)
+Case 0x9003
+_Add($sInfo, "DateTimeOriginal", $vTag)
+Case 0x9004
+_Add($sInfo, "DateTimeDigitized", $vTag)
+Case 0x9101
+Switch BinaryMid($vTag, 1, 1)
+Case 0x34
+$vTemp = "RGB"
+Case 0x31
+$vTemp = "YCbCr"
+Case Else
+$vTemp = "Undefined"
+EndSwitch
+_Add($sInfo, "ComponentsConfiguration", $vTemp)
+Case 0x9102
+_Add($sInfo, "CompressedBitsPerPixel", $vTag)
+Case 0x9201
+_Add($sInfo, "ShutterSpeedValue", $vTag)
+Case 0x9202
+_Add($sInfo, "ApertureValue", $vTag)
+Case 0x9203
+_Add($sInfo, "BrightnessValue", $vTag)
+Case 0x9204
+_Add($sInfo, "ExposureBiasValue", $vTag)
+Case 0x9205
+_Add($sInfo, "MaxApertureValue", $vTag)
+Case 0x9206
+_Add($sInfo, "SubjectDistance", $vTag)
+Case 0x9207
+_AddArray($sInfo, "MeteringMode", $vTag, "Unknown;Average;Center Weighted Average;Spot;MultiSpot;MultiSegment;Partial;Other")
+Case 0x9208
+If $vTag = 255 Then
+_Add($sInfo, "LightSource", "Other")
+Else
+_AddArray($sInfo, "LightSource", $vTag, "Unknown;Daylight;Fluorescent;Tungsten;Flash;;;;;Fine weather;Cloudy weather;Shade;" &  "Daylight fluorescent;Day white fluorescent;Cool white fluorescent;White fluorescent;;" &  "Standard light A;Standard light B;Standard light C;D55;D65;D75;D50;ISO studio tungsten")
+EndIf
+Case 0x9209
+If _IsBitSet($vTag, 0) Then
+$vTemp = "Fired, "
+Else
+$vTemp = "Not fired, "
+EndIf
+Switch _IsBitSet($vTag, 4) * 2 + _IsBitSet($vTag, 3)
+Case 1
+$vTemp &= "Forced ON, "
+Case 2
+$vTemp &= "Forced OFF, "
+Case 3
+$vTemp &= "Auto, "
+EndSwitch
+If _IsBitSet($vTag, 6) Then $vTemp &= "Red-eye reduction, "
+_Add($sInfo, "Flash", StringTrimRight($vTemp, 2))
+Case 0x920A
+_Add($sInfo, "FocalLength", $vTag)
+Case 0x9214
+If IsArray($vTag) Then
+Switch UBound($vTag)
+Case 2
+$vTemp = StringFormat("Point, %d:%d", $vTag[0], $vTag[1])
+Case 3
+$vTemp = StringFormat("Circle, Center %d:%d, Diameter %d", $vTag[0], $vTag[1], $vTag[2])
+Case 4
+$vTemp = StringFormat("Square, Center %d:%d, Width %d, Height %d", $vTag[0], $vTag[1], $vTag[2], $vTag[3])
+EndSwitch
+EndIf
+_Add($sInfo, "SubjectArea", $vTemp)
+Case 0x9286
+Switch BinaryMid($vTag, 1, 8)
+Case "0x4153434949000000"
+$vTemp = BinaryToString(BinaryMid($vTag, 9))
+Case "0x554E49434F444500"
+$vTemp = BinaryMid($vTag, 9)
+Case Else
+$vTemp = BinaryMid($vTag, 9)
+EndSwitch
+_Add($sInfo, "UserComment", $vTemp)
+Case 0x9290
+_Add($sInfo, "SubsecTime", $vTag)
+Case 0x9291
+_Add($sInfo, "SubsecTimeOriginal", $vTag)
+Case 0x9292
+_Add($sInfo, "SubsecTimeDigitized", $vTag)
+Case 0xA001
+_AddArray($sInfo, "ColorSpace", $vTag, ";RGB", "Uncalibrated")
+Case 0xA002
+_Add($sInfo, "PixelXDimension", $vTag)
+Case 0xA003
+_Add($sInfo, "PixelYDimension", $vTag)
+Case 0xA004
+_Add($sInfo, "RelatedSoundFile", $vTag)
+Case 0xA20B
+_Add($sInfo, "FlashEnergy", $vTag)
+Case 0xA20E
+_Add($sInfo, "FocalPlaneXResolution", $vTag)
+Case 0xA20F
+_Add($sInfo, "FocalPlaneYResolution", $vTag)
+Case 0xA210
+_AddArray($sInfo, "FocalPlaneResolutionUnit", $vTag, ";;Inch;Centimeter")
+Case 0xA214
+If IsArray($vTag) Then
+_Add($sInfo, "SubjectLocation", $vTag[0] & ":" & $vTag[1])
+EndIf
+Case 0xA215
+_Add($sInfo, "ExposureIndex", $vTag)
+Case 0xA217
+_AddArray($sInfo, "SensingMethod", $vTag, "Undefined;Undefined;OneChipColorArea;TwoChipColorArea;ThreeChipColorArea;ColorSequentialArea;Undefined;Trilinear;ColorSequentialLinear")
+Case 0xA300
+If $vTag = 0x3 Then _Add($sInfo, "FileSource", "DSC")
+Case 0xA301
+If $vTag = 0x1 Then _Add($sInfo, "SceneType", "Directly recorded")
+Case 0xA401
+_AddArray($sInfo, "CustomRendered", "No;Yes","No")
+Case 0xA402
+_AddArray($sInfo, "ExposureMode", $vTag, "Auto;Manual;Auto bracket")
+Case 0xA403
+_AddArray($sInfo, "WhiteBalance", $vTag, "Auto;Manual")
+Case 0xA404
+_Add($sInfo, "DigitalZoomRatio", $vTag)
+Case 0xA405
+_AddArray($sInfo, "FocalLengthIn35mmFilm", $vTag, "Unknown", $vTag)
+Case 0xA406
+_AddArray($sInfo, "SceneCaptureType", $vTag, "Standard;Landscape;Portrait;Night scene")
+Case 0xA407
+_AddArray($sInfo, "GainControl", $vTag, "None;Low gain up;High gain up;Low gain down;High gain down")
+Case 0xA408
+_AddArray($sInfo, "Contrast", $vTag, "Normal;Soft;Hard")
+Case 0xA409
+_AddArray($sInfo, "Saturation", $vTag, "Normal;Low;High")
+Case 0xA40A
+_AddArray($sInfo, "Sharpness", $vTag, "Normal;Soft;Hard")
+Case 0xA40B
+_Add($sInfo, "DeviceSettingDescription", $vTag)
+Case 0xA40C
+_AddArray($sInfo, "SubjectDistanceRange", $vTag, "Unknown;Macro;Close view;Distant view")
+Case 0xA420
+_Add($sInfo, "ImageUniqueID", $vTag)
+EndSwitch
+EndFunc
+Func _AddGpsTag(ByRef $sInfo, $nID, $vTag)
+Switch $nID
+Case 0x0000
+_Add($sInfo, "GPSVersionID", $vTag)
+Case 0x0001
+_Add($sInfo, "GPSLatitudeRef", $vTag)
+Case 0x0002
+If IsArray($vTag) And (UBound($vTag) = 3) Then
+_Add($sInfo, "GPSLatitude", StringFormat("%f/%f/%f", $vTag[0], $vTag[1], $vTag[2]))
+EndIf
+Case 0x0003
+_Add($sInfo, "GPSLongitudeRef", $vTag)
+Case 0x0004
+If IsArray($vTag) And (UBound($vTag) = 3) Then
+_Add($sInfo, "GPSLongitude", StringFormat("%f/%f/%f", $vTag[0], $vTag[1], $vTag[2]))
+EndIf
+Case 0x0005
+_AddArray($sInfo, "GPSAltitudeRef", $vTag, "Above sea level,Below sea level")
+Case 0x0006
+_Add($sInfo, "GPSAltitude", $vTag)
+Case 0x0007
+If IsArray($vTag) And (UBound($vTag) = 3) Then
+_Add($sInfo, "GPSTimeStamp", StringFormat("UTC %f:%f:%f", $vTag[0], $vTag[1], $vTag[2]))
+EndIf
+Case 0x0008
+_Add($sInfo, "GPSSatellites", $vTag)
+Case 0x0009
+_Add($sInfo, "GPSStatus", $vTag)
+Case 0x000A
+_Add($sInfo, "GPSMeasureMode", $vTag)
+Case 0x000B
+_Add($sInfo, "GPSDOP", $vTag)
+Case 0x000C
+_Add($sInfo, "GPSSpeedRef", $vTag)
+Case 0x000D
+_Add($sInfo, "GPSSpeed", $vTag)
+Case 0x000E
+_Add($sInfo, "GPSTrackRef", $vTag)
+Case 0x000F
+_Add($sInfo, "GPSTrack", $vTag)
+Case 0x0010
+_Add($sInfo, "GPSImgDirectionRef", $vTag)
+Case 0x0011
+_Add($sInfo, "GPSImgDirection", $vTag)
+Case 0x0012
+_Add($sInfo, "GPSMapDatum", $vTag)
+Case 0x0013
+_Add($sInfo, "GPSDestLatitudeRef", $vTag)
+Case 0x0014
+If IsArray($vTag) And (UBound($vTag) = 3) Then
+_Add($sInfo, "GPSDestLatitude", StringFormat("%f/%f/%f", $vTag[0], $vTag[1], $vTag[2]))
+EndIf
+Case 0x0015
+_Add($sInfo, "GPSDestLongitudeRef", $vTag)
+Case 0x0016
+If IsArray($vTag) And (UBound($vTag) = 3) Then
+_Add($sInfo, "GPSDestLongitude", StringFormat("%f/%f/%f", $vTag[0], $vTag[1], $vTag[2]))
+EndIf
+Case 0x0017
+_Add($sInfo, "GPSDestBearingRef", $vTag)
+Case 0x0018
+_Add($sInfo, "GPSDestBearing", $vTag)
+Case 0x0019
+_Add($sInfo, "GPSDestDistanceRef", $vTag)
+Case 0x001A
+_Add($sInfo, "GPSDestDistance", $vTag)
+Case 0x001D
+_Add($sInfo, "GPSDateStamp", $vTag)
+Case 0x001E
+_AddArray($sInfo, "GPSDifferential", $vTag, "No correction;Correction applied")
+EndSwitch
+EndFunc
+Func _AddArray(ByRef $sInfo, $sField, $vTag, $sValues, $sDefault = "Undefined")
+Local $aArray = StringSplit($sValues, ";", 2)
+Switch $vTag
+Case 0 To UBound($aArray) - 1
+If $aArray[$vTag] = "" Then $aArray[$vTag] = $sDefault
+_Add($sInfo, $sField, $aArray[$vTag])
+Case Else
+_Add($sInfo, $sField, $sDefault)
+EndSwitch
+EndFunc
+Func _IsBitSet($nNum, $nBit)
+Return BitAND(BitShift($nNum, $nBit), 1)
+EndFunc
+Func _Add(ByRef $sInfo, $sField, $nValue)
+$sInfo = $sInfo & $sField & "=" & $nValue & @LF
+EndFunc
+Func _IntR32($nInt, $nOrder = 1)
+If not $nOrder Then Return $nInt
+Return BitOR(BitAND(BitShift($nInt,24), 0x000000FF),  BitAND(BitShift($nInt, 8), 0x0000FF00),  BitAND(BitShift($nInt,-8), 0x00FF0000),  BitAND(BitShift($nInt,-24),0xFF000000))
+EndFunc
+Func _IntR16($nInt, $nOrder = 1)
+If not $nOrder Then Return $nInt
+Return BitOR(BitAND(BitShift($nInt, 8), 0xFF), BitAND(BitShift($nInt, -8), 0xFF00))
+EndFunc
+Func _FileSetPointer($hFile, $nOffset, $nStartPosition)
+Local $ret = DllCall("kernel32.dll","int","SetFilePointer",  "int",$hFile,  "int",$nOffset,  "ptr",0,  "int",$nStartPosition)
+EndFunc
+Func _FileReadToStruct($vStruct, $hFile)
+If not DllStructGetSize($vStruct) Then $vStruct = DllStructCreate($vStruct)
+Local $nLen	= DllStructGetSize($vStruct)
+Local $pRead = DllStructCreate("dword")
+Local $ret = DllCall("kernel32.dll","int","ReadFile",  "int",$hFile,  "ptr",DllStructGetPtr($vStruct),  "int", $nLen,  "ptr",DllStructGetPtr($pRead),  "ptr",0)
+Local $nRead = DllStructGetData($pRead, 1)
+SetExtended($nRead)
+If not ($nRead = $nLen) Then SetError(2)
+Return $vStruct
+EndFunc
+Func _FileReadToStructAtOffset($vStruct, $hFile, $nOffset)
+_FileSetPointer($hFile, $nOffset, $__FILE_BEGIN)
+Return SetError(@error, @extended, _FileReadToStruct($vStruct, $hFile))
 EndFunc
 Global $oMyError = ObjEvent("AutoIt.Error", "BotComError")
 Func BotComError()
@@ -69414,7 +71667,10 @@ Return False
 EndIf
 Return True
 EndFunc
-Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000)
+Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
+If $bUseSemaphore = True Then
+WaitForSemaphore(StringReplace($cmd, "\", "/"))
+EndIf
 Local $data, $pid, $hTimer
 If StringLen($param) > 0 Then $cmd &= " " & $param
 $hTimer = TimerInit()
@@ -69426,12 +71682,28 @@ If $pid = 0 Then
 SetLog("Launch faild: " & $cmd, $COLOR_RED)
 Return
 EndIf
+Local $hProcess
+If _WinAPI_GetVersion() >= 6.0 Then
+$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_LIMITED_INFORMATION, 0, $pid)
+Else
+$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_INFORMATION, 0, $pid)
+EndIf
 $data = ""
 Local $timeout_sec = Round($timeout / 1000)
-If $timeout > 0 And $timeout_sec = 0 Then $timeout_sec = 1
-ProcessWaitClose($pid, $timeout_sec)
+While True
+If $hProcess Then
+_WinAPI_WaitForSingleObject($hProcess, $iDelaySleep)
+Else
+Sleep($iDelaySleep)
+EndIf
 $data &= StdoutRead($pid)
-$data &= StderrRead($pid)
+If @error Then ExitLoop
+If ($timeout > 0 And TimerDiff($hTimer) > $timeout) Then ExitLoop
+WEnd
+If $hProcess Then
+_WinAPI_CloseHandle($hProcess)
+$hProcess = 0
+EndIF
 CleanLaunchOutput($data)
 If ProcessExists($pid) Then
 If ProcessClose($pid) = 1 Then
@@ -69439,12 +71711,23 @@ If $debugSetlog = 1 Then SetLog("Process killed: " & $cmd, $COLOR_RED)
 $process_killed = True
 EndIf
 EndIf
-ProcessWaitClose($pid, $timeout_sec)
 StdioClose($pid)
 If $debugSetlog = 1 Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_PURPLE)
 Return $data
 EndFunc
 Func ProcessExists2($ProgramPath, $ProgramParameter = Default, $CompareMode = Default, $SearchMode = 0, $CompareCommandLineFunc = "", $strComputer = ".")
+If IsNumber($ProgramPath) Then
+Local $hProcess, $pid = $ProgramPath
+If _WinAPI_GetVersion() >= 6.0 Then
+$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_LIMITED_INFORMATION, 0, $pid)
+Else
+$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_INFORMATION, 0, $pid)
+EndIf
+If $hProcess Then
+_WinAPI_CloseHandle($hProcess)
+EndIf
+Return (($hProcess) ? $pid : 0)
+EndIf
 If $ProgramParameter = Default Then
 $ProgramParameter = ""
 If $CompareMode = Default Then $CompareMode = 1
@@ -69452,7 +71735,6 @@ EndIf
 If $CompareMode = Default Then
 $CompareMode = 0
 EndIf
-If IsNumber($ProgramPath) Then Return ProcessExists($ProgramPath)
 Local $oWMI=ObjGet("winmgmts:{impersonationLevel=impersonate}!\\" & $strComputer & "\root\cimv2")
 SetDebugLog("ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2"")")
 If @error <> 0 Then
@@ -69601,71 +71883,59 @@ EndIf
 EndIf
 Return True
 EndFunc
-Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT, $ReturnBMP = False)
+Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = $GAME_WIDTH, $iBottom = $GAME_HEIGHT, $ReturnBMP = False, $ReturnLocal_hHBitmap = False)
 Local $SuspendMode
+If $ReturnLocal_hHBitmap = False And $hHBitmap <> $hHBitmapTest Then
 _GDIPlus_BitmapDispose($hBitmap)
 _WinAPI_DeleteObject($hHBitmap)
+EndIf
 If $RunState Then CheckAndroidRunning()
+Local $_hHBitmap = $hHBitmapTest
+If $hHBitmapTest = 0 Then
 If $ichkBackground = 1 Then
 Local $iW = Number($iRight) - Number($iLeft), $iH = Number($iBottom) - Number($iTop)
 If $AndroidAdbScreencap = True Then
-$hHBitmap = AndroidScreencap($iLeft, $iTop, $iW, $iH)
+$_hHBitmap = AndroidScreencap($iLeft, $iTop, $iW, $iH)
 Else
 $SuspendMode = ResumeAndroid(False)
-Local $hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($HWnD, $AppPaneName, $AppClassInstance))
+Local $hCtrl = ControlGetHandle($HWnD, $AppPaneName, $AppClassInstance)
+Local $hDC_Capture = _WinAPI_GetDC($hCtrl)
 Local $hMemDC = _WinAPI_CreateCompatibleDC($hDC_Capture)
-$hHBitmap = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH)
-Local $hObjectOld = _WinAPI_SelectObject($hMemDC, $hHBitmap)
-DllCall("user32.dll", "int", "PrintWindow", "hwnd", $HWnD, "handle", $hMemDC, "int", 0)
-_WinAPI_SelectObject($hMemDC, $hHBitmap)
+$_hHBitmap = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH)
+Local $hObjectOld = _WinAPI_SelectObject($hMemDC, $_hHBitmap)
+DllCall("user32.dll", "int", "PrintWindow", "hwnd", $hCtrl, "handle", $hMemDC, "int", 0)
+_WinAPI_SelectObject($hMemDC, $_hHBitmap)
 _WinAPI_BitBlt($hMemDC, 0, 0, $iW, $iH, $hDC_Capture, $iLeft, $iTop, 0x00CC0020)
 _WinAPI_DeleteDC($hMemDC)
 _WinAPI_SelectObject($hMemDC, $hObjectOld)
-_WinAPI_ReleaseDC($HWnD, $hDC_Capture)
+_WinAPI_ReleaseDC($hCtrl, $hDC_Capture)
 SuspendAndroid($SuspendMode, False)
 EndIf
-Global $hBitmap = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmap)
 Else
 getBSPos()
 $SuspendMode = ResumeAndroid(False)
-$hHBitmap = _ScreenCapture_Capture("", $iLeft + $BSpos[0], $iTop + $BSpos[1], $iRight + $BSpos[0] - 1, $iBottom + $BSpos[1] - 1, False)
-Global $hBitmap = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmap)
+$_hHBitmap = _ScreenCapture_Capture("", $iLeft + $BSpos[0], $iTop + $BSpos[1], $iRight + $BSpos[0] - 1, $iBottom + $BSpos[1] - 1, False)
 SuspendAndroid($SuspendMode, False)
 EndIf
+EndIf
 $ForceCapture = False
-If $ReturnBMP Then Return $hBitmap
+If $ReturnLocal_hHBitmap = False Then
+$hHBitmap = $_hHBitmap
+$hBitmap = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmap)
+If $ReturnBMP = True Then Return $hBitmap
+Else
+Return $_hHBitmap
+EndIf
 EndFunc
-Func _CaptureRegion2($iLeft = 0, $iTop = 0, $iRight = $DEFAULT_WIDTH, $iBottom = $DEFAULT_HEIGHT)
-Local $SuspendMode
-Local $iW = Number($iRight) - Number($iLeft)
-Local $iH = Number($iBottom) - Number($iTop)
-Local $hDC_Capture, $hMemDC, $hObjectOld
+Func _CaptureRegion2($iLeft = 0, $iTop = 0, $iRight = $GAME_WIDTH, $iBottom = $GAME_HEIGHT)
+If $hHBitmap2 <> $hHBitmapTest Then
 _WinAPI_DeleteObject($hHBitmap2)
-If $RunState Then CheckAndroidRunning()
-If $ichkBackground = 1 Then
-If $AndroidAdbScreencap = True Then
-$hHBitmap2 = AndroidScreencap($iLeft, $iTop, $iW, $iH)
-Else
-$SuspendMode = ResumeAndroid(False)
-$hDC_Capture = _WinAPI_GetWindowDC(ControlGetHandle($HWnD, $AppPaneName, $AppClassInstance))
-$hMemDC = _WinAPI_CreateCompatibleDC($hDC_Capture)
-$hHBitmap2 = _WinAPI_CreateCompatibleBitmap($hDC_Capture, $iW, $iH)
-$hObjectOld = _WinAPI_SelectObject($hMemDC, $hHBitmap2)
-DllCall("user32.dll", "int", "PrintWindow", "hwnd", $HWnD, "handle", $hMemDC, "int", 0)
-_WinAPI_SelectObject($hMemDC, $hHBitmap2)
-_WinAPI_BitBlt($hMemDC, 0, 0, $iW, $iH, $hDC_Capture, $iLeft, $iTop, $SRCCOPY)
-_WinAPI_DeleteDC($hMemDC)
-_WinAPI_SelectObject($hMemDC, $hObjectOld)
-_WinAPI_ReleaseDC($HWnD, $hDC_Capture)
-SuspendAndroid($SuspendMode, False)
 EndIf
+If $hHBitmapTest = 0 Then
+$hHBitmap2 = _CaptureRegion($iLeft, $iTop, $iRight, $iBottom, False, True)
 Else
-getBSPos()
-$SuspendMode = ResumeAndroid(False)
-$hHBitmap2 = _ScreenCapture_Capture("", $iLeft + $BSpos[0], $iTop + $BSpos[1], $iRight + $BSpos[0] - 1, $iBottom + $BSpos[1] - 1, False)
-SuspendAndroid($SuspendMode, False)
+$hHBitmap2 = $hHBitmapTest
 EndIf
-$ForceCapture = False
 EndFunc
 Func FastCaptureRegion()
 Return $ichkBackground = 1 And $AndroidAdbScreencap = False
@@ -69676,6 +71946,11 @@ Return $bNeedCaptureRegion
 EndFunc
 Func ForceCaptureRegion($bForceCapture = True)
 $ForceCapture = $bForceCapture
+EndFunc
+Func TestCapture($hHBitmap = Default)
+If $hHBitmap = Default Then Return $hHBitmapTest <> 0
+$hHBitmapTest = $hHBitmap
+Return $hHBitmap
 EndFunc
 Func _ColorCheck($nColor1, $nColor2, $sVari = 5, $Ignore = "")
 Local $Red1, $Red2, $Blue1, $Blue2, $Green1, $Green2
@@ -70045,11 +72320,25 @@ EndFunc
 Func getOcrPBTtime($x_start, $y_start)
 Return getOcrAndCapture("coc-pbttime", $x_start, $y_start, 59, 15)
 EndFunc
-Func getOcrMaintenanceTime($x_start, $y_start)
-Return getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
+Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
+Local $result = getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
+Local $String = $sLogText & " " & $result
+If $debugSetlog = 1 And $sLogText <> Default And IsString($sLogText) Then
+SetDebugLog($String, $LogTextColor, $bSilentSetLog)
+ElseIf $result <> "" Then
+SetDebugLog($String, $LogTextColor, True)
+EndIF
+Return $result
 EndFunc
-Func getOcrRateCoc($x_start, $y_start)
-Return getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 18, True)
+Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
+Local $result = getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 18, True)
+Local $String = $sLogText & " " & $result
+If $debugSetlog = 1 And $sLogText <> Default And IsString($sLogText) Then
+SetDebugLog($String, $LogTextColor, $bSilentSetLog)
+ElseIf $result <> "" Then
+SetDebugLog($String, $LogTextColor, True)
+EndIf
+Return $result
 EndFunc
 Func getRemainTLaboratory($x_start, $y_start)
 Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 192, 24)
@@ -70296,7 +72585,7 @@ Func captureDebugImage($aResult, $subDirectory)
 Local $coords
 If IsArray($aResult) Then
 DirCreate($dirTempDebug & $subDirectory)
-_CaptureRegion(0, 0, 860, 737)
+_CaptureRegion()
 Local $editedImage = $hBitmap
 Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 Local $Time = @HOUR & "." & @MIN & "." & @SEC
@@ -70719,7 +73008,7 @@ CloseCoC(True)
 EndIf
 Return
 EndIf
-If $debugSetlog = 1 Then SetLog("Loop to clean screen without Clouds , nº :" & $i, $COLOR_PURPLE)
+If $debugSetlog = 1 Then SetLog("Loop to clean screen without Clouds, # " & $i, $COLOR_PURPLE)
 ForceCaptureRegion()
 WEnd
 SuspendAndroid()
@@ -70840,8 +73129,6 @@ $iAimDark[$i] = $iMinDark[$i]
 $iAimTrophy[$i] = $iMinTrophy[$i]
 Next
 EndIf
-_WinAPI_EmptyWorkingSet(GetAndroidPid())
-_WinAPI_EmptyWorkingSet(@AutoItPID)
 If _Sleep($iDelayVillageSearch1) Then Return
 $Result = getAttackDisable(346, 182)
 checkAttackDisable($iTaBChkAttack, $Result)
@@ -70886,7 +73173,6 @@ If $Restart = True Then Return
 GetResources(False)
 If $Restart = True Then Return
 If Mod(($iSkipped + 1), 100) = 0 Then
-_WinAPI_EmptyWorkingSet(WinGetProcess($HWnD))
 If _Sleep($iDelayRespond) Then Return
 If CheckZoomOut() = False Then Return
 EndIf
@@ -71257,7 +73543,7 @@ Local $currentArmyCamps = Int($CurCamp / $TotalCamp * 100)
 Local $bMatchModeEnabled = True
 Local $checkSearches = Int($currentSearch) >= Int($iEnableAfterCount[$iMatchMode]) And Int($currentSearch) <= Int($iEnableBeforeCount[$iMatchMode]) And $iEnableSearchSearches[$iMatchMode] = 1
 Local $checkTropies = Int($currentTropies) >= Int($iEnableAfterTropies[$iMatchMode]) And Int($currentTropies) <= Int($iEnableBeforeTropies[$iMatchMode]) And $iEnableSearchTropies[$iMatchMode] = 1
-Local $checkArmyCamps = Int($currentArmyCamps) >= Int($iEnableAfterArmyCamps[$iMatchMode] Or $fullarmy = True) And $iEnableSearchCamps[$iMatchMode] = 1
+Local $checkArmyCamps = Int($currentArmyCamps) >= Int($iEnableAfterArmyCamps[$iMatchMode]) Or $fullarmy = True And $iEnableSearchCamps[$iMatchMode] = 1
 Local $checkHeroes = Not ($iHeroWait[$iMatchMode] > $HERO_NOHERO And (BitAND($iHeroAttack[$iMatchMode], $iHeroWait[$iMatchMode], $iHeroAvailable) = $iHeroWait[$iMatchMode]) = False) Or $nocheckHeroes
 Local $checkSpells = ($bFullArmySpells And $iEnableSpellsWait[$iMatchMode] = 1) Or $iEnableSpellsWait[$iMatchMode] = 0
 Switch $iMatchMode
@@ -71269,7 +73555,7 @@ Case $TS
 $bMatchModeEnabled = ($iTScheck = 1)
 EndSwitch
 If $checkHeroes And $checkSpells Then
-If $bMatchModeEnabled And ($checkSearches Or $checkTropies Or $checkArmyCamps) Then
+If $bMatchModeEnabled And ($checkSearches Or $iEnableSearchSearches[$iMatchMode] = 0) And ($checkTropies Or $iEnableSearchTropies[$iMatchMode] = 0) And ($checkArmyCamps Or $iEnableSearchCamps[$iMatchMode] = 0) Then
 If $debugsetlog = 1 Then Setlog($sModeText[$iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies & ",$checkArmyCamps=" & $checkArmyCamps & ",$checkHeroes=" & $checkHeroes & ",$checkSpells=" & $checkSpells & ")", $Color_Blue)
 Return True
 Else
@@ -72197,7 +74483,7 @@ If $Debugsetlog = 1 Then Setlog("Not on main page, CheckBaseQuick skipped", $COL
 EndIf
 EndFunc
 Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
-If ($ichkSinglePBTForced = 0 And ($iChkBotStop = 1 And $icmbBotCond >= 19) = False) Or Not (IsMainPage()) Then Return
+If ($ichkSinglePBTForced = 0 And ($iChkBotStop = 1 And $icmbBotCond >= 19) = False) And $ichkCloseWaitEnable = 0 Or Not (IsMainPage()) Then Return
 Local $Result, $iTimeTillPBTstartSec, $ichkTime = 0, $ichkSTime = 0, $ichkPBTime = 0
 If $bChkShield Or $aShieldStatus[0] = "" Or $aShieldStatus[1] = "" Or $aShieldStatus[2] = "" Or $sPBStartTime = "" Or $bGForcePBTUpdate = True Then
 $Result = getShieldInfo()
@@ -72304,7 +74590,7 @@ If $iUseRandomClick = 0 then
 Click($CollectXY[$t][0], $CollectXY[$t][1], 1, 0, "#0430")
 If _Sleep($iDelayCollect2) Then Return
 Else
-ClickZone($CollectXY[$t][0], $CollectXY[$t][1], 20, "#0430")
+ClickZone($CollectXY[$t][0], $CollectXY[$t][1], 5, "#0430")
 _Sleep(Random($iDelayCollect2, $iDelayCollect2 * 4, 1))
 EndIF
 Next
@@ -73440,7 +75726,6 @@ _ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 $stext = $sErrorText & @CRLF & GetTranslated(640,25,"Click OK then click on one of your") & " " & $choice & "'s." & @CRLF & @CRLF &  GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,28,"Locate") & " " & $choice, $stext, 15, $frmBot)
 If $MsgBox = 1 Then
-WinActivate($HWnD)
 If $ArmyCamp Then
 Local $aPos = FindPos()
 $ArmyPos[0] = $aPos[0]
@@ -73775,7 +76060,6 @@ _ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
 $MsgBox = _ExtMsgBox(0, GetTranslated(640, 54, "Locate Building|Finished|Cancel"), GetTranslated(640, 55, "Locate Upgrades"), $stext, 0, $frmBot)
 Switch $MsgBox
 Case 1
-WinActivate($HWnD)
 Local $aPos = FindPos()
 $aUpgrades[$icount][0] = $aPos[0]
 $aUpgrades[$icount][1] = $aPos[1]
@@ -74096,7 +76380,6 @@ $stext = $sErrorText & @CRLF & GetTranslated(640,32,"Click OK then click on your
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,33,"Locate Clan Castle"), $stext, 15, $frmBot)
 If $MsgBox = 1 Then
 WinGetAndroidHandle()
-WinActivate($HWnD)
 ClickP($aAway, 1, 0, "#0373")
 Local $aPos = FindPos()
 $aCCPos[0] = $aPos[0]
@@ -74194,7 +76477,6 @@ $stext = $sErrorText & @CRLF & GetTranslated(640,43,"Click OK then click on your
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,44,"Locate Laboratory"), $stext, 15, $frmBot)
 If $MsgBox = 1 Then
 WinGetAndroidHandle()
-WinActivate($HWnD)
 ClickP($aAway, 1, 0, "#0379")
 Local $aPos = FindPos()
 $aLabPos[0] = Int($aPos[0])
@@ -74279,7 +76561,6 @@ Local $stext, $MsgBox, $Success, $sLocMsg
 Local $iStupid = 0, $iSilly = 0, $sErrorText = ""
 SetLog("Locating Town Hall ...", $COLOR_BLUE)
 WinGetAndroidHandle()
-WinActivate($HWnD)
 If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) Or _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 Zoomout()
 Collect()
@@ -74290,7 +76571,6 @@ $stext = $sErrorText & @CRLF & GetTranslated(640,49,"Click OK then click on your
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,50,"Locate TownHall"), $stext, 30, $frmBot)
 If $MsgBox = 1 Then
 WinGetAndroidHandle()
-WinActivate($HWnD)
 ClickP($aAway, 1, 0, "#0391")
 Local $aPos = FindPos()
 $TownHallPos[0] = $aPos[0]
@@ -74377,7 +76657,6 @@ $stext = $sErrorText & @CRLF & GetTranslated(640,45,"Click OK then click on your
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,46,"Locate Spell Factory"), $stext, 15, $frmBot)
 If $MsgBox = 1 Then
 WinGetAndroidHandle()
-WinActivate($HWnD)
 Local $aPos = FindPos()
 $SFPos[0] = $aPos[0]
 $SFPos[1] = $aPos[1]
@@ -74469,7 +76748,6 @@ $stext = $sErrorText & @CRLF & GetTranslated(640,48,"Click OK then click on your
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,47,"Locate Dark Spell Factory"), $stext, 15, $frmBot)
 If $MsgBox = 1 Then
 WinGetAndroidHandle()
-WinActivate($HWnD)
 ClickP($aAway, 1, 0, "#0385")
 Local $aPos = FindPos()
 $DSFPos[0] = $aPos[0]
@@ -74561,7 +76839,6 @@ EndFunc
 Func _LocateQueenAltar()
 Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo
 WinGetAndroidHandle()
-WinActivate($HWnD)
 checkMainScreen(False)
 If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) Or _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 Zoomout()
@@ -74576,7 +76853,6 @@ $stext = $sErrorText & @CRLF & GetTranslated(640,34,"Click OK then click on your
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,35,"Locate Queen Altar"), $stext, 15, $frmBot)
 If $MsgBox = 1 Then
 WinGetAndroidHandle()
-WinActivate($HWnD)
 ClickP($aTopLeftClient)
 Local $aPos = FindPos()
 $QueenAltarPos[0] = $aPos[0]
@@ -74686,7 +76962,6 @@ EndFunc
 Func _LocateKingAltar()
 Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo
 WinGetAndroidHandle()
-WinActivate($HWnD)
 checkMainScreen(False)
 If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) Or _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 Zoomout()
@@ -74702,7 +76977,6 @@ $stext = $sErrorText & @CRLF & GetTranslated(640,39,"Click OK then click on your
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,40,"Locate King Altar"), $stext, 15, $frmBot)
 If $MsgBox = 1 Then
 WinGetAndroidHandle()
-WinActivate($HWnD)
 Local $aPos = FindPos()
 $KingAltarPos[0] = $aPos[0]
 $KingAltarPos[1] = $aPos[1]
@@ -74814,7 +77088,6 @@ SetLog("Grand Warden requires TH11, Cancel locate Altar!", $COLOR_RED)
 Return
 EndIf
 WinGetAndroidHandle()
-WinActivate($HWnD)
 checkMainScreen(False)
 If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) And _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
 Zoomout()
@@ -74830,7 +77103,6 @@ $stext = $sErrorText & @CRLF & GetTranslated(640,41,"Click OK then click on your
 $MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,42,"Locate Grand Warden Altar"), $stext, 15, $frmBot)
 If $MsgBox = 1 Then
 WinGetAndroidHandle()
-WinActivate($HWnD)
 Local $aPos = FindPos()
 $WardenAltarPos[0] = $aPos[0]
 $WardenAltarPos[1] = $aPos[1]
@@ -75966,7 +78238,7 @@ If _Sleep($iDelayPushMsg1) Then Return
 SetLog("Pushbullet: Last Raid Text has been sent!", $COLOR_GREEN)
 EndIf
 If $PushBulletEnabled = 1 And $pLastRaidImg = 1 Then
-_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT - 45)
+_CaptureRegion()
 Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 Local $Time = @HOUR & "." & @MIN
 If $ScreenshotLootInfo = 1 Then
@@ -76016,7 +78288,7 @@ If $PushBulletEnabled = 1 And $pWallUpgrade = 1 Then _PushToPushBullet($iOrigPus
 Case "RequestScreenshot"
 Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 Local $Time = @HOUR & "." & @MIN
-_CaptureRegion(0, 0, $DEFAULT_WIDTH, $DEFAULT_HEIGHT)
+_CaptureRegion()
 $hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2)
 Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 _GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirTemp & $Screnshotfilename)
@@ -76452,7 +78724,7 @@ Next
 EndFunc
 Func ReplayShare($last = 1)
 Local $txtMessage, $tNew
-If $iShareAttackNow = 0 Then Return
+If $iShareAttack = 0 Then Return
 If $last = 1 Then
 ClickP($aAway, 1, 0, "#0235")
 If _Sleep($iDelayReplayShare2) Then Return
@@ -77180,12 +79452,12 @@ $y = Round($y, 3)
 If $times <> 1 Then
 For $i = 0 To ($times - 1)
 If $debugClick = 1 Then SetLog("_ControlClick " & "X=" & $x & " Y=" & $y & " ,t" & $times & ",s" & $speed & $AncVal, $COLOR_ORANGE, "Verdana", "7.5", 0)
-_ControlClick($x, $y)
+Click($x, $y)
 If _Sleep($speed, False) Then ExitLoop
 Next
 Else
 If $debugClick = 1 Then SetLog("_ControlClick " & "X=" & $x & " Y=" & $y & $AncVal, $COLOR_ORANGE, "Verdana", "7.5", 0)
-_ControlClick($x, $y)
+Click($x, $y)
 EndIf
 EndFunc
 Func PureClickR($boundingBox, $x, $y, $times = 1, $speed = 0, $OutScreen = (680 + $bottomOffsetY), $scale = 3, $density = 1, $centerX = 0, $centerY = 0)
@@ -77249,11 +79521,6 @@ If $ichkDeleteLogs = 1 Then DeleteFiles($dirLogs, "*.*", $iDeleteLogsDays, 0)
 If $ichkDeleteLoots = 1 Then DeleteFiles($dirLoots, "*.*", $iDeleteLootsDays, 0)
 If $ichkDeleteTemp = 1 Then DeleteFiles($dirTemp, "*.*", $iDeleteTempDays, 0)
 If $ichkDeleteTemp = 1 Then DeleteFiles($dirTempDebug, "*.*", $iDeleteTempDays, 0)
-FileChangeDir($LibDir)
-If CheckPrerequisites() Then
-MBRFunc(True)
-debugMBRFunctions($debugSearchArea, $debugRedArea, $debugOcr)
-EndIf
 $sMsg = GetTranslated(500, 7, "Found running %s %s" , $Android, $AndroidVersion)
 If $FoundRunningAndroid Then
 SetLog($sMsg, $COLOR_GREEN)
@@ -77262,8 +79529,6 @@ If $FoundInstalledAndroid Then
 SetLog("Found installed " & $Android & " " & $AndroidVersion, $COLOR_GREEN)
 EndIf
 SetLog(GetTranslated(500, 8, "Android Emulator Configuration: %s", $sAndroidInfo), $COLOR_GREEN)
-AdlibRegister("PushBulletRemoteControl", $PBRemoteControlInterval)
-AdlibRegister("PushBulletDeleteOldPushes", $PBDeleteOldPushesInterval)
 CheckDisplay()
 LoadTHImage()
 LoadElixirImage()
@@ -77291,6 +79556,8 @@ If $BotAction = $eBotStop Then $BotAction = $eBotNoAction
 Case $eBotSearchMode
 BotSearchMode()
 If $BotAction = $eBotSearchMode Then $BotAction = $eBotNoAction
+Case $eBotClose
+BotClose()
 EndSwitch
 WEnd
 Func runBot()
@@ -77435,7 +79702,7 @@ SetLog("Restarted after Out of Sync Error: Attack Now", $COLOR_BLUE)
 EndIf
 EndIf
 If _Sleep($iDelayRunBot3) Then Return
-$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
+$iTrophyCurrent = Number(getTrophyMainScreen($aTrophies[0], $aTrophies[1]))
 If $debugsetlog = 1 Then SetLog("Runbot Trophy Count: " & $iTrophyCurrent, $COLOR_PURPLE)
 AttackMain()
 If $OutOfGold = 1 Then
@@ -77470,10 +79737,10 @@ WEnd
 If _Sleep($iDelayIdle1) Then ExitLoop
 checkMainScreen(False)
 If ($CommandStop = 3 Or $CommandStop = 0) Then
-CheckOverviewFullArmy(True)
+CheckOverviewFullArmy(True, False)
+getArmyHeroCount(False, False)
+getArmySpellCount(False, True)
 If _Sleep($iDelayIdle1) Then Return
-getArmyHeroCount(True, True)
-getArmySpellCount(True, True)
 If Not ($fullArmy) And $bTrainEnabled = True Then
 SetLog("Army Camp and Barracks are not full, Training Continues...", $COLOR_ORANGE)
 $CommandStop = 0
@@ -77540,8 +79807,12 @@ If $CurCamp >=  $TotalCamp * $iEnableAfterArmyCamps[$LB]/100 and $iEnableSearchC
 If $CurCamp >=  $TotalCamp * $iEnableAfterArmyCamps[$TS]/100 and $iEnableSearchCamps[$TS]  = 1 Then Exitloop
 SetLog("Time Idle: " & StringFormat("%02i", Floor(Floor($TimeIdle / 60) / 60)) & ":" & StringFormat("%02i", Floor(Mod(Floor($TimeIdle / 60), 60))) & ":" & StringFormat("%02i", Floor(Mod($TimeIdle, 60))))
 If $OutOfGold = 1 Or $OutOfElixir = 1 Then Return
+If ($CommandStop = 3 Or $CommandStop = 0) And $bTrainEnabled = False Then ExitLoop
 If $iChkSnipeWhileTrain = 1 Then SnipeWhileTrain()
-If $CommandStop = -1 Then SmartWait4Train()
+If $CommandStop = -1 Then
+SmartWait4Train()
+If $Restart = True Then ExitLoop
+EndIf
 WEnd
 EndFunc
 Func AttackMain()

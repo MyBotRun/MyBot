@@ -152,12 +152,12 @@ $y +=48
 $grpTimeWakeUp = GUICtrlCreateGroup(GetTranslated(636,85, "Remote Device"), $x - 20, $y - 20 , 225, 42)
 	$y -= 5
 	$lblTimeWakeUp = GUICtrlCreateLabel(GetTranslated(636,86, "When 'Another Device' wait") & ":", $x - 10, $y + 2, -1, -1)
-	$txtTip = GetTranslated(636,87, "Enter the time to wait (in seconds) before the Bot reconnects when another device took control.")
+	$txtTip = GetTranslated(636,87, "Enter the time to wait (in Minutes) before the Bot reconnects when another device took control.")
 		_GUICtrlSetTip(-1, $txtTip)
-	$txtTimeWakeUp = GUICtrlCreateInput("240", $x + 127, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	$txtTimeWakeUp = GUICtrlCreateInput("2", $x + 127, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		_GUICtrlSetTip(-1, $txtTip)
 		GUICtrlSetLimit(-1, 3)
-	$lblTimeWakeUpSec = GUICtrlCreateLabel(GetTranslated(603,6, "sec."), $x + 165, $y + 2, -1, -1)
+	$lblTimeWakeUpSec = GUICtrlCreateLabel(GetTranslated(603,10, "min."), $x + 165, $y + 2, -1, -1)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $y+= 51
