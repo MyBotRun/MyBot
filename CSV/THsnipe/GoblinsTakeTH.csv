@@ -1,0 +1,15 @@
+TROOP |S1|S2|Q1|Q2|DEL1 |DEL2 |LOG_TEXT                                            |NOTES,Column 2,Column 3,Column 4,Column 5,Column 6
+Text  |  |  |  |  |     |     |Sniping TH with Queen & Goblins   				   |
+Text  |  |  |  |  |     |     |Wave1: Sending 4~6 gobs and wait 25 seconds         |
+Gobl  | 2| 3| 2| 2|  800| 1000|                                                    |deploying 4-6 goblins
+WAIT  |  |  |  |  |     |25000|                                                    |wait for 20 seconds
+Text  |  |  |  |  |     |     |Wave2: Sending 4~10 gobs and wait 20 seconds        |
+Gobl  | 4| 5| 1| 2|  900| 1000|                                                    |deploying 4~10 goblins
+WAIT  |  |  |  |  |     |20000|                                                    |
+Text  |  |  |  |  |     |     |Still no star - Let's send in more diverse troops!  |
+Giant | 2| 2| 1| 1|  500|  600|                                                    |deploys 2 giants in case of spring traps
+King  |  |  |  |  |     |     |                                                    |deploys king
+Queen |  |  |  |  |     |     |                                                    |deploys queen
+RSpell|  |  |  |  |     |     |                                                    |drop rage spell
+Gobl  | 4| 5| 2| 3|  900| 1000|                                                    |deploying 8~15 goblins
+WAIT  |  |  |  |  |     |25000|                                                    |

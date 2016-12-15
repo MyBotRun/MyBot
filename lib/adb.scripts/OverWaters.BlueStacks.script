@@ -1,0 +1,42 @@
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+# Click Drag
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.1 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.2 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+sleep 1
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.3 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.1 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.2 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+sleep 1
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.3 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.1 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.2 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+sleep 1
+dd obs=16 if=$SCRIPTPATH/OverWaters.BlueStacks.script.3 of={$AndroidMouseDevice}
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay
+ls />/dev/null # dummy delay

@@ -1,0 +1,275 @@
+; #FUNCTION# ====================================================================================================================
+; Name ..........: MBR GUI Design
+; Description ...: This file Includes GUI Design
+; Syntax ........:
+; Parameters ....: None
+; Return values .: None
+; Author ........: GKevinOD (2014)
+; Modified ......: DkEd, Hervidero (2015)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+
+#include "Functions\Other\AppUserModelId.au3"
+#include "Functions\GUI\_GUICtrlSetTip.au3"
+#include "functions\GUI\_GUICtrlCreatePic.au3"
+#include "functions\GUI\GUI_State.au3"
+#include "functions\GUI\SplashStep.au3"
+
+Global Const $TCM_SETITEM = 0x1306
+
+Global Const $_GUI_MAIN_WIDTH = 470
+Global Const $_GUI_MAIN_HEIGHT = 650
+Global Const $_GUI_MAIN_TOP = 5
+Global Const $_GUI_BOTTOM_HEIGHT = 135
+Global Const $_GUI_CHILD_LEFT = 10
+Global Const $_GUI_CHILD_TOP = 110 + $_GUI_MAIN_TOP
+
+Global $hImageList = 0
+
+;~ ------------------------------------------------------
+;~ Main GUI
+;~ ------------------------------------------------------
+SplashStep(GetTranslated(500, 23, "Loading Main GUI..."))
+$frmBot = GUICreate($sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP, $frmBotPosX, $frmBotPosY, BitOr($WS_MINIMIZEBOX, $WS_CAPTION, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS))
+GUISetOnEvent($GUI_EVENT_SECONDARYDOWN, "rightclick")
+; group multiple bot windows using _WindowAppId
+_WindowAppId($frmBot, "MyBot.run")
+GUISetIcon($pIconLib, $eIcnGUI)
+TraySetIcon($pIconLib, $eIcnGUI)
+TraySetToolTip($sBotTitle)
+
+; Need $frmBotEx for embedding Android
+$frmBotEx = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
+GUICtrlCreateLabel("", 0, 0, $_GUI_MAIN_WIDTH, 5)
+GUICtrlSetBkColor(-1, $COLOR_WHITE)
+$frmBot_MAIN_PIC = _GUICtrlCreatePic($sLogoPath, 0, $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH, 67)
+$frmBot_URL_PIC = _GUICtrlCreatePic($sLogoUrlPath, 0, $_GUI_MAIN_TOP + 67, $_GUI_MAIN_WIDTH, 13)
+GUICtrlSetCursor(-1, 0)
+
+$hToolTip = _GUIToolTip_Create($frmBot) ; tool tips for URL links etc
+_GUIToolTip_SetMaxTipWidth($hToolTip, $_GUI_MAIN_WIDTH) ; support multiple lines
+
+GUISwitch($frmBot)
+$frmBotEmbeddedShieldInput = GUICtrlCreateInput("", 0, 0, -1, -1, $WS_TABSTOP)
+;$frmBotEmbeddedShieldInput = GUICtrlCreateLabel("", 0, 0, 0, 0, $WS_TABSTOP)
+;$frmBotEmbeddedShieldInput = GUICtrlCreateDummy()
+GUICtrlSetState($frmBotEmbeddedShieldInput, $GUI_HIDE)
+
+$frmBotBottom = GUICreate("", $_GUI_MAIN_WIDTH, $_GUI_BOTTOM_HEIGHT, 0, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TOPMOST, $frmBot)
+$frmBotBottomCtrlState = 0
+$frmBotEmbeddedShield = 0
+$frmBotEmbeddedMouse = 0
+$frmBotEmbeddedGarphics = 0
+
+
+;~ ------------------------------------------------------
+;~ Header Menu
+;~ ------------------------------------------------------
+
+GUISwitch($frmBot)
+;$idMENU_DONATE = GUICtrlCreateMenu("&" & GetTranslated(601,18,"Paypal Donate?"))
+;_GUICtrlMenu_SetItemType(_GUICtrlMenu_GetMenu($frmBot), 0, $MFT_RIGHTJUSTIFY) ; move to right
+;$idMENU_DONATE_SUPPORT = GUICtrlCreateMenuItem(GetTranslated(601,19,"Support the development"), $idMENU_DONATE)
+;GUICtrlSetOnEvent(-1, "")
+
+;~ ------------------------------------------------------
+;~ GUI Bottom
+;~ ------------------------------------------------------
+SplashStep(GetTranslated(500, 24, "Loading GUI Bottom..."))
+GUISwitch($frmBotBottom)
+#include "GUI\MBR GUI Design Bottom.au3"
+GUISwitch($frmBotEx)
+
+;~ ------------------------------------------------------
+;~ GUI Child Files
+;~ ------------------------------------------------------
+SplashStep(GetTranslated(500, 25, "Loading General tab..."))
+#include "GUI\MBR GUI Design Child General.au3" ; includes '$FirstControlToHide" on GUI
+SplashStep(GetTranslated(500, 26, "Loading Village tab..."))
+#include "GUI\MBR GUI Design Child Village.au3"
+SplashStep(GetTranslated(500, 27, "Loading Attack tab..."))
+#include "GUI\MBR GUI Design Child Attack.au3"
+SplashStep(GetTranslated(500, 28, "Loading Bot tab..."))
+#include "GUI\MBR GUI Design Child Bot.au3"
+;GUISetState()
+GUISwitch($frmBotEx)
+$tabMain = GUICtrlCreateTab(5, 85 + $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH - 9, $_GUI_MAIN_HEIGHT - 225); , $TCS_MULTILINE)
+GUICtrlSetResizing(-1, $GUI_DOCKBORDERS)
+$tabGeneral = GUICtrlCreateTabItem(GetTranslated(600,1, "Log"))
+$tabVillage = GUICtrlCreateTabItem(GetTranslated(600,2, "Village")) ; Village
+$tabAttack = GUICtrlCreateTabItem(GetTranslated(600,3,"Attack Plan"))
+$tabBot = GUICtrlCreateTabItem(GetTranslated(600,4,"Bot"))
+
+;~ -------------------------------------------------------------
+;~ About Us Tab
+;~ -------------------------------------------------------------
+SplashStep(GetTranslated(500, 29, "Loading About Us tab..."))
+$tabAboutUs = GUICtrlCreateTabItem(GetTranslated(600, 5, "About Us"))
+Local $x = 28, $y = 128 + $_GUI_MAIN_TOP
+	$grpCredits = GUICtrlCreateGroup("Credits", $x - 20, $y - 20, 454, 340)
+		$lblCreditsBckGrnd = GUICtrlCreateLabel("", $x - 20, $y - 20, 454, 340)  ; adds fixed white background for entire tab, if using "Labels"
+		GUICtrlSetBkColor(-1, $COLOR_WHITE)
+		$txtCredits = "My Bot is brought to you by a worldwide team of open source"  & @CRLF & _
+						"programmers and a vibrant community of forum members!"
+		$lblCredits1 = GUICtrlCreateLabel($txtCredits, $x + 8, $y - 10, 400, 35, $SS_CENTER)
+			GUICtrlSetFont(-1, 10, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_NAVY)
+		$y += 30
+		$txtCredits = "Please visit our web forums:"
+		$lblCredits2 = GUICtrlCreateLabel($txtCredits, $x + 44, $y, 180, 30, $SS_CENTER)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+		$labelMyBotURL = GUICtrlCreateLabel("https://mybot.run/forums", $x + 223, $y, 150, 20)
+			;GUICtrlSetCursor(-1, 0) ; not working :(
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_INFO)
+		$y += 22
+		$lblCredits3 = GUICtrlCreateLabel("Credits belong to following programmers for donating their time:", $x - 5, $y, 420, 20)
+			GUICtrlSetFont(-1, 10, $FW_BOLD)
+		$y += 20
+		$txtCredits =	"Active developers: "
+		$lbltxtCreditsA1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_NAVY)
+		$txtCredits = "Boju, Cosote, Ezeck0001, Fliegerfaust, Hervidero, IceCube, MMHK, MonkeyHunter, MR.ViPeR, ProMac, Roro-Titi, Sardo, TheRevenor, Trlopes, Zengzeng"
+		$lbltxtCreditsA2 = GUICtrlCreateLabel($txtCredits, $x + 5, $y + 15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
+			GUICtrlSetFont(-1,9, $FW_MEDIUM)
+		$y += 65
+		$txtCredits =	"Inactive developers: "
+		$lbltxtCreditsMIA1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_NAVY)
+		$txtCredits = "Kaganus"
+		$lbltxtCreditsMIA2 = GUICtrlCreateLabel($txtCredits, $x + 5, $y + 15, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
+			GUICtrlSetFont(-1, 9, $FW_MEDIUM)
+		$y += 35
+		$txtCredits =	"Retired developers: "
+		$lbltxtCreditsDead1 = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_NAVY)
+		$txtCredits = "Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, KnowJack, LunaEclipse, Safar46, Saviart, TheMaster1st, and others"
+		$lbltxtCreditsDead2 = GUICtrlCreateLabel($txtCredits, $x + 5, $y + 15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
+			GUICtrlSetFont(-1, 9, $FW_MEDIUM)
+		$y += 66
+		$txtCredits = "Special thanks to all contributing forum members helping " & @CRLF & "to make this software better! "
+		$lbltxtCredits2 = GUICtrlCreateLabel($txtCredits, $x + 14, $y, 390, 30, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER), 0)
+			GUICtrlSetFont(-1, 9, $FW_MEDIUM)
+		$y += 40
+		$txtCredits =	"The latest release of 'My Bot' can be found at:"
+		$lbltxtNewVer = GUICtrlCreateLabel($txtCredits, $x - 5, $y, 400, 15, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
+			GUICtrlSetFont(-1, 10, $FW_BOLD)
+		$y += 18
+		$labelForumURL = GUICtrlCreateLabel("https://mybot.run/forums/index.php?/forum/4-official-releases/", $x + 25, $y, 450, 20)
+			;GUICtrlSetCursor(-1, 0) ; not working :(
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD)
+			GUICtrlSetColor(-1, $COLOR_INFO)
+		$y = 455
+		$txtWarn =	"By running this program, the user accepts all responsibility that arises from the use of this software."  & @CRLF & _
+						"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even " & @CRLF & _
+						"the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General " & @CRLF & _
+						"Public License for more details. The license can be found in the main code folder location."  & @CRLF & _
+						"Copyright (C) 2015-2016 MyBot.run"
+		$lbltxtWarn1 = GUICtrlCreateLabel($txtWarn, $x + 1, $y, 415, 56, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT, $ES_CENTER), 0)
+			GUICtrlSetColor(-1, 0x000053)
+			GUICtrlSetFont(-1, 6.5, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+GUICtrlCreateTabItem("")
+
+;~ -------------------------------------------------------------
+;~ GUI init
+;~ -------------------------------------------------------------
+
+SplashStep(GetTranslated(500, 30, "Initializing GUI..."))
+#Region ; Bind Icon images to all Tabs in all GUI windows (main and children)
+Bind_ImageList($tabMain)
+Bind_ImageList($hGUI_VILLAGE_TAB)
+Bind_ImageList($hGUI_ARMY_TAB)
+Bind_ImageList($hGUI_DONATE_TAB)
+Bind_ImageList($hGUI_UPGRADE_TAB)
+Bind_ImageList($hGUI_NOTIFY_TAB)
+Bind_ImageList($hGUI_ATTACK_TAB)
+Bind_ImageList($hGUI_SEARCH_TAB)
+Bind_ImageList($hGUI_DEADBASE_TAB)
+Bind_ImageList($hGUI_ACTIVEBASE_TAB)
+Bind_ImageList($hGUI_AttackOption_TAB)
+Bind_ImageList($hGUI_THSNIPE_TAB)
+Bind_ImageList($hGUI_BOT_TAB)
+Bind_ImageList($hGUI_STRATEGIES_TAB)
+Bind_ImageList($hGUI_STATS_TAB)
+#EndRegion ; Bind Icon images to all Tabs in all GUI windows (main and children)
+
+#Region ; Show GUI and activate Tab LOG
+GUICtrlSetState($hGUI_LOG, $GUI_SHOW)
+#EndRegion ; Show GUI and activate Tab LOG
+
+;~ -------------------------------------------------------------
+;~ Show bot
+;~ -------------------------------------------------------------
+
+cmbLog()
+
+If IsHWnd($hSplash) Then GUIDelete($hSplash) ; Delete the splash screen since we don't need it anymore
+If Not $NoFocusTampering Then
+	; normal
+	GUISetState(@SW_SHOW, $frmBot)
+Else
+	GUISetState(@SW_SHOW, $frmBot)
+	;GUISetState(@SW_SHOWNOACTIVATE, $frmBot)
+	;Local $lCurExStyle = _WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE)
+	;_WinAPI_SetWindowLong($HWnd, $GWL_EXSTYLE, BitOR($lCurExStyle, $WS_EX_TOPMOST))
+	;_WinAPI_SetWindowLong($HWnd, $GWL_EXSTYLE, $lCurExStyle)
+EndIf
+
+GUISetState(@SW_SHOWNOACTIVATE, $frmBotEx)
+GUISetState(@SW_SHOWNOACTIVATE, $frmBotBottom)
+GUISwitch($frmBotEx)
+$frmBotMinimized = False
+
+$frmBotPosInit = WinGetPos($frmBot)
+ReDim $frmBotPosInit[7]
+$frmBotPosInit[4] = _WinAPI_GetClientWidth($frmBot)
+$frmBotPosInit[5] = _WinAPI_GetClientHeight($frmBot)
+$frmBotPosInit[6] = ControlGetPos($frmBot, "", $frmBotEx)[3]
+
+;~ -------------------------------------------------------------
+;~ Bottom status bar
+;~ -------------------------------------------------------------
+
+$statLog = _GUICtrlStatusBar_Create($frmBotBottom)
+_ArrayConcatenate($G, $y)
+_GUICtrlStatusBar_SetSimple($statLog)
+_GUICtrlStatusBar_SetText($statLog, "Status : Idle")
+$tiShow = TrayCreateItem(GetTranslated(500,31,"Show bot"))
+TrayItemSetOnEvent($tiShow, "tiShow")
+$tiHide = TrayCreateItem(GetTranslated(500,32, "Hide when minimized"))
+TrayItemSetOnEvent($tiHide, "tiHide")
+TrayCreateItem("")
+$tiDonate = TrayCreateItem(GetTranslated(500,33, "Support Development"))
+TrayItemSetOnEvent($tiDonate, "tiDonate")
+$tiAbout = TrayCreateItem(GetTranslated(500,34, "About"))
+TrayItemSetOnEvent($tiAbout, "tiAbout")
+TrayCreateItem("")
+$tiExit = TrayCreateItem(GetTranslated(500,35, "Exit"))
+TrayItemSetOnEvent($tiExit, "tiExit")
+
+
+If $hFuncLib <> -1 Then
+	;enable buttons start and search mode only if MRBfunctions.dll loaded, prevent click of buttons before dll loaded in memory
+	GUICtrlSetState($btnStart, $GUI_ENABLE)
+	; enable search only button when TH level variable has valid level, to avoid posts from users not pressing start first
+	If $iTownHallLevel > 2 Then
+		GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
+	EndIf
+EndIf
+
+;~ -------------------------------------------------------------
+SetDebugLog("$frmBot=" & $frmBot, Default, True)
+SetDebugLog("$frmBotEx=" & $frmBotEx, Default, True)
+SetDebugLog("$frmBotBottom=" & $frmBotBottom, Default, True)
+SetDebugLog("$frmBotEmbeddedShield=" & $frmBotEmbeddedShield, Default, True)
+SetDebugLog("$frmBotEmbeddedShieldInput=" & $frmBotEmbeddedShieldInput, Default, True)
+SetDebugLog("$frmBotEmbeddedGarphics=" & $frmBotEmbeddedGarphics, Default, True)
+
