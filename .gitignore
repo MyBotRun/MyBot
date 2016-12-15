@@ -66,5 +66,5 @@ EnableMBRDebug.txt
 *.db
 
 # Release files
-LastVersion*.txt
-TestVersion*.txt
+!LastVersion*.txt
+!TestVersion*.txt
