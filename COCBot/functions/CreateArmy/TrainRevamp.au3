@@ -130,7 +130,8 @@ Func TestMaxCamp()
 			$ToReturn = 1
 		Else
 			; The number of troops is not correct
-			Setlog(" - Your army is: " & $ArmyCamp[0], $COLOR_RED)
+			If $ArmyCamp[1] > 240 then Setlog(" Your CoC is outdated!!! ", $COLOR_RED)
+			Setlog(" - Your army is: " & $ArmyCamp[1], $COLOR_RED)
 			$ToReturn = 0
 		EndIf
 	EndIf

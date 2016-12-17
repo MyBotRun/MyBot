@@ -1,3 +1,16 @@
+﻿* **V6.4.1**
+ * Fix bot ghosting/freezing jumping window when busy
+ * Fix minor GUI refresh issues
+ * Fix slow bot GUI when docked
+ * Fix Donate in Halt Attack ( donate/train only )
+ * Fix Halt Attack ( stay online only )
+ * Fix Android Failed to Stop Log
+ * Improve watchdog CPU utilization
+ * Improve the Hero Activation check
+ * Revert zombie mode to be off
+ * Add a check for outdated CoC double capacity on Train window
+ * Changed the Debug Dead Base images to dir Temp Debug inside Profile
+
 * **V6.4**
  * Fix iTools AVM WinAPI screen resize
  * Fix create shared folder for iTools, Nox and Droid4X

@@ -20,7 +20,7 @@
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
 #pragma compile(ProductVersion, 6.4)
-#pragma compile(FileVersion, 6.4)
+#pragma compile(FileVersion, 6.4.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
 
@@ -35,7 +35,7 @@ ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 Global $iBotLaunchTime = 0
 Local $hBotLaunchTime = TimerInit()
 
-$sBotVersion = "v6.4" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+$sBotVersion = "v6.4.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 #include "COCBot\functions\Config\DelayTimes.au3"
@@ -208,6 +208,8 @@ If $AndroidShieldEnabled = False Then
 	SetLog($sMsg, $COLOR_ACTION)
 EndIf
 
+DisableProcessWindowsGhosting()
+
 ;~ Restore process priority
 ProcessSetPriority(@AutoItPID, $iBotProcessPriority)
 
@@ -241,8 +243,8 @@ Func runBot() ;Bot that runs everything in order
 	$TotalTrainedTroops = 0
 	Local $Quickattack = False
 	Local $iWaitTime
-	PrepareDonateCC()
 	While 1
+		PrepareDonateCC()
 		$Restart = False
 		$fullArmy = False
 		$CommandStop = -1
@@ -416,6 +418,7 @@ Func Idle() ;Sequence that runs until Full Army
 		If $CommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_SUCCESS)
 		Local $hTimer = TimerInit()
 		Local $iReHere = 0
+		PrepareDonateCC()
 
 		;If $iSkipDonateNearFulLTroopsEnable = 1 Then getArmyCapacity(true,true)
 		If $bDonate = True Then

@@ -20,9 +20,9 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 	$iSkipped = 0
 
 	If $debugDeadBaseImage = 1 Then
+		DirCreate($dirTempDebug & "\SkippedZombies\")
+		DirCreate($dirTempDebug & "\Zombies\")
 		setZombie()
-		DirCreate(@ScriptDir & "\SkippedZombies\")
-		DirCreate(@ScriptDir & "\Zombies\")
 	EndIf
 
 	If $Is_ClientSyncError = False Then

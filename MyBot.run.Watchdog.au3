@@ -34,6 +34,8 @@
 #include <Date.au3>
 #include <Array.au3>
 
+Global $hNtDll = DllOpen("ntdll.dll")
+
 Global Const $COLOR_ERROR = $COLOR_RED ; Error messages
 Global Const $COLOR_WARNING = $COLOR_MAROON ; Warning messages
 Global Const $COLOR_INFO = $COLOR_BLUE ; Information or Status updates for user
@@ -51,7 +53,9 @@ Global $iTimeoutRestartBot = 120000 ; Milliseconds un-responsive bot is launched
 Global $iTimeoutAutoClose = 60000 ; Milliseconds watchdog automatically closed when no bot available, -1 = disabled
 Global $hTimeoutAutoClose = 0 ; Timer Handle for $iTimeoutAutoClose
 
-Global $iDelaySleep = 100
+Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
+Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
+Global $iDelaySleep = 500
 Global $debugSetlog = 0
 
 Func SetLog($String, $Color = $COLOR_BLACK, $LogPrefix = "L ")
@@ -64,18 +68,20 @@ Func SetDebugLog($String, $Color = $COLOR_DEBUG, $LogPrefix = "D ")
 EndFunc   ;==>SetDebugLog
 
 Func _Sleep($ms, $iSleep = True, $CheckRunState = True)
-	Sleep($ms)
+	_SleepMilli($ms)
 EndFunc   ;==>_Sleep
 
-Func _SleepMilli($iMilliSec)
-	_SleepMicro($iMilliSec * 1000)
-EndFunc   ;==>_SleepMilli
-
 Func _SleepMicro($iMicroSec)
-    Local $hStruct = DllStructCreate("int64 time;")
-    DllStructSetData($hStruct, "time", -1 * ($iMicroSec * 10))
-    DllCall("ntdll.dll", "dword", "ZwDelayExecution", "int", 0, "ptr", DllStructGetPtr($hStruct))
+	;Local $hStruct_SleepMicro = DllStructCreate("int64 time;")
+	;Local $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
+    DllStructSetData($hStruct_SleepMicro, "time", $iMicroSec * -10)
+    DllCall($hNtDll, "dword", "ZwDelayExecution", "int", 0, "ptr", $pStruct_SleepMicro)
+	;$hStruct_SleepMicro = 0
 EndFunc   ;==>_SleepMicro
+
+Func _SleepMilli($iMilliSec)
+	_SleepMicro(Int($iMilliSec * 1000))
+EndFunc   ;==>_SleepMilli
 
 If @AutoItX64 = 1 Then
 	MsgBox(0, "", "Don't Run/Compile the Script as (x64)! try to Run/Compile the Script as (x86) to get the bot to work." & @CRLF & _
@@ -109,6 +115,7 @@ $frmBot = GUICreate($sBotTitle, 32, 32)
 $hStarted = TimerInit() ; Timer handle watchdog started
 $hTimeoutAutoClose = $hStarted
 
+Local $iExitCode = 0
 While 1
 	SetDebugLog("Broadcast query bot state, registered bots: " & UBound(GetManagedMyBotDetails()))
 	_WinAPI_BroadcastSystemMessage($WM_MYBOTRUN_API_1_0, 0, $frmBot, $BSF_POSTMESSAGE + $BSF_IGNORECURRENTTASK, $BSM_APPLICATIONS)
@@ -116,7 +123,7 @@ While 1
 	Local $hLoopTimer = TimerInit()
 	Local $hCheckTimer = TimerInit()
 	While TimerDiff($hLoopTimer) < $iTimeoutBroadcast
-		_SleepMilli($iDelaySleep)
+		_Sleep($iDelaySleep)
 		If TimerDiff($hCheckTimer) >= $iTimeoutCheckBot Then
 			; check if bot not responding anymore and restart if so
 			CheckManagedMyBot($iTimeoutRestartBot)
@@ -128,9 +135,12 @@ While 1
 	If $iTimeoutAutoClose > -1 And TimerDiff($hTimeoutAutoClose) > $iTimeoutAutoClose Then
 		If UBound(GetManagedMyBotDetails()) = 0 Then
 			SetLog("Closing " & $sBotTitle & "as no running bot found")
-			Exit (1)
+			$iExitCode = 1
 		EndIf
 		$hTimeoutAutoClose = TimerInit() ; timeout starts again
 	EndIf
 
 WEnd
+
+DllClose("ntdll.dll")
+Exit($iExitCode)

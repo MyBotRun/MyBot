@@ -3,12 +3,9 @@
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
 #pragma compile(ProductVersion, 6.4)
-#pragma compile(FileVersion, 6.4)
+#pragma compile(FileVersion, 6.4.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
-#AutoIt3Wrapper_UseX64=7n
-#AutoIt3Wrapper_Run_Au3Stripper=y
-#Au3Stripper_Parameters=/mo /rsln
 Global Const $WC_ANIMATE = 'SysAnimate32'
 Global Const $WC_BUTTON = 'Button'
 Global Const $WC_COMBOBOX = 'ComboBox'
@@ -3422,7 +3419,7 @@ Local $iBotProcessPriority = _ProcessGetPriority(@AutoItPID)
 ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 Global $iBotLaunchTime = 0
 Local $hBotLaunchTime = TimerInit()
-$sBotVersion = "v6.4"
+$sBotVersion = "v6.4.1"
 $sBotTitle = "My Bot " & $sBotVersion & " "
 Global Const $iDelaySleep = 100
 Global Const $iDelayWaitForPopup = 1500
@@ -8152,15 +8149,10 @@ Global Const $COINIT_APARTMENTTHREADED = 0x02
 Global Const $COINIT_DISABLE_OLE1DDE = 0x04
 Global Const $COINIT_MULTITHREADED = 0x00
 Global Const $COINIT_SPEED_OVER_MEMORY = 0x08
-#Region Global Variables and Constants
 Global $__g_vEnum, $__g_vExt = 0
 Global $__g_hHeap = 0, $__g_iRGBMode = 1
 Global Const $tagOSVERSIONINFO = 'struct;dword OSVersionInfoSize;dword MajorVersion;dword MinorVersion;dword BuildNumber;dword PlatformId;wchar CSDVersion[128];endstruct'
 Global Const $__WINVER = __WINVER()
-#EndRegion Global Variables and Constants
-#Region Functions list
-#EndRegion Functions list
-#Region Public Functions
 Func _WinAPI_ArrayToStruct(Const ByRef $aData, $iStart = 0, $iEnd = -1)
 If __CheckErrorArrayBounds($aData, $iStart, $iEnd) Then Return SetError(@error + 10, @extended, 0)
 Local $tagStruct = ''
@@ -8330,8 +8322,6 @@ DllCall('ntdll.dll', 'none', 'RtlZeroMemory', 'struct*', $pMemory, 'ulong_ptr', 
 If @error Then Return SetError(@error, @extended, 0)
 Return 1
 EndFunc
-#EndRegion Public Functions
-#Region Internal Functions
 Func __CheckErrorArrayBounds(Const ByRef $aData, ByRef $iStart, ByRef $iEnd, $nDim = 1, $iDim = $UBOUND_DIMENSIONS)
 If Not IsArray($aData) Then Return SetError(1, 0, 1)
 If UBound($aData, $iDim) <> $nDim Then Return SetError(2, 0, 1)
@@ -8473,13 +8463,7 @@ Local $aRet = DllCall('kernel32.dll', 'bool', 'GetVersionExW', 'struct*', $tOSVI
 If @error Or Not $aRet[0] Then Return SetError(@error, @extended, 0)
 Return BitOR(BitShift(DllStructGetData($tOSVI, 2), -8), DllStructGetData($tOSVI, 3))
 EndFunc
-#EndRegion Internal Functions
-#Region Global Variables and Constants
 Global Const $__tagWinAPICom_GUID = "struct;ulong Data1;ushort Data2;ushort Data3;byte Data4[8];endstruct"
-#EndRegion Global Variables and Constants
-#Region Functions list
-#EndRegion Functions list
-#Region Public Functions
 Func _WinAPI_CLSIDFromProgID($sProgID)
 Local $tGUID = DllStructCreate($__tagWinAPICom_GUID)
 Local $aReturn = DllCall('ole32.dll', 'long', 'CLSIDFromProgID', 'wstr', $sProgID, 'struct*', $tGUID)
@@ -8553,7 +8537,6 @@ If @error Then Return SetError(@error, @extended, 0)
 If $aReturn[0] Then Return SetError(10, $aReturn[0], 0)
 Return 1
 EndFunc
-#EndRegion Public Functions
 Global Const $URL_SCHEME_INVALID = -1
 Global Const $URL_SCHEME_UNKNOWN = 0
 Global Const $URL_SCHEME_FTP = 1
@@ -8612,9 +8595,6 @@ Global Const $URLIS_HASQUERY = 6
 Global Const $URLIS_NOHISTORY = 2
 Global Const $URLIS_OPAQUE = 1
 Global Const $URLIS_URL = 0
-#Region Functions list
-#EndRegion Functions list
-#Region Public Functions
 Func _WinAPI_CommandLineToArgv($sCmd)
 Local $aResult[1] = [0]
 $sCmd = StringStripWS($sCmd, $STR_STRIPLEADING + $STR_STRIPTRAILING)
@@ -9010,8 +8990,6 @@ Local $aRet = DllCall('shlwapi.dll', 'bool', 'UrlIsW', 'wstr', $sUrl, 'uint', $i
 If @error Then Return SetError(@error, @extended, False)
 Return $aRet[0]
 EndFunc
-#EndRegion Public Functions
-#Region Internal Functions
 Func __US($sString, $iLength = 0)
 If $iLength Then
 $sString = StringLeft($sString, $iLength)
@@ -9025,8 +9003,6 @@ DllStructSetData($tUS, 3, DllStructGetPtr($tUS, 4))
 DllStructSetData($tUS, 4, $sString)
 Return $tUS
 EndFunc
-#EndRegion Internal Functions
-#Region Global Variables and Constants
 Global Const $tagIO_COUNTERS = 'struct;uint64 ReadOperationCount;uint64 WriteOperationCount;uint64 OtherOperationCount;uint64 ReadTransferCount;uint64 WriteTransferCount;uint64 OtherTransferCount;endstruct'
 Global Const $tagJOBOBJECT_ASSOCIATE_COMPLETION_PORT = 'ulong_ptr CompletionKey;ptr CompletionPort'
 Global Const $tagJOBOBJECT_BASIC_ACCOUNTING_INFORMATION = 'struct;int64 TotalUserTime;int64 TotalKernelTime;int64 ThisPeriodTotalUserTime;int64 ThisPeriodTotalKernelTime;dword TotalPageFaultCount;dword TotalProcesses;dword ActiveProcesses;dword TotalTerminatedProcesses;endstruct'
@@ -9040,10 +9016,6 @@ Global Const $tagJOBOBJECT_GROUP_INFORMATION = ''
 Global Const $tagJOBOBJECT_SECURITY_LIMIT_INFORMATION = 'dword SecurityLimitFlags;ptr JobToken;ptr SidsToDisable;ptr PrivilegesToDelete;ptr RestrictedSids'
 Global Const $tagMODULEINFO = 'ptr BaseOfDll;dword SizeOfImage;ptr EntryPoint'
 Global Const $tagPROCESSENTRY32 = 'dword Size;dword Usage;dword ProcessID;ulong_ptr DefaultHeapID;dword ModuleID;dword Threads;dword ParentProcessID;long PriClassBase;dword Flags;wchar ExeFile[260]'
-#EndRegion Global Variables and Constants
-#Region Functions list
-#EndRegion Functions list
-#Region Public Functions
 Func _WinAPI_AdjustTokenPrivileges($hToken, $aPrivileges, $iAttributes, ByRef $aAdjust)
 $aAdjust = 0
 If Not $aPrivileges And IsNumber($aPrivileges) Then Return 0
@@ -9724,7 +9696,6 @@ Local $aRet = DllCall('kernel32.dll', 'bool', 'UserHandleGrantAccess', 'handle',
 If @error Then Return SetError(@error, @extended, False)
 Return $aRet[0]
 EndFunc
-#EndRegion Public Functions
 Global Const $LINGUISTIC_IGNORECASE = 0x00000010
 Global Const $LINGUISTIC_IGNOREDIACRITIC = 0x00000020
 Global Const $NORM_IGNORECASE = 0x00000001
@@ -10361,7 +10332,6 @@ Global Const $PT_BEZIERTO = 4
 Global Const $PT_LINETO = 2
 Global Const $PT_MOVETO = 6
 Global Const $PT_CLOSEFIGURE = 1
-#Region Global Variables and Constants
 Global Const $tagBITMAP = 'struct;long bmType;long bmWidth;long bmHeight;long bmWidthBytes;ushort bmPlanes;ushort bmBitsPixel;ptr bmBits;endstruct'
 Global Const $tagBITMAPV4HEADER = 'struct;dword bV4Size;long bV4Width;long bV4Height;ushort bV4Planes;ushort bV4BitCount;dword bV4Compression;dword bV4SizeImage;long bV4XPelsPerMeter;long bV4YPelsPerMeter;dword bV4ClrUsed;dword bV4ClrImportant;dword bV4RedMask;dword bV4GreenMask;dword bV4BlueMask;dword bV4AlphaMask;dword bV4CSType;int bV4Endpoints[9];dword bV4GammaRed;dword bV4GammaGreen;dword bV4GammaBlue;endstruct'
 Global Const $tagBITMAPV5HEADER = 'struct;dword bV5Size;long bV5Width;long bV5Height;ushort bV5Planes;ushort bV5BitCount;dword bV5Compression;dword bV5SizeImage;long bV5XPelsPerMeter;long bV5YPelsPerMeter;dword bV5ClrUsed;dword bV5ClrImportant;dword bV5RedMask;dword bV5GreenMask;dword bV5BlueMask;dword bV5AlphaMask;dword bV5CSType;int bV5Endpoints[9];dword bV5GammaRed;dword bV5GammaGreen;dword bV5GammaBlue;dword bV5Intent;dword bV5ProfileData;dword bV5ProfileSize;dword bV5Reserved;endstruct'
@@ -10383,10 +10353,6 @@ Global Const $tagOUTLINETEXTMETRIC = 'struct;uint otmSize;' & $tagTEXTMETRIC & '
 Global Const $tagPAINTSTRUCT = 'hwnd hDC;int fErase;dword rPaint[4];int fRestore;int fIncUpdate;byte rgbReserved[32]'
 Global Const $tagRGNDATAHEADER = 'struct;dword Size;dword Type;dword Count;dword RgnSize;' & $tagRECT & ';endstruct'
 Global Const $tagXFORM = 'float eM11;float eM12;float eM21;float eM22;float eDx;float eDy'
-#EndRegion Global Variables and Constants
-#Region Functions list
-#EndRegion Functions list
-#Region Public Functions
 Func _WinAPI_AbortPath($hDC)
 Local $aRet = DllCall('gdi32.dll', 'bool', 'AbortPath', 'handle', $hDC)
 If @error Then Return SetError(@error, @extended, False)
@@ -12981,8 +12947,6 @@ Local $aRet = DllCall('user32.dll', 'hwnd', 'WindowFromDC', 'handle', $hDC)
 If @error Then Return SetError(@error, @extended, 0)
 Return $aRet[0]
 EndFunc
-#EndRegion Public Functions
-#Region Embedded DLL Functions
 Func __AlphaProc()
 Static $pProc = 0
 If Not $pProc Then
@@ -13016,8 +12980,6 @@ EndIf
 EndIf
 Return $pProc
 EndFunc
-#EndRegion Embedded DLL Functions
-#Region Internal Functions
 Func __EnumDisplayMonitorsProc($hMonitor, $hDC, $pRECT, $lParam)
 #forceref $hDC, $lParam
 __Inc($__g_vEnum)
@@ -13076,14 +13038,8 @@ Else
 Return 1
 EndIf
 EndFunc
-#EndRegion Internal Functions
-#Region Global Variables and Constants
 Global $__g_vVal
 Global Const $tagVS_FIXEDFILEINFO = 'dword Signature;dword StrucVersion;dword FileVersionMS;dword FileVersionLS;dword ProductVersionMS;dword ProductVersionLS;dword FileFlagsMask;dword FileFlags;dword FileOS;dword FileType;dword FileSubtype;dword FileDateMS;dword FileDateLS'
-#EndRegion Global Variables and Constants
-#Region Functions list
-#EndRegion Functions list
-#Region Public Functions
 Func _WinAPI_AddIconTransparency($hIcon, $iPercent = 50, $bDelete = False)
 Local $tBITMAP, $hDib = 0, $hResult = 0
 Local $ahBitmap[2]
@@ -13562,8 +13518,6 @@ If $__g_vEnum Then Return SetError($__g_vEnum, 0, 0)
 __Inc($__g_vEnum, -1)
 Return $__g_vEnum
 EndFunc
-#EndRegion Public Functions
-#Region Embedded DLL Functions
 Func __TransparencyProc()
 Static $pProc = 0
 If Not $pProc Then
@@ -13575,8 +13529,6 @@ EndIf
 EndIf
 Return $pProc
 EndFunc
-#EndRegion Embedded DLL Functions
-#Region Internal Functions
 Func __EnumResLanguagesProc($hModule, $iType, $iName, $iLanguage, $lParam)
 #forceref $hModule, $iType, $iName, $lParam
 __Inc($__g_vEnum)
@@ -13664,7 +13616,6 @@ Local $pData = _WinAPI_LockResource($hData)
 If Not $pData Then Return SetError(@error + 40, @extended, 0)
 Return SetExtended($iSize, $pData)
 EndFunc
-#EndRegion Internal Functions
 Global Const $GDIP_DASHCAPFLAT = 0
 Global Const $GDIP_DASHCAPROUND = 2
 Global Const $GDIP_DASHCAPTRIANGLE = 3
@@ -18926,12 +18877,7 @@ Global Const $DTN_FORMATW = $DTN_FIRST - 3
 Global Const $DTN_FORMATQUERYW = $DTN_FIRST - 2
 Global Const $GUI_SS_DEFAULT_DATE = $DTS_LONGDATEFORMAT
 Global Const $GUI_SS_DEFAULT_MONTHCAL = 0
-#Region Global Variables and Constants
 Global Const $tagNUMBERFMT = 'uint NumDigits;uint LeadingZero;uint Grouping;ptr DecimalSep;ptr ThousandSep;uint NegativeOrder'
-#EndRegion Global Variables and Constants
-#Region Functions list
-#EndRegion Functions list
-#Region Public Functions
 Func _WinAPI_CompareString($iLCID, $sString1, $sString2, $iFlags = 0)
 Local $aRet = DllCall('kernel32.dll', 'int', 'CompareStringW', 'dword', $iLCID, 'dword', $iFlags, 'wstr', $sString1,  'int', -1, 'wstr', $sString2, 'int', -1)
 If @error Or Not $aRet[0] Then Return SetError(@error, @extended, 0)
@@ -19120,8 +19066,6 @@ Local $aRet = DllCall('kernel32.dll', 'bool', 'SetUserGeoID', 'long', $iGEOID)
 If @error Then Return SetError(@error, @extended, False)
 Return $aRet[0]
 EndFunc
-#EndRegion Public Functions
-#Region Internal Functions
 Func __EnumGeoIDProc($iID)
 __Inc($__g_vEnum)
 $__g_vEnum[$__g_vEnum[0]] = $iID
@@ -19140,7 +19084,6 @@ $__g_vEnum[$__g_vEnum[0]] = Dec($__g_vEnum[$__g_vEnum[0]])
 EndIf
 Return 1
 EndFunc
-#EndRegion Internal Functions
 Func _DateAdd($sType, $iNumber, $sDate)
 Local $asTimePart[4]
 Local $asDatePart[4]
@@ -24978,20 +24921,13 @@ EndFunc
 Func _StringToHex($sString)
 Return Hex(StringToBinary($sString, $SB_UTF8))
 EndFunc
-#Region Header
-#EndRegion Header
-#Region Global Variables
 Global $__g_iIELoadWaitTimeout = 300000
 Global $__g_bIEAU3Debug = False
 Global $__g_bIEErrorNotify = True
 Global $__g_oIEErrorHandler, $__g_sIEUserErrorHandler
-#EndRegion Global Variables
-#Region Global Constants
 Global Const $__gaIEAU3VersionInfo[6] = ["T", 3, 0, 2, "20140819", "T3.0-2"]
 Global Const $LSFW_LOCK = 1, $LSFW_UNLOCK = 2
 Global Enum  $_IESTATUS_Success = 0,  $_IESTATUS_GeneralError,  $_IESTATUS_ComError,  $_IESTATUS_InvalidDataType,  $_IESTATUS_InvalidObjectType,  $_IESTATUS_InvalidValue,  $_IESTATUS_LoadWaitTimeout,  $_IESTATUS_NoMatch,  $_IESTATUS_AccessIsDenied,  $_IESTATUS_ClientDisconnected
-#EndRegion Global Constants
-#Region Core functions
 Func _IECreate($sUrl = "about:blank", $iTryAttach = 0, $iVisible = 1, $iWait = 1, $iTakeFocus = 1)
 If Not $iVisible Then $iTakeFocus = 0
 If $iTryAttach Then
@@ -25333,8 +25269,6 @@ $__g_iIELoadWaitTimeout = $iTimeout
 Return SetError($_IESTATUS_Success, 0, 1)
 EndIf
 EndFunc
-#EndRegion Core functions
-#Region Frame Functions
 Func _IEIsFrameSet(ByRef $oObject)
 If Not IsObj($oObject) Then
 __IEConsoleWriteError("Error", "_IEIsFrameSet", "$_IESTATUS_InvalidDataType")
@@ -25400,8 +25334,6 @@ __IEConsoleWriteError("Warning", "_IEFrameGetObjByName", "$_IESTATUS_NoMatch", "
 Return SetError($_IESTATUS_NoMatch, 2, 0)
 EndIf
 EndFunc
-#EndRegion Frame Functions
-#Region Link functions
 Func _IELinkClickByText(ByRef $oObject, $sLinkText, $iIndex = 0, $iWait = 1)
 If Not IsObj($oObject) Then
 __IEConsoleWriteError("Error", "_IELinkClickByText", "$_IESTATUS_InvalidDataType")
@@ -25473,8 +25405,6 @@ __IEConsoleWriteError("Warning", "_IELinkGetCollection", "$_IESTATUS_NoMatch")
 Return SetError($_IESTATUS_NoMatch, 2, 0)
 EndSelect
 EndFunc
-#EndRegion Link functions
-#Region Image functions
 Func _IEImgClick(ByRef $oObject, $sLinkText, $sMode = "src", $iIndex = 0, $iWait = 1)
 If Not IsObj($oObject) Then
 __IEConsoleWriteError("Error", "_IEImgClick", "$_IESTATUS_InvalidDataType")
@@ -25537,8 +25467,6 @@ __IEConsoleWriteError("Warning", "_IEImgGetCollection", "$_IESTATUS_NoMatch")
 Return SetError($_IESTATUS_NoMatch, 1, 0)
 EndSelect
 EndFunc
-#EndRegion Image functions
-#Region Form functions
 Func _IEFormGetCollection(ByRef $oObject, $iIndex = -1)
 If Not IsObj($oObject) Then
 __IEConsoleWriteError("Error", "_IEFormGetCollection", "$_IESTATUS_InvalidDataType")
@@ -26048,8 +25976,6 @@ Return SetError($_IESTATUS_ComError, @error, 0)
 EndIf
 Return SetError($_IESTATUS_Success, 0, 1)
 EndFunc
-#EndRegion Form functions
-#Region Table functions
 Func _IETableGetCollection(ByRef $oObject, $iIndex = -1)
 If Not IsObj($oObject) Then
 __IEConsoleWriteError("Error", "_IETableGetCollection", "$_IESTATUS_InvalidDataType")
@@ -26115,8 +26041,6 @@ $aTableCells = $aTmp
 EndIf
 Return SetError($_IESTATUS_Success, 0, $aTableCells)
 EndFunc
-#EndRegion Table functions
-#Region Read/Write functions
 Func _IEBodyReadHTML(ByRef $oObject)
 If Not IsObj($oObject) Then
 __IEConsoleWriteError("Error", "_IEBodyReadHTML", "$_IESTATUS_InvalidDataType")
@@ -26267,8 +26191,6 @@ Return SetError($_IESTATUS_ComError, @error, 0)
 EndIf
 Return SetError($_IESTATUS_Success, 0, 1)
 EndFunc
-#EndRegion Read/Write functions
-#Region Utility functions
 Func _IEDocGetObj(ByRef $oObject)
 If Not IsObj($oObject) Then
 __IEConsoleWriteError("Error", "_IEDocGetObj", "$_IESTATUS_InvalidDataType")
@@ -26999,8 +26921,6 @@ EndIf
 $oObject = 0
 Return SetError($_IESTATUS_Success, 0, 1)
 EndFunc
-#EndRegion Utility functions
-#Region General
 Func _IE_Introduction($sModule = "basic")
 Local $sHTML = ""
 Switch $sModule
@@ -27366,8 +27286,6 @@ Func _IE_VersionInfo()
 __IEConsoleWriteError("Information", "_IE_VersionInfo", "version " &  $__gaIEAU3VersionInfo[0] &  $__gaIEAU3VersionInfo[1] & "." &  $__gaIEAU3VersionInfo[2] & "-" &  $__gaIEAU3VersionInfo[3], "Release date: " & $__gaIEAU3VersionInfo[4])
 Return SetError($_IESTATUS_Success, 0, $__gaIEAU3VersionInfo)
 EndFunc
-#EndRegion General
-#Region Internal functions
 Func __IELockSetForegroundWindow($iLockCode)
 Local $aRet = DllCall("user32.dll", "bool", "LockSetForegroundWindow", "uint", $iLockCode)
 If @error Or Not $aRet[0] Then Return SetError(1, _WinAPI_GetLastError(), 0)
@@ -27497,8 +27415,6 @@ Case Else
 Return $_IESTATUS_Success
 EndSwitch
 EndFunc
-#EndRegion Internal functions
-#Region ProtoType Functions
 Func __IENavigate(ByRef $oObject, $sUrl, $iWait = 1, $iFags = 0, $sTarget = "", $sPostdata = "", $sHeaders = "")
 __IEConsoleWriteError("Warning", "__IENavigate", "Unsupported function called. Not fully tested.")
 If Not IsObj($oObject) Then
@@ -27597,7 +27513,6 @@ EndIf
 Until Not FileExists($sTempName)
 Return $sTempName
 EndFunc
-#EndRegion ProtoType Functions
 Global Const $HDF_LEFT = 0x00000000
 Global Const $HDF_RIGHT = 0x00000001
 Global Const $HDF_CENTER = 0x00000002
@@ -32461,7 +32376,7 @@ Global $bMonitorHeight800orBelow = False
 Global $ichkDisableSplash = 0
 Global $debugDisableZoomout = 0
 Global $debugDisableVillageCentering = 0
-Global $debugDeadBaseImage = 1
+Global $debugDeadBaseImage = 0
 Global $aZombie = [""  , 0  , 0  , 0  , 0  , ""  , ""  , 30  , 300  , 600  , 150  ]
 Global $debugClick = 0
 Global $debugSearchArea = 0, $debugOcr = 0, $debugRedArea = 0, $debugSetlog = 0, $debugImageSave = 0, $debugWalls = 0, $debugBuildingPos = 0, $debugVillageSearchImages = 0
@@ -32787,6 +32702,7 @@ Global $pImageLib = $LibDir & "\ImageSearchDLL.dll"
 Global $pImgLib = $LibDir & "\MyBotRunImgLoc.dll"
 Global $pFuncLib = $LibDir & "\MBRFunctions.dll"
 Global $hNtDll = -1
+Global $hUser32Dll = -1
 Global $hFuncLib = -1
 Global $hImgLib
 Global $pIconLib = $LibDir & "\MBRBOT.dll"
@@ -33276,6 +33192,8 @@ Global $CurCamp, $TotalCamp = 0
 Global $NoLeague
 Global $FirstStart = True
 Global $TPaused, $BlockInputPause = 0
+Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
+Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $TogglePauseUpdateState = False
 Global $TogglePauseAllowed = True
 Global $itxtRestartGold = 10000
@@ -33766,7 +33684,6 @@ EndIf
 _GDIPlus_Startup()
 Global $hSplash = 0, $hSplashProgress, $lSplashStatus, $lSplashTitle
 Global $iTotalSteps = 11, $iCurrentStep = 0
-#Region Splash
 Local $sSplashImg = $sLogoPath
 Local $hImage, $iX, $iY
 Local $iT = 20
@@ -33784,7 +33701,6 @@ $lSplashStatus = GUICtrlCreateLabel("", 15, $iY + $iT + $iB + 38, $iX - 30, 15, 
 _GDIPlus_BitmapDispose($hSplashImg)
 GUISetState(@SW_SHOWNOACTIVATE, $hSplash)
 EndIf
-#EndRegion
 Global $aCenterEnemyVillageClickDrag = [65, 545]
 Global $aCenterHomeVillageClickDrag = [160, 665]
 Global $aIsReloadError[4] = [457, 301 + $midOffsetY, 0x33B5E5, 10]
@@ -35612,6 +35528,7 @@ Func MBRFunc($Start = True)
 Switch $Start
 Case True
 $hNtDll = DllOpen("ntdll.dll")
+$hUser32Dll = DllOpen("user32.dll")
 $hFuncLib = DllOpen($pFuncLib)
 $hImgLib = DllOpen($pImgLib)
 If $hFuncLib = -1 Then
@@ -35621,6 +35538,7 @@ EndIf
 SetDebugLog("MBRfunctions.dll opened.")
 Case False
 DllClose($hNtDll)
+DllClose($hUser32Dll)
 DllClose($hFuncLib)
 DllClose($hImgLib)
 SetDebugLog("MBRfunctions.dll closed.")
@@ -36362,7 +36280,7 @@ If _SleepStatus(1000) Then Return False
 EndIf
 Local $Result = Execute("Close" & $Android & "()")
 If Not $RunState Then Return False
-If ProcessExists2($pid) Then
+If ProcessExists($pid) Then
 SetLog("Failed to stop " & $Android, $COLOR_ERROR)
 Else
 SetLog($Android & " stopped successfully", $COLOR_SUCCESS)
@@ -36373,7 +36291,7 @@ EndFunc
 Func CloseVboxAndroidSvc()
 Local $process_killed
 If Not $RunState Then Return
-LaunchConsole($__VBoxManage_Path, "controlvm " & $AndroidInstance & " poweroff", $process_killed)
+LaunchConsole($__VBoxManage_Path, "controlvm " & $AndroidInstance & " poweroff", $process_killed, 30000)
 If _SleepStatus(3000) Then Return
 EndFunc
 Func CheckAndroidRunning($bQuickCheck = True, $bStartIfRequired = True)
@@ -38027,7 +37945,6 @@ Global $sTxtHeroWarden = GetTranslated(644,3, "G.Warden")
 Global $sTxtElixirTroops =  $sTxtBarbarians & "|" & $sTxtArchers & "|" & $sTxtGiants & "|" & $sTxtGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtHealers &"|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtMiners
 Global Const $aLabTroops[30][5] = [  [-1, -1, -1, GetTranslated(603,0, "None"), $eIcnBlank],  [123, 320 + $midOffsetY, 0, $sTxtBarbarians, $eIcnBarbarian],  [123, 427 + $midOffsetY, 0, $sTxtArchers, $eIcnArcher],  [230, 320 + $midOffsetY, 0, $sTxtGiants, $eIcnGiant],  [230, 427 + $midOffsetY, 0, $sTxtGoblins, $eIcnGoblin],  [337, 320 + $midOffsetY, 0, $sTxtWallBreakers, $eIcnWallBreaker],  [337, 427 + $midOffsetY, 0, $sTxtBalloons, $eIcnBalloon],  [443, 320 + $midOffsetY, 0, $sTxtWizards, $eIcnWizard],  [443, 427 + $midOffsetY, 0, $sTxtHealers, $eIcnHealer],  [550, 320 + $midOffsetY, 0, $sTxtDragons, $eIcnDragon],  [550, 427 + $midOffsetY, 0, $sTxtPekkas, $eIcnPekka],  [657, 320 + $midOffsetY, 0, $sTxtBabyDragons, $eIcnBabyDragon],  [657, 427 + $midOffsetY, 0, $sTxtMiners, $eIcnMiner],  [433, 320 + $midOffsetY, 1, $sTxtLiSpell, $eIcnLightSpell],  [433, 427 + $midOffsetY, 1, $sTxtHeSpell, $eIcnHealSpell],  [540, 320 + $midOffsetY, 1, $sTxtRaSpell, $eIcnRageSpell],  [540, 427 + $midOffsetY, 1, $sTxtJuSPell, $eIcnJumpSpell],  [647, 320 + $midOffsetY, 1, $sTxtFrSpell, $eIcnFreezeSpell],  [647, 427 + $midOffsetY, 1, $sTxtClSpell, $eIcnCloneSpell],  [109, 320 + $midOffsetY, 2, $sTxtPoSpell, $eIcnPoisonSpell],  [109, 427 + $midOffsetY, 2, $sTxtEaSpell, $eIcnEarthQuakeSpell],  [216, 320 + $midOffsetY, 2, $sTxtHaSpell, $eIcnHasteSpell],  [216, 427 + $midOffsetY, 2, $sTxtSkSpell, $eIcnSkeletonSpell],  [322, 320 + $midOffsetY, 2, $sTxtMinions, $eIcnMinion],  [322, 427 + $midOffsetY, 2, $sTxtHogRiders, $eIcnHogRider],  [429, 320 + $midOffsetY, 2, $sTxtValkyries, $eIcnValkyrie],  [429, 427 + $midOffsetY, 2, $sTxtGolems, $eIcnGolem],  [536, 320 + $midOffsetY, 2, $sTxtWitches, $eIcnWitch],  [536, 427 + $midOffsetY, 2, $sTxtLavaHounds, $eIcnLavaHound],  [642, 320 + $midOffsetY, 2, $sTxtBowlers, $eIcnBowler]]
 Local $tDelayBtn = 1000
-#Region ====================== #### CONSTANTS #### ======================
 Global Const $CLSID_ShellLink = "{00021401-0000-0000-C000-000000000046}"
 Global Const $sIID_IShellLinkW = "{000214F9-0000-0000-C000-000000000046}"
 Global Const $tag_IShellLinkW =  "GetPath hresult(long;long;long;long);" &  "GetIDList hresult(long);" &  "SetIDList hresult(long);" &  "GetDescription hresult(long;long);" &  "SetDescription hresult(wstr);" &  "GetWorkingDirectory hresult(long;long);" &  "SetWorkingDirectory hresult(long;long);" &  "GetArguments hresult(long;long);" &  "SetArguments hresult(ptr);" &  "GetHotkey hresult(long);" &  "SetHotkey hresult(word);" &  "GetShowCmd hresult(long);" &  "SetShowCmd hresult(int);" &  "GetIconLocation hresult(long;long;long);" &  "SetIconLocation hresult(wstr;int);" &  "SetRelativePath hresult(long;long);" &  "Resolve hresult(long;long);" &  "SetPath hresult(wstr);"
@@ -38041,7 +37958,6 @@ Global Const $tagPROPERTYKEY = 'struct;ulong Data1;ushort Data2;ushort Data3;byt
 Global $tagPROPVARIANT =  'USHORT vt;' &  'WORD wReserved1;' &  'WORD wReserved2;' &  'WORD wReserved3;' &  'LONG;PTR'
 Global Const $sIID_IPropertyStore = '{886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99}'
 Global Const $VT_EMPTY = 0, $VT_LPWSTR = 31
-#EndRegion ====================== #### CONSTANTS #### ======================
 Func _WindowAppId($hWnd, $appid = Default)
 Local $tpIPropertyStore = DllStructCreate('ptr')
 _WinAPI_SHGetPropertyStoreForWindow($hWnd, $sIID_IPropertyStore, $tpIPropertyStore)
@@ -45297,7 +45213,6 @@ GUICtrlSetFont(-1, 6.5, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
 SplashStep(GetTranslated(500, 30, "Initializing GUI..."))
-#Region
 Bind_ImageList($tabMain)
 Bind_ImageList($hGUI_VILLAGE_TAB)
 Bind_ImageList($hGUI_ARMY_TAB)
@@ -45313,10 +45228,7 @@ Bind_ImageList($hGUI_THSNIPE_TAB)
 Bind_ImageList($hGUI_BOT_TAB)
 Bind_ImageList($hGUI_STRATEGIES_TAB)
 Bind_ImageList($hGUI_STATS_TAB)
-#EndRegion
-#Region
 GUICtrlSetState($hGUI_LOG, $GUI_SHOW)
-#EndRegion
 cmbLog()
 If IsHWnd($hSplash) Then GUIDelete($hSplash)
 If Not $NoFocusTampering Then
@@ -45890,7 +45802,10 @@ $debugBuildingPos = 0
 $debugDeadBaseImage = 0
 EndFunc
 Func btnVillageStat()
+If GUICtrlGetState($lblVillageReportTemp) <> $GUI_HIDE Then
 GUICtrlSetState($lblVillageReportTemp, $GUI_HIDE)
+EndIf
+SetTime(True)
 If GUICtrlGetState($lblResultGoldNow) = $GUI_ENABLE + $GUI_SHOW Then
 GUICtrlSetState($lblResultGoldNow, $GUI_ENABLE + $GUI_HIDE)
 GUICtrlSetState($lblResultElixirNow, $GUI_ENABLE + $GUI_HIDE)
@@ -46110,6 +46025,11 @@ Else
 GUICtrlSetState($i, $iPrevState[$i])
 EndIf
 Next
+If $Enable = False Then
+ControlDisable("","",$cmbLanguage)
+Else
+ControlEnable("","",$cmbLanguage)
+EndIf
 $GUIControl_Disabled = False
 If $OptimizedRedraw = True Then SetRedrawBotWindow(True)
 EndFunc
@@ -51348,6 +51268,9 @@ Func AndroidToFront()
 WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_TOPMOST, 0, False)
 WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 EndFunc
+Func DisableProcessWindowsGhosting()
+DllCall($hUser32Dll, "none", "DisableProcessWindowsGhosting")
+EndFunc
 Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
 Local $wasCritical = SetCriticalMessageProcessing(True)
 Local $wasAllowed = $TogglePauseAllowed
@@ -51979,10 +51902,10 @@ DllStructSetData($tRECT, "Bottom", $top + $height - $groupBorder)
 _WinAPI_RedrawWindow($frmBotEx, $tRECT, 0, $RDW_INVALIDATE)
 Return 1
 EndFunc
-Func SetTime()
+Func SetTime($bForceUpdate = False)
 Local $time = _TicksToTime(Int(TimerDiff($sTimer) + $iTimePassed), $hour, $min, $sec)
-If GUICtrlRead($hGUI_STATS_TAB, 1) = $hGUI_STATS_TAB_ITEM2 Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-If GUICtrlGetState($lblResultGoldNow) <> $GUI_ENABLE + $GUI_SHOW Then GUICtrlSetData($lblResultRuntimeNow, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+If GUICtrlRead($hGUI_STATS_TAB, 1) = $hGUI_STATS_TAB_ITEM2 Or $bForceUpdate = True Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+If GUICtrlGetState($lblResultGoldNow) <> $GUI_ENABLE + $GUI_SHOW Or $bForceUpdate = True  Then GUICtrlSetData($lblResultRuntimeNow, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 EndFunc
 Func tabMain()
 $tabidx = GUICtrlRead($tabMain)
@@ -52566,13 +52489,8 @@ Return _WinAPI_CloseHandle($hSemaphore)
 EndIf
 Return False
 EndFunc
-#Region Header
-#EndRegion Header
-#Region Global Variables
 Global Enum  $iOAER_bSet_ErrLine, $iOAER_bIn_Proc, $iOAER_bUse_StdOut, $iOAER_iPID, $iOAER_hErr_Callback, $iOAER_hErr_WinHook, $iOAER_sUserFunc, $iOAER_vUserParams, $iOAER_iCOMErrorNumber, $iOAER_sCOMErrorDesc,  $iOAER_Total
 Global $aOAER_DATA[$iOAER_Total]
-#EndRegion Global Variables
-#Region Public Functions
 Func _OnAutoItErrorRegister()
 If $aOAER_DATA[$iOAER_hErr_WinHook] Then
 Return
@@ -52589,8 +52507,6 @@ EndFunc
 Func _OnAutoItErrorUnRegister()
 __OAER_OnExit()
 EndFunc
-#EndRegion Public Functions
-#Region Internal Functions
 Func __OAER_OnExit()
 If $aOAER_DATA[$iOAER_hErr_WinHook] Then
 _WinAPI_UnhookWindowsHookEx($aOAER_DATA[$iOAER_hErr_WinHook])
@@ -52621,7 +52537,6 @@ _WinAPI_FatalAppExit($sError_Msg)
 EndSwitch
 Return _WinAPI_CallNextHookEx($aOAER_DATA[$iOAER_hErr_WinHook], $nCode, $wParam, $lParam)
 EndFunc
-#EndRegion Internal Functions
 Func WallsStatsMAJ()
 Local $sVarNameOld = "itxtwall" & ($icmbWalls + 4 < 10 ? "0" : "") & ($icmbWalls + 4) & "ST"
 Local $sVarNameNew = "itxtwall" & ($icmbWalls + 5 < 10 ? "0" : "") & ($icmbWalls + 5) & "ST"
@@ -64139,11 +64054,11 @@ Case Else
 $SlotComp = 2
 EndSwitch
 If $slotNumber = $King Or $slotNumber = $Queen Or $slotNumber = $Warden Then $xOffsetFor11Slot += 8
-$SlotPixelColor = _ColorCheck(_GetPixelColor(15, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 15)
+$SlotPixelColor = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 10)
 If $debugSetlog = 1 Then
-Setlog(" Slot 0  _ColorCheck 0x07202A at (15," & 580 + $bottomOffsetY & "): " & $SlotPixelColor, $COLOR_DEBUG)
-$SlotPixelColorTemp = _GetPixelColor(15, 580 + $bottomOffsetY, $bCapturePixel)
-Setlog(" Slot 0  _GetPixelColo(15," & 580 + $bottomOffsetY & "): " & $SlotPixelColorTemp, $COLOR_DEBUG)
+Setlog(" Slot 0  _ColorCheck 0x07202A at (17," & 580 + $bottomOffsetY & "): " & $SlotPixelColor, $COLOR_DEBUG)
+$SlotPixelColorTemp = _GetPixelColor(17, 580 + $bottomOffsetY, $bCapturePixel)
+Setlog(" Slot 0  _GetPixelColo(17," & 580 + $bottomOffsetY & "): " & $SlotPixelColorTemp, $COLOR_DEBUG)
 EndIf
 If $SlotPixelColor = True Then
 Return $xOffsetFor11Slot + $SlotComp + ($slotNumber * 72)
@@ -64946,7 +64861,7 @@ Else
 SetLog("Total Army Camp capacity: " & $CurCamp & "/" & $TotalCamp)
 $ArmyCapacity = 0
 EndIf
-If ($CurCamp >= ($TotalCamp * $fulltroop / 100)) And $CommandStop = -1 Then
+If ($CurCamp >= ($TotalCamp * $fulltroop / 100)) Then
 $fullArmy = True
 Else
 $fullArmy = False
@@ -66285,7 +66200,8 @@ If UBound($ArmyCamp) = 3 Then
 If $ArmyCamp[2] = 0 Or $ArmyCamp[0] = 0 Then
 $ToReturn = 1
 Else
-Setlog(" - Your army is: " & $ArmyCamp[0], $COLOR_RED)
+If $ArmyCamp[1] > 240 then Setlog(" Your CoC is outdated!!! ", $COLOR_RED)
+Setlog(" - Your army is: " & $ArmyCamp[1], $COLOR_RED)
 $ToReturn = 0
 EndIf
 EndIf
@@ -68318,7 +68234,7 @@ If $SearchIdx >= 0 Then $aZombie[4] = Number($SearchIdx)
 If $aZombie[5] = "" Then $aZombie[5] = $Timestamp
 If $aZombie[6] = "" Then $aZombie[6] = $redline
 Local $dbFound = $aZombie[3] >= $iMinCollectorMatches
-Local $path = @ScriptDir & (($dbFound) ? ("\Zombies\") : ("\SkippedZombies\"))
+Local $path = $dirTempDebug  & (($dbFound) ? ("\Zombies\") : ("\SkippedZombies\"))
 Local $availK = Round($aZombie[2] / 1000)
 If $aZombie[0] = "" Then
 Local $create = $aZombie[0] = "" And ($dbFound = True Or ($aZombie[8] = -1 And $aZombie[9] = -1) Or ($availK >= $aZombie[8] And hasElixirStorage() = False) Or $availK >= $aZombie[9])
@@ -68414,7 +68330,6 @@ Global $Ly[4] = [0, 0, 265, 265]
 Global $Rx[4] = [460, 860, 400, 860]
 Global $Ry[4] = [325, 325, 590, 590]
 Global $Area[5][11][4], $IS_x[11][4], $IS_y[11][4], $E[5][11]
-#Region ### Check Dead Base Functions ###
 Func ZombieSearch()
 _CaptureRegion()
 $ZombieCount = 0
@@ -68439,7 +68354,6 @@ Else
 Return False
 EndIf
 EndFunc
-#EndRegion ### Check Dead Base Functions ###
 Func ZombieSearch2($limit = 0, $tolerancefix = 0)
 Local $hTimer = TimerInit()
 Local $count = 0
@@ -74260,16 +74174,15 @@ $frmBotDockedPosY = $AndroidPosY
 EndIf
 EndIf
 WinMove2($frmBot, "", $frmBotDockedPosX, $frmBotDockedPosY, -1, -1, 0, 0, False)
-_SendMessage($frmBot, $WM_SETREDRAW, False, 0)
-If $AndroidEmbedMode = 0 Then
-WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM)
-EndIf
 $aPosFrmBotEx = ControlGetPos($frmBot, "", $frmBotEx)
 $aPosFrmBotEx[3] = $frmBotPosInit[6]
 If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosFrmBotEx[] = " & $aPosFrmBotEx[0] & ", " & $aPosFrmBotEx[1] & ", " & $aPosFrmBotEx[2] & ", " & $aPosFrmBotEx[3], Default, True)
 WinMove($frmBotEx, "", $aPosCtl[2] + 2, 0, $aPosFrmBotEx[2], $aPosFrmBotEx[3] + $frmBotAddH)
 WinMove($frmBotBottom, "", $aPosCtl[2] + 2, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP + $frmBotAddH)
-WinSetTrans($frmBotBottom, "", 254)
+If $AndroidEmbedMode = 0 Then
+WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM)
+EndIf
+_SendMessage($frmBot, $WM_SETREDRAW, False, 0)
 $aPosLog = ControlGetPos($frmBotEx, "", $hGUI_LOG)
 If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosLog[] = " & $aPosLog[0] & ", " & $aPosLog[1] & ", " & $aPosLog[2] & ", " & $aPosLog[3], Default, True)
 WinMove($hGUI_LOG, "", $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, $aPosLog[2], $aPosLog[3] + $frmBotAddH)
@@ -75017,42 +74930,29 @@ EndFunc
 Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = True)
 Local $iBegin = TimerInit()
 If SetCriticalMessageProcessing() = False Then
-CheckPostponedLog()
-If $iDelay > 0 Then
-If $RunState And Not $bSearchMode And Not $TPaused And ($hTimer_SetTime = 0 Or TimerDiff($hTimer_SetTime) >= 1000) Then
-SetTime()
-$hTimer_SetTime = TimerInit()
-EndIf
-If $hTimer_PBRemoteControlInterval = 0 Or TimerDiff($hTimer_PBRemoteControlInterval) >= $PBRemoteControlInterval Then
-PushBulletRemoteControl()
-$hTimer_PBRemoteControlInterval = TimerInit()
-EndIf
-If $hTimer_PBDeleteOldPushesInterval = 0 Or TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $PBDeleteOldPushesInterval Then
-PushBulletDeleteOldPushes()
-$hTimer_PBDeleteOldPushesInterval = TimerInit()
-EndIf
-If $RunState And TestCapture() = False And ($hTimer_EmptyWorkingSetAndroid = 0 Or TimerDiff($hTimer_EmptyWorkingSetAndroid) >= $iEmptyWorkingSetAndroid) Then
-If IsArray(getAndroidPos(True)) = 1 Then _WinAPI_EmptyWorkingSet(GetAndroidPid())
-$hTimer_EmptyWorkingSetAndroid = TimerInit()
-EndIf
-If $hTimer_EmptyWorkingSetBot = 0 Or TimerDiff($hTimer_EmptyWorkingSetBot) >= $iEmptyWorkingSetBot Then
-_WinAPI_EmptyWorkingSet(@AutoItPID)
-$hTimer_EmptyWorkingSetBot = TimerInit()
-EndIF
-If $TogglePauseUpdateState Then TogglePauseUpdateState("_Sleep")
-If $TPaused And $SleepWhenPaused And $TogglePauseAllowed Then TogglePauseSleep()
 If $bMoveDivider Then
 MoveDivider()
 $bMoveDivider = False
 EndIf
+If $iDelay > 0 And TimerDiff($hTxtLogTimer) >= $iTxtLogTimerTimeout Then
 If $NotifyDeleteAllPushesNow = True Then PushMsg("DeleteAllPBMessages")
-If $iMakeScreenshotNow = True Then
-If $iScreenshotType = 0 Then
-MakeScreenshot($dirTemp, "jpg")
-Else
-MakeScreenshot($dirTemp, "png")
+If TimerDiff($hTimer_PBRemoteControlInterval) >= $PBRemoteControlInterval Then
+PushBulletRemoteControl()
+$hTimer_PBRemoteControlInterval = TimerInit()
 EndIf
+If TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $PBDeleteOldPushesInterval Then
+PushBulletDeleteOldPushes()
+$hTimer_PBDeleteOldPushesInterval = TimerInit()
 EndIf
+If $RunState And TestCapture() = False And TimerDiff($hTimer_EmptyWorkingSetAndroid) >= $iEmptyWorkingSetAndroid Then
+If IsArray(getAndroidPos(True)) = 1 Then _WinAPI_EmptyWorkingSet(GetAndroidPid())
+$hTimer_EmptyWorkingSetAndroid = TimerInit()
+EndIf
+If TimerDiff($hTimer_EmptyWorkingSetBot) >= $iEmptyWorkingSetBot Then
+_WinAPI_EmptyWorkingSet(@AutoItPID)
+$hTimer_EmptyWorkingSetBot = TimerInit()
+EndIF
+CheckPostponedLog()
 EndIf
 EndIf
 If $CheckRunState = True And $RunState = False Then
@@ -75061,35 +74961,50 @@ Return True
 EndIf
 Local $iRemaining = $iDelay - TimerDiff($iBegin)
 While $iRemaining > 0
+DllCall($hNtDll, "dword", "ZwYieldExecution")
 If $CheckRunState = True And $RunState = False Then
 ResumeAndroid()
 Return True
 EndIf
-If $iRemaining >= $iDelaySleep Then
-Sleep($iDelaySleep)
-ElseIf $iRemaining >= 10 Then
-Sleep($iRemaining)
-Else
-_SleepMicro(Int($iRemaining * 1000))
-EndIf
-$iRemaining = $iDelay - TimerDiff($iBegin)
 If SetCriticalMessageProcessing() = False Then
+If $TPaused And $SleepWhenPaused And $TogglePauseAllowed Then TogglePauseSleep()
+If $TogglePauseUpdateState Then TogglePauseUpdateState("_Sleep")
+If $iMakeScreenshotNow = True Then
+If $iScreenshotType = 0 Then
+MakeScreenshot($dirTemp, "jpg")
+Else
+MakeScreenshot($dirTemp, "png")
+EndIf
+EndIf
+If TimerDiff($hTxtLogTimer) >= $iTxtLogTimerTimeout Then
+If $RunState And Not $bSearchMode And Not $TPaused And ($hTimer_SetTime = 0 Or TimerDiff($hTimer_SetTime) >= 750) Then
+SetTime()
+$hTimer_SetTime = TimerInit()
+EndIf
 AndroidEmbedCheck()
 AndroidShieldCheck()
+CheckPostponedLog()
+EndIf
+EndIf
+$iRemaining = $iDelay - TimerDiff($iBegin)
+If $iRemaining >= $iDelaySleep Then
+_SleepMilli($iDelaySleep)
+Else
+_SleepMilli($iRemaining)
 EndIf
 WEnd
 Return False
 EndFunc
 Func _SleepMicro($iMicroSec)
-Local $hStruct = DllStructCreate("int64 time;")
-DllStructSetData($hStruct, "time", -1 * ($iMicroSec * 10))
-DllCall($hNtDll, "dword", "ZwDelayExecution", "int", 0, "ptr", DllStructGetPtr($hStruct))
+DllStructSetData($hStruct_SleepMicro, "time", $iMicroSec * -10)
+DllCall($hNtDll, "dword", "ZwDelayExecution", "int", 0, "ptr", $pStruct_SleepMicro)
+EndFunc
+Func _SleepMilli($iMilliSec)
+_SleepMicro(Int($iMilliSec * 1000))
 EndFunc
 Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = True)
 Local $iCurTime, $iMinCalc, $iSecCalc, $iTime, $iBegin, $sString, $hLastUpdate
 Local $iDelayMinCalc, $iDelaySecCalc, $iDelaySecCalc
-Local Const $Font = "Verdana"
-Local Const $FontSize = 7.5
 Local $bUpdate = True
 $iBegin = TimerInit()
 $iDelayMinCalc = Int($iDelay / (60 * 1000))
@@ -75108,8 +75023,8 @@ $sString = "Waiting Time= " & StringFormat("%02u" & ":" & "%02u", $iDelayMinCalc
 $hLastUpdate = TimerInit()
 _GUICtrlStatusBar_SetText($statLog, " Status: " & $sString)
 EndIf
-If $iSleep = True Then _Sleep($iDelaySleep)
-$bUpdate = TimerDiff($hLastUpdate) > 500
+_Sleep($iDelaySleep)
+$bUpdate = TimerDiff($hLastUpdate) > 750
 WEnd
 If $RunState = False And $CheckRunState = True Then Return True
 Return False
@@ -75423,7 +75338,6 @@ Global Const $RI_KEY_BREAK = 1
 Global Const $RI_KEY_E0 = 2
 Global Const $RI_KEY_E1 = 4
 Global Const $RI_KEY_MAKE = 0
-#Region Global Variables and Constants
 Global Const $tagOSVERSIONINFOEX = $tagOSVERSIONINFO & ';ushort ServicePackMajor;ushort ServicePackMinor;ushort SuiteMask;byte ProductType;byte Reserved'
 Global Const $tagRAWINPUTDEVICE = 'struct;ushort UsagePage;ushort Usage;dword Flags;hwnd hTarget;endstruct'
 Global Const $tagRAWINPUTHEADER = 'struct;dword Type;dword Size;handle hDevice;wparam wParam;endstruct'
@@ -75445,10 +75359,6 @@ Global Const $tagUSEROBJECTFLAGS = 'int Inherit;int Reserved;dword Flags'
 Global Const $tagWINDOWINFO = 'dword Size;struct;long rWindow[4];endstruct;struct;long rClient[4];endstruct;dword Style;dword ExStyle;dword WindowStatus;uint cxWindowBorders;uint cyWindowBorders;word atomWindowType;word CreatorVersion'
 Global Const $tagWNDCLASS = 'uint Style;ptr hWndProc;int ClsExtra;int WndExtra;ptr hInstance;ptr hIcon;ptr hCursor;ptr hBackground;ptr MenuName;ptr ClassName'
 Global Const $tagWNDCLASSEX = 'uint Size;uint Style;ptr hWndProc;int ClsExtra;int WndExtra;ptr hInstance;ptr hIcon;ptr hCursor;ptr hBackground;ptr MenuName;ptr ClassName;ptr hIconSm'
-#EndRegion Global Variables and Constants
-#Region Functions list
-#EndRegion Functions list
-#Region Public Functions
 Func _WinAPI_ActivateKeyboardLayout($hLocale, $iFlag = 0)
 Local $aRet = DllCall('user32.dll', 'handle', 'ActivateKeyboardLayout', 'handle', $hLocale, 'uint', $iFlag)
 If @error Then Return SetError(@error, @extended, 0)
@@ -76615,10 +76525,6 @@ Local $aRet = DllCall('user32.dll', 'bool', 'UpdateLayeredWindowIndirect', 'hwnd
 If @error Then Return SetError(@error, @extended, False)
 Return $aRet[0]
 EndFunc
-#EndRegion Public Functions
-#Region Embedded DLL Functions
-#EndRegion Embedded DLL Functions
-#Region Internal Functions
 Func __EnumDefaultProc($pData, $lParam)
 #forceref $lParam
 Local $iLength = _WinAPI_StrLen($pData)
@@ -76639,7 +76545,6 @@ $__g_vEnum[$__g_vEnum[0][0]][$i] = DllStructGetData($tEPFI, $i + 2) * $iSize
 Next
 Return 1
 EndFunc
-#EndRegion Internal Functions
 Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 If $debugClick = 1 Then
 Local $txt = _DecodeDebug($debugtxt)
@@ -77366,19 +77271,14 @@ EndFunc
 Func TimeDebug()
 Return "[" & @YEAR & "-" & @MON & "-" & @MDAY & " " & _NowTime(5) & "." & @MSEC & "] "
 EndFunc
-#Region Header
 If @AutoItVersion >= '3.3.2.0' Then
 Execute('OnAutoItExitRegister("__BlockInputEx_OnAutoItExit")')
 Else
 Execute('Assign("i_OptOEF", Opt("OnExitFunc", "__BlockInputEx_OnAutoItExit"), 2)')
 EndIf
-#EndRegion Header
-#Region Global Variables
 Global $ah_MouseKeyboard_WinHooks[8]
 Global $s_KeyboardKeys_Buffer
 Global $i_MouseHookGetAncestorHwnd = 1
-#EndRegion Global Variables
-#Region Public Functions
 Func _BlockInputEx($iBlockMode = -1, $sExclude = "", $sInclude = "", $hWindows = "", $iBlockAllInput = 0)
 $BlockInputPause = $iBlockMode
 If $iBlockMode < -1 Or $iBlockMode > 3 Then Return SetError(1, 0, 0)
@@ -77409,8 +77309,6 @@ $ah_MouseKeyboard_WinHooks[6] = "|" & $hWindows & "|"
 $ah_MouseKeyboard_WinHooks[7] = $iBlockAllInput
 Return 1
 EndFunc
-#EndRegion Public Functions
-#Region Internal Functions
 Func __BlockInputEx_KeyBoardHook_Proc($nCode, $wParam, $lParam)
 If $nCode < 0 Then
 Return _WinAPI_CallNextHookEx($ah_MouseKeyboard_WinHooks[2], $nCode, $wParam, $lParam)
@@ -77583,7 +77481,6 @@ EndFunc
 Func __BlockInputEx_OnAutoItExit()
 _BlockInputEx(0)
 EndFunc
-#EndRegion Internal Functions
 Func TogglePause()
 TogglePauseImpl("Button")
 EndFunc
@@ -78684,9 +78581,19 @@ Next
 Return _ArrayToString($a, ".")
 EndFunc
 Func CloseRunningBot($sBotWindowTitle)
+Local $param = ""
+For $i = 1 To $CmdLine[0]
+If $param <> "" Then $param &= " "
+$param &= $CmdLine[$i]
+Next
+Local $otherPID = 0
+If $param <> "" Then
+ProcessExists2(@AutoItExe, $param, 1, 1)
+EndIf
 Local $otherHWnD = WinGetHandle($sBotTitle)
-If @error = 0 Then
-Local $otherPID = WinGetProcess($otherHWnD)
+If @error = 0 Or $otherPID > 0 Then
+If $otherHWnD <> 0 Then $otherPID = WinGetProcess($otherHWnD)
+If $otherPID > 0 And $otherPID <> @AutoItPID Then
 SetDebugLog("Found existing " & $sBotTitle & " instance to close, PID " & $otherPID & ", HWnD " & $otherHWnD)
 WerFaultClose("AutoIt v3 Script")
 WerFaultClose(@AutoItExe)
@@ -78707,6 +78614,7 @@ EndIf
 Return False
 EndIf
 Return True
+EndIf
 EndIf
 Return False
 EndFunc
@@ -81246,9 +81154,9 @@ Local $weakBaseValues
 Local $logwrited = False
 $iSkipped = 0
 If $debugDeadBaseImage = 1 Then
+DirCreate($dirTempDebug & "\SkippedZombies\")
+DirCreate($dirTempDebug & "\Zombies\")
 setZombie()
-DirCreate(@ScriptDir & "\SkippedZombies\")
-DirCreate(@ScriptDir & "\Zombies\")
 EndIf
 If $Is_ClientSyncError = False Then
 For $i = 0 To $iModeCount - 1
@@ -83117,7 +83025,7 @@ $bSkipDonTroops = False
 $bSkipDonSpells = False
 If ($bDonateTroop Or $bDonateSpell Or $bDonateAllTroop Or $bDonateAllSpell) And $donateCCfilter Then
 If $ichkExtraAlphabets = 1 Then
-Setlog("Reading Latin, Turkish, Extra latin, Cyrillic...", $COLOR_INFO)
+Setlog("Using OCR to read Latin and Cyrillic derived alphabets..", $COLOR_ACTION)
 $ClanString = ""
 $ClanString = getChatString(30, $DonatePixel[1] - 50, "coc-latin-cyr")
 If $ClanString = "" Then
@@ -83132,7 +83040,7 @@ $ClanString &= " " & getChatString(30, $DonatePixel[1] - 23, "coc-latin-cyr")
 EndIf
 If _Sleep($iDelayDonateCC2) Then ExitLoop
 Else
-Setlog("Reading Latin, Turkish, Extra latin...", $COLOR_INFO)
+Setlog("Using OCR to read Latin derived alphabets..", $COLOR_ACTION)
 $ClanString = ""
 $ClanString = getChatString(30, $DonatePixel[1] - 50, "coc-latinA")
 If $ClanString = "" Then
@@ -83148,7 +83056,7 @@ EndIf
 If _Sleep($iDelayDonateCC2) Then ExitLoop
 EndIf
 If $ichkExtraChinese = 1 Then
-Setlog("Reading Chinese...", $COLOR_INFO)
+Setlog("Using OCR to read the Chinese alphabet..", $COLOR_ACTION)
 If $ClanString = "" Then
 $ClanString = getChatStringChinese(30, $DonatePixel[1] - 24)
 Else
@@ -83970,6 +83878,7 @@ EndFunc
 Func SkipDonateNearFullTroops($setlog = False, $aHeroResult = Default)
 If $bDonationEnabled = False Then Return True
 If $iSkipDonateNearFulLTroopsEnable = 0 Then Return False
+If $CommandStop = 0 And $bTrainEnabled = True Then Return False
 Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 If $iPlannedDonateHours[$hour[0]] = 0 And $iPlannedDonateHoursEnable = 1 Then Return True
 If $iSkipDonateNearFulLTroopsEnable = 1 Then
@@ -89393,6 +89302,7 @@ $sMsg = GetTranslated(500, 9, "Android Shield not available for %s", @OSVersion)
 If $AndroidShieldEnabled = False Then
 SetLog($sMsg, $COLOR_ACTION)
 EndIf
+DisableProcessWindowsGhosting()
 ProcessSetPriority(@AutoItPID, $iBotProcessPriority)
 LaunchWatchdog()
 AutoStart()
@@ -89416,8 +89326,8 @@ Func runBot()
 $TotalTrainedTroops = 0
 Local $Quickattack = False
 Local $iWaitTime
-PrepareDonateCC()
 While 1
+PrepareDonateCC()
 $Restart = False
 $fullArmy = False
 $CommandStop = -1
@@ -89583,6 +89493,7 @@ If _Sleep($iDelayIdle1) Then Return
 If $CommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_SUCCESS)
 Local $hTimer = TimerInit()
 Local $iReHere = 0
+PrepareDonateCC()
 If $bDonate = True Then
 Local $aHeroResult = CheckArmyCamp(True, True, True)
 While $iReHere < 7

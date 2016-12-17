@@ -17,6 +17,7 @@ Func MBRFunc($Start = True)
 	Switch $Start
 		Case True
 			$hNtDll = DllOpen("ntdll.dll")
+			$hUser32Dll = DllOpen("user32.dll")
 			$hFuncLib = DllOpen($pFuncLib)
 			$hImgLib = DllOpen($pImgLib)
 			If $hFuncLib = -1 Then
@@ -26,6 +27,7 @@ Func MBRFunc($Start = True)
 			SetDebugLog("MBRfunctions.dll opened.")
 		Case False
 			DllClose($hNtDll)
+			DllClose($hUser32Dll)
 			DllClose($hFuncLib)
 			DllClose($hImgLib)
 			SetDebugLog("MBRfunctions.dll closed.")

@@ -14,33 +14,44 @@
 ; ===============================================================================================================================
 Func CloseRunningBot($sBotWindowTitle)
 	; terminate same bot instance, this current instance doesn't have main window yet, so no need to exclude this PID
+	Local $param = ""
+	For $i = 1 To $CmdLine[0]
+		If $param <> "" Then $param &= " "
+		$param &= $CmdLine[$i]
+	Next
+	Local $otherPID = 0
+	If $param <> "" Then
+		ProcessExists2(@AutoItExe, $param, 1, 1)
+	EndIf
 	Local $otherHWnD = WinGetHandle($sBotTitle)
-	If @error = 0 Then
+	If @error = 0 Or $otherPID > 0 Then
 		; other bot window found
-		Local $otherPID = WinGetProcess($otherHWnD)
-		SetDebugLog("Found existing " & $sBotTitle & " instance to close, PID " & $otherPID & ", HWnD " & $otherHWnD)
-		; close any related WerFault Window as well
-		WerFaultClose("AutoIt v3 Script")
-		WerFaultClose(@AutoItExe)
-		If WinClose($otherHWnD) = 1 Then
-			SetDebugLog("Existing bot window closed")
-		EndIf
-		If ProcessWaitClose($otherPID, 30) = 0 Then
-			; bot didn't close in 30 secodns, force close now
-			SetDebugLog("Existing bot window still there...")
-			WinKill($otherHWnD)
-			SetDebugLog("Existing bot window killed")
-		EndIf
-		; paranoia section...
-		If ProcessExists($otherPID) = $otherPID Then
-			SetDebugLog("Existing bot process still there...")
-			If KillProcess($otherPID, "CloseRunningBot") = True Then
-				SetDebugLog("Existing bot process now closed")
-				Return True
+		If $otherHWnD <> 0 Then $otherPID = WinGetProcess($otherHWnD)
+		If $otherPID > 0 And $otherPID <> @AutoItPID Then
+			SetDebugLog("Found existing " & $sBotTitle & " instance to close, PID " & $otherPID & ", HWnD " & $otherHWnD)
+			; close any related WerFault Window as well
+			WerFaultClose("AutoIt v3 Script")
+			WerFaultClose(@AutoItExe)
+			If WinClose($otherHWnD) = 1 Then
+				SetDebugLog("Existing bot window closed")
 			EndIf
-			Return False
+			If ProcessWaitClose($otherPID, 30) = 0 Then
+				; bot didn't close in 30 secodns, force close now
+				SetDebugLog("Existing bot window still there...")
+				WinKill($otherHWnD)
+				SetDebugLog("Existing bot window killed")
+			EndIf
+			; paranoia section...
+			If ProcessExists($otherPID) = $otherPID Then
+				SetDebugLog("Existing bot process still there...")
+				If KillProcess($otherPID, "CloseRunningBot") = True Then
+					SetDebugLog("Existing bot process now closed")
+					Return True
+				EndIf
+				Return False
+			EndIf
+			Return True
 		EndIf
-		Return True
 	EndIf
 	Return False
 EndFunc   ;==>CloseRunningBot

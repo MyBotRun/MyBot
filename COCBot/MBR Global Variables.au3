@@ -70,7 +70,7 @@ Global $ichkDisableSplash = 0 ; Splash screen disabled = 1
 ;debugging
 Global $debugDisableZoomout = 0
 Global $debugDisableVillageCentering = 0
-Global $debugDeadBaseImage = 1 ; Enable collection of zombies (capture screenshot of detect DeadBase routine)
+Global $debugDeadBaseImage = 0 ; Enable collection of zombies (capture screenshot of detect DeadBase routine)
 ; Enabled saving of enemy villages when deadbase is active
 Global $aZombie = ["" _ ; 0=Filename
 	, 0 _  ; 1=Raided Elixir
@@ -485,6 +485,7 @@ Global $pImageLib = $LibDir & "\ImageSearchDLL.dll" ; ImageSearch library
 Global $pImgLib = $LibDir & "\MyBotRunImgLoc.dll" ; Last Image Library from @trlopes with all Legal Information need on LGPL
 Global $pFuncLib = $LibDir & "\MBRFunctions.dll" ; functions library
 Global $hNtDll = -1 ; handle to ntdll.dll
+Global $hUser32Dll = -1 ; handle to user32.dll
 Global $hFuncLib = -1 ; handle to functions library
 Global $hImgLib ; handle to imgloc library
 Global $pIconLib = $LibDir & "\MBRBOT.dll" ; icon library
@@ -562,7 +563,7 @@ Global $iDroplineEdge = [$DROPLINE_EDGE_FIRST, $DROPLINE_EDGE_FIRST, 0, 0, 0, 0]
 Global $iAtkAlgorithm[$iModeCount]
 
 ;--------------------------------------------------------------------------
-; Notify Revamp - PushBullet/Telegram variables - Added by DocOC team
+; Notify Revamp - PushBullet/Telegram variables
 ;-------------------------------------------------------------------------
 ;PushBullet---------------------------------------------------------------
 Global $NotifyVersion = "Revamp v1.5.1"
@@ -633,7 +634,7 @@ Global $txbNotifyPBToken, $txbNotifyTGToken, $txbNotifyOrigin, $chkNotifyAlertMa
 Global $chkNotifyAlertUpgradeWall, $chkNotifyAlertOutOfSync, $chkNotifyAlertTakeBreak, $chkNotifyAlertBuilderIdle, $chkNotifyAlertVillageStats, $chkNotifyAlertLastAttack
 Global $chkNotifyAlertAnotherDevice, $chkNotifyAlertMaintenance, $chkNotifyAlertBAN, $chkNotifyBOTUpdate
 ;--------------------------------------------------------------------------
-; Notify Revamp - PushBullet/Telegram variables - Added by DocOC team
+; Notify Revamp - PushBullet/Telegram variables
 ;-------------------------------------------------------------------------
 
 Global $sLogFName = ""
@@ -1114,6 +1115,8 @@ Global $CurCamp, $TotalCamp = 0
 Global $NoLeague
 Global $FirstStart = True
 Global $TPaused, $BlockInputPause = 0
+Global $hStruct_SleepMicro = DllStructCreate("int64 time;") ; holds the _SleepMilli sleep time in 100-nanoseconds
+Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $TogglePauseUpdateState = False ; If True, TooglePauseUpdateState() call required and called in _Sleep()
 Global $TogglePauseAllowed = True ; If False, pause will not immediately happen but on next call to _Sleep when $TogglePauseAllowed = True again
 
@@ -1720,14 +1723,12 @@ Global $IMGLOCTHNEAR
 Global $IMGLOCTHFAR
 Global $IMGLOCTHRDISTANCE
 
-; DocOc Globals
-
 ;QuickTrain Radio Buttons
 
 Global $ichkUseQTrain = 0
 Global $iRadio_Army1, $iRadio_Army2, $iRadio_Army3
 ;---------------------------------------------------------------
-; SmartZap GUI variables - Added by DocOC team
+; SmartZap GUI variables
 ;---------------------------------------------------------------
 	Global $ichkSmartZap = 0
 	Global $ichkSmartZapDB = 1

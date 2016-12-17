@@ -337,7 +337,11 @@ Func btnAnalyzeVillage()
 EndFunc   ;==>btnAnalyzeVillage
 
 Func btnVillageStat()
-	GUICtrlSetState($lblVillageReportTemp, $GUI_HIDE)
+	If GUICtrlGetState($lblVillageReportTemp) <> $GUI_HIDE Then
+		GUICtrlSetState($lblVillageReportTemp, $GUI_HIDE)
+	EndIf
+
+	SetTime(True)
 
 	If GUICtrlGetState($lblResultGoldNow) = $GUI_ENABLE + $GUI_SHOW Then
 		;hide normal values
@@ -599,6 +603,11 @@ Func ToggleGuiControls($Enable, $OptimizedRedraw = True)
 			GUICtrlSetState($i, $iPrevState[$i])
 		EndIf
 	Next
+	If $Enable = False Then
+		ControlDisable("","",$cmbLanguage)
+	Else
+		ControlEnable("","",$cmbLanguage)
+	EndIf
 	$GUIControl_Disabled = False
 	If $OptimizedRedraw = True Then SetRedrawBotWindow(True)
 EndFunc   ;==>ToggleGuiControls

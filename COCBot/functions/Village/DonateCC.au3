@@ -172,8 +172,8 @@ Func DonateCC($Check = False)
 			;Read chat request for DonateTroop and DonateSpell
 			If ($bDonateTroop Or $bDonateSpell Or $bDonateAllTroop Or $bDonateAllSpell) And $donateCCfilter Then
 				If $ichkExtraAlphabets = 1 Then
-					; Chat Request , Latin + Turkish + Extra latin + Cyrillic Alphabets / three paragraphs.
-					Setlog("Reading Latin, Turkish, Extra latin, Cyrillic...", $COLOR_INFO)
+					; Chat Request using "coc-latin-cyr" xml: Latin + Cyrillic derived alphabets / three paragraphs
+					Setlog("Using OCR to read Latin and Cyrillic derived alphabets..", $COLOR_ACTION)
 					$ClanString = ""
 					$ClanString = getChatString(30, $DonatePixel[1] - 50, "coc-latin-cyr")
 					If $ClanString = "" Then
@@ -187,9 +187,9 @@ Func DonateCC($Check = False)
 						$ClanString &= " " & getChatString(30, $DonatePixel[1] - 23, "coc-latin-cyr")
 					EndIf
 					If _Sleep($iDelayDonateCC2) Then ExitLoop
-				Else
-					; Chat Request , Latin + Turkish + Extra / three paragraphs.
-					Setlog("Reading Latin, Turkish, Extra latin...", $COLOR_INFO)
+				Else ; default
+					; Chat Request using "coc-latinA" xml: only Latin derived alphabets / three paragraphs
+					Setlog("Using OCR to read Latin derived alphabets..", $COLOR_ACTION)
 					$ClanString = ""
 					$ClanString = getChatString(30, $DonatePixel[1] - 50, "coc-latinA")
 					If $ClanString = "" Then
@@ -204,9 +204,9 @@ Func DonateCC($Check = False)
 					EndIf
 					If _Sleep($iDelayDonateCC2) Then ExitLoop
 				EndIf
-					; Chat Request , Chinese / one paragraphs.
+					; Chat Request using IMGLOC: Chinese alphabet / one paragraph
 				If $ichkExtraChinese = 1 Then
-					Setlog("Reading Chinese...", $COLOR_INFO)
+					Setlog("Using OCR to read the Chinese alphabet..", $COLOR_ACTION)
 					If $ClanString = "" Then
 						$ClanString = getChatStringChinese(30, $DonatePixel[1] - 24)
 					Else
@@ -1256,6 +1256,8 @@ Func SkipDonateNearFullTroops($setlog = False, $aHeroResult = Default)
 	If $bDonationEnabled = False Then Return True ; will disable the donation
 
 	If $iSkipDonateNearFulLTroopsEnable = 0 Then Return False ; will enable the donation
+
+	If $CommandStop = 0 And $bTrainEnabled = True Then Return False ; IF is halt Attack and Train/Donate ....Enable the donation
 
 	Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 

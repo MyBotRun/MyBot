@@ -333,19 +333,17 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 
 		WinMove2($frmBot, "", $frmBotDockedPosX, $frmBotDockedPosY, -1, -1, 0, 0, False)
 
-		_SendMessage($frmBot, $WM_SETREDRAW, False, 0)
-
-		;Local $BS1_style = BitOR($WS_OVERLAPPED, $WS_MINIMIZEBOX, $WS_GROUP, $WS_SYSMENU, $WS_DLGFRAME, $WS_BORDER, $WS_CAPTION, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $WS_VISIBLE)
-		If $AndroidEmbedMode = 0 Then
-			WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM)
-		EndIf
 		$aPosFrmBotEx = ControlGetPos($frmBot, "", $frmBotEx)
 		$aPosFrmBotEx[3] = $frmBotPosInit[6]
 		If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosFrmBotEx[] = " & $aPosFrmBotEx[0] & ", " & $aPosFrmBotEx[1] & ", " & $aPosFrmBotEx[2] & ", " & $aPosFrmBotEx[3], Default, True)
 		WinMove($frmBotEx, "", $aPosCtl[2] + 2, 0, $aPosFrmBotEx[2], $aPosFrmBotEx[3] + $frmBotAddH)
 		WinMove($frmBotBottom, "", $aPosCtl[2] + 2, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP + $frmBotAddH)
-		WinSetTrans($frmBotBottom, "", 254)
-
+		;WinSetTrans($frmBotBottom, "", 254)
+		;Local $BS1_style = BitOR($WS_OVERLAPPED, $WS_MINIMIZEBOX, $WS_GROUP, $WS_SYSMENU, $WS_DLGFRAME, $WS_BORDER, $WS_CAPTION, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $WS_VISIBLE)
+		If $AndroidEmbedMode = 0 Then
+			WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], $HWND_BOTTOM)
+		EndIf
+		_SendMessage($frmBot, $WM_SETREDRAW, False, 0) ; disable bot window redraw
 		$aPosLog = ControlGetPos($frmBotEx, "", $hGUI_LOG)
 		If $debugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosLog[] = " & $aPosLog[0] & ", " & $aPosLog[1] & ", " & $aPosLog[2] & ", " & $aPosLog[3], Default, True)
 		WinMove($hGUI_LOG, "", $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, $aPosLog[2], $aPosLog[3] + $frmBotAddH)

@@ -176,6 +176,9 @@ Func AndroidToFront()
 	WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 EndFunc   ;==>AndroidToFront
 
+Func DisableProcessWindowsGhosting()
+	DllCall($hUser32Dll, "none", "DisableProcessWindowsGhosting")
+EndFunc   ;==>DisableProcessWindowsGhosting
 
 Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
 	Local $wasCritical = SetCriticalMessageProcessing(True)
@@ -970,10 +973,10 @@ Func ControlRedraw($hWin, $ConrolId)
 	Return 1
 EndFunc   ;==>ControlRedraw
 
-Func SetTime()
+Func SetTime($bForceUpdate = False)
 	Local $time = _TicksToTime(Int(TimerDiff($sTimer) + $iTimePassed), $hour, $min, $sec)
-	If GUICtrlRead($hGUI_STATS_TAB, 1) = $hGUI_STATS_TAB_ITEM2 Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-	If GUICtrlGetState($lblResultGoldNow) <> $GUI_ENABLE + $GUI_SHOW Then GUICtrlSetData($lblResultRuntimeNow, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+	If GUICtrlRead($hGUI_STATS_TAB, 1) = $hGUI_STATS_TAB_ITEM2 Or $bForceUpdate = True Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+	If GUICtrlGetState($lblResultGoldNow) <> $GUI_ENABLE + $GUI_SHOW Or $bForceUpdate = True  Then GUICtrlSetData($lblResultRuntimeNow, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 	;If $pEnabled = 1 And $pRemote = 1 And StringFormat("%02i", $sec) = "50" Then NotifyRemoteControl()
 	;If $pEnabled = 1 And $ichkDeleteOldPBPushes = 1 And Mod($min + 1, 30) = 0 And $sec = "0" Then _DeleteOldPushes() ; check every 30 min if must to delete old pushbullet messages, increase delay time for anti ban pushbullet
 EndFunc   ;==>SetTime

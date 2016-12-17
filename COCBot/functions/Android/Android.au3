@@ -823,7 +823,7 @@ Func CloseAndroid($sSource)
 	Local $Result = Execute("Close" & $Android & "()")
 
 	If Not $RunState Then Return False
-	If ProcessExists2($pid) Then
+	If ProcessExists($pid) Then
 		SetLog("Failed to stop " & $Android, $COLOR_ERROR)
 	Else
 		SetLog($Android & " stopped successfully", $COLOR_SUCCESS)
@@ -838,7 +838,7 @@ Func CloseVboxAndroidSvc()
 	Local $process_killed
 	If Not $RunState Then Return
 	; stop virtualbox instance
-	LaunchConsole($__VBoxManage_Path, "controlvm " & $AndroidInstance & " poweroff", $process_killed)
+	LaunchConsole($__VBoxManage_Path, "controlvm " & $AndroidInstance & " poweroff", $process_killed, 30000)
 	If _SleepStatus(3000) Then Return
 EndFunc   ;==>CloseVboxAndroidSvc
 

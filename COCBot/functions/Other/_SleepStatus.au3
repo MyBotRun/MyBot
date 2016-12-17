@@ -21,8 +21,6 @@ Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = 
 	;
 	Local $iCurTime, $iMinCalc, $iSecCalc, $iTime, $iBegin, $sString, $hLastUpdate
 	Local $iDelayMinCalc, $iDelaySecCalc, $iDelaySecCalc
-	Local Const $Font = "Verdana"
-	Local Const $FontSize = 7.5
 	Local $bUpdate = True
 	$iBegin = TimerInit()
 	$iDelayMinCalc = Int($iDelay / (60 * 1000))
@@ -41,8 +39,8 @@ Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = 
 			$hLastUpdate = TimerInit()
 			_GUICtrlStatusBar_SetText($statLog, " Status: " & $sString)
 		EndIf
-		If $iSleep = True Then _Sleep($iDelaySleep)
-		$bUpdate = TimerDiff($hLastUpdate) > 500
+		_Sleep($iDelaySleep)
+		$bUpdate = TimerDiff($hLastUpdate) > 750
 	WEnd
 	If $RunState = False And $CheckRunState = True Then Return True
 	Return False
