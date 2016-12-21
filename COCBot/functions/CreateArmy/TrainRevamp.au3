@@ -142,7 +142,8 @@ EndFunc   ;==>TestMaxCamp
 Func TrainRevampOldStyle()
 	If $debugsetlogTrain = 1 Then Setlog(" - Initial Custom train Function")
 
-	If $bDonateTrain = -1 Then SetbDonateTrain()
+	;If $bDonateTrain = -1 Then SetbDonateTrain()
+	If $bActiveDonate = -1 Then PrepareDonateCC()
 
 	CheckArmySpellCastel()
 
@@ -236,9 +237,12 @@ Func CheckArmySpellCastel()
 	If $debugsetlogTrain = 1 Then Setlog(" - $TotalCamp : " & $TotalCamp)
 
 	$bFullArmySpells = False
+	; Local Variable to check the occupied space by the Spells to Brew ... can be different of the Spells Factory Capacity ( $iTotalCountSpell )
+	Local $totalCapacitySpellsToBrew = $PSpellComp + $ESpellComp + $HaSpellComp + $SkSpellComp + ($LSpellComp* 2) + ($RSpellComp* 2) + ($HSpellComp* 2) + ($JSpellComp* 2) + ($FSpellComp* 2) + ($CSpellComp* 2)
+
 	$iTotalSpellSpace = 0
 	If UBound($aGetSpellsSize) = 2 Then
-		If $aGetSpellsSize[0] = $aGetSpellsSize[1] Or $aGetSpellsSize[0] >= $iTotalCountSpell Then
+		If $aGetSpellsSize[0] = $aGetSpellsSize[1] Or $aGetSpellsSize[0] >= $iTotalCountSpell or $aGetSpellsSize[0] >= $totalCapacitySpellsToBrew Then
 			$iTotalSpellSpace = $aGetSpellsSize[0]
 			$bFullArmySpells = True
 		EndIf
@@ -446,12 +450,12 @@ Func IsFullCastleSpells($returnOnly = False)
 EndFunc   ;==>IsFullCastleSpells
 
 Func RemoveCastleSpell()
-	If _ColorCheck(_GetPixelColor(675, 482, True), Hex(0xFFFFFF, 6), 30) = False Then ; If no 'Edit Army' Button found in army tab to edit troops
+	If _ColorCheck(_GetPixelColor(806, 472, True), Hex(0xD0E878, 6), 25) = False Then ; If no 'Edit Army' Button found in army tab to edit troops
 		SetLog("Cannot find/verify 'Edit Army' Button in Army tab", $COLOR_ORANGE)
 		Return False ; Exit function
 	EndIf
 
-	Click(Random(680, 775, 1), Random(470, 515, 1)) ; Click on Edit Army Button
+	Click(Random(723, 812, 1), Random(469, 513, 1)) ; Click on Edit Army Button
 	If $Runstate = False Then Return
 
 	If _Sleep(500) Then Return
@@ -461,7 +465,7 @@ Func RemoveCastleSpell()
 
 	If _Sleep(400) Then Return
 
-	If _ColorCheck(_GetPixelColor(815, 520, True), Hex(0x68B020, 6), 30) = False Then ; If no 'Okay' button found in army tab to save changes
+	If _ColorCheck(_GetPixelColor(806, 561, True), Hex(0xD0E878, 6), 25) = False Then ; If no 'Okay' button found in army tab to save changes
 		SetLog("Cannot find/verify 'Okay' Button in Army tab", $COLOR_ORANGE)
 		ClickP($aAway, 2, 0, "#0346") ; Click Away, Necessary! due to possible errors/changes
 		If _Sleep(400) Then OpenArmyWindow() ; Open Army Window AGAIN
@@ -470,7 +474,7 @@ Func RemoveCastleSpell()
 
 	If _Sleep(700) Then Return
 
-	Click(Random(730, 830, 1), Random(495, 525, 1)) ; Click on 'Okay' button to save changes
+	Click(Random(720, 815, 1), Random(558, 589, 1)) ; Click on 'Okay' button to save changes
 
 	If _Sleep(700) Then Return
 
@@ -806,7 +810,8 @@ Func CountCommandsForSpell($Spell, $Mode)
 EndFunc   ;==>CountCommandsForSpell
 
 Func IsGUICheckedForSpell($Spell, $Mode)
-	Local $sSpell = ""
+	Local $sSpell = "" , $iVal
+
 	If $Runstate = False Then Return
 	Switch Eval("e" & $Spell)
 		Case $eLSpell
@@ -829,7 +834,8 @@ Func IsGUICheckedForSpell($Spell, $Mode)
 
 	$iVal = Execute("$ichk" & $sSpell & "Spell")
 
-	Return (($iVal[$Mode] = 1) ? True : False)
+	If IsArray($iVal) Then Return (($iVal[$Mode] = 1) ? True : False)
+	Return False
 EndFunc   ;==>IsGUICheckedForSpell
 
 Func DragIfNeeded($Troop)
@@ -931,7 +937,8 @@ Func RemoveExtraTroops($toRemove)
 		Return $ToReturn
 	EndIf
 
-	If $IsFullArmywithHeroesAndSpells = True Or $fullarmy = True Or ($CommandStop = 3 Or $CommandStop = 0) = True And Not $bDonateTrain Then
+	;If $IsFullArmywithHeroesAndSpells = True Or $fullarmy = True Or ($CommandStop = 3 Or $CommandStop = 0) = True And Not $bDonateTrain Then
+	If $IsFullArmywithHeroesAndSpells = True Or $fullarmy = True Or ($CommandStop = 3 Or $CommandStop = 0) = True And Not $bActiveDonate Then
 		$ToReturn = 3
 		Return $ToReturn
 	EndIf
@@ -990,12 +997,12 @@ Func RemoveExtraTroops($toRemove)
 			EndIf
 		EndIf
 
-		If _ColorCheck(_GetPixelColor(675, 482, True), Hex(0xFFFFFF, 6), 30) = False Then ; If no 'Edit Army' Button found in army tab to edit troops
+		If _ColorCheck(_GetPixelColor(806, 472, True), Hex(0xD0E878, 6), 25) = False Then ; If no 'Edit Army' Button found in army tab to edit troops
 			SetLog("Cannot find/verify 'Edit Army' Button in Army tab", $COLOR_ORANGE)
 			Return False ; Exit function
 		EndIf
 
-		Click(Random(680, 775, 1), Random(470, 515, 1)) ; Click on Edit Army Button
+		Click(Random(723, 812, 1), Random(469, 513, 1)) ; Click on Edit Army Button
 
 		; Loop through troops needed to get removed
 		$CounterToRemove = 0
@@ -1023,7 +1030,9 @@ Func RemoveExtraTroops($toRemove)
 			Next
 		EndIf
 
-		If _ColorCheck(_GetPixelColor(772, 510, True), Hex(0xFFFFFF, 6), 30) = False Then ; If no 'Okay' button found in army tab to save changes
+		If _Sleep(150) Then Return
+
+		If _ColorCheck(_GetPixelColor(806, 561, True), Hex(0xD0E878, 6), 25) = False Then ; If no 'Okay' button found in army tab to save changes
 			SetLog("Cannot find/verify 'Okay' Button in Army tab", $COLOR_ORANGE)
 			ClickP($aAway, 2, 0, "#0346") ; Click Away, Necessary! due to possible errors/changes
 			If _Sleep(400) Then OpenArmyWindow() ; Open Army Window AGAIN
@@ -1032,7 +1041,7 @@ Func RemoveExtraTroops($toRemove)
 
 		If _Sleep(700) Then Return
 		If $Runstate = False Then Return
-		Click(Random(730, 830, 1), Random(495, 525, 1)) ; Click on 'Okay' button to save changes
+		Click(Random(720, 815, 1), Random(558, 589, 1)) ; Click on 'Okay' button to save changes
 
 		If _Sleep(700) Then Return
 
@@ -1512,16 +1521,16 @@ Func CheckExistentArmy($txt = "", $showlog = True)
 
 	If $txt = "Troops" Then
 		ResetVariables("Troops")
-		Local $directory = "trainwindow-ArmyTroops-bundle"
+		Local $directory = @ScriptDir & "\imgxml\ArmyTroops" ; "armytroops-bundle"
 		Local $x = 23, $y = 215, $x1 = 840, $y1 = 255
 	EndIf
 	If $txt = "Spells" Then
 		ResetVariables("Spells")
-		Local $directory = "trainwindow-ArmySpells-bundle"
+		Local $directory = "armytspells-bundle"
 		Local $x = 23, $y = 366, $x1 = 585, $y1 = 400
 	EndIf
 	If $txt = "Heroes" Then
-		Local $directory = "trainwindow-ArmyHeroes-bundle"
+		Local $directory = "armyheroes-bundle"
 		Local $x = 610, $y = 366, $x1 = 830, $y1 = 400
 	EndIf
 

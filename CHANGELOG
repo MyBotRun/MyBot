@@ -1,4 +1,32 @@
-﻿* **V6.4.1**
+﻿* **V6.5**
+ * Fix the Spells Factory and Brew Capacity issues
+ * Fix possible error or variables in IsGUICheckedForSpell
+ * Fix CleanYard log when not enabled
+ * Fix Button Search Mode
+ * Fix the Remain Time to request CC Troops|OCR
+ * Fix the Request CC troops (DEC Update)
+ * Fix the Donate CC troops (DEC Update)
+ * Fix the Army Overview detections (DEC Update)
+ * Fix the DE detection main page (DEC Update)
+ * Fix the Trophies detection main page (DEC Update)
+ * Fix the Trophies detection Attack page (DEC Update)
+ * Fix the Attack bar detection (DEC Update)
+ * Fix the train custom troops (DEC Update)
+ * Fix the OCR Language detection (DEC Update)
+ * Fix the Hero auto activation on low health (DEC Update)
+ * Fix the Colect Obstacles with snow (DEC Update)
+ * Fix the Notify Restart Loop
+ * Fix the Snow theme detection
+ * Improve the MyBotRunImgloc.dll
+ * Improve adding 34 more Chinese characters total 150 including elixir spells
+ * Improve the Gold Mines / Elixir Collector / Drills Snow detection
+ * Improve village search village measuring when returning home if failing
+ * Add Stat Donate Tab
+ * Add Portuguese GUI translation
+ * Add Auto Wall Upgrade Lv11
+ * Add Wizard Tower Snow Theme for weak base
+
+* **V6.4.1**
  * Fix bot ghosting/freezing jumping window when busy
  * Fix minor GUI refresh issues
  * Fix slow bot GUI when docked

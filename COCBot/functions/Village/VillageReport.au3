@@ -33,7 +33,7 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 	$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 	If Not $bSuppressLog Then Setlog(" [T]: " & _NumberFormat($iTrophyCurrent), $COLOR_SUCCESS)
 
-	If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then ; check if the village have a Dark Elixir Storage
+	If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then ; check if the village have a Dark Elixir Storage
 		$iGoldCurrent = getResourcesMainScreen(696, 23)
 		$iElixirCurrent = getResourcesMainScreen(696, 74)
 		$iDarkCurrent =  getResourcesMainScreen(728, 123)

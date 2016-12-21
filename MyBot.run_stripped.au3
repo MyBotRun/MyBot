@@ -1,9 +1,9 @@
-#RequireAdmin
+﻿#RequireAdmin
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 6.4)
-#pragma compile(FileVersion, 6.4.1)
+#pragma compile(ProductVersion, 6.5)
+#pragma compile(FileVersion, 6.5)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
 Global Const $WC_ANIMATE = 'SysAnimate32'
@@ -3419,7 +3419,7 @@ Local $iBotProcessPriority = _ProcessGetPriority(@AutoItPID)
 ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 Global $iBotLaunchTime = 0
 Local $hBotLaunchTime = TimerInit()
-$sBotVersion = "v6.4.1"
+$sBotVersion = "v6.5"
 $sBotTitle = "My Bot " & $sBotVersion & " "
 Global Const $iDelaySleep = 100
 Global Const $iDelayWaitForPopup = 1500
@@ -32710,7 +32710,7 @@ Global Const $dirTHSnipesAttacks = @ScriptDir & "\CSV\THSnipe"
 Global Const $dirAttacksCSV = @ScriptDir & "\CSV\Attack"
 Global $RedrawBotWindowMode = 2
 Global $bRedrawBotWindow[3] = [True, False, False]
-Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eIcnKingAbility, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant,  $eIcnTrap, $eIcnGoblin, $eIcnDonGoblin, $eIcnGold, $eIcnGolem, $eIcnDonGolem, $eIcnHealer, $eIcnDonHealer, $eIcnHogRider, $eIcnDonHogRider, $eIcnHealSpell, $eIcnInferno, $eIcnJumpSpell, $eIcnLavaHound, $eIcnDonLavaHound, $eIcnLightSpell, $eIcnMinion, $eIcnDonMinion, $eIcnPekka, $eIcnDonPekka,  $eIcnQueenAbility, $eIcnRageSpell, $eIcnTroops, $eIcnHourGlass, $eIcnTH1, $eIcnTH10, $eIcnTrophy, $eIcnValkyrie, $eIcnDonValkyrie, $eIcnWall, $eIcnWallBreaker, $eIcnDonWallBreaker, $eIcnWitch, $eIcnDonWitch, $eIcnWizard, $eIcnDonWizard, $eIcnXbow, $eIcnBarrackBoost, $eIcnMine, $eIcnCamp,  $eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnNotify, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack,  $eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes,  $eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnQueen, $eIcnKing, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenAbility, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost,  $eIcnQueenBoost, $eIcnWardenBoost, $eIcnWardenUpgr, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain,  $eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner,  $eIcnNoShield, $eIcnDonCustomB, $eIcnAirdefense, $eIcnDarkBarrackBoost, $eIcnDarkElixirStorage, $eIcnSpellsCost , $eIcnTroopsCost , $eIcnResetButton, $eIcnNewSmartZap, $eIcnTrain, $eIcnAttack, $eIcnDelay, $eIcnReOrder, $eIcn2Arrow, $eIcnArrowLeft, $eIcnArrowRight, $eIcnAndroid,  $eHdV04, $eHdV05, $eHdV06, $eHdV07, $eHdV08, $eHdV09, $eHdV10, $eHdV11,  $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend,  $eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11,  $eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup,  $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon
+Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eIcnKingAbility, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant,  $eIcnTrap, $eIcnGoblin, $eIcnDonGoblin, $eIcnGold, $eIcnGolem, $eIcnDonGolem, $eIcnHealer, $eIcnDonHealer, $eIcnHogRider, $eIcnDonHogRider, $eIcnHealSpell, $eIcnInferno, $eIcnJumpSpell, $eIcnLavaHound, $eIcnDonLavaHound, $eIcnLightSpell, $eIcnMinion, $eIcnDonMinion, $eIcnPekka, $eIcnDonPekka,  $eIcnQueenAbility, $eIcnRageSpell, $eIcnTroops, $eIcnHourGlass, $eIcnTH1, $eIcnTH10, $eIcnTrophy, $eIcnValkyrie, $eIcnDonValkyrie, $eIcnWall, $eIcnWallBreaker, $eIcnDonWallBreaker, $eIcnWitch, $eIcnDonWitch, $eIcnWizard, $eIcnDonWizard, $eIcnXbow, $eIcnBarrackBoost, $eIcnMine, $eIcnCamp,  $eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnNotify, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack,  $eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes,  $eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnQueen, $eIcnKing, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenAbility, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost,  $eIcnQueenBoost, $eIcnWardenBoost, $eIcnWardenUpgr, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain,  $eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner,  $eIcnNoShield, $eIcnDonCustomB, $eIcnAirdefense, $eIcnDarkBarrackBoost, $eIcnDarkElixirStorage, $eIcnSpellsCost , $eIcnTroopsCost , $eIcnResetButton, $eIcnNewSmartZap, $eIcnTrain, $eIcnAttack, $eIcnDelay, $eIcnReOrder, $eIcn2Arrow, $eIcnArrowLeft, $eIcnArrowRight, $eIcnAndroid,  $eHdV04, $eHdV05, $eHdV06, $eHdV07, $eHdV08, $eHdV09, $eHdV10, $eHdV11,  $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend,  $eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11,  $eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup,  $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon,  $eWall12, $ePortuguese
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
 Global $eIcnAchievements = $eIcnMain
@@ -32917,7 +32917,7 @@ Global $TrainSpecial = 1
 Global $cBarbarian = 0, $cArcher = 0, $cGoblin = 0, $cGiant = 0, $cWallbreaker = 0, $cWizard = 0, $cBalloon = 0, $cDragon = 0, $cPekka = 0, $cBabyDragon = 0, $cMiner = 0, $cMinion = 0, $cHogs = 0, $cValkyrie = 0, $cGolem = 0, $cWitch = 0, $cLavaHound = 0, $cBowl = 0
 Global Enum $eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine,  $eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eKing, $eQueen, $eWarden, $eCastle,  $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell
 Global $WallCost = 0
-Global $WallCosts[7] = [30000, 75000, 200000, 500000, 1000000, 3000000, 4000000]
+Global $WallCosts[8] = [30000, 75000, 200000, 500000, 1000000, 2000000, 3000000, 4000000]
 Global $WallX = 0, $WallY = 0
 Global $Wall[8]
 Global $iMaxNbWall = 4
@@ -33047,8 +33047,7 @@ Global $DonatePixel
 Global $iClanLevel
 Global $LastBarrackTrainDonatedTroop = 1
 Global $LastDarkBarrackTrainDonatedTroop = 1
-Global $bDonate = -1
-Global $bDonateTrain = -1
+Global $bActiveDonate = -1
 Global $sTxtRequest = ""
 Global $ichkDonateAllBarbarians, $ichkDonateBarbarians, $sTxtDonateBarbarians, $sTxtBlacklistBarbarians, $aDonBarbarians, $aBlkBarbarians
 Global $ichkDonateAllArchers, $ichkDonateArchers, $sTxtDonateArchers, $sTxtBlacklistArchers, $aDonArchers, $aBlkArchers
@@ -33429,6 +33428,7 @@ Global $aWardenUpgCost[20] = [6, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8,
 Global $MinorObstacle = False
 Global Const $dirLanguages = @ScriptDir & "\Languages\"
 Global $sLanguage = "English"
+Global $sLanguageDisp = "English"
 Global $aLanguageFile[1][2]
 Global Const $sDefaultLanguage = "English"
 Global $aLanguage[1][1]
@@ -33577,7 +33577,7 @@ Global $icmbMinimumTimeClose = 2, $lblCloseWaitingTroops, $ilblSymbolWaiting, $i
 Global $aTimeTrain[3] = [0, 0, 0]
 Global $iCCRemainTime = 0
 Global $iNbrOfWallsUpped = 0
-Global $itxtWall04ST=0, $itxtWall05ST=0, $itxtWall06ST=0, $itxtWall07ST=0, $itxtWall08ST=0, $itxtWall09ST=0, $itxtWall10ST=0, $itxtWall11ST=0
+Global $itxtWall04ST=0, $itxtWall05ST=0, $itxtWall06ST=0, $itxtWall07ST=0, $itxtWall08ST=0, $itxtWall09ST=0, $itxtWall10ST=0, $itxtWall11ST=0, $itxtWall12ST=0
 Global $chkLvl6Enabled = 1
 Global $chkLvl7Enabled = 1
 Global $chkLvl8Enabled = 1
@@ -33650,9 +33650,9 @@ Global $LevPekkCost[6] = [0, 28000, 32000, 36000, 40000, 45000]
 Global $LevBabyDCost[5] = [0, 15000, 16000, 17000, 18000]
 Global $LevMineCost[5] = [0, 4200, 4800, 5400, 6000]
 Global $LevMiniCost[8] = [0, 6, 7, 8, 9, 10, 11, 12]
-Global $LevHogsCost[7] = [0, 40, 45, 52, 58, 65, 90]
+Global $LevHogsCost[8] = [0, 40, 45, 52, 58, 65, 90, 115]
 Global $LevValkCost[6] = [0, 70, 100, 130, 160, 190]
-Global $LevGoleCost[6] = [0, 450, 525, 600, 675, 750]
+Global $LevGoleCost[7] = [0, 450, 525, 600, 675, 750, 825]
 Global $LevWitcCost[4] = [0, 250, 350, 450]
 Global $LevLavaCost[5] = [0, 390, 450, 510, 570]
 Global $LevBowlCost[4] = [0, 130, 150, 170]
@@ -33664,7 +33664,7 @@ Global $LevRSpellCost[6] = [0, 23000, 25000, 27000, 30000, 33000]
 Global $LevJSpellCost[4] = [0, 23000, 27000, 31000]
 Global $LevFSpellCost[6] = [0, 26000, 29000, 31000, 33000, 35000]
 Global $LevCSpellCost[5] = [0, 38000, 40000, 42000, 44000]
-Global $LevPSpellCost[5] = [0, 95, 110, 125, 140]
+Global $LevPSpellCost[6] = [0, 95, 110, 125, 140, 155]
 Global $LevESpellCost[5] = [0, 125, 140, 160, 180]
 Global $LevHaSpellCost[5] = [0, 80, 85, 60, 95]
 Global $LevSkSpellCost[5] = [0, 110, 120, 130, 140]
@@ -33678,6 +33678,9 @@ Global $topgoldloot = 0
 Global $topelixirloot = 0
 Global $topdarkloot = 0
 Global $topTrophyloot = 0
+Global $TroopsDonQ[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $TroopsDonXP[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $lblDonQ[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 If FileExists($config) Or FileExists($building) Then
 readConfig()
 EndIf
@@ -33741,7 +33744,7 @@ Global $aClanTab[2] = [189, 24]
 Global $aClanInfo[2] = [282, 55]
 Global $aArmyCampSize[2] = [110, 136 + $midOffsetY]
 Global $aArmySpellSize[2] = [99, 284 + $midOffsetY]
-Global $aArmyCCRemainTime[2] = [652, 266 + $midOffsetY]
+Global $aArmyCCRemainTime[2] = [725, 517 + $midOffsetY]
 Global $aIsCampNotFull[4] = [149, 150 + $midOffsetY, 0x761714, 20]
 Global $aIsCampFull[4] = [128, 151 + $midOffsetY, 0xFFFFFF, 10]
 Global $aBarrackFull[4] = [388, 154 + $midOffsetY, 0xE84D50, 20]
@@ -33750,7 +33753,7 @@ Global $aLanguageCheck1[4] = [326, 8, 0xF9FAF9, 20]
 Global $aLanguageCheck2[4] = [329, 9, 0x060706, 20]
 Global $aLanguageCheck3[4] = [348, 12, 0x040403, 20]
 Global $aLanguageCheck4[4] = [354, 11, 0x090908, 20]
-Global $aTrophies[2] = [65, 74]
+Global $aTrophies[2] = [72, 85]
 Global $aNoCloudsAttack[4] = [25, 606, 0xC00000, 10]
 Global $aMessageButton[2] = [38, 143]
 Global $aArmyTrainButton[2] = [40, 525 + $bottomOffsetY]
@@ -33776,31 +33779,32 @@ Global $aIsTrainPgChk1[4]	  = [812, 97 + $midOffsetY, 0xE0070A, 10]
 Global $aIsTrainPgChk2[4]	  = [762, 328 + $midOffsetY, 0xF18439, 10]
 Global $aRtnHomeCloud1[4]	  = [56, 592 + $bottomOffsetY, 0x0A223F, 15]
 Global $aRtnHomeCloud2[4]	  = [72, 592 + $bottomOffsetY, 0x103F7E, 15]
-Global $aKingHealth = [-1, 572 + $bottomOffsetY, 0x00b29e, 15]
-Global $aQueenHealth = [-1, 572 + $bottomOffsetY, 0x008227, 15]
-Global $aWardenHealth = [-1, 568 + $bottomOffsetY, 0x472b63, 15]
+Global $aDetectLang[2]	= [16, 634 + $bottomOffsetY]
+Global $aKingHealth = [-1, 569 + $bottomOffsetY, 0x543e20, 20]
+Global $aQueenHealth = [-1, 569 + $bottomOffsetY, 0x9a4825, 20]
+Global $aWardenHealth = [-1, 569 + $bottomOffsetY, 0xd2696c, 15]
 Global $aWonOneStarAtkRprt[4] = [325, 180 + $midOffsetY, 0xC8CaC4, 30]
 Global $aWonTwoStarAtkRprt[4] = [398, 180 + $midOffsetY, 0xD0D6D0, 30]
 Global $aWonThreeStarAtkRprt[4] = [534, 180 + $midOffsetY, 0xC8CAC7, 30]
-Global Const $TrainBarb[4]  = [87, 372 + $midOffsetY, 0xFFD028, 40]
-Global Const $TrainArch[4]  = [72, 474 + $midOffsetY, 0xE03E68, 40]
-Global Const $TrainGiant[4] = [155, 372 + $midOffsetY, 0xF07908, 40]
-Global Const $TrainGobl[4]  = [166, 476 + $midOffsetY, 0x407428, 40]
-Global Const $TrainWall[4]  = [264, 377 + $midOffsetY, 0x564B58, 40]
-Global Const $TrainBall[4]  = [284, 491 + $midOffsetY, 0x564952, 40]
-Global Const $TrainWiza[4]  = [366, 364 + $midOffsetY, 0xFFECD0, 40]
-Global Const $TrainHeal[4]  = [374, 482 + $midOffsetY, 0xB8FCFE, 40]
-Global Const $TrainDrag[4]  = [470, 373 + $midOffsetY, 0x483D68, 40]
-Global Const $TrainPekk[4]  = [470, 473 + $midOffsetY, 0xD8E7E8, 40]
-Global Const $TrainBabyD[4] = [552, 375 + $midOffsetY, 0x88BC40, 40]
-Global Const $TrainMine[4]  = [562, 518 + $midOffsetY, 0x403430, 40]
-Global Const $TrainMini[4] = [477, 384 + $midOffsetY, 0x30689F, 40]
-Global Const $TrainHogs[4] = [491, 467 + $midOffsetY, 0x603C30, 40]
-Global Const $TrainValk[4] = [578, 352 + $midOffsetY, 0xFF5E14, 40]
-Global Const $TrainGole[4] = [579, 518 + $midOffsetY, 0x706458, 40]
-Global Const $TrainWitc[4] = [674, 354 + $midOffsetY, 0x6864B3, 40]
-Global Const $TrainLava[4] = [702, 497 + $midOffsetY, 0x5F5849, 40]
-Global Const $TrainBowl[4] = [784, 365 + $midOffsetY, 0x9084F4, 40]
+Global Const $TrainBarb[4]  = [64, 354 + $midOffsetY, 0xE0AB38, 40]
+Global Const $TrainArch[4]  = [82, 464 + $midOffsetY, 0xC02C68, 40]
+Global Const $TrainGiant[4] = [192, 387 + $midOffsetY, 0xF7AD78, 40]
+Global Const $TrainGobl[4]  = [178, 487 + $midOffsetY, 0xB0DB6E, 40]
+Global Const $TrainWall[4]  = [282, 385 + $midOffsetY, 0x000000, 40]
+Global Const $TrainBall[4]  = [249, 469 + $midOffsetY, 0x64242C, 40]
+Global Const $TrainWiza[4]  = [384, 384 + $midOffsetY, 0xF8D0B8, 40]
+Global Const $TrainHeal[4]  = [396, 500 + $midOffsetY, 0xF8EEE8, 40]
+Global Const $TrainDrag[4]  = [435, 354 + $midOffsetY, 0xFDF8F6, 40]
+Global Const $TrainPekk[4]  = [465, 493 + $midOffsetY, 0x0E0811, 40]
+Global Const $TrainBabyD[4] = [578, 385 + $midOffsetY, 0x080000, 40]
+Global Const $TrainMine[4]  = [568, 452 + $midOffsetY, 0x989C98, 40]
+Global Const $TrainMini[4] = [489, 375 + $midOffsetY, 0x7ACFF0, 40]
+Global Const $TrainHogs[4] = [500, 467 + $midOffsetY, 0xB87867, 40]
+Global Const $TrainValk[4] = [601, 354 + $midOffsetY, 0xFF9B60, 40]
+Global Const $TrainGole[4] = [618, 479 + $midOffsetY, 0xF4E8C8, 40]
+Global Const $TrainWitc[4] = [696, 353 + $midOffsetY, 0x636AE5, 40]
+Global Const $TrainLava[4] = [687, 475 + $midOffsetY, 0x210D00, 40]
+Global Const $TrainBowl[4] = [777, 356 + $midOffsetY, 0x8884F0, 40]
 Global $TrainLSpell[4] = [ 70, 405 + $midOffsetY, 0x0A47EE, 40]
 Global $TrainRSpell[4] = [170, 405 + $midOffsetY, 0x501886, 40]
 Global $TrainFSpell[4] = [270, 405 + $midOffsetY, 0x29ADD0, 40]
@@ -33832,26 +33836,26 @@ Global $GemESpell[4] = [25, 340 + $midOffsetY, 0x030300, 1]
 Global $GemHaSpell[4] = [25, 340 + $midOffsetY, 0x030300, 1]
 Global $GemSkSpell[4] = [25, 340 + $midOffsetY, 0x030300, 1]
 Global $NextBtn[4] = [780, 546 + $bottomOffsetY, 0xD34300, 20]
-Global $aRequestTroopsAO[6] = [758, 572, 0x76C01E, 0xD8EE80, 0x989898, 20]
-Global Const $FullBarb[4] = [100, 423 + $midOffsetY, 0x7A7A7A, 45]
-Global Const $FullArch[4] = [100, 529 + $midOffsetY, 0x8E8E8E, 45]
-Global Const $FullGiant[4] = [199, 422 + $midOffsetY, 0x6E6E6E, 45]
-Global Const $FullGobl[4] = [199, 523 + $midOffsetY, 0x6B6B6B, 45]
-Global Const $FullWall[4] = [297, 429 + $midOffsetY, 0x8B8B8B, 45]
-Global Const $FullBall[4] = [296, 531 + $midOffsetY, 0x878787, 45]
+Global $aRequestTroopsAO[6] = [743, 574, 0x76C01E, 0xD8EE80, 0x989898, 20]
+Global Const $FullBarb[4] = [100, 423 + $midOffsetY, 0x6D6D6D, 45]
+Global Const $FullArch[4] = [100, 529 + $midOffsetY, 0x8A8A8A, 45]
+Global Const $FullGiant[4] = [199, 422 + $midOffsetY, 0x676767, 45]
+Global Const $FullGobl[4] = [199, 523 + $midOffsetY, 0x666666, 45]
+Global Const $FullWall[4] = [297, 429 + $midOffsetY, 0x8D8D8D, 45]
+Global Const $FullBall[4] = [296, 531 + $midOffsetY, 0x898989, 45]
 Global Const $FullWiza[4] = [397, 421 + $midOffsetY, 0x676767, 45]
-Global Const $FullHeal[4] = [397, 522 + $midOffsetY, 0x676767, 45]
+Global Const $FullHeal[4] = [398, 522 + $midOffsetY, 0x696969, 45]
 Global Const $FullDrag[4] = [496, 421 + $midOffsetY, 0x676767, 45]
-Global Const $FullPekk[4] = [493, 526 + $midOffsetY, 0x818181, 45]
-Global Const $FullBabyD[4] = [589, 423 + $midOffsetY, 0x747474, 40]
-Global Const $FullMine[4] = [592, 523 + $midOffsetY, 0x6B6B6B, 40]
-Global Const $FullMini[4] = [497, 352 + $midOffsetY, 0x787878, 15]
-Global Const $FullHogs[4] = [500, 477 + $midOffsetY, 0x919191, 30]
-Global Const $FullValk[4] = [573, 367 + $midOffsetY, 0x8E8E8E, 30]
-Global Const $FullGole[4] = [574, 462 + $midOffsetY, 0xA9A9A9, 30]
-Global Const $FullWitc[4] = [677, 392 + $midOffsetY, 0x888888, 30]
-Global Const $FullLava[4] = [724, 505 + $midOffsetY, 0x969696, 30]
-Global Const $FullBowl[4] = [800, 379 + $midOffsetY, 0x585858, 20]
+Global Const $FullPekk[4] = [493, 526 + $midOffsetY, 0x7D7D7D, 45]
+Global Const $FullBabyD[4] = [590, 423 + $midOffsetY, 0x696969, 40]
+Global Const $FullMine[4] = [594, 523 + $midOffsetY, 0x686868, 40]
+Global Const $FullMini[4] = [456, 356 + $midOffsetY, 0x4D4D4D, 25]
+Global Const $FullHogs[4] = [488, 512 + $midOffsetY, 0xA4A4A4, 30]
+Global Const $FullValk[4] = [578, 370 + $midOffsetY, 0x8C8C8C, 30]
+Global Const $FullGole[4] = [597, 509 + $midOffsetY, 0x3A3A3A, 30]
+Global Const $FullWitc[4] = [671, 387 + $midOffsetY, 0x8D8D8D, 30]
+Global Const $FullLava[4] = [721, 488 + $midOffsetY, 0x808080, 30]
+Global Const $FullBowl[4] = [777, 407 + $midOffsetY, 0x727272, 20]
 Global Const $GemBarb[4] = [187, 372 + $midOffsetY, 0xE70A12, 30]
 Global Const $GemArch[4] = [290, 372 + $midOffsetY, 0xE70A12, 30]
 Global Const $GemGiant[4] = [392, 372 + $midOffsetY, 0xE70A12, 30]
@@ -38236,19 +38240,19 @@ _GUICtrlSetTip(-1, $txtTip)
 Local $x = 295, $y = $y_bottom + 20
 $grpVillage = GUICtrlCreateGroup(GetTranslated(603,32, "Village"), $x - 20, $y - 20, 180, 85)
 $lblResultGoldNow = GUICtrlCreateLabel("", $x - 5, $y + 2, 60, 15, $SS_RIGHT)
-$lblResultGoldHourNow = GUICtrlCreateLabel("", $x, $y + 2, 50, 15, $SS_RIGHT)
+$lblResultGoldHourNow = GUICtrlCreateLabel("", $x, $y + 2, 60, 15, $SS_RIGHT)
 GUICtrlSetState(-1, $GUI_HIDE)
 $picResultGoldNow = GUICtrlCreateIcon ($pIconLib, $eIcnGold, $x + 60, $y, 16, 16)
 GUICtrlSetState(-1, $GUI_HIDE)
 $picResultGoldTemp = GUICtrlCreateIcon ($pIconLib, $eIcnGold, $x - 5, $y, 16, 16)
 $lblResultElixirNow = GUICtrlCreateLabel("", $x - 5, $y + 22, 60, 15, $SS_RIGHT)
-$lblResultElixirHourNow = GUICtrlCreateLabel("", $x, $y + 22, 50, 15, $SS_RIGHT)
+$lblResultElixirHourNow = GUICtrlCreateLabel("", $x, $y + 22, 60, 15, $SS_RIGHT)
 GUICtrlSetState(-1, $GUI_HIDE)
 $picResultElixirNow = GUICtrlCreateIcon ($pIconLib, $eIcnElixir, $x + 60, $y + 20, 16, 16)
 GUICtrlSetState(-1, $GUI_HIDE)
 $picResultElixirTemp = GUICtrlCreateIcon ($pIconLib, $eIcnElixir, $x - 5, $y + 20, 16, 16)
 $lblResultDENow = GUICtrlCreateLabel("", $x, $y + 42, 55, 15, $SS_RIGHT)
-$lblResultDEHourNow = GUICtrlCreateLabel("", $x - 5, $y + 42, 55, 15, $SS_RIGHT)
+$lblResultDEHourNow = GUICtrlCreateLabel("", $x - 5, $y + 42, 60, 15, $SS_RIGHT)
 GUICtrlSetState(-1, $GUI_HIDE)
 $picResultDENow = GUICtrlCreateIcon ($pIconLib, $eIcnDark, $x + 60, $y + 40, 16, 16)
 GUICtrlSetState(-1, $GUI_HIDE)
@@ -39811,8 +39815,8 @@ GUICtrlSetOnEvent(-1, "btnResetUpgrade")
 GUICtrlCreateTabItem("")
 $hGUI_UPGRADE_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600,17,"Walls"))
 Global $chkWalls
-Global $txtWall04ST, $txtWall05ST, $txtWall06ST, $txtWall07ST, $txtWall08ST, $txtWall09ST, $txtWall10ST, $txtWall11ST
-Global $Wall04ST, $Wall05ST, $Wall06ST, $Wall07ST, $Wall08ST, $Wall09ST, $Wall10ST, $Wall11ST
+Global $txtWall04ST, $txtWall05ST, $txtWall06ST, $txtWall07ST, $txtWall08ST, $txtWall09ST, $txtWall10ST, $txtWall11ST, $txtWall12ST
+Global $Wall04ST, $Wall05ST, $Wall06ST, $Wall07ST, $Wall08ST, $Wall09ST, $Wall10ST, $Wall11ST, $Wall12ST
 Global $sldMaxNbWall
 Global $lblWallCost, $cmbWalls, $UseGold, $UseElixir, $UseElixirGold, $txtWallMinGold, $txtWallMinElixir
 Local $x = 25, $y = 45
@@ -39850,7 +39854,7 @@ $x += 225
 $lblWalls = GUICtrlCreateLabel(GetTranslated(617,18, "Search for Walls level") & ":", $x, $y+2, -1, -1)
 $cmbWalls = GUICtrlCreateCombo("", $x + 110, $y, 61, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL), $WS_EX_RIGHT)
 _GUICtrlSetTip(-1, GetTranslated(617,19, "Search for Walls of this level and try to upgrade them one by one."))
-GUICtrlSetData(-1, "4   |5   |6   |7   |8   |9   |10   ", "4   ")
+GUICtrlSetData(-1, "4   |5   |6   |7   |8   |9   |10   |11   ", "4   ")
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlSetOnEvent(-1, "cmbWalls")
 _ArrayConcatenate($G, $C)
@@ -39872,39 +39876,46 @@ GUICtrlSetLimit(-1, 7)
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 Local $x = 25, $y = 170
-$grpUpgrWalls = GUICtrlCreateGroup(Gettranslated(617,29, "Walls counter"), $x - 20, $y - 20, 430, 60)
+$grpUpgrWalls = GUICtrlCreateGroup(Gettranslated(617,29, "Walls counter"), $x - 20, $y - 20, 430, 100)
 $x -= 3
 $txtWall04ST = GUICtrlCreateInput("0", $x - 10, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 4 "&GetTranslated(617,31, "you have."))
 $Wall04ST = GUICtrlCreateIcon($pIconLib, $eWall04, $x + 17, $y-2, 24, 24)
-$x = 70
+$x += 80
 $txtWall05ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 5 "&GetTranslated(617,31, "you have."))
 $Wall05ST = GUICtrlCreateIcon($pIconLib, $eWall05, $x+27, $y-2, 24, 24)
-$x = +130
+$x += 80
 $txtWall06ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 6 "&GetTranslated(617,31, "you have."))
 $Wall06ST = GUICtrlCreateIcon($pIconLib, $eWall06, $x+27, $y-2, 24, 24)
-$x = +180
+$x += 80
 $txtWall07ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 7 "&GetTranslated(617,31, "you have."))
 $Wall07ST = GUICtrlCreateIcon($pIconLib, $eWall07, $x+27, $y-2, 24, 24)
-$x = +230
+$x += 80
 $txtWall08ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 8 "&GetTranslated(617,31, "you have."))
 $Wall08ST = GUICtrlCreateIcon($pIconLib, $eWall08, $x+27, $y-2, 24, 24)
-$x = +280
+Local $x = 25
+$x -= 3
+$x += 10
+$y += 40
 $txtWall09ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 9 "&GetTranslated(617,31, "you have."))
 $Wall09ST = GUICtrlCreateIcon($pIconLib, $eWall09, $x+27, $y-2, 24, 24)
-$x = +330
+$x += 80
 $txtWall10ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 10 "&GetTranslated(617,31, "you have."))
 $Wall10ST = GUICtrlCreateIcon($pIconLib, $eWall10, $x+27, $y-2, 24, 24)
-$x = +380
+$x += 80
 $txtWall11ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 11 "&GetTranslated(617,31, "you have."))
 $Wall11ST = GUICtrlCreateIcon($pIconLib, $eWall11, $x+27, $y-2, 24, 24)
+$x += 80
+$txtWall12ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 12 "&GetTranslated(617,31, "you have."))
+$Wall12ST = GUICtrlCreateIcon($pIconLib, $eWall12, $x+27, $y-2, 24, 24)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
 $hGUI_NOTIFY = GUICreate("", $_GUI_MAIN_WIDTH - 28, $_GUI_MAIN_HEIGHT - 255 - 28, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $hGUI_VILLAGE)
@@ -43945,7 +43956,7 @@ $hcmbLanguage = _GUICtrlComboBoxEx_GetComboControl($cmbLanguage)
 $txtTip = GetTranslated(636,84, "Use this to switch to a different GUI language")
 _GUICtrlSetTip($hcmbLanguage,$txtTip,Default,Default,Default, False)
 LoadLanguagesComboBox()
-_GUICtrlComboBoxEx_SetCurSel($cmbLanguage, _GUICtrlComboBoxEx_FindStringExact($cmbLanguage, $sLanguage))
+_GUICtrlComboBoxEx_SetCurSel($cmbLanguage, _GUICtrlComboBoxEx_FindStringExact($cmbLanguage, $sLanguageDisp))
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $y += 54
 $grpOnLoadBot = GUICtrlCreateGroup(GetTranslated(636,2, "When Bot Loads"), $x - 20, $y - 20, 210, 120)
@@ -44156,8 +44167,13 @@ _GUICtrlSetTip(-1, GetTranslated(636,113, "Debug: Disables zoomout of village.")
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlSetState(-1, $GUI_HIDE)
 $y += 20
-$chkDebugDisableVillageCentering = GUICtrlCreateCheckbox(GetTranslated(636,113, "Disable Village Centering"), $x , $y-5, -1, -1)
-_GUICtrlSetTip(-1, GetTranslated(636,114, "Debug: Disables centering of village."))
+$chkDebugDisableVillageCentering = GUICtrlCreateCheckbox(GetTranslated(636,114, "Disable Village Centering"), $x , $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,115, "Debug: Disables centering of village."))
+GUICtrlSetState(-1, $GUI_DISABLE)
+GUICtrlSetState(-1, $GUI_HIDE)
+$y += 20
+$chkDebugDeadbaseImage = GUICtrlCreateCheckbox(GetTranslated(636,116, "Deadbase Image save"), $x , $y-5, -1, -1)
+_GUICtrlSetTip(-1, GetTranslated(636,117, "Debug: Saves images of skipped deadbase villages."))
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlSetState(-1, $GUI_HIDE)
 Local $x = 300
@@ -45141,6 +45157,118 @@ $y -= 110
 $lblRev1 = GUICtrlCreateLabel("", $x + 28, $y - 160, 5, 300)
 GUICtrlSetBkColor(-1, 0xA8A8A8)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
+$hGUI_STATS_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600, 55,"Donations"))
+Local $x = 5, $y = 25, $z = 33
+$grpElxTr = GUICtrlCreateGroup(GetTranslated(632,118,"Troops"), $x, $y, 425, 240, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
+$x -= 12
+$y += 20
+$z += 20
+GUICtrlCreateIcon($pIconLib, $eIcnBarbarian, $x + 60, $y, 32, 32)
+$lblDonQ[1] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnArcher, $x + 140, $y, 32, 32)
+$lblDonQ[2] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnGiant, $x + 220, $y, 32, 32)
+$lblDonQ[3] = GUICtrlCreateLabel("0", $x + 180, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnGoblin, $x + 300, $y, 32, 32)
+$lblDonQ[4] = GUICtrlCreateLabel("0", $x + 260, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnWallBreaker, $x + 380, $y, 32, 32)
+$lblDonQ[5] = GUICtrlCreateLabel("0", $x + 340, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+$y += 35
+$z += 35
+GUICtrlCreateIcon($pIconLib, $eIcnBalloon, $x + 60, $y, 32, 32)
+$lblDonQ[6] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnWizard, $x + 140, $y, 32, 32)
+$lblDonQ[7] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnHealer, $x + 220, $y, 32, 32)
+$lblDonQ[8] = GUICtrlCreateLabel("0", $x + 180, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnDragon, $x + 300, $y, 32, 32)
+$lblDonQ[9] = GUICtrlCreateLabel("0", $x + 260, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnPekka, $x + 380, $y, 32, 32)
+$lblDonQ[10] = GUICtrlCreateLabel("0", $x + 340, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+$y += 35
+$z += 35
+GUICtrlCreateIcon($pIconLib, $eIcnBabyDragon, $x + 60, $y, 32, 32)
+$lblDonQ[11] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnMiner, $x + 140, $y, 32, 32)
+$lblDonQ[12] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+$y += 40
+$z += 40
+GUICtrlCreateIcon($pIconLib, $eIcnMinion, $x + 60, $y, 32, 32)
+$lblDonQ[13] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnHogRider, $x + 140, $y, 32, 32)
+$lblDonQ[14] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnValkyrie, $x + 220, $y, 32, 32)
+$lblDonQ[15] = GUICtrlCreateLabel("0", $x + 180, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnGolem, $x + 300, $y, 32, 32)
+$lblDonQ[16] = GUICtrlCreateLabel("0", $x + 260, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnWitch, $x + 380, $y, 32, 32)
+$lblDonQ[17] = GUICtrlCreateLabel("0", $x + 340, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+$y += 35
+$z += 35
+GUICtrlCreateIcon($pIconLib, $eIcnLavaHound, $x + 60, $y, 32, 32)
+$lblDonQ[18] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnBowler, $x + 140, $y, 32, 32)
+$lblDonQ[19] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+$x += 12
+$y += 40
+$lblTotalTroopsQ = GUICtrlCreateLabel(GetTranslated(632,120,"Total Donated") & " : 0", $x + 5, $y, 230, 27, $SS_CENTER)
+GUICtrlSetFont(-1, 12, 800, 0, "Arial Black")
+GUICtrlSetColor(-1, 0xFFFFFF)
+GUICtrlSetBkColor(-1, 0x808080)
+$lblTotalTroopsXP = GUICtrlCreateLabel(GetTranslated(632,121,"XP Won") & " : 0", $x + 240, $y, 180, 27, $SS_CENTER)
+GUICtrlSetFont(-1, 12, 800, 0, "Arial Black")
+GUICtrlSetColor(-1, 0xFFFFFF)
+GUICtrlSetBkColor(-1, 0x808080)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+Local $x = 5, $y = 265, $z = 273
+$grpDElxTrSp = GUICtrlCreateGroup(GetTranslated(632,119,"Spells"), $x, $y, 425, 95, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
+$x -= 12
+$x += 40
+$y += 20
+$z += 20
+GUICtrlCreateIcon($pIconLib, $eIcnPoisonSpell, $x + 60, $y, 32, 32)
+$lblDonQ[20] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnEarthQuakeSpell, $x + 140, $y, 32, 32)
+$lblDonQ[21] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnHasteSpell, $x + 220, $y, 32, 32)
+$lblDonQ[22] = GUICtrlCreateLabel("0", $x + 180, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+GUICtrlCreateIcon($pIconLib, $eIcnSkeletonSpell, $x + 300, $y, 32, 32)
+$lblDonQ[23] = GUICtrlCreateLabel("0", $x + 260, $z, 35, 20, $SS_RIGHT)
+GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+$x -= 40
+$x += 12
+$y += 40
+$lblTotalSpellsQ = GUICtrlCreateLabel(GetTranslated(632,120,"Total Donated") & " : 0", $x + 5, $y, 230, 27, $SS_CENTER)
+GUICtrlSetFont(-1, 12, 800, 0, "Arial Black")
+GUICtrlSetColor(-1, 0xFFFFFF)
+GUICtrlSetBkColor(-1, 0x808080)
+$lblTotalSpellsXP = GUICtrlCreateLabel(GetTranslated(632,121,"XP Won") & " : 0", $x + 240, $y, 180, 27, $SS_CENTER)
+GUICtrlSetFont(-1, 12, 800, 0, "Arial Black")
+GUICtrlSetColor(-1, 0xFFFFFF)
+GUICtrlSetBkColor(-1, 0x808080)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
 GUISwitch($frmBotEx)
 $tabMain = GUICtrlCreateTab(5, 85 + $_GUI_MAIN_TOP, $_GUI_MAIN_WIDTH - 9, $_GUI_MAIN_HEIGHT - 225)
@@ -45194,7 +45322,7 @@ $txtCredits = "Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, Gkev
 $lbltxtCreditsDead2 = GUICtrlCreateLabel($txtCredits, $x + 5, $y + 15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 GUICtrlSetFont(-1, 9, $FW_MEDIUM)
 $y += 66
-$txtCredits = "Special thanks to all contributing forum members helping " & @CRLF & "to make this software better! "
+$txtCredits = "Special thanks to all contributing forum members helping to make this" & @CRLF & "software better! And a special note to: @KevinM our server admin!"
 $lbltxtCredits2 = GUICtrlCreateLabel($txtCredits, $x + 14, $y, 390, 30, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER), 0)
 GUICtrlSetFont(-1, 9, $FW_MEDIUM)
 $y += 40
@@ -45365,6 +45493,7 @@ _GUICtrlRichEdit_AppendTextColor($txtLog, "" & @CRLF, _ColorConvert($Color_Black
 SaveConfig()
 readConfig()
 applyConfig(False)
+NotifyGetLastMessageFromTelegram()
 If BitAND($AndroidSupportFeature, 1 + 2) = 0 And $ichkBackground = 1 Then
 GUICtrlSetState($chkBackground, $GUI_UNCHECKED)
 chkBackground()
@@ -45462,12 +45591,18 @@ checkMainScreen(False)
 If _Sleep(100) Then Return
 $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 If _Sleep(100) Then Return
-getArmyCapacity(True, True)
+CheckArmySpellCastel()
+ClickP($aAway, 2, 0, "")
+If _Sleep(100) Then Return
+If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
 If _Sleep(100) Then Return
 PrepareSearch()
 If _Sleep(1000) Then Return
 VillageSearch()
 If _Sleep(100) Then Return
+Else
+Setlog("Your Army is not prepared, check the Attack/train options")
+EndIf
 btnStop()
 EndFunc
 Global Enum $eBotNoAction, $eBotStart, $eBotStop, $eBotSearchMode, $eBotClose
@@ -45497,7 +45632,7 @@ Global $aTabControlsAttackOptions = [$hGUI_AttackOption_TAB, $hGUI_AttackOption_
 Global $aTabControlsStrategies = [$hGUI_STRATEGIES_TAB, $hGUI_STRATEGIES_TAB_ITEM1, $hGUI_STRATEGIES_TAB_ITEM2]
 Global $aTabControlsBot = [$hGUI_BOT_TAB, $hGUI_BOT_TAB_ITEM1, $hGUI_BOT_TAB_ITEM2, $hGUI_BOT_TAB_ITEM3, $hGUI_BOT_TAB_ITEM4, $hGUI_BOT_TAB_ITEM5]
 Global $aTabControlsStats = [$hGUI_STATS_TAB, $hGUI_STATS_TAB_ITEM1, $hGUI_STATS_TAB_ITEM2, $hGUI_STATS_TAB_ITEM3]
-Global $aAlwaysEnabledControls = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugDisableZoomout, $chkDebugDisableVillageCentering, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestRequestCC, $btnTestAttackBar, $btnTestClickDrag, $btnTestImage, $btnTestVillageSize, $btnTestDeadBase, $btnTestDeadBaseFolder, $btnTestTHimgloc, $btnTestimglocTroopBar,$btnTestQuickTrainsimgloc, $chkdebugAttackCSV, $chkmakeIMGCSV, $btnTestAttackCSV, $btnTestFindButton, $txtTestFindButton, $btnTestCleanYard]
+Global $aAlwaysEnabledControls = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugDisableZoomout, $chkDebugDisableVillageCentering, $chkDebugDeadbaseImage, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestRequestCC, $btnTestAttackBar, $btnTestClickDrag, $btnTestImage, $btnTestVillageSize, $btnTestDeadBase, $btnTestDeadBaseFolder, $btnTestTHimgloc, $btnTestimglocTroopBar,$btnTestQuickTrainsimgloc, $chkdebugAttackCSV, $chkmakeIMGCSV, $btnTestAttackCSV, $btnTestFindButton, $txtTestFindButton, $btnTestCleanYard]
 Global $frmBot_WNDPROC = 0
 Global $frmBot_WNDPROC_ptr = 0
 Func SetCriticalMessageProcessing($bEnterCritical = Default)
@@ -45801,11 +45936,8 @@ Setlog("--------------------------------------------------------------", $COLOR_
 $debugBuildingPos = 0
 $debugDeadBaseImage = 0
 EndFunc
-Func btnVillageStat()
-If GUICtrlGetState($lblVillageReportTemp) <> $GUI_HIDE Then
-GUICtrlSetState($lblVillageReportTemp, $GUI_HIDE)
-EndIf
-SetTime(True)
+Func btnVillageStat($source = "")
+If $FirstRun = 0 And $RunState = True And $TPaused = False Then SetTime(True)
 If GUICtrlGetState($lblResultGoldNow) = $GUI_ENABLE + $GUI_SHOW Then
 GUICtrlSetState($lblResultGoldNow, $GUI_ENABLE + $GUI_HIDE)
 GUICtrlSetState($lblResultElixirNow, $GUI_ENABLE + $GUI_HIDE)
@@ -45816,9 +45948,11 @@ GUICtrlSetState($lblResultGemNow, $GUI_ENABLE + $GUI_HIDE)
 GUICtrlSetState($lblResultGoldHourNow, $GUI_ENABLE + $GUI_SHOW)
 GUICtrlSetState($lblResultElixirHourNow, $GUI_ENABLE + $GUI_SHOW)
 GUICtrlSetState($lblResultDEHourNow, $GUI_ENABLE + $GUI_SHOW)
+If $FirstRun = 0 or $source = "UpdateStats" Then
 GUICtrlSetState($lblResultRuntimeNow, $GUI_ENABLE + $GUI_SHOW)
 GUICtrlSetState($lblResultAttackedHourNow, $GUI_ENABLE + $GUI_SHOW)
 GUICtrlSetState($lblResultSkippedHourNow, $GUI_ENABLE + $GUI_SHOW)
+EndIf
 GUICtrlSetState($picResultTrophyNow, $GUI_ENABLE + $GUI_HIDE)
 GUICtrlSetState($picResultBuilderNow, $GUI_ENABLE + $GUI_HIDE)
 GUICtrlSetState($picResultGemNow, $GUI_ENABLE + $GUI_HIDE)
@@ -46236,7 +46370,8 @@ Local $NbrOfBarrack = 4
 Local $NbrOfDarkBarrack = 2
 For $i = 0 To UBound($TroopName) - 1
 Local $NbrOfTroop = GUICtrlRead(Eval("txtNum" & $TroopName[$i]))
-If $NbrOfTroop > 0 Then
+Local $LevOfTroop = Eval("itxtLev" & $TroopName[$i])
+If $NbrOfTroop > 0 And $LevOfTroop > 0 Then
 If $TroopType[$i] = "e" Then
 If IsInt($NbrOfTroop / $NbrOfBarrack) = 1 then
 $TotalTotalTimeTroop += ($NbrOfTroop / $NbrOfBarrack) * $TroopTimes[$i]
@@ -46686,14 +46821,18 @@ Next
 If $debugsetlogTrain = 1 Then Setlog("Custom train order used...", $COLOR_DEBUG)
 Return True
 EndFunc
-Func LevUpDown($SelTroopSpell)
+Func LevUpDown($SelTroopSpell, $NoChangeLev = True)
 Local $MaxLev = UBound(Eval("Lev" & $SelTroopSpell & "Cost"), 1)
 Local $LevColor = $COLOR_WHITE
 Local $TempLev
+If $NoChangeLev Then
 If _IsPressed("10") Or _IsPressed("02") Then
 $TempLev = Eval("itxtLev" & $SelTroopSpell) - 1
 Else
 $TempLev = Eval("itxtLev" & $SelTroopSpell) + 1
+EndIf
+Else
+$TempLev = Eval("itxtLev" & $SelTroopSpell)
 EndIf
 If $TempLev > $MaxLev - 1 Or $TempLev = 0 Then
 $TempLev = 0
@@ -49086,12 +49225,6 @@ GUICtrlSetState($txtUnBrkMaxDark, $GUI_DISABLE)
 $iUnbreakableMode = 0
 EndIf
 EndFunc
-Func PushBulletRemoteControl()
-If ($NotifyPBEnabled = 1 Or $NotifyTGEnabled = 1) And $NotifyRemoteEnable = 1 Then NotifyRemoteControl()
-EndFunc
-Func PushBulletDeleteOldPushes()
-If $NotifyPBEnabled = 1 And $NotifyDeletePushesOlderThan = 1 Then _DeleteOldPushes()
-EndFunc
 Func chkPBTGenabled()
 If GUICtrlRead($chkNotifyPBEnabled) = $GUI_CHECKED Then
 $NotifyPBEnabled = 1
@@ -49495,8 +49628,8 @@ Func cmbWalls()
 $icmbWalls = _GUICtrlComboBox_GetCurSel($cmbWalls)
 $WallCost = $WallCosts[_GUICtrlComboBox_GetCurSel($cmbWalls)]
 GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-_GUI_Value_STATE("HIDE", $txtWall04ST & "#" & $txtWall05ST & "#" & $txtWall06ST & "#" & $txtWall07ST & "#" & $txtWall08ST & "#" & $txtWall09ST & "#" & $txtWall10ST & "#" & $txtWall11ST)
-_GUI_Value_STATE("HIDE", $Wall04ST & "#" & $Wall05ST & "#" & $Wall06ST & "#" & $Wall07ST & "#" & $Wall08ST & "#" & $Wall09ST & "#" & $Wall10ST & "#" & $Wall11ST)
+_GUI_Value_STATE("HIDE", $txtWall04ST & "#" & $txtWall05ST & "#" & $txtWall06ST & "#" & $txtWall07ST & "#" & $txtWall08ST & "#" & $txtWall09ST & "#" & $txtWall10ST & "#" & $txtWall11ST & "#" & $txtWall12ST)
+_GUI_Value_STATE("HIDE", $Wall04ST & "#" & $Wall05ST & "#" & $Wall06ST & "#" & $Wall07ST & "#" & $Wall08ST & "#" & $Wall09ST & "#" & $Wall10ST & "#" & $Wall11ST & "#" & $Wall12ST)
 Switch $icmbWalls
 Case 0
 _GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST)
@@ -49539,13 +49672,20 @@ GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
 GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
 Case 5
 _GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST)
-$WallCost = 3000000
+$WallCost = 2000000
 GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 GUICtrlSetState($UseElixir, $GUI_ENABLE)
 GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
 GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
 Case 6
 _GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST & "#" & $txtWall11ST & "#" & $Wall11ST)
+$WallCost = 3000000
+GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
+GUICtrlSetState($UseElixir, $GUI_ENABLE)
+GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
+GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
+Case 7
+_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST & "#" & $txtWall11ST & "#" & $Wall11ST & "#" & $txtWall12ST & "#" & $Wall12ST)
 $WallCost = 4000000
 GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 GUICtrlSetState($UseElixir, $GUI_ENABLE)
@@ -50162,6 +50302,8 @@ Case "Spanish"
 $LangIcons = 201
 Case "Turkish"
 $LangIcons = 202
+Case "Portuguese"
+$LangIcons = 205
 Case Else
 $LangIcons = 203
 EndSwitch
@@ -50314,6 +50456,14 @@ Else
 $debugDisableVillageCentering = 0
 EndIf
 SetDebugLog("DebugDisableVillageCentering " & ($debugDisableVillageCentering = 1 ? "enabled" : "disabled"))
+EndFunc
+Func chkDebugDeadbaseImage()
+If GUICtrlRead($chkDebugDeadbaseImage) = $GUI_CHECKED Then
+$debugDeadbaseImage = 1
+Else
+$debugDeadbaseImage = 0
+EndIf
+SetDebugLog("DebugDeadbaseImage " & ($debugDeadbaseImage = 1 ? "enabled" : "disabled"))
 EndFunc
 Func chkDebugOcr()
 If GUICtrlRead($chkDebugOcr) = $GUI_CHECKED Then
@@ -51496,6 +51646,8 @@ Case $chkDebugDisableZoomout
 chkDebugDisableZoomout()
 Case $chkDebugDisableVillageCentering
 chkDebugDisableVillageCentering()
+Case $chkDebugDeadbaseImage
+chkDebugDeadbaseImage()
 Case $chkDebugOcr
 chkDebugOcr()
 Case $chkDebugImageSave
@@ -52283,7 +52435,7 @@ Local $aIconIndex[5] = [$eIcnOptions, $eIcnAndroid, $eIcnProfile, $eIcnProfile, 
 Case $hGUI_STRATEGIES_TAB
 Local $aIconIndex[2] = [$eIcnReload, $eIcnCopy]
 Case $hGUI_STATS_TAB
-Local $aIconIndex[3] = [$eIcnGoldElixir, $eIcnOptions, $eIcnCamp]
+Local $aIconIndex[4] = [$eIcnGoldElixir, $eIcnOptions, $eIcnCamp, $eIcnCCRequest]
 Case Else
 EndSwitch
 If IsArray($aIconIndex) Then
@@ -52380,6 +52532,7 @@ If $devmode = 1 Then
 GUICtrlSetState($chkDebugSetlog, $GUI_SHOW + $GUI_ENABLE)
 GUICtrlSetState($chkDebugDisableZoomout, $GUI_SHOW + $GUI_ENABLE)
 GUICtrlSetState($chkDebugDisableVillageCentering, $GUI_SHOW + $GUI_ENABLE)
+GUICtrlSetState($chkDebugDeadbaseImage, $GUI_SHOW + $GUI_ENABLE)
 GUICtrlSetState($chkDebugOcr, $GUI_SHOW + $GUI_ENABLE)
 GUICtrlSetState($chkDebugImageSave, $GUI_SHOW + $GUI_ENABLE)
 GUICtrlSetState($chkdebugBuildingPos, $GUI_SHOW + $GUI_ENABLE)
@@ -52551,6 +52704,7 @@ GUICtrlSetData($txtWall08ST, $itxtWall08ST)
 GUICtrlSetData($txtWall09ST, $itxtWall09ST)
 GUICtrlSetData($txtWall10ST, $itxtWall10ST)
 GUICtrlSetData($txtWall11ST, $itxtWall11ST)
+GUICtrlSetData($txtWall12ST, $itxtWall12ST)
 SaveConfig()
 EndFunc
 Func setupProfileComboBox()
@@ -53124,6 +53278,8 @@ GUICtrlSetData(Eval("txtNum" & $TroopName[$T]), Eval($TroopName[$T] & "Comp"))
 Else
 GUICtrlSetData(Eval("txtNum" & $TroopName[$T]), 0)
 EndIf
+GUICtrlSetData(Eval("txtLev" & $TroopName[$T]), Eval("itxtLev" & $TroopName[$T]))
+LevUpDown($TroopName[$T], False)
 Next
 For $S = 0 To UBound($SpellName) - 1
 If BitAND(Eval($SpellName[$S] & "Comp") <> 0, Eval("itxtLev" & $SpellName[$S]) <> 0) Then
@@ -53131,6 +53287,8 @@ GUICtrlSetData(Eval("txtNum" & $SpellName[$S]), Eval($SpellName[$S] & "Comp"))
 Else
 GUICtrlSetData(Eval("txtNum" & $SpellName[$S]), 0)
 EndIf
+GUICtrlSetData(Eval("txtLev" & $SpellName[$S]), Eval("itxtLev" & $SpellName[$S]))
+LevUpDown($SpellName[$S], False)
 Next
 GUICtrlSetData($txtFullTroop, $fulltroop)
 If $ichkCloseWaitEnable = 1 Then
@@ -53220,6 +53378,7 @@ GUICtrlSetData($txtWall08ST, $itxtWall08ST)
 GUICtrlSetData($txtWall09ST, $itxtWall09ST)
 GUICtrlSetData($txtWall10ST, $itxtWall10ST)
 GUICtrlSetData($txtWall11ST, $itxtWall11ST)
+GUICtrlSetData($txtWall12ST, $itxtWall12ST)
 _GUICtrlComboBox_SetCurSel($cmbWalls, $icmbWalls)
 Switch $iUseStorage
 Case 0
@@ -54108,6 +54267,7 @@ GUICtrlSetData($txtWall08ST, $itxtWall08ST)
 GUICtrlSetData($txtWall09ST, $itxtWall09ST)
 GUICtrlSetData($txtWall10ST, $itxtWall10ST)
 GUICtrlSetData($txtWall11ST, $itxtWall11ST)
+GUICtrlSetData($txtWall12ST, $itxtWall12ST)
 GUICtrlSetData($txtUpgrMinGold, $itxtUpgrMinGold)
 GUICtrlSetData($txtUpgrMinElixir, $itxtUpgrMinElixir)
 GUICtrlSetData($txtUpgrMinDark, $itxtUpgrMinDark)
@@ -54209,6 +54369,11 @@ If $debugDisableVillageCentering = 1 Then
 GUICtrlSetState($chkDebugDisableVillageCentering, $GUI_CHECKED)
 Else
 GUICtrlSetState($chkDebugDisableVillageCentering, $GUI_UNCHECKED)
+EndIf
+If $debugDeadbaseImage = 1 Then
+GUICtrlSetState($chkDebugDeadbaseImage, $GUI_CHECKED)
+Else
+GUICtrlSetState($chkDebugDeadbaseImage, $GUI_UNCHECKED)
 EndIf
 If $debugOcr = 1 Then
 GUICtrlSetState($chkDebugOcr, $GUI_CHECKED)
@@ -54769,16 +54934,7 @@ Else
 GUICtrlSetState($hRadio_Army3, $GUI_UNCHECKED)
 EndIf
 IF $iGUIEnabled = 0 Then
-For $T = 0 To (UBound($TroopName) - 1)
-Assign("itxtLev" & $TroopName[$T], Eval("itxtLev" & $TroopName[$T]) - 1)
-Call("Lev" & $TroopName[$T])
-If Eval("itxtLev" & $TroopName[$T]) < 0 Then Assign("itxtLev" & $TroopName[$T], 0)
-Next
-For $S = 0 To (UBound($SpellName) - 1)
-Assign("itxtLev" & $SpellName[$S], Eval("itxtLev" & $SpellName[$S]) - 1)
-Call("Lev" & $SpellName[$S])
-If Eval("itxtLev" & $SpellName[$S]) < 0 Then Assign("itxtLev" & $SpellName[$S], 0)
-Next
+lblTotalCount2()
 $iGUIEnabled = 1
 EndIf
 If $bRedrawAtExit Then SetRedrawBotWindow(True)
@@ -54823,36 +54979,36 @@ If $buildingVersion < $_ver630  Or ($buildingVersion >= $_ver63u And $buildingVe
 SetLog("New MyBot.run version! Re-locate all buildings!", $COLOR_WARNING)
 $locationsInvalid = True
 EndIf
-IniReadS($iTownHallLevel, $building, "other", "LevelTownHall", "0")
+IniReadS($iTownHallLevel, $building, "other", "LevelTownHall", 0, "int")
 If $locationsInvalid = False Then
-IniReadS($TownHallPos[0], $building, "other", "xTownHall", "-1")
-IniReadS($TownHallPos[1], $building, "other", "yTownHall", "-1")
-IniReadS($aCCPos[0], $building, "other", "xCCPos", "-1")
-IniReadS($aCCPos[1], $building, "other", "yCCPos", "-1")
-IniReadS($barrackPos[0][0], $building, "other", "xBarrack1", "-1")
-IniReadS($barrackPos[0][1], $building, "other", "yBarrack1", "-1")
-IniReadS($barrackPos[1][0], $building, "other", "xBarrack2", "-1")
-IniReadS($barrackPos[1][1], $building, "other", "yBarrack2", "-1")
-IniReadS($barrackPos[2][0], $building, "other", "xBarrack3", "-1")
-IniReadS($barrackPos[2][1], $building, "other", "yBarrack3", "-1")
-IniReadS($barrackPos[3][0], $building, "other", "xBarrack4", "-1")
-IniReadS($barrackPos[3][1], $building, "other", "yBarrack4", "-1")
-IniReadS($SFPos[0], $building, "other", "xspellfactory", "-1")
-IniReadS($SFPos[1], $building, "other", "yspellfactory", "-1")
-IniReadS($DSFPos[0], $building, "other", "xDspellfactory", "-1")
-IniReadS($DSFPos[1], $building, "other", "yDspellfactory", "-1")
-IniReadS($KingAltarPos[0], $building, "other", "xKingAltarPos", "-1")
-IniReadS($KingAltarPos[1], $building, "other", "yKingAltarPos", "-1")
-IniReadS($QueenAltarPos[0], $building, "other", "xQueenAltarPos", "-1")
-IniReadS($QueenAltarPos[1], $building, "other", "yQueenAltarPos", "-1")
-IniReadS($WardenAltarPos[0], $building, "other", "xWardenAltarPos", "-1")
-IniReadS($WardenAltarPos[1], $building, "other", "yWardenAltarPos", "-1")
-InireadS($aLabPos[0], $building, "upgrade", "LabPosX", "-1")
-InireadS($aLabPos[1], $building, "upgrade", "LabPosY", "-1")
+IniReadS($TownHallPos[0], $building, "other", "xTownHall", -1, "int")
+IniReadS($TownHallPos[1], $building, "other", "yTownHall", -1, "int")
+IniReadS($aCCPos[0], $building, "other", "xCCPos", -1, "int")
+IniReadS($aCCPos[1], $building, "other", "yCCPos", -1, "int")
+IniReadS($barrackPos[0][0], $building, "other", "xBarrack1", -1, "int")
+IniReadS($barrackPos[0][1], $building, "other", "yBarrack1", -1, "int")
+IniReadS($barrackPos[1][0], $building, "other", "xBarrack2", -1, "int")
+IniReadS($barrackPos[1][1], $building, "other", "yBarrack2", -1, "int")
+IniReadS($barrackPos[2][0], $building, "other", "xBarrack3", -1, "int")
+IniReadS($barrackPos[2][1], $building, "other", "yBarrack3", -1, "int")
+IniReadS($barrackPos[3][0], $building, "other", "xBarrack4", -1, "int")
+IniReadS($barrackPos[3][1], $building, "other", "yBarrack4", -1, "int")
+IniReadS($SFPos[0], $building, "other", "xspellfactory", -1, "int")
+IniReadS($SFPos[1], $building, "other", "yspellfactory", -1, "int")
+IniReadS($DSFPos[0], $building, "other", "xDspellfactory", -1, "int")
+IniReadS($DSFPos[1], $building, "other", "yDspellfactory", -1, "int")
+IniReadS($KingAltarPos[0], $building, "other", "xKingAltarPos", -1, "int")
+IniReadS($KingAltarPos[1], $building, "other", "yKingAltarPos", -1, "int")
+IniReadS($QueenAltarPos[0], $building, "other", "xQueenAltarPos", -1, "int")
+IniReadS($QueenAltarPos[1], $building, "other", "yQueenAltarPos", -1, "int")
+IniReadS($WardenAltarPos[0], $building, "other", "xWardenAltarPos", -1, "int")
+IniReadS($WardenAltarPos[1], $building, "other", "yWardenAltarPos", -1, "int")
+IniReadS($aLabPos[0], $building, "upgrade", "LabPosX", -1, "int")
+IniReadS($aLabPos[1], $building, "upgrade", "LabPosY", -1, "int")
 EndIf
-IniReadS($ArmyPos[0], $building, "other", "xArmy", "-1")
-IniReadS($ArmyPos[0], $building, "other", "yArmy", "-1")
-IniReadS($TotalCamp, $building, "other", "totalcamp", "0")
+IniReadS($ArmyPos[0], $building, "other", "xArmy", -1, "int")
+IniReadS($ArmyPos[0], $building, "other", "yArmy", -1, "int")
+IniReadS($TotalCamp, $building, "other", "totalcamp", 0, "int")
 IniReadS($listResourceLocation, $building, "other", "listResource", "")
 For $iz = 0 To UBound($aUpgrades, 1) - 1
 $aUpgrades[$iz][0] = IniRead($building, "upgrade", "xupgrade" & $iz, "-1")
@@ -54863,8 +55019,8 @@ $aUpgrades[$iz][4] = IniRead($building, "upgrade", "upgradename" & $iz, "")
 $aUpgrades[$iz][5] = IniRead($building, "upgrade", "upgradelevel" & $iz, "")
 $aUpgrades[$iz][6] = IniRead($building, "upgrade", "upgradetime" & $iz, "")
 $aUpgrades[$iz][7] = IniRead($building, "upgrade", "upgradeend" & $iz, "-1")
-$ichkbxUpgrade[$iz] = IniRead($building, "upgrade", "upgradechk" & $iz, "0")
-$ichkUpgrdeRepeat[$iz] = IniRead($building, "upgrade", "upgraderepeat" & $iz, "0")
+$ichkbxUpgrade[$iz] = Int(IniRead($building, "upgrade", "upgradechk" & $iz, 0))
+$ichkUpgrdeRepeat[$iz] = Int(IniRead($building, "upgrade", "upgraderepeat" & $iz, 0))
 $ipicUpgradeStatus[$iz] = IniRead($building, "upgrade", "upgradestatusicon" & $iz, $eIcnTroops)
 If $locationsInvalid = True Then
 $aUpgrades[$iz][0] = -1
@@ -54873,272 +55029,273 @@ $ichkbxUpgrade[$iz] = 0
 $ichkUpgrdeRepeat[$iz] = 0
 EndIf
 Next
-InireadS($ichkLab, $building, "upgrade", "upgradetroops", "0")
-InireadS($icmbLaboratory, $building, "upgrade", "upgradetroopname", "0")
+InireadS($ichkLab, $building, "upgrade", "upgradetroops", 0, "int")
+InireadS($icmbLaboratory, $building, "upgrade", "upgradetroopname", 0, "int")
 $sLabUpgradeTime = IniRead($building, "upgrade", "upgradelabtime", "")
 EndIf
 If FileExists($config) Then
 SetDebugLog("Read Config " & $config)
-IniReadS($frmBotPosX, $config, "general", "frmBotPosX", "-1")
-IniReadS($frmBotPosY, $config, "general", "frmBotPosY", "-1")
+IniReadS($frmBotPosX, $config, "general", "frmBotPosX", -1, "int")
+IniReadS($frmBotPosY, $config, "general", "frmBotPosY", -1, "int")
 If $frmBotPosX < -30000 Or $frmBotPosY < -30000 Then
 $frmBotPosX = -1
 $frmBotPosY = -1
 EndIf
-IniReadS($AndroidPosX, $config, "general", "AndroidPosX", "-1")
-IniReadS($AndroidPosY, $config, "general", "AndroidPosY", "-1")
+IniReadS($AndroidPosX, $config, "general", "AndroidPosX", -1, "int")
+IniReadS($AndroidPosY, $config, "general", "AndroidPosY", -1, "int")
 If $AndroidPosX < -30000 Or $AndroidPosY < -30000 Then
 $AndroidPosX = -1
 $AndroidPosY = -1
 EndIf
-IniReadS($frmBotDockedPosX, $config, "general", "frmBotDockedPosX", "-1")
-IniReadS($frmBotDockedPosY, $config, "general", "frmBotDockedPosY", "-1")
+IniReadS($frmBotDockedPosX, $config, "general", "frmBotDockedPosX", -1, "int")
+IniReadS($frmBotDockedPosY, $config, "general", "frmBotDockedPosY", -1, "int")
 If $frmBotDockedPosX < -30000 Or $frmBotDockedPosY < -30000 Then
 $frmBotDockedPosX = -1
 $frmBotDockedPosY = -1
 EndIf
 IniReadS($iHideWhenMinimized, $config, "general", "HideWhenMinimized", $iHideWhenMinimized)
 IniReadS($iVillageName, $config, "general", "villageName", "")
-IniReadS($iCmbLog, $config, "general", "logstyle", "0")
-IniReadS($iDividerY, $config, "general", "LogDividerY", "243")
-IniReadS($ichkAutoStart, $config, "general", "AutoStart", "0")
-IniReadS($ichkAutoStartDelay, $config, "general", "AutoStartDelay", "10")
+IniReadS($iCmbLog, $config, "general", "logstyle", 0, "int")
+IniReadS($iDividerY, $config, "general", "LogDividerY", 243, "int")
+IniReadS($ichkAutoStart, $config, "general", "AutoStart", 0, "int")
+IniReadS($ichkAutoStartDelay, $config, "general", "AutoStartDelay", 10, "int")
 IniReadS($restarted, $config, "general", "Restarted", $restarted, "int")
 If $bBotLaunchOption_Autostart = True Then $restarted = 1
-IniReadS($ichkBackground, $config, "general", "Background", "1")
-IniReadS($ichkBotStop, $config, "general", "BotStop", "0")
-IniReadS($icmbBotCommand, $config, "general", "Command", "0")
-IniReadS($icmbBotCond, $config, "general", "Cond", "0")
-IniReadS($icmbHoursStop, $config, "general", "Hour", "0")
-IniReadS($iDisposeWindows, $config, "general", "DisposeWindows", "0")
+IniReadS($ichkBackground, $config, "general", "Background", 1, "int")
+IniReadS($ichkBotStop, $config, "general", "BotStop", 0, "int")
+IniReadS($icmbBotCommand, $config, "general", "Command", 0, "int")
+IniReadS($icmbBotCond, $config, "general", "Cond", 0, "int")
+IniReadS($icmbHoursStop, $config, "general", "Hour", 0, "int")
+IniReadS($iDisposeWindows, $config, "general", "DisposeWindows", 0, "int")
 IniReadS($icmbDisposeWindowsPos, $config, "general", "DisposeWindowsPos", "SNAP-TR")
-IniReadS($AlertSearch, $config, "general", "AlertSearch", "0")
-IniReadS($ichkAttackNow, $config, "general", "AttackNow", "0")
-IniReadS($iAttackNowDelay, $config, "general", "attacknowdelay", "3")
-IniReadS($ichkbtnScheduler, $config, "general", "BtnScheduler", "0")
-IniReadS($RedrawBotWindowMode, $config, "general", "RedrawBotWindowMode", "2", "Int")
-IniReadS($ichkUpgradeKing, $config, "upgrade", "UpgradeKing", "0")
-IniReadS($ichkUpgradeQueen, $config, "upgrade", "UpgradeQueen", "0")
-IniReadS($ichkUpgradeWarden, $config, "upgrade", "UpgradeWarden", "0")
-IniReadS($itxtUpgrMinGold, $config, "upgrade", "minupgrgold", "100000")
-IniReadS($itxtUpgrMinElixir, $config, "upgrade", "minupgrelixir", "100000")
-IniReadS($itxtUpgrMinDark, $config, "upgrade", "minupgrdark", "2000")
-IniReadS($ichkWalls, $config, "upgrade", "auto-wall", "0")
-IniReadS($iSaveWallBldr, $config, "upgrade", "savebldr", "0")
-IniReadS($iUseStorage, $config, "upgrade", "use-storage", "0")
-IniReadS($icmbWalls, $config, "upgrade", "walllvl", "6")
-IniReadS($itxtWallMinGold, $config, "upgrade", "minwallgold", "0")
-IniReadS($itxtWallMinElixir, $config, "upgrade", "minwallelixir", "0")
-IniReadS($WallCost, $config, "upgrade", "WallCost", "0")
-IniReadS($itxtWall04ST, $config, "Walls", "Wall04", "0")
-IniReadS($itxtWall05ST, $config, "Walls", "Wall05", "0")
-IniReadS($itxtWall06ST, $config, "Walls", "Wall06", "0")
-IniReadS($itxtWall07ST, $config, "Walls", "Wall07", "0")
-IniReadS($itxtWall08ST, $config, "Walls", "Wall08", "0")
-IniReadS($itxtWall09ST, $config, "Walls", "Wall09", "0")
-IniReadS($itxtWall10ST, $config, "Walls", "Wall10", "0")
-IniReadS($itxtWall11ST, $config, "Walls", "Wall11", "0")
-IniReadS($itxtRestartGold, $config, "other", "minrestartgold", "50000")
-IniReadS($itxtRestartElixir, $config, "other", "minrestartelixir", "50000")
-IniReadS($itxtRestartDark, $config, "other", "minrestartdark", "500")
-IniReadS($iCmbTroopComp, $config, "troop", "TroopComposition", "9")
-IniReadS($icmbDarkTroopComp, $config, "troop", "DarkTroopComposition", "2")
-IniReadS($iTrainArchersToFitCamps, $config, "troop", "TrainArchersToFitCamps", "1")
-IniReadS($iChkUseQuickTrain, $config, "troop", "UseQuickTrain", "0")
-IniReadS($iCmbCurrentArmy, $config, "troop", "CurrentArmy", "1")
-IniReadS($iRadio_Army1, $config, "troop", "QuickTrain1", "1")
-IniReadS($iRadio_Army2, $config, "troop", "QuickTrain2", "0")
-IniReadS($iRadio_Army3, $config, "troop", "QuickTrain3", "0")
+IniReadS($AlertSearch, $config, "general", "AlertSearch", 0, "int")
+IniReadS($ichkAttackNow, $config, "general", "AttackNow", 0, "int")
+IniReadS($iAttackNowDelay, $config, "general", "attacknowdelay", 3, "int")
+IniReadS($ichkbtnScheduler, $config, "general", "BtnScheduler", 0, "int")
+IniReadS($RedrawBotWindowMode, $config, "general", "RedrawBotWindowMode", 2, "int")
+IniReadS($ichkUpgradeKing, $config, "upgrade", "UpgradeKing", 0, "int")
+IniReadS($ichkUpgradeQueen, $config, "upgrade", "UpgradeQueen", 0, "int")
+IniReadS($ichkUpgradeWarden, $config, "upgrade", "UpgradeWarden", 0, "int")
+IniReadS($itxtUpgrMinGold, $config, "upgrade", "minupgrgold", 100000, "int")
+IniReadS($itxtUpgrMinElixir, $config, "upgrade", "minupgrelixir", 100000, "int")
+IniReadS($itxtUpgrMinDark, $config, "upgrade", "minupgrdark", 2000, "int")
+IniReadS($ichkWalls, $config, "upgrade", "auto-wall", 0, "int")
+IniReadS($iSaveWallBldr, $config, "upgrade", "savebldr", 0, "int")
+IniReadS($iUseStorage, $config, "upgrade", "use-storage", 0, "int")
+IniReadS($icmbWalls, $config, "upgrade", "walllvl", 6, "int")
+IniReadS($itxtWallMinGold, $config, "upgrade", "minwallgold", 0, "int")
+IniReadS($itxtWallMinElixir, $config, "upgrade", "minwallelixir", 0, "int")
+IniReadS($WallCost, $config, "upgrade", "WallCost", 0, "int")
+IniReadS($itxtWall04ST, $config, "Walls", "Wall04", 0, "int")
+IniReadS($itxtWall05ST, $config, "Walls", "Wall05", 0, "int")
+IniReadS($itxtWall06ST, $config, "Walls", "Wall06", 0, "int")
+IniReadS($itxtWall07ST, $config, "Walls", "Wall07", 0, "int")
+IniReadS($itxtWall08ST, $config, "Walls", "Wall08", 0, "int")
+IniReadS($itxtWall09ST, $config, "Walls", "Wall09", 0, "int")
+IniReadS($itxtWall10ST, $config, "Walls", "Wall10", 0, "int")
+IniReadS($itxtWall11ST, $config, "Walls", "Wall11", 0, "int")
+IniReadS($itxtWall12ST, $config, "Walls", "Wall12", 0, "int")
+IniReadS($itxtRestartGold, $config, "other", "minrestartgold", 50000, "int")
+IniReadS($itxtRestartElixir, $config, "other", "minrestartelixir", 50000, "int")
+IniReadS($itxtRestartDark, $config, "other", "minrestartdark", 500, "int")
+IniReadS($iCmbTroopComp, $config, "troop", "TroopComposition", 9, "int")
+IniReadS($icmbDarkTroopComp, $config, "troop", "DarkTroopComposition", 2, "int")
+IniReadS($iTrainArchersToFitCamps, $config, "troop", "TrainArchersToFitCamps", 1, "int")
+IniReadS($iChkUseQuickTrain, $config, "troop", "UseQuickTrain", 0, "int")
+IniReadS($iCmbCurrentArmy, $config, "troop", "CurrentArmy", 1, "int")
+IniReadS($iRadio_Army1, $config, "troop", "QuickTrain1", 1, "int")
+IniReadS($iRadio_Army2, $config, "troop", "QuickTrain2", 0, "int")
+IniReadS($iRadio_Army3, $config, "troop", "QuickTrain3", 0, "int")
 Local $tempTroop, $tempLevTroop
 For $T = 0 To UBound($TroopName) - 1
 Switch $TroopName[$T]
 Case "Barb"
-IniReadS($tempTroop, $config, "troop", $TroopName[$T], "58")
-IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], "1")
+IniReadS($tempTroop, $config, "troop", $TroopName[$T], 58, "int")
+IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], 1, "int")
 Case "Arch"
-IniReadS($tempTroop, $config, "troop", $TroopName[$T], "115")
-IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], "1")
+IniReadS($tempTroop, $config, "troop", $TroopName[$T], 115, "int")
+IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], 1, "int")
 Case "Gobl"
-IniReadS($tempTroop, $config, "troop", $TroopName[$T], "19")
-IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], "1")
+IniReadS($tempTroop, $config, "troop", $TroopName[$T], 19, "int")
+IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], 1, "int")
 Case "Giant"
-IniReadS($tempTroop, $config, "troop", $TroopName[$T], "4")
-IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], "1")
+IniReadS($tempTroop, $config, "troop", $TroopName[$T], 4, "int")
+IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], 1, "int")
 Case "Wall"
-IniReadS($tempTroop, $config, "troop", $TroopName[$T], "4")
-IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], "1")
+IniReadS($tempTroop, $config, "troop", $TroopName[$T], 4, "int")
+IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], 1, "int")
 Case Else
-IniReadS($tempTroop, $config, "troop", $TroopName[$T], "0")
-IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], "0")
+IniReadS($tempTroop, $config, "troop", $TroopName[$T], 0, "int")
+IniReadS($tempLevTroop, $config, "LevelTroop", $TroopName[$T], 0, "int")
 EndSwitch
 Assign($TroopName[$T] & "Comp", $tempTroop)
 Assign("itxtLev" & $TroopName[$T], $tempLevTroop)
 Next
 Local $tempSpell, $tempLevSpell
 For $S = 0 To (UBound($SpellName) - 1)
-IniReadS($tempSpell, $config, "Spells", $SpellName[$S], "0")
+IniReadS($tempSpell, $config, "Spells", $SpellName[$S], 0, "int")
 Assign($SpellName[$S] & "Comp", $tempSpell)
-IniReadS($tempLevSpell, $config, "LevelSpell", $SpellName[$S], "0")
+IniReadS($tempLevSpell, $config, "LevelSpell", $SpellName[$S], 0, "int")
 Assign("itxtLev" & $SpellName[$S], $tempLevSpell)
 Next
 For $i = 0 To 3
-IniReadS($barrackTroop[$i], $config, "troop", "troop" & $i + 1, "0")
+IniReadS($barrackTroop[$i], $config, "troop", "troop" & $i + 1, 0, "int")
 Next
 For $i = 0 To 1
-IniReadS($darkBarrackTroop[$i], $config, "troop", "Darktroop" & $i + 1, "0")
+IniReadS($darkBarrackTroop[$i], $config, "troop", "Darktroop" & $i + 1, 0, "int")
 Next
-IniReadS($fulltroop, $config, "troop", "fullTroop", "100")
-IniReadS($isldTrainITDelay, $config, "other", "TrainITDelay", "40")
-IniReadS($ichkCloseWaitEnable, $config, "other", "chkCloseWaitEnable", "1")
-IniReadS($ichkCloseWaitTrain, $config, "other", "chkCloseWaitTrain", "0")
-IniReadS($ibtnCloseWaitStop, $config, "other", "btnCloseWaitStop", "0")
-IniReadS($ibtnCloseWaitStopRandom, $config, "other", "btnCloseWaitStopRandom", "0")
-IniReadS($ibtnCloseWaitExact, $config, "other", "btnCloseWaitExact", "0")
-IniReadS($ibtnCloseWaitRandom, $config, "other", "btnCloseWaitRandom", "1")
-IniReadS($icmbCloseWaitRdmPercent, $config, "other", "CloseWaitRdmPercent", "10")
-IniReadS($icmbMinimumTimeClose, $config, "other", "MinimumTimeToClose", "2")
-IniReadS($ichkTroopOrder, $config, "troop", "chkTroopOrder", "0")
+IniReadS($fulltroop, $config, "troop", "fullTroop", 100, "int")
+IniReadS($isldTrainITDelay, $config, "other", "TrainITDelay", 40, "int")
+IniReadS($ichkCloseWaitEnable, $config, "other", "chkCloseWaitEnable", 1, "int")
+IniReadS($ichkCloseWaitTrain, $config, "other", "chkCloseWaitTrain", 0, "int")
+IniReadS($ibtnCloseWaitStop, $config, "other", "btnCloseWaitStop", 0, "int")
+IniReadS($ibtnCloseWaitStopRandom, $config, "other", "btnCloseWaitStopRandom", 0, "int")
+IniReadS($ibtnCloseWaitExact, $config, "other", "btnCloseWaitExact", 0, "int")
+IniReadS($ibtnCloseWaitRandom, $config, "other", "btnCloseWaitRandom", 1, "int")
+IniReadS($icmbCloseWaitRdmPercent, $config, "other", "CloseWaitRdmPercent", 10, "int")
+IniReadS($icmbMinimumTimeClose, $config, "other", "MinimumTimeToClose", 2, "int")
+IniReadS($ichkTroopOrder, $config, "troop", "chkTroopOrder", 0, "int")
 For $z = 0 To UBound($DefaultTroopGroup) -1
 IniReadS($icmbTroopOrder[$z], $config, "troop", "cmbTroopOrder" & $z, $z)
 Next
-IniReadS($iTotalCountSpell, $config, "Spells", "SpellFactory", "0")
+IniReadS($iTotalCountSpell, $config, "Spells", "SpellFactory", 0, "int")
 $iTotalCountSpell = Int($iTotalCountSpell)
-IniReadS($iChkEnableAfter[$DB], $config, "search", "DBEnableAfter", "0")
-IniReadS($iCmbMeetGE[$DB], $config, "search", "DBMeetGE", "1")
-IniReadS($iChkMeetDE[$DB], $config, "search", "DBMeetDE", "0")
-IniReadS($iChkMeetTrophy[$DB], $config, "search", "DBMeetTrophy", "0")
-IniReadS($iChkMeetTH[$DB], $config, "search", "DBMeetTH", "0")
-IniReadS($iChkMeetTHO[$DB], $config, "search", "DBMeetTHO", "0")
-IniReadS($iChkMeetOne[$DB], $config, "search", "DBMeetOne", "0")
-IniReadS($iEnableAfterCount[$DB], $config, "search", "DBEnableAfterCount", "1")
-IniReadS($iEnableBeforeCount[$DB], $config, "search", "DBEnableBeforeCount", "9999", "Int")
-IniReadS($iEnableAfterTropies[$DB], $config, "search", "DBEnableAfterTropies", "100", "Int")
-IniReadS($iEnableBeforeTropies[$DB], $config, "search", "DBEnableBeforeTropies", "6000", "Int")
-IniReadS($iEnableAfterArmyCamps[$DB], $config, "search", "DBEnableAfterArmyCamps", "100", "Int")
-IniReadS($iMinGold[$DB], $config, "search", "DBsearchGold", "80000", "Int")
-IniReadS($iMinElixir[$DB], $config, "search", "DBsearchElixir", "80000")
-IniReadS($iMinGoldPlusElixir[$DB], $config, "search", "DBsearchGoldPlusElixir", "160000", "Int")
-IniReadS($iMinDark[$DB], $config, "search", "DBsearchDark", "0", "Int")
-IniReadS($iMinTrophy[$DB], $config, "search", "DBsearchTrophy", "0", "Int")
-IniReadS($iCmbTH[$DB], $config, "search", "DBTHLevel", "0")
-IniReadS($iCmbWeakMortar[$DB], $config, "search", "DBWeakMortar", "5", "Int")
-IniReadS($iCmbWeakWizTower[$DB], $config, "search", "DBWeakWizTower", "4", "Int")
-IniReadS($iCmbWeakAirDefense[$DB], $config, "search", "DBWeakAirDefense", "7", "Int")
-IniReadS($iCmbWeakXBow[$DB], $config, "search", "DBWeakXBow", "4", "Int")
-IniReadS($iCmbWeakInferno[$DB], $config, "search", "DBWeakInferno", "1", "Int")
-IniReadS($iCmbWeakEagle[$DB], $config, "search", "DBWeakEagle", "2", "Int")
-IniReadS($iChkMaxMortar[$DB], $config, "search", "DBCheckMortar", "0", "Int")
-IniReadS($iChkMaxWizTower[$DB], $config, "search", "DBCheckWizTower", "0", "Int")
-IniReadS($iChkMaxAirDefense[$DB], $config, "search", "DBCheckAirDefense", "0", "Int")
-IniReadS($iChkMaxXBow[$DB], $config, "search", "DBCheckXBow", "0", "Int")
-IniReadS($iChkMaxInferno[$DB], $config, "search", "DBCheckInferno", "0", "Int")
-IniReadS($iChkMaxEagle[$DB], $config, "search", "DBCheckEagle", "0", "Int")
-IniReadS($iChkEnableAfter[$LB], $config, "search", "ABEnableAfter", "0")
-IniReadS($iCmbMeetGE[$LB], $config, "search", "ABMeetGE", "2")
-IniReadS($iChkMeetDE[$LB], $config, "search", "ABMeetDE", "0")
-IniReadS($iChkMeetTrophy[$LB], $config, "search", "ABMeetTrophy", "0")
-IniReadS($iChkMeetTH[$LB], $config, "search", "ABMeetTH", "0")
-IniReadS($iChkMeetTHO[$LB], $config, "search", "ABMeetTHO", "0")
-IniReadS($iChkMeetOne[$LB], $config, "search", "ABMeetOne", "0")
-IniReadS($iEnableAfterCount[$LB], $config, "search", "ABEnableAfterCount", "1")
-IniReadS($iEnableBeforeCount[$LB], $config, "search", "ABEnableBeforeCount", "9999", "Int")
-IniReadS($iEnableAfterTropies[$LB], $config, "search", "ABEnableAfterTropies", "100", "Int")
-IniReadS($iEnableBeforeTropies[$LB], $config, "search", "ABEnableBeforeTropies", "6000", "Int")
-IniReadS($iEnableAfterArmyCamps[$LB], $config, "search", "ABEnableAfterArmyCamps", "100", "Int")
-IniReadS($iMinGold[$LB], $config, "search", "ABsearchGold", "80000", "Int")
-IniReadS($iMinElixir[$LB], $config, "search", "ABsearchElixir", "80000")
-IniReadS($iMinGoldPlusElixir[$LB], $config, "search", "ABsearchGoldPlusElixir", "160000", "Int")
-IniReadS($iMinDark[$LB], $config, "search", "ABsearchDark", "0", "Int")
-IniReadS($iMinTrophy[$LB], $config, "search", "ABsearchTrophy", "0", "Int")
-IniReadS($iCmbTH[$LB], $config, "search", "ABTHLevel", "0")
-IniReadS($iCmbWeakMortar[$LB], $config, "search", "ABWeakMortar", "5", "Int")
-IniReadS($iCmbWeakWizTower[$LB], $config, "search", "ABWeakWizTower", "4", "Int")
-IniReadS($iCmbWeakAirDefense[$LB], $config, "search", "ABWeakAirDefense", "7", "Int")
-IniReadS($iCmbWeakXBow[$LB], $config, "search", "ABWeakXBow", "4", "Int")
-IniReadS($iCmbWeakInferno[$LB], $config, "search", "ABWeakInferno", "1", "Int")
-IniReadS($iCmbWeakEagle[$LB], $config, "search", "ABWeakEagle", "2", "Int")
-IniReadS($iChkMaxMortar[$LB], $config, "search", "ABCheckMortar", "0", "Int")
-IniReadS($iChkMaxWizTower[$LB], $config, "search", "ABCheckWizTower", "0", "Int")
-IniReadS($iChkMaxAirDefense[$LB], $config, "search", "ABCheckAirDefense", "0", "Int")
-IniReadS($iChkMaxXBow[$LB], $config, "search", "ABCheckXBow", "0", "Int")
-IniReadS($iChkMaxInferno[$LB], $config, "search", "ABCheckInferno", "0", "Int")
-IniReadS($iChkMaxEagle[$LB], $config, "search", "ABCheckEagle", "0", "Int")
-IniReadS($iChkSearchReduction, $config, "search", "reduction", "0")
-IniReadS($ReduceCount, $config, "search", "reduceCount", "20")
-IniReadS($ReduceGold, $config, "search", "reduceGold", "2000")
-IniReadS($ReduceElixir, $config, "search", "reduceElixir", "2000")
-IniReadS($ReduceGoldPlusElixir, $config, "search", "reduceGoldPlusElixir", "4000")
-IniReadS($ReduceDark, $config, "search", "reduceDark", "100")
-IniReadS($ReduceTrophy, $config, "search", "reduceTrophy", "2")
-IniReadS($iChkRestartSearchLimit, $config, "search", "ChkRestartSearchLimit", "1")
-IniReadS($iRestartSearchlimit, $config, "search", "RestartSearchLimit", "50")
-IniReadS($iDBcheck, $config, "search", "DBcheck", "1")
-IniReadS($iABcheck, $config, "search", "ABcheck", "0")
-IniReadS($iTScheck, $config, "search", "TScheck", "0")
-IniReadS($iEnableSearchSearches[$DB], $config, "search", "ChkDBSearchSearches", "1")
-IniReadS($iEnableSearchSearches[$LB], $config, "search", "ChkABSearchSearches", "0")
-IniReadS($iEnableSearchSearches[$TS], $config, "search", "ChkTSSearchSearches", "0")
-IniReadS($iEnableSearchTropies[$DB], $config, "search", "ChkDBSearchTropies", "0")
-IniReadS($iEnableSearchTropies[$LB], $config, "search", "ChkABSearchTropies", "0")
-IniReadS($iEnableSearchTropies[$TS], $config, "search", "ChkTSSearchTropies", "0")
-IniReadS($iEnableSearchCamps[$DB], $config, "search", "ChkDBSearchCamps", "0")
-IniReadS($iEnableSearchCamps[$LB], $config, "search", "ChkABSearchCamps", "0")
-IniReadS($iEnableSearchCamps[$TS], $config, "search", "ChkTSSearchCamps", "0")
-IniReadS($OptBullyMode, $config, "search", "BullyMode", "0")
-IniReadS($ATBullyMode, $config, "search", "ATBullyMode", "0")
-IniReadS($YourTH, $config, "search", "YourTH", "0")
-IniReadS($iTHBullyAttackMode, $config, "search", "THBullyAttackMode", "0")
-IniReadS($THaddtiles, $config, "search", "THaddTiles", "2")
-IniReadS($iEnableAfterCount[$TS], $config, "search", "TSEnableAfterCount", "1")
-IniReadS($iEnableBeforeCount[$TS], $config, "search", "TSEnableBeforeCount", "9999", "Int")
-IniReadS($iEnableAfterTropies[$TS], $config, "search", "TSEnableAfterTropies", "100", "Int")
-IniReadS($iEnableBeforeTropies[$TS], $config, "search", "TSEnableBeforeTropies", "6000", "Int")
-IniReadS($iEnableAfterArmyCamps[$TS], $config, "search", "TSEnableAfterArmyCamps", "100", "Int")
-IniReadS($iMinGold[$TS], $config, "search", "TSsearchGold", "80000", "Int")
-IniReadS($iMinElixir[$TS], $config, "search", "TSsearchElixir", "80000", "Int")
-IniReadS($iMinGoldPlusElixir[$TS], $config, "search", "TSsearchGoldPlusElixir", "160000", "Int")
-IniReadS($iMinDark[$TS], $config, "search", "TSsearchDark", "600", "Int")
-IniReadS($iCmbMeetGE[$TS], $config, "search", "TSMeetGE", "1")
-IniReadS($iChkTrophyRange, $config, "search", "TrophyRange", "0")
-IniReadS($itxtdropTrophy, $config, "search", "MinTrophy", "5000", "Int")
-IniReadS($itxtMaxTrophy, $config, "search", "MaxTrophy", "5000", "Int")
-IniReadS($iChkTrophyHeroes, $config, "search", "chkTrophyHeroes", "0")
-IniReadS($iCmbTrophyHeroesPriority, $config, "search", "cmbTrophyHeroesPriority", "0")
-IniReadS($iChkTrophyAtkDead, $config, "search", "chkTrophyAtkDead", "0")
-IniReadS($itxtDTArmyMin, $config, "search", "DTArmyMin", "70")
-IniReadS($itxtSWTtiles, $config, "search", "SWTtiles", "1")
-IniReadS($iDeadBaseDisableCollectorsFilter,$config, "search", "chkDisableCollectorsFilter", "0")
-IniReadS($iAtkAlgorithm[$DB], $config, "attack", "DBAtkAlgorithm", "0")
-IniReadS($iAtkAlgorithm[$LB], $config, "attack", "ABAtkAlgorithm", "0")
-IniReadS($iChkDeploySettings[$DB], $config, "attack", "DBDeploy", "3")
-IniReadS($iCmbUnitDelay[$DB], $config, "attack", "DBUnitD", "4")
-IniReadS($iCmbWaveDelay[$DB], $config, "attack", "DBWaveD", "4")
-IniReadS($iChkRandomspeedatk[$DB], $config, "attack", "DBRandomSpeedAtk", "1")
-IniReadS($iChkDeploySettings[$LB], $config, "attack", "ABDeploy", "0")
-IniReadS($iCmbUnitDelay[$LB], $config, "attack", "ABUnitD", "4")
-IniReadS($iCmbWaveDelay[$LB], $config, "attack", "ABWaveD", "4")
-IniReadS($iChkRandomspeedatk[$LB], $config, "attack", "ABRandomSpeedAtk", "1")
-IniReadS($iCmbSelectTroop[$DB], $config, "attack", "DBSelectTroop", "0")
-IniReadS($iCmbSelectTroop[$LB], $config, "attack", "ABSelectTroop", "0")
-IniReadS($iCmbSelectTroop[$TS], $config, "attack", "TSSelectTroop", "0")
-IniReadS($iChkRedArea[$DB], $config, "attack", "DBSmartAttackRedArea", "1")
-IniReadS($iCmbSmartDeploy[$DB], $config, "attack", "DBSmartAttackDeploy", "0")
-IniReadS($iChkSmartAttack[$DB][0], $config, "attack", "DBSmartAttackGoldMine", "0")
-IniReadS($iChkSmartAttack[$DB][1], $config, "attack", "DBSmartAttackElixirCollector", "0")
-IniReadS($iChkSmartAttack[$DB][2], $config, "attack", "DBSmartAttackDarkElixirDrill", "0")
-IniReadS($iChkRedArea[$LB], $config, "attack", "ABSmartAttackRedArea", "1")
-IniReadS($iCmbSmartDeploy[$LB], $config, "attack", "ABSmartAttackDeploy", "1")
-IniReadS($iChkSmartAttack[$LB][0], $config, "attack", "ABSmartAttackGoldMine", "0")
-IniReadS($iChkSmartAttack[$LB][1], $config, "attack", "ABSmartAttackElixirCollector", "0")
-IniReadS($iChkSmartAttack[$LB][2], $config, "attack", "ABSmartAttackDarkElixirDrill", "0")
-IniReadS($KingAttack[$DB], $config, "attack", "DBKingAtk", "0")
-IniReadS($KingAttack[$LB], $config, "attack", "ABKingAtk", "0")
-IniReadS($KingAttack[$TS], $config, "attack", "TSKingAtk", "0")
-IniReadS($QueenAttack[$DB], $config, "attack", "DBQueenAtk", "0")
-IniReadS($QueenAttack[$LB], $config, "attack", "ABQueenAtk", "0")
-IniReadS($QueenAttack[$TS], $config, "attack", "TSQueenAtk", "0")
-IniReadS($iCmbStandardAlgorithm[$DB], $config, "attack", "DBStandardAlgorithm", "0")
-IniReadS($iCmbStandardAlgorithm[$LB], $config, "attack", "LBStandardAlgorithm", "0")
+IniReadS($iChkEnableAfter[$DB], $config, "search", "DBEnableAfter", 0, "int")
+IniReadS($iCmbMeetGE[$DB], $config, "search", "DBMeetGE", 1, "int")
+IniReadS($iChkMeetDE[$DB], $config, "search", "DBMeetDE", 0, "int")
+IniReadS($iChkMeetTrophy[$DB], $config, "search", "DBMeetTrophy", 0, "int")
+IniReadS($iChkMeetTH[$DB], $config, "search", "DBMeetTH", 0, "int")
+IniReadS($iChkMeetTHO[$DB], $config, "search", "DBMeetTHO", 0, "int")
+IniReadS($iChkMeetOne[$DB], $config, "search", "DBMeetOne", 0, "int")
+IniReadS($iEnableAfterCount[$DB], $config, "search", "DBEnableAfterCount", 1, "int")
+IniReadS($iEnableBeforeCount[$DB], $config, "search", "DBEnableBeforeCount", 9999, "int")
+IniReadS($iEnableAfterTropies[$DB], $config, "search", "DBEnableAfterTropies", 100, "int")
+IniReadS($iEnableBeforeTropies[$DB], $config, "search", "DBEnableBeforeTropies", 6000, "int")
+IniReadS($iEnableAfterArmyCamps[$DB], $config, "search", "DBEnableAfterArmyCamps", 100, "int")
+IniReadS($iMinGold[$DB], $config, "search", "DBsearchGold", 80000, "int")
+IniReadS($iMinElixir[$DB], $config, "search", "DBsearchElixir", 80000, "int")
+IniReadS($iMinGoldPlusElixir[$DB], $config, "search", "DBsearchGoldPlusElixir", 160000, "int")
+IniReadS($iMinDark[$DB], $config, "search", "DBsearchDark", 0, "int")
+IniReadS($iMinTrophy[$DB], $config, "search", "DBsearchTrophy", 0, "int")
+IniReadS($iCmbTH[$DB], $config, "search", "DBTHLevel", 0, "int")
+IniReadS($iCmbWeakMortar[$DB], $config, "search", "DBWeakMortar", 5, "int")
+IniReadS($iCmbWeakWizTower[$DB], $config, "search", "DBWeakWizTower", 4, "int")
+IniReadS($iCmbWeakAirDefense[$DB], $config, "search", "DBWeakAirDefense", 7, "int")
+IniReadS($iCmbWeakXBow[$DB], $config, "search", "DBWeakXBow", 4, "int")
+IniReadS($iCmbWeakInferno[$DB], $config, "search", "DBWeakInferno", 1, "int")
+IniReadS($iCmbWeakEagle[$DB], $config, "search", "DBWeakEagle", 2, "int")
+IniReadS($iChkMaxMortar[$DB], $config, "search", "DBCheckMortar", 0, "int")
+IniReadS($iChkMaxWizTower[$DB], $config, "search", "DBCheckWizTower", 0, "int")
+IniReadS($iChkMaxAirDefense[$DB], $config, "search", "DBCheckAirDefense", 0, "int")
+IniReadS($iChkMaxXBow[$DB], $config, "search", "DBCheckXBow", 0, "int")
+IniReadS($iChkMaxInferno[$DB], $config, "search", "DBCheckInferno", 0, "int")
+IniReadS($iChkMaxEagle[$DB], $config, "search", "DBCheckEagle", 0, "int")
+IniReadS($iChkEnableAfter[$LB], $config, "search", "ABEnableAfter", 0, "int")
+IniReadS($iCmbMeetGE[$LB], $config, "search", "ABMeetGE", 2, "int")
+IniReadS($iChkMeetDE[$LB], $config, "search", "ABMeetDE", 0, "int")
+IniReadS($iChkMeetTrophy[$LB], $config, "search", "ABMeetTrophy", 0, "int")
+IniReadS($iChkMeetTH[$LB], $config, "search", "ABMeetTH", 0, "int")
+IniReadS($iChkMeetTHO[$LB], $config, "search", "ABMeetTHO", 0, "int")
+IniReadS($iChkMeetOne[$LB], $config, "search", "ABMeetOne", 0, "int")
+IniReadS($iEnableAfterCount[$LB], $config, "search", "ABEnableAfterCount", 1, "int")
+IniReadS($iEnableBeforeCount[$LB], $config, "search", "ABEnableBeforeCount", 9999, "int")
+IniReadS($iEnableAfterTropies[$LB], $config, "search", "ABEnableAfterTropies", 100, "int")
+IniReadS($iEnableBeforeTropies[$LB], $config, "search", "ABEnableBeforeTropies", 6000, "int")
+IniReadS($iEnableAfterArmyCamps[$LB], $config, "search", "ABEnableAfterArmyCamps", 100, "int")
+IniReadS($iMinGold[$LB], $config, "search", "ABsearchGold", 80000, "int")
+IniReadS($iMinElixir[$LB], $config, "search", "ABsearchElixir", 80000, "int")
+IniReadS($iMinGoldPlusElixir[$LB], $config, "search", "ABsearchGoldPlusElixir", 160000, "int")
+IniReadS($iMinDark[$LB], $config, "search", "ABsearchDark", 0, "int")
+IniReadS($iMinTrophy[$LB], $config, "search", "ABsearchTrophy", 0, "int")
+IniReadS($iCmbTH[$LB], $config, "search", "ABTHLevel", 0, "int")
+IniReadS($iCmbWeakMortar[$LB], $config, "search", "ABWeakMortar", 5, "int")
+IniReadS($iCmbWeakWizTower[$LB], $config, "search", "ABWeakWizTower", 4, "int")
+IniReadS($iCmbWeakAirDefense[$LB], $config, "search", "ABWeakAirDefense", 7, "int")
+IniReadS($iCmbWeakXBow[$LB], $config, "search", "ABWeakXBow", 4, "int")
+IniReadS($iCmbWeakInferno[$LB], $config, "search", "ABWeakInferno", 1, "int")
+IniReadS($iCmbWeakEagle[$LB], $config, "search", "ABWeakEagle", 2, "int")
+IniReadS($iChkMaxMortar[$LB], $config, "search", "ABCheckMortar", 0, "int")
+IniReadS($iChkMaxWizTower[$LB], $config, "search", "ABCheckWizTower", 0, "int")
+IniReadS($iChkMaxAirDefense[$LB], $config, "search", "ABCheckAirDefense", 0, "int")
+IniReadS($iChkMaxXBow[$LB], $config, "search", "ABCheckXBow", 0, "int")
+IniReadS($iChkMaxInferno[$LB], $config, "search", "ABCheckInferno", 0, "int")
+IniReadS($iChkMaxEagle[$LB], $config, "search", "ABCheckEagle", 0, "int")
+IniReadS($iChkSearchReduction, $config, "search", "reduction", 0, "int")
+IniReadS($ReduceCount, $config, "search", "reduceCount", 20, "int")
+IniReadS($ReduceGold, $config, "search", "reduceGold", 2000, "int")
+IniReadS($ReduceElixir, $config, "search", "reduceElixir", 2000, "int")
+IniReadS($ReduceGoldPlusElixir, $config, "search", "reduceGoldPlusElixir", 4000, "int")
+IniReadS($ReduceDark, $config, "search", "reduceDark", 100, "int")
+IniReadS($ReduceTrophy, $config, "search", "reduceTrophy", 2, "int")
+IniReadS($iChkRestartSearchLimit, $config, "search", "ChkRestartSearchLimit", 1, "int")
+IniReadS($iRestartSearchlimit, $config, "search", "RestartSearchLimit", 50, "int")
+IniReadS($iDBcheck, $config, "search", "DBcheck", 1, "int")
+IniReadS($iABcheck, $config, "search", "ABcheck", 0, "int")
+IniReadS($iTScheck, $config, "search", "TScheck", 0, "int")
+IniReadS($iEnableSearchSearches[$DB], $config, "search", "ChkDBSearchSearches", 1, "int")
+IniReadS($iEnableSearchSearches[$LB], $config, "search", "ChkABSearchSearches", 0, "int")
+IniReadS($iEnableSearchSearches[$TS], $config, "search", "ChkTSSearchSearches", 0, "int")
+IniReadS($iEnableSearchTropies[$DB], $config, "search", "ChkDBSearchTropies", 0, "int")
+IniReadS($iEnableSearchTropies[$LB], $config, "search", "ChkABSearchTropies", 0, "int")
+IniReadS($iEnableSearchTropies[$TS], $config, "search", "ChkTSSearchTropies", 0, "int")
+IniReadS($iEnableSearchCamps[$DB], $config, "search", "ChkDBSearchCamps", 0, "int")
+IniReadS($iEnableSearchCamps[$LB], $config, "search", "ChkABSearchCamps", 0, "int")
+IniReadS($iEnableSearchCamps[$TS], $config, "search", "ChkTSSearchCamps", 0, "int")
+IniReadS($OptBullyMode, $config, "search", "BullyMode", 0, "int")
+IniReadS($ATBullyMode, $config, "search", "ATBullyMode", 0, "int")
+IniReadS($YourTH, $config, "search", "YourTH", 0, "int")
+IniReadS($iTHBullyAttackMode, $config, "search", "THBullyAttackMode", 0, "int")
+IniReadS($THaddtiles, $config, "search", "THaddTiles", 2, "int")
+IniReadS($iEnableAfterCount[$TS], $config, "search", "TSEnableAfterCount", 1, "int")
+IniReadS($iEnableBeforeCount[$TS], $config, "search", "TSEnableBeforeCount", 9999, "int")
+IniReadS($iEnableAfterTropies[$TS], $config, "search", "TSEnableAfterTropies", 100, "int")
+IniReadS($iEnableBeforeTropies[$TS], $config, "search", "TSEnableBeforeTropies", 6000, "int")
+IniReadS($iEnableAfterArmyCamps[$TS], $config, "search", "TSEnableAfterArmyCamps", 100, "int")
+IniReadS($iMinGold[$TS], $config, "search", "TSsearchGold", 80000, "int")
+IniReadS($iMinElixir[$TS], $config, "search", "TSsearchElixir", 80000, "int")
+IniReadS($iMinGoldPlusElixir[$TS], $config, "search", "TSsearchGoldPlusElixir", 160000, "int")
+IniReadS($iMinDark[$TS], $config, "search", "TSsearchDark", 600, "int")
+IniReadS($iCmbMeetGE[$TS], $config, "search", "TSMeetGE", 1, "int")
+IniReadS($iChkTrophyRange, $config, "search", "TrophyRange", 0, "int")
+IniReadS($itxtdropTrophy, $config, "search", "MinTrophy", 5000, "int")
+IniReadS($itxtMaxTrophy, $config, "search", "MaxTrophy", 5000, "int")
+IniReadS($iChkTrophyHeroes, $config, "search", "chkTrophyHeroes", 0, "int")
+IniReadS($iCmbTrophyHeroesPriority, $config, "search", "cmbTrophyHeroesPriority", 0, "int")
+IniReadS($iChkTrophyAtkDead, $config, "search", "chkTrophyAtkDead", 0, "int")
+IniReadS($itxtDTArmyMin, $config, "search", "DTArmyMin", 70, "int")
+IniReadS($itxtSWTtiles, $config, "search", "SWTtiles", 1, "int")
+IniReadS($iDeadBaseDisableCollectorsFilter,$config, "search", "chkDisableCollectorsFilter", 0, "int")
+IniReadS($iAtkAlgorithm[$DB], $config, "attack", "DBAtkAlgorithm", 0, "int")
+IniReadS($iAtkAlgorithm[$LB], $config, "attack", "ABAtkAlgorithm", 0, "int")
+IniReadS($iChkDeploySettings[$DB], $config, "attack", "DBDeploy", 3, "int")
+IniReadS($iCmbUnitDelay[$DB], $config, "attack", "DBUnitD", 4, "int")
+IniReadS($iCmbWaveDelay[$DB], $config, "attack", "DBWaveD", 4, "int")
+IniReadS($iChkRandomspeedatk[$DB], $config, "attack", "DBRandomSpeedAtk", 1, "int")
+IniReadS($iChkDeploySettings[$LB], $config, "attack", "ABDeploy", 0, "int")
+IniReadS($iCmbUnitDelay[$LB], $config, "attack", "ABUnitD", 4, "int")
+IniReadS($iCmbWaveDelay[$LB], $config, "attack", "ABWaveD", 4, "int")
+IniReadS($iChkRandomspeedatk[$LB], $config, "attack", "ABRandomSpeedAtk", 1, "int")
+IniReadS($iCmbSelectTroop[$DB], $config, "attack", "DBSelectTroop", 0, "int")
+IniReadS($iCmbSelectTroop[$LB], $config, "attack", "ABSelectTroop", 0, "int")
+IniReadS($iCmbSelectTroop[$TS], $config, "attack", "TSSelectTroop", 0, "int")
+IniReadS($iChkRedArea[$DB], $config, "attack", "DBSmartAttackRedArea", 1, "int")
+IniReadS($iCmbSmartDeploy[$DB], $config, "attack", "DBSmartAttackDeploy", 0, "int")
+IniReadS($iChkSmartAttack[$DB][0], $config, "attack", "DBSmartAttackGoldMine", 0, "int")
+IniReadS($iChkSmartAttack[$DB][1], $config, "attack", "DBSmartAttackElixirCollector", 0, "int")
+IniReadS($iChkSmartAttack[$DB][2], $config, "attack", "DBSmartAttackDarkElixirDrill", 0, "int")
+IniReadS($iChkRedArea[$LB], $config, "attack", "ABSmartAttackRedArea", 1, "int")
+IniReadS($iCmbSmartDeploy[$LB], $config, "attack", "ABSmartAttackDeploy", 1, "int")
+IniReadS($iChkSmartAttack[$LB][0], $config, "attack", "ABSmartAttackGoldMine", 0, "int")
+IniReadS($iChkSmartAttack[$LB][1], $config, "attack", "ABSmartAttackElixirCollector", 0, "int")
+IniReadS($iChkSmartAttack[$LB][2], $config, "attack", "ABSmartAttackDarkElixirDrill", 0, "int")
+IniReadS($KingAttack[$DB], $config, "attack", "DBKingAtk", 0, "int")
+IniReadS($KingAttack[$LB], $config, "attack", "ABKingAtk", 0, "int")
+IniReadS($KingAttack[$TS], $config, "attack", "TSKingAtk", 0, "int")
+IniReadS($QueenAttack[$DB], $config, "attack", "DBQueenAtk", 0, "int")
+IniReadS($QueenAttack[$LB], $config, "attack", "ABQueenAtk", 0, "int")
+IniReadS($QueenAttack[$TS], $config, "attack", "TSQueenAtk", 0, "int")
+IniReadS($iCmbStandardAlgorithm[$DB], $config, "attack", "DBStandardAlgorithm", 0, "int")
+IniReadS($iCmbStandardAlgorithm[$LB], $config, "attack", "LBStandardAlgorithm", 0, "int")
 Local $temp1, $temp2, $temp3
 IniReadS($temp1, $config, "attack", "DBKingAtk", $HERO_NOHERO)
 IniReadS($temp2, $config, "attack", "DBQueenAtk", $HERO_NOHERO)
@@ -55162,40 +55319,40 @@ $iHeroWait[$LB] = BitOR(Int($temp1), Int($temp2), Int($temp3))
 $iHeroWaitNoBit[$LB][0] = ($temp1 > $HERO_NOHERO) ? 1 : 0
 $iHeroWaitNoBit[$LB][1] = ($temp2 > $HERO_NOHERO) ? 1 : 0
 $iHeroWaitNoBit[$LB][2] = ($temp3 > $HERO_NOHERO) ? 1 : 0
-IniReadS($iDropCC[$DB], $config, "attack", "DBDropCC", "0")
-IniReadS($iDropCC[$LB], $config, "attack", "ABDropCC", "0")
-IniReadS($iDropCC[$TS], $config, "attack", "TSDropCC", "0")
-IniReadS($WardenAttack[$DB], $config, "attack", "DBWardenAtk", "0")
-IniReadS($WardenAttack[$LB], $config, "attack", "ABWardenAtk", "0")
-IniReadS($WardenAttack[$TS], $config, "attack", "TSWardenAtk", "0")
-IniReadS($ichkLightSpell[$DB], $config, "attack", "DBLightSpell", "0")
-IniReadS($ichkLightSpell[$LB], $config, "attack", "ABLightSpell", "0")
-IniReadS($ichkLightSpell[$TS], $config, "attack", "TSLightSpell", "0")
-IniReadS($ichkHealSpell[$DB], $config, "attack", "DBHealSpell", "0")
-IniReadS($ichkHealSpell[$LB], $config, "attack", "ABHealSpell", "0")
-IniReadS($ichkHealSpell[$TS], $config, "attack", "TSHealSpell", "0")
-IniReadS($ichkRageSpell[$DB], $config, "attack", "DBRageSpell", "0")
-IniReadS($ichkRageSpell[$LB], $config, "attack", "ABRageSpell", "0")
-IniReadS($ichkRageSpell[$TS], $config, "attack", "TSRageSpell", "0")
-IniReadS($ichkJumpSpell[$DB], $config, "attack", "DBJumpSpell", "0")
-IniReadS($ichkJumpSpell[$LB], $config, "attack", "ABJumpSpell", "0")
-IniReadS($ichkJumpSpell[$TS], $config, "attack", "TSJumpSpell", "0")
-IniReadS($ichkFreezeSpell[$DB], $config, "attack", "DBFreezeSpell", "0")
-IniReadS($ichkFreezeSpell[$LB], $config, "attack", "ABFreezeSpell", "0")
-IniReadS($ichkFreezeSpell[$TS], $config, "attack", "TSFreezeSpell", "0")
-IniReadS($ichkPoisonSpell[$DB], $config, "attack", "DBPoisonSpell", "0")
-IniReadS($ichkPoisonSpell[$LB], $config, "attack", "ABPoisonSpell", "0")
-IniReadS($ichkPoisonSpell[$TS], $config, "attack", "TSPoisonSpell", "0")
-IniReadS($ichkEarthquakeSpell[$DB], $config, "attack", "DBEarthquakeSpell", "0")
-IniReadS($ichkEarthquakeSpell[$LB], $config, "attack", "ABEarthquakeSpell", "0")
-IniReadS($ichkEarthquakeSpell[$TS], $config, "attack", "TSEarthquakeSpell", "0")
-IniReadS($ichkHasteSpell[$DB], $config, "attack", "DBHasteSpell", "0")
-IniReadS($ichkHasteSpell[$LB], $config, "attack", "ABHasteSpell", "0")
-IniReadS($ichkHasteSpell[$TS], $config, "attack", "TSHasteSpell", "0")
-IniReadS($ichkCloneSpell[$DB], $config, "attack", "DBCloneSpell", "0")
-IniReadS($ichkCloneSpell[$LB], $config, "attack", "ABCloneSpell", "0")
-IniReadS($ichkSkeletonSpell[$DB], $config, "attack", "DBSkeletonSpell", "0")
-IniReadS($ichkSkeletonSpell[$LB], $config, "attack", "ABSkeletonSpell", "0")
+IniReadS($iDropCC[$DB], $config, "attack", "DBDropCC", 0, "int")
+IniReadS($iDropCC[$LB], $config, "attack", "ABDropCC", 0, "int")
+IniReadS($iDropCC[$TS], $config, "attack", "TSDropCC", 0, "int")
+IniReadS($WardenAttack[$DB], $config, "attack", "DBWardenAtk", 0, "int")
+IniReadS($WardenAttack[$LB], $config, "attack", "ABWardenAtk", 0, "int")
+IniReadS($WardenAttack[$TS], $config, "attack", "TSWardenAtk", 0, "int")
+IniReadS($ichkLightSpell[$DB], $config, "attack", "DBLightSpell", 0, "int")
+IniReadS($ichkLightSpell[$LB], $config, "attack", "ABLightSpell", 0, "int")
+IniReadS($ichkLightSpell[$TS], $config, "attack", "TSLightSpell", 0, "int")
+IniReadS($ichkHealSpell[$DB], $config, "attack", "DBHealSpell", 0, "int")
+IniReadS($ichkHealSpell[$LB], $config, "attack", "ABHealSpell", 0, "int")
+IniReadS($ichkHealSpell[$TS], $config, "attack", "TSHealSpell", 0, "int")
+IniReadS($ichkRageSpell[$DB], $config, "attack", "DBRageSpell", 0, "int")
+IniReadS($ichkRageSpell[$LB], $config, "attack", "ABRageSpell", 0, "int")
+IniReadS($ichkRageSpell[$TS], $config, "attack", "TSRageSpell", 0, "int")
+IniReadS($ichkJumpSpell[$DB], $config, "attack", "DBJumpSpell", 0, "int")
+IniReadS($ichkJumpSpell[$LB], $config, "attack", "ABJumpSpell", 0, "int")
+IniReadS($ichkJumpSpell[$TS], $config, "attack", "TSJumpSpell", 0, "int")
+IniReadS($ichkFreezeSpell[$DB], $config, "attack", "DBFreezeSpell", 0, "int")
+IniReadS($ichkFreezeSpell[$LB], $config, "attack", "ABFreezeSpell", 0, "int")
+IniReadS($ichkFreezeSpell[$TS], $config, "attack", "TSFreezeSpell", 0, "int")
+IniReadS($ichkPoisonSpell[$DB], $config, "attack", "DBPoisonSpell", 0, "int")
+IniReadS($ichkPoisonSpell[$LB], $config, "attack", "ABPoisonSpell", 0, "int")
+IniReadS($ichkPoisonSpell[$TS], $config, "attack", "TSPoisonSpell", 0, "int")
+IniReadS($ichkEarthquakeSpell[$DB], $config, "attack", "DBEarthquakeSpell", 0, "int")
+IniReadS($ichkEarthquakeSpell[$LB], $config, "attack", "ABEarthquakeSpell", 0, "int")
+IniReadS($ichkEarthquakeSpell[$TS], $config, "attack", "TSEarthquakeSpell", 0, "int")
+IniReadS($ichkHasteSpell[$DB], $config, "attack", "DBHasteSpell", 0, "int")
+IniReadS($ichkHasteSpell[$LB], $config, "attack", "ABHasteSpell", 0, "int")
+IniReadS($ichkHasteSpell[$TS], $config, "attack", "TSHasteSpell", 0, "int")
+IniReadS($ichkCloneSpell[$DB], $config, "attack", "DBCloneSpell", 0, "int")
+IniReadS($ichkCloneSpell[$LB], $config, "attack", "ABCloneSpell", 0, "int")
+IniReadS($ichkSkeletonSpell[$DB], $config, "attack", "DBSkeletonSpell", 0, "int")
+IniReadS($ichkSkeletonSpell[$LB], $config, "attack", "ABSkeletonSpell", 0, "int")
 IniReadS($scmbDBScriptName, $config, "attack", "ScriptDB", "Barch four fingers")
 IniReadS($scmbABScriptName, $config, "attack", "ScriptAB", "Barch four fingers")
 IniReadS($iRedlineRoutine[$DB], $config, "attack", "RedlineRoutineDB", $iRedlineRoutine[$DB], "Int")
@@ -55203,420 +55360,421 @@ IniReadS($iRedlineRoutine[$LB], $config, "attack", "RedlineRoutineAB", $iRedline
 IniReadS($iDroplineEdge[$DB], $config, "attack", "DroplineEdgeDB", $iDroplineEdge[$DB], "Int")
 IniReadS($iDroplineEdge[$LB], $config, "attack", "DroplineEdgeAB", $iDroplineEdge[$LB], "Int")
 IniReadS($iActivateKQCondition, $config, "attack", "ActivateKQ", "Auto")
-IniReadS($delayActivateKQ, $config, "attack", "delayActivateKQ", "9")
+IniReadS($delayActivateKQ, $config, "attack", "delayActivateKQ", 9, "int")
 $delayActivateKQ *= 1000
-IniReadS($iActivateWardenCondition, $config, "attack", "ActivateWarden", "1")
-IniReadS($delayActivateW, $config, "attack", "delayActivateW", "9")
+IniReadS($iActivateWardenCondition, $config, "attack", "ActivateWarden", 1, "int")
+IniReadS($delayActivateW, $config, "attack", "delayActivateW", 9, "int")
 $delayActivateW *= 1000
-IniReadS($TakeLootSnapShot, $config, "attack", "TakeLootSnapShot", "0")
-IniReadS($ScreenshotLootInfo, $config, "attack", "ScreenshotLootInfo", "0")
+IniReadS($TakeLootSnapShot, $config, "attack", "TakeLootSnapShot", 0, "int")
+IniReadS($ScreenshotLootInfo, $config, "attack", "ScreenshotLootInfo", 0, "int")
 IniReadS($scmbAttackTHType, $config, "attack", "AttackTHType", "bam")
-IniReadS($THSnipeBeforeDBEnable, $config, "attack", "THSnipeBeforeDBEnable", "0")
-IniReadS($THSnipeBeforeLBEnable, $config, "attack", "THSnipeBeforeLBEnable", "0")
-IniReadS($THSnipeBeforeDBTiles, $config, "attack", "THSnipeBeforeDBTiles", "0")
-IniReadS($THSnipeBeforeLBTiles, $config, "attack", "THSnipeBeforeLBTiles", "0")
+IniReadS($THSnipeBeforeDBEnable, $config, "attack", "THSnipeBeforeDBEnable", 0, "int")
+IniReadS($THSnipeBeforeLBEnable, $config, "attack", "THSnipeBeforeLBEnable", 0, "int")
+IniReadS($THSnipeBeforeDBTiles, $config, "attack", "THSnipeBeforeDBTiles", 0, "int")
+IniReadS($THSnipeBeforeLBTiles, $config, "attack", "THSnipeBeforeLBTiles", 0, "int")
 IniReadS($THSnipeBeforeDBScript, $config, "attack", "THSnipeBeforeDBScript", "bam")
 IniReadS($THSnipeBeforeLBScript, $config, "attack", "THSnipeBeforeLBScript", "bam")
-IniReadS($MilkFarmLocateMine, $config, "MilkingAttack", "LocateMine", "1")
-IniReadS($MilkFarmLocateElixir, $config, "MilkingAttack", "LocateElixir", "1")
-IniReadS($MilkFarmLocateDrill, $config, "MilkingAttack", "LocateDrill", "1")
+IniReadS($MilkFarmLocateMine, $config, "MilkingAttack", "LocateMine", 1, "int")
+IniReadS($MilkFarmLocateElixir, $config, "MilkingAttack", "LocateElixir", 1, "int")
+IniReadS($MilkFarmLocateDrill, $config, "MilkingAttack", "LocateDrill", 1, "int")
 Local $tempMilkFarmElixirParam
 IniReadS($tempMilkFarmElixirParam, $config, "MilkingAttack", "LocateElixirLevel", "-1|-1|-1|-1|-1|-1|2|2|2")
 $MilkFarmElixirParam = StringSplit($tempMilkFarmElixirParam, "|", 2)
 If UBound($MilkFarmElixirParam) <> 9 Then $MilkFarmElixirParam = StringSplit("-1|-1|-1|-1|-1|-1|2|2|2", "|", 2)
-IniReadS($MilkFarmMineParam, $config, "MilkingAttack", "MineParam", "5")
-IniReadS($MilkFarmDrillParam, $config, "MilkingAttack", "DrillParam", "1")
-IniReadS($MilkFarmAttackElixirExtractors, $config, "MilkingAttack", "AttackElixir", "1")
-IniReadS($MilkFarmAttackGoldMines, $config, "MilkingAttack", "AttackMine", "1")
-IniReadS($MilkFarmAttackDarkDrills, $config, "MilkingAttack", "AttackDrill", "1")
-IniReadS($MilkFarmLimitGold, $config, "MilkingAttack", "LimitGold", "9950000")
-IniReadS($MilkFarmLimitElixir, $config, "MilkingAttack", "LimitElixir", "9950000")
-IniReadS($MilkFarmLimitDark, $config, "MilkingAttack", "LimitDark", "200000")
-IniReadS($MilkFarmResMaxTilesFromBorder, $config, "MilkingAttack", "MaxTiles", "1")
-IniReadS($MilkFarmTroopForWaveMin, $config, "MilkingAttack", "TroopForWaveMin", "4")
-IniReadS($MilkFarmTroopForWaveMax, $config, "MilkingAttack", "TroopForWaveMax", "6")
-IniReadS($MilkFarmTroopMaxWaves, $config, "MilkingAttack", "MaxWaves", "4")
-IniReadS($MilkFarmDelayFromWavesMin, $config, "MilkingAttack", "DelayBetweenWavesMin", "3000")
-IniReadS($MilkFarmDelayFromWavesMax, $config, "MilkingAttack", "DelayBetweenWavesMax", "5000")
-IniReadS($MilkFarmForcetolerance, $config, "MilkingAttack", "MilkFarmForceTolerance", "0")
-IniReadS($MilkFarmForcetolerancenormal, $config, "MilkingAttack", "MilkFarmForcetolerancenormal", "60")
-IniReadS($MilkFarmForcetoleranceboosted, $config, "MilkingAttack", "MilkFarmForcetoleranceboosted", "60")
-IniReadS($MilkFarmForcetolerancedestroyed, $config, "MilkingAttack", "MilkFarmForcetolerancedestroyed", "60")
-IniReadS($MilkingAttackCheckStructureDestroyedBeforeAttack, $config, "MilkingAttack", "CheckStructureDestroyedBeforeAttack", "0")
-IniReadS($MilkingAttackCheckStructureDestroyedAfterAttack, $config, "MilkingAttack", "CheckStructureDestroyedAfterAttack", "0")
-IniReadS($MilkingAttackDropGoblinAlgorithm, $config, "MilkingAttack", "DropRandomPlace", "0")
-IniReadS($MilkFarmTHMaxTilesFromBorder, $config, "MilkingAttack", "TownhallTiles", "0")
+IniReadS($MilkFarmMineParam, $config, "MilkingAttack", "MineParam", 5, "int")
+IniReadS($MilkFarmDrillParam, $config, "MilkingAttack", "DrillParam", 1, "int")
+IniReadS($MilkFarmAttackElixirExtractors, $config, "MilkingAttack", "AttackElixir", 1, "int")
+IniReadS($MilkFarmAttackGoldMines, $config, "MilkingAttack", "AttackMine", 1, "int")
+IniReadS($MilkFarmAttackDarkDrills, $config, "MilkingAttack", "AttackDrill", 1, "int")
+IniReadS($MilkFarmLimitGold, $config, "MilkingAttack", "LimitGold", 9950000, "int")
+IniReadS($MilkFarmLimitElixir, $config, "MilkingAttack", "LimitElixir", 9950000, "int")
+IniReadS($MilkFarmLimitDark, $config, "MilkingAttack", "LimitDark", 200000, "int")
+IniReadS($MilkFarmResMaxTilesFromBorder, $config, "MilkingAttack", "MaxTiles", 1, "int")
+IniReadS($MilkFarmTroopForWaveMin, $config, "MilkingAttack", "TroopForWaveMin", 4, "int")
+IniReadS($MilkFarmTroopForWaveMax, $config, "MilkingAttack", "TroopForWaveMax", 6, "int")
+IniReadS($MilkFarmTroopMaxWaves, $config, "MilkingAttack", "MaxWaves", 4, "int")
+IniReadS($MilkFarmDelayFromWavesMin, $config, "MilkingAttack", "DelayBetweenWavesMin", 3000, "int")
+IniReadS($MilkFarmDelayFromWavesMax, $config, "MilkingAttack", "DelayBetweenWavesMax", 5000, "int")
+IniReadS($MilkFarmForcetolerance, $config, "MilkingAttack", "MilkFarmForceTolerance", 0, "int")
+IniReadS($MilkFarmForcetolerancenormal, $config, "MilkingAttack", "MilkFarmForcetolerancenormal", 60, "int")
+IniReadS($MilkFarmForcetoleranceboosted, $config, "MilkingAttack", "MilkFarmForcetoleranceboosted", 60, "int")
+IniReadS($MilkFarmForcetolerancedestroyed, $config, "MilkingAttack", "MilkFarmForcetolerancedestroyed", 60, "int")
+IniReadS($MilkingAttackCheckStructureDestroyedBeforeAttack, $config, "MilkingAttack", "CheckStructureDestroyedBeforeAttack", 0, "int")
+IniReadS($MilkingAttackCheckStructureDestroyedAfterAttack, $config, "MilkingAttack", "CheckStructureDestroyedAfterAttack", 0, "int")
+IniReadS($MilkingAttackDropGoblinAlgorithm, $config, "MilkingAttack", "DropRandomPlace", 0, "int")
+IniReadS($MilkFarmTHMaxTilesFromBorder, $config, "MilkingAttack", "TownhallTiles", 0, "int")
 IniReadS($MilkFarmAlgorithmTh, $config, "MilkingAttack", "TownHallAlgorithm", "Bam")
-IniReadS($MilkFarmSnipeEvenIfNoExtractorsFound, $config, "MilkingAttack", "TownHallHitAnyway", "0")
-IniReadS($MilkingAttackStructureOrder, $config, "MilkingAttack", "StructureOrder", "1")
-IniReadS($MilkAttackAfterTHSnipe, $config, "MilkingAttack", "MilkAttackAfterTHSnipe", "0")
-IniReadS($MilkAttackAfterScriptedAtk, $config, "MilkingAttack", "MilkAttackAfterScriptedAtk", "0")
-IniReadS($MilkAttackCSVscript, $config, "MilkingAttack", "MilkAttackCSVscript", "0")
-IniReadS($MilkAttackType, $config, "MilkingAttack", "MilkAttackType", "0")
-IniReadS($sTimeStopAtk[$DB], $config, "endbattle", "txtDBTimeStopAtk", "20")
-IniReadS($iChkTimeStopAtk[$DB], $config, "endbattle", "chkDBTimeStopAtk", "1")
-IniReadS($sTimeStopAtk2[$DB], $config, "endbattle", "txtDBTimeStopAtk2", "7")
-IniReadS($iChkTimeStopAtk2[$DB], $config, "endbattle", "chkDBTimeStopAtk2", "0")
-IniReadS($stxtMinGoldStopAtk2[$DB], $config, "endbattle", "txtDBMinGoldStopAtk2", "1000")
-IniReadS($stxtMinElixirStopAtk2[$DB], $config, "endbattle", "txtDBMinElixirStopAtk2", "1000")
-IniReadS($stxtMinDarkElixirStopAtk2[$DB], $config, "endbattle", "txtDBMinDarkElixirStopAtk2", "50")
-IniReadS($ichkEndOneStar[$DB], $config, "endbattle", "chkDBEndOneStar", "0")
-IniReadS($ichkEndTwoStars[$DB], $config, "endbattle", "chkDBEndTwoStars", "0")
-IniReadS($ichkEndNoResources[$DB], $config, "endbattle", "chkDBEndNoResources", "0")
-IniReadS($sTimeStopAtk[$LB], $config, "endbattle", "txtABTimeStopAtk", "20")
-IniReadS($iChkTimeStopAtk[$LB], $config, "endbattle", "chkABTimeStopAtk", "1")
-IniReadS($sTimeStopAtk2[$LB], $config, "endbattle", "txtABTimeStopAtk2", "7")
-IniReadS($iChkTimeStopAtk2[$LB], $config, "endbattle", "chkABTimeStopAtk2", "0")
-IniReadS($stxtMinGoldStopAtk2[$LB], $config, "endbattle", "txtABMinGoldStopAtk2", "1000")
-IniReadS($stxtMinElixirStopAtk2[$LB], $config, "endbattle", "txtABMinElixirStopAtk2", "1000")
-IniReadS($stxtMinDarkElixirStopAtk2[$LB], $config, "endbattle", "txtABMinDarkElixirStopAtk2", "50")
-IniReadS($ichkEndOneStar[$LB], $config, "endbattle", "chkABEndOneStar", "0")
-IniReadS($ichkEndTwoStars[$LB], $config, "endbattle", "chkABEndTwoStars", "0")
-IniReadS($ichkEndNoResources[$LB], $config, "endbattle", "chkABEndNoResources", "0")
-IniReadS($DESideEB, $config, "endbattle", "chkDESideEB", "0")
-IniReadS($DELowEndMin, $config, "endbattle", "txtDELowEndMin", "25")
-IniReadS($DisableOtherEBO, $config, "endbattle", "chkDisableOtherEBO", "0")
-IniReadS($DEEndOneStar, $config, "endbattle", "chkDEEndOneStar", "0")
-IniReadS($DEEndBk, $config, "endbattle", "chkDEEndBk", "0")
-IniReadS($DEEndAq, $config, "endbattle", "chkDEEndAq", "0")
-IniReadS($iUnbreakableMode, $config, "Unbreakable", "chkUnbreakable", "0")
-IniReadS($iUnbreakableWait, $config, "Unbreakable", "UnbreakableWait", "5")
-IniReadS($iUnBrkMinGold, $config, "Unbreakable", "minUnBrkgold", "50000")
-IniReadS($iUnBrkMinElixir, $config, "Unbreakable", "minUnBrkelixir", "50000")
-IniReadS($iUnBrkMinDark, $config, "Unbreakable", "minUnBrkdark", "5000")
-IniReadS($iUnBrkMaxGold, $config, "Unbreakable", "maxUnBrkgold", "600000")
-IniReadS($iUnBrkMaxElixir, $config, "Unbreakable", "maxUnBrkelixir", "600000")
-IniReadS($iUnBrkMaxDark, $config, "Unbreakable", "maxUnBrkdark", "10000")
-IniReadS($iChkUseCCBalanced, $config, "ClanClastle", "BalanceCC", "0")
-IniReadS($iCmbCCDonated, $config, "ClanClastle", "BalanceCCDonated", "1")
-IniReadS($iCmbCCReceived, $config, "ClanClastle", "BalanceCCReceived", "1")
-IniReadS($ichkTrap, $config, "other", "chkTrap", "1")
-IniReadS($iChkCollect, $config, "other", "chkCollect", "1")
-IniReadS($ichkTombstones, $config, "other", "chkTombstones", "1")
-IniReadS($ichkCleanYard, $config, "other", "chkCleanYard", "0")
-IniReadS($ichkGemsBox, $config, "other", "chkGemsBox", "0")
-IniReadS($sTimeWakeUp, $config, "other", "txtTimeWakeUp", "0")
-IniReadS($iVSDelay, $config, "other", "VSDelay", "0", "Int")
-IniReadS($iMaxVSDelay, $config, "other", "MaxVSDelay", "4", "Int")
-IniReadS($iWAOffsetX, $config, "other", "WAOffsetX", "0")
-IniReadS($iWAOffsetY, $config, "other", "WAOffsetY", "0")
+IniReadS($MilkFarmSnipeEvenIfNoExtractorsFound, $config, "MilkingAttack", "TownHallHitAnyway", 0, "int")
+IniReadS($MilkingAttackStructureOrder, $config, "MilkingAttack", "StructureOrder", 1, "int")
+IniReadS($MilkAttackAfterTHSnipe, $config, "MilkingAttack", "MilkAttackAfterTHSnipe", 0, "int")
+IniReadS($MilkAttackAfterScriptedAtk, $config, "MilkingAttack", "MilkAttackAfterScriptedAtk", 0, "int")
+IniReadS($MilkAttackCSVscript, $config, "MilkingAttack", "MilkAttackCSVscript", 0, "int")
+IniReadS($MilkAttackType, $config, "MilkingAttack", "MilkAttackType", 0, "int")
+IniReadS($sTimeStopAtk[$DB], $config, "endbattle", "txtDBTimeStopAtk", 20, "int")
+IniReadS($iChkTimeStopAtk[$DB], $config, "endbattle", "chkDBTimeStopAtk", 1, "int")
+IniReadS($sTimeStopAtk2[$DB], $config, "endbattle", "txtDBTimeStopAtk2", 7, "int")
+IniReadS($iChkTimeStopAtk2[$DB], $config, "endbattle", "chkDBTimeStopAtk2", 0, "int")
+IniReadS($stxtMinGoldStopAtk2[$DB], $config, "endbattle", "txtDBMinGoldStopAtk2", 1000, "int")
+IniReadS($stxtMinElixirStopAtk2[$DB], $config, "endbattle", "txtDBMinElixirStopAtk2", 1000, "int")
+IniReadS($stxtMinDarkElixirStopAtk2[$DB], $config, "endbattle", "txtDBMinDarkElixirStopAtk2", 50, "int")
+IniReadS($ichkEndOneStar[$DB], $config, "endbattle", "chkDBEndOneStar", 0, "int")
+IniReadS($ichkEndTwoStars[$DB], $config, "endbattle", "chkDBEndTwoStars", 0, "int")
+IniReadS($ichkEndNoResources[$DB], $config, "endbattle", "chkDBEndNoResources", 0, "int")
+IniReadS($sTimeStopAtk[$LB], $config, "endbattle", "txtABTimeStopAtk", 20, "int")
+IniReadS($iChkTimeStopAtk[$LB], $config, "endbattle", "chkABTimeStopAtk", 1, "int")
+IniReadS($sTimeStopAtk2[$LB], $config, "endbattle", "txtABTimeStopAtk2", 7, "int")
+IniReadS($iChkTimeStopAtk2[$LB], $config, "endbattle", "chkABTimeStopAtk2", 0, "int")
+IniReadS($stxtMinGoldStopAtk2[$LB], $config, "endbattle", "txtABMinGoldStopAtk2", 1000, "int")
+IniReadS($stxtMinElixirStopAtk2[$LB], $config, "endbattle", "txtABMinElixirStopAtk2", 1000, "int")
+IniReadS($stxtMinDarkElixirStopAtk2[$LB], $config, "endbattle", "txtABMinDarkElixirStopAtk2", 50, "int")
+IniReadS($ichkEndOneStar[$LB], $config, "endbattle", "chkABEndOneStar", 0, "int")
+IniReadS($ichkEndTwoStars[$LB], $config, "endbattle", "chkABEndTwoStars", 0, "int")
+IniReadS($ichkEndNoResources[$LB], $config, "endbattle", "chkABEndNoResources", 0, "int")
+IniReadS($DESideEB, $config, "endbattle", "chkDESideEB", 0, "int")
+IniReadS($DELowEndMin, $config, "endbattle", "txtDELowEndMin", 25, "int")
+IniReadS($DisableOtherEBO, $config, "endbattle", "chkDisableOtherEBO", 0, "int")
+IniReadS($DEEndOneStar, $config, "endbattle", "chkDEEndOneStar", 0, "int")
+IniReadS($DEEndBk, $config, "endbattle", "chkDEEndBk", 0, "int")
+IniReadS($DEEndAq, $config, "endbattle", "chkDEEndAq", 0, "int")
+IniReadS($iUnbreakableMode, $config, "Unbreakable", "chkUnbreakable", 0, "int")
+IniReadS($iUnbreakableWait, $config, "Unbreakable", "UnbreakableWait", 5, "int")
+IniReadS($iUnBrkMinGold, $config, "Unbreakable", "minUnBrkgold", 50000, "int")
+IniReadS($iUnBrkMinElixir, $config, "Unbreakable", "minUnBrkelixir", 50000, "int")
+IniReadS($iUnBrkMinDark, $config, "Unbreakable", "minUnBrkdark", 5000, "int")
+IniReadS($iUnBrkMaxGold, $config, "Unbreakable", "maxUnBrkgold", 600000, "int")
+IniReadS($iUnBrkMaxElixir, $config, "Unbreakable", "maxUnBrkelixir", 600000, "int")
+IniReadS($iUnBrkMaxDark, $config, "Unbreakable", "maxUnBrkdark", 10000, "int")
+IniReadS($iChkUseCCBalanced, $config, "ClanClastle", "BalanceCC", 0, "int")
+IniReadS($iCmbCCDonated, $config, "ClanClastle", "BalanceCCDonated", 1, "int")
+IniReadS($iCmbCCReceived, $config, "ClanClastle", "BalanceCCReceived", 1, "int")
+IniReadS($ichkTrap, $config, "other", "chkTrap", 1, "int")
+IniReadS($iChkCollect, $config, "other", "chkCollect", 1, "int")
+IniReadS($ichkTombstones, $config, "other", "chkTombstones", 1, "int")
+IniReadS($ichkCleanYard, $config, "other", "chkCleanYard", 0, "int")
+IniReadS($ichkGemsBox, $config, "other", "chkGemsBox", 0, "int")
+IniReadS($sTimeWakeUp, $config, "other", "txtTimeWakeUp", 0, "int")
+IniReadS($iVSDelay, $config, "other", "VSDelay", 0, "Int")
+IniReadS($iMaxVSDelay, $config, "other", "MaxVSDelay", 4, "Int")
+IniReadS($iWAOffsetX, $config, "other", "WAOffsetX", "")
+IniReadS($iWAOffsetY, $config, "other", "WAOffsetY", "")
 IniReadS($NotifyPBToken, $config, "notify", "PBToken", "")
 IniReadS($NotifyTGToken, $config, "notify", "TGToken", "")
 IniReadS($NotifyOrigin, $config, "notify", "Origin", $sCurrProfile)
-IniReadS($NotifyAlerLastRaidTXT, $config, "notify", "AlertPBLastRaidTxt", "0")
-IniReadS($NotifyPBEnabled, $config, "notify", "PBEnabled", "0")
-IniReadS($NotifyTGEnabled, $config, "notify", "TGEnabled", "0")
-IniReadS($NotifyRemoteEnable, $config, "notify", "PBRemote", "0")
-IniReadS($NotifyDeleteAllPushesOnStart, $config, "notify", "DeleteAllPBPushes", "0")
-IniReadS($NotifyAlertMatchFound, $config, "notify", "AlertPBVMFound", "0")
-IniReadS($NotifyAlerLastRaidIMG, $config, "notify", "AlertPBLastRaid", "0")
-IniReadS($NotifyAlertUpgradeWalls, $config, "notify", "AlertPBWallUpgrade", "0")
-IniReadS($NotifyAlertOutOfSync, $config, "notify", "AlertPBOOS", "0")
-IniReadS($NotifyAlertTakeBreak, $config, "notify", "AlertPBVBreak", "0")
-IniReadS($NotifyAlertAnotherDevice, $config, "notify", "AlertPBOtherDevice", "0")
-IniReadS($NotifyDeletePushesOlderThanHours, $config, "notify", "HoursPushBullet", "4")
-IniReadS($NotifyDeletePushesOlderThan, $config, "notify", "DeleteOldPBPushes", "0")
-IniReadS($NotifyAlertCampFull, $config, "notify", "AlertPBCampFull", "0")
-IniReadS($NotifyAlertVillageReport, $config, "notify", "AlertPBVillage", "0")
-IniReadS($NotifyAlertLastAttack, $config, "notify", "AlertPBLastAttack", "0")
-IniReadS($NotifyAlertBulderIdle, $config, "notify", "AlertBuilderIdle", "0")
-IniReadS($NotifyAlertMaintenance, $config, "notify", "AlertPBMaintenance", "0")
-IniReadS($NotifyAlertBAN, $config, "notify", "AlertPBBAN", "0")
-IniReadS($NotifyAlertBOTUpdate, $config, "notify", "AlertPBUpdate", "0")
-$NotifyScheduleWeekDaysEnable = IniRead($config, "notify", "NotifyWeekDaysEnable", "0")
+IniReadS($NotifyAlerLastRaidTXT, $config, "notify", "AlertPBLastRaidTxt", 0, "int")
+IniReadS($NotifyPBEnabled, $config, "notify", "PBEnabled", 0, "int")
+IniReadS($NotifyTGEnabled, $config, "notify", "TGEnabled", 0, "int")
+IniReadS($NotifyRemoteEnable, $config, "notify", "PBRemote", 0, "int")
+IniReadS($NotifyDeleteAllPushesOnStart, $config, "notify", "DeleteAllPBPushes", 0, "int")
+IniReadS($NotifyAlertMatchFound, $config, "notify", "AlertPBVMFound", 0, "int")
+IniReadS($NotifyAlerLastRaidIMG, $config, "notify", "AlertPBLastRaid", 0, "int")
+IniReadS($NotifyAlertUpgradeWalls, $config, "notify", "AlertPBWallUpgrade", 0, "int")
+IniReadS($NotifyAlertOutOfSync, $config, "notify", "AlertPBOOS", 0, "int")
+IniReadS($NotifyAlertTakeBreak, $config, "notify", "AlertPBVBreak", 0, "int")
+IniReadS($NotifyAlertAnotherDevice, $config, "notify", "AlertPBOtherDevice", 0, "int")
+IniReadS($NotifyDeletePushesOlderThanHours, $config, "notify", "HoursPushBullet", 4, "int")
+IniReadS($NotifyDeletePushesOlderThan, $config, "notify", "DeleteOldPBPushes", 0, "int")
+IniReadS($NotifyAlertCampFull, $config, "notify", "AlertPBCampFull", 0, "int")
+IniReadS($NotifyAlertVillageReport, $config, "notify", "AlertPBVillage", 0, "int")
+IniReadS($NotifyAlertLastAttack, $config, "notify", "AlertPBLastAttack", 0, "int")
+IniReadS($NotifyAlertBulderIdle, $config, "notify", "AlertBuilderIdle", 0, "int")
+IniReadS($NotifyAlertMaintenance, $config, "notify", "AlertPBMaintenance", 0, "int")
+IniReadS($NotifyAlertBAN, $config, "notify", "AlertPBBAN", 0, "int")
+IniReadS($NotifyAlertBOTUpdate, $config, "notify", "AlertPBUpdate", 0, "int")
+$NotifyScheduleWeekDaysEnable = Int(IniRead($config, "notify", "NotifyWeekDaysEnable", 0))
 $NotifyScheduleWeekDays = StringSplit(IniRead($config, "notify", "NotifyWeekDays", "1|1|1|1|1|1|1"),"|", $STR_NOCOUNT)
-$NotifyScheduleHoursEnable = IniRead($config, "notify", "NotifyHoursEnable", "0")
+$NotifyScheduleHoursEnable = Int(IniRead($config, "notify", "NotifyHoursEnable", 0))
 $NotifyScheduleHours = StringSplit(IniRead($config, "notify", "NotifyHours", "1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1"),"|", $STR_NOCOUNT)
-IniReadS($ichkDeleteLogs, $config, "deletefiles", "DeleteLogs", "1")
-IniReadS($iDeleteLogsDays, $config, "deletefiles", "DeleteLogsDays", "2")
-IniReadS($ichkDeleteTemp, $config, "deletefiles", "DeleteTemp", "1")
-IniReadS($iDeleteTempDays, $config, "deletefiles", "DeleteTempDays", "2")
-IniReadS($ichkDeleteLoots, $config, "deletefiles", "DeleteLoots", "1")
-IniReadS($iDeleteLootsDays, $config, "deletefiles", "DeleteLootsDays", "2")
-$DebugClick = BitOR($DebugClick, Int(IniRead($config, "debug", "debugsetclick", "0")))
+IniReadS($ichkDeleteLogs, $config, "deletefiles", "DeleteLogs", 1, "int")
+IniReadS($iDeleteLogsDays, $config, "deletefiles", "DeleteLogsDays", 2, "int")
+IniReadS($ichkDeleteTemp, $config, "deletefiles", "DeleteTemp", 1, "int")
+IniReadS($iDeleteTempDays, $config, "deletefiles", "DeleteTempDays", 2, "int")
+IniReadS($ichkDeleteLoots, $config, "deletefiles", "DeleteLoots", 1, "int")
+IniReadS($iDeleteLootsDays, $config, "deletefiles", "DeleteLootsDays", 2, "int")
+$DebugClick = BitOR($DebugClick, Int(IniRead($config, "debug", "debugsetclick", 0)))
 If $DevMode = 1 Then
-$DebugSetlog = BitOR($DebugSetlog, Int(IniRead($config, "debug", "debugsetlog", "0")))
-$DebugDisableZoomout = BitOR($DebugDisableZoomout, Int(IniRead($config, "debug", "disablezoomout", "0")))
-$DebugDisableVillageCentering = BitOR($DebugDisableVillageCentering, Int(IniRead($config, "debug", "disablevillagecentering", "0")))
-$DebugOcr = BitOR($DebugOcr, Int(IniRead($config, "debug", "debugocr", "0")))
-$DebugImageSave = BitOR($DebugImageSave, Int(IniRead($config, "debug", "debugimagesave", "0")))
-$debugBuildingPos = BitOR($debugBuildingPos, Int(IniRead($config, "debug", "debugbuildingpos", "0")))
-$debugsetlogTrain = BitOR($debugsetlogTrain, Int(IniRead($config, "debug", "debugtrain", "0")))
-$debugresourcesoffset = BitOR($debugresourcesoffset, Int(IniRead($config, "debug", "debugresourcesoffset", "0")))
-$continuesearchelixirdebug = BitOR($continuesearchelixirdebug, Int(IniRead($config, "debug", "continuesearchelixirdebug", "0")))
-$debugMilkingIMGmake = BitOR($debugMilkingIMGmake, Int(IniRead($config, "debug", "debugMilkingIMGmake", "0")))
-$debugOCRdonate = BitOR($debugOCRdonate, Int(IniRead($config, "debug", "debugOCRDonate", "0")))
-$debugAttackCSV = BitOR($debugAttackCSV, Int(IniRead($config, "debug", "debugAttackCSV", "0")))
-$makeIMGCSV = BitOR($makeIMGCSV, Int(IniRead($config, "debug", "debugmakeimgcsv", "0")))
+$DebugSetlog = BitOR($DebugSetlog, Int(IniRead($config, "debug", "debugsetlog", 0)))
+$DebugDisableZoomout = BitOR($DebugDisableZoomout, Int(IniRead($config, "debug", "disablezoomout", 0)))
+$DebugDisableVillageCentering = BitOR($DebugDisableVillageCentering, Int(IniRead($config, "debug", "disablevillagecentering", 0)))
+$DebugDeadbaseImage = BitOR($DebugDeadbaseImage, Int(IniRead($config, "debug", "debugdeadbaseimage", 0)))
+$DebugOcr = BitOR($DebugOcr, Int(IniRead($config, "debug", "debugocr", 0)))
+$DebugImageSave = BitOR($DebugImageSave, Int(IniRead($config, "debug", "debugimagesave", 0)))
+$debugBuildingPos = BitOR($debugBuildingPos, Int(IniRead($config, "debug", "debugbuildingpos", 0)))
+$debugsetlogTrain = BitOR($debugsetlogTrain, Int(IniRead($config, "debug", "debugtrain", 0)))
+$debugresourcesoffset = BitOR($debugresourcesoffset, Int(IniRead($config, "debug", "debugresourcesoffset", 0)))
+$continuesearchelixirdebug = BitOR($continuesearchelixirdebug, Int(IniRead($config, "debug", "continuesearchelixirdebug", 0)))
+$debugMilkingIMGmake = BitOR($debugMilkingIMGmake, Int(IniRead($config, "debug", "debugMilkingIMGmake", 0)))
+$debugOCRdonate = BitOR($debugOCRdonate, Int(IniRead($config, "debug", "debugOCRDonate", 0)))
+$debugAttackCSV = BitOR($debugAttackCSV, Int(IniRead($config, "debug", "debugAttackCSV", 0)))
+$makeIMGCSV = BitOR($makeIMGCSV, Int(IniRead($config, "debug", "debugmakeimgcsv", 0)))
 EndIf
 $iPlannedDonateHours = StringSplit(IniRead($config, "planned", "DonateHours", "1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1"), "|", $STR_NOCOUNT)
 $iPlannedRequestCCHours = StringSplit(IniRead($config, "planned", "RequestHours", "1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1"), "|", $STR_NOCOUNT)
 $iPlannedDropCCHours = StringSplit(IniRead($config, "planned", "DropCCHours", "1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1"), "|", $STR_NOCOUNT)
-$iPlannedDonateHoursEnable = IniRead($config, "planned", "DonateHoursEnable", "0")
-$iPlannedRequestCCHoursEnable = IniRead($config, "planned", "RequestHoursEnable", "0")
-$iPlannedDropCCHoursEnable = IniRead($config, "planned", "DropCCEnable", "0")
-$iPlannedBoostBarracksEnable = IniRead($config, "planned", "BoostBarracksHoursEnable", "0")
+$iPlannedDonateHoursEnable = Int(IniRead($config, "planned", "DonateHoursEnable", 0))
+$iPlannedRequestCCHoursEnable = Int(IniRead($config, "planned", "RequestHoursEnable", 0))
+$iPlannedDropCCHoursEnable = Int(IniRead($config, "planned", "DropCCEnable", 0))
+$iPlannedBoostBarracksEnable = Int(IniRead($config, "planned", "BoostBarracksHoursEnable", 0))
 $iPlannedBoostBarracksHours = StringSplit(IniRead($config, "planned", "BoostBarracksHours", "1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1"), "|", $STR_NOCOUNT)
 $iPlannedattackHours = StringSplit(IniRead($config, "planned", "attackHours", "1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1"), "|", $STR_NOCOUNT)
 $iPlannedAttackWeekDays = StringSplit(IniRead($config, "planned", "attackDays", "1|1|1|1|1|1|1"), "|", $STR_NOCOUNT)
-$ichkAttackPlannerEnable = IniRead($config, "planned", "chkAttackPlannerEnable", "0")
-$ichkAttackPlannerCloseCoC = IniRead($config, "planned", "chkAttackPlannerCloseCoC", "0")
-$ichkAttackPlannerCloseAll = IniRead($config, "planned", "chkAttackPlannerCloseAll", "0")
-$ichkAttackPlannerRandom = IniRead($config, "planned", "chkAttackPlannerRandom", "0")
-$icmbAttackPlannerRandom = IniRead($config, "planned", "cmbAttackPlannerRandom", "4")
-$ichkAttackPlannerDayLimit = IniRead($config, "planned", "chkAttackPlannerDayLimit", "0")
-$icmbAttackPlannerDayMin = IniRead($config, "planned", "cmbAttackPlannerDayMin", "12")
-$icmbAttackPlannerDayMax = IniRead($config, "planned", "cmbAttackPlannerDayMax", "15")
-$iShareminGold = IniRead($config, "shareattack", "minGold", "200000")
-$iShareminElixir = IniRead($config, "shareattack", "minElixir", "200000")
-$iSharemindark = IniRead($config, "shareattack", "minDark", "100")
-$iShareAttack = IniRead($config, "shareattack", "ShareAttack", "0")
+$ichkAttackPlannerEnable = Int(IniRead($config, "planned", "chkAttackPlannerEnable", 0))
+$ichkAttackPlannerCloseCoC = Int(IniRead($config, "planned", "chkAttackPlannerCloseCoC", 0))
+$ichkAttackPlannerCloseAll = Int(IniRead($config, "planned", "chkAttackPlannerCloseAll", 0))
+$ichkAttackPlannerRandom = Int(IniRead($config, "planned", "chkAttackPlannerRandom", 0))
+$icmbAttackPlannerRandom = Int(IniRead($config, "planned", "cmbAttackPlannerRandom", 4))
+$ichkAttackPlannerDayLimit = Int(IniRead($config, "planned", "chkAttackPlannerDayLimit", 0))
+$icmbAttackPlannerDayMin = Int(IniRead($config, "planned", "cmbAttackPlannerDayMin", 12))
+$icmbAttackPlannerDayMax = Int(IniRead($config, "planned", "cmbAttackPlannerDayMax", 15))
+$iShareminGold = Int(IniRead($config, "shareattack", "minGold", 200000))
+$iShareminElixir = Int(IniRead($config, "shareattack", "minElixir", 200000))
+$iSharemindark = Int(IniRead($config, "shareattack", "minDark", 100))
+$iShareAttack = Int(IniRead($config, "shareattack", "ShareAttack", 0))
 $sShareMessage = StringReplace(IniRead($config, "shareattack", "Message", "Nice|Good|Thanks|Wowwww"), "|", @CRLF)
-$iUseRandomClick = IniRead($config, "other", "UseRandomClick", "0")
-$ichkAddIdleTime = IniRead($config, "other", "chkAddIdleTime", "1")
+$iUseRandomClick = Int(IniRead($config, "other", "UseRandomClick", 0))
+$ichkAddIdleTime = Int(IniRead($config, "other", "chkAddIdleTime", 1))
 IniReadS($iAddIdleTimeMin, $config, "other", "txtAddDelayIdlePhaseTimeMin", $iAddIdleTimeMin)
 IniReadS($iAddIdleTimeMax, $config, "other", "txtAddDelayIdlePhaseTimeMax", $iAddIdleTimeMax)
-$iScreenshotType = IniRead($config, "other", "ScreenshotType", "0")
-$ichkScreenshotHideName = IniRead($config, "other", "ScreenshotHideName", "1")
-$ichkUseQTrain = IniRead($config, "other", "ChkUseQTrain", "0")
-$ichkForceBrewBeforeAttack = IniRead($config, "other", "ChkForceBrewBeforeAttack", "0")
-$ichkTotalCampForced = IniRead($config, "other", "ChkTotalCampForced", "1")
-$iValueTotalCampForced = IniRead($config, "other", "ValueTotalCampForced", "220")
-$ichkSinglePBTForced = IniRead($config, "other", "chkSinglePBTForced", "0")
-$iValueSinglePBTimeForced = IniRead($config, "other", "ValueSinglePBTimeForced", "18")
-$iValuePBTimeForcedExit = IniRead($config, "other", "ValuePBTimeForcedExit", "15")
-$ichkLanguage = IniRead($config, "General", "ChkLanguage", "1")
+$iScreenshotType = Int(IniRead($config, "other", "ScreenshotType", 0))
+$ichkScreenshotHideName = Int(IniRead($config, "other", "ScreenshotHideName", 1))
+$ichkUseQTrain = Int(IniRead($config, "other", "ChkUseQTrain", 0))
+$ichkForceBrewBeforeAttack = Int(IniRead($config, "other", "ChkForceBrewBeforeAttack", 0))
+$ichkTotalCampForced = Int(IniRead($config, "other", "ChkTotalCampForced", 1))
+$iValueTotalCampForced = Int(IniRead($config, "other", "ValueTotalCampForced", 220))
+$ichkSinglePBTForced = Int(IniRead($config, "other", "chkSinglePBTForced", 0))
+$iValueSinglePBTimeForced = Int(IniRead($config, "other", "ValueSinglePBTimeForced", 18))
+$iValuePBTimeForcedExit = Int(IniRead($config, "other", "ValuePBTimeForcedExit", 15))
+$ichkLanguage = Int(IniRead($config, "General", "ChkLanguage", 1))
 $ichkDisableSplash = IniRead($config, "General", "ChkDisableSplash", $ichkDisableSplash)
-$ichkVersion = IniRead($config, "General", "ChkVersion", "1")
-$ichkFixClanCastle = IniRead($config, "other", "ChkFixClanCastle", "0")
+$ichkVersion = Int(IniRead($config, "General", "ChkVersion", 1))
+$ichkFixClanCastle = Int(IniRead($config, "other", "ChkFixClanCastle", 0))
 $sTxtRequest = IniRead($config, "donate", "txtRequest", "")
 $sSkipDonateNearFulLTroopsPercentual = IniRead($config, "donate", "SkipDonateNearFulLTroopsPercentual", 90)
 $iSkipDonateNearFulLTroopsEnable = IniRead($config, "donate", "SkipDonateNearFulLTroopsEnable", 1)
-$ichkDonateBarbarians = IniRead($config, "donate", "chkDonateBarbarians", "0")
-$ichkDonateAllBarbarians = IniRead($config, "donate", "chkDonateAllBarbarians", "0")
+$ichkDonateBarbarians = Int(IniRead($config, "donate", "chkDonateBarbarians", 0))
+$ichkDonateAllBarbarians = Int(IniRead($config, "donate", "chkDonateAllBarbarians", 0))
 $sTxtDonateBarbarians = StringReplace(IniRead($config, "donate", "txtDonateBarbarians", "barbarians|barbarian|barb"), "|", @CRLF)
 $sTxtBlacklistBarbarians = StringReplace(IniRead($config, "donate", "txtBlacklistBarbarians", "no barbarians|no barb|barbarian no|barb no"), "|", @CRLF)
 $aDonBarbarians = StringSplit($sTxtDonateBarbarians, @CRLF, $STR_ENTIRESPLIT)
 $aBlkBarbarians = StringSplit($sTxtBlacklistBarbarians, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateArchers = IniRead($config, "donate", "chkDonateArchers", "0")
-$ichkDonateAllArchers = IniRead($config, "donate", "chkDonateAllArchers", "0")
+$ichkDonateArchers = Int(IniRead($config, "donate", "chkDonateArchers", 0))
+$ichkDonateAllArchers = Int(IniRead($config, "donate", "chkDonateAllArchers", 0))
 $sTxtDonateArchers = StringReplace(IniRead($config, "donate", "txtDonateArchers", "archers|archer|arch"), "|", @CRLF)
 $sTxtBlacklistArchers = StringReplace(IniRead($config, "donate", "txtBlacklistArchers", "no archers|no arch|archer no|arch no"), "|", @CRLF)
 $aDonArchers = StringSplit($sTxtDonateArchers, @CRLF, $STR_ENTIRESPLIT)
 $aBlkArchers = StringSplit($sTxtBlacklistArchers, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateGiants = IniRead($config, "donate", "chkDonateGiants", "0")
-$ichkDonateAllGiants = IniRead($config, "donate", "chkDonateAllGiants", "0")
+$ichkDonateGiants = Int(IniRead($config, "donate", "chkDonateGiants", 0))
+$ichkDonateAllGiants = Int(IniRead($config, "donate", "chkDonateAllGiants", 0))
 $sTxtDonateGiants = StringReplace(IniRead($config, "donate", "txtDonateGiants", "giants|giant|any"), "|", @CRLF)
 $sTxtBlacklistGiants = StringReplace(IniRead($config, "donate", "txtBlacklistGiants", "no giants|giants no"), "|", @CRLF)
 $aDonGiants = StringSplit($sTxtDonateGiants, @CRLF, $STR_ENTIRESPLIT)
 $aBlkGiants = StringSplit($sTxtBlacklistGiants, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateGoblins = IniRead($config, "donate", "chkDonateGoblins", "0")
-$ichkDonateAllGoblins = IniRead($config, "donate", "chkDonateAllGoblins", "0")
+$ichkDonateGoblins = Int(IniRead($config, "donate", "chkDonateGoblins", 0))
+$ichkDonateAllGoblins = Int(IniRead($config, "donate", "chkDonateAllGoblins", 0))
 $sTxtDonateGoblins = StringReplace(IniRead($config, "donate", "txtDonateGoblins", "goblins|goblin"), "|", @CRLF)
 $sTxtBlacklistGoblins = StringReplace(IniRead($config, "donate", "txtBlacklistGoblins", "no goblins|goblins no"), "|", @CRLF)
 $aDonGoblins = StringSplit($sTxtDonateGoblins, @CRLF, $STR_ENTIRESPLIT)
 $aBlkGoblins = StringSplit($sTxtBlacklistGoblins, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateWallBreakers = IniRead($config, "donate", "chkDonateWallBreakers", "0")
-$ichkDonateAllWallBreakers = IniRead($config, "donate", "chkDonateAllWallBreakers", "0")
+$ichkDonateWallBreakers = Int(IniRead($config, "donate", "chkDonateWallBreakers", 0))
+$ichkDonateAllWallBreakers = Int(IniRead($config, "donate", "chkDonateAllWallBreakers", 0))
 $sTxtDonateWallBreakers = StringReplace(IniRead($config, "donate", "txtDonateWallBreakers", "wall breakers|wb"), "|", @CRLF)
 $sTxtBlacklistWallBreakers = StringReplace(IniRead($config, "donate", "txtBlacklistWallBreakers", "no wallbreakers|wb no"), "|", @CRLF)
 $aDonWallBreakers = StringSplit($sTxtDonateWallBreakers, @CRLF, $STR_ENTIRESPLIT)
 $aBlkWallBreakers = StringSplit($sTxtBlacklistWallBreakers, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateBalloons = IniRead($config, "donate", "chkDonateBalloons", "0")
-$ichkDonateAllBalloons = IniRead($config, "donate", "chkDonateAllBalloons", "0")
+$ichkDonateBalloons = Int(IniRead($config, "donate", "chkDonateBalloons", 0))
+$ichkDonateAllBalloons = Int(IniRead($config, "donate", "chkDonateAllBalloons", 0))
 $sTxtDonateBalloons = StringReplace(IniRead($config, "donate", "txtDonateBalloons", "balloons|balloon"), "|", @CRLF)
 $sTxtBlacklistBalloons = StringReplace(IniRead($config, "donate", "txtBlacklistBalloons", "no balloon|balloons no"), "|", @CRLF)
 $aDonBalloons = StringSplit($sTxtDonateBalloons, @CRLF, $STR_ENTIRESPLIT)
 $aBlkBalloons = StringSplit($sTxtBlacklistBalloons, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateWizards = IniRead($config, "donate", "chkDonateWizards", "0")
-$ichkDonateAllWizards = IniRead($config, "donate", "chkDonateAllWizards", "0")
+$ichkDonateWizards = Int(IniRead($config, "donate", "chkDonateWizards", 0))
+$ichkDonateAllWizards = Int(IniRead($config, "donate", "chkDonateAllWizards", 0))
 $sTxtDonateWizards = StringReplace(IniRead($config, "donate", "txtDonateWizards", "wizards|wizard|wiz"), "|", @CRLF)
 $sTxtBlacklistWizards = StringReplace(IniRead($config, "donate", "txtBlacklistWizards", "no wizards|wizards no|no wizard|wizard no"), "|", @CRLF)
 $aDonWizards = StringSplit($sTxtDonateWizards, @CRLF, $STR_ENTIRESPLIT)
 $aBlkWizards = StringSplit($sTxtBlacklistWizards, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateHealers = IniRead($config, "donate", "chkDonateHealers", "0")
-$ichkDonateAllHealers = IniRead($config, "donate", "chkDonateAllHealers", "0")
+$ichkDonateHealers = Int(IniRead($config, "donate", "chkDonateHealers", 0))
+$ichkDonateAllHealers = Int(IniRead($config, "donate", "chkDonateAllHealers", 0))
 $sTxtDonateHealers = StringReplace(IniRead($config, "donate", "txtDonateHealers", "healer"), "|", @CRLF)
 $sTxtBlacklistHealers = StringReplace(IniRead($config, "donate", "txtBlacklistHealers", "no healer|healer no"), "|", @CRLF)
 $aDonHealers = StringSplit($sTxtDonateHealers, @CRLF, $STR_ENTIRESPLIT)
 $aBlkHealers = StringSplit($sTxtBlacklistHealers, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateDragons = IniRead($config, "donate", "chkDonateDragons", "0")
-$ichkDonateAllDragons = IniRead($config, "donate", "chkDonateAllDragons", "0")
+$ichkDonateDragons = Int(IniRead($config, "donate", "chkDonateDragons", 0))
+$ichkDonateAllDragons = Int(IniRead($config, "donate", "chkDonateAllDragons", 0))
 $sTxtDonateDragons = StringReplace(IniRead($config, "donate", "txtDonateDragons", "dragon"), "|", @CRLF)
 $sTxtBlacklistDragons = StringReplace(IniRead($config, "donate", "txtBlacklistDragons", "no dragon|dragon no"), "|", @CRLF)
 $aDonDragons = StringSplit($sTxtDonateDragons, @CRLF, $STR_ENTIRESPLIT)
 $aBlkDragons = StringSplit($sTxtBlacklistDragons, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonatePekkas = IniRead($config, "donate", "chkDonatePekkas", "0")
-$ichkDonateAllPekkas = IniRead($config, "donate", "chkDonateAllPekkas", "0")
+$ichkDonatePekkas = Int(IniRead($config, "donate", "chkDonatePekkas", 0))
+$ichkDonateAllPekkas = Int(IniRead($config, "donate", "chkDonateAllPekkas", 0))
 $sTxtDonatePekkas = StringReplace(IniRead($config, "donate", "txtDonatePekkas", "PEKKA|pekka"), "|", @CRLF)
 $sTxtBlacklistPekkas = StringReplace(IniRead($config, "donate", "txtBlacklistPekkas", "no PEKKA|pekka no"), "|", @CRLF)
 $aDonPekkas = StringSplit($sTxtDonatePekkas, @CRLF, $STR_ENTIRESPLIT)
 $aBlkPekkas = StringSplit($sTxtBlacklistPekkas, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateBabyDragons = IniRead($config, "donate", "chkDonateBabyDragons", "0")
-$ichkDonateAllBabyDragons = IniRead($config, "donate", "chkDonateAllBabyDragons", "0")
+$ichkDonateBabyDragons = Int(IniRead($config, "donate", "chkDonateBabyDragons", 0))
+$ichkDonateAllBabyDragons = Int(IniRead($config, "donate", "chkDonateAllBabyDragons", 0))
 $sTxtDonateBabyDragons = StringReplace(IniRead($config, "donate", "txtDonateBabyDragons", "baby dragon|baby"), "|", @CRLF)
 $sTxtBlacklistBabyDragons = StringReplace(IniRead($config, "donate", "txtBlacklistBabyDragons", "no baby dragon|baby dragon no|no baby|baby no"), "|", @CRLF)
 $aDonBabyDragons = StringSplit($sTxtDonateBabyDragons, @CRLF, $STR_ENTIRESPLIT)
 $aBlkBabyDragons = StringSplit($sTxtBlacklistBabyDragons, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateMiners = IniRead($config, "donate", "chkDonateMiners", "0")
-$ichkDonateAllMiners = IniRead($config, "donate", "chkDonateAllMiners", "0")
+$ichkDonateMiners = Int(IniRead($config, "donate", "chkDonateMiners", 0))
+$ichkDonateAllMiners = Int(IniRead($config, "donate", "chkDonateAllMiners", 0))
 $sTxtDonateMiners = StringReplace(IniRead($config, "donate", "txtDonateMiners", "miner|mine"), "|", @CRLF)
 $sTxtBlacklistMiners = StringReplace(IniRead($config, "donate", "txtBlacklistMiners", "no miner|miner no|no mine|mine no"), "|", @CRLF)
 $aDonMiners = StringSplit($sTxtDonateMiners, @CRLF, $STR_ENTIRESPLIT)
 $aBlkMiners = StringSplit($sTxtBlacklistMiners, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateMinions = IniRead($config, "donate", "chkDonateMinions", "0")
-$ichkDonateAllMinions = IniRead($config, "donate", "chkDonateAllMinions", "0")
+$ichkDonateMinions = Int(IniRead($config, "donate", "chkDonateMinions", 0))
+$ichkDonateAllMinions = Int(IniRead($config, "donate", "chkDonateAllMinions", 0))
 $sTxtDonateMinions = StringReplace(IniRead($config, "donate", "txtDonateMinions", "minions|minion"), "|", @CRLF)
 $sTxtBlacklistMinions = StringReplace(IniRead($config, "donate", "txtBlacklistMinions", "no minion|minions no"), "|", @CRLF)
 $aDonMinions = StringSplit($sTxtDonateMinions, @CRLF, $STR_ENTIRESPLIT)
 $aBlkMinions = StringSplit($sTxtBlacklistMinions, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateHogRiders = IniRead($config, "donate", "chkDonateHogRiders", "0")
-$ichkDonateAllHogRiders = IniRead($config, "donate", "chkDonateAllHogRiders", "0")
+$ichkDonateHogRiders = Int(IniRead($config, "donate", "chkDonateHogRiders", 0))
+$ichkDonateAllHogRiders = Int(IniRead($config, "donate", "chkDonateAllHogRiders", 0))
 $sTxtDonateHogRiders = StringReplace(IniRead($config, "donate", "txtDonateHogRiders", "hogriders|hogs|hog"), "|", @CRLF)
 $sTxtBlacklistHogRiders = StringReplace(IniRead($config, "donate", "txtBlacklistHogRiders", "no hogriders|hogriders no|no hog|hogs no"), "|", @CRLF)
 $aDonHogRiders = StringSplit($sTxtDonateHogRiders, @CRLF, $STR_ENTIRESPLIT)
 $aBlkHogRiders = StringSplit($sTxtBlacklistHogRiders, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateValkyries = IniRead($config, "donate", "chkDonateValkyries", "0")
-$ichkDonateAllValkyries = IniRead($config, "donate", "chkDonateAllValkyries", "0")
+$ichkDonateValkyries = Int(IniRead($config, "donate", "chkDonateValkyries", 0))
+$ichkDonateAllValkyries = Int(IniRead($config, "donate", "chkDonateAllValkyries", 0))
 $sTxtDonateValkyries = StringReplace(IniRead($config, "donate", "txtDonateValkyries", "valkyries|valkyrie|valk"), "|", @CRLF)
 $sTxtBlacklistValkyries = StringReplace(IniRead($config, "donate", "txtBlacklistValkyries", "no valkyrie|valkyries no|no valk|valk no"), "|", @CRLF)
 $aDonValkyries = StringSplit($sTxtDonateValkyries, @CRLF, $STR_ENTIRESPLIT)
 $aBlkValkyries = StringSplit($sTxtBlacklistValkyries, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateGolems = IniRead($config, "donate", "chkDonateGolems", "0")
-$ichkDonateAllGolems = IniRead($config, "donate", "chkDonateAllGolems", "0")
+$ichkDonateGolems = Int(IniRead($config, "donate", "chkDonateGolems", 0))
+$ichkDonateAllGolems = Int(IniRead($config, "donate", "chkDonateAllGolems", 0))
 $sTxtDonateGolems = StringReplace(IniRead($config, "donate", "txtDonateGolems", "golem"), "|", @CRLF)
 $sTxtBlacklistGolems = StringReplace(IniRead($config, "donate", "txtBlacklistGolems", "no golem|golem no"), "|", @CRLF)
 $aDonGolems = StringSplit($sTxtDonateGolems, @CRLF, $STR_ENTIRESPLIT)
 $aBlkGolems = StringSplit($sTxtBlacklistGolems, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateWitches = IniRead($config, "donate", "chkDonateWitches", "0")
-$ichkDonateAllWitches = IniRead($config, "donate", "chkDonateAllWitches", "0")
+$ichkDonateWitches = Int(IniRead($config, "donate", "chkDonateWitches", 0))
+$ichkDonateAllWitches = Int(IniRead($config, "donate", "chkDonateAllWitches", 0))
 $sTxtDonateWitches = StringReplace(IniRead($config, "donate", "txtDonateWitches", "witches|witch"), "|", @CRLF)
 $sTxtBlacklistWitches = StringReplace(IniRead($config, "donate", "txtBlacklistWitches", "no witches|witches no|no witch|witch no"), "|", @CRLF)
 $aDonWitches = StringSplit($sTxtDonateWitches, @CRLF, $STR_ENTIRESPLIT)
 $aBlkWitches = StringSplit($sTxtBlacklistWitches, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateLavaHounds = IniRead($config, "donate", "chkDonateLavaHounds", "0")
-$ichkDonateAllLavaHounds = IniRead($config, "donate", "chkDonateAllLavaHounds", "0")
+$ichkDonateLavaHounds = Int(IniRead($config, "donate", "chkDonateLavaHounds", 0))
+$ichkDonateAllLavaHounds = Int(IniRead($config, "donate", "chkDonateAllLavaHounds", 0))
 $sTxtDonateLavaHounds = StringReplace(IniRead($config, "donate", "txtDonateLavaHounds", "lavahounds|lava|hound"), "|", @CRLF)
 $sTxtBlacklistLavaHounds = StringReplace(IniRead($config, "donate", "txtBlacklistLavaHounds", "no lavahound|lavahound no|no lava|lava no|nohound|hound no"), "|", @CRLF)
 $aDonLavaHounds = StringSplit($sTxtDonateLavaHounds, @CRLF, $STR_ENTIRESPLIT)
 $aBlkLavaHounds = StringSplit($sTxtBlacklistLavaHounds, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateBowlers = IniRead($config, "donate", "chkDonateBowlers", "0")
-$ichkDonateAllBowlers = IniRead($config, "donate", "chkDonateAllBowlers", "0")
+$ichkDonateBowlers = Int(IniRead($config, "donate", "chkDonateBowlers", 0))
+$ichkDonateAllBowlers = Int(IniRead($config, "donate", "chkDonateAllBowlers", 0))
 $sTxtDonateBowlers = StringReplace(IniRead($config, "donate", "txtDonateBowlers", "bowler|bowl"), "|", @CRLF)
 $sTxtBlacklistBowlers = StringReplace(IniRead($config, "donate", "txtBlacklistBowlers", "no bowler|bowl no"), "|", @CRLF)
 $aDonBowlers = StringSplit($sTxtDonateBowlers, @CRLF, $STR_ENTIRESPLIT)
 $aBlkBowlers = StringSplit($sTxtBlacklistBowlers, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonatePoisonSpells = IniRead($config, "donate", "chkDonatePoisonSpells", "0")
-$ichkDonateAllPoisonSpells = IniRead($config, "donate", "chkDonateAllPoisonSpells", "0")
+$ichkDonatePoisonSpells = Int(IniRead($config, "donate", "chkDonatePoisonSpells", 0))
+$ichkDonateAllPoisonSpells = Int(IniRead($config, "donate", "chkDonateAllPoisonSpells", 0))
 $sTxtDonatePoisonSpells = StringReplace(IniRead($config, "donate", "txtDonatePoisonSpells", "poison"), "|", @CRLF)
 $sTxtBlacklistPoisonSpells = StringReplace(IniRead($config, "donate", "txtBlacklistPoisonSpells", "no poison|poison no"), "|", @CRLF)
 $aDonPoisonSpells = StringSplit($sTxtDonatePoisonSpells, @CRLF, $STR_ENTIRESPLIT)
 $aBlkPoisonSpells = StringSplit($sTxtBlacklistPoisonSpells, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateEarthQuakeSpells = IniRead($config, "donate", "chkDonateEarthQuakeSpells", "0")
-$ichkDonateAllEarthQuakeSpells = IniRead($config, "donate", "chkDonateAllEarthQuakeSpells", "0")
+$ichkDonateEarthQuakeSpells = Int(IniRead($config, "donate", "chkDonateEarthQuakeSpells", 0))
+$ichkDonateAllEarthQuakeSpells = Int(IniRead($config, "donate", "chkDonateAllEarthQuakeSpells", 0))
 $sTxtDonateEarthQuakeSpells = StringReplace(IniRead($config, "donate", "txtDonateEarthQuakeSpells", "earthquake|quake"), "|", @CRLF)
 $sTxtBlacklistEarthQuakeSpells = StringReplace(IniRead($config, "donate", "txtBlacklistEarthQuakeSpells", "no earthquake|quake no"), "|", @CRLF)
 $aDonEarthQuakeSpells = StringSplit($sTxtDonateEarthQuakeSpells, @CRLF, $STR_ENTIRESPLIT)
 $aBlkEarthQuakeSpells = StringSplit($sTxtBlacklistEarthQuakeSpells, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateHasteSpells = IniRead($config, "donate", "chkDonateHasteSpells", "0")
-$ichkDonateAllHasteSpells = IniRead($config, "donate", "chkDonateAllHasteSpells", "0")
+$ichkDonateHasteSpells = Int(IniRead($config, "donate", "chkDonateHasteSpells", 0))
+$ichkDonateAllHasteSpells = Int(IniRead($config, "donate", "chkDonateAllHasteSpells", 0))
 $sTxtDonateHasteSpells = StringReplace(IniRead($config, "donate", "txtDonateHasteSpells", "haste"), "|", @CRLF)
 $sTxtBlacklistHasteSpells = StringReplace(IniRead($config, "donate", "txtBlacklistHasteSpells", "no haste|haste no"), "|", @CRLF)
 $aDonHasteSpells = StringSplit($sTxtDonateHasteSpells, @CRLF, $STR_ENTIRESPLIT)
 $aBlkHasteSpells = StringSplit($sTxtBlacklistHasteSpells, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateSkeletonSpells = IniRead($config, "donate", "chkDonateSkeletonSpells", "0")
-$ichkDonateAllSkeletonSpells = IniRead($config, "donate", "chkDonateAllSkeletonSpells", "0")
+$ichkDonateSkeletonSpells = Int(IniRead($config, "donate", "chkDonateSkeletonSpells", 0))
+$ichkDonateAllSkeletonSpells = Int(IniRead($config, "donate", "chkDonateAllSkeletonSpells", 0))
 $sTxtDonateSkeletonSpells = StringReplace(IniRead($config, "donate", "txtDonateSkeletonSpells", "skeleton"), "|", @CRLF)
 $sTxtBlacklistSkeletonSpells = StringReplace(IniRead($config, "donate", "txtBlacklistSkeletonSpells", "no skeleton|skeleton no"), "|", @CRLF)
 $aDonSkeletonSpells = StringSplit($sTxtDonateSkeletonSpells, @CRLF, $STR_ENTIRESPLIT)
 $aBlkSkeletonSpells = StringSplit($sTxtBlacklistSkeletonSpells, @CRLF, $STR_ENTIRESPLIT)
-$ichkDonateCustomA = IniRead($config, "donate", "chkDonateCustomA", "0")
-$ichkDonateAllCustomA = IniRead($config, "donate", "chkDonateAllCustomA", "0")
+$ichkDonateCustomA = Int(IniRead($config, "donate", "chkDonateCustomA", 0))
+$ichkDonateAllCustomA = Int(IniRead($config, "donate", "chkDonateAllCustomA", 0))
 $sTxtDonateCustomA = StringReplace(IniRead($config, "donate", "txtDonateCustomA", "ground support|ground"), "|", @CRLF)
 $sTxtBlacklistCustomA = StringReplace(IniRead($config, "donate", "txtBlacklistCustomA", "no ground|ground no|nonly"), "|", @CRLF)
 $aDonCustomA = StringSplit($sTxtDonateCustomA, @CRLF, $STR_ENTIRESPLIT)
 $aBlkCustomA = StringSplit($sTxtBlacklistCustomA, @CRLF, $STR_ENTIRESPLIT)
-$varDonateCustomA[0][0] = IniRead($config, "donate", "cmbDonateCustomA1", "6")
-$varDonateCustomA[1][0] = IniRead($config, "donate", "cmbDonateCustomA2", "1")
-$varDonateCustomA[2][0] = IniRead($config, "donate", "cmbDonateCustomA3", "0")
-$varDonateCustomA[0][1] = IniRead($config, "donate", "txtDonateCustomA1", "2")
-$varDonateCustomA[1][1] = IniRead($config, "donate", "txtDonateCustomA2", "3")
-$varDonateCustomA[2][1] = IniRead($config, "donate", "txtDonateCustomA3", "1")
-$ichkDonateCustomB = IniRead($config, "donate", "chkDonateCustomB", "0")
-$ichkDonateAllCustomB = IniRead($config, "donate", "chkDonateAllCustomB", "0")
+$varDonateCustomA[0][0] = Int(IniRead($config, "donate", "cmbDonateCustomA1", 6))
+$varDonateCustomA[1][0] = Int(IniRead($config, "donate", "cmbDonateCustomA2", 1))
+$varDonateCustomA[2][0] = Int(IniRead($config, "donate", "cmbDonateCustomA3", 0))
+$varDonateCustomA[0][1] = Int(IniRead($config, "donate", "txtDonateCustomA1", 2))
+$varDonateCustomA[1][1] = Int(IniRead($config, "donate", "txtDonateCustomA2", 3))
+$varDonateCustomA[2][1] = Int(IniRead($config, "donate", "txtDonateCustomA3", 1))
+$ichkDonateCustomB = Int(IniRead($config, "donate", "chkDonateCustomB", 0))
+$ichkDonateAllCustomB = Int(IniRead($config, "donate", "chkDonateAllCustomB", 0))
 $sTxtDonateCustomB = StringReplace(IniRead($config, "donate", "txtDonateCustomB", "air support|any air"), "|", @CRLF)
 $sTxtBlacklistCustomB = StringReplace(IniRead($config, "donate", "txtBlacklistCustomB", "no air|air no|only|just"), "|", @CRLF)
 $aDonCustomB = StringSplit($sTxtDonateCustomB, @CRLF, $STR_ENTIRESPLIT)
 $aBlkCustomB = StringSplit($sTxtBlacklistCustomB, @CRLF, $STR_ENTIRESPLIT)
-$varDonateCustomB[0][0] = IniRead($config, "donate", "cmbDonateCustomB1", "11")
-$varDonateCustomB[1][0] = IniRead($config, "donate", "cmbDonateCustomB2", "1")
-$varDonateCustomB[2][0] = IniRead($config, "donate", "cmbDonateCustomB3", "6")
-$varDonateCustomB[0][1] = IniRead($config, "donate", "txtDonateCustomB1", "3")
-$varDonateCustomB[1][1] = IniRead($config, "donate", "txtDonateCustomB2", "13")
-$varDonateCustomB[2][1] = IniRead($config, "donate", "txtDonateCustomB3", "5")
+$varDonateCustomB[0][0] = Int(IniRead($config, "donate", "cmbDonateCustomB1", 11))
+$varDonateCustomB[1][0] = Int(IniRead($config, "donate", "cmbDonateCustomB2", 1))
+$varDonateCustomB[2][0] = Int(IniRead($config, "donate", "cmbDonateCustomB3", 6))
+$varDonateCustomB[0][1] = Int(IniRead($config, "donate", "txtDonateCustomB1", 3))
+$varDonateCustomB[1][1] = Int(IniRead($config, "donate", "txtDonateCustomB2", 13))
+$varDonateCustomB[2][1] = Int(IniRead($config, "donate", "txtDonateCustomB3", 5))
 $sTxtBlacklist = StringReplace(IniRead($config, "donate", "txtBlacklist", "clan war|war|cw"), "|", @CRLF)
 $aBlackList = StringSplit($sTxtBlacklist, @CRLF, $STR_ENTIRESPLIT)
-$icmbFilterDonationsCC = IniRead($config, "donate", "cmbFilterDonationsCC", "0")
-$ichkExtraAlphabets = IniRead($config, "donate", "chkExtraAlphabets", "0")
-$ichkExtraChinese = IniRead($config, "donate", "chkExtraChinese", "0")
+$icmbFilterDonationsCC = Int(IniRead($config, "donate", "cmbFilterDonationsCC", 0))
+$ichkExtraAlphabets = Int(IniRead($config, "donate", "chkExtraAlphabets", 0))
+$ichkExtraChinese = Int(IniRead($config, "donate", "chkExtraChinese", 0))
 $chkLvl6Enabled = 0
-InireadS($chkLvl7Enabled, $config, "collectors", "lvl7Enabled", "1", "Int")
-InireadS($chkLvl8Enabled, $config, "collectors", "lvl8Enabled", "1", "Int")
-InireadS($chkLvl9Enabled, $config, "collectors", "lvl9Enabled", "1", "Int")
-InireadS($chkLvl10Enabled, $config, "collectors", "lvl10Enabled", "1", "Int")
-InireadS($chkLvl11Enabled, $config, "collectors", "lvl11Enabled", "1", "Int")
-InireadS($chkLvl12Enabled, $config, "collectors", "lvl12Enabled", "1", "Int")
-InireadS($cmbLvl6Fill, $config, "collectors", "lvl6fill", "0", "Int")
+IniReadS($chkLvl7Enabled, $config, "collectors", "lvl7Enabled", 1, "int")
+IniReadS($chkLvl8Enabled, $config, "collectors", "lvl8Enabled", 1, "int")
+IniReadS($chkLvl9Enabled, $config, "collectors", "lvl9Enabled", 1, "int")
+IniReadS($chkLvl10Enabled, $config, "collectors", "lvl10Enabled", 1, "int")
+IniReadS($chkLvl11Enabled, $config, "collectors", "lvl11Enabled", 1, "int")
+IniReadS($chkLvl12Enabled, $config, "collectors", "lvl12Enabled", 1, "int")
+IniReadS($cmbLvl6Fill, $config, "collectors", "lvl6fill", 0, "int")
 If $cmbLvl6Fill > 1 Then $cmbLvl6Fill = 1
-InireadS($cmbLvl7Fill, $config, "collectors", "lvl7fill", "0", "Int")
+IniReadS($cmbLvl7Fill, $config, "collectors", "lvl7fill", 0, "int")
 If $cmbLvl7Fill > 1 Then $cmbLvl7Fill = 1
-InireadS($cmbLvl8Fill, $config, "collectors", "lvl8fill", "0", "Int")
+IniReadS($cmbLvl8Fill, $config, "collectors", "lvl8fill", 0, "int")
 If $cmbLvl8Fill > 1 Then $cmbLvl8Fill = 1
-InireadS($cmbLvl9Fill, $config, "collectors", "lvl9fill", "0", "Int")
+IniReadS($cmbLvl9Fill, $config, "collectors", "lvl9fill", 0, "int")
 If $cmbLvl9Fill > 1 Then $cmbLvl9Fill = 1
-InireadS($cmbLvl10Fill, $config, "collectors", "lvl10fill", "0", "Int")
+IniReadS($cmbLvl10Fill, $config, "collectors", "lvl10fill", 0, "int")
 If $cmbLvl10Fill > 1 Then $cmbLvl10Fill = 1
-InireadS($cmbLvl11Fill, $config, "collectors", "lvl11fill", "0", "Int")
+IniReadS($cmbLvl11Fill, $config, "collectors", "lvl11fill", 0, "int")
 If $cmbLvl11Fill > 1 Then $cmbLvl11Fill = 1
-InireadS($cmbLvl12Fill, $config, "collectors", "lvl12fill", "0", "Int")
+IniReadS($cmbLvl12Fill, $config, "collectors", "lvl12fill", 0, "int")
 If $cmbLvl12Fill > 1 Then $cmbLvl12Fill = 1
-InireadS($toleranceOffset, $config, "collectors", "tolerance", "0", "Int")
+IniReadS($toleranceOffset, $config, "collectors", "tolerance", 0, "int")
 InireadS($iMinCollectorMatches, $config, "collectors", "minmatches", $iMinCollectorMatches)
 If $iMinCollectorMatches < 1 Or $iMinCollectorMatches > 6 Then $iMinCollectorMatches = 3
-$AndroidAutoAdjustConfig = IniRead($config, "android", "auto.adjust.config", ($AndroidAutoAdjustConfig ? "1" : "0")) = "1"
+$AndroidAutoAdjustConfig = Int(IniRead($config, "android", "auto.adjust.config", ($AndroidAutoAdjustConfig ? "1" : 0))) = "1"
 $AndroidGameDistributor = IniRead($config, "android", "game.distributor", $AndroidGameDistributor)
 $AndroidGamePackage = IniRead($config, "android", "game.package", $AndroidGamePackage)
 $AndroidGameClass = IniRead($config, "android", "game.class", $AndroidGameClass)
 $UserGameDistributor = IniRead($config, "android", "user.distributor", $UserGameDistributor)
 $UserGamePackage = IniRead($config, "android", "user.package", $UserGamePackage)
 $UserGameClass = IniRead($config, "android", "user.class", $UserGameClass)
-$AndroidCheckTimeLagEnabled = IniRead($config, "android", "check.time.lag.enabled", ($AndroidCheckTimeLagEnabled ? "1" : "0")) = "1"
+$AndroidCheckTimeLagEnabled = Int(IniRead($config, "android", "check.time.lag.enabled", ($AndroidCheckTimeLagEnabled ? "1" : 0))) = "1"
 $AndroidAdbScreencapTimeoutMin = Int(IniRead($config, "android", "adb.screencap.timeout.min", $AndroidAdbScreencapTimeoutMin))
 $AndroidAdbScreencapTimeoutMax = Int(IniRead($config, "android", "adb.screencap.timeout.max", $AndroidAdbScreencapTimeoutMax))
 $AndroidAdbScreencapTimeoutDynamic = Int(IniRead($config, "android", "adb.screencap.timeout.dynamic", $AndroidAdbScreencapTimeoutDynamic))
-$AndroidAdbInputEnabled = IniRead($config, "android", "adb.input.enabled", ($AndroidAdbInputEnabled ? "1" : "0")) = "1"
-$AndroidAdbClickEnabled = IniRead($config, "android", "adb.click.enabled", ($AndroidAdbClickEnabled ? "1" : "0")) = "1"
+$AndroidAdbInputEnabled = Int(IniRead($config, "android", "adb.input.enabled", ($AndroidAdbInputEnabled ? "1" : 0))) = "1"
+$AndroidAdbClickEnabled = Int(IniRead($config, "android", "adb.click.enabled", ($AndroidAdbClickEnabled ? "1" : 0))) = "1"
 $AndroidAdbClickGroup = Int(IniRead($config, "android", "adb.click.group", $AndroidAdbClickGroup))
-$AndroidAdbClicksEnabled = IniRead($config, "android", "adb.clicks.enabled", ($AndroidAdbClicksEnabled ? "1" : "0")) = "1"
+$AndroidAdbClicksEnabled = Int(IniRead($config, "android", "adb.clicks.enabled", ($AndroidAdbClicksEnabled ? "1" : 0))) = "1"
 $AndroidAdbClicksTroopDeploySize = Int(IniRead($config, "android", "adb.clicks.troop.deploy.size", $AndroidAdbClicksTroopDeploySize))
-$NoFocusTampering = IniRead($config, "android", "no.focus.tampering", ($NoFocusTampering ? "1" : "0")) = "1"
+$NoFocusTampering = Int(IniRead($config, "android", "no.focus.tampering", ($NoFocusTampering ? "1" : 0))) = "1"
 $AndroidShieldColor = Dec(IniRead($config, "android", "shield.color", Hex($AndroidShieldColor, 6)))
 $AndroidShieldTransparency = Int(IniRead($config, "android", "shield.transparency", $AndroidShieldTransparency))
 $AndroidActiveColor = Dec(IniRead($config, "android", "active.color", Hex($AndroidActiveColor, 6)))
 $AndroidActiveTransparency = Int(IniRead($config, "android", "active.transparency", $AndroidActiveTransparency))
 $AndroidInactiveColor = Dec(IniRead($config, "android", "inactive.color", Hex($AndroidInactiveColor, 6)))
 $AndroidInactiveTransparency = Int(IniRead($config, "android", "inactive.transparency", $AndroidInactiveTransparency))
-IniReadS($ichkTSActivateCamps2, $config, "search", "ChkTSSearchCamps2", "0")
-IniReadS($iEnableAfterArmyCamps2, $config, "search", "TSEnableAfterArmyCamps2", "100")
-IniReadS($iEnableSpellsWait[$DB], $config, "search", "ChkDBSpellsWait", "0")
-IniReadS($iEnableSpellsWait[$LB], $config, "search", "ChkABSpellsWait", "0")
-IniReadS($iTotalTrainSpaceSpell, $config, "search", "TotalTrainSpaceSpell", "0")
-IniReadS($iChkWaitForCastleSpell[$DB], $config, "search", "ChkDBCastleSpellWait", "0")
-IniReadS($iChkWaitForCastleSpell[$LB], $config, "search", "ChkABCastleSpellWait", "0")
-IniReadS($iChkWaitForCastleTroops[$DB], $config, "search", "ChkDBCastleTroopsWait", "0")
-IniReadS($iChkWaitForCastleTroops[$LB], $config, "search", "ChkABCastleTroopsWait", "0")
-IniReadS($iCmbWaitForCastleSpell[$DB], $config, "search", "cmbDBWaitForCastleSpell", "0")
-IniReadS($iCmbWaitForCastleSpell[$LB], $config, "search", "cmbABWaitForCastleSpell", "0")
+IniReadS($ichkTSActivateCamps2, $config, "search", "ChkTSSearchCamps2", 0, "int")
+IniReadS($iEnableAfterArmyCamps2, $config, "search", "TSEnableAfterArmyCamps2", 100, "int")
+IniReadS($iEnableSpellsWait[$DB], $config, "search", "ChkDBSpellsWait", 0, "int")
+IniReadS($iEnableSpellsWait[$LB], $config, "search", "ChkABSpellsWait", 0, "int")
+IniReadS($iTotalTrainSpaceSpell, $config, "search", "TotalTrainSpaceSpell", 0, "int")
+IniReadS($iChkWaitForCastleSpell[$DB], $config, "search", "ChkDBCastleSpellWait", 0, "int")
+IniReadS($iChkWaitForCastleSpell[$LB], $config, "search", "ChkABCastleSpellWait", 0, "int")
+IniReadS($iChkWaitForCastleTroops[$DB], $config, "search", "ChkDBCastleTroopsWait", 0, "int")
+IniReadS($iChkWaitForCastleTroops[$LB], $config, "search", "ChkABCastleTroopsWait", 0, "int")
+IniReadS($iCmbWaitForCastleSpell[$DB], $config, "search", "cmbDBWaitForCastleSpell", 0, "int")
+IniReadS($iCmbWaitForCastleSpell[$LB], $config, "search", "cmbABWaitForCastleSpell", 0, "int")
 Else
 Return False
 EndIf
@@ -56165,6 +56323,7 @@ $itxtWall08ST = GUICtrlRead($txtWall08ST)
 $itxtWall09ST = GUICtrlRead($txtWall09ST)
 $itxtWall10ST = GUICtrlRead($txtWall10ST)
 $itxtWall11ST = GUICtrlRead($txtWall11ST)
+$itxtWall12ST = GUICtrlRead($txtWall12ST)
 If GUICtrlRead($chkSaveWallBldr) = $GUI_CHECKED Then
 $iSaveWallBldr = 1
 Else
@@ -56262,6 +56421,11 @@ If GUICtrlRead($chkDebugDisableVillageCentering) = $GUI_CHECKED Then
 $debugDisableVillageCentering = 1
 Else
 $debugDisableVillageCentering = 0
+EndIf
+If GUICtrlRead($chkDebugDeadbaseImage) = $GUI_CHECKED Then
+$debugDeadbaseImage = 1
+Else
+$debugDeadbaseImage = 0
 EndIf
 If GUICtrlRead($chkDebugOcr) = $GUI_CHECKED Then
 $debugOcr = 1
@@ -57465,6 +57629,7 @@ IniWriteS($config, "Walls", "Wall08", $itxtWall08ST)
 IniWriteS($config, "Walls", "Wall09", $itxtWall09ST)
 IniWriteS($config, "Walls", "Wall10", $itxtWall10ST)
 IniWriteS($config, "Walls", "Wall11", $itxtWall11ST)
+IniWriteS($config, "Walls", "Wall12", $itxtWall12ST)
 For $iz = 0 To UBound($aUpgrades, 1) - 1
 IniWrite($building, "upgrade", "xupgrade" & $iz, $aUpgrades[$iz][0])
 IniWrite($building, "upgrade", "yupgrade" & $iz, $aUpgrades[$iz][1])
@@ -57649,6 +57814,7 @@ If $devmode = 1 Then
 IniWriteS($config, "debug", "debugsetlog", $DebugSetlog)
 IniWriteS($config, "debug", "disablezoomout", $debugDisableZoomout)
 IniWriteS($config, "debug", "disablevillagecentering", $debugDisableVillageCentering)
+IniWriteS($config, "debug", "debugdeadbaseimage", $debugDeadbaseImage)
 IniWriteS($config, "debug", "debugocr", $debugOcr)
 IniWriteS($config, "debug", "debugimagesave", $DebugImageSave)
 IniWriteS($config, "debug", "debugbuildingpos", $debugBuildingPos)
@@ -58325,8 +58491,10 @@ If $Gold2 = "" Then
 If _Sleep($iDelayGoldElixirChangeEBO1) Then Return
 $Gold2 = getGoldVillageSearch(48, 69)
 EndIf
+CheckHeroesHealth()
 $Elixir2 = getElixirVillageSearch(48, 69 + 29)
 $Trophies = getTrophyVillageSearch(48, 69 + 99)
+CheckHeroesHealth()
 If $Trophies <> "" Then
 If _Sleep($iDelayGoldElixirChangeEBO1) Then Return
 $DarkElixir2 = getDarkElixirVillageSearch(48, 69 + 57)
@@ -58334,6 +58502,7 @@ Else
 $DarkElixir2 = ""
 $Trophies = getTrophyVillageSearch(48, 69 + 69)
 EndIf
+CheckHeroesHealth()
 $txtDiff = Round(($z - TimerDiff($iBegin)) / 1000, 1)
 If Number($txtDiff) < 0 Then $txtDiff = 0
 $NoResourceOCR = StringLen($Gold2) = 0 And StringLen($Elixir2) = 0 And StringLen($DarkElixir2) = 0
@@ -63488,61 +63657,69 @@ Func GetLocationMine()
 If $iDetectedImageType = 0 Then
 Local $result = DllCall($hFuncLib, "str", "getLocationMineExtractor", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# GetLocationMine: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"Mine")
-Else
-Local $result = DllCall($hFuncLib, "str", "getLocationSnowMineExtractor", "ptr", $hHBitmap2)
-If $debugBuildingPos = 1 Then Setlog("#*# GetLocationSnowMine: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"SnowMine")
-EndIf
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "Mine")
 Return GetListPixel($result[0])
+Else
+Local $directory = @ScriptDir & "\imgxml\Storages\Mines_Snow"
+Local $Maxpositions = 7
+Local $aResult = returnMultipleMatches($directory, $Maxpositions)
+Local $result = ConvertImgloc2MBR($aResult, $Maxpositions)
+Return GetListPixel($result)
+EndIf
+Return GetListPixel($result)
 EndFunc
 Func GetLocationElixir()
 If $iDetectedImageType = 0 Then
 Local $result = DllCall($hFuncLib, "str", "getLocationElixirExtractor", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# GetLocationElixir: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"Elixir")
-Else
-Local $result = DllCall($hFuncLib, "str", "getLocationSnowElixirExtractor", "ptr", $hHBitmap2)
-If $debugBuildingPos = 1 Then Setlog("#*# GetLocationSnowElixir: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"SnowElixir")
-EndIf
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "Elixir")
 Return GetListPixel($result[0])
+Else
+Local $directory = @ScriptDir & "\imgxml\Storages\Collectors_Snow"
+Local $Maxpositions = 7
+Local $aResult = returnMultipleMatches($directory, $Maxpositions)
+Local $result = ConvertImgloc2MBR($aResult, $Maxpositions)
+Return GetListPixel($result)
+EndIf
 EndFunc
 Func GetLocationDarkElixir()
-Local $result = DllCall($hFuncLib, "str", "getLocationDarkElixirExtractor", "ptr", $hHBitmap2)
+Local $directory = @ScriptDir & "\imgxml\Storages\Drills"
+Local $Maxpositions = 3
+Local $aResult = returnMultipleMatches($directory, $Maxpositions)
+Local $result = ConvertImgloc2MBR($aResult, $Maxpositions)
 If $debugBuildingPos = 1 Then
-Setlog("#*# GetLocationDarkElixir: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"DarkElixir")
+Setlog("#*# GetLocationDarkElixir: " & $result, $COLOR_DEBUG1)
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "DarkElixir")
 EndIf
-Return GetListPixel($result[0])
+Return GetListPixel($result)
 EndFunc
 Func GetLocationTownHall()
 Local $result = DllCall($hFuncLib, "str", "getLocationTownHall", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# GetLocationTownHall: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"TownHall")
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "TownHall")
 Return GetListPixel($result[0])
 EndFunc
 Func GetLocationDarkElixirStorageWithLevel()
 Local $result = DllCall($hFuncLib, "str", "getLocationDarkElixirStorageWithLevel", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# GetLocationDarkElixirStorageWithLevel: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"DarkElixirStorageWithLevel")
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "DarkElixirStorageWithLevel")
 Return $result[0]
 EndFunc
 Func GetLocationDarkElixirStorage()
 Local $result = DllCall($hFuncLib, "str", "getLocationDarkElixirStorage", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# GetLocationDarkElixirStorage: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"DarkElixirStorage")
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "DarkElixirStorage")
 Return GetListPixel($result[0])
 EndFunc
 Func GetLocationElixirWithLevel()
 If $iDetectedImageType = 0 Then
 Local $result = DllCall($hFuncLib, "str", "getLocationElixirExtractorWithLevel", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# getLocationElixirExtractorWithLevel: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"ElixirExtractorWithLevel")
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "ElixirExtractorWithLevel")
 Else
 Local $result = DllCall($hFuncLib, "str", "getLocationSnowElixirExtractorWithLevel", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# getLocationSnowElixirExtractorWithLevel: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"SnowElixirExtractorWithLevel")
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "SnowElixirExtractorWithLevel")
 EndIf
 Return $result[0]
 EndFunc
@@ -63550,18 +63727,18 @@ Func GetLocationMineWithLevel()
 If $iDetectedImageType = 0 Then
 Local $result = DllCall($hFuncLib, "str", "getLocationMineExtractorWithLevel", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# getLocationMineExtractorWithLevel: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"MineExtractorWithLevel")
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "MineExtractorWithLevel")
 Else
 Local $result = DllCall($hFuncLib, "str", "getLocationSnowMineExtractorWithLevel", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# getLocationSnowMineExtractorWithLevel: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"SnowMineExtractorWithLevel")
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "SnowMineExtractorWithLevel")
 EndIf
 Return $result[0]
 EndFunc
 Func GetLocationDarkElixirWithLevel()
 Local $result = DllCall($hFuncLib, "str", "getLocationDarkElixirExtractorWithLevel", "ptr", $hHBitmap2)
 If $debugBuildingPos = 1 Then Setlog("#*# getLocationDarkElixirExtractorWithLevel: " & $result[0], $COLOR_DEBUG1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($result[0],"DarkElixirExtractorWithLevel")
+If $debugGetLocation = 1 Then DebugImageGetLocation($result[0], "DarkElixirExtractorWithLevel")
 Return $result[0]
 EndFunc
 Func GetLocationGoldStorage()
@@ -63577,13 +63754,13 @@ Local $minLevel = 0
 Local $maxLevel = 12
 Local $statFile = ""
 If $DebugSetLog = 1 Then SetLog("Started the function | GetLocationGoldStorage")
-Local $aResult = returnMultipleMatches($directory, $maxReturnPoints , $redLines, $statFile, $minLevel, $maxLevel)
+Local $aResult = returnMultipleMatches($directory, $maxReturnPoints, $redLines, $statFile, $minLevel, $maxLevel)
 If UBound($aResult) > 1 Then
 For $i = 1 To UBound($aResult) - 1
 $Filename = $aResult[$i][1]
 $TotalObjects = $aResult[$i][4]
 $GoldStorageXY = $aResult[$i][5]
-If IsArray($GoldStorageXY) and $TotalObjects > 0 Then
+If IsArray($GoldStorageXY) And $TotalObjects > 0 Then
 For $t = 0 To UBound($GoldStorageXY) - 1
 If $DebugSetLog = 1 Then SetLog($Filename & " found (" & $GoldStorageXY[$t][0] & "," & $GoldStorageXY[$t][1] & ")", $COLOR_SUCCESS)
 $TempVectStr &= $GoldStorageXY[$t][0] & "-" & $GoldStorageXY[$t][1] & "|"
@@ -63596,7 +63773,7 @@ EndIf
 If $DebugSetLog = 1 Then SetLog("  - Calculated  in: " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
 If StringLen($TempVectStr) > 0 Then
 $TempVectStr = StringLeft($TempVectStr, StringLen($TempVectStr) - 1)
-if $debugGetLocation = 1 Then DebugImageGetLocation($TempVectStr,"GoldStorage")
+If $debugGetLocation = 1 Then DebugImageGetLocation($TempVectStr, "GoldStorage")
 Local $InputVect = GetListPixel($TempVectStr)
 SetLog("Total Gold Storages :" & $TotalStorages)
 Return $InputVect
@@ -63617,13 +63794,13 @@ Local $minLevel = 0
 Local $maxLevel = 12
 Local $statFile = ""
 If $DebugSetLog = 1 Then SetLog("Started the function | GetLocationElixirStorage")
-Local $aResult = returnMultipleMatches($directory, $maxReturnPoints , $redLines, $statFile, $minLevel, $maxLevel)
+Local $aResult = returnMultipleMatches($directory, $maxReturnPoints, $redLines, $statFile, $minLevel, $maxLevel)
 If UBound($aResult) > 1 Then
 For $i = 1 To UBound($aResult) - 1
 $Filename = $aResult[$i][1]
 $TotalObjects = $aResult[$i][4]
 $ElixirStorageXY = $aResult[$i][5]
-If IsArray($ElixirStorageXY) and $TotalObjects > 0 Then
+If IsArray($ElixirStorageXY) And $TotalObjects > 0 Then
 For $t = 0 To UBound($ElixirStorageXY) - 1
 If $DebugSetLog = 1 Then SetLog($Filename & " found (" & $ElixirStorageXY[$t][0] & "," & $ElixirStorageXY[$t][1] & ")", $COLOR_SUCCESS)
 $TempVectStr &= $ElixirStorageXY[$t][0] & "-" & $ElixirStorageXY[$t][1] & "|"
@@ -63638,7 +63815,7 @@ If StringLen($TempVectStr) > 0 Then
 $TempVectStr = StringLeft($TempVectStr, StringLen($TempVectStr) - 1)
 Local $InputVect = GetListPixel($TempVectStr)
 SetLog("Total Elixirr Storages :" & $TotalStorages)
-if $debugGetLocation = 1 Then DebugImageGetLocation($TempVectStr,"ElixirStorage")
+If $debugGetLocation = 1 Then DebugImageGetLocation($TempVectStr, "ElixirStorage")
 Return $InputVect
 Else
 Return 0
@@ -63649,8 +63826,8 @@ setlog("DebugImage .............................")
 setlog("input: " & $vectorstr)
 setlog("type: " & $type)
 Switch $type
-case "DarkElixirStorageWithLevel", "ElixirExtractorWithLevel", "SnowElixirExtractorWithLevel", "MineExtractorWithLevel", "SnowMineExtractorWithLevel", "DarkElixirExtractorWithLevel"
-Local $vector = stringSplit($vectorstr,"~",2)
+Case "DarkElixirStorageWithLevel", "ElixirExtractorWithLevel", "SnowElixirExtractorWithLevel", "MineExtractorWithLevel", "SnowMineExtractorWithLevel", "DarkElixirExtractorWithLevel"
+Local $vector = StringSplit($vectorstr, "~", 2)
 Setlog("-- " & $type)
 For $i = 0 To UBound($vector) - 1
 Setlog($type & " " & $i & " --> " & $vector[$i])
@@ -63659,34 +63836,57 @@ If UBound($temp) = 2 Then
 $pixel = StringSplit($temp[1], "-", 2)
 If UBound($pixel) = 2 Then
 If isInsideDiamondRedArea($pixel) Then
-if $debugsetlog=1 then Setlog("coordinate inside village (" & $pixel[0] & "," & $pixel[1] & ")" )
-_CaptureRegion($pixel[0]  - 30, $pixel[1] - 30, $pixel[0]  + 30, $pixel[1]  + 30)
-DebugImageSave("DebugImageGetLocation_" & $type & "_"  ,  False)
+If $DebugSetLog = 1 Then Setlog("coordinate inside village (" & $pixel[0] & "," & $pixel[1] & ")")
+_CaptureRegion($pixel[0] - 30, $pixel[1] - 30, $pixel[0] + 30, $pixel[1] + 30)
+DebugImageSave("DebugImageGetLocation_" & $type & "_", False)
 Else
-if $debugsetlog=1 then Setlog("coordinate out of village (" & $pixel[0] & "," & $pixel[1] & ")" )
+If $DebugSetLog = 1 Then Setlog("coordinate out of village (" & $pixel[0] & "," & $pixel[1] & ")")
 EndIf
 EndIf
 EndIf
 Next
-case "Mine", "SnowMine", "Elixir", "SnowElixir", "DarkElixir", "TownHall","DarkElixirStorage", "GoldStorage", "ElixirStorage"
-Local $vector = stringSplit($vectorstr,"|",2)
+Case "Mine", "SnowMine", "Elixir", "SnowElixir", "DarkElixir", "TownHall", "DarkElixirStorage", "GoldStorage", "ElixirStorage"
+Local $vector = StringSplit($vectorstr, "|", 2)
 Setlog("-- " & $type)
 For $i = 0 To UBound($vector) - 1
 Local $pixel = StringSplit($vector[$i], "-", 2)
 If UBound($pixel) = 2 Then
 If isInsideDiamondRedArea($pixel) Then
-if $debugsetlog=1 then Setlog("coordinate inside village (" & $pixel[0] & "," & $pixel[1] & ")" )
-_CaptureRegion($pixel[0]  - 30, $pixel[1] - 30, $pixel[0]  + 30, $pixel[1]  + 30)
-DebugImageSave("DebugImageGetLocation_" & $type & "_"  ,  False)
+If $DebugSetLog = 1 Then Setlog("coordinate inside village (" & $pixel[0] & "," & $pixel[1] & ")")
+_CaptureRegion($pixel[0] - 30, $pixel[1] - 30, $pixel[0] + 30, $pixel[1] + 30)
+DebugImageSave("DebugImageGetLocation_" & $type & "_", False)
 Else
-if $debugsetlog=1 then Setlog("coordinate out of village (" & $pixel[0] & "," & $pixel[1] & ")" )
+If $DebugSetLog = 1 Then Setlog("coordinate out of village (" & $pixel[0] & "," & $pixel[1] & ")")
 EndIf
 EndIf
 Next
-case Else
+Case Else
 setlog("!!!!!!")
 EndSwitch
 setlog("-------------------------------------------")
+EndFunc
+Func ConvertImgloc2MBR($Array, $Maxpositions)
+Local $StringConverted = Null
+Local $Max = 0
+If IsArray($Array) Then
+For $i = 1 To UBound($Array) - 1
+Local $Coord = $Array[$i][5]
+If IsArray($Coord) Then
+For $t = 0 To UBound($Coord) - 1
+If isInsideDiamondXY($Coord[$t][0], $Coord[$t][1]) Then
+$StringConverted &= $Coord[$t][0] & "-" & $Coord[$t][1] & "|"
+$Max += 1
+If $Max = $Maxpositions Then ExitLoop (2)
+EndIf
+Next
+EndIf
+Next
+Else
+Setlog("Error on Imgloc detection Mines|Collectors", $COLOR_RED)
+EndIf
+$StringConverted = StringTrimRight($StringConverted, 1)
+If $DebugSetLog then Setlog("$StringConverted: " & $StringConverted)
+Return $StringConverted
 EndFunc
 Func GetOffestPixelRedArea2($pixel, $eVectorType, $offset = 3)
 Local $pixelOffest = $pixel
@@ -63833,11 +64033,11 @@ Func CheckHeroesHealth()
 If $checkKPower Or $checkQPower or $checkWPower Then
 ForceCaptureRegion()
 Local $aKingHealthCopy = $aKingHealth
-$aKingHealthCopy[0] = GetXPosOfArmySlot($King, 68)
+$aKingHealthCopy[0] = GetXPosOfArmySlot($King, 68) + 10
 Local $aQueenHealthCopy = $aQueenHealth
-$aQueenHealthCopy[0] = GetXPosOfArmySlot($Queen, 68)
+$aQueenHealthCopy[0] = GetXPosOfArmySlot($Queen, 68) + 6
 Local $aWardenHealthCopy = $aWardenHealth
-$aWardenHealthCopy[0] = GetXPosOfArmySlot($Warden, 68)
+$aWardenHealthCopy[0] = GetXPosOfArmySlot($Warden, 68) + 8
 If _Sleep($iDelayRespond) Then Return
 If $debugSetlog = 1 Then
 Setlog(" CheckHeroesHealth started ")
@@ -64053,7 +64253,6 @@ $SlotComp = 1
 Case Else
 $SlotComp = 2
 EndSwitch
-If $slotNumber = $King Or $slotNumber = $Queen Or $slotNumber = $Warden Then $xOffsetFor11Slot += 8
 $SlotPixelColor = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 10)
 If $debugSetlog = 1 Then
 Setlog(" Slot 0  _ColorCheck 0x07202A at (17," & 580 + $bottomOffsetY & "): " & $SlotPixelColor, $COLOR_DEBUG)
@@ -64888,9 +65087,9 @@ $canRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroops
 If $debugsetlogTrain = 1 Then SETLOG("Can Request CC: " & $canRequestCC, $COLOR_DEBUG)
 If _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
 Local $iRemainTrainCCTimer = 0, $sResultCCMinutes = "", $aResult
-Local $sResultCC = getArmyCampCap($aArmyCCRemainTime[0], $aArmyCCRemainTime[1])
+Local $sResultCC = getRequestRemainTime( $aArmyCCRemainTime[0] ,  $aArmyCCRemainTime[1] )
 If $debugsetlogTrain = 1 Then Setlog("getArmyCampCap returned: " & $sResultCC, $COLOR_DEBUG)
-$iCCRemainTime = ConvertOCRTime("CC request time", $sResultCC)
+$iCCRemainTime = ConvertOCRTime("CC request", $sResultCC)
 EndIf
 If $bCloseArmyWindow = True Then
 ClickP($aAway, 1, 0, "#0000")
@@ -65046,7 +65245,7 @@ $iHeroUpgrading[0] = 0
 $iHeroUpgrading[1] = 0
 $iHeroUpgrading[2] = 0
 EndIf
-Local Const $aHeroRemainData[3][4] = [[620, 414, "King", $eKing], [695, 414, "Queen", $eQueen], [775, 414, "Warden", $eWarden]]
+Local Const $aHeroRemainData[3][4] = [[620, 414, "King", $eKing], [690, 414, "Queen", $eQueen], [765, 414, "Warden", $eWarden]]
 For $index = 0 To UBound($aHeroRemainData) - 1
 If StringInStr($HeroType, "all", $STR_NOCASESENSEBASIC) = 0 And $HeroType <> $aHeroRemainData[$index][3] Then ContinueLoop
 $sResult = ArmyHeroStatus($index)
@@ -66209,7 +66408,7 @@ Return $ToReturn
 EndFunc
 Func TrainRevampOldStyle()
 If $debugsetlogTrain = 1 Then Setlog(" - Initial Custom train Function")
-If $bDonateTrain = -1 Then SetbDonateTrain()
+If $bActiveDonate = -1 Then PrepareDonateCC()
 CheckArmySpellCastel()
 If ($CommandStop = 3 Or $CommandStop = 0) And $fullarmy Then
 SetLog("You are in halt attack mode and your Army is prepared!", $COLOR_DEBUG)
@@ -66277,9 +66476,10 @@ If $debugsetlogTrain = 1 Then $debugOcr = 0
 If $debugsetlogTrain = 1 Then Setlog(" - $CurCamp : " & $CurCamp)
 If $debugsetlogTrain = 1 Then Setlog(" - $TotalCamp : " & $TotalCamp)
 $bFullArmySpells = False
+Local $totalCapacitySpellsToBrew = $PSpellComp + $ESpellComp + $HaSpellComp + $SkSpellComp + ($LSpellComp* 2) + ($RSpellComp* 2) + ($HSpellComp* 2) + ($JSpellComp* 2) + ($FSpellComp* 2) + ($CSpellComp* 2)
 $iTotalSpellSpace = 0
 If UBound($aGetSpellsSize) = 2 Then
-If $aGetSpellsSize[0] = $aGetSpellsSize[1] Or $aGetSpellsSize[0] >= $iTotalCountSpell Then
+If $aGetSpellsSize[0] = $aGetSpellsSize[1] Or $aGetSpellsSize[0] >= $iTotalCountSpell or $aGetSpellsSize[0] >= $totalCapacitySpellsToBrew Then
 $iTotalSpellSpace = $aGetSpellsSize[0]
 $bFullArmySpells = True
 EndIf
@@ -66458,24 +66658,24 @@ Return ""
 EndIf
 EndFunc
 Func RemoveCastleSpell()
-If _ColorCheck(_GetPixelColor(675, 482, True), Hex(0xFFFFFF, 6), 30) = False Then
+If _ColorCheck(_GetPixelColor(806, 472, True), Hex(0xD0E878, 6), 25) = False Then
 SetLog("Cannot find/verify 'Edit Army' Button in Army tab", $COLOR_ORANGE)
 Return False
 EndIf
-Click(Random(680, 775, 1), Random(470, 515, 1))
+Click(Random(723, 812, 1), Random(469, 513, 1))
 If $Runstate = False Then Return
 If _Sleep(500) Then Return
 Local $pos[2] = [575, 575]
 ClickRemoveTroop($pos, 1, $isldTrainITDelay)
 If _Sleep(400) Then Return
-If _ColorCheck(_GetPixelColor(815, 520, True), Hex(0x68B020, 6), 30) = False Then
+If _ColorCheck(_GetPixelColor(806, 561, True), Hex(0xD0E878, 6), 25) = False Then
 SetLog("Cannot find/verify 'Okay' Button in Army tab", $COLOR_ORANGE)
 ClickP($aAway, 2, 0, "#0346")
 If _Sleep(400) Then OpenArmyWindow()
 Return False
 EndIf
 If _Sleep(700) Then Return
-Click(Random(730, 830, 1), Random(495, 525, 1))
+Click(Random(720, 815, 1), Random(558, 589, 1))
 If _Sleep(700) Then Return
 If _ColorCheck(_GetPixelColor(508, 428, True), Hex(0xFFFFFF, 6), 30) = False Then
 SetLog("Cannot find/verify 'Okay #2' Button in Army tab", $COLOR_ORANGE)
@@ -66749,7 +66949,7 @@ EndIf
 Return $ToReturn
 EndFunc
 Func IsGUICheckedForSpell($Spell, $Mode)
-Local $sSpell = ""
+Local $sSpell = "" , $iVal
 If $Runstate = False Then Return
 Switch Eval("e" & $Spell)
 Case $eLSpell
@@ -66770,7 +66970,8 @@ Case $eHaSpell
 $sSpell = "Haste"
 EndSwitch
 $iVal = Execute("$ichk" & $sSpell & "Spell")
-Return (($iVal[$Mode] = 1) ? True : False)
+If IsArray($iVal) Then Return (($iVal[$Mode] = 1) ? True : False)
+Return False
 EndFunc
 Func DragIfNeeded($Troop)
 Local Const $pos = GetTrainPos(Eval("e" & $Troop))
@@ -66856,7 +67057,7 @@ If UBound($toRemove) = 1 And $toRemove[0][0] = "Arch" And $toRemove[0][1] = 0 Th
 $ToReturn = 3
 Return $ToReturn
 EndIf
-If $IsFullArmywithHeroesAndSpells = True Or $fullarmy = True Or ($CommandStop = 3 Or $CommandStop = 0) = True And Not $bDonateTrain Then
+If $IsFullArmywithHeroesAndSpells = True Or $fullarmy = True Or ($CommandStop = 3 Or $CommandStop = 0) = True And Not $bActiveDonate Then
 $ToReturn = 3
 Return $ToReturn
 EndIf
@@ -66905,11 +67106,11 @@ SetLog("  " & NameOfTroop(Eval("e" & $toRemove[$i][0])) & ": " & $toRemove[$i][1
 Next
 EndIf
 EndIf
-If _ColorCheck(_GetPixelColor(675, 482, True), Hex(0xFFFFFF, 6), 30) = False Then
+If _ColorCheck(_GetPixelColor(806, 472, True), Hex(0xD0E878, 6), 25) = False Then
 SetLog("Cannot find/verify 'Edit Army' Button in Army tab", $COLOR_ORANGE)
 Return False
 EndIf
-Click(Random(680, 775, 1), Random(470, 515, 1))
+Click(Random(723, 812, 1), Random(469, 513, 1))
 $CounterToRemove = 0
 For $j = 0 To (UBound($toRemove) - 1)
 If IsSpellToBrew($toRemove[$j][0]) Then ExitLoop
@@ -66931,7 +67132,8 @@ EndIf
 Next
 Next
 EndIf
-If _ColorCheck(_GetPixelColor(772, 510, True), Hex(0xFFFFFF, 6), 30) = False Then
+If _Sleep(150) Then Return
+If _ColorCheck(_GetPixelColor(806, 561, True), Hex(0xD0E878, 6), 25) = False Then
 SetLog("Cannot find/verify 'Okay' Button in Army tab", $COLOR_ORANGE)
 ClickP($aAway, 2, 0, "#0346")
 If _Sleep(400) Then OpenArmyWindow()
@@ -66939,7 +67141,7 @@ Return False
 EndIf
 If _Sleep(700) Then Return
 If $Runstate = False Then Return
-Click(Random(730, 830, 1), Random(495, 525, 1))
+Click(Random(720, 815, 1), Random(558, 589, 1))
 If _Sleep(700) Then Return
 If _ColorCheck(_GetPixelColor(508, 428, True), Hex(0xFFFFFF, 6), 30) = False Then
 SetLog("Cannot find/verify 'Okay #2' Button in Army tab", $COLOR_ORANGE)
@@ -67288,16 +67490,16 @@ If _Sleep(1500) Then Return
 EndIf
 If $txt = "Troops" Then
 ResetVariables("Troops")
-Local $directory = "trainwindow-ArmyTroops-bundle"
+Local $directory = @ScriptDir & "\imgxml\ArmyTroops"
 Local $x = 23, $y = 215, $x1 = 840, $y1 = 255
 EndIf
 If $txt = "Spells" Then
 ResetVariables("Spells")
-Local $directory = "trainwindow-ArmySpells-bundle"
+Local $directory = "armytspells-bundle"
 Local $x = 23, $y = 366, $x1 = 585, $y1 = 400
 EndIf
 If $txt = "Heroes" Then
-Local $directory = "trainwindow-ArmyHeroes-bundle"
+Local $directory = "armyheroes-bundle"
 Local $x = 610, $y = 366, $x1 = 830, $y1 = 400
 EndIf
 Local $result = SearchArmy($directory, $x, $y, $x1, $y1, $txt)
@@ -68234,7 +68436,7 @@ If $SearchIdx >= 0 Then $aZombie[4] = Number($SearchIdx)
 If $aZombie[5] = "" Then $aZombie[5] = $Timestamp
 If $aZombie[6] = "" Then $aZombie[6] = $redline
 Local $dbFound = $aZombie[3] >= $iMinCollectorMatches
-Local $path = $dirTempDebug  & (($dbFound) ? ("\Zombies\") : ("\SkippedZombies\"))
+Local $path = $dirTempDebug  & (($dbFound) ? ("Zombies\") : ("SkippedZombies\"))
 Local $availK = Round($aZombie[2] / 1000)
 If $aZombie[0] = "" Then
 Local $create = $aZombie[0] = "" And ($dbFound = True Or ($aZombie[8] = -1 And $aZombie[9] = -1) Or ($availK >= $aZombie[8] And hasElixirStorage() = False) Or $availK >= $aZombie[9])
@@ -68993,6 +69195,7 @@ Local $hObstaclesTimer = TimerInit()
 If getBuilderCount() = False Then Return
 If _Sleep($iDelayRespond) Then Return
 Local $directory = @ScriptDir & "\imgxml\Resources\Obstacles"
+If $iDetectedImageType = 1 then $directory = @ScriptDir & "\imgxml\Obstacles_Snow"
 Local $Filename = ""
 Local $Locate = 0
 Local $CleanYardXY
@@ -69081,7 +69284,7 @@ EndIf
 If $NoBuilders Then
 SetLog("No Builders available to remove Obstacles!")
 Else
-If $Locate = 0 Then SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)
+If $Locate = 0 And $ichkCleanYard = 1 Then SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)
 If $DebugSetLog = 1 Then SetLog("Time: " & Round(TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
 EndIf
 UpdateStats()
@@ -69932,7 +70135,7 @@ Return False
 EndFunc
 Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn = 0)
 Local $FoundWalls[1] = [""]
-Local $directory = "walls-bundle"
+Local $directory = @ScriptDir & "\imgxml\Walls"
 Local $redLines = $redline
 Local $minLevel = $walllevel
 Local $maxLevel = $walllevel
@@ -69981,6 +70184,12 @@ If $debugsetlog = 1 Then SetLog("imgloc TH search Start", $COLOR_DEBUG)
 Local $numRetry = 2
 For $retry = 0 To $numRetry
 if $retry > 0 then  $xdirectory = $xdirectoryb
+IF $iDetectedImageType = 1 Then
+$xdirectory = "snow-" & $xdirectory
+EndIF
+if $retry > 0 and $IMGLOCREDLINE <> "" then
+$redLines = $IMGLOCREDLINE
+endif
 Local $hTimer = TimerInit()
 Local $result = findMultiple($xdirectory, $sCocDiamond, $redLines, $minLevel, $maxLevel, $maxReturnPoints, $returnProps, $bForceCapture)
 If IsArray($result) Then
@@ -70014,7 +70223,7 @@ $aTownHall[1] = Number($IMGLOCTHLOCATION[1])
 $THx = Number($IMGLOCTHLOCATION[0])
 $THy = Number($IMGLOCTHLOCATION[1])
 $THLocation = 1
-If $debugImageSave = 1 then
+If $debugImageSave = 1  and $retry > 0 then
 _CaptureRegion()
 Local $editedImage = $hBitmap
 Local $subDirectory = @ScriptDir & "\Thdetection\"
@@ -70053,20 +70262,21 @@ Next
 If $debugsetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 Else
 If $debugsetlog = 1 Then SetLog("imgloc Found Multiple TH : ", $COLOR_INFO)
+If $debugImageSave = 1  Then DebugImageSave("imglocTHSearch_MultiMatched_", True)
 If $debugsetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 EndIf
 Else
-If $debugsetlog = 1 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
-If $debugImageSave = 1 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
-If $debugsetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
+If $debugsetlog = 1  and $retry > 0 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
+If $debugImageSave = 1 and $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
+If $debugsetlog = 1 and $retry > 0 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 EndIf
-$retry = $retry + 1
 If $IMGLOCTHLEVEL > 0 Then
 ExitLoop
 Else
-If $debugImageSave = 1 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
+If $debugImageSave = 1 and $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
 If $debugsetlog = 1 Then SetLog("imgloc THSearch Notfound, Retry:  " & $retry)
 EndIf
+$retry = $retry + 1
 Next
 EndFunc
 Func ResetTHsearch()
@@ -70099,8 +70309,7 @@ $debugSetlog = 1
 $debugOCR = 1
 $debugImageSave = 1
 Setlog("=========== Imgloc ============")
-local $temp = AttackBarCheck()
-Setlog(" STRING : " & $temp)
+PrepareAttack($DB)
 $debugSetlog = 0
 $debugOCR = 0
 $debugImageSave = 0
@@ -70210,7 +70419,7 @@ $strinToReturn = StringTrimLeft($strinToReturn, 1)
 Return $strinToReturn
 EndFunc
 Func SlotAttack($PosX)
-Local $CheckSlot11 = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 10)
+Local $CheckSlot11 = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 15)
 If $debugSetlog = 1 Then
 Setlog(" Slot < 12 _ColorCheck 0x07202A at (17," & 580 + $bottomOffsetY & "): " & $CheckSlot11, $COLOR_DEBUG)
 Local $SlotPixelColorTemp = _GetPixelColor(17, 580 + $bottomOffsetY, $bCapturePixel)
@@ -70539,7 +70748,7 @@ $Restart = True
 EndFunc
 Func BanMsgBox()
 Local $MsgBox
-Local $stext = "Sorry, youy account is banned!!" & @CRLF & "Bot will stop now..."
+Local $stext = "Sorry, your account is banned!!" & @CRLF & "Bot will stop now..."
 While 1
 PushMsg("BAN")
 _ExtMsgBoxSet(4, 1, 0x004080, 0xFFFF00, 20, "Comic Sans MS", 600)
@@ -78039,7 +78248,7 @@ Return SetError(0, 0, ($error = 0 ? True : False))
 EndFunc
 Func TestLanguage()
 If $Runstate Then
-If getOcrLanguage(324, 6) = "english" Then
+If getOcrLanguage($aDetectLang[0], $aDetectLang[1]) = "english" Then
 Setlog("Language setting is English: Correct.", $COLOR_INFO)
 Else
 SetLog("Language setting is Wrong: Change CoC language to English!", $COLOR_ERROR)
@@ -78092,7 +78301,7 @@ GUICtrlSetState($lblVillageReportTemp, $GUI_HIDE)
 GUICtrlSetState($picResultGoldTemp, $GUI_HIDE)
 GUICtrlSetState($picResultElixirTemp, $GUI_HIDE)
 GUICtrlSetState($picResultDETemp, $GUI_HIDE)
-GUICtrlSetState($lblResultGoldNow, $GUI_SHOW)
+GUICtrlSetState($lblResultGoldNow, $GUI_SHOW + $GUI_DISABLE)
 GUICtrlSetState($picResultGoldNow, $GUI_SHOW)
 GUICtrlSetState($lblResultElixirNow, $GUI_SHOW)
 GUICtrlSetState($picResultElixirNow, $GUI_SHOW)
@@ -78108,6 +78317,7 @@ EndIf
 GUICtrlSetState($lblResultTrophyNow, $GUI_SHOW)
 GUICtrlSetState($lblResultBuilderNow, $GUI_SHOW)
 GUICtrlSetState($lblResultGemNow, $GUI_SHOW)
+btnVillageStat("UpdateStats")
 $iGoldStart = $iGoldCurrent
 $iElixirStart = $iElixirCurrent
 $iDarkStart = $iDarkCurrent
@@ -78455,6 +78665,15 @@ $iNbrOfDetectedMines[$i] = 0
 $iNbrOfDetectedCollectors[$i] = 0
 $iNbrOfDetectedDrills[$i] = 0
 Next
+For $i = 0 To 23
+$TroopsDonQ[$i] = 0
+GUICtrlSetData($lblDonQ[$i], $TroopsDonQ[$i])
+$TroopsDonXP[$i] = 0
+Next
+GUICtrlSetData($lblTotalTroopsQ, "Total Donated : 0")
+GUICtrlSetData($lblTotalSpellsQ, "Total Donated : 0")
+GUICtrlSetData($lblTotalTroopsXP, "XP Won : 0")
+GUICtrlSetData($lblTotalSpellsXP, "XP Won : 0")
 UpdateStats()
 EndFunc
 Func CheckVersion()
@@ -80233,7 +80452,7 @@ Func getAttackDisable($x_start, $y_start)
 Return getOcrAndCapture("coc-dis", $x_start, $y_start, 118, 24, True)
 EndFunc
 Func getOcrLanguage($x_start, $y_start)
-Return getOcrAndCapture("coc-ms-testl", $x_start, $y_start, 43, 11, True)
+Return getOcrAndCapture("coc-ms-testl", $x_start, $y_start, 93, 16, True)
 EndFunc
 Func getOcrSpellDetection($x_start, $y_start)
 Local $result = getOcrAndCapture("coc-t-spells2", $x_start, $y_start, 50, 30, True)
@@ -80305,10 +80524,13 @@ Func getRemainTLaboratory($x_start, $y_start)
 Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 192, 24)
 EndFunc
 Func getRemainTHero($x_start, $y_start)
-Return getOcrAndCapture("coc-remainhero", $x_start, $y_start, 38, 12, True)
+Return getOcrAndCapture("coc-remainhero", $x_start, $y_start, 55, 12, True)
 EndFunc
 Func getHeroStatus($x_start, $y_start)
 Return getOcrAndCapture("coc-herostatus", $x_start, $y_start, 20, 20)
+EndFunc
+Func getRequestRemainTime($x_start, $y_start)
+Return getOcrAndCapture("coc-CCremainTime", $x_start, $y_start, 30, 14)
 EndFunc
 Func getCloudTextShort($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 Local $result = getOcrAndCapture("coc-cloudsearch", $x_start, $y_start, 51, 27)
@@ -80893,7 +81115,11 @@ Local $hWeakTimer = TimerInit()
 $aEagleResults = defenseSearch($aResult, @ScriptDir & "\imgxml\WeakBase\Eagle", $townHallLevel, $iCmbWeakEagle, $eWeakEagle, $performSearch, $iChkMaxEagle, $forceCaptureRegion)
 $aInfernoResults = defenseSearch($aResult, @ScriptDir & "\imgxml\WeakBase\Infernos", $townHallLevel, $iCmbWeakInferno, $eWeakInferno, $performSearch, $iChkMaxInferno, $forceCaptureRegion)
 $aXBowResults = defenseSearch($aResult, @ScriptDir & "\imgxml\WeakBase\Xbow", $townHallLevel, $iCmbWeakXBow, $eWeakXBow, $performSearch, $iChkMaxXBow, $forceCaptureRegion)
+If  $iDetectedImageType = 1 then
+$aWizardTowerResults = defenseSearch($aResult, @ScriptDir & "\imgxml\WeakBase\WTower_Snow", $townHallLevel, $iCmbWeakWizTower, $eWeakWizard, $performSearch, $iChkMaxWizTower, $forceCaptureRegion)
+Else
 $aWizardTowerResults = defenseSearch($aResult, @ScriptDir & "\imgxml\WeakBase\WTower", $townHallLevel, $iCmbWeakWizTower, $eWeakWizard, $performSearch, $iChkMaxWizTower, $forceCaptureRegion)
+EndIf
 $aMortarResults = defenseSearch($aResult, @ScriptDir & "\imgxml\WeakBase\Mortars", $townHallLevel, $iCmbWeakMortar, $eWeakMortar, $performSearch, $iChkMaxMortar, $forceCaptureRegion)
 $aAirDefenseResults = defenseSearch($aResult, @ScriptDir & "\imgxml\WeakBase\ADefense", $townHallLevel, $iCmbWeakAirDefense, $eWeakAirDefense, $performSearch, $iChkMaxAirDefense, $forceCaptureRegion)
 For $i = 1 To UBound($aResult) - 1
@@ -81046,12 +81272,12 @@ If _Sleep($iDelayRespond) Then Return
 $searchElixir = getElixirVillageSearch(48, 69 + 29)
 If _Sleep($iDelayRespond) Then Return
 If $debugSetlog Then SetLog("Village dark elixir available chk color: " & _GetPixelColor(31, 144, True) & " : 0x0F0617 expected", $COLOR_DEBUG)
-If _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x0a050a, 6), 10) Or _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x0F0617, 6), 5) Then
-$searchDark = getDarkElixirVillageSearch(45, 125)
-$searchTrophy = getTrophyVillageSearch(45, 167)
+If _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x282020, 6), 10) Or _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x0F0617, 6), 5) Then
+$searchDark = getDarkElixirVillageSearch(48, 126)
+$searchTrophy = getTrophyVillageSearch(45, 168)
 Else
 $searchDark = "N/A"
-$searchTrophy = getTrophyVillageSearch(45, 69 + 69)
+$searchTrophy = getTrophyVillageSearch(48, 69 + 69)
 EndIf
 If $searchGold = $searchGold2 And $searchElixir = $searchElixir2 Then $iStuck += 1
 If $searchGold <> $searchGold2 Or $searchElixir <> $searchElixir2 Then $iStuck = 0
@@ -81224,7 +81450,17 @@ EndIf
 Next
 ForceCaptureRegion()
 _CaptureRegion2()
-If CheckZoomOut("VillageSearch", False) = False Then Return
+If CheckZoomOut("VillageSearch", True, False) = False Then
+$i = 0
+Local $bMeasured
+Do
+$i += 1
+If _Sleep($iDelayPrepareSearch3) Then Return
+ForceCaptureRegion()
+$bMeasured = CheckZoomOut("VillageSearch", $i < 2, True)
+Until $bMeasured = True Or $i >= 2
+If $bMeasured = False Then Return
+EndIf
 Local $THString = ""
 If $match[$DB] Or $match[$LB] Or $match[$TS] Then
 $THString = FindTownhall(False, False)
@@ -81493,16 +81729,18 @@ SetLog("Aim: [G]:" & StringFormat("%7s", $iAimGold[$x]) & " [E]:" & StringFormat
 EndIf
 EndIf
 EndFunc
-Func CheckZoomOut($sSource = "CheckZoomOut", $bForecCapture = True)
+Func CheckZoomOut($sSource = "CheckZoomOut", $bCheckOnly = False, $bForecCapture = True)
 If $bForecCapture = True Then
 _CaptureRegion2()
 EndIf
 Local $aVillageResult = SearchZoomOut(False, True, $sSource, False)
 If IsArray($aVillageResult) = 0 Or $aVillageResult[0] = "" Then
+If $bCheckOnly = False Then
 SetLog("Not Zoomed Out! Exiting to MainScreen...", $COLOR_ERROR)
 checkMainScreen()
 $Restart = True
 $Is_ClientSyncError = True
+EndIf
 Return False
 EndIf
 Return True
@@ -81590,7 +81828,6 @@ EndIf
 Local $checkSpells = ($bFullArmySpells And $iEnableSpellsWait[$iMatchMode] = 1) Or $iEnableSpellsWait[$iMatchMode] = 0
 Local $totalSpellsToBrew = 0
 $totalSpellsToBrew += $PSpellComp + $ESpellComp + $HaSpellComp + $SkSpellComp +  $LSpellComp + $RSpellComp + $HSpellComp + $JSpellComp + $FSpellComp + $CSpellComp
-$iTotalCountSpell = $totalSpellsToBrew
 If GetCurTotalSpell() = $totalSpellsToBrew And $iEnableSpellsWait[$iMatchMode] = 1 Then
 $checkSpells = True
 ElseIf $bFullArmySpells = True And $iEnableSpellsWait[$iMatchMode] = 1 Then
@@ -82700,15 +82937,23 @@ Setlog("Detecting your Village Theme", $COLOR_INFO)
 ClickP($aAway, 2, 20, "#0467")
 If _Sleep($iDelayImageType1) Then Return
 If Not IsMainPage() Then ClickP($aAway, 2, 20, "#0467")
-If _ColorCheck(_GetPixelColor($aImageTypeN1[0], $aImageTypeN1[1], True), Hex($aImageTypeN1[2], 6), $aImageTypeN1[3]) And  _ColorCheck(_GetPixelColor($aImageTypeN2[0], $aImageTypeN2[1], True), Hex($aImageTypeN2[2], 6), $aImageTypeN2[3]) Then
-$iDetectedImageType = 0
-Setlog("Normal Theme detected")
-ElseIf _ColorCheck(_GetPixelColor($aImageTypeS1[0], $aImageTypeS1[1], True), Hex($aImageTypeS1[2], 6), $aImageTypeS1[3]) And  _ColorCheck(_GetPixelColor($aImageTypeS2[0], $aImageTypeS2[1], True), Hex($aImageTypeS2[2], 6), $aImageTypeS2[3]) Then
+Local $x = 200
+Local $y = 130
+Local $x1 = $x + 60
+Local $y1 = $y + 80
+Local $directory = @ScriptDir & "\imgxml\SnowTheme"
+Local $temp = SearchImgloc($directory, $x, $y, $x1, $y1)
+If IsArray($temp) then
+If StringInStr($temp[0], "Snow") > 0 Then
 $iDetectedImageType = 1
 Setlog("Snow Theme detected")
 Else
 $iDetectedImageType = 0
-Setlog("Default Theme detected")
+Setlog("Normal Theme detected")
+EndIf
+Else
+$iDetectedImageType = 0
+Setlog("Normal Theme detected", $COLOR_RED)
 EndIf
 EndFunc
 Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
@@ -82935,21 +83180,19 @@ EndGainCost("Collect")
 EndFunc
 Global $DonationWindowY
 Global $PrepDon[4] = [False, False, False, False]
-Func SetbDonateTrain()
-$bDonateTrain = BitOR(BitOR($iChkDonateBarbarians, $iChkDonateArchers, $iChkDonateGiants, $iChkDonateGoblins,  $iChkDonateWallBreakers, $iChkDonateBalloons, $iChkDonateWizards, $iChkDonateHealers,  $iChkDonateDragons, $iChkDonatePekkas, $iChkDonateBabyDragons, $iChkDonateMiners, $iChkDonateMinions, $iChkDonateHogRiders,  $iChkDonateValkyries, $iChkDonateGolems, $iChkDonateWitches, $iChkDonateLavaHounds, $iChkDonateBowlers, $iChkDonateCustomA, $iChkDonateCustomB), BitOR($iChkDonateAllBarbarians, $iChkDonateAllArchers, $iChkDonateAllGiants, $iChkDonateAllGoblins,  $iChkDonateAllWallBreakers, $iChkDonateAllBalloons, $iChkDonateAllWizards, $iChkDonateAllHealers,  $iChkDonateAllDragons, $iChkDonateAllPekkas, $iChkDonateAllBabyDragons, $iChkDonateAllMiners, $iChkDonateAllMinions, $iChkDonateAllHogRiders,  $iChkDonateAllValkyries, $iChkDonateAllGolems, $iChkDonateAllWitches, $iChkDonateAllLavaHounds, $iChkDonateAllBowlers, $iChkDonateAllCustomA, $iChkDonateAllCustomB), BitOR($iChkDonatePoisonSpells, $iChkDonateEarthQuakeSpells, $iChkDonateHasteSpells, $iChkDonateSkeletonSpells), BitOR($iChkDonateAllPoisonSpells, $iChkDonateAllEarthQuakeSpells, $iChkDonateAllHasteSpells, $iChkDonateAllSkeletonSpells))
-EndFunc
 Func PrepareDonateCC()
 $PrepDon[0] = BitOR($iChkDonateBarbarians, $iChkDonateArchers, $iChkDonateGiants, $iChkDonateGoblins,  $iChkDonateWallBreakers, $iChkDonateBalloons, $iChkDonateWizards, $iChkDonateHealers,  $iChkDonateDragons, $iChkDonatePekkas, $iChkDonateBabyDragons, $iChkDonateMiners, $iChkDonateMinions, $iChkDonateHogRiders,  $iChkDonateValkyries, $iChkDonateGolems, $iChkDonateWitches, $iChkDonateLavaHounds, $iChkDonateBowlers, $iChkDonateCustomA, $iChkDonateCustomB)
 $PrepDon[1] = BitOR($iChkDonateAllBarbarians, $iChkDonateAllArchers, $iChkDonateAllGiants, $iChkDonateAllGoblins,  $iChkDonateAllWallBreakers, $iChkDonateAllBalloons, $iChkDonateAllWizards, $iChkDonateAllHealers,  $iChkDonateAllDragons, $iChkDonateAllPekkas, $iChkDonateAllBabyDragons, $iChkDonateAllMiners, $iChkDonateAllMinions, $iChkDonateAllHogRiders,  $iChkDonateAllValkyries, $iChkDonateAllGolems, $iChkDonateAllWitches, $iChkDonateAllLavaHounds, $iChkDonateAllBowlers, $iChkDonateAllCustomA, $iChkDonateAllCustomB)
 $PrepDon[2] = BitOR($iChkDonatePoisonSpells, $iChkDonateEarthQuakeSpells, $iChkDonateHasteSpells, $iChkDonateSkeletonSpells)
 $PrepDon[3] = BitOR($iChkDonateAllPoisonSpells, $iChkDonateAllEarthQuakeSpells, $iChkDonateAllHasteSpells, $iChkDonateAllSkeletonSpells)
-$bDonate = BitOR($PrepDon[0], $PrepDon[1], $PrepDon[2], $PrepDon[3])
+$bActiveDonate = BitOR($PrepDon[0], $PrepDon[1], $PrepDon[2], $PrepDon[3])
 EndFunc
 Func DonateCC($Check = False)
 Local $bDonateTroop = $PrepDon[0]
 Local $bDonateAllTroop = $PrepDon[1]
 Local $bDonateSpell = $PrepDon[2]
 Local $bDonateAllSpell = $PrepDon[3]
+Local $bDonate = $bActiveDonate
 Local $bOpen = True, $bClose = False
 Global $iTotalDonateCapacity, $iTotalDonateSpellCapacity
 Global $iDonTroopsLimit = 5, $iDonSpellsLimit = 1, $iDonTroopsAv = 0, $iDonSpellsAv = 0
@@ -83815,15 +84058,21 @@ EndIf
 EndFunc
 Func DetectSlotTroop($Type)
 Local $FullTemp
+Local $directory = @ScriptDir & "\imgxml\DonateCC"
+Local $directorySpells = @ScriptDir & "\imgxml\DonateCCSpells"
 If $Type >= $eBarb And $Type <= $eBowl Then
 For $Slot = 0 To 5
-$FullTemp = getOcrDonationTroopsDetection(343 + (68 * $Slot), $DonationWindowY + 37)
-If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " getOcrDonationTroopsDetection returned >>" & $FullTemp & "<<", $COLOR_DEBUG)
-If StringInStr($FullTemp & " ", "empty") > 0 Then ExitLoop
-If $FullTemp <> "" Then
+Local $x = 343 + (68 * $Slot)
+Local $y = $DonationWindowY + 37
+Local $x1 = $x + 75
+Local $y1 = $y + 43
+$FullTemp = SearchImgloc($directory,$x,$y,$x1,$y1)
+If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " SearchImgloc returned >>" & $FullTemp[0] & "<<", $COLOR_DEBUG)
+If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
+If $FullTemp[0] <> "" Then
 For $i = $eBarb To $eBowl
 $sTmp = StringStripWS(StringLeft(NameOfTroop($i), 4), $STR_STRIPTRAILING)
-If StringInStr($FullTemp & " ", $sTmp) > 0 Then
+If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
 If $debugsetlog = 1 Then Setlog("Detected " & NameOfTroop($i), $COLOR_DEBUG)
 If $Type = $i Then Return $Slot
 ExitLoop
@@ -83835,13 +84084,17 @@ Next
 EndIf
 Next
 For $Slot = 6 To 11
-$FullTemp = getOcrDonationTroopsDetection(343 + (68 * ($Slot - 6)), $DonationWindowY + 124)
-If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " getOcrDonationTroopsDetection returned >>" & $FullTemp & "<<", $COLOR_DEBUG)
-If StringInStr($FullTemp & " ", "empty") > 0 Then ExitLoop
-If $FullTemp <> "" Then
+Local $x = 343 + (68 * ($Slot - 6))
+Local $y = $DonationWindowY + 124
+Local $x1 = $x + 75
+Local $y1 = $y + 43
+$FullTemp = SearchImgloc($directory,$x,$y,$x1,$y1)
+If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " SearchImgloc returned >>" & $FullTemp[0] & "<<", $COLOR_DEBUG)
+If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
+If $FullTemp[0] <> "" Then
 For $i = $eBall To $eBowl
 $sTmp = StringStripWS(StringLeft(NameOfTroop($i), 4), $STR_STRIPTRAILING)
-If StringInStr($FullTemp & " ", $sTmp) > 0 Then
+If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
 If $debugsetlog = 1 Then Setlog("Detected " & NameOfTroop($i), $COLOR_DEBUG)
 If $Type = $i Then Return $Slot
 ExitLoop
@@ -83855,13 +84108,17 @@ Next
 EndIf
 If $Type >= $ePSpell And $Type <= $eSkSpell Then
 For $Slot = 12 To 16
-$FullTemp = getOcrDonationTroopsDetection(343 + (68 * ($Slot - 12)), $DonationWindowY + 241)
-If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " getOcrDonationTroopsDetection returned >>" & $FullTemp & "<<", $COLOR_DEBUG)
-If StringInStr($FullTemp & " ", "empty") > 0 Then ExitLoop
-If $FullTemp <> "" Then
+Local $x = 343 + (68 * ($Slot - 12))
+Local $y = $DonationWindowY + 241
+Local $x1 = $x + 75
+Local $y1 = $y + 43
+$FullTemp = SearchImgloc($directorySpells,$x,$y,$x1,$y1)
+If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " SearchImgloc returned >>" & $FullTemp[0] & "<<", $COLOR_DEBUG)
+If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
+If $FullTemp[0] <> "" Then
 For $i = $ePSpell To $eSkSpell
 $sTmp = StringLeft(NameOfTroop($i), 4)
-If StringInStr($FullTemp & " ", $sTmp) > 0 Then
+If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
 If $debugsetlog = 1 Then Setlog("Detected " & NameOfTroop($i), $COLOR_DEBUG)
 If $Type = $i Then Return $Slot
 ExitLoop
@@ -83918,6 +84175,9 @@ Else
 If $setlog Then Setlog("» Donation disabled, available troops " & $ArmyCapacity & "%, limit " & $sSkipDonateNearFulLTroopsPercentual & "%", $COLOR_INFO)
 Return True
 EndIf
+Else
+If $setlog Then Setlog("» Donation disabled, available troops " & $ArmyCapacity & "%, limit " & $sSkipDonateNearFulLTroopsPercentual & "%", $COLOR_INFO)
+Return True
 EndIf
 Else
 If $setlog Then Setlog("» Donations enabled, available troops " & $ArmyCapacity & "%, limit " & $sSkipDonateNearFulLTroopsPercentual & "%", $COLOR_INFO)
@@ -83928,8 +84188,123 @@ Return False
 EndIf
 EndFunc
 Func DonatedTroop($Type, $iDonTroopsQuantity)
+Switch $Type
+Case $eBarb
+$TroopsDonQ[1] += $iDonTroopsQuantity
+$TroopsDonXP[1] += $iDonTroopsQuantity
+Case $eArch
+$TroopsDonQ[2] += $iDonTroopsQuantity
+$TroopsDonXP[2] += $iDonTroopsQuantity
+Case $eGiant
+$TroopsDonQ[3] += $iDonTroopsQuantity
+$TroopsDonXP[3] += $iDonTroopsQuantity * 5
+Case $eGobl
+$TroopsDonQ[4] += $iDonTroopsQuantity
+$TroopsDonXP[4] += $iDonTroopsQuantity
+Case $eWall
+$TroopsDonQ[5] += $iDonTroopsQuantity
+$TroopsDonXP[5] += $iDonTroopsQuantity * 2
+Case $eWiza
+$TroopsDonQ[6] += $iDonTroopsQuantity
+$TroopsDonXP[6] += $iDonTroopsQuantity * 4
+Case $eBall
+$TroopsDonQ[7] += $iDonTroopsQuantity
+$TroopsDonXP[7] += $iDonTroopsQuantity * 5
+Case $eHeal
+$TroopsDonQ[8] += $iDonTroopsQuantity
+$TroopsDonXP[8] += $iDonTroopsQuantity * 14
+Case $eDrag
+$TroopsDonQ[9] += $iDonTroopsQuantity
+$TroopsDonXP[9] += $iDonTroopsQuantity * 20
+Case $ePekk
+$TroopsDonQ[10] += $iDonTroopsQuantity
+$TroopsDonXP[10] += $iDonTroopsQuantity * 25
+Case $eBabyD
+$TroopsDonQ[11] += $iDonTroopsQuantity
+$TroopsDonXP[11] += $iDonTroopsQuantity * 10
+Case $eMine
+$TroopsDonQ[12] += $iDonTroopsQuantity
+$TroopsDonXP[12] += $iDonTroopsQuantity * 5
+Case $eMini
+$TroopsDonQ[13] += $iDonTroopsQuantity
+$TroopsDonXP[13] += $iDonTroopsQuantity * 2
+Case $eHogs
+$TroopsDonQ[14] += $iDonTroopsQuantity
+$TroopsDonXP[14] += $iDonTroopsQuantity * 5
+Case $eValk
+$TroopsDonQ[15] += $iDonTroopsQuantity
+$TroopsDonXP[15] += $iDonTroopsQuantity * 8
+Case $eWitc
+$TroopsDonQ[16] += $iDonTroopsQuantity
+$TroopsDonXP[16] += $iDonTroopsQuantity * 12
+Case $eGole
+$TroopsDonQ[17] += $iDonTroopsQuantity
+$TroopsDonXP[17] += $iDonTroopsQuantity * 30
+Case $eLava
+$TroopsDonQ[18] += $iDonTroopsQuantity
+$TroopsDonXP[18] += $iDonTroopsQuantity * 30
+Case $eBowl
+$TroopsDonQ[19] += $iDonTroopsQuantity
+$TroopsDonXP[19] += $iDonTroopsQuantity * 6
+EndSwitch
+For $i = 1 To 19
+GUICtrlSetData($lblDonQ[$i], $TroopsDonQ[$i])
+Next
+Local $TotalTrQ = 0
+For $i = 1 To 19
+$TotalTrQ += $TroopsDonQ[$i]
+Next
+Local $TotalTrXPWon = 0
+For $i = 1 To 19
+$TotalTrXPWon += $TroopsDonXP[$i]
+Next
+GUICtrlSetData($lblTotalTroopsQ, GetTranslated(632,120,"Total Donated") & " : " & $TotalTrQ)
+GUICtrlSetData($lblTotalTroopsXP, GetTranslated(632,121,"XP Won") & " : " & $TotalTrXPWon)
 EndFunc
 Func DonatedSpell($Type, $iDonSpellsQuantity)
+Switch $Type
+Case $ePSpell
+$TroopsDonQ[20] += $iDonTroopsQuantity
+$TroopsDonXP[20] += $iDonTroopsQuantity * 5
+Case $eESpell
+$TroopsDonQ[21] += $iDonTroopsQuantity
+$TroopsDonXP[21] += $iDonTroopsQuantity * 5
+Case $eHaSpell
+$TroopsDonQ[22] += $iDonTroopsQuantity
+$TroopsDonXP[22] += $iDonTroopsQuantity * 5
+Case $eSkSpell
+$TroopsDonQ[23] += $iDonTroopsQuantity
+$TroopsDonXP[23] += $iDonTroopsQuantity * 5
+EndSwitch
+For $i = 20 To 23
+GUICtrlSetData($lblDonQ[$i], $TroopsDonQ[$i])
+Next
+Local $TotalSpQ = 0
+For $i = 20 To 23
+$TotalSpQ += $TroopsDonQ[$i]
+Next
+Local $TotalSpXPWon = 0
+For $i = 20 To 23
+$TotalSpXPWon += $TroopsDonXP[$i]
+Next
+GUICtrlSetData($lblTotalSpellsQ, GetTranslated(632,120,"Total Donated") & " : " & $TotalSpQ)
+GUICtrlSetData($lblTotalSpellsXP, GetTranslated(632,121,"XP Won") & " : " & $TotalSpXPWon)
+EndFunc
+Func SearchImgloc($directory = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0)
+Local $aResult[1], $aCoordArray[1][2], $aCoords, $aCoordsSplit, $aValue
+Local $Redlines = "FV"
+_CaptureRegion2($x, $y, $x1, $y1)
+$res = DllCall($hImgLib, "str", "SearchMultipleTilesBetweenLevels", "handle", $hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", $Redlines, "Int", 0, "Int", 1000)
+If $res[0] <> "" Then
+Local $aKeys = StringSplit($res[0], "|", $STR_NOCOUNT)
+ReDim $aResult[UBound($aKeys)]
+For $i = 0 To UBound($aKeys) - 1
+$aResult[$i] = returnPropertyValue($aKeys[$i], "objectname")
+Next
+Return $aResult
+EndIf
+$aResult[0] = "empty"
+Return $aResult
 EndFunc
 Func donateCCWBLUserImageCollect($x,$y)
 Local $imagematch = False
@@ -85207,7 +85582,7 @@ ClickP($aAway, 1, 0, "#0376")
 Return
 EndIf
 $sInfo = BuildingInfo(242, 520 + $bottomOffsetY)
-If $sInfo[0] > 1 Or $sInfo[0] = "" Then
+If IsArray($sInfo) and ($sInfo[0] > 1 Or $sInfo[0] = "") Then
 If StringInStr($sInfo[1], "clan") = 0 Then
 If $sInfo[0] = "" Then
 $sLocMsg = "Nothing"
@@ -85993,7 +86368,7 @@ ClickP($aAway, 1, 0, "#0221")
 If _Sleep($iDelayProfileReport1) Then Return
 SetLog("Profile Report", $COLOR_INFO)
 SetLog("Opening Profile page to read atk, def, donated and received...", $COLOR_INFO)
-Click(190, 33, 1, 0, "#0222")
+Click(30, 40, 1, 0, "#0222")
 If _Sleep($iDelayProfileReport2) Then Return
 While _ColorCheck(_GetPixelColor(400, 104 + $midOffsetY, True), Hex(0xA2A6BE, 6), 20) = False
 If $Debugsetlog = 1 Then Setlog("Profile wait time: " & $iCount & ", color= " & _GetPixelColor(400, 104 + $midOffsetY, True)& " pos (400," & 104 + $midOffsetY&")", $COLOR_DEBUG)
@@ -86025,7 +86400,7 @@ EndIf
 $TroopsDonated = getProfile(158, 268 + $midOffsetY)
 $TroopsReceived = getProfile(360, 268 + $midOffsetY)
 SetLog(" [ATKW]: " & _NumberFormat($AttacksWon) & " [DEFW]: " & _NumberFormat($DefensesWon) & " [TDON]: " & _NumberFormat($TroopsDonated) & " [TREC]: " & _NumberFormat($TroopsReceived), $COLOR_SUCCESS)
-Click(820, 40, 1, 0, "#0223")
+Click(830, 80, 1, 0, "#0223")
 If _Sleep($iDelayProfileReport3) Then Return
 $iCount = 0
 While _CheckPixel($aIsMain, $bCapturePixel) = False
@@ -86210,7 +86585,7 @@ getBuilderCount($bSuppressLog)
 If _Sleep($iDelayRespond) Then Return
 $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 If Not $bSuppressLog Then Setlog(" [T]: " & _NumberFormat($iTrophyCurrent), $COLOR_SUCCESS)
-If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then
+If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then
 $iGoldCurrent = getResourcesMainScreen(696, 23)
 $iElixirCurrent = getResourcesMainScreen(696, 74)
 $iDarkCurrent =  getResourcesMainScreen(728, 123)
@@ -86777,7 +87152,7 @@ EndSwitch
 EndIf
 EndFunc
 Func NotifyRemoteControl()
-If $NotifyRemoteEnable = 1 Then NotifyRemoteControlProc()
+If $NotifyRemoteEnable = 1 Then NotifyRemoteControlProc(0)
 EndFunc
 Func NotifyReport()
 If $NotifyAlertVillageReport = 1 Then
@@ -86848,6 +87223,12 @@ $NotifyForced = 1
 PushMsg("ShieldInfo")
 EndIf
 PushMsg("BuilderIdle")
+EndFunc
+Func PushBulletRemoteControl()
+If ($NotifyPBEnabled = 1) And $NotifyRemoteEnable = 1 Then NotifyRemoteControlProc(1)
+EndFunc
+Func PushBulletDeleteOldPushes()
+If $NotifyPBEnabled = 1 And $NotifyDeletePushesOlderThan = 1 Then _DeleteOldPushes()
 EndFunc
 Func NotifylPushBulletMessage($pMessage = "")
 If ($NotifyPBEnabled = 0 Or $NotifyPBToken = "") And ($NotifyTGEnabled = 0 Or $NotifyTGToken = "") Then Return
@@ -87084,9 +87465,9 @@ Local $TGPushMsg = '{"text": "' & $TGMsg & '", "chat_id":' & $TGChatID &', "repl
 $oHTTP.Send($TGPushMsg)
 $TGLastRemote = $TGLast_UID
 EndFunc
-Func NotifyRemoteControlProc()
+Func NotifyRemoteControlProc($OnlyPB)
 If ($NotifyPBEnabled = 0 And $NotifyTGEnabled = 0) Or $NotifyRemoteEnable = 0 Then Return
-If $NotifyPBEnabled = 1 And $NotifyPBToken <> "" Then
+If $OnlyPB = 0 And $NotifyPBEnabled = 1 And $NotifyPBToken <> "" Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 Local $pushbulletApiUrl
 If $pushLastModified = 0 Then
@@ -87539,7 +87920,8 @@ Case "LastRaid"
 If ($NotifyPBEnabled = 1 Or $NotifyTGEnabled = 1)  And $NotifyAlerLastRaidTXT = 1 Then
 NotifyPushToBoth($NotifyOrigin & " | " & GetTranslated(620,119, "Last Raid txt") & "\n" & "[" & GetTranslated(620,109, "G") & "]: " & _NumberFormat($iGoldLast) & " [" & GetTranslated(620,110, "E") & "]: " & _NumberFormat($iElixirLast) & " [" & GetTranslated(620,111, "DE") & "]: " & _NumberFormat($iDarkLast) & " [" & GetTranslated(620,112, "T") & "]: " & $iTrophyLast)
 If _Sleep($iDelayPushMsg1) Then Return
-SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,727,"Last Raid Text has been sent!"), $COLOR_GREEN)
+If $NotifyPBEnabled = 1 Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,727,"Last Raid Text has been sent!"), $COLOR_GREEN)
+If $NotifyTGEnabled = 1 Then SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,727,"Last Raid Text has been sent!"), $COLOR_GREEN)
 EndIf
 If ($NotifyPBEnabled = 1 Or $NotifyTGEnabled = 1)  And $NotifyAlerLastRaidIMG = 1 Then
 Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
@@ -87553,11 +87935,15 @@ $hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap
 _GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirLoots & $AttackFile)
 _GDIPlus_ImageDispose($hBitmap_Scaled)
 EndIf
-SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,728,"Last Raid screenshot has been sent!"), $COLOR_GREEN)
+If $NotifyPBEnabled = 1 Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,728,"Last Raid screenshot has been sent!"), $COLOR_GREEN)
+If $NotifyTGEnabled = 1 Then SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,728,"Last Raid screenshot has been sent!"), $COLOR_GREEN)
 NotifyPushFileToBoth($AttackFile, GetTranslated(620,120, "Loots"), "image/jpeg", $NotifyOrigin & " | " & GetTranslated(620,118, "Last Raid") & "\n" & $AttackFile)
 If _Sleep($iDelayPushMsg1) Then Return
 Local $iDelete = FileDelete($dirLoots & $AttackFile)
-If Not $iDelete Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+If Not $iDelete Then
+If $NotifyPBEnabled = 1 Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+If $NotifyTGEnabled = 1 Then SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+EndIf
 EndIf
 Case "FoundWalls"
 If ($NotifyPBEnabled = 1 Or $NotifyTGEnabled = 1) And $NotifyAlertUpgradeWalls = 1 Then NotifyPushToBoth($NotifyOrigin & " | " & GetTranslated(620,173, "Found Wall level") & " " & $icmbWalls + 4 & "\n" & " " & GetTranslated(620,177, "Wall segment has been located") & "...\n" & GetTranslated(620,153, "Upgrading") & "...")
@@ -87616,13 +88002,15 @@ EndIf
 Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 _GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirTemp & $Screnshotfilename)
 _GDIPlus_ImageDispose($hBitmap_Scaled)
-If $PBRequestScreenshot = 1 Then
+If $PBRequestScreenshot = 1 Or $TGRequestScreenshot = 1 Then
+If $PBRequestScreenshot = 1 And $NotifyPBEnabled = 1 Then
 NotifyPushFileToPushBullet($Screnshotfilename, "Temp", "image/jpeg", $NotifyOrigin & " | " & GetTranslated(620,162, "Screenshot of your village") & " " & "\n" & $Screnshotfilename)
 SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,730,"Screenshot sent!"), $COLOR_GREEN)
 EndIf
-If $TGRequestScreenshot = 1 Then
+If $TGRequestScreenshot = 1 And $NotifyTGEnabled = 1 Then
 NotifyPushFileToTelegram($Screnshotfilename, "Temp", "image/jpeg", $NotifyOrigin & " | " & GetTranslated(620,162, "Screenshot of your village") & " " & "\n" & $Screnshotfilename)
 SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,730,"Screenshot sent!"), $COLOR_GREEN)
+EndIf
 EndIf
 $PBRequestScreenshot = 0
 $PBRequestScreenshotHD = 0
@@ -87630,7 +88018,10 @@ $TGRequestScreenshot = 0
 $TGRequestScreenshotHD = 0
 If _Sleep($iDelayPushMsg2) Then Return
 Local $iDelete = FileDelete($dirTemp & $Screnshotfilename)
-If Not $iDelete Then SetLog(GetTranslated(620,720,"Notify PushBullet") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+If Not $iDelete Then
+If $NotifyPBEnabled = 1 Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+If $NotifyTGEnabled = 1 Then SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+EndIf
 Case "BuilderInfo"
 Click(0,0, 5)
 Click(274,8)
@@ -87640,19 +88031,24 @@ Local $Time = @HOUR & "." & @MIN
 _CaptureRegion(224, 74, 446, 262)
 Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 _GDIPlus_ImageSaveToFile($hBitmap, $dirTemp & $Screnshotfilename)
-If $PBRequestBuilderInfo = 1 Then
+If $PBRequestBuilderInfo = 1 Or $TGRequestBuilderInfo = 1 Then
+If $PBRequestBuilderInfo = 1 And $NotifyPBEnabled = 1 Then
 NotifyPushFileToPushBullet($Screnshotfilename, "Temp", "image/jpeg", $NotifyOrigin & " | " &  "Builder Information" & "\n" & $Screnshotfilename)
 SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,731,"Builder Information sent!"), $COLOR_GREEN)
 EndIf
-If $TGRequestBuilderInfo = 1 Then
+If $TGRequestBuilderInfo = 1 And $NotifyTGEnabled = 1 Then
 NotifyPushFileToTelegram($Screnshotfilename, "Temp", "image/jpeg", $NotifyOrigin & " | " &  "Builder Information" & "\n" & $Screnshotfilename)
 SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,731,"Builder Information sent!"), $COLOR_GREEN)
+EndIf
 EndIf
 $PBRequestBuilderInfo = 0
 $TGRequestBuilderInfo = 0
 If _Sleep($iDelayPushMsg2) Then Return
 Local $iDelete = FileDelete($dirTemp & $Screnshotfilename)
-If Not $iDelete Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+If Not $iDelete Then
+If $NotifyPBEnabled = 1 Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+If $NotifyTGEnabled = 1 Then SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+EndIf
 Click(0,0, 5)
 Case "ShieldInfo"
 Click(0,0, 5)
@@ -87663,27 +88059,35 @@ Local $Time = @HOUR & "." & @MIN
 _CaptureRegion(200, 165, 660, 568)
 Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 _GDIPlus_ImageSaveToFile($hBitmap, $dirTemp & $Screnshotfilename)
-If $PBRequestShieldInfo = 1 Then
+If $PBRequestShieldInfo = 1 Or $TGRequestShieldInfo = 1 Then
+If $PBRequestShieldInfo = 1 And $NotifyPBEnabled = 1 Then
 NotifyPushFileToPushBullet($Screnshotfilename, "Temp", "image/jpeg", $NotifyOrigin & " | " &  "Shield Information" & "\n" & $Screnshotfilename)
 SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,732,"Shield Information sent!"), $COLOR_GREEN)
 EndIf
-If $TGRequestShieldInfo = 1 Then
+If $TGRequestShieldInfo = 1 And $NotifyTGEnabled = 1 Then
 NotifyPushFileToTelegram($Screnshotfilename, "Temp", "image/jpeg", $NotifyOrigin & " | " &  "Shield Information" & "\n" & $Screnshotfilename)
 SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,732,"Shield Information sent!"), $COLOR_GREEN)
+EndIf
 EndIf
 $PBRequestShieldInfo = 0
 $TGRequestShieldInfo = 0
 If _Sleep($iDelayPushMsg2) Then Return
 Local $iDelete = FileDelete($dirTemp & $Screnshotfilename)
-If Not $iDelete Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+If Not $iDelete Then
+If $NotifyPBEnabled = 1 Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+If $NotifyTGEnabled = 1 Then SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,729,"An error occurred deleting temporary screenshot file."), $COLOR_RED)
+EndIf
 Click(0,0, 5)
 Case "DeleteAllPBMessages"
 NotifyDeletePushBullet()
-SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,733,"All messages deleted."), $COLOR_GREEN)
+If $NotifyPBEnabled = 1 Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,733,"All messages deleted."), $COLOR_GREEN)
+If $NotifyTGEnabled = 1 Then SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,733,"All messages deleted."), $COLOR_GREEN)
 $NotifyDeleteAllPushesNow = False
 Case "CampFull"
 If ($NotifyPBEnabled = 1 Or $NotifyTGEnabled = 1) And $NotifyAlertCampFull = 1 Then
 NotifyPushToBoth($NotifyOrigin & " | " & GetTranslated(620,128, "Your Army Camps are now Full"))
+If $NotifyPBEnabled = 1 Then SetLog(GetTranslated(620,700,"Notify PushBullet") & ": " & GetTranslated(620,128, "Your Army Camps are now Full"), $COLOR_GREEN)
+If $NotifyTGEnabled = 1 Then SetLog(GetTranslated(620,701,"Notify Telegram") & ": " & GetTranslated(620,128, "Your Army Camps are now Full"), $COLOR_GREEN)
 EndIf
 Case "Misc"
 NotifyPushToBoth($Message)
@@ -87768,7 +88172,7 @@ Else
 SetLog("Laboratory Upgrade in progress, waiting for completion", $COLOR_INFO)
 Return False
 EndIf
-If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then
+If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then
 $iElixirCount = getResourcesMainScreen(705, 74)
 $iDarkCount = getResourcesMainScreen(728, 123)
 SetLog("Updating village values [E]: " & $iElixirCount & " [D]: " & $iDarkCount, $COLOR_SUCCESS)
@@ -88392,7 +88796,7 @@ EndIf
 EndIf
 EndIf
 If _Sleep($iDelayUpgradeHero1) Then Return
-If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then
+If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then
 $iDarkCurrent = Number(getResourcesMainScreen(728, 123))
 If $debugSetlog = 1 Then SetLog("Updating village values [D]: " & $iDarkCurrent, $COLOR_DEBUG)
 Else
@@ -88480,7 +88884,7 @@ EndIf
 EndIf
 EndIf
 If _Sleep($iDelayUpgradeHero1) Then Return
-If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then
+If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then
 $iDarkCurrent = Number(getResourcesMainScreen(728, 123))
 If $debugSetlog = 1 Then SetLog("Updating village values [D]: " & $iDarkCurrent, $COLOR_DEBUG)
 Else
@@ -88573,7 +88977,7 @@ EndIf
 EndIf
 EndIf
 If _Sleep($iDelayUpgradeHero1) Then Return
-If _ColorCheck(_GetPixelColor(812, 141, True), Hex(0x000000, 6), 10) Then
+If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then
 $iElixirCurrent = getResourcesMainScreen(705, 74)
 If $debugSetlog = 1 Then SetLog("Updating village values [E]: " & $iElixirCurrent, $COLOR_DEBUG)
 Else
@@ -89493,8 +89897,7 @@ If _Sleep($iDelayIdle1) Then Return
 If $CommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_SUCCESS)
 Local $hTimer = TimerInit()
 Local $iReHere = 0
-PrepareDonateCC()
-If $bDonate = True Then
+If $bActiveDonate = True Then
 Local $aHeroResult = CheckArmyCamp(True, True, True)
 While $iReHere < 7
 $iReHere += 1
@@ -89719,13 +90122,13 @@ Case "NotifyReport"
 NotifyReport()
 _Sleep($iDelayRunBot3)
 Case "DonateCC"
-If $bDonate = True Then
+If $bActiveDonate = True Then
 If SkipDonateNearFullTroops(True) = False Then DonateCC()
 If _Sleep($iDelayRunBot1) = False Then checkMainScreen(False)
 EndIF
 Case "DonateCC,Train"
 If $iSkipDonateNearFulLTroopsEnable = 1 and $FirstStart = true Then getArmyCapacity(True, True)
-If $bDonate = True Then
+If $bActiveDonate = True Then
 If SkipDonateNearFullTroops(True) = False Then DonateCC()
 EndIF
 If _Sleep($iDelayRunBot1) = False Then checkMainScreen(False)

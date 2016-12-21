@@ -1,4 +1,4 @@
-; #FUNCTION# ====================================================================================================================
+﻿; #FUNCTION# ====================================================================================================================
 ; Name ..........: MBR Bot
 ; Description ...: This file contens the Sequence that runs all MBR Bot
 ; Author ........:  (2014)
@@ -19,8 +19,8 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 6.4)
-#pragma compile(FileVersion, 6.4.1)
+#pragma compile(ProductVersion, 6.5)
+#pragma compile(FileVersion, 6.5)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
 
@@ -35,7 +35,7 @@ ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 Global $iBotLaunchTime = 0
 Local $hBotLaunchTime = TimerInit()
 
-$sBotVersion = "v6.4.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+$sBotVersion = "v6.5" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 #include "COCBot\functions\Config\DelayTimes.au3"
@@ -418,10 +418,10 @@ Func Idle() ;Sequence that runs until Full Army
 		If $CommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_SUCCESS)
 		Local $hTimer = TimerInit()
 		Local $iReHere = 0
-		PrepareDonateCC()
+		;PrepareDonateCC()
 
 		;If $iSkipDonateNearFulLTroopsEnable = 1 Then getArmyCapacity(true,true)
-		If $bDonate = True Then
+		If $bActiveDonate = True Then
 			Local $aHeroResult = CheckArmyCamp(True, True, True)
 			While $iReHere < 7
 				$iReHere += 1
@@ -670,14 +670,14 @@ Func _RunFunction($action)
 			NotifyReport()
 			_Sleep($iDelayRunBot3)
 		Case "DonateCC"
-			If $bDonate = True Then
+			If $bActiveDonate = True Then
 				;If $iSkipDonateNearFulLTroopsEnable = 1 and $FirstStart = False Then getArmyCapacity(True, True)
 				If SkipDonateNearFullTroops(True) = False Then DonateCC()
 				If _Sleep($iDelayRunBot1) = False Then checkMainScreen(False)
 			EndIF
 		Case "DonateCC,Train"
 			If $iSkipDonateNearFulLTroopsEnable = 1 and $FirstStart = true Then getArmyCapacity(True, True)
-			If $bDonate = True Then
+			If $bActiveDonate = True Then
 				If SkipDonateNearFullTroops(True) = False Then DonateCC()
 			EndIF
 			If _Sleep($iDelayRunBot1) = False Then checkMainScreen(False)

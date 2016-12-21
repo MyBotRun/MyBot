@@ -196,7 +196,7 @@ Func setZombie($RaidedElixir = -1, $AvailableElixir = -1, $Matched = -1, $Search
 		If $aZombie[5] = "" Then $aZombie[5] = $Timestamp
 		If $aZombie[6] = "" Then $aZombie[6] = $redline
 		Local $dbFound = $aZombie[3] >= $iMinCollectorMatches
-		Local $path = $dirTempDebug  & (($dbFound) ? ("\Zombies\") : ("\SkippedZombies\"))
+		Local $path = $dirTempDebug  & (($dbFound) ? ("Zombies\") : ("SkippedZombies\"))
 		Local $availK = Round($aZombie[2] / 1000)
 		; $ZombieFilename = "DebugDB_xxx%_" & $sCurrProfile & @YEAR & "-" & @MON & "-" & @MDAY & "_" & StringReplace(_NowTime(5), ":", "-") & "_search_" & StringFormat("%03i", $SearchCount) & "_" & StringFormat("%04i", Round($searchElixir / 1000)) & "k_matched_" & $TotalMatched
 		If $aZombie[0] = "" Then

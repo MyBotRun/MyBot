@@ -629,6 +629,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	$itxtWall09ST = GUICtrlRead($txtWall09ST)
 	$itxtWall10ST = GUICtrlRead($txtWall10ST)
 	$itxtWall11ST = GUICtrlRead($txtWall11ST)
+	$itxtWall12ST = GUICtrlRead($txtWall12ST)
 
 	If GUICtrlRead($chkSaveWallBldr) = $GUI_CHECKED Then
 		$iSaveWallBldr = 1
@@ -739,6 +740,11 @@ Func saveConfig() ;Saves the controls settings to the config
 			$debugDisableVillageCentering = 1
 		Else
 			$debugDisableVillageCentering = 0
+		EndIf
+		If GUICtrlRead($chkDebugDeadbaseImage) = $GUI_CHECKED Then
+			$debugDeadbaseImage = 1
+		Else
+			$debugDeadbaseImage = 0
 		EndIf
 		If GUICtrlRead($chkDebugOcr) = $GUI_CHECKED Then
 			$debugOcr = 1
@@ -2235,6 +2241,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWriteS($config, "Walls", "Wall09", $itxtWall09ST)
 	IniWriteS($config, "Walls", "Wall10", $itxtWall10ST)
 	IniWriteS($config, "Walls", "Wall11", $itxtWall11ST)
+	IniWriteS($config, "Walls", "Wall12", $itxtWall12ST)
 
 	For $iz = 0 To UBound($aUpgrades, 1) - 1 ; Save Upgrades data
 		IniWrite($building, "upgrade", "xupgrade" & $iz, $aUpgrades[$iz][0])
@@ -2484,6 +2491,7 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWriteS($config, "debug", "debugsetlog", $DebugSetlog)
 		IniWriteS($config, "debug", "disablezoomout", $debugDisableZoomout)
 		IniWriteS($config, "debug", "disablevillagecentering", $debugDisableVillageCentering)
+		IniWriteS($config, "debug", "debugdeadbaseimage", $debugDeadbaseImage)
 		IniWriteS($config, "debug", "debugocr", $debugOcr)
 		IniWriteS($config, "debug", "debugimagesave", $DebugImageSave)
 		IniWriteS($config, "debug", "debugbuildingpos", $debugBuildingPos)

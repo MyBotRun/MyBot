@@ -934,6 +934,162 @@ $hGUI_STATS_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,40,"Attacks"))
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 ;--> TAB Attacks
+;TAB Attacks
+$hGUI_STATS_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600, 55,"Donations"))
+
+Local $x = 5, $y = 25, $z = 33
+
+$grpElxTr = GUICtrlCreateGroup(GetTranslated(632,118,"Troops"), $x, $y, 425, 240, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
+
+$x -= 12
+$y += 20
+$z += 20
+
+	GUICtrlCreateIcon($pIconLib, $eIcnBarbarian, $x + 60, $y, 32, 32)
+	$lblDonQ[1] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnArcher, $x + 140, $y, 32, 32)
+	$lblDonQ[2] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnGiant, $x + 220, $y, 32, 32)
+	$lblDonQ[3] = GUICtrlCreateLabel("0", $x + 180, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnGoblin, $x + 300, $y, 32, 32)
+	$lblDonQ[4] = GUICtrlCreateLabel("0", $x + 260, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnWallBreaker, $x + 380, $y, 32, 32)
+	$lblDonQ[5] = GUICtrlCreateLabel("0", $x + 340, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+$y += 35
+$z += 35
+
+	GUICtrlCreateIcon($pIconLib, $eIcnBalloon, $x + 60, $y, 32, 32)
+	$lblDonQ[6] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnWizard, $x + 140, $y, 32, 32)
+	$lblDonQ[7] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnHealer, $x + 220, $y, 32, 32)
+	$lblDonQ[8] = GUICtrlCreateLabel("0", $x + 180, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnDragon, $x + 300, $y, 32, 32)
+	$lblDonQ[9] = GUICtrlCreateLabel("0", $x + 260, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnPekka, $x + 380, $y, 32, 32)
+	$lblDonQ[10] = GUICtrlCreateLabel("0", $x + 340, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+$y += 35
+$z += 35
+
+	GUICtrlCreateIcon($pIconLib, $eIcnBabyDragon, $x + 60, $y, 32, 32)
+	$lblDonQ[11] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnMiner, $x + 140, $y, 32, 32)
+	$lblDonQ[12] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+$y += 40
+$z += 40
+
+	GUICtrlCreateIcon($pIconLib, $eIcnMinion, $x + 60, $y, 32, 32)
+	$lblDonQ[13] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnHogRider, $x + 140, $y, 32, 32)
+	$lblDonQ[14] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnValkyrie, $x + 220, $y, 32, 32)
+	$lblDonQ[15] = GUICtrlCreateLabel("0", $x + 180, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnGolem, $x + 300, $y, 32, 32)
+	$lblDonQ[16] = GUICtrlCreateLabel("0", $x + 260, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnWitch, $x + 380, $y, 32, 32)
+	$lblDonQ[17] = GUICtrlCreateLabel("0", $x + 340, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+$y += 35
+$z += 35
+
+	GUICtrlCreateIcon($pIconLib, $eIcnLavaHound, $x + 60, $y, 32, 32)
+	$lblDonQ[18] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnBowler, $x + 140, $y, 32, 32)
+	$lblDonQ[19] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+$x += 12
+$y += 40
+
+	$lblTotalTroopsQ = GUICtrlCreateLabel(GetTranslated(632,120,"Total Donated") & " : 0", $x + 5, $y, 230, 27, $SS_CENTER)
+	GUICtrlSetFont(-1, 12, 800, 0, "Arial Black")
+	GUICtrlSetColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, 0x808080)
+
+	$lblTotalTroopsXP = GUICtrlCreateLabel(GetTranslated(632,121,"XP Won") & " : 0", $x + 240, $y, 180, 27, $SS_CENTER)
+	GUICtrlSetFont(-1, 12, 800, 0, "Arial Black")
+	GUICtrlSetColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, 0x808080)
+
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+Local $x = 5, $y = 265, $z = 273
+
+$grpDElxTrSp = GUICtrlCreateGroup(GetTranslated(632,119,"Spells"), $x, $y, 425, 95, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
+
+$x -= 12
+$x += 40
+$y += 20
+$z += 20
+
+	GUICtrlCreateIcon($pIconLib, $eIcnPoisonSpell, $x + 60, $y, 32, 32)
+	$lblDonQ[20] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnEarthQuakeSpell, $x + 140, $y, 32, 32)
+	$lblDonQ[21] = GUICtrlCreateLabel("0", $x + 100, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnHasteSpell, $x + 220, $y, 32, 32)
+	$lblDonQ[22] = GUICtrlCreateLabel("0", $x + 180, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+	GUICtrlCreateIcon($pIconLib, $eIcnSkeletonSpell, $x + 300, $y, 32, 32)
+	$lblDonQ[23] = GUICtrlCreateLabel("0", $x + 260, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, 800, 0, "Arial")
+
+$x -= 40
+$x += 12
+$y += 40
+
+	$lblTotalSpellsQ = GUICtrlCreateLabel(GetTranslated(632,120,"Total Donated") & " : 0", $x + 5, $y, 230, 27, $SS_CENTER)
+	GUICtrlSetFont(-1, 12, 800, 0, "Arial Black")
+	GUICtrlSetColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, 0x808080)
+
+	$lblTotalSpellsXP = GUICtrlCreateLabel(GetTranslated(632,121,"XP Won") & " : 0", $x + 240, $y, 180, 27, $SS_CENTER)
+	GUICtrlSetFont(-1, 12, 800, 0, "Arial Black")
+	GUICtrlSetColor(-1, 0xFFFFFF)
+	GUICtrlSetBkColor(-1, 0x808080)
+
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+;--> TAB Don Stats
 
 GUICtrlCreateTabItem("")
 ;GUISetState()

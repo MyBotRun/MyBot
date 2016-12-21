@@ -336,12 +336,9 @@ Func btnAnalyzeVillage()
 	$debugDeadBaseImage = 0
 EndFunc   ;==>btnAnalyzeVillage
 
-Func btnVillageStat()
-	If GUICtrlGetState($lblVillageReportTemp) <> $GUI_HIDE Then
-		GUICtrlSetState($lblVillageReportTemp, $GUI_HIDE)
-	EndIf
+Func btnVillageStat($source = "")
 
-	SetTime(True)
+	If $FirstRun = 0 And $RunState = True And $TPaused = False Then SetTime(True)
 
 	If GUICtrlGetState($lblResultGoldNow) = $GUI_ENABLE + $GUI_SHOW Then
 		;hide normal values
@@ -355,9 +352,11 @@ Func btnVillageStat()
 		GUICtrlSetState($lblResultGoldHourNow, $GUI_ENABLE + $GUI_SHOW)
 		GUICtrlSetState($lblResultElixirHourNow, $GUI_ENABLE + $GUI_SHOW)
 		GUICtrlSetState($lblResultDEHourNow, $GUI_ENABLE + $GUI_SHOW)
-		GUICtrlSetState($lblResultRuntimeNow, $GUI_ENABLE + $GUI_SHOW)
-		GUICtrlSetState($lblResultAttackedHourNow, $GUI_ENABLE + $GUI_SHOW)
-		GUICtrlSetState($lblResultSkippedHourNow, $GUI_ENABLE + $GUI_SHOW)
+		If $FirstRun = 0 or $source = "UpdateStats" Then
+			GUICtrlSetState($lblResultRuntimeNow, $GUI_ENABLE + $GUI_SHOW)
+			GUICtrlSetState($lblResultAttackedHourNow, $GUI_ENABLE + $GUI_SHOW)
+			GUICtrlSetState($lblResultSkippedHourNow, $GUI_ENABLE + $GUI_SHOW)
+		EndIf
 		; hide normal pics
 		GUICtrlSetState($picResultTrophyNow, $GUI_ENABLE + $GUI_HIDE)
 		GUICtrlSetState($picResultBuilderNow, $GUI_ENABLE + $GUI_HIDE)

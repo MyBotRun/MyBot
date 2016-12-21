@@ -16,15 +16,15 @@
 Global $DonationWindowY
 Global $PrepDon[4] = [False, False, False, False]
 
-Func SetbDonateTrain()
-	$bDonateTrain = BitOR(BitOR($iChkDonateBarbarians, $iChkDonateArchers, $iChkDonateGiants, $iChkDonateGoblins, _
-			$iChkDonateWallBreakers, $iChkDonateBalloons, $iChkDonateWizards, $iChkDonateHealers, _
-			$iChkDonateDragons, $iChkDonatePekkas, $iChkDonateBabyDragons, $iChkDonateMiners, $iChkDonateMinions, $iChkDonateHogRiders, _
-			$iChkDonateValkyries, $iChkDonateGolems, $iChkDonateWitches, $iChkDonateLavaHounds, $iChkDonateBowlers, $iChkDonateCustomA, $iChkDonateCustomB), BitOR($iChkDonateAllBarbarians, $iChkDonateAllArchers, $iChkDonateAllGiants, $iChkDonateAllGoblins, _
-			$iChkDonateAllWallBreakers, $iChkDonateAllBalloons, $iChkDonateAllWizards, $iChkDonateAllHealers, _
-			$iChkDonateAllDragons, $iChkDonateAllPekkas, $iChkDonateAllBabyDragons, $iChkDonateAllMiners, $iChkDonateAllMinions, $iChkDonateAllHogRiders, _
-			$iChkDonateAllValkyries, $iChkDonateAllGolems, $iChkDonateAllWitches, $iChkDonateAllLavaHounds, $iChkDonateAllBowlers, $iChkDonateAllCustomA, $iChkDonateAllCustomB), BitOR($iChkDonatePoisonSpells, $iChkDonateEarthQuakeSpells, $iChkDonateHasteSpells, $iChkDonateSkeletonSpells), BitOR($iChkDonateAllPoisonSpells, $iChkDonateAllEarthQuakeSpells, $iChkDonateAllHasteSpells, $iChkDonateAllSkeletonSpells))
-EndFunc   ;==>SetbDonate
+;Func SetbDonateTrain()
+;	$bDonateTrain = BitOR(BitOR($iChkDonateBarbarians, $iChkDonateArchers, $iChkDonateGiants, $iChkDonateGoblins, _
+;			$iChkDonateWallBreakers, $iChkDonateBalloons, $iChkDonateWizards, $iChkDonateHealers, _
+;			$iChkDonateDragons, $iChkDonatePekkas, $iChkDonateBabyDragons, $iChkDonateMiners, $iChkDonateMinions, $iChkDonateHogRiders, _
+;			$iChkDonateValkyries, $iChkDonateGolems, $iChkDonateWitches, $iChkDonateLavaHounds, $iChkDonateBowlers, $iChkDonateCustomA, $iChkDonateCustomB), BitOR($iChkDonateAllBarbarians, $iChkDonateAllArchers, $iChkDonateAllGiants, $iChkDonateAllGoblins, _
+;			$iChkDonateAllWallBreakers, $iChkDonateAllBalloons, $iChkDonateAllWizards, $iChkDonateAllHealers, _
+;			$iChkDonateAllDragons, $iChkDonateAllPekkas, $iChkDonateAllBabyDragons, $iChkDonateAllMiners, $iChkDonateAllMinions, $iChkDonateAllHogRiders, _
+;			$iChkDonateAllValkyries, $iChkDonateAllGolems, $iChkDonateAllWitches, $iChkDonateAllLavaHounds, $iChkDonateAllBowlers, $iChkDonateAllCustomA, $iChkDonateAllCustomB), BitOR($iChkDonatePoisonSpells, $iChkDonateEarthQuakeSpells, $iChkDonateHasteSpells, $iChkDonateSkeletonSpells), BitOR($iChkDonateAllPoisonSpells, $iChkDonateAllEarthQuakeSpells, $iChkDonateAllHasteSpells, $iChkDonateAllSkeletonSpells))
+;EndFunc   ;==>SetbDonate
 
 Func PrepareDonateCC()
 
@@ -41,7 +41,8 @@ Func PrepareDonateCC()
 	$PrepDon[2] = BitOR($iChkDonatePoisonSpells, $iChkDonateEarthQuakeSpells, $iChkDonateHasteSpells, $iChkDonateSkeletonSpells)
 	$PrepDon[3] = BitOR($iChkDonateAllPoisonSpells, $iChkDonateAllEarthQuakeSpells, $iChkDonateAllHasteSpells, $iChkDonateAllSkeletonSpells)
 
-	$bDonate = BitOR($PrepDon[0], $PrepDon[1], $PrepDon[2], $PrepDon[3])
+	$bActiveDonate = BitOR($PrepDon[0], $PrepDon[1], $PrepDon[2], $PrepDon[3])
+	;$bDonate = BitOR($PrepDon[0], $PrepDon[1], $PrepDon[2], $PrepDon[3])
 	;Setlog(" - Donate: $bDonate:" & $bDonate & " $bDonateTroop:" & $PrepDon[0] & " $bDonateAllTroop:" & $PrepDon[1] & " $bDonateSpell:" & $PrepDon[2] & " $bDonateAllSpell:" & $PrepDon[3], $COLOR_GREEN)
 EndFunc   ;==>PrepareDonateCC
 
@@ -53,6 +54,9 @@ Func DonateCC($Check = False)
 
 	Local $bDonateSpell = $PrepDon[2]
 	Local $bDonateAllSpell = $PrepDon[3]
+
+	Local $bDonate = $bActiveDonate
+
 	Local $bOpen = True, $bClose = False
 
 	;Global $bDonate = BitOR($bDonateTroop, $bDonateAllTroop, $bDonateSpell, $bDonateAllSpell)
@@ -1185,16 +1189,28 @@ EndFunc   ;==>RemainingCCcapacity
 Func DetectSlotTroop($Type)
 
 	Local $FullTemp
+
+	Local $directory = @ScriptDir & "\imgxml\DonateCC"
+	Local $directorySpells = @ScriptDir & "\imgxml\DonateCCSpells"
+
+
 	If $Type >= $eBarb And $Type <= $eBowl Then
 		For $Slot = 0 To 5
-			$FullTemp = getOcrDonationTroopsDetection(343 + (68 * $Slot), $DonationWindowY + 37)
-			If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " getOcrDonationTroopsDetection returned >>" & $FullTemp & "<<", $COLOR_DEBUG)
-			If StringInStr($FullTemp & " ", "empty") > 0 Then ExitLoop
-			If $FullTemp <> "" Then
+			Local $x = 343 + (68 * $Slot)
+			Local $y = $DonationWindowY + 37
+			Local $x1 = $x + 75
+			Local $y1 = $y + 43
+
+			$FullTemp = SearchImgloc($directory,$x,$y,$x1,$y1)
+			;$FullTemp = getOcrDonationTroopsDetection(343 + (68 * $Slot), $DonationWindowY + 37)
+
+			If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " SearchImgloc returned >>" & $FullTemp[0] & "<<", $COLOR_DEBUG)
+			If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
+			If $FullTemp[0] <> "" Then
 				For $i = $eBarb To $eBowl
 					$sTmp = StringStripWS(StringLeft(NameOfTroop($i), 4), $STR_STRIPTRAILING)
 					;If $debugsetlog = 1 Then Setlog(NameOfTroop($i) & " = " & $sTmp, $COLOR_DEBUG)
-					If StringInStr($FullTemp & " ", $sTmp) > 0 Then
+					If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
 						If $debugsetlog = 1 Then Setlog("Detected " & NameOfTroop($i), $COLOR_DEBUG)
 						If $Type = $i Then Return $Slot
 						ExitLoop
@@ -1206,14 +1222,21 @@ Func DetectSlotTroop($Type)
 			EndIf
 		Next
 		For $Slot = 6 To 11
-			$FullTemp = getOcrDonationTroopsDetection(343 + (68 * ($Slot - 6)), $DonationWindowY + 124)
-			If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " getOcrDonationTroopsDetection returned >>" & $FullTemp & "<<", $COLOR_DEBUG)
-			If StringInStr($FullTemp & " ", "empty") > 0 Then ExitLoop
-			If $FullTemp <> "" Then
+			Local $x = 343 + (68 * ($Slot - 6))
+			Local $y = $DonationWindowY + 124
+			Local $x1 = $x + 75
+			Local $y1 = $y + 43
+
+			$FullTemp = SearchImgloc($directory,$x,$y,$x1,$y1)
+			;$FullTemp = getOcrDonationTroopsDetection(343 + (68 * ($Slot - 6)), $DonationWindowY + 124)
+
+			If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " SearchImgloc returned >>" & $FullTemp[0] & "<<", $COLOR_DEBUG)
+			If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
+			If $FullTemp[0] <> "" Then
 				For $i = $eBall To $eBowl
 					$sTmp = StringStripWS(StringLeft(NameOfTroop($i), 4), $STR_STRIPTRAILING)
 					;If $debugsetlog = 1 Then Setlog(NameOfTroop($i) & " = " & $sTmp, $COLOR_DEBUG)
-					If StringInStr($FullTemp & " ", $sTmp) > 0 Then
+					If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
 						If $debugsetlog = 1 Then Setlog("Detected " & NameOfTroop($i), $COLOR_DEBUG)
 						If $Type = $i Then Return $Slot
 						ExitLoop
@@ -1227,14 +1250,21 @@ Func DetectSlotTroop($Type)
 	EndIf
 	If $Type >= $ePSpell And $Type <= $eSkSpell Then
 		For $Slot = 12 To 16
-			$FullTemp = getOcrDonationTroopsDetection(343 + (68 * ($Slot - 12)), $DonationWindowY + 241)
-			If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " getOcrDonationTroopsDetection returned >>" & $FullTemp & "<<", $COLOR_DEBUG)
-			If StringInStr($FullTemp & " ", "empty") > 0 Then ExitLoop
-			If $FullTemp <> "" Then
+			Local $x = 343 + (68 * ($Slot - 12))
+			Local $y = $DonationWindowY + 241
+			Local $x1 = $x + 75
+			Local $y1 = $y + 43
+
+			$FullTemp = SearchImgloc($directorySpells,$x,$y,$x1,$y1)
+			;$FullTemp = getOcrDonationTroopsDetection(343 + (68 * ($Slot - 12)), $DonationWindowY + 241)
+
+			If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " SearchImgloc returned >>" & $FullTemp[0] & "<<", $COLOR_DEBUG)
+			If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
+			If $FullTemp[0] <> "" Then
 				For $i = $ePSpell To $eSkSpell
 					$sTmp = StringLeft(NameOfTroop($i), 4)
 					;If $debugsetlog = 1 Then Setlog(NameOfTroop($i) & " = " & $sTmp, $COLOR_DEBUG)
-					If StringInStr($FullTemp & " ", $sTmp) > 0 Then
+					If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
 						If $debugsetlog = 1 Then Setlog("Detected " & NameOfTroop($i), $COLOR_DEBUG)
 						If $Type = $i Then Return $Slot
 						ExitLoop
@@ -1301,6 +1331,9 @@ Func SkipDonateNearFullTroops($setlog = False, $aHeroResult = Default)
 					If $setlog Then Setlog("» Donation disabled, available troops " & $ArmyCapacity & "%, limit " & $sSkipDonateNearFulLTroopsPercentual & "%", $COLOR_INFO)
 					Return True ; troops camps% > limit
 				EndIf
+			Else
+				If $setlog Then Setlog("» Donation disabled, available troops " & $ArmyCapacity & "%, limit " & $sSkipDonateNearFulLTroopsPercentual & "%", $COLOR_INFO)
+				Return True ; troops camps% > limit
 			EndIf
 		Else
 			If $setlog Then Setlog("» Donations enabled, available troops " & $ArmyCapacity & "%, limit " & $sSkipDonateNearFulLTroopsPercentual & "%", $COLOR_INFO)
@@ -1312,8 +1345,146 @@ Func SkipDonateNearFullTroops($setlog = False, $aHeroResult = Default)
 	EndIf
 EndFunc   ;==>SkipDonateNearFullTroops
 
-Func DonatedTroop($Type, $iDonTroopsQuantity) ; @TODO Add GUI, this is just a dummy
+Func DonatedTroop($Type, $iDonTroopsQuantity)
+
+	Switch $Type
+		Case $eBarb
+			$TroopsDonQ[1] += $iDonTroopsQuantity
+			$TroopsDonXP[1] += $iDonTroopsQuantity
+		Case $eArch
+			$TroopsDonQ[2] += $iDonTroopsQuantity
+			$TroopsDonXP[2] += $iDonTroopsQuantity
+		Case $eGiant
+			$TroopsDonQ[3] += $iDonTroopsQuantity
+			$TroopsDonXP[3] += $iDonTroopsQuantity * 5
+		Case $eGobl
+			$TroopsDonQ[4] += $iDonTroopsQuantity
+			$TroopsDonXP[4] += $iDonTroopsQuantity
+		Case $eWall
+			$TroopsDonQ[5] += $iDonTroopsQuantity
+			$TroopsDonXP[5] += $iDonTroopsQuantity * 2
+		Case $eWiza
+			$TroopsDonQ[6] += $iDonTroopsQuantity
+			$TroopsDonXP[6] += $iDonTroopsQuantity * 4
+		Case $eBall
+			$TroopsDonQ[7] += $iDonTroopsQuantity
+			$TroopsDonXP[7] += $iDonTroopsQuantity * 5
+		Case $eHeal
+			$TroopsDonQ[8] += $iDonTroopsQuantity
+			$TroopsDonXP[8] += $iDonTroopsQuantity * 14
+		Case $eDrag
+			$TroopsDonQ[9] += $iDonTroopsQuantity
+			$TroopsDonXP[9] += $iDonTroopsQuantity * 20
+		Case $ePekk
+			$TroopsDonQ[10] += $iDonTroopsQuantity
+			$TroopsDonXP[10] += $iDonTroopsQuantity * 25
+		Case $eBabyD
+			$TroopsDonQ[11] += $iDonTroopsQuantity
+			$TroopsDonXP[11] += $iDonTroopsQuantity * 10
+		Case $eMine
+			$TroopsDonQ[12] += $iDonTroopsQuantity
+			$TroopsDonXP[12] += $iDonTroopsQuantity * 5
+		Case $eMini
+			$TroopsDonQ[13] += $iDonTroopsQuantity
+			$TroopsDonXP[13] += $iDonTroopsQuantity * 2
+		Case $eHogs
+			$TroopsDonQ[14] += $iDonTroopsQuantity
+			$TroopsDonXP[14] += $iDonTroopsQuantity * 5
+		Case $eValk
+			$TroopsDonQ[15] += $iDonTroopsQuantity
+			$TroopsDonXP[15] += $iDonTroopsQuantity * 8
+		Case $eWitc
+			$TroopsDonQ[16] += $iDonTroopsQuantity
+			$TroopsDonXP[16] += $iDonTroopsQuantity * 12
+		Case $eGole
+			$TroopsDonQ[17] += $iDonTroopsQuantity
+			$TroopsDonXP[17] += $iDonTroopsQuantity * 30
+		Case $eLava
+			$TroopsDonQ[18] += $iDonTroopsQuantity
+			$TroopsDonXP[18] += $iDonTroopsQuantity * 30
+		Case $eBowl
+			$TroopsDonQ[19] += $iDonTroopsQuantity
+			$TroopsDonXP[19] += $iDonTroopsQuantity * 6
+	EndSwitch
+
+	For $i = 1 To 19
+		GUICtrlSetData($lblDonQ[$i], $TroopsDonQ[$i])
+	Next
+
+	Local $TotalTrQ = 0
+	For $i = 1 To 19
+		$TotalTrQ += $TroopsDonQ[$i]
+	Next
+
+	Local $TotalTrXPWon = 0
+	For $i = 1 To 19
+		$TotalTrXPWon += $TroopsDonXP[$i]
+	Next
+
+	GUICtrlSetData($lblTotalTroopsQ, GetTranslated(632,120,"Total Donated") & " : " & $TotalTrQ)
+	GUICtrlSetData($lblTotalTroopsXP, GetTranslated(632,121,"XP Won") & " : " & $TotalTrXPWon)
+
 EndFunc   ;==>DonatedTroop
 
-Func DonatedSpell($Type, $iDonSpellsQuantity) ; @TODO Add GUI, this is just a dummy
+Func DonatedSpell($Type, $iDonSpellsQuantity)
+
+	Switch $Type
+		Case $ePSpell
+			$TroopsDonQ[20] += $iDonTroopsQuantity
+			$TroopsDonXP[20] += $iDonTroopsQuantity * 5
+		Case $eESpell
+			$TroopsDonQ[21] += $iDonTroopsQuantity
+			$TroopsDonXP[21] += $iDonTroopsQuantity * 5
+		Case $eHaSpell
+			$TroopsDonQ[22] += $iDonTroopsQuantity
+			$TroopsDonXP[22] += $iDonTroopsQuantity * 5
+		Case $eSkSpell
+			$TroopsDonQ[23] += $iDonTroopsQuantity
+			$TroopsDonXP[23] += $iDonTroopsQuantity * 5
+	EndSwitch
+
+	For $i = 20 To 23
+		GUICtrlSetData($lblDonQ[$i], $TroopsDonQ[$i])
+	Next
+
+	Local $TotalSpQ = 0
+	For $i = 20 To 23
+		$TotalSpQ += $TroopsDonQ[$i]
+	Next
+
+	Local $TotalSpXPWon = 0
+	For $i = 20 To 23
+		$TotalSpXPWon += $TroopsDonXP[$i]
+	Next
+
+	GUICtrlSetData($lblTotalSpellsQ, GetTranslated(632,120,"Total Donated") & " : " & $TotalSpQ)
+	GUICtrlSetData($lblTotalSpellsXP, GetTranslated(632,121,"XP Won") & " : " & $TotalSpXPWon)
+
 EndFunc   ;==>DonatedSpell
+
+Func SearchImgloc($directory = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0)
+
+	; Setup arrays, including default return values for $return
+	Local $aResult[1], $aCoordArray[1][2], $aCoords, $aCoordsSplit, $aValue
+	Local $Redlines = "FV"
+	; Capture the screen for comparison
+	_CaptureRegion2($x, $y, $x1, $y1)
+	$res = DllCall($hImgLib, "str", "SearchMultipleTilesBetweenLevels", "handle", $hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", $Redlines, "Int", 0, "Int", 1000)
+
+	If $res[0] <> "" Then
+		; Get the keys for the dictionary item.
+		Local $aKeys = StringSplit($res[0], "|", $STR_NOCOUNT)
+
+		; Redimension the result array to allow for the new entries
+		ReDim $aResult[UBound($aKeys)]
+
+		; Loop through the array
+		For $i = 0 To UBound($aKeys) - 1
+			; Get the property values
+			$aResult[$i] = returnPropertyValue($aKeys[$i], "objectname")
+		Next
+		Return $aResult
+	EndIf
+	$aResult[0] = "empty"
+	Return $aResult
+EndFunc

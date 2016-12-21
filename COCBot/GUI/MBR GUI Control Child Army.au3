@@ -111,7 +111,8 @@ Func lblTotalCount2()
 	Local $NbrOfDarkBarrack = 2 ;For the moment fix to 2 until fine detect level of each Barrack
 	For $i = 0 To UBound($TroopName) - 1
 		Local $NbrOfTroop = GUICtrlRead(Eval("txtNum" & $TroopName[$i]))
-		If $NbrOfTroop > 0 Then
+		Local $LevOfTroop = Eval("itxtLev" & $TroopName[$i])
+		If $NbrOfTroop > 0 And $LevOfTroop > 0 Then
 			If $TroopType[$i] = "e" Then
 				If IsInt($NbrOfTroop / $NbrOfBarrack) = 1 then
 					$TotalTotalTimeTroop += ($NbrOfTroop / $NbrOfBarrack) * $TroopTimes[$i]
@@ -898,14 +899,18 @@ EndFunc   ;==>IsUseCustomDarkTroopOrder
 	;==============================================================
 #Ce
 
-Func LevUpDown($SelTroopSpell)
+Func LevUpDown($SelTroopSpell, $NoChangeLev = True)
 	Local $MaxLev = UBound(Eval("Lev" & $SelTroopSpell & "Cost"), 1)
 	Local $LevColor = $COLOR_WHITE
 	Local $TempLev
-	If _IsPressed("10") Or _IsPressed("02") Then
-		$TempLev = Eval("itxtLev" & $SelTroopSpell) - 1
+	If $NoChangeLev Then
+		If _IsPressed("10") Or _IsPressed("02") Then
+			$TempLev = Eval("itxtLev" & $SelTroopSpell) - 1
+		Else
+			$TempLev = Eval("itxtLev" & $SelTroopSpell) + 1
+		EndIf
 	Else
-		$TempLev = Eval("itxtLev" & $SelTroopSpell) + 1
+		$TempLev = Eval("itxtLev" & $SelTroopSpell)
 	EndIf
 	If $TempLev > $MaxLev - 1 Or $TempLev = 0 Then
 		$TempLev = 0

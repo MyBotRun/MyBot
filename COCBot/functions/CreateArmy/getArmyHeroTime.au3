@@ -54,7 +54,7 @@ Func getArmyHeroTime($HeroType = "all", $bOpenArmyWindow = False, $bCloseArmyWin
 	EndIf
 
 	; Constant Array with OCR find location: [X pos, Y Pos, Text Name, Global enum value]
-	Local Const $aHeroRemainData[3][4] = [[620, 414, "King", $eKing], [695, 414, "Queen", $eQueen], [775, 414, "Warden", $eWarden]]
+	Local Const $aHeroRemainData[3][4] = [[620, 414, "King", $eKing], [690, 414, "Queen", $eQueen], [765, 414, "Warden", $eWarden]]
 
 	For $index = 0 To UBound($aHeroRemainData) - 1 ;cycle through all 3 slots and hero types
 

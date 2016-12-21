@@ -26,6 +26,7 @@ Func LoadLanguagesComboBox()
 		ReDim $aLanguageFile[$iFileIndex + 1][3]
 		$aLanguageFile[$iFileIndex][0] = StringLeft($sFilename, StringLen($sFilename) - 4)
 		Local $LangIcons
+		; All Language Icons are made by YummyGum and can be found here: https://www.iconfinder.com/iconsets/142-mini-country-flags-16x16px
 		Switch $aLanguageFile[$iFileIndex][0]
 				Case "BahasaIND"
 					$LangIcons = 192
@@ -49,6 +50,8 @@ Func LoadLanguagesComboBox()
 					$LangIcons = 201
 				Case "Turkish"
 					$LangIcons = 202
+				Case "Portuguese"
+					$LangIcons = 205
 				Case Else
 					$LangIcons = 203 ; Use Grey Icon when none of the Languages is matching
 		EndSwitch
@@ -235,6 +238,15 @@ Func chkDebugDisableVillageCentering()
 	EndIf
 	SetDebugLog("DebugDisableVillageCentering " & ($debugDisableVillageCentering = 1 ? "enabled" : "disabled"))
 EndFunc   ;==>chkDebugDisableVillageCentering
+
+Func chkDebugDeadbaseImage()
+	If GUICtrlRead($chkDebugDeadbaseImage) = $GUI_CHECKED Then
+		$debugDeadbaseImage = 1
+	Else
+		$debugDeadbaseImage = 0
+	EndIf
+	SetDebugLog("DebugDeadbaseImage " & ($debugDeadbaseImage = 1 ? "enabled" : "disabled"))
+EndFunc   ;==>chkDebugDeadbaseImage
 
 Func chkDebugOcr()
 	If GUICtrlRead($chkDebugOcr) = $GUI_CHECKED Then

@@ -211,8 +211,8 @@ GUICtrlCreateTabItem("")
 $hGUI_UPGRADE_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600,17,"Walls"))
 
 Global $chkWalls
-Global $txtWall04ST, $txtWall05ST, $txtWall06ST, $txtWall07ST, $txtWall08ST, $txtWall09ST, $txtWall10ST, $txtWall11ST
-Global $Wall04ST, $Wall05ST, $Wall06ST, $Wall07ST, $Wall08ST, $Wall09ST, $Wall10ST, $Wall11ST
+Global $txtWall04ST, $txtWall05ST, $txtWall06ST, $txtWall07ST, $txtWall08ST, $txtWall09ST, $txtWall10ST, $txtWall11ST, $txtWall12ST
+Global $Wall04ST, $Wall05ST, $Wall06ST, $Wall07ST, $Wall08ST, $Wall09ST, $Wall10ST, $Wall11ST, $Wall12ST
 Global $sldMaxNbWall
 Global $lblWallCost, $cmbWalls, $UseGold, $UseElixir, $UseElixirGold, $txtWallMinGold, $txtWallMinElixir
 
@@ -259,7 +259,7 @@ Global $lblWallCost, $cmbWalls, $UseGold, $UseElixir, $UseElixirGold, $txtWallMi
 		$lblWalls = GUICtrlCreateLabel(GetTranslated(617,18, "Search for Walls level") & ":", $x, $y+2, -1, -1)
 		$cmbWalls = GUICtrlCreateCombo("", $x + 110, $y, 61, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL), $WS_EX_RIGHT)
 			_GUICtrlSetTip(-1, GetTranslated(617,19, "Search for Walls of this level and try to upgrade them one by one."))
-			GUICtrlSetData(-1, "4   |5   |6   |7   |8   |9   |10   ", "4   ")
+			GUICtrlSetData(-1, "4   |5   |6   |7   |8   |9   |10   |11   ", "4   ")
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "cmbWalls")
 			_ArrayConcatenate($G, $C)
@@ -282,41 +282,48 @@ Global $lblWallCost, $cmbWalls, $UseGold, $UseElixir, $UseElixirGold, $txtWallMi
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	Local $x = 25, $y = 170
-	$grpUpgrWalls = GUICtrlCreateGroup(Gettranslated(617,29, "Walls counter"), $x - 20, $y - 20, 430, 60)
+	$grpUpgrWalls = GUICtrlCreateGroup(Gettranslated(617,29, "Walls counter"), $x - 20, $y - 20, 430, 100)
 		; Load PNG image
 		;_GDIPlus_StartUp()
 		$x -= 3
 		$txtWall04ST = GUICtrlCreateInput("0", $x - 10, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 4 "&GetTranslated(617,31, "you have."))
 		$Wall04ST = GUICtrlCreateIcon($pIconLib, $eWall04, $x + 17, $y-2, 24, 24)
-		$x = 70
+		$x += 80
 		$txtWall05ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 5 "&GetTranslated(617,31, "you have."))
 		$Wall05ST = GUICtrlCreateIcon($pIconLib, $eWall05, $x+27, $y-2, 24, 24)
-		$x = +130
+		$x += 80
 		$txtWall06ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 6 "&GetTranslated(617,31, "you have."))
 		$Wall06ST = GUICtrlCreateIcon($pIconLib, $eWall06, $x+27, $y-2, 24, 24)
-		$x = +180
+		$x += 80
 		$txtWall07ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 7 "&GetTranslated(617,31, "you have."))
 		$Wall07ST = GUICtrlCreateIcon($pIconLib, $eWall07, $x+27, $y-2, 24, 24)
-		$x = +230
+		$x += 80
 		$txtWall08ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 8 "&GetTranslated(617,31, "you have."))
 		$Wall08ST = GUICtrlCreateIcon($pIconLib, $eWall08, $x+27, $y-2, 24, 24)
-		$x = +280
+		Local $x = 25
+		$x -= 3
+		$x += 10
+		$y += 40
 		$txtWall09ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 9 "&GetTranslated(617,31, "you have."))
 		$Wall09ST = GUICtrlCreateIcon($pIconLib, $eWall09, $x+27, $y-2, 24, 24)
-		$x = +330
+		$x += 80
 		$txtWall10ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 10 "&GetTranslated(617,31, "you have."))
 		$Wall10ST = GUICtrlCreateIcon($pIconLib, $eWall10, $x+27, $y-2, 24, 24)
-		$x = +380
+		$x += 80
 		$txtWall11ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 11 "&GetTranslated(617,31, "you have."))
 		$Wall11ST = GUICtrlCreateIcon($pIconLib, $eWall11, $x+27, $y-2, 24, 24)
+		$x += 80
+		$txtWall12ST = GUICtrlCreateInput("0", $x, $y , 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			_GUICtrlSetTip(-1, GetTranslated(617,30, "Input number of Walls level")&" 12 "&GetTranslated(617,31, "you have."))
+		$Wall12ST = GUICtrlCreateIcon($pIconLib, $eWall12, $x+27, $y-2, 24, 24)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUICtrlCreateTabItem("")
 

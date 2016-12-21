@@ -23,7 +23,7 @@ Func ProfileReport()
 
 	SetLog("Profile Report", $COLOR_INFO)
 	SetLog("Opening Profile page to read atk, def, donated and received...", $COLOR_INFO)
-	Click(190, 33, 1, 0, "#0222") ; Click Info Profile Button
+	Click(30, 40, 1, 0, "#0222") ; Click Info Profile Button
 	If _Sleep($iDelayProfileReport2) Then Return
 
 	While _ColorCheck(_GetPixelColor(400, 104 + $midOffsetY, True), Hex(0xA2A6BE, 6), 20) = False ; wait for Info Profile to open
@@ -58,7 +58,7 @@ Func ProfileReport()
 	$TroopsReceived = getProfile(360, 268 + $midOffsetY)
 
 	SetLog(" [ATKW]: " & _NumberFormat($AttacksWon) & " [DEFW]: " & _NumberFormat($DefensesWon) & " [TDON]: " & _NumberFormat($TroopsDonated) & " [TREC]: " & _NumberFormat($TroopsReceived), $COLOR_SUCCESS)
-	Click(820, 40, 1, 0, "#0223") ; Close Profile page
+	Click(830, 80, 1, 0, "#0223") ; Close Profile page
 	If _Sleep($iDelayProfileReport3) Then Return
 
 	$iCount = 0

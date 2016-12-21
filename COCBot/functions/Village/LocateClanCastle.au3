@@ -69,7 +69,7 @@ Func LocateClanCastle()
 			Return
 		EndIf
 		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY) ; 860x780
-		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
+		If IsArray($sInfo) and ($sInfo[0] > 1 Or $sInfo[0] = "") Then
 			If StringInStr($sInfo[1], "clan") = 0 Then
 				If $sInfo[0] = "" Then
 					$sLocMsg = "Nothing"

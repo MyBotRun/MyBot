@@ -89,6 +89,8 @@ Func CleanYard()
 	; Obstacles function to Parallel Search , will run all pictures inside the directory
 	Local $directory = @ScriptDir & "\imgxml\Resources\Obstacles"
 
+	If $iDetectedImageType = 1 then $directory = @ScriptDir & "\imgxml\Obstacles_Snow"  ; Snow theme
+
 	; Setup arrays, including default return values for $return
 	Local $Filename = ""
 	Local $Locate = 0
@@ -192,7 +194,7 @@ Func CleanYard()
 	If $NoBuilders Then
 		SetLog("No Builders available to remove Obstacles!")
 	Else
-		If $Locate = 0 Then SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)
+		If $Locate = 0 And $ichkCleanYard = 1 Then SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)
 		If $DebugSetLog = 1 Then SetLog("Time: " & Round(TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
 	EndIf
 	UpdateStats()

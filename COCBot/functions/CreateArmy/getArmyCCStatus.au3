@@ -39,9 +39,10 @@ Func getArmyCCStatus($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	If _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
 		Local $iRemainTrainCCTimer = 0, $sResultCCMinutes = "", $aResult
 
-		Local $sResultCC = getArmyCampCap($aArmyCCRemainTime[0], $aArmyCCRemainTime[1]) ;Get CC time via OCR.
+		;Local $sResultCC = getArmyCampCap($aArmyCCRemainTime[0], $aArmyCCRemainTime[1]) ;Get CC time via OCR.
+		Local $sResultCC = getRequestRemainTime( $aArmyCCRemainTime[0] ,  $aArmyCCRemainTime[1] )
 		If $debugsetlogTrain = 1 Then Setlog("getArmyCampCap returned: " & $sResultCC, $COLOR_DEBUG)
-		$iCCRemainTime = ConvertOCRTime("CC request time", $sResultCC)
+		$iCCRemainTime = ConvertOCRTime("CC request", $sResultCC)
 		; If $sResultCC <> "" Then
 			; If StringInStr($sResultCC, "m") > 1 Then
 				; $aResult = StringSplit($sResultCC, "m", $STR_NOCOUNT)

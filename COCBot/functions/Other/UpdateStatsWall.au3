@@ -26,5 +26,6 @@ Func WallsStatsMAJ()
 		GUICtrlSetData($txtWall09ST, $itxtWall09ST)
 		GUICtrlSetData($txtWall10ST, $itxtWall10ST)
 		GUICtrlSetData($txtWall11ST, $itxtWall11ST)
+		GUICtrlSetData($txtWall12ST, $itxtWall12ST)
 	SaveConfig()
 EndFunc   ;==>WallsStatsMAJ

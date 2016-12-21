@@ -65,7 +65,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 	;name , level , coords
 	Local $FoundWalls[1] = [""] ;
 
-	Local $directory = "walls-bundle"
+	Local $directory = @ScriptDir & "\imgxml\Walls"
 	Local $redLines = $redline
 	Local $minLevel = $walllevel
 	Local $maxLevel = $walllevel

@@ -38,7 +38,7 @@ Func UpdateStats()
 		GUICtrlSetState($picResultElixirTemp, $GUI_HIDE)
 		GUICtrlSetState($picResultDETemp, $GUI_HIDE)
 
-		GUICtrlSetState($lblResultGoldNow, $GUI_SHOW)
+		GUICtrlSetState($lblResultGoldNow, $GUI_SHOW + $GUI_DISABLE) ; $GUI_DISABLE to trigger default view in btnVillageStat
 		GUICtrlSetState($picResultGoldNow, $GUI_SHOW)
 		GUICtrlSetState($lblResultElixirNow, $GUI_SHOW)
 		GUICtrlSetState($picResultElixirNow, $GUI_SHOW)
@@ -54,6 +54,7 @@ Func UpdateStats()
 		GUICtrlSetState($lblResultTrophyNow, $GUI_SHOW)
 		GUICtrlSetState($lblResultBuilderNow, $GUI_SHOW)
 		GUICtrlSetState($lblResultGemNow, $GUI_SHOW)
+		btnVillageStat("UpdateStats")
 		$iGoldStart = $iGoldCurrent
 		$iElixirStart = $iElixirCurrent
 		$iDarkStart = $iDarkCurrent
@@ -479,5 +480,17 @@ Func ResetStats()
 		$iNbrOfDetectedCollectors[$i] = 0
 		$iNbrOfDetectedDrills[$i] = 0
 	Next
+
+	For $i = 0 To 23
+		$TroopsDonQ[$i] = 0
+		GUICtrlSetData($lblDonQ[$i], $TroopsDonQ[$i])
+		$TroopsDonXP[$i] = 0
+	Next
+
+	GUICtrlSetData($lblTotalTroopsQ, "Total Donated : 0")
+	GUICtrlSetData($lblTotalSpellsQ, "Total Donated : 0")
+	GUICtrlSetData($lblTotalTroopsXP, "XP Won : 0")
+	GUICtrlSetData($lblTotalSpellsXP, "XP Won : 0")
+
 	UpdateStats()
 EndFunc   ;==>ResetStats

@@ -288,8 +288,8 @@ Func cmbWalls()
 	$icmbWalls = _GUICtrlComboBox_GetCurSel($cmbWalls)
 	$WallCost = $WallCosts[_GUICtrlComboBox_GetCurSel($cmbWalls)]
 	GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-	_GUI_Value_STATE("HIDE", $txtWall04ST & "#" & $txtWall05ST & "#" & $txtWall06ST & "#" & $txtWall07ST & "#" & $txtWall08ST & "#" & $txtWall09ST & "#" & $txtWall10ST & "#" & $txtWall11ST)
-	_GUI_Value_STATE("HIDE", $Wall04ST & "#" & $Wall05ST & "#" & $Wall06ST & "#" & $Wall07ST & "#" & $Wall08ST & "#" & $Wall09ST & "#" & $Wall10ST & "#" & $Wall11ST)
+	_GUI_Value_STATE("HIDE", $txtWall04ST & "#" & $txtWall05ST & "#" & $txtWall06ST & "#" & $txtWall07ST & "#" & $txtWall08ST & "#" & $txtWall09ST & "#" & $txtWall10ST & "#" & $txtWall11ST & "#" & $txtWall12ST)
+	_GUI_Value_STATE("HIDE", $Wall04ST & "#" & $Wall05ST & "#" & $Wall06ST & "#" & $Wall07ST & "#" & $Wall08ST & "#" & $Wall09ST & "#" & $Wall10ST & "#" & $Wall11ST & "#" & $Wall12ST)
 	Switch $icmbWalls ;
 		Case 0
 			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST)
@@ -332,13 +332,20 @@ Func cmbWalls()
 			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
 		Case 5
 			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST)
-			$WallCost = 3000000
+			$WallCost = 2000000
 			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseElixir, $GUI_ENABLE)
 			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
 			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
 		Case 6
 			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST & "#" & $txtWall11ST & "#" & $Wall11ST)
+			$WallCost = 3000000
+			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
+			GUICtrlSetState($UseElixir, $GUI_ENABLE)
+			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
+			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
+		Case 7
+			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST & "#" & $txtWall11ST & "#" & $Wall11ST & "#" & $txtWall12ST & "#" & $Wall12ST)
 			$WallCost = 4000000
 			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
 			GUICtrlSetState($UseElixir, $GUI_ENABLE)

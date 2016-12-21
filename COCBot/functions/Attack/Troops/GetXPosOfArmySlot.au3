@@ -29,7 +29,7 @@ Func GetXPosOfArmySlot($slotNumber, $xOffsetFor11Slot)
 			$SlotComp = 2
 	EndSwitch
 
-	If $slotNumber = $King Or $slotNumber = $Queen Or $slotNumber = $Warden Then $xOffsetFor11Slot += 8
+	;If $slotNumber = $King Or $slotNumber = $Queen Or $slotNumber = $Warden Then $xOffsetFor11Slot += 8
 
 	; check Dark color on slot 0 to verify if exists > 11 slots
 	$SlotPixelColor = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 10)

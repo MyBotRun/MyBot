@@ -48,6 +48,9 @@ Func BotStart()
 	readConfig()
 	applyConfig(False) ; bot window redraw stays disabled!
 
+	;Reset Telegram message
+	NotifyGetLastMessageFromTelegram()
+	
 	If BitAND($AndroidSupportFeature, 1 + 2) = 0 And $ichkBackground = 1 Then
 		GUICtrlSetState($chkBackground, $GUI_UNCHECKED)
 		chkBackground() ; Invoke Event manually
@@ -166,11 +169,17 @@ Func BotSearchMode()
 	If _Sleep(100) Then Return
 	$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1]) ; get OCR to read current Village Trophies
 	If _Sleep(100) Then Return
-	getArmyCapacity(True, True)
+	CheckArmySpellCastel()
+	ClickP($aAway, 2, 0, "") ;Click Away
 	If _Sleep(100) Then Return
-	PrepareSearch()
-	If _Sleep(1000) Then Return
-	VillageSearch()
-	If _Sleep(100) Then Return
+	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
+		If _Sleep(100) Then Return
+		PrepareSearch()
+		If _Sleep(1000) Then Return
+		VillageSearch()
+		If _Sleep(100) Then Return
+	Else
+		Setlog("Your Army is not prepared, check the Attack/train options")
+	EndIf
 	btnStop()
 EndFunc   ;==>BotSearchMode

@@ -510,7 +510,8 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend, _
 		$eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, _
 		$eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup, _
-		$eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon
+		$eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, _
+		$eWall12, $ePortuguese
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
@@ -772,7 +773,7 @@ Global Enum $eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eD
 	$eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell
 ;wall
 Global $WallCost = 0
-Global $WallCosts[7] = [30000, 75000, 200000, 500000, 1000000, 3000000, 4000000]
+Global $WallCosts[8] = [30000, 75000, 200000, 500000, 1000000, 2000000, 3000000, 4000000]
 Global $WallX = 0, $WallY = 0
 Global $Wall[8]
 Global $iMaxNbWall = 4
@@ -939,8 +940,9 @@ Global $DonatePixel
 Global $iClanLevel
 Global $LastBarrackTrainDonatedTroop = 1
 Global $LastDarkBarrackTrainDonatedTroop = 1
-Global $bDonate = -1	; -1 means not set yet
-Global $bDonateTrain = -1	; -1 means not set yet
+Global $bActiveDonate = -1	; -1 means not set yet
+;Global $bDonate = -1	; -1 means not set yet
+;Global $bDonateTrain = -1	; -1 means not set yet
 
 Global $sTxtRequest = ""
 Global $ichkDonateAllBarbarians, $ichkDonateBarbarians, $sTxtDonateBarbarians, $sTxtBlacklistBarbarians, $aDonBarbarians, $aBlkBarbarians
@@ -1470,6 +1472,7 @@ Global $MinorObstacle = False
 ;Languages
 Global Const $dirLanguages = @ScriptDir & "\Languages\"
 Global $sLanguage = "English"
+Global $sLanguageDisp = "English"
 Global $aLanguageFile[1][2]; undimmed language file array [FileName][DisplayName]
 Global Const $sDefaultLanguage = "English"
 Global $aLanguage[1][1] ;undimmed language array
@@ -1663,7 +1666,7 @@ Global $iCCRemainTime = 0  ; Time remaining until can request CC again
 
 ;Walls
 Global $iNbrOfWallsUpped = 0
-Global $itxtWall04ST=0, $itxtWall05ST=0, $itxtWall06ST=0, $itxtWall07ST=0, $itxtWall08ST=0, $itxtWall09ST=0, $itxtWall10ST=0, $itxtWall11ST=0
+Global $itxtWall04ST=0, $itxtWall05ST=0, $itxtWall06ST=0, $itxtWall07ST=0, $itxtWall08ST=0, $itxtWall09ST=0, $itxtWall10ST=0, $itxtWall11ST=0, $itxtWall12ST=0
 
 ;Collectors
 Global $chkLvl6Enabled = 1
@@ -1777,9 +1780,9 @@ Global $LevPekkCost[6] = [0, 28000, 32000, 36000, 40000, 45000]
 Global $LevBabyDCost[5] = [0, 15000, 16000, 17000, 18000]
 Global $LevMineCost[5] = [0, 4200, 4800, 5400, 6000]
 Global $LevMiniCost[8] = [0, 6, 7, 8, 9, 10, 11, 12]
-Global $LevHogsCost[7] = [0, 40, 45, 52, 58, 65, 90]
+Global $LevHogsCost[8] = [0, 40, 45, 52, 58, 65, 90, 115]
 Global $LevValkCost[6] = [0, 70, 100, 130, 160, 190]
-Global $LevGoleCost[6] = [0, 450, 525, 600, 675, 750]
+Global $LevGoleCost[7] = [0, 450, 525, 600, 675, 750, 825]
 Global $LevWitcCost[4] = [0, 250, 350, 450]
 Global $LevLavaCost[5] = [0, 390, 450, 510, 570]
 Global $LevBowlCost[4] = [0, 130, 150, 170]
@@ -1793,7 +1796,7 @@ Global $LevRSpellCost[6] = [0, 23000, 25000, 27000, 30000, 33000]
 Global $LevJSpellCost[4] = [0, 23000, 27000, 31000]
 Global $LevFSpellCost[6] = [0, 26000, 29000, 31000, 33000, 35000]
 Global $LevCSpellCost[5] = [0, 38000, 40000, 42000, 44000]
-Global $LevPSpellCost[5] = [0, 95, 110, 125, 140]
+Global $LevPSpellCost[6] = [0, 95, 110, 125, 140, 155]
 Global $LevESpellCost[5] = [0, 125, 140, 160, 180]
 Global $LevHaSpellCost[5] = [0, 80, 85, 60, 95]
 Global $LevSkSpellCost[5] = [0, 110, 120, 130, 140]
@@ -1810,6 +1813,11 @@ Global $topgoldloot = 0
 Global $topelixirloot = 0
 Global $topdarkloot = 0
 Global $topTrophyloot = 0
+
+; Donate Stats
+Global $TroopsDonQ[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $TroopsDonXP[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $lblDonQ[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 ;=== No variables below ! ================================================
 

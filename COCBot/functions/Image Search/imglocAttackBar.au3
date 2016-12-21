@@ -19,9 +19,7 @@ Func TestImglocTroopBar()
 	$debugImageSave = 1
 
 	Setlog("=========== Imgloc ============")
-	local $temp = AttackBarCheck()
-	Setlog(" STRING : " & $temp)
-
+	PrepareAttack($DB)
 	$debugSetlog = 0
 	$debugOCR = 0
 	$debugImageSave = 0
@@ -163,7 +161,7 @@ EndFunc   ;==>AttackBarCheck
 
 Func SlotAttack($PosX)
 
-	Local $CheckSlot11 = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 10)
+	Local $CheckSlot11 = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 15) ; 15 just in case of the snow theme
 
 	If $debugSetlog = 1 Then
 		Setlog(" Slot < 12 _ColorCheck 0x07202A at (17," & 580 + $bottomOffsetY & "): " & $CheckSlot11, $COLOR_DEBUG) ;Debug

@@ -135,8 +135,8 @@ Func getAttackDisable($x_start, $y_start);  -> 346, 182 - Gets red text disabled
 	Return getOcrAndCapture("coc-dis", $x_start, $y_start, 118, 24, True)
 EndFunc   ;==>getAttackDisable
 
-Func getOcrLanguage($x_start, $y_start);  -> Get english language - main screen - "Builder" text at top--> getLanguage(324,6)
-	Return getOcrAndCapture("coc-ms-testl", $x_start, $y_start, 43, 11, True)
+Func getOcrLanguage($x_start, $y_start);  -> Get english language - main screen - "Attack" text on attack button
+	Return getOcrAndCapture("coc-ms-testl", $x_start, $y_start, 93, 16, True)
 EndFunc   ;==>getOcrLanguage
 
 Func getOcrSpellDetection($x_start, $y_start);  -> Recognition of the Spells in Armyoverview window
@@ -223,11 +223,15 @@ Func getRemainTLaboratory($x_start, $y_start) ; read actual time remaining in La
 EndFunc   ;==>getRemainTLaboratory
 
 Func getRemainTHero($x_start, $y_start) ; Get time remaining for hero to be ready for attack from train window, BK:443,504 AQ:504,504 GW:565:504
-	Return getOcrAndCapture("coc-remainhero", $x_start, $y_start, 38, 12, True)
+	Return getOcrAndCapture("coc-remainhero", $x_start, $y_start, 55, 12, True)
 EndFunc   ;==>getRemainTHero
 
 Func getHeroStatus($x_start, $y_start) ; Get status/type_of_Hero from Hero Slots in training overview window, Slot1:464,446 Slot2:526,446 Slot3:588:446
 	Return getOcrAndCapture("coc-herostatus", $x_start, $y_start, 20, 20)
+EndFunc   ;==>getHeroStatus
+
+Func getRequestRemainTime($x_start, $y_start) ; Get Remain Time To request Troops
+	Return getOcrAndCapture("coc-CCremainTime", $x_start, $y_start, 30, 14)
 EndFunc   ;==>getHeroStatus
 
 Func getCloudTextShort($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)

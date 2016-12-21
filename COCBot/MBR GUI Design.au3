@@ -154,7 +154,7 @@ Local $x = 28, $y = 128 + $_GUI_MAIN_TOP
 		$lbltxtCreditsDead2 = GUICtrlCreateLabel($txtCredits, $x + 5, $y + 15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 			GUICtrlSetFont(-1, 9, $FW_MEDIUM)
 		$y += 66
-		$txtCredits = "Special thanks to all contributing forum members helping " & @CRLF & "to make this software better! "
+		$txtCredits = "Special thanks to all contributing forum members helping to make this" & @CRLF & "software better! And a special note to: @KevinM our server admin!"
 		$lbltxtCredits2 = GUICtrlCreateLabel($txtCredits, $x + 14, $y, 390, 30, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $ES_CENTER), 0)
 			GUICtrlSetFont(-1, 9, $FW_MEDIUM)
 		$y += 40

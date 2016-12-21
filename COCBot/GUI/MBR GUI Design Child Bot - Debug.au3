@@ -65,8 +65,13 @@ $grpDebug = GUICtrlCreateGroup(GetTranslated(636,34, "Debug"), $x - 20, $y - 20,
 		GUICtrlSetState(-1, $GUI_DISABLE)
 		GUICtrlSetState(-1, $GUI_HIDE)
 	$y += 20
-	$chkDebugDisableVillageCentering = GUICtrlCreateCheckbox(GetTranslated(636,113, "Disable Village Centering"), $x , $y-5, -1, -1)
-		_GUICtrlSetTip(-1, GetTranslated(636,114, "Debug: Disables centering of village."))
+	$chkDebugDisableVillageCentering = GUICtrlCreateCheckbox(GetTranslated(636,114, "Disable Village Centering"), $x , $y-5, -1, -1)
+		_GUICtrlSetTip(-1, GetTranslated(636,115, "Debug: Disables centering of village."))
+		GUICtrlSetState(-1, $GUI_DISABLE)
+		GUICtrlSetState(-1, $GUI_HIDE)
+	$y += 20
+	$chkDebugDeadbaseImage = GUICtrlCreateCheckbox(GetTranslated(636,116, "Deadbase Image save"), $x , $y-5, -1, -1)
+		_GUICtrlSetTip(-1, GetTranslated(636,117, "Debug: Saves images of skipped deadbase villages."))
 		GUICtrlSetState(-1, $GUI_DISABLE)
 		GUICtrlSetState(-1, $GUI_HIDE)
 

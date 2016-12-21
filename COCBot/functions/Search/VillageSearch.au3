@@ -117,8 +117,18 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		_CaptureRegion2()
 
 		; measure enemy village
-		If CheckZoomOut("VillageSearch", False) = False Then Return ; exit func
-
+		If CheckZoomOut("VillageSearch", True, False) = False Then
+			; check two more times, only required for snow theme (snow fall can make it easily fail), but don't hurt to keep it
+			$i = 0
+			Local $bMeasured
+			Do
+				$i += 1
+				If _Sleep($iDelayPrepareSearch3) Then Return ; wait 500 ms
+				ForceCaptureRegion()
+				$bMeasured = CheckZoomOut("VillageSearch", $i < 2, True)
+			Until $bMeasured = True Or $i >= 2
+			If $bMeasured = False Then Return ; exit func
+		EndIf
 		; ----------------- FIND TARGET TOWNHALL -------------------------------------------
 		; $searchTH name of level of townhall (return "-" if no th found)
 		; $THx and $THy coordinates of townhall

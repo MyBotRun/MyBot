@@ -55,7 +55,7 @@ Global $aClanTab[2] = [189, 24] ; Clan Tab, Chat Window, Main Screen
 Global $aClanInfo[2] = [282, 55] ; Clan Info Icon
 Global $aArmyCampSize[2] = [110, 136 + $midOffsetY] ; Training Window, Overview screen, Current Size/Total Size
 Global $aArmySpellSize[2] = [99, 284 + $midOffsetY] ; Training Window Overviewscreen, current number/total capacity
-Global $aArmyCCRemainTime[2] = [652, 266 + $midOffsetY] ; Training Window Overviewscreen, Minutes & Seconds remaining till can request again
+Global $aArmyCCRemainTime[2] = [725, 517 + $midOffsetY] ; Training Window Overviewscreen, Minutes & Seconds remaining till can request again
 Global $aIsCampNotFull[4] = [149, 150 + $midOffsetY, 0x761714, 20] ; Training Window, Overview screen Red pixel in Exclamation mark with camp is not full
 Global $aIsCampFull[4] = [128, 151 + $midOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
 Global $aBarrackFull[4] = [388, 154 + $midOffsetY, 0xE84D50, 20] ; Training Window, Barracks Screen, Red pixel in Exclamation mark with Barrack is full
@@ -64,7 +64,7 @@ Global $aLanguageCheck1[4] = [326, 8, 0xF9FAF9, 20] ; Main Screen Test Language 
 Global $aLanguageCheck2[4] = [329, 9, 0x060706, 20] ; Main Screen Test Language for word 'Builders'
 Global $aLanguageCheck3[4] = [348, 12, 0x040403, 20] ; Main Screen Test Language for word 'Builders'
 Global $aLanguageCheck4[4] = [354, 11, 0x090908, 20] ; Main Screen Test Language for word 'Builders'
-Global $aTrophies[2] = [65, 74] ; Main Screen, Trophies
+Global $aTrophies[2] = [72, 85] ; Main Screen, Trophies
 Global $aNoCloudsAttack[4] = [25, 606, 0xC00000, 10] ; Attack Screen: No More Clouds
 Global $aMessageButton[2] = [38, 143] ; Main Screen, Message Button
 Global $aArmyTrainButton[2] = [40, 525 + $bottomOffsetY] ; Main Screen, Army Train Button
@@ -90,13 +90,18 @@ Global $aIsTrainPgChk1[4]	  = [812, 97 + $midOffsetY, 0xE0070A, 10]  ; Main Scre
 Global $aIsTrainPgChk2[4]	  = [762, 328 + $midOffsetY, 0xF18439, 10]  ; Main Screen, Train page open - Dark Orange in left arrow
 Global $aRtnHomeCloud1[4]	  = [56, 592 + $bottomOffsetY, 0x0A223F, 15]  ; Cloud Screen, during search, blue pixel in left eye
 Global $aRtnHomeCloud2[4]	  = [72, 592 + $bottomOffsetY, 0x103F7E, 15]  ; Cloud Screen, during search, blue pixel in right eye
+Global $aDetectLang[2]	= [16, 634 + $bottomOffsetY] ; Detect Language, bottom left Attack button must read "Attack"
 
 ;Global $aKingHealth          = [ -1, 572 + $bottomOffsetY, 0x4FD404,110] ; Attack Screen, Check King's Health, X coordinate is dynamic, not used from array
 ;Global $aQueenHealth         = [ -1, 573 + $bottomOffsetY, 0x4FD404,110] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array
 
-Global $aKingHealth = [-1, 572 + $bottomOffsetY, 0x00b29e, 15] ; Attack Screen, Check King's Health, X coordinate is dynamic, not used from array   ;  -> with slot compensation 0xbfb29e
-Global $aQueenHealth = [-1, 572 + $bottomOffsetY, 0x008227, 15] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
-Global $aWardenHealth = [-1, 568 + $bottomOffsetY, 0x472b63, 15] ; Attack Screen, Check Warden's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
+; Check healthy color RGB ( 220,255,19~27) ; the king and queen haves the same Y , but warden is a little lower ...
+; King Crown ; background pixel not at green bar
+Global $aKingHealth = [-1, 569 + $bottomOffsetY, 0x543e20, 20] ; Attack Screen, Check King's Health, X coordinate is dynamic, not used from array   ;  -> with slot compensation 0xbfb29e
+; Quuen crown ; background pixel not at green bar
+Global $aQueenHealth = [-1, 569 + $bottomOffsetY, 0x9a4825, 20] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
+; Warden hair ; background pixel not at green bar
+Global $aWardenHealth = [-1, 569 + $bottomOffsetY, 0xd2696c, 15] ; Attack Screen, Check Warden's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
 
 
 ;attack report... stars won
@@ -121,28 +126,28 @@ Global $aWonThreeStarAtkRprt[4] = [534, 180 + $midOffsetY, 0xC8CAC7, 30] ; Cente
 	;Global $DropTrophiesStartPoint = [34, 310]
 #ce
 ;	pixel color: location information								BS 850MB (Reg GFX), BS 500MB (Med GFX) : location
-Global Const $TrainBarb[4]  = [87, 372 + $midOffsetY, 0xFFD028, 40]  ; FFB620, FFB620
-Global Const $TrainArch[4]  = [72, 474 + $midOffsetY, 0xE03E68, 40]  ; 882857, 882852
-Global Const $TrainGiant[4] = [155, 372 + $midOffsetY, 0xF07908, 40] ; FFCE94, FFCE94
-Global Const $TrainGobl[4]  = [166, 476 + $midOffsetY, 0x407428, 40] ; A9F36A, A9F36B
-Global Const $TrainWall[4]  = [264, 377 + $midOffsetY, 0x564B58, 40] ; 7B6E8F, 786C8A
-Global Const $TrainBall[4]  = [284, 491 + $midOffsetY, 0x564952, 40] ; 781C10, 7C1C10
+Global Const $TrainBarb[4]  = [64, 354 + $midOffsetY, 0xE0AB38, 40]  ; FFB620, FFB620
+Global Const $TrainArch[4]  = [82, 464 + $midOffsetY, 0xC02C68, 40]  ; 882857, 882852
+Global Const $TrainGiant[4] = [192, 387 + $midOffsetY, 0xF7AD78, 40] ; FFCE94, FFCE94
+Global Const $TrainGobl[4]  = [178, 487 + $midOffsetY, 0xB0DB6E, 40] ; A9F36A, A9F36B
+Global Const $TrainWall[4]  = [282, 385 + $midOffsetY, 0x000000, 40] ; 7B6E8F, 786C8A
+Global Const $TrainBall[4]  = [249, 469 + $midOffsetY, 0x64242C, 40] ; 781C10, 7C1C10
 
-Global Const $TrainWiza[4]  = [366, 364 + $midOffsetY, 0xFFECD0, 40] ; E19179, E3937C
-Global Const $TrainHeal[4]  = [374, 482 + $midOffsetY, 0xB8FCFE, 40] ; D67244, D67244
-Global Const $TrainDrag[4]  = [470, 373 + $midOffsetY, 0x483D68, 40] ; 473254, 493153
-Global Const $TrainPekk[4]  = [470, 473 + $midOffsetY, 0xD8E7E8, 40] ; 385470, 395671
-Global Const $TrainBabyD[4] = [552, 375 + $midOffsetY, 0x88BC40, 40] ; 88D464, 88D461, middle of snout
-Global Const $TrainMine[4]  = [562, 518 + $midOffsetY, 0x403430, 40] ; 1A1815, 1B1814, right eye brow under hat
+Global Const $TrainWiza[4]  = [384, 384 + $midOffsetY, 0xF8D0B8, 40] ; E19179, E3937C
+Global Const $TrainHeal[4]  = [396, 500 + $midOffsetY, 0xF8EEE8, 40] ; D67244, D67244
+Global Const $TrainDrag[4]  = [435, 354 + $midOffsetY, 0xFDF8F6, 40] ; 473254, 493153
+Global Const $TrainPekk[4]  = [465, 493 + $midOffsetY, 0x0E0811, 40] ; 385470, 395671
+Global Const $TrainBabyD[4] = [578, 385 + $midOffsetY, 0x080000, 40] ; 88D464, 88D461, middle of snout
+Global Const $TrainMine[4]  = [568, 452 + $midOffsetY, 0x989C98, 40] ; 1A1815, 1B1814, right eye brow under hat
 
 ;Global $TrainMini[4] = [220, 310 + $midOffsetY, 0x182340, 40] ; 15203A, 172039, Dark blue botton of horn
-Global Const $TrainMini[4] = [477, 384 + $midOffsetY, 0x30689F, 40] ; Dark blue botton of horn
-Global Const $TrainHogs[4] = [491, 467 + $midOffsetY, 0x603C30, 40] ; 3A2620, 3B2720, brown above right ear
-Global Const $TrainValk[4] = [578, 352 + $midOffsetY, 0xFF5E14, 40] ; FF6E18, FF6D18, orange right hair curl above eye
-Global Const $TrainGole[4] = [579, 518 + $midOffsetY, 0x706458, 40] ; E1C8AD, E3C8AC, top of head
-Global Const $TrainWitc[4] = [674, 354 + $midOffsetY, 0x6864B3, 40] ; 403C68, 403D68, middle of purple hood
-Global Const $TrainLava[4] = [702, 497 + $midOffsetY, 0x5F5849, 40] ; 4C4C3C, 4B4C3C, center of brown nose
-Global Const $TrainBowl[4] = [784, 365 + $midOffsetY, 0x9084F4, 40] ; 6060E7, 6060E5 ,purple on cheek
+Global Const $TrainMini[4] = [489, 375 + $midOffsetY, 0x7ACFF0, 40] ; Dark blue botton of horn
+Global Const $TrainHogs[4] = [500, 467 + $midOffsetY, 0xB87867, 40] ; 3A2620, 3B2720, brown above right ear
+Global Const $TrainValk[4] = [601, 354 + $midOffsetY, 0xFF9B60, 40] ; FF6E18, FF6D18, orange right hair curl above eye
+Global Const $TrainGole[4] = [618, 479 + $midOffsetY, 0xF4E8C8, 40] ; E1C8AD, E3C8AC, top of head
+Global Const $TrainWitc[4] = [696, 353 + $midOffsetY, 0x636AE5, 40] ; 403C68, 403D68, middle of purple hood
+Global Const $TrainLava[4] = [687, 475 + $midOffsetY, 0x210D00, 40] ; 4C4C3C, 4B4C3C, center of brown nose
+Global Const $TrainBowl[4] = [777, 356 + $midOffsetY, 0x8884F0, 40] ; 6060E7, 6060E5 ,purple on cheek
 
 ;Spells Section
 Global $TrainLSpell[4] = [ 70, 405 + $midOffsetY, 0x0A47EE, 40]
@@ -182,30 +187,30 @@ Global $GemSkSpell[4] = [25, 340 + $midOffsetY, 0x030300, 1]		; These will never
 Global $NextBtn[4] = [780, 546 + $bottomOffsetY, 0xD34300, 20] ;  Next Button
 ; Someone asking troops : Color 0xD0E978 in x = 121
 
-Global $aRequestTroopsAO[6] = [758, 572, 0x76C01E, 0xD8EE80, 0x989898, 20] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
+Global $aRequestTroopsAO[6] = [743, 574, 0x76C01E, 0xD8EE80, 0x989898, 20] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
 
-Global Const $FullBarb[4] = [100, 423 + $midOffsetY, 0x7A7A7A, 45] ; Location of Elixir check pixel with normal color and Barrack Full color
-Global Const $FullArch[4] = [100, 529 + $midOffsetY, 0x8E8E8E, 45]
-Global Const $FullGiant[4] = [199, 422 + $midOffsetY, 0x6E6E6E, 45]
-Global Const $FullGobl[4] = [199, 523 + $midOffsetY, 0x6B6B6B, 45]
-Global Const $FullWall[4] = [297, 429 + $midOffsetY, 0x8B8B8B, 45]
-Global Const $FullBall[4] = [296, 531 + $midOffsetY, 0x878787, 45]
+Global Const $FullBarb[4] = [100, 423 + $midOffsetY, 0x6D6D6D, 45] ; Location of Elixir check pixel with normal color and Barrack Full color
+Global Const $FullArch[4] = [100, 529 + $midOffsetY, 0x8A8A8A, 45]
+Global Const $FullGiant[4] = [199, 422 + $midOffsetY, 0x676767, 45]
+Global Const $FullGobl[4] = [199, 523 + $midOffsetY, 0x666666, 45]
+Global Const $FullWall[4] = [297, 429 + $midOffsetY, 0x8D8D8D, 45]
+Global Const $FullBall[4] = [296, 531 + $midOffsetY, 0x898989, 45]
 
 Global Const $FullWiza[4] = [397, 421 + $midOffsetY, 0x676767, 45]
-Global Const $FullHeal[4] = [397, 522 + $midOffsetY, 0x676767, 45]
+Global Const $FullHeal[4] = [398, 522 + $midOffsetY, 0x696969, 45]
 Global Const $FullDrag[4] = [496, 421 + $midOffsetY, 0x676767, 45]
-Global Const $FullPekk[4] = [493, 526 + $midOffsetY, 0x818181, 45]
-Global Const $FullBabyD[4] = [589, 423 + $midOffsetY, 0x747474, 40] ; B1B1B1, B1B1B1, reg color: 88D464
-Global Const $FullMine[4] = [592, 523 + $midOffsetY, 0x6B6B6B, 40] ; AEAEAE, ADADAD, reg color: 84BF5E
+Global Const $FullPekk[4] = [493, 526 + $midOffsetY, 0x7D7D7D, 45]
+Global Const $FullBabyD[4] = [590, 423 + $midOffsetY, 0x696969, 40] ; B1B1B1, B1B1B1, reg color: 88D464
+Global Const $FullMine[4] = [594, 523 + $midOffsetY, 0x686868, 40] ; AEAEAE, ADADAD, reg color: 84BF5E
 
-Global Const $FullMini[4] = [497, 352 + $midOffsetY, 0x787878, 15] ; 0xC7F8F8 Most locations are only 30 decimal change in blue to gray (Dk blue chest)
-Global Const $FullHogs[4] = [500, 477 + $midOffsetY, 0x919191, 30] ; 0xD07C58 normal (lt brown shoulder)
-Global Const $FullValk[4] = [573, 367 + $midOffsetY, 0x8E8E8E, 30] ; 0xFF6E18 normal (lt orange hari curl)
-Global Const $FullGole[4] = [574, 462 + $midOffsetY, 0xA9A9A9, 30] ; 0xF07CD0 normal (pink eye)
-Global Const $FullWitc[4] = [677, 392 + $midOffsetY, 0x888888, 30] ; 0xF83DA4 normal (left pink eye) Need to fix
+Global Const $FullMini[4] = [456, 356 + $midOffsetY, 0x4D4D4D, 25] ; 0xC7F8F8 Most locations are only 30 decimal change in blue to gray (Dk blue chest)
+Global Const $FullHogs[4] = [488, 512 + $midOffsetY, 0xA4A4A4, 30] ; 0xD07C58 normal (lt brown shoulder)
+Global Const $FullValk[4] = [578, 370 + $midOffsetY, 0x8C8C8C, 30] ; 0xFF6E18 normal (lt orange hari curl)
+Global Const $FullGole[4] = [597, 509 + $midOffsetY, 0x3A3A3A, 30] ; 0xF07CD0 normal (pink eye)
+Global Const $FullWitc[4] = [671, 387 + $midOffsetY, 0x8D8D8D, 30] ; 0xF83DA4 normal (left pink eye) Need to fix
 
-Global Const $FullLava[4] = [724, 505 + $midOffsetY, 0x969696, 30] ; 0xFF7000 normal (Orange line above DE drop)
-Global Const $FullBowl[4] = [800, 379 + $midOffsetY, 0x585858, 20] ; 0x6060E8 normal (purple in cheek)
+Global Const $FullLava[4] = [721, 488 + $midOffsetY, 0x808080, 30] ; 0xFF7000 normal (Orange line above DE drop)
+Global Const $FullBowl[4] = [777, 407 + $midOffsetY, 0x727272, 20] ; 0x6060E8 normal (purple in cheek)
 
 Global Const $GemBarb[4] = [187, 372 + $midOffsetY, 0xE70A12, 30] ; Pixel location of middle of right side of zero text for troop training, and color when out of Elixir
 Global Const $GemArch[4] = [290, 372 + $midOffsetY, 0xE70A12, 30]

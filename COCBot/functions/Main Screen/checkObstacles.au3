@@ -307,7 +307,7 @@ EndFunc   ;==>checkObstacles_ResetSearch
 
 Func BanMsgBox()
 	Local $MsgBox
-	Local $stext = "Sorry, youy account is banned!!" & @CRLF & "Bot will stop now..."
+	Local $stext = "Sorry, your account is banned!!" & @CRLF & "Bot will stop now..."
 	While 1
 		PushMsg("BAN")
 		_ExtMsgBoxSet(4, 1, 0x004080, 0xFFFF00, 20, "Comic Sans MS", 600)

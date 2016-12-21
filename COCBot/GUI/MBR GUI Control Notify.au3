@@ -13,13 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func PushBulletRemoteControl()
-	If ($NotifyPBEnabled = 1 Or $NotifyTGEnabled = 1) And $NotifyRemoteEnable = 1 Then NotifyRemoteControl()
-EndFunc   ;==>PushBulletRemoteControl
 
-Func PushBulletDeleteOldPushes()
-	If $NotifyPBEnabled = 1 And $NotifyDeletePushesOlderThan = 1 Then _DeleteOldPushes() ; check every 30 min if must delete old pushbullet messages, increase delay time for anti ban pushbullet
-EndFunc   ;==>PushBulletDeleteOldPushes
 
 Func chkPBTGenabled()
 	If GUICtrlRead($chkNotifyPBEnabled) = $GUI_CHECKED Then
