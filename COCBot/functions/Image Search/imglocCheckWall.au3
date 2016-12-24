@@ -20,7 +20,7 @@ Func imglocCheckWall()
 	;name , level , coords
 	Local $FoundWalls[1]
 	$FoundWalls[0] = "" ; empty value to make sure return value filled
-	$FoundWalls = imglocFindWalls($levelWall, "DCD", "DCD", 10) ; lets get 10 points just to make sure we discard false positives
+	$FoundWalls = imglocFindWalls($levelWall, "ECD", "ECD", 10) ; lets get 10 points just to make sure we discard false positives
 
 	ClickP($aAway, 1, 0, "#0505") ; to prevent bot 'Anyone there ?'
 

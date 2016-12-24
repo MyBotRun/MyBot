@@ -1685,7 +1685,7 @@ chkskipDonateNearFulLTroopsEnable()
 
 	If $ichkDonateAllSkeletonSpells = 1 Then
 		GUICtrlSetState($chkDonateAllSkeletonSpells, $GUI_CHECKED)
-		_DonateAllControlsSpell(2, True)
+		_DonateAllControlsSpell(3, True)
 	Else
 		GUICtrlSetState($chkDonateAllSkeletonSpells, $GUI_UNCHECKED)
 	EndIf
@@ -2544,7 +2544,7 @@ chkskipDonateNearFulLTroopsEnable()
 	Local $tempindex = _GUICtrlComboBox_FindStringExact($cmbMilkingCSVScriptName, $MilkAttackCSVscript)
 	If $tempindex = -1 Then
 		$tempindex = 0
-		Setlog("Previous saved Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
+		Setlog("Previous saved Milking Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
 		Setlog("Automatically setted a default script, please check your config", $COLOR_ERROR)
 	EndIf
 	_GUICtrlComboBox_SetCurSel($cmbMilkingCSVScriptName, $tempindex)

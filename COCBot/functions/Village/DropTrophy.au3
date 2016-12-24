@@ -275,7 +275,7 @@ EndFunc   ;==>DropTrophy
 
 Func SetTrophyLoss()
 	Local $sTrophyLoss
-	If _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x0a050a, 6), 10) or _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x0F0617, 6), 5) Then ; check if the village have a Dark Elixir Storage
+	If _ColorCheck(_GetPixelColor(33, 148, True), Hex(0x000000, 6), 10) or _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x282020, 6), 5) Then ; check if the village have a Dark Elixir Storage
 		$sTrophyLoss = getTrophyLossAttackScreen(48, 214)
 	Else
 		$sTrophyLoss = getTrophyLossAttackScreen(48, 184)

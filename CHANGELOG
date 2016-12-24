@@ -1,4 +1,31 @@
-﻿* **V6.5**
+﻿* **V6.5.1**
+ * Fix Milking Error Message on Start
+ * Fix Hero Upgrading
+ * Fix Auto Hero Upgrading
+ * Fix mismatched TH from lower level (6/7)
+ * Fix Milking Script & Auto Align X/Y blanks config load
+ * Fix the Donate when exist queued troops between available
+ * Fix train positions
+ * Fix the Pekka detection on Attack bar
+ * Fix the Halt Attack idle interruption
+ * Fix the Train system when not exist Spells factory
+ * Fix the Manual Activation Heroes Power included the Warden
+ * Fix the Exiting battle, activating King and queen, but not warden (to recover some health)
+ * Fix the Drop trophies OCR (DEC Update)
+ * Fix for Wall Upgrade on Map Edges
+ * Fix GUI bug with Donate all Skeletonspell
+ * Fix Train Loop Heroes not Ready If Drop Trophy with Heroes is Checked
+ * Move the Boost barracks to train tab
+ * Move the Boost Spells factory to Brew Tab
+ * Improve the Queen and warden activation on all slots
+ * Improve log message/format on train
+ * Add Santa's Surprise Spell detection and change Spells coords
+ * Add new Function will check if TH snipes was selected and IF the troops 
+ to make are more then one troop kind, if yes proceeds directly to battle 
+ and make troops AFTER the battle. This option is ONLY available on Custom train.
+ 
+
+* **V6.5**
  * Fix the Spells Factory and Brew Capacity issues
  * Fix possible error or variables in IsGUICheckedForSpell
  * Fix CleanYard log when not enabled

@@ -228,7 +228,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		For $i = $eBarb To $eBowl ; lauch all remaining troops
 			;If $i = $eBarb Or $i = $eArch Then
 			LauchTroop($i, $nbSides, 0, 1)
-			CheckHeroesHealth()
+			If $iActivateKQCondition = "Auto" then CheckHeroesHealth()
 			;Else
 			;	 LauchTroop($i, $nbSides, 0, 1, 2)
 			;EndIf
@@ -236,8 +236,8 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		Next
 	Next
 
-	;Activate KQ's power
-	If ($checkKPower Or $checkQPower) And $iActivateKQCondition = "Manual" Then
+	;Activate Heroe's power Manual after X seconds
+	If ($checkKPower Or $checkQPower or $checkWPower) And $iActivateKQCondition = "Manual" Then
 		SetLog("Waiting " & $delayActivateKQ / 1000 & " seconds before activating Hero abilities", $COLOR_INFO)
 		If _Sleep($delayActivateKQ) Then Return
 		If $checkKPower Then
@@ -249,6 +249,11 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			SetLog("Activating Queen's power", $COLOR_INFO)
 			SelectDropTroop($Queen)
 			$checkQPower = False
+		EndIf
+		If $checkWPower then
+			SetLog("Activating Warden's power", $COLOR_INFO)
+			SelectDropTroop($Warden)
+			$checkWPower = False
 		EndIf
 	EndIf
 

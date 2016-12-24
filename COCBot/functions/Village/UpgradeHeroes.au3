@@ -114,7 +114,7 @@ Func QueenUpgrade()
 			If $sInfo[2] <> "" Then
 				$aHeroLevel = Number($sInfo[2]) ; grab hero level from building info array
 				SetLog("Your Queen Level read as: " & $aHeroLevel, $COLOR_SUCCESS)
-				If $aHeroLevel = 40 Then; max hero
+				If $aHeroLevel = $iMaxQueenLevel Then; max hero
 					SetLog("Your AQ is max, cannot upgrade!", $COLOR_INFO)
 					$ichkUpgradeQueen = 0 ; turn Off the Queen�s upgrade
 					Return
@@ -129,7 +129,7 @@ Func QueenUpgrade()
 	If _Sleep($iDelayUpgradeHero1) Then Return
 
 	;##### Get updated village elixir and dark elixir values
-	If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then ; check if the village have a Dark Elixir Storage
+	If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then ; check if the village has a Dark Elixir Storage
 		$iDarkCurrent = Number(getResourcesMainScreen(728, 123))
 		If $debugSetlog = 1 Then SetLog("Updating village values [D]: " & $iDarkCurrent, $COLOR_DEBUG)
 	Else
@@ -141,8 +141,8 @@ Func QueenUpgrade()
 		Return
 	EndIf
 
-	Local $offColors[3][3] = [[0x9B4C28, 41, 23], [0x040009, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
-	Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 620 + $bottomOffsetY, 1, 1, Hex(0xF6F9F3, 6), $offColors, 30) ; first gray/white pixel of button
+	Local $offColors[3][3] = [[0xE07B50, 41, 23], [0x282020, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
+	Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 620 + $bottomOffsetY, 1, 1, Hex(0xF5F6F2, 6), $offColors, 30) ; first gray/white pixel of button
 
 	If IsArray($ButtonPixel) Then
 		If $debugSetlog = 1 And IsArray($ButtonPixel) Then
@@ -217,7 +217,7 @@ Func KingUpgrade()
 			If $sInfo[2] <> "" Then
 				$aHeroLevel = Number($sInfo[2]) ; grab hero level from building info array
 				SetLog("Your King Level read as: " & $aHeroLevel, $COLOR_SUCCESS)
-				If $aHeroLevel = 40 Then; max hero
+				If $aHeroLevel = $iMaxKingLevel Then; max hero
 					SetLog("Your BK is max, cannot upgrade!", $COLOR_INFO)
 					$ichkUpgradeKing = 0 ; Turn Off the King's Upgrade
 					Return
@@ -245,8 +245,8 @@ Func KingUpgrade()
 		Return
 	EndIf
 
-	Local $offColors[3][3] = [[0x9B4C28, 41, 23], [0x040009, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
-	Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 620 + $bottomOffsetY, 1, 1, Hex(0xF6F9F3, 6), $offColors, 30) ; first gray/white pixel of button
+	Local $offColors[3][3] = [[0xE07B50, 41, 23], [0x282020, 72, 0], [0xF4F5F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
+	Global $ButtonPixel = _MultiPixelSearch(240, 563 + $bottomOffsetY, 670, 620 + $bottomOffsetY, 1, 1, Hex(0xF5F6F2, 6), $offColors, 30) ; first gray/white pixel of button
 
 	If IsArray($ButtonPixel) Then
 		If $debugSetlog = 1 And IsArray($ButtonPixel) Then
@@ -327,7 +327,7 @@ Func WardenUpgrade()
 			If $sInfo[2] <> "" Then
 				$aHeroLevel = Number($sInfo[2]) ; grab hero level from building info array
 				SetLog("Your Warden Level read as: " & $aHeroLevel, $COLOR_SUCCESS)
-				If $aHeroLevel = 20 Then; max hero
+				If $aHeroLevel = $iMaxWardenLevel Then; max hero
 					SetLog("Your GW is max, cannot upgrade!", $COLOR_INFO)
 					$ichkUpgradeWarden = 0 ; turn OFF the Wardn's Upgrade
 					Return

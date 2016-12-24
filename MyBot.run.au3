@@ -35,7 +35,7 @@ ProcessSetPriority(@AutoItPID, $PROCESS_ABOVENORMAL)
 Global $iBotLaunchTime = 0
 Local $hBotLaunchTime = TimerInit()
 
-$sBotVersion = "v6.5" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+$sBotVersion = "v6.5.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 #include "COCBot\functions\Config\DelayTimes.au3"
@@ -308,7 +308,7 @@ Func runBot() ;Bot that runs everything in order
 			If $RunState = False Then Return
 			If $Restart = True Then ContinueLoop
 			If IsSearchAttackEnabled() Then ; if attack is disabled skip reporting, requesting, donating, training, and boosting
-				Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC,Train', 'BoostBarracks', 'BoostSpellFactory', 'BoostDarkSpellFactory', 'BoostKing', 'BoostQueen', 'BoostWarden', 'RequestCC']
+				Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC,Train', 'BoostBarracks', 'BoostSpellFactory', 'BoostKing', 'BoostQueen', 'BoostWarden', 'RequestCC']
 				While 1
 					If $RunState = False Then Return
 					If $Restart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
@@ -529,9 +529,9 @@ Func Idle() ;Sequence that runs until Full Army
 
 		If $canRequestCC = True Then RequestCC()
 
-		If $CurCamp >= $TotalCamp * $iEnableAfterArmyCamps[$DB] / 100 And $iEnableSearchCamps[$DB] = 1 And IsSearchModeActive($DB) Then ExitLoop
-		If $CurCamp >= $TotalCamp * $iEnableAfterArmyCamps[$LB] / 100 And $iEnableSearchCamps[$LB] = 1 And IsSearchModeActive($LB) Then ExitLoop
-		If $CurCamp >= $TotalCamp * $iEnableAfterArmyCamps[$TS] / 100 And $iEnableSearchCamps[$TS] = 1 And IsSearchModeActive($TS) Then ExitLoop
+		;If $CurCamp >= $TotalCamp * $iEnableAfterArmyCamps[$DB] / 100 And $iEnableSearchCamps[$DB] = 1 And IsSearchModeActive($DB) Then ExitLoop
+		;If $CurCamp >= $TotalCamp * $iEnableAfterArmyCamps[$LB] / 100 And $iEnableSearchCamps[$LB] = 1 And IsSearchModeActive($LB) Then ExitLoop
+		;If $CurCamp >= $TotalCamp * $iEnableAfterArmyCamps[$TS] / 100 And $iEnableSearchCamps[$TS] = 1 And IsSearchModeActive($TS) Then ExitLoop
 
 		SetLog("Time Idle: " & StringFormat("%02i", Floor(Floor($TimeIdle / 60) / 60)) & ":" & StringFormat("%02i", Floor(Mod(Floor($TimeIdle / 60), 60))) & ":" & StringFormat("%02i", Floor(Mod($TimeIdle, 60))))
 
@@ -698,11 +698,9 @@ Func _RunFunction($action)
 				getArmySpellCount(False, True) ; use true parameter to close train overview window
 			EndIf
 		Case "BoostBarracks"
-			BoostBarracks2()
+			BoostBarracks()
 		Case "BoostSpellFactory"
 			BoostSpellFactory()
-		Case "BoostDarkSpellFactory"
-			BoostDarkSpellFactory()
 		Case "BoostKing"
 			BoostKing()
 		Case "BoostQueen"

@@ -128,8 +128,12 @@ Func SmartWait4Train()
 		If _Sleep($iDelayRespond) Then Return
 		$aHeroResult = getArmyHeroTime("all")
 		If @error Then
-			Setlog("getArmyHeroTime return error, exit SmartWait!", $COLOR_ERROR)
+			Setlog("getArmyHeroTime return error: " & @error & ", exit SmartWait!", $COLOR_ERROR)
 			Return ; if error, then quit smartwait
+		EndIf
+		If Not IsArray($aHeroResult) Then
+			Setlog("getArmyHeroTime OCR fail, exit SmartWait!", $COLOR_ERROR)
+			Return ; quit when ocr fai, stop trying to close while training this time
 		EndIf
 		If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SetLog("getArmyHeroTime returned: " & $aHeroResult[0] & ":" & $aHeroResult[1] & ":" & $aHeroResult[2], $COLOR_DEBUG)
 		If _Sleep($iDelayRespond) Then Return

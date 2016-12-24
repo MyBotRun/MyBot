@@ -256,6 +256,7 @@ Func ParseAttackCSV($debug = False)
 						Local $exitNoResources = 0
 						Local $hSleepTimer = TimerInit()
 						While TimerDiff($hSleepTimer) < $sleep
+							If $iActivateKQCondition = "Auto" then CheckHeroesHealth()
 							;READ RESOURCES
 							$Gold = getGoldVillageSearch(48, 69)
 							$Elixir = getElixirVillageSearch(48, 69 + 29)
@@ -269,6 +270,7 @@ Func ParseAttackCSV($debug = False)
 								$DarkElixir = ""
 								$Trophies = getTrophyVillageSearch(48, 69 + 69)
 							EndIf
+							If $iActivateKQCondition = "Auto" then CheckHeroesHealth()
 							If $DebugSetLog = 1 Then SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 							;EXIT IF RESOURCES = 0
 							If $ichkEndNoResources[$iMatchMode] = 1 And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
@@ -292,7 +294,6 @@ Func ParseAttackCSV($debug = False)
 							If _Sleep($iDelayRespond) Then ; check for pause/stop, close file before return
 								Return
 							EndIf
-							CheckHeroesHealth()
 						WEnd
 						If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop ;stop parse CSV file, start exit battle procedure
 

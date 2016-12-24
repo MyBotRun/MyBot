@@ -738,4 +738,25 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 
 	ParseAttackCSV($testattack)
 
+	;Activate Heroe's power Manual after X seconds
+	If ($checkKPower Or $checkQPower or $checkWPower) And $iActivateKQCondition = "Manual" Then
+		SetLog("Waiting " & $delayActivateKQ / 1000 & " seconds before activating Hero abilities", $COLOR_INFO)
+		If _Sleep($delayActivateKQ) Then Return
+		If $checkKPower Then
+			SetLog("Activating King's power", $COLOR_INFO)
+			SelectDropTroop($King)
+			$checkKPower = False
+		EndIf
+		If $checkQPower Then
+			SetLog("Activating Queen's power", $COLOR_INFO)
+			SelectDropTroop($Queen)
+			$checkQPower = False
+		EndIf
+		If $checkWPower then
+			SetLog("Activating Warden's power", $COLOR_INFO)
+			SelectDropTroop($Warden)
+			$checkWPower = False
+		EndIf
+	EndIf
+
 EndFunc   ;==>Algorithm_AttackCSV

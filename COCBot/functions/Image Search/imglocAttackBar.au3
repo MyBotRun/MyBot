@@ -32,7 +32,7 @@ Func AttackBarCheck()
 	; Setup arrays, including default return values for $return
 	Local $aResult[1][5], $aCoordArray[1][2], $aCoords, $aCoordsSplit, $aValue
 	Local $redLines = "FV"
-	Local $directory =  "attackbar-bundle"
+	Local $directory =  @ScriptDir & "\imgxml\AttackBar"
 	If $RunState = False Then Return
 	; Capture the screen for comparison
 	_CaptureRegion2($x, $y, $x1, $y1)
@@ -94,12 +94,20 @@ Func AttackBarCheck()
 
 			_ArraySort($aResult, 0, 0, 0, 1) ; Sort By X position , will be the Slot 0 to $i
 
+			Local $CheckSlot12 = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 15) ; 15 just in case of the snow theme
+
+			If $debugSetlog = 1 Then
+				Setlog(" Slot < 12 _ColorCheck 0x07202A at (17," & 580 + $bottomOffsetY & "): " & $CheckSlot12, $COLOR_DEBUG) ;Debug
+				Local $SlotPixelColorTemp = _GetPixelColor(17, 580 + $bottomOffsetY, $bCapturePixel)
+				Setlog(" Slot < 12 _GetPixelColo(17," & 580 + $bottomOffsetY & "): " & $SlotPixelColorTemp, $COLOR_DEBUG) ;Debug
+			EndIf
+
 			For $i = 0 To UBound($aResult) - 1
 				Local $Slottemp
 				If $aResult[$i][1] > 0 Then
 					If $debugSetlog = 1 Then SetLog("SLOT : " & $i, $COLOR_DEBUG) ;Debug
 					If $debugSetlog = 1 Then SetLog("Detection : " & $aResult[$i][0] & "|x" & $aResult[$i][1] & "|y" & $aResult[$i][2], $COLOR_DEBUG) ;Debug
-					$Slottemp = SlotAttack(number($aResult[$i][1]))
+					$Slottemp = SlotAttack(number($aResult[$i][1]),$CheckSlot12)
 					If $RunState = False Then Return ; Stop function
 					If _Sleep(20) then return        ; Pause function
 					If Ubound($Slottemp) = 2 then
@@ -159,15 +167,7 @@ Func AttackBarCheck()
 
 EndFunc   ;==>AttackBarCheck
 
-Func SlotAttack($PosX)
-
-	Local $CheckSlot11 = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 15) ; 15 just in case of the snow theme
-
-	If $debugSetlog = 1 Then
-		Setlog(" Slot < 12 _ColorCheck 0x07202A at (17," & 580 + $bottomOffsetY & "): " & $CheckSlot11, $COLOR_DEBUG) ;Debug
-		Local $SlotPixelColorTemp = _GetPixelColor(17, 580 + $bottomOffsetY, $bCapturePixel)
-		Setlog(" Slot < 12 _GetPixelColo(17," & 580 + $bottomOffsetY & "): " & $SlotPixelColorTemp, $COLOR_DEBUG) ;Debug
-	EndIf
+Func SlotAttack($PosX, $CheckSlot12)
 
 	Local $Slottemp[2] = [0, 0]
 
@@ -175,7 +175,7 @@ Func SlotAttack($PosX)
 		If $PosX >= 25 + ($i * 73)  and $PosX < 98 + ($i * 73) then
 			$Slottemp[0] = 35 + ($i * 73)
 			$Slottemp[1] = $i
-			If $CheckSlot11 = False Then $Slottemp[0] -= 13
+			If $CheckSlot12 = False Then $Slottemp[0] -= 13
 			If $debugSetlog = 1 Then Setlog("Slot: " & $i & " | $x > " & 25 + ($i * 73) & " and $x < " & 98 + ($i * 73))
 			If $debugSetlog = 1 Then Setlog("Slot: " & $i & " | $PosX: " & $PosX & " |  OCR x position: " & $Slottemp[0] & " | OCR Slot: " & $Slottemp[1])
 			Return $Slottemp

@@ -1485,6 +1485,6 @@ Func SearchImgloc($directory = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0)
 		Next
 		Return $aResult
 	EndIf
-	$aResult[0] = "empty"
+	$aResult[0] = "queued"
 	Return $aResult
 EndFunc

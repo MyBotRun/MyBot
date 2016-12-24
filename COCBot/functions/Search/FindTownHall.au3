@@ -15,7 +15,7 @@ Func FindTownHall($check = True, $forceCaptureRegion = True)
 	Local $THString = ""
 	$searchTH = "-"
 	$THx=0
-	$THy=0;if not check, find     TH Snipe and bully mode, always find				if deadbase enabled, and TH lvl or Outside checked, find          same with livebase
+	$THy=0;if not check, find     TH Snipe and bully mode, always find				if deadbase enabled, and TH lvl or Outside checked, find          same with ActiveBase
 
 	If $check = True Or _
 		 IsSearchModeActive($TS)  Or _

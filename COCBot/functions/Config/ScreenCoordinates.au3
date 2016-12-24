@@ -97,9 +97,9 @@ Global $aDetectLang[2]	= [16, 634 + $bottomOffsetY] ; Detect Language, bottom le
 
 ; Check healthy color RGB ( 220,255,19~27) ; the king and queen haves the same Y , but warden is a little lower ...
 ; King Crown ; background pixel not at green bar
-Global $aKingHealth = [-1, 569 + $bottomOffsetY, 0x543e20, 20] ; Attack Screen, Check King's Health, X coordinate is dynamic, not used from array   ;  -> with slot compensation 0xbfb29e
-; Quuen crown ; background pixel not at green bar
-Global $aQueenHealth = [-1, 569 + $bottomOffsetY, 0x9a4825, 20] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
+Global $aKingHealth = [-1, 569 + $bottomOffsetY, 0x543e20, 15] ; Attack Screen, Check King's Health, X coordinate is dynamic, not used from array   ;  -> with slot compensation 0xbfb29e
+; Queen purple between crown ; background pixel not at green bar
+Global $aQueenHealth = [-1, 569 + $bottomOffsetY, 0x4b35b5, 15] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
 ; Warden hair ; background pixel not at green bar
 Global $aWardenHealth = [-1, 569 + $bottomOffsetY, 0xd2696c, 15] ; Attack Screen, Check Warden's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
 
@@ -127,7 +127,7 @@ Global $aWonThreeStarAtkRprt[4] = [534, 180 + $midOffsetY, 0xC8CAC7, 30] ; Cente
 #ce
 ;	pixel color: location information								BS 850MB (Reg GFX), BS 500MB (Med GFX) : location
 Global Const $TrainBarb[4]  = [64, 354 + $midOffsetY, 0xE0AB38, 40]  ; FFB620, FFB620
-Global Const $TrainArch[4]  = [82, 464 + $midOffsetY, 0xC02C68, 40]  ; 882857, 882852
+Global Const $TrainArch[4]  = [77, 482 + $midOffsetY, 0xB82A64, 40]  ; 882857, 882852
 Global Const $TrainGiant[4] = [192, 387 + $midOffsetY, 0xF7AD78, 40] ; FFCE94, FFCE94
 Global Const $TrainGobl[4]  = [178, 487 + $midOffsetY, 0xB0DB6E, 40] ; A9F36A, A9F36B
 Global Const $TrainWall[4]  = [282, 385 + $midOffsetY, 0x000000, 40] ; 7B6E8F, 786C8A
@@ -144,7 +144,7 @@ Global Const $TrainMine[4]  = [568, 452 + $midOffsetY, 0x989C98, 40] ; 1A1815, 1
 Global Const $TrainMini[4] = [489, 375 + $midOffsetY, 0x7ACFF0, 40] ; Dark blue botton of horn
 Global Const $TrainHogs[4] = [500, 467 + $midOffsetY, 0xB87867, 40] ; 3A2620, 3B2720, brown above right ear
 Global Const $TrainValk[4] = [601, 354 + $midOffsetY, 0xFF9B60, 40] ; FF6E18, FF6D18, orange right hair curl above eye
-Global Const $TrainGole[4] = [618, 479 + $midOffsetY, 0xF4E8C8, 40] ; E1C8AD, E3C8AC, top of head
+Global Const $TrainGole[4] = [563, 470 + $midOffsetY, 0x6C8694, 40] ; E1C8AD, E3C8AC, top of head
 Global Const $TrainWitc[4] = [696, 353 + $midOffsetY, 0x636AE5, 40] ; 403C68, 403D68, middle of purple hood
 Global Const $TrainLava[4] = [687, 475 + $midOffsetY, 0x210D00, 40] ; 4C4C3C, 4B4C3C, center of brown nose
 Global Const $TrainBowl[4] = [777, 356 + $midOffsetY, 0x8884F0, 40] ; 6060E7, 6060E5 ,purple on cheek
@@ -187,29 +187,29 @@ Global $GemSkSpell[4] = [25, 340 + $midOffsetY, 0x030300, 1]		; These will never
 Global $NextBtn[4] = [780, 546 + $bottomOffsetY, 0xD34300, 20] ;  Next Button
 ; Someone asking troops : Color 0xD0E978 in x = 121
 
-Global $aRequestTroopsAO[6] = [743, 574, 0x76C01E, 0xD8EE80, 0x989898, 20] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
+Global $aRequestTroopsAO[6] = [791, 565, 0x66a2a8, 0xa0d448, 0x919191, 15] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
 
-Global Const $FullBarb[4] = [100, 423 + $midOffsetY, 0x6D6D6D, 45] ; Location of Elixir check pixel with normal color and Barrack Full color
-Global Const $FullArch[4] = [100, 529 + $midOffsetY, 0x8A8A8A, 45]
-Global Const $FullGiant[4] = [199, 422 + $midOffsetY, 0x676767, 45]
-Global Const $FullGobl[4] = [199, 523 + $midOffsetY, 0x666666, 45]
-Global Const $FullWall[4] = [297, 429 + $midOffsetY, 0x8D8D8D, 45]
-Global Const $FullBall[4] = [296, 531 + $midOffsetY, 0x898989, 45]
+Global Const $FullBarb[4] = [100, 423 + $midOffsetY, 0x6D6D6D, 20] ; Location of Elixir check pixel with normal color and Barrack Full color
+Global Const $FullArch[4] = [100, 529 + $midOffsetY, 0x8A8A8A, 20]
+Global Const $FullGiant[4] = [199, 422 + $midOffsetY, 0x676767, 20]
+Global Const $FullGobl[4] = [199, 523 + $midOffsetY, 0x666666, 20]
+Global Const $FullWall[4] = [297, 429 + $midOffsetY, 0x8D8D8D, 20]
+Global Const $FullBall[4] = [296, 531 + $midOffsetY, 0x898989, 20]
 
-Global Const $FullWiza[4] = [397, 421 + $midOffsetY, 0x676767, 45]
-Global Const $FullHeal[4] = [398, 522 + $midOffsetY, 0x696969, 45]
-Global Const $FullDrag[4] = [496, 421 + $midOffsetY, 0x676767, 45]
-Global Const $FullPekk[4] = [493, 526 + $midOffsetY, 0x7D7D7D, 45]
-Global Const $FullBabyD[4] = [590, 423 + $midOffsetY, 0x696969, 40] ; B1B1B1, B1B1B1, reg color: 88D464
-Global Const $FullMine[4] = [594, 523 + $midOffsetY, 0x686868, 40] ; AEAEAE, ADADAD, reg color: 84BF5E
+Global Const $FullWiza[4] = [397, 421 + $midOffsetY, 0x676767, 20]
+Global Const $FullHeal[4] = [398, 523 + $midOffsetY, 0x676767, 20]
+Global Const $FullDrag[4] = [496, 421 + $midOffsetY, 0x676767, 20]
+Global Const $FullPekk[4] = [493, 526 + $midOffsetY, 0x7D7D7D, 20]
+Global Const $FullBabyD[4] = [590, 423 + $midOffsetY, 0x696969, 20] ; B1B1B1, B1B1B1, reg color: 88D464
+Global Const $FullMine[4] = [594, 523 + $midOffsetY, 0x686868, 20] ; AEAEAE, ADADAD, reg color: 84BF5E
 
-Global Const $FullMini[4] = [456, 356 + $midOffsetY, 0x4D4D4D, 25] ; 0xC7F8F8 Most locations are only 30 decimal change in blue to gray (Dk blue chest)
-Global Const $FullHogs[4] = [488, 512 + $midOffsetY, 0xA4A4A4, 30] ; 0xD07C58 normal (lt brown shoulder)
-Global Const $FullValk[4] = [578, 370 + $midOffsetY, 0x8C8C8C, 30] ; 0xFF6E18 normal (lt orange hari curl)
-Global Const $FullGole[4] = [597, 509 + $midOffsetY, 0x3A3A3A, 30] ; 0xF07CD0 normal (pink eye)
-Global Const $FullWitc[4] = [671, 387 + $midOffsetY, 0x8D8D8D, 30] ; 0xF83DA4 normal (left pink eye) Need to fix
+Global Const $FullMini[4] = [456, 356 + $midOffsetY, 0x4D4D4D, 20] ; 0xC7F8F8 Most locations are only 30 decimal change in blue to gray (Dk blue chest)
+Global Const $FullHogs[4] = [488, 512 + $midOffsetY, 0xA4A4A4, 20] ; 0xD07C58 normal (lt brown shoulder)
+Global Const $FullValk[4] = [578, 370 + $midOffsetY, 0x8C8C8C, 20] ; 0xFF6E18 normal (lt orange hari curl)
+Global Const $FullGole[4] = [597, 509 + $midOffsetY, 0x3A3A3A, 20] ; 0xF07CD0 normal (pink eye)
+Global Const $FullWitc[4] = [671, 387 + $midOffsetY, 0x8D8D8D, 20] ; 0xF83DA4 normal (left pink eye) Need to fix
 
-Global Const $FullLava[4] = [721, 488 + $midOffsetY, 0x808080, 30] ; 0xFF7000 normal (Orange line above DE drop)
+Global Const $FullLava[4] = [721, 488 + $midOffsetY, 0x808080, 20] ; 0xFF7000 normal (Orange line above DE drop)
 Global Const $FullBowl[4] = [777, 407 + $midOffsetY, 0x727272, 20] ; 0x6060E8 normal (purple in cheek)
 
 Global Const $GemBarb[4] = [187, 372 + $midOffsetY, 0xE70A12, 30] ; Pixel location of middle of right side of zero text for troop training, and color when out of Elixir

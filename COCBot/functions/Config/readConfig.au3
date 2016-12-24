@@ -659,7 +659,7 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 ;~ 		IniReadS($iChkSmartAttack[$MA][1], $config, "MilkingAttack", "MASmartAttackElixirCollector", 0, "int")
 ;~ 		IniReadS($iChkSmartAttack[$MA][2], $config, "MilkingAttack", "MASmartAttackDarkElixirDrill", 0, "int")
 
-		IniReadS($MilkAttackCSVscript, $config, "MilkingAttack", "MilkAttackCSVscript", 0, "int")
+		IniReadS($MilkAttackCSVscript, $config, "MilkingAttack", "MilkAttackCSVscript", "0")
 		IniReadS($MilkAttackType, $config, "MilkingAttack", "MilkAttackType", 0, "int")
 
 
@@ -1126,23 +1126,23 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		If $iMinCollectorMatches < 1 Or $iMinCollectorMatches > 6 Then $iMinCollectorMatches = 3
 
 		; Android Configuration
-		$AndroidAutoAdjustConfig = Int(IniRead($config, "android", "auto.adjust.config", ($AndroidAutoAdjustConfig ? "1" : 0))) = "1" ; if enabled, best android options are configured
+		$AndroidAutoAdjustConfig = Int(IniRead($config, "android", "auto.adjust.config", ($AndroidAutoAdjustConfig ? 1 : 0))) = 1 ; if enabled, best android options are configured
 		$AndroidGameDistributor = IniRead($config, "android", "game.distributor", $AndroidGameDistributor)
 		$AndroidGamePackage = IniRead($config, "android", "game.package", $AndroidGamePackage)
 		$AndroidGameClass = IniRead($config, "android", "game.class", $AndroidGameClass)
 		$UserGameDistributor = IniRead($config, "android", "user.distributor", $UserGameDistributor)
 		$UserGamePackage = IniRead($config, "android", "user.package", $UserGamePackage)
 		$UserGameClass = IniRead($config, "android", "user.class", $UserGameClass)
-		$AndroidCheckTimeLagEnabled = Int(IniRead($config, "android", "check.time.lag.enabled", ($AndroidCheckTimeLagEnabled ? "1" : 0))) = "1"
+		$AndroidCheckTimeLagEnabled = Int(IniRead($config, "android", "check.time.lag.enabled", ($AndroidCheckTimeLagEnabled ? 1 : 0))) = 1
 		$AndroidAdbScreencapTimeoutMin = Int(IniRead($config, "android", "adb.screencap.timeout.min", $AndroidAdbScreencapTimeoutMin))
 		$AndroidAdbScreencapTimeoutMax = Int(IniRead($config, "android", "adb.screencap.timeout.max", $AndroidAdbScreencapTimeoutMax))
 		$AndroidAdbScreencapTimeoutDynamic = Int(IniRead($config, "android", "adb.screencap.timeout.dynamic", $AndroidAdbScreencapTimeoutDynamic))
-		$AndroidAdbInputEnabled = Int(IniRead($config, "android", "adb.input.enabled", ($AndroidAdbInputEnabled ? "1" : 0))) = "1"
-		$AndroidAdbClickEnabled = Int(IniRead($config, "android", "adb.click.enabled", ($AndroidAdbClickEnabled ? "1" : 0))) = "1"
+		$AndroidAdbInputEnabled = Int(IniRead($config, "android", "adb.input.enabled", ($AndroidAdbInputEnabled ? 1 : 0))) = 1
+		$AndroidAdbClickEnabled = Int(IniRead($config, "android", "adb.click.enabled", ($AndroidAdbClickEnabled ? 1 : 0))) = 1
 		$AndroidAdbClickGroup = Int(IniRead($config, "android", "adb.click.group", $AndroidAdbClickGroup))
-		$AndroidAdbClicksEnabled = Int(IniRead($config, "android", "adb.clicks.enabled", ($AndroidAdbClicksEnabled ? "1" : 0))) = "1"
+		$AndroidAdbClicksEnabled = Int(IniRead($config, "android", "adb.clicks.enabled", ($AndroidAdbClicksEnabled ? 1 : 0))) = 1
 		$AndroidAdbClicksTroopDeploySize = Int(IniRead($config, "android", "adb.clicks.troop.deploy.size", $AndroidAdbClicksTroopDeploySize))
-		$NoFocusTampering = Int(IniRead($config, "android", "no.focus.tampering", ($NoFocusTampering ? "1" : 0))) = "1"
+		$NoFocusTampering = Int(IniRead($config, "android", "no.focus.tampering", ($NoFocusTampering ? 1 : 0))) = 1
 		$AndroidShieldColor = Dec(IniRead($config, "android", "shield.color", Hex($AndroidShieldColor, 6)))
 		$AndroidShieldTransparency = Int(IniRead($config, "android", "shield.transparency", $AndroidShieldTransparency))
 		$AndroidActiveColor = Dec(IniRead($config, "android", "active.color", Hex($AndroidActiveColor, 6)))

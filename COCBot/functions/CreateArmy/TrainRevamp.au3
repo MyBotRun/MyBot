@@ -130,7 +130,7 @@ Func TestMaxCamp()
 			$ToReturn = 1
 		Else
 			; The number of troops is not correct
-			If $ArmyCamp[1] > 240 then Setlog(" Your CoC is outdated!!! ", $COLOR_RED)
+			If $ArmyCamp[1] > 240 Then Setlog(" Your CoC is outdated!!! ", $COLOR_RED)
 			Setlog(" - Your army is: " & $ArmyCamp[1], $COLOR_RED)
 			$ToReturn = 0
 		EndIf
@@ -153,6 +153,8 @@ Func TrainRevampOldStyle()
 		If $FirstStart Then $FirstStart = False
 		Return
 	EndIf
+
+	If ThSnipesSkiptrain() then return
 
 	If $Runstate = False Then Return
 	Local $rWhatToTrain = WhatToTrain(True) ; r in First means Result! Result of What To Train Function
@@ -238,17 +240,21 @@ Func CheckArmySpellCastel()
 
 	$bFullArmySpells = False
 	; Local Variable to check the occupied space by the Spells to Brew ... can be different of the Spells Factory Capacity ( $iTotalCountSpell )
-	Local $totalCapacitySpellsToBrew = $PSpellComp + $ESpellComp + $HaSpellComp + $SkSpellComp + ($LSpellComp* 2) + ($RSpellComp* 2) + ($HSpellComp* 2) + ($JSpellComp* 2) + ($FSpellComp* 2) + ($CSpellComp* 2)
+	Local $totalCapacitySpellsToBrew = $PSpellComp + $ESpellComp + $HaSpellComp + $SkSpellComp + ($LSpellComp * 2) + ($RSpellComp * 2) + ($HSpellComp * 2) + ($JSpellComp * 2) + ($FSpellComp * 2) + ($CSpellComp * 2)
 
 	$iTotalSpellSpace = 0
 	If UBound($aGetSpellsSize) = 2 Then
-		If $aGetSpellsSize[0] = $aGetSpellsSize[1] Or $aGetSpellsSize[0] >= $iTotalCountSpell or $aGetSpellsSize[0] >= $totalCapacitySpellsToBrew Then
+		If $aGetSpellsSize[0] = $aGetSpellsSize[1] Or $aGetSpellsSize[0] >= $iTotalCountSpell Or $aGetSpellsSize[0] >= $totalCapacitySpellsToBrew Then
 			$iTotalSpellSpace = $aGetSpellsSize[0]
 			$bFullArmySpells = True
 		EndIf
 	Else
-		SetLog("Error reading Spells size")
-		Return
+		If $iTownHallLevel > 4 and $iTotalCountSpell > 0 Then
+			SetLog("Error reading Spells size!!", $COLOR_RED)
+			Return
+		Else
+			$bFullArmySpells = True
+		EndIf
 	EndIf
 
 	$checkSpells = checkspells()
@@ -272,6 +278,10 @@ Func CheckArmySpellCastel()
 	If $aGetCastleSize[0] <> "" And $aGetCastleSize[1] <> "" Then Setlog(" - Clan Castle: " & $aGetCastleSize[0] & "/" & $aGetCastleSize[1], $COLOR_GREEN) ; coc-ms
 
 	If IsWaitforHeroesActive() = False And $iChkTrophyRange = 0 And $iChkTrophyHeroes = 0 Then $bFullArmyHero = True
+	; If Drop Trophy with Heroes is checked and a Hero is Available, then set $bFullArmyHero to True
+	If $iChkTrophyRange = 1 And $iChkTrophyHeroes = 1 And $bFullArmyHero = False Then
+		If $iHeroAvailable > 0 Then $bFullArmyHero = True
+	EndIf
 
 	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
 		If $fullarmy And $checkSpells And $bFullArmyHero And $fullcastlespells And $fullcastletroops Then
@@ -660,12 +670,14 @@ EndFunc   ;==>TrainUsingWhatToTrain
 Func BrewUsingWhatToTrain($Spell, $Quantity) ; it's job is a bit different with 'TrainUsingWhatToTrain' Function, It's being called by TrainusingWhatToTrain Func
 	If $Quantity <= 0 Then Return False
 	If $Quantity = 9999 Then
-		SetLog("Brewing " & NameOfTroop(Eval("e" & $Spell)) & " Cancelled, " & @CRLF & _
-				"Because you have enough as you set In GUI And This Spell will not be used in Attack")
+		SetLog("Brewing " & NameOfTroop(Eval("e" & $Spell)) & " Cancelled " & @CRLF & _
+				"                  Reason: Enough as set in GUI " & @CRLF & _
+				"                               This Spell not used in Attack")
 		Return True
 	EndIf
 	If $Runstate = False Then Return
 	If ISArmyWindow(False, $BrewSpellsTAB) = False Then OpenTrainTabNumber($BrewSpellsTAB)
+
 	;If IsQueueEmpty(-1, True) = False Then Return True
 	Select
 		Case $IsFullArmywithHeroesAndSpells = False
@@ -730,6 +742,66 @@ Func BrewUsingWhatToTrain($Spell, $Quantity) ; it's job is a bit different with 
 	EndSelect
 EndFunc   ;==>BrewUsingWhatToTrain
 
+Func CheckForSantaSpell()
+	If $isSantaSpellAvailable = -1 Then ; Check if santa spell variable is not set YET
+		ForceCaptureRegion()
+		Local $_IsSantaSpellPixel[4] = [65, 540, 0x7C0427, 20]
+
+		Local $rPixelCheck = _CheckPixel($_IsSantaSpellPixel, True)
+
+		If $rPixelCheck = True Then
+			$isSantaSpellAvailable = 1 ; Santa Spell is Available, Set value to prevent to check each time
+			SetLog("Setting new coords for Spells due to Santa's Surprise Spell", $COLOR_INFO)
+			; Difference between each spell column is 98, And between each row is 101
+
+			; change Y value of Brewing Rage spell Coz with Santa Spell, Rage is in Second Row
+			$TrainRSpell[1] += 101 ; Y
+			$FullRSpell[1] += 101 ; Y
+
+			; change X and Y value of Brewing Heal spell Coz with Santa Spell, Heal is in First Row and Second Column
+			$TrainHSpell[0] += 98 ; X
+			$FullHSpell[0] += 98 ; X
+			$TrainHSpell[1] -= 101 ; Y
+			$FullHSpell[1] -= 101 ; Y
+
+			; change X and Y value of Brewing Jump spell Coz with Santa Spell, Jump is in First Row and Third Column
+			$TrainJSpell[0] += 98 ; X
+			$FullJSpell[0] += 98 ; X
+			$TrainJSpell[1] -= 101 ; Y
+			$FullJSpell[1] -= 101 ; Y
+
+			; change Y value of Brewing Freeze spell Coz with Santa Spell, Freeze is in Second Row
+			$TrainFSpell[1] += 101 ; Y
+			$FullFSpell[1] += 101 ; Y
+
+			; change X and Y value of Brewing Clone spell Coz with Santa Spell, Clone is in First Row and Fourth Column
+			$TrainCSpell[0] += 98 ; X
+			$FullCSpell[0] += 98 ; X
+			$TrainCSpell[1] -= 101 ; Y
+			$FullCSpell[1] -= 101 ; Y
+
+
+			; Dark Spells, Dark Spells just X values are Changed, orders are same
+			$TrainPSpell[0] += 98 ; X
+			$FullPSpell[0] += 98 ; X
+
+			$TrainESpell[0] += 98 ; X
+			$FullESpell[0] += 98 ; X
+
+			$TrainHaSpell[0] += 98 ; X
+			$FullHaSpell[0] += 98 ; X
+
+			$TrainSkSpell[0] += 98 ; X
+			$FullSkSpell[0] += 98 ; X
+
+		Else
+			; Set the value to false to prevent check for santa spell each time
+			$isSantaSpellAvailable = 0
+		EndIf
+	EndIf
+	Return True
+EndFunc   ;==>CheckForSantaSpell
+
 Func TotalSpellsToBrewInGUI()
 	Local $ToReturn = 0
 	If $iTotalCountSpell = 0 Then Return $ToReturn
@@ -763,7 +835,7 @@ Func HowManyTimesWillBeUsed($Spell) ;ONLY ONLY ONLY FOR SPELLS, TO SEE IF NEEDED
 		EndIf
 	EndIf
 
-	; Code For LiveBase
+	; Code For ActiveBase
 	If $iABcheck = 1 Then
 		If $iAtkAlgorithm[$LB] = 1 Then ; Scripted Attack is Selected
 			If IsGUICheckedForSpell($Spell, $LB) Then
@@ -810,7 +882,7 @@ Func CountCommandsForSpell($Spell, $Mode)
 EndFunc   ;==>CountCommandsForSpell
 
 Func IsGUICheckedForSpell($Spell, $Mode)
-	Local $sSpell = "" , $iVal
+	Local $sSpell = "", $iVal
 
 	If $Runstate = False Then Return
 	Switch Eval("e" & $Spell)
@@ -1388,6 +1460,8 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $showlog = True)
 EndFunc   ;==>WhatToTrain
 
 Func TestTroopsCoords()
+	Local $iCount = 3
+	$Runstate = True
 	#CS
 		For $i = 0 To UBound($TroopName) - 1
 		TrainIt(Eval("e" & $TroopName[$i]), 1, $isldTrainITDelay)
@@ -1398,30 +1472,49 @@ Func TestTroopsCoords()
 		TrainIt(Eval("e" & $TroopDarkName[$i]), 1, $isldTrainITDelay)
 		Next
 	#CE
-	TrainIt($eDrag, 1, 300)
-	TrainIt($eBarb, 1, 300)
-	TrainIt($eArch, 1, 300)
-	TrainIt($eGiant, 1, 300)
-	TrainIt($eGobl, 1, 300)
-	TrainIt($eWall, 1, 300)
-	TrainIt($eBall, 1, 300)
-	TrainIt($eWiza, 1, 300)
-	TrainIt($eHeal, 1, 300)
-	TrainIt($eDrag, 1, 300)
-	TrainIt($ePekk, 1, 300)
-	TrainIt($eBabyD, 1, 300)
-	TrainIt($eMine, 1, 300)
-	If _Sleep(1000) Then Return
+	TrainIt($eDrag, $iCount, 300)
+	TrainIt($eBarb, $iCount, 300)
+	TrainIt($eArch, $iCount, 300)
+	TrainIt($eGiant, $iCount, 300)
+	TrainIt($eGobl, $iCount, 300)
+	TrainIt($eWall, $iCount, 300)
+	TrainIt($eBall, $iCount, 300)
+	TrainIt($eWiza, $iCount, 300)
+	TrainIt($eHeal, $iCount, 300)
+	TrainIt($eDrag, $iCount, 300)
+	TrainIt($ePekk, $iCount, 300)
+	TrainIt($eBabyD, $iCount, 300)
+	TrainIt($eMine, $iCount, 300)
 	ClickDrag(616, 445 + $midOffsetY, 400, 445 + $midOffsetY, 2000)
 	If _Sleep(1500) Then Return
-	TrainIt($eMini, 1, 300)
-	TrainIt($eHogs, 1, 300)
-	TrainIt($eValk, 1, 300)
-	TrainIt($eGole, 1, 300)
-	TrainIt($eWitc, 1, 300)
-	TrainIt($eLava, 1, 300)
-	TrainIt($eBowl, 1, 300)
+	TrainIt($eMini, $iCount, 300)
+	TrainIt($eHogs, $iCount, 300)
+	TrainIt($eValk, $iCount, 300)
+	TrainIt($eGole, $iCount, 300)
+	TrainIt($eWitc, $iCount, 300)
+	TrainIt($eLava, $iCount, 300)
+	TrainIt($eBowl, $iCount, 300)
+	$Runstate = False
 EndFunc   ;==>TestTroopsCoords
+
+Func TestSpellsCoords()
+	$Runstate = True
+
+	Local $iCount = 1
+	CheckForSantaSpell()
+	TrainIt($eLSpell, $iCount, 300)
+	TrainIt($eHSpell, $iCount, 300)
+	TrainIt($eRSpell, $iCount, 300)
+	TrainIt($eJSpell, $iCount, 300)
+	TrainIt($eFSpell, $iCount, 300)
+	TrainIt($eCSpell, $iCount, 300)
+	TrainIt($ePSpell, $iCount, 300)
+	TrainIt($eESpell, $iCount, 300)
+	TrainIt($eHaSpell, $iCount, 300)
+	TrainIt($eSkSpell, $iCount, 300)
+
+	$Runstate = False
+EndFunc   ;==>TestSpellsCoords
 
 Func LeftSpace($ReturnAll = False)
 	; Need to be in 'Train Tab'
@@ -1820,7 +1913,10 @@ Func OpenTrainTabNumber($Num)
 	If IsTrainPage() Then
 		Click($TabNumber[$Num][0], $TabNumber[$Num][1], 2, 200)
 		If _Sleep(1500) Then Return
-		If ISArmyWindow(False, $Num) Then Setlog(" - Opened the " & $Message[$Num], $COLOR_ACTION1)
+		If ISArmyWindow(False, $Num) Then
+			Setlog(" - Opened the " & $Message[$Num], $COLOR_ACTION1)
+			If $Num = $BrewSpellsTAB Then CheckForSantaSpell() ; Can be Deleted after DEC (in 2017 :P)
+		EndIf
 	Else
 		Setlog(" - Error Clicking On " & ($Num >= 0 And $Num < UBound($Message)) ? ($Message[$Num]) : ("Not selectable") & " Tab!!!", $COLOR_RED)
 	EndIf
@@ -2303,3 +2399,21 @@ Func IsElixirSpell($Spell)
 	Next
 	Return False
 EndFunc   ;==>IsElixirSpell
+
+Func ThSnipesSkiptrain()
+	Local $Temp = 0
+	; Check if the User will use TH snipes
+
+	If IsSearchModeActive($TS) and $IsFullArmywithHeroesAndSpells then
+		For $i = 0 To (UBound($TroopName) - 1)
+			If Eval($TroopName[$i] & "Comp") > 0 then $Temp += 1
+		Next
+		If $Temp = 1 then return False ; 	make troops before battle ( is using only one troop kind )
+		If $Temp > 1 then
+			Setlog ( "Skipping Training before Attack due to THSnipes!", $COLOR_INFO )
+			return True  ;	not making troops before battle
+		EndIf
+	Else
+		Return False ; 	Proceeds as usual
+	EndIf
+EndFunc ; ThSnipesSkiptrain

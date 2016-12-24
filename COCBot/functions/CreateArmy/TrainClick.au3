@@ -32,8 +32,12 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt, $
 			If FastCaptureRegion() = True Then
 				For $i = 0 To ($iTimes - 1)
 					If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
-					If $debugsetlogTrain = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], True), $COLOR_DEBUG)
-					If _CheckPixel($aWatchSpot, True) = True Then ExitLoop ; Check to see if barrack full
+					Local $sLogText = Default
+					If $debugsetlogTrain = 1 Then $sLogText = "TrainClick " & $x & "," & $y & "," & $iTimes
+					If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then ; Check to see if barrack full
+						If $debugClick = 1 Then SetLog("Camp is FULL after " & $i & " clicks", $COLOR_DEBUG)
+						ExitLoop
+					EndIf
 					If _CheckPixel($aLootSpot, True) = True Then ; Check to see if out of Elixir
 						SetLog("Elixir Check Fail: Color = " & _GetPixelColor($aLootSpot[0], $aLootSpot[1], False), $COLOR_DEBUG)
 						$OutOfElixir = 1
@@ -50,8 +54,12 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt, $
 				Next
 			Else
 				If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
-				If $debugsetlogTrain = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], True), $COLOR_DEBUG)
-				If _CheckPixel($aWatchSpot, False) = True Then Return ; Check to see if barrack full
+				Local $sLogText = Default
+				If $debugsetlogTrain = 1 Then $sLogText = "TrainClick " & $x & "," & $y & "," & $iTimes
+				If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then ; Check to see if barrack full
+					If $debugClick = 1 Then SetLog("Camp is FULL", $COLOR_DEBUG)
+					Return ; Check to see if barrack full
+				EndIf
 				If _CheckPixel($aLootSpot, False) = True Then ; Check to see if out of Elixir
 					SetLog("Elixir Check Fail: Color = " & _GetPixelColor($aLootSpot[0], $aLootSpot[1], False), $COLOR_DEBUG)
 					$OutOfElixir = 1
@@ -69,7 +77,10 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt, $
 		Else
 			If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
 			If $debugsetlogTrain = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], False), $COLOR_DEBUG)
-			If _CheckPixel($aWatchSpot, True) = True Then Return ; Check to see if barrack full
+			If _CheckPixel($aWatchSpot, True) = True Then
+				If $debugClick = 1 Then SetLog("Camp is FULL", $COLOR_DEBUG)
+				Return ; Check to see if barrack full
+			EndIf
 			If _CheckPixel($aLootSpot, False) = True Then ; Check to see if out of Elixir
 				SetLog("Elixir Check Fail: Color = " & _GetPixelColor($aLootSpot[0], $aLootSpot[1], False), $COLOR_DEBUG)
 				$OutOfElixir = 1

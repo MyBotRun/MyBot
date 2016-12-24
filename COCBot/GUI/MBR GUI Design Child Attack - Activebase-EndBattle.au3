@@ -88,7 +88,7 @@ Global $grpDEside , $chkDESideEB ,$txtDELowEndMin  , $lblDELowEndMin , $chkDisab
 
 		$grpDEside = GUICtrlCreateGroup(GetTranslated(606,15,"DE side End Battle options"), $x - 20, $y - 20, 259, 305)
 			GUICtrlCreateLabel(GetTranslated(606,16, "Attack Dark Elixir Side, End Battle Options") & ":", $x - 10, $y , -1, -1)
-				$txtTip = GetTranslated(606,17, "Enabled by selecting DE side attack in LiveBase Deploy - Attack On: options")
+				$txtTip = GetTranslated(606,17, "Enabled by selecting DE side attack in ActiveBase Deploy - Attack On: options")
 				_GUICtrlSetTip(-1, $txtTip)
 		$y += 15
 		$x -= 10

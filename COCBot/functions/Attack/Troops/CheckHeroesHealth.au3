@@ -18,11 +18,11 @@ Func CheckHeroesHealth()
 		ForceCaptureRegion() ; ensure no screenshot caching kicks in
 
 		Local $aKingHealthCopy = $aKingHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
-		$aKingHealthCopy[0] = GetXPosOfArmySlot($King, 68) + 10
+		$aKingHealthCopy[0] = GetXPosOfArmySlot($King, 68) + 2
 		Local $aQueenHealthCopy = $aQueenHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
-		$aQueenHealthCopy[0] = GetXPosOfArmySlot($Queen, 68) + 6
+		$aQueenHealthCopy[0] = GetXPosOfArmySlot($Queen, 68) + 3
 		Local $aWardenHealthCopy = $aWardenHealth
-		$aWardenHealthCopy[0] = GetXPosOfArmySlot($Warden, 68) + 8
+		$aWardenHealthCopy[0] = GetXPosOfArmySlot($Warden, 68)
 		If _Sleep($iDelayRespond) Then Return  ; improve pause button response
 
 		If $debugSetlog = 1 Then

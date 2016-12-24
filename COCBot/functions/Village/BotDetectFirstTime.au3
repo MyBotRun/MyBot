@@ -59,38 +59,6 @@ Func BotDetectFirstTime()
 	CheckImageType()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 
-	If $icmbQuantBoostBarracks > 0 Then
-		If _Sleep($iDelayBotDetectFirstTime3) Then Return
-		For $i = 0 To $icmbQuantBoostBarracks - 1 ; verify if all barracks haves a valid position
-			If $barrackPos[$i][0] = "" Or $barrackPos[$i][0] = -1 Then ;  Boost individual barracks with "button Boost 10 gems"
-				; Setlog("loop: "& $i+1 )
-				For $x = 0 To 3
-					$barrackPos[$x][0] = -1
-					$barrackPos[$x][1] = -1
-				Next
-				LocateOneBarrack()
-				SaveConfig()
-				ExitLoop
-			EndIf
-		Next
-	EndIf
-
-	If (GUICtrlRead($cmbBoostDarkSpellFactory) > 0) Then
-		If _Sleep($iDelayBotDetectFirstTime3) Then Return
-		If $DSFPos[0] = -1 Then
-			LocateDarkSpellFactory()
-			SaveConfig()
-		EndIf
-	EndIf
-
-	If (GUICtrlRead($cmbBoostSpellFactory) > 0) Then
-		If _Sleep($iDelayBotDetectFirstTime3) Then Return
-		If $SFPos[0] = -1 Then
-			LocateSpellFactory()
-			SaveConfig()
-		EndIf
-	EndIf
-
 	If GUICtrlRead($chkScreenshotHideName) = $GUI_CHECKED Or $ichkScreenshotHideName = 1 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		If $aCCPos[0] = -1 Then
