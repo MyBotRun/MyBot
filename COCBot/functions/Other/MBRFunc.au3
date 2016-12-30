@@ -79,6 +79,10 @@ Func setVillageOffset($x, $y, $z)
 	$VILLAGE_OFFSET[2] = $z
 EndFunc   ;==>setVillageOffset
 
+Func setMaxDegreeOfParallelism($iMaxDegreeOfParallelism = -1)
+	DllCall($pImgLib , "str", "setMaxDegreeOfParallelism", "int", $iMaxDegreeOfParallelism) ;set PARALLELOPTIONS.MaxDegreeOfParallelism for multi-threaded operations
+EndFunc   ;==>setMaxDegreeOfParallelism
+
 Func ConvertVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
 	Local $result = DllCall($hFuncLib, "str", "ConvertVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
 	if Isarray($result) = False  then

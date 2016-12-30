@@ -23,7 +23,7 @@ Local $x = 10, $y = 45
 			GUICtrlSetState(-1, $GUI_CHECKED)
     $y +=20
 		$lblDBTimeStopAtka = GUICtrlCreateLabel(GetTranslated(606,5, "raided within")& ":", $x + 16, $y + 3, -1, -1)
-		$txtDBTimeStopAtk = GUICtrlCreateInput("20", $x + 85, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$txtDBTimeStopAtk = GUICtrlCreateInput("15", $x + 85, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 2)
 		$lblDBTimeStopAtk = GUICtrlCreateLabel(GetTranslated(603,6, "sec."), $x + 120, $y + 3, -1, -1)

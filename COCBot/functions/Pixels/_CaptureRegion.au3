@@ -8,7 +8,7 @@
 ;                  $iRight              - [optional] an integer value. Default is $GAME_WIDTH.
 ;                  $iBottom             - [optional] an integer value. Default is $GAME_HEIGHT.
 ;                  $ReturnBMP           - DEPRECATED! [optional] an boolean value. Default is False.
-;                  $ReturnLocal_hHBitmap- [optional] an boolean value. Default is False, if True no global variables as changed
+;                  $ReturnLocal_hHBitmap- [optional] an boolean value. Default is False, if True no global variables are changed
 ;                                         and Local $_hHBitmap is returned.
 ; Return values .: None
 ; Author ........:

@@ -50,11 +50,13 @@ Func SetLog($String, $Color = Default, $Font = Default, $FontSize = Default, $st
 	EndIf
 EndFunc   ;==>SetLog
 
-Func SetLogText($String, $Color, $Font, $FontSize, $time) ;Sets the text for the log
-	_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")
-	_GUICtrlRichEdit_AppendTextColor($txtLog, $time, 0x000000, False)
-	_GUICtrlRichEdit_SetFont($txtLog, $FontSize, $Font)
-	_GUICtrlRichEdit_AppendTextColor($txtLog, $String & @CRLF, _ColorConvert($Color), False)
+Func SetLogText(ByRef $hTxtLog, ByRef $String, ByRef $Color, ByRef $Font, ByRef $FontSize, ByRef $time) ;Sets the text for the log
+	If $time Then
+		_GUICtrlRichEdit_SetFont($hTxtLog, 6, "Lucida Console")
+		_GUICtrlRichEdit_AppendTextColor($hTxtLog, $time, 0x000000, False)
+	EndIf
+	_GUICtrlRichEdit_SetFont($hTxtLog, $FontSize, $Font)
+	_GUICtrlRichEdit_AppendTextColor($hTxtLog, $String & @CRLF, _ColorConvert($Color), False)
 EndFunc   ;==>SetLogText
 
 Func SetDebugLog($String, $Color = Default, $bSilentSetLog = Default, $Font = Default, $FontSize = Default, $statusbar = Default)
@@ -81,53 +83,57 @@ Func SetGuiLog($String, $Color = Default, $bGuiLog = Default)
 	Return SetDebugLog($String, $Color)
 EndFunc   ;==>SetGuiLog
 
-Func CheckPostponedLog()
-	If $bCriticalMessageProcessing Or TimerDiff($hTxtLogTimer) < $iTxtLogTimerTimeout Then Return 0
-	If UBound($aTxtLogInitText) > 0 And IsDeclared("txtLog") Then
-		Local $wasLock = AndroidShieldLock(True) ; lock Android Shield as shield changes state when focus changes
-		Local $txtLogMutex = AcquireMutex("txtLog") ; synchronize access
+Func FlushGuiLog(ByRef $hTxtLog, ByRef $aTxtLog, $bUpdateStatus = False, $sLogMutexName = "txtLog")
+	Local $wasLock = AndroidShieldLock(True) ; lock Android Shield as shield changes state when focus changes
+	Local $txtLogMutex = AcquireMutex($sLogMutexName) ; synchronize access
 
-		Local $activeBot = _WinAPI_GetActiveWindow() = $frmBot ; different scroll to bottom when bot not active to fix strange bot activation flickering
-		Local $hCtrl = _WinAPI_GetFocus() ; RichEdit tampers with focus so remember and restore
-		_SendMessage($txtLog, $WM_SETREDRAW, False, 0) ; disable redraw so logging has no visiual effect
-		_WinAPI_EnableWindow($txtLog, False) ; disable RichEdit
-		_GUICtrlRichEdit_SetSel($txtLog, -1, -1) ; select end
+	Local $activeBot = _WinAPI_GetActiveWindow() = $frmBot ; different scroll to bottom when bot not active to fix strange bot activation flickering
+	Local $hCtrl = _WinAPI_GetFocus() ; RichEdit tampers with focus so remember and restore
+	_SendMessage($hTxtLog, $WM_SETREDRAW, False, 0) ; disable redraw so logging has no visiual effect
+	_WinAPI_EnableWindow($hTxtLog, False) ; disable RichEdit
+	_GUICtrlRichEdit_SetSel($hTxtLog, -1, -1) ; select end
 
-		;add existing Log
-		;Execute("LogPostponedText()")
-		LogPostponedText()
-		$hTxtLogTimer = TimerInit()
-
-		$iLogs = UBound($aTxtLogInitText)
-		Redim $aTxtLogInitText[0][6]
-
-		_WinAPI_EnableWindow($txtLog, True) ; enabled RichEdit again
-		_GUICtrlRichEdit_SetSel($txtLog, -1, -1) ; select end (scroll to end)
-		_SendMessage($txtLog, $WM_SETREDRAW, True, 0) ; enabled RechEdit redraw again
-		_WinAPI_RedrawWindow($txtLog, 0, 0, $RDW_INVALIDATE) ; redraw RichEdit
-		If $activeBot And $hCtrl <> $txtLog Then _WinAPI_SetFocus($hCtrl) ; Restore Focus
-
-		ReleaseMutex($txtLogMutex) ; end of synchronized block
-		AndroidShieldLock($wasLock) ; unlock Android Shield
-
-		Return $iLogs
-	EndIf
-
-	Return 0
-EndFunc   ;==>CheckPostponedLog
-
-Func LogPostponedText()
+	;add existing Log
 	Local $i
-	For $i = 0 To UBound($aTxtLogInitText) - 1
-		If $i < UBound($aTxtLogInitText) And UBound($aTxtLogInitText, 2) > 5 Then
-			SetLogText($aTxtLogInitText[$i][0], $aTxtLogInitText[$i][1], $aTxtLogInitText[$i][2], $aTxtLogInitText[$i][3], $aTxtLogInitText[$i][5])
+	For $i = 0 To UBound($aTxtLog) - 1
+		If $i < UBound($aTxtLog) And UBound($aTxtLog, 2) > 5 Then
+			SetLogText($hTxtLog, $aTxtLog[$i][0], $aTxtLog[$i][1], $aTxtLog[$i][2], $aTxtLog[$i][3], $aTxtLog[$i][5])
 		EndIf
 	Next
-	Local $iLogs = UBound($aTxtLogInitText)
-	If $iLogs - 1 >= 0 And $aTxtLogInitText[$iLogs - 1][4] = 1 And IsDeclared("statLog") Then
-		_GUICtrlStatusBar_SetText($statLog, "Status : " & $aTxtLogInitText[$iLogs - 1][0])
+	Local $iLogs = UBound($aTxtLog)
+	If $bUpdateStatus = True And $iLogs - 1 >= 0 And $aTxtLog[$iLogs - 1][4] = 1 And IsDeclared("statLog") Then
+		_GUICtrlStatusBar_SetText($statLog, "Status : " & $aTxtLog[$iLogs - 1][0])
 	EndIf
-EndFunc   ;==>LogPostponedLogs
+
+	$iLogs = UBound($aTxtLog)
+	Redim $aTxtLog[0][6]
+
+	_WinAPI_EnableWindow($hTxtLog, True) ; enabled RichEdit again
+	_GUICtrlRichEdit_SetSel($hTxtLog, -1, -1) ; select end (scroll to end)
+	_SendMessage($hTxtLog, $WM_SETREDRAW, True, 0) ; enabled RechEdit redraw again
+	_WinAPI_RedrawWindow($hTxtLog, 0, 0, $RDW_INVALIDATE) ; redraw RichEdit
+	If $activeBot And $hCtrl <> $hTxtLog Then _WinAPI_SetFocus($hCtrl) ; Restore Focus
+
+	ReleaseMutex($txtLogMutex) ; end of synchronized block
+	AndroidShieldLock($wasLock) ; unlock Android Shield
+	Return $iLogs
+EndFunc   ;==>FlushGuiLog
+
+Func CheckPostponedLog()
+	Local $iLogs = 0
+	If $bCriticalMessageProcessing Or TimerDiff($hTxtLogTimer) < $iTxtLogTimerTimeout Then Return 0
+
+	If UBound($aTxtLogInitText) > 0 And IsDeclared("txtLog") Then
+		$iLogs += FlushGuiLog($txtLog, $aTxtLogInitText, True, "txtLog")
+	EndIf
+
+	If UBound($aTxtAtkLogInitText) > 0 And IsDeclared("txtAtkLog") Then
+		$iLogs += FlushGuiLog($txtAtkLog, $aTxtAtkLogInitText, False, "txtAtkLog")
+	EndIf
+
+	$hTxtLogTimer = TimerInit()
+	Return $iLogs
+EndFunc   ;==>CheckPostponedLog
 
 Func _GUICtrlRichEdit_AppendTextColor($hWnd, $sText, $iColor, $bGotoEnd = True)
 	If $bGotoEnd Then _GUICtrlRichEdit_SetSel($hWnd, -1, -1)
@@ -145,19 +151,19 @@ EndFunc   ;==>_ColorConvert
 Func SetAtkLog($String1, $String2 = "", $Color = $COLOR_BLACK, $Font = "Lucida Console", $FontSize = 7.5) ;Sets the text for the log
 	If $hAttackLogFileHandle = "" Then CreateAttackLogFile()
 	;string1 see in video, string1&string2 put in file
-
-	_SendMessage($txtAtkLog, $WM_SETREDRAW, False, 0) ; disable redraw so logging has no visiual effect
-	_WinAPI_EnableWindow($txtAtkLog, False) ; disable RichEdit
-
-	_GUICtrlRichEdit_SetFont($txtAtkLog, $FontSize, $Font)
-	_GUICtrlRichEdit_AppendTextColor($txtAtkLog, $String1 & @CRLF, _ColorConvert($Color), False)
-
-	_WinAPI_EnableWindow($txtAtkLog, True) ; enabled RichEdit again
-	_SendMessage($txtAtkLog, $WM_SETREDRAW, True, 0) ; enabled RechEdit redraw again
-	_WinAPI_RedrawWindow($txtAtkLog, 0, 0, $RDW_INVALIDATE) ; redraw RichEdit
-	_GUICtrlRichEdit_SetSel($txtAtkLog, -1, -1) ; select end (scroll to end)
-
 	_FileWriteLog($hAttackLogFileHandle, $String1 & $String2)
+
+	Local $txtLogMutex = AcquireMutex("txtAtkLog")
+	Local $iIndex = UBound($aTxtAtkLogInitText)
+	ReDim $aTxtAtkLogInitText[$iIndex + 1][6]
+	$aTxtAtkLogInitText[$iIndex][0] = $String1
+	$aTxtAtkLogInitText[$iIndex][1] = $Color
+	$aTxtAtkLogInitText[$iIndex][2] = $Font
+	$aTxtAtkLogInitText[$iIndex][3] = $FontSize
+	$aTxtAtkLogInitText[$iIndex][4] = 0 ; no status bar update
+	$aTxtAtkLogInitText[$iIndex][5] = 0 ; no time
+	ReleaseMutex($txtLogMutex)
+
 EndFunc   ;==>SetAtkLog
 
 Func AtkLogHead()

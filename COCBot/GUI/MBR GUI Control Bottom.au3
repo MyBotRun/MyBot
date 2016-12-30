@@ -567,6 +567,52 @@ Func ButtonBoost()
 
 EndFunc
 
+Func DebugSpellsCoords()
+	$RunState = True
+
+		CheckForSantaSpell()
+
+		_CaptureRegion2()
+		Local $subDirectory = $dirTempDebug & "SpellsCoords"
+		DirCreate($subDirectory)
+		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+		Local $Time = @HOUR & "." & @MIN & "." & @SEC
+		Local $filename = String($Date & "_" & $Time & "_.png")
+		Local $editedImage = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmap2)
+		Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($editedImage)
+		Local $hPenRED = _GDIPlus_PenCreate(0xFFFF0000, 3) ; Create a pencil Color FF0000/RED
+
+		addInfoToDebugImage($hGraphic, $hPenRED, "Light", $TrainLSpell[0], $TrainLSpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Rage", $TrainRSpell[0], $TrainRSpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Freeze", $TrainFSpell[0], $TrainFSpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Heal", $TrainHSpell[0], $TrainHSpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Jump", $TrainJSpell[0], $TrainJSpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Clone", $TrainCSpell[0], $TrainCSpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Poison", $TrainPSpell[0], $TrainPSpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Earth", $TrainESpell[0], $TrainESpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Haste", $TrainHaSpell[0], $TrainHaSpell[1])
+		addInfoToDebugImage($hGraphic, $hPenRED, "Skeleton", $TrainSkSpell[0], $TrainSkSpell[1])
+
+
+		_GDIPlus_ImageSaveToFile($editedImage, $subDirectory & "\" & $filename)
+		_GDIPlus_PenDispose($hPenRED)
+		_GDIPlus_GraphicsDispose($hGraphic)
+		_GDIPlus_BitmapDispose($EditedImage)
+
+		Local $iCount = 1
+		TrainIt($eLSpell, $iCount, 300)
+		TrainIt($eHSpell, $iCount, 300)
+		TrainIt($eRSpell, $iCount, 300)
+		TrainIt($eJSpell, $iCount, 300)
+		TrainIt($eFSpell, $iCount, 300)
+		TrainIt($eCSpell, $iCount, 300)
+		TrainIt($ePSpell, $iCount, 300)
+		TrainIt($eESpell, $iCount, 300)
+		TrainIt($eHaSpell, $iCount, 300)
+		TrainIt($eSkSpell, $iCount, 300)
+
+	$RunState = False
+EndFunc
 
 Func arrows()
 	getArmyHeroCount()

@@ -142,8 +142,8 @@ Func lblTotalCountSpell2()
 	; calculate $iTotalTrainSpaceSpell value
 	$tmpTotalTrainSpaceSpell = (Eval("LSpell" & "Comp") * 2) + (Eval("HSpell" & "Comp") * 2) + (Eval("RSpell" & "Comp") * 2) + (Eval("JSpell" & "Comp") * 2) + _
 			(Eval("FSpell" & "Comp") * 2) + (Eval("CSpell" & "Comp") * 4) + Eval("PSpell" & "Comp") + Eval("HaSpell" & "Comp") + Eval("ESpell" & "Comp") + Eval("SkSpell" & "Comp")
-	If $tmpTotalTrainSpaceSpell <> $iTotalTrainSpaceSpell Then
-		$iTotalTrainSpaceSpell = $tmpTotalTrainSpaceSpell
+	$iTotalTrainSpaceSpell = $tmpTotalTrainSpaceSpell
+	;If $tmpTotalTrainSpaceSpell <> $iTotalTrainSpaceSpell Then
 		If $iTotalTrainSpaceSpell < GUICtrlRead($txtTotalCountSpell) + 1 Then
 			GUICtrlSetBkColor($txtNumLSpell, $COLOR_MONEYGREEN)
 			GUICtrlSetBkColor($txtNumHSpell, $COLOR_MONEYGREEN)
@@ -167,7 +167,7 @@ Func lblTotalCountSpell2()
 			GUICtrlSetBkColor($txtNumHaSpell, $COLOR_RED)
 			GUICtrlSetBkColor($txtNumSkSpell, $COLOR_RED)
 		EndIf
-	EndIf
+	;EndIf
 
 	Local $TotalTotalTimeSpell = 0
 	$TotalTotalTimeSpell = (Eval("LSpell" & "Comp") * 360) + _
@@ -831,73 +831,86 @@ Func IsUseCustomDarkTroopOrder()
 	Return True
 EndFunc   ;==>IsUseCustomDarkTroopOrder
  #CE
-#Cs
-	;==============================================================
-	; SmartZap - Added by DocOC team
-	;==============================================================
-	Func chkSmartLightSpell()
+
+; ============================================================================
+; ================================= SmartZap =================================
+; ============================================================================
+Func chkSmartLightSpell()
 	If GUICtrlRead($chkSmartLightSpell) = $GUI_CHECKED Then
-	GUICtrlSetState($chkSmartZapDB, $GUI_ENABLE)
-	GUICtrlSetState($chkSmartZapSaveHeroes, $GUI_ENABLE)
-	GUICtrlSetState($txtMinDark, $GUI_ENABLE)
-	GUICtrlSetState($chkNoobZap, $GUI_ENABLE)
-	$ichkSmartZap = 1
-	If GUICtrlRead($chkDBTimeStopAtk) = $GUI_UNCHECKED Then
-	GUICtrlSetState($chkDBTimeStopAtk, $GUI_CHECKED)
-	GUICtrlSetData($txtDBTimeStopAtk, 10)
-	chkDBTimeStopAtk()
-	EndIf
-	If GUICtrlRead($chkABTimeStopAtk) = $GUI_UNCHECKED Then
-	GUICtrlSetState($chkABTimeStopAtk, $GUI_CHECKED)
-	GUICtrlSetData($txtABTimeStopAtk, 10)
-	chkABTimeStopAtk()
-	EndIf
+		GUICtrlSetState($chkSmartZapDB, $GUI_ENABLE)
+		GUICtrlSetState($chkSmartZapSaveHeroes, $GUI_ENABLE)
+		GUICtrlSetState($txtMinDark, $GUI_ENABLE)
+		GUICtrlSetState($chkNoobZap, $GUI_ENABLE)
+		GUICtrlSetState($lblLSpell, $GUI_SHOW)
+		If GUICtrlRead($chkNoobZap) = $GUI_UNCHECKED Then
+			GUICtrlSetState($chkEarthQuakeZap, $GUI_ENABLE)
+		Else
+			GUICtrlSetState($chkEarthQuakeZap, $GUI_UNCHECKED)
+			GUICtrlSetState($chkEarthQuakeZap, $GUI_DISABLE)
+			GUICtrlSetState($lblEQZap, $GUI_HIDE)
+		EndIf
+		$ichkSmartZap = 1
 	Else
-	GUICtrlSetState($chkSmartZapDB, $GUI_DISABLE)
-	GUICtrlSetState($chkSmartZapSaveHeroes, $GUI_DISABLE)
-	GUICtrlSetState($txtMinDark, $GUI_DISABLE)
-	GUICtrlSetState($chkNoobZap, $GUI_DISABLE)
-	$ichkSmartZap = 0
+		GUICtrlSetState($chkSmartZapDB, $GUI_DISABLE)
+		GUICtrlSetState($chkSmartZapSaveHeroes, $GUI_DISABLE)
+		GUICtrlSetState($txtMinDark, $GUI_DISABLE)
+		GUICtrlSetState($chkNoobZap, $GUI_DISABLE)
+		GUICtrlSetState($chkEarthQuakeZap, $GUI_DISABLE)
+		GUICtrlSetState($lblLSpell, $GUI_HIDE)
+		$ichkSmartZap = 0
 	EndIf
-	EndFunc   ;==>chkSmartLightSpell
+EndFunc   ;==>chkSmartLightSpell
 
-	Func chkNoobZap()
+Func chkNoobZap()
 	If GUICtrlRead($chkNoobZap) = $GUI_CHECKED Then
-	GUICtrlSetState($txtExpectedDE, $GUI_ENABLE)
-	$ichkNoobZap = 1
+		GUICtrlSetState($txtExpectedDE, $GUI_ENABLE)
+		GUICtrlSetState($chkEarthQuakeZap, $GUI_UNCHECKED)
+		GUICtrlSetState($chkEarthQuakeZap, $GUI_DISABLE)
+		GUICtrlSetState($lblEQZap, $GUI_HIDE)
+		$ichkNoobZap = 1
 	Else
-	GUICtrlSetState($txtExpectedDE, $GUI_DISABLE)
-	$ichkNoobZap = 0
+		GUICtrlSetState($txtExpectedDE, $GUI_DISABLE)
+		GUICtrlSetState($chkEarthQuakeZap, $GUI_ENABLE)
+		$ichkNoobZap = 0
 	EndIf
-	EndFunc   ;==>chkDumbZap
+EndFunc   ;==>chkNoobZap
 
-	Func chkSmartZapDB()
-	If GUICtrlRead($chkSmartZapDB) = $GUI_CHECKED Then
-	$ichkSmartZapDB = 1
+Func chkEarthQuakeZap()
+	If GUICtrlRead($chkEarthQuakeZap) = $GUI_CHECKED Then
+		GUICtrlSetState($lblEQZap, $GUI_SHOW)
+		$ichkEarthQuakeZap = 1
 	Else
-	$ichkSmartZapDB = 0
+		GUICtrlSetState($lblEQZap, $GUI_HIDE)
+		$ichkEarthQuakeZap = 0
 	EndIf
-	EndFunc   ;==>chkSmartZapDB
+EndFunc   ;==>chkEarthQuakeZap
 
-	Func chkSmartZapSaveHeroes()
-	If GUICtrlRead($chkSmartZapSaveHeroes) = $GUI_CHECKED Then
-	$ichkSmartZapSaveHeroes = 1
-	Else
-	$ichkSmartZapSaveHeroes = 0
-	EndIf
-	EndFunc   ;==>chkSmartZapSaveHeroes
+Func chkSmartZapDB()
+    If GUICtrlRead($chkSmartZapDB) = $GUI_CHECKED Then
+        $ichkSmartZapDB = 1
+    Else
+        $ichkSmartZapDB = 0
+    EndIf
+EndFunc   ;==>chkSmartZapDB
 
-	Func txtMinDark()
+Func chkSmartZapSaveHeroes()
+    If GUICtrlRead($chkSmartZapSaveHeroes) = $GUI_CHECKED Then
+        $ichkSmartZapSaveHeroes = 1
+    Else
+        $ichkSmartZapSaveHeroes = 0
+    EndIf
+EndFunc   ;==>chkSmartZapSaveHeroes
+
+Func txtMinDark()
 	$itxtMinDE = GUICtrlRead($txtMinDark)
-	EndFunc   ;==>txtMinDark
+EndFunc   ;==>txtMinDark
 
-	Func txtExpectedDE()
+Func txtExpectedDE()
 	$itxtExpectedDE = GUICtrlRead($txtExpectedDE)
-	EndFunc   ;==>TxtExpectedDE
-	;==========================END=================================
-	;			 SmartZap - Added by DocOC team
-	;==============================================================
-#Ce
+EndFunc   ;==>TxtExpectedDE
+; ============================================================================
+; ================================= SmartZap =================================
+; ============================================================================
 
 Func LevUpDown($SelTroopSpell, $NoChangeLev = True)
 	Local $MaxLev = UBound(Eval("Lev" & $SelTroopSpell & "Cost"), 1)

@@ -47,7 +47,7 @@ Global $aTabControlsDonate = [$hGUI_DONATE_TAB, $hGUI_DONATE_TAB_ITEM1, $hGUI_DO
 Global $aTabControlsUpgrade = [$hGUI_UPGRADE_TAB, $hGUI_UPGRADE_TAB_ITEM1, $hGUI_UPGRADE_TAB_ITEM2, $hGUI_UPGRADE_TAB_ITEM3, $hGUI_UPGRADE_TAB_ITEM4]
 Global $aTabControlsNotify = [$hGUI_NOTIFY_TAB, $hGUI_NOTIFY_TAB_ITEM2, $hGUI_NOTIFY_TAB_ITEM6]
 
-Global $aTabControlsAttack = [$hGUI_ATTACK_TAB, $hGUI_ATTACK_TAB_ITEM1, $hGUI_ATTACK_TAB_ITEM2, $hGUI_ATTACK_TAB_ITEM3]
+Global $aTabControlsAttack = [$hGUI_ATTACK_TAB, $hGUI_ATTACK_TAB_ITEM1, $hGUI_ATTACK_TAB_ITEM2, $hGUI_ATTACK_TAB_ITEM3, $hGUI_ATTACK_TAB_ITEM4]
 Global $aTabControlsArmy = [$hGUI_ARMY_TAB, $hGUI_ARMY_TAB_ITEM1, $hGUI_ARMY_TAB_ITEM2, $hGUI_ARMY_TAB_ITEM3, $hGUI_ARMY_TAB_ITEM4]
 Global $aTabControlsSearch = [$hGUI_SEARCH_TAB, $hGUI_SEARCH_TAB_ITEM1, $hGUI_SEARCH_TAB_ITEM2, $hGUI_SEARCH_TAB_ITEM3, $hGUI_SEARCH_TAB_ITEM4, $hGUI_SEARCH_TAB_ITEM5]
 Global $aTabControlsDeadbase = [$hGUI_DEADBASE_TAB, $hGUI_DEADBASE_TAB_ITEM1, $hGUI_DEADBASE_TAB_ITEM2, $hGUI_DEADBASE_TAB_ITEM3, $hGUI_DEADBASE_TAB_ITEM4]
@@ -59,7 +59,7 @@ Global $aTabControlsStrategies = [$hGUI_STRATEGIES_TAB, $hGUI_STRATEGIES_TAB_ITE
 Global $aTabControlsBot = [$hGUI_BOT_TAB, $hGUI_BOT_TAB_ITEM1, $hGUI_BOT_TAB_ITEM2, $hGUI_BOT_TAB_ITEM3, $hGUI_BOT_TAB_ITEM4, $hGUI_BOT_TAB_ITEM5]
 Global $aTabControlsStats = [$hGUI_STATS_TAB, $hGUI_STATS_TAB_ITEM1, $hGUI_STATS_TAB_ITEM2, $hGUI_STATS_TAB_ITEM3]
 
-Global $aAlwaysEnabledControls = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugDisableZoomout, $chkDebugDisableVillageCentering, $chkDebugDeadbaseImage, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestRequestCC, $btnTestAttackBar, $btnTestClickDrag, $btnTestImage, $btnTestVillageSize, $btnTestDeadBase, $btnTestDeadBaseFolder, $btnTestTHimgloc, $btnTestimglocTroopBar,$btnTestQuickTrainsimgloc, $chkdebugAttackCSV, $chkmakeIMGCSV, $btnTestAttackCSV, $btnTestFindButton, $txtTestFindButton, $btnTestCleanYard] ; , $lblLightningUsed, $lblSmartZap
+Global $aAlwaysEnabledControls = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugDisableZoomout, $chkDebugDisableVillageCentering, $chkDebugDeadbaseImage, $chkDebugOcr, $chkDebugImageSave, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestRequestCC, $btnTestAttackBar, $btnTestClickDrag, $btnTestImage, $btnTestVillageSize, $btnTestDeadBase, $btnTestDeadBaseFolder, $btnTestTHimgloc, $btnTestimglocTroopBar,$btnTestQuickTrainsimgloc, $chkdebugAttackCSV, $chkmakeIMGCSV, $btnTestAttackCSV, $btnTestFindButton, $txtTestFindButton, $btnTestCleanYard, $lblLightningUsed, $lblSmartZap, $lblEarthQuakeUsed, $btnTestConfigSave, $btnTestConfigRead, $btnTestConfigApply]
 
 Global $frmBot_WNDPROC = 0
 Global $frmBot_WNDPROC_ptr = 0
@@ -506,6 +506,12 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnTestFindButton()
 		Case $btnTestCleanYard
 			btnTestCleanYard()
+		Case $btnTestConfigSave
+			saveConfig()
+		Case $btnTestConfigRead
+			readConfig()
+		Case $btnTestConfigApply
+			applyConfig()
 	EndSwitch
 
 		If $lParam = $cmbLanguage Then
@@ -729,10 +735,10 @@ Func BotClose($SaveConfig = Default, $bExit = True)
    If $hMutex_Profile <> 0 Then _WinAPI_CloseHandle($hMutex_Profile)
    If $hMutex_MyBot <> 0 Then _WinAPI_CloseHandle($hMutex_MyBot)
    ; Clean up resources
-   _GDIPlus_ImageDispose($hBitmap)
+   _GDIPlus_BitmapDispose($hBitmap)
    _WinAPI_DeleteObject($hHBitmap)
-	_WinAPI_DeleteObject($hHBitmap2)
-	_WinAPI_DeleteObject($hHBitmapTest)
+   _WinAPI_DeleteObject($hHBitmap2)
+   _WinAPI_DeleteObject($hHBitmapTest)
    _GDIPlus_Shutdown()
    MBRFunc(False) ; close MBRFunctions dll
    _GUICtrlRichEdit_Destroy($txtLog)
@@ -775,6 +781,7 @@ Func BotRestore($sCaller)
 	$FrmBotMinimized = False
 	Local $botPosX = ($AndroidEmbedded = False ? $frmBotPosX : $frmBotDockedPosX)
 	Local $botPosY = ($AndroidEmbedded = False ? $frmBotPosY : $frmBotDockedPosY)
+	Local $aPos = [$botPosX, $botPosY]
 	SetDebugLog("Restore bot window to " & $botPosX & ", " & $botPosY & ", caller: " & $sCaller, Default, True)
 	Local $iExStyle = _WinAPI_GetWindowLong($frmBot, $GWL_EXSTYLE)
 	If BitAND($iExStyle, $WS_EX_TOOLWINDOW) Then
@@ -786,6 +793,10 @@ Func BotRestore($sCaller)
 	WinMove2($frmBot, "", $botPosX, $botPosY, -1, -1, $HWND_TOP, $SWP_SHOWWINDOW)
 	_WinAPI_SetActiveWindow($frmBot)
 	_WinAPI_SetFocus($frmBot)
+	If _CheckWindowVisibility($frmBot, $aPos) Then
+		SetDebugLog("Bot Window '" & $Title & "' not visible, moving to position: " & $aPos[0] & ", " & $aPos[1])
+		WinMove2($frmBot, "", $aPos[0], $aPos[1])
+	EndIf
 	ReleaseMutex($hMutex)
 EndFunc   ;==BotRestore
 
@@ -1051,23 +1062,23 @@ Func tabAttack()
 		GUISetState(@SW_HIDE, $hGUI_STRATEGIES)
 		GUISetState(@SW_SHOWNOACTIVATE, $hGUI_ARMY)
 		GUISetState(@SW_HIDE, $hGUI_SEARCH)
-;~		GUISetState(@SW_HIDE, $hGUI_NewSmartZap)
+		GUISetState(@SW_HIDE, $hGUI_NewSmartZap)
 	Case $tabidx = 1 ; SEARCH tab
 		GUISetState(@SW_HIDE, $hGUI_STRATEGIES)
 		GUISetState(@SW_HIDE, $hGUI_ARMY)
 		GUISetState(@SW_SHOWNOACTIVATE, $hGUI_SEARCH)
-;~		GUISetState(@SW_HIDE, $hGUI_NewSmartZap)
+		GUISetState(@SW_HIDE, $hGUI_NewSmartZap)
 		tabSEARCH()
-;~	Case $tabidx = 2 ; NewSmartZap tab
-;~		GUISetState(@SW_HIDE, $hGUI_ARMY)
-;~		GUISetState(@SW_HIDE, $hGUI_SEARCH)
-;~		GUISetState(@SW_SHOWNOACTIVATE, $hGUI_NewSmartZap)
-;~		GUISetState(@SW_HIDE, $hGUI_STRATEGIES)
-	Case $tabidx = 2 ; STRATEGIES tab
+	Case $tabidx = 2 ; NewSmartZap tab
+		GUISetState(@SW_HIDE, $hGUI_ARMY)
+		GUISetState(@SW_HIDE, $hGUI_SEARCH)
+		GUISetState(@SW_SHOWNOACTIVATE, $hGUI_NewSmartZap)
+		GUISetState(@SW_HIDE, $hGUI_STRATEGIES)
+	Case $tabidx = 3 ; STRATEGIES tab
 		GUISetState(@SW_SHOWNOACTIVATE, $hGUI_STRATEGIES)
 		GUISetState(@SW_HIDE, $hGUI_ARMY)
 		GUISetState(@SW_HIDE, $hGUI_SEARCH)
-;~		GUISetState(@SW_HIDE, $hGUI_NewSmartZap)
+		GUISetState(@SW_HIDE, $hGUI_NewSmartZap)
 	EndSelect
 EndFunc   ;==>tabAttack
 
@@ -1453,7 +1464,7 @@ Func Bind_ImageList($nCtrl)
 
 		Case $hGUI_ATTACK_TAB
 			; the icons for attack tab
-			Local $aIconIndex[3] = [$eIcnTrain, $eIcnMagnifier, $eIcnStrategies] ; , $eIcnLightSpell
+			Local $aIconIndex[4] = [$eIcnTrain, $eIcnMagnifier, $eIcnLightSpell, $eIcnStrategies]
 
 		Case $hGUI_SEARCH_TAB
 			; the icons for SEARCH tab

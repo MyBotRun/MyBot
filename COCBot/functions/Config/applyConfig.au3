@@ -1400,7 +1400,6 @@ chkskipDonateNearFulLTroopsEnable()
 	chkDonateMinions()
 	If $configLoaded Then GUICtrlSetData($txtDonateMinions, $sTxtDonateMinions)
 	If $configLoaded Then GUICtrlSetData($txtBlacklistMinions, $sTxtBlacklistMinions)
-
 	If $ichkDonateHogRiders = 1 Then
 		GUICtrlSetState($chkDonateHogRiders, $GUI_CHECKED)
 	Else
@@ -2114,10 +2113,7 @@ chkskipDonateNearFulLTroopsEnable()
 	_GUICtrlComboBox_SetCurSel($cmbDisposeWindowsCond, $icmbDisposeWindowsPos)
 	GUICtrlSetData($txtWAOffsetX, $iWAOffsetX)
 	GUICtrlSetData($txtWAOffsetY, $iWAOffsetY)
-	#cs
-		_GUICtrlComboBox_SetCurSel($cmbGUIStyle, $iGUIStyle)
-	#ce
-
+	;_GUICtrlComboBox_SetCurSel($cmbGUIStyle, $iGUIStyle)
 	;debug
 	If $debugClick = 1 Then
 		GUICtrlSetState($chkDebugClick, $GUI_CHECKED)
@@ -2820,8 +2816,10 @@ chkskipDonateNearFulLTroopsEnable()
 	Else
 		GUICtrlSetState($hRadio_Army3, $GUI_UNCHECKED)
 	EndIf
-#Cs
-	;SmartZap
+
+; ============================================================================
+; ================================= SmartZap =================================
+; ============================================================================
 	If $ichkSmartZap = 1 Then
 		GUICtrlSetState($chkSmartLightSpell, $GUI_CHECKED)
 		GUICtrlSetState($chkSmartZapDB, $GUI_ENABLE)
@@ -2842,6 +2840,11 @@ chkskipDonateNearFulLTroopsEnable()
 		GUICtrlSetState($chkNoobZap, $GUI_UNCHECKED)
 		GUICtrlSetState($txtExpectedDE, $GUI_DISABLE)
 	EndIf
+	If $ichkEarthQuakeZap = 1 Then
+		GUICtrlSetState($chkEarthQuakeZap, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkEarthQuakeZap, $GUI_UNCHECKED)
+	EndIf
 	If $ichkSmartZapDB = 1 Then
 		GUICtrlSetState($chkSmartZapDB, $GUI_CHECKED)
 	Else
@@ -2852,10 +2855,16 @@ chkskipDonateNearFulLTroopsEnable()
 	Else
 		GUICtrlSetState($chkSmartZapSaveHeroes, $GUI_UNCHECKED)
 	EndIf
+	If $DebugSmartZap = 1 Then
+		GUICtrlSetState($chkDebugSmartZap, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDebugSmartZap, $GUI_UNCHECKED)
+	EndIf
 	GUICtrlSetData($txtMinDark, $itxtMinDE)
 	GUICtrlSetData($txtExpectedDE, $itxtExpectedDE)
-#Ce
-	; Reenabling window redraw - Keep this last....
+; ============================================================================
+; ================================= SmartZap =================================
+; ============================================================================
 
 	IF $iGUIEnabled = 0 Then
 		lblTotalCount2()
@@ -2871,6 +2880,7 @@ chkskipDonateNearFulLTroopsEnable()
 		; Next
 			$iGUIEnabled = 1
 	EndIf
-	If $bRedrawAtExit Then SetRedrawBotWindow(True)
 
+	; Reenabling window redraw - Keep this last....
+	If $bRedrawAtExit Then SetRedrawBotWindow(True)
 EndFunc   ;==>applyConfig

@@ -30,7 +30,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			While GoldElixirChangeEBO()
 				If _Sleep($iDelayReturnHome1) Then Return
 			WEnd
-;~			If IsAttackPage() Then smartZap(); Check to see if we should zap the DE Drills
+			If IsAttackPage() Then smartZap(); Check to see if we should zap the DE Drills
 			;If Heroes were not activated: Hero Ability activation before End of Battle to restore health
 			If ($checkKPower = True Or $checkQPower = True Or $checkWPower = True) And $iActivateKQCondition = "Auto" Then
 				;_CaptureRegion()

@@ -72,7 +72,7 @@ Func CheckMilkingBaseTest()
 
 	_CaptureRegion2()
 	_CaptureRegion()
-	$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
+	;$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
 
 	Local $MilkFarmAtkPixelListSTR = ""
 	Local $ElixirVect = StringSplit(GetLocationElixirWithLevel(), "~", 2) ; ["6#527-209" , "6#421-227" , "6#600-264" , "6#299-331" , "6#511-404" , "6#511-453"]

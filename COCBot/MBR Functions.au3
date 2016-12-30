@@ -99,8 +99,8 @@
 #include "functions\Attack\Troops\SelectDropTroop.au3"
 #include "functions\Attack\Troops\SetSleep.au3"
 
-;~ #include "functions\Attack\SmartZap\drillSearch.au3"
-;~ #include "functions\Attack\SmartZap\smartZap.au3"
+#include "functions\Attack\SmartZap\drillSearch.au3"
+#include "functions\Attack\SmartZap\smartZap.au3"
 
 #include "functions\CreateArmy\_TrainMoveBtn.au3"
 #include "functions\CreateArmy\BarracksStatus.au3"
@@ -179,6 +179,7 @@
 #include "functions\Other\_Sleep.au3"
 #include "functions\Other\_SleepStatus.au3"
 #include "functions\Other\_StatusUpdateTime.au3"
+#include "functions\Other\_TicksToDay.au3"
 #include "functions\Other\Click.au3"
 #include "functions\Other\ClickOkay.au3"
 #include "functions\Other\ClickRemove.au3"

@@ -29,6 +29,9 @@ EndFunc
 Func AttackBarCheck()
 
 	Local $x = 0, $y = 659, $x1 = 853, $y1 = 698
+	Local $CheckSlot12 = False
+	Local $CheckSlotwHero = False
+
 	; Setup arrays, including default return values for $return
 	Local $aResult[1][5], $aCoordArray[1][2], $aCoords, $aCoordsSplit, $aValue
 	Local $redLines = "FV"
@@ -94,20 +97,27 @@ Func AttackBarCheck()
 
 			_ArraySort($aResult, 0, 0, 0, 1) ; Sort By X position , will be the Slot 0 to $i
 
-			Local $CheckSlot12 = _ColorCheck(_GetPixelColor(17, 580 + $bottomOffsetY, True), Hex(0x07202A, 6), 15) ; 15 just in case of the snow theme
+			$CheckSlot12 = _ColorCheck(_GetPixelColor(17, 643, True), Hex(0x478AC6, 6), 15) Or _  	; Slot Filled / Background Blue / More than 11 Slots
+						   _ColorCheck(_GetPixelColor(17, 643, True), Hex(0x434343, 6), 10)   		; Slot deployed / Gray / More than 11 Slots
 
 			If $debugSetlog = 1 Then
-				Setlog(" Slot < 12 _ColorCheck 0x07202A at (17," & 580 + $bottomOffsetY & "): " & $CheckSlot12, $COLOR_DEBUG) ;Debug
-				Local $SlotPixelColorTemp = _GetPixelColor(17, 580 + $bottomOffsetY, $bCapturePixel)
-				Setlog(" Slot < 12 _GetPixelColo(17," & 580 + $bottomOffsetY & "): " & $SlotPixelColorTemp, $COLOR_DEBUG) ;Debug
+				Setlog(" Slot > 12 _ColorCheck 0x478AC6 at (17," & 643 & "): " & $CheckSlot12, $COLOR_DEBUG) ;Debug
+				Local $CheckSlot12Color = _GetPixelColor(17, 643, $bCapturePixel)
+				Setlog(" Slot > 12 _GetPixelColor(17," & 643 & "): " & $CheckSlot12Color, $COLOR_DEBUG) ;Debug
 			EndIf
+
+			For $i = 0 To UBound($aResult) - 1
+				If $aResult[$i][0] = "King" Or $aResult[$i][0] = "Queen" Or $aResult[$i][0] = "Warden" Then
+					$CheckSlotwHero = True
+				EndIf
+			Next
 
 			For $i = 0 To UBound($aResult) - 1
 				Local $Slottemp
 				If $aResult[$i][1] > 0 Then
 					If $debugSetlog = 1 Then SetLog("SLOT : " & $i, $COLOR_DEBUG) ;Debug
 					If $debugSetlog = 1 Then SetLog("Detection : " & $aResult[$i][0] & "|x" & $aResult[$i][1] & "|y" & $aResult[$i][2], $COLOR_DEBUG) ;Debug
-					$Slottemp = SlotAttack(number($aResult[$i][1]),$CheckSlot12)
+					$Slottemp = SlotAttack(number($aResult[$i][1]), $CheckSlot12, $CheckSlotwHero)
 					If $RunState = False Then Return ; Stop function
 					If _Sleep(20) then return        ; Pause function
 					If Ubound($Slottemp) = 2 then
@@ -167,7 +177,7 @@ Func AttackBarCheck()
 
 EndFunc   ;==>AttackBarCheck
 
-Func SlotAttack($PosX, $CheckSlot12)
+Func SlotAttack($PosX, $CheckSlot12, $CheckSlotwHero)
 
 	Local $Slottemp[2] = [0, 0]
 
@@ -175,7 +185,11 @@ Func SlotAttack($PosX, $CheckSlot12)
 		If $PosX >= 25 + ($i * 73)  and $PosX < 98 + ($i * 73) then
 			$Slottemp[0] = 35 + ($i * 73)
 			$Slottemp[1] = $i
-			If $CheckSlot12 = False Then $Slottemp[0] -= 13
+			If $CheckSlot12 = True Then
+				$Slottemp[0] -= 13
+			ElseIf $CheckSlotwHero = False Then
+				$Slottemp[0] += 8
+			EndIf
 			If $debugSetlog = 1 Then Setlog("Slot: " & $i & " | $x > " & 25 + ($i * 73) & " and $x < " & 98 + ($i * 73))
 			If $debugSetlog = 1 Then Setlog("Slot: " & $i & " | $PosX: " & $PosX & " |  OCR x position: " & $Slottemp[0] & " | OCR Slot: " & $Slottemp[1])
 			Return $Slottemp

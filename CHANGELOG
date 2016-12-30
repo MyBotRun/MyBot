@@ -1,4 +1,26 @@
-﻿* **V6.5.1**
+﻿* **V6.5.2**
+ * Fix Android or Bot window out of visible screen problem
+ * Fix Bot /restart parameter not closing other bot instance when Window not accessible
+ * Fix Debug variable error on Drills detection
+ * Fix the troops limitation of 5 on Donate to All
+ * Fix Detection and Donation of the Skeleton Spell
+ * Fix Not Counting Spells on First Loop with Donate All activated
+ * Fix OCR on attack bar when heroes are not present
+ * Fix reported Randomly dropping CC, using Spells and Clicking on Heroes
+ * Fix All DonateCCWBL file bugs/issues
+ * Fix PushBullet / Telegram settings not saved issue
+ * Fix Drop Trophies and wait for heroes , GUI changed to control correctly the variables
+ * Fix attack log sometime wrong color or style
+ * Fix iTools Mouse Click when not docked
+ * Fix GDI Handle leak
+ * Improve status timer display with hours, days when necessary
+ * Improve Heroes detection on attack bar after deployment
+ * Add SmartZap and N00bZap Mode
+ * Add detect advertisements and close them for non Google APKs
+ * Add Ice Wizard detection and change Troops train coords
+ * Add auto-enable saving of dead base zombie images after 200 skipped bases
+
+* **V6.5.1**
  * Fix Milking Error Message on Start
  * Fix Hero Upgrading
  * Fix Auto Hero Upgrading
@@ -20,10 +42,9 @@
  * Improve the Queen and warden activation on all slots
  * Improve log message/format on train
  * Add Santa's Surprise Spell detection and change Spells coords
- * Add new Function will check if TH snipes was selected and IF the troops 
- to make are more then one troop kind, if yes proceeds directly to battle 
+ * Add new Function will check if TH snipes was selected and IF the troops
+ to make are more then one troop kind, if yes proceeds directly to battle
  and make troops AFTER the battle. This option is ONLY available on Custom train.
- 
 
 * **V6.5**
  * Fix the Spells Factory and Brew Capacity issues

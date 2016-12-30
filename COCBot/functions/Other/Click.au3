@@ -59,14 +59,17 @@ EndFunc   ;==>Click
 
 Func _ControlClick($x, $y)
    	;Local $hWin = ($AndroidEmbedded = False ? $HWnD : $AndroidEmbeddedCtrlTarget[1])
-	Local $hWin = $HWnDCtrl
+	Local $useHWnD = $AndroidControlClickWindow = 1 And $AndroidEmbedded = False
+	Local $hWin = (($useHWnD) ? ($HWnD) : ($HWnDCtrl))
 	$x = Int($x)
 	$y = Int($y)
 	If $hWin = $HWnD Then
 		$x += $BSrpos[0]
 		$y += $BSrpos[1]
 	EndIf
-	;Return ControlClick($hWin, "", "", "left", "1", $x, $y)
+	If $AndroidControlClickMode = 0 Then
+		Return ControlClick($hWin, "", "", "left", "1", $x, $y)
+	EndIf
 	Local $WM_LBUTTONDOWN = 0x0201, $WM_LBUTTONUP = 0x0202
 	Local $lParam =  BitOR(Int($y) * 0x10000, BitAND(Int($x), 0xFFFF)) ; HiWord = y-coordinate, LoWord = x-coordinate
 	; _WinAPI_PostMessage or _SendMessage

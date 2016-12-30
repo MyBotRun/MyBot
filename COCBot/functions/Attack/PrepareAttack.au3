@@ -35,6 +35,11 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 	;Local $result = DllCall($hFuncLib, "str", "searchIdentifyTroop", "ptr", $hHBitmap2)
 	;If $ichkFixClanCastle= 1 Then $result[0] = FixClanCastle( $result[0])
 
+	For $i = 0 to UBound($atkTroops) -1
+		$atkTroops[$i][0] = -1
+		$atkTroops[$i][1] = 0
+	Next
+
 	Local $Plural = 0
 	Local $result = AttackBarCheck()
 	If $debugSetlog = 1 Then Setlog("DLL Troopsbar list: " & $result, $COLOR_DEBUG)
@@ -55,12 +60,13 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 		Else
 			$troopKind = $aTemp[$i][0]
 			;If $debugsetlog=1 Then Setlog("examine troop " &  NameOfTroop($TroopKind) ,$COLOR_DEBUG1)
-			If $troopKind <$eKing Then
+			If $troopKind < $eKing Then
 				;If $debugsetlog=1 Then Setlog("examine troop " &  NameOfTroop($TroopKind) & " -> normal troop",$COLOR_DEBUG1)
 				;normal troop
 				If Not IsTroopToBeUsed($pMatchMode, $troopKind) Then
 					If $debugSetlog = 1 Then Setlog("Discard use of troop " & $troopKind &  " " & NameOfTroop($troopKind), $COLOR_ERROR)
 					$atkTroops[$i][0] = -1
+					$atkTroops[$i][1] = 0
 					$troopKind = -1
 				Else
 					;use troop
@@ -68,7 +74,6 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 					;Setlog ("troopsnumber = " & $troopsnumber & "+ " &  Number( $aTemp[$i][1]))
 					$atkTroops[$i][0] = $aTemp[$i][0]
 					$atkTroops[$i][1] = $aTemp[$i][1]
-					$troopKind = $aTemp[$i][1]
 					$troopsnumber +=  $aTemp[$i][1]
 				EndIf
 
@@ -80,6 +85,8 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 					;If $debugSetlog=1 Then Setlog("for matchmode = " & $pMatchMode & " and troop " & $TroopKind & " " & NameOfTroop($TroopKind) & " USE",$COLOR_DEBUG1)
 					;Setlog ("troopsnumber = " & $troopsnumber & "+1")
 					$atkTroops[$i][0] = $aTemp[$i][0]
+					$atkTroops[$i][1] = $aTemp[$i][1]
+					If $atkTroops[$i][0] = $eKing or $atkTroops[$i][0] = $eQueen or $atkTroops[$i][0] = $eWarden then $atkTroops[$i][1] = 1
 					$troopKind = $aTemp[$i][1]
 					$troopsnumber +=  1
 				Else
@@ -91,7 +98,8 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 
 			$Plural = 0
 			If $aTemp[$i][1] > 1 then $Plural = 1
-			If $troopKind <> -1 Then SetLog($aTemp[$i][2] & " » " & $aTemp[$i][1] & " " & NameOfTroop($atkTroops[$i][0], $Plural), $COLOR_SUCCESS)
+			If $troopKind <> -1 Then SetLog($aTemp[$i][2] & " » " & $atkTroops[$i][1] & " " & NameOfTroop($atkTroops[$i][0], $Plural), $COLOR_SUCCESS)
+
 		EndIf
     Next
 
@@ -236,15 +244,15 @@ Func IsSpecialTroopToBeUsed($pMatchMode, $pTroopType)
 						 If $ichkPoisonSpell[$DB] = 1 Then Return True
 				EndSwitch
 			Case  $eESpell
-				Switch $pmatchMode
-					Case $DB
-						 If $ichkEarthquakeSpell[$DB] = 1 Then Return True
-					Case $LB
-						 If $ichkEarthquakeSpell[$LB] = 1 Then Return True
-					Case $TS
-						 If $ichkEarthquakeSpell[$TS] = 1 Then Return True
-					Case $MA
-						 If $ichkEarthquakeSpell[$DB] = 1 Then Return True
+                Switch $pmatchMode
+                    Case $DB
+                         If $ichkEarthquakeSpell[$DB] = 1 Or $ichkSmartZap = 1 Then Return True
+                    Case $LB
+                         If $ichkEarthquakeSpell[$LB] = 1 Or $ichkSmartZap = 1 Then Return True
+                    Case $TS
+                         If $ichkEarthquakeSpell[$TS] = 1 Or $ichkSmartZap = 1 Then Return True
+                    Case $MA
+                         If $ichkEarthquakeSpell[$DB] = 1 Or $ichkSmartZap = 1 Then Return True
 				EndSwitch
 			Case  $eHaSpell
 				Switch $pmatchMode

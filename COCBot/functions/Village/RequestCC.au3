@@ -67,6 +67,7 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	Else
 		;no button request found
 		SetLog("Cannot detect button request troops.")
+		setlog("The Pixel on " & $aRequestTroopsAO[0]& "-" & $aRequestTroopsAO[1]& " was: " & $color, $COLOR_ERROR)
 	EndIf
 
 	;exit from army overview

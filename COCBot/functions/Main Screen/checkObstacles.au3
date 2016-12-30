@@ -6,7 +6,7 @@
 ; Parameters ....:
 ; Return values .: Returns True when there is something blocking
 ; Author ........: Hungle (2014)
-; Modified ......: KnowJack (2015), Sardo 2015-08, The Master 2015-10, MonkeyHunter (08-2016)
+; Modified ......: KnowJack (2015), Sardo 2015-08, The Master 2015-10, MonkeyHunter (08-2016), MMHK (2016-12)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -52,6 +52,17 @@ Func _checkObstacles() ;Checks if something is in the way for mainscreen
 		EndIf
 	Else
 		$hCocReconnectingTimer = 0
+	EndIf
+
+	If $AndroidGameDistributor <> $GOOGLE Then ; close an ads window for non google apks
+		Local $aXButton = FindAdsXButton()
+		If IsArray($aXButton) Then
+			SetDebugLog("checkObstacles: Found " & $AndroidGameDistributor & " ADS X button to close")
+			PureClickP($aXButton)
+			$MinorObstacle = True
+			If _Sleep($iDelaycheckObstacles1) Then Return
+			Return False
+		EndIf
 	EndIf
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -7,9 +7,9 @@
 ;					  : $bOpenArmyWindow  = Bool value, true if train overview window needs to be opened
 ;					  : $bCloseArmyWindow = Bool value, true if train overview window needs to be closed
 ;                     : $bForceReadTime   = Bool value, true if updrade remaining time should be read
-; Return values .: MonkeyHunter (05/06-2016)
-; Author ........:
-; Modified ......:
+; Return values .:
+; Author ........: MonkeyHunter (05/06-2016)
+; Modified ......: MR.ViPER (24-12-2016)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -39,7 +39,22 @@ Func getArmyHeroTime($HeroType = "all", $bOpenArmyWindow = False, $bCloseArmyWin
 		If _Sleep($iDelaycheckArmyCamp5) Then Return
 	EndIf
 
-	If $iTownHallLevel < 7 then Return
+	;If $iTownHallLevel < 7 then Return
+	If $bHaveAnyHero = -1 Then
+		; The variable to see if the village have any hero is not set yet
+		; check if the village have any hero
+		Local $rImgSearch = Not (StringInStr(FindImageInPlace("HaveAnyHero", @ScriptDir & "\imgxml\trainwindow\HeroSlots\NoHero_1_95.xml", "620,400,675,430", True), ","))
+		If $debugSetlog = 1 Then SetLog("Setting $bHaveAnyHero Value To: " & $rImgSearch, $COLOR_DEBUG)
+		If $rImgSearch = True Then
+			$bHaveAnyHero = 1
+		Else
+			$bHaveAnyHero = 0
+			Return	; There're no heroes to check, Return
+		EndIf
+	ElseIf $bHaveAnyHero = 0 Then
+		If $debugSetlog = 1 Then SetLog("$bHaveAnyHero = 0", $COLOR_DEBUG)
+		Return	; There're no heroes to check, Return
+	EndIf
 
 	Local $iRemainTrainHeroTimer = 0
 	Local $i

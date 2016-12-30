@@ -322,6 +322,30 @@ Func UpdateStats()
 		$iOldDElixirFromDrills = $iDElixirFromDrills
 	EndIf
 
+; ============================================================================
+; ================================= SmartZap =================================
+; ============================================================================
+   ; SmartZap DE Gain
+	If $iOldSmartZapGain <> $smartZapGain Then
+		GUICtrlSetData($lblSmartZap, _NumberFormat($smartZapGain, True))
+		$iOldSmartZapGain = $smartZapGain
+	EndIf
+
+	; SmartZap Spells Used
+	If $iOldNumLTSpellsUsed <> $numLSpellsUsed Then
+		GUICtrlSetData($lblLightningUsed, _NumberFormat($numLSpellsUsed, True))
+		$iOldNumLTSpellsUsed = $numLSpellsUsed
+ 	EndIf
+
+	; EarthQuake Spells Used
+	If $iOldNumEQSpellsUsed <> $numEQSpellsUsed Then
+		GUICtrlSetData($lblEarthQuakeUsed, _NumberFormat($numEQSpellsUsed, True))
+		$iOldNumEQSpellsUsed = $numEQSpellsUsed
+ 	EndIf
+; ============================================================================
+; ================================= SmartZap =================================
+; ============================================================================
+
 	$iAttackedCount = 0
 
 	For $i = 0 To $iModeCount
@@ -470,6 +494,11 @@ Func ResetStats()
 	$iGoldFromMines = 0
 	$iElixirFromCollectors = 0
 	$iDElixirFromDrills = 0
+; ======================= SmartZap =======================
+	$smartZapGain = 0
+	$numLSpellsUsed = 0
+	$numEQSpellsUsed = 0
+; ======================= SmartZap =======================
 	For $i = 0 To $iModeCount
 		$iAttackedVillageCount[$i] = 0
 		$iTotalGoldGain[$i] = 0

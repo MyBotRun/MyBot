@@ -203,7 +203,7 @@ Func PoliteCloseCoC($sSource = "Unknown_")
 					ExitLoop
 			EndSwitch
 			If $i > 10 Then
-				Setlog("Can not find Okay button to exit CoC, Forcefully Closing CoC", $COLOR_ERROR)
+				Setlog("Can not find exit button: " & $AndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
 				If $debugImageSave = 1 Then DebugImageSave($sSource)
 				CloseCoC()
 				ExitLoop

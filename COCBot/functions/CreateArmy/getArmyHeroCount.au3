@@ -30,7 +30,22 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		If _Sleep($iDelaycheckArmyCamp5) Then Return
 	EndIf
 
-	If $iTownHallLevel < 7 then return
+	;If $iTownHallLevel < 7 then return
+	If $bHaveAnyHero = -1 Then
+		; The variable to see if the village have any hero is not set yet
+		; check if the village have any hero
+		Local $rImgSearch = Not (StringInStr(FindImageInPlace("HaveAnyHero", @ScriptDir & "\imgxml\trainwindow\HeroSlots\NoHero_1_95.xml", "620,400,675,430", True), ","))
+		If $debugSetlog = 1 Then SetLog("Setting $bHaveAnyHero Value To: " & $rImgSearch, $COLOR_DEBUG)
+		If $rImgSearch = True Then
+			$bHaveAnyHero = 1
+		Else
+			$bHaveAnyHero = 0
+			Return	; There're no heroes to check, Return
+		EndIf
+	ElseIf $bHaveAnyHero = 0 Then
+		If $debugSetlog = 1 Then SetLog("$bHaveAnyHero = 0", $COLOR_DEBUG)
+		Return	; There're no heroes to check, Return
+	EndIf
 
 	$iHeroAvailable = $HERO_NOHERO ; Reset hero available data
 	$bFullArmyHero = False

@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: Array with data on Dark Elixir Drills found in search
 ; Author ........: LunaEclipse(March, 2016)
-; Modified ......: NTS team (October, 2016)
+; Modified ......: 
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:

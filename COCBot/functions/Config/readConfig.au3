@@ -668,7 +668,7 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 
 		;======================================================================================================================
 		;End Battle Settings------------------------------------------------------------------------
-		IniReadS($sTimeStopAtk[$DB], $config, "endbattle", "txtDBTimeStopAtk", 20, "int")
+		IniReadS($sTimeStopAtk[$DB], $config, "endbattle", "txtDBTimeStopAtk", 15, "int")
 		IniReadS($iChkTimeStopAtk[$DB], $config, "endbattle", "chkDBTimeStopAtk", 1, "int")
 		IniReadS($sTimeStopAtk2[$DB], $config, "endbattle", "txtDBTimeStopAtk2", 7, "int")
 		IniReadS($iChkTimeStopAtk2[$DB], $config, "endbattle", "chkDBTimeStopAtk2", 0, "int")
@@ -1165,15 +1165,24 @@ Func readConfig($inputfile = $config, $partial = False) ;Reads config and sets i
 		IniReadS($iChkWaitForCastleTroops[$LB], $config, "search", "ChkABCastleTroopsWait", 0, "int")
 		IniReadS($iCmbWaitForCastleSpell[$DB], $config, "search", "cmbDBWaitForCastleSpell", 0, "int")
 		IniReadS($iCmbWaitForCastleSpell[$LB], $config, "search", "cmbABWaitForCastleSpell", 0, "int")
-#Cs
-		;SmartZap
-		$ichkSmartZap = Int(IniRead($config, "SmartZap", "UseSmartZap", 0))
-		$ichkSmartZapDB = Int(IniRead($config, "SmartZap", "ZapDBOnly", 1))
-		$ichkSmartZapSaveHeroes = Int(IniRead($config, "SmartZap", "THSnipeSaveHeroes", 1))
-		$itxtMinDE = Int(IniRead($config, "SmartZap", "MinDE", 250))
-		$ichkNoobZap = Int(IniRead($config, "SmartZap", "UseNoobZap", 0))
-		$itxtExpectedDE = Int(IniRead($config, "SmartZap", "ExpectedDE", 95))
-#Ce
+
+; ============================================================================
+; ================================= SmartZap =================================
+; ============================================================================
+		$ichkSmartZap = IniRead($config, "SmartZap", "UseSmartZap", "0")
+		$ichkSmartZapDB = IniRead($config, "SmartZap", "ZapDBOnly", "1")
+		$ichkSmartZapSaveHeroes = IniRead($config, "SmartZap", "THSnipeSaveHeroes", "1")
+		$itxtMinDE = IniRead($config, "SmartZap", "MinDE", "350")
+		$ichkNoobZap = IniRead($config, "SmartZap", "UseNoobZap", "0")
+		$ichkEarthQuakeZap = IniRead($config, "SmartZap", "UseEarthQuakeZap", "0")
+		$itxtExpectedDE = IniRead($config, "SmartZap", "ExpectedDE", "320")
+		$DebugSmartZap = IniRead($config, "SmartZap", "DebugSmartZap", "0")
+; ============================================================================
+; ================================= SmartZap =================================
+; ============================================================================
+
+		$_CheckIceWizardSlot = True ; recheck if Ice Wizard exists in Train Window
+
 	Else
 		Return False
 	EndIf

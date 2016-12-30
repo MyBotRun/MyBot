@@ -46,6 +46,9 @@ Func _GetVectorOutZone($eVectorType)
 	For $i = 0 To $iSteps
 		Local $pixel = [Round($xMin + (($xMax - $xMin) * $i) / $iSteps), Round($yMin + (($yMax - $yMin) * $i) / $iSteps)]
 		ReDim $vectorOutZone[UBound($vectorOutZone) + 1]
+		If $pixel[1] >  555 + $bottomOffsetY Then
+			$pixel[1] = 555 + $bottomOffsetY
+		EndIf
 		$vectorOutZone[UBound($vectorOutZone) - 1] = $pixel
 		$x += $xStep
 		$y += $yStep

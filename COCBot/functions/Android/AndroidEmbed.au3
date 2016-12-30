@@ -145,7 +145,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 						If $targetIsHWnD = False Then
 							;ControlMove($hCtrlTarget, "", "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3])
 							_WinAPI_SetParent($hCtrlTarget, $hCtrlTargetParent)
-							;_WinAPI_SetWindowLong($hCtrlTarget, $GWL_HWNDPARENT, $hCtrlTargetParent)
+							_WinAPI_SetWindowLong($hCtrlTarget, $GWL_HWNDPARENT, $hCtrlTargetParent)
 						EndIf
 						;_WinAPI_SetWindowLong($HWnd, $GWL_STYLE, BitOR(_WinAPI_GetWindowLong($HWnD, $GWL_STYLE), $WS_MINIMIZE)) ; ensures that Android Window shows up in taskbar
 						_WinAPI_SetWindowLong($HWnD, $GWL_EXSTYLE, $lCurExStyle)
@@ -171,6 +171,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 			$aPosFrmBotEx = ControlGetPos($frmBot, "", $frmBotEx)
 			If UBound($aPosFrmBotEx) < 4 Then
 				SetLog("Bot Window not available", $COLOR_ERROR)
+				$g_hProcShieldInput[3] = False
 				Return False
 			EndIf
 			ControlMove($frmBot, "", $frmBotEx, 0, 0, $aPosFrmBotEx[2], $aPosFrmBotEx[3] - $frmBotAddH)
@@ -204,15 +205,14 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 
 				; move Android rendering control back to its place
 				WinMove2(($targetIsHWnD ? $hCtrl : $hCtrlTarget), "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3], 0, 0, False)
-				getAndroidPos() ; ensure window size is ok
-				getBSPos() ; update android screen coord. for clicks etc
-
 				Execute("Embed" & $Android & "(False)")
 				If $AndroidEmbedMode = 1 Then
 					; bring android back to front
 					WinMove2($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3], $HWND_TOPMOST)
 					WinMove2($HWnD, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3], $HWND_NOTOPMOST, 0, False)
 				EndIf
+				getAndroidPos() ; ensure window size is ok
+				getBSPos() ; update android screen coord. for clicks etc
 			EndIf
 
 			SetDebugLog("Undocked Android Window")
@@ -376,8 +376,8 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 			_WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $newStyle)
 			_WinAPI_SetParent($HWnD, $frmBot)
 			If $targetIsHWnD = False Then
+				_WinAPI_SetWindowLong($hCtrlTarget, $GWL_HWNDPARENT, $frmBot)
 				_WinAPI_SetParent($hCtrlTarget, $frmBot)
-				;_WinAPI_SetWindowLong($hCtrlTarget, $GWL_HWNDPARENT, $frmBot)
 			EndIf
 			_WinAPI_SetWindowLong($HWnD, $GWL_STYLE, $newStyle)
 			;ControlFocus($frmBot, "", $frmBot) ; required for BlueStacks

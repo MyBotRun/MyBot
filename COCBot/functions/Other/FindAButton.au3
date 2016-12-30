@@ -28,13 +28,33 @@ Func FindExitButton($sButtonName)
 		$aPosXY = StringSplit(($result[0])[0], ",", $STR_NOCOUNT)
 		$aPosXY[0] += $aCoor[0]
 		$aPosXY[1] += $aCoor[1]
-		If $DebugSetlog = 1 Then Setlog($sButtonName & " Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
+		If $DebugSetlog = 1 Then Setlog("FindExitButton: " & $sButtonName & " Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
 		Return $aPosXY
 	EndIf
 
-	SetLog("FindExitButton: " & $sButtonName & " NOT Found" , $COLOR_INFO)
+	If $DebugSetlog = 1 Then SetLog("FindExitButton: " & $sButtonName & " NOT Found" , $COLOR_DEBUG)
 	Return $aPosXY
 EndFunc   ;==>FindExitButton
+
+Func FindAdsXButton()
+	Local $sCoor
+	Local $sDirectory = "adsxbutton-bundle"
+	Local $sReturnProps = "objectpoints"
+	Local $result = ""
+	Local $aPosXY = ""
+
+	$sCoor = GetDiamondFromRect(GetButtonRectangle("AdsX"))
+	$result = findMultiple($sDirectory, $sCoor, "FV", 0, 0, 1, $sReturnProps, False)
+
+	If IsArray($result) then
+		$aPosXY = StringSplit(($result[0])[0], ",", $STR_NOCOUNT)
+		If $DebugSetlog = 1 Then Setlog("FindAdsXButton: " & $AndroidGameDistributor & " AdsX Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
+		Return $aPosXY
+	EndIf
+
+	If $DebugSetlog = 1 Then Setlog("FindAdsXButton: " & $AndroidGameDistributor & " NOT Found", $COLOR_DEBUG)
+	Return $aPosXY
+EndFunc   ;==>FindAdsXButton
 
 Func GetButtonRectangle($sButtonName)
 	Local $btnRectangle = "0,0," & $DEFAULT_WIDTH & "," & $DEFAULT_HEIGHT
@@ -60,6 +80,8 @@ Func GetButtonRectangle($sButtonName)
 			$btnRectangle = GetDummyRectangle("353,387", 10)
 		Case "Guopan"
 			$btnRectangle = GetDummyRectangle("409,440", 10)
+		Case "AdsX"
+			$btnRectangle = ($DEFAULT_WIDTH / 2) & ",0," & $DEFAULT_WIDTH & "," & ($DEFAULT_HEIGHT / 2) ; upper right area of screen
 		Case Else
 			$btnRectangle = "0,0," & $DEFAULT_WIDTH & "," & $DEFAULT_HEIGHT ; use full image to locate button
 	EndSwitch

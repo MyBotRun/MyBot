@@ -154,7 +154,7 @@ Func TrainRevampOldStyle()
 		Return
 	EndIf
 
-	If ThSnipesSkiptrain() then return
+	If ThSnipesSkiptrain() Then Return
 
 	If $Runstate = False Then Return
 	Local $rWhatToTrain = WhatToTrain(True) ; r in First means Result! Result of What To Train Function
@@ -249,7 +249,7 @@ Func CheckArmySpellCastel()
 			$bFullArmySpells = True
 		EndIf
 	Else
-		If $iTownHallLevel > 4 and $iTotalCountSpell > 0 Then
+		If $iTownHallLevel > 4 And $iTotalCountSpell > 0 Then
 			SetLog("Error reading Spells size!!", $COLOR_RED)
 			Return
 		Else
@@ -277,10 +277,14 @@ Func CheckArmySpellCastel()
 	If $aGetSpellsSize[0] <> "" And $aGetSpellsSize[1] <> "" Then Setlog(" - Spells: " & $aGetSpellsSize[0] & "/" & $aGetSpellsSize[1], $COLOR_GREEN) ; coc-ms
 	If $aGetCastleSize[0] <> "" And $aGetCastleSize[1] <> "" Then Setlog(" - Clan Castle: " & $aGetCastleSize[0] & "/" & $aGetCastleSize[1], $COLOR_GREEN) ; coc-ms
 
-	If IsWaitforHeroesActive() = False And $iChkTrophyRange = 0 And $iChkTrophyHeroes = 0 Then $bFullArmyHero = True
-	; If Drop Trophy with Heroes is checked and a Hero is Available, then set $bFullArmyHero to True
-	If $iChkTrophyRange = 1 And $iChkTrophyHeroes = 1 And $bFullArmyHero = False Then
-		If $iHeroAvailable > 0 Then $bFullArmyHero = True
+	; If Drop Trophy with Heroes is checked and a Hero is Available or under the trophies range, then set $bFullArmyHero to True
+	If IsWaitforHeroesActive() = False And $iChkTrophyHeroes = 0 Then $bFullArmyHero = True
+	If IsWaitforHeroesActive() = False And $iChkTrophyHeroes = 1 And $bFullArmyHero = False Then
+		If $iHeroAvailable > 0 Or Number($iTrophyCurrent) <= Number($iTxtMaxTrophy) Then
+			$bFullArmyHero = True
+		Else
+			Setlog("Waiting for Heroes to drop trophies!", $COLOR_ACTION)
+		EndIf
 	EndIf
 
 	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
@@ -318,6 +322,15 @@ Func CheckArmySpellCastel()
 	Else
 		Setlog("Chief, are your Army ready for battle? No, Not yet!", $COLOR_ACTION)
 		If $text <> "" Then Setlog(" -" & $text & " not Ready!", $COLOR_ACTION)
+	EndIf
+
+	If $debugSetlog = 1 Then
+		SetLog(" $fullarmy: " & String($fullarmy), $COLOR_DEBUG)
+		SetLog(" $bFullArmyHero: " & String($bFullArmyHero), $COLOR_DEBUG)
+		SetLog(" $fullcastlespells: " & String($fullcastlespells), $COLOR_DEBUG)
+		SetLog(" $fullcastletroops: " & String($fullcastletroops), $COLOR_DEBUG)
+		SetLog(" $IsFullArmywithHeroesAndSpells: " & String($IsFullArmywithHeroesAndSpells), $COLOR_DEBUG)
+		SetLog(" $iTownHallLevel: " & Number($iTownHallLevel), $COLOR_DEBUG)
 	EndIf
 
 EndFunc   ;==>CheckArmySpellCastel
@@ -409,6 +422,7 @@ Func IsFullCastleSpells($returnOnly = False)
 
 
 	If $ToReturn = True Then
+		Setlog("Getting current available spell in clan castle.")
 		$CurCCSpell = GetCurCCSpell()
 		If $CurCCSpell = "" Then
 			If $returnOnly = False Then SetLog("Failed to get current available spell in clan castle", $COLOR_RED)
@@ -508,23 +522,23 @@ Func CompareCCSpellWithGUI($CS)
 	If $dbCSPellWait = True And $lbCSPellWait = True Then Return True
 	If $Runstate = False Then Return
 	Switch $SpellsInGUI[0]
-		Case "Poison"
+		Case $sTxtPoisonSpells
 			$SpellsInGUI[0] = "PSpell"
-		Case "EarthQuake"
+		Case $sTxtEarthquakeSpells
 			$SpellsInGUI[0] = "ESpell"
-		Case "Haste"
+		Case $sTxtHasteSpells
 			$SpellsInGUI[0] = "HaSpell"
-		Case "Skeleton"
+		Case $sTxtSkeletonSpells
 			$SpellsInGUI[0] = "SkSpell"
 	EndSwitch
 	Switch $SpellsInGUI[1]
-		Case "Poison"
+		Case $sTxtPoisonSpells
 			$SpellsInGUI[1] = "PSpell"
-		Case "EarthQuake"
+		Case $sTxtEarthquakeSpells
 			$SpellsInGUI[1] = "ESpell"
-		Case "Haste"
+		Case $sTxtHasteSpells
 			$SpellsInGUI[1] = "HaSpell"
-		Case "Skeleton"
+		Case $sTxtSkeletonSpells
 			$SpellsInGUI[1] = "SkSpell"
 	EndSwitch
 
@@ -533,9 +547,10 @@ EndFunc   ;==>CompareCCSpellWithGUI
 
 Func GetCurCCSpell()
 	If $Runstate = False Then Return
-	Local $directory = "trainwindow-ArmyDarkSpells-bundle"
-	Local $res = SearchArmy($directory, 508, 493, 587, 592, "", True)
+	Local $directory = "armytspells-bundle"
+	Local $res = SearchArmy($directory, 508, 518, 585, 570, "", True)
 	If ValidateSearchArmyResult($res) Then
+		Setlog(" - " & NameOfTroop(Eval("e" & $res[0][0])), $COLOR_GREEN)
 		Return $res[0][0]
 	EndIf
 	Return ""
@@ -745,7 +760,7 @@ EndFunc   ;==>BrewUsingWhatToTrain
 Func CheckForSantaSpell()
 	If $isSantaSpellAvailable = -1 Then ; Check if santa spell variable is not set YET
 		ForceCaptureRegion()
-		Local $_IsSantaSpellPixel[4] = [65, 540, 0x7C0427, 20]
+		Local $_IsSantaSpellPixel[4] = [65, 510 + $midOffsetY, 0x7C0427, 40]
 
 		Local $rPixelCheck = _CheckPixel($_IsSantaSpellPixel, True)
 
@@ -782,17 +797,18 @@ Func CheckForSantaSpell()
 
 
 			; Dark Spells, Dark Spells just X values are Changed, orders are same
-			$TrainPSpell[0] += 98 ; X
-			$FullPSpell[0] += 98 ; X
+			; Without Santa's Surprise spell, the distance between Regular Spells and Dark Spells was 12, BUT now is 8, 12 - 8 = 4, So 98 - 4 = 94
+			$TrainPSpell[0] += 94 ; X
+			$FullPSpell[0] += 94 ; X
 
-			$TrainESpell[0] += 98 ; X
-			$FullESpell[0] += 98 ; X
+			$TrainESpell[0] += 94 ; X
+			$FullESpell[0] += 94 ; X
 
-			$TrainHaSpell[0] += 98 ; X
-			$FullHaSpell[0] += 98 ; X
+			$TrainHaSpell[0] += 94 ; X
+			$FullHaSpell[0] += 94 ; X
 
-			$TrainSkSpell[0] += 98 ; X
-			$FullSkSpell[0] += 98 ; X
+			$TrainSkSpell[0] += 94 ; X
+			$FullSkSpell[0] += 94 ; X
 
 		Else
 			; Set the value to false to prevent check for santa spell each time
@@ -912,35 +928,35 @@ EndFunc   ;==>IsGUICheckedForSpell
 
 Func DragIfNeeded($Troop)
 	Local Const $pos = GetTrainPos(Eval("e" & $Troop))
+	Local $sLogText = Default
+	If $debugsetlogTrain = 1 Then $sLogText = NameOfTroop(Eval("e" & $Troop))
 	If $Runstate = False Then Return
 
 	If IsDarkTroop($Troop) Then
-		Local $rCheckPixel = _CheckPixel($pos, $bCapturePixel)
+		Local $rCheckPixel = _CheckPixel($pos, $bCapturePixel, Default, $sLogText)
 		For $i = 1 To 4
 			If $rCheckPixel = False Then
 				ClickDrag(616, 445 + $midOffsetY, 400, 445 + $midOffsetY, 2000)
 				If _Sleep(1500) Then Return
-				$rCheckPixel = _CheckPixel($pos, $bCapturePixel)
+				$rCheckPixel = _CheckPixel($pos, $bCapturePixel, Default, $sLogText)
 			Else
 				Return True
 			EndIf
 		Next
-		SetLog("Failed to Verify Troop " & NameOfTroop(Eval("e" & $Troop)) & " Position or Failed to Drag Successfully", $COLOR_RED)
-		Return False
 	Else
-		Local $rCheckPixel = _CheckPixel($pos, $bCapturePixel)
+		Local $rCheckPixel = _CheckPixel($pos, $bCapturePixel, Default, $sLogText)
 		For $i = 1 To 4
 			If $rCheckPixel = False Then
 				ClickDrag(400, 445 + $midOffsetY, 616, 445 + $midOffsetY, 2000)
 				If _Sleep(1500) Then Return
-				$rCheckPixel = _CheckPixel($pos, $bCapturePixel)
+				$rCheckPixel = _CheckPixel($pos, $bCapturePixel, Default, $sLogText)
 			Else
 				Return True
 			EndIf
 		Next
-		SetLog("Failed to Verify Troop " & NameOfTroop(Eval("e" & $Troop)) & " Position or Failed to Drag Successfully", $COLOR_RED)
-		Return False
 	EndIf
+	SetLog("Failed to Verify Troop " & NameOfTroop(Eval("e" & $Troop)) & " Position or Failed to Drag Successfully", $COLOR_RED)
+	Return False
 EndFunc   ;==>DragIfNeeded
 
 Func DoWhatToTrainContainSpell($rWTT)
@@ -1462,38 +1478,34 @@ EndFunc   ;==>WhatToTrain
 Func TestTroopsCoords()
 	Local $iCount = 3
 	$Runstate = True
+	For $i = 0 To UBound($TroopName) - 1
+		DragIfNeeded($TroopName[$i])
+		TrainIt(Eval("e" & $TroopName[$i]), $iCount, $isldTrainITDelay)
+	Next
 	#CS
-		For $i = 0 To UBound($TroopName) - 1
-		TrainIt(Eval("e" & $TroopName[$i]), 1, $isldTrainITDelay)
-		Next
+		TrainIt($eDrag, $iCount, 300)
+		TrainIt($eBarb, $iCount, 300)
+		TrainIt($eArch, $iCount, 300)
+		TrainIt($eGiant, $iCount, 300)
+		TrainIt($eGobl, $iCount, 300)
+		TrainIt($eWall, $iCount, 300)
+		TrainIt($eBall, $iCount, 300)
+		TrainIt($eWiza, $iCount, 300)
+		TrainIt($eHeal, $iCount, 300)
+		TrainIt($eDrag, $iCount, 300)
+		TrainIt($ePekk, $iCount, 300)
+		TrainIt($eBabyD, $iCount, 300)
+		TrainIt($eMine, $iCount, 300)
 		ClickDrag(616, 445 + $midOffsetY, 400, 445 + $midOffsetY, 2000)
 		If _Sleep(1500) Then Return
-		For $i = 0 To UBound($TroopDarkName) - 1
-		TrainIt(Eval("e" & $TroopDarkName[$i]), 1, $isldTrainITDelay)
-		Next
+		TrainIt($eMini, $iCount, 300)
+		TrainIt($eHogs, $iCount, 300)
+		TrainIt($eValk, $iCount, 300)
+		TrainIt($eGole, $iCount, 300)
+		TrainIt($eWitc, $iCount, 300)
+		TrainIt($eLava, $iCount, 300)
+		TrainIt($eBowl, $iCount, 300)
 	#CE
-	TrainIt($eDrag, $iCount, 300)
-	TrainIt($eBarb, $iCount, 300)
-	TrainIt($eArch, $iCount, 300)
-	TrainIt($eGiant, $iCount, 300)
-	TrainIt($eGobl, $iCount, 300)
-	TrainIt($eWall, $iCount, 300)
-	TrainIt($eBall, $iCount, 300)
-	TrainIt($eWiza, $iCount, 300)
-	TrainIt($eHeal, $iCount, 300)
-	TrainIt($eDrag, $iCount, 300)
-	TrainIt($ePekk, $iCount, 300)
-	TrainIt($eBabyD, $iCount, 300)
-	TrainIt($eMine, $iCount, 300)
-	ClickDrag(616, 445 + $midOffsetY, 400, 445 + $midOffsetY, 2000)
-	If _Sleep(1500) Then Return
-	TrainIt($eMini, $iCount, 300)
-	TrainIt($eHogs, $iCount, 300)
-	TrainIt($eValk, $iCount, 300)
-	TrainIt($eGole, $iCount, 300)
-	TrainIt($eWitc, $iCount, 300)
-	TrainIt($eLava, $iCount, 300)
-	TrainIt($eBowl, $iCount, 300)
 	$Runstate = False
 EndFunc   ;==>TestTroopsCoords
 
@@ -1593,7 +1605,7 @@ Func ISArmyWindow($writelogs = False, $TabNumber = 0)
 	WEnd
 
 	If $i <= 28 Then
-		If ($DebugSetlog = 1 Or $DebugClick = 1) And $writelogs = True Then Setlog("**Train Window OK**", $COLOR_DEBUG) ;Debug
+		If ($debugSetlog = 1 Or $DebugClick = 1) And $writelogs = True Then Setlog("**Train Window OK**", $COLOR_DEBUG) ;Debug
 		Return True
 	Else
 		If $writelogs = True Then SetLog("Cannot find train Window | TAB " & $TabNumber, $COLOR_RED) ; in case of $i = 29 in while loop
@@ -1614,6 +1626,7 @@ Func CheckExistentArmy($txt = "", $showlog = True)
 
 	If $txt = "Troops" Then
 		ResetVariables("Troops")
+		ResetDropTrophiesVariable()
 		Local $directory = @ScriptDir & "\imgxml\ArmyTroops" ; "armytroops-bundle"
 		Local $x = 23, $y = 215, $x1 = 840, $y1 = 255
 	EndIf
@@ -1657,7 +1670,7 @@ Func CheckExistentArmy($txt = "", $showlog = True)
 					If $txt = "Heroes" Then
 						If $showlog = True Then Setlog(" - " & NameOfTroop(Eval("e" & $result[$i][0]), $Plural) & " Recovered", $COLOR_GREEN)
 					ElseIf $txt = "Troops" Then
-						ResetDropTrophiesVariable()
+						;ResetDropTrophiesVariable()
 						If $showlog = True Then Setlog(" - " & $result[$i][3] & " " & NameOfTroop(Eval("e" & $result[$i][0]), $Plural) & " Available", $COLOR_GREEN)
 						Assign("Cur" & $result[$i][0], Eval("Cur" & $result[$i][0]) + $result[$i][3])
 						CanBeUsedToDropTrophies(Eval("e" & $result[$i][0]), Eval("Cur" & $result[$i][0]))
@@ -1916,6 +1929,7 @@ Func OpenTrainTabNumber($Num)
 		If ISArmyWindow(False, $Num) Then
 			Setlog(" - Opened the " & $Message[$Num], $COLOR_ACTION1)
 			If $Num = $BrewSpellsTAB Then CheckForSantaSpell() ; Can be Deleted after DEC (in 2017 :P)
+			If $Num = $TrainTroopsTAB Then ICEWizardDetection() ; Can be Deleted after DEC (in 2017 :P)
 		EndIf
 	Else
 		Setlog(" - Error Clicking On " & ($Num >= 0 And $Num < UBound($Message)) ? ($Message[$Num]) : ("Not selectable") & " Tab!!!", $COLOR_RED)
@@ -1926,14 +1940,14 @@ Func TrainArmyNumber($Num)
 
 	$Num = $Num - 1
 	Local $a_TrainArmy[3][4] = [[817, 366, 0x6bb720, 10], [817, 484, 0x6bb720, 10], [817, 601, 0x6bb720, 10]]
-	Setlog(" - TrainArmyNumber: " & $Num + 1)
+	Setlog("Using Quick Train Tab.")
 	If $Runstate = False Then Return
 
 	If ISArmyWindow(False, $QuickTrainTAB) Then
 		; _ColorCheck($nColor1, $nColor2, $sVari = 5, $Ignore = "")
 		If _ColorCheck(_GetPixelColor($a_TrainArmy[$Num][0], $a_TrainArmy[$Num][1], True), Hex($a_TrainArmy[$Num][2], 6), $a_TrainArmy[$Num][3]) Then
 			Click($a_TrainArmy[$Num][0], $a_TrainArmy[$Num][1], 1)
-			SetLog("Making the Army " & $Num + 1)
+			SetLog("Making the Army " & $Num + 1, $COLOR_INFO)
 			If _Sleep(1000) Then Return
 		Else
 			Setlog(" - Error Clicking On Army: " & $Num + 1 & "| Pixel was :" & _GetPixelColor($a_TrainArmy[$Num][0], $a_TrainArmy[$Num][1], True), $COLOR_ORANGE)
@@ -1951,18 +1965,17 @@ Func DeleteQueued($TypeQueued, $OffsetQueued = 802)
 		If ISArmyWindow(False, $TrainTroopsTAB) = False Then OpenTrainTabNumber($TrainTroopsTAB)
 		If _Sleep(1500) Then Return
 		If ISArmyWindow(True, $TrainTroopsTAB) = False Then Return
-		SetLog(" - Delete Troops Queued ", $COLOR_ACTION)
 	ElseIf $TypeQueued = "Spells" Then
 		OpenTrainTabNumber($BrewSpellsTAB)
 		If _Sleep(1500) Then Return
 		If ISArmyWindow(True, $BrewSpellsTAB) = False Then Return
-		SetLog(" - Delete Spells Queued ", $COLOR_ACTION)
 	Else
 		Return
 	EndIf
 	If _Sleep(500) Then Return
 	Local $x = 0
 	While Not IsQueueEmpty(-1, True, False)
+		If $x = 0 Then SetLog(" - Delete " & $TypeQueued & " Queued!", $COLOR_ACTION)
 		If _Sleep(20) Then Return
 		If $Runstate = False Then Return
 		Click($OffsetQueued + 24, 202, 2, 50)
@@ -2404,16 +2417,56 @@ Func ThSnipesSkiptrain()
 	Local $Temp = 0
 	; Check if the User will use TH snipes
 
-	If IsSearchModeActive($TS) and $IsFullArmywithHeroesAndSpells then
+	If IsSearchModeActive($TS) And $IsFullArmywithHeroesAndSpells Then
 		For $i = 0 To (UBound($TroopName) - 1)
-			If Eval($TroopName[$i] & "Comp") > 0 then $Temp += 1
+			If Eval($TroopName[$i] & "Comp") > 0 Then $Temp += 1
 		Next
-		If $Temp = 1 then return False ; 	make troops before battle ( is using only one troop kind )
-		If $Temp > 1 then
-			Setlog ( "Skipping Training before Attack due to THSnipes!", $COLOR_INFO )
-			return True  ;	not making troops before battle
+		If $Temp = 1 Then Return False ; 	make troops before battle ( is using only one troop kind )
+		If $Temp > 1 Then
+			Setlog("Skipping Training before Attack due to THSnipes!", $COLOR_INFO)
+			Return True ;	not making troops before battle
 		EndIf
 	Else
 		Return False ; 	Proceeds as usual
 	EndIf
-EndFunc ; ThSnipesSkiptrain
+EndFunc   ;==>ThSnipesSkiptrain
+
+Func ICEWizardDetection()
+
+	If $_CheckIceWizardSlot Then
+		If _ColorCheck(_GetPixelColor(358, 492, True), Hex(0x007b97, 6), 15) And _ ; d0b097
+				_ColorCheck(_GetPixelColor(358, 512, True), Hex(0xd0b097, 6), 15) Then
+			Setlog("Detected Ice Wizard Troop!")
+			; With Ice Wizard
+			$TrainHeal = $TrainHeal_ICE
+			$TrainDrag = $TrainDrag_ICE
+			$TrainPekk = $TrainPekk_ICE
+			$TrainBabyD = $TrainBabyD_ICE
+			$TrainMine = $TrainMine_ICE
+
+			; With Ice Wizard
+			$FullHeal = $FullHeal_ICE
+			$FullDrag = $FullDrag_ICE
+			$FullPekk = $FullPekk_ICE
+			$FullBabyD = $FullBabyD_ICE
+			$FullMine = $FullMine_ICE
+		Else
+		    SetLog("Ice Wizard Troop not detected!")
+			; Without Ice Wizard
+			$TrainHeal = $TrainHeal_Normal
+			$TrainDrag = $TrainDrag_Normal
+			$TrainPekk = $TrainPekk_Normal
+			$TrainBabyD = $TrainBabyD_Normal
+			$TrainMine = $TrainMine_Normal
+
+			; Without Ice Wizard
+			$FullHeal = $FullHeal_Normal
+			$FullDrag = $FullDrag_Normal
+			$FullPekk = $FullPekk_Normal
+			$FullBabyD = $FullBabyD_Normal
+			$FullMine = $FullMine_Normal
+		EndIf
+		$_CheckIceWizardSlot = False
+	Endif
+
+EndFunc   ;==>ICEWizardDetection

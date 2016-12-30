@@ -19,7 +19,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 	Local $logwrited = False
 	$iSkipped = 0
 
-	If $debugDeadBaseImage = 1 Then
+	If $debugDeadBaseImage = 1 Or $iSearchEnableDebugDeadBaseImage > 0 Then
 		DirCreate($dirTempDebug & "\SkippedZombies\")
 		DirCreate($dirTempDebug & "\Zombies\")
 		setZombie()
@@ -157,8 +157,10 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		$GetResourcesTXT = StringFormat("%3s", $SearchCount) & "> [G]:" & StringFormat("%7s", $searchGold) & " [E]:" & StringFormat("%7s", $searchElixir) & " [D]:" & StringFormat("%5s", $searchDark) & " [T]:" & StringFormat("%2s", $searchTrophy) & $THString
 
 		; ----------------- CHECK DEAD BASE -------------------------------------------------
+		If Not $RunState Then Return
 		; check deadbase if no milking attack or milking attack but low cpu settings  ($MilkAttackType=1)
-		If ($match[$DB] And $iAtkAlgorithm[$DB] <> 2) Or $match[$LB] Or ($match[$DB] And $iAtkAlgorithm[$DB] = 2 And $MilkAttackType = 1) Then
+		Local $checkDeadBase = ($match[$DB] And $iAtkAlgorithm[$DB] <> 2) Or $match[$LB] Or ($match[$DB] And $iAtkAlgorithm[$DB] = 2 And $MilkAttackType = 1)
+		If $checkDeadBase Then
 			$dbBase = checkDeadBase()
 		EndIf
 
@@ -294,7 +296,15 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		If $bBtnAttackNowPressed = True Then ExitLoop
 
 		; ----------------- PRESS BUTTON NEXT  -------------------------------------------------
-		If $debugDeadBaseImage = 1 Then	setZombie()
+		If $checkDeadBase And $debugDeadBaseImage = 0 And $iSkipped > $iSearchEnableDebugDeadBaseImage Then
+			SetLog("Enabled collecting debug images of dead bases (zombies)", $COLOR_DEBUG)
+			SetLog("- Save skipped dead base when available Elixir with empty storage > " & (($aZombie[8] > -1) ? ($aZombie[8] & "k") : ("is disabled")), $COLOR_DEBUG)
+			SetLog("- Save skipped dead base when available Elixir > " & (($aZombie[9] > -1) ? ($aZombie[9] & "k") : ("is disabled")), $COLOR_DEBUG)
+			SetLog("- Save dead base when available Elixir < " & (($aZombie[10] > -1) ? ($aZombie[10] & "k") : ("is disabled")), $COLOR_DEBUG)
+			SetLog("- Save dead base when raided Elixir < " & (($aZombie[7] > -1) ? ($aZombie[7] & "%") : ("is disabled")), $COLOR_DEBUG)
+			$debugDeadBaseImage = 1
+		EndIf
+		If $debugDeadBaseImage = 1 Then setZombie()
 		Local $i = 0
 		While $i < 100
 			If _Sleep($iDelayVillageSearch2) Then Return

@@ -63,7 +63,7 @@ Func DonateCC($Check = False)
 	;Setlog(" - Donate: $bDonate:" & $bDonate & " $bDonateTroop:" & $bDonateTroop & " $bDonateAllTroop:" & $bDonateAllTroop & " $bDonateSpell:" & $bDonateSpell & " $bDonateAllSpell:" & $bDonateAllSpell, $COLOR_GREEN)
 	Global $iTotalDonateCapacity, $iTotalDonateSpellCapacity
 
-	Global $iDonTroopsLimit = 5, $iDonSpellsLimit = 1, $iDonTroopsAv = 0, $iDonSpellsAv = 0
+	Global $iDonTroopsLimit = 8, $iDonSpellsLimit = 1, $iDonTroopsAv = 0, $iDonSpellsAv = 0
 	Global $iDonTroopsQuantityAv = 0, $iDonTroopsQuantity = 0, $iDonSpellsQuantityAv = 0, $iDonSpellsQuantity = 0
 
 	Global $bSkipDonTroops = False, $bSkipDonSpells = False
@@ -243,7 +243,7 @@ Func DonateCC($Check = False)
 			   $bSkipDonTroops = True
 			   $bSkipDonSpells = True
 			Else
-				If $CurTotalDarkSpell = 0 And $FirstStart And $bDonateSpell Then
+				If $CurTotalDarkSpell = 0 And $FirstStart And ($bDonateSpell Or $bDonateAllSpell) Then
 					SetLog("Getting total Spells Available To be ready for Donation...", $COLOR_BLUE)
 					Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0173") ; required to close Chat tab
 					If _Sleep(500) Then Return
@@ -413,6 +413,15 @@ Func DonateCC($Check = False)
 				$bDonateAllRespectBlk = True
 
 				If $bDonateAllTroop And $bSkipDonTroops = False Then
+					; read available donate cap, and ByRef set the $bSkipDonTroops and $bSkipDonSpells flags
+					DonateWindowCap($bSkipDonTroops, $bSkipDonSpells)
+					If $bSkipDonTroops And $bSkipDonSpells Then
+						DonateWindow($bClose)
+						$bDonate = True
+						$y = $DonatePixel[1] + 50
+						If _Sleep($iDelayDonateCC2) Then ExitLoop
+						ContinueLoop ; go to next button if already donated, maybe this is an impossible case..
+					EndIf
 					If $debugsetlog = 1 Then Setlog("Troop All checkpoint.", $COLOR_DEBUG)
 					Select
 						Case $iChkDonateAllCustomA = 1
@@ -720,7 +729,7 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 		$YComp = 88 ; correct 860x780
 	EndIf
 
-	If $Slot >= 12 And $Slot <= 14 Then
+	If $Slot >= 12 And $Slot <= 15 Then
 		$donaterow = 3 ;row of poisons
 		$Slot = $Slot - 12
 		$donateposinrow = $Slot
@@ -1430,17 +1439,17 @@ Func DonatedSpell($Type, $iDonSpellsQuantity)
 
 	Switch $Type
 		Case $ePSpell
-			$TroopsDonQ[20] += $iDonTroopsQuantity
-			$TroopsDonXP[20] += $iDonTroopsQuantity * 5
+			$TroopsDonQ[20] += $iDonSpellsQuantity
+			$TroopsDonXP[20] += $iDonSpellsQuantity * 5
 		Case $eESpell
-			$TroopsDonQ[21] += $iDonTroopsQuantity
-			$TroopsDonXP[21] += $iDonTroopsQuantity * 5
+			$TroopsDonQ[21] += $iDonSpellsQuantity
+			$TroopsDonXP[21] += $iDonSpellsQuantity * 5
 		Case $eHaSpell
-			$TroopsDonQ[22] += $iDonTroopsQuantity
-			$TroopsDonXP[22] += $iDonTroopsQuantity * 5
+			$TroopsDonQ[22] += $iDonSpellsQuantity
+			$TroopsDonXP[22] += $iDonSpellsQuantity * 5
 		Case $eSkSpell
-			$TroopsDonQ[23] += $iDonTroopsQuantity
-			$TroopsDonXP[23] += $iDonTroopsQuantity * 5
+			$TroopsDonQ[23] += $iDonSpellsQuantity
+			$TroopsDonXP[23] += $iDonSpellsQuantity * 5
 	EndSwitch
 
 	For $i = 20 To 23

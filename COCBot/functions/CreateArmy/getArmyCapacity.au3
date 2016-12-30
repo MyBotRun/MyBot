@@ -112,6 +112,8 @@ Func getArmyCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	EndIf
 	If _Sleep($iDelaycheckArmyCamp4) Then Return
 
+	If $ichkTotalCampForced = 1 Then $TotalCamp = Number($iValueTotalCampForced)
+
 	If $TotalCamp > 0 Then
 		SetLog("Total Army Camp capacity: " & $CurCamp & "/" & $TotalCamp & " (" & Int($CurCamp / $TotalCamp * 100) & "%)")
 		$ArmyCapacity = Int($CurCamp / $TotalCamp * 100)

@@ -117,6 +117,15 @@ EndFunc   ;==>WindowsArrange
 
 Func DisposeWindows()
 	updateBtnEmbed()
+	; ensure bot window is visible
+	Local $aPos = WinGetPos($frmBot)
+	If IsArray($aPos) Then
+		If _CheckWindowVisibility($frmBot, $aPos) Then
+			SetDebugLog("Bot Window '" & $Title & "' not visible, moving to position: " & $aPos[0] & ", " & $aPos[1])
+			WinMove2($frmBot, "", $aPos[0], $aPos[1])
+		EndIf
+	EndIf
+
 	If $iDisposeWindows = 1 Then
 		Switch $icmbDisposeWindowsPos
 			Case 0
@@ -230,3 +239,150 @@ Func ControlGetPos2($title, $text, $controlID)
 	WEnd
 	Return $aPos
 EndFunc   ;==>ControlGetPos2
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _CheckWindowVisibility
+; Description ...: Checks the current position of the window to make sure it is on the visible screen area
+; Syntax ........: _CheckWindowVisibility($hWnd, $p)
+; Parameters ....: In $hWnd  - window handle
+;                  In/Out $p - if window is not visible, this function will move it to be visible, and return the new
+;                              coordinates in this parameter
+; Return values .: True if window was moved, False otherwise
+; Author ........: CodeSlinger69
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+Func _CheckWindowVisibility(Const $hWnd, ByRef $p)
+   ; If window is minimized then do nothing
+   If $p[0] < -30000 And $p[1] < -30000 Then Return False
+
+   ; See if the window intersects with a monitor
+   Local $monitorHandle = _MonitorFromWindow($hWnd, 0)
+
+   If $monitorHandle <> 0 Then
+	  ;ConsoleWrite("Windows is visible" & @CRLF)
+	  Return False
+   EndIf
+
+   ; Get handle to closest monitor
+   $monitorHandle = _MonitorFromWindow($hWnd, 2)
+
+   ; Get info for closest monitor, and move window to top left
+   Local $monitorInfo = _MonitorGetInfo($monitorHandle)
+   $p[0] = $monitorInfo[0]
+   $p[1] = $monitorInfo[1]
+
+   Return True
+EndFunc
+
+; ===================================================================================================================
+; Func _GraphicsCreateDC($sDriver="DISPLAY",$sDevice=0,$pInitData=0)
+;
+; Function to create a Device Context. With default parameters, it will create a DC covering ALL monitors, rather
+;    than getting only the default monitor with GetDC(0)
+;    *NOTE: When done with the DC, must use DeleteDC on the returned DC (whereas GetDC uses ReleaseDC)
+;
+; Author: Ascend4nt
+; ===================================================================================================================
+Func _GraphicsCreateDC($sDriver="DISPLAY",$sDevice=0,$pInitData=0)
+    If Not IsString($sDriver) Then Return SetError(1,0,False)
+    Local $aRet,$sDeviceType
+    If $sDevice="" Or Not IsString($sDevice) Then
+        $sDeviceType="ptr"
+        $sDevice=0
+    Else
+        $sDeviceType="wstr"
+    EndIf
+    $aRet=DllCall('gdi32.dll',"handle","CreateDCW","wstr",$sDriver,$sDeviceType,$sDevice,"ptr",0,"ptr",$pInitData)
+    If @error Then Return SetError(2,@error,0)
+    If $aRet[0]=0 Then Return SetError(3,0,0)
+    Return $aRet[0]
+ EndFunc
+
+; ==========================================================================================================================
+; Func _MonitorGetInfo($hMonitor,$hMonitorDC=0)
+;
+; Gets information about a monitor (given a monitor handle).
+;
+; $hMonitor = Handle to Monitor
+; $hMonitorDC = Optional Monitor DC
+;
+; Returns:
+;    Success: 10-element array, with @error=0:
+;        $array[0]  = Monitor  upper-left corner X coordinate (this rect is same as full-screen size)
+;        $array[1]  = Monitor  upper-left corner Y coordinate
+;        $array[2]  = Monitor lower-right corner X coordinate
+;        $array[3]  = Monitor lower-right corner Y coordinate
+;        $array[4]  = Monitor Work Area  upper-left corner X coordinate (this rect is same as maximized size)
+;        $array[5]  = Monitor Work Area  upper-left corner Y coordinate
+;        $array[6]  = Monitor Work Area lower-right corner X coordinate
+;        $array[7]  = Monitor Work Area lower-right corner Y coordinate
+;        $array[8]  = Primary monitor boolean (0 = not, 1 = is)
+;        $array[9]  = Monitor Or Display Device Name (usually '.DISPLAY#' where # starts at 1)
+;        $array[10] = Bits Per Pixel
+;        $array[11] = Vertical Refresh Rate
+;    Failure: '' with @error set:
+;        @error = 1 = invalid parameter
+;        @error = 2 = DLLCall() error, with @extended set to DLLCall() error code (see AutoIt Help)
+;        @error = 3 = API call failed
+;
+; Author: Ascend4nt
+; ==========================================================================================================================
+Func _MonitorGetInfo($hMonitor,$hMonitorDC=0)
+    If Not IsPtr($hMonitor) Or $hMonitor=0 Then Return SetError(1,0,'')
+
+    ; cbSize, rcMonitor (virtual rect of monitor), rcWork (maximized state of window [minus taskbar, sidebar etc]), dwFlags
+    Local $aRet, $stMonInfoEx=DllStructCreate('dword;long[8];dword;wchar[32]'), $bMonDCCreated=0
+    DllStructSetData($stMonInfoEx,1,DllStructGetSize($stMonInfoEx))        ; set cbSize
+    $aRet=DllCall('user32.dll','bool','GetMonitorInfoW','handle',$hMonitor,'ptr',DllStructGetPtr($stMonInfoEx))
+    If @error Then Return SetError(2,0,'')
+
+    If Not $aRet[0] Then Return SetError(3,0,'')
+
+    Dim $aRet[12]
+    ; Both RECT's
+    For $i=0 To 7
+        $aRet[$i]=DllStructGetData($stMonInfoEx,2,$i+1)
+    Next
+    ; 0 or 1 for Primary Monitor [MONITORINFOF_PRIMARY = 1]
+    $aRet[8]=DllStructGetData($stMonInfoEx,3)
+    ; Device String of type '.DISPLAY1' etc
+    $aRet[9]=DllStructGetData($stMonInfoEx,4)
+    If $hMonitorDC=0 Then
+        $hMonitorDC=_GraphicsCreateDC($aRet[9],$aRet[9])
+        $bMonDCCreated=1
+    EndIf
+    $aRet[10]=_WinAPI_GetDeviceCaps($hMonitorDC,12)    ; Bits-Per-Pixel
+    $aRet[11]=_WinAPI_GetDeviceCaps($hMonitorDC,116)    ; Vertical Refresh Rate (Hz)
+    If $bMonDCCreated Then _WinAPI_DeleteDC($hMonitorDC)
+;~     ConsoleWrite("BitsPerPixel="&$aRet[10]&", Refresh Rate="&$aRet[11]&" Hz"&@CRLF)
+    Return $aRet
+EndFunc
+
+; ==========================================================================================================================
+; Func _MonitorFromWindow($hWnd,$iFlags=2)
+;
+; Retrieves a handle to the display monitor that has the largest area of intersection with the bounding rectangle of a
+; specified window.
+;
+; $iFlags: 0-2:  Determines the function's return value if the window does not intersect any display monitor.
+;    MONITOR_DEFAULTTONULL (0)
+;    MONITOR_DEFAULTTOPRIMARY (1)
+;    MONITOR_DEFAULTTONEAREST (2)
+;
+; Author: Ascend4nt
+; ==========================================================================================================================
+Func _MonitorFromWindow($hWnd, $iFlags=2)
+    If Not IsHWnd($hWnd) Or $iFlags<0 Or $iFlags>2 Then Return SetError(1,0,0)
+
+    Local $aRet=DllCall('user32.dll', 'handle', 'MonitorFromWindow', 'hwnd', $hWnd, 'dword', $iFlags)
+    If @error Then Return SetError(2,@error,0)
+
+    If $aRet[0]=0 Then Return SetError(3,0,0)
+
+    Return $aRet[0]
+EndFunc

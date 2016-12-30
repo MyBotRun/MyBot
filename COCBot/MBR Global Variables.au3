@@ -71,6 +71,7 @@ Global $ichkDisableSplash = 0 ; Splash screen disabled = 1
 Global $debugDisableZoomout = 0
 Global $debugDisableVillageCentering = 0
 Global $debugDeadBaseImage = 0 ; Enable collection of zombies (capture screenshot of detect DeadBase routine)
+Global $iSearchEnableDebugDeadBaseImage = 200 ; If $debugDeadBaseImage is 0 and more than searches reached, set $debugDeadBaseImage = 1, 0 = disabled
 ; Enabled saving of enemy villages when deadbase is active
 Global $aZombie = ["" _ ; 0=Filename
 	, 0 _  ; 1=Raided Elixir
@@ -94,6 +95,8 @@ Global $debugGetLocation = 0 ;make a image of each structure detected with getlo
 Global $debugOCRdonate = 0 ; when 1 make OCR and simulate but do not donate
 Global $debugAndroidEmbedded = 0
 Global $debugWindowMessages = 0 ; 0=off, 1=most Window Messages, 2=all Window Messages
+Global $DebugSmartZap = 0
+Global $DebugGdiCount = 0 ; monitor bot GDI Handle count, 0 = Disabled, <> 0 = Enabled
 
 Global Const $COLOR_ORANGE = 0xFF7700  ; Used for donate GUI buttons
 Global Const $COLOR_ERROR = $COLOR_RED   ; Error messages
@@ -250,7 +253,8 @@ Global $AndroidEmbed ; Enable Android Docking
 Global $AndroidEmbedMode ; Android Dock Mode: -1 = Not available, 0 = Normal docking, 1 = Simulated docking
 Global $AndroidBackgroundLaunch ; Enabled Android Background launch using Windows Scheduled Task
 Global $AndroidBackgroundLaunched ; True when Android was launched in headless mode without a window
-Global $AndroidControlClickWindow = 1 ; 0 = Click the Android Control, 1 = Click the Android Window
+Global $AndroidControlClickWindow = 0 ; 0 = Click the Android Control, 1 = Click the Android Window
+Global $AndroidControlClickMode = 0 ; 0 = Use AutoIt ControlClick, 1 = Use _SendMessage
 
 Func AndroidAdbClickSupported()
 	Return BitAND($AndroidSupportFeature, 4) = 4
@@ -379,6 +383,7 @@ Global $sProfilePath = @ScriptDir & "\Profiles"
 ;Global $sTemplates = @ScriptDir & "\Templates"
 Global $sPreset = @ScriptDir & "\Strategies"
 Global $aTxtLogInitText[0][6] = [[]]
+Global $aTxtAtkLogInitText[0][6] = [[]]
 Global $hTxtLogTimer = TimerInit() ; Timer Handle of last log
 Global $iTxtLogTimerTimeout = 500 ; Refresh log only every configured Milliseconds
 
@@ -847,6 +852,7 @@ Global $iHeroWaitNoBit[$iModeCount][3] ; Heroes wait status for attack
 Global $iHeroAvailable = $HERO_NOHERO ; Hero ready status
 Global $iHeroUpgrading[3] = [0, 0, 0] ; Upgrading Heroes
 Global $iHeroUpgradingBit = $HERO_NOHERO ; Upgrading Heroes
+Global $bHaveAnyHero = -1	; -1 Means not set yet
 Global $bFullArmyHero = False ; = BitAnd($iHeroWait[$iMatchMode], $iHeroAvailable )
 
 Global $KingAttackCSV[$iModeCount] ;King attack settings
@@ -1479,6 +1485,7 @@ Global $sLanguageDisp = "English"
 Global $aLanguageFile[1][2]; undimmed language file array [FileName][DisplayName]
 Global Const $sDefaultLanguage = "English"
 Global $aLanguage[1][1] ;undimmed language array
+Global $hLangIcons = 0
 
 ;images
 Global $iDetectedImageType = 0
@@ -1733,27 +1740,33 @@ Global $IMGLOCTHRDISTANCE
 
 Global $ichkUseQTrain = 0
 Global $iRadio_Army1, $iRadio_Army2, $iRadio_Army3
-;---------------------------------------------------------------
-; SmartZap GUI variables
-;---------------------------------------------------------------
-	Global $ichkSmartZap = 0
-	Global $ichkSmartZapDB = 1
-	Global $ichkSmartZapSaveHeroes = 1
-	Global $itxtMinDE = 250
-	; NoobZap
-	Global $ichkNoobZap = 0
-	Global $itxtExpectedDE = 95
-	; SmartZap stats
-	Global $smartZapGain = 0
-	Global $numLSpellsUsed = 0
-	Global $iOldsmartZapGain = 0, $iOldNumLTSpellsUsed = 0
-	; SmartZap Array to hold Total Amount of DE available from Drill at each level (1-6)
-	Global Const $drillLevelHold[6] = [120, 225, 405, 630, 960, 1350]
-	; SmartZap Array to hold Amount of DE available to steal from Drills at each level (1-6)
-	Global Const $drillLevelSteal[6] = [59, 102, 172, 251, 343, 479]
-;---------------------------------------------------------------
-;End Smart Zap Globals
-;---------------------------------------------------------------
+
+;SmartZap
+Global $numSpells = 0
+Global $ichkSmartZap = 0
+Global $ichkSmartZapDB = 1
+Global $ichkSmartZapSaveHeroes = 1
+Global $itxtMinDE = 350
+
+; NoobZap
+Global $ichkNoobZap = 0
+Global $itxtExpectedDE = 320
+
+; EarthQuakeZap
+Global $ichkEarthQuakeZap = 0
+Global $EQSpellZap = 0
+Global $iOldNumEQSpellsUsed = 0, $numEQSpellsUsed = 0
+
+; SmartZap stats
+Global $smartZapGain = 0
+Global $numLSpellsUsed = 0
+Global $iOldsmartZapGain = 0, $iOldNumLTSpellsUsed = 0
+
+; SmartZap Array to hold Total Amount of DE available from Drill at each level (1-6)
+Global Const $drillLevelHold[6] = [120, 225, 405, 630, 960, 1350]
+
+; SmartZap Array to hold Amount of DE available to steal from Drills at each level (1-6)
+Global Const $drillLevelSteal[6] = [59, 102, 172, 251, 343, 479]
 
 ;Wait for Castle
 Global $iChkWaitForCastleSpell[$iModeCount]
@@ -1823,6 +1836,7 @@ Global $TroopsDonXP[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 Global $lblDonQ[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Global $isSantaSpellAvailable = -1	; -1 Means not Set
+Global $_CheckIceWizardSlot = True ; Check if Ice Wizard changes normal troop layout (reset to true in readConfig!)
 
 ;=== No variables below ! ================================================
 

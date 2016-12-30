@@ -16,6 +16,16 @@
 ; ===============================================================================================================================
 Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = True)
 	Local $iBegin = TimerInit()
+
+	; track GDI count
+	If $DebugGdiCount <> 0 Then
+		Local $iCount = _WinAPI_GetGuiResources()
+		If $iCount <> $DebugGdiCount Then
+			SetDebugLog("GDI Handle Count: " & $iCount)
+			$DebugGdiCount = $iCount
+		EndIf
+	EndIf
+
 	If SetCriticalMessageProcessing() = False Then
 
 		If $bMoveDivider Then

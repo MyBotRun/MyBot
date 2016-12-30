@@ -141,6 +141,14 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 	If IsHWnd($HWnD) = 1 Then
 		; Android Window found
 		Local $aPos = WinGetPos($HWnD)
+		If IsArray($aPos) Then
+			If _CheckWindowVisibility($HWnD, $aPos) Then
+			   SetDebugLog("Android Window '" & $Title & "' not visible, moving to position: " & $aPos[0] & ", " & $aPos[1])
+			   WinMove2($HWnD, "", $aPos[0], $aPos[1])
+			   $aPos = WinGetPos($HWnD)
+			EndIf
+		 EndIf
+
 		AndroidQueueReboot(False)
 		If $currHWnD = 0 Or $currHWnD <> $HWnD Then
 			; Restore original Android Window position
@@ -2663,4 +2671,4 @@ Func AndroidPicturePathAutoConfig($myPictures = Default, $subDir = Default, $bSe
 		EndIf
 	EndIf
 	Return $Result
-EndFunc   ;==>AndroidPicturePathAutoConfig
+ EndFunc   ;==>AndroidPicturePathAutoConfig

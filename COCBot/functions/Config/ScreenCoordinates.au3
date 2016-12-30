@@ -75,9 +75,9 @@ Global $aArmyOverviewTest[4] = [150, 554 + $midOffsetY, 0xBC2BD1, 20] ; Color pu
 Global $aCancRequestCCBtn[4] = [340, 250, 0xCC4010, 20] ; Red button Cancel in window request CC
 Global $aSendRequestCCBtn[2] = [524, 250] ; Green button Send in window request CC
 Global $atxtRequestCCBtn[2] = [430, 140] ; textbox in window request CC
-Global $aIsDarkElixirFull[4] = [709, 134, 0x1A0026, 10] ; Main Screen DE Resource bar is full
-Global $aIsGoldFull[4] = [660, 33, 0xD4B100, 6] ; Main Screen Gold Resource bar is Full
-Global $aIsElixirFull[4] = [660, 84, 0xAE1AB3, 6] ; Main Screen Elixir Resource bar is Full
+Global $aIsDarkElixirFull[4] = [710, 107 + $midOffsetY, 0x1A0026, 10] ; Main Screen DE Resource bar is full
+Global $aIsGoldFull[4] = [661, 6 + $midOffsetY, 0xDAB300, 10] ; Main Screen Gold Resource bar is Full
+Global $aIsElixirFull[4] = [661, 57 + $midOffsetY, 0xB31AB3, 10] ; Main Screen Elixir Resource bar is Full
 Global $aConfirmCoCExit[2] = [515, 410 + $midOffsetY] ; CoC Confirm Exit button (no color for button as it matches grass)
 Global $aPerkBtn[4] = [95, 243 + $midOffsetY, 0x7cd8e8, 10] ; Clan Info Page, Perk Button (blue); 800x780
 Global $aIsGemWindow1[4] = [573, 256 + $midOffsetY, 0xDD0408, 20] ; Main Screen, pixel left of Red X to close gem window
@@ -134,17 +134,33 @@ Global Const $TrainWall[4]  = [282, 385 + $midOffsetY, 0x000000, 40] ; 7B6E8F, 7
 Global Const $TrainBall[4]  = [249, 469 + $midOffsetY, 0x64242C, 40] ; 781C10, 7C1C10
 
 Global Const $TrainWiza[4]  = [384, 384 + $midOffsetY, 0xF8D0B8, 40] ; E19179, E3937C
-Global Const $TrainHeal[4]  = [396, 500 + $midOffsetY, 0xF8EEE8, 40] ; D67244, D67244
-Global Const $TrainDrag[4]  = [435, 354 + $midOffsetY, 0xFDF8F6, 40] ; 473254, 493153
-Global Const $TrainPekk[4]  = [465, 493 + $midOffsetY, 0x0E0811, 40] ; 385470, 395671
-Global Const $TrainBabyD[4] = [578, 385 + $midOffsetY, 0x080000, 40] ; 88D464, 88D461, middle of snout
-Global Const $TrainMine[4]  = [568, 452 + $midOffsetY, 0x989C98, 40] ; 1A1815, 1B1814, right eye brow under hat
+
+; Without Ice Wizard
+Global $TrainHeal_Normal  = [396, 500 + $midOffsetY, 0xF8EEE8, 40] ; D67244, D67244
+Global $TrainDrag_Normal  = [435, 354 + $midOffsetY, 0xFDF8F6, 40] ; 473254, 493153
+Global $TrainPekk_Normal  = [465, 493 + $midOffsetY, 0x0E0811, 40] ; 385470, 395671
+Global $TrainBabyD_Normal = [578, 385 + $midOffsetY, 0x080000, 40] ; 88D464, 88D461, middle of snout
+Global $TrainMine_Normal  = [568, 452 + $midOffsetY, 0x989C98, 40] ; 1A1815, 1B1814, right eye brow under hat
+
+; With Ice Wizard
+Global $TrainHeal_ICE  = [475, 414, 0x7acdf2, 40] ; right eye
+Global $TrainDrag_ICE  = [475, 533, 0xaf3457, 40] ; Dragon tongue
+Global $TrainPekk_ICE  = [554, 417, 0xdc23c4, 40] ; Pekka left eye
+Global $TrainBabyD_ICE = [554, 504, 0x8fe067, 40] ; Bdragon green skin
+Global $TrainMine_ICE  = [660, 399, 0x596060, 40] ; Hat
+
+; Default
+Global $TrainHeal  = $TrainHeal_Normal
+Global $TrainDrag  = $TrainDrag_Normal
+Global $TrainPekk  = $TrainPekk_Normal
+Global $TrainBabyD = $TrainBabyD_Normal
+Global $TrainMine  = $TrainMine_Normal
 
 ;Global $TrainMini[4] = [220, 310 + $midOffsetY, 0x182340, 40] ; 15203A, 172039, Dark blue botton of horn
 Global Const $TrainMini[4] = [489, 375 + $midOffsetY, 0x7ACFF0, 40] ; Dark blue botton of horn
 Global Const $TrainHogs[4] = [500, 467 + $midOffsetY, 0xB87867, 40] ; 3A2620, 3B2720, brown above right ear
-Global Const $TrainValk[4] = [601, 354 + $midOffsetY, 0xFF9B60, 40] ; FF6E18, FF6D18, orange right hair curl above eye
-Global Const $TrainGole[4] = [563, 470 + $midOffsetY, 0x6C8694, 40] ; E1C8AD, E3C8AC, top of head
+Global Const $TrainValk[4] = [619, 398 + $midOffsetY, 0xD03E04, 40] ; FF6E18, FF6D18, orange right hair curl above eye
+Global Const $TrainGole[4] = [583, 498 + $midOffsetY, 0x534E48, 40] ; E1C8AD, E3C8AC, top of head
 Global Const $TrainWitc[4] = [696, 353 + $midOffsetY, 0x636AE5, 40] ; 403C68, 403D68, middle of purple hood
 Global Const $TrainLava[4] = [687, 475 + $midOffsetY, 0x210D00, 40] ; 4C4C3C, 4B4C3C, center of brown nose
 Global Const $TrainBowl[4] = [777, 356 + $midOffsetY, 0x8884F0, 40] ; 6060E7, 6060E5 ,purple on cheek
@@ -187,7 +203,8 @@ Global $GemSkSpell[4] = [25, 340 + $midOffsetY, 0x030300, 1]		; These will never
 Global $NextBtn[4] = [780, 546 + $bottomOffsetY, 0xD34300, 20] ;  Next Button
 ; Someone asking troops : Color 0xD0E978 in x = 121
 
-Global $aRequestTroopsAO[6] = [791, 565, 0x66a2a8, 0xa0d448, 0x919191, 15] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
+; 1 - Green : available | 2 - Dark gray : request allready made | 3 - Light gray : Castle filled/No Castle
+Global $aRequestTroopsAO[6] = [737, 565, 0xa2d44a, 0x808182, 0xb6b6b6, 10] ; Button Request Troops in Army Overview  (x,y,can request, request allready made, army full/no clan, toll)
 
 Global Const $FullBarb[4] = [100, 423 + $midOffsetY, 0x6D6D6D, 20] ; Location of Elixir check pixel with normal color and Barrack Full color
 Global Const $FullArch[4] = [100, 529 + $midOffsetY, 0x8A8A8A, 20]
@@ -197,11 +214,27 @@ Global Const $FullWall[4] = [297, 429 + $midOffsetY, 0x8D8D8D, 20]
 Global Const $FullBall[4] = [296, 531 + $midOffsetY, 0x898989, 20]
 
 Global Const $FullWiza[4] = [397, 421 + $midOffsetY, 0x676767, 20]
-Global Const $FullHeal[4] = [398, 523 + $midOffsetY, 0x676767, 20]
-Global Const $FullDrag[4] = [496, 421 + $midOffsetY, 0x676767, 20]
-Global Const $FullPekk[4] = [493, 526 + $midOffsetY, 0x7D7D7D, 20]
-Global Const $FullBabyD[4] = [590, 423 + $midOffsetY, 0x696969, 20] ; B1B1B1, B1B1B1, reg color: 88D464
-Global Const $FullMine[4] = [594, 523 + $midOffsetY, 0x686868, 20] ; AEAEAE, ADADAD, reg color: 84BF5E
+
+;Without Ice Wizard
+Global $FullHeal_Normal  = [398, 523 + $midOffsetY, 0x676767, 20]
+Global $FullDrag_Normal  = [496, 421 + $midOffsetY, 0x676767, 20]
+Global $FullPekk_Normal  = [493, 526 + $midOffsetY, 0x7D7D7D, 20]
+Global $FullBabyD_Normal = [590, 423 + $midOffsetY, 0x696969, 20] ; B1B1B1, B1B1B1, reg color: 88D464
+Global $FullMine_Normal  = [594, 523 + $midOffsetY, 0x686868, 20] ; AEAEAE, ADADAD, reg color: 84BF5E
+
+; With Ice Wizard
+Global $FullHeal_ICE  = [495, 453, 0x717171, 20] ; elixir Drop
+Global $FullDrag_ICE  = [495, 554, 0x6c6c6c, 20]
+Global $FullPekk_ICE  = [592, 453, 0x6f6f6f, 20]
+Global $FullBabyD_ICE = [592, 554, 0x6d6d6d, 20] ; B1B1B1, B1B1B1, reg color: 88D464
+Global $FullMine_ICE  = [690, 453, 0x6d6d6d, 20] ; AEAEAE, ADADAD, reg color: 84BF5E
+
+; Normal
+Global $FullHeal  = $FullHeal_Normal
+Global $FullDrag  = $FullDrag_Normal
+Global $FullPekk  = $FullPekk_Normal
+Global $FullBabyD = $FullBabyD_Normal
+Global $FullMine  = $FullMine_Normal
 
 Global Const $FullMini[4] = [456, 356 + $midOffsetY, 0x4D4D4D, 20] ; 0xC7F8F8 Most locations are only 30 decimal change in blue to gray (Dk blue chest)
 Global Const $FullHogs[4] = [488, 512 + $midOffsetY, 0xA4A4A4, 20] ; 0xD07C58 normal (lt brown shoulder)

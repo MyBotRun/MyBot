@@ -15,18 +15,29 @@
 Func CloseRunningBot($sBotWindowTitle)
 	; terminate same bot instance, this current instance doesn't have main window yet, so no need to exclude this PID
 	Local $param = ""
-	For $i = 1 To $CmdLine[0]
+	For $i = 1 To $aCmdLine[0]
 		If $param <> "" Then $param &= " "
-		$param &= $CmdLine[$i]
+		$param &= $aCmdLine[$i]
 	Next
 	Local $otherPID = 0
+	Local $otherPIDs = 0
 	If $param <> "" Then
-		ProcessExists2(@AutoItExe, $param, 1, 1)
+		$otherPIDs = ProcessesExist(@AutoItExe, $param, 1, 1)
 	EndIf
 	Local $otherHWnD = WinGetHandle($sBotTitle)
-	If @error = 0 Or $otherPID > 0 Then
+	If @error = 0 Or UBound($otherPIDs) > 0 Then
 		; other bot window found
-		If $otherHWnD <> 0 Then $otherPID = WinGetProcess($otherHWnD)
+		If $otherHWnD <> 0 Then
+			$otherPID = WinGetProcess($otherHWnD)
+		Else
+			; find PID in array
+			For $pid In $otherPIDs
+				If $pid <> @AutoItPID Then
+					$otherPID = $pid
+					ExitLoop
+				EndIf
+			Next
+		EndIf
 		If $otherPID > 0 And $otherPID <> @AutoItPID Then
 			SetDebugLog("Found existing " & $sBotTitle & " instance to close, PID " & $otherPID & ", HWnD " & $otherHWnD)
 			; close any related WerFault Window as well

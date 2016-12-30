@@ -27,7 +27,7 @@ Func _GetPixelColor($iX, $iY, $bNeedCapture = False, $sLogText = Default, $LogTe
 		$aPixelColor = _GDIPlus_BitmapGetPixel($hBitmap, 1, 1)
 	EndIf
 	If $sLogText <> Default And IsString($sLogText) Then
-		Local $String = $sLogText & ", Found: " & Hex($aPixelColor, 6)
+		Local $String = $sLogText & " at X,Y: " & $iX & "," & $iY & " Found: " & Hex($aPixelColor, 6)
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	EndIf
 	Return Hex($aPixelColor, 6)
