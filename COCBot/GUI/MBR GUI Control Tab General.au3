@@ -25,7 +25,7 @@ Func btnAtkLogCopyClipboard()
 EndFunc   ;==>btnAtkLogCopyClipboard
 
 Func cmbLog()
-	Local $x = 0, $y = 0, $w = $_GUI_MAIN_WIDTH - 20, $h = $_GUI_MAIN_HEIGHT - 470 + Int($frmBotAddH / 2) ; default GUI values, used as reference
+	Local $x = 0, $y = 0, $w = $_GUI_MAIN_WIDTH - 20, $h = $_GUI_MAIN_HEIGHT - 490 + Int($frmBotAddH / 2) ; default GUI values, used as reference
 	If ($iDividerY > $h + Int($h / 2) + $y And $iDividerY < $h * 2 + $iDividerHeight + $y) Or $iDividerY > $h * 2 + $iDividerHeight + $y Then $iDividerY = $h + Int($h / 2) + $y
 	If ($iDividerY < Int($h / 2) + $y And $iDividerY > 0) Or $iDividerY < 0 Then $iDividerY = Int($h / 2)
 	_SendMessage($txtLog, $WM_SETREDRAW, False, 0) ; disable redraw so disabling has no visiual effect

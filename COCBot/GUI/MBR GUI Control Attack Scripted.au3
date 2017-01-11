@@ -283,11 +283,24 @@ EndFunc   ;==>DuplicateScriptAB
 
 Func cmbScriptRedlineImplDB()
 	$iRedlineRoutine[$DB] = _GUICtrlComboBox_GetCurSel($cmbScriptRedlineImplDB)
+	If $iRedlineRoutine[$DB] = 3 then
+		GUICtrlSetState($cmbScriptDroplineDB, $GUI_HIDE)
+		$iDroplineEdge[$DB] = $DROPLINE_FULL_EDGE_FIXED
+	Else
+		GUICtrlSetState($cmbScriptDroplineDB, $GUI_SHOW)
+	Endif
 EndFunc   ;==>cmbScriptRedlineImplDB
 
 Func cmbScriptRedlineImplAB()
 	$iRedlineRoutine[$LB] = _GUICtrlComboBox_GetCurSel($cmbScriptRedlineImplAB)
+	If $iRedlineRoutine[$LB] = 3 then
+		GUICtrlSetState($cmbScriptDroplineAB, $GUI_HIDE)
+		$iDroplineEdge[$LB] = $DROPLINE_FULL_EDGE_FIXED
+	Else
+		GUICtrlSetState($cmbScriptDroplineAB, $GUI_SHOW)
+	EndIf
 EndFunc   ;==>cmbScriptRedlineImplAB
+
 
 Func cmbScriptDroplineDB()
 	$iDroplineEdge[$DB] = _GUICtrlComboBox_GetCurSel($cmbScriptDroplineDB)

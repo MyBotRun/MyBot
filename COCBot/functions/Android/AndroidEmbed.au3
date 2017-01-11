@@ -397,6 +397,9 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 
 			WinMove($HWnD, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3] - 1) ; force redraw this way (required for LeapDroid)
 			WinMove($HWnD, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3]) ; force redraw this way (required for LeapDroid)
+			If $targetIsHWnD = False Then
+				WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], 0, 0, False)
+			EndIf
 			; register thumbnail
 			If _WinAPI_DwmIsCompositionEnabled() And $hThumbnail = 0 Then
 				$hThumbnail = _WinAPI_DwmRegisterThumbnail($frmBot, $HWnD)

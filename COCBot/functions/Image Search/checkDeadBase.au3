@@ -148,7 +148,7 @@ Func LoadElixirImage50Percent()
 	Next
 EndFunc   ;==>LoadElixirImage50Percent
 
-Func hasElixirStorage()
+Func hasElixirStorage($bForceCapture = False)
 
 	Local $has = False
 
@@ -160,7 +160,6 @@ Func hasElixirStorage()
 	Local $maxReturnPoints = 0 ; all positions
 	Local $returnProps="objectname,objectpoints,objectlevel"
 	Local $sDirectory = @ScriptDir & "\imgxml\deadbase\elix\storage\"
-	Local $bForceCapture = False ; force CaptureScreen
 	Local $result = findMultiple($sDirectory ,$sCocDiamond ,$redLines, $minLevel, $maxLevel, $maxReturnPoints , $returnProps, $bForceCapture)
 
 	If IsArray($result) then
@@ -199,7 +198,7 @@ Func setZombie($RaidedElixir = -1, $AvailableElixir = -1, $Matched = -1, $Search
 		Local $path = $dirTempDebug  & (($dbFound) ? ("Zombies\") : ("SkippedZombies\"))
 		Local $availK = Round($aZombie[2] / 1000)
 		; $ZombieFilename = "DebugDB_xxx%_" & $sCurrProfile & @YEAR & "-" & @MON & "-" & @MDAY & "_" & StringReplace(_NowTime(5), ":", "-") & "_search_" & StringFormat("%03i", $SearchCount) & "_" & StringFormat("%04i", Round($searchElixir / 1000)) & "k_matched_" & $TotalMatched
-		If $aZombie[0] = "" Then
+		If $aZombie[0] = "" And $aZombie[4] > 0 Then
 			Local $create = $aZombie[0] = "" And ($dbFound = True Or ($aZombie[8] = -1 And $aZombie[9] = -1) Or ($availK >= $aZombie[8] And hasElixirStorage() = False) Or $availK >= $aZombie[9])
 			If $create = True Then
 				Local $ZombieFilename = "DebugDB_" & StringFormat("%04i", $availK) & "k_" & $sCurrProfile & "_search_" & StringFormat("%03i", $aZombie[4]) & "_matched_" & $aZombie[3] & "_" & $aZombie[5] & ".png"
@@ -333,7 +332,13 @@ Func checkDeadBaseNew()
 EndFunc   ;==>checkDeadBase
 
 Func checkDeadBase()
-	Return checkDeadBaseSuperNew(False)
+	Local $dbFound = checkDeadBaseSuperNew(False)
+	#cs GUI options missing
+	If $dbFound = False Then
+		$dbFound = checkDeadBaseStorage()
+	EndIf
+	#ce
+	Return $dbFound
 EndFunc
 
 ;checkDeadBase Variables:-------------===========================
@@ -765,6 +770,30 @@ Func imglocIsDeadBase(ByRef $aPos, $FillLevel = 100, $minCollectorLevel = 0, $ma
 	Return $TotalMatched
 
 EndFunc
+
+; Do it better like here, func AdjustLootForStorages and CalculateLootInStorage: https://github.com/CodeSlinger69/ClAsHbOt/blob/master/Source/ClAsHbOt%20Script/AutoRaid.au3
+Func checkDeadBaseStorage($AvailableElixir = $searchElixir, $RequiredElixir = 250000, $bForceCapture = False)
+
+	Local $dbFound = False
+	If $AvailableElixir < $RequiredElixir Then
+		SetDebugLog("Check Deadbase on Elixir Storage failed, available Elixir of " & $AvailableElixir & " < required of " & $RequiredElixir)
+		Return $dbFound
+	EndIf
+
+	If hasElixirStorage($bForceCapture) = True Then
+		SetDebugLog("Check Deadbase on Elixir Storage failed, loaded Elixir Storage found")
+		Return $dbFound
+	EndIf
+
+	$dbFound = True
+	SetDebugLog("Check Deadbase on Elixir Storage succeeded")
+	Local $path = $dirTempDebug  & (($dbFound) ? ("Zombies\") : ("SkippedZombies\"))
+	Local $ZombieFilename = "DebugDB_checkDeadBaseStorage_" & $sCurrProfile & "_" & @YEAR & "-" & @MON & "-" & @MDAY & "_" & StringReplace(_NowTime(5), ":", "-") & ".png"
+	Local $hBitmapZombie = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmap2)
+	_GDIPlus_ImageSaveToFile($hBitmapZombie, $path & $ZombieFilename)
+	_GDIPlus_BitmapDispose($hBitmapZombie)
+	Return $dbFound
+EndFunc   ;==>checkDeadBaseStorage
 
 Func checkDeadBaseSuperNew($bForceCapture = True, $sFillDirectory = @ScriptDir & "\imgxml\deadbase\elix\fill\", $sLvlDirectory = @ScriptDir & "\imgxml\deadbase\elix\lvl\")
 

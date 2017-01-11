@@ -17,6 +17,8 @@
 Func MakeDropLine($searchvect, $startpoint, $endpoint, $iLineDistanceThreshold = 75, $bLineToCorner = False)
 
 	SetDebugLog("MakeDropLine for " & UBound($searchvect) & " points")
+	If $bLineToCorner = False And UBound($searchvect) > 0 Then $startpoint = $searchvect[0]
+	If $bLineToCorner = False And UBound($searchvect) > 0 Then $endpoint = $searchvect[UBound($searchvect) - 1]
 	SetDebugLog("MakeDropLine: Start = " & PixelToString($startpoint) & ", End = " & PixelToString($endpoint) & ": " & PixelArrayToString($searchvect, ","))
 
 	Local $startX = $startpoint[0]

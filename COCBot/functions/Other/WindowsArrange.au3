@@ -273,8 +273,10 @@ Func _CheckWindowVisibility(Const $hWnd, ByRef $p)
 
    ; Get info for closest monitor, and move window to top left
    Local $monitorInfo = _MonitorGetInfo($monitorHandle)
-   $p[0] = $monitorInfo[0]
-   $p[1] = $monitorInfo[1]
+   If UBound($monitorInfo) > 1 Then
+      $p[0] = $monitorInfo[0]
+      $p[1] = $monitorInfo[1]
+   EndIf
 
    Return True
 EndFunc

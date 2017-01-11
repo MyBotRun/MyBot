@@ -15,9 +15,9 @@
 
 Local $x = 25, $y = 45
 	$grpRoyalAbilitiesCSV = GUICtrlCreateGroup(GetTranslated(634,1, "Hero Abilities"), $x - 20, $y - 20, 420, 60)
-		GUICtrlCreateIcon($pIconLib, $eIcnKingAbility, $x-10, $y, 24, 24)
-		GUICtrlCreateIcon($pIconLib, $eIcnQueenAbility, $x+ 15, $y, 24, 24)
-		GUICtrlCreateIcon($pIconLib, $eIcnWardenAbility, $x+ 40, $y, 24, 24)
+		GUICtrlCreateIcon($pIconLib, $eIcnKing, $x-10, $y, 24, 24)
+		GUICtrlCreateIcon($pIconLib, $eIcnQueen, $x+ 15, $y, 24, 24)
+		GUICtrlCreateIcon($pIconLib, $eIcnWarden, $x+ 40, $y, 24, 24)
 
 	$x += 70
 	$y -= 4

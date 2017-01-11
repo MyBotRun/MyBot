@@ -5,14 +5,14 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Zax (2015)
-; Modified ......: Safar46 (2015), Hervidero (2015-04), HungLe (2015-04), Sardo (2015-08), Promac (2015-12), Hervidero (2016-01), MonkeyHunter (2016-07)
+; Modified ......: Safar46 (2015), Hervidero (2015-04), HungLe (2015-04), Sardo (2015-08), Promac (2015-12), Hervidero (2016-01), MonkeyHunter (2016-07), Fliegerfaust (2016-12)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-
+;
 Global $DonationWindowY
 Global $PrepDon[4] = [False, False, False, False]
 
@@ -38,8 +38,8 @@ Func PrepareDonateCC()
 			$iChkDonateAllDragons, $iChkDonateAllPekkas, $iChkDonateAllBabyDragons, $iChkDonateAllMiners, $iChkDonateAllMinions, $iChkDonateAllHogRiders, _
 			$iChkDonateAllValkyries, $iChkDonateAllGolems, $iChkDonateAllWitches, $iChkDonateAllLavaHounds, $iChkDonateAllBowlers, $iChkDonateAllCustomA, $iChkDonateAllCustomB)
 
-	$PrepDon[2] = BitOR($iChkDonatePoisonSpells, $iChkDonateEarthQuakeSpells, $iChkDonateHasteSpells, $iChkDonateSkeletonSpells)
-	$PrepDon[3] = BitOR($iChkDonateAllPoisonSpells, $iChkDonateAllEarthQuakeSpells, $iChkDonateAllHasteSpells, $iChkDonateAllSkeletonSpells)
+	$PrepDon[2] = BitOR($iChkDonatePoisonSpells, $iChkDonateEarthQuakeSpells, $iChkDonateHasteSpells, $iChkDonateSkeletonSpells, $iChkDonateLightningSpells, $iChkDonateHealSpells, $iChkDonateRageSpells, $iChkDonateJumpSpells, $iChkDonateFreezeSpells)
+	$PrepDon[3] = BitOR($iChkDonateAllPoisonSpells, $iChkDonateAllEarthQuakeSpells, $iChkDonateAllHasteSpells, $iChkDonateAllSkeletonSpells, $iChkDonateAllLightningSpells, $iChkDonateAllHealSpells, $iChkDonateAllRageSpells, $iChkDonateAllJumpSpells, $iChkDonateAllFreezeSpells)
 
 	$bActiveDonate = BitOR($PrepDon[0], $PrepDon[1], $PrepDon[2], $PrepDon[3])
 	;$bDonate = BitOR($PrepDon[0], $PrepDon[1], $PrepDon[2], $PrepDon[3])
@@ -243,7 +243,7 @@ Func DonateCC($Check = False)
 			   $bSkipDonTroops = True
 			   $bSkipDonSpells = True
 			Else
-				If $CurTotalDarkSpell = 0 And $FirstStart And ($bDonateSpell Or $bDonateAllSpell) Then
+				If $CurTotalDonSpell[0] = 0 And $FirstStart And ($bDonateSpell Or $bDonateAllSpell) Then
 					SetLog("Getting total Spells Available To be ready for Donation...", $COLOR_BLUE)
 					Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0173") ; required to close Chat tab
 					If _Sleep(500) Then Return
@@ -251,10 +251,10 @@ Func DonateCC($Check = False)
 					OpenArmyWindow()
 					If _Sleep(250) Then Return
 					CheckExistentArmy("Spells")
-					CountNumberDarkSpells() ; needed value for spell donates
+					CountNumberSpells() ; needed value for spell donates
 					ClickP($aAway, 2, 0, "#0346") ;Click Away
 					If _Sleep(1000) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
-					SetLog("Total DElixir Spells Available and can be donated : " & $CurTotalDarkSpell, $COLOR_BLUE)
+					SetLog("Total Spells Available which can be donated : " & $CurTotalDonSpell[0], $COLOR_BLUE)
 					ForceCaptureRegion()
 					If _CheckPixel($aChatTab, $bCapturePixel) = False Then ClickP($aOpenChat, 1, 0, "#0168") ; Clicks chat tab
 					If _Sleep($iDelayDonateCC4) Then Return
@@ -305,7 +305,7 @@ Func DonateCC($Check = False)
 					; no message, this CC has no Spell capability
 					   If $debugsetlog = 1 Then Setlog("This CC cannot accept spells, skip spell donation...", $COLOR_DEBUG)
 					$bSkipDonSpells = True
-				ElseIf $CurTotalDarkSpell = 0 Then
+				ElseIf $CurTotalDonSpell[0] = 0 Then
 					If $debugsetlog = 1 Then Setlog("No spells available, skip spell donation...", $COLOR_DEBUG) ;Debug
 					Setlog("No spells available, skip spell donation...", $COLOR_ORANGE)
 					$bSkipDonSpells = True
@@ -401,6 +401,11 @@ Func DonateCC($Check = False)
 
 				If $bDonateSpell = 1 And $bSkipDonSpells = False Then
 					If $debugsetlog = 1 Then Setlog("Spell checkpoint.", $COLOR_DEBUG)
+					If $iChkDonateLightningSpells = 1 And $bSkipDonSpells = False And CheckDonateTroop($eLSpell, $aDonLightningSpells, $aBlkLightningSpells, $aBlackList, $ClanString) Then DonateTroopType($eLSpell)
+					If $iChkDonateHealSpells = 1 And $bSkipDonSpells = False And CheckDonateTroop($eHSpell, $aDonHealSpells, $aBlkHealSpells, $aBlacklist, $ClanString) Then DonateTroopType($eHSpell)
+					If $iChkDonateRageSpells = 1 And $bSkipDonSpells = False And CheckDonateTroop($eRSpell, $aDonRageSpells, $aBlkRageSpells, $aBlacklist, $ClanString) Then DonateTroopType($eRSpell)
+					If $iChkDonateJumpSpells = 1 And $bSkipDonSpells = False And CheckDonateTroop($eJSpell, $aDonJumpSpells, $aBlkJumpSpells, $aBlacklist, $ClanString) Then DonateTroopType($eJSpell)
+					If $iChkDonateFreezeSpells = 1 And $bSkipDonSpells = False And CheckDonateTroop($eFSpell, $aDonFreezeSpells, $aBlkFreezeSpells, $aBlacklist, $ClanString) Then DonateTroopType($eFSpell)
 					If $iChkDonatePoisonSpells = 1 And $bSkipDonSpells = False And CheckDonateTroop($ePSpell, $aDonPoisonSpells, $aBlkPoisonSpells, $aBlackList, $ClanString) Then DonateTroopType($ePSpell)
 					If $iChkDonateEarthQuakeSpells = 1 And $bSkipDonSpells = False And CheckDonateTroop($eESpell, $aDonEarthQuakeSpells, $aBlkEarthQuakeSpells, $aBlackList, $ClanString) Then DonateTroopType($eESpell)
 					If $iChkDonateHasteSpells = 1 And $bSkipDonSpells = False And CheckDonateTroop($eHaSpell, $aDonHasteSpells, $aBlkHasteSpells, $aBlackList, $ClanString) Then DonateTroopType($eHaSpell)
@@ -513,6 +518,16 @@ Func DonateCC($Check = False)
 					If $debugsetlog = 1 Then Setlog("Spell All checkpoint.", $COLOR_DEBUG)
 
 					Select
+						Case $iChkDonateAllLightningSpells = 1
+							If CheckDonateTroop($eLSpell, $aDonLightningSpells, $aBlkLightningSpells, $aBlacklist, $ClanString) Then DonateTroopType($eLSpell, 0, False, $bDonateAllSpell)
+						Case $iChkDonateAllHealSpells = 1
+							If CheckDonateTroop($eHSpell, $aDonHealSpells, $aBlkHealSpells, $aBlacklist, $ClanString) Then  DonateTroopType($eHSpell, 0, False, $bDonateAllSpell)
+						Case $iChkDonateAllRageSpells = 1
+							If CheckDonateTroop($eRSpell, $aDonRageSpells, $aBlkRageSpells, $aBlacklist, $ClanString) Then DonateTroopType($eRSpell, 0, False, $bDonateAllSpell)
+						Case $iChkDonateAllJumpSpells = 1
+							If CheckDonateTroop($eJSpell, $aDonJumpSpells, $aBlkJumpSpells, $aBlacklist, $ClanString) Then DonateTroopType($eJSpell, 0, False, $bDonateAllSpell)
+						Case $iChkDonateAllFreezeSpells = 1
+							If CheckDonateTroop($eFSpell, $aDonFreezeSpells, $aBlkFreezeSpells, $aBlacklist, $ClanString) Then DonateTroopType($eFSpell, 0, False, $bDonateAllSpell)
 						Case $iChkDonateAllPoisonSpells = 1
 							If CheckDonateTroop($ePSpell, $aDonPoisonSpells, $aBlkPoisonSpells, $aBlackList, $ClanString) Then DonateTroopType($ePSpell, 0, False, $bDonateAllSpell)
 						Case $iChkDonateAllEarthQuakeSpells = 1
@@ -690,7 +705,7 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
  #CE
 	EndIf
 
-	If $Type >= $ePSpell And $Type <= $eSkSpell Then
+	If $Type >= $eLSpell And $Type <= $eSkSpell Then
 		;spells
 		For $i = 0 To UBound($SpellName) - 1
 			If Eval("e" & $SpellName[$i]) = $Type Then
@@ -713,6 +728,7 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 		Local $oldDebugOcr = $debugOcr
 		$debugOcr = 1
 	EndIf
+	If $Type > $eHaSpell And $CurTotalDonSpell[1] > 6 Then DragSpellDonWindow()
 	$Slot = DetectSlotTroop($Type)
 	$detectedSlot = $Slot
 	If $debugsetlog = 1 Then setlog("slot found = " & $Slot, $COLOR_DEBUG)
@@ -729,7 +745,7 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 		$YComp = 88 ; correct 860x780
 	EndIf
 
-	If $Slot >= 12 And $Slot <= 15 Then
+	If $Slot >= 12 And $Slot <= 17 Then
 		$donaterow = 3 ;row of poisons
 		$Slot = $Slot - 12
 		$donateposinrow = $Slot
@@ -755,7 +771,7 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 				EndIf
 
 				If $debugOCRdonate = 0 Then
-					; Use slow clikc when the Train system is Quicktrain
+					; Use slow click when the Train system is Quicktrain
 					If $ichkUseQTrain = 1 Then
 						$icount = 0
 						For $x = 0 To $Quant
@@ -926,7 +942,7 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 			SetLog("No " & NameOfTroop($Type) & " available to donate..", $COLOR_ERROR)
 		EndIf
 	Else ; spells
-		SetLog("Else Spells Condition Matched", $COLOR_ORANGE)
+		SetLog("Spells Condition Matched", $COLOR_ORANGE)
 		If _ColorCheck(_GetPixelColor(350 + ($Slot * 68), $DonationWindowY + 105 + $YComp, True), Hex(0x6038B0, 6), 20) Or _
 				_ColorCheck(_GetPixelColor(355 + ($Slot * 68), $DonationWindowY + 106 + $YComp, True), Hex(0x6038B0, 6), 20) Or _
 				_ColorCheck(_GetPixelColor(360 + ($Slot * 68), $DonationWindowY + 107 + $YComp, True), Hex(0x6038B0, 6), 20) Then ; check for 'purple'
@@ -970,6 +986,18 @@ Func DonateTroopType($Type, $Quant = 0, $Custom = False, $bDonateAll = False)
 	EndIf
 
 EndFunc   ;==>DonateTroopType
+
+Func DragSpellDonWindow()
+	If Not $RunState Then Return
+	If _ColorCheck(_GetPixelColor(350 ,$DonationWindowY, True), Hex(0xFFFFFF, 6), 20) Then
+		ClickDrag(715, $DonationWindowY + 303, 580, $DonationWindowY + 303, 50)
+		If $debugSetlog = 1 Then SetLog("Dragged Spell Window successfully", $COLOR_ACTION)
+	Else
+		If $debugSetlog = 1 Then SetLog("Couldn't drag the Spell Window because the Donation Window is not open!", $COLOR_ERROR)
+		Return
+	EndIf
+	If _Sleep(800) Then Return
+EndFunc
 
 Func DonateWindow($Open = True)
 	If $debugsetlog = 1 And $Open = True Then Setlog("DonateWindow Open Start", $COLOR_DEBUG)
@@ -1257,8 +1285,8 @@ Func DetectSlotTroop($Type)
 			EndIf
 		Next
 	EndIf
-	If $Type >= $ePSpell And $Type <= $eSkSpell Then
-		For $Slot = 12 To 16
+	If $Type >= $eLSpell And $Type <= $eSkSpell Then
+		For $Slot = 12 To 17
 			Local $x = 343 + (68 * ($Slot - 12))
 			Local $y = $DonationWindowY + 241
 			Local $x1 = $x + 75
@@ -1270,7 +1298,7 @@ Func DetectSlotTroop($Type)
 			If $debugsetlog = 1 Then Setlog("Slot: " & $Slot & " SearchImgloc returned >>" & $FullTemp[0] & "<<", $COLOR_DEBUG)
 			If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
 			If $FullTemp[0] <> "" Then
-				For $i = $ePSpell To $eSkSpell
+				For $i = $eLSpell To $eSkSpell
 					$sTmp = StringLeft(NameOfTroop($i), 4)
 					;If $debugsetlog = 1 Then Setlog(NameOfTroop($i) & " = " & $sTmp, $COLOR_DEBUG)
 					If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
@@ -1438,31 +1466,46 @@ EndFunc   ;==>DonatedTroop
 Func DonatedSpell($Type, $iDonSpellsQuantity)
 
 	Switch $Type
-		Case $ePSpell
+		Case $eLSpell
 			$TroopsDonQ[20] += $iDonSpellsQuantity
-			$TroopsDonXP[20] += $iDonSpellsQuantity * 5
-		Case $eESpell
+			$TroopsDonXP[20] += $iDonSpellsQuantity * 10
+		Case $eHSpell
 			$TroopsDonQ[21] += $iDonSpellsQuantity
-			$TroopsDonXP[21] += $iDonSpellsQuantity * 5
-		Case $eHaSpell
+			$TroopsDonXP[21] += $iDonSpellsQuantity * 10
+		Case $eRSpell
 			$TroopsDonQ[22] += $iDonSpellsQuantity
-			$TroopsDonXP[22] += $iDonSpellsQuantity * 5
-		Case $eSkSpell
+			$TroopsDonXP[22] += $iDonSpellsQuantity * 10
+		Case $eJSpell
 			$TroopsDonQ[23] += $iDonSpellsQuantity
-			$TroopsDonXP[23] += $iDonSpellsQuantity * 5
+			$TroopsDonXP[23] += $iDonSpellsQuantity * 10
+		Case $eFSpell
+			$TroopsDonQ[24] += $iDonSpellsQuantity
+			$TroopsDonXP[24] += $iDonSpellsQuantity * 10
+		Case $ePSpell
+			$TroopsDonQ[25] += $iDonSpellsQuantity
+			$TroopsDonXP[25] += $iDonSpellsQuantity * 5
+		Case $eESpell
+			$TroopsDonQ[26] += $iDonSpellsQuantity
+			$TroopsDonXP[26] += $iDonSpellsQuantity * 5
+		Case $eHaSpell
+			$TroopsDonQ[27] += $iDonSpellsQuantity
+			$TroopsDonXP[27] += $iDonSpellsQuantity * 5
+		Case $eSkSpell
+			$TroopsDonQ[28] += $iDonSpellsQuantity
+			$TroopsDonXP[28] += $iDonSpellsQuantity * 5
 	EndSwitch
 
-	For $i = 20 To 23
+	For $i = 20 To 28
 		GUICtrlSetData($lblDonQ[$i], $TroopsDonQ[$i])
 	Next
 
 	Local $TotalSpQ = 0
-	For $i = 20 To 23
+	For $i = 20 To 28
 		$TotalSpQ += $TroopsDonQ[$i]
 	Next
 
 	Local $TotalSpXPWon = 0
-	For $i = 20 To 23
+	For $i = 20 To 28
 		$TotalSpXPWon += $TroopsDonXP[$i]
 	Next
 

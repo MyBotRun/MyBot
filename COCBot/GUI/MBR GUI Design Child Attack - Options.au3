@@ -23,10 +23,13 @@ GUICtrlCreateTabItem("")
 $hGUI_AttackOption_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslated(600,29,"Attack"))
 #include "MBR GUI Design Child Attack - Options-Attack.au3"
 GUICtrlCreateTabItem("")
-$hGUI_AttackOption_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,30,"End Battle"))
+$hGUI_AttackOption_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,56,"SmartZap"))
+#include "MBR GUI Design Child Attack - NewSmartZap.au3"
+GUICtrlCreateTabItem("")
+$hGUI_AttackOption_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600,30,"End Battle"))
 #include "MBR GUI Design Child Attack - Options-EndBattle.au3"
 GUICtrlCreateTabItem("")
-$hGUI_AttackOption_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600,32,"Trophy Settings"))
+$hGUI_AttackOption_TAB_ITEM5 = GUICtrlCreateTabItem(GetTranslated(600,32,"Trophy Settings"))
 #include "MBR GUI Design Child Attack - Options-TrophySettings.au3"
 GUICtrlCreateTabItem("")
 

@@ -22,7 +22,6 @@ Func CheckWall()
 	Local $NameLvlMask[5] = ["Core of Base", "Center of Base", "Middle of Base", "Most of Base", "All of Base"] ; Mask Names for easier understanding
 	Local $levelWall = $icmbWalls + 4
 	Local $listPixel[0]
-	;$Walltolerance = Number(GUICtrlRead($sldToleranceWall)) * 5
 
 
 	For $i = 0 To UBound($listLvlMask) - 1

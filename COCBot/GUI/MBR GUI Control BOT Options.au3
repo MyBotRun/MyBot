@@ -26,7 +26,6 @@ Func LoadLanguagesComboBox()
 		If @error Then ExitLoop ; exit when no more files are found
 		ReDim $aLanguageFile[$iFileIndex + 1][3]
 		$aLanguageFile[$iFileIndex][0] = StringLeft($sFilename, StringLen($sFilename) - 4)
-		Local $LangIcons
 		; All Language Icons are made by YummyGum and can be found here: https://www.iconfinder.com/iconsets/142-mini-country-flags-16x16px
 		$aLanguageFile[$iFileIndex][2] = _GUIImageList_AddIcon($hLangIcons, @ScriptDir & "\lib\MBRBot.dll", Eval("e" & $aLanguageFile[$iFileIndex][0]) - 1 )
 		$sLangDisplayName = IniRead($dirLanguages & $sFilename, "Language", "DisplayName", "Unknown")
@@ -54,7 +53,7 @@ Func LoadLanguagesComboBox()
 			_GUICtrlComboBoxEx_AddString($cmbLanguage, $aLanguageFile[$i][1], $eMissingLangIcon, $eMissingLangIcon)
 		EndIf
 	Next
-
+_GUICtrlComboBox_SetCurSel($cmbLanguage, _GUICtrlComboBox_FindStringExact($cmbLanguage, $aLanguageFile[_ArraySearch($aLanguageFile, $sLanguage)][1]))
 EndFunc   ;==>LoadLanguagesComboBox
 
 Func cmbLanguage()
@@ -700,6 +699,11 @@ Func btnTestCleanYard()
 	$result = ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
 	If @error Then $result = "Error " & @error & ", " & @extended & ", "
 	SetLog("Result CleanYard", $COLOR_INFO)
+	SetLog("Testing CheckTombs", $COLOR_INFO)
+	$result = CheckTombs()
+	$result = ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
+	If @error Then $result = "Error " & @error & ", " & @extended & ", "
+	SetLog("Result CheckTombs", $COLOR_INFO)
 	SetLog("Testing CleanYard DONE" , $COLOR_INFO)
 	EndImageTest()
 	; restore original state

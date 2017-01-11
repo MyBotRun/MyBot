@@ -75,9 +75,11 @@ Func TrainClick($x, $y, $iTimes, $iSpeed, $aWatchSpot, $aLootSpot, $sdebugtxt, $
 				If _Sleep($iSpeed, False) Then Return
 			EndIf
 		Else
+			Local $sLogText = Default
+			If $debugsetlogTrain = 1 Then $sLogText = "TrainClick " & $x & "," & $y & "," & $iTimes
 			If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
 			If $debugsetlogTrain = 1 Then SetLog("Full Check=" & _GetPixelColor($aWatchSpot[0], $aWatchSpot[1], False), $COLOR_DEBUG)
-			If _CheckPixel($aWatchSpot, True) = True Then
+			If _CheckPixel($aWatchSpot, True, Default, $sLogText) = True Then
 				If $debugClick = 1 Then SetLog("Camp is FULL", $COLOR_DEBUG)
 				Return ; Check to see if barrack full
 			EndIf

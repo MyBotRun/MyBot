@@ -23,7 +23,6 @@ Default Instance Key: N/A (internally empty String "" or "Android" is used)
 Known issues/bugs: True Background mode using ADB not available (no ADB screencap & no ADB mouse click).
 ADB only used for standard interaction and zoom-out.
 ADB connection for BlueStacks2 can require one-time ADB daemon restart (initiated automatically by bot).
-Starting with BlueStacks 2.5.55.xxxx, WinAPI Mouse Click and Ctrl-Click zoom-out don't work and ADB routines/scripts are used.
 
 KOPLAYER
 ========

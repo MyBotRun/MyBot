@@ -933,6 +933,61 @@ $hGUI_STATS_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,40,"Attacks"))
 		GUICtrlSetBkColor(-1, 0xA8A8A8)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
+
+	$x = $xStart + 5
+	$y = $yStart + 310
+		$lblStatsTSRev = GUICtrlCreateLabel(GetTranslated(632,122, "Smart Zap"), $x - 20, $y - 32, 187, 17, $SS_CENTER)
+		GUICtrlSetBkColor(-1, 0xC3C3C3)
+		GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		GUICtrlSetColor(-1, $COLOR_BLACK)
+		$lblStatsTSRev = GUICtrlCreateLabel("", $x + 35 + 130, $y - 32, 30, 17, $SS_CENTER)
+		GUICtrlSetBkColor(-1, 0xC3C3C3)
+		GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		GUICtrlSetColor(-1, $COLOR_BLACK)
+		$lblStatsTBRev = GUICtrlCreateLabel("", $x - 18 + 212, $y - 32, 207, 17, $SS_CENTER)
+		GUICtrlSetBkColor(-1, 0xC3C3C3)
+		GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		GUICtrlSetColor(-1, $COLOR_BLACK)
+	$x -= 10
+	$y -= 10
+		GUICtrlCreateIcon($pIconLib, $eIcnDarkElixirStorage, $x - 10, $y, 16, 16)
+		$txtTip = GetTranslated(632,124,"The amount of Dark Elixir won while zapping")
+		_GUICtrlSetTip(-1, $txtTip)
+		GUICtrlCreateLabel(GetTranslated(632,74, -1) & ":", $x + 13, $y + 2, -1, 17)
+		_GUICtrlSetTip(-1, $txtTip)
+		$lblSmartZap = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
+		GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		GUICtrlSetColor(-1, $COLOR_BLACK)
+		_GUICtrlSetTip(-1, $txtTip)
+	$y += 20
+		GUICtrlCreateIcon($pIconLib, $eIcnLightSpell, $x - 10, $y, 16, 16)
+		$txtTip = GetTranslated(632,125, "The amount of Lightning Spells used to zap")
+		_GUICtrlSetTip(-1, $txtTip)
+		GUICtrlCreateLabel(GetTranslated(632,123, "Used") & ":", $x + 13, $y + 2, -1, 17)
+		_GUICtrlSetTip(-1, $txtTip)
+		$lblLightningUsed = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
+		GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		GUICtrlSetColor(-1, $COLOR_BLACK)
+		_GUICtrlSetTip(-1, $txtTip)
+	$y += 20
+		GUICtrlCreateIcon($pIconLib, $eIcnEarthQuakeSpell, $x - 10, $y, 16, 16)
+		$txtTip = GetTranslated(632,126, "The amount of Earthquake Spells used to zap")
+		_GUICtrlSetTip(-1, $txtTip)
+		GUICtrlCreateLabel(GetTranslated(632,123, "Used") & ":", $x + 13, $y + 2, -1, 17)
+		_GUICtrlSetTip(-1, $txtTip)
+		$lblEarthQuakeUsed = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
+		GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		GUICtrlSetColor(-1, $COLOR_BLACK)
+		_GUICtrlSetTip(-1, $txtTip)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	$x = $xStart + 160
+	$y = $yStart + 150
+
+		$lblRev1 = GUICtrlCreateLabel("", $x + 28, $y - 160, 5, 368)
+		GUICtrlSetBkColor(-1, 0xA8A8A8)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
 ;--> TAB Attacks
 ;TAB Attacks
 $hGUI_STATS_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600, 55,"Donations"))
@@ -964,16 +1019,16 @@ $z += 20
 	GUICtrlCreateIcon($pIconLib, $eIcnWallBreaker, $x + 340, $y, 32, 32)
 	$lblDonQ[5] = GUICtrlCreateLabel("0", $x + 300, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-	
+
 	GUICtrlCreateIcon($pIconLib, $eIcnBalloon, $x + 410, $y, 32, 32)
-	$lblDonQ[6] = GUICtrlCreateLabel("0", $x + 370, $z, 35, 20, $SS_RIGHT)
+	$lblDonQ[7] = GUICtrlCreateLabel("0", $x + 370, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 
 $y += 35
 $z += 35
 
 	GUICtrlCreateIcon($pIconLib, $eIcnWizard, $x + 60, $y, 32, 32)
-	$lblDonQ[7] = GUICtrlCreateLabel("0", $x + 25, $z, 30, 20, $SS_RIGHT)
+	$lblDonQ[6] = GUICtrlCreateLabel("0", $x + 25, $z, 30, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 
 	GUICtrlCreateIcon($pIconLib, $eIcnHealer, $x + 130, $y, 32, 32)
@@ -991,7 +1046,7 @@ $z += 35
 	GUICtrlCreateIcon($pIconLib, $eIcnBabyDragon, $x + 340, $y, 32, 32)
 	$lblDonQ[11] = GUICtrlCreateLabel("0", $x + 300, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-	
+
 	GUICtrlCreateIcon($pIconLib, $eIcnMiner, $x + 410, $y, 32, 32)
 	$lblDonQ[12] = GUICtrlCreateLabel("0", $x + 370, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
@@ -1012,13 +1067,13 @@ $z += 50
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 
 	GUICtrlCreateIcon($pIconLib, $eIcnGolem, $x + 270, $y, 32, 32)
-	$lblDonQ[16] = GUICtrlCreateLabel("0", $x + 230, $z, 35, 20, $SS_RIGHT)
+	$lblDonQ[17] = GUICtrlCreateLabel("0", $x + 230, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 
 	GUICtrlCreateIcon($pIconLib, $eIcnWitch, $x + 340, $y, 32, 32)
-	$lblDonQ[17] = GUICtrlCreateLabel("0", $x + 300, $z, 35, 20, $SS_RIGHT)
+	$lblDonQ[16] = GUICtrlCreateLabel("0", $x + 300, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-	
+
 	GUICtrlCreateIcon($pIconLib, $eIcnLavaHound, $x +410, $y, 32, 32)
 	$lblDonQ[18] = GUICtrlCreateLabel("0", $x + 370, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
@@ -1045,34 +1100,58 @@ $y += 45
 
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-Local $x = 5, $y = 255, $z = 263
+Local $x = 5, $y = 250, $z = 263
 
-$grpDElxTrSp = GUICtrlCreateGroup(GetTranslated(632,119,"Spells"), $x, $y, 427, 95, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
+$grpDElxTrSp = GUICtrlCreateGroup(GetTranslated(632,119,"Spells"), $x, $y, 427, 150, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
 
-$x -= 12
-$x += 55
+$x -= 25
 $y += 20
 $z += 20
 
-	GUICtrlCreateIcon($pIconLib, $eIcnPoisonSpell, $x + 60, $y, 32, 32)
-	$lblDonQ[20] = GUICtrlCreateLabel("0", $x + 20, $z, 35, 20, $SS_RIGHT)
+	GUICtrlCreateIcon($pIconLib, $eIcnLightSpell, $x + 60, $y, 32, 32)
+	$lblDonQ[20] = GUICtrlCreateLabel("0", $x + 25, $z, 30, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 
-	GUICtrlCreateIcon($pIconLib, $eIcnEarthQuakeSpell, $x + 130, $y, 32, 32)
+	GUICtrlCreateIcon($pIconLib, $eIcnHealSpell, $x + 130, $y, 32, 32)
 	$lblDonQ[21] = GUICtrlCreateLabel("0", $x + 90, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 
-	GUICtrlCreateIcon($pIconLib, $eIcnHasteSpell, $x + 200, $y, 32, 32)
+	GUICtrlCreateIcon($pIconLib, $eIcnRageSpell, $x + 200, $y, 32, 32)
 	$lblDonQ[22] = GUICtrlCreateLabel("0", $x + 160, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 
-	GUICtrlCreateIcon($pIconLib, $eIcnSkeletonSpell, $x + 270, $y, 32, 32)
+	GUICtrlCreateIcon($pIconLib, $eIcnJumpSpell, $x + 270, $y, 32, 32)
 	$lblDonQ[23] = GUICtrlCreateLabel("0", $x + 230, $z, 35, 20, $SS_RIGHT)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 
-$x -= 40
-$x -= 2
-$y += 40
+	GUICtrlCreateIcon($pIconLib, $eIcnFreezeSpell, $x + 340, $y, 32, 32)
+	$lblDonQ[24] = GUICtrlCreateLabel("0", $x + 300, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+
+
+$y += 50
+$z += 50
+
+
+	GUICtrlCreateIcon($pIconLib, $eIcnPoisonSpell, $x + 60, $y, 32, 32)
+	$lblDonQ[25] = GUICtrlCreateLabel("0", $x + 25, $z, 30, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+
+	GUICtrlCreateIcon($pIconLib, $eIcnHasteSpell, $x + 130, $y, 32, 32)
+	$lblDonQ[26] = GUICtrlCreateLabel("0", $x + 90, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+
+	GUICtrlCreateIcon($pIconLib, $eIcnEarthquakeSpell, $x + 200, $y, 32, 32)
+	$lblDonQ[27] = GUICtrlCreateLabel("0", $x + 160, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+
+	GUICtrlCreateIcon($pIconLib, $eIcnSkeletonSpell, $x + 270, $y, 32, 32)
+	$lblDonQ[28] = GUICtrlCreateLabel("0", $x + 230, $z, 35, 20, $SS_RIGHT)
+	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+
+
+$x += 26
+$y += 45
 
 	$lblTotalSpellsQ = GUICtrlCreateLabel(GetTranslated(632,120,"Total Donated") & " : 0", $x + 5, $y, 230, 20, $SS_CENTER)
 	GUICtrlSetFont(-1, 11, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)

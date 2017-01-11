@@ -22,7 +22,7 @@
 Global Const $TCM_SETITEM = 0x1306
 
 Global Const $_GUI_MAIN_WIDTH = 470
-Global Const $_GUI_MAIN_HEIGHT = 650
+Global Const $_GUI_MAIN_HEIGHT = 690 ; 650
 Global Const $_GUI_MAIN_TOP = 5
 Global Const $_GUI_BOTTOM_HEIGHT = 135
 Global Const $_GUI_CHILD_LEFT = 10

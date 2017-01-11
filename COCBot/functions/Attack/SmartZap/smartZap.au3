@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: LunaEclipse(March, 2016)
-; Modified ......: TheRevenor (November, 2016)
+; Modified ......: TheRevenor(November, 2016), ProMac(Desember, 2016), TheRevenor(Desember, 2016)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -96,7 +96,7 @@ Func smartZap($minDE = -1)
 	Local $searchDark, $oldSearchDark = 0, $skippedZap = True, $performedZap = False, $dropPoint
 
 	; If smartZap is not checked, exit.
-	If $DebugSmartZap = 1 Then SetLog("$ichkSmartZap = " & $ichkSmartZap & " | $ichkNoobZap = " & $ichkNoobZap, $COLOR_DEBUG)
+	If $DebugSmartZap = 1 Then SetLog("$ichkSmartZap = " & $ichkSmartZap & " | $ichkEarthQuakeZap = " & $ichkEarthQuakeZap & " | $ichkNoobZap = " & $ichkNoobZap, $COLOR_DEBUG)
 	If $ichkSmartZap <> 1 Then Return $performedZap
 	If $ichkSmartZap = 1 And $ichkNoobZap = 0 Then
 		SetLog("====== You have activated SmartZap Mode ======", $COLOR_ERROR)
@@ -182,7 +182,7 @@ Func smartZap($minDE = -1)
 		SetLog(" - Number of Lightning Spells: " & Number($numSpells), $COLOR_FUCHSIA)
 	EndIf
 
-	If $EQSpellZap > 0 And IsSpecialTroopToBeUsed($DB, $eESpell) Then
+	If $ichkEarthQuakeZap = 1 And $EQSpellZap > 0 And IsSpecialTroopToBeUsed($DB, $eESpell) Then
 		SetLog(" - Number of Earth Quake Spells: " & Number($EQSpellZap), $COLOR_FUCHSIA)
     Else
 		$EQSpellZap = 0 ; remove the EQ , is not to use it
@@ -240,12 +240,10 @@ Func smartZap($minDE = -1)
 			Return $performedZap
 		EndIf
 
-		; If you activate N00bZap, drop lightning on any level DE drill
+		; If you activate N00bZap, drop lightning on any DE drill
 		If $ichkNoobZap = 1 Then
 			SetLog("NoobZap is going to attack any drill.", $COLOR_ACTION)
-			If  $EQSpellZap > 0 Then
-				zapDrill($eLSpell, $aDarkDrills[0][0] + $strikeOffsets[0], $aDarkDrills[0][1] + $strikeOffsets[1])
-			Endif
+			zapDrill($eLSpell, $aDarkDrills[0][0] + $strikeOffsets[0], $aDarkDrills[0][1] + $strikeOffsets[1])
 
 			$performedZap = True
 			$skippedZap = False
@@ -335,6 +333,7 @@ Func smartZap($minDE = -1)
 						$expectedDE = Ceiling(Number($drillLevelSteal[($aDarkDrills[0][2] - 1)] * 0.70))  ; 70% damage ! Lighting Spells
 					EndIf
 				Else
+					$numLSpellsUsed += 1
 					$expectedDE = $itxtExpectedDE
 				EndIf
 			Else
@@ -433,6 +432,7 @@ EndFunc   ;==>EarthQuakeZapDrill
 
 Func ReCheckDrillExist($x, $y)
 	Local $result
+	If _Sleep($DelaySmartZap3) Then Return ; 3 seconds to disapear green bars
 	_CaptureRegion2($x - 50, $y - 50, $x + 40, $y + 40)
 	Local $directory = @ScriptDir & "\imgxml\Storages\Drills"
 	Local $Maxpositions = 1

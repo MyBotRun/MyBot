@@ -24,8 +24,6 @@ $grpLanguages = GUICtrlCreateGroup(GetTranslated(636,83, "GUI Language"), $x - 2
 	_GUICtrlSetTip($hcmbLanguage,$txtTip,Default,Default,Default, False)
 
 	LoadLanguagesComboBox() ; full combo box languages reading from languages folders
-
-	_GUICtrlComboBoxEx_SetCurSel($cmbLanguage, _GUICtrlComboBoxEx_FindStringExact($cmbLanguage, $sLanguageDisp))
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $y += 54

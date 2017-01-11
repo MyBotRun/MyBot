@@ -21,7 +21,7 @@ Func getNumberOfDrills($listPixelByLevel = -1)
 	If Not IsArray($listPixelByLevel) Then $listPixelByLevel = getDrillArray()
 
 	If $listPixelByLevel[1] <> "" Then $result = $listPixelByLevel[0]
-	If $debugSetLog = 1 Then SetLog("Total No. of Dark Elixir Drills = " & $result, $COLOR_FUCHSIA)
+	If $DebugSmartZap = 1 Then SetLog("Total No. of Dark Elixir Drills = " & $result, $COLOR_DEBUG)
 
 	Return $result
 EndFunc   ;==>getNumberOfDrills
@@ -43,10 +43,10 @@ Func fillDrillArray($listPixelByLevel = -1)
 			; If the string delimiter is not found, then try next string.
 			If @error Then ContinueLoop
 
-			If $debugSetLog = 1 Then
-				Setlog("Drill search UBound($pixelWithLevel) = " & UBound($pixelWithLevel) - 1, $COLOR_PURPLE)
+			If $DebugSmartZap = 1 Then
+				Setlog("Drill search UBound($pixelWithLevel) = " & UBound($pixelWithLevel) - 1, $COLOR_DEBUG)
 				For $j = 0 To UBound($pixelWithLevel) - 1
-					Setlog("Drill search $pixelWithLevel[" & $j & "] = " & $pixelWithLevel[$j], $COLOR_PURPLE)
+					Setlog("Drill search $pixelWithLevel[" & $j & "] = " & $pixelWithLevel[$j], $COLOR_DEBUG)
 				Next
 			EndIf
 
@@ -56,8 +56,8 @@ Func fillDrillArray($listPixelByLevel = -1)
 			$pixel[1] = $pixelStr[2]
 
 			; Debug Drill Search
-			If $debugSetLog = 1 Then
-				Setlog("Drill search $level = " & $level, $COLOR_PURPLE)
+			If $DebugSmartZap = 1 Then
+				Setlog("Drill search $level = " & $level, $COLOR_DEBUG)
 				For $j = 0 To UBound($pixelStr) - 1
 					Setlog("Drill search $pixelStr[" & $j & "] = " & $pixelStr[$j], $COLOR_PURPLE)
 				Next
@@ -71,10 +71,10 @@ Func fillDrillArray($listPixelByLevel = -1)
 				$result[$i][3] = $drillLevelHold[Number($level) - 1]
 				$result[$i][4] = $drillLevelSteal[Number($level) - 1]
 
-				If $debugSetLog = 1 Then SetLog("Dark Elixir Drill: [" & $result[$i][0] & "," & $result[$i][1] & "], Level: " & $result[$i][2] & ", Hold: " & $result[$i][3] & ", Steal: " & $result[$i][4], $COLOR_BLUE)
+				If $DebugSmartZap = 1 Then SetLog("Dark Elixir Drill: [" & $result[$i][0] & "," & $result[$i][1] & "], Level: " & $result[$i][2] & ", Hold: " & $result[$i][3] & ", Steal: " & $result[$i][4], $COLOR_DEBUG)
 			Else
-				If $debugSetLog = 1 Then SetLog("Dark Elixir Drill: [" & $pixel[0] & "," & $pixel[1] & "], Level: " & $level, $COLOR_PURPLE)
-				If $debugSetLog = 1 Then SetLog("Found Dark Elixir Drill with an invalid location.", $COLOR_RED)
+				If $DebugSmartZap = 1 Then SetLog("Dark Elixir Drill: [" & $pixel[0] & "," & $pixel[1] & "], Level: " & $level, $COLOR_DEBUG)
+				If $DebugSmartZap = 1 Then SetLog("Found Dark Elixir Drill with an invalid location.", $COLOR_ERROR)
 			EndIf
 		Next
 	EndIf
@@ -95,15 +95,15 @@ Func getDrillArray()
 	$listPixelByLevel = StringSplit($result, "~")
 
 	; Debugging purposes only
-	If $debugSetLog = 1 Then
-		Setlog("Drill search $result[0] = " & $result, $COLOR_PURPLE)
+	If $DebugSmartZap = 1 Then
+		Setlog("Drill search $result[0] = " & $result, $COLOR_DEBUG)
 
 		; Get the number of drills for the loop
 		$numDrills = getNumberOfDrills($listPixelByLevel)
 		If $numDrills > 0 Then
 			For $i = 1 To $numDrills
 				; Debug the array entries.
-				Setlog("Drill search $listPixelByLevel[" & $i & "] = " & $listPixelByLevel[$i], $COLOR_PURPLE)
+				Setlog("Drill search $listPixelByLevel[" & $i & "] = " & $listPixelByLevel[$i], $COLOR_DEBUG)
 			Next
 		EndIf
 	EndIf

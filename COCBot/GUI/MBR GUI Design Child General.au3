@@ -44,7 +44,7 @@ $divider = GUICtrlCreateLabel("", 0, 0, 20, 20, $SS_SUNKEN + $SS_BLACKRECT)
 
 WinActivate($activeHWnD) ; restore current active window
 
-$y = 370
+$y = 410
 	$lblLog = GUICtrlCreateLabel(GetTranslated(601,3, "Log Style")&":", $x, $y + 5, -1, -1)
 		GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 	$cmbLog = GUICtrlCreateCombo("", $x + 50, $y, 180, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))

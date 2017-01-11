@@ -1392,6 +1392,51 @@ chkskipDonateNearFulLTroopsEnable()
 	If $configLoaded Then GUICtrlSetData($txtDonateMiners, $sTxtDonateMiners)
 	If $configLoaded Then GUICtrlSetData($txtBlacklistMiners, $sTxtBlacklistMiners)
 
+	If $ichkDonateLightningSpells = 1 Then
+		GUICtrlSetState($chkDonateLightningSpells, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDonateLightningSpells, $GUI_UNCHECKED)
+	EndIf
+	chkDonateLightningSpells()
+	If $configLoaded Then GUICtrlSetData($txtDonateLightningSpells, $sTxtDonateLightningSpells)
+	If $configLoaded Then GUICtrlSetData($txtBlacklistLightningSpells, $sTxtBlacklistLightningSpells)
+
+	If $ichkDonateHealSpells = 1 Then
+		GUICtrlSetState($chkDonateHealSpells, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDonateHealSpells, $GUI_UNCHECKED)
+	EndIf
+	chkDonateHealSpells()
+	If $configLoaded Then GUICtrlSetData($txtDonateHealSpells, $sTxtDonateHealSpells)
+	If $configLoaded Then GUICtrlSetData($txtBlacklistHealSpells, $sTxtBlacklistHealSpells)
+
+	If $ichkDonateRageSpells = 1 Then
+		GUICtrlSetState($chkDonateRageSpells, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDonateRageSpells, $GUI_UNCHECKED)
+	EndIf
+	chkDonateRageSpells()
+	If $configLoaded Then GUICtrlSetData($txtDonateRageSpells, $sTxtDonateRageSpells)
+	If $configLoaded Then GUICtrlSetData($txtBlacklistRageSpells, $sTxtBlacklistRageSpells)
+
+	If $ichkDonateJumpSpells = 1 Then
+		GUICtrlSetState($chkDonateJumpSpells, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDonateJumpSpells, $GUI_UNCHECKED)
+	EndIf
+	chkDonateJumpSpells()
+	If $configLoaded Then GUICtrlSetData($txtDonateJumpSpells, $sTxtDonateJumpSpells)
+	If $configLoaded Then GUICtrlSetData($txtBlacklistJumpSpells, $sTxtBlacklistJumpSpells)
+
+	If $ichkDonateFreezeSpells = 1 Then
+		GUICtrlSetState($chkDonateFreezeSpells, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDonateFreezeSpells, $GUI_UNCHECKED)
+	EndIf
+	chkDonateFreezeSpells()
+	If $configLoaded Then GUICtrlSetData($txtDonateFreezeSpells, $sTxtDonateFreezeSpells)
+	If $configLoaded Then GUICtrlSetData($txtBlacklistFreezeSpells, $sTxtBlacklistFreezeSpells)
+
 	If $ichkDonateMinions = 1 Then
 		GUICtrlSetState($chkDonateMinions, $GUI_CHECKED)
 	Else
@@ -1610,6 +1655,41 @@ chkskipDonateNearFulLTroopsEnable()
 		_DonateAllControls($eMine, True)
 	Else
 		GUICtrlSetState($chkDonateAllMiners, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkDonateAllLightningSpells = 1 Then
+		GUICtrlSetState($chkDonateAllLightningSpells, $GUI_CHECKED)
+		_DonateAllControlsSpell(4, True)
+	Else
+		GUICtrlSetState($chkDonateAllLightningSpells, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkDonateAllHealSpells = 1 Then
+		GUICtrlSetState($chkDonateAllHealSpells, $GUI_CHECKED)
+		_DonateAllControlsSpell(5, True)
+	Else
+		GUICtrlSetState($chkDonateAllHealSpells, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkDonateAllRageSpells = 1 Then
+		GUICtrlSetState($chkDonateAllRageSpells, $GUI_CHECKED)
+		_DonateAllControlsSpell(6, True)
+	Else
+		GUICtrlSetState($chkDonateAllRageSpells, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkDonateAllJumpSpells = 1 Then
+		GUICtrlSetState($chkDonateAllJumpSpells, $GUI_CHECKED)
+		_DonateAllControlsSpell(7, True)
+	Else
+		GUICtrlSetState($chkDonateAllJumpSpells, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkDonateAllFreezeSpells = 1 Then
+		GUICtrlSetState($chkDonateAllFreezeSpells, $GUI_CHECKED)
+		_DonateAllControlsSpell(8, True)
+	Else
+		GUICtrlSetState($chkDonateAllFreezeSpells, $GUI_UNCHECKED)
 	EndIf
 
 	If $ichkDonateAllMinions = 1 Then
@@ -2199,7 +2279,6 @@ chkskipDonateNearFulLTroopsEnable()
 
 	;multilanguage
 	LoadLanguagesComboBox() ; recreate combo box values
-	_GUICtrlComboBox_SetCurSel($cmbLanguage, _GUICtrlComboBox_FindStringExact($cmbLanguage, $aLanguageFile[_ArraySearch($aLanguageFile, $sLanguage)][1]))
 
 	;distributors
 	SetCurSelCmbCOCDistributors()
@@ -2786,7 +2865,12 @@ chkskipDonateNearFulLTroopsEnable()
 	chkABWaitForCCSpell()
 
 	_GUICtrlComboBox_SetCurSel($cmbDBWaitForCastleSpell, $iCmbWaitForCastleSpell[$DB])
+	_GUICtrlComboBox_SetCurSel($cmbDBWaitForCastleSpell2, $iCmbWaitForCastleSpell2[$DB])
 	_GUICtrlComboBox_SetCurSel($cmbABWaitForCastleSpell, $iCmbWaitForCastleSpell[$LB])
+	_GUICtrlComboBox_SetCurSel($cmbABWaitForCastleSpell2, $iCmbWaitForCastleSpell2[$LB])
+
+	cmbDBWaitForCCSpell()
+	cmbABWaitForCCSpell()
 
 	;Apply to switch Attack Standard after THSnipe End ==>
 	If $ichkTSActivateCamps2 = 1 Then
@@ -2799,19 +2883,19 @@ chkskipDonateNearFulLTroopsEnable()
 
 	;Train Radio/QuickTrain
 
-	If $iRadio_Army1 = 1 Then
+	If $iChkQuickArmy1 = 1 Then
 		GUICtrlSetState($hRadio_Army1, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($hRadio_Army1, $GUI_UNCHECKED)
 	EndIf
 
-	If $iRadio_Army2 = 1 Then
+	If $iChkQuickArmy2 = 1 Then
 		GUICtrlSetState($hRadio_Army2, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($hRadio_Army2, $GUI_UNCHECKED)
 	EndIf
 
-	If $iRadio_Army3 = 1 Then
+	If $iChkQuickArmy3 = 1 Then
 		GUICtrlSetState($hRadio_Army3, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($hRadio_Army3, $GUI_UNCHECKED)

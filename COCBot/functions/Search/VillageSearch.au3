@@ -75,6 +75,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		$logwrited = False
 		$bBtnAttackNowPressed = False
 		$hAttackCountDown = TimerInit()
+		$SearchTHLResult = - 1
 
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 		Local $Time = @HOUR & "." & @MIN & "." & @SEC
@@ -116,19 +117,25 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		ForceCaptureRegion()
 		_CaptureRegion2()
 
-		; measure enemy village
-		If CheckZoomOut("VillageSearch", True, False) = False Then
-			; check two more times, only required for snow theme (snow fall can make it easily fail), but don't hurt to keep it
-			$i = 0
-			Local $bMeasured
-			Do
-				$i += 1
-				If _Sleep($iDelayPrepareSearch3) Then Return ; wait 500 ms
-				ForceCaptureRegion()
-				$bMeasured = CheckZoomOut("VillageSearch", $i < 2, True)
-			Until $bMeasured = True Or $i >= 2
-			If $bMeasured = False Then Return ; exit func
-		EndIf
+		; measure enemy village (only if resources match)
+		For $i = 0 To $iModeCount - 1
+			If $match[$i] Then
+				If CheckZoomOut("VillageSearch", True, False) = False Then
+					; check two more times, only required for snow theme (snow fall can make it easily fail), but don't hurt to keep it
+					$i = 0
+					Local $bMeasured
+					Do
+						$i += 1
+						If _Sleep($iDelayPrepareSearch3) Then Return ; wait 500 ms
+						ForceCaptureRegion()
+						_CaptureRegion2()
+						$bMeasured = CheckZoomOut("VillageSearch", $i < 2, False)
+					Until $bMeasured = True Or $i >= 2
+					If $bMeasured = False Then Return ; exit func
+				EndIf
+				ExitLoop
+			EndIf
+		Next
 		; ----------------- FIND TARGET TOWNHALL -------------------------------------------
 		; $searchTH name of level of townhall (return "-" if no th found)
 		; $THx and $THy coordinates of townhall
@@ -136,6 +143,9 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		If $match[$DB] Or $match[$LB] Or $match[$TS] Then; make sure resource conditions are met
 			$THString = FindTownhall(False, False);find TH, but only if TH condition is checked
 		ElseIf ($iChkMeetOne[$DB] = 1 Or $iChkMeetOne[$LB] = 1) Then;meet one then attack, do not need correct resources
+			$THString = FindTownhall(True, False)
+		ElseIf $OptBullyMode = 1 And ($SearchCount >= $ATBullyMode) then
+			; Check the TH for BullyMode
 			$THString = FindTownhall(True, False)
 		EndIf
 
@@ -145,13 +155,16 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 					If $iChkMeetTH[$i] <> 1 And $iChkMeetTHO[$i] <> 1 Then
 						;ignore, conditions not checked
 					Else
-						If CompareTH($i) Then $match[$i] = True;have a match if meet one enabled & a TH condition is met.
+						If CompareTH($i) Then $match[$i] = True;have a match if meet one enabled & a TH condition is met. ; UPDATE THE VARIABLE $SearchTHLResult
 					EndIf
 				Else
-					If Not CompareTH($i) Then $match[$i] = False;if TH condition not met, skip. if it is, match is determined based on resources
+					If Not CompareTH($i) Then $match[$i] = False;if TH condition not met, skip. if it is, match is determined based on resources ; UPDATE THE VARIABLE $SearchTHLResult
 				EndIf
 			EndIf
 		Next
+
+		; Check the TH Level for BullyMode conditional
+		if $SearchTHLResult = -1 then CompareTH(0)  ; inside have a conditional to update $SearchTHLResult
 
 		; ----------------- WRITE LOG OF ENEMY RESOURCES -----------------------------------
 		$GetResourcesTXT = StringFormat("%3s", $SearchCount) & "> [G]:" & StringFormat("%7s", $searchGold) & " [E]:" & StringFormat("%7s", $searchElixir) & " [D]:" & StringFormat("%5s", $searchDark) & " [T]:" & StringFormat("%2s", $searchTrophy) & $THString
@@ -165,8 +178,8 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 
 		; ----------------- CHECK WEAK BASE -------------------------------------------------
-		If ($isModeActive[$DB] And IsWeakBaseActive($DB) And $dbBase And ($match[$DB] Or $iChkMeetOne[$DB] = 1)) Or _
-			($isModeActive[$LB] And IsWeakBaseActive($LB) And ($match[$LB] Or $iChkMeetOne[$LB] = 1)) Then
+		If (IsWeakBaseActive($DB) And $dbBase And ($match[$DB] Or $iChkMeetOne[$DB] = 1)) Or _
+			(IsWeakBaseActive($LB) And ($match[$LB] Or $iChkMeetOne[$LB] = 1)) Then
 
 			;let try to reduce weekbase time
 			If ( $searchTH <> "-" ) then
@@ -229,15 +242,13 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			$logwrited = True
 			$iMatchMode = $LB
 			ExitLoop
-		ElseIf $match[$LB] Or $match[$DB] Then
-			If $OptBullyMode = 1 And ($SearchCount >= $ATBullyMode) Then
-				If $SearchTHLResult = 1 Then
-					SetLog($GetResourcesTXT, $COLOR_SUCCESS, "Lucida Console", 7.5)
-					SetLog("      " & "Not a match, but TH Bully Level Found! ", $COLOR_SUCCESS, "Lucida Console", 7.5)
-					$logwrited = True
-					$iMatchMode = $iTHBullyAttackMode
-					ExitLoop
-				EndIf
+		ElseIf $OptBullyMode = 1 And ($SearchCount >= $ATBullyMode) Then  ; TH bully doesn't need the resources conditions
+			If $SearchTHLResult = 1 Then
+				SetLog($GetResourcesTXT, $COLOR_SUCCESS, "Lucida Console", 7.5)
+				SetLog("      " & "Not a match, but TH Bully Level Found! ", $COLOR_SUCCESS, "Lucida Console", 7.5)
+				$logwrited = True
+				$iMatchMode = $iTHBullyAttackMode
+				ExitLoop
 			EndIf
 		EndIf
 
@@ -296,7 +307,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		If $bBtnAttackNowPressed = True Then ExitLoop
 
 		; ----------------- PRESS BUTTON NEXT  -------------------------------------------------
-		If $checkDeadBase And $debugDeadBaseImage = 0 And $iSkipped > $iSearchEnableDebugDeadBaseImage Then
+		If $checkDeadBase And $debugDeadBaseImage = 0 And $SearchCount > $iSearchEnableDebugDeadBaseImage Then
 			SetLog("Enabled collecting debug images of dead bases (zombies)", $COLOR_DEBUG)
 			SetLog("- Save skipped dead base when available Elixir with empty storage > " & (($aZombie[8] > -1) ? ($aZombie[8] & "k") : ("is disabled")), $COLOR_DEBUG)
 			SetLog("- Save skipped dead base when available Elixir > " & (($aZombie[9] > -1) ? ($aZombie[9] & "k") : ("is disabled")), $COLOR_DEBUG)

@@ -1,4 +1,31 @@
-﻿* **V6.5.2**
+﻿* **V6.5.3**
+ * Add Donation of 2 Space Spells
+ * Add new Detection of Troops in Training Window using ImgLoc
+ * Fix deadbase search during trophy drop
+ * Fix error deploying all available heros during trophy drop
+ * Fix SmartZap And N00bZap Mode
+ * Fix Full Drop line first Redline point not starting/ending at axis position
+ * Fix using selected redline stratey in CSV Attack on live base when standard attack (not used!) had DES or TH attack selected
+ * Fix weak base detection mixing live and dead base settings
+ * Fix Donation Clan Mates Filter setting not saved when Cyrillic/Chinese Alphabet Recoginition checked
+ * Fix "cannot use ADB on shared folder" error for BlueStacks (and probably other Androids) related to a timing issue
+ * Fix Training Minions instead of Bowlers issue
+ * Fix Incorrect statistics of Donate Wizz, Ball, Golem and Witch
+ * Fix Check Dark Elixier Full does not work on Attack Screen
+ * Fix Language not shown correct on fresh Profiles
+ * Fix to use SearchCamps before not use when bot is in idle mode only wait full camps
+ * Fix Bully Mode errors on search Village
+ * Fix Glitch on GUI when the troops are level 0 and the input box don't disappears.
+ * Improve search performance not measuring village when resources don't match
+ * Improve watchdog not restarting crashed bot when manually restarted within 2 Minutes
+ * Improve the Lighting Spell detection , on armyover view window
+ * Revert forced ADB clicks for BS 2.5.x to WinAPI/ControlClick as not required anymore
+ * Update Turkish Language By @TuborGRedTR And @CHiNo-
+ * Update Icons for Troops and Spells extract from DEC Update
+ * Add New detection of Train/Brew slots
+ * Add Red Line Option on CSV to deploy on external Edges
+ 
+* **V6.5.2**
  * Fix Android or Bot window out of visible screen problem
  * Fix Bot /restart parameter not closing other bot instance when Window not accessible
  * Fix Debug variable error on Drills detection

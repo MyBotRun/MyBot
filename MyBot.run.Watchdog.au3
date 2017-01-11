@@ -131,6 +131,9 @@ While 1
 		EndIf
 	WEnd
 
+	; log active bots
+	SetDebugLog("Active bots: " & GetActiveMyBotCount($iTimeoutBroadcast + 3000))
+
 	; automatically close watchdog when no bot available
 	If $iTimeoutAutoClose > -1 And TimerDiff($hTimeoutAutoClose) > $iTimeoutAutoClose Then
 		If UBound(GetManagedMyBotDetails()) = 0 Then

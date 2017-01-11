@@ -14,8 +14,10 @@
 ; ===============================================================================================================================
 
 Func CheckTombs()
-	If $ichkTombstones <> 1 Then Return False
-	If $NotNeedAllTime[1] = 0 Then Return
+	If Not TestCapture() Then
+		If $ichkTombstones <> 1 Then Return False
+		If $NotNeedAllTime[1] = 0 Then Return
+	EndIf
 	; Timer
 	Local $hTimer = TimerInit()
 
@@ -77,7 +79,7 @@ EndFunc   ;==>CheckTombs
 Func CleanYard()
 
 	; Early exist if noting to do
-	If $ichkCleanYard = 0 And $ichkGemsBox = 0 Then Return
+	If $ichkCleanYard = 0 And $ichkGemsBox = 0 And Not TestCapture() Then Return
 
 	; Timer
 	Local $hObstaclesTimer = TimerInit()
@@ -142,8 +144,8 @@ Func CleanYard()
 	Local $GemBoxXY[2] = [0, 0]
 
 	; Perform a parallel search with all images inside the directory
-	If $iFreeBuilderCount > 0 And $ichkGemsBox = 1 Then
-		Local $aResult = returnSingleMatchOwnVillage($directoryGemBox)
+	If ($iFreeBuilderCount > 0 And $ichkGemsBox = 1) Or TestCapture() Then
+		Local $aResult = multiMatches($directoryGemBox, 1, $sCocDiamond, $sCocDiamond)
 		If UBound($aResult) > 1 Then
 			; Now loop through the array to modify values, select the highest entry to return
 			For $i = 1 To UBound($aResult) - 1

@@ -26,6 +26,8 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 	Local $maxLevel = 100
 	Local $maxReturnPoints = 1
 	Local $returnProps = "objectname,objectlevel,objectpoints,nearpoints,farpoints,redlinedistance"
+	
+	Local $strpredebug = ""
 
 	If $myVillage = False Then ; these are only for OPONENT village
 		ResetTHsearch() ;see below
@@ -45,6 +47,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 		
 		IF $iDetectedImageType = 1 Then ;Snow theme on
 			$xdirectory = "snow-" & $xdirectory  
+			$strpredebug = "snow_"
 		EndIF
 		
 		if $retry > 0 and $IMGLOCREDLINE <> "" then ; on retry IMGLOCREDLNE is already populated
@@ -137,7 +140,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 				If $debugsetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 			Else
 				If $debugsetlog = 1 Then SetLog("imgloc Found Multiple TH : ", $COLOR_INFO)
-				If $debugImageSave = 1  Then DebugImageSave("imglocTHSearch_MultiMatched_", True)
+				If $debugImageSave = 1  Then DebugImageSave($strpredebug & "imglocTHSearch_MultiMatched_", True)
 				;could be a multi match or another tile for same object. As TH only have 1 tile, this will never happen
 				If $debugsetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 			EndIf
@@ -145,14 +148,14 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 		Else
 			;thnotfound
 			If $debugsetlog = 1  and $retry > 0 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
-			If $debugImageSave = 1 and $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
+			If $debugImageSave = 1 and $retry > 0 Then DebugImageSave($strpredebug & "imglocTHSearch_NoTHFound_", True)
 			If $debugsetlog = 1 and $retry > 0 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 		EndIf
 		
 		If $IMGLOCTHLEVEL > 0 Then
 			ExitLoop ; TH was found
 		Else
-			If $debugImageSave = 1 and $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
+			If $debugImageSave = 1 and $retry > 0 Then DebugImageSave($strpredebug & "imglocTHSearch_NoTHFound_", True)
 			If $debugsetlog = 1 Then SetLog("imgloc THSearch Notfound, Retry:  " & $retry)
 		EndIf
 		$retry = $retry + 1

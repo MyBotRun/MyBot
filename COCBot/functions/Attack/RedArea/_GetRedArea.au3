@@ -29,10 +29,10 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC)
 	Local $ySkip = 5
 	Local $result = 0
 
-	If $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 Then ; Used for DES Side Attack (need to know the side the DES is on)
+	If $iMatchMode = $LB And $iAtkAlgorithm[$LB] = 0 And $iChkDeploySettings[$LB] = 4 Then ; Used for DES Side Attack (need to know the side the DES is on)
 		$result = DllCall($hFuncLib, "str", "getRedAreaSideBuilding", "ptr", $hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingDES)
 		If $debugSetlog Then Setlog("Debug: Redline with DES Side chosen")
-	ElseIf $iMatchMode = $LB And $iChkDeploySettings[$LB] = 5 Then ; Used for TH Side Attack (need to know the side the TH is on)
+	ElseIf $iMatchMode = $LB And $iAtkAlgorithm[$LB] = 0 And $iChkDeploySettings[$LB] = 5 Then ; Used for TH Side Attack (need to know the side the TH is on)
 		$result = DllCall($hFuncLib, "str", "getRedAreaSideBuilding", "ptr", $hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingTH)
 		If $debugSetlog Then Setlog("Debug: Redline with TH Side chosen")
 	Else ; Normal getRedArea

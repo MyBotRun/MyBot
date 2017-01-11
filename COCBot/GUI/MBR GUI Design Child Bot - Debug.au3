@@ -74,6 +74,10 @@ $chkDebugDeadbaseImage = GUICtrlCreateCheckbox(GetTranslated(636, 116, "Deadbase
 _GUICtrlSetTip(-1, GetTranslated(636, 117, "Debug: Saves images of skipped deadbase villages."))
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlSetState(-1, $GUI_HIDE)
+$y += 20
+$chkDebugSmartZap = GUICtrlCreateCheckbox(GetTranslated(638, 23,"Debug SmartZap"), $x, $y -5, -1, -1)
+$txtTip = GetTranslated(638, 24, "Use this to debug SmartZap")
+_GUICtrlSetTip(-1, $txtTip)
 
 Local $x = 300
 $y = 52
@@ -121,7 +125,7 @@ $btnTestDeadBaseFolder = GUICtrlCreateButton(GetTranslated(636, 116, "Test Dead 
 $btnTestCleanYard = GUICtrlCreateButton(GetTranslated(636, 119, "Test Clean Yard"), $x - 145, $y, 140, 25)
 $y -= $yNext
 
-$btnTestAttackCSV = GUICtrlCreateButton(GetTranslated(636, 117, "Test Attack CSV"), $x, $y, 140, 25)
+$btnTestAttackCSV = GUICtrlCreateButton(GetTranslated(636, 121, "Test Attack CSV"), $x, $y, 140, 25)
 $y -= $yNext
 
 $btnTestimglocTroopBar = GUICtrlCreateButton("IMGLOC ATTACKBAR", $x, $y, 140, 25)

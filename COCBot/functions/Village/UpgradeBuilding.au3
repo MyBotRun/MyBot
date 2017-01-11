@@ -418,13 +418,6 @@ Func SetlogUpgradeValues($i)
 	For $j = 0 To UBound($aUpgrades, 2) - 1
 		Setlog("$aUpgrades[" & $i & "][" & $j & "]= " & $aUpgrades[$i][$j], $COLOR_DEBUG)
 	Next
-	;Setlog("$chkbxUpgrade= " & GUICtrlRead($chkbxUpgrade[$i]) & "|" & $ichkbxUpgrade[$i], $COLOR_DEBUG) ; upgrade selection box
-	;Setlog("$txtUpgradeName= " & GUICtrlRead($txtUpgradeName[$i]) & "|" &  $aUpgrades[$i][4], $COLOR_DEBUG) ;  Unit Name
-	;Setlog("$txtUpgradeLevel= " & GUICtrlRead($txtUpgradeLevel[$i]) & "|" & $itxtUpgradeLevel[$i], $COLOR_DEBUG) ; Unit Level
-	;Setlog("$picUpgradeType= " & GUICtrlRead($picUpgradeType[$i]) & "|" & $ipicUpgradeStatus[$i], $COLOR_DEBUG) ; status image
-	;Setlog("$txtUpgradeValue= " & GUICtrlRead($txtUpgradeValue[$i]) & "|" & $aUpgrades[$i][2], $COLOR_DEBUG) ; Upgrade value
-	;Setlog("$txtUpgradeTime= " & GUICtrlRead($txtUpgradeTime[$i]) & "|" & $aUpgrades[$i][6], $COLOR_DEBUG) ; Upgrade time
-	;Setlog("$chkUpgrdeRepeat= " & GUICtrlRead($chkUpgrdeRepeat[$i]) & "|" & $ichkUpgrdeRepeat, $COLOR_DEBUG) ; repeat box
 	Setlog("$chkbxUpgrade= " & $ichkbxUpgrade[$i], $COLOR_DEBUG) ; upgrade selection box
 	Setlog("$txtUpgradeName= " & $aUpgrades[$i][4], $COLOR_DEBUG) ;  Unit Name
 	Setlog("$txtUpgradeLevel= " & $itxtUpgradeLevel[$i], $COLOR_DEBUG) ; Unit Level

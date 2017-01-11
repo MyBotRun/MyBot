@@ -72,7 +72,7 @@ Func Collect()
 		Local $res = DllCall($hImgLib, "str", "FindTile", "handle", $hHBitmap2, "str", $LootCart, "str", $fullCocAreas, "Int", $MaxReturnPoints)
 		If @error Then _logErrorDLLCall($pImgLib, @error)
 		If IsArray($res) Then
-			If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
+			If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_INFO)
 			If $res[0] = "0" Or $res[0] = "" Then
 				SetLog("No Loot Cart found, Yard is clean!", $COLOR_SUCCESS)
 			ElseIf StringLeft($res[0], 2) = "-1" Then

@@ -48,7 +48,7 @@ EndFunc
 Func ZoomOutBlueStacks2()
 	If $__BlueStacks2Version_2_5_or_later = False Then
 		; ctrl click is best and most stable for BlueStacks, but not working after 2.5.55.6279 version
-	Return ZoomOutCtrlClick(False, False, False, False)
+		Return ZoomOutCtrlClick(False, False, False, False)
 	Else
 		; newer BlueStacks versions don't work with Ctrl-Click, so fall back to original arraw key
 		Return DefaultZoomOut("{DOWN}", 0)

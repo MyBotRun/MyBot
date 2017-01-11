@@ -18,6 +18,12 @@ Func DropTrophy()
 	If $iChkTrophyRange = 1 Then
 		If $DebugSetlog = 1 Then SetLog("Drop Trophy START", $COLOR_DEBUG)
 
+		If $debugDeadBaseImage = 1 Then
+			DirCreate($dirTempDebug & "\SkippedZombies\")
+			DirCreate($dirTempDebug & "\Zombies\")
+			setZombie()
+		EndIf
+
 		$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1]) ; get OCR to read current Village Trophies
 		If $DebugSetlog = 1 Then SetLog("Current Trophy Count: " & $iTrophyCurrent, $COLOR_DEBUG)
 		If Number($iTrophyCurrent) <= Number($iTxtMaxTrophy) Then Return ; exit on trophy count to avoid other checks
@@ -79,7 +85,22 @@ Func DropTrophy()
 				SetLog("Dropping Trophies to " & $itxtdropTrophy, $COLOR_INFO)
 				If _Sleep($iDelayDropTrophy4) Then ExitLoop
 				$bDropSuccessful = True
-				ZoomOut()
+
+				; measure enemy village
+				If CheckZoomOut("VillageSearch", True, False) = False Then
+					; check two more times, only required for snow theme (snow fall can make it easily fail), but don't hurt to keep it
+					$i = 0
+					Local $bMeasured
+					Do
+						$i += 1
+						If _Sleep($iDelayPrepareSearch3) Then Return ; wait 500 ms
+						ForceCaptureRegion()
+						_CaptureRegion2()
+						$bMeasured = CheckZoomOut("VillageSearch", $i < 2, False)
+					Until $bMeasured = True Or $i >= 2
+					If $bMeasured = False Then Return ; exit func
+				EndIf
+
 				PrepareSearch()
 				If $OutOfGold = 1 Then Return ; Check flag for enough gold to search
 				If $Restart = True Then Return
@@ -103,6 +124,9 @@ Func DropTrophy()
 					Local $GPE = ((Number($searchElixir) + Number($searchGold)) >= Number($iAimGoldPlusElixir[$DB]))
 					If $G = True And $E = True And $GPE = True Then
 						SetLog("Found [G]:" & StringFormat("%7s", $searchGold) & " [E]:" & StringFormat("%7s", $searchElixir) & " [D]:" & StringFormat("%5s", $searchDark) & " [T]:" & StringFormat("%2s", $searchTrophy), $COLOR_BLACK, "Lucida Console", 7.5)
+						If $debugDeadBaseImage = 1 Then setZombie()
+						ForceCaptureRegion()
+						_CaptureRegion2() ; take new capture for deadbase
 						If checkDeadBase() Then
 							; _BlockInputEx(0, "", "", $HWnD) ; block all keyboard keys
 
@@ -179,6 +203,7 @@ Func DropTrophy()
 									If IsAttackPage() Then SelectDropTroop($Queen) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
 									ReturnHome(False, False) ;Return home no screenshot
 									If _Sleep($iDelayDropTrophy1) Then ExitLoop
+									ExitLoop
 								EndIf
 							Case "K"
 								If $King <> -1 Then
@@ -191,6 +216,7 @@ Func DropTrophy()
 									If IsAttackPage() Then SelectDropTroop($King) ;If King was not activated: Boost King before EndBattle to restore some health
 									ReturnHome(False, False) ;Return home no screenshot
 									If _Sleep($iDelayDropTrophy1) Then ExitLoop
+									ExitLoop
 								EndIf
 							Case "W"
 								If $Warden <> -1 Then
@@ -203,6 +229,7 @@ Func DropTrophy()
 									If IsAttackPage() Then SelectDropTroop($Warden) ;If Warden was not activated: Boost Warden before EndBattle to restore some health
 									ReturnHome(False, False) ;Return home no screenshot
 									If _Sleep($iDelayDropTrophy1) Then ExitLoop
+									ExitLoop
 								EndIf
 							EndSwitch
 						Next

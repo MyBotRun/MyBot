@@ -87,13 +87,18 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 						EndSwitch
 						SetLog("Hero slot#" & $index + 1 & $sMessage & " Healing", $COLOR_DEBUG) ;Debug
 					EndIf
-					Local $HealTime = getArmyHeroTime("all")
+					Local $HealTime = number(getArmyHeroTime(19 + $index)) ; 19 = $eKing
 					If @error Then
 						Setlog("getArmyHeroTime return error, on getArmyHeroCount!", $COLOR_ERROR)
 					EndIf
-					If $index = 0 then Setlog(" - Barbarian King will recover in " & Min2Time($HealTime[0]), $COLOR_ACTION)
-					If $index = 1 then Setlog(" - Archer Queen will recover in " & Min2Time($HealTime[1]) , $COLOR_ACTION)
-					If $index = 2 then Setlog(" - Grand Warden will recover in " & Min2Time($HealTime[2]), $COLOR_ACTION)
+					If $HealTime <> "" then
+						If $index = 0 then Setlog(" - Barbarian King will recover in " & Min2Time($HealTime), $COLOR_ACTION)
+						If $index = 1 then Setlog(" - Archer Queen will recover in " & Min2Time($HealTime) , $COLOR_ACTION)
+						If $index = 2 then Setlog(" - Grand Warden will recover in " & Min2Time($HealTime), $COLOR_ACTION)
+					Else
+						Setlog("slot " & $index + 1 &  " getArmyHeroTime error!")
+						if Not ISArmyWindow() then return
+					EndIf
 				Case StringInStr($sResult, "upgrade", $STR_NOCASESENSEBASIC)
 					Switch $index
 						Case 0

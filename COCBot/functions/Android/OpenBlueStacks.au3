@@ -181,6 +181,7 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
     Next
 
     If Not $bCheckOnly Then
+      #cs as of 2017-01-03 disabled for 6.5.3 version as not required anymore and WinAPI/ControlClick does work fine again
 	  $__BlueStacks2Version_2_5_or_later = GetVersionNormalized($__BlueStacks_Version) >= GetVersionNormalized("2.5.00.0000")
 	  If $AndroidAutoAdjustConfig = True And $__BlueStacks2Version_2_5_or_later Then
 		 SetDebugLog($Android & " Version is 2.5 or later found, enable ADB Mouse Click")
@@ -189,6 +190,7 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 		 ; update android config
 		 InitAndroidConfig(True)
 	  EndIF
+	  #ce
 
 	  Local $BootParameter = RegRead($HKLM & "\SOFTWARE\BlueStacks\Guests\Android\", "BootParameters")
 	  Local $OEMFeatures

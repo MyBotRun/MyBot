@@ -153,9 +153,9 @@ Func getMaxUISetting($settingArray, $defenseType)
 
 	If IsArray($settingArray) Then
 		; Check if dead base search is active and dead base weak base detection is active, use setting if active, 0 if not active
-		$maxDB = ($iDBcheck = 1 And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
+		$maxDB = (IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
 		; Check if live base search is active and live base weak base detection is active, use setting if active, 0 if not active
-		$maxLB = ($iABcheck = 1 And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
+		$maxLB = (IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
 
 		; Get the value that is highest
 		$result = _Max(Number($maxDB), Number($maxLB))
@@ -171,9 +171,9 @@ Func getMinUISetting($settingArray, $defenseType)
 
 	If IsArray($settingArray) Then
 		; Check if dead base search is active and dead base weak base detection is active, use setting if active, 0 if not active
-		$minDB = ($iDBcheck = 1 And IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
+		$minDB = (IsWeakBaseActive($DB)) ? $settingArray[$DB] : 0
 		; Check if live base search is active and live base weak base detection is active, use setting if active, 0 if not active
-		$minLB = ($iABcheck = 1 And IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
+		$minLB = (IsWeakBaseActive($LB)) ? $settingArray[$LB] : 0
 
 		; Get the value that is highest
 		$result = _Min(Number($minDB), Number($minLB))
@@ -192,7 +192,7 @@ Func getIsWeak($aResults, $searchType)
 EndFunc   ;==>getIsWeak
 
 Func IsWeakBaseActive($type)
-	Return BitOR($iChkMaxEagle[$type], $iChkMaxInferno[$type], $iChkMaxXBow[$type], $iChkMaxWizTower[$type], $iChkMaxMortar[$type], $iChkMaxAirDefense[$type])
+	Return BitOR($iChkMaxEagle[$type], $iChkMaxInferno[$type], $iChkMaxXBow[$type], $iChkMaxWizTower[$type], $iChkMaxMortar[$type], $iChkMaxAirDefense[$type]) And IsSearchModeActive($type, False, True)
 EndFunc   ;==>IsWeakBaseActive
 
 Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $defenseType, ByRef $performSearch, $guiEnabledArray, $forceCaptureRegion = True)
@@ -207,7 +207,7 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $d
 	; Setup search limitations
 	Local $minSearchLevel = getMinUISetting($settingArray, $defenseType) + 1
 	Local $maxSearchLevel = getTHDefenseMax($townHallLevel, $defenseType)
-	Local $guiCheckDefense = IsArray($guiEnabledArray) And (BitAND($iDBcheck, $guiEnabledArray[$DB]) Or BitAND($iABcheck, $guiEnabledArray[$LB]))
+	Local $guiCheckDefense = IsArray($guiEnabledArray) And ((IsSearchModeActive($DB, False, True) And $guiEnabledArray[$DB]) Or (IsSearchModeActive($LB, False, True) And $guiEnabledArray[$LB]))
 
 	; Only do the search if its required
 	If $performSearch Then

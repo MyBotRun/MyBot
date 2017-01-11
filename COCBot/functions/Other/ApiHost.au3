@@ -11,7 +11,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Global $aManagedMyBotDetails[0] ; Contains array of MemoryHandleArray - frmBot - Timer Handle of last response - Command line of bot - HWnD - RunState - TPaused
+Global $aManagedMyBotDetails[0] ; Contains array of MemoryHandleArray - frmBot - Timer Handle of last response - Command line of bot - Bot Window Title - RunState - TPaused
 GUIRegisterMsg($WM_MYBOTRUN_API_1_0, "WM_MYBOTRUN_API_1_0_HOST")
 GUIRegisterMsg($WM_MYBOTRUN_STATE_1_0, "WM_MYBOTRUN_STATE_1_0")
 
@@ -57,9 +57,11 @@ Func GetManagedMyBotDetails($hFrmBot = Default, $_RunState = Default, $_TPaused 
 
 	If IsHWnd($hFrmBot) = 0 Then Return -1
 	Local $pid = WinGetProcess($hFrmBot)
+	Local $title = WinGetTitle($hFrmBot)
 	If $pid = -1 Then SetLog("Process not found for Window Handle: " & $hFrmBot)
 
 	For $i = 0 To UBound($aManagedMyBotDetails) - 1
+		If $i > UBound($aManagedMyBotDetails) - 1 Then ExitLoop ; array could have been reduced in size
 		Local $a = $aManagedMyBotDetails[$i]
 		If $a[0] = $hFrmBot Then
 			$a[1] = TimerInit()
@@ -68,15 +70,20 @@ Func GetManagedMyBotDetails($hFrmBot = Default, $_RunState = Default, $_TPaused 
 			$aManagedMyBotDetails[$i] = $a
 			Return $a
 		EndIf
+		If $a[3] = $title Then
+			SetDebugLog("Remove registered Bot Window Handle " & $a[0] & ", as new instance detected")
+			_ArrayDelete($aManagedMyBotDetails, $i)
+			$i -= 1
+		EndIf
 	Next
 
 	ReDim $aManagedMyBotDetails[UBound($aManagedMyBotDetails) + 1]
 	Local $a[6]
-
+	; Register new bot
 	$a[0] = $hFrmBot
 	$a[1] = TimerInit()
 	$a[2] = ProcessGetCommandLine($pid)
-	;$a[3] = $HWnD ; not yet supported
+	$a[3] = $title
 	$a[4] = $_RunState
 	$a[5] = $_TPaused
 	If $a[1] = -1 Then SetLog("Command line not found for Window Handle/PID: " & $hFrmBot & "/" & $pid)
@@ -121,7 +128,16 @@ Func CheckManagedMyBot($iTimeout)
 		Local $a = $aManagedMyBotDetails[$i]
 		If TimerDiff($a[1]) > $iTimeout Then
 			_ArrayDelete($aManagedMyBotDetails, $i)
+			; check if bot has been already restarted manually
 			Local $cmd = $a[2]
+			Local $title = $a[3]
+			For $j = 0 To UBound($aManagedMyBotDetails) - 1
+				$a = $aManagedMyBotDetails[$j]
+				If $a[3] = $title Then
+					SetDebugLog("Bot already restarted, window title: " & $title)
+					Return WinGetProcess($a[0])
+				EndIf
+			Next
 			If StringInStr($cmd, " /restart") = 0 Then $cmd &= " /restart"
 			If $a[4] Then
 				; bot was started, autostart again
@@ -134,3 +150,18 @@ Func CheckManagedMyBot($iTimeout)
 
 	Return 0
 EndFunc   ;==>CheckManagedMyBot
+
+Func GetActiveMyBotCount($iTimeout)
+
+	Local $iCount = 0
+	For $i = 0 To UBound($aManagedMyBotDetails) - 1
+		Local $a = $aManagedMyBotDetails[$i]
+		If TimerDiff($a[1]) <= $iTimeout Then
+			$iCount += 1
+		Else
+			SetDebugLog("Bot not responding with Window Handle: " & $a[0])
+		EndIf
+	Next
+
+	Return $iCount
+EndFunc   ;==>GetActiveMyBotCount

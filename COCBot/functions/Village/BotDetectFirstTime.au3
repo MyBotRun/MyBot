@@ -12,7 +12,7 @@
 
 Func BotDetectFirstTime()
 
-	Local $collx, $colly, $Result, $i = 0 , $t =0
+	Local $collx, $colly, $Result, $i = 0, $t = 0
 
 	If $Is_ClientSyncError = True Then Return ; if restart after OOS, and User stop/start bot, skip this.
 
@@ -36,7 +36,7 @@ Func BotDetectFirstTime()
 		EndIf
 		If $TownHallPos[1] = "" Or $TownHallPos[1] = -1 Then
 			;checkTownhallADV2()
-			imglocTHSearch(true,true); search th on myvillage
+			imglocTHSearch(True, True) ; search th on myvillage
 			$TownHallPos[0] = $THx
 			$TownHallPos[1] = $THy
 			If $debugSetlog = 1 Then SetLog("OldDDL Townhall: (" & $TownHallPos[0] & "," & $TownHallPos[1] & ")", $COLOR_ERROR)
@@ -59,7 +59,7 @@ Func BotDetectFirstTime()
 	CheckImageType()
 	If _Sleep($iDelayBotDetectFirstTime1) Then Return
 
-	If GUICtrlRead($chkScreenshotHideName) = $GUI_CHECKED Or $ichkScreenshotHideName = 1 Then
+	If $ichkScreenshotHideName = 1 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		If $aCCPos[0] = -1 Then
 			LocateClanCastle()
@@ -75,7 +75,7 @@ Func BotDetectFirstTime()
 		EndIf
 	EndIf
 
-	If (GUICtrlRead($cmbBoostBarbarianKing) > 0) Or $ichkUpgradeKing = 1 Then
+	If $icmbBoostBarbarianKing > 0 Or $ichkUpgradeKing = 1 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		If $KingAltarPos[0] = -1 Then
 			LocateKingAltar()
@@ -83,7 +83,7 @@ Func BotDetectFirstTime()
 		EndIf
 	EndIf
 
-	If (GUICtrlRead($cmbBoostArcherQueen) > 0) Or $ichkUpgradeQueen = 1 Then
+	If $icmbBoostArcherQueen > 0 Or $ichkUpgradeQueen = 1 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		If $QueenAltarPos[0] = -1 Then
 			LocateQueenAltar()
@@ -91,7 +91,7 @@ Func BotDetectFirstTime()
 		EndIf
 	EndIf
 
-	If Number($iTownHallLevel) > 10 And ((GUICtrlRead($cmbBoostWarden) > 0) Or $ichkUpgradeWarden = 1) Then
+	If Number($iTownHallLevel) > 10 And $icmbBoostWarden > 0 Or $ichkUpgradeWarden = 1 Then
 		If _Sleep($iDelayBotDetectFirstTime3) Then Return
 		If $WardenAltarPos[0] = -1 Then
 			LocateWardenAltar()
@@ -99,107 +99,10 @@ Func BotDetectFirstTime()
 		EndIf
 	EndIf
 
-	;Display Level TH in Stats
 	GUICtrlSetData($lblTHLevels, "")
-
-	;Boju Display TH Level in Stats
 	_GUI_Value_STATE("HIDE", $groupListTHLevels)
 	If $debugSetlog = 1 Then Setlog("Select TH Level:" & Number($iTownHallLevel), $COLOR_DEBUG)
-	Switch Number($iTownHallLevel)
-		Case 4
-			GUICtrlSetState($THLevels04, $GUI_SHOW)
-			GUICtrlSetData($lblTHLevels, "4")
-		Case 5
-			GUICtrlSetState($THLevels05, $GUI_SHOW)
-			GUICtrlSetData($lblTHLevels, "5")
-		Case 6
-			GUICtrlSetState($THLevels06, $GUI_SHOW)
-			GUICtrlSetData($lblTHLevels, "6")
-		Case 7
-			GUICtrlSetState($THLevels07, $GUI_SHOW)
-			GUICtrlSetData($lblTHLevels, "7")
-		Case 8
-			GUICtrlSetState($THLevels08, $GUI_SHOW)
-			GUICtrlSetData($lblTHLevels, "8")
-		Case 9
-			GUICtrlSetState($THLevels09, $GUI_SHOW)
-			GUICtrlSetData($lblTHLevels, "9")
-		Case 10
-			GUICtrlSetState($THLevels10, $GUI_SHOW)
-			GUICtrlSetData($lblTHLevels, "10")
-		Case 11
-			GUICtrlSetState($THLevels11, $GUI_SHOW)
-			GUICtrlSetData($lblTHLevels, "11")
-	EndSwitch
-	GUICtrlSetState(Eval("$THLevels" + Number($iTownHallLevel)), $GUI_SHOW)
-
-#comments-start  removed due replacement by imgloc collect
-	If $iChkCollect = 1 And $listResourceLocation = "" Then
-		If _Sleep($iDelayBotDetectFirstTime3) Then Return
-		While 1 ; Clear the collectors using old image find to reduce collector image finding errors
-			If _Sleep($iDelayBotDetectFirstTime3) Or $RunState = False Then ExitLoop
-			_CaptureRegion()
-			If _ImageSearch(@ScriptDir & "\images\collect.png", 1, $collx, $colly, 20) Then
-				If isInsideDiamondXY($collx, $colly) Then
-					If IsMainPage() Then Click($collx, $colly, 1, 0, "#0330") ;Click collector
-					If _Sleep($iDelayBotDetectFirstTime3) Then Return
-				EndIf
-				ClickP($aAway, 1, 0, "#0329") ;Click Away
-			Else
-				ExitLoop
-			EndIf
-			If $i >= 20 Then ExitLoop
-			$i += 1
-		WEnd
-		SetLog("Verifying your Mines/Collectors/Drills ...wait ...")
-
-
-		_CaptureRegion2()
-		$t =0
-		$PixelMineHere = GetLocationMine()
-		For $i = 0 To UBound($PixelMineHere) - 1
-			If isInsideDiamond($PixelMineHere[$i]) Then
-				$pixel = $PixelMineHere[$i]
-				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
-				If $debugSetlog = 1 Then SetLog("- Gold Mine " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_DEBUG)
-				$t +=1
-			EndIf
-		Next
-		If $t > 0 Then
-			SetLog("Total No. of Gold Mines: " & $t)
-		EndIf
-
-		$t =0
-		If _Sleep($iDelayBotDetectFirstTime1) Then Return
-		$PixelElixirHere = GetLocationElixir()
-		For $i = 0 To UBound($PixelElixirHere) - 1
-			If isInsideDiamond($PixelElixirHere[$i]) Then
-				$pixel = $PixelElixirHere[$i]
-				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
-				If $debugSetlog = 1 Then SetLog("- Elixir Collector " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_DEBUG)
-				$t +=1
-			EndIf
-		Next
-		If $t > 0 Then
-			SetLog("Total No. of Elixir Collectors: " & $t)
-		EndIf
-
-		$t =0
-		If _Sleep($iDelayBotDetectFirstTime1) Then Return
-		$PixelDarkElixirHere = GetLocationDarkElixir()
-		For $i = 0 To UBound($PixelDarkElixirHere) - 1
-			If isInsideDiamond($PixelDarkElixirHere[$i]) Then
-				$pixel = $PixelDarkElixirHere[$i]
-				$listResourceLocation = $listResourceLocation & $pixel[0] & ";" & $pixel[1] & "|"
-				If $debugSetlog = 1 Then SetLog("- Dark Ellxir Drill " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_DEBUG)
-				$t +=1
-			EndIf
-		Next
-		If $t > 0 Then
-			SetLog("Total No. of Dark Elixir Drills: " & $t)
-		EndIf
-		$t =0
-	EndIf
-#comments-end
+	GUICtrlSetState(Eval("THLevels" & Number($iTownHallLevel)), $GUI_SHOW)
+	GUICtrlSetData($lblTHLevels, Number($iTownHallLevel))
 
 EndFunc   ;==>BotDetectFirstTime
