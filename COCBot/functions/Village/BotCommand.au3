@@ -6,96 +6,93 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Code Monkey #17
-; Modified ......: MonkeyHunter (2106-2)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: MonkeyHunter (2106-2), CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func BotCommand()
-	If $iChkBotStop = 1 Then
+#include-once
 
-		$MeetCondStop = False ; reset flags so bot can restart farming when conditions change.
+Func BotCommand()
+    Static $TimeToStop = -1
+
+	If $g_bChkBotStop = True Then
+
+		$g_bMeetCondStop = False ; reset flags so bot can restart farming when conditions change.
 		$bTrainEnabled = True
 		$bDonationEnabled = True
 
-		If $icmbBotCond = 15 And $icmbHoursStop <> 0 Then $TimeToStop = $icmbHoursStop * 3600000 ; 3600000 = 1 Hours
+		If $g_iCmbBotCond = 15 And $g_iCmbHoursStop <> 0 Then $TimeToStop = $g_iCmbHoursStop * 3600000 ; 3600000 = 1 Hours
 
 		Local $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 		Local $TrophyMax = Number($iTrophyCurrent) > Number($itxtMaxTrophy)
-		If $TrophyMax Then
-			$Trophy = "Max. Trophy Reached!"
-		Else
-			$Trophy = ""
-		EndIf
+		Local $Trophy = ($TrophyMax ? "Max. Trophy Reached!" : "")
 
-		Switch $icmbBotCond
+		Switch $g_iCmbBotCond
 			Case 0
-				If isGoldFull() And isElixirFull() And $TrophyMax Then $MeetCondStop = True
+				If isGoldFull() And isElixirFull() And $TrophyMax Then $g_bMeetCondStop = True
 			Case 1
-				If (isGoldFull() And isElixirFull()) Or $TrophyMax Then $MeetCondStop = True
+				If (isGoldFull() And isElixirFull()) Or $TrophyMax Then $g_bMeetCondStop = True
 			Case 2
-				If (isGoldFull() Or isElixirFull()) And $TrophyMax Then $MeetCondStop = True
+				If (isGoldFull() Or isElixirFull()) And $TrophyMax Then $g_bMeetCondStop = True
 			Case 3
-				If isGoldFull() Or isElixirFull() Or $TrophyMax Then $MeetCondStop = True
+				If isGoldFull() Or isElixirFull() Or $TrophyMax Then $g_bMeetCondStop = True
 			Case 4
-				If isGoldFull() And isElixirFull() Then $MeetCondStop = True
+				If isGoldFull() And isElixirFull() Then $g_bMeetCondStop = True
 			Case 5
-				If isGoldFull() Or isElixirFull() Then $MeetCondStop = True
+				If isGoldFull() Or isElixirFull() Then $g_bMeetCondStop = True
 			Case 6
-				If isGoldFull() And $TrophyMax Then $MeetCondStop = True
+				If isGoldFull() And $TrophyMax Then $g_bMeetCondStop = True
 			Case 7
-				If isElixirFull() And $TrophyMax Then $MeetCondStop = True
+				If isElixirFull() And $TrophyMax Then $g_bMeetCondStop = True
 			Case 8
-				If isGoldFull() Or $TrophyMax Then $MeetCondStop = True
+				If isGoldFull() Or $TrophyMax Then $g_bMeetCondStop = True
 			Case 9
-				If isElixirFull() Or $TrophyMax Then $MeetCondStop = True
+				If isElixirFull() Or $TrophyMax Then $g_bMeetCondStop = True
 			Case 10
-				If isGoldFull() Then $MeetCondStop = True
+				If isGoldFull() Then $g_bMeetCondStop = True
 			Case 11
-				If isElixirFull() Then $MeetCondStop = True
+				If isElixirFull() Then $g_bMeetCondStop = True
 			Case 12
-				If $TrophyMax Then $MeetCondStop = True
+				If $TrophyMax Then $g_bMeetCondStop = True
 			Case 13
-				If isDarkElixirFull() Then $MeetCondStop = True
+				If isDarkElixirFull() Then $g_bMeetCondStop = True
 			Case 14
-				If isGoldFull() And isElixirFull() And isDarkElixirFull() Then $MeetCondStop = True
-			Case 15
-				If $UseTimeStop = -1 Then
-					$UseTimeStop = 1
-				EndIf
-				If Round(TimerDiff($sTimer)) > $TimeToStop Then $MeetCondStop = True
-			Case 16
-				$MeetCondStop = True
-			Case 17
-				$MeetCondStop = True
+				If isGoldFull() And isElixirFull() And isDarkElixirFull() Then $g_bMeetCondStop = True
+			Case 15 ; Bot running for...
+				If Round(TimerDiff($g_hTimerSinceStarted)) > $TimeToStop Then $g_bMeetCondStop = True
+			Case 16 ; Train/Donate Only
+				$g_bMeetCondStop = True
+			Case 17 ; Donate Only
+				$g_bMeetCondStop = True
 				$bTrainEnabled = False
-			Case 18
-				$MeetCondStop = True
+			Case 18 ; Only stay online
+				$g_bMeetCondStop = True
 				$bTrainEnabled = False
 				$bDonationEnabled = False
 			Case 19 ; Have shield - Online/Train/Collect/Donate
-				If $bWaitShield = True Then $MeetCondStop = True
+				If $g_bWaitShield = True Then $g_bMeetCondStop = True
 			Case 20 ; Have shield - Online/Collect/Donate
-				If $bWaitShield = True Then
-					$MeetCondStop = True
+				If $g_bWaitShield = True Then
+					$g_bMeetCondStop = True
 					$bTrainEnabled = False
 				EndIf
 			Case 21 ; Have shield - Online/Collect
-				If $bWaitShield = True Then
-					$MeetCondStop = True
+				If $g_bWaitShield = True Then
+					$g_bMeetCondStop = True
 					$bTrainEnabled = False
 					$bDonationEnabled = False
 				EndIf
 		EndSwitch
 
-		If $MeetCondStop Then
-			If $icmbBotCond <> 4 And $icmbBotCond <> 5 And $icmbBotCond <> 10 And $icmbBotCond <> 11 Then
+		If $g_bMeetCondStop Then
+			If $g_iCmbBotCond <> 4 And $g_iCmbBotCond <> 5 And $g_iCmbBotCond <> 10 And $g_iCmbBotCond <> 11 Then
 				If $Trophy <> "" Then SetLog($Trophy, $COLOR_SUCCESS)
 				If _Sleep($iDelayBotCommand1) Then Return
 			EndIf
-			Switch $icmbBotCommand
+			Switch $g_iCmbBotCommand
 				Case 0
 					If $bDonationEnabled = False Then
 						SetLog("Halt Attack, Stay Online/Collect...", $COLOR_INFO)
@@ -104,7 +101,7 @@ Func BotCommand()
 					Else
 						SetLog("Halt Attack, Stay Online/Train/Collect/Donate...", $COLOR_INFO)
 					EndIf
-					$CommandStop = 0 ; Halt Attack
+					$g_iCommandStop = 0 ; Halt Attack
 					If _Sleep($iDelayBotCommand1) Then Return
 				Case 1
 					SetLog("MyBot.run Bot Stop as requested!!", $COLOR_INFO)

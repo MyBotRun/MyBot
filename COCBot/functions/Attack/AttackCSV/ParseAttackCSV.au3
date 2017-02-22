@@ -23,17 +23,17 @@ Func ParseAttackCSV($debug = False)
 	Local $bForceSideExist = False
 
 	;Local $filename = "attack1"
-	If $iMatchMode = $DB Then
-		Local $filename = $scmbDBScriptName
+	If $g_iMatchMode = $DB Then
+		Local $filename = $g_sAttackScrScriptName[$DB]
 	Else
-		Local $filename = $scmbABScriptName
+		Local $filename = $g_sAttackScrScriptName[$LB]
 	EndIf
 	Setlog("execute " & $filename)
 
 	Local $f, $line, $acommand, $command
 	Local $value1 = "", $value2 = "", $value3 = "", $value4 = "", $value5 = "", $value6 = "", $value7 = "", $value8 = "", $value9 = ""
-	If FileExists($dirAttacksCSV & "\" & $filename & ".csv") Then
-		Local $iLine, $aLines = FileReadToArray($dirAttacksCSV & "\" & $filename & ".csv")
+	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
+		Local $iLine, $aLines = FileReadToArray($g_sCSVAttacksPath & "\" & $filename & ".csv")
 
 		; Read in lines of text until the EOF is reached
 		For $iLine = 0 To UBound($aLines) - 1
@@ -92,7 +92,7 @@ Func ParseAttackCSV($debug = False)
 							If CheckCsvValues("MAKE", 1, $value1) And CheckCsvValues("MAKE", 5, $value5) Then
 								Assign("ATTACKVECTOR_" & $value1, MakeDropPoints(Eval($sidex), $value3, $value4, $value5, $value6, $value7))
 								For $i = 0 To UBound(Execute("$ATTACKVECTOR_" & $value1)) - 1
-									$pixel = Execute("$ATTACKVECTOR_" & $value1 & "[" & $i & "]")
+									Local $pixel = Execute("$ATTACKVECTOR_" & $value1 & "[" & $i & "]")
 									debugAttackCSV($i & " - " & $pixel[0] & "," & $pixel[1])
 								Next
 							Else
@@ -214,7 +214,7 @@ Func ParseAttackCSV($debug = False)
 							EndIf
 						EndIf
 						DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
-						ReleaseClicks($AndroidAdbClicksTroopDeploySize)
+						ReleaseClicks($g_iAndroidAdbClicksTroopDeploySize)
 						If _Sleep($iDelayRespond) Then ; check for pause/stop, close file before return
 							Return
 						EndIf
@@ -271,24 +271,27 @@ Func ParseAttackCSV($debug = False)
 								$Trophies = getTrophyVillageSearch(48, 69 + 69)
 							EndIf
 							If $iActivateKQCondition = "Auto" then CheckHeroesHealth()
-							If $DebugSetLog = 1 Then SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
+							If $g_iDebugSetlog = 1 Then SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 							;EXIT IF RESOURCES = 0
-							If $ichkEndNoResources[$iMatchMode] = 1 And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
-								If $DebugSetLog = 0 Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO) ; log if not down above
+							If $g_abStopAtkNoResources[$g_iMatchMode] And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
+								If $g_iDebugSetlog = 0 Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO) ; log if not down above
 								SetDebugLog("From Attackcsv: Gold & Elixir & DE = 0, end battle ", $COLOR_DEBUG)
 								$exitNoResources = 1
 								ExitLoop
 							EndIf
 							;CALCULATE TWO STARS REACH
-							If $ichkEndTwoStars[$iMatchMode] = 1 And _CheckPixel($aWonTwoStar, True) Then
+							If $g_abStopAtkTwoStars[$g_iMatchMode] And _CheckPixel($aWonTwoStar, True) Then
 								SetDebugLog("From Attackcsv: Two Star Reach, exit", $COLOR_SUCCESS)
 								$exitTwoStars = 1
 								ExitLoop
 							EndIf
 							;CALCULATE ONE STARS REACH
-							If $ichkEndOneStar[$iMatchMode] = 1 And _CheckPixel($aWonOneStar, True) Then
+							If $g_abStopAtkOneStar[$g_iMatchMode] And _CheckPixel($aWonOneStar, True) Then
 								SetDebugLog("From Attackcsv: One Star Reach, exit", $COLOR_SUCCESS)
 								$exitOneStar = 1
+								ExitLoop
+							EndIf
+							If $g_abStopAtkPctHigherEnable[$g_iMatchMode] And Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)) > Int($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) Then
 								ExitLoop
 							EndIf
 							If _Sleep($iDelayRespond) Then ; check for pause/stop, close file before return
@@ -299,7 +302,7 @@ Func ParseAttackCSV($debug = False)
 
 					Case "RECALC"
 						ReleaseClicks()
-						PrepareAttack($iMatchMode, True)
+						PrepareAttack($g_iMatchMode, True)
 					Case "SIDE"
 						ReleaseClicks()
 						Setlog("Calculate main side... ")
@@ -409,7 +412,7 @@ Func ParseAttackCSV($debug = False)
 									$heightBottomLeft += Int($value6)
 							EndSwitch
 
-							$pixel = StringSplit($thx & "-" & $thy, "-", 2)
+							Local $pixel = StringSplit($thx & "-" & $thy, "-", 2)
 							Switch StringLeft(Slice8($pixel), 1)
 								Case 1, 2
 									$heightBottomRight += Int($value7)
@@ -573,6 +576,6 @@ Func ParseAttackCSV($debug = False)
 		Next
 		ReleaseClicks()
 	Else
-		SetLog("Cannot find attack file " & $dirAttacksCSV & "\" & $filename & ".csv", $COLOR_ERROR)
+		SetLog("Cannot find attack file " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
 	EndIf
 EndFunc   ;==>ParseAttackCSV

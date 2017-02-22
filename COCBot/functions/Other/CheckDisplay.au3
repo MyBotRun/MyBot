@@ -7,7 +7,7 @@
 ; Return values .: Returns True if both DPI and display are above minimum requirement, returns False otherwise.
 ; Author ........: MonkeyHunter (12-2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: None
 ; Link ..........: https://www.autoitscript.com/forum/topic/154885-autoit-and-dpi-awareness/, https://github.com/MyBotRun/MyBot/wiki
@@ -27,7 +27,7 @@ Func CheckDisplay()
 	If $iDPIRatio <> 1 Then
 		ShowDPIHelp($iDPIRatio * 100)
 	Else
-		If $Debugsetlog = 1 Then SetLog(_PadStringCenter("  Display DPI setting = " & $iDPIRatio & "  ", 53, "+"), $COLOR_INFO)
+		If $g_iDebugSetlog = 1 Then SetLog(_PadStringCenter("  Display DPI setting = " & $iDPIRatio & "  ", 53, "+"), $COLOR_INFO)
 		ConsoleWrite('DPI= ' & $iDPIRatio & @CRLF)
 		$bDisplayDPI = True ; DPI OK
 	EndIf
@@ -51,7 +51,6 @@ Func CheckDisplay()
 			ConsoleWrite('DisplayHandle: ' & $aMonitorData[$i][0] & ', DisplayX: ' & $aMonitorData[$i][3] & ', DisplayY: ' & $aMonitorData[$i][4] & @CRLF)
 			If $aMonitorData[$i][0] = $hMonitor Then ; find display with Android Emulator
 				$bDisplayFound = True
-				$bMonitorHeight800orBelow = ($aMonitorData[$i][4] <= 800)
 				$sBSDisplaySize = $aMonitorData[$i][3] & "x" & $aMonitorData[$i][4]
 				ConsoleWrite("DisplaySizeFound: " & $sBSDisplaySize & @CRLF)
 				If ($aMonitorData[$i][3] < $iDisplaySizeMin) Or ($aMonitorData[$i][4] < $iDisplaySizeMin) Then
@@ -63,7 +62,7 @@ Func CheckDisplay()
 					Setlog(" ")
 				Else
 					ConsoleWrite("Display Check Pass!" & @CRLF)
-					If $Debugsetlog = 1 Then SetLog(_PadStringCenter(" Display size= " & $sBSDisplaySize & " ", 50, "+"), $COLOR_INFO)
+					If $g_iDebugSetlog = 1 Then SetLog(_PadStringCenter(" Display size= " & $sBSDisplaySize & " ", 50, "+"), $COLOR_INFO)
 					ExitLoop
 				EndIf
 			EndIf
@@ -79,7 +78,7 @@ Func CheckDisplay()
 
 EndFunc   ;==>CheckDisplay
 Func ShowDPIHelp($currentDPI)
-	$text = GetTranslated(640,4,"Your DPI is incorrect. It is set to") & " " & $currentDPI & GetTranslated(640,5,"%. You must set it to 100% for this bot to work.") & @CRLF & _
+	Local $text = GetTranslated(640,4,"Your DPI is incorrect. It is set to") & " " & $currentDPI & GetTranslated(640,5,"%. You must set it to 100% for this bot to work.") & @CRLF & _
 			GetTranslated(640,6,"When you have changed the DPI to the correct value, reboot your computer and run the bot again.") & @CRLF & _
 			GetTranslated(640,7,"You won't be able to use the bot until you make this change.") & @CRLF & @CRLF & _
 			GetTranslated(640,8,"Click OK to view instructions on how to change DPI")
@@ -101,6 +100,6 @@ Func ShowDPIHelp($currentDPI)
 		EndSwitch
 	EndIf
 	btnStop()
-	GUICtrlSetState($btnStart, $GUI_DISABLE)
+	GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 EndFunc   ;==>ShowDPIHelp
 

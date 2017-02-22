@@ -1,40 +1,47 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: MBR GUI Design
-; Description ...: This file Includes GUI Design
+; Description ...: This file creates the "End Battle" tab under the "TH Snipe" tab under the "Search & Attack" tab under the "Attack Plan" tab
 ; Syntax ........:
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........:
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
 
-Local $x = 10, $y = 45
-	$grpTSEndBattle = GUICtrlCreateGroup(GetTranslated(606,1, -1),  $x - 5, $y - 20, 420, 305)
+Global $g_hChkTSActivateCamps2 = 0, $g_hTxtTSArmyCamps2 = 0
+Global $g_hGrpTSEndBattle = 0, $g_hLblTSArmyCamps2 = 0
+
+Func CreateAttackSearchTHSnipeEndBattle()
+    Local $x = 10, $y = 45
+	$g_hGrpTSEndBattle = GUICtrlCreateGroup(GetTranslated(606,1, -1),  $x - 5, $y - 20, 420, 305)
 	;Apply to switch Attack Standard after THSnipe End ==>
-	  $lblTSAttackConfigure2=GUICtrlCreateLabel(GetTranslated(606,28,"Switch DB Attack at END") & ":",$x, $y , 143 , 18,$SS_LEFT)
+	  GUICtrlCreateLabel(GetTranslated(606,28,"Switch DB Attack at END") & ":",$x, $y , 143 , 18,$SS_LEFT)
 	  $y += 15
 		 ;chk camps
-		 $chkTSActivateCamps2 = GUICtrlCreateCheckbox("",$x+2,$y+3,16,16)
+		 $g_hChkTSActivateCamps2 = GUICtrlCreateCheckbox("",$x+2,$y+3,16,16)
 		 GUICtrlSetOnEvent(-1, "chkTSActivateCamps2")
+
 		 ;Army camps %
-		 $lblTSArmyCamps2 = GUICtrlCreateLabel("Camps >=", $x +20 , $y +4 , -1, -1)
+		 $g_hLblTSArmyCamps2 = GUICtrlCreateLabel("Camps >=", $x +20 , $y +4 , -1, -1)
 		 GUICtrlSetState(-1,$GUI_DISABLE)
-		 $txtTSArmyCamps2 = GUICtrlCreateInput("50", $x + 75, $y, 35, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		 $g_hTxtTSArmyCamps2 = GUICtrlCreateInput("50", $x + 75, $y, 35, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		 GUICtrlSetState(-1,$GUI_DISABLE)
-		 $txtTip = GetTranslated(606,29, "Set the % Army camps before activate this option")
-		 _GUICtrlSetTip(-1, $txtTip)
+		 _GUICtrlSetTip(-1, GetTranslated(606,29, "Set the % Army camps before activate this option"))
 		 GUICtrlSetLimit(-1, 6)
+
 		 ;camps %
-		 $lblTSArmyCamps2_1 = GUICtrlCreateLabel("%", $x+115 , $y +4 , -1, -1)
+		 GUICtrlCreateLabel("%", $x+115 , $y +4 , -1, -1)
 		 GUICtrlSetState(-1,$GUI_DISABLE)
 	  $y +=26
+
 	;==> Apply to switch Attack Standard after THSnipe End
-	
+
 #CS
 	 		$chkTSTimeStopAtk = GUICtrlCreateCheckbox(GetTranslated(606,2, -1) ,$x, $y, -1, -1)
 			$txtTip = GetTranslated(606,3, -1) & @CRLF & GetTranslated(606,4, -1)
@@ -70,21 +77,21 @@ Local $x = 10, $y = 45
 			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 6)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$picTSMinGoldStopAtk2 = GUICtrlCreateIcon($pIconLib, $eIcnGold, $x + 117, $y, 16, 16)
+		$picTSMinGoldStopAtk2 = GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 117, $y, 16, 16)
 			_GUICtrlSetTip(-1, $txtTip)
    $y += 21
 		$txtTSMinElixirStopAtk2 = GUICtrlCreateInput("2000", $x + 65, $y , 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 6)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$picTSMinElixirStopAtk2 = GUICtrlCreateIcon($pIconLib, $eIcnElixir, $x + 117, $y, 16, 16)
+		$picTSMinElixirStopAtk2 = GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 117, $y, 16, 16)
 			_GUICtrlSetTip(-1, $txtTip)
    $y += 21
 		$txtTSMinDarkElixirStopAtk2 = GUICtrlCreateInput("50", $x + 65, $y , 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $txtTip)
 			GUICtrlSetLimit(-1, 4)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$picTSMinDarkElixirStopAtk2 = GUICtrlCreateIcon($pIconLib, $eIcnDark, $x + 117, $y, 16, 16)
+		$picTSMinDarkElixirStopAtk2 = GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 117, $y, 16, 16)
 			_GUICtrlSetTip(-1, $txtTip)
 	$y += 21
 		$chkTSEndNoResources = GUICtrlCreateCheckbox(GetTranslated(606,9, -1), $x , $y , -1, -1)
@@ -104,3 +111,4 @@ Local $x = 10, $y = 45
  #CE
 
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
+EndFunc

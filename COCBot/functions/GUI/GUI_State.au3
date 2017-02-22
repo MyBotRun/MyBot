@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Boju(2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 Func _GUI_Value_STATE($action_groupe, $group_de_controle)
 	;SetRedrawBotWindow(False)
-	$liste_controle = StringSplit($group_de_controle, "#")
+	Local $liste_controle = StringSplit($group_de_controle, "#")
 	If IsArray($liste_controle) Then
 		For $i = 1 To $liste_controle[0]
 			Switch StringUpper($action_groupe)

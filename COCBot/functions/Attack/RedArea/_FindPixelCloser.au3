@@ -9,7 +9,7 @@
 ; Return values .: None
 ; Author ........: didipe
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,7 +23,7 @@ Func _FindPixelCloser($arrPixel, $pixel, $nb = 1)
 	For $j = 0 To $nb
 		Local $PixelCloser = $arrPixel[0]
 		For $i = 0 To UBound($arrPixel) - 1
-			$alreadyExist = False
+			Local $alreadyExist = False
 			Local $arrTemp = $arrPixel[$i]
 			Local $found = False
 			;search closer only on y

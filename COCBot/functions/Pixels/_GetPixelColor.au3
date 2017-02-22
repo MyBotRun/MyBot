@@ -12,7 +12,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: MonkeyHunter (08-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,8 @@
 ; ===============================================================================================================================
 
 Func _GetPixelColor($iX, $iY, $bNeedCapture = False, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
-	If $bNeedCapture = False Or $RunState = False Then
+	Local $aPixelColor = 0
+	If $bNeedCapture = False Or $g_bRunState = False Then
 		$aPixelColor = _GDIPlus_BitmapGetPixel($hBitmap, $iX, $iY)
 	Else
 		_CaptureRegion($iX - 1, $iY - 1, $iX + 1, $iY + 1)
@@ -34,8 +35,8 @@ Func _GetPixelColor($iX, $iY, $bNeedCapture = False, $sLogText = Default, $LogTe
 EndFunc   ;==>_GetPixelColor
 
 Func IsPixelColorGray($sPixelColorRgbHex)
-	If StringLen($sPixelColorRgbHex) <> 6 Then Return False
-	Local $sRed = StringLeft($sPixelColorRgbHex, 2)
-	Local $sBlue = StringRight($sPixelColorRgbHex, 2)
-	Return $sRed = $sBlue And $sRed = StringMid($sPixelColorRgbHex, 3, 2)
+    If StringLen($sPixelColorRgbHex) <> 6 Then Return False
+    Local $sRed = StringLeft($sPixelColorRgbHex, 2)
+    Local $sBlue = StringRight($sPixelColorRgbHex, 2)
+    Return $sRed = $sBlue And $sRed = StringMid($sPixelColorRgbHex, 3, 2)
 EndFunc   ;==>IsPixelColorGray

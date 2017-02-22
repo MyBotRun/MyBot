@@ -4,7 +4,7 @@
 ; Syntax ........: $iDelayXXXXXXYYY  : XXXX = function name using the delay, YYY = delay value or position of delay in file
 ; Author ........: Sardo (Aug 2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -171,8 +171,9 @@ Global Const $iDelayZoomOut3 = 1000
 ;__BlockInputEx_KeyBoardHook_Proc
 Global Const $iDelayBlockInput1 = 10
 
-;CheckVersionHTML
+;CheckVersionHTML / download license
 Global Const $iDelayCheckVersionHTML1 = 250
+Global Const $iDelayDownloadLicense = 250
 
 ;TogglePause
 Global Const $iDelayTogglePause1 = 100
@@ -361,6 +362,7 @@ Global Const $iDelayTrain5 = 250 ; click
 Global Const $iDelayTrain6 = 20 ; click
 Global Const $iDelayTrain7 = 5 ; Spells Creation
 Global Const $iDelayTrain8 = 5000 ; wait for a while to desapear the 'received castle troops' msg
+Global Const $iDelayLvUP = 150 ; delay in repeatly increasing levels on the train troops screen when button is held down
 
 ;IsTrainPage
 Global Const $iDelayIsTrainPage1 = 100

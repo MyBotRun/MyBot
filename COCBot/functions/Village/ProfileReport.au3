@@ -7,15 +7,17 @@
 ; Return values .: None
 ; Author ........: Sardo
 ; Modified ......: KnowJack (July 2015) add wait loop for slow PC read of OCR
-;                  Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+;                  Sardo 2015-08, CodeSlinger69 9(2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
 
 Func ProfileReport()
+   Local $AttacksWon = 0, $DefensesWon = 0
 
 	Local $iCount
 	ClickP($aAway, 1, 0, "#0221") ;Click Away
@@ -26,48 +28,48 @@ Func ProfileReport()
 	Click(30, 40, 1, 0, "#0222") ; Click Info Profile Button
 	If _Sleep($iDelayProfileReport2) Then Return
 
-	While _ColorCheck(_GetPixelColor(400, 104 + $midOffsetY, True), Hex(0xA2A6BE, 6), 20) = False ; wait for Info Profile to open
-		If $Debugsetlog = 1 Then Setlog("Profile wait time: " & $iCount & ", color= " & _GetPixelColor(400, 104 + $midOffsetY, True)& " pos (400," & 104 + $midOffsetY&")", $COLOR_DEBUG)
+	While _ColorCheck(_GetPixelColor(400, 104 + $g_iMidOffsetY, True), Hex(0xA2A6BE, 6), 20) = False ; wait for Info Profile to open
+		If $g_iDebugSetlog = 1 Then Setlog("Profile wait time: " & $iCount & ", color= " & _GetPixelColor(400, 104 + $g_iMidOffsetY, True)& " pos (400," & 104 + $g_iMidOffsetY&")", $COLOR_DEBUG)
 		$iCount += 1
 		If _Sleep($iDelayProfileReport1) Then Return
 		If $iCount >= 25 Then ExitLoop
 	WEnd
-	If $Debugsetlog = 1 And $iCount >= 25 Then Setlog("Excess wait time for profile to open: " & $iCount, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 And $iCount >= 25 Then Setlog("Excess wait time for profile to open: " & $iCount, $COLOR_DEBUG)
 	If _Sleep($iDelayProfileReport1) Then Return
 	$AttacksWon = ""
 
 	If _ColorCheck(_GetPixelColor($ProfileRep01[0], $ProfileRep01[1] , True), Hex($ProfileRep01[2], 6), $ProfileRep01[3]) = true  Then
-		If $debugSetlog=1 Then Setlog("Village have no attack and no defenses " & $ProfileRep01[0] & "," & $ProfileRep01[1] + $midOffsetY,$COLOR_DEBUG)
+		If $g_iDebugSetlog=1 Then Setlog("Village have no attack and no defenses " & $ProfileRep01[0] & "," & $ProfileRep01[1] + $g_iMidOffsetY,$COLOR_DEBUG)
 		$AttacksWon = 0
 		$DefensesWon = 0
 	Else
-		$AttacksWon = getProfile(578, 268 + $midOffsetY)
-		If $Debugsetlog = 1 Then Setlog("$AttacksWon 1st read: " & $AttacksWon, $COLOR_DEBUG)
+		$AttacksWon = getProfile(578, 268 + $g_iMidOffsetY)
+		If $g_iDebugSetlog = 1 Then Setlog("$AttacksWon 1st read: " & $AttacksWon, $COLOR_DEBUG)
 		$iCount = 0
 		While $AttacksWon = "" ; Wait for $attacksWon to be readable in case of slow PC
 			If _Sleep($iDelayProfileReport1) Then Return
-			$AttacksWon = getProfile(578, 268 + $midOffsetY)
-			If $Debugsetlog = 1 Then Setlog("Read Loop $AttacksWon: " & $AttacksWon & ", Count: " & $iCount, $COLOR_DEBUG)
+			$AttacksWon = getProfile(578, 268 + $g_iMidOffsetY)
+			If $g_iDebugSetlog = 1 Then Setlog("Read Loop $AttacksWon: " & $AttacksWon & ", Count: " & $iCount, $COLOR_DEBUG)
 			$iCount += 1
 			If $iCount >= 20 Then ExitLoop
 		WEnd
-		If $Debugsetlog = 1 And $iCount >= 20 Then Setlog("Excess wait time for reading $AttacksWon: " & getProfile(578, 268 + $midOffsetY), $COLOR_DEBUG)
-		$DefensesWon = getProfile(790, 268 + $midOffsetY)
+		If $g_iDebugSetlog = 1 And $iCount >= 20 Then Setlog("Excess wait time for reading $AttacksWon: " & getProfile(578, 268 + $g_iMidOffsetY), $COLOR_DEBUG)
+		$DefensesWon = getProfile(790, 268 + $g_iMidOffsetY)
 	EndIf
-	$TroopsDonated = getProfile(158, 268 + $midOffsetY)
-	$TroopsReceived = getProfile(360, 268 + $midOffsetY)
+	$TroopsDonated = getProfile(158, 268 + $g_iMidOffsetY)
+	$TroopsReceived = getProfile(360, 268 + $g_iMidOffsetY)
 
 	SetLog(" [ATKW]: " & _NumberFormat($AttacksWon) & " [DEFW]: " & _NumberFormat($DefensesWon) & " [TDON]: " & _NumberFormat($TroopsDonated) & " [TREC]: " & _NumberFormat($TroopsReceived), $COLOR_SUCCESS)
 	Click(830, 80, 1, 0, "#0223") ; Close Profile page
 	If _Sleep($iDelayProfileReport3) Then Return
 
 	$iCount = 0
-	While _CheckPixel($aIsMain, $bCapturePixel) = False ; wait for profile report window very slow close
+	While _CheckPixel($aIsMain, $g_bCapturePixel) = False ; wait for profile report window very slow close
 		If _Sleep($iDelayProfileReport3) Then Return
 		$iCount += 1
-		If $Debugsetlog = 1 Then Setlog("End ProfileReport $iCount= " & $iCount, $COLOR_DEBUG)
+		If $g_iDebugSetlog = 1 Then Setlog("End ProfileReport $iCount= " & $iCount, $COLOR_DEBUG)
 		If $iCount > 50 Then
-			If $Debugsetlog = 1 Then Setlog("Excess wait time clearing ProfileReport window: " & $iCount, $COLOR_DEBUG)
+			If $g_iDebugSetlog = 1 Then Setlog("Excess wait time clearing ProfileReport window: " & $iCount, $COLOR_DEBUG)
 			ExitLoop
 		EndIf
 	WEnd

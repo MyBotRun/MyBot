@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2015-11), Hervidero (2015-11)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot Copyright 2015-2016
+; Remarks .......: This file is part of MyBot Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,7 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "", $var1 = Default, $va
 	Local $sDefaultText, $sLanguageText
 
 	;If GetTranslated was called without correct parameters return value -2 to show the coder there is a mistake made somewhere (debug)
-	If $debugMultilanguage = 1 Then Return ($iSection & "-" & $iKey)
+	If $g_iDebugMultilanguage = 1 Then Return ($iSection & "-" & $iKey)
 	If $iSection = -1 Or $iKey = -1 Or $sText = "" Then Return "-2"
 
 	Local $bOutBound = False
@@ -92,11 +92,12 @@ EndFunc   ;==>GetTranslatedParsedText
 
 ;DetectLanguage()
 Func DetectLanguage()
-	$sLanguage = IniRead($config, "other", "language", "")
+    Local $decimalCode = "", $countryCode = "", $langName = ""
+	$sLanguage = IniRead($g_sProfileConfigPath, "other", "language", "")
 	If Not FileExists(@ScriptDir & "\Languages\" & $sLanguage & ".ini") Then $sLanguage = ""
 	If $sLanguage = "" Then
-		$OSLang = @OSLang
-		If $debugSetLog Then SetLog("Detected language code: " & $OSLang)
+		Local $OSLang = @OSLang
+		If $g_iDebugSetlog Then SetLog("Detected language code: " & $OSLang)
 		Switch $OSLang;get language
 
 			Case Hex(0x0004, 4)
@@ -1019,14 +1020,14 @@ Func DetectLanguage()
 		If FileExists($dirLanguages & "/" & $langName & ".ini") Then;if language file found
 			SetLog("Language file " & $langName & ".ini found in " & $dirLanguages)
 			$sLanguage = $langName
-			IniWrite($config, "other", "language", $sLanguage)
+			IniWrite($g_sProfileConfigPath, "other", "language", $sLanguage)
 		Else;otherwise, use english if the language isn't available yet
 			SetLog("Language file for " & $langName & " not found! Defaulting to English", $COLOR_ERROR)
 			$sLanguage = $sDefaultLanguage
 		EndIf
 	Else
 		;read the selected language from profile ini
-		$sLanguage = IniRead($config, "other", "language", $sDefaultLanguage)
+		$sLanguage = IniRead($g_sProfileConfigPath, "other", "language", $sDefaultLanguage)
 	EndIf
 
 

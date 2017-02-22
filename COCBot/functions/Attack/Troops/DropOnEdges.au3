@@ -10,7 +10,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -38,7 +38,7 @@ Func DropOnEdges($troop, $nbSides, $number, $slotsPerEdge = 0)
 		KeepClicks()
 		If $nbSides = 1 Or ($nbSides = 3 And $i = 2) Then
 			Local $nbTroopsPerEdge = Round($nbTroopsLeft / ($nbSides - $i))
-			If $iMatchMode = $LB And $iChkDeploySettings[$LB] >= 4 Then ; Used for DE or TH side attack
+			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] >= 4 Then ; Used for DE or TH side attack
 				DropOnEdge($troop, $Edges[$BuildingEdge], $nbTroopsPerEdge, $slotsPerEdge)
 			Else
 				DropOnEdge($troop, $Edges[$i], $nbTroopsPerEdge, $slotsPerEdge)

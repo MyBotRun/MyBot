@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: TRLopes (October 2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,16 +18,16 @@
 
 
 Func imglocTestQuickTrain($quickTrainOption=0)
-	Local $currentRunState = $RunState
-	$RunState = true
+	Local $currentRunState = $g_bRunState
+	$g_bRunState = true
 	QuickTrain(1,True,True)
-	$RunState = $currentRunState
+	$g_bRunState = $currentRunState
 EndFunc
 
 
 
 Func QuickTrain($quickTrainOption, $bOpenAndClose = True,$forceDebug=false)
-	if $debugimagesave = true then
+	if $g_iDebugImageSave = true then
 		$forceDebug = true
 	endif
 	if $forceDebug = true then SetLog("QUICKTRAINDEBUG : START" , $COLOR_RED)
@@ -35,7 +35,7 @@ Func QuickTrain($quickTrainOption, $bOpenAndClose = True,$forceDebug=false)
 	Local $retry = 5 ;#times it retries to find buttons
 	If $bOpenAndClose = True Then
 		imglocOpenTrainWindow()
-		If _Sleep($tDelayBtn) Then Return
+		If _Sleep($g_iQuickTrainButtonRetryDelay) Then Return
 	EndIf
 	Local $optBtn
 	Local $QuickTrainTabArea =  "645,110,760,140"
@@ -51,7 +51,7 @@ Func QuickTrain($quickTrainOption, $bOpenAndClose = True,$forceDebug=false)
 		Else
 			if $forceDebug = true then SetLog("QUICKTRAINDEBUG : QuickTrainTabBtn  NOT FOUND Retry: " & $rt , $COLOR_RED)
 		EndIf
-		If _Sleep($tDelayBtn) Then Return ;forcing sleep to make next button available
+		If _Sleep($g_iQuickTrainButtonRetryDelay) Then Return ;forcing sleep to make next button available
 		If  $QuickTrainTabBtn <> "" then ExitLoop
 		If $forceDebug = true and $rt = $retry then DebugImageSave("QUICKTRAINDEBUG" , True)
 	Next
@@ -60,7 +60,7 @@ Func QuickTrain($quickTrainOption, $bOpenAndClose = True,$forceDebug=false)
 		;now check tab area to see if tab color is white now (tab opened)
 		if $forceDebug = true then SetLog("QUICKTRAINDEBUG : Finding CheckTabBtn Retry: " & $rt , $COLOR_RED)
 		$CheckTabBtn  =  isButtonVisible("CheckTabBtn",@ScriptDir & "\imgxml\newtrainwindow\CheckTab_0_0_97.xml",$QuickTrainTabArea) ;check same region for White Area when tab selected
-		If _Sleep($tDelayBtn) Then Return
+		If _Sleep($g_iQuickTrainButtonRetryDelay) Then Return
 		If $CheckTabBtn <> "" then
 			if $forceDebug = true then SetLog("QUICKTRAINDEBUG : CheckTabBtn FOUND Retry: " & $rt  & " in " & $CheckTabBtn, $COLOR_RED)
 			ExitLoop
@@ -77,7 +77,7 @@ Func QuickTrain($quickTrainOption, $bOpenAndClose = True,$forceDebug=false)
 	EndIf
 
 	if $forceDebug = true then SetLog("QUICKTRAINDEBUG : ALL BUTONS FOUND, CHECKING SELECTED OPTION " & $quickTrainOption , $COLOR_RED)
-	Local $selBtn=""
+	Local $selBtn="", $region = ""
 	$optBtn = ""
 	Switch $quickTrainOption
 		Case 0 ; Previous Army
@@ -115,12 +115,12 @@ EndFunc
 
 Func imglocTrainIfAvailable($nTroopEnum,$iQuantity, $imglocFoundArray)
 	Local $sTroopName = decodeTroopEnum($nTroopEnum)
-	If $debugsetlog = 1 Then SetLog($sTroopName & " / " & $nTroopEnum & " training if available!", $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then SetLog($sTroopName & " / " & $nTroopEnum & " training if available!", $COLOR_DEBUG)
 	Local $aLineValue
 	For $iFA = 0 to ubound($imglocFoundArray) -1
 		$aLineValue = $imglocFoundArray[$iFA] ; this should be an array of objectname,objectpoints,filename
 		If $aLineValue[0] = $sTroopName Then ; found troop/spell to click
-			If $debugsetlog = 1 Then SetLog($sTroopName & " / " & $nTroopEnum & " found. Checking availability!", $COLOR_DEBUG)
+			If $g_iDebugSetlog = 1 Then SetLog($sTroopName & " / " & $nTroopEnum & " found. Checking availability!", $COLOR_DEBUG)
 			;lets recheck if button is still available for clicking
 			Local $tmpRectArea = GetDummyRectangle($aLineValue[1],20) ; get diamond from coords string using 20px distance
 			Local $tmpTileName = $aLineValue[2] ; holds file path needed to recheck if still available for click
@@ -142,10 +142,10 @@ Func imglocFindAvailableToTrain($sTrainType)
 	Local $maxReturnPoints = 1 ; only need one match for each image
 	Local $returnProps="objectname,objectpoints,filepath"
 	Local $sDirectory = @ScriptDir & "\imgxml\newtrainwindow\" & $sTrainType & "\"
-	If $debugsetlog = 1 Then SetLog("imgloc Searching Regular Troops :  in " & $sCocDiamond & " using "&  $sDirectory, $COLOR_INFO)
+	If $g_iDebugSetlog = 1 Then SetLog("imgloc Searching Regular Troops :  in " & $sCocDiamond & " using "&  $sDirectory, $COLOR_INFO)
 	Local $bForceCapture = True ; force CaptureScreen
 	;aux data
-	If $debugsetlog = 1 Then SetLog("imgloc train search : " & $sTrainType, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then SetLog("imgloc train search : " & $sTrainType, $COLOR_DEBUG)
 	Local $hTimer = TimerInit()
 	Local $result = findMultiple($sDirectory ,$sCocDiamond ,$redLines, $minLevel, $maxLevel, $maxReturnPoints , $returnProps, $bForceCapture )
 	Return $result

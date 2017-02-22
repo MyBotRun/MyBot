@@ -5,28 +5,36 @@
 ; Parameters ....: $bRebootAndroid = True reboots Android if too many page errors per Minutes detected
 ; Return values .: True if Android reboot should be initiated, False otherwise
 ; Author ........: Cosote (October 2016)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2016-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: If checkAndroidPageError() = True Then Return
 ; ===============================================================================================================================
+#include-once
+
+Global $g_aiAndroidPageError[2]=[0,0] ; Variables for page error count and TimerHandle
+
+Func InitAndroidPageError()
+   $g_aiAndroidPageError[0] = 0 ; Page Error Counter
+   $g_aiAndroidPageError[1] = 0 ; TimerHandle
+EndFunc
 
 Func checkAndroidPageError($bRebootAndroid = True)
 
-	If $AndroidPageError[1] = 0 Then Return False
+	If $g_aiAndroidPageError[1] = 0 Then Return False
 
-	Local $bResetTimer = TimerDiff($AndroidPageError[1]) > $iAndroidRebootPageErrorPerMinutes * 60 * 1000
+	Local $bResetTimer = TimerDiff($g_aiAndroidPageError[1]) > $g_iAndroidRebootPageErrorPerMinutes * 60 * 1000
 
-	If $AndroidPageError[0] >= $iAndroidRebootPageErrorCount And $bResetTimer = False Then
+	If $g_aiAndroidPageError[0] >= $g_iAndroidRebootPageErrorCount And $bResetTimer = False Then
 
-		Local $sMin = Round(TimerDiff($AndroidPageError[1]) / (60 * 1000), 1) & " Minutes"
+		Local $sMin = Round(TimerDiff($g_aiAndroidPageError[1]) / (60 * 1000), 1) & " Minutes"
 
 		If $bRebootAndroid = True Then
-			SetLog("Reboot " & $Android & " due to " & $AndroidPageError[0] & " page errors in " & $sMin, $COLOR_ERROR)
+			SetLog("Reboot " & $g_sAndroidEmulator & " due to " & $g_aiAndroidPageError[0] & " page errors in " & $sMin, $COLOR_ERROR)
 		Else
-			SetLog($Android & " had " & $AndroidPageError[0] & " page errors in " & $sMin, $COLOR_ERROR)
+			SetLog($g_sAndroidEmulator & " had " & $g_aiAndroidPageError[0] & " page errors in " & $sMin, $COLOR_ERROR)
 		EndIf
 		InitAndroidPageError()
 
@@ -40,8 +48,8 @@ Func checkAndroidPageError($bRebootAndroid = True)
 
 	If $bResetTimer = True Then
 
-		If $AndroidPageError[0] > 0 Then
-			SetDebugLog("Cleared " & $AndroidPageError[0] & " " & $Android & " page errors")
+		If $g_aiAndroidPageError[0] > 0 Then
+			SetDebugLog("Cleared " & $g_aiAndroidPageError[0] & " " & $g_sAndroidEmulator & " page errors")
 		EndIf
 
 		InitAndroidPageError()
@@ -55,10 +63,10 @@ EndFunc   ;==>checkAndroidPageError
 
 Func AndroidPageError($sSource)
 
-	$AndroidPageError[0] += 1
-	SetDebugLog("Page error count increased to " & $AndroidPageError[0] & ", source: " & $sSource)
-	If $AndroidPageError[1] = 0 Then $AndroidPageError[1] = TimerInit()
-	Return $AndroidPageError[0]
+	$g_aiAndroidPageError[0] += 1
+	SetDebugLog("Page error count increased to " & $g_aiAndroidPageError[0] & ", source: " & $sSource)
+	If $g_aiAndroidPageError[1] = 0 Then $g_aiAndroidPageError[1] = TimerInit()
+	Return $g_aiAndroidPageError[0]
 
 EndFunc   ;==>AndroidPageError
 

@@ -7,7 +7,7 @@
 ; Return values .: Promac(04-2016)
 ; Author ........: MonkeyHunter (04-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,7 +16,7 @@
 ;
 Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 
-	If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmyTroopTime:", $COLOR_DEBUG1)
+	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SETLOG("Begin getArmyTroopTime:", $COLOR_DEBUG1)
 
 	$aTimeTrain[0] = 0  ; reset time
 

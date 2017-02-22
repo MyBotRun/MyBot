@@ -5,15 +5,20 @@
 ; Parameters ....: $bReTest - [optional] a boolean value. Default is False.
 ; Return values .: None , sets several global variables
 ; Author ........: trlopes (Oct 2016)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
 
 Global $aTownHall[4] = [-1, -1, -1, -1] ; [LocX, LocY, BldgLvl, Quantity]
+Global $IMGLOCTHLOCATION
+Global $IMGLOCTHNEAR
+Global $IMGLOCTHFAR
+Global $IMGLOCTHRDISTANCE
 
 Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 	;set THSearch Values for multisearch
@@ -26,34 +31,31 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 	Local $maxLevel = 100
 	Local $maxReturnPoints = 1
 	Local $returnProps = "objectname,objectlevel,objectpoints,nearpoints,farpoints,redlinedistance"
-	
-	Local $strpredebug = ""
 
 	If $myVillage = False Then ; these are only for OPONENT village
 		ResetTHsearch() ;see below
 	Else
 		$redLines = "ECD" ;needed for searching your own village
 	EndIf
-    
+
 
 
 	;aux data
 	Local $propsNames = StringSplit($returnProps, ",", $STR_NOCOUNT)
-	If $debugsetlog = 1 Then SetLog("imgloc TH search Start", $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then SetLog("imgloc TH search Start", $COLOR_DEBUG)
 	Local $numRetry = 2 ; try to find TH twice
 
 	For $retry = 0 To $numRetry
 		if $retry > 0 then  $xdirectory = $xdirectoryb
-		
+
 		IF $iDetectedImageType = 1 Then ;Snow theme on
-			$xdirectory = "snow-" & $xdirectory  
-			$strpredebug = "snow_"
+			$xdirectory = "snow-" & $xdirectory
 		EndIF
-		
+
 		if $retry > 0 and $IMGLOCREDLINE <> "" then ; on retry IMGLOCREDLNE is already populated
 			$redLines = $IMGLOCREDLINE
 		endif
-		
+
 		Local $hTimer = TimerInit()
 		Local $result = findMultiple($xdirectory, $sCocDiamond, $redLines, $minLevel, $maxLevel, $maxReturnPoints, $returnProps, $bForceCapture)
 
@@ -61,10 +63,10 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 			;we got results from multisearch ; lets set $redline in case we need to perform another search
 			$redLines = $IMGLOCREDLINE ; that was set by findMultiple if redline argument was ""
 			If UBound($result) = 1 Then
-				If $debugsetlog = 1 Then SetLog("imgloc Found TH : ", $COLOR_INFO)
+				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found TH : ", $COLOR_INFO)
 				Local $propsValues = $result[0]
 				For $pv = 0 To UBound($propsValues) - 1
-					If $debugsetlog = 1 Then SetLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
+					If $g_iDebugSetlog = 1 Then SetLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
 					Switch $propsNames[$pv]
 						Case "objectname"
 							;nothing to do
@@ -92,7 +94,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 								$THy = Number($IMGLOCTHLOCATION[1]) ; backwards compatibility
 								$THLocation = 1 ; backwards compatibility
 
-								If $debugImageSave = 1  and $retry > 0 then
+								If $g_iDebugImageSave = 1  and $retry > 0 then
 									_CaptureRegion()
 
 									; Store a copy of the image handle
@@ -137,26 +139,26 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 						$aTownHall[3] = 1 ; found 1 only
 					EndIf
 				Next
-				If $debugsetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
+				If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 			Else
-				If $debugsetlog = 1 Then SetLog("imgloc Found Multiple TH : ", $COLOR_INFO)
-				If $debugImageSave = 1  Then DebugImageSave($strpredebug & "imglocTHSearch_MultiMatched_", True)
+				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found Multiple TH : ", $COLOR_INFO)
+				If $g_iDebugImageSave = 1  Then DebugImageSave("imglocTHSearch_MultiMatched_", True)
 				;could be a multi match or another tile for same object. As TH only have 1 tile, this will never happen
-				If $debugsetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
+				If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 			EndIf
 
 		Else
 			;thnotfound
-			If $debugsetlog = 1  and $retry > 0 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
-			If $debugImageSave = 1 and $retry > 0 Then DebugImageSave($strpredebug & "imglocTHSearch_NoTHFound_", True)
-			If $debugsetlog = 1 and $retry > 0 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
+			If $g_iDebugSetlog = 1  and $retry > 0 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
+			If $g_iDebugImageSave = 1 and $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
+			If $g_iDebugSetlog = 1 and $retry > 0 Then SetLog("imgloc THSearch Calculated  (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 		EndIf
-		
+
 		If $IMGLOCTHLEVEL > 0 Then
 			ExitLoop ; TH was found
 		Else
-			If $debugImageSave = 1 and $retry > 0 Then DebugImageSave($strpredebug & "imglocTHSearch_NoTHFound_", True)
-			If $debugsetlog = 1 Then SetLog("imgloc THSearch Notfound, Retry:  " & $retry)
+			If $g_iDebugImageSave = 1 and $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
+			If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Notfound, Retry:  " & $retry)
 		EndIf
 		$retry = $retry + 1
 	Next ; retry

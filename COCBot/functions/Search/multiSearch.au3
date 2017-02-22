@@ -15,14 +15,14 @@
 
 Func updateMultiSearchStats($aResult, $statFile = "")
 	Switch $statFile
-		Case $statChkWeakBase
+		Case $g_sProfileWeakBasePath
 			updateWeakBaseStats($aResult)
 		Case Else
 			; Don't log stats at present
 	EndSwitch
 EndFunc   ;==>updateMultiSearchStats
 
-Func addInfoToDebugImage($hGraphic, $hPen, $fileName, $x, $y)
+Func addInfoToDebugImage(ByRef $hGraphic, ByRef $hPen, $fileName, $x, $y)
 	; Draw the location on the image
 	_GDIPlus_GraphicsDrawRect($hGraphic, $x - 5, $y - 5, 10, 10, $hPen)
 
@@ -39,6 +39,7 @@ Func addInfoToDebugImage($hGraphic, $hPen, $fileName, $x, $y)
 	_GDIPlus_GraphicsDrawStringEx($hGraphic, $sString, $hFont, $aInfo[0], $hFormat, $hBrush)
 
 	; Dispose all resources
+	$tLayout = 0
 	_GDIPlus_FontDispose($hFont)
 	_GDIPlus_FontFamilyDispose($hFamily)
 	_GDIPlus_StringFormatDispose($hFormat)
@@ -50,7 +51,7 @@ Func captureDebugImage($aResult, $subDirectory)
 
 	If IsArray($aResult) Then
 		; Create the directory in case it doesn't exist
-		DirCreate($dirTempDebug & $subDirectory)
+		DirCreate($g_sProfileTempDebugPath & $subDirectory)
 
 		; Store a copy of the image handle
 		Local $editedImage = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmap2)
@@ -84,7 +85,7 @@ Func captureDebugImage($aResult, $subDirectory)
 		_GDIPlus_GraphicsDrawString($hGraphic, "Time Taken:" & $aResult[0][2] & " " & $aResult[0][3], 350, 50, "Verdana", 20)
 
 		; Save the image and release any memory
-		_GDIPlus_ImageSaveToFile($editedImage, $dirTempDebug & $subDirectory & "\" & $fileName)
+		_GDIPlus_ImageSaveToFile($editedImage, $g_sProfileTempDebugPath & $subDirectory & "\" & $fileName)
 		_GDIPlus_PenDispose($hPen)
 		_GDIPlus_GraphicsDispose($hGraphic)
 		_GDIPlus_BitmapDispose($editedImage)
@@ -93,8 +94,8 @@ EndFunc   ;==>captureDebugImage
 
 Func returnPropertyValue($key, $property)
 	; Get the property
-	Local $aValue = DllCall($hImgLib, "str", "GetProperty", "str", $key, "str", $property)
-	If @error Then _logErrorDLLCall($pImgLib, @error)
+	Local $aValue = DllCall($g_hLibImgLoc, "str", "GetProperty", "str", $key, "str", $property)
+	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 	Return $aValue[0]
 EndFunc   ;==>getProperty
 
@@ -126,12 +127,12 @@ Func multiMatches($directory, $maxReturnPoints = 0, $fullCocAreas = "DCD", $redL
 	If $forceCaptureRegion = True Then _CaptureRegion2()
 
 	; Perform the search
-	$res = DllCall($hImgLib, "str", "SearchMultipleTilesBetweenLevels", "handle", $hHBitmap2, "str", $directory, "str", $fullCocAreas, "Int", $maxReturnPoints, "str", $redLines, "Int", $minLevel, "Int", $maxLevel)
-	If @error Then _logErrorDLLCall($pImgLib, @error)
+	Local $res = DllCall($g_hLibImgLoc, "str", "SearchMultipleTilesBetweenLevels", "handle", $hHBitmap2, "str", $directory, "str", $fullCocAreas, "Int", $maxReturnPoints, "str", $redLines, "Int", $minLevel, "Int", $maxLevel)
+	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 
 	; Get the redline data
-	$aValue = DllCall($hImgLib, "str", "GetProperty", "str", "redline", "str", "")
-	If @error Then _logErrorDLLCall($pImgLib, @error)
+	$aValue = DllCall($g_hLibImgLoc, "str", "GetProperty", "str", "redline", "str", "")
+	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 	$redLines = $aValue[0]
 
 	If $res[0] <> "" Then

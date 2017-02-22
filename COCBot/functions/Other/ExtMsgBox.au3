@@ -9,7 +9,7 @@
 ; Author(s) .....: Melba23, based on some original code by photonbuddy & YellowLab, and KaFu (default font data)
 ; Link ..........: https://www.autoitscript.com/forum/topic/109096-extended-message-box-bugfix-version-9-aug-16/
 ;
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -279,7 +279,8 @@ EndFunc   ;==>_ExtMsgBoxSet
 ; Author ........: Melba23, based on some original code by photonbuddy & YellowLab
 ; Example........; Yes
 ;=====================================================================================================================
-Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $iVPos = 0, $bMain = True)
+; CS69 Jan 2017 - default $hWin parameter to $g_hFrmBot so it doesn't have to be set everytime this function is called
+Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = $g_hFrmBot, $iVPos = 0, $bMain = True)
 
 	; Set default sizes for message box
 	Local $iMsg_Width_Max = $g_aEMB_Settings[6], $iMsg_Width_Min = 150, $iMsg_Width_Abs = $g_aEMB_Settings[7]
@@ -731,26 +732,40 @@ Func __EMB_GetDefaultFont()
 	Local $hTheme = DllCall($hThemeDLL, 'ptr', 'OpenThemeData', 'hwnd', $hWnd, 'wstr', "Static")
 	If @error Then Return $aDefFontData
 	$hTheme = $hTheme[0]
+
 	; Create LOGFONT structure
 	Local $tFont = DllStructCreate("long;long;long;long;long;byte;byte;byte;byte;byte;byte;byte;byte;wchar[32]")
 	Local $pFont = DllStructGetPtr($tFont)
+
 	; Get MsgBox font from theme
 	DllCall($hThemeDLL, 'long', 'GetThemeSysFont', 'HANDLE', $hTheme, 'int', 805, 'ptr', $pFont) ; TMT_MSGBOXFONT
-	If @error Then Return $aDefFontData
+	If @error Then
+	   $tFont = 0
+	   Return $aDefFontData
+    EndIf
+
 	; Get default DC
 	Local $hDC = DllCall("user32.dll", "handle", "GetDC", "hwnd", $hWnd)
-	If @error Then Return $aDefFontData
+	If @error Then
+	   $tFont = 0
+	   Return $aDefFontData
+    EndIf
 	$hDC = $hDC[0]
+
 	; Get font vertical size
 	Local $iPixel_Y = DllCall("gdi32.dll", "int", "GetDeviceCaps", "handle", $hDC, "int", 90) ; LOGPIXELSY
 	If Not @error Then
 		$iPixel_Y = $iPixel_Y[0]
 		$aDefFontData[0] = Int(2 * (.25 - DllStructGetData($tFont, 1) * 72 / $iPixel_Y)) / 2
 	EndIf
+
 	; Close DC
 	DllCall("user32.dll", "int", "ReleaseDC", "hwnd", $hWnd, "handle", $hDC)
+
 	; Extract font data from LOGFONT structure
 	$aDefFontData[1] = DllStructGetData($tFont, 14)
+
+	$tFont = 0
 
 	Return $aDefFontData
 

@@ -6,7 +6,7 @@
 ; Return values .: MR.ViPER (16-10-2016)
 ; Author ........:
 ; Modified ......: MR.ViPER (10-12-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,7 +16,7 @@
 Func ArmyHeroStatus($Hero)
 	Local $directory = "trainwindow-HeroStatus-bundle"
 	Local Const $aHeroesRect[3][4] = [[610, 340, 683, 390], [683, 340, 758, 390], [757, 340, 833, 390]] ; [[643, 340, 683, 390], [718, 340, 758, 390], [749, 340, 833, 390]]
-	Local $Result
+	Local $Result, $Status
 
 	Select
 		Case $Hero = "King" Or $Hero = 0 Or $Hero = $eKing
@@ -40,7 +40,7 @@ EndFunc   ;==>ArmyHeroStatus
 Func CountHeroes()
 	Local $directory =  "trainwindow-HeroStatus-bundle"
 	Local Const $aHeroesRect[3][4] = [[643, 340, 683, 390], [718, 340, 758, 390], [749, 340, 833, 390]]
-	Local $Result
+	Local $Result, $Status
 	Local $Available = 0, $Healing = 0, $Upgrading = 0, $None = 0, $AvaiAndHealing = 0
 	Local $ToReturn[5] = [$Available, $Healing, $Upgrading, $None, $AvaiAndHealing]
 	For $i = 0 To (UBound($aHeroesRect) - 1)

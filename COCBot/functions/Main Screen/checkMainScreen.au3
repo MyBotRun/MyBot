@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (July/Aug 2015) , TheMaster (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkObstacles(), waitMainScreen()
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,13 +20,13 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 	If $Check = True Then
 		SetLog("Trying to locate Main Screen")
 	Else
-		;If $debugsetlog = 1 Then SetLog("checkMainScreen start quiet mode", $COLOR_DEBUG)
+		;If $g_iDebugSetlog = 1 Then SetLog("checkMainScreen start quiet mode", $COLOR_DEBUG)
     EndIf
 	If TestCapture() = False Then
 		If CheckAndroidRunning(False) = False Then Return
 		getBSPos() ; Update $HWnd and Android Window Positions
 		#cs
-		If $ichkBackground = 0 And $NoFocusTampering = False And $AndroidEmbedded = False Then
+		If $g_bChkBackgroundMode = False And $NoFocusTampering = False And $g_bAndroidEmbedded = False Then
 			Local $hTimer = TimerInit(), $hWndActive = -1
 			Local $activeHWnD = WinGetHandle("")
 			While TimerDiff($hTimer) < 1000 And $hWndActive <> $HWnD And Not _Sleep(100)
@@ -42,14 +42,14 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		EndIf
 		#ce
 		WinGetAndroidHandle()
-		If $ichkBackground = 0 And $HWnD <> 0 Then
+		If $g_bChkBackgroundMode = False And $HWnD <> 0 Then
 			; ensure android is top
 			AndroidToFront()
 		EndIf
-		If $AndroidAdbScreencap = False And _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
+		If $g_bAndroidAdbScreencap = False And _WinAPI_IsIconic($HWnD) Then WinSetState($HWnD, "", @SW_RESTORE)
 	EndIf
 	$iCount = 0
-	While _CheckPixel($aIsMain, $bCapturePixel) = False
+	While _CheckPixel($aIsMain, $g_bCapturePixel) = False
 		If TestCapture() Then
 			SetLog("Main Screen not Located", $COLOR_ERROR)
 			ExitLoop
@@ -57,17 +57,17 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		WinGetAndroidHandle()
 		If _Sleep($iDelaycheckMainScreen1) Then Return
 		$Result = checkObstacles()
-		If $debugsetlog = 1 Then Setlog("CheckObstacles Result = "&$Result, $COLOR_DEBUG)
+		If $g_iDebugSetlog = 1 Then Setlog("CheckObstacles Result = "&$Result, $COLOR_DEBUG)
 
 		If ($Result = False And $MinorObstacle = True) Then
 			$MinorObstacle = False
 		ElseIf ($Result = False And $MinorObstacle = False) Then
 			 RestartAndroidCoC() ; Need to try to restart CoC
 		Else
-			$Restart = True
+			$g_bRestart = True
 		EndIf
 		waitMainScreen()  ; Due to differeneces in PC speed, let waitMainScreen test for CoC restart
-		If Not $RunState Then Return
+		If Not $g_bRunState Then Return
 		If @extended Then Return SetError(1, 1, -1)
 		If @error Then $iCount += 1
 		If $iCount > 2 Then
@@ -77,17 +77,17 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		EndIf
 	WEnd
 	ZoomOut()
-	If Not $RunState Then Return
+	If Not $g_bRunState Then Return
 
 	If $Check = True Then
 		SetLog("Main Screen Located", $COLOR_SUCCESS)
 	Else
-		;If $debugsetlog = 1 Then SetLog("checkMainScreen exit quiet mode", $COLOR_DEBUG)
+		;If $g_iDebugSetlog = 1 Then SetLog("checkMainScreen exit quiet mode", $COLOR_DEBUG)
 	EndIf
 
     ;After checkscreen dispose windows
 	DisposeWindows()
-	
+
 	;Execute Notify Pending Actions
 	NotifyPendingActions()
 EndFunc   ;==>checkMainScreen

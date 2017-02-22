@@ -5,134 +5,135 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
+
 Func btnLocateUpgrades()
-	Local $wasRunState = $RunState
-	$RunState = True
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
 	LocateUpgrades()
-	$RunState = $wasRunState
+	$g_bRunState = $wasRunState
 EndFunc   ;==>btnLocateUpgrades
 
 Func btnchkbxUpgrade()
-	For $i = 0 To UBound($aUpgrades, 1) - 1
-		If GUICtrlRead($chkbxUpgrade[$i]) = $GUI_CHECKED Then
-			$ichkbxUpgrade[$i] = 1
+	For $i = 0 To UBound($g_avBuildingUpgrades, 1) - 1
+		If GUICtrlRead($g_hChkUpgrade[$i]) = $GUI_CHECKED Then
+			$g_abBuildingUpgradeEnable[$i] = True
 		Else
-			$ichkbxUpgrade[$i] = 0
+			$g_abBuildingUpgradeEnable[$i] = False
 		EndIf
 	Next
 EndFunc   ;==>btnchkbxUpgrade
 
 Func btnchkbxRepeat()
-	For $i = 0 To UBound($aUpgrades, 1) - 1
-		If GUICtrlRead($chkUpgrdeRepeat[$i]) = $GUI_CHECKED Then
-			$ichkUpgrdeRepeat[$i] = 1
+	For $i = 0 To UBound($g_avBuildingUpgrades, 1) - 1
+		If GUICtrlRead($g_hChkUpgradeRepeat[$i]) = $GUI_CHECKED Then
+			$g_abUpgradeRepeatEnable[$i] = True
 		Else
-			$ichkUpgrdeRepeat[$i] = 0
+			$g_abUpgradeRepeatEnable[$i] = False
 		EndIf
 	Next
 EndFunc   ;==>btnchkbxRepeat
 
 Func picUpgradeTypeLocation()
-	Local $wasRunState = $RunState
-	$RunState = True
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
 	PureClick(1, 40, 1, 0, "#9999") ; Clear screen
 	Sleep(100)
 	Zoomout() ; Zoom out if needed
 	Local $inum
-	For $inum = 0 To UBound($aUpgrades, 1) - 1
-		If @GUI_CtrlId = $picUpgradeType[$inum] Then
-			Local $x = $aUpgrades[$inum][0]
-			Local $y = $aUpgrades[$inum][1]
-			Local $n = $aUpgrades[$inum][4]
+	For $inum = 0 To UBound($g_avBuildingUpgrades, 1) - 1
+		If @GUI_CtrlId = $g_hPicUpgradeType[$inum] Then
+			Local $x = $g_avBuildingUpgrades[$inum][0]
+			Local $y = $g_avBuildingUpgrades[$inum][1]
+			Local $n = $g_avBuildingUpgrades[$inum][4]
 			SetDebugLog("Selecting #" & $inum + 1 & ": " & $n & ", " & $x & "/" & $y)
 			If isInsideDiamondXY($x, $y) Then ; check for valid location
-				BuildingClick($aUpgrades[$inum][0], $aUpgrades[$inum][1], "#9999")
+				BuildingClick($g_avBuildingUpgrades[$inum][0], $g_avBuildingUpgrades[$inum][1], "#9999")
 				Sleep(100)
 				If StringInStr($n, "collect", $STR_NOCASESENSEBASIC) Or _
 						StringInStr($n, "mine", $STR_NOCASESENSEBASIC) Or _
 						StringInStr($n, "drill", $STR_NOCASESENSEBASIC) Then
 					Click(1, 40, 1, 0, "#0999") ;Click away to deselect collector if was not full, and collected with previous click
 					Sleep(100)
-					BuildingClick($aUpgrades[$inum][0], $aUpgrades[$inum][1], "#9999") ;Select collector
+					BuildingClick($g_avBuildingUpgrades[$inum][0], $g_avBuildingUpgrades[$inum][1], "#9999") ;Select collector
 				EndIf
 			EndIf
 			ExitLoop
 		EndIf
 	Next
-	$RunState = $wasRunState
+	$g_bRunState = $wasRunState
 EndFunc   ;==>picUpgradeTypeLocation
 
 Func btnResetUpgrade()
-	For $i = 0 To UBound($aUpgrades, 1) - 1
-		If GUICtrlRead($chkUpgrdeRepeat[$i]) = $GUI_CHECKED Then ContinueLoop
-		$aUpgrades[$i][0] = -1 ; clear location and loot value in $aUpgrades variable
-		$aUpgrades[$i][1] = -1 ; clear location and loot value in $aUpgrades variable
-		$aUpgrades[$i][2] = -1 ; clear location and loot value in $aUpgrades variable
-		$aUpgrades[$i][3] = "" ;Clear Upgrade Type
-		$aUpgrades[$i][4] = "" ;Clear Upgrade Unit Name
-		$aUpgrades[$i][5] = "" ;Clear Upgrade Level
-		$aUpgrades[$i][6] = "" ;Clear Upgrade Time
-		$aUpgrades[$i][7] = "" ;Clear Upgrade Starting Time
-		GUICtrlSetData($txtUpgradeName[$i], "") ; Clear GUI Unit Name
-		GUICtrlSetData($txtUpgradeLevel[$i], "") ; Clear GUI Unit Level
-		GUICtrlSetData($txtUpgradeValue[$i], "") ; Clear Upgrade value in GUI
-		GUICtrlSetData($txtUpgradeTime[$i], "") ; Clear Upgrade time in GUI
-		GUICtrlSetImage($picUpgradeType[$i], $pIconLib, $eIcnBlank) ; change GUI upgrade image to blank
-		$ipicUpgradeStatus[$i] = $eIcnTroops
-		GUICtrlSetImage($picUpgradeStatus[$i], $pIconLib, $ipicUpgradeStatus[$i]) ; Change GUI upgrade status to not ready
-		GUICtrlSetState($chkbxUpgrade[$i], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
-		GUICtrlSetData($txtUpgradeEndTime[$i], "") ; Clear Upgrade time in GUI
-		GUICtrlSetState($chkUpgrdeRepeat[$i], $GUI_UNCHECKED) ; Change repeat box to unchecked
+	For $i = 0 To UBound($g_avBuildingUpgrades, 1) - 1
+		If GUICtrlRead($g_hChkUpgradeRepeat[$i]) = $GUI_CHECKED Then ContinueLoop
+		$g_avBuildingUpgrades[$i][0] = -1 ; clear location and loot value in $g_avBuildingUpgrades variable
+		$g_avBuildingUpgrades[$i][1] = -1 ; clear location and loot value in $g_avBuildingUpgrades variable
+		$g_avBuildingUpgrades[$i][2] = -1 ; clear location and loot value in $g_avBuildingUpgrades variable
+		$g_avBuildingUpgrades[$i][3] = "" ;Clear Upgrade Type
+		$g_avBuildingUpgrades[$i][4] = "" ;Clear Upgrade Unit Name
+		$g_avBuildingUpgrades[$i][5] = "" ;Clear Upgrade Level
+		$g_avBuildingUpgrades[$i][6] = "" ;Clear Upgrade Time
+		$g_avBuildingUpgrades[$i][7] = "" ;Clear Upgrade Starting Time
+		GUICtrlSetData($g_hTxtUpgradeName[$i], "") ; Clear GUI Unit Name
+		GUICtrlSetData($g_hTxtUpgradeLevel[$i], "") ; Clear GUI Unit Level
+		GUICtrlSetData($g_hTxtUpgradeValue[$i], "") ; Clear Upgrade value in GUI
+		GUICtrlSetData($g_hTxtUpgradeTime[$i], "") ; Clear Upgrade time in GUI
+		GUICtrlSetImage($g_hPicUpgradeType[$i], $g_sLibIconPath, $eIcnBlank) ; change GUI upgrade image to blank
+		$g_aiPicUpgradeStatus[$i] = $eIcnTroops
+		GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, $g_aiPicUpgradeStatus[$i]) ; Change GUI upgrade status to not ready
+		GUICtrlSetState($g_hChkUpgrade[$i], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
+		GUICtrlSetData($g_hTxtUpgradeEndTime[$i], "") ; Clear Upgrade time in GUI
+		GUICtrlSetState($g_hChkUpgradeRepeat[$i], $GUI_UNCHECKED) ; Change repeat box to unchecked
 	Next
 EndFunc   ;==>btnResetUpgrade
 
 Func chkLab()
-	If GUICtrlRead($chkLab) = $GUI_CHECKED Then
-		$ichkLab = 1
-		GUICtrlSetState($icnLabUpgrade, $GUI_SHOW)
-		GUICtrlSetState($lblNextUpgrade, $GUI_ENABLE)
-		GUICtrlSetState($cmbLaboratory, $GUI_ENABLE)
-		GUICtrlSetState($btnLocateLaboratory, $GUI_SHOW)
-		GUICtrlSetImage($icnLabUpgrade, $pIconLib, $aLabTroops[$icmbLaboratory][4])
+	If GUICtrlRead($g_hChkAutoLabUpgrades) = $GUI_CHECKED Then
+		$g_bAutoLabUpgradeEnable = True
+		GUICtrlSetState($g_hPicLabUpgrade, $GUI_SHOW)
+		GUICtrlSetState($g_hLblNextUpgrade, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbLaboratory, $GUI_ENABLE)
+		;GUICtrlSetState($g_hBtnLocateLaboratory, $GUI_SHOW)
+		GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $aLabTroops[$g_iCmbLaboratory][4])
 	Else
-		$ichkLab = 0
-		GUICtrlSetState($icnLabUpgrade, $GUI_HIDE)
-		GUICtrlSetState($lblNextUpgrade, $GUI_DISABLE)
-		GUICtrlSetState($cmbLaboratory, $GUI_DISABLE)
-		GUICtrlSetState($btnLocateLaboratory, $GUI_HIDE)
-		GUICtrlSetImage($icnLabUpgrade, $pIconLib, $aLabTroops[0][4])
+		$g_bAutoLabUpgradeEnable = False
+		GUICtrlSetState($g_hPicLabUpgrade, $GUI_HIDE)
+		GUICtrlSetState($g_hLblNextUpgrade, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbLaboratory, $GUI_DISABLE)
+		;GUICtrlSetState($g_hBtnLocateLaboratory, $GUI_HIDE)
+		GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $aLabTroops[0][4])
 	EndIf
 	LabStatusGUIUpdate()
 EndFunc   ;==>chkLab
 
 Func LabStatusGUIUpdate()
 	If _DateIsValid($sLabUpgradeTime) Then
-		$txtTip = GetTranslated(614, 8, "Visible Red button means that laboratory upgrade in process") & @CRLF & _
+		_GUICtrlSetTip($g_hBtnResetLabUpgradeTime, GetTranslated(614, 8, "Visible Red button means that laboratory upgrade in process") & @CRLF & _
 				GetTranslated(614, 9, "This will automatically disappear when near time for upgrade to be completed.") & @CRLF & _
 				GetTranslated(614, 10, "If upgrade has been manually finished with gems before normal end time,") & @CRLF & _
 				GetTranslated(614, 11, "Click red button to reset internal upgrade timer BEFORE STARTING NEW UPGRADE") & @CRLF & _
 				GetTranslated(614, 12, "Caution - Unnecessary timer reset will force constant checks for lab status") & @CRLF & @CRLF & _
 				GetTranslated(614, 19, "Troop Upgrade started") & ", " & _
-				GetTranslated(614, 20, "Will begin to check completion at:") & " " & $sLabUpgradeTime & @CRLF & " "
-		_GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
-		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_SHOW)
-		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_ENABLE)
+				GetTranslated(614, 20, "Will begin to check completion at:") & " " & $sLabUpgradeTime & @CRLF & " ")
+		GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_SHOW)
+		GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_ENABLE)
 	Else
-		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_HIDE) ; comment this line out to edit GUI
-		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_DISABLE)
+		GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_HIDE) ; comment this line out to edit GUI
+		GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>LabStatusGUIUpdate
 
 Func cmbLab()
-	$icmbLaboratory = _GUICtrlComboBox_GetCurSel($cmbLaboratory)
-	GUICtrlSetImage($icnLabUpgrade, $pIconLib, $aLabTroops[$icmbLaboratory][4])
+	$g_iCmbLaboratory = _GUICtrlComboBox_GetCurSel($g_hCmbLaboratory)
+	GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $aLabTroops[$g_iCmbLaboratory][4])
 EndFunc   ;==>cmbLab
 
 Func ResetLabUpgradeTime()
@@ -140,229 +141,175 @@ Func ResetLabUpgradeTime()
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
 	Local $stext = @CRLF & GetTranslated(614, 13, "Are you 100% sure you want to reset lab upgrade timer?") & @CRLF & _
 			GetTranslated(614, 14, "Click OK to reset") & @CRLF & GetTranslated(614, 15, "Or Click Cancel to exit") & @CRLF
-	Local $MsgBox = _ExtMsgBox(0, GetTranslated(614, 16, "Reset timer") & "|" & GetTranslated(614, 17, "Cancel and Return"), GetTranslated(614, 18, "Reset laboratory upgrade timer?"), $stext, 120, $frmBot)
-	If $DebugSetlog = 1 Then Setlog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
+	Local $MsgBox = _ExtMsgBox(0, GetTranslated(614, 16, "Reset timer") & "|" & GetTranslated(614, 17, "Cancel and Return"), _
+							   GetTranslated(614, 18, "Reset laboratory upgrade timer?"), $stext, 120, $g_hFrmBot)
+	If $g_iDebugSetlog = 1 Then Setlog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
 	If $MsgBox = 1 Then
 		$sLabUpgradeTime = ""
-		$txtTip = GetTranslated(614, 8, "Visible Red button means that laboratory upgrade in process") & @CRLF & _
+		_GUICtrlSetTip($g_hBtnResetLabUpgradeTime, GetTranslated(614, 8, "Visible Red button means that laboratory upgrade in process") & @CRLF & _
 				GetTranslated(614, 9, "This will automatically disappear when near time for upgrade to be completed.") & @CRLF & _
 				GetTranslated(614, 10, "If upgrade has been manually finished with gems before normal end time,") & @CRLF & _
 				GetTranslated(614, 11, "Click red button to reset internal upgrade timer BEFORE STARTING NEW UPGRADE") & @CRLF & _
-				GetTranslated(614, 12, "Caution - Unnecessary timer reset will force constant checks for lab status")
-		_GUICtrlSetTip($btnResetLabUpgradeTime, $txtTip)
+				GetTranslated(614, 12, "Caution - Unnecessary timer reset will force constant checks for lab status"))
 	EndIf
 	If _DateIsValid($sLabUpgradeTime) Then
-		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_SHOW)
-		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_ENABLE)
+		GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_SHOW)
+		GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_ENABLE)
 	Else
-		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_HIDE)
-		GUICtrlSetState($btnResetLabUpgradeTime, $GUI_DISABLE)
+		GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_HIDE)
+		GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>ResetLabUpgradeTime
 
 Func chkUpgradeKing()
 	If $iTownHallLevel > 6 Or $iTownHallLevel = 0 Then ; Must be TH7 or above to have King
-		GUICtrlSetState($chkUpgradeKing, $GUI_ENABLE)
-		If GUICtrlRead($chkUpgradeKing) = $GUI_CHECKED Then
-			$ichkUpgradeKing = 1
-			GUICtrlSetState($chkDBKingWait, $GUI_UNCHECKED)
-			GUICtrlSetState($chkABKingWait, $GUI_UNCHECKED)
-			GUICtrlSetState($chkDBKingWait, $GUI_DISABLE)
-			GUICtrlSetState($chkABKingWait, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkUpgradeKing, $GUI_ENABLE)
+		If GUICtrlRead($g_hChkUpgradeKing) = $GUI_CHECKED Then
+			$g_bUpgradeKingEnable = True
+			GUICtrlSetState($g_hChkDBKingWait, $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkABKingWait, $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDBKingWait, $GUI_DISABLE)
+			GUICtrlSetState($g_hChkABKingWait, $GUI_DISABLE)
 			_GUI_Value_STATE("SHOW", $groupKingSleeping)
 		Else
-			$ichkUpgradeKing = 0
-			GUICtrlSetState($chkDBKingWait, $GUI_ENABLE)
-			GUICtrlSetState($chkABKingWait, $GUI_ENABLE)
+			$g_bUpgradeKingEnable = False
+			GUICtrlSetState($g_hChkDBKingWait, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkABKingWait, $GUI_ENABLE)
 			_GUI_Value_STATE("HIDE", $groupKingSleeping)
 		EndIf
 
-		If GUICtrlRead($cmbBoostBarbarianKing) > 0 Then
-			GUICtrlSetState($chkUpgradeKing, $GUI_DISABLE)
-			GUICtrlSetState($chkUpgradeKing, $GUI_UNCHECKED)
-			$ichkUpgradeKing = 0
+		If GUICtrlRead($g_hCmbBoostBarbarianKing) > 0 Then
+			GUICtrlSetState($g_hChkUpgradeKing, $GUI_DISABLE)
+			GUICtrlSetState($g_hChkUpgradeKing, $GUI_UNCHECKED)
+			$g_bUpgradeKingEnable = False
 		Else
-			GUICtrlSetState($chkUpgradeKing, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkUpgradeKing, $GUI_ENABLE)
 		EndIf
 	Else
-		GUICtrlSetState($chkUpgradeKing, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkUpgradeKing, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkUpgradeKing
 
 Func chkUpgradeQueen()
 	If $iTownHallLevel > 8 Or $iTownHallLevel = 0 Then ; Must be TH9 or above to have Queen
-		GUICtrlSetState($chkUpgradeQueen, $GUI_ENABLE)
-		If GUICtrlRead($chkUpgradeQueen) = $GUI_CHECKED Then
-			$ichkUpgradeQueen = 1
-			GUICtrlSetState($chkDBQueenWait, $GUI_UNCHECKED)
-			GUICtrlSetState($chkABQueenWait, $GUI_UNCHECKED)
-			GUICtrlSetState($chkDBQueenWait, $GUI_DISABLE)
-			GUICtrlSetState($chkABQueenWait, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkUpgradeQueen, $GUI_ENABLE)
+		If GUICtrlRead($g_hChkUpgradeQueen) = $GUI_CHECKED Then
+			$g_bUpgradeQueenEnable = True
+			GUICtrlSetState($g_hChkDBQueenWait, $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkABQueenWait, $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDBQueenWait, $GUI_DISABLE)
+			GUICtrlSetState($g_hChkABQueenWait, $GUI_DISABLE)
 			_GUI_Value_STATE("SHOW", $groupQueenSleeping)
 		Else
-			$ichkUpgradeQueen = 0
-			GUICtrlSetState($chkDBQueenWait, $GUI_ENABLE)
-			GUICtrlSetState($chkABQueenWait, $GUI_ENABLE)
+			$g_bUpgradeQueenEnable = False
+			GUICtrlSetState($g_hChkDBQueenWait, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkABQueenWait, $GUI_ENABLE)
 			_GUI_Value_STATE("HIDE", $groupQueenSleeping)
 		EndIf
 
-		If GUICtrlRead($cmbBoostArcherQueen) > 0 Then
-			GUICtrlSetState($chkUpgradeQueen, $GUI_DISABLE)
-			GUICtrlSetState($chkUpgradeQueen, $GUI_UNCHECKED)
-			$ichkUpgradeQueen = 0
+		If GUICtrlRead($g_hCmbBoostArcherQueen) > 0 Then
+			GUICtrlSetState($g_hChkUpgradeQueen, $GUI_DISABLE)
+			GUICtrlSetState($g_hChkUpgradeQueen, $GUI_UNCHECKED)
+			$g_bUpgradeQueenEnable = False
 		Else
-			GUICtrlSetState($chkUpgradeQueen, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkUpgradeQueen, $GUI_ENABLE)
 		EndIf
 	Else
-		GUICtrlSetState($chkUpgradeQueen, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkUpgradeQueen, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkUpgradeQueen
 
 Func chkUpgradeWarden()
 	If $iTownHallLevel > 10 Or $iTownHallLevel = 0 Then ; Must be TH11 to have warden
-		GUICtrlSetState($chkUpgradeWarden, $GUI_ENABLE)
-		If GUICtrlRead($chkUpgradeWarden) = $GUI_CHECKED Then
-			$ichkUpgradeWarden = 1
-			GUICtrlSetState($chkDBWardenWait, $GUI_UNCHECKED)
-			GUICtrlSetState($chkABWardenWait, $GUI_UNCHECKED)
-			GUICtrlSetState($chkDBWardenWait, $GUI_DISABLE)
-			GUICtrlSetState($chkABWardenWait, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkUpgradeWarden, $GUI_ENABLE)
+		If GUICtrlRead($g_hChkUpgradeWarden) = $GUI_CHECKED Then
+			$g_bUpgradeWardenEnable = True
+			GUICtrlSetState($g_hChkDBWardenWait, $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkABWardenWait, $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDBWardenWait, $GUI_DISABLE)
+			GUICtrlSetState($g_hChkABWardenWait, $GUI_DISABLE)
 			_GUI_Value_STATE("SHOW", $groupWardenSleeping)
 		Else
-			$ichkUpgradeWarden = 0
-			GUICtrlSetState($chkDBWardenWait, $GUI_ENABLE)
-			GUICtrlSetState($chkABWardenWait, $GUI_ENABLE)
+			$g_bUpgradeWardenEnable = False
+			GUICtrlSetState($g_hChkDBWardenWait, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkABWardenWait, $GUI_ENABLE)
 			_GUI_Value_STATE("HIDE", $groupWardenSleeping)
 		EndIf
 
-		If GUICtrlRead($cmbBoostWarden) > 0 Then
-			GUICtrlSetState($chkUpgradeWarden, $GUI_DISABLE)
-			GUICtrlSetState($chkUpgradeWarden, $GUI_UNCHECKED)
-			$ichkUpgradeWarden = 0
+		If GUICtrlRead($g_hCmbBoostWarden) > 0 Then
+			GUICtrlSetState($g_hChkUpgradeWarden, $GUI_DISABLE)
+			GUICtrlSetState($g_hChkUpgradeWarden, $GUI_UNCHECKED)
+			$g_bUpgradeWardenEnable = False
 		Else
-			GUICtrlSetState($chkUpgradeWarden, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkUpgradeWarden, $GUI_ENABLE)
 		EndIf
 	Else
-		GUICtrlSetState($chkUpgradeWarden, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkUpgradeWarden, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkUpgradeWarden
 
 Func chkWalls()
-	If GUICtrlRead($chkWalls) = $GUI_CHECKED Then
-		$ichkWalls = 1
-		GUICtrlSetState($UseGold, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkWalls) = $GUI_CHECKED Then
+		$g_bAutoUpgradeWallsEnable = True
+		GUICtrlSetState($g_hRdoUseGold, $GUI_ENABLE)
 		; GUICtrlSetState($sldMaxNbWall, $GUI_ENABLE)
 		;GUICtrlSetState($sldToleranceWall, $GUI_ENABLE)
-		;GUICtrlSetState($btnFindWalls, $GUI_ENABLE)
-		;		GUICtrlSetState($UseElixir, $GUI_ENABLE)
-		;		GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
-		GUICtrlSetState($cmbWalls, $GUI_ENABLE)
-		GUICtrlSetState($txtWallMinGold, $GUI_ENABLE)
-		;		GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
+		;GUICtrlSetState($g_hBtnFindWalls, $GUI_ENABLE)
+		;		GUICtrlSetState($g_hRdoUseElixir, $GUI_ENABLE)
+		;		GUICtrlSetState($g_hRdoUseElixirGold, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbWalls, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtWallMinGold, $GUI_ENABLE)
+		;		GUICtrlSetState($g_hTxtWallMinElixir, $GUI_ENABLE)
 		cmbWalls()
 	Else
-		$ichkWalls = 0
-		GUICtrlSetState($UseGold, $GUI_DISABLE)
-		GUICtrlSetState($UseElixir, $GUI_DISABLE)
-		GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
-		GUICtrlSetState($cmbWalls, $GUI_DISABLE)
-		GUICtrlSetState($txtWallMinGold, $GUI_DISABLE)
-		GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
+		$g_bAutoUpgradeWallsEnable = False
+		GUICtrlSetState($g_hRdoUseGold, $GUI_DISABLE)
+		GUICtrlSetState($g_hRdoUseElixir, $GUI_DISABLE)
+		GUICtrlSetState($g_hRdoUseElixirGold, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbWalls, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtWallMinGold, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtWallMinElixir, $GUI_DISABLE)
 		; GUICtrlSetState($sldMaxNbWall, $GUI_DISABLE)
 		;GUICtrlSetState($sldToleranceWall, $GUI_DISABLE)
-		;GUICtrlSetState($btnFindWalls, $GUI_DISABLE)
+		;GUICtrlSetState($g_hBtnFindWalls, $GUI_DISABLE)
 
 	EndIf
 EndFunc   ;==>chkWalls
 
 
 Func chkSaveWallBldr()
-	If GUICtrlRead($chkSaveWallBldr) = $GUI_CHECKED Then
-		$iSaveWallBldr = 1
-	Else
-		$iSaveWallBldr = 0
-	EndIf
+	$g_bUpgradeWallSaveBuilder = (GUICtrlRead($g_hChkSaveWallBldr) = $GUI_CHECKED)
 EndFunc   ;==>chkSaveWallBldr
 
 Func cmbWalls()
-	$icmbWalls = _GUICtrlComboBox_GetCurSel($cmbWalls)
-	$WallCost = $WallCosts[_GUICtrlComboBox_GetCurSel($cmbWalls)]
-	GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-	_GUI_Value_STATE("HIDE", $txtWall04ST & "#" & $txtWall05ST & "#" & $txtWall06ST & "#" & $txtWall07ST & "#" & $txtWall08ST & "#" & $txtWall09ST & "#" & $txtWall10ST & "#" & $txtWall11ST & "#" & $txtWall12ST)
-	_GUI_Value_STATE("HIDE", $Wall04ST & "#" & $Wall05ST & "#" & $Wall06ST & "#" & $Wall07ST & "#" & $Wall08ST & "#" & $Wall09ST & "#" & $Wall10ST & "#" & $Wall11ST & "#" & $Wall12ST)
-	Switch $icmbWalls ;
-		Case 0
-			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST)
-			$WallCost = 30000
-			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-			GUICtrlSetState($UseGold, $GUI_CHECKED)
-			GUICtrlSetState($UseElixir, $GUI_DISABLE)
-			GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
-			GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
-		Case 1
-			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST)
-			$WallCost = 75000
-			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-			GUICtrlSetState($UseGold, $GUI_CHECKED)
-			GUICtrlSetState($UseElixir, $GUI_DISABLE)
-			GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
-			GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
-		Case 2
-			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST)
-			$WallCost = 200000
-			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-			GUICtrlSetState($UseGold, $GUI_CHECKED)
-			GUICtrlSetState($UseElixir, $GUI_DISABLE)
-			GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
-			GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
-		Case 3
-			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST)
-			$WallCost = 500000
-			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-			GUICtrlSetState($UseGold, $GUI_CHECKED)
-			GUICtrlSetState($UseElixir, $GUI_DISABLE)
-			GUICtrlSetState($UseElixirGold, $GUI_DISABLE)
-			GUICtrlSetState($txtWallMinElixir, $GUI_DISABLE)
-		Case 4
-			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST)
-			$WallCost = 1000000
-			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-			GUICtrlSetState($UseElixir, $GUI_ENABLE)
-			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
-			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
-		Case 5
-			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST)
-			$WallCost = 2000000
-			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-			GUICtrlSetState($UseElixir, $GUI_ENABLE)
-			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
-			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
-		Case 6
-			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST & "#" & $txtWall11ST & "#" & $Wall11ST)
-			$WallCost = 3000000
-			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-			GUICtrlSetState($UseElixir, $GUI_ENABLE)
-			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
-			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
-		Case 7
-			_GUI_Value_STATE("SHOW", $txtWall04ST & "#" & $Wall04ST & "#" & $txtWall05ST & "#" & $Wall05ST & "#" & $txtWall06ST & "#" & $Wall06ST & "#" & $txtWall07ST & "#" & $Wall07ST & "#" & $txtWall08ST & "#" & $Wall08ST & "#" & $txtWall09ST & "#" & $Wall09ST & "#" & $txtWall10ST & "#" & $Wall10ST & "#" & $txtWall11ST & "#" & $Wall11ST & "#" & $txtWall12ST & "#" & $Wall12ST)
-			$WallCost = 4000000
-			GUICtrlSetData($lblWallCost, _NumberFormat($WallCost))
-			GUICtrlSetState($UseElixir, $GUI_ENABLE)
-			GUICtrlSetState($UseElixirGold, $GUI_ENABLE)
-			GUICtrlSetState($txtWallMinElixir, $GUI_ENABLE)
-	EndSwitch
+	$g_iCmbUpgradeWallsLevel = _GUICtrlComboBox_GetCurSel($g_hCmbWalls)
+	$g_iWallCost = $g_iaWallCost[$g_iCmbUpgradeWallsLevel]
+	GUICtrlSetData($g_hLblWallCost, _NumberFormat($g_iWallCost))
 
+   For $i = 4 To $g_iCmbUpgradeWallsLevel+5
+	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_SHOW)
+	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_SHOW)
+   Next
+   For $i = $g_iCmbUpgradeWallsLevel+6 To 12
+	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
+	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
+   Next
+
+   If $g_iCmbUpgradeWallsLevel <= 3 Then GUICtrlSetState($g_hRdoUseGold, $GUI_CHECKED)
+
+   GUICtrlSetState($g_hRdoUseElixir, $g_iCmbUpgradeWallsLevel <= 3 ? $GUI_DISABLE : $GUI_ENABLE)
+   GUICtrlSetState($g_hRdoUseElixirGold, $g_iCmbUpgradeWallsLevel <= 3 ? $GUI_DISABLE : $GUI_ENABLE)
+   GUICtrlSetState($g_hTxtWallMinElixir, $g_iCmbUpgradeWallsLevel <= 3 ? $GUI_DISABLE : $GUI_ENABLE)
 EndFunc   ;==>cmbWalls
 
 Func btnWalls()
-	Local $wasRunState = $RunState
-	$RunState = True
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
 	Zoomout()
-	$icmbWalls = _GUICtrlComboBox_GetCurSel($cmbWalls)
-	;$debugWalls = 1
+	$g_iCmbUpgradeWallsLevel = _GUICtrlComboBox_GetCurSel($g_hCmbWalls)
+	;$g_iDebugWalls = 1
 	If imglocCheckWall() Then Setlog("Hei Chef! We found the Wall!")
-	;$debugWalls = 0
-	$RunState = $wasRunState
-	AndroidShield("btnWalls") ; Update shield status due to manual $RunState
+	;$g_iDebugWalls = 0
+	$g_bRunState = $wasRunState
+	AndroidShield("btnWalls") ; Update shield status due to manual $g_bRunState
 EndFunc   ;==>btnWalls

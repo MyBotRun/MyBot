@@ -5,59 +5,62 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
+
 Func chkRandomSpeedAtkAB()
-	If GUICtrlRead($chkRandomSpeedAtkAB) = $GUI_CHECKED Then
+	If GUICtrlRead($g_hChkRandomSpeedAtkAB) = $GUI_CHECKED Then
 		;$iChkABRandomSpeedAtk = 1
-		GUICtrlSetState($cmbUnitDelayAB, $GUI_DISABLE)
-		GUICtrlSetState($cmbWaveDelayAB, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbStandardUnitDelayAB, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbStandardWaveDelayAB, $GUI_DISABLE)
 	Else
 		;$iChkABRandomSpeedAtk = 0
-		GUICtrlSetState($cmbUnitDelayAB, $GUI_ENABLE)
-		GUICtrlSetState($cmbWaveDelayAB, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbStandardUnitDelayAB, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbStandardWaveDelayAB, $GUI_ENABLE)
 	EndIf
 EndFunc   ;==>chkRandomSpeedAtkAB
 
 Func chkSmartAttackRedAreaAB()
-	If GUICtrlRead($chkSmartAttackRedAreaAB) = $GUI_CHECKED Then
-		$iChkRedArea[$LB] = 1
-		For $i = $lblSmartDeployAB To $picAttackNearDarkElixirDrillAB
+	If GUICtrlRead($g_hChkSmartAttackRedAreaAB) = $GUI_CHECKED Then
+		$g_abAttackStdSmartAttack[$LB] = 1
+		For $i = $g_hLblSmartDeployAB To $g_hPicAttackNearDarkElixirDrillAB
 			GUICtrlSetState($i, $GUI_SHOW)
 		Next
 	Else
-		$iChkRedArea[$LB] = 0
-		For $i = $lblSmartDeployAB To $picAttackNearDarkElixirDrillAB
+		$g_abAttackStdSmartAttack[$LB] = 0
+		For $i = $g_hLblSmartDeployAB To $g_hPicAttackNearDarkElixirDrillAB
 			GUICtrlSetState($i, $GUI_HIDE)
 		Next
 	EndIf
 EndFunc   ;==>chkSmartAttackRedAreaAB
+
 Func chkRandomSpeedAtkDB()
-	If GUICtrlRead($chkRandomSpeedAtkDB) = $GUI_CHECKED Then
+	If GUICtrlRead($g_hChkRandomSpeedAtkDB) = $GUI_CHECKED Then
 		;$iChkDBRandomSpeedAtk = 1
-		GUICtrlSetState($cmbUnitDelayDB, $GUI_DISABLE)
-		GUICtrlSetState($cmbWaveDelayDB, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbStandardUnitDelayDB, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbStandardWaveDelayDB, $GUI_DISABLE)
 	Else
 		;$iChkDBRandomSpeedAtk = 0
-		GUICtrlSetState($cmbUnitDelayDB, $GUI_ENABLE)
-		GUICtrlSetState($cmbWaveDelayDB, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbStandardUnitDelayDB, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbStandardWaveDelayDB, $GUI_ENABLE)
 	EndIf
 EndFunc   ;==>chkRandomSpeedAtkDB
 
 Func chkSmartAttackRedAreaDB()
-	If GUICtrlRead($chkSmartAttackRedAreaDB) = $GUI_CHECKED Then
-		$iChkRedArea[$DB] = 1
-		For $i = $lblSmartDeployDB To $picAttackNearDarkElixirDrillDB
+	If GUICtrlRead($g_hChkSmartAttackRedAreaDB) = $GUI_CHECKED Then
+		$g_abAttackStdSmartAttack[$DB] = 1
+		For $i = $g_hLblSmartDeployDB To $g_hPicAttackNearDarkElixirDrillDB
 			GUICtrlSetState($i, $GUI_SHOW)
 		Next
 	Else
-		$iChkRedArea[$DB] = 0
-		For $i = $lblSmartDeployDB To $picAttackNearDarkElixirDrillDB
+		$g_abAttackStdSmartAttack[$DB] = 0
+		For $i = $g_hLblSmartDeployDB To $g_hPicAttackNearDarkElixirDrillDB
 			GUICtrlSetState($i, $GUI_HIDE)
 		Next
 	EndIf

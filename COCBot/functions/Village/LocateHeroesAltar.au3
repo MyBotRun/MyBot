@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: ProMac 2015
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,12 +16,12 @@
 
 
 Func LocateQueenAltar()
-	Local $wasRunState = $RunState
-	$RunState = True
-	AndroidShield("LocateQueenAltar 1") ; Update shield status due to manual $RunState
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
+	AndroidShield("LocateQueenAltar 1") ; Update shield status due to manual $g_bRunState
 	Local $Result = _LocateQueenAltar()
-	$RunState = $wasRunState
-	AndroidShield("LocateQueenAltar 2") ; Update shield status due to manual $RunState
+	$g_bRunState = $wasRunState
+	AndroidShield("LocateQueenAltar 2") ; Update shield status due to manual $g_bRunState
 	Return $Result
 EndFunc   ;==>LocateQueenAltar
 
@@ -44,7 +44,7 @@ Func _LocateQueenAltar()
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$stext = $sErrorText & @CRLF & GetTranslated(640,34,"Click OK then click on your Queen Altar") & @CRLF & @CRLF & _
 				GetTranslated(640,26,"Do not move mouse after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
-		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,35,"Locate Queen Altar"), $stext, 15, $frmBot)
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,35,"Locate Queen Altar"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
 			ClickP($aTopLeftClient)
@@ -87,28 +87,25 @@ Func _LocateQueenAltar()
 		EndIf
 
 		;get Queen info
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While IsArray($sInfo) = False
-			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY); 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $debugSetlog = 1 Then SetLog($sInfo[1] & $sInfo[2])
+		If $g_iDebugSetlog = 1 Then SetLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 			If @error Then Return SetError(0, 0, 0)
 
 			If StringInStr($sInfo[1], "Quee") = 0 Then
-				If $sInfo[0] = "" Then
-					$sLocMsg = "Nothing"
-				Else
-					$sLocMsg = $sInfo[1]
-				EndIf
+				Local $sLocMsg = ($sInfo[0] = "" ? "Nothing" : $sInfo[1])
+
 				$iSilly += 1
 				Select
 					Case $iSilly = 1
@@ -146,20 +143,20 @@ Func _LocateQueenAltar()
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 	$stext = GetTranslated(640,38,"Now you can remove mouse out of Android Emulator, Thanks!!")
-	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15, $frmBot)
+	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15)
 
-	IniWrite($building, "other", "xQueenAltarPos", $QueenAltarPos[0])
-	IniWrite($building, "other", "yQueenAltarPos", $QueenAltarPos[1])
+	IniWrite($g_sProfileBuildingPath, "other", "xQueenAltarPos", $QueenAltarPos[0])
+	IniWrite($g_sProfileBuildingPath, "other", "yQueenAltarPos", $QueenAltarPos[1])
 
 EndFunc   ;==>_LocateQueenAltar
 
 Func LocateKingAltar()
-	Local $wasRunState = $RunState
-	$RunState = True
-	AndroidShield("LocateKingAltar 1") ; Update shield status due to manual $RunState
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
+	AndroidShield("LocateKingAltar 1") ; Update shield status due to manual $g_bRunState
 	Local $Result = _LocateKingAltar()
-	$RunState = $wasRunState
-	AndroidShield("LocateKingAltar 2") ; Update shield status due to manual $RunState
+	$g_bRunState = $wasRunState
+	AndroidShield("LocateKingAltar 2") ; Update shield status due to manual $g_bRunState
 	Return $Result
 EndFunc   ;==>LocateKingAltar
 
@@ -182,7 +179,7 @@ Func _LocateKingAltar()
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$stext = $sErrorText & @CRLF & GetTranslated(640,39,"Click OK then click on your King Altar") & @CRLF & @CRLF & _
 				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
-		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,40,"Locate King Altar"), $stext, 15, $frmBot)
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,40,"Locate King Altar"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
 			Local $aPos = FindPos()
@@ -224,27 +221,24 @@ Func _LocateKingAltar()
 		EndIf
 
 		;Get King info
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
+		$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY); 860x780
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While IsArray($sInfo) = False
-			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
+			$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY); 860x780
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $debugSetlog = 1 Then SetLog($sInfo[1] & $sInfo[2])
+		If $g_iDebugSetlog = 1 Then SetLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 
 			If (StringInStr($sInfo[1], "Barb") = 0) And (StringInStr($sInfo[1], "King") = 0) Then
-				If $sInfo[0] = "" Then
-					$sLocMsg = "Nothing"
-				Else
-					$sLocMsg = $sInfo[1]
-				EndIf
+				Local $sLocMsg = ($sInfo[0] = "" ? "Nothing" : $sInfo[1])
+
 				$iSilly += 1
 				Select
 					Case $iSilly = 1
@@ -282,21 +276,21 @@ Func _LocateKingAltar()
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 	$stext = GetTranslated(640,38,"Now you can remove mouse out of Android Emulator, Thanks!!")
-	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15, $frmBot)
+	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15)
 
-	IniWrite($building, "other", "xKingAltarPos", $KingAltarPos[0])
-	IniWrite($building, "other", "yKingAltarPos", $KingAltarPos[1])
+	IniWrite($g_sProfileBuildingPath, "other", "xKingAltarPos", $KingAltarPos[0])
+	IniWrite($g_sProfileBuildingPath, "other", "yKingAltarPos", $KingAltarPos[1])
 
 EndFunc   ;==>_LocateKingAltar
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Func LocateWardenAltar()
-	Local $wasRunState = $RunState
-	$RunState = True
-	AndroidShield("LocateWardenAltar 1") ; Update shield status due to manual $RunState
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
+	AndroidShield("LocateWardenAltar 1") ; Update shield status due to manual $g_bRunState
 	Local $Result = _LocateWardenAltar()
-	$RunState = $wasRunState
-	AndroidShield("LocateWardenAltar 2") ; Update shield status due to manual $RunState
+	$g_bRunState = $wasRunState
+	AndroidShield("LocateWardenAltar 2") ; Update shield status due to manual $g_bRunState
 	Return $Result
 EndFunc   ;==>LocateWardenAltar
 
@@ -324,7 +318,7 @@ Func _LocateWardenAltar()
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$stext = $sErrorText & @CRLF & GetTranslated(640,41,"Click OK then click on your Grand Warden Altar") & @CRLF & @CRLF & _
 				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
-		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,42,"Locate Grand Warden Altar"), $stext, 15, $frmBot)
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,42,"Locate Grand Warden Altar"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
 			Local $aPos = FindPos()
@@ -366,28 +360,25 @@ Func _LocateWardenAltar()
 		EndIf
 
 		;get GrandWarden info
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY) ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< need to work
+		$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< need to work
 		If @error Then SetError(0, 0, 0)
 		Local $CountGetInfo = 0
 		While IsArray($sInfo) = False
-			$sInfo = BuildingInfo(242, 520 + $bottomOffsetY)
+			$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY)
 			If @error Then SetError(0, 0, 0)
 			Sleep(100)
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $debugSetlog = 1 Then SetLog($sInfo[1] & $sInfo[2])
+		If $g_iDebugSetlog = 1 Then SetLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 			If @error Then Return SetError(0, 0, 0)
 
 			If StringInStr($sInfo[1], "Warden") = 0 Then
-				If $sInfo[0] = "" Then
-					$sLocMsg = "Nothing"
-				Else
-					$sLocMsg = $sInfo[1]
-				EndIf
+				Local $sLocMsg = ($sInfo[0] = "" ? "Nothing" : $sInfo[1])
+
 				$iSilly += 1
 				Select
 					Case $iSilly = 1
@@ -425,10 +416,10 @@ Func _LocateWardenAltar()
 
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 	$stext = GetTranslated(640,38,"Now you can remove mouse out of Android Emulator, Thanks!!")
-	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15, $frmBot)
+	$MsgBox = _ExtMsgBox(48, GetTranslated(640,36,"OK"), GetTranslated(640,37,"Notice!"), $stext, 15)
 
-	IniWrite($building, "other", "xWardenAltarPos", $WardenAltarPos[0])
-	IniWrite($building, "other", "yWardenAltarPos", $WardenAltarPos[1])
+	IniWrite($g_sProfileBuildingPath, "other", "xWardenAltarPos", $WardenAltarPos[0])
+	IniWrite($g_sProfileBuildingPath, "other", "yWardenAltarPos", $WardenAltarPos[1])
 
 
 EndFunc   ;==>_LocateWardenAltar

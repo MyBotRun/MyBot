@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Code Monkey #69
 ; Modified ......: KnowJack (June 2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -27,7 +27,7 @@ Func LocateClanCastle()
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$stext = $sErrorText & @CRLF & GetTranslated(640,32,"Click OK then click on your Clan Castle") & @CRLF & @CRLF & _
 				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
-		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,33,"Locate Clan Castle"), $stext, 15, $frmBot)
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,33,"Locate Clan Castle"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
 			ClickP($aAway, 1, 0, "#0373")
@@ -68,15 +68,12 @@ Func LocateClanCastle()
 			ClickP($aAway, 1, 0, "#0376")
 			Return
 		EndIf
-		$sInfo = BuildingInfo(242, 520 + $bottomOffsetY) ; 860x780
+		$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
 		If IsArray($sInfo) and ($sInfo[0] > 1 Or $sInfo[0] = "") Then
 			If StringInStr($sInfo[1], "clan") = 0 Then
-				If $sInfo[0] = "" Then
-					$sLocMsg = "Nothing"
-				Else
-					$sLocMsg = $sInfo[1]
-				EndIf
-				$iSilly += 1
+				Local $sLocMsg = ($sInfo[0] = "" ? "Nothing" : $sInfo[1])
+
+			    $iSilly += 1
 				Select
 					Case $iSilly = 1
 						$sErrorText = "Wait, That is not the Clan Castle?, It was a " & $sLocMsg & @CRLF

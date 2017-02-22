@@ -6,12 +6,14 @@
 ; Return values .: None
 ; Author ........: Cosote (2015-12)
 ; Modified ......: Cosote (2016-08)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+
+Global $g_oWMI = ObjGet("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
 
 Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
 
@@ -26,9 +28,9 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 	$hTimer = TimerInit()
 	$process_killed = False
 
-	If $debugSetlog = 1 Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG) ; Debug Run
+	If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG) ; Debug Run
 	$pid = Run($cmd, "", @SW_HIDE, $STDERR_MERGED)
-	If $debugSetlog = 1 Then Setlog("Func LaunchConsole: command launched", $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: command launched", $COLOR_DEBUG)
 	If $pid = 0 Then
 		SetLog("Launch faild: " & $cmd, $COLOR_ERROR)
 		Return
@@ -51,29 +53,29 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 			Sleep($iDelaySleep)
 		EndIf
 		;_StatusUpdateTime($hTimer)
-		;If $debugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead...", $COLOR_DEBUG)
+		;If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead...", $COLOR_DEBUG)
 		$data &= StdoutRead($pid)
 		If @error Then ExitLoop
 		;$data &= StderrRead($pid)
 		If ($timeout > 0 And TimerDiff($hTimer) > $timeout) Then ExitLoop
-		;If $debugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead loop", $COLOR_DEBUG)
+		;If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: StdoutRead loop", $COLOR_DEBUG)
 	WEnd
+	StdioClose($pid)
 
 	If $hProcess Then
 		_WinAPI_CloseHandle($hProcess)
 		$hProcess = 0
-	EndIF
-
+	EndIf
 	CleanLaunchOutput($data)
 
 	If ProcessExists($pid) Then
 		If ProcessClose($pid) = 1 Then
-			If $debugSetlog = 1 Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
+			If $g_iDebugSetlog = 1 Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
 			$process_killed = True
 		EndIf
 	EndIf
 	StdioClose($pid)
-	If $debugSetlog = 1 Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG) ; Debug Run Output
+	If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG) ; Debug Run Output
 	Return $data
 EndFunc   ;==>LaunchConsole
 
@@ -108,7 +110,6 @@ Func ProcessExists2($ProgramPath, $ProgramParameter = Default, $CompareMode = De
 	 $CompareMode = 0
   EndIf
 
-  Local $oWMI=ObjGet("winmgmts:{impersonationLevel=impersonate}!\\" & $strComputer & "\root\cimv2") ; ""
   SetDebugLog("ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2"")")
   If @error <> 0 Then
 	 SetDebugLog("Cannot create ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2")
@@ -132,7 +133,7 @@ Func ProcessExists2($ProgramPath, $ProgramParameter = Default, $CompareMode = De
   EndIf
   SetDebugLog("WMI Query: " & $query)
   ; https://msdn.microsoft.com/en-us/library/aa393866(v=vs.85).aspx
-  Local $oProcessColl = $oWMI.ExecQuery($query)
+  Local $oProcessColl = $g_oWMI.ExecQuery($query)
   Local $Process, $PID = 0, $i = 0
 
   For $Process In $oProcessColl
@@ -148,24 +149,29 @@ Func ProcessExists2($ProgramPath, $ProgramParameter = Default, $CompareMode = De
 	   EndIf
     EndIf
 	$i += 1
+	$Process = 0
   Next
   If $PID = 0 Then
 	 SetDebugLog("Process by CommandLine not found: " & $ProgramPath & ($ProgramParameter = "" ? "" : ($ProgramPath <> "" ? " " : "") & $ProgramParameter))
   Else
      SetDebugLog("Found Process " & $PID & " by CommandLine: " & $ProgramPath & ($ProgramParameter = "" ? "" : ($ProgramPath <> "" ? " " : "") & $ProgramParameter))
   EndIf
-
   Return $PID
 EndFunc ;==>ProcessExists2
 
 ; Special version of ProcessExists2 that returns Array of all processes found
-Func ProcessesExist($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $SearchMode = 0, $CompareCommandLineFunc = "", $strComputer=".")
+Func ProcessesExist($ProgramPath, $ProgramParameter = Default, $CompareMode = Default, $SearchMode = Default, $CompareCommandLineFunc = Default, $bReturnDetailedArray = Default, $strComputer=".")
+
+  If $ProgramParameter = Default Then $ProgramParameter = ""
+  If $CompareMode = Default Then $CompareMode = 0
+  If $SearchMode = Default Then $SearchMode = 0
+  If $CompareCommandLineFunc = Default Then $CompareCommandLineFunc = ""
+  If $bReturnDetailedArray = Default Then $bReturnDetailedArray = False
 
   If IsNumber($ProgramPath) Then
 	 Local $a[1] = [ProcessExists($ProgramPath)] ; Be compatible with ProcessExists
      Return $a
   EndIf
-  Local $oWMI=ObjGet("winmgmts:{impersonationLevel=impersonate}!\\" & $strComputer & "\root\cimv2") ; ""
   SetDebugLog("ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2"")")
   If @error <> 0 Then
 	 SetDebugLog("Cannot create ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2")
@@ -189,7 +195,7 @@ Func ProcessesExist($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $Sea
      If $SearchMode = 1 And StringLen($ProgramParameter) > 0 Then $query &= "CommandLine like ""%" & StringReplace($ProgramParameter,"\","\\") & "%"""
   EndIf
   SetDebugLog("WMI Query: " & $query)
-  Local $oProcessColl = $oWMI.ExecQuery($query)
+  Local $oProcessColl = $g_oWMI.ExecQuery($query)
   Local $Process, $PID = 0, $i = 0
   Local $PIDs[0]
 
@@ -203,8 +209,14 @@ Func ProcessesExist($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $Sea
 
 	   $PID = Number($Process.Handle)
 	   ReDim $PIDs[$i + 1]
-	   $PIDs[$i] = Number($Process.Handle)
+	   Local $a = $PID
+	   If $bReturnDetailedArray Then
+		   Local $a = [$PID, $Process.ExecutablePath, $Process.CommandLine]
+	   EndIf
+	   $PIDs[$i] = $a
 	   $i += 1
+
+	   $Process = 0
     EndIf
   Next
   If $i = 0 Then
@@ -212,6 +224,7 @@ Func ProcessesExist($ProgramPath, $ProgramParameter = "", $CompareMode = 0, $Sea
   Else
      SetDebugLog("Found " & $i & " process(es) with " & $ProgramPath & ($ProgramParameter = "" ? "" : " " & $ProgramParameter))
   EndIf
+  $oProcessColl = 0
 
   Return $PIDs
 EndFunc ;==>ProcessesExist
@@ -221,7 +234,6 @@ Func ProcessGetCommandLine($PID, $strComputer = ".")
 
   If Not IsNumber($PID) Then Return SetError(2, 0, -1)
 
-  Local $oWMI=ObjGet("winmgmts:{impersonationLevel=impersonate}!\\" & $strComputer & "\root\cimv2") ; ""
   SetDebugLog("ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2"")")
   If @error <> 0 Then
 	 SetDebugLog("Cannot create ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2")
@@ -232,15 +244,20 @@ Func ProcessGetCommandLine($PID, $strComputer = ".")
   Local $commandLine
   Local $query = "Select * from Win32_Process where Handle = " & $PID
   SetDebugLog("WMI Query: " & $query)
-  Local $oProcessColl = $oWMI.ExecQuery($query)
+  Local $oProcessColl = $g_oWMI.ExecQuery($query)
   Local $Process, $i = 0
 
   For $Process In $oProcessColl
     SetDebugLog($Process.Handle & " = " & $Process.CommandLine)
 	SetError(0, 0, 0)
-	Return $Process.CommandLine
+	Local $sProcessCommandLine = $Process.CommandLine
+	$Process = 0
+	$oProcessColl = 0
+	Return $sProcessCommandLine
   Next
   SetDebugLog("Process not found with PID " & $PID)
+  $Process = 0
+  $oProcessColl = 0
   Return SetError(1, 0, -1)
 EndFunc ;==>ProcessGetCommandLine
 
@@ -249,7 +266,6 @@ Func ProcessGetWmiProcess($PID, $strComputer = ".")
 
   If Not IsNumber($PID) Then Return SetError(2, 0, -1)
 
-  Local $oWMI=ObjGet("winmgmts:{impersonationLevel=impersonate}!\\" & $strComputer & "\root\cimv2") ; ""
   SetDebugLog("ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2"")")
   If @error <> 0 Then
 	 SetDebugLog("Cannot create ObjGet(""winmgmts:\\" & $strComputer & "\root\cimv2")
@@ -260,15 +276,19 @@ Func ProcessGetWmiProcess($PID, $strComputer = ".")
   Local $commandLine
   Local $query = "Select * from Win32_Process where Handle = " & $PID
   SetDebugLog("WMI Query: " & $query)
-  Local $oProcessColl = $oWMI.ExecQuery($query)
+  Local $oProcessColl = $g_oWMI.ExecQuery($query)
   Local $Process, $i = 0
 
   For $Process In $oProcessColl
     SetDebugLog($Process.Handle & " = " & $Process.CommandLine)
 	SetError(0, 0, 0)
+	$Process = 0
+	$oProcessColl = 0
 	Return $Process
   Next
   SetDebugLog("Process not found with PID " & $PID)
+  $Process = 0
+  $oProcessColl = 0
   Return SetError(1, 0, -1)
 EndFunc ;==>ProcessGetWmiProcess
 

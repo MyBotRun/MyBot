@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: Didipe (2015)
 ; Modified ......: Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,35 +16,35 @@
 Func MBRFunc($Start = True)
 	Switch $Start
 		Case True
-			$hNtDll = DllOpen("ntdll.dll")
-			$hUser32Dll = DllOpen("user32.dll")
-			$hFuncLib = DllOpen($pFuncLib)
-			$hImgLib = DllOpen($pImgLib)
-			If $hFuncLib = -1 Then
+			$g_hLibNTDLL = DllOpen("ntdll.dll")
+			$g_hLibUser32DLL = DllOpen("user32.dll")
+			$g_hLibFunctions = DllOpen($g_sLibFunctionsPath)
+			$g_hLibImgLoc = DllOpen($g_sLibImgLocPath)
+			If $g_hLibFunctions = -1 Then
 				Setlog("MBRfunctions.dll not found.", $COLOR_ERROR)
 				Return False
 			EndIf
 			SetDebugLog("MBRfunctions.dll opened.")
 		Case False
-			DllClose($hNtDll)
-			DllClose($hUser32Dll)
-			DllClose($hFuncLib)
-			DllClose($hImgLib)
+			DllClose($g_hLibNTDLL)
+			DllClose($g_hLibUser32DLL)
+			DllClose($g_hLibFunctions)
+			DllClose($g_hLibImgLoc)
 			SetDebugLog("MBRfunctions.dll closed.")
 	EndSwitch
 EndFunc   ;==>MBRFunc
 
-Func debugMBRFunctions($debugSearchArea = 0, $debugRedArea = 0, $debugOcr = 0)
-	SetDebugLog("debugMBRFunctions: $debugSearchArea=" & $debugSearchArea & ", $debugRedArea=" & $debugRedArea & ", $debugOcr=" & $debugOcr)
+Func debugMBRFunctions($g_iDebugSearchArea = 0, $g_iDebugRedArea = 0, $g_iDebugOcr = 0)
+	SetDebugLog("debugMBRFunctions: $g_iDebugSearchArea=" & $g_iDebugSearchArea & ", $g_iDebugRedArea=" & $g_iDebugRedArea & ", $g_iDebugOcr=" & $g_iDebugOcr)
 	Local $activeHWnD = WinGetHandle("")
-	Local $result = DllCall($hFuncLib, "str", "setGlobalVar", "int", $debugSearchArea, "int", $debugRedArea, "int", $debugOcr)
+	Local $result = DllCall($g_hLibFunctions, "str", "setGlobalVar", "int", $g_iDebugSearchArea, "int", $g_iDebugRedArea, "int", $g_iDebugOcr)
 	If @error Then
-		_logErrorDLLCall($pFuncLib & ", setGlobalVar:", @error)
+		_logErrorDLLCall($g_sLibFunctionsPath & ", setGlobalVar:", @error)
 		Return SetError(@error)
 	EndIf
 	;dll return 0 on success, -1 on error
 	If IsArray($result) Then
-		If $debugSetlog = 1 And $result[0] = -1 Then SetLog("MBRfunctions.dll error setting Global vars.", $COLOR_DEBUG)
+		If $g_iDebugSetlog = 1 And $result[0] = -1 Then SetLog("MBRfunctions.dll error setting Global vars.", $COLOR_DEBUG)
 	Else
 		SetDebugLog("MBRfunctions.dll not found.", $COLOR_ERROR)
 	EndIf
@@ -53,9 +53,9 @@ EndFunc   ;==>debugMBRFunctions
 
 Func setAndroidPID($pid)
 	SetDebugLog("setAndroidPID: $pid=" & $pid)
-	Local $result = DllCall($hFuncLib, "str", "setAndroidPID", "int", $pid)
+	Local $result = DllCall($g_hLibFunctions, "str", "setAndroidPID", "int", $pid)
 	If @error Then
-		_logErrorDLLCall($pFuncLib & ", setAndroidPID:", @error)
+		_logErrorDLLCall($g_sLibFunctionsPath & ", setAndroidPID:", @error)
 		Return SetError(@error)
 	EndIf
 	;dll return 0 on success, -1 on error
@@ -64,7 +64,7 @@ Func setAndroidPID($pid)
 			SetDebugLog("MBRfunctions.dll error setting Android PID.")
 		Else
 			SetDebugLog("Android PID=" & $pid & " initialized: " & $result[0])
-			debugMBRFunctions($debugSearchArea, $debugRedArea, $debugOcr) ; set debug levels
+			debugMBRFunctions($g_iDebugSearchArea, $g_iDebugRedArea, $g_iDebugOcr) ; set debug levels
 		EndIf
 	Else
 		SetDebugLog("MBRfunctions.dll not found.", $COLOR_ERROR)
@@ -72,21 +72,21 @@ Func setAndroidPID($pid)
 EndFunc   ;==>setAndroidPID
 
 Func setVillageOffset($x, $y, $z)
-	DllCall($hFuncLib, "str", "setVillageOffset", "int", $x, "int", $y, "float", $z)
-	DllCall($pImgLib , "str", "setVillageOffset", "int", $x, "int", $y, "float", $z) ;set values in imgloc also
-	$VILLAGE_OFFSET[0] = $x
-	$VILLAGE_OFFSET[1] = $y
-	$VILLAGE_OFFSET[2] = $z
+	DllCall($g_hLibFunctions, "str", "setVillageOffset", "int", $x, "int", $y, "float", $z)
+	DllCall($g_sLibImgLocPath , "str", "setVillageOffset", "int", $x, "int", $y, "float", $z) ;set values in imgloc also
+	$g_iVILLAGE_OFFSET[0] = $x
+	$g_iVILLAGE_OFFSET[1] = $y
+	$g_iVILLAGE_OFFSET[2] = $z
 EndFunc   ;==>setVillageOffset
 
 Func setMaxDegreeOfParallelism($iMaxDegreeOfParallelism = -1)
-	DllCall($pImgLib , "str", "setMaxDegreeOfParallelism", "int", $iMaxDegreeOfParallelism) ;set PARALLELOPTIONS.MaxDegreeOfParallelism for multi-threaded operations
+	DllCall($g_sLibImgLocPath , "str", "setMaxDegreeOfParallelism", "int", $iMaxDegreeOfParallelism) ;set PARALLELOPTIONS.MaxDegreeOfParallelism for multi-threaded operations
 EndFunc   ;==>setMaxDegreeOfParallelism
 
 Func ConvertVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
-	Local $result = DllCall($hFuncLib, "str", "ConvertVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
+	Local $result = DllCall($g_hLibFunctions, "str", "ConvertVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
 	if Isarray($result) = False  then
-	   if $debugsetlog=1 then Setlog("ConvertVillagePos result error", $COLOR_ERROR)
+	   if $g_iDebugSetlog=1 then Setlog("ConvertVillagePos result error", $COLOR_ERROR)
 	   Return ;exit if
     EndIf
 	Local $a = StringSplit($result[0], "|")
@@ -96,9 +96,9 @@ Func ConvertVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
 EndFunc   ;==>ConvertVillagePos
 
 Func ConvertToVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
-	Local $result = DllCall($hFuncLib, "str", "ConvertToVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
+	Local $result = DllCall($g_hLibFunctions, "str", "ConvertToVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
 	if Isarray($result) = False  then
-	   if $debugsetlog=1 then Setlog("ConvertToVillagePos result error", $COLOR_ERROR)
+	   if $g_iDebugSetlog=1 then Setlog("ConvertToVillagePos result error", $COLOR_ERROR)
 	   Return ;exit if
     EndIf
 	Local $a = StringSplit($result[0], "|")
@@ -108,9 +108,9 @@ Func ConvertToVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
 EndFunc   ;==>ConvertToVillagePos
 
 Func ConvertFromVillagePos(ByRef $x, ByRef $y)
-	Local $result = DllCall($hFuncLib, "str", "ConvertFromVillagePos", "int", $x, "int", $y)
+	Local $result = DllCall($g_hLibFunctions, "str", "ConvertFromVillagePos", "int", $x, "int", $y)
 	if Isarray($result) = False  then
-	   if $debugsetlog=1 then Setlog("ConvertVillagePos result error", $COLOR_ERROR)
+	   if $g_iDebugSetlog=1 then Setlog("ConvertVillagePos result error", $COLOR_ERROR)
 	   Return ;exit if
     EndIf
 	Local $a = StringSplit($result[0], "|")
@@ -118,3 +118,8 @@ Func ConvertFromVillagePos(ByRef $x, ByRef $y)
 	$x = Int($a[1])
 	$y = Int($a[2])
 EndFunc   ;==>ConvertFromVillagePos
+
+Func ReduceBotMemory()
+	_WinAPI_EmptyWorkingSet(@AutoItPID) ; Reduce Working Set of Bot
+	;DllCall($g_sLibImgLocPath , "none", "gc") ; disabled as possibly cause freeze
+EndFunc

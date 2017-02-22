@@ -13,7 +13,7 @@ Func imglocCheckWall()
 
 	If _Sleep(500) Then Return
 
-	Local $levelWall = $icmbWalls + 4
+	Local $levelWall = $g_iCmbUpgradeWallsLevel + 4
 
 	_CaptureRegion2()
 	SetLog("Searching for Wall(s) level: " & $levelWall & ". Using imgloc: ", $COLOR_SUCCESS)
@@ -36,17 +36,18 @@ Func imglocCheckWall()
 				;try click
 				GemClick($aCoord[0], $aCoord[1])
 				If _Sleep(500) Then Return
-				$aResult = BuildingInfo(245, 520 + $bottomOffsetY) ; Get building name and level with OCR
+				Local $aResult = BuildingInfo(245, 520 + $g_iBottomOffsetY) ; Get building name and level with OCR
 				If $aResult[0] = 2 Then ; We found a valid building name
 					If StringInStr($aResult[1], "wall") = True And Number($aResult[2]) = $levelWall Then ; we found a wall
 						Setlog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is a Wall Level: " & $levelWall & ".")
 						Return True
 					Else
 						ClickP($aAway, 1, 0, "#0931") ;Click Away
-						If $debugSetlog Then
+						If $g_iDebugSetlog Then
 							Setlog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is not a Wall Level: " & $levelWall & ". It was: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG) ;debug
 						Else
 							Setlog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is not a Wall Level: " & $levelWall & ".", $COLOR_ERROR)
+							SetDebugLog("It was: " & $aResult[1] & ", " & $aResult[2], $COLOR_DEBUG, True) ; log actual wall values to file log only
 						EndIf
 					EndIf
 				Else
@@ -75,12 +76,12 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 	_CaptureRegion2()
 
 	; Perform the search
-	Local $result = DllCall($pImgLib, "str", "SearchMultipleTilesBetweenLevels", "handle", $hHBitmap2, "str", $directory, "str", $searcharea, "Int", $maxReturnPoints, "str", $redLines, "Int", $minLevel, "Int", $maxLevel)
-	$error = @error ; Store error values as they reset at next function call
-	$extError = @extended
+	Local $result = DllCall($g_sLibImgLocPath, "str", "SearchMultipleTilesBetweenLevels", "handle", $hHBitmap2, "str", $directory, "str", $searcharea, "Int", $maxReturnPoints, "str", $redLines, "Int", $minLevel, "Int", $maxLevel)
+	Local $error = @error ; Store error values as they reset at next function call
+	Local $extError = @extended
 
 	If $error Then
-		_logErrorDLLCall($pImgLib, $error)
+		_logErrorDLLCall($g_sLibImgLocPath, $error)
 		SetLog(" imgloc DLL Error imgloc " & $error & " --- " & $extError, $COLOR_RED)
 		SetError(2, $extError, $error) ; Set external error code = 2 for DLL error
 		Return
@@ -93,7 +94,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 	; Process results
 	If $result[0] <> "" Then
 		; Get the keys for the dictionary item.
-		If $DebugSetlog Then SetLog(" imglocFindMyWall search returned : " & $result[0])
+		If $g_iDebugSetlog Then SetLog(" imglocFindMyWall search returned : " & $result[0])
 		Local $aKeys = StringSplit($result[0], "|", $STR_NOCOUNT)
 		; Loop through the array
 		ReDim $FoundWalls[UBound($aKeys)]

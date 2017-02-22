@@ -5,17 +5,18 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
 
 Func PopulateComboScriptsFilesDB()
 	Dim $FileSearch, $NewFile
-	$FileSearch = FileFindFirstFile($dirAttacksCSV & "\*.csv")
+	$FileSearch = FileFindFirstFile($g_sCSVAttacksPath & "\*.csv")
 	Dim $output = ""
 	While True
 		$NewFile = FileFindNextFile($FileSearch)
@@ -26,17 +27,17 @@ Func PopulateComboScriptsFilesDB()
 	;remove last |
 	$output = StringLeft($output, StringLen($output) - 1)
 	;reset combo box
-	_GUICtrlComboBox_ResetContent($cmbScriptNameDB)
+	_GUICtrlComboBox_ResetContent($g_hCmbScriptNameDB)
 	;set combo box
-	GUICtrlSetData($cmbScriptNameDB, $output)
-	_GUICtrlComboBox_SetCurSel($cmbScriptNameDB, _GUICtrlComboBox_FindStringExact($cmbScriptNameDB, ""))
-	GUICtrlSetData($lblNotesScriptDB, "")
+	GUICtrlSetData($g_hCmbScriptNameDB, $output)
+	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameDB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameDB, ""))
+	GUICtrlSetData($g_hLblNotesScriptDB, "")
 EndFunc   ;==>PopulateComboScriptsFilesDB
 
 
 Func PopulateComboScriptsFilesAB()
 	Dim $FileSearch, $NewFile
-	$FileSearch = FileFindFirstFile($dirAttacksCSV & "\*.csv")
+	$FileSearch = FileFindFirstFile($g_sCSVAttacksPath & "\*.csv")
 	Dim $output = ""
 	While True
 		$NewFile = FileFindNextFile($FileSearch)
@@ -47,11 +48,11 @@ Func PopulateComboScriptsFilesAB()
 	;remove last |
 	$output = StringLeft($output, StringLen($output) - 1)
 	;reset combo box
-	_GUICtrlComboBox_ResetContent($cmbScriptNameAB)
+	_GUICtrlComboBox_ResetContent($g_hCmbScriptNameAB)
 	;set combo box
-	GUICtrlSetData($cmbScriptNameAB, $output)
-	_GUICtrlComboBox_SetCurSel($cmbScriptNameAB, _GUICtrlComboBox_FindStringExact($cmbScriptNameAB, ""))
-	GUICtrlSetData($lblNotesScriptAB, "")
+	GUICtrlSetData($g_hCmbScriptNameAB, $output)
+	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameAB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameAB, ""))
+	GUICtrlSetData($g_hLblNotesScriptAB, "")
 EndFunc   ;==>PopulateComboScriptsFilesAB
 
 
@@ -62,15 +63,13 @@ EndFunc   ;==>PopulateComboScriptsFilesAB
 
 Func cmbScriptNameDB()
 
-	Local $tempvect1 = _GUICtrlComboBox_GetListArray($cmbScriptNameDB)
-	Local $filename = $tempvect1[_GUICtrlComboBox_GetCurSel($cmbScriptNameDB) + 1]
+	Local $tempvect1 = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameDB)
+	Local $filename = $tempvect1[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB) + 1]
 	Local $f, $result = ""
 	Local $tempvect, $line, $t
 
-	$scmbScriptNameDB = $filename
-
-	If FileExists($dirAttacksCSV & "\" & $filename & ".csv") Then
-		$f = FileOpen($dirAttacksCSV & "\" & $filename & ".csv", 0)
+	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
+		$f = FileOpen($g_sCSVAttacksPath & "\" & $filename & ".csv", 0)
 		; Read in lines of text until the EOF is reached
 		While 1
 			$line = FileReadLine($f)
@@ -83,22 +82,20 @@ Func cmbScriptNameDB()
 		FileClose($f)
 
 	EndIf
-	GUICtrlSetData($lblNotesScriptDB, $result)
+	GUICtrlSetData($g_hLblNotesScriptDB, $result)
 
 EndFunc   ;==>cmbScriptNameDB
 
 
 Func cmbScriptNameAB()
 
-	Local $tempvect1 = _GUICtrlComboBox_GetListArray($cmbScriptNameAB)
-	Local $filename = $tempvect1[_GUICtrlComboBox_GetCurSel($cmbScriptNameAB) + 1]
+	Local $tempvect1 = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameAB)
+	Local $filename = $tempvect1[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB) + 1]
 	Local $f, $result = ""
 	Local $tempvect, $line, $t
 
-	$scmbScriptNameAB = $filename
-
-	If FileExists($dirAttacksCSV & "\" & $filename & ".csv") Then
-		$f = FileOpen($dirAttacksCSV & "\" & $filename & ".csv", 0)
+	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
+		$f = FileOpen($g_sCSVAttacksPath & "\" & $filename & ".csv", 0)
 		; Read in lines of text until the EOF is reached
 		While 1
 			$line = FileReadLine($f)
@@ -111,28 +108,28 @@ Func cmbScriptNameAB()
 		FileClose($f)
 
 	EndIf
-	GUICtrlSetData($lblNotesScriptAB, $result)
+	GUICtrlSetData($g_hLblNotesScriptAB, $result)
 
 EndFunc   ;==>cmbScriptNameAB
 
 
 
 Func UpdateComboScriptNameDB()
-	Local $indexofscript = _GUICtrlComboBox_GetCurSel($cmbScriptNameDB)
+	Local $indexofscript = _GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB)
 	Local $scriptname
-	_GUICtrlComboBox_GetLBText($cmbScriptNameDB, $indexofscript, $scriptname)
+	_GUICtrlComboBox_GetLBText($g_hCmbScriptNameDB, $indexofscript, $scriptname)
 	PopulateComboScriptsFilesDB()
-	_GUICtrlComboBox_SetCurSel($cmbScriptNameDB, _GUICtrlComboBox_FindStringExact($cmbScriptNameDB, $scriptname))
+	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameDB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameDB, $scriptname))
 	cmbScriptNameDB()
 EndFunc   ;==>UpdateComboScriptNameDB
 
 
 Func UpdateComboScriptNameAB()
-	Local $indexofscript = _GUICtrlComboBox_GetCurSel($cmbScriptNameAB)
+	Local $indexofscript = _GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB)
 	Local $scriptname
-	_GUICtrlComboBox_GetLBText($cmbScriptNameAB, $indexofscript, $scriptname)
+	_GUICtrlComboBox_GetLBText($g_hCmbScriptNameAB, $indexofscript, $scriptname)
 	PopulateComboScriptsFilesAB()
-	_GUICtrlComboBox_SetCurSel($cmbScriptNameAB, _GUICtrlComboBox_FindStringExact($cmbScriptNameAB, $scriptname))
+	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameAB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameAB, $scriptname))
 	cmbScriptNameAB()
 EndFunc   ;==>UpdateComboScriptNameAB
 
@@ -141,37 +138,37 @@ EndFunc   ;==>UpdateComboScriptNameAB
 
 
 Func EditScriptDB()
-	Local $tempvect1 = _GUICtrlComboBox_GetListArray($cmbScriptNameDB)
-	Local $filename = $tempvect1[_GUICtrlComboBox_GetCurSel($cmbScriptNameDB) + 1]
+	Local $tempvect1 = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameDB)
+	Local $filename = $tempvect1[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB) + 1]
 	Local $f, $result = ""
 	Local $tempvect, $line, $t
-	If FileExists($dirAttacksCSV & "\" & $filename & ".csv") Then
-		ShellExecute("notepad.exe", $dirAttacksCSV & "\" & $filename & ".csv")
+	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
+		ShellExecute("notepad.exe", $g_sCSVAttacksPath & "\" & $filename & ".csv")
 	EndIf
 EndFunc   ;==>EditScriptDB
 
 Func EditScriptAB()
-	Local $tempvect1 = _GUICtrlComboBox_GetListArray($cmbScriptNameAB)
-	Local $filename = $tempvect1[_GUICtrlComboBox_GetCurSel($cmbScriptNameAB) + 1]
+	Local $tempvect1 = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameAB)
+	Local $filename = $tempvect1[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB) + 1]
 	Local $f, $result = ""
 	Local $tempvect, $line, $t
-	If FileExists($dirAttacksCSV & "\" & $filename & ".csv") Then
-		ShellExecute("notepad.exe", $dirAttacksCSV & "\" & $filename & ".csv")
+	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
+		ShellExecute("notepad.exe", $g_sCSVAttacksPath & "\" & $filename & ".csv")
 	EndIf
 EndFunc   ;==>EditScriptAB
 
 
 Func AttackCSVAssignDefaultScriptName()
 	Dim $FileSearch, $NewFile
-	$FileSearch = FileFindFirstFile($dirAttacksCSV & "\*.csv")
+	$FileSearch = FileFindFirstFile($g_sCSVAttacksPath & "\*.csv")
 	Dim $output = ""
 	$NewFile = FileFindNextFile($FileSearch)
 	If @error Then $output = ""
 	$output = StringLeft($NewFile, StringLen($NewFile) - 4)
 	FileClose($FileSearch)
 	;remove last |
-	_GUICtrlComboBox_SetCurSel($cmbScriptNameDB, _GUICtrlComboBox_FindStringExact($cmbScriptNameDB, $output))
-	_GUICtrlComboBox_SetCurSel($cmbScriptNameAB, _GUICtrlComboBox_FindStringExact($cmbScriptNameAB, $output))
+	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameDB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameDB, $output))
+	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameAB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameAB, $output))
 
 	cmbScriptNameDB()
 	cmbScriptNameAB()
@@ -185,16 +182,16 @@ Local $temp1 = 0, $temp2 = 0, $temp3 = 0, $temp4 = 0 ; empty temp vars
 Func NewScriptDB()
 	Local $filenameScript = InputBox(GetTranslated(635, 1, -1), GetTranslated(635, 2, -1) & ":")
 	If StringLen($filenameScript) > 0 Then
-		If FileExists($dirAttacksCSV & "\" & $filenameScript & ".csv") Then
+		If FileExists($g_sCSVAttacksPath & "\" & $filenameScript & ".csv") Then
 			MsgBox("", "", GetTranslated(635, 3, -1))
 		Else
-			Local $hFileOpen = FileOpen($dirAttacksCSV & "\" & $filenameScript & ".csv", $FO_APPEND)
+			Local $hFileOpen = FileOpen($g_sCSVAttacksPath & "\" & $filenameScript & ".csv", $FO_APPEND)
 			If $hFileOpen = -1 Then
 				MsgBox($MB_SYSTEMMODAL, "", GetTranslated(635, 4, -1))
 				Return False
 			Else
 				FileClose($hFileOpen)
-				$scmbDBScriptName = $filenameScript
+				$g_sAttackScrScriptName[$DB] = $filenameScript
 				UpdateComboScriptNameDB()
 				UpdateComboScriptNameAB()
 			EndIf
@@ -206,16 +203,16 @@ EndFunc   ;==>NewScriptDB
 Func NewScriptAB()
 	Local $filenameScript = InputBox(GetTranslated(635, 1, -1), GetTranslated(635, 2, -1) & ":")
 	If StringLen($filenameScript) > 0 Then
-		If FileExists($dirAttacksCSV & "\" & $filenameScript & ".csv") Then
+		If FileExists($g_sCSVAttacksPath & "\" & $filenameScript & ".csv") Then
 			MsgBox("", "", GetTranslated(635, 3, -1))
 		Else
-			Local $hFileOpen = FileOpen($dirAttacksCSV & "\" & $filenameScript & ".csv", $FO_APPEND)
+			Local $hFileOpen = FileOpen($g_sCSVAttacksPath & "\" & $filenameScript & ".csv", $FO_APPEND)
 			If $hFileOpen = -1 Then
 				MsgBox($MB_SYSTEMMODAL, "", GetTranslated(635, 4, -1))
 				Return False
 			Else
 				FileClose($hFileOpen)
-				$scmbABScriptName = $filenameScript
+				$g_sAttackScrScriptName[$LB] = $filenameScript
 				UpdateComboScriptNameAB()
 				UpdateComboScriptNameDB()
 
@@ -231,23 +228,23 @@ Local $temp1 = GetTranslated(635, 5, "Copy to New Script File"), $temp2 = GetTra
 Local $temp1 = 0, $temp2 = 0, $temp3 = 0 ; empty temp vars
 
 Func DuplicateScriptDB()
-	Local $indexofscript = _GUICtrlComboBox_GetCurSel($cmbScriptNameDB)
+	Local $indexofscript = _GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB)
 	Local $scriptname
-	_GUICtrlComboBox_GetLBText($cmbScriptNameDB, $indexofscript, $scriptname)
-	$scmbDBScriptName = $scriptname
-	Local $filenameScript = InputBox(GetTranslated(635, 5, -1), GetTranslated(635, 6, -1) & ": <" & $scmbDBScriptName & ">" & @CRLF & GetTranslated(635, 7, -1) & ":")
+	_GUICtrlComboBox_GetLBText($g_hCmbScriptNameDB, $indexofscript, $scriptname)
+	$g_sAttackScrScriptName[$DB] = $scriptname
+	Local $filenameScript = InputBox(GetTranslated(635, 5, -1), GetTranslated(635, 6, -1) & ": <" & $g_sAttackScrScriptName[$DB] & ">" & @CRLF & GetTranslated(635, 7, -1) & ":")
 	If StringLen($filenameScript) > 0 Then
-		If FileExists($dirAttacksCSV & "\" & $filenameScript & ".csv") Then
+		If FileExists($g_sCSVAttacksPath & "\" & $filenameScript & ".csv") Then
 			MsgBox("", "", GetTranslated(635, 3, -1))
 		Else
-			Local $hFileOpen = FileCopy($dirAttacksCSV & "\" & $scmbDBScriptName & ".csv", $dirAttacksCSV & "\" & $filenameScript & ".csv")
+			Local $hFileOpen = FileCopy($g_sCSVAttacksPath & "\" & $g_sAttackScrScriptName[$DB] & ".csv", $g_sCSVAttacksPath & "\" & $filenameScript & ".csv")
 
 			If $hFileOpen = -1 Then
 				MsgBox($MB_SYSTEMMODAL, "", GetTranslated(635, 4, -1))
 				Return False
 			Else
 				FileClose($hFileOpen)
-				$scmbDBScriptName = $filenameScript
+				$g_sAttackScrScriptName[$DB] = $filenameScript
 				UpdateComboScriptNameDB()
 				UpdateComboScriptNameAB()
 
@@ -257,23 +254,23 @@ Func DuplicateScriptDB()
 EndFunc   ;==>DuplicateScriptDB
 
 Func DuplicateScriptAB()
-	Local $indexofscript = _GUICtrlComboBox_GetCurSel($cmbScriptNameAB)
+	Local $indexofscript = _GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB)
 	Local $scriptname
-	_GUICtrlComboBox_GetLBText($cmbScriptNameAB, $indexofscript, $scriptname)
-	$scmbABScriptName = $scriptname
-	Local $filenameScript = InputBox(GetTranslated(635, 5, -1), GetTranslated(635, 6, -1) & ": <" & $scmbABScriptName & ">" & @CRLF & GetTranslated(635, 7, -1) & ":")
+	_GUICtrlComboBox_GetLBText($g_hCmbScriptNameAB, $indexofscript, $scriptname)
+	$g_sAttackScrScriptName[$LB] = $scriptname
+	Local $filenameScript = InputBox(GetTranslated(635, 5, -1), GetTranslated(635, 6, -1) & ": <" & $g_sAttackScrScriptName[$LB] & ">" & @CRLF & GetTranslated(635, 7, -1) & ":")
 	If StringLen($filenameScript) > 0 Then
-		If FileExists($dirAttacksCSV & "\" & $filenameScript & ".csv") Then
+		If FileExists($g_sCSVAttacksPath & "\" & $filenameScript & ".csv") Then
 			MsgBox("", "", GetTranslated(635, 3, -1))
 		Else
-			Local $hFileOpen = FileCopy($dirAttacksCSV & "\" & $scmbABScriptName & ".csv", $dirAttacksCSV & "\" & $filenameScript & ".csv")
+			Local $hFileOpen = FileCopy($g_sCSVAttacksPath & "\" & $g_sAttackScrScriptName[$LB] & ".csv", $g_sCSVAttacksPath & "\" & $filenameScript & ".csv")
 
 			If $hFileOpen = -1 Then
 				MsgBox($MB_SYSTEMMODAL, "", GetTranslated(635, 4, -1))
 				Return False
 			Else
 				FileClose($hFileOpen)
-				$scmbABScriptName = $filenameScript
+				$g_sAttackScrScriptName[$LB] = $filenameScript
 				UpdateComboScriptNameAB()
 				UpdateComboScriptNameDB()
 			EndIf
@@ -282,30 +279,29 @@ Func DuplicateScriptAB()
 EndFunc   ;==>DuplicateScriptAB
 
 Func cmbScriptRedlineImplDB()
-	$iRedlineRoutine[$DB] = _GUICtrlComboBox_GetCurSel($cmbScriptRedlineImplDB)
-	If $iRedlineRoutine[$DB] = 3 then
-		GUICtrlSetState($cmbScriptDroplineDB, $GUI_HIDE)
-		$iDroplineEdge[$DB] = $DROPLINE_FULL_EDGE_FIXED
-	Else
-		GUICtrlSetState($cmbScriptDroplineDB, $GUI_SHOW)
-	Endif
+	$g_aiAttackScrRedlineRoutine[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbScriptRedlineImplDB)
+    If $g_aiAttackScrRedlineRoutine[$DB] = 3 then
+        GUICtrlSetState($g_hCmbScriptDroplineDB, $GUI_HIDE)
+        $g_aiAttackScrDroplineEdge[$DB] = $DROPLINE_FULL_EDGE_FIXED
+    Else
+        GUICtrlSetState($g_hCmbScriptDroplineDB, $GUI_SHOW)
+    Endif
 EndFunc   ;==>cmbScriptRedlineImplDB
 
 Func cmbScriptRedlineImplAB()
-	$iRedlineRoutine[$LB] = _GUICtrlComboBox_GetCurSel($cmbScriptRedlineImplAB)
-	If $iRedlineRoutine[$LB] = 3 then
-		GUICtrlSetState($cmbScriptDroplineAB, $GUI_HIDE)
-		$iDroplineEdge[$LB] = $DROPLINE_FULL_EDGE_FIXED
-	Else
-		GUICtrlSetState($cmbScriptDroplineAB, $GUI_SHOW)
-	EndIf
+	$g_aiAttackScrRedlineRoutine[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbScriptRedlineImplAB)
+    If $g_aiAttackScrRedlineRoutine[$LB] = 3 then
+        GUICtrlSetState($g_hCmbScriptDroplineAB, $GUI_HIDE)
+        $g_aiAttackScrDroplineEdge[$LB] = $DROPLINE_FULL_EDGE_FIXED
+    Else
+        GUICtrlSetState($g_hCmbScriptDroplineAB, $GUI_SHOW)
+    EndIf
 EndFunc   ;==>cmbScriptRedlineImplAB
 
-
 Func cmbScriptDroplineDB()
-	$iDroplineEdge[$DB] = _GUICtrlComboBox_GetCurSel($cmbScriptDroplineDB)
+	$g_aiAttackScrDroplineEdge[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbScriptDroplineDB)
 EndFunc   ;==>cmbScriptDroplineDB
 
 Func cmbScriptDroplineAB()
-	$iDroplineEdge[$LB] = _GUICtrlComboBox_GetCurSel($cmbScriptDroplineAB)
+	$g_aiAttackScrDroplineEdge[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbScriptDroplineAB)
 EndFunc   ;==>cmbScriptDroplineAB

@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: didipe
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -39,19 +39,23 @@ Func _GetVectorOutZone($eVectorType)
 		$yMin = $ExternalArea[3][1] - 2
 		$xMax = $ExternalArea[1][0] - 2
 		$yMax = $ExternalArea[1][1]
-	EndIf
-	$xStep = ($xMax - $xMin) / $iSteps
-	$yStep = ($yMax - $yMin) / $iSteps
+	 EndIf
+
+    ; CS69 these step variables are not needed, since the $x and $y below are not referenced
+	; $xStep = ($xMax - $xMin) / $iSteps
+	; $yStep = ($yMax - $yMin) / $iSteps
 
 	For $i = 0 To $iSteps
 		Local $pixel = [Round($xMin + (($xMax - $xMin) * $i) / $iSteps), Round($yMin + (($yMax - $yMin) * $i) / $iSteps)]
 		ReDim $vectorOutZone[UBound($vectorOutZone) + 1]
-		If $pixel[1] >  555 + $bottomOffsetY Then
-			$pixel[1] = 555 + $bottomOffsetY
+		If $pixel[1] >  555 + $g_iBottomOffsetY Then
+			$pixel[1] = 555 + $g_iBottomOffsetY
 		EndIf
 		$vectorOutZone[UBound($vectorOutZone) - 1] = $pixel
-		$x += $xStep
-		$y += $yStep
+
+		; CS69 - $x and $y are never referenced in this function
+		; $x += $xStep
+		; $y += $yStep
 	Next
 
 	Return $vectorOutZone

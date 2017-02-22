@@ -15,7 +15,7 @@
 Func CleanRedArea(ByRef $InputVect, $side = "")
 	Local $TempVectStr = ""
 	For $i = 0 To UBound($InputVect) - 1
-		$pixel = $InputVect[$i]
+		Local $pixel = $InputVect[$i]
 		If isInsideDiamondRedArea($pixel) Then
 			$TempVectStr &= $pixel[0] & "-" & $pixel[1] & "|"
 		Else

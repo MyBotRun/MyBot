@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: AtoZ (2015)
 ; Modified ......: Barracoda (July 2015), TheMaster 2015-10
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,28 +20,28 @@ Func SwitchAttackTHType()
 EndFunc   ;==>SwitchAttackTHType
 
 Func AttackTHParseCSV($test = False)
-	If $debugsetlog = 1 Then Setlog("AttackTHParseCSV start", $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then Setlog("AttackTHParseCSV start", $COLOR_DEBUG)
 	Local $f, $line, $acommand, $command
 
 	Local $attackCSVtoUse = ""
-	Switch $iMatchMode
+	Switch $g_iMatchMode
 		Case $TS
-			$attackCSVtoUse = $scmbAttackTHType
+			$attackCSVtoUse = $g_sAtkTSType
 		Case $LB
-			$attackCSVtoUse = $THSnipeBeforeLBScript
+			$attackCSVtoUse = $g_iTHSnipeBeforeScript[$LB]
 		Case $DB
 			If $duringMilkingAttack = 1 Then
-				$attackCSVtoUse = $MilkFarmAlgorithmTh
+				$attackCSVtoUse = $g_sMilkFarmAlgorithmTh
 			Else
-				$attackCSVtoUse = $THSnipeBeforeDBScript
+				$attackCSVtoUse = $g_iTHSnipeBeforeScript[$DB]
 			EndIf
 	EndSwitch
 
 
 
-	If FileExists($dirTHSnipesAttacks & "\" & $attackCSVtoUse & ".csv") Then
-		$f = FileOpen($dirTHSnipesAttacks & "\" & $attackCSVtoUse & ".csv", 0)
-		If $debugsetlog=1 Then Setlog("Use algorithm " & $attackCSVtoUse &".csv",$COLOR_DEBUG)
+	If FileExists($g_sTHSnipeAttacksPath & "\" & $attackCSVtoUse & ".csv") Then
+		$f = FileOpen($g_sTHSnipeAttacksPath & "\" & $attackCSVtoUse & ".csv", 0)
+		If $g_iDebugSetlog=1 Then Setlog("Use algorithm " & $attackCSVtoUse &".csv",$COLOR_DEBUG)
 		; Read in lines of text until the EOF is reached
 		While 1
 			$line = FileReadLine($f)
@@ -55,12 +55,12 @@ Func AttackTHParseCSV($test = False)
 					Case $command = "TROOP" Or $command = ""
 						;Setlog("<<<<discard line>>>>")
 					Case $command = "TEXT"
-						If $debugsetlog = 1 Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
+						If $g_iDebugSetlog = 1 Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
 
 						SetLog($acommand[8], $COLOR_INFO)
 
 					Case StringInStr(StringUpper("-Barb-Arch-Giant-Gobl-Wall-Ball-Wiza-Heal-Drag-Pekk-BabyD-Mine-Mini-Hogs-Valk-Gole-Witc-Lava-Bowl"), "-" & $command & "-") > 0
-						If $debugsetlog = 1 Then Setlog(">> AttackTHGrid($e" & $command & ", Random (" & Int($acommand[2]) & "," & Int($acommand[3]) & ",1), Random(" & Int($acommand[4]) & "," & Int($acommand[5]) & ",1), Random(" & Int($acommand[6]) & "," & Int($acommand[7]) & ",1) )")
+						If $g_iDebugSetlog = 1 Then Setlog(">> AttackTHGrid($e" & $command & ", Random (" & Int($acommand[2]) & "," & Int($acommand[3]) & ",1), Random(" & Int($acommand[4]) & "," & Int($acommand[5]) & ",1), Random(" & Int($acommand[6]) & "," & Int($acommand[7]) & ",1) )")
 
 						Local $iNbOfSpots
 						If Int($acommand[2]) = Int($acommand[3]) Then
@@ -86,23 +86,23 @@ Func AttackTHParseCSV($test = False)
 						AttackTHGrid(Eval("e" & $command), $iNbOfSpots, $iAtEachSpot, $Sleep, 0)
 
 					Case $command = "WAIT"
-						If $debugsetlog = 1 Then Setlog(">> GoldElixirChangeThSnipes(" & Int($acommand[7]) & ") ")
+						If $g_iDebugSetlog = 1 Then Setlog(">> GoldElixirChangeThSnipes(" & Int($acommand[7]) & ") ")
 
 						If CheckOneStar(Int($acommand[7]) / 2000) Then ExitLoop ; Use seconds not ms , Half of time to check One start and the other halft for check the Resources
 						If GoldElixirChangeThSnipes(Int($acommand[7]) / 2000) Then ExitLoop ; Correct the Function GoldElixirChangeThSnipes uses seconds not ms
 
 					Case StringInStr(StringUpper("-King-Queen-Castle-"), "-" & $command & "-") > 0
-						If $debugsetlog = 1 Then Setlog(">> AttackTHGrid($e" & $command & ")")
+						If $g_iDebugSetlog = 1 Then Setlog(">> AttackTHGrid($e" & $command & ")")
 
 						AttackTHGrid(Eval("e" & $command))
 
 					Case StringInStr(StringUpper("-HSpell-RSpell-LSpell-JSpell-FSpell-PSpell-ESpell-HaSpell"), "-" & $command & "-") > 0
-						If $debugsetlog = 1 Then Setlog(">> SpellTHGrid($e" & $command & ")")
+						If $g_iDebugSetlog = 1 Then Setlog(">> SpellTHGrid($e" & $command & ")")
 
 						SpellTHGrid(Eval("e" & $command))
 
 					Case StringInStr(StringUpper("-LSpell-"), "-" & $command & "-") > 0
-						If $debugsetlog = 1 Then Setlog(">> CastSpell($e" & $command & ",$THx, $THy)")
+						If $g_iDebugSetlog = 1 Then Setlog(">> CastSpell($e" & $command & ",$THx, $THy)")
 
 						CastSpell(Eval("e" & $command), $THx, $THy)
 
@@ -110,18 +110,18 @@ Func AttackTHParseCSV($test = False)
 						Setlog("attack row bad, discard: " & $line, $COLOR_ERROR)
 				EndSelect
 				If $acommand[8] <> "" And $command <> "TEXT" And $command <> "TROOP" Then
-					If $debugsetlog = 1 Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
+					If $g_iDebugSetlog = 1 Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
 					SETLOG($acommand[8], $COLOR_INFO)
 				EndIf
 			Else
 				If StringStripWS($acommand[1], 2) <> "" Then Setlog("attack row error, discard: " & $line, $COLOR_ERROR)
 			EndIf
-			If $debugsetlog = 1 Then Setlog(">> CheckOneStar()")
+			If $g_iDebugSetlog = 1 Then Setlog(">> CheckOneStar()")
 			If CheckOneStar() Then ExitLoop
 		WEnd
 		FileClose($f)
 	Else
-		SetLog("Cannot found THSnipe attack file " & $dirTHSnipesAttacks & "\" & $attackCSVtoUse & ".csv", $COLOR_ERROR)
+		SetLog("Cannot found THSnipe attack file " & $g_sTHSnipeAttacksPath & "\" & $attackCSVtoUse & ".csv", $COLOR_ERROR)
 	EndIf
 
 EndFunc   ;==>AttackTHParseCSV

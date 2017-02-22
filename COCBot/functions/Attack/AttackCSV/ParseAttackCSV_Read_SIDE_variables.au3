@@ -28,18 +28,18 @@ Func ParseAttackCSV_Read_SIDE_variables()
 ;	$attackcsv_locate_Mortar = 0
 ;	$attackcsv_locate_GemBox = 0
 
-	If $iMatchMode = $DB Then
-		Local $filename = $scmbDBScriptName
+	If $g_iMatchMode = $DB Then
+		Local $filename = $g_sAttackScrScriptName[$DB]
 	Else
-		Local $filename = $scmbABScriptName
+		Local $filename = $g_sAttackScrScriptName[$LB]
 	EndIf
 
 	Local $f, $line, $acommand, $command
 	Local $value1, $value2, $value3, $value4, $value5, $value6, $value7, $value8, $value9
 	Local $bForceSideExist = False
 
-	If FileExists($dirAttacksCSV & "\" & $filename & ".csv") Then
-		$f = FileOpen($dirAttacksCSV & "\" & $filename & ".csv", 0)
+	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
+		$f = FileOpen($g_sCSVAttacksPath & "\" & $filename & ".csv", 0)
 		; Read in lines of text until the EOF is reached
 		While 1
 			$line = FileReadLine($f)
@@ -92,6 +92,6 @@ Func ParseAttackCSV_Read_SIDE_variables()
 		WEnd
 		FileClose($f)
 	Else
-		SetLog("Cannot find attack file " & $dirAttacksCSV & "\" & $filename & ".csv", $COLOR_ERROR)
+		SetLog("Cannot find attack file " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
 	EndIf
 EndFunc   ;==>ParseAttackCSV_Read_SIDE_variables

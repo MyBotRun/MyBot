@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (June2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,23 +16,23 @@ Func SetSleep($type)
 	If IsKeepClicksActive() = True Then Return 0 ; fast bulk deploy
 	Local $factor0 = 10
 	Local $factor1 = 100
-	If $AndroidAdbClick = True Then
+	If $g_bAndroidAdbClick = True Then
 	   ; adjust for slow ADB clicks the delay factor
 	   $factor0 = 10
 	   $factor1 = 100
     EndIf
 	Switch $type
 		Case 0
-			If $iChkRandomspeedatk[$iMatchMode] = 1 Then
+			If $g_abAttackStdRandomizeDelay[$g_iMatchMode] Then
 				Return Round(Random(1, 10)) * $factor0
 			Else
-				Return ($iCmbUnitDelay[$iMatchMode] + 1) * $factor0
+				Return ($g_aiAttackStdUnitDelay[$g_iMatchMode] + 1) * $factor0
 			EndIf
 		Case 1
-			If $iChkRandomspeedatk[$iMatchMode] = 1 Then
+			If $g_abAttackStdRandomizeDelay[$g_iMatchMode] Then
 				Return Round(Random(1, 10)) * $factor1
 			Else
-				Return ($iCmbWaveDelay[$iMatchMode] + 1) * $factor1
+				Return ($g_aiAttackStdWaveDelay[$g_iMatchMode] + 1) * $factor1
 			EndIf
 	EndSwitch
 EndFunc   ;==>SetSleep
@@ -45,14 +45,14 @@ EndFunc   ;==>SetSleep
 ; Return values .: see _Sleep
 ; Author ........: cosote (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func _SleepAttack($iDelay, $iSleep = True)
-	If $RunState = False Then
+	If $g_bRunState = False Then
 		ResumeAndroid()
 		Return True
 	EndIf

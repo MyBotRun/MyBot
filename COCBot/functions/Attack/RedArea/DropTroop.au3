@@ -11,7 +11,7 @@
 ; Return values .: None
 ; Author ........: didipe
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,12 +20,12 @@
 Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1)
 
 	If isProblemAffect(True) Then Return
-	$nameFunc = "[DropTroop]"
+	Local $nameFunc = "[DropTroop]"
 	debugRedArea($nameFunc & " IN ")
 	debugRedArea("troop : [" & $troop & "] / nbSides : [" & $nbSides & "] / number : [" & $number & "] / slotsPerEdge [" & $slotsPerEdge & "]")
 
 
-	If ($iChkRedArea[$iMatchMode]) Then
+	If ($g_abAttackStdSmartAttack[$g_iMatchMode]) Then
 		If $slotsPerEdge = 0 Or $number < $slotsPerEdge Then $slotsPerEdge = $number
 		If _Sleep($iDelayDropTroop1) Then Return
 		SelectDropTroop($troop) ;Select Troop
@@ -33,7 +33,8 @@ Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1
 
 		If $nbSides < 1 Then Return
 		Local $nbTroopsLeft = $number
-		If ($iChkSmartAttack[$iMatchMode][0] = 0 And $iChkSmartAttack[$iMatchMode][1] = 0 And $iChkSmartAttack[$iMatchMode][2] = 0) Then
+		If ($g_abAttackStdSmartNearCollectors[$g_iMatchMode][0] = False And $g_abAttackStdSmartNearCollectors[$g_iMatchMode][1] = False And _
+		    $g_abAttackStdSmartNearCollectors[$g_iMatchMode][2] = False) Then
 
 			If $nbSides = 4 Then
 				Local $edgesPixelToDrop = GetPixelDropTroop($troop, $number, $slotsPerEdge)
@@ -82,7 +83,7 @@ Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1
 			EndIf
 			If ($number > 0 And $nbTroopsPerEdge = 0) Then $nbTroopsPerEdge = 1
 			For $i = $startIndex To $maxElementNearCollector
-				$pixel = $PixelNearCollector[$i]
+				Local $pixel = $PixelNearCollector[$i]
 				ReDim $listEdgesPixelToDrop[UBound($listEdgesPixelToDrop) + 1]
 				If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini Or $troop = $eBarb) Then
 					$listEdgesPixelToDrop[UBound($listEdgesPixelToDrop) - 1] = _FindPixelCloser($PixelRedAreaFurther, $pixel, 5)
@@ -102,12 +103,12 @@ Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1
 EndFunc   ;==>DropTroop
 
 Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
-	$nameFunc = "[DropTroop2]"
+	Local $nameFunc = "[DropTroop2]"
 	debugRedArea($nameFunc & " IN ")
 	debugRedArea("troop : [" & $troop & "] / nbSides : [" & $nbSides & "] / number : [" & $number & "] / slotsPerEdge [" & $slotsPerEdge & "]")
 	Local $listInfoPixelDropTroop[0]
 
-	If ($iChkRedArea[$iMatchMode]) Then
+	If ($g_abAttackStdSmartAttack[$g_iMatchMode]) Then
 		If $slotsPerEdge = 0 Or $number < $slotsPerEdge Then $slotsPerEdge = $number
 		;If _Sleep($iDelayDropTroop1) Then Return
 		;SelectDropTroop($troop) ;Select Troop
@@ -116,7 +117,8 @@ Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
 		If $nbSides < 1 Then Return
 		Local $nbTroopsLeft = $number
 		Local $nbTroopsPerEdge = Round($nbTroopsLeft / $nbSides)
-		If (($iChkSmartAttack[$iMatchMode][0] = 0 And $iChkSmartAttack[$iMatchMode][1] = 0 And $iChkSmartAttack[$iMatchMode][2] = 0) Or UBound($PixelNearCollector) = 0) Then
+		If (($g_abAttackStdSmartNearCollectors[$g_iMatchMode][0] = False And $g_abAttackStdSmartNearCollectors[$g_iMatchMode][1] = False And _
+		     $g_abAttackStdSmartNearCollectors[$g_iMatchMode][2] = False) Or UBound($PixelNearCollector) = 0) Then
 			If ($number > 0 And $nbTroopsPerEdge = 0) Then $nbTroopsPerEdge = 1
 			If $nbSides = 4 Then
 				ReDim $listInfoPixelDropTroop[UBound($listInfoPixelDropTroop) + 4]
@@ -150,7 +152,7 @@ Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
 			EndIf
 			Local $centerPixel[2] = [430, 338]
 			For $i = $startIndex To $maxElementNearCollector
-				$pixel = $PixelNearCollector[$i]
+				Local $pixel = $PixelNearCollector[$i]
 				ReDim $listInfoPixelDropTroop[UBound($listInfoPixelDropTroop) + 1]
 				Local $arrPixelToSearch
 				If ($pixel[0] < $centerPixel[0] And $pixel[1] < $centerPixel[1]) Then

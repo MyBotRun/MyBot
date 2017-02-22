@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,17 +15,15 @@
 
 #include "functions\Other\Synchronization.au3"
 #include "functions\Other\OnAutoItErrorRegisterBot.au3"
-#include "functions\Other\UpdateStatsWall.au3"
 
 #include "functions\Config\profileFunctions.au3"
 #include "functions\Config\applyConfig.au3"
-#include "functions\Config\strategies.au3"
 #include "functions\Config\readConfig.au3"
 #include "functions\Config\saveConfig.au3"
 
 #include "functions\Attack\AttackReport.au3"
 #include "functions\Attack\BuildingSide.au3"
-#include "functions\Attack\GoldElixirChange.au3"
+#include "functions\Attack\GoldElixirChangeThSnipes.au3"
 #include "functions\Attack\GoldElixirChangeEBO.au3"
 #include "functions\Attack\PrepareAttack.au3"
 #include "functions\Attack\ReturnHome.au3"
@@ -102,8 +100,6 @@
 #include "functions\Attack\SmartZap\drillSearch.au3"
 #include "functions\Attack\SmartZap\smartZap.au3"
 
-#include "functions\CreateArmy\_TrainMoveBtn.au3"
-#include "functions\CreateArmy\BarracksStatus.au3"
 #include "functions\CreateArmy\CheckFullArmy.au3"
 #include "functions\CreateArmy\CheckArmyCamp.au3"
 #include "functions\CreateArmy\getArmyCapacity.au3"
@@ -114,25 +110,16 @@
 #include "functions\CreateArmy\getArmySpellCapacity.au3"
 #include "functions\CreateArmy\getArmySpellCount.au3"
 #include "functions\CreateArmy\getArmySpellTime.au3"
-;#include "functions\CreateArmy\getArmyTroopCount.au3" we don't use this anymore
 #include "functions\CreateArmy\getArmyTroopTime.au3"
-#include "functions\CreateArmy\isBarrack.au3"
 #include "functions\CreateArmy\openArmyOverview.au3"
-#include "functions\CreateArmy\Spell.au3"
 #include "functions\CreateArmy\SmartWait4Train.au3"
 #include "functions\CreateArmy\TrainClick.au3"
-#include "functions\CreateArmy\Train.au3"
 #include "functions\CreateArmy\TrainRevamp.au3"
 #include "functions\CreateArmy\TrainIt.au3"
 
 #include "functions\Image Search\ImageSearch.au3"
 #include "functions\Image Search\checkDeadBase.au3"
-#include "functions\Image Search\checkTownhall.au3"
-; #include "functions\Image Search\checkWall.au3"
 #include "functions\Image Search\CheckTombs.au3"
-#include "functions\Image Search\THSearch.au3"
-
-
 #include "functions\Image Search\imglocAuxiliary.au3"
 #include "functions\Image Search\imglocScreens.au3"
 #include "functions\Image Search\imglocTrainHelper.au3"
@@ -184,7 +171,6 @@
 #include "functions\Other\ClickOkay.au3"
 #include "functions\Other\ClickRemove.au3"
 #include "functions\Other\CreateLogFile.au3"
-;#include "functions\Other\MBRFunc.au3"
 #include "functions\Other\DebugImageSave.au3"
 #include "functions\Other\DebugSaveDesktopImage.au3"
 #include "functions\Other\ExtendedErrorInfo.au3"
@@ -206,6 +192,7 @@
 #include "functions\Other\UpdateStats.au3"
 #include "functions\Other\CheckVersion.au3"
 #include "functions\Other\CloseRunningBot.au3"
+#include "functions\Other\RestartBot.au3"
 #include "functions\Other\WindowSystemMenu.au3"
 #include "functions\Other\image_get_info.au3"
 
@@ -262,12 +249,10 @@
 #include "functions\Village\isDarkElixirFull.au3"
 #include "functions\Village\isGoldFull.au3"
 #include "functions\Village\isElixirFull.au3"
-#include "functions\Village\LocateBarrack.au3"
 #include "functions\Village\LocateUpgrade.au3"
 #include "functions\Village\LocateClanCastle.au3"
 #include "functions\Village\LocateLab.au3"
 #include "functions\Village\LocateTownHall.au3"
-#include "functions\Village\LocateSpell.au3"
 #include "functions\Village\LocateHeroesAltar.au3"
 #include "functions\Village\ProfileReport.au3"
 #include "functions\Village\ReArm.au3"
@@ -280,13 +265,30 @@
 #include "functions\Village\ReplayShare.au3"
 #include "functions\Village\BoostHeroes.au3"
 #include "functions\Village\UpgradeHeroes.au3"
-#include "functions\Village\ClanLevel.au3"
 #include "functions\Village\StarBonus.au3"
 #include "functions\Village\AddIdleTime.au3"
 #include "functions\Village\GetVillageSize.au3"
 #include "functions\Village\GainCost.au3"
 #include "functions\Village\ConvertOCRTime.au3"
 #include "functions\Other\ClickZoneR.au3"
+#include "functions\Village\CheckNeedOpenTrain.au3"
 
 #include "functions\Other\Api.au3"
 #include "functions\Other\ApiClient.au3"
+
+; OLD CODE
+
+;#include "functions\Image Search\checkWall.au3"
+;#include "functions\CreateArmy\getArmyTroopCount.au3" we don't use this anymore
+;#include "functions\Other\MBRFunc.au3"
+;#include "functions\CreateArmy\Spell.au3"
+;#include "functions\CreateArmy\_TrainMoveBtn.au3"
+;#include "functions\CreateArmy\isBarrack.au3"ateArmy\TrainIt.au3"
+;#include "functions\CreateArmy\Train.au3"
+;#include "functions\Image Search\THSearch.au3"
+;#include "functions\CreateArmy\BarracksStatus.au3"
+;#include "functions\Image Search\checkTownhall.au3"
+;#include "functions\Village\LocateBarrack.au3"
+;#include "functions\Village\ClanLevel.au3"
+;#include "functions\Village\LocateSpell.au3"
+;#include "functions\Other\UpdateStatsWall.au3"

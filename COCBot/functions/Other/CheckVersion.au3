@@ -5,8 +5,8 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Sardo (2015-06)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,15 +18,15 @@ Func CheckVersion()
 		CheckVersionHTML()
 		If $lastversion = "" Then
 			SetLog("WE CANNOT OBTAIN PRODUCT VERSION AT THIS TIME", $COLOR_ACTION)
-		ElseIf VersionNumFromVersionTXT($sBotVersion) < VersionNumFromVersionTXT($lastversion) Then
-			SetLog("WARNING, YOUR BOT VERSION (" & $sBotVersion & ") IS OUT OF DATE.", $COLOR_ERROR)
+		ElseIf VersionNumFromVersionTXT($g_sBotVersion) < VersionNumFromVersionTXT($lastversion) Then
+			SetLog("WARNING, YOUR BOT VERSION (" & $g_sBotVersion & ") IS OUT OF DATE.", $COLOR_ERROR)
 			SetLog("PLEASE DOWNLOAD THE LATEST(" & $lastversion & ") FROM https://MyBot.run               ", $COLOR_ERROR)
 			SetLog(" ")
 			_PrintLogVersion($oldversmessage)
 			PushMsg("Update")
-		ElseIf VersionNumFromVersionTXT($sBotVersion) > VersionNumFromVersionTXT($lastversion) Then
+		ElseIf VersionNumFromVersionTXT($g_sBotVersion) > VersionNumFromVersionTXT($lastversion) Then
 			SetLog("YOU ARE USING A FUTURE VERSION OF MYBOT CHIEF!", $COLOR_SUCCESS)
-			SetLog("YOUR VERSION: " & $sBotVersion, $COLOR_SUCCESS)
+			SetLog("YOUR VERSION: " & $g_sBotVersion, $COLOR_SUCCESS)
 			SetLog("OFFICIAL VERSION: " & $lastversion, $COLOR_SUCCESS)
 			SetLog(" ")
 		Else
@@ -70,7 +70,7 @@ Func CheckVersionHTML()
 		FileCopy(@ScriptDir & "\TestVersion.txt", $versionfile, 1)
 	Else
 		;download page from site contains last bot version
-		$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", $versionfile, 0, 1)
+		Local $hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", $versionfile, 0, 1)
 
 		; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
 		Local $i = 0

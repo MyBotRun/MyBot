@@ -4,52 +4,53 @@
 ; Syntax ........: _Sleep($iDelay[, $iSleep = True])
 ; Parameters ....: $iDelay              - an integer value.
 ;                  $iSleep              - [optional] an integer value. Default is True. unused and deprecated
-;                  $$CheckRunState      - Exit and returns True if $RunState is False
-; Return values .: True when $RunState is False otherwise True (also True if $CheckRunState=False)
+;                  $$CheckRunState      - Exit and returns True if $g_bRunState is False
+; Return values .: True when $g_bRunState is False otherwise True (also True if $CheckRunState=False)
 ; Author ........:
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
+
 Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = True)
+    Static $hTimer_SetTime = 0
+	Static $hTimer_PBRemoteControlInterval = 0
+    Static $hTimer_PBDeleteOldPushesInterval = 0
+    Static $hTimer_EmptyWorkingSetAndroid = 0
+	Static $hTimer_EmptyWorkingSetBot = 0
+
 	Local $iBegin = TimerInit()
 
-	; track GDI count
-	If $DebugGdiCount <> 0 Then
-		Local $iCount = _WinAPI_GetGuiResources()
-		If $iCount <> $DebugGdiCount Then
-			SetDebugLog("GDI Handle Count: " & $iCount)
-			$DebugGdiCount = $iCount
-		EndIf
-	EndIf
+	debugGdiHandle("_Sleep")
 
 	If SetCriticalMessageProcessing() = False Then
 
-		If $bMoveDivider Then
+		If $g_bMoveDivider Then
 			MoveDivider()
-			$bMoveDivider = False
+			$g_bMoveDivider = False
 		EndIf
 
-		If $iDelay > 0 And TimerDiff($hTxtLogTimer) >= $iTxtLogTimerTimeout Then
-			If $NotifyDeleteAllPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
+		If $iDelay > 0 And TimerDiff($g_hTxtLogTimer) >= $g_iTxtLogTimerTimeout Then
+			If $g_bNotifyDeleteAllPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
 
-			If TimerDiff($hTimer_PBRemoteControlInterval) >= $PBRemoteControlInterval Then
+			If TimerDiff($hTimer_PBRemoteControlInterval) >= $g_iPBRemoteControlInterval Then
 				PushBulletRemoteControl()
 				$hTimer_PBRemoteControlInterval = TimerInit()
 			EndIf
-			If TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $PBDeleteOldPushesInterval Then
+			If TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $g_iPBDeleteOldPushesInterval Then
 				PushBulletDeleteOldPushes()
 				$hTimer_PBDeleteOldPushesInterval = TimerInit()
 			EndIf
-			If $RunState And TestCapture() = False And TimerDiff($hTimer_EmptyWorkingSetAndroid) >= $iEmptyWorkingSetAndroid Then
+			If $g_bRunState And TestCapture() = False And TimerDiff($hTimer_EmptyWorkingSetAndroid) >= $g_iEmptyWorkingSetAndroid Then
 				If IsArray(getAndroidPos(True)) = 1 Then _WinAPI_EmptyWorkingSet(GetAndroidPid()) ; Reduce Working Set of Android Process
 				$hTimer_EmptyWorkingSetAndroid = TimerInit()
 			EndIf
-			If TimerDiff($hTimer_EmptyWorkingSetBot) >= $iEmptyWorkingSetBot Then
-				_WinAPI_EmptyWorkingSet(@AutoItPID) ; Reduce Working Set of Bot
+			If TimerDiff($hTimer_EmptyWorkingSetBot) >= $g_iEmptyWorkingSetBot Then
+				ReduceBotMemory()
 				$hTimer_EmptyWorkingSetBot = TimerInit()
 			EndIF
 
@@ -58,29 +59,29 @@ Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = T
 	EndIf
 	;AndroidEmbedCheck()
 	;AndroidShieldCheck()
-	If $CheckRunState = True And $RunState = False Then
+	If $CheckRunState = True And $g_bRunState = False Then
 		ResumeAndroid()
 		Return True
 	EndIf
 	Local $iRemaining = $iDelay - TimerDiff($iBegin)
 	While $iRemaining > 0
-		DllCall($hNtDll, "dword", "ZwYieldExecution")
-		If $CheckRunState = True And $RunState = False Then
+		DllCall($g_hLibNTDLL, "dword", "ZwYieldExecution")
+		If $CheckRunState = True And $g_bRunState = False Then
 			ResumeAndroid()
 			Return True
 		EndIf
 		If SetCriticalMessageProcessing() = False Then
-			If $TPaused And $SleepWhenPaused And $TogglePauseAllowed Then TogglePauseSleep() ; Bot is paused
-			If $TogglePauseUpdateState Then TogglePauseUpdateState("_Sleep") ; Update Pause GUI states
-			If $iMakeScreenshotNow = True Then
+			If $g_bBotPaused And $SleepWhenPaused And $g_bTogglePauseAllowed Then TogglePauseSleep() ; Bot is paused
+			If $g_bTogglePauseUpdateState Then TogglePauseUpdateState("_Sleep") ; Update Pause GUI states
+			If $g_bMakeScreenshotNow = True Then
 				If $iScreenshotType = 0 Then
-					MakeScreenshot($dirTemp, "jpg")
+					MakeScreenshot($g_sProfileTempPath, "jpg")
 				Else
-					MakeScreenshot($dirTemp, "png")
+					MakeScreenshot($g_sProfileTempPath, "png")
 				EndIf
 			EndIf
-			If TimerDiff($hTxtLogTimer) >= $iTxtLogTimerTimeout Then
-				If $RunState And Not $bSearchMode And Not $TPaused And ($hTimer_SetTime = 0 Or TimerDiff($hTimer_SetTime) >= 750) Then
+			If TimerDiff($g_hTxtLogTimer) >= $g_iTxtLogTimerTimeout Then
+				If $g_bRunState And Not $bSearchMode And Not $g_bBotPaused And ($hTimer_SetTime = 0 Or TimerDiff($hTimer_SetTime) >= 750) Then
 					SetTime()
 					$hTimer_SetTime = TimerInit()
 				EndIf
@@ -100,11 +101,8 @@ Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = T
 EndFunc   ;==>_Sleep
 
 Func _SleepMicro($iMicroSec)
-	;Local $hStruct_SleepMicro = DllStructCreate("int64 time;")
-	;Local $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
     DllStructSetData($hStruct_SleepMicro, "time", $iMicroSec * -10)
-    DllCall($hNtDll, "dword", "ZwDelayExecution", "int", 0, "ptr", $pStruct_SleepMicro)
-	;$hStruct_SleepMicro = 0
+    DllCall($g_hLibNTDLL, "dword", "ZwDelayExecution", "int", 0, "ptr", $pStruct_SleepMicro)
 EndFunc   ;==>_SleepMicro
 
 Func _SleepMilli($iMilliSec)

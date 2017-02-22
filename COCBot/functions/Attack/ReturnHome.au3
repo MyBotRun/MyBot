@@ -6,20 +6,20 @@
 ;                  $GoldChangeCheck     - [optional] an unknown value. Default is True.
 ; Return values .: None
 ; Author ........:
-; Modified ......: KnowJack (Jun/Aug2015), MonkeyHunter (2106-01)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: KnowJack (Jun/Aug2015), MonkeyHunter (2106-01), CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
-	If $DebugSetLog = 1 Then Setlog("ReturnHome function... (from matchmode=" & $iMatchMode & " - " & $sModeText[$iMatchMode] & ")", $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then Setlog("ReturnHome function... (from matchmode=" & $g_iMatchMode & " - " & $g_asModeText[$g_iMatchMode] & ")", $COLOR_DEBUG)
 	Local $counter = 0
 	Local $hBitmap_Scaled
 	Local $i, $j
 
-	If $DisableOtherEBO And $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 And $DESideEB And ($dropQueen Or $dropKing) Then
+	If $g_bDESideDisableOther And $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 4 And $g_bDESideEndEnable And ($dropQueen Or $dropKing) Then
 		SaveandDisableEBO()
 		SetLog("Disabling Normal End Battle Options", $COLOR_SUCCESS)
 	EndIf
@@ -50,11 +50,11 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 				EndIf
 			EndIf
 		Else
-			If $DebugSetLog = 1 Then Setlog("Battle already over", $COLOR_DEBUG)
+			If $g_iDebugSetlog = 1 Then Setlog("Battle already over", $COLOR_DEBUG)
 		EndIf
 	EndIf
 
-	If $DisableOtherEBO And $iMatchMode = $LB And $iChkDeploySettings[$LB] = 4 And $DESideEB And ($dropQueen Or $dropKing) Then
+	If $g_bDESideDisableOther And $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 4 And $g_bDESideEndEnable And ($dropQueen Or $dropKing) Then
 		RevertEBO()
 	EndIf
 
@@ -62,22 +62,22 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	$checkQPower = False
 	$checkWPower = False
 
-	If $iTScheck = 1 And $iMatchMode = $TS And $icmbTroopComp <> 8 Then $FirstStart = True ;reset barracks upon return when TH sniping w/custom army
+	If $g_abAttackTypeEnable[$TS] = 1 And $g_iMatchMode = $TS Then $g_bFirstStart = True ;reset barracks upon return when TH sniping w/custom army
 
 	SetLog("Returning Home", $COLOR_INFO)
-	If $RunState = False Then Return
+	If $g_bRunState = False Then Return
 
 	; ---- CLICK SURRENDER BUTTON ----
 	If Not (IsReturnHomeBattlePage(True, False)) Then ; check if battle is already over
 		$i = 0 ; Reset Loop counter
 		While 1 ; dynamic wait loop for surrender button to appear
-			If $DebugSetLog = 1 Then SetDebugLog("Wait for surrender button to appear #" & $i)
-			If _CheckPixel($aSurrenderButton, $bCapturePixel) Then ;is surrender button is visible?
+			If $g_iDebugSetlog = 1 Then SetDebugLog("Wait for surrender button to appear #" & $i)
+			If _CheckPixel($aSurrenderButton, $g_bCapturePixel) Then ;is surrender button is visible?
 				If IsAttackPage() Then ; verify still on attack page, and battle has not ended magically before clicking
 					ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
 					$j = 0
 					While 1 ; dynamic wait for Okay button
-						If $DebugSetLog = 1 Then SetDebugLog("Wait for OK button to appear #" & $j)
+						If $g_iDebugSetlog = 1 Then SetDebugLog("Wait for OK button to appear #" & $j)
 						If IsEndBattlePage(False) Then
 							ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
 							ExitLoop 2
@@ -99,11 +99,11 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			If _Sleep($iDelayReturnHome5) Then Return
 		WEnd
 	Else
-		If $DebugSetLog = 1 Then Setlog("Battle already over.", $COLOR_DEBUG)
+		If $g_iDebugSetlog = 1 Then Setlog("Battle already over.", $COLOR_DEBUG)
 	EndIf
 	If _Sleep($iDelayReturnHome2) Then Return ; short wait for return to main
 
-	TrayTip($sBotTitle, "", BitOR($TIP_ICONASTERISK, $TIP_NOSOUND)) ; clear village search match found message
+	TrayTip($g_sBotTitle, "", BitOR($TIP_ICONASTERISK, $TIP_NOSOUND)) ; clear village search match found message
 
 	checkAndroidReboot(False)
 
@@ -111,7 +111,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		If IsAttackPage() Then
 			$counter = 0
 			While _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False ; test for Return Home Button
-				If $DebugSetLog = 1 Then SetDebugLog("Wait for Return Home Button to appear #" & $counter)
+				If $g_iDebugSetlog = 1 Then SetDebugLog("Wait for Return Home Button to appear #" & $counter)
 				If _Sleep($iDelayReturnHome2) Then ExitLoop
 				$counter += 1
 				If $counter > 40 Then ExitLoop
@@ -129,11 +129,12 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		$hBitmap_Scaled = _GDIPlus_ImageResize($hBitmap, _GDIPlus_ImageGetWidth($hBitmap) / 2, _GDIPlus_ImageGetHeight($hBitmap) / 2) ;resize image
 		; screenshot filename according with new options around filenames
 		If $ScreenshotLootInfo = 1 Then
-			$LootFileName = $Date & "_" & $Time & " G" & $iGoldLast & " E" & $iElixirLast & " DE" & $iDarkLast & " T" & $iTrophyLast & " S" & StringFormat("%3s", $SearchCount) & ".jpg"
+			$LootFileName = $Date & "_" & $Time & " G" & $g_iStatsLastAttack[$eLootGold] & " E" & $g_iStatsLastAttack[$eLootElixir] & " DE" & _
+						    $g_iStatsLastAttack[$eLootDarkElixir] & " T" & $g_iStatsLastAttack[$eLootTrophy] & " S" & StringFormat("%3s", $SearchCount) & ".jpg"
 		Else
 			$LootFileName = $Date & "_" & $Time & ".jpg"
 		EndIf
-		_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $dirLoots & $LootFileName)
+		_GDIPlus_ImageSaveToFile($hBitmap_Scaled, $g_sProfileLootsPath & $LootFileName)
 		_GDIPlus_ImageDispose($hBitmap_Scaled)
 	EndIf
 
@@ -144,8 +145,8 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 
 	$i = 0 ; Reset Loop counter
 	While 1
-		If $DebugSetLog = 1 Then SetDebugLog("Wait for End Fight Scene to appear #" & $i)
-		If _CheckPixel($aEndFightSceneAvl, $bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
+		If $g_iDebugSetlog = 1 Then SetDebugLog("Wait for End Fight Scene to appear #" & $i)
+		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
 			If IsReturnHomeBattlePage() Then ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
 			ExitLoop
 		Else
@@ -158,7 +159,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 
 	$counter = 0
 	While 1
-		If $DebugSetLog = 1 Then SetDebugLog("Wait for End Fight Scene to appear #" & $counter)
+		If $g_iDebugSetlog = 1 Then SetDebugLog("Wait for End Fight Scene to appear #" & $counter)
 		If _Sleep($iDelayReturnHome4) Then Return
 		If StarBonus() = True Then Setlog("Star Bonus window closed chief!", $COLOR_INFO) ; Check for Star Bonus window to fill treasury (2016-01) update
 		If ReturnHomeMainPage() Then Return
@@ -173,9 +174,9 @@ EndFunc   ;==>ReturnHome
 
 Func ReturnHomeMainPage()
 	If IsMainPage(1) Then
-		_GUICtrlEdit_SetText($txtLog, _PadStringCenter(" BOT LOG ", 71, "="))
-		_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")
-		_GUICtrlRichEdit_AppendTextColor($txtLog, "" & @CRLF, _ColorConvert($Color_Black))
+		_GUICtrlEdit_SetText($g_hTxtLog, _PadStringCenter(" BOT LOG ", 71, "="))
+		_GUICtrlRichEdit_SetFont($g_hTxtLog, 6, "Lucida Console")
+		_GUICtrlRichEdit_AppendTextColor($g_hTxtLog, "" & @CRLF, _ColorConvert($Color_Black))
 		Return True
 	EndIf
 	Return False

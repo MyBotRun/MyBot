@@ -7,7 +7,7 @@
 ; Return values .: Promac (04-2016)
 ; Author ........: MonkeyHunter (04-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,7 +16,7 @@
 ;
 Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 
-	If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then Setlog("Begin getArmySpellTime:", $COLOR_DEBUG1)
+	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Begin getArmySpellTime:", $COLOR_DEBUG1)
 
 	$aTimeTrain[1] = 0  ; reset time
 
@@ -38,4 +38,4 @@ Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		If _Sleep($iDelaycheckArmyCamp4) Then Return
 	EndIf
-EndFunc   ;==>getArmySpellCount
+EndFunc   ;==>getArmySpellTime

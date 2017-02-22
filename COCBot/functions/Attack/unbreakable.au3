@@ -6,7 +6,7 @@
 ; Return values .: False if regular farming is needed to refill storage
 ; Author ........: KnowJack (Jul/Aug 2015) updated for COC changes, added early Take-A-Break Detection
 ; Modified ......: Sardo (2015-08), MonkeyHunter (2015-12)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -22,11 +22,11 @@ Func Unbreakable()
 	;
 	Local $x, $y, $i, $iTime, $iCount
 
-	Switch $iUnbreakableMode
+	Switch $g_iUnbrkMode
 		Case 2
-			If (Number($iGoldCurrent) > Number($iUnBrkMaxGold)) And (Number($iElixirCurrent) > Number($iUnBrkMaxElixir)) And (Number($iDarkCurrent) > Number($iUnBrkMaxDark)) Then
+			If (Number($iGoldCurrent) > Number($g_iUnbrkMaxGold)) And (Number($iElixirCurrent) > Number($g_iUnbrkMaxElixir)) And (Number($iDarkCurrent) > Number($g_iUnbrkMaxDark)) Then
 				SetLog(" ====== Unbreakable Mode restarted! ====== ", $COLOR_SUCCESS)
-				$iUnbreakableMode = 1
+				$g_iUnbrkMode = 1
 			Else
 				SetLog(" = Unbreakable Mode Paused, Farming to Refill Storages =", $COLOR_INFO)
 				Return False
@@ -53,18 +53,18 @@ Func Unbreakable()
 	EndSelect
 
 	Local $sMissingLoot = ""
-	If ((Number($iGoldCurrent) - Number($iUnBrkMinGold)) < 0) Then
+	If ((Number($iGoldCurrent) - Number($g_iUnbrkMinGold)) < 0) Then
 		$sMissingLoot &= "Gold, "
 	EndIf
-	If ((Number($iElixirCurrent) - Number($iUnBrkMinElixir)) < 0) Then
+	If ((Number($iElixirCurrent) - Number($g_iUnbrkMinElixir)) < 0) Then
 		$sMissingLoot &= "Elixir, "
 	EndIf
-	If ((Number($iDarkCurrent) - Number($iUnBrkMinDark)) < 0) Then
+	If ((Number($iDarkCurrent) - Number($g_iUnbrkMinDark)) < 0) Then
 		$sMissingLoot &= "Dark Elixir"
 	EndIf
 	If $sMissingLoot <> "" Then
 		SetLog("Oops, Out of " & $sMissingLoot & " - back to farming", $COLOR_ERROR)
-		$iUnbreakableMode = 2 ; go back to farming mode.
+		$g_iUnbrkMode = 2 ; go back to farming mode.
 		Return False
 	EndIf
 
@@ -72,12 +72,12 @@ Func Unbreakable()
 	If _Sleep($iDelayUnbreakable2) Then Return True ; wait for home screen
 	ClickP($aAway, 1, $iDelayUnbreakable7, "#0112") ;clear screen
 	If _Sleep($iDelayUnbreakable1) Then Return True ; wait for home screen
-	If $Restart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
+	If $g_bRestart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
 	$iCount = 0
 	Local $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1]) ; Get trophy
-	If $debugSetlog = 1 Then Setlog("Trophy Count Read = " & $iTrophyCurrent, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then Setlog("Trophy Count Read = " & $iTrophyCurrent, $COLOR_DEBUG)
 	While Number($iTrophyCurrent) > Number($itxtMaxTrophy) ; verify that trophy dropped and didn't fail due misc errors searching
-		If $debugSetlog = 1 Then Setlog("Drop Trophy Loop #" & $iCount + 1, $COLOR_DEBUG)
+		If $g_iDebugSetlog = 1 Then Setlog("Drop Trophy Loop #" & $iCount + 1, $COLOR_DEBUG)
 		DropTrophy()
 		If _Sleep($iDelayUnbreakable2) Then Return ; wait for home screen
 		ClickP($aAway, 1, 0, "#0395") ;clear screen
@@ -90,7 +90,7 @@ Func Unbreakable()
 		EndIf
 		$iCount += 1
 	WEnd
-	If $Restart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
+	If $g_bRestart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
 
 	BreakPersonalShield() ; break personal Shield and Personal Guard
 	If @error Then
@@ -112,10 +112,10 @@ Func Unbreakable()
 		If _Sleep($iDelayUnbreakable1) Then Return True
 		; New button search as old pixel check matched grass color sometimes
 		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
-		Global $ButtonPixel = _MultiPixelSearch(438, 372 + $midOffsetY, 590, 404 + $midOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $debugSetlog = 1 Then Setlog("Exit btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_DEBUG)
+		Global $ButtonPixel = _MultiPixelSearch(438, 372 + $g_iMidOffsetY, 590, 404 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
+		If $g_iDebugSetlog = 1 Then Setlog("Exit btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_DEBUG)
 		If IsArray($ButtonPixel) Then
-			If $debugSetlog = 1 Then
+			If $g_iDebugSetlog = 1 Then
 				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
 				Setlog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_DEBUG)
 			EndIf
@@ -126,7 +126,7 @@ Func Unbreakable()
 		$i += 1
 	WEnd
 
-	$iTime = Number($iUnbreakableWait)
+	$iTime = Number($g_iUnbrkWait)
 	If $iTime < 1 Then $iTime = 1 ;error check user time input
 	Local Const $iGracePeriodTime = 5 ; 5 minutes for server to acknowledge log off.
 	$iTime = ($iTime + $iGracePeriodTime) * 60 * 1000 ; add server grace time and convert to milliseconds
@@ -135,8 +135,8 @@ Func Unbreakable()
 
 	$iCount = 0
 	While 1 ; Under attack when return from sleep?  wait some more ...
-		If $debugSetlog = 1 Then Setlog("Under Attack Pixels = " & _GetPixelColor(841, 342 + $midOffsetY, True) & "/" & _GetPixelColor(842, 348 + $midOffsetY, True), $COLOR_DEBUG)
-		If _ColorCheck(_GetPixelColor(841, 342 + $midOffsetY, True), Hex(0x711C0A, 6), 20) And _ColorCheck(_GetPixelColor(842, 348 + $midOffsetY, True), Hex(0x721C0E, 6), 20) Then
+		If $g_iDebugSetlog = 1 Then Setlog("Under Attack Pixels = " & _GetPixelColor(841, 342 + $g_iMidOffsetY, True) & "/" & _GetPixelColor(842, 348 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+		If _ColorCheck(_GetPixelColor(841, 342 + $g_iMidOffsetY, True), Hex(0x711C0A, 6), 20) And _ColorCheck(_GetPixelColor(842, 348 + $g_iMidOffsetY, True), Hex(0x721C0E, 6), 20) Then
 			Setlog("Base is under attack, waiting 30 seocnds for end", $COLOR_INFO)
 		Else
 			ExitLoop
@@ -149,14 +149,14 @@ Func Unbreakable()
 
 	Local $Message = _PixelSearch(20, 624, 105, 627, Hex(0xE1E3CB, 6), 15) ;Check if Return Home button available and close the screen
 	If IsArray($Message) Then
-		If $debugSetlog = 1 Then Setlog("Return Home Pixel = " & _GetPixelColor($Message[0], $Message[1], True) & ", Pos: " & $Message[0] & "/" & $Message[1], $COLOR_DEBUG)
-		PureClick(67, 602 + $bottomOffsetY, 1, 0, "#0138")
+		If $g_iDebugSetlog = 1 Then Setlog("Return Home Pixel = " & _GetPixelColor($Message[0], $Message[1], True) & ", Pos: " & $Message[0] & "/" & $Message[1], $COLOR_DEBUG)
+		PureClick(67, 602 + $g_iBottomOffsetY, 1, 0, "#0138")
 		If _Sleep($iDelayUnbreakable3) Then Return True
 	EndIf
 
-	If _ColorCheck(_GetPixelColor(235, 209 + $midOffsetY, True), Hex(0x9E3826, 6), 20) And _ColorCheck(_GetPixelColor(242, 140 + $midOffsetY, True), Hex(0xFFFFFF, 6), 20) Then ;See if village was attacked, then click Okay
-		If $debugSetlog = 1 Then Setlog("Village Attacked Pixels = " & _GetPixelColor(235, 209 + $midOffsetY, True) & "/" & _GetPixelColor(242, 140 + $midOffsetY, True), $COLOR_DEBUG)
-		PureClick(429, 493 + $midOffsetY, 1, 0, "#0132")
+	If _ColorCheck(_GetPixelColor(235, 209 + $g_iMidOffsetY, True), Hex(0x9E3826, 6), 20) And _ColorCheck(_GetPixelColor(242, 140 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 20) Then ;See if village was attacked, then click Okay
+		If $g_iDebugSetlog = 1 Then Setlog("Village Attacked Pixels = " & _GetPixelColor(235, 209 + $g_iMidOffsetY, True) & "/" & _GetPixelColor(242, 140 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+		PureClick(429, 493 + $g_iMidOffsetY, 1, 0, "#0132")
 		If _Sleep($iDelayUnbreakable3) Then Return True
 	EndIf
 

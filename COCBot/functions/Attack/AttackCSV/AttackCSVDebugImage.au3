@@ -18,6 +18,7 @@ Func AttackCSVDEBUGIMAGE()
 	Local $testx
 	Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($EditedImage)
 	Local $hBrush = _GDIPlus_BrushCreateSolid(0xFFFFFFFF)
+    Local $pixel
 
 	; Open box of crayons :-)
 	Local $hPenLtGreen = _GDIPlus_PenCreate(0xFF00DC00, 2)
@@ -43,13 +44,12 @@ Func AttackCSVDEBUGIMAGE()
 	_GDIPlus_GraphicsDrawLine($hGraphic, $InternalArea[1][0], $InternalArea[1][1], $InternalArea[3][0], $InternalArea[3][1], $hPenDkGreen)
 
 	;-- DRAW VERTICAL AND ORIZONTAL LINES
-	_GDIPlus_GraphicsDrawLine($hGraphic, $InternalArea[2][0], 0, $InternalArea[2][0], $DEFAULT_HEIGHT, $hPenDkGreen)
-	_GDIPlus_GraphicsDrawLine($hGraphic, 0, $InternalArea[0][1], $DEFAULT_WIDTH, $InternalArea[0][1], $hPenDkGreen)
+	_GDIPlus_GraphicsDrawLine($hGraphic, $InternalArea[2][0], 0, $InternalArea[2][0], $g_iDEFAULT_HEIGHT, $hPenDkGreen)
+	_GDIPlus_GraphicsDrawLine($hGraphic, 0, $InternalArea[0][1], $g_iDEFAULT_WIDTH, $InternalArea[0][1], $hPenDkGreen)
 
 	;-- DRAW DIAGONALS LINES
 	_GDIPlus_GraphicsDrawLine($hGraphic, $ExternalArea[4][0], $ExternalArea[4][1], $ExternalArea[7][0], $ExternalArea[7][1], $hPenLtGreen)
 	_GDIPlus_GraphicsDrawLine($hGraphic, $ExternalArea[5][0], $ExternalArea[5][1], $ExternalArea[6][0], $ExternalArea[6][1], $hPenLtGreen)
-
 
 	;-- DRAW REDAREA PATH
 	For $i = 0 To UBound($PixelTopLeft) - 1
@@ -269,7 +269,7 @@ Func AttackCSVDEBUGIMAGE()
 
 	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 	Local $Time = @HOUR & "." & @MIN & "." & @SEC
-	Local $filename = $dirTempDebug & String("AttackDebug_" & $Date & "_" & $Time)  & ".jpg"
+	Local $filename = $g_sProfileTempDebugPath & String("AttackDebug_" & $Date & "_" & $Time)  & ".jpg"
 	_GDIPlus_ImageSaveToFile($EditedImage, $filename)
 	SetDebugLog("Attack CSV image saved: " & $filename)
 

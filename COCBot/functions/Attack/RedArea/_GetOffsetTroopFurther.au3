@@ -9,7 +9,7 @@
 ; Return values .: None
 ; Author ........: didipe
 ; Modified ......: ProMac (Dec - 2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -95,8 +95,8 @@ Func _GetOffsetTroopFurther($pixel, $eVectorType, $offset)
 		If ($found) Then ExitLoop
 	Next
 	; Not select pixel in menu of troop
-	If $pixelOffset[1] > 555 + $bottomOffsetY Then
-		$pixelOffset[1] = 555 + $bottomOffsetY
+	If $pixelOffset[1] > 555 + $g_iBottomOffsetY Then
+		$pixelOffset[1] = 555 + $g_iBottomOffsetY
 	EndIf
 	debugRedArea("$pixelOffset x : [" & $pixelOffset[0] & "] / y : [" & $pixelOffset[1] & "]")
 

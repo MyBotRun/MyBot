@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Heridero, Zengzeng (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -32,7 +32,7 @@ Func CheckPrerequisites($bSilent = False)
 	checkIsAdmin($bSilent)
 
 	If $isAllOK = False And Not $bSilent Then
-		GUICtrlSetState($btnStart, $GUI_DISABLE)
+		GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 	EndIf
 	Return $isAllOK
 EndFunc   ;==>CheckPrerequisites
@@ -66,7 +66,7 @@ Func isVC2010Installed()
 
 	Local $success = False
 	For $reg In $listRegistry
-		$sKeyName = RegRead($reg, "Version")
+		Local $sKeyName = RegRead($reg, "Version")
 		If $sKeyName <> "" Then
 			$success = True
 			ExitLoop
@@ -81,14 +81,14 @@ Func isEveryFileInstalled($bSilent = False)
 
 	; folders and files needed checking
 	Local $aCheckFiles[9] = [@ScriptDir & "\COCBot", _
-			$LibDir, _
+			$g_sLibPath, _
 			@ScriptDir & "\Images", _
-			$pFuncLib, _
-			$pImageLib, _
-			$pImgLib, _
-			$pIconLib, _
-			$LibDir & "\opencv_core220.dll", _
-			$LibDir & "\opencv_imgproc220.dll"]
+			$g_sLibFunctionsPath, _
+			$g_sLibImageSearchPath, _
+			$g_sLibImgLocPath, _
+			$g_sLibIconPath, _
+			$g_sLibPath & "\opencv_core220.dll", _
+			$g_sLibPath & "\opencv_imgproc220.dll"]
 
 	For $vElement In $aCheckFiles
 		$iCount += FileExists($vElement)
@@ -96,9 +96,9 @@ Func isEveryFileInstalled($bSilent = False)
 	If $iCount = UBound($aCheckFiles) Then
 		$bResult = True
 	ElseIf Not $bSilent Then
-		GUICtrlSetState($btnStart, $GUI_DISABLE)
+		GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 
-		Local $sText1, $sText2, $MsgBox
+		Local $sText1="", $sText2="", $sText3="", $MsgBox=0
 		$sText1 = GetTranslated(640,11,"Hey Chief, we are missing some files!")
 		$sText2 = GetTranslated(640,12,"Please extract all files and folders and start this program again!")
 		$sText3 = GetTranslated(640,13,"Sorry, Start button disabled until fixed!")
@@ -108,8 +108,8 @@ Func isEveryFileInstalled($bSilent = False)
 		Setlog($sText3, $COLOR_ERROR)
 
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$MsgBox = _ExtMsgBox(48, GetTranslated(640,14,"Ok"), $sText1, $sText2, 0, $frmBot)
-		GUICtrlSetState($btnStart, $GUI_DISABLE)
+		$MsgBox = _ExtMsgBox(48, GetTranslated(640,14,"Ok"), $sText1, $sText2, 0)
+		GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 	EndIf
 	If @Compiled Then;if .exe
 		If Not StringInStr(@ScriptFullPath, "MyBot.run.exe", 1) Then; if filename isn't MyBot.run.exe
@@ -124,8 +124,8 @@ Func isEveryFileInstalled($bSilent = False)
 				Setlog($sText3, $COLOR_ERROR)
 
 				_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-				$MsgBox = _ExtMsgBox(48, GetTranslated(640,14,"Ok"), $sText1, $sText2, 0, $frmBot)
-				GUICtrlSetState($btnStart, $GUI_DISABLE)
+				$MsgBox = _ExtMsgBox(48, GetTranslated(640,14,"Ok"), $sText1, $sText2, 0)
+				GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 			EndIf
 			$bResult = False
 		EndIf
@@ -139,12 +139,11 @@ Func checkAutoitVersion($bSilent = False)
 	Local $result = _VersionCompare(@AutoItVersion, $requiredAutoit)
 	If $result = 0 Or $result = 1 Then Return 1
 	If Not $bSilent Then
-		Local $sText1, $sText2, $MsgBox
-		$sText1 = "Hey Chief, your AutoIt version is out of date!"
-		$sText3 = "Click OK to download the latest version of AutoIt."
-		$sText2 = "The bot requires AutoIt version "&$requiredAutoit&" or above. Your version of AutoIt is "&@AutoItVersion&"." & @CRLF & $sText3 & @CRLF &"After installing the new version, open the bot again."
+		Local $sText1 = "Hey Chief, your AutoIt version is out of date!"
+		Local $sText3 = "Click OK to download the latest version of AutoIt."
+		Local $sText2 = "The bot requires AutoIt version "&$requiredAutoit&" or above. Your version of AutoIt is "&@AutoItVersion&"." & @CRLF & $sText3 & @CRLF &"After installing the new version, open the bot again."
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$MsgBox = _ExtMsgBox(48, "OK|Cancel", $sText1, $sText2, 0, $frmBot)
+		Local $MsgBox = _ExtMsgBox(48, "OK|Cancel", $sText1, $sText2, 0)
 		If $MsgBox = 1 Then ShellExecute("https://www.autoitscript.com/site/autoit/downloads/")
 	EndIf
 	Return 0

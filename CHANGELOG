@@ -1,4 +1,51 @@
-﻿* **V6.5.3**
+﻿* **V7.0**
+ * Major Code Cleaning and formatting
+ * Add Korean Alphabet Recognition for Donation - 108 chars
+ * Add Auto Resume after x Minutes. (Suggested by @takamper)
+ * Add 2 More End Battle Options related to Overall Battle Damage. (Suggested by @rahulblaze)
+ * Add 2 More Auto Upgrade Slots
+ * Add Auto Activate Hero Ability when Battle Damage is above 92%
+ * Add CheckBox to disable Donate
+ * Reduce open Army to only open when it's needed (Estimate training time)
+ * Show Shield and PBT time remaining in BOT LOG if checked
+ * Fix redline detection choosing best out of 4 images for best attack
+ * Fix redline falling back to outer green when line too short
+ * Fix About Us tab display incorrectly on system locales as Chinese and some others
+ * Fix Stats tab title rows Korean display problems
+ * Fix Run Time occasionally displays garbage time at bot first start without target emulator running
+ * Fix Random Delay not working when Max # input first
+ * Fix Wait For CC Spell
+ * Fix small Bug in DonateCC Debug Testing
+ * Fix test village size debug button
+ * Fix transparent bot when "Hide when minimized" is used
+ * Fix Bot looping through Obstacles with no Elixir available
+ * Fix Balloon and Wizard getting not detected sometimes while Donating
+ * Fix GUI redraw in Donate Tab
+ * Fix drawing yellow circles when selecting upgrades and smartwait is active
+ * Fix bot crashes due to bot window refresh initiated from dll
+ * Fix GUI in attacks tabs that got enabled during bot start/stop when it should stay hidden
+ * Fix GDI memory leak
+ * Fix custom train order
+ * Fix wrong Android Emulator being using in rare cases of bot crash
+ * Fix smartwait errors with minumum wait time settings & short shield times
+ * Fix file handle leak on \Device\NamedPipe
+ * Improve skip wall upgrade logic to allow wall upgrades when adequate resources exist for buildings+walls
+ * Improve bot memory allocation
+ * Improve speed disabling and enabling all GUI controls during bot start/stop
+ * Improve Android launch when VirtualBox VM parameter dynamically change
+ * Improve Upgrades when Android docked to draw yellow circles on existing upgrades
+ * Improve manually locate townhall automatically rebooting bot
+ * Improve switch language automatically rebooting bot
+ * Improve run time with days format in stats tab
+ * Improve the Lighting Spell detection and Freeze on Train
+ * Enable Au3Stripper to reduce compiled script size
+ * Vitnamese Language File (by @NguyenAnhHD)
+ * Spanish Language File (by @dcm4682)
+ * Korean Language File (by @sadam129 @school4i)
+ * Update Russian Language File (by @Vlab97)
+ * Update Portuguese Language File (by @RoPa)
+
+* **V6.5.3**
  * Add Donation of 2 Space Spells
  * Add new Detection of Troops in Training Window using ImgLoc
  * Fix deadbase search during trophy drop
@@ -24,7 +71,7 @@
  * Update Icons for Troops and Spells extract from DEC Update
  * Add New detection of Train/Brew slots
  * Add Red Line Option on CSV to deploy on external Edges
- 
+
 * **V6.5.2**
  * Fix Android or Bot window out of visible screen problem
  * Fix Bot /restart parameter not closing other bot instance when Window not accessible

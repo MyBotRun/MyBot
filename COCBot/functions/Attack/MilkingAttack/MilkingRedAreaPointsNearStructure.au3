@@ -26,8 +26,8 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 ;~ 	$ResourceToInsert &= "." & $coordinate
  	Local $pixelCoord = StringSplit($coordinate, "-", 2)
 
- 	Local $diamondx = $MilkFarmOffsetX + $MilkFarmOffsetXStep * $MilkFarmResMaxTilesFromBorder
- 	Local $diamondy = $MilkFarmOffsetY + $MilkFarmOffsetYStep * $MilkFarmResMaxTilesFromBorder
+ 	Local $diamondx = $MilkFarmOffsetX + $MilkFarmOffsetXStep * $g_iMilkFarmResMaxTilesFromBorder
+ 	Local $diamondy = $MilkFarmOffsetY + $MilkFarmOffsetYStep * $g_iMilkFarmResMaxTilesFromBorder
  	If UBound($pixelCoord) = 2 Then
 
 		;adjust********************************************************************************************************************
@@ -53,7 +53,7 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -66,7 +66,7 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -79,7 +79,7 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -92,7 +92,7 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -100,10 +100,10 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 ;~ 			If StringLen($MilkFarmObjectivesSTR) > 0 Then $MilkFarmObjectivesSTR &= "|"
 ;~ 			$MilkFarmObjectivesSTR &= $ResourceToInsert
 ;~ 		EndIf
-		 If $debugsetlog=1 Then Setlog("$ResourceToInsertQty = " & $ResourceToInsertQty & " value " & $ResourceToInsert,$COLOR_DEBUG)
+		 If $g_iDebugSetlog=1 Then Setlog("$ResourceToInsertQty = " & $ResourceToInsertQty & " value " & $ResourceToInsert,$COLOR_DEBUG)
 		 Return $ResourceToInsert
  	Else
- 		If $DebugSetLog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #1 " & $pixelCoord & " " & UBound($pixelCoord), $COLOR_ERROR)
+ 		If $g_iDebugSetlog = 1 Then Setlog("MilkingRedAreaPointsNearStructure Discard error #1 " & $pixelCoord & " " & UBound($pixelCoord), $COLOR_ERROR)
  	EndIf
 
 ;~ 	Return $ResourceToInsertQty

@@ -3,16 +3,17 @@
 ; Name ..........: MoveMouseOutBS() & _WindowFromPoint($iX,$iY)
 ; Description ...: Moves Mouse out of BS if it is inside of BS window
 ; Author ........: The Master (2015)
-; Modified ......:
-; Remarks .......: This file is part of MyBot Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......:
 ; ===============================================================================================================================
+#include-once
 
 Func MoveMouseOutBS()
-	If $iMoveMouseOutBS = 0 Then Return
+	If $g_bMoveMouseOutBS = False Then Return
 	Local $hWindow, $txtTitleW, $hControl, $aMousePos
 	$aMousePos = MouseGetPos()
 	If IsArray($aMousePos) Then
@@ -30,11 +31,16 @@ Func MoveMouseOutBS()
 EndFunc   ;==>MoveMouseOutBS
 
 Func _WindowFromPoint($iX, $iY)
-	Local $stInt64, $aRet, $stPoint = DllStructCreate("long;long")
+	Local $aRet, $stPoint = DllStructCreate("long;long")
 	DllStructSetData($stPoint, 1, $iX)
 	DllStructSetData($stPoint, 2, $iY)
-	$stInt64 = DllStructCreate("int64", DllStructGetPtr($stPoint))
+	Local $stInt64 = DllStructCreate("int64", DllStructGetPtr($stPoint))
+
 	$aRet = DllCall("user32.dll", "hwnd", "WindowFromPoint", "int64", DllStructGetData($stInt64, 1))
+
+	$stPoint = 0
+	$stInt64 = 0
+
 	If @error Then Return SetError(0, 0, 0)
 	If $aRet[0] = 0 Then Return SetError(0, 0, 0)
 	Return $aRet[0]

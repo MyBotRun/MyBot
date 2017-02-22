@@ -10,7 +10,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (04-2016)
 ; Modified ......: Cosote (06-2016), MonkeyHunter (07-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,7 +18,7 @@
 ; ===============================================================================================================================
 Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer_", $StopEmulator = False, $bFullRestart = False)
 
-	If $debugsetlog = 1 Then Setlog("Begin UniversalCloseWaitOpenCoC:", $COLOR_DEBUG1)
+	If $g_iDebugSetlog = 1 Then Setlog("Begin UniversalCloseWaitOpenCoC:", $COLOR_DEBUG1)
 
 	Local $sWaitTime = ""
 	Local $iMin, $iSec, $iHour, $iWaitSec, $StopAndroidFlag
@@ -58,7 +58,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 			$StopAndroidFlag = 1
 			SetLog("Code Monkey provided bad stop emulator flag value", $COLOR_ERROR)
 	EndSelect
-	If $debugsetlog = 1 Then Setlog("Stop Android flag : Input flag " & $StopAndroidFlag & " : " & $StopEmulator, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then Setlog("Stop Android flag : Input flag " & $StopAndroidFlag & " : " & $StopEmulator, $COLOR_DEBUG)
 	If _Sleep($iDelayRespond) Then Return False
 
 	Switch $StopAndroidFlag
@@ -82,7 +82,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 				EndIf
 				WaitnOpenCoC($iWaitTime, $bFullRestart)
 				AndroidShieldForceDown(False)
-				If $RunState = False Then Return False
+				If $g_bRunState = False Then Return False
 			Else
 				WaitnOpenCoC($iDelayWaitnOpenCoC10000, $bFullRestart) ; if waittime = 0 then only wait 10 seconds before restart
 			EndIf
@@ -98,6 +98,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 			PoliteCloseCoC($sSource)
 			If _Sleep(3000) Then Return False ; Wait 3 sec.
 			CloseAndroid("UniversalCloseWaitOpenCoC")
+			ReduceBotMemory()
 			If $iWaitTime > 0 Then
 				SetLog("Waiting " & $sWaitTime & "before starting CoC", $COLOR_SUCCESS)
 				If $iWaitTime > 30000 Then
@@ -114,7 +115,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 				EndIf
 			Else
 				If _SleepStatus($iDelayWaitnOpenCoC10000) Then Return False
-			EndIf
+				EndIf
 			StartAndroidCoC()
 		Case Else
 			SetLog("Code Monkey is drinking banana liqueur again!", $COLOR_ERROR)

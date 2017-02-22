@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (06-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -27,7 +27,7 @@ Func getBuilderCount($bSuppressLog = False)
 			$iFreeBuilderCount = Int($aGetBuilders[0]) ; update global values
 			If $iTestFreeBuilderCount <> -1 Then $iFreeBuilderCount = $iTestFreeBuilderCount ; used for test cases
 			$iTotalBuilderCount = Int($aGetBuilders[1])
-			If $debugSetlog = 1 And $bSuppressLog = False Then Setlog("No. of Free/Total Builders: " & $iFreeBuilderCount & "/" & $iTotalBuilderCount, $COLOR_DEBUG)
+			If $g_iDebugSetlog = 1 And $bSuppressLog = False Then Setlog("No. of Free/Total Builders: " & $iFreeBuilderCount & "/" & $iTotalBuilderCount, $COLOR_DEBUG)
 			Return True  ; Happy Monkey returns!
 		Else
 			SetLog("Bad OCR read Free/Total Builders", $COLOR_ERROR) ; OCR returned unusable value?
@@ -37,7 +37,7 @@ Func getBuilderCount($bSuppressLog = False)
 		SetLog("Unable to read Builders info at this time", $COLOR_ERROR)
 		; drop down to error handling code
 	EndIf
-	If $debugSetlog = 1 Or $debugimagesave = 1 Then Debugimagesave("getBuilderCount_")
+	If $g_iDebugSetlog = 1 Or $g_iDebugImageSave = 1 Then Debugimagesave("getBuilderCount_")
 	If checkObstacles() Then checkMainScreen()  ; trap common error messages
 	Return False
 

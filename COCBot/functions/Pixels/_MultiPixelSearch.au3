@@ -17,7 +17,7 @@
 ; Return values .: None
 ; Author ........: Your Name
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -77,7 +77,7 @@ EndFunc   ;==>_MultiPixelSearch2
 
 Func WaitforPixel($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation, $maxDelay = 10) ; $maxDelay is in 1/2 second
 	For $i = 1 To $maxDelay * 10
-		$result = _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation)
+		Local $result = _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation)
 		If IsArray($result) Then Return True
 		If _Sleep(50) Then Return
 	Next

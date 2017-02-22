@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (July 2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -30,7 +30,7 @@ Func LocateTownHall($bLocationOnly = False)
 		_ExtMsgBoxSet(1 + 64, 1, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
 		$stext = $sErrorText & @CRLF & GetTranslated(640,49,"Click OK then click on your Town Hall") & @CRLF & @CRLF & _
 				GetTranslated(640,26,"Do not move mouse quickly after clicking location") & @CRLF & @CRLF & GetTranslated(640,27,"Make sure the building name is visible for me!") & @CRLF
-		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,50,"Locate TownHall"), $stext, 30, $frmBot)
+		$MsgBox = _ExtMsgBox(0, GetTranslated(640,1,"Ok|Cancel"), GetTranslated(640,50,"Locate TownHall"), $stext, 30)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
 			ClickP($aAway, 1, 0, "#0391")

@@ -3,7 +3,7 @@
 ; Description ...: Pixel and Locate Image functions
 ; Author ........: HungLe (april-2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -47,16 +47,35 @@ Func GetPixelDistance(Const ByRef $Pixel0, Const ByRef $Pixel1)
 	Return $d
 EndFunc   ;==>GetPixelDistance
 
+Func GetPixelListDistance(Const $PixelArray, Const $iMaxAllowedPixelDistance)
+	Local $dTotal = 0
+	Local $i
+	Local $iMax = UBound($PixelArray) - 1
+	If $iMax < 1 Then Return $dTotal
+	Local $prePixel = $PixelArray[0]
+	Local $curPixel
+	Local $d
+	For $i = 1 To $iMax
+		$curPixel = $PixelArray[$i]
+		If UBound($prePixel) > 1 And UBound($curPixel) > 1 Then
+			$d = GetPixelDistance($prePixel, $curPixel)
+			If $d <= $iMaxAllowedPixelDistance Then $dTotal += $d
+		EndIf
+		$prePixel = $curPixel
+	Next
+	Return $dTotal
+EndFunc   ;==>GetPixelListDistance
+
 Func GetLocationItem($functionName)
-	If $debugSetLog = 1 Or $debugBuildingPos = 1 Then
+	If $g_iDebugSetlog = 1 Or $g_iDebugBuildingPos = 1 Then
 		Local $hTimer = TimerInit()
 		Setlog("GetLocationItem(" & $functionName & ")", $COLOR_DEBUG)
 	EndIf
-	$resultHere = DllCall($hFuncLib, "str", $functionName, "ptr", $hHBitmap2)
+	Local $resultHere = DllCall($g_hLibFunctions, "str", $functionName, "ptr", $hHBitmap2)
 	If UBound($resultHere) > 0 Then
-		If $debugBuildingPos = 1 Then Setlog("#*# " & $functionName & ": " & $resultHere[0] & "calc in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
+		If $g_iDebugBuildingPos = 1 Then Setlog("#*# " & $functionName & ": " & $resultHere[0] & "calc in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
 		Return GetListPixel($resultHere[0])
 	Else
-		If $debugBuildingPos = 1 Then Setlog("#*# " & $functionName & ": NONE calc in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
+		If $g_iDebugBuildingPos = 1 Then Setlog("#*# " & $functionName & ": NONE calc in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
 	EndIf
 EndFunc   ;==>GetLocationItem

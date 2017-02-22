@@ -7,7 +7,7 @@
 ; Return values .: True if no device not found error was detected or device is now connected and $cmd executed
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkMainscreen, isProblemAffect
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,11 +17,11 @@
 Func SendAdbCommand($cmd, $EnsureConnected = True)
 	Local $process_killed, $connected_to, $pid, $i
 
-	Local $data = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " " & $cmd, $process_killed)
+	Local $data = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " " & $cmd, $process_killed)
 	Local $error_device_not_found = (StringInStr($data, "device not found") > 0) Or $process_killed
 
 	If $error_device_not_found Then
-		SetDebugLog("ADB connection error, device " & $AndroidAdbDevice & " not available")
+		SetDebugLog("ADB connection error, device " & $g_sAndroidAdbDevice & " not available")
 		If Not $EnsureConnected Then
 			SetDebugLog("Connect will not be initiated")
 			SetLog("ADB command not executed or interrupted: " & $cmd, $COLOR_ERROR)
@@ -30,7 +30,7 @@ Func SendAdbCommand($cmd, $EnsureConnected = True)
 		; connect and try again
 		If ConnectAndroidAdb() Then
 			; execute command again
-			$data = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " " & $cmd, $process_killed)
+			$data = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " " & $cmd, $process_killed)
 			$error_device_not_found = (StringInStr($data, "device not found") > 0) Or $process_killed
 		EndIf
 		If $error_device_not_found Then

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (2015-12)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,20 +17,20 @@ Func OpenDroid4X($bRestart = False)
 
    Local $PID, $hTimer, $iCount = 0, $process_killed, $cmdOutput, $connected_to, $launchAndroid, $cmdPar
 
-   SetLog("Starting " & $Android & " and Clash Of Clans", $COLOR_SUCCESS)
+   SetLog("Starting " & $g_sAndroidEmulator & " and Clash Of Clans", $COLOR_SUCCESS)
 
    $launchAndroid = WinGetAndroidHandle() = 0
    If $launchAndroid Then
 	  ; TODO as Droid4X crashes quite often, check if vm ist not running in background...
 	  ; Launch Droid4X
 	  $cmdPar = GetAndroidProgramParameter()
-	  SetDebugLog("ShellExecute: " & $AndroidProgramPath & " " & $cmdPar)
-	  $PID = ShellExecute($AndroidProgramPath, $cmdPar)
+	  SetDebugLog("ShellExecute: " & $g_sAndroidProgramPath & " " & $cmdPar)
+	  $PID = ShellExecute($g_sAndroidProgramPath, $cmdPar)
 	  If _Sleep(1000) Then Return False
 	  If $PID <> 0 Then $PID = ProcessExists($PID)
 	  SetDebugLog("$PID= "&$PID)
 	  If $PID = 0 Then  ; IF ShellExecute failed
-		SetLog("Unable to load " & $Android & ($AndroidInstance = "" ? "" : "(" & $AndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
+		SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
 		SetLog("Unable to continue........", $COLOR_WARNING)
 		btnStop()
 		SetError(1, 1, -1)
@@ -40,48 +40,48 @@ Func OpenDroid4X($bRestart = False)
 
    ; Test ADB is connected
    $connected_to = ConnectAndroidAdb(False, 60 * 1000)
-   If Not $RunState Then Return False
+   If Not $g_bRunState Then Return False
 
-   SetLog("Please wait while " & $Android & " and CoC start...", $COLOR_SUCCESS)
+   SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
    $hTimer = TimerInit()
    ; Wait for device
-   ;$cmdOutput = LaunchConsole($AndroidAdbPath, "-s " & $AndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)
-   ;If Not $RunState Then Return
+   ;$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)
+   ;If Not $g_bRunState Then Return
 
    ; Wair for Activity Manager
-   If WaitForAndroidBootCompleted($AndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return False
+   If WaitForAndroidBootCompleted($g_iAndroidLaunchWaitSec - TimerDiff($hTimer) / 1000, $hTimer) Then Return False
 
    ; Wait for UI Control, then CoC can be launched
-   ;While Not IsArray(ControlGetPos($Title, $AppPaneName, $AppClassInstance)) And TimerDiff($hTimer) <= $AndroidLaunchWaitSec * 1000
+   ;While Not IsArray(ControlGetPos($Title, $g_sAppPaneName, $g_sAppClassInstance)) And TimerDiff($hTimer) <= $g_iAndroidLaunchWaitSec * 1000
    ;  If _Sleep(500) Then Return
    ;WEnd
 
-    If Not $RunState Then Return False
-	If TimerDiff($hTimer) >= $AndroidLaunchWaitSec * 1000 Then ; if it took 4 minutes, Android/PC has major issue so exit
+    If Not $g_bRunState Then Return False
+	If TimerDiff($hTimer) >= $g_iAndroidLaunchWaitSec * 1000 Then ; if it took 4 minutes, Android/PC has major issue so exit
 	  SetLog("Serious error has occurred, please restart PC and try again", $COLOR_ERROR)
-	  SetLog($Android & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for window", $COLOR_ERROR)
+	  SetLog($g_sAndroidEmulator & " refuses to load, waited " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds for window", $COLOR_ERROR)
 	  SetError(1, @extended, False)
 	  Return False
 	EndIf
 
-    SetLog($Android & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_SUCCESS)
+    SetLog($g_sAndroidEmulator & " Loaded, took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_SUCCESS)
 	Return True
 
 EndFunc   ;==>OpenDroid4X
 
 Func GetDroid4XProgramParameter($bAlternative = False)
-   If Not $bAlternative Or $AndroidInstance <> $AndroidAppConfig[$AndroidConfig][1] Then
+   If Not $bAlternative Or $g_sAndroidInstance <> $g_avAndroidAppConfig[$g_iAndroidConfig][1] Then
 	  ; should be launched with these parameter
-	  Return "-o " & ($AndroidInstance = "" ? $AndroidAppConfig[$AndroidConfig][1] : $AndroidInstance)
+	  Return "-o " & ($g_sAndroidInstance = "" ? $g_avAndroidAppConfig[$g_iAndroidConfig][1] : $g_sAndroidInstance)
    EndIf
    ; default instance gets launched when no parameter was specified (this is the alternative way)
    Return ""
 EndFunc
 
 Func GetDroid4XPath()
-	Local $droid4xPath = RegRead($HKLM & "\SOFTWARE\Droid4X\", "InstallDir") ; Doesn't exist (yet)
+	Local $droid4xPath = RegRead($g_sHKLM & "\SOFTWARE\Droid4X\", "InstallDir") ; Doesn't exist (yet)
 	If @error <> 0 Then ; work-a-round
-	   Local $DisplayIcon = RegRead($HKLM & "\SOFTWARE" & $Wow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\Droid4X\", "DisplayIcon")
+	   Local $DisplayIcon = RegRead($g_sHKLM & "\SOFTWARE" & $g_sWow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\Droid4X\", "DisplayIcon")
 	   If @error = 0 Then
 			Local $iLastBS = StringInStr($DisplayIcon, "\", 0, -1)
 			$droid4xPath = StringLeft($DisplayIcon, $iLastBS)
@@ -101,12 +101,12 @@ Func GetDroid4XAdbPath()
 EndFunc
 
 Func InitDroid4X($bCheckOnly = False)
-    Local $process_killed, $aRegExResult, $VirtualBox_Path, $AndroidAdbDeviceHost, $AndroidAdbDevicePort, $oops = 0
+    Local $process_killed, $aRegExResult, $VirtualBox_Path, $g_sAndroidAdbDeviceHost, $g_sAndroidAdbDevicePort, $oops = 0
 
-    $__Droid4X_Version = RegRead($HKLM & "\SOFTWARE" & $Wow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\Droid4X\", "DisplayVersion")
+    $__Droid4X_Version = RegRead($g_sHKLM & "\SOFTWARE" & $g_sWow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\Droid4X\", "DisplayVersion")
 	$__Droid4X_Path = GetDroid4XPath()
 
-    $VirtualBox_Path = RegRead($HKLM & "\SOFTWARE\Oracle\VirtualBox\", "InstallDir")
+    $VirtualBox_Path = RegRead($g_sHKLM & "\SOFTWARE\Oracle\VirtualBox\", "InstallDir")
 	If @error <> 0 Then
 		$VirtualBox_Path = @ProgramFilesDir & "\Oracle\VirtualBox\"
 		SetError(0, 0, 0)
@@ -115,7 +115,7 @@ Func InitDroid4X($bCheckOnly = False)
 
    If FileExists($__Droid4X_Path & "Droid4X.exe") = False Then
 	  If Not $bCheckOnly Then
-		 SetLog("Serious error has occurred: Cannot find " & $Android & ":", $COLOR_ERROR)
+		 SetLog("Serious error has occurred: Cannot find " & $g_sAndroidEmulator & ":", $COLOR_ERROR)
 		 SetLog($__Droid4X_Path & "Droid4X.exe", $COLOR_ERROR)
 		 SetError(1, @extended, False)
 	  EndIf
@@ -124,7 +124,7 @@ Func InitDroid4X($bCheckOnly = False)
 
    If FileExists($__Droid4X_Path & "adb.exe") = False Then
 	  If Not $bCheckOnly Then
-		 SetLog("Serious error has occurred: Cannot find " & $Android & ":", $COLOR_ERROR)
+		 SetLog("Serious error has occurred: Cannot find " & $g_sAndroidEmulator & ":", $COLOR_ERROR)
 		 SetLog($__Droid4X_Path & "adb.exe", $COLOR_ERROR)
 		 SetError(1, @extended, False)
 	  EndIf
@@ -145,66 +145,66 @@ Func InitDroid4X($bCheckOnly = False)
 	  InitAndroidConfig(True) ; Restore default config
 
 	  $__VBoxManage_Path = $VirtualBox_Path & "VBoxManage.exe"
-	  $__VBoxVMinfo = LaunchConsole($__VBoxManage_Path, "showvminfo " & $AndroidInstance, $process_killed)
+	  $__VBoxVMinfo = LaunchConsole($__VBoxManage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
 	  ; check if instance is known
 	  If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
 		 ; Unknown vm
-		 SetLog("Cannot find " & $Android & " instance " & $AndroidInstance, $COLOR_ERROR)
+		 SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
 		 Return False
 	  EndIf
 	  $aRegExResult = StringRegExp($__VBoxVMinfo, "ADB_PORT.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)
 	  If Not @error Then
-		 $AndroidAdbDeviceHost = $aRegExResult[0]
-		 If $debugSetlog = 1 Then Setlog("Func LaunchConsole: Read $AndroidAdbDeviceHost = " & $AndroidAdbDeviceHost, $COLOR_DEBUG)
+		 $g_sAndroidAdbDeviceHost = $aRegExResult[0]
+		 If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: Read $g_sAndroidAdbDeviceHost = " & $g_sAndroidAdbDeviceHost, $COLOR_DEBUG)
 	  Else
 		 $oops = 1
-		 SetLog("Cannot read " & $Android & "(" & $AndroidInstance & ") ADB Device Host", $COLOR_ERROR)
+		 SetLog("Cannot read " & $g_sAndroidEmulator & "(" & $g_sAndroidInstance & ") ADB Device Host", $COLOR_ERROR)
 	  EndIF
 
 	  $aRegExResult = StringRegExp($__VBoxVMinfo, "ADB_PORT.*host port = (\d{3,5}),", $STR_REGEXPARRAYMATCH)
 	  If Not @error Then
-		 $AndroidAdbDevicePort = $aRegExResult[0]
-		 If $debugSetlog = 1 Then Setlog("Func LaunchConsole: Read $AndroidAdbDevicePort = " & $AndroidAdbDevicePort, $COLOR_DEBUG)
+		 $g_sAndroidAdbDevicePort = $aRegExResult[0]
+		 If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: Read $g_sAndroidAdbDevicePort = " & $g_sAndroidAdbDevicePort, $COLOR_DEBUG)
 	  Else
 		 $oops = 1
-		 SetLog("Cannot read " & $Android & "(" & $AndroidInstance & ") ADB Device Port", $COLOR_ERROR)
+		 SetLog("Cannot read " & $g_sAndroidEmulator & "(" & $g_sAndroidInstance & ") ADB Device Port", $COLOR_ERROR)
 	  EndIF
 
 	  If $oops = 0 Then
-		 $AndroidAdbDevice = $AndroidAdbDeviceHost & ":" & $AndroidAdbDevicePort
+		 $g_sAndroidAdbDevice = $g_sAndroidAdbDeviceHost & ":" & $g_sAndroidAdbDevicePort
 	  Else ; use defaults
-		 SetLog("Using ADB default device " & $AndroidAdbDevice & " for " & $Android, $COLOR_ERROR)
+		 SetLog("Using ADB default device " & $g_sAndroidAdbDevice & " for " & $g_sAndroidEmulator, $COLOR_ERROR)
 	  EndIf
 	  ; update global variables
-	  $AndroidProgramPath = $__Droid4X_Path & "Droid4X.exe"
-	  $AndroidAdbPath = FindPreferredAdbPath()
-	  If $AndroidAdbPath = "" Then $AndroidAdbPath = $__Droid4X_Path & "adb.exe"
-	  $AndroidVersion = $__Droid4X_Version
+	  $g_sAndroidProgramPath = $__Droid4X_Path & "Droid4X.exe"
+	  $g_sAndroidAdbPath = FindPreferredAdbPath()
+	  If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $__Droid4X_Path & "adb.exe"
+	  $g_sAndroidVersion = $__Droid4X_Version
 	  ; Update Window Title if instance has been configured
-	  If $AndroidInstance = "" Or StringCompare($AndroidInstance, $AndroidAppConfig[$AndroidConfig][1]) = 0 Then
+	  If $g_sAndroidInstance = "" Or StringCompare($g_sAndroidInstance, $g_avAndroidAppConfig[$g_iAndroidConfig][1]) = 0 Then
 		 ; Default title, nothing to do
 	  Else
 		 ; Update title (only if not updated yet)
-		 If $Title = $AndroidAppConfig[$AndroidConfig][2] Then
-			$Title = StringReplace($AndroidAppConfig[$AndroidConfig][2], "Droid4X", $AndroidInstance)
+		 If $Title = $g_avAndroidAppConfig[$g_iAndroidConfig][2] Then
+			$Title = StringReplace($g_avAndroidAppConfig[$g_iAndroidConfig][2], "Droid4X", $g_sAndroidInstance)
 		 EndIf
 	  EndIf
 
 	  ; get screencap paths: Name: 'picture', Host path: 'C:\Users\Administrator\Pictures\MEmu Photo' (machine mapping), writable
 	  ; see also: VBoxManage setextradata droid4x VBoxInternal2/SharedFoldersEnableSymlinksCreate/picture 1
-	  $AndroidPicturesPath = "/mnt/shared/picture/"
+	  $g_sAndroidPicturesPath = "/mnt/shared/picture/"
 	  $aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'picture', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
 	  If Not @error Then
-		 $AndroidPicturesHostPath = $aRegExResult[0] & "\"
-		 $AndroidSharedFolderAvailable = True
+		 $g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
+		 $g_bAndroidSharedFolderAvailable = True
 	  Else
-		 SetLog($Android & " Background Mode is not available", $COLOR_ERROR)
-		 $AndroidPicturesHostPath = ""
-		 $AndroidAdbScreencap = False
-		 $AndroidSharedFolderAvailable = False
+		 SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
+		 $g_sAndroidPicturesHostPath = ""
+		 $g_bAndroidAdbScreencap = False
+		 $g_bAndroidSharedFolderAvailable = False
 	  EndIf
 
-	  $__VBoxGuestProperties = LaunchConsole($__VBoxManage_Path, "guestproperty enumerate " & $AndroidInstance, $process_killed)
+	  $__VBoxGuestProperties = LaunchConsole($__VBoxManage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 
 	  WinGetAndroidHandle()
 
@@ -217,24 +217,24 @@ Func InitDroid4X($bCheckOnly = False)
 EndFunc
 
 Func SetScreenDroid4X()
-   If Not $RunState Then Return False
+   If Not $g_bRunState Then Return False
    If Not InitAndroid() Then Return False
 
    Local $cmdOutput, $process_killed
 
    ; Set width and height
-   $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $AndroidInstance & " vbox_graph_mode " & $AndroidClientWidth & "x" & $AndroidClientHeight & "-16", $process_killed)
+   $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_graph_mode " & $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight & "-16", $process_killed)
 
    ; Set dpi
-   $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $AndroidInstance & " vbox_dpi 160", $process_killed)
+   $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
 
    ;vboxmanage sharedfolder add droid4x --name picture --hostpath "C:\Users\Administrator\Pictures\Droid4X Photo" --automount
-   AndroidPicturePathAutoConfig() ; ensure $AndroidPicturesHostPath is set and exists
-   If $AndroidSharedFolderAvailable = False And $AndroidPicturesPathAutoConfig = True And FileExists($AndroidPicturesHostPath) = 1 Then
+   AndroidPicturePathAutoConfig() ; ensure $g_sAndroidPicturesHostPath is set and exists
+   If $g_bAndroidSharedFolderAvailable = False And $g_bAndroidPicturesPathAutoConfig = True And FileExists($g_sAndroidPicturesHostPath) = 1 Then
       ; remove tailing backslash
-      Local $path = $AndroidPicturesHostPath
+      Local $path = $g_sAndroidPicturesHostPath
       If StringRight($path, 1) = "\" Then $path = StringLeft($path, StringLen($path) - 1)
-	  $cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $AndroidInstance & " --name picture --hostpath """ & $path & """  --automount", $process_killed)
+	  $cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name picture --hostpath """ & $path & """  --automount", $process_killed)
    EndIf
 
    Return True
@@ -252,7 +252,7 @@ Func CheckScreenDroid4X($bSetLog = True)
 
    Local $aValues[2][2] = [ _
 	  ["vbox_dpi", "160"], _
-	  ["vbox_graph_mode", $AndroidClientWidth & "x" & $AndroidClientHeight & "-16"] _
+	  ["vbox_graph_mode", $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight & "-16"] _
    ]
    Local $i, $Value, $iErrCnt = 0, $process_killed, $aRegExResult, $properties
 
@@ -262,9 +262,9 @@ Func CheckScreenDroid4X($bSetLog = True)
 	  If $Value <> $aValues[$i][1] Then
 		 If $iErrCnt = 0 Then
 			If $bSetLog Then
-			   SetLog("MyBot doesn't work with " & $Android & " screen configuration!", $COLOR_ERROR)
+			   SetLog("MyBot doesn't work with " & $g_sAndroidEmulator & " screen configuration!", $COLOR_ERROR)
 			Else
-			   SetDebugLog("MyBot doesn't work with " & $Android & " screen configuration!", $COLOR_ERROR)
+			   SetDebugLog("MyBot doesn't work with " & $g_sAndroidEmulator & " screen configuration!", $COLOR_ERROR)
 			EndIf
 		 EndIf
 		 If $bSetLog Then
@@ -290,23 +290,23 @@ EndFunc
 
 Func UpdateDroid4XWindowState()
    WinGetAndroidHandle()
-   ControlGetPos($hWnD, $AppPaneName, $AppClassInstance)
+   ControlGetPos($hWnD, $g_sAppPaneName, $g_sAppClassInstance)
    If @error = 1 Then
 	  ; Window not found, nothing to do
 	  SetError(0, 0, 0)
 	  Return False
    EndIf
 
-   Local $acw = $AndroidAppConfig[$AndroidConfig][5]
-   Local $ach = $AndroidAppConfig[$AndroidConfig][6]
-   Local $aww = $AndroidAppConfig[$AndroidConfig][7]
-   Local $awh = $AndroidAppConfig[$AndroidConfig][8]
+   Local $acw = $g_avAndroidAppConfig[$g_iAndroidConfig][5]
+   Local $ach = $g_avAndroidAppConfig[$g_iAndroidConfig][6]
+   Local $aww = $g_avAndroidAppConfig[$g_iAndroidConfig][7]
+   Local $awh = $g_avAndroidAppConfig[$g_iAndroidConfig][8]
 
-   Local $v = GetVersionNormalized($AndroidVersion)
+   Local $v = GetVersionNormalized($g_sAndroidVersion)
    For $i = 0 To UBound($__Droid4X_Window) - 1
 	  Local $v2 = GetVersionNormalized($__Droid4X_Window[$i][0])
 	  If $v >= $v2 Then
-		 SetDebugLog("Using Window sizes of " & $Android & " " & $__Droid4X_Window[$i][0])
+		 SetDebugLog("Using Window sizes of " & $g_sAndroidEmulator & " " & $__Droid4X_Window[$i][0])
 		 $aww = $__Droid4X_Window[$i][1]
 		 $awh = $__Droid4X_Window[$i][2]
 		 ExitLoop
@@ -315,10 +315,10 @@ Func UpdateDroid4XWindowState()
 
    Local $i
    Local $Values[4][3] = [ _
-	  ["Screen Width", $AndroidClientWidth  , $AndroidClientWidth], _
-	  ["Screen Height", $AndroidClientHeight, $AndroidClientHeight], _
-	  ["Window Width", $AndroidWindowWidth  , $AndroidWindowWidth], _
-	  ["Window Height", $AndroidWindowHeight , $AndroidWindowHeight] _
+	  ["Screen Width", $g_iAndroidClientWidth  , $g_iAndroidClientWidth], _
+	  ["Screen Height", $g_iAndroidClientHeight, $g_iAndroidClientHeight], _
+	  ["Window Width", $g_iAndroidWindowWidth  , $g_iAndroidWindowWidth], _
+	  ["Window Height", $g_iAndroidWindowHeight , $g_iAndroidWindowHeight] _
    ]
    Local $bChanged = False, $ok = False
    $Values[0][2] = $acw
@@ -326,15 +326,15 @@ Func UpdateDroid4XWindowState()
    $Values[2][2] = $aww
    $Values[3][2] = $awh
 
-   $AndroidClientWidth = $Values[0][2]
-   $AndroidClientHeight = $Values[1][2]
-   $AndroidWindowWidth =  $Values[2][2]
-   $AndroidWindowHeight = $Values[3][2]
+   $g_iAndroidClientWidth = $Values[0][2]
+   $g_iAndroidClientHeight = $Values[1][2]
+   $g_iAndroidWindowWidth =  $Values[2][2]
+   $g_iAndroidWindowHeight = $Values[3][2]
 
    For $i = 0 To UBound($Values) -1
 	  If $Values[$i][1] <> $Values[$i][2] Then
 		 $bChanged = True
-		 SetDebugLog($Android & " " & $Values[$i][0] & " updated from " & $Values[$i][1] & " to " & $Values[$i][2])
+		 SetDebugLog($g_sAndroidEmulator & " " & $Values[$i][0] & " updated from " & $Values[$i][1] & " to " & $Values[$i][2])
 	  EndIf
    Next
 

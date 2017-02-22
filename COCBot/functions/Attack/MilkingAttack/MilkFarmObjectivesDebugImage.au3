@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 
 Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
-	If $debugMilkingIMGmake = 1 Then
+	If $g_iDebugMilkingIMGmake = 1 Then
 		_CaptureRegion()
 		Local $EditedImage
 		$EditedImage = $hBitmap
@@ -23,6 +23,7 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 		Local $hBrush = _GDIPlus_BrushCreateSolid(0xFFFFFFFF)
 
 		;-- DRAW REDAREA PATH
+		Local $pixel
 		Local $hPen = _GDIPlus_PenCreate(0xFFFF0000, 2)
 		For $i = 0 To UBound($PixelTopLeft) - 1
 			$pixel = $PixelTopLeft[$i]
@@ -108,17 +109,17 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 						_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + $MilkFarmOffsetY + $MilkFarmOffsetYStep * $multiplier, $pixel[0] + $resourceoffsetx + $MilkFarmOffsetX + $MilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $hPen)
 					EndIf
 				Else
-					If $DebugSetLog = 1 Then Setlog("MilkFarmObjectivesDebugImage #1", $COLOR_DEBUG)
+					If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesDebugImage #1", $COLOR_DEBUG)
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkFarmObjectivesDebugImage #2", $COLOR_DEBUG)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesDebugImage #2", $COLOR_DEBUG)
 			EndIf
 
 		Next
 
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 		Local $Time = @HOUR & "." & @MIN & "." & @SEC
-		Local $savefolder = $dirTempDebug & "MilkFarmDebug_" & "\"
+		Local $savefolder = $g_sProfileTempDebugPath & "MilkFarmDebug_" & "\"
 		DirCreate($savefolder)
 
 		Local $filename = String("MilkFarmDebug_" & $Date & "_" & $Time)

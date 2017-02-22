@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (12-2015, 09-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,8 +21,8 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 
 	Switch $sReturnHome
 		Case "cloud" ; PB found while in clouds searching for base, must press return home and wait for main base
-			If _CheckPixel($aRtnHomeCloud1, $bCapturePixel, Default, "Return Home Btn chk1", $COLOR_DEBUG) And _
-					_CheckPixel($aRtnHomeCloud2, $bCapturePixel, Default, "Return Home Btn chk2", $COLOR_DEBUG) Then ; verify return home button
+			If _CheckPixel($aRtnHomeCloud1, $g_bCapturePixel, Default, "Return Home Btn chk1", $COLOR_DEBUG) And _
+					_CheckPixel($aRtnHomeCloud2, $g_bCapturePixel, Default, "Return Home Btn chk2", $COLOR_DEBUG) Then ; verify return home button
 				ClickP($aRtnHomeCloud1, 1, 0, "#0513") ; click return home button, return to main screen for base check before log off
 				Local $wCount = 0
 				While IsMainPage() = False ; wait for main screen
@@ -38,12 +38,12 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 
 	If IsMainPage() Then ; check for main page
 
-		If $Debugsetlog = 1 Then Setlog("CheckBaseQuick now...", $COLOR_DEBUG)
+		If $g_iDebugSetlog = 1 Then Setlog("CheckBaseQuick now...", $COLOR_DEBUG)
 
 		RequestCC() ; fill CC
 		If _Sleep($iDelayRunBot1) Then Return
 		checkMainScreen(False) ; required here due to many possible exits
-		If $Restart = True Then
+		If $g_bRestart = True Then
 			If $bStopRecursion = True Then $bDisableBreakCheck = False
 			Return
 		EndIf
@@ -51,27 +51,25 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 		DonateCC() ; donate troops
 		If _Sleep($iDelayRunBot1) Then Return
 		checkMainScreen(False) ; required here due to many possible function exits
-		If $Restart = True Then
+		If $g_bRestart = True Then
 			If $bStopRecursion = True Then $bDisableBreakCheck = False
 			Return
 		EndIf
 
 		CheckOverviewFullArmy(True) ; Check if army needs to be trained due donations
 		If Not ($FullArmy) And $bTrainEnabled = True Then
-			If $troops_maked_after_fullarmy = False And $actual_train_skip < $max_train_skip Then
-				$troops_maked_after_fullarmy = False
+			If $actual_train_skip < $max_train_skip Then
 				; Train()
 				TrainRevamp()
-				If $Restart = True Then Return
+				If $g_bRestart = True Then Return
 			Else
-				If $debugsetlogTrain = 1 Then Setlog("skip train. " & $actual_train_skip + 1 & "/" & $max_train_skip, $color_purple)
+				If $g_iDebugSetlogTrain = 1 Then Setlog("skip train. " & $actual_train_skip + 1 & "/" & $max_train_skip, $color_purple)
 				$actual_train_skip = $actual_train_skip + 1
 				CheckOverviewFullArmy(True, False) ; use true parameter to open train overview window
-				getArmyHeroCount(False, False)
-				getArmySpellCount(False, True) ; use true parameter to close train overview window
+				If ISArmyWindow(False, $ArmyTAB) then CheckExistentArmy("Spells") ; Imgloc Method
+				getArmyHeroCount(False, True) ; true to close the window
 				If $actual_train_skip >= $max_train_skip Then
 					$actual_train_skip = 0
-					$troops_maked_after_fullarmy = False
 				EndIf
 				If $bStopRecursion = True Then $bDisableBreakCheck = False
 				Return
@@ -82,7 +80,7 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 		If _Sleep($iDelayRunBot1) Then Return
 
 	Else
-		If $Debugsetlog = 1 Then Setlog("Not on main page, CheckBaseQuick skipped", $COLOR_WARNING)
+		If $g_iDebugSetlog = 1 Then Setlog("Not on main page, CheckBaseQuick skipped", $COLOR_WARNING)
 	EndIf
 
 	If $bStopRecursion = True Then $bDisableBreakCheck = False ; reset flag to stop checking for attackdisable messages, stop recursion

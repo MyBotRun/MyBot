@@ -6,7 +6,7 @@
 ; Return values .: True if Not enough loot, and clicks away to close the window
 ; Author ........: KnowJack (May-2015)
 ; Modified ......: Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,16 +14,16 @@
 ; ===============================================================================================================================
 
 Func isNoUpgradeLoot($bNeedCaptureRegion = False)
-	If _ColorCheck(_GetPixelColor(459, 490 + $midOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) And _ ; Check regular upgrades window
-			_ColorCheck(_GetPixelColor(459, 494 + $midOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) And _
-			_ColorCheck(_GetPixelColor(459, 498 + $midOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero on norma Upgrades = means not enough loot!
-		If $debugSetlog = 1 Then Setlog("isNoUpgradeLoot Red Zero found", $COLOR_DEBUG)
+	If _ColorCheck(_GetPixelColor(459, 490 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) And _ ; Check regular upgrades window
+			_ColorCheck(_GetPixelColor(459, 494 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) And _
+			_ColorCheck(_GetPixelColor(459, 498 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero on norma Upgrades = means not enough loot!
+		If $g_iDebugSetlog = 1 Then Setlog("isNoUpgradeLoot Red Zero found", $COLOR_DEBUG)
 		PureClickP($aAway, 1, 0, "#0142") ; click away to close upgrade window
 		Return True
-	ElseIf _ColorCheck(_GetPixelColor(691, 523 + $midOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) And _  ; Check Hero upgrades window
-			_ColorCheck(_GetPixelColor(691, 527 + $midOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) And _
-			_ColorCheck(_GetPixelColor(691, 531 + $midOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
-		If $debugSetlog = 1 Then Setlog("IsNoUpgradeLoot Hero Red Zero Found", $COLOR_DEBUG)
+	ElseIf _ColorCheck(_GetPixelColor(691, 523 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) And _  ; Check Hero upgrades window
+			_ColorCheck(_GetPixelColor(691, 527 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) And _
+			_ColorCheck(_GetPixelColor(691, 531 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0xE70A12, 6), 20) Then ; Check for Red Zero = means not enough loot!
+		If $g_iDebugSetlog = 1 Then Setlog("IsNoUpgradeLoot Hero Red Zero Found", $COLOR_DEBUG)
 		PureClickP($aAway, 1, 0, "#0143") ; click away to close gem window
 		Return True
 	EndIf

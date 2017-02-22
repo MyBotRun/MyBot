@@ -18,7 +18,7 @@
 ;							 5 = Failed to send a MouseMove command.
 ;							 7 = Failed to send a MouseUp command.
 ; Author(s):		KillerDeluxe
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -35,10 +35,10 @@ Func _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, $Button = "left", $Delay = 50)
 
 	; adjust coordinates based on Android control offset
 	If $hWin = $HWnD Then
-		$X1 += $BSrpos[0]
-		$Y1 += $BSrpos[1]
-		$X2 += $BSrpos[0]
-		$Y2 += $BSrpos[1]
+		$X1 += $g_aiBSrpos[0]
+		$Y1 += $g_aiBSrpos[1]
+		$X2 += $g_aiBSrpos[0]
+		$Y2 += $g_aiBSrpos[1]
 	EndIf
 
 	WinGetAndroidHandle()
@@ -47,6 +47,7 @@ Func _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, $Button = "left", $Delay = 50)
 		Return SetError(1, "", False)
 	EndIf
 
+    Local $Pressed = 0
 	If StringLower($Button) == "left" Then
 		$Button = $WM_LBUTTONDOWN
 		$Pressed = 1
@@ -59,7 +60,7 @@ Func _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, $Button = "left", $Delay = 50)
 		If $Delay == 10 Then $Delay = 100
 	EndIf
 
-	$User32 = DllOpen("User32.dll")
+	Local $User32 = DllOpen("User32.dll")
 	If @error Then Return SetError(4, "", False)
 
 	MoveMouseOutBS()
@@ -98,13 +99,13 @@ Func ClickDrag($X1, $Y1, $X2, $Y2, $Delay = 50)
 	If TestCapture() Then Return
 	;Return _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, "left", $Delay)
 	Local $error = 0
-	If $AndroidAdbClickDrag = True Then
-		;AndroidSwipe($X1, $Y1, $X2, $Y2, $RunState)
-		AndroidClickDrag($X1, $Y1, $X2, $Y2, $RunState)
+	If $g_bAndroidAdbClickDrag = True Then
+		;AndroidSwipe($X1, $Y1, $X2, $Y2, $g_bRunState)
+		AndroidClickDrag($X1, $Y1, $X2, $Y2, $g_bRunState)
 		$error = @error
 		If _Sleep($Delay / 5) Then Return SetError(-1, "", False)
 	EndIf
-	If $AndroidAdbClickDrag = False Or $error <> 0 Then
+	If $g_bAndroidAdbClickDrag = False Or $error <> 0 Then
 		Return _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, "left", $Delay)
 	EndIf
 	Return SetError(0, 0, ($error = 0 ? True : False))

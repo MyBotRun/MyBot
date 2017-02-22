@@ -7,7 +7,7 @@
 ; Author ........: Sardo (2015-06)
 ; Modified ......: Hervidero(2015)
 ;
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 
 Func TestLanguage()
-	If $Runstate Then
+	If $g_bRunState Then
 		; test "builder" word top of sceen
 		If getOcrLanguage($aDetectLang[0], $aDetectLang[1]) = "english" Then
 			Setlog("Language setting is English: Correct.", $COLOR_INFO)

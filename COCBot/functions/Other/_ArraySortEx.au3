@@ -3,15 +3,15 @@
 ; Name ..........: _ArraySortEx
 ; Description ...:
 ; Syntax ........: _ArraySortEx($Arry, $iStartRow, $iEndRow, Column, iDescending, Column, iDescending, Column, iDescending, Column, iDescending)
-; Parameters ....: 
+; Parameters ....:
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Boju (10-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
-; Example .......: _ArraySortEx($DefaultTroopGroup, 0, 0, 3, 1, 2, 0)
+; Example .......: _ArraySortEx($g_avDefaultTroopGroup, 0, 0, 3, 1, 2, 0)
 ; ===============================================================================================================================
 Func _ArraySortEx(ByRef $avArray, $iStartRow = 0, $iEndRow = 0, $iCol1 = 0, $AscDescCol1  = 0, $iCol2 = -1, $AscDescCol2  = 0, $iCol3 = -1, $AscDescCol3  = 0, $iCol4 = -1, $AscDescCol4  = 0)
   Local $iLastRow = 0

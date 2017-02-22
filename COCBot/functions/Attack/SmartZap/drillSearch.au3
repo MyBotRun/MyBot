@@ -4,7 +4,7 @@
 ; Syntax ........: drillSearch()
 ; Parameters ....: None
 ; Return values .: Array with data on Dark Elixir Drills found in search
-; Author ........: LunaEclipse(March, 2016)
+; Author ........: TripleM(January, 2017)
 ; Modified ......: 
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015
 ;                  MyBot is distributed under the terms of the GNU GPL
@@ -13,109 +13,130 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func getNumberOfDrills($listPixelByLevel = -1)
-	Local $aReturn
-	Local $result = 0
+Func drillSearch()
+	Local $aReturnResult[0][4]
+	Local $pixelerror = 15
 
-	; Check to see if the function was passed an array with drill information
-	If Not IsArray($listPixelByLevel) Then $listPixelByLevel = getDrillArray()
+	Local $directory = @ScriptDir & "\imgxml\Storages\Drills"
+	Local $Maxpositions = 0 ; Return all found Positions
+	Local $aResult = multiMatches($directory, $Maxpositions, "ECD", "ECD")
 
-	If $listPixelByLevel[1] <> "" Then $result = $listPixelByLevel[0]
-	If $DebugSmartZap = 1 Then SetLog("Total No. of Dark Elixir Drills = " & $result, $COLOR_DEBUG)
+	For $iResult = 1 To UBound($aResult) - 1 			; Loop through all resultrows, skipping first row, which is searcharea, each matched img has its own row, if no resultrow, for is skipped
+		If _Sleep(10) Then Return
+		Local $aTemp[0][2]
+		_ArrayAdd($aTemp, $aResult[$iResult][5]) 		; Copy Positionarray to temp array
+		_ArrayColInsert($aTemp, 2)						; Adding Level Column
+		_ArrayColInsert($aTemp, 3)						; Adding Hold Column
+		For $iRow = 0 To UBound($aTemp) - 1
+			$aTemp[$iRow][2] = $aResult[$iResult][2] 	; Setting Level Column to Result Level
+		Next
+		_ArrayAdd($aReturnResult, $aTemp)				; Adding temp array to return array
+	Next
 
-	Return $result
-EndFunc   ;==>getNumberOfDrills
-
-Func fillDrillArray($listPixelByLevel = -1)
-	Local $result[4][5] = [	[-1, -1, -1, -1, -1], _
-							[-1, -1, -1, -1, -1], _
-							[-1, -1, -1, -1, -1], _
-							[-1, -1, -1, -1, -1]]
-
-	Local $pixel[2], $pixelWithLevel, $level, $pixelStr
-	Local $numDrills = getNumberOfDrills($listPixelByLevel)
-
-	If Not IsArray($listPixelByLevel) Then $listPixelByLevel = getDrillArray()
-
-	If $numDrills > 0 Then
-		For $i = 1 To $numDrills
-			$pixelWithLevel = StringSplit($listPixelByLevel[$i], "#")
-			; If the string delimiter is not found, then try next string.
-			If @error Then ContinueLoop
-
-			If $DebugSmartZap = 1 Then
-				Setlog("Drill search UBound($pixelWithLevel) = " & UBound($pixelWithLevel) - 1, $COLOR_DEBUG)
-				For $j = 0 To UBound($pixelWithLevel) - 1
-					Setlog("Drill search $pixelWithLevel[" & $j & "] = " & $pixelWithLevel[$j], $COLOR_DEBUG)
-				Next
+	Local $iResult = 0
+	While $iResult < Ubound($aReturnResult)
+		If _Sleep(10) Then Return
+		; Removing Duplicate Drills
+		Local $jResult = $iResult + 1
+		While $jResult < Ubound($aReturnResult)
+			If Abs($aReturnResult[$iResult][0] - $aReturnResult[$jResult][0]) <= $pixelerror And Abs($aReturnResult[$iResult][1] - $aReturnResult[$jResult][1]) <= $pixelerror Then
+				$aReturnResult[$iResult][2] = _Min(Number($aReturnResult[$iResult][2]), Number($aReturnResult[$jResult][2]))
+				If $DebugSmartZap = 1 Then 
+					SetLog("Found Duplicate Dark Elixir Drill: [" & $aReturnResult[$jResult][0] & "," & $aReturnResult[$jResult][1] & "], Level: " & $aReturnResult[$jResult][2], $COLOR_DEBUG)
+				EndIf
+				_ArrayDelete($aReturnResult, $jResult)
 			EndIf
+			$jResult += 1
+		WEnd
+		; Correcting Drilllevel
+		Local $iDrillLevel = CheckDrillLvl($aReturnResult[$iResult][0], $aReturnResult[$iResult][1])
+		If $iDrillLevel > 0 And $aReturnResult[$iResult][2] <> $iDrillLevel Then
+			If $DebugSmartZap = 1 Then SetLog("Correcting Drill Level, old = " & $aReturnResult[$iResult][2] & ", new = " & $iDrillLevel, $COLOR_DEBUG)
+			$aReturnResult[$iResult][2] = $iDrillLevel
+		EndIf
+		; Adjusting Hold
+		$aReturnResult[$iResult][3] = Ceiling(Number($g_aDrillLevelTotal[$aReturnResult[$iResult][2] - 1] * $g_fDarkStealFactor))
+		If $DebugSmartZap = 1 Then 
+			SetLog(($iResult + 1) & ". Valid Drill: [" & $aReturnResult[$iResult][0] & "," & $aReturnResult[$iResult][1] & "], Level: " & $aReturnResult[$iResult][2] & ", Hold: " & $aReturnResult[$iResult][3], $COLOR_DEBUG)
+		EndIf
+		$iResult += 1
+	WEnd
 
-			$level = $pixelWithLevel[1]
-			$pixelStr = StringSplit($pixelWithLevel[2], "-")
-			$pixel[0] = $pixelStr[1]
-			$pixel[1] = $pixelStr[2]
+	Return $aReturnResult
+EndFunc   ;==>drillSearch
 
-			; Debug Drill Search
-			If $DebugSmartZap = 1 Then
-				Setlog("Drill search $level = " & $level, $COLOR_DEBUG)
-				For $j = 0 To UBound($pixelStr) - 1
-					Setlog("Drill search $pixelStr[" & $j & "] = " & $pixelStr[$j], $COLOR_PURPLE)
-				Next
-			EndIf
+Func CheckDrillLvl($x, $y)
+	_CaptureRegion2($x - 25, $y - 25, $x + 25, $y + 25)
+	Local $directory = @ScriptDir & "\imgxml\Storages\Drills\Level"
+	Local $Maxpositions = 1
 
-			; Check to make sure the found drill is actually inside the valid COC Area
-			If isInsideDiamond($pixel) Then
-				$result[$i][0] = Number($pixel[0])
-				$result[$i][1] = Number($pixel[1])
-				$result[$i][2] = Number($level)
-				$result[$i][3] = $drillLevelHold[Number($level) - 1]
-				$result[$i][4] = $drillLevelSteal[Number($level) - 1]
+	Local $aResult = multiMatches($directory, $Maxpositions, "FV", "FV", "", 0, 1000, False)
 
-				If $DebugSmartZap = 1 Then SetLog("Dark Elixir Drill: [" & $result[$i][0] & "," & $result[$i][1] & "], Level: " & $result[$i][2] & ", Hold: " & $result[$i][3] & ", Steal: " & $result[$i][4], $COLOR_DEBUG)
+	If $DebugSmartZap = 1 Then SetLog("CheckDrillLvl: UBound($aresult) = " & UBound($aResult), $COLOR_DEBUG)
+	If UBound($aResult) > 1 Then
+		If $DebugSmartZap = 1 Then SetLog("CheckDrillLvl: $aresult[" & (UBound($aResult) - 1) & "][2] = " & $aResult[UBound($aResult) - 1][2], $COLOR_DEBUG)
+		Return $aResult[UBound($aResult) - 1][2]
+	EndIf
+	Return 0
+EndFunc   ;==>CheckDrillLvl
+
+Func getDrillCluster(Const ByRef $aDarkDrills)
+	Local $iMaxMedianDist = 26
+	Local $aBestCluster[4] = [0, 0, 0, -1]
+	
+	If UBound($aDarkDrills) < 2 Then Return -1
+	
+	If UBound($aDarkDrills) > 2 Then
+		Local $iMedianX = Ceiling(Number(($aDarkDrills[0][0] + $aDarkDrills[1][0] + $aDarkDrills[2][0])/3))
+		Local $iMedianY = Ceiling(Number(($aDarkDrills[0][1] + $aDarkDrills[1][1] + $aDarkDrills[2][1])/3))
+		If $DebugSmartZap = 1 Then SetLog("TripleDrill Unweighted Median Point: x = " & $iMedianX & ", y = " & $iMedianY, $COLOR_DEBUG)
+		For $i = 0 To 2
+			If Abs($aDarkDrills[$i][0] - $iMedianX) > $iMaxMedianDist Or Abs($aDarkDrills[$i][1] - $iMedianY) > $iMaxMedianDist  Then
+				$aBestCluster[3] = -1
+				ExitLoop
 			Else
-				If $DebugSmartZap = 1 Then SetLog("Dark Elixir Drill: [" & $pixel[0] & "," & $pixel[1] & "], Level: " & $level, $COLOR_DEBUG)
-				If $DebugSmartZap = 1 Then SetLog("Found Dark Elixir Drill with an invalid location.", $COLOR_ERROR)
+				Local $aTemp[3] = [0, 1, 2]
+				$aBestCluster[3] = $aTemp
 			EndIf
 		Next
+		If $DebugSmartZap = 1 And $aBestCluster[3] <> -1 Then SetLog("TripleDrill Cluster found." & $aBestCluster[3], $COLOR_DEBUG)
 	EndIf
-
-	Return $result
-EndFunc   ;==>fillDrillArray
-
-Func getDrillArray()
-	Local $result, $listPixelByLevel
-	Local $numDrills = 0
-
-	; Capture the screen
-	_CaptureRegion2()
-
-	; Get the results of a drill search
-	$result = GetLocationDarkElixirWithLevel()
-	; Split DLL return into an array
-	$listPixelByLevel = StringSplit($result, "~")
-
-	; Debugging purposes only
-	If $DebugSmartZap = 1 Then
-		Setlog("Drill search $result[0] = " & $result, $COLOR_DEBUG)
-
-		; Get the number of drills for the loop
-		$numDrills = getNumberOfDrills($listPixelByLevel)
-		If $numDrills > 0 Then
-			For $i = 1 To $numDrills
-				; Debug the array entries.
-				Setlog("Drill search $listPixelByLevel[" & $i & "] = " & $listPixelByLevel[$i], $COLOR_DEBUG)
-			Next
-		EndIf
+	
+	If $aBestCluster[3] = -1 Then
+		Local $iMaxHold = 0
+		For $i = 0 To UBound($aDarkDrills) - 1
+			Local $iMedianX = Ceiling(Number(($aDarkDrills[$i][0] + $aDarkDrills[Mod($i + 1, UBound($aDarkDrills))][0])/2))
+			Local $iMedianY = Ceiling(Number(($aDarkDrills[$i][1] + $aDarkDrills[Mod($i + 1, UBound($aDarkDrills))][1])/2))
+			If $DebugSmartZap = 1 Then SetLog("[" & $i & "," & Mod($i + 1, UBound($aDarkDrills)) & "] DoubleDrill Unweighted Median Point: x = " & $iMedianX & ", y = " & $iMedianY, $COLOR_DEBUG)
+			If $aDarkDrills[$i][3] + $aDarkDrills[Mod($i + 1, UBound($aDarkDrills))][3] > $iMaxHold Then
+				If Abs($aDarkDrills[$i][0] - $iMedianX) <= $iMaxMedianDist And Abs($aDarkDrills[$i][1] - $iMedianY) <= $iMaxMedianDist _
+				And Abs($aDarkDrills[Mod($i + 1, UBound($aDarkDrills))][0] - $iMedianX) <= $iMaxMedianDist And Abs($aDarkDrills[Mod($i + 1, UBound($aDarkDrills))][1] - $iMedianY) <= $iMaxMedianDist Then
+					$iMaxHold = $aDarkDrills[$i][3] + $aDarkDrills[Mod($i + 1, UBound($aDarkDrills))][3]
+					Local $aTemp[2] = [$i, Mod($i + 1, UBound($aDarkDrills))]
+					$aBestCluster[3] = $aTemp
+				EndIf
+			EndIf
+		Next
+		If $DebugSmartZap = 1 And $aBestCluster[3] <> -1 Then SetLog("DoubleDrill Cluster found: [" & ($aBestCluster[3])[0] & "," & ($aBestCluster[3])[1] & "]", $COLOR_DEBUG)
 	EndIf
-
-	Return $listPixelByLevel
-EndFunc   ;==>getDrillArray
-
-Func drillSearch($listPixelByLevel = -1)
-	; Not using SmartZap so lets just exit now
-	If $ichkSmartZap <> 1 Then Return False
-
-	If Not IsArray($listPixelByLevel) Then $listPixelByLevel = getDrillArray()
-
-	Return fillDrillArray($listPixelByLevel)
-EndFunc   ;==>drillSearch
+	
+	If $aBestCluster[3] = -1 Then
+		Return -1
+	Else
+		Local $iWeightedMedianX = 0
+		Local $iWeightedMedianY = 0
+		Local $iWeightedMedianDiv = 0
+		Local $iTotalHold = 0
+		For $i = 0 To UBound($aBestCluster[3]) - 1
+			$iWeightedMedianX += $aDarkDrills[($aBestCluster[3])[$i]][0] * $g_aDrillLevelHP[$aDarkDrills[($aBestCluster[3])[$i]][2] - 1]
+			$iWeightedMedianY += $aDarkDrills[($aBestCluster[3])[$i]][1] * $g_aDrillLevelHP[$aDarkDrills[($aBestCluster[3])[$i]][2] - 1]
+			$iWeightedMedianDiv += $g_aDrillLevelHP[$aDarkDrills[($aBestCluster[3])[$i]][2] - 1]
+			$iTotalHold += $aDarkDrills[($aBestCluster[3])[$i]][3]
+		Next
+		$aBestCluster[0] = Ceiling(Number($iWeightedMedianX / $iWeightedMedianDiv))
+		$aBestCluster[1] = Ceiling(Number($iWeightedMedianY / $iWeightedMedianDiv))
+		$aBestCluster[2] = $iTotalHold
+		If $DebugSmartZap = 1 Then SetLog("Best Cluster: weighted x = " & $aBestCluster[0] & ", weighted y = " & $aBestCluster[1] & ", hold = " & $aBestCluster[2], $COLOR_DEBUG)
+		Return $aBestCluster
+	EndIf
+EndFunc   ;==>getDrillCluster

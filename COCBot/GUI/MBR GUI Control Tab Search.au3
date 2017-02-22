@@ -5,180 +5,95 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
-; Modified ......: Hervidero (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: Hervidero (2015), CodeSlinger69 [2017]
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
 
 Func cmbDBGoldElixir()
-	If _GUICtrlComboBox_GetCurSel($cmbDBMeetGE) < 2 Then
-		GUICtrlSetState($txtDBMinGold, $GUI_SHOW)
-		GUICtrlSetState($picDBMinGold, $GUI_SHOW)
-		GUICtrlSetState($txtDBMinElixir, $GUI_SHOW)
-		GUICtrlSetState($picDBMinElixir, $GUI_SHOW)
-		GUICtrlSetState($txtDBMinGoldPlusElixir, $GUI_HIDE)
-		GUICtrlSetState($picDBMinGPEGold, $GUI_HIDE)
+	If _GUICtrlComboBox_GetCurSel($g_hCmbDBMeetGE) < 2 Then
+		GUICtrlSetState($g_hTxtDBMinGold, $GUI_SHOW)
+		GUICtrlSetState($g_hPicDBMinGold, $GUI_SHOW)
+		GUICtrlSetState($g_hTxtDBMinElixir, $GUI_SHOW)
+		GUICtrlSetState($g_hPicDBMinElixir, $GUI_SHOW)
+		GUICtrlSetState($g_hTxtDBMinGoldPlusElixir, $GUI_HIDE)
+		GUICtrlSetState($g_hPicDBMinGPEGold, $GUI_HIDE)
 	Else
-		GUICtrlSetState($txtDBMinGold, $GUI_HIDE)
-		GUICtrlSetState($picDBMinGold, $GUI_HIDE)
-		GUICtrlSetState($txtDBMinElixir, $GUI_HIDE)
-		GUICtrlSetState($picDBMinElixir, $GUI_HIDE)
-		GUICtrlSetState($txtDBMinGoldPlusElixir, $GUI_SHOW)
-		GUICtrlSetState($picDBMinGPEGold, $GUI_SHOW)
+		GUICtrlSetState($g_hTxtDBMinGold, $GUI_HIDE)
+		GUICtrlSetState($g_hPicDBMinGold, $GUI_HIDE)
+		GUICtrlSetState($g_hTxtDBMinElixir, $GUI_HIDE)
+		GUICtrlSetState($g_hPicDBMinElixir, $GUI_HIDE)
+		GUICtrlSetState($g_hTxtDBMinGoldPlusElixir, $GUI_SHOW)
+		GUICtrlSetState($g_hPicDBMinGPEGold, $GUI_SHOW)
 	EndIf
 EndFunc   ;==>cmbDBGoldElixir
 
 Func chkDBMeetDE()
-	If GUICtrlRead($chkDBMeetDE) = $GUI_CHECKED Then
-		_GUICtrlEdit_SetReadOnly($txtDBMinDarkElixir, False)
-	Else
-		_GUICtrlEdit_SetReadOnly($txtDBMinDarkElixir, True)
-	EndIf
+	_GUICtrlEdit_SetReadOnly($g_hTxtDBMinDarkElixir, GUICtrlRead($g_hChkDBMeetDE) = $GUI_CHECKED ? False : True)
 EndFunc   ;==>chkDBMeetDE
 
 Func chkDBMeetTrophy()
-	If GUICtrlRead($chkDBMeetTrophy) = $GUI_CHECKED Then
-		_GUICtrlEdit_SetReadOnly($txtDBMinTrophy, False)
-	Else
-		_GUICtrlEdit_SetReadOnly($txtDBMinTrophy, True)
-	EndIf
+	_GUICtrlEdit_SetReadOnly($g_hTxtDBMinTrophy, GUICtrlRead($g_hChkDBMeetTrophy) = $GUI_CHECKED ? False : True)
 EndFunc   ;==>chkDBMeetTrophy
 
 Func chkDBMeetTH()
-	If GUICtrlRead($chkDBMeetTH) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbDBTH, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbDBTH, $GUI_DISABLE)
-	EndIf
+	GUICtrlSetState($g_hCmbDBTH, GUICtrlRead($g_hChkDBMeetTH) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkDBMeetTH
 
 Func chkDBWeakBase()
-	If GUICtrlRead($chkMaxMortar[$DB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakMortar[$DB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakMortar[$DB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxWizTower[$DB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakWizTower[$DB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakWizTower[$DB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxAirDefense[$DB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakAirDefense[$DB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakAirDefense[$DB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxXBow[$DB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakXBow[$DB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakXBow[$DB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxInferno[$DB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakInferno[$DB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakInferno[$DB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxEagle[$DB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakEagle[$DB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakEagle[$DB], $GUI_DISABLE)
-	EndIf
+	GUICtrlSetState($g_ahCmbWeakMortar[$DB], GUICtrlRead($g_ahChkMaxMortar[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakWizTower[$DB], GUICtrlRead($g_ahChkMaxWizTower[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakAirDefense[$DB], GUICtrlRead($g_ahChkMaxAirDefense[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakXBow[$DB], GUICtrlRead($g_ahChkMaxXBow[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakInferno[$DB], GUICtrlRead($g_ahChkMaxInferno[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakEagle[$DB], GUICtrlRead($g_ahChkMaxEagle[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkDBWeakBase
 
 Func cmbABGoldElixir()
-	If _GUICtrlComboBox_GetCurSel($cmbABMeetGE) < 2 Then
-		GUICtrlSetState($txtABMinGold, $GUI_SHOW)
-		GUICtrlSetState($picABMinGold, $GUI_SHOW)
-		GUICtrlSetState($txtABMinElixir, $GUI_SHOW)
-		GUICtrlSetState($picABMinElixir, $GUI_SHOW)
-		GUICtrlSetState($txtABMinGoldPlusElixir, $GUI_HIDE)
-		GUICtrlSetState($picABMinGPEGold, $GUI_HIDE)
+	If _GUICtrlComboBox_GetCurSel($g_hCmbABMeetGE) < 2 Then
+		GUICtrlSetState($g_hTxtABMinGold, $GUI_SHOW)
+		GUICtrlSetState($g_hPicABMinGold, $GUI_SHOW)
+		GUICtrlSetState($g_hTxtABMinElixir, $GUI_SHOW)
+		GUICtrlSetState($g_hPicABMinElixir, $GUI_SHOW)
+		GUICtrlSetState($g_hTxtABMinGoldPlusElixir, $GUI_HIDE)
+		GUICtrlSetState($g_hPicABMinGPEGold, $GUI_HIDE)
 	Else
-		GUICtrlSetState($txtABMinGold, $GUI_HIDE)
-		GUICtrlSetState($picABMinGold, $GUI_HIDE)
-		GUICtrlSetState($txtABMinElixir, $GUI_HIDE)
-		GUICtrlSetState($picABMinElixir, $GUI_HIDE)
-		GUICtrlSetState($txtABMinGoldPlusElixir, $GUI_SHOW)
-		GUICtrlSetState($picABMinGPEGold, $GUI_SHOW)
+		GUICtrlSetState($g_hTxtABMinGold, $GUI_HIDE)
+		GUICtrlSetState($g_hPicABMinGold, $GUI_HIDE)
+		GUICtrlSetState($g_hTxtABMinElixir, $GUI_HIDE)
+		GUICtrlSetState($g_hPicABMinElixir, $GUI_HIDE)
+		GUICtrlSetState($g_hTxtABMinGoldPlusElixir, $GUI_SHOW)
+		GUICtrlSetState($g_hPicABMinGPEGold, $GUI_SHOW)
 	EndIf
 EndFunc   ;==>cmbABGoldElixir
 
 Func chkABMeetDE()
-	If GUICtrlRead($chkABMeetDE) = $GUI_CHECKED Then
-		_GUICtrlEdit_SetReadOnly($txtABMinDarkElixir, False)
-	Else
-		_GUICtrlEdit_SetReadOnly($txtABMinDarkElixir, True)
-	EndIf
+	_GUICtrlEdit_SetReadOnly($g_hTxtABMinDarkElixir, GUICtrlRead($g_hChkABMeetDE) = $GUI_CHECKED ? False : True)
 EndFunc   ;==>chkABMeetDE
 
 Func chkABMeetTrophy()
-	If GUICtrlRead($chkABMeetTrophy) = $GUI_CHECKED Then
-		_GUICtrlEdit_SetReadOnly($txtABMinTrophy, False)
-	Else
-		_GUICtrlEdit_SetReadOnly($txtABMinTrophy, True)
-	EndIf
+	_GUICtrlEdit_SetReadOnly($g_hTxtABMinTrophy, GUICtrlRead($g_hChkABMeetTrophy) = $GUI_CHECKED ? False : True)
 EndFunc   ;==>chkABMeetTrophy
 
 Func chkABMeetTH()
-	If GUICtrlRead($chkABMeetTH) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbABTH, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbABTH, $GUI_DISABLE)
-	EndIf
+	GUICtrlSetState($g_hCmbABTH, GUICtrlRead($g_hChkABMeetTH) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkABMeetTH
 
 Func chkABWeakBase()
-	If GUICtrlRead($chkMaxMortar[$LB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakMortar[$LB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakMortar[$LB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxWizTower[$LB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakWizTower[$LB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakWizTower[$LB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxAirDefense[$LB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakAirDefense[$LB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakAirDefense[$LB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxXBow[$LB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakXBow[$LB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakXBow[$LB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxInferno[$LB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakInferno[$LB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakInferno[$LB], $GUI_DISABLE)
-	EndIf
-
-	If GUICtrlRead($chkMaxEagle[$LB]) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbWeakEagle[$LB], $GUI_ENABLE)
-	Else
-		GUICtrlSetState($cmbWeakEagle[$LB], $GUI_DISABLE)
-	EndIf
+	GUICtrlSetState($g_ahCmbWeakMortar[$LB], GUICtrlRead($g_ahChkMaxMortar[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakWizTower[$LB], GUICtrlRead($g_ahChkMaxWizTower[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakAirDefense[$LB], GUICtrlRead($g_ahChkMaxAirDefense[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakXBow[$LB], GUICtrlRead($g_ahChkMaxXBow[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakInferno[$LB], GUICtrlRead($g_ahChkMaxInferno[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakEagle[$LB], GUICtrlRead($g_ahChkMaxEagle[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkABWeakBase
 
 Func chkRestartSearchLimit()
-	If GUICtrlRead($ChkRestartSearchLimit) = $GUI_CHECKED Then
-		GUICtrlSetState($txtRestartSearchlimit, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($txtRestartSearchlimit, $GUI_DISABLE)
-	EndIf
+	GUICtrlSetState($g_hTxtRestartSearchlimit, GUICtrlRead($g_hChkRestartSearchLimit) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkRestartSearchLimit
 
 
@@ -203,18 +118,18 @@ Func btnConfigureABWeakBase()
 EndFunc   ;==>btnConfigureABWeakBase
 
 Func chkDBActivateSearches()
-	If GUICtrlRead($chkDBActivateSearches) = $GUI_CHECKED Then
-		GUICtrlSetState($txtDBSearchesMin, $GUI_ENABLE)
-		GUICtrlSetState($lblDBSearches, $GUI_ENABLE)
-		GUICtrlSetState($txtDBSearchesMax, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkDBActivateSearches) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtDBSearchesMin, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblDBSearches, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtDBSearchesMax, $GUI_ENABLE)
 		;DBPanel($GUI_SHOW)
 		;_GUI_Value_STATE("SHOW", $groupSearchDB)
 		;cmbDBGoldElixir()
 		;_GUI_Value_STATE("SHOW", $groupHerosDB)
 	Else
-		GUICtrlSetState($txtDBSearchesMin, $GUI_DISABLE)
-		GUICtrlSetState($lblDBSearches, $GUI_DISABLE)
-		GUICtrlSetState($txtDBSearchesMax, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtDBSearchesMin, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblDBSearches, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtDBSearchesMax, $GUI_DISABLE)
 		;DBPanel($GUI_HIDE)
 		;_GUI_Value_STATE("HIDE", $groupSearchDB)
 		;_GUI_Value_STATE("HIDE", $groupHerosDB)
@@ -224,17 +139,17 @@ Func chkDBActivateSearches()
 EndFunc   ;==>chkDBActivateSearches
 
 Func chkDBActivateTropies()
-	If GUICtrlRead($chkDBActivateTropies) = $GUI_CHECKED Then
-		GUICtrlSetState($txtDBTropiesMin, $GUI_ENABLE)
-		GUICtrlSetState($lblDBTropies, $GUI_ENABLE)
-		GUICtrlSetState($txtDBTropiesMax, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkDBActivateTropies) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtDBTropiesMin, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblDBTropies, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtDBTropiesMax, $GUI_ENABLE)
 		;_GUI_Value_STATE("SHOW", $groupSearchDB)
 		;cmbDBGoldElixir()
 		;_GUI_Value_STATE("SHOW", $groupHerosDB)
 	Else
-		GUICtrlSetState($txtDBTropiesMin, $GUI_DISABLE)
-		GUICtrlSetState($lblDBTropies, $GUI_DISABLE)
-		GUICtrlSetState($txtDBTropiesMax, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtDBTropiesMin, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblDBTropies, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtDBTropiesMax, $GUI_DISABLE)
 		;_GUI_Value_STATE("HIDE", $groupSearchDB)
 		;_GUI_Value_STATE("HIDE", $groupHerosDB)
 	EndIf
@@ -243,15 +158,15 @@ Func chkDBActivateTropies()
 EndFunc   ;==>chkDBActivateTropies
 
 Func chkDBActivateCamps()
-	If GUICtrlRead($chkDBActivateCamps) = $GUI_CHECKED Then
-		GUICtrlSetState($lblDBArmyCamps, $GUI_ENABLE)
-		GUICtrlSetState($txtDBArmyCamps, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkDBActivateCamps) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hLblDBArmyCamps, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtDBArmyCamps, $GUI_ENABLE)
 		;_GUI_Value_STATE("SHOW", $groupSearchDB)
 		;cmbDBGoldElixir()
 		;_GUI_Value_STATE("SHOW", $groupHerosDB)
 	Else
-		GUICtrlSetState($lblDBArmyCamps, $GUI_DISABLE)
-		GUICtrlSetState($txtDBArmyCamps, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblDBArmyCamps, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtDBArmyCamps, $GUI_DISABLE)
 		;_GUI_Value_STATE("HIDE", $groupSearchDB)
 		;_GUI_Value_STATE("HIDE", $groupHerosDB)
 	EndIf
@@ -259,41 +174,17 @@ Func chkDBActivateCamps()
 	dbCheckall()
 EndFunc   ;==>chkDBActivateCamps
 
-#cs
-Func DBPanel($Style_GUI)
-	GUICtrlSetState($grpDBFilter, $Style_GUI)
-	GUICtrlSetState($cmbDBMeetGE, $Style_GUI)
-	GUICtrlSetState($txtDBMinGold, $Style_GUI)
-	GUICtrlSetState($picDBMinGold, $Style_GUI)
-	GUICtrlSetState($txtDBMinElixir, $Style_GUI)
-	GUICtrlSetState($picDBMinElixir, $Style_GUI)
-	GUICtrlSetState($txtDBMinGoldPlusElixir, $Style_GUI)
-	GUICtrlSetState($picDBMinGPEGold, $Style_GUI)
-	GUICtrlSetState($chkDBMeetDE, $Style_GUI)
-	GUICtrlSetState($txtDBMinDarkElixir, $Style_GUI)
-	GUICtrlSetState($picDBMinDarkElixir, $Style_GUI)
-	GUICtrlSetState($chkDBMeetTrophy, $Style_GUI)
-	GUICtrlSetState($txtDBMinTrophy, $Style_GUI)
-	GUICtrlSetState($picDBMinTrophies, $Style_GUI)
-	GUICtrlSetState($chkDBMeetTH, $Style_GUI)
-	GUICtrlSetState($cmbDBTH, $Style_GUI)
-	GUICtrlSetState($picDBMaxTH10, $Style_GUI)
-	GUICtrlSetState($chkDBMeetTHO, $Style_GUI)
-	GUICtrlSetState($chkDBWeakBase, $Style_GUI)
-	GUICtrlSetState($chkDBMeetOne, $Style_GUI)
-	GUICtrlSetState($cmbDBWeakMortar, $Style_GUI)
-	GUICtrlSetState($picDBWeakMortar, $Style_GUI)
-	GUICtrlSetState($cmbDBWeakWizTower, $Style_GUI)
-	GUICtrlSetState($picDBWeakWizTower, $Style_GUI)
-
-EndFunc   ;==>
-#ce
-
 Func EnableSearchPanels($mode)
 	;_GUI_Value_STATE("HIDE", $groupAttackDBSpell&"#"&$groupIMGAttackDBSpell&"#"&$groupAttackABSpell&"#"&$groupIMGAttackABSpell)
 	Switch $mode
 		Case $DB
-			If GUICtrlRead($chkDBActivateSearches) = $GUI_CHECKED Or GUICtrlRead($chkDBActivateTropies) = $GUI_CHECKED Or GUICtrlRead($chkDBActivateCamps) = $GUI_CHECKED Or GUICtrlRead($chkDBKingWait) = $GUI_CHECKED Or GUICtrlRead($chkDBQueenWait) = $GUI_CHECKED Or GUICtrlRead($chkDBWardenWait) = $GUI_CHECKED Or GUICtrlRead($chkDBSpellsWait) = $GUI_CHECKED Then
+			If GUICtrlRead($g_hChkDBActivateSearches) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBActivateTropies) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBActivateCamps) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBSpellsWait) = $GUI_CHECKED Then
 				_GUI_Value_STATE("SHOW", $groupHerosDB)
 				;search
 				_GUI_Value_STATE("SHOW", $groupSearchDB)
@@ -322,7 +213,13 @@ Func EnableSearchPanels($mode)
 				;_GUI_Value_STATE("HIDE", $groupEndBattkeDB)
 			EndIf
 		Case $LB
-			If GUICtrlRead($chkABActivateSearches) = $GUI_CHECKED Or GUICtrlRead($chkABActivateTropies) = $GUI_CHECKED Or GUICtrlRead($chkABActivateCamps) = $GUI_CHECKED Or GUICtrlRead($chkABKingWait) = $GUI_CHECKED Or GUICtrlRead($chkABQueenWait) = $GUI_CHECKED Or GUICtrlRead($chkABWardenWait) = $GUI_CHECKED Or GUICtrlRead($chkABSpellsWait) = $GUI_CHECKED Then
+			If GUICtrlRead($g_hChkABActivateSearches) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABActivateTropies) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABActivateCamps) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABSpellsWait) = $GUI_CHECKED Then
 				_GUI_Value_STATE("SHOW", $groupHerosAB)
 				;search
 				_GUI_Value_STATE("SHOW", $groupSearchAB)
@@ -351,7 +248,7 @@ Func EnableSearchPanels($mode)
 				;_GUI_Value_STATE("HIDE", $groupEndBattkeAB)
 			EndIf
 		Case $TS
-			If GUICtrlRead($chkTSActivateSearches) = $GUI_CHECKED Or GUICtrlRead($chkTSActivateTropies) = $GUI_CHECKED Or GUICtrlRead($chkTSActivateCamps) = $GUI_CHECKED Then
+			If GUICtrlRead($g_hChkTSActivateSearches) = $GUI_CHECKED Or GUICtrlRead($g_hChkTSActivateTropies) = $GUI_CHECKED Or GUICtrlRead($g_hChkTSActivateCamps) = $GUI_CHECKED Then
 				;search
 				_GUI_Value_STATE("SHOW", $groupSearchTS)
 				cmbTSGoldElixir()
@@ -381,17 +278,17 @@ EndFunc   ;==>EnableSearchPanels
 
 
 Func chkABActivateSearches()
-	If GUICtrlRead($chkABActivateSearches) = $GUI_CHECKED Then
-		GUICtrlSetState($txtABSearchesMin, $GUI_ENABLE)
-		GUICtrlSetState($lblABSearches, $GUI_ENABLE)
-		GUICtrlSetState($txtABSearchesMax, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkABActivateSearches) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtABSearchesMin, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblABSearches, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtABSearchesMax, $GUI_ENABLE)
 		;_GUI_Value_STATE("SHOW", $groupSearchAB)
 		;cmbABGoldElixir()
 		;_GUI_Value_STATE("SHOW", $groupHerosAB)
 	Else
-		GUICtrlSetState($txtABSearchesMin, $GUI_DISABLE)
-		GUICtrlSetState($lblABSearches, $GUI_DISABLE)
-		GUICtrlSetState($txtABSearchesMax, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtABSearchesMin, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblABSearches, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtABSearchesMax, $GUI_DISABLE)
 		;_GUI_Value_STATE("HIDE", $groupSearchAB)
 		;_GUI_Value_STATE("HIDE", $groupHerosAB)
 	EndIf
@@ -400,17 +297,17 @@ Func chkABActivateSearches()
 EndFunc   ;==>chkABActivateSearches
 
 Func chkABActivateTropies()
-	If GUICtrlRead($chkABActivateTropies) = $GUI_CHECKED Then
-		GUICtrlSetState($txtABTropiesMin, $GUI_ENABLE)
-		GUICtrlSetState($lblABTropies, $GUI_ENABLE)
-		GUICtrlSetState($txtABTropiesMax, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkABActivateTropies) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtABTropiesMin, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblABTropies, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtABTropiesMax, $GUI_ENABLE)
 		;_GUI_Value_STATE("SHOW", $groupSearchAB)
 		;cmbABGoldElixir()
 		;_GUI_Value_STATE("SHOW", $groupHerosAB)
 	Else
-		GUICtrlSetState($txtABTropiesMin, $GUI_DISABLE)
-		GUICtrlSetState($lblABTropies, $GUI_DISABLE)
-		GUICtrlSetState($txtABTropiesMax, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtABTropiesMin, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblABTropies, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtABTropiesMax, $GUI_DISABLE)
 		;_GUI_Value_STATE("HIDE", $groupSearchAB)
 		;_GUI_Value_STATE("HIDE", $groupHerosAB)
 	EndIf
@@ -419,15 +316,15 @@ Func chkABActivateTropies()
 EndFunc   ;==>chkABActivateTropies
 
 Func chkABActivateCamps()
-	If GUICtrlRead($chkABActivateCamps) = $GUI_CHECKED Then
-		GUICtrlSetState($lblABArmyCamps, $GUI_ENABLE)
-		GUICtrlSetState($txtABArmyCamps, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkABActivateCamps) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hLblABArmyCamps, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtABArmyCamps, $GUI_ENABLE)
 		;_GUI_Value_STATE("SHOW", $groupSearchAB)
 		;cmbABGoldElixir()
 		;_GUI_Value_STATE("SHOW", $groupHerosAB)
 	Else
-		GUICtrlSetState($lblABArmyCamps, $GUI_DISABLE)
-		GUICtrlSetState($txtABArmyCamps, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblABArmyCamps, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtABArmyCamps, $GUI_DISABLE)
 		;_GUI_Value_STATE("HIDE", $groupSearchAB)
 		;_GUI_Value_STATE("HIDE", $groupHerosAB)
 	EndIf
@@ -436,16 +333,16 @@ Func chkABActivateCamps()
 EndFunc   ;==>chkABActivateCamps
 
 Func chkTSActivateSearches()
-	If GUICtrlRead($chkTSActivateSearches) = $GUI_CHECKED Then
-		GUICtrlSetState($txtTSSearchesMin, $GUI_ENABLE)
-		GUICtrlSetState($lblTSSearches, $GUI_ENABLE)
-		GUICtrlSetState($txtTSSearchesMax, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkTSActivateSearches) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtTSSearchesMin, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblTSSearches, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtTSSearchesMax, $GUI_ENABLE)
 		;_GUI_Value_STATE("SHOW", $groupSearchTS)
 		;cmbTSGoldElixir()
 	Else
-		GUICtrlSetState($txtTSSearchesMin, $GUI_DISABLE)
-		GUICtrlSetState($lblTSSearches, $GUI_DISABLE)
-		GUICtrlSetState($txtTSSearchesMax, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtTSSearchesMin, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblTSSearches, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtTSSearchesMax, $GUI_DISABLE)
 		;_GUI_Value_STATE("HIDE", $groupSearchTS)
 	EndIf
 	;EnableSearchPanels($TS)
@@ -453,16 +350,16 @@ Func chkTSActivateSearches()
 EndFunc   ;==>chkTSActivateSearches
 
 Func chkTSActivateTropies()
-	If GUICtrlRead($chkTSActivateTropies) = $GUI_CHECKED Then
-		GUICtrlSetState($txtTSTropiesMin, $GUI_ENABLE)
-		GUICtrlSetState($lblTSTropies, $GUI_ENABLE)
-		GUICtrlSetState($txtTSTropiesMax, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkTSActivateTropies) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtTSTropiesMin, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblTSTropies, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtTSTropiesMax, $GUI_ENABLE)
 		;_GUI_Value_STATE("SHOW", $groupSearchTS)
 		;cmbTSGoldElixir()
 	Else
-		GUICtrlSetState($txtTSTropiesMin, $GUI_DISABLE)
-		GUICtrlSetState($lblTSTropies, $GUI_DISABLE)
-		GUICtrlSetState($txtTSTropiesMax, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtTSTropiesMin, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblTSTropies, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtTSTropiesMax, $GUI_DISABLE)
 		;_GUI_Value_STATE("HIDE", $groupSearchTS)
 	EndIf
 	;EnableSearchPanels($TS)
@@ -470,14 +367,14 @@ Func chkTSActivateTropies()
 EndFunc   ;==>chkTSActivateTropies
 
 Func chkTSActivateCamps()
-	If GUICtrlRead($chkTSActivateCamps) = $GUI_CHECKED Then
-		GUICtrlSetState($lblTSArmyCamps, $GUI_ENABLE)
-		GUICtrlSetState($txtTSArmyCamps, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkTSActivateCamps) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hLblTSArmyCamps, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtTSArmyCamps, $GUI_ENABLE)
 		;_GUI_Value_STATE("SHOW", $groupSearchTS)
 		;cmbTSGoldElixir()
 	Else
-		GUICtrlSetState($lblTSArmyCamps, $GUI_DISABLE)
-		GUICtrlSetState($txtTSArmyCamps, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblTSArmyCamps, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtTSArmyCamps, $GUI_DISABLE)
 		;_GUI_Value_STATE("HIDE", $groupSearchTS)
 	EndIf
 	;EnableSearchPanels($TS)
@@ -486,150 +383,194 @@ EndFunc   ;==>chkTSActivateCamps
 
 Func chkDBKingWait()
 	If $iTownHallLevel > 6 Or $iTownHallLevel = 0 Then ; Must be TH7 or above to have King
-		If GUICtrlRead($chkDBKingWait) = $GUI_CHECKED Then
-			If $ichkUpgradeKing = 0 Then
-				GUICtrlSetState($chkDBKingAttack, $GUI_CHECKED)
+		If GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED Then
+			If $g_bUpgradeKingEnable = False Then
+				GUICtrlSetState($g_hChkDBKingAttack, $GUI_CHECKED)
 			Else
-				GUICtrlSetState($chkDBKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkDBKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		Else
-			If $ichkUpgradeKing = 0 Then
-				GUICtrlSetState($chkDBKingWait, $GUI_ENABLE)
+			If $g_bUpgradeKingEnable = False Then
+				GUICtrlSetState($g_hChkDBKingWait, $GUI_ENABLE)
 			Else
-				GUICtrlSetState($chkDBKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkDBKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		EndIf
 	Else
-		GUICtrlSetState($chkDBKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		GUICtrlSetState($chkDBKingAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkDBKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkDBKingAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkDBKingWait
 
 Func chkDBQueenWait()
 	If $iTownHallLevel > 8 Or $iTownHallLevel = 0 Then ; Must be TH9 or above to have Queen
-		If GUICtrlRead($chkDBQueenWait) = $GUI_CHECKED Then
-			If $ichkUpgradeQueen = 0 Then
-				GUICtrlSetState($chkDBQueenAttack, $GUI_CHECKED)
+		If GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED Then
+			If $g_bUpgradeQueenEnable = False Then
+				GUICtrlSetState($g_hChkDBQueenAttack, $GUI_CHECKED)
 			Else
-				GUICtrlSetState($chkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		Else
-			If $ichkUpgradeQueen = 0 Then
-				GUICtrlSetState($chkDBQueenWait, $GUI_ENABLE)
+			If $g_bUpgradeQueenEnable = False Then
+				GUICtrlSetState($g_hChkDBQueenWait, $GUI_ENABLE)
 			Else
-				GUICtrlSetState($chkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		EndIf
 	Else
-		GUICtrlSetState($chkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		GUICtrlSetState($chkDBQueenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkDBQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkDBQueenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkDBQueenWait
 
 Func chkDBWardenWait()
 	If $iTownHallLevel > 10 Or $iTownHallLevel = 0 Then ; Must be TH11 to have warden
-		If GUICtrlRead($chkDBWardenWait) = $GUI_CHECKED Then
-			If $ichkUpgradeWarden = 0 Then
-				GUICtrlSetState($chkDBWardenAttack, $GUI_CHECKED)
-				GUICtrlSetState($IMGchkDBWardenWait, $GUI_ENABLE)
+		If GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED Then
+			If $g_bUpgradeWardenEnable = False Then
+				GUICtrlSetState($g_hChkDBWardenAttack, $GUI_CHECKED)
+				GUICtrlSetState($g_hPicDBWardenWait, $GUI_ENABLE)
 			Else
-				GUICtrlSetState($chkDBWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkDBWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		Else
-			If $ichkUpgradeWarden = 0 Then
-				GUICtrlSetState($chkDBWardenWait, $GUI_ENABLE)
+			If $g_bUpgradeWardenEnable = False Then
+				GUICtrlSetState($g_hChkDBWardenWait, $GUI_ENABLE)
 			Else
-				GUICtrlSetState($chkDBWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkDBWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		EndIf
 	Else
-		GUICtrlSetState($chkDBWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		GUICtrlSetState($chkDBWardenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkDBWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkDBWardenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkDBWardenWait
 
 Func chkABKingWait()
 	If $iTownHallLevel > 6 Or $iTownHallLevel = 0 Then ; Must be TH7 or above to have King
-		If GUICtrlRead($chkABKingWait) = $GUI_CHECKED Then
-			If $ichkUpgradeKing = 0 Then
-				GUICtrlSetState($chkABKingAttack, $GUI_CHECKED)
+		If GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED Then
+			If $g_bUpgradeKingEnable = False Then
+				GUICtrlSetState($g_hChkABKingAttack, $GUI_CHECKED)
 			Else
-				GUICtrlSetState($chkABKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkABKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		Else
-			If $ichkUpgradeKing = 0 Then
-				GUICtrlSetState($chkABKingWait, $GUI_ENABLE)
+			If $g_bUpgradeKingEnable = False Then
+				GUICtrlSetState($g_hChkABKingWait, $GUI_ENABLE)
 			Else
-				GUICtrlSetState($chkABKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkABKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		EndIf
 	Else
-		GUICtrlSetState($chkABKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		GUICtrlSetState($chkABKingAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkABKingWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkABKingAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkABKingWait
 
 Func chkABQueenWait()
 	If $iTownHallLevel > 8 Or $iTownHallLevel = 0 Then ; Must be TH9 or above to have Queen
-		If GUICtrlRead($chkABQueenWait) = $GUI_CHECKED Then
-			If $ichkUpgradeQueen = 0 Then
-				GUICtrlSetState($chkABQueenAttack, $GUI_CHECKED)
+		If GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED Then
+			If $g_bUpgradeQueenEnable = False Then
+				GUICtrlSetState($g_hChkABQueenAttack, $GUI_CHECKED)
 			Else
-				GUICtrlSetState($chkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		Else
-			If $ichkUpgradeQueen = 0 Then
-				GUICtrlSetState($chkABQueenWait, $GUI_ENABLE)
+			If $g_bUpgradeQueenEnable = False Then
+				GUICtrlSetState($g_hChkABQueenWait, $GUI_ENABLE)
 			Else
-				GUICtrlSetState($chkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		EndIf
 	Else
-		GUICtrlSetState($chkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		GUICtrlSetState($chkABQueenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkABQueenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkABQueenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkABQueenWait
 
 Func chkABWardenWait()
 	If $iTownHallLevel > 10 Or $iTownHallLevel = 0 Then ; Must be TH11 to have warden
-		If GUICtrlRead($chkABWardenWait) = $GUI_CHECKED Then
-			If $ichkUpgradeWarden = 0 Then
-				GUICtrlSetState($chkABWardenAttack, $GUI_CHECKED)
+		If GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED Then
+			If $g_bUpgradeWardenEnable = False Then
+				GUICtrlSetState($g_hChkABWardenAttack, $GUI_CHECKED)
 			Else
-				GUICtrlSetState($chkABWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkABWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		Else
-			If $ichkUpgradeWarden = 0 Then
-				GUICtrlSetState($chkABWardenWait, $GUI_ENABLE)
+			If $g_bUpgradeWardenEnable = False Then
+				GUICtrlSetState($g_hChkABWardenWait, $GUI_ENABLE)
 			Else
-				GUICtrlSetState($chkABWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+				GUICtrlSetState($g_hChkABWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 			EndIf
 		EndIf
 	Else
-		GUICtrlSetState($chkABWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		GUICtrlSetState($chkABWardenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkABWardenWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkABWardenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkABWardenWait
 
+Func chkDBWaitForCCSpell()
+	If GUICtrlRead($g_hChkDBWaitForCastleSpell) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hCmbDBWaitForCastleSpell, $GUI_ENABLE)
+		cmbDBWaitForCCSpell()
+	Else
+		GUICtrlSetState($g_hCmbDBWaitForCastleSpell, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtDBWaitForCastleSpell, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbDBWaitForCastleSpell2, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkDBWaitForCCSpell
+
+Func chkABWaitForCCSpell()
+	If GUICtrlRead($g_hChkABWaitForCastleSpell) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hCmbABWaitForCastleSpell, $GUI_ENABLE)
+		cmbABWaitForCCSpell()
+	Else
+		GUICtrlSetState($g_hCmbABWaitForCastleSpell, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtABWaitForCastleSpell, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbABWaitForCastleSpell2, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkABWaitForCCSpell
+
+Func cmbDBWaitForCCSpell()
+	Local $iSpellSelection = _GUICtrlComboBox_GetCurSel($g_hCmbDBWaitForCastleSpell)
+	If $iSpellSelection > 0 And  $iSpellSelection < 6 Then
+		GUICtrlSetState($g_hCmbDBWaitForCastleSpell2, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtDBWaitForCastleSpell, $GUI_DISABLE)
+	Else
+		GUICtrlSetState($g_hCmbDBWaitForCastleSpell2, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtDBWaitForCastleSpell, $GUI_ENABLE)
+	EndIf
+EndFunc
+
+Func cmbABWaitForCCSpell()
+	Local $iSpellSelection = _GUICtrlComboBox_GetCurSel($g_hCmbABWaitForCastleSpell)
+	If $iSpellSelection > 0 And  $iSpellSelection < 6 Then
+		GUICtrlSetState($g_hCmbABWaitForCastleSpell2, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtABWaitForCastleSpell, $GUI_DISABLE)
+	Else
+		GUICtrlSetState($g_hCmbABWaitForCastleSpell2, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtABWaitForCastleSpell, $GUI_ENABLE)
+	EndIf
+EndFunc
+
 Func chkDBSpellsWait()
 	If $iTownHallLevel > 4 Or $iTownHallLevel = 0 Then ; Must be TH5+ to have spells
-		For $i = $IMGchkDBLightSpellWait To $IMGchkDBHasteSpellWait
+		For $i = $g_hPicDBLightSpellWait To $g_hPicDBHasteSpellWait
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
-		If GUICtrlRead($chkDBSpellsWait) = $GUI_CHECKED Then
-			$iEnableSpellsWait[$DB] = 1
+		If GUICtrlRead($g_hChkDBSpellsWait) = $GUI_CHECKED Then
+			$g_abSearchSpellsWaitEnable[$DB] = True
 			chkSpellWaitError()
 			If @error Then
-				GUICtrlSetState($chkDBSpellsWait, $GUI_UNCHECKED)
-				$iEnableSpellsWait[$DB] = 0
+				GUICtrlSetState($g_hChkDBSpellsWait, $GUI_UNCHECKED)
+				$g_abSearchSpellsWaitEnable[$DB] = False
 				Setlog("Wait for Spells disabled due training count error", $COLOR_ERROR)
 			EndIf
 		Else
-			$iEnableSpellsWait[$DB] = 0
+			$g_abSearchSpellsWaitEnable[$DB] = False
 		EndIf
 	Else
-		GUICtrlSetState($chkDBSpellsWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		For $i = $IMGchkDBLightSpellWait To $IMGchkDBHasteSpellWait
+		GUICtrlSetState($g_hChkDBSpellsWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		For $i = $g_hPicDBLightSpellWait To $g_hPicDBHasteSpellWait
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
@@ -637,23 +578,23 @@ EndFunc
 
 Func chkABSpellsWait()
 	If $iTownHallLevel > 4 Or $iTownHallLevel = 0 Then ; Must be TH5+ to have spells
-		For $i = $IMGchkABLightSpellWait To $IMGchkABHasteSpellWait
+		For $i = $g_hPicABLightSpellWait To $g_hPicABHasteSpellWait
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
-		If GUICtrlRead($chkABSpellsWait) = $GUI_CHECKED Then
-			$iEnableSpellsWait[$LB] = 1
+		If GUICtrlRead($g_hChkABSpellsWait) = $GUI_CHECKED Then
+			$g_abSearchSpellsWaitEnable[$LB] = True
 			chkSpellWaitError()
 			If @error Then
-				GUICtrlSetState($chkABSpellsWait, $GUI_UNCHECKED)
-				$iEnableSpellsWait[$LB] = 0
+				GUICtrlSetState($g_hChkABSpellsWait, $GUI_UNCHECKED)
+				$g_abSearchSpellsWaitEnable[$LB] = False
 				Setlog("Wait for Spells disabled due training count error", $COLOR_ERROR)
 			EndIf
 		Else
-			$iEnableSpellsWait[$LB] = 0
+			$g_abSearchSpellsWaitEnable[$LB] = False
 		EndIf
 	Else
-		GUICtrlSetState($chkABSpellsWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		For $i = $IMGchkABLightSpellWait To $IMGchkABHasteSpellWait
+		GUICtrlSetState($g_hChkABSpellsWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		For $i = $g_hPicABLightSpellWait To $g_hPicABHasteSpellWait
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
@@ -666,7 +607,7 @@ Func chkSpellWaitError()
 	Local $sErrorText, $sText, $MsgBox1, $MsgBox2, $MsgBox3
 
 	; Check if spell total GUI is larger than spell count trained for wait for spells to work properly!
-	If $iTotalTrainSpaceSpell > GUICtrlRead($txtTotalCountSpell) Then  ; we have an error!
+	If $iTotalTrainSpaceSpell > GUICtrlRead($g_hTxtTotalCountSpell) Then  ; we have an error!
 		$sErrorText = GetTranslated(625,110, "Total number of trained spells exceeds total set in GUI!") & @CRLF & _
 			GetTranslated(625,111, "Reduce number of trained spells,") & @CRLF & _
 			GetTranslated(625,112, "OR ELSE BOT WILL NEVER ATTACK!!") & @CRLF
@@ -686,7 +627,7 @@ Func chkSpellWaitError()
 	While 1
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xE00000, 0xFFFF00, 12, "Comic Sans MS", 480)
 		$sText = $sErrorText & @CRLF & GetTranslated(625,113,"Click YES to close this warning message") & @CRLF
-		$MsgBox1 = _ExtMsgBox(48, GetTranslated(625,114,"YES, I Understand Warning|No"), GetTranslated(625,115,"Wait for Spells Warning!"), $sText, 30, $frmBot)
+		$MsgBox1 = _ExtMsgBox(48, GetTranslated(625,114,"YES, I Understand Warning|No"), GetTranslated(625,115,"Wait for Spells Warning!"), $sText, 30, $g_hFrmBot)
 		Switch $MsgBox1
 			Case 1
 				$bHaveBeenWarned = True
@@ -694,7 +635,7 @@ Func chkSpellWaitError()
 			Case Else
 				_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xFFFF00 , 0xE00000, 12, "Comic Sans MS", 480)
 				$stext = GetTranslated(625,116,"Sorry, must understand warning and click Yes!") & @CRLF
-				$MsgBox2 = _ExtMsgBox(16, GetTranslated(625,117,"OK"), GetTranslated(625,118,"User Input Error"), $stext, 15, $frmBot)
+				$MsgBox2 = _ExtMsgBox(16, GetTranslated(625,117,"OK"), GetTranslated(625,118,"User Input Error"), $stext, 15, $g_hFrmBot)
 				If $iCount = 1 And $MsgBox1 = 9 And $MsgBox2 = 9 Then ExitLoop  ; If time out on both error messages happens twice then exit loop to avoid stuck
 		EndSwitch
 		$iCount += 1
@@ -702,11 +643,12 @@ Func chkSpellWaitError()
 			$sText = GetTranslated(625,119,"CONGRATULATIONS!!") & @CRLF & GetTranslated(625,120,"You found the secret message in Bot!") & @CRLF & _
 				GetTranslated(625,121,"Can you find the randomly selected button to close this message?") & @CRLF & _
 				GetTranslated(625,122, "HaHaHaHa...") & @CRLF & @CRLF & @CRLF
-			$sFunnyText = $sText
+			Local $sFunnyText = $sText
+			Local $iControl = 0
 			$iCount = 1
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 480)
 			While 1
-				$MsgBox3 = _ExtMsgBox(128, "1|2|3|4|5|6|7", GetTranslated(625,123,"You are a WINNER!!"), $sFunnyText, 900, $frmBot)
+				$MsgBox3 = _ExtMsgBox(128, "1|2|3|4|5|6|7", GetTranslated(625,123,"You are a WINNER!!"), $sFunnyText, 900, $g_hFrmBot)
 				If @error Then Setlog("_ExtMsgBox error: " & @error, $COLOR_ERROR)
 				If $iCount > 7 And Int($MsgBox3) = Random(1,8,1) Then
 					ExitLoop

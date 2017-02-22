@@ -17,13 +17,12 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func dropCC($x, $y, $slot) ;Drop clan castle
-	;If $slot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $iDropCC[$iMatchMode] = 1 Or $iDropCCCSV[$iMatchMode] = 1) Then
 
 	Local $test1 = false
 	Local $test2 = false
-	If $iMatchMode = $MA and $iDropCC[$DB] = 1  then $test1= True
-	if $iMatchMode <>$MA Then
-		If ($iMatchMode <> $DB And $iMatchMode <> $LB and $iMatchMode <> $MA) Or $iDropCC[$iMatchMode] = 1 Or $iDropCCCSV[$iMatchMode] = 1  Then $test2 = True
+	If $g_iMatchMode = $MA and $g_abAttackDropCC[$DB]  then $test1= True
+	if $g_iMatchMode <>$MA Then
+		If ($g_iMatchMode <> $DB And $g_iMatchMode <> $LB and $g_iMatchMode <> $MA) Or $g_abAttackDropCC[$g_iMatchMode] Then $test2 = True
 	EndIf
 
 	If $slot <> -1 and ( $test1 or $test2 )	Then
@@ -41,7 +40,7 @@ Func dropCC($x, $y, $slot) ;Drop clan castle
 			If Number($TroopsReceived) <> 0 Then
 				If Number(Number($TroopsDonated) / Number($TroopsReceived)) >= (Number($iCmbCCDonated) / Number($iCmbCCReceived)) Then
 					SetLog("Dropping Clan Castle, donated (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") >= " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_INFO)
-					Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2, "#0086")
+					Click(GetXPosOfArmySlot($slot, 68), 595 + $g_iBottomOffsetY, 1, $iDelaydropCC2, "#0086")
 					If _Sleep($iDelaydropCC1) Then Return
 					Click($x, $y, 1, 0, "#0087")
 				Else
@@ -50,7 +49,7 @@ Func dropCC($x, $y, $slot) ;Drop clan castle
 			Else
 				If Number(Number($TroopsDonated) / 1) >= (Number($iCmbCCDonated) / Number($iCmbCCReceived)) Then
 					SetLog("Dropping Clan Castle, donated (" & $TroopsDonated & ") / received (" & $TroopsReceived & ") >= " & $iCmbCCDonated & "/" & $iCmbCCReceived, $COLOR_INFO)
-					Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2, "#0088")
+					Click(GetXPosOfArmySlot($slot, 68), 595 + $g_iBottomOffsetY, 1, $iDelaydropCC2, "#0088")
 					If _Sleep($iDelaydropCC1) Then Return
 					Click($x, $y, 1, 0, "#0089")
 				Else
@@ -59,7 +58,7 @@ Func dropCC($x, $y, $slot) ;Drop clan castle
 			EndIf
 		Else
 			SetLog("Dropping Clan Castle", $COLOR_INFO)
-			Click(GetXPosOfArmySlot($slot, 68), 595 + $bottomOffsetY, 1, $iDelaydropCC2, "#0090")
+			Click(GetXPosOfArmySlot($slot, 68), 595 + $g_iBottomOffsetY, 1, $iDelaydropCC2, "#0090")
 			If _Sleep($iDelaydropCC1) Then Return
 			Click($x, $y, 1, 0, "#0091")
 		EndIf

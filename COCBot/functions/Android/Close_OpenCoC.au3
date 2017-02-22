@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: The Master (2015)
 ; Modified ......: cosote (Dec 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,9 +15,9 @@
 ; ===============================================================================================================================
 
 Func CloseCoC($ReOpenCoC = False)
-	$SkipFirstZoomout = False
+	$g_bSkipFirstZoomout = False
 	ResumeAndroid()
-	If Not $RunState Then Return
+	If Not $g_bRunState Then Return
 
 	Local $Adb = ""
 	If $ReOpenCoC Then
@@ -27,12 +27,12 @@ Func CloseCoC($ReOpenCoC = False)
 	EndIf
 	WinGetAndroidHandle()
 	AndroidHomeButton()
-	If Not $RunState Then Return
-	SendAdbCommand("shell am force-stop " & $AndroidGamePackage)
-	If Not $RunState Then Return
+	If Not $g_bRunState Then Return
+	SendAdbCommand("shell am force-stop " & $g_sAndroidGamePackage)
+	If Not $g_bRunState Then Return
 	If $ReOpenCoC Then
 		OpenCoC()
-		$Restart = True
+		$g_bRestart = True
 	EndIf
 
 EndFunc   ;==>CloseCoC
@@ -47,7 +47,7 @@ EndFunc   ;==>CloseCoC
 ; Return values .: None
 ; Author ........: The Master (2015)
 ; Modified ......: cosote (Dec 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -56,14 +56,14 @@ EndFunc   ;==>CloseCoC
 
 Func OpenCoC()
 	ResumeAndroid()
-	If Not $RunState Then Return
+	If Not $g_bRunState Then Return
 
 	Local $RunApp = "", $iCount = 0
 	WinGetAndroidHandle()
 	AndroidHomeButton()
 	If _Sleep(500) Then Return
 	If Not StartAndroidCoC() Then Return
-	If Not $RunState Then Return
+	If Not $g_bRunState Then Return
 	While _CheckPixel($aIsMain, True) = False ; Wait for MainScreen
 		$iCount += 1
 		If _Sleep(100) Then Return
@@ -84,7 +84,7 @@ EndFunc   ;==>OpenCoC
 ; Return values .: None
 ; Author ........: KnowJack (Aug 2015)
 ; Modified ......: TheMaster (2015), cosote (Dec 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -93,7 +93,7 @@ EndFunc   ;==>OpenCoC
 
 Func WaitnOpenCoC($iWaitTime, $bFullRestart = False)
 	ResumeAndroid()
-	If Not $RunState Then Return
+	If Not $g_bRunState Then Return
 
 	Local $RunApp = ""
 	Local $sWaitTime = ""
@@ -108,16 +108,17 @@ Func WaitnOpenCoC($iWaitTime, $bFullRestart = False)
 	If $iMin > 0 Then $sWaitTime &= $iMin & " minutes "
 	If $iSec > 0 Then $sWaitTime &= $iSec & " seconds "
 	SetLog("Waiting " & $sWaitTime & "before starting CoC", $COLOR_SUCCESS)
+	ReduceBotMemory()
 	If _SleepStatus($iWaitTime) Then Return False ; Wait for server to see log off
 
 	If Not StartAndroidCoC() Then Return
-	If Not $RunState Then Return
+	If Not $g_bRunState Then Return
 
-	If $debugSetlog = 1 Then setlog("CoC Restarted, Waiting for completion", $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then setlog("CoC Restarted, Waiting for completion", $COLOR_DEBUG)
 
 	If $bFullRestart = True Then
 		checkMainScreen() ; Use checkMainScreen to restart CoC, and waitMainScreen to handle Take A Break wait, or other errors.
-		$Restart = True
+		$g_bRestart = True
 	Else
 		waitMainScreen()
 	EndIf
@@ -132,15 +133,15 @@ EndFunc   ;==>WaitnOpenCoC
 ; Return values .: None
 ; Author ........: MonkeyHunter (05-2016), MMHK (11-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func PoliteCloseCoC($sSource = "Unknown_")
-	$SkipFirstZoomout = False
-	If $AndroidGameDistributor = $GOOGLE Then
+	$g_bSkipFirstZoomout = False
+	If $g_sAndroidGameDistributor = $g_sGoogle Then
 		Local $i = 0 ; Reset Loop counter
 		While 1
 			checkObstacles()
@@ -149,7 +150,7 @@ Func PoliteCloseCoC($sSource = "Unknown_")
 			If ClickOkay("ExitOkay_" & $sSource, True) = True Then ExitLoop ; Confirm okay to exit
 			If $i > 10 Then
 				Setlog("Can not find Okay button to exit CoC, Forcefully Closing CoC", $COLOR_ERROR)
-				If $debugImageSave = 1 Then DebugImageSave($sSource)
+				If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
 				CloseCoC()
 				ExitLoop
 			EndIf
@@ -162,29 +163,29 @@ Func PoliteCloseCoC($sSource = "Unknown_")
 			checkObstacles()
 			AndroidBackButton()
 			If _Sleep($iDelayCloseOpen1000) Then Return ; wait for window to open
-			Switch $AndroidGameDistributor
+			Switch $g_sAndroidGameDistributor
 				Case "Kunlun", "Huawei", "Kaopu", "Microvirt", "Yeshen", "Qihoo", "Baidu", "OPPO", "Anzhi", "Lenovo", "Aiyouxi"
-					$btnExit = FindExitButton($AndroidGameDistributor)
+					$btnExit = FindExitButton($g_sAndroidGameDistributor)
 					If IsArray($btnExit) Then
 						Click($btnExit[0], $btnExit[1])
 						ExitLoop
 					EndIf
 				Case "9game"
 					If _Sleep($iDelayCloseOpen2000) Then Return ; wait more
-					$btnExit = FindExitButton($AndroidGameDistributor)
+					$btnExit = FindExitButton($g_sAndroidGameDistributor)
 					If IsArray($btnExit) Then
 						Click($btnExit[0] + 71, $btnExit[1] + 64) ; click offsets for the transparent window
-						If $DebugSetlog Then Setlog($AndroidGameDistributor & " Click offset X|Y = 71|64", $COLOR_DEBUG)
+						If $g_iDebugSetlog Then Setlog($g_sAndroidGameDistributor & " Click offset X|Y = 71|64", $COLOR_DEBUG)
 						ExitLoop
 					EndIf
 				Case "VIVO", "Xiaomi"
-					$btnExit = FindExitButton($AndroidGameDistributor)
+					$btnExit = FindExitButton($g_sAndroidGameDistributor)
 					If IsArray($btnExit) Then
 						Click($btnExit[0], $btnExit[1], 2, $iDelayCloseOpen3000) ; has to click twice slowly
 						ExitLoop
 					EndIf
 				Case "Guopan"
-					$btnExit = FindExitButton($AndroidGameDistributor)
+					$btnExit = FindExitButton($g_sAndroidGameDistributor)
 					If IsArray($btnExit) Then
 						Click($btnExit[0], $btnExit[1])
 					EndIf
@@ -197,18 +198,19 @@ Func PoliteCloseCoC($sSource = "Unknown_")
 				Case "Wandoujia/Downjoy", "Haimawan", "Leshi"
 					ContinueCase
 				Case Else
-					Setlog("Polite Close Unsupported - " & $AndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
-					If $debugImageSave = 1 Then DebugImageSave($sSource)
+					Setlog("Polite Close Unsupported - " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
+					If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
 					CloseCoC()
 					ExitLoop
 			EndSwitch
 			If $i > 10 Then
-				Setlog("Can not find exit button: " & $AndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
-				If $debugImageSave = 1 Then DebugImageSave($sSource)
+				Setlog("Can not find exit button: " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
+				If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
 				CloseCoC()
 				ExitLoop
 			EndIf
 			$i += 1
 		WEnd
 	EndIf
+	ReduceBotMemory()
 EndFunc   ;==>PoliteCloseCoC

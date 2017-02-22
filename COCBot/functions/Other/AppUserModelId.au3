@@ -10,7 +10,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Link ..........: https://www.autoitscript.com/forum/topic/168099-how-to-prevent-multiple-guis-from-combining-in-the-taskbar/
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Example .......: No
@@ -102,6 +102,8 @@ Func _WindowAppId($hWnd, $appid = Default)
     Local $tpIPropertyStore = DllStructCreate('ptr')
     _WinAPI_SHGetPropertyStoreForWindow($hWnd, $sIID_IPropertyStore, $tpIPropertyStore)
     Local $pPropertyStore = DllStructGetData($tpIPropertyStore, 1)
+	$tpIPropertyStore = 0
+
     Local $oPropertyStore = ObjCreateInterface($pPropertyStore, $sIID_IPropertyStore, _
             'GetCount HRESULT(PTR);GetAt HRESULT(DWORD; PTR);GetValue HRESULT(PTR;PTR);' & _
             'SetValue HRESULT(PTR;PTR);Commit HRESULT()')
@@ -123,14 +125,18 @@ Func _WindowAppId($hWnd, $appid = Default)
                     'uint', DllStructGetSize($buf))
             If Not @error Then
                 $sAppId = DllStructGetData($buf, 1)
-            EndIf
+			EndIf
+			$buf = 0
         EndIf
     Else
         _WinAPI_InitPropVariantFromString($appId, $tPROPVARIANT)
         $oPropertyStore.SetValue(DllStructGetPtr($tPKEY), DllStructGetPtr($tPROPVARIANT))
         $oPropertyStore.Commit()
         $sAppId = $appid
-    EndIf
+	EndIf
+
+    $tPROPVARIANT = 0
+    $tPKEY = 0
 
     ;$oPropertyStore.Release() ; this line crashes Autoit
     Return SetError(($sAppId == '')*2, 0, $sAppId)
@@ -167,7 +173,7 @@ Func _ShortcutAppId($lnkfile, $appid = Default)
             Local $tPKEY = _PKEY_AppUserModel_ID()
             Local $tPROPVARIANT = DllStructCreate($tagPROPVARIANT)
 
-            $tRIID_IPropertyStore = _WinAPI_GUIDFromString($sIID_IPropertyStore)
+            Local $tRIID_IPropertyStore = _WinAPI_GUIDFromString($sIID_IPropertyStore)
 
             Local $pPropertyStore
             $oIShellLinkW.QueryInterface($tRIID_IPropertyStore, $pPropertyStore)
@@ -188,6 +194,7 @@ Func _ShortcutAppId($lnkfile, $appid = Default)
                                 'ptr', DllStructGetPtr($buf), _
                                 'uint', DllStructGetSize($buf))
                         $sAppId = DllStructGetData($buf, 1)
+						$buf = 0
                     EndIf
                 Else ; set appid
                     _WinAPI_InitPropVariantFromString($appid, $tPROPVARIANT)
@@ -196,7 +203,10 @@ Func _ShortcutAppId($lnkfile, $appid = Default)
                     $oIPersistFile.Save($lnkfile, True)
                     $sAppId = $appid
                 EndIf
-            EndIf
+			EndIf
+
+			$tPROPVARIANT = 0
+			$tPKEY = 0
         EndIf
     EndIf
     If IsObj($oPropertyStore) Then $oPropertyStore.Release()

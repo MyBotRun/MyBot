@@ -9,7 +9,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -26,7 +26,7 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 	If isProblemAffect(True) Then Return
 	If Not IsAttackPage() Then Return
 
-	$nameFunc = "[DropOnPixel]"
+	Local $nameFunc = "[DropOnPixel]"
 	debugRedArea($nameFunc & " IN ")
 	debugRedArea("troop : [" & $troop & "] / size arrPixel [" & UBound($listArrPixel) & "] / number [" & $number & "]/ $slotsPerEdge [" & $slotsPerEdge & "] ")
 	If ($number = 0 Or UBound($listArrPixel) = 0) Then Return
@@ -110,7 +110,7 @@ Func DropOnPixel($troop, $listArrPixel, $number, $slotsPerEdge = 0)
 						debugRedArea("CC : $slotsPerEdge = else ")
 						debugRedArea("$offset: " & $offset)
 					EndIf
-					If Number($currentPixel[1]) > 555 + $bottomOffsetY then $currentPixel[1] = 555 + $bottomOffsetY
+					If Number($currentPixel[1]) > 555 + $g_iBottomOffsetY then $currentPixel[1] = 555 + $g_iBottomOffsetY
 					AttackClick($currentPixel[0], $currentPixel[1], $nbTroopByPixel, SetSleep(0), 0, "#0098")
 					$nbTroopsLeft -= $nbTroopByPixel
 				Next

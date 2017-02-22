@@ -3,7 +3,7 @@
 ; Description ...: Register Windows Message and provides functions to communicate between bots and manage bot application
 ; Author ........: cosote (12-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ;                  Read/write memory: https://www.autoitscript.com/forum/topic/104117-shared-memory-variables-demo/
 ; Related .......:
@@ -16,9 +16,9 @@ GUIRegisterMsg($WM_MYBOTRUN_API_1_0, "WM_MYBOTRUN_API_1_0_CLIENT")
 
 Func WM_MYBOTRUN_API_1_0_CLIENT($hWind, $iMsg, $wParam, $lParam)
 
-	If $hWind <> $frmBot Then Return 0
+	If $hWind <> $g_hFrmBot Then Return 0
 
-	SetDebugLog("API: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	;SetDebugLog("API: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 
 	$hWind = 0
 	Switch BitAND($wParam, 0xFFFF)
@@ -27,29 +27,29 @@ Func WM_MYBOTRUN_API_1_0_CLIENT($hWind, $iMsg, $wParam, $lParam)
 
 		Case 0x0000 ; query bot run and pause state
 			$hWind = HWnd($lParam)
-			$lParam = $frmBot
+			$lParam = $g_hFrmBot
 			$wParam += 1
 			Local $wParamHi = 0
-			If $RunState = True Then $wParamHi += 1
-			If $TPaused = True Then $wParamHi += 2
+			If $g_bRunState = True Then $wParamHi += 1
+			If $g_bBotPaused = True Then $wParamHi += 2
 			$wParam += BitShift($wParamHi, -16)
 
 		Case 0x0010 ; query bot detailed state
 			$iMsg = $WM_MYBOTRUN_STATE_1_0
 			$hWind = HWnd($lParam)
-			$lParam = $frmBot
+			$lParam = $g_hFrmBot
 			$wParam = DllStructGetPtr($tBotState)
-			DllStructSetData($tBotState, "frmBot", $frmBot)
+			DllStructSetData($tBotState, "frmBot", $g_hFrmBot)
 			DllStructSetData($tBotState, "HWnD", $HWnD)
-			DllStructSetData($tBotState, "RunState", $RunState)
-			DllStructSetData($tBotState, "TPaused", $TPaused)
+			DllStructSetData($tBotState, "RunState", $g_bRunState)
+			DllStructSetData($tBotState, "TPaused", $g_bBotPaused)
 
 		Case 0x1000 ; start bot
 			$hWind = HWnd($lParam)
-			$lParam = $frmBot
+			$lParam = $g_hFrmBot
 			$wParam += 1
 			Local $wParamHi = 0
-			If $RunState = False Then
+			If $g_bRunState = False Then
 				$wParamHi = 1
 				$wParam += BitShift($wParamHi, -16)
 				_WinAPI_PostMessage($hWind, $iMsg, $wParam, $lParam)
@@ -60,10 +60,10 @@ Func WM_MYBOTRUN_API_1_0_CLIENT($hWind, $iMsg, $wParam, $lParam)
 
 		Case 0x1010 ; stop bot
 			$hWind = HWnd($lParam)
-			$lParam = $frmBot
+			$lParam = $g_hFrmBot
 			$wParam += 1
 			Local $wParamHi = 0
-			If $RunState = True Then
+			If $g_bRunState = True Then
 				$wParamHi = 1
 				btnStop()
 			EndIf
@@ -71,10 +71,10 @@ Func WM_MYBOTRUN_API_1_0_CLIENT($hWind, $iMsg, $wParam, $lParam)
 
 		Case 0x1020 ; resume bot
 			$hWind = HWnd($lParam)
-			$lParam = $frmBot
+			$lParam = $g_hFrmBot
 			$wParam += 1
 			Local $wParamHi = 0
-			If $TPaused = True And $RunState = True Then
+			If $g_bBotPaused = True And $g_bRunState = True Then
 				TogglePauseImpl("ManageFarm")
 				$wParamHi = 1
 			EndIf
@@ -82,10 +82,10 @@ Func WM_MYBOTRUN_API_1_0_CLIENT($hWind, $iMsg, $wParam, $lParam)
 
 		Case 0x1030 ; pause bot
 			$hWind = HWnd($lParam)
-			$lParam = $frmBot
+			$lParam = $g_hFrmBot
 			$wParam += 1
 			Local $wParamHi = 0
-			If $TPaused = False And $RunState = True Then
+			If $g_bBotPaused = False And $g_bRunState = True Then
 				TogglePauseImpl("ManageFarm")
 				$wParamHi = 1
 			EndIf
@@ -93,7 +93,7 @@ Func WM_MYBOTRUN_API_1_0_CLIENT($hWind, $iMsg, $wParam, $lParam)
 
 		Case 0x1040 ; close bot
 			$hWind = HWnd($lParam)
-			$lParam = $frmBot
+			$lParam = $g_hFrmBot
 			$wParam += 1
 			Local $wParamHi = 0
 			BotCloseRequest()
@@ -147,7 +147,7 @@ Func LaunchWatchdog()
 		SetLog("Cannot launch watchdog", $COLOR_RED)
 		Return 0
 	EndIf
-	If $debugSetlog Then
+	If $g_iDebugSetlog Then
 		SetDebugLog("Watchdog launched, PID = " & $pid)
 	Else
 		SetLog("Watchdog launched")
@@ -158,14 +158,14 @@ EndFunc   ;==>LaunchWatchdog
 Func UnregisterManagedMyBotHost()
 	For $i = 0 To UBound($aManagedMyBotHosts) - 1
 		Local $a = $aManagedMyBotHosts[$i]
-		$hFrmHost = $a[0]
+		Local $hFrmHost = $a[0]
 		$a[0] = 0
 		$aManagedMyBotHosts[$i] = $a
 		If IsHWnd($hFrmHost) Then
 			Local $hWind = $hFrmHost
 			Local $iMsg = $WM_MYBOTRUN_API_1_0
 			Local $wParam = 0x1040 + 2
-			Local $lParam = $frmBot
+			Local $lParam = $g_hFrmBot
 			_WinAPI_PostMessage($hWind, $iMsg, $wParam, $lParam)
 			SetDebugLog("Bot Host Window Handle un-registered: " & $hFrmHost)
 		EndIf

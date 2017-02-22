@@ -7,7 +7,7 @@
 ; Authors .......: Saviart, Hervidero
 ; Modified ......: Hervidero, ProMac, KnowJack (May/July-2015) added check for loot available to prevent spending gems. changed screen capture to pixel capture.
 ;                  Sardo 2015-08 , ProMac (01-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,11 +16,11 @@
 
 Func ReArm()
 
-	If $ichkTrap = 0 Then Return ; If re-arm is not enable in GUI return and skip this code
+	If $g_bChkTrap = False Then Return ; If re-arm is not enable in GUI return and skip this code
 	;If $iShouldRearm = False Then Return
 	If $NotNeedAllTime[0] = 0 Then Return
 	;$iShouldRearm = False
-	;	Local $y = 562 + $bottomOffsetY ; Add 60 y pixel for 860x780 window
+	;	Local $y = 562 + $g_iBottomOffsetY ; Add 60 y pixel for 860x780 window
 
 	SetLog("Checking if Village needs Rearming..", $COLOR_INFO)
 
@@ -56,19 +56,19 @@ Func ReArm()
 		If FileExists($ImagesToUse[$i]) Then
 			_CaptureRegion2(125, 610, 740, 715)
 			;Full Search in ALL Image (FV for cocDiamond) and return only fisrt match (maxObjects=1)
-			$res = DllCall($hImgLib, "str", "FindTile", "handle", $hHBitmap2, "str", $ImagesToUse[$i], "str", "FV", "int", 1)
-			If @error Then _logErrorDLLCall($pImgLib, @error)
+			Local $res = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $hHBitmap2, "str", $ImagesToUse[$i], "str", "FV", "int", 1)
+			If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 			If IsArray($res) Then
-				If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
 				If $res[0] = "0" Or $res[0] = "" Then
-					If $DebugSetlog = 1 Then SetLog("No Button found")
+					If $g_iDebugSetlog = 1 Then SetLog("No Button found")
 				ElseIf StringLeft($res[0], 2) = "-1" Then
 					SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 				Else
-					$expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
-					$posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
-					$ButtonX = 125 + Int($posPoint[0])
-					$ButtonY = 610 + Int($posPoint[1])
+					Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
+					Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+					Local $ButtonX = 125 + Int($posPoint[0])
+					Local $ButtonY = 610 + Int($posPoint[1])
 					If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
 					If _Sleep($iDelayReArm1) Then Return
 					Click(515, 400, 1, 0, "#0226")

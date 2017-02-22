@@ -22,10 +22,10 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 	$ResourceToInsert = $type
 	$ResourceToInsert &= "." & $level
 	$ResourceToInsert &= "." & $coordinate
-	$pixel = StringSplit($coordinate, "-", 2)
+	Local $pixel = StringSplit($coordinate, "-", 2)
 
-	Local $diamondx = $MilkFarmOffsetX + $MilkFarmOffsetXStep * $MilkFarmResMaxTilesFromBorder
-	Local $diamondy = $MilkFarmOffsetY + $MilkFarmOffsetYStep * $MilkFarmResMaxTilesFromBorder
+	Local $diamondx = $MilkFarmOffsetX + $MilkFarmOffsetXStep * $g_iMilkFarmResMaxTilesFromBorder
+	Local $diamondy = $MilkFarmOffsetY + $MilkFarmOffsetYStep * $g_iMilkFarmResMaxTilesFromBorder
 	If UBound($pixel) = 2 Then
 
 		;adjust********************************************************************************************************************
@@ -51,7 +51,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -64,7 +64,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -77,7 +77,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -90,7 +90,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $DebugSetLog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -99,7 +99,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 			$MilkFarmObjectivesSTR &= $ResourceToInsert
 		EndIf
 	Else
-		If $DebugSetLog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #1 " & $pixel & " " & UBound($pixel), $COLOR_ERROR)
+		If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #1 " & $pixel & " " & UBound($pixel), $COLOR_ERROR)
 	EndIf
 
 	Return $ResourceToInsertQty

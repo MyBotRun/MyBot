@@ -7,22 +7,18 @@
 ;                  $bCloseArmyWindow    - [optional] a boolean value. Default is False.
 ; Return values .: None
 ; Author ........: Separated from checkArmyCamp()
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-;
-
-Global $SlotInArmyBarb = -1, $SlotInArmyArch = -1, $SlotInArmyGiant = -1, $SlotInArmyGobl = -1, $SlotInArmyWall = -1, $SlotInArmyBall = -1, $SlotInArmyWiza = -1, $SlotInArmyHeal = -1
-Global $SlotInArmyMini = -1, $SlotInArmyHogs = -1, $SlotInArmyValk = -1, $SlotInArmyGole = -1, $SlotInArmyWitc = -1, $SlotInArmyLava = -1, $SlotInArmyBowl = -1, $SlotInArmyDrag = -1
-Global $SlotInArmyPekk = -1, $SlotInArmyBabyD = -1, $SlotInArmyMine = -1
+#include-once
 
 Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $test = false)
 
-	If $debugsetlogTrain = 1 Or $debugSetlog = 1 Then SETLOG("Begin getArmyTroopCount:", $COLOR_DEBUG1)
+	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SETLOG("Begin getArmyTroopCount:", $COLOR_DEBUG1)
 
 	If $test = false  Then
 		If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
@@ -44,14 +40,14 @@ Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $tes
 	Local $TroopQ = 0
 	Local $TroopTypeT = ""
 
-	_CaptureRegion2(120, 165 + $midOffsetY, 740, 220 + $midOffsetY)
-	If $debugSetlog = 1 Then SetLog("$hHBitmap2 made", $COLOR_DEBUG)
+	_CaptureRegion2(120, 165 + $g_iMidOffsetY, 740, 220 + $g_iMidOffsetY)
+	If $g_iDebugSetlog = 1 Then SetLog("$hHBitmap2 made", $COLOR_DEBUG)
 	If _Sleep($iDelaycheckArmyCamp5) Then Return
-	If $debugsetlogTrain = 1 Then SetLog("Calling MBRfunctions.dll/searchIdentifyTroopTrained ", $COLOR_DEBUG)
+	If $g_iDebugSetlogTrain = 1 Then SetLog("Calling MBRfunctions.dll/searchIdentifyTroopTrained ", $COLOR_DEBUG)
 
-	$FullTemp = DllCall($hFuncLib, "str", "searchIdentifyTroopTrained", "ptr", $hHBitmap2)
+	$FullTemp = DllCall($g_hLibFunctions, "str", "searchIdentifyTroopTrained", "ptr", $hHBitmap2)
 	If _Sleep($iDelaycheckArmyCamp6) Then Return ; 10ms improve pause button response
-	If $debugsetlogTrain = 1 Then
+	If $g_iDebugSetlogTrain = 1 Then
 		If IsArray($FullTemp) Then
 			SetLog("Dll return $FullTemp :" & $FullTemp[0], $COLOR_DEBUG)
 		Else
@@ -63,23 +59,19 @@ Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $tes
 		$TroopTypeT = StringSplit($FullTemp[0], "|")
 	EndIf
 
-	If $debugsetlogTrain = 1 Then
+	If $g_iDebugSetlogTrain = 1 Then
 		If IsArray($TroopTypeT) Then
 			SetLog("$Trooptype split # : " & $TroopTypeT[0], $COLOR_DEBUG)
 		Else
 			SetLog("$Trooptype split # : ERROR " & $TroopTypeT, $COLOR_DEBUG)
 		EndIf
 	EndIf
-	If $debugsetlogTrain = 1 Then SetLog("Start the Loop", $COLOR_DEBUG)
+	If $g_iDebugSetlogTrain = 1 Then SetLog("Start the Loop", $COLOR_DEBUG)
 
-	For $i = 0 To UBound($TroopName) - 1 ; Reset the variables
-		Assign(("SlotInArmy" & $TroopName[$i]), -1)
+	For $i = 0 To UBound($g_asTroopName) - 1 ; Reset the variables
+		$g_aiSlotInArmy[$i] = -1
 	Next
-#CS 
-	For $i = 0 To UBound($TroopDarkName) - 1 ; Reset the variables
-		Assign(("SlotInArmy" & $TroopDarkName[$i]), -1)
-	Next
- #CE
+
 	For $i = 0 To UBound($aDTtroopsToBeUsed, 1) - 1 ; Reset the variables
 		$aDTtroopsToBeUsed[$i][1] = 0
 	Next
@@ -91,147 +83,147 @@ Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $tes
 			$TroopQ = "0"
 			If _sleep($iDelaycheckArmyCamp1) Then Return
 			Local $Troops = StringSplit($TroopTypeT[$i], "#", $STR_NOCOUNT)
-			If $debugsetlogTrain = 1 Then SetLog("$TroopTypeT[$i] split : " & $i, $COLOR_DEBUG)
+			If $g_iDebugSetlogTrain = 1 Then SetLog("$TroopTypeT[$i] split : " & $i, $COLOR_DEBUG)
 
 			If IsArray($Troops) And $Troops[0] <> "" Then
 
 				If $Troops[0] = $eBarb Then
 					$TroopQ = $Troops[2]
 					$aDTtroopsToBeUsed[0][1] = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eBarb) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eBarb) Then
 						$CurBarb = -($TroopQ)
-						$SlotInArmyBarb = $i - 1
+						$g_aiSlotInArmy[$eTroopBarbarian] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eArch Then
 					$TroopQ = $Troops[2]
 					$aDTtroopsToBeUsed[1][1] = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eArch) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eArch) Then
 						$CurArch = -($TroopQ)
-						$SlotInArmyArch = $i - 1
+						$g_aiSlotInArmy[$eTroopArcher] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eGiant Then
 					$TroopQ = $Troops[2]
 					$aDTtroopsToBeUsed[2][1] = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eGiant) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eGiant) Then
 						$CurGiant = -($TroopQ)
-						$SlotInArmyGiant = $i - 1
+						$g_aiSlotInArmy[$eTroopGiant] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eGobl Then
 					$TroopQ = $Troops[2]
 					$aDTtroopsToBeUsed[4][1] = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eGobl) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eGobl) Then
 						$CurGobl = -($TroopQ)
-						$SlotInArmyGobl = $i - 1
+						$g_aiSlotInArmy[$eTroopGoblin] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eWall Then
 					$TroopQ = $Troops[2]
 					$aDTtroopsToBeUsed[3][1] = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eWall) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eWall) Then
 						$CurWall = -($TroopQ)
-						$SlotInArmyWall = $i - 1
+						$g_aiSlotInArmy[$eTroopWallBreaker] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eBall Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eBall) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eBall) Then
 						$CurBall = -($TroopQ)
-						$SlotInArmyBall = $i - 1
+						$g_aiSlotInArmy[$eTroopBalloon] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eHeal Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eHeal) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eHeal) Then
 						$CurHeal = -($TroopQ)
-						$SlotInArmyHeal = $i - 1
+						$g_aiSlotInArmy[$eTroopHealer] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eWiza Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eWiza) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eWiza) Then
 						$CurWiza = -($TroopQ)
-						$SlotInArmyWiza = $i - 1
+						$g_aiSlotInArmy[$eTroopWizard] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eDrag Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eDrag) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eDrag) Then
 						$CurDrag = -($TroopQ)
-						$SlotInArmyDrag = $i - 1
+						$g_aiSlotInArmy[$eTroopDragon] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $ePekk Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($ePekk) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($ePekk) Then
 						$CurPekk = -($TroopQ)
-						$SlotInArmyPekk = $i - 1
+						$g_aiSlotInArmy[$eTroopPekka] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eBabyD Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eBabyD) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eBabyD) Then
 						$CurBabyD = -($TroopQ)
-						$SlotInArmyBabyD = $i - 1
+						$g_aiSlotInArmy[$eTroopBabyDragon] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eMine Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eMine) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eMine) Then
 						$CurMine = -($TroopQ)
-						$SlotInArmyMine = $i - 1
+						$g_aiSlotInArmy[$eTroopMiner] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eMini Then
 					$TroopQ = $Troops[2]
 					$aDTtroopsToBeUsed[5][1] = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eMini) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eMini) Then
 						$CurMini = -($TroopQ)
-						$SlotInArmyMini = $i - 1
+						$g_aiSlotInArmy[$eTroopMinion] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eHogs Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eHogs) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eHogs) Then
 						$CurHogs = -($TroopQ)
-						$SlotInArmyHogs = $i - 1
+						$g_aiSlotInArmy[$eTroopHogRider] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eValk Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eValk) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eValk) Then
 						$CurValk = -($TroopQ)
-						$SlotInArmyValk = $i - 1
+						$g_aiSlotInArmy[$eTroopValkyrie] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eGole Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eGole) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eGole) Then
 						$CurGole = -($TroopQ)
-						$SlotInArmyGole = $i - 1
+						$g_aiSlotInArmy[$eTroopGolem] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eWitc Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eWitc) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eWitc) Then
 						$CurWitc = -($TroopQ)
-						$SlotInArmyWitc = $i - 1
+						$g_aiSlotInArmy[$eTroopWitch] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eLava Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eLava) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eLava) Then
 						$CurLava = -($TroopQ)
-						$SlotInArmyLava = $i - 1
+						$g_aiSlotInArmy[$eTroopLavaHound] = $i - 1
 					EndIf
 
 				ElseIf $Troops[0] = $eBowl Then
 					$TroopQ = $Troops[2]
-					If $FirstStart Or $fullArmy Or IsTroopToDonateOnly($eBowl) Then
+					If $g_bFirstStart Or $fullArmy Or IsTroopToDonateOnly($eBowl) Then
 						$CurBowl = -($TroopQ)
-						$SlotInArmyBowl = $i - 1
+						$g_aiSlotInArmy[$eTroopBowler] = $i - 1
 					EndIf
 
 				EndIf
@@ -244,7 +236,7 @@ Func getArmyTroopCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $tes
 
 	EndIf
 
-	If Not $fullArmy And $FirstStart Then
+	If Not $fullArmy And $g_bFirstStart Then
 		$ArmyComp = $CurCamp
 	EndIf
 

@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
-	$pixel = StringSplit($coordinate, "-", 2)
+	Local $pixel = StringSplit($coordinate, "-", 2)
 	Switch $type ;adjust coordinate
 		Case "gomine"
 			Local $px = StringSplit($MilkFarmOffsetMine[$level], "-", 2)
@@ -28,7 +28,7 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 		Case Else
 			Local $px = StringSplit("0-0", "-", 2)
 			Local $name = ""
-			If $debugsetlog = 1 Then Setlog("MilkingAttackStructureDestroyed error #1")
+			If $g_iDebugSetlog = 1 Then Setlog("MilkingAttackStructureDestroyed error #1")
 	EndSwitch
 	$pixel[0] += $px[0]
 	$pixel[1] += $px[1]
@@ -38,26 +38,35 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 		;----------
 		Local $found = 0
 		Local $posx, $posy
-		If $debugsetlog = 1 Then Setlog("##start search in vector Destroyed" & $name & "IMG" & $level & ": numbers of files=" & UBound(Eval("Destroyed" & $name & "IMG" & $level)), $COLOR_SUCCESS)
-;~ 		 For $t = 1 To ubound(Eval("Destroyed" & $name & "IMG" & $level)) - 1
-;~ 			   If $debugsetlog=1 Then Setlog("-" &  Execute("$Destroyed" & $name & "IMG"& $level & "[" & $t & "]"),$COLOR_DEBUG1)
+		Local $aDestroyedImgFilenames = 0
+		If $name = "Mine" Then
+		   $aDestroyedImgFilenames = $DestroyedMineIMG[$level]
+	    ElseIf $name = "Elixir" Then
+		   $aDestroyedImgFilenames = $DestroyedElixirIMG[$level]
+	    ElseIf $name = "Dark" Then
+		   $aDestroyedImgFilenames = $DestroyedDarkIMG[$level]
+	    EndIf
+		If $g_iDebugSetlog = 1 Then Setlog("##start search in vector Destroyed" & $name & "IMG" & $level & ": numbers of files=" & UBound($aDestroyedImgFilenames), $COLOR_SUCCESS)
+;~ 		 For $t = 1 To ubound($aDestroyedImg) - 1
+;~ 			   If $g_iDebugSetlog=1 Then Setlog("-" & $aDestroyedImgFilenames[$t],$COLOR_DEBUG1)
 ;~ 		 Next
-		For $t = UBound(Eval("Destroyed" & $name & "IMG" & $level)) - 1 To 1 Step -1 ;
-			$filename = Execute("$Destroyed" & $name & "IMG" & $level & "[" & $t & "]")
-			;If $debugsetlog=1 Then Setlog(">>filename = " & $filename)
-			$tolerance = Int(StringMid($filename, StringInStr($filename, "_", 0, 3) + 1, StringInStr($filename, "_", 0, 4) - StringInStr($filename, "_", 0, 3) - 1))
-			If $MilkFarmForcetolerance = 1 Then $tolerance = Int($MilkFarmForcetolerancedestroyed)
+		For $t = UBound($aDestroyedImgFilenames) - 1 To 1 Step -1 ;
+			Local $filename = $aDestroyedImgFilenames[$t]
 
-			;If $debugsetlog=1 Then Setlog(">>tol " & $tolerance)
-			$found = _ImageSearch(@ScriptDir & "\images\CapacityStructure\" & Execute("$Destroyed" & $name & "IMG" & $level & "[" & $t & "]"), 1, $posx, $posy, $tolerance)
+			;If $g_iDebugSetlog=1 Then Setlog(">>filename = " & $filename)
+			Local $tolerance = Int(StringMid($filename, StringInStr($filename, "_", 0, 3) + 1, StringInStr($filename, "_", 0, 4) - StringInStr($filename, "_", 0, 3) - 1))
+			If $g_bMilkFarmForceToleranceEnable Then $tolerance = Int($g_iMilkFarmForceToleranceDestroyed)
+
+			;If $g_iDebugSetlog=1 Then Setlog(">>tol " & $tolerance)
+			$found = _ImageSearch(@ScriptDir & "\images\CapacityStructure\" & $filename, 1, $posx, $posy, $tolerance)
 			If $found = 1 Then
-				If $debugsetlog = 1 Then Setlog("IMAGECKECK OK " & $filename, $COLOR_DEBUG)
-				If $debugsetlog = 1 Then SetLog(">>Structure Destroyed! (" & $name & "," & $level & "," & $tolerance & ")", $COLOR_ERROR)
+				If $g_iDebugSetlog = 1 Then Setlog("IMAGECHECK OK " & $filename, $COLOR_DEBUG)
+				If $g_iDebugSetlog = 1 Then SetLog(">>Structure Destroyed! (" & $name & "," & $level & "," & $tolerance & ")", $COLOR_ERROR)
 				;Msgbox("","","destroyed")
 				Return True
 				ExitLoop
 			Else
-;~ 					If $debugsetlog = 1 Then Setlog(">>IMAGECHECK FAIL " & $filename, $COLOR_GRAY)
+;~ 					If $g_iDebugSetlog = 1 Then Setlog(">>IMAGECHECK FAIL " & $filename, $COLOR_GRAY)
 			EndIf
 		Next
 		If $found = 0 Then
@@ -65,6 +74,6 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 		EndIf
 		Return False
 	Else
-		If $debugsetlog = 1 Then Setlog("error MilkingAttackStructureDestroyed #1")
+		If $g_iDebugSetlog = 1 Then Setlog("error MilkingAttackStructureDestroyed #1")
 	EndIf
 EndFunc   ;==>MilkingAttackStructureDestroyed

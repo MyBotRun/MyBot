@@ -13,9 +13,9 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func debugAttackCSV($string)
-	If $debugAttackCSV = 1 Then
+	If $g_iDebugAttackCSV = 1 Then
 		ConsoleWrite("A " & TimeDebug() & $string & @CRLF)
-		Local $hfile = FileOpen($dirLogs & "debugAttackCSV.log", $FO_APPEND)
+		Local $hfile = FileOpen($g_sProfileLogsPath & "debugAttackCSV.log", $FO_APPEND)
 		_FileWriteLog($hfile, $string)
 		FileClose($hfile)
 	EndIf

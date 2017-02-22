@@ -5,8 +5,8 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: cosote (2016)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,19 +18,18 @@ Func BotStart()
 	CalCostCamp()
 	CalCostSpell()
 
-	$RunState = True
-	$TogglePauseAllowed = True
-	$SkipFirstZoomout = False
+	$g_bRunState = True
+	$g_bTogglePauseAllowed = True
+	$g_bSkipFirstZoomout = False
 	$Is_SearchLimit = False
 	$Is_ClientSyncError = False
-	$Quickattack = False
 
-	EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
-	;$FirstAttack = 0
+	EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
+	;$g_iFirstAttack = 0
 
 	$bTrainEnabled = True
 	$bDonationEnabled = True
-	$MeetCondStop = False
+	$g_bMeetCondStop = False
 	$Is_ClientSyncError = False
 	$bDisableBreakCheck = False ; reset flag to check for early warning message when bot start/restart in case user stopped in middle
 	$bDisableDropTrophy = False ; Reset Disabled Drop Trophy because the user has no Tier 1 or 2 Troops
@@ -38,11 +37,11 @@ Func BotStart()
 	If Not $bSearchMode Then
 		CreateLogFile()
 		CreateAttackLogFile()
-		If $FirstRun = -1 Then $FirstRun = 1
+		If $g_iFirstRun = -1 Then $g_iFirstRun = 1
 	EndIf
-	_GUICtrlEdit_SetText($txtLog, _PadStringCenter(" BOT LOG ", 71, "="))
-	_GUICtrlRichEdit_SetFont($txtLog, 6, "Lucida Console")
-	_GUICtrlRichEdit_AppendTextColor($txtLog, "" & @CRLF, _ColorConvert($Color_Black))
+	_GUICtrlEdit_SetText($g_hTxtLog, _PadStringCenter(" BOT LOG ", 71, "="))
+	_GUICtrlRichEdit_SetFont($g_hTxtLog, 6, "Lucida Console")
+	_GUICtrlRichEdit_AppendTextColor($g_hTxtLog, "" & @CRLF, _ColorConvert($Color_Black))
 
 	SaveConfig()
 	readConfig()
@@ -50,22 +49,24 @@ Func BotStart()
 
 	;Reset Telegram message
 	NotifyGetLastMessageFromTelegram()
-	
-	If BitAND($AndroidSupportFeature, 1 + 2) = 0 And $ichkBackground = 1 Then
-		GUICtrlSetState($chkBackground, $GUI_UNCHECKED)
+
+	If BitAND($g_iAndroidSupportFeature, 1 + 2) = 0 And $g_bChkBackgroundMode = True Then
+		GUICtrlSetState($g_hChkBackgroundMode, $GUI_UNCHECKED)
 		chkBackground() ; Invoke Event manually
-		SetLog("Background Mode not supported for " & $Android & " and has been disabled", $COLOR_ERROR)
+		SetLog("Background Mode not supported for " & $g_sAndroidEmulator & " and has been disabled", $COLOR_ERROR)
 	EndIf
+
+	GUICtrlSetState($g_hBtnStart, $GUI_HIDE)
+	GUICtrlSetState($g_hBtnStop, $GUI_SHOW)
+	GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
+	GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
+	GUICtrlSetState($g_hBtnSearchMode, $GUI_HIDE)
+	GUICtrlSetState($g_hChkBackgroundMode, $GUI_DISABLE)
+	EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
 
 	DisableGuiControls()
 
-	EnableControls($frmBotBottom, Default, $frmBotBottomCtrlState)
-	GUICtrlSetState($btnStart, $GUI_HIDE)
-	GUICtrlSetState($btnStop, $GUI_SHOW)
-	GUICtrlSetState($btnPause, $GUI_SHOW)
-	GUICtrlSetState($btnResume, $GUI_HIDE)
-	GUICtrlSetState($btnSearchMode, $GUI_HIDE)
-	GUICtrlSetState($chkBackground, $GUI_DISABLE)
+	SetRedrawBotWindow(True, Default, Default, Default, "BotStart")
 
 	Local $Result = False
 	If WinGetAndroidHandle() = 0 Then
@@ -73,20 +74,20 @@ Func BotStart()
 	EndIf
 	SetDebugLog("Android Window Handle: " & WinGetAndroidHandle())
 	If $HWnD <> 0 Then ;Is Android open?
-		If Not $RunState Then Return
-		If $AndroidBackgroundLaunched = True Or AndroidControlAvailable() Then ; Really?
+		If Not $g_bRunState Then Return
+		If $g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable() Then ; Really?
 			If Not $Result Then
 				$Result = InitiateLayout()
 			EndIf
 		Else
 			; Not really
-			SetLog("Current " & $Android & " Window not supported by MyBot", $COLOR_ERROR)
+			SetLog("Current " & $g_sAndroidEmulator & " Window not supported by MyBot", $COLOR_ERROR)
 			$Result = RebootAndroid(False)
 		EndIf
-		If Not $RunState Then Return
+		If Not $g_bRunState Then Return
 		Local $hWndActive = $HWnD
 		; check if window can be activated
-		If $NoFocusTampering = False And $AndroidBackgroundLaunched = False And $AndroidEmbedded = False Then
+		If $g_bNoFocusTampering = False And $g_bAndroidBackgroundLaunched = False And $g_bAndroidEmbedded = False Then
 			Local $hTimer = TimerInit()
 			$hWndActive = -1
 			Local $activeHWnD = WinGetHandle("")
@@ -95,15 +96,15 @@ Func BotStart()
 			WEnd
 			WinActivate($activeHWnD) ; restore current active window
 		EndIf
-		If Not $RunState Then Return
-		If $hWndActive = $HWnD And ($AndroidBackgroundLaunched = True Or AndroidControlAvailable())  Then ; Really?
+		If Not $g_bRunState Then Return
+		If $hWndActive = $HWnD And ($g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable())  Then ; Really?
 			Initiate() ; Initiate and run bot
 		Else
-			SetLog("Cannot use " & $Android & ", please check log", $COLOR_ERROR)
+			SetLog("Cannot use " & $g_sAndroidEmulator & ", please check log", $COLOR_ERROR)
 			btnStop()
 		EndIf
 	Else
-		SetLog("Cannot start " & $Android & ", please check log", $COLOR_ERROR)
+		SetLog("Cannot start " & $g_sAndroidEmulator & ", please check log", $COLOR_ERROR)
 		btnStop()
 	EndIf
 EndFunc   ;==>BotStart
@@ -111,14 +112,14 @@ EndFunc   ;==>BotStart
 Func BotStop()
 	ResumeAndroid()
 
-	$RunState = False
-	$TPaused = False
-	$TogglePauseAllowed = True
+	$g_bRunState = False
+	$g_bBotPaused = False
+	$g_bTogglePauseAllowed = True
 
-	;WinSetState($frmBotBottom, "", @SW_DISABLE)
+	;WinSetState($g_hFrmBotBottom, "", @SW_DISABLE)
 	Local $aCtrlState
-	EnableControls($frmBotBottom, False, $frmBotBottomCtrlState)
-	;$FirstStart = true
+	EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
+	;$g_bFirstStart = true
 
 	EnableGuiControls()
 
@@ -126,34 +127,40 @@ Func BotStop()
 	AndroidBotStopEvent() ; signal android that bot is now stopping
 	AndroidShield("btnStop", Default)
 
-	EnableControls($frmBotBottom, Default, $frmBotBottomCtrlState)
+	EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
 
-	GUICtrlSetState($chkBackground, $GUI_ENABLE)
-	GUICtrlSetState($btnStart, $GUI_SHOW)
-	GUICtrlSetState($btnStop, $GUI_HIDE)
-	GUICtrlSetState($btnPause, $GUI_HIDE)
-	GUICtrlSetState($btnResume, $GUI_HIDE)
-	If $iTownHallLevel > 2 Then GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
-	GUICtrlSetState($btnSearchMode, $GUI_SHOW)
-	;GUICtrlSetState($btnMakeScreenshot, $GUI_ENABLE)
+	GUICtrlSetState($g_hChkBackgroundMode, $GUI_ENABLE)
+	GUICtrlSetState($g_hBtnStart, $GUI_SHOW)
+	GUICtrlSetState($g_hBtnStop, $GUI_HIDE)
+	GUICtrlSetState($g_hBtnPause, $GUI_HIDE)
+	GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
+	If $iTownHallLevel > 2 Then GUICtrlSetState($g_hBtnSearchMode, $GUI_ENABLE)
+	GUICtrlSetState($g_hBtnSearchMode, $GUI_SHOW)
+	;GUICtrlSetState($g_hBtnMakeScreenshot, $GUI_ENABLE)
 
 	; hide attack buttons if show
-	GUICtrlSetState($btnAttackNowDB, $GUI_HIDE)
-	GUICtrlSetState($btnAttackNowLB, $GUI_HIDE)
-	GUICtrlSetState($btnAttackNowTS, $GUI_HIDE)
-	GUICtrlSetState($pic2arrow, $GUI_SHOW)
-	GUICtrlSetState($lblVersion, $GUI_SHOW)
+	GUICtrlSetState($g_hBtnAttackNowDB, $GUI_HIDE)
+	GUICtrlSetState($g_hBtnAttackNowLB, $GUI_HIDE)
+	GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
+	GUICtrlSetState($g_hPicTwoArrowShield, $GUI_SHOW)
+	GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
 
 	;_BlockInputEx(0, "", "", $HWnD)
 	SetLog(_PadStringCenter(" Bot Stop ", 50, "="), $COLOR_ACTION)
 	If Not $bSearchMode Then
-		If Not $TPaused Then $iTimePassed += Int(TimerDiff($sTimer))
+		If Not $g_bBotPaused Then $g_iTimePassed += Int(TimerDiff($g_hTimerSinceStarted))
 		;AdlibUnRegister("SetTime")
-		$Restart = True
-		FileClose($hLogFileHandle)
-		$hLogFileHandle = ""
-		FileClose($hAttackLogFileHandle)
-		$hAttackLogFileHandle = ""
+		$g_bRestart = True
+
+	   If $g_hLogFile <> 0 Then
+		  FileClose($g_hLogFile)
+		  $g_hLogFile = 0
+	   EndIf
+
+	   If $g_hAttackLogFile <> 0 Then
+		  FileClose($g_hAttackLogFile)
+		  $g_hAttackLogFile = 0
+	   EndIf
 	Else
 		$bSearchMode = False
 	EndIf
@@ -161,9 +168,9 @@ EndFunc   ;==>BotStop
 
 Func BotSearchMode()
 	$bSearchMode = True
-	$Restart = False
+	$g_bRestart = False
 	$Is_ClientSyncError = False
-	If $FirstRun = 1 Then $FirstRun = -1
+	If $g_iFirstRun = 1 Then $g_iFirstRun = -1
 	btnStart()
 	checkMainScreen(False)
 	If _Sleep(100) Then Return

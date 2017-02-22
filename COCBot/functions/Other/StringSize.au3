@@ -8,7 +8,7 @@
 ; Author(s) .....:  Melba23 - thanks to trancexx for the default DC code
 ; Link ..........: https://www.autoitscript.com/forum/topic/109096-extended-message-box-bugfix-version-9-aug-16/
 ;
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -225,11 +225,12 @@ Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = ""
 		Local $avSize_Info[4] = [$sText, $iLine_Height, $iLine_Width, ($asLines[0] * $iLine_Height) + 4]
 	EndIf
 
-	; Clear up
+	; Clean up
     DllCall("gdi32.dll", "handle", "SelectObject", "handle", $hDC, "handle", $hPrevFont)
 	DllCall("gdi32.dll", "bool", "DeleteObject", "handle", $hFont)
 	DllCall("user32.dll", "int", "ReleaseDC", "hwnd", 0, "handle", $hDC)
 	If $hLabel Then GUICtrlDelete($hLabel)
+    $tSize = 0
 
 	Return $avSize_Info
 
@@ -274,9 +275,15 @@ Func _StringSize_DefaultFontName()
 	DLLStructSetData($tNONCLIENTMETRICS, 1, DllStructGetSize($tNONCLIENTMETRICS))
 	DLLCall("user32.dll", "int", "SystemParametersInfo", "int", 41, "int", DllStructGetSize($tNONCLIENTMETRICS), "ptr", DllStructGetPtr($tNONCLIENTMETRICS), "int", 0)
 	Local $tLOGFONT = DllStructCreate("long;long;long;long;long;byte;byte;byte;byte;byte;byte;byte;byte;char[32]", DLLStructGetPtr($tNONCLIENTMETRICS, 13))
+
+	$tNONCLIENTMETRICS = 0
+
 	If IsString(DllStructGetData($tLOGFONT, 14)) Then
-		Return DllStructGetData($tLOGFONT, 14)
-	Else
+	    Local $iVal = DllStructGetData($tLOGFONT, 14)
+		$tLOGFONT = 0
+		Return $iVal
+    Else
+		$tLOGFONT = 0
 		Return "Tahoma"
 	EndIf
 

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (aug-2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -19,7 +19,7 @@ Global $oMyError = ObjEvent("AutoIt.Error", "BotComError") ; Initialize a COM er
 Func BotComError()
 
 	SetError(0, 0, 0)
-	If $debugsetlog = 1 Then
+	If $g_iDebugSetlog = 1 Then
 		Setlog("We intercepted a COM Error !", $COLOR_ERROR)
 		Setlog("err.description is: " & $oMyError.description, $COLOR_ERROR)
 		Setlog("err.windescription:" & $oMyError.windescription, $COLOR_ERROR)

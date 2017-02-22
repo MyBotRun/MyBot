@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-02)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,11 +17,11 @@
 Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
 	; skip shield data collection if force single PB, wait for shield, or close while training not enabled, or window is not on main base
-	If ($ichkSinglePBTForced = 0 And ($iChkBotStop = 1 And $icmbBotCond >= 19) = False) And $ichkCloseWaitEnable = 0 Or Not (IsMainPage()) Then Return
+	If ($ichkSinglePBTForced = 0 And ($g_bChkBotStop = True And $g_iCmbBotCond >= 19) = False) And $g_bCloseWhileTrainingEnable = False Or Not (IsMainPage()) Then Return
 
 	Local $Result, $iTimeTillPBTstartSec, $ichkTime = 0, $ichkSTime = 0, $ichkPBTime = 0
 
-	If $bChkShield Or $aShieldStatus[0] = "" Or $aShieldStatus[1] = "" Or $aShieldStatus[2] = "" Or $sPBStartTime = "" Or $bGForcePBTUpdate = True Then ; almost always get shield information
+	If $bChkShield Or $aShieldStatus[0] = "" Or $aShieldStatus[1] = "" Or $aShieldStatus[2] = "" Or $sPBStartTime = "" Or $g_bGForcePBTUpdate = True Then ; almost always get shield information
 
 		$Result = getShieldInfo() ; get expire time of shield
 
@@ -29,41 +29,44 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 		If _Sleep($iDelayRespond) Then Return
 
 		If IsArray($Result) Then
-			If $debugSetlog = 1 Then
-				;Setlog("getShieldInfo() return String|String|String : " & $Result[0] & "|" & $Result[1] & "|" & $Result[2], $COLOR_DEBUG)
-				Setlog("Shield expires in: " & _DateDiff('n', $Result[2], _NowCalc()) & " Minutes", $COLOR_DEBUG)
+		    Local $iShieldExp = _DateDiff('n', $Result[2], _NowCalc())
+			If Abs($iShieldExp) > 0 Then
+			   Local $sFormattedDiff = _Date_Difference(_NowCalc(), $Result[2], 4)
+			   Setlog("Shield expires in: " & $sFormattedDiff)
+			Else
+			   Setlog("Shield has expired")
 			EndIf
 
 			If _DateIsValid($aShieldStatus[2]) Then ; if existing global shield time is valid
 				$ichkTime = Abs(Int(_DateDiff('s', $aShieldStatus[2], $Result[2]))) ; compare old and new time
 				If $ichkTime > 60 Then ; test if more than 60 seconds different in case of attack while shield has reduced time
 					$bForceChkPBT = True ; update PB time
-					If $debugSetlog = 1 Then Setlog("Shield time changed: " & $ichkTime & " Sec, Force PBT OCR: " & $bForceChkPBT, $COLOR_WARNING)
+					If $g_iDebugSetlog = 1 Then Setlog("Shield time changed: " & $ichkTime & " Sec, Force PBT OCR: " & $bForceChkPBT, $COLOR_WARNING)
 				EndIf
 			EndIf
 
 			$aShieldStatus = $Result ; update ShieldStatus global values
 
-			If $iChkBotStop = 1 And $icmbBotCond >= 19 Then ; is Halt mode enabled and With Shield selected?
+			If $g_bChkBotStop = True And $g_iCmbBotCond >= 19 Then ; is Halt mode enabled and With Shield selected?
 				If $aShieldStatus[0] = "shield" Then ; verify shield
 					Setlog("Shield found, Halt Attack Now!", $COLOR_INFO)
-					$bWaitShield = True
+					$g_bWaitShield = True
 					$Is_ClientSyncError = False ; cancel OOS restart to enable BotCommand to process Halt mode
 					$Is_SearchLimit = False ; reset search limit flag to enable BotCommand to process Halt mode
 				Else
-					$bWaitShield = False
-					If $MeetCondStop = True Then
+					$g_bWaitShield = False
+					If $g_bMeetCondStop = True Then
 						Setlog("Shield expired, resume attacking", $COLOR_INFO)
 						$bTrainEnabled = True
 						$bDonationEnabled = True
-						$MeetCondStop = False
+						$g_bMeetCondStop = False
 					Else
-						If $debugSetlog = 1 Then Setlog("Halt With Shield: Shield not found...", $COLOR_DEBUG)
+						If $g_iDebugSetlog = 1 Then Setlog("Halt With Shield: Shield not found...", $COLOR_DEBUG)
 					EndIf
 				EndIf
 			EndIf
 		Else
-			If $debugSetlog = 1 Then Setlog("Bad getShieldInfo() return value: " & $Result, $COLOR_ERROR)
+			If $g_iDebugSetlog = 1 Then Setlog("Bad getShieldInfo() return value: " & $Result, $COLOR_ERROR)
 			If _Sleep($iDelayRespond) Then Return
 
 			For $i = 0 To UBound($aShieldStatus) - 1 ; clear global shieldstatus if no shield data returned
@@ -79,23 +82,27 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 		$ichkPBTime = Int(_DateDiff('s', $sPBStartTime, _NowCalc())) ; compare existing shield date/time to now.
 		If $ichkPBTime >= 295 Then
 			$bForceChkPBT = True ; test if PBT date/time in more than 5 minutes past, force update
-			If $debugSetlog = 1 Then Setlog("Found old PB time= " & $ichkPBTime & " Seconds, Force update:" & $bForceChkPBT, $COLOR_WARNING)
+			If $g_iDebugSetlog = 1 Then Setlog("Found old PB time= " & $ichkPBTime & " Seconds, Force update:" & $bForceChkPBT, $COLOR_WARNING)
 		EndIf
 	EndIf
 
-	If $bForceChkPBT Or $bGForcePBTUpdate Or $sPBStartTime = "" Then
+	If $bForceChkPBT Or $g_bGForcePBTUpdate Or $sPBStartTime = "" Then
 
-		$bGForcePBTUpdate = False  ; Reset global flag to force PB update
+		$g_bGForcePBTUpdate = False  ; Reset global flag to force PB update
 
 		$Result = getPBTime() ; Get time in future that PBT starts
 
 		If @error Then Setlog("chkShieldStatus getPBTime OCR error= " & @error & ", Extended= " & @extended, $COLOR_ERROR)
-		;If $debugSetlog = 1 Then Setlog("getPBTime() returned: " & $Result, $COLOR_DEBUG)
+		;If $g_iDebugSetlog = 1 Then Setlog("getPBTime() returned: " & $Result, $COLOR_DEBUG)
 		If _Sleep($iDelayRespond) Then Return
 
 		If _DateIsValid($Result) Then
-			$iTimeTillPBTstartMin = Int(_DateDiff('n', $Result, _NowCalc())) ; time in seconds
-			If $debugSetlog = 1 Then Setlog("Personal Break starts in: " & $iTimeTillPBTstartMin & "Minutes", $COLOR_DEBUG)
+			Local $iTimeTillPBTstartMin = Int(_DateDiff('n', $Result, _NowCalc())) ; time in minutes
+
+			If Abs($iTimeTillPBTstartMin) > 0 Then
+			   Local $sFormattedDiff = _Date_Difference(_DateAdd("n",-1,_NowCalc()), $Result, 4)
+			   Setlog("Personal Break starts in: " & $sFormattedDiff)
+			EndIf
 
 			If $iTimeTillPBTstartMin < -(Int($iValuePBTimeForcedExit)) Then
 				$sPBStartTime = _DateAdd('n', -(Int($iValuePBTimeForcedExit)), $Result) ; subtract GUI time setting from PB start time to set early forced break time
@@ -104,7 +111,7 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 			Else
 				$sPBStartTime = "" ; clear value, can not log off ealy.
 			EndIf
-			If $debugSetlog = 1 Then Setlog("Early Log Off time=" & $sPBStartTime & ", In " & _DateDiff('n', $sPBStartTime, _NowCalc()) & " Minutes", $COLOR_DEBUG)
+			If $g_iDebugSetlog = 1 Then Setlog("Early Log Off time=" & $sPBStartTime & ", In " & _DateDiff('n', $sPBStartTime, _NowCalc()) & " Minutes", $COLOR_DEBUG)
 		Else
 			Setlog("Bad getPBTtime() return value: " & $Result, $COLOR_ERROR)
 			$sPBStartTime = "" ; reset to force update next pass
@@ -114,3 +121,21 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 	If checkObstacles() Then checkMainScreen(False) ; Check for screen errors
 
 EndFunc   ;==>chkShieldStatus
+
+; Returns formatted difference between two dates
+; $iGrain from 0 To 5, to control level of detail that is returned
+Func _Date_Difference($sStartDate, Const $sEndDate, Const $iGrain)
+    Local $aUnit[6] = ["Y", "M", "D", "h", "n", "s"]
+    Local $aType[6] = ["year", "month", "day", "hour", "minute", "second"]
+    Local $sReturn = "", $iUnit
+
+    For $i = 0 To $iGrain
+        $iUnit = _DateDiff($aUnit[$i], $sStartDate, $sEndDate)
+        If $iUnit <> 0 Then
+            $sReturn &= $iUnit & " " & $aType[$i] & ($iUnit > 1 ? "s" : "") & " "
+        EndIf
+        $sStartDate = _DateAdd($aUnit[$i], $iUnit, $sStartDate)
+    Next
+
+    Return $sReturn
+EndFunc

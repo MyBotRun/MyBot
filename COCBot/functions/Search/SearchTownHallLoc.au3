@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Code Monkey #5
 ; Modified ......: Sardo 2016-02
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,20 +17,20 @@ Func SearchTownHallLoc()
 	Local $addtiles = 0
 
 	;how many distance tiles from border
-	Switch $iMatchMode
+	Switch $g_iMatchMode
 		Case $TS
 			If $ArmyCapacity < 100 Then
-				$addtiles = $itxtSWTtiles
+				$addtiles = $g_iAtkTSAddTilesWhileTrain
 			Else
-				$addtiles = $THaddtiles
+				$addtiles = $g_iAtkTSAddTilesFullTroops
 			EndIf
 		Case $LB
-			$addtiles = $THSnipeBeforeLBTiles
+			$addtiles = $g_iTHSnipeBeforeTiles[$LB]
 		Case $DB
 			If $duringMilkingAttack = 1 Then
-				$addtiles = $MilkFarmTHMaxTilesFromBorder
+				$addtiles = $g_iMilkFarmTHMaxTilesFromBorder
 			Else
-				$addtiles = $THSnipeBeforeDBTiles
+				$addtiles = $g_iTHSnipeBeforeTiles[$DB]
 			EndIf
 	EndSwitch
 

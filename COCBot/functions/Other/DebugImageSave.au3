@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: KnowJack (Aug 2015)
 ; Modified ......: Sardo (2016-01)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,11 +18,11 @@ Func DebugImageSave($TxtName = "Unknown", $capturenew = True, $extensionpng = "p
 
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
 	;SetLog("Taking snapshot for later review", $COLOR_SUCCESS) ;Debug purposes only :)
-	$Date = @MDAY & "." & @MON & "." & @YEAR
-	$Time = @HOUR & "." & @MIN & "." & @SEC
-	Local $savefolder = $dirTempDebug
+	Local $Date = @MDAY & "." & @MON & "." & @YEAR
+	Local $Time = @HOUR & "." & @MIN & "." & @SEC
+	Local $savefolder = $g_sProfileTempDebugPath
 	If $makesubfolder = True Then
-		$savefolder = $dirTempDebug & $TxtName & "\"
+		$savefolder = $g_sProfileTempDebugPath & $TxtName & "\"
 		DirCreate($savefolder)
 	EndIf
 
@@ -62,7 +62,7 @@ Func DebugImageSave($TxtName = "Unknown", $capturenew = True, $extensionpng = "p
 	_GDIPlus_ImageSaveToFile($EditedImage, $filename)
 	_GDIPlus_BitmapDispose($EditedImage)
 
-	If $debugsetlog = 1 Then Setlog($filename, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then Setlog($filename, $COLOR_DEBUG)
 
 	If _Sleep($iDelayDebugImageSave1) Then Return
 

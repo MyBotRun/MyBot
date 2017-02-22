@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: AtoZ (2015)
 ; Modified ......: Barracoda (July 2015), TheMaster 2015-10
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -32,7 +32,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 	Local $NumTroopDeployed = 0
 
 	If _Sleep(5) Then Return
-	If $Restart = True Then Return
+	If $g_bRestart = True Then Return
 	If CheckOneStar(0, False, True) Then Return
 
 	For $i = 0 To UBound($atkTroops) - 1
@@ -41,7 +41,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 		EndIf
 	Next
 
-	If ($THtroop = -1) And $debugSetlog = 1 Then SetLog("No " & $name & " Found!!!")
+	If ($THtroop = -1) And $g_iDebugSetlog = 1 Then SetLog("No " & $name & " Found!!!")
 	If ($THtroop = -1) Then Return False
 
 	;Heroes And CC
@@ -52,8 +52,8 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 
 		;King
 		If $troopKind = $eKing Then
-			If $duringMilkingAttack = 0 and $KingAttack[$TS] = 0 Then Return
-			If $duringMilkingAttack = 1 and $KingAttack[$DB] = 0 Then Return
+			If $duringMilkingAttack = 0 And BitAND($g_aiAttackUseHeroes[$TS], $eHeroKing) <> $eHeroKing Then Return
+			If $duringMilkingAttack = 1 And BitAND($g_aiAttackUseHeroes[$DB], $eHeroKing) <> $eHeroKing Then Return
 			$checkKPower = True
 			SetLog("Dropping King", $COLOR_SUCCESS)
 			$THusedKing = 1
@@ -61,8 +61,8 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 
 		;Queen
 		If $troopKind = $eQueen Then
-			If $duringMilkingAttack = 0 and $QueenAttack[$TS] = 0 Then Return
-			If $duringMilkingAttack = 1 and $QueenAttack[$DB] = 0 Then Return
+			If $duringMilkingAttack = 0 And BitAND($g_aiAttackUseHeroes[$TS], $eHeroQueen) <> $eHeroQueen Then Return
+			If $duringMilkingAttack = 1 And BitAND($g_aiAttackUseHeroes[$DB], $eHeroQueen) <> $eHeroQueen Then Return
 			$checkQPower = True
 			SetLog("Dropping Queen", $COLOR_SUCCESS)
 			$THusedQueen = 1
@@ -70,8 +70,8 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 
 		;Warden
 		If $troopKind = $eWarden Then
-			If  $duringMilkingAttack = 0 and $WardenAttack[$TS] = 0 Then Return
-			If $duringMilkingAttack = 1 and $WardenAttack[$DB] = 0 Then Return
+			If $duringMilkingAttack = 0 And BitAND($g_aiAttackUseHeroes[$TS], $eHeroWarden) <> $eHeroWarden Then Return
+			If $duringMilkingAttack = 1 And BitAND($g_aiAttackUseHeroes[$DB], $eHeroWarden) <> $eHeroWarden Then Return
 			$checkWPower = True
 			SetLog("Dropping Grand Warden", $COLOR_SUCCESS)
 			$THusedWarden = 1
@@ -79,8 +79,8 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 
 		;CC
 		If $troopKind = $eCastle Then
-			If $duringMilkingAttack = 0 and $iDropCC[$TS] = 0 Then Return
-			If $duringMilkingAttack = 1 and $iDropCC[$DB] = 0 Then Return
+			If $duringMilkingAttack = 0 And $g_abAttackDropCC[$TS] Then Return
+			If $duringMilkingAttack = 1 And $g_abAttackDropCC[$DB] Then Return
 
 			If $iPlannedDropCCHoursEnable = 1 Then
 				Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
@@ -119,7 +119,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 		$name = NameOfTroop($troopKind, $plural)
 
 		$TroopCountBeg = Number(ReadTroopQuantity($THtroop))
-		If ($TroopCountBeg = 0) And $debugSetlog = 1 Then SetLog("No " & $name & " Remaining!!!")
+		If ($TroopCountBeg = 0) And $g_iDebugSetlog = 1 Then SetLog("No " & $name & " Remaining!!!")
 		If ($TroopCountBeg = 0) Then Return False
 
 		If $waveNb = 0 Then $waveName = "Only"
@@ -161,7 +161,7 @@ EndFunc   ;==>AttackTHGrid
 
 
 Func DeployTHNormal($iAtEachSpot, $iNbOfSpots)
-
+	Local $aThx = 0, $aThy = 0
 	Switch $THside
 		Case 0 ;UL
 			For $num = 0 To $iAtEachSpot - 1
@@ -229,13 +229,25 @@ EndFunc   ;==>DeployTHNormal
 
 Func SpellTHGrid($S)
 
-
-	If 	$duringMilkingAttack = 0 and ( ($S = $eHSpell And $ichkHealSpell[$TS] = 1) Or ($S = $eLSpell And $ichkLightSpell[$TS] = 1) Or ($S = $eRSpell And $ichkRageSpell[$TS] = 1) Or ($S = $eJSpell And $ichkJumpSpell[$TS] = 1) Or ($S = $eFSpell And $ichkFreezeSpell[$TS] = 1) Or ($S = $ePSpell And $ichkPoisonSpell[$TS] = 1) Or ($S = $eHaSpell And $ichkHasteSpell[$TS] = 1) Or ($S = $eESpell And $ichkEarthquakeSpell[$TS] = 1)) or _
-		$duringMilkingAttack = 1 and ( ($S = $eHSpell And $ichkHealSpell[$DB] = 1) Or ($S = $eLSpell And $ichkLightSpell[$DB] = 1) Or ($S = $eRSpell And $ichkRageSpell[$DB] = 1) Or ($S = $eJSpell And $ichkJumpSpell[$DB] = 1) Or ($S = $eFSpell And $ichkFreezeSpell[$DB] = 1) Or ($S = $ePSpell And $ichkPoisonSpell[$DB] = 1) Or ($S = $eHaSpell And $ichkHasteSpell[$DB] = 1) Or ($S = $eESpell And $ichkEarthquakeSpell[$DB] = 1)) _
-		Then
+	If 	$duringMilkingAttack = 0 And (($S = $eHSpell And $g_abAttackUseHealSpell[$TS]) Or _
+									($S = $eLSpell And $g_abAttackUseLightSpell[$TS]) Or _
+									($S = $eRSpell And $g_abAttackUseRageSpell[$TS]) Or _
+									($S = $eJSpell And $g_abAttackUseJumpSpell[$TS]) Or _
+									($S = $eFSpell And $g_abAttackUseFreezeSpell[$TS]) Or _
+									($S = $ePSpell And $g_abAttackUsePoisonSpell[$TS]) Or _
+									($S = $eHaSpell And $g_abAttackUseHasteSpell[$TS]) Or _
+									($S = $eESpell And $g_abAttackUseEarthquakeSpell[$TS])) Or _
+		$duringMilkingAttack = 1 And (($S = $eHSpell And $g_abAttackUseHealSpell[$DB]) Or _
+									($S = $eLSpell And $g_abAttackUseLightSpell[$DB]) Or _
+									($S = $eRSpell And $g_abAttackUseRageSpell[$DB]) Or _
+									($S = $eJSpell And $g_abAttackUseJumpSpell[$DB]) Or _
+									($S = $eFSpell And $g_abAttackUseFreezeSpell[$DB]) Or _
+									($S = $ePSpell And $g_abAttackUsePoisonSpell[$DB]) Or _
+									($S = $eHaSpell And $g_abAttackUseHasteSpell[$DB]) Or _
+									($S = $eESpell And $g_abAttackUseEarthquakeSpell[$DB])) Then
 
 		If _Sleep(10) Then Return
-		If $Restart = True Then Return
+		If $g_bRestart = True Then Return
 		If CheckOneStar(0, False, True) Then Return
 
 		If $THi <= 15 Or $THside = 0 Or $THside = 2 Then
@@ -264,29 +276,24 @@ Func CastSpell($THSpell, $x, $y)
 	Local $Spell = -1
 	Local $name = ""
 
-	If ($THSpell = $eHSpell And $ichkUseHSpellsTH = 1) Or ($THSpell = $eLSpell And $ichkUseLSpellsTH = 1) Or ($THSpell = $eRSpell And $ichkUseRSpellsTH = 1) Then
+	If _Sleep(10) Then Return
+	If $g_bRestart = True Then Return
+	If CheckOneStar(0, False, True) Then Return
 
-		If _Sleep(10) Then Return
-		If $Restart = True Then Return
-		If CheckOneStar(0, False, True) Then Return
-
-		For $i = 0 To UBound($atkTroops) - 1
-			If $atkTroops[$i][0] = $THSpell Then
-				$Spell = $i
-				$name = NameOfTroop($THSpell, 0)
-			EndIf
-		Next
-
-		;If ($Spell = -1) Then Return False
-		If $Spell > -1 Then
-			SetLog("Dropping " & $name)
-			SelectDropTroop($Spell)
-			If _Sleep($iDelayCastSpell1) Then Return
-			If IsAttackPage() Then Click($x, $y, 1, 0, "#0029")
-		Else
-			If $debugSetlog = 1 Then SetLog("No " & $name & " Found")
+	For $i = 0 To UBound($atkTroops) - 1
+		If $atkTroops[$i][0] = $THSpell Then
+			$Spell = $i
+			$name = NameOfTroop($THSpell, 0)
 		EndIf
+	Next
 
+	If $Spell > -1 Then
+		SetLog("Dropping " & $name)
+		SelectDropTroop($Spell)
+		If _Sleep($iDelayCastSpell1) Then Return
+		If IsAttackPage() Then Click($x, $y, 1, 0, "#0029")
+	Else
+		If $g_iDebugSetlog = 1 Then SetLog("No " & $name & " Found")
 	EndIf
 
 EndFunc   ;==>CastSpell
@@ -296,12 +303,12 @@ Func CheckOneStar($DelayInSec = 0, $Log = True, $CheckHeroes = True)
 	For $i = 0 To $DelayInSec
 
 		If _Sleep(5) Then Return True
-		If $Restart = True Then Return True
+		If $g_bRestart = True Then Return True
 		If $CheckHeroes = True And ($checkQPower = True Or $checkKPower = True) Then CheckHeroesHealth() ;Check Heroes Health and activate their abilities if health is not green
 		;check for one star
 		If _ColorCheck(_GetPixelColor($aWonOneStar[0], $aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) Then ;exit if 1 star
 			If $Log = True Then SetLog("Townhall has been destroyed!", $COLOR_ACTION)
-			If $Restart = True Then Return True
+			If $g_bRestart = True Then Return True
 
 			;Activate King and Queen powers to restore health before exit if they are deployed
 
@@ -312,7 +319,7 @@ Func CheckOneStar($DelayInSec = 0, $Log = True, $CheckHeroes = True)
 			EndIf
 
 			If _Sleep(500) Then Return True
-			If $Restart = True Then Return True
+			If $g_bRestart = True Then Return True
 
 			If $checkKPower = True Then
 				SetLog("Activating King's power to restore some health before EndBattle", $COLOR_INFO)
@@ -330,7 +337,7 @@ Func CheckOneStar($DelayInSec = 0, $Log = True, $CheckHeroes = True)
 
 			If $i <> 0 Then
 				If _Sleep(1000) Then Return True
-				If $Restart = True Then Return True
+				If $g_bRestart = True Then Return True
 			EndIf
 
 		EndIf

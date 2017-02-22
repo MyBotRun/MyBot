@@ -9,7 +9,7 @@
 ;                  $Tolerance           - allowable variation in finding image.
 ; Return values .:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -36,7 +36,7 @@ EndFunc   ;==>_ImageSearch
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -44,12 +44,12 @@ EndFunc   ;==>_ImageSearch
 ; ===============================================================================================================================
 Func _ImageSearchArea($findImage, $resultPosition, $x1, $y1, $right, $bottom, ByRef $x, ByRef $y, $Tolerance)
 	Global $HBMP = $hHBitmap
-	If $ichkBackground = 0 Then
+	If $g_bChkBackgroundMode = False Then
 		$HBMP = 0
-		$x1 += $BSPos[0]
-		$y1 += $BSPos[1]
-		$right += $BSPos[0]
-		$bottom += $BSPos[1]
+		$x1 += $g_aiBSpos[0]
+		$y1 += $g_aiBSpos[1]
+		$right += $g_aiBSpos[0]
+		$bottom += $g_aiBSpos[1]
 	EndIf
 	;MsgBox(0,"asd","" & $x1 & " " & $y1 & " " & $right & " " & $bottom)
 
@@ -57,14 +57,14 @@ Func _ImageSearchArea($findImage, $resultPosition, $x1, $y1, $right, $bottom, By
 	If IsString($findImage) Then
 		If $Tolerance > 0 Then $findImage = "*" & $Tolerance & " " & $findImage
 		If $HBMP = 0 Then
-			$result = DllCall($pImageLib, "str", "ImageSearch", "int", $x1, "int", $y1, "int", $right, "int", $bottom, "str", $findImage)
+			$result = DllCall($g_sLibImageSearchPath, "str", "ImageSearch", "int", $x1, "int", $y1, "int", $right, "int", $bottom, "str", $findImage)
 		Else
-			$result = DllCall($pImageLib, "str", "ImageSearchEx", "int", $x1, "int", $y1, "int", $right, "int", $bottom, "str", $findImage, "ptr", $HBMP)
+			$result = DllCall($g_sLibImageSearchPath, "str", "ImageSearchEx", "int", $x1, "int", $y1, "int", $right, "int", $bottom, "str", $findImage, "ptr", $HBMP)
 		EndIf
 	Else
-		$result = DllCall($pImageLib, "str", "ImageSearchExt", "int", $x1, "int", $y1, "int", $right, "int", $bottom, "int", $Tolerance, "ptr", $findImage, "ptr", $HBMP)
+		$result = DllCall($g_sLibImageSearchPath, "str", "ImageSearchExt", "int", $x1, "int", $y1, "int", $right, "int", $bottom, "int", $Tolerance, "ptr", $findImage, "ptr", $HBMP)
 	EndIf
-	If @error Then _logErrorDLLCall($pImageLib, @error)
+	If @error Then _logErrorDLLCall($g_sLibImageSearchPath, @error)
 
 	; If error exit
 	If IsArray($result) Then
@@ -77,7 +77,7 @@ Func _ImageSearchArea($findImage, $resultPosition, $x1, $y1, $right, $bottom, By
 
 	; Otherwise get the x,y location of the match and the size of the image to
 	; compute the centre of search
-	$array = StringSplit($result[0], "|")
+	Local $array = StringSplit($result[0], "|")
 	If (UBound($array) >= 4) Then
 		$x = Int(Number($array[2]))
 		$y = Int(Number($array[3]))
@@ -98,10 +98,10 @@ Func _ImageSearchAreaImgLoc($findImage, $resultPosition, $x1, $y1, $right, $bott
 	Local $sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 	Local $MaxReturnPoints = 1
 
-	Local $res = DllCall($hImgLib, "str", "FindTile", "handle", $hHBMP, "str", $findImage,  "str", $sArea, "Int", $MaxReturnPoints)
-	If @error Then _logErrorDLLCall($pImgLib, @error)
+	Local $res = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $hHBMP, "str", $findImage,  "str", $sArea, "Int", $MaxReturnPoints)
+	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 	If IsArray($res) Then
-		;If $DebugSetlog = 1 Then SetLog("_ImageSearchAreaImgLoc " & $findImage & " succeeded " & $res[0] & ",$sArea=" & $sArea & ",$ToleranceImgLoc=" & $ToleranceImgLoc , $COLOR_ERROR)
+		;If $g_iDebugSetlog = 1 Then SetLog("_ImageSearchAreaImgLoc " & $findImage & " succeeded " & $res[0] & ",$sArea=" & $sArea & ",$ToleranceImgLoc=" & $ToleranceImgLoc , $COLOR_ERROR)
 		If $res[0] = "0" Or $res[0] = "" Then
 			;SetLog($findImage & " not found", $COLOR_GREEN)
 		ElseIf StringLeft($res[0], 2) = "-1" Then

@@ -67,36 +67,44 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 	Local $extraunit = Mod($qty, ($indexEnd - $indexStart + 1))
 	debugAttackCSV(">> qty x point: " & $qtyxpoint)
 	debugAttackCSV(">> qty extra: " & $extraunit)
-	;search slot where is the troop...
+
+    ; Get the integer index of the troop name specified
+	Local $iTroopIndex = TroopIndexLookup($troopName)
+	If $iTroopIndex = -1 Then
+	   Setlog("CSV troop name '" & $troopName & "' is unrecognized.")
+	   Return
+    EndIf
+
+    ;search slot where is the troop...
 	Local $troopPosition = -1
 	For $i = 0 To UBound($atkTroops) - 1
-		If $atkTroops[$i][0] = Eval("e" & $troopName) Then
+		If $atkTroops[$i][0] = $iTroopIndex Then
 			$troopPosition = $i
 		EndIf
 	Next
 
 	Local $usespell = True
-	Switch Eval("e" & $troopName)
+	Switch $iTroopIndex
 		Case $eLSpell
-			If $ichkLightSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseLightSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eHSpell
-			If $ichkHealSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseHealSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eRSpell
-			If $ichkRageSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseRageSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eJSpell
-			If $ichkJumpSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseJumpSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eFSpell
-			If $ichkFreezeSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseFreezeSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eCSpell
-			If $ichkCloneSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseCloneSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $ePSpell
-			If $ichkPoisonSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUsePoisonSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eESpell
-			If $ichkEarthquakeSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseEarthquakeSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eHaSpell
-			If $ichkHasteSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseHasteSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eSkSpell
-			If $ichkSkeletonSpell[$iMatchMode] = 0 Then $usespell = False
+			If $g_abAttackUseSkeletonSpell[$g_iMatchMode] = False Then $usespell = False
 	EndSwitch
 
 	If $troopPosition = -1 Or $usespell = False Then
@@ -104,7 +112,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 			Setlog("No troop found in your attack troops list")
 			debugAttackCSV("No troop found in your attack troops list")
 		Else
-			If $DebugSetLog = 1 Then SetLog("discard use spell", $COLOR_DEBUG)
+			If $g_iDebugSetlog = 1 Then SetLog("discard use spell", $COLOR_DEBUG)
 		EndIf
 
 	Else
@@ -142,7 +150,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 				Local $delayDropLast = 0
 				If $j = $numbersOfVectors Then $delayDropLast = $delayDrop
 				If $index <= UBound(Execute("$" & Eval("vector" & $j))) Then
-					$pixel = Execute("$" & Eval("vector" & $j) & "[" & $index - 1 & "]")
+					Local $pixel = Execute("$" & Eval("vector" & $j) & "[" & $index - 1 & "]")
 					Local $qty2 = $qtyxpoint
 					If $index < $indexStart + $extraunit Then $qty2 += 1
 
@@ -153,7 +161,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 						Local $delayPoint = $delayPointmin
 					EndIf
 
-					Switch Eval("e" & $troopName)
+					Switch $iTroopIndex
 						Case $eBarb To $eBowl ; drop normal troops
 							If $debug = True Then
 								Setlog("AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")

@@ -17,8 +17,8 @@
 Func MakeDropLine($searchvect, $startpoint, $endpoint, $iLineDistanceThreshold = 75, $bLineToCorner = False)
 
 	SetDebugLog("MakeDropLine for " & UBound($searchvect) & " points")
-	If $bLineToCorner = False And UBound($searchvect) > 0 Then $startpoint = $searchvect[0]
-	If $bLineToCorner = False And UBound($searchvect) > 0 Then $endpoint = $searchvect[UBound($searchvect) - 1]
+    If $bLineToCorner = False And UBound($searchvect) > 0 Then $startpoint = $searchvect[0]
+    If $bLineToCorner = False And UBound($searchvect) > 0 Then $endpoint = $searchvect[UBound($searchvect) - 1]
 	SetDebugLog("MakeDropLine: Start = " & PixelToString($startpoint) & ", End = " & PixelToString($endpoint) & ": " & PixelArrayToString($searchvect, ","))
 
 	Local $startX = $startpoint[0]
@@ -36,7 +36,7 @@ Func MakeDropLine($searchvect, $startpoint, $endpoint, $iLineDistanceThreshold =
 	Local $iLineIdx = -1
 
 	For $idx = 0 To $size
-		$Pixel1 = $searchvect[$idx]
+		Local $Pixel1 = $searchvect[$idx]
 
 		If $Pixel1[0] < 0 Then ContinueLoop
 
@@ -95,7 +95,7 @@ Func MakeDropLineOriginal($searchvect, $startpoint, $endpoint)
 
 	For $i = $startX + 1 To $endX
 		For $j = $t To UBound($searchvect) - 1
-			$pixel = $searchvect[$j]
+			Local $pixel = $searchvect[$j]
 			If $i < $pixel[0] Then
 				Local $h = Line2Points($point1, $pixel, $i)
 				CheckAttackLocation($i, $h)

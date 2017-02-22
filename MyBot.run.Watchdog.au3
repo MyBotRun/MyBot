@@ -3,7 +3,7 @@
 ; Description ...: This file contens the Sequence that runs all MBR Bot
 ; Author ........: cosote (12-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,8 +20,8 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot Watchdog)
-#pragma compile(ProductVersion, 6.3)
-#pragma compile(FileVersion, 6.3)
+#pragma compile(ProductVersion, 7.0)
+#pragma compile(FileVersion, 7.0)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
 
@@ -56,7 +56,7 @@ Global $hTimeoutAutoClose = 0 ; Timer Handle for $iTimeoutAutoClose
 Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $iDelaySleep = 500
-Global $debugSetlog = 0
+Global $g_iDebugSetlog = 0
 
 Func SetLog($String, $Color = $COLOR_BLACK, $LogPrefix = "L ")
 	Local $log = $LogPrefix & TimeDebug() & $String
@@ -93,7 +93,7 @@ If Not FileExists(@ScriptDir & "\License.txt") Then
 	$license = InetGet("http://www.gnu.org/licenses/gpl-3.0.txt", @ScriptDir & "\License.txt")
 EndIf
 
-$sBotVersion = "v6.3" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+$sBotVersion = "v7.0" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 $sBotTitle = "My Bot Watchdog " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode

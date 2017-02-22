@@ -9,10 +9,10 @@
 ;				   $iSecs				- Variable to store the seconds.
 ; Return values .: Success: 			1
 ;				   Failure: 			0 and sets the @error flag to non-zero.
-;				   @error: 				1 - $iTicks isn't an integer.
+;				   @error: 				1 - $iTicks < 0
 ; Author ........: MMHK (May-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: _TicksToTime
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,7 +21,7 @@
 Func _TicksToDay($iTicks, ByRef $iDays, ByRef $iHours, ByRef $iMins, ByRef $iSecs)
 
 	_TicksToTime($iTicks, $iHours, $iMins, $iSecs)
-	If @error Then Return SetError(1, 0, 0) ; $iTicks isn't an integer.
+	If @error Then Return SetError(1, 0, 0) ; $iTicks < 0
 
 	$iDays = int($iHours/24)
 	$iHours = Mod($iHours,24)

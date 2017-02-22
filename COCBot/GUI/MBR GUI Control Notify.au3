@@ -5,101 +5,100 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-
-
+#include-once
 
 Func chkPBTGenabled()
-	If GUICtrlRead($chkNotifyPBEnabled) = $GUI_CHECKED Then
-		$NotifyPBEnabled = 1
-		GUICtrlSetState($txbNotifyPBToken, $GUI_ENABLE)
-		GUICtrlSetState($btnNotifyDeleteMessages, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyDeleteAllPBPushes, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyDeleteOldPBPushes, $GUI_ENABLE)
-		GUICtrlSetState($btnNotifyDeleteMessages, $GUI_ENABLE)
-		If $NotifyDeletePushesOlderThan = 1 Then
-			GUICtrlSetState($cmbNotifyPushHours, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkNotifyPBEnable) = $GUI_CHECKED Then
+		$g_bNotifyPBEnable = True
+		GUICtrlSetState($g_hTxtNotifyPBToken, $GUI_ENABLE)
+		GUICtrlSetState($g_hBtnNotifyDeleteMessages, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyDeleteAllPBPushes, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyDeleteOldPBPushes, $GUI_ENABLE)
+		GUICtrlSetState($g_hBtnNotifyDeleteMessages, $GUI_ENABLE)
+		If $g_bNotifyDeletePushesOlderThan = True Then
+			GUICtrlSetState($g_hCmbNotifyPushHours, $GUI_ENABLE)
 		Else
-			GUICtrlSetState($cmbNotifyPushHours, $GUI_DISABLE)
+			GUICtrlSetState($g_hCmbNotifyPushHours, $GUI_DISABLE)
 		EndIf
 	Else
-		$NotifyPBEnabled = 0
-		GUICtrlSetState($chkTGenabled, $GUI_ENABLE)
-		GUICtrlSetState($txbNotifyPBToken, $GUI_DISABLE)
-		GUICtrlSetState($btnNotifyDeleteMessages, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyDeleteAllPBPushes, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyDeleteOldPBPushes, $GUI_ENABLE)
-		GUICtrlSetState($btnNotifyDeleteMessages, $GUI_ENABLE)
-		GUICtrlSetState($cmbNotifyPushHours, $GUI_DISABLE)
+		$g_bNotifyPBEnable = False
+		GUICtrlSetState($g_hChkNotifyTGEnable, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtNotifyPBToken, $GUI_DISABLE)
+		GUICtrlSetState($g_hBtnNotifyDeleteMessages, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyDeleteAllPBPushes, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyDeleteOldPBPushes, $GUI_ENABLE)
+		GUICtrlSetState($g_hBtnNotifyDeleteMessages, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbNotifyPushHours, $GUI_DISABLE)
 	EndIf
 
-	If GUICtrlRead($chkTGenabled) = $GUI_CHECKED Then
-		$NotifyTGEnabled = 1
-		GUICtrlSetState($txbNotifyTGToken, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkNotifyTGEnable) = $GUI_CHECKED Then
+		$g_bNotifyTGEnable = True
+		GUICtrlSetState($g_hTxtNotifyTGToken, $GUI_ENABLE)
 	Else
-		$NotifyTGEnabled = 0
-		GUICtrlSetState($txbNotifyTGToken, $GUI_DISABLE)
+		$g_bNotifyTGEnable = False
+		GUICtrlSetState($g_hTxtNotifyTGToken, $GUI_DISABLE)
 	EndIf
 
-	If $NotifyPBEnabled = 1 Or $NotifyTGEnabled = 1 Then
-		GUICtrlSetState($chkNotifyRemote, $GUI_ENABLE)
-		GUICtrlSetState($txbNotifyOrigin, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertMatchFound, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertLastRaidIMG, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertUpgradeWall, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertLastRaidTXT, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertOutOfSync, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertTakeBreak, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertVillageStats, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertLastAttack, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertAnotherDevice, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertCampFull, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertBuilderIdle, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertMaintenance, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyAlertBAN, $GUI_ENABLE)
-		GUICtrlSetState($chkNotifyBOTUpdate, $GUI_ENABLE)
+	If $g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True Then
+		GUICtrlSetState($g_hChkNotifyRemote, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtNotifyOrigin, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertMatchFound, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertLastRaidIMG, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertUpgradeWall, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertLastRaidTXT, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertOutOfSync, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertTakeBreak, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertVillageStats, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertLastAttack, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertAnotherDevice, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertCampFull, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertBuilderIdle, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertMaintenance, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertBAN, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyBOTUpdate, $GUI_ENABLE)
 	Else
-		GUICtrlSetState($chkNotifyRemote, $GUI_DISABLE)
-		GUICtrlSetState($txbNotifyOrigin, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertMatchFound, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertLastRaidIMG, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertUpgradeWall, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertLastRaidTXT, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertOutOfSync, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertTakeBreak, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertVillageStats, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertLastAttack, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertAnotherDevice, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertCampFull, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertBuilderIdle, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertMaintenance, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyAlertBAN, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyBOTUpdate, $GUI_DISABLE)
-		GUICtrlSetState($cmbNotifyPushHours, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyDeleteAllPBPushes, $GUI_DISABLE)
-		GUICtrlSetState($chkNotifyDeleteOldPBPushes, $GUI_DISABLE)
-		GUICtrlSetState($btnNotifyDeleteMessages, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyRemote, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtNotifyOrigin, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertMatchFound, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertLastRaidIMG, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertUpgradeWall, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertLastRaidTXT, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertOutOfSync, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertTakeBreak, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertVillageStats, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertLastAttack, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertAnotherDevice, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertCampFull, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertBuilderIdle, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertMaintenance, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertBAN, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyBOTUpdate, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbNotifyPushHours, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyDeleteAllPBPushes, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyDeleteOldPBPushes, $GUI_DISABLE)
+		GUICtrlSetState($g_hBtnNotifyDeleteMessages, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkPBTGenabled
 
 Func chkDeleteOldPBPushes()
-	If GUICtrlRead($chkNotifyDeleteOldPBPushes) = $GUI_CHECKED Then
-		$NotifyDeletePushesOlderThan = 1
-		If $NotifyPBEnabled Then GUICtrlSetState($cmbNotifyPushHours, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkNotifyDeleteOldPBPushes) = $GUI_CHECKED Then
+		$g_bNotifyDeletePushesOlderThan = True
+		If $g_bNotifyPBEnable Then GUICtrlSetState($g_hCmbNotifyPushHours, $GUI_ENABLE)
 	Else
-		$NotifyDeletePushesOlderThan = 0
-		GUICtrlSetState($cmbNotifyPushHours, $GUI_DISABLE)
+		$g_bNotifyDeletePushesOlderThan = False
+		GUICtrlSetState($g_hCmbNotifyPushHours, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkDeleteOldPBPushes
 
 Func btnDeletePBMessages()
-	$NotifyDeleteAllPushesNow = True
+	$g_bNotifyDeleteAllPushesNow = True
 EndFunc   ;==>btnDeletePBMessages
 
 Func NotifyHelp()
@@ -110,99 +109,50 @@ Func NotifyHelp()
 	EndIf
 EndFunc	;==>NotifyHelp
 
-
-; Restart Bot
-Func _Restart()
-	SetDebugLog("Restart " & $sBotTitle)
-	Local $sCmdLine = ProcessGetCommandLine(@AutoItPID)
-	If @error <> 0 Then
-		SetLog("Cannot prepare to restart " & $sBotTitle & ", error code " & @error, $COLOR_RED)
-		Return SetError(1, 0, 0)
-	EndIf
-	IniWrite($config, "general", "Restarted", 1)
-
-	; add restart option (if not already there)
-	If StringRight($sCmdLine, 9) <> " /Restart" Then
-		$sCmdLine &= " /Restart"
-	EndIf
-
-	; Restart My Bot
-	Local $pid = Run("cmd.exe /c start """" " & $sCmdLine, $WorkingDir, @SW_HIDE) ; cmd.exe only used to support launched like "..\AutoIt3\autoit3.exe" from console
-	If @error = 0 Then
-		CloseAndroid("_Restart")
-		SetLog("Restarting " & $sBotTitle)
-		; Wait 1 Minute to get closed
-		_SleepStatus(60 * 1000)
-	Else
-		SetLog("Cannot restart " & $sBotTitle, $COLOR_RED)
-	EndIf
-
-	Return SetError(2, 0, 0)
-EndFunc   ;==>_Restart
-
 Func chkNotifyHours()
-	If GUICtrlRead($chkNotifyHours) = $GUI_CHECKED Then
-		For $i = $lbNotifyHours1 To $lbNotifyHoursPM
-			GUICtrlSetState($i, $GUI_ENABLE)
-		Next
-		GUICtrlSetState($chkNotifyWeekDays, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($chkNotifyWeekDays, $GUI_UNCHECKED)
-		For $i = $lbNotifyHours1 To $lbNotifyHoursPM
-			GUICtrlSetState($i, $GUI_DISABLE)
-		Next
-		GUICtrlSetState($chkNotifyWeekDays, $GUI_UNCHECKED)
-		GUICtrlSetState($chkNotifyWeekDays, $GUI_DISABLE)
+	Local $b = GUICtrlRead($g_hChkNotifyOnlyHours) = $GUI_CHECKED
+	For $i = 0 To 23
+		GUICtrlSetState($g_hChkNotifyhours[$i], $b ? $GUI_ENABLE : $GUI_DISABLE)
+	Next
+	_GUI_Value_STATE($b ? "ENABLE" : "DISABLE", $g_hChkNotifyOnlyWeekDays&"#"&$g_hChkNotifyhoursE1&"#"&$g_hChkNotifyhoursE2)
+
+	If $b = False Then
+		GUICtrlSetState($g_hChkNotifyOnlyWeekDays, $GUI_UNCHECKED)
 		chkNotifyWeekDays()
 	EndIf
 EndFunc   ;==>chkNotifyHours
 
 Func chkNotifyhoursE1()
-	If GUICtrlRead($chkNotifyhoursE1) = $GUI_CHECKED And GUICtrlRead($chkNotifyhours0) = $GUI_CHECKED Then
-		For $i = $chkNotifyhours0 To $chkNotifyhours11
-			GUICtrlSetState($i, $GUI_UNCHECKED)
-		Next
-	Else
-		For $i = $chkNotifyhours0 To $chkNotifyhours11
-			GUICtrlSetState($i, $GUI_CHECKED)
-		Next
-	EndIf
+    Local $b = GUICtrlRead($g_hChkNotifyhoursE1) = $GUI_CHECKED And GUICtrlRead($g_hChkNotifyhours[0]) = $GUI_CHECKED
+    For $i = 0 To 11
+	   GUICtrlSetState($g_hChkNotifyhours[$i], $b ? $GUI_UNCHECKED : $GUI_CHECKED)
+    Next
 	Sleep(300)
-	GUICtrlSetState($chkNotifyhoursE1, $GUI_UNCHECKED)
+	GUICtrlSetState($g_hChkNotifyhoursE1, $GUI_UNCHECKED)
 EndFunc   ;==>chkNotifyhoursE1
 
 Func chkNotifyhoursE2()
-	If GUICtrlRead($chkNotifyhoursE2) = $GUI_CHECKED And GUICtrlRead($chkNotifyhours12) = $GUI_CHECKED Then
-		For $i = $chkNotifyhours12 To $chkNotifyhours23
-			GUICtrlSetState($i, $GUI_UNCHECKED)
-		Next
-	Else
-		For $i = $chkNotifyhours12 To $chkNotifyhours23
-			GUICtrlSetState($i, $GUI_CHECKED)
-		Next
-	EndIf
+    Local $b = GUICtrlRead($g_hChkNotifyhoursE2) = $GUI_CHECKED And GUICtrlRead($g_hChkNotifyhours[12]) = $GUI_CHECKED
+	For $i = 12 To 23
+	   GUICtrlSetState($g_hChkNotifyhours[$i], $b ? $GUI_UNCHECKED : $GUI_CHECKED)
+    Next
 	Sleep(300)
-	GUICtrlSetState($chkNotifyhoursE2, $GUI_UNCHECKED)
+	GUICtrlSetState($g_hChkNotifyhoursE2, $GUI_UNCHECKED)
 EndFunc		;==>chkNotifyhoursE2
 
 Func chkNotifyWeekDays()
-
-	If GUICtrlRead($chkNotifyWeekDays) = $GUI_CHECKED Then
-		For $i = $chkNotifyWeekdays0 To $chkNotifyWeekdays6
-			GUICtrlSetState($i, $GUI_ENABLE)
-		Next
-		For $i = $lbNotifyWeekdays0 To $lbNotifyWeekdays6
-			GUICtrlSetState($i, $GUI_ENABLE)
-		Next
-	Else
-		For $i = $chkNotifyWeekdays0 To $chkNotifyWeekdays6
-			GUICtrlSetState($i, $GUI_DISABLE)
-		Next
-		For $i = $lbNotifyWeekdays0 To $lbNotifyWeekdays6
-			GUICtrlSetState($i, $GUI_DISABLE)
-		Next
-	EndIf
-
+	Local $b = GUICtrlRead($g_hChkNotifyOnlyWeekDays) = $GUI_CHECKED
+	For $i = 0 To 6
+		GUICtrlSetState($g_hChkNotifyWeekdays[$i], $b ? $GUI_ENABLE : $GUI_DISABLE)
+	Next
+	GUICtrlSetState($g_ahChkNotifyWeekdaysE, $b ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc	;==>chkNotifyWeekDays
 
-
+Func ChkNotifyWeekdaysE()
+	Local $b = BitOR(GUICtrlRead($g_hChkNotifyWeekdays[0]), GUICtrlRead($g_hChkNotifyWeekdays[1]), GUICtrlRead($g_hChkNotifyWeekdays[2]), GUICtrlRead($g_hChkNotifyWeekdays[3]), GUICtrlRead($g_hChkNotifyWeekdays[4]), GUICtrlRead($g_hChkNotifyWeekdays[5]), GUICtrlRead($g_hChkNotifyWeekdays[6])) = $GUI_CHECKED
+	For $i = 0 To 6
+		GUICtrlSetState($g_hChkNotifyWeekdays[$i], $b ? $GUI_UNCHECKED : $GUI_CHECKED)
+	Next
+	Sleep(300)
+	GUICtrlSetState($g_ahChkNotifyWeekdaysE, $GUI_UNCHECKED)
+EndFunc   ;==>ChkNotifyWeekdaysE

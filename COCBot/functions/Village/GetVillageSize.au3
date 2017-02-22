@@ -17,7 +17,7 @@
 ;                      9 = tree image file name
 ; Author ........: Cosote (Oct 17th 2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -44,7 +44,7 @@ Func GetVillageSize($DebugLog = True)
 		SetLog("Error: Missing tree files", $COLOR_ERROR)
 		Return $aResult
 	EndIf
-	local $i, $findImage
+	local $i, $findImage, $sArea, $a
 
 	For $i = 1 To $aStoneFiles[0]
 		$findImage = $aStoneFiles[$i]
@@ -59,11 +59,12 @@ Func GetVillageSize($DebugLog = True)
 			$y1 = $y0 - $iAdditional
 			$right = $x0 + $iAdditional
 			$bottom = $y0 + $iAdditional
-
+			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			;SetDebugLog("GetVillageSize check for image " & $findImage)
-			If _ImageSearchAreaImgLoc($directory & "\" & $findImage, 1, $x1, $y1, $right, $bottom, $x, $y, $hHBitmap2) Then
-				$x += $x1
-				$y += $y1
+			$a = decodeSingleCoord(findImage($findImage, $directory & "\" & $findImage,  $sArea, 1, False))
+			If UBound($a) = 2 Then
+				$x = Int($a[0])
+				$y = Int($a[1])
 				;SetDebugLog("Found stone image at " & $x & ", " & $y & ": " & $findImage)
 				$stone[0] = $x ; x center of stone found
 				$stone[1] = $y ; y center of stone found
@@ -97,11 +98,12 @@ Func GetVillageSize($DebugLog = True)
 			$y1 = $y0 - $iAdditional
 			$right = $x0 + $iAdditional
 			$bottom = $y0 + $iAdditional
-
+			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			;SetDebugLog("GetVillageSize check for image " & $findImage)
-			If _ImageSearchAreaImgLoc($directory & "\" & $findImage, 1, $x1, $y1, $right, $bottom, $x, $y, $hHBitmap2) Then
-				$x += $x1
-				$y += $y1
+			$a = decodeSingleCoord(findImage($findImage, $directory & "\" & $findImage,  $sArea, 1, False))
+			If UBound($a) = 2 Then
+				$x = Int($a[0])
+				$y = Int($a[1])
 				;SetDebugLog("Found tree image at " & $x & ", " & $y & ": " & $findImage)
 				$tree[0] = $x ; x center of tree found
 				$tree[1] = $y ; y center of tree found

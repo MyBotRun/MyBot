@@ -189,13 +189,13 @@ Func __OAER_OnErrorCallback($nCode, $wParam, $lParam)
 			EndIf
 
 			;_WinAPI_DestroyWindow($hError_Wnd)
-			SetDebugLog($sBotTitle & " AutoIt Error: " & $sError_Msg, Default, True)
+			SetDebugLog($g_sBotTitle & " AutoIt Error: " & $sError_Msg, Default, True)
 
 			BotClose(Default, False)
 
 			_WinAPI_FatalAppExit($sError_Msg)
 			#cs
-			MsgBox(BitOR($MB_ICONERROR, $MB_SERVICE_NOTIFICATION), $sBotTitle & " CRASHED", $sError_Msg)
+			MsgBox(BitOR($MB_ICONERROR, $MB_SERVICE_NOTIFICATION), $g_sBotTitle & " CRASHED", $sError_Msg)
 			ProcessClose(@AutoItPID)
 			Exit(1)
 			#ce

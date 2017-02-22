@@ -6,7 +6,7 @@
 ; Return values .: True if boosted, False if not
 ; Author ........: Cosote Oct. 2016
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,7 +21,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 		BuildingClickP($aPos, "#0462")
 		If _Sleep($iDelayBoostHeroes2) Then Return
 		ForceCaptureRegion()
-		Local $aResult = BuildingInfo(242, 520 + $bottomOffsetY)
+		Local $aResult = BuildingInfo(242, 520 + $g_iBottomOffsetY)
 		If $aResult[0] > 1 Then
 			Local $sN = $aResult[1] ; Store bldg name
 			Local $sL = $aResult[2] ; Sotre bdlg level
@@ -36,9 +36,9 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 	EndIf
 
 	If $ok = True Then
-		$Boost = findButton("BoostOne")
+		Local $Boost = findButton("BoostOne")
 		If IsArray($Boost) Then
-			If $DebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
+			If $g_iDebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 			Click($Boost[0], $Boost[1], 1, 0, "#0463")
 			If _Sleep($iDelayBoostHeroes1) Then Return
 			$Boost = findButton("GEM")
@@ -71,10 +71,10 @@ EndFunc   ;==>BoostHero
 
 Func AllowBoosting($sName, $icmbBoost)
 
-	If ($bTrainEnabled = True And $boostsEnabled = 1 And $icmbBoost > 0) = False Then Return False
+	If ($bTrainEnabled = True And $icmbBoost > 0) = False Then Return False
 
 	Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
-	If $iPlannedBoostBarracksHours[$hour[0]] = 0 Then
+	If $g_abBoostBarracksHours[$hour[0]] = False Then
 		SetLog("Boosting " & $sName & " is not planned and skipped...", $COLOR_SUCCESS)
 		Return False
 	EndIf

@@ -5,13 +5,14 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: MMHK (11-2016)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
 
 Func LoadCOCDistributorsComboBox()
 	Local $sDistributors = $NO_COC
@@ -23,42 +24,42 @@ Func LoadCOCDistributorsComboBox()
 		$sDistributors = _ArrayToString($aDistributorsData, "|")
 	EndIf
 
-	GUICtrlSetData($cmbCOCdistributors, "", "")
-	GUICtrlSetData($cmbCOCdistributors, $sDistributors)
+	GUICtrlSetData($g_hCmbCOCDistributors, "", "")
+	GUICtrlSetData($g_hCmbCOCDistributors, $sDistributors)
 EndFunc   ;==>LoadCOCdistributorsComboBox
 
 Func SetCurSelCmbCOCDistributors()
 	Local $sIniDistributor
 	Local $iIndex
-	If _GUICtrlComboBox_GetCount($cmbCOCdistributors) = 1 Then ; when no/unknown/one coc installed
-		_GUICtrlComboBox_SetCurSel($cmbCOCdistributors, 0)
-		GUICtrlSetState($cmbCOCdistributors, $GUI_DISABLE)
+	If _GUICtrlComboBox_GetCount($g_hCmbCOCDistributors) = 1 Then ; when no/unknown/one coc installed
+		_GUICtrlComboBox_SetCurSel($g_hCmbCOCDistributors, 0)
+		GUICtrlSetState($g_hCmbCOCDistributors, $GUI_DISABLE)
 	Else
-		$sIniDistributor = GetCOCTranslated($AndroidGameDistributor)
-		$iIndex = _GUICtrlComboBox_FindStringExact($cmbCOCdistributors, $sIniDistributor)
+		$sIniDistributor = GetCOCTranslated($g_sAndroidGameDistributor)
+		$iIndex = _GUICtrlComboBox_FindStringExact($g_hCmbCOCDistributors, $sIniDistributor)
 		If $iIndex = -1 Then ; not found on combo
-			_GUICtrlComboBox_SetCurSel($cmbCOCdistributors, 0)
+			_GUICtrlComboBox_SetCurSel($g_hCmbCOCDistributors, 0)
 		Else
-			_GUICtrlComboBox_SetCurSel($cmbCOCdistributors, $iIndex)
+			_GUICtrlComboBox_SetCurSel($g_hCmbCOCDistributors, $iIndex)
 		EndIf
-		GUICtrlSetState($cmbCOCdistributors, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbCOCDistributors, $GUI_ENABLE)
 	EndIf
 EndFunc   ;==>setCurSelCmbCOCDistributors
 
 Func cmbCOCDistributors()
 	Local $sDistributor
-    _GUICtrlComboBox_GetLBText($cmbCOCdistributors, _GUICtrlComboBox_GetCurSel($cmbCOCdistributors), $sDistributor)
+    _GUICtrlComboBox_GetLBText($g_hCmbCOCDistributors, _GUICtrlComboBox_GetCurSel($g_hCmbCOCDistributors), $sDistributor)
 
-	If $sDistributor = $UserGameDistributor Then ; ini user option
-		$AndroidGameDistributor = $UserGameDistributor
-		$AndroidGamePackage = $UserGamePackage
-		$AndroidGameClass = $UserGameClass
+	If $sDistributor = $g_sUserGameDistributor Then ; ini user option
+		$g_sAndroidGameDistributor = $g_sUserGameDistributor
+		$g_sAndroidGamePackage = $g_sUserGamePackage
+		$g_sAndroidGameClass = $g_sUserGameClass
 	Else
 		GetCOCUnTranslated($sDistributor)
 		If Not @error Then ; not no/unknown
-			$AndroidGameDistributor = GetCOCUnTranslated($sDistributor)
-			$AndroidGamePackage = GetCOCPackage($sDistributor)
-			$AndroidGameClass = GetCOCClass($sDistributor)
+			$g_sAndroidGameDistributor = GetCOCUnTranslated($sDistributor)
+			$g_sAndroidGamePackage = GetCOCPackage($sDistributor)
+			$g_sAndroidGameClass = GetCOCClass($sDistributor)
 		EndIf ; else existing one (no emulator bot startup compatible), if wrong ini info either kept or replaced by cursel when saveconfig, not fall back to google
 	EndIf
 EndFunc   ;==>cmbCOCDistributors

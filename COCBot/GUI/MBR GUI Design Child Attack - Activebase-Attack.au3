@@ -1,143 +1,177 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: MBR GUI Design
-; Description ...: This file Includes GUI Design
+; Description ...: This file creates the "Attack" tab under the "ActiveBase" tab under the "Search & Attack" tab under the "Attack Plan" tab
 ; Syntax ........:
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........:
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
 
-Local $x = 25, $y = 40
-	$grpABAttack = GUICtrlCreateGroup(GetTranslated(624,1, -1), $x - 20, $y - 15, 145, 223)
+; Attack with
+Global $g_hCmbABAlgorithm = 0, $g_hCmbABSelectTroop = 0, $g_hChkABKingAttack = 0, $g_hChkABQueenAttack = 0, $g_hChkABWardenAttack = 0, $g_hChkABDropCC = 0
+Global $g_hChkABLightSpell = 0, $g_hChkABHealSpell = 0, $g_hChkABRageSpell = 0, $g_hChkABJumpSpell = 0, $g_hChkABFreezeSpell = 0, $g_hChkABCloneSpell = 0, _
+	   $g_hChkABPoisonSpell = 0, $g_hChkABEarthquakeSpell = 0, $g_hChkABHasteSpell = 0, $g_hChkABSkeletonSpell = 0
+
+Global $g_hGrpABAttack = 0, $g_hPicABKingAttack = 0, $g_hPicABQueenAttack = 0, $g_hPicABWardenAttack = 0, $g_hPicABDropCC = 0
+Global $g_hPicABLightSpell = 0, $g_hPicABHealSpell = 0, $g_hPicABRageSpell = 0, $g_hPicABJumpSpell = 0, $g_hPicABFreezeSpell = 0, $g_hPicABCloneSpell = 0, _
+	   $g_hPicABPoisonSpell = 0, $g_hPicABEarthquakeSpell = 0, $g_hPicABHasteSpell = 0, $g_hPicABSkeletonSpell = 0
+
+; TH Snipe
+Global $g_hChkTHSnipeBeforeLBEnable = 0, $g_hTxtTHSnipeBeforeLBTiles = 0, $g_hCmbTHSnipeBeforeLBScript = 0
+Global $g_hLblTHSnipeBeforeLBTiles = 0
+
+Func CreateAttackSearchActiveBaseAttack()
+   Local $sTxtTip = ""
+   Local $x = 25, $y = 40
+	$g_hGrpABAttack = GUICtrlCreateGroup(GetTranslated(624,1, -1), $x - 20, $y - 15, 145, 223)
 		$x -= 15
 		$y += 5
-		$cmbABAlgorithm = GUICtrlCreateCombo("", $x, $y, 135, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$g_hCmbABAlgorithm = GUICtrlCreateCombo("", $x, $y, 135, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, "")
 			GUICtrlSetData(-1, GetTranslated(624,3, -1) & "|" & GetTranslated(624,4, -1) , GetTranslated(624,3,-1))
 			GUICtrlSetOnEvent(-1, "cmbABAlgorithm")
+
 		$y += 30
-		$cmbABSelectTroop=GUICtrlCreateCombo("", $x, $y, 135, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$g_hCmbABSelectTroop=GUICtrlCreateCombo("", $x, $y, 135, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetData(-1, GetTranslated(624,7, -1) & "|" & GetTranslated(624,8, -1) & "|" & GetTranslated(624,9, -1) & "|" & GetTranslated(624,10, -1) & "|" & GetTranslated(624,11, -1) & "|" & GetTranslated(624,12, -1) & "|" & GetTranslated(624,13, -1) & "|" & GetTranslated(624,14, -1) & "|" & GetTranslated(624,15, -1) & "|" & GetTranslated(624,16, -1) & "|" & GetTranslated(624,17, -1), GetTranslated(624,7, -1))
 			_GUICtrlSetTip(-1, GetTranslated(624,18, -1))
+
 		$y += 30
-		$IMGchkABKingAttack=GUICtrlCreateIcon($pIconLib, $eIcnKing, $x , $y, 24, 24)
-			$txtTip = GetTranslated(624,20, -1) & @CRLF & GetTranslated(624, 41, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABKingAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
+		$g_hPicABKingAttack=GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x , $y, 24, 24)
+			$sTxtTip = GetTranslated(624,20, -1) & @CRLF & GetTranslated(624, 41, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABKingAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
 		$x += 46
-		$IMGchkABQueenAttack=GUICtrlCreateIcon($pIconLib, $eIcnQueen, $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,21, -1) & @CRLF & GetTranslated(624, 42, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABQueenAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
+		$g_hPicABQueenAttack=GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,21, -1) & @CRLF & GetTranslated(624, 42, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABQueenAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
 		$x +=46
-		$IMGchkABWardenAttack=GUICtrlCreateIcon($pIconLib, $eIcnWarden, $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,22, -1) & @CRLF & GetTranslated(624, 43, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABWardenAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-	    $y +=27
-		$x -=92
-		$IMGchkABDropCC=GUICtrlCreateIcon($pIconLib, $eIcnCC, $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,23, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABDropCC = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-		$x += 46
-		$IMGchkABLightSpell=GUICtrlCreateIcon($pIconLib, $eIcnLightSpell, $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,24, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABLightSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-		$x +=46
-		$IMGchkABHealSpell=GUICtrlCreateIcon($pIconLib, $eIcnHealSpell, $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,25, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABHealSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-	    $y +=27
-		$x -=92
-		$IMGchkABRageSpell=GUICtrlCreateIcon($pIconLib, $eIcnRageSpell, $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,26, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABRageSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-		$x +=46
-			$IMGchkABJumpSpell=GUICtrlCreateIcon($pIconLib, $eIcnJumpSpell , $x, $y, 24, 24)
-			$txtTip =GetTranslated(624,27, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABJumpSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-		$x += 46
-		$IMGchkABFreezeSpell=GUICtrlCreateIcon($pIconLib, $eIcnFreezeSpell , $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,28, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABFreezeSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-	    $y +=27
-		$x -=92
-		$IMGchkABCloneSpell=GUICtrlCreateIcon($pIconLib, $eIcnCloneSpell , $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,44, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABCloneSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-		$x +=46
-		$IMGchkABPoisonSpell=GUICtrlCreateIcon($pIconLib, $eIcnPoisonSpell , $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,29, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABPoisonSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
-		$x +=46
-		$IMGchkABEarthquakeSpell=GUICtrlCreateIcon($pIconLib, $eIcnEarthquakeSpell , $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,30, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABEarthquakeSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
+		$g_hPicABWardenAttack=GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,22, -1) & @CRLF & GetTranslated(624, 43, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABWardenAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
 		$y +=27
 		$x -=92
-		$IMGchkABHasteSpell=GUICtrlCreateIcon($pIconLib, $eIcnHasteSpell, $x, $y, 24, 24)
-		$txtTip =GetTranslated(624,31, -1)
-		_GUICtrlSetTip(-1, $txtTip)
-		$chkABHasteSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-		_GUICtrlSetTip(-1, $txtTip)
+		$g_hPicABDropCC=GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,23, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABDropCC = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		$x += 46
+		$g_hPicABLightSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnLightSpell, $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,24, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABLightSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
 		$x +=46
-		$IMGchkABSkeletonSpell=GUICtrlCreateIcon($pIconLib, $eIcnSkeletonSpell , $x, $y, 24, 24)
-			$txtTip = GetTranslated(624,45, -1)
-			_GUICtrlSetTip(-1, $txtTip)
-		$chkABSkeletonSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
-			_GUICtrlSetTip(-1, $txtTip)
+		$g_hPicABHealSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnHealSpell, $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,25, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABHealSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		$y +=27
+		$x -=92
+		$g_hPicABRageSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnRageSpell, $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,26, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABRageSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		$x +=46
+			$g_hPicABJumpSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnJumpSpell , $x, $y, 24, 24)
+			$sTxtTip =GetTranslated(624,27, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABJumpSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		$x += 46
+		$g_hPicABFreezeSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnFreezeSpell , $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,28, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABFreezeSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		$y +=27
+		$x -=92
+		$g_hPicABCloneSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnCloneSpell , $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,44, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABCloneSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		$x +=46
+		$g_hPicABPoisonSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnPoisonSpell , $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,29, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABPoisonSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		$x +=46
+		$g_hPicABEarthquakeSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnEarthquakeSpell , $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,30, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABEarthquakeSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		$y +=27
+		$x -=92
+		$g_hPicABHasteSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnHasteSpell, $x, $y, 24, 24)
+		$sTxtTip =GetTranslated(624,31, -1)
+		_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABHasteSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+		_GUICtrlSetTip(-1, $sTxtTip)
+
+		$x +=46
+		$g_hPicABSkeletonSpell=GUICtrlCreateIcon($g_sLibIconPath, $eIcnSkeletonSpell , $x, $y, 24, 24)
+			$sTxtTip = GetTranslated(624,45, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABSkeletonSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-Local $x = 10, $y = 268
-	$grpTSAttackBeforeAB = GUICtrlCreateGroup(GetTranslated(624,32, -1),  $x - 5, $y - 20, 145, 84,$SS_CENTER)
-		$chkTHSnipeBeforeLBEnable = GUICtrlCreateCheckbox(GetTranslated(624,33, -1) ,$x, $y - 5, -1, -1)
-			$txtTip = GetTranslated(624,34, -1)
-			_GUICtrlSetTip(-1, $txtTip)
+   Local $x = 10, $y = 268
+	GUICtrlCreateGroup(GetTranslated(624,32, -1),  $x - 5, $y - 20, 145, 84,$SS_CENTER)
+		$g_hChkTHSnipeBeforeLBEnable = GUICtrlCreateCheckbox(GetTranslated(624,33, -1) ,$x, $y - 5, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslated(624,34, -1))
 			GUICtrlSetOnEvent(-1, "chkTHSnipeBeforeLBEnable")
+
 		$y += 16
-		$lblTHSnipeBeforeLBTiles = GUICtrlCreateLabel(GetTranslated(624,35, -1)& ":", $x, $y + 3, 70, -1, $SS_RIGHT)
+		$g_hLblTHSnipeBeforeLBTiles = GUICtrlCreateLabel(GetTranslated(624,35, -1)& ":", $x, $y + 3, 70, -1, $SS_RIGHT)
 		GUICtrlSetState(-1, $GUI_DISABLE)
-		$txtTHSnipeBeforeLBTiles = GUICtrlCreateInput("2", $x + 75, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$txtTip = GetTranslated(624,36, -1)
-			_GUICtrlSetTip(-1, $txtTip)
+		$g_hTxtTHSnipeBeforeLBTiles = GUICtrlCreateInput("2", $x + 75, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$sTxtTip = GetTranslated(624,36, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 2)
 			GUICtrlSetState(-1, $GUI_DISABLE)
- 		$picTHSnipeBeforeLBTiles = GUICtrlCreateIcon($pIconLib, $eIcnTiles, $x + 107, $y + 1, 16, 16)
- 			_GUICtrlSetTip(-1, $txtTip)
+ 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTiles, $x + 107, $y + 1, 16, 16)
+ 			_GUICtrlSetTip(-1, $sTxtTip)
+
 		$y += 21
-		$cmbTHSnipeBeforeLBScript = GUICtrlCreateCombo("",  $x, $y, 130, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$g_hCmbTHSnipeBeforeLBScript = GUICtrlCreateCombo("",  $x, $y, 130, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetData(-1, "")
-            $txtTip = GetTranslated(624,37, -1)
-			_GUICtrlSetTip(-1, $txtTip)
+			_GUICtrlSetTip(-1, GetTranslated(624,37, -1))
 			;GUICtrlSetOnEvent(-1, "cmbAttackTHType")
 			GUICtrlSetState(-1, $GUI_DISABLE)
-LoadABSnipeAttacks()
-_GUICtrlComboBox_SetCurSel($cmbTHSnipeBeforeLBScript,_GUICtrlComboBox_FindStringExact($cmbTHSnipeBeforeLBScript, "Bam"))
-	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+   LoadABSnipeAttacks()
+   _GUICtrlComboBox_SetCurSel($g_hCmbTHSnipeBeforeLBScript,_GUICtrlComboBox_FindStringExact($g_hCmbTHSnipeBeforeLBScript, "Bam"))
+	   GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+EndFunc

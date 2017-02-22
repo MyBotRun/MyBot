@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:  (2014-Dec)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -35,7 +35,7 @@ Func Barch() ;Attack Algorithm for Barch
 		Next
 
 		If _Sleep($iDelayBarch2) Then ExitLoop
-		Switch $iChkDeploySettings[$iMatchMode]
+		Switch $g_aiAttackStdDropSides[$g_iMatchMode]
 			Case 0 ;Two sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				SetLog("~Attacking from two sides...")
 				If _Sleep($iDelayBarch3) Then ExitLoop
@@ -44,7 +44,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping first wave of Barbarians", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop first round of Barbarians
-					Click(GetXPosOfArmySlot($Barb, 68), 595 + $bottomOffsetY, 1, 0, "#0032") ;Select Troop
+					Click(GetXPosOfArmySlot($Barb, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0032") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numBarbPerSpot, 1, "#0033")
 					Click($BottomRight[$i][0], $BottomRight[$i][1], $numBarbPerSpot, 1, "#0034")
@@ -54,7 +54,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping first wave of Archers", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop first round of Archers
-					Click(GetXPosOfArmySlot($Arch, 68), 595 + $bottomOffsetY, 1, 0, "#0035") ;Select Troop
+					Click(GetXPosOfArmySlot($Arch, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0035") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numArchPerSpot, 1, "#0036")
 					Click($BottomRight[$i][0], $BottomRight[$i][1], $numArchPerSpot, 1, "#0037")
@@ -64,7 +64,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping second wave of Barbarians", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop second round of Barbarians
-					Click(GetXPosOfArmySlot($Barb, 68), 595 + $bottomOffsetY, 1, 0, "#0038") ;Select Troop
+					Click(GetXPosOfArmySlot($Barb, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0038") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numBarbPerSpot, 1, "#0039")
 					Click($BottomRight[$i][0], $BottomRight[$i][1], $numBarbPerSpot, 1, "#0040")
@@ -74,7 +74,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping second wave of Archers", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop second round of Archers
-					Click(GetXPosOfArmySlot($Arch, 68), 595 + $bottomOffsetY, 1, 0, "#0041") ;Select Troop
+					Click(GetXPosOfArmySlot($Arch, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0041") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numArchPerSpot, 1, "#0042")
 					Click($BottomRight[$i][0], $BottomRight[$i][1], $numArchPerSpot, 1, "#0043")
@@ -91,7 +91,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping first wave of Barbarians", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop first round of Barbarians
-					Click(GetXPosOfArmySlot($Barb, 68), 595 + $bottomOffsetY, 1, 0, "#0044") ;Select Troop
+					Click(GetXPosOfArmySlot($Barb, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0044") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numBarbPerSpot, 1, "#0045")
 					Click($TopRight[$i][0], $TopRight[$i][1], $numBarbPerSpot, 1, "#0046")
@@ -102,7 +102,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping first wave of Archers", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop first round of Archers
-					Click(GetXPosOfArmySlot($Arch, 68), 595 + $bottomOffsetY, 1, 0, "#0048") ;Select Troop
+					Click(GetXPosOfArmySlot($Arch, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0048") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numArchPerSpot, 1, "#0049")
 					Click($TopRight[$i][0], $TopRight[$i][1], $numArchPerSpot, 1, "#0050")
@@ -113,7 +113,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping second wave of Barbarians", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop second round of Barbarians
-					Click(GetXPosOfArmySlot($Barb, 68), 595 + $bottomOffsetY, 1, 0, "#0052") ;Select Troop
+					Click(GetXPosOfArmySlot($Barb, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0052") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numBarbPerSpot, 1, "#0053")
 					Click($TopRight[$i][0], $TopRight[$i][1], $numBarbPerSpot, 1, "#0054")
@@ -124,7 +124,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping second wave of Archers", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop second round of Archers
-					Click(GetXPosOfArmySlot($Arch, 68), 595 + $bottomOffsetY, 1, 0, "#0085") ;Select Troop
+					Click(GetXPosOfArmySlot($Arch, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0085") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numArchPerSpot, 1, "#0056")
 					Click($TopRight[$i][0], $TopRight[$i][1], $numArchPerSpot, 1, "#0057")
@@ -142,7 +142,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping first wave of Barbarians", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop first round of Barbarians
-					Click(GetXPosOfArmySlot($Barb, 68), 595 + $bottomOffsetY, 1, 0, "#0059") ;Select Troop
+					Click(GetXPosOfArmySlot($Barb, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0059") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numBarbPerSpot, 1, "#0060")
 					Click($TopRight[$i][0], $TopRight[$i][1], $numBarbPerSpot, 1, "#0061")
@@ -154,7 +154,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping first wave of Archers", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop first round of Archers
-					Click(GetXPosOfArmySlot($Arch, 68), 595 + $bottomOffsetY, 1, 0, "#0064") ;Select Troop
+					Click(GetXPosOfArmySlot($Arch, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0064") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numArchPerSpot, 1, "#0065")
 					Click($TopRight[$i][0], $TopRight[$i][1], $numArchPerSpot, 1, "#0066")
@@ -166,7 +166,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping second wave of Barbarians", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop second round of Barbarians
-					Click(GetXPosOfArmySlot($Barb, 68), 595 + $bottomOffsetY, 1, 0, "#0069") ;Select Troop
+					Click(GetXPosOfArmySlot($Barb, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0069") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numBarbPerSpot, 1, "#0070")
 					Click($TopRight[$i][0], $TopRight[$i][1], $numBarbPerSpot, 1, "#0071")
@@ -178,7 +178,7 @@ Func Barch() ;Attack Algorithm for Barch
 
 				SetLog("Dropping second wave of Archers", $COLOR_INFO)
 				For $i = 0 To 4 ;Drop second round of Archers
-					Click(GetXPosOfArmySlot($Arch, 68), 595 + $bottomOffsetY, 1, 0, "#0074") ;Select Troop
+					Click(GetXPosOfArmySlot($Arch, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0074") ;Select Troop
 					If _Sleep($iDelayBarch1) Then ExitLoop (2)
 					Click($TopLeft[$i][0], $TopLeft[$i][1], $numArchPerSpot, 1, "#0075")
 					Click($TopRight[$i][0], $TopRight[$i][1], $numArchPerSpot, 1, "#0076")
@@ -197,7 +197,7 @@ Func Barch() ;Attack Algorithm for Barch
 		$atkTroops[$Arch][1] = Number(ReadTroopQuantity($Arch))
 
 		While $atkTroops[$Barb][1] <> 0
-			Click(GetXPosOfArmySlot($Barb, 68), 595 + $bottomOffsetY, 1, 0, "#0079")
+			Click(GetXPosOfArmySlot($Barb, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0079")
 			Click($TopLeft[3][0], $TopLeft[3][1], $atkTroops[$Barb][1], 1, "#0080")
 
 			$atkTroops[$Barb][1] = Number(ReadTroopQuantity($Barb))
@@ -206,7 +206,7 @@ Func Barch() ;Attack Algorithm for Barch
 		If _Sleep($iDelayBarch3) Then ExitLoop
 
 		While $atkTroops[$Arch][1] <> 0
-			Click(GetXPosOfArmySlot($Arch, 68), 595 + $bottomOffsetY, 1, 0, "#0081")
+			Click(GetXPosOfArmySlot($Arch, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0081")
 			Click($TopLeft[3][0], $TopLeft[3][1], $atkTroops[$Arch][1], 1, "#0082")
 
 			$atkTroops[$Arch][1] = Number(ReadTroopQuantity($Arch))
@@ -220,11 +220,11 @@ Func Barch() ;Attack Algorithm for Barch
 			If _Sleep($delayActivateKQ) Then Return
 			If $checkKPower = True Then
 				SetLog("Activate King's power", $COLOR_INFO)
-				Click(GetXPosOfArmySlot($King, 68), 595 + $bottomOffsetY, 1, 0, "#0083")
+				Click(GetXPosOfArmySlot($King, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0083")
 			EndIf
 			If $checkQPower = True Then
 				SetLog("Activate Queen's power", $COLOR_INFO)
-				Click(GetXPosOfArmySlot($Queen, 68), 595 + $bottomOffsetY, 1, 0, "#0084")
+				Click(GetXPosOfArmySlot($Queen, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0084")
 			EndIf
 		EndIf
 

@@ -2,8 +2,8 @@
 ; Name ..........: MyBot.run Bot API functions
 ; Description ...: Register Windows Message and provides functions to communicate between bots and manage bot application
 ; Author ........: cosote (12-2016)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ;                  Read/write memory: https://www.autoitscript.com/forum/topic/104117-shared-memory-variables-demo/
 ; Related .......:
@@ -17,7 +17,7 @@ GUIRegisterMsg($WM_MYBOTRUN_STATE_1_0, "WM_MYBOTRUN_STATE_1_0")
 
 Func WM_MYBOTRUN_API_1_0_HOST($hWind, $iMsg, $wParam, $lParam)
 
-	SetDebugLog("API: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam)
+	;SetDebugLog("API: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam)
 
 	$hWind = 0
 	Switch BitAND($wParam, 0xFFFF)

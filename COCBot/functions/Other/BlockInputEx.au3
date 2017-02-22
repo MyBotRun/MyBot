@@ -174,7 +174,6 @@ Global $i_MouseHookGetAncestorHwnd = 1
 ; Example .......; Yes
 ; ===============================================================================================================================
 Func _BlockInputEx($iBlockMode = -1, $sExclude = "", $sInclude = "", $hWindows = "", $iBlockAllInput = 0)
-	$BlockInputPause = $iBlockMode
 	If $iBlockMode < -1 Or $iBlockMode > 3 Then Return SetError(1, 0, 0) ;Only -1 to 3 modes are supported.
 
 	If $iBlockMode <= 0 Then Return __BlockInputEx_UnhookWinHooks_Proc()
@@ -225,6 +224,7 @@ Func __BlockInputEx_KeyBoardHook_Proc($nCode, $wParam, $lParam)
 	Local $iFlags = DllStructGetData($KBDLLHOOKSTRUCT, "flags")
 	Local $iDec_vkCode = DllStructGetData($KBDLLHOOKSTRUCT, "vkCode")
 	Local $vkCode = "0x" & Hex($iDec_vkCode, 2)
+	$KBDLLHOOKSTRUCT = 0
 
 	If Not StringInStr($s_KeyboardKeys_Buffer, $iDec_vkCode & '|') Then
 		$s_KeyboardKeys_Buffer &= $iDec_vkCode & '|'
@@ -268,6 +268,7 @@ Func __BlockInputEx_MouseHook_Proc($nCode, $wParam, $lParam)
 	Local $MOUSEHOOKSTRUCT = DllStructCreate("ptr pt;hwnd hwnd;uint wHitTestCode;ulong_ptr dwExtraInfo", $lParam)
 	Local $iExtraInfo = DllStructGetData($MOUSEHOOKSTRUCT, "dwExtraInfo")
 	Local $iMouse_Event = BitAND($wParam, 0xFFFF)
+	$MOUSEHOOKSTRUCT = 0
 	;Add mouse exclude/include actions support...
 
 	Local $sInclude = $ah_MouseKeyboard_WinHooks[4]

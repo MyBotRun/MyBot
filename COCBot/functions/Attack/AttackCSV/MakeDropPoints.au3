@@ -55,7 +55,7 @@ Func MakeDropPoints($side, $pointsQty, $addtiles, $versus, $randomx = 2, $random
 
 	Local $str = ""
 	For $i = 0 To UBound($Vector) - 1
-		$pixel = $Vector[$i]
+		Local $pixel = $Vector[$i]
 		$str &= $pixel[0] & "-" & $pixel[1] & "|"
 	Next
 
