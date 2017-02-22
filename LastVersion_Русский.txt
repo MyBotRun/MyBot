@@ -1,4 +1,4 @@
 ﻿[general]
-version = "v6.5.3"
-messagenew = "Счастливого рождества всем!\nhttps://github.com/MyBotRun/MyBot/wiki/ChangeLog\n\nТеперь вы можете выбрать язык перейдя на вкладку Разное (со временем будет добавлено больше языков)"
-messageold = "Новая версия MyBot (v6.5.3) уже доступна!\nПожалуйста скачайте последнюю версию:\nhttps://mybot.run"
+version = "v7.0"
+messagenew = "Основное обновление!\nhttps://github.com/MyBotRun/MyBot/wiki/ChangeLog\n\nБлагодаря новым функциях и исправлениях"
+messageold = "Новая версия MyBot (v7.0) уже доступна!\nПожалуйста скачайте последнюю версию:\nhttps://mybot.run"
