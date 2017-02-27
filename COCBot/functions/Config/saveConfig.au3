@@ -583,7 +583,7 @@ Func SaveConfig_600_28_LB()
 	IniWriteS($g_sProfileConfigPath, "search", "ABWeakXBow", $g_aiFilterMaxXBowLevel[$LB])
 	IniWriteS($g_sProfileConfigPath, "search", "ABWeakInferno", $g_aiFilterMaxInfernoLevel[$LB])
 	IniWriteS($g_sProfileConfigPath, "search", "ABWeakEagle", $g_aiFilterMaxEagleLevel[$LB])
-	IniWriteS($g_sProfileConfigPath, "search", "DBMeetOne", $g_abFilterMeetOneConditionEnable[$LB] ? 1 : 0)
+	IniWriteS($g_sProfileConfigPath, "search", "ABMeetOne", $g_abFilterMeetOneConditionEnable[$LB] ? 1 : 0)
 EndFunc
 
 Func SaveConfig_600_28_TS()

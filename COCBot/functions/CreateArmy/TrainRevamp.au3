@@ -1351,16 +1351,16 @@ Func IsQueueEmpty($Tab = -1, $bSkipTabCheck = False, $removeExtraTroopsQueue = T
 	If $g_bRunState = False Then Return
 
 	If $Tab = $TrainTroopsTAB Or $Tab = -1  Then
-		$iArrowX = $aGreenArrowTrainTroops[0]
+		$iArrowX = $aGreenArrowTrainTroops[0]  ; aada82  170 218 130    | y + 3 = 6ab320 106 179 32
 		$iArrowY = $aGreenArrowTrainTroops[1]
 	ElseIf $Tab = $BrewSpellsTAB Then
-		$iArrowX = $aGreenArrowBrewSpells[0]
+		$iArrowX = $aGreenArrowBrewSpells[0]   ; a0d077  160 208 119    | y + 3 = 74be2c 116 190 44
 		$iArrowY = $aGreenArrowBrewSpells[1]
 	EndIf
 
-	If Not _ColorCheck(_GetPixelColor($iArrowX, $iArrowY, True), Hex(0xAADA82, 6), 30) And Not _ColorCheck(_GetPixelColor($iArrowX, $iArrowY + 6, True), Hex(0x78BE29, 6), 30) Then
+	If Not _ColorCheck(_GetPixelColor($iArrowX, $iArrowY, True), Hex(0xAADA82, 6), 30) And Not _ColorCheck(_GetPixelColor($iArrowX, $iArrowY + 3, True), Hex(0x6ab320, 6), 30) Then
 		Return True ; Check Green Arrows at top first, if not there -> Return
-	ElseIf _ColorCheck(_GetPixelColor($iArrowX, $iArrowY, True), Hex(0xAADA82, 6), 30) And _ColorCheck(_GetPixelColor($iArrowX, $iArrowY + 6, True), Hex(0x78BE29, 6), 30) And Not $removeExtraTroopsQueue Then
+	ElseIf _ColorCheck(_GetPixelColor($iArrowX, $iArrowY, True), Hex(0xAADA82, 6), 30) And _ColorCheck(_GetPixelColor($iArrowX, $iArrowY + 3, True), Hex(0x74be2c, 6), 30) And Not $removeExtraTroopsQueue Then
 		Return False
 	EndIf
 
@@ -1465,11 +1465,12 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $showlog = True)
 		EndIf
 		Setlog(" - Your Army is Full, let's make troops before Attack!")
 		; Elixir Troops
-		For $ii = $eTroopCount - 1 To 0 Step -1
-			$i = $g_avTroopGroup[$ii][6] ; custom train order
-			If $g_aiArmyCompTroops[$i] > 0 Then
-				$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$i]
-				$ToReturn[UBound($ToReturn) - 1][1] = $g_aiArmyCompTroops[$i]
+		For $ii = 0 To $eTroopCount - 1
+		    Local $troopIndex = $g_aiTrainOrder[$ii]
+			;SetDebugLog($ii & ": " & $troopIndex & " " & $g_aiCurrentTroops[$troopIndex] & " " & $g_asTroopShortNames[$troopIndex] & " " & $g_aiArmyCompTroops[$troopIndex])
+			If $g_aiArmyCompTroops[$troopIndex] > 0 Then
+				$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$troopIndex]
+				$ToReturn[UBound($ToReturn) - 1][1] = $g_aiArmyCompTroops[$troopIndex]
 				ReDim $ToReturn[UBound($ToReturn) + 1][2]
 			EndIf
 		Next
@@ -1507,12 +1508,13 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $showlog = True)
 	Switch $ReturnExtraTroopsOnly
 		Case False
 			; Check Elixir Troops needed quantity to Train
-			For $ii = $eTroopCount - 1 To 0 Step -1
-				$i = $g_avTroopGroup[$ii][6] ; custom train order
+			For $ii = 0 To $eTroopCount - 1
+			    Local $troopIndex = $g_aiTrainOrder[$ii]
+			    ;SetDebugLog($ii & ": " & $troopIndex & " " & $g_aiCurrentTroops[$troopIndex] & " " & $g_asTroopShortNames[$troopIndex] & " " & $g_aiArmyCompTroops[$troopIndex])
 				If $g_bRunState = False Then Return
-				If $g_aiArmyCompTroops[$i] > 0 Then
-					$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$i]
-					$ToReturn[UBound($ToReturn) - 1][1] = $g_aiArmyCompTroops[$i] - $g_aiCurrentTroops[$i]
+				If $g_aiArmyCompTroops[$troopIndex] > 0 Then
+					$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$troopIndex]
+					$ToReturn[UBound($ToReturn) - 1][1] = $g_aiArmyCompTroops[$troopIndex] - $g_aiCurrentTroops[$troopIndex]
 					ReDim $ToReturn[UBound($ToReturn) + 1][2]
 				EndIf
 			Next
@@ -1529,13 +1531,14 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $showlog = True)
 			Next
 		Case Else
 			; Check Elixir Troops Extra Quantity
-			For $ii = $eTroopCount - 1 To 0 Step -1
-				$i = $g_avTroopGroup[$ii][6] ; custom train order
+			For $ii = 0 To $eTroopCount - 1
+			    Local $troopIndex = $g_aiTrainOrder[$ii]
 				If $g_bRunState = False Then Return
-				If $g_aiCurrentTroops[$i] > 0 Then
-					If $g_aiArmyCompTroops[$i] - $g_aiCurrentTroops[$i] < 0 Then
-						$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$i]
-						$ToReturn[UBound($ToReturn) - 1][1] = Abs($g_aiArmyCompTroops[$i] - $g_aiCurrentTroops[$i])
+			    ;SetDebugLog($ii & ": " & $troopIndex & " " & $g_aiCurrentTroops[$troopIndex] & " " & $g_asTroopShortNames[$troopIndex] & " " & $g_aiArmyCompTroops[$troopIndex])
+				If $g_aiCurrentTroops[$troopIndex] > 0 Then
+					If $g_aiArmyCompTroops[$troopIndex] - $g_aiCurrentTroops[$troopIndex] < 0 Then
+						$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$troopIndex]
+						$ToReturn[UBound($ToReturn) - 1][1] = Abs($g_aiArmyCompTroops[$troopIndex] - $g_aiCurrentTroops[$troopIndex])
 						ReDim $ToReturn[UBound($ToReturn) + 1][2]
 					EndIf
 				EndIf
@@ -1561,9 +1564,9 @@ EndFunc   ;==>WhatToTrain
 Func TestTroopsCoords()
 	Local $iCount = 3
 	$g_bRunState = True
-	For $i = 0 To UBound($g_asTroopName) - 1
-		DragIfNeeded($g_asTroopName[$i])
-		TrainIt(TroopIndexLookup($g_asTroopName[$i]), $iCount, $g_iTrainClickDelay)
+	For $i = 0 To $eTroopCount - 1
+		DragIfNeeded($g_asTroopShortNames[$i])
+		TrainIt(TroopIndexLookup($g_asTroopShortNames[$i]), $iCount, $g_iTrainClickDelay)
 	Next
 	#CS
 		TrainIt($eDrag, $iCount, 300)
@@ -2054,20 +2057,25 @@ Func TrainArmyNumber($Num)
 EndFunc   ;==>TrainArmyNumber
 
 Func DeleteQueued($TypeQueued, $OffsetQueued = 802)
+
+	Local $Slot2Use = -1
 	If $TypeQueued = "Troops" Then
 		If ISArmyWindow(False, $TrainTroopsTAB) = False Then OpenTrainTabNumber($TrainTroopsTAB, "DeleteQueued()")
 		If _Sleep(1500) Then Return
 		If ISArmyWindow(True, $TrainTroopsTAB) = False Then Return
+		$Slot2Use = $TrainTroopsTAB
 	ElseIf $TypeQueued = "Spells" Then
 		OpenTrainTabNumber($BrewSpellsTAB, "DeleteQueued()")
 		If _Sleep(1500) Then Return
 		If ISArmyWindow(True, $BrewSpellsTAB) = False Then Return
+		$Slot2Use = $BrewSpellsTAB
 	Else
 		Return
 	EndIf
 	If _Sleep(500) Then Return
 	Local $x = 0
-	While Not IsQueueEmpty(-1, True, False)
+
+	While Not IsQueueEmpty($Slot2Use, True, False)
 		If $x = 0 Then SetLog(" - Delete " & $TypeQueued & " Queued!", $COLOR_ACTION)
 		If _Sleep(20) Then Return
 		If $g_bRunState = False Then Return
@@ -2116,8 +2124,15 @@ Func Slot($x = 0, $txt = "")
 EndFunc   ;==>Slot
 
 Func MakingDonatedTroops()
-	; notes $g_avDefaultTroopGroup[19][5]
-	; notes $g_avDefaultTroopGroup[19][0] = TroopName | [1] = TroopNamePosition | [2] = TroopHeight | [3] = Times | [4] = qty | [5] = marker for DarkTroop or ElixerTroop]
+   ; notes $avDefaultTroopGroup[19][0] = TroopName | [1] = TroopNamePosition | [2] = TroopHeight | [3] = Times | [4] = qty | [5] = marker for DarkTroop or ElixerTroop]
+   Local $avDefaultTroopGroup[19][6] = [ _
+	  ["Arch", 1, 1, 25, 0, "e"], ["Giant", 2, 5, 120, 0, "e"], ["Wall", 4, 2, 60, 0, "e"], ["Barb", 0, 1, 20, 0, "e"], ["Gobl", 3, 1, 30, 0, "e"], ["Heal", 7, 14, 600, 0, "e"], _
+	  ["Pekk", 9, 25, 900, 0, "e"], ["Ball", 5, 5, 300, 0, "e"], ["Wiza", 6, 4, 300, 0, "e"], ["Drag", 8, 20, 900, 0, "e"], ["BabyD", 10, 10, 600, 0, "e"],["Mine", 11, 5, 300, 0, "e"], _
+	  ["Mini", 0, 2, 45, 0, "d"], ["Hogs", 1, 5, 120, 0, "d"], ["Valk", 2, 8, 300, 0, "d"], ["Gole", 3, 30, 900, 0, "d"], ["Witc", 4, 12, 600, 0, "d"], ["Lava", 5, 30, 900, 0, "d"], _
+	  ["Bowl", 6, 6, 300, 0, "d"]]
+
+   ; notes $avDefaultTroopGroup[19][5]
+	; notes $avDefaultTroopGroup[19][0] = TroopName | [1] = TroopNamePosition | [2] = TroopHeight | [3] = Times | [4] = qty | [5] = marker for DarkTroop or ElixerTroop]
 	; notes ClickDrag(616, 445 + $g_iMidOffsetY, 400, 445 + $g_iMidOffsetY, 2000) ; Click drag for dark Troops
 	; notes	ClickDrag(400, 445 + $g_iMidOffsetY, 616, 445 + $g_iMidOffsetY, 2000) ; Click drag for Elixer Troops
 	; notes $RemainTrainSpace[0] = Current Army  | [1] = Total Army Capacity  | [2] = Remain Space for the current Army
@@ -2142,11 +2157,11 @@ Func MakingDonatedTroops()
 
 	SetLog("  making donated troops", $COLOR_ACTION1)
 	If $areThereDonTroop > 0 Then
-		; Load $g_aiDonateTroops[$i] Values into $g_avDefaultTroopGroup[19][5]
-		For $i = 0 To UBound($g_avDefaultTroopGroup) - 1
+		; Load $g_aiDonateTroops[$i] Values into $avDefaultTroopGroup[19][5]
+		For $i = 0 To UBound($avDefaultTroopGroup) - 1
 			For $j = 0 To $eTroopCount - 1
-				If $g_asTroopShortNames[$j] = $g_avDefaultTroopGroup[$i][0] Then
-					$g_avDefaultTroopGroup[$i][4] = $g_aiDonateTroops[$j]
+				If $g_asTroopShortNames[$j] = $avDefaultTroopGroup[$i][0] Then
+					$avDefaultTroopGroup[$i][4] = $g_aiDonateTroops[$j]
 					$g_aiDonateTroops[$j] = 0
 				EndIf
 			Next
@@ -2156,25 +2171,25 @@ Func MakingDonatedTroops()
 		If _Sleep(1500) Then Return
 		If ISArmyWindow(True, $TrainTroopsTAB) = False Then Return
 
-		For $i = 0 To UBound($g_avDefaultTroopGroup, 1) - 1
+		For $i = 0 To UBound($avDefaultTroopGroup, 1) - 1
 			If $g_bRunState = False Then Return
 			$Plural = 0
-			If $g_avDefaultTroopGroup[$i][4] > 0 Then
+			If $avDefaultTroopGroup[$i][4] > 0 Then
 				$RemainTrainSpace = GetOCRCurrent(48, 160)
 				If $RemainTrainSpace[0] = $RemainTrainSpace[1] Then ; army camps full
 					;Camps Full All Donate Counters should be zero!!!!
-					For $j = 0 To UBound($g_avDefaultTroopGroup, 1) - 1
-						$g_avDefaultTroopGroup[$j][4] = 0
+					For $j = 0 To UBound($avDefaultTroopGroup, 1) - 1
+						$avDefaultTroopGroup[$j][4] = 0
 					Next
 					ExitLoop
 				EndIf
 
-				Local $iTroopIndex = TroopIndexLookup($g_avDefaultTroopGroup[$i][0])
+				Local $iTroopIndex = TroopIndexLookup($avDefaultTroopGroup[$i][0])
 
-				If $g_avDefaultTroopGroup[$i][2] * $g_avDefaultTroopGroup[$i][4] <= $RemainTrainSpace[2] Then ; Troopheight x donate troop qty <= avaible train space
-					;Local $pos = GetTrainPos(TroopIndexLookup($g_avDefaultTroopGroup[$i][0]))
-					Local $howMuch = $g_avDefaultTroopGroup[$i][4]
-					If $g_avDefaultTroopGroup[$i][5] = "e" Then
+				If $avDefaultTroopGroup[$i][2] * $avDefaultTroopGroup[$i][4] <= $RemainTrainSpace[2] Then ; Troopheight x donate troop qty <= avaible train space
+					;Local $pos = GetTrainPos(TroopIndexLookup($avDefaultTroopGroup[$i][0]))
+					Local $howMuch = $avDefaultTroopGroup[$i][4]
+					If $avDefaultTroopGroup[$i][5] = "e" Then
 						TrainIt($iTroopIndex, $howMuch, $g_iTrainClickDelay)
 						;PureClick($pos[0], $pos[1], $howMuch, 500)
 					Else
@@ -2183,23 +2198,23 @@ Func MakingDonatedTroops()
 						;PureClick($pos[0], $pos[1], $howMuch, 500)
 						ClickDrag(220, 445 + $g_iMidOffsetY, 725, 445 + $g_iMidOffsetY, 2000) ; Click drag for Elixer Troops
 					EndIf
-					Local $sTroopName = ($g_avDefaultTroopGroup[$i][4] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
-					Setlog(" - Trained " & $g_avDefaultTroopGroup[$i][4] & " " & $sTroopName, $COLOR_ACTION)
-					$g_avDefaultTroopGroup[$i][4] = 0
+					Local $sTroopName = ($avDefaultTroopGroup[$i][4] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
+					Setlog(" - Trained " & $avDefaultTroopGroup[$i][4] & " " & $sTroopName, $COLOR_ACTION)
+					$avDefaultTroopGroup[$i][4] = 0
 					If _Sleep(1000) Then Return ; Needed Delay, OCR was not picking up Troop Changes
 				Else
 					For $z = 0 To $RemainTrainSpace[2] - 1
 						$RemainTrainSpace = GetOCRCurrent(48, 160)
 						If $RemainTrainSpace[0] = $RemainTrainSpace[1] Then ; army camps full
 							;Camps Full All Donate Counters should be zero!!!!
-							For $j = 0 To UBound($g_avDefaultTroopGroup, 1) - 1
-								$g_avDefaultTroopGroup[$j][4] = 0
+							For $j = 0 To UBound($avDefaultTroopGroup, 1) - 1
+								$avDefaultTroopGroup[$j][4] = 0
 							Next
 							ExitLoop (2) ;
 						EndIf
-						If $g_avDefaultTroopGroup[$i][2] <= $RemainTrainSpace[2] And $g_avDefaultTroopGroup[$i][4] > 0 Then
-							;TrainIt(TroopIndexLookup($g_asTroopName[$i]), 1, $g_iTrainClickDelay)
-							;Local $pos = GetTrainPos(TroopIndexLookup($g_avDefaultTroopGroup[$i][0]))
+						If $avDefaultTroopGroup[$i][2] <= $RemainTrainSpace[2] And $avDefaultTroopGroup[$i][4] > 0 Then
+							;TrainIt(TroopIndexLookup($g_asTroopShortNames[$i]), 1, $g_iTrainClickDelay)
+							;Local $pos = GetTrainPos(TroopIndexLookup($avDefaultTroopGroup[$i][0]))
 							Local $howMuch = 1
 							If $iTroopIndex >= $eBarb And $iTroopIndex <= $eMine Then ; elixir troop
 								TrainIt($iTroopIndex, $howMuch, $g_iTrainClickDelay)
@@ -2210,9 +2225,9 @@ Func MakingDonatedTroops()
 								;PureClick($pos[0], $pos[1], $howMuch, 500)
 								ClickDrag(220, 445 + $g_iMidOffsetY, 725, 445 + $g_iMidOffsetY, 2000) ; Click drag for Elixer Troops
 							EndIf
-							Local $sTroopName = ($g_avDefaultTroopGroup[$i][4] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
-							Setlog(" - Trained " & $g_avDefaultTroopGroup[$i][4] & " " & $sTroopName, $COLOR_ACTION)
-							$g_avDefaultTroopGroup[$i][4] -= 1
+							Local $sTroopName = ($avDefaultTroopGroup[$i][4] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
+							Setlog(" - Trained " & $avDefaultTroopGroup[$i][4] & " " & $sTroopName, $COLOR_ACTION)
+							$avDefaultTroopGroup[$i][4] -= 1
 							If _Sleep(1000) Then Return ; Needed Delay, OCR was not picking up Troop Changes
 						Else
 							ExitLoop
@@ -2232,8 +2247,8 @@ Func MakingDonatedTroops()
 			If _Sleep(1000) Then Return ; Needed Delay, OCR was not picking up Troop Changes
 		EndIf
 		; Ensure all donate values are reset to zero
-		For $j = 0 To UBound($g_avDefaultTroopGroup, 1) - 1
-			$g_avDefaultTroopGroup[$j][4] = 0
+		For $j = 0 To UBound($avDefaultTroopGroup, 1) - 1
+			$avDefaultTroopGroup[$j][4] = 0
 		Next
 	EndIf
 

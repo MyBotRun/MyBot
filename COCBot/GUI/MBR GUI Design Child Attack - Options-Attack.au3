@@ -25,8 +25,7 @@ Global $g_ahChkAttackWeekdays[7] = [0,0,0,0,0,0,0], $g_ahChkAttackHours[24] = [0
 Global $g_hLbAttackPlannerRandom = 0, $g_hLbAttackPlannerDayLimit = 0, $g_ahChkAttackWeekdaysE = 0, $g_ahChkAttackHoursE1 = 0, $g_ahChkAttackHoursE2 = 0
 
 ; Clan castle
-Global $g_hChkDropCCHoursEnable = 0, $g_hChkUseCCBalanced = 0, $g_hCmbCCDonated = 0, $g_hCmbCCReceived = 0, _
-	   $g_ahChkDropCCHours[24] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+Global $g_hChkDropCCHoursEnable = 0, $g_ahChkDropCCHours[24] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 Global $g_ahChkDropCCHoursE1 = 0, $g_ahChkDropCCHoursE2 = 0
 
@@ -336,27 +335,6 @@ Func CreateAttackSearchOptionsAttack()
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			_GUICtrlSetTip(-1, GetTranslated(634,41, "Use schedule to define when dropping CC is allowed, \r\n CC is always dropped when schedule is not enabled"))
 			GUICtrlSetOnEvent(-1, "chkDropCCHoursEnable")
-
-	$y += 22
-		$g_hChkUseCCBalanced = GUICtrlCreateCheckbox(GetTranslated(634,13,"Balance Donate/Receive" ), $x +20, $y+2, -1, -1)
-			GUICtrlSetState(-1, $GUI_UNCHECKED)
-			_GUICtrlSetTip(-1, GetTranslated(634,14, "Drop your Clan Castle only if your donated/received ratio is greater than D/R ratio below."))
-			GUICtrlSetOnEvent(-1, "chkBalanceDR")
-
-	$y += 28
-		$g_hCmbCCDonated = GUICtrlCreateCombo("",  $x + 40 , $y, 30, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslated(634,15, "Donated ratio"))
-			GUICtrlSetData(-1, "1|2|3|4|5", "1")
-			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetOnEvent(-1, "cmbBalanceDR")
-		GUICtrlCreateLabel("/", $x + 73, $y + 5, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(634,16, "Wanted donated / received ratio") & @CRLF & _
-							   GetTranslated(634,17, "1/1 means donated = received, 1/2 means donated = half the received etc."))
-		$g_hCmbCCReceived = GUICtrlCreateCombo("", $x +80, $y, 30, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslated(634,18, "Received ratio"))
-			GUICtrlSetData(-1, "1|2|3|4|5", "1")
-			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetOnEvent(-1, "cmbBalanceDR")
 
 	$x += 188
 	$y = 245

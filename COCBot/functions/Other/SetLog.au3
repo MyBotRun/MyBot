@@ -34,7 +34,10 @@ Func SetLog($String, $Color = Default, $Font = Default, $FontSize = Default, $st
 	If $statusbar = Default Then $statusbar = 1
 	If $time = Default Then $time = Time()
 	Local $log = $LogPrefix & TimeDebug() & $String
-	If $bConsoleWrite = True And $String <> "" Then ConsoleWrite($log & @CRLF) ; Always write any log to console
+	If $bConsoleWrite = True And $String <> "" Then
+		Local $sLevel = GetLogLevel($Color)
+		ConsoleWrite($sLevel & $log & @CRLF) ; Always write any log to console
+	EndIf
 	If $g_hLogFile = 0 Then CreateLogFile()
 
 	; write to log file
@@ -60,6 +63,42 @@ Func SetLog($String, $Color = Default, $Font = Default, $FontSize = Default, $st
 	EndIf
 EndFunc   ;==>SetLog
 
+Func GetLogLevel($Color)
+	; translate log level
+	Local $sLevel = ""
+	Switch $Color
+	Case $COLOR_ERROR
+		$sLevel = "ERROR    "
+	Case $COLOR_WARNING
+		$sLevel = "WARN     "
+	Case $COLOR_SUCCESS
+		$sLevel = "SUCCESS  "
+	Case $COLOR_SUCCESS1
+		$sLevel = "SUCCESS1 "
+	Case $COLOR_INFO
+		$sLevel = "INFO     "
+	Case $COLOR_DEBUG
+		$sLevel = "DEBUG    "
+	Case $COLOR_DEBUG1
+		$sLevel = "DEBUG1   "
+	Case $COLOR_DEBUG2
+		$sLevel = "DEBUG2   "
+	Case $COLOR_DEBUGS
+		$sLevel = "DEBUGS   "
+	Case $COLOR_ACTION
+		$sLevel = "ACTION   "
+	Case $COLOR_ACTION1
+		$sLevel = "ACTION1  "
+	Case $COLOR_ORANGE
+		$sLevel = "ORANGE   "
+	Case $COLOR_BLACK
+		$sLevel = "NORMAL   "
+	Case Else
+		$sLevel = Hex($Color, 6) & "   "
+	EndSwitch
+	Return $sLevel
+EndFunc   ;==>GetLogLevel
+
 Func SetLogText(ByRef $hTxtLog, ByRef $String, ByRef $Color, ByRef $Font, ByRef $FontSize, ByRef $time) ;Sets the text for the log
 	If $time Then
 		_GUICtrlRichEdit_SetFont($hTxtLog, 6, "Lucida Console")
@@ -76,10 +115,10 @@ Func SetDebugLog($String, $Color = Default, $bSilentSetLog = Default, $Font = De
 
 	Local $LogPrefix = "D "
 	Local $log = $LogPrefix & TimeDebug() & $String
-	If $String <> "" Then ConsoleWrite($log & @CRLF) ; Always write any log to console
 	If $g_iDebugSetlog = 1 And $bSilentSetLog = False Then
-		SetLog($String, $Color, $Font, $FontSize, $statusbar, Time(), False, $LogPrefix)
-	 Else
+		SetLog($String, $Color, $Font, $FontSize, $statusbar, Time(), True, $LogPrefix)
+	Else
+		If $String <> "" Then ConsoleWrite(GetLogLevel($Color) & $log & @CRLF) ; Always write any log to console
 		If $g_hLogFile = 0 Then CreateLogFile()
 		__FileWriteLog($g_hLogFile, $log)
 	EndIf

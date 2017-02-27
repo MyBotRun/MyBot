@@ -1,4 +1,17 @@
-﻿* **V7.0**
+﻿* **V7.0.1**
+ * Fix AutoIt Errors/crashes when checking donate request due variable not defined
+ * Fix Meet One Condition For Attack GUI Setting
+ * Fix Wrong Bowler Troop Space and Archer Train Time
+ * Fix Delete Queued Spells on Quick Train
+ * Fix Custom Train Order not working
+ * Fix Wall upgrade issues where wall is upgraded, but reports no upgrade possible
+ * Fix GUI issues with Quick Train, CSV Script red line method, and training time
+ * Fix bot crash when debug log was enabled manually in script
+ * Fix unnecessary repeated hero activation when certain end battle options used
+ * Improve console log messaging
+ * Update Vietnamese Language File (by @NguyenAnhHD)
+
+* **V7.0**
  * Major Code Cleaning and formatting
  * Add Korean Alphabet Recognition for Donation - 108 chars
  * Add Auto Resume after x Minutes. (Suggested by @takamper)
@@ -27,7 +40,7 @@
  * Fix GDI memory leak
  * Fix custom train order
  * Fix wrong Android Emulator being using in rare cases of bot crash
- * Fix smartwait errors with minumum wait time settings & short shield times
+ * Fix smartwait errors with minimum wait time settings & short shield times
  * Fix file handle leak on \Device\NamedPipe
  * Improve skip wall upgrade logic to allow wall upgrades when adequate resources exist for buildings+walls
  * Improve bot memory allocation
@@ -39,7 +52,7 @@
  * Improve run time with days format in stats tab
  * Improve the Lighting Spell detection and Freeze on Train
  * Enable Au3Stripper to reduce compiled script size
- * Vitnamese Language File (by @NguyenAnhHD)
+ * Vietnamese Language File (by @NguyenAnhHD)
  * Spanish Language File (by @dcm4682)
  * Korean Language File (by @sadam129 @school4i)
  * Update Russian Language File (by @Vlab97)

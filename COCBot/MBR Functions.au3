@@ -13,6 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
+#include "functions\Other\SetLog.au3"
 #include "functions\Other\Synchronization.au3"
 #include "functions\Other\OnAutoItErrorRegisterBot.au3"
 
@@ -158,7 +159,6 @@
 #include "functions\Android\AndroidEmbed.au3"
 
 #include "functions\Other\WerFaultClose.au3"
-#include "functions\Other\_ArraySortEx.au3"
 #include "functions\Other\_NumberFormat.au3"
 #include "functions\Other\_PadStringCenter.au3"
 #include "functions\Other\_ReduceMemory.au3"
@@ -176,7 +176,6 @@
 #include "functions\Other\ExtendedErrorInfo.au3"
 #include "functions\Other\FindPos.au3"
 #include "functions\Other\StringSize.au3"
-#include "functions\Other\SetLog.au3"
 #include "functions\Other\Tab.au3"
 #include "functions\Other\Time.au3"
 #include "functions\Other\BlockInputEx.au3"

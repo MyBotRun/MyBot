@@ -14,13 +14,11 @@
 ; ===============================================================================================================================
 #include-once
 
-Global $g_avTroopGroup[19][7]  ; Actual training order values determined dynamically based on GUI. Similar to $g_avDefaultTroopGroup but idx 6 is storing original position
-
 Func chkUseQTrain()
 	If GUICtrlRead($g_hChkUseQuickTrain) = $GUI_CHECKED Then
 		_GUI_Value_STATE("ENABLE", $g_hRdoArmy1 & "#" & $g_hRdoArmy2 & "#" & $g_hRdoArmy3)
-		_GUI_Value_STATE("DISABLE", $g_hGrpTrainTroops)
-		_GUI_Value_STATE("DISABLE", $g_hGrpCookSpell)
+		_GUI_Value_STATE("DISABLE", $grpTrainTroops)
+		_GUI_Value_STATE("DISABLE", $grpCookSpell)
 		GUICtrlSetData($g_hLblTotalTimeCamp, " 0s")
 		GUICtrlSetData($g_hLblTotalTimeSpell, " 0s")
 		GUICtrlSetData($g_hLblElixirCostCamp, "0")
@@ -327,23 +325,23 @@ Func chkTroopOrder($bNoiseMode = True)
 	If GUICtrlRead($g_hChkCustomTrainOrderEnable) = $GUI_CHECKED Then
 		$g_bCustomTrainOrderEnable = True
 		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_ENABLE)
-		For $i = 0 To UBound($g_asTroopOrderTrainTab) - 2
+		For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
 			GUICtrlSetState($g_ahCmbTroopOrder[$i], $GUI_ENABLE)
 		Next
 		If IsUseCustomTroopOrder() = True Then GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	Else
 		$g_bCustomTrainOrderEnable = False
 		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE) ; disable button
-		For $i = 0 To UBound($g_asTroopOrderTrainTab) - 2
+		For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
 			GUICtrlSetState($g_ahCmbTroopOrder[$i], $GUI_DISABLE) ; disable combo boxes
 		Next
 		SetDefaultTroopGroup($bNoiseMode) ; Reset troopgroup values to default
 		If $bNoiseMode Or $g_iDebugSetlogTrain = 1 Then
 			Local $sNewTrainList = ""
-			For $i = 0 To UBound($g_asTroopName) - 1
-				$sNewTrainList &= $g_asTroopName[$i] & ", "
+			For $i = 0 To $eTroopCount - 1
+				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
 			Next
-			$sNewTrainList = StringLeft($sNewTrainList, StringLen($sNewTrainList) - 2)
+			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
 			Setlog("Current train order= " & $sNewTrainList, $COLOR_BLUE)
 		EndIf
 	EndIf
@@ -357,7 +355,7 @@ Func GUITrainOrder()
 
 	GUICtrlSetImage($iCtrlIdImage, $g_sLibIconPath, $g_aiTroopOrderIcon[$iTroopIndex]) ; set proper troop icon
 
-	For $i = 0 To UBound($g_asTroopOrderTrainTab) - 2 ; check for duplicate combobox index and flag problem
+	For $i = 0 To UBound($g_ahCmbTroopOrder) - 1 ; check for duplicate combobox index and flag problem
 		If $iGUI_CtrlId = $g_ahCmbTroopOrder[$i] Then ContinueLoop
 		If _GUICtrlComboBox_GetCurSel($iGUI_CtrlId) = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) Then
 			GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $eIcnOptions)
@@ -381,8 +379,8 @@ Func BtnTroopOrderSet()
 	Local $sNewTrainList = ""
 
 	; check for duplicate combobox index and flag with read color
-	For $i = 0 To UBound($g_asTroopOrderTrainTab) - 2
-		For $j = 0 To UBound($g_asTroopOrderTrainTab) - 2
+	For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
+		For $j = 0 To UBound($g_ahCmbTroopOrder) - 1
 			If $i = $j Then ContinueLoop ; skip if index are same
 			If _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$j]) Then
 				_GUICtrlComboBox_SetCurSel($g_ahCmbTroopOrder[$j], -1)
@@ -391,9 +389,12 @@ Func BtnTroopOrderSet()
 			Else
 				GUICtrlSetColor($g_ahCmbTroopOrder[$j], $COLOR_BLACK)
 			EndIf
-			$g_aiCmbCustomTrainOrder[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) ; update combo array variable with new value
 		Next
-	Next
+
+	    ; update combo array variable with new value
+		$g_aiCmbCustomTrainOrder[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i])
+    Next
+
 	If $bReady Then
 		ChangeTroopTrainOrder() ; code function to record new training order
 		If @error Then
@@ -410,9 +411,10 @@ Func BtnTroopOrderSet()
 			GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 		Else
 			Setlog("Troop training order changed successfully!", $COLOR_GREEN)
-			For $i = 0 To UBound($g_asTroopName) - 1
-				$sNewTrainList &= $g_asTroopName[$i] & ", "
+			For $i = 0 To $eTroopCount - 1
+				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
 			Next
+			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
 			Setlog("Troop train order= " & $sNewTrainList, $COLOR_BLUE)
 		EndIf
 	Else
@@ -424,81 +426,52 @@ Func BtnTroopOrderSet()
 EndFunc   ;==>BtnTroopOrderSet
 
 Func ChangeTroopTrainOrder()
-
 	If $g_iDebugSetlog = 1 Or $g_iDebugSetlogTrain = 1 Then Setlog("Begin Func ChangeTroopTrainOrder()", $COLOR_DEBUG) ;Debug
 
-	; reference for original troopgroup list
-	;$g_avTroopGroup[10][3] = [["Arch", 1, 1], ["Giant", 2, 5], ["Wall", 4, 2], ["Barb", 0, 1], ["Gobl", 3, 1], ["Heal", 7, 14], ["Pekk", 9, 25], ["Ball", 5, 5], ["Wiza", 6, 4], ["Drag", 8, 20]]
-
-	Local $sComboText = ""
-	Local $NewTroopGroup[19][7]
+	Local $NewTroopOrder[$eTroopCount]
 	Local $iUpdateCount = 0
-
-	If UBound($g_asTroopOrderTrainTab) - 1 <> UBound($g_avTroopGroup) Then ; safety check in case troops are added
-		If $g_iDebugSetlogTrain = 1 Then Setlog("UBound($g_asTroopOrderTrainTab) - 1: " & UBound($g_asTroopOrderTrainTab) - 1 & " = " & UBound($g_avTroopGroup) & "UBound($g_avTroopGroup)", $COLOR_DEBUG) ;Debug
-		Setlog("Monkey ate bad banana, fix $g_asTroopOrderTrainTab & $g_avTroopGroup arrays!", $COLOR_RED)
-		SetError(1, 0, False)
-		Return
-	EndIf
 
 	If IsUseCustomTroopOrder() = False Then ; check if no custom troop values saved yet.
 		SetError(2, 0, False)
 		Return
 	EndIf
 
-	For $i = 0 To UBound($g_asTroopOrderTrainTab) - 2 ; Look for match of combobox text to troopgroup and create new train order
-		$sComboText = StringLeft(StringStripWS(GUICtrlRead($g_ahCmbTroopOrder[$i]), $STR_STRIPALL), 5)
-		For $j = 0 To UBound($g_avDefaultTroopGroup) - 1
-			;Setlog("$i=" & $i & ", ComboSel=" & _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) & ", $g_avDefaultTroopGroup[" & $j & "][0]: " & $g_avDefaultTroopGroup[$j][0] & " = " & $sComboText& " :$sComboText" , $COLOR_DEBUG) ;Debug
-			If StringInStr($sComboText, $j > 11 ? StringLeft($g_avDefaultTroopGroup[$j][0], 3) : $g_avDefaultTroopGroup[$j][0], $STR_NOCASESENSEBASIC) = 0 Then ContinueLoop
-			$iUpdateCount += 1 ; keep count of troops updated to ensure success
-			;Setlog("$iUpdateCount: " & $iUpdateCount , $COLOR_DEBUG) ;Debug  ; debug
-			For $k = 0 To UBound($g_avDefaultTroopGroup, 2) - 1 ; if true then assign next $i array element(s) in list to match in troopgroup
-				$NewTroopGroup[$i][$k] = $g_avDefaultTroopGroup[$j][$k]
-			Next ; ; $NewTroopGroup[$i][$k] loop
-			$NewTroopGroup[$i][6] = $j
-			ExitLoop
-		Next ; $g_avDefaultTroopGroup[$j][x] loop
-	Next ; $g_ahCmbTroopOrder[$i] loop
+    ; Look for match of combobox text to troopgroup and create new train order
+	For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
+		Local $sComboText = GUICtrlRead($g_ahCmbTroopOrder[$i])
+		For $j = 0 To UBound($g_asTroopOrderList) - 1
+			If $sComboText = $g_asTroopOrderList[$j] Then
+			   $NewTroopOrder[$i] = $j - 1
+			   $iUpdateCount += 1
+			   ExitLoop
+			EndIf
+		Next
+	Next
 
-	If $iUpdateCount = UBound($g_avDefaultTroopGroup, 1) Then ; safety check that all troops properly assigned to new array.
-		For $j = 0 To UBound($g_avDefaultTroopGroup) - 1
-			For $k = 0 To UBound($NewTroopGroup, 2) - 1
-				$g_avTroopGroup[$j][$k] = $NewTroopGroup[$j][$k]
-			Next
-			If $g_iDebugSetlogTrain = 1 Then Setlog("$g_avTroopGroup[" & $j & "]= " & $g_avTroopGroup[$j][0] & ":" & $g_avTroopGroup[$j][1] & ":" & $g_avTroopGroup[$j][2], $COLOR_ORANGE)
+	If $iUpdateCount = $eTroopCount Then ; safety check that all troops properly assigned to new array.
+		For $i = 0 To $eTroopCount - 1
+			$g_aiTrainOrder[$i] = $NewTroopOrder[$i]
 		Next
 		GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnGreenLight)
 	Else
-		Setlog($iUpdateCount & "|" & UBound($g_avDefaultTroopGroup, 1) & " - Error - Bad troop assignment in ChangeTroopTrainOrder()", $COLOR_RED)
+		Setlog($iUpdateCount & "|" & $eTroopCount & " - Error - Bad troop assignment in ChangeTroopTrainOrder()", $COLOR_RED)
 		SetError(3, 0, False)
 		Return
 	EndIf
 
 	Return True
-
 EndFunc   ;==>ChangeTroopTrainOrder
 
 Func SetDefaultTroopGroup($bNoiseMode = True)
-	;
-	; $g_avTroopGroup[10][3] = [["Arch", 1, 1], ["Giant", 2, 5], ["Wall", 4, 2], ["Barb", 0, 1], ["Gobl", 3, 1], ["Heal", 7, 14], ["Pekk", 9, 25], ["Ball", 5, 5], ["Wiza", 6, 4], ["Drag", 8, 20]]
-	;
-	_ArraySortEx($g_avDefaultTroopGroup, 0, 0, 3, 1, 2, 0)
-	For $i = 0 To UBound($g_avDefaultTroopGroup, 1) - 1
-		For $j = 0 To UBound($g_avDefaultTroopGroup, 2) - 1
-			$g_avTroopGroup[$i][$j] = $g_avDefaultTroopGroup[$i][$j]
-		Next
-		$g_avTroopGroup[$i][6] = $i
-	Next
-	For $i = 0 To UBound($g_avDefaultTroopGroup, 1) - 1
-		$g_asTroopName[$i] = $g_avTroopGroup[$i][0]
+	For $i = 0 To $eTroopCount - 1
+		$g_aiTrainOrder[$i] = $i
 	Next
 
 	If $bNoiseMode Or $g_iDebugSetlogTrain = 1 Then Setlog("Default troop training order set", $COLOR_GREEN)
 EndFunc   ;==>SetDefaultTroopGroup
 
 Func IsUseCustomTroopOrder()
-	For $i = 0 To UBound($g_asTroopOrderTrainTab) - 2 ; Check if custom train order has been used to select log message
+	For $i = 0 To UBound($g_aiCmbCustomTrainOrder) - 1 ; Check if custom train order has been used, to select log message
 		If $g_aiCmbCustomTrainOrder[$i] = -1 Then
 			If $g_iDebugSetlogTrain = 1 Then Setlog("Custom train order not used...", $COLOR_DEBUG) ;Debug
 			Return False

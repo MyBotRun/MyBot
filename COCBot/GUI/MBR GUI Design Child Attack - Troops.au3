@@ -36,13 +36,16 @@ Global $g_hCmbBoostBarracks = 0, $g_hCmbBoostSpellFactory = 0, $g_hCmbBoostBarba
 Global $g_hChkBoostBarracksHours[24] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], $g_hChkBoostBarracksHoursE1 = 0, $g_hChkBoostBarracksHoursE2 = 0
 
 ; Train Order sub-tab
+Global Const $g_asTroopOrderList[] = [ "", _
+   GetTranslated(604,1, "Barbarians"), GetTranslated(604,2, "Archers"), GetTranslated(604,3, "Giants"), GetTranslated(604,4, "Goblins"), _
+   GetTranslated(604,5, "Wall Breakers"), GetTranslated(604,7, "Balloons"), GetTranslated(604,8, "Wizards"), GetTranslated(604,9, "Healers"), _
+   GetTranslated(604,10, "Dragons"), GetTranslated(604,11, "Pekkas"), GetTranslated(604,20, "Baby Dragons"), GetTranslated(604,21, "Miners"), _
+   GetTranslated(604,13, "Minions"), GetTranslated(604,14, "Hog Riders"), GetTranslated(604,15, "Valkyries"), GetTranslated(604,16, "Golems"), _
+   GetTranslated(604,17, "Witches"), GetTranslated(604,18, "Lava Hounds"), GetTranslated(604, 19, "Bowlers") ]
 Global $g_hChkCustomTrainOrderEnable = 0
-Global $g_ahCmbTroopOrder[UBound($g_aiTroopOrderIcon)] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-Global $g_ahImgTroopOrder[UBound($g_aiTroopOrderIcon)] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+Global $g_ahCmbTroopOrder[$eTroopCount] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+Global $g_ahImgTroopOrder[$eTroopCount] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 Global $g_hBtnTroopOrderSet = 0, $g_ahImgTroopOrderSet = 0
-; Do Not Use translated names here or ChangeTroopTrainOrder() code breaks
-;Local $g_asTroopOrderTrainTab[] = ["", $sTxtBarbarians, $sTxtArchers, $sTxtGiants, $sTxtGoblins, $sTxtWallBreakers, $sTxtBalloons, $sTxtWizards, $sTxtHealers, $sTxtDragons, $sTxtPekkas, $sTxtBabyDragons, $sTxtMiners, $sTxtMinions, $sTxtHogRiders, $sTxtValkyries, $sTxtGolems, $sTxtWitches, $sTxtLavaHounds, $sTxtBowlers]
-Global $g_asTroopOrderTrainTab[] = ["", "Barbarians", "Archers", "Giants", "Goblins", "Wall Breakers", "Balloons", "Wizards", "Healers", "Dragons", "Pekkas", "Baby Dragons", "Miners", "Minions", "Hog Riders", "Valkyries", "Golems", "Witches", "Lava Hounds", "Bowlers"]
 
 ; Options sub-tab
 Global $g_hChkCloseWhileTraining = 0, $g_hChkCloseWithoutShield = 0, $g_hChkCloseEmulator = 0, $g_hChkRandomClose = 0, $g_hRdoCloseWaitExact = 0, $g_hRdoCloseWaitRandom = 0
@@ -770,17 +773,22 @@ Func CreateTrainOrderSubTab()
 						  GetTranslated(641, 28, "Changing train order can be useful with CSV scripted attack armies!"))
 	   GUICtrlSetOnEvent(-1, "chkTroopOrder2")
 
+	  If UBound($g_asTroopOrderList) - 1 <> $eTroopCount Then ; safety check in case troops are added
+		If $g_iDebugSetlogTrain = 1 Then Setlog("UBound($g_asTroopOrderList) - 1: " & UBound($g_asTroopOrderList) - 1 & " = " & "$eTroopCount: " & $eTroopCount, $COLOR_DEBUG) ;Debug
+		Setlog("Monkey ate bad banana, fix $g_asTroopOrderList & $eTroopCount arrays!", $COLOR_RED)
+	  EndIf
+
 	  ; Create translated list of Troops for combo box
 	  Local $sComboData = ""
-	  For $j = 0 To UBound($g_asTroopOrderTrainTab) - 1
-		  $sComboData &= $g_asTroopOrderTrainTab[$j] & "|"
+	  For $j = 0 To UBound($g_asTroopOrderList) - 1
+		  $sComboData &= $g_asTroopOrderList[$j] & "|"
 	  Next
 
 	  Local $txtTroopOrder = GetTranslated(641, 29, "Enter sequence order for training of troop #")
 
 	  ; Create ComboBox(es) for selection of troop training order
 	  $y += 23
-	  For $z = 0 To UBound($g_asTroopOrderTrainTab) - 2
+	  For $z = 0 To $eTroopCount - 1
 		  If $z < 12 Then
 			  GUICtrlCreateLabel($z + 1 & ":", $x - 16, $y + 2, -1, 18)
 			  $g_ahCmbTroopOrder[$z] = GUICtrlCreateCombo("", $x, $y, 94, 18, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))

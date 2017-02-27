@@ -13,23 +13,6 @@
 ; Example .......: No
 ; ===============================================================================================================================
 #include-once
-Func chkBalanceDR()
-	If GUICtrlRead($g_hChkUseCCBalanced) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hCmbCCDonated, $GUI_ENABLE)
-		GUICtrlSetState($g_hCmbCCReceived, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($g_hCmbCCDonated, $GUI_DISABLE)
-		GUICtrlSetState($g_hCmbCCReceived, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkBalanceDR
-
-Func cmbBalanceDR()
-	If _GUICtrlComboBox_GetCurSel($g_hCmbCCDonated) = _GUICtrlComboBox_GetCurSel($g_hCmbCCReceived) Then
-		_GUICtrlComboBox_SetCurSel($g_hCmbCCDonated, 0)
-		_GUICtrlComboBox_SetCurSel($g_hCmbCCReceived, 0)
-	EndIf
-EndFunc   ;==>cmbBalanceDR
-
 Func btnMilkingOptions()
 ;~ 	OpenGUIMilk2()
 EndFunc   ;==>btnMilkingOptions

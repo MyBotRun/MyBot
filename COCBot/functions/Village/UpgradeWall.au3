@@ -93,7 +93,10 @@ Func UpgradeWallGold()
 				SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
 				Return False
 			EndIf
-			If GemClick(440, 480 + $g_iMidOffsetY, 1, 0, "#0317") = False Then
+			Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0317")
+			If _Sleep(1000) Then Return
+			If isGemOpen(True) Then
+				ClickP($aAway, 1, 0, "#0314") ; click away
 				SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
 				Return False
 			Else
@@ -131,7 +134,10 @@ Func UpgradeWallElixir()
 				SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
 				Return False
 			EndIf
-			If GemClick(440, 480 + $g_iMidOffsetY, 1, 0, "#0318") = False Then
+			Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0318")
+			If _Sleep(1000) Then Return
+			If isGemOpen(True) Then
+				ClickP($aAway, 1, 0, "#0314") ; click away
 				SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
 				Return False
 			Else
@@ -155,11 +161,11 @@ EndFunc   ;==>UpgradeWallElixir
 
 Func SkipWallUpgrade() ; Dynamic Upgrades
 
-;	If _Sleep(500) Then Return
-;	checkMainScreen(False)
-;	If $g_bRestart = True Then Return
-;	 $g_iUpgradeWallLootType = IniRead($g_sProfileConfigPath, "other", "use-storage", "0") ; Reset Variable to User Selection
-	InireadS($g_iUpgradeWallLootType,$g_sProfileConfigPath, "upgrade", "use-storage", "0") ; Reset Variable to User Selection
+	;	If _Sleep(500) Then Return
+	;	checkMainScreen(False)
+	;	If $g_bRestart = True Then Return
+	;	 $g_iUpgradeWallLootType = IniRead($g_sProfileConfigPath, "other", "use-storage", "0") ; Reset Variable to User Selection
+	InireadS($g_iUpgradeWallLootType, $g_sProfileConfigPath, "upgrade", "use-storage", "0") ; Reset Variable to User Selection
 
 	Local $iUpgradeAction = 0
 	Local $iBuildingsNeedGold = 0
@@ -172,25 +178,26 @@ Func SkipWallUpgrade() ; Dynamic Upgrades
 	$iAvailBuilderCount = $iFreeBuilderCount ; capture local copy of free builders
 
 	;;;;; Check building upgrade resouce needs .vs. available resources for walls
-	For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1  ; loop through all upgrades to see if any are enabled.
-		If $g_abBuildingUpgradeEnable[$iz] = True Then $iUpgradeAction += 1  ; count number enabled
+	For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1 ; loop through all upgrades to see if any are enabled.
+		If $g_abBuildingUpgradeEnable[$iz] = True Then $iUpgradeAction += 1 ; count number enabled
 	Next
+
 	If $iFreeBuilderCount > ($g_bUpgradeWallSaveBuilder ? 1 : 0) And $iUpgradeAction > 0 Then  ; check if builder available for bldg upgrade, and upgrades enabled
 		For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1
 			; internal check if builder still available, if loop index upgrade slot is enabled, and if repeat upgrade is done/ready for next upgrade
 			If $iAvailBuilderCount > ($g_bUpgradeWallSaveBuilder ? 1 : 0) And $g_abBuildingUpgradeEnable[$iz] = True And ($g_avBuildingUpgrades[$iz][7] = "" And $g_abUpgradeRepeatEnable[$iz]) Then
 				Switch $g_avBuildingUpgrades[$iz][3]
 					Case "Gold"
-						$iBuildingsNeedGold += Number($g_avBuildingUpgrades[$iz][2])  ; sum gold required for enabled upgrade
-						$iAvailBuilderCount -= 1  ; subtract builder from free count, as only need to save gold for upgrades where builder is available
+						$iBuildingsNeedGold += Number($g_avBuildingUpgrades[$iz][2]) ; sum gold required for enabled upgrade
+						$iAvailBuilderCount -= 1 ; subtract builder from free count, as only need to save gold for upgrades where builder is available
 					Case "Elixir"
-						$iBuildingsNeedElixir += Number($g_avBuildingUpgrades[$iz][2])  ; sum elixir required for enabled upgrade
-						$iAvailBuilderCount -= 1  ; subtract builder from free count, as only need to save elixir for upgrades where builder is available
+						$iBuildingsNeedElixir += Number($g_avBuildingUpgrades[$iz][2]) ; sum elixir required for enabled upgrade
+						$iAvailBuilderCount -= 1 ; subtract builder from free count, as only need to save elixir for upgrades where builder is available
 				EndSwitch
 			EndIf
 		Next
-		SetLog("SkipWall-Upgrade Summary: G:" & $iBuildingsNeedGold & ", E:" & $iBuildingsNeedElixir & ", Wall: " & $g_iWallCost & ", MinG: " & $g_iUpgradeWallMinGold  & ", MinE: " & $g_iUpgradeWallMinElixir)  ; debug
-		If $iBuildingsNeedGold > 0 Or $iBuildingsNeedElixir > 0 Then  ; if upgrade enabled and building upgrade resource is required, log user messages.
+		SetLog("SkipWall-Upgrade Summary: G:" & $iBuildingsNeedGold & ", E:" & $iBuildingsNeedElixir & ", Wall: " & $g_iWallCost & ", MinG: " & $g_iUpgradeWallMinGold & ", MinE: " & $g_iUpgradeWallMinElixir) ; debug
+		If $iBuildingsNeedGold > 0 Or $iBuildingsNeedElixir > 0 Then ; if upgrade enabled and building upgrade resource is required, log user messages.
 			Switch $g_iUpgradeWallLootType
 				Case 0 ; Using gold
 					If $iGoldCurrent - ($iBuildingsNeedGold + $g_iWallCost + Number($g_iUpgradeWallMinGold)) < 0 Then

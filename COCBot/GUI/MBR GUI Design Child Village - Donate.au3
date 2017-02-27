@@ -60,6 +60,9 @@ Global $g_hGrpDonateCC = 0, $g_ahChkDonateHoursE1 = 0, $g_ahChkDonateHoursE2 = 0
 Global $g_hGUI_RequestCC = 0, $g_hGUI_DONATECC = 0, $g_hGUI_ScheduleCC = 0
 Global $g_hGrpDonate = 0, $g_hChkDonate = 1, $g_hLblDonateDisabled = 0, $g_hLblScheduleDisabled = 0
 
+; Clan castle
+Global $g_hChkUseCCBalanced = 0, $g_hCmbCCDonated = 0, $g_hCmbCCReceived = 0
+
 Func CreateVillageDonate()
    $g_hGUI_DONATE = GUICreate("", $_GUI_MAIN_WIDTH - 28, $_GUI_MAIN_HEIGHT - 255 - 28, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_VILLAGE)
    ;GUISetBkColor($COLOR_WHITE, $g_hGUI_DONATE)
@@ -1818,6 +1821,31 @@ Func CreateScheduleSubTab()
 	  $x += 95
 		 $g_hLblSkipDonateNearFullTroopsText1 =  GUICtrlCreateLabel("%", $x, $y)
 
+   GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+   $x = $xStart
+   $y += 25
+   GUICtrlCreateGroup(GetTranslated(634,13,"Balance Donate/Receive"), $x - 20, $y, 430, 40)
+   	$y += 12
+		$g_hChkUseCCBalanced = GUICtrlCreateCheckbox(GetTranslated(634,13,"Balance Donate/Receive"), $x, $y+2, -1, -1)
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
+			_GUICtrlSetTip(-1, GetTranslated(634,14, "Disable Clan Castle Usage or Donations if Ratio is not correct. Will Auto Continue when the Ratio is correct again"))
+			GUICtrlSetOnEvent(-1, "chkBalanceDR")
+
+	$x += 250
+		$g_hCmbCCDonated = GUICtrlCreateCombo("",  $x + 40 , $y, 30, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			_GUICtrlSetTip(-1, GetTranslated(634,15, "Donated ratio"))
+			GUICtrlSetData(-1, "1|2|3|4|5", "1")
+			GUICtrlSetState(-1, $GUI_DISABLE)
+			GUICtrlSetOnEvent(-1, "cmbBalanceDR")
+		GUICtrlCreateLabel("/", $x + 73, $y + 5, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslated(634,16, "Wanted donated / received ratio") & @CRLF & _
+							   GetTranslated(634,17, "1/1 means donated = received, 1/2 means donated = half the received etc."))
+		$g_hCmbCCReceived = GUICtrlCreateCombo("", $x +80, $y, 30, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			_GUICtrlSetTip(-1, GetTranslated(634,18, "Received ratio"))
+			GUICtrlSetData(-1, "1|2|3|4|5", "1")
+			GUICtrlSetState(-1, $GUI_DISABLE)
+			GUICtrlSetOnEvent(-1, "cmbBalanceDR")
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
 #EndRegion

@@ -84,6 +84,7 @@ Func setMaxDegreeOfParallelism($iMaxDegreeOfParallelism = -1)
 EndFunc   ;==>setMaxDegreeOfParallelism
 
 Func ConvertVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
+	If $g_iBotLaunchTime = 0 Then Return ; Bot didn't finish launch yet
 	Local $result = DllCall($g_hLibFunctions, "str", "ConvertVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
 	if Isarray($result) = False  then
 	   if $g_iDebugSetlog=1 then Setlog("ConvertVillagePos result error", $COLOR_ERROR)
@@ -96,6 +97,7 @@ Func ConvertVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
 EndFunc   ;==>ConvertVillagePos
 
 Func ConvertToVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
+	If $g_iBotLaunchTime = 0 Then Return ; Bot didn't finish launch yet
 	Local $result = DllCall($g_hLibFunctions, "str", "ConvertToVillagePos", "int", $x, "int", $y, "float", $zoomfactor)
 	if Isarray($result) = False  then
 	   if $g_iDebugSetlog=1 then Setlog("ConvertToVillagePos result error", $COLOR_ERROR)
@@ -108,6 +110,7 @@ Func ConvertToVillagePos(ByRef $x, ByRef $y, $zoomfactor = 0)
 EndFunc   ;==>ConvertToVillagePos
 
 Func ConvertFromVillagePos(ByRef $x, ByRef $y)
+	If $g_iBotLaunchTime = 0 Then Return ; Bot didn't finish launch yet
 	Local $result = DllCall($g_hLibFunctions, "str", "ConvertFromVillagePos", "int", $x, "int", $y)
 	if Isarray($result) = False  then
 	   if $g_iDebugSetlog=1 then Setlog("ConvertVillagePos result error", $COLOR_ERROR)
