@@ -148,6 +148,7 @@ Func CreateBotOptions()
 	   $y += 19
 	   #ce
 	   $g_hChkBotCustomTitleBarClick = GUICtrlCreateCheckbox(GetTranslated(636,124, "My Bot design Title Bar"), $x, $y, -1, -1)
+		   If BitAND($g_iBotDesignFlags, 1) Then GUICtrlSetState(-1, $GUI_CHECKED)
 		   GUICtrlSetOnEvent(-1, "chkBotCustomTitleBarClick")
 		   _GUICtrlSetTip(-1, GetTranslated(636,125, "Enable optimized My Bot Window Title Bar and\r\nthin Window Border (restart of bot is required)"))
 	   $y += 19
