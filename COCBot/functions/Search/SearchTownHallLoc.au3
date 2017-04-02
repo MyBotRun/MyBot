@@ -6,51 +6,65 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Code Monkey #5
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: Sardo 2016-02
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func SearchTownHallLoc()
-   If $searchTH <> "-" Then
- 		 If isInsideDiamondXY( $THx,$THy)=False Then Return False
+	Local $addtiles = 0
 
-	  For $i=0 to 20
+	;how many distance tiles from border
+	Switch $g_iMatchMode
+		Case $TS
+			If $g_iArmyCapacity < 100 Then
+				$addtiles = $g_iAtkTSAddTilesWhileTrain
+			Else
+				$addtiles = $g_iAtkTSAddTilesFullTroops
+			EndIf
+		Case $LB
+			$addtiles = $g_iTHSnipeBeforeTiles[$LB]
+		Case $DB
+			If $g_bDuringMilkingAttack = True Then
+				$addtiles = $g_iMilkFarmTHMaxTilesFromBorder
+			Else
+				$addtiles = $g_iTHSnipeBeforeTiles[$DB]
+			EndIf
+	EndSwitch
 
-		 If $Thx<114+$i*19+ceiling(($THaddtiles-2)/2*19) And $Thy<359-$i*14+ceiling(($THaddtiles-2)/2*14) Then
-			$THi=$i
-			$THside=0
-			Return True
-		 EndIf
-		 If $Thx<117+$i*19+ceiling(($THaddtiles-2)/2*19) And $Thy>268+$i*14-floor(($THaddtiles-2)/2*14) Then
-			$THi=$i
-			$THside=1
-			Return True
-		 EndIf
-		 If $Thx>743-$i*19-floor(($THaddtiles-2)/2*19) And $Thy<358-$i*14+ceiling(($THaddtiles-2)/2*14) Then
-			$THi=$i
-			$THside=2
-			Return True
-		 EndIf
-		 If $Thx>742-$i*19-floor(($THaddtiles-2)/2*19) And $Thy>268+$i*14-floor(($THaddtiles-2)/2*14) Then
-			$THi=$i
-			$THside=3
-			Return True
-		 EndIf
-		 Next
-   EndIf
+
+	; New Tile px on 44x44 map size : X = 16px and Y = 12px
+
+	;setlog("th add tiles = " & $addtiles)
+	If $g_iSearchTH <> "-" Then
+		If isInsideDiamondXY($g_iTHx, $g_iTHy) = False Then Return False
+
+		For $i = 0 To 22
+
+			If $g_iTHx < 114 + $i * 16 + Ceiling(($addtiles - 2) / 2 * 16) And $g_iTHy < 359 - $i * 12 + Ceiling(($addtiles - 2) / 2 * 12) Then
+				$g_iTHi = $i
+				$g_iTHside = 0 ; TopLeft
+				Return True
+			EndIf
+			If $g_iTHx < 117 + $i * 16 + Ceiling(($addtiles - 2) / 2 * 16) And $g_iTHy > 268 + $i * 12 - Floor(($addtiles - 2) / 2 * 12) Then
+				$g_iTHi = $i
+				$g_iTHside = 1 ; BottomLeft
+				Return True
+			EndIf
+			If $g_iTHx > 743 - $i * 16 - Floor(($addtiles - 2) / 2 * 16) And $g_iTHy < 358 - $i * 12 + Ceiling(($addtiles - 2) / 2 * 12) Then
+				$g_iTHi = $i
+				$g_iTHside = 2 ; TopRight
+				Return True
+			EndIf
+			If $g_iTHx > 742 - $i * 16 - Floor(($addtiles - 2) / 2 * 16) And $g_iTHy > 268 + $i * 12 - Floor(($addtiles - 2) / 2 * 12) Then
+				$g_iTHi = $i
+				$g_iTHside = 3 ; BottomRight
+				Return True
+			EndIf
+		Next
+	EndIf
 	Return False
-EndFunc ;--- SearchTownHallLoc
-
-;~ Func FilterTH()
-;~    	  For $i=0 to 20
-;~ 		 If $Thx<52+$i*19 And $Thy<315-$i*14 Then Return False
-;~ 		 If $Thx<52+$i*19 And $Thy>315+$i*14 Then Return False
-;~  		 If $Thx>802-$i*19 And $Thy<315-$i*14 Then Return False
-;~ 		 If $Thx>802-$i*19 And $Thy>315+$i*14 Then Return False
-;~ 	  Next
-;~ 			Return True
-;~ EndFunc
+EndFunc   ;==>SearchTownHallLoc
 

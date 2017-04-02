@@ -8,8 +8,8 @@
 ;                  $offset              - an object.
 ; Return values .: None
 ; Author ........: didipe
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: ProMac (12-2016)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,37 +21,46 @@ Func _GetOffsetTroopFurther($pixel, $eVectorType, $offset)
 	Local $vectorRedArea[0]
 	Local $pixelOffset = GetOffestPixelRedArea2($pixel, $eVectorType, $offset)
 	If ($eVectorType = $eVectorLeftTop) Then
-		$xMin = 80
-		$xMax = 430
-		$yMin = 338
-		$yMax = 73
+
+		$xMin = $InternalArea[0][0] + 2
+		$yMin = $InternalArea[0][1]
+		$xMax = $InternalArea[2][0]
+		$yMax = $InternalArea[2][1] + 2
+
 		$xStep = 4
 		$yStep = -3
 		$yOffset = -1 * $offset
 		$xOffset = Floor($yOffset)
 	ElseIf ($eVectorType = $eVectorRightTop) Then
-		$xMin = 430
-		$xMax = 780
-		$yMin = 73
-		$yMax = 338
+
+		$xMin = $InternalArea[2][0]
+		$yMin = $InternalArea[2][1] + 2
+		$xMax = $InternalArea[1][0] - 2
+		$yMax = $InternalArea[1][1]
+
+
 		$xStep = 4
 		$yStep = 3
 		$yOffset = -1 * $offset
 		$xOffset = Floor($yOffset) * -1
 	ElseIf ($eVectorType = $eVectorLeftBottom) Then
-		$xMin = 80
-		$xMax = 430
-		$yMin = 338
-		$yMax = 600
+
+		$xMin = $InternalArea[0][0] + 2
+		$yMin = $InternalArea[0][1]
+		$xMax = $InternalArea[3][0]
+		$yMax = $InternalArea[3][1] - 2
+
 		$xStep = 4
 		$yStep = 3
 		$yOffset = $offset
 		$xOffset = Floor($yOffset) * -1
 	Else
-		$xMin = 430
-		$xMax = 780
-		$yMin = 600
-		$yMax = 338
+
+		$xMin = $InternalArea[3][0]
+		$yMin = $InternalArea[3][1] - 2
+		$xMax = $InternalArea[1][0] - 2
+		$yMax = $InternalArea[1][1]
+
 		$xStep = 4
 		$yStep = -3
 		$yOffset = $offset
@@ -86,10 +95,10 @@ Func _GetOffsetTroopFurther($pixel, $eVectorType, $offset)
 		If ($found) Then ExitLoop
 	Next
 	; Not select pixel in menu of troop
-	If $pixelOffset[1] > 547 + $bottomOffsetY Then
-		$pixelOffset[1] = 547 + $bottomOffsetY
+	If $pixelOffset[1] > 555 + $g_iBottomOffsetY Then
+		$pixelOffset[1] = 555 + $g_iBottomOffsetY
 	EndIf
-	debugRedArea("$pixelOffset x : [" + $pixelOffset[0] + "] / y : [" + $pixelOffset[1] + "]")
+	debugRedArea("$pixelOffset x : [" & $pixelOffset[0] & "] / y : [" & $pixelOffset[1] & "]")
 
 	Return $pixelOffset
 EndFunc   ;==>_GetOffsetTroopFurther

@@ -1,290 +1,131 @@
-Func OpenGUIMilk()
-	GUIMilk()
-	applyMilkingConfig()
-	GUISetState(@SW_SHOW, $hMilkGUI)
-	GUISetState(@SW_DISABLE, $frmBot)
-EndFunc
-Func SaveMilkingConfig()
+; #FUNCTION# ====================================================================================================================
+; Name ..........: MBR GUI Control Milking
+; Description ...: This file Includes all functions to current GUI
+; Syntax ........:
+; Parameters ....: None
+; Return values .: None
+; Author ........: MyBot.run team
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+#include-once
 
-
-	;1 Elixir Collectors Minimum Level
-	Local $TempMilkFarmElixirParam = ""
-	For $i = 0 to 8
-	   $TempMilkFarmElixirParam &= _GUICtrlComboBox_GetCurSel(  Eval("cmbMilkLvl"&$i+4) ) -1  & "|"
-    Next
-    $MilkFarmElixirParam = StringSplit(StringLeft($TempMilkFarmElixirParam,StringLen($TempMilkFarmElixirParam) - 1 ),"|",2)
-
-   ;2. If Elixir Collectors Found, Then
-	If GUICtrlRead($chkAtkElixirExtractors) = $GUI_CHECKED Then
-	   $MilkFarmLocateElixir = 1
-    Else
-	   $MilkFarmLocateElixir = 0
-    EndIf
-
-	If GUICtrlRead($chkAtkGoldMines) = $GUI_CHECKED Then
-	   $MilkFarmLocateMine = 1
-    Else
-	   $MilkFarmLocateMine = 0
-    EndIf
-
-	$MilkFarmMineParam = _GUICtrlComboBox_GetCurSel($cmbAtkGoldMinesLevel)  + 1
-
-	If GUICtrlRead($chkAtkDarkDrills) = $GUI_CHECKED Then
-	   $MilkFarmLocateDrill = 1
-    Else
-	   $MilkFarmLocateDrill = 0
-    EndIf
-
-	$MilkFarmAttackDarkDrills = _GUICtrlComboBox_GetCurSel($cmbAtkDarkDrillsLevel)  + 1
-
-	;3. Only Attack If
-	$MilkFarmResMaxTilesFromBorder = _GUICtrlComboBox_GetCurSel($cmbRedlineResDistance)
-
-	If GUICtrlRead($chkAttackMinesifGold) = $GUI_CHECKED Then
-	   $MilkFarmAttackGoldMines = 1
-    Else
-	   $MilkFarmAttackGoldMines = 0
-    EndIf
-
-	If GUICtrlRead($chkAttackMinesifElixir) = $GUI_CHECKED Then
-	   $MilkFarmAttackElixirExtractors = 1
-    Else
-	   $MilkFarmAttackElixirExtractors = 0
-    EndIf
-
-	If GUICtrlRead($chkAttackMinesifDarkElixir) = $GUI_CHECKED Then
-	   $MilkFarmAttackDarkDrills = 1
-    Else
-	   $MilkFarmAttackDarkDrills = 0
-    EndIf
-
-	$MilkFarmLimitGold = GUICtrlRead($txtAttackMinesIfGold)
-	$MilkFarmLimitElixir = GUICtrlRead($txtAttackMinesifElixir)
-	$MilkFarmLimitDark = GUICtrlRead($txtAttackMinesifDarkElixir)
-
-	;4 Troops to Use For Each Resource
-	$MilkFarmTroopForWaveMin = GUICtrlRead($txtLowerXWave)
-	$MilkFarmTroopForWaveMax = GUICtrlRead($txtUpperXWave)
-	$MilkFarmTroopMaxWaves = GUICtrlRead($txtMaxWaves)
-	$MilkFarmDelayFromWavesMin = GUICtrlRead($txtLowerDelayWaves)
-	$MilkFarmDelayFromWavesMax = GUICtrlRead($txtUpperDelayWaves)
-
-    ;5 Snipe Outside TH
-;~ 	If GUICtrlRead($chkSnipeMilkTH) = $GUI_CHECKED Then
-;~ 	   $MilkFarmSnipeTh = 1
-;~     Else
-;~ 	   $MilkFarmSnipeTh = 0
-;~     EndIf
-
-;~ 	$MilkFarmTHMaxTilesFromBorder = GUICtrlRead ( $txtMaxTilesMilk)
-
-;~     $MilkFarmAlgorithmTh = _GUICtrlComboBox_GetCurSel($cmbMilkSnipeAlgorithm)
-
-;~ 	If GUICtrlRead($chkSnipeIfNoElixir) = $GUI_CHECKED Then
-;~ 	   $MilkFarmSnipeEvenIfNoExtractorsFound = 1
-;~     Else
-;~ 	   $MilkFarmSnipeEvenIfNoExtractorsFound = 0
-;~     EndIf
-
-	If $DevMode = 1 Then
-
-	   If GUICtrlRead($chkMilkingDebugIMG) = $GUI_CHECKED Then
-		  $debugresourcesoffset = 1
-	   Else
-		  $debugresourcesoffset = 0
-	   EndIf
-
-	   If GUICtrlRead($chkMilkingDebugFullSearch) = $GUI_CHECKED Then
-		  $continuesearchelixirdebug = 1
-	   Else
-		  $continuesearchelixirdebug = 0
-	   EndIf
-    EndIf
-	GUIDelete($hMilkGUI)
-	GUISetState(@SW_ENABLE, $frmBot)
-EndFunc
 Func chkAtkGoldMines()
-	If GUICtrlRead($chkAtkGoldMines) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbAtkGoldMinesLevel, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkAtkGoldMines) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hCmbAtkGoldMinesLevel, $GUI_ENABLE)
 	Else
-		GUICtrlSetState($cmbAtkGoldMinesLevel, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbAtkGoldMinesLevel, $GUI_DISABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>chkAtkGoldMines
+
 Func chkAtkDarkDrills()
-	If GUICtrlRead($chkAtkDarkDrills) = $GUI_CHECKED Then
-		GUICtrlSetState($cmbAtkDarkDrillsLevel, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkAtkDarkDrills) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hCmbAtkDarkDrillsLevel, $GUI_ENABLE)
 	Else
-		GUICtrlSetState($cmbAtkDarkDrillsLevel, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbAtkDarkDrillsLevel, $GUI_DISABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>chkAtkDarkDrills
+
 Func chkAttackMinesifGold()
-	If GUICtrlRead($chkattackminesifgold) = $GUI_CHECKED Then
-		guictrlsetstate($txtAttackMinesIfGold, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkAttackMinesIfGold) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtAttackMinesIfGold, $GUI_ENABLE)
 	Else
-		guictrlsetstate($txtAttackMinesIfGold, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtAttackMinesIfGold, $GUI_DISABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>chkAttackMinesifGold
+
 Func chkAttackMinesifelixir()
-	If GUICtrlRead($chkattackminesifelixir) = $GUI_CHECKED Then
-		guictrlsetstate($txtAttackMinesIfelixir, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkAttackMinesIfElixir) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtAttackMinesIfElixir, $GUI_ENABLE)
 	Else
-		guictrlsetstate($txtAttackMinesIfelixir, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtAttackMinesIfElixir, $GUI_DISABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>chkAttackMinesifelixir
+
 Func chkAttackMinesifdarkElixir()
-	If GUICtrlRead($chkattackminesifdarkElixir) = $GUI_CHECKED Then
-		guictrlsetstate($txtAttackMinesIfdarkElixir, $GUI_ENABLE)
+	If GUICtrlRead($g_hChkAttackMinesIfDarkElixir) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtAttackMinesIfDarkElixir, $GUI_ENABLE)
 	Else
-		guictrlsetstate($txtAttackMinesIfdarkElixir, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtAttackMinesIfDarkElixir, $GUI_DISABLE)
 	EndIf
-EndFunc
-;~ Func chkSnipeMilkTH()
-;~ 	If GUICtrlRead($chkSnipeMilkTH) = $GUI_CHECKED Then
-;~ 		guictrlsetstate($txtMaxTilesMilk, $GUI_ENABLE)
-;~ 		GUICtrlSetState($cmbMilkSnipeAlgorithm, $GUI_ENABLE)
-;~ 		GUICtrlSetState($chkSnipeIfNoElixir, $GUI_ENABLE)
+EndFunc   ;==>chkAttackMinesifdarkElixir
+
+Func chkMilkFarmForcetolerance()
+
+	If GUICtrlRead($g_hChkMilkFarmForceTolerance) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hTxtMilkFarmForceToleranceNormal, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtMilkFarmForceToleranceBoosted, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtMilkFarmForceToleranceDestroyed, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($g_hTxtMilkFarmForceToleranceNormal, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtMilkFarmForceToleranceBoosted, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtMilkFarmForceToleranceDestroyed, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkMilkFarmForcetolerance
+
+Func chkMilkAfterAttackTHSnipe()
+	If GUICtrlRead($g_hChkMilkAfterAttackTHSnipe) = $GUI_CHECKED Then
+		For $i = $g_hGrpSnipeOutsideTHAtEnd To $g_hGrpDeploy - 1
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+	Else
+		For $i = $g_hGrpSnipeOutsideTHAtEnd To $g_hGrpDeploy - 1
+			If $i <> $g_hChkMilkAfterAttackTHSnipe Then GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc   ;==>chkMilkAfterAttackTHSnipe
+
+;~ Func chkMilkAfterAttackStandard()
+;~ 	If GuiCtrlRead($chkMilkAfterAttackStandard) =    $GUI_CHECKED Then
+;~ 			For $i = $grpDeploy to $lblx-1
+;~ 				GUICtrlSetState($i, $GUI_Enable)
+;~ 			Next
 ;~ 	Else
-;~ 		guictrlsetstate($txtMaxTilesMilk, $GUI_DISABLE)
-;~ 		GUICtrlSetState($cmbMilkSnipeAlgorithm, $GUI_DISABLE)
-;~ 		GUICtrlSetState($chkSnipeIfNoElixir, $GUI_DISABLE)
+;~ 			For $i = $grpDeploy to $lblx-1
+;~ 				If $i <>   $chkMilkAfterAttackStandard Then GUICtrlSetState($i, $GUI_DISABLE)
+;~ 			Next
 ;~ 	EndIf
-;~  EndFunc
+;~ EndFunc
 
-Func applyMilkingConfig()
+Func PopulateComboMilkingCSVScriptsFiles()
+	Dim $FileSearch, $NewFile
+	$FileSearch = FileFindFirstFile($g_sCSVAttacksPath & "\*.csv")
+	Dim $output = ""
+	While True
+		$NewFile = FileFindNextFile($FileSearch)
+		If @error Then ExitLoop
+		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
+	WEnd
+	FileClose($FileSearch)
+	;remove last |
+	$output = StringLeft($output, StringLen($output) - 1)
+	;reset combo box
+	_GUICtrlComboBox_ResetContent($g_hCmbMilkingCSVScriptName)
+	;set combo box
+	GUICtrlSetData($g_hCmbMilkingCSVScriptName, $output)
 
-   ;1. elixir Collectors Minimum Level
-   If Ubound( $MilkFarmElixirParam) = 9 Then
-	  For $i = 0 to Ubound($MilkFarmElixirParam) - 1
-		 _GUICtrlComboBox_SetCurSel( Eval("cmbMilkLvl"&$i+4), $MilkFarmElixirParam[$i]+1)
-	  Next
-   Else
-	  For $i = 0 to 9 - 1
-		 _GUICtrlComboBox_SetCurSel( Eval("cmbMilkLvl"&$i+4), 0)
-	  Next
-   EndIf
+	_GUICtrlComboBox_SetCurSel($g_hCmbMilkingCSVScriptName, _GUICtrlComboBox_FindStringExact($g_hCmbMilkingCSVScriptName, ""))
+	GUICtrlSetData($g_hLblMilkingCSVNotesScript, "")
+EndFunc   ;==>PopulateComboMilkingCSVScriptsFiles
 
-   ;2 If Elixir Collectors Found, Then
-   If $MilkFarmLocateElixir = 1 Then
-	  GUICtrlSetState($chkAtkElixirExtractors, $GUI_CHECKED)
-   Else
-	  GUICtrlSetState($chkAtkElixirExtractors, $GUI_UNCHECKED)
-   EndIf
-
-   If $MilkFarmLocateMine = 1 Then
-	  GUICtrlSetState($chkAtkGoldMines, $GUI_CHECKED)
-   Else
-	  GUICtrlSetState($chkAtkGoldMines, $GUI_UNCHECKED)
-   EndIf
-
-   _GUICtrlComboBox_SetCurSel( $cmbAtkGoldMinesLevel,$MilkFarmMineParam -1)
-
-   If $MilkFarmLocateDrill = 1 Then
-	  GUICtrlSetState($chkAtkDarkDrills, $GUI_CHECKED)
-   Else
-	  GUICtrlSetState($chkAtkDarkDrills, $GUI_UNCHECKED)
-   EndIf
-
-   _GUICtrlComboBox_SetCurSel( $cmbAtkDarkDrillsLevel,$MilkFarmAttackDarkDrills -1)
-
-   ;3 Only attack If
-   _GUICtrlComboBox_SetCurSel( $cmbRedlineResDistance,$MilkFarmResMaxTilesFromBorder)
-
-   If $MilkFarmAttackElixirExtractors = 1 Then
-	  GUICtrlSetState($chkAttackMinesifElixir, $GUI_CHECKED)
-   Else
-	  GUICtrlSetState($chkAttackMinesifElixir, $GUI_UNCHECKED)
-   EndIf
-   If $MilkFarmAttackGoldMines = 1 Then
-	  GUICtrlSetState($chkAttackMinesifGold, $GUI_CHECKED)
-   Else
-	  GUICtrlSetState($chkAttackMinesifGold, $GUI_UNCHECKED)
-   EndIf
-   If $MilkFarmAttackDarkDrills = 1 Then
-	  GUICtrlSetState($chkAttackMinesifDarkElixir, $GUI_CHECKED)
-   Else
-	  GUICtrlSetState($chkAttackMinesifDarkElixir, $GUI_UNCHECKED)
-   EndIf
-	GUICtrlSetData($txtAttackMinesIfGold, $MilkFarmLimitGold)
-	GUICtrlSetData($txtAttackMinesifElixir, $MilkFarmLimitElixir)
-	GUICtrlSetData($txtAttackMinesifDarkElixir, $MilkFarmLimitDark)
-	chkAttackMinesifGold()
-	chkAttackMinesifelixir()
-	chkAttackMinesifdarkElixir()
-
-
-	GUICtrlSetData($txtLowerXWave, $MilkFarmTroopForWaveMin)
-	GUICtrlSetData($txtUpperXWave, $MilkFarmTroopForWaveMax)
-	GUICtrlSetData($txtMaxWaves, $MilkFarmTroopMaxWaves)
-	GUICtrlSetData($txtLowerDelayWaves, $MilkFarmDelayFromWavesMin)
-	GUICtrlSetData($txtUpperDelayWaves, $MilkFarmDelayFromWavesMax)
-
-;~    If $MilkFarmSnipeTh = 1 Then
-;~ 	  GUICtrlSetState($chkSnipeMilkTH, $GUI_CHECKED)
-;~    Else
-;~ 	  GUICtrlSetState($chkSnipeMilkTH, $GUI_UNCHECKED)
-;~    EndIf
-
-;~    GUICtrlSetData($txtMaxTilesMilk, $MilkFarmTHMaxTilesFromBorder)
-
-;~    	Dim $FileSearch, $NewFile
-;~ 	$FileSearch = FileFindFirstFile($dirTHSnipesAttacks & "\*.csv")
-;~ 	Dim $output = ""
-;~ 	While True
-;~ 		$NewFile = FileFindNextFile($FileSearch)
-;~ 		If @error Then ExitLoop
-;~ 		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
-;~ 	WEnd
-;~ 	FileClose($FileSearch)
-;~ 	;remove last |
-;~ 	$output = StringLeft($output, StringLen($output) - 1)
-;~ 	;reset combo box
-;~ 	_GUICtrlComboBox_ResetContent($cmbAttackTHType)
-;~ 	;set combo box
-;~ 	GUICtrlSetData($cmbMilkSnipeAlgorithm, $output)
-;~    _GUICtrlComboBox_SetCurSel( $cmbMilkSnipeAlgorithm, _GUICtrlComboBox_FindStringExact($cmbMilkSnipeAlgorithm, $MilkFarmAlgorithmTh))
-
-
-;~    If $MilkFarmSnipeEvenIfNoExtractorsFound = 1 Then
-;~ 	  GUICtrlSetState($chkSnipeIfNoElixir, $GUI_CHECKED)
-;~    Else
-;~ 	  GUICtrlSetState($chkSnipeIfNoElixir, $GUI_UNCHECKED)
-;~    EndIf
-
-
-	If $DevMode = 1 Then
-	   GUICtrlSetState($grpMilkingDebug, $GUI_SHOW)
-	   GUICtrlSetState($chkMilkingDebugIMG, $GUI_SHOW)
-	   GUICtrlSetState($chkMilkingDebugFullSearch, $GUI_SHOW)
-
-	   If $debugresourcesoffset = 1 Then
-		  GUICtrlSetState($chkMilkingDebugIMG, $GUI_CHECKED)
-	   Else
-		  GUICtrlSetState($chkMilkingDebugIMG, $GUI_UNCHECKED)
-	   EndIf
-
-	   If $continuesearchelixirdebug = 1 Then
-		  GUICtrlSetState($chkMilkingDebugFullSearch, $GUI_CHECKED)
-	   Else
-		  GUICtrlSetState($chkMilkingDebugFullSearch, $GUI_UNCHECKED)
-	   EndIf
-    EndIf
-
-
-EndFunc
-Func OpenGUIMilk2()
-	GUIMilk()
-	applyMilkingConfig()
-	GUISetState(@SW_SHOW, $hMilkGUI)
-	GUISetState(@SW_DISABLE, $frmBot)
-
-EndFunc
-
-Func CloseGUIMilk2()
-	$gui3open = 0
-	SaveMilkingConfig()
-	GUIDelete($hMilkGUI)
-	GUISetState(@SW_ENABLE, $frmBot)
-	WinActivate($frmBot)
-EndFunc
-
-
+Func PopulateCmbMilkSnipeAlgorithm()
+	Dim $FileSearch, $NewFile
+	$FileSearch = FileFindFirstFile($g_sTHSnipeAttacksPath & "\*.csv")
+	Dim $output = ""
+	While True
+		$NewFile = FileFindNextFile($FileSearch)
+		If @error Then ExitLoop
+		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
+	WEnd
+	FileClose($FileSearch)
+	;remove last |
+	$output = StringLeft($output, StringLen($output) - 1)
+	;reset combo box
+	_GUICtrlComboBox_ResetContent($g_hCmbMilkSnipeAlgorithm)
+	;set combo box
+	GUICtrlSetData($g_hCmbMilkSnipeAlgorithm, $output)
+EndFunc   ;==>PopulateCmbMilkSnipeAlgorithm

@@ -1,0 +1,117 @@
+List of Supported Android Emulator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+MEmu
+====
+http://www.memuplay.com/
+Versions 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+MyBot Command Line Key: MEmu
+Default Instance Key: MEmu
+Second Instance Key:  MEmu_1
+
+Known issues/bugs: None
+
+BlueStacks
+==========
+http://www.bluestacks.com/
+Version 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x, 0.9.x, 0.8.x
+MyBot Command Line Key (0.8.x - 0.11.x): BlueStacks
+MyBot Command Line Key (2.x): BlueStacks2
+Default Instance Key: N/A (internally empty String "" or "Android" is used)
+
+Known issues/bugs: True Background mode using ADB not available (no ADB screencap & no ADB mouse click).
+ADB connection for BlueStacks2 can require one-time ADB daemon restart (initiated automatically by bot).
+ADB connection does interfere with LeapDroid default instance, review LeapDroid section to change ADB port.
+
+KOPLAYER
+========
+http://www.koplayer.com/
+Versions 1.4.1055, 1.4.1049
+MyBot Command Line Key: KOPLAYER
+Default Instance Key: KOPLAYER
+Second Instance Key:  KOPLAYER_1
+
+Known issues/bugs: None
+
+Droid4X
+=======
+http://www.droid4x.com/
+Versions 0.10.5 Beta, 0.10.4 Beta, 0.10.3 Beta, 0.10.2 Beta, 0.10.1 Beta, 0.10.0 Beta, 0.9.0 Beta, 0.8.7 Beta, 0.8.6 Beta
+MyBot Command Line Key: Droid4X
+Default Instance Key: droid4x
+Second Instance Key:  droid4x_1
+
+Known issues/bugs: None
+
+LeapDroid
+=========
+http://www.leapdroid.com/, download available here: https://mybot.run/forums/index.php?/topic/22912-new-leapdroid-support
+Version 1.8.0, 1.7.0, 1.6.1, 1.5.0, 1.4.0, 1.3.1
+MyBot Command Line Key: LeapDroid
+Default Instance Key: vm1
+Second Instance Key:  vm2
+
+Known issues/bugs: When docked, mouse outside bot window is not submitted to LeapDroid and if mouse state chances
+outside bot window when used for LeapDroid, mouse handling inside LeapDroid stops working, so be careful!
+ADB connection problems when mixed with other Emulators. Work-a-round: Close all LeadDroid instances at start bot again.
+As of version 1.5.0 only vm1 and vm2 support keyboard input, version 1.7.0 has that fixed.
+Window focus get changed a lot by LeapDroid, to fix this install custom qt4 libraries:
+https://mybot.run/forums/index.php?/topic/22912-new-leapdroid-support/
+Installation of BlueStacks and LeapDroid at the same time is not advised, as LeapDroid ADB device name is same as BlueStacks.
+You must change vm1 ADB port with command line, e.g. "C:\Program Files\LeapDroid\vboxmanage" guestproperty set vm1 adb_port 5510
+
+iTools AVM
+==========
+http://pro.itools.cn/simulate/
+Version 2.0.7.9, 2.0.6.8
+MyBot Command Line Key: iTools
+Default Instance Key: iToolsVM
+Second Instance Key:  iToolsVM_01
+
+Known issues/bugs: Background mode only supported when iTools running in DirectX mode.
+Application is in Chinese and Android also. You can change Android language, but will not be saved.
+Tampering guestproperties and making the vbox VirtualBox file somehow read-only can work, see:
+https://mybot.run/forums/index.php?/topic/26023-itools-avm-support/
+
+Nox
+===
+http://en.bignox.com/
+Versions 3.8.0.x, 3.7.6.x, 3.7.5.1, 3.7.5, 3.7.3, 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.3.0, 3.1.0
+MyBot Command Line Key: Nox
+Default Instance Key: nox
+Second Instance Key:  Nox_1
+
+Known issues/bugs: Only in low computer screen resolutions and when Android Window doesn't have android screen size of 860x732
+due to different window size, MyBot resizing fails for any version (3.5.1 and 3.1 resize is quite unstable but could work).
+Dock mode not available.
+Newer versions since 3.7.3 support setting of framerates and 10 fps in OpenGL significantly reduces CPU.
+
+
+MyBot Feature & Functions Matrix (not complete yet!)
+================================
+
+Feature/Function         | MEmu          | BlueStacks    | BlueStacks2   | KOPLAYER      | Droid4X       | LeapDroid      | iTools AVM    | Nox
+-------------------------|---------------|---------------|---------------|---------------|---------------|----------------|---------------|---------------
+DPI Support*             | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes (limited)
+Dock Mode                | Yes           | Yes           | Yes           | Yes           | Yes           | Yes, simulated | Yes           | No
+Configure Android Screen | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | No            | Yes
+Configure Android Window | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes, unstable
+WinAPI bg screenshot     | No            | Yes           | Yes           | Yes, DirectX  | No            | Yes            | Yes, DirectX  | Yes, DirectX
+AndroidScreencap         | Yes           | No            | Yes, not used | Yes           | Yes           | No, mem leak   | Yes, not used | Yes
+AndroidZoomOut           | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes
+AndroidClick             | Yes, not used | No            | No            | Yes, not used | Yes, not used | No             | Yes, not used | Yes, not used
+_ControlClick            | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes
+AndroidClickDrag         | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes
+_PostMessage_ClickDrag   | No            | Yes, not used | Yes, not used | No            | No            | No             | No            | No
+AndroidSendText*         | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes
+
+Feature & Functions Notes
+-------------------------
+DPI Support* DPI Awareness is available for all Android Emulators, but is different depending on the Android Emulator and background settings and dock mode.
+When Android is running in DPI Aware Mode (bot by default is running in DPI un-aware mode) docking and non background mode will turn bot also into DPI Aware
+Mode, resulting in smaller Window scaled at 100%. Also, when Android is running in DPI un-aware mode (e.g. iTools), docking will not change anything, only when
+disabling background mode.
+AndroidSendText* Works only for ASCII Characters, most symbols, but no Umlauts etc.
+It falls back to WinAPI when unsupported characters are detected, but might fail also.
+If sending text is not working, keep it empty in bot and last entered text will be sent.

@@ -19,7 +19,7 @@
 ;                               | 4 - $nMin is larger than $nMax
 ;                               | 5 - $nMin or $nMax exceeds limit
 ;                               | 6 - $nSeed exceeds limit
-; Author ........: money
+; Author ........: Money (AutoIt Forums)
 ; Modified.......:
 ; Remarks .......:  If $iInt is 1 and $iCount exceeds total unique numbers than @extend is set to 1 and item count is adjusted to the
 ;                  + maximum numbers that can be returned
@@ -27,6 +27,7 @@
 ; Link ..........:
 ; Example .......: Yes
 ; ===============================================================================================================================
+
 Func _RandomUnique($iCount, $nMin, $nMax, $iInt = 0, $nSeed = Default)
 	; error checking
 	Select

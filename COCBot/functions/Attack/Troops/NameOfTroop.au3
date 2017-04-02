@@ -6,8 +6,8 @@
 ;                  $iPlural    - [optional] a integer value to indicate the $sTroopname returned must be in plural form. Default is 0.
 ; Return values .: $sTroopname
 ; Author ........: Unknown (2015)
-; Modified ......: ZengZeng (2016-01), Hervidero (2016-01)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: ZengZeng (01-2016), Hervidero (01-2016)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -37,6 +37,10 @@ Func NameOfTroop($iKind, $iPlural = 0)
 			$sTroopname = "Dragon"
 		Case $ePekk
 			$sTroopname = "Pekka"
+		Case $eBabyD
+			$sTroopname = "Baby Dragon"
+		Case $eMine
+			$sTroopname = "Miner"
 		Case $eMini
 			$sTroopname = "Minion"
 		Case $eHogs
@@ -49,6 +53,8 @@ Func NameOfTroop($iKind, $iPlural = 0)
 			$sTroopname = "Golem"
 		Case $eLava
 			$sTroopname = "Lava Hound"
+		Case $eBowl
+			$sTroopname = "Bowler"
 		Case $eKing
 			$sTroopname = "King"
 			$iPlural = 0 ; safety reset, $sTroopname of $eKing cannot be plural
@@ -71,12 +77,16 @@ Func NameOfTroop($iKind, $iPlural = 0)
 			$sTroopname = "Jump Spell"
 		Case $eFSpell
 			$sTroopname = "Freeze Spell"
+		Case $eCSpell
+			$sTroopname = "Clone Spell"
 		Case $ePSpell
 			$sTroopname = "Poison Spell"
 		Case $eESpell
 			$sTroopname = "Earthquake Spell"
 		Case $eHaSpell
 			$sTroopname = "Haste Spell"
+		Case $eSkSpell
+			$sTroopname = "Skeleton Spell"
 		Case Else
 			Return "" ; error or unknown case
 	EndSwitch

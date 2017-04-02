@@ -6,15 +6,22 @@
 ; Return values .: None
 ; Author ........: Sardo (2015-11), Hervidero (2015-11)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot Copyright 2015-2016
+; Remarks .......: This file is part of MyBot Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
+Func GetTranslated($iSection = -1, $iKey = -1, $sText = "", $var1 = Default, $var2 = Default, $var3 = Default)
+    Static $aLanguage[1][1] ;undimmed language array
+
+	$sText = StringReplace($sText, @CRLF, "\r\n")
+
+	Local $sDefaultText, $g_sLanguageText
+
 	;If GetTranslated was called without correct parameters return value -2 to show the coder there is a mistake made somewhere (debug)
+	If $g_iDebugMultilanguage = 1 Then Return ($iSection & "-" & $iKey)
 	If $iSection = -1 Or $iKey = -1 Or $sText = "" Then Return "-2"
 
 	Local $bOutBound = False
@@ -23,60 +30,81 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "")
 
 	If $aLanguage[$iSection][$iKey] <> "" Then Return $aLanguage[$iSection][$iKey] ; Return from array if it was already parsed.
 
-	If $sLanguage = $sDefaultLanguage Then ; default English
-		Local $sDefaultText = IniRead($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, $sText)
+	If $g_sLanguage = $g_sDefaultLanguage Then ; default English
 
-		If $sText = "-1" Then
-			$aLanguage[$iSection][$iKey] = $sDefaultText
-			Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
+		$sDefaultText = IniRead($g_sDirLanguages & $g_sDefaultLanguage & ".ini", $iSection, $iKey, "-3")
+
+		If $sText = "-1" Then  ; check for "-1" if text repeated
+			If $sDefaultText <> "-3" Then  ; check if text exists inside file
+				$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
+				$aLanguage[$iSection][$iKey] = $sDefaultText
+				Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
+			Else
+				Return "-3"  ; Show -3 error code in GUI to show read error and no text in file
+			EndIf
 		EndIf
 
 		If $sDefaultText <> $sText Then
-			IniWrite($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, $sText) ; Rewrite Default English.ini with new text value
+			IniWrite($g_sDirLanguages & $g_sDefaultLanguage & ".ini", $iSection, $iKey, $sText) ; Rewrite Default English.ini with new text value
+			$sText = GetTranslatedParsedText($sText, $var1, $var2, $var3)
 			$aLanguage[$iSection][$iKey] = $sText
 			Return $sText
 		Else
+			$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
 			$aLanguage[$iSection][$iKey] = $sDefaultText
 			Return $sDefaultText
 		EndIf
 	Else ; translated language
-		Local $sLanguageText = IniRead($dirLanguages & $sLanguage & ".ini", $iSection, $iKey, "-3")
+		$g_sLanguageText = IniRead($g_sDirLanguages & $g_sLanguage & ".ini", $iSection, $iKey, "-3")
 
 		If $sText = "-1" Then
-			Local $sDefaultText = IniRead($dirLanguages & $sDefaultLanguage & ".ini", $iSection, $iKey, $sText)
-			If $sLanguageText = "-3" Then
+			If $g_sLanguageText = "-3" Then
+				$sDefaultText = IniRead($g_sDirLanguages & $g_sDefaultLanguage & ".ini", $iSection, $iKey, $sText)
+				$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
 				$aLanguage[$iSection][$iKey] = $sDefaultText
 				Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
 			Else
-				$aLanguage[$iSection][$iKey] = $sLanguageText
-				Return $sLanguageText
+				$g_sLanguageText = GetTranslatedParsedText($g_sLanguageText, $var1, $var2, $var3)
+				$aLanguage[$iSection][$iKey] = $g_sLanguageText
+				Return $g_sLanguageText
 			EndIf
 		EndIf
 
-		If $sLanguageText = "-3" Then
-			IniWrite($dirLanguages & $sLanguage & ".ini", $iSection, $iKey, $sText) ; Rewrite Language.ini with new untranslated Default text value
+		If $g_sLanguageText = "-3" Then
+			IniWrite($g_sDirLanguages & $g_sLanguage & ".ini", $iSection, $iKey, $sText) ; Rewrite Language.ini with new untranslated Default text value
+			$sText = GetTranslatedParsedText($sText, $var1, $var2, $var3)
 			$aLanguage[$iSection][$iKey] = $sText
 			Return $sText
 		EndIf
 
-		$aLanguage[$iSection][$iKey] = $sLanguageText
-		Return $sLanguageText
+		$g_sLanguageText = GetTranslatedParsedText($g_sLanguageText, $var1, $var2, $var3)
+		$aLanguage[$iSection][$iKey] = $g_sLanguageText
+		Return $g_sLanguageText
 	EndIf
 EndFunc   ;==>GetTranslated
 
+Func GetTranslatedParsedText($sText, $var1 = Default, $var2 = Default, $var3 = Default)
+	Local $s = StringReplace($sText, "\r\n", @CRLF)
+	If $var1 = Default Then Return $s
+	If $var2 = Default Then Return StringFormat($sText, $var1)
+	If $var3 = Default Then Return StringFormat($sText, $var1, $var2)
+	Return StringFormat($sText, $var1, $var2, $var3)
+EndFunc   ;==>GetTranslatedParsedText
+
 ;DetectLanguage()
 Func DetectLanguage()
-	$firstBotStart = IniRead($config, "other", "detectLanguage", "1")
-	If $firstBotStart = "1" Then
-		IniWrite($config, "other", "detectLanguage", "0");bot will only detect language on first start, after first detect, bot will use value in config
-		$OSLang = @OSLang
-		If $debugSetLog Then SetLog("Detected language code: " & $OSLang)
+    Local $decimalCode = "", $countryCode = "", $langName = ""
+	$g_sLanguage = IniRead($g_sProfileConfigPath, "other", "language", "")
+	If Not FileExists(@ScriptDir & "\Languages\" & $g_sLanguage & ".ini") Then $g_sLanguage = ""
+	If $g_sLanguage = "" Then
+		Local $OSLang = @OSLang
+		If $g_iDebugSetlog Then SetLog("Detected language code: " & $OSLang)
 		Switch $OSLang;get language
 
 			Case Hex(0x0004, 4)
 				$decimalCode = '4'
 				$countryCode = 'zh-CHS'
-				$langName = 'Chinese'
+				$langName = 'Chinese_S'
 			Case Hex(0x0401, 4)
 				$decimalCode = '1025'
 				$countryCode = 'ar-SA'
@@ -92,7 +120,7 @@ Func DetectLanguage()
 			Case Hex(0x0404, 4)
 				$decimalCode = '1028'
 				$countryCode = 'zh-TW'
-				$langName = 'Chinese'
+				$langName = 'Chinese_T'
 			Case Hex(0x0405, 4)
 				$decimalCode = '1029'
 				$countryCode = 'cs-CZ'
@@ -560,7 +588,7 @@ Func DetectLanguage()
 			Case Hex(0x0804, 4)
 				$decimalCode = '2052'
 				$countryCode = 'zh-CN'
-				$langName = 'Chinese'
+				$langName = 'Chinese_S'
 			Case Hex(0x0807, 4)
 				$decimalCode = '2055'
 				$countryCode = 'de-CH'
@@ -684,7 +712,7 @@ Func DetectLanguage()
 			Case Hex(0x0C04, 4)
 				$decimalCode = '3076'
 				$countryCode = 'zh-HK'
-				$langName = 'Chinese'
+				$langName = 'Chinese_T'
 			Case Hex(0x0C07, 4)
 				$decimalCode = '3079'
 				$countryCode = 'de-AT'
@@ -720,7 +748,7 @@ Func DetectLanguage()
 			Case Hex(0x1004, 4)
 				$decimalCode = '4100'
 				$countryCode = 'zh-SG'
-				$langName = 'Chinese'
+				$langName = 'Chinese_S'
 			Case Hex(0x1007, 4)
 				$decimalCode = '4103'
 				$countryCode = 'de-LU'
@@ -756,7 +784,7 @@ Func DetectLanguage()
 			Case Hex(0x1404, 4)
 				$decimalCode = '5124'
 				$countryCode = 'zh-MO'
-				$langName = 'Chinese'
+				$langName = 'Chinese_T'
 			Case Hex(0x1407, 4)
 				$decimalCode = '5127'
 				$countryCode = 'de-LI'
@@ -984,23 +1012,23 @@ Func DetectLanguage()
 			Case Hex(0x7C04, 4)
 				$decimalCode = '31748'
 				$countryCode = 'zh-CHT'
-				$langName = 'Chinese'
+				$langName = 'Chinese_T'
 			Case Else
 				SetLog("Your computer's language was not recognized.")
 				$langName = "NONE"
 		EndSwitch
-		SetLog("Detected System Locale: " & $langName, $COLOR_BLUE)
-		If FileExists($dirLanguages & "/" & $langName & ".ini") Then;if language file found
-			SetLog("Language file " & $langName & ".ini found in " & $dirLanguages)
-			$sLanguage = $langName
-			IniWrite($config, "other", "language", $sLanguage)
+		SetLog("Detected System Locale: " & $langName, $COLOR_INFO)
+		If FileExists($g_sDirLanguages & "/" & $langName & ".ini") Then;if language file found
+			SetLog("Language file " & $langName & ".ini found in " & $g_sDirLanguages)
+			$g_sLanguage = $langName
+			IniWrite($g_sProfileConfigPath, "other", "language", $g_sLanguage)
 		Else;otherwise, use english if the language isn't available yet
-			SetLog("Language file for " & $langName & " not found! Defaulting to English", $COLOR_RED)
-			$sLanguage = $sDefaultLanguage
+			SetLog("Language file for " & $langName & " not found! Defaulting to English", $COLOR_ERROR)
+			$g_sLanguage = $g_sDefaultLanguage
 		EndIf
 	Else
 		;read the selected language from profile ini
-		$sLanguage = IniRead($config, "other", "language", $sDefaultLanguage)
+		$g_sLanguage = IniRead($g_sProfileConfigPath, "other", "language", $g_sDefaultLanguage)
 	EndIf
 
 

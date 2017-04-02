@@ -1,0 +1,16 @@
+# Click and Drag script, Func AndroidSwipe($x1, $y1, $x2, $y2, $wasRunState = $RunState)
+sendevent {$AndroidMouseDevice} 1 330 1
+sendevent {$AndroidMouseDevice} 3 58 1
+sendevent {$AndroidMouseDevice} 3 53 {$x1}
+sendevent {$AndroidMouseDevice} 3 54 {$y1}
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sendevent {$AndroidMouseDevice} 3 53 {$x2}
+sendevent {$AndroidMouseDevice} 3 54 {$y2}
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0
+sleep 1
+sendevent {$AndroidMouseDevice} 1 330 0
+sendevent {$AndroidMouseDevice} 3 58 0
+sendevent {$AndroidMouseDevice} 0 2 0
+sendevent {$AndroidMouseDevice} 0 0 0

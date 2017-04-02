@@ -1,0 +1,66 @@
+NOTE  |Author: karthik  Attack: TH9 GoWiPe
+NOTE  |Modified: MonkeyHunter - ver. 1.2d - 10.05.2016
+NOTE  |Make these Troops and spells : 2 Golem, 8 wall breaker, 17 Wizards, 3 pekka, 100% archer, 3 rage, 1 heal  
+      
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|                   
+SIDE  |0          |0          |0          |0          |5          |5          |5          |           |
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |A          |RIGHT-BACK |10         |1          |INT-EXT    |0          |0          |           |vector for Golem and wall breaker right back 
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |B          |RIGHT-FRONT|10         |1          |INT-EXT    |0          |0          |           |vector for Golem and wall breaker left back 
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |C          |RIGHT-BACK |10         |2          |EXT-INT    |2          |3          |           |vector for Wizard Right  Back 
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |D          |RIGHT-FRONT|10         |2          |EXT-INT    |2          |1          |           |vector for Wizard right  front
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |E          |RIGHT-FRONT|10         |1          |INT-EXT    |1          |2          |           |vector for heroes right back 
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |F          |RIGHT-FRONT|10         |1          |INT-EXT    |2          |3          |           |vector for pekka
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |G          |RIGHT-BACK |10         |-10        |INT-EXT    |0          |0          |           |vector for 1st rage
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |H          |RIGHT-FRONT|10         |-10        |INT-EXT    |0          |0          |           |vector for 2st rage
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |I          |RIGHT-BACK |10         |-12        |INT-EXT    |0          |0          |           |vector for 3rd Rage
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |J          |RIGHT-BACK |10         |-10        |INT-EXT    |0          |0          |           |vector for 1st Heal Spell
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |K          |RIGHT-FRONT|10         |-12        |INT-EXT    |0          |0          |           |vector for 2nd Heal Spell
+     
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A-B        |5          |1          |Gole       |0          |0          |400        |           | Droping 2 golem 
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |C-D        |1-10       |7          |Wiza       |50-70      |0          |800        |           | Droping Wizards
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A-B        |5          |3          |Wall       |20-50      |0          |2000-4000  |           | Droping 6 of wall breakers
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|   
+DROP  |F          |2          |3          |Pekk       |20-400     |0          |5000-6000  |           | Droping of Pekka  
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A-B        |1          |3          |wall       |10-20      |0          |300        |           | Dropping 2 wall breakers 
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |E          |1          |1          |King       |1          |100        |100-200    |           | Drop of King
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|   
+DROP  |F          |1          |3          |Pekk       |20-400     |0          |50         |           | Droping of extra Pekka when train error
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________| 
+DROP  |E          |2          |1          |Queen      |1          |100        |50         |           | Droping Queen
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A-B        |5          |1          |Gole       |0          |0          |50         |           | Droping remaining golem if Redline error
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |G          |4          |1          |RSpell     |1          |0          |2000-3000  |           | Droping Rage Spell
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |H          |4          |1          |RSpell     |1          |0          |1000-1500  |           | Droping Rage Spell
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A-B        |1-2        |2          |Wiza       |1          |0          |50-100     |           | Drop of Wizards   
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |C-D        |1-10       |7          |Wiza       |5          |0          |50         |           | Droping remaining Wizards if Redline error
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A          |1          |1          |Castle     |1          |0          |10000      |           | Droping Castle Troops
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |I          |1          |1          |Rspell     |1          |0          |300        |           | Droping Rage Spell
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |J          |1          |1          |Hspell     |1          |0          |300        |           | Droping Heal Spell
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A          |1-3        |30         |arch       |10         |0          |7000-9000  |           | Drop 1 archer, can drop upto 30 if training error
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |K          |2          |1          |Hspell     |1          |0          |300        |           | Droping extra Heal Spell if train error
+WAIT  |200-400    |           |           |           |           |           |           |           |

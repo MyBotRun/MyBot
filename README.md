@@ -19,7 +19,7 @@ Essential software :
 - Windows Vista/7/8/8.1/10
 - Microsoft Visual C++ 2010 Redistributable Package (x86)
 - Microsoft .NET Framework 4.5
-- BlueStacks 0.9.x - 0.10.x OR Bluestacks 2 OR Droid4x 0.8.6 OR MEmu 2.2.1
+- Android Emulator , more infor : \COCBot\functions\Android\Android Status & Information.txt
 - The latest drivers for your graphics device
 - MyBot last version avaiable
 - DON´T USE THE OLD CONFIG FILES
@@ -36,7 +36,7 @@ Please see the file called LICENSE.
 Mybot uses non-GPL/GPL 3rd party libraries for extension (#SystemLibraryException): 
 - OpenCV - BSD license - repository : https://github.com/MyBotRun/Libraries
 - ImageSearch - GNU license - repository : https://github.com/MyBotRun/Libraries
-- ImgLoc - LGPL v3 License - A customized AForge.Imaging - library source : https://code.google.com/archive/p/aforge/
+- MyBotRunImgLoc.dll - Functional library from the Developer TRlopes 2016 , The owner can restrict use, inspection of source code, modification of source code, and redistribution.
 - Functional library MBRfunctions.dll - Proprietary library from the Developer Didipe 2015
 
 Contacts

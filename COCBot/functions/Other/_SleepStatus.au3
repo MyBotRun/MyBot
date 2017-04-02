@@ -1,43 +1,67 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: _SleepStatus
-; Description ...:
-; Syntax ........: _SleepStatus($iDelay[, $iSleep = True[, $bDirection = True]])
+; Description ...: Update status bar with remaining timer
+;				   Display as Day(s) 00:00:00, 00:00:00, 00:00
+; Syntax ........: _SleepStatus($iDelay[, $iSleep = True[, $bDirection = True[, $CheckRunState = True]]])
 ; Parameters ....: $iDelay              - an integer value.
 ;                  $iSleep              - [optional] an integer value. Default is True.
 ;                  $bDirection          - [optional] a boolean value. Default is True.
-; Return values .: None
+;                  $CheckRunState       - [optional] a boolean value. Default is True to check for $g_bRunState.
+; Return values .: False:				default for running bot
+;				   True:				check for run state and bot's stopped
 ; Author ........: KnowJack (June-2015)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: MMHK (Dec-2016)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True)
-	;
+Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = True)
 	; $bDirection: True equals count down display, False equals count up display
-	;
-	Local $iCurTime, $iMinCalc, $iSecCalc, $iTime, $iBegin, $sString
-	Local $iDelayMinCalc, $iDelaySecCalc, $iDelaySecCalc
-	Local Const $Font = "Verdana"
-	Local Const $FontSize = 7.5
-	$iBegin = TimerInit()
-	$iDelayMinCalc = Int($iDelay / (60 * 1000))
-	$iDelaySecCalc = $iDelay - ($iDelayMinCalc * 60 * 1000)
-	$iDelaySecCalc = Int($iDelaySecCalc / 1000)
-	While TimerDiff($iBegin) < $iDelay
-		If $RunState = False Then Return True
-		$iCurTime = TimerDiff($iBegin)
-		$iTime = $iCurTime ; display count up timer
-		If $bDirection = True Then $iTime = $iDelay - $iCurTime ; display countdown timer
-		$iMinCalc = Int($iTime / (60 * 1000))
-		$iSecCalc = $iTime - ($iMinCalc * 60 * 1000)
-		$iSecCalc = Int($iSecCalc / 1000)
-		$sString = "Waiting Time= " & StringFormat("%02u" & ":" & "%02u", $iDelayMinCalc, $iDelaySecCalc) & ",  Time Left= " & StringFormat("%02u" & ":" & "%02u", $iMinCalc, $iSecCalc)
-		_GUICtrlStatusBar_SetText($statLog, " Status: " & $sString)
-		tabMain()
-		If $iSleep = True Then Sleep(500)
+
+	Local $iDay = 0, $iHour = 0, $iMin = 0, $iSec = 0
+	Local $iBegin, $iCurTime, $iTime
+	Local $bUpdate = True, $hLastUpdate
+	Local $iDayCalc = 0, $iHourCalc = 0, $iMinCalc = 0, $iSecCalc = 0
+	Local $sTimeWait, $sTimeLeftLapse = ",  Time Lapse = "
+
+	$iBegin = __TimerInit()
+	_TicksToDay($iDelay, $iDay, $iHour, $iMin, $iSec)
+
+	While __TimerDiff($iBegin) < $iDelay
+		If $g_bRunState = False And $CheckRunState = True Then Return True
+		If $bUpdate Then
+			$iCurTime = __TimerDiff($iBegin)
+			$iTime = $iCurTime ; display count up timer ; avoid flicker
+			If $bDirection = True Then
+				$iTime = $iDelay - $iCurTime ; display countdown timer
+				$sTimeLeftLapse = ",  Time Left = "
+			EndIf
+
+			_TicksToDay($iTime, $iDayCalc, $iHourCalc, $iMinCalc, $iSecCalc)
+
+			$sTimeWait = "Waiting Time = "
+			Select
+				Case $iDay > 0
+					$sTimeWait &= StringFormat("%2u Day(s) ", $iDay)
+					$sTimeLeftLapse &= StringFormat("%2u Day(s) ", $iDayCalc)
+					ContinueCase
+				Case $iHour > 0
+					$sTimeWait &= StringFormat("%02u:", $iHour)
+					$sTimeLeftLapse &= StringFormat("%02u:", $iHourCalc)
+					ContinueCase
+				Case Else
+					$sTimeWait &= StringFormat("%02u:%02u", $iMin, $iSec)
+					$sTimeLeftLapse &= StringFormat("%02u:%02u", $iMinCalc, $iSecCalc)
+			EndSelect
+
+			$hLastUpdate = __TimerInit()
+			_GUICtrlStatusBar_SetText($g_hStatusBar, " Status: " & $sTimeWait & $sTimeLeftLapse)
+		EndIf
+		_Sleep($DELAYSLEEP)
+		$bUpdate = __TimerDiff($hLastUpdate) > 750
 	WEnd
+	If $g_bRunState = False And $CheckRunState = True Then Return True
 	Return False
 EndFunc   ;==>_SleepStatus

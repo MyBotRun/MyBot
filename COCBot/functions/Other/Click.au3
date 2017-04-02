@@ -6,37 +6,39 @@
 ; Return values .: None
 ; Author ........: (2014)
 ; Modified ......: HungLe (may-2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkMainscreen, isProblemAffect
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
+#include-once
+#include <WinAPISys.au3>
+
 Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
-    If $debugClick = 1 Then
+	If $g_iDebugClick = 1 Or TestCapture() Then
 		Local $txt = _DecodeDebug($debugtxt)
-		SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ORANGE, "Verdana", "7.5", 0)
+		SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
 	EndIf
 
-    If $AndroidAdbClick = True Then
+	If TestCapture() Then Return
+
+	If $g_bAndroidAdbClick = True Then
 		AndroidClick($x, $y, $times, $speed)
 	EndIf
-	If $AndroidAdbClick = True Then
-	   Return
-    EndIf
+	If $g_bAndroidAdbClick = True Then
+		Return
+	EndIf
 
-    Local $SuspendMode = ResumeAndroid()
-    ;getBSPos()
-    $x = $x  + $BSrpos[0]
-	$y = $y  + $BSrpos[1]
+	Local $SuspendMode = ResumeAndroid()
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
-			If isProblemAffectBeforeClick() Then
-				If $debugClick = 1 Then Setlog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_RED, "Verdana", "7.5", 0)
+			If isProblemAffectBeforeClick($i) Then
+				If $g_iDebugClick = 1 Then Setlog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
-				Return  ; if need to clear screen do not click
+				Return ; if need to clear screen do not click
 			EndIf
 			MoveMouseOutBS()
 			_ControlClick($x, $y)
@@ -44,49 +46,81 @@ Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 		Next
 	Else
 		If isProblemAffectBeforeClick() Then
-			If $debugClick = 1 Then Setlog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_RED, "Verdana", "7.5", 0)
+			If $g_iDebugClick = 1 Then Setlog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 			checkMainScreen(False)
 			SuspendAndroid($SuspendMode)
-			Return  ; if need to clear screen do not click
+			Return ; if need to clear screen do not click
 		EndIf
 		MoveMouseOutBS()
 		_ControlClick($x, $y)
 	EndIf
-    SuspendAndroid($SuspendMode)
+	SuspendAndroid($SuspendMode)
 EndFunc   ;==>Click
 
 Func _ControlClick($x, $y)
-   $AndroidAdbScreencapTimer = 0 ; invalidate ADB screencap timer/timeout
-   Return ControlClick($Title, "", "", "left", "1", $x, $y)
-EndFunc
+	;Local $hWin = ($g_bAndroidEmbedded = False ? $g_hAndroidWindow : $g_aiAndroidEmbeddedCtrlTarget[1])
+	Local $useHWnD = $g_iAndroidControlClickWindow = 1 And $g_bAndroidEmbedded = False
+	Local $hWin = (($useHWnD) ? ($g_hAndroidWindow) : ($g_hAndroidControl))
+	$x = Int($x)
+	$y = Int($y)
+	If $hWin = $g_hAndroidWindow Then
+		$x += $g_aiBSrpos[0]
+		$y += $g_aiBSrpos[1]
+	EndIf
+	If $g_iAndroidControlClickMode = 0 Then
+		Return ControlClick($hWin, "", "", "left", "1", $x, $y)
+	EndIf
+	Local $WM_LBUTTONDOWN = 0x0201, $WM_LBUTTONUP = 0x0202
+	Local $lParam = BitOR(Int($y) * 0x10000, BitAND(Int($x), 0xFFFF)) ; HiWord = y-coordinate, LoWord = x-coordinate
+	; _WinAPI_PostMessage or _SendMessage
+	_SendMessage($hWin, $WM_LBUTTONDOWN, 0x0001, $lParam)
+	_SendMessage($hWin, $WM_LBUTTONUP, 0x0000, $lParam)
+	_SleepMicro(25000) ; sleep 25 Milliseconds
+	Return 1
+EndFunc   ;==>_ControlClick
 
-Func isProblemAffectBeforeClick()
-   If FastCaptureRegion() Then Return isProblemAffect(True)
-   Return False
-EndFunc
+Func isProblemAffectBeforeClick($iCount = 0)
+	If NeedCaptureRegion($iCount) = True Then Return isProblemAffect(True)
+	Return False
+EndFunc   ;==>isProblemAffectBeforeClick
 
 ; ClickP : takes an array[2] (or array[4]) as a parameter [x,y]
 Func ClickP($point, $howMuch = 1, $speed = 0, $debugtxt = "")
 	Click($point[0], $point[1], $howMuch, $speed, $debugtxt)
 EndFunc   ;==>ClickP
 
-Func PureClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
-	If $debugClick = 1 Then
+Func BuildingClick($x, $y, $debugtxt = "")
+	Local $point[2] = [$x, $y]
+	ConvertToVillagePos($x, $y)
+	If $g_iDebugClick = 1 Then
 		Local $txt = _DecodeDebug($debugtxt)
-		SetLog("PureClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ORANGE, "Verdana", "7.5", 0)
+		SetLog("BuildingClick " & $point[0] & "," & $point[1] & " converted to " & $x & "," & $y & " " & $debugtxt & $txt, $COLOR_ACTION)
+	EndIf
+	Return Click($x, $y, 1, 0, $debugtxt)
+EndFunc   ;==>BuildingClick
+
+Func BuildingClickP($point, $debugtxt = "")
+	Local $x = $point[0]
+	Local $y = $point[1]
+	Return BuildingClick($x, $y, $debugtxt)
+EndFunc   ;==>BuildingClickP
+
+Func PureClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
+	If $g_iDebugClick = 1 Then
+		Local $txt = _DecodeDebug($debugtxt)
+		SetLog("PureClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
 	EndIf
 
-    If $AndroidAdbClick = True Then
-	   AndroidClick($x, $y, $times, $speed)
-	EndIf
-	If $AndroidAdbClick = True Then
-	   Return
-    EndIf
+	If TestCapture() Then Return
 
-    Local $SuspendMode = ResumeAndroid()
-    ;getBSPos()
-    $x = $x  + $BSrpos[0]
-	$y = $y  + $BSrpos[1]
+	If $g_bAndroidAdbClick = True Then
+		AndroidClick($x, $y, $times, $speed, False)
+	EndIf
+	If $g_bAndroidAdbClick = True Then
+		Return
+	EndIf
+
+	Local $SuspendMode = ResumeAndroid()
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
 			MoveMouseOutBS()
@@ -97,7 +131,7 @@ Func PureClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 		MoveMouseOutBS()
 		_ControlClick($x, $y)
 	EndIf
-    SuspendAndroid($SuspendMode)
+	SuspendAndroid($SuspendMode)
 EndFunc   ;==>PureClick
 
 ; PureClickP : takes an array[2] (or array[4]) as a parameter [x,y]
@@ -106,43 +140,42 @@ Func PureClickP($point, $howMuch = 1, $speed = 0, $debugtxt = "")
 EndFunc   ;==>PureClickP
 
 Func GemClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
-	If $debugClick = 1 Then
+	If $g_iDebugClick = 1 Then
 		Local $txt = _DecodeDebug($debugtxt)
-		SetLog("GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ORANGE, "Verdana", "7.5", 0)
+		SetLog("GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
 	EndIf
 
-    If $AndroidAdbClick = True Then
-	   If isGemOpen(True) Then
-		  Return False
-	   EndIf
-	   AndroidClick($x, $y, $times, $speed)
-	EndIf
-	If $AndroidAdbClick = True Then
-	   Return
-    EndIf
+	If TestCapture() Then Return
 
-    Local $SuspendMode = ResumeAndroid()
-    ;getBSPos()
-    $x = $x  + $BSrpos[0]
-	$y = $y  + $BSrpos[1]
+	If $g_bAndroidAdbClick = True Then
+		If isGemOpen(True) Then
+			Return False
+		EndIf
+		AndroidClick($x, $y, $times, $speed)
+	EndIf
+	If $g_bAndroidAdbClick = True Then
+		Return
+	EndIf
+
+	Local $SuspendMode = ResumeAndroid()
 	Local $i
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
 			If isGemOpen(True) Then
-			   SuspendAndroid($SuspendMode)
-			   Return False
+				SuspendAndroid($SuspendMode)
+				Return False
 			EndIf
-			If isProblemAffectBeforeClick() Then
-				If $debugClick = 1 Then Setlog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_RED, "Verdana", "7.5", 0)
+			If isProblemAffectBeforeClick($i) Then
+				If $g_iDebugClick = 1 Then Setlog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
-				Return  ; if need to clear screen do not click
+				Return ; if need to clear screen do not click
 			EndIf
 			MoveMouseOutBS()
 			_ControlClick($x, $y)
 			If isGemOpen(True) Then
-			   SuspendAndroid($SuspendMode)
-			   Return False
+				SuspendAndroid($SuspendMode)
+				Return False
 			EndIf
 			If _Sleep($speed, False) Then ExitLoop
 		Next
@@ -152,17 +185,17 @@ Func GemClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 			Return False
 		EndIf
 		If isProblemAffectBeforeClick() Then
-			If $debugClick = 1 Then Setlog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_RED, "Verdana", "7.5", 0)
+			If $g_iDebugClick = 1 Then Setlog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 			checkMainScreen(False)
 			SuspendAndroid($SuspendMode)
-			Return  ; if need to clear screen do not click
+			Return ; if need to clear screen do not click
 		EndIf
 		MoveMouseOutBS()
 		_ControlClick($x, $y)
 		If isGemOpen(True) Then
-		   SuspendAndroid($SuspendMode)
-		   Return False
-	    EndIf
+			SuspendAndroid($SuspendMode)
+			Return False
+		EndIf
 	EndIf
 	SuspendAndroid($SuspendMode)
 EndFunc   ;==>GemClick
@@ -171,6 +204,14 @@ EndFunc   ;==>GemClick
 Func GemClickP($point, $howMuch = 1, $speed = 0, $debugtxt = "")
 	Return GemClick($point[0], $point[1], $howMuch, $speed, $debugtxt = "")
 EndFunc   ;==>GemClickP
+
+Func AttackClick($x, $y, $times = 1, $speed = 0, $afterDelay = 0, $debugtxt = "")
+	Local $timer = __TimerInit()
+	Local $result = PureClick($x, $y, $times, $speed, $debugtxt)
+	Local $delay = $times * $speed + $afterDelay - __TimerDiff($timer)
+	If IsKeepClicksActive() = False And $delay > 0 Then _Sleep($delay, False)
+	Return $result
+EndFunc   ;==>AttackClick
 
 Func _DecodeDebug($message)
 	Local $separator = " | "
@@ -273,6 +314,12 @@ Func _DecodeDebug($message)
 			Return $separator & "Train - Select Prev Barrack/SP"
 		Case "#0340"
 			Return $separator & "Train - Click Next Barrack/SP"
+		Case "#0341"
+			Return $separator & "Train - Train Bowler"
+		Case "#0342"
+			Return $separator & "Train - Train Baby Dragon"
+		Case "#0343"
+			Return $separator & "Train - Train Miner"
 
 			;DONATE
 		Case "#0168"
@@ -286,7 +333,11 @@ Func _DecodeDebug($message)
 		Case "#0174"
 			Return $separator & "Donate - Click Donate Button"
 		Case "#0175"
-			Return $separator & "Donate - Donate Selected Troop"
+			Return $separator & "Donate - Donate Selected Troop first row"
+		Case "#0600"
+			Return $separator & "Donate - Donate Selected Troop second row"
+		Case "#0601"
+			Return $separator & "Donate - Donate Selected Troop spell"
 			;TEST LANGUAGE
 		Case "#0144"
 			Return $separator & "ChkLang - Config Button"
@@ -347,12 +398,20 @@ Func _DecodeDebug($message)
 		Case "#0150"
 			Return $separator & "Prepare Search - Press Find a Match Button"
 
-		 ;AllTroops
+			;AllTroops
 		Case "#0030"
 			Return $separator & "Attack - press surrender"
 		Case "#0031"
 			Return $separator & "Attack - press confirm surrender"
 
+		Case "#0510"
+			Return $separator & "Attack Search - Open chat tab"
+		Case "#0511"
+			Return $separator & "Attack Search - close chat tab"
+		Case "#0512"
+			Return $separator & "Attack Search - Press retry search button"
+		Case "#0513"
+			Return $separator & "Attack Search - Return Home button"
 
 		Case "#0000"
 			Return $separator & " "
@@ -363,16 +422,58 @@ Func _DecodeDebug($message)
 EndFunc   ;==>_DecodeDebug
 
 Func SendText($sText)
-   Local $Result = 1
-   Local $error = 0
-   If $AndroidAdbInput = True Then
-	  AndroidSendText($sText)
-	  $error = @error
-   EndIf
-   If $AndroidAdbInput = False Or $error <> 0 Then
-	  Local $SuspendMode = ResumeAndroid()
-	  $Result = ControlSend($HWnD, "", "", $sText, 0)
-	  SuspendAndroid($SuspendMode)
-   EndIf
-   Return $Result
-EndFunc
+	Local $result = 1
+	Local $error = 0
+	If $g_bAndroidAdbInput = True Then
+		AndroidSendText($sText)
+		$error = @error
+	EndIf
+	If $g_bAndroidAdbInput = False Or $error <> 0 Then
+		Local $SuspendMode = ResumeAndroid()
+		;$Result = ControlSend($g_hAndroidWindow, "", "", $sText, 0)
+		Local $ascText = ""
+		Local $r, $i, $vk, $shiftBits, $char
+		Local $c = 0
+		For $i = 1 To StringLen($sText)
+			$char = StringMid($sText, $i, 1)
+			$vk = _VkKeyScan($char)
+			$shiftBits = @extended
+			If $vk = -1 And $shiftBits = -1 Then
+				; key not found, skip it
+				SetDebugLog("SendText cannot send character: " & $char)
+				$c += 1
+			Else
+				If BitAND($shiftBits, 1) > 0 Then $ascText &= "{LSHIFT down}"
+				If BitAND($shiftBits, 2) > 0 Then $ascText &= "{LCTRL down}"
+				If BitAND($shiftBits, 4) > 0 Then $ascText &= "{LALT down}"
+				$ascText &= "{ASC " & _WinAPI_MapVirtualKey($vk, $MAPVK_VK_TO_CHAR) & "}"
+				If BitAND($shiftBits, 4) > 0 Then $ascText &= "{LALT up}"
+				If BitAND($shiftBits, 2) > 0 Then $ascText &= "{LCTRL up}"
+				If BitAND($shiftBits, 1) > 0 Then $ascText &= "{LSHIFT up}"
+				;SetDebugLog("SendText: " & $char & " as " & $ascText)
+				$r = ControlSend($g_hAndroidWindow, "", "", $ascText, 0)
+				$ascText = ""
+				If $r = 1 Then
+					;If _Sleep(50) = True Then ExitLoop
+					$c += 1
+				EndIf
+			EndIf
+		Next
+		$result = 0
+		If $c = StringLen($sText) Then $result = 1
+		SuspendAndroid($SuspendMode)
+	EndIf
+	Return $result
+EndFunc   ;==>SendText
+
+; return value is VK code
+; @extended contains shift state bits:
+; 1 = SHIFT key
+; 2 = CTRL key
+; 4 = ALT key
+; Source: https://www.autoitscript.com/forum/topic/138681-user32dllvkkeyscan-not-doing-it-right/?do=findComment&comment=971876
+Func _VkKeyScan($s_Char)
+	Local $a_Ret = DllCall("user32.dll", "short", "VkKeyScanW", "ushort", AscW($s_Char))
+	If @error Then Return SetError(@error, @extended, -1)
+	Return SetExtended(BitShift($a_Ret[0], 8), BitAND($a_Ret[0], 0xFF))
+EndFunc   ;==>_VkKeyScan

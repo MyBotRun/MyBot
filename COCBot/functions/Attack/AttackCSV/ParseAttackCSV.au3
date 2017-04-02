@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,43 +20,41 @@ Func ParseAttackCSV($debug = False)
 	Global $ATTACKVECTOR_Y, $ATTACKVECTOR_Z
 
 	Local $rownum = 0
+	Local $bForceSideExist = False
 
 	;Local $filename = "attack1"
-	If $iMatchMode = $DB Then
-		Local $filename = $scmbDBScriptName
+	If $g_iMatchMode = $DB Then
+		Local $filename = $g_sAttackScrScriptName[$DB]
 	Else
-		Local $filename = $scmbABScriptName
+		Local $filename = $g_sAttackScrScriptName[$LB]
 	EndIf
 	Setlog("execute " & $filename)
 
 	Local $f, $line, $acommand, $command
-	Local $value1, $value2, $value3, $value4, $value5, $value6, $value7, $value8, $value9
-	If FileExists($dirAttacksCSV & "\" & $filename & ".csv") Then
-		$f = FileOpen($dirAttacksCSV & "\" & $filename & ".csv", 0)
+	Local $value1 = "", $value2 = "", $value3 = "", $value4 = "", $value5 = "", $value6 = "", $value7 = "", $value8 = "", $value9 = ""
+	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
+		Local $iLine, $aLines = FileReadToArray($g_sCSVAttacksPath & "\" & $filename & ".csv")
+
 		; Read in lines of text until the EOF is reached
-		While 1
-			$line = FileReadLine($f)
-			$rownum += 1
+		For $iLine = 0 To UBound($aLines) - 1
+			$line = $aLines[$iLine]
+			$rownum = $line + 1
 			If @error = -1 Then ExitLoop
 			If $debug = True Then Setlog("parse line:<<" & $line & ">>")
 			debugAttackCSV("line content: " & $line)
 			$acommand = StringSplit($line, "|")
 			If $acommand[0] >= 8 Then
-				$command = StringStripWS(StringUpper($acommand[1]), 2)
-				$value1 = StringStripWS(StringUpper($acommand[2]), 2)
-				$value2 = StringStripWS(StringUpper($acommand[3]), 2)
-				$value3 = StringStripWS(StringUpper($acommand[4]), 2)
-				$value4 = StringStripWS(StringUpper($acommand[5]), 2)
-				$value5 = StringStripWS(StringUpper($acommand[6]), 2)
-				$value6 = StringStripWS(StringUpper($acommand[7]), 2)
-				$value7 = StringStripWS(StringUpper($acommand[8]), 2)
-				$value8 = StringStripWS(StringUpper($acommand[9]), 2)
-				$value9 = StringStripWS(StringUpper($acommand[10]), 2)
+				$command = StringStripWS(StringUpper($acommand[1]), $STR_STRIPTRAILING)
+				; Set values
+				For $i = 2 To (UBound($acommand) - 1)
+					Assign("value" & Number($i - 1), StringStripWS(StringUpper($acommand[$i]), $STR_STRIPTRAILING))
+				Next
 
 				Switch $command
 					Case ""
 						debugAttackCSV("comment line")
 					Case "MAKE"
+						ReleaseClicks()
 						If CheckCsvValues("MAKE", 2, $value2) Then
 							Local $sidex = StringReplace($value2, "-", "_")
 							If $sidex = "RANDOM" Then
@@ -94,7 +92,7 @@ Func ParseAttackCSV($debug = False)
 							If CheckCsvValues("MAKE", 1, $value1) And CheckCsvValues("MAKE", 5, $value5) Then
 								Assign("ATTACKVECTOR_" & $value1, MakeDropPoints(Eval($sidex), $value3, $value4, $value5, $value6, $value7))
 								For $i = 0 To UBound(Execute("$ATTACKVECTOR_" & $value1)) - 1
-									$pixel = Execute("$ATTACKVECTOR_" & $value1 & "[" & $i & "]")
+									Local $pixel = Execute("$ATTACKVECTOR_" & $value1 & "[" & $i & "]")
 									debugAttackCSV($i & " - " & $pixel[0] & "," & $pixel[1])
 								Next
 							Else
@@ -106,10 +104,12 @@ Func ParseAttackCSV($debug = False)
 							debugAttackCSV("Discard row, bad value2 parameter:row " & $rownum)
 						EndIf
 					Case "DROP"
+						KeepClicks()
 						;index...
-						Local $index1, $index2, $indexvect
+						Local $index1, $index2, $indexArray, $indexvect
 						$indexvect = StringSplit($value2, "-", 2)
 						If UBound($indexvect) > 1 Then
+							$indexArray = 0
 							If Int($indexvect[0]) > 0 And Int($indexvect[1]) > 0 Then
 								$index1 = Int($indexvect[0])
 								$index2 = Int($indexvect[1])
@@ -118,12 +118,19 @@ Func ParseAttackCSV($debug = False)
 								$index2 = 1
 							EndIf
 						Else
-							If Int($value2) > 0 Then
-								$index1 = Int($value2)
-								$index2 = Int($value2)
+							$indexArray = StringSplit($value2, ",", 2)
+							If UBound($indexArray) > 1 Then
+								$index1 = 0
+								$index2 = UBound($indexArray) - 1
 							Else
-								$index1 = 1
-								$index2 = 1
+								$indexArray = 0
+								If Int($value2) > 0 Then
+									$index1 = Int($value2)
+									$index2 = Int($value2)
+								Else
+									$index1 = 1
+									$index2 = 1
+								EndIf
 							EndIf
 						EndIf
 						;qty...
@@ -150,7 +157,7 @@ Func ParseAttackCSV($debug = False)
 						Local $delaypoints1, $delaypoints2, $delaypointsvect
 						$delaypointsvect = StringSplit($value5, "-", 2)
 						If UBound($delaypointsvect) > 1 Then
-							If Int($delaypointsvect[0]) > 0 And Int($delaypointsvect[1]) > 0 Then
+							If Int($delaypointsvect[0]) >= 0 And Int($delaypointsvect[1]) >= 0 Then
 								$delaypoints1 = Int($delaypointsvect[0])
 								$delaypoints2 = Int($delaypointsvect[1])
 							Else
@@ -158,7 +165,7 @@ Func ParseAttackCSV($debug = False)
 								$delaypoints2 = 1
 							EndIf
 						Else
-							If Int($value3) > 0 Then
+							If Int($value5) >= 0 Then
 								$delaypoints1 = Int($value5)
 								$delaypoints2 = Int($value5)
 							Else
@@ -170,7 +177,7 @@ Func ParseAttackCSV($debug = False)
 						Local $delaydrop1, $delaydrop2, $delaydropvect
 						$delaydropvect = StringSplit($value6, "-", 2)
 						If UBound($delaydropvect) > 1 Then
-							If Int($delaydropvect[0]) > 0 And Int($delaydropvect[1]) > 0 Then
+							If Int($delaydropvect[0]) >= 0 And Int($delaydropvect[1]) >= 0 Then
 								$delaydrop1 = Int($delaydropvect[0])
 								$delaydrop2 = Int($delaydropvect[1])
 							Else
@@ -178,7 +185,7 @@ Func ParseAttackCSV($debug = False)
 								$delaydrop2 = 1
 							EndIf
 						Else
-							If Int($value3) > 0 Then
+							If Int($value6) >= 0 Then
 								$delaydrop1 = Int($value6)
 								$delaydrop2 = Int($value6)
 							Else
@@ -190,7 +197,7 @@ Func ParseAttackCSV($debug = False)
 						Local $sleepdrop1, $sleepdrop2, $sleepdroppvect
 						$sleepdroppvect = StringSplit($value7, "-", 2)
 						If UBound($sleepdroppvect) > 1 Then
-							If Int($sleepdroppvect[0]) > 0 And Int($sleepdroppvect[1]) > 0 Then
+							If Int($sleepdroppvect[0]) >= 0 And Int($sleepdroppvect[1]) >= 0 Then
 								$sleepdrop1 = Int($sleepdroppvect[0])
 								$sleepdrop2 = Int($sleepdroppvect[1])
 							Else
@@ -198,7 +205,7 @@ Func ParseAttackCSV($debug = False)
 								$sleepdrop2 = 1
 							EndIf
 						Else
-							If Int($value3) > 0 Then
+							If Int($value7) >= 0 Then
 								$sleepdrop1 = Int($value7)
 								$sleepdrop2 = Int($value7)
 							Else
@@ -206,8 +213,13 @@ Func ParseAttackCSV($debug = False)
 								$sleepdrop2 = 1
 							EndIf
 						EndIf
-						DropTroopFromINI($value1, $index1, $index2, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
+						DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
+						ReleaseClicks($g_iAndroidAdbClicksTroopDeploySize)
+						If _Sleep($DELAYRESPOND) Then ; check for pause/stop, close file before return
+							Return
+						EndIf
 					Case "WAIT"
+						ReleaseClicks()
 						;sleep time
 						Local $sleep1, $sleep2, $sleepvect
 						$sleepvect = StringSplit($value1, "-", 2)
@@ -242,11 +254,15 @@ Func ParseAttackCSV($debug = False)
 						Local $exitOneStar = 0
 						Local $exitTwoStars = 0
 						Local $exitNoResources = 0
-						Local $hSleepTimer = TimerInit()
-						While TimerDiff($hSleepTimer) < $sleep
+						Local $hSleepTimer = __TimerInit()
+						While __TimerDiff($hSleepTimer) < $sleep
+							If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
 							;READ RESOURCES
 							$Gold = getGoldVillageSearch(48, 69)
 							$Elixir = getElixirVillageSearch(48, 69 + 29)
+							If _Sleep($DELAYRESPOND) Then ; check for pause/stop, close file before return
+								Return
+							EndIf
 							$Trophies = getTrophyVillageSearch(48, 69 + 99)
 							If $Trophies <> "" Then ; If trophy value found, then base has Dark Elixir
 								$DarkElixir = getDarkElixirVillageSearch(48, 69 + 57)
@@ -254,43 +270,53 @@ Func ParseAttackCSV($debug = False)
 								$DarkElixir = ""
 								$Trophies = getTrophyVillageSearch(48, 69 + 69)
 							EndIf
-							SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_BLUE)
+							If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
+							If $g_iDebugSetlog = 1 Then SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 							;EXIT IF RESOURCES = 0
-							If $ichkEndNoResources = 1 And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
-								If $DebugSetLog = 1 Then Setlog("From Attackcsv: Gold & Elixir & DE = 0, end battle ", $COLOR_PURPLE)
+							If $g_abStopAtkNoResources[$g_iMatchMode] And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
+								If $g_iDebugSetlog = 0 Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO) ; log if not down above
+								SetDebugLog("From Attackcsv: Gold & Elixir & DE = 0, end battle ", $COLOR_DEBUG)
 								$exitNoResources = 1
 								ExitLoop
 							EndIf
 							;CALCULATE TWO STARS REACH
-							If $ichkEndTwoStars = 1 And _CheckPixel($aWonTwoStar, True) Then
-								If $DebugSetLog = 1 Then Setlog("From Attackcsv: Two Star Reach, exit", $COLOR_GREEN)
+							If $g_abStopAtkTwoStars[$g_iMatchMode] And _CheckPixel($aWonTwoStar, True) Then
+								SetDebugLog("From Attackcsv: Two Star Reach, exit", $COLOR_SUCCESS)
 								$exitTwoStars = 1
 								ExitLoop
 							EndIf
 							;CALCULATE ONE STARS REACH
-							If $ichkEndOneStar = 1 And _CheckPixel($aWonOneStar, True) Then
-								If $DebugSetLog = 1 Then Setlog("From Attackcsv: One Star Reach, exit", $COLOR_GREEN)
+							If $g_abStopAtkOneStar[$g_iMatchMode] And _CheckPixel($aWonOneStar, True) Then
+								SetDebugLog("From Attackcsv: One Star Reach, exit", $COLOR_SUCCESS)
 								$exitOneStar = 1
 								ExitLoop
 							EndIf
-							If _sleep($iDelayAttackCSV3) Then Return ;wait 5 ms to read commands from GUI
-							CheckHeroesHealth()
+							If $g_abStopAtkPctHigherEnable[$g_iMatchMode] And Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)) > Int($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) Then
+								ExitLoop
+							EndIf
+							If _Sleep($DELAYRESPOND) Then ; check for pause/stop, close file before return
+								Return
+							EndIf
 						WEnd
 						If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop ;stop parse CSV file, start exit battle procedure
 
 					Case "RECALC"
-						PrepareAttack($iMatchMode, True)
+						ReleaseClicks()
+						PrepareAttack($g_iMatchMode, True)
 					Case "SIDE"
+						ReleaseClicks()
 						Setlog("Calculate main side... ")
+						Local $heightTopLeft = 0, $heightTopRight = 0, $heightBottomLeft = 0, $heightBottomRight = 0
 						If StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
 							$MAINSIDE = StringUpper($value8)
-							Setlog("Forced side: " & StringUpper($value8))
+							Setlog("Forced side: " & StringUpper($value8), $COLOR_INFO)
+							$bForceSideExist = True
 						Else
-							Local $heightTopLeft = 0, $heightTopRight = 0, $heightBottomLeft = 0, $heightBottomRight = 0
 
-							For $i = 0 To UBound($PixelMine) - 1
+
+							For $i = 0 To UBound($g_aiPixelMine) - 1
 								Local $str = ""
-								Local $pixel = $PixelMine[$i]
+								Local $pixel = $g_aiPixelMine[$i]
 								If UBound($pixel) = 2 Then
 									Switch StringLeft(Slice8($pixel), 1)
 										Case 1, 2
@@ -305,9 +331,9 @@ Func ParseAttackCSV($debug = False)
 								EndIf
 							Next
 
-							For $i = 0 To UBound($PixelElixir) - 1
+							For $i = 0 To UBound($g_aiPixelElixir) - 1
 								Local $str = ""
-								Local $pixel = $PixelElixir[$i]
+								Local $pixel = $g_aiPixelElixir[$i]
 								If UBound($pixel) = 2 Then
 									Switch StringLeft(Slice8($pixel), 1)
 										Case 1, 2
@@ -322,9 +348,9 @@ Func ParseAttackCSV($debug = False)
 								EndIf
 							Next
 
-							For $i = 0 To UBound($PixelDarkElixir) - 1
+							For $i = 0 To UBound($g_aiPixelDarkElixir) - 1
 								Local $str = ""
-								Local $pixel = $PixelDarkElixir[$i]
+								Local $pixel = $g_aiPixelDarkElixir[$i]
 								If UBound($pixel) = 2 Then
 									Switch StringLeft(Slice8($pixel), 1)
 										Case 1, 2
@@ -339,10 +365,43 @@ Func ParseAttackCSV($debug = False)
 								EndIf
 							Next
 
-							If Int($value4) > 0 Then SetLog("find gold storage: work in progress...");
-							If Int($value5) > 0 Then SetLog("find elixir storage: work in progress...");
+							If IsArray($g_aiCSVGoldStoragePos) Then
+								For $i = 0 To UBound($g_aiCSVGoldStoragePos) - 1
+									Local $pixel = $g_aiCSVGoldStoragePos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value4)
+											Case 3, 4
+												$heightTopRight += Int($value4)
+											Case 5, 6
+												$heightTopLeft += Int($value4)
+											Case 7, 8
+												$heightBottomLeft += Int($value4)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
 
-							Switch StringLeft(Slice8($darkelixirStoragePos), 1)
+							If IsArray($g_aiCSVElixirStoragePos) Then
+								For $i = 0 To UBound($g_aiCSVElixirStoragePos) - 1
+									Local $pixel = $g_aiCSVElixirStoragePos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value5)
+											Case 3, 4
+												$heightTopRight += Int($value5)
+											Case 5, 6
+												$heightTopLeft += Int($value5)
+											Case 7, 8
+												$heightBottomLeft += Int($value5)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
+
+							Switch StringLeft(Slice8($g_aiCSVDarkElixirStoragePos), 1)
 								Case 1, 2
 									$heightBottomRight += Int($value6)
 								Case 3, 4
@@ -353,7 +412,7 @@ Func ParseAttackCSV($debug = False)
 									$heightBottomLeft += Int($value6)
 							EndSwitch
 
-							$pixel = StringSplit($thx & "-" & $thy, "-", 2)
+							Local $pixel = StringSplit($g_iTHx & "-" & $g_iTHy, "-", 2)
 							Switch StringLeft(Slice8($pixel), 1)
 								Case 1, 2
 									$heightBottomRight += Int($value7)
@@ -363,6 +422,85 @@ Func ParseAttackCSV($debug = False)
 									$heightTopLeft += Int($value7)
 								Case 7, 8
 									$heightBottomLeft += Int($value7)
+							EndSwitch
+						EndIf
+
+						If $bForceSideExist = False Then
+							Local $maxValue = $heightBottomRight
+							Local $sidename = "BOTTOM-RIGHT"
+
+							If $heightTopLeft > $maxValue Then
+								$maxValue = $heightTopLeft
+								$sidename = "TOP-LEFT"
+							EndIf
+
+							If $heightTopRight > $maxValue Then
+								$maxValue = $heightTopRight
+								$sidename = "TOP-RIGHT"
+							EndIf
+
+							If $heightBottomLeft > $maxValue Then
+								$maxValue = $heightBottomLeft
+								$sidename = "BOTTOM-LEFT"
+							EndIf
+
+							Setlog("Mainside: " & $sidename & " (top-left:" & $heightTopLeft & " top-right:" & $heightTopRight & " bottom-left:" & $heightBottomLeft & " bottom-right:" & $heightBottomRight)
+							$MAINSIDE = $sidename
+						EndIf
+
+						Switch $MAINSIDE
+							Case "BOTTOM-RIGHT"
+								$FRONT_LEFT = "BOTTOM-RIGHT-DOWN"
+								$FRONT_RIGHT = "BOTTOM-RIGHT-UP"
+								$RIGHT_FRONT = "TOP-RIGHT-DOWN"
+								$RIGHT_BACK = "TOP-RIGHT-UP"
+								$LEFT_FRONT = "BOTTOM-LEFT-DOWN"
+								$LEFT_BACK = "BOTTOM-LEFT-UP"
+								$BACK_LEFT = "TOP-LEFT-DOWN"
+								$BACK_RIGHT = "TOP-LEFT-UP"
+							Case "BOTTOM-LEFT"
+								$FRONT_LEFT = "BOTTOM-LEFT-UP"
+								$FRONT_RIGHT = "BOTTOM-LEFT-DOWN"
+								$RIGHT_FRONT = "BOTTOM-RIGHT-DOWN"
+								$RIGHT_BACK = "BOTTOM-RIGHT-UP"
+								$LEFT_FRONT = "TOP-LEFT-DOWN"
+								$LEFT_BACK = "TOP-LEFT-UP"
+								$BACK_LEFT = "TOP-RIGHT-UP"
+								$BACK_RIGHT = "TOP-RIGHT-DOWN"
+							Case "TOP-LEFT"
+								$FRONT_LEFT = "TOP-LEFT-UP"
+								$FRONT_RIGHT = "TOP-LEFT-DOWN"
+								$RIGHT_FRONT = "BOTTOM-LEFT-UP"
+								$RIGHT_BACK = "BOTTOM-LEFT-DOWN"
+								$LEFT_FRONT = "TOP-RIGHT-UP"
+								$LEFT_BACK = "TOP-RIGHT-DOWN"
+								$BACK_LEFT = "BOTTOM-RIGHT-UP"
+								$BACK_RIGHT = "BOTTOM-RIGHT-DOWN"
+							Case "TOP-RIGHT"
+								$FRONT_LEFT = "TOP-RIGHT-DOWN"
+								$FRONT_RIGHT = "TOP-RIGHT-UP"
+								$RIGHT_FRONT = "TOP-LEFT-UP"
+								$RIGHT_BACK = "TOP-LEFT-DOWN"
+								$LEFT_FRONT = "BOTTOM-RIGHT-UP"
+								$LEFT_BACK = "BOTTOM-RIGHT-DOWN"
+								$BACK_LEFT = "BOTTOM-LEFT-DOWN"
+								$BACK_RIGHT = "BOTTOM-LEFT-UP"
+						EndSwitch
+
+					Case "SIDEB"
+						ReleaseClicks()
+						If $bForceSideExist = False Then
+							Setlog("Recalculate main side for additional defense buildings... ", $COLOR_INFO)
+
+							Switch StringLeft(Slice8($g_aiCSVEagleArtilleryPos), 1)
+								Case 1, 2
+									$heightBottomRight += Int($value1)
+								Case 3, 4
+									$heightTopRight += Int($value1)
+								Case 5, 6
+									$heightTopLeft += Int($value1)
+								Case 7, 8
+									$heightBottomLeft += Int($value1)
 							EndSwitch
 
 							Local $maxValue = $heightBottomRight
@@ -383,7 +521,7 @@ Func ParseAttackCSV($debug = False)
 								$sidename = "BOTTOM-LEFT"
 							EndIf
 
-							Setlog("Mainside: " & $sidename & " (top-left:" & $heightTopLeft & " top-right:" & $heightTopRight & " bottom-left:" & $heightBottomLeft & " bottom-right:" & $heightBottomRight)
+							Setlog("New Mainside: " & $sidename & " (top-left:" & $heightTopLeft & " top-right:" & $heightTopRight & " bottom-left:" & $heightBottomLeft & " bottom-right:" & $heightBottomRight, $COLOR_INFO)
 							$MAINSIDE = $sidename
 						EndIf
 						Switch $MAINSIDE
@@ -426,15 +564,18 @@ Func ParseAttackCSV($debug = False)
 						EndSwitch
 
 					Case Else
-						Setlog("attack row bad, discard :row " & $rownum, $COLOR_RED)
+						Setlog("attack row bad, discard :row " & $rownum, $COLOR_ERROR)
 				EndSwitch
 			Else
-				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard.: " & $line, $COLOR_RED)
+				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard.: " & $line, $COLOR_ERROR)
 			EndIf
 			CheckHeroesHealth()
-		WEnd
-		FileClose($f)
+			If _Sleep($DELAYRESPOND) Then ; check for pause/stop after each line of CSV, close file before return
+				Return
+			EndIf
+		Next
+		ReleaseClicks()
 	Else
-		SetLog("Cannot find attack file " & $dirAttacksCSV & "\" & $filename & ".csv", $color_red)
+		SetLog("Cannot find attack file " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
 	EndIf
 EndFunc   ;==>ParseAttackCSV

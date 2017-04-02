@@ -6,65 +6,84 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........:
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (01-2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-
-If $OnlyInstance Then HotKeySet("{PAUSE}", "TogglePause")
+#include-once
 
 Func TogglePause()
 	TogglePauseImpl("Button")
-EndFunc
+EndFunc   ;==>TogglePause
 
 Func TogglePauseImpl($Source)
-   ResumeAndroid()
-   SetRedrawBotWindow(True)
-   Local $BlockInputPausePrev
-	$TPaused = NOT $TPaused
-	If $TPaused and $Runstate = True Then
-		TrayTip($sBotTitle, "", 1)
-		TrayTip($sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
-		Setlog("Bot was Paused!",$COLOR_RED)
-		If Not $bSearchMode Then
-			$iTimePassed += Int(TimerDiff($sTimer))
-			AdlibUnRegister("SetTime")
+	If Not $g_bRunState Then Return
+	ResumeAndroid()
+	$g_bBotPaused = Not $g_bBotPaused
+	If $g_bTogglePauseAllowed = False Then
+		$g_bTogglePauseUpdateState = True
+		Return
+	EndIf
+	TogglePauseUpdateState($Source)
+	TogglePauseSleep()
+EndFunc   ;==>TogglePauseImpl
+
+Func TogglePauseUpdateState($Source)
+	$g_iActualTrainSkip = 0
+
+	$g_bTogglePauseUpdateState = False
+
+    If $g_bBotPaused Then
+		AndroidShield("TogglePauseImpl paused", False)
+		TrayTip($g_sBotTitle, "", 1)
+		TrayTip($g_sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
+		Setlog("Bot was Paused!", $COLOR_ERROR)
+		If Not $g_bSearchMode Then
+			$g_iTimePassed += Int(__TimerDiff($g_hTimerSinceStarted))
+			;AdlibUnRegister("SetTime")
 		EndIf
 		PushMsg("Pause", $Source)
-		 If $BlockInputPause>0 Then	 $BlockInputPausePrev=$BlockInputPause
-		 If $BlockInputPause>0 Then  _BlockInputEx(0,"","",$HWnD)
-		GUICtrlSetState($btnPause, $GUI_HIDE)
-		GUICtrlSetState($btnResume, $GUI_SHOW)
+		GUICtrlSetState($g_hBtnPause, $GUI_HIDE)
+		GUICtrlSetState($g_hBtnResume, $GUI_SHOW)
 		;GUICtrlSetState($btnMakeScreenshot, $GUI_ENABLE)
-	ElseIf $TPaused = False And $Runstate = True Then
-		TrayTip($sBotTitle, "", 1)
-		TrayTip($sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
-		Setlog("Bot was Resumed.",$COLOR_GREEN)
-		If Not $bSearchMode Then
-			$sTimer = TimerInit()
-			AdlibRegister("SetTime", 1000)
+	Else
+		AndroidShield("TogglePauseImpl resumed")
+		TrayTip($g_sBotTitle, "", 1)
+		TrayTip($g_sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
+		Setlog("Bot was Resumed.", $COLOR_SUCCESS)
+		If Not $g_bSearchMode Then
+			$g_hTimerSinceStarted = __TimerInit()
+			;AdlibRegister("SetTime", 1000)
 		EndIf
 		PushMsg("Resume", $Source)
-		 If $BlockInputPausePrev>0 Then  _BlockInputEx($BlockInputPausePrev,"","",$HWnD)
-		 If $BlockInputPausePrev>0 Then $BlockInputPausePrev=0
-		GUICtrlSetState($btnPause, $GUI_SHOW)
-		GUICtrlSetState($btnResume, $GUI_HIDE)
+		GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
+		GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 		;GUICtrlSetState($btnMakeScreenshot, $GUI_DISABLE)
-		ZoomOut()
+		;ZoomOut()
 	EndIf
+	SetRedrawBotWindow(True, Default, Default, Default, "TogglePauseUpdateState")
+EndFunc	  ;==>TogglePauseUpdateState
+
+Func TogglePauseSleep()
 	Local $counter = 0
-	While $TPaused ; Actual Pause loop
-		If _Sleep($iDelayTogglePause1) Then ExitLoop
+	Local $hTimerAutoResume = __TimerInit()
+	While $g_bBotPaused ; Actual Pause loop
+		If _Sleep($DELAYTOGGLEPAUSE1, True, True, False) Then ExitLoop
+		If $g_bAutoResumeEnable And __TimerDiff($hTimerAutoResume) >= ($g_iAutoResumeTime * 60000) Then
+			SetLog("Auto resume bot after " & $g_iAutoResumeTime & " minutes of waiting", $COLOR_INFO)
+			TogglePause()
+		EndIf
 		$counter = $counter + 1
-	    If $pEnabled = 1 AND $pRemote = 1 AND $counter = 200 Then
-			_RemoteControl()
+		If ($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyRemoteEnable = True And $counter = 200 Then
+			NotifyRemoteControl()
 			$counter = 0
 		EndIf
 	WEnd
 	; everything below this WEnd is executed when unpaused!
+	$g_bSkipFirstZoomout = False
 	;ZoomOut() ; moved to resume
-	If _Sleep($iDelayTogglePause2) Then Return
-EndFunc
+	If _Sleep($DELAYTOGGLEPAUSE2, True, True, False) Then Return
+EndFunc	  ;==>TogglePauseSleep

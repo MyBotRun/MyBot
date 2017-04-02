@@ -11,7 +11,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -26,21 +26,21 @@ Func MakeDropPoints($side, $pointsQty, $addtiles, $versus, $randomx = 2, $random
 	EndIf
 	Switch $side
 		Case "TOP-LEFT-DOWN"
-			Local $Vector = $PixelTopLeftDOWNDropLine
+			Local $Vector = $g_aiPixelTopLeftDOWNDropLine
 		Case "TOP-LEFT-UP"
-			Local $Vector = $PixelTopLeftUPDropLine
+			Local $Vector = $g_aiPixelTopLeftUPDropLine
 		Case "TOP-RIGHT-DOWN"
-			Local $Vector = $PixelTopRightDOWNDropLine
+			Local $Vector = $g_aiPixelTopRightDOWNDropLine
 		Case "TOP-RIGHT-UP"
-			Local $Vector = $PixelTopRightUPDropLine
+			Local $Vector = $g_aiPixelTopRightUPDropLine
 		Case "BOTTOM-LEFT-UP"
-			Local $Vector = $PixelBottomLeftUPDropLine
+			Local $Vector = $g_aiPixelBottomLeftUPDropLine
 		Case "BOTTOM-LEFT-DOWN"
-			Local $Vector = $PixelBottomLeftDOWNDropLine
+			Local $Vector = $g_aiPixelBottomLeftDOWNDropLine
 		Case "BOTTOM-RIGHT-UP"
-			Local $Vector = $PixelBottomRightUPDropLine
+			Local $Vector = $g_aiPixelBottomRightUPDropLine
 		Case "BOTTOM-RIGHT-DOWN"
-			Local $Vector = $PixelBottomRightDOWNDropLine
+			Local $Vector = $g_aiPixelBottomRightDOWNDropLine
 		Case Else
 	EndSwitch
 	If Int($pointsQty) > 0 Then
@@ -55,7 +55,7 @@ Func MakeDropPoints($side, $pointsQty, $addtiles, $versus, $randomx = 2, $random
 
 	Local $str = ""
 	For $i = 0 To UBound($Vector) - 1
-		$pixel = $Vector[$i]
+		Local $pixel = $Vector[$i]
 		$str &= $pixel[0] & "-" & $pixel[1] & "|"
 	Next
 

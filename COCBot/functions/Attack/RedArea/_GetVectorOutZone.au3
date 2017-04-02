@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: didipe
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,47 +16,46 @@
 Func _GetVectorOutZone($eVectorType)
 	debugRedArea("_GetVectorOutZone IN")
 	Local $vectorOutZone[0]
+	Local $iSteps = 100
+	Local $xMin, $yMin, $xMax, $yMax
 
 	If ($eVectorType = $eVectorLeftTop) Then
-		$xMin = 430
-		$yMin = 29
-		$xMax = 33
-		$yMax = 325
-		$xStep = -4
-		$yStep = 3
+		$xMin = $ExternalArea[0][0] + 2
+		$yMin = $ExternalArea[0][1]
+		$xMax = $ExternalArea[2][0]
+		$yMax = $ExternalArea[2][1] + 2
 	ElseIf ($eVectorType = $eVectorRightTop) Then
-		$xMin = 430
-		$yMin = 29
-		$xMax = 834
-		$yMax = 325
-		$xStep = 4
-		$yStep = 3
+		$xMin = $ExternalArea[2][0]
+		$yMin = $ExternalArea[2][1] + 2
+		$xMax = $ExternalArea[1][0] - 2
+		$yMax = $ExternalArea[1][1]
 	ElseIf ($eVectorType = $eVectorLeftBottom) Then
-		$xMin = 39
-		$yMin = 338
-		$xMax = 430
-		$yMax = 630
-		$xStep = 4
-		$yStep = 3
-	Else
-		$xMin = 834
-		$yMin = 325
-		$xMax = 430
-		$yMax = 630
-		$xStep = -4
-		$yStep = 3
+		$xMin = $ExternalArea[0][0] + 2
+		$yMin = $ExternalArea[0][1]
+		$xMax = $ExternalArea[3][0]
+		$yMax = $ExternalArea[3][1] - 2
+	Else ; bottom right
+		$xMin = $ExternalArea[3][0]
+		$yMin = $ExternalArea[3][1] - 2
+		$xMax = $ExternalArea[1][0] - 2
+		$yMax = $ExternalArea[1][1]
 	EndIf
 
+	; CS69 these step variables are not needed, since the $x and $y below are not referenced
+	; $xStep = ($xMax - $xMin) / $iSteps
+	; $yStep = ($yMax - $yMin) / $iSteps
 
-	Local $pixel[2]
-	Local $x = $xMin
-	For $y = $yMin To $yMax Step $yStep
-		$x += $xStep
-		$pixel[0] = $x
-		$pixel[1] = $y
+	For $i = 0 To $iSteps
+		Local $pixel = [Round($xMin + (($xMax - $xMin) * $i) / $iSteps), Round($yMin + (($yMax - $yMin) * $i) / $iSteps)]
 		ReDim $vectorOutZone[UBound($vectorOutZone) + 1]
+		If $pixel[1] > 555 + $g_iBottomOffsetY Then
+			$pixel[1] = 555 + $g_iBottomOffsetY
+		EndIf
 		$vectorOutZone[UBound($vectorOutZone) - 1] = $pixel
 
+		; CS69 - $x and $y are never referenced in this function
+		; $x += $xStep
+		; $y += $yStep
 	Next
 
 	Return $vectorOutZone

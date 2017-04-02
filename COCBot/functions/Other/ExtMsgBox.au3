@@ -5,11 +5,11 @@
 ; AutoIt Version : v3.2.12.1 or higher
 ; Language ......: English
 ; Description ...: Generates user defined message boxes centred on a GUI, on screen or at defined coordinates
-; Remarks .......:
-; Note ..........:
-; Author(s) .....: Melba23, based on some original code by photonbuddy & YellowLab, and KaFu (default font data)
 ;
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Author(s) .....: Melba23, based on some original code by photonbuddy & YellowLab, and KaFu (default font data)
+; Link ..........: https://www.autoitscript.com/forum/topic/109096-extended-message-box-bugfix-version-9-aug-16/
+;
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -52,7 +52,7 @@ $g_aEMB_Settings[9] = BitAND(BitShift(String(Binary($g_aEMB_TempArray[0])), 8), 
 $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 11) ; Title bar icon width
 $g_aEMB_Settings[12] = $g_aEMB_TempArray[0]
 $g_aEMB_TempArray = DllCall("user32.dll", "int", "GetSystemMetrics", "int", 30) ; Title bar button width
-$g_aEMB_Settings[12] += (($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0])) ; Compensate for small buttons in some themes
+$g_aEMB_Settings[12] += ( ($g_aEMB_TempArray[0] < 30) ? ($g_aEMB_TempArray[0] * 3) : ($g_aEMB_TempArray[0]) ) ; Compensate for small buttons in some themes
 $g_aEMB_TempArray = 0
 $g_aEMB_TempArray = DllCall("dwmapi.dll", "uint", "DwmIsCompositionEnabled", "int*", $g_aEMB_TempArray) ; Check for Aero enabled
 If Not @error And $g_aEMB_TempArray[1] = True Then
@@ -279,7 +279,8 @@ EndFunc   ;==>_ExtMsgBoxSet
 ; Author ........: Melba23, based on some original code by photonbuddy & YellowLab
 ; Example........; Yes
 ;=====================================================================================================================
-Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $iVPos = 0, $bMain = True)
+; CS69 Jan 2017 - default $hWin parameter to $g_hFrmBot so it doesn't have to be set everytime this function is called
+Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = $g_hFrmBot, $iVPos = 0, $bMain = True)
 
 	; Set default sizes for message box
 	Local $iMsg_Width_Max = $g_aEMB_Settings[6], $iMsg_Width_Min = 150, $iMsg_Width_Abs = $g_aEMB_Settings[7]
@@ -288,7 +289,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 
 	; Declare local variables
 	Local $iParent_Win = 0, $fCountdown = False, $cCheckbox, $aLabel_Size, $aRet, $iRet_Value, $iHpos
-	Local $sButton_Text, $iButton_Width_Req, $iButton_Width, $iButton_Xpos
+	Local $sButton_Text, $iButton_Width, $iButton_Xpos
 
 	; Validate timeout value
 	$iTimeOut = Int(Number($iTimeOut))
@@ -358,10 +359,14 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 		EndSwitch
 	EndIf
 
+	; Set default values
+	Local $aButton_Text[1] = [0]
+	Local $iButton_Width_Req = 0
 	; Get required button size
 	If $vButton <> " " Then
 		; Split button text into individual strings
-		Local $aButton_Text = StringSplit($vButton, "|")
+		$aButton_Text = StringSplit($vButton, "|")
+
 		; Get absolute available width for each button
 		Local $iButton_Width_Abs = Floor((($iMsg_Width_Max - 10) / $aButton_Text[0]) - 10)
 		; Error if below min button size
@@ -409,8 +414,6 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 		EndIf
 		; Determine GUI width required for all buttons at this width
 		$iButton_Width_Req = (($iButton_Width + 10) * $aButton_Text[0]) + 10
-	Else
-		$iButton_Width_Req = 0
 	EndIf
 
 	; Set tab expansion flag if required
@@ -452,18 +455,11 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 	; Size title
 	Local $aTitleSize = _StringSize($sTitle, $g_aEMB_Settings[10], Default, Default, $g_aEMB_Settings[11])
 
-	;ConsoleWrite(142 & " - " & $aTitleSize[2] & @CRLF)
-	;ConsoleWrite(80 & " - " & $iMsg_Width - 70 & @CRLF)
-	;ConsoleWrite(500 & " - " & $g_aEMB_Settings[7] & @CRLF)
-	;ConsoleWrite(83 & " - " & $g_aEMB_Settings[12] & @CRLF)
-
 	; Check if title wider than text
 	If $aTitleSize[2] > ($iMsg_Width - 70) Then ; Assume icon reduction of 50 regardless of icon setting
 		; Adjust dialog width up to absolute dialog width value
-		$iDialog_Width = (($aTitleSize[2] < ($g_aEMB_Settings[7] - $g_aEMB_Settings[12])) ? ($aTitleSize[2] + $g_aEMB_Settings[12]) : ($g_aEMB_Settings[7]))
+		$iDialog_Width = ( ($aTitleSize[2] < ($g_aEMB_Settings[7] - $g_aEMB_Settings[12])) ? ($aTitleSize[2] + $g_aEMB_Settings[12]) : ($g_aEMB_Settings[7]) )
 	EndIf
-
-	;ConsoleWrite($iDialog_Width & @CRLF)
 
 	Local $iMsg_Height = $iLabel_Height + 35
 	; Increase height if buttons present
@@ -528,7 +524,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 	If BitAND($g_aEMB_Settings[0], 2) Then $iExtStyle = -1
 
 	; Create GUI with $WS_POPUPWINDOW, $WS_CAPTION style and required extended style
-	Local $hMsgGUI = GUICreate($sTitle, $iDialog_Width, $iMsg_Height, $iHpos, $iVPos, BitOR(0x80880000, 0x00C00000), $iExtStyle, $iParent_Win)
+	Local $hMsgGUI = _GUICreate($sTitle, $iDialog_Width, $iMsg_Height, $iHpos, $iVPos, BitOR(0x80880000, 0x00C00000), $iExtStyle, $iParent_Win)
 	If @error Then
 		Return SetError(7, 0, -1)
 	EndIf
@@ -596,58 +592,58 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 	EndIf
 
 	; Create buttons
-	Local $cAccel_Key = 9999 ; Placeholder to prevent firing if no buttons
-	If $vButton <> " " Then
+	Local $aButtonCID[$aButton_Text[0] + 1] = [9999] ; Placeholder to prevent accel key firing if no buttons
+    If $vButton <> " " Then
 
-		; Create dummy control for Accel key
-		$cAccel_Key = GUICtrlCreateDummy()
-		; Set Space key as Accel key
-		Local $aAccel_Key[1][2] = [["{SPACE}", $cAccel_Key]]
-		GUISetAccelerators($aAccel_Key)
+        ; Create dummy control for Accel key
+        $aButtonCID[0] = GUICtrlCreateDummy()
+        ; Set Space key as Accel key
+        Local $aAccel_Key[1][2] = [["{SPACE}", $aButtonCID[0]]]
+        GUISetAccelerators($aAccel_Key)
 
-		; Calculate button horizontal start
-		If $aButton_Text[0] = 1 Then
-			If BitAND($g_aEMB_Settings[1], 4) = 4 Then
-				; Single centred button
-				$iButton_Xpos = ($iDialog_Width - $iButton_Width) / 2
-			Else
-				; Single offset button
-				$iButton_Xpos = $iDialog_Width - $iButton_Width - 10
-			EndIf
-		Else
-			; Multiple centred buttons
-			$iButton_Xpos = ($iDialog_Width - ($iButton_Width_Req - 20)) / 2
-		EndIf
-		; Set default button code
-		Local $iDefButton_Code = 0
-		; Set default button style
-		Local $iDef_Button_Style = 0
-		; Work through button list
-		For $i = 0 To $aButton_Text[0] - 1
-			Local $iButton_Text = $aButton_Text[$i + 1]
-			; Set default button
-			If $aButton_Text[0] = 1 Then ; Only 1 button
-				$iDef_Button_Style = 0x0001
-			ElseIf StringLeft($iButton_Text, 1) = "&" Then ; Look for &
-				$iDef_Button_Style = 0x0001
-				$aButton_Text[$i + 1] = StringTrimLeft($iButton_Text, 1)
-				; Set default button code for Accel key return
-				$iDefButton_Code = $i + 1
-			EndIf
-			; Draw button
-			GUICtrlCreateButton($aButton_Text[$i + 1], $iButton_Xpos + ($i * ($iButton_Width + 10)), $iMsg_Height - 35, $iButton_Width, 25, $iDef_Button_Style)
-			; Set font if required
-			If Not BitAND($g_aEMB_Settings[0], 4) Then GUICtrlSetFont(-1, $g_aEMB_Settings[4], 400, 0, $g_aEMB_Settings[5])
-			; Reset default style parameter
-			$iDef_Button_Style = 0
-		Next
-	EndIf
+        ; Calculate button horizontal start
+        If $aButton_Text[0] = 1 Then
+            If BitAND($g_aEMB_Settings[1], 4) = 4 Then
+                ; Single centred button
+                $iButton_Xpos = ($iMsg_Width - $iButton_Width) / 2
+            Else
+                ; Single offset button
+                $iButton_Xpos = $iMsg_Width - $iButton_Width - 10
+            EndIf
+        Else
+            ; Multiple centred buttons
+            $iButton_Xpos = ($iMsg_Width - ($iButton_Width_Req - 20)) / 2
+        EndIf
+        ; Set default button code
+        Local $iDefButton_Code = 0
+        ; Set default button style
+        Local $iDef_Button_Style = 0
+        ; Work through button list
+        For $i = 0 To $aButton_Text[0] - 1
+            Local $iButton_Text = $aButton_Text[$i + 1]
+            ; Set default button
+            If $aButton_Text[0] = 1 Then ; Only 1 button
+                $iDef_Button_Style = 0x0001
+            ElseIf StringLeft($iButton_Text, 1) = "&" Then ; Look for &
+                $iDef_Button_Style = 0x0001
+                $aButton_Text[$i + 1] = StringTrimLeft($iButton_Text, 1)
+                ; Set default button code for Accel key return
+                $iDefButton_Code = $i + 1
+            EndIf
+            ; Draw button
+            $aButtonCID[$i + 1] = GUICtrlCreateButton($aButton_Text[$i + 1], $iButton_Xpos + ($i * ($iButton_Width + 10)), $iMsg_Height - 35, $iButton_Width, 25, $iDef_Button_Style)
+            ; Set font if required
+            If Not BitAND($g_aEMB_Settings[0], 4) Then GUICtrlSetFont(-1, $g_aEMB_Settings[4], 400, 0, $g_aEMB_Settings[5])
+            ; Reset default style parameter
+            $iDef_Button_Style = 0
+        Next
+    EndIf
 
 	; Show GUI
 	GUISetState(@SW_SHOW, $hMsgGUI)
 
 	; Begin timeout counter
-	Local $iTimeout_Begin = TimerInit()
+	Local $iTimeout_Begin = __TimerInit()
 	Local $iCounter = 0
 
 	; Declare GUIGetMsg return array here and not in loop
@@ -664,28 +660,33 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = "", $i
 				Case $aMsg[0] = -3 ; $GUI_EVENT_CLOSE
 					$iRet_Value = 0
 					ExitLoop
-				Case $aMsg[0] = $cAccel_Key
-					; Accel key pressed so return default button code
-					If $iDefButton_Code Then
-						$iRet_Value = $iDefButton_Code
-						ExitLoop
-					EndIf
-				Case $aMsg[0] > $cAccel_Key
-					; Button handle minus Accel key handle will give button index
-					$iRet_Value = $aMsg[0] - $cAccel_Key
-					ExitLoop
+				Case $aMsg[0] = $aButtonCID[0]
+                    ; Accel key pressed so return default button code
+                    If $iDefButton_Code Then
+                        $iRet_Value = $iDefButton_Code
+                        ExitLoop
+                    EndIf
+                Case Else
+					; Check for other buttons
+					For $i = 1 To UBound($aButtonCID) - 1
+						If $aMsg[0] = $aButtonCID[$i] Then
+							$iRet_Value = $i
+							; No point in looking further
+							ExitLoop 2
+						EndIf
+					Next
 			EndSelect
 		EndIf
 
 		; Timeout if required
-		If TimerDiff($iTimeout_Begin) / 1000 >= $iTimeOut And $iTimeOut > 0 Then
+		If __TimerDiff($iTimeout_Begin) / 1000 >= $iTimeOut And $iTimeOut > 0 Then
 			$iRet_Value = 9
 			ExitLoop
 		EndIf
 
 		; Show countdown if required
 		If $fCountdown = True Then
-			Local $iTimeRun = Int(TimerDiff($iTimeout_Begin) / 1000)
+			Local $iTimeRun = Int(__TimerDiff($iTimeout_Begin) / 1000)
 			If $iTimeRun <> $iCounter Then
 				$iCounter = $iTimeRun
 				GUICtrlSetData($cCountdown_Label, StringFormat("%2s", $iTimeOut - $iCounter))
@@ -731,26 +732,40 @@ Func __EMB_GetDefaultFont()
 	Local $hTheme = DllCall($hThemeDLL, 'ptr', 'OpenThemeData', 'hwnd', $hWnd, 'wstr', "Static")
 	If @error Then Return $aDefFontData
 	$hTheme = $hTheme[0]
+
 	; Create LOGFONT structure
 	Local $tFont = DllStructCreate("long;long;long;long;long;byte;byte;byte;byte;byte;byte;byte;byte;wchar[32]")
 	Local $pFont = DllStructGetPtr($tFont)
+
 	; Get MsgBox font from theme
 	DllCall($hThemeDLL, 'long', 'GetThemeSysFont', 'HANDLE', $hTheme, 'int', 805, 'ptr', $pFont) ; TMT_MSGBOXFONT
-	If @error Then Return $aDefFontData
+	If @error Then
+	   $tFont = 0
+	   Return $aDefFontData
+    EndIf
+
 	; Get default DC
 	Local $hDC = DllCall("user32.dll", "handle", "GetDC", "hwnd", $hWnd)
-	If @error Then Return $aDefFontData
+	If @error Then
+	   $tFont = 0
+	   Return $aDefFontData
+    EndIf
 	$hDC = $hDC[0]
+
 	; Get font vertical size
 	Local $iPixel_Y = DllCall("gdi32.dll", "int", "GetDeviceCaps", "handle", $hDC, "int", 90) ; LOGPIXELSY
 	If Not @error Then
 		$iPixel_Y = $iPixel_Y[0]
 		$aDefFontData[0] = Int(2 * (.25 - DllStructGetData($tFont, 1) * 72 / $iPixel_Y)) / 2
 	EndIf
+
 	; Close DC
 	DllCall("user32.dll", "int", "ReleaseDC", "hwnd", $hWnd, "handle", $hDC)
+
 	; Extract font data from LOGFONT structure
 	$aDefFontData[1] = DllStructGetData($tFont, 14)
+
+	$tFont = 0
 
 	Return $aDefFontData
 

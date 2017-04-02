@@ -10,98 +10,67 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drops for king and queen and Grand Warden
-	If $debugSetLog = 1 Then SetLog("dropHeroes KingSlot " & $KingSlot & " QueenSlot " & $QueenSlot & " WardenSlot " & $WardenSlot, $Color_Purple)
-	If _Sleep($iDelaydropHeroes1) Then Return
-	Local $dropKing = False
-	Local $dropQueen = False
-	Local $dropWarden = False
+	If $g_iDebugSetlog = 1 Then SetLog("dropHeroes KingSlot " & $KingSlot & " QueenSlot " & $QueenSlot & " WardenSlot " & $WardenSlot & " matchmode " & $g_iMatchMode, $COLOR_DEBUG)
+	If _Sleep($DELAYDROPHEROES1) Then Return
+	$g_bDropKing = False
+	$g_bDropQueen = False
+	$g_bDropWarden = False
 
-	If $iMatchMode = $DB Then
-		If $ichkUseAttackDBCSV = 1 Then
-			;scripted attack
-			If $KingSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $KingAttackCSV[$iMatchMode] = 1) Then
-				$dropKing = True
-			EndIf
-			If $QueenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $QueenAttackCSV[$iMatchMode] = 1) Then
-				$dropQueen = True
-			EndIf
-			If $WardenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $WardenAttackCSV[$iMatchMode] = 1) Then
-				$dropWarden = True
-			EndIf
-		Else
-			If $KingSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_KING) = $HERO_KING) Then
-				$dropKing = True
-			EndIf
-			If $QueenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_QUEEN) = $HERO_QUEEN) Then
-				$dropQueen = True
-			EndIf
-			If $WardenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_WARDEN) = $HERO_WARDEN) Then
-				$dropWarden = True
-			EndIf
-		EndIf
-	EndIf
-	If $iMatchMode = $LB Then
-		If $ichkUseAttackABCSV = 1 Then
-			;scripted attack
-			If $KingSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $KingAttackCSV[$iMatchMode] = 1) Then
-				$dropKing = True
-			EndIf
-			If $QueenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $QueenAttackCSV[$iMatchMode] = 1) Then
-				$dropQueen = True
-			EndIf
-			If $WardenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or $WardenAttackCSV[$iMatchMode] = 1) Then
-				$dropWarden = True
-			EndIf
-		Else
-			If $KingSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_KING) = $HERO_KING) Then
-				$dropKing = True
-			EndIf
-			If $QueenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_QUEEN) = $HERO_QUEEN) Then
-				$dropQueen = True
-			EndIf
-			If $WardenSlot <> -1 And (($iMatchMode <> $DB And $iMatchMode <> $LB) Or BitAND($iHeroAttack[$iMatchMode], $HERO_WARDEN) = $HERO_WARDEN) Then
-				$dropWarden = True
-			EndIf
-		EndIf
+	;Force to check settings of matchmode =$DB if you attack $TS after milkingattack
+	Local $MatchMode
+	If $g_iMatchMode = $TS And $g_bDuringMilkingAttack = True Then
+		$MatchMode = $DB
+	Else
+		$MatchMode = $g_iMatchMode
 	EndIf
 
-	If $debugSetLog = 1 Then SetLog("drop KING = " & $dropKing, $Color_Purple)
-	If $debugSetLog = 1 Then SetLog("drop QUEEN = " & $dropQueen, $Color_Purple)
-	If $debugSetLog = 1 Then SetLog("drop WARDEN = " & $dropWarden, $Color_Purple)
+	;use hero if  slot (detected ) and ( (matchmode <>DB and <>LB  ) or (check user GUI settings) )
+	If $KingSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroKing) = $eHeroKing) Then $g_bDropKing = True
+	If $QueenSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroQueen) = $eHeroQueen) Then $g_bDropQueen = True
+	If $WardenSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroWarden) = $eHeroWarden) Then $g_bDropWarden = True
 
-	If $dropKing Then
-		SetLog("Dropping King", $COLOR_BLUE)
-		Click(GetXPosOfArmySlot($KingSlot, 68), 595 + $bottomOffsetY, 1, 0, "#0092") ;Select King 860x780
-		If _Sleep($iDelaydropHeroes2) Then Return
+	If $g_iDebugSetlog = 1 Then SetLog("drop KING = " & $g_bDropKing, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then SetLog("drop QUEEN = " & $g_bDropQueen, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then SetLog("drop WARDEN = " & $g_bDropWarden, $COLOR_DEBUG)
+
+	If $g_bDropKing Then
+		SetLog("Dropping King", $COLOR_INFO)
+		Click(GetXPosOfArmySlot($KingSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0092") ;Select King 860x780
+		If _Sleep($DELAYDROPHEROES2) Then Return
 		Click($x, $y, 1, 0, "#0093")
-		$checkKPower = True
+		$g_bCheckKingPower = True
+		If $g_iActivateKQCondition = "Manual" Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = __TimerInit() ; initialize fixed activation timer
 	EndIf
 
-	If _Sleep($iDelaydropHeroes1) Then Return
+	If _Sleep($DELAYDROPHEROES1) Then Return
 
-	If $dropQueen Then
-		SetLog("Dropping Queen", $COLOR_BLUE)
-		Click(GetXPosOfArmySlot($QueenSlot, 68), 595 + $bottomOffsetY, 1, 0, "#0094") ;Select Queen 860x780
-		If _Sleep($iDelaydropHeroes2) Then Return
+	If $g_bDropQueen Then
+		SetLog("Dropping Queen", $COLOR_INFO)
+		Click(GetXPosOfArmySlot($QueenSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0094") ;Select Queen 860x780
+		If _Sleep($DELAYDROPHEROES2) Then Return
 		Click($x, $y, 1, 0, "#0095")
-		$checkQPower = True
+		$g_bCheckQueenPower = True
+		If $g_iActivateKQCondition = "Manual" Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = __TimerInit() ; initialize fixed activation timer
 	EndIf
 
-	If _Sleep($iDelaydropHeroes1) Then Return
+	If _Sleep($DELAYDROPHEROES1) Then Return
 
-	If $dropWarden Then
-		SetLog("Dropping Grand Warden", $COLOR_BLUE)
-		Click(GetXPosOfArmySlot($WardenSlot, 68), 595 + $bottomOffsetY, 1, 0, "#X998") ;Select Warden 860x780
-		If _Sleep($iDelaydropHeroes2) Then Return
+	If $g_bDropWarden Then
+		SetLog("Dropping Grand Warden", $COLOR_INFO)
+		Click(GetXPosOfArmySlot($WardenSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#X998") ;Select Warden 860x780
+		If _Sleep($DELAYDROPHEROES2) Then Return
 		Click($x, $y, 1, 0, "#x999")
-		$checkWPower = True
+		$g_bCheckWardenPower = True
+		If $g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition Then
+			$g_aHeroesTimerActivation[$eHeroGrandWarden] = __TimerInit() ; initialize fixed activation timer
+		EndIf
 	EndIf
 
 EndFunc   ;==>dropHeroes

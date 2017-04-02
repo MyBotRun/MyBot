@@ -7,34 +7,63 @@
 ; Return values .: None
 ; Author ........: KnowJack (Aug 2015)
 ; Modified ......: Sardo (2016-01)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func DebugImageSave($TxtName = "Unknown",$capturenew=True,$extensionpng="png",$makesubfolder = True)
+Func DebugImageSave($TxtName = "Unknown", $capturenew = True, $extensionpng = "png", $makesubfolder = True)
 
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
-	;SetLog("Taking snapshot for later review", $COLOR_GREEN) ;Debug purposes only :)
-	$Date = @MDAY & "." & @MON & "." & @YEAR
-	$Time = @HOUR & "." & @MIN & "." & @SEC
-	Local $savefolder =$dirTempDebug
-	If $makesubfolder=True Then
-		$savefolder = $dirTempDebug& $TxtName & "\"
+	;SetLog("Taking snapshot for later review", $COLOR_SUCCESS) ;Debug purposes only :)
+	Local $Date = @MDAY & "." & @MON & "." & @YEAR
+	Local $Time = @HOUR & "." & @MIN & "." & @SEC
+	Local $savefolder = $g_sProfileTempDebugPath
+	If $makesubfolder = True Then
+		$savefolder = $g_sProfileTempDebugPath & $TxtName & "\"
 		DirCreate($savefolder)
 	EndIf
 
-	If $capturenew Then _CaptureRegion()
-	IF $extensionpng = "png" Then
-		_GDIPlus_ImageSaveToFile($hBitmap, $savefolder & $TxtName & $Date & " at " & $Time & ".png")
-		If $debugsetlog=1 Then Setlog( $TxtName & $Date & " at " & $Time & ".png", $COLOR_purple)
+	Local $extension
+	If $extensionpng = "png" then
+		$extension = "png"
 	Else
-		_GDIPlus_ImageSaveToFile($hBitmap, $savefolder & $TxtName & $Date & " at " & $Time & ".jpg")
-		If $debugsetlog=1 Then Setlog( $TxtName & $Date & " at " & $Time & ".jpg", $COLOR_purple)
+		$extension = "jpg"
 	EndIf
 
-	If _Sleep($iDelayDebugImageSave1) Then Return
+	Local $exist = true
+	local $i = 1
+	Local $first = True
+	Local $filename = ""
+	While $exist
+		If $first Then
+			$first = False
+			$filename = $savefolder & $TxtName & $Date & " at " & $Time & "." & $extension
+			If FileExists($filename) = 1 Then
+				$exist = True
+			Else
+				$exist = False
+
+			EndIf
+		Else
+			$filename = $savefolder & $TxtName & $Date & " at " & $Time & " (" & $i & ")." & $extension
+			If FileExists($filename) = 1 Then
+				$i +=1
+			Else
+				$exist = False
+			EndIf
+		EndIf
+	WEnd
+
+	If $capturenew Then _CaptureRegion2()
+	Local $EditedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
+	_GDIPlus_ImageSaveToFile($EditedImage, $filename)
+	_GDIPlus_BitmapDispose($EditedImage)
+
+	If $g_iDebugSetlog = 1 Then Setlog($filename, $COLOR_DEBUG)
+
+	If _Sleep($DELAYDEBUGIMAGESAVE1) Then Return
 
 EndFunc   ;==>DebugImageSave

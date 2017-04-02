@@ -5,33 +5,39 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Sardo (2015-06)
-; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: CodeSlinger69 (2017)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
+
+Global $g_sLastVersion = "" ;latest version from GIT
+Global $g_sLastMessage = "" ;message for last version
+Global $g_sOldVersionMessage = "" ;warning message for old bot
 
 Func CheckVersion()
-	If $ichkVersion = 1 Then
+	If $g_bCheckVersion Then
 		CheckVersionHTML()
-		If $lastversion = "" Then
-			SetLog("WE CANNOT OBTAIN PRODUCT VERSION AT THIS TIME", $COLOR_ORANGE)
-		ElseIf VersionNumFromVersionTXT($sBotVersion) < VersionNumFromVersionTXT($lastversion) Then
-			SetLog("WARNING, YOUR BOT VERSION (" & $sBotVersion & ") IS OUT OF DATE.", $COLOR_RED)
-			SetLog("PLEASE DOWNLOAD THE LATEST(" & $lastversion & ") FROM https://MyBot.run               ", $COLOR_RED)
+		If $g_sLastVersion = "" Then
+			SetLog("WE CANNOT OBTAIN PRODUCT VERSION AT THIS TIME", $COLOR_ACTION)
+		ElseIf VersionNumFromVersionTXT($g_sBotVersion) < VersionNumFromVersionTXT($g_sLastVersion) Then
+			SetLog("WARNING, YOUR BOT VERSION (" & $g_sBotVersion & ") IS OUT OF DATE.", $COLOR_ERROR)
+			SetLog("PLEASE DOWNLOAD THE LATEST(" & $g_sLastVersion & ") FROM https://MyBot.run               ", $COLOR_ERROR)
 			SetLog(" ")
-			_PrintLogVersion($oldversmessage)
-		ElseIf VersionNumFromVersionTXT($sBotVersion) > VersionNumFromVersionTXT($lastversion) Then
-			SetLog("YOU ARE USING A FUTURE VERSION OF MYBOT CHIEF!", $COLOR_GREEN)
-			SetLog("YOUR VERSION: " & $sBotVersion, $COLOR_GREEN)
-			SetLog("OFFICIAL VERSION: " & $lastversion, $COLOR_GREEN)
+			_PrintLogVersion($g_sOldVersionMessage)
+			PushMsg("Update")
+		ElseIf VersionNumFromVersionTXT($g_sBotVersion) > VersionNumFromVersionTXT($g_sLastVersion) Then
+			SetLog("YOU ARE USING A FUTURE VERSION OF MYBOT CHIEF!", $COLOR_SUCCESS)
+			SetLog("YOUR VERSION: " & $g_sBotVersion, $COLOR_SUCCESS)
+			SetLog("OFFICIAL VERSION: " & $g_sLastVersion, $COLOR_SUCCESS)
 			SetLog(" ")
 		Else
-			SetLog("WELCOME CHIEF, YOU HAVE THE LATEST VERSION OF THE BOT", $COLOR_GREEN)
+			SetLog("WELCOME CHIEF, YOU HAVE THE LATEST VERSION OF THE BOT", $COLOR_SUCCESS)
 			SetLog(" ")
-			_PrintLogVersion($lastmessage)
+			_PrintLogVersion($g_sLastMessage)
 		EndIf
 	EndIf
 EndFunc   ;==>CheckVersion
@@ -43,7 +49,7 @@ EndFunc   ;==>CheckVersion
 
 ;~ 	;search version into downloaded page
 ;~ 	Local $f, $line, $Casesense = 0
-;~ 	$lastversion = ""
+;~ 	$g_sLastVersion = ""
 ;~ 	If FileExists(@ScriptDir & "\LastVersion.txt") Then
 ;~ 		$f = FileOpen(@ScriptDir & "\LastVersion.txt", 0)
 ;~ 		; Read in lines of text until the EOF is reached
@@ -51,10 +57,10 @@ EndFunc   ;==>CheckVersion
 ;~ 			$line = FileReadLine($f)
 ;~ 			If @error = -1 Then ExitLoop
 ;~ 			If StringInStr($line, "version=", $Casesense) Then
-;~ 				$lastversion = StringMid($line, 9, -1)
+;~ 				$g_sLastVersion = StringMid($line, 9, -1)
 ;~ 			EndIf
 ;~ 			If StringInStr($line, "message=", $Casesense) Then
-;~ 				$lastmessage = StringMid($line, 9, -1)
+;~ 				$g_sLastMessage = StringMid($line, 9, -1)
 ;~ 			EndIf
 ;~ 		WEnd
 ;~ 		FileClose($f)
@@ -69,52 +75,48 @@ Func CheckVersionHTML()
 		FileCopy(@ScriptDir & "\TestVersion.txt", $versionfile, 1)
 	Else
 		;download page from site contains last bot version
-		$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", $versionfile,0,1)
+		Local $hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion.txt", $versionfile, 0, 1)
 
 		; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
-		Local $i=0
+		Local $i = 0
 		Do
-			Sleep($iDelayCheckVersionHTML1)
-			$i +=1
-		Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) or $i > 25
+			Sleep($DELAYCHECKVERSIONHTML1)
+			$i += 1
+		Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) Or $i > 25
 
 		InetClose($hDownload)
 	EndIf
 
 	;search version into downloaded page
-	Local $f, $f2, $line, $line2, $Casesense = 0, $chkvers = False, $chkmsg = False, $chkmsg2 = False, $i = 0
-	$lastversion = ""
+	Local $line, $line2, $Casesense = 0, $chkvers = False, $chkmsg = False, $chkmsg2 = False, $i = 0
+	$g_sLastVersion = ""
 	If FileExists($versionfile) Then
-		$f = FileOpen($versionfile, 0)
-		$lastversion = IniRead($versionfile,"general","version","")
+		$g_sLastVersion = IniRead($versionfile, "general", "version", "")
 		;look for localized messages for the new and old versions
-		Local $versionfilelocalized = @ScriptDir & "\LastVersion_" & $sLanguage & ".txt";
-		If FileExists(@ScriptDir & "\TestVersion_" & $sLanguage & ".txt") Then
-			FileCopy(@ScriptDir & "\TestVersion_" & $sLanguage & ".txt", $versionfilelocalized, 1)
+		Local $versionfilelocalized = @ScriptDir & "\LastVersion_" & $g_sLanguage & ".txt" ;
+		If FileExists(@ScriptDir & "\TestVersion_" & $g_sLanguage & ".txt") Then
+			FileCopy(@ScriptDir & "\TestVersion_" & $g_sLanguage & ".txt", $versionfilelocalized, 1)
 		Else
 			;download page from site contains last bot version localized messages
-			$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion_" & $sLanguage & ".txt", $versionfilelocalized,0,1)
+			$hDownload = InetGet("https://raw.githubusercontent.com/MyBotRun/MyBot/master/LastVersion_" & $g_sLanguage & ".txt", $versionfilelocalized, 0, 1)
 
 			; Wait for the download to complete by monitoring when the 2nd index value of InetGetInfo returns True.
-			Local $i=0
+			Local $i = 0
 			Do
-				Sleep($iDelayCheckVersionHTML1)
-				$i +=1
-			Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) or $i > 25
+				Sleep($DELAYCHECKVERSIONHTML1)
+				$i += 1
+			Until InetGetInfo($hDownload, $INET_DOWNLOADCOMPLETE) Or $i > 25
 
 			InetClose($hDownload)
 		EndIf
 		If FileExists($versionfilelocalized) Then
-			$f2 = FileOpen($versionfilelocalized, 0)
-			$lastmessage  = IniRead($versionfilelocalized,"general","messagenew","")
-			$oldversmessage  = IniRead($versionfilelocalized,"general","messageold","")
-			FileClose($f2)
+			$g_sLastMessage = IniRead($versionfilelocalized, "general", "messagenew", "")
+			$g_sOldVersionMessage = IniRead($versionfilelocalized, "general", "messageold", "")
 			FileDelete($versionfilelocalized)
 		Else
-			$lastmessage  = IniRead($versionfile,"general","messagenew","")
-			$oldversmessage  = IniRead($versionfile,"general","messageold","")
+			$g_sLastMessage = IniRead($versionfile, "general", "messagenew", "")
+			$g_sOldVersionMessage = IniRead($versionfile, "general", "messageold", "")
 		EndIf
-		FileClose($f)
 		FileDelete($versionfile)
 	EndIf
 EndFunc   ;==>CheckVersionHTML
@@ -145,10 +147,6 @@ Func VersionNumFromVersionTXT($versionTXT)
 	Return $resultnumber
 EndFunc   ;==>VersionNumFromVersionTXT
 
-
-
-
-
 Func _PrintLogVersion($message)
 	Local $messagevet = StringSplit($message, "\n", 1)
 	If Not (IsArray($messagevet)) Then
@@ -178,3 +176,13 @@ Func _PrintLogVersion($message)
 		Next
 	EndIf
 EndFunc   ;==>_PrintLogVersion
+
+Func GetVersionNormalized($VersionString, $Chars = 5)
+	If StringLeft($VersionString, 1) = "v" Then $VersionString = StringMid($VersionString, 2)
+	Local $a = StringSplit($VersionString, ".", 2)
+	Local $i
+	For $i = 0 To UBound($a) - 1
+		If StringLen($a[$i]) < $Chars Then $a[$i] = _StringRepeat("0", $Chars - StringLen($a[$i])) & $a[$i]
+	Next
+	Return _ArrayToString($a, ".")
+EndFunc   ;==>GetVersionNormalized

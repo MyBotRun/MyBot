@@ -9,7 +9,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,17 +21,32 @@ Func GetPixelDropTroop($troop, $number, $slotsPerEdge)
 	Local $newPixelTopRight
 	Local $newPixelBottomRight
 
-	If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini or $troop = $eBarb ) Then
-		$newPixelTopLeft = $PixelTopLeftFurther
-		$newPixelBottomLeft = $PixelBottomLeftFurther
-		$newPixelTopRight = $PixelTopRightFurther
-		$newPixelBottomRight = $PixelBottomRightFurther
-
+	If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini Or $troop = $eBarb) Then
+		If UBound($g_aiPixelTopLeftFurther) > 0 Then
+			$newPixelTopLeft = $g_aiPixelTopLeftFurther
+		Else
+			$newPixelTopLeft = $g_aiPixelTopLeft
+		EndIf
+		If UBound($g_aiPixelBottomLeftFurther) > 0 Then
+			$newPixelBottomLeft = $g_aiPixelBottomLeftFurther
+		Else
+			$newPixelBottomLeft = $g_aiPixelBottomLeft
+		EndIf
+		If UBound($g_aiPixelTopRightFurther) > 0 Then
+			$newPixelTopRight = $g_aiPixelTopRightFurther
+		Else
+			$newPixelTopRight = $g_aiPixelTopRight
+		EndIf
+		If UBound($g_aiPixelBottomRightFurther) Then
+			$newPixelBottomRight = $g_aiPixelBottomRightFurther
+		Else
+			$newPixelBottomRight = $g_aiPixelBottomRight
+		EndIf
 	Else
-		$newPixelTopLeft = $PixelTopLeft
-		$newPixelBottomLeft = $PixelBottomLeft
-		$newPixelTopRight = $PixelTopRight
-		$newPixelBottomRight = $PixelBottomRight
+		$newPixelTopLeft = $g_aiPixelTopLeft
+		$newPixelBottomLeft = $g_aiPixelBottomLeft
+		$newPixelTopRight = $g_aiPixelTopRight
+		$newPixelBottomRight = $g_aiPixelBottomRight
 	EndIf
 
 	If ($slotsPerEdge = 1) Then
@@ -52,6 +67,6 @@ Func GetPixelDropTroop($troop, $number, $slotsPerEdge)
 		$newPixelBottomRight = GetVectorPixelToDeploy($newPixelBottomRight, 0, $slotsPerEdge)
 
 	EndIf
-	Local $edgesPixelToDrop[4] = [$newPixelBottomRight, $newPixelTopLeft, $newPixelBottomLeft, $newPixelTopRight]
-	Return $edgesPixelToDrop
+	Local $g_aaiEdgeDropPointsPixelToDrop[4] = [$newPixelBottomRight, $newPixelTopLeft, $newPixelBottomLeft, $newPixelTopRight]
+	Return $g_aaiEdgeDropPointsPixelToDrop
 EndFunc   ;==>GetPixelDropTroop

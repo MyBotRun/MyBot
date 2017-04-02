@@ -6,176 +6,176 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Code Gorilla #3
-; Modified ......: Sardo 2015-08, KnowJack(Aug 2015), kaganus (August 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Modified ......: Sardo 2015-08, KnowJack(Aug 2015), kaganus (August 2015), ProMac (04-2016), Codeslinger69 (2017) - Human like bubble popping
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func Collect()
-	If $RunState = False Then Return
+#include-once
+
+Func Collect($Treasury = True)
+	If $g_bChkCollect = False Then Return
+	If $g_bRunState = False Then Return
 
 	ClickP($aAway, 1, 0, "#0332") ;Click Away
 
-	If $iChkCollect = 0 Then Return
+	StartGainCost()
+	checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
 
-	Local $collx, $colly, $i = 0
+	SetLog("Collecting Resources", $COLOR_INFO)
+	If _Sleep($DELAYCOLLECT2) Then Return
 
-	VillageReport(True, True)
-	$tempCounter = 0
-	While ($iGoldCurrent = "" Or $iElixirCurrent = "" Or ($iDarkCurrent = "" And $iDarkStart <> "")) And $tempCounter < 3
-		$tempCounter += 1
-		VillageReport(True, True)
-	WEnd
-	Local $tempGold = $iGoldCurrent
-	Local $tempElixir = $iElixirCurrent
-	Local $tempDElixir = $iDarkCurrent
+	; Collect function to Parallel Search , will run all pictures inside the directory
+	Local $directory = @ScriptDir & "\imgxml\Resources\Collect"
+	; Setup arrays, including default return values for $return
+	Local $Filename = ""
+	Local $CollectXY
 
-	checkAttackDisable($iTaBChkIdle) ; Early Take-A-Break detection
+	Local $aResult = returnMultipleMatchesOwnVillage($directory)
+	If UBound($aResult) > 1 Then
 
-	SetLog("Collecting Resources", $COLOR_BLUE)
-	If _Sleep($iDelayCollect2) Then Return
+		; Put all the found collectors/mines/pumps into a single XY array
+		Local $aiUnSortedMatchXY[1][2], $iMatchCount = 0
+		For $i = 1 To UBound($aResult) - 1
+			$Filename = $aResult[$i][1] ; Filename
+			$CollectXY = $aResult[$i][5] ; Coords
+			If IsMainPage() Then
+				If IsArray($CollectXY) Then
+					For $t = 0 To UBound($CollectXY) - 1 ; each filename can have several positions
+						If isInsideDiamondXY($CollectXY[$t][0], $CollectXY[$t][1]) Then
+							If $g_iDebugSetlog = 1 Then SetLog($Filename & " found (" & $CollectXY[$t][0] & "," & $CollectXY[$t][1] & ")", $COLOR_SUCCESS)
 
-	If $listResourceLocation <> "" Then
-		Local $ResourceLocations = StringSplit($listResourceLocation, "|")
-		For $i = 1 To $ResourceLocations[0]
-			If $ResourceLocations[$i] <> "" Then
-				$pixel = StringSplit($ResourceLocations[$i], ";")
-				If isInsideDiamondXY($pixel[1], $pixel[2]) Then
-					If IsMainPage() Then click($pixel[1], $pixel[2], 1, 0, "#0331")
-				Else
-					SetLog("Error in Mines/Collector locations found, finding positions again", $COLOR_RED)
-					IniDelete($building, "other", "listResource")
-					If _Sleep($iDelayCollect2) Then Return
-					$listResourceLocation = ""
-					BotDetectFirstTime()
-					IniWrite($building, "other", "listResource", $listResourceLocation)
-					ExitLoop
+							ReDim $aiUnSortedMatchXY[$iMatchCount + 1][2]
+							$aiUnSortedMatchXY[$iMatchCount][0] = $CollectXY[$t][0]
+							$aiUnSortedMatchXY[$iMatchCount][1] = $CollectXY[$t][1]
+							$iMatchCount += 1
+						EndIf
+					Next
 				EndIf
-				If _Sleep($iDelayCollect2) Then Return
 			EndIf
 		Next
-	EndIf
 
-	While 1
-		If _Sleep($iDelayCollect1) Or $RunState = False Then ExitLoop
-		_CaptureRegion()
-		If _ImageSearch(@ScriptDir & "\images\Resources\collect.png", 1, $collx, $colly, 20) Then
-			If isInsideDiamondXY($collx, $colly) Then
-				If IsMainPage() Then Click($collx, $colly, 1, 0, "#0330") ;Click collector
-				If _Sleep($iDelayCollect1) Then Return
-			EndIf
-			ClickP($aAway, 1, 0, "#0329") ;Click Away
-		Else
-			ExitLoop
-		EndIf
-		If $i >= 20 Then ExitLoop
-		$i += 1
-	WEnd
-	If _Sleep($iDelayCollect3) Then Return
-	checkMainScreen(False) ; check if errors during function
+		; Sort the found collectors, then click on each in human like sequence
+		If $iMatchCount > 0 Then
+			Local $aiSortedMatchXY = SortXYArrayByClosestNeighbor($aiUnSortedMatchXY)
+			For $i = 0 To UBound($aiSortedMatchXY) - 1
+				If $g_iDebugSetlog = 1 Then SetLog("Sorted Collectors: " & $aiSortedMatchXY[$i][0] & "," & $aiSortedMatchXY[$i][1], $COLOR_SUCCESS)
 
-	; Loot Cart Collect Function
-
-	Setlog("Searching for a Loot Cart..", $COLOR_BLUE)
-
-	Local $LootCart = @ScriptDir & "\images\Resources\loot_cart.png"
-	Local $LootCartX, $LootCartY
-
-	$ToleranceImgLoc = 0.850
-
-	$hBitmapFirst = _CaptureRegion2()
-	Local $res = DllCall($pImgLib, "str", "SearchTile", "handle", $hBitmapFirst, "str", $LootCart, "float", $ToleranceImgLoc, "str", $ExtendedCocSearchArea, "str", $ExtendedCocDiamond)
-	_WinAPI_DeleteObject($hBitmapFirst)
-
-	If IsArray($res) Then
-		If $DebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_RED)
-		If $res[0] = "0" Then
-			; failed to find a loot cart on the field
-			SetLog("No Loot Cart found, Yard is clean!", $COLOR_PURPLE)
-		ElseIf $res[0] = "-1" Then
-			SetLog("DLL Error", $COLOR_RED)
-		ElseIf $res[0] = "-2" Then
-			SetLog("Invalid Resolution", $COLOR_RED)
-		Else
-			$expRet = StringSplit($res[0], "|", 2)
-			For $j = 1 To UBound($expRet) - 1 Step 2
-				$LootCartX = Int($expRet[$j])
-				$LootCartY = Int($expRet[$j + 1])
-				If $DebugSetlog then SetLog("LootCart found (" & $LootCartX & "," & $LootCartY & ")", $COLOR_GREEN)
-				If IsMainPage() Then Click($LootCartX, $LootCartY, 1, 0, "#0330")
-				If _Sleep($iDelayCollect1) Then Return
-
-				;Get LootCard info confirming the name
-				Local $sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
-				If @error Then SetError(0, 0, 0)
-				Local $CountGetInfo = 0
-				While IsArray($sInfo) = False
-					$sInfo = BuildingInfo(242, 520 + $bottomOffsetY); 860x780
-					If @error Then SetError(0, 0, 0)
-					If _Sleep($iDelayCollect1) Then Return
-					$CountGetInfo += 1
-					If $CountGetInfo >= 5 Then Return
-				WEnd
-				If $DebugSetlog then SetLog(_ArrayToString($sInfo, " "), $COLOR_PURPLE)
-				If @error Then Return SetError(0, 0, 0)
-				If $sInfo[0] > 1 Or $sInfo[0] = "" Then
-					If StringInStr($sInfo[1], "Loot") = 0 Then
-						If $DebugSetlog then SetLog("Bad Loot Cart location", $COLOR_ORANGE)
-					Else
-						If IsMainPage() Then Click($aLootCartBtn[0], $aLootCartBtn[1], 1, 0, "#0331") ;Click loot cart button
-					EndIf
+				If $g_bUseRandomClick = False Then
+					Click($aiSortedMatchXY[$i][0], $aiSortedMatchXY[$i][1], 1, 0, "#0430")
+					If _Sleep($DELAYCOLLECT2) Then Return
+				Else
+					ClickZone($aiSortedMatchXY[$i][0], $aiSortedMatchXY[$i][1], 5, "#0430")
+					_Sleep(Random($DELAYCOLLECT2, $DELAYCOLLECT2 * 4, 1))
 				EndIf
 			Next
 		EndIf
+
 	EndIf
 
+	If _Sleep($DELAYCOLLECT3) Then Return
+	checkMainScreen(False) ; check if errors during function
+	; Loot Cart Collect Function
 
-#cs	_CaptureRegion()
-	If _ImageSearch(@ScriptDir & "\images\lootcart.png", 1, $collx, $colly, 70) Then
-		If isInsideDiamondXY($collx, $colly) Then
-			If IsMainPage() Then Click($collx, $colly, 1, 0, "#0330") ;Click loot cart
-			If _Sleep($iDelayCollect1) Then Return
+	Setlog("Searching for a Loot Cart..", $COLOR_INFO)
 
-			Local $aCartInfo = BuildingInfo(242, 520 + $bottomOffsetY)
-			If $debugsetlog = 1 Then Setlog("$aCartInfo[0]=" & $aCartInfo[0] & ", $aCartInfo[1]=" & $aCartInfo[1] & ", $aCartInfo[2]=" & $aCartInfo[2], $COLOR_PURPLE)
-			If $aCartInfo[0] > 1 Then
-				If StringInStr($aCartInfo[1], "Cart") = 0 Then
-					SetLog("Loot Cart not found! I detected a " & $aCartInfo[1] & "! Please try again!", $COLOR_Fuchsia)
+	Local $LootCart = @ScriptDir & "\imgxml\Resources\LootCart\loot_cart_0_85.xml"
+	Local $LootCartX, $LootCartY
+
+	$g_fToleranceImgLoc = 0.850
+	Local $fullCocAreas = "ECD"
+	Local $MaxReturnPoints = 1
+
+	_CaptureRegion2()
+	Local $res = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $g_hHBitmap2, "str", $LootCart, "str", $fullCocAreas, "Int", $MaxReturnPoints)
+	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
+	If IsArray($res) Then
+		If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
+		If $res[0] = "0" Or $res[0] = "" Then
+			SetLog("No Loot Cart found, Yard is clean!", $COLOR_SUCCESS)
+		ElseIf StringLeft($res[0], 2) = "-1" Then
+			SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
+		Else
+			Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
+			;$expret contains 2 positions; 0 is the total objects; 1 is the point in X,Y format
+			Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+			If IsArray($posPoint) Then
+				$LootCartX = Int($posPoint[0])
+				$LootCartY = Int($posPoint[1])
+				If isInsideDiamondXY($LootCartX, $LootCartY) Then
+					If $g_iDebugSetlog Then SetLog("LootCart found (" & $LootCartX & "," & $LootCartY & ")", $COLOR_SUCCESS)
+					If IsMainPage() Then Click($LootCartX, $LootCartY, 1, 0, "#0330")
+					If _Sleep($DELAYCOLLECT1) Then Return
+
+					;Get LootCart info confirming the name
+					Local $sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
+					If @error Then SetError(0, 0, 0)
+					Local $CountGetInfo = 0
+					While IsArray($sInfo) = False
+						$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
+						If @error Then SetError(0, 0, 0)
+						If _Sleep($DELAYCOLLECT1) Then Return
+						$CountGetInfo += 1
+						If $CountGetInfo >= 5 Then Return
+					WEnd
+					If $g_iDebugSetlog Then SetLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+					If @error Then Return SetError(0, 0, 0)
+					If $sInfo[0] > 1 Or $sInfo[0] = "" Then
+						If StringInStr($sInfo[1], "Loot") = 0 Then
+							If $g_iDebugSetlog Then SetLog("Bad Loot Cart location", $COLOR_ACTION)
+						Else
+							If IsMainPage() Then Click($aLootCartBtn[0], $aLootCartBtn[1], 1, 0, "#0331") ;Click loot cart button
+						EndIf
+					EndIf
 				Else
-					If IsMainPage() Then Click($aLootCartBtn[0], $aLootCartBtn[1], 1, 0, "#0331") ;Click loot cart button
+					Setlog("Loot Cart not removed, please do manually!", $COLOR_WARNING)
 				EndIf
 			EndIf
-			If _Sleep($iDelayCollect1) Then Return
 		EndIf
-		ClickP($aAway, 1, 0, "#0329") ;Click Away
-#ce	EndIf
+	EndIf
+	If $g_bChkTreasuryCollect And $Treasury Then TreasuryCollect()
+	EndGainCost("Collect")
+EndFunc   ;==>Collect
 
-	VillageReport(True, True)
-	$tempCounter = 0
-	While ($iGoldCurrent = "" Or $iElixirCurrent = "" Or ($iDarkCurrent = "" And $iDarkStart <> "")) And $tempCounter < 3
-		$tempCounter += 1
-		VillageReport(True, True)
+Func SortXYArrayByClosestNeighbor(Const ByRef $aUnsorted)
+	If IsArray($aUnsorted) = False Then Return
+
+	Local $iPoints = UBound($aUnsorted)
+	If $iPoints = 0 Then Return
+
+	Local $aSorted[$iPoints][2]
+	Local $aUnsortedTemp = $aUnsorted
+
+	; Find random starting index
+	Local $iFirst = Random(0, $iPoints - 1, 1)
+	$aSorted[0][0] = $aUnsortedTemp[$iFirst][0]
+	$aSorted[0][1] = $aUnsortedTemp[$iFirst][1]
+	_ArrayDelete($aUnsortedTemp, $iFirst)
+
+	; Build array of closest neighbors to first match
+	Local $iSortedCount = 1
+	While UBound($aUnsortedTemp) > 0
+		Local $iNextClosest = 999, $fBestDist = 999
+		For $i = 0 To UBound($aUnsortedTemp) - 1
+			Local $fDist = Sqrt(($aUnsortedTemp[$i][0] - $aSorted[$iSortedCount - 1][0]) ^ 2 + ($aUnsortedTemp[$i][1] - $aSorted[$iSortedCount - 1][1]) ^ 2)
+			If $fDist < $fBestDist Then
+				$fBestDist = $fDist
+				$iNextClosest = $i
+			EndIf
+		Next
+
+		If $iNextClosest = 999 Then
+			SetDebugLog("SortXYArrayByClosestNeighbor error", $COLOR_ERROR)
+			Return 0
+		EndIf
+
+		$aSorted[$iSortedCount][0] = $aUnsortedTemp[$iNextClosest][0]
+		$aSorted[$iSortedCount][1] = $aUnsortedTemp[$iNextClosest][1]
+		$iSortedCount += 1
+		_ArrayDelete($aUnsortedTemp, $iNextClosest)
 	WEnd
 
-	If $tempGold <> "" And $iGoldCurrent <> "" Then
-		$tempGoldCollected = $iGoldCurrent - $tempGold
-		$iGoldFromMines += $tempGoldCollected
-		$iGoldTotal += $tempGoldCollected
-	EndIf
-
-	If $tempElixir <> "" And $iElixirCurrent <> "" Then
-		$tempElixirCollected = $iElixirCurrent - $tempElixir
-		$iElixirFromCollectors += $tempElixirCollected
-		$iElixirTotal += $tempElixirCollected
-	EndIf
-
-	If $tempDElixir <> "" And $iDarkCurrent <> "" Then
-		$tempDElixirCollected = $iDarkCurrent - $tempDElixir
-		$iDElixirFromDrills += $tempDElixirCollected
-		$iDarkTotal += $tempDElixirCollected
-	EndIf
-
-	UpdateStats()
-EndFunc   ;==>Collect
+	Return $aSorted
+EndFunc   ;==>SortXYArrayByClosestNeighbor

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -19,7 +19,7 @@ Func GetListPixel3($listPixel)
 		For $i = 0 To UBound($listPixelSide) - 1
 			Local $pixelStr = StringSplit($listPixelSideStr[$i + 1], "-")
 			If ($pixelStr[0] > 2) Then
-				Local $pixel[3] = [$pixelStr[1], $pixelStr[2], $pixelStr[3]]
+				Local $pixel = [Int($pixelStr[1]), Int($pixelStr[2]), Int($pixelStr[3])]
 				$listPixelSide[$i] = $pixel
 			EndIf
 		Next
@@ -27,11 +27,10 @@ Func GetListPixel3($listPixel)
 	Else
 		If StringInStr($listPixel, "-") > 0 Then
 			Local $pixelStrHere = StringSplit($listPixel, "-")
-			Local $pixelHere[3] = [$pixelStrHere[1], $pixelStrHere[2], $pixelStrHere[3]]
-			Local $listPixelHere[1]
-			$listPixelHere[0] = $pixelHere
+			Local $pixelHere = [Int($pixelStrHere[1]), Int($pixelStrHere[2]), Int($pixelStrHere[3])]
+			Local $listPixelHere = [$pixelHere]
 			Return $listPixelHere
 		EndIf
-		Return -1;
+		Return -1 ;
 	EndIf
 EndFunc   ;==>GetListPixel3

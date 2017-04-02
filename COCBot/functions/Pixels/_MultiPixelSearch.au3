@@ -12,12 +12,12 @@
 ;                  $xSkip               - an unknown value.
 ;                  $ySkip               - an unknown value.
 ;                  $firstColor          - 1st pixel to find
-;                  $offColor            - array of pixel location, and color
+;                  $offColor            - array of color, pixel location and optional color variation
 ;                  $iColorVariation     - an integer value.
 ; Return values .: None
 ; Author ........: Your Name
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -26,12 +26,15 @@
 ; rotate y first, x second: search in columns
 Func _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
+	Local $offColorVariation = UBound($offColor, 2) > 3
 	For $x = 0 To $iRight - $iLeft Step $xSkip
 		For $y = 0 To $iBottom - $iTop Step $ySkip
 			If _ColorCheck(_GetPixelColor($x, $y), $firstColor, $iColorVariation) Then
 				Local $allchecked = True
+				Local $iCV = $iColorVariation
 				For $i = 0 To UBound($offColor) - 1
-					If _ColorCheck(_GetPixelColor($x + $offColor[$i][1], $y + $offColor[$i][2]), Hex($offColor[$i][0], 6), $iColorVariation) = False Then
+					If $offColorVariation = True Then $iCV = $offColor[$i][3]
+					If _ColorCheck(_GetPixelColor($x + $offColor[$i][1], $y + $offColor[$i][2]), Hex($offColor[$i][0], 6), $iCV) = False Then
 						$allchecked = False
 						ExitLoop
 					EndIf
@@ -49,12 +52,15 @@ EndFunc   ;==>_MultiPixelSearch
 ; rotate x first, y second: search in rows
 Func _MultiPixelSearch2($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
+	Local $offColorVariation = UBound($offColor, 2) > 3
 	For $y = 0 To $iBottom - $iTop Step $ySkip
 		For $x = 0 To $iRight - $iLeft Step $xSkip
 			If _ColorCheck(_GetPixelColor($x, $y), $firstColor, $iColorVariation) Then
 				Local $allchecked = True
+				Local $iCV = $iColorVariation
 				For $i = 0 To UBound($offColor) - 1
-					If _ColorCheck(_GetPixelColor($x + $offColor[$i][1], $y + $offColor[$i][2]), Hex($offColor[$i][0], 6), $iColorVariation) = False Then
+					If $offColorVariation = True Then $iCV = $offColor[$i][3]
+					If _ColorCheck(_GetPixelColor($x + $offColor[$i][1], $y + $offColor[$i][2]), Hex($offColor[$i][0], 6), $iCV) = False Then
 						$allchecked = False
 						ExitLoop
 					EndIf
@@ -71,9 +77,9 @@ EndFunc   ;==>_MultiPixelSearch2
 
 Func WaitforPixel($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation, $maxDelay = 10) ; $maxDelay is in 1/2 second
 	For $i = 1 To $maxDelay * 10
-		$result = _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation)
+		Local $result = _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $firstColor, $iColorVariation)
 		If IsArray($result) Then Return True
 		If _Sleep(50) Then Return
 	Next
 	Return False
-EndFunc   ;==>_WaitForPixel
+EndFunc   ;==>WaitforPixel

@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: kaganus (August 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -30,4 +30,4 @@ Func _NumberFormat($Number, $NullToZero = False) ; pad numbers with spaces as th
 		Return StringRegExpReplace($Number, "(\A\d{1,3}(?=(\d{3})+\z)|\d{3}(?=\d))", "\1 ")
 	EndIf
 
-EndFunc
+EndFunc   ;==>_NumberFormat

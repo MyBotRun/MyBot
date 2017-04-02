@@ -6,7 +6,7 @@
 ; Return values .:None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2016
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,19 +14,17 @@
 ; ===============================================================================================================================
 
 Func MilkingDetectRedArea()
-   	$MilkFarmObjectivesSTR = ""
-	LoadAmountOfResourcesImages()
+	$g_sMilkFarmObjectivesSTR = ""
 	;01 - REDAREA -----------------------------------------------------------------------------------------------------------------------------------------
-	Local $hTimer = TimerInit()
-	_WinAPI_DeleteObject($hBitmapFirst)
-	$hBitmapFirst = _CaptureRegion2()
+	Local $hTimer = __TimerInit()
+	_CaptureRegion2()
 	_GetRedArea()
-	Local $htimerREDAREA = Round(TimerDiff($hTimer) / 1000, 2)
-	If $debugsetlog = 1 Then SetLog("> RedArea completed in " & $htimerREDAREA & " seconds", $color_blue)
+	Local $htimerREDAREA = Round(__TimerDiff($hTimer) / 1000, 2)
+	If $g_iDebugSetlog = 1 Then SetLog("> RedArea completed in " & $htimerREDAREA & " seconds", $COLOR_INFO)
 
 	;02 - DEPURE REDAREA BAD POINTS -----------------------------------------------------------------------------------------------------------------------
-	CleanRedArea($PixelTopLeft)
-	CleanRedArea($PixelTopRight)
-	CleanRedArea($PixelBottomLeft)
-	CleanRedArea($PixelBottomRight)
-EndFunc
+	CleanRedArea($g_aiPixelTopLeft)
+	CleanRedArea($g_aiPixelTopRight)
+	CleanRedArea($g_aiPixelBottomLeft)
+	CleanRedArea($g_aiPixelBottomRight)
+EndFunc   ;==>MilkingDetectRedArea

@@ -14,9 +14,9 @@
 ; ===============================================================================================================================
 
 Func isDarkElixirFull()
-	If _CheckPixel($aIsDarkElixirFull, $bCapturePixel) Then ;Check for black/purple pixel in full bar
-		SetLog("Dark Elixir Storages is full!", $COLOR_GREEN)
-		Return True
+	If isAttackPage() And _CheckPixel($aIsAtkDarkElixirFull, $g_bCapturePixel) Or _CheckPixel($aIsDarkElixirFull, $g_bCapturePixel) Then ;Check for black/purple pixel in full bar
+ 		SetLog("Dark Elixir Storages is full!", $COLOR_SUCCESS)
+ 		Return True
 	EndIf
 	Return False
 EndFunc   ;==>isDarkElixirFull
