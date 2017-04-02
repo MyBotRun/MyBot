@@ -16,9 +16,9 @@
 #### Installation
   ------------
 Essential software :
-- Windows Vista/7/8/8.1/10
+- Windows XP/Vista/7/8/8.1/10
 - Microsoft Visual C++ 2010 Redistributable Package (x86)
-- Microsoft .NET Framework 4.5
+- Microsoft .NET Framework 4.0
 - Android Emulator , more infor : \COCBot\functions\Android\Android Status & Information.txt
 - The latest drivers for your graphics device
 - MyBot latest version available
