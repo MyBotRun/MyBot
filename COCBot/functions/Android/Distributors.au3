@@ -17,8 +17,8 @@ Global $g_sNO_COC, $g_sUNKNOWN_COC
 Global $_g_asDISTRIBUTORS[19][4]
 
 Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language is detected
-	$g_sNO_COC = "<" & GetTranslated(642, 1, "No COC") & ">"
-	$g_sUNKNOWN_COC = "<" & GetTranslated(642, 2, "Unknown COC") & ">"
+	$g_sNO_COC = "<" & GetTranslated(642, 9, "No COC") & ">"
+	$g_sUNKNOWN_COC = "<" & GetTranslated(642, 10, "Unknown COC") & ">"
 
 	Dim $_g_asDISTRIBUTORS[19][4] = [ _
 			["Google", "com.supercell.clashofclans", "com.supercell.clashofclans.GameApp", GetTranslated(642, 11, "Google")], _

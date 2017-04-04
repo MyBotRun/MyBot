@@ -153,7 +153,6 @@ Func CreateMainGUIControls()
 	   GUICtrlCreateLabel("", 0, 0, $_GUI_MAIN_WIDTH, $_GUI_MAIN_TOP)
 	   GUICtrlSetOnEvent(-1, "BotMoveRequest")
 	   GUICtrlSetBkColor(-1, $COLOR_WHITE)
-	   WinMove2($g_hFrmBotButtons, "", -1, $_GUI_MAIN_HEIGHT * -1, -1, 0, 0, False)
   Else
 	   ; align title bar with logo
 	   Local $iTitleX = 25
@@ -348,7 +347,7 @@ Func ShowMainGUI()
 	EndIf
 
 	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotButtons)
-	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEx)
+	If $g_hFrmBotEx Then GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEx)
 	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotBottom)
     CheckBotShrinkExpandButton()
 
@@ -403,9 +402,9 @@ Func CheckDpiAwareness($bCheckOnlyIfAlreadyAware = False, $bForceDpiAware = Fals
 			If $g_bCustomTitleBarActive = False Then
 				; Default Windows Title Bar changes height
 				Local $g_iDpiAwarenessYcomp = _WinAPI_GetSystemMetrics($SM_CYCAPTION)
+				Local $aResult = DllCall("user32.dll", "boolean", "SetProcessDPIAware")
 				$g_aFrmBotPosInit[7] = _WinAPI_GetSystemMetrics($SM_CYCAPTION) - $g_iDpiAwarenessYcomp
-				Local $aResult = SetDebugLog("Enabled DPI Awareness, height compensation: " & $g_aFrmBotPosInit[7])
-				DllCall("user32.dll", "boolean", "SetProcessDPIAware")
+				SetDebugLog("Enabled DPI Awareness, height compensation: " & $g_aFrmBotPosInit[7])
 				;DllCall("user32.dll", "dword", "SetProcessDpiAwareness", "dword", 0)
 			Else
 				; custom Custom Title Bar

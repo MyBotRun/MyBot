@@ -1,4 +1,9 @@
-﻿* **V7.1**
+﻿* **V7.1.1**
+ * Fix DPI awareness switch from scaled compensation title bar height in classic window title bar design mode (docked Android window was cut off at bottom)
+ * Fix classic window title bar design mode resizing/hiding active window during bot launch
+ * Fix some incorrect GUI translate references
+
+* **V7.1**
  * Fix General BlackList Donations GUI setting not saved
  * Stop troop training in Halt Mode(s) -On-line Only & -Donate Only
  * Fix memory leak in OCR

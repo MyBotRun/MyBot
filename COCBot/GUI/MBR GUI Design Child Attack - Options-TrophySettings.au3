@@ -102,14 +102,14 @@ Func CreateAttackSearchOptionsTrophySettings()
 		$g_hCmbTrophyHeroesPriority = GUICtrlCreateCombo("", $x + 125, $y - 4 , 170, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, GetTranslated(609,12, "Set the order on which Hero the Bot drops first when available."))
 			Local $txtPriorityConnector = ">"
-			Local $txtPriorityDefault =   GetTranslated(644,2,-1) & $txtPriorityConnector & GetTranslated(644,1,-1) & $txtPriorityConnector & GetTranslated(644,3,-1) ; default value Queen, King, G.Warden
+			Local $txtPriorityDefault =   GetTranslated(644, 2, "Queen") & $txtPriorityConnector & GetTranslated(644, 1, "King") & $txtPriorityConnector & GetTranslated(644, 3, "G.Warden") ; default value Queen, King, G.Warden
 			Local $txtPriorityList = "" & _
-			GetTranslated(644,2,-1) & $txtPriorityConnector & GetTranslated(644,1,-1) & $txtPriorityConnector & GetTranslated(644,3,-1) & "|" & _
-			GetTranslated(644,2,-1) & $txtPriorityConnector & GetTranslated(644,3,-1) & $txtPriorityConnector & GetTranslated(644,1,-1) & "|" & _
-			GetTranslated(644,1,-1) & $txtPriorityConnector & GetTranslated(644,2,-1) & $txtPriorityConnector & GetTranslated(644,3,-1) & "|" & _
-			GetTranslated(644,1,-1) & $txtPriorityConnector & GetTranslated(644,3,-1) & $txtPriorityConnector & GetTranslated(644,2,-1) & "|" & _
-			GetTranslated(644,3,-1) & $txtPriorityConnector & GetTranslated(644,1,-1) & $txtPriorityConnector & GetTranslated(644,2,-1) & "|" & _
-			GetTranslated(644,3,-1) & $txtPriorityConnector & GetTranslated(644,2,-1) & $txtPriorityConnector & GetTranslated(644,1,-1) & "|" & _
+			GetTranslated(644, 2, -1) & $txtPriorityConnector & GetTranslated(644, 1, -1) & $txtPriorityConnector & GetTranslated(644, 3, -1) & "|" & _
+			GetTranslated(644, 2, -1) & $txtPriorityConnector & GetTranslated(644, 3, -1) & $txtPriorityConnector & GetTranslated(644, 1, -1) & "|" & _
+			GetTranslated(644, 1, -1) & $txtPriorityConnector & GetTranslated(644, 2, -1) & $txtPriorityConnector & GetTranslated(644, 3, -1) & "|" & _
+			GetTranslated(644, 1, -1) & $txtPriorityConnector & GetTranslated(644, 3, -1) & $txtPriorityConnector & GetTranslated(644, 2, -1) & "|" & _
+			GetTranslated(644, 3, -1) & $txtPriorityConnector & GetTranslated(644, 1, -1) & $txtPriorityConnector & GetTranslated(644, 2, -1) & "|" & _
+			GetTranslated(644, 3, -1) & $txtPriorityConnector & GetTranslated(644, 2, -1) & $txtPriorityConnector & GetTranslated(644, 1, -1) & "|" & _
 			""
 			If $g_iDebugSetlog = 1 Then Setlog($txtPriorityDefault)
 			If $g_iDebugSetlog = 1 Then Setlog($txtPriorityList)

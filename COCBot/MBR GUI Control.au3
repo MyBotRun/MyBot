@@ -898,6 +898,7 @@ Func CheckBotShrinkExpandButton($bCheckOnlyParent = False)
 EndFunc
 
 Func BotShrinkExpandToggle()
+	If $g_hFrmBotButtons = 0 Then Return False
 	If $g_bAndroidEmbedded = False Then
 		SetDebugLog("BotShrinkExpandToggle: Android not docked")
 		Return False

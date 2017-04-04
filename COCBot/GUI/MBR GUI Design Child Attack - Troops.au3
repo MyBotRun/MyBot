@@ -83,12 +83,12 @@ Func CreateTroopsSpellsSubTab()
 	   $g_hChkUseQuickTrain = GUICtrlCreateCheckbox(GetTranslated(621, 34, "Use Quick Train"), $x + 15, $y + 19, -1, 15)
 	   GUICtrlSetState(-1, $GUI_UNCHECKED)
 	   GUICtrlSetOnEvent(-1, "chkUseQTrain")
-	   $g_hRdoArmy1 = GUICtrlCreateRadio(GetTranslated(621, 37, "Army 1"), $x + 120, $y + 20, 50, 15)
+	   $g_hRdoArmy1 = GUICtrlCreateRadio(GetTranslated(621, 37, "Army 1"), $x + 120, $y + 20, 57, 15)
 	   GUICtrlSetState(-1, $GUI_DISABLE)
 	   GUICtrlSetState(-1, $GUI_CHECKED)
-	   $g_hRdoArmy2 = GUICtrlCreateRadio(GetTranslated(621, 38, "Army 2"), $x + 180, $y + 20, 50, 15)
+	   $g_hRdoArmy2 = GUICtrlCreateRadio(GetTranslated(621, 38, "Army 2"), $x + 185, $y + 20, 57, 15)
 	   GUICtrlSetState(-1, $GUI_DISABLE)
-	   $g_hRdoArmy3 = GUICtrlCreateRadio(GetTranslated(621, 39, "Army 3"), $x + 240, $y + 20, 50, 15)
+	   $g_hRdoArmy3 = GUICtrlCreateRadio(GetTranslated(621, 39, "Army 3"), $x + 250, $y + 20, 57, 15)
 	   GUICtrlSetState(-1, $GUI_DISABLE)
 	   GUICtrlCreateLabel(GetTranslated(621, 41, "Remove Army"), $x + 335, $y + 20, -1, 15, $SS_LEFT)
 	   GUICtrlCreateIcon($g_sLibIconPath, $eIcnResetButton, $x + 405, $y + 17, 24, 24)
@@ -96,7 +96,7 @@ Func CreateTroopsSpellsSubTab()
 
    $x = 10
    $y = 45
-   $g_hGrpTrainTroops = GUICtrlCreateGroup(GetTranslated(1000, 1, "Train Troops"), $x - 5, $y, $g_iSizeWGrpTab3, 195)
+   $g_hGrpTrainTroops = GUICtrlCreateGroup(GetTranslated(621, 43, "Train Troops"), $x - 5, $y, $g_iSizeWGrpTab3, 195)
 
 	  $x = 30
 	  $y += 20
@@ -442,7 +442,7 @@ Func CreateTroopsSpellsSubTab()
 
    $x = 10
    $y = 240
-   $g_hGrpCookSpell = GUICtrlCreateGroup(GetTranslated(1000, 2, "Brew Spells"), $x - 5, $y, $g_iSizeWGrpTab3, 123)
+   $g_hGrpCookSpell = GUICtrlCreateGroup(GetTranslated(621, 44, "Brew Spells"), $x - 5, $y, $g_iSizeWGrpTab3, 123)
 	  $x += 20
 	  $y += 17
 		  GUICtrlCreateLabel(GetTranslated(622, 2, "Spell Capacity") & " :", $x - 15, $y, -1, -1, $SS_RIGHT)
