@@ -41,25 +41,6 @@ Func AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed =
 	#ce
 EndFunc   ;==>AndroidEmbed
 
-Func __WinAPI_GetParent($hWin, $iMillis = 3000)
-	If $hWin = 0 Then Return 0
-	Local $hTimer = __TimerInit()
-	Local $bPostSomething = True
-	Local $hWinParent = 0
-	Do
-		$hWinParent = _WinAPI_GetParent($hWin)
-		If IsPtr($hWinParent) = 0 Then
-			If $bPostSomething And __TimerDiff($hTimer) > $iMillis / 2 Then
-				$bPostSomething = False
-				;_WinAPI_UpdateWindow($hWin)
-			EndIf
-			Sleep(10)
-		EndIf
-	Until IsPtr($hWinParent) = 1 Or __TimerDiff($hTimer) > $iMillis
-	;SetDebugLog("__WinAPI_GetParent: " & $hWinParent & " found from " & $hWin & " in " & __TimerDiff($hTimer) & " ms")
-	Return $hWinParent
-EndFunc  ;==>__WinAPI_GetParent
-
 Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed = False, $bNoAndroidScreenSizeCheck = False)
 
 	If ($CallWinGetAndroidHandle = False And $g_hAndroidWindow = 0) Or ($CallWinGetAndroidHandle = True And WinGetAndroidHandle() = 0) Then

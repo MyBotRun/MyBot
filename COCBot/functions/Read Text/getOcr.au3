@@ -2,7 +2,7 @@
 ; Name ..........: OCR
 ; Description ...: Gets complete value of gold/Elixir/DarkElixir/Trophy/Gem xxx,xxx
 ; Author ........: Didipe (2015)
-; Modified ......: ProMac (2015), Hervidero (2015-12), MMHK (2016-12)
+; Modified ......: ProMac (2015), Hervidero (2015-12), MMHK (2016-12), MR.ViPER (2017-4)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -287,6 +287,48 @@ Func getChatStringKorean($x_start, $y_start) ; -> Get string chat request - Kore
 	Local $bUseOcrImgLoc = True
 	Return getOcrAndCapture("korean-bundle", $x_start, $y_start, 160, 14, Default, $bUseOcrImgLoc)
 EndFunc   ;==>getChatStringKorean
+
+Func getChatStringPersian($x_start, $y_start, $bConvert = True) ; -> Get string chat request - Persian - "DonateCC.au3"
+	Local $bUseOcrImgLoc = True
+	Local $OCRString = getOcrAndCapture("persian-bundle", $x_start, $y_start, 240, 20, Default, $bUseOcrImgLoc, True)
+	If $bConvert = True Then
+		$OCRString = StringReverse($OCRString)
+		$OCRString = StringReplace($OCRString, "A", "ا")
+		$OCRString = StringReplace($OCRString, "B", "ب")
+		$OCRString = StringReplace($OCRString, "C", "چ")
+		$OCRString = StringReplace($OCRString, "D", "د")
+		$OCRString = StringReplace($OCRString, "F", "ف")
+		$OCRString = StringReplace($OCRString, "G", "گ")
+		$OCRString = StringReplace($OCRString, "J", "ج")
+		$OCRString = StringReplace($OCRString, "H", "ه")
+		$OCRString = StringReplace($OCRString, "R", "ر")
+		$OCRString = StringReplace($OCRString, "K", "ک")
+		$OCRString = StringReplace($OCRString, "K", "ل")
+		$OCRString = StringReplace($OCRString, "M", "م")
+		$OCRString = StringReplace($OCRString, "N", "ن")
+		$OCRString = StringReplace($OCRString, "P", "پ")
+		$OCRString = StringReplace($OCRString, "S", "س")
+		$OCRString = StringReplace($OCRString, "T", "ت")
+		$OCRString = StringReplace($OCRString, "V", "و")
+		$OCRString = StringReplace($OCRString, "Y", "ی")
+		$OCRString = StringReplace($OCRString, "L", "ل")
+		$OCRString = StringReplace($OCRString, "Z", "ز")
+		$OCRString = StringReplace($OCRString, "X", "خ")
+		$OCRString = StringReplace($OCRString, "Q", "ق")
+		$OCRString = StringReplace($OCRString, ",", ",")
+		$OCRString = StringReplace($OCRString, "0", " ")
+		$OCRString = StringReplace($OCRString, "1", ".")
+		$OCRString = StringReplace($OCRString, "22", "ع")
+		$OCRString = StringReplace($OCRString, "44", "ش")
+		$OCRString = StringReplace($OCRString, "55", "ح")
+		$OCRString = StringReplace($OCRString, "66", "ض")
+		$OCRString = StringReplace($OCRString, "77", "ط")
+		$OCRString = StringReplace($OCRString, "88", "لا")
+		$OCRString = StringReplace($OCRString, "99", "ث")
+		$OCRString = StringStripWS($OCRString, 1 + 2)
+	EndIf
+	Return $OCRString
+EndFunc   ;==>getChatStringPersian
 
 Func OcrForceCaptureRegion($bForce = Default)
 	If $bForce = Default Then Return $g_bOcrForceCaptureRegion

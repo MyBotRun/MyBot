@@ -379,6 +379,7 @@ Func SaveConfig_600_12()
 	_Ini_Add("donate", "chkExtraAlphabets", $g_bChkExtraAlphabets ? 1 : 0)
 	_Ini_Add("donate", "chkExtraChinese", $g_bChkExtraChinese ? 1 : 0)
 	_Ini_Add("donate", "chkExtraKorean", $g_bChkExtraKorean ? 1 : 0)
+	_Ini_Add("donate", "chkExtraPersian", $g_bChkExtraPersian ? 1 : 0)
 
 	_Ini_Add("donate", "txtBlacklist", StringReplace($g_sTxtGeneralBlacklist, @CRLF, "|"))
 EndFunc   ;==>SaveConfig_600_12

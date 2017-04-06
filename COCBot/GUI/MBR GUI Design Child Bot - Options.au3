@@ -23,8 +23,8 @@ Global $g_hChkDisableSplash = 0, $g_hChkForMBRUpdates = 0, $g_hChkDeleteLogs = 0
 Global $g_hChkAutostart = 0, $g_hTxtAutostartDelay = 0, $g_hChkCheckGameLanguage = 0, $g_hChkAutoAlign = 0, $g_hTxtAlignOffsetX = 0, $g_hTxtAlignOffsetY = 0, _
 	   $g_hCmbAlignmentOptions = 0
 ;Global $g_hChkUpdatingWhenMinimized = 0
-Global $g_hChkBotCustomTitleBarClick = 0, $g_hChkHideWhenMinimized = 0, $g_hChkUseRandomClick = 0, $g_hChkScreenshotType = 0, $g_hChkScreenshotHideName = 0, _
-	   $g_hTxtTimeAnotherDevice = 0
+Global $g_hChkBotCustomTitleBarClick = 0, $g_hChkBotAutoSlideClick = 0, $g_hChkHideWhenMinimized = 0, $g_hChkUseRandomClick = 0, $g_hChkScreenshotType = 0, _
+	   $g_hChkScreenshotHideName = 0, $g_hTxtTimeAnotherDevice = 0
 Global $g_hChkSinglePBTForced = 0, $g_hTxtSinglePBTimeForced = 0, $g_hTxtPBTimeForcedExit = 0, $g_hChkFixClanCastle = 0, $g_hChkAutoResume = 0, $g_hTxtAutoResumeTime = 0
 
 Func CreateBotOptions()
@@ -138,8 +138,8 @@ Func CreateBotOptions()
 		   GUICtrlSetState(-1, $GUI_DISABLE)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-   Local $x = 240, $y = 45
-   GUICtrlCreateGroup(GetTranslated(636,93, "Advanced"), $x - 20, $y - 20, 225, 102)
+   Local $x = 240, $y = 45, $yGroup = $y
+   Local $hGroup = GUICtrlCreateGroup(GetTranslated(636,93, "Advanced"), $x - 20, $y - 20, 0, 0)
 	   #cs
 	   $g_hChkUpdatingWhenMinimized = GUICtrlCreateCheckbox(GetTranslated(636,96, "Updating when minimized"), $x, $y, -1, -1)
 		   GUICtrlSetState(-1, $GUI_DISABLE) ; must be always enabled
@@ -151,6 +151,12 @@ Func CreateBotOptions()
 		   If BitAND($g_iBotDesignFlags, 1) Then GUICtrlSetState(-1, $GUI_CHECKED)
 		   GUICtrlSetOnEvent(-1, "chkBotCustomTitleBarClick")
 		   _GUICtrlSetTip(-1, GetTranslated(636,125, "Enable optimized My Bot Window Title Bar and\r\nthin Window Border (restart of bot is required)"))
+	   $y += 19
+	   $g_hChkBotAutoSlideClick = GUICtrlCreateCheckbox(GetTranslated(636,126, "Auto Slide when docked"), $x, $y, -1, -1)
+		   If BitAND($g_iBotDesignFlags, 1) = 0 Then GUICtrlSetState(-1, $GUI_DISABLE)
+		   If BitAND($g_iBotDesignFlags, 2) Then GUICtrlSetState(-1, $GUI_CHECKED)
+		   GUICtrlSetOnEvent(-1, "chkBotAutoSlideClick")
+		   _GUICtrlSetTip(-1, GetTranslated(636,127, "Enable auto sliding when Android is docked\r\non bot window activation/deactivation"))
 	   $y += 19
 	   $g_hChkHideWhenMinimized = GUICtrlCreateCheckbox(GetTranslated(636,98, "Hide when minimized"), $x, $y, -1, -1)
 		   GUICtrlSetOnEvent(-1, "chkHideWhenMinimized")
@@ -164,9 +170,11 @@ Func CreateBotOptions()
 		$y += 19
 	   $g_hChkUseRandomClick = GUICtrlCreateCheckbox(GetTranslated(636,94, "Random Click"), $x, $y, -1, -1)
 		   GUICtrlSetOnEvent(-1, "chkUseRandomClick")
+		$y += 19
+   GUICtrlSetPos($hGroup, $x - 20, $yGroup - 20, 255, (($y - $yGroup) / 19) * 25)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-   $y += 47
+   $y += 30
    GUICtrlCreateGroup(GetTranslated(636,55, "Photo Screenshot Options"), $x - 20, $y - 17, 225, 60)
 	   $g_hChkScreenshotType = GUICtrlCreateCheckbox(GetTranslated(636,56, "Make in PNG format"), $x, $y, -1, -1)
 		   GUICtrlSetState(-1, $GUI_CHECKED)

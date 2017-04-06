@@ -26,7 +26,8 @@ Global $g_hLbAttackPlannerRandom = 0, $g_hLbAttackPlannerDayLimit = 0, $g_ahChkA
 
 ; Clan castle
 Global $g_hChkDropCCHoursEnable = 0, $g_ahChkDropCCHours[24] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-
+GLobal $g_hLblDropCChour = 0, $g_ahLblDropCChoursE = 0
+GLobal $g_hLblDropCChours[12] = [0,0,0,0,0,0,0,0,0,0,0,0]
 Global $g_ahChkDropCCHoursE1 = 0, $g_ahChkDropCCHoursE2 = 0
 
 Func CreateAttackSearchOptionsAttack()
@@ -336,19 +337,22 @@ Func CreateAttackSearchOptionsAttack()
 
 	$y += 14
 	$x -= 21
-		GUICtrlCreateLabel(" 0", $x + 30, $y, 13, 15)
-		GUICtrlCreateLabel(" 1", $x + 45, $y, 13, 15)
-		GUICtrlCreateLabel(" 2", $x + 60, $y, 13, 15)
-		GUICtrlCreateLabel(" 3", $x + 75, $y, 13, 15)
-		GUICtrlCreateLabel(" 4", $x + 90, $y, 13, 15)
-		GUICtrlCreateLabel(" 5", $x + 105, $y, 13, 15)
-		GUICtrlCreateLabel(" 6", $x + 120, $y, 13, 15)
-		GUICtrlCreateLabel(" 7", $x + 135, $y, 13, 15)
-		GUICtrlCreateLabel(" 8", $x + 150, $y, 13, 15)
-		GUICtrlCreateLabel(" 9", $x + 165, $y, 13, 15)
-		GUICtrlCreateLabel("10", $x + 180, $y, 13, 15)
-		GUICtrlCreateLabel("11", $x + 195, $y, 13, 15)
-		GUICtrlCreateLabel("X", $x + 213, $y+2, 11, 11)
+		$g_hLblDropCChour = GUICtrlCreateLabel(GetTranslated(603, 15, -1) & ":", $x , $y, -1, 15)
+			Local $sTxtTip = GetTranslated(603, 30, -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hLblDropCChours[0] = GUICtrlCreateLabel(" 0", $x + 30, $y, 13, 15)
+		$g_hLblDropCChours[1] = GUICtrlCreateLabel(" 1", $x + 45, $y, 13, 15)
+		$g_hLblDropCChours[2] = GUICtrlCreateLabel(" 2", $x + 60, $y, 13, 15)
+		$g_hLblDropCChours[3] = GUICtrlCreateLabel(" 3", $x + 75, $y, 13, 15)
+		$g_hLblDropCChours[4] = GUICtrlCreateLabel(" 4", $x + 90, $y, 13, 15)
+		$g_hLblDropCChours[5] = GUICtrlCreateLabel(" 5", $x + 105, $y, 13, 15)
+		$g_hLblDropCChours[6] = GUICtrlCreateLabel(" 6", $x + 120, $y, 13, 15)
+		$g_hLblDropCChours[7] = GUICtrlCreateLabel(" 7", $x + 135, $y, 13, 15)
+		$g_hLblDropCChours[8] = GUICtrlCreateLabel(" 8", $x + 150, $y, 13, 15)
+		$g_hLblDropCChours[9] = GUICtrlCreateLabel(" 9", $x + 165, $y, 13, 15)
+		$g_hLblDropCChours[10] = GUICtrlCreateLabel("10", $x + 180, $y, 13, 15)
+		$g_hLblDropCChours[11] = GUICtrlCreateLabel("11", $x + 195, $y, 13, 15)
+		$g_ahLblDropCChoursE = GUICtrlCreateLabel("X", $x + 213, $y+2, 11, 11)
 
     $y += 15
 		$g_ahChkDropCCHours[0] = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)

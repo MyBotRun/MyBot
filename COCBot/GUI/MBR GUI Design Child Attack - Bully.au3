@@ -38,7 +38,7 @@ Func CreateAttackSearchBully()
 		   $g_hTxtATBullyMode = GUICtrlCreateInput("150", $x + 95, $y, 35, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			   GUICtrlSetLimit(-1, 3)
 			   _GUICtrlSetTip(-1, GetTranslated(629,4, "TH Bully: No. of searches to wait before activating."))
-		   GUICtrlCreateLabel(GetTranslated(603,5, -1), $x + 135, $y + 5, -1, -1)
+		   GUICtrlCreateLabel(GetTranslated(603, 11, -1), $x + 135, $y + 5, -1, -1)
 
 		   $y +=25
 		   $g_hLblATBullyMode = GUICtrlCreateLabel(GetTranslated(629,6, "Max TH level") & ":", $x - 5, $y + 3, 90, -1, $SS_RIGHT)

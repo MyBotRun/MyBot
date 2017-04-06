@@ -242,6 +242,7 @@
 #include "functions\Village\DonateCCWBL.au3"
 #include "functions\Village\DropTrophy.au3"
 #include "functions\Village\GetTownHallLevel.au3"
+#include "functions\Village\isAtkDarkElixirFull.au3"
 #include "functions\Village\isDarkElixirFull.au3"
 #include "functions\Village\isGoldFull.au3"
 #include "functions\Village\isElixirFull.au3"

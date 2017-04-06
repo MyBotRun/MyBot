@@ -33,12 +33,12 @@ Func chkRequestCCHours()
 
 	If GUICtrlRead($g_hChkRequestTroopsEnable) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hTxtRequestCC, $GUI_SHOW + $GUI_ENABLE)
-		For $i = $g_ahLblRequestCCHours0 To $g_hLblRequestCCHoursPM
+		For $i = $g_hLblRequestCChour To $g_hLblRequestCCHoursPM
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
 	Else
 		GUICtrlSetState($g_hTxtRequestCC, $GUI_SHOW + $GUI_DISABLE)
-		For $i = $g_ahLblRequestCCHours0 To $g_hLblRequestCCHoursPM
+		For $i = $g_hLblRequestCChour To $g_hLblRequestCCHoursPM
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
@@ -79,11 +79,11 @@ Func chkDonateHours()
 	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "chkDonateHours")
 
     If GUICtrlRead($g_hChkDonateHoursEnable) = $GUI_CHECKED Then
-		For $i = $g_hLblDonateHours1 To $g_hLblDonateHoursPM
+		For $i = $g_hLblDonateCChour To $g_hLblDonateHoursPM
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
 	Else
-		For $i = $g_hLblDonateHours1 To $g_hLblDonateHoursPM
+		For $i = $g_hLblDonateCChour To $g_hLblDonateHoursPM
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf

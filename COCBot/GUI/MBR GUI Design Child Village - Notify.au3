@@ -173,7 +173,7 @@ Func CreateNotifyScheduleSubTab()
 	Local $y = 150 - 105
 	Local $sTxtTip = ""
 
-	GUICtrlCreateGroup(GetTranslated(619,51, "Notify Schedule"), $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
+	GUICtrlCreateGroup(GetTranslated(619, 51, -1), $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
 	$x += 10
 	$y += 10
 	GUICtrlCreateIcon($g_sLibIconPath, $eIcnPBNotify, $x - 5, $y, 64, 64, $BS_ICON)

@@ -72,8 +72,15 @@ Func cmbLanguage()
 EndFunc   ;==>cmbLanguage
 
 Func chkBotCustomTitleBarClick()
-	$g_iBotDesignFlags = BitOR(BitAND($g_iBotDesignFlags, BitNOT(1)), ((GUICtrlRead($g_hChkBotCustomTitleBarClick) = $GUI_CHECKED) ? 1 : 0))
+	Local $bChecked = GUICtrlRead($g_hChkBotCustomTitleBarClick) = $GUI_CHECKED
+	$g_iBotDesignFlags = BitOR(BitAND($g_iBotDesignFlags, BitNOT(1)), (($bChecked) ? 1 : 0))
+	GUICtrlSetState($g_hChkBotAutoSlideClick, ($bChecked ? $GUI_ENABLE : $GUI_DISABLE))
 EndFunc   ;==>chkBotCustomTitleBarClick
+
+Func chkBotAutoSlideClick()
+	Local $bChecked = GUICtrlRead($g_hChkBotAutoSlideClick) = $GUI_CHECKED
+	$g_iBotDesignFlags = BitOR(BitAND($g_iBotDesignFlags, BitNOT(2)), (($bChecked) ? 2 : 0))
+EndFunc   ;==>chkBotAutoSlideClick
 
 Func chkUseRandomClick()
 	$g_bUseRandomClick = (GUICtrlRead($g_hChkUseRandomClick) = $GUI_CHECKED)

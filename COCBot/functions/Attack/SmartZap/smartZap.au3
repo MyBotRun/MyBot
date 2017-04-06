@@ -133,12 +133,12 @@ Func smartZap($minDE = -1)
 	EndIf
 
 	; Check to see if the DE Storage is already full
-	If isDarkElixirFull() Then
+	If isAtkDarkElixirFull() Then
 		SetLog("No need to zap!", $COLOR_INFO)
-		If $g_bDebugSmartZap = True Then SetLog("isDarkElixirFull(): " & isDarkElixirFull(), $COLOR_DEBUG)
+		If $g_bDebugSmartZap = True Then SetLog("isAtkDarkElixirFull(): True", $COLOR_DEBUG)
 		Return $performedZap
 	Else
-		If $g_bDebugSmartZap = True Then SetLog("isDarkElixirFull(): " & isDarkElixirFull(), $COLOR_DEBUG)
+		If $g_bDebugSmartZap = True Then SetLog("isAtkDarkElixirFull(): False", $COLOR_DEBUG)
 	EndIf
 
 	; Check to make sure the account is high enough level to store DE.

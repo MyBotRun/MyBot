@@ -210,19 +210,19 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 ;~ 			GUICtrlSetOnEvent(-1, "btnLocateDarkSpellfactory")
 
 		$x += 38
-		$g_hBtnLocateKingAltar = GUICtrlCreateButton(GetTranslated(610,65, "King"), $x, $y, 36, 36, $BS_ICON)
+		$g_hBtnLocateKingAltar = GUICtrlCreateButton(GetTranslated(603, 33, "King"), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnKingBoostLocate)
 			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,66, "Barbarian King Altar"))
 			GUICtrlSetOnEvent(-1, "btnLocateKingAltar")
 
 	    $x += 38
-		$g_hBtnLocateQueenAltar = GUICtrlCreateButton(GetTranslated(610,67, "Queen"), $x, $y, 36, 36, $BS_ICON)
+		$g_hBtnLocateQueenAltar = GUICtrlCreateButton(GetTranslated(603, 34, "Queen"), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnQueenBoostLocate)
 			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,68, "Archer Queen Altar"))
 			GUICtrlSetOnEvent(-1, "btnLocateQueenAltar")
 
 		$x += 38
-		$g_hBtnLocateWardenAltar = GUICtrlCreateButton(GetTranslated(610,69, "Grand Warden"), $x, $y, 36, 36, $BS_ICON)
+		$g_hBtnLocateWardenAltar = GUICtrlCreateButton(GetTranslated(603, 35, "Grand Warden"), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnWardenBoostLocate)
 			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,70, "Grand Warden Altar"))
 			GUICtrlSetOnEvent(-1, "btnLocateWardenAltar")

@@ -202,13 +202,13 @@ Global $__BlueStacks2Version_2_5_or_later = False ;Starting with this version bo
 Global $__MEmu_Adjust_Width = 6
 Global $__MEmu_ToolBar_Width = 45
 Global $__MEmu_SystemBar = 36
-Global $__MEmu_PhoneLayout = "0" ; 0: bottom system bar, 1: right system bar, 2: no system bar (default)
-Global $__MEmu_Window[4][5] = _ ; Alternative window sizes (array must be ordered by version descending!)
+Global $__MEmu_PhoneLayout = "2" ; 0: bottom system bar, 1: right system bar, 2: no system bar (default)
+Global $__MEmu_Window[4][4] = _ ; Alternative window sizes (array must be ordered by version descending!)
 		[ _ ; Version|$g_iAndroidWindowWidth|$g_iAndroidWindowHeight|$__MEmu_ToolBar_Width|$__MEmu_PhoneLayout
-		["2.8.0", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40, "2"], _
-		["2.6.2", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40, "0"], _
-		["2.5.0", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 40, "0"], _
-		["2.2.1", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"] _
+		["2.8.0", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40], _
+		["2.6.2", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40], _
+		["2.5.0", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 40], _
+		["2.2.1", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45] _
 		]
 Global $__Droid4X_Window[3][3] = _ ; Alternative window sizes (array must be ordered by version descending!)
 		[ _ ; Version|$g_iAndroidWindowWidth|$g_iAndroidWindowHeight
@@ -224,7 +224,7 @@ Global $__Droid4X_Window[3][3] = _ ; Alternative window sizes (array must be ord
 ;                |                   |                        |                                  |                |                      |                       |                      |                       |              |                    |16 = ADB shell is steady |                      |                                    |
 ;                |                   |                        |                                  |                |                      |                       |                      |                       |              |                    |32 = ADB click drag                             |                                    |
 Global $g_avAndroidAppConfig[8][15] = [ _ ;                   |                                  |                |                      |                       |                      |                       |              |                    |64 = Make DPI Aware (if avaliable)              |                                    |
-		["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT + 24, 0, "127.0.0.1:21503", 0 + 2 + 4 + 8 + 16 + 32, '# ', 'Microvirt Virtual Input', 0], _
+		["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 0, "127.0.0.1:21503", 0 + 2 + 4 + 8 + 16 + 32, '# ', 'Microvirt Virtual Input', 0], _
 		["BlueStacks2", "", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32, '$ ', 'BlueStacks Virtual Touch', 0], _
 		["BlueStacks", "", "BlueStacks App Player", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32, '$ ', 'BlueStacks Virtual Touch', 0], _
 		["KOPLAYER", "KOPLAYER", "KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 64, $g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 0 + 2 + 4 + 8 + 16 + 32, '# ', 'ttVM Virtual Input', 0], _
@@ -443,6 +443,7 @@ Global Const $g_iCollectAtCount = 10 ; Run Collect() after this amount of times 
 Global Enum $eBotNoAction, $eBotStart, $eBotStop, $eBotSearchMode, $eBotClose
 Global $g_iBotAction = $eBotNoAction
 Global $g_bBotMoveRequested = False ; should the bot be moved
+Global $g_bBotShrinkExpandToggleRequested = False ; should the bot be slided
 Global $g_bRestart = False
 Global $g_bRunState = False
 Global $g_bBtnAttackNowPressed = False ; Set to true if any of the 3 attack now buttons are pressed
@@ -690,6 +691,7 @@ Global $g_aiDonateCustomTrpNumA[3][2] = [[0, 0], [0, 0], [0, 0]], $g_aiDonateCus
 Global $g_bChkExtraAlphabets = False ; extra alphabets
 Global $g_bChkExtraChinese = False ; extra Chinese alphabets
 Global $g_bChkExtraKorean = False ; extra Korean alphabets
+Global $g_bChkExtraPersian = False ; extra Persian alphabets
 Global $g_sTxtGeneralBlacklist = ""
 
 ; <><><><> Village / Donate - Schedule <><><><>

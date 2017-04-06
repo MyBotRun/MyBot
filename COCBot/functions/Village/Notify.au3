@@ -413,24 +413,24 @@ Func NotifyActivateKeyboardOnTelegram($TGMsg)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json; charset=ISO-8859-1,utf-8")
 
 	Local $TGPushMsg = '{"text": "' & $TGMsg & '", "chat_id":' & $g_sTGChatID & ', "reply_markup": {"keyboard": [["' & _
-			'\ud83d\udcf7 ' & GetTranslated(620, 801, "Screenshot") & '","' & _
-			'\ud83d\udd28 ' & GetTranslated(620, 802, "Builder") & '","' & _
-			'\ud83d\udd30 ' & GetTranslated(620, 803, "Shield") & '"],["' & _
-			'\ud83d\udcc8 ' & GetTranslated(620, 804, "Stats") & '","' & _
-			'\ud83d\udcaa ' & GetTranslated(620, 805, "Troops") & '","' & _
-			'\u2753 ' & GetTranslated(620, 806, "Help") & '"],["' & _
-			'\u25aa ' & GetTranslated(620, 807, "Stop") & '","' & _
-			'\ud83d\udd00 ' & GetTranslated(620, 808, "Pause") & '","' & _
-			'\u25b6 ' & GetTranslated(620, 809, "Resume") & '","' & _
-			'\ud83d\udd01 ' & GetTranslated(620, 810, "Restart") & '"],["' & _
-			'\ud83d\udccb ' & GetTranslated(620, 811, "Log") & '","' & _
-			'\ud83c\udf04 ' & GetTranslated(620, 812, "Lastraid") & '","' & _
-			'\ud83d\udcc4 ' & GetTranslated(620, 813, "LastRaidTxt") & '"],["' & _
-			'\u2705 ' & GetTranslated(620, 814, "Attack On") & '","' & _
-			'\u274C ' & GetTranslated(620, 815, "Attack Off") & '"],["' & _
-			'\ud83d\udca4 ' & GetTranslated(620, 816, "Hibernate") & '","' & _
-			'\u26a1 ' & GetTranslated(620, 817, "Shut down") & '","' & _
-			'\ud83d\udd06 ' & GetTranslated(620, 818, "Standby") & '"]],"one_time_keyboard": false,"resize_keyboard":true}}'
+			'\ud83d\udcf7 ' & GetTranslated(620, 191, "Screenshot") & '","' & _
+			'\ud83d\udd28 ' & GetTranslated(620, 192, "Builder") & '","' & _
+			'\ud83d\udd30 ' & GetTranslated(620, 193, "Shield") & '"],["' & _
+			'\ud83d\udcc8 ' & GetTranslated(620, 194, "Stats") & '","' & _
+			'\ud83d\udcaa ' & GetTranslated(620, 195, "Troops") & '","' & _
+			'\u2753 ' & GetTranslated(620, 196, "Help") & '"],["' & _
+			'\u25aa ' & GetTranslated(620, 197, "Stop") & '","' & _
+			'\ud83d\udd00 ' & GetTranslated(620, 198, "Pause") & '","' & _
+			'\u25b6 ' & GetTranslated(620, 199, "Resume") & '","' & _
+			'\ud83d\udd01 ' & GetTranslated(620, 200, "Restart") & '"],["' & _
+			'\ud83d\udccb ' & GetTranslated(620, 201, "Log") & '","' & _
+			'\ud83c\udf04 ' & GetTranslated(620, 202, "Lastraid") & '","' & _
+			'\ud83d\udcc4 ' & GetTranslated(620, 203, "LastRaidTxt") & '"],["' & _
+			'\u2705 ' & GetTranslated(620, 204, "Attack On") & '","' & _
+			'\u274C ' & GetTranslated(620, 205, "Attack Off") & '"],["' & _
+			'\ud83d\udca4 ' & GetTranslated(620, 206, "Hibernate") & '","' & _
+			'\u26a1 ' & GetTranslated(620, 207, "Shut down") & '","' & _
+			'\ud83d\udd06 ' & GetTranslated(620, 208, "Standby") & '"]],"one_time_keyboard": false,"resize_keyboard":true}}'
 	$oHTTP.Send($TGPushMsg)
 
 	$g_iTGLastRemote = $g_sTGLast_UID
@@ -1128,7 +1128,7 @@ Func NotifyPushFileToBoth($File, $Folder, $FileType, $body)
 				Local $pPush = '{"type": "file", "file_name": "' & $File & '", "file_type": "' & $FileType & '", "file_url": "' & $file_url[0] & '", "body": "' & $body & '"}'
 				$oHTTP.Send($pPush)
 			Else
-				SetLog(GetTranslated(620, 700, "Notify PushBullet") & ": " & GetTranslated(620, 726, "Unable to send file") & " " & $File, $COLOR_RED)
+				SetLog(GetTranslated(620, 182, "Notify PushBullet") & ": " & GetTranslated(620, 183, "Unable to send file") & " " & $File, $COLOR_RED)
 				NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslated(620, 170, "Unable to Upload File") & "\n" & GetTranslated(620, 171, "Occured an error type") & " 1 " & GetTranslated(620, 144, "uploading file to PushBullet server") & "...")
 			EndIf
 		Else

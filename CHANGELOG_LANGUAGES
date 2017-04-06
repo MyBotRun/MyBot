@@ -1,0 +1,6 @@
+* **V7.1.2**
+ * Add auto slide bot when docked (when using new My Bot design Title Bar is used)
+	[636]
+	126=Auto Slide when docked
+	127=Enable auto sliding when Android is docked\r\non bot window activation/deactivation
+

@@ -322,7 +322,6 @@ Func UpdateMEmuWindowState()
 			$aww = $__MEmu_Window[$i][1]
 			$awh = $__MEmu_Window[$i][2]
 			$tbw = $__MEmu_Window[$i][3]
-			$__MEmu_PhoneLayout = $__MEmu_Window[$i][4]
 			ExitLoop
 		EndIf
 	Next

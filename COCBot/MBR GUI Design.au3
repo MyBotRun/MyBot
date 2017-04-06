@@ -92,13 +92,13 @@ Global Const $g_iSizeHGrpTab3 = $_GUI_MAIN_HEIGHT - 315 ;375
 Global Const $g_iSizeWGrpTab4 = $_GUI_MAIN_WIDTH - 50 ;420
 Global Const $g_iSizeHGrpTab4 = $_GUI_MAIN_HEIGHT - 345 ;345
 
-Global $g_iBotDesignFlags = 1 ; Bit 0 = Use Windows Default Title Bar, 1 = Use new custom Title Bar, 2, 4, 8, ... future features
+Global $g_iBotDesignFlags = 3 ; Bit 0 = Use Windows Default Title Bar, 1 = Use new custom Title Bar, 2 = Auto Slide bot when docked and window activation changes, 4, 8, ... future features
 Global $g_bCustomTitleBarActive = Default ; Current state if custom title bar has been designed, set to True or False in CreateMainGUI()
-Global $g_bBotDockedShrinked = False
+Global $g_bBotDockedShrinked = False ; Bot is shrinked or not when docked
 Global $hImageList = 0
 Global $g_hFrmBotButtons, $g_hFrmBotLogoUrlSmall, $g_hFrmBotEx = 0, $g_hLblBotTitle, $g_hLblBotShrink = 0, $g_hLblBotExpand = 0, $g_hLblBotMinimize = 0, $g_hLblBotClose = 0, $g_hFrmBotBottom = 0
 Global $g_hFrmBotEmbeddedShield = 0, $g_hFrmBotEmbeddedShieldInput = 0, $g_hFrmBotEmbeddedGraphics = 0
-Global $g_hFrmBot_MAIN_PIC = 0, $g_hFrmBot_URL_PIC = 0
+Global $g_hFrmBot_MAIN_PIC = 0, $g_hFrmBot_URL_PIC = 0, $g_hFrmBot_URL_PIC2 = 0
 Global $g_hTabMain = 0, $g_hTabLog = 0, $g_hTabVillage = 0, $g_hTabAttack = 0, $g_hTabBot = 0, $g_hTabAbout = 0
 Global $g_hStatusBar = 0
 Global $g_hTiShow = 0, $g_hTiHide = 0, $g_hTiDonate = 0, $g_hTiAbout = 0, $g_hTiExit = 0
@@ -153,8 +153,7 @@ Func CreateMainGUIControls()
 	   GUICtrlCreateLabel("", 0, 0, $_GUI_MAIN_WIDTH, $_GUI_MAIN_TOP)
 	   GUICtrlSetOnEvent(-1, "BotMoveRequest")
 	   GUICtrlSetBkColor(-1, $COLOR_WHITE)
-	   WinMove2($g_hFrmBotButtons, "", -1, $_GUI_MAIN_HEIGHT * -1, -1, 0, 0, False)
-  Else
+   Else
 	   ; align title bar with logo
 	   Local $iTitleX = 25
 	   GUICtrlCreateLabel("", 0, 0, $iTitleX, $_GUI_MAIN_TOP)
@@ -192,8 +191,7 @@ Func CreateMainGUIControls()
 
 	   $g_hFrmBotLogoUrlSmall = _GUICreate("My Bot URL", 290, 13, 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), BitOR($WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE, ($g_bAndroidShieldPreWin8 ? 0 : $WS_EX_LAYERED)), $g_hFrmBot)
 	   ;WinSetTrans($g_hFrmBotLogoUrlSmall, "", 254) ; trick to hide buttons from Android Screen that is not always refreshing
-	   ;$g_hFrmBot_URL_PIC =
-	   _GUICtrlCreatePic($g_sLogoUrlSmallPath, 0, 0, 290, 13)
+	   $g_hFrmBot_URL_PIC2 = _GUICtrlCreatePic($g_sLogoUrlSmallPath, 0, 0, 290, 13)
 	   GUICtrlSetCursor(-1, 0)
 
 	   GUISwitch($g_hFrmBotEx)
@@ -348,7 +346,7 @@ Func ShowMainGUI()
 	EndIf
 
 	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotButtons)
-	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEx)
+	If $g_hFrmBotEx Then GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEx)
 	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotBottom)
     CheckBotShrinkExpandButton()
 
@@ -403,9 +401,9 @@ Func CheckDpiAwareness($bCheckOnlyIfAlreadyAware = False, $bForceDpiAware = Fals
 			If $g_bCustomTitleBarActive = False Then
 				; Default Windows Title Bar changes height
 				Local $g_iDpiAwarenessYcomp = _WinAPI_GetSystemMetrics($SM_CYCAPTION)
+				Local $aResult = DllCall("user32.dll", "boolean", "SetProcessDPIAware")
 				$g_aFrmBotPosInit[7] = _WinAPI_GetSystemMetrics($SM_CYCAPTION) - $g_iDpiAwarenessYcomp
-				Local $aResult = SetDebugLog("Enabled DPI Awareness, height compensation: " & $g_aFrmBotPosInit[7])
-				DllCall("user32.dll", "boolean", "SetProcessDPIAware")
+				SetDebugLog("Enabled DPI Awareness, height compensation: " & $g_aFrmBotPosInit[7])
 				;DllCall("user32.dll", "dword", "SetProcessDpiAwareness", "dword", 0)
 			Else
 				; custom Custom Title Bar

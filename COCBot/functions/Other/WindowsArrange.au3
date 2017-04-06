@@ -257,6 +257,33 @@ Func ControlGetRelativePos($title, $text,  $controlID)
 	Return $a
 EndFunc   ;==>ControlGetRelativePos
 
+Func __WinAPI_GetParent($hWin, $iMillis = 3000)
+	If $hWin = 0 Then Return 0
+	Local $hTimer = __TimerInit()
+	Local $bPostSomething = True
+	Local $hWinParent = 0
+	Do
+		$hWinParent = _WinAPI_GetParent($hWin)
+		If IsPtr($hWinParent) = 0 Then
+			If $bPostSomething And __TimerDiff($hTimer) > $iMillis / 2 Then
+				$bPostSomething = False
+				;_WinAPI_UpdateWindow($hWin)
+			EndIf
+			Sleep(10)
+		EndIf
+	Until IsPtr($hWinParent) = 1 Or __TimerDiff($hTimer) > $iMillis
+	;SetDebugLog("__WinAPI_GetParent: " & $hWinParent & " found from " & $hWin & " in " & __TimerDiff($hTimer) & " ms")
+	Return $hWinParent
+EndFunc  ;==>__WinAPI_GetParent
+
+Func WinIsChildOf($hWinChild, $hWinParent)
+	While $hWinChild <> 0
+		If $hWinChild = $hWinParent Then Return True
+		$hWinChild = _WinAPI_GetParent($hWinChild)
+	WEnd
+	Return False
+EndFunc   ;==>WinIsChildOf
+
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: _CheckWindowVisibility
 ; Description ...: Checks the current position of the window to make sure it is on the visible screen area

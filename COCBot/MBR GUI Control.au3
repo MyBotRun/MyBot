@@ -103,6 +103,7 @@ Func InitializeMainGUI()
    GUIRegisterMsg($WM_NCACTIVATE, "GUIControl_WM_NCACTIVATE")
    GUIRegisterMsg($WM_SETFOCUS, "GUIControl_WM_FOCUS")
    GUIRegisterMsg($WM_KILLFOCUS, "GUIControl_WM_FOCUS")
+   GUIRegisterMsg($WM_ACTIVATEAPP, "GUIControl_WM_ACTIVATEAPP")
    GUIRegisterMsg($WM_MOVE, "GUIControl_WM_MOVE")
    ;GUIRegisterMsg($WM_PAINT, "GUIControl_WM_MPAINT")
 
@@ -187,6 +188,19 @@ Func DisableProcessWindowsGhosting()
 	DllCall($g_hLibUser32DLL, "none", "DisableProcessWindowsGhosting")
 EndFunc   ;==>DisableProcessWindowsGhosting
 
+Func GUIControl_WM_ACTIVATEAPP($hWin, $iMsg, $wParam, $lParam)
+	; bot activated/deactivated
+	If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_ACTIVATEAPP: $hWin=" & $hWin & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", Active=" & _WinAPI_GetActiveWindow(), Default, True)
+	If $wParam Then
+		; bot activated
+		;If BitAND($g_iBotDesignFlags, 2) And $g_bAndroidEmbedded And $g_bBotDockedShrinked Then BotShrinkExpandToggle() ; auto expand bot again
+	Else
+		; bot deactivated
+		If BitAND($g_iBotDesignFlags, 2) And $g_bAndroidEmbedded And Not $g_bBotDockedShrinked Then BotShrinkExpandToggle() ; auto shrink bot again ;
+	EndIf
+	Return $GUI_RUNDEFMSG
+EndFunc   ;==>GUIControl_WM_ACTIVATEAPP
+
 Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
 	Local $wasCritical = SetCriticalMessageProcessing(True)
 	Local $wasAllowed = $g_bTogglePauseAllowed
@@ -203,11 +217,12 @@ Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
 		EndIf
 		If $iActive = 0 Then
 			; bot deactivated
-			SetDebugLog("GUIControl_WM_NCACTIVATE: Deactivate Bot", Default, True)
+			If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_NCACTIVATE: Deactivate Bot", Default, True)
 			_WinAPI_SetFocus(0)
 		Else
 			If $g_bHideWhenMinimized = False Then BotRestore("GUIControl_WM_NCACTIVATE")
-			SetDebugLog("GUIControl_WM_NCACTIVATE: Activate Bot", Default, True)
+			If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_NCACTIVATE: Activate Bot", Default, True)
+			If BitAND($g_iBotDesignFlags, 2) And $g_bAndroidEmbedded And $g_bBotDockedShrinked Then BotShrinkExpandToggle() ; auto expand bot again
 		EndIf
 		If $g_bAndroidEmbedded And $g_iAndroidEmbedMode = 1 And AndroidShieldActiveDelay() = False Then
 			AndroidEmbedCheck(False, $iActive <> 0, 1) ; Always update z-order
@@ -422,7 +437,7 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $g_hLblMyBotURL, $g_hLblForumURL, $g_hLblUnbreakableLink
 			; Handle open URL when label fires the event normally
 			OpenURL_Label($nID)
-		Case $g_hFrmBot_URL_PIC
+		Case $g_hFrmBot_URL_PIC, $g_hFrmBot_URL_PIC2
 			OpenURL_Label($g_hLblMyBotURL)
 		Case $g_hLblDonate
 			; Donate URL is not in text nor tooltip
@@ -547,6 +562,7 @@ EndFunc   ;==>GUIControl
 
 Func GUIControl_WM_MOVE($hWind, $iMsg, $wParam, $lParam)
 	;If $g_bGUIControlDisabled = True Then Return $GUI_RUNDEFMSG
+	If $g_bBotShrinkExpandToggleRequested Then Return $GUI_RUNDEFMSG ; bot shrinking is requested or active
 	Local $wasCritical = SetCriticalMessageProcessing(True)
 	Local $wasAllowed = $g_bTogglePauseAllowed
 	$g_bTogglePauseAllowed = False
@@ -895,13 +911,31 @@ Func CheckBotShrinkExpandButton($bCheckOnlyParent = False)
 		WinSetTrans($g_hFrmBotButtons, "", (($g_bBotDockedShrinked) ? (210) : (254))) ; trick to hide buttons from Android Screen that is not always refreshing
 	EndIf
 	Return $bChanged
-EndFunc
+EndFunc   ;==>CheckBotShrinkExpandButton
 
 Func BotShrinkExpandToggle()
+	$g_bBotShrinkExpandToggleRequested = True
+EndFunc   ;==>BotShrinkExpandToggle
+
+Func BotShrinkExpandToggleExecute()
+	;Local $bHasFocus = WinActive($g_hFrmBot) <> 0
+	If $g_hFrmBotButtons = 0 Then Return False
+	If $g_iBotAction = $eBotClose Then Return False
 	If $g_bAndroidEmbedded = False Then
 		SetDebugLog("BotShrinkExpandToggle: Android not docked")
+		$g_bBotShrinkExpandToggleRequested = False
 		Return False
 	EndIf
+	Local $aPos = WinGetPos($g_hFrmBot)
+	If UBound($aPos) < 4 Then
+		SetDebugLog("BotShrinkExpandToggle: Bot Window not accessible")
+		$g_bBotShrinkExpandToggleRequested = False
+		Return False
+	EndIf
+	; use expended width and height (taken from AndroidEmbedded.au3)
+	Local $aPosCtl = $g_aiAndroidEmbeddedCtrlTarget[6]
+	$aPos[2] = (($g_bBotDockedShrinked) ? ($aPosCtl[2] + 2) : ($g_aFrmBotPosInit[2] + $aPosCtl[2] + 2))
+	$aPos[3] = $g_aFrmBotPosInit[3] + $g_iFrmBotAddH + $g_aFrmBotPosInit[7]
 	;Local $wasCritical = SetCriticalMessageProcessing(True)
 	Local $bAndroidShieldEnabled = $g_bAndroidShieldEnabled
 	;Local $shieldActive = $g_hProcShieldInput[3]
@@ -920,7 +954,6 @@ Func BotShrinkExpandToggle()
 		GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotButtons)
 	EndIf
 	Local $iMode = (($g_bBotDockedShrinked) ? (1) : (-1))
-	Local $aPos = WinGetPos($g_hFrmBot)
 	Local $aPosBtn = ControlGetPos($g_hFrmBot, "", $g_hFrmBotButtons)
 	;Local $aPosBtn = WinGetPos($g_hFrmBotButtons)
 	;_SendMessage($g_aiAndroidEmbeddedCtrlTarget[0], $WM_SETREDRAW, False, 0)
@@ -978,6 +1011,7 @@ Func BotShrinkExpandToggle()
 	;SetCriticalMessageProcessing($wasCritical)
 	;$g_hProcShieldInput[3] = $shieldActive
 	$g_bAndroidShieldEnabled = $bAndroidShieldEnabled
+	$g_bBotShrinkExpandToggleRequested = False
 	Return True
 EndFunc   ;==>BotShrinkExpandToggle
 
@@ -1002,6 +1036,8 @@ Func CheckBotRequests()
 	If $g_bBotMoveRequested = True Then
 		$g_bBotMoveRequested = False
 		_WinAPI_PostMessage($g_hFrmBot, $WM_SYSCOMMAND, 0xF012, 0) ; SC_DRAGMOVE = 0xF012
+	Else
+		If $g_bBotShrinkExpandToggleRequested Then BotShrinkExpandToggleExecute()
 	EndIf
 EndFunc   ;==>CheckBotMoveRequest
 

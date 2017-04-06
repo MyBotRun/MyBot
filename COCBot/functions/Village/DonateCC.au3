@@ -213,7 +213,16 @@ Func DonateCC($Check = False)
 					EndIf
 					If _Sleep($DELAYDONATECC2) Then ExitLoop
 				EndIf
-
+				; Chat Request using IMGLOC: Persian alphabet / one paragraph
+				If $g_bChkExtraPersian Then
+					Setlog("Using OCR to read the Persian alphabet..", $COLOR_ACTION)
+					If $ClanString = "" Then
+						$ClanString = getChatStringPersian(30, $g_aiDonatePixel[1] - 31)
+					Else
+						$ClanString &= " " & getChatStringPersian(30, $g_aiDonatePixel[1] - 31)
+					EndIf
+					If _Sleep($DELAYDONATECC2) Then ExitLoop
+				EndIf
 
 				If $ClanString = "" Or $ClanString = " " Then
 					SetLog("Unable to read Chat Request!", $COLOR_ERROR)
