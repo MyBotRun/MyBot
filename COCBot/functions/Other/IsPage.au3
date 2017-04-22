@@ -12,13 +12,14 @@
 ; Example .......:
 ; ===============================================================================================================================
 
-Func IsPageLoop($aCheckPixel, $iLoop = 30)
+Func IsPageLoop($aCheckPixel, $iLoop = 30, $bCapturePixel = $g_bCapturePixel)
+	$bCapturePixel = $bCapturePixel Or $iLoop > 1
 	Local $IsPage = False
 	Local $i = 0
-
+	
 	While $i < $iLoop
 		ForceCaptureRegion()
-		If _CheckPixel($aCheckPixel, $g_bCapturePixel) Then
+		If _CheckPixel($aCheckPixel, $bCapturePixel) Then
 			$IsPage = True
 			ExitLoop
 		EndIf
@@ -43,15 +44,15 @@ Func IsTrainPage($writelogs = True, $iLoop = 30)
 
 EndFunc   ;==>IsTrainPage
 
-Func IsAttackPage()
+Func IsAttackPage($bCapturePixel = $g_bCapturePixel)
 
-	If IsPageLoop($aIsAttackPage, 1) Then
+	If IsPageLoop($aIsAttackPage, 1, $bCapturePixel) Then
 		If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then SetLog("**Attack Window OK**", $COLOR_ACTION)
 		Return True
 	EndIf
 
 	If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then
-		Local $colorRead = _GetPixelColor($aIsAttackPage[0], $aIsAttackPage[1], True)
+		Local $colorRead = _GetPixelColor($aIsAttackPage[0], $aIsAttackPage[1], $bCapturePixel)
 		SetLog("**Attack Window FAIL**", $COLOR_ACTION)
 		SetLog("expected in (" & $aIsAttackPage[0] & "," & $aIsAttackPage[1] & ")  = " & Hex($aIsAttackPage[2], 6) & " - Found " & $colorRead, $COLOR_ACTION)
 	EndIf

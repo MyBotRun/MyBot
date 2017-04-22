@@ -26,9 +26,13 @@ Func OpenMEmu($bRestart = False)
 		If $cmdPar Then $cmdPar = " " & $cmdPar
 		SetDebugLog("ShellExecute: " & $g_sAndroidProgramPath & " " & $cmdPar)
 		;$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar, $__MEmu_Path)
-		$PID = Run($g_sAndroidProgramPath & $cmdPar, $__MEmu_Path)
-		If _Sleep(1000) Then Return False
-		If $PID <> 0 Then $PID = ProcessExists($PID)
+		For $i = 1 to 3
+	       $PID = Run($g_sAndroidProgramPath & $cmdPar, $__MEmu_Path)
+		   If _Sleep(3000) Then Return False
+		   If $PID <> 0 Then $PID = ProcessExists($PID)
+		   If $PID <> 0 Then ExitLoop
+	    Next
+
 		SetDebugLog("$PID= " & $PID)
 		If $PID = 0 Then ; IF ShellExecute failed
 			SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
@@ -291,6 +295,15 @@ Func UpdateMEmuConfig()
 		SetDebugLog($g_sAndroidEmulator & " phone_layout is " & $__MEmu_PhoneLayout, $COLOR_ERROR)
 	Else
 		SetDebugLog("Cannot read " & $g_sAndroidEmulator & " guestproperty phone_layout!", $COLOR_ERROR)
+		Local $v = GetVersionNormalized($g_sAndroidVersion)
+		For $i = 0 To UBound($__MEmu_Window) - 1
+			Local $v2 = GetVersionNormalized($__MEmu_Window[$i][0])
+			If $v >= $v2 Then
+				$__MEmu_PhoneLayout = $__MEmu_Window[$i][4]
+				SetDebugLog("Using phone_layout " & $__MEmu_PhoneLayout)
+				ExitLoop
+			EndIf
+		Next
 	EndIf
 	SetError(0, 0, 0)
 

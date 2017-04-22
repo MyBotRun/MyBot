@@ -58,7 +58,7 @@ Func CreateAboutTab()
 	 GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 		 GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 		 GUICtrlSetColor(-1, $COLOR_NAVY)
-	 $sText = "Ezeck0001, IceCube, Kaganus, MR.ViPeR, RoroTiti, Sardo, TheRevenor, Zengzeng"
+	 $sText = "Ezeck0001, IceCube, Kaganus, MR.ViPeR, Sardo, TheRevenor, Zengzeng"
 	 GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 		 GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 

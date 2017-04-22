@@ -183,6 +183,27 @@ Func _CaptureRegion2Sync()
 	$g_hHBitmap2 = GetHHBitmapArea($g_hHBitmap)
 EndFunc   ;==>_CaptureRegion2Sync
 
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _CaptureRegions
+; Description ...: Updates $g_hHBitmap and $g_hHBitmap2
+; Syntax ........: _CaptureRegions()
+; Parameters ....: None
+; Return values .: None
+; Author ........: cosote
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+Func _CaptureRegions()
+	_CaptureRegion()
+	_CaptureRegion2Sync()
+	Return True
+EndFunc   ;==>_CaptureRegions
+
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: GetHHBitmapArea
 ; Description ...: Creates a new hHBitmap of given $_hHBitmap in requested size

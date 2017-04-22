@@ -321,7 +321,8 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		While $i < 100
 			If _Sleep($DELAYVILLAGESEARCH2) Then Return
 			$i += 1
-			If ( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1], True), Hex($NextBtn[2], 6), $NextBtn[3])) And IsAttackPage() Then
+			_CaptureRegions()
+			If ( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1]), Hex($NextBtn[2], 6), $NextBtn[3])) And IsAttackPage(False) Then
 				If $g_bUseRandomClick = False Then
 					ClickP($NextBtn, 1, 0, "#0155") ;Click Next
 				Else
@@ -331,7 +332,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			Else
 				If $g_iDebugSetlog = 1 Then SetLog("Wait to see Next Button... " & $i, $COLOR_DEBUG)
 			EndIf
-			If $i >= 99 Or isProblemAffect(True) Then ; if we can't find the next button or there is an error, then restart
+			If $i >= 99 Or isProblemAffect() Or (Mod($i, 10) = 0 And checkObstacles_Network(False, False)) Then ; if we can't find the next button or there is an error, then restart
 				$g_bIsClientSyncError = True
 				checkMainScreen()
 				If $g_bRestart Then

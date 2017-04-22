@@ -109,22 +109,24 @@ Func _ImageSearchAreaImgLoc($findImage, $resultPosition, $x1, $y1, $right, $bott
 		Else
 			Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
 			;$expret contains 2 positions; 0 is the total objects; 1 is the point in X,Y format
-			Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
-			If UBound($posPoint) >= 2 Then
-				$x = Int($posPoint[0])
-				$y = Int($posPoint[1])
-				If $resultPosition <> 1 Then ; ImgLoc is always centered, convert to upper-left
-					Local $sImgInfo = _ImageGetInfo($findImage)
-					Local $iTileWidth = _ImageGetParam($sImgInfo, "Width")
-					Local $iTileHeight = _ImageGetParam($sImgInfo, "Height")
-					$x -= Int(Number($iTileWidth) / 2)
-					$y -= Int(Number($iTileHeight) / 2)
+			If UBound($expRet) >= 2 Then 
+				Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+				If UBound($posPoint) >= 2 Then
+					$x = Int($posPoint[0])
+					$y = Int($posPoint[1])
+					If $resultPosition <> 1 Then ; ImgLoc is always centered, convert to upper-left
+						Local $sImgInfo = _ImageGetInfo($findImage)
+						Local $iTileWidth = _ImageGetParam($sImgInfo, "Width")
+						Local $iTileHeight = _ImageGetParam($sImgInfo, "Height")
+						$x -= Int(Number($iTileWidth) / 2)
+						$y -= Int(Number($iTileHeight) / 2)
+					EndIf
+					$x -= $x1
+					$y -= $y1
+					Return 1
+				Else
+					;SetLog($findImage & " not found: " & $expRet[1], $COLOR_GREEN)
 				EndIf
-				$x -= $x1
-				$y -= $y1
-				Return 1
-			Else
-				;SetLog($findImage & " not found: " & $expRet[1], $COLOR_GREEN)
 			EndIf
 		EndIf
 	EndIf

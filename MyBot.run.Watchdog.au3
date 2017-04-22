@@ -20,8 +20,8 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot Watchdog)
-#pragma compile(ProductVersion, 7.0)
-#pragma compile(FileVersion, 7.0)
+#pragma compile(ProductVersion, 7.1.3)
+#pragma compile(FileVersion, 7.1.3)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
 
@@ -84,7 +84,7 @@ Func _SleepMilli($iMilliSec)
 	_SleepMicro(Int($iMilliSec * 1000))
 EndFunc   ;==>_SleepMilli
 
-Global $sBotVersion = "v7.0" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+Global $sBotVersion = "v7.1.3" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 Global $sBotTitle = "My Bot Watchdog " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
@@ -106,9 +106,11 @@ $hStarted = __TimerInit() ; Timer handle watchdog started
 $hTimeoutAutoClose = $hStarted
 
 Local $iExitCode = 0
+Local $iActiveBots = 0
 While 1
-	SetDebugLog("Broadcast query bot state, registered bots: " & UBound(GetManagedMyBotDetails()))
-	_WinAPI_BroadcastSystemMessage($WM_MYBOTRUN_API_1_0, 0, $frmBot, $BSF_POSTMESSAGE + $BSF_IGNORECURRENTTASK, $BSM_APPLICATIONS)
+	$iActiveBots = UBound(GetManagedMyBotDetails())
+	SetDebugLog("Broadcast query bot state, registered bots: " & $iActiveBots)
+	_WinAPI_BroadcastSystemMessage($WM_MYBOTRUN_API_1_0, $iActiveBots, $frmBot, $BSF_POSTMESSAGE + $BSF_IGNORECURRENTTASK, $BSM_APPLICATIONS)
 
 	Local $hLoopTimer = __TimerInit()
 	Local $hCheckTimer = __TimerInit()
@@ -122,7 +124,8 @@ While 1
 	WEnd
 
 	; log active bots
-	SetDebugLog("Active bots: " & GetActiveMyBotCount($iTimeoutBroadcast + 3000))
+	$iActiveBots = GetActiveMyBotCount($iTimeoutBroadcast + 3000)
+	SetDebugLog("Active bots: " & $iActiveBots)
 
 	; automatically close watchdog when no bot available
 	If $iTimeoutAutoClose > -1 And __TimerDiff($hTimeoutAutoClose) > $iTimeoutAutoClose Then

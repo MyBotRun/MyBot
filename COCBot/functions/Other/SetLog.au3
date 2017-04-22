@@ -225,9 +225,9 @@ Func FlushGuiLog(ByRef $hTxtLog, ByRef $aTxtLog, $bUpdateStatus = False, $sLogMu
 	Return $iLogs
 EndFunc   ;==>FlushGuiLog
 
-Func CheckPostponedLog()
+Func CheckPostponedLog($bNow = False)
 	Local $iLogs = 0
-	If $g_bCriticalMessageProcessing Or __TimerDiff($g_hTxtLogTimer) < $g_iTxtLogTimerTimeout Then Return 0
+	If $g_bCriticalMessageProcessing Or ($bNow = False And __TimerDiff($g_hTxtLogTimer) < $g_iTxtLogTimerTimeout) Then Return 0
 
 	If $g_oTxtLogInitText.Count > 0 And $g_hTxtLog <> 0 Then
 		$iLogs += FlushGuiLog($g_hTxtLog, $g_oTxtLogInitText, True, "txtLog")

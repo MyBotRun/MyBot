@@ -88,6 +88,8 @@ Func CreateBotDebug()
 	  $y += 20
 	   $g_hChkDebugSmartZap = GUICtrlCreateCheckbox(GetTranslated(638, 23, "Debug SmartZap"), $x, $y - 5, -1, -1)
 	   _GUICtrlSetTip(-1, GetTranslated(638, 24, "Use it to debug SmartZap"))
+		GUICtrlSetState(-1, $GUI_DISABLE)
+		GUICtrlSetState(-1, $GUI_HIDE)
 
 	  Local $x = 300
 	  $y = 52

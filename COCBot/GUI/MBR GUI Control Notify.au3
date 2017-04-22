@@ -32,9 +32,9 @@ Func chkPBTGenabled()
 		GUICtrlSetState($g_hChkNotifyTGEnable, $GUI_ENABLE)
 		GUICtrlSetState($g_hTxtNotifyPBToken, $GUI_DISABLE)
 		GUICtrlSetState($g_hBtnNotifyDeleteMessages, $GUI_DISABLE)
-		GUICtrlSetState($g_hChkNotifyDeleteAllPBPushes, $GUI_ENABLE)
-		GUICtrlSetState($g_hChkNotifyDeleteOldPBPushes, $GUI_ENABLE)
-		GUICtrlSetState($g_hBtnNotifyDeleteMessages, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyDeleteAllPBPushes, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyDeleteOldPBPushes, $GUI_DISABLE)
+		GUICtrlSetState($g_hBtnNotifyDeleteMessages, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbNotifyPushHours, $GUI_DISABLE)
 	EndIf
 

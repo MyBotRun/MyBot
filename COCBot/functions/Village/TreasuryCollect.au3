@@ -54,11 +54,15 @@ Func TreasuryCollect()
 			SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 		Else
 			Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
-			Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
-			Local $ButtonX = 125 + Int($posPoint[0])
-			Local $ButtonY = 610 + Int($posPoint[1])
-			If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
-			If _Sleep($DELAYTREASURY1) Then Return
+			If UBound($expRet) > 1 Then 
+				Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+				If UBound($posPoint) > 1 Then
+					Local $ButtonX = 125 + Int($posPoint[0])
+					Local $ButtonY = 610 + Int($posPoint[1])
+					If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
+					If _Sleep($DELAYTREASURY1) Then Return
+				EndIf
+			EndIf
 		EndIf
 	EndIf ; end of treasury button find/click
 
@@ -90,18 +94,22 @@ Func TreasuryCollect()
 				SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 			Else
 				Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
-				Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
-				Local $ButtonX = 350 + Int($posPoint[0])
-				Local $ButtonY = 450 + Int($posPoint[1])
-				Click($ButtonX, $ButtonY, 1, 0, "#0330")
-				If _Sleep($DELAYTREASURY2) Then Return
-				If ClickOkay("ConfirmCollectTreasury") = True Then ; Click Okay to confirm collect treasury loot
-					SetLog("Loot Treasury Collected Successfully.", $COLOR_SUCCESS)
-				Else
-					SetLog("Error collecting Treasury", $COLOR_ERROR)
+				If UBound($expRet) > 1 Then 
+					Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+					If UBound($posPoint) > 1 Then
+						Local $ButtonX = 350 + Int($posPoint[0])
+						Local $ButtonY = 450 + Int($posPoint[1])
+						Click($ButtonX, $ButtonY, 1, 0, "#0330")
+						If _Sleep($DELAYTREASURY2) Then Return
+						If ClickOkay("ConfirmCollectTreasury") = True Then ; Click Okay to confirm collect treasury loot
+							SetLog("Loot Treasury Collected Successfully.", $COLOR_SUCCESS)
+						Else
+							SetLog("Error collecting Treasury", $COLOR_ERROR)
+						EndIf
+						ClickP($aAway, 1, 0, "#0438") ; Click away
+						If _Sleep($DELAYTREASURY4) Then Return
+					EndIf
 				EndIf
-				ClickP($aAway, 1, 0, "#0438") ; Click away
-				If _Sleep($DELAYTREASURY4) Then Return
 			EndIf
 		EndIf ; end of treasury button find/click
 	Else

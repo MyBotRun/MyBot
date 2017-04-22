@@ -5,8 +5,9 @@
 ; Syntax ........: PoliteCloseOpenCoc($iWaitTime, $sSource, $StopEmulator)
 ; Parameters ....: $iWaitTime           - an integer value of milliseconds wait time betwen close and open game
 ; 					  : $sSource             - Not optional string value with name of calling function to display for error logs
-; 					  : $StopEmulator		 	 - Boolean flag or string "random", true will stop/close emulator after closing CoC app, "random" will let code pick close status, "idle" will let app time out
-; 					  : $bFullRestart			 - Optional boolean flag when not closing emulator to force full restart in WaitnOpenCoc
+; 					  : $StopEmulator		 - Boolean flag or string "random", true will stop/close emulator after closing CoC app, "random" will let code pick close status, "idle" will let app time out
+; 					  : $bFullRestart		 - Optional boolean flag when not closing emulator to force full restart in WaitnOpenCoc
+;                     : $bSuspendComputer    - Optional boolean to put computer into sleep and resume again
 ; Return values .: None
 ; Author ........: MonkeyHunter (04-2016)
 ; Modified ......: Cosote (06-2016), MonkeyHunter (07-2016)
@@ -16,7 +17,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer_", $StopEmulator = False, $bFullRestart = False)
+Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer_", $StopEmulator = False, $bFullRestart = False, $bSuspendComputer = False)
 
 	If $g_iDebugSetlog = 1 Then Setlog("Begin UniversalCloseWaitOpenCoC:", $COLOR_DEBUG1)
 
@@ -65,7 +66,9 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 		Case 0 ; Do nothing while waiting, Let app time out
 			If $iWaitTime > 0 Then
 				SetLog("Going idle for " & $sWaitTime & "before starting CoC", $COLOR_SUCCESS)
-				If _SleepStatus($iWaitTime) Then Return False
+				Local $hTimer = __TimerInit()
+				If $bSuspendComputer Then SuspendComputer($iWaitTime)
+				If _SleepStatus($iWaitTime, True, True, True, $hTimer) Then Return False ; Wait for set requested
 			Else
 				If _SleepStatus($DELAYWAITNOPENCOC10000) Then Return False ; if waittime = 0 then only wait 10 seconds before restart
 			EndIf
@@ -80,7 +83,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 					EnableGuiControls() ; enable bot controls is more than 30 seconds wait time
 					SetLog("Enabled bot controls due to long wait time", $COLOR_SUCCESS)
 				EndIf
-				WaitnOpenCoC($iWaitTime, $bFullRestart)
+				WaitnOpenCoC($iWaitTime, $bFullRestart, $bSuspendComputer)
 				AndroidShieldForceDown(False)
 				If $g_bRunState = False Then Return False
 			Else
@@ -105,7 +108,9 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 					EnableGuiControls() ; enable bot controls is more than 30 seconds wait time
 					SetLog("Enabled bot controls due to long wait time", $COLOR_SUCCESS)
 				EndIf
-				If _SleepStatus($iWaitTime) Then Return False ; Wait for set requested
+				Local $hTimer = __TimerInit()
+				If $bSuspendComputer Then SuspendComputer($iWaitTime)
+				If _SleepStatus($iWaitTime, True, True, True, $hTimer) Then Return False ; Wait for set requested
 				If $iWaitTime > 30000 Then
 					; ensure possible changes are populated
 					SaveConfig()
@@ -122,3 +127,34 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 	EndSwitch
 
 EndFunc   ;==>UniversalCloseWaitOpenCoC
+
+Func SuspendComputer($iMilliseconds)
+
+	SetDebugLog("Trying to suspend computer")
+	If $g_BotInstanceCount > 1 Then
+		SetLog($g_BotInstanceCount & " bot instances detected, will not suspend computer", $COLOR_ERROR)
+		Return False
+	EndIf
+
+	; wake up here
+	If SetWakeUpSeconds(Round($iMilliseconds / 1000, 0)) Then
+		; close ADB session
+		AndroidAdbTerminateShellInstance()
+		; close ADB daemon as it will loose connection to Android anyway
+		KillAdbDaemon()
+		; reset time lag
+		InitAndroidTimeLag()
+		; put computer now to sleep
+		SetLog("Suspend computer now", $COLOR_INFO)
+		CheckPostponedLog(True)
+		If SetSuspend() Then
+			Return True
+		EndIf
+		SetLog("Cannot suspend computer, error: " & @error & ", extended: " & @extended, $COLOR_ERROR)
+		Return False
+	EndIf
+
+	SetLog("Cannot set computer wakeup time, error: " & @error & ", extended: " & @extended, $COLOR_ERROR)
+	Return False
+
+EndFunc

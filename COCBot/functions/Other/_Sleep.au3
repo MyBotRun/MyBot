@@ -39,7 +39,7 @@ Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = T
 			If $g_bNotifyDeleteAllPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
 
 			If __TimerDiff($hTimer_PBRemoteControlInterval) >= $g_iPBRemoteControlInterval Then
-				PushBulletRemoteControl()
+				NotifyRemoteControl()
 				$hTimer_PBRemoteControlInterval = __TimerInit()
 			EndIf
 			If __TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $g_iPBDeleteOldPushesInterval Then
@@ -63,8 +63,6 @@ Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = T
 			EndIf
 		EndIf
 	EndIf
-	;AndroidEmbedCheck()
-	;AndroidShieldCheck()
 	If $CheckRunState = True And $g_bRunState = False Then
 		ResumeAndroid()
 		Return True

@@ -18,23 +18,14 @@ Func WM_MYBOTRUN_API_1_0_CLIENT($hWind, $iMsg, $wParam, $lParam)
 
 	If $hWind <> $g_hFrmBot Then Return 0
 
-	;SetDebugLog("API: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	;SetDebugLog("API: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam)
 
 	$hWind = 0
 	Switch BitAND($wParam, 0xFFFF)
 
 		; Post Message to Manage Farm App and consume message
 
-		Case 0x0000 ; query bot run and pause state
-			$hWind = HWnd($lParam)
-			$lParam = $g_hFrmBot
-			$wParam += 1
-			Local $wParamHi = 0
-			If $g_bRunState = True Then $wParamHi += 1
-			If $g_bBotPaused = True Then $wParamHi += 2
-			$wParam += BitShift($wParamHi, -16)
-
-		Case 0x0010 ; query bot detailed state
+		Case 0x0100 ; query bot detailed state
 			$iMsg = $WM_MYBOTRUN_STATE_1_0
 			$hWind = HWnd($lParam)
 			$lParam = $g_hFrmBot
@@ -99,6 +90,19 @@ Func WM_MYBOTRUN_API_1_0_CLIENT($hWind, $iMsg, $wParam, $lParam)
 			BotCloseRequest()
 			$wParam += BitShift($wParamHi, -16)
 
+		Case Else ;Case 0x0000 ; query bot run and pause state
+			If $wParam < 0x100 Then
+				$hWind = HWnd($lParam)
+				$lParam = $g_hFrmBot
+				Local $iActiveBots = BitAND($wParam, 0xFF)
+				If $g_BotInstanceCount <> $iActiveBots Then SetDebugLog($iActiveBots & " running bot instances detected")
+				$g_BotInstanceCount = $iActiveBots
+				$wParam = 1
+				Local $wParamHi = 0
+				If $g_bRunState = True Then $wParamHi += 1
+				If $g_bBotPaused = True Then $wParamHi += 2
+				$wParam += BitShift($wParamHi, -16)
+			EndIf
 	EndSwitch
 
 	If $hWind <> 0 Then

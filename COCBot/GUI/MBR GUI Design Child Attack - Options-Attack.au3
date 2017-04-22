@@ -18,8 +18,8 @@
 Global $g_hRadAutoAbilities = 0, $g_hRadManAbilities = 0, $g_hTxtManAbilities = 0, $g_hChkUseWardenAbility = 0, $g_hTxtWardenAbility = 0
 
 ; Attack schedule
-Global $g_hChkAttackPlannerEnable = 0, $g_hChkAttackPlannerCloseCoC = 0, $g_hChkAttackPlannerCloseAll = 0, $g_hChkAttackPlannerRandom = 0, $g_hCmbAttackPlannerRandom = 0, _
-	   $g_hChkAttackPlannerDayLimit = 0, $g_hCmbAttackPlannerDayMin = 0, $g_hCmbAttackPlannerDayMax = 0
+Global $g_hChkAttackPlannerEnable = 0, $g_hChkAttackPlannerCloseCoC = 0, $g_hChkAttackPlannerCloseAll = 0, $g_hChkAttackPlannerSuspendComputer = 0, $g_hChkAttackPlannerRandom = 0, _
+	   $g_hCmbAttackPlannerRandom = 0, $g_hChkAttackPlannerDayLimit = 0, $g_hCmbAttackPlannerDayMin = 0, $g_hCmbAttackPlannerDayMax = 0
 Global $g_ahChkAttackWeekdays[7] = [0,0,0,0,0,0,0], $g_ahChkAttackHours[24] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 Global $g_hLbAttackPlannerRandom = 0, $g_hLbAttackPlannerDayLimit = 0, $g_ahChkAttackWeekdaysE = 0, $g_ahChkAttackHoursE1 = 0, $g_ahChkAttackHoursE2 = 0
@@ -61,16 +61,16 @@ Func CreateAttackSearchOptionsAttack()
 			   $sTxtTip = GetTranslated(634,10, "Force Eternal Tome ability of Grand Warden on a timer.")
 			   _GUICtrlSetTip(-1, $sTxtTip)
 				GUICtrlSetOnEvent(-1, "ChkUseWardenAbility")
-		   $g_hTxtWardenAbility = GUICtrlCreateInput("10", $x + 220, $y + 2, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		   $g_hTxtWardenAbility = GUICtrlCreateInput("10", $x + 230, $y + 2, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			   $sTxtTip = GetTranslated(634,11, "Set the time in seconds for Timed Activation of Grand Warden Ability.")
 			   _GUICtrlSetTip(-1, $sTxtTip)
 			   GUICtrlSetLimit(-1, 2)
-		   GUICtrlCreateLabel(GetTranslated(603,6, -1), $x + 253, $y + 4, -1, -1)
+		   GUICtrlCreateLabel(GetTranslated(603,6, -1), $x + 263, $y + 4, -1, -1)
 
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
     Local $x = 25, $y = 145
-    GUICtrlCreateGroup(GetTranslated(634,20, "Attack Schedule"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 127)
+    GUICtrlCreateGroup(GetTranslated(634,20, "Attack Schedule"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 138)
 	$x -= 5
 		$g_hChkAttackPlannerEnable = GUICtrlCreateCheckbox(GetTranslated(634,21, "Enable Schedule"), $x, $y-5, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslated(634,22, "This option will allow you to schedule attack times") & @CRLF & _
@@ -86,31 +86,36 @@ Func CreateAttackSearchOptionsAttack()
 							   GetTranslated(634,26, -1))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerCloseAll")
-		$g_hChkAttackPlannerRandom = GUICtrlCreateCheckbox(GetTranslated(634,29, "Random Disable"), $x, $y+52, -1, -1)
+		$g_hChkAttackPlannerSuspendComputer = GUICtrlCreateCheckbox(GetTranslated(634,42, "Suspend Computer"), $x, $y+52, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslated(634,43, "This option will suspend computer when not scheduled to Search & Attack!") & @CRLF & _
+							   GetTranslated(634,26, -1))
+			GUICtrlSetState(-1, $GUI_DISABLE)
+			GUICtrlSetOnEvent(-1, "chkAttackPlannerSuspendComputer")
+		$g_hChkAttackPlannerRandom = GUICtrlCreateCheckbox(GetTranslated(634,29, "Random Disable"), $x, $y+71, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslated(634,30, "This option will randomly stop attacking") & @CRLF & _
 							   GetTranslated(634,26, -1))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerRandom")
-		$g_hCmbAttackPlannerRandom = GUICtrlCreateCombo("",  $x + 110 , $y+50, 37, 16, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$g_hCmbAttackPlannerRandom = GUICtrlCreateCombo("",  $x + 110 , $y+69, 37, 16, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, GetTranslated(634,31, "Select number of hours to stop attacking"))
 			GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20", "4")
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "cmbAttackPlannerRandom")
-		$g_hLbAttackPlannerRandom = GUICtrlCreateLabel(GetTranslated(603,37, "hrs"), $x+148, $y+54, -1,-1)
+		$g_hLbAttackPlannerRandom = GUICtrlCreateLabel(GetTranslated(603,37, "hrs"), $x+148, $y+73, -1,-1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_hChkAttackPlannerDayLimit = GUICtrlCreateCheckbox(GetTranslated(634,35, "Daily Limit"), $x, $y+71, -1, -1)
+		$g_hChkAttackPlannerDayLimit = GUICtrlCreateCheckbox(GetTranslated(634,35, "Daily Limit"), $x, $y+90, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslated(634,36, "Will randomly stop attacking when exceed random number of attacks between range selected") & @CRLF & _
 							   GetTranslated(634,26, -1))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerDayLimit")
-		$g_hCmbAttackPlannerDayMin = GUICtrlCreateInput("12",  $x+100 , $y+75, 37, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$g_hCmbAttackPlannerDayMin = GUICtrlCreateInput("12",  $x+100 , $y+92, 37, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(634,37, "Enter minimum number of attacks allowed per day"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetLimit(-1, 3)
 			GUICtrlSetOnEvent(-1, "cmbAttackPlannerDayMin")
-		$g_hLbAttackPlannerDayLimit = GUICtrlCreateLabel(GetTranslated(634,39,"to"), $x+142, $y+75, -1,-1)
+		$g_hLbAttackPlannerDayLimit = GUICtrlCreateLabel(GetTranslated(634,39,"to"), $x+142, $y+94, -1,-1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_hCmbAttackPlannerDayMax = GUICtrlCreateInput("15",  $x+157 , $y+75, 37, 18,  BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$g_hCmbAttackPlannerDayMax = GUICtrlCreateInput("15",  $x+157 , $y+94, 37, 18,  BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslated(634,38, "Enter maximum number of attacks allowed per day"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetLimit(-1, 3)
@@ -321,11 +326,11 @@ Func CreateAttackSearchOptionsAttack()
 
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-    Local $x = 25, $y = 275
-    GUICtrlCreateGroup(GetTranslated(634,12, "ClanCastle"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 110)
+    Local $x = 25, $y = 290
+    GUICtrlCreateGroup(GetTranslated(634,12, "ClanCastle"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 102)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x, $y + 8, 64, 64)
 
-	$y -= 4
+	$y -= 8
 		$g_hChkDropCCHoursEnable = GUICtrlCreateCheckbox(GetTranslated(634,40,"Enable CC Drop Schedule" ), $x + 70, $y, -1, -1)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			_GUICtrlSetTip(-1, GetTranslated(634,41, "Use schedule to define when dropping CC is allowed, \r\n CC is always dropped when schedule is not enabled"))

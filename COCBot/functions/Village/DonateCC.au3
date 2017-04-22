@@ -1227,18 +1227,18 @@ Func SkipDonateNearFullTroops($setlog = False, $aHeroResult = Default)
 				Next
 				If $g_iDebugSetlog = 1 Then SetLog("$iHighestTime = " & $iHighestTime & "|" & String($iHighestTime > 5), $COLOR_DEBUG)
 				If $iHighestTime > 5 Then
-					If $setlog Then Setlog("?? Donations enabled, Heroes recover time is long", $COLOR_INFO)
+					If $setlog Then Setlog(" - Donations enabled, Heroes recover time is long", $COLOR_INFO)
 					Return False
 				Else
-					If $setlog Then Setlog("?? Donation disabled, available troops " & $g_iArmyCapacity & "%, limit " & $g_iDonateSkipNearFullPercent & "%", $COLOR_INFO)
+					If $setlog Then Setlog(" - Donation disabled, available troops " & $g_iArmyCapacity & "%, limit " & $g_iDonateSkipNearFullPercent & "%", $COLOR_INFO)
 					Return True ; troops camps% > limit
 				EndIf
 			Else
-				If $setlog Then Setlog("?? Donation disabled, available troops " & $g_iArmyCapacity & "%, limit " & $g_iDonateSkipNearFullPercent & "%", $COLOR_INFO)
+				If $setlog Then Setlog(" - Donation disabled, available troops " & $g_iArmyCapacity & "%, limit " & $g_iDonateSkipNearFullPercent & "%", $COLOR_INFO)
 				Return True ; troops camps% > limit
 			EndIf
 		Else
-			If $setlog Then Setlog("?? Donations enabled, available troops " & $g_iArmyCapacity & "%, limit " & $g_iDonateSkipNearFullPercent & "%", $COLOR_INFO)
+			If $setlog Then Setlog(" - Donations enabled, available troops " & $g_iArmyCapacity & "%, limit " & $g_iDonateSkipNearFullPercent & "%", $COLOR_INFO)
 			Return False ; troops camps% into limits
 		EndIf
 	Else

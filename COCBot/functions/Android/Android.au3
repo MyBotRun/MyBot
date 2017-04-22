@@ -68,7 +68,7 @@ EndFunc   ;==>InitAndroidConfig
 
 Func AndroidMakeDpiAware()
 	Return BitAND($g_iAndroidSupportFeature, 64) > 0 And $g_bAndroidAdbScreencap = False
-EndFunc   ;==>AndroidFeatureMakeDpiAware
+EndFunc   ;==>AndroidMakeDpiAware
 
 Func CleanSecureFiles($iAgeInUTCSeconds = 600)
 	If $g_sAndroidPicturesHostPath = "" Then Return
@@ -172,17 +172,26 @@ EndFunc   ;==>UpdateAndroidWindowState
 
 Func UpdateHWnD($hWin)
 	If $hWin = 0 Then
+		If $g_hAndroidWindow <> 0 Then
+			$g_bRestart = True ; Android likely crashed
+			;$g_bIsClientSyncError = True ; quick restart search
+		EndIf
 		$g_hAndroidWindow = 0
 		$g_hAndroidControl = 0
 		Return False
 	EndIf
+	If $g_hAndroidWindow <> 0 Then
+		$g_bRestart = True ; Android likely crashed
+		;$g_bIsClientSyncError = True ; quick restart search
+	EndIf
+
 	$g_hAndroidWindow = $hWin
 	CheckDpiAwareness()
 	#cs Was coded for LeapDroid when manually launch DPI unaware and bot was DPI aware, then bot resize LeapDroid but too pixy... unfortunately making bot DPI aware did not fix it, so better just restart bot?
-	If CheckDpiAwareness(True) Then
+		If CheckDpiAwareness(True) Then
 		; check if Android must become DPI Aware
 		If GetProcessDpiAwareness(GetAndroidPid()) = 0 Then	AndroidDpiAwareness()
-	EndIf
+		EndIf
 	#ce
 	Local $hCtrl = ControlGetHandle($hWin, $g_sAppPaneName, $g_sAppClassInstance)
 	If $hCtrl = 0 Then
@@ -493,7 +502,8 @@ EndFunc   ;==>_WinGetAndroidHandle
 
 Func UpdateAndroidWindowTitle($hWin, $t)
 	If $g_bUpdateAndroidWindowTitle = True And $g_sAndroidInstance <> "" And StringInStr($t, $g_sAndroidInstance) = 0 Then
-		$t &= " (" & $g_sAndroidInstance & ")"
+		;$t &= " (" & $g_sAndroidInstance & ")"
+		$t = $g_sAndroidEmulator & " (" & $g_sAndroidInstance & ")"
 		_WinAPI_SetWindowText($hWin, $t)
 	EndIf
 	Return $t
@@ -899,7 +909,7 @@ Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True)
 	;AndroidAdbTerminateShellInstance()
 	If Not $g_bRunState Then Return False
 	;$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
-	AndroidAdbSendShellCommand("am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, 60000) ; timeout of 1 Minute
+	$cmdOutput = AndroidAdbSendShellCommand("am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, 60000) ; timeout of 1 Minute
 	If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
 		SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_ERROR)
 		SetLog("Unable to continue........", $COLOR_WARNING)
@@ -1106,6 +1116,23 @@ Func ReleaseAdbDaemonMutex($hMutex, $ReturnValue = Default)
 	Return $ReturnValue
 EndFunc   ;==>ReleaseAdbDaemonMutex
 
+Func KillAdbDaemon($bMutexLock = True)
+	Local $hMutex = -1
+	If $bMutexLock Then $hMutex = AquireAdbDaemonMutex()
+	If $hMutex = 0 Then
+		SetDebugLog("Cannot acquire ADB mutex to kill daemon", $COLOR_ERROR)
+		Return False
+	EndIf
+	SetDebugLog("Stop ADB daemon!", $COLOR_ERROR)
+	Local $process_killed
+	LaunchConsole($g_sAndroidAdbPath, "kill-server", $process_killed)
+	Local $pids = ProcessesExist($g_sAndroidAdbPath, "", 1)
+	For $i = 0 To UBound($pids) - 1
+		KillProcess($pids[$i], $g_sAndroidAdbPath)
+	Next
+	Return ReleaseAdbDaemonMutex($hMutex, True)
+EndFunc   ;==>KillAdbDaemon
+
 Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $timeout = 15000)
 	If $g_sAndroidAdbPath = "" Or FileExists($g_sAndroidAdbPath) = 0 Then
 		SetLog($g_sAndroidEmulator & " ADB Path not valid: " & $g_sAndroidAdbPath, $COLOR_ERROR)
@@ -1145,12 +1172,7 @@ Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $timeout = 150
 	Switch $g_iAndroidRecoverStrategy
 		Case 0
 			; not connected... strange, kill any Adb now
-			SetDebugLog("Stop ADB daemon!", $COLOR_ERROR)
-			LaunchConsole($g_sAndroidAdbPath, "kill-server", $process_killed)
-			Local $pids = ProcessesExist($g_sAndroidAdbPath, "", 1)
-			For $i = 0 To UBound($pids) - 1
-				KillProcess($pids[$i], $g_sAndroidAdbPath)
-			Next
+			KillAdbDaemon(False)
 
 			; ok, now try to connect again
 			$connected_to = IsAdbConnected()
@@ -1297,7 +1319,7 @@ Func AndroidSetFontSizeNormal()
 	ResumeAndroid()
 	AndroidAdbLaunchShellInstance($g_bRunState, False)
 	SetLog("Set " & $g_sAndroidEmulator & " Display Font Scale to normal", $COLOR_INFO)
-	AndroidAdbSendShellCommand("settings put system font_scale 1.0")
+	AndroidAdbSendShellCommand("settings put system font_scale 1.0", Default, Default, False)
 EndFunc   ;==>AndroidSetFontSizeNormal
 
 Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIfNeccessary = $g_bRunState)
@@ -2690,7 +2712,7 @@ Func RedrawAndroidWindow()
 	If $Result = "" And @error <> 0 Then
 		; Not implemented, use default implementation
 		_WinAPI_RedrawWindow($g_hAndroidWindow, 0, 0, $RDW_INVALIDATE + $RDW_ALLCHILDREN)
-		_WinAPI_SetWindowPos($g_hAndroidWindow, 0, 0, 0, 0, 0, BitOr($SWP_NOMOVE, $SWP_NOSIZE, $SWP_FRAMECHANGED)) ; redraw
+		_WinAPI_SetWindowPos($g_hAndroidWindow, 0, 0, 0, 0, 0, BitOR($SWP_NOMOVE, $SWP_NOSIZE, $SWP_FRAMECHANGED)) ; redraw
 		_WinAPI_UpdateWindow($g_hAndroidWindow)
 	EndIf
 	Return $Result

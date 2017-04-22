@@ -50,7 +50,7 @@ Func WaitForClouds()
 	ForceCaptureRegion() ; ensure screenshots are not cached
 	Local $hMinuteTimer = __TimerInit() ; initialize timer for tracking search time
 
-	While _CheckPixel($aNoCloudsAttack, $g_bCapturePixel) = False ; loop to wait for clouds to disappear
+	While $g_bRestart = False And _CaptureRegions() And _CheckPixel($aNoCloudsAttack) = False ; loop to wait for clouds to disappear
 		If _Sleep($DELAYGETRESOURCES1) Then Return
 		$iCount += 1
 		If isProblemAffect(True) Then ; check for reload error messages and restart search if needed
@@ -73,6 +73,13 @@ Func WaitForClouds()
 				EndIf
 				$iCount = 0 ; reset outer loop value
 			EndIf
+		EndIf
+		If (Mod($iCount, 10) = 0 And checkObstacles_Network(False, False)) Then
+			; network error -> restart CoC
+			$g_bIsClientSyncError = True
+			$g_bRestart = True
+			CloseCoC(True)
+			Return
 		EndIf
 		If $g_iDebugSetlog = 1 Then _GUICtrlStatusBar_SetText($g_hStatusBar, " Status: Loop to clean screen without Clouds, # " & $iCount)
 		$iSearchTime = __TimerDiff($hMinuteTimer) / 60000 ;get time since minute timer start in minutes

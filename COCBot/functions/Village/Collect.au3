@@ -100,37 +100,39 @@ Func Collect($Treasury = True)
 		Else
 			Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
 			;$expret contains 2 positions; 0 is the total objects; 1 is the point in X,Y format
-			Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
-			If IsArray($posPoint) Then
-				$LootCartX = Int($posPoint[0])
-				$LootCartY = Int($posPoint[1])
-				If isInsideDiamondXY($LootCartX, $LootCartY) Then
-					If $g_iDebugSetlog Then SetLog("LootCart found (" & $LootCartX & "," & $LootCartY & ")", $COLOR_SUCCESS)
-					If IsMainPage() Then Click($LootCartX, $LootCartY, 1, 0, "#0330")
-					If _Sleep($DELAYCOLLECT1) Then Return
-
-					;Get LootCart info confirming the name
-					Local $sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
-					If @error Then SetError(0, 0, 0)
-					Local $CountGetInfo = 0
-					While IsArray($sInfo) = False
-						$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
-						If @error Then SetError(0, 0, 0)
+			If UBound($expRet) > 1 Then 
+				Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+				If UBound($posPoint) > 1 Then
+					$LootCartX = Int($posPoint[0])
+					$LootCartY = Int($posPoint[1])
+					If isInsideDiamondXY($LootCartX, $LootCartY) Then
+						If $g_iDebugSetlog Then SetLog("LootCart found (" & $LootCartX & "," & $LootCartY & ")", $COLOR_SUCCESS)
+						If IsMainPage() Then Click($LootCartX, $LootCartY, 1, 0, "#0330")
 						If _Sleep($DELAYCOLLECT1) Then Return
-						$CountGetInfo += 1
-						If $CountGetInfo >= 5 Then Return
-					WEnd
-					If $g_iDebugSetlog Then SetLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
-					If @error Then Return SetError(0, 0, 0)
-					If $sInfo[0] > 1 Or $sInfo[0] = "" Then
-						If StringInStr($sInfo[1], "Loot") = 0 Then
-							If $g_iDebugSetlog Then SetLog("Bad Loot Cart location", $COLOR_ACTION)
-						Else
-							If IsMainPage() Then Click($aLootCartBtn[0], $aLootCartBtn[1], 1, 0, "#0331") ;Click loot cart button
+
+						;Get LootCart info confirming the name
+						Local $sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
+						If @error Then SetError(0, 0, 0)
+						Local $CountGetInfo = 0
+						While IsArray($sInfo) = False
+							$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
+							If @error Then SetError(0, 0, 0)
+							If _Sleep($DELAYCOLLECT1) Then Return
+							$CountGetInfo += 1
+							If $CountGetInfo >= 5 Then Return
+						WEnd
+						If $g_iDebugSetlog Then SetLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+						If @error Then Return SetError(0, 0, 0)
+						If $sInfo[0] > 1 Or $sInfo[0] = "" Then
+							If StringInStr($sInfo[1], "Loot") = 0 Then
+								If $g_iDebugSetlog Then SetLog("Bad Loot Cart location", $COLOR_ACTION)
+							Else
+								If IsMainPage() Then Click($aLootCartBtn[0], $aLootCartBtn[1], 1, 0, "#0331") ;Click loot cart button
+							EndIf
 						EndIf
+					Else
+						Setlog("Loot Cart not removed, please do manually!", $COLOR_WARNING)
 					EndIf
-				Else
-					Setlog("Loot Cart not removed, please do manually!", $COLOR_WARNING)
 				EndIf
 			EndIf
 		EndIf

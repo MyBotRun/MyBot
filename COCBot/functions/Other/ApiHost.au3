@@ -11,7 +11,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Global $g_ahManagedMyBotDetails[0] ; Contains array of MemoryHandleArray - frmBot - Timer Handle of last response - Command line of bot - Bot Window Title - RunState - TPaused
+Global $g_ahManagedMyBotDetails[0] ; Contains array of MemoryHandleArray - frmBot - Timer Handle of last response - Command line of bot - Bot Window Title - RunState - TPaused - Verify count
 GUIRegisterMsg($WM_MYBOTRUN_API_1_0, "WM_MYBOTRUN_API_1_0_HOST")
 GUIRegisterMsg($WM_MYBOTRUN_STATE_1_0, "WM_MYBOTRUN_STATE_1_0")
 
@@ -51,7 +51,7 @@ Func WM_MYBOTRUN_STATE_1_0($hWind, $iMsg, $wParam, $lParam)
 
 EndFunc   ;==>WM_MYBOTRUN_STATE_1_0
 
-Func GetManagedMyBotDetails($hFrmBot = Default, $_RunState = Default, $_TPaused = Default)
+Func GetManagedMyBotDetails($hFrmBot = Default, $_RunState = Default, $_TPaused = Default, $iVerifyCount = 2)
 
 	If $hFrmBot = Default Then Return $g_ahManagedMyBotDetails
 
@@ -67,7 +67,9 @@ Func GetManagedMyBotDetails($hFrmBot = Default, $_RunState = Default, $_TPaused 
 			$a[1] = __TimerInit()
 			If $_RunState <> Default Then $a[4] = $_RunState
 			If $_TPaused <> Default Then $a[5] = $_TPaused
+			$a[6] = $iVerifyCount ; verify count bot is really crashed (used to compensate computer sleep etc.)
 			$g_ahManagedMyBotDetails[$i] = $a
+			SetDebugLog("Bot Window state received: " & GetManagedMyBotInfoString($a))
 			Return $a
 		EndIf
 		If $a[3] = $g_sAndroidTitle Then
@@ -78,7 +80,7 @@ Func GetManagedMyBotDetails($hFrmBot = Default, $_RunState = Default, $_TPaused 
 	Next
 
 	ReDim $g_ahManagedMyBotDetails[UBound($g_ahManagedMyBotDetails) + 1]
-	Local $a[6]
+	Local $a[7]
 	; Register new bot
 	$a[0] = $hFrmBot
 	$a[1] = __TimerInit()
@@ -86,11 +88,19 @@ Func GetManagedMyBotDetails($hFrmBot = Default, $_RunState = Default, $_TPaused 
 	$a[3] = $g_sAndroidTitle
 	$a[4] = $_RunState
 	$a[5] = $_TPaused
+	$a[6] = $iVerifyCount ; verify count bot is really crashed (used to compensate computer sleep etc.)
 	If $a[1] = -1 Then SetLog("Command line not found for Window Handle/PID: " & $hFrmBot & "/" & $pid)
 	$g_ahManagedMyBotDetails[$i] = $a
-	SetDebugLog("New Bot Window Handle registered: " & $hFrmBot)
+	SetDebugLog("New Bot Window Handle registered: " & GetManagedMyBotInfoString($a))
 	Return $a
 EndFunc   ;==>GetManagedMyBotDetails
+
+Func GetManagedMyBotInfoString(ByRef $a)
+
+	If UBound($a) < 7 Then Return "unknown"
+	Return $a[0] & ", " & $a[2] & ", " & $a[3] & ", " & ($a[4] ? "running" : "not running") & ", " & ($a[5] ? "paused" : "not paused")
+
+EndFunc   ;==>GetManagedMyBotInfoString
 
 Func UnregisterManagedMyBotClient($hFrmBot)
 
@@ -127,6 +137,13 @@ Func CheckManagedMyBot($iTimeout)
 	For $i = 0 To UBound($g_ahManagedMyBotDetails) - 1
 		Local $a = $g_ahManagedMyBotDetails[$i]
 		If __TimerDiff($a[1]) > $iTimeout Then
+			If $a[6] > 0 Then
+				; not verified inresponsive, decrease counter
+				$a[6] -= 1
+				; update array
+				$g_ahManagedMyBotDetails[$i] = $a
+				ContinueLoop
+			EndIf
 			_ArrayDelete($g_ahManagedMyBotDetails, $i)
 			; check if bot has been already restarted manually
 			Local $cmd = $a[2]

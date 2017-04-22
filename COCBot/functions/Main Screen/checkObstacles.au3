@@ -33,28 +33,13 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 EndFunc   ;==>checkObstacles
 
 Func _checkObstacles() ;Checks if something is in the way for mainscreen
-	Static $hCocReconnectingTimer = 0 ; TimerHandle of first CoC reconnecting animation
-
 	Local $msg, $x, $y, $Result
 	$g_bMinorObstacle = False
 
 	_CaptureRegion()
 	_CaptureRegion2Sync() ; share same image from _CaptureRegion()
 
-	If UBound(decodeSingleCoord(FindImageInPlace("CocReconnecting", $g_sCocReconnecting, "420,355,440,375", False))) > 1 Then
-		If $hCocReconnectingTimer = 0 Then
-			SetLog("Network Connection lost...", $COLOR_ERROR)
-			$hCocReconnectingTimer = __TimerInit()
-		ElseIf __TimerDiff($hCocReconnectingTimer) > $g_iCoCReconnectingTimeout Then
-			SetLog("Network Connection really lost, Reloading CoC...", $COLOR_ERROR)
-			$hCocReconnectingTimer = 0
-			Return checkObstacles_ReloadCoC()
-		Else
-			SetLog("Network Connection lost, waiting...", $COLOR_ERROR)
-		EndIf
-	Else
-		$hCocReconnectingTimer = 0
-	EndIf
+	If checkObstacles_Network() Then Return True
 
 	If $g_sAndroidGameDistributor <> $g_sGoogle Then ; close an ads window for non google apks
 		Local $aXButton = FindAdsXButton()
@@ -328,3 +313,25 @@ Func BanMsgBox()
 		If $MsgBox = 1 Then Return
 	WEnd
 EndFunc   ;==>BanMsgBox
+
+Func checkObstacles_Network($bForceCapture = False, $bReloadCoC = True)
+	Static $hCocReconnectingTimer = 0 ; TimerHandle of first CoC reconnecting animation
+
+	If UBound(decodeSingleCoord(FindImageInPlace("CocReconnecting", $g_sCocReconnecting, "420,355,440,375", $bForceCapture))) > 1 Then
+		If $hCocReconnectingTimer = 0 Then
+			SetLog("Network Connection lost...", $COLOR_ERROR)
+			$hCocReconnectingTimer = __TimerInit()
+		ElseIf __TimerDiff($hCocReconnectingTimer) > $g_iCoCReconnectingTimeout Then
+			SetLog("Network Connection really lost, Reloading CoC...", $COLOR_ERROR)
+			$hCocReconnectingTimer = 0
+			If $bReloadCoC = True Then Return checkObstacles_ReloadCoC()
+			Return True
+		Else
+			SetLog("Network Connection lost, waiting...", $COLOR_ERROR)
+		EndIf
+	Else
+		$hCocReconnectingTimer = 0
+	EndIf
+
+	Return False
+EndFunc   ;==>checkObstacles_Network

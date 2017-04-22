@@ -289,6 +289,7 @@ Func chkAttackPlannerEnable()
 		If GUICtrlRead($g_hChkAttackPlannerCloseAll) = $GUI_UNCHECKED Then
 			GUICtrlSetState($g_hChkAttackPlannerCloseAll, $GUI_ENABLE)
 			GUICtrlSetState($g_hChkAttackPlannerCloseCoC, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkAttackPlannerSuspendComputer, $GUI_ENABLE)
 		Else
 			GUICtrlSetState($g_hChkAttackPlannerCloseAll, $GUI_ENABLE)
 			GUICtrlSetState($g_hChkAttackPlannerCloseCoC, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
@@ -330,6 +331,7 @@ Func chkAttackPlannerEnable()
 	Else
 		$g_bAttackPlannerEnable = False
 		GUICtrlSetState($g_hChkAttackPlannerCloseCoC, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkAttackPlannerSuspendComputer, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkAttackPlannerCloseAll, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkAttackPlannerRandom, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbAttackPlannerRandom, $GUI_DISABLE)
@@ -354,6 +356,14 @@ Func chkAttackPlannerCloseCoC()
 		$g_bAttackPlannerCloseCoC = True
 	Else
 		$g_bAttackPlannerCloseCoC = False
+	EndIf
+EndFunc   ;==>chkAttackPlannerCloseCoC
+
+Func chkAttackPlannerSuspendComputer()
+	If GUICtrlRead($g_hChkAttackPlannerSuspendComputer) = $GUI_CHECKED Then
+		$g_bAttackPlannerSuspendComputer = True
+	Else
+		$g_bAttackPlannerSuspendComputer = False
 	EndIf
 EndFunc   ;==>chkAttackPlannerCloseCoC
 

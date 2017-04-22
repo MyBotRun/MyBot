@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........:
-; Modified ......: CodeSlinger69 (2017)
+; Modified ......: CodeSlinger69 (01-2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -166,7 +166,7 @@ Func CreateBotOptions()
 			_GUICtrlSetTip(-1,GetTranslated(636, 123, "This will auto resume your bot after x minutes"))
 			GUICtrlSetOnEvent(-1, "chkAutoResume")
 		$g_hTxtAutoResumeTime = GUICtrlCreateInput("5",$x + 132, $y + 5, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-		GUICtrlCreateLabel( GetTranslated(603,10, -1), $x+167, $y+5, 27, 15)
+		GUICtrlCreateLabel( GetTranslated(603,10, -1), $x + 167, $y + 6, 27, 15)
 		$y += 19
 	   $g_hChkUseRandomClick = GUICtrlCreateCheckbox(GetTranslated(636,94, "Random Click"), $x, $y, -1, -1)
 		   GUICtrlSetOnEvent(-1, "chkUseRandomClick")
@@ -191,10 +191,10 @@ Func CreateBotOptions()
 	   GUICtrlCreateLabel(GetTranslated(636,86, "When 'Another Device' wait") & ":", $x - 10, $y + 2, -1, -1)
 	   $sTxtTip = GetTranslated(636,87, "Enter the time to wait (in Minutes) before the Bot reconnects when another device took control.")
 		   _GUICtrlSetTip(-1, $sTxtTip)
-	   $g_hTxtTimeAnotherDevice = GUICtrlCreateInput("2", $x + 127, $y - 1, 35, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	   $g_hTxtTimeAnotherDevice = GUICtrlCreateInput("2", $x + 132, $y + 1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		   _GUICtrlSetTip(-1, $sTxtTip)
 		   GUICtrlSetLimit(-1, 3)
-	   GUICtrlCreateLabel(GetTranslated(603,10, "min."), $x + 165, $y + 2, -1, -1)
+	   GUICtrlCreateLabel(GetTranslated(603,10, "min."), $x + 167, $y + 2, -1, -1)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
    $y+= 51

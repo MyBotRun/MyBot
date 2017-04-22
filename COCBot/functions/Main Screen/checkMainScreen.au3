@@ -49,7 +49,7 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		If $g_bAndroidAdbScreencap = False And _WinAPI_IsIconic($g_hAndroidWindow) Then WinSetState($g_hAndroidWindow, "", @SW_RESTORE)
 	EndIf
 	$iCount = 0
-	While _CheckPixel($aIsMain, $g_bCapturePixel) = False
+	While _CaptureRegions() And (_CheckPixel($aIsMain) = False Or checkObstacles_Network(False, False))
 		If TestCapture() Then
 			SetLog("Main Screen not Located", $COLOR_ERROR)
 			ExitLoop

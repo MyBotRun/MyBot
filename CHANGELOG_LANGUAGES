@@ -1,3 +1,17 @@
+* **V7.1.3**
+ * Add Suspend Computer option to SmartWait and Attack Schedule
+	[634]
+	42=Suspend Computer
+	43=This option will suspend computer when not scheduled to Search & Attack!
+	[641]
+	47=Suspend Computer
+	48=Option will suspend computer when selected\r\nAdding this option may increase offline time slightly due to variable times required for startup
+ * Add missing translate in TH Snipe Attack GUI
+ 	[624]
+	2=Attack Type
+	6=Only drop these troops
+	19=Special troops to use
+
 * **V7.1.2**
  * Add auto slide bot when docked (when using new My Bot design Title Bar is used)
 	[636]

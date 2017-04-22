@@ -71,8 +71,69 @@ Global $g_iVILLAGE_OFFSET[3] = [0, 0, 1]
 
 #Region debugging
 ; <><><><><><><><><><><><><><><><><><>
-; <><><><> debugging <><><><>
-Global $g_aiSearchEnableDebugDeadBaseImage = 200 ; If $g_iDebugDeadBaseImage is 0 and more than searches reached, set $g_iDebugDeadBaseImage = 1, 0 = disabled
+; <><><><> debug flags <><><><>
+; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+Local Const $UserDebugEnable = 0 ; <<< change this value equal to 1, to enable USER debug mode when posting bugs in MBR forums!
+
+; This will be the ObjEvent to handle with object errors
+Global $g_oCOMErrorHandler = 0
+
+; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+; <><><><> Individual error flags for debugging individual sections of code!   			<><><><>
+; <><><><> Can be manually set when required, Enabled when = 1, disabled when = 0 	   <><><><>
+; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+Global $g_iDebugClick = $UserDebugEnable ; Debug Bot Clicks and when docked, display current mouse position and RGB color
+Global $g_iDebugSetlog = $UserDebugEnable ; Verbose log messages, or extra log messages most everywhere
+Global $g_iDebugOcr = $UserDebugEnable ; Creates \Lib\Debug folder and collects OCR images of text capture plus creates OCR log file
+Global $g_iDebugImageSave = $UserDebugEnable ; Save images at key points to allow review/verify emulator window status
+Global $g_iDebugBuildingPos = $UserDebugEnable ; extra information about buildings detected while searching for base to attack
+Global $g_iDebugSetlogTrain = $UserDebugEnable ; verbose log information during troop training
+Global $g_iDebugWindowMessages = $UserDebugEnable ; 0=off, 1=most Window Messages, 2=all Window Messages
+Global $g_iDebugAndroidEmbedded = $UserDebugEnable ; Extra Android messages when using dock mode
+Global $g_iDebugWalls = $UserDebugEnable ;  extra information about wall finding
+Global $g_iDebugGetLocation = $UserDebugEnable ;make a image of each structure detected with getlocation
+Global $g_iDebugSearchArea = $UserDebugEnable ; search area logging
+Global $g_iDebugRedArea = $UserDebugEnable ; display red line data captured
+
+; <><><><> Enabled when = "True", disabled when = "False"  <><><><>
+Global $g_bDebugSmartZap = ($UserDebugEnable ? True : False ) ; verbose logs for SmartZap users
+
+; <><><><> Enable these flags when debugging Attack CSV Scripts! <><><><>
+Global $g_iDebugAttackCSV = $UserDebugEnable ; Verbose log output of actual attack script plus bot actions
+Global $g_iDebugMakeIMGCSV = $UserDebugEnable ; Saves "clean" iamge and image with all drop points and detected buildings marked
+
+; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+; <><><><> ONLY Enable items below this line when debugging special errors listed!! <><><><>
+; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+; <><><><> Capture image of every base during village search! <><><><>
+Global $g_iDebugVillageSearchImages = 0 ; will fill drive with huge number of images, enable "Delete Temp Files" to reduce lag created with too many images in folder
+
+; <><><><> Debug Dead Base search problems <><><><>
+Global $g_iDebugDeadBaseImage = 0 ; Enable collection of zombie base images where loot is above search filter, no dead base detected
+Global $g_aiSearchEnableDebugDeadBaseImage = 200 ; If $g_iDebugDeadBaseImage is 0 and more than these searches reached, set $g_iDebugDeadBaseImage = 1, 0 = disabled
+
+; <><><><> Enable when debugging Milk attack errors! <><><><>
+Global $g_iDebugResourcesOffset = 0 ;make images with offset to check correct adjust values
+Global $g_iDebugMilkingIMGmake = 0
+Global $g_iDebugContinueSearchElixir = 0 ; SLOW... if =1 search elixir check all images even if capacity < mincapacity and make debug image in temp folder if no match all images
+
+; <><><><> Enable this flag to test Donation code, but DOES NOT DONATE! <><><><>
+Global $g_iDebugOCRdonate = 0 ; Creates OCR/image data and simulate, but do not donate
+
+; <><><><> Only enable thise when debuggng Android zoom out issues! <><><><>
+Global $g_iDebugDisableZoomout = 0
+Global $g_iDebugDisableVillageCentering = 0
+
+; <><><><> Only used to debug GDI memory leaks! <><><><>
+Global $g_iDebugGDICount = 0 ; monitor bot GDI Handle count, 0 = Disabled, <> 0 = Enabled
+
+; <><><><> Only used to debug language translations! <><><><>
+Global $g_iDebugMultilanguage = 0 ; Debug translated GUI messages, displays section/# of translate for GUI elements instead of actual text
+
+; <><><><> debugging use only variables <><><><>
+
 ; Enabled saving of enemy villages when deadbase is active
 Global $g_aZombie = ["" _ ; 0=Filename
 		, 0 _ ; 1=Raided Elixir
@@ -86,29 +147,9 @@ Global $g_aZombie = ["" _ ; 0=Filename
 		, 600 _ ; 9=Save screenshot when skipped DeadBase and available Exlixir in k is >= value (-1 for disable)
 		, 150 _ ; 10=Save screenshot when DeadBase and available Exlixir in k is < value (-1 for disable)
 		]
-
-Global $g_iDebugSearchArea = 0, $g_iDebugRedArea = 0, $g_iDebugWalls = 0, $g_iDebugVillageSearchImages = 0
-Global $g_iDebugMultilanguage = 0
-Global $g_iDebugGetLocation = 0 ;make a image of each structure detected with getlocation
-Global $g_iDebugAndroidEmbedded = 0
-Global $g_iDebugWindowMessages = 0 ; 0=off, 1=most Window Messages, 2=all Window Messages
-Global $g_iDebugGDICount = 0 ; monitor bot GDI Handle count, 0 = Disabled, <> 0 = Enabled
 Global $g_iDebugGDICountMax = 0 ; max value of GDI Handle count
 Global $g_oDebugGDIHandles = ObjCreate("Scripting.Dictionary") ; stores GDI handles when $g_iDebugGDICount <> 0
 
-; Milking
-Global $g_iDebugResourcesOffset = 0 ;make images with offset to check correct adjust values
-Global $g_iDebugMilkingIMGmake = 0
-Global $g_iDebugContinueSearchElixir = 0 ; SLOW... if =1 search elixir check all images even if capacity < mincapacity and make debug image in temp folder if no match all images
-
-; From Bot/Debug window
-Global $g_iDebugClick = 0 ; Debug Bot Clicks and when docked, display current mouse position and RGB color
-Global $g_iDebugSetlog = 0, $g_iDebugOcr = 0, $g_iDebugImageSave = 0, $g_iDebugBuildingPos = 0, $g_iDebugSetlogTrain = 0, $g_iDebugDisableZoomout = 0, $g_iDebugDisableVillageCentering = 0
-Global $g_iDebugOCRdonate = 0 ; when 1 make OCR and simulate but do not donate
-Global $g_iDebugAttackCSV = 0, $g_iDebugMakeIMGCSV = 0 ;attackcsv debug
-Global $g_iDebugDeadBaseImage = 0 ; Enable collection of zombies (capture screenshot of detect DeadBase routine)
-
-; <><><><> debugging <><><><>
 ; <><><><><><><><><><><><><><><><><><>
 #EndRegion debugging
 
@@ -202,13 +243,12 @@ Global $__BlueStacks2Version_2_5_or_later = False ;Starting with this version bo
 Global $__MEmu_Adjust_Width = 6
 Global $__MEmu_ToolBar_Width = 45
 Global $__MEmu_SystemBar = 36
-Global $__MEmu_PhoneLayout = "2" ; 0: bottom system bar, 1: right system bar, 2: no system bar (default)
-Global $__MEmu_Window[4][4] = _ ; Alternative window sizes (array must be ordered by version descending!)
+Global $__MEmu_PhoneLayout = "2" ; 0: bottom Nav Bar (default till 2.6.1), 1: right Nav Bar, 2: hidden Nav Bar (default since 2.6.2)
+Global $__MEmu_Window[3][5] = _ ; Alternative window sizes (array must be ordered by version descending!)
 		[ _ ; Version|$g_iAndroidWindowWidth|$g_iAndroidWindowHeight|$__MEmu_ToolBar_Width|$__MEmu_PhoneLayout
-		["2.8.0", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40], _
-		["2.6.2", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40], _
-		["2.5.0", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 40], _
-		["2.2.1", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45] _
+		["2.6.2", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40, "2"], _
+		["2.5.0", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 40, "0"], _
+		["2.2.1", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"] _
 		]
 Global $__Droid4X_Window[3][3] = _ ; Alternative window sizes (array must be ordered by version descending!)
 		[ _ ; Version|$g_iAndroidWindowWidth|$g_iAndroidWindowHeight
@@ -389,6 +429,9 @@ Global $g_hMutex_BotTitle = 0
 Global $g_hMutex_Profile = 0
 Global $g_hMutex_MyBot = 0
 
+; Detected Bot Instance thru watchdog registration
+Global $g_BotInstanceCount = 0
+
 ; Arrays to hold stat information
 Global $g_aiWeakBaseStats
 
@@ -431,7 +474,8 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eHdV11, $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend, _
 		$eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, _
 		$eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, _
-		$eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani
+		$eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, _
+		$eArabic
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
@@ -736,6 +780,22 @@ Global $g_iUnbrkMode = 0, $g_iUnbrkWait = 5
 Global $g_iUnbrkMinGold = 50000, $g_iUnbrkMinElixir = 50000, $g_iUnbrkMaxGold = 600000, $g_iUnbrkMaxElixir = 600000, $g_iUnbrkMinDark = 5000, $g_iUnbrkMaxDark = 6000
 
 ; <><><><> Village / Notify <><><><>
+Global Const $g_sCurlPath = $g_sLibPath & "\curl\curl.exe" ; Curl used on PushBullet
+Global $g_bNotifyForced = False
+Global $g_sTGChatID = ""
+Global $g_bPBRequestScreenshot = False
+Global $g_bPBRequestScreenshotHD = False
+Global $g_bPBRequestBuilderInfo = False
+Global $g_bPBRequestShieldInfo = False
+Global $g_bTGRequestScreenshot = False
+Global $g_bTGRequestScreenshotHD = False
+Global $g_bTGRequestBuilderInfo = False
+Global $g_bTGRequestShieldInfo = False
+Global $g_iTGLastRemote = 0
+Global $g_sTGLast_UID = ""
+Global $g_sTGLastMessage = ""
+Global $g_sAttackFile = ""
+
 ;PushBullet
 Global $g_bNotifyPBEnable = False, $g_sNotifyPBToken = ""
 ;Telegram
@@ -790,8 +850,8 @@ Global $g_aiTrainOrder[$eTroopCount] = [ _
 		$eTroopBowler]
 
 ; <><><><> Attack Plan / Train Army / Options <><><><>
-Global $g_bCloseWhileTrainingEnable = True, $g_bCloseWithoutShield = False, $g_bCloseEmulator = False, $g_bCloseRandom = False, $g_bCloseExactTime = False, _
-		$g_bCloseRandomTime = True, $g_iCloseRandomTimePercent = 10, $g_iCloseMinimumTime = 2
+Global $g_bCloseWhileTrainingEnable = True, $g_bCloseWithoutShield = False, $g_bCloseEmulator = False, $g_bSuspendComputer = False, $g_bCloseRandom = False, _
+		$g_bCloseExactTime = False, $g_bCloseRandomTime = True, $g_iCloseRandomTimePercent = 10, $g_iCloseMinimumTime = 2
 Global $g_iTrainClickDelay = 40
 Global $g_bTrainAddRandomDelayEnable = False, $g_iTrainAddRandomDelayMin = 5, $g_iTrainAddRandomDelayMax = 60
 
@@ -918,8 +978,8 @@ Global $g_bSearchAttackNowEnable = False, $g_iSearchAttackNowDelay = 0, $g_bSear
 ; <><><><> Attack Plan / Search & Attack / Options / Attack <><><><>
 Global $g_iActivateKQCondition = "Auto", $g_bActivateWardenCondition = False, $g_iDelayActivateKQ = 9000, $g_iDelayActivateW = 10000
 Global $g_aHeroesTimerActivation[$eHeroCount] = [0, 0, 0] ; $eHeroBarbarianKing | $eHeroArcherQueen | $eHeroGrandWarden
-Global $g_bAttackPlannerEnable = False, $g_bAttackPlannerCloseCoC = False, $g_bAttackPlannerCloseAll = False, $g_bAttackPlannerRandomEnable = False, $g_iAttackPlannerRandomTime = 0, _
-		$g_bAttackPlannerDayLimit = False, $g_iAttackPlannerDayMin = 12, $g_iAttackPlannerDayMax = 15
+Global $g_bAttackPlannerEnable = False, $g_bAttackPlannerCloseCoC = False, $g_bAttackPlannerCloseAll = False, $g_bAttackPlannerSuspendComputer = False, $g_bAttackPlannerRandomEnable = False, _
+	   $g_iAttackPlannerRandomTime = 0, $g_iAttackPlannerRandomTime = 0, $g_bAttackPlannerDayLimit = False, $g_iAttackPlannerDayMin = 12, $g_iAttackPlannerDayMax = 15
 Global $g_abPlannedAttackWeekDays[7] = [True, True, True, True, True, True, True]
 Global $g_abPlannedattackHours[24] = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
 Global $g_bPlannedDropCCHoursEnable = False, $g_bUseCCBalanced = False, $g_iCCDonated = 0, $g_iCCReceived = 0
@@ -993,7 +1053,7 @@ Global Const $g_sDirLanguages = @ScriptDir & "\Languages\"
 Global Const $g_sDefaultLanguage = "English"
 
 ; Notify
-Global Const $g_sNotifyVersion = "Revamp v1.5.1"
+Global Const $g_sNotifyVersion = "Revamp v1.5.8"
 Global Const $g_iPBRemoteControlInterval = 60000 ; 60 secs
 Global Const $g_iPBDeleteOldPushesInterval = 1800000 ; 30 mins
 Global $g_bNotifyDeleteAllPushesNow = False

@@ -28,7 +28,7 @@ Func CreateAttackSearchTHSnipeAttack()
    Local $x = 25, $y = 40
 	GUICtrlCreateGroup(GetTranslated(624,1, -1), $x - 20, $y - 15, $g_iSizeWGrpTab4, $g_iSizeHGrpTab4)
 		$x -= 15
-		$g_hLblAttackTHType = GUICtrlCreateLabel(GetTranslated(624,2, -1) & ":", $x  , $y  , 135, 18, $SS_LEFT)
+		$g_hLblAttackTHType = GUICtrlCreateLabel(GetTranslated(624, 2, "Attack Type") & ":", $x  , $y  , 135, 18, $SS_LEFT)
 
 		$y += 15
 		$g_hCmbAttackTHType = GUICtrlCreateCombo("",  $x, $y, 128, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
@@ -38,7 +38,7 @@ Func CreateAttackSearchTHSnipeAttack()
 			LoadThSnipeAttacks()
 
 		$y += 25
-		$g_hLblTSSelectTroop=GUICtrlCreateLabel(GetTranslated(624,6,-1) & ":",$x, $y , 135 , 18,$SS_LEFT)
+		$g_hLblTSSelectTroop=GUICtrlCreateLabel(GetTranslated(624, 6, "Only drop these troops") & ":",$x, $y , 135 , 18,$SS_LEFT)
 
 		$y += 15
 		$g_hCmbTSSelectTroop=GUICtrlCreateCombo("", $x , $y, 128, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
@@ -46,7 +46,7 @@ Func CreateAttackSearchTHSnipeAttack()
 			_GUICtrlSetTip(-1, GetTranslated(624,18, -1))
 
 		$y += 25
-		$g_hLblTSSelectSpecialTroop=GUICtrlCreateLabel(GetTranslated(624,19, -1) & ":",$x, $y, 135, 18, $SS_LEFT)
+		$g_hLblTSSelectSpecialTroop=GUICtrlCreateLabel(GetTranslated(624, 19, "Special troops to use") & ":",$x, $y, 135, 18, $SS_LEFT)
 
 		$y += 18
 	    $g_hPicTSKingAttack=GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x , $y, 24, 24)

@@ -180,7 +180,6 @@
 #include "functions\Other\TogglePause.au3"
 #include "functions\Other\CheckPrerequisites.au3"
 #include "functions\Other\CheckDisplay.au3"
-#include "functions\Other\AutoStart.au3"
 #include "functions\Other\WindowsArrange.au3"
 #include "functions\Other\MakeScreenshot.au3"
 #include "functions\Other\ClickDrag.au3"
@@ -192,6 +191,7 @@
 #include "functions\Other\RestartBot.au3"
 #include "functions\Other\WindowSystemMenu.au3"
 #include "functions\Other\image_get_info.au3"
+#include "functions\Other\SetWakeUpTime.au3"
 
 #include "functions\Other\IsPage.au3"
 #include "functions\Other\MoveMouseOutBS.au3"

@@ -23,15 +23,15 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 7.1.2)
-#pragma compile(FileVersion, 7.1.2)
+#pragma compile(ProductVersion, 7.1.3)
+#pragma compile(FileVersion, 7.1.3)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
 
 ; Enforce variable declarations
 Opt("MustDeclareVars", 1)
 
-Global $g_sBotVersion = "v7.1.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+Global $g_sBotVersion = "v7.1.3" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
 Global $g_sBotTitle = "" ;~ Don't assign any title here, use Func UpdateBotTitle()
 Global $g_hFrmBot = 0 ; The main GUI window
 
@@ -157,9 +157,6 @@ Func InitializeBot()
 	FinalInitialization($sAndroidInfo)
 
 	;ProcessSetPriority(@AutoItPID, $iBotProcessPriority) ;~ Restore process priority
-
-	; AutoStart Bot if requested
-	AutoStart()
 
 EndFunc   ;==>InitializeBot
 
@@ -546,12 +543,20 @@ EndFunc   ;==>FinalInitialization
 ; Example .......: No
 ; ===============================================================================================================================
 Func MainLoop()
+	Local $iStartDelay = 0
+	If $g_bAutoStart Or $g_bRestarted = True Then
+		Local $iDelay = $g_iAutoStartDelay
+		If $g_bRestarted = True Then $iDelay = 0
+		$iStartDelay = $iDelay * 1000
+		$g_iBotAction = $eBotStart
+	EndIf
+
 	While 1
 		_Sleep($DELAYSLEEP, True, False)
 
 		Switch $g_iBotAction
 			Case $eBotStart
-				BotStart()
+				BotStart($iStartDelay)
 				If $g_iBotAction = $eBotStart Then $g_iBotAction = $eBotNoAction
 			Case $eBotStop
 				BotStop()

@@ -1,4 +1,27 @@
-﻿* **V7.1.2**
+﻿* **V7.1.3**
+ * Add Suspend Computer option to SmartWait and Attack Schedule (see https://mybot.run/forums/index.php?/topic/29562-how-to-use-new-suspendsleep-computer-support/ for more details)
+ * Add Inferno lv4 , Mortar Lv9/10 , WizardTower lv10 , Xbow lv5 and AD lv9 to weakBase Images/GUI settings
+ * Add ObjEvent Code to handle with Objects errors and Poor Connection on Notify.
+ * Fix training not completing when out of resources detected but not restored or incorrectly detected in first place
+ * Fix SmartWait initiating wait for heroes
+ * Fix detect CoC App not installed (introduced in 7.1)
+ * Fix MEmu wrong phone layout for new instances (only MEmu till 2.6.1 impacted)
+ * Fix BlueStacks set screen size crashing bot due to recursion
+ * Fix MEmu sometimes not starting
+ * Fix watchdog restarting bots after computer resuming from sleep
+ * Fix z order of detached shield (when docked in Windows 7)
+ * Fix creation on imglog debug images when not configure with /lib/imglocdebug.txt
+ * Fix eventual issue if the object 'WinHTTP' was not created on Notify
+ * Fix Telegram last cmd on Stop/Start BOT
+ * Fix Telegram LOG remote command
+ * Fix Telegram Keyboard translate commands
+ * Fix Wait for Spells
+ * Improve CoC network reconnecting state detection and restart CoC during village search and home screen checks
+ * Improve auto-start bot so auto-start can be stopped
+ * Improve bot crashed handling during waiting for clouds
+ * Arabic Language File by @awssaad
+
+* **V7.1.2**
  * Add Persian Alphabet Recognition for Donation
  * Fix MEmu wrong phone layout used for window resizing introduced in 7.1
  * Fix halt mode for Dark Elixir Full

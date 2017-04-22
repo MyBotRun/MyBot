@@ -25,18 +25,19 @@ Func BotCommand()
 		$bChkBotStop = True ; set halt attack mode
 		$iCmbBotCond = 18 ; set stay online/collect only mode
 		$iCmbBotCommand = 0 ; set stop mode to stay online
-		SetDebugLog("Out of " & ($g_bOutOfGold ? "Gold" : "") & " " & ($g_bOutOfElixir ? "Elixir" : "") & " condition detected, force HALT mode!", Default, True)
+		Local $sOutOf = ($g_bOutOfGold ? "Gold" : "") & (($g_bOutOfGold And $g_bOutOfElixir)? " and " : "") & ($g_bOutOfElixir ? "Elixir" : "")
+		SetLog("Out of " & $sOutOf & " condition detected, force HALT mode!", $COLOR_WARNING)
 	Else
 		$bChkBotStop = $g_bChkBotStop ; Normal use GUI halt mode values
 		$iCmbBotCond = $g_iCmbBotCond
 		$iCmbBotCommand = $g_iCmbBotCommand
 	EndIf
 
-	If $bChkBotStop = True Then
+	$g_bMeetCondStop = False ; reset flags so bot can restart farming when conditions change.
+	$g_bTrainEnabled = True
+	$g_bDonationEnabled = True
 
-		$g_bMeetCondStop = False ; reset flags so bot can restart farming when conditions change.
-		$g_bTrainEnabled = True
-		$g_bDonationEnabled = True
+	If $bChkBotStop = True Then
 
 		If $iCmbBotCond = 15 And $g_iCmbHoursStop <> 0 Then $TimeToStop = $g_iCmbHoursStop * 3600000 ; 3600000 = 1 Hours
 

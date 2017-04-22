@@ -271,8 +271,12 @@ Func chkCloseWaitEnable()
 	EndIf
 	If GUICtrlRead($g_hChkRandomClose) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hChkCloseEmulator, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkSuspendComputer, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	Else
-		If GUICtrlRead($g_hChkCloseWhileTraining) = $GUI_CHECKED Then GUICtrlSetState($g_hChkCloseEmulator, $GUI_ENABLE)
+		If GUICtrlRead($g_hChkCloseWhileTraining) = $GUI_CHECKED Then
+			GUICtrlSetState($g_hChkCloseEmulator, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkSuspendComputer, $GUI_ENABLE)
+		EndIf
 	EndIf
 EndFunc   ;==>chkCloseWaitEnable
 
@@ -284,14 +288,23 @@ Func btnCloseWaitStop()
 	$g_bCloseEmulator = (GUICtrlRead($g_hChkCloseEmulator) = $GUI_CHECKED)
 EndFunc   ;==>btnCloseWaitStop
 
+Func btnCloseWaitSuspendComputer()
+	$g_bSuspendComputer = (GUICtrlRead($g_hChkSuspendComputer) = $GUI_CHECKED)
+EndFunc   ;==>btnCloseWaitSuspendComputer
+
 Func btnCloseWaitStopRandom()
 	If GUICtrlRead($g_hChkRandomClose) = $GUI_CHECKED Then
 		$g_bCloseRandom = True
 		$g_bCloseEmulator = False
+		$g_bSuspendComputer = False
 		GUICtrlSetState($g_hChkCloseEmulator, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkSuspendComputer, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	Else
 		$g_bCloseRandom = False
-		If GUICtrlRead($g_hChkCloseWhileTraining) = $GUI_CHECKED Then GUICtrlSetState($g_hChkCloseEmulator, $GUI_ENABLE)
+		If GUICtrlRead($g_hChkCloseWhileTraining) = $GUI_CHECKED Then
+			GUICtrlSetState($g_hChkCloseEmulator, $GUI_ENABLE)
+			GUICtrlSetState($g_hChkSuspendComputer, $GUI_ENABLE)
+		EndIf
 	EndIf
 EndFunc   ;==>btnCloseWaitStopRandom
 
@@ -321,7 +334,7 @@ Func chkTroopOrder2()
 	chkTroopOrder()
 EndFunc   ;==>chkTroopOrder2
 
-Func chkTroopOrder($bNoiseMode = True)
+Func chkTroopOrder($bSetLog = True)
 	If GUICtrlRead($g_hChkCustomTrainOrderEnable) = $GUI_CHECKED Then
 		$g_bCustomTrainOrderEnable = True
 		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_ENABLE)
@@ -337,14 +350,14 @@ Func chkTroopOrder($bNoiseMode = True)
 		For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
 			GUICtrlSetState($g_ahCmbTroopOrder[$i], $GUI_DISABLE) ; disable combo boxes
 		Next
-		SetDefaultTroopGroup($bNoiseMode) ; Reset troopgroup values to default
-		If $bNoiseMode Or $g_iDebugSetlogTrain = 1 Then
+		SetDefaultTroopGroup($bSetLog) ; Reset troopgroup values to default
+		If ($bSetLog Or $g_iDebugSetlogTrain = 1) And $g_bCustomTrainOrderEnable Then
 			Local $sNewTrainList = ""
 			For $i = 0 To $eTroopCount - 1
 				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
 			Next
 			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
-			Setlog("Current train order= " & $sNewTrainList, $COLOR_BLUE)
+			Setlog("Current train order= " & $sNewTrainList, $COLOR_INFO)
 		EndIf
 	EndIf
 EndFunc   ;==>chkTroopOrder
@@ -366,7 +379,7 @@ Func GUITrainOrder()
 			$bDuplicate = True
 		EndIf
 	Next
-	If $bDuplicate = True Then
+	If $bDuplicate Then
 		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE) ; enable button to apply new order
 		Return
 	Else
@@ -453,25 +466,25 @@ Func BtnTroopOrderSet()
 		If @error Then
 			Switch @error
 				Case 1
-					Setlog("Code problem, can not continue till fixed!", $COLOR_RED)
+					Setlog("Code problem, can not continue till fixed!", $COLOR_ERROR)
 				Case 2
-					Setlog("Bad Combobox selections, please fix!", $COLOR_RED)
+					Setlog("Bad Combobox selections, please fix!", $COLOR_ERROR)
 				Case 3
-					Setlog("Unable to Change Troop Train Order due bad change count!", $COLOR_RED)
+					Setlog("Unable to Change Troop Train Order due bad change count!", $COLOR_ERROR)
 				Case Else
-					Setlog("Monkey ate bad banana, something wrong with ChangeTroopTrainOrder() code!", $COLOR_RED)
+					Setlog("Monkey ate bad banana, something wrong with ChangeTroopTrainOrder() code!", $COLOR_ERROR)
 			EndSwitch
 			GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 		Else
-			Setlog("Troop training order changed successfully!", $COLOR_GREEN)
+			Setlog("Troop training order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eTroopCount - 1
 				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
 			Next
 			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
-			Setlog("Troop train order= " & $sNewTrainList, $COLOR_BLUE)
+			Setlog("Troop train order= " & $sNewTrainList, $COLOR_INFO)
 		EndIf
 	Else
-		Setlog("Must use all troops and No duplicate troop names!", $COLOR_RED)
+		Setlog("Must use all troops and No duplicate troop names!", $COLOR_ERROR)
 		GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	EndIf
 ;	GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE)
@@ -485,7 +498,7 @@ Func ChangeTroopTrainOrder()
 	Local $NewTroopOrder[$eTroopCount]
 	Local $iUpdateCount = 0
 
-	If IsUseCustomTroopOrder() = False Then ; check if no custom troop values saved yet.
+	If Not IsUseCustomTroopOrder() Then ; check if no custom troop values saved yet.
 		SetError(2, 0, False)
 		Return
 	EndIf
@@ -508,7 +521,7 @@ Func ChangeTroopTrainOrder()
 		Next
 		GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnGreenLight)
 	Else
-		Setlog($iUpdateCount & "|" & $eTroopCount & " - Error - Bad troop assignment in ChangeTroopTrainOrder()", $COLOR_RED)
+		Setlog($iUpdateCount & "|" & $eTroopCount & " - Error - Bad troop assignment in ChangeTroopTrainOrder()", $COLOR_ERROR)
 		SetError(3, 0, False)
 		Return
 	EndIf
@@ -516,22 +529,22 @@ Func ChangeTroopTrainOrder()
 	Return True
 EndFunc   ;==>ChangeTroopTrainOrder
 
-Func SetDefaultTroopGroup($bNoiseMode = True)
+Func SetDefaultTroopGroup($bSetLog = True)
 	For $i = 0 To $eTroopCount - 1
 		$g_aiTrainOrder[$i] = $i
 	Next
 
-	If $bNoiseMode Or $g_iDebugSetlogTrain = 1 Then Setlog("Default troop training order set", $COLOR_GREEN)
+	If ($bSetLog Or $g_iDebugSetlogTrain = 1) And $g_bCustomTrainOrderEnable Then Setlog("Default troop training order set", $COLOR_SUCCESS)
 EndFunc   ;==>SetDefaultTroopGroup
 
 Func IsUseCustomTroopOrder()
 	For $i = 0 To UBound($g_aiCmbCustomTrainOrder) - 1 ; Check if custom train order has been used, to select log message
 		If $g_aiCmbCustomTrainOrder[$i] = -1 Then
-			If $g_iDebugSetlogTrain = 1 Then Setlog("Custom train order not used...", $COLOR_DEBUG) ;Debug
+			If $g_iDebugSetlogTrain = 1 And $g_bCustomTrainOrderEnable Then Setlog("Custom train order not used...", $COLOR_DEBUG) ;Debug
 			Return False
 		EndIf
 	Next
-	If $g_iDebugSetlogTrain = 1 Then Setlog("Custom train order used...", $COLOR_DEBUG) ;Debug
+	If $g_iDebugSetlogTrain = 1 And $g_bCustomTrainOrderEnable Then Setlog("Custom train order used...", $COLOR_DEBUG) ;Debug
 	Return True
 EndFunc   ;==>IsUseCustomTroopOrder
 

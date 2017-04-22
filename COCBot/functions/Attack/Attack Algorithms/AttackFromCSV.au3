@@ -440,7 +440,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		Local $htimerMine = Round(__TimerDiff($hTimer) / 1000, 2)
 		If (IsArray($g_aiPixelMine)) Then
 			For $i = 0 To UBound($g_aiPixelMine) - 1
-				$pixel = $g_aiPixelMine[$i]
+				Local $pixel = $g_aiPixelMine[$i]
 				Local $str = $pixel[0] & "-" & $pixel[1] & "-" & "MINE"
 				If isInsideDiamond($pixel) Then
 					If $pixel[0] <= $InternalArea[2][0] Then
@@ -481,7 +481,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		Local $htimerMine = Round(__TimerDiff($hTimer) / 1000, 2)
 		If (IsArray($g_aiPixelElixir)) Then
 			For $i = 0 To UBound($g_aiPixelElixir) - 1
-				$pixel = $g_aiPixelElixir[$i]
+				Local $pixel = $g_aiPixelElixir[$i]
 				Local $str = $pixel[0] & "-" & $pixel[1] & "-" & "ELIXIR"
 				If isInsideDiamond($pixel) Then
 					If $pixel[0] <= $InternalArea[2][0] Then
@@ -522,7 +522,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		Local $htimerMine = Round(__TimerDiff($hTimer) / 1000, 2)
 		If (IsArray($g_aiPixelDarkElixir)) Then
 			For $i = 0 To UBound($g_aiPixelDarkElixir) - 1
-				$pixel = $g_aiPixelDarkElixir[$i]
+				Local $pixel = $g_aiPixelDarkElixir[$i]
 				Local $str = $pixel[0] & "-" & $pixel[1] & "-" & "DRILL"
 				If isInsideDiamond($pixel) Then
 					If $pixel[0] <= $InternalArea[2][0] Then

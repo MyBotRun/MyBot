@@ -20,6 +20,7 @@ Func CloseBlueStacks()
 
 	If Not InitAndroid() Then Return
 
+	SetDebugLog("Closing BlueStacks: " & $__BlueStacks_Path & "HD-Quit.exe")
 	RunWait($__BlueStacks_Path & "HD-Quit.exe")
 	If @error <> 0 Then
 		SetLog($g_sAndroidEmulator & " failed to quit", $COLOR_ERROR)
@@ -71,6 +72,7 @@ Func CloseBlueStacks2()
 
 	If Not InitAndroid() Then Return
 
+	SetDebugLog("Closing BlueStacks: " & $__BlueStacks_Path & "HD-Quit.exe")
 	RunWait($__BlueStacks_Path & "HD-Quit.exe")
 	If @error <> 0 Then
 		SetLog($g_sAndroidEmulator & " failed to quit", $COLOR_ERROR)

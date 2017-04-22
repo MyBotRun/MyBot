@@ -40,7 +40,7 @@ Func OpenBlueStacks($bRestart = False)
 	SetLog("Please wait while " & $g_sAndroidEmulator & "/CoC start....", $COLOR_SUCCESS)
 	WinGetAndroidHandle()
 	$hTimer = __TimerInit() ; start a timer for tracking BS start up time
-	While IsArray(ControlGetPos($g_sAndroidTitle, $g_sAppPaneName, $g_sAppClassInstance)) = False
+	While $g_hAndroidControl = 0
 		If _Sleep(3000) Then ExitLoop
 		_StatusUpdateTime($hTimer, $g_sAndroidEmulator & "/CoC Start")
 		If __TimerDiff($hTimer) > $g_iAndroidLaunchWaitSec * 1000 Then ; if no BS position returned in 4 minutes, BS/PC has major issue so exit
@@ -55,7 +55,7 @@ Func OpenBlueStacks($bRestart = False)
 		WinGetAndroidHandle()
 	WEnd
 
-	If IsArray(ControlGetPos($g_sAndroidTitle, $g_sAppPaneName, $g_sAppClassInstance)) Then
+	If $g_hAndroidControl Then
 		$connected_to = ConnectAndroidAdb(False, 3000) ; small time-out as ADB connection must be available now
 
 		SetLog("BlueStacks Loaded, took " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_SUCCESS)
@@ -81,7 +81,7 @@ Func OpenBlueStacks2($bRestart = False)
 
 	$hTimer = __TimerInit()
 	WinGetAndroidHandle()
-	While IsArray(ControlGetPos($g_sAndroidTitle, $g_sAppPaneName, $g_sAppClassInstance)) = False
+	While $g_hAndroidControl = 0
 		If Not $g_bRunState Then Return False
 		; check that HD-Frontend.exe process is really there
 		Local $PID = ProcessExists2($g_sAndroidProgramPath)
@@ -120,7 +120,7 @@ Func OpenBlueStacks2($bRestart = False)
 	EndIf
 	;_WinAPI_SetWindowPos($g_hAndroidWindow, 0, 0, 0, 0, 0, BitOr($SWP_NOMOVE, $SWP_NOSIZE, $SWP_FRAMECHANGED)) ; redraw
 
-	If IsArray(ControlGetPos($g_sAndroidTitle, $g_sAppPaneName, $g_sAppClassInstance)) Then
+	If $g_hAndroidControl Then
 		$connected_to = ConnectAndroidAdb(False, 3000) ; small time-out as ADB connection must be available now
 
 		;If WaitForDeviceBlueStacks2($g_iAndroidLaunchWaitSec - __TimerDiff($hTimer) / 1000, $hTimer) Then Return
@@ -394,16 +394,16 @@ EndFunc   ;==>RebootBlueStacksSetScreen
 
 Func ConfigBlueStacks2WindowManager()
 	If Not $g_bRunState Then Return
-	Local $cmdOutput, $process_killed
+	Local $cmdOutput
 	; shell wm density 160
 	; shell wm size 860x672
 	; shell reboot
 
 	; Reset Window Manager size
-	$cmdOutput = AndroidAdbSendShellCommand("wm size reset", $process_killed)
+	$cmdOutput = AndroidAdbSendShellCommand("wm size reset", Default, Default, False)
 
 	; Set expected dpi
-	$cmdOutput = AndroidAdbSendShellCommand("wm density 160", $process_killed)
+	$cmdOutput = AndroidAdbSendShellCommand("wm density 160", Default, Default, False)
 
 	; Set font size to normal
 	AndroidSetFontSizeNormal()

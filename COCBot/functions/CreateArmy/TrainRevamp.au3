@@ -248,7 +248,7 @@ Func CheckArmySpellCastel()
 	Next
 
 	If UBound($aGetSpellsSize) = 2 Then
-		If $aGetSpellsSize[0] = $aGetSpellsSize[1] Or $aGetSpellsSize[0] >= $g_iTotalSpellValue Or $aGetSpellsSize[0] >= $totalCapacitySpellsToBrew Then
+		If Number($aGetSpellsSize[0]) = Number($aGetSpellsSize[1]) Or Number($aGetSpellsSize[0]) >= Number($g_iTotalSpellValue) Or (Number($aGetSpellsSize[0]) >= Number($totalCapacitySpellsToBrew) And $g_bQuickTrainEnable = False) Then ; Force numeric check
 			$g_bFullArmySpells = True
 		EndIf
 	Else
@@ -364,7 +364,7 @@ Func IsFullSpells($log = False) ;Go in Spell Tab
 	$g_bFullArmySpells = False
 	If UBound($aGetSpellsSize) = 2 Then
 		If $log Then SetLog("Spells: " & $aGetSpellsSize[0] & "/" & $aGetSpellsSize[1], $COLOR_GREEN)
-		If $aGetSpellsSize[0] = $aGetSpellsSize[1] Or $aGetSpellsSize[0] >= $g_iTotalSpellValue Or $aGetSpellsSize[0] >= TotalSpellsToBrewInGUI() Then
+		If Number($aGetSpellsSize[0]) = Number($aGetSpellsSize[1]) Or Number($aGetSpellsSize[0]) >= Number($g_iTotalSpellValue) Or (Number($aGetSpellsSize[0]) >= Number(TotalSpellsToBrewInGUI()) And $g_bQuickTrainEnable = False) Then ; Force numeric check
 			$g_bFullArmySpells = True
 			Return True
 		EndIf

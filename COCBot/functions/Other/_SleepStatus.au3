@@ -7,6 +7,7 @@
 ;                  $iSleep              - [optional] an integer value. Default is True.
 ;                  $bDirection          - [optional] a boolean value. Default is True.
 ;                  $CheckRunState       - [optional] a boolean value. Default is True to check for $g_bRunState.
+;                  $iBeginTimer         - [Optional] initial __TimerInit()
 ; Return values .: False:				default for running bot
 ;				   True:				check for run state and bot's stopped
 ; Author ........: KnowJack (June-2015)
@@ -17,22 +18,22 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = True)
+Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = True, $iBeginTimer = __TimerInit())
 	; $bDirection: True equals count down display, False equals count up display
 
 	Local $iDay = 0, $iHour = 0, $iMin = 0, $iSec = 0
-	Local $iBegin, $iCurTime, $iTime
+	Local $iCurTime, $iTime
 	Local $bUpdate = True, $hLastUpdate
 	Local $iDayCalc = 0, $iHourCalc = 0, $iMinCalc = 0, $iSecCalc = 0
 	Local $sTimeWait, $sTimeLeftLapse = ",  Time Lapse = "
 
-	$iBegin = __TimerInit()
+
 	_TicksToDay($iDelay, $iDay, $iHour, $iMin, $iSec)
 
-	While __TimerDiff($iBegin) < $iDelay
+	While __TimerDiff($iBeginTimer) < $iDelay
 		If $g_bRunState = False And $CheckRunState = True Then Return True
 		If $bUpdate Then
-			$iCurTime = __TimerDiff($iBegin)
+			$iCurTime = __TimerDiff($iBeginTimer)
 			$iTime = $iCurTime ; display count up timer ; avoid flicker
 			If $bDirection = True Then
 				$iTime = $iDelay - $iCurTime ; display countdown timer

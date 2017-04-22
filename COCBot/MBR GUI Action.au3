@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func BotStart()
+Func BotStart($bAutostartDelay = 0)
 	ResumeAndroid()
 	CalCostCamp()
 	CalCostSpell()
@@ -45,8 +45,12 @@ Func BotStart()
 	readConfig()
 	applyConfig(False) ; bot window redraw stays disabled!
 
+	; Initial ObjEvents for the Autoit objects errors
+	__ObjEventIni()
+
 	;Reset Telegram message
 	NotifyGetLastMessageFromTelegram()
+	$g_iTGLastRemote = $g_sTGLast_UID
 
 	If BitAND($g_iAndroidSupportFeature, 1 + 2) = 0 And $g_bChkBackgroundMode = True Then
 		GUICtrlSetState($g_hChkBackgroundMode, $GUI_UNCHECKED)
@@ -65,6 +69,11 @@ Func BotStart()
 	DisableGuiControls()
 
 	SetRedrawBotWindow(True, Default, Default, Default, "BotStart")
+
+	If $bAutostartDelay Then
+		SetLog("Bot Auto Starting in " & Round($bAutostartDelay / 1000, 0) & " seconds", $COLOR_ERROR)
+		_SleepStatus($bAutostartDelay)
+	EndIf
 
 	Local $Result = False
 	If WinGetAndroidHandle() = 0 Then
@@ -161,6 +170,9 @@ Func BotStop()
 	Else
 		$g_bSearchMode = False
 	EndIf
+
+	; Ends ObjEvents for the Autoit objects errors
+	__ObjEventEnds()
 
 	ReduceBotMemory()
 EndFunc   ;==>BotStop

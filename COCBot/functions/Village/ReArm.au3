@@ -63,31 +63,35 @@ Func ReArm()
 					SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 				Else
 					Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
-					Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
-					Local $ButtonX = 125 + Int($posPoint[0])
-					Local $ButtonY = 610 + Int($posPoint[1])
-					If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
-					If _Sleep($DELAYREARM1) Then Return
-					Click(515, 400, 1, 0, "#0226")
-					If _Sleep($DELAYREARM4) Then Return
-					If isGemOpen(True) = True Then
-						Setlog("Not enough loot to rearm traps.....", $COLOR_ERROR)
-						Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
-						If _Sleep($DELAYREARM1) Then Return
-					Else
-						Switch $i
-							Case 0
-								SetLog("Rearmed Trap(s)", $COLOR_SUCCESS)
-								$g_abNotNeedAllTime[0] = False
-							Case 1
-								SetLog("Reloaded XBow(s)", $COLOR_SUCCESS)
-								$g_abNotNeedAllTime[0] = False
-							Case 2
-								SetLog("Reloaded Inferno(s)", $COLOR_SUCCESS)
-								$g_abNotNeedAllTime[0] = False
-						EndSwitch
-						$locate = 1
-						If _Sleep($DELAYREARM1) Then Return
+					If UBound($expRet) > 1 Then 
+						Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+						If UBound($posPoint) > 1 Then
+							Local $ButtonX = 125 + Int($posPoint[0])
+							Local $ButtonY = 610 + Int($posPoint[1])
+							If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
+							If _Sleep($DELAYREARM1) Then Return
+							Click(515, 400, 1, 0, "#0226")
+							If _Sleep($DELAYREARM4) Then Return
+							If isGemOpen(True) = True Then
+								Setlog("Not enough loot to rearm traps.....", $COLOR_ERROR)
+								Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
+								If _Sleep($DELAYREARM1) Then Return
+							Else
+								Switch $i
+									Case 0
+										SetLog("Rearmed Trap(s)", $COLOR_SUCCESS)
+										$g_abNotNeedAllTime[0] = False
+									Case 1
+										SetLog("Reloaded XBow(s)", $COLOR_SUCCESS)
+										$g_abNotNeedAllTime[0] = False
+									Case 2
+										SetLog("Reloaded Inferno(s)", $COLOR_SUCCESS)
+										$g_abNotNeedAllTime[0] = False
+								EndSwitch
+								$locate = 1
+								If _Sleep($DELAYREARM1) Then Return
+							EndIf
+						EndIf
 					EndIf
 				EndIf
 			EndIf

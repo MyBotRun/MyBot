@@ -24,7 +24,7 @@ Func IsSearchAttackEnabled()
 	Local $aNoAttackTimes[2] = [$sStartTime, $sEndTime] ; array to hold start/end time for when attacking is disabled.
 	Local $iWaitTime = 0
 
-	Local $bCloseGame = $g_bAttackPlannerCloseCoC = True Or $g_bAttackPlannerCloseAll = True ; flag summary for closing game from GUI values
+	Local $bCloseGame = $g_bAttackPlannerCloseCoC = True Or $g_bAttackPlannerCloseAll = True Or $g_bAttackPlannerSuspendComputer = True ; flag summary for closing game from GUI values
 	If $g_iDebugSetlog = 1 Then Setlog("$bCloseGame:" & $bCloseGame, $COLOR_DEBUG)
 
 	If $g_bAttackPlannerDayLimit = True And _OverAttackLimit() Then ; check daily attack limit before checking schedule
@@ -32,7 +32,7 @@ Func IsSearchAttackEnabled()
 		If _Sleep($DELAYRESPOND) Then Return True
 		If $bCloseGame Then
 			$iWaitTime = _getTimeRemainTimeToday() ; get seconds left in day till Midnight
-			UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True) ; Close and Wait for attacking to start
+			UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True, $g_bAttackPlannerSuspendComputer) ; Close and Wait for attacking to start
 			$g_bRestart = True
 			Return
 		Else
@@ -56,7 +56,7 @@ Func IsSearchAttackEnabled()
 					SetError(1, "Can not find NoAttack wait time", True)
 					Return True
 				EndIf
-				UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True) ; Close and Wait for attacking to start
+				UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True, $g_bAttackPlannerSuspendComputer) ; Close and Wait for attacking to start
 				$g_bRestart = True
 				Return
 			Else
@@ -91,7 +91,7 @@ Func IsSearchAttackEnabled()
 				EndIf
 				If $g_iDebugSetlog = 1 Then Setlog("Stop attack wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
 				; close emulator as directed
-				UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True) ; Close and Wait for attacking to start
+				UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True, $g_bAttackPlannerSuspendComputer) ; Close and Wait for attacking to start
 				$g_bRestart = True
 				Return
 			Else

@@ -45,8 +45,9 @@ Func drillSearch()
 					SetLog("Found Duplicate Dark Elixir Drill: [" & $aReturnResult[$jResult][0] & "," & $aReturnResult[$jResult][1] & "], Level: " & $aReturnResult[$jResult][2], $COLOR_DEBUG)
 				EndIf
 				_ArrayDelete($aReturnResult, $jResult)
+			Else
+				$jResult += 1
 			EndIf
-			$jResult += 1
 		WEnd
 		; Correcting Drilllevel
 		Local $iDrillLevel = CheckDrillLvl($aReturnResult[$iResult][0], $aReturnResult[$iResult][1])

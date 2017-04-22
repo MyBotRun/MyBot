@@ -81,7 +81,8 @@ EndFunc   ;==>OpenCoC
 ; Description ...: Waits for specified time before restarting Coc
 ; Syntax ........: WaitnOpenCoC($iWaitTime)
 ; Parameters ....: $iWaitTime           - Time to wait in milliseconds.
-;					  ; $bFullRestart			 - Optional boolean flag if function needs to clean up mis windows after opening CoC
+;				   $bFullRestart        - Optional boolean flag if function needs to clean up mis windows after opening CoC
+;                  $bSuspendComputer    - Optional boolean to put computer into sleep and resume again
 ; Return values .: None
 ; Author ........: KnowJack (Aug 2015)
 ; Modified ......: TheMaster (2015), cosote (Dec 2015)
@@ -92,7 +93,7 @@ EndFunc   ;==>OpenCoC
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func WaitnOpenCoC($iWaitTime, $bFullRestart = False)
+Func WaitnOpenCoC($iWaitTime, $bFullRestart = False, $bSuspendComputer = False)
 	ResumeAndroid()
 	If Not $g_bRunState Then Return
 
@@ -110,7 +111,9 @@ Func WaitnOpenCoC($iWaitTime, $bFullRestart = False)
 	If $iSec > 0 Then $sWaitTime &= $iSec & " seconds "
 	SetLog("Waiting " & $sWaitTime & "before starting CoC", $COLOR_SUCCESS)
 	ReduceBotMemory()
-	If _SleepStatus($iWaitTime) Then Return False ; Wait for server to see log off
+	Local $hTimer = __TimerInit()
+	If $bSuspendComputer Then SuspendComputer($iWaitTime)
+	If _SleepStatus($iWaitTime, True, True, True, $hTimer) Then Return False ; Wait for server to see log off
 
 	If Not StartAndroidCoC() Then Return
 	If Not $g_bRunState Then Return

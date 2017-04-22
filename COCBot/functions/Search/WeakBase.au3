@@ -92,12 +92,12 @@ Func getTHDefenseMax($levelTownHall, $defenseType)
 	Local $maxTH = 11
 
 	; Setup Arrays with the max level per town hall level
-	Local $eagleLevels[$maxTH] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
-	Local $infernoLevels[$maxTH] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4]
-	Local $mortarLevels[$maxTH] = [0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-	Local $wizardLevels[$maxTH] = [0, 0, 0, 0, 2, 3, 4, 6, 7, 8, 9]
-	Local $xbowLevels[$maxTH] = [0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 4]
-	Local $adefenseLevels[$maxTH] = [0, 0, 0, 2, 3, 4, 5, 6, 7, 8, 8]
+	Local $eagleLevels[$maxTH] =    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ]
+	Local $infernoLevels[$maxTH] =  [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4 ]
+	Local $mortarLevels[$maxTH] =   [0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10]
+	Local $wizardLevels[$maxTH] =   [0, 0, 0, 0, 2, 3, 4, 6, 7, 9, 10]
+	Local $xbowLevels[$maxTH] =     [0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 5 ]
+	Local $adefenseLevels[$maxTH] = [0, 0, 0, 2, 3, 4, 5, 6, 7, 8, 9 ]
 
 	; If something went wrong with TH search and returned 0, set to max TH level
 	If $levelTownHall = 0 Then $levelTownHall = $maxTH

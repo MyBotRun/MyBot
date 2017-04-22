@@ -148,17 +148,21 @@ Func GetVariable(Const $ImageToUse, Const $iIndex)
 		Else
 			If $g_iDebugSetlogTrain Then Setlog("String: " & $res[0])
 			Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
-			Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
-			Local $ButtonX = 25 + Int($posPoint[0])
-			Local $ButtonY = 375 + Int($posPoint[1])
-			Local $Colorcheck = "0x" & _GetPixelColor($ButtonX, $ButtonY, $g_bCapturePixel)
-			Local $Tolerance = 40
-			Local $FinalVariable[4] = [$ButtonX, $ButtonY, $Colorcheck, $Tolerance]
-			SetLog(" - " & GetTroopName($iIndex) & " Icon found!", $COLOR_SUCCESS)
-			If $g_iDebugSetlogTrain Then SetLog("Found: [" & $ButtonX & "," & $ButtonY & "]", $COLOR_SUCCESS)
-			If $g_iDebugSetlogTrain Then SetLog("Color check: " & $Colorcheck, $COLOR_SUCCESS)
-			If $g_iDebugSetlogTrain Then SetLog("$Tolerance: " & $Tolerance, $COLOR_SUCCESS)
-			Return $FinalVariable
+			If UBound($expRet) > 1 Then 
+				Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
+				If UBound($posPoint) > 1 Then
+					Local $ButtonX = 25 + Int($posPoint[0])
+					Local $ButtonY = 375 + Int($posPoint[1])
+					Local $Colorcheck = "0x" & _GetPixelColor($ButtonX, $ButtonY, $g_bCapturePixel)
+					Local $Tolerance = 40
+					Local $FinalVariable[4] = [$ButtonX, $ButtonY, $Colorcheck, $Tolerance]
+					SetLog(" - " & GetTroopName($iIndex) & " Icon found!", $COLOR_SUCCESS)
+					If $g_iDebugSetlogTrain Then SetLog("Found: [" & $ButtonX & "," & $ButtonY & "]", $COLOR_SUCCESS)
+					If $g_iDebugSetlogTrain Then SetLog("Color check: " & $Colorcheck, $COLOR_SUCCESS)
+					If $g_iDebugSetlogTrain Then SetLog("$Tolerance: " & $Tolerance, $COLOR_SUCCESS)
+					Return $FinalVariable
+				EndIf
+			EndIf
 		EndIf
 	Else
 		SetLog("Don't know how to train the troop with index " & $iIndex & " yet")

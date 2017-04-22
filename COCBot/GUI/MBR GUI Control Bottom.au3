@@ -162,8 +162,7 @@ Func btnStart()
 	Else
 		$g_iBotAction = $eBotStart
 	EndIf
-			$g_iActualTrainSkip = 0
-
+	$g_iActualTrainSkip = 0
 EndFunc   ;==>btnStart
 
 Func btnStop()
@@ -274,9 +273,6 @@ Func btnEmbed()
 	WinGetAndroidHandle()
 	WinGetPos($g_hAndroidWindow)
 	If @error <> 0 Then Return SetError(0, 0, 0)
-	;If Not $g_bAndroidEmbedded And GetProcessDpiAwareness(GetAndroidPid()) And CheckDpiAwareness(False, True) Then
-		; DPI awareness changed
-	;EndIf
 	AndroidEmbed(Not $g_bAndroidEmbedded)
 EndFunc   ;==>btnHide
 

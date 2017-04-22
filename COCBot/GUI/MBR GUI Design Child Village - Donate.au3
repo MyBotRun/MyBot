@@ -1844,7 +1844,7 @@ Func CreateScheduleSubTab()
 			_GUICtrlSetTip(-1, GetTranslated(634,14, "Disable Clan Castle Usage or Donations if Ratio is not correct. Will Auto Continue when the Ratio is correct again"))
 			GUICtrlSetOnEvent(-1, "chkBalanceDR")
 
-	$x += 250
+	$x += 290
 		$g_hCmbCCDonated = GUICtrlCreateCombo("",  $x + 40 , $y, 30, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, GetTranslated(634,15, "Donated ratio"))
 			GUICtrlSetData(-1, "1|2|3|4|5", "1")
