@@ -102,6 +102,9 @@ Func GetNoxRtPath()
 	If FileExists($path) = 0 Then
 		$path = EnvGet("ProgramFiles(x86)") & "\Bignox\BigNoxVM\RT\"
 	EndIf
+	If FileExists($path) = 0 Then
+		$path = EnvGet("ProgramFiles") & "\Bignox\BigNoxVM\RT\"
+	EndIf
 	SetError(0, 0, 0)
 	Return StringReplace($path, "\\", "\")
 EndFunc   ;==>GetNoxRtPath
@@ -200,13 +203,33 @@ Func InitNox($bCheckOnly = False)
 			$g_bAndroidSharedFolderAvailable = True
 			$g_sAndroidPicturesHostPath = $aRegExResult[UBound($aRegExResult) - 1] & "\"
 		Else
-			$g_bAndroidSharedFolderAvailable = False
-			$g_bAndroidAdbScreencap = False
-			$g_sAndroidPicturesHostPath = ""
-			SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
+			; Check the shared folder 'Nox_share' , this is the default path on last version
+			If FileExists(@MyDocumentsDir & "\Nox_share\") then
+				$g_bAndroidSharedFolderAvailable = True
+				$g_sAndroidPicturesHostPath = @MyDocumentsDir & "\Nox_share\Other\"
+				If not FileExists($g_sAndroidPicturesHostPath) then
+					; Just in case of 'Other' Folder doesn't exist
+					DirCreate($g_sAndroidPicturesHostPath)
+				EndIf
+			Else
+				$g_bAndroidSharedFolderAvailable = False
+				$g_bAndroidAdbScreencap = False
+				$g_sAndroidPicturesHostPath = ""
+				SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
+			EndIf
 		EndIf
 
 		$__VBoxGuestProperties = LaunchConsole($__VBoxManage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
+
+		Local $v = GetVersionNormalized($g_sAndroidVersion)
+		For $i = 0 To UBound($__Nox_Config) - 1
+			Local $v2 = GetVersionNormalized($__Nox_Config[$i][0])
+			If $v >= $v2 Then
+				SetDebugLog("Using Android Config of " & $g_sAndroidEmulator & " " & $__Nox_Config[$i][0])
+				$g_sAppClassInstance = $__Nox_Config[$i][1]
+				ExitLoop
+			EndIf
+		Next
 
 		; Update Android Screen and Window
 		;UpdateNoxConfig()
@@ -233,6 +256,7 @@ Func SetScreenNox()
 		; remove tailing backslash
 		Local $path = $g_sAndroidPicturesHostPath
 		If StringRight($path, 1) = "\" Then $path = StringLeft($path, StringLen($path) - 1)
+		$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder remove " & $g_sAndroidInstance & " --name Other", $process_killed)
 		$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name Other --hostpath """ & $path & """  --automount", $process_killed)
 	EndIf
 

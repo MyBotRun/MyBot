@@ -73,9 +73,23 @@ Func _Ini_Save($filename)
 		If $asParts[1] <> $sCurrentSection Then
 			$sCurrentSection = $asParts[1]
 			FileWriteLine($hFile, "[" & $sCurrentSection & "]")
+			; Strategies File
+			If $g_sProfileSecondaryOutputFileName <> "" Then
+				If $sCurrentSection = "search" Or $sCurrentSection = "attack" Or $sCurrentSection = "troop" Or $sCurrentSection = "spells" Or $sCurrentSection = "milkingattack" Or $sCurrentSection = "endbattle" Or $sCurrentSection = "collectors" then
+					FileWriteLine($g_sProfileSecondaryOutputFileName, "[" & $sCurrentSection & "]")
+				EndIF
+			EndIf
 		EndIf
 
 		FileWriteLine($hFile, $asParts[2] & "=" & $g_asIniTable[$i][1])
+
+		; Strategies File
+		If $g_sProfileSecondaryOutputFileName <> "" Then
+			If $sCurrentSection = "search" Or $sCurrentSection = "attack" Or $sCurrentSection = "troop" Or $sCurrentSection = "spells" Or $sCurrentSection = "milkingattack" Or $sCurrentSection = "endbattle" Or $sCurrentSection = "collectors" Then
+				FileWriteLine($g_sProfileSecondaryOutputFileName, $asParts[2] & "=" & $g_asIniTable[$i][1])
+			EndIf
+		EndIf
+
 	Next
 	FileClose($hFile)
 

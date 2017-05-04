@@ -31,6 +31,8 @@ Func _ColorCheck($nColor1, $nColor2, $sVari = 5, $Ignore = Default)
 		Case "Heroes" ; mask RGB - Green
 			If Abs($Blue1 - $Blue2) > $sVari Then Return False
 			If Abs($Red1 - $Red2) > $sVari Then Return False
+		Case "Red+Blue" ; mask RGB - Red
+			If Abs($Green1 - $Green2) > $sVari Then Return False
 		Case Else ; compare all color channels
 			If Abs($Blue1 - $Blue2) > $sVari Then Return False
 			If Abs($Green1 - $Green2) > $sVari Then Return False

@@ -155,7 +155,7 @@ Func TrainRevampOldStyle()
 	If ThSnipesSkiptrain() Then Return
 
 	If $g_bRunState = False Then Return
-	Local $rWhatToTrain = WhatToTrain(True) ; r in First means Result! Result of What To Train Function
+	Local $rWhatToTrain = WhatToTrain(True, False) ; r in First means Result! Result of What To Train Function
 	Local $rRemoveExtraTroops = RemoveExtraTroops($rWhatToTrain)
 
 	If $rRemoveExtraTroops = 1 Or $rRemoveExtraTroops = 2 Then
@@ -2438,16 +2438,16 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	; Let??s UPDATE the current Elixir and Dark elixir each Troop train on 'Bottom train Window Page'
 	If _ColorCheck(_GetPixelColor(223, 594, True), Hex(0xE8E8E0, 6), 20) Then ; Gray background window color
 		; Village without Dark Elixir
-		If ISArmyWindow(False, $TrainTroopsTAB) Or ISArmyWindow(False, $BrewSpellsTAB) Then $nElixirCurrent = getResourcesValueTrainPage(315, 594) ; ELIXIR
+		$nElixirCurrent = getResourcesValueTrainPage(315, 594) ; ELIXIR
 	Else
 		; Village with Elixir and Dark Elixir
-		If ISArmyWindow(False, $TrainTroopsTAB) Or ISArmyWindow(False, $BrewSpellsTAB) Then $nElixirCurrent = getResourcesValueTrainPage(230, 594) ; ELIXIR
-		If ISArmyWindow(False, $TrainTroopsTAB) Or ISArmyWindow(False, $BrewSpellsTAB) Then $nDarkCurrent = getResourcesValueTrainPage(382, 594) ; DARK ELIXIR
+		$nElixirCurrent = getResourcesValueTrainPage(230, 594) ; ELIXIR
+		$nDarkCurrent = getResourcesValueTrainPage(382, 594) ; DARK ELIXIR
 	EndIf
 
 	; 	DEBUG
 	If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then
-		Setlog(" ?? Current resources:")
+		Setlog("- Current resources:")
 		Setlog(" - Elixir: " & _NumberFormat($nElixirCurrent) & " / Dark Elixir: " & _NumberFormat($nDarkCurrent), $COLOR_INFO)
 		$g_iDebugOcr = $bLocalDebugOCR ; disable the OCR debug
 	EndIf

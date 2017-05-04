@@ -1,4 +1,17 @@
-﻿* **V7.1.3**
+﻿* **V7.1.4**
+ * Add Nox 3.8.1.3 support
+ * Fix Strategies save file
+ * Fix auto-activation of heros sometimes not working
+ * Fix Android resize bot crash when Andorid crashes or Android Window is unavailable at wrong time
+ * Fix auto-start delaying also 2nd or more manual starts
+ * Improve shared folder handling
+ * Improve the train time click/checks delays
+ * Update example TH9 GoWiPe Strategy file to be compatible with train revamp changes made in v7.
+ * Change "Delete Temp Files" feature to include recursive removal of DEBUG files\folders when users enable debug long term.
+ * Removed the reduncancy on Train log
+ * Update Russian Language File by @Vlab97
+
+* **V7.1.3**
  * Add Suspend Computer option to SmartWait and Attack Schedule (see https://mybot.run/forums/index.php?/topic/29562-how-to-use-new-suspendsleep-computer-support/ for more details)
  * Add Inferno lv4 , Mortar Lv9/10 , WizardTower lv10 , Xbow lv5 and AD lv9 to weakBase Images/GUI settings
  * Add ObjEvent Code to handle with Objects errors and Poor Connection on Notify.

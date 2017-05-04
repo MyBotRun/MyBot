@@ -76,9 +76,6 @@ Global $g_iVILLAGE_OFFSET[3] = [0, 0, 1]
 
 Local Const $UserDebugEnable = 0 ; <<< change this value equal to 1, to enable USER debug mode when posting bugs in MBR forums!
 
-; This will be the ObjEvent to handle with object errors
-Global $g_oCOMErrorHandler = 0
-
 ; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 ; <><><><> Individual error flags for debugging individual sections of code!   			<><><><>
 ; <><><><> Can be manually set when required, Enabled when = 1, disabled when = 0 	   <><><><>
@@ -149,6 +146,9 @@ Global $g_aZombie = ["" _ ; 0=Filename
 		]
 Global $g_iDebugGDICountMax = 0 ; max value of GDI Handle count
 Global $g_oDebugGDIHandles = ObjCreate("Scripting.Dictionary") ; stores GDI handles when $g_iDebugGDICount <> 0
+
+; This will be the ObjEvent to handle with object errors
+Global $g_oCOMErrorHandler = 0
 
 ; <><><><><><><><><><><><><><><><><><>
 #EndRegion debugging
@@ -255,6 +255,11 @@ Global $__Droid4X_Window[3][3] = _ ; Alternative window sizes (array must be ord
 		["0.10.0", $g_iDEFAULT_WIDTH + 6, $g_iDEFAULT_HEIGHT + 53], _
 		["0.8.6", $g_iDEFAULT_WIDTH + 10, $g_iDEFAULT_HEIGHT + 50] _
 		]
+Global $__Nox_Config[2][2] = _ ; Alternative Nox Control ID (array must be ordered by version descending!)
+		[ _ ; Version|$g_sAppClassInstance
+		["3.8.1.3", "[CLASS:subWin; INSTANCE:1]"], _
+		["3.1.0", "[CLASS:Qt5QWindowIcon; INSTANCE:4]"] _
+		]
 ;   0            |1                  |2                       |3                                 |4               |5                     |6                      |7                     |8                      |9             |10                  |11                       |12                    |13                                  |14
 ;   $g_sAndroidEmulator              |$g_sAndroidTitle        |$g_sAppClassInstance              |$g_sAppPaneName |$g_iAndroidClientWidth|$g_iAndroidClientHeight|$g_iAndroidWindowWidth|$g_iAndroidWindowHeight|$ClientOffsetY|$g_sAndroidAdbDevice|$g_iAndroidSupportFeature|$g_sAndroidShellPrompt|$g_sAndroidMouseDevice              |$g_bAndroidEmbed/$g_iAndroidEmbedMode
 ;                |$g_sAndroidInstance|                        |                                  |                |                      |                       |                      |                       |              |                    |1 = Normal background mode                      |                                    |-1 = Not available
@@ -271,7 +276,7 @@ Global $g_avAndroidAppConfig[8][15] = [ _ ;                   |                 
 		["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "emulator-5554", 1 + 8 + 16 + 32, '# ', 'qwerty2', 1], _
 		["iTools", "iToolsVM", "iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13, 0, "127.0.0.1:54001", 1 + 8 + 16 + 32 + 64, '# ', 'iTools Virtual PassThrough Input', 0], _
 		["Droid4X", "droid4x", "Droid4X ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 10, $g_iDEFAULT_HEIGHT + 50, 0, "127.0.0.1:26944", 0 + 2 + 4 + 8 + 16 + 32, '# ', 'droid4x Virtual Input', 0], _
-		["Nox", "nox", "No", "[CLASS:Qt5QWindowIcon; INSTANCE:4]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10, 0, "127.0.0.1:62001", 0 + 2 + 4 + 8 + 16 + 32, '# ', '(nox Virtual Input|Android Input)', -1] _
+		["Nox", "nox", "No", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10, 0, "127.0.0.1:62001", 0 + 2 + 4 + 8 + 16 + 32, '# ', '(nox Virtual Input|Android Input)', 1] _
 		]
 
 ; Startup detection

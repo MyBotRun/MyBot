@@ -239,11 +239,13 @@ Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWid
 				WinMove($g_hAndroidWindow, "", $AndroidWinPos[0], $AndroidWinPos[1], $aAndroidWindow[0] - 2, $aAndroidWindow[1] - 2) ; force invalid resize (triggers Android rendering control resize)
 				;Sleep($DELAYSLEEP)
 				$AndroidWinPos = WinGetPos($g_hAndroidWindow)
-				$WinWidth = $AndroidWinPos[2]
-				$WinHeight = $AndroidWinPos[3]
+				If UBound($AndroidWinPos) > 3 Then
+					$WinWidth = $AndroidWinPos[2]
+					$WinHeight = $AndroidWinPos[3]
+				EndIf
 			EndIf
 
-			If UBound($AndroidWinPos) > 2 Then ; Check expected Window size
+			If UBound($AndroidWinPos) > 3 Then ; Check expected Window size
 
 				WinMove2($g_hAndroidWindow, "", $AndroidWinPos[0], $AndroidWinPos[1], $aAndroidWindow[0], $aAndroidWindow[1]) ; resized to expected window size
 				;WinMove($g_hAndroidWindow, "", $AndroidWinPos[0], $AndroidWinPos[1], $aAndroidWindow[0], $aAndroidWindow[1])

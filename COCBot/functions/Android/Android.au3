@@ -1381,7 +1381,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIf
 		EndIf
 		; check shared folder
 		;If StringInStr($g_sAndroidPicturesPath, "|", $STR_NOCASESENSEBASIC) > 0 Then
-		If True Then ; always validate picture patch
+		If $g_bRunState = True Then ; always validate picture patch
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
 				Return SetError(3, 0)
 			EndIf
@@ -1393,31 +1393,32 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIf
 				Local $path = $g_sAndroidPicturesPath
 				If StringRight($path, 1) = "/" Then $path = StringLeft($path, StringLen($path) - 1)
 				Local $aRegExResult = StringRegExp($s, $path, $STR_REGEXPARRAYMATCH)
-				If @error = 0 Then
-					; check which path contains dummy file
-					Local $dummyFile = StringMid(_Crypt_HashData($g_sBotTitle & _Now(), $CALG_SHA1), 3)
-					FileWriteLine($g_sAndroidPicturesHostPath & $dummyFile, _Now())
-					For $i = 0 To UBound($aRegExResult) - 1
-						$path = $aRegExResult[$i]
-						If StringRight($path, 1) <> "/" Then $path &= "/"
-						$s = AndroidAdbSendShellCommand("ls " & $path & $dummyFile, Default, $wasRunState, False)
-						If StringInStr($s, "No such file or directory") = 0 Then
-							$pathFound = True
-							$g_sAndroidPicturesPath = $path
-							SetDebugLog("Using " & $g_sAndroidPicturesPath & " for Android shared folder")
-							ExitLoop
-						EndIf
-					Next
-					; delete dummy FileChangeDir
-					FileDelete($g_sAndroidPicturesHostPath & $dummyFile)
-				EndIf
+				SetError(0)
+				If UBound($aRegExResult) = 0 Then Local $aRegExResult = []
+				_ArrayConcatenate($aRegExResult, StringSplit(((StringLeft($path, 1) = "(" And StringRight($path, 1) = ")") ? StringMid($path, 2, StringLen($path) - 2) : $path), "|", $STR_NOCOUNT))
+				; check which path contains dummy file
+				Local $dummyFile = StringMid(_Crypt_HashData($g_sBotTitle & _Now(), $CALG_SHA1), 3)
+				FileWriteLine($g_sAndroidPicturesHostPath & $dummyFile, _Now())
+				For $i = 0 To UBound($aRegExResult) - 1
+					$path = $aRegExResult[$i]
+					If StringRight($path, 1) <> "/" Then $path &= "/"
+					$s = AndroidAdbSendShellCommand("ls '" & $path & $dummyFile & "'", Default, $wasRunState, False)
+					If StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error:") = 0 Then
+						$pathFound = True
+						$g_sAndroidPicturesPath = $path
+						SetDebugLog("Using " & $g_sAndroidPicturesPath & " for Android shared folder")
+						ExitLoop
+					EndIf
+				Next
+				; delete dummy FileChangeDir
+				FileDelete($g_sAndroidPicturesHostPath & $dummyFile)
 				If $pathFound = True Then ExitLoop
 				If $iMount = 0 Then
 					SetLog("Waiting for shared folder to get mounted...", $COLOR_GREEN)
 				Else
 					SetDebugLog("Still waiting for shared folder to get mounted...")
 				EndIf
-				If _Sleep(3000) Then Return
+				If _Sleep(6000) Then Return
 			Next
 			If $pathFound = False Then
 				SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)

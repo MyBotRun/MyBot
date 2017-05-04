@@ -34,6 +34,16 @@ Func _CheckPixel($aScreenCode, $bNeedCapture = Default, $Ignore = Default, $sLog
 	Return False ;
 EndFunc   ;==>_CheckPixel
 
+Func _CheckPixel2($aScreenCode, $sHexColor, $Ignore = Default)
+	If _ColorCheck( _
+			$sHexColor, _ ; capture color #1
+			Hex($aScreenCode[2], 6), _ ; compare to Color #2 from screencode
+			$aScreenCode[3], $Ignore) Then ; using tolerance from screencode and color mask name referenced by $Ignore
+		Return True
+	EndIf
+	Return False ;
+EndFunc   ;==>_CheckPixel2
+
 Func _WaitForCheckPixel($aScreenCode, $bNeedCapture = Default, $Ignore = Default, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default, $iWaitLoop = Default)
 	If $iWaitLoop = Default Then $iWaitLoop = 250  ; if default wait time per loop, then wait 250ms
 	Local $wCount = 0
