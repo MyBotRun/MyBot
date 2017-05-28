@@ -39,10 +39,10 @@ Func getBSPos()
 		If Not $g_bRunState Then Return
 		If @error = 1 Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
-			Local $stext = @CRLF & GetTranslated(640, 17, "MyBot has experienced a serious error") & @CRLF & @CRLF & _
-					GetTranslated(640, 18, "Unable to find or start up ") & $g_sAndroidEmulator & @CRLF & @CRLF & GetTranslated(640, 22, "Reboot PC and try again,") & _
-					GetTranslated(640, 19, "and search www.mybot.run forums for more help") & @CRLF
-			Local $MsgBox = _ExtMsgBox(0, GetTranslated(640, 20, "Close MyBot!"), GetTranslated(640, 21, "Okay - Must Exit Program"), $stext, 15, $g_hFrmBot)
+			Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "sText_01", "MyBot has experienced a serious error") & @CRLF & @CRLF & _
+					GetTranslatedFileIni("MBR Popups", "sText_02", "Unable to find or start up ") & $g_sAndroidEmulator & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "sText_03", "Reboot PC and try again,") & _
+					GetTranslatedFileIni("MBR Popups", "sText_04", "and search www.mybot.run forums for more help") & @CRLF
+			Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "sText_05", "Close MyBot!"), GetTranslatedFileIni("MBR Popups", "sText_06", "Okay - Must Exit Program"), $stext, 15, $g_hFrmBot)
 			If $MsgBox = 1 Then
 				BotClose()
 			EndIf
@@ -79,10 +79,10 @@ Func getBSPos()
 		If Not $g_bRunState Then Return
 		If @error = 1 Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
-			$stext = @CRLF & GetTranslated(640, 17, "MyBot has experienced a serious error") & @CRLF & @CRLF & _
-					GetTranslated(640, 18, "Unable to find or start up") & " " & $g_sAndroidEmulator & @CRLF & @CRLF & GetTranslated(640, 22, "Reboot PC and try again,") & _
-					GetTranslated(640, 19, "and search www.mybot.run forums for more help") & @CRLF
-			$MsgBox = _ExtMsgBox(0, GetTranslated(640, 20, "Close MyBot!"), GetTranslated(640, 21, "Okay - Must Exit Program"), $stext, 15, $g_hFrmBot)
+			$stext = @CRLF & GetTranslatedFileIni("MBR Popups", "sText_01", "MyBot has experienced a serious error") & @CRLF & @CRLF & _
+					GetTranslatedFileIni("MBR Popups", "sText_02", "Unable to find or start up") & " " & $g_sAndroidEmulator & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "sText_03", "Reboot PC and try again,") & _
+					GetTranslatedFileIni("MBR Popups", "sText_04", "and search www.mybot.run forums for more help") & @CRLF
+			$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "sText_05", "Close MyBot!"), GetTranslatedFileIni("MBR Popups", "sText_06", "Okay - Must Exit Program"), $stext, 15, $g_hFrmBot)
 			If $MsgBox = 1 Then
 				BotClose()
 				Return
@@ -135,6 +135,7 @@ Func getBSPos()
 EndFunc   ;==>getBSPos
 
 Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWidthFirst = Default)
+	Static $asControlSize[6][4]
 	Local $aControlSize = ControlGetPos(GetCurrentAndroidHWnD(), $g_sAppPaneName, $g_sAppClassInstance)
 	Local $aControlSizeInitial = $aControlSize
 
@@ -150,12 +151,25 @@ Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWid
 		If ($aControlSize[2] <> $g_iAndroidClientWidth Or $aControlSize[3] <> $g_iAndroidClientHeight) And $RetryCount1 = 0 And $RetryCount2 = 0 Then ; Is Client size correct?
 			; ensure Android Window and Screen sizes are up-to-date
 			UpdateAndroidWindowState()
+			; prepare local static variable for retry count
+			If $RetryCount1 = 0 Then
+				For $i = 0 To 5
+					For $j = 0 To 3
+						$asControlSize[$i][$j] = 0
+					Next
+				Next
+			EndIf
 		EndIf
 
 		If $aControlSize[2] <> $g_iAndroidClientWidth Or $aControlSize[3] <> $g_iAndroidClientHeight Then ; Is Client size correct?
+			If $RetryCount1 < 6 Then
+				For $i = 0 To 3
+					$asControlSize[$RetryCount1][$i] = $aControlSize[$i]
+				Next
+			EndIf
 			;DisposeWindows()
 			;WinActivate($g_hAndroidWindow)
-			SetDebugLog($sPre & "Unsupported " & $g_sAndroidEmulator & " screen size of " & $aControlSize[2] & " x " & $aControlSize[3] & " (expect " & $g_iAndroidClientWidth & " x " & $g_iAndroidClientHeight & ")", $COLOR_ACTION)
+			SetDebugLog($sPre & "Unsupported " & $g_sAndroidEmulator & " screen size of " & $aControlSize[2] & " x " & $aControlSize[3] & " at " & $aControlSize[0] & ", " & $aControlSize[1]  & " (expect " & $g_iAndroidClientWidth & " x " & $g_iAndroidClientHeight & ")", $COLOR_ACTION)
 			Local $aAdj0 = [0, 0]
 			If $RetryCount1 = 0 And $RetryCount2 = 0 Then
 				; resize window first to an invalid size
@@ -262,8 +276,7 @@ Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWid
 
 					If UBound($aNewControlSize) > 2 Then
 						; reload size
-						$aControlSize[2] = $aNewControlSize[2]
-						$aControlSize[3] = $aNewControlSize[3]
+						$aControlSize = $aNewControlSize
 
 						If $aControlSize[2] <> $g_iAndroidClientWidth Or $aControlSize[3] <> $g_iAndroidClientHeight Then
 							If $bExpectControlResize = True Then
@@ -271,6 +284,15 @@ Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWid
 									SetLog($sPre & $g_sAndroidEmulator & " window resize didn't work, screen is " & $aControlSize[2] & " x " & $aControlSize[3], $COLOR_ERROR)
 								Else
 									SetLog($g_sAndroidEmulator & " window resize didn't work, screen is " & $aControlSize[2] & " x " & $aControlSize[3], $COLOR_ERROR)
+								EndIf
+								If $RetryCount1 > 0 And $RetryCount1 < 6 And $RetryCount2 = 0 Then
+									; early abort when cannot be resized
+									Local $bXinc = $aControlSize[0] > $asControlSize[$RetryCount1][0] And $asControlSize[$RetryCount1][0] > $asControlSize[$RetryCount1 - 1][0]
+									Local $bYinc = $aControlSize[1] > $asControlSize[$RetryCount1][1] And $asControlSize[$RetryCount1][1] > $asControlSize[$RetryCount1 - 1][1]
+									If ($bXinc And Not $bYinc) Or (Not $bXinc And $bYinc) Then
+										SetLog($g_sAndroidEmulator & " window cannot be resized, abort", $COLOR_ERROR)
+										Return $aControlSize
+									EndIf
 								EndIf
 							EndIf
 							; added for MEmu in hires with DPI > 100%

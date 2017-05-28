@@ -17,9 +17,9 @@
 Global $g_aFrmBotBottomCtrlState, $g_hFrmBotEmbeddedShield = 0, $g_hFrmBotEmbeddedMouse = 0, $g_hFrmBotEmbeddedGraphics = 0
 
 Func Initiate()
-    Static $bCheckLanguageFirst = False
+	Static $bCheckLanguageFirst = False
 	WinGetAndroidHandle()
-    If $g_hAndroidWindow <> 0 And ($g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable()) Then
+	If $g_hAndroidWindow <> 0 And ($g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable()) Then
 		SetLogCentered(" " & $g_sBotTitle & " Powered by MyBot.run ", "~", $COLOR_DEBUG)
 
 		Local $Compiled = @ScriptName & (@Compiled ? " Executable" : " Script")
@@ -30,7 +30,7 @@ Func Initiate()
 			SetLogCentered(" Search Mode Start ", Default, $COLOR_SUCCESS)
 		EndIf
 		SetLogCentered("  Current Profile: " & $g_sProfileCurrentName & " ", "-", $COLOR_INFO)
-		If $g_iDebugSetlog = 1 Or $g_iDebugOcr = 1 Or $g_iDebugRedArea = 1 Or $g_bDevMode = True Or $g_iDebugImageSave = 1 Or $g_iDebugBuildingPos = 1 Or $g_iDebugOCRdonate = 1 Or $g_iDebugAttackCSV  = 1 Then
+		If $g_iDebugSetlog = 1 Or $g_iDebugOcr = 1 Or $g_iDebugRedArea = 1 Or $g_bDevMode = True Or $g_iDebugImageSave = 1 Or $g_iDebugBuildingPos = 1 Or $g_iDebugOCRdonate = 1 Or $g_iDebugAttackCSV = 1 Then
 			SetLogCentered(" Warning Debug Mode Enabled! ", "-", $COLOR_ERROR)
 			SetLog("      Setlog : " & $g_iDebugSetlog, $COLOR_ERROR, "Lucida Console", 8)
 			SetLog("         OCR : " & $g_iDebugOcr, $COLOR_ERROR, "Lucida Console", 8)
@@ -77,8 +77,8 @@ Func Initiate()
 			If Not $g_bRunState Then Return
 
 			If $bCheckLanguageFirst = False And $g_bCheckGameLanguage Then
-			   TestLanguage()
-			   $bCheckLanguageFirst = True
+				TestLanguage()
+				$bCheckLanguageFirst = True
 			EndIf
 			If Not $g_bRunState Then Return
 
@@ -222,7 +222,7 @@ Func reHide()
 	WinGetAndroidHandle()
 	If $g_bIsHidden = True And $g_hAndroidWindow <> 0 And $g_bAndroidEmbedded = False Then
 		SetDebugLog("Hide " & $g_sAndroidEmulator & " Window after restart")
-		Return WinMove2($g_hAndroidWindow, "", -32000, -32000)
+		Return WinMove($g_hAndroidWindow, "", -32000, -32000)
 	EndIf
 	Return 0
 EndFunc   ;==>reHide
@@ -231,15 +231,15 @@ Func updateBtnHideState($newState = $GUI_ENABLE)
 	Local $hideState = GUICtrlGetState($g_hBtnHide)
 	Local $newHideState = ($g_bAndroidEmbedded = True ? $GUI_DISABLE : $newState)
 	If $hideState <> $newHideState Then GUICtrlSetState($g_hBtnHide, $newHideState)
-EndFunc	  ;==>updateBtnHideState
+EndFunc   ;==>updateBtnHideState
 
 Func btnHide()
 	If $g_bIsHidden = False Then
-		GUICtrlSetData($g_hBtnHide, GetTranslated(602, 26, "Show"))
+		GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_False", "Show"))
 		HideAndroidWindow(True)
 		$g_bIsHidden = True
 	ElseIf $g_bIsHidden = True Then
-		GUICtrlSetData($g_hBtnHide, GetTranslated(602, 11, "Hide"))
+		GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_True", "Hide"))
 		HideAndroidWindow(False)
 		$g_bIsHidden = False
 	EndIf
@@ -257,9 +257,9 @@ Func updateBtnEmbed()
 	Local $text = GUICtrlRead($g_hBtnEmbed)
 	Local $newText
 	If $g_bAndroidEmbedded = True Then
-		$newText = GetTranslated(602, 28, "Undock")
+		$newText = GetTranslatedFileIni("MBR GUI Control Bottom", "Func_AndroidEmbedded_False", "Undock")
 	Else
-		$newText = GetTranslated(602, 27, "Dock")
+		$newText = GetTranslatedFileIni("MBR GUI Control Bottom", "Func_AndroidEmbedded_True", "Dock")
 	EndIf
 	If $text <> $newText Then GUICtrlSetData($g_hBtnEmbed, $newText)
 	If $state <> $GUI_ENABLE Then GUICtrlSetState($g_hBtnEmbed, $GUI_ENABLE)
@@ -274,7 +274,7 @@ Func btnEmbed()
 	WinGetPos($g_hAndroidWindow)
 	If @error <> 0 Then Return SetError(0, 0, 0)
 	AndroidEmbed(Not $g_bAndroidEmbedded)
-EndFunc   ;==>btnHide
+EndFunc   ;==>btnEmbed
 
 Func btnMakeScreenshot()
 	If $g_bRunState Then $g_bMakeScreenshotNow = True
@@ -320,7 +320,7 @@ Func btnAnalyzeVillage()
 	For $i = 0 To UBound($g_iBuildingToLoc) - 1
 		Local $pixel = $g_iBuildingToLoc[$i]
 		If $g_iDebugSetlog = 1 Then SetLog("- Dark Elixir Storage " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_DEBUG)
-    Next
+	Next
 
 	SETLOG("LOCATE BARRACKS C#..............")
 	Local $PixelBarrackHere = GetLocationItem("getLocationBarrack")
@@ -328,7 +328,7 @@ Func btnAnalyzeVillage()
 	For $i = 0 To UBound($PixelBarrackHere) - 1
 		Local $pixel = $PixelBarrackHere[$i]
 		If $g_iDebugSetlog = 1 Then SetLog("- Barrack " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_DEBUG)
-    Next
+	Next
 
 	SETLOG("LOCATE BARRACKS C#..............")
 	Local $PixelDarkBarrackHere = GetLocationItem("getLocationDarkBarrack")
@@ -377,7 +377,7 @@ Func btnVillageStat($source = "")
 		GUICtrlSetState($g_hLblResultGoldHourNow, $GUI_ENABLE + $GUI_SHOW)
 		GUICtrlSetState($g_hLblResultElixirHourNow, $GUI_ENABLE + $GUI_SHOW)
 		GUICtrlSetState($g_hLblResultDEHourNow, $GUI_ENABLE + $GUI_SHOW)
-		If $g_iFirstRun = 0 or $source = "UpdateStats" Then
+		If $g_iFirstRun = 0 Or $source = "UpdateStats" Then
 			GUICtrlSetState($g_hLblResultRuntimeNow, $GUI_ENABLE + $GUI_SHOW)
 			GUICtrlSetState($g_hLblResultAttackedHourNow, $GUI_ENABLE + $GUI_SHOW)
 			GUICtrlSetState($g_hLblResultSkippedHourNow, $GUI_ENABLE + $GUI_SHOW)
@@ -590,11 +590,11 @@ Func ButtonBoost()
 	SETLOG("MBRSearchImage TEST..................STOP")
 	$g_bRunState = $wasRunState
 
-EndFunc
+EndFunc   ;==>ButtonBoost
 
 Func arrows()
 	getArmyHeroCount()
-EndFunc
+EndFunc   ;==>arrows
 
 Func EnableGuiControls($OptimizedRedraw = True)
 	Return ToggleGuiControls(True, $OptimizedRedraw)
@@ -625,9 +625,9 @@ Func ToggleGuiControls($Enable, $OptimizedRedraw = True)
 		EndIf
 	Next
 	If $Enable = False Then
-		ControlDisable("","",$g_hCmbGUILanguage)
+		ControlDisable("", "", $g_hCmbGUILanguage)
 	Else
-		ControlEnable("","",$g_hCmbGUILanguage)
+		ControlEnable("", "", $g_hCmbGUILanguage)
 	EndIf
 	$g_bGUIControlDisabled = False
 	If $OptimizedRedraw = True Then SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "ToggleGuiControls")

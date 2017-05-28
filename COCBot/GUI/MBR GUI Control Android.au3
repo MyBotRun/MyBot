@@ -26,7 +26,7 @@ Func LoadCOCDistributorsComboBox()
 
 	GUICtrlSetData($g_hCmbCOCDistributors, "", "")
 	GUICtrlSetData($g_hCmbCOCDistributors, $sDistributors)
-EndFunc   ;==>LoadCOCdistributorsComboBox
+EndFunc   ;==>LoadCOCDistributorsComboBox
 
 Func SetCurSelCmbCOCDistributors()
 	Local $sIniDistributor
@@ -44,11 +44,11 @@ Func SetCurSelCmbCOCDistributors()
 		EndIf
 		GUICtrlSetState($g_hCmbCOCDistributors, $GUI_ENABLE)
 	EndIf
-EndFunc   ;==>setCurSelCmbCOCDistributors
+EndFunc   ;==>SetCurSelCmbCOCDistributors
 
 Func cmbCOCDistributors()
 	Local $sDistributor
-    _GUICtrlComboBox_GetLBText($g_hCmbCOCDistributors, _GUICtrlComboBox_GetCurSel($g_hCmbCOCDistributors), $sDistributor)
+	_GUICtrlComboBox_GetLBText($g_hCmbCOCDistributors, _GUICtrlComboBox_GetCurSel($g_hCmbCOCDistributors), $sDistributor)
 
 	If $sDistributor = $g_sUserGameDistributor Then ; ini user option
 		$g_sAndroidGameDistributor = $g_sUserGameDistributor
@@ -68,3 +68,33 @@ Func DistributorsBotStopEvent()
 	LoadCOCDistributorsComboBox()
 	SetCurSelCmbCOCDistributors()
 EndFunc   ;==>DistributorsBotStopEvent
+
+Func AndroidSuspendFlagsToIndex($iFlags)
+	Local $idx = 0
+	If BitAND($iFlags, 2) > 0 Then
+		$idx = 2
+	ElseIf BitAND($iFlags, 1) > 0 Then
+		$idx = 1
+	EndIf
+	If $idx > 0 And BitAND($iFlags, 4) > 0 Then $idx += 2
+	Return $idx
+EndFunc   ;==>AndroidSuspendFlagsToIndex
+
+Func AndroidSuspendIndexToFlags($idx)
+	Local $iFlags = 0
+	Switch $idx
+		Case 1
+			$iFlags = 1
+		Case 2
+			$iFlags = 2
+		Case 3
+			$iFlags = 1 + 4
+		Case 4
+			$iFlags = 2 + 4
+	EndSwitch
+	Return $iFlags
+EndFunc   ;==>AndroidSuspendFlagsToIndex
+
+Func cmbSuspendAndroid()
+	$g_iAndroidSuspendModeFlags = AndroidSuspendIndexToFlags(_GUICtrlComboBox_GetCurSel($g_hCmbSuspendAndroid))
+EndFunc   ;==>cmbSuspendAndroid

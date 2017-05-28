@@ -400,7 +400,7 @@ EndFunc   ;==>chkAttackPlannerRandom
 
 Func cmbAttackPlannerRandom()
 	$g_iAttackPlannerRandomTime = Int(_GUICtrlComboBox_GetCurSel($g_hCmbAttackPlannerRandom))
-	GUICtrlSetData($g_hLbAttackPlannerRandom, $g_iAttackPlannerRandomTime > 0 ? GetTranslated(603, 37, -1) : GetTranslated(603, 38, "hr"))
+	GUICtrlSetData($g_hLbAttackPlannerRandom, $g_iAttackPlannerRandomTime > 0 ? GetTranslatedFileIni("MBR Global GUI Design", "hrs", -1) : GetTranslatedFileIni("MBR Global GUI Design", "hr", -1))
 EndFunc   ;==>cmbAttackPlannerRandom
 
 Func chkAttackPlannerDayLimit()
@@ -543,14 +543,14 @@ Func sldMaxVSDelay()
 		$g_iSearchDelayMin = $g_iSearchDelayMax
 	EndIf
 	If $g_iSearchDelayMin = 1 Then
-		GUICtrlSetData($g_hLblTextVSDelay, GetTranslated(603, 7, "second"))
+		GUICtrlSetData($g_hLblTextVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "second", "second"))
 	Else
-		GUICtrlSetData($g_hLblTextVSDelay, GetTranslated(603, 8, "seconds"))
+		GUICtrlSetData($g_hLblTextVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "seconds", "seconds"))
 	EndIf
 	If $g_iSearchDelayMax = 1 Then
-		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslated(603, 7, "second"))
+		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "second", "second"))
 	Else
-		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslated(603, 8, "seconds"))
+		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "seconds", "seconds"))
 	EndIf
 EndFunc   ;==>sldMaxVSDelay
 
@@ -563,13 +563,13 @@ Func sldVSDelay()
 		$g_iSearchDelayMax = $g_iSearchDelayMin
 	EndIf
 	If $g_iSearchDelayMin = 1 Then
-		GUICtrlSetData($g_hLblTextVSDelay, GetTranslated(603, 7, "second"))
+		GUICtrlSetData($g_hLblTextVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "second", "second"))
 	Else
-		GUICtrlSetData($g_hLblTextVSDelay, GetTranslated(603, 8, "seconds"))
+		GUICtrlSetData($g_hLblTextVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "seconds", "seconds"))
 	EndIf
 	If $g_iSearchDelayMax = 1 Then
-		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslated(603, 7, "second"))
+		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "second", "second"))
 	Else
-		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslated(603, 8, "seconds"))
+		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "seconds", "seconds"))
 	EndIf
  EndFunc   ;==>sldVSDelay

@@ -21,9 +21,32 @@ Func readConfig($inputfile = $g_sProfileConfigPath) ;Reads config and sets it to
 	; Read the stats files into arrays, will create the files if necessary
 	$g_aiWeakBaseStats = readWeakBaseStats()
 
+	ReadProfileConfig()
 	If FileExists($g_sProfileBuildingPath) Then ReadBuildingConfig()
 	If FileExists($g_sProfileConfigPath) Then ReadRegularConfig()
 EndFunc   ;==>readConfig
+
+Func ReadProfileConfig($sIniFile = $g_sProfilePath & "\profile.ini")
+	If FileExists($sIniFile) = 0 Then Return False
+	Local $iValue
+	; defaultprofile read not required
+	;$g_sProfileCurrentName = StringRegExpReplace(IniRead($sIniFile, "general", "defaultprofile", ""), '[/:*?"<>|]', '_')
+
+	$iValue = $g_iGlobalActiveBotsAllowed
+	$g_iGlobalActiveBotsAllowed = Int(IniRead($sIniFile, "general", "globalactivebotsallowed", $g_iGlobalActiveBotsAllowed))
+	If $g_iGlobalActiveBotsAllowed < 1 Then $g_iGlobalActiveBotsAllowed = 2 ; ensure that multiple bots can run
+	If $iValue <> $g_iGlobalActiveBotsAllowed Then
+		SetDebugLog("Maximum of " & $iValue & " bots running at same time changed to " & $g_iGlobalActiveBotsAllowed)
+	EndIf
+
+	$iValue = $g_iGlobalThreads
+	$g_iGlobalThreads = Int(IniRead($sIniFile, "general", "globalthreads", $g_iGlobalThreads))
+	If $iValue <> $g_iGlobalThreads Then
+		SetDebugLog("Threading: Using " & $g_iGlobalThreads & " threads shared across all bot instances changed to " & $iValue)
+	EndIf
+
+	Return True
+EndFunc   ;==>ReadProfileConfig
 
 Func ReadBuildingConfig()
 	SetDebugLog("Read Building Config " & $g_sProfileBuildingPath)
@@ -107,6 +130,7 @@ Func ReadRegularConfig()
 	SetDebugLog("Read Config " & $g_sProfileConfigPath)
 
 	IniReadS($g_iThreads, $g_sProfileConfigPath, "general", "threads", $g_iThreads, "int")
+	If $g_iThreads < 0 Then $g_iThreads = 0
 	IniReadS($g_iBotDesignFlags, $g_sProfileConfigPath, "general", "botDesignFlags", 0, "int") ; Default for existing profiles is 0, for new is 3
 
 	; Window positions
@@ -273,6 +297,7 @@ Func ReadConfig_Android()
 	$g_iAndroidActiveTransparency = Int(IniRead($g_sProfileConfigPath, "android", "active.transparency", $g_iAndroidActiveTransparency))
 	$g_iAndroidInactiveColor = Dec(IniRead($g_sProfileConfigPath, "android", "inactive.color", Hex($g_iAndroidInactiveColor, 6)))
 	$g_iAndroidInactiveTransparency = Int(IniRead($g_sProfileConfigPath, "android", "inactive.transparency", $g_iAndroidInactiveTransparency))
+	$g_iAndroidSuspendModeFlags = Int(IniRead($g_sProfileConfigPath, "android", "suspend.mode", $g_iAndroidSuspendModeFlags))
 
 	If $g_bBotLaunchOption_Restart = True Then
 		; for now only read when bot crashed and restarted through watchdog or nofify event
@@ -1105,9 +1130,16 @@ EndFunc   ;==>ReadConfig_600_52_2
 
 Func ReadConfig_600_54()
 	; <><><><> Attack Plan / Train Army / Train Order <><><><>
+	; Troops Order
 	IniReadS($g_bCustomTrainOrderEnable, $g_sProfileConfigPath, "troop", "chkTroopOrder", False, "Bool")
 	For $z = 0 To UBound($g_aiCmbCustomTrainOrder) - 1
 		IniReadS($g_aiCmbCustomTrainOrder[$z], $g_sProfileConfigPath, "troop", "cmbTroopOrder" & $z, -1)
+	Next
+
+	; Spells Order
+	IniReadS($g_bCustomBrewOrderEnable, $g_sProfileConfigPath, "Spells", "chkSpellOrder", False, "Bool")
+	For $z = 0 To UBound($g_aiCmbCustomBrewOrder) - 1
+		IniReadS($g_aiCmbCustomBrewOrder[$z], $g_sProfileConfigPath, "Spells", "cmbSpellOrder" & $z, -1)
 	Next
 EndFunc   ;==>ReadConfig_600_54
 
@@ -1118,6 +1150,7 @@ Func ReadConfig_600_56()
 	$g_bNoobZap = (IniRead($g_sProfileConfigPath, "SmartZap", "UseNoobZap", "0") = "1")
 	$g_bSmartZapDB = (IniRead($g_sProfileConfigPath, "SmartZap", "ZapDBOnly", "1") = "1")
 	$g_bSmartZapSaveHeroes = (IniRead($g_sProfileConfigPath, "SmartZap", "THSnipeSaveHeroes", "1") = "1")
+	$g_bSmartZapFTW = (IniRead($g_sProfileConfigPath, "SmartZap", "FTW", "0") = "1")
 	$g_iSmartZapMinDE = Int(IniRead($g_sProfileConfigPath, "SmartZap", "MinDE", 350))
 	$g_iSmartZapExpectedDE = Int(IniRead($g_sProfileConfigPath, "SmartZap", "ExpectedDE", 320))
 EndFunc   ;==>ReadConfig_600_56

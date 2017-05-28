@@ -77,7 +77,7 @@ Func PresetSaveConf()
 	;2 check illegal caracter and replace
 	If StringRegExp($filename, '\\|/|:|\*|\?|\"|\<|\>|\|') Then GUICtrlSetData($g_hTxtPresetSaveFilename, StringRegExpReplace($filename, '\\|/|:|\*|\?|\"|\<|\>|\|', "_"))
 
-	;3 check if file allready exists
+	;3 check if file already exists
 	If FileExists($g_sProfilePresetPath & "\" & $filename & ".ini") Then
 		Local $i = 2
 		While $i > 0
@@ -106,7 +106,7 @@ Func PresetSaveConf()
 EndFunc   ;==>PresetSaveConf
 
 Func PresetDeleteConf()
-	Local $button = MsgBox($MB_ICONWARNING + $MB_OKCANCEL, GetTranslated(640, 70, "Delete Configuration"), GetTranslated(640, 71, 'Are you sure you want to delete the configuration ?') & GUICtrlRead($g_hCmbPresetList) & '"?' & @CRLF & _
+	Local $button = MsgBox($MB_ICONWARNING + $MB_OKCANCEL, GetTranslatedFileIni("MBR Popups", "Func_PresetDeleteConf_Info_01", "Delete Configuration"), GetTranslatedFileIni("MBR Popups", "Func_PresetDeleteConf_Info_02", 'Are you sure you want to delete the configuration ?') & GUICtrlRead($g_hCmbPresetList) & '"?' & @CRLF & _
 			"This cannot be undone.")
 	If $button = $IDOK Then
 		FileDelete($g_sProfilePresetPath & "\" & GUICtrlRead($g_hCmbPresetList) & ".ini")

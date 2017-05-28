@@ -32,8 +32,8 @@ Func CreateAttackTab()
 
    GUISwitch($g_hGUI_ATTACK)
    $g_hGUI_ATTACK_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab1, $g_iSizeHGrpTab1, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
-   $g_hGUI_ATTACK_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslated(600,41,"Train Army"))
-   $g_hGUI_ATTACK_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslated(600,42,"Search && Attack"))
-   $g_hGUI_ATTACK_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,43,"Strategies"))
+   $g_hGUI_ATTACK_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01", "Train Army"))
+   $g_hGUI_ATTACK_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02", "Search && Attack"))
+   $g_hGUI_ATTACK_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_03", "Strategies"))
    GUICtrlCreateTabItem("")
 EndFunc

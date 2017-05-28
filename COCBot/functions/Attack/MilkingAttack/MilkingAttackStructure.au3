@@ -38,7 +38,7 @@ Func MilkingAttackStructure($vectstr)
 				If $g_bMilkingAttackCheckStructureDestroyedBeforeAttack Then
 					If MilkingAttackStructureDestroyed($vect[0], $vect[1], $vect[2]) Then
 						$skipdelay = True
-						ExitLoop ; exit if allready destroyed by other wave
+						ExitLoop ; exit if already destroyed by other wave
 					EndIf
 				EndIf
 

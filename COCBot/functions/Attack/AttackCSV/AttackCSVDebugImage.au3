@@ -13,7 +13,11 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func AttackCSVDEBUGIMAGE()
+
+	Local $iTimer = __TimerInit()
+
 	_CaptureRegion2()
+
 	Local $EditedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
 	Local $testx
 	Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($EditedImage)
@@ -26,10 +30,17 @@ Func AttackCSVDEBUGIMAGE()
 	Local $hPenMdGreen = _GDIPlus_PenCreate(0xFF4CFF00, 2)
 	Local $hPenRed = _GDIPlus_PenCreate(0xFFFF0000, 2)
 	Local $hPenDkRed = _GDIPlus_PenCreate(0xFF6A0000, 2)
-	Local $hPenBlue = _GDIPlus_PenCreate(0xFF0026FF, 2)
+	Local $hPenNavyBlue = _GDIPlus_PenCreate(0xFF000066, 2)
+	Local $hPenBlue = _GDIPlus_PenCreate(0xFF0000CC, 2)
+	Local $hPenSteelBlue = _GDIPlus_PenCreate(0xFF0066CC, 2)
+	Local $hPenLtBlue = _GDIPlus_PenCreate(0xFF0080FF, 2)
+	Local $hPenPaleBlue = _GDIPlus_PenCreate(0xFF66B2FF, 2)
 	Local $hPenCyan = _GDIPlus_PenCreate(0xFF00FFFF, 2)
 	Local $hPenYellow = _GDIPlus_PenCreate(0xFFFFD800, 2)
 	Local $hPenLtGrey = _GDIPlus_PenCreate(0xFFCCCCCC, 2)
+	Local $hPenWhite = _GDIPlus_PenCreate(0xFFFFFFFF, 2)
+	Local $hPenMagenta = _GDIPlus_PenCreate(0xFFFF00F6, 2)
+
 
 	;-- DRAW EXTERNAL PERIMETER LINES
 	_GDIPlus_GraphicsDrawLine($hGraphic, $ExternalArea[0][0], $ExternalArea[0][1], $ExternalArea[2][0], $ExternalArea[2][1], $hPenLtGreen)
@@ -242,19 +253,76 @@ Func AttackCSVDEBUGIMAGE()
 	Next
 	For $i = 0 To UBound($g_aiPixelElixir) - 1
 		$pixel = $g_aiPixelElixir[$i]
-		_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 10, 20, 20, $hPenDkGreen)
+		_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 5, 20, 20, $hPenDkGreen)
 	Next
 	For $i = 0 To UBound($g_aiPixelDarkElixir) - 1
 		$pixel = $g_aiPixelDarkElixir[$i]
-		_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 10, 20, 20, $hPenDkRed)
+		_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 5, 20, 20, $hPenDkRed)
 	Next
 
+	; - DRAW GOLD STORAGE -------------------------------------------------------
+	If $g_bCSVLocateStorageGold = True And IsArray($g_aiCSVGoldStoragePos) Then
+			For $i = 0 To UBound($g_aiCSVGoldStoragePos) - 1
+				$pixel = $g_aiCSVGoldStoragePos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 20, 20, $hPenWhite)
+			Next
+	EndIf
+
+	; - DRAW ELIXIR STORAGE ---------------------------------------------------------
+	If $g_bCSVLocateStorageElixir = True And IsArray($g_aiCSVElixirStoragePos) Then
+			For $i = 0 To UBound($g_aiCSVElixirStoragePos) - 1
+				$pixel = $g_aiCSVElixirStoragePos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 20, 20, $hPenMagenta)
+			Next
+	EndIf
+
+
 	; - DRAW TOWNHALL -------------------------------------------------------------------
-	_GDIPlus_GraphicsDrawRect($hGraphic, $g_iTHx - 15, $g_iTHy - 15, 30, 30, $hPenRed)
+	_GDIPlus_GraphicsDrawRect($hGraphic, $g_iTHx - 5, $g_iTHy - 10, 30, 30, $hPenRed)
 
 	; - DRAW Eagle -------------------------------------------------------------------
 	If $g_bCSVLocateEagle = True And IsArray($g_aiCSVEagleArtilleryPos) Then
 		_GDIPlus_GraphicsDrawRect($hGraphic, $g_aiCSVEagleArtilleryPos[0] - 15, $g_aiCSVEagleArtilleryPos[1] - 15, 30, 30, $hPenBlue)
+	EndIf
+
+	; - DRAW Inferno -------------------------------------------------------------------
+	If $g_bCSVLocateInferno = True And IsArray($g_aiCSVInfernoPos) Then
+		For $i = 0 To UBound($g_aiCSVInfernoPos) - 1
+			$pixel = $g_aiCSVInfernoPos[$i]
+			_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 10, 20, 20, $hPenNavyBlue)
+		Next
+	EndIf
+
+	; - DRAW X-Bow -------------------------------------------------------------------
+	If $g_bCSVLocateXBow = True And IsArray($g_aiCSVXBowPos) Then
+		For $i = 0 To UBound($g_aiCSVXBowPos) - 1
+			$pixel = $g_aiCSVXBowPos[$i]
+			_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 25, 25, 25, $hPenBlue)
+		Next
+	EndIf
+
+	; - DRAW Wizard Towers -------------------------------------------------------------------
+	If $g_bCSVLocateWizTower = True And IsArray($g_aiCSVWizTowerPos) Then
+		For $i = 0 To UBound($g_aiCSVWizTowerPos) - 1
+			$pixel = $g_aiCSVWizTowerPos[$i]
+			_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 5, $pixel[1] - 15, 25, 25, $hPenSteelBlue)
+		Next
+	EndIf
+
+	; - DRAW Mortars -------------------------------------------------------------------
+	If $g_bCSVLocateMortar = True And IsArray($g_aiCSVMortarPos) Then
+		For $i = 0 To UBound($g_aiCSVMortarPos) - 1
+			$pixel = $g_aiCSVMortarPos[$i]
+			_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 25, 25, $hPenLtBlue)
+		Next
+	EndIf
+
+	; - DRAW Air Defense -------------------------------------------------------------------
+	If $g_bCSVLocateAirDefense = True And IsArray($g_aiCSVAirDefensePos) Then
+		For $i = 0 To UBound($g_aiCSVAirDefensePos) - 1
+			$pixel = $g_aiCSVAirDefensePos[$i]
+			_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 12, $pixel[1] - 10, 25, 25, $hPenPaleBlue)
+		Next
 	EndIf
 
 	; 99 -  DRAW SLICE NUMBERS
@@ -271,6 +339,7 @@ Func AttackCSVDEBUGIMAGE()
 	Local $Time = @HOUR & "." & @MIN & "." & @SEC
 	Local $filename = $g_sProfileTempDebugPath & String("AttackDebug_" & $Date & "_" & $Time) & ".jpg"
 	_GDIPlus_ImageSaveToFile($EditedImage, $filename)
+	If @error Then SetLog("Debug Image save error: " & @extended, $COLOR_ERROR)
 	SetDebugLog("Attack CSV image saved: " & $filename)
 
 	; Clean up resources
@@ -280,9 +349,15 @@ Func AttackCSVDEBUGIMAGE()
 	_GDIPlus_PenDispose($hPenRed)
 	_GDIPlus_PenDispose($hPenDkRed)
 	_GDIPlus_PenDispose($hPenBlue)
+	_GDIPlus_PenDispose($hPenNavyBlue)
+	_GDIPlus_PenDispose($hPenSteelBlue)
+	_GDIPlus_PenDispose($hPenLtBlue)
+	_GDIPlus_PenDispose($hPenPaleBlue)
 	_GDIPlus_PenDispose($hPenCyan)
 	_GDIPlus_PenDispose($hPenYellow)
 	_GDIPlus_PenDispose($hPenLtGrey)
+	_GDIPlus_PenDispose($hPenWhite)
+	_GDIPlus_PenDispose($hPenMagenta)
 	_GDIPlus_BrushDispose($hBrush)
 	_GDIPlus_GraphicsDispose($hGraphic)
 	_GDIPlus_BitmapDispose($EditedImage)
@@ -291,5 +366,7 @@ Func AttackCSVDEBUGIMAGE()
 	If TestCapture() = True Then
 		ShellExecute($filename)
 	EndIf
+
+	SetDebugLog("AttackCSV DEBUG IMAGE Create Required: " & Round((__TimerDiff($iTimer) * 0.001), 1) & "Seconds", $COLOR_DEBUG)
 
 EndFunc   ;==>AttackCSVDEBUGIMAGE

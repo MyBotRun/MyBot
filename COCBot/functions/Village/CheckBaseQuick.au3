@@ -66,7 +66,7 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 				If $g_iDebugSetlogTrain = 1 Then Setlog("skip train. " & $g_iActualTrainSkip + 1 & "/" & $g_iMaxTrainSkip, $color_purple)
 				$g_iActualTrainSkip = $g_iActualTrainSkip + 1
 				CheckOverviewFullArmy(True, False) ; use true parameter to open train overview window
-				If ISArmyWindow(False, $ArmyTAB) Then CheckExistentArmy("Spells") ; Imgloc Method
+				If IsArmyWindow(False, $ArmyTAB) Then CheckExistentArmy("Spells") ; Imgloc Method
 				getArmyHeroCount(False, True) ; true to close the window
 				If $g_iActualTrainSkip >= $g_iMaxTrainSkip Then
 					$g_iActualTrainSkip = 0

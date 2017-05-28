@@ -53,7 +53,7 @@ Func ReArm()
 		If FileExists($ImagesToUse[$i]) Then
 			_CaptureRegion2(125, 610, 740, 715)
 			;Full Search in ALL Image (FV for cocDiamond) and return only fisrt match (maxObjects=1)
-			Local $res = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[$i], "str", "FV", "int", 1)
+			Local $res = DllCallMyBot("FindTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[$i], "str", "FV", "int", 1)
 			If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 			If IsArray($res) Then
 				If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)

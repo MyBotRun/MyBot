@@ -3,16 +3,16 @@
 ; Description ...:
 ; Syntax ........: SetLog($String[, $Color = $COLOR_BLACK[, $Font = "Verdana"[, $FontSize = 7.5[, $statusbar = 1[, $time = Time([,
 ;                  $bConsoleWrite = True]]]]]])
-; Parameters ....: $String              - an unknown value.
-;                  $Color               - [optional] an unknown value. Default is $COLOR_BLACK.
-;                  $Font                - [optional] an unknown value. Default is "Verdana".
-;                  $FontSize            - [optional] an unknown value. Default is 7.5.
+; Parameters ....: $sLogMessage         - The message which gets shown in Bot log
+;                  $iColor               - [optional] an unknown value. Default is $COLOR_BLACK.
+;                  $sFont                - [optional] an unknown value. Default is "Verdana".
+;                  $iFontSize            - [optional] an unknown value. Default is 7.5.
 ;                  $statusbar           - [optional] a string value. Default is 1.
 ;                  $time                - [optional] a dll struct value. Default is Time(.
 ;                  $bConsoleWrite       - [optional] a boolean value. Default is True.
 ; Return values .: None
 ; Author ........:
-; Modified ......: CodeSlinger69 (2017)
+; Modified ......: CodeSlinger69 (01-2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -25,12 +25,12 @@ Global $g_oTxtLogInitText = ObjCreate("Scripting.Dictionary")
 Global $g_oTxtAtkLogInitText = ObjCreate("Scripting.Dictionary")
 
 
-Func SetLog($String, $Color = Default, $Font = Default, $FontSize = Default, $statusbar = Default, $bConsoleWrite = Default) ;Sets the text for the log
-	Return _SetLog($String, $Color, $Font, $FontSize, $statusbar, $bConsoleWrite)
+Func SetLog($sLogMessage, $iColor = Default, $sFont = Default, $iFontSize = Default, $iStatusbar = Default, $bConsoleWrite = Default) ;Sets the text for the log
+	If $sLogMessage <> "" Then Return _SetLog($sLogMessage, $iColor, $sFont, $iFontSize, $iStatusbar, $bConsoleWrite)
 EndFunc   ;==>SetLog
 
 ; internal _SetLog(), don't use outside this file
-Func _SetLog($String, $Color = Default, $Font = Default, $FontSize = Default, $statusbar = Default, $time = Default, $bConsoleWrite = Default, _
+Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Default, $statusbar = Default, $time = Default, $bConsoleWrite = Default, _
 			$LogPrefix = Default, $bPostponed = Default, $bSilentSetLog = Default, $bWriteToLogFile = Default)
 
 	If $Color = Default Then $Color = $COLOR_BLACK
@@ -45,8 +45,8 @@ Func _SetLog($String, $Color = Default, $Font = Default, $FontSize = Default, $s
 	If $bSilentSetLog = Default Then $bSilentSetLog = $g_bSilentSetLog
 	If $bWriteToLogFile = Default Then $bWriteToLogFile = True
 
-	Local $log = $LogPrefix & $debugTime & $String
-	If $bConsoleWrite = True And $String <> "" Then
+	Local $log = $LogPrefix & $debugTime & $sLogMessage
+	If $bConsoleWrite = True And $sLogMessage <> "" Then
 		Local $sLevel = GetLogLevel($Color)
 		ConsoleWrite($sLevel & $log & @CRLF) ; Always write any log to console
 	EndIf
@@ -62,7 +62,7 @@ Func _SetLog($String, $Color = Default, $Font = Default, $FontSize = Default, $s
 	EndIf
 	;Local $txtLogMutex = AcquireMutex("txtLog")
 	Local $a[6]
-	$a[0] = $String
+	$a[0] = $sLogMessage
 	$a[1] = $Color
 	$a[2] = $Font
 	$a[3] = $FontSize
@@ -119,42 +119,42 @@ Func GetLogLevel($Color)
 	Return $sLevel
 EndFunc   ;==>GetLogLevel
 
-Func SetLogText(ByRef $hTxtLog, ByRef $String, ByRef $Color, ByRef $Font, ByRef $FontSize, ByRef $time) ;Sets the text for the log
+Func SetLogText(ByRef $hTxtLog, ByRef $sLogMessage, ByRef $Color, ByRef $Font, ByRef $FontSize, ByRef $time) ;Sets the text for the log
 	If $time Then
 		_GUICtrlRichEdit_SetFont($hTxtLog, 6, "Lucida Console")
 		_GUICtrlRichEdit_AppendTextColor($hTxtLog, $time, 0x000000, False)
 	EndIf
 	_GUICtrlRichEdit_SetFont($hTxtLog, $FontSize, $Font)
-	_GUICtrlRichEdit_AppendTextColor($hTxtLog, $String & @CRLF, _ColorConvert($Color), False)
+	_GUICtrlRichEdit_AppendTextColor($hTxtLog, $sLogMessage & @CRLF, _ColorConvert($Color), False)
 EndFunc   ;==>SetLogText
 
-Func SetDebugLog($String, $Color = Default, $bSilentSetLog = Default, $Font = Default, $FontSize = Default, $statusbar = Default)
+Func SetDebugLog($sLogMessage, $Color = Default, $bSilentSetLog = Default, $Font = Default, $FontSize = Default, $statusbar = Default)
 	If $Color = Default Then $Color = $COLOR_DEBUG
 	If $bSilentSetLog = Default Then $bSilentSetLog = False
 	If $statusbar = Default Then $statusbar = 0
 
 	Local $LogPrefix = "D "
-	Local $log = $LogPrefix & TimeDebug() & $String
+	Local $log = $LogPrefix & TimeDebug() & $sLogMessage
 	If $g_iDebugSetlog = 1 And $bSilentSetLog = False Then
-		_SetLog($String, $Color, $Font, $FontSize, $statusbar, Default, True, $LogPrefix)
+		_SetLog($sLogMessage, $Color, $Font, $FontSize, $statusbar, Default, True, $LogPrefix)
 	Else
-		If $String <> "" Then ConsoleWrite(GetLogLevel($Color) & $log & @CRLF) ; Always write any log to console
+		If $sLogMessage <> "" Then ConsoleWrite(GetLogLevel($Color) & $log & @CRLF) ; Always write any log to console
 		If $g_hLogFile = 0 And $g_sProfileLogsPath Then CreateLogFile()
 		If $g_hLogFile Then
 			__FileWriteLog($g_hLogFile, $log)
 		Else
 			; log later
-			_SetLog($String, $Color, $Font, $FontSize, $statusbar, Default, False, $LogPrefix, Default, True)
+			_SetLog($sLogMessage, $Color, $Font, $FontSize, $statusbar, Default, False, $LogPrefix, Default, True)
 		EndIf
 	EndIf
 EndFunc   ;==>SetDebugLog
 
-Func SetGuiLog($String, $Color = Default, $bGuiLog = Default)
+Func SetGuiLog($sLogMessage, $Color = Default, $bGuiLog = Default)
 	If $bGuiLog = Default Then $bGuiLog = True
 	If $bGuiLog = True Then
-		Return _SetLog($String, $Color)
+		Return _SetLog($sLogMessage, $Color)
 	EndIf
-	Return SetDebugLog($String, $Color)
+	Return SetDebugLog($sLogMessage, $Color)
 EndFunc   ;==>SetGuiLog
 
 Func FlushGuiLog(ByRef $hTxtLog, ByRef $aTxtLog, $bUpdateStatus = False, $sLogMutexName = "txtLog")
@@ -273,9 +273,9 @@ Func SetAtkLog($String1, $String2 = "", $Color = $COLOR_BLACK, $Font = "Lucida C
 EndFunc   ;==>SetAtkLog
 
 Func AtkLogHead()
-	SetAtkLog(_PadStringCenter(" " & GetTranslated(601, 15, "ATTACK LOG") & " ", 71, "="), "", $COLOR_BLACK, "MS Shell Dlg", 8.5)
-	SetAtkLog(GetTranslated(601, 16, "                   --------  LOOT --------       ----- BONUS ------"), "")
-	SetAtkLog(GetTranslated(601, 17, " TIME|TROP.|SEARCH|   GOLD| ELIXIR|DARK EL|TR.|S|  GOLD|ELIXIR|  DE|L."), "")
+	SetAtkLog(_PadStringCenter(" " & GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_01", "ATTACK LOG") & " ", 71, "="), "", $COLOR_BLACK, "MS Shell Dlg", 8.5)
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                  --------  LOOT --------       ----- BONUS ------'), "")
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|TIME|TROP.|SEARCH|   GOLD| ELIXIR|DARK EL|TR.|S|  GOLD|ELIXIR|  DE|L.'), "")
 EndFunc   ;==>AtkLogHead
 
 Func __FileWriteLog($handle, $text)

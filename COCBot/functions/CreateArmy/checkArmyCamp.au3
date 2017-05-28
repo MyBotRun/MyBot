@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func checkArmyCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bGetHeroesTime = False)
+Func checkArmyCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bGetHeroesTime = False, $bSetLog = True)
 
 	If $g_iDebugSetlogTrain = 1 Then SETLOG("Begin checkArmyCamp:", $COLOR_DEBUG1)
 
@@ -28,37 +28,41 @@ Func checkArmyCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bGetHer
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	GetArmyCapacity()
+	GetArmyCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
 	;getArmyTroopCount() ; OLD METTHOD to detect troops on army over view window
-	If ISArmyWindow(False, $ArmyTAB) Then CheckExistentArmy("Troops") ; Imgloc Method
+
+	CheckExistentArmy("Troops", $bSetLog)
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	getArmyTroopTime()
+	getArmyTroopTime(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
 	Local $HeroesRegenTime
-	getArmyHeroCount()
+	getArmyHeroCount(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
-	If $bGetHeroesTime = True Then $HeroesRegenTime = getArmyHeroTime("all")
-	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
-
-	getArmySpellCapacity()
+	If $bGetHeroesTime = True Then $HeroesRegenTime = getArmyHeroTime("all", $bSetLog)
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	If ISArmyWindow(False, $ArmyTAB) Then CheckExistentArmy("Spells") ; Imgloc Method
+	getArmySpellCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	getArmySpellTime()
+	CheckExistentArmy("Spells", $bSetLog) ; Imgloc Method
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	getArmyCCStatus()
+	getArmySpellTime(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
+
+	getArmyCCSpellCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
+
+	getArmyCCStatus(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
 	If Not $g_bFullArmy Then DeleteExcessTroops()
 
-	If $bCloseArmyWindow = True Then
+	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf

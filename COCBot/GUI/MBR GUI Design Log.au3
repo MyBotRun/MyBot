@@ -40,24 +40,29 @@ Func CreateLogTab()
    WinActivate($activeHWnD) ; restore current active window
 
    $y = 410
-   GUICtrlCreateLabel(GetTranslated(601,3, "Log Style")&":", $x, $y + 5, -1, -1)
+   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Log", "LblLog_Style", "Log Style")&":", $x, $y + 5, -1, -1)
 	  GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
    $g_hCmbLogDividerOption = GUICtrlCreateCombo("", $x + 50, $y, 180, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	  GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-	  _GUICtrlSetTip(-1, GetTranslated(601,4, "Use these options to set the Log type."))
-	  GUICtrlSetData(-1, GetTranslated(601,5, "Use Divider to Resize Both Logs") &"|" &GetTranslated(601,6, "Bot and Attack Log Same Size") &"|" &GetTranslated(601,7, "Large Bot Log, Small Attack Log") &"|" &GetTranslated(601,8, "Small Bot Log, Large Attack Log") &"|" &GetTranslated(601,9, "Full Bot Log, Hide Attack Log") & "|" & GetTranslated(601,10, "Hide Bot Log, Full Attack Log") , GetTranslated(601,5, "Use Divider to Resize Both Logs"))
+	  _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Log", "LblLog_Style_Info_01", "Use these options to set the Log type."))
+	  GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_01", "Use Divider to Resize Both Logs") & "|" & _
+						 GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_02", "Bot and Attack Log Same Size") & "|" & _
+						 GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_03", "Large Bot Log, Small Attack Log") & "|" & _
+						 GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_04", "Small Bot Log, Large Attack Log") & "|" & _
+						 GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_05", "Full Bot Log, Hide Attack Log") & "|" & _
+						 GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_06", "Hide Bot Log, Full Attack Log") , GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_01", -1))
 	  GUICtrlSetOnEvent(-1, "cmbLog")
 
-   $g_hBtnAtkLogClear = GUICtrlCreateButton(GetTranslated(601,11, "Clear Atk. Log"), $x + 270, $y - 1, 80, 23)
+   $g_hBtnAtkLogClear = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Log", "BtnAtkLogClear", "Clear Atk. Log"), $x + 270, $y - 1, 80, 23)
 	  GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-	  _GUICtrlSetTip(-1, GetTranslated(601,12, "Use this to clear the Attack Log."))
+	  _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Log", "BtnAtkLogClear_Info_01", "Use this to clear the Attack Log."))
 	  GUICtrlSetOnEvent(-1, "btnAtkLogClear")
 	  If $g_bBtnColor Then GUICtrlSetBkColor(-1, 0x22C4F5)
 
-   $g_hBtnAtkLogCopyClipboard = GUICtrlCreateButton(GetTranslated(601,13, "Copy to Clipboard"), $x + 350, $y - 1, 100, 23)
+   $g_hBtnAtkLogCopyClipboard = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Log", "BtnAtkLogCopyClipboard", "Copy to Clipboard"), $x + 350, $y - 1, 100, 23)
 	  GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-	  _GUICtrlSetTip(-1, GetTranslated(601,14, "Use this to copy the Attack Log to the Clipboard (CTRL+C)"))
+	  _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Log", "BtnAtkLogCopyClipboard_Info_01", "Use this to copy the Attack Log to the Clipboard (CTRL+C)"))
 	  GUICtrlSetOnEvent(-1, "btnAtkLogCopyClipboard")
 	  If $g_bBtnColor Then GUICtrlSetBkColor(-1, 0x22C4F5)
 

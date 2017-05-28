@@ -252,6 +252,7 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hChkdebugAttackCSV) = 1
 	$oAlwaysEnabledControls($g_hChkMakeIMGCSV) = 1
 	$oAlwaysEnabledControls($g_hBtnTestAttackCSV) = 1
+	$oAlwaysEnabledControls($g_hBtnTestBuildingLocation) = 1
 	$oAlwaysEnabledControls($g_hBtnTestFindButton) = 1
 	$oAlwaysEnabledControls($g_hTxtTestFindButton) = 1
 	$oAlwaysEnabledControls($g_hBtnTestCleanYard) = 1

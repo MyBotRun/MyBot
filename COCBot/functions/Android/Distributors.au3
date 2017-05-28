@@ -17,29 +17,29 @@ Global $g_sNO_COC, $g_sUNKNOWN_COC
 Global $_g_asDISTRIBUTORS[19][4]
 
 Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language is detected
-	$g_sNO_COC = "<" & GetTranslated(642, 9, "No COC") & ">"
-	$g_sUNKNOWN_COC = "<" & GetTranslated(642, 10, "Unknown COC") & ">"
+	$g_sNO_COC = "<" & GetTranslatedFileIni("MBR Distributors", "NO_COC", "No COC") & ">"
+	$g_sUNKNOWN_COC = "<" & GetTranslatedFileIni("MBR Distributors", "Unknown_COC", "Unknown COC") & ">"
 
 	Dim $_g_asDISTRIBUTORS[19][4] = [ _
-			["Google", "com.supercell.clashofclans", "com.supercell.clashofclans.GameApp", GetTranslated(642, 11, "Google")], _
-			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 12, "Kunlun")], _
-			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 13, "Qihoo")], _
-			["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 14, "Baidu")], _
-			["9game", "com.supercell.clashofclans.uc", "com.supercell.clashofclans.uc.GameApp", GetTranslated(642, 15, "9game")], _
-			["Wandoujia/Downjoy", "com.supercell.clashofclans.wdj", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 16, "Wandoujia/Downjoy")], _
-			["Huawei", "com.supercell.clashofclans.huawei", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 17, "Huawei")], _
-			["OPPO", "com.supercell.clashofclans.nearme.gamecenter", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 18, "OPPO")], _
-			["VIVO", "com.supercell.clashofclans.vivo", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 19, "VIVO")], _
-			["Anzhi", "com.supercell.clashofclans.anzhi", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 20, "Anzhi")], _
-			["Kaopu", "com.supercell.clashofclans.ewan.kaopu", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 21, "Kaopu")], _
-			["Lenovo", "com.supercell.clashofclans.lenovo", "com.supercell.clashofclans.GameAppKunlun", GetTranslated(642, 22, "Lenovo")], _
-			["Guopan", "com.supercell.clashofclans.wdj", "com.flamingo.sdk.view.WDJSplashActivity", GetTranslated(642, 23, "Guopan")], _
-			["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.clashofclans.mi.GameAppXiaomi", GetTranslated(642, 24, "Xiaomi")], _
-			["Haimawan", "com.supercell.clashofclans.ewan.hm", "cn.ewan.supersdk.activity.SplashActivity", GetTranslated(642, 25, "Haimawan")], _
-			["Leshi", "com.supercell.clashofclans.ewan.leshi", "cn.ewan.supersdk.activity.SplashActivity", GetTranslated(642, 26, "Leshi")], _
-			["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", GetTranslated(642, 27, "Microvirt")], _
-			["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity", GetTranslated(642, 28, "Yeshen")], _
-			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity", GetTranslated(642, 29, "Aiyouxi")] _
+			["Google", "com.supercell.clashofclans", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_01", "Google")], _
+			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_02", "Kunlun")], _
+			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_03", "Qihoo")], _
+			["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_04", "Baidu")], _
+			["9game", "com.supercell.clashofclans.uc", "com.supercell.clashofclans.uc.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_05", "9game")], _
+			["Wandoujia/Downjoy", "com.supercell.clashofclans.wdj", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_06", "Wandoujia/Downjoy")], _
+			["Huawei", "com.supercell.clashofclans.huawei", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_07", "Huawei")], _
+			["OPPO", "com.supercell.clashofclans.nearme.gamecenter", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_08", "OPPO")], _
+			["VIVO", "com.supercell.clashofclans.vivo", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_09", "VIVO")], _
+			["Anzhi", "com.supercell.clashofclans.anzhi", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_10", "Anzhi")], _
+			["Kaopu", "com.supercell.clashofclans.ewan.kaopu", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_11", "Kaopu")], _
+			["Lenovo", "com.supercell.clashofclans.lenovo", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_12", "Lenovo")], _
+			["Guopan", "com.supercell.clashofclans.wdj", "com.flamingo.sdk.view.WDJSplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_13",  "Guopan")], _
+			["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.clashofclans.mi.GameAppXiaomi", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_14", "Xiaomi")], _
+			["Haimawan", "com.supercell.clashofclans.ewan.hm", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_15", "Haimawan")], _
+			["Leshi", "com.supercell.clashofclans.ewan.leshi", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_16", "Leshi")], _
+			["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_17", "Microvirt")], _
+			["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_18", "Yeshen")], _
+			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_19", "Aiyouxi")] _
 			]
 EndFunc   ;==>InitializeCOCDistributors
 

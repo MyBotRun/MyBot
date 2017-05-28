@@ -13,14 +13,15 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func ParseAttackCSV($debug = False)
-	Global $ATTACKVECTOR_A, $ATTACKVECTOR_B, $ATTACKVECTOR_C, $ATTACKVECTOR_D, $ATTACKVECTOR_E, $ATTACKVECTOR_F
-	Global $ATTACKVECTOR_G, $ATTACKVECTOR_H, $ATTACKVECTOR_I, $ATTACKVECTOR_J, $ATTACKVECTOR_K, $ATTACKVECTOR_L
-	Global $ATTACKVECTOR_M, $ATTACKVECTOR_N, $ATTACKVECTOR_O, $ATTACKVECTOR_P, $ATTACKVECTOR_Q, $ATTACKVECTOR_R
-	Global $ATTACKVECTOR_S, $ATTACKVECTOR_T, $ATTACKVECTOR_U, $ATTACKVECTOR_V, $ATTACKVECTOR_W, $ATTACKVECTOR_X
-	Global $ATTACKVECTOR_Y, $ATTACKVECTOR_Z
 
 	Local $rownum = 0
 	Local $bForceSideExist = False
+	Local $sErrorText, $sTargetVectors = ""
+
+	For $v = 0 To 25  ; Zero all 26 vectors from last atttack in case here is error MAKE'ing new vectors
+		Assign("ATTACKVECTOR_" & Chr(65+$v), "", $ASSIGN_EXISTFAIL) ; start with character "A" = ASCII 65
+		If @error Then SetLog("Failed to erase old vector: " & Chr(65+$v) & ", ask code monkey to fix!", $COLOR_ERROR)
+	Next
 
 	;Local $filename = "attack1"
 	If $g_iMatchMode = $DB Then
@@ -39,6 +40,7 @@ Func ParseAttackCSV($debug = False)
 		For $iLine = 0 To UBound($aLines) - 1
 			$line = $aLines[$iLine]
 			$rownum = $line + 1
+			$sErrorText = "" ; empty error text each row
 			If @error = -1 Then ExitLoop
 			If $debug = True Then Setlog("parse line:<<" & $line & ">>")
 			debugAttackCSV("line content: " & $line)
@@ -90,18 +92,44 @@ Func ParseAttackCSV($debug = False)
 								EndSwitch
 							EndIf
 							If CheckCsvValues("MAKE", 1, $value1) And CheckCsvValues("MAKE", 5, $value5) Then
-								Assign("ATTACKVECTOR_" & $value1, MakeDropPoints(Eval($sidex), $value3, $value4, $value5, $value6, $value7))
-								For $i = 0 To UBound(Execute("$ATTACKVECTOR_" & $value1)) - 1
-									Local $pixel = Execute("$ATTACKVECTOR_" & $value1 & "[" & $i & "]")
-									debugAttackCSV($i & " - " & $pixel[0] & "," & $pixel[1])
-								Next
+								$sTargetVectors = StringReplace($sTargetVectors, $value3, "", Default, $STR_NOCASESENSEBASIC) ; if re-making a vector, must remove from target vector string
+								If CheckCsvValues("MAKE", 8, $value8) Then ; Vector is targeted towards building v7.2
+									; new field definitions:
+									; $side = target side string
+									; value3 = Drop point count can be 1 or 5 value only
+									; value4 = addtiles Ignore if value3 = 5, only used when dropping in sigle point
+									; value5 = versus ignore direction
+									; value6 = RandomX ignored as image find location will be "random" without need to add more variability
+									; value7 = randomY ignored as image find location will be "random" without need to add more variability
+									; value8 = Building target for drop points
+									If $value3 = 1 Or $value3 = 5 Then ; check for valid number of drop points
+										Local $tmpArray = MakeTargetDropPoints(Eval($sidex), $value3, $value4, $value8)
+										If @error Then
+											$sErrorText = "MakeTargetDropPoints: " & @error ; set flag
+										Else
+											Assign("ATTACKVECTOR_" & $value1, $tmpArray) ; assing vector
+											$sTargetVectors &= $value1 ; add letter of every vector using building target to string to error check DROP command
+										EndIf
+									Else
+										$sErrorText = "value 3"
+									EndIf
+								Else ; normal redline based drop vectors
+									Assign("ATTACKVECTOR_" & $value1, MakeDropPoints(Eval($sidex), $value3, $value4, $value5, $value6, $value7))
+								EndIf
 							Else
-								Setlog("Discard row, bad value1 or value 5 parameter: row " & $rownum)
-								debugAttackCSV("Discard row, bad value1 or value5 parameter")
+								$sErrorText = "value1 or value 5"
 							EndIf
 						Else
-							Setlog("Discard row, bad value2 parameter:row " & $rownum)
-							debugAttackCSV("Discard row, bad value2 parameter:row " & $rownum)
+							$sErrorText = "value2"
+						EndIf
+						If $sErrorText <> "" Then ; log error message
+							Setlog("Discard row, bad " & $sErrorText & " parameter:row " & $rownum)
+							debugAttackCSV("Discard row, bad " & $sErrorText & " parameter:row " & $rownum)
+						Else ; debuglog vectors
+							For $i = 0 To UBound(Execute("$ATTACKVECTOR_" & $value1)) - 1
+								Local $pixel = Execute("$ATTACKVECTOR_" & $value1 & "[" & $i & "]")
+								debugAttackCSV($i & " - " & $pixel[0] & "," & $pixel[1])
+							Next
 						EndIf
 					Case "DROP"
 						KeepClicks()
@@ -213,7 +241,39 @@ Func ParseAttackCSV($debug = False)
 								$sleepdrop2 = 1
 							EndIf
 						EndIf
-						DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
+						; check for targeted vectors and validate index numbers, need too many values for check logic to use CheckCSVValues()
+						Local $tmpVectorList = StringSplit($value1, "-", $STR_NOCOUNT) ; get array with all vector(s) used
+						For $v = 0 To UBound($tmpVectorList) - 1 ; loop thru each vector in target list
+							If StringInStr($sTargetVectors, $tmpVectorList[$v], $STR_NOCASESENSEBASIC) = True Then
+								If IsArray($indexArray) Then ; is index comma separated list?
+									For $i = $index1 To $index2 ; check that all values are less 5?
+										If $indexArray[$i] < 1 Or $indexArray[$i] > 5 Then
+											$sErrorText &= "Invalid INDEX for near building DROP"
+											SetDebugLog("$index1: " & $index1 & ", $index2: " & $index2 & ", $indexArray[" & $i & "]: " & $indexArray[$i], $COLOR_ERROR)
+											ExitLoop
+										EndIf
+									Next
+								ElseIf $indexArray = 0 Then ; index is either 2 values comma separated, range "-" separated between 1 & 5, or single index
+									Select
+										Case $index1 = 1 And $index1 = $index2
+											; do nothing, is valid
+										Case $index1 >= 1 And $index1 <= 5 And $index2 > 1 And $index2 <= 5
+											; do nothing valid index values for near location targets
+										Case Else
+											$sErrorText &= "Invalid INDEX for building target"
+											SetDebugLog("$index1: " & $index1 & ", $index2: " & $index2, $COLOR_ERROR)
+									EndSelect
+								Else
+									SetDebugLog("Monkey found a bad banana checking Bdlg target INDEX!", $COLOR_ERROR)
+								EndIf
+							EndIf
+						Next
+						If $sErrorText <> "" Then
+							Setlog("Discard row, " & $sErrorText & " parameter:row " & $rownum)
+							debugAttackCSV("Discard row, " & $sErrorText & " parameter:row " & $rownum)
+						Else
+							DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
+						EndIf
 						ReleaseClicks($g_iAndroidAdbClicksTroopDeploySize)
 						If _Sleep($DELAYRESPOND) Then ; check for pause/stop, close file before return
 							Return
@@ -502,6 +562,96 @@ Func ParseAttackCSV($debug = False)
 								Case 7, 8
 									$heightBottomLeft += Int($value1)
 							EndSwitch
+
+							If IsArray($g_aiCSVInfernoPos) Then
+								For $i = 0 To UBound($g_aiCSVInfernoPos) - 1
+									Local $pixel = $g_aiCSVInfernoPos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value4)
+											Case 3, 4
+												$heightTopRight += Int($value4)
+											Case 5, 6
+												$heightTopLeft += Int($value4)
+											Case 7, 8
+												$heightBottomLeft += Int($value4)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
+
+							If IsArray($g_aiCSVXBowPos) Then
+								For $i = 0 To UBound($g_aiCSVXBowPos) - 1
+									Local $pixel = $g_aiCSVXBowPos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value4)
+											Case 3, 4
+												$heightTopRight += Int($value4)
+											Case 5, 6
+												$heightTopLeft += Int($value4)
+											Case 7, 8
+												$heightBottomLeft += Int($value4)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
+
+							If IsArray($g_aiCSVWizTowerPos) Then
+								For $i = 0 To UBound($g_aiCSVWizTowerPos) - 1
+									Local $pixel = $g_aiCSVWizTowerPos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value4)
+											Case 3, 4
+												$heightTopRight += Int($value4)
+											Case 5, 6
+												$heightTopLeft += Int($value4)
+											Case 7, 8
+												$heightBottomLeft += Int($value4)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
+
+							If IsArray($g_aiCSVMortarPos) Then
+								For $i = 0 To UBound($g_aiCSVMortarPos) - 1
+									Local $pixel = $g_aiCSVMortarPos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value4)
+											Case 3, 4
+												$heightTopRight += Int($value4)
+											Case 5, 6
+												$heightTopLeft += Int($value4)
+											Case 7, 8
+												$heightBottomLeft += Int($value4)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
+
+							If IsArray($g_aiCSVAirDefensePos) Then
+								For $i = 0 To UBound($g_aiCSVAirDefensePos) - 1
+									Local $pixel = $g_aiCSVAirDefensePos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value4)
+											Case 3, 4
+												$heightTopRight += Int($value4)
+											Case 5, 6
+												$heightTopLeft += Int($value4)
+											Case 7, 8
+												$heightBottomLeft += Int($value4)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
 
 							Local $maxValue = $heightBottomRight
 							Local $sidename = "BOTTOM-RIGHT"

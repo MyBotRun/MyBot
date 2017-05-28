@@ -14,7 +14,21 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func VillageSearch() ;Control for searching a village that meets conditions
+Func VillageSearch()
+
+	$g_bVillageSearchActive = True
+	$g_bCloudsActive = True
+
+	Local $Result = _VillageSearch()
+
+	$g_bVillageSearchActive = False
+	$g_bCloudsActive = False
+
+	Return $Result
+
+EndFunc   ;==>VillageSearch
+
+Func _VillageSearch() ;Control for searching a village that meets conditions
 	Local $Result
 	Local $weakBaseValues
 	Local $logwrited = False
@@ -73,6 +87,8 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		; cleanup some vars used by imgloc just in case. usend in TH and DeadBase ( imgloc functions)
 		ResetTHsearch()
 
+		_ObjDeleteKey($g_oBldgAttackInfo, "") ; Remove all keys from building dictionary
+
 		If $g_iDebugVillageSearchImages = 1 Then DebugImageSave("villagesearch")
 		$logwrited = False
 		$g_bBtnAttackNowPressed = False
@@ -86,6 +102,8 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 		; ----------------- READ ENEMY VILLAGE RESOURCES  -----------------------------------
 		WaitForClouds() ; Wait for clouds to disappear
 		If $g_bRestart = True Then Return ; exit func
+
+		$g_bCloudsActive = False
 
 		GetResources(False) ;Reads Resource Values
 		If $g_bRestart = True Then Return ; exit func
@@ -323,6 +341,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 			$i += 1
 			_CaptureRegions()
 			If ( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1]), Hex($NextBtn[2], 6), $NextBtn[3])) And IsAttackPage(False) Then
+				$g_bCloudsActive = True
 				If $g_bUseRandomClick = False Then
 					ClickP($NextBtn, 1, 0, "#0155") ;Click Next
 				Else
@@ -407,7 +426,7 @@ Func VillageSearch() ;Control for searching a village that meets conditions
 
 	$g_bIsClientSyncError = False
 
-EndFunc   ;==>VillageSearch
+EndFunc   ;==>_VillageSearch
 
 Func SearchLimit($iSkipped)
 	If $g_bSearchRestartEnable And $iSkipped >= Number($g_iSearchRestartLimit) Then

@@ -17,6 +17,7 @@ Func chkSmartLightSpell()
 	If GUICtrlRead($g_hChkSmartLightSpell) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hChkSmartZapDB, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkSmartZapSaveHeroes, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkSmartZapFTW, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkNoobZap, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkSmartEQSpell, $GUI_ENABLE)
 		GUICtrlSetState($g_hLblSmartUseLSpell, $GUI_SHOW)
@@ -31,6 +32,7 @@ Func chkSmartLightSpell()
 	Else
 		GUICtrlSetState($g_hChkSmartZapDB, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkSmartZapSaveHeroes, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkSmartZapFTW, $GUI_DISABLE)
 		GUICtrlSetState($g_hTxtSmartMinDark, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkNoobZap, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkSmartEQSpell, $GUI_DISABLE)
@@ -65,6 +67,10 @@ EndFunc   ;==>chkEarthQuakeZap
 Func chkSmartZapDB()
     $g_bSmartZapDB = (GUICtrlRead($g_hChkSmartZapDB) = $GUI_CHECKED)
 EndFunc   ;==>chkSmartZapDB
+
+Func chkSmartZapFTW()
+    $g_bSmartZapFTW = (GUICtrlRead($g_hChkSmartZapFTW) = $GUI_CHECKED)
+EndFunc   ;==>chkSmartZapFTW
 
 Func chkSmartZapSaveHeroes()
     $g_bSmartZapSaveHeroes = (GUICtrlRead($g_hChkSmartZapSaveHeroes) = $GUI_CHECKED)

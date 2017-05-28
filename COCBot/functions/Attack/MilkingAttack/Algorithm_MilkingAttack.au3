@@ -147,7 +147,7 @@ Func Alogrithm_MilkingAttack()
 	If $g_bMilkAttackAfterTHSnipeEnable Then
 		; TH snipe attack selected, if no th found before, search enemy TH location
 		;a check th position
-		FindTownHall(True) ;force search townhall bacause we have possibility to allready destroyed
+		FindTownHall(True) ;force search townhall bacause we have possibility to already destroyed
 
 		;b check th outside
 		If $g_iSearchTH <> "-" Then
@@ -174,7 +174,7 @@ Func Alogrithm_MilkingAttack()
 	EndIf
 	If $g_bMilkAttackAfterScriptedAtkEnable Then
 		SetLogCentered("Scripted Attack after Miliking ", Default, $COLOR_INFO)
-		Algorithm_AttackCSV(False, False) ;launch algorithm without launch redarea (allready calculated)
+		Algorithm_AttackCSV(False, False) ;launch algorithm without launch redarea (already calculated)
 ;~ 		$g_iMatchMode = $MA
 ;~ 		PrepareAttack($g_iMatchMode, True)
 ;~ 		algorithm_AllTroops()

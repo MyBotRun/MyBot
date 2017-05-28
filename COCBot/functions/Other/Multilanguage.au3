@@ -4,7 +4,7 @@
 ; Syntax ........:
 ; Parameters ....: None
 ; Return values .: None
-; Author ........: Sardo (2015-11), Hervidero (2015-11)
+; Author ........: Sardo (2015-11), Hervidero (2015-11), Boju (2017-04)
 ; Modified ......:
 ; Remarks .......: This file is part of MyBot Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
@@ -1033,3 +1033,161 @@ Func DetectLanguage()
 
 
 EndFunc   ;==>DetectLanguage
+
+Func GetTranslatedFileIni($iSection = -1, $iKey = -1, $sText = "", $var1 = Default, $var2 = Default, $var3 = Default)
+	Static $aNewLanguage[1][2] ;undimmed language array
+	$sText = StringReplace($sText, @CRLF, "\r\n")
+
+	Local $sDefaultText, $g_sLanguageText
+	Local $SearchInLanguage = $iSection & "§" & $iKey
+	Local $result = _ArraySearch($aNewLanguage, $SearchInLanguage, 0, 0, 0, 0, 0)
+	If $result <> -1 Then
+		Return GetTranslatedParsedText($aNewLanguage[$result][1], $var1, $var2, $var3)
+	EndIf
+
+	If $g_sLanguage = $g_sDefaultLanguage Then ; default English
+
+		$sDefaultText = IniRead($g_sDirLanguages & $g_sDefaultLanguage & ".ini", $iSection, $iKey, "-3")
+
+		If $sText = "-1" Then  ; check for "-1" if text repeated
+			If $sDefaultText <> "-3" Then  ; check if text exists inside file
+				$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
+				Local $result = _ArraySearch($aNewLanguage, $SearchInLanguage, 0, 0, 0, 0, 0)
+				If $result <> -1 Then
+					$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][0] = $SearchInLanguage
+					$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][1] = $sDefaultText
+					ReDim $aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) + 1][2]
+				EndIf
+				Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
+			Else
+				Return "-3"  ; Show -3 error code in GUI to show read error and no text in file
+			EndIf
+		EndIf
+
+		If $sDefaultText <> $sText Then
+			Local $ini_file = $g_sDirLanguages & $g_sDefaultLanguage & ".ini"
+			Local $aSection[1][2] = [[$iKey, $sText]]
+			Local $Count = 1
+			Local $aKey = IniReadSection($ini_file, $iSection)
+			 If IsArray($aKey) Then
+				For $i = 1 To $aKey[0][0]
+					$Count += 1
+					ReDim $aSection[$Count][2]
+					$aSection[$Count - 1][0] = $aKey[$i][0]
+					$aSection[$Count - 1][1] = $aKey[$i][1]
+				Next
+			EndIf
+			_ArraySort($aSection, 0, 0, 0, 0)
+			IniWriteSection($ini_file, $iSection, $aSection, 0)
+			$sText = GetTranslatedParsedText($sText, $var1, $var2, $var3)
+			Local $result = _ArraySearch($aNewLanguage, $SearchInLanguage, 0, 0, 0, 0, 0)
+			If $result <> -1 Then
+				$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][0] = $SearchInLanguage
+				$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][1] = $sText
+				ReDim $aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) + 1][2]
+			Else
+				; $aNewLanguage[$result][1] = $sText
+			EndIf
+			Return $sText
+		Else
+			$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
+			Local $result = _ArraySearch($aNewLanguage, $SearchInLanguage, 0, 0, 0, 0, 0)
+			If $result <> -1 Then
+				$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][0] = $SearchInLanguage
+				$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][1] = $sDefaultText
+				ReDim $aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) + 1][2]
+			Else
+				; $aNewLanguage[$result][1] = $sDefaultText
+			EndIf
+			Return $sDefaultText
+		EndIf
+	Else ; translated language
+		$g_sLanguageText = IniRead($g_sDirLanguages & $g_sLanguage & ".ini", $iSection, $iKey, "-3")
+
+		If $sText = "-1" Then
+			If $g_sLanguageText = "-3" Then
+				$sDefaultText = IniRead($g_sDirLanguages & $g_sDefaultLanguage & ".ini", $iSection, $iKey, $sText)
+				$sDefaultText = GetTranslatedParsedText($sDefaultText, $var1, $var2, $var3)
+				Local $result = _ArraySearch($aNewLanguage, $SearchInLanguage, 0, 0, 0, 0, 0)
+				If $result <> -1 Then
+					$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][0] = $SearchInLanguage
+					$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][1] = $sDefaultText
+					ReDim $aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) + 1][2]
+				Else
+					; $aNewLanguage[$result][1] = $sDefaultText
+				EndIf
+				Return $sDefaultText ; will also return "-1" as debug if english.ini does not contain the correct section/key
+			Else
+				$g_sLanguageText = GetTranslatedParsedText($g_sLanguageText, $var1, $var2, $var3)
+				Local $result = _ArraySearch($aNewLanguage, $SearchInLanguage, 0, 0, 0, 0, 0)
+				If $result <> -1 Then
+					$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][0] = $SearchInLanguage
+					$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][1] = $g_sLanguageText
+					ReDim $aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) + 1][2]
+				Else
+					; $aNewLanguage[$result][1] = $g_sLanguageText
+				EndIf
+				Return $g_sLanguageText
+			EndIf
+		EndIf
+
+		If $g_sLanguageText = "-3" Then
+			Local $ini_file = $g_sDirLanguages & $g_sLanguage & ".ini"
+			Local $aSection[1][2] = [[$iKey, $sText]]
+			Local $Count = 1
+			Local $aKey = IniReadSection($ini_file, $iSection)
+			 If IsArray($aKey) Then
+				For $i = 1 To $aKey[0][0]
+					$Count += 1
+					ReDim $aSection[$Count][2]
+					$aSection[$Count - 1][0] = $aKey[$i][0]
+					$aSection[$Count - 1][1] = $aKey[$i][1]
+				Next
+			EndIf
+			_ArraySort($aSection, 0, 0, 0, 0)
+			IniWriteSection($ini_file, $iSection, $aSection, 0)
+			$sText = GetTranslatedParsedText($sText, $var1, $var2, $var3)
+			Local $result = _ArraySearch($aNewLanguage, $SearchInLanguage, 0, 0, 0, 0, 0)
+			If $result <> -1 Then
+				$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][0] = $SearchInLanguage
+				$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][1] = $sText
+				ReDim $aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) + 1][2]
+			Else
+				; $aNewLanguage[$result][1] = $sText
+			EndIf
+			Return $sText
+		EndIf
+		$g_sLanguageText = GetTranslatedParsedText($g_sLanguageText, $var1, $var2, $var3)
+			Local $result = _ArraySearch($aNewLanguage, $SearchInLanguage, 0, 0, 0, 0, 0)
+			If $result <> -1 Then
+				$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][0] = $SearchInLanguage
+				$aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) - 1][1] = $g_sLanguageText
+				ReDim $aNewLanguage[UBound($aNewLanguage, $UBOUND_ROWS) + 1][2]
+			Else
+				; $aNewLanguage[$result][1] = $g_sLanguageText
+			EndIf
+		Return $g_sLanguageText
+	EndIf
+EndFunc   ;==>GetTranslatedFileIni
+
+Func _ReadFullIni()
+	Local $ini_file = $g_sDirLanguages & $g_sDefaultLanguage & ".ini"
+	Static $aNewLanguage[1][2] ;undimmed language array
+	Local $Count = 1 ; Initialisation compteur
+	Local $aSection = IniReadSectionNames($ini_file) ; Lecture des sections
+	For $i = 1 To UBound($aSection) - 1 ; Boucle de lecture
+		Local $aKey = IniReadSection($ini_file, $aSection[$i]) ; Lecture des clés de la section en cours
+		If IsArray($aKey) Then ; Si la section n'est pas vide
+			ReDim $aNewLanguage[$Count + UBound($aKey) - 1][2] ; On redimentionne le tableau en ajoutant le nombre d'éléments de la section en cours
+			For $j = 1 To Ubound($aKey) - 1 ; Boucle de lecture
+				$aNewLanguage[$Count][0] = $aSection[$i] & "§" & $aKey[$j][0]; On stocke le nom de la section
+				$aNewLanguage[$Count][1] = $aKey[$j][1]; On stocke le nom de la clé
+				$Count += 1 ; On incrémente le compteur
+			Next
+		Else ; Si la section est vide
+			ReDim $aNewLanguage[$Count + 1][2] ; On redimentionne le tableau de une ligne
+			$aNewLanguage[$Count][0] = $aSection[$i] ; On stocke le nom de la section
+			$Count += 1 ; On incrémente le compteur
+		EndIf
+	Next
+EndFunc   ;==>_ReadFullIni

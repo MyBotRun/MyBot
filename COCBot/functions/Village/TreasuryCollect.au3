@@ -15,7 +15,7 @@
 #include-once
 
 Func TreasuryCollect()
-	If $g_iDebugSetlog = 1 Then SETLOG("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
+	If $g_iDebugSetlog = 1 Then SetLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
 	If $g_bRunState = False Then Return ; ensure bot is running
 
 	ClickP($aAway, 1, 0, "#0441") ; clear open windows - Click Away before reading village data
@@ -44,7 +44,7 @@ Func TreasuryCollect()
 
 	;Find and Click Treasury Button To Open Treasury Window
 	_CaptureRegion2(125, 610, 740, 715)
-	Local $res = DllCall($g_hLibImgLoc, "str", "SearchTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[0], "float", $g_fToleranceImgLoc, "str", "FV", "int", 1)
+	Local $res = DllCallMyBot("SearchTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[0], "float", $g_fToleranceImgLoc, "str", "FV", "int", 1)
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 	If IsArray($res) Then
 		If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
@@ -54,7 +54,7 @@ Func TreasuryCollect()
 			SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 		Else
 			Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
-			If UBound($expRet) > 1 Then 
+			If UBound($expRet) > 1 Then
 				Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
 				If UBound($posPoint) > 1 Then
 					Local $ButtonX = 125 + Int($posPoint[0])
@@ -77,14 +77,14 @@ Func TreasuryCollect()
 		SetLog("Found full Treasury, collecting loot...", $COLOR_SUCCESS)
 		$ForceCollect = True
 	Else
-		SetLog("Treasury not full", $COLOR_INFO)
+		SetLog("Treasury not full yet", $COLOR_INFO)
 	EndIf
 
 	; Treasury window open, user msg logged, time to collect loot!
 	; check for collect treasury full GUI condition enabled and low resources
 	If $ForceCollect Or ($g_bChkTreasuryCollect And ((Number($g_aiCurrentLoot[$eLootGold]) <= $g_iTxtTreasuryGold) Or (Number($g_aiCurrentLoot[$eLootElixir]) <= $g_iTxtTreasuryElixir) Or (Number($g_aiCurrentLoot[$eLootDarkElixir]) <= $g_iTxtTreasuryDark))) Then
 		_CaptureRegion2(350, 450, 505, 521)
-		Local $res = DllCall($g_hLibImgLoc, "str", "SearchTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[1], "float", $g_fToleranceImgLoc, "str", "FV", "int", 1)
+		Local $res = DllCallMyBot("SearchTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[1], "float", $g_fToleranceImgLoc, "str", "FV", "int", 1)
 		If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 		If IsArray($res) Then
 			If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
@@ -94,7 +94,7 @@ Func TreasuryCollect()
 				SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 			Else
 				Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
-				If UBound($expRet) > 1 Then 
+				If UBound($expRet) > 1 Then
 					Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
 					If UBound($posPoint) > 1 Then
 						Local $ButtonX = 350 + Int($posPoint[0])
@@ -116,4 +116,7 @@ Func TreasuryCollect()
 		ClickP($aAway, 1, 0, "#0438") ; Click away
 		If _Sleep($DELAYTREASURY4) Then Return
 	EndIf
+
+	ClickP($aAway, 1, 0, "#0438") ; Click away
+	If _Sleep($DELAYTREASURY4) Then Return
 EndFunc   ;==>TreasuryCollect

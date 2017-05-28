@@ -30,21 +30,22 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 	Local $maxLevel = 100
 	Local $maxReturnPoints = 1
 	Local $returnProps = "objectname,objectlevel,objectpoints,nearpoints,farpoints,redlinedistance"
+	Local $iFindTime = 0
 
 	If $myVillage = False Then ; these are only for OPONENT village
 		ResetTHsearch() ;see below
+		$redLines = "ECD" ;quick fix for bad redline data
 	Else
 		$redLines = "ECD" ;needed for searching your own village
 	EndIf
 
-
-
 	;aux data
 	Local $propsNames = StringSplit($returnProps, ",", $STR_NOCOUNT)
 	If $g_iDebugSetlog = 1 Then SetLog("imgloc TH search Start", $COLOR_DEBUG)
-	Local $numRetry = 2 ; try to find TH twice
+	Local $numRetry = 1 ; try to find TH twice (one retry)
 
 	For $retry = 0 To $numRetry
+		Local $iLvlFound = 0
 		If $retry > 0 Then $xdirectory = $xdirectoryb
 
 		If $g_iDetectedImageType = 1 Then ;Snow theme on
@@ -52,7 +53,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 		EndIf
 
 		If $retry > 0 And $g_sImglocRedline <> "" Then ; on retry IMGLOCREDLNE is already populated
-			$redLines = $g_sImglocRedline
+			;$redLines = $g_sImglocRedline ;quick fix for bad redline data, so disabled for now
 		EndIf
 
 		Local $hTimer = __TimerInit()
@@ -60,23 +61,59 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 		If IsArray($result) Then
 			;we got results from multisearch ; lets set $redline in case we need to perform another search
-			$redLines = $g_sImglocRedline ; that was set by findMultiple if redline argument was ""
-			If UBound($result) = 1 Then
+			;quick fix for bad redline data, so disabled for now
+			;$redLines = $g_sImglocRedline ; that was set by findMultiple if redline argument was ""
+
+			If $g_sImglocRedline <> "" Then  ; Add redline data to global building dictionary
+				_ObjPutValue($g_oBldgAttackInfo, $eBldgRedLine & "_OBJECTPOINTS", $g_sImglocRedline)
+				If @error Then _ObjErrMsg("_ObjPutValue $g_oBldgAttackInfo imglocTHSearch", @error) ; Log COM error prevented
+				Local $aCoordsSplit = StringSplit($g_sImglocRedline, "|") ; split redlines in x,y, to get count of redline locations
+				Local $redlinesCount = $aCoordsSplit[0] ; assign to variable to avoid constant check for array exists
+				_ObjPutValue($g_oBldgAttackInfo, $eBldgRedLine & "_COUNT", $redlinesCount)
+				If @error Then _ObjErrMsg("_ObjPutValue $g_oBldgAttackInfo imglocTHSearch", @error)
+			EndIf
+
+			Local $iBestResult = 0
+			If UBound($result) > 1 Then
+				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found Multiple TH : " & UBound($result), $COLOR_INFO)
+				; search for highest level
+				Local $iHighestLvl = 0
+				For $iResult = 0 To UBound($result) - 1
+					Local $propsValues = $result[$iResult]
+					For $pv = 0 To UBound($propsValues) - 1
+						Switch $propsNames[$pv]
+							Case "objectlevel"
+								Local $iLvl = Number($propsValues[$pv])
+								If $iLvl > $iHighestLvl Then
+									$iHighestLvl = $iLvl
+									$iBestResult = $iResult
+								EndIF
+						EndSwitch
+					Next
+				Next
+				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found Multiple TH : Using index " & $iBestResult, $COLOR_INFO)
+			EndIf
+			If UBound($result) > 0 Then
 				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found TH : ", $COLOR_INFO)
-				Local $propsValues = $result[0]
+				Local $propsValues = $result[$iBestResult]
 				For $pv = 0 To UBound($propsValues) - 1
 					If $g_iDebugSetlog = 1 Then SetLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
 					Switch $propsNames[$pv]
 						Case "objectname"
 							;nothing to do
+							_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_NAMEFOUND", $propsValues[$pv]) ; add object name found to building dictionary
+							If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_NAMEFOUND", @error) ; Log COM error prevented
 							Local $PathFile = $propsValues[$pv]
 						Case "objectlevel"
+							$iLvlFound = Number($propsValues[$pv])
 							If $myVillage = False Then
-								$g_iImglocTHLevel = Number($propsValues[$pv])
+								$g_iImglocTHLevel = $iLvlFound
 								$g_aiTownHallDetails[2] = Number($propsValues[$pv])
 								$g_iSearchTH = Number($propsValues[$pv])
+								_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_MAXLEVELFOUND", $propsValues[$pv]) ; add TH Level found to buidling dictionary
+								If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_MAXLEVELFOUND", @error) ; Log COM error prevented
 							Else
-								$g_iTownHallLevel = Number($propsValues[$pv]) ; I think $g_iTownHallLevel needs to be decreased
+								$g_iTownHallLevel = $iLvlFound ; I think $g_iTownHallLevel needs to be decreased
 							EndIf
 						Case "objectpoints"
 							If $propsValues[$pv] = "0" Then
@@ -91,13 +128,19 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 								$g_aiTownHallDetails[1] = Number($IMGLOCTHLOCATION[1])
 								$g_iTHx = Number($IMGLOCTHLOCATION[0]) ; backwards compatibility
 								$g_iTHy = Number($IMGLOCTHLOCATION[1]) ; backwards compatibility
+								_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_OBJECTPOINTS", $propsValues[$pv]) ; add string location of TH found to building dictionary
+								If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_OBJECTPOINTS", @error) ; Log COM error prevented
+
+								Local $aTHLoc = decodeMultipleCoords($propsValues[$pv]) ; need TH location in same format as other buildings, meaning array containing x,y location sub-arrays
+								_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_LOCATION", $aTHLoc) ; add array location of TH found to building dictionary
+								If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_LOCATION", @error) ; Log COM error prevented
 
 								If $g_iDebugImageSave = 1 And $retry > 0 Then
 									_CaptureRegion()
 
 									; Store a copy of the image handle
 									Local $editedImage = $g_hBitmap
-									Local $subDirectory = @ScriptDir & "\Thdetection\"
+									Local $subDirectory = $g_sProfileTempDebugPath & "\Thdetection\"
 									DirCreate($subDirectory)
 
 									; Create the timestamp and filename
@@ -123,43 +166,52 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 						Case "nearpoints"
 							If $myVillage = False Then
 								$IMGLOCTHNEAR = $propsValues[$pv]
+								_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_NEARPOINTS", $propsValues[$pv]) ; add near points to building dictionary
+								If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_NEARPOINTS", @error) ; Log COM error prevented
 							EndIf
 						Case "farpoints"
 							If $myVillage = False Then
 								$IMGLOCTHFAR = $propsValues[$pv]
+								_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_FARPOINTS", $propsValues[$pv]) ; add FAR points to building dictionary
+								If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_FARPOINTS", @error) ; Log COM error prevented
 							EndIf
 						Case "redlinedistance"
 							If $myVillage = False Then
 								$IMGLOCTHRDISTANCE = $propsValues[$pv]
+								_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_REDLINEDISTANCE", $propsValues[$pv]) ; add red line distance to building dictionary
+								If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_REDLINEDISTANCE", @error) ; Log COM error prevented
 							EndIf
 					EndSwitch
 					If $myVillage = False Then
 						$g_aiTownHallDetails[3] = 1 ; found 1 only
 					EndIf
 				Next
-				If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
-			Else
-				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found Multiple TH : ", $COLOR_INFO)
-				If $g_iDebugImageSave = 1 Then DebugImageSave("imglocTHSearch_MultiMatched_", True)
-				;could be a multi match or another tile for same object. As TH only have 1 tile, $g_iTownHallLevel will never happen
-				If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
+				If $iLvlFound > 0 Then
+					ExitLoop ; TH was found
+				EndIf
 			EndIf
-
 		Else
 			;thnotfound
 			If $g_iDebugSetlog = 1 And $retry > 0 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
-			If $g_iDebugImageSave = 1 And $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
 			If $g_iDebugSetlog = 1 And $retry > 0 Then SetLog("imgloc THSearch Calculated  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 		EndIf
 
-		If $g_iImglocTHLevel > 0 Then
+		If $iLvlFound > 0 Then
+			$iFindTime += __TimerDiff($hTimer) ; add total TH search time in milliseconds
+			If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round($iFindTime / 1000, 2) & " seconds) :")
 			ExitLoop ; TH was found
 		Else
 			If $g_iDebugImageSave = 1 And $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
 			If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Notfound, Retry:  " & $retry)
 		EndIf
-		$retry = $retry + 1
+
 	Next ; retry
+
+	If $iFindTime <> 0 Then ; Remove error message when TH not found at all :(
+		_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_FINDTIME", $iFindTime * 0.001) ; store total TH Finding time in seconds to building dictionary
+		If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_FINDTIME", @error) ; Log COM error prevented
+	EndIf
+
 EndFunc   ;==>imglocTHSearch
 
 Func ResetTHsearch()
@@ -179,6 +231,14 @@ Func ResetTHsearch()
 	$g_iTHx = 0 ; backwards compatibility
 	$g_iTHy = 0 ; backwards compatibility
 	$g_iSearchTH = "-" ; means not found
+	; empty TH data from dictionary
+	Local $string
+	Local $iKeys = $g_oBldgAttackInfo.Keys
+	For $string In $iKeys
+		If StringInStr($string, $eBldgTownHall & "_", $STR_NOCASESENSEBASIC) > 0 Then $g_oBldgAttackInfo.Remove($string)
+	Next
+	; SetDebugLog("TH search data cleared", $COLOR_DEBUG)
+
 EndFunc   ;==>ResetTHsearch
 
 ;backwards compatibility

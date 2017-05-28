@@ -350,12 +350,16 @@ Func UpdateMEmuWindowState()
 	Local $bChanged = False, $ok = False
 	Local $toolBarPos = ControlGetPos($g_sAndroidTitle, "", "Qt5QWindowIcon3")
 	If UBound($toolBarPos) = 4 Then
+		Local $tbw_using = $tbw
+		If $toolBarPos[2] > 20 And $toolBarPos[2] < 60 Then	$tbw_using = $toolBarPos[2]
+		SetDebugLog($g_sAndroidEmulator & " Tool Bar found, width = " & $toolBarPos[2] & ", height = " & $toolBarPos[3] & ", expected width = " & $tbw & ", using width = " & $tbw_using)
+		$tbw = $tbw_using
 		;ConsoleWrite("Qt5QWindowIcon3=" & $toolBarPos[0] & "," & $toolBarPos[1] & "," & $toolBarPos[2] & "," & $toolBarPos[3] & ($isVisible = 1 ? " visible" : " hidden")) ; 863,33,45,732
-		If $toolBarPos[2] = $tbw Then
+		;If $toolBarPos[2] = $tbw Then
 			$bToolBarVisible = ControlCommand($g_sAndroidTitle, "", "Qt5QWindowIcon3", "IsVisible", "") = 1
 			SetDebugLog($g_sAndroidEmulator & " Tool Bar is " & ($bToolBarVisible ? "visible" : "hidden"))
 			$ok = True
-		EndIf
+		;EndIf
 	EndIf
 	If Not $ok Then
 		SetDebugLog($g_sAndroidEmulator & " Tool Bar state is undetermined as treated as " & ($bToolBarVisible ? "visible" : "hidden"), $COLOR_ERROR)

@@ -56,6 +56,11 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		EndIf
 		WinGetAndroidHandle()
 		If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
+
+		If isOnBuilderIsland(True) Then GoToNormalVillage()
+
+		If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
+
 		$Result = checkObstacles()
 		If $g_iDebugSetlog = 1 Then Setlog("CheckObstacles Result = " & $Result, $COLOR_DEBUG)
 

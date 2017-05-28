@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: Code Monkey #666
-; Modified ......: Promac (2015-04), KnowJack(2015-08), Hervidero (2016-01), MonkeyHunter (2016-01)
+; Modified ......: Promac (2015-04), KnowJack(2015-08), Hervidero (2016-01), MonkeyHunter (2016-01,05)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -290,7 +290,7 @@ EndFunc   ;==>DropTrophy
 
 Func SetTrophyLoss()
 	Local $sTrophyLoss
-	If _ColorCheck(_GetPixelColor(33, 148, True), Hex(0x000000, 6), 10) Or _ColorCheck(_GetPixelColor(31, 144, True), Hex(0x282020, 6), 5) Then ; check if the village have a Dark Elixir Storage
+	If _ColorCheck(_GetPixelColor(33, 148, True), Hex(0x000000, 6), 10) Or  _CheckPixel($aAtkHasDarkElixir, $g_bCapturePixel, Default, "HasDarkElixir") Then ; check if the village have a Dark Elixir Storage
 		$sTrophyLoss = getTrophyLossAttackScreen(48, 214)
 	Else
 		$sTrophyLoss = getTrophyLossAttackScreen(48, 184)

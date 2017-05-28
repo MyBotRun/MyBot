@@ -80,7 +80,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 	_CaptureRegion2()
 
 	; Perform the search
-	Local $result = DllCall($g_hLibImgLoc, "str", "SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", $searcharea, "Int", $maxReturnPoints, "str", $redLines, "Int", $minLevel, "Int", $maxLevel)
+	Local $result = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", $searcharea, "Int", $maxReturnPoints, "str", $redLines, "Int", $minLevel, "Int", $maxLevel)
 	Local $error = @error ; Store error values as they reset at next function call
 	Local $extError = @extended
 
@@ -105,7 +105,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 		For $i = 0 To UBound($aKeys) - 1
 			; Get the property values
 			; Loop through the found object names
-			Local $aCoords = returnImglocProperty($aKeys[$i], "objectpoints")
+			Local $aCoords = RetrieveImglocProperty($aKeys[$i], "objectpoints")
 			$FoundWalls[$i] = $aCoords
 		Next
 	EndIf

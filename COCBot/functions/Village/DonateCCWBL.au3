@@ -79,8 +79,8 @@ Func donateCCWBLUserImageCollect($x, $y)
 
 			;search chat divider line
 			Local $founddivider
-			Local $chat_divider = @ScriptDir & "\imgxml\donateccwbl\chatdivider_0_98.xml"
-			Local $chat_divider_hidden = @ScriptDir & "\imgxml\donateccwbl\chatdividerhidden_0_98.xml"
+			Local $chat_divider = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdivider_0_98.xml"
+			Local $chat_divider_hidden = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdividerhidden_0_98.xml"
 			;_CaptureRegion2()
 			Local $iAllFilesCount = 0
 			Local $res = FindImageInPlace("DCCWBL", $chat_divider, "0," & $y - 90 & "," & $x - 30 & "," & $y, False)

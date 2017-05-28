@@ -83,6 +83,7 @@
 #include "functions\Attack\RedArea\GetVectorPixelAverage.au3"
 #include "functions\Attack\RedArea\GetVectorPixelOnEachSide.au3"
 #include "functions\Attack\RedArea\GetVectorPixelToDeploy.au3"
+#include "functions\Attack\RedArea\PointInPoly.au3"
 
 #include "functions\Attack\Troops\CheckHeroesHealth.au3"
 #include "functions\Attack\Troops\dropCC.au3"
@@ -99,6 +100,7 @@
 #include "functions\Attack\Troops\SetSleep.au3"
 
 #include "functions\Attack\SmartZap\drillSearch.au3"
+#include "functions\Attack\SmartZap\easyPreySearch.au3"
 #include "functions\Attack\SmartZap\smartZap.au3"
 
 #include "functions\CreateArmy\CheckFullArmy.au3"
@@ -107,12 +109,12 @@
 #include "functions\CreateArmy\getArmyCCStatus.au3"
 #include "functions\CreateArmy\getArmyHeroCount.au3"
 #include "functions\CreateArmy\getArmyHeroTime.au3"
-#include "functions\CreateArmy\getArmyHeroStatus.au3"
 #include "functions\CreateArmy\getArmySpellCapacity.au3"
+#include "functions\CreateArmy\getArmyCCSpellCapacity.au3"
 #include "functions\CreateArmy\getArmySpellCount.au3"
 #include "functions\CreateArmy\getArmySpellTime.au3"
 #include "functions\CreateArmy\getArmyTroopTime.au3"
-#include "functions\CreateArmy\openArmyOverview.au3"
+#include "functions\CreateArmy\OpenArmyOverview.au3"
 #include "functions\CreateArmy\SmartWait4Train.au3"
 #include "functions\CreateArmy\TrainClick.au3"
 #include "functions\CreateArmy\TrainRevamp.au3"
@@ -138,6 +140,7 @@
 #include "functions\Main Screen\checkAttackDisable.au3"
 #include "functions\Main Screen\RemoveGhostTrayIcons.au3"
 #include "functions\Main Screen\waitMainScreen.au3"
+#include "functions\Main Screen\isOnBuilderIsland.au3"
 
 ; Android support for MEmu, LeapDroid, Droid4X, Nox, BlueStacks...
 #include "functions\Android\AndroidMenuShortcuts.au3"
@@ -192,6 +195,7 @@
 #include "functions\Other\WindowSystemMenu.au3"
 #include "functions\Other\image_get_info.au3"
 #include "functions\Other\SetWakeUpTime.au3"
+#include "functions\Other\ScriptingDictionaryTools.au3"
 
 #include "functions\Other\IsPage.au3"
 #include "functions\Other\MoveMouseOutBS.au3"
@@ -269,6 +273,7 @@
 #include "functions\Village\ConvertOCRTime.au3"
 #include "functions\Other\ClickZoneR.au3"
 #include "functions\Village\CheckNeedOpenTrain.au3"
+#include "functions\Village\GoToNormalVillage.au3"
 
 #include "functions\Other\Api.au3"
 #include "functions\Other\ApiClient.au3"

@@ -43,7 +43,7 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 				AndroidEmbed(True)
 				If Not ($offsetX == "" Or $offsetY == "") Then
 					$bAdjusted = $BotX <> $offsetX Or $BotY <> $offsetY
-					If $bAdjusted = True Then WinMove2($g_hFrmBot, "", $offsetX, $offsetY)
+					If $bAdjusted = True Then WinMove($g_hFrmBot, "", $offsetX, $offsetY)
 				EndIf
 
 			Else
@@ -63,11 +63,11 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 						EndIf
 						$bAdjusted = $AndroidX <> $x Or $AndroidY <> $y
 						If $bAdjusted Then
-							WinMove2($g_hAndroidWindow, "", $x, $y)
+							WinMove($g_hAndroidWindow, "", $x, $y)
 							_Sleep($DELAYWINDOWSARRANGE1, True, False)
 						EndIf
 						$bAdjusted = $bAdjusted = True Or $BotX <> $AndroidW + $offsetX * 2 Or $BotY <> $y
-						If $bAdjusted Then WinMove2($g_hFrmBot, "", $x + $AndroidW + $offsetX, $y)
+						If $bAdjusted Then WinMove($g_hFrmBot, "", $x + $AndroidW + $offsetX, $y)
 					Case "BOT-BS" ; position left BOT, right adjacent Android
 						If $offsetX == "" Then
 							$x = $BotX
@@ -79,31 +79,31 @@ Func WindowsArrange($position, $offsetX = 0, $offsetY = 0)
 						EndIf
 						$bAdjusted = $BotX <> $x Or $BotY <> $y
 						If $bAdjusted Then
-							WinMove2($g_hFrmBot, "", $x, $y)
+							WinMove($g_hFrmBot, "", $x, $y)
 							_Sleep($DELAYWINDOWSARRANGE1, True, False)
 						EndIf
 						$bAdjusted = $bAdjusted Or $AndroidX <> $x + $BotW + $offsetX Or $AndroidY <> $y
-						If $bAdjusted Then WinMove2($g_hAndroidWindow, "", $x + $BotW + $offsetX, $y)
+						If $bAdjusted Then WinMove($g_hAndroidWindow, "", $x + $BotW + $offsetX, $y)
 					Case "SNAP-TR" ; position BOT top right of Android, do not move Android
 						If $offsetX == "" Then $offsetX = 0
 						If $offsetY == "" Then $offsetY = 0
 						$bAdjusted = $BotX <> $AndroidX + $AndroidW + $offsetX Or $BotY <> $AndroidY + $offsetY
-						If $bAdjusted Then WinMove2($g_hFrmBot, "", $AndroidX + $AndroidW + $offsetX, $AndroidY + $offsetY)
+						If $bAdjusted Then WinMove($g_hFrmBot, "", $AndroidX + $AndroidW + $offsetX, $AndroidY + $offsetY)
 					Case "SNAP-BR" ; position BOT botom right of BS, do not move Android
 						If $offsetX == "" Then $offsetX = 0
 						If $offsetY == "" Then $offsetY = 0
 						$bAdjusted = $AndroidX <> $AndroidX + $AndroidW + $offsetX Or $AndroidY <> $AndroidY + ($AndroidH - $BotH) + $offsetY
-						If $bAdjusted Then WinMove2($g_hFrmBot, "", $AndroidX + $AndroidW + $offsetX, $AndroidY + ($AndroidH - $BotH) + $offsetY)
+						If $bAdjusted Then WinMove($g_hFrmBot, "", $AndroidX + $AndroidW + $offsetX, $AndroidY + ($AndroidH - $BotH) + $offsetY)
 					Case "SNAP-TL" ; position BOT top left of Android, do not move Android
 						If $offsetX == "" Then $offsetX = 0
 						If $offsetY == "" Then $offsetY = 0
 						$bAdjusted = $BotX <> $AndroidX - $BotW - $offsetX Or $BotY <> $AndroidY + $offsetY
-						If $bAdjusted Then WinMove2($g_hFrmBot, "", $AndroidX - $BotW - $offsetX, $AndroidY + $offsetY)
+						If $bAdjusted Then WinMove($g_hFrmBot, "", $AndroidX - $BotW - $offsetX, $AndroidY + $offsetY)
 					Case "SNAP-BL" ; position BOT bottom left of Android, do not move Android
 						If $offsetX == "" Then $offsetX = 0
 						If $offsetY == "" Then $offsetY = 0
 						$bAdjusted = $BotX <> $AndroidX - $BotW - $offsetX Or $BotY <> $AndroidY + ($AndroidH - $BotH) + $offsetY
-						If $bAdjusted Then WinMove2($g_hFrmBot, "", $AndroidX - $BotW - $offsetX, $AndroidY + ($AndroidH - $BotH) + $offsetY)
+						If $bAdjusted Then WinMove($g_hFrmBot, "", $AndroidX - $BotW - $offsetX, $AndroidY + ($AndroidH - $BotH) + $offsetY)
 				EndSwitch
 			EndIf
 			If $bAdjusted = True Then
@@ -122,7 +122,7 @@ Func DisposeWindows()
 	If IsArray($aPos) Then
 		If _CheckWindowVisibility($g_hFrmBot, $aPos) Then
 			SetDebugLog("Bot Window '" & $g_sAndroidTitle & "' not visible, moving to position: " & $aPos[0] & ", " & $aPos[1])
-			WinMove2($g_hFrmBot, "", $aPos[0], $aPos[1])
+			WinMove($g_hFrmBot, "", $aPos[0], $aPos[1])
 		EndIf
 	EndIf
 
@@ -186,7 +186,12 @@ Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter =
 	$NoResize = $NoResize Or ($w = $aPos[2] And $h = $aPos[3])
 
 	;If $g_iDebugSetlog = 1 Then SetLog("Window " & $WinTitle & "(" & $hWin & "): " & ($NoResize ? "no resize" : "resize to " & $w & " x " & $h) & ($NoMove ? ", no move" : ", move to " & $x & "," & $y), $COLOR_INFO);
-	_WinAPI_SetWindowPos($hWin, $hAfter, $x, $y, $w, $h, BitOR(($NoMove ? BitOR($SWP_NOMOVE, $SWP_NOREPOSITION) : 0), $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags, $SWP_ASYNCWINDOWPOS)) ; resize window without sending changing message to window
+	If $g_bWinMove2_Compatible And $NoResize = False Then
+		WinMove($WinTitle, $WinText, $x, $y, $w, $h)
+		_WinAPI_SetWindowPos($hWin, $hAfter, 0, 0, 0, 0, BitOR($SWP_NOSIZE, $SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags)) ; resize window without sending changing message to window
+	Else
+		_WinAPI_SetWindowPos($hWin, $hAfter, $x, $y, $w, $h, BitOR(($NoMove ? BitOR($SWP_NOMOVE, $SWP_NOREPOSITION) : 0), ($NoResize ? $SWP_NOSIZE : 0), $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags)) ; resize window without sending changing message to window
+	EndIf
 
 	; check width and height if it got changed...
 	If $bCheckAfterPos Then
@@ -204,12 +209,29 @@ Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter =
 		If $x <> $aPos[0] Or $y <> $aPos[1] Or $w <> $aPos[2] Or $h <> $aPos[3] Then
 			SetDebugLog("Window " & $WinTitle & (($WinTitle <> $hWin) ? "(" & $hWin & ")" : "") & " got resized/moved again to " & $aPos[0] & "/" & $aPos[1] & " " & $aPos[2] & "x" & $aPos[3] & ", restore now " & $x & "/" & $y & " " & $w & "x" & $h, $COLOR_ACTION)
 			WinMove($hWin, "", $x, $y, $w, $h - 1) ; resize window WITH sending changing message to window
-			_WinAPI_SetWindowPos($hWin, $hAfter, $x, $y, $w, $h, BitOR($SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags)) ; resize window without sending changing message to window
+			If $g_bWinMove2_Compatible Then
+				WinMove($hWin, "", $x, $y, $w, $h)
+				_WinAPI_SetWindowPos($hWin, $hAfter, 0, 0, 0, 0, BitOR($SWP_NOSIZE, $SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags)) ; resize window without sending changing message to window
+			Else
+				_WinAPI_SetWindowPos($hWin, $hAfter, $x, $y, $w, $h, BitOR($SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags)) ; resize window without sending changing message to window
+			EndIf
 		EndIf
 	EndIf
 
 	Return $hWin
 EndFunc   ;==>WinMove2
+
+Func ControlGetHandle2($title, $text, $controlID)
+	For $sClass In StringSplit($controlID, "|", $STR_NOCOUNT)
+		Local $hCtrl = ControlGetHandle($title, $text, $sClass)
+		If $hCtrl Then
+			$g_sControlGetHandle2_Classname = $sClass
+			Return $hCtrl
+		EndIf
+	Next
+	$g_sControlGetHandle2_Classname = ""
+	Return SetError(1, 0, 0)
+EndFunc
 
 Func WinGetClientPos($hWin, $x = 0, $y = 0)
 	Local $tPoint = DllStructCreate("int x;int y")

@@ -4,8 +4,8 @@
 ; Syntax ........: RequestCC()
 ; Parameters ....:
 ; Return values .: None
-; Author ........: Code Monkey #73
-; Modified ......: (2015-06) Sardo, KnowJack(Jul/Aug 2015), Sardo 2015-08
+; Author ........:
+; Modified ......: Sardo(06-2015), KnowJack(10-2015), Sardo (08-2015)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -15,11 +15,11 @@
 
 Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 
-	If $g_bRequestTroopsEnable = False Or $g_bCanRequestCC = False Or $g_bDonationEnabled = False Then
+	If Not $g_bRequestTroopsEnable Or Not $g_bCanRequestCC Or Not $g_bDonationEnabled Then
 		Return
 	EndIf
 
-	If $g_bRequestTroopsEnable = True Then
+	If $g_bRequestTroopsEnable Then
 		Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 		If $g_abRequestCCHours[$hour[0]] = False Then
 			SetLog("Request Clan Castle troops not planned, Skipped..", $COLOR_ACTION)
@@ -31,7 +31,7 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 
 	;open army overview
 	If IsMainPage() Then
-		If $g_bUseRandomClick = False Then
+		If Not $g_bUseRandomClick Then
 			Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0334")
 		Else
 			ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
@@ -42,23 +42,23 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
 
 	;wait to see army overview
-
-	Local $icount = 0
-	While Not ( _ColorCheck(_GetPixelColor($aArmyOverviewTest[0], $aArmyOverviewTest[1], True), Hex($aArmyOverviewTest[2], 6), $aArmyOverviewTest[3]))
+	Local $iCount = 0
+	While IsTrainPage() = False
 		If _Sleep($DELAYREQUESTCC1) Then ExitLoop
-		$icount += 1
-		If $g_iDebugSetlog = 1 Then Setlog("$icount1 = " & $icount & ", " & _GetPixelColor($aArmyOverviewTest[0], $aArmyOverviewTest[1], True), $COLOR_DEBUG)
-		If $icount > 5 Then ExitLoop ; wait 6*500ms = 3 seconds max
+		$iCount += 1
+		If $iCount > 5 Then
+			If $g_iDebugSetlog = 1 Then Setlog("RequestCC Army Window issue!", $COLOR_DEBUG)
+			ExitLoop ; wait 6*500ms = 3 seconds max
+		EndIf
 	WEnd
-	If $icount > 5 And $g_iDebugSetlog = 1 Then Setlog("RequestCC warning 1", $COLOR_DEBUG)
-
 
 	Local $color = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True)
+
 	If _ColorCheck($color, Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5]) Then
 		;can make a request
 		Local $x = _makerequest()
 	ElseIf _ColorCheck($color, Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
-		;request has allready been made
+		;request has already been made
 		SetLog("Request has already been made")
 	ElseIf _ColorCheck($color, Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
 		;clan full or not in clan
@@ -72,7 +72,7 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 
 	;exit from army overview
 	If _Sleep($DELAYREQUESTCC1) Then Return
-	If $ClickPAtEnd = True Then ClickP($aAway, 2, 0, "#0335")
+	If $ClickPAtEnd Then ClickP($aAway, 2, 0, "#0335")
 
 EndFunc   ;==>RequestCC
 

@@ -27,10 +27,11 @@ Global $g_RunPipe_hThread = 0
 Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
 
 	If $bUseSemaphore = True Then
-		WaitForSemaphore(StringReplace($cmd, "\", "/"))
+		Local $hSemaphore = LockSemaphore(StringReplace($cmd, "\", "/"), "Waiting to launch: " & $cmd)
 	EndIf
 
-	Local $data, $pid, $hStdIn[2], $hStdOut[2], $hTimer
+	Local $data, $pid, $hStdIn[2], $hStdOut[2], $hTimer, $hProcess, $hThread
+
 
 	If StringLen($param) > 0 Then $cmd &= " " & $param
 
@@ -38,21 +39,21 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 	$process_killed = False
 
 	If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG) ; Debug Run
-	$pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut)
+	$pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut, $hProcess, $hThread)
 	If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: command launched", $COLOR_DEBUG)
 	If $pid = 0 Then
 		SetLog("Launch faild: " & $cmd, $COLOR_ERROR)
+		If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
 		Return
 	EndIf
 
-	Local $hProcess = $g_RunPipe_hProcess, $hThread = $g_RunPipe_hThread
 	Local $timeout_sec = Round($timeout / 1000)
 	Local $iWaitResult
 
 	Do
 		$iWaitResult = _WinAPI_WaitForSingleObject($hProcess, $DELAYSLEEP)
 		$data &= ReadPipe($hStdOut[0])
-	Until ($timeout > 0 And __TimerDiff($hTimer) > $timeout) Or $iWaitResult <> 0x102 ; WAIT_TIMEOUT = 0x102
+	Until ($timeout > 0 And __TimerDiff($hTimer) > $timeout) Or $iWaitResult <> $WAIT_TIMEOUT
 
 	If ProcessExists($pid) Then
 		If ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread) = 1 Then
@@ -62,9 +63,12 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 	Else
 		ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread)
 	EndIf
+	$g_RunPipe_hProcess = 0
+	$g_RunPipe_hThread = 0
 	CleanLaunchOutput($data)
 
 	If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG) ; Debug Run Output
+	If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
 	Return $data
 EndFunc   ;==>LaunchConsole
 
@@ -251,7 +255,7 @@ Func CleanLaunchOutput(ByRef $output)
 	If StringRight($output, 1) = @CR Then $output = StringLeft($output, StringLen($output) - 1)
 EndFunc   ;==>CleanLaunchOutput
 
-Func RunPipe($program, $workdir, $show_flag, $opt_flag, ByRef $hStdIn, ByRef $hStdOut)
+Func RunPipe($program, $workdir, $show_flag, $opt_flag, ByRef $hStdIn, ByRef $hStdOut, ByRef $hProcess, ByRef $hThread)
 
 	If UBound($hStdIn) < 2 Then
 		Local $a = [0, 0]
@@ -284,25 +288,25 @@ Func RunPipe($program, $workdir, $show_flag, $opt_flag, ByRef $hStdIn, ByRef $hS
 
 	If __WinAPI_CreateProcess("", $program, 0, 0, True, 0, 0, $workdir, $lpStartupInfo, $lpProcessInformation) Then
 		Local $pid = DllStructGetData($ProcessInformation, "ProcessID")
-		$g_RunPipe_hProcess = DllStructGetData($ProcessInformation, "hProcess")
-		$g_RunPipe_hThread = DllStructGetData($ProcessInformation, "hThread")
+		$hProcess = DllStructGetData($ProcessInformation, "hProcess")
+		$hThread = DllStructGetData($ProcessInformation, "hThread")
 		;_WinAPI_CloseHandle($hStdOut[1])
 		Return $pid
 	EndIf
 
 	; close handles
-	ClosePipe(0, $hStdIn, $hStdOut)
+	ClosePipe(0, $hStdIn, $hStdOut, 0, 0)
 
 EndFunc   ;==>RunPipe
 
-Func ClosePipe($pid, $hStdIn = $g_RunPipe_StdIn, $hStdOut = $g_RunPipe_StdOut, $hProcess = $g_RunPipe_hProcess, $hThread = $g_RunPipe_hThread)
+Func ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread)
 
 	_WinAPI_CloseHandle($hStdIn[0])
 	_WinAPI_CloseHandle($hStdIn[1])
 	_WinAPI_CloseHandle($hStdOut[0])
 	_WinAPI_CloseHandle($hStdOut[1])
-	_WinAPI_CloseHandle($hProcess)
-	_WinAPI_CloseHandle($hThread)
+	If $hProcess Then _WinAPI_CloseHandle($hProcess)
+	If $hThread Then _WinAPI_CloseHandle($hThread)
 	Return ProcessClose($pid)
 
 EndFunc   ;==>ClosePipe

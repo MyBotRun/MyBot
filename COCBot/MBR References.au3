@@ -7,7 +7,6 @@ Func ReferenceFunctions()
 	Local $a1, $a2
 	BotMoveRequest()
 	BotMinimizeRequest()
-	setMaxDegreeOfParallelism()
 	FindPreferredAdbPath()
 	CloseVboxAndroidSvc()
 	SetScreenAndroid()
@@ -49,8 +48,6 @@ Func ReferenceFunctions()
 	RedrawBotWindowNow()
 	_GUICtrlListView_SetItemHeightByFont(0, 0)
 	_GUICtrlListView_GetHeightToFitRows(0, 0)
-	LockSemaphore(0)
-	UnlockSemaphore(0)
 	OverallDamage()
 	Barch()
 	MilkingDebug()
@@ -60,10 +57,7 @@ Func ReferenceFunctions()
 	FindClosestToAxis(0)
 	GetSlotIndexFromXPos(0)
 	CheckFullBarrack()
-	CountHeroes()
 	GetCurTotalDarkSpell()
-	IsFullArmy()
-	IsFullSpells()
 	IsElixirTroop(0)
 	TestTroopsCoords()
 	TestSpellsCoords()
@@ -246,7 +240,6 @@ Func ReferenceGlobals()
 	$a1 = $aArmyCCRemainTime
 	$a1 = $aIsReloadError
 	$a1 = $g_iAndroidControlClickWindow
-	$a1 = $g_aWeakDefenseMaxLevels
 
 	$a1 = $ATTACKVECTOR_A
 	$a1 = $ATTACKVECTOR_B

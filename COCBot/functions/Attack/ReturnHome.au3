@@ -66,6 +66,9 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	$g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
 	$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
 
+	; Reset building info used to attack base
+	_ObjDeleteKey($g_oBldgAttackInfo, "") ; Remove all Keys from dictionary
+
 	If $g_abAttackTypeEnable[$TS] = 1 And $g_iMatchMode = $TS Then $g_bFirstStart = True ;reset barracks upon return when TH sniping w/custom army
 
 	SetLog("Returning Home", $COLOR_INFO)
@@ -163,7 +166,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 
 	$counter = 0
 	While 1
-		If $g_iDebugSetlog = 1 Then SetDebugLog("Wait for End Fight Scene to appear #" & $counter)
+		If $g_iDebugSetlog = 1 Then SetDebugLog("Wait for Star Bonus window to appear #" & $counter)
 		If _Sleep($DELAYRETURNHOME4) Then Return
 		If StarBonus() = True Then Setlog("Star Bonus window closed chief!", $COLOR_INFO) ; Check for Star Bonus window to fill treasury (2016-01) update
 		If ReturnHomeMainPage() Then Return

@@ -23,23 +23,29 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 7.0)
-#pragma compile(FileVersion, 7.0)
+#pragma compile(ProductVersion, 7.2)
+#pragma compile(FileVersion, 7.2)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.Wmi.exe) ; Required
 
 ; Enforce variable declarations
 Opt("MustDeclareVars", 1)
 
+#include <APIErrorsConstants.au3>
 #include <Misc.au3>
 #include <WinAPI.au3>
 #include <WinAPISys.au3>
 #include <WinAPIProc.au3>
 #include <ProcessConstants.au3>
 #include <ColorConstants.au3>
+#include <Date.au3>
 
 Global $g_sWmiTestApi = ""
+Global $g_bRunState = True
 Global $g_iDebugSetlog = 0
+Global $g_iGlobalActiveBotsAllowed = 0 ; Dummy
+Global $g_hMutextOrSemaphoreGlobalActiveBots = 0 ; Dummy
+Global $g_hStatusBar = 0 ; Dummy
 Global Const $COLOR_ORANGE = 0xFF7700 ; Used for donate GUI buttons
 Global Const $COLOR_ERROR = $COLOR_RED ; Error messages
 Global Const $COLOR_WARNING = $COLOR_MAROON ; Warning messages
@@ -53,6 +59,10 @@ Global Const $COLOR_DEBUGS = $COLOR_MEDGRAY ; Med Grey, debug color for less imp
 Global Const $COLOR_ACTION = 0xFF8000 ; Med Orange, debug color for individual actions, clicks, etc
 Global Const $COLOR_ACTION1 = 0xcc80ff ; Light Purple, debug color for pixel/window checks
 
+Func _Sleep($ms, $iSleep = True, $CheckRunState = True)
+	Sleep($ms)
+EndFunc   ;==>_Sleep
+
 Func SetLog($String, $Color = $COLOR_BLACK, $LogPrefix = "L ")
 	;ConsoleWrite($String & @CRLF) ; Always write any log to console
 EndFunc   ;==>SetLog
@@ -61,8 +71,9 @@ Func SetDebugLog($String, $Color = $COLOR_DEBUG, $LogPrefix = "D ")
 	;Return SetLog($String, $Color, $LogPrefix)
 EndFunc   ;==>SetDebugLog
 
-#include "COCBot/functions/Config/DelayTimes.au3"
-#include "COCBot/functions/Other/LaunchConsole.au3"
+#include "COCBot\functions\Config\DelayTimes.au3"
+#include "COCBot\functions\Other\Time.au3"
+#include "COCBot\functions\Other\LaunchConsole.au3"
 
 Local $g_oWMI = ObjGet("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
 Local $query
@@ -113,3 +124,11 @@ Func OutputWmiData($s)
 	EndIf
 	ConsoleWrite($s & @CRLF)
 EndFunc   ;==>OutputWmiData
+
+; Dummy functions
+Func _GUICtrlStatusBar_SetText($a, $b)
+EndFunc
+Func GetTranslated($a, $b, $c)
+EndFunc
+Func GetTranslatedFileIni($a, $b, $c)
+EndFunc

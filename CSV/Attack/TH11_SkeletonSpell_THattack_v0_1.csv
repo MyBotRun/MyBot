@@ -1,0 +1,21 @@
+NOTE  |Author: MonkeyHunter - ver. 0.2 - 05.15.2017
+NOTE  |Modified: ??
+NOTE  |Attack: TownHall inside base with Skeleton Spells
+NOTE  |Make these Troops: 1 earthquake, 10 skeleton spells, Rage Spell in Clan Castle (all maxed)
+NOTE  |Will drop all spells on TH for 1 star win, and does not leave shield!
+NOTE  |Warning: Can lose attack if TH is protected by Wizard towers. :(
+NOTE  |Requires "drop on building" feature with modified "MAKE/DROP" found in V7.2+ MBR code
+
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|
+SIDE  |0          |0          |10         |0          |0          |0          |1          |           | Target DE drill side if dropping troops
+      |EAGLE      |INFERNO    |XBOW       |WIZTOWER   |MORTAR     |AIRDEFENSE |GEMBOX     |GEMBOX     |
+SIDEB |1          |1          |1          |1          |1          |1          |           |           | Test find building capabilities
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|BUILDING___|
+MAKE  |Z          |FRONT-RIGHT|1          |0          |IGNORE     |0          |0          |TOWNHALL   | vector for spell drop on TH
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |Z          |1          |1          |ESpell     |0          |0          |20         |           | Drop Earthquake spell to damage TH 25%
+DROP  |Z          |1          |1          |RSpell     |0          |0          |10         |           | Drop CC rage to infuriate skeletons
+DROP  |Z          |1          |10         |SkSpell    |1          |1          |0          |           | Drop 10 max level skeleton spells :)
+WAIT  |5000-10000 |           |           |           |           |           |           |           | Wait & CHECK end battle settings

@@ -72,6 +72,27 @@ Func CheckCsvValues($instruction, $variablenumber, $variable)
 							Return True
 						Case "INT-EXT"
 							Return True
+						Case "IGNORE"
+							Return True
+						Case Else
+							Return False
+					EndSwitch
+				Case 8 ; check for valid building targets
+					Switch $variable
+						Case "TOWNHALL"
+							Return True
+						Case "EAGLE"
+							Return True
+						Case "INFERNO"
+							Return True
+						Case "XBOW"
+							Return True
+						Case "WIZTOWER"
+							Return True
+						Case "MORTAR"
+							Return True
+						Case "AIRDEFENSE"
+							Return True
 						Case Else
 							Return False
 					EndSwitch

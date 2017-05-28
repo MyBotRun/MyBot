@@ -30,6 +30,7 @@ Func CloseCoC($ReOpenCoC = False)
 	If Not $g_bRunState Then Return
 	;SendAdbCommand("shell am force-stop " & $g_sAndroidGamePackage)
 	AndroidAdbSendShellCommand("am force-stop " & $g_sAndroidGamePackage, Default, Default, False)
+	ResetAndroidProcess()
 	If Not $g_bRunState Then Return
 	If $ReOpenCoC Then
 		OpenCoC()
@@ -93,7 +94,7 @@ EndFunc   ;==>OpenCoC
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func WaitnOpenCoC($iWaitTime, $bFullRestart = False, $bSuspendComputer = False)
+Func WaitnOpenCoC($iWaitTime, $bFullRestart = False, $bSuspendComputer = False, $bLockBotSlot = False)
 	ResumeAndroid()
 	If Not $g_bRunState Then Return
 
@@ -114,6 +115,11 @@ Func WaitnOpenCoC($iWaitTime, $bFullRestart = False, $bSuspendComputer = False)
 	Local $hTimer = __TimerInit()
 	If $bSuspendComputer Then SuspendComputer($iWaitTime)
 	If _SleepStatus($iWaitTime, True, True, True, $hTimer) Then Return False ; Wait for server to see log off
+
+	If $bLockBotSlot = True Then
+		LockBotSlot(True)
+	EndIf
+	If Not $g_bRunState Then Return
 
 	If Not StartAndroidCoC() Then Return
 	If Not $g_bRunState Then Return
@@ -216,5 +222,6 @@ Func PoliteCloseCoC($sSource = "Unknown_")
 			$i += 1
 		WEnd
 	EndIf
+	ResetAndroidProcess()
 	ReduceBotMemory()
 EndFunc   ;==>PoliteCloseCoC

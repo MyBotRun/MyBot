@@ -66,10 +66,12 @@ Func checkAndroidTimeLag($bRebootAndroid = True)
 	Local $hostMinutes = $hostSeconds / 60
 	Local $androidSeconds = $curr_androidUTC - $androidUTC
 
-	Local $lagTotal = $hostSeconds - $androidSeconds ; - Int($g_aiAndroidTimeLag[3] / 1000)
+	Local $lagTotal = $hostSeconds - $androidSeconds
+	Local $lagComp = Int($g_aiAndroidTimeLag[3] / 1000) ; compensate Android Resume time lag during Village Search (as only required there)
+	$lagTotal -= $lagComp
 	Local $lagPerMin = Int($lagTotal / $hostMinutes)
 
-	SetDebugLog($g_sAndroidEmulator & " time lag is " & ($lagPerMin > 0 ? "> " : "") & $lagPerMin & " sec/min (avg for " & $hostSeconds & " sec)")
+	SetDebugLog($g_sAndroidEmulator & " time lag is " & ($lagPerMin > 0 ? "> " : "") & $lagPerMin & " sec/min (avg for " & $hostSeconds & " sec, Android suspend time was " & $lagComp & " sec)")
 
 	If $androidSeconds <= 0 Then
 		InitAndroidTimeLag()
