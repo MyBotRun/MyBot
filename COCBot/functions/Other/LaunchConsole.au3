@@ -81,17 +81,19 @@ EndFunc   ;==>LaunchConsole
 ; $CompareParameterFunc is func that returns True or False if parameter is matching, "" not used
 Func ProcessExists2($ProgramPath, $ProgramParameter = Default, $CompareMode = Default, $SearchMode = 0, $CompareCommandLineFunc = "")
 
-	If IsNumber($ProgramPath) Then ;Return ProcessExists($ProgramPath) ; Be compatible with ProcessExists
-		Local $hProcess, $pid = $ProgramPath
+	If IsInt($ProgramPath) Then ;Return ProcessExists($ProgramPath) ; Be compatible with ProcessExists
+		Local $hProcess, $pid = Int($ProgramPath)
 		If _WinAPI_GetVersion() >= 6.0 Then
 			$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_LIMITED_INFORMATION, 0, $pid)
 		Else
 			$hProcess = _WinAPI_OpenProcess($PROCESS_QUERY_INFORMATION, 0, $pid)
 		EndIf
-		If $hProcess Then
+		Local $iExitCode = 0
+		If $hProcess And @error = 0 Then
+			$iExitCode = _WinAPI_GetExitCodeProcess($hProcess)
 			_WinAPI_CloseHandle($hProcess)
 		EndIf
-		Return (($hProcess) ? $pid : 0)
+		Return (($iExitCode = 259) ? $pid : 0)
 	EndIf
 
 	If $ProgramParameter = Default Then

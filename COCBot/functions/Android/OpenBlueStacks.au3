@@ -58,6 +58,9 @@ Func OpenBlueStacks($bRestart = False)
 	If $g_hAndroidControl Then
 		$connected_to = ConnectAndroidAdb(False, 3000) ; small time-out as ADB connection must be available now
 
+		If WaitForAndroidBootCompleted($g_iAndroidLaunchWaitSec - __TimerDiff($hTimer) / 1000, $hTimer) Then Return
+		If Not $g_bRunState Then Return False
+
 		SetLog("BlueStacks Loaded, took " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_SUCCESS)
 
 		Return True

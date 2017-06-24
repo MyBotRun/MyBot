@@ -34,6 +34,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 	debugAttackCSV(" - delay for multiple troops in same point: " & $delayPointmin & "-" & $delayPointmax)
 	debugAttackCSV(" - delay when  change deploy point : " & $delayDropMin & "-" & $delayDropMax)
 	debugAttackCSV(" - delay after drop all troops : " & $sleepafterMin & "-" & $sleepAfterMax)
+
 	;how many vectors need to manage...
 	Local $temp = StringSplit($vectors, "-")
 	Local $numbersOfVectors
@@ -74,6 +75,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 		Setlog("CSV troop name '" & $troopName & "' is unrecognized.")
 		Return
 	EndIf
+	Local $bHeroDrop = ($iTroopIndex = $eWarden ? True : False) ;set flag TRUE if Warden was dropped
 
 	;search slot where is the troop...
 	Local $troopPosition = -1
@@ -222,7 +224,14 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 			debugAttackCSV(">> delay after drop all troops: " & $sleepafter)
 			If $sleepafter <= 1000 Then ; check SLEEPAFTER value is less than 1 second?
 				If _Sleep($sleepafter) Then Return
-				CheckHeroesHealth() ; check hero health == does nothing if hero not dropped
+				If $bHeroDrop = True Then  ;Check hero but skip Warden if was dropped with sleepafter to short to allow icon update
+					Local $bHold = $g_bCheckWardenPower ; store existing flag state, should be true?
+					$g_bCheckWardenPower = False ;temp disable warden health check
+					CheckHeroesHealth()
+					$g_bCheckWardenPower = $bHold ; restore flag state
+				Else
+					CheckHeroesHealth()
+				EndIf
 			Else ; $sleepafter is More than 1 second, then improve pause/stop button response with max 1 second delays
 				For $z = 1 To Int($sleepafter / 1000) ; Check hero health every second while while sleeping
 					If _Sleep(980) Then Return ; sleep 1 second minus estimated herohealthcheck time when heroes not activiated

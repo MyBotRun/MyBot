@@ -56,7 +56,7 @@ Func InitAndroidConfig($bRestart = False)
 	$g_bAndroidAdbClick = $g_bAndroidAdbClickEnabled = True And AndroidAdbClickSupported() ; Enable Android ADB mouse click
 	$g_bAndroidAdbInput = $g_bAndroidAdbInputEnabled = True And BitAND($g_iAndroidSupportFeature, 8) = 8 ; Enable Android ADB send text (CC requests)
 	$g_bAndroidAdbInstance = $g_bAndroidAdbInstanceEnabled = True And BitAND($g_iAndroidSupportFeature, 16) = 16 ; Enable Android steady ADB shell instance when available
-	$g_bAndroidAdbClickDrag = $g_bAndroidAdbClickDragEnabled = True And BitAND($g_iAndroidSupportFeature, 32) = 32 ; Enable Android ADB Click Drag script
+	$g_bAndroidAdbClickDrag = $g_bAndroidAdbClickDragEnabled = True And BitAND($g_iAndroidSupportFeature, 32) = 32 ; Enable Android ADB Click Drag script or input swipe
 	$g_bAndroidEmbed = $g_bAndroidEmbedEnabled = True And $g_iAndroidEmbedMode > -1 ; Enable Android Docking
 	$g_bAndroidBackgroundLaunch = $g_bAndroidBackgroundLaunchEnabled = True ; Enabled Android Background launch using Windows Scheduled Task
 	$g_bAndroidBackgroundLaunched = False ; True when Android was launched in headless mode without a window
@@ -1365,6 +1365,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIf
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
 				Return SetError(3, 0)
 			EndIf
+			AndroidAdbTerminateShellInstance()
 			;$g_iAndroidAdbProcess[0] = Run($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED))
 			$g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
 			If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
@@ -1374,6 +1375,8 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIf
 				$g_bAndroidAdbInput = False
 				If BitAND($g_iAndroidSupportFeature, 1) = 0 Then $g_bChkBackgroundMode = False ; disable also background mode the hard way
 				Return SetError(1, 0)
+			Else
+				AndroidAdbSendShellCommand("PS1=" & $g_sAndroidAdbPrompt, Default, $wasRunState, False) ; set prompt to unique string $g_sAndroidAdbPrompt
 			EndIf
 		EndIf
 
@@ -2659,7 +2662,7 @@ Func AndroidSwipeNotWorking($x1, $y1, $x2, $y2, $wasRunState = $g_bRunState) ; T
 	EndIf
 EndFunc   ;==>AndroidSwipeNotWorking
 
-Func AndroidInputSwipe($x1, $y1, $x2, $y2, $wasRunState = $g_bRunState) ; Not used anymore, see AndroidClickDrag
+Func AndroidInputSwipe($x1, $y1, $x2, $y2, $wasRunState = $g_bRunState) ; Only used for BlueStacks/BlueStacks2
 	AndroidAdbLaunchShellInstance($wasRunState)
 	If @error = 0 Then
 		AndroidAdbSendShellCommand("input swipe " & $x1 & " " & $y1 & " " & $x2 & " " & $y2, Default, $wasRunState)

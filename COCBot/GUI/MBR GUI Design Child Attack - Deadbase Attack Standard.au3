@@ -86,21 +86,21 @@ Func CreateAttackSearchDeadBaseStandard()
 		   $g_hChkAttackNearGoldMineDB = GUICtrlCreateCheckbox("", $x + 20, $y, 17, 17)
 			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "ChkAttackNearGoldMine_Info_01", "Drop troops near Gold Mines")
 			   _GUICtrlSetTip(-1, $sTxtTip)
-		   GUICtrlCreateIcon($g_sLibIconPath, $eIcnMine, $x + 40 , $y - 3 , 24, 24)
+		   _GUICtrlCreateIcon($g_sLibIconPath, $eIcnMine, $x + 40 , $y - 3 , 24, 24)
 			   _GUICtrlSetTip(-1, $sTxtTip)
 
 		   $x += 75
 		   $g_hChkAttackNearElixirCollectorDB = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "ChkAttackNearElixirCollector_Info_01", "Drop troops near Elixir Collectors")
 			   _GUICtrlSetTip(-1, $sTxtTip)
-		   GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20 , $y - 3 , 24, 24)
+		   _GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20 , $y - 3 , 24, 24)
 			   _GUICtrlSetTip(-1, $sTxtTip)
 
 		   $x += 55
 		   $g_hChkAttackNearDarkElixirDrillDB = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "ChkAttackNearDarkElixirDrill_Info_01", "Drop troops near Dark Elixir Drills")
 			   _GUICtrlSetTip(-1, $sTxtTip)
-		   $g_hPicAttackNearDarkElixirDrillDB = GUICtrlCreateIcon($g_sLibIconPath, $eIcnDrill, $x + 20 , $y - 3, 24, 24)
+		   $g_hPicAttackNearDarkElixirDrillDB = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDrill, $x + 20 , $y - 3, 24, 24)
 			   _GUICtrlSetTip(-1, $sTxtTip)
 	   GUICtrlCreateGroup("", -99, -99, 1, 1)
 

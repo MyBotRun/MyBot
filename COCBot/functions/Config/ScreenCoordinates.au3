@@ -21,8 +21,7 @@ Global $aIsDPI125[4] = [355, 35, 0x399CB8, 15] ; Main Screen, Builder Left Eye, 
 Global $aIsDPI150[4] = [426, 42, 0x348FAA, 15] ; Main Screen, Builder Left Eye, DPI set to 150%
 ;Global $aIsMainGrayed[4] = [284, 28, 0x215B69, 15] ; Main Screen Grayed, Builder Left Eye
 Global $aIsMainGrayed[4] = [284, 29, 0x0B1B29, 15] ; Main Screen Grayed, Builder Left Eye :SC_okt
-Global $aIsOnBuilderIsland1[4] = [382, 19, 0xF9DFB2, 15] ; Check the Builder Icon if Bot is on wrong Village: Builders Skin Color
-Global $aIsOnBuilderIsland2[4] = [368, 9, 0x77BDDF, 15] ; Check the Builder Icon if Bot is on wrong Village: Info Icon
+Global $aIsOnBuilderIsland[4] = [838, 18, 0xffff46, 10] ; Check the Gold Coin from resources , is a square not round
 
 Global $aTopLeftClient[4] = [1, 1, 0x000000, 0] ; TopLeftClient: Tolerance not needed
 Global $aTopMiddleClient[4] = [475, 1, 0x000000, 0] ; TopMiddleClient: Tolerance not needed
@@ -38,12 +37,12 @@ Global $aFindMatchButton[4] = [195, 480 + $g_iBottomOffsetY, 0xFFBF43, 10] ; Fin
 Global $aFindMatchButton2[4] = [195, 480 + $g_iBottomOffsetY, 0xE75D0D, 10] ; Find Multiplayer Match Button, Attack Screen 860x780 with shield
 Global $aIsAttackShield[4] = [250, 415 + $g_iMidOffsetY, 0xE8E8E0, 10] ; Attack window, white shield verification window
 Global $aAway[2] = [1, 40] ; Away click, moved from 1,1 to prevent scroll window from top
-Global $aRemoveShldButton[4] = [470, 18, 0xA80408, 10] ; Legacy - Main Screen, Red pixel lower part of Minus sign to remove shield, used to validate latest COC installed
+;Global $aRemoveShldButton[4] = [470, 18, 0xA80408, 10] ; Legacy - Main Screen, Red pixel lower part of Minus sign to remove shield, used to validate latest COC installed
 Global $aNoShield[4] = [448, 20, 0x43484B, 15] ; Main Screen, charcoal pixel center of shield when no shield is present
 Global $aHaveShield[4] = [455, 19, 0xF0F8FB, 15] ; Main Screen, Silver pixel top center of shield
-Global $aHavePerGuard[4] = [455, 19, 0x12120E, 15] ; Main Screen, black pixel in sword outline top center of shield
-Global $aShieldInfoButton[4] = [472, 11, 0x6DB0D3, 10] ; Main Screen, Blue pixel upper part of "i"
-Global $aIsShieldInfo[4] = [645, 195, 0xE00408, 20] ; Main Screen, Shield Info window, red pixel right of X
+Global $aHavePerGuard[4] = [455, 19, 0x10100D, 15] ; Main Screen, black pixel in sword outline top center of shield
+Global $aShieldInfoButton[4] = [431, 10, 0x75BDE4, 15] ; Main Screen, Blue pixel upper part of "i"
+Global $aIsShieldInfo[4] = [645, 195, 0xED1115, 20] ; Main Screen, Shield Info window, red pixel right of X
 Global $aSurrenderButton[4] = [70, 545 + $g_iBottomOffsetY, 0xC00000, 40] ; Surrender Button, Attack Screen
 Global $aConfirmSurrender[4] = [500, 415 + $g_iMidOffsetY, 0x60AC10, 20] ; Confirm Surrender Button, Attack Screen, green color on button?
 Global $aCancelFight[4] = [822, 48, 0xD80408, 20] ; Cancel Fight Scene
@@ -65,6 +64,7 @@ Global $aIsCampNotFull[4] = [149, 150 + $g_iMidOffsetY, 0x761714, 20] ; Training
 Global $aIsCampFull[4] = [128, 151 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Training Window, Overview screen White pixel in check mark with camp IS full (can not test for Green, as it has trees under it!)
 Global $aBarrackFull[4] = [388, 154 + $g_iMidOffsetY, 0xE84D50, 20] ; Training Window, Barracks Screen, Red pixel in Exclamation mark with Barrack is full
 Global $aBuildersDigits[2] = [324, 21] ; Main Screen, Free/Total Builders
+Global $aBuildersDigitsBuilderBase[2] = [414, 21] ; Main Screen on Builders Base Free/Total Builders
 Global $aLanguageCheck1[4] = [326, 8, 0xF9FAF9, 20] ; Main Screen Test Language for word 'Builders'
 Global $aLanguageCheck2[4] = [329, 9, 0x060706, 20] ; Main Screen Test Language for word 'Builders'
 Global $aLanguageCheck3[4] = [348, 12, 0x040403, 20] ; Main Screen Test Language for word 'Builders'
@@ -114,7 +114,7 @@ Global $aKingHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15] ; Attack Scree
 ; Queen purple between crown ; background pixel not at green bar
 Global $aQueenHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
 ; Warden hair ; background pixel not at green bar
-Global $aWardenHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15] ; Attack Screen, Check Warden's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
+Global $aWardenHealth = [-1, 571 + $g_iBottomOffsetY, 0x00D500, 15] ; Attack Screen, Check Warden's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
 
 
 ;attack report... stars won
@@ -144,6 +144,9 @@ Global Const $aRtnHomeCheck2[4] = [497, 548 + $g_iMidOffsetY, 0x79C326, 20]
 ;Global Const $aRtnHomeCheck3[4]      = [ 284,  28, 0x41B1CD, 20]
 
 Global Const $aSearchLimit[6] = [19, 565, 104, 580, 0xD9DDCF, 10] ; (kaganus) no idea what this is for
+
+; Builder Base
+Global Const $aConfirmBoost[4] = [431, 438, 0xD9F57B, 10]
 
 ;inattackscreen
 Global Const $aIsAttackPage[4] = [70, 548 + $g_iBottomOffsetY, 0xC80000, 20] ; red button "end battle" 860x780
@@ -214,10 +217,10 @@ Global $aFullBowl[4] = [777, 407 + $g_iMidOffsetY, 0x727272, 20] ; 0x6060E8 norm
 
 ;-----> Spells <-----
 Global $aTrainLSpell[5] = [ 70, 405 + $g_iMidOffsetY, 0x0A47EE, 40, False]
-Global $aTrainRSpell[5] = [170, 405 + $g_iMidOffsetY, 0x501886, 40, False]
-Global $aTrainFSpell[5] = [270, 405 + $g_iMidOffsetY, 0x29ADD0, 40, False]
 Global $aTrainHSpell[5] = [ 70, 505 + $g_iMidOffsetY, 0xDAAF48, 40, False]
+Global $aTrainRSpell[5] = [170, 405 + $g_iMidOffsetY, 0x501886, 45, False]
 Global $aTrainJSpell[5] = [170, 505 + $g_iMidOffsetY, 0x4CCC08, 40, False]
+Global $aTrainFSpell[5] = [270, 405 + $g_iMidOffsetY, 0x29ADD0, 40, False]
 Global $aTrainCSpell[5] = [270, 505 + $g_iMidOffsetY, 0x20DDD8, 40, False]
 Global $aTrainPSpell[5] = [375, 405 + $g_iMidOffsetY, 0xF88010, 40, False]
 Global $aTrainESpell[5] = [375, 505 + $g_iMidOffsetY, 0xBF8B58, 40, False]
@@ -225,10 +228,10 @@ Global $aTrainHaSpell[5] = [469, 409 + $g_iMidOffsetY, 0xf267a7, 40, False]
 Global $aTrainSkSpell[5] = [475, 505 + $g_iMidOffsetY, 0xE01800, 40, False]
 
 Global $aFullLSpell[4] = [74, 392 + $g_iMidOffsetY, 0x515151, 40]
-Global $aFullRSpell[4] = [186, 405 + $g_iMidOffsetY, 0x696969, 40]
-Global $aFullFSpell[4] = [266, 395 + $g_iMidOffsetY, 0x929292, 40]
 Global $aFullHSpell[4] = [70, 505 + $g_iMidOffsetY, 0xB1B1B1, 40]
+Global $aFullRSpell[4] = [186, 405 + $g_iMidOffsetY, 0x696969, 40]
 Global $aFullJSpell[4] = [170, 495 + $g_iMidOffsetY, 0xABABAB, 40]
+Global $aFullFSpell[4] = [266, 395 + $g_iMidOffsetY, 0x929292, 40]
 Global $aFullCSpell[4] = [269, 502 + $g_iMidOffsetY, 0xA4A4A4, 40]
 Global $aFullPSpell[4] = [375, 410 + $g_iMidOffsetY, 0x929292, 40]
 Global $aFullESpell[4] = [370, 510 + $g_iMidOffsetY, 0x858585, 40]

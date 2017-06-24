@@ -89,6 +89,22 @@ Func IsMainPage($iLoop = 30)
 
 EndFunc   ;==>IsMainPage
 
+Func IsMainPageBuilderBase($iLoop = 30)
+
+	If IsPageLoop($aIsOnBuilderIsland, $iLoop) Then
+		$g_bMainWindowOk = True
+		If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then SetLog("**Main Window OK**", $COLOR_ACTION)
+		Return True
+	EndIf
+
+	$g_bMainWindowOk = False
+	If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then SetLog("**Main Window FAIL**", $COLOR_ACTION)
+	If $g_iDebugImageSave = 1 Then DebugImageSave("IsMainPageBuilderBase")
+	If $iLoop > 1 Then AndroidPageError("IsMainPageBase")
+	Return False
+
+EndFunc   ;==>IsMainPage
+
 Func IsMainChatOpenPage() ;main page open chat
 
 	If IsPageLoop($aChatTab, 1) Then

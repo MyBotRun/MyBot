@@ -96,7 +96,7 @@ Func DELow()
 	Local $DarkE = ""
 	Local $Dchk = 0
 	While $DarkE = "" ;~~~~~~~~Loop 10x or until Dark Elixer is Readable.
-		$DarkE = getDarkElixirVillageSearch(48, 125)
+		$DarkE = getDarkElixirVillageSearch(48, 126)
 		$Dchk += 1
 		If _Sleep(50) Then Return
 		If $Dchk >= 10 Then
@@ -106,7 +106,7 @@ Func DELow()
 	WEnd
 	If Number($DarkE) < (Number($g_iSearchDark) * (Number($g_iDESideEndMin) / 100)) Then ; First check if Dark Elixer is below set minimum
 		If _Sleep(50) Then Return
-		$DarkE = getDarkElixirVillageSearch(48, 125)
+		$DarkE = getDarkElixirVillageSearch(48, 126)
 		If _Sleep(50) Then Return
 		If Number($DarkE) < (Number($g_iSearchDark) * (Number($g_iDESideEndMin) / 100)) Then ; Second check if Dark Elixer is below set minimum
 			If $g_bDESideEndAQWeak And $g_bDropQueen And $g_bCheckQueenPower = False Then

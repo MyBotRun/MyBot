@@ -16,7 +16,7 @@
 Func AndroidBackButton($bCheckRunState = True)
 	If $bCheckRunState And Not $g_bRunState Then Return False
 	;SendAdbCommand("shell input keyevent 4", False)
-	AndroidAdbSendShellCommand("input keyevent 4", Default, Default, False)
+	AndroidAdbSendShellCommand("input keyevent 4")
 	If $g_iDebugSetlog = 1 Then Setlog("Used Adb to press back button", $COLOR_INFO)
 	Return True
 EndFunc   ;==>AndroidBackButton
@@ -36,10 +36,10 @@ EndFunc   ;==>AndroidBackButton
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func AndroidHomeButton()
-	If Not $g_bRunState Then Return False
+Func AndroidHomeButton($bCheckRunState = True)
+	If $bCheckRunState And Not $g_bRunState Then Return False
 	;SendAdbCommand("shell input keyevent 3", False)
-	AndroidAdbSendShellCommand("input keyevent 3", Default, Default, False)
+	AndroidAdbSendShellCommand("input keyevent 3")
 	If $g_iDebugSetlog = 1 Then Setlog("Used Adb to press home button", $COLOR_INFO)
 	Return True
 EndFunc   ;==>AndroidHomeButton

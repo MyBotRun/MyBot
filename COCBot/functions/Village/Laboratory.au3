@@ -202,7 +202,7 @@ Func Laboratory()
 				Next
 				$g_sLabUpgradeTime = _DateAdd('n', Ceiling($iRemainingTimeMin), _NowCalc()) ; add the time required to NOW to finish the upgrade
 				If @error Then _logErrorDateAdd(@error)
-				SetLog($g_avLabTroops[$g_iCmbLaboratory][3] & "Updated Lab finishing time: " & $g_sLabUpgradeTime, $COLOR_SUCCESS)
+				SetLog("Updated Lab finishing time: " & $g_sLabUpgradeTime, $COLOR_SUCCESS)
 				LabStatusGUIUpdate() ; Update GUI flag
 			Else
 				If $g_iDebugSetlog = 1 Then Setlog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)

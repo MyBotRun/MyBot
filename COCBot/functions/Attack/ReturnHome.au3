@@ -32,7 +32,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			WEnd
 			If IsAttackPage() Then smartZap() ; Check to see if we should zap the DE Drills
 			;If Heroes were not activated: Hero Ability activation before End of Battle to restore health
-			If ($g_bCheckKingPower = True Or $g_bCheckQueenPower = True Or $g_bCheckWardenPower = True) And $g_iActivateKQCondition = "Auto" Then
+			If ($g_bCheckKingPower = True Or $g_bCheckQueenPower = True Or $g_bCheckWardenPower = True) Then
 				;_CaptureRegion()
 				If _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False Then ; If not already at Return Homescreen
 					If $g_bCheckKingPower = True Then
@@ -62,6 +62,9 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	$g_bCheckKingPower = False
 	$g_bCheckQueenPower = False
 	$g_bCheckWardenPower = False
+	$g_bDropKing = False
+	$g_bDropQueen = False
+	$g_bDropWarden = False
 	$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
 	$g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
 	$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0

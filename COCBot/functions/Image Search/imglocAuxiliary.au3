@@ -467,7 +467,7 @@ Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = T
 		If $g_iDebugSetlog = 1 Then SetLog("FindImageInPlace : " & $sImageName & " NOT Found", $COLOR_INFO)
 		Return ""
 	EndIf
-	If $bForceCaptureRegion = True Then
+	If $bForceCaptureRegion Then
 		$returnvalue = Number($aCoords[0]) + Number($aPlaces[0]) & "," & Number($aCoords[1]) + Number($aPlaces[1])
 	Else
 		$returnvalue = Number($aCoords[0]) & "," & Number($aCoords[1])

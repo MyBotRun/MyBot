@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 #include-once
 
-Global $g_hCmbCOCDistributors = 0, $g_hCmbSuspendAndroid = 0
+Global $g_hCmbCOCDistributors = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClickDragScript = 0
 
 Func CreateBotAndroid()
    Local $x = 25, $y = 45, $w = 210, $h = 50
@@ -25,6 +25,16 @@ Func CreateBotAndroid()
 	   LoadCOCDistributorsComboBox()
 	   SetCurSelCmbCOCDistributors()
 	   GUICtrlSetOnEvent(-1, "cmbCOCDistributors")
+   GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+   $y += $h + 5
+   $w = $g_iSizeWGrpTab2 - 2
+
+   GUICtrlCreateGroup(GetTranslatedFileIni("Android", "Android_Options", "Android Options"), $x - 20, $y - 20, $w, $h)
+	   ;$y -=2
+	   $g_hChkAndroidAdbClickDragScript = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkAdbClickDragScript", "Use script for accurate Click && Drag"), $x, $y, -1, -1)
+	   _GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAdbClickDragScript_Info", "Use Android specific script file for Click & Drag.\r\nIf unchecked use more compatible 'input swipe'."))
+	   GUICtrlSetState(-1, (($g_bAndroidAdbClickDragScript) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
    $y += $h + 5

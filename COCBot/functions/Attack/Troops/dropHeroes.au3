@@ -19,9 +19,9 @@
 Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drops for king and queen and Grand Warden
 	If $g_iDebugSetlog = 1 Then SetLog("dropHeroes KingSlot " & $KingSlot & " QueenSlot " & $QueenSlot & " WardenSlot " & $WardenSlot & " matchmode " & $g_iMatchMode, $COLOR_DEBUG)
 	If _Sleep($DELAYDROPHEROES1) Then Return
-	$g_bDropKing = False
-	$g_bDropQueen = False
-	$g_bDropWarden = False
+	Local $bDropKing = False
+	Local $bDropQueen = False
+	Local $bDropWarden = False
 
 	;Force to check settings of matchmode =$DB if you attack $TS after milkingattack
 	Local $MatchMode
@@ -32,42 +32,57 @@ Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drop
 	EndIf
 
 	;use hero if  slot (detected ) and ( (matchmode <>DB and <>LB  ) or (check user GUI settings) )
-	If $KingSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroKing) = $eHeroKing) Then $g_bDropKing = True
-	If $QueenSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroQueen) = $eHeroQueen) Then $g_bDropQueen = True
-	If $WardenSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroWarden) = $eHeroWarden) Then $g_bDropWarden = True
+	If $KingSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroKing) = $eHeroKing) Then $bDropKing = True
+	If $QueenSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroQueen) = $eHeroQueen) Then $bDropQueen = True
+	If $WardenSlot <> -1 And (($MatchMode <> $DB And $MatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$MatchMode], $eHeroWarden) = $eHeroWarden) Then $bDropWarden = True
 
-	If $g_iDebugSetlog = 1 Then SetLog("drop KING = " & $g_bDropKing, $COLOR_DEBUG)
-	If $g_iDebugSetlog = 1 Then SetLog("drop QUEEN = " & $g_bDropQueen, $COLOR_DEBUG)
-	If $g_iDebugSetlog = 1 Then SetLog("drop WARDEN = " & $g_bDropWarden, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then SetLog("drop KING = " & $bDropKing, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then SetLog("drop QUEEN = " & $bDropQueen, $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then SetLog("drop WARDEN = " & $bDropWarden, $COLOR_DEBUG)
 
-	If $g_bDropKing Then
+	If $bDropKing Then
 		SetLog("Dropping King", $COLOR_INFO)
 		Click(GetXPosOfArmySlot($KingSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0092") ;Select King 860x780
 		If _Sleep($DELAYDROPHEROES2) Then Return
 		Click($x, $y, 1, 0, "#0093")
-		$g_bCheckKingPower = True
+		If $g_bDropKing = False Then ; check global flag, only begin hero health check on 1st hero drop as flag is reset to false after activation
+			$g_bCheckKingPower = True
+		Else
+			SetDebugLog("King dropped 2nd time, Check Power flag not changed") ; do nothing as hero already dropped
+		EndIf
+		$g_bDropKing = True ; Set global flag hero dropped
 		If $g_iActivateKQCondition = "Manual" Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = __TimerInit() ; initialize fixed activation timer
 	EndIf
 
 	If _Sleep($DELAYDROPHEROES1) Then Return
 
-	If $g_bDropQueen Then
+	If $bDropQueen Then
 		SetLog("Dropping Queen", $COLOR_INFO)
 		Click(GetXPosOfArmySlot($QueenSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0094") ;Select Queen 860x780
 		If _Sleep($DELAYDROPHEROES2) Then Return
 		Click($x, $y, 1, 0, "#0095")
-		$g_bCheckQueenPower = True
+		If $g_bDropQueen = False Then ; check global flag, only begin hero health check on 1st hero drop as flag is reset to false after activation
+			$g_bCheckQueenPower = True
+		Else
+			SetDebugLog("Queen dropped 2nd time, Check Power flag not changed") ; do nothing as hero already dropped
+		EndIf
+		$g_bDropQueen = True ; Set global flag hero dropped
 		If $g_iActivateKQCondition = "Manual" Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = __TimerInit() ; initialize fixed activation timer
 	EndIf
 
 	If _Sleep($DELAYDROPHEROES1) Then Return
 
-	If $g_bDropWarden Then
+	If $bDropWarden Then
 		SetLog("Dropping Grand Warden", $COLOR_INFO)
 		Click(GetXPosOfArmySlot($WardenSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#X998") ;Select Warden 860x780
 		If _Sleep($DELAYDROPHEROES2) Then Return
 		Click($x, $y, 1, 0, "#x999")
-		$g_bCheckWardenPower = True
+		If $g_bDropWarden = False Then ; check global flag, only begin hero health check on 1st hero drop as flag is reset to false after activation
+			$g_bCheckWardenPower = True
+		Else
+			SetDebugLog("Warden dropped 2nd time, Check Power flag not changed") ; do nothing as hero already dropped
+		EndIf
+		$g_bDropWarden = True ; Set global flag hero dropped
 		If $g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition Then
 			$g_aHeroesTimerActivation[$eHeroGrandWarden] = __TimerInit() ; initialize fixed activation timer
 		EndIf

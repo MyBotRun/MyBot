@@ -17,6 +17,7 @@ Func ParseAttackCSV($debug = False)
 	Local $rownum = 0
 	Local $bForceSideExist = False
 	Local $sErrorText, $sTargetVectors = ""
+	Local $iTroopIndex, $bWardenDrop = False
 
 	For $v = 0 To 25  ; Zero all 26 vectors from last atttack in case here is error MAKE'ing new vectors
 		Assign("ATTACKVECTOR_" & Chr(65+$v), "", $ASSIGN_EXISTFAIL) ; start with character "A" = ASCII 65
@@ -275,9 +276,10 @@ Func ParseAttackCSV($debug = False)
 							DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
 						EndIf
 						ReleaseClicks($g_iAndroidAdbClicksTroopDeploySize)
-						If _Sleep($DELAYRESPOND) Then ; check for pause/stop, close file before return
-							Return
-						EndIf
+						If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop
+						;set flag if warden was dropped and sleep after delay was to short for icon to update properly
+						$iTroopIndex = TroopIndexLookup($value4, "ParseAttackCSV") ; obtain enum
+						$bWardenDrop = ($iTroopIndex = $eWarden) And ($sleepdrop1 < 1000)
 					Case "WAIT"
 						ReleaseClicks()
 						;sleep time
@@ -316,13 +318,11 @@ Func ParseAttackCSV($debug = False)
 						Local $exitNoResources = 0
 						Local $hSleepTimer = __TimerInit()
 						While __TimerDiff($hSleepTimer) < $sleep
-							If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
+							CheckHeroesHealth()
 							;READ RESOURCES
 							$Gold = getGoldVillageSearch(48, 69)
 							$Elixir = getElixirVillageSearch(48, 69 + 29)
-							If _Sleep($DELAYRESPOND) Then ; check for pause/stop, close file before return
-								Return
-							EndIf
+							If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop
 							$Trophies = getTrophyVillageSearch(48, 69 + 99)
 							If $Trophies <> "" Then ; If trophy value found, then base has Dark Elixir
 								$DarkElixir = getDarkElixirVillageSearch(48, 69 + 57)
@@ -330,7 +330,7 @@ Func ParseAttackCSV($debug = False)
 								$DarkElixir = ""
 								$Trophies = getTrophyVillageSearch(48, 69 + 69)
 							EndIf
-							If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
+							CheckHeroesHealth()
 							If $g_iDebugSetlog = 1 Then SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 							;EXIT IF RESOURCES = 0
 							If $g_abStopAtkNoResources[$g_iMatchMode] And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
@@ -354,9 +354,7 @@ Func ParseAttackCSV($debug = False)
 							If $g_abStopAtkPctHigherEnable[$g_iMatchMode] And Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)) > Int($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) Then
 								ExitLoop
 							EndIf
-							If _Sleep($DELAYRESPOND) Then ; check for pause/stop, close file before return
-								Return
-							EndIf
+							If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop
 						WEnd
 						If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop ;stop parse CSV file, start exit battle procedure
 
@@ -719,10 +717,15 @@ Func ParseAttackCSV($debug = False)
 			Else
 				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard.: " & $line, $COLOR_ERROR)
 			EndIf
-			CheckHeroesHealth()
-			If _Sleep($DELAYRESPOND) Then ; check for pause/stop after each line of CSV, close file before return
-				Return
+			If $bWardenDrop = True Then  ;Check hero, but skip Warden if was dropped with sleepafter to short to allow icon update
+				Local $bHold = $g_bCheckWardenPower ; store existing flag state, should be true?
+				$g_bCheckWardenPower = False ;temp disable warden health check
+				CheckHeroesHealth()
+				$g_bCheckWardenPower = $bHold ; restore flag state
+			Else
+				CheckHeroesHealth()
 			EndIf
+			If _Sleep($DELAYRESPOND) Then  Return ; check for pause/stop after each line of CSV
 		Next
 		ReleaseClicks()
 	Else

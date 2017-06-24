@@ -50,7 +50,7 @@ Func CreatePushBulletTelegramSubTab()
    $g_hGrpNotify = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "Group_01", "PushBullet/Telegram Notify") & " " & $g_sNotifyVersion, $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
 
 		$x -= 10
-		GUICtrlCreateIcon ($g_sLibIconPath, $eIcnNotify, $x + 3, $y, 32, 32)
+		_GUICtrlCreateIcon ($g_sLibIconPath, $eIcnNotify, $x + 3, $y, 32, 32)
 		$g_hChkNotifyPBEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyPBEnable", "Enable PushBullet"), $x + 40, $y + 5)
 			GUICtrlSetOnEvent(-1, "chkPBTGenabled")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyPBEnable_Info_01", "Enable PushBullet notifications"))
@@ -85,7 +85,7 @@ Func CreatePushBulletTelegramSubTab()
 			GUICtrlSetState(-1, $GUI_DISABLE)
 
 		$y += 20
-		GUICtrlCreateIcon ($g_sLibIconPath, $eIcnTelegram, $x + 3, $y, 32, 32)
+		_GUICtrlCreateIcon ($g_sLibIconPath, $eIcnTelegram, $x + 3, $y, 32, 32)
 		 $g_hChkNotifyTGEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyTGEnable", "Enable Telegram"), $x + 40, $y + 5)
 			GUICtrlSetOnEvent(-1, "chkPBTGenabled")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyTGEnable_Info_01", "Enable Telegram notifications"))
@@ -176,7 +176,7 @@ Func CreateNotifyScheduleSubTab()
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_02_STab_03", -1), $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
 	$x += 10
 	$y += 10
-	GUICtrlCreateIcon($g_sLibIconPath, $eIcnPBNotify, $x - 5, $y, 64, 64, $BS_ICON)
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPBNotify, $x - 5, $y, 64, 64, $BS_ICON)
 	$g_hChkNotifyOnlyHours = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", "Only during these hours of each day"), $x+70, $y-6)
 		GUICtrlSetOnEvent(-1, "chkNotifyHours")
 

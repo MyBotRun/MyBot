@@ -47,7 +47,14 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 			If Not $aTrainPos[4] Then
 				SetLog("Cannot verify the Train Position of " & GetTroopName($iIndex) & ". Using ImgLoc to find new Train Position!", $COLOR_WARNING)
 				Local $aTempPos = GetTrainPosImgLoc($iIndex)
-				$aTempPos[4] = True
+
+				If @error Then ; Fix Problem because imgloc FAILED to do something useful again
+					Setlog("Unrecoverable error occurred in TrainIt(), Skipping: " & GetTroopName($iIndex), $COLOR_ERROR)
+					$g_bRestart = True ; set restart flag to force a return back to main loop via delay commands
+					SetError(1000, "", "")
+					Return
+				EndIf
+
 				SetNewTrainPos($iIndex, $aTempPos)
 
 				Local $aTempFullName = GetFullNameImgLoc($iIndex, $aTrainPos)
@@ -93,6 +100,7 @@ Func SetNewTrainPos($iIndex, $aNewTrainPos)
 
 	If ($iIndex >= $eBarb And $iIndex <= $eBowl) Or ($iIndex >= $eLSpell And $iIndex <= $eSkSpell) Then
 		$aTrainArmy[$iIndex] = $aNewTrainPos
+		Return 1
 	EndIf
 
 	SetLog("Don't know how to set the train pos of the troop " & GetTroopName($iIndex) & " yet", $COLOR_WARNING)
@@ -108,7 +116,12 @@ Func GetTrainPosImgLoc(Const $iIndex)
 		Local $sFilter = String($g_asTroopShortNames[$iIndex]) & "*"
 		Local $asImageToUse = _FileListToArray($sDirectory, $sFilter, $FLTA_FILES, True)
 		If $g_iDebugSetlogTrain Then setlog("$asImageToUse Troops: " & $asImageToUse[1])
-		Return GetVariable($asImageToUse[1], $iIndex)
+		Local $Result = GetVariable($asImageToUse[1], $iIndex)
+		If @error Then ; set return error flag so TrainIt does something smart
+			SetError(1, "", "")
+			Return
+		EndIf
+		Return $Result
 	EndIf
 
 	If $iIndex >= $eLSpell And $iIndex <= $eSkSpell Then
@@ -116,7 +129,12 @@ Func GetTrainPosImgLoc(Const $iIndex)
 		Local $sFilter = String($g_asSpellShortNames[$iIndex - $eLSpell]) & "*"
 		Local $asImageToUse = _FileListToArray($sDirectory, $sFilter, $FLTA_FILES, True)
 		If $g_iDebugSetlogTrain Then setlog("$asImageToUse Spell: " & $asImageToUse[1])
-		Return GetVariable($asImageToUse[1], $iIndex)
+		Local $Result = GetVariable($asImageToUse[1], $iIndex)
+		If @error Then ; set return error flag so TrainIt does something smart
+			SetError(1, "", "")
+			Return
+		EndIf
+		Return $Result
 	EndIf
 
 	Return 0
@@ -138,6 +156,7 @@ Func SetNewFullName($iIndex, $aNewFullName)
 
 	If ($iIndex >= $eBarb And $iIndex <= $eBowl) Or ($iIndex >= $eLSpell And $iIndex <= $eSkSpell) Then
 		$aFullArmy[$iIndex] = $aNewFullName
+		Return 1
 	EndIf
 
 	SetLog("Don't know how to set the full name of troop with index " & $iIndex & " yet")
@@ -180,6 +199,7 @@ Func SetNewRNDName($iIndex, $aNewRNDName)
 
 	If ($iIndex >= $eBarb And $iIndex <= $eBowl) Or ($iIndex >= $eLSpell And $iIndex <= $eSkSpell) Then
 		$aTrainArmyRND[$iIndex] = $aNewRNDName
+		Return 1
 	EndIf
 
 	SetLog("Don't know how to set the RND name of troop with index " & $iIndex & " yet!", $COLOR_ERROR)
@@ -217,10 +237,16 @@ Func GetVariable(Const $ImageToUse, Const $iIndex)
 		If $res[0] = "0" Then
 			; failed to find a train icon on the field
 			SetLog("No " & GetTroopName($iIndex) & " Icon found!", $COLOR_ERROR)
+			SetError(1, "", "")
+			Return
 		ElseIf $res[0] = "-1" Then
 			SetLog("DLL Error", $COLOR_ERROR)
+			SetError(2, "", "")
+			Return
 		ElseIf $res[0] = "-2" Then
 			SetLog("Invalid Resolution", $COLOR_ERROR)
+			SetError(3, "", "")
+			Return
 		Else
 			If $g_iDebugSetlogTrain Then Setlog("String: " & $res[0])
 			Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
@@ -231,7 +257,7 @@ Func GetVariable(Const $ImageToUse, Const $iIndex)
 					Local $ButtonY = 375 + Int($posPoint[1])
 					Local $Colorcheck = "0x" & _GetPixelColor($ButtonX, $ButtonY, $g_bCapturePixel)
 					Local $Tolerance = 40
-					Local $FinalVariable[5] = [$ButtonX, $ButtonY, $Colorcheck, $Tolerance, False]
+					Local $FinalVariable[5] = [$ButtonX, $ButtonY, $Colorcheck, $Tolerance, True]
 					If $g_iDebugSetlogTrain Then SetLog(" - " & GetTroopName($iIndex) & " Icon found!", $COLOR_SUCCESS)
 					If $g_iDebugSetlogTrain Then SetLog("Found: [" & $ButtonX & "," & $ButtonY & "]", $COLOR_SUCCESS)
 					If $g_iDebugSetlogTrain Then SetLog("Color check: " & $Colorcheck, $COLOR_SUCCESS)

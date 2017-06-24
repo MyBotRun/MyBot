@@ -239,6 +239,7 @@ Func SaveConfig_Android()
 	_Ini_Add("android", "adb.screencap.timeout.dynamic", $g_iAndroidAdbScreencapTimeoutDynamic)
 	_Ini_Add("android", "adb.input.enabled", ($g_bAndroidAdbInputEnabled ? "1" : "0"))
 	_Ini_Add("android", "adb.click.enabled", ($g_bAndroidAdbClickEnabled ? "1" : "0"))
+	_Ini_Add("android", "adb.click.drag.script", ($g_bAndroidAdbClickDragScript ? "1" : "0"))
 	_Ini_Add("android", "adb.click.group", $g_iAndroidAdbClickGroup)
 	_Ini_Add("android", "adb.clicks.enabled", ($g_bAndroidAdbClicksEnabled ? "1" : "0"))
 	_Ini_Add("android", "adb.clicks.troop.deploy.size", $g_iAndroidAdbClicksTroopDeploySize)
@@ -323,6 +324,9 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "minTreasurygold", $g_iTxtTreasuryGold)
 	_Ini_Add("other", "minTreasuryelixir", $g_iTxtTreasuryElixir)
 	_Ini_Add("other", "minTreasurydark", $g_iTxtTreasuryDark)
+
+	_Ini_Add("other", "ChkCollectBuildersBase", $g_bChkCollectBuilderBase ? 1: 0)
+	_Ini_Add("other", "ChkStartClockTowerBoost", $g_bChkStartClockTowerBoost ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_6
 
 Func SaveConfig_600_9()

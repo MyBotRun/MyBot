@@ -35,7 +35,7 @@ Func CreateAttackSearchOptionsAttack()
    Local $sTxtTip = ""
    Local $x = 25, $y = 45
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_01", "Hero Abilities"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 95)
-		GUICtrlCreateIcon($g_sLibIconPath, $eIcnHeroes, $x, $y, 64, 64)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnHeroes, $x, $y, 64, 64)
 
 	   $x += 82
 	   $y -= 4
@@ -328,7 +328,7 @@ Func CreateAttackSearchOptionsAttack()
 
     Local $x = 25, $y = 290
     GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_03", "ClanCastle"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 102)
-		GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x, $y + 8, 64, 64)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x, $y + 8, 64, 64)
 
 	$y -= 8
 		$g_hChkDropCCHoursEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkDropCCHoursEnable", "Enable CC Drop Schedule" ), $x + 70, $y, -1, -1)

@@ -1,3 +1,24 @@
+* **V7.2.1**
+ * Add Builder Base collect resources and activate Clock Tower
+ * Add Bot Android Option "Use script for accurate Click & Drag", unchecking can solve swipe issues
+ * Improve reliability of detecting if window is open to builder base and not main base
+ * Improve ADB handling when ADB process killed
+ * Fix random errors with upgrade building/hero "windows not detected as open" by moving pixel check location with new values
+ * Fix errors reading building upgrade cost when not enough resources with new XML file for pink text
+ * Fix 20 Seconds launch delay (due to Android initialization)
+ * Fix confusing error message during training referring to TrainRevamp tab
+ * Fix recursive loop error when problem occurs when finding train icons with ImgLoc
+ * Fix pixel values & locations for Shield & Guard check used for Unbreakable mode
+ * Fix undeclared variable error when using Milk Attack
+ * Fix train window hero upgrade detection not attacking when waiting for heroes
+ * Fix rage spell brewing
+ * Fix BlueStacks reboot loop
+ * Fix Warden instant activation when using CSV attack scripts, due slow render of Warden health status in attack bar
+ * Update Azerbaijan and Turkish Language By Z E C K
+ * Update Arabic Language By @awssaad
+ * Update Vietnamese Language by NguyenAnhHD
+ * Remove erroneous message when heroes are upgrading, and 1 attack mode selected "wait for heroes" but is not enabled
+
 * **V7.2**
  * Add Nox 3.8.2 and DirectX support, fix Click&Drag and automatic screen config
  * Add new system to use translate
@@ -30,14 +51,14 @@
  *   Attacking (attack button, page detection, wait for clouds, star bonus)
  *   Upgrade buildings (resource type used, reading building names)
  * Added detection of builder base window, and return to main base.
- 
+
  *** WARNING>> SOME BOT FEATURES ARE NOT OPERATIONAL!!!!
- Not Working: 
+ Not Working:
  >> Building Upgrades, Lab Upgrades
- Not Tested: 
+ Not Tested:
  >> Halt modes, Attack schedule, unbreakable mode, quick train, boosting, alternate attack modes (TH side attack, DE side attack, etc), various CoC Reload error messages, and debug test buttons.
 
- 
+
 * **V7.1.4**
  * Add Nox 3.8.1.3 support
  * Fix Strategies save file

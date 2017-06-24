@@ -46,7 +46,7 @@ Func CreateAttackSearchTHSnipeSearch()
 						       GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_02", -1))
 			GUICtrlSetLimit(-1, 6)
-		GUICtrlCreateIcon($g_sLibIconPath, $eIcnMagnifier, $x + 163, $y + 1, 16, 16)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMagnifier, $x + 163, $y + 1, 16, 16)
 
 	$y +=21
 		$g_hChkTSActivateTropies = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies",  -1), $x, $y, 68, 18)
@@ -66,7 +66,7 @@ Func CreateAttackSearchTHSnipeSearch()
 							  GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
 							  GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
 			GUICtrlSetLimit(-1, 6)
-		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrophy, $x + 163, $y + 1, 16, 16)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrophy, $x + 163, $y + 1, 16, 16)
 
 	$y +=21
 		$g_hChkTSActivateCamps = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateCamps", -1), $x, $y, 110, 18)
@@ -98,7 +98,7 @@ Func CreateAttackSearchTHSnipeSearch()
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinGold_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 6)
-		$g_hPicTSMinGold = GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 137, $y, 16, 16)
+		$g_hPicTSMinGold = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 137, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y += 21
@@ -106,7 +106,7 @@ Func CreateAttackSearchTHSnipeSearch()
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinElixir_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 6)
-		$g_hPicTSMinElixir = GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 137, $y, 16, 16)
+		$g_hPicTSMinElixir = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 137, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y -= 11
@@ -115,7 +115,7 @@ Func CreateAttackSearchTHSnipeSearch()
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 6)
 			GUICtrlSetState (-1, $GUI_HIDE)
- 		$g_hPicTSMinGPEGold = GUICtrlCreateIcon($g_sLibIconPath, $eIcnGoldElixir, $x + 137, $y + 1, 16, 16)
+ 		$g_hPicTSMinGPEGold = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGoldElixir, $x + 137, $y + 1, 16, 16)
  			_GUICtrlSetTip(-1, $sTxtTip)
  			GUICtrlSetState (-1, $GUI_HIDE)
 
@@ -129,7 +129,7 @@ Func CreateAttackSearchTHSnipeSearch()
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 5)
 			_GUICtrlEdit_SetReadOnly(-1, True)
-		$g_hPicTSMinDarkElixir = GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 137, $y, 16, 16)
+		$g_hPicTSMinDarkElixir = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 137, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y += 24
@@ -146,7 +146,7 @@ Func CreateAttackSearchTHSnipeSearch()
 		$g_hTxtSWTTiles = GUICtrlCreateInput("2", $x + 85, $y , 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 1)
- 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTiles, $x + 137, $y + 1, 16, 16)
+ 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTiles, $x + 137, $y + 1, 16, 16)
  			_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y += 24
@@ -158,7 +158,7 @@ Func CreateAttackSearchTHSnipeSearch()
 		$g_hTxtTHaddTiles = GUICtrlCreateInput("2", $x + 85, $y , 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 1)
- 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTiles, $x + 137, $y + 1, 16, 16)
+ 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTiles, $x + 137, $y + 1, 16, 16)
  			_GUICtrlSetTip(-1, $sTxtTip)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
  EndFunc

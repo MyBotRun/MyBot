@@ -71,26 +71,29 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSet
 						Case 0
 							$sMessage = "-Barbarian King"
 							; safety code to warn user when wait for hero found while being upgraded to reduce stupid user posts for not attacking
-							If BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroKing) = $eHeroKing Or BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroKing) = $eHeroKing Then ; check wait for hero status
-								_GUI_Value_STATE("SHOW", $groupKingSleeping) ; Show king sleeping icon
+							If ($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroKing) = $eHeroKing) Or _
+									($g_abAttackTypeEnable[$LB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroKing) = $eHeroKing) Then ; check wait for hero status
 								SetLog("Warning: King Upgrading & Wait enabled, Disable Wait for King or may never attack!", $COLOR_ERROR)
+								_GUI_Value_STATE("SHOW", $groupKingSleeping) ; Show king sleeping icon
 							EndIf
 						Case 1
 							$sMessage = "-Archer Queen"
 							; safety code
-							If BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroQueen) = $eHeroQueen Or BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroQueen) = $eHeroQueen Then
-								_GUI_Value_STATE("SHOW", $groupQueenSleeping)
+							If ($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroQueen) = $eHeroQueen) Or _
+									($g_abAttackTypeEnable[$LB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroQueen) = $eHeroQueen) Then
 								SetLog("Warning: Queen Upgrading & Wait enabled, Disable Wait for Queen or may never attack!", $COLOR_ERROR)
+								_GUI_Value_STATE("SHOW", $groupQueenSleeping)
 							EndIf
 						Case 2
 							$sMessage = "-Grand Warden"
 							; safety code
-							If BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroWarden) = $eHeroWarden Or BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden Then
-								_GUI_Value_STATE("SHOW", $groupWardenSleeping)
+							If ($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroWarden) = $eHeroWarden) Or _
+									($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden) Then
 								SetLog("Warning: Warden Upgrading & Wait enabled, Disable Wait for Warden or may never attack!", $COLOR_ERROR)
+								_GUI_Value_STATE("SHOW", $groupWardenSleeping)
 							EndIf
 						Case Else
-							$sMessage = "-Need to Get Monkey"
+							$sMessage = "-Need to Feed Code Monkey some bananas"
 					EndSwitch
 					If $g_iDebugSetlogTrain = 1 Or $iDebugArmyHeroCount = 1 Then SetLog("Hero slot#" & $i + 1 & $sMessage & " Upgrade in Process", $COLOR_DEBUG)
 				Case StringInStr($sResult, "none", $STR_NOCASESENSEBASIC)
@@ -129,14 +132,14 @@ Func ArmyHeroStatus($i)
 		EndIf
 	EndIf
 
-	;return hero if there was a problem with the search
+	;return 'none' if there was a problem with the search ; or no Hero slot
 	Switch $i
 		Case 0
-			Return "king"
+			Return "none"
 		Case 1
-			Return "queen"
+			Return "none"
 		Case 2
-			Return "warden"
+			Return "none"
 	EndSwitch
 
 EndFunc   ;==>ArmyHeroStatus

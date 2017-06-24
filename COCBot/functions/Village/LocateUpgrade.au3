@@ -41,7 +41,6 @@ Func LocateUpgrades()
 	While 1
 		_CaptureRegion(0, 0, $g_iDEFAULT_WIDTH, 2)
 		If _GetPixelColor(1, 1) <> Hex(0x000000, 6) Or _GetPixelColor(850, 1) <> Hex(0x000000, 6) Then ; Check for zoomout in case user tried to zoom in.
-			SetLog("Locate Oops, prep screen 1st", $COLOR_INFO)
 			ZoomOut()
 			$g_bDisableBreakCheck = True ; stop early PB log off when locating upgrades
 			Collect()

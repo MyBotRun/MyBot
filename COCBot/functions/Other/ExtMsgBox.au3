@@ -588,7 +588,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = $g_hFr
 		GUICtrlSetFont(-1, 18, Default, Default, $g_aEMB_Settings[5])
 		GUICtrlSetColor(-1, $g_aEMB_Settings[3])
 	Else
-		If $iIcon_Reduction Then GUICtrlCreateIcon($sDLL, $iIcon_Style, 10, 20)
+		If $iIcon_Reduction Then _GUICtrlCreateIcon($sDLL, $iIcon_Style, 10, 20)
 	EndIf
 
 	; Create buttons

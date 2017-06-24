@@ -20,10 +20,15 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 		If $g_iDebugMakeIMGCSV = 1 And $Remaining = False And TestCapture() = 0 Then DebugImageSave("clean", False) ; make clean snapshot as well
 	EndIf
 
-	If ($g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition) And Not $Remaining Then ; Zero Hero activation timers
-		For $i = $eHeroBarbarianKing To $eHeroGrandWarden
-			$g_aHeroesTimerActivation[$i] = 0
-		Next
+	If $Remaining = False Then ; reset Hero variables before attack if not checking remaining troops
+		$g_bDropKing = False ; reset hero dropped flags
+		$g_bDropQueen = False
+		$g_bDropWarden = False
+		If ($g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition) Then ; Zero Hero activation timers
+			For $i = $eHeroBarbarianKing To $eHeroGrandWarden
+				$g_aHeroesTimerActivation[$i] = 0
+			Next
+		EndIf
 	EndIf
 
 	Local $troopsnumber = 0

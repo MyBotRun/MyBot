@@ -6,7 +6,7 @@
 ; Parameters ....: none
 ; Return values .: none
 ; ...............: Sets @error if buttons not found properly and sets @extended with string error message
-; Author ........: MonkeyHunter (2016-01)
+; Author ........: MonkeyHunter (2016-01)(2017-06)
 ; Modified ......:
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
@@ -17,15 +17,13 @@
 
 Func BreakPersonalShield()
 
-	If _CheckPixel($aRemoveShldButton, $g_bCapturePixel) Then ; check for old version CoC app, warn and return if not udpated.
-		Setlog("Oops, Need to have latest CoC installed!", $COLOR_ERROR)
-		Setlog("New Personal Guard info window not avialable!", $COLOR_ERROR)
-		SetError(1)
-		Return
+	If $g_iDebugSetlog = 1 Then Setlog("Begin BreakPersonalShield:", $COLOR_DEBUG1)
+
+	If $g_iDebugSetlog = 1 Then
+		Setlog("Checking if Shield available", $COLOR_INFO)
+		Setlog("Have shield pixel color: " & _GetPixelColor($aHaveShield, $g_bCapturePixel) & " :" & _CheckPixel($aHaveShield, $g_bCapturePixel), $COLOR_DEBUG)
 	EndIf
 
-	If $g_iDebugSetlog = 1 Then Setlog("Checking if Shield available", $COLOR_INFO)
-	If $g_iDebugSetlog = 1 Then Setlog("Have shield pixel color: " & _GetPixelColor($aHaveShield, $g_bCapturePixel) & " :" & _CheckPixel($aHaveShield, $g_bCapturePixel), $COLOR_DEBUG)
 	If _CheckPixel($aHaveShield, $g_bCapturePixel) Then ; check for shield
 		If IsMainPage() Then ; check for main page
 			PureClickP($aShieldInfoButton)
@@ -54,8 +52,11 @@ Func BreakPersonalShield()
 		Return
 	EndIf
 
-	If $g_iDebugSetlog = 1 Then Setlog("Checking if Personal Guard available", $COLOR_INFO)
-	If $g_iDebugSetlog = 1 Then Setlog("Have guard pixel color: " & _GetPixelColor($aHavePerGuard, $g_bCapturePixel) & " :" & _CheckPixel($aHavePerGuard, $g_bCapturePixel), $COLOR_DEBUG)
+	If $g_iDebugSetlog = 1 Then
+		Setlog("Checking if Personal Guard available", $COLOR_INFO)
+		Setlog("Have guard pixel color: " & _GetPixelColor($aHavePerGuard, $g_bCapturePixel) & " :" & _CheckPixel($aHavePerGuard, $g_bCapturePixel), $COLOR_DEBUG)
+	EndIf
+
 	If _CheckPixel($aHavePerGuard, $g_bCapturePixel) Then ; check for personal guard timer
 		If IsMainPage() Then
 			PureClickP($aShieldInfoButton)

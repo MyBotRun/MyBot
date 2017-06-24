@@ -280,6 +280,7 @@ Func CreateMainGUIControls()
    Bind_ImageList($g_hTabMain)
 
    Bind_ImageList($g_hGUI_VILLAGE_TAB)
+	  Bind_ImageList($g_hGUI_MISC_TAB)
 	  Bind_ImageList($g_hGUI_DONATE_TAB)
 	  Bind_ImageList($g_hGUI_UPGRADE_TAB)
 	  Bind_ImageList($g_hGUI_NOTIFY_TAB)
@@ -478,3 +479,38 @@ Func GetDPIRatio($iDPIDef = 96)
     _GDIPlus_Shutdown()
     Return $iDPI
 EndFunc   ;==>GetDPIRatio
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _GUICtrlCreateIcon
+; Description ...: Uses GUICtrlCreatePic to reduce GDI Handles by 2 per control
+; Syntax ........: see GUICtrlCreateIcon
+; Parameters ....: see GUICtrlCreateIcon
+; Return values .:
+; Author ........: cosote
+; Modified ......:
+; Remarks .......: Optimized for $g_sLibIconPath
+; Related .......:
+; Link ..........: http://www.autoitscript.com/forum/topic/159612-dpi-resolution-problem/?hl=%2Bdpi#entry1158317
+; Example .......: No
+; ===============================================================================================================================
+Func _GUICtrlCreateIcon($filename, $iconName, $left, $top, $width = 32, $height = 32, $style = -1, $exStyle = -1)
+	Static $s_hLibIcon = 0
+	Local $hLib
+	If $filename = $g_sLibIconPath Then
+		If $s_hLibIcon = 0 Then
+			$s_hLibIcon = _WinAPI_LoadLibraryEx($filename, $LOAD_LIBRARY_AS_DATAFILE)
+		EndIf
+		$hLib = $s_hLibIcon
+	Else
+		$hLib = _WinAPI_LoadLibraryEx($filename, $LOAD_LIBRARY_AS_DATAFILE)
+	EndIf
+	Local $hIcon = _WinAPI_LoadImage($hLib, $iconName, $IMAGE_ICON, $width, $height, $LR_DEFAULTCOLOR)
+	If $hLib <> $s_hLibIcon Then
+		_WinAPI_FreeLibrary($hLib)
+	EndIf
+	Local $hBmp = _WinAPI_Create32BitHBITMAP($hIcon, False, True)
+	Local $controlID = GUICtrlCreatePic("", $left, $top, $width, $height, $style, $exStyle)
+	GUICtrlSendMsg($controlID, $STM_SETIMAGE, 0, $hBmp)
+	_WinAPI_DeleteObject($hBmp)
+	Return $controlID
+EndFunc

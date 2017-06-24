@@ -16,7 +16,7 @@
 Func isOnBuilderIsland($bNeedCaptureRegion = False)
 	_Sleep($DELAYISBUILDERISLAND)
 
-	If _CheckPixel($aIsOnBuilderIsland1, $bNeedCaptureRegion) And _CheckPixel($aIsOnBuilderIsland2, $bNeedCaptureRegion) Then
+	If _CheckPixel($aIsOnBuilderIsland, $bNeedCaptureRegion) Then
 		If $g_iDebugSetlog = 1 Then Setlog("Builder Island Builder detected", $COLOR_DEBUG)
 		Return True
 	Else

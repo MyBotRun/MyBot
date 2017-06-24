@@ -1406,7 +1406,7 @@ Func tabMain()
 				GUISetState(@SW_HIDE, $g_hGUI_BOT)
 				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_ABOUT)
 
-			Case ELSE
+			Case Else
 				GUISetState(@SW_HIDE, $g_hGUI_LOG)
 				GUISetState(@SW_HIDE, $g_hGUI_VILLAGE)
 				GUISetState(@SW_HIDE, $g_hGUI_ATTACK)
@@ -1418,21 +1418,30 @@ EndFunc   ;==>tabMain
 Func tabVillage()
 	Local $tabidx = GUICtrlRead($g_hGUI_VILLAGE_TAB)
 		Select
+			Case $tabidx = 0 ; Misc Tab
+				GUISetState(@SW_HIDE, $g_hGUI_UPGRADE)
+				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_MISC)
+				GUISetState(@SW_HIDE, $g_hGUI_DONATE)
+				GUISetState(@SW_HIDE, $g_hGUI_NOTIFY)
 			Case $tabidx = 1 ; Donate tab
 				GUISetState(@SW_HIDE, $g_hGUI_UPGRADE)
+				GUISetState(@SW_HIDE, $g_hGUI_MISC)
 				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_DONATE)
 				GUISetState(@SW_HIDE, $g_hGUI_NOTIFY)
-			Case $tabidx = 2 ; NOTIFY tab
-				GUISetState(@SW_HIDE, $g_hGUI_DONATE)
+			Case $tabidx = 2 ; Upgrade tab
 				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_UPGRADE)
+				GUISetState(@SW_HIDE, $g_hGUI_MISC)
+				GUISetState(@SW_HIDE, $g_hGUI_DONATE)
 				GUISetState(@SW_HIDE, $g_hGUI_NOTIFY)
-			Case $tabidx = 4 ; Upgrade tab
-				GUISetState(@SW_HIDE, $g_hGUI_DONATE)
+			Case $tabidx = 4 ; NOTIFY tab
 				GUISetState(@SW_HIDE, $g_hGUI_UPGRADE)
+				GUISetState(@SW_HIDE, $g_hGUI_MISC)
+				GUISetState(@SW_HIDE, $g_hGUI_DONATE)
 				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_NOTIFY)
-			Case ELSE
-				GUISetState(@SW_HIDE, $g_hGUI_DONATE)
+			Case Else
 				GUISetState(@SW_HIDE, $g_hGUI_UPGRADE)
+				GUISetState(@SW_HIDE, $g_hGUI_MISC)
+				GUISetState(@SW_HIDE, $g_hGUI_DONATE)
 				GUISetState(@SW_HIDE, $g_hGUI_NOTIFY)
 		EndSelect
 
@@ -1778,6 +1787,9 @@ Func Bind_ImageList($nCtrl)
 		Case $g_hGUI_TRAINARMY_TAB
 			; the icons for army tab
 			Local $aIconIndex[4] = [$eIcnTrain, $eIcnGem, $eIcnReOrder, $eIcnOptions]
+
+		Case $g_hGUI_MISC_TAB
+			Local $aIconIndex[2] = [$eIcnTH1, $eIcnBuilderHall]
 
 		Case $g_hGUI_DONATE_TAB
 			 ; the icons for donate tab

@@ -100,9 +100,13 @@ Func ClickDrag($X1, $Y1, $X2, $Y2, $Delay = 50)
 	;Return _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, "left", $Delay)
 	Local $error = 0
 	If $g_bAndroidAdbClickDrag = True Then
-		;AndroidSwipe($X1, $Y1, $X2, $Y2, $g_bRunState)
-		AndroidClickDrag($X1, $Y1, $X2, $Y2, $g_bRunState)
-		$error = @error
+		If $g_bAndroidAdbClickDragScript = True Then
+			AndroidClickDrag($X1, $Y1, $X2, $Y2, $g_bRunState)
+			$error = @error
+		Else
+			AndroidInputSwipe($X1, $Y1, $X2, $Y2, $g_bRunState)
+			$error = @error
+		EndIf
 		If _Sleep($Delay / 5) Then Return SetError(-1, "", False)
 	EndIf
 	If $g_bAndroidAdbClickDrag = False Or $error <> 0 Then

@@ -21,7 +21,7 @@ Func MilkingAttackStructure($vectstr)
 		Local $aRnd[1] = [$temp]
 	Else
 
-		Local $troopxwave
+		Local $troopxwave, $pixel
 		If $g_iMilkFarmTroopForWaveMin = $g_iMilkFarmTroopForWaveMax Then
 			$troopxwave = $g_iMilkFarmTroopForWaveMin
 		Else
@@ -54,7 +54,7 @@ Func MilkingAttackStructure($vectstr)
 						EndIf
 
 						;If $g_iDebugSetlog=1 Then Setlog(">drop using position " & $rndpos & ": " & $vect[$rndpos] )
-						Local $pixel = StringSplit($vect[$rndpos], "-", 2)
+						$pixel = StringSplit($vect[$rndpos], "-", 2)
 						Local $delaypoint = 0
 
 						If UBound($pixel) = 2 Then

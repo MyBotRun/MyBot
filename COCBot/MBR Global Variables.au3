@@ -220,7 +220,7 @@ Global $g_iAndroidAdbAutoTerminate = 0 ; Steady ADB shell instance is automatica
 Global $g_bAndroidAdbScreencapEnabled = True ; Use Android ADB to capture screenshots in RGBA raw format
 Global $g_bAndroidAdbScreencapPngEnabled = False ; Use Android ADB to capture screenshots in PNG format, significantly slower than raw format (not final, captured screenshot resize too slow...)
 Global $g_bAndroidAdbZoomoutEnabled = True ; Use Android ADB zoom-out script
-Global $g_bAndroidAdbClickDragEnabled = True ; Use Android ADB click drag script
+Global $g_bAndroidAdbClickDragEnabled = True ; Use Android ADB click drag script or input swipe
 Global $g_bAndroidAdbInputEnabled = True ; Enable Android ADB send text (CC requests), swipe not used as click drag anymore
 Global $g_iAndroidAdbInputWordsCharLimit = 10 ; Android ADB send text words (split by space) with this limit of specified characters per command (0 = disabled and entire text is sent at once)
 Global $g_bAndroidAdbClickEnabled = False ; Enable Android ADB mouse click
@@ -273,10 +273,11 @@ Global $__Nox_Config[2][2] = _ ; Alternative Nox Control ID (array must be order
 ;                |                   |                        |                                  |                |                      |                       |                      |                       |              |                    |8 = ADB input text       |                      |                                    |
 ;                |                   |                        |                                  |                |                      |                       |                      |                       |              |                    |16 = ADB shell is steady |                      |                                    |
 ;                |                   |                        |                                  |                |                      |                       |                      |                       |              |                    |32 = ADB click drag                             |                                    |
-Global $g_avAndroidAppConfig[8][15] = [ _ ;                   |                                  |                |                      |                       |                      |                       |              |                    |64 = Make DPI Aware (if avaliable)              |                                    |
+;                |                   |                        |                                  |                |                      |                       |                      |                       |              |                    |64 = Make DPI Aware (if avaliable)              |                                    |
+Global $g_avAndroidAppConfig[8][15] = [ _ ;                   |                                  |                |                      |                       |                      |                       |              |                    |128 = ADB use input swipe and not script        |                                    |
 		["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 0, "127.0.0.1:21503", 0 + 2 + 4 + 8 + 16 + 32, '# ', 'Microvirt Virtual Input', 0], _
-		["BlueStacks2", "", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32, '$ ', 'BlueStacks Virtual Touch', 0], _
-		["BlueStacks", "", "BlueStacks App Player", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32, '$ ', 'BlueStacks Virtual Touch', 0], _
+		["BlueStacks2", "", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128, '$ ', 'BlueStacks Virtual Touch', 0], _
+		["BlueStacks", "", "BlueStacks App Player", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128, '$ ', 'BlueStacks Virtual Touch', 0], _
 		["KOPLAYER", "KOPLAYER", "KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 64, $g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 0 + 2 + 4 + 8 + 16 + 32, '# ', 'ttVM Virtual Input', 0], _
 		["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "emulator-5554", 1 + 8 + 16 + 32, '# ', 'qwerty2', 1], _
 		["iTools", "iToolsVM", "iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13, 0, "127.0.0.1:54001", 1 + 8 + 16 + 32 + 64, '# ', 'iTools Virtual PassThrough Input', 0], _
@@ -311,7 +312,8 @@ Global $g_bAndroidAdbScreencap ; Use Android ADB to capture screenshots in RGBA 
 Global $g_bAndroidAdbClick ; Enable Android ADB mouse click
 Global $g_bAndroidAdbInput ; Enable Android ADB send text (CC requests)
 Global $g_bAndroidAdbInstance ; Enable Android steady ADB shell instance when available
-Global $g_bAndroidAdbClickDrag ; Enable Android ADB Click Drag script
+Global $g_bAndroidAdbClickDrag ; Enable Android ADB Click Drag script or input swipe
+Global $g_bAndroidAdbClickDragScript = True ; If $g_bAndroidAdbClickDrag = True it used either script (True) or input swipe (False) for click & drag
 Global $g_bAndroidEmbed ; Enable Android Docking
 Global $g_iAndroidEmbedMode ; Android Dock Mode: -1 = Not available, 0 = Normal docking, 1 = Simulated docking
 Global $g_bAndroidBackgroundLaunch ; Enabled Android Background launch using Windows Scheduled Task
@@ -491,7 +493,7 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, _
 		$eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, _
 		$eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, _
-		$eArabic
+		$eArabic, $eIcnElixirCollectorL5, $eIcnClockTower, $eIcnBuilderHall, $eIcnGoldMineL5, $eIcnGemMine
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
@@ -727,6 +729,8 @@ Global $g_bChkTreasuryCollect = False
 Global $g_iTxtTreasuryGold = 0
 Global $g_iTxtTreasuryElixir = 0
 Global $g_iTxtTreasuryDark = 0
+
+Global $g_bChkCollectBuilderBase = False, $g_bChkStartClockTowerBoost = False
 
 ; <><><><> Village / Donate - Request <><><><>
 Global $g_bRequestTroopsEnable = False
@@ -1024,6 +1028,7 @@ Global $g_bDropTrophyEnable = False, $g_iDropTrophyMax = 1200, $g_iDropTrophyMin
 ; <><><><> Bot / Options <><><><>
 Global $g_sLanguage = "English"
 Global $g_bDisableSplash = False ; Splash screen disabled = 1
+Global $g_bMyBotDance = False  ; Dancing MyBot splash screen
 Global $g_bCheckVersion = True
 Global $g_bDeleteLogs = True, $g_iDeleteLogsDays = 2, $g_bDeleteTemp = True, $g_iDeleteTempDays = 2, $g_bDeleteLoots = True, $g_iDeleteLootsDays = 2
 Global $g_bAutoStart = False, $g_iAutoStartDelay = 10
@@ -1082,6 +1087,7 @@ Global $g_sLootFileName = ""
 
 ; Stats
 Global $g_iFreeBuilderCount = 0, $g_iTotalBuilderCount = 0, $g_iGemAmount = 0 ; builder and gem amounts
+Global $g_iFreeBuilderCountBB = 0, $g_iTotalBuilderCountBB = 0
 Global $g_iTestFreeBuilderCount = -1 ; used for test cases, -1 = disabled
 Global $g_iStatsStartedWith[$eLootCount] = [0, 0, 0, 0]
 Global $g_iStatsTotalGain[$eLootCount] = [0, 0, 0, 0]
@@ -1207,6 +1213,7 @@ Global $g_bHaveAnyHero = -1 ; -1 Means not set yet
 Global $g_bCheckKingPower = False ; Check for King activate power
 Global $g_bCheckQueenPower = False ; Check for Queen activate power
 Global $g_bCheckWardenPower = False ; Check for Warden activate power
+Global $g_bDropQueen, $g_bDropKing, $g_bDropWarden
 
 ; Attack - Troops
 Global $g_aiSlotInArmy[$eTroopCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
@@ -1371,7 +1378,6 @@ Global $g_asShieldStatus = ["", "", ""] ; string shield type, string shield time
 
 ; Building Side (DES/TH) Switch and DESide End Early
 Global Enum $eSideBuildingDES, $eSideBuildingTH
-Global $g_bDropQueen, $g_bDropKing, $g_bDropWarden
 Global $g_iBuildingEdge = 0, $g_iBuildingToLoc = ""
 Global $g_iDarkLow = 0
 
