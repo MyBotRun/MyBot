@@ -539,6 +539,8 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			TestImglocTroopBar()
 		Case $g_hBtnTestAttackCSV
 			btnTestAttackCSV()
+		Case $g_hBtnTestBuildingLocation
+			btnTestGetLocationBuilding()
 		Case $g_hBtnTestFindButton
 			btnTestFindButton()
 		Case $g_hBtnTestCleanYard
@@ -1052,6 +1054,7 @@ Func BotClose($SaveConfig = Default, $bExit = True)
    $g_bBotPaused = False
    ResumeAndroid()
    SetLog("Closing " & $g_sBotTitle & " now ...")
+   LockBotSlot(False)
    AndroidEmbed(False) ; detach Android Window
    AndroidShieldDestroy() ; destroy Shield Hooks
    AndroidBotStopEvent() ; signal android that bot is now stoppting
@@ -1062,9 +1065,9 @@ Func BotClose($SaveConfig = Default, $bExit = True)
    EndIf
    AndroidAdbTerminateShellInstance()
    ; Close Mutexes
-   If $g_hMutex_BotTitle <> 0 Then _WinAPI_CloseHandle($g_hMutex_BotTitle)
-   If $g_hMutex_Profile <> 0 Then _WinAPI_CloseHandle($g_hMutex_Profile)
-   If $g_hMutex_MyBot <> 0 Then _WinAPI_CloseHandle($g_hMutex_MyBot)
+   If $g_hMutex_BotTitle <> 0 Then ReleaseMutex($g_hMutex_BotTitle)
+   If $g_hMutex_Profile <> 0 Then ReleaseMutex($g_hMutex_Profile)
+   If $g_hMutex_MyBot <> 0 Then ReleaseMutex($g_hMutex_MyBot)
    ; Clean up resources
    __GDIPlus_Shutdown()
    _Crypt_Shutdown()

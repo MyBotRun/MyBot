@@ -129,6 +129,9 @@ Global Const $DELAYCHECKOBSTACLES10 = 1800000 ; 30 minutes
 ;isGemOpen
 Global Const $DELAYISGEMOPEN1 = 350
 
+;isOnBuilderIsland
+Global Const $DELAYISBUILDERISLAND = 300
+
 ;waitMainScreen
 Global Const $DELAYWAITMAINSCREEN1 = 2000
 
@@ -280,7 +283,7 @@ Global Const $DELAYREPLAYSHARE3 = 1000
 Global Const $DELAYREPLAYSHARE4 = 2000
 
 ;RequestCC
-Global Const $DELAYREQUESTCC1 = 500
+Global Const $DELAYREQUESTCC1 = 1000
 
 ;_makerequest
 Global Const $DELAYMAKEREQUEST1 = 500
@@ -294,6 +297,7 @@ Global Const $DELAYLVUP = 150 ; delay in repeatly increasing levels on the train
 
 ;IsTrainPage
 Global Const $DELAYISTRAINPAGE1 = 100
+Global Const $DELAYISTRAINPAGE2 = 1000
 
 ;UpgradeBuilding
 Global Const $DELAYUPGRADEBUILDING1 = 200

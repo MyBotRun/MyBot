@@ -129,7 +129,7 @@ Func QueenUpgrade()
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
 
 	;##### Get updated village elixir and dark elixir values
-	If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then ; check if the village has a Dark Elixir Storage
+	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootDarkElixir] = Number(getResourcesMainScreen(728, 123))
 		If $g_iDebugSetlog = 1 Then SetLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
 	Else
@@ -232,7 +232,7 @@ Func KingUpgrade()
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
 
 	;##### Get updated village elixir and dark elixir values
-	If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then ; check if the village have a Dark Elixir Storage
+	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootDarkElixir] = Number(getResourcesMainScreen(728, 123))
 		If $g_iDebugSetlog = 1 Then SetLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
 	Else
@@ -342,7 +342,7 @@ Func WardenUpgrade()
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
 
 	;##### Get updated village elixir values
-	If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 10) Then ; check if the village have a Dark Elixir Storage
+	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(705, 74)
 		If $g_iDebugSetlog = 1 Then SetLog("Updating village values [E]: " & $g_aiCurrentLoot[$eLootElixir], $COLOR_DEBUG)
 	Else

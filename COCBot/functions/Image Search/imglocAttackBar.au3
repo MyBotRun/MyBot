@@ -52,7 +52,7 @@ Func AttackBarCheck($Remaining = False)
 
 	Local $strinToReturn = ""
 	; Perform the search
-	Local $res = DllCall($g_hLibImgLoc, "str", "SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", $redLines, "Int", 0, "Int", 1000)
+	Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", $redLines, "Int", 0, "Int", 1000)
 
 	If IsArray($res) Then
 		If $res[0] = "0" Or $res[0] = "" Then
@@ -70,9 +70,9 @@ Func AttackBarCheck($Remaining = False)
 			For $i = 0 To UBound($aKeys) - 1
 				If $g_bRunState = False Then Return
 				; Get the property values
-				$aResult[$i][0] = returnPropertyValue($aKeys[$i], "objectname")
+				$aResult[$i][0] = RetrieveImglocProperty($aKeys[$i], "objectname")
 				; Get the coords property
-				$aValue = returnPropertyValue($aKeys[$i], "objectpoints")
+				$aValue = RetrieveImglocProperty($aKeys[$i], "objectpoints")
 				$aCoords = StringSplit($aValue, "|", $STR_NOCOUNT)
 				$aCoordsSplit = StringSplit($aCoords[0], ",", $STR_NOCOUNT)
 				If UBound($aCoordsSplit) = 2 Then

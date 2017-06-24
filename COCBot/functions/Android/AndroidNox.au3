@@ -260,6 +260,23 @@ Func SetScreenNox()
 		$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name Other --hostpath """ & $path & """  --automount", $process_killed)
 	EndIf
 
+	; find Nox conf.ini in C:\Users\User\AppData\Local\Nox and set "Fix window size" to Enable, "Remember size and position" to Disable and screen res also
+	Local $sLocalAppData = EnvGet("LOCALAPPDATA")
+	Local $sPre = ""
+	If $g_sAndroidInstance <> "nox" Then $sPre = "clone_" & $g_sAndroidInstance & "_"
+	Local $sConfig = $sLocalAppData & "\Nox\" & $sPre & "conf.ini"
+	If FileExists($sConfig) Then
+		SetDebugLog("Configure Nox screen config: " & $sConfig)
+		IniWrite($sConfig, "setting", "h_resolution", $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight)
+		IniWrite($sConfig, "setting", "h_dpi", "160")
+		IniWrite($sConfig, "setting", "fixsize", "true")
+		IniWrite($sConfig, "setting", "is_save_pos_and_size", "false")
+		IniWrite($sConfig, "setting", "last_player_width", "864")
+		IniWrite($sConfig, "setting", "last_player_height", "770")
+	Else
+		SetDebugLog("Cannot find Nox config to cnfigure screen: " & $sConfig, $COLOR_ERROR)
+	EndIf
+
 	Return True
 
 EndFunc   ;==>SetScreenNox
@@ -341,7 +358,7 @@ Func GetNoxRunningInstance($bStrictCheck = True)
 EndFunc   ;==>GetNoxRunningInstance
 
 Func RedrawNoxWindow()
-	;Return SetError(1)
+	Return SetError(1)
 	Local $aPos = WinGetPos($g_hAndroidWindow)
 	;_PostMessage_ClickDrag($aPos[0] + Int($aPos[2] / 2), $aPos[1] + 3, $aPos[0] + Int($aPos[2] / 2), $aPos[1] + 53)
 	;_PostMessage_ClickDrag($aPos[0] + Int($aPos[2] / 2), $aPos[1] + 53, $aPos[0] + Int($aPos[2] / 2), $aPos[1] + 3)

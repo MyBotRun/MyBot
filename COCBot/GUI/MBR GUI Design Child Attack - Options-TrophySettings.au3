@@ -25,17 +25,17 @@ Func CreateAttackSearchOptionsTrophySettings()
    Local $sTxtTip = ""
    Local $x = 25, $y = 45
 
-	GUICtrlCreateGroup(GetTranslated(609,1, "Trophy Settings"), $x - 20, $y - 20, $g_iSizeWGrpTab4, $g_iSizeHGrpTab4)
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "Group_01", "Trophy Settings"), $x - 20, $y - 20, $g_iSizeWGrpTab4, $g_iSizeHGrpTab4)
 		$x += 25
 		$y += 25
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrophy, $x - 15, $y, 64, 64, $BS_ICON)
 
 		$x += 50
-		$g_hChkTrophyRange = GUICtrlCreateCheckbox(GetTranslated(609,2, "Trophy range") & ":",$x + 20, $y, -1, -1)
+		$g_hChkTrophyRange = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "ChkTrophyRange", "Trophy range") & ":",$x + 20, $y, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkTrophyRange")
 		$g_hTxtDropTrophy = GUICtrlCreateInput("5000", $x + 110, $y, 35, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetLimit(-1, 4)
-			_GUICtrlSetTip(-1, GetTranslated(609,3, "MIN: The Bot will drop trophies until below this value."))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "TxtDropTrophy_Info_01", "MIN: The Bot will drop trophies until below this value."))
 			GuiCtrlSetState(-1,$GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "TxtDropTrophy")
 
@@ -61,10 +61,10 @@ Func CreateAttackSearchOptionsTrophySettings()
 		GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 		GUICtrlSetColor(-1, $COLOR_BLACK)
 
-		GUICtrlCreateLabel(GetTranslated(603,13, "-"), $x + 148, $y + 4, -1, -1)
+		GUICtrlCreateLabel("-", $x + 148, $y + 4, -1, -1)
 		$g_hTxtMaxTrophy = GUICtrlCreateInput("5000", $x + 155, $y, 35, -1, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetLimit(-1, 4)
-			_GUICtrlSetTip(-1, GetTranslated(609,4, "MAX: The Bot will drop trophies if your trophy count is greater than this value."))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "TxtMaxTrophy_Info_01", "MAX: The Bot will drop trophies if your trophy count is greater than this value."))
 			GuiCtrlSetState(-1,$GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "TxtMaxTrophy")
 
@@ -92,24 +92,24 @@ Func CreateAttackSearchOptionsTrophySettings()
 
 		$y += 24
 		$x += 20
-		$g_hChkTrophyHeroes = GUICtrlCreateCheckbox(GetTranslated(609,5, "Use Heroes To Drop Trophies"), $x, $y, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(609,6, "Use Heroes to drop Trophies if Heroes are available."))
+		$g_hChkTrophyHeroes = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "ChkTrophyHeroes", "Use Heroes To Drop Trophies"), $x, $y, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "ChkTrophyHeroes_Info_01", "Use Heroes to drop Trophies if Heroes are available."))
 			GuiCtrlSetState(-1,$GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkTrophyHeroes")
 
 		$y += 25
-	    $g_hLblTrophyHeroesPriority = GUICtrlCreateLabel(GetTranslated(609,11, "Priority Hero to Use") & ":", $x + 16 , $y , 110, -1)
+	    $g_hLblTrophyHeroesPriority = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "LblTrophyHeroesPriority", "Priority Hero to Use") & ":", $x + 16 , $y , 110, -1)
 		$g_hCmbTrophyHeroesPriority = GUICtrlCreateCombo("", $x + 125, $y - 4 , 170, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslated(609,12, "Set the order on which Hero the Bot drops first when available."))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "LblTrophyHeroesPriority_Info_01", "Set the order on which Hero the Bot drops first when available."))
 			Local $txtPriorityConnector = ">"
-			Local $txtPriorityDefault =   GetTranslated(603, 34, -1) & $txtPriorityConnector & GetTranslated(603, 33, -1) & $txtPriorityConnector & GetTranslated(603, 35, -1) ; default value Queen, King, G.Warden
+			Local $txtPriorityDefault =   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) ; default value Queen, King, G.Warden
 			Local $txtPriorityList = "" & _
-			GetTranslated(603, 34, -1) & $txtPriorityConnector & GetTranslated(603, 33, -1) & $txtPriorityConnector & GetTranslated(603, 35, -1) & "|" & _
-			GetTranslated(603, 34, -1) & $txtPriorityConnector & GetTranslated(603, 35, -1) & $txtPriorityConnector & GetTranslated(603, 33, -1) & "|" & _
-			GetTranslated(603, 33, -1) & $txtPriorityConnector & GetTranslated(603, 34, -1) & $txtPriorityConnector & GetTranslated(603, 35, -1) & "|" & _
-			GetTranslated(603, 33, -1) & $txtPriorityConnector & GetTranslated(603, 35, -1) & $txtPriorityConnector & GetTranslated(603, 34, -1) & "|" & _
-			GetTranslated(603, 35, -1) & $txtPriorityConnector & GetTranslated(603, 33, -1) & $txtPriorityConnector & GetTranslated(603, 34, -1) & "|" & _
-			GetTranslated(603, 35, -1) & $txtPriorityConnector & GetTranslated(603, 34, -1) & $txtPriorityConnector & GetTranslated(603, 33, -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & "|" & _
 			""
 			If $g_iDebugSetlog = 1 Then Setlog($txtPriorityDefault)
 			If $g_iDebugSetlog = 1 Then Setlog($txtPriorityList)
@@ -117,20 +117,20 @@ Func CreateAttackSearchOptionsTrophySettings()
  			GUICtrlSetState(-1, $GUI_DISABLE)
 
 		$y += 20
-		$g_hChkTrophyAtkDead = GUICtrlCreateCheckbox(GetTranslated(609,7, "Attack Dead Bases During Drop"), $x  , $y +2, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(609,8, "Attack a Deadbase found on the first search while dropping Trophies."))
+		$g_hChkTrophyAtkDead = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "ChkTrophyAtkDead", "Attack Dead Bases During Drop"), $x  , $y +2, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "ChkTrophyAtkDead_Info_01", "Attack a Deadbase found on the first search while dropping Trophies."))
 			GUICtrlSetOnEvent(-1, "chkTrophyAtkDead")
 			GuiCtrlSetState(-1,$GUI_DISABLE)
 
 		$y += 24
 		;$x += 10
-		$g_hLblDropTrophyArmyMin = GUICtrlCreateLabel(GetTranslated(609,9, "Wait until Army Camp are at least") & " " & ChrW(8805), $x + 16 , $y + 6, 200, -1, $SS_LEFT)
-		$sTxtTip = GetTranslated(609,10, "Enter the percent of full army required for dead base attack before starting trophy drop.")
+		$g_hLblDropTrophyArmyMin = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "LblDropTrophyArmyMin", "Wait until Army Camp are at least") & " " & ChrW(8805), $x + 16 , $y + 6, 200, -1, $SS_LEFT)
+		$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-TrophySettings", "LblDropTrophyArmyMin_Info_01", "Enter the percent of full army required for dead base attack before starting trophy drop.")
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hTxtDropTrophyArmyMin = GUICtrlCreateInput("70", $x + 215, $y +2, 27, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 2)
 			GUICtrlSetState (-1, $GUI_DISABLE)
-		$g_hLblDropTrophyArmyPercent = GUICtrlCreateLabel(GetTranslated(603,12, "%"), $x + 245, $y +6, -1, -1)
+		$g_hLblDropTrophyArmyPercent = GUICtrlCreateLabel("%", $x + 245, $y +6, -1, -1)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
  EndFunc

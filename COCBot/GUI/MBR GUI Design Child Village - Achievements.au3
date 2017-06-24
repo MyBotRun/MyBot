@@ -21,10 +21,10 @@ Global $g_hLblUnbreakableHelp = 0, $g_hLblUnbreakableLink = 0
 Func CreateVillageAchievements()
    Local $x = 25
    Local $y = 45
-   GUICtrlCreateGroup(GetTranslated(618,1, "Defense Farming"), $x - 20, $y - 20, $g_iSizeWGrpTab2, 150)
+   GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "Group_01", "Defense Farming"), $x - 20, $y - 20, $g_iSizeWGrpTab2, 150)
 	  $y +=10
-	  $g_hChkUnbreakable = GUICtrlCreateCheckbox(GetTranslated(618,2, "Enable Unbreakable"), $x - 10, $y, -1, -1)
-	  _GUICtrlSetTip(-1, GetTranslated(618,3, "Enable farming Defense Wins for Unbreakable achievement.")) ;& @CRLF & "TIP: Set your trophy range on the Misc Tab to '600 - 800' for best results. WARNING: Doing so will DROP you Trophies!"
+	  $g_hChkUnbreakable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "ChkUnbreakable", "Enable Unbreakable"), $x - 10, $y, -1, -1)
+	  _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "ChkUnbreakable_Info_01", "Enable farming Defense Wins for Unbreakable achievement.")) ;& @CRLF & "TIP: Set your trophy range on the Misc Tab to '600 - 800' for best results. WARNING: Doing so will DROP you Trophies!"
 	  GUICtrlSetOnEvent(-1, "chkUnbreakable")
 
 	  GUICtrlCreateIcon($g_sLibIconPath, $eIcnGoldStar, $x + 10, $y + 51, 32, 32)
@@ -32,64 +32,64 @@ Func CreateVillageAchievements()
 	  GUICtrlCreateIcon($g_sLibIconPath, $eIcnGoldStar, $x + 90, $y + 51, 32, 32)
 
 	  $x = 150
-	  GUICtrlCreateLabel(GetTranslated(618,4, "Wait Time") & ":", $x - 10, $y + 3, 86, -1, $SS_RIGHT)
+	  GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "LblUnbreakable", "Wait Time") & ":", $x - 10, $y + 3, 86, -1, $SS_RIGHT)
 	  $g_hTxtUnbreakable = GUICtrlCreateInput("5", $x + 80, $y, 30, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslated(618,5, "Set the amount of time to stop CoC and wait for enemy attacks to gain defense wins. (1-99 minutes)"))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnbreakable_Info_01", "Set the amount of time to stop CoC and wait for enemy attacks to gain defense wins. (1-99 minutes)"))
 			GUICtrlSetLimit(-1, 2)
-	  GUICtrlCreateLabel(GetTranslated(618,6, "Minutes"), $x + 113, $y+3, -1, -1)
+	  GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Minutes", "Minutes"), $x + 113, $y+3, -1, -1)
 
 	  $y += 28
-	  GUICtrlCreateLabel(GetTranslated(618,7, "Farm Min."), $x + 25 , $y, -1, -1)
-	  GUICtrlCreateLabel(GetTranslated(618,8, "Save Min."), $x + 115 , $y, -1, -1)
+	  GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "Lbl_FarmMin._Info_01", "Farm Min."), $x + 25 , $y, -1, -1)
+	  GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "Lbl_SaveMin._Info_01", "Save Min."), $x + 115 , $y, -1, -1)
 
 	  $y += 16
 	  $g_hTxtUnBrkMinGold = GUICtrlCreateInput("50000", $x + 20, $y, 58, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		 GUICtrlSetState(-1, $GUI_DISABLE)
-		 _GUICtrlSetTip(-1, GetTranslated(618,9, "Amount of Gold that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,10, "Set this value to amount of Gold you need for searching or upgrades."))
+		 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMinGold_Info_01", "Amount of Gold that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMinGold_Info_02", "Set this value to amount of Gold you need for searching or upgrades."))
 		 GUICtrlSetLimit(-1, 7)
 	  GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 80, $y + 2, 16, 16)
 	  $g_hTxtUnBrkMaxGold = GUICtrlCreateInput("600000", $x + 110, $y, 58, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		 GUICtrlSetState(-1, $GUI_DISABLE)
-		 _GUICtrlSetTip(-1, GetTranslated(618,11, "Amount of Gold in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,12, "Input amount of Gold you need to attract enemy or for upgrades."))
+		 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMaxGold_Info_01", "Amount of Gold in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMaxGold_Info_02", "Input amount of Gold you need to attract enemy or for upgrades."))
 		 GUICtrlSetLimit(-1, 7)
 	  GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 170, $y + 2, 16, 16)
 
 	  $y += 26
 	  $g_hTxtUnBrkMinElixir = GUICtrlCreateInput("50000", $x + 20, $y, 58, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		 GUICtrlSetState(-1, $GUI_DISABLE)
-		 _GUICtrlSetTip(-1, GetTranslated(618,13, "Amount of Elixir that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,14, "Set this value to amount of Elixir you need for making troops or upgrades."))
+		 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMinElixir_Info_01", "Amount of Elixir that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMinElixir_Info_02", "Set this value to amount of Elixir you need for making troops or upgrades."))
 		 GUICtrlSetLimit(-1, 7)
 	  GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 80, $y, 16, 16)
 	  $g_hTxtUnBrkMaxElixir = GUICtrlCreateInput("600000", $x + 110, $y, 58, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		 GUICtrlSetState(-1, $GUI_DISABLE)
-		 _GUICtrlSetTip(-1, GetTranslated(618,15, "Amount of Elixir in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,16, "Input amount of Elixir you need to attract enemy or for upgrades."))
+		 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMaxElixir_Info_01", "Amount of Elixir in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMaxElixir_Info_02", "Input amount of Elixir you need to attract enemy or for upgrades."))
 		 GUICtrlSetLimit(-1, 7)
 	  GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 170, $y, 16, 16)
 
 	  $y += 24
 	  $g_hTxtUnBrkMinDark = GUICtrlCreateInput("5000", $x + 20, $y, 58, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		 GUICtrlSetState(-1, $GUI_DISABLE)
-		 _GUICtrlSetTip(-1, GetTranslated(618,17, "Amount of Dark Elixir that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslated(618,18, "Set this value to amount of Dark Elixir you need for making troops or upgrades."))
+		 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMinDark_Info_01", "Amount of Dark Elixir that stops Defense farming, switches to normal farming if below.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMinDark_Info_02", "Set this value to amount of Dark Elixir you need for making troops or upgrades."))
 		 GUICtrlSetLimit(-1, 6)
 	  GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 80, $y, 16, 16)
 	  $g_hTxtUnBrkMaxDark = GUICtrlCreateInput("6000", $x + 110, $y, 58, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		 GUICtrlSetState(-1, $GUI_DISABLE)
-		 _GUICtrlSetTip(-1, GetTranslated(618,19, "Amount of Dark Elixir in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslated(618,20, "Input amount of Dark Elixir you need to attract enemy or for upgrades."))
+		 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMaxDark_Info_01", "Amount of Dark Elixir in Storage Required to Enable Defense Farming.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "TxtUnBrkMaxDark_Info_02", "Input amount of Dark Elixir you need to attract enemy or for upgrades."))
 		 GUICtrlSetLimit(-1, 6)
 	  GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 170, $y, 16, 16)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
    $x = 25
    $y = 200
-   GUICtrlCreateGroup(GetTranslated(618,21,"How to use Unbreakable Mode"), $x - 20, $y - 20, $g_iSizeWGrpTab2, 200)
-	  Local $txtHelp = GetTranslated(618,22,"Unbreakable mode will help you gain defense wins and the ""Unbreakable"" achievement.") & _
-		 @CRLF & GetTranslated(618,23,"Set ""Wait Time"" to how long you want the bot to wait for defenses." ) & _
-		 @CRLF & GetTranslated(618,24,"Farm Min is how many resources the bot must have before attacking." ) & _
-		 @CRLF & GetTranslated(618,25,"Save Min is how many resources the bot must have before starting unbreakable mode." ) & _
-		 @CRLF & GetTranslated(618,26,"Click the below link for more information:" )
+   GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "Group_02", "How to use Unbreakable Mode"), $x - 20, $y - 20, $g_iSizeWGrpTab2, 200)
+	  Local $txtHelp = GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "txtHelp_01", "Unbreakable mode will help you gain defense wins and the ""Unbreakable"" achievement.") & _
+		 @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "txtHelp_02", "Set ""Wait Time"" to how long you want the bot to wait for defenses." ) & _
+		 @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "txtHelp_03", "Farm Min is how many resources the bot must have before attacking." ) & _
+		 @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "txtHelp_04", "Save Min is how many resources the bot must have before starting unbreakable mode." ) & _
+		 @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "txtHelp_05", "Click the below link for more information:" )
 	  $g_hLblUnbreakableHelp = GUICtrlCreateLabel($txtHelp, $x - 10, $y, 430, 125)
-	  $g_hLblUnbreakableLink = GUICtrlCreateLabel(GetTranslated(618,27,"More Info"), $x - 10, $y + 100, 100,20)
+	  $g_hLblUnbreakableLink = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "LblUnbreakableLink", "More Info"), $x - 10, $y + 100, 100,20)
 		 _GUIToolTip_AddTool($g_hToolTip, 0, "https://mybot.run/forums/index.php?/topic/2964-guide-how-to-use-mybot-unbreakable-mode-updated/", GUICtrlGetHandle($g_hLblUnbreakableLink))
 		 GUICtrlSetFont(-1, 8.5, $FW_BOLD, $GUI_FONTUNDER)
 		 GUICtrlSetColor(-1, $COLOR_INFO)

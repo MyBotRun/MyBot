@@ -72,30 +72,30 @@ Func CreateAttackSearch()
    ; SEARCH tab
    ;============
    $g_hGUI_SEARCH_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab2, $g_iSizeHGrpTab2, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
-   $g_hGUI_SEARCH_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslated(600,23,"DeadBase") & "    ") ; MUST add 4 spaces to make room for the Checkmark box!
+   $g_hGUI_SEARCH_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_01", "DeadBase") & "    ") ; MUST add 4 spaces to make room for the Checkmark box!
    ; this tab will be empty because it is only used to display a child GUI
    ; below controls are only shown when the strategy is disabled and the child gui will be hidden.
-	   $g_hLblDeadbaseDisabled = GUICtrlCreateLabel(GetTranslated(600,49,"Note: This Strategy is disabled, tick the checkmark on the") & " " & GetTranslated(600, 23, -1) & " " & GetTranslated(600,50,"tab to enable it!"), 20, 30, $_GUI_MAIN_WIDTH - 40, -1)
+	   $g_hLblDeadbaseDisabled = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Main GUI", "disabled_Tab_03_STab_02_STab_Info_01", "Note: This Strategy is disabled, tick the checkmark on the") & " " & GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_01", -1) & " " & GetTranslatedFileIni("MBR Main GUI", "disabled_Tab_03_STab_02_STab_Info_02", "tab to enable it!"), 20, 30, $_GUI_MAIN_WIDTH - 40, -1)
 	   GUICtrlSetState(-1, $GUI_HIDE)
 
-   $g_hGUI_SEARCH_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslated(600,24,"ActiveBase") & "    ")
+   $g_hGUI_SEARCH_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_02", "ActiveBase") & "    ")
    ; this tab will be empty because it is only used to display a child GUI
    ; below controls are only shown when the strategy is disabled and the child gui will be hidden.
-	   $g_hLblActivebaseDisabled = GUICtrlCreateLabel(GetTranslated(600,49, -1) & " " & GetTranslated(600, 24, -1) & " " & GetTranslated(600,50, -1), 20, 30, $_GUI_MAIN_WIDTH - 40, -1)
+	   $g_hLblActivebaseDisabled = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Main GUI", "disabled_Tab_03_STab_02_STab_Info_01",  -1) & " " & GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_02", -1) & " " & GetTranslatedFileIni("MBR Main GUI", "disabled_Tab_03_STab_02_STab_Info_02",  -1), 20, 30, $_GUI_MAIN_WIDTH - 40, -1)
 	   GUICtrlSetState(-1, $GUI_HIDE)
 
-   $g_hGUI_SEARCH_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,25,"TH Snipe") & "    ")
+   $g_hGUI_SEARCH_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_03", "TH Snipe") & "    ")
    ; this tab will be empty because it is only used to display a child GUI
    ; below controls are only shown when the strategy is disabled and the child gui will be hidden.
-	   $g_hLblTHSnipeDisabled = GUICtrlCreateLabel(GetTranslated(600,49, -1) & " " & GetTranslated(600, 25, -1) & " " & GetTranslated(600,50, -1), 20, 30, $_GUI_MAIN_WIDTH - 40, -1)
+	   $g_hLblTHSnipeDisabled = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Main GUI", "disabled_Tab_03_STab_02_STab_Info_01",  -1) & " " & GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_03", -1) & " " & GetTranslatedFileIni("MBR Main GUI", "disabled_Tab_03_STab_02_STab_Info_02",  -1), 20, 30, $_GUI_MAIN_WIDTH - 40, -1)
 	   GUICtrlSetState(-1, $GUI_HIDE)
 
-   $g_hGUI_SEARCH_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslated(600,26,"Bully") & "    ")
+   $g_hGUI_SEARCH_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_04", "Bully") & "    ")
    ; this tab will be empty because it is only used to display a child GUI
-	   $g_hLblBullyDisabled = GUICtrlCreateLabel(GetTranslated(600,49, -1) & " " & GetTranslated(600, 26, -1) & " " & GetTranslated(600,50, -1), 20, 30, $_GUI_MAIN_WIDTH - 40, -1)
+	   $g_hLblBullyDisabled = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Main GUI", "disabled_Tab_03_STab_02_STab_Info_01",  -1) & " " & GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_04", -1) & " " & GetTranslatedFileIni("MBR Main GUI", "disabled_Tab_03_STab_02_STab_Info_02",  -1), 20, 30, $_GUI_MAIN_WIDTH - 40, -1)
 	   GUICtrlSetState(-1, $GUI_HIDE)
 
-   $g_hGUI_SEARCH_TAB_ITEM5 = GUICtrlCreateTabItem(GetTranslated(600,27,"Options"))
+   $g_hGUI_SEARCH_TAB_ITEM5 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_05", "Options"))
    ; this tab will be empty because it is only used to display a child GUI
 
    GUICtrlCreateTabItem("")

@@ -14,6 +14,7 @@
 ; ===============================================================================================================================
 
 Func BotStart($bAutostartDelay = 0)
+
 	ResumeAndroid()
 	CalCostCamp()
 	CalCostSpell()
@@ -75,6 +76,10 @@ Func BotStart($bAutostartDelay = 0)
 		_SleepStatus($bAutostartDelay)
 	EndIf
 
+	; wait for slot
+	LockBotSlot(True)
+	If $g_bRunState = False Then Return
+
 	Local $Result = False
 	If WinGetAndroidHandle() = 0 Then
 		$Result = OpenAndroid(False)
@@ -117,6 +122,10 @@ Func BotStart($bAutostartDelay = 0)
 EndFunc   ;==>BotStart
 
 Func BotStop()
+
+	; release bot slot
+	LockBotSlot(False)
+
 	ResumeAndroid()
 
 	$g_bRunState = False
@@ -187,7 +196,7 @@ Func BotSearchMode()
 	If _Sleep(100) Then Return
 	$g_aiCurrentLoot[$eLootTrophy] = getTrophyMainScreen($aTrophies[0], $aTrophies[1]) ; get OCR to read current Village Trophies
 	If _Sleep(100) Then Return
-	CheckArmySpellCastel()
+	CheckIfArmyIsReady()
 	ClickP($aAway, 2, 0, "") ;Click Away
 	If _Sleep(100) Then Return
 	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then

@@ -24,7 +24,10 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func GetVillageSize($DebugLog = False)
+Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "tree")
+
+	If $sStonePrefix = Default Then $sStonePrefix = "stone"
+	If $sTreePrefix = Default Then $sTreePrefix = "tree"
 
 	Local $aResult = 0
 	Local $directory = @ScriptDir & "\imgxml\village\"
@@ -33,13 +36,22 @@ Func GetVillageSize($DebugLog = False)
 
 	Local $iAdditional = 75
 
-	Local $aStoneFiles = _FileListToArray($directory, "stone*.*", $FLTA_FILES)
+	Local $aStoneFiles = _FileListToArray($directory, $sStonePrefix & "*.*", $FLTA_FILES)
 	If @error Then
 		SetLog("Error: Missing stone files", $COLOR_ERROR)
 		Return $aResult
 	EndIf
-
-	Local $aTreeFiles = _FileListToArray($directory, "tree*.*", $FLTA_FILES)
+	; use stoneBlueStacks2A stones first
+	Local $iNewIdx = 1
+	For $i = 1 To $aStoneFiles[0]
+		If StringInStr($aStoneFiles[$i], "stoneBlueStacks2A") = 1 Then
+			Local $s = $aStoneFiles[$iNewIdx]
+			$aStoneFiles[$iNewIdx] = $aStoneFiles[$i]
+			$aStoneFiles[$i] = $s
+			$iNewIdx += 1
+		EndIf
+	Next
+	Local $aTreeFiles = _FileListToArray($directory, $sTreePrefix & "*.*", $FLTA_FILES)
 	If @error Then
 		SetLog("Error: Missing tree files", $COLOR_ERROR)
 		Return $aResult

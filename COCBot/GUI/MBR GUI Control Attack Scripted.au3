@@ -175,19 +175,19 @@ Func AttackCSVAssignDefaultScriptName()
 EndFunc   ;==>AttackCSVAssignDefaultScriptName
 
 ;Parse this first on load of bot, needed outside the function to update current language.ini file. Used on Func NewABScript() and NewDBScript()
-Local $temp1 = GetTranslated(635, 1, "Create New Script File"), $temp2 = GetTranslated(635, 2, "New Script Filename")
-Local $temp3 = GetTranslated(635, 3, "File exists, please input a new name"), $temp4 = GetTranslated(635, 4, "An error occurred when creating the file.")
+Local $temp1 = GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Create", "Create New Script File"), $temp2 = GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_New_0", "New Script Filename")
+Local $temp3 = GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_File-exists", "File exists, please input a new name"), $temp4 = GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Error", "An error occurred when creating the file.")
 Local $temp1 = 0, $temp2 = 0, $temp3 = 0, $temp4 = 0 ; empty temp vars
 
 Func NewScriptDB()
-	Local $filenameScript = InputBox(GetTranslated(635, 1, -1), GetTranslated(635, 2, -1) & ":")
+	Local $filenameScript = InputBox(GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Create", -1), GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_New_0", -1) & ":")
 	If StringLen($filenameScript) > 0 Then
 		If FileExists($g_sCSVAttacksPath & "\" & $filenameScript & ".csv") Then
-			MsgBox("", "", GetTranslated(635, 3, -1))
+			MsgBox("", "", GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_File-exists", -1))
 		Else
 			Local $hFileOpen = FileOpen($g_sCSVAttacksPath & "\" & $filenameScript & ".csv", $FO_APPEND)
 			If $hFileOpen = -1 Then
-				MsgBox($MB_SYSTEMMODAL, "", GetTranslated(635, 4, -1))
+				MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Error", -1))
 				Return False
 			Else
 				FileClose($hFileOpen)
@@ -201,14 +201,14 @@ EndFunc   ;==>NewScriptDB
 
 
 Func NewScriptAB()
-	Local $filenameScript = InputBox(GetTranslated(635, 1, -1), GetTranslated(635, 2, -1) & ":")
+	Local $filenameScript = InputBox(GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Create", -1), GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_New_0", -1) & ":")
 	If StringLen($filenameScript) > 0 Then
 		If FileExists($g_sCSVAttacksPath & "\" & $filenameScript & ".csv") Then
-			MsgBox("", "", GetTranslated(635, 3, -1))
+			MsgBox("", "", GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_File-exists", -1))
 		Else
 			Local $hFileOpen = FileOpen($g_sCSVAttacksPath & "\" & $filenameScript & ".csv", $FO_APPEND)
 			If $hFileOpen = -1 Then
-				MsgBox($MB_SYSTEMMODAL, "", GetTranslated(635, 4, -1))
+				MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Error", -1))
 				Return False
 			Else
 				FileClose($hFileOpen)
@@ -224,7 +224,7 @@ EndFunc   ;==>NewScriptAB
 
 
 ;Parse this first on load of bot, needed outside the function to update current language.ini file. Used on Func DuplicateABScript() and DuplicateDBScript()
-Local $temp1 = GetTranslated(635, 5, "Copy to New Script File"), $temp2 = GetTranslated(635, 6, "Copy"), $temp3 = GetTranslated(635, 7, "to New Script Filename")
+Local $temp1 = GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Copy_0", "Copy to New Script File"), $temp2 = GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Copy_1", "Copy"), $temp3 = GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_New_1", "to New Script Filename")
 Local $temp1 = 0, $temp2 = 0, $temp3 = 0 ; empty temp vars
 
 Func DuplicateScriptDB()
@@ -232,15 +232,15 @@ Func DuplicateScriptDB()
 	Local $scriptname
 	_GUICtrlComboBox_GetLBText($g_hCmbScriptNameDB, $indexofscript, $scriptname)
 	$g_sAttackScrScriptName[$DB] = $scriptname
-	Local $filenameScript = InputBox(GetTranslated(635, 5, -1), GetTranslated(635, 6, -1) & ": <" & $g_sAttackScrScriptName[$DB] & ">" & @CRLF & GetTranslated(635, 7, -1) & ":")
+	Local $filenameScript = InputBox(GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Copy_0", -1), GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Copy_1", -1) & ": <" & $g_sAttackScrScriptName[$DB] & ">" & @CRLF & GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_New_1", -1) & ":")
 	If StringLen($filenameScript) > 0 Then
 		If FileExists($g_sCSVAttacksPath & "\" & $filenameScript & ".csv") Then
-			MsgBox("", "", GetTranslated(635, 3, -1))
+			MsgBox("", "", GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_File-exists", -1))
 		Else
 			Local $hFileOpen = FileCopy($g_sCSVAttacksPath & "\" & $g_sAttackScrScriptName[$DB] & ".csv", $g_sCSVAttacksPath & "\" & $filenameScript & ".csv")
 
 			If $hFileOpen = -1 Then
-				MsgBox($MB_SYSTEMMODAL, "", GetTranslated(635, 4, -1))
+				MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Error", -1))
 				Return False
 			Else
 				FileClose($hFileOpen)
@@ -258,15 +258,15 @@ Func DuplicateScriptAB()
 	Local $scriptname
 	_GUICtrlComboBox_GetLBText($g_hCmbScriptNameAB, $indexofscript, $scriptname)
 	$g_sAttackScrScriptName[$LB] = $scriptname
-	Local $filenameScript = InputBox(GetTranslated(635, 5, -1), GetTranslated(635, 6, -1) & ": <" & $g_sAttackScrScriptName[$LB] & ">" & @CRLF & GetTranslated(635, 7, -1) & ":")
+	Local $filenameScript = InputBox(GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Copy_0", -1), GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Copy_1", -1) & ": <" & $g_sAttackScrScriptName[$LB] & ">" & @CRLF & GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_New_1", -1) & ":")
 	If StringLen($filenameScript) > 0 Then
 		If FileExists($g_sCSVAttacksPath & "\" & $filenameScript & ".csv") Then
-			MsgBox("", "", GetTranslated(635, 3, -1))
+			MsgBox("", "", GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_File-exists", -1))
 		Else
 			Local $hFileOpen = FileCopy($g_sCSVAttacksPath & "\" & $g_sAttackScrScriptName[$LB] & ".csv", $g_sCSVAttacksPath & "\" & $filenameScript & ".csv")
 
 			If $hFileOpen = -1 Then
-				MsgBox($MB_SYSTEMMODAL, "", GetTranslated(635, 4, -1))
+				MsgBox($MB_SYSTEMMODAL, "", GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Error", -1))
 				Return False
 			Else
 				FileClose($hFileOpen)

@@ -22,11 +22,11 @@ Func ParseAttackCSV_Read_SIDE_variables()
 	$g_bCSVLocateStorageDarkElixir = False
 	$g_bCSVLocateStorageTownHall = False
 	$g_bCSVLocateEagle = False
-	; $g_bCSVLocateInferno = False
-	; $g_bCSVLocateXBow = False
-	; $g_bCSVLocateWizTower = False
-	; $g_bCSVLocateMortar = False
-	; $g_bCSVLocateAirDefense = False
+	$g_bCSVLocateInferno = False
+	$g_bCSVLocateXBow = False
+	$g_bCSVLocateWizTower = False
+	$g_bCSVLocateMortar = False
+	$g_bCSVLocateAirDefense = False
 	; $g_bCSVLocateGemBox = False
 
 	If $g_iMatchMode = $DB Then
@@ -40,15 +40,19 @@ Func ParseAttackCSV_Read_SIDE_variables()
 	Local $bForceSideExist = False
 
 	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
-		$f = FileOpen($g_sCSVAttacksPath & "\" & $filename & ".csv", 0)
-		; Read in lines of text until the EOF is reached
-		While 1
-			$line = FileReadLine($f)
-			If @error = -1 Then ExitLoop
+		Local $aLines = FileReadToArray($g_sCSVAttacksPath & "\" & $filename & ".csv")
+		If @error Then
+			SetLog("Attack CSV script not found: " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
+			Return
+		EndIf
+		For $iLine = 0 To UBound($aLines) - 1
+			$line = $aLines[$iLine]
 			$acommand = StringSplit($line, "|")
 			If $acommand[0] >= 8 Then
 				$command = StringStripWS(StringUpper($acommand[1]), $STR_STRIPTRAILING)
-				If $command <> "SIDE" And $command <> "SIDEB" Then ContinueLoop
+
+				If $command <> "SIDE" And $command <> "SIDEB" And $command <> "MAKE" Then ContinueLoop
+
 				$value1 = StringStripWS(StringUpper($acommand[2]), $STR_STRIPTRAILING)
 				$value2 = StringStripWS(StringUpper($acommand[3]), $STR_STRIPTRAILING)
 				$value3 = StringStripWS(StringUpper($acommand[4]), $STR_STRIPTRAILING)
@@ -59,39 +63,59 @@ Func ParseAttackCSV_Read_SIDE_variables()
 				$value8 = StringStripWS(StringUpper($acommand[9]), $STR_STRIPTRAILING)
 				$value9 = StringStripWS(StringUpper($acommand[10]), $STR_STRIPTRAILING)
 
-
-				If $command = "SIDE" Then
-					;forced side
-					If StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
-						;keep original values
-						$bForceSideExist = True
-					Else
-						;if this line uses a building, then it must be detected
-						If Int($value1) > 0 Then $g_bCSVLocateMine = True
-						If Int($value2) > 0 Then $g_bCSVLocateElixir = True
-						If Int($value3) > 0 Then $g_bCSVLocateDrill = True
-						If Int($value4) > 0 Then $g_bCSVLocateStorageGold = True
-						If Int($value5) > 0 Then $g_bCSVLocateStorageElixir = True
-						If Int($value6) > 0 Then $g_bCSVLocateStorageDarkElixir = True
-						If Int($value7) > 0 Then $g_bCSVLocateStorageTownHall = True
-						; $value8 = Forced Side value
-					EndIf
+				If $command = "SIDE" And StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
+					$bForceSideExist = True ;keep original values
 				EndIf
 
-				If $command = "SIDEB" And $bForceSideExist = False Then
-					If Int($value1) > 0 Then $g_bCSVLocateEagle = True
-					;	If Int($value2) > 0 Then $g_bCSVLocateInferno = True
-					;	If Int($value3) > 0 Then $g_bCSVLocateXBow = True
-					;	If Int($value4) > 0 Then $g_bCSVLocateWizTower = True
-					;	If Int($value5) > 0 Then $g_bCSVLocateMortar = True
-					;	If Int($value6) > 0 Then $g_bCSVLocateAirDefense = True
-					;	If Int($value7) > 0 Then $g_bCSVLocateGemBox = True
-					;	If Int($value8) > 0 Then $g_bCSVLocateGemBox = True
-				EndIf
-
+				Switch $command
+					Case "SIDE" ;if this line uses a building, then it must be detected
+						If $bForceSideExist = False Then
+							If Int($value1) > 0 Then $g_bCSVLocateMine = True
+							If Int($value2) > 0 Then $g_bCSVLocateElixir = True
+							If Int($value3) > 0 Then $g_bCSVLocateDrill = True
+							If Int($value4) > 0 Then $g_bCSVLocateStorageGold = True
+							If Int($value5) > 0 Then $g_bCSVLocateStorageElixir = True
+							If Int($value6) > 0 Then $g_bCSVLocateStorageDarkElixir = True
+							If Int($value7) > 0 Then $g_bCSVLocateStorageTownHall = True
+							; $value8 = Forced Side value
+						EndIf
+					Case "SIDEB"
+						If $bForceSideExist = False Then
+							If Int($value1) > 0 Then $g_bCSVLocateEagle = True
+							If Int($value2) > 0 Then $g_bCSVLocateInferno = True
+							If Int($value3) > 0 Then $g_bCSVLocateXBow = True
+							If Int($value4) > 0 Then $g_bCSVLocateWizTower = True
+							If Int($value5) > 0 Then $g_bCSVLocateMortar = True
+							If Int($value6) > 0 Then $g_bCSVLocateAirDefense = True
+							; If Int($value7) > 0 Then $g_bCSVLocateGemBox = True IE unused
+							; If Int($value8) > 0 Then $g_bCSVLocateGemBox = True IE unused
+						EndIf
+					Case "MAKE" ; check if targeted building vectors are used im MAKE commands >> starting in V7.2+
+						If StringLen(StringStripWS($value8, $STR_STRIPALL)) > 0 Then ; check for empty string?
+							Switch $value8
+								Case "TOWNHALL"
+									$g_bCSVLocateStorageTownHall = True
+								Case "EAGLE"
+									$g_bCSVLocateEagle = True
+								Case "INFERNO"
+									$g_bCSVLocateInferno = True
+								Case "XBOW"
+									$g_bCSVLocateXBow = True
+								Case "WIZTOWER"
+									$g_bCSVLocateWizTower = True
+								Case "MORTAR"
+									$g_bCSVLocateMortar = True
+								Case "AIRDEFENSE"
+									$g_bCSVLocateAirDefense = True
+								Case Else
+									SetDebugLog("Invalid MAKE building target name: " & $value8, $COLOR_WARNING)
+									debugAttackCSV("Invalid MAKE building target name: " & $value8)
+							EndSwitch
+							debugAttackCSV("SIDE Parse MAKE target building= " & $value8)
+						EndIf
+				EndSwitch
 			EndIf
-		WEnd
-		FileClose($f)
+		Next
 	Else
 		SetLog("Cannot find attack file " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
 	EndIf

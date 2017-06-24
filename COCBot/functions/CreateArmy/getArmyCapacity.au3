@@ -14,19 +14,21 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func getArmyCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
+Func getArmyCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
 
 	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SETLOG("Begin getArmyCapacity:", $COLOR_DEBUG1)
 
-	If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
-		SetError(1)
-		Return ; not open, not requested to be open - error.
-	ElseIf $bOpenArmyWindow = True Then
-		If openArmyOverview() = False Then
-			SetError(2)
-			Return ; not open, requested to be open - error.
+	If $CheckWindow Then
+		If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
+			SetError(1)
+			Return ; not open, not requested to be open - error.
+		ElseIf $bOpenArmyWindow Then
+			If Not OpenArmyOverview() Then
+				SetError(2)
+				Return ; not open, requested to be open - error.
+			EndIf
+			If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 		EndIf
-		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
 	Local $aGetArmySize[3] = ["", "", ""]
@@ -115,10 +117,10 @@ Func getArmyCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	If $g_bTotalCampForced = True Then $g_iTotalCampSpace = Number($g_iTotalCampForcedValue)
 
 	If $g_iTotalCampSpace > 0 Then
-		SetLog("Total Army Camp capacity: " & $g_CurrentCampUtilization & "/" & $g_iTotalCampSpace & " (" & Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100) & "%)")
+		If $bSetLog Then SetLog("Total Army Camp capacity: " & $g_CurrentCampUtilization & "/" & $g_iTotalCampSpace & " (" & Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100) & "%)")
 		$g_iArmyCapacity = Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100)
 	Else
-		SetLog("Total Army Camp capacity: " & $g_CurrentCampUtilization & "/" & $g_iTotalCampSpace)
+		If $bSetLog Then SetLog("Total Army Camp capacity: " & $g_CurrentCampUtilization & "/" & $g_iTotalCampSpace)
 		$g_iArmyCapacity = 0
 	EndIf
 

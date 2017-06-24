@@ -23,15 +23,15 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 7.1.4)
-#pragma compile(FileVersion, 7.1.4)
+#pragma compile(ProductVersion, 7.2)
+#pragma compile(FileVersion, 7.2)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
 
 ; Enforce variable declarations
 Opt("MustDeclareVars", 1)
 
-Global $g_sBotVersion = "v7.1.4" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+Global $g_sBotVersion = "v7.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
 Global $g_sBotTitle = "" ;~ Don't assign any title here, use Func UpdateBotTitle()
 Global $g_hFrmBot = 0 ; The main GUI window
 
@@ -122,7 +122,18 @@ Func InitializeBot()
 
 	InitAndroidConfig()
 
-	If FileExists(@ScriptDir & "\EnableMBRDebug.txt") Then $g_bDevMode = True
+	If FileExists(@ScriptDir & "\EnableMBRDebug.txt") Then  ; Set developer mode
+		$g_bDevMode = True
+		Local $aText = FileReadToArray(@ScriptDir & "\EnableMBRDebug.txt") ; check if special debug flags set inside EnableMBRDebug.txt file
+		If Not @error  Then
+			For $l = 0 To UBound($aText) - 1
+				If StringInStr($aText[$l], "DISABLEWATCHDOG", $STR_NOCASESENSEBASIC) <> 0 Then
+					$g_bBotLaunchOption_NoWatchdog = True
+					SetDebugLog("Watch Dog disabled by Developer Mode File Command", $COLOR_INFO)
+				EndIf
+			Next
+		EndIf
+	EndIf
 
 	; early load of config
 	If FileExists($g_sProfileConfigPath) Or FileExists($g_sProfileBuildingPath) Then
@@ -195,6 +206,8 @@ Func ProcessCommandLine()
 					$g_iBotLaunchOption_Dock = 1
 				Case "/dock2", "/d2", "-dock2", "-d2"
 					$g_iBotLaunchOption_Dock = 2
+				Case "/nobotslot", "/nbs", "-nobotslot", "-nbs"
+					$g_bBotLaunchOption_NoBotSlot = True
 				Case Else
 					$bOptionDetected = False
 					$g_asCmdLine[0] += 1
@@ -231,7 +244,7 @@ EndFunc   ;==>ProcessCommandLine
 ; Example .......: No
 ; ===============================================================================================================================
 Func InitializeAndroid()
-	Local $s = GetTranslated(500, 21, "Initializing Android...")
+	Local $s = GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_06", "Initializing Android...")
 	SplashStep($s)
 
 	If $g_bBotLaunchOption_Restart = False Then
@@ -257,7 +270,7 @@ Func InitializeAndroid()
 			Next
 		EndIf
 
-		SplashStep(GetTranslated(500, 22, "Detecting Android..."))
+		SplashStep(GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_07", "Detecting Android..."))
 		If $g_asCmdLine[0] < 2 Then
 			DetectRunningAndroid()
 			If Not $g_bFoundRunningAndroid Then DetectInstalledAndroid()
@@ -292,7 +305,7 @@ EndFunc   ;==>InitializeAndroid
 ; ===============================================================================================================================
 Func SetupProfileFolder()
 	$g_sProfileConfigPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\config.ini"
-	$g_sProfileWeakBasePath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\stats_chkweakbase.INI"
+	$g_sProfileBuildingStatsPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\stats_buildings.ini"
 	$g_sProfileBuildingPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\building.ini"
 	$g_sProfileLogsPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\Logs\"
 	$g_sProfileLootsPath = $g_sProfilePath & "\" & $g_sProfileCurrentName & "\Loots\"
@@ -336,13 +349,13 @@ Func InitializeMBR(ByRef $sAI)
 	; multilanguage
 	If Not FileExists(@ScriptDir & "\Languages") Then DirCreate(@ScriptDir & "\Languages")
 	DetectLanguage()
-
+	_ReadFullIni()
 	; must be called after language is detected
 	TranslateTroopNames()
 	InitializeCOCDistributors()
 
 	; check for compiled x64 version
-	Local $sMsg = GetTranslated(500, 1, "Don't Run/Compile the Script as (x64)! Try to Run/Compile the Script as (x86) to get the bot to work.\r\n" & _
+	Local $sMsg = GetTranslatedFileIni("MBR GUI Design - Loading", "Compile_Script", "Don't Run/Compile the Script as (x64)! Try to Run/Compile the Script as (x86) to get the bot to work.\r\n" & _
 			"If this message still appears, try to re-install AutoIt.")
 	If @AutoItX64 = 1 Then
 		DestroySplashScreen()
@@ -356,11 +369,11 @@ Func InitializeMBR(ByRef $sAI)
 
 	; Update Bot title
 	UpdateBotTitle()
-	UpdateSplashTitle($g_sBotTitle & GetTranslated(500, 20, ", Profile: %s", $g_sProfileCurrentName))
+	UpdateSplashTitle($g_sBotTitle & GetTranslatedFileIni("MBR GUI Design - Loading", "Loading_Profile", ", Profile: %s", $g_sProfileCurrentName))
 
 	If $g_bBotLaunchOption_Restart = True Then
 		If CloseRunningBot($g_sBotTitle, True) Then
-			SplashStep(GetTranslated(500, 36, "Closing previous bot..."), False)
+			SplashStep(GetTranslatedFileIni("MBR GUI Design - Loading", "Closing_previous", "Closing previous bot..."), False)
 			If CloseRunningBot($g_sBotTitle) = True Then
 				; wait for Mutexes to get disposed
 				Sleep(3000)
@@ -370,7 +383,7 @@ Func InitializeMBR(ByRef $sAI)
 		EndIf
 	EndIf
 
-	Local $cmdLineHelp = GetTranslated(500, 2, "By using the commandline (or a shortcut) you can start multiple Bots:\r\n" & _
+	Local $cmdLineHelp = GetTranslatedFileIni("MBR GUI Design - Loading", "Commandline_multiple_Bots", "By using the commandline (or a shortcut) you can start multiple Bots:\r\n" & _
 			"     MyBot.run.exe [ProfileName] [EmulatorName] [InstanceName]\r\n\r\n" & _
 			"With the first command line parameter, specify the Profilename (you can create profiles on the Bot/Profiles tab, if a " & _
 			"profilename contains a {space}, then enclose the profilename in double quotes). " & _
@@ -380,15 +393,15 @@ Func InitializeMBR(ByRef $sAI)
 			"     MyBot.run.exe MyVillage BlueStacks2\r\n" & _
 			"     MyBot.run.exe ""My Second Village"" MEmu MEmu_1")
 
-	$g_hMutex_BotTitle = _Singleton($g_sBotTitle, 1)
-	$sAI = GetTranslated(500, 3, "%s", $g_sAndroidEmulator)
-	Local $sAndroidInfo2 = GetTranslated(500, 4, "%s (instance %s)", $g_sAndroidEmulator, $g_sAndroidInstance)
+	$g_hMutex_BotTitle = CreateMutex($g_sBotTitle)
+	$sAI = GetTranslatedFileIni("MBR GUI Design - Loading", "Android_instance_01", "%s", $g_sAndroidEmulator)
+	Local $sAndroidInfo2 = GetTranslatedFileIni("MBR GUI Design - Loading", "Android_instance_02", "%s (instance %s)", $g_sAndroidEmulator, $g_sAndroidInstance)
 	If $g_sAndroidInstance <> "" Then
 		$sAI = $sAndroidInfo2
 	EndIf
 
 	; Check if we are already running for this instance
-	$sMsg = GetTranslated(500, 5, "My Bot for %s is already running.\r\n\r\n", $sAI)
+	$sMsg = GetTranslatedFileIni("MBR GUI Design - Loading", "Msg_Android_instance_01", "My Bot for %s is already running.\r\n\r\n", $sAI)
 	If $g_hMutex_BotTitle = 0 Then
 		DestroySplashScreen()
 		MsgBox(BitOR($MB_OK, $MB_ICONINFORMATION, $MB_TOPMOST), $g_sBotTitle, $sMsg & $cmdLineHelp)
@@ -397,10 +410,10 @@ Func InitializeMBR(ByRef $sAI)
 	EndIf
 
 	; Check if we are already running for this profile
-	$g_hMutex_Profile = _Singleton(StringReplace($g_sProfilePath & "\" & $g_sProfileCurrentName, "\", "-"), 1)
-	$sMsg = GetTranslated(500, 6, "My Bot with Profile %s is already running in %s.\r\n\r\n", $g_sProfileCurrentName, $g_sProfilePath & "\" & $g_sProfileCurrentName)
+	$g_hMutex_Profile = CreateMutex(StringReplace($g_sProfilePath & "\" & $g_sProfileCurrentName, "\", "-"))
+	$sMsg = GetTranslatedFileIni("MBR GUI Design - Loading", "Msg_Android_instance_02", "My Bot with Profile %s is already running in %s.\r\n\r\n", $g_sProfileCurrentName, $g_sProfilePath & "\" & $g_sProfileCurrentName)
 	If $g_hMutex_Profile = 0 Then
-		_WinAPI_CloseHandle($g_hMutex_BotTitle)
+		ReleaseMutex($g_hMutex_BotTitle)
 		DestroySplashScreen()
 		MsgBox(BitOR($MB_OK, $MB_ICONINFORMATION, $MB_TOPMOST), $g_sBotTitle, $sMsg & $cmdLineHelp)
 		__GDIPlus_Shutdown()
@@ -408,9 +421,10 @@ Func InitializeMBR(ByRef $sAI)
 	EndIf
 
 	; Get mutex
-	$g_hMutex_MyBot = _Singleton("MyBot.run", 1)
+	$g_hMutex_MyBot = CreateMutex("MyBot.run")
 	$g_bOnlyInstance = $g_hMutex_MyBot <> 0 ; And False
 	SetDebugLog("My Bot is " & ($g_bOnlyInstance ? "" : "not ") & "the only running instance")
+
 EndFunc   ;==>InitializeMBR
 
 ; #FUNCTION# ====================================================================================================================
@@ -494,12 +508,12 @@ Func FinalInitialization(Const $sAI)
 	EndIf
 
 	If $g_bFoundRunningAndroid Then
-		SetLog(GetTranslated(500, 7, "Found running %s %s", $g_sAndroidEmulator, $g_sAndroidVersion), $COLOR_SUCCESS)
+		SetLog(GetTranslatedFileIni("MBR GUI Design - Loading", "Msg_Android_instance_03", "Found running %s %s", $g_sAndroidEmulator, $g_sAndroidVersion), $COLOR_SUCCESS)
 	EndIf
 	If $g_bFoundInstalledAndroid Then
 		SetLog("Found installed " & $g_sAndroidEmulator & " " & $g_sAndroidVersion, $COLOR_SUCCESS)
 	EndIf
-	SetLog(GetTranslated(500, 8, "Android Emulator Configuration: %s", $sAI), $COLOR_SUCCESS)
+	SetLog(GetTranslatedFileIni("MBR GUI Design - Loading", "Msg_Android_instance_04", "Android Emulator Configuration: %s", $sAI), $COLOR_SUCCESS)
 
 	; destroy splash screen here (so we witness the 100% ;)
 	DestroySplashScreen()
@@ -516,10 +530,11 @@ Func FinalInitialization(Const $sAI)
 
 	; Remember time in Milliseconds bot launched
 	$g_iBotLaunchTime = __TimerDiff($g_hBotLaunchTime)
+	SetDebugLog("Maximum of " & $g_iGlobalActiveBotsAllowed & " bots running at same time configured")
 	SetDebugLog("MyBot.run launch time " & Round($g_iBotLaunchTime) & " ms.")
 
 	If $g_bAndroidShieldEnabled = False Then
-		SetLog(GetTranslated(500, 9, "Android Shield not available for %s", @OSVersion), $COLOR_ACTION)
+		SetLog(GetTranslatedFileIni("MBR GUI Design - Loading", "Msg_Android_instance_05", "Android Shield not available for %s", @OSVersion), $COLOR_ACTION)
 	EndIf
 
 	DisableProcessWindowsGhosting()
@@ -559,6 +574,13 @@ Func MainLoop()
 				BotStart($iStartDelay)
 				$iStartDelay = 0 ; don't autostart delay in future
 				If $g_iBotAction = $eBotStart Then $g_iBotAction = $eBotNoAction
+
+				; test error handling when bot started and then stopped
+				; force app crash for debugging/testing purposes
+				;DllCallAddress("NONE", 0)
+				; force au3 script error for debugging/testing purposes
+				;Local $iTmp = $iStartDelay[0]
+
 			Case $eBotStop
 				BotStop()
 				If $g_iBotAction = $eBotStop Then $g_iBotAction = $eBotNoAction
@@ -569,8 +591,6 @@ Func MainLoop()
 				BotClose()
 		EndSwitch
 
-		; force app crash for debugging/testing purposes
-		;DllCallAddress("NONE", 0)
 	WEnd
 EndFunc   ;==>MainLoop
 
@@ -758,7 +778,7 @@ Func Idle() ;Sequence that runs until Full Army
 
 		;If $g_bDonateSkipNearFullEnable = True Then getArmyCapacity(true,true)
 		If $g_iActiveDonate And $g_bChkDonate Then
-			Local $aHeroResult = CheckArmyCamp(True, True, True)
+			Local $aHeroResult = CheckArmyCamp(True, True, True, False)
 			While $iReHere < 7
 				$iReHere += 1
 				If $iReHere = 1 And SkipDonateNearFullTroops(True, $aHeroResult) = False And BalanceDonRec(True) Then
@@ -920,6 +940,7 @@ Func AttackMain() ;Main control for attack functions
 EndFunc   ;==>AttackMain
 
 Func Attack() ;Selects which algorithm
+	$g_bAttackActive = True
 	SetLog(" ====== Start Attack ====== ", $COLOR_SUCCESS)
 	If ($g_iMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 1) Or ($g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 1) Then
 		If $g_iDebugSetlog = 1 Then Setlog("start scripted attack", $COLOR_ERROR)
@@ -931,6 +952,7 @@ Func Attack() ;Selects which algorithm
 		If $g_iDebugSetlog = 1 Then Setlog("start standard attack", $COLOR_ERROR)
 		algorithm_AllTroops()
 	EndIf
+	$g_bAttackActive = False
 EndFunc   ;==>Attack
 
 
@@ -1008,7 +1030,7 @@ Func _RunFunction($action)
 				If SkipDonateNearFullTroops(True) = False And BalanceDonRec(True) Then DonateCC()
 			EndIf
 			If _Sleep($DELAYRUNBOT1) = False Then checkMainScreen(False)
-			If $g_bTrainEnabled = True Then ; check for training enabled in halt mode
+			If $g_bTrainEnabled Then ; check for training enabled in halt mode
 				If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
 					;Train()
 					TrainRevamp()

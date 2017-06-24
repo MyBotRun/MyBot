@@ -27,71 +27,71 @@ Global $g_hChkTreasuryCollect = 0, $g_hTxtTreasuryGold = 0, $g_hTxtTreasuryElixi
 Func CreateVillageMisc()
    Local $sTxtTip = ""
    Local $x = 15, $y = 45
-   GUICtrlCreateGroup(GetTranslated(610,1, "Halt Attack"), $x - 10, $y - 20, $g_iSizeWGrpTab2, 100)
+   GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_01", "Halt Attack"), $x - 10, $y - 20, $g_iSizeWGrpTab2, 100)
 		$g_hChkBotStop = GUICtrlCreateCheckbox("", $x - 5, $y, 16, 16)
-			$sTxtTip = GetTranslated(610,2, "Use these options to set when the bot will stop attacking.")
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BotStop_Info_01", "Use these options to set when the bot will stop attacking.")
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkBotStop")
 
 		$g_hCmbBotCommand = GUICtrlCreateCombo("", $x + 20, $y - 3, 95, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetData(-1, GetTranslated(610,3, "Halt Attack") & "|" & GetTranslated(610,4, "Stop Bot") & "|" & GetTranslated(610,5, "Close Bot") & "|" & GetTranslated(610,6, "Close CoC+Bot") & "|" & GetTranslated(610,7, "Shutdown PC") & "|" & GetTranslated(610,8, "Sleep PC") & "|" & GetTranslated(610,9, "Reboot PC"), GetTranslated(610,3, -1))
+			GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCommand_Item_01", "Halt Attack") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCommand_Item_02", "Stop Bot") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCommand_Item_03", "Close Bot") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCommand_Item_04", "Close CoC+Bot") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCommand_Item_05", "Shutdown PC") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCommand_Item_06", "Sleep PC") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCommand_Item_07", "Reboot PC"), GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCommand_Item_01", -1))
 			GUICtrlSetState (-1, $GUI_DISABLE)
-		GUICtrlCreateLabel(GetTranslated(610,10, "When..."), $x + 128, $y, 45, 17)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "LblBotCommand", "When..."), $x + 128, $y, 45, 17)
 
 		$g_hCmbBotCond = GUICtrlCreateCombo("", $x + 175, $y - 3, 160, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetData(-1, GetTranslated(610,11, "G and E Full and Max.Trophy") & "|" & GetTranslated(610,12, "(G and E) Full or Max.Trophy") & "|" & GetTranslated(610,13, "(G or E) Full and Max.Trophy") & "|" & _
-			GetTranslated(610,14, "G or E Full or Max.Trophy") & "|" & GetTranslated(610,15, "Gold and Elixir Full") & "|" & GetTranslated(610,16, "Gold or Elixir Full") & "|" & GetTranslated(610,17, "Gold Full and Max.Trophy") & "|" & _
-			GetTranslated(610,18, "Elixir Full and Max.Trophy") & "|" & GetTranslated(610,19, "Gold Full or Max.Trophy") & "|" & GetTranslated(610,20, "Elixir Full or Max.Trophy") & "|" & GetTranslated(610,21, "Gold Full") & "|" & _
-			GetTranslated(610,22, "Elixir Full") & "|" & GetTranslated(610,23, "Reach Max. Trophy") & "|" & GetTranslated(610,24, "Dark Elixir Full") & "|" & GetTranslated(610,25, "All Storage (G+E+DE) Full") & "|" & _
-			GetTranslated(610,26, "Bot running for...") & "|" & GetTranslated(610,27, "Now (Train/Donate Only)") & "|" & _
-			GetTranslated(610,28, "Now (Donate Only)") & "|" & GetTranslated(610,29, "Now (Only stay online)") & "|" & GetTranslated(610,30, "W/Shield (Train/Donate Only)") & "|" & GetTranslated(610,31, "W/Shield (Donate Only)") & "|" & _
-			GetTranslated(610,32, "W/Shield (Only stay online)"), GetTranslated(610,27, -1))
+			GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_01", "G and E Full and Max.Trophy") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_02", "(G and E) Full or Max.Trophy") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_03", "(G or E) Full and Max.Trophy") & "|" & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_04", "G or E Full or Max.Trophy") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_05", "Gold and Elixir Full") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_06", "Gold or Elixir Full") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_07", "Gold Full and Max.Trophy") & "|" & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_08", "Elixir Full and Max.Trophy") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_09", "Gold Full or Max.Trophy") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_10", "Elixir Full or Max.Trophy") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_11", "Gold Full") & "|" & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_12", "Elixir Full") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_13", "Reach Max. Trophy") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_14", "Dark Elixir Full") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_15", "All Storage (G+E+DE) Full") & "|" & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_16", "Bot running for...") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_17", "Now (Train/Donate Only)") & "|" & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_18", "Now (Donate Only)") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_19", "Now (Only stay online)") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_20", "W/Shield (Train/Donate Only)") & "|" & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_21", "W/Shield (Donate Only)") & "|" & _
+			GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_22", "W/Shield (Only stay online)"), GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "CmbBotCond_Item_17", -1))
 			GUICtrlSetOnEvent(-1, "cmbBotCond")
 			GUICtrlSetState (-1, $GUI_DISABLE)
 
 		$g_hCmbHoursStop = GUICtrlCreateCombo("", $x + 340, $y - 3, 80, 35, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, $sTxtTip)
-			Local $sTxtHours = GetTranslated(603,14, "Hours")
-			GUICtrlSetData(-1, "-|1 " & GetTranslated(603,15, "Hour") & "|2 " & $sTxtHours & "|3 " & $sTxtHours & "|4 " & $sTxtHours & "|5 " & $sTxtHours & "|6 " & $sTxtHours & "|7 " & $sTxtHours & "|8 " & $sTxtHours & "|9 " & $sTxtHours & "|10 " & $sTxtHours & "|11 " & $sTxtHours & "|12 " & $sTxtHours& "|13 " & $sTxtHours & "|14 " & $sTxtHours & "|15 " & $sTxtHours & "|16 " & $sTxtHours & "|17 " & $sTxtHours & "|18 " & $sTxtHours & "|19 " & $sTxtHours & "|20 " & $sTxtHours & "|21 " & $sTxtHours & "|22 " & $sTxtHours & "|23 " & $sTxtHours & "|24 " & $sTxtHours, "-")
+			Local $sTxtHours = GetTranslatedFileIni("MBR Global GUI Design", "Hours", "Hours")
+			GUICtrlSetData(-1, "-|1 " & GetTranslatedFileIni("MBR Global GUI Design", "Hour", "Hour") & "|2 " & $sTxtHours & "|3 " & $sTxtHours & "|4 " & $sTxtHours & "|5 " & $sTxtHours & "|6 " & $sTxtHours & "|7 " & $sTxtHours & "|8 " & $sTxtHours & "|9 " & $sTxtHours & "|10 " & $sTxtHours & "|11 " & $sTxtHours & "|12 " & $sTxtHours& "|13 " & $sTxtHours & "|14 " & $sTxtHours & "|15 " & $sTxtHours & "|16 " & $sTxtHours & "|17 " & $sTxtHours & "|18 " & $sTxtHours & "|19 " & $sTxtHours & "|20 " & $sTxtHours & "|21 " & $sTxtHours & "|22 " & $sTxtHours & "|23 " & $sTxtHours & "|24 " & $sTxtHours, "-")
 			GUICtrlSetState (-1, $GUI_DISABLE)
 
 	  $y += 25
-		GUICtrlCreateLabel(GetTranslated(610,35, "The bot will Halt automatically when you run out of Resources. It will resume when reaching these minimal values."), $x + 20, $y, 400, 25, $BS_MULTILINE)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "LblBotWillHaltAutomatically", "The bot will Halt automatically when you run out of Resources. It will resume when reaching these minimal values."), $x + 20, $y, 400, 25, $BS_MULTILINE)
 
 	  $y += 30
-		GUICtrlCreateLabel(GetTranslated(610,36, "Resume Attack") & ":", $x + 20, $y + 2, 80, -1)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "LblResumeAttack", "Resume Attack") & ":", $x + 20, $y + 2, 80, -1)
 
 	  $x += 90
 		GUICtrlCreateLabel(ChrW(8805), $x + 22, $y + 2, -1, -1)
 		GUICtrlCreateIcon ($g_sLibIconPath, $eIcnGold, $x + 84, $y, 16, 16)
 		$g_hTxtRestartGold = GUICtrlCreateInput("10000", $x + 32, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, GetTranslated(610,37, "Minimum Gold value for the bot to resume attacking after halting because of low gold."))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtRestartGold_Info_01", "Minimum Gold value for the bot to resume attacking after halting because of low gold."))
 			GUICtrlSetLimit(-1, 7)
 
 	  $x += 90
 		GUICtrlCreateLabel(ChrW(8805), $x + 22, $y + 2, -1, -1)
 		GUICtrlCreateIcon ($g_sLibIconPath, $eIcnElixir, $x + 84, $y, 16, 16)
 		$g_hTxtRestartElixir = GUICtrlCreateInput("25000", $x + 32, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, GetTranslated(610,38, "Minimum Elixir value for the bot to resume attacking after halting because of low elixir."))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtRestartElixir_Info_01", "Minimum Elixir value for the bot to resume attacking after halting because of low elixir."))
 			GUICtrlSetLimit(-1, 7)
 
 	  $x += 90
 		GUICtrlCreateLabel(ChrW(8805), $x + 22, $y + 2, -1, -1)
 		GUICtrlCreateIcon ($g_sLibIconPath, $eIcnDark, $x + 84, $y, 16, 16)
 		$g_hTxtRestartDark = GUICtrlCreateInput("500", $x + 32, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, GetTranslated(610,39, "Minimum Dark Elixir value for the bot to resume attacking after halting because of low dark elixir."))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtRestartDark_Info_01", "Minimum Dark Elixir value for the bot to resume attacking after halting because of low dark elixir."))
 			GUICtrlSetLimit(-1, 6)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
    Local $x = 15, $y = 148
-   GUICtrlCreateGroup(GetTranslated(610,40, "Rearm, Collect, Clear"), $x -10, $y - 20 , $g_iSizeWGrpTab2, 235)
+   GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_02", "Rearm, Collect, Clear"), $x -10, $y - 20 , $g_iSizeWGrpTab2, 235)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrap, $x + 7, $y, 24, 24)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnXbow, $x + 32, $y, 24, 24)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnInferno, $x + 57, $y, 24, 24)
-		$g_hChkTrap = GUICtrlCreateCheckbox(GetTranslated(610,41, "Rearm Traps && Reload Xbows and Infernos"), $x + 100, $y + 4, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(610,42, "Check this to automatically Rearm Traps, Reload Xbows and Infernos (if any) in your Village."))
+		$g_hChkTrap = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTrap", "Rearm Traps && Reload Xbows and Infernos"), $x + 100, $y + 4, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTrap_Info_01", "Check this to automatically Rearm Traps, Reload Xbows and Infernos (if any) in your Village."))
 			GUICtrlSetState(-1, $GUI_CHECKED)
 
 	  $y += 35
@@ -99,20 +99,20 @@ Func CreateVillageMisc()
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 24, 24)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnDrill, $x + 45, $y, 24, 24)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnLootCart, $x + 70, $y, 24, 24)
-		$g_hChkCollect = GUICtrlCreateCheckbox(GetTranslated(610,43, "Collect Resources && Loot Cart"), $x + 100, $y + 4, -1, -1, -1)
+		$g_hChkCollect = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCollect", "Collect Resources && Loot Cart"), $x + 100, $y + 4, -1, -1, -1)
 			GUICtrlSetOnEvent(-1, "ChkCollect")
-			_GUICtrlSetTip(-1, GetTranslated(610,44, "Check this to automatically collect the Village's Resources") & @CRLF & _
-							   GetTranslated(610,45, "from Gold Mines, Elixir Collectors and Dark Elixir Drills.") & @CRLF & _
-							   GetTranslated(610,46, "This will also search for a Loot Cart in your village and collect it."))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCollect_Info_01", "Check this to automatically collect the Village's Resources") & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCollect_Info_02", "from Gold Mines, Elixir Collectors and Dark Elixir Drills.") & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCollect_Info_03", "This will also search for a Loot Cart in your village and collect it."))
 			GUICtrlSetState(-1, $GUI_CHECKED)
 
 		$y += 35
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTreasury, $x + 22, $y - 10, 48, 48)
-		$g_hChkTreasuryCollect = GUICtrlCreateCheckbox(GetTranslated(610, 81, "Treasury"), $x + 100, $y + 4, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(610, 82, "Check this to automatically collect Treasury when FULL,") & @CRLF & _
-					GetTranslated(610, 83,"'OR' when Storage values are BELOW minimum values on right,") & @CRLF & _
-					GetTranslated(610, 84,"Use zero as min values to ONLY collect when Treasury is full") & @CRLF & _
-					GetTranslated(610, 85,"Large minimum values will collect Treasury loot more often!"))
+		$g_hChkTreasuryCollect = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTreasuryCollect", "Treasury"), $x + 100, $y + 4, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTreasuryCollect_Info_01", "Check this to automatically collect Treasury when FULL,") & @CRLF & _
+					GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTreasuryCollect_Info_02", "'OR' when Storage values are BELOW minimum values on right,") & @CRLF & _
+					GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTreasuryCollect_Info_03", "Use zero as min values to ONLY collect when Treasury is full") & @CRLF & _
+					GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTreasuryCollect_Info_04", "Large minimum values will collect Treasury loot more often!"))
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "ChkTreasuryCollect")
 
@@ -122,122 +122,98 @@ Func CreateVillageMisc()
 		GUICtrlCreateLabel("<", $x + 50, $y + 6, -1, -1)
 		$g_hTxtTreasuryGold = GUICtrlCreateInput("1000000", $x + 75, $y + 4, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState (-1, $GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslated(610, 86, "Minimum Gold Storage amount to collect Treasury.") & @CRLF & _
-					GetTranslated(610, 87, "Set same as Resume Attack values to collect when 'out of gold' error") & @CRLF & _
-					GetTranslated(610, 88, "happens while searching for attack") & @CRLF & GetTranslated(610, 85, -1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryGold_Info_01", "Minimum Gold Storage amount to collect Treasury.") & @CRLF & _
+					GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryGold_Info_02", "Set same as Resume Attack values to collect when 'out of gold' error") & @CRLF & _
+					GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryGold_Info_03", "happens while searching for attack") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTreasuryCollect_Info_01",  -1))
 			GUICtrlSetLimit(-1, 7)
 		$y += 12
-		GUICtrlCreateLabel(GetTranslated(610, 89, "Or"), $x, $y + 6, -1, -1)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "LblTreasuryOr", "Or"), $x, $y + 6, -1, -1)
 		$y += 12
 		GUICtrlCreateIcon ($g_sLibIconPath, $eIcnElixir, $x + 58, $y + 4, 16, 16)
 		GUICtrlCreateLabel("<", $x + 50, $y + 6, -1, -1)
 		$g_hTxtTreasuryElixir = GUICtrlCreateInput("1000000", $x + 75, $y + 4, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState (-1, $GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslated(610, 90, "Minimum Elixir Storage amount to collect Treasury.") & @CRLF & _
-					GetTranslated(610, 91, "Set same as Resume Attack values to collect when 'out of elixir' error") & @CRLF & _
-					GetTranslated(610, 92, "happens during troop training") & @CRLF & GetTranslated(610, 85, -1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryElixir_Info_01", "Minimum Elixir Storage amount to collect Treasury.") & @CRLF & _
+					GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryElixir_Info_02", "Set same as Resume Attack values to collect when 'out of elixir' error") & @CRLF & _
+					GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryElixir_Info_03", "happens during troop training") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTreasuryCollect_Info_01",  -1))
 			GUICtrlSetLimit(-1, 7)
 		$y -= 12
 		$x += 126
-		GUICtrlCreateLabel(GetTranslated(610, 89, -1), $x + 4, $y + 6, -1, -1)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "LblTreasuryOr", -1), $x + 4, $y + 6, -1, -1)
 		GUICtrlCreateIcon ($g_sLibIconPath, $eIcnDark, $x + 58, $y + 4, 16, 16)
 		GUICtrlCreateLabel("<", $x + 50, $y + 6, -1, -1)
 		$g_hTxtTreasuryDark = GUICtrlCreateInput("1000", $x + 75, $y + 4, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState (-1, $GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslated(610, 93, "Minimum Dark Elixir Storage amount to collect Treasury.") & @CRLF & _
-					GetTranslated(610, 91, -1) & @CRLF & GetTranslated(610, 92, -1) & @CRLF & GetTranslated(610, 85, -1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryDark_Info_01", "Minimum Dark Elixir Storage amount to collect Treasury.") & @CRLF & _
+					GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryElixir_Info_02", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtTreasuryElixir_Info_03", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTreasuryCollect_Info_01",  -1))
 			GUICtrlSetLimit(-1, 6)
 
 	$x -= (170 + 126)
 	  $y += 35
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTombstone, $x + 32 , $y, 24, 24)
-		$g_hChkTombstones = GUICtrlCreateCheckbox(GetTranslated(610,47, "Clear Tombstones"), $x + 100, $y + 4, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(610,48, "Check this to automatically clear tombstones after enemy attack."))
+		$g_hChkTombstones = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTombstones", "Clear Tombstones"), $x + 100, $y + 4, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkTombstones_Info_01", "Check this to automatically clear tombstones after enemy attack."))
 			GUICtrlSetState(-1, $GUI_CHECKED)
 
 	  $y += 35
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTree, $x + 20, $y, 24, 24)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnBark, $x + 45, $y, 24, 24)
-		$g_hChkCleanYard = GUICtrlCreateCheckbox(GetTranslated(610,49, "Remove Obstacles"), $x + 100, $y + 4, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(610,50, "Check this to automatically clear Yard from Trees, Trunks, etc."))
+		$g_hChkCleanYard = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCleanYard", "Remove Obstacles"), $x + 100, $y + 4, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCleanYard_Info_01", "Check this to automatically clear Yard from Trees, Trunks, etc."))
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 
 	  $y += 35
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnGembox, $x + 32, $y, 24, 24)
-		$g_hChkGemsBox = GUICtrlCreateCheckbox(GetTranslated(610,51, "Remove GemBox"), $x + 100, $y + 4, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(610,52, "Check this to automatically clear GemBox."))
+		$g_hChkGemsBox = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkGemsBox", "Remove GemBox"), $x + 100, $y + 4, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkGemsBox_Info_01", "Check this to automatically clear GemBox."))
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
    Local $x = 20, $y = 385
-   GUICtrlCreateGroup(GetTranslated(610,53, "Locate Manually"), $x - 15, $y - 20, $g_iSizeWGrpTab2, 65)
-		Local $sTxtRelocate = GetTranslated(610,55, "Relocate your") & " "
+   GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_03", "Locate Manually"), $x - 15, $y - 20, $g_iSizeWGrpTab2, 65)
+		Local $sTxtRelocate = GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtRelocate_Info_01", "Relocate your") & " "
 		$X -= 11
 		$y += 0
-		GUICtrlCreateButton(GetTranslated(610,54, "Townhall"), $x, $y, 36, 36, $BS_ICON)
+		GUICtrlCreateButton(GetTranslatedFileIni("MBR Global GUI Design", "LblTownhall", "Townhall"), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnTH11, 1)
-			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,54, -1))
+			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnTownhall", -1))
 			GUICtrlSetOnEvent(-1, "btnLocateTownHall")
 
 		$x += 38
-		GUICtrlCreateButton(GetTranslated(610,56, "Clan Castle"), $x, $y, 36, 36, $BS_ICON)
+		GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnCC", "Clan Castle"), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnCC, 1)
-			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,56, -1))
+			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnCC", -1))
 			GUICtrlSetOnEvent(-1, "btnLocateClanCastle")
 
-;~ 		$x += 38
-;~ 		GUICtrlCreateButton(GetTranslated(610,57, "A.C."), $x, $y, 36, 36, $BS_ICON)
-;~ 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnCamp, 1)
-;~ 			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,58, "Army Camp"))
-;~ 			GUICtrlSetOnEvent(-1, "btnLocateArmyCamp")
-
-;~ 		$x += 38
-;~ 		GUICtrlCreateButton(GetTranslated(610,59, "Bar."), $x, $y, 36, 36, $BS_ICON)
-;~ 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnBarrack, 1)
-;~ 			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,60, "Barrack"))
-;~ 			GUICtrlSetOnEvent(-1, "btnLocateBarracks")
-
-;~ 		$x += 38
-;~ 		$g_hBtnLocateSpellfactory = GUICtrlCreateButton(GetTranslated(610,61, "S.F."), $x, $y, 36, 36, $BS_ICON)
-;~ 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnSpellFactory, 1)
-;~ 			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,62, "Spell Factory"))
-;~ 			GUICtrlSetOnEvent(-1, "btnLocateSpellfactory")
-
-;~ 		$x += 38
-;~ 		$g_hBtnLocateDarkSpellFactory = GUICtrlCreateButton(GetTranslated(610,63, "D.S.F."), $x, $y, 36, 36, $BS_ICON)
-;~ 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnDarkSpellFactory, 1)
-;~ 			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,64, "Dark Spell Factory"))
-;~ 			GUICtrlSetOnEvent(-1, "btnLocateDarkSpellfactory")
-
 		$x += 38
-		$g_hBtnLocateKingAltar = GUICtrlCreateButton(GetTranslated(603, 33, "King"), $x, $y, 36, 36, $BS_ICON)
+		$g_hBtnLocateKingAltar = GUICtrlCreateButton(GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", "King"), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnKingBoostLocate)
-			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,66, "Barbarian King Altar"))
+			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnAltarKing_Info_01", "Barbarian King Altar"))
 			GUICtrlSetOnEvent(-1, "btnLocateKingAltar")
 
 	    $x += 38
-		$g_hBtnLocateQueenAltar = GUICtrlCreateButton(GetTranslated(603, 34, "Queen"), $x, $y, 36, 36, $BS_ICON)
+		$g_hBtnLocateQueenAltar = GUICtrlCreateButton(GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", "Queen"), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnQueenBoostLocate)
-			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,68, "Archer Queen Altar"))
+			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnAltarQueen_Info_01", "Archer Queen Altar"))
 			GUICtrlSetOnEvent(-1, "btnLocateQueenAltar")
 
 		$x += 38
-		$g_hBtnLocateWardenAltar = GUICtrlCreateButton(GetTranslated(603, 35, "Grand Warden"), $x, $y, 36, 36, $BS_ICON)
+		$g_hBtnLocateWardenAltar = GUICtrlCreateButton(GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", "Grand Warden"), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnWardenBoostLocate)
-			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,70, "Grand Warden Altar"))
+			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnAltarWarden_Info_01", "Grand Warden Altar"))
 			GUICtrlSetOnEvent(-1, "btnLocateWardenAltar")
 
 		$x += 38
-		$g_hBtnLocateLaboratory = GUICtrlCreateButton(GetTranslated(610,71, "Lab."), $x, $y, 36, 36, $BS_ICON)
+		$g_hBtnLocateLaboratory = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnLocateLaboratory", "Lab."), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnLaboratory)
-			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslated(610,72, "Laboratory"))
+			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnLocateLaboratory_Info_01", "Laboratory"))
 			GUICtrlSetOnEvent(-1, "btnLab")
 
 		$x += 205
-		GUICtrlCreateButton(GetTranslated(610,73, "Reset."), $x, $y, 36, 36, $BS_ICON)
+		GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnReset", "Reset."), $x, $y, 36, 36, $BS_ICON)
 			GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnBldgX)
-			_GUICtrlSetTip(-1, GetTranslated(610,74, "Click here to reset all building locations,") & @CRLF & _
-							   GetTranslated(610,75, "when you have changed your village layout."))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnReset_Info_01", "Click here to reset all building locations,") & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnReset_Info_02", "when you have changed your village layout."))
 			GUICtrlSetOnEvent(-1, "btnResetBuilding")
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc

@@ -30,13 +30,13 @@ Func CreateAttackSearchTHSnipe()
    GUISwitch($g_hGUI_THSNIPE)
 
    $g_hGUI_THSNIPE_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
-   $g_hGUI_THSNIPE_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslated(600,28,"Search"))
+   $g_hGUI_THSNIPE_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_01", -1))
    CreateAttackSearchTHSnipeSearch()
 
-   $g_hGUI_THSNIPE_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslated(600,29,"Attack"))
+   $g_hGUI_THSNIPE_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_02", -1))
    CreateAttackSearchTHSnipeAttack()
 
-   $g_hGUI_THSNIPE_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslated(600,30,"End Battle"))
+   $g_hGUI_THSNIPE_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_03", -1))
    CreateAttackSearchTHSnipeEndBattle()
 
    ;GUISetState()

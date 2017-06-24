@@ -16,6 +16,7 @@
 
 Global Const $g_sAdbScriptsPath = $g_sLibPath & "\adb.scripts" ; ADD script and event files folder
 Global Const $g_sAndroidAdbPrompt = "mybot.run:" ; Single instance of ADB PS1 prompt
+Global $g_iAndroidCoCPid = 0 ; Android CoC process PID for suspend and resume
 Global $g_iAndroidAdbProcess = [0, 0, 0, 0, 0] ; Single instance of ADB used for screencap, 0: PID, 1: StdIn handles, 2: StdOut handles, 3: Process handle, 4: Thread handle
 Global $g_aiAndroidAdbClicks[1] = [-1] ; Stores clicks after KeepClicks() called, fired and emptied with ReleaseClicks()
 Global $g_aiAndroidAdbStatsTotal[2][2] = [ _
@@ -178,6 +179,7 @@ Func UpdateHWnD($hWin)
 		EndIf
 		$g_hAndroidWindow = 0
 		$g_hAndroidControl = 0
+		ResetAndroidProcess()
 		Return False
 	EndIf
 	If $g_hAndroidWindow <> 0 Then
@@ -187,17 +189,21 @@ Func UpdateHWnD($hWin)
 
 	$g_hAndroidWindow = $hWin
 	CheckDpiAwareness()
+	; reset time lag
+	InitAndroidTimeLag()
+	ResetAndroidProcess()
 	#cs Was coded for LeapDroid when manually launch DPI unaware and bot was DPI aware, then bot resize LeapDroid but too pixy... unfortunately making bot DPI aware did not fix it, so better just restart bot?
 		If CheckDpiAwareness(True) Then
 		; check if Android must become DPI Aware
 		If GetProcessDpiAwareness(GetAndroidPid()) = 0 Then	AndroidDpiAwareness()
 		EndIf
 	#ce
-	Local $hCtrl = ControlGetHandle($hWin, $g_sAppPaneName, $g_sAppClassInstance)
+	Local $hCtrl = ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance)
 	If $hCtrl = 0 Then
 		$g_hAndroidControl = 0
 		Return False
 	EndIf
+	$g_sAppClassInstance = $g_sControlGetHandle2_Classname
 	Local $hWinParent = __WinAPI_GetParent($hCtrl)
 	If $hWinParent = 0 Then
 		$g_hAndroidControl = 0
@@ -222,7 +228,7 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 		If IsArray($aPos) Then
 			If $g_bAndroidEmbedded = False And _CheckWindowVisibility($g_hAndroidWindow, $aPos) Then
 				SetDebugLog("Android Window '" & $g_sAndroidTitle & "' not visible, moving to position: " & $aPos[0] & ", " & $aPos[1])
-				WinMove2($g_hAndroidWindow, "", $aPos[0], $aPos[1])
+				WinMove($g_hAndroidWindow, "", $aPos[0], $aPos[1])
 				$aPos = WinGetPos($g_hAndroidWindow)
 			EndIf
 		EndIf
@@ -232,7 +238,7 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 			; Restore original Android Window position
 			If $g_bAndroidEmbedded = False And IsArray($aPos) = 1 And ($g_bIsHidden = False Or ($aPos[0] > -30000 Or $aPos[1] > -30000)) Then
 				SetDebugLog("Move Android Window '" & $g_sAndroidTitle & "' to position: " & $g_iAndroidPosX & ", " & $g_iAndroidPosY)
-				WinMove2($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+				WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
 				$aPos[0] = $g_iAndroidPosX
 				$aPos[1] = $g_iAndroidPosY
 			EndIf
@@ -254,7 +260,7 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 			EndIf
 			If $g_bIsHidden = True And ($aPos[0] > -30000 Or $aPos[1] > -30000) Then
 				; rehide Android
-				WinMove2($g_hAndroidWindow, "", -32000, -32000)
+				WinMove($g_hAndroidWindow, "", -32000, -32000)
 			EndIf
 		EndIf
 		$g_bWinGetAndroidHandleActive = False
@@ -370,7 +376,7 @@ Func _WinGetAndroidHandle($bFindByTitle = False)
 				$hWin = $aWinList[$i][1]
 				$t = $aWinList[$i][0]
 				If $g_sAndroidTitle = $t Then
-					Local $hCtrl = ControlGetHandle($hWin, $g_sAppPaneName, $g_sAppClassInstance)
+					Local $hCtrl = ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance)
 					If $hCtrl <> 0 Then
 						SetDebugLog("Found " & $g_sAndroidEmulator & " Window '" & $t & "' (" & $hWin & ") by matching title '" & $g_sAndroidTitle & "' (#1)")
 						UpdateHWnD($hWin)
@@ -395,7 +401,7 @@ Func _WinGetAndroidHandle($bFindByTitle = False)
 		If $error = 0 Then
 			; window found, check title for case insensitive match
 			$t = WinGetTitle($hWin)
-			If $g_sAndroidTitle = $t And ControlGetHandle($hWin, $g_sAppPaneName, $g_sAppClassInstance) <> 0 Then
+			If $g_sAndroidTitle = $t And ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance) <> 0 Then
 				; all good, update $g_hAndroidWindow and exit
 				If $g_hAndroidWindow <> $hWin Then SetDebugLog("Found " & $g_sAndroidEmulator & " Window '" & $t & "' (" & $hWin & ") by matching title '" & $g_sAndroidTitle & "' (#2)")
 				UpdateHWnD($hWin)
@@ -432,7 +438,7 @@ Func _WinGetAndroidHandle($bFindByTitle = False)
 			For $i = 1 To $aWinList[0][0]
 				$t = $aWinList[$i][0]
 				$hWin = $aWinList[$i][1]
-				If StringRight($t, StringLen($g_sAndroidInstance)) = $g_sAndroidInstance And ControlGetHandle($hWin, $g_sAppPaneName, $g_sAppClassInstance) <> 0 Then
+				If StringRight($t, StringLen($g_sAndroidInstance)) = $g_sAndroidInstance And ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance) <> 0 Then
 					; looks good, update $g_hAndroidWindow, $g_sAndroidTitle and exit
 					SetDebugLog("Found " & $g_sAndroidEmulator & " Window '" & $t & "' (" & $hWin & ") for instance " & $g_sAndroidInstance)
 					UpdateHWnD($hWin)
@@ -475,7 +481,7 @@ Func _WinGetAndroidHandle($bFindByTitle = False)
 				For $i = 1 To $aWinList[0][0]
 					$t = $aWinList[$i][0]
 					$hWin = $aWinList[$i][1]
-					If $pid = WinGetProcess($hWin) And ControlGetHandle($hWin, $g_sAppPaneName, $g_sAppClassInstance) <> 0 Then
+					If $pid = WinGetProcess($hWin) And ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance) <> 0 Then
 						SetDebugLog("Found " & $g_sAndroidEmulator & " Window '" & $t & "' (" & $hWin & ") by PID " & $pid & " ('" & $commandLine & "')")
 						UpdateHWnD($hWin)
 						$g_sAndroidTitle = UpdateAndroidWindowTitle($g_hAndroidWindow, $t)
@@ -698,6 +704,7 @@ Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
 			, ((IsArray($g_avAndroidProgramFileVersionInfo) ? _ArrayToString($g_avAndroidProgramFileVersionInfo, ",", 1) : "not available")) _
 			, $g_iAndroidSecureFlags _
 			, $g_sAndroidAdbPath _
+			, $__VBoxManage_Path _
 			, $g_sAndroidAdbDevice _
 			, $g_sAndroidPicturesPath _
 			, $g_sAndroidPicturesHostPath _
@@ -743,6 +750,7 @@ Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
 		If CompareAndUpdate($aPriorValues[IncrUpdate($i)], $sText) Or $bLogChangesOnly = False Then SetDebugLog("Android Program FileVersionInfo: " & $sText)
 		If CompareAndUpdate($aPriorValues[IncrUpdate($i)], $g_iAndroidSecureFlags) Or $bLogChangesOnly = False Then SetDebugLog("Android SecureME setting: " & $g_iAndroidSecureFlags)
 		If CompareAndUpdate($aPriorValues[IncrUpdate($i)], $g_sAndroidAdbPath) Or $bLogChangesOnly = False Then SetDebugLog("Android ADB Path: " & $g_sAndroidAdbPath)
+		If CompareAndUpdate($aPriorValues[IncrUpdate($i)], $__VBoxManage_Path) Or $bLogChangesOnly = False Then SetDebugLog("Android VBoxManage Path: " & $__VBoxManage_Path)
 		If CompareAndUpdate($aPriorValues[IncrUpdate($i)], $g_sAndroidAdbDevice) Or $bLogChangesOnly = False Then SetDebugLog("Android ADB Device: " & $g_sAndroidAdbDevice)
 		If CompareAndUpdate($aPriorValues[IncrUpdate($i)], $g_sAndroidPicturesPath) Or $bLogChangesOnly = False Then SetDebugLog("Android ADB Shared Folder: " & $g_sAndroidPicturesPath)
 		; check if share folder exists
@@ -897,6 +905,7 @@ Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True)
 	;$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "connect " & $g_sAndroidAdbDevice, $process_killed)
 	;$connected_to = StringInStr($cmdOutput, "connected to")
 
+	ResetAndroidProcess()
 	Local $sRestart = ""
 	If $bRestart = True Then
 		SetLog("Please wait for CoC restart......", $COLOR_INFO) ; Let user know we need time...
@@ -929,11 +938,23 @@ Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True)
 	If Not $g_bRunState Then Return False
 	AndroidAdbLaunchShellInstance()
 
+	; reset time lag
+	InitAndroidTimeLag()
+
 	Return True
 EndFunc   ;==>RestartAndroidCoC
 
+; Reset variables that track running CoC App
+Func ResetAndroidProcess()
+	$g_iAndroidCoCPid = 0
+	$g_bMainWindowOk = False
+EndFunc   ;==>ResetAndroidProcess
+
+
 Func CloseAndroid($sSource)
 	ResumeAndroid()
+
+	ResetAndroidProcess()
 
 	SetLog("Stopping " & $g_sAndroidEmulator & "....", $COLOR_INFO)
 	SetDebugLog("CloseAndroid, caller: " & $sSource)
@@ -1103,7 +1124,7 @@ Func AquireAdbDaemonMutex($timout = 30000)
 	Local $timer = __TimerInit()
 	Local $g_hMutex_MyBot = 0
 	While $g_hMutex_MyBot = 0 And __TimerDiff($timer) < $timout
-		$g_hMutex_MyBot = _Singleton("MyBot.run/AdbDaemonLaunch", 1)
+		$g_hMutex_MyBot = CreateMutex("MyBot.run/AdbDaemonLaunch")
 		If $g_hMutex_MyBot <> 0 Then ExitLoop
 		If _Sleep(250) Then ExitLoop
 	WEnd
@@ -1111,9 +1132,7 @@ Func AquireAdbDaemonMutex($timout = 30000)
 EndFunc   ;==>AquireAdbDaemonMutex
 
 Func ReleaseAdbDaemonMutex($hMutex, $ReturnValue = Default)
-	_WinAPI_CloseHandle($hMutex)
-	If $ReturnValue = Default Then Return
-	Return $ReturnValue
+	Return ReleaseMutex($hMutex, $ReturnValue)
 EndFunc   ;==>ReleaseAdbDaemonMutex
 
 Func KillAdbDaemon($bMutexLock = True)
@@ -1342,53 +1361,35 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIf
 				EndIf
 			Next
 		EndIf
-
 		If $g_bAndroidAdbInstance = True Then
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
 				Return SetError(3, 0)
 			EndIf
 			;$g_iAndroidAdbProcess[0] = Run($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED))
-			$g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2])
+			$g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
 			If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 				SetLog($g_sAndroidEmulator & " error launching ADB for background mode, zoom-out, mouse click and input", $COLOR_ERROR)
 				$g_bAndroidAdbScreencap = False
 				$g_bAndroidAdbClick = False
 				$g_bAndroidAdbInput = False
 				If BitAND($g_iAndroidSupportFeature, 1) = 0 Then $g_bChkBackgroundMode = False ; disable also background mode the hard way
-				SetError(1, 0)
-			EndIf
-			; increase shell priority
-			$s = AndroidAdbSendShellCommand("PS1=" & $g_sAndroidAdbPrompt, Default, $wasRunState, False) ; set prompt to unique string $g_sAndroidAdbPrompt
-			#cs 2016-04-08 cosote Replaced by shell.init.script
-				Local $renice = "/system/xbin/renice -20 "
-				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
-				If StringInStr($s, "not found") > 0 Then
-				$renice = "renice -- -20 "
-				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
-				EndIf
-				$s &= AndroidAdbSendShellCommand("stop media", Default, $wasRunState, False) ; stop media service as it can consume up to 30% Android CPU
-			#ce
-			Local $scriptFile = ""
-			If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\shell.init." & $g_sAndroidEmulator & ".script") = 1 Then $scriptFile = "shell.init." & $g_sAndroidEmulator & ".script"
-			If $scriptFile = "" Then $scriptFile = "shell.init.script"
-			$s &= AndroidAdbSendShellCommandScript($scriptFile, Default, Default, Default, $wasRunState, False)
-			Local $error = @error
-			SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
-			If $error <> 0 Then
-				SuspendAndroid($SuspendMode)
-				Return
+				Return SetError(1, 0)
 			EndIf
 		EndIf
+
 		; check shared folder
 		;If StringInStr($g_sAndroidPicturesPath, "|", $STR_NOCASESENSEBASIC) > 0 Then
-		If $g_bRunState = True Then ; always validate picture patch
+		If True Then ; always validate picture patch
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
 				Return SetError(3, 0)
 			EndIf
-
 			Local $pathFound = False
 			Local $iMount
 			For $iMount = 0 To 9
+				If $g_sAndroidPicturesPath = "" Then
+					SetDebugLog("Problem in configuration, $g_sAndroidPicturesPath is empty", $COLOR_ERROR)
+					ExitLoop
+				EndIf
 				$s = AndroidAdbSendShellCommand("mount", Default, $wasRunState, False)
 				Local $path = $g_sAndroidPicturesPath
 				If StringRight($path, 1) = "/" Then $path = StringLeft($path, StringLen($path) - 1)
@@ -1401,6 +1402,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIf
 				FileWriteLine($g_sAndroidPicturesHostPath & $dummyFile, _Now())
 				For $i = 0 To UBound($aRegExResult) - 1
 					$path = $aRegExResult[$i]
+					If $path = "" Then ContinueLoop
 					If StringRight($path, 1) <> "/" Then $path &= "/"
 					$s = AndroidAdbSendShellCommand("ls '" & $path & $dummyFile & "'", Default, $wasRunState, False)
 					If StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error:") = 0 Then
@@ -1422,6 +1424,30 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIf
 			Next
 			If $pathFound = False Then
 				SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
+			EndIf
+		EndIf
+		If $g_bAndroidAdbInstance = True Then
+			$s = ""
+			; increase shell priority
+			#cs 2016-04-08 cosote Replaced by shell.init.script
+				Local $renice = "/system/xbin/renice -20 "
+				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
+				If StringInStr($s, "not found") > 0 Then
+				$renice = "renice -- -20 "
+				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
+				EndIf
+				$s &= AndroidAdbSendShellCommand("stop media", Default, $wasRunState, False) ; stop media service as it can consume up to 30% Android CPU
+			#ce
+			Local $scriptFile = ""
+			If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\shell.init." & $g_sAndroidEmulator & ".script") = 1 Then $scriptFile = "shell.init." & $g_sAndroidEmulator & ".script"
+			If $scriptFile = "" Then $scriptFile = "shell.init.script"
+			$s &= AndroidAdbSendShellCommandScript($scriptFile, Default, Default, Default, $wasRunState, False)
+			$s &= AndroidAdbSendShellCommand("PS1=" & $g_sAndroidAdbPrompt, Default, $wasRunState, False) ; set prompt to unique string $g_sAndroidAdbPrompt
+			Local $error = @error
+			SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
+			If $error <> 0 Then
+				SuspendAndroid($SuspendMode)
+				Return
 			EndIf
 		EndIf
 		; check mouse device
@@ -2646,30 +2672,65 @@ Func AndroidInputSwipe($x1, $y1, $x2, $y2, $wasRunState = $g_bRunState) ; Not us
 	EndIf
 EndFunc   ;==>AndroidInputSwipe
 
-Func SuspendAndroid($SuspendMode = True, $bDebugLog = True, $bForceSuspendAndroid = False)
-	If $g_bAndroidSuspendedEnabled = False And $bForceSuspendAndroid = False Then Return False
+Func SuspendAndroid($SuspendMode = True, $bDebugLog = Default, $bForceSuspendAndroid = False)
+	If $bDebugLog = Default Then $bDebugLog = $g_iDebugSetlog > 0
+	If ($g_bAndroidSuspendedEnabled = False Or $g_iAndroidSuspendModeFlags = 0 Or $g_bMainWindowOk = False) And $bForceSuspendAndroid = False Then Return False
 	If $SuspendMode = False Then Return ResumeAndroid($bDebugLog, $bForceSuspendAndroid)
 	If $g_bAndroidSuspended = True Then Return True
-	Local $pid = GetAndroidSvcPid()
-	If $pid = -1 Or $pid = 0 Then $pid = GetAndroidPid()
-	If $pid = -1 Or $pid = 0 Then Return False
-	$g_bAndroidSuspended = True
-	_ProcessSuspendResume($pid, True) ; suspend Android
-	$g_iAndroidSuspendedTimer = __TimerInit()
+	Local $bSuspendProcess = BitAND($g_iAndroidSuspendModeFlags, 4) = 0
+	If $bSuspendProcess = True Then
+		; Suspend CoC Process
+		If $g_iAndroidCoCPid = 0 Then $g_iAndroidCoCPid = GetAndroidProcessPID(Default, False)
+		If $g_iAndroidCoCPid = 0 Then Return False
+		Local $s = AndroidAdbSendShellCommand("kill -STOP " & $g_iAndroidCoCPid) ; suspend CoC
+		If StringInStr($s, "No such process") > 0 Then
+			$g_iAndroidCoCPid = GetAndroidProcessPID(Default, False)
+			If $g_iAndroidCoCPid = 0 Then Return False
+			$s = AndroidAdbSendShellCommand("kill -STOP " & $g_iAndroidCoCPid) ; suspend CoC
+		EndIf
+		$g_bAndroidSuspended = True
+	Else
+		; Suspend entire Android
+		Local $pid = GetAndroidSvcPid()
+		If $pid = -1 Or $pid = 0 Then $pid = GetAndroidPid()
+		If $pid = -1 Or $pid = 0 Then Return False
+		;AndroidAdbSendShellCommand("input keyevent 26") ; sleep android
+		$g_bAndroidSuspended = True
+		_ProcessSuspendResume($pid, True) ; suspend Android
+		$g_iAndroidSuspendedTimer = __TimerInit()
+	EndIf
 	If $bDebugLog = True Then SetDebugLog("Android Suspended")
 	Return False
 EndFunc   ;==>SuspendAndroid
 
-Func ResumeAndroid($bDebugLog = True, $bForceSuspendAndroid = False)
-	If $g_bAndroidSuspendedEnabled = False And $bForceSuspendAndroid = False Then Return False
+Func ResumeAndroid($bDebugLog = Default, $bForceSuspendAndroid = False)
+	If $bDebugLog = Default Then $bDebugLog = $g_iDebugSetlog > 0
+	If ($g_bAndroidSuspendedEnabled = False Or $g_iAndroidSuspendModeFlags = 0) And $bForceSuspendAndroid = False Then Return False
 	If $g_bAndroidSuspended = False Then Return False
-	Local $pid = GetAndroidSvcPid()
-	If $pid = -1 Or $pid = 0 Then $pid = GetAndroidPid()
-	If $pid = -1 Or $pid = 0 Then Return False
-	$g_bAndroidSuspended = False
-	_ProcessSuspendResume($pid, False) ; resume Android
-	$g_aiAndroidTimeLag[3] += __TimerDiff($g_iAndroidSuspendedTimer) ; calculate total suspended time
-	If $bDebugLog = True Then SetDebugLog("Android Resumed (total time " & Round($g_aiAndroidTimeLag[3]) & " ms)")
+	Local $bSuspendProcess = BitAND($g_iAndroidSuspendModeFlags, 4) = 0
+	If $bSuspendProcess = True Then
+		; Resume CoC Process
+		$g_bAndroidSuspended = False
+		If $g_iAndroidCoCPid = 0 Then $g_iAndroidCoCPid = GetAndroidProcessPID(Default, False)
+		If $g_iAndroidCoCPid = 0 Then Return False
+		Local $s = AndroidAdbSendShellCommand("kill -CONT " & $g_iAndroidCoCPid) ; suspend CoC
+		If StringInStr($s, "No such process") > 0 Then
+			$g_iAndroidCoCPid = GetAndroidProcessPID(Default, False)
+			If $g_iAndroidCoCPid = 0 Then Return False
+			$s = AndroidAdbSendShellCommand("kill -CONT " & $g_iAndroidCoCPid) ; suspend CoC
+		EndIf
+		If $bDebugLog = True Then SetDebugLog("Android Resumed")
+	Else
+		; Resume entire Android
+		Local $pid = GetAndroidSvcPid()
+		If $pid = -1 Or $pid = 0 Then $pid = GetAndroidPid()
+		If $pid = -1 Or $pid = 0 Then Return False
+		$g_bAndroidSuspended = False
+		_ProcessSuspendResume($pid, False) ; resume Android
+		;AndroidAdbSendShellCommand("input keyevent 26") ; wake android
+		$g_aiAndroidTimeLag[3] += __TimerDiff($g_iAndroidSuspendedTimer) ; calculate total suspended time
+		If $bDebugLog = True Then SetDebugLog("Android Resumed (total time " & Round($g_aiAndroidTimeLag[3]) & " ms)")
+	EndIf
 	Return True
 EndFunc   ;==>ResumeAndroid
 
@@ -2762,7 +2823,8 @@ Func checkAndroidReboot($bRebootAndroid = True)
 
 EndFunc   ;==>checkAndroidReboot
 
-Func GetAndroidProcessPID($sPackage = $g_sAndroidGamePackage, $bForeground = True)
+Func GetAndroidProcessPID($sPackage = Default, $bForeground = True)
+	If $sPackage = Default Then $sPackage = $g_sAndroidGamePackage
 	; u0_a58    4395  580   1135308 187040 14    -6    0     0     ffffffff 00000000 S com.supercell.clashofclans
 	If AndroidInvalidState() Then Return 0
 	Local $cmd = "ps -p|grep """ & $g_sAndroidGamePackage & """"
@@ -2795,9 +2857,9 @@ Func HideAndroidWindow($bHide = True)
 
 	Execute("Hide" & $g_sAndroidEmulator & "Window($bHide)")
 	If $bHide = True Then
-		WinMove2($g_hAndroidWindow, "", -32000, -32000)
+		WinMove($g_hAndroidWindow, "", -32000, -32000)
 	ElseIf $bHide = False Then
-		WinMove2($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+		WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
 		WinActivate($g_hAndroidWindow)
 	EndIf
 EndFunc   ;==>HideAndroidWindow

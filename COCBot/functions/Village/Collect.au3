@@ -1,12 +1,11 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: Collect
 ; Description ...:
 ; Syntax ........: Collect()
 ; Parameters ....:
 ; Return values .: None
-; Author ........: Code Gorilla #3
-; Modified ......: Sardo 2015-08, KnowJack(Aug 2015), kaganus (August 2015), ProMac (04-2016), Codeslinger69 (2017) - Human like bubble popping
+; Author ........:
+; Modified ......: Sardo (08-2015), KnowJack(10-2015), kaganus (10-2015), ProMac (04-2016), Codeslinger69 (01-2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -16,8 +15,8 @@
 #include-once
 
 Func Collect($Treasury = True)
-	If $g_bChkCollect = False Then Return
-	If $g_bRunState = False Then Return
+	If Not $g_bChkCollect Then Return
+	If Not $g_bRunState Then Return
 
 	ClickP($aAway, 1, 0, "#0332") ;Click Away
 
@@ -31,11 +30,25 @@ Func Collect($Treasury = True)
 	Local $directory = @ScriptDir & "\imgxml\Resources\Collect"
 	; Setup arrays, including default return values for $return
 	Local $Filename = ""
-	Local $CollectXY
+	Local $CollectXY, $t
 
 	Local $aResult = returnMultipleMatchesOwnVillage($directory)
-	If UBound($aResult) > 1 Then
 
+	If UBound($aResult) > 1 Then ; we have an array with data of images found
+		For $i = 1 To UBound($aResult) - 1  ; loop through array rows
+			$Filename = $aResult[$i][1] ; Filename
+			$CollectXY = $aResult[$i][5] ; Coords
+			If IsArray($CollectXY) Then ; found array of locations
+				$t = Random(0, UBound($CollectXY) - 1, 1) ; SC May 2017 update only need to pick one of each to collect all
+				If $g_iDebugSetlog = 1  Then SetLog($Filename & " found, random pick(" & $CollectXY[$t][0] & "," & $CollectXY[$t][1] & ")", $COLOR_GREEN)
+				If IsMainPage() Then Click($CollectXY[$t][0], $CollectXY[$t][1], 1, 0, "#0430")
+				If _Sleep($DELAYCOLLECT2) Then Return
+			EndIf
+		Next
+	EndIf
+
+	#comments-start  Remove fancy humanized resource collection :(
+	If UBound($aResult) > 1 Then
 		; Put all the found collectors/mines/pumps into a single XY array
 		Local $aiUnSortedMatchXY[1][2], $iMatchCount = 0
 		For $i = 1 To UBound($aResult) - 1
@@ -56,14 +69,13 @@ Func Collect($Treasury = True)
 				EndIf
 			EndIf
 		Next
-
 		; Sort the found collectors, then click on each in human like sequence
 		If $iMatchCount > 0 Then
 			Local $aiSortedMatchXY = SortXYArrayByClosestNeighbor($aiUnSortedMatchXY)
 			For $i = 0 To UBound($aiSortedMatchXY) - 1
 				If $g_iDebugSetlog = 1 Then SetLog("Sorted Collectors: " & $aiSortedMatchXY[$i][0] & "," & $aiSortedMatchXY[$i][1], $COLOR_SUCCESS)
 
-				If $g_bUseRandomClick = False Then
+				If Not $g_bUseRandomClick Then
 					Click($aiSortedMatchXY[$i][0], $aiSortedMatchXY[$i][1], 1, 0, "#0430")
 					If _Sleep($DELAYCOLLECT2) Then Return
 				Else
@@ -72,14 +84,14 @@ Func Collect($Treasury = True)
 				EndIf
 			Next
 		EndIf
-
 	EndIf
+	#comments-end
 
 	If _Sleep($DELAYCOLLECT3) Then Return
 	checkMainScreen(False) ; check if errors during function
 	; Loot Cart Collect Function
 
-	Setlog("Searching for a Loot Cart..", $COLOR_INFO)
+	SetLog("Searching for a Loot Cart..", $COLOR_INFO)
 
 	Local $LootCart = @ScriptDir & "\imgxml\Resources\LootCart\loot_cart_0_85.xml"
 	Local $LootCartX, $LootCartY
@@ -89,7 +101,7 @@ Func Collect($Treasury = True)
 	Local $MaxReturnPoints = 1
 
 	_CaptureRegion2()
-	Local $res = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $g_hHBitmap2, "str", $LootCart, "str", $fullCocAreas, "Int", $MaxReturnPoints)
+	Local $res = DllCallMyBot("FindTile", "handle", $g_hHBitmap2, "str", $LootCart, "str", $fullCocAreas, "Int", $MaxReturnPoints)
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 	If IsArray($res) Then
 		If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
@@ -100,7 +112,7 @@ Func Collect($Treasury = True)
 		Else
 			Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
 			;$expret contains 2 positions; 0 is the total objects; 1 is the point in X,Y format
-			If UBound($expRet) > 1 Then 
+			If UBound($expRet) > 1 Then
 				Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
 				If UBound($posPoint) > 1 Then
 					$LootCartX = Int($posPoint[0])

@@ -87,3 +87,16 @@ Func _logErrorDateAdd($ErrorCode)
 	EndSwitch
 	Setlog("_DateAdd error code = " & $sEmsg, $COLOR_ERROR)
 EndFunc   ;==>_logErrorDateAdd
+
+Func _logErrorGetBuilding($ErrorCode)
+	Local $sEmsg
+	Switch $ErrorCode
+		Case 1
+			$sEmsg = "1| Path missing in $g_oBldgImages dictionary"
+		Case 2
+			$sEmsg = "2| DLL found no buildings"
+		Case Else
+			$sEmsg = "Slap Code Monkey!"
+	EndSwitch
+	Setlog("# GetLocationBuilding error code: " & $sEmsg, $COLOR_ERROR)
+EndFunc   ;==>_logErrorGetBuilding

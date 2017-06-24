@@ -78,9 +78,9 @@ Func LocateUpgrades()
 				ContinueLoop
 			EndIf
 			AndroidShieldForceDown(True, True)
-			$stext = GetTranslated(640, 51, "Click 'Locate Building' button then click on your Building/Hero to upgrade.") & @CRLF & @CRLF & GetTranslated(640, 52, "Click 'Finished' button when done locating all upgrades.") & @CRLF & @CRLF & GetTranslated(640, 53, "Click on Cancel to exit finding buildings.") & @CRLF & @CRLF
+			$stext = GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_01", "Click 'Locate Building' button then click on your Building/Hero to upgrade.") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_02", "Click 'Finished' button when done locating all upgrades.") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_03", "Click on Cancel to exit finding buildings.") & @CRLF & @CRLF
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
-			$MsgBox = _ExtMsgBox(0, GetTranslated(640, 54, "Locate Building|Finished|Cancel"), GetTranslated(640, 55, "Locate Upgrades"), $stext, 0, $g_hFrmBot)
+			$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_04", "Locate Building|Finished|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_05", "Locate Upgrades"), $stext, 0, $g_hFrmBot)
 			Switch $MsgBox
 				Case 1 ; YES! we want to find a building.
 					Local $aPos = FindPos()
@@ -140,8 +140,8 @@ EndFunc   ;==>LocateUpgrades
 Func CheckUpgrades() ; Valdiate and determine the cost and type of the upgrade and change GUI boxes/pics to match
 	If AndroidShielded() = False Then
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		Local $stext = GetTranslated(640, 38, "Keep Mouse OUT of Android Emulator Window While I Check Your Upgrades, Thanks!!")
-		Local $MsgBox = _ExtMsgBox(48, GetTranslated(640, 36, "OK"), GetTranslated(640, 37, "Notice"), $stext, 15, $g_hFrmBot)
+		Local $stext = GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_06", "Keep Mouse OUT of Android Emulator Window While I Check Your Upgrades, Thanks!!")
+		Local $MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), GetTranslatedFileIni("MBR Popups", "Notice", "Notice"), $stext, 15, $g_hFrmBot)
 		If _Sleep($DELAYCHECKUPGRADES) Then Return
 		If $MsgBox <> 1 Then
 			Setlog("Something weird happened in getting upgrade values, try again", $COLOR_ERROR)
@@ -285,7 +285,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 
 		_CaptureRegion()
 		Select ;Ensure the right upgrade window is open!
-			Case _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY), Hex(0xE00408, 6), 20) ; Check if the building Upgrade window is open
+			Case _ColorCheck(_GetPixelColor(687, 161 + $g_iMidOffsetY), Hex(0xCD1419, 6), 20) ; Check if the building Upgrade window is open red bottom of white X to close
 				If _ColorCheck(_GetPixelColor(351, 485 + $g_iMidOffsetY), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
 					If $g_abUpgradeRepeatEnable[$inum] = True Then
 						Setlog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_ERROR)
@@ -305,14 +305,14 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					Return False
 				EndIf
 
-				If _ColorCheck(_GetPixelColor(477, 490 + $g_iMidOffsetY), Hex(0xF0E850, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Gold" ;Check if Gold required and update type
-				If _ColorCheck(_GetPixelColor(483, 486 + $g_iMidOffsetY), Hex(0xF030D8, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Elixir" ;Check if Elixir required and update type
+				If _ColorCheck(_GetPixelColor(485, 500 + $g_iMidOffsetY), Hex(0xFFD115, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Gold" ;Check if Gold required and update type
+				If _ColorCheck(_GetPixelColor(480, 500 + $g_iMidOffsetY), Hex(0xBD21EF, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Elixir" ;Check if Elixir required and update type
 
 				$g_avBuildingUpgrades[$inum][2] = Number(getResourcesBonus(366, 487 + $g_iMidOffsetY)) ; Try to read white text.
 				If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getUpgradeResource(366, 487 + $g_iMidOffsetY)) ;read RED upgrade text
 				If $g_avBuildingUpgrades[$inum][2] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then $bOopsFlag = True ; set error flag for user to set value if not repeat upgrade
 
-				$g_avBuildingUpgrades[$inum][6] = getBldgUpgradeTime(196, 304 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
+				$g_avBuildingUpgrades[$inum][6] = getBldgUpgradeTime(195, 307 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
 				Setlog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)
 				If $g_avBuildingUpgrades[$inum][6] <> "" Then $g_avBuildingUpgrades[$inum][7] = "" ; Clear old upgrade end time
 
@@ -335,7 +335,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					ClickP($aAway, 1, 0, "#0215") ;Click Away
 					Return False
 				EndIf
-				If _ColorCheck(_GetPixelColor(703, 535 + $g_iMidOffsetY), Hex(0x000000, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Dark" ; Check if DE required and update type
+				If _ColorCheck(_GetPixelColor(710, 535 + $g_iMidOffsetY), Hex(0x3C3035, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Dark" ; Check if DE required and update type
 				$g_avBuildingUpgrades[$inum][2] = Number(getResourcesBonus(598, 519 + $g_iMidOffsetY)) ; Try to read white text.
 				If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getUpgradeResource(598, 519 + $g_iMidOffsetY)) ;read RED upgrade text
 				If $g_avBuildingUpgrades[$inum][2] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then $bOopsFlag = True ; set error flag for user to set value
@@ -360,7 +360,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			If $iLoot = "" Then $iLoot = 8000000
 			Local $aBotLoc = WinGetPos($g_hFrmBot)
 
-			$inputbox = InputBox(GetTranslated(640, 56, "Text Read Error"), GetTranslated(640, 57, "Enter the cost of the upgrade"), $iLoot, "", -1, -1, $aBotLoc[0] + 125, $aBotLoc[1] + 225, -1, $g_hFrmBot)
+			$inputbox = InputBox(GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_07", "Text Read Error"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_08", "Enter the cost of the upgrade"), $iLoot, "", -1, -1, $aBotLoc[0] + 125, $aBotLoc[1] + 225, -1, $g_hFrmBot)
 			If @error Then
 				Setlog("InputBox error, data reset. Try again", $COLOR_ERROR)
 				ClearUpgradeInfo($inum) ; clear upgrade information
@@ -369,13 +369,13 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			$g_avBuildingUpgrades[$inum][2] = Int($inputbox)
 			Setlog("User input value = " & $g_avBuildingUpgrades[$inum][2], $COLOR_DEBUG)
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-			Local $stext = GetTranslated(640, 58, "Save copy of upgrade image for developer analysis ?")
-			Local $MsgBox = _ExtMsgBox(48, GetTranslated(640, 59, "YES|NO"), GetTranslated(640, 37, "Notice"), $stext, 60, $g_hFrmBot)
+			Local $stext = GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_09", "Save copy of upgrade image for developer analysis ?")
+			Local $MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "YES_NO", "YES|NO"), GetTranslatedFileIni("MBR Popups", "Notice", "Notice"), $stext, 60, $g_hFrmBot)
 			If $MsgBox = 1 And $g_iDebugImageSave = 1 Then DebugImageSave("UpgradeReadError_")
 		EndIf
 		If $g_avBuildingUpgrades[$inum][3] = "" And $bOopsFlag = True And $bRepeat = False Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
-			$inputbox = _ExtMsgBox(0, GetTranslated(640, 60, "   GOLD   |  ELIXIR  |DARK ELIXIR"), GetTranslated(640, 61, "Need User Help"), GetTranslated(640, 62, "Select Upgrade Type:"), 0, $g_hFrmBot)
+			$inputbox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_10", "   GOLD   |  ELIXIR  |DARK ELIXIR"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_11",  "Need User Help"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_12", "Select Upgrade Type:"), 0, $g_hFrmBot)
 			If $g_iDebugSetlog = 1 Then Setlog(" _MsgBox returned = " & $inputbox, $COLOR_DEBUG)
 			Switch $inputbox
 				Case 1

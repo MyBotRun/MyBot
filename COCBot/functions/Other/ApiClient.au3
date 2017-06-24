@@ -137,13 +137,13 @@ Func GetManagedMyBotHost($hFrmHost = Default)
 EndFunc   ;==>GetManagedMyBotHost
 
 Func LaunchWatchdog()
-	Local $hMutex = _Singleton($sWatchdogMutex, 1)
+	Local $hMutex = CreateMutex($sWatchdogMutex)
 	If $hMutex = 0 Then
 		; already running
 		SetDebugLog("Watchdog already running")
 		Return 0
 	EndIf
-	_WinAPI_CloseHandle($hMutex)
+	ReleaseMutex($hMutex)
 	Local $cmd = """" & @ScriptDir & "\MyBot.run.Watchdog.exe"""
 	If @Compiled = 0 Then $cmd = """" & @AutoItExe & """ /AutoIt3ExecuteScript """ & @ScriptDir & "\MyBot.run.Watchdog.au3" & """"
 	Local $pid = Run($cmd, @ScriptDir, @SW_HIDE)

@@ -29,48 +29,48 @@ Global $g_hLblAddTiles = 0, $g_hLblAddTiles2 = 0, $g_hLblSWTTiles = 0, $g_hLblTH
 Func CreateAttackSearchTHSnipeSearch()
    Local $sTxtTip = ""
    Local $x = 25, $y = 45
-	GUICtrlCreateGroup(GetTranslated(625,0, -1), $x - 20, $y - 20, 190, $g_iSizeHGrpTab4)
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "Group_01", -1), $x - 20, $y - 20, 190, $g_iSizeHGrpTab4)
 		$x -= 15
-		$g_hChkTSActivateSearches = GUICtrlCreateCheckbox(GetTranslated(603,5, -1), $x, $y, 68, 18)
-			_GUICtrlSetTip(-1, GetTranslated(625,68, -1) & @CRLF & GetTranslated(625,69, -1))
+		$g_hChkTSActivateSearches = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches", -1), $x, $y, 68, 18)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_02", -1))
 			GUICtrlSetState(-1,$GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "chkTSActivateSearches")
 		$g_hTxtTSSearchesMin = GUICtrlCreateInput("1", $x + 70, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, GetTranslated(625,2, -1) & @CRLF & @CRLF & _
-							   GetTranslated(625,68, -1) & @CRLF & _
-							   GetTranslated(625,69, -1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMinSearches_Info_01", -1) & @CRLF & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_02", -1))
 			GUICtrlSetLimit(-1, 6)
 		$g_hLblTSSearches = GUICtrlCreateLabel("-", $x + 113, $y + 2, -1, -1)
 		$g_hTxtTSSearchesMax = GUICtrlCreateInput("9999", $x + 120, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER)) ;ChrW(8734)
-			_GUICtrlSetTip(-1, GetTranslated(625,3, -1) & @CRLF & @CRLF & _
-						       GetTranslated(625,68, -1) & @CRLF & _
-							   GetTranslated(625,69,-1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMaxSearches_Info_01", -1) & @CRLF & @CRLF & _
+						       GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_02", -1))
 			GUICtrlSetLimit(-1, 6)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnMagnifier, $x + 163, $y + 1, 16, 16)
 
 	$y +=21
-		$g_hChkTSActivateTropies = GUICtrlCreateCheckbox(GetTranslated(625,4, -1), $x, $y, 68, 18)
-			_GUICtrlSetTip(-1, GetTranslated(625,68, -1) & @CRLF & GetTranslated(625,70,-1))
+		$g_hChkTSActivateTropies = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies",  -1), $x, $y, 68, 18)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
 			GUICtrlSetOnEvent(-1, "chkTSActivateTropies")
 		$g_hTxtTSTropiesMin = GUICtrlCreateInput("0", $x + 70, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1,$GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslated(625,5, -1) & @CRLF & @CRLF & _
-							   GetTranslated(625,68, -1) & @CRLF & _
-							   GetTranslated(625,70,-1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMinTropies_Info_01", -1) & @CRLF & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
 			GUICtrlSetLimit(-1, 6)
 		$g_hLblTSTropies = GUICtrlCreateLabel("-", $x + 113, $y + 2, -1, -1)
 			GUICtrlSetState(-1,$GUI_DISABLE)
 		$g_hTxtTSTropiesMax = GUICtrlCreateInput("6000", $x + 120, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1,$GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslated(625,6, -1) & @CRLF & @CRLF & _
-							  GetTranslated(625,68, -1) & @CRLF & _
-							  GetTranslated(625,70,-1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMaxTropies_Info_01", -1) & @CRLF & @CRLF & _
+							  GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
+							  GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
 			GUICtrlSetLimit(-1, 6)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrophy, $x + 163, $y + 1, 16, 16)
 
 	$y +=21
-		$g_hChkTSActivateCamps = GUICtrlCreateCheckbox(GetTranslated(625,7, -1), $x, $y, 110, 18)
-			$sTxtTip = GetTranslated(625,8, -1)
+		$g_hChkTSActivateCamps = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateCamps", -1), $x, $y, 110, 18)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateCamps_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkTSActivateCamps")
 		$g_hLblTSArmyCamps = GUICtrlCreateLabel(ChrW(8805), $x + 113 - 1, $y + 2, -1, -1)
@@ -85,15 +85,17 @@ Func CreateAttackSearchTHSnipeSearch()
 	  GUICtrlCreateGroup("", -99, -99, 1, 1)
 
     Local $x = 220, $y = 45
-	$g_hGrpTSFilter = GUICtrlCreateGroup(GetTranslated(625,14, -1), $x - 20, $y - 20, 225, $g_iSizeHGrpTab4)
+	$g_hGrpTSFilter = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "Group_02", -1), $x - 20, $y - 20, 225, $g_iSizeHGrpTab4)
 		$x -= 15
 		$g_hCmbTSMeetGE = GUICtrlCreateCombo("", $x , $y + 10, 65, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			$sTxtTip = GetTranslated(625,15, -1) & @CRLF & GetTranslated(625,16, -1) & @CRLF & GetTranslated(625,17, -1) & @CRLF & GetTranslated(625,18, -1)
-			GUICtrlSetData(-1, GetTranslated(625,19, -1) &"|" & GetTranslated(625,20, -1) & "|" & GetTranslated(625,21, -1), GetTranslated(625,19, -1))
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Info_01", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Info_02", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Info_03", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Info_04", -1)
+			GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Item_01", -1) & "|" & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Item_02", -1) & "|" & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Item_03", -1), GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Item_01", -1))
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "cmbTSGoldElixir")
 		$g_hTxtTSMinGold = GUICtrlCreateInput("80000", $x + 85, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$sTxtTip = GetTranslated(625,23, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinGold_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 6)
 		$g_hPicTSMinGold = GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 137, $y, 16, 16)
@@ -101,7 +103,7 @@ Func CreateAttackSearchTHSnipeSearch()
 
 		$y += 21
 		$g_hTxtTSMinElixir = GUICtrlCreateInput("80000", $x + 85, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$sTxtTip = GetTranslated(625,24, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinElixir_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 6)
 		$g_hPicTSMinElixir = GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 137, $y, 16, 16)
@@ -109,7 +111,7 @@ Func CreateAttackSearchTHSnipeSearch()
 
 		$y -= 11
 		$g_hTxtTSMinGoldPlusElixir = GUICtrlCreateInput("160000", $x + 85, $y, 50, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$sTxtTip = GetTranslated(625,25, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinGoldPlusElixir_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 6)
 			GUICtrlSetState (-1, $GUI_HIDE)
@@ -118,12 +120,12 @@ Func CreateAttackSearchTHSnipeSearch()
  			GUICtrlSetState (-1, $GUI_HIDE)
 
 		$y += 34
-		$g_hChkTSMeetDE = GUICtrlCreateCheckbox(GetTranslated(625,26, -1), $x, $y, -1, -1)
-			$sTxtTip = GetTranslated(625,27, -1)
+		$g_hChkTSMeetDE = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetDE", -1), $x, $y, -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetDE_Info_01", -1)
 			GUICtrlSetOnEvent(-1, "chkTSMeetDE")
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hTxtTSMinDarkElixir = GUICtrlCreateInput("600", $x + 85, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			$sTxtTip = GetTranslated(625,28, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinDarkElixir_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 5)
 			_GUICtrlEdit_SetReadOnly(-1, True)
@@ -131,21 +133,15 @@ Func CreateAttackSearchTHSnipeSearch()
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y += 24
-;~ 		$chkSkipTrapped = GUICtrlCreateCheckbox(GetTranslated(2,58, "Skip Trapped"), $x , $y, -1, -1)
-;~ 			$sTxtTip = GetTranslated(2,60, "Skip Trapped Townhall")
-;~ 			_GUICtrlSetTip(-1, $sTxtTip)
-;~		$btnConfigureSkipTrapped = GUICtrlCreateButton(GetTranslated(2,61, "..."), $x+84, $y, 30,20)
-;~	 	    GUICtrlSetOnEvent(-1, "OpenGUISkipTrappedTH")
-
 		$y +=35
-		$g_hLblAddTiles = GUICtrlCreateLabel(GetTranslated(625,42, "TownHall, Distance From") , $x , $y + 4, -1, -1, $SS_LEFT)
+		$g_hLblAddTiles = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblAddTiles_01", "TownHall, Distance From") , $x , $y + 4, -1, -1, $SS_LEFT)
 
 		$y += 16
-		$g_hLblAddTiles2 = GUICtrlCreateLabel(GetTranslated(625,43, "Border, Add Tiles") & ":" , $x+5 , $y + 4, -1, -1, $SS_LEFT)
+		$g_hLblAddTiles2 = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblAddTiles_02", "Border, Add Tiles") & ":" , $x+5 , $y + 4, -1, -1, $SS_LEFT)
 
 		$y += 21
-		$g_hLblSWTTiles = GUICtrlCreateLabel("- " & GetTranslated(625,44, "While Train"), $x, $y + 4, 100, -1, $SS_LEFT)
-			$sTxtTip = GetTranslated(625,45, "Add number of tiles from Base Edges")
+		$g_hLblSWTTiles = GUICtrlCreateLabel("- " & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblSWTTiles", "While Train"), $x, $y + 4, 100, -1, $SS_LEFT)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblSWTTiles_Info_01", "Add number of tiles from Base Edges")
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hTxtSWTTiles = GUICtrlCreateInput("2", $x + 85, $y , 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)
@@ -154,8 +150,10 @@ Func CreateAttackSearchTHSnipeSearch()
  			_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y += 24
-		$g_hLblTHadd = GUICtrlCreateLabel("- " & GetTranslated(625,46, "Full Troops"), $x, $y + 4, -1, 17, $SS_LEFT)
-		    $sTxtTip = GetTranslated(625,47, "Enter how many 'Grass' 1x1 tiles the TH may be from the Base edges to be seen as a TH Outside.") & @CRLF & GetTranslated(625,48, "Ex: (0) tiles; TH must be exactly at the edge. (4) tiles: TH may be 4 tiles farther from edges and closer to the center of the village.") & @CRLF & GetTranslated(625,49, "If the TH is farther away then the No. of tiles set, the base will be skipped.")
+		$g_hLblTHadd = GUICtrlCreateLabel("- " & GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "LblFullTroop", -1), $x, $y + 4, -1, 17, $SS_LEFT)
+		    $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblTHadd_Info_01", "Enter how many 'Grass' 1x1 tiles the TH may be from the Base edges to be seen as a TH Outside.") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblTHadd_Info_02", "Ex: (0) tiles; TH must be exactly at the edge. (4) tiles: TH may be 4 tiles farther from edges and closer to the center of the village.") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblTHadd_Info_03", "If the TH is farther away then the No. of tiles set, the base will be skipped.")
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hTxtTHaddTiles = GUICtrlCreateInput("2", $x + 85, $y , 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)

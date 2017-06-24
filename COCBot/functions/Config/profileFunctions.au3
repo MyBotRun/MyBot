@@ -95,8 +95,6 @@ Func createProfile($bCreateNew = False)
 		FileClose($hFile)
 	EndIf
 
-	; Set the current profile as the default profile.
-	IniWrite($g_sProfilePath & "\profile.ini", "general", "defaultprofile", $g_sProfileCurrentName)
 	SetupProfileFolder()
 	; Create the profiles sub-folders
 	DirCreate($g_sProfileLogsPath)
@@ -121,7 +119,7 @@ Func setupProfile()
 	; Create the profile if needed, this also sets the variables if the profile exists.
 	createProfile()
 	; Set the profile name on the village info group.
-	GUICtrlSetData($g_hGrpVillage, GetTranslated(603, 32, "Village") & ": " & $g_sProfileCurrentName)
+	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
 EndFunc   ;==>setupProfile
 
@@ -141,6 +139,6 @@ Func selectProfile()
 	EndIf
 
 	; Set the profile name on the village info group.
-	GUICtrlSetData($g_hGrpVillage, GetTranslated(603, 32, "Village") & ": " & $g_sProfileCurrentName)
+	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
 EndFunc   ;==>selectProfile

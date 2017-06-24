@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: getArmyHeroCount
 ; Description ...: Obtains count of heroes available from Training - Army Overview window
@@ -7,7 +6,7 @@
 ;				 : $bCloseArmyWindow = Bool value, true if train overview window needs to be closed
 ; Return values .: None
 ; Author ........:
-; Modified ......: MonkeyHunter (06-2016), MR.ViPER (10-2016)
+; Modified ......: MonkeyHunter (06-2016), MR.ViPER (10-2016), Fliegerfaust (03-2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -15,67 +14,47 @@
 ; Example .......: No
 ; ===============================================================================================================================
 ;
-Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
+Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
 
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SETLOG("Begin getArmyTHeroCount:", $COLOR_DEBUG) ;Debug
+	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("Begin getArmyHeroCount:", $COLOR_DEBUG)
 
-	If $bOpenArmyWindow = False And ISArmyWindow() = False Then ; check for train page
-		SetError(1)
-		Return ; not open, not requested to be open - error.
-	ElseIf $bOpenArmyWindow = True Then
-		If OpenArmyWindow() = False Then
-			SetError(2)
-			Return ; not open, requested to be open - error.
+	If $CheckWindow Then
+		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
+			SetError(1)
+			Return ; not open, not requested to be open - error.
+		ElseIf $bOpenArmyWindow Then
+			If Not OpenArmyOverview() Then
+				SetError(2)
+				Return ; not open, requested to be open - error.
+			EndIf
+			If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 		EndIf
-		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
-	EndIf
-
-	;If $g_iTownHallLevel < 7 then return
-	If $g_bHaveAnyHero = -1 Then
-		; The variable to see if the village have any hero is not set yet
-		; check if the village have any hero
-		Local $rImgSearch = Not (StringInStr(FindImageInPlace("HaveAnyHero", @ScriptDir & "\imgxml\trainwindow\HeroSlots\NoHero_1_95.xml", "620,400,675,430", True), ","))
-		If $g_iDebugSetlog = 1 Then SetLog("Setting $g_bHaveAnyHero Value To: " & $rImgSearch, $COLOR_DEBUG)
-		If $rImgSearch = True Then
-			$g_bHaveAnyHero = 1
-		Else
-			$g_bHaveAnyHero = 0
-			Return ; There're no heroes to check, Return
-		EndIf
-	ElseIf $g_bHaveAnyHero = 0 Then
-		If $g_iDebugSetlog = 1 Then SetLog("$g_bHaveAnyHero = 0", $COLOR_DEBUG)
-		Return ; There're no heroes to check, Return
 	EndIf
 
 	$g_iHeroAvailable = $eHeroNone ; Reset hero available data
-	$g_bFullArmyHero = False
-	Local $debugArmyHeroCount = 0 ; local debug flag
+	Local $iDebugArmyHeroCount = 0 ; local debug flag
 
 	; Detection by OCR
 	Local $sResult
-	Local Const $HeroSlots[3][2] = [[464, 446], [526, 446], [588, 446]] ; Location of hero status check tile
+	Local Const $iHeroes = 3
 	Local $sMessage = ""
-	Local $tmpUpgradingHeroes[3] = [$eHeroNone, $eHeroNone, $eHeroNone]
-	$g_iHeroUpgrading[0] = 0
-	$g_iHeroUpgrading[1] = 0
-	$g_iHeroUpgrading[2] = 0
 
-	For $index = 0 To UBound($HeroSlots) - 1
-		$sResult = ArmyHeroStatus($index) ; OCR slot for information
+	For $i = 0 To $iHeroes - 1
+		$sResult = ArmyHeroStatus($i)
 		If $sResult <> "" Then ; we found something, figure out what?
 			Select
 				Case StringInStr($sResult, "king", $STR_NOCASESENSEBASIC)
-					Setlog(" - Barbarian King available", $COLOR_GREEN)
+					If $bSetLog Then Setlog(" - Barbarian King available", $COLOR_SUCCESS)
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroKing)
 				Case StringInStr($sResult, "queen", $STR_NOCASESENSEBASIC)
-					Setlog(" - Archer Queen available", $COLOR_GREEN)
+					If $bSetLog Then Setlog(" - Archer Queen available", $COLOR_SUCCESS)
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroQueen)
 				Case StringInStr($sResult, "warden", $STR_NOCASESENSEBASIC)
-					Setlog(" - Grand Warden available", $COLOR_GREEN)
+					If $bSetLog Then Setlog(" - Grand Warden available", $COLOR_SUCCESS)
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroWarden)
 				Case StringInStr($sResult, "heal", $STR_NOCASESENSEBASIC)
-					If $g_iDebugSetlogTrain = 1 Or $debugArmyHeroCount = 1 Then
-						Switch $index
+					If $g_iDebugSetlogTrain = 1 Or $iDebugArmyHeroCount = 1 Then
+						Switch $i
 							Case 0
 								$sMessage = "-Barbarian King"
 							Case 1
@@ -85,105 +64,79 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 							Case Else
 								$sMessage = "-Very Bad Monkey Needs"
 						EndSwitch
-						SetLog("Hero slot#" & $index + 1 & $sMessage & " Healing", $COLOR_DEBUG) ;Debug
-					EndIf
-					Local $HealTime = Number(getArmyHeroTime(19 + $index)) ; 19 = $eKing
-					If @error Then
-						Setlog("getArmyHeroTime return error, on getArmyHeroCount!", $COLOR_ERROR)
-					EndIf
-					If $HealTime <> "" Then
-						If $index = 0 Then Setlog(" - Barbarian King will recover in " & Min2Time($HealTime), $COLOR_ACTION)
-						If $index = 1 Then Setlog(" - Archer Queen will recover in " & Min2Time($HealTime), $COLOR_ACTION)
-						If $index = 2 Then Setlog(" - Grand Warden will recover in " & Min2Time($HealTime), $COLOR_ACTION)
-					Else
-						Setlog("slot " & $index + 1 & " getArmyHeroTime error!")
-						If Not ISArmyWindow() Then Return
+						SetLog("Hero slot#" & $i + 1 & $sMessage & " Healing", $COLOR_DEBUG)
 					EndIf
 				Case StringInStr($sResult, "upgrade", $STR_NOCASESENSEBASIC)
-					Switch $index
+					Switch $i
 						Case 0
 							$sMessage = "-Barbarian King"
-							$tmpUpgradingHeroes[$index] = $eHeroKing
 							; safety code to warn user when wait for hero found while being upgraded to reduce stupid user posts for not attacking
 							If BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroKing) = $eHeroKing Or BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroKing) = $eHeroKing Then ; check wait for hero status
-								;$g_aiSearchHeroWaitEnable[$DB] = BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroQueen, $eHeroWarden) ; remove wait for king value with mask
-								;$g_aiSearchHeroWaitEnable[$LB] = BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroQueen, $eHeroWarden)
-								;GUICtrlSetState($chkDBKingWait, $GUI_UNCHECKED)  ; uncheck GUI box to show user wait for king not possible
-								;GUICtrlSetState($chkABKingWait, $GUI_UNCHECKED)
 								_GUI_Value_STATE("SHOW", $groupKingSleeping) ; Show king sleeping icon
-								;SetLog("Warning: King Upgrading & Wait enabled, Disable Wait for King or may never attack!", $COLOR_RED)
+								SetLog("Warning: King Upgrading & Wait enabled, Disable Wait for King or may never attack!", $COLOR_ERROR)
 							EndIf
 						Case 1
 							$sMessage = "-Archer Queen"
-							$tmpUpgradingHeroes[$index] = $eHeroQueen
 							; safety code
 							If BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroQueen) = $eHeroQueen Or BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroQueen) = $eHeroQueen Then
-								;$g_aiSearchHeroWaitEnable[$DB] = BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroKing, $eHeroWarden)
-								;$g_aiSearchHeroWaitEnable[$LB] = BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroKing, $eHeroWarden)
-								;GUICtrlSetState($chkDBQueenWait, $GUI_UNCHECKED)
-								;GUICtrlSetState($chkABQueenWait, $GUI_UNCHECKED)
 								_GUI_Value_STATE("SHOW", $groupQueenSleeping)
-								;SetLog("Warning: Queen Upgrading & Wait enabled, Disable Wait for Queen or may never attack!", $COLOR_RED)
+								SetLog("Warning: Queen Upgrading & Wait enabled, Disable Wait for Queen or may never attack!", $COLOR_ERROR)
 							EndIf
 						Case 2
 							$sMessage = "-Grand Warden"
-							$tmpUpgradingHeroes[$index] = $eHeroWarden
 							; safety code
 							If BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroWarden) = $eHeroWarden Or BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden Then
-								;$g_aiSearchHeroWaitEnable[$DB] = BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroKing, $eHeroQueen)
-								;$g_aiSearchHeroWaitEnable[$LB] = BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroKing, $eHeroQueen)
-								;GUICtrlSetState($chkDBWardenWait, $GUI_UNCHECKED)
-								;GUICtrlSetState($chkABWardenWait, $GUI_UNCHECKED)
 								_GUI_Value_STATE("SHOW", $groupWardenSleeping)
-								;SetLog("Warning: Warden Upgrading & Wait enabled, Disable Wait for Warden or may never attack!", $COLOR_RED)
+								SetLog("Warning: Warden Upgrading & Wait enabled, Disable Wait for Warden or may never attack!", $COLOR_ERROR)
 							EndIf
 						Case Else
 							$sMessage = "-Need to Get Monkey"
 					EndSwitch
-					$g_iHeroUpgrading[$index] = 1
-					If $g_iDebugSetlogTrain = 1 Or $debugArmyHeroCount = 1 Then SetLog("Hero slot#" & $index + 1 & $sMessage & " Upgrade in Process", $COLOR_DEBUG) ;Debug
+					If $g_iDebugSetlogTrain = 1 Or $iDebugArmyHeroCount = 1 Then SetLog("Hero slot#" & $i + 1 & $sMessage & " Upgrade in Process", $COLOR_DEBUG)
 				Case StringInStr($sResult, "none", $STR_NOCASESENSEBASIC)
-					If $g_iDebugSetlogTrain = 1 Or $debugArmyHeroCount = 1 Then SetLog("Hero slot#" & $index + 1 & " Empty, stop count", $COLOR_DEBUG) ;Debug
+					If $g_iDebugSetlogTrain = 1 Or $iDebugArmyHeroCount = 1 Then SetLog("Hero slot#" & $i + 1 & " Empty, stop count", $COLOR_DEBUG)
 					ExitLoop ; when we find empty slots, done looking for heroes
 				Case Else
-					SetLog("Hero slot#" & $i + 1 & " bad OCR string returned!", $COLOR_RED)
+					If $bSetLog Then SetLog("Hero slot#" & $i + 1 & " bad OCR string returned!", $COLOR_ERROR)
 			EndSelect
 		Else
-			SetLog("Hero slot#" & $index + 1 & " status read problem!", $COLOR_RED)
+			If $bSetLog Then SetLog("Hero slot#" & $i + 1 & " status read problem!", $COLOR_ERROR)
 		EndIf
 	Next
-	$g_iHeroUpgradingBit = BitOR($tmpUpgradingHeroes[0], $tmpUpgradingHeroes[1], $tmpUpgradingHeroes[2])
 
-	If $g_abAttackTypeEnable[$DB] = False Then $g_aiSearchHeroWaitEnable[$DB] = $eHeroNone
-	If $g_abAttackTypeEnable[$LB] = False Then $g_aiSearchHeroWaitEnable[$LB] = $eHeroNone
+	If $g_iDebugSetlogTrain = 1 Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Status K|Q|W : " & BitAND($g_iHeroAvailable, $eHeroKing) & "|" & BitAND($g_iHeroAvailable, $eHeroQueen) & "|" & BitAND($g_iHeroAvailable, $eHeroWarden), $COLOR_DEBUG)
 
-	If (($g_abAttackTypeEnable[$DB] And $g_aiSearchHeroWaitEnable[$DB] <= $g_iHeroAvailable) Or ($g_abAttackTypeEnable[$LB] And $g_aiSearchHeroWaitEnable[$LB] <= $g_iHeroAvailable)) Or _
-			($g_aiSearchHeroWaitEnable[$DB] = $eHeroNone And $g_aiSearchHeroWaitEnable[$LB] = $eHeroNone) Then
-		$g_bFullArmyHero = True
-		If $g_iDebugSetlogTrain = 1 Or $debugArmyHeroCount = 1 Then SetLog("$g_bFullArmyHero= " & $g_bFullArmyHero, $COLOR_DEBUG) ;Debug
-	EndIf
-
-	If $g_iDebugSetlogTrain = 1 Or $debugArmyHeroCount = 1 Then
-		Setlog("====== DEBUG HEROES ======")
-		Setlog("$g_aiSearchHeroWaitEnable[$DB]: " & $g_aiSearchHeroWaitEnable[$DB])
-		Setlog("$g_aiSearchHeroWaitEnable[$LB]: " & $g_aiSearchHeroWaitEnable[$LB])
-		Setlog("$g_iHeroAvailable: " & $g_iHeroAvailable)
-		Setlog("$g_bFullArmyHero: " & $g_bFullArmyHero)
-		SetLog("Hero Status K|Q|W : " & BitAND($g_iHeroAvailable, $eHeroKing) & "|" & BitAND($g_iHeroAvailable, $eHeroQueen) & "|" & BitAND($g_iHeroAvailable, $eHeroWarden), $COLOR_DEBUG) ;Debug
-		Setlog("====== ########### ======")
-	EndIf
-
-	If $bCloseArmyWindow = True Then
+	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
 
 EndFunc   ;==>getArmyHeroCount
 
-Func Min2Time($nr_min)
-	Local $nr_sec = $nr_min * 60
-	Local $sec2time_hour = Int($nr_sec / 3600)
-	Local $sec2time_min = Int(($nr_sec - $sec2time_hour * 3600) / 60)
-	Local $sec2time_sec = $nr_sec - $sec2time_hour * 3600 - $sec2time_min * 60
-	Return StringFormat('%02d:%02d:%02d', $sec2time_hour, $sec2time_min, $sec2time_sec)
-EndFunc   ;==>Min2Time
+Func ArmyHeroStatus($i)
+	Local $sImageDir = "trainwindow-HeroStatus-bundle", $sResult = ""
+	Local Const $aHeroesRect[3][4] = [[660, 349, 673, 361], [734, 349, 747, 361], [807, 349, 822, 361]]
+
+	; Perform the search
+	_CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
+	Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $sImageDir, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
+	If $res[0] <> "" Then
+		Local $aKeys = StringSplit($res[0], "|", $STR_NOCOUNT)
+		If StringInStr($aKeys[0], "xml", $STR_NOCASESENSEBASIC) Then
+			Local $aResult = StringSplit($aKeys[0], "_", $STR_NOCOUNT)
+			$sResult = $aResult[0]
+			Return $sResult
+		EndIf
+	EndIf
+
+	;return hero if there was a problem with the search
+	Switch $i
+		Case 0
+			Return "king"
+		Case 1
+			Return "queen"
+		Case 2
+			Return "warden"
+	EndSwitch
+
+EndFunc   ;==>ArmyHeroStatus

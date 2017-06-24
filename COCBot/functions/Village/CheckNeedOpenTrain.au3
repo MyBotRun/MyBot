@@ -28,25 +28,26 @@ Func CheckNeedOpenTrain($TimeBeforeTrain)
 		If $g_aiSearchCampsPct[$TS] < $QuickArmyCamps Then $QuickArmyCamps = $g_aiSearchCampsPct[$TS]
 		If $g_aiSearchCampsPct[$TS] - Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100) < $QuickArmyCamps Then $QuickArmyCamps = $g_aiSearchCampsPct[$TS] - Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100)
 	EndIf
+
 	If $g_aiTimeTrain[0] = 0 Then $bToReturn = True
-	
+
 	Local $sNowTime = ""
 	Local $iTimeBeforeTrain1, $iTimeBeforeTrain2
 	$sNowTime = _NowCalc()
 	If $TimeBeforeTrain = "" Then $TimeBeforeTrain = $sNowTime
 	$iTimeBeforeTrain1 = _DateAdd("s", Int(($g_aiTimeTrain[0] * 60) * ($QuickArmyCamps / 100)), $TimeBeforeTrain)
-	$iTimeBeforeTrain2 = _DateDiff("s", $iTimeBeforeTrain1, $sNowTime)
-	If $g_iDebugSetlogTrain = 1 Then 
-		Setlog("Start Train: " & $TimeBeforeTrain)
-		Setlog("Now: " & $sNowTime)
-		Setlog("Train end time: " & $iTimeBeforeTrain1)
-		Setlog("Next Train in S: " & $iTimeBeforeTrain2)
+	$iTimeBeforeTrain2 = _DateDiff("s", $sNowTime, $iTimeBeforeTrain1)
+	If $g_iDebugSetlogTrain = 1 Then
+		SetLog("Start Train: " & $TimeBeforeTrain)
+		SetLog("Now: " & $sNowTime)
+		SetLog("Train end time: " & $iTimeBeforeTrain1)
+		SetLog("Next Train in S: " & $iTimeBeforeTrain2)
 	EndIf
-	If $iTimeBeforeTrain2 >= 0 Then $bToReturn = True
+
+	If $iTimeBeforeTrain2 <= 0 Then $bToReturn = True
 	If ($g_iActiveDonate Or $g_bDonationEnabled) And $g_bChkDonate Then $bToReturn = True
-	If $bToReturn = False Then
-		Setlog("Train end time: " & $iTimeBeforeTrain1, $COLOR_DEBUG)
-	EndIf
-	If $bToReturn = False Then ClickP($aAway, 1, 0, "#0332") ;Click Away
+	If Not $bToReturn Then Setlog("Train end time: " & $iTimeBeforeTrain1, $COLOR_DEBUG)
+	If Not $bToReturn Then ClickP($aAway, 1, 0, "#0332") ;Click Away
+
 	Return $bToReturn
 EndFunc   ;==>CheckNeedOpenTrain

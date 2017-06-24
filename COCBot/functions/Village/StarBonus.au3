@@ -5,7 +5,7 @@
 ; Syntax ........: StarBonus()
 ; Parameters ....:
 ; Return values .: MonkeyHunter(2016-1)
-; Modified ......:
+; Modified ......: MonkeyHunter (05-2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -17,29 +17,28 @@ Func StarBonus()
 	If $g_iDebugSetlog = 1 Then Setlog("Begin Star Bonus window check", $COLOR_DEBUG1)
 
 	; Verify is Star bonus window open?
-	If _CheckPixel($aIsMainGrayed, $g_bCapturePixel) = False Then Return ; Star bonus window opens on main base view, and grays page.
+	If _CheckPixel($aIsMainGrayed, $g_bCapturePixel, Default, "IsMainGrayed") = False Then Return ; Star bonus window opens on main base view, and grays page.
 
-	If $g_iDebugSetlog = 1 Then Setlog("StarBonusWindowChk #1: " & _GetPixelColor(640, 185 + $g_iMidOffsetY, $g_bCapturePixel) & ", #2: " & _GetPixelColor(650, 462 + $g_iBottomOffsetY, $g_bCapturePixel), $COLOR_DEBUG)
+	Local $aWindowChk1[4] = [640, 184 + $g_iMidOffsetY, 0xCD1A1F, 15] ; Red X to close Window
+	Local $aWindowChk2[4] = [650, 462 + $g_iBottomOffsetY, 0xE8E8E0, 10] ; White pixel on top trees where it does not belong
+
 	If _Sleep($DELAYSTARBONUS100) Then Return
 
 	; Verify actual star bonus window open
-	If _ColorCheck(_GetPixelColor(640, 185 + $g_iMidOffsetY, $g_bCapturePixel), Hex(0xC00F15, 6), 10) And _ ; Check for Red below X for window close
-			_ColorCheck(_GetPixelColor(650, 462 + $g_iBottomOffsetY, $g_bCapturePixel), Hex(0xE8E8E0, 6), 10) Then ; and White pixel on top trees where it does not belong
-
+	If _CheckPixel($aWindowChk1, $g_bCapturePixel, Default, "Starbonus1") And _CheckPixel($aWindowChk2, $g_bCapturePixel, Default, "Starbonus2") Then
 		; Find and Click Okay button
-		Local $offColors[3][3] = [[0x000000, 143, 0], [0xFFFFFF, 53, 17], [0xFFFFFF, 53, 29]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
-		Local $ButtonPixel = _MultiPixelSearch(353, 440 + $g_iMidOffsetY, 502, 474 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $g_iDebugSetlog = 1 Then Setlog("Bonus Okay btn chk-#1: " & _GetPixelColor(355, 441 + $g_iMidOffsetY, $g_bCapturePixel) & ", #2: " & _GetPixelColor(355 + 143, 441 + $g_iMidOffsetY, $g_bCapturePixel) & ", #3: " & _GetPixelColor(355 + 53, 441 + 17 + $g_iMidOffsetY, $g_bCapturePixel) & ", #4: " & _GetPixelColor(355 + 53, 441 + 29 + $g_iMidOffsetY, $g_bCapturePixel), $COLOR_DEBUG)
+		Local $offColors[3][3] = [[0x000000, 145, 0], [0xFFFFFF, 55, 16], [0xFFFFFF, 51, 23]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom left side
+		Local $ButtonPixel = _MultiPixelSearch(353, 442 + $g_iMidOffsetY, 502, 474 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
+		If $g_iDebugSetlog = 1 Then Setlog("Okay btn chk-#1: " & _GetPixelColor(354, 442 + $g_iMidOffsetY, $g_bCapturePixel) & ", #2: " & _GetPixelColor(354 + 145, 442 + $g_iMidOffsetY, $g_bCapturePixel) & ", #3: " & _GetPixelColor(354 + 55, 442 + 16 + $g_iMidOffsetY, $g_bCapturePixel) & ", #4: " & _GetPixelColor(355 + 51, 442 + 23 + $g_iMidOffsetY, $g_bCapturePixel), $COLOR_DEBUG)
 		If IsArray($ButtonPixel) Then
 			If $g_iDebugSetlog = 1 Then
-				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-				Setlog("Bonus Okay Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], $g_bCapturePixel) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 143, $ButtonPixel[1], $g_bCapturePixel) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 53, $ButtonPixel[1] + 17, $g_bCapturePixel) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 53, $ButtonPixel[1] + 29, $g_bCapturePixel), $COLOR_DEBUG)
+				Setlog("ButtonPixelLocation = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+				Setlog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], $g_bCapturePixel) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], $g_bCapturePixel) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 52, $ButtonPixel[1] + 17, $g_bCapturePixel) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 51, $ButtonPixel[1] + 24, $g_bCapturePixel), $COLOR_DEBUG)
 			EndIf
-			Click($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 1, 0, "#0000") ; Click Okay Button
+			Click($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 2, 50, "#0117") ; Click Okay Button
 			If _Sleep($DELAYSTARBONUS500) Then Return
 			Return True
 		EndIf
-
 	EndIf
 
 	If $g_iDebugSetlog = 1 Then Setlog("Star Bonus window not found?", $COLOR_DEBUG)

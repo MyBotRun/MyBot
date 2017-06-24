@@ -19,13 +19,14 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 	SetDebugLog("applyConfig(), call number " & $iApplyConfigCount)
 
 	setMaxDegreeOfParallelism($g_iThreads)
+	setProcessingPoolSize($g_iGlobalThreads)
 
 	; Saved window positions
 	If $g_bAndroidEmbedded = False Then
-		If $g_iFrmBotPosX > -30000 And $g_iFrmBotPosY > -30000 And $g_bFrmBotMinimized = False Then WinMove2($g_hFrmBot, "", $g_iFrmBotPosX, $g_iFrmBotPosY)
-		If $g_iAndroidPosX > -30000 And $g_iAndroidPosY > -30000 And $g_bIsHidden = False Then WinMove2($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+		If $g_iFrmBotPosX > -30000 And $g_iFrmBotPosY > -30000 And $g_bFrmBotMinimized = False Then WinMove($g_hFrmBot, "", $g_iFrmBotPosX, $g_iFrmBotPosY)
+		If $g_iAndroidPosX > -30000 And $g_iAndroidPosY > -30000 And $g_bIsHidden = False Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
 	Else
-		If $g_iFrmBotDockedPosX > -30000 And $g_iFrmBotDockedPosY > -30000 And $g_bFrmBotMinimized = False Then WinMove2($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY)
+		If $g_iFrmBotDockedPosX > -30000 And $g_iFrmBotDockedPosY > -30000 And $g_bFrmBotMinimized = False Then WinMove($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY)
 	EndIf
 
 	; Move with redraw disabled causes ghost window in VMWare, so move first then disable redraw
@@ -33,6 +34,8 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 
 	; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
+	; <><><><> Bot / Profile (global settings) <><><><>
+	ApplyConfig_Profile($TypeReadSave)
 	; <><><><> Bot / Android <><><><>
 	ApplyConfig_Android($TypeReadSave)
 	; <><><><> Log window <><><><>
@@ -130,14 +133,31 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 	If $bRedrawAtExit Then SetRedrawBotWindow($bWasRdraw, Default, Default, Default, "applyConfig")
 EndFunc   ;==>applyConfig
 
+Func ApplyConfig_Profile($TypeReadSave)
+	; <><><><> Bot / Processor/Threads Advanced <><><><>
+	Switch $TypeReadSave
+		Case "Read"
+			GUICtrlSetData($g_hTxtGlobalActiveBotsAllowed, $g_iGlobalActiveBotsAllowed)
+			GUICtrlSetData($g_hTxtGlobalThreads, $g_iGlobalThreads)
+		Case "Save"
+			$g_iGlobalActiveBotsAllowed = Int(GUICtrlRead($g_hTxtGlobalActiveBotsAllowed))
+			If $g_iGlobalActiveBotsAllowed < 1 Then
+				$g_iGlobalActiveBotsAllowed = 1 ; ensure that at least one bot can run
+			EndIf
+			$g_iGlobalThreads = Int(GUICtrlRead($g_hTxtGlobalThreads))
+	EndSwitch
+EndFunc
+
 Func ApplyConfig_Android($TypeReadSave)
 	; <><><><> Bot / Android <><><><>
 	Switch $TypeReadSave
 		Case "Read"
 			SetCurSelCmbCOCDistributors()
 			UpdateBotTitle()
+			_GUICtrlComboBox_SetCurSel($g_hCmbSuspendAndroid, AndroidSuspendFlagsToIndex($g_iAndroidSuspendModeFlags))
 		Case "Save"
 			cmbCOCDistributors()
+			cmbSuspendAndroid()
 	EndSwitch
 EndFunc   ;==>ApplyConfig_Android
 
@@ -1022,7 +1042,7 @@ Func ApplyConfig_600_29($TypeReadSave)
 			GUICtrlSetState($g_hChkAttackPlannerCloseAll, $g_bAttackPlannerCloseAll = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAttackPlannerSuspendComputer, $g_bAttackPlannerSuspendComputer = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAttackPlannerRandom, $g_bAttackPlannerRandomEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
-			_GUICtrlComboBox_SetCurSel($g_hCmbAttackPlannerRandom, $g_iAttackPlannerRandomTime)
+			_GUICtrlComboBox_SetCurSel($g_hCmbAttackPlannerRandom, ($g_iAttackPlannerRandomTime - 1))
 			GUICtrlSetState($g_hChkAttackPlannerDayLimit, $g_bAttackPlannerDayLimit = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkAttackPlannerEnable()
 			GUICtrlSetData($g_hCmbAttackPlannerDayMin, $g_iAttackPlannerDayMin)
@@ -1050,7 +1070,7 @@ Func ApplyConfig_600_29($TypeReadSave)
 			$g_bAttackPlannerCloseAll = (GUICtrlRead($g_hChkAttackPlannerCloseAll) = $GUI_CHECKED)
 			$g_bAttackPlannerSuspendComputer = (GUICtrlRead($g_hChkAttackPlannerSuspendComputer) = $GUI_CHECKED)
 			$g_bAttackPlannerRandomEnable = (GUICtrlRead($g_hChkAttackPlannerRandom) = $GUI_CHECKED)
-			$g_iAttackPlannerRandomTime = _GUICtrlComboBox_GetCurSel($g_hCmbAttackPlannerRandom)
+			$g_iAttackPlannerRandomTime = (_GUICtrlComboBox_GetCurSel($g_hCmbAttackPlannerRandom) + 1)
 			$g_bAttackPlannerDayLimit = (GUICtrlRead($g_hChkAttackPlannerDayLimit) = $GUI_CHECKED)
 			$g_iAttackPlannerDayMin = GUICtrlRead($g_hCmbAttackPlannerDayMin)
 			$g_iAttackPlannerDayMax = GUICtrlRead($g_hCmbAttackPlannerDayMax)
@@ -1806,6 +1826,7 @@ Func ApplyConfig_600_54($TypeReadSave)
 	; <><><> Attack Plan / Train Army / Train Order <><><>
 	Switch $TypeReadSave
 		Case "Read"
+			; Troops Order
 			GUICtrlSetState($g_hChkCustomTrainOrderEnable, $g_bCustomTrainOrderEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkTroopOrder()
 			For $z = 0 To UBound($g_ahCmbTroopOrder) - 1
@@ -1824,13 +1845,39 @@ Func ApplyConfig_600_54($TypeReadSave)
 					Next
 				EndIf
 			EndIf
+			; Spells Order
+			GUICtrlSetState($g_hChkCustomBrewOrderEnable, $g_bCustomBrewOrderEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
+			chkSpellsOrder()
+			For $z = 0 To UBound($g_ahCmbSpellsOrder) - 1
+				_GUICtrlComboBox_SetCurSel($g_ahCmbSpellsOrder[$z], $g_aiCmbCustomBrewOrder[$z])
+				GUICtrlSetImage($g_ahImgSpellsOrder[$z], $g_sLibIconPath, $g_aiSpellsOrderIcon[$g_aiCmbCustomBrewOrder[$z] + 1])
+			Next
+			If $g_bCustomBrewOrderEnable Then ; only update troop train order if enabled
+				If Not ChangeSpellsBrewOrder() Then ; process error
+					SetDefaultSpellsGroup()
+					GUICtrlSetState($g_hChkCustomBrewOrderEnable, $GUI_UNCHECKED)
+					$g_bCustomBrewOrderEnable = False
+					GUICtrlSetState($g_hBtnRemoveSpells, $GUI_DISABLE) ; disable button
+					GUICtrlSetState($g_hBtnSpellsOrderSet, $GUI_DISABLE)
+					For $i = 0 To UBound($g_ahCmbSpellsOrder) - 1
+						GUICtrlSetState($g_ahCmbSpellsOrder[$i], $GUI_DISABLE) ; disable combo boxes
+					Next
+				EndIf
+			EndIf
+
 			chkTotalCampForced()
 			chkUseQTrain() ; this function also calls calls lblTotalCount and TotalSpellCountClick
 			SetComboTroopComp() ; this function also calls lblTotalCount
 		Case "Save"
+			; Troops Order
 			$g_bCustomTrainOrderEnable = (GUICtrlRead($g_hChkCustomTrainOrderEnable) = $GUI_CHECKED)
 			For $z = 0 To UBound($g_ahCmbTroopOrder) - 1
 				$g_aiCmbCustomTrainOrder[$z] = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$z])
+			Next
+			; Spells Order
+			$g_bCustomBrewOrderEnable = (GUICtrlRead($g_hChkCustomBrewOrderEnable) = $GUI_CHECKED)
+			For $z = 0 To UBound($g_ahCmbSpellsOrder) - 1
+				$g_aiCmbCustomBrewOrder[$z] = _GUICtrlComboBox_GetCurSel($g_ahCmbSpellsOrder[$z])
 			Next
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_54
@@ -1844,6 +1891,7 @@ Func ApplyConfig_600_56($TypeReadSave)
 			GUICtrlSetState($g_hChkNoobZap, $g_bNoobZap = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkSmartZapDB, $g_bSmartZapDB = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkSmartZapSaveHeroes, $g_bSmartZapSaveHeroes = True ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkSmartZapFTW, $g_bSmartZapFTW = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetData($g_hTxtSmartMinDark, $g_iSmartZapMinDE)
 			GUICtrlSetData($g_hTxtSmartExpectedDE, $g_iSmartZapExpectedDE)
 			chkSmartLightSpell()
@@ -1860,6 +1908,7 @@ Func ApplyConfig_600_56($TypeReadSave)
 			$g_bNoobZap = (GUICtrlRead($g_hChkNoobZap) = $GUI_CHECKED)
 			$g_bSmartZapDB = (GUICtrlRead($g_hChkSmartZapDB) = $GUI_CHECKED)
 			$g_bSmartZapSaveHeroes = (GUICtrlRead($g_hChkSmartZapSaveHeroes) = $GUI_CHECKED)
+			$g_bSmartZapFTW = (GUICtrlRead($g_hChkSmartZapFTW) = $GUI_CHECKED)
 			$g_iSmartZapMinDE = Int(GUICtrlRead($g_hTxtSmartMinDark))
 			$g_iSmartZapExpectedDE = Int(GUICtrlRead($g_hTxtSmartExpectedDE))
 	EndSwitch

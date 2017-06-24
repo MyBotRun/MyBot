@@ -67,8 +67,10 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 			If $iWaitTime > 0 Then
 				SetLog("Going idle for " & $sWaitTime & "before starting CoC", $COLOR_SUCCESS)
 				Local $hTimer = __TimerInit()
+				LockBotSlot(False)
 				If $bSuspendComputer Then SuspendComputer($iWaitTime)
 				If _SleepStatus($iWaitTime, True, True, True, $hTimer) Then Return False ; Wait for set requested
+				LockBotSlot(True)
 			Else
 				If _SleepStatus($DELAYWAITNOPENCOC10000) Then Return False ; if waittime = 0 then only wait 10 seconds before restart
 			EndIf
@@ -83,7 +85,8 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 					EnableGuiControls() ; enable bot controls is more than 30 seconds wait time
 					SetLog("Enabled bot controls due to long wait time", $COLOR_SUCCESS)
 				EndIf
-				WaitnOpenCoC($iWaitTime, $bFullRestart, $bSuspendComputer)
+				LockBotSlot(False)
+				WaitnOpenCoC($iWaitTime, $bFullRestart, $bSuspendComputer, True)
 				AndroidShieldForceDown(False)
 				If $g_bRunState = False Then Return False
 			Else
@@ -109,8 +112,10 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 					SetLog("Enabled bot controls due to long wait time", $COLOR_SUCCESS)
 				EndIf
 				Local $hTimer = __TimerInit()
+				LockBotSlot(False)
 				If $bSuspendComputer Then SuspendComputer($iWaitTime)
 				If _SleepStatus($iWaitTime, True, True, True, $hTimer) Then Return False ; Wait for set requested
+				LockBotSlot(True)
 				If $iWaitTime > 30000 Then
 					; ensure possible changes are populated
 					SaveConfig()

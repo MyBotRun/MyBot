@@ -234,6 +234,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 				; move Android rendering control back to its place
 				WinMove2(($targetIsHWnD ? $hCtrl : $hCtrlTarget), "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3], 0, 0, False)
 				Execute("Embed" & $g_sAndroidEmulator & "(False)")
+				WinMove($g_hAndroidWindow, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3]) ; use WinMove to trigger move message
 				If $g_iAndroidEmbedMode = 1 Then
 					; bring android back to front
 					WinMove2($g_hAndroidWindow, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3], $HWND_TOPMOST)

@@ -1,14 +1,54 @@
-﻿* **V7.1.4**
+* **V7.2**
+ * Add Nox 3.8.2 and DirectX support, fix Click&Drag and automatic screen config
+ * Add new system to use translate
+ * Add Suspend Android options under Bot/Android to suspend Android (CoC process) during Search/Attack or also for every ImgLoc call
+ * Add SmartZap/NoobZap FTW Mode
+ * Add Spells Brew Custom Order
+ * Add Drop On Building CSV attack enhancement: adds MAKE for target building, MAKE near red line closest to building, and can DROP on building locations.  Allows spell drop inside base, and targeting of key buildings with special troops during attack.
+ * Improve thread utilization for multiple running bots sharing maximum number of available logical processors
+ * Improve thread utilization for running bot limiting maximum number of available logical processors
+ * Improve multiple bots limiting number of running bots at the same time (command line option /nobotslot or /nbs disables this feature: useful for development/debugging)
+ * Improve multiple bots launching at the same time to ensure only one is launching
+ * Improve Android Window resizing to abort earlier when not working
+ * Replace duplicated "getproperty" ImgLoc DLL call functions with single function
+ * Reduce duplicate image searching for defense buildings when using both WeakBase filter and CSV scripted attack method
+ * Improve handling of building data using a scripting dictionary to simplify sharing location data learned between bot features
+ * Embellish CSV attack scripts SIDEB command with additional target buildings (now includes: EAGLE, INFERNO, XBOW, WIZTOWER, MORTAR, AIRDEFENSE)
+ * Improve find TH during village search
+ * Fix Attack Schedule Random Close being an hour wrong
+ * Fix Attack Schedule Wait Time for Random Close returning negative Value
+ * Fix MEmu 2.5.0 tool bar width for Window resizing
+ * Fix Window Resize that did cause wrong height on some systems
+
+﻿***Fixes required for SC May 22 Game Update***
+ * Change pixel locations/colors & OCR for:
+ *   Main screen (location, reading resources & trophy, gem spend window open, game language)
+ *   Resource Collection (Update collect only one of each type, new collect images, treasury window)
+ *   Request CC (chat tab window open/close)
+ *   Donate CC (numerous changes to button detect, window locations, etc; due differences between emulator rendering)
+ *   Troop Training (tabs, arrows, page detection)
+ *   Attacking (attack button, page detection, wait for clouds, star bonus)
+ *   Upgrade buildings (resource type used, reading building names)
+ * Added detection of builder base window, and return to main base.
+ 
+ *** WARNING>> SOME BOT FEATURES ARE NOT OPERATIONAL!!!!
+ Not Working: 
+ >> Building Upgrades, Lab Upgrades
+ Not Tested: 
+ >> Halt modes, Attack schedule, unbreakable mode, quick train, boosting, alternate attack modes (TH side attack, DE side attack, etc), various CoC Reload error messages, and debug test buttons.
+
+ 
+* **V7.1.4**
  * Add Nox 3.8.1.3 support
  * Fix Strategies save file
- * Fix auto-activation of heros sometimes not working
- * Fix Android resize bot crash when Andorid crashes or Android Window is unavailable at wrong time
+ * Fix auto-activation of heroes sometimes not working
+ * Fix Android resize bot crash when Android crashes or Android Window is unavailable at wrong time
  * Fix auto-start delaying also 2nd or more manual starts
  * Improve shared folder handling
  * Improve the train time click/checks delays
  * Update example TH9 GoWiPe Strategy file to be compatible with train revamp changes made in v7.
  * Change "Delete Temp Files" feature to include recursive removal of DEBUG files\folders when users enable debug long term.
- * Removed the reduncancy on Train log
+ * Removed the redundancy on Train log
  * Update Russian Language File by @Vlab97
 
 * **V7.1.3**

@@ -32,4 +32,8 @@ EndFunc   ;==>UpdateSplashTitle
 
 Func DestroySplashScreen()
    If IsHWnd($g_hSplash) Then GUIDelete($g_hSplash)
+
+   ; allow now other bots to launch
+   ReleaseMutex($g_hSplashMutex)
+   $g_hSplashMutex = 0
 EndFunc   ;==>DestroySplashScreen

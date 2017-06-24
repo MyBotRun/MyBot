@@ -26,39 +26,41 @@ Global $g_hLblDELowEndMin = 0, $g_hLblDEEndAq = 0, $g_hLblABPercentHigher = 0, $
 Func CreateAttackSearchActiveBaseEndBattle()
    Local $sTxtTip = ""
    Local $x = 10, $y = 45
-	$g_hGrpABEndBattle = GUICtrlCreateGroup(GetTranslated(606,1, -1),  $x - 5, $y - 20, 155, $g_iSizeHGrpTab4)
+	$g_hGrpABEndBattle = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "Group_01", -1),  $x - 5, $y - 20, 155, $g_iSizeHGrpTab4)
 	$y -=5
-		$g_hChkStopAtkABNoLoot1 = GUICtrlCreateCheckbox(GetTranslated(606,2, -1) ,$x, $y, -1, -1)
-			$sTxtTip = GetTranslated(606,3, -1) & @CRLF & GetTranslated(606,4, -1)
+		$g_hChkStopAtkABNoLoot1 = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkStopAtkNoLoot", -1) ,$x, $y, -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkStopAtkNoLoot_Info_01", -1) & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkStopAtkNoLoot_Info_02", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkStopAtkABNoLoot1")
 			GUICtrlSetState(-1, $GUI_CHECKED)
 
 	$y +=20
-		$g_hLblABTimeStopAtka = GUICtrlCreateLabel(GetTranslated(606,5, -1)& ":", $x + 16, $y + 3, -1, -1)
+		$g_hLblABTimeStopAtka = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblStopAtkNoLoot", -1)& ":", $x + 16, $y + 3, -1, -1)
 		$g_hTxtStopAtkABNoLoot1 = GUICtrlCreateInput("20", $x + 85, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 2)
-		$g_hLblABTimeStopAtk = GUICtrlCreateLabel(GetTranslated(603,6, -1), $x + 120, $y + 3, -1, -1)
+		$g_hLblABTimeStopAtk = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 120, $y + 3, -1, -1)
 
    $y += 20
-		$g_hChkStopAtkABNoLoot2 = GUICtrlCreateCheckbox(GetTranslated(606,2, -1) ,$x, $y, -1, -1)
-			$sTxtTip = GetTranslated(606,3, -1) & @CRLF & GetTranslated(606,4, -1)
+		$g_hChkStopAtkABNoLoot2 = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkStopAtkNoLoot", -1) ,$x, $y, -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkStopAtkNoLoot_Info_01", -1) & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkStopAtkNoLoot_Info_02", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkStopAtkABNoLoot2")
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 
    $y += 20
-		$g_hLblABTimeStopAtk2a = GUICtrlCreateLabel(GetTranslated(606,5, -1)& ":", $x + 16, $y + 3, -1, -1)
+		$g_hLblABTimeStopAtk2a = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblStopAtkNoLoot", -1)& ":", $x + 16, $y + 3, -1, -1)
 		$g_hTxtStopAtkABNoLoot2 = GUICtrlCreateInput("5", $x + 85, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 2)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_hLblABTimeStopAtk2 = GUICtrlCreateLabel(GetTranslated(603,6, -1), $x + 120, $y + 3, -1, -1)
+		$g_hLblABTimeStopAtk2 = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 120, $y + 3, -1, -1)
 
 	$y += 21
-		$g_hLblABMinRerourcesAtk2 = GUICtrlCreateLabel(GetTranslated(606,7, -1) & ":", $x + 16 , $y + 2, -1, -1)
-			$sTxtTip = GetTranslated(606,8, -1)
+		$g_hLblABMinRerourcesAtk2 = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblMinRerourcesAtk2", -1) & ":", $x + 16 , $y + 2, -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblMinRerourcesAtk2_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 
@@ -87,52 +89,52 @@ Func CreateAttackSearchActiveBaseEndBattle()
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$y += 21
-		$g_hChkABEndNoResources = GUICtrlCreateCheckbox(GetTranslated(606,9, -1), $x , $y , -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(606,10, -1))
+		$g_hChkABEndNoResources = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndNoResources", -1), $x , $y , -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndNoResources_Info_01", -1))
 			GUICtrlSetState(-1, $GUI_ENABLE)
 
 	$y += 21
-		$g_hChkABEndOneStar = GUICtrlCreateCheckbox(GetTranslated(606,11, -1) , $x, $y , -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(606,12, -1))
+		$g_hChkABEndOneStar = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndOneStar", -1) , $x, $y , -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndOneStar_Info_01", -1))
 			GUICtrlSetState(-1, $GUI_ENABLE)
 
 	$y += 21
-		$g_hChkABEndTwoStars = GUICtrlCreateCheckbox(GetTranslated(606,13,-1) , $x, $y, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(606,14, -1))
+		$g_hChkABEndTwoStars = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndTwoStars", -1) , $x, $y, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndTwoStars_Info_01", -1))
 			GUICtrlSetState(-1, $GUI_ENABLE)
 	$y += 21
-		$g_hChkABEndPercentHigher = GUICtrlCreateCheckbox(GetTranslated(606,30, "When Percentage is"), $x, $y, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(606,31, "End Battle if Overall Damage Percentage is above"))
+		$g_hChkABEndPercentHigher = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndPercentHigher", -1), $x, $y, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndPercentHigher_Info_01", -1))
 			GUICtrlSetState(-1, $GUI_ENABLE)
 	$y +=20
-		$g_hLblABPercentHigher = GUICtrlCreateLabel(GetTranslated(606,32,"above") & ":", $x + 16 , $y + 2, -1, -1)
+		$g_hLblABPercentHigher = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblPercentHigher", -1) & ":", $x + 16 , $y + 2, -1, -1)
 		$g_hTxtABPercentHigher = GUICtrlCreateInput("60", $x + 85, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, GetTranslated(606,31, -1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndPercentHigher_Info_01", -1))
 			GUICtrlSetLimit(-1, 2)
 		$g_hLblABPercentHigherSec = GUICtrlCreateLabel("%", $x + 120, $y + 3, -1, -1)
 	$y += 21
-		$g_hChkABEndPercentChange = GUICtrlCreateCheckbox(GetTranslated(606,33,"When Percentage doesn't") , $x, $y, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslated(606, 34,"End Battle when Percentage doesn't change in"))
+		$g_hChkABEndPercentChange = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndPercentChange", -1) , $x, $y, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndPercentChange_Info_01", -1))
 			GUICtrlSetState(-1, $GUI_ENABLE)
 	$y +=20
-		$g_hLblABPercentChange = GUICtrlCreateLabel(GetTranslated(606, 35,"change in")& ":", $x + 16, $y + 3, -1, -1)
+		$g_hLblABPercentChange = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblPercentChange", -1)& ":", $x + 16, $y + 3, -1, -1)
 		$g_hTxtABPercentChange = GUICtrlCreateInput("15", $x + 85, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, GetTranslated(606,34, -1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndPercentChange_Info_01", -1))
 			GUICtrlSetLimit(-1, 2)
-		$g_hLblABPercentChangeSec = GUICtrlCreateLabel(GetTranslated(603,6, -1), $x + 120, $y + 3, -1, -1)
+		$g_hLblABPercentChangeSec = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 120, $y + 3, -1, -1)
 
 
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 
    Local $x = 185, $y = 45
-   GUICtrlCreateGroup(GetTranslated(606,15,"DE side End Battle options"), $x - 20, $y - 20, 259, $g_iSizeHGrpTab4)
-		 GUICtrlCreateLabel(GetTranslated(606,16, "Attack Dark Elixir Side, End Battle Options") & ":", $x - 10, $y , -1, -1)
-			 _GUICtrlSetTip(-1, GetTranslated(606,17, "Enabled by selecting DE side attack in ActiveBase Deploy - Attack On: options"))
+   GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "Group_02", "DE side End Battle options"), $x - 20, $y - 20, 259, $g_iSizeHGrpTab4)
+		 GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LabelDE_01", "Attack Dark Elixir Side, End Battle Options") & ":", $x - 10, $y , -1, -1)
+			 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LabelDE_Info_01", "Enabled by selecting DE side attack in ActiveBase Deploy - Attack On: options"))
 
 		$y += 15
 		$x -= 10
-			$g_hChkDESideEB = GUICtrlCreateCheckbox(GetTranslated(606,18, "When below") & ":", $x , $y , -1, -1)
-				$sTxtTip = GetTranslated(606,19, "Enables Special conditions for Dark Elixir side attack.") & @CRLF & GetTranslated(606,20, "If no additional filters are selected will end battle when below Total Dark Elixir Percent.")
+			$g_hChkDESideEB = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDESideEB", "When below") & ":", $x , $y , -1, -1)
+				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDESideEB_Info_01", "Enables Special conditions for Dark Elixir side attack.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDESideEB_Info_02", "If no additional filters are selected will end battle when below Total Dark Elixir Percent.")
 				_GUICtrlSetTip(-1, $sTxtTip)
 				GUICtrlSetOnEvent(-1, "chkDESideEB")
 			$g_hTxtDELowEndMin = GUICtrlCreateInput("25", $x + 92, $y , 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -144,36 +146,36 @@ Func CreateAttackSearchActiveBaseEndBattle()
 				_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y += 20
-			$g_hChkDisableOtherEBO = GUICtrlCreateCheckbox(GetTranslated(606,21, "Disable Normal End Battle Options"), $x, $y, -1, -1)
-				_GUICtrlSetTip(-1, GetTranslated(606,22, "Disable Normal End Battle Options when DE side attack is found."))
+			$g_hChkDisableOtherEBO = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDisableOtherEBO", "Disable Normal End Battle Options"), $x, $y, -1, -1)
+				_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDisableOtherEBO_Info_01", "Disable Normal End Battle Options when DE side attack is found."))
 				GUICtrlSetState(-1, $GUI_DISABLE)
 
 		$y += 20
-			$g_hChkDEEndOneStar = GUICtrlCreateCheckbox(GetTranslated(606,11, -1) & ":", $x, $y , -1, -1)
-				$sTxtTip = GetTranslated(606,23, "Will End the Battle when below min DE and One Star is won.")
+			$g_hChkDEEndOneStar = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndOneStar", -1) & ":", $x, $y , -1, -1)
+				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndOneStar_Info_02", "Will End the Battle when below min DE and One Star is won.")
 				_GUICtrlSetTip(-1, $sTxtTip)
 				GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlCreateIcon($g_sLibIconPath, $eIcnSilverStar, $x + 135, $y + 2, 16, 16)
 				_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y += 20
-			$g_hChkDEEndBk = GUICtrlCreateCheckbox(GetTranslated(606,24, "When"), $x, $y , -1, -1)
-				$sTxtTip = GetTranslated(606,25, "Will End the Battle when below min DE and King is weak")
+			$g_hChkDEEndBk = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDEEnd", "When"), $x, $y , -1, -1)
+				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDEEnd_Info_01", "Will End the Battle when below min DE and King is weak")
 				_GUICtrlSetTip(-1, $sTxtTip)
 				GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x + 50, $y + 2, 16, 16)
 				_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlCreateLabel(GetTranslated(606,26, "is weak"), $x + 70, $y + 4, -1, -1)
+			GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblDEEnd", "is weak"), $x + 70, $y + 4, -1, -1)
 				_GUICtrlSetTip(-1, $sTxtTip)
 
 		$y += 20
-			$g_hChkDEEndAq = GUICtrlCreateCheckbox(GetTranslated(606,24, -1), $x, $y , -1, -1)
-				$sTxtTip = GetTranslated(606,27, "Will End the Battle when below min DE and Queen is weak")
+			$g_hChkDEEndAq = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDEEnd", -1), $x, $y , -1, -1)
+				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkDEEnd_Info_02", "Will End the Battle when below min DE and Queen is weak")
 				_GUICtrlSetTip(-1, $sTxtTip)
 				GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x + 50, $y + 2, 16, 16)
 				_GUICtrlSetTip(-1, $sTxtTip)
-			$g_hLblDEEndAq = GUICtrlCreateLabel(GetTranslated(606,26, -1), $x + 70, $y + 4, -1, -1)
+			$g_hLblDEEndAq = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblDEEnd", -1), $x + 70, $y + 4, -1, -1)
 				_GUICtrlSetTip(-1, $sTxtTip)
 
 		GUICtrlCreateGroup("", -99, -99, 1, 1)

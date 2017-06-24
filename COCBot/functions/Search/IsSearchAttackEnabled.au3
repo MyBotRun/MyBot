@@ -50,7 +50,7 @@ Func IsSearchAttackEnabled()
 			Setlog("Attack schedule random skip time found....", $COLOR_INFO)
 			If _Sleep($DELAYRESPOND) Then Return True
 			If $bCloseGame Then
-				$iWaitTime = _DateDiff("s", $aNoAttackTimes[1], _NowCalc()) ; find time to stop attacking in seconds
+				$iWaitTime = _DateDiff("s", _NowCalc(), $aNoAttackTimes[1]) ; find time to stop attacking in seconds
 				If @error Then
 					_logErrorDateDiff(@error)
 					SetError(1, "Can not find NoAttack wait time", True)

@@ -19,6 +19,7 @@ Global $g_hSplash = 0, $g_hSplashProgress, $g_lSplashStatus, $g_lSplashTitle
 Global Const $g_iSplashTotalSteps = 10
 Global $g_iSplashCurrentStep = 0
 Global $g_hSplashTimer = 0
+Global $g_hSplashMutex = 0
 
 #include "MBR GUI Control Splash.au3"
 
@@ -30,6 +31,9 @@ Func CreateSplashScreen()
    Local $hImage, $iX, $iY
    Local $iT = 20 ; Top of logo (additional space)
    Local $iB = 10 ; Bottom of logo (additional space)
+
+   ; Launch only one bot at a time... it simply consumes too much CPU
+   $g_hSplashMutex = AcquireMutexTicket("Launching", 1, Default, False)
 
    If $g_bDisableSplash = False Then
 
@@ -44,7 +48,7 @@ Func CreateSplashScreen()
 	   _GUICtrlCreatePic($hSplashImg, 0, $iT) ; Splash Image
 	   $g_lSplashTitle = GUICtrlCreateLabel($g_sBotTitle, 15, $iY + $iT + $iB + 3, $iX - 30, 15, $SS_CENTER) ; Splash Title
 	   $g_hSplashProgress = GUICtrlCreateProgress(15, $iY + $iT + $iB + 20, $iX - 30, 10, $PBS_SMOOTH, BitOR($WS_EX_TOPMOST, $WS_EX_WINDOWEDGE, $WS_EX_TOOLWINDOW)) ; Splash Progress
-	   $g_lSplashStatus = GUICtrlCreateLabel(GetTranslated(500, 19, "Loading..."), 15, $iY + $iT + $iB + 38, $iX - 30, 15, $SS_CENTER) ; Splash Title
+	   $g_lSplashStatus = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design - Loading", "SplashStep_Loading", "Loading..."), 15, $iY + $iT + $iB + 38, $iX - 30, 15, $SS_CENTER) ; Splash Title
 
 	   ; Cleanup GDI resources
 	   _GDIPlus_BitmapDispose($hSplashImg)
@@ -53,7 +57,7 @@ Func CreateSplashScreen()
 	   GUISetState(@SW_SHOWNOACTIVATE, $g_hSplash)
 
 	   $g_hSplashTimer = __TimerInit()
-	EndIf
+   EndIf
 
 EndFunc
 

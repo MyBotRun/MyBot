@@ -59,7 +59,7 @@ Func SetDPI()
 	Local $stext = "My Bot needs to change your DPI settinng to continue!" & @CRLF & @CRLF & _
 			"You will be required to reboot your PC when done" & @CRLF & @CRLF & "Please close other programs and save you work NOW!" & @CRLF & @CRLF & _
 			"Hit OK to change settings and reboot, or cancel to exit bot"
-	Local $MsgBox = _ExtMsgBox(0, GetTranslated(640, 1, "Ok|Cancel"), GetTranslated(640, 2, "Display Settings Error"), $stext, 120)
+	Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Settings_Error", "Display Settings Error"), $stext, 120)
 	If $MsgBox = 1 Then
 		; DLLCALL to change the DPI setting, requires the DPI to be in string format
 		; Requires the system to be restarted to take effect.

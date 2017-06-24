@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 #include-once
 
-Global $aLanguageFile[1][2]; undimmed language file array [FileName][DisplayName]
+Global $aLanguageFile[1][2] ; undimmed language file array [FileName][DisplayName]
 Global $hLangIcons = 0
 
 Func LoadLanguagesComboBox()
@@ -31,7 +31,7 @@ Func LoadLanguagesComboBox()
 		ReDim $aLanguageFile[$iFileIndex + 1][3]
 		$aLanguageFile[$iFileIndex][0] = StringLeft($sFilename, StringLen($sFilename) - 4)
 		; All Language Icons are made by YummyGum and can be found here: https://www.iconfinder.com/iconsets/142-mini-country-flags-16x16px
-		$aLanguageFile[$iFileIndex][2] = _GUIImageList_AddIcon($hLangIcons, @ScriptDir & "\lib\MBRBot.dll", Eval("e" & $aLanguageFile[$iFileIndex][0]) - 1 )
+		$aLanguageFile[$iFileIndex][2] = _GUIImageList_AddIcon($hLangIcons, @ScriptDir & "\lib\MBRBot.dll", Eval("e" & $aLanguageFile[$iFileIndex][0]) - 1)
 		$sLangDisplayName = IniRead($g_sDirLanguages & $sFilename, "Language", "DisplayName", "Unknown")
 		$aLanguageFile[$iFileIndex][1] = $sLangDisplayName
 		If $sLangDisplayName = "Unknown" Then
@@ -50,7 +50,7 @@ Func LoadLanguagesComboBox()
 
 	;set combo box
 	_GUICtrlComboBoxEx_SetImageList($g_hCmbGUILanguage, $hLangIcons)
-	For $i = 0 to UBound($aLanguageFile) - 1
+	For $i = 0 To UBound($aLanguageFile) - 1
 		If $aLanguageFile[$i][2] <> -1 Then
 			_GUICtrlComboBoxEx_AddString($g_hCmbGUILanguage, $aLanguageFile[$i][1], $aLanguageFile[$i][2], $aLanguageFile[$i][2])
 		Else
@@ -66,9 +66,9 @@ Func cmbLanguage()
 	Local $g_sLanguageIndex = _ArraySearch($aLanguageFile, $aLanguage[_GUICtrlComboBox_GetCurSel($g_hCmbGUILanguage) + 1])
 
 	$g_sLanguage = $aLanguageFile[$g_sLanguageIndex][0] ; the filename = 0, the display name = 1
-	MsgBox("", "", GetTranslated(636, 71, "Restart Bot to load program with new language:") & " " & $aLanguageFile[$g_sLanguageIndex][1] & " (" & $g_sLanguage & ")")
+	MsgBox("", "", GetTranslatedFileIni("MBR Popups", "Func_cmbLanguage", "Restart Bot to load program with new language:") & " " & $aLanguageFile[$g_sLanguageIndex][1] & " (" & $g_sLanguage & ")")
 	IniWriteS($g_sProfileConfigPath, "other", "language", $g_sLanguage) ; save language before restarting
-	ShellExecute(@ScriptFullPath,$g_sProfileCurrentName & " " & $g_sAndroidEmulator & " " & $g_sAndroidInstance & " /r")
+	ShellExecute(@ScriptFullPath, $g_sProfileCurrentName & " " & $g_sAndroidEmulator & " " & $g_sAndroidInstance & " /r")
 EndFunc   ;==>cmbLanguage
 
 Func chkBotCustomTitleBarClick()
@@ -83,12 +83,18 @@ Func chkBotAutoSlideClick()
 EndFunc   ;==>chkBotAutoSlideClick
 
 Func chkUseRandomClick()
-	$g_bUseRandomClick = (GUICtrlRead($g_hChkUseRandomClick) = $GUI_CHECKED)
+	;$g_bUseRandomClick = (GUICtrlRead($g_hChkUseRandomClick) = $GUI_CHECKED)
+	$g_bRunState = True
+	Local $ArmyCamp = GetOCRCurrent(48, 160)
+	_CaptureRegion2(48,160,115, 174)
+	DebugImageSave("hi", False)
+	_ArrayDisplay($ArmyCamp)
+	$g_bRunState = False
 EndFunc   ;==>chkUseRandomClick
 #cs
-Func chkUpdatingWhenMinimized()
+	Func chkUpdatingWhenMinimized()
 	$g_bUpdatingWhenMinimized = (GUICtrlRead($g_hChkUpdatingWhenMinimized) = $GUI_CHECKED)
-EndFunc   ;==>chkUpdatingWhenMinimized
+	EndFunc   ;==>chkUpdatingWhenMinimized
 #ce
 Func chkHideWhenMinimized()
 	$g_bHideWhenMinimized = (GUICtrlRead($g_hChkHideWhenMinimized) = $GUI_CHECKED)
@@ -163,7 +169,43 @@ EndFunc   ;==>txtSinglePBTimeForced
 
 Func chkAutoResume()
 	$g_bAutoResumeEnable = (GUICtrlRead($g_hChkAutoResume) = $GUI_CHECKED)
-EndFunc
+EndFunc   ;==>chkAutoResume
+
+Func txtGlobalActiveBotsAllowed()
+	Local $iValue = Int(GUICtrlRead($g_hTxtGlobalActiveBotsAllowed))
+	If $iValue < 1 Then
+		$iValue = 1 ; ensure that at least one bot can run
+		GUICtrlSetData($g_hTxtGlobalActiveBotsAllowed, $iValue)
+	EndIf
+	If $g_iGlobalActiveBotsAllowed <> $iValue Then
+		; value changed... for globally changed values, save immediately
+		SetDebugLog("Maximum of " & $g_iGlobalActiveBotsAllowed & " bots running at same time changed to " & $iValue)
+		$g_iGlobalActiveBotsAllowed = $iValue
+		SaveProfileConfig(Default, True)
+	EndIf
+EndFunc   ;==>txtGlobalActiveBotsAllowed
+
+Func txtGlobalThreads()
+	Local $iValue = Int(GUICtrlRead($g_hTxtGlobalThreads))
+	If $g_iGlobalThreads <> $iValue Then
+		; value changed... for globally changed values, save immediately
+		SetDebugLog("Threading: Using " & $g_iGlobalThreads & " threads shared across all bot instances changed to " & $iValue)
+		$g_iGlobalThreads = $iValue
+		SaveProfileConfig(Default, True)
+	EndIf
+EndFunc   ;==>txtGlobalThreads
+
+Func txtThreads()
+	Local $iValue = Int(GUICtrlRead($g_hTxtThreads))
+	If $g_iThreads <> $iValue Then
+		; value changed... for globally changed values, save immediately
+		SetDebugLog("Threading: Using " & $g_iThreads & " threads for parallelism changedd to " & $iValue)
+		$g_iThreads = $iValue
+		SaveProfileConfig(Default, True)
+	EndIf
+EndFunc   ;==>txtThreads
+
+; #DEBUG FUNCTION# ==============================================================================================================
 
 Func chkDebugClick()
 	$g_iDebugClick = (GUICtrlRead($g_hChkDebugClick) = $GUI_CHECKED ? 1 : 0)
@@ -228,20 +270,6 @@ EndFunc   ;==>chkmakeIMGCSV
 Func btnTestTrain()
 	Local $currentOCR = $g_iDebugOcr
 	Local $currentRunState = $g_bRunState
-	#cs
-	_GUICtrlTab_ClickTab($g_hTabMain, 0)
-	$g_iDebugOcr = 1
-	$g_bRunState = True
-	ForceCaptureRegion()
-	DebugImageSave("train_")
-	SetLog(_PadStringCenter(" Test Train begin (" & $g_sBotVersion & ")", 54, "="), $COLOR_INFO)
-	getArmyTroopCount(False, False, True)
-	getArmyHeroCount(False, False)
-	SetLog(_PadStringCenter(" Test Train end ", 54, "="), $COLOR_INFO)
-	Run("Explorer.exe " & $g_sLibPath & "\debug\ocr\")
-	Run("Explorer.exe " & $g_sProfileTempDebugPath & "train_")
-	#ce
-
 	$g_bRunState = True
 	BeginImageTest()
 
@@ -252,10 +280,10 @@ Func btnTestTrain()
 	SetLog("Result checkArmyCamp() = " & $result, $COLOR_INFO)
 
 	SetLog("Testing getArmyHeroTime()", $COLOR_INFO)
-	$result = getArmyHeroTime()
+	$result = getArmyHeroTime("all")
 	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
 	SetLog("Result getArmyHeroTime() = " & $result, $COLOR_INFO)
-	SetLog("Testing Train DONE" , $COLOR_INFO)
+	SetLog("Testing Train DONE", $COLOR_INFO)
 
 	EndImageTest()
 
@@ -275,14 +303,14 @@ Func btnTestDonateCC()
 	DebugImageSave("donateCC_")
 
 	SetLog(_PadStringCenter(" Test DonateCC begin (" & $g_sBotVersion & ")", 54, "="), $COLOR_INFO)
-	Local $DonationWindowY = 0
-	Local $aDonWinOffColors[2][3] = [[0xFFFFFF, 0, 2], [0xc7c5bc, 0, 209]]
+	$g_iDonationWindowY = 0
+	Local $aDonWinOffColors[3][3] = [[0xFFFFFF, 0, 1], [0xFFFFFF, 0, 31], [0xABABA8, 0, 32]]
 	Local $aDonationWindow = _MultiPixelSearch(409, 0, 410, $g_iDEFAULT_HEIGHT, 1, 1, Hex(0xFFFFFF, 6), $aDonWinOffColors, 10)
 
 	If IsArray($aDonationWindow) Then
-		$DonationWindowY = $aDonationWindow[1]
+		$g_iDonationWindowY = $aDonationWindow[1]
 		_Sleep(250)
-		Setlog("$DonationWindowY: " & $DonationWindowY, $COLOR_DEBUG)
+		Setlog("$DonationWindowY: " & $g_iDonationWindowY, $COLOR_DEBUG)
 	Else
 		SetLog("Could not find the Donate Window :(", $COLOR_ERROR)
 		Return False
@@ -317,7 +345,7 @@ Func btnTestSendText()
 	SendText($s)
 	SetLog(_PadStringCenter(" Test SendText end ", 54, "="), $COLOR_INFO)
 	$g_bRunState = $currentRunState
-EndFunc   ;==>SendText
+EndFunc   ;==>btnTestSendText
 
 Func btnTestAttackBar()
 	Local $currentOCR = $g_iDebugOcr
@@ -517,7 +545,7 @@ Func btnTestDeadBase()
 	EndIf
 
 	$g_bRunState = $currentRunState
-EndFunc   ;==>btnTestDeadbase
+EndFunc   ;==>btnTestDeadBase
 
 Func btnTestDeadBaseFolder()
 
@@ -532,33 +560,26 @@ Func btnTestDeadBaseFolder()
 	Local $newFill = 'checkDeadBaseSuperNew(False, "' & @ScriptDir & "\imgxml\deadbase\elix\fill\new\" & '")'
 	checkDeadBaseFolder($directory, $oldFill, $newFill)
 
-EndFunc   ;==>btnTestDeadBase
+EndFunc   ;==>btnTestDeadBaseFolder
 
 Func btnTestAttackCSV()
 
-	Local $hBMP = 0, $hHBMP = 0
-	Local $sImageFile = FileOpenDialog("Select CoC screenshot to test, cancel to use live screenshot", @ScriptDir & "\Zombies", "Image (*.png)", $FD_FILEMUSTEXIST, "", $g_hFrmBot)
-	If @error <> 0 Then
-		SetLog("Testing image cancelled, taking screenshot from " & $g_sAndroidEmulator, $COLOR_INFO)
-		_CaptureRegion()
-		$hHBMP = $g_hHBitmap
-		TestCapture($hHBMP)
-	Else
-		SetLog("Testing image " & $sImageFile, $COLOR_INFO)
-		; load test image
-		$hBMP = _GDIPlus_BitmapCreateFromFile($sImageFile)
-		$hHBMP = _GDIPlus_BitmapCreateDIBFromBitmap($hBMP)
-		_GDIPlus_BitmapDispose($hBMP)
-		TestCapture($hHBMP)
-		SetLog("Testing image hHBitmap = " & $hHBMP)
-	EndIf
+	BeginImageTest() ; get image for testing
 
 	Local $currentRunState = $g_bRunState
 	Local $currentDebugAttackCSV = $g_iDebugAttackCSV
 	Local $currentMakeIMGCSV = $g_iDebugMakeIMGCSV
+	Local $currentiMatchMode = $g_iMatchMode
+	Local $currentdebugsetlog = $g_iDebugSetlog
+	Local $currentDebugBuildingPos = $g_iDebugBuildingPos
+
 	$g_bRunState = True
 	$g_iDebugAttackCSV = 1
 	$g_iDebugMakeIMGCSV = 1
+	$g_iDebugSetlog = 1
+	$g_iDebugBuildingPos = 1
+
+	$g_iMatchMode = $DB ; define which script to use
 
 	SearchZoomOut($aCenterEnemyVillageClickDrag, True, "btnTestAttackCSV")
 	ResetTHsearch()
@@ -566,20 +587,217 @@ Func btnTestAttackCSV()
 	SetLog("FindTownhall() = " & FindTownhall(True), $COLOR_INFO)
 	SetLog("$g_sImglocRedline = " & $g_sImglocRedline, $COLOR_INFO)
 
+	SetLog("Testing PrepareAttack()", $COLOR_INFO)
+	PrepareAttack($g_iMatchMode)
+
 	SetLog("Testing Algorithm_AttackCSV()", $COLOR_INFO)
-	Algorithm_AttackCSV()
+	Algorithm_AttackCSV(True, False) ; true for test attack mode, and false for get redlinearea
 	SetLog("Testing Algorithm_AttackCSV() DONE", $COLOR_INFO)
 
-	If $hHBMP <> 0 Then
-		_WinAPI_DeleteObject($hHBMP)
-		TestCapture(0)
-	EndIf
+	EndImageTest() ; clear test image handle
 
 	$g_bRunState = $currentRunState
 	$g_iDebugAttackCSV = $currentDebugAttackCSV
 	$g_iDebugMakeIMGCSV = $currentMakeIMGCSV
+	$g_iMatchMode = $currentiMatchMode
+	$g_iDebugSetlog = $currentdebugsetlog
+	$g_iDebugBuildingPos = $currentDebugBuildingPos
 
-EndFunc
+EndFunc   ;==>btnTestAttackCSV
+
+Func btnTestGetLocationBuilding()
+
+	Local $aResult, $iBdlgFindTime, $hTimer
+
+	BeginImageTest() ; get image for testing
+
+	; Store variables changed, set test values
+	Local $currentRunState = $g_bRunState
+	Local $currentDebugBuildingPos = $g_iDebugBuildingPos
+	Local $currentdebugsetlog = $g_iDebugSetlog
+	$g_bRunState = True
+	$g_iDebugBuildingPos = 1
+	$g_iDebugSetlog = 1
+
+	SearchZoomOut($aCenterEnemyVillageClickDrag, True, "btnTestAttackCSV")
+	ResetTHsearch()
+	SetLog("Testing FindTownhall()", $COLOR_INFO)
+	SetLog("FindTownhall() = " & FindTownhall(True), $COLOR_INFO)
+;	SetLog("$g_sImglocRedline = " & $g_sImglocRedline, $COLOR_INFO)
+
+	_LogObjList($g_oBldgAttackInfo) ; log dictionary contents
+
+	SetLog("Testing GetLocationBuilding() with all buildings", $COLOR_INFO)
+
+	For $b = $eBldgGoldS To $eBldgAirDefense
+		If $b = $eBldgDarkS Then ContinueLoop ; skip dark elixir as images not available
+		$aResult = GetLocationBuilding($b, $g_iSearchTH, False)
+		If $aResult = -1 Then Setlog("Monkey ate bad banana: " & "GetLocationBuilding " & $g_sBldgNames[$b], $COLOR_ERROR)
+	Next
+
+	_LogObjList($g_oBldgAttackInfo) ; log dictionary contents
+	btnTestGetLocationBuildingImage() ; create image of locations
+
+	Local $string, $iFindBldgTotalTestTime
+	Local $iKeys = $g_oBldgAttackInfo.Keys
+	For $string In $iKeys
+		If StringInStr($string, "_FINDTIME", $STR_NOCASESENSEBASIC) > 0 Then $iFindBldgTotalTestTime += $g_oBldgAttackInfo.item($string)
+	Next
+	Setlog("GetLocationBuilding() Total Image search time= " & $iFindBldgTotalTestTime, $COLOR_SUCCESS)
+
+	$g_oBldgAttackInfo.RemoveAll ; remove all data
+
+	SetLog("Testing DONE", $COLOR_INFO)
+
+	EndImageTest() ; clear test image handle
+
+	; restore changed variables
+	$g_bRunState = $currentRunState
+	$g_iDebugBuildingPos = $currentDebugBuildingPos
+	$g_iDebugSetlog = $currentdebugsetlog
+
+EndFunc   ;==>btnTestGetLocationBuilding
+
+Func btnTestGetLocationBuildingImage()
+
+	Local $iTimer = __TimerInit()
+
+	_CaptureRegion2()
+	Local $EditedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
+	Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($EditedImage)
+	Local $hBrush = _GDIPlus_BrushCreateSolid(0xFFFFFFFF)
+	Local $pixel
+
+	; Open box of crayons :-)
+	Local $hPenWhite = _GDIPlus_PenCreate(0xFFFFFFFF, 2)
+	Local $hPenMagenta = _GDIPlus_PenCreate(0xFFFF00F6, 2)
+	Local $hPenRed = _GDIPlus_PenCreate(0xFFFF0000, 2)
+	Local $hPenNavyBlue = _GDIPlus_PenCreate(0xFF000066, 2)
+	Local $hPenBlue = _GDIPlus_PenCreate(0xFF0000CC, 2)
+	Local $hPenSteelBlue = _GDIPlus_PenCreate(0xFF0066CC, 2)
+	Local $hPenLtBlue = _GDIPlus_PenCreate(0xFF0080FF, 2)
+	Local $hPenPaleBlue = _GDIPlus_PenCreate(0xFF66B2FF, 2)
+	Local $hPenCyan = _GDIPlus_PenCreate(0xFF00FFFF, 2)
+
+
+	; - GOLD STORAGE
+	If $g_oBldgAttackInfo.exists($eBldgGoldS & "_LOCATION") Then
+		$g_aiCSVGoldStoragePos = $g_oBldgAttackInfo.item($eBldgGoldS & "_LOCATION")
+		If IsArray($g_aiCSVGoldStoragePos) Then
+			For $i = 0 To UBound($g_aiCSVGoldStoragePos) - 1
+				$pixel = $g_aiCSVGoldStoragePos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 20, 20, $hPenMagenta)
+			Next
+		EndIf
+	EndIf
+
+	; - ELIXIR STORAGE
+	If $g_oBldgAttackInfo.exists($eBldgElixirS & "_LOCATION") Then
+		$g_aiCSVElixirStoragePos = $g_oBldgAttackInfo.item($eBldgElixirS & "_LOCATION")
+		If IsArray($g_aiCSVElixirStoragePos) Then
+			For $i = 0 To UBound($g_aiCSVElixirStoragePos) - 1
+				$pixel = $g_aiCSVElixirStoragePos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 20, 20, $hPenWhite)
+			Next
+		EndIf
+	EndIf
+
+	; - DRAW TOWNHALL -------------------------------------------------------------------
+	_GDIPlus_GraphicsDrawRect($hGraphic, $g_iTHx - 5, $g_iTHy - 10, 30, 30, $hPenRed)
+
+	; - DRAW Eagle -------------------------------------------------------------------
+	If $g_oBldgAttackInfo.exists($eBldgEagle & "_LOCATION") Then
+		$g_aiCSVEagleArtilleryPos = $g_oBldgAttackInfo.item($eBldgEagle & "_LOCATION")
+		If IsArray($g_aiCSVEagleArtilleryPos[0]) Then
+			Local $sPixel = $g_aiCSVEagleArtilleryPos[0]
+			_GDIPlus_GraphicsDrawRect($hGraphic, $sPixel[0] - 15, $sPixel[1] - 15, 30, 30, $hPenBlue)
+		EndIf
+	EndIf
+
+	; - DRAW Inferno -------------------------------------------------------------------
+	If $g_oBldgAttackInfo.exists($eBldgInferno & "_LOCATION") Then
+		$g_aiCSVInfernoPos = $g_oBldgAttackInfo.item($eBldgInferno & "_LOCATION")
+		If IsArray($g_aiCSVInfernoPos) Then
+			For $i = 0 To UBound($g_aiCSVInfernoPos) - 1
+				$pixel = $g_aiCSVInfernoPos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 10, 20, 20, $hPenNavyBlue)
+			Next
+		EndIf
+	EndIf
+
+	; - DRAW X-Bow -------------------------------------------------------------------
+	If $g_oBldgAttackInfo.exists($eBldgXBow & "_LOCATION") Then
+		$g_aiCSVXBowPos = $g_oBldgAttackInfo.item($eBldgXBow & "_LOCATION")
+		If IsArray($g_aiCSVXBowPos) Then
+			For $i = 0 To UBound($g_aiCSVXBowPos) - 1
+				$pixel = $g_aiCSVXBowPos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 25, 25, 25, $hPenBlue)
+			Next
+		EndIf
+	EndIf
+
+	; - DRAW Wizard Towers -------------------------------------------------------------------
+	If $g_oBldgAttackInfo.exists($eBldgWizTower & "_LOCATION") Then
+		$g_aiCSVWizTowerPos = $g_oBldgAttackInfo.item($eBldgWizTower & "_LOCATION")
+		If IsArray($g_aiCSVWizTowerPos) Then
+			For $i = 0 To UBound($g_aiCSVWizTowerPos) - 1
+				$pixel = $g_aiCSVWizTowerPos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 5, $pixel[1] - 15, 25, 25, $hPenSteelBlue)
+			Next
+		EndIf
+	EndIf
+
+	; - DRAW Mortars -------------------------------------------------------------------
+	If $g_oBldgAttackInfo.exists($eBldgMortar & "_LOCATION") Then
+		$g_aiCSVMortarPos = $g_oBldgAttackInfo.item($eBldgMortar & "_LOCATION")
+		If IsArray($g_aiCSVMortarPos) Then
+			For $i = 0 To UBound($g_aiCSVMortarPos) - 1
+				$pixel = $g_aiCSVMortarPos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 15, 25, 25, $hPenLtBlue)
+			Next
+		EndIf
+	EndIf
+
+	; - DRAW Air Defense -------------------------------------------------------------------
+	If $g_oBldgAttackInfo.exists($eBldgAirDefense & "_LOCATION") Then
+		$g_aiCSVAirDefensePos = $g_oBldgAttackInfo.item($eBldgAirDefense & "_LOCATION")
+		If IsArray($g_aiCSVAirDefensePos) Then
+			For $i = 0 To UBound($g_aiCSVAirDefensePos) - 1
+				$pixel = $g_aiCSVAirDefensePos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 12, $pixel[1] - 10, 25, 25, $hPenPaleBlue)
+			Next
+		EndIf
+	EndIf
+
+	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+	Local $Time = @HOUR & "." & @MIN & "." & @SEC
+	Local $filename = $g_sProfileTempDebugPath & String("GetLocationBuilding_" & $Date & "_" & $Time) & ".jpg"
+	_GDIPlus_ImageSaveToFile($EditedImage, $filename)
+	SetLog("GetLocationBuilding image saved: " & $filename)
+
+
+	; Clean up resources
+	_GDIPlus_PenDispose($hPenWhite)
+	_GDIPlus_PenDispose($hPenMagenta)
+	_GDIPlus_PenDispose($hPenRed)
+	_GDIPlus_PenDispose($hPenBlue)
+	_GDIPlus_PenDispose($hPenNavyBlue)
+	_GDIPlus_PenDispose($hPenSteelBlue)
+	_GDIPlus_PenDispose($hPenLtBlue)
+	_GDIPlus_PenDispose($hPenPaleBlue)
+	_GDIPlus_PenDispose($hPenCyan)
+	_GDIPlus_BrushDispose($hBrush)
+	_GDIPlus_GraphicsDispose($hGraphic)
+	_GDIPlus_BitmapDispose($EditedImage)
+
+	; open image
+	If TestCapture() = True Then
+		ShellExecute($filename)
+	EndIf
+
+	SetLog("GetLocationBuilding DEBUG IMAGE Create Required: " & Round((__TimerDiff($iTimer) * 0.001), 1) & "Seconds", $COLOR_DEBUG)
+
+EndFunc   ;==>btnTestGetLocationBuildingImage
 
 Func btnTestFindButton()
 	BeginImageTest()
@@ -590,9 +808,9 @@ Func btnTestFindButton()
 	$result = ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
 	If @error Then $result = "Error " & @error & ", " & @extended & ", "
 	SetLog("Result findButton(""" & $sButton & """) = " & $result, $COLOR_INFO)
-	SetLog("Testing findButton(""" & $sButton & """) DONE" , $COLOR_INFO)
+	SetLog("Testing findButton(""" & $sButton & """) DONE", $COLOR_INFO)
 	EndImageTest()
-EndFunc
+EndFunc   ;==>btnTestFindButton
 
 Func btnTestCleanYard()
 	Local $currentRunState = $g_bRunState
@@ -607,18 +825,18 @@ Func btnTestCleanYard()
 	$result = ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
 	If @error Then $result = "Error " & @error & ", " & @extended & ", "
 	SetLog("Result CleanYard", $COLOR_INFO)
-    SetLog("Testing CheckTombs", $COLOR_INFO)
-    $result = CheckTombs()
-    $result = ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
-    If @error Then $result = "Error " & @error & ", " & @extended & ", "
-    SetLog("Result CheckTombs", $COLOR_INFO)
-	SetLog("Testing CleanYard DONE" , $COLOR_INFO)
+	SetLog("Testing CheckTombs", $COLOR_INFO)
+	$result = CheckTombs()
+	$result = ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
+	If @error Then $result = "Error " & @error & ", " & @extended & ", "
+	SetLog("Result CheckTombs", $COLOR_INFO)
+	SetLog("Testing CleanYard DONE", $COLOR_INFO)
 	EndImageTest()
 	; restore original state
 	$g_iTestFreeBuilderCount = -1
 	$g_iFreeBuilderCount = $iCurrFreeBuilderCount
 	$g_bRunState = $currentRunState
-EndFunc
+EndFunc   ;==>btnTestCleanYard
 
 Func BeginImageTest($directory = $g_sProfileTempPath)
 	Local $hBMP = 0, $hHBMP = 0
@@ -639,11 +857,11 @@ Func BeginImageTest($directory = $g_sProfileTempPath)
 	TestCapture($hHBMP)
 	SetLog("Testing image hHBitmap = " & $hHBMP)
 	Return True
-EndFunc
+EndFunc   ;==>BeginImageTest
 
 Func EndImageTest()
 	TestCapture(0)
-EndFunc
+EndFunc   ;==>EndImageTest
 
 Func FixClanCastle($inputString)
 	; if found  a space in results of attack bar slot detection, force insert of clan castle
@@ -672,7 +890,7 @@ EndFunc   ;==>FixClanCastle
 
 Func btnTestOcrMemory()
 
-	_CaptureRegion2(162, 200, 162 + 120 , 200 + 27)
+	_CaptureRegion2(162, 200, 162 + 120, 200 + 27)
 
 	For $i = 1 To 5000
 		DllCall($g_hLibMyBot, "str", "ocr", "ptr", $g_hHBitmap2, "str", "coc-DonTroops", "int", $g_iDebugOcr)
@@ -681,4 +899,5 @@ Func btnTestOcrMemory()
 
 	Next
 
-EndFunc
+EndFunc   ;==>btnTestOcrMemory
+

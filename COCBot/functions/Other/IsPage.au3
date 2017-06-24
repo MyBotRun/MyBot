@@ -4,7 +4,7 @@
 ;                  IsEndBattlePage & IsReturnHomeBattlePage
 ; Description ...: Verify if you are in the correct window...
 ; Author ........: Sardo (2015)
-; Modified ......: ProMac 2015, MonkeyHunter (2015-12)
+; Modified ......: ProMac (2015), MonkeyHunter (12-2015)
 ; Remarks .......: This file is part of MyBot Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
@@ -16,32 +16,31 @@ Func IsPageLoop($aCheckPixel, $iLoop = 30, $bCapturePixel = $g_bCapturePixel)
 	$bCapturePixel = $bCapturePixel Or $iLoop > 1
 	Local $IsPage = False
 	Local $i = 0
-	
+
 	While $i < $iLoop
 		ForceCaptureRegion()
 		If _CheckPixel($aCheckPixel, $bCapturePixel) Then
 			$IsPage = True
 			ExitLoop
 		EndIf
-		If _Sleep($DELAYISTRAINPAGE1) Then ExitLoop
+		If _Sleep($DELAYISTRAINPAGE2) Then ExitLoop ; 1s Delay
 		$i += 1
 	WEnd
 
 	Return $IsPage
 EndFunc   ;==>IsPageLoop
 
-Func IsTrainPage($writelogs = True, $iLoop = 30)
+Func IsTrainPage($bSetLog = True, $iLoop = 30)
 
 	If IsPageLoop($aIsTrainPgChk1, $iLoop) Then
-		If ($g_iDebugSetlog = 1 Or $g_iDebugClick = 1) And $writelogs = True Then Setlog("**Train Window OK**", $COLOR_ACTION)
+		If ($g_iDebugSetlog = 1 Or $g_iDebugClick = 1) And $bSetLog Then Setlog("**Army Window OK**", $COLOR_ACTION)
 		Return True
 	EndIf
 
-	If $writelogs = True Then SetLog("Cannot find train Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
-	If $g_iDebugImageSave = 1 Then DebugImageSave("IsTrainPage_")
+	If $bSetLog Then SetLog("Cannot find Army Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
+	If $g_iDebugImageSave = 1 Then DebugImageSave("IsTrainPage")
 	If $iLoop > 1 Then AndroidPageError("IsTrainPage")
 	Return False
-
 EndFunc   ;==>IsTrainPage
 
 Func IsAttackPage($bCapturePixel = $g_bCapturePixel)
@@ -56,7 +55,7 @@ Func IsAttackPage($bCapturePixel = $g_bCapturePixel)
 		SetLog("**Attack Window FAIL**", $COLOR_ACTION)
 		SetLog("expected in (" & $aIsAttackPage[0] & "," & $aIsAttackPage[1] & ")  = " & Hex($aIsAttackPage[2], 6) & " - Found " & $colorRead, $COLOR_ACTION)
 	EndIf
-	If $g_iDebugImageSave = 1 Then DebugImageSave("IsAttackPage_")
+	If $g_iDebugImageSave = 1 Then DebugImageSave("IsAttackPage")
 	Return False
 
 EndFunc   ;==>IsAttackPage
@@ -77,12 +76,14 @@ EndFunc   ;==>IsAttackWhileShieldPage
 Func IsMainPage($iLoop = 30)
 
 	If IsPageLoop($aIsMain, $iLoop) Then
+		$g_bMainWindowOk = True
 		If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then SetLog("**Main Window OK**", $COLOR_ACTION)
 		Return True
 	EndIf
 
+	$g_bMainWindowOk = False
 	If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then SetLog("**Main Window FAIL**", $COLOR_ACTION)
-	If $g_iDebugImageSave = 1 Then DebugImageSave("IsMainPage_")
+	If $g_iDebugImageSave = 1 Then DebugImageSave("IsMainPage")
 	If $iLoop > 1 Then AndroidPageError("IsMainPage")
 	Return False
 
@@ -96,7 +97,7 @@ Func IsMainChatOpenPage() ;main page open chat
 	EndIf
 
 	If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then SetLog("**Chat Open Window FAIL** " & $aChatTab[0] & "," & $aChatTab[1] & " " & _GetPixelColor($aChatTab[0], $aChatTab[1], True), $COLOR_ACTION)
-	If $g_iDebugImageSave = 1 Then DebugImageSave("IsMainChatOpenPage_")
+	If $g_iDebugImageSave = 1 Then DebugImageSave("IsMainChatOpenPage")
 	Return False
 
 EndFunc   ;==>IsMainChatOpenPage
@@ -115,7 +116,7 @@ Func IsClanInfoPage()
 		Return True
 	Else
 		If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then SetLog("**Clan Info Window FAIL**", $COLOR_ACTION)
-		If $g_iDebugImageSave = 1 Then DebugImageSave("IsClanInfoPage_")
+		If $g_iDebugImageSave = 1 Then DebugImageSave("IsClanInfoPage")
 		Return False
 	EndIf
 
@@ -138,7 +139,7 @@ Func IsLaunchAttackPage()
 		SetLog("expected in (" & $aFindMatchButton[0] & "," & $aFindMatchButton[1] & ")  = " & Hex($aFindMatchButton[2], 6) & " or " & Hex($aFindMatchButton2[2], 6) & " - Found " & $colorReadnoshield & " or " & $colorReadwithshield, $COLOR_ACTION)
 	EndIf
 
-	If $g_iDebugImageSave = 1 Then DebugImageSave("IsLaunchAttackPage_")
+	If $g_iDebugImageSave = 1 Then DebugImageSave("IsLaunchAttackPage")
 	Return False
 
 EndFunc   ;==>IsLaunchAttackPage
@@ -154,7 +155,7 @@ Func IsEndBattlePage($writelog = True)
 			SetLog("**End Battle Window FAIL**", $COLOR_ACTION)
 			SetLog("expected in (" & $aConfirmSurrender[0] & "," & $aConfirmSurrender[1] & ")  = " & Hex($aConfirmSurrender[2], 6) & " - Found " & $colorRead, $COLOR_ACTION)
 		EndIf
-		If $g_iDebugImageSave = 1 And $writelog = True Then DebugImageSave("IsEndBattlePage_")
+		If $g_iDebugImageSave = 1 And $writelog = True Then DebugImageSave("IsEndBattlePage")
 		Return False
 	EndIf
 
@@ -171,7 +172,7 @@ Func IsReturnHomeBattlePage($useReturnValue = False, $makeDebugImageScreenshot =
 	EndIf
 
 	If ($g_iDebugSetlog = 1 Or $g_iDebugClick = 1) And ($makeDebugImageScreenshot = True) Then SetLog("**Return Home Battle Window FAIL**", $COLOR_ACTION)
-	If $g_iDebugImageSave = 1 And $makeDebugImageScreenshot = True Then DebugImageSave("IsReturnHomeBattlePage_")
+	If $g_iDebugImageSave = 1 And $makeDebugImageScreenshot = True Then DebugImageSave("IsReturnHomeBattlePage")
 	If $useReturnValue = True Then
 		Return False
 	Else
@@ -195,7 +196,7 @@ Func IsPostDefenseSummaryPage()
 	Else
 		If $g_iDebugSetlog = 1 Or $g_iDebugClick = 1 Then SetLog("**Post Defense Page not visible**", $COLOR_ACTION)
 		If $g_iDebugImageSave = 1 Then
-			DebugImageSave("IsPostDefenseSummaryPage_")
+			DebugImageSave("IsPostDefenseSummaryPage")
 		EndIf
 		Return False
 	EndIf

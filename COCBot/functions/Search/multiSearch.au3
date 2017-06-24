@@ -15,7 +15,7 @@
 
 Func updateMultiSearchStats($aResult, $statFile = "")
 	Switch $statFile
-		Case $g_sProfileWeakBasePath
+		Case $g_sProfileBuildingStatsPath
 			updateWeakBaseStats($aResult)
 		Case Else
 			; Don't log stats at present
@@ -75,7 +75,8 @@ Func captureDebugImage($aResult, $subDirectory)
 				If IsArray($coords) Then
 					; Loop through all found points for the item and add them to the image
 					For $j = 0 To UBound($coords) - 1
-						addInfoToDebugImage($hGraphic, $hPen, $aResult[$i][0], $coords[$j][0], $coords[$j][1])
+						Local $coord = $coords[$j]
+						addInfoToDebugImage($hGraphic, $hPen, $aResult[$i][0], $coord[0], $coord[1])
 					Next
 				EndIf
 			EndIf
@@ -91,13 +92,6 @@ Func captureDebugImage($aResult, $subDirectory)
 		_GDIPlus_BitmapDispose($editedImage)
 	EndIf
 EndFunc   ;==>captureDebugImage
-
-Func returnPropertyValue($key, $property)
-	; Get the property
-	Local $aValue = DllCall($g_hLibImgLoc, "str", "GetProperty", "str", $key, "str", $property)
-	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
-	Return $aValue[0]
-EndFunc   ;==>returnPropertyValue
 
 Func updateResultsRow(ByRef $aResult, $redLines = "")
 	; Create the local variable to do the counting
@@ -127,7 +121,7 @@ Func multiMatches($directory, $maxReturnPoints = 0, $fullCocAreas = "DCD", $redL
 	If $forceCaptureRegion = True Then _CaptureRegion2()
 
 	; Perform the search
-	Local $res = DllCall($g_hLibImgLoc, "str", "SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", $fullCocAreas, "Int", $maxReturnPoints, "str", $redLines, "Int", $minLevel, "Int", $maxLevel)
+	Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", $fullCocAreas, "Int", $maxReturnPoints, "str", $redLines, "Int", $minLevel, "Int", $maxLevel)
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 
 	; Get the redline data
@@ -145,14 +139,14 @@ Func multiMatches($directory, $maxReturnPoints = 0, $fullCocAreas = "DCD", $redL
 		; Loop through the array
 		For $i = 0 To UBound($aKeys) - 1
 			; Get the property values
-			$aResult[$i + 1][0] = returnPropertyValue($aKeys[$i], "filename")
-			$aResult[$i + 1][1] = returnPropertyValue($aKeys[$i], "objectname")
-			$aResult[$i + 1][2] = returnPropertyValue($aKeys[$i], "objectlevel")
-			$aResult[$i + 1][3] = returnPropertyValue($aKeys[$i], "fillLevel")
-			$aResult[$i + 1][4] = returnPropertyValue($aKeys[$i], "totalobjects")
+			$aResult[$i + 1][0] = RetrieveImglocProperty($aKeys[$i], "filename")
+			$aResult[$i + 1][1] = RetrieveImglocProperty($aKeys[$i], "objectname")
+			$aResult[$i + 1][2] = RetrieveImglocProperty($aKeys[$i], "objectlevel")
+			$aResult[$i + 1][3] = RetrieveImglocProperty($aKeys[$i], "fillLevel")
+			$aResult[$i + 1][4] = RetrieveImglocProperty($aKeys[$i], "totalobjects")
 
 			; Get the coords property
-			$aValue = returnPropertyValue($aKeys[$i], "objectpoints")
+			$aValue = RetrieveImglocProperty($aKeys[$i], "objectpoints")
 			$aCoords = StringSplit($aValue, "|", $STR_NOCOUNT)
 			ReDim $aCoordArray[UBound($aCoords)][2]
 

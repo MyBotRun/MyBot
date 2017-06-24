@@ -91,11 +91,26 @@ Func _CaptureGameScreen(ByRef $_hHBitmap, Const $iLeft = 0, Const $iTop = 0, Con
 
 	If $g_hHBitmapTest = 0 Then
 		If $g_bRunState Then CheckAndroidRunning() ; Ensure Android is running
+		Local $iL = $iLeft, $iT = $iTop, $iR = $iRight, $iB = $iBottom
+		Local $iW = Number($iR) - Number($iL), $iH = Number($iB) - Number($iT)
+		Local $bDebugAlwaysSaveFullScreenTimer = False
+		If Not $g_hDebugAlwaysSaveFullScreenTimer = 0 Then
+			If __TimerDiff($g_hDebugAlwaysSaveFullScreenTimer) < 300000 Then
+				$bDebugAlwaysSaveFullScreenTimer = True
+				$iL = 0
+				$iT = 0
+				$iR = $g_iGAME_WIDTH
+				$iB = $g_iGAME_HEIGHT
+				$iW = Number($iR) - Number($iL)
+				$iH = Number($iB) - Number($iT)
+			Else
+				SetLog("Disable $g_hDebugAlwaysSaveFullScreenTimer")
+				$g_hDebugAlwaysSaveFullScreenTimer = 0
+			EndIf
+		EndIf
 		If $g_bChkBackgroundMode = True Then
-			Local $iW = Number($iRight) - Number($iLeft), $iH = Number($iBottom) - Number($iTop)
-
 			If $g_bAndroidAdbScreencap = True Then
-				$_hHBitmap = AndroidScreencap($iLeft, $iTop, $iW, $iH)
+				$_hHBitmap = AndroidScreencap($iL, $iT, $iW, $iH)
 			Else
 				$SuspendMode = ResumeAndroid(False)
 				;Local $hCtrl = ControlGetHandle($g_hAndroidWindow, $g_sAppPaneName, $g_sAppClassInstance)
@@ -111,7 +126,7 @@ Func _CaptureGameScreen(ByRef $_hHBitmap, Const $iLeft = 0, Const $iTop = 0, Con
 				; $PW_RENDERFULLCONTENT = 2 ; New in Windows 8.1, suppost to capture DirectX/OpenGL screens through DWM (but didn't work for MEmu)
 				DllCall("user32.dll", "int", "PrintWindow", "hwnd", $hCtrl, "handle", $hMemDC, "int", $flags)
 				_WinAPI_SelectObject($hMemDC, $_hHBitmap)
-				_WinAPI_BitBlt($hMemDC, 0, 0, $iW, $iH, $hDC_Capture, $iLeft, $iTop, $SRCCOPY)
+				_WinAPI_BitBlt($hMemDC, 0, 0, $iW, $iH, $hDC_Capture, $iL, $iT, $SRCCOPY)
 
 				_WinAPI_DeleteDC($hMemDC)
 				_WinAPI_SelectObject($hMemDC, $hObjectOld)
@@ -121,8 +136,23 @@ Func _CaptureGameScreen(ByRef $_hHBitmap, Const $iLeft = 0, Const $iTop = 0, Con
 		Else
 			getBSPos()
 			$SuspendMode = ResumeAndroid(False)
-			$_hHBitmap = _ScreenCapture_Capture("", $iLeft + $g_aiBSpos[0], $iTop + $g_aiBSpos[1], $iRight + $g_aiBSpos[0] - 1, $iBottom + $g_aiBSpos[1] - 1, False)
+			$_hHBitmap = _ScreenCapture_Capture("", $iL + $g_aiBSpos[0], $iT + $g_aiBSpos[1], $iR + $g_aiBSpos[0] - 1, $iB + $g_aiBSpos[1] - 1, False)
 			SuspendAndroid($SuspendMode, False)
+		EndIf
+
+		If $bDebugAlwaysSaveFullScreenTimer = True Then
+			; save full screen
+			Local $sDateTime = @YEAR & "-" & @MON & "-" & @MDAY & "_" & @HOUR & "-" & @MIN & "-" & @SEC & "." & @MSEC
+			Local $hBitmap_full = _GDIPlus_BitmapCreateFromHBITMAP($_hHBitmap)
+			SetDebugLog("Save full screen: " & $g_sProfileTempDebugPath & "FullScreen_" & $sDateTime & ".png")
+			_GDIPlus_ImageSaveToFile($hBitmap_full, $g_sProfileTempDebugPath & "FullScreen_" & $sDateTime & ".png")
+			_GDIPlus_BitmapDispose($hBitmap_full)
+			If $iLeft > 0 Or $iTop > 0 Or $iRight < $g_iGAME_WIDTH Or $iBottom < $g_iGAME_HEIGHT Then
+				; create requested image size
+				Local $hHBitmap_full = $_hHBitmap
+				$_hHBitmap = GetHHBitmapArea($_hHBitmap, $iLeft, $iTop, $iRight, $iBottom)
+				_WinAPI_DeleteObject($hHBitmap_full)
+			EndIf
 		EndIf
 	ElseIf $iLeft > 0 Or $iTop > 0 Or $iRight < $g_iGAME_WIDTH Or $iBottom < $g_iGAME_HEIGHT Then
 		; resize test image

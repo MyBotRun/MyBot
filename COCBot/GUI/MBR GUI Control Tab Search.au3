@@ -610,9 +610,9 @@ Func chkSpellWaitError()
 
 	; Check if spell total GUI is larger than spell count trained for wait for spells to work properly!
 	If $g_iTotalTrainSpaceSpell > GUICtrlRead($g_hTxtTotalCountSpell) Then  ; we have an error!
-		$sErrorText = GetTranslated(625,110, "Total number of trained spells exceeds total set in GUI!") & @CRLF & _
-			GetTranslated(625,111, "Reduce number of trained spells,") & @CRLF & _
-			GetTranslated(625,112, "OR ELSE BOT WILL NEVER ATTACK!!") & @CRLF
+		$sErrorText = GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_ErrorText_01", "Total number of trained spells exceeds total set in GUI!") & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_ErrorText_02", "Reduce number of trained spells,") & @CRLF & _
+			GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_ErrorText_03", "OR ELSE BOT WILL NEVER ATTACK!!") & @CRLF
 		$bErrorCondition = True
 	Else
 		Return
@@ -628,29 +628,29 @@ Func chkSpellWaitError()
 	Local $iCount = 0
 	While 1
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xE00000, 0xFFFF00, 12, "Comic Sans MS", 480)
-		$sText = $sErrorText & @CRLF & GetTranslated(625,113,"Click YES to close this warning message") & @CRLF
-		$MsgBox1 = _ExtMsgBox(48, GetTranslated(625,114,"YES, I Understand Warning|No"), GetTranslated(625,115,"Wait for Spells Warning!"), $sText, 30, $g_hFrmBot)
+		$sText = $sErrorText & @CRLF & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_01", "Click YES to close this warning message") & @CRLF
+		$MsgBox1 = _ExtMsgBox(48, GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_02", "YES, I Understand Warning|No"), GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_03", "Wait for Spells Warning!"), $sText, 30, $g_hFrmBot)
 		Switch $MsgBox1
 			Case 1
 				$bHaveBeenWarned = True
 				ExitLoop
 			Case Else
 				_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xFFFF00 , 0xE00000, 12, "Comic Sans MS", 480)
-				$stext = GetTranslated(625,116,"Sorry, must understand warning and click Yes!") & @CRLF
-				$MsgBox2 = _ExtMsgBox(16, GetTranslated(625,117,"OK"), GetTranslated(625,118,"User Input Error"), $stext, 15, $g_hFrmBot)
+				$stext = GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_04", "Sorry, must understand warning and click Yes!") & @CRLF
+				$MsgBox2 = _ExtMsgBox(16, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_07", "User Input Error"), $stext, 15, $g_hFrmBot)
 				If $iCount = 1 And $MsgBox1 = 9 And $MsgBox2 = 9 Then ExitLoop  ; If time out on both error messages happens twice then exit loop to avoid stuck
 		EndSwitch
 		$iCount += 1
 		If $iCount > 2 Then  ; You want to be crazy?  OK, then start the madness
-			$sText = GetTranslated(625,119,"CONGRATULATIONS!!") & @CRLF & GetTranslated(625,120,"You found the secret message in Bot!") & @CRLF & _
-				GetTranslated(625,121,"Can you find the randomly selected button to close this message?") & @CRLF & _
-				GetTranslated(625,122, "HaHaHaHa...") & @CRLF & @CRLF & @CRLF
+			$sText = GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_08", "CONGRATULATIONS!!") & @CRLF & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_09", "You found the secret message in Bot!") & @CRLF & _
+				GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_10", "Can you find the randomly selected button to close this message?") & @CRLF & _
+				GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_11", "HaHaHaHa...") & @CRLF & @CRLF & @CRLF
 			Local $sFunnyText = $sText
 			Local $iControl = 0
 			$iCount = 1
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 480)
 			While 1
-				$MsgBox3 = _ExtMsgBox(128, "1|2|3|4|5|6|7", GetTranslated(625,123,"You are a WINNER!!"), $sFunnyText, 900, $g_hFrmBot)
+				$MsgBox3 = _ExtMsgBox(128, "1|2|3|4|5|6|7", GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_12", "You are a WINNER!!"), $sFunnyText, 900, $g_hFrmBot)
 				If @error Then Setlog("_ExtMsgBox error: " & @error, $COLOR_ERROR)
 				If $iCount > 7 And Int($MsgBox3) = Random(1,8,1) Then
 					ExitLoop
@@ -663,31 +663,31 @@ Func chkSpellWaitError()
 					Switch $iControl
 						Case 1
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x61FF00, 0x020028, 12, "Arial", 480)
-							$sFunnyText = $sText & GetTranslated(625,124,"Sorry not that button!") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_01", "Sorry not that button!") & @CRLF
 						Case 2
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xDC00FF, 0x011E00, 12, "Comic Sans MS", 480)
-							$sFunnyText = $sText & GetTranslated(625,125,"Donate ??5000 to MyBot.run while you wait 15 minutes for this to time out?") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_02", "Donate ??5000 to MyBot.run while you wait 15 minutes for this to time out?") & @CRLF
 						Case 3
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x000000, 0xFFFFFF, 12, "Tahoma", 480)
-							$sFunnyText = $sText & GetTranslated(625,126,"Having trouble finding the exit button?") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_03", "Having trouble finding the exit button?") & @CRLF
 						Case 4
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x4800FF, 0xD800FF, 12, "Comic Sans MS", 480)
-							$sFunnyText = $sText & GetTranslated(625,127,"This is fun, can we keep going all day?") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_04", "This is fun, can we keep going all day?") & @CRLF
 						Case 5
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Times New Roman", 480)
-							$sFunnyText = $sText & GetTranslated(625,128,"Try four more times, you have to get lucky sooner or later!") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_05", "Try four more times, you have to get lucky sooner or later!") & @CRLF
 						Case 6
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x00FFED, 0x010051, 12, "Comic Sans MS", 480)
-							$sFunnyText = $sText & GetTranslated(625,129,"Do you have a Banana? This code monkey is Hungry!") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_06", "Do you have a Banana? This code monkey is Hungry!") & @CRLF
 						Case 7
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0xFF6600, 0x013000, 12, "Lucida Console", 480)
-							$sFunnyText = $sText & GetTranslated(625,130,"Maybe try hitting same button till you and Mr. Random pick same?") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_07", "Maybe try hitting same button till you and Mr. Random pick same?") & @CRLF
 						Case 0
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x000000, 0xFFFFFF, 12, "Tahoma", 480)
-							$sFunnyText = $sText & GetTranslated(625,131,"Sorry, can not 'escape' from this!") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_08", "Sorry, can not 'escape' from this!") & @CRLF
 						Case Else
 							_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 480)
-							$sFunnyText = $sText & GetTranslated(625,132,"Program error! Programmers can ruin a good joke.") & @CRLF
+							$sFunnyText = $sText & GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_FunnyText_09", "Program error! Programmers can ruin a good joke.") & @CRLF
 							ExitLoop 2
 					EndSwitch
 					$iCount += 1
