@@ -23,15 +23,15 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 7.1.3)
-#pragma compile(FileVersion, 7.1.3)
+#pragma compile(ProductVersion, 7.1.4)
+#pragma compile(FileVersion, 7.1.4)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
 
 ; Enforce variable declarations
 Opt("MustDeclareVars", 1)
 
-Global $g_sBotVersion = "v7.1.3" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+Global $g_sBotVersion = "v7.1.4" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
 Global $g_sBotTitle = "" ;~ Don't assign any title here, use Func UpdateBotTitle()
 Global $g_hFrmBot = 0 ; The main GUI window
 
@@ -464,7 +464,7 @@ Func SetupFilesAndFolders()
 	If $g_bDeleteLoots Then DeleteFiles($g_sProfileLootsPath, "*.*", $g_iDeleteLootsDays, 0)
 	If $g_bDeleteTemp Then
 		DeleteFiles($g_sProfileTempPath, "*.*", $g_iDeleteTempDays, 0)
-		DeleteFiles($g_sProfileTempDebugPath, "*.*", $g_iDeleteTempDays, 0)
+		DeleteFiles($g_sProfileTempDebugPath, "*.*", $g_iDeleteTempDays, 0, $FLTAR_RECUR)
 	EndIf
 
 	SetDebugLog("$g_sProfilePath = " & $g_sProfilePath)
@@ -557,6 +557,7 @@ Func MainLoop()
 		Switch $g_iBotAction
 			Case $eBotStart
 				BotStart($iStartDelay)
+				$iStartDelay = 0 ; don't autostart delay in future
 				If $g_iBotAction = $eBotStart Then $g_iBotAction = $eBotNoAction
 			Case $eBotStop
 				BotStop()

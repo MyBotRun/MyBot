@@ -16,39 +16,41 @@
 
 Func GetLocationMine()
 
-	If $g_iDetectedImageType = 0 Then
-		Local $result = DllCall($g_hLibMyBot, "str", "getLocationMineExtractor", "ptr", $g_hHBitmap2)
-		If $g_iDebugBuildingPos = 1 Then Setlog("#*# GetLocationMine: " & $result[0], $COLOR_DEBUG1)
-		If $g_iDebugGetLocation = 1 Then DebugImageGetLocation($result[0], "Mine")
-		Return GetListPixel($result[0])
-	Else
-		Local $directory = @ScriptDir & "\imgxml\Storages\Mines_Snow"
-		Local $Maxpositions = 7
-		Local $aResult = returnMultipleMatches($directory, $Maxpositions)
-		Local $result = ConvertImgloc2MBR($aResult, $Maxpositions)
-		If $g_iDebugBuildingPos = 1 Then Setlog("#*# GetLocationSnowMine: " & $result, $COLOR_DEBUG1)
-		If $g_iDebugGetLocation = 1 Then DebugImageGetLocation($result, "SnowMine")
-		Return GetListPixel($result)
+	Local $directory = @ScriptDir & "\imgxml\Storages\GoldMines"
+	Local $txt = "Mines"
+	Local $Maxpositions = 7
+
+	; Snow Theme detected
+	If $g_iDetectedImageType  = 1 Then
+		$directory = @ScriptDir & "\imgxml\Storages\Mines_Snow"
+		$txt = "SnowMines"
 	EndIf
+
+	Local $aResult = returnMultipleMatches($directory, $Maxpositions)
+	Local $result = ConvertImgloc2MBR($aResult, $Maxpositions)
+	If $g_iDebugBuildingPos = 1 Then Setlog("#*# GetLocation"& $txt &": " & $result, $COLOR_DEBUG1)
+	If $g_iDebugGetLocation = 1 Then DebugImageGetLocation($result, $txt)
 
 	Return GetListPixel($result)
 EndFunc   ;==>GetLocationMine
 
 Func GetLocationElixir()
-	If $g_iDetectedImageType = 0 Then
-		Local $result = DllCall($g_hLibMyBot, "str", "getLocationElixirExtractor", "ptr", $g_hHBitmap2)
-		If $g_iDebugBuildingPos = 1 Then Setlog("#*# GetLocationElixir: " & $result[0], $COLOR_DEBUG1)
-		If $g_iDebugGetLocation = 1 Then DebugImageGetLocation($result[0], "Elixir")
-		Return GetListPixel($result[0])
-	Else
-		Local $directory = @ScriptDir & "\imgxml\Storages\Collectors_Snow"
-		Local $Maxpositions = 7
-		Local $aResult = returnMultipleMatches($directory, $Maxpositions)
-		Local $result = ConvertImgloc2MBR($aResult, $Maxpositions)
-		If $g_iDebugBuildingPos = 1 Then Setlog("#*# GetLocationSnowElixir: " & $result, $COLOR_DEBUG1)
-		If $g_iDebugGetLocation = 1 Then DebugImageGetLocation($result, "SnowElixir")
-		Return GetListPixel($result)
+	Local $directory = @ScriptDir & "\imgxml\Storages\Collectors"
+	Local $txt = "Collectors"
+	Local $Maxpositions = 7
+
+	; Snow Theme detected
+	If $g_iDetectedImageType  = 1 Then
+		$directory = @ScriptDir & "\imgxml\Storages\Collectors_Snow"
+		$txt = "SnowCollectors"
 	EndIf
+
+	Local $aResult = returnMultipleMatches($directory, $Maxpositions)
+	Local $result = ConvertImgloc2MBR($aResult, $Maxpositions)
+	If $g_iDebugBuildingPos = 1 Then Setlog("#*# GetLocation"& $txt &": " & $result, $COLOR_DEBUG1)
+	If $g_iDebugGetLocation = 1 Then DebugImageGetLocation($result, $txt)
+
+	Return GetListPixel($result)
 EndFunc   ;==>GetLocationElixir
 
 Func GetLocationDarkElixir()

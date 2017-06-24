@@ -4,9 +4,8 @@
 ; Syntax ........:
 ; Parameters ....: Folder with last caracther "\"  |   filter files   |  type of delete:0 delete file, 1: put into recycle bin
 ; Return values .: None
-; Author ........: Sardo (2015-06)
+; Author ........: Sardo (2015-06), MonkeyHunter (05-2017)
 ; Modified ......:
-;
 ; Needs..........: include <Date.au3> <File.au3> <FileConstants.au3> <MsgBoxConstants.au3>
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
@@ -14,11 +13,9 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: Deletefiles("C:\Users\administrator\AppData\Local\Temp\", "*.*", 2,1) delete temp file >=2 days from now and put into recycle bin
 ; ===============================================================================================================================
-
-
-Func Deletefiles($Folder, $Filter, $daydiff = 120, $type = 0)
-	Local $FileListName = _FileListToArray($Folder, $Filter, 1); list files to an array.
-	Local $x, $t, $tmin = 0
+Func Deletefiles($Folder, $Filter, $daydiff = 120, $type = 0, $Recursion = $FLTAR_NORECUR)
+	Local $x
+	Local $FileListName = _FileListToArrayRec($Folder, $Filter, $FLTAR_FILESFOLDERS, $Recursion) ; list files to an array
 	If Not ((Not IsArray($FileListName)) Or (@error = 1)) Then
 		For $x = $FileListName[0] To 1 Step -1
 			Local $FileDate = FileGetTime($Folder & $FileListName[$x])
@@ -33,12 +30,20 @@ Func Deletefiles($Folder, $Filter, $daydiff = 120, $type = 0)
 					FileRecycle($Folder & $FileListName[$x])
 				EndIf
 			Else
-				Return False
+				ContinueLoop
 			EndIf
 		Next
 	Else
 		Return False
 	EndIf
+	If $Folder = $g_sProfileTempDebugPath Then ; remove empty folders in DEBUG directory
+			$FileListName = _FileListToArray($Folder, "*", $FLTA_FOLDERS)
+			If IsArray($FileListName) Then
+				For $x = $FileListName[0] To 1 Step -1
+					If DirGetSize($Folder & $FileListName[$x]) = 0 Then DirRemove($Folder & $FileListName[$x])
+				Next
+			EndIf
+		EndIf
 	Return True
 EndFunc   ;==>Deletefiles
 
