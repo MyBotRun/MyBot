@@ -1,8 +1,8 @@
 
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: LauchTroop
+; Name ..........: LaunchTroop
 ; Description ...:
-; Syntax ........: LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb[, $slotsPerEdge = 0])
+; Syntax ........: LaunchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb[, $slotsPerEdge = 0])
 ; Parameters ....: $troopKind           - a dll struct value.
 ;                  $nbSides             - a general number value.
 ;                  $waveNb              - an unknown value.
@@ -17,7 +17,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
+Func LaunchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 	Local $troop = -1
 	Local $troopNb = 0
 	Local $name = ""
@@ -256,12 +256,12 @@ Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
 			Else
 				;no drop goblins in standard attack after milking attack
 				If $g_bDuringMilkingAttack = False Then
-					If LauchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
+					If LaunchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
 						If _Sleep(SetSleep(1)) Then Return
 					EndIf
 				Else
 					If $listInfoDeploy[$i][0] <> $eGobl Then
-						If LauchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
+						If LaunchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
 							If _Sleep(SetSleep(1)) Then Return
 						EndIf
 					EndIf

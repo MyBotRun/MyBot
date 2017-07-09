@@ -49,7 +49,7 @@ Func CreateAboutTab()
 	 GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 		 GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 		 GUICtrlSetColor(-1, $COLOR_NAVY)
-	 $sText = "Boju, Codeslinger69, Cosote, Fliegerfaust, Hervidero, MMHK, MonkeyHunter, ProMac, TripleM, Trlopes"
+	 $sText = "Boju, Cosote, Fliegerfaust, MMHK, TripleM, Trlopes"
 	 GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT),0)
 		 GUICtrlSetFont(-1,9, $FW_MEDIUM, Default, "Arial")
 
@@ -58,7 +58,7 @@ Func CreateAboutTab()
 	 GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 		 GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 		 GUICtrlSetColor(-1, $COLOR_NAVY)
-	 $sText = "Ezeck0001, IceCube, Kaganus, MR.ViPeR, Sardo, TheRevenor, Zengzeng"
+	 $sText = "Codeslinger69, Ezeck0001, Hervidero, IceCube, Kaganus, MR.ViPeR, Sardo, TheRevenor, Zengzeng"
 	 GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 		 GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 
@@ -67,7 +67,7 @@ Func CreateAboutTab()
 	 GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 		 GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 		 GUICtrlSetColor(-1, $COLOR_NAVY)
-	 $sText = "Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, KnowJack, LunaEclipse, Safar46, Saviart, TheMaster1st, and others"
+	 $sText = "Antidote, AtoZ, Barracoda, Didipe, Dinobot, DixonHill, DkEd, GkevinOD, HungLe, KnowJack, LunaEclipse, MonkeyHunter, ProMac, Safar46, Saviart, TheMaster1st, and others"
 	 GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BITOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 		 GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 

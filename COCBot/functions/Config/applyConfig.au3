@@ -459,7 +459,7 @@ Func ApplyConfig_600_14($TypeReadSave)
 		Case "Read"
 			GUICtrlSetState($g_hChkAutoLabUpgrades, $g_bAutoLabUpgradeEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbLaboratory, $g_iCmbLaboratory)
-			GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[$g_iCmbLaboratory][4])
+			_GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[$g_iCmbLaboratory][4])
 			chkLab()
 		Case "Save"
 			$g_bAutoLabUpgradeEnable = (GUICtrlRead($g_hChkAutoLabUpgrades) = $GUI_CHECKED)
@@ -495,7 +495,7 @@ Func ApplyConfig_600_16($TypeReadSave)
 	Switch $TypeReadSave
 		Case "Read"
 			For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1 ; Apply the buildings upgrade variable to GUI
-				GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $g_aiPicUpgradeStatus[$iz]) ; Set GUI status pic
+				_GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $g_aiPicUpgradeStatus[$iz]) ; Set GUI status pic
 				If $g_avBuildingUpgrades[$iz][2] > 0 Then
 					GUICtrlSetData($g_hTxtUpgradeValue[$iz], _NumberFormat($g_avBuildingUpgrades[$iz][2])) ; Set GUI loot value to match $g_avBuildingUpgrades variable
 				Else
@@ -507,13 +507,13 @@ Func ApplyConfig_600_16($TypeReadSave)
 
 				Switch $g_avBuildingUpgrades[$iz][3] ;Set GUI Upgrade Type to match $g_avBuildingUpgrades variable
 					Case "Gold"
-						GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnGold)
+						_GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnGold)
 					Case "Elixir"
-						GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnElixir)
+						_GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnElixir)
 					Case "Dark"
-						GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnDark)
+						_GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnDark)
 					Case Else
-						GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnBlank)
+						_GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnBlank)
 				EndSwitch
 
 				GUICtrlSetState($g_hChkUpgrade[$iz], $g_abBuildingUpgradeEnable[$iz] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -1839,7 +1839,7 @@ Func ApplyConfig_600_54($TypeReadSave)
 			chkTroopOrder()
 			For $z = 0 To UBound($g_ahCmbTroopOrder) - 1
 				_GUICtrlComboBox_SetCurSel($g_ahCmbTroopOrder[$z], $g_aiCmbCustomTrainOrder[$z])
-				GUICtrlSetImage($g_ahImgTroopOrder[$z], $g_sLibIconPath, $g_aiTroopOrderIcon[$g_aiCmbCustomTrainOrder[$z] + 1])
+				_GUICtrlSetImage($g_ahImgTroopOrder[$z], $g_sLibIconPath, $g_aiTroopOrderIcon[$g_aiCmbCustomTrainOrder[$z] + 1])
 			Next
 			If $g_bCustomTrainOrderEnable Then ; only update troop train order if enabled
 				If Not ChangeTroopTrainOrder() Then ; process error
@@ -1858,7 +1858,7 @@ Func ApplyConfig_600_54($TypeReadSave)
 			chkSpellsOrder()
 			For $z = 0 To UBound($g_ahCmbSpellsOrder) - 1
 				_GUICtrlComboBox_SetCurSel($g_ahCmbSpellsOrder[$z], $g_aiCmbCustomBrewOrder[$z])
-				GUICtrlSetImage($g_ahImgSpellsOrder[$z], $g_sLibIconPath, $g_aiSpellsOrderIcon[$g_aiCmbCustomBrewOrder[$z] + 1])
+				_GUICtrlSetImage($g_ahImgSpellsOrder[$z], $g_sLibIconPath, $g_aiSpellsOrderIcon[$g_aiCmbCustomBrewOrder[$z] + 1])
 			Next
 			If $g_bCustomBrewOrderEnable Then ; only update troop train order if enabled
 				If Not ChangeSpellsBrewOrder() Then ; process error

@@ -23,15 +23,15 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 7.2.1)
-#pragma compile(FileVersion, 7.2.1
+#pragma compile(ProductVersion, 7.2.2)
+#pragma compile(FileVersion, 7.2.2
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
 
 ; Enforce variable declarations
 Opt("MustDeclareVars", 1)
 
-Global $g_sBotVersion = "v7.2.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+Global $g_sBotVersion = "v7.2.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
 Global $g_sBotTitle = "" ;~ Don't assign any title here, use Func UpdateBotTitle()
 Global $g_hFrmBot = 0 ; The main GUI window
 
@@ -790,7 +790,7 @@ Func Idle() ;Sequence that runs until Full Army
 				If $g_bRestart = True Then ExitLoop
 				If checkAndroidReboot() Then ContinueLoop 2
 			WEnd
-		EndIf
+		EndIF
 		If _Sleep($DELAYIDLE1) Then ExitLoop
 		checkObstacles() ; trap common error messages also check for reconnecting animation
 		checkMainScreen(False) ; required here due to many possible exits
@@ -1020,7 +1020,7 @@ Func _RunFunction($action)
 				;If $g_bDonateSkipNearFullEnable = True and $g_bFirstStart = False Then getArmyCapacity(True, True)
 				If SkipDonateNearFullTroops(True) = False And BalanceDonRec(True) Then DonateCC()
 				If _Sleep($DELAYRUNBOT1) = False Then checkMainScreen(False)
-			EndIf
+			EndIF
 		Case "DonateCC,Train"
 			If $g_iActiveDonate And $g_bChkDonate Then
 				If $g_bFirstStart Then
@@ -1028,7 +1028,7 @@ Func _RunFunction($action)
 					getArmySpellCapacity(False, True)
 				EndIf
 				If SkipDonateNearFullTroops(True) = False And BalanceDonRec(True) Then DonateCC()
-			EndIf
+			EndIF
 			If _Sleep($DELAYRUNBOT1) = False Then checkMainScreen(False)
 			If $g_bTrainEnabled Then ; check for training enabled in halt mode
 				If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
@@ -1042,8 +1042,8 @@ Func _RunFunction($action)
 						$g_iActualTrainSkip = 0
 					EndIf
 					CheckOverviewFullArmy(True, False) ; use true parameter to open train overview window
-					If ISArmyWindow(False, $ArmyTAB) Then CheckExistentArmy("Spells") ; Imgloc Method
-					getArmyHeroCount(False, True)
+					If ISArmyWindow(False, $ArmyTAB) then CheckExistentArmy("Spells") ; Imgloc Method
+					getArmyHeroCount(False, TRue)
 				EndIf
 			Else
 				If $g_iDebugSetlogTrain = 1 Then Setlog("Halt mode - training disabled", $COLOR_DEBUG)

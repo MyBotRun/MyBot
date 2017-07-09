@@ -86,9 +86,9 @@ Func btnResetUpgrade()
 		GUICtrlSetData($g_hTxtUpgradeLevel[$i], "") ; Clear GUI Unit Level
 		GUICtrlSetData($g_hTxtUpgradeValue[$i], "") ; Clear Upgrade value in GUI
 		GUICtrlSetData($g_hTxtUpgradeTime[$i], "") ; Clear Upgrade time in GUI
-		GUICtrlSetImage($g_hPicUpgradeType[$i], $g_sLibIconPath, $eIcnBlank) ; change GUI upgrade image to blank
+		_GUICtrlSetImage($g_hPicUpgradeType[$i], $g_sLibIconPath, $eIcnBlank) ; change GUI upgrade image to blank
 		$g_aiPicUpgradeStatus[$i] = $eIcnTroops
-		GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, $g_aiPicUpgradeStatus[$i]) ; Change GUI upgrade status to not ready
+		_GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, $g_aiPicUpgradeStatus[$i]) ; Change GUI upgrade status to not ready
 		GUICtrlSetState($g_hChkUpgrade[$i], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
 		GUICtrlSetData($g_hTxtUpgradeEndTime[$i], "") ; Clear Upgrade time in GUI
 		GUICtrlSetState($g_hChkUpgradeRepeat[$i], $GUI_UNCHECKED) ; Change repeat box to unchecked
@@ -102,14 +102,14 @@ Func chkLab()
 		GUICtrlSetState($g_hLblNextUpgrade, $GUI_ENABLE)
 		GUICtrlSetState($g_hCmbLaboratory, $GUI_ENABLE)
 		;GUICtrlSetState($g_hBtnLocateLaboratory, $GUI_SHOW)
-		GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[$g_iCmbLaboratory][4])
+		_GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[$g_iCmbLaboratory][4])
 	Else
 		$g_bAutoLabUpgradeEnable = False
 		GUICtrlSetState($g_hPicLabUpgrade, $GUI_HIDE)
 		GUICtrlSetState($g_hLblNextUpgrade, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbLaboratory, $GUI_DISABLE)
 		;GUICtrlSetState($g_hBtnLocateLaboratory, $GUI_HIDE)
-		GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[0][4])
+		_GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[0][4])
 	EndIf
 	LabStatusGUIUpdate()
 EndFunc   ;==>chkLab
@@ -133,7 +133,7 @@ EndFunc   ;==>LabStatusGUIUpdate
 
 Func cmbLab()
 	$g_iCmbLaboratory = _GUICtrlComboBox_GetCurSel($g_hCmbLaboratory)
-	GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[$g_iCmbLaboratory][4])
+	_GUICtrlSetImage($g_hPicLabUpgrade, $g_sLibIconPath, $g_avLabTroops[$g_iCmbLaboratory][4])
 EndFunc   ;==>cmbLab
 
 Func ResetLabUpgradeTime()

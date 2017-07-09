@@ -18,12 +18,36 @@
 
 Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 	If $g_iDebugSetlogTrain = 1 Then SetLog("Func TrainIt " & $iIndex & " " & $iQuantity & " " & $iSleep, $COLOR_DEBUG)
-
 	Local $bDark = False
 	_CaptureRegion()
 	Local $aTrainPos = GetTrainPos($iIndex)
 	If IsArray($aTrainPos) Then
-		If _CheckPixel($aTrainPos, $g_bNoCapturePixel) Then
+		Switch _CheckPixel($aTrainPos, $g_bNoCapturePixel)
+		Case False
+			SetLog("Cannot verify the Train Position of " & GetTroopName($iIndex) & ". Using ImgLoc to find new Train Position!", $COLOR_WARNING)
+			Local $aTempPos = GetTrainPosImgLoc($iIndex)
+			If @error Then ; Fix Problem because imgloc FAILED to do something useful again
+				Setlog("Unrecoverable error occurred in TrainIt(), Skipping: " & GetTroopName($iIndex), $COLOR_ERROR)
+				Local $badPixelColor = _GetPixelColor($aTrainPos[0], $aTrainPos[1], $g_bNoCapturePixel)
+				If StringMid($badPixelColor, 1, 2) = StringMid($badPixelColor, 3, 2) And StringMid($badPixelColor, 1, 2) = StringMid($badPixelColor, 5, 2) Then
+					; Pixel is gray, so queue is full -> nothing to inform the user about
+					If $g_iDebugSetlogTrain = 1 Then Setlog("Troop " & GetTroopName($iIndex) & " is not available due to full queue", $COLOR_DEBUG)
+				Else
+					Setlog("Bad pixel check on troop position " & GetTroopName($iIndex), $COLOR_ERROR)
+					If $g_iDebugSetlogTrain = 1 Then Setlog("Train Pixel Color: " & $badPixelColor, $COLOR_DEBUG)
+					If $g_iDebugSetlogTrain = 1 Then Setlog("Train Pixel Coords 2: " & $aTrainPos[0] & ":" & $aTrainPos[1], $COLOR_DEBUG) ; MMHK
+				EndIf
+				$g_bRestart = True ; set restart flag to force a return back to main loop via delay commands
+				SetError(1000, "", "")
+				Return
+			EndIf
+			SetNewTrainPos($iIndex, $aTempPos)
+			Local $aTempFullName = GetFullNameImgLoc($iIndex, $aTrainPos)
+			SetNewFullName($iIndex, $aTempFullName)
+			Local $aTempRNDPos = GetRNDNameImgLoc($iIndex, $aTrainPos)
+			SetNewRNDName($iIndex, $aTempRNDPos)
+			ContinueCase
+		Case True
 			Local $FullName = GetFullName($iIndex)
 			If IsArray($FullName) Then
 				Local $RNDName = GetRNDName($iIndex)
@@ -43,38 +67,7 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 			Else
 				Setlog("TrainIt " & GetTroopName($iIndex) & " - FullName did not return array?", $COLOR_ERROR)
 			EndIf
-		Else
-			If Not $aTrainPos[4] Then
-				SetLog("Cannot verify the Train Position of " & GetTroopName($iIndex) & ". Using ImgLoc to find new Train Position!", $COLOR_WARNING)
-				Local $aTempPos = GetTrainPosImgLoc($iIndex)
-
-				If @error Then ; Fix Problem because imgloc FAILED to do something useful again
-					Setlog("Unrecoverable error occurred in TrainIt(), Skipping: " & GetTroopName($iIndex), $COLOR_ERROR)
-					$g_bRestart = True ; set restart flag to force a return back to main loop via delay commands
-					SetError(1000, "", "")
-					Return
-				EndIf
-
-				SetNewTrainPos($iIndex, $aTempPos)
-
-				Local $aTempFullName = GetFullNameImgLoc($iIndex, $aTrainPos)
-				SetNewFullName($iIndex, $aTempFullName)
-
-				Local $aTempRNDPos = GetRNDNameImgLoc($iIndex, $aTrainPos)
-				SetNewRNDName($iIndex, $aTempRNDPos)
-
-				Return TrainIt($iIndex, $iQuantity, $iSleep) ; Try once again
-			Else
-				Local $badPixelColor = _GetPixelColor($aTrainPos[0], $aTrainPos[1], $g_bNoCapturePixel)
-				If StringMid($badPixelColor, 1, 2) = StringMid($badPixelColor, 3, 2) And StringMid($badPixelColor, 1, 2) = StringMid($badPixelColor, 5, 2) Then
-					; Pixel is gray, so queue is full -> nothing to inform the user about
-					If $g_iDebugSetlogTrain = 1 Then Setlog("Troop " & GetTroopName($iIndex) & " is not available due to full queue", $COLOR_DEBUG)
-				Else
-					Setlog("Bad pixel check on troop position " & GetTroopName($iIndex), $COLOR_ERROR)
-					If $g_iDebugSetlogTrain = 1 Then Setlog("Train Pixel Color: " & $badPixelColor, $COLOR_DEBUG)
-				EndIf
-			EndIf
-		EndIf
+		EndSwitch
 	Else
 		Setlog("Impossible happened? TrainIt troop position " & GetTroopName($iIndex) & " did not return array", $COLOR_ERROR)
 	EndIf

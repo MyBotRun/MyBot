@@ -72,7 +72,7 @@ Func LocateUpgrades()
 
 		For $icount = 0 To UBound($g_avBuildingUpgrades, 1) - 1
 			If $g_abUpgradeRepeatEnable[$icount] = True And (GUICtrlRead($g_hTxtUpgradeName[$icount]) <> "") Then ; check for repeat upgrade
-				GUICtrlSetImage($g_hPicUpgradeStatus[$icount], $g_sLibIconPath, $eIcnYellowLight) ; Set GUI Status to Yellow showing ready for upgrade
+				_GUICtrlSetImage($g_hPicUpgradeStatus[$icount], $g_sLibIconPath, $eIcnYellowLight) ; Set GUI Status to Yellow showing ready for upgrade
 				GUICtrlSetState($g_hChkUpgrade[$icount], $GUI_CHECKED) ; Change upgrade selection box to checked again
 				ContinueLoop
 			EndIf
@@ -95,7 +95,7 @@ Func LocateUpgrades()
 							AndroidGraphicsGdiUpdate()
 						EndIf
 						SetDebugLog("Updgrade #" & $icount & " added at " & $g_avBuildingUpgrades[$icount][0] & "/" & $g_avBuildingUpgrades[$icount][1] & ", marker drawn: " & $bMarkerDrawn)
-						GUICtrlSetImage($g_hPicUpgradeStatus[$icount], $g_sLibIconPath, $eIcnYellowLight) ; Set GUI Status to Yellow showing ready for upgrade
+						_GUICtrlSetImage($g_hPicUpgradeStatus[$icount], $g_sLibIconPath, $eIcnYellowLight) ; Set GUI Status to Yellow showing ready for upgrade
 						$g_aiPicUpgradeStatus[$icount] = $eIcnYellowLight
 						_Sleep(750)
 					Else
@@ -149,7 +149,7 @@ Func CheckUpgrades() ; Valdiate and determine the cost and type of the upgrade a
 	EndIf
 	For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1
 		If isInsideDiamondXY($g_avBuildingUpgrades[$iz][0], $g_avBuildingUpgrades[$iz][1]) = False Then ; check for location off grass.
-			GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $eIcnRedLight) ; change indicator back to red showing location invalid
+			_GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $eIcnRedLight) ; change indicator back to red showing location invalid
 			GUICtrlSetState($g_hChkUpgrade[$iz], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
 			If $g_abUpgradeRepeatEnable[$iz] = True Then GUICtrlSetState($g_hChkUpgradeRepeat[$iz], $GUI_UNCHECKED) ; Change repeat selection box to unchecked
 			ContinueLoop
@@ -158,13 +158,13 @@ Func CheckUpgrades() ; Valdiate and determine the cost and type of the upgrade a
 		If UpgradeValue($iz) = False Then ; Get the upgrade cost, name, level, and time
 			If $g_abUpgradeRepeatEnable[$iz] = True And $g_avBuildingUpgrades[$iz][4] <> "" Then ContinueLoop ; If repeat is checked and bldg has name, then get value later.
 			Setlog("Locate Upgrade #" & $iz + 1 & " Value Error, try again", $COLOR_ERROR)
-			GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $eIcnRedLight) ; change indicator back to red showing location invalid
+			_GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $eIcnRedLight) ; change indicator back to red showing location invalid
 			GUICtrlSetData($g_hTxtUpgradeName[$iz], "") ; Clear GUI Name
 			GUICtrlSetData($g_hTxtUpgradeLevel[$iz], "") ; Clear GUI Level
 			GUICtrlSetData($g_hTxtUpgradeValue[$iz], "") ; Clear Upgrade value in GUI
 			GUICtrlSetData($g_hTxtUpgradeTime[$iz], "") ; Clear Upgrade time in GUI
 			GUICtrlSetData($g_hTxtUpgradeEndTime[$iz], "") ; Clear Upgrade End time in GUI
-			GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnBlank)
+			_GUICtrlSetImage($g_hPicUpgradeType[$iz], $g_sLibIconPath, $eIcnBlank)
 			If $g_abUpgradeRepeatEnable[$iz] = True Then GUICtrlSetState($g_hChkUpgradeRepeat[$iz], $GUI_UNCHECKED) ; Change repeat selection box to unchecked
 			ContinueLoop
 		EndIf
@@ -211,7 +211,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		$g_avBuildingUpgrades[$inum][2] = 0 ; Clear previous upgrade value if run before
 		GUICtrlSetData($g_hTxtUpgradeValue[$inum], "") ; Clear Upgrade value in GUI
 		$g_avBuildingUpgrades[$inum][3] = "" ; Clear previous loot type if run before
-		GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnBlank)
+		_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnBlank)
 		$g_avBuildingUpgrades[$inum][4] = "" ; Clear upgrade name if run before
 		GUICtrlSetData($g_hTxtUpgradeName[$inum], "") ; Set GUI name to match $g_avBuildingUpgrades variable
 		$g_avBuildingUpgrades[$inum][5] = "" ; Clear upgrade level if run before
@@ -294,8 +294,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 						Setlog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_ERROR)
 					EndIf
 					ClearUpgradeInfo($inum) ; clear upgrade information
-					GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnRedLight)
-					GUICtrlSetImage($g_hPicUpgradeStatus[$inum], $g_sLibIconPath, $eIcnTroops) ; change to needs trained indicator
+					_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnRedLight)
+					_GUICtrlSetImage($g_hPicUpgradeStatus[$inum], $g_sLibIconPath, $eIcnTroops) ; change to needs trained indicator
 					$g_abBuildingUpgradeEnable[$inum] = False
 					GUICtrlSetState($g_hChkUpgrade[$inum], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
 					$g_avBuildingUpgrades[$inum][7] = "" ; Clear upgrade end date/time if run before
@@ -325,8 +325,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 						Setlog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_ERROR)
 					EndIf
 					ClearUpgradeInfo($inum) ; clear upgrade information
-					GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnRedLight)
-					GUICtrlSetImage($g_hPicUpgradeStatus[$inum], $g_sLibIconPath, $eIcnTroops) ; change to needs trained indicator
+					_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnRedLight)
+					_GUICtrlSetImage($g_hPicUpgradeStatus[$inum], $g_sLibIconPath, $eIcnTroops) ; change to needs trained indicator
 					$g_abBuildingUpgradeEnable[$inum] = False
 					GUICtrlSetState($g_hChkUpgrade[$inum], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
 					$g_avBuildingUpgrades[$inum][7] = "" ; Clear upgrade end date/time if run before
@@ -413,13 +413,13 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 	; Update GUI with new values
 	Switch $g_avBuildingUpgrades[$inum][3] ;Set GUI Upgrade Type to match $g_avBuildingUpgrades variable
 		Case "Gold"
-			GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnGold) ; 24
+			_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnGold) ; 24
 		Case "Elixir"
-			GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnElixir) ; 15
+			_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnElixir) ; 15
 		Case "Dark"
-			GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnDark) ; 11
+			_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnDark) ; 11
 		Case Else
-			GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnBlank)
+			_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnBlank)
 	EndSwitch
 	GUICtrlSetData($g_hTxtUpgradeValue[$inum], _NumberFormat($g_avBuildingUpgrades[$inum][2])) ; Show Upgrade value in GUI
 	GUICtrlSetData($g_hTxtUpgradeTime[$inum], StringStripWS($g_avBuildingUpgrades[$inum][6], $STR_STRIPALL)) ; Set GUI time to match $g_avBuildingUpgrades variable

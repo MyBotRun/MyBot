@@ -92,7 +92,7 @@
 #include "functions\Attack\Troops\DropOnEdges.au3"
 #include "functions\Attack\Troops\GetXPosOfArmySlot.au3"
 #include "functions\Attack\Troops\GetSlotIndexFromXPos.au3"
-#include "functions\Attack\Troops\LauchTroop.au3"
+#include "functions\Attack\Troops\LaunchTroop.au3"
 #include "functions\Attack\Troops\NameOfTroop.au3"
 #include "functions\Attack\Troops\OldDropTroop.au3"
 #include "functions\Attack\Troops\ReadTroopQuantity.au3"

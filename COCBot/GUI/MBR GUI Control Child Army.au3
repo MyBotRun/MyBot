@@ -342,7 +342,7 @@ Func chkTroopOrder($bSetLog = True)
 		For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
 			GUICtrlSetState($g_ahCmbTroopOrder[$i], $GUI_ENABLE)
 		Next
-		If IsUseCustomTroopOrder() = True Then GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
+		If IsUseCustomTroopOrder() = True Then _GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	Else
 		$g_bCustomTrainOrderEnable = False
 		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE) ; disable button
@@ -370,7 +370,7 @@ Func chkSpellsOrder()
 		Next
 		GUICtrlSetState($g_hBtnRemoveSpells, $GUI_ENABLE)
 		GUICtrlSetState($g_hBtnSpellsOrderSet, $GUI_ENABLE)
-		If IsUseCustomSpellsOrder() = True Then GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight)
+		If IsUseCustomSpellsOrder() = True Then _GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	Else
 		$g_bCustomBrewOrderEnable = False
 		For $i = 0 To UBound($g_ahCmbSpellsOrder) - 1
@@ -389,12 +389,12 @@ Func GUISpellsOrder()
 	Local $iCtrlIdImage = $iGUI_CtrlId + 1 ; record control ID for $g_ahImgTroopOrder[$z] based on control of combobox that called this function
 	Local $iSpellsIndex = _GUICtrlComboBox_GetCurSel($iGUI_CtrlId) + 1 ; find zero based index number of Spell selected in combo box, add one for enum of proper icon
 
-	GUICtrlSetImage($iCtrlIdImage, $g_sLibIconPath, $g_aiSpellsOrderIcon[$iSpellsIndex]) ; set proper Spell icon
+	_GUICtrlSetImage($iCtrlIdImage, $g_sLibIconPath, $g_aiSpellsOrderIcon[$iSpellsIndex]) ; set proper Spell icon
 
 	For $i = 0 To UBound($g_ahCmbSpellsOrder) - 1 ; check for duplicate combobox index and flag problem
 		If $iGUI_CtrlId = $g_ahCmbSpellsOrder[$i] Then ContinueLoop
 		If _GUICtrlComboBox_GetCurSel($iGUI_CtrlId) = _GUICtrlComboBox_GetCurSel($g_ahCmbSpellsOrder[$i]) Then
-			GUICtrlSetImage($g_ahImgSpellsOrder[$i], $g_sLibIconPath, $eIcnOptions)
+			_GUICtrlSetImage($g_ahImgSpellsOrder[$i], $g_sLibIconPath, $eIcnOptions)
 			_GUICtrlComboBox_SetCurSel($g_ahCmbSpellsOrder[$i], -1)
 			GUISetState()
 			$bDuplicate = True
@@ -406,7 +406,7 @@ Func GUISpellsOrder()
 		Return
 	Else
 		GUICtrlSetState($g_hBtnSpellsOrderSet, $GUI_ENABLE) ; enable button to apply new order
-		GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
+		_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
 	EndIf
 EndFunc   ;==>GUISpellsOrder
 
@@ -420,9 +420,9 @@ Func BtnRemoveSpells()
 		$g_aiCmbCustomBrewOrder[$i] = -1
 		_GUICtrlComboBox_ResetContent($g_ahCmbSpellsOrder[$i])
 		GUICtrlSetData($g_ahCmbSpellsOrder[$i], $sComboData, "")
-		GUICtrlSetImage($g_ahImgSpellsOrder[$i], $g_sLibIconPath, $eIcnOptions)
+		_GUICtrlSetImage($g_ahImgSpellsOrder[$i], $g_sLibIconPath, $eIcnOptions)
 	Next
-	GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnSilverStar)
+	_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnSilverStar)
 	SetDefaultSpellsGroup(False)
 	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "BtnRemoveSpells")
 EndFunc   ;==>BtnRemoveSpells
@@ -433,12 +433,12 @@ Func GUITrainOrder()
 	Local $iCtrlIdImage = $iGUI_CtrlId + 1 ; record control ID for $g_ahImgTroopOrder[$z] based on control of combobox that called this function
 	Local $iTroopIndex = _GUICtrlComboBox_GetCurSel($iGUI_CtrlId) + 1 ; find zero based index number of troop selected in combo box, add one for enum of proper icon
 
-	GUICtrlSetImage($iCtrlIdImage, $g_sLibIconPath, $g_aiTroopOrderIcon[$iTroopIndex]) ; set proper troop icon
+	_GUICtrlSetImage($iCtrlIdImage, $g_sLibIconPath, $g_aiTroopOrderIcon[$iTroopIndex]) ; set proper troop icon
 
 	For $i = 0 To UBound($g_ahCmbTroopOrder) - 1 ; check for duplicate combobox index and flag problem
 		If $iGUI_CtrlId = $g_ahCmbTroopOrder[$i] Then ContinueLoop
 		If _GUICtrlComboBox_GetCurSel($iGUI_CtrlId) = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) Then
-			GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $eIcnOptions)
+			_GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $eIcnOptions)
 			_GUICtrlComboBox_SetCurSel($g_ahCmbTroopOrder[$i], -1)
 			GUISetState()
 			$bDuplicate = True
@@ -449,7 +449,7 @@ Func GUITrainOrder()
 		Return
 	Else
 		GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_ENABLE) ; enable button to apply new order
-		GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
+		_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight) ; set status indicator to show need to apply new order
 	EndIf
 EndFunc   ;==>GUITrainOrder
 
@@ -463,9 +463,9 @@ Func BtnRemoveTroops()
 		$g_aiCmbCustomTrainOrder[$i] = -1
 		_GUICtrlComboBox_ResetContent ($g_ahCmbTroopOrder[$i])
 		GUICtrlSetData($g_ahCmbTroopOrder[$i], $sComboData, "")
-		GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $eIcnOptions)
+		_GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $eIcnOptions)
 	Next
-	GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnSilverStar)
+	_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnSilverStar)
 	SetDefaultTroopGroup(False)
 	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "BtnRemoveTroops")
 EndFunc   ;==>BtnRemoveTroops
@@ -488,7 +488,7 @@ Func BtnSpellsOrderSet()
 			If _GUICtrlComboBox_GetCurSel($g_ahCmbSpellsOrder[$i]) <> -1 And _
 					_GUICtrlComboBox_GetCurSel($g_ahCmbSpellsOrder[$i]) = _GUICtrlComboBox_GetCurSel($g_ahCmbSpellsOrder[$j]) Then
 				_GUICtrlComboBox_SetCurSel($g_ahCmbSpellsOrder[$j], -1)
-				GUICtrlSetImage($g_ahImgSpellsOrder[$j], $g_sLibIconPath, $eIcnOptions)
+				_GUICtrlSetImage($g_ahImgSpellsOrder[$j], $g_sLibIconPath, $eIcnOptions)
 				$bReady = False
 			Else
 				GUICtrlSetColor($g_ahCmbSpellsOrder[$j], $COLOR_BLACK)
@@ -517,7 +517,7 @@ Func BtnSpellsOrderSet()
 					If $aiBrewOrder[$j] <> -1 Then ; loop till find a valid troop enum
 						$g_aiCmbCustomBrewOrder[$i] = $aiBrewOrder[$j] ; assign unused troop
 						_GUICtrlComboBox_SetCurSel($g_ahCmbSpellsOrder[$i], $aiBrewOrder[$j])
-						GUICtrlSetImage($g_ahImgSpellsOrder[$i], $g_sLibIconPath, $g_aiSpellsOrderIcon[$g_aiCmbCustomBrewOrder[$i] + 1])
+						_GUICtrlSetImage($g_ahImgSpellsOrder[$i], $g_sLibIconPath, $g_aiSpellsOrderIcon[$g_aiCmbCustomBrewOrder[$i] + 1])
 						$aiBrewOrder[$j] = -1 ; remove unused troop from array
 						ExitLoop
 					EndIf
@@ -539,7 +539,7 @@ Func BtnSpellsOrderSet()
 				Case Else
 					Setlog("Monkey ate bad banana, something wrong with ChangeSpellsBrewOrder() code!", $COLOR_ERROR)
 			EndSwitch
-			GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight)
+			_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight)
 		Else
 			Setlog("Spells Brew order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eSpellCount - 1
@@ -550,7 +550,7 @@ Func BtnSpellsOrderSet()
 		EndIf
 	Else
 		Setlog("Must use all Spells and No duplicate troop names!", $COLOR_ERROR)
-		GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight)
+		_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	EndIf
 	;	GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE)
 	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "BtnSpellsOrderSet")
@@ -575,7 +575,7 @@ Func BtnTroopOrderSet()
 			If _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) <> -1 And _
 					_GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$i]) = _GUICtrlComboBox_GetCurSel($g_ahCmbTroopOrder[$j]) Then
 				_GUICtrlComboBox_SetCurSel($g_ahCmbTroopOrder[$j], -1)
-				GUICtrlSetImage($g_ahImgTroopOrder[$j], $g_sLibIconPath, $eIcnOptions)
+				_GUICtrlSetImage($g_ahImgTroopOrder[$j], $g_sLibIconPath, $eIcnOptions)
 				$bReady = False
 			Else
 				GUICtrlSetColor($g_ahCmbTroopOrder[$j], $COLOR_BLACK)
@@ -604,7 +604,7 @@ Func BtnTroopOrderSet()
 					If $aiUsedTroop[$j] <> -1 Then ; loop till find a valid troop enum
 						$g_aiCmbCustomTrainOrder[$i] = $aiUsedTroop[$j] ; assign unused troop
 						_GUICtrlComboBox_SetCurSel($g_ahCmbTroopOrder[$i], $aiUsedTroop[$j])
-						GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $g_aiTroopOrderIcon[$g_aiCmbCustomTrainOrder[$i] + 1])
+						_GUICtrlSetImage($g_ahImgTroopOrder[$i], $g_sLibIconPath, $g_aiTroopOrderIcon[$g_aiCmbCustomTrainOrder[$i] + 1])
 						$aiUsedTroop[$j] = -1 ; remove unused troop from array
 						ExitLoop
 					EndIf
@@ -626,7 +626,7 @@ Func BtnTroopOrderSet()
 				Case Else
 					Setlog("Monkey ate bad banana, something wrong with ChangeTroopTrainOrder() code!", $COLOR_ERROR)
 			EndSwitch
-			GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
+			_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 		Else
 			Setlog("Troop training order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eTroopCount - 1
@@ -637,7 +637,7 @@ Func BtnTroopOrderSet()
 		EndIf
 	Else
 		Setlog("Must use all troops and No duplicate troop names!", $COLOR_ERROR)
-		GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
+		_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	EndIf
 ;	GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE)
 	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "BtnTroopOrderSet")
@@ -670,7 +670,7 @@ Func ChangeSpellsBrewOrder()
 		For $i = 0 To $eSpellCount - 1
 			$g_aiBrewOrder[$i] = $NewTroopOrder[$i]
 		Next
-		GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnGreenLight)
+		_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnGreenLight)
 	Else
 		Setlog($iUpdateCount & "|" & $eSpellCount & " - Error - Bad Spells assignment in ChangeSpellsBrewOrder()", $COLOR_ERROR)
 		SetError(3, 0, False)
@@ -709,7 +709,7 @@ Func ChangeTroopTrainOrder()
 		For $i = 0 To $eTroopCount - 1
 			$g_aiTrainOrder[$i] = $NewTroopOrder[$i]
 		Next
-		GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnGreenLight)
+		_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnGreenLight)
 	Else
 		Setlog($iUpdateCount & "|" & $eTroopCount & " - Error - Bad troop assignment in ChangeTroopTrainOrder()", $COLOR_ERROR)
 		SetError(3, 0, False)

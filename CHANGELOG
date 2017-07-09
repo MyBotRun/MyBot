@@ -1,3 +1,14 @@
+* **V7.2.2**
+ * Fix bad train troop pixel porblems
+ * Fix bot background mode when BlueStacks2 using OpenGL (GlRenderMode=4)
+ * Fix max level and cost for spells
+ * Fix Name tab for schedule notify
+ * Fix Icons not updating
+ * Fix disabled Misc Tab when Bot is running/paused
+ * Lower Clock Tower Tolerance to improve Detection
+ * Improve bot boot time by 17 Seconds for BlueStacks/BlueStacks2
+ * Update Azerbaijan and Turkish Language By Z E C K
+
 * **V7.2.1**
  * Add Builder Base collect resources and activate Clock Tower
  * Add Bot Android Option "Use script for accurate Click & Drag", unchecking can solve swipe issues

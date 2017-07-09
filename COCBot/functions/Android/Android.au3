@@ -1444,7 +1444,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIf
 			Local $scriptFile = ""
 			If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\shell.init." & $g_sAndroidEmulator & ".script") = 1 Then $scriptFile = "shell.init." & $g_sAndroidEmulator & ".script"
 			If $scriptFile = "" Then $scriptFile = "shell.init.script"
-			$s &= AndroidAdbSendShellCommandScript($scriptFile, Default, Default, Default, $wasRunState, False)
+			$s &= AndroidAdbSendShellCommandScript($scriptFile, Default, Default, 3000, $wasRunState, False)
 			$s &= AndroidAdbSendShellCommand("PS1=" & $g_sAndroidAdbPrompt, Default, $wasRunState, False) ; set prompt to unique string $g_sAndroidAdbPrompt
 			Local $error = @error
 			SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
@@ -1523,6 +1523,10 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 		; use steady ADB shell
 		Local $aReadPipe = $g_iAndroidAdbProcess[2]
 		Local $aWritePipe = $g_iAndroidAdbProcess[1]
+		If UBound($aReadPipe) < 2 Or UBound($aWritePipe) < 2 Then
+			SetDebugLog("ADB Shell instance not initialized, cannot execute: " & $cmd, $COLOR_ERROR)
+			Return SetError(1, 0, "")
+		EndIf
 		ReadPipe($aReadPipe[0])
 		If $cmd = Default Then
 			; nothing to launch
@@ -1575,7 +1579,7 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 	SuspendAndroid($SuspendMode)
 	Local $error = (($g_bRunState = False Or __TimerDiff($hTimer) < $timeout Or $timeout < 1) ? 0 : 1)
 	If $error <> 0 Then
-		SetDebugLog("(" & $iCommandErrors & "): ADB shell command error " & $error & ": " & $s)
+		SetDebugLog("(" & $iCommandErrors & "): ADB shell command error " & $error & ": " & $s, $COLOR_ERROR)
 		$iCommandErrors += 1
 	EndIf
 	If $__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY > 0 Then Sleep($__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY)
@@ -1759,7 +1763,7 @@ Func AndroidAdbSendShellCommandScript($scriptFile, $variablesArray = Default, $c
 			; create script file
 			$script = "#!/bin/sh"
 			For $i = 1 To $aCmds[0]
-				If ($i = 1 And $aCmds[$i] = $script) Or $aCmds[$i] = "" Then
+				If ($i = 1 And StringLeft($aCmds[$i], 2) = "#!") Or $aCmds[$i] = "" Then
 					ContinueLoop
 				EndIf
 				$script &= (@LF & $aCmds[$i])

@@ -276,8 +276,35 @@ Func InitBlueStacks2($bCheckOnly = False)
 		Return False
 	EndIf
 
-	If Not $bCheckOnly Then
-		; nothing special to set yet
+	If $bInstalled And Not $bCheckOnly Then
+		; check if BlueStacks 2 is running in OpenGL mode
+		Local $GlRenderMode = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\Android\Config\", "GlRenderMode")
+		Switch $GlRenderMode
+		Case 4
+			If $g_iDebugSetlog = 1 Then
+				SetDebugLog($g_sAndroidEmulator & " is using DirectX, disable ADB background mode")
+			Else
+				SetDebugLog($g_sAndroidEmulator & " is using DirectX")
+			EndIF
+			$g_avAndroidAppConfig[$__BS2_Idx][11] = BitOR($g_avAndroidAppConfig[$__BS2_Idx][11], 1)
+			$g_avAndroidAppConfig[$__BS2_Idx][11] = BitAND($g_avAndroidAppConfig[$__BS2_Idx][11], BitXOR(-1, 2))
+			$g_iAndroidSupportFeature = BitOR($g_iAndroidSupportFeature, 1)
+			$g_iAndroidSupportFeature = BitAND($g_iAndroidSupportFeature, BitXOR(-1, 2))
+			$g_bAndroidAdbScreencap = $g_bAndroidAdbScreencapEnabled = True And BitAND($g_iAndroidSupportFeature, 2) = 2 ; Use Android ADB to capture screenshots in RGBA raw format
+		Case 1
+			If $g_iDebugSetlog = 1 Then
+				SetDebugLog($g_sAndroidEmulator & " is using OpenGL, enabled ADB background mode")
+			Else
+				SetDebugLog($g_sAndroidEmulator & " is using OpenGL")
+			EndIF
+			$g_avAndroidAppConfig[$__BS2_Idx][11] = BitAND($g_avAndroidAppConfig[$__BS2_Idx][11], BitXOR(-1, 1))
+			$g_avAndroidAppConfig[$__BS2_Idx][11] = BitOR($g_avAndroidAppConfig[$__BS2_Idx][11], 2)
+			$g_iAndroidSupportFeature = BitAND($g_iAndroidSupportFeature, BitXOR(-1, 1))
+			$g_iAndroidSupportFeature = BitOR($g_iAndroidSupportFeature, 2)
+			$g_bAndroidAdbScreencap = $g_bAndroidAdbScreencapEnabled = True And BitAND($g_iAndroidSupportFeature, 2) = 2 ; Use Android ADB to capture screenshots in RGBA raw format
+		Case Else
+			SetLog($g_sAndroidEmulator & " unknown render mode " & $GlRenderMode, $COLOR_WARNING)
+		EndSwitch
 	EndIf
 
 	Return $bInstalled

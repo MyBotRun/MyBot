@@ -215,14 +215,14 @@ Func Barch() ;Attack Algorithm for Barch
 		If _Sleep($DELAYBARCH1) Then ExitLoop
 
 		;Activate KQ's power
-		If $g_bCheckKingPower = True Or $g_bCheckQueenPower = True Then
+		If $g_bCheckKingPower Or $g_bCheckQueenPower Then
 			SetLog("Waiting " & $g_iDelayActivateKQ / 1000 & " seconds before activating Hero abilities", $COLOR_SUCCESS)
 			If _Sleep($g_iDelayActivateKQ) Then Return
-			If $g_bCheckKingPower = True Then
+			If $g_bCheckKingPower Then
 				SetLog("Activate King's power", $COLOR_INFO)
 				Click(GetXPosOfArmySlot($iKing, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0083")
 			EndIf
-			If $g_bCheckQueenPower = True Then
+			If $g_bCheckQueenPower Then
 				SetLog("Activate Queen's power", $COLOR_INFO)
 				Click(GetXPosOfArmySlot($iQueen, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0084")
 			EndIf

@@ -20,8 +20,8 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot Watchdog)
-#pragma compile(ProductVersion, 7.2)
-#pragma compile(FileVersion, 7.2)
+#pragma compile(ProductVersion, 7.2.2)
+#pragma compile(FileVersion, 7.2.2)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
 
@@ -97,7 +97,7 @@ Func _SleepMilli($iMilliSec)
 	_SleepMicro(Int($iMilliSec * 1000))
 EndFunc   ;==>_SleepMilli
 
-Global $sBotVersion = "v7.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+Global $sBotVersion = "v7.2.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 Global $sBotTitle = "My Bot Watchdog " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode

@@ -80,7 +80,7 @@ Global $aArmyOverviewTest[4] = [150, 554 + $g_iMidOffsetY, 0xBC2BD1, 20] ; Color
 Global $aCancRequestCCBtn[4] = [340, 250, 0xCC4010, 20] ; Red button Cancel in window request CC
 Global $aSendRequestCCBtn[2] = [524, 250] ; Green button Send in window request CC
 Global $atxtRequestCCBtn[2] = [430, 140] ; textbox in window request CC
-Global $aIsAtkDarkElixirFull[4] = [743, 62 + $g_iMidOffsetY, 0x1A0026, 10] ; Attack Screen DE Resource bar is full
+Global $aIsAtkDarkElixirFull[4] = [743, 62 + $g_iMidOffsetY, 0x270D33, 10] ; Attack Screen DE Resource bar is full
 Global $aIsDarkElixirFull[4] = [710, 107 + $g_iMidOffsetY, 0x270D33, 10] ; Main Screen DE Resource bar is full
 Global $aIsGoldFull[4] = [661, 5 + $g_iMidOffsetY, 0xE7C00D, 10] ; Main Screen Gold Resource bar is Full
 Global $aIsElixirFull[4] = [661, 57 + $g_iMidOffsetY, 0xC027C0, 10] ; Main Screen Elixir Resource bar is Full
@@ -114,7 +114,7 @@ Global $aKingHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15] ; Attack Scree
 ; Queen purple between crown ; background pixel not at green bar
 Global $aQueenHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15] ; Attack Screen, Check Queen's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
 ; Warden hair ; background pixel not at green bar
-Global $aWardenHealth = [-1, 571 + $g_iBottomOffsetY, 0x00D500, 15] ; Attack Screen, Check Warden's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
+Global $aWardenHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15] ; Attack Screen, Check Warden's Health, X coordinate is dynamic, not used from array  ;  -> with slot compensation 0xe08227
 
 
 ;attack report... stars won

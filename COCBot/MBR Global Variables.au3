@@ -608,11 +608,11 @@ Global Const $g_aiSpellTrainTime[$eSpellCount] = [360, 360, 360, 360, 360, 720, 
 ; Zero element contains number of levels, elements 1 thru n contain cost of that level spell
 Global Const $g_aiSpellCostPerLevel[$eSpellCount][8] = [ _
 		[7, 15000, 16500, 18000, 20000, 22000, 24000, 26000], _ ;LightningSpell
-		[6, 15000, 16500, 18000, 20000, 22000, 24000], _ 	 ;HealSpell
+		[7, 15000, 16500, 18000, 19000, 21000, 23000, 25000], _ 	 ;HealSpell
 		[5, 23000, 25000, 27000, 30000, 33000], _     		 ;RageSpell
 		[3, 23000, 27000, 31000], _        					 ;JumpSpell
-		[5, 26000, 29000, 31000, 33000, 35000], _ ;FreezeSpell
-		[4, 38000, 40000, 42000, 44000], _					 ;CloneSpell
+		[6, 23000, 26000, 29000, 31000, 33000, 35000], _ ;FreezeSpell
+		[5, 38000, 39000, 41000, 43000, 45000], _					 ;CloneSpell
 		[5, 95, 110, 125, 140, 155], _         				 ;PoisonSpell
 		[4, 125, 140, 160, 180], _    						 ;EarthquakeSpell
 		[4, 80, 85, 60, 95], _								 ;HasteSpell

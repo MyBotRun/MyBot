@@ -106,6 +106,8 @@ Global $g_aFrmBotPosInit[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hFirstControlToHide = 0, $g_hLastControlToHide = 0, $g_aiControlPrevState[1]
 Global $g_bFrmBotMinimized = False ; prevents bot flickering
 
+Global $g_oCtrlIconData = ObjCreate("Scripting.Dictionary")
+
 #include "GUI\MBR GUI Design Bottom.au3"
 #include "GUI\MBR GUI Design Log.au3"
 #include "GUI\MBR GUI Design Village.au3"
@@ -494,6 +496,7 @@ EndFunc   ;==>GetDPIRatio
 ; Example .......: No
 ; ===============================================================================================================================
 Func _GUICtrlCreateIcon($filename, $iconName, $left, $top, $width = 32, $height = 32, $style = -1, $exStyle = -1)
+	;Return GUICtrlCreateIcon($filename, $iconName, $left, $top, $width, $height, $style, $exStyle)
 	Static $s_hLibIcon = 0
 	Local $hLib
 	If $filename = $g_sLibIconPath Then
@@ -510,7 +513,57 @@ Func _GUICtrlCreateIcon($filename, $iconName, $left, $top, $width = 32, $height 
 	EndIf
 	Local $hBmp = _WinAPI_Create32BitHBITMAP($hIcon, False, True)
 	Local $controlID = GUICtrlCreatePic("", $left, $top, $width, $height, $style, $exStyle)
-	GUICtrlSendMsg($controlID, $STM_SETIMAGE, 0, $hBmp)
+	_WinAPI_DeleteObject(GUICtrlSendMsg($controlID, $STM_SETIMAGE, 0, $hBmp))
 	_WinAPI_DeleteObject($hBmp)
+	; required for later icon change using _GUICtrlSetImage
+	Local $aIconData = [$width, $height]
+	$g_oCtrlIconData("Icon:" & GUICtrlGetHandle($controlID)) = $aIconData
 	Return $controlID
-EndFunc
+EndFunc   ;==>_GUICtrlCreateIcon
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _GUICtrlSetImage
+; Description ...: Support icon change for _GUICtrlCreateIcon
+; Syntax ........: see GUICtrlSetImage
+; Parameters ....: see GUICtrlSetImage
+; Return values .:
+; Author ........: cosote
+; Modified ......:
+; Remarks .......: Optimized for $g_sLibIconPath
+; Related .......:
+; Link ..........: http://www.autoitscript.com/forum/topic/159612-dpi-resolution-problem/?hl=%2Bdpi#entry1158317
+; Example .......: No
+; ===============================================================================================================================
+Func _GUICtrlSetImage($controlID, $filename, $iconName = -1, $iconType = 1)
+
+	Local $aIconData = $g_oCtrlIconData("Icon:" & GUICtrlGetHandle($controlID))
+
+	If IsArray($aIconData) = 0 Then
+		Return GUICtrlSetImage($controlID, $filename, $iconName, $iconType)
+	EndIf
+
+	Static $s_hLibIcon = 0
+	Local $hLib
+	If $filename = $g_sLibIconPath Then
+		If $s_hLibIcon = 0 Then
+			$s_hLibIcon = _WinAPI_LoadLibraryEx($filename, $LOAD_LIBRARY_AS_DATAFILE)
+		EndIf
+		$hLib = $s_hLibIcon
+	Else
+		$hLib = _WinAPI_LoadLibraryEx($filename, $LOAD_LIBRARY_AS_DATAFILE)
+	EndIf
+	If $hLib = 0 Then Return 0
+	Local $width = $aIconData[0], $height = $aIconData[1]
+	Local $hIcon = _WinAPI_LoadImage($hLib, $iconName, $IMAGE_ICON, $width, $height, $LR_DEFAULTCOLOR)
+	If $hLib <> $s_hLibIcon Then
+		_WinAPI_FreeLibrary($hLib)
+	EndIf
+	If $hIcon = 0 Then Return 0
+	Local $hBmp = _WinAPI_Create32BitHBITMAP($hIcon, False, True)
+	If $hBmp = 0 Then Return 0
+	_WinAPI_DeleteObject(GUICtrlSendMsg($controlID, $STM_SETIMAGE, 0, 0))
+	GUICtrlSendMsg($controlID, $STM_SETIMAGE, 0, $hBmp)
+	_WinAPI_InvalidateRect(GUICtrlGetHandle($controlID), 0, False)
+	_WinAPI_DeleteObject($hBmp)
+	Return 1
+EndFunc   ;==>_GUICtrlSetImage
