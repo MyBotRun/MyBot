@@ -23,15 +23,8 @@ Func OpenLeapDroid($bRestart = False)
 	If $launchAndroid Then
 		; Launch LeapDroid
 		$cmdPar = GetAndroidProgramParameter()
-		SetDebugLog("ShellExecute: " & $g_sAndroidProgramPath & " " & $cmdPar)
-		$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar, $__LeapDroid_Path)
-		If _Sleep(1000) Then Return False
-		If $PID <> 0 Then $PID = ProcessExists($PID)
-		SetDebugLog("$PID= " & $PID)
-		If $PID = 0 Then ; IF ShellExecute failed
-			SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
-			SetLog("Unable to continue........", $COLOR_WARNING)
-			btnStop()
+		$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
+		If $PID = 0 Then
 			SetError(1, 1, -1)
 			Return False
 		EndIf
@@ -180,6 +173,7 @@ Func InitLeapDroid($bCheckOnly = False)
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $LeapDroid_Path & "adb.exe"
 		$g_sAndroidVersion = $LeapDroidVersion
 		$__LeapDroid_Path = $LeapDroid_Path
+		$g_sAndroidPath = $__LeapDroid_Path
 		$__VBoxManage_Path = $LeapDroid_Manage_Path
 		; Name: adb_port, value: 5555, timestamp: 1468752611809230200, flags:
 		$aRegExResult = StringRegExp($__VBoxGuestProperties, "Name: adb_port, value: (\d{3,5}),", $STR_REGEXPARRAYMATCH)

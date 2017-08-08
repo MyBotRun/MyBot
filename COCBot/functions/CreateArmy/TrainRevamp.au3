@@ -70,10 +70,10 @@ Func TrainRevamp()
 
 		CheckIsFullQueuedAndNotFullArmy()
 		If Not $g_bRunState Then Return
-		If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop, plus improve pause response
+		If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop, plus improve pause response
 		CheckIsEmptyQueuedAndNotFullArmy()
 		If Not $g_bRunState Then Return
-		If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop, plus improve pause response
+		If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop, plus improve pause response
 		If $g_bFirstStart Then $g_bFirstStart = False
 	EndIf
 
@@ -168,7 +168,7 @@ Func TrainRevampOldStyle()
 		$rWhatToTrain = WhatToTrain(False, False)
 		TrainUsingWhatToTrain($rWhatToTrain)
 	EndIf
-	If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
+	If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 
 	If IsQueueEmpty($TrainTroopsTAB) Then
 		If Not $g_bRunState Then Return
@@ -180,7 +180,7 @@ Func TrainRevampOldStyle()
 		If Not $g_bRunState Then Return
 		If Not IsArmyWindow(False, $ArmyTAB) Then OpenTrainTabNumber($ArmyTAB, "TrainRevampOldStyle()")
 	EndIf
-	If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
+	If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 
 	$rWhatToTrain = WhatToTrain(False, False)
 	If DoWhatToTrainContainSpell($rWhatToTrain) Then
@@ -281,8 +281,8 @@ Func CheckIfArmyIsReady()
 		If $sLogText <> "" Then Setlog(" -" & $sLogText & " are not Ready!", $COLOR_ACTION)
 	EndIf
 
-; Force to Request CC troops or Spells
-	If not $bFullArmyCCTroops or not $bFullArmyCCSpells then $g_bCanRequestCC = true
+	; Force to Request CC troops or Spells
+	If Not $bFullArmyCCTroops Or Not $bFullArmyCCSpells Then $g_bCanRequestCC = True
 	If $g_iDebugSetlog = 1 Then
 		SetLog(" $g_bFullArmy: " & String($g_bFullArmy), $COLOR_DEBUG)
 		SetLog(" $bCheckCCTroops: " & String($bFullArmyCCTroops), $COLOR_DEBUG)
@@ -485,25 +485,14 @@ Func CompareCCSpellWithGUI($CCSpell1, $CCSpell2, $CastleCapacity)
 		EndIf
 	EndIf
 
-	; Check if Button STOP was Clicked
 	If Not $g_bRunState Then Return
-
-	; Check if Button Pause was clicked
 	If _Sleep(100) Then Return
 
-	; Variables to Fill with Spell's names
-	Local $sCCSpell, $sCCSpell2, $bCheckDBCCSpell = False, $bCheckABCCSpell = False
+	Local $sCCSpell, $sCCSpell2, $bCheckDBCCSpell = False, $bCheckABCCSpell = False, $aShouldRemove[2] = [0, 0]
 
-	; Variable will be true if is necessary check the slot2 ( when the capacity is 2 and the first slot is a Dark Spell )
-	Local $bCheckCCSpell2 = False
-
-	; Variable to fill with Spell quantities to delete , 0 , 1 or 2
-	Local $aShouldRemove[2] = [0, 0]
-
-	; IF exist any error on parameter: Castle Capacity!!
 	If $CastleCapacity = 0 Or $CastleCapacity = "" Then Return $aShouldRemove
 
-	; Correct Set log and flag a Variable to use $bCheckDBCCSpell For dead bases
+	; Correct SetLog and flag a Variable to use $bCheckDBCCSpell For dead bases
 	If $g_abAttackTypeEnable[$DB] And $g_abSearchCastleSpellsWaitEnable[$DB] Then
 		If $g_iDebugSetlogTrain Then Setlog("- Let's compare CC Spells on Dead Bases!", $COLOR_DEBUG)
 		$bCheckDBCCSpell = True
@@ -511,12 +500,12 @@ Func CompareCCSpellWithGUI($CCSpell1, $CCSpell2, $CastleCapacity)
 
 	; Correct Set log and flag a Variable to use $bCheckABCCSpell For Alive Bases
 	If $g_abAttackTypeEnable[$LB] And $g_abSearchCastleSpellsWaitEnable[$LB] Then
-		If $g_iDebugSetlogTrain Then Setlog("- Let's compare CC Spells on live Bases", $COLOR_DEBUG)
+		If $g_iDebugSetlogTrain Then Setlog("- Let's compare CC Spells on Active Bases", $COLOR_DEBUG)
 		$bCheckABCCSpell = True
 	EndIf
 
 	; Just In case !!! how knows ...
-	If $bCheckDBCCSpell = False And $bCheckABCCSpell = False Then Return $aShouldRemove
+	If Not $bCheckDBCCSpell And Not $bCheckABCCSpell Then Return $aShouldRemove
 
 	For $Mode = $DB To $LB
 		; Why check spells if is 'ANY' on Both , Will return [0,0]
@@ -547,55 +536,45 @@ Func CompareCCSpellWithGUI($CCSpell1, $CCSpell2, $CastleCapacity)
 					$sCCSpell = "SkSpell"
 			EndSwitch
 
-			; Will only proceeds with 'second slot check' IF the Castle capacity is 2 and was selected a Dark Spell on Slot1
-			If ($g_aiSearchCastleSpellsWaitRegular[$Mode] > 5 Or ($g_aiSearchCastleSpellsWaitRegular[$Mode] = 0 And $g_aiSearchCastleSpellsWaitDark[$Mode] > 0)) And $CastleCapacity = 2 Then $bCheckCCSpell2 = True
+			Switch $g_aiSearchCastleSpellsWaitDark[$Mode]
+				Case 0
+					$sCCSpell2 = "Any"
+				Case 1
+					$sCCSpell2 = "PSpell"
+				Case 2
+					$sCCSpell2 = "ESpell"
+				Case 3
+					$sCCSpell2 = "HaSpell"
+				Case 4
+					$sCCSpell2 = "SkSpell"
+			EndSwitch
 
-			; Debug
-			If $g_iDebugSetlogTrain Then Setlog("[1][" & $txt & "] GUI Spell is " & $sCCSpell, $COLOR_DEBUG)
+			Switch $CCSpell1[0][3] ; Switch through all possible results
 
-			; If the Spell1 Match with ANY or with GUI Name than return 0 to remove
-			If ($sCCSpell = $CCSpell1[0][0] Or $sCCSpell = "Any") And $CCSpell1[0][3] = 1 Then
-				; Is not to remove [0,0] Slot 1
-				$aShouldRemove[0] = 0
-			ElseIf ($sCCSpell = $CCSpell1[0][0] Or $sCCSpell = "Any") And $CCSpell1[0][3] = 2 And ($CCSpell1[0][0] <> $CCSpell2[0][0] Or $CCSpell2[0][0] <> "Any") Then
-				; Spell is the correct BUT exist 2 and doesn't match with Slot 2
-				; Remove one Spell from Slot 1
-				$aShouldRemove[0] = 1
-			Else
-				; Is to remove all coz doesn't match the name of the Spells on Slot 1
-				$aShouldRemove[0] = $CCSpell1[0][3] ; $CCSpell1[0][3] is the quantity , 1 or 2
-			EndIf
+				Case 1 ; One Spell on Slot 1
 
-			If $bCheckCCSpell2 Then ; Castle Spells capacity is 2
-				Switch $g_aiSearchCastleSpellsWaitDark[$Mode]
-					Case 0
-						$sCCSpell2 = "Any"
-					Case 1
-						$sCCSpell2 = "PSpell"
-					Case 2
-						$sCCSpell2 = "ESpell"
-					Case 3
-						$sCCSpell2 = "HaSpell"
-					Case 4
-						$sCCSpell2 = "SkSpell"
-				EndSwitch
+					If ($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") Then
+						$aShouldRemove[0] = $CCSpell1[0][3]
+					EndIf
 
-				; If exist 2 Spells on Slot1 , But Slot2 needs different Spell
-				If $CCSpell1[0][3] = 2 And $sCCSpell2 <> $sCCSpell And $bCheckCCSpell2 = True Then
-					Setlog("One more Dark Spell on Slot 1 than is needed!")
-					$aShouldRemove[0] = 1 ; remove ONE Dark Spell of 2
-				EndIf
+					If $CastleCapacity = 2 and $g_aiSearchCastleSpellsWaitRegular[$Mode] > 5 Then
+						If $sCCSpell2 <> $CCSpell2[0][0] And $sCCSpell2 <> "Any" Then
+							$aShouldRemove[1] = $CCSpell2[0][3]
+						EndIf
+					EndIf
 
-				; Debug
-				If $g_iDebugSetlogTrain Then Setlog("[2][" & $txt & "] GUI Spell is " & $sCCSpell2, $COLOR_DEBUG)
+				Case 2 ; Two Spells on Slot 1
 
-				; If the Spell2 Match with ANY or with GUI Name than return 0 to remove
-				If $sCCSpell2 = $CCSpell2[0][0] Or $sCCSpell2 = "Any" Or ($sCCSpell2 = $sCCSpell And $CCSpell1[0][3] = $CastleCapacity) Then ; If the spell on Slot 1 is = and have 2
-					$aShouldRemove[1] = 0 ; Is not to remove [0,0] Slot 2
-				Else
-					$aShouldRemove[1] = $CCSpell2[0][3] ; is to remove coz doesn't match the name of the Spells on Slot 1 ($aShouldRemove[0]) $CCSpell1[0][3] is the quantity , 1 or 2
-				EndIf
-			EndIf
+					If ($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") And ($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
+						$aShouldRemove[0] = $CCSpell1[0][3]
+					ElseIf ($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") Or ($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
+						$aShouldRemove[0] = 1
+					EndIf
+
+				Case Else ; Mistakes were made?
+					Return $aShouldRemove
+			EndSwitch
+
 			ExitLoop ; Is Only necessary loop once ...
 		EndIf
 	Next
@@ -702,7 +681,7 @@ Func TrainUsingWhatToTrain($rWTT, $bSpellsOnly = False)
 						EndIf
 					EndIf
 				EndIf
-				If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
+				If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 			Next
 		Case True
 			For $i = 0 To (UBound($rWTT) - 1)
@@ -762,7 +741,7 @@ Func TrainUsingWhatToTrain($rWTT, $bSpellsOnly = False)
 						EndIf
 					EndIf
 				EndIf
-				If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
+				If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 			Next
 	EndSwitch
 
@@ -1562,10 +1541,10 @@ Func IsArmyWindow($bSetLog = False, $iTabNumber = 0)
 	If _CheckPixel($aIsTrainPgChk1, True) Then
 		While $i < 1
 			If Not $g_bRunState Then Return
-			if $g_iDebugSetlogTrain then Setlog("$CheckIT[0]: " & $CheckIT[0])
-			if $g_iDebugSetlogTrain then Setlog("$CheckIT[1]: " & $CheckIT[1])
-			if $g_iDebugSetlogTrain then Setlog("$CheckIT[2]: " & Hex($CheckIT[2], 6))
-			if $g_iDebugSetlogTrain then Setlog("$CheckIT[3]: " & $CheckIT[3])
+			If $g_iDebugSetlogTrain Then Setlog("$CheckIT[0]: " & $CheckIT[0])
+			If $g_iDebugSetlogTrain Then Setlog("$CheckIT[1]: " & $CheckIT[1])
+			If $g_iDebugSetlogTrain Then Setlog("$CheckIT[2]: " & Hex($CheckIT[2], 6))
+			If $g_iDebugSetlogTrain Then Setlog("$CheckIT[3]: " & $CheckIT[3])
 			If _ColorCheck(_GetPixelColor($CheckIT[0], $CheckIT[1], True), Hex($CheckIT[2], 6), $CheckIT[3]) Then ExitLoop
 
 			If _Sleep($DELAYISTRAINPAGE2) Then ExitLoop
@@ -2064,7 +2043,7 @@ Func MakingDonatedTroops()
 						;PureClick($pos[0], $pos[1], $howMuch, 500)
 						ClickDrag(220, 445 + $g_iMidOffsetY, 725, 445 + $g_iMidOffsetY, 2000) ; Click drag for Elixer Troops
 					EndIf
-					If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
+					If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 					Local $sTroopName = ($avDefaultTroopGroup[$i][4] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
 					Setlog(" - Trained " & $avDefaultTroopGroup[$i][4] & " " & $sTroopName, $COLOR_ACTION)
 					$avDefaultTroopGroup[$i][4] = 0
@@ -2092,7 +2071,7 @@ Func MakingDonatedTroops()
 								;PureClick($pos[0], $pos[1], $howMuch, 500)
 								ClickDrag(220, 445 + $g_iMidOffsetY, 725, 445 + $g_iMidOffsetY, 2000) ; Click drag for Elixer Troops
 							EndIf
-							If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
+							If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 							Local $sTroopName = ($avDefaultTroopGroup[$i][4] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
 							Setlog(" - Trained " & $avDefaultTroopGroup[$i][4] & " " & $sTroopName, $COLOR_ACTION)
 							$avDefaultTroopGroup[$i][4] -= 1
@@ -2133,7 +2112,7 @@ Func MakingDonatedTroops()
 				Local $howMuch = $g_aiDonateSpells[$i]
 				TrainIt($eLSpell + $i, $howMuch, $g_iTrainClickDelay)
 				;PureClick($pos[0], $pos[1], $howMuch, 500)
-				If _Sleep($DELAYRESPOND)  Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
+				If _Sleep($DELAYRESPOND) Then Return ; add 5ms delay to catch TrainIt errors, and force return to back to main loop
 				Setlog(" - Brewed " & $howMuch & " " & $g_asSpellNames[$i] & ($howMuch > 1 ? " Spells" : " Spell"), $COLOR_ACTION)
 				$g_aiDonateTroops[$i] -= $howMuch
 			EndIf
@@ -2158,15 +2137,15 @@ Func GetOCRCurrent($x_start, $y_start)
 		$aResult[1] = Number($aTempResult[1])
 		; Case to use this function os Spells will be <= 22 , 11*2
 		If $aResult[1] <= 22 Then
-			if $g_iDebugSetlogTrain then Setlog("$g_iTotalSpellValue: " & $g_iTotalSpellValue, $COLOR_DEBUG)
+			If $g_iDebugSetlogTrain Then Setlog("$g_iTotalSpellValue: " & $g_iTotalSpellValue, $COLOR_DEBUG)
 			$aResult[1] = $g_iTotalSpellValue
 			$aResult[2] = $g_iTotalSpellValue - $aResult[0]
-		; May 2017 Update the Army Camp Value on Train page is DOUBLE Value
+			; May 2017 Update the Army Camp Value on Train page is DOUBLE Value
 		ElseIf $aResult[1] <> $g_iTotalCampSpace Then
-			If $g_iDebugSetlogTrain then Setlog("$g_iTotalCampSpace: " & $g_iTotalCampSpace, $COLOR_DEBUG)
+			If $g_iDebugSetlogTrain Then Setlog("$g_iTotalCampSpace: " & $g_iTotalCampSpace, $COLOR_DEBUG)
 			$aResult[1] = $g_iTotalCampSpace
 			$aResult[2] = $g_iTotalCampSpace - $aResult[0]
-		EndIf														   
+		EndIf
 		$aResult[2] = $aResult[1] - $aResult[0]
 	Else
 		Setlog("DEBUG | ERROR on GetOCRCurrent", $COLOR_ERROR)

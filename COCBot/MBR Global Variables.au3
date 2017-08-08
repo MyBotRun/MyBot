@@ -248,13 +248,14 @@ Global $__BlueStacks2Version_2_5_or_later = False ;Starting with this version bo
 Global $__MEmu_Adjust_Width = 6
 Global $__MEmu_ToolBar_Width = 45
 Global $__MEmu_SystemBar = 36
-Global $__MEmu_PhoneLayout = "2" ; 0: bottom Nav Bar (default till 2.6.1), 1: right Nav Bar, 2: hidden Nav Bar (default since 2.6.2)
-Global $__MEmu_Window[3][5] = _ ; Alternative window sizes (array must be ordered by version descending!)
-		[ _ ; Version|$g_iAndroidWindowWidth|$g_iAndroidWindowHeight|$__MEmu_ToolBar_Width|$__MEmu_PhoneLayout
-		["2.6.2", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40, "2"], _
-		["2.5.0", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"], _
-		["2.2.1", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"] _
-		]
+Global $__MEmu_PhoneLayout = "2" ; 0: bottom Nav Bar (default till 2.6.1), 1: right Nav Bar, 2: hidden Nav Bar (default since 2.6.2), -1 disable Nav Bar compensation since MEmu 3 Nav Bar auto-hides
+Global $__MEmu_Window[4][5] = _ ; Alternative window sizes (array must be ordered by version descending!)
+        [ _ ; Version|$g_iAndroidWindowWidth|$g_iAndroidWindowHeight|$__MEmu_ToolBar_Width|$__MEmu_PhoneLayout
+        ["3.0.8", $g_iDEFAULT_WIDTH + 40, $g_iDEFAULT_HEIGHT - 14, 36, "-1"], _
+        ["2.6.2", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40, "2"], _
+        ["2.5.0", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"], _
+        ["2.2.1", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"] _
+        ]
 Global $__Droid4X_Window[3][3] = _ ; Alternative window sizes (array must be ordered by version descending!)
 		[ _ ; Version|$g_iAndroidWindowWidth|$g_iAndroidWindowHeight
 		["0.10.0", $g_iDEFAULT_WIDTH + 6, $g_iDEFAULT_HEIGHT + 53], _
@@ -276,8 +277,8 @@ Global $__Nox_Config[2][2] = _ ; Alternative Nox Control ID (array must be order
 ;                |                   |                        |                                  |                |                      |                       |                      |                       |              |                    |64 = Make DPI Aware (if avaliable)              |                                    |
 Global $g_avAndroidAppConfig[8][15] = [ _ ;                   |                                  |                |                      |                       |                      |                       |              |                    |128 = ADB use input swipe and not script        |                                    |
 		["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 0, "127.0.0.1:21503", 0 + 2 + 4 + 8 + 16 + 32, '# ', 'Microvirt Virtual Input', 0], _
-		["BlueStacks2", "", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128, '$ ', 'BlueStacks Virtual Touch', 0], _
-		["BlueStacks", "", "BlueStacks App Player", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128, '$ ', 'BlueStacks Virtual Touch', 0], _
+		["BlueStacks2", "Android", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128, '$ ', 'BlueStacks Virtual Touch', 0], _
+		["BlueStacks", "Android", "BlueStacks App Player", "[CLASS:BlueStacksApp; INSTANCE:1]", "_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128, '$ ', 'BlueStacks Virtual Touch', 0], _
 		["KOPLAYER", "KOPLAYER", "KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 64, $g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 0 + 2 + 4 + 8 + 16 + 32, '# ', 'ttVM Virtual Input', 0], _
 		["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, 0, "emulator-5554", 1 + 8 + 16 + 32, '# ', 'qwerty2', 1], _
 		["iTools", "iToolsVM", "iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48, $g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13, 0, "127.0.0.1:54001", 1 + 8 + 16 + 32 + 64, '# ', 'iTools Virtual PassThrough Input', 0], _
@@ -308,6 +309,7 @@ Global $g_sAndroidAdbDevice ; full device name ADB connects to
 Global $g_iAndroidSupportFeature ; See $g_avAndroidAppConfig above!
 Global $g_sAndroidShellPrompt ; empty string not available, '# ' for rooted and '$ ' for not rooted android
 Global $g_sAndroidMouseDevice ; empty string not available, can be direct device '/dev/input/event2' or name by getevent -p
+Global $g_iAndroidAdbSuCommand ; empty string is not available, used by BlueStacks to have root access
 Global $g_bAndroidAdbScreencap ; Use Android ADB to capture screenshots in RGBA raw format
 Global $g_bAndroidAdbClick ; Enable Android ADB mouse click
 Global $g_bAndroidAdbInput ; Enable Android ADB send text (CC requests)
@@ -324,6 +326,7 @@ Global $g_iAndroidControlClickMode = 0 ; 0 = Use AutoIt ControlClick, 1 = Use _S
 ; Updated in UpdateAndroidConfig() and $g_sAndroidEmulator&Init() as well
 Global $g_bInitAndroidActive = False
 
+Global $g_sAndroidPath = "" ; Program folder to launch android emulator
 Global $g_sAndroidProgramPath = "" ; Program path and executable to launch android emulator
 Global $g_avAndroidProgramFileVersionInfo = 0 ; Array of _WinAPI_VerQueryValue FileVersionInfo
 Global $g_bAndroidHasSystemBar = False ; BS2 System Bar can be entirely disabled in Windows Registry
@@ -730,7 +733,7 @@ Global $g_iTxtTreasuryGold = 0
 Global $g_iTxtTreasuryElixir = 0
 Global $g_iTxtTreasuryDark = 0
 
-Global $g_bChkCollectBuilderBase = False, $g_bChkStartClockTowerBoost = False
+Global $g_bChkCollectBuilderBase = False, $g_bChkStartClockTowerBoost = False, $g_bChkCTBoostBlderBz = False
 
 ; <><><><> Village / Donate - Request <><><><>
 Global $g_bRequestTroopsEnable = False

@@ -23,15 +23,8 @@ Func OpeniTools($bRestart = False)
 	If $launchAndroid Then
 		; Launch iTools
 		$cmdPar = GetAndroidProgramParameter()
-		SetDebugLog("ShellExecute: " & $g_sAndroidProgramPath & " " & $cmdPar)
-		$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar, $__iTools_Path)
-		If _Sleep(1000) Then Return False
-		If $PID <> 0 Then $PID = ProcessExists($PID)
-		SetDebugLog("$PID= " & $PID)
-		If $PID = 0 Then ; IF ShellExecute failed
-			SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
-			SetLog("Unable to continue........", $COLOR_WARNING)
-			btnStop()
+		$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
+		If $PID = 0 Then
 			SetError(1, 1, -1)
 			Return False
 		EndIf
@@ -186,6 +179,7 @@ Func InitiTools($bCheckOnly = False)
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $iTools_Path & "tools\adb.exe"
 		$g_sAndroidVersion = ""
 		$__iTools_Path = $iTools_Path
+		$g_sAndroidPath = $__iTools_Path
 		$__VBoxManage_Path = $iTools_Manage_Path
 
 		$aRegExResult = StringRegExp($__VBoxVMinfo, "ADB_PORT.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)

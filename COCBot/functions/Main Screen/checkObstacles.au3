@@ -14,7 +14,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 ;
-Func checkObstacles() ;Checks if something is in the way for mainscreen
+Func checkObstacles($bBuilderBase = False) ;Checks if something is in the way for mainscreen
 	Static $checkObstaclesActive = False
 
 	If TestCapture() = False And WinGetAndroidHandle() = 0 Then
@@ -26,20 +26,28 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 	If $checkObstaclesActive = True Then Return True
 	Local $wasForce = OcrForceCaptureRegion(False)
 	$checkObstaclesActive = True
-	Local $Result = _checkObstacles()
+	Local $Result = _checkObstacles($bBuilderBase)
 	OcrForceCaptureRegion($wasForce)
 	$checkObstaclesActive = False
 	Return $Result
 EndFunc   ;==>checkObstacles
 
-Func _checkObstacles() ;Checks if something is in the way for mainscreen
+Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way for mainscreen
 	Local $msg, $x, $y, $Result
 	$g_bMinorObstacle = False
 
-	_CaptureRegion()
-	_CaptureRegion2Sync() ; share same image from _CaptureRegion()
+	_CaptureRegions()
 
 	If checkObstacles_Network() Then Return True
+	Local $bIsOnBuilderIsland = _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel)
+	If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
+		SetLog("Detected Builder Base, trying to switch back to Main Village")
+		If SwitchBetweenBases(False) Then
+			$g_bMinorObstacle = True
+			If _Sleep($DELAYCHECKOBSTACLES1) Then Return
+			Return False
+		EndIf
+	EndIf
 
 	If $g_sAndroidGameDistributor <> $g_sGoogle Then ; close an ads window for non google apks
 		Local $aXButton = FindAdsXButton()

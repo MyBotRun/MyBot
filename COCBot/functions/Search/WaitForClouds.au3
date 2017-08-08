@@ -6,7 +6,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: MonkeyHunter (08-2016)
-; Modified ......: MonkeyHunter (05-2017)
+; Modified ......: MonkeyHunter (05-2017) MMHK (07-2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -198,6 +198,7 @@ EndFunc   ;==>chkSearchText
 
 Func chkAttackSearchFail()
 	; boolean 50-60ms OCR check for pink text "unable to find villages to attack!" error message during search for base to attack
+	If _Sleep($DELAYCLOUDSCLEARED) Then Return ; add delay as buying time for OCR text to disappear when retry btn pressed
 	Local $result
 	$result = getCloudFailShort(271, 351 + $g_iMidOffsetY, "Cloud Search Fail Text: unable=", $COLOR_DEBUG, Default)
 	If $result <> "" And StringInStr($result, "unable", $STR_NOCASESENSEBASIC) > 0 Then ; found "unable" characters in text
@@ -234,19 +235,21 @@ EndFunc   ;==>chkAttackSearchPersonalBreak
 
 Func btnSearchFailRetry()
 	; verify retry button exists, and press button, return false if button not found
-	Local $offColors[3][3] = [[0x000000, 50, 8], [0x60B014, 55, 21], [0x020201, 90, 7]] ; 2nd=Black in "R", 3rd=green centered under text, 4th=black in v of letter "Y"
-	Local $ButtonPixel = _MultiPixelSearch(364, 405 + $g_iMidOffsetY, 466, 430 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Retry button edge
-	If $g_iDebugSetlog = 1 Then Setlog("Retry btn clr chk-#1: " & _GetPixelColor(368, 347 + $g_iMidOffsetY, True) & ", #2: " & _
-		_GetPixelColor(368 + 50, 347 + 8 + $g_iMidOffsetY, True) & ", #3: " & _GetPixelColor(368 + 55, 347 + 21 + $g_iMidOffsetY, True) & ", #4: " & _
-		_GetPixelColor(368 + 90, 347 + 7 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+	Local $offColors[3][3] = [[0x121311, 50, 8], [0x6EBC1F, 55, 21], [0x11110F, 90, 7]] ; 2nd=Black in "R", 3rd=green centered under text, 4th=black in v of letter "Y" ; before 2017 May update 0x000000 0x60B014 0x020201
+	Local $ButtonPixel = _MultiPixelSearch(364, 405 + $g_iMidOffsetY, 466, 430 + $g_iMidOffsetY, 1, 1, Hex(0x171814, 6), $offColors, 20) ; first vertical black pixel of Retry button edge ; before 2017 May update 0x000000
+	If $g_iDebugSetlog = 1 Then Setlog("Retry btn clr chk-#1: " & 	_GetPixelColor(368, 347 + $g_iMidOffsetY + 60, True) & ", #2: " & _
+																	_GetPixelColor(368 + 50, 347 + 8 + $g_iMidOffsetY + 60, True) & ", #3: " & _
+																	_GetPixelColor(368 + 55, 347 + 21 + $g_iMidOffsetY + 60, True) & ", #4: " & _
+																	_GetPixelColor(368 + 90, 347 + 7 + $g_iMidOffsetY + 60, True), $COLOR_DEBUG) ; after 2017 May update Y +60
 	If IsArray($ButtonPixel) Then
 		If $g_iDebugSetlog = 1 Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Retry Btn Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, _
-				$ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, _
-				$ButtonPixel[1] + 27, True), $COLOR_DEBUG)
+			Setlog("Retry Btn Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _
+														_GetPixelColor($ButtonPixel[0] + 50, $ButtonPixel[1] + 8, True) & ", #3: " & _
+														_GetPixelColor($ButtonPixel[0] + 55, $ButtonPixel[1] + 21, True) & ", #4: " & _
+														_GetPixelColor($ButtonPixel[0] + 90, $ButtonPixel[1] + 7, True), $COLOR_DEBUG) ; before 2017 May update + (0, 0) (144, 0) (54, 17) (54, 27)
 		EndIf
-		Click($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 1, 0, "#0512") ; Click Retry Button
+		Click($ButtonPixel[0] + 68, $ButtonPixel[1] + 13, 1, 0, "#0512") ; Click Retry Button ; before 2017 May update + (75, 25)
 		Return True
 	EndIf
 	Return False

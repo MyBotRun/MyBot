@@ -327,6 +327,7 @@ Func SaveConfig_600_6()
 
 	_Ini_Add("other", "ChkCollectBuildersBase", $g_bChkCollectBuilderBase ? 1: 0)
 	_Ini_Add("other", "ChkStartClockTowerBoost", $g_bChkStartClockTowerBoost ? 1 : 0)
+	_Ini_Add("other", "ChkCTBoostBlderBz", $g_bChkCTBoostBlderBz ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_6
 
 Func SaveConfig_600_9()

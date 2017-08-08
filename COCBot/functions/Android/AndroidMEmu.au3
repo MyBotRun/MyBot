@@ -23,21 +23,8 @@ Func OpenMEmu($bRestart = False)
 	If $launchAndroid Then
 		; Launch MEmu
 		$cmdPar = GetAndroidProgramParameter()
-		If $cmdPar Then $cmdPar = " " & $cmdPar
-		SetDebugLog("ShellExecute: " & $g_sAndroidProgramPath & " " & $cmdPar)
-		;$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar, $__MEmu_Path)
-		For $i = 1 to 3
-	       $PID = Run($g_sAndroidProgramPath & $cmdPar, $__MEmu_Path)
-		   If _Sleep(3000) Then Return False
-		   If $PID <> 0 Then $PID = ProcessExists($PID)
-		   If $PID <> 0 Then ExitLoop
-	    Next
-
-		SetDebugLog("$PID= " & $PID)
-		If $PID = 0 Then ; IF ShellExecute failed
-			SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
-			SetLog("Unable to continue........", $COLOR_WARNING)
-			btnStop()
+		$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath, 30)
+		If $PID = 0 Then
 			SetError(1, 1, -1)
 			Return False
 		EndIf
@@ -167,6 +154,7 @@ Func InitMEmu($bCheckOnly = False)
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $MEmu_Path & "adb.exe"
 		$g_sAndroidVersion = $MEmuVersion
 		$__MEmu_Path = $MEmu_Path
+		$g_sAndroidPath = $__MEmu_Path
 		$__VBoxManage_Path = $MEmu_Manage_Path
 		$aRegExResult = StringRegExp($__VBoxVMinfo, "name = ADB.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)
 		If Not @error Then
@@ -284,6 +272,8 @@ EndFunc   ;==>CheckScreenMEmu
 Func UpdateMEmuConfig()
 
 	Local $Value, $process_killed, $aRegExResult
+	Local $iSizeConfig = FindMEmuWindowConfig()
+
 	;MEmu "phone_layout" value="2" -> no system bar
 	;MEmu "phone_layout" value="1" -> right system bar
 	;MEmu "phone_layout" value="0" -> bottom system bar
@@ -292,23 +282,36 @@ Func UpdateMEmuConfig()
 
 	If @error = 0 Then
 		$__MEmu_PhoneLayout = $aRegExResult[0]
-		SetDebugLog($g_sAndroidEmulator & " phone_layout is " & $__MEmu_PhoneLayout, $COLOR_ERROR)
+		If $iSizeConfig > -1 And $__MEmu_Window[$iSizeConfig][4] = "-1" Then
+			SetDebugLog($g_sAndroidEmulator & " phone_layout is " & $__MEmu_PhoneLayout & ", but set to -1 to disable screen compensation", $COLOR_ERROR)
+			$__MEmu_PhoneLayout = $__MEmu_Window[$iSizeConfig][4]
+		Else
+			SetDebugLog($g_sAndroidEmulator & " phone_layout is " & $__MEmu_PhoneLayout, $COLOR_ERROR)
+		EndIf
 	Else
 		SetDebugLog("Cannot read " & $g_sAndroidEmulator & " guestproperty phone_layout!", $COLOR_ERROR)
-		Local $v = GetVersionNormalized($g_sAndroidVersion)
-		For $i = 0 To UBound($__MEmu_Window) - 1
-			Local $v2 = GetVersionNormalized($__MEmu_Window[$i][0])
-			If $v >= $v2 Then
-				$__MEmu_PhoneLayout = $__MEmu_Window[$i][4]
-				SetDebugLog("Using phone_layout " & $__MEmu_PhoneLayout)
-				ExitLoop
-			EndIf
-		Next
+		If $iSizeConfig > -1 Then
+			$__MEmu_PhoneLayout = $__MEmu_Window[$iSizeConfig][4]
+			SetDebugLog("Using phone_layout " & $__MEmu_PhoneLayout)
+		EndIf
 	EndIf
 	SetError(0, 0, 0)
 
 	Return UpdateMEmuWindowState()
 EndFunc   ;==>UpdateMEmuConfig
+
+Func FindMEmuWindowConfig()
+	Local $v = GetVersionNormalized($g_sAndroidVersion)
+	For $i = 0 To UBound($__MEmu_Window) - 1
+		Local $v2 = GetVersionNormalized($__MEmu_Window[$i][0])
+		If $v >= $v2 Then
+			SetDebugLog("Using Window sizes of " & $g_sAndroidEmulator & " " & $__MEmu_Window[$i][0])
+			Return $i
+		EndIf
+	Next
+	SetDebugLog("Cannot find Window sizes of " & $g_sAndroidEmulator & " " & $g_sAndroidVersion)
+	Return -1
+EndFunc   ;==>FindMEmuWindowConfig
 
 Func UpdateMEmuWindowState()
 	; check if MEmu is open and Tool Bar is closed
@@ -327,17 +330,12 @@ Func UpdateMEmuWindowState()
 	Local $awh = $g_avAndroidAppConfig[$g_iAndroidConfig][8]
 	Local $tbw = $__MEmu_ToolBar_Width
 
-	Local $v = GetVersionNormalized($g_sAndroidVersion)
-	For $i = 0 To UBound($__MEmu_Window) - 1
-		Local $v2 = GetVersionNormalized($__MEmu_Window[$i][0])
-		If $v >= $v2 Then
-			SetDebugLog("Using Window sizes of " & $g_sAndroidEmulator & " " & $__MEmu_Window[$i][0])
-			$aww = $__MEmu_Window[$i][1]
-			$awh = $__MEmu_Window[$i][2]
-			$tbw = $__MEmu_Window[$i][3]
-			ExitLoop
-		EndIf
-	Next
+	Local $iSizeConfig = FindMEmuWindowConfig()
+	If $iSizeConfig > -1 Then
+		$aww = $__MEmu_Window[$iSizeConfig][1]
+		$awh = $__MEmu_Window[$iSizeConfig][2]
+		$tbw = $__MEmu_Window[$iSizeConfig][3]
+	EndIf
 
 	Local $bToolBarVisible = True
 	Local $i
@@ -348,17 +346,17 @@ Func UpdateMEmuWindowState()
 			["Window Height", $g_iAndroidWindowHeight, $g_iAndroidWindowHeight] _
 			]
 	Local $bChanged = False, $ok = False
-	Local $toolBarPos = ControlGetPos($g_sAndroidTitle, "", "Qt5QWindowIcon3")
+	Local $toolBarPos = ControlGetPos($g_hAndroidWindow, "", "Qt5QWindowIcon3")
 	If UBound($toolBarPos) = 4 Then
 		Local $tbw_using = $tbw
-		If $toolBarPos[2] > 20 And $toolBarPos[2] < 60 Then	$tbw_using = $toolBarPos[2]
+		If $toolBarPos[2] > 20 And $toolBarPos[2] < 60 Then $tbw_using = $toolBarPos[2]
 		SetDebugLog($g_sAndroidEmulator & " Tool Bar found, width = " & $toolBarPos[2] & ", height = " & $toolBarPos[3] & ", expected width = " & $tbw & ", using width = " & $tbw_using)
 		$tbw = $tbw_using
 		;ConsoleWrite("Qt5QWindowIcon3=" & $toolBarPos[0] & "," & $toolBarPos[1] & "," & $toolBarPos[2] & "," & $toolBarPos[3] & ($isVisible = 1 ? " visible" : " hidden")) ; 863,33,45,732
 		;If $toolBarPos[2] = $tbw Then
-			$bToolBarVisible = ControlCommand($g_sAndroidTitle, "", "Qt5QWindowIcon3", "IsVisible", "") = 1
-			SetDebugLog($g_sAndroidEmulator & " Tool Bar is " & ($bToolBarVisible ? "visible" : "hidden"))
-			$ok = True
+		$bToolBarVisible = ControlCommand($g_hAndroidWindow, "", "Qt5QWindowIcon3", "IsVisible", "") = 1
+		SetDebugLog($g_sAndroidEmulator & " Tool Bar is " & ($bToolBarVisible ? "visible" : "hidden"))
+		$ok = True
 		;EndIf
 	EndIf
 	If Not $ok Then
@@ -378,7 +376,7 @@ Func UpdateMEmuWindowState()
 			$Values[1][2] = $ach
 			$Values[2][2] = $aww + $__MEmu_SystemBar - $w
 			$Values[3][2] = $awh
-		Case "2" ; Hidden
+		Case "2", "-1" ; Hidden or no PhoneLayout compensation
 			$Values[0][2] = $acw
 			$Values[1][2] = $ach
 			$Values[2][2] = $aww - $w

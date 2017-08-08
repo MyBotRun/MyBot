@@ -24,15 +24,8 @@ Func OpenDroid4X($bRestart = False)
 		; TODO as Droid4X crashes quite often, check if vm ist not running in background...
 		; Launch Droid4X
 		$cmdPar = GetAndroidProgramParameter()
-		SetDebugLog("ShellExecute: " & $g_sAndroidProgramPath & " " & $cmdPar)
-		$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar)
-		If _Sleep(1000) Then Return False
-		If $PID <> 0 Then $PID = ProcessExists($PID)
-		SetDebugLog("$PID= " & $PID)
-		If $PID = 0 Then ; IF ShellExecute failed
-			SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
-			SetLog("Unable to continue........", $COLOR_WARNING)
-			btnStop()
+		$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
+		If $PID = 0 Then
 			SetError(1, 1, -1)
 			Return False
 		EndIf
@@ -177,6 +170,7 @@ Func InitDroid4X($bCheckOnly = False)
 		EndIf
 		; update global variables
 		$g_sAndroidProgramPath = $__Droid4X_Path & "Droid4X.exe"
+		$g_sAndroidPath = $__Droid4X_Path
 		$g_sAndroidAdbPath = FindPreferredAdbPath()
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $__Droid4X_Path & "adb.exe"
 		$g_sAndroidVersion = $__Droid4X_Version
@@ -340,3 +334,7 @@ Func UpdateDroid4XWindowState()
 
 	Return $bChanged
 EndFunc   ;==>UpdateDroid4XWindowState
+
+Func CloseDroid4X()
+	Return CloseVboxAndroidSvc()
+EndFunc   ;==>CloseDroid4X

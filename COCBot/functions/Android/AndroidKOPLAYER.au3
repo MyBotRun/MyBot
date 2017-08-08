@@ -25,17 +25,10 @@ Func OpenKOPLAYER($bRestart = False)
 	If $launchAndroid Then
 		; Launch KOPLAYER
 		$cmdPar = GetAndroidProgramParameter() & " -t " & $g_sAndroidInstance
-		SetDebugLog("ShellExecute: " & $g_sAndroidProgramPath & " " & $cmdPar)
-		$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar, $__KOPLAYER_Path)
-		If _Sleep(1000) Then Return
-		If $PID <> 0 Then $PID = ProcessExists($PID)
-		SetDebugLog("$PID= " & $PID)
-		If $PID = 0 Then ; IF ShellExecute failed
-			SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_RED)
-			SetLog("Unable to continue........", $COLOR_MAROON)
-			btnStop()
+		$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
+		If $PID = 0 Then
 			SetError(1, 1, -1)
-			Return
+			Return False
 		EndIf
 	EndIf
 
@@ -145,6 +138,7 @@ Func InitKOPLAYER($bCheckOnly = False)
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = GetKOPLAYERAdbPath()
 		$g_sAndroidVersion = $KOPLAYERVersion
 		$__KOPLAYER_Path = $KOPLAYER_Path
+		$g_sAndroidPath = $__KOPLAYER_Path
 		$__VBoxManage_Path = $KOPLAYER_Manage_Path
 		$aRegExResult = StringRegExp($__VBoxVMinfo, "name = .*host ip = ([^,]*),.*guest port = 5555", $STR_REGEXPARRAYMATCH)
 		If Not @error Then

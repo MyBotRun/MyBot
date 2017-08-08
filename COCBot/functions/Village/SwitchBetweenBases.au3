@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func SwitchBetweenBases()
+Func SwitchBetweenBases($bCheckMainScreen = True)
 	Local $sSwitchTo, $bIsOnBuilderBase = False, $aButtonCoords
 	Local $sTile, $sTilePath, $sRegionToSearch
 
@@ -31,6 +31,7 @@ Func SwitchBetweenBases()
 		$sRegionToSearch = "66,432,388,627"
 	EndIf
 
+	ZoomOut() ; ensure bot is visible
 	$aButtonCoords = decodeSingleCoord(findImageInPlace($sTile, @ScriptDir & "\imgxml\Boat\" & $sTile,  $sRegionToSearch))
 	If UBound($aButtonCoords) > 1 Then
 		SetLog("Going to " & $sSwitchTo, $COLOR_INFO)
@@ -38,13 +39,11 @@ Func SwitchBetweenBases()
 		If _Sleep($DELAYSWITCHBASES1) Then Return
 
 		If $bIsOnBuilderBase Then
-			If _Sleep($DELAYSWITCHBASES2) Then Return
-
 			If isOnBuilderIsland(True) Then
 				SetLog("Failed to go back to the normal Village!", $COLOR_ERROR)
 			Else
 				SetLog("Successfully went back to the normal Village!", $COLOR_SUCCESS)
-				checkMainScreen(True, False)
+				If $bCheckMainScreen = True Then checkMainScreen(True, False)
 				Return True
 			EndIf
 		Else
@@ -52,7 +51,7 @@ Func SwitchBetweenBases()
 				SetLog("Failed to go to the Builder Base!", $COLOR_ERROR)
 			Else
 				SetLog("Successfully went to the Builder Base!", $COLOR_SUCCESS)
-				checkMainScreen(True, True)
+				If $bCheckMainScreen = True Then checkMainScreen(True, True)
 				Return True
 			EndIf
 		EndIf

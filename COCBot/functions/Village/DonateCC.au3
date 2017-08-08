@@ -896,7 +896,7 @@ Func DonateWindow($Open = True)
 	;_CaptureRegion(0, 0, 320 + $g_iMidOffsetY, $g_aiDonatePixel[1] + 30 + $YComp)
 	Local $icount = 0
 	While Not (_ColorCheck(_GetPixelColor(331, $g_aiDonatePixel[1], True, "DonateWindow"), Hex(0xffffff, 6), 0))
-		If _Sleep($DELAYDONATEWINDOW1) Then Return
+		If _Sleep($DELAYDONATEWINDOW2) Then Return
 		;_CaptureRegion(0, 0, 320 + $g_iMidOffsetY, $g_aiDonatePixel[1] + 30 + $YComp)
 		$icount += 1
 		If $icount = 20 Then ExitLoop
@@ -911,7 +911,6 @@ Func DonateWindow($Open = True)
 
 	If IsArray($aDonationWindow) Then
 		$g_iDonationWindowY = $aDonationWindow[1]
-		If _Sleep($DELAYDONATEWINDOW1) Then Return
 		If $g_iDebugSetlog = 1 Then Setlog("$g_iDonationWindowY: " & $g_iDonationWindowY, $COLOR_DEBUG)
 	Else
 		SetLog("Could not find the Donate Window!", $COLOR_ERROR)

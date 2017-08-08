@@ -84,7 +84,7 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "", $var1 = Default, $va
 EndFunc   ;==>GetTranslated
 
 Func GetTranslatedParsedText($sText, $var1 = Default, $var2 = Default, $var3 = Default)
-	Local $s = StringReplace($sText, "\r\n", @CRLF)
+	Local $s = StringReplace(StringReplace($sText, "\r\n", @CRLF), "\n", @CRLF)
 	If $var1 = Default Then Return $s
 	If $var2 = Default Then Return StringFormat($sText, $var1)
 	If $var3 = Default Then Return StringFormat($sText, $var1, $var2)

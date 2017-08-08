@@ -23,21 +23,13 @@ Func OpenNox($bRestart = False)
 	If $launchAndroid Then
 		; Launch Nox
 		$cmdPar = GetAndroidProgramParameter()
-		SetDebugLog("ShellExecute: " & $g_sAndroidProgramPath & " " & $cmdPar)
-		$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar, $__Nox_Path)
-		If _Sleep(1000) Then Return False
-		If $PID <> 0 Then $PID = ProcessExists($PID)
-		SetDebugLog("$PID= " & $PID)
-		If $PID = 0 Then ; IF ShellExecute failed
-			SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
-			SetLog("Unable to continue........", $COLOR_WARNING)
-			btnStop()
+		$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
+		If $PID = 0 Then
 			SetError(1, 1, -1)
 			Return False
 		EndIf
 	EndIf
 
-	SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
 	$hTimer = __TimerInit()
 
 	If WaitForRunningVMS($g_iAndroidLaunchWaitSec - __TimerDiff($hTimer) / 1000, $hTimer) Then Return False
@@ -170,6 +162,7 @@ Func InitNox($bCheckOnly = False)
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = GetNoxAdbPath()
 		$g_sAndroidVersion = $Version
 		$__Nox_Path = $path
+		$g_sAndroidPath = $__Nox_Path
 		$__VBoxManage_Path = $VBoxFile
 		$aRegExResult = StringRegExp($__VBoxVMinfo, ".*host ip = ([^,]+), .* guest port = 5555", $STR_REGEXPARRAYMATCH)
 		If Not @error Then

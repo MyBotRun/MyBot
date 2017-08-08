@@ -1,3 +1,30 @@
+* **V7.2.3**
+ * Fix Main Screen Locating & Troop Training for August 4th Update
+
+ * Add activate Clock Tower Boost when available w/o condictions
+ * Add BlueStacks 3 multi-instance support (bot command line parameter is still BlueStacks2!)
+ * Add additional Android options under Bot/Android to launch a ADB shell or install apps from Play Store
+ * Add support for CoC distributor Tencent
+ * Fix Clock Tower Detection & Activation
+ * Fix Heroes not boosting
+ * Fix Builder base not collecting all resources
+ * Fix Bot Crash when Wait for CC is enabled with duplicate Spells in CC
+ * Fix switching between Builder Base and Normal Village
+ * Fix Bot crash when computer run cycle reaches 48.7 days
+ * Fix bot crash when initiate attacks using external edge in most languages except BahasaIND, French, Italian, 
+   Spanish
+ * Fix CSV row number error
+ * Fix failed to find/press retry search button when every 30 minutes in cloud
+ * Fix Retry search button pushed in cloud, search not continued but waiting for CoC restart issue
+ * Fix Korean OCR for donation
+ * Fix 0 Second Random Train Delay Issue by sleepnmojo
+ * Improve MEmu 3.x screen resize
+ * Improve BlueStacks DPI setting to 160 DPI
+ * Update Azerbaijan and Turkish Language By Z E C K
+ * Update Arabic Language By awssaad
+ * Update Vietnamese Language by NguyenAnhHD
+ * Update German Language
+
 * **V7.2.2**
  * Fix bad train troop pixel porblems
  * Fix bot background mode when BlueStacks2 using OpenGL (GlRenderMode=4)
@@ -26,7 +53,7 @@
  * Fix BlueStacks reboot loop
  * Fix Warden instant activation when using CSV attack scripts, due slow render of Warden health status in attack bar
  * Update Azerbaijan and Turkish Language By Z E C K
- * Update Arabic Language By @awssaad
+ * Update Arabic Language By awssaad
  * Update Vietnamese Language by NguyenAnhHD
  * Remove erroneous message when heroes are upgrading, and 1 attack mode selected "wait for heroes" but is not enabled
 

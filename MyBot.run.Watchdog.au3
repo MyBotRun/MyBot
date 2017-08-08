@@ -20,8 +20,8 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot Watchdog)
-#pragma compile(ProductVersion, 7.2.2)
-#pragma compile(FileVersion, 7.2.2)
+#pragma compile(ProductVersion, 7.2.3)
+#pragma compile(FileVersion, 7.2.3)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
 

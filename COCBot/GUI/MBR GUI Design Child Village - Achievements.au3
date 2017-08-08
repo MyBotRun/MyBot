@@ -88,10 +88,11 @@ Func CreateVillageAchievements()
 		 @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "txtHelp_03", "Farm Min is how many resources the bot must have before attacking." ) & _
 		 @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "txtHelp_04", "Save Min is how many resources the bot must have before starting unbreakable mode." ) & _
 		 @CRLF & GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "txtHelp_05", "Click the below link for more information:" )
-	  $g_hLblUnbreakableHelp = GUICtrlCreateLabel($txtHelp, $x - 10, $y, 430, 125)
+	  $g_hLblUnbreakableHelp = GUICtrlCreateLabel($txtHelp, $x - 10, $y, 430, 100)
 	  $g_hLblUnbreakableLink = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Achievements", "LblUnbreakableLink", "More Info"), $x - 10, $y + 100, 100,20)
-		 _GUIToolTip_AddTool($g_hToolTip, 0, "https://mybot.run/forums/index.php?/topic/2964-guide-how-to-use-mybot-unbreakable-mode-updated/", GUICtrlGetHandle($g_hLblUnbreakableLink))
+		 _GUICtrlSetTip(-1, "https://mybot.run/forums/index.php?/topic/2964-guide-how-to-use-mybot-unbreakable-mode-updated/")
 		 GUICtrlSetFont(-1, 8.5, $FW_BOLD, $GUI_FONTUNDER)
 		 GUICtrlSetColor(-1, $COLOR_INFO)
+	     GUICtrlSetCursor(-1, 0)
 	  GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc

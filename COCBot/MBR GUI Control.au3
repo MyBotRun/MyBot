@@ -426,12 +426,12 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $GUI_EVENT_CLOSE, $g_hLblBotClose
 			; Clean up resources
 			BotCloseRequest()
-		Case $g_hLblCreditsBckGrnd, $g_hLblUnbreakableHelp
+		Case $g_hLblCreditsBckGrnd
 			; Handle open URL clicks when label of link is over another background label
 			Local $CursorInfo = GUIGetCursorInfo($g_hFrmBot)
 			If IsArray($CursorInfo) = 1 Then
 				Switch $CursorInfo[4]
-					Case $g_hLblMyBotURL, $g_hLblForumURL, $g_hLblUnbreakableLink
+					Case $g_hLblMyBotURL, $g_hLblForumURL
 						OpenURL_Label($CursorInfo[4])
 				EndSwitch
 			EndIf

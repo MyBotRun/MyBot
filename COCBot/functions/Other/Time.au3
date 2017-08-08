@@ -38,9 +38,9 @@ EndFunc   ;==>TimeDebug
 ; ===============================================================================================================================
 Func __TimerInit()
 	Local $iCurrentTimeMSec = _Date_Time_GetTickCount()
-	If $iCurrentTimeMSec > 4060800000 Then ; Get tick limit is 49.7 days, or value wraps around to zero
-		SetLog("PC running too long, reboot PC soon!", $COLOR_WARNING) ; gives users ~48 hours to reboot PC
-	EndIf
+	;If $iCurrentTimeMSec > 4060800000 Then ; Get tick limit is 49.7 days, or value wraps around to zero
+		;SetLog("PC running too long, reboot PC soon!", $COLOR_WARNING) ; gives users ~48 hours to reboot PC
+	;EndIf
 	Return $iCurrentTimeMSec
 EndFunc   ;==>__TimerInit
 
@@ -67,9 +67,10 @@ Func __TimerDiff($iTimeMsec)
 	EndIf
 	Local $iCurrentTimeMSec = _Date_Time_GetTickCount()
 	If $iCurrentTimeMSec < $iTimeMsec Then ; If $iTimeMsec > 4294080000 (48.7 days) then time value wraps around to zero
-		SetLog("PC on more than 49.7 days, must reboot PC!", $COLOR_ERROR)
-		SetError(2, 0, 0)
-		Return
+		;SetLog("PC on more than 49.7 days, must reboot PC!", $COLOR_ERROR)
+		;SetError(2, 0, 0)
+		;Return
+		$iTimeMsec = $iTimeMsec - 4294967296
 	EndIf
 	Return $iCurrentTimeMSec - $iTimeMsec
 EndFunc   ;==>__TimerDiff

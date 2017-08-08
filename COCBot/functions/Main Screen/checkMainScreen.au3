@@ -37,7 +37,7 @@ Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main 
 
 	If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderIsland
 
-	While _CaptureRegions() And (Not _CheckPixel($aPixelToCheck) Or checkObstacles_Network(False, False))
+	While _CaptureRegions() And (Not _CheckPixel($aPixelToCheck, $g_bNoCapturePixel) Or checkObstacles_Network(False, False))
 		If TestCapture() Then
 			SetLog("Main Screen not Located", $COLOR_ERROR)
 			ExitLoop
@@ -45,13 +45,7 @@ Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main 
 		WinGetAndroidHandle()
 		If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 
-		If Not $bBuilderBase Then
-			If isOnBuilderIsland(True) Then SwitchBetweenBases()
-		EndIf
-
-		If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
-
-		$bObstacleResult = checkObstacles()
+		$bObstacleResult = checkObstacles($bBuilderBase)
 		If $g_iDebugSetlog = 1 Then Setlog("CheckObstacles Result = " & $bObstacleResult, $COLOR_DEBUG)
 
 		If (Not $bObstacleResult And $g_bMinorObstacle) Then

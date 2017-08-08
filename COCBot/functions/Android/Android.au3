@@ -46,6 +46,7 @@ Func InitAndroidConfig($bRestart = False)
 	$g_iAndroidClientHeight = $g_avAndroidAppConfig[$g_iAndroidConfig][6] ; Expected height of android rendering control
 	$g_iAndroidWindowWidth = $g_avAndroidAppConfig[$g_iAndroidConfig][7] ; Expected Width of android window
 	$g_iAndroidWindowHeight = $g_avAndroidAppConfig[$g_iAndroidConfig][8] ; Expected height of android window
+	$g_iAndroidAdbSuCommand = "" ; Android path to su
 	$g_sAndroidAdbPath = "" ; Path to executable HD-Adb.exe or adb.exe
 	$g_sAndroidAdbDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][10] ; full device name ADB connects to
 	$g_iAndroidSupportFeature = $g_avAndroidAppConfig[$g_iAndroidConfig][11] ; 0 = Not available, 1 = Available, 2 = Available using ADB (experimental!)
@@ -805,7 +806,7 @@ Func AndroidBotStopEvent()
 	Return $Result
 EndFunc   ;==>AndroidBotStopEvent
 
-Func OpenAndroid($bRestart = False)
+Func OpenAndroid($bRestart = False, $bStartOnlyAndroid = False, $wasRunState = $g_bRunState)
 	Static $OpenAndroidActive = 0
 
 	If $OpenAndroidActive >= $g_iOpenAndroidActiveMaxTry Then
@@ -817,13 +818,15 @@ Func OpenAndroid($bRestart = False)
 	If $OpenAndroidActive > 1 Then
 		SetDebugLog("Opening " & $g_sAndroidEmulator & " recursively " & $OpenAndroidActive & ". time...")
 	EndIf
-	Local $Result = _OpenAndroid($bRestart)
+	If $bStartOnlyAndroid = True And $wasRunState = False Then $g_bRunState = True
+	Local $Result = _OpenAndroid($bRestart, $bStartOnlyAndroid)
+	If $bStartOnlyAndroid = True And $wasRunState = False Then $g_bRunState = False
 	WinGetAndroidHandle()
 	$OpenAndroidActive -= 1
 	Return $Result
 EndFunc   ;==>OpenAndroid
 
-Func _OpenAndroid($bRestart = False)
+Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
 	ResumeAndroid()
 
 	; list Android devices to ensure ADB Daemon is launched
@@ -854,8 +857,12 @@ Func _OpenAndroid($bRestart = False)
 
 	If Not Execute("Open" & $g_sAndroidEmulator & "(" & $bRestart & ")") Then Return False
 
+	If $bStartOnlyAndroid Then
+		Return True
+	EndIf
+
 	; Check Android screen size, position windows
-	If Not InitiateLayout() Then Return False ; recursive call to OpenAndroid() possible
+	If $bStartOnlyAndroid = False And Not InitiateLayout() Then Return False ; recursive call to OpenAndroid() possible
 
 	WinGetAndroidHandle(False) ; get window Handle
 
@@ -996,13 +1003,13 @@ Func CloseVboxAndroidSvc()
 	If _SleepStatus(3000) Then Return
 EndFunc   ;==>CloseVboxAndroidSvc
 
-Func CheckAndroidRunning($bQuickCheck = True, $bStartIfRequired = True)
+Func CheckAndroidRunning($bQuickCheck = True, $bStartIfRequired = True, $bStartOnlyAndroid = False)
 	Local $hWin = $g_hAndroidWindow
 	If WinGetAndroidHandle() = 0 Or ($bQuickCheck = False And $g_bAndroidBackgroundLaunched = False And AndroidControlAvailable() = 0) Then
 		SetDebugLog($g_sAndroidEmulator & " not running")
 		If $bStartIfRequired = True Then
 			If $hWin = 0 Then
-				OpenAndroid(True)
+				OpenAndroid(True, $bStartOnlyAndroid)
 			Else
 				RebootAndroid()
 			EndIf
@@ -1085,7 +1092,7 @@ Func WaitForAndroidBootCompleted($WaitInSec = 120, $hTimer = 0)
 		$booted = StringLeft($cmdOutput, 1) = "1"
 		If $booted = True Then ExitLoop
 		If $hTimer <> 0 Then _StatusUpdateTime($hTimer)
-		If _Sleep(3000) Then Return True ; Sleep 3 Seconds
+		If _Sleep(5000) Then Return True ; Sleep 5 Seconds
 		If __TimerDiff($hMyTimer) > $WaitInSec * 1000 Then ; if no device available in 4 minutes, Android/PC has major issue so exit
 			SetLog("Serious error has occurred, please restart PC and try again", $COLOR_ERROR)
 			SetLog($g_sAndroidEmulator & " refuses to load, waited " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds for boot completed", $COLOR_ERROR)
@@ -1152,7 +1159,7 @@ Func KillAdbDaemon($bMutexLock = True)
 	Return ReleaseAdbDaemonMutex($hMutex, True)
 EndFunc   ;==>KillAdbDaemon
 
-Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $timeout = 15000)
+Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $bStartOnlyAndroid = False, $timeout = 15000)
 	If $g_sAndroidAdbPath = "" Or FileExists($g_sAndroidAdbPath) = 0 Then
 		SetLog($g_sAndroidEmulator & " ADB Path not valid: " & $g_sAndroidAdbPath, $COLOR_ERROR)
 		Return False
@@ -1165,7 +1172,7 @@ Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $timeout = 150
 		If AndroidInvalidState() Then
 			; Android is not running
 			SetDebugLog("ConnectAndroidAdb: Reboot Android as it's not running")
-			RebootAndroid()
+			RebootAndroid(True, $bStartOnlyAndroid)
 		EndIf
 	EndIf
 
@@ -1202,7 +1209,7 @@ Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $timeout = 150
 				SetLog("ADB cannot connect to " & $g_sAndroidEmulator & ", restart emulator now...", $COLOR_ERROR)
 				If Not RebootAndroid() Then Return False
 				; ok, last try
-				$connected_to = ConnectAndroidAdb(False)
+				$connected_to = ConnectAndroidAdb(False, $bStartOnlyAndroid)
 				If Not $connected_to Then
 					; Let's give up...
 					If Not $g_bRunState Then Return False ; True ; interrupted and return True not to start any failback logic
@@ -1233,7 +1240,7 @@ Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $timeout = 150
 				Next
 
 				; ok, last try
-				$connected_to = ConnectAndroidAdb(False)
+				$connected_to = ConnectAndroidAdb(False, $bStartOnlyAndroid)
 				If Not $connected_to Then
 					; Let's give up...
 					If Not $g_bRunState Then Return False ; True ; interrupted and return True not to start any failback logic
@@ -1246,7 +1253,7 @@ Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $timeout = 150
 	Return $connected_to ; ADB is connected or not
 EndFunc   ;==>ConnectAndroidAdb
 
-Func RebootAndroid($bRestart = True)
+Func RebootAndroid($bRestart = True, $bStartOnlyAndroid = False)
 	ResumeAndroid()
 	If Not $g_bRunState Then Return False
 
@@ -1260,7 +1267,7 @@ Func RebootAndroid($bRestart = True)
 	If _Sleep(1000) Then Return False
 
 	; Start Android
-	Return OpenAndroid($bRestart)
+	Return OpenAndroid($bRestart, $bStartOnlyAndroid)
 EndFunc   ;==>RebootAndroid
 
 Func RebootAndroidSetScreenDefault()
@@ -1341,7 +1348,8 @@ Func AndroidSetFontSizeNormal()
 	AndroidAdbSendShellCommand("settings put system font_scale 1.0", Default, Default, False)
 EndFunc   ;==>AndroidSetFontSizeNormal
 
-Func AndroidAdbLaunchShellInstance($wasRunState = $g_bRunState, $rebootAndroidIfNeccessary = $g_bRunState)
+Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+	If $wasRunState = Default Then $wasRunState = $g_bRunState
 	If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 		Local $SuspendMode = ResumeAndroid()
 		InitAndroid()
@@ -2919,3 +2927,88 @@ Func AndroidPicturePathAutoConfig($myPictures = Default, $subDir = Default, $bSe
 	EndIf
 	Return $Result
 EndFunc   ;==>AndroidPicturePathAutoConfig
+
+Func OpenAdbShell($bRunInitScript = True)
+	; Ensure Android is running
+	CheckAndroidRunning(True, True, True)
+	; Ensure ADB daemon is running
+	If ConnectAndroidAdb(True, True) = False Then
+		SetLog("Cannot open ADB shell, ADB connection not available", $COLOR_ERROR)
+		Return 0
+	EndIf
+
+	Local $iPid = ShellExecute($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell")
+	SetLog("Launched ADB Shell, PID=" & $iPid & ": """ & $g_sAndroidAdbPath & """ -s " & $g_sAndroidAdbDevice & " shell")
+	Local $hWnd = 0
+	Local $hTimer = __TimerInit()
+	Do
+		If $hWnd = 0 Then _Sleep(100, True, False)
+		Local $winlist = WinList()
+		For $i = 1 To $winlist[0][0]
+			If $winlist[$i][0] <> "" Then
+				If WinGetProcess($winlist[$i][1]) = $iPid Then
+					$hWnd = $winlist[$i][1]
+					SetDebugLog("Launched ADB Shell, found Window Handle " & $hWnd)
+					ExitLoop
+				EndIf
+			EndIf
+		Next
+	Until $hWnd <> 0 Or __TimerDiff($hTimer) > 3000
+	If $hWnd <> 0 And $g_iAndroidAdbSuCommand <> "" Then
+		SetLog("Send Shell command: " & $g_iAndroidAdbSuCommand)
+		ControlSend($hWnd, "", "", $g_iAndroidAdbSuCommand & "{ENTER}")
+	EndIf
+	Return $iPid
+EndFunc   ;==>OpenAdbShell
+
+Func OpenPlayStore($sPackage)
+	; Ensure Android is running
+	CheckAndroidRunning(True, True, True)
+	; Ensure ADB daemon is running
+	If ConnectAndroidAdb(True, True) = False Then
+		SetLog("Cannot open Play Store, ADB connection not available", $COLOR_ERROR)
+		Return 0
+	EndIf
+	AndroidAdbSendShellCommand("am start -a android.intent.action.VIEW -d 'market://details?id=" & $sPackage & "'")
+EndFunc   ;==>OpenPlayStore
+
+Func OpenPlayStoreGame()
+	Return OpenPlayStore($g_sUserGamePackage)
+EndFunc   ;==>OpenPlayStoreGame
+
+Func OpenPlayStoreNovaLauncher()
+	Return OpenPlayStore("com.teslacoilsw.launcher")
+EndFunc   ;==>OpenPlayStoreNovaLauncher
+
+Func LaunchAndroid($sProgramPath, $sCmdParam, $sPath, $iWaitInSecAfterLaunch = Default, $bStopIfLaunchFails = True)
+	If $iWaitInSecAfterLaunch = Default Then $iWaitInSecAfterLaunch = 10
+	If $sCmdParam And StringLeft($sCmdParam, 1) <> " " Then
+		$sCmdParam = " " & $sCmdParam
+	EndIf
+	SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
+	Local $pid = 0
+	;$PID = ShellExecute($g_sAndroidProgramPath, $cmdPar, $__MEmu_Path)
+	For $i = 1 To 3
+		SetDebugLog("LaunchAndroid: " & $sProgramPath & $sCmdParam)
+		$pid = Run($sProgramPath & $sCmdParam, $sPath)
+		If _Sleep(3000) Then Return False
+		If $pid <> 0 Then $pid = ProcessExists($pid)
+		If $pid <> 0 Then ExitLoop
+	Next
+
+	SetDebugLog("$PID= " & $pid)
+	If $pid = 0 And $bStopIfLaunchFails = True Then ; IF ShellExecute failed
+		SetLog("Unable to load " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : "(" & $g_sAndroidInstance & ")") & ", please check emulator/installation.", $COLOR_ERROR)
+		SetLog("Unable to continue........", $COLOR_WARNING)
+		btnStop()
+		SetError(1, 1, -1)
+		Return 0
+	EndIf
+
+	If $iWaitInSecAfterLaunch > 0 Then
+		_SleepStatus($iWaitInSecAfterLaunch * 1000)
+	EndIf
+
+	Return $pid
+
+EndFunc   ;==>LaunchAndroid

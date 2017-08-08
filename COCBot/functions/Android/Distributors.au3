@@ -14,13 +14,13 @@
 ; ===============================================================================================================================
 
 Global $g_sNO_COC, $g_sUNKNOWN_COC
-Global $_g_asDISTRIBUTORS[19][4]
+Global $_g_asDISTRIBUTORS[20][4]
 
 Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language is detected
 	$g_sNO_COC = "<" & GetTranslatedFileIni("MBR Distributors", "NO_COC", "No COC") & ">"
 	$g_sUNKNOWN_COC = "<" & GetTranslatedFileIni("MBR Distributors", "Unknown_COC", "Unknown COC") & ">"
 
-	Dim $_g_asDISTRIBUTORS[19][4] = [ _
+	Dim $_g_asDISTRIBUTORS[20][4] = [ _
 			["Google", "com.supercell.clashofclans", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_01", "Google")], _
 			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_02", "Kunlun")], _
 			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_03", "Qihoo")], _
@@ -39,7 +39,8 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 			["Leshi", "com.supercell.clashofclans.ewan.leshi", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_16", "Leshi")], _
 			["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_17", "Microvirt")], _
 			["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_18", "Yeshen")], _
-			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_19", "Aiyouxi")] _
+			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_19", "Aiyouxi")], _
+			["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.tencent.tmgp.supercell.clashofclans.GameAppTencent", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_20", "Tencent")] _
 			]
 EndFunc   ;==>InitializeCOCDistributors
 

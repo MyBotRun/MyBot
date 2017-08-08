@@ -22,12 +22,15 @@ Func ZoomOut() ;Zooms out
     ResumeAndroid()
     WinGetAndroidHandle()
 	getBSPos() ; Update $g_hAndroidWindow and Android Window Positions
-	If Not $g_bRunState Then Return
+	If Not $g_bRunState Then
+		SetDebugLog("Exit ZoomOut, bot not running")
+		Return
+	EndIf
 	Local $Result
 	If $g_bAndroidEmbedded = False Or $g_iAndroidEmbedMode = 1 Then
 		; default zoomout
-		$Result = Call("ZoomOut" & $g_sAndroidEmulator)
-		If @extended <> 0 And @error <> 0 Then
+		$Result = Execute("ZoomOut" & $g_sAndroidEmulator & "()")
+		If $Result = "" And @error <> 0 Then
 			; Not implemented or other error
 			$Result = AndroidOnlyZoomOut()
 		EndIf

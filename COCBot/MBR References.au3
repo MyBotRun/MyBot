@@ -552,4 +552,36 @@ Func ReferenceGlobals()
 	$a1 = $eESpell
 	$a1 = $eHaSpell
 	$a1 = $eSkSpell
+
+	$a1 = $aTrainBarb
+	$a1 = $aTrainArch
+	$a1 = $aTrainGiant
+	$a1 = $aTrainGobl
+	$a1 = $aTrainWall
+	$a1 = $aTrainBall
+	$a1 = $aTrainWiza
+	$a1 = $aTrainHeal
+	$a1 = $aTrainDrag
+	$a1 = $aTrainPekk
+	$a1 = $aTrainBabyD
+	$a1 = $aTrainMine
+	$a1 = $aTrainMini
+	$a1 = $aTrainHogs
+	$a1 = $aTrainValk
+	$a1 = $aTrainGole
+	$a1 = $aTrainWitc
+	$a1 = $aTrainLava
+	$a1 = $aTrainBowl
+	$a1 = $aTrainLSpell
+	$a1 = $aTrainHSpell
+	$a1 = $aTrainRSpell
+	$a1 = $aTrainJSpell
+	$a1 = $aTrainFSpell
+	$a1 = $aTrainCSpell
+	$a1 = $aTrainPSpell
+	$a1 = $aTrainESpell
+	$a1 = $aTrainHaSpell
+	$a1 = $aTrainSkSpell
+
+	$a1 = $aTrainArmy
 EndFunc   ;==>ReferenceGlobals

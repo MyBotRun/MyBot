@@ -205,7 +205,7 @@ Func PoliteCloseCoC($sSource = "Unknown_")
 						Click($btnExit[0], $btnExit[1])
 						ExitLoop
 					EndIf
-				Case "Wandoujia/Downjoy", "Haimawan", "Leshi"
+				Case "Wandoujia/Downjoy", "Haimawan", "Leshi", "Tencent"
 					ContinueCase
 				Case Else
 					Setlog("Polite Close Unsupported - " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)

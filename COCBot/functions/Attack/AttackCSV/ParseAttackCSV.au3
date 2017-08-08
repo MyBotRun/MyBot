@@ -5,7 +5,7 @@
 ; Parameters ....: $debug               - [optional]
 ; Return values .: None
 ; Author ........: Sardo (2016)
-; Modified ......:
+; Modified ......: MMHK (07-2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -14,7 +14,6 @@
 ; ===============================================================================================================================
 Func ParseAttackCSV($debug = False)
 
-	Local $rownum = 0
 	Local $bForceSideExist = False
 	Local $sErrorText, $sTargetVectors = ""
 	Local $iTroopIndex, $bWardenDrop = False
@@ -35,13 +34,13 @@ Func ParseAttackCSV($debug = False)
 	Local $f, $line, $acommand, $command
 	Local $value1 = "", $value2 = "", $value3 = "", $value4 = "", $value5 = "", $value6 = "", $value7 = "", $value8 = "", $value9 = ""
 	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
-		Local $iLine, $aLines = FileReadToArray($g_sCSVAttacksPath & "\" & $filename & ".csv")
+		Local $aLines = FileReadToArray($g_sCSVAttacksPath & "\" & $filename & ".csv")
 
 		; Read in lines of text until the EOF is reached
 		For $iLine = 0 To UBound($aLines) - 1
 			$line = $aLines[$iLine]
-			$rownum = $line + 1
 			$sErrorText = "" ; empty error text each row
+			debugAttackCSV("line: " & $iLine + 1)
 			If @error = -1 Then ExitLoop
 			If $debug = True Then Setlog("parse line:<<" & $line & ">>")
 			debugAttackCSV("line content: " & $line)
@@ -124,8 +123,8 @@ Func ParseAttackCSV($debug = False)
 							$sErrorText = "value2"
 						EndIf
 						If $sErrorText <> "" Then ; log error message
-							Setlog("Discard row, bad " & $sErrorText & " parameter:row " & $rownum)
-							debugAttackCSV("Discard row, bad " & $sErrorText & " parameter:row " & $rownum)
+							Setlog("Discard row, bad " & $sErrorText & " parameter: row " & $iLine + 1)
+							debugAttackCSV("Discard row, bad " & $sErrorText & " parameter: row " & $iLine + 1)
 						Else ; debuglog vectors
 							For $i = 0 To UBound(Execute("$ATTACKVECTOR_" & $value1)) - 1
 								Local $pixel = Execute("$ATTACKVECTOR_" & $value1 & "[" & $i & "]")
@@ -270,8 +269,8 @@ Func ParseAttackCSV($debug = False)
 							EndIf
 						Next
 						If $sErrorText <> "" Then
-							Setlog("Discard row, " & $sErrorText & " parameter:row " & $rownum)
-							debugAttackCSV("Discard row, " & $sErrorText & " parameter:row " & $rownum)
+							Setlog("Discard row, " & $sErrorText & ": row " & $iLine + 1)
+							debugAttackCSV("Discard row, " & $sErrorText & ": row " & $iLine + 1)
 						Else
 							DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
 						EndIf
@@ -712,10 +711,10 @@ Func ParseAttackCSV($debug = False)
 						EndSwitch
 
 					Case Else
-						Setlog("attack row bad, discard :row " & $rownum, $COLOR_ERROR)
+						Setlog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
 				EndSwitch
 			Else
-				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard.: " & $line, $COLOR_ERROR)
+				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard: row " & $iLine + 1, $COLOR_ERROR)
 			EndIf
 			If $bWardenDrop = True Then  ;Check hero, but skip Warden if was dropped with sleepafter to short to allow icon update
 				Local $bHold = $g_bCheckWardenPower ; store existing flag state, should be true?

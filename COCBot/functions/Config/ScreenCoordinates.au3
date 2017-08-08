@@ -14,13 +14,9 @@
 Global $aCenterEnemyVillageClickDrag = [65, 545] ; Scroll village using this location in the water
 Global $aCenterHomeVillageClickDrag = [160, 665] ; Scroll village using this location in the water
 Global $aIsReloadError[4] = [457, 301 + $g_iMidOffsetY, 0x33B5E5, 10] ; Pixel Search Check point For All Reload Button errors, except break ending
-;Global $aIsMain[4] = [284, 28, 0x41B1CD, 20] ; Main Screen, Builder Left Eye
-Global $aIsMain[4] = [284, 29, 0x1C4466, 20] ; Main Screen, Builder Left Eye :SC_okt
+Global $aIsMain[4] = [278, 9, 0x77BDE0, 20] ; Main Screen, Builder Info Icon
+Global $aIsMainGrayed[4] = [278, 9, 0x3C5F70, 15] ; Main Screen, Builder Info Icon grayed
 
-Global $aIsDPI125[4] = [355, 35, 0x399CB8, 15] ; Main Screen, Builder Left Eye, DPI set to 125%
-Global $aIsDPI150[4] = [426, 42, 0x348FAA, 15] ; Main Screen, Builder Left Eye, DPI set to 150%
-;Global $aIsMainGrayed[4] = [284, 28, 0x215B69, 15] ; Main Screen Grayed, Builder Left Eye
-Global $aIsMainGrayed[4] = [284, 29, 0x0B1B29, 15] ; Main Screen Grayed, Builder Left Eye :SC_okt
 Global $aIsOnBuilderIsland[4] = [838, 18, 0xffff46, 10] ; Check the Gold Coin from resources , is a square not round
 
 Global $aTopLeftClient[4] = [1, 1, 0x000000, 0] ; TopLeftClient: Tolerance not needed
@@ -145,16 +141,8 @@ Global Const $aRtnHomeCheck2[4] = [497, 548 + $g_iMidOffsetY, 0x79C326, 20]
 
 Global Const $aSearchLimit[6] = [19, 565, 104, 580, 0xD9DDCF, 10] ; (kaganus) no idea what this is for
 
-; Builder Base
-Global Const $aConfirmBoost[4] = [431, 438, 0xD9F57B, 10]
-
 ;inattackscreen
 Global Const $aIsAttackPage[4] = [70, 548 + $g_iBottomOffsetY, 0xC80000, 20] ; red button "end battle" 860x780
-
-; Bluestacks Menu - replaced with shortcut keys due removal or BS menu bar
-;Global Const $aBSBackButton[4] = [ 50, 700 + $g_iBottomOffsetY, 0x000000, 10] ; Bluestacks V0.9. - V0.10. back button
-;Global Const $aBSHomeButton[4] = [125, 700 + $g_iBottomOffsetY, 0x000000, 10] ; Bluestacks V0.9. - V0.10. Home button
-;Global Const $aBSExitButton[4] = [820, 700 + $g_iBottomOffsetY, 0x000000, 10] ; Bluestacks V0.9. - V0.10. Exit button
 
 ;CheckImageType (Normal, Snow, etc)
 Global Const $aImageTypeN1[4] = [237, 161, 0xD5A849, 30] ; Sand on Forest Edge 'Lane' 860x780
@@ -170,140 +158,36 @@ Global $aAttackButtonRND[4] = [20, 610 + $g_iMidOffsetY, 100, 670 + $g_iMidOffse
 Global $aFindMatchButtonRND[4] = [200, 510 + $g_iMidOffsetY, 300, 530 + $g_iMidOffsetY] ; Find Multiplayer Match Button, Both Shield or without shield Screen 860x732
 Global $NextBtnRND[4] = [710, 530 + $g_iMidOffsetY, 830, 570 + $g_iMidOffsetY] ;  Next Button
 
-
-
-;<><><><> TRAIN <><><><>
-
-;-----> Troops <-----
-Global $aTrainBarb[5]  = [64, 354 + $g_iMidOffsetY, 0xE0AB38, 40, False]  ; FFB620, FFB620
-Global $aTrainArch[5]  = [77, 482 + $g_iMidOffsetY, 0xB82A64, 40, False]  ; 882857, 882852
-Global $aTrainGiant[5] = [192, 387 + $g_iMidOffsetY, 0xF7AD78, 40, False] ; FFCE94, FFCE94
-Global $aTrainGobl[5]  = [178, 487 + $g_iMidOffsetY, 0xB0DB6E, 40, False] ; A9F36A, A9F36B
-Global $aTrainWall[5]  = [282, 385 + $g_iMidOffsetY, 0x000000, 40, False] ; 7B6E8F, 786C8A
-Global $aTrainBall[5]  = [249, 469 + $g_iMidOffsetY, 0x64242C, 40, False] ; 781C10, 7C1C10
-Global $aTrainWiza[5]  = [384, 384 + $g_iMidOffsetY, 0xF8D0B8, 40, False] ; E19179, E3937C
-Global $aTrainHeal[5]  = [396, 500 + $g_iMidOffsetY, 0xF8EEE8, 40, False] ; D67244, D67244
-Global $aTrainDrag[5]  = [435, 354 + $g_iMidOffsetY, 0xFDF8F6, 40, False] ; 473254, 493153
-Global $aTrainPekk[5]  = [465, 493 + $g_iMidOffsetY, 0x0E0811, 40, False] ; 385470, 395671
-Global $aTrainBabyD[5] = [578, 385 + $g_iMidOffsetY, 0x080000, 40, False] ; 88D464, 88D461, middle of snout
-Global $aTrainMine[5]  = [568, 452 + $g_iMidOffsetY, 0x989C98, 40, False] ; 1A1815, 1B1814, right eye brow under hat
-Global $aTrainMini[5] = [489, 375 + $g_iMidOffsetY, 0x7ACFF0, 40, False] ; Dark blue botton of horn
-Global $aTrainHogs[5] = [500, 467 + $g_iMidOffsetY, 0xB87867, 40, False] ; 3A2620, 3B2720, brown above right ear
-Global $aTrainValk[5] = [619, 398 + $g_iMidOffsetY, 0xD03E04, 40, False] ; FF6E18, FF6D18, orange right hair curl above eye
-Global $aTrainGole[5] = [583, 498 + $g_iMidOffsetY, 0x534E48, 40, False] ; E1C8AD, E3C8AC, top of head
-Global $aTrainWitc[5] = [696, 353 + $g_iMidOffsetY, 0x636AE5, 40, False] ; 403C68, 403D68, middle of purple hood
-Global $aTrainLava[5] = [687, 475 + $g_iMidOffsetY, 0x210D00, 40, False] ; 4C4C3C, 4B4C3C, center of brown nose
-Global $aTrainBowl[5] = [777, 356 + $g_iMidOffsetY, 0x8884F0, 40, False] ; 6060E7, 6060E5 ,purple on cheek
-
-Global $aFullBarb[4] = [100, 423 + $g_iMidOffsetY, 0x6D6D6D, 20] ; Location of Elixir check pixel with normal color and Barrack Full color
-Global $aFullArch[4] = [100, 529 + $g_iMidOffsetY, 0x8A8A8A, 20]
-Global $aFullGiant[4] = [199, 422 + $g_iMidOffsetY, 0x676767, 20]
-Global $aFullGobl[4] = [199, 523 + $g_iMidOffsetY, 0x666666, 20]
-Global $aFullWall[4] = [297, 429 + $g_iMidOffsetY, 0x8D8D8D, 20]
-Global $aFullBall[4] = [296, 531 + $g_iMidOffsetY, 0x898989, 20]
-Global $aFullWiza[4] = [397, 421 + $g_iMidOffsetY, 0x676767, 20]
-Global $aFullHeal[4]  = [398, 523 + $g_iMidOffsetY, 0x676767, 20]
-Global $aFullDrag[4]  = [496, 421 + $g_iMidOffsetY, 0x676767, 20]
-Global $aFullPekk[4]  = [493, 526 + $g_iMidOffsetY, 0x7D7D7D, 20]
-Global $aFullBabyD[4] = [590, 423 + $g_iMidOffsetY, 0x696969, 20] ; B1B1B1, B1B1B1, reg color: 88D464
-Global $aFullMine[4] = [594, 523 + $g_iMidOffsetY, 0x686868, 20] ; AEAEAE, ADADAD, reg color: 84BF5E
-Global $aFullMini[4] = [456, 356 + $g_iMidOffsetY, 0x4D4D4D, 20] ; 0xC7F8F8 Most locations are only 30 decimal change in blue to gray (Dk blue chest)
-Global $aFullHogs[4] = [488, 512 + $g_iMidOffsetY, 0xA4A4A4, 20] ; 0xD07C58 normal (lt brown shoulder)
-Global $aFullValk[4] = [578, 370 + $g_iMidOffsetY, 0x8C8C8C, 20] ; 0xFF6E18 normal (lt orange hari curl)
-Global $aFullGole[4] = [597, 509 + $g_iMidOffsetY, 0x3A3A3A, 20] ; 0xF07CD0 normal (pink eye)
-Global $aFullWitc[4] = [671, 387 + $g_iMidOffsetY, 0x8D8D8D, 20] ; 0xF83DA4 normal (left pink eye) Need to fix
-Global $aFullLava[4] = [721, 488 + $g_iMidOffsetY, 0x808080, 20] ; 0xFF7000 normal (Orange line above DE drop)
-Global $aFullBowl[4] = [777, 407 + $g_iMidOffsetY, 0x727272, 20] ; 0x6060E8 normal (purple in cheek)
-
-;-----> Spells <-----
-Global $aTrainLSpell[5] = [ 70, 405 + $g_iMidOffsetY, 0x0A47EE, 40, False]
-Global $aTrainHSpell[5] = [ 70, 505 + $g_iMidOffsetY, 0xDAAF48, 40, False]
-Global $aTrainRSpell[5] = [170, 405 + $g_iMidOffsetY, 0x501886, 45, False]
-Global $aTrainJSpell[5] = [170, 505 + $g_iMidOffsetY, 0x4CCC08, 40, False]
-Global $aTrainFSpell[5] = [270, 405 + $g_iMidOffsetY, 0x29ADD0, 40, False]
-Global $aTrainCSpell[5] = [270, 505 + $g_iMidOffsetY, 0x20DDD8, 40, False]
-Global $aTrainPSpell[5] = [375, 405 + $g_iMidOffsetY, 0xF88010, 40, False]
-Global $aTrainESpell[5] = [375, 505 + $g_iMidOffsetY, 0xBF8B58, 40, False]
-Global $aTrainHaSpell[5] = [469, 409 + $g_iMidOffsetY, 0xf267a7, 40, False]
-Global $aTrainSkSpell[5] = [475, 505 + $g_iMidOffsetY, 0xE01800, 40, False]
-
-Global $aFullLSpell[4] = [74, 392 + $g_iMidOffsetY, 0x515151, 40]
-Global $aFullHSpell[4] = [70, 505 + $g_iMidOffsetY, 0xB1B1B1, 40]
-Global $aFullRSpell[4] = [186, 405 + $g_iMidOffsetY, 0x696969, 40]
-Global $aFullJSpell[4] = [170, 495 + $g_iMidOffsetY, 0xABABAB, 40]
-Global $aFullFSpell[4] = [266, 395 + $g_iMidOffsetY, 0x929292, 40]
-Global $aFullCSpell[4] = [269, 502 + $g_iMidOffsetY, 0xA4A4A4, 40]
-Global $aFullPSpell[4] = [375, 410 + $g_iMidOffsetY, 0x929292, 40]
-Global $aFullESpell[4] = [370, 510 + $g_iMidOffsetY, 0x858585, 40]
-Global $aFullHaSpell[4] = [470, 410 + $g_iMidOffsetY, 0x929292, 40]
-Global $aFullSkSpell[4] = [475, 510 + $g_iMidOffsetY, 0x4A4A4A, 40]
+Global $aTrainBarb[4]  = [-1, -1, -1, -1]
+Global $aTrainArch[4]  = [-1, -1, -1, -1]
+Global $aTrainGiant[4] = [-1, -1, -1, -1]
+Global $aTrainGobl[4]  = [-1, -1, -1, -1]
+Global $aTrainWall[4]  = [-1, -1, -1, -1]
+Global $aTrainBall[4]  = [-1, -1, -1, -1]
+Global $aTrainWiza[4]  = [-1, -1, -1, -1]
+Global $aTrainHeal[4]  = [-1, -1, -1, -1]
+Global $aTrainDrag[4]  = [-1, -1, -1, -1]
+Global $aTrainPekk[4]  = [-1, -1, -1, -1]
+Global $aTrainBabyD[4] = [-1, -1, -1, -1]
+Global $aTrainMine[4]  = [-1, -1, -1, -1]
+Global $aTrainMini[4] = [-1, -1, -1, -1]
+Global $aTrainHogs[4] = [-1, -1, -1, -1]
+Global $aTrainValk[4] = [-1, -1, -1, -1]
+Global $aTrainGole[4] = [-1, -1, -1, -1]
+Global $aTrainWitc[4] = [-1, -1, -1, -1]
+Global $aTrainLava[4] = [-1, -1, -1, -1]
+Global $aTrainBowl[4] = [-1, -1, -1, -1]
+Global $aTrainLSpell[4] = [-1, -1, -1, -1]
+Global $aTrainHSpell[4] = [-1, -1, -1, -1]
+Global $aTrainRSpell[4] = [-1, -1, -1, -1]
+Global $aTrainJSpell[4] = [-1, -1, -1, -1]
+Global $aTrainFSpell[4] = [-1, -1, -1, -1]
+Global $aTrainCSpell[4] = [-1, -1, -1, -1]
+Global $aTrainPSpell[4] = [-1, -1, -1, -1]
+Global $aTrainESpell[4] = [-1, -1, -1, -1]
+Global $aTrainHaSpell[4] = [-1, -1, -1, -1]
+Global $aTrainSkSpell[4] = [-1, -1, -1, -1]
 
 Global $aTrainArmy[$eArmyCount] = [$aTrainBarb, $aTrainArch, $aTrainGiant, $aTrainGobl, $aTrainWall, $aTrainBall, $aTrainWiza, $aTrainHeal, $aTrainDrag, $aTrainPekk, $aTrainBabyD, $aTrainMine, _
 								   $aTrainMini, $aTrainHogs, $aTrainValk, $aTrainGole, $aTrainWitc, $aTrainLava, $aTrainBowl, 0, 0, 0, 0, $aTrainLSpell, $aTrainHSpell, $aTrainRSpell, $aTrainJSpell, $aTrainFSpell, $aTrainCSpell, _
 								   $aTrainPSpell, $aTrainESpell, $aTrainHaSpell, $aTrainSkSpell]
-
-Global $aFullArmy[$eArmyCount] = [$aFullBarb, $aFullArch, $aFullGiant, $aFullGobl, $aFullWall, $aFullBall, $aFullWiza, $aFullHeal, $aFullDrag, $aFullPekk, $aFullBabyD, $aFullMine, _
-								  $aFullMini, $aFullHogs, $aFullValk, $aFullGole, $aFullWitc, $aFullLava, $aFullBowl, 0, 0, 0, 0, $aFullLSpell, $aFullHSpell, $aFullRSpell, $aFullJSpell, $aFullFSpell, $aFullCSpell, _
-								  $aFullPSpell, $aFullESpell, $aFullHaSpell, $aFullSkSpell]
-
-								   ;Zeroes are Spaceholders for non trainable Objects like Warden
-
-
-;----> Random Train Click Positions <-----
-Global $xBtnTrain = 89
-Global $yBtnTrain = 50
-Global $xTrainOffset = 97
-Global $yTrainOffset = 101
-Global $xTrain = 28
-Global $yTrain = 371
-Global $aTrainBarbRND[4] = [$xTrain + ($xTrainOffset * 0), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 0), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainGiantRND[4]= [$xTrain + ($xTrainOffset * 1), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 1), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainWallRND[4] = [$xTrain + ($xTrainOffset * 2), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 2), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainWizaRND[4] = [$xTrain + ($xTrainOffset * 3), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 3), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainDragRND[4] = [$xTrain + ($xTrainOffset * 4), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 4), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainBabyDRND[4] = [$xTrain + ($xTrainOffset * 5), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 5), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-$yTrain = $yTrain + $yTrainOffset
-Global $aTrainArchRND[4] = [$xTrain + ($xTrainOffset * 0), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 0), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainGoblRND[4] = [$xTrain + ($xTrainOffset * 1), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 1), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainBallRND[4] = [$xTrain + ($xTrainOffset * 2), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 2), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainHealRND[4] = [$xTrain + ($xTrainOffset * 3), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 3), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainPekkRND[4] = [$xTrain + ($xTrainOffset * 4), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 4), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainMineRND[4] = [$xTrain + ($xTrainOffset * 5), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 5), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-
-Global $xTrain = 445
-Global $yTrain = 371
-Global $aTrainMiniRND[4] = [$xTrain + ($xTrainOffset * 0), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 0), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainValkRND[4] = [$xTrain + ($xTrainOffset * 1), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 1), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainWitcRND[4] = [$xTrain + ($xTrainOffset * 2), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 2), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainBowlRND[4] = [$xTrain + ($xTrainOffset * 3), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 3), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-$yTrain = $yTrain + $yTrainOffset
-Global $aTrainHogsRND[4] = [$xTrain + ($xTrainOffset * 0), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 0), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainGoleRND[4] = [$xTrain + ($xTrainOffset * 1), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 1), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainLavaRND[4] = [$xTrain + ($xTrainOffset * 2), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 2), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-
-Global $xBtnTrain = 89
-Global $yBtnTrain = 50
-Global $xTrainOffset = 97
-Global $yTrainOffset = 101
-Global $xTrain = 28
-Global $yTrain = 371
-Global $aTrainLSpellRND[4] = [$xTrain + ($xTrainOffset * 0), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 0), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainRSpellRND[4]=  [$xTrain + ($xTrainOffset * 1), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 1), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainFSpellRND[4] = [$xTrain + ($xTrainOffset * 2), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 2), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-$yTrain = $yTrain + $yTrainOffset
-Global $aTrainHSpellRND[4] = [$xTrain + ($xTrainOffset * 0), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 0), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainJSpellRND[4] = [$xTrain + ($xTrainOffset * 1), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 1), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainCSpellRND[4] = [$xTrain + ($xTrainOffset * 2), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 2), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-
-Global $xTrain = 331
-Global $yTrain = 371
-Global $aTrainPSpellRND[4] = [$xTrain + ($xTrainOffset * 0), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 0), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainHaSpellRND[4] = [$xTrain + ($xTrainOffset * 1), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 1), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-$yTrain = $yTrain + $yTrainOffset
-Global $aTrainESpellRND[4] = [$xTrain + ($xTrainOffset * 0), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 0), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-Global $aTrainSkSpellRND[4] = [$xTrain + ($xTrainOffset * 1), $yTrain + $g_iMidOffsetY, $xTrain + $xBtnTrain + ($xTrainOffset * 1), $yTrain + $yBtnTrain + $g_iMidOffsetY]
-
-
-Global $aTrainArmyRND[$eArmyCount] = [$aTrainBarbRND, $aTrainArchRND, $aTrainGiantRND, $aTrainGoblRND, $aTrainWallRND, $aTrainBallRND, $aTrainWizaRND, $aTrainHealRND, $aTrainDragRND, $aTrainPekkRND, $aTrainBabyDRND, $aTrainMineRND, _
-									  $aTrainMiniRND, $aTrainHogsRND, $aTrainValkRND, $aTrainGoleRND, $aTrainWitcRND, $aTrainLavaRND, $aTrainBowlRND, 0, 0, 0, 0, $aTrainLSpellRND, $aTrainHSpellRND, $aTrainRSpellRND, $aTrainJSpell, _
-								      $aTrainFSpellRND, $aTrainCSpellRND, $aTrainPSpellRND, $aTrainESpellRND, $aTrainHaSpellRND, $aTrainSkSpellRND]

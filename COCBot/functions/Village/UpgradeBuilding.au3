@@ -56,7 +56,7 @@ Func UpgradeBuilding()
 	$iAvailBldr = $g_iFreeBuilderCount - ($g_bUpgradeWallSaveBuilder = True ? 1 : 0)
 
 	If $iAvailBldr <= 0 Then
-		Setlog("No builder available for upgrade process", $COLOR_ERROR)
+		Setlog("No builder available for upgrade process")
 		Return False
 	EndIf
 
@@ -70,7 +70,7 @@ Func UpgradeBuilding()
 
 		; Check free builder in case of multiple upgrades, but skip check when time to check repeated upgrades.
 		If $iAvailBldr <= 0 And $bChkAllRptUpgrade = False Then
-			Setlog("No builder available for #" & $iz + 1 & ", " & $g_avBuildingUpgrades[$iz][4], $COLOR_ERROR)
+			Setlog("No builder available for #" & $iz + 1 & ", " & $g_avBuildingUpgrades[$iz][4])
 			Return False
 		EndIf
 
@@ -107,7 +107,7 @@ Func UpgradeBuilding()
 					ContinueLoop ; Not ready yet..
 				ElseIf ($iAvailBldr <= 0) Then
 					; must stop upgrade attempt if no builder here, due bypass of available builder check when $bChkAllRptUpgrade=true to get updated building values.
-					Setlog("No builder available for " & $g_avBuildingUpgrades[$iz][4], $COLOR_ERROR)
+					Setlog("No builder available for " & $g_avBuildingUpgrades[$iz][4])
 					ContinueLoop
 				EndIf
 			EndIf

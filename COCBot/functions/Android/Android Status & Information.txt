@@ -2,10 +2,13 @@ List of Supported Android Emulator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Newer versions of Android Emulators listed here might work.
+The once listed here have been tested and do work.
+
 MEmu
 ====
 http://www.memuplay.com/
-Versions 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1
@@ -15,10 +18,11 @@ Known issues/bugs: None
 BlueStacks
 ==========
 http://www.bluestacks.com/
-Version 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x, 0.9.x, 0.8.x
+Version 3.7.x, 2.7.x, 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x, 0.9.x, 0.8.x
 MyBot Command Line Key (0.8.x - 0.11.x): BlueStacks
-MyBot Command Line Key (2.x): BlueStacks2
-Default Instance Key: N/A (internally empty String "" or "Android" is used)
+MyBot Command Line Key (2.x/3.x): BlueStacks2
+Default Instance Key: Android
+Second Instance Key (only for BlueStacks 3.x):  Android_1
 
 Known issues/bugs: True Background mode using ADB not available (no ADB screencap & no ADB mouse click).
 ADB connection for BlueStacks2 can require one-time ADB daemon restart (initiated automatically by bot).
@@ -65,7 +69,7 @@ You must change vm1 ADB port with command line, e.g. "C:\Program Files\LeapDroid
 iTools AVM
 ==========
 http://pro.itools.cn/simulate/
-Version 2.0.7.9, 2.0.6.8
+Version 2.0.8.9, 2.0.7.9, 2.0.6.8
 MyBot Command Line Key: iTools
 Default Instance Key: iToolsVM
 Second Instance Key:  iToolsVM_01
@@ -92,20 +96,20 @@ Newer versions since 3.7.3 support setting of framerates and 10 fps in OpenGL si
 MyBot Feature & Functions Matrix (not complete yet!)
 ================================
 
-Feature/Function         | MEmu          | BlueStacks    | BlueStacks2   | KOPLAYER      | Droid4X       | LeapDroid      | iTools AVM    | Nox
--------------------------|---------------|---------------|---------------|---------------|---------------|----------------|---------------|---------------
-DPI Support*             | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes (limited)
-Dock Mode                | Yes           | Yes           | Yes           | Yes           | Yes           | Yes, simulated | Yes           | No
-Configure Android Screen | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | No            | Yes
-Configure Android Window | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes, unstable
-WinAPI bg screenshot     | No            | Yes           | Yes           | Yes, DirectX  | No            | Yes            | Yes, DirectX  | Yes, DirectX
-AndroidScreencap         | Yes           | No            | Yes, not used | Yes           | Yes           | No, mem leak   | Yes, not used | Yes
-AndroidZoomOut           | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes
-AndroidClick             | Yes, not used | No            | No            | Yes, not used | Yes, not used | No             | Yes, not used | Yes, not used
-_ControlClick            | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes
-AndroidClickDrag         | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes
-_PostMessage_ClickDrag   | No            | Yes, not used | Yes, not used | No            | No            | No             | No            | No
-AndroidSendText*         | Yes           | Yes           | Yes           | Yes           | Yes           | Yes            | Yes           | Yes
+Feature/Function         | MEmu          | BlueStacks    | BlueStacks2     | KOPLAYER      | Droid4X       | LeapDroid      | iTools AVM    | Nox
+-------------------------|---------------|---------------|-----------------|---------------|---------------|----------------|---------------|---------------
+DPI Support*             | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes (limited)
+Dock Mode                | Yes           | Yes           | Yes             | Yes           | Yes           | Yes, simulated | Yes           | No
+Configure Android Screen | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | No            | Yes
+Configure Android Window | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes, unstable
+WinAPI bg screenshot     | No            | Yes           | Yes             | Yes, DirectX  | No            | Yes            | Yes, DirectX  | Yes, DirectX
+AndroidScreencap         | Yes           | No            | Yes, for OpenGL | Yes           | Yes           | No, mem leak   | Yes, not used | Yes
+AndroidZoomOut           | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes
+AndroidClick             | Yes, not used | No            | No              | Yes, not used | Yes, not used | No             | Yes, not used | Yes, not used
+_ControlClick            | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes
+AndroidClickDrag         | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes
+_PostMessage_ClickDrag   | No            | Yes, not used | Yes, not used   | No            | No            | No             | No            | No
+AndroidSendText*         | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes
 
 Feature & Functions Notes
 -------------------------
