@@ -35,12 +35,11 @@ Func TogglePauseUpdateState($Source)
 	$g_iActualTrainSkip = 0
 
 	$g_bTogglePauseUpdateState = False
-
     If $g_bBotPaused Then
 		AndroidShield("TogglePauseImpl paused", False)
 		TrayTip($g_sBotTitle, "", 1)
-		TrayTip($g_sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
-		Setlog("Bot was Paused!", $COLOR_ERROR)
+		If Not $g_bDisableNotifications Then TrayTip($g_sBotTitle, "was Paused!", 1, $TIP_ICONEXCLAMATION)
+		SetLog("Bot was Paused!", $COLOR_ERROR)
 		If Not $g_bSearchMode Then
 			$g_iTimePassed += Int(__TimerDiff($g_hTimerSinceStarted))
 			;AdlibUnRegister("SetTime")
@@ -52,7 +51,7 @@ Func TogglePauseUpdateState($Source)
 	Else
 		AndroidShield("TogglePauseImpl resumed")
 		TrayTip($g_sBotTitle, "", 1)
-		TrayTip($g_sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
+		If Not $g_bDisableNotifications Then TrayTip($g_sBotTitle, "was Resumed.", 1, $TIP_ICONASTERISK)
 		Setlog("Bot was Resumed.", $COLOR_SUCCESS)
 		If Not $g_bSearchMode Then
 			$g_hTimerSinceStarted = __TimerInit()

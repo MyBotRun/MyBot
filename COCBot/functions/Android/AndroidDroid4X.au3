@@ -93,6 +93,11 @@ Func GetDroid4XAdbPath()
 	Return ""
 EndFunc   ;==>GetDroid4XAdbPath
 
+Func GetDroid4XBackgroundMode()
+	; Only OpenGL is supported up to version 0.10.6 Beta
+	Return $g_iAndroidBackgroundModeOpenGL
+EndFunc   ;==>GetDroid4XBackgroundMode
+
 Func InitDroid4X($bCheckOnly = False)
 	Local $process_killed, $aRegExResult, $VirtualBox_Path, $g_sAndroidAdbDeviceHost, $g_sAndroidAdbDevicePort, $oops = 0
 
@@ -197,8 +202,6 @@ Func InitDroid4X($bCheckOnly = False)
 			$g_bAndroidAdbScreencap = False
 			$g_bAndroidSharedFolderAvailable = False
 		EndIf
-
-		$__VBoxGuestProperties = LaunchConsole($__VBoxManage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 
 		WinGetAndroidHandle()
 

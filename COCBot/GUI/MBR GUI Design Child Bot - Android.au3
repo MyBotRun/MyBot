@@ -14,10 +14,10 @@
 ; ===============================================================================================================================
 #include-once
 
-Global $g_hCmbCOCDistributors = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClickDragScript = 0
+Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClickDragScript = 0
 
 Func CreateBotAndroid()
-	Local $x = 25, $y = 45, $w = 210, $h = 50
+	Local $x = 25, $y = 45, $y2, $w = 210, $h = 50
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR Distributors", "Group_01", "Distributors"), $x - 20, $y - 20, $w, $h) ; $g_iSizeWGrpTab2, $g_iSizeHGrpTab2
 	$y -= 2
 	$g_hCmbCOCDistributors = GUICtrlCreateCombo("", $x - 8, $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
@@ -28,16 +28,26 @@ Func CreateBotAndroid()
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$y += $h + 5
+	$y2 = $y
 	$w = $g_iSizeWGrpTab2 - 2
+	$h = 80
 	GUICtrlCreateGroup(GetTranslatedFileIni("Android", "Android_Options", "Android Options"), $x - 20, $y - 20, $w, $h)
-	;$y -=2
+	;$y -= 2
+	GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblBackgroundMode", "Screencapture Background Mode"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
+	$g_hCmbAndroidBackgroundMode = GUICtrlCreateCombo("", $x - 8 + 180 + 5, $y, 200, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+	GUICtrlSetData(-1, GetTranslatedFileIni("Android", "CmbBackgroundMode", "Default|Use WinAPI (need Android DirectX)|Use ADB screencap"))
+	_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "CmbBackgroundMode_Info", 'Control how the Android screenshot is taken in background mode.\nDefault chooses WinAPI or screencap based on Android Emulator.\nInfo: WinAPI is faster than screencap, but screencap always works,\neven if screen is off (we call that the "True Background Mode")!'))
+	_GUICtrlComboBox_SetCurSel(-1, $g_iAndroidBackgroundMode)
+	GUICtrlSetOnEvent(-1, "cmbAndroidBackgroundMode")
+	$y += 25
 	$g_hChkAndroidAdbClickDragScript = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkAdbClickDragScript", "Use script for accurate Click && Drag"), $x, $y, -1, -1)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAdbClickDragScript_Info", "Use Android specific script file for Click & Drag.\r\nIf unchecked use more compatible 'input swipe'."))
 	GUICtrlSetState(-1, (($g_bAndroidAdbClickDragScript) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-	$y += $h + 5
+	$y = $y2 + $h + 5
 	$w = $g_iSizeWGrpTab2 - 2
+	$h = 50
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR Distributors", "Group_02", "Advanced Android Options"), $x - 20, $y - 20, $w, $h)
 	$y -= 2
 	GUICtrlCreateLabel(GetTranslatedFileIni("MBR Distributors", "LblAdvanced_Android_Options", "Suspend/Resume Android"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
@@ -49,7 +59,7 @@ Func CreateBotAndroid()
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$y += $h + 5
-	Local $y2 = $y
+	$y2 = $y
 	$w = 240
 	$h = 80
 	GUICtrlCreateGroup(GetTranslatedFileIni("Android Control", "Group_03", "Android Control"), $x - 20, $y - 20, $w, $h)

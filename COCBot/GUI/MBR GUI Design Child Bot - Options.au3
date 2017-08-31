@@ -26,7 +26,7 @@ Global $g_hTxtGlobalActiveBotsAllowed = 0, $g_hTxtGlobalThreads = 0, $g_hTxtThre
 ;Global $g_hChkUpdatingWhenMinimized = 0
 Global $g_hChkBotCustomTitleBarClick = 0, $g_hChkBotAutoSlideClick = 0, $g_hChkHideWhenMinimized = 0, $g_hChkUseRandomClick = 0, $g_hChkScreenshotType = 0, _
 	   $g_hChkScreenshotHideName = 0, $g_hTxtTimeAnotherDevice = 0
-Global $g_hChkSinglePBTForced = 0, $g_hTxtSinglePBTimeForced = 0, $g_hTxtPBTimeForcedExit = 0, $g_hChkFixClanCastle = 0, $g_hChkAutoResume = 0, $g_hTxtAutoResumeTime = 0
+Global $g_hChkSinglePBTForced = 0, $g_hTxtSinglePBTimeForced = 0, $g_hTxtPBTimeForcedExit = 0, $g_hChkFixClanCastle = 0, $g_hChkAutoResume = 0, $g_hTxtAutoResumeTime = 0, $g_hChkDisableNotifications = 0
 
 Func CreateBotOptions()
 
@@ -133,15 +133,15 @@ Func CreateBotOptions()
 		   GUICtrlSetState(-1, $GUI_DISABLE)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-   $y += 85
-   GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_08", "Processor/Thread Advanced"), $x - 20, $y - 20, 330, 85)
+   $y += 52
+   GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_08", "Processor/Thread Advanced"), $x - 20, $y - 20, 210, 85)
 	   $y -= 2
 	   $g_hTxtGlobalActiveBotsAllowed = GUICtrlCreateInput($g_iGlobalActiveBotsAllowed, $x, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "TxtGlobalActiveBotsAllowed_Info_01", "When running multiple bots, specify how many can run at the same time.\r\nThis reduces your CPU utilization significantly.\r\nHalf of available logical processors is a good number.\r\nThis configuration is shared across all profiles/instances and a restart of all bots is required (close all, wait, and start all again!).")
 		   GUICtrlSetOnEvent(-1, "txtGlobalActiveBotsAllowed")
 		   GUICtrlSetLimit(-1, 2)
 		   _GUICtrlSetTip(-1, $sTxtTip)
-	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblGlobalActiveBotsAllowed_Info_01", "Bots can run parallel at the same time"), $x + 30, $y + 4)
+	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblGlobalActiveBotsAllowed_Info_01", "Bots can run at the same time"), $x + 30, $y + 3)
 		   _GUICtrlSetTip(-1, $sTxtTip)
 
 	   $y += 20
@@ -150,7 +150,7 @@ Func CreateBotOptions()
 		   GUICtrlSetOnEvent(-1, "txtGlobalThreads")
 		   GUICtrlSetLimit(-1, 2)
 		   _GUICtrlSetTip(-1, $sTxtTip)
-	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblGlobalThreads_Info_01", "Global image processing threads will be used for all bots"), $x + 30, $y + 4)
+	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblGlobalThreads_Info_01", "Img processing threads for all bots"), $x + 30, $y + 3)
 		   _GUICtrlSetTip(-1, $sTxtTip)
 
 	   $y += 20
@@ -159,12 +159,12 @@ Func CreateBotOptions()
 		   GUICtrlSetOnEvent(-1, "txtThreads")
 		   GUICtrlSetLimit(-1, 2)
 		   _GUICtrlSetTip(-1, $sTxtTip)
-	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblThreads_Info_01", "Image processing threads will be used for this bot"), $x + 30, $y + 4)
+	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblThreads_Info_01", "Img processing threads for this bot"), $x + 30, $y + 3)
 		   _GUICtrlSetTip(-1, $sTxtTip)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
    Local $x = 240, $y = 45, $yGroup = $y
-   Local $hGroup = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_04", "Advanced"), $x - 20, $y - 20, 0, 0)
+   Local $hGroup = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_04", "Advanced"), $x - 20, $y - 20, 225, 140)
 	   #cs
 	   $g_hChkUpdatingWhenMinimized = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkUpdatingWhenMinimized", "Updating when minimized"), $x, $y, -1, -1)
 		   GUICtrlSetState(-1, $GUI_DISABLE) ; must be always enabled
@@ -193,13 +193,15 @@ Func CreateBotOptions()
 		$g_hTxtAutoResumeTime = GUICtrlCreateInput("5",$x + 132, $y + 5, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "min.", -1), $x + 167, $y + 6, 27, 15)
 		$y += 19
+		$g_hChkDisableNotifications = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkDisableNotifications", "Disable Notifications"), $x, $y, -1, -1)
+			_GUICtrlSetTip(-1,GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkDisableNotifications_Info_01", "Disable Notifications sent by the Bot"))
+			GUICtrlSetOnEvent(-1, "chkDisableNotifications")
+		$y += 19
 	   $g_hChkUseRandomClick = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkUseRandomClick", "Random Click"), $x, $y, -1, -1)
 		   GUICtrlSetOnEvent(-1, "chkUseRandomClick")
-		$y += 19
-   GUICtrlSetPos($hGroup, $x - 20, $yGroup - 20, 255, (($y - $yGroup) / 19) * 25)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-   $y += 30
+   $y += 45
    GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_05", "Photo Screenshot Options"), $x - 20, $y - 17, 225, 60)
 	   $g_hChkScreenshotType = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkScreenshotType", "Make in PNG format"), $x, $y, -1, -1)
 		   GUICtrlSetState(-1, $GUI_CHECKED)

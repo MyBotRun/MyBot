@@ -176,12 +176,28 @@ Func InitKOPLAYER($bCheckOnly = False)
 			SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_RED)
 		EndIf
 
-		$__VBoxGuestProperties = LaunchConsole($__VBoxManage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 	EndIf
 
 	Return True
 
 EndFunc   ;==>InitKOPLAYER
+
+Func GetKOPLAYERBackgroundMode()
+	Local $aRegExResult = StringRegExp($__VBoxExtraData, "Key: GUI/RenderMode, Value: (.*)", $STR_REGEXPARRAYMATCH)
+	Local $sRenderMode = "Unknown"
+	If Not @error Then
+		$sRenderMode = $aRegExResult[0]
+		Switch $sRenderMode
+			Case "DirectX"
+				Return $g_iAndroidBackgroundModeDirectX
+			Case "Opengl"
+				Return $g_iAndroidBackgroundModeOpenGL
+			Case Else
+				SetLog($g_sAndroidEmulator & " unsupported Render Mode " & $sRenderMode, $COLOR_WARNING)
+		EndSwitch
+	EndIf
+	Return 0
+EndFunc   ;==>GetKOPLAYERBackgroundMode
 
 Func SetScreenKOPLAYER()
 

@@ -221,12 +221,27 @@ Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter =
 	Return $hWin
 EndFunc   ;==>WinMove2
 
-Func ControlGetHandle2($title, $text, $controlID)
+Func ControlGetHandle2($title, $text, $controlID, $iMinWidth = Default, $iMinHeight = Default)
 	For $sClass In StringSplit($controlID, "|", $STR_NOCOUNT)
 		Local $hCtrl = ControlGetHandle($title, $text, $sClass)
 		If $hCtrl Then
-			$g_sControlGetHandle2_Classname = $sClass
-			Return $hCtrl
+			If $iMinWidth <> Default Or $iMinHeight <> Default Then
+				; check for min width or height
+				Local $aPos = WinGetPos($hCtrl)
+				If UBound($aPos) > 3 Then
+					If ($iMinWidth = Default Or $aPos[2] >= $iMinWidth) And ($iMinHeight = Default Or $aPos[2] >= $iMinHeight) Then
+						$g_sControlGetHandle2_Classname = $sClass
+						Return $hCtrl
+					EndIf
+				Else
+					SetDebugLog("ControlGetHandle2 cannot validate window dimension")
+					$g_sControlGetHandle2_Classname = $sClass
+					Return $hCtrl
+				EndIf
+			Else
+				$g_sControlGetHandle2_Classname = $sClass
+				Return $hCtrl
+			EndIf
 		EndIf
 	Next
 	$g_sControlGetHandle2_Classname = ""

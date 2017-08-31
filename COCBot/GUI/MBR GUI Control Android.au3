@@ -93,8 +93,13 @@ Func AndroidSuspendIndexToFlags($idx)
 			$iFlags = 2 + 4
 	EndSwitch
 	Return $iFlags
-EndFunc   ;==>AndroidSuspendFlagsToIndex
+EndFunc   ;==>AndroidSuspendIndexToFlags
 
 Func cmbSuspendAndroid()
 	$g_iAndroidSuspendModeFlags = AndroidSuspendIndexToFlags(_GUICtrlComboBox_GetCurSel($g_hCmbSuspendAndroid))
 EndFunc   ;==>cmbSuspendAndroid
+
+Func cmbAndroidBackgroundMode()
+	$g_iAndroidBackgroundMode = _GUICtrlComboBox_GetCurSel($g_hCmbAndroidBackgroundMode)
+	UpdateAndroidBackgroundMode()
+EndFunc   ;==>cmbAndroidBackgroundMode

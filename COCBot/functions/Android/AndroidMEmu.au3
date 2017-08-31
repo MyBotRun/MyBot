@@ -99,6 +99,11 @@ Func GetMEmuAdbPath()
 	Return ""
 EndFunc   ;==>GetMEmuAdbPath
 
+Func GetMEmuBackgroundMode()
+	; Only OpenGL is supported up to version 3.1.2.5
+	Return $g_iAndroidBackgroundModeOpenGL
+EndFunc   ;==>GetMEmuBackgroundMode
+
 Func InitMEmu($bCheckOnly = False)
 	Local $process_killed, $aRegExResult, $g_sAndroidAdbDeviceHost, $g_sAndroidAdbDevicePort, $oops = 0
 	Local $MEmuVersion = RegRead($g_sHKLM & "\SOFTWARE" & $g_sWow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\MEmu\", "DisplayVersion")
@@ -271,22 +276,21 @@ EndFunc   ;==>CheckScreenMEmu
 
 Func UpdateMEmuConfig()
 
-	Local $Value, $process_killed, $aRegExResult
+	Local $aRegExResult
 	Local $iSizeConfig = FindMEmuWindowConfig()
 
 	;MEmu "phone_layout" value="2" -> no system bar
 	;MEmu "phone_layout" value="1" -> right system bar
 	;MEmu "phone_layout" value="0" -> bottom system bar
-	$Value = LaunchConsole($__VBoxManage_Path, "guestproperty get " & $g_sAndroidInstance & " phone_layout", $process_killed)
-	$aRegExResult = StringRegExp($Value, "Value: (.+)", $STR_REGEXPARRAYMATCH)
+	$aRegExResult = StringRegExp($__VBoxGuestProperties, "Name: phone_layout, value: (.+), timestamp:", $STR_REGEXPARRAYMATCH)
 
 	If @error = 0 Then
 		$__MEmu_PhoneLayout = $aRegExResult[0]
 		If $iSizeConfig > -1 And $__MEmu_Window[$iSizeConfig][4] = "-1" Then
-			SetDebugLog($g_sAndroidEmulator & " phone_layout is " & $__MEmu_PhoneLayout & ", but set to -1 to disable screen compensation", $COLOR_ERROR)
+			SetDebugLog($g_sAndroidEmulator & " phone_layout is " & $__MEmu_PhoneLayout & ", but set to -1 to disable screen compensation")
 			$__MEmu_PhoneLayout = $__MEmu_Window[$iSizeConfig][4]
 		Else
-			SetDebugLog($g_sAndroidEmulator & " phone_layout is " & $__MEmu_PhoneLayout, $COLOR_ERROR)
+			SetDebugLog($g_sAndroidEmulator & " phone_layout is " & $__MEmu_PhoneLayout)
 		EndIf
 	Else
 		SetDebugLog("Cannot read " & $g_sAndroidEmulator & " guestproperty phone_layout!", $COLOR_ERROR)

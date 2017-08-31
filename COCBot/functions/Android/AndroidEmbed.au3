@@ -233,7 +233,6 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 
 				; move Android rendering control back to its place
 				WinMove2(($targetIsHWnD ? $hCtrl : $hCtrlTarget), "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3], 0, 0, False)
-				Execute("Embed" & $g_sAndroidEmulator & "(False)")
 				WinMove($g_hAndroidWindow, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3]) ; use WinMove to trigger move message
 				If $g_iAndroidEmbedMode = 1 Then
 					; bring android back to front
@@ -243,6 +242,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 				If $bNoAndroidScreenSizeCheck = False Then
 					getBSPos() ; update android screen coord. for clicks etc
 				EndIf
+				Execute("Embed" & $g_sAndroidEmulator & "(False)")
 			EndIf
 
 			SetDebugLog("Undocked Android Window")
@@ -318,17 +318,28 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 	$HWnDParent = __WinAPI_GetParent($g_hAndroidWindow)
 	$hCtrl = ControlGetHandle(GetCurrentAndroidHWnD(), $g_sAppPaneName, $g_sAppClassInstance) ; sometimes $hCtrl is wrong/changed ?!? read again
 	$hCtrlTarget = __WinAPI_GetParent($hCtrl)
+	$targetIsHWnD = $hCtrlTarget = $g_hAndroidWindow
+	#cs not tested nor required, yet
+	; check if parent control is of same size, then use it
+	Local $aCtrlPos = WinGetPos($hCtrl)
+	Local $aCtrlTargetPos = WinGetPos($hCtrlTarget)
+	If UBound($aCtrlPos) > 3 And UBound($aCtrlTargetPos) > 3 Then
+		If $aCtrlPos[2] = $aCtrlTargetPos[2] And $aCtrlPos[3] = $aCtrlTargetPos[3] Then
+			; ok, use $hCtrlTarget
+		Else
+			SetDebugLog("Using Android Control as target for docking")
+			$hCtrlTarget = $hCtrl
+		EndIf
+	EndIf
+	#ce
 	;_WinAPI_SetWindowLong($hCtrl, $GWL_STYLE, BitAND(_WinAPI_GetWindowLong($hCtrl, $GWL_STYLE), BitNOT($WS_EX_NOPARENTNOTIFY)))
 	$lCurStyleTarget = _WinAPI_GetWindowLong($hCtrlTarget, $GWL_STYLE)
 	$hCtrlTargetParent = __WinAPI_GetParent($hCtrlTarget)
 	SetDebugLog("AndroidEmbed: $hCtrl=" & $hCtrl & ", $hCtrlTarget=" & $hCtrlTarget & ", $hCtrlTargetParent=" & $hCtrlTargetParent & ", $g_hAndroidWindow=" & $g_hAndroidWindow, Default, True)
 
-	$targetIsHWnD = $hCtrlTarget = $g_hAndroidWindow
 	Local $adjustPosCtrl = False
 	If $bAlreadyEmbedded = True Then
-
 		$g_hProcShieldInput[3] = True
-
 	Else
 
 		$aPosCtl = ControlGetPos($g_hAndroidWindow, "", ($targetIsHWnD ? $hCtrl : $hCtrlTarget))

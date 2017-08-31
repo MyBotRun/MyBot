@@ -53,6 +53,7 @@ Func InitAndroidConfig($bRestart = False)
 	$g_sAndroidShellPrompt = $g_avAndroidAppConfig[$g_iAndroidConfig][12] ; empty string not available, '# ' for rooted and '$ ' for not rooted android
 	$g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] ; empty string not available, can be direct device '/dev/input/event2' or name by getevent -p
 	$g_iAndroidEmbedMode = $g_avAndroidAppConfig[$g_iAndroidConfig][14] ; Android Dock Mode: -1 = Not available, 0 = Normal docking, 1 = Simulated docking
+	$g_iAndroidBackgroundModeDefault = $g_avAndroidAppConfig[$g_iAndroidConfig][15] ; Default Android Background Mode: 1 = WinAPI mode (faster, but requires Android DirectX), 2 = ADB screencap mode (slower, but alwasy works even if Monitor is off -> "True Brackground Mode")
 	$g_bAndroidAdbScreencap = $g_bAndroidAdbScreencapEnabled = True And BitAND($g_iAndroidSupportFeature, 2) = 2 ; Use Android ADB to capture screenshots in RGBA raw format
 	$g_bAndroidAdbClick = $g_bAndroidAdbClickEnabled = True And AndroidAdbClickSupported() ; Enable Android ADB mouse click
 	$g_bAndroidAdbInput = $g_bAndroidAdbInputEnabled = True And BitAND($g_iAndroidSupportFeature, 8) = 8 ; Enable Android ADB send text (CC requests)
@@ -63,10 +64,23 @@ Func InitAndroidConfig($bRestart = False)
 	$g_bAndroidBackgroundLaunched = False ; True when Android was launched in headless mode without a window
 	$g_bUpdateAndroidWindowTitle = False ; If Android has always same title (like LeapDroid) instance name will be added
 	; screencap might have disabled backgroundmode
-	If $g_bAndroidAdbScreencap And IsDeclared("g_hChkBackground") Then ; CS69 - not sure why this is here?  Globals are loaded first, so the GUI variable g_hChkBackground
-		chkBackground() ; is never created before this line of code executed.
+	If $g_bAndroidAdbScreencap And IsDeclared("g_hChkBackground") Then
+		; when GUI is initialized, update background checkbox
+		chkBackground()
 	EndIf
+	
+	UpdateHWnD($g_hAndroidWindow, False) ; Ensure $g_sAppClassInstance is properly set
 EndFunc   ;==>InitAndroidConfig
+
+Func AndroidSupportFeaturesSet($iValue, $iIdx = $g_iAndroidConfig)
+	$g_avAndroidAppConfig[$iIdx][11] = BitOR($g_avAndroidAppConfig[$iIdx][11], $iValue)
+	$g_iAndroidSupportFeature = BitOR($g_iAndroidSupportFeature, $iValue)
+EndFunc   ;==>AndroidSupportFeaturesSet
+
+Func AndroidSupportFeaturesRemove($iValue, $iIdx = $g_iAndroidConfig)
+	$g_avAndroidAppConfig[$iIdx][11] = BitAND($g_avAndroidAppConfig[$iIdx][11], BitXOR(-1, $iValue))
+	$g_iAndroidSupportFeature = BitAND($g_iAndroidSupportFeature, BitXOR(-1, $iValue))
+EndFunc   ;==>AndroidSupportFeaturesRemove
 
 Func AndroidMakeDpiAware()
 	Return BitAND($g_iAndroidSupportFeature, 64) > 0 And $g_bAndroidAdbScreencap = False
@@ -148,7 +162,7 @@ Func UpdateAndroidConfig($instance = Default, $emulator = Default)
 	If $instance = Default Then $instance = $g_avAndroidAppConfig[$g_iAndroidConfig][1]
 	SetDebugLog("UpdateAndroidConfig(""" & $instance & """)")
 
-	InitAndroidConfig()
+	InitAndroidConfig(False)
 	$g_sAndroidInstance = $instance ; Clone or instance of emulator or "" if not supported/default instance
 
 	; update secure setting
@@ -172,9 +186,9 @@ Func UpdateAndroidWindowState()
 	Return $bChanged
 EndFunc   ;==>UpdateAndroidWindowState
 
-Func UpdateHWnD($hWin)
+Func UpdateHWnD($hWin, $bRestart = True)
 	If $hWin = 0 Then
-		If $g_hAndroidWindow <> 0 Then
+		If $g_hAndroidWindow <> 0 And $bRestart Then
 			$g_bRestart = True ; Android likely crashed
 			;$g_bIsClientSyncError = True ; quick restart search
 		EndIf
@@ -183,7 +197,7 @@ Func UpdateHWnD($hWin)
 		ResetAndroidProcess()
 		Return False
 	EndIf
-	If $g_hAndroidWindow <> 0 Then
+	If $g_hAndroidWindow <> 0 And $bRestart Then
 		$g_bRestart = True ; Android likely crashed
 		;$g_bIsClientSyncError = True ; quick restart search
 	EndIf
@@ -199,12 +213,17 @@ Func UpdateHWnD($hWin)
 		If GetProcessDpiAwareness(GetAndroidPid()) = 0 Then	AndroidDpiAwareness()
 		EndIf
 	#ce
-	Local $hCtrl = ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance)
+	Local $hCtrl = ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance, 100, 100)
 	If $hCtrl = 0 Then
 		$g_hAndroidControl = 0
 		Return False
 	EndIf
-	$g_sAppClassInstance = $g_sControlGetHandle2_Classname
+	Local $AppClass = $g_sControlGetHandle2_Classname
+	If BitAND($g_iAndroidSupportFeature, 256) > 0 Then $AppClass = $hCtrl
+	If $g_sAppClassInstance <> $AppClass Then
+		SetDebugLog("Update $g_sAppClassInstance to: " & $AppClass)
+	EndIf
+	$g_sAppClassInstance = $AppClass
 	Local $hWinParent = __WinAPI_GetParent($hCtrl)
 	If $hWinParent = 0 Then
 		$g_hAndroidControl = 0
@@ -363,6 +382,13 @@ Func _WinGetAndroidHandle($bFindByTitle = False)
 	; Default WinTitleMatchMode should be 3 (exact match)
 	Local $hWin = WinGetHandle($g_hAndroidWindow)
 	If $hWin > 0 And $hWin = $g_hAndroidWindow Then Return $g_hAndroidWindow
+
+	; Window not found, reset $g_sAppClassInstance as it might have replaced with handle
+	If $g_sAppClassInstance <> $g_avAndroidAppConfig[$g_iAndroidConfig][3] Then
+		SetDebugLog("Restore $g_sAppClassInstance to: " & $g_avAndroidAppConfig[$g_iAndroidConfig][3])
+	EndIf
+	$g_sAppClassInstance = $g_avAndroidAppConfig[$g_iAndroidConfig][3]
+
 	; Find all controls by title and check which contains the android control (required for Nox)
 	Local $i
 	Local $t
@@ -719,17 +745,45 @@ Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
 			, $g_bNoFocusTampering _
 			]
 	SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $g_sAndroidEmulator)
+
 	If Not $bCheckOnly Then
 		; Check that $g_sAndroidInstance default instance is used for ""
 		If $g_sAndroidInstance = "" Then $g_sAndroidInstance = $g_avAndroidAppConfig[$g_iAndroidConfig][1]
+
+		; clear some values for optional vbox calls
+		$__VBoxGuestProperties = ""
+		$__VBoxExtraData = ""
 	EndIf
+
+	; call Android initialization routine
 	Local $Result = Execute("Init" & $g_sAndroidEmulator & "(" & $bCheckOnly & ")")
 	If $Result = "" And @error <> 0 Then
 		; Not implemented
 		SetLog("Android support for " & $g_sAndroidEmulator & " is not available", $COLOR_ERROR)
 	EndIf
-	Local $successful = @error = 0
+
+	Local $successful = @error = 0, $process_killed
 	If Not $bCheckOnly And $Result Then
+
+		; exclude Android for WerFault reporting
+		If $b_sAndroidProgramWerFaultExcluded = True Then
+			Local $sFileOnly = StringMid($g_sAndroidProgramPath, StringInStr($g_sAndroidProgramPath, "\", 0, -1) + 1)
+			Local $aResult = DllCall("Wer.dll", "int", "WerAddExcludedApplication", "wstr", $sFileOnly, "bool", True)
+			If (UBound($aResult) > 0 And $aResult[0] = $S_OK) Or RegWrite($g_sHKLM & "\Software\Microsoft\Windows\Windows Error Reporting\ExcludedApplications", $sFileOnly, "REG_DWORD", "1") = 1 Then
+				SetDebugLog("Disabled WerFault for " & $sFileOnly)
+			Else
+				SetDebugLog("Cannot disable WerFault for " & $sFileOnly)
+			EndIf
+		EndIf
+
+		; update Virtualbox properties
+		If FileExists($__VBoxManage_Path) Then
+			If $__VBoxGuestProperties = "" Then $__VBoxGuestProperties = LaunchConsole($__VBoxManage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
+			If $__VBoxExtraData = "" Then $__VBoxExtraData = LaunchConsole($__VBoxManage_Path, "getextradata " & $g_sAndroidInstance & " enumerate", $process_killed)
+		EndIf
+
+		UpdateAndroidBackgroundMode()
+
 		; read Android Program Details
 		Local $pAndroidFileVersionInfo
 		If _WinAPI_GetFileVersionInfo($g_sAndroidProgramPath, $pAndroidFileVersionInfo) Then
@@ -2220,6 +2274,7 @@ Func AndroidAdbClickSupported()
 EndFunc   ;==>AndroidAdbClickSupported
 
 Func AndroidClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True)
+	ForceCaptureRegion()
 	;AndroidSlowClick($x, $y, $times, $speed)
 	AndroidFastClick($x, $y, $times, $speed, $checkProblemAffect)
 EndFunc   ;==>AndroidClick
@@ -2969,6 +3024,7 @@ Func OpenPlayStore($sPackage)
 		SetLog("Cannot open Play Store, ADB connection not available", $COLOR_ERROR)
 		Return 0
 	EndIf
+	SetLog("Open Play Store App '" & $sPackage & "'", $COLOR_INFO)
 	AndroidAdbSendShellCommand("am start -a android.intent.action.VIEW -d 'market://details?id=" & $sPackage & "'")
 EndFunc   ;==>OpenPlayStore
 
@@ -3012,3 +3068,83 @@ Func LaunchAndroid($sProgramPath, $sCmdParam, $sPath, $iWaitInSecAfterLaunch = D
 	Return $pid
 
 EndFunc   ;==>LaunchAndroid
+
+Func UpdateAndroidBackgroundMode()
+	; update Android Brackground Mode support
+	Local $iMode = (($g_iAndroidBackgroundMode = 0) ? ($g_iAndroidBackgroundModeDefault) : ($g_iAndroidBackgroundMode))
+	Local $iBackgroundMode = Execute("Get" & $g_sAndroidEmulator & "BackgroundMode()")
+	If $iBackgroundMode = "" And @error <> 0 Then
+		; Not implemented
+		Local $sMode = "Unknown"
+		Switch $iMode
+			Case $g_iAndroidBackgroundModeDirectX
+				$sMode = "DirectX/WinAPI"
+			Case $g_iAndroidBackgroundModeOpenGL
+				$sMode = "OpenGL/ADB screencap"
+		EndSwitch
+		SetLog($g_sAndroidEmulator & " DirectX/OpenGL cannot be detected")
+		SetLog("Using " & $sMode & " for Background Mode")
+	Else
+		; update Android Background supported modes
+		Local $sGraphicsEngine = "Unknown"
+		Switch $iBackgroundMode
+			Case $g_iAndroidBackgroundModeDirectX
+				$sGraphicsEngine = "DirectX"
+				SetDebugLog($g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") is using DirectX, enable WinAPI for Background Mode")
+				AndroidSupportFeaturesSet(1) ; enabled DirectX Background Mode
+			Case $g_iAndroidBackgroundModeOpenGL
+				$sGraphicsEngine = "OpenGL"
+				SetDebugLog($g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") is using OpenGL, disable WinAPI for Background Mode")
+				AndroidSupportFeaturesRemove(1) ; disabled DirectX Background Mode
+			Case Else
+				; using default mode
+				$iMode = $g_iAndroidBackgroundModeDefault
+				Local $sMode = "Unknown"
+				Switch $iMode
+					Case $g_iAndroidBackgroundModeDirectX
+						$sMode = "DirectX/WinAPI"
+					Case $g_iAndroidBackgroundModeOpenGL
+						$sMode = "OpenGL/ADB screencap"
+				EndSwitch
+				SetLog($g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") unsupported Graphics Engine / Render Mode, using " & $sMode, $COLOR_WARNING)
+		EndSwitch
+	EndIf
+
+	Switch $iMode
+		Case 1 ; WinAPI mode (faster, but requires Android DirectX)
+			If BitAND($g_iAndroidSupportFeature, 1) = 0 Then
+				If BitAND($g_iAndroidSupportFeature, 2) > 0 Then
+					SetLog("Android DirectX not available, using ADB screencap for background capture", $COLOR_WARNING)
+				Else
+					SetLog("Android DirectX and ADB screencap not available, Background Mode not supported", $COLOR_ERROR)
+				EndIf
+			Else
+				; Ok, disable screencap
+				SetDebugLog("Disable ADB screencap, using WinAPI DirectX for Background Mode")
+				$g_bAndroidAdbScreencap = False
+			EndIf
+		Case 2 ; ADB screencap mode (slower, but alwasy works even if Monitor is off -> "True Brackground Mode")
+			If $g_bAndroidAdbScreencapEnabled <> True Or $g_bAndroidSharedFolderAvailable <> True Then
+				SetLog("Android ADB screencap disabled, please check Android Options", $COLOR_ERROR)
+			Else
+				If BitAND($g_iAndroidSupportFeature, 2) = 0 Then
+					If BitAND($g_iAndroidSupportFeature, 1) > 0 Then
+						SetLog("Android ADB screencap not available, using WinAPI for background capture", $COLOR_WARNING)
+					Else
+						SetLog("Android ADB screencap and DirectX not available, Background Mode not supported", $COLOR_ERROR)
+					EndIf
+				Else
+					; Ok, enable screencap
+					SetDebugLog("Enable ADB screencap for Background Mode")
+					$g_bAndroidAdbScreencap = $g_bAndroidAdbScreencapEnabled = True And BitAND($g_iAndroidSupportFeature, 2) = 2 ; Use Android ADB to capture screenshots in RGBA raw format
+				EndIf
+			EndIf
+		Case Else
+			SetLog("Unsupported Android Background Mode " & $iMode, $COLOR_ERROR)
+	EndSwitch
+
+	If IsDeclared("g_hChkBackground") Then
+		; when GUI is initialized, update background checkbox
+		chkBackground()
+	EndIf
+EndFunc   ;==>UpdateAndroidBackgroundMode

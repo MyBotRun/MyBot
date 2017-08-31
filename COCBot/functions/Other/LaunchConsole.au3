@@ -239,7 +239,6 @@ Func ProcessGetWmiProcess($pid, $strComputer = ".")
 	For $Process In WmiQuery($query)
 		SetDebugLog($Process[0] & " = " & $Process[2])
 		SetError(0, 0, 0)
-		$Process = 0
 		CloseWmiObject()
 		Return $Process
 	Next

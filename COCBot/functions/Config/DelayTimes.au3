@@ -295,6 +295,7 @@ Global Const $DELAYTRAIN4 = 200
 Global Const $DELAYTRAIN6 = 20 ; click
 Global Const $DELAYTRAIN8 = 5000 ; wait for a while to desapear the 'received castle troops' msg
 Global Const $DELAYLVUP = 150 ; delay in repeatly increasing levels on the train troops screen when button is held down
+Global Const $g_iQuickTrainButtonRetryDelay = 1000
 
 ;IsTrainPage
 Global Const $DELAYISTRAINPAGE1 = 100

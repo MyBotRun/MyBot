@@ -227,6 +227,12 @@ Func ReferenceFunctions()
 	returnLowestLevelSingleMatch(0)
 	updateGlobalVillageOffset(0, 0)
 	GemClickR(0, 0, 0)
+	GetBlueStacksBackgroundMode()
+	GetBlueStacks2BackgroundMode()
+	GetDroid4XBackgroundMode()
+	GetKOPLAYERBackgroundMode()
+	GetMEmuBackgroundMode()
+	GetNoxBackgroundMode()
 EndFunc   ;==>ReferenceFunctions
 
 Func ReferenceGlobals()

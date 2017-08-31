@@ -1499,7 +1499,7 @@ Func OpenArmyWindow()
 	While IsArmyWindow(False, $ArmyTAB) = False
 		If _sleep($DELAYTRAIN4) Then Return
 		$iCount += 1
-		If $iCount = 5 And IsMainPage() Then
+		If $iCount = 5 And IsMainPage(1) Then
 			If _Sleep($DELAYTRAIN4) Then Return ; wait before click
 			If $g_iDebugSetlogTrain Then SetLog("Click $aArmyTrainButton", $COLOR_DEBUG)
 			If Not $g_bUseRandomClick Then

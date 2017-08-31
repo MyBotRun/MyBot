@@ -171,7 +171,6 @@ Func InitiTools($bCheckOnly = False)
 			SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
 			Return False
 		EndIf
-		$__VBoxGuestProperties = LaunchConsole($iTools_Manage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 
 		; update global variables
 		$g_sAndroidProgramPath = $iTools_Path & "iToolsAVM.exe"

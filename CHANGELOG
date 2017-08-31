@@ -1,3 +1,17 @@
+* **V7.2.4**
+ * Add Bot / Android Option to select preferred Android Background Mode
+ * Add BlueStacks2/3 and iTools support for ADB screencap Background Mode
+ * Add KOPLAYER and Nox WinAPI/DirectX support for Background Mode
+ * Add Nox Dock Mode support
+ * Add Ability to Disable Bot Notifications suggested By HarchH
+ * Fix Bad Pixel Check in Training when Bot runs while Troops change
+ * Fix closing WerFault Message
+ * Fix Share Replay Function
+ * Fix SmartWait for Heroes
+ * Update DropTrophy Drop Location to drop Troops/Heroes further into the grass
+ * Update Azerbaijan and Turkish Language By Z E C K
+ * Update Vietnamese Language by NguyenAnhHD
+
 * **V7.2.3**
  * Fix Main Screen Locating & Troop Training for August 4th Update
 
@@ -11,7 +25,7 @@
  * Fix Bot Crash when Wait for CC is enabled with duplicate Spells in CC
  * Fix switching between Builder Base and Normal Village
  * Fix Bot crash when computer run cycle reaches 48.7 days
- * Fix bot crash when initiate attacks using external edge in most languages except BahasaIND, French, Italian, 
+ * Fix bot crash when initiate attacks using external edge in most languages except BahasaIND, French, Italian,
    Spanish
  * Fix CSV row number error
  * Fix failed to find/press retry search button when every 30 minutes in cloud

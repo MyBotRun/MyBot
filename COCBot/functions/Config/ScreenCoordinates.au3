@@ -150,6 +150,11 @@ Global Const $aImageTypeN2[4] = [205, 180, 0x86A533, 30] ; Grass on Forest Edge 
 Global Const $aImageTypeS1[4] = [237, 161, 0xFEFDFD, 30] ; Snow on Forest Edge 'Lane' 860x780
 Global Const $aImageTypeS2[4] = [205, 180, 0xFEFEFE, 30] ; Snow on Forest Edge 'Lane' 860x780
 
+;ReplayShare
+Global Const $aAttackLogPage[4] = [775, 125, 0xEB1115, 40] ;red on X Button of Attack Log Page
+Global Const $aAttackLogAttackTab[4] = [437, 114, 0xF0F4F0, 30] ; White on Attack Log Tab  (Tab Name)
+Global Const $aBlueShareReplayButton[4] = [500, 156 + $g_iMidOffsetY, 0x70D4E8, 30] ; Blue Share Replay Button
+Global Const $aGrayShareReplayButton[4] = [500, 156 + $g_iMidOffsetY, 0xBBBBBB, 30] ; Gray Share Replay Button
 
 Global Const $ProfileRep01[4] = [600, 260, 0x71769F, 20] ; If colorcheck then village have 0 attacks and 0 defenses
 

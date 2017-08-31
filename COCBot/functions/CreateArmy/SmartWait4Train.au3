@@ -24,7 +24,7 @@ Func SmartWait4Train()
 
 	Local $iExitCount = 0
 	If _Sleep($DELAYSMARTWAIT) Then Return ; first start 500ms so no false "**Main Window FAIL**" pops up
-	While IsMainPage() = False ; check & wait for main page to ensure can read shield information properly
+	While IsMainPage(1) = False ; check & wait for main page to ensure can read shield information properly
 		If _Sleep($DELAYIDLE1) Then Return
 		$iExitCount += 1
 		If $iExitCount > 25 Then ; 5 seconds before have error?
@@ -144,7 +144,7 @@ Func SmartWait4Train()
 		If $aHeroResult[0] > 0 Or $aHeroResult[1] > 0 Or $aHeroResult[2] > 0 Then ; check if hero is enabled to use/wait and set wait time
 			For $pTroopType = $eKing To $eWarden ; check all 3 hero
 				Local $iHeroIdx = $pTroopType - $eKing
-				For $pMatchMode = $DB To $g_iModeCount - 1 ; check all attack modes
+				For $pMatchMode = $DB To $LB ; check only DB and LB (TS has no wait option!)
 					If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then
 						SetLog("$pTroopType: " & NameOfTroop($pTroopType) & ", $pMatchMode: " & $g_asModeText[$pMatchMode], $COLOR_DEBUG)
 						Setlog("TroopToBeUsed: " & IsSpecialTroopToBeUsed($pMatchMode, $pTroopType) & ", Hero Wait Status= " & IsSearchModeActiveMini($pMatchMode) & " & " & IsSpecialTroopToBeUsed($pMatchMode, $pTroopType) & " & " & ($g_iHeroUpgrading[$iHeroIdx] <> 1) & " & " & ($g_iHeroWaitAttackNoBit[$pMatchMode][$iHeroIdx] = 1), $COLOR_DEBUG)

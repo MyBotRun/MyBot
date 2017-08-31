@@ -17,18 +17,18 @@
 Func WerFaultClose($programFile, $tryCountMax = 10, $tryCount = 0)
 
 	Local $WinTitleMatchMode = Opt("WinTitleMatchMode", -3) ; Window Title exact match mode (case insensitive)
-	Local $g_sAndroidTitle = $programFile
+	Local $sTitle = $programFile
 
-	Local $iLastBS = StringInStr($g_sAndroidTitle, "\", 0, -1)
-	If $iLastBS > 0 Then $g_sAndroidTitle = StringMid($g_sAndroidTitle, $iLastBS + 1)
+	Local $iLastBS = StringInStr($sTitle, "\", 0, -1)
+	If $iLastBS > 0 Then $sTitle = StringMid($sTitle, $iLastBS + 1)
 
-	Local $aList = WinList($g_sAndroidTitle)
+	Local $aList = WinList($sTitle)
 	Opt("WinTitleMatchMode", $WinTitleMatchMode)
 
 	Local $closed = 0
 	Local $i
 
-	SetDebugLog("Found " & $aList[0][0] & " WerFault Windows with title '" & $g_sAndroidTitle & "'")
+	SetDebugLog("Found " & $aList[0][0] & " WerFault Windows with title '" & $sTitle & "'")
 
 	If $aList[0][0] > 0 Then
 		For $i = 1 To $aList[0][0]
@@ -67,8 +67,11 @@ Func WerFaultClose($programFile, $tryCountMax = 10, $tryCount = 0)
 		; try program FileDescription
 		Local $pFileVersionInfo
 		If _WinAPI_GetFileVersionInfo($programFile, $pFileVersionInfo) Then
-			Local $FileDescription = _WinAPI_VerQueryValue($pFileVersionInfo, $FV_FILEDESCRIPTION)
-			If $FileDescription <> "" Then Return WerFaultClose($FileDescription, $tryCountMax, $tryCount)
+			Local $aFileDescription = _WinAPI_VerQueryValue($pFileVersionInfo, $FV_FILEDESCRIPTION)
+			If UBound($aFileDescription) > 1 And UBound($aFileDescription, 2) > 1 Then
+				Local $sFileDescription = $aFileDescription[1][1]
+				If $sFileDescription Then Return WerFaultClose($sFileDescription, $tryCountMax, $tryCount)
+			EndIf
 		EndIf
 	EndIf
 

@@ -23,15 +23,15 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 7.2.3)
-#pragma compile(FileVersion, 7.2.3)
+#pragma compile(ProductVersion, 7.2.4)
+#pragma compile(FileVersion, 7.2.4)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.exe) ; Required
 
 ; Enforce variable declarations
 Opt("MustDeclareVars", 1)
 
-Global $g_sBotVersion = "v7.2.3" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+Global $g_sBotVersion = "v7.2.4" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
 Global $g_sBotTitle = "" ;~ Don't assign any title here, use Func UpdateBotTitle()
 Global $g_hFrmBot = 0 ; The main GUI window
 

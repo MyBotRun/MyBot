@@ -14,17 +14,20 @@
 ; ===============================================================================================================================
 
 Func SwitchBetweenBases($bCheckMainScreen = True)
-	Local $sSwitchTo, $bIsOnBuilderBase = False, $aButtonCoords
+	Local $sSwitchFrom, $sSwitchTo, $sBack = "", $bIsOnBuilderBase = False, $aButtonCoords
 	Local $sTile, $sTilePath, $sRegionToSearch
 
 	If Not $g_bRunState Then Return
 
 	If isOnBuilderIsland(True) Then
+		$sSwitchFrom = "Builder Base"
 		$sSwitchTo = "Normal Village"
+		$sBack = " back"
 		$bIsOnBuilderBase = True
 		$sTile = "BoatBuilderBase_0_89.xml"
 		$sRegionToSearch = "487,44,708,242"
 	Else
+		$sSwitchFrom = "Normal Village"
 		$sSwitchTo = "Builder Base"
 		$bIsOnBuilderBase = False
 		$sTile = "BoatNormalVillage_0_89.xml"
@@ -38,22 +41,21 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 		ClickP($aButtonCoords)
 		If _Sleep($DELAYSWITCHBASES1) Then Return
 
-		If $bIsOnBuilderBase Then
-			If isOnBuilderIsland(True) Then
-				SetLog("Failed to go back to the normal Village!", $COLOR_ERROR)
-			Else
-				SetLog("Successfully went back to the normal Village!", $COLOR_SUCCESS)
-				If $bCheckMainScreen = True Then checkMainScreen(True, False)
-				Return True
-			EndIf
+		; switch can take up to 2 Seconds, check for 3 additional Seconds...
+		Local $hTimerHandle = __TimerInit()
+		Local $bSwitched = False
+		While __TimerDiff($hTimerHandle) < 3000 And Not $bSwitched
+			_Sleep(250)
+			ForceCaptureRegion()
+			$bSwitched = isOnBuilderIsland(True) <> $bIsOnBuilderBase
+		WEnd
+		
+		If $bSwitched Then
+			SetLog("Successfully went" & $sBack & " to the " & $sSwitchTo & "!", $COLOR_SUCCESS)
+			If $bCheckMainScreen = True Then checkMainScreen(True, Not $bIsOnBuilderBase)
+			Return True
 		Else
-			If Not isOnBuilderIsland(True) Then
-				SetLog("Failed to go to the Builder Base!", $COLOR_ERROR)
-			Else
-				SetLog("Successfully went to the Builder Base!", $COLOR_SUCCESS)
-				If $bCheckMainScreen = True Then checkMainScreen(True, True)
-				Return True
-			EndIf
+			SetLog("Failed to go" & $sBack & " to the " & $sSwitchTo & "!", $COLOR_ERROR)
 		EndIf
 	Else
 		If $bIsOnBuilderBase Then
