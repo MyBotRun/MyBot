@@ -150,7 +150,7 @@ Func CreateBotOptions()
 		   GUICtrlSetOnEvent(-1, "txtGlobalThreads")
 		   GUICtrlSetLimit(-1, 2)
 		   _GUICtrlSetTip(-1, $sTxtTip)
-	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblGlobalThreads_Info_01", "Img processing threads for all bots"), $x + 30, $y + 3)
+	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblGlobalThreads_Info_01", "Image Threads for all bots"), $x + 30, $y + 3)
 		   _GUICtrlSetTip(-1, $sTxtTip)
 
 	   $y += 20
@@ -159,7 +159,7 @@ Func CreateBotOptions()
 		   GUICtrlSetOnEvent(-1, "txtThreads")
 		   GUICtrlSetLimit(-1, 2)
 		   _GUICtrlSetTip(-1, $sTxtTip)
-	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblThreads_Info_01", "Img processing threads for this bot"), $x + 30, $y + 3)
+	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblThreads_Info_01", "Image Threads for this bot"), $x + 30, $y + 3)
 		   _GUICtrlSetTip(-1, $sTxtTip)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 

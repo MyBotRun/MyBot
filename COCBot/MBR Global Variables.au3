@@ -217,6 +217,7 @@ Global $g_bAndroidEmbedded = False
 Global $g_aiAndroidEmbeddedCtrlTarget[10] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_avAndroidShieldStatus[5] = [Default, 0, 0, Default, Default] ; Current Android Shield status (0: True = Shield Up, False = Shield Down, Default only for init; 1: Color; 2: Transparency = 0-255; 3: Invisible Shield; 4: Detached Shield)
 
+Global $g_bPoliteCloseCoC = False ; True: PoliteCloseCoC() function will try to perform a polite close by going back and press exit button, False am force-stop to kill game
 Global Const $g_bAndroidBackgroundLaunchEnabled = False ; Headless mode not finished yet (2016-07-13, cosote)
 Global $g_bAndroidCheckTimeLagEnabled = True ; Checks every 60 Seconds or later in main loops (Bot Run, Idle and SearchVillage) is Android needs reboot due to time lag (see $g_iAndroidTimeLagThreshold)
 Global $g_iAndroidAdbAutoTerminate = 0 ; Steady ADB shell instance is automatically closed after this number of executed commands, 0 = disabled (test for BS to fix frozen screen situation!)
@@ -329,6 +330,8 @@ Global $g_bAndroidEmbed ; Enable Android Docking
 Global $g_iAndroidEmbedMode ; Android Dock Mode: -1 = Not available, 0 = Normal docking, 1 = Simulated docking
 Global $g_bAndroidBackgroundLaunch ; Enabled Android Background launch using Windows Scheduled Task
 Global $g_bAndroidBackgroundLaunched ; True when Android was launched in headless mode without a window
+Global $g_iAndroidControlClickDelay = 10 ; 10 is Default (Milliseconds)
+Global $g_iAndroidControlClickDownDelay = 0 ; 10 is Default (Milliseconds)
 Global $g_iAndroidControlClickWindow = 0 ; 0 = Click the Android Control, 1 = Click the Android Window
 Global $g_iAndroidControlClickMode = 0 ; 0 = Use AutoIt ControlClick, 1 = Use _SendMessage
 
@@ -844,7 +847,7 @@ Global $g_bNotifyRemoteEnable = False, $g_sNotifyOrigin = "", $g_bNotifyDeleteAl
 Global $g_bNotifyAlertMatchFound = False, $g_bNotifyAlerLastRaidIMG = False, $g_bNotifyAlerLastRaidTXT = False, $g_bNotifyAlertCampFull = False, _
 		$g_bNotifyAlertUpgradeWalls = False, $g_bNotifyAlertOutOfSync = False, $g_bNotifyAlertTakeBreak = False, $g_bNotifyAlertBulderIdle = False, _
 		$g_bNotifyAlertVillageReport = False, $g_bNotifyAlertLastAttack = False, $g_bNotifyAlertAnotherDevice = False, $g_bNotifyAlertMaintenance = False, _
-		$g_bNotifyAlertBAN = False, $g_bNotifyAlertBOTUpdate = False
+		$g_bNotifyAlertBAN = False, $g_bNotifyAlertBOTUpdate = False, $g_bNotifyAlertSmartWaitTime = False
 ;Schedule
 Global $g_bNotifyScheduleHoursEnable = False, $g_bNotifyScheduleWeekDaysEnable = False
 Global $g_abNotifyScheduleHours[24] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
@@ -1479,7 +1482,7 @@ Func _FilloBldgLevels()
 	$g_oBldgLevels.add($eBldgDarkS, $aBldgDarkStorage)
 	Local Const $aBldgEagle[11] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
 	$g_oBldgLevels.add($eBldgEagle, $aBldgEagle)
-	Local Const $aBldgInferno[11] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4]
+	Local Const $aBldgInferno[11] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 5]
 	$g_oBldgLevels.add($eBldgInferno, $aBldgInferno)
 	Local Const $aBldgMortar[11] = [0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10]
 	$g_oBldgLevels.add($eBldgMortar, $aBldgMortar)

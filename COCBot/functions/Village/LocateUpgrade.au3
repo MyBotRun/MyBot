@@ -15,6 +15,13 @@
 
 Func LocateUpgrades()
 
+	If $g_bBotPaused Then
+		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
+		Local $stext = GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_BotPaused", "Cannot locate Upgrades when bot is paused!")
+		Local $MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), GetTranslatedFileIni("MBR Popups", "Notice", "Notice"), $stext, 15, $g_hFrmBot)
+		Return
+	EndIf
+
 	WinGetAndroidHandle()
 
 	If $g_hAndroidWindow <> 0 And $g_bAndroidBackgroundLaunched = True Then ; Android is running in background mode, so restart Android

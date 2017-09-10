@@ -149,78 +149,84 @@ EndFunc   ;==>WaitnOpenCoC
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func PoliteCloseCoC($sSource = "Unknown_")
+Func PoliteCloseCoC($sSource = "Unknown_", $bPoliteCloseCoC = $g_bPoliteCloseCoC)
 	$g_bSkipFirstZoomout = False
-	If $g_sAndroidGameDistributor = $g_sGoogle Then
-		Local $i = 0 ; Reset Loop counter
-		While 1
-			checkObstacles()
-			AndroidBackButton()
-			If _Sleep($DELAYCLOSEOPEN1000) Then Return ; wait for window to open
-			If ClickOkay("ExitOkay_" & $sSource, True) = True Then ExitLoop ; Confirm okay to exit
-			If $i > 10 Then
-				Setlog("Can not find Okay button to exit CoC, Forcefully Closing CoC", $COLOR_ERROR)
-				If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
-				CloseCoC()
-				ExitLoop
-			EndIf
-			$i += 1
-		WEnd
-	Else
-		Local $btnExit
-		Local $i = 0 ; Reset Loop counter
-		While 1
-			checkObstacles()
-			AndroidBackButton()
-			If _Sleep($DELAYCLOSEOPEN1000) Then Return ; wait for window to open
-			Switch $g_sAndroidGameDistributor
-				Case "Kunlun", "Huawei", "Kaopu", "Microvirt", "Yeshen", "Qihoo", "Baidu", "OPPO", "Anzhi", "Lenovo", "Aiyouxi"
-					$btnExit = FindExitButton($g_sAndroidGameDistributor)
-					If IsArray($btnExit) Then
-						Click($btnExit[0], $btnExit[1])
-						ExitLoop
-					EndIf
-				Case "9game"
-					If _Sleep($DELAYCLOSEOPEN2000) Then Return ; wait more
-					$btnExit = FindExitButton($g_sAndroidGameDistributor)
-					If IsArray($btnExit) Then
-						Click($btnExit[0] + 71, $btnExit[1] + 64) ; click offsets for the transparent window
-						If $g_iDebugSetlog Then Setlog($g_sAndroidGameDistributor & " Click offset X|Y = 71|64", $COLOR_DEBUG)
-						ExitLoop
-					EndIf
-				Case "VIVO", "Xiaomi"
-					$btnExit = FindExitButton($g_sAndroidGameDistributor)
-					If IsArray($btnExit) Then
-						Click($btnExit[0], $btnExit[1], 2, $DELAYCLOSEOPEN3000) ; has to click twice slowly
-						ExitLoop
-					EndIf
-				Case "Guopan"
-					$btnExit = FindExitButton($g_sAndroidGameDistributor)
-					If IsArray($btnExit) Then
-						Click($btnExit[0], $btnExit[1])
-					EndIf
-					If _Sleep($DELAYCLOSEOPEN2000) Then Return ; wait for second window
-					$btnExit = FindExitButton("Kunlun")
-					If IsArray($btnExit) Then
-						Click($btnExit[0], $btnExit[1])
-						ExitLoop
-					EndIf
-				Case "Wandoujia/Downjoy", "Haimawan", "Leshi", "Tencent"
-					ContinueCase
-				Case Else
-					Setlog("Polite Close Unsupported - " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
+	If $bPoliteCloseCoC Then
+		; polite close
+		If $g_sAndroidGameDistributor = $g_sGoogle Then
+			Local $i = 0 ; Reset Loop counter
+			While 1
+				checkObstacles()
+				AndroidBackButton()
+				If _Sleep($DELAYCLOSEOPEN1000) Then Return ; wait for window to open
+				If ClickOkay("ExitOkay_" & $sSource, True) = True Then ExitLoop ; Confirm okay to exit
+				If $i > 10 Then
+					Setlog("Can not find Okay button to exit CoC, Forcefully Closing CoC", $COLOR_ERROR)
 					If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
 					CloseCoC()
 					ExitLoop
-			EndSwitch
-			If $i > 10 Then
-				Setlog("Can not find exit button: " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
-				If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
-				CloseCoC()
-				ExitLoop
-			EndIf
-			$i += 1
-		WEnd
+				EndIf
+				$i += 1
+			WEnd
+		Else
+			Local $btnExit
+			Local $i = 0 ; Reset Loop counter
+			While 1
+				checkObstacles()
+				AndroidBackButton()
+				If _Sleep($DELAYCLOSEOPEN1000) Then Return ; wait for window to open
+				Switch $g_sAndroidGameDistributor
+					Case "Kunlun", "Huawei", "Kaopu", "Microvirt", "Yeshen", "Qihoo", "Baidu", "OPPO", "Anzhi", "Lenovo", "Aiyouxi"
+						$btnExit = FindExitButton($g_sAndroidGameDistributor)
+						If IsArray($btnExit) Then
+							Click($btnExit[0], $btnExit[1])
+							ExitLoop
+						EndIf
+					Case "9game"
+						If _Sleep($DELAYCLOSEOPEN2000) Then Return ; wait more
+						$btnExit = FindExitButton($g_sAndroidGameDistributor)
+						If IsArray($btnExit) Then
+							Click($btnExit[0] + 71, $btnExit[1] + 64) ; click offsets for the transparent window
+							If $g_iDebugSetlog Then Setlog($g_sAndroidGameDistributor & " Click offset X|Y = 71|64", $COLOR_DEBUG)
+							ExitLoop
+						EndIf
+					Case "VIVO", "Xiaomi"
+						$btnExit = FindExitButton($g_sAndroidGameDistributor)
+						If IsArray($btnExit) Then
+							Click($btnExit[0], $btnExit[1], 2, $DELAYCLOSEOPEN3000) ; has to click twice slowly
+							ExitLoop
+						EndIf
+					Case "Guopan"
+						$btnExit = FindExitButton($g_sAndroidGameDistributor)
+						If IsArray($btnExit) Then
+							Click($btnExit[0], $btnExit[1])
+						EndIf
+						If _Sleep($DELAYCLOSEOPEN2000) Then Return ; wait for second window
+						$btnExit = FindExitButton("Kunlun")
+						If IsArray($btnExit) Then
+							Click($btnExit[0], $btnExit[1])
+							ExitLoop
+						EndIf
+					Case "Wandoujia/Downjoy", "Haimawan", "Leshi", "Tencent"
+						ContinueCase
+					Case Else
+						Setlog("Polite Close Unsupported - " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
+						If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
+						CloseCoC()
+						ExitLoop
+				EndSwitch
+				If $i > 10 Then
+					Setlog("Can not find exit button: " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
+					If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
+					CloseCoC()
+					ExitLoop
+				EndIf
+				$i += 1
+			WEnd
+		EndIf
+	Else
+		; force-kill Game
+		CloseCoC()
 	EndIf
 	ResetAndroidProcess()
 	ReduceBotMemory()

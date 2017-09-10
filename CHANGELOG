@@ -1,3 +1,13 @@
+* **V7.2.5**
+ * Add Inferno Lvl 5 to Weak Base Images/GUI settings, add Lvl 4 tile and lowered tolerance
+ * Lower Eagle Lvl 1 tolerance for better Weak Base detection
+ * Fix Weak Base
+ * Fix Wait for Heroes Queen and Warden
+ * Fix train Balloon
+ * Fix upgrades possible when bot is paused
+ * Fix rare redline variable not declared error
+ * Update Arabic Language By @awssaad
+
 * **V7.2.4**
  * Add Bot / Android Option to select preferred Android Background Mode
  * Add BlueStacks2/3 and iTools support for ADB screencap Background Mode

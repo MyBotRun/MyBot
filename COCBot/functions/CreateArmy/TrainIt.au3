@@ -21,54 +21,65 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 	Local $bDark = ($iIndex >= $eMini And $iIndex <= $eBowl)
 	Local $iErrors = 0
 
-	Do
+	For $i = 1 To 5 ; Do
 
-	Local $aTrainPos = GetTrainPos($iIndex)
-	If IsArray($aTrainPos) And $aTrainPos[0] <> -1 Then
-		If _ColorCheck(_GetPixelColor($aTrainPos[0], $aTrainPos[1], $g_bCapturePixel), Hex($aTrainPos[2], 6), $aTrainPos[3]) Then
-			Local $FullName = GetFullName($iIndex, $aTrainPos)
-			If IsArray($FullName) Then
-				Local $RNDName = GetRNDName($iIndex, $aTrainPos)
-				If IsArray($RNDName) Then
-					TrainClickP($aTrainPos, $iQuantity, $g_iTrainClickDelay, $FullName, "#0266", $RNDName)
-					If _Sleep($iSleep) Then Return
-					If $g_bOutOfElixir Then
-						Setlog("Not enough " & ($bDark ? "Dark " : "") & "Elixir to train position " & GetTroopName($iIndex) & " troops!", $COLOR_ERROR)
-						Setlog("Switching to Halt Attack, Stay Online Mode...", $COLOR_ERROR)
-						If Not $g_bFullArmy Then $g_bRestart = True ;If the army camp is full, If yes then use it to refill storages
-						Return ; We are out of Elixir stop training.
+		Local $aTrainPos = GetTrainPos($iIndex)
+		If IsArray($aTrainPos) And $aTrainPos[0] <> -1 Then
+			If _ColorCheck(_GetPixelColor($aTrainPos[0], $aTrainPos[1], $g_bCapturePixel), Hex($aTrainPos[2], 6), $aTrainPos[3]) Then
+				Local $FullName = GetFullName($iIndex, $aTrainPos)
+				If IsArray($FullName) Then
+					Local $RNDName = GetRNDName($iIndex, $aTrainPos)
+					If IsArray($RNDName) Then
+						TrainClickP($aTrainPos, $iQuantity, $g_iTrainClickDelay, $FullName, "#0266", $RNDName)
+						If _Sleep($iSleep) Then Return
+						If $g_bOutOfElixir Then
+							Setlog("Not enough " & ($bDark ? "Dark " : "") & "Elixir to train position " & GetTroopName($iIndex) & " troops!", $COLOR_ERROR)
+							Setlog("Switching to Halt Attack, Stay Online Mode...", $COLOR_ERROR)
+							If Not $g_bFullArmy Then $g_bRestart = True ;If the army camp is full, If yes then use it to refill storages
+							Return ; We are out of Elixir stop training.
+						EndIf
+						Return True
+					Else
+						Setlog("TrainIt position " & GetTroopName($iIndex) & " - RNDName did not return array?", $COLOR_ERROR)
+						Return False
 					EndIf
-					Return True
 				Else
-					Setlog("TrainIt position " & GetTroopName($iIndex) & " - RNDName did not return array?", $COLOR_ERROR)
+					Setlog("TrainIt " & GetTroopName($iIndex) & " - FullName did not return array?", $COLOR_ERROR)
+					Return False
 				EndIf
 			Else
-				Setlog("TrainIt " & GetTroopName($iIndex) & " - FullName did not return array?", $COLOR_ERROR)
+				Local $sBadPixelColor = _GetPixelColor($aTrainPos[0], $aTrainPos[1], $g_bCapturePixel)
+				If $g_iDebugSetlogTrain Then Setlog("Positon X: " & $aTrainPos[0] & "| Y : " & $aTrainPos[1] & " |Color get: " & $sBadPixelColor & " | Need: " & $aTrainPos[2])
+				If StringMid($sBadPixelColor, 1, 2) = StringMid($sBadPixelColor, 3, 2) And StringMid($sBadPixelColor, 1, 2) = StringMid($sBadPixelColor, 5, 2) Then
+					; Pixel is gray, so queue is full -> nothing to inform the user about
+					Setlog("Troop " & GetTroopName($iIndex) & " is not available due to full queue", $COLOR_DEBUG)
+				Else
+					If $iErrors = 0 Then
+						Local $aEmptyArray[4] = [-1,-1,-1,-1]
+						$aTrainArmy[$iIndex] = $aEmptyArray
+						$iErrors += 1
+					Else
+						If $g_iDebugSetlogTrain = 1 Then DebugImageSave("BadPixelCheck_" & GetTroopName($iIndex))
+						SetLog("Bad pixel check on troop position " & GetTroopName($iIndex), $COLOR_ERROR)
+						If $g_iDebugSetlogTrain = 1 Then Setlog("Train Pixel Color: " & $sBadPixelColor, $COLOR_DEBUG)
+						$iErrors = 0
+					EndIf
+				EndIf
 			EndIf
 		Else
-			Local $sBadPixelColor = _GetPixelColor($aTrainPos[0], $aTrainPos[1], $g_bCapturePixel)
-			If $g_iDebugSetlogTrain Then Setlog("Positon X: " & $aTrainPos[0] & "| Y : " & $aTrainPos[1] & " |Color get: " & $sBadPixelColor & " | Need: " & $aTrainPos[2])
-			If StringMid($sBadPixelColor, 1, 2) = StringMid($sBadPixelColor, 3, 2) And StringMid($sBadPixelColor, 1, 2) = StringMid($sBadPixelColor, 5, 2) Then
-				; Pixel is gray, so queue is full -> nothing to inform the user about
-				Setlog("Troop " & GetTroopName($iIndex) & " is not available due to full queue", $COLOR_DEBUG)
-			Else
-				If $iErrors = 0 Then
-					Local $aEmptyArray[4] = [-1,-1,-1,-1]
-					$aTrainArmy[$iIndex] = $aEmptyArray
-					$iErrors += 1
+			If UBound($aTrainPos) > 0 And $aTrainPos[0] = -1 Then
+				If $i < 5 Then
+					ForceCaptureRegion()
 				Else
-					If $g_iDebugSetlogTrain = 1 Then DebugImageSave("BadPixelCheck_" & GetTroopName($iIndex))
-					SetLog("Bad pixel check on troop position " & GetTroopName($iIndex), $COLOR_ERROR)
-					If $g_iDebugSetlogTrain = 1 Then Setlog("Train Pixel Color: " & $sBadPixelColor, $COLOR_DEBUG)
-					$iErrors = 0
+					If $g_iDebugSetlogTrain = 1 Then DebugImageSave("TroopIconNotFound_" & GetTroopName($iIndex))
+					Setlog("TrainIt troop position " & GetTroopName($iIndex) & " did not find icon", $COLOR_ERROR)
 				EndIf
+			Else
+				Setlog("Impossible happened? TrainIt troop position " & GetTroopName($iIndex) & " did not return array", $COLOR_ERROR)
 			EndIf
 		EndIf
-	Else
-		Setlog("Impossible happened? TrainIt troop position " & GetTroopName($iIndex) & " did not return array", $COLOR_ERROR)
-	EndIf
 
-	Until $iErrors = 0
+	Next ; Until $iErrors = 0
 EndFunc   ;==>TrainIt
 
 Func GetTrainPos(Const $iIndex)

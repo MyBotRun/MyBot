@@ -262,6 +262,7 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hBtnTestConfigSave) = 1
 	$oAlwaysEnabledControls($g_hBtnTestConfigRead) = 1
 	$oAlwaysEnabledControls($g_hBtnTestConfigApply) = 1
+	$oAlwaysEnabledControls($g_hBtnTestWeakBase) = 1
 
 	$oAlwaysEnabledControls($g_hBtnMakeScreenshot) = 1
 	$oAlwaysEnabledControls($g_hDivider) = 1

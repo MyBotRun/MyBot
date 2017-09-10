@@ -17,7 +17,12 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 
 	; Attack CSV has debug option to save attack line image, save have png of current $g_hHBitmap2
 	If ($pMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 1) Or ($pMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 1) Then
-		If $g_iDebugMakeIMGCSV = 1 And $Remaining = False And TestCapture() = 0 Then DebugImageSave("clean", False) ; make clean snapshot as well
+		If $g_iDebugMakeIMGCSV = 1 And $Remaining = False And TestCapture() = 0 Then
+			If $g_iSearchTH = "-" Then ; If TH is unknown, try again to find as it is needed for filename
+				imglocTHSearch(True, False, False)
+			EndIf
+			DebugImageSave("clean", False, Default, Default, "TH" & $g_iSearchTH & "-") ; make clean snapshot as well
+		EndIf
 	EndIf
 
 	If $Remaining = False Then ; reset Hero variables before attack if not checking remaining troops

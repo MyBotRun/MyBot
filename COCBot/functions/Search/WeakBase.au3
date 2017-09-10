@@ -149,7 +149,7 @@ EndFunc   ;==>getIsWeak
 
 Func IsWeakBaseActive($type)
 	Return ($g_abFilterMaxEagleEnable[$type] Or $g_abFilterMaxInfernoEnable[$type] Or $g_abFilterMaxXBowEnable[$type] Or $g_abFilterMaxWizTowerEnable[$type] Or _
-			$g_abFilterMaxMortarEnable[$type] Or $g_abFilterMaxAirDefenseEnable[$type]) And IsSearchModeActive($type, False, True)
+			$g_abFilterMaxMortarEnable[$type] Or $g_abFilterMaxAirDefenseEnable[$type]) And IsSearchModeActiveMini($type)
 EndFunc   ;==>IsWeakBaseActive
 
 Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $iDefenseType, ByRef $performSearch, $guiEnabledArray, $bForceCaptureRegion = True)
@@ -164,13 +164,14 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $i
 	; Results when search is not necessary because of levels
 	Local $aNotNecessary[7] = ["None", "None", 0, 0, 0, $defaultCoords, ""]
 
-	; Setup search limitations
-	Local $minSearchLevel = getMinUISetting($settingArray, $iDefenseType) + 1 ; stores lowest defense bldg level specified in all active attack modes for max buiding level in GUI
-	Local $maxSearchLevel = getTHDefenseMax($townHallLevel, $iDefenseType) ; store the maximum defense building level possible based on TH level being attacked
-	Local $guiCheckDefense = IsArray($guiEnabledArray) And ((IsSearchModeActive($DB, False, True) And $guiEnabledArray[$DB]) Or (IsSearchModeActive($LB, False, True) And $guiEnabledArray[$LB]))
-
 	; Only do the search if its required
 	If $performSearch Then
+		; Setup search limitations
+		Local $minSearchLevel = getMinUISetting($settingArray, $iDefenseType) + 1 ; stores lowest defense bldg level specified in all active attack modes for max buiding level in GUI
+		Local $maxSearchLevel = getTHDefenseMax($townHallLevel, $iDefenseType) ; store the maximum defense building level possible based on TH level being attacked
+		Local $bGuiEnableArray = IsArray($guiEnabledArray), $bIsSearchModeActiveDB = IsSearchModeActiveMini($DB), $bIsSearchModeActiveLB = IsSearchModeActiveMini($LB)
+		Local $guiCheckDefense = $bGuiEnableArray And (($bIsSearchModeActiveDB And $guiEnabledArray[$DB]) Or ($bIsSearchModeActiveLB And $guiEnabledArray[$LB]))
+
 		; Start the timer for individual defense searches
 		Local $defenseTimer = __TimerInit()
 
@@ -183,12 +184,19 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $i
 			If $aResult[0][0] = "" Then $aResult[0][0] = $aDefenseResult[6]
 			; Check to see if further searches are required, $performSearch is passed ByRef, so this will update the value in the calling function
 			If Number($aDefenseResult[2]) > getMaxUISetting($settingArray, $iDefenseType) Then $performSearch = False
-			If $g_iDebugSetlog = 1 Then SetLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " - " & Round(__TimerDiff($defenseTimer) / 1000, 2) & " seconds")
+			If $g_iDebugSetlog = 1 Then
+				SetLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " - " & Round(__TimerDiff($defenseTimer) / 1000, 2) & " seconds")
+				For $i = 0 To UBound($aDefenseResult) - 2
+					SetLog("$aDefenseResult[" & $i & "]: " & $aDefenseResult[$i])
+				Next
+			EndIf
 		Else
 			$aDefenseResult = $aNotNecessary
-			If $g_iDebugSetlog = 1 Then SetLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " not necessary!")
+			If $g_iDebugSetlog = 1 Then SetLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " not necessary! $bGuiEnableArray=" & $bGuiEnableArray & ", $bIsSearchModeActiveDB=" & $bIsSearchModeActiveDB & ", $bIsSearchModeActiveLB=" & $bIsSearchModeActiveLB & ", $maxSearchLevel=" & $maxSearchLevel & ", $minSearchLevel=" & $minSearchLevel)
 		EndIf
 	EndIf
+
+
 
 	Return $aDefenseResult
 EndFunc   ;==>defenseSearch
@@ -343,11 +351,14 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 	; Set search area to be inside dark green border
 	Local $fullCocAreas = "DCD"
 	; Set max buidling level to search, except if using scripted CSV attack, then override max level
+	#cs Not required!
 	If isScriptedAttackActive() Then
 		$maxLevelSearch = 100
 	Else
 		$maxLevelSearch = $maxLevel
 	EndIf
+	#ce
+	$maxLevelSearch = $maxLevel
 
 	; verify if red line data exists in dictionary, or was passed as parameter, to set flag for later retrevial of red line data and storage if needed.
 	If $redlines = "" Or $redlines = "DCD" Then
@@ -357,11 +368,9 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 				If IsString($redlines) And $redlines <> "" And $redlines <> "DCD" Then ; error check for null red line data in dictionary
 					$bRedLineExists = True
 				Else
-					$redlines = "DCD"
 					$bRedLineExists = False
 				EndIf
 			Else ; if less than 25 redline stored, then try again.
-				$redlines = "DCD"
 				$bRedLineExists = False
 			EndIf
 		Else
@@ -384,16 +393,19 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 			EndIf
 		EndIf
 	Else ; almost impossible....
-		$redlines = "DCD"
 		$bRedLineExists = False
 	EndIf
 
+	If $bRedLineExists = False Then
+		$redlines = "DCD"
+	EndIf
+
 	If $g_iDebugSetlog = 1 Then
-		SetLog("> " & $g_sBldgNames[$iDefenseType + 7] & " Max Level: " & $maxLevelSearch, $COLOR_DEBUG)
+		SetLog("> " & $g_sBldgNames[$iDefenseType + 7] & " Max Level: " & $maxLevel & " Max Search Level: " & $maxLevelSearch, $COLOR_DEBUG)
 		Setlog("> Max return points: " & $maxReturnPoints, $COLOR_DEBUG)
 		SetLog("> Red Line Exists:" & $bRedLineExists & " , redlines=" & $redlines, $COLOR_DEBUG)
 	EndIf
-	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
+	If _Sleep($DELAYCHECKARMYCAMP6) Then Return $return; 10ms improve pause button response
 
 	; Capture the screen
 	If $bForceCaptureRegion = True Then _CaptureRegion2()
@@ -444,14 +456,14 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 			; Check for duplicate locations from DLL when more than 1 location returned?
 			If $i = 0 And StringLen($sTempCoord) > 7 Then
 				$iCountUpdate = RemoveDupNearby($sTempCoord) ; remove duplicates BYREF, return location count
-				If $iTmpObjectLevel <> $iCountUpdate And $iCountUpdate <> "" Then $iTmpObjectLevel = $iCountUpdate
+				;If $iTmpObjectLevel <> $iCountUpdate And $iCountUpdate <> "" Then $iTmpObjectLevel = $iCountUpdate
 			EndIf
 
 			; get number of buildings found
 			$iTmpBldTotal = RetrieveImglocProperty($aKeys[$i], "totalobjects")
 
 			; store "returnhighestsinglelevel" search data
-			If $iTmpObjectLevel > Number($return[2]) And (Int($maxLevel) <= $iTmpObjectLevel) Then ; Check to see if is a higher level then currently stored for weakbase return array
+			If $iTmpObjectLevel > Number($return[2]) Then ;And ($iTmpObjectLevel >= Int($maxLevel)) Then ; Check to see if is a higher level then currently stored for weakbase return array
 				; Store the retrun data because its higher, and greater than max level in GUI
 				$return[0] = $aStatData[$i + 1][0]
 				$return[1] = RetrieveImglocProperty($aKeys[$i], "objectname") ; Type
@@ -512,10 +524,10 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 			Select
 				Case UBound($aBldgCoord, 1) > 1 And IsArray($aBldgCoord[1]) ; if we have array of arrays, separate and list
 					$sText = PixelArrayToString($aBldgCoord, ",")
-				Case IsArray($aBldgCoord[0]) ; single row with array
+				Case UBound($aBldgCoord) > 0 And IsArray($aBldgCoord[0]) ; single row with array
 					Local $aPixelb = $aBldgCoord[0]
 					$sText = PixelToString($aPixelb, ":")
-				Case IsArray($aBldgCoord[0]) = 0
+				Case UBound($aBldgCoord) > 0 And IsArray($aBldgCoord[0]) = 0
 					$sText = PixelToString($aBldgCoord, ":")
 				Case Else
 					$sText = "Monkey ate bad banana!"
@@ -526,7 +538,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 		; finish storing CSV related data after retrieving all keys returned
 		If isScriptedAttackActive() Then
 
-			If $return[2] <> "" Or $return[2] <> 0 Then
+			If $return[2] <> 0 Then
 				_ObjAdd($g_oBldgAttackInfo, $iDefenseType + 7 & "_MAXLVLFOUND", $return[2]) ; save max level found, add siz to weakbase enum to equal building enum
 				If @error Then _ObjErrMsg("_ObjAdd " & $g_sBldgNames[$iDefenseType + 7] & " _MAXLVLFOUND", @error) ; log errors
 			EndIf

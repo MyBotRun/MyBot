@@ -105,7 +105,8 @@ Func IsSearchModeActive($g_iMatchMode, $nocheckHeroes = False, $bNoLog = False)
 EndFunc   ;==>IsSearchModeActive
 
 Func IsSearchModeActiveMini(Const $iMatchMode)
-	Return $g_abAttackTypeEnable[$DB] Or $g_abAttackTypeEnable[$LB] Or $g_abAttackTypeEnable[$TS]
+	;Return $g_abAttackTypeEnable[$DB] Or $g_abAttackTypeEnable[$LB] Or $g_abAttackTypeEnable[$TS]
+	Return $g_abAttackTypeEnable[$iMatchMode]
 EndFunc   ;==>IsSearchModeActiveMini
 
 ; #FUNCTION# ====================================================================================================================

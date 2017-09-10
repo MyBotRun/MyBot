@@ -14,8 +14,10 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func DebugImageSave($TxtName = "Unknown", $capturenew = True, $extensionpng = "png", $makesubfolder = True)
-
+Func DebugImageSave($TxtName = "Unknown", $capturenew = Default, $extensionpng = Default, $makesubfolder = Default, $sTag = "")
+	If $capturenew = Default Then $capturenew = True
+	If $extensionpng = Default Then $extensionpng = "png"
+	If $makesubfolder = Default Then $makesubfolder = True
 	; Debug Code to save images before zapping for later review, time stamped to align with logfile!
 	;SetLog("Taking snapshot for later review", $COLOR_SUCCESS) ;Debug purposes only :)
 	Local $Date = @MDAY & "." & @MON & "." & @YEAR
@@ -40,7 +42,7 @@ Func DebugImageSave($TxtName = "Unknown", $capturenew = True, $extensionpng = "p
 	While $exist
 		If $first Then
 			$first = False
-			$filename = $savefolder & $TxtName & $Date & " at " & $Time & "." & $extension
+			$filename = $savefolder & $TxtName & $sTag & $Date & " at " & $Time & "." & $extension
 			If FileExists($filename) = 1 Then
 				$exist = True
 			Else
@@ -48,7 +50,7 @@ Func DebugImageSave($TxtName = "Unknown", $capturenew = True, $extensionpng = "p
 
 			EndIf
 		Else
-			$filename = $savefolder & $TxtName & $Date & " at " & $Time & " (" & $i & ")." & $extension
+			$filename = $savefolder & $TxtName & $sTag & $Date & " at " & $Time & " (" & $i & ")." & $extension
 			If FileExists($filename) = 1 Then
 				$i +=1
 			Else

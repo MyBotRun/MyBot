@@ -28,6 +28,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 	Local $xSkip = 1
 	Local $ySkip = 5
 	Local $result = 0
+	Local $listPixelBySide
 
 	If $g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 0 And $g_aiAttackStdDropSides[$LB] = 4 Then ; Used for DES Side Attack (need to know the side the DES is on)
 		$result = DllCall($g_hLibMyBot, "str", "getRedAreaSideBuilding", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingDES)
@@ -39,16 +40,17 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 
 		Switch $iMode
 			Case $REDLINE_NONE ; No red line
-				Local $listPixelBySide = ["NoRedLine", "", "", "", ""]
+				Local $a = ["NoRedLine", "", "", "", ""]
+				$listPixelBySide = $a
 			Case $REDLINE_IMGLOC_RAW ; ImgLoc raw red line routine
 				; ensure redline exists
 				SearchRedLinesMultipleTimes()
-				Local $listPixelBySide = getRedAreaSideBuilding()
+				$listPixelBySide = getRedAreaSideBuilding()
 			Case $REDLINE_IMGLOC ; New ImgLoc based deployable red line routine
 				; ensure redline exists
 				SearchRedLinesMultipleTimes()
 				Local $dropPoints = GetOffSetRedline("TL") & "|" & GetOffSetRedline("BL") & "|" & GetOffSetRedline("BR") & "|" & GetOffSetRedline("TR")
-				Local $listPixelBySide = getRedAreaSideBuilding($dropPoints)
+				$listPixelBySide = getRedAreaSideBuilding($dropPoints)
 				#cs
 					$g_aiPixelTopLeft = _SortRedline(GetOffSetRedline("TL"))
 					$g_aiPixelBottomLeft =  _SortRedline(GetOffSetRedline("BL"))
@@ -63,7 +65,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 	EndIf
 
 	If IsArray($result) Then
-		Local $listPixelBySide = StringSplit($result[0], "#")
+		$listPixelBySide = StringSplit($result[0], "#")
 	EndIf
 	$g_aiPixelTopLeft = GetPixelSide($listPixelBySide, 1)
 	$g_aiPixelBottomLeft = GetPixelSide($listPixelBySide, 2)

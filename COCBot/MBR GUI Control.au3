@@ -553,6 +553,8 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			readConfig()
 		Case $g_hBtnTestConfigApply
 			applyConfig()
+		Case $g_hBtnTestWeakBase
+			btnTestWeakBase()
 	EndSwitch
 
 		If $lParam = $g_hCmbGUILanguage Then

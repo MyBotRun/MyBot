@@ -68,14 +68,17 @@ Func _ControlClick($x, $y)
 		$y += $g_aiBSrpos[1]
 	EndIf
 	If $g_iAndroidControlClickMode = 0 Then
+		Opt("MouseClickDelay", $g_iAndroidControlClickDelay) ;Default: 10 milliseconds
+		Opt("MouseClickDownDelay", $g_iAndroidControlClickDownDelay) ;Default: 10 milliseconds
 		Return ControlClick($hWin, "", "", "left", "1", $x, $y)
 	EndIf
 	Local $WM_LBUTTONDOWN = 0x0201, $WM_LBUTTONUP = 0x0202
 	Local $lParam = BitOR(Int($y) * 0x10000, BitAND(Int($x), 0xFFFF)) ; HiWord = y-coordinate, LoWord = x-coordinate
 	; _WinAPI_PostMessage or _SendMessage
 	_SendMessage($hWin, $WM_LBUTTONDOWN, 0x0001, $lParam)
+	_SleepMicro($g_iAndroidControlClickDownDelay * 1000)
 	_SendMessage($hWin, $WM_LBUTTONUP, 0x0000, $lParam)
-	_SleepMicro(25000) ; sleep 25 Milliseconds
+	_SleepMicro($g_iAndroidControlClickDelay * 1000) ; sleep 25 Milliseconds
 	Return 1
 EndFunc   ;==>_ControlClick
 

@@ -1071,10 +1071,13 @@ Func GetTranslatedFileIni($iSection = -1, $iKey = -1, $sText = "", $var1 = Defau
 			Local $aKey = IniReadSection($ini_file, $iSection)
 			 If IsArray($aKey) Then
 				For $i = 1 To $aKey[0][0]
-					$Count += 1
-					ReDim $aSection[$Count][2]
-					$aSection[$Count - 1][0] = $aKey[$i][0]
-					$aSection[$Count - 1][1] = $aKey[$i][1]
+					If _ArraySearch($aSection, $aKey[$i][0], 0, 0, 0, 0, 1, 0) = -1 Then
+						; add only unique keys
+						$Count += 1
+						ReDim $aSection[$Count][2]
+						$aSection[$Count - 1][0] = $aKey[$i][0]
+						$aSection[$Count - 1][1] = $aKey[$i][1]
+					EndIf
 				Next
 			EndIf
 			_ArraySort($aSection, 0, 0, 0, 0)
@@ -1138,10 +1141,13 @@ Func GetTranslatedFileIni($iSection = -1, $iKey = -1, $sText = "", $var1 = Defau
 			Local $aKey = IniReadSection($ini_file, $iSection)
 			 If IsArray($aKey) Then
 				For $i = 1 To $aKey[0][0]
-					$Count += 1
-					ReDim $aSection[$Count][2]
-					$aSection[$Count - 1][0] = $aKey[$i][0]
-					$aSection[$Count - 1][1] = $aKey[$i][1]
+					If _ArraySearch($aSection, $aKey[$i][0], 0, 0, 0, 0, 1, 0) = -1 Then
+						; add only unique keys
+						$Count += 1
+						ReDim $aSection[$Count][2]
+						$aSection[$Count - 1][0] = $aKey[$i][0]
+						$aSection[$Count - 1][1] = $aKey[$i][1]
+					EndIf
 				Next
 			EndIf
 			_ArraySort($aSection, 0, 0, 0, 0)
@@ -1180,9 +1186,12 @@ Func _ReadFullIni()
 		If IsArray($aKey) Then ; Si la section n'est pas vide
 			ReDim $aNewLanguage[$Count + UBound($aKey) - 1][2] ; On redimentionne le tableau en ajoutant le nombre d'éléments de la section en cours
 			For $j = 1 To Ubound($aKey) - 1 ; Boucle de lecture
-				$aNewLanguage[$Count][0] = $aSection[$i] & "§" & $aKey[$j][0]; On stocke le nom de la section
-				$aNewLanguage[$Count][1] = $aKey[$j][1]; On stocke le nom de la clé
-				$Count += 1 ; On incrémente le compteur
+				If _ArraySearch($aNewLanguage, $aSection[$i] & "§" & $aKey[$j][0], 0, 0, 0, 0, 1, 0) = -1 Then
+					; add only unique keys
+					$aNewLanguage[$Count][0] = $aSection[$i] & "§" & $aKey[$j][0]; On stocke le nom de la section
+					$aNewLanguage[$Count][1] = $aKey[$j][1]; On stocke le nom de la clé
+					$Count += 1 ; On incrémente le compteur
+				EndIf
 			Next
 		Else ; Si la section est vide
 			ReDim $aNewLanguage[$Count + 1][2] ; On redimentionne le tableau de une ligne
