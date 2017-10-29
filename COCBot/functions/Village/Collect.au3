@@ -40,52 +40,12 @@ Func Collect($Treasury = True)
 			$CollectXY = $aResult[$i][5] ; Coords
 			If IsArray($CollectXY) Then ; found array of locations
 				$t = Random(0, UBound($CollectXY) - 1, 1) ; SC May 2017 update only need to pick one of each to collect all
-				If $g_iDebugSetlog = 1  Then SetLog($Filename & " found, random pick(" & $CollectXY[$t][0] & "," & $CollectXY[$t][1] & ")", $COLOR_GREEN)
+				If $g_bDebugSetlog Then SetLog($Filename & " found, random pick(" & $CollectXY[$t][0] & "," & $CollectXY[$t][1] & ")", $COLOR_GREEN)
 				If IsMainPage() Then Click($CollectXY[$t][0], $CollectXY[$t][1], 1, 0, "#0430")
 				If _Sleep($DELAYCOLLECT2) Then Return
 			EndIf
 		Next
 	EndIf
-
-	#comments-start  Remove fancy humanized resource collection :(
-	If UBound($aResult) > 1 Then
-		; Put all the found collectors/mines/pumps into a single XY array
-		Local $aiUnSortedMatchXY[1][2], $iMatchCount = 0
-		For $i = 1 To UBound($aResult) - 1
-			$Filename = $aResult[$i][1] ; Filename
-			$CollectXY = $aResult[$i][5] ; Coords
-			If IsMainPage() Then
-				If IsArray($CollectXY) Then
-					For $t = 0 To UBound($CollectXY) - 1 ; each filename can have several positions
-						If isInsideDiamondXY($CollectXY[$t][0], $CollectXY[$t][1]) Then
-							If $g_iDebugSetlog = 1 Then SetLog($Filename & " found (" & $CollectXY[$t][0] & "," & $CollectXY[$t][1] & ")", $COLOR_SUCCESS)
-
-							ReDim $aiUnSortedMatchXY[$iMatchCount + 1][2]
-							$aiUnSortedMatchXY[$iMatchCount][0] = $CollectXY[$t][0]
-							$aiUnSortedMatchXY[$iMatchCount][1] = $CollectXY[$t][1]
-							$iMatchCount += 1
-						EndIf
-					Next
-				EndIf
-			EndIf
-		Next
-		; Sort the found collectors, then click on each in human like sequence
-		If $iMatchCount > 0 Then
-			Local $aiSortedMatchXY = SortXYArrayByClosestNeighbor($aiUnSortedMatchXY)
-			For $i = 0 To UBound($aiSortedMatchXY) - 1
-				If $g_iDebugSetlog = 1 Then SetLog("Sorted Collectors: " & $aiSortedMatchXY[$i][0] & "," & $aiSortedMatchXY[$i][1], $COLOR_SUCCESS)
-
-				If Not $g_bUseRandomClick Then
-					Click($aiSortedMatchXY[$i][0], $aiSortedMatchXY[$i][1], 1, 0, "#0430")
-					If _Sleep($DELAYCOLLECT2) Then Return
-				Else
-					ClickZone($aiSortedMatchXY[$i][0], $aiSortedMatchXY[$i][1], 5, "#0430")
-					_Sleep(Random($DELAYCOLLECT2, $DELAYCOLLECT2 * 4, 1))
-				EndIf
-			Next
-		EndIf
-	EndIf
-	#comments-end
 
 	If _Sleep($DELAYCOLLECT3) Then Return
 	checkMainScreen(False) ; check if errors during function
@@ -104,7 +64,7 @@ Func Collect($Treasury = True)
 	Local $res = DllCallMyBot("FindTile", "handle", $g_hHBitmap2, "str", $LootCart, "str", $fullCocAreas, "Int", $MaxReturnPoints)
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 	If IsArray($res) Then
-		If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
+		If $g_bDebugSetlog Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
 		If $res[0] = "0" Or $res[0] = "" Then
 			SetLog("No Loot Cart found, Yard is clean!", $COLOR_SUCCESS)
 		ElseIf StringLeft($res[0], 2) = "-1" Then
@@ -118,7 +78,7 @@ Func Collect($Treasury = True)
 					$LootCartX = Int($posPoint[0])
 					$LootCartY = Int($posPoint[1])
 					If isInsideDiamondXY($LootCartX, $LootCartY) Then
-						If $g_iDebugSetlog Then SetLog("LootCart found (" & $LootCartX & "," & $LootCartY & ")", $COLOR_SUCCESS)
+						If $g_bDebugSetlog Then SetLog("LootCart found (" & $LootCartX & "," & $LootCartY & ")", $COLOR_SUCCESS)
 						If IsMainPage() Then Click($LootCartX, $LootCartY, 1, 0, "#0330")
 						If _Sleep($DELAYCOLLECT1) Then Return
 
@@ -133,11 +93,11 @@ Func Collect($Treasury = True)
 							$CountGetInfo += 1
 							If $CountGetInfo >= 5 Then Return
 						WEnd
-						If $g_iDebugSetlog Then SetLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+						If $g_bDebugSetlog Then SetLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 						If @error Then Return SetError(0, 0, 0)
 						If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 							If StringInStr($sInfo[1], "Loot") = 0 Then
-								If $g_iDebugSetlog Then SetLog("Bad Loot Cart location", $COLOR_ACTION)
+								If $g_bDebugSetlog Then SetLog("Bad Loot Cart location", $COLOR_ACTION)
 							Else
 								If IsMainPage() Then Click($aLootCartBtn[0], $aLootCartBtn[1], 1, 0, "#0331") ;Click loot cart button
 							EndIf

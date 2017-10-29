@@ -29,7 +29,7 @@ Func OpenBlueStacks($bRestart = False)
 	$cmdPar = GetAndroidProgramParameter()
 	$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
 	$ErrorResult = ControlGetHandle("BlueStacks Error", "", "") ; Check for BS error window handle if it opens
-	If $g_iDebugSetlog = 1 Then Setlog("$PID= " & $PID & ", $ErrorResult = " & $ErrorResult, $COLOR_DEBUG)
+	If $g_bDebugAndroid Then Setlog("$PID= " & $PID & ", $ErrorResult = " & $ErrorResult, $COLOR_DEBUG)
 	If $PID = 0 Or $ErrorResult <> 0 Then ; IF ShellExecute failed or BS opens error window = STOP
 		SetError(1, 1, -1)
 		Return False
@@ -43,7 +43,6 @@ Func OpenBlueStacks($bRestart = False)
 		If __TimerDiff($hTimer) > $g_iAndroidLaunchWaitSec * 1000 Then ; if no BS position returned in 4 minutes, BS/PC has major issue so exit
 			SetLog("Serious error has occurred, please restart PC and try again", $COLOR_ERROR)
 			SetLog("BlueStacks refuses to load, waited " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_ERROR)
-			DebugSaveDesktopImage("BSOpenError_") ; Save copy of user desktop for analysis
 			SetLog("Unable to continue........", $COLOR_WARNING)
 			btnstop()
 			SetError(1, 1, -1)
@@ -611,18 +610,18 @@ Func CloseBlueStacks()
 			ServiceStop($aServiceList[$iIndex])
 			If @error Then
 				$bOops = True
-				If $g_iDebugSetlog = 1 Then Setlog($aServiceList[$iIndex] & "errored trying to stop", $COLOR_WARNING)
+				If $g_bDebugAndroid Then Setlog($aServiceList[$iIndex] & "errored trying to stop", $COLOR_WARNING)
 			EndIf
 		Next
 		If $bOops Then
-			If $g_iDebugSetlog = 1 Then Setlog("Service Stop issues, Stopping BS 2nd time", $COLOR_WARNING)
+			If $g_bDebugAndroid Then Setlog("Service Stop issues, Stopping BS 2nd time", $COLOR_WARNING)
 			KillBSProcess()
 			If _SleepStatus(5000) Then Return
 		EndIf
 	EndIf
 
 
-	If $g_iDebugSetlog = 1 And $bOops Then
+	If $g_bDebugAndroid And $bOops Then
 		SetLog("BS Kill Failed to stop service", $COLOR_ERROR)
 	EndIf
 
@@ -684,13 +683,13 @@ Func KillBSProcess()
 
 	For $iIndex = 0 To UBound($aBS_FileNames) - 1
 		$aBS_FileNames[$iIndex][1] = ProcessExists($aBS_FileNames[$iIndex][0]) ; Find the PID for each BS file name that is running
-		If $g_iDebugSetlog = 1 Then Setlog($aBS_FileNames[$iIndex][0] & " PID = " & $aBS_FileNames[$iIndex][1], $COLOR_DEBUG)
+		If $g_bDebugAndroid Then Setlog($aBS_FileNames[$iIndex][0] & " PID = " & $aBS_FileNames[$iIndex][1], $COLOR_DEBUG)
 		If $aBS_FileNames[$iIndex][1] > 0 Then ; If it is running, then kill it
 			ShellExecute(@WindowsDir & "\System32\taskkill.exe", " -t -pid " & $aBS_FileNames[$iIndex][1], "", Default, @SW_HIDE)
 			If _Sleep(1000) Then Return ; Give OS time to work
 		EndIf
 		If ProcessExists($aBS_FileNames[$iIndex][1]) Then ; If it is still running, then force kill it
-			If $g_iDebugSetlog = 1 Then Setlog($aBS_FileNames[$iIndex][0] & " 1st Kill failed, trying again", $COLOR_DEBUG)
+			If $g_bDebugAndroid Then Setlog($aBS_FileNames[$iIndex][0] & " 1st Kill failed, trying again", $COLOR_DEBUG)
 			ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $aBS_FileNames[$iIndex][1], "", Default, @SW_HIDE)
 			If _Sleep(500) Then Return ; Give OS time to work
 		EndIf
@@ -725,7 +724,7 @@ Func ServiceStop($sServiceName)
 		StdioClose($PID)
 		$Result = StringInStr($data, "stopped")
 		$bFailed = StringInStr($data, "failed")
-		;		If $g_iDebugSetlog = 1 Then
+		;		If $g_bDebugAndroid Then
 		;			SetLog($sServiceName & " stop status= " & $Result, $COLOR_DEBUG)
 		;			SetLog("StdOutRead= " & $data, $COLOR_DEBUG)
 		;		EndIf
@@ -739,10 +738,10 @@ Func ServiceStop($sServiceName)
 		EndIf
 		If _Sleep(1000) Then Return ; Loop delay check for close every 1 second
 	WEnd
-	If $g_iDebugSetlog = 1 And $svcWaitIterations > 15 Then
+	If $g_bDebugAndroid And $svcWaitIterations > 15 Then
 		SetLog("Failed to stop service " & $sServiceName, $COLOR_ERROR)
 	Else
-		If $g_iDebugSetlog = 1 Then SetLog($sServiceName & "Service stopped successfully", $COLOR_SUCCESS)
+		If $g_bDebugAndroid Then SetLog($sServiceName & "Service stopped successfully", $COLOR_SUCCESS)
 	EndIf
 EndFunc   ;==>ServiceStop
 

@@ -30,21 +30,22 @@ Func Initiate()
 			SetLogCentered(" Search Mode Start ", Default, $COLOR_SUCCESS)
 		EndIf
 		SetLogCentered("  Current Profile: " & $g_sProfileCurrentName & " ", "-", $COLOR_INFO)
-		If $g_iDebugSetlog = 1 Or $g_iDebugOcr = 1 Or $g_iDebugRedArea = 1 Or $g_bDevMode = True Or $g_iDebugImageSave = 1 Or $g_iDebugBuildingPos = 1 Or $g_iDebugOCRdonate = 1 Or $g_iDebugAttackCSV = 1 Then
+		If $g_bDebugSetlog Or $g_bDebugOcr Or $g_bDebugRedArea Or $g_bDevMode Or $g_bDebugImageSave Or $g_bDebugBuildingPos Or $g_bDebugOCRdonate Or $g_bDebugAttackCSV Or $g_bDebugAndroid Then
 			SetLogCentered(" Warning Debug Mode Enabled! ", "-", $COLOR_ERROR)
-			SetLog("      Setlog : " & $g_iDebugSetlog, $COLOR_ERROR, "Lucida Console", 8)
-			SetLog("         OCR : " & $g_iDebugOcr, $COLOR_ERROR, "Lucida Console", 8)
-			SetLog("     RedArea : " & $g_iDebugRedArea, $COLOR_ERROR, "Lucida Console", 8)
-			SetLog("   ImageSave : " & $g_iDebugImageSave, $COLOR_ERROR, "Lucida Console", 8)
-			SetLog(" BuildingPos : " & $g_iDebugBuildingPos, $COLOR_ERROR, "Lucida Console", 8)
-			SetLog("   OCRDonate : " & $g_iDebugOCRdonate, $COLOR_ERROR, "Lucida Console", 8)
-			SetLog("   AttackCSV : " & $g_iDebugAttackCSV, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog("      SetLog : " & $g_bDebugSetlog, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog("      Android : " & $g_bDebugAndroid, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog("         OCR : " & $g_bDebugOcr, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog("     RedArea : " & $g_bDebugRedArea, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog("   ImageSave : " & $g_bDebugImageSave, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog(" BuildingPos : " & $g_bDebugBuildingPos, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog("   OCRDonate : " & $g_bDebugOCRdonate, $COLOR_ERROR, "Lucida Console", 8)
+			SetLog("   AttackCSV : " & $g_bDebugAttackCSV, $COLOR_ERROR, "Lucida Console", 8)
 			SetLogCentered(" Warning Debug Mode Enabled! ", "-", $COLOR_ERROR)
 		EndIf
 
 		$g_bFirstStart = True
 
-		If $g_bNotifyDeleteAllPushesOnStart = True Then _DeletePush()
+		If $g_bNotifyDeleteAllPushesOnStart Then _DeletePush()
 
 		If Not $g_bSearchMode Then
 			$g_hTimerSinceStarted = __TimerInit()
@@ -53,11 +54,8 @@ Func Initiate()
 		AndroidBotStartEvent() ; signal android that bot is now running
 		If Not $g_bRunState Then Return
 
-		;		$g_bRunState = True
-
 		If Not $g_bSearchMode Then
-			;AdlibRegister("SetTime", 1000)
-			If $g_bRestarted = True Then
+			If $g_bRestarted Then
 				$g_bRestarted = False
 				IniWrite($g_sProfileConfigPath, "general", "Restarted", 0)
 				PushMsg("Restarted")
@@ -76,7 +74,7 @@ Func Initiate()
 			BotDetectFirstTime()
 			If Not $g_bRunState Then Return
 
-			If $bCheckLanguageFirst = False And $g_bCheckGameLanguage Then
+			If Not $bCheckLanguageFirst And $g_bCheckGameLanguage Then
 				TestLanguage()
 				$bCheckLanguageFirst = True
 			EndIf
@@ -156,8 +154,8 @@ EndFunc   ;==>IsStopped
 Func btnStart()
 	; decide when to run
 	EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
-	Local $RunNow = $g_iBotAction <> $eBotNoAction
-	If $RunNow Then
+	Local $bRunNow = $g_iBotAction <> $eBotNoAction
+	If $bRunNow Then
 		BotStart()
 	Else
 		$g_iBotAction = $eBotStart
@@ -178,21 +176,19 @@ EndFunc   ;==>btnStop
 Func btnSearchMode()
 	; decide when to run
 	EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
-	Local $RunNow = $g_iBotAction <> $eBotNoAction
-	If $RunNow Then
+	Local $bRunNow = $g_iBotAction <> $eBotNoAction
+	If $bRunNow Then
 		BotSearchMode()
 	Else
 		$g_iBotAction = $eBotSearchMode
 	EndIf
 EndFunc   ;==>btnSearchMode
 
-Func btnPause($RunNow = True)
-	;Send("{PAUSE}")
+Func btnPause($bRunNow = True)
 	TogglePause()
 EndFunc   ;==>btnPause
 
 Func btnResume()
-	;Send("{PAUSE}")
 	TogglePause()
 EndFunc   ;==>btnResume
 
@@ -220,7 +216,7 @@ EndFunc   ;==>btnAttackNowTS
 ;~ Hide Android Window again without overwriting $botPos[0] and [1]
 Func reHide()
 	WinGetAndroidHandle()
-	If $g_bIsHidden = True And $g_hAndroidWindow <> 0 And $g_bAndroidEmbedded = False Then
+	If $g_bIsHidden And $g_hAndroidWindow <> 0 And Not $g_bAndroidEmbedded Then
 		SetDebugLog("Hide " & $g_sAndroidEmulator & " Window after restart")
 		Return WinMove($g_hAndroidWindow, "", -32000, -32000)
 	EndIf
@@ -234,13 +230,13 @@ Func updateBtnHideState($newState = $GUI_ENABLE)
 EndFunc   ;==>updateBtnHideState
 
 Func btnHide()
-	If $g_bIsHidden = False Then
+	If Not $g_bIsHidden Then
 		GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_False", "Show"))
-		HideAndroidWindow(True)
+		HideAndroidWindow(True, Default, Default, "btnHide")
 		$g_bIsHidden = True
-	ElseIf $g_bIsHidden = True Then
+	ElseIf $g_bIsHidden Then
 		GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_True", "Hide"))
-		HideAndroidWindow(False)
+		HideAndroidWindow(False, Default, Default, "btnHide")
 		$g_bIsHidden = False
 	EndIf
 EndFunc   ;==>btnHide
@@ -249,14 +245,15 @@ Func updateBtnEmbed()
 	If $g_hBtnEmbed = 0 Then Return False
 	UpdateFrmBotStyle()
 	Local $state = GUICtrlGetState($g_hBtnEmbed)
-	If $g_hAndroidWindow = 0 Or $g_bAndroidBackgroundLaunched = True Or $g_bAndroidEmbed = False Then
+	If $g_hAndroidWindow = 0 Or $g_bAndroidBackgroundLaunched = True Or $g_bAndroidEmbed = False Or $g_iGuiMode <> 1 Then
 		If $state <> $GUI_DISABLE Then GUICtrlSetState($g_hBtnEmbed, $GUI_DISABLE)
+		updateBtnHideState()
 		Return False
 	EndIf
 
 	Local $text = GUICtrlRead($g_hBtnEmbed)
 	Local $newText
-	If $g_bAndroidEmbedded = True Then
+	If $g_bAndroidEmbedded Then
 		$newText = GetTranslatedFileIni("MBR GUI Control Bottom", "Func_AndroidEmbedded_False", "Undock")
 	Else
 		$newText = GetTranslatedFileIni("MBR GUI Control Bottom", "Func_AndroidEmbedded_True", "Dock")
@@ -277,7 +274,17 @@ Func btnEmbed()
 EndFunc   ;==>btnEmbed
 
 Func btnMakeScreenshot()
-	If $g_bRunState Then $g_bMakeScreenshotNow = True
+	If $g_bRunState Then
+		; call with flag when bot is running to execute on _sleep() idle
+		$g_bMakeScreenshotNow = True
+	Else
+		; call directly when bot is stopped
+		If $g_bScreenshotPNGFormat = False Then
+			MakeScreenshot($g_sProfileTempPath, "jpg")
+		Else
+			MakeScreenshot($g_sProfileTempPath, "png")
+		EndIf
+	EndIf
 EndFunc   ;==>btnMakeScreenshot
 
 Func GetFont()
@@ -289,81 +296,9 @@ Func GetFont()
 	Setlog($sText, $COLOR_DEBUG)
 EndFunc   ;==>GetFont
 
-
-
-Func btnAnalyzeVillage()
-	$g_iDebugBuildingPos = 1
-	$g_iDebugDeadBaseImage = 1
-	SETLOG("DEADBASE CHECK..................")
-	checkDeadBase()
-
-	SETLOG("TOWNHALL CHECK imgloc..................")
-	$g_iSearchTH = imgloccheckTownhallADV2()
-
-	SETLOG("TOWNHALL C# CHECK. IMGLOC..............")
-	imglocTHSearch()
-
-	SETLOG("MINE CHECK C#...................")
-	$g_aiPixelMine = GetLocationMine()
-	SetLog("[" & UBound($g_aiPixelMine) & "] Gold Mines")
-	SETLOG("ELIXIR CHECK C#.................")
-	$g_aiPixelElixir = GetLocationElixir()
-	SetLog("[" & UBound($g_aiPixelElixir) & "] Elixir Collectors")
-
-	SETLOG("DARK ELIXIR CHECK C#............")
-	$g_aiPixelDarkElixir = GetLocationDarkElixir()
-	SetLog("[" & UBound($g_aiPixelDarkElixir) & "] Dark Elixir Drill/s")
-
-	SETLOG("DARK ELIXIR STORAGE CHECK C#....")
-	$g_iBuildingToLoc = GetLocationDarkElixirStorage
-	SetLog("[" & UBound($g_iBuildingToLoc) & "] Dark Elixir Storage")
-	For $i = 0 To UBound($g_iBuildingToLoc) - 1
-		Local $pixel = $g_iBuildingToLoc[$i]
-		If $g_iDebugSetlog = 1 Then SetLog("- Dark Elixir Storage " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_DEBUG)
-	Next
-
-	SETLOG("LOCATE BARRACKS C#..............")
-	Local $PixelBarrackHere = GetLocationItem("getLocationBarrack")
-	SetLog("Total No. of Barracks: " & UBound($PixelBarrackHere), $COLOR_DEBUG)
-	For $i = 0 To UBound($PixelBarrackHere) - 1
-		Local $pixel = $PixelBarrackHere[$i]
-		If $g_iDebugSetlog = 1 Then SetLog("- Barrack " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_DEBUG)
-	Next
-
-	SETLOG("LOCATE BARRACKS C#..............")
-	Local $PixelDarkBarrackHere = GetLocationItem("getLocationDarkBarrack")
-	SetLog("Total No. of Dark Barracks: " & UBound($PixelBarrackHere), $COLOR_DEBUG)
-	For $i = 0 To UBound($PixelDarkBarrackHere) - 1
-		Local $pixel = $PixelDarkBarrackHere[$i]
-		If $g_iDebugSetlog = 1 Then SetLog("- Dark Barrack " & $i + 1 & ": (" & $pixel[0] & "," & $pixel[1] & ")", $COLOR_DEBUG)
-    Next
-
-	SetLog("WEAK BASE C#.....................", $COLOR_DEBUG1)
-	; Weak Base Detection modified by LunaEclipse
-	Local $weakBaseValues
-	If IsWeakBaseActive($DB) Or IsWeakBaseActive($LB) Then
-		$weakBaseValues = IsWeakBase()
-	EndIf
-	For $i = 0 To $g_iModeCount - 2
-		If IsWeakBaseActive($i) Then
-			If getIsWeak($weakBaseValues, $i) Then
-				SetLog(StringUpper($g_asModeText[$i]) & " IS A WEAK BASE: TRUE", $COLOR_DEBUG)
-			Else
-				SetLog(StringUpper($g_asModeText[$i]) & " IS A WEAK BASE: FALSE", $COLOR_DEBUG)
-			EndIf
-
-			SetLog("Time taken: " & $weakBaseValues[5][0] & " " & $weakBaseValues[5][1], $COLOR_DEBUG)
-		EndIf
-    Next
-
-	Setlog("--------------------------------------------------------------", $COLOR_DEBUG1)
-	$g_iDebugBuildingPos = 0
-	$g_iDebugDeadBaseImage = 0
-EndFunc   ;==>btnAnalyzeVillage
-
 Func btnVillageStat($source = "")
 
-	If $g_iFirstRun = 0 And $g_bRunState = True And $g_bBotPaused = False Then SetTime(True)
+	If $g_iFirstRun = 0 And $g_bRunState And Not $g_bBotPaused Then SetTime(True)
 
 	If GUICtrlGetState($g_hLblResultGoldNow) = $GUI_ENABLE + $GUI_SHOW Then
 		;hide normal values
@@ -417,196 +352,18 @@ Func btnVillageStat($source = "")
 
 EndFunc   ;==>btnVillageStat
 
-Func btnTestDonate()
-	Local $wasRunState = $g_bRunState
-	$g_bRunState = True
-	SETLOG("DONATE TEST..................START")
-	ZoomOut()
-	saveconfig()
-	readconfig()
-	applyconfig()
-	DonateCC()
-	SETLOG("DONATE TEST..................STOP")
-	$g_bRunState = $wasRunState
-EndFunc   ;==>btnTestDonate
-
-Func btnTestButtons()
-
-	Local $wasRunState = $g_bRunState
-	$g_bRunState = True
-	Local $ButtonX, $ButtonY
-	Local $hTimer = __TimerInit()
-	Local $res
-	Local $ImagesToUse[3]
-	$ImagesToUse[0] = @ScriptDir & "\imgxml\rearm\Traps_0_90.xml"
-	$ImagesToUse[1] = @ScriptDir & "\imgxml\rearm\Xbow_0_90.xml"
-	$ImagesToUse[2] = @ScriptDir & "\imgxml\rearm\Inferno_0_90.xml"
-	Local $x = 1
-	Local $y = 1
-	Local $w = 615
-	Local $h = 105
-
-	$g_fToleranceImgLoc = 0.950
-
-	SETLOG("SearchTile TEST..................START")
-	;;;;;; Use the Polygon to a rectangle or Square search zone ;;;;;;;;;;
-	Local $SearchArea = String($x & "|" & $y & "|" & $w & "|" & $h) ; x|y|Width|Height
-	; form a polygon " top(x,y) | Right (w,y) | Bottom(w,h) | Left(x,h) "
-	Local $AreaInRectangle = String($x + 1 & "," & $y + 1 & "|" & $w - 1 & "," & $y + 1 & "|" & $w - 1 & "," & $h - 1 & "|" & $x + 1 & "," & $h - 1)
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-	_CaptureRegion(125, 610, 740, 715)
-
-	For $i = 0 To 2
-		If FileExists($ImagesToUse[$i]) Then
-			$res = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[$i], "str", $SearchArea, "str", $AreaInRectangle)
-			If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
-			If IsArray($res) Then
-				If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
-				If $res[0] = "0" Then
-					; failed to find a loot cart on the field
-					SetLog("No Button found")
-				ElseIf $res[0] = "-1" Then
-					SetLog("DLL Error", $COLOR_ERROR)
-				ElseIf $res[0] = "-2" Then
-					SetLog("Invalid Resolution", $COLOR_ERROR)
-				Else
-					Local $expRet = StringSplit($res[0], "|", 2)
-					$ButtonX = 125 + Int($expRet[1])
-					$ButtonY = 610 + Int($expRet[2])
-					SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_SUCCESS)
-					;If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
-					_Sleep(200)
-					;Click(515, 400, 1, 0, "#0226")
-					_Sleep(200)
-					If isGemOpen(True) = True Then
-						Setlog("Not enough loot to rearm traps.....", $COLOR_ERROR)
-						Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
-						_Sleep(200)
-					Else
-						If $i = 0 Then SetLog("Rearmed Trap(s)", $COLOR_SUCCESS)
-						If $i = 1 Then SetLog("Reloaded XBow(s)", $COLOR_SUCCESS)
-						If $i = 2 Then SetLog("Reloaded Inferno(s)", $COLOR_SUCCESS)
-						_Sleep(200)
-					EndIf
-				EndIf
-			EndIf
-		EndIf
-	Next
-	SetLog("  - Calculated  in: " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
-	SETLOG("SearchTile TEST..................STOP")
-
-	Local $hTimer = __TimerInit()
-	SETLOG("MBRSearchImage TEST..................STOP")
-
-	For $i = 0 To 2
-		If FileExists($ImagesToUse[$i]) Then
-			_CaptureRegion2(125, 610, 740, 715)
-			$res = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[$i], "str", "FV", "int", 1)
-			If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
-			If IsArray($res) Then
-				If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
-				If $res[0] = "0" Then
-					; failed to find a loot cart on the field
-					SetLog("No Button found")
-				ElseIf $res[0] = "-1" Then
-					SetLog("DLL Error", $COLOR_ERROR)
-				ElseIf $res[0] = "-2" Then
-					SetLog("Invalid Resolution", $COLOR_ERROR)
-				Else
-					$expRet = StringSplit($res[0], "|", 2)
-					$ButtonX = 125 + Int($expRet[1])
-					$ButtonY = 610 + Int($expRet[2])
-					SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_SUCCESS)
-					;If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
-					_Sleep(200)
-					;Click(515, 400, 1, 0, "#0226")
-					_Sleep(200)
-					If isGemOpen(True) = True Then
-						Setlog("Not enough loot to rearm traps.....", $COLOR_ERROR)
-						Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
-						_Sleep(200)
-					Else
-						If $i = 0 Then SetLog("Rearmed Trap(s)", $COLOR_SUCCESS)
-						If $i = 1 Then SetLog("Reloaded XBow(s)", $COLOR_SUCCESS)
-						If $i = 2 Then SetLog("Reloaded Inferno(s)", $COLOR_SUCCESS)
-						_Sleep(200)
-					EndIf
-				EndIf
-			EndIf
-		EndIf
-	Next
-	SetLog("  - Calculated  in: " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
-
-	SETLOG("MBRSearchImage TEST..................STOP")
-	$g_bRunState = $wasRunState
-
-EndFunc   ;==>btnTestButtons
-
-Func ButtonBoost()
-
-	Local $wasRunState = $g_bRunState
-	$g_bRunState = True
-	Local $ButtonX, $ButtonY
-	Local $hTimer = __TimerInit()
-	Local $res
-	Local $ImagesToUse[2]
-	$ImagesToUse[0] = @ScriptDir & "\imgxml\boostbarracks\BoostBarrack_0_92.xml"
-	$ImagesToUse[1] = @ScriptDir & "\imgxml\boostbarracks\BarrackBoosted_0_92.xml"
-	$g_fToleranceImgLoc = 0.90
-	SETLOG("MBRSearchImage TEST..................STARTED")
-	_CaptureRegion2(125, 610, 740, 715)
-	For $i = 0 To 1
-		If FileExists($ImagesToUse[$i]) Then
-			$res = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[$i], "str", "FV", "int", 1)
-			If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
-			If IsArray($res) Then
-				If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
-				If $res[0] = "0" Then
-					; failed to find a loot cart on the field
-					If $i = 1 Then SetLog("No Button found")
-				ElseIf $res[0] = "-1" Then
-					SetLog("DLL Error", $COLOR_ERROR)
-				ElseIf $res[0] = "-2" Then
-					SetLog("Invalid Resolution", $COLOR_ERROR)
-				Else
-					_Sleep(200)
-					If $i = 0 Then
-						SetLog("Found the Button to Boost individual")
-						Local $expRet = StringSplit($res[0], "|", 2)
-						$ButtonX = 125 + Int($expRet[1])
-						$ButtonY = 610 + Int($expRet[2])
-						SetLog("found (" & $ButtonX & "," & $ButtonY & ")", $COLOR_SUCCESS)
-						;If IsMainPage() Then Click($ButtonX, $ButtonY, 1, 0, "#0330")
-						ExitLoop
-					Else
-						SetLog("The Barrack is already boosted!")
-					EndIf
-				EndIf
-			EndIf
-		EndIf
-	Next
-	SetLog("  - Calculated  in: " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
-	SETLOG("MBRSearchImage TEST..................STOP")
-	$g_bRunState = $wasRunState
-
-EndFunc   ;==>ButtonBoost
-
-Func arrows()
-	getArmyHeroCount()
-EndFunc   ;==>arrows
-
-Func EnableGuiControls($OptimizedRedraw = True)
-	Return ToggleGuiControls(True, $OptimizedRedraw)
+Func EnableGuiControls($bOptimizedRedraw = True)
+	Return ToggleGuiControls(True, $bOptimizedRedraw)
 EndFunc   ;==>EnableGuiControls
 
-Func DisableGuiControls($OptimizedRedraw = True)
-	Return ToggleGuiControls(False, $OptimizedRedraw)
+Func DisableGuiControls($bOptimizedRedraw = True)
+	Return ToggleGuiControls(False, $bOptimizedRedraw)
 EndFunc   ;==>DisableGuiControls
 
-Func ToggleGuiControls($Enable, $OptimizedRedraw = True)
-	If $OptimizedRedraw = True Then Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "ToggleGuiControls")
-	If $Enable = False Then
+Func ToggleGuiControls($bEnabled, $bOptimizedRedraw = True)
+	If $g_iGuiMode <> 1 Then Return
+	If $bOptimizedRedraw Then Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "ToggleGuiControls")
+	If Not $bEnabled Then
 		SetDebugLog("Disable GUI Controls")
 	Else
 		SetDebugLog("Enable GUI Controls")
@@ -615,7 +372,7 @@ Func ToggleGuiControls($Enable, $OptimizedRedraw = True)
 	For $i = $g_hFirstControlToHide To $g_hLastControlToHide
 		If IsAlwaysEnabledControl($i) Then ContinueLoop
 		If $g_bNotifyPBEnable And $i = $g_hBtnNotifyDeleteMessages Then ContinueLoop ; exclude the DeleteAllMesages button when PushBullet is enabled
-		If $Enable = False Then
+		If Not $bEnabled Then
 			; Save state of all controls on tabs
 			$g_aiControlPrevState[$i] = BitAND(GUICtrlGetState($i), $GUI_ENABLE)
 			If $g_aiControlPrevState[$i] Then GUICtrlSetState($i, $GUI_DISABLE)
@@ -624,11 +381,11 @@ Func ToggleGuiControls($Enable, $OptimizedRedraw = True)
 			If $g_aiControlPrevState[$i] Then GUICtrlSetState($i, $g_aiControlPrevState[$i])
 		EndIf
 	Next
-	If $Enable = False Then
+	If Not $bEnabled Then
 		ControlDisable("", "", $g_hCmbGUILanguage)
 	Else
 		ControlEnable("", "", $g_hCmbGUILanguage)
 	EndIf
 	$g_bGUIControlDisabled = False
-	If $OptimizedRedraw = True Then SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "ToggleGuiControls")
+	If $bOptimizedRedraw Then SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "ToggleGuiControls")
 EndFunc   ;==>ToggleGuiControls

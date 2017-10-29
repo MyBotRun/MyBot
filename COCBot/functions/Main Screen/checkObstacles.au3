@@ -64,9 +64,9 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 	; Detect All Reload Button errors => 1- Another device, 2- Take a break, 3- Connection lost or error, 4- Out of sync, 5- Inactive, 6- Maintenance
 	Local $aMessage = _PixelSearch($aIsReloadError[0], $aIsReloadError[1], $aIsReloadError[0] + 3, $aIsReloadError[1] + 11, Hex($aIsReloadError[2], 6), $aIsReloadError[3], $g_bNoCapturePixel)
 	If IsArray($aMessage) Then
-		If $g_iDebugSetlog = 1 Then SetLog("(Inactive=" & _GetPixelColor($aIsInactive[0], $aIsInactive[1]) & ")(DC=" & _GetPixelColor($aIsConnectLost[0], $aIsConnectLost[1]) & ")(OoS=" & _GetPixelColor($aIsCheckOOS[0], $aIsCheckOOS[1]) & ")", $COLOR_DEBUG)
-		If $g_iDebugSetlog = 1 Then SetLog("(Maintenance=" & _GetPixelColor($aIsMaintenance[0], $aIsMaintenance[1]) & ")(RateCoC=" & ")", $COLOR_DEBUG)
-		If $g_iDebugSetlog = 1 Then SetLog("33B5E5=>true, 282828=>false", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetLog("(Inactive=" & _GetPixelColor($aIsInactive[0], $aIsInactive[1]) & ")(DC=" & _GetPixelColor($aIsConnectLost[0], $aIsConnectLost[1]) & ")(OoS=" & _GetPixelColor($aIsCheckOOS[0], $aIsCheckOOS[1]) & ")", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetLog("(Maintenance=" & _GetPixelColor($aIsMaintenance[0], $aIsMaintenance[1]) & ")(RateCoC=" & ")", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetLog("33B5E5=>true, 282828=>false", $COLOR_DEBUG)
 		;;;;;;;##### 1- Another device #####;;;;;;;
 		$Result = getOcrMaintenanceTime(184, 325 + $g_iMidOffsetY, "Another Device OCR:") ; OCR text to find Another device message
 		If StringInStr($Result, "device", $STR_NOCASESENSEBASIC) Or _
@@ -152,7 +152,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 				checkObstacles_ResetSearch()
 			Case Else
 				;  Add check for game update and Rate CoC error messages
-				If $g_iDebugImageSave = 1 Then DebugImageSave("ChkObstaclesReloadMsg_") ; debug only
+				If $g_bDebugImageSave Then DebugImageSave("ChkObstaclesReloadMsg_") ; debug only
 				$Result = getOcrRateCoc(228, 390 + $g_iMidOffsetY, "Check Obstacles getOCRRateCoC= ")
 				If StringInStr($Result, "never", $STR_NOCASESENSEBASIC) Or UBound(decodeSingleCoord(FindImageInPlace("RateNever", $g_sAppRateNever, "228,420,273,448", False))) > 1 Then
 					SetLog("Clash feedback window found, permanently closed!", $COLOR_ERROR)
@@ -162,8 +162,21 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 				EndIf
 				$Result = getOcrMaintenanceTime(171, 325 + $g_iMidOffsetY, "Check Obstacles OCR 'Good News!'=") ; OCR text for "Good News!"
 				If StringInStr($Result, "new", $STR_NOCASESENSEBASIC) Then
-					$msg = "Game Update is required, Bot must stop!!"
-					Return checkObstacles_StopBot($msg) ; stop bot
+					If Not $g_bAutoUpdateGame Then
+						$msg = "Game Update is required, Bot must stop!!"
+						Return checkObstacles_StopBot($msg) ; stop bot
+					Else
+						; CoC update required
+						Switch UpdateGame()
+							Case True, Default
+								; Update completed or not required
+								Return checkObstacles_ReloadCoC()
+							Case False
+								; Update failed
+								$msg = "Game Update failed, Bot must stop!!"
+								Return checkObstacles_StopBot($msg) ; stop bot
+						EndSwitch
+					EndIf
 				ElseIf StringInStr($Result, "rate", $STR_NOCASESENSEBASIC) Then ; back up check for rate CoC reload window
 					SetLog("Clash feedback window found, permanently closed!", $COLOR_ERROR)
 					PureClick(248, 408 + $g_iMidOffsetY, 1, 0, "#9999") ; Click on never to close window and stop reappear. Never=248,408 & Later=429,408
@@ -343,3 +356,32 @@ Func checkObstacles_Network($bForceCapture = False, $bReloadCoC = True)
 
 	Return False
 EndFunc   ;==>checkObstacles_Network
+
+Func UpdateGame()
+	; launch Play Store
+	SetLog("Open Play Store for Game Update...")
+	OpenPlayStoreGame()
+#cs Finish that when time permits ;)
+	; wait 1 Minute to open
+
+	; Check for Update button
+		SetLog("Play Store Game update available"
+
+	; Check for Open button
+		SetLog("Play Store Game update not required"
+		Return Default
+
+	; press update button
+
+	; press accept button
+
+	; track progress, area 17,317 - 805,335
+
+	; Check for Open button
+		SetLog("Game updated"
+		Return True
+
+	SetLog("Game updated failed"
+	Return False
+#ce
+EndFunc   ;==>UpdateGame

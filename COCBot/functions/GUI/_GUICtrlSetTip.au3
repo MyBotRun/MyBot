@@ -14,6 +14,8 @@
 ; ===============================================================================================================================
 #include-once
 
+Global $g_hToolTip = 0
+
 Func _GUICtrlSetTip($controlID, $tiptext, $title = Default, $icon = Default, $options = Default, $useControlID = True)
 	;Return GUICtrlSetTip($controlID, $tiptext, $title, $icon, $options)
 	If $g_hToolTip = 0 Then

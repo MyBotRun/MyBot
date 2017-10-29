@@ -17,9 +17,9 @@
 
 Func BreakPersonalShield()
 
-	If $g_iDebugSetlog = 1 Then Setlog("Begin BreakPersonalShield:", $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then Setlog("Begin BreakPersonalShield:", $COLOR_DEBUG1)
 
-	If $g_iDebugSetlog = 1 Then
+	If $g_bDebugSetlog Then
 		Setlog("Checking if Shield available", $COLOR_INFO)
 		Setlog("Have shield pixel color: " & _GetPixelColor($aHaveShield, $g_bCapturePixel) & " :" & _CheckPixel($aHaveShield, $g_bCapturePixel), $COLOR_DEBUG)
 	EndIf
@@ -44,7 +44,7 @@ Func BreakPersonalShield()
 			Setlog("Shield removed", $COLOR_SUCCESS)
 		EndIf
 	Else
-		If $g_iDebugSetlog = 1 Then Setlog("No shield available", $COLOR_SUCCESS)
+		If $g_bDebugSetlog Then Setlog("No shield available", $COLOR_SUCCESS)
 	EndIf
 
 	If _Sleep($DELAYPERSONALSHIELD1) Then ; wait for break shield window
@@ -52,7 +52,7 @@ Func BreakPersonalShield()
 		Return
 	EndIf
 
-	If $g_iDebugSetlog = 1 Then
+	If $g_bDebugSetlog Then
 		Setlog("Checking if Personal Guard available", $COLOR_INFO)
 		Setlog("Have guard pixel color: " & _GetPixelColor($aHavePerGuard, $g_bCapturePixel) & " :" & _CheckPixel($aHavePerGuard, $g_bCapturePixel), $COLOR_DEBUG)
 	EndIf
@@ -74,10 +74,10 @@ Func BreakPersonalShield()
 				SetError(6, "guard Okay button not found")
 				Return
 			EndIf
-			Setlog("Guard removed", $COLOR_SUCCESS)
+			Setlog("Personal Guard removed", $COLOR_SUCCESS)
 		EndIf
 	Else
-		If $g_iDebugSetlog = 1 Then Setlog("No guard available", $COLOR_SUCCESS)
+		If $g_bDebugSetlog Then Setlog("No guard available", $COLOR_SUCCESS)
 	EndIf
 
 EndFunc   ;==>BreakPersonalShield

@@ -30,6 +30,7 @@ EndFunc   ;==>GetAndroidDisplayHWnD
 
 ; Syncronized _AndroidEmbed
 Func AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed = False, $bNoAndroidScreenSizeCheck = False)
+	If $g_iGuiMode <> 1 Then Return False
 	If $g_bAndroidEmbed = False Then Return False
 	Return _AndroidEmbed($Embed, $CallWinGetAndroidHandle, $bForceEmbed, $bNoAndroidScreenSizeCheck)
 	#cs
@@ -191,7 +192,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 			; move Android rendering control back to its place
 			WinMove(($targetIsHWnD ? $hCtrl : $hCtrlTarget), "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3])
 			WinMove2(($targetIsHWnD ? $hCtrl : $hCtrlTarget), "", $aPosCtl[0], $aPosCtl[1], $aPosCtl[2], $aPosCtl[3], 0, 0, False)
-			If $g_iDebugAndroidEmbedded Then SetDebugLog("Placed Android Control at " & $aPosCtl[0] & "," & $aPosCtl[1])
+			If $g_bDebugAndroidEmbedded Then SetDebugLog("Placed Android Control at " & $aPosCtl[0] & "," & $aPosCtl[1])
 
 			ControlHide($g_hGUI_LOG, "", $g_hDivider)
 			$aPosFrmBotEx = ControlGetPos($g_hFrmBot, "", $g_hFrmBotEx)
@@ -311,7 +312,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 		updateBtnEmbed()
 		Return False
 	EndIf
-	If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPos[] = " & $aPos[0] & ", " & $aPos[1] & ", " & $aPos[2] & ", " & $aPos[3], Default, True)
+	If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPos[] = " & $aPos[0] & ", " & $aPos[1] & ", " & $aPos[2] & ", " & $aPos[3], Default, True)
 	$lCurStyle = _WinAPI_GetWindowLong($g_hAndroidWindow, $GWL_STYLE)
 	$lCurExStyle = _WinAPI_GetWindowLong($g_hAndroidWindow, $GWL_EXSTYLE)
 
@@ -351,15 +352,15 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 		;Switch $g_sAndroidEmulator
 		;	Case "BlueStacks", "BlueStacks2"
 				If $aPosCtl[2] <> $g_iAndroidClientWidth Then
-					If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[2] = " & $aPosCtl[2] & " changed to " & $g_iAndroidClientWidth, Default, True)
+					If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[2] = " & $aPosCtl[2] & " changed to " & $g_iAndroidClientWidth, Default, True)
 					$aPosCtl[2] = $g_iAndroidClientWidth
 				EndIf
 				If $aPosCtl[3] <> $g_iAndroidClientHeight Then
-					If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[3] = " & $aPosCtl[3] & " changed to " & $g_iAndroidClientHeight, Default, True)
+					If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[3] = " & $aPosCtl[3] & " changed to " & $g_iAndroidClientHeight, Default, True)
 					$aPosCtl[3] = $g_iAndroidClientHeight
 				EndIf
 		;EndSwitch
-		If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[] = " & $aPosCtl[0] & ", " & $aPosCtl[1] & ", " & $aPosCtl[2] & ", " & $aPosCtl[3], Default, True)
+		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosCtl[] = " & $aPosCtl[0] & ", " & $aPosCtl[1] & ", " & $aPosCtl[2] & ", " & $aPosCtl[3], Default, True)
 
 		If $targetIsHWnD Then
 			Local $aPosParentCtl = $aPosCtl
@@ -375,12 +376,12 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 				Return False
 			EndIf
 		EndIf
-		If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosParentCtl[] = " & $aPosParentCtl[0] & ", " & $aPosParentCtl[1] & ", " & $aPosParentCtl[2] & ", " & $aPosParentCtl[3], Default, True)
+		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosParentCtl[] = " & $aPosParentCtl[0] & ", " & $aPosParentCtl[1] & ", " & $aPosParentCtl[2] & ", " & $aPosParentCtl[3], Default, True)
 
 		Local $botClientWidth = $g_aFrmBotPosInit[4]
 		Local $botClientHeight = $g_aFrmBotPosInit[5] - $g_aFrmBotPosInit[7]
 		$g_iFrmBotAddH = $aPosCtl[3] - $botClientHeight - $g_aFrmBotPosInit[7]
-		If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $g_iFrmBotAddH = " & $g_iFrmBotAddH, Default, True)
+		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $g_iFrmBotAddH = " & $g_iFrmBotAddH, Default, True)
 		If $g_iFrmBotAddH < 0 Then $g_iFrmBotAddH = 0
 
 		Local $g_hFrmBotWidth = $g_aFrmBotPosInit[2] + $aPosCtl[2] + 2
@@ -404,7 +405,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 
 		$aPosFrmBotEx = ControlGetPos($g_hFrmBot, "", $g_hFrmBotEx)
 		$aPosFrmBotEx[3] = $g_aFrmBotPosInit[6]
-		If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosFrmBotEx[] = " & $aPosFrmBotEx[0] & ", " & $aPosFrmBotEx[1] & ", " & $aPosFrmBotEx[2] & ", " & $aPosFrmBotEx[3], Default, True)
+		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosFrmBotEx[] = " & $aPosFrmBotEx[0] & ", " & $aPosFrmBotEx[1] & ", " & $aPosFrmBotEx[2] & ", " & $aPosFrmBotEx[3], Default, True)
 		WinMove($g_hFrmBotEx, "", $aPosCtl[2] + 2, 0, $aPosFrmBotEx[2], $aPosFrmBotEx[3] + $g_iFrmBotAddH)
 		WinMove($g_hFrmBotBottom, "", $aPosCtl[2] + 2, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP + $g_iFrmBotAddH)
 		;WinSetTrans($g_hFrmBotBottom, "", 254)
@@ -417,11 +418,11 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 		Local $a = ControlGetRelativePos($g_hFrmBotEx, "", $g_hTabMain)
 		If UBound($a) > 3 Then
 			Local $ctrlResult = WinMove(GUICtrlGetHandle($g_hTabMain), "", $a[0], $a[1], $a[2], $a[3] + $g_iFrmBotAddH)
-			If $g_iDebugAndroidEmbedded Then SetDebugLog("Move $g_hTabMain Pos: " & $a[0] & ", " & $a[1] & ", " & $a[2] & ", " & $a[3] + $g_iFrmBotAddH & ": " & $ctrlResult)
+			If $g_bDebugAndroidEmbedded Then SetDebugLog("Move $g_hTabMain Pos: " & $a[0] & ", " & $a[1] & ", " & $a[2] & ", " & $a[3] + $g_iFrmBotAddH & ": " & $ctrlResult)
 		EndIf
 		; increase log size
 		$aPosLog = ControlGetPos($g_hFrmBotEx, "", $g_hGUI_LOG)
-		If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosLog[] = " & $aPosLog[0] & ", " & $aPosLog[1] & ", " & $aPosLog[2] & ", " & $aPosLog[3], Default, True)
+		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosLog[] = " & $aPosLog[0] & ", " & $aPosLog[1] & ", " & $aPosLog[2] & ", " & $aPosLog[3], Default, True)
 		WinMove($g_hGUI_LOG, "", $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, $aPosLog[2], $aPosLog[3] + $g_iFrmBotAddH)
 
 		WinMove2($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY, $g_hFrmBotWidth, $g_hFrmBotHeight, 0, 0, False)
@@ -506,13 +507,13 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 
 	Local $aCheck = WinGetPos($g_hAndroidWindow)
 	If IsArray($aCheck) Then
-		If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: Android Window Pos: " & $aCheck[0] & ", " & $aCheck[1] & ", " & $aCheck[2] & ", " & $aCheck[3], Default, True)
+		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: Android Window Pos: " & $aCheck[0] & ", " & $aCheck[1] & ", " & $aCheck[2] & ", " & $aCheck[3], Default, True)
 	Else
 		SetDebugLog("AndroidEmbed: Android Window not found", $COLOR_ERROR)
 	EndIf
 	Local $aCheck = ControlGetPos(GetCurrentAndroidHWnD(), $g_sAppPaneName, $g_sAppClassInstance)
 	If IsArray($aCheck) Then
-		If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: Android Control Pos: " & $aCheck[0] & ", " & $aCheck[1] & ", " & $aCheck[2] & ", " & $aCheck[3], Default, True)
+		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: Android Control Pos: " & $aCheck[0] & ", " & $aCheck[1] & ", " & $aCheck[2] & ", " & $aCheck[3], Default, True)
 	Else
 		SetDebugLog("AndroidEmbed: Android Control not found", $COLOR_ERROR)
 	EndIf
@@ -815,11 +816,11 @@ Func AndroidShield($sCaller, $Enable = Default, $CallWinGetAndroidHandle = True,
 	Return _AndroidShield($sCaller, $Enable, $CallWinGetAndroidHandle, $iDelay, $AndroidHasFocus, $AndroidUpdateFocus)
 	#cs
 	Local $hMutex = AcquireMutex("AndroidShield", Default, 1000)
-	;If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidShield, acquired mutex: " & $hMutex, Default, True)
+	;If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidShield, acquired mutex: " & $hMutex, Default, True)
 	If $hMutex <> 0 Then
 		Local $Result = _AndroidShield($sCaller, $Enable, $CallWinGetAndroidHandle, $iDelay, $AndroidHasFocus, $AndroidUpdateFocus)
 		ReleaseMutex($hMutex)
-		;If $g_iDebugAndroidEmbedded Then SetDebugLog("AndroidShield, released mutex: " & $hMutex, Default, True)
+		;If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidShield, released mutex: " & $hMutex, Default, True)
 		Return $Result
 	Else
 		SetDebugLog("AndroidShield, failed acquire mutex, caller: " & $sCaller, Default, True)
@@ -850,7 +851,7 @@ Func _AndroidShield($sCaller, $Enable = Default, $CallWinGetAndroidHandle = True
 		$g_avAndroidShieldDelay[1] = $iDelay
 		$g_avAndroidShieldDelay[2] = $Enable
 		$g_avAndroidShieldDelay[3] = $AndroidHasFocus
-		SetDebugLog("ShieldAndroid: Delayed update $iDelay=" & $iDelay & ", $Enable=" & $Enable & ", $AndroidHasFocus=" & $AndroidHasFocus & ", caller: " & $sCaller, Default, True)
+		;SetDebugLog("ShieldAndroid: Delayed update $iDelay=" & $iDelay & ", $Enable=" & $Enable & ", $AndroidHasFocus=" & $AndroidHasFocus & ", caller: " & $sCaller, Default, True)
 		Return False
 	EndIf
 
@@ -946,7 +947,7 @@ Func _AndroidShield($sCaller, $Enable = Default, $CallWinGetAndroidHandle = True
 		#ce
 		If $bDetachedShield = False Then
 			If $g_hFrmBotEmbeddedShield = 0 Then
-				$g_hFrmBotEmbeddedShield = _GUICreate("", $aPosCtl[2], $aPosCtl[3], 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), ($bNoVisibleShield ? $WS_EX_TRANSPARENT : 0), $g_hFrmBot) ; Android Shield for mouse
+				$g_hFrmBotEmbeddedShield = GUICreate("", $aPosCtl[2], $aPosCtl[3], 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), ($bNoVisibleShield ? $WS_EX_TRANSPARENT : 0), $g_hFrmBot) ; Android Shield for mouse
 			Else
 				WinMove($g_hFrmBotEmbeddedShield, "", 0, 0, $aPosCtl[2], $aPosCtl[3]) ; $HWND_TOPMOST
 			EndIf
@@ -955,10 +956,10 @@ Func _AndroidShield($sCaller, $Enable = Default, $CallWinGetAndroidHandle = True
 			Local $bHasFocus = WinActive($g_hFrmBot) <> 0
 			Local $a = AndroidEmbed_HWnD_Position(True, $bDetachedShield)
 			If $g_hFrmBotEmbeddedShield = 0 Then
-				$g_hFrmBotEmbeddedShield = _GUICreate("", $aPosCtl[2], $aPosCtl[3], $a[0], $a[1], BitOR($WS_POPUP, $WS_TABSTOP), BitOR($WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE, $WS_EX_TRANSPARENT), $g_hFrmBot) ; Android Shield for mouse
+				$g_hFrmBotEmbeddedShield = GUICreate("", $aPosCtl[2], $aPosCtl[3], $a[0], $a[1], BitOR($WS_POPUP, $WS_TABSTOP), BitOR($WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE, $WS_EX_TRANSPARENT), $g_hFrmBot) ; Android Shield for mouse
 				_WinAPI_EnableWindow($g_hFrmBotEmbeddedShield, False)
 				GUISetOnEvent($GUI_EVENT_PRIMARYDOWN, "BotMoveRequest")
-				$g_hFrmBotEmbeddedMouse = _GUICreate("", $aPosCtl[2], $aPosCtl[3], 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TRANSPARENT, $g_hFrmBot) ; Android Mouse layer
+				$g_hFrmBotEmbeddedMouse = GUICreate("", $aPosCtl[2], $aPosCtl[3], 0, 0, BitOR($WS_CHILD, $WS_TABSTOP), $WS_EX_TRANSPARENT, $g_hFrmBot) ; Android Mouse layer
 			EndIf
 			If $g_bBotDockedShrinked And Not $bHasFocus Then WinMove2($g_hFrmBotButtons, "", -1, -1, -1, -1, $HWND_BOTTOM, 0, False)
 			WinMove2($g_hFrmBotEmbeddedShield, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3], ($bHasFocus ? -1 : $HWND_BOTTOM), 0, False) ; $SWP_SHOWWINDOW
@@ -1027,7 +1028,7 @@ Func AndroidGraphicsGdiBegin()
 			$iL = $a[0]
 			$iT = $a[1]
 		EndIf
-		$g_hFrmBotEmbeddedGraphics = _GUICreate("", $iW, $iH, $iL, $iT, $WS_CHILD, BitOR($WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE, $WS_EX_LAYERED, $WS_EX_TOPMOST), $g_hFrmBot)
+		$g_hFrmBotEmbeddedGraphics = GUICreate("", $iW, $iH, $iL, $iT, $WS_CHILD, BitOR($WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE, $WS_EX_LAYERED, $WS_EX_TOPMOST), $g_hFrmBot)
 	EndIf
 	WinMove2($g_hFrmBotEmbeddedGraphics, "", $iW, $iH, $iL, $iT, $HWND_NOTOPMOST, 0, False)
 	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEmbeddedGraphics)

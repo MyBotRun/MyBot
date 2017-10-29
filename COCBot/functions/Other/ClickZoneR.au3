@@ -23,7 +23,7 @@ Func ClickZone ($x, $y, $Offset = 7, $debugtxt = "", $times = 1, $speed = 0, $Ou
 		$BasY = $y-$Offset
 	EndIf
 	Dim $g_aiTempBot[4] = [$x-$Offset, $BasY, $x+$Offset, $y+$Offset]
-	If $g_iDebugClick = 1 Then
+	If $g_bDebugClick Then
 		Local $txt = _DecodeDebug($debugtxt)
 		SetLog("ClickZone " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
 	EndIf
@@ -63,12 +63,12 @@ Func ClickR($boundingBox, $x, $y, $times = 1, $speed = 0, $OutScreen = (680 + $g
 	$y = Round($y, 3)
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
-			If $g_iDebugClick = 1 Then SetLog("_ControlClick " & "X=" & $x & " Y=" & $y & " ,t" & $times & ",s" & $speed & $AncVal, $COLOR_ACTION, "Verdana", "7.5", 0)
+			If $g_bDebugClick Then SetLog("_ControlClick " & "X=" & $x & " Y=" & $y & " ,t" & $times & ",s" & $speed & $AncVal, $COLOR_ACTION, "Verdana", "7.5", 0)
 			Click($x, $y)
 			If _Sleep($speed, False) Then ExitLoop
 		Next
 	Else
-		If $g_iDebugClick = 1 Then SetLog("_ControlClick " & "X=" & $x & " Y=" & $y & $AncVal, $COLOR_ACTION, "Verdana", "7.5", 0)
+		If $g_bDebugClick Then SetLog("_ControlClick " & "X=" & $x & " Y=" & $y & $AncVal, $COLOR_ACTION, "Verdana", "7.5", 0)
 		Click($x, $y)
 	EndIf
 EndFunc   ;==>ClickR
@@ -106,12 +106,12 @@ Func PureClickR($boundingBox, $x, $y, $times = 1, $speed = 0, $OutScreen = (680 
 	$y = Round($y, 3)
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
-			If $g_iDebugClick = 1 Then SetLog("PureClick " & "X=" & $x & " Y=" & $y & " ,t" & $times & ",s" & $speed & $AncVal, $COLOR_ACTION, "Verdana", "7.5", 0)
+			If $g_bDebugClick Then SetLog("PureClick " & "X=" & $x & " Y=" & $y & " ,t" & $times & ",s" & $speed & $AncVal, $COLOR_ACTION, "Verdana", "7.5", 0)
 			PureClick($x, $y)
 			If _Sleep($speed, False) Then ExitLoop
 		Next
 	Else
-		If $g_iDebugClick = 1 Then SetLog("PureClick " & "X=" & $x & " Y=" & $y & $AncVal, $COLOR_ACTION, "Verdana", "7.5", 0)
+		If $g_bDebugClick Then SetLog("PureClick " & "X=" & $x & " Y=" & $y & $AncVal, $COLOR_ACTION, "Verdana", "7.5", 0)
 		PureClick($x, $y)
 	EndIf
 EndFunc   ;==>ClickR
@@ -148,7 +148,7 @@ Func GemClickR($boundingBox,$x, $y, $times = 1, $speed = 0, $debugtxt = "", $Out
 	$x = Round($x, 3)
 	$y = Round($y, 3)
 
-	If $g_iDebugClick = 1 Then
+	If $g_bDebugClick Then
 		Local $txt = _DecodeDebug($debugtxt)
 		SetLog("GemClickR " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
 	EndIf
@@ -172,7 +172,7 @@ Func GemClickR($boundingBox,$x, $y, $times = 1, $speed = 0, $debugtxt = "", $Out
 			   Return False
 			EndIf
 			If isProblemAffectBeforeClick($i) Then
-				If $g_iDebugClick = 1 Then Setlog("VOIDED GemClickR " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
+				If $g_bDebugClick Then Setlog("VOIDED GemClickR " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
 				Return  ; if need to clear screen do not click
@@ -191,7 +191,7 @@ Func GemClickR($boundingBox,$x, $y, $times = 1, $speed = 0, $debugtxt = "", $Out
 			Return False
 		EndIf
 		If isProblemAffectBeforeClick() Then
-			If $g_iDebugClick = 1 Then Setlog("VOIDED GemClickR " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
+			If $g_bDebugClick Then Setlog("VOIDED GemClickR " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 			checkMainScreen(False)
 			SuspendAndroid($SuspendMode)
 			Return  ; if need to clear screen do not click

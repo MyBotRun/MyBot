@@ -64,7 +64,7 @@ Func DebugImageSave($TxtName = "Unknown", $capturenew = Default, $extensionpng =
 	_GDIPlus_ImageSaveToFile($EditedImage, $filename)
 	_GDIPlus_BitmapDispose($EditedImage)
 
-	If $g_iDebugSetlog = 1 Then Setlog($filename, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog($filename, $COLOR_DEBUG)
 
 	If _Sleep($DELAYDEBUGIMAGESAVE1) Then Return
 

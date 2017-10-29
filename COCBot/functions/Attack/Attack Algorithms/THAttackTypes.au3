@@ -20,7 +20,7 @@ Func SwitchAttackTHType()
 EndFunc   ;==>SwitchAttackTHType
 
 Func AttackTHParseCSV($test = False)
-	If $g_iDebugSetlog = 1 Then Setlog("AttackTHParseCSV start", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("AttackTHParseCSV start", $COLOR_DEBUG)
 	Local $f, $line, $acommand, $command
 
 	Local $attackCSVtoUse = ""
@@ -41,7 +41,7 @@ Func AttackTHParseCSV($test = False)
 
 	If FileExists($g_sTHSnipeAttacksPath & "\" & $attackCSVtoUse & ".csv") Then
 		$f = FileOpen($g_sTHSnipeAttacksPath & "\" & $attackCSVtoUse & ".csv", 0)
-		If $g_iDebugSetlog = 1 Then Setlog("Use algorithm " & $attackCSVtoUse & ".csv", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Use algorithm " & $attackCSVtoUse & ".csv", $COLOR_DEBUG)
 		; Read in lines of text until the EOF is reached
 		While 1
 			$line = FileReadLine($f)
@@ -55,12 +55,12 @@ Func AttackTHParseCSV($test = False)
 					Case $command = "TROOP" Or $command = ""
 						;Setlog("<<<<discard line>>>>")
 					Case $command = "TEXT"
-						If $g_iDebugSetlog = 1 Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
+						If $g_bDebugSetlog Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
 
 						SetLog($acommand[8], $COLOR_INFO)
 
 					Case StringInStr(StringUpper("-Barb-Arch-Giant-Gobl-Wall-Ball-Wiza-Heal-Drag-Pekk-BabyD-Mine-Mini-Hogs-Valk-Gole-Witc-Lava-Bowl"), "-" & $command & "-") > 0
-						If $g_iDebugSetlog = 1 Then Setlog(">> AttackTHGrid($e" & $command & ", Random (" & Int($acommand[2]) & "," & Int($acommand[3]) & ",1), Random(" & Int($acommand[4]) & "," & Int($acommand[5]) & ",1), Random(" & Int($acommand[6]) & "," & Int($acommand[7]) & ",1) )")
+						If $g_bDebugSetlog Then Setlog(">> AttackTHGrid($e" & $command & ", Random (" & Int($acommand[2]) & "," & Int($acommand[3]) & ",1), Random(" & Int($acommand[4]) & "," & Int($acommand[5]) & ",1), Random(" & Int($acommand[6]) & "," & Int($acommand[7]) & ",1) )")
 
 						Local $iNbOfSpots
 						If Int($acommand[2]) = Int($acommand[3]) Then
@@ -86,23 +86,23 @@ Func AttackTHParseCSV($test = False)
 						AttackTHGrid(Eval("e" & $command), $iNbOfSpots, $iAtEachSpot, $Sleep, 0)
 
 					Case $command = "WAIT"
-						If $g_iDebugSetlog = 1 Then Setlog(">> GoldElixirChangeThSnipes(" & Int($acommand[7]) & ") ")
+						If $g_bDebugSetlog Then Setlog(">> GoldElixirChangeThSnipes(" & Int($acommand[7]) & ") ")
 
 						If CheckOneStar(Int($acommand[7]) / 2000) Then ExitLoop ; Use seconds not ms , Half of time to check One start and the other halft for check the Resources
 						If GoldElixirChangeThSnipes(Int($acommand[7]) / 2000) Then ExitLoop ; Correct the Function GoldElixirChangeThSnipes uses seconds not ms
 
 					Case StringInStr(StringUpper("-King-Queen-Castle-"), "-" & $command & "-") > 0
-						If $g_iDebugSetlog = 1 Then Setlog(">> AttackTHGrid($e" & $command & ")")
+						If $g_bDebugSetlog Then Setlog(">> AttackTHGrid($e" & $command & ")")
 
 						AttackTHGrid(Eval("e" & $command))
 
 					Case StringInStr(StringUpper("-HSpell-RSpell-LSpell-JSpell-FSpell-PSpell-ESpell-HaSpell"), "-" & $command & "-") > 0
-						If $g_iDebugSetlog = 1 Then Setlog(">> SpellTHGrid($e" & $command & ")")
+						If $g_bDebugSetlog Then Setlog(">> SpellTHGrid($e" & $command & ")")
 
 						SpellTHGrid(Eval("e" & $command))
 
 					Case StringInStr(StringUpper("-LSpell-"), "-" & $command & "-") > 0
-						If $g_iDebugSetlog = 1 Then Setlog(">> CastSpell($e" & $command & ",$g_iTHx, $g_iTHy)")
+						If $g_bDebugSetlog Then Setlog(">> CastSpell($e" & $command & ",$g_iTHx, $g_iTHy)")
 
 						CastSpell(Eval("e" & $command), $g_iTHx, $g_iTHy)
 
@@ -110,13 +110,13 @@ Func AttackTHParseCSV($test = False)
 						Setlog("attack row bad, discard: " & $line, $COLOR_ERROR)
 				EndSelect
 				If $acommand[8] <> "" And $command <> "TEXT" And $command <> "TROOP" Then
-					If $g_iDebugSetlog = 1 Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
+					If $g_bDebugSetlog Then Setlog(">> SETLOG(""" & $acommand[8] & """)")
 					SETLOG($acommand[8], $COLOR_INFO)
 				EndIf
 			Else
 				If StringStripWS($acommand[1], 2) <> "" Then Setlog("attack row error, discard: " & $line, $COLOR_ERROR)
 			EndIf
-			If $g_iDebugSetlog = 1 Then Setlog(">> CheckOneStar()")
+			If $g_bDebugSetlog Then Setlog(">> CheckOneStar()")
 			If CheckOneStar() Then ExitLoop
 		WEnd
 		FileClose($f)

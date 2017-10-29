@@ -14,6 +14,18 @@
 ; ===============================================================================================================================
 #include-once
 
+Func InitTranslatedTextUpgradeTab()
+	GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "MsgBox_Warning_Title", "Warning about your settings...")
+	GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "MsgBox_Warning_Text", "Warning ! You selected 2 resources to ignore... That can be a problem,\r\n" & _
+		"and Auto Upgrade can be ineffective, by not launching any upgrade...\r\n" & _
+		"I recommend you to select only one resource, not more...")
+	GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "MsgBox_Invalid_Title", "Invalid settings...")
+	GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "MsgBox_Invalid_Text", "Warning ! You selected 3 resources to ignore... And you can't...\r\n" & _
+		"With your settings, Auto Upgrade will be completely ineffective\r\n" & _
+		"and will not launch any upgrade... You must deselect one or more\r\n" & _
+		"ignored resource.")
+EndFunc
+
 Func btnLocateUpgrades()
 	Local $wasRunState = $g_bRunState
 	$g_bRunState = True
@@ -143,7 +155,7 @@ Func ResetLabUpgradeTime()
 			GetTranslatedFileIni("MBR Func_Village_Upgrade", "Lab_GUIUpdate_Info_08", "Click OK to reset") & @CRLF & GetTranslatedFileIni("MBR Func_Village_Upgrade", "Lab_GUIUpdate_Info_09", "Or Click Cancel to exit") & @CRLF
 	Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Func_Village_Upgrade", "Lab_GUIUpdate_Info_10", "Reset timer") & "|" & GetTranslatedFileIni("MBR Func_Village_Upgrade", "Lab_GUIUpdate_Info_11", "Cancel and Return"), _
 							   GetTranslatedFileIni("MBR Func_Village_Upgrade", "Lab_GUIUpdate_Info_12", "Reset laboratory upgrade timer?"), $stext, 120, $g_hFrmBot)
-	If $g_iDebugSetlog = 1 Then Setlog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
 	If $MsgBox = 1 Then
 		$g_sLabUpgradeTime = ""
 		_GUICtrlSetTip($g_hBtnResetLabUpgradeTime, GetTranslatedFileIni("MBR Func_Village_Upgrade", "BtnResetLabUpgradeTime_Info_01", "Visible Red button means that laboratory upgrade in process") & @CRLF & _
@@ -276,7 +288,6 @@ Func chkWalls()
 	EndIf
 EndFunc   ;==>chkWalls
 
-
 Func chkSaveWallBldr()
 	$g_bUpgradeWallSaveBuilder = (GUICtrlRead($g_hChkSaveWallBldr) = $GUI_CHECKED)
 EndFunc   ;==>chkSaveWallBldr
@@ -307,9 +318,46 @@ Func btnWalls()
 	$g_bRunState = True
 	Zoomout()
 	$g_iCmbUpgradeWallsLevel = _GUICtrlComboBox_GetCurSel($g_hCmbWalls)
-	;$g_iDebugWalls = 1
 	If imglocCheckWall() Then Setlog("Hei Chef! We found the Wall!")
-	;$g_iDebugWalls = 0
 	$g_bRunState = $wasRunState
 	AndroidShield("btnWalls") ; Update shield status due to manual $g_bRunState
 EndFunc   ;==>btnWalls
+
+Func chkAutoUpgrade()
+	If GUICtrlRead($g_chkAutoUpgrade) = $GUI_CHECKED Then
+		$g_ichkAutoUpgrade = 1
+		For $i = $g_FirstAutoUpgradeLabel To $g_AutoUpgradeLog
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+	Else
+		$g_ichkAutoUpgrade = 0
+		For $i = $g_FirstAutoUpgradeLabel To $g_AutoUpgradeLog
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc   ;==>chkAutoUpgrade
+
+Func chkResourcesToIgnore()
+	For $i = 0 To 2
+		$g_ichkResourcesToIgnore[$i] = GUICtrlRead($g_chkResourcesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
+	Next
+
+	Local $iIgnoredResources = 0
+	For $i = 0 To 2
+		If $g_ichkResourcesToIgnore[$i] = 1 Then $iIgnoredResources += 1
+	Next
+	Switch $iIgnoredResources
+		Case 2
+			MsgBox(0 + 16, GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "MsgBox_Warning_Title", "-1"), _
+					GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "MsgBox_Warning_Text", "-1"))
+		Case 3
+			MsgBox(0 + 16, GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "MsgBox_Invalid_Title", "-1"), _
+					GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "MsgBox_Invalid_Text", "-1"))
+	EndSwitch
+EndFunc   ;==>chkResourcesToIgnore
+
+Func chkUpgradesToIgnore()
+	For $i = 0 To 12
+		$g_ichkUpgradesToIgnore[$i] = GUICtrlRead($g_chkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
+	Next
+EndFunc   ;==>chkUpgradesToIgnore

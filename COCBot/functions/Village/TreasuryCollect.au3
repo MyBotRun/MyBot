@@ -15,8 +15,8 @@
 #include-once
 
 Func TreasuryCollect()
-	If $g_iDebugSetlog = 1 Then SetLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
-	If $g_bRunState = False Then Return ; ensure bot is running
+	If $g_bDebugSetlog Then SetLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
+	If Not $g_bRunState Then Return ; ensure bot is running
 
 	ClickP($aAway, 1, 0, "#0441") ; clear open windows - Click Away before reading village data
 	If _Sleep($DELAYRESPOND) Then Return
@@ -47,9 +47,9 @@ Func TreasuryCollect()
 	Local $res = DllCallMyBot("SearchTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[0], "float", $g_fToleranceImgLoc, "str", "FV", "int", 1)
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 	If IsArray($res) Then
-		If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
+		If $g_bDebugSetlog Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
 		If $res[0] = "0" Or $res[0] = "" Then
-			If $g_iDebugSetlog = 1 Then SetLog("No Treasury Button Found", $COLOR_WARNING) ; failed to find Treasury Button
+			If $g_bDebugSetlog Then SetLog("No Treasury Button Found", $COLOR_WARNING) ; failed to find Treasury Button
 		ElseIf StringLeft($res[0], 2) = "-1" Then
 			SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 		Else
@@ -87,9 +87,9 @@ Func TreasuryCollect()
 		Local $res = DllCallMyBot("SearchTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[1], "float", $g_fToleranceImgLoc, "str", "FV", "int", 1)
 		If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 		If IsArray($res) Then
-			If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
+			If $g_bDebugSetlog Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
 			If $res[0] = "0" Or $res[0] = "" Then
-				If $g_iDebugSetlog = 1 Then SetLog("No Treasury Button Found", $COLOR_WARNING) ; failed to find Treasury Button
+				If $g_bDebugSetlog Then SetLog("No Treasury Button Found", $COLOR_WARNING) ; failed to find Treasury Button
 			ElseIf StringLeft($res[0], 2) = "-1" Then
 				SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 			Else

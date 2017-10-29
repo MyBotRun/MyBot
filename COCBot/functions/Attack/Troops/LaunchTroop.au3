@@ -48,7 +48,7 @@ Func LaunchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 EndFunc   ;==>LauchTroop
 
 Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
-	If $g_iDebugSetlog = 1 Then SetLog("LaunchTroop2 with CC " & $iCC & ", K " & $iKing & ", Q " & $iQueen & ", W " & $iWarden, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetLog("LaunchTroop2 with CC " & $iCC & ", K " & $iKing & ", Q " & $iQueen & ", W " & $iWarden, $COLOR_DEBUG)
 	Local $listListInfoDeployTroopPixel[0]
 	Local $pixelRandomDrop[2]
 	Local $pixelRandomDropcc[2]
@@ -63,7 +63,7 @@ Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
 			Local $waveNb = $listInfoDeploy[$i][2]
 			Local $maxWaveNb = $listInfoDeploy[$i][3]
 			Local $slotsPerEdge = $listInfoDeploy[$i][4]
-			If $g_iDebugSetlog = 1 Then SetLog("**ListInfoDeploy row " & $i & ": USE " & $troopKind & " SIDES " & $nbSides & " WAVE " & $waveNb & " XWAVE " & $maxWaveNb & " SLOTXEDGE " & $slotsPerEdge, $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetLog("**ListInfoDeploy row " & $i & ": USE " & $troopKind & " SIDES " & $nbSides & " WAVE " & $waveNb & " XWAVE " & $maxWaveNb & " SLOTXEDGE " & $slotsPerEdge, $COLOR_DEBUG)
 			If (IsNumber($troopKind)) Then
 				For $j = 0 To UBound($g_avAttackTroops) - 1 ; identify the position of this kind of troop
 					If $g_avAttackTroops[$j][0] = $troopKind Then
@@ -110,20 +110,20 @@ Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
 						If $g_aiDeployHeroesPosition[0] <> -1 Then
 							$pixelRandomDrop[0] = $g_aiDeployHeroesPosition[0]
 							$pixelRandomDrop[1] = $g_aiDeployHeroesPosition[1]
-							If $g_iDebugSetlog = 1 Then SetLog("Deploy Heroes $g_aiDeployHeroesPosition")
+							If $g_bDebugSetlog Then SetLog("Deploy Heroes $g_aiDeployHeroesPosition")
 						Else
 							$pixelRandomDrop[0] = $g_aaiBottomRightDropPoints[2][0]
 							$pixelRandomDrop[1] = $g_aaiBottomRightDropPoints[2][1] ;
-							If $g_iDebugSetlog = 1 Then SetLog("Deploy Heroes $g_aaiBottomRightDropPoints")
+							If $g_bDebugSetlog Then SetLog("Deploy Heroes $g_aaiBottomRightDropPoints")
 						EndIf
 						If $g_aiDeployCCPosition[0] <> -1 Then
 							$pixelRandomDropcc[0] = $g_aiDeployCCPosition[0]
 							$pixelRandomDropcc[1] = $g_aiDeployCCPosition[1]
-							If $g_iDebugSetlog = 1 Then SetLog("Deploy CC $g_aiDeployHeroesPosition")
+							If $g_bDebugSetlog Then SetLog("Deploy CC $g_aiDeployHeroesPosition")
 						Else
 							$pixelRandomDropcc[0] = $g_aaiBottomRightDropPoints[2][0]
 							$pixelRandomDropcc[1] = $g_aaiBottomRightDropPoints[2][1] ;
-							If $g_iDebugSetlog = 1 Then SetLog("Deploy CC $g_aaiBottomRightDropPoints")
+							If $g_bDebugSetlog Then SetLog("Deploy CC $g_aaiBottomRightDropPoints")
 						EndIf
 
 						If ($infoPixelDropTroop[0] = "CC") Then
@@ -176,20 +176,20 @@ Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
 									If $g_aiDeployHeroesPosition[0] <> -1 Then
 										$pixelRandomDrop[0] = $g_aiDeployHeroesPosition[0]
 										$pixelRandomDrop[1] = $g_aiDeployHeroesPosition[1]
-										If $g_iDebugSetlog = 1 Then SetLog("Deploy Heroes $g_aiDeployHeroesPosition")
+										If $g_bDebugSetlog Then SetLog("Deploy Heroes $g_aiDeployHeroesPosition")
 									Else
 										$pixelRandomDrop[0] = $g_aaiBottomRightDropPoints[2][0]
 										$pixelRandomDrop[1] = $g_aaiBottomRightDropPoints[2][1] ;
-										If $g_iDebugSetlog = 1 Then SetLog("Deploy Heroes $g_aaiBottomRightDropPoints")
+										If $g_bDebugSetlog Then SetLog("Deploy Heroes $g_aaiBottomRightDropPoints")
 									EndIf
 									If $g_aiDeployCCPosition[0] <> -1 Then
 										$pixelRandomDropcc[0] = $g_aiDeployCCPosition[0]
 										$pixelRandomDropcc[1] = $g_aiDeployCCPosition[1]
-										If $g_iDebugSetlog = 1 Then SetLog("Deploy CC $g_aiDeployHeroesPosition")
+										If $g_bDebugSetlog Then SetLog("Deploy CC $g_aiDeployHeroesPosition")
 									Else
 										$pixelRandomDropcc[0] = $g_aaiBottomRightDropPoints[2][0]
 										$pixelRandomDropcc[1] = $g_aaiBottomRightDropPoints[2][1] ;
-										If $g_iDebugSetlog = 1 Then SetLog("Deploy CC $g_aaiBottomRightDropPoints")
+										If $g_bDebugSetlog Then SetLog("Deploy CC $g_aaiBottomRightDropPoints")
 									EndIf
 
 									If ($g_bIsCCDropped = False And $infoTroopListArrPixel[0] = "CC") Then

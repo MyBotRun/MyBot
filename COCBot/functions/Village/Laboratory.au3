@@ -46,7 +46,7 @@ Func Laboratory()
 
 	If $g_sLabUpgradeTime <> "" Then $TimeDiff = _DateDiff("n", _NowCalc(), $g_sLabUpgradeTime) ; what is difference between end time and now in minutes?
 	If @error Then _logErrorDateDiff(@error)
-	If $g_iDebugSetlog = 1 Then SetLog($g_avLabTroops[$g_iCmbLaboratory][3] & " Lab end time: " & $g_sLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetLog($g_avLabTroops[$g_iCmbLaboratory][3] & " Lab end time: " & $g_sLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
 
 	If $g_bRunState = False Then Return
 	If $TimeDiff <= 0 Then
@@ -75,11 +75,11 @@ Func Laboratory()
 	Local $offColors[4][3] = [[0x708CB0, 37, 34], [0x603818, 50, 43], [0xD5FC58, 61, 8], [0x000000, 82, 0]] ; 2nd pixel Blue blade, 3rd pixel brown handle, 4th pixel Green cross, 5th black button edge
 	Local $ButtonPixel = _MultiPixelSearch(433, 565 + $g_iBottomOffsetY, 562, 619 + $g_iBottomOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 30) ; Black pixel of button edge
 	If IsArray($ButtonPixel) Then
-		If $g_iDebugSetlog = 1 Then
+		If $g_bDebugSetlog Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
 			Setlog("#1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 37, $ButtonPixel[1] + 34, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 50, $ButtonPixel[1] + 43, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 61, $ButtonPixel[1] + 8, True), $COLOR_DEBUG)
 		EndIf
-		If $g_iDebugImageSave = 1 Then DebugImageSave("LabUpgrade") ; Debug Only
+		If $g_bDebugImageSave Then DebugImageSave("LabUpgrade") ; Debug Only
 		Click($ButtonPixel[0] + 40, $ButtonPixel[1] + 25, 1, 0, "#0198") ; Click Research Button
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
 	Else
@@ -88,20 +88,20 @@ Func Laboratory()
 		Return False
 	EndIf
 
-	If $g_iDebugSetlog = 1 Then LabTroopImages1() ; Debug Only
+	If $g_bDebugSetlog Then LabTroopImages1() ; Debug Only
 
 	If $g_iFirstTimeLab = 0 Then ; Need to get upgrade value for troops on page 1, only do this on 1st cycle of function
 		For $i = 1 To 10
 			$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-			If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 			If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 49999 Then ; check if blank or below min value for any upgrade on page 1
 				$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-				If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 			EndIf
 			If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 49999 Then ; check if blank or below min value for any upgrade on page 1
 				If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
 					$aUpgradeValue[$i] = -1
-					If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				EndIf
 			EndIf
 			If $g_bRunState = False Then Return
@@ -114,19 +114,19 @@ Func Laboratory()
 		ClickDrag(650, 443 + $g_iMidOffsetY, 323, 443 + $g_iMidOffsetY, 1000)
 		;_PostMessage_ClickDrag(734, 393, 643, 393, "left", 1500)
 		If _Sleep($DELAYLABORATORY3) Then Return
-		If $g_iDebugSetlog = 1 Then LabTroopImages2() ; Debug Only
+		If $g_bDebugSetlog Then LabTroopImages2() ; Debug Only
 		If $g_iFirstTimeLab < 2 Then
 			For $i = 11 To 18
 				$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-				If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then ; check if blank or below min value for any upgrade on page 2
 					$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-					If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				EndIf
 				If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then ; check if blank or below min value for any upgrade on page 2
 					If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
 						$aUpgradeValue[$i] = -1
-						If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+						If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 					EndIf
 				EndIf
 				If $g_bRunState = False Then Return
@@ -140,19 +140,19 @@ Func Laboratory()
 		ClickDrag(734, 443 + $g_iMidOffsetY, 3, 443 + $g_iMidOffsetY, 2000)
 		;_PostMessage_ClickDrag(734, 393, 643, 393, "left", 1500)
 		If _Sleep($DELAYLABORATORY3) Then Return
-		If $g_iDebugSetlog = 1 Then LabTroopImages3() ; Debug Only
+		If $g_bDebugSetlog Then LabTroopImages3() ; Debug Only
 		If $g_iFirstTimeLab < 4 Then
 			For $i = 19 To 29
 				$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-				If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then ; check if blank or below min value for any upgrade on page 2
 					$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-					If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				EndIf
 				If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then ; check if blank or below min value for any upgrade on page 2
 					If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
 						$aUpgradeValue[$i] = -1
-						If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+						If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 					EndIf
 				EndIf
 				If $g_bRunState = False Then Return
@@ -174,7 +174,7 @@ Func Laboratory()
 		; upgrade in process and time not recorded?  Then update completion time!
 		If $g_sLabUpgradeTime = "" Or $TimeDiff <= 0 Then
 			$Result = getRemainTLaboratory(282, 277) ; Try to read white text showing actual time left for upgrade
-			If $g_iDebugSetlog = 1 Then Setlog($g_avLabTroops[$g_iCmbLaboratory][3] & " OCR Remaining Lab Time = " & $Result, $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog($g_avLabTroops[$g_iCmbLaboratory][3] & " OCR Remaining Lab Time = " & $Result, $COLOR_DEBUG)
 			$aArray = StringSplit($Result, ' ', BitOR($STR_CHRSPLIT, $STR_NOCOUNT)) ;separate days, hours, minutes, seconds
 			If IsArray($aArray) Then
 				Local $iRemainingTimeMin = 0
@@ -198,20 +198,18 @@ Func Laboratory()
 							ClickP($aAway, 2, $DELAYLABORATORY4, "#0328")
 							Return False
 					EndSelect
-					If $g_iDebugSetlog = 1 Then Setlog("Remain Lab Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog("Remain Lab Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_DEBUG)
 				Next
 				$g_sLabUpgradeTime = _DateAdd('n', Ceiling($iRemainingTimeMin), _NowCalc()) ; add the time required to NOW to finish the upgrade
 				If @error Then _logErrorDateAdd(@error)
 				SetLog("Updated Lab finishing time: " & $g_sLabUpgradeTime, $COLOR_SUCCESS)
 				LabStatusGUIUpdate() ; Update GUI flag
 			Else
-				If $g_iDebugSetlog = 1 Then Setlog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 			EndIf
 		EndIf
-		;If $g_iDebugSetlog <> 1 Then
 		ClickP($aAway, 2, $DELAYLABORATORY4, "#0328")
 		Return False
-		;EndIf
 	EndIf
 
 	If $aUpgradeValue[$g_iCmbLaboratory] = -1 Then
@@ -294,7 +292,7 @@ Func LabUpgrade()
 			; If none of other error conditions apply, begin upgrade process
 			Click($g_avLabTroops[$g_iCmbLaboratory][0] + 40, $g_avLabTroops[$g_iCmbLaboratory][1] + 40, 1, 0, "#0200") ; Click Upgrade troop button
 			If _Sleep($DELAYLABUPGRADE1) Then Return ; Wait for window to open
-			If $g_iDebugImageSave = 1 Then DebugImageSave("LabUpgrade")
+			If $g_bDebugImageSave Then DebugImageSave("LabUpgrade")
 
 			; double check if maxed?
 			If _ColorCheck(_GetPixelColor(258, 192, True), Hex(0xFF1919, 6), 20) And _ColorCheck(_GetPixelColor(272, 194, True), Hex(0xFF1919, 6), 20) Then
@@ -323,7 +321,7 @@ Func LabUpgrade()
 				$Result = getLabUpgradeTime(481, 557) ; Try to read white text showing time for upgrade
 				Setlog($g_avLabTroops[$g_iCmbLaboratory][3] & " Upgrade OCR Time = " & $Result, $COLOR_INFO)
 				$StartTime = _NowCalc() ; what is date:time now
-				If $g_iDebugSetlog = 1 Then SetLog($g_avLabTroops[$g_iCmbLaboratory][3] & "Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
+				If $g_bDebugSetlog Then SetLog($g_avLabTroops[$g_iCmbLaboratory][3] & "Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
 				; Compute upgrade end time
 				$EndTime = ""
 				$EndPeriod = ""
@@ -331,7 +329,7 @@ Func LabUpgrade()
 				$g_sLabUpgradeTime = StringStripWS($Result, $STR_STRIPALL)
 				Local $aArray = StringRegExp($g_sLabUpgradeTime, '\d+', $STR_REGEXPARRAYMATCH)
 				If IsArray($aArray) Then
-					If $g_iDebugSetlog = 1 Then ; debug - display array value
+					If $g_bDebugSetlog Then ; debug - display array value
 						For $i = 0 To UBound($aArray) - 1
 							Setlog("UpgradeTime $aArray[" & $i & "] = " & $aArray[$i])
 						Next
@@ -351,7 +349,7 @@ Func LabUpgrade()
 						Case Else
 							Setlog("Upgrade time period invalid, try again!", $COLOR_WARNING)
 					EndSwitch
-					If $g_iDebugSetlog = 1 Then Setlog("$EndTime = " & $EndTime & " , $EndPeriod = " & $EndPeriod & ", $timeadd = " & $TimeAdd, $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog("$EndTime = " & $EndTime & " , $EndPeriod = " & $EndPeriod & ", $timeadd = " & $TimeAdd, $COLOR_DEBUG)
 					SetLog($g_avLabTroops[$g_iCmbLaboratory][3] & "Upgrade Finishes @ " & $g_sLabUpgradeTime, $COLOR_SUCCESS)
 				Else
 					Setlog("Error reading the upgrade time required, try again!", $COLOR_WARNING)
@@ -416,7 +414,7 @@ Func DebugRegionSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0, $iRight = $g_
 EndFunc   ;==>DebugRegionSave
 
 Func LabTroopImages1() ; Debug function to record pixel values for page 1 of lab troop window
-	If $g_iDebugImageSave = 1 Then DebugImageSave("LabUpgrade")
+	If $g_bDebugImageSave Then DebugImageSave("LabUpgrade")
 	For $i = 1 To 10
 		DebugRegionSave($g_avLabTroops[$i][3], $g_avLabTroops[$i][0], $g_avLabTroops[$i][1], $g_avLabTroops[$i][0] + 98, $g_avLabTroops[$i][1] + 98)
 		SetLog($g_avLabTroops[$i][3], $COLOR_WARNING)
@@ -432,7 +430,7 @@ Func LabTroopImages1() ; Debug function to record pixel values for page 1 of lab
 EndFunc   ;==>LabTroopImages1
 
 Func LabTroopImages2() ; Debug function to record pixel values for page 2 of lab troop window
-	If $g_iDebugImageSave = 1 Then DebugImageSave("LabUpgrade")
+	If $g_bDebugImageSave Then DebugImageSave("LabUpgrade")
 	For $i = 11 To 18
 		DebugRegionSave($g_avLabTroops[$i][3], $g_avLabTroops[$i][0], $g_avLabTroops[$i][1], $g_avLabTroops[$i][0] + 98, $g_avLabTroops[$i][1] + 98)
 		SetLog($g_avLabTroops[$i][3], $COLOR_WARNING)
@@ -448,7 +446,7 @@ Func LabTroopImages2() ; Debug function to record pixel values for page 2 of lab
 EndFunc   ;==>LabTroopImages2
 
 Func LabTroopImages3() ; Debug function to record pixel values for page 2 of lab troop window
-	If $g_iDebugImageSave = 1 Then DebugImageSave("LabUpgrade")
+	If $g_bDebugImageSave Then DebugImageSave("LabUpgrade")
 	For $i = 19 To 29
 		DebugRegionSave($g_avLabTroops[$i][3], $g_avLabTroops[$i][0], $g_avLabTroops[$i][1], $g_avLabTroops[$i][0] + 98, $g_avLabTroops[$i][1] + 98)
 		SetLog($g_avLabTroops[$i][3], $COLOR_WARNING)

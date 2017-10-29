@@ -28,10 +28,10 @@ Func _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, $Button = "left", $Delay = 50)
 
 	Local $hWin = $g_hAndroidControl
 
-	$X1 = Int($X1)
-	$Y1 = Int($Y1)
-	$X2 = Int($X2)
-	$Y2 = Int($Y2)
+	$X1 = Int($X1) + $g_aiMouseOffset[0]
+	$Y1 = Int($Y1) + $g_aiMouseOffset[1]
+	$X2 = Int($X2) + $g_aiMouseOffset[0]
+	$Y2 = Int($Y2) + $g_aiMouseOffset[1]
 
 	; adjust coordinates based on Android control offset
 	If $hWin = $g_hAndroidWindow Then

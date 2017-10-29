@@ -22,5 +22,5 @@ Func AddIdleTime()
 	EndIf
 	Setlog("Waiting, Add random delay of " & $iTimeToWait & " seconds.", $COLOR_INFO)
 	If _SleepStatus($iTimeToWait * 1000) Then Return
-	_GUICtrlStatusBar_SetText($g_hStatusBar, "")
+	_GUICtrlStatusBar_SetTextEx($g_hStatusBar, "")
 EndFunc   ;==>AddIdleTime

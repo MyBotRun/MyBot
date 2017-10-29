@@ -51,7 +51,7 @@ Func isInsideDiamond($aCoords)
 	ConvertToVillagePos($xD, $yD)
 	$Right = $xD
 
-	;If $g_iDebugSetlog = 1 Then SetLog("isInsideDiamond coordinates updated by offset: " & $Left & ", " & $Right & ", " & $Top & ", " & $Bottom, $COLOR_DEBUG)
+	;If $g_bDebugSetlog Then SetLog("isInsideDiamond coordinates updated by offset: " & $Left & ", " & $Right & ", " & $Top & ", " & $Bottom, $COLOR_DEBUG)
 
 	Local $aDiamond[2][2] = [[$Left, $Top], [$Right, $Bottom]]
 	Local $aMiddle = [($aDiamond[0][0] + $aDiamond[1][0]) / 2, ($aDiamond[0][1] + $aDiamond[1][1]) / 2]
@@ -62,34 +62,20 @@ Func isInsideDiamond($aCoords)
 
 	If ($DX / $aSize[0] + $DY / $aSize[1] <= 1) Then
 		If $x < 68 And $y > 316 Then ; coordinates where the game will click on the CHAT tab (safe margin)
-			If $g_iDebugSetlog = 1 Then SetDebuglog("Coordinate Inside Village, but Exclude CHAT")
+			If $g_bDebugSetlog Then SetDebuglog("Coordinate Inside Village, but Exclude CHAT")
 			Return False
 		ElseIf $y < 63 Then ; coordinates where the game will click on the BUILDER button or SHIELD button (safe margin)
-			If $g_iDebugSetlog = 1 Then SetDebuglog("Coordinate Inside Village, but Exclude BUILDER")
+			If $g_bDebugSetlog Then SetDebuglog("Coordinate Inside Village, but Exclude BUILDER")
 			Return False
 		ElseIf $x > 692 And $y > 156 And $y < 210 Then ; coordinates where the game will click on the GEMS button (safe margin)
-			If $g_iDebugSetlog = 1 Then SetDebuglog("Coordinate Inside Village, but Exclude GEMS")
+			If $g_bDebugSetlog Then SetDebuglog("Coordinate Inside Village, but Exclude GEMS")
 			Return False
 		EndIf
-		;If $g_iDebugSetlog = 1 Then SetDebuglog("Coordinate Inside Village", $COLOR_DEBUG)
+		;If $g_bDebugSetlog Then SetDebuglog("Coordinate Inside Village", $COLOR_DEBUG)
 		Return True ; Inside Village
 	Else
-		If $g_iDebugSetlog = 1 Then SetDebuglog("Coordinate Outside Village")
+		If $g_bDebugSetlog Then SetDebuglog("Coordinate Outside Village")
 		Return False ; Outside Village
 	EndIf
 
 EndFunc   ;==>isInsideDiamond
-
-#cs
-	Global $g_iDebugSetlog = 1
-	Func SetDebugLog($text)
-	ConsoleWrite($text & @CRLF)
-	EndFunc
-	Local $aTests[2][2] = [[595, 463], [575, 328]]
-	Local $i, $x, $y
-	For $i = 0 To UBound($aTests) - 1
-	$x = $aTests[$i][0]
-	$y = $aTests[$i][1]
-	SetDebugLog($x & ", " & $y & ":" & isInsideDiamondXY($x, $y))
-	Next
-#ce

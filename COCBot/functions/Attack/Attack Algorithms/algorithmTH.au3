@@ -41,7 +41,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 		EndIf
 	Next
 
-	If ($THtroop = -1) And $g_iDebugSetlog = 1 Then SetLog("No " & $name & " Found!!!")
+	If ($THtroop = -1) And $g_bDebugSetlog Then SetLog("No " & $name & " Found!!!")
 	If ($THtroop = -1) Then Return False
 
 	;Heroes And CC
@@ -119,7 +119,7 @@ Func AttackTHGrid($troopKind, $iNbOfSpots = 1, $iAtEachSpot = 1, $Sleep = Random
 		$name = NameOfTroop($troopKind, $plural)
 
 		$TroopCountBeg = Number(ReadTroopQuantity($THtroop))
-		If ($TroopCountBeg = 0) And $g_iDebugSetlog = 1 Then SetLog("No " & $name & " Remaining!!!")
+		If ($TroopCountBeg = 0) And $g_bDebugSetlog Then SetLog("No " & $name & " Remaining!!!")
 		If ($TroopCountBeg = 0) Then Return False
 
 		If $waveNb = 0 Then $waveName = "Only"
@@ -293,7 +293,7 @@ Func CastSpell($THSpell, $x, $y)
 		If _Sleep($DELAYATTCKTHGRID1) Then Return
 		If IsAttackPage() Then Click($x, $y, 1, 0, "#0029")
 	Else
-		If $g_iDebugSetlog = 1 Then SetLog("No " & $name & " Found")
+		If $g_bDebugSetlog Then SetLog("No " & $name & " Found")
 	EndIf
 
 EndFunc   ;==>CastSpell

@@ -581,7 +581,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 
 	If $g_bCSVLocateStorageElixir = True Then
 		$aResult = GetLocationBuilding($eBldgElixirS, $g_iSearchTH, False)
-		If @error And $g_iDebugSetlog Then _logErrorGetBuilding(@error)
+		If @error And $g_bDebugSetlog Then _logErrorGetBuilding(@error)
 		If $aResult <> -1 Then ; check if Monkey ate bad banana
 			If $aResult = 1 Then
 				Setlog("> " & $g_sBldgNames[$eBldgElixirS] & " Not found", $COLOR_WARNING)
@@ -757,8 +757,8 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	Setlog(">> Total time: " & Round(__timerdiff($hTimerTOTAL) / 1000, 2) & " seconds", $COLOR_INFO)
 
 	; 12 - DEBUGIMAGE ------------------------------------------------------------------------
-	If $g_iDebugMakeIMGCSV = 1 Then AttackCSVDEBUGIMAGE() ;make IMG debug
-	If $g_iDebugAttackCSV = 1 Then _LogObjList($g_oBldgAttackInfo) ; display dictionary for raw find image debug
+	If $g_bDebugMakeIMGCSV Then AttackCSVDEBUGIMAGE() ;make IMG debug
+	If $g_bDebugAttackCSV Then _LogObjList($g_oBldgAttackInfo) ; display dictionary for raw find image debug
 
 	; 13 - START TH SNIPE BEFORE ATTACK CSV IF NEED ------------------------------------------
 	If $g_bTHSnipeBeforeEnable[$DB] And $g_iSearchTH = "-" Then FindTownHall(True) ;search townhall if no previous detect
@@ -770,10 +770,10 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 				$g_bTHSnipeUsedQueen = False
 				AttackTHParseCSV()
 			Else
-				If $g_iDebugSetlog = 1 Then Setlog("TH snipe before scripted attack skip, th internal village", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog("TH snipe before scripted attack skip, th internal village", $COLOR_DEBUG)
 			EndIf
 		Else
-			If $g_iDebugSetlog = 1 Then Setlog("TH snipe before scripted attack skip, no th found", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog("TH snipe before scripted attack skip, no th found", $COLOR_DEBUG)
 		EndIf
 	EndIf
 

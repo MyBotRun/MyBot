@@ -117,7 +117,7 @@ Func getMaxUISetting($settingArray, $iDefenseType)
 		$result = _Max(Number($maxDB), Number($maxLB))
 	EndIf
 
-	If $g_iDebugSetlog = 1 Then SetLog("Max " & $g_aWeakDefenseNames[$iDefenseType] & " Level: " & $result, $COLOR_INFO)
+	If $g_bDebugSetlog Then SetLog("Max " & $g_aWeakDefenseNames[$iDefenseType] & " Level: " & $result, $COLOR_INFO)
 	Return $result
 EndFunc   ;==>getMaxUISetting
 
@@ -135,7 +135,7 @@ Func getMinUISetting($settingArray, $iDefenseType)
 		$result = _Min(Number($minDB), Number($minLB))
 	EndIf
 
-	If $g_iDebugSetlog = 1 Then SetLog("Min " & $g_aWeakDefenseNames[$iDefenseType] & " Level: " & $result, $COLOR_INFO)
+	If $g_bDebugSetlog Then SetLog("Min " & $g_aWeakDefenseNames[$iDefenseType] & " Level: " & $result, $COLOR_INFO)
 	Return $result
 EndFunc   ;==>getMinUISetting
 
@@ -178,13 +178,13 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $i
 		If $guiCheckDefense And $maxSearchLevel >= $minSearchLevel Then
 			; Check the defense.
 			Local $sDefenseName = StringSplit($directory, "\", $STR_NOCOUNT)
-			If $g_iDebugSetlog Then SetLog("checkDefense :" & $sDefenseName[UBound($sDefenseName) - 1] & " > " & $minSearchLevel & " < " & $maxSearchLevel & " For TH:" & $townHallLevel, $COLOR_ORANGE)
+			If $g_bDebugSetlog Then SetLog("checkDefense :" & $sDefenseName[UBound($sDefenseName) - 1] & " > " & $minSearchLevel & " < " & $maxSearchLevel & " For TH:" & $townHallLevel, $COLOR_ORANGE)
 			$aDefenseResult = DefenseSearchMultiMatch($iDefenseType, $directory, $aResult[0][0], $g_sProfileBuildingStatsPath, $minSearchLevel, $maxSearchLevel, $bForceCaptureRegion)
 			; Store the redlines retrieved for use in the later searches, if you don't currently have redlines saved.
 			If $aResult[0][0] = "" Then $aResult[0][0] = $aDefenseResult[6]
 			; Check to see if further searches are required, $performSearch is passed ByRef, so this will update the value in the calling function
 			If Number($aDefenseResult[2]) > getMaxUISetting($settingArray, $iDefenseType) Then $performSearch = False
-			If $g_iDebugSetlog = 1 Then
+			If $g_bDebugSetlog Then
 				SetLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " - " & Round(__TimerDiff($defenseTimer) / 1000, 2) & " seconds")
 				For $i = 0 To UBound($aDefenseResult) - 2
 					SetLog("$aDefenseResult[" & $i & "]: " & $aDefenseResult[$i])
@@ -192,7 +192,7 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $i
 			EndIf
 		Else
 			$aDefenseResult = $aNotNecessary
-			If $g_iDebugSetlog = 1 Then SetLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " not necessary! $bGuiEnableArray=" & $bGuiEnableArray & ", $bIsSearchModeActiveDB=" & $bIsSearchModeActiveDB & ", $bIsSearchModeActiveLB=" & $bIsSearchModeActiveLB & ", $maxSearchLevel=" & $maxSearchLevel & ", $minSearchLevel=" & $minSearchLevel)
+			If $g_bDebugSetlog Then SetLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " not necessary! $bGuiEnableArray=" & $bGuiEnableArray & ", $bIsSearchModeActiveDB=" & $bIsSearchModeActiveDB & ", $bIsSearchModeActiveLB=" & $bIsSearchModeActiveLB & ", $maxSearchLevel=" & $maxSearchLevel & ", $minSearchLevel=" & $minSearchLevel)
 		EndIf
 	EndIf
 
@@ -267,9 +267,9 @@ Func IsWeakBase($townHallLevel = 11, $redlines = "", $bForceCaptureRegion = True
 	; Forces the display of the various statistical displays, if set to true
 	; displayWeakBaseLog($aResult, true)
 	; Displays the various statistical displays, if debug logging is enabled
-	displayWeakBaseLog($aResult, $g_iDebugSetlog = 1)
+	displayWeakBaseLog($aResult, $g_bDebugSetlog)
 
-	If $g_iDebugSetlog = 1 Then
+	If $g_bDebugSetlog Then
 		_LogObjList($g_oBldgAttackInfo) ; raw debug only!
 		Local $text = _ArrayToString($aResult, ",", 0, UBound($aResult, 1) - 1, "|", 0, UBound($aResult, 2) - 1)
 		If @error Then Setlog("Error _ArrayToString, code:" & @error, $COLOR_ERROR)
@@ -280,25 +280,25 @@ Func IsWeakBase($townHallLevel = 11, $redlines = "", $bForceCaptureRegion = True
 	If Number($aResult[0][2]) > 10 Then
 		; Search took longer than 10 seconds so take a debug picture no matter what the debug option is
 		captureDebugImage($aResult, "WeakBase_Detection_TooSlow")
-	ElseIf $g_iDebugImageSave = 1 And Number($aResult[1][4]) = 0 Then
+	ElseIf $g_bDebugImageSave And Number($aResult[1][4]) = 0 Then
 		; Eagle Artillery not detected, so lets log the picture for manual inspection
 		captureDebugImage($aResult, "WeakBase_Detection_Eagle_NotDetected")
-	ElseIf $g_iDebugImageSave = 1 And Number($aResult[2][4]) = 0 Then
+	ElseIf $g_bDebugImageSave And Number($aResult[2][4]) = 0 Then
 		; Inferno Towers not detected, so lets log the picture for manual inspection
 		captureDebugImage($aResult, "WeakBase_Detection_Inferno_NotDetected")
-	ElseIf $g_iDebugImageSave = 1 And Number($aResult[3][4]) = 0 Then
+	ElseIf $g_bDebugImageSave And Number($aResult[3][4]) = 0 Then
 		; X-bows not detected, so lets log the picture for manual inspection
 		captureDebugImage($aResult, "WeakBase_Detection_Xbow_NotDetected")
-	ElseIf $g_iDebugImageSave = 1 And Number($aResult[4][4]) = 0 Then
+	ElseIf $g_bDebugImageSave And Number($aResult[4][4]) = 0 Then
 		; Wizard Towers not detected, so lets log the picture for manual inspection
 		captureDebugImage($aResult, "WeakBase_Detection_WTower_NotDetected")
-	ElseIf $g_iDebugImageSave = 1 And Number($aResult[5][4]) = 0 Then
+	ElseIf $g_bDebugImageSave And Number($aResult[5][4]) = 0 Then
 		; Mortars not detected, so lets log the picture for manual inspection
 		captureDebugImage($aResult, "WeakBase_Detection_Mortar_NotDetected")
-	ElseIf $g_iDebugImageSave = 1 And Number($aResult[6][4]) = 0 Then
+	ElseIf $g_bDebugImageSave And Number($aResult[6][4]) = 0 Then
 		; Air Defenses not detected, so lets log the picture for manual inspection
 		captureDebugImage($aResult, "WeakBase_Detection_ADefense_NotDetected")
-	ElseIf $g_iDebugImageSave = 1 Then
+	ElseIf $g_bDebugImageSave Then
 		; Debug option is set, so take a debug picture
 		captureDebugImage($aResult, "WeakBase_Detection")
 	EndIf
@@ -330,7 +330,7 @@ EndFunc   ;==>IsWeakBase
 ; ===============================================================================================================================
 Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $statFile = "", $minLevel = 0, $maxLevel = 100, $bForceCaptureRegion = True)
 
-	If $g_iDebugSetlog = 1 Then Setlog("Begin DefenseSearchMultiMatch: " & $g_sBldgNames[$iDefenseType + 7], $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then Setlog("Begin DefenseSearchMultiMatch: " & $g_sBldgNames[$iDefenseType + 7], $COLOR_DEBUG1)
 
 	Local $hTimer = __TimerInit() ; begin local timer
 
@@ -400,7 +400,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 		$redlines = "DCD"
 	EndIf
 
-	If $g_iDebugSetlog = 1 Then
+	If $g_bDebugSetlog Then
 		SetLog("> " & $g_sBldgNames[$iDefenseType + 7] & " Max Level: " & $maxLevel & " Max Search Level: " & $maxLevelSearch, $COLOR_DEBUG)
 		Setlog("> Max return points: " & $maxReturnPoints, $COLOR_DEBUG)
 		SetLog("> Red Line Exists:" & $bRedLineExists & " , redlines=" & $redlines, $COLOR_DEBUG)
@@ -518,7 +518,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 		Local $aBldgCoord = decodeMultipleCoords($sLocCoord) ; change building location string into array
 		If IsArray($aBldgCoord) Then $return[5] = $aBldgCoord ; store in return array
 
-		If $g_iDebugSetlog = 1 Or $g_iDebugBuildingPos = 1 Then
+		If $g_bDebugSetlog Or $g_bDebugBuildingPos Then
 			SetLog($g_sBldgNames[$iDefenseType + 7] & " Coordinates: " & $sLocCoord, $COLOR_DEBUG)
 			Local $sText
 			Select
@@ -565,7 +565,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 			Local $iTime = __TimerDiff($hTimer) * 0.001 ; Image search time saved to dictionary in seconds
 			_ObjAdd($g_oBldgAttackInfo, $iDefenseType + 7 & "_FINDTIME", $iTime)
 			If @error Then _ObjErrMsg("_ObjAdd" & $g_sBldgNames[$iDefenseType + 7] & " _FINDTIME", @error) ; Log errors
-			If $g_iDebugSetlog = 1 Then SetLog("  - Location(s) found in: " & Round($iTime, 2) & " seconds ", $COLOR_DEBUG1)
+			If $g_bDebugSetlog Then SetLog("  - Location(s) found in: " & Round($iTime, 2) & " seconds ", $COLOR_DEBUG1)
 
 		EndIf
 

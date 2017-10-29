@@ -51,7 +51,7 @@ Func AcquireMutex($mutexName, $scope = Default, $timeout = Default, $sWaitMessag
 				$bLogged = True
 				SetLog($sWaitMessage)
 			EndIf
-			If $g_hStatusBar Then _GUICtrlStatusBar_SetText($g_hStatusBar, $sWaitMessage)
+			_GUICtrlStatusBar_SetTextEx($g_hStatusBar, $sWaitMessage)
 		EndIf
 		If $bUse_Sleep Then
 			_Sleep($iDelay)
@@ -102,7 +102,7 @@ Func LockSemaphore($Semaphore, $sWaitMessage = Default)
 				$bLogged = True
 				SetLog($sWaitMessage)
 			EndIf
-			If $g_hStatusBar Then _GUICtrlStatusBar_SetText($g_hStatusBar, $sWaitMessage)
+			_GUICtrlStatusBar_SetTextEx($g_hStatusBar, $sWaitMessage)
 		EndIf
 		_Sleep($iDelay, True, False)
 		;Sleep($iDelay)
@@ -186,7 +186,7 @@ Func AcquireMutexTicket($sMutexName, $iMinTicketNo, $sWaitMessage = Default, $bC
 				$bLogged = True
 				SetLog($sWaitMessage)
 			EndIf
-			If $g_hStatusBar Then _GUICtrlStatusBar_SetText($g_hStatusBar, $sWaitMessage)
+			_GUICtrlStatusBar_SetTextEx($g_hStatusBar, $sWaitMessage)
 		EndIf
 		;SetDebugLog("Waiting for mutex ticket (" & $iTicket & "): " & $sTicketMutex)
 		_Sleep($iDelay, True, False)

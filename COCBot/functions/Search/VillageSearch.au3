@@ -34,7 +34,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	Local $logwrited = False
 	Local $iSkipped = 0
 
-	If $g_iDebugDeadBaseImage = 1 Or $g_aiSearchEnableDebugDeadBaseImage > 0 Then
+	If $g_bDebugDeadBaseImage Or $g_aiSearchEnableDebugDeadBaseImage > 0 Then
 		DirCreate($g_sProfileTempDebugPath & "\SkippedZombies\")
 		DirCreate($g_sProfileTempDebugPath & "\Zombies\")
 		setZombie()
@@ -89,7 +89,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 		_ObjDeleteKey($g_oBldgAttackInfo, "") ; Remove all keys from building dictionary
 
-		If $g_iDebugVillageSearchImages = 1 Then DebugImageSave("villagesearch")
+		If $g_bDebugVillageSearchImages Then DebugImageSave("villagesearch")
 		$logwrited = False
 		$g_bBtnAttackNowPressed = False
 		$g_iSearchTHLResult = -1
@@ -101,6 +101,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 		; ----------------- READ ENEMY VILLAGE RESOURCES  -----------------------------------
 		WaitForClouds() ; Wait for clouds to disappear
+		AttackRemainingTime(True) ; Timer for knowing when attack starts, in 30 Sec. attack automatically starts and lasts for 3 Minutes
 		If $g_bRestart = True Then Return ; exit func
 
 		$g_bCloudsActive = False
@@ -303,7 +304,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		; Return Home on Search limit
 		If SearchLimit($iSkipped + 1) Then Return True
 
-		If checkAndroidReboot() = True Then
+		If CheckAndroidReboot() = True Then
 			$g_bRestart = True
 			$g_bIsClientSyncError = True
 			Return
@@ -326,15 +327,15 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		If $g_bBtnAttackNowPressed = True Then ExitLoop
 
 		; ----------------- PRESS BUTTON NEXT  -------------------------------------------------
-		If $checkDeadBase And $g_iDebugDeadBaseImage = 0 And $g_iSearchCount > $g_aiSearchEnableDebugDeadBaseImage Then
+		If $checkDeadBase And Not $g_bDebugDeadBaseImage And $g_iSearchCount > $g_aiSearchEnableDebugDeadBaseImage Then
 			SetLog("Enabled collecting debug images of dead bases (zombies)", $COLOR_DEBUG)
 			SetLog("- Save skipped dead base when available Elixir with empty storage > " & (($g_aZombie[8] > -1) ? ($g_aZombie[8] & "k") : ("is disabled")), $COLOR_DEBUG)
 			SetLog("- Save skipped dead base when available Elixir > " & (($g_aZombie[9] > -1) ? ($g_aZombie[9] & "k") : ("is disabled")), $COLOR_DEBUG)
 			SetLog("- Save dead base when available Elixir < " & (($g_aZombie[10] > -1) ? ($g_aZombie[10] & "k") : ("is disabled")), $COLOR_DEBUG)
 			SetLog("- Save dead base when raided Elixir < " & (($g_aZombie[7] > -1) ? ($g_aZombie[7] & "%") : ("is disabled")), $COLOR_DEBUG)
-			$g_iDebugDeadBaseImage = 1
+			$g_bDebugDeadBaseImage = True
 		EndIf
-		If $g_iDebugDeadBaseImage = 1 Then setZombie()
+		If $g_bDebugDeadBaseImage Then setZombie()
 		Local $i = 0
 		While $i < 100
 			If _Sleep($DELAYVILLAGESEARCH2) Then Return
@@ -349,7 +350,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 				EndIf
 				ExitLoop
 			Else
-				If $g_iDebugSetlog = 1 Then SetLog("Wait to see Next Button... " & $i, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetLog("Wait to see Next Button... " & $i, $COLOR_DEBUG)
 			EndIf
 			If $i >= 99 Or isProblemAffect() Or (Mod($i, 10) = 0 And checkObstacles_Network(False, False)) Then ; if we can't find the next button or there is an error, then restart
 				$g_bIsClientSyncError = True
@@ -434,7 +435,7 @@ Func SearchLimit($iSkipped)
 		While _CheckPixel($aSurrenderButton, $g_bCapturePixel) = False
 			If _Sleep($DELAYSEARCHLIMIT) Then Return
 			$Wcount += 1
-			If $g_iDebugSetlog = 1 Then setlog("wait surrender button " & $Wcount, $COLOR_DEBUG)
+			If $g_bDebugSetlog Then setlog("wait surrender button " & $Wcount, $COLOR_DEBUG)
 			If $Wcount >= 50 Or isProblemAffect(True) Then
 				checkMainScreen()
 				$g_bIsClientSyncError = False ; reset OOS flag for long restart
@@ -473,7 +474,7 @@ Func WriteLogVillageSearch($x)
 	If $g_abFilterMeetTH[$x] Then $MeetTHtext = "- Max TH " & $g_aiMaxTH[$x] ;$g_aiFilterMeetTHMin
 	If $g_abFilterMeetTHOutsideEnable[$x] Then $MeetTHOtext = "- TH Outside"
 	If IsWeakBaseActive($x) Then $MeetWeakBasetext = "- Weak Base"
-	If Not ($g_bIsSearchLimit) And $g_iDebugSetlog = 1 Then
+	If Not ($g_bIsSearchLimit) And $g_bDebugSetlog Then
 		SetLogCentered(" Searching For " & $g_asModeText[$x] & " ", Default, $COLOR_INFO)
 		Setlog("Enable " & $g_asModeText[$x] & " search IF ", $COLOR_INFO)
 		If $g_abSearchSearchesEnable[$x] Then Setlog("- Numbers of searches range " & $g_aiSearchSearchesMin[$x] & " - " & $g_aiSearchSearchesMax[$x], $COLOR_INFO)

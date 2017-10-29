@@ -41,7 +41,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 	;aux data
 	Local $propsNames = StringSplit($returnProps, ",", $STR_NOCOUNT)
-	If $g_iDebugSetlog = 1 Then SetLog("imgloc TH search Start", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetLog("imgloc TH search Start", $COLOR_DEBUG)
 	Local $numRetry = 1 ; try to find TH twice (one retry)
 
 	For $retry = 0 To $numRetry
@@ -75,7 +75,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 			Local $iBestResult = 0
 			If UBound($result) > 1 Then
-				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found Multiple TH : " & UBound($result), $COLOR_INFO)
+				If $g_bDebugSetlog Then SetLog("imgloc Found Multiple TH : " & UBound($result), $COLOR_INFO)
 				; search for highest level
 				Local $iHighestLvl = 0
 				For $iResult = 0 To UBound($result) - 1
@@ -91,13 +91,13 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 						EndSwitch
 					Next
 				Next
-				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found Multiple TH : Using index " & $iBestResult, $COLOR_INFO)
+				If $g_bDebugSetlog Then SetLog("imgloc Found Multiple TH : Using index " & $iBestResult, $COLOR_INFO)
 			EndIf
 			If UBound($result) > 0 Then
-				If $g_iDebugSetlog = 1 Then SetLog("imgloc Found TH : ", $COLOR_INFO)
+				If $g_bDebugSetlog Then SetLog("imgloc Found TH : ", $COLOR_INFO)
 				Local $propsValues = $result[$iBestResult]
 				For $pv = 0 To UBound($propsValues) - 1
-					If $g_iDebugSetlog = 1 Then SetLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
+					If $g_bDebugSetlog Then SetLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
 					Switch $propsNames[$pv]
 						Case "objectname"
 							;nothing to do
@@ -135,7 +135,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 								_ObjPutValue($g_oBldgAttackInfo, $eBldgTownHall & "_LOCATION", $aTHLoc) ; add array location of TH found to building dictionary
 								If @error Then _ObjErrMsg("$g_oBldgAttackInfo imglocTHSearch " & $g_sBldgNames[$eBldgTownHall] & "_LOCATION", @error) ; Log COM error prevented
 
-								If $g_iDebugImageSave = 1 And $retry > 0 Then
+								If $g_bDebugImageSave And $retry > 0 Then
 									_CaptureRegion()
 
 									; Store a copy of the image handle
@@ -192,17 +192,17 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 			EndIf
 		Else
 			;thnotfound
-			If $g_iDebugSetlog = 1 And $retry > 0 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
-			If $g_iDebugSetlog = 1 And $retry > 0 Then SetLog("imgloc THSearch Calculated  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
+			If $g_bDebugSetlog And $retry > 0 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
+			If $g_bDebugSetlog And $retry > 0 Then SetLog("imgloc THSearch Calculated  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 		EndIf
 
 		If $iLvlFound > 0 Then
 			$iFindTime += __TimerDiff($hTimer) ; add total TH search time in milliseconds
-			If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Calculated  (in " & Round($iFindTime / 1000, 2) & " seconds) :")
+			If $g_bDebugSetlog Then SetLog("imgloc THSearch Calculated  (in " & Round($iFindTime / 1000, 2) & " seconds) :")
 			ExitLoop ; TH was found
 		Else
-			If $g_iDebugImageSave = 1 And $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
-			If $g_iDebugSetlog = 1 Then SetLog("imgloc THSearch Notfound, Retry:  " & $retry)
+			If $g_bDebugImageSave And $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
+			If $g_bDebugSetlog Then SetLog("imgloc THSearch Notfound, Retry:  " & $retry)
 		EndIf
 
 	Next ; retry

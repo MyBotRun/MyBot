@@ -15,7 +15,7 @@
 ;
 Func getArmyCCStatus($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
 
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Begin getArmyCCStatus:", $COLOR_DEBUG1)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("Begin getArmyCCStatus:", $COLOR_DEBUG1)
 
 	$g_iCCRemainTime = 0 ; reset global time
 
@@ -34,7 +34,7 @@ Func getArmyCCStatus($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetL
 
 	;verify can make requestCC and update global flag
 	$g_bCanRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5])
-	If $g_iDebugSetlogTrain = 1 Then SetLog("Can Request CC: " & $g_bCanRequestCC, $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Then SetLog("Can Request CC: " & $g_bCanRequestCC, $COLOR_DEBUG)
 
 	If Not $g_bCanRequestCC Then
 		If _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
@@ -51,7 +51,7 @@ Func getArmyCCStatus($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetL
 
 		;Local $sResultCC = getArmyCampCap($aArmyCCRemainTime[0], $aArmyCCRemainTime[1]) ;Get CC time via OCR.
 		Local $sResultCC = getRequestRemainTime($aArmyCCRemainTime[0], $aArmyCCRemainTime[1])
-		If $g_iDebugSetlogTrain = 1 Then Setlog("getArmyCampCap returned: " & $sResultCC, $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Then Setlog("getArmyCampCap returned: " & $sResultCC, $COLOR_DEBUG)
 		$g_iCCRemainTime = ConvertOCRTime("CC request", $sResultCC, $bSetLog)
 	EndIf
 

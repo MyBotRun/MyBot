@@ -103,8 +103,8 @@ Func IsGemWindowOpen($AcceptGem = False)
 	_Sleep($DELAYISGEMOPEN1)
 	If _ColorCheck(_GetPixelColor(590, 235 + $g_iMidOffsetY, True), Hex(0xD80408, 6), 20) Then
 		If _ColorCheck(_GetPixelColor(375, 383 + $g_iMidOffsetY, True), Hex(0x222322, 6), 20) Then
-			If $g_iDebugSetlog = 1 Or $g_bDebugBarrackBoost Then Setlog("DETECTED, GEM Window Is OPEN", $COLOR_DEBUG) ;Debug
-			If $AcceptGem = True Then
+			If $g_bDebugSetlog Or $g_bDebugBarrackBoost Then Setlog("DETECTED, GEM Window Is OPEN", $COLOR_DEBUG) ;Debug
+			If $AcceptGem Then
 				Click(435, 445)
 				_Sleep($DELAYBOOSTBARRACKS2)
 				SetLog('Boost was Successful.', $COLOR_GREEN)

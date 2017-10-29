@@ -151,8 +151,9 @@ EndFunc   ;==>DisposeWindows
 ; Replacement for WinMove ( "title", "text", x, y [, width [, height [, speed]]] )
 ; Parameter [, speed] is not supported and is actually $hAfter!
 Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter = 0, $iFlags = 0, $bCheckAfterPos = True)
-	;If $s <> 0 And $g_iDebugSetlog = 1 Then SetLog("WinMove2(" & $WinTitle & "," & $WinText & "," & $x & "," & $y & "," & $w & "," & $h & "," & $s & "): speed parameter '" & $s & "' is not supported!", $COLOR_ERROR);
+	;If $s <> 0 And $g_bDebugSetlog Then SetLog("WinMove2(" & $WinTitle & "," & $WinText & "," & $x & "," & $y & "," & $w & "," & $h & "," & $s & "): speed parameter '" & $s & "' is not supported!", $COLOR_ERROR);
 	Local $hWin = WinGetHandle($WinTitle, $WinText)
+	If $WinTitle = $g_hFrmBot And $g_iGuiMode = 0 Then Return $hWin
 
 	If _WinAPI_IsIconic($hWin) Then
 		; Window minimized, restore first
@@ -185,7 +186,7 @@ Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter =
 	$NoMove = $NoMove Or ($x = $aPos[0] And $y = $aPos[1])
 	$NoResize = $NoResize Or ($w = $aPos[2] And $h = $aPos[3])
 
-	;If $g_iDebugSetlog = 1 Then SetLog("Window " & $WinTitle & "(" & $hWin & "): " & ($NoResize ? "no resize" : "resize to " & $w & " x " & $h) & ($NoMove ? ", no move" : ", move to " & $x & "," & $y), $COLOR_INFO);
+	;If $g_bDebugSetlog Then SetLog("Window " & $WinTitle & "(" & $hWin & "): " & ($NoResize ? "no resize" : "resize to " & $w & " x " & $h) & ($NoMove ? ", no move" : ", move to " & $x & "," & $y), $COLOR_INFO);
 	If $g_bWinMove2_Compatible And $NoResize = False Then
 		WinMove($WinTitle, $WinText, $x, $y, $w, $h)
 		_WinAPI_SetWindowPos($hWin, $hAfter, 0, 0, 0, 0, BitOR($SWP_NOSIZE, $SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags)) ; resize window without sending changing message to window
@@ -261,6 +262,7 @@ EndFunc   ;==>WinGetClientPos
 
 Func WinGetPos2($title, $text = "")
 	Local $aPos = 0
+	If $title = $g_hFrmBot And $g_iGuiMode = 0 Then Return $aPos
 	If IsHWnd($title) = 0 Then $title = WinGetHandle($title, $text)
 	While IsHWnd($title) And (IsArray($aPos) = 0 Or $aPos[2] < 200)
 		If _WinAPI_IsIconic($title) Then WinSetState($title, "", @SW_RESTORE)
@@ -271,6 +273,7 @@ EndFunc   ;==>WinGetPos2
 
 Func ControlGetPos2($title, $text, $controlID)
 	Local $aPos = 0
+	If $title = $g_hFrmBot And $g_iGuiMode = 0 Then Return $aPos
 	If IsHWnd($title) = 0 Then $title = WinGetHandle($title, $text)
 	While IsHWnd($title) And (IsArray($aPos) = 0 Or $aPos[2] < 200)
 		If _WinAPI_IsIconic($title) Then WinSetState($title, "", @SW_RESTORE)

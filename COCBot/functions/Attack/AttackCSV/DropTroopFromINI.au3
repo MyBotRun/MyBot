@@ -115,7 +115,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 			Setlog("No troop found in your attack troops list")
 			debugAttackCSV("No troop found in your attack troops list")
 		Else
-			If $g_iDebugSetlog = 1 Then SetLog("discard use spell", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetLog("discard use spell", $COLOR_DEBUG)
 		EndIf
 
 	Else

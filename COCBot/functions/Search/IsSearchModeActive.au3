@@ -57,25 +57,14 @@ Func IsSearchModeActive($g_iMatchMode, $nocheckHeroes = False, $bNoLog = False)
 			$bMatchModeEnabled = False
 	EndSwitch
 
-	If $bMatchModeEnabled = False Then Return False ; exit if no DB, LB, TS mode enabled
-
-	#CS	If $g_iDebugSetlog = 1 Then
-		Setlog("====== DEBUG IsSearchModeActive ======" )
-		Setlog("$g_aiSearchHeroWaitEnable["& $g_iMatchMode &"]: " & $g_aiSearchHeroWaitEnable[$g_iMatchMode])
-		Setlog("$g_aiAttackUseHeroes["& $g_iMatchMode &"]: " & $g_aiAttackUseHeroes[$g_iMatchMode])
-		Setlog("$g_iHeroUpgradingBit: " & $g_iHeroUpgradingBit)
-		Setlog("$g_iHeroAvailable: " & $g_iHeroAvailable)
-		Setlog("$checkHeroes: " & $checkHeroes)
-		Setlog("======================================" )
-		EndIf
-	#CE
+	If Not $bMatchModeEnabled Then Return False ; exit if no DB, LB, TS mode enabled
 
 	If $checkHeroes And $g_bCheckSpells Then ;If $checkHeroes Then
 		If ($checkSearches Or $g_abSearchSearchesEnable[$g_iMatchMode] = False) And ($checkTropies Or $g_abSearchTropiesEnable[$g_iMatchMode] = False) And ($checkArmyCamps Or $g_abSearchCampsEnable[$g_iMatchMode] = False) Then
-			If $g_iDebugSetlog = 1 And $bNoLog = False Then Setlog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies & ",$checkArmyCamps=" & $checkArmyCamps & ",$checkHeroes=" & $checkHeroes & ",$g_bCheckSpells=" & $g_bCheckSpells & ")", $COLOR_INFO) ;If $g_iDebugSetlog = 1 Then Setlog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies &",$checkArmyCamps=" & $checkArmyCamps & ",$checkHeroes=" & $checkHeroes & ")" , $COLOR_INFO)
+			If $g_bDebugSetlog And Not $bNoLog Then Setlog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies & ",$checkArmyCamps=" & $checkArmyCamps & ",$checkHeroes=" & $checkHeroes & ",$g_bCheckSpells=" & $g_bCheckSpells & ")", $COLOR_INFO) ;If  = 1 Then Setlog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies &",$checkArmyCamps=" & $checkArmyCamps & ",$checkHeroes=" & $checkHeroes & ")" , $COLOR_INFO)
 			Return True
 		Else
-			If $g_iDebugSetlog = 1 And $bNoLog = False Then
+			If $g_bDebugSetlog And Not $bNoLog Then
 				Setlog($g_asModeText[$g_iMatchMode] & " not active!", $COLOR_INFO)
 				Local $txtsearches = "Fail"
 				If $checkSearches Then $txtsearches = "Success"
@@ -96,10 +85,10 @@ Func IsSearchModeActive($g_iMatchMode, $nocheckHeroes = False, $bNoLog = False)
 			Return False
 		EndIf
 	ElseIf $checkHeroes = 0 Then
-		If $g_iDebugSetlog = 1 And $bNoLog = False Then Setlog("Heroes not ready", $COLOR_DEBUG)
+		If $g_bDebugSetlog And Not $bNoLog Then Setlog("Heroes not ready", $COLOR_DEBUG)
 		Return False
 	Else
-		If $g_iDebugSetlog = 1 And $bNoLog = False Then Setlog("Spells not ready", $COLOR_DEBUG)
+		If $g_bDebugSetlog And Not $bNoLog Then Setlog("Spells not ready", $COLOR_DEBUG)
 		Return False
 	EndIf
 EndFunc   ;==>IsSearchModeActive
@@ -126,11 +115,11 @@ EndFunc   ;==>IsSearchModeActiveMini
 Func IsWaitforSpellsActive()
 	For $i = $DB To $g_iModeCount - 1
 		If $g_abAttackTypeEnable[$i] And $g_abSearchSpellsWaitEnable[$i] Then
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("IsWaitforSpellsActive = True", $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("IsWaitforSpellsActive = True", $COLOR_DEBUG)
 			Return True
 		EndIf
 	Next
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("IsWaitforSpellsActive = False", $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("IsWaitforSpellsActive = False", $COLOR_DEBUG)
 	Return False
 EndFunc   ;==>IsWaitforSpellsActive
 
@@ -151,10 +140,10 @@ EndFunc   ;==>IsWaitforSpellsActive
 Func IsWaitforHeroesActive()
 	For $i = $DB To $g_iModeCount - 1
 		If $g_abAttackTypeEnable[$i] And ($g_aiSearchHeroWaitEnable[$i] > $eHeroNone And (BitAND($g_aiAttackUseHeroes[$i], $g_aiSearchHeroWaitEnable[$i]) = $g_aiSearchHeroWaitEnable[$i]) And (Abs($g_aiSearchHeroWaitEnable[$i] - $g_iHeroUpgradingBit) > $eHeroNone)) Then
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("IsWaitforHeroesActive = True", $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("IsWaitforHeroesActive = True", $COLOR_DEBUG)
 			Return True
 		EndIf
 	Next
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("IsWaitforHeroesActive = False", $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("IsWaitforHeroesActive = False", $COLOR_DEBUG)
 	Return False
 EndFunc   ;==>IsWaitforHeroesActive

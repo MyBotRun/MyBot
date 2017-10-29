@@ -27,13 +27,6 @@ Func FindTownHall($check = True, $forceCaptureRegion = True)
 
 		$g_iSearchTH = imgloccheckTownHallADV2(0, 0, $forceCaptureRegion)
 
-		;2nd attempt - NOT NEEDED AHS IMGLOC TRIES 2 TIMES
-		;If $g_iSearchTH = "-" Then ; retry with autoit search after $DELAYVILLAGESEARCH5 seconds
-		;	If _Sleep($DELAYGETRESOURCES5) Then Return
-		;	If $g_iDebugSetlog=1 Then SetLog("2nd attempt to detect the TownHall!", $COLOR_ERROR)
-		;	$g_iSearchTH = THSearch()
-		;EndIf
-
 		If $g_iSearchTH <> "-" And SearchTownHallLoc() = False Then
 			$g_sTHLoc = "In"
 		ElseIf $g_iSearchTH <> "-" Then

@@ -20,7 +20,7 @@ Func MilkingDetectRedArea()
 	_CaptureRegion2()
 	_GetRedArea()
 	Local $htimerREDAREA = Round(__TimerDiff($hTimer) / 1000, 2)
-	If $g_iDebugSetlog = 1 Then SetLog("> RedArea completed in " & $htimerREDAREA & " seconds", $COLOR_INFO)
+	If $g_bDebugSetlog Then SetLog("> RedArea completed in " & $htimerREDAREA & " seconds", $COLOR_INFO)
 
 	;02 - DEPURE REDAREA BAD POINTS -----------------------------------------------------------------------------------------------------------------------
 	CleanRedArea($g_aiPixelTopLeft)

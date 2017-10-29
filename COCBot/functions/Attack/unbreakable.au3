@@ -74,9 +74,9 @@ Func Unbreakable()
 	If $g_bRestart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
 	$iCount = 0
 	Local $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1]) ; Get trophy
-	If $g_iDebugSetlog = 1 Then Setlog("Trophy Count Read = " & $iTrophyCurrent, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("Trophy Count Read = " & $iTrophyCurrent, $COLOR_DEBUG)
 	While Number($iTrophyCurrent) > Number($g_iDropTrophyMax) ; verify that trophy dropped and didn't fail due misc errors searching
-		If $g_iDebugSetlog = 1 Then Setlog("Drop Trophy Loop #" & $iCount + 1, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Drop Trophy Loop #" & $iCount + 1, $COLOR_DEBUG)
 		DropTrophy()
 		If _Sleep($DELAYUNBREAKABLE2) Then Return ; wait for home screen
 		ClickP($aAway, 1, 0, "#0395") ;clear screen
@@ -113,9 +113,9 @@ Func Unbreakable()
 		; New button search as old pixel check matched grass color sometimes
 		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
 		Local $ButtonPixel = _MultiPixelSearch(438, 372 + $g_iMidOffsetY, 590, 404 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $g_iDebugSetlog = 1 Then Setlog("Exit btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Exit btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_DEBUG)
 		If IsArray($ButtonPixel) Then
-			If $g_iDebugSetlog = 1 Then
+			If $g_bDebugSetlog Then
 				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
 				Setlog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_DEBUG)
 			EndIf
@@ -135,7 +135,7 @@ Func Unbreakable()
 
 	$iCount = 0
 	While 1 ; Under attack when return from sleep?  wait some more ...
-		If $g_iDebugSetlog = 1 Then Setlog("Under Attack Pixels = " & _GetPixelColor(841, 342 + $g_iMidOffsetY, True) & "/" & _GetPixelColor(842, 348 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Under Attack Pixels = " & _GetPixelColor(841, 342 + $g_iMidOffsetY, True) & "/" & _GetPixelColor(842, 348 + $g_iMidOffsetY, True), $COLOR_DEBUG)
 		If _ColorCheck(_GetPixelColor(841, 342 + $g_iMidOffsetY, True), Hex(0x711C0A, 6), 20) And _ColorCheck(_GetPixelColor(842, 348 + $g_iMidOffsetY, True), Hex(0x721C0E, 6), 20) Then
 			Setlog("Base is under attack, waiting 30 seocnds for end", $COLOR_INFO)
 		Else
@@ -149,13 +149,13 @@ Func Unbreakable()
 
 	Local $Message = _PixelSearch(20, 624, 105, 627, Hex(0xE1E3CB, 6), 15) ;Check if Return Home button available and close the screen
 	If IsArray($Message) Then
-		If $g_iDebugSetlog = 1 Then Setlog("Return Home Pixel = " & _GetPixelColor($Message[0], $Message[1], True) & ", Pos: " & $Message[0] & "/" & $Message[1], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Return Home Pixel = " & _GetPixelColor($Message[0], $Message[1], True) & ", Pos: " & $Message[0] & "/" & $Message[1], $COLOR_DEBUG)
 		PureClick(67, 602 + $g_iBottomOffsetY, 1, 0, "#0138")
 		If _Sleep($DELAYUNBREAKABLE3) Then Return True
 	EndIf
 
 	If _ColorCheck(_GetPixelColor(235, 209 + $g_iMidOffsetY, True), Hex(0x9E3826, 6), 20) And _ColorCheck(_GetPixelColor(242, 140 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 20) Then ;See if village was attacked, then click Okay
-		If $g_iDebugSetlog = 1 Then Setlog("Village Attacked Pixels = " & _GetPixelColor(235, 209 + $g_iMidOffsetY, True) & "/" & _GetPixelColor(242, 140 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Village Attacked Pixels = " & _GetPixelColor(235, 209 + $g_iMidOffsetY, True) & "/" & _GetPixelColor(242, 140 + $g_iMidOffsetY, True), $COLOR_DEBUG)
 		PureClick(429, 493 + $g_iMidOffsetY, 1, 0, "#0132")
 		If _Sleep($DELAYUNBREAKABLE3) Then Return True
 	EndIf

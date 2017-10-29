@@ -1,7 +1,7 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: checkAndroidPageError
+; Name ..........: CheckAndroidPageError
 ; Description ...: Function to check for Android IsPage error to reboot Android if threshold exceeded
-; Syntax ........: checkAndroidPageError()
+; Syntax ........: CheckAndroidPageError()
 ; Parameters ....: $bRebootAndroid = True reboots Android if too many page errors per Minutes detected
 ; Return values .: True if Android reboot should be initiated, False otherwise
 ; Author ........: Cosote (10-2016)
@@ -10,7 +10,7 @@
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
-; Example .......: If checkAndroidPageError() = True Then Return
+; Example .......: If CheckAndroidPageError() = True Then Return
 ; ===============================================================================================================================
 #include-once
 
@@ -21,7 +21,7 @@ Func InitAndroidPageError()
 	$g_aiAndroidPageError[1] = 0 ; TimerHandle
 EndFunc   ;==>InitAndroidPageError
 
-Func checkAndroidPageError($bRebootAndroid = True)
+Func CheckAndroidPageError($bRebootAndroid = True)
 
 	If $g_aiAndroidPageError[1] = 0 Then Return False
 
@@ -58,7 +58,7 @@ Func checkAndroidPageError($bRebootAndroid = True)
 
 	Return False
 
-EndFunc   ;==>checkAndroidPageError
+EndFunc   ;==>CheckAndroidPageError
 
 
 Func AndroidPageError($sSource)

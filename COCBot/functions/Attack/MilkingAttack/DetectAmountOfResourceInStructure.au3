@@ -41,19 +41,16 @@ Func DetectAmountOfResourceInStructure($type, $coordinate, $level, $mincapacity)
 					$tolerance = $g_iMilkFarmForceToleranceNormal
 				EndIf
 			EndIf
-
-			;If $g_iDebugSetlog=1 Then Setlog("cap " & $capacityanalized)
-			;If $g_iDebugSetlog=1 Then Setlog("tol " & $tolerance)
-			If $capacityanalized < $mincapacity And $g_iDebugContinueSearchElixir = 0 Then
+			If $capacityanalized < $mincapacity And Not $g_bDebugContinueSearchElixir Then
 				;stop search... do not search below minimum capacity
-				If $g_iDebugSetlog = 1 Then Setlog("IMAGECKECK STOP, capacity < mincapacity " & $filename, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog("IMAGECKECK STOP, capacity < mincapacity " & $filename, $COLOR_DEBUG)
 				Return -1
 				ExitLoop
 			Else
 				$found = _ImageSearch(@ScriptDir & "\images\CapacityStructure\" & $a[$t], 1, $posx, $posy, $tolerance)
 				If $found = 1 Then
-					If $g_iDebugSetlog = 1 Then Setlog("IMAGECKECK OK (" & $tolerance & ") " & $filename, $COLOR_DEBUG)
-					If $g_iDebugImageSave = 1 Then DebugImageSave("IMAGECKECK OK (" & $tolerance & ") " & $filename, False)
+					If $g_bDebugSetlog Then Setlog("IMAGECKECK OK (" & $tolerance & ") " & $filename, $COLOR_DEBUG)
+					If $g_bDebugImageSave Then DebugImageSave("IMAGECKECK OK (" & $tolerance & ") " & $filename, False)
 					Return $capacityanalized
 					ExitLoop
 				EndIf
@@ -61,8 +58,8 @@ Func DetectAmountOfResourceInStructure($type, $coordinate, $level, $mincapacity)
 		Next
 		If $found = 0 Then
 			;DebugImageSave("elixir_" & $level & "_X_70_A_(" & $coordinate[0] & "," & $coordinate[1] & ")_", False)
-			If $g_iDebugImageSave = 1 Then DebugImageSave("elixir_" & $level & "_", False)
-			If $g_iDebugSetlog = 1 Then SETLOG("FAIL STRUCTURE POSITION (" & $coordinate[0] & "," & $coordinate[1] & ") level " & $level & " (" & $level + 4 & ")", $COLOR_DEBUG)
+			If $g_bDebugImageSave Then DebugImageSave("elixir_" & $level & "_", False)
+			If $g_bDebugSetlog Then SetLog("FAIL STRUCTURE POSITION (" & $coordinate[0] & "," & $coordinate[1] & ") level " & $level & " (" & $level + 4 & ")", $COLOR_DEBUG)
 		EndIf
 		Return -1
 	Else

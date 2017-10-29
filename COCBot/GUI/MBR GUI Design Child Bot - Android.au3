@@ -14,13 +14,14 @@
 ; ===============================================================================================================================
 #include-once
 
-Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClickDragScript = 0
+Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, _
+	$g_hTxtAndroidRebootHours = 0
 
 Func CreateBotAndroid()
-	Local $x = 25, $y = 45, $y2, $w = 210, $h = 50
+	Local $x = 25, $y = 45, $y2, $w = 240, $h = 50, $sTxtTip
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR Distributors", "Group_01", "Distributors"), $x - 20, $y - 20, $w, $h) ; $g_iSizeWGrpTab2, $g_iSizeHGrpTab2
 	$y -= 2
-	$g_hCmbCOCDistributors = GUICtrlCreateCombo("", $x - 8, $y, 185, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+	$g_hCmbCOCDistributors = GUICtrlCreateCombo("", $x - 8, $y, $w - 25, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Distributors", "CmbCOCDistributors_Info_01", "Allow bot to launch COC based on the distribution chosen"))
 	LoadCOCDistributorsComboBox()
 	SetCurSelCmbCOCDistributors()
@@ -30,7 +31,7 @@ Func CreateBotAndroid()
 	$y += $h + 5
 	$y2 = $y
 	$w = $g_iSizeWGrpTab2 - 2
-	$h = 80
+	$h = 96
 	GUICtrlCreateGroup(GetTranslatedFileIni("Android", "Android_Options", "Android Options"), $x - 20, $y - 20, $w, $h)
 	;$y -= 2
 	GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblBackgroundMode", "Screencapture Background Mode"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
@@ -44,6 +45,15 @@ Func CreateBotAndroid()
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAdbClickDragScript_Info", "Use Android specific script file for Click & Drag.\r\nIf unchecked use more compatible 'input swipe'."))
 	GUICtrlSetState(-1, (($g_bAndroidAdbClickDragScript) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	$y += 25
+	GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblAndroidRebootHours", "Reboot Android in") & ":", $x + 17, $y + 2, -1, -1)
+	$sTxtTip = GetTranslatedFileIni("Android", "LblAndroidRebootHours_Info", "Enter hours when Android will be automatically rebooted after specified run-time.")
+	_GUICtrlSetTip(-1, $sTxtTip)
+	$g_hTxtAndroidRebootHours = GUICtrlCreateInput($g_iAndroidRebootHours, $x + 177, $y + 1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	_GUICtrlSetTip(-1, $sTxtTip)
+	GUICtrlSetLimit(-1, 4)
+	GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "hrs", -1), $x + 212, $y + 2, -1, -1)
 
 	$y = $y2 + $h + 5
 	$w = $g_iSizeWGrpTab2 - 2
@@ -64,12 +74,12 @@ Func CreateBotAndroid()
 	$h = 80
 	GUICtrlCreateGroup(GetTranslatedFileIni("Android Control", "Group_03", "Android Control"), $x - 20, $y - 20, $w, $h)
 	$y -= 2
-	GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnAndroidAdbShell", "Start ADB Shell in new Console Window"), $x - 8, $y, 220, 25)
+	$g_hBtnAndroidAdbShell = GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnAndroidAdbShell", "Start ADB Shell in new Console Window"), $x - 8, $y, 220, 25)
 	GUICtrlSetOnEvent(-1, "OpenAdbShell")
 	$y += 30
-	GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnAndroidHome", "Send Home"), $x - 8, $y, 105, 25)
+	$g_hBtnAndroidHome = GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnAndroidHome", "Send Home"), $x - 8, $y, 105, 25)
 	GUICtrlSetOnEvent(-1, "AndroidHomeButton")
-	GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnAndroidBack", "Send Back"), $x - 8 + 115, $y, 105, 25)
+	$g_hBtnAndroidBack = GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnAndroidBack", "Send Back"), $x - 8 + 115, $y, 105, 25)
 	GUICtrlSetOnEvent(-1, "AndroidBackButton")
 
 	;$x = 25 + $g_iSizeWGrpTab2 - 2 - 10 - $w

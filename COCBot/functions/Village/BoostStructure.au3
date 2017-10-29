@@ -38,7 +38,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 	If $ok = True Then
 		Local $Boost = findButton("BoostOne")
 		If IsArray($Boost) Then
-			If $g_iDebugSetlog = 1 Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 			Click($Boost[0], $Boost[1], 1, 0, "#0463")
 			If _Sleep($DELAYBOOSTHEROES1) Then Return
 			$Boost = findButton("GEM")

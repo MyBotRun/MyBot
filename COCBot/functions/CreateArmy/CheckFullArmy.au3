@@ -21,10 +21,10 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	;;;;;; Will only get full army when the maximum capacity of your camps are reached regardless of the full army percentage you input in GUI ;;;;;;;;;
 	;;;;;; Use this only in halt attack mode and if an error happened in reading army current number Or Max capacity ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	If $bOpenArmyWindow = True Then
+	If $bOpenArmyWindow Then
 		ClickP($aAway, 1, 0, "#0346") ;Click Away
 		If _Sleep($DELAYCHECKFULLARMY1) Then Return
-		If $g_bUseRandomClick = False Then
+		If Not $g_bUseRandomClick Then
 			Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0347") ; Click Button Army Overview
 		Else
 			ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
@@ -32,7 +32,7 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		If _Sleep($DELAYCHECKFULLARMY2) Then Return
 		Local $j = 0
 		While Not _ColorCheck(_GetPixelColor(114, 535 + $g_iMidOffsetY, True), Hex(0xE8E8E0, 6), 20)
-			If $g_iDebugSetlogTrain = 1 Then Setlog("OverView TabColor=" & _GetPixelColor(114, 535 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Then Setlog("OverView TabColor=" & _GetPixelColor(114, 535 + $g_iMidOffsetY, True), $COLOR_DEBUG)
 			If _Sleep($DELAYCHECKFULLARMY1) Then Return ; wait for Train Window to be ready.
 			$j += 1
 			If $j > 15 Then ExitLoop
@@ -50,15 +50,15 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		$Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(128, 176, True), Hex(0x90C030, 6), 20)
 	EndIf
 
-	If $g_iDebugSetlogTrain = 1 Then Setlog("Checking Overview for full army [!] " & $Pixel & ", " & _GetPixelColor(128, 176, True), $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Then Setlog("Checking Overview for full army [!] " & $Pixel & ", " & _GetPixelColor(128, 176, True), $COLOR_DEBUG)
 	If $Pixel Then
 		$g_bFullArmy = True
 	EndIf
 
 	$g_bCanRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5])
-	If $g_iDebugSetlog = 1 Then Setlog("Can Request CC: " & $g_bCanRequestCC, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("Can Request CC: " & $g_bCanRequestCC, $COLOR_DEBUG)
 
-	If $bCloseArmyWindow = True Then
+	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0348") ;Click Away
 		If _Sleep($DELAYCHECKFULLARMY3) Then Return
 	EndIf
@@ -90,8 +90,8 @@ Func CheckFullBarrack()
 
 	If _sleep(200) Then Return
 	Local $Pixel = _CheckPixel($aBarrackFull, True)
-	If $g_iDebugSetlogTrain = 1 Then Setlog("Check Barrack Full color : " & _GetPixelColor($aBarrackFull[0], $aBarrackFull[1], True) & " Expected if Full : " & Hex($aBarrackFull[2], 6), $COLOR_DEBUG)
-	If $g_iDebugSetlogTrain = 1 Then Setlog("Checking for Full Normal or Dark Barrack [!]" & $Pixel, $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Then SetLog("Check Barrack Full color : " & _GetPixelColor($aBarrackFull[0], $aBarrackFull[1], True) & " Expected if Full : " & Hex($aBarrackFull[2], 6), $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Then SetLog("Checking for Full Normal or Dark Barrack [!]" & $Pixel, $COLOR_DEBUG)
 
 	If $Pixel Then
 		Return True ; The Barrack Has Stopped

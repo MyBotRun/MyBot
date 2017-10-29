@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func debugRedArea($string)
-	If $g_iDebugRedArea = 1 Then
+	If $g_bDebugRedArea Then
 		Local $hFile = FileOpen($g_sProfileLogsPath & "debugRedArea.log", $FO_APPEND)
 		_FileWriteLog($hFile, $string)
 		FileClose($hFile)

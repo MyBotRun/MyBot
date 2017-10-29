@@ -14,9 +14,9 @@
 ; ===============================================================================================================================
 
 Func MilkingDebug()
-	Local $debugselogLocal = $g_iDebugSetlog
+	Local $debugselogLocal = $g_bDebugSetlog
 	Local $MilkingExtractorsMatch
-	$g_iDebugSetlog = 1
+	$g_bDebugSetlog = True
 	Setlog("1 - Zoom out")
 	CheckZoomOut()
 	Local $TimeCheckMilkingAttack = __TimerInit()
@@ -35,7 +35,7 @@ Func MilkingDebug()
 	Setlog("  2.4 Detect Dark Elixir Extractors")
 	Local $TimeCheckMilkingAttackSeconds = Round(__TimerDiff($TimeCheckMilkingAttack) / 1000, 2)
 	Setlog("Computing Time Milking Attack : " & $TimeCheckMilkingAttackSeconds & " seconds", $COLOR_INFO)
-	$g_iDebugSetlog = $debugselogLocal
+	$g_bDebugSetlog = $debugselogLocal
 	Setlog("Make DebugImage")
 	MilkFarmObjectivesDebugImage($g_sMilkFarmObjectivesSTR, 0)
 
@@ -67,9 +67,6 @@ Func CheckMilkingBaseTest()
 	Local $elixirmatch = 0
 	Local $elixirdiscard = 0
 	For $i = 0 To UBound($ElixirVect) - 1
-
-
-		;	If $g_iDebugSetlog = 1 Then Setlog($i & " : " & $ElixirVect[$i]) ;[15:51:30] 0 : 2#405-325 -> level 6
 
 		;03.02 check isinsidediamond
 		Local $temp = StringSplit($ElixirVect[$i], "#", 2) ;TEMP ["2", "404-325"]
@@ -150,7 +147,7 @@ Func CheckMilkingBaseTest()
 ;~ 				EndIf
 
 		Else
-			If $g_iDebugSetlog = 1 Then Setlog(" - discard #1 no valid point", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog(" - discard #1 no valid point", $COLOR_DEBUG)
 			$elixirdiscard += 1
 		EndIf
 		Setlog("............ next ..........")
@@ -191,7 +188,7 @@ Func CheckMilkingBaseTest()
 ;~ 								$ElixirLocationx = Int($expRet[$j])
 ;~ 								$ElixirLocationy = Int($expRet[$j + 1])
 ;~ 								If isInsideDiamondXY($ElixirLocationx, $ElixirLocationy) Then
-;~ 									If $g_iDebugDeadBaseImage = 1 Then
+;~ 									If $g_bDebugDeadBaseImage = 1 Then
 ;~ 										$ImageInfo = String("I_" & $t)
 ;~ 										_GDIPlus_GraphicsDrawRect($hGraphic, $ElixirLocationx - 5, $ElixirLocationy - 5, 10, 10, $hPen)
 ;~ 										_GDIPlus_GraphicsDrawString($hGraphic, $ImageInfo, $ElixirLocationx , $ElixirLocationy - 30, "Arial", 15)

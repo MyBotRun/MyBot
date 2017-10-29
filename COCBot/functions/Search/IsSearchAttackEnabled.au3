@@ -16,7 +16,7 @@
 ;
 Func IsSearchAttackEnabled()
 
-	If $g_iDebugSetlog = 1 Then Setlog("Begin IsSearchAttackScheduled:", $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then Setlog("Begin IsSearchAttackScheduled:", $COLOR_DEBUG1)
 
 	If $g_bAttackPlannerEnable = False Then Return True ; return true if attack planner is not enabled
 
@@ -25,7 +25,7 @@ Func IsSearchAttackEnabled()
 	Local $iWaitTime = 0
 
 	Local $bCloseGame = $g_bAttackPlannerCloseCoC = True Or $g_bAttackPlannerCloseAll = True Or $g_bAttackPlannerSuspendComputer = True ; flag summary for closing game from GUI values
-	If $g_iDebugSetlog = 1 Then Setlog("$bCloseGame:" & $bCloseGame, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("$bCloseGame:" & $bCloseGame, $COLOR_DEBUG)
 
 	If $g_bAttackPlannerDayLimit = True And _OverAttackLimit() Then ; check daily attack limit before checking schedule
 		Setlog("Daily attack limit reached, skip attacks till new day starts!", $COLOR_INFO)
@@ -76,7 +76,7 @@ Func IsSearchAttackEnabled()
 					For $i = @WDAY To 6
 						If $g_abPlannedAttackWeekDays[$i] = False Then $iWaitTime += 86400 ; add 1 day of seconds to wait time
 						If $g_abPlannedAttackWeekDays[$i] = True Then ExitLoop ; stop adding days when find attack planner enabled
-						If $g_iDebugSetlog = 1 Then Setlog("Subtotal wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
+						If $g_bDebugSetlog Then Setlog("Subtotal wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
 					Next
 				EndIf
 				If $iWaitTime = 0 Then ; if days are not set then compute wait time from hours
@@ -85,11 +85,11 @@ Func IsSearchAttackEnabled()
 						For $i = @HOUR + 1 To 23
 							If $g_abPlannedattackHours[$i] = False Then $iWaitTime += 3600 ; add 1 hour of seconds to wait time
 							If $g_abPlannedattackHours[$i] = True Then ExitLoop ; stop adding hours when find attack planner enabled
-							If $g_iDebugSetlog = 1 Then Setlog("Subtotal wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
+							If $g_bDebugSetlog Then Setlog("Subtotal wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
 						Next
 					EndIf
 				EndIf
-				If $g_iDebugSetlog = 1 Then Setlog("Stop attack wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog("Stop attack wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
 				; close emulator as directed
 				UniversalCloseWaitOpenCoC($iWaitTime * 1000, "IsSearchAttackScheduled_", $g_bAttackPlannerCloseAll, True, $g_bAttackPlannerSuspendComputer) ; Close and Wait for attacking to start
 				$g_bRestart = True
@@ -110,7 +110,7 @@ Func _getTimeRemainTimeToday()
 		SetError(1, "Can not determine time remaining today", 0)
 		Return
 	EndIf
-	If $g_iDebugSetlog = 1 Then Setlog("getTimeRemainToday= " & $iTimeRemain & " Seconds", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("getTimeRemainToday= " & $iTimeRemain & " Seconds", $COLOR_DEBUG)
 	Return $iTimeRemain
 EndFunc   ;==>_getTimeRemainTimeToday
 
@@ -122,7 +122,7 @@ Func _IsTimeAfter($sCompareTime, $sCurrentTime = _NowCalc())
 		SetError(1, "Can not check if time is after", False)
 		Return
 	EndIf
-	If $g_iDebugSetlog = 1 Then Setlog("IsTimeAfter: " & $bResult, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("IsTimeAfter: " & $bResult, $COLOR_DEBUG)
 	Return $bResult
 EndFunc   ;==>_IsTimeAfter
 
@@ -134,7 +134,7 @@ Func _IsTimeBefore($sCompareTime, $sCurrentTime = _NowCalc())
 		SetError(1, "Can not check if time is before", False)
 		Return
 	EndIf
-	If $g_iDebugSetlog = 1 Then Setlog("IsTimeBefore: " & $bResult, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("IsTimeBefore: " & $bResult, $COLOR_DEBUG)
 	Return $bResult
 EndFunc   ;==>_IsTimeBefore
 
@@ -142,7 +142,7 @@ Func _IsTimeInRange($sStartTime, $sEndTime)
 	Local $sCurrentTime = _NowCalc()
 	; Calculate if time until start time is less than 0 And time until end time is greater than 0
 	Local $bResult = _IsTimeAfter($sStartTime, $sCurrentTime) And _IsTimeBefore($sEndTime, $sCurrentTime)
-	If $g_iDebugSetlog = 1 Then Setlog("IsTimeInRange: " & $bResult, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("IsTimeInRange: " & $bResult, $COLOR_DEBUG)
 	Return $bResult ; Returns true if current time is within the range
 EndFunc   ;==>_IsTimeInRange
 
@@ -173,7 +173,7 @@ Func _getDailyRandomStartEnd($iDuration = 4)
 		$iStartHour = _getDailyRandom() * 24
 		If $iStartHour <= @HOUR Then $iStartHour = @HOUR + 1.166 ; check if random start is before now, if yes add 70 minutes
 		$iEndHour = $iStartHour + $iDuration
-		If $g_iDebugSetlog = 1 Then Setlog("StartHour: " & $iStartHour & "EndHour: " & $iEndHour, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("StartHour: " & $iStartHour & "EndHour: " & $iEndHour, $COLOR_DEBUG)
 		$aNoAttackTimes[0] = _DateAdd("h", $iStartHour, _NowCalc()) ; create proper date/time string with start time
 		If @error Then
 			_logErrorDateDiff(@error)
@@ -187,7 +187,7 @@ Func _getDailyRandomStartEnd($iDuration = 4)
 			Return
 		EndIf
 	EndIf
-	If $g_iDebugSetlog = 1 Then Setlog("NoAttackStart: " & $aNoAttackTimes[0] & "NoAttackEnd: " & $aNoAttackTimes[1], $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("NoAttackStart: " & $aNoAttackTimes[0] & "NoAttackEnd: " & $aNoAttackTimes[1], $COLOR_DEBUG)
 	Return $aNoAttackTimes ; return array with start/end time
 EndFunc   ;==>_getDailyRandomStartEnd
 
@@ -197,9 +197,9 @@ Func _getDailyRandom()
 	If $iNowDay <> @YDAY Then ; if 1 day or more has passed since last time, update daily random value
 		$iDailyRandomValue = Round(Random(0.001, 1), 4) ; set random value
 		$iNowDay = @YDAY ; set new year day value
-		If $g_iDebugSetlog = 1 Then Setlog("New day = new random value!", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("New day = new random value!", $COLOR_DEBUG)
 	EndIf
-	If $g_iDebugSetlog = 1 Then Setlog("DailyRandomValue=" & StringFormat("%0.5f", $iDailyRandomValue), $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("DailyRandomValue=" & StringFormat("%0.5f", $iDailyRandomValue), $COLOR_DEBUG)
 	Return $iDailyRandomValue
 EndFunc   ;==>_getDailyRandom
 
@@ -209,7 +209,7 @@ Func IsPlannedTimeNow()
 		$hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 		$hourloot = $hour[0]
 		If $g_abPlannedattackHours[$hourloot] = True Then
-			If $g_iDebugSetlog = 1 Then SetLog("Attack plan enabled for now..", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetLog("Attack plan enabled for now..", $COLOR_DEBUG)
 			Return True
 		Else
 			SetLog("Attack plan enabled today, but not this hour", $COLOR_INFO)
@@ -234,11 +234,11 @@ Func _OverAttackLimit()
 	Else
 		$iAttackCountToday = $g_aiAttackedCount - $iTotalAttackCount ; subtract old total attack count from current attack count to update Today count
 	EndIf
-	If $g_iDebugSetlog = 1 Then Setlog("AttackCountToday: " & $iAttackCountToday & ", AttackedCount: " & $g_aiAttackedCount & "TotalAttackCount: " & $iTotalAttackCount, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("AttackCountToday: " & $iAttackCountToday & ", AttackedCount: " & $g_aiAttackedCount & "TotalAttackCount: " & $iTotalAttackCount, $COLOR_DEBUG)
 	; Need to get attack limits from GUI variables and use randomization
 	Local $iRandomAttackCountToday = Ceiling(Int($g_iAttackPlannerDayMin) + (_getDailyRandom() * (Int($g_iAttackPlannerDayMax) - Int($g_iAttackPlannerDayMin))))
 	If $iRandomAttackCountToday > Int($g_iAttackPlannerDayMax) Then $iRandomAttackCountToday = Int($g_iAttackPlannerDayMax)
-	If $g_iDebugSetlog = 1 Then Setlog("RandomAttackCountToday: " & $iRandomAttackCountToday, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("RandomAttackCountToday: " & $iRandomAttackCountToday, $COLOR_DEBUG)
 	If $iAttackCountToday > $iRandomAttackCountToday Then Return True
 	Return False
 EndFunc   ;==>_OverAttackLimit

@@ -37,7 +37,7 @@ Func CheckNeedOpenTrain($TimeBeforeTrain)
 	If $TimeBeforeTrain = "" Then $TimeBeforeTrain = $sNowTime
 	$iTimeBeforeTrain1 = _DateAdd("s", Int(($g_aiTimeTrain[0] * 60) * ($QuickArmyCamps / 100)), $TimeBeforeTrain)
 	$iTimeBeforeTrain2 = _DateDiff("s", $sNowTime, $iTimeBeforeTrain1)
-	If $g_iDebugSetlogTrain = 1 Then
+	If $g_bDebugSetlogTrain Then
 		SetLog("Start Train: " & $TimeBeforeTrain)
 		SetLog("Now: " & $sNowTime)
 		SetLog("Train end time: " & $iTimeBeforeTrain1)

@@ -24,7 +24,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "tree")
+Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = Default)
 
 	If $sStonePrefix = Default Then $sStonePrefix = "stone"
 	If $sTreePrefix = Default Then $sTreePrefix = "tree"
@@ -62,7 +62,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "
 		SetLog("Error: Missing tree files", $COLOR_ERROR)
 		Return $aResult
 	EndIf
-	local $i, $findImage, $sArea, $a
+	Local $i, $findImage, $sArea, $a
 
 	For $i = 1 To $aStoneFiles[0]
 		$findImage = $aStoneFiles[$i]
@@ -79,7 +79,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "
 			$bottom = $y0 + $iAdditional
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			;SetDebugLog("GetVillageSize check for image " & $findImage)
-			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage,  $sArea, 1, False))
+			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, False))
 			If UBound($a) = 2 Then
 				$x = Int($a[0])
 				$y = Int($a[1])
@@ -118,7 +118,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "
 			$bottom = $y0 + $iAdditional
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			;SetDebugLog("GetVillageSize check for image " & $findImage)
-			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage,  $sArea, 1, False))
+			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, False))
 			If UBound($a) = 2 Then
 				$x = Int($a[0])
 				$y = Int($a[1])
@@ -163,8 +163,8 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "
 	$aResult[0] = $c
 	$aResult[1] = $z
 	$aResult[2] = $x
-	$aResult[3] = $y
 	$aResult[4] = $stone[0]
+	$aResult[3] = $y
 	$aResult[5] = $stone[1]
 	$aResult[6] = $stone[5]
 	$aResult[7] = $tree[0]
@@ -173,7 +173,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = "
 	Return $aResult
 EndFunc   ;==>GetVillageSize
 
-Func updateGlobalVillageOffset($x, $y)
+Func UpdateGlobalVillageOffset($x, $y)
 
 	Local $updated = False
 
@@ -214,4 +214,4 @@ Func updateGlobalVillageOffset($x, $y)
 
 	Return $updated
 
-EndFunc   ;==>updateGlobalVillageOffset
+EndFunc   ;==>UpdateGlobalVillageOffset

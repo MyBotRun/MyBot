@@ -20,7 +20,7 @@
 
 Func _CheckPixel($aScreenCode, $bNeedCapture = Default, $Ignore = Default, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	If $bNeedCapture = Default Then $bNeedCapture = False
-	If $g_iDebugSetlog = 1 And $sLogText <> Default And IsString($sLogText) Then
+	If $g_bDebugSetlog And $sLogText <> Default And IsString($sLogText) Then
 		$sLogText &= ", Expected: " & Hex($aScreenCode[2], 6) & ", Tolerance: " & $aScreenCode[3]
 	Else
 		$sLogText = Default

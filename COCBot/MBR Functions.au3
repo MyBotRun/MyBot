@@ -17,12 +17,6 @@
 ;#include "functions\Other\Synchronization.au3" ; now included in LaunchConsole.au3
 #include "functions\Other\OnAutoItErrorRegisterBot.au3"
 
-#include "functions\Config\profileFunctions.au3"
-#include "functions\Config\_Ini_Table.au3"
-#include "functions\Config\applyConfig.au3"
-#include "functions\Config\readConfig.au3"
-#include "functions\Config\saveConfig.au3"
-
 #include "functions\Attack\AttackReport.au3"
 #include "functions\Attack\BuildingSide.au3"
 #include "functions\Attack\GoldElixirChangeThSnipes.au3"
@@ -129,7 +123,7 @@
 #include "functions\Image Search\imglocCheckWall.au3"
 #include "functions\Image Search\imglocTHSearch.au3"
 #include "functions\Image Search\imglocAttackBar.au3"
-
+#include "functions\Image Search\QuickMIS.au3"
 
 #include "functions\Main Screen\checkMainScreen.au3"
 #include "functions\Main Screen\checkObstacles.au3"
@@ -146,8 +140,9 @@
 #include "functions\Android\AndroidMenuShortcuts.au3"
 #include "functions\Android\Close_OpenCoC.au3"
 #include "functions\Android\ZoomOut.au3"
-#include "functions\Android\checkAndroidTimeLag.au3"
-#include "functions\Android\checkAndroidPageError.au3"
+#include "functions\Android\CheckAndroidTimeLag.au3"
+#include "functions\Android\CheckAndroidPageError.au3"
+#include "functions\Android\CheckAndroidRebootCondition.au3"
 #include "functions\Android\AndroidBlueStacks.au3"
 #include "functions\Android\AndroidDroid4X.au3"
 #include "functions\Android\AndroidMEmu.au3"
@@ -172,7 +167,6 @@
 #include "functions\Other\ClickRemove.au3"
 #include "functions\Other\CreateLogFile.au3"
 #include "functions\Other\DebugImageSave.au3"
-#include "functions\Other\DebugSaveDesktopImage.au3"
 #include "functions\Other\ExtendedErrorInfo.au3"
 #include "functions\Other\FindPos.au3"
 #include "functions\Other\StringSize.au3"
@@ -257,6 +251,7 @@
 #include "functions\Village\RequestCC.au3"
 #include "functions\Village\VillageReport.au3"
 #include "functions\Village\UpgradeBuilding.au3"
+#include "functions\Village\Auto Upgrade.au3"
 #include "functions\Village\UpgradeWall.au3"
 #include "functions\Village\Notify.au3"
 #include "functions\Village\Laboratory.au3"
@@ -274,23 +269,15 @@
 
 #include "functions\Village\BuilderBase\Collect.au3"
 #include "functions\Village\BuilderBase\StartClockTowerBoost.au3"
+#include "functions\Village\BuilderBase\BuilderBaseReport.au3"
+#include "functions\Village\BuilderBase\SuggestedUpgrades.au3"
 
 #include "functions\Other\Api.au3"
 #include "functions\Other\ApiClient.au3"
 
-; OLD CODE
-
-;#include "functions\Image Search\checkWall.au3"
-;#include "functions\CreateArmy\getArmyTroopCount.au3" we don't use this anymore
-;#include "functions\Other\MBRFunc.au3"
-;#include "functions\CreateArmy\Spell.au3"
-;#include "functions\CreateArmy\_TrainMoveBtn.au3"
-;#include "functions\CreateArmy\isBarrack.au3"ateArmy\TrainIt.au3"
-;#include "functions\CreateArmy\Train.au3"
-;#include "functions\Image Search\THSearch.au3"
-;#include "functions\CreateArmy\BarracksStatus.au3"
-;#include "functions\Image Search\checkTownhall.au3"
-;#include "functions\Village\LocateBarrack.au3"
-;#include "functions\Village\ClanLevel.au3"
-;#include "functions\Village\LocateSpell.au3"
-;#include "functions\Other\UpdateStatsWall.au3"
+; moved to the end to avoid any global declare issues
+#include "functions\Config\profileFunctions.au3"
+#include "functions\Config\_Ini_Table.au3"
+#include "functions\Config\applyConfig.au3"
+#include "functions\Config\readConfig.au3"
+#include "functions\Config\saveConfig.au3"

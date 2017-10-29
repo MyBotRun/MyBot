@@ -33,13 +33,13 @@ Func BotDetectFirstTime()
 			Local $pixel = $PixelTHHere[0]
 			$g_aiTownHallPos[0] = $pixel[0]
 			$g_aiTownHallPos[1] = $pixel[1]
-			If $g_iDebugSetlog = 1 Then SetLog("DLLc# Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
+			If $g_bDebugSetlog Then SetLog("DLLc# Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
 		EndIf
 		If $g_aiTownHallPos[1] = "" Or $g_aiTownHallPos[1] = -1 Then
 			imglocTHSearch(True, True) ; search th on myvillage
 			$g_aiTownHallPos[0] = $g_iTHx
 			$g_aiTownHallPos[1] = $g_iTHy
-			If $g_iDebugSetlog = 1 Then SetLog("OldDDL Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
+			If $g_bDebugSetlog Then SetLog("OldDDL Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
 		EndIf
 		SetLog("Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_DEBUG)
 	EndIf
@@ -104,7 +104,7 @@ Func BotDetectFirstTime()
 
 	;Boju Display TH Level in Stats
 	_GUI_Value_STATE("HIDE", $g_aGroupListTHLevels)
-	If $g_iDebugSetlog = 1 Then Setlog("Select TH Level:" & Number($g_iTownHallLevel), $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("Select TH Level:" & Number($g_iTownHallLevel), $COLOR_DEBUG)
 	GUICtrlSetState($g_ahPicTHLevels[$g_iTownHallLevel], $GUI_SHOW)
 	GUICtrlSetData($g_hLblTHLevels, $g_iTownHallLevel)
 

@@ -1,7 +1,7 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: checkAndroidTimeLag
+; Name ..........: CheckAndroidTimeLag
 ; Description ...: Function to check time inside Android matching host time
-; Syntax ........: checkAndroidTimeLag()
+; Syntax ........: CheckAndroidTimeLag()
 ; Parameters ....: $bRebootAndroid = True reboots Android if time lag > $g_iAndroidTimeLagThreshold
 ; Return values .: True if Android reboot should be initiated, False otherwise
 ;                  @extended = time lag in Seconds per Minutes
@@ -17,18 +17,22 @@
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
-; Example .......: If checkAndroidTimeLag() = True Then Return
+; Example .......: If CheckAndroidTimeLag() = True Then Return
 ; ===============================================================================================================================
 #include-once
 
-Func InitAndroidTimeLag()
+Func InitAndroidTimeLag($bResetProblemCounter = True)
 	$g_aiAndroidTimeLag[0] = 0 ; Time lag in Secodns determined
 	$g_aiAndroidTimeLag[1] = 0 ; UTC time of Android in Seconds
 	$g_aiAndroidTimeLag[2] = 0 ; AutoIt TimerHandle
 	$g_aiAndroidTimeLag[3] = 0 ; Suspended time of Android in Milliseconds
+	If $bResetProblemCounter = True Then
+		$g_aiAndroidTimeLag[4] = 0 ; # of time lag problems detected
+		$g_aiAndroidTimeLag[5] = 0 ; TimerInit handle of last time lag problem
+	EndIf
 EndFunc   ;==>InitAndroidTimeLag
 
-Func checkAndroidTimeLag($bRebootAndroid = True)
+Func CheckAndroidTimeLag($bRebootAndroid = True)
 
 	SetError(0, 0)
 	If $g_bAndroidCheckTimeLagEnabled = False Then Return SetError(1, 0, False)
@@ -41,6 +45,13 @@ Func checkAndroidTimeLag($bRebootAndroid = True)
 		Return SetError(3, 0, False)
 	EndIf
 
+	; check if problem count should be reseted
+	If $g_aiAndroidTimeLag[4] > 0 And $g_aiAndroidTimeLag[5] <> 0 And __TimerDiff($g_aiAndroidTimeLag[5]) > $g_iAndroidTimeLagResetProblemCountMinutes * 60000 Then
+		SetDebugLog("Time lag problems count of " & $g_aiAndroidTimeLag[4] & " reset to 0 due to " & Round(__TimerDiff($g_aiAndroidTimeLag[5]) / 1000, 0) & " Seconds with an incident")
+		$g_aiAndroidTimeLag[4] = 0
+		$g_aiAndroidTimeLag[5] = 0
+	EndIf
+
 	; get Android UTC
 	Local $s = AndroidAdbSendShellCommand("date +%s")
 	If @error <> 0 Then Return SetError(4, 0, False)
@@ -49,7 +60,7 @@ Func checkAndroidTimeLag($bRebootAndroid = True)
 	Local $curr_hostTimer = __TimerInit()
 
 	If $curr_androidUTC < 1 Then
-		InitAndroidTimeLag()
+		InitAndroidTimeLag(False)
 		Return SetError(5, 0, False)
 	EndIf
 
@@ -74,7 +85,7 @@ Func checkAndroidTimeLag($bRebootAndroid = True)
 	SetDebugLog($g_sAndroidEmulator & " time lag is " & ($lagPerMin > 0 ? "> " : "") & $lagPerMin & " sec/min (avg for " & $hostSeconds & " sec, Android suspend time was " & $lagComp & " sec)")
 
 	If $androidSeconds <= 0 Then
-		InitAndroidTimeLag()
+		InitAndroidTimeLag(False)
 		Return SetError(6, 0, False)
 	EndIf
 
@@ -86,17 +97,20 @@ Func checkAndroidTimeLag($bRebootAndroid = True)
 	$g_aiAndroidTimeLag[2] = $curr_hostTimer
 	$g_aiAndroidTimeLag[3] = 0
 
-	Local $bRebooted = False
 	If $lagPerMin > $g_iAndroidTimeLagThreshold Then
-
-		If $bRebootAndroid = True Then
-			SetLog("Rebooting " & $g_sAndroidEmulator & " due to time lag problem of " & $lagPerMin & " sec/min", $COLOR_ERROR)
-			$bRebooted = True
-			;Else
-			;SetLog($g_sAndroidEmulator & " suffered time lag of " & $lagPerMin & " sec/min (reboot skipped)", $COLOR_ERROR)
-		EndIf
-
+		$g_aiAndroidTimeLag[4] += 1 ; increase problem counter
+		$g_aiAndroidTimeLag[5] = __TimerInit()
+		SetLog($g_aiAndroidTimeLag[4] & ". Time lag detected of " & $lagPerMin & " sec/min for " & $g_sAndroidEmulator, $COLOR_ERROR)
+		InitAndroidTimeLag(False)
 	EndIf
 
-	Return SetError(0, $lagPerMin, $bRebooted)
-EndFunc   ;==>checkAndroidTimeLag
+	Local $bReboot = False
+	If $bRebootAndroid And $g_aiAndroidTimeLag[4] >= $g_iAndroidTimeLagRebootThreshold Then
+		SetLog("Rebooting " & $g_sAndroidEmulator & " due to " & $g_aiAndroidTimeLag[4] & " time lag problems", $COLOR_ERROR)
+		$bReboot = True
+		;Else
+		;SetLog($g_sAndroidEmulator & " suffered time lag of " & $lagPerMin & " sec/min (reboot skipped)", $COLOR_ERROR)
+	EndIf
+
+	Return SetError(0, $lagPerMin, $bReboot)
+EndFunc   ;==>CheckAndroidTimeLag

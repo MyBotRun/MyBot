@@ -17,7 +17,7 @@
 Func TrainRevamp()
 
 	If Not $g_bTrainEnabled Then ; check for training disabled in halt mode
-		If $g_iDebugSetlogTrain = 1 Then Setlog("Halt mode - training disabled", $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Then Setlog("Halt mode - training disabled", $COLOR_DEBUG)
 		Return
 	EndIf
 
@@ -36,9 +36,9 @@ Func TrainRevamp()
 		Return
 	EndIf
 
-	If $g_iDebugSetlogTrain = 1 Then Setlog(" - Initial Quick train Function")
+	If $g_bDebugSetlogTrain Then Setlog(" - Initial Quick train Function")
 
-	If $g_iDebugSetlogTrain = 1 Then Setlog(" - Line Open Army Window")
+	If $g_bDebugSetlogTrain Then Setlog(" - Line Open Army Window")
 
 	CheckIfArmyIsReady()
 
@@ -137,7 +137,7 @@ EndFunc   ;==>TestMaxCamp
 Func TrainRevampOldStyle()
 	If Not $g_bRunState Then Return
 
-	If $g_iDebugSetlogTrain = 1 Then Setlog(" - Initial Custom train Function")
+	If $g_bDebugSetlogTrain Then Setlog(" - Initial Custom train Function")
 
 	;If $bDonateTrain = -1 Then SetbDonateTrain()
 	If $g_iActiveDonate = -1 Then PrepareDonateCC()
@@ -216,7 +216,7 @@ Func CheckIfArmyIsReady()
 
 	CheckArmyCamp(False, False, False, True)
 
-	If $g_iDebugSetlogTrain = 1 Then
+	If $g_bDebugSetlogTrain Then
 		Setlog(" - $g_CurrentCampUtilization : " & $g_CurrentCampUtilization)
 		Setlog(" - $g_iTotalCampSpace : " & $g_iTotalCampSpace)
 	EndIf
@@ -251,7 +251,7 @@ Func CheckIfArmyIsReady()
 			$g_bIsFullArmywithHeroesAndSpells = True
 			If $g_bFirstStart Then $g_bFirstStart = False
 		Else
-			If $g_iDebugSetlog = 1 Then
+			If $g_bDebugSetlog Then
 				SetLog(" $g_bFullArmy: " & String($g_bFullArmy), $COLOR_DEBUG)
 				SetLog(" $g_bCheckSpells: " & String($g_bCheckSpells), $COLOR_DEBUG)
 				SetLog(" $bFullArmyHero: " & String($bFullArmyHero), $COLOR_DEBUG)
@@ -261,7 +261,7 @@ Func CheckIfArmyIsReady()
 			$g_bIsFullArmywithHeroesAndSpells = False
 		EndIf
 	Else
-		If $g_iDebugSetlog = 1 Then SetLog(" Army not ready: IsSearchModeActive($DB)=" & IsSearchModeActive($DB) & ", checkCollectors(True, False)=" & checkCollectors(True, False) & ", IsSearchModeActive($LB)=" & IsSearchModeActive($LB) & ", IsSearchModeActive($TS)=" & IsSearchModeActive($TS), $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetLog(" Army not ready: IsSearchModeActive($DB)=" & IsSearchModeActive($DB) & ", checkCollectors(True, False)=" & checkCollectors(True, False) & ", IsSearchModeActive($LB)=" & IsSearchModeActive($LB) & ", IsSearchModeActive($TS)=" & IsSearchModeActive($TS), $COLOR_DEBUG)
 		$g_bIsFullArmywithHeroesAndSpells = False
 	EndIf
 
@@ -283,7 +283,7 @@ Func CheckIfArmyIsReady()
 
 	; Force to Request CC troops or Spells
 	If Not $bFullArmyCCTroops Or Not $bFullArmyCCSpells Then $g_bCanRequestCC = True
-	If $g_iDebugSetlog = 1 Then
+	If $g_bDebugSetlog Then
 		SetLog(" $g_bFullArmy: " & String($g_bFullArmy), $COLOR_DEBUG)
 		SetLog(" $bCheckCCTroops: " & String($bFullArmyCCTroops), $COLOR_DEBUG)
 		SetLog(" $bCheckCCSpells: " & String($bFullArmyCCSpells), $COLOR_DEBUG)
@@ -345,7 +345,7 @@ Func IsFullClanCastleSpells($bReturnOnly = False)
 	If $g_iCurrentCCSpell = $g_iTotalCCSpell Then $bCCSpellFull = True
 
 	If $bCCSpellFull And (($g_abAttackTypeEnable[$DB] And $g_abSearchCastleSpellsWaitEnable[$DB]) Or ($g_abAttackTypeEnable[$LB] And $g_abSearchCastleSpellsWaitEnable[$LB])) Then
-		If $g_iDebugSetlogTrain Then Setlog("Getting current available spell in Clan Castle.")
+		If $g_bDebugSetlogTrain Then Setlog("Getting current available spell in Clan Castle.")
 		; Imgloc Detection
 		If $g_iTotalCCSpell >= 1 Then $sCurCCSpell1 = GetCurCCSpell(1)
 		If $g_iTotalCCSpell >= 2 Then $sCurCCSpell2 = GetCurCCSpell(2)
@@ -365,10 +365,10 @@ Func IsFullClanCastleSpells($bReturnOnly = False)
 
 		; Debug
 		If $g_iTotalCCSpell >= 2 Then
-			If $g_iDebugSetlogTrain Then Setlog("Slot 1 to remove: " & $aShouldRemove[0])
-			If $g_iDebugSetlogTrain Then Setlog("Slot 2 to remove: " & $aShouldRemove[1])
+			If $g_bDebugSetlogTrain Then Setlog("Slot 1 to remove: " & $aShouldRemove[0])
+			If $g_bDebugSetlogTrain Then Setlog("Slot 2 to remove: " & $aShouldRemove[1])
 		ElseIf $g_iTotalCCSpell = 1 Then
-			If $g_iDebugSetlogTrain Then Setlog("Slot 1 to remove: " & $aShouldRemove[0])
+			If $g_bDebugSetlogTrain Then Setlog("Slot 1 to remove: " & $aShouldRemove[0])
 		EndIf
 
 		If $aShouldRemove[0] > 0 Or $aShouldRemove[1] > 0 Then
@@ -378,7 +378,7 @@ Func IsFullClanCastleSpells($bReturnOnly = False)
 			; Check the Request Clan troops & Spells buttom
 			$g_bCanRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5])
 			; Debug
-			If $g_iDebugSetlogTrain Then Setlog(" » Clans Castle button available? " & $g_bCanRequestCC)
+			If $g_bDebugSetlogTrain Then Setlog(" » Clans Castle button available? " & $g_bCanRequestCC)
 			; Let´s request Troops & Spells
 			If $g_bCanRequestCC Then
 				$rColCheckFullCCTroops = _ColorCheck(_GetPixelColor(24, 470, True), Hex(0x93C230, 6), 30)
@@ -474,7 +474,7 @@ Func CompareCCSpellWithGUI($CCSpell1, $CCSpell2, $CastleCapacity)
 	; $CCSpell1[0][0] = Name , [0][1] = X , [0][2] = Y , [0][3] = Quantities
 	; $CCSpell2[0][0] = Name , [0][1] = X , [0][2] = Y , [0][3] = Quantities , IS "" if was not detected or is not necessary
 
-	If $g_iDebugSetlogTrain Then ; Just For debug
+	If $g_bDebugSetlogTrain Then ; Just For debug
 		For $i = 0 To UBound($CCSpell1, $UBOUND_COLUMNS) - 1
 			Setlog("$CCSpell1[0][" & $i & "]: " & $CCSpell1[0][$i])
 		Next
@@ -494,13 +494,13 @@ Func CompareCCSpellWithGUI($CCSpell1, $CCSpell2, $CastleCapacity)
 
 	; Correct SetLog and flag a Variable to use $bCheckDBCCSpell For dead bases
 	If $g_abAttackTypeEnable[$DB] And $g_abSearchCastleSpellsWaitEnable[$DB] Then
-		If $g_iDebugSetlogTrain Then Setlog("- Let's compare CC Spells on Dead Bases!", $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Then Setlog("- Let's compare CC Spells on Dead Bases!", $COLOR_DEBUG)
 		$bCheckDBCCSpell = True
 	EndIf
 
 	; Correct Set log and flag a Variable to use $bCheckABCCSpell For Alive Bases
 	If $g_abAttackTypeEnable[$LB] And $g_abSearchCastleSpellsWaitEnable[$LB] Then
-		If $g_iDebugSetlogTrain Then Setlog("- Let's compare CC Spells on Active Bases", $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Then Setlog("- Let's compare CC Spells on Active Bases", $COLOR_DEBUG)
 		$bCheckABCCSpell = True
 	EndIf
 
@@ -586,15 +586,15 @@ EndFunc   ;==>CompareCCSpellWithGUI
 Func GetCurCCSpell($iSpellSlot = 1)
 	If Not $g_bRunState Then Return
 	Local $directory = @ScriptDir & "\imgxml\ArmySpells"
-	Local $x1 = 508, $x2 = 587, $y1 = 500, $y2 = 570
+	Local $x1 = 508, $x2 = 615, $y1 = 500, $y2 = 570
 
 	If $iSpellSlot = 1 Then
 		;Nothing
 	ElseIf $iSpellSlot = 2 Then
-		$x1 = 587
+		$x1 = 600
 		$x2 = 660
 	Else
-		If $g_iDebugSetlog = 1 Then SetLog("GetCurCCSpell() called with the wrong argument!", $COLOR_ERROR)
+		If $g_bDebugSetlog Then SetLog("GetCurCCSpell() called with the wrong argument!", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -897,6 +897,9 @@ Func IsGUICheckedForSpell($Spell, $Mode)
 		Case $eFSpell
 			$sSpell = "Freeze"
 			$aVal = $g_abAttackUseFreezeSpell
+		Case $eCSpell
+			$sSpell = "Clone"
+			$aVal = $g_abAttackUseCloneSpell
 		Case $ePSpell
 			$sSpell = "Poison"
 			$aVal = $g_abAttackUsePoisonSpell
@@ -919,7 +922,7 @@ Func DragIfNeeded($Troop)
 
 	If IsDarkTroop($Troop) Then
 		If _ColorCheck(_GetPixelColor(834, 403, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
-		If $g_iDebugSetlogTrain Then Setlog("DragIfNeeded Dark Troops: " & $bCheckPixel)
+		If $g_bDebugSetlogTrain Then Setlog("DragIfNeeded Dark Troops: " & $bCheckPixel)
 		For $i = 1 To 3
 			If Not $bCheckPixel Then
 				ClickDrag(715, 445 + $g_iMidOffsetY, 220, 445 + $g_iMidOffsetY, 2000)
@@ -931,7 +934,7 @@ Func DragIfNeeded($Troop)
 		Next
 	Else
 		If _ColorCheck(_GetPixelColor(22, 403, True), Hex(0xD3D3CB, 6), 5) Then $bCheckPixel = True
-		If $g_iDebugSetlogTrain Then Setlog("DragIfNeeded Normal Troops: " & $bCheckPixel)
+		If $g_bDebugSetlogTrain Then Setlog("DragIfNeeded Normal Troops: " & $bCheckPixel)
 		For $i = 1 To 3
 			If Not $bCheckPixel Then
 				ClickDrag(220, 445 + $g_iMidOffsetY, 725, 445 + $g_iMidOffsetY, 2000)
@@ -1485,7 +1488,7 @@ Func OpenArmyWindow()
 
 	If WaitforPixel(31, 515 + $g_iBottomOffsetY, 33, 517 + $g_iBottomOffsetY, Hex(0xFFFDED, 6), 10, 20) Then
 		If _Sleep($DELAYTRAIN4) Then Return ; wait before click
-		If $g_iDebugSetlogTrain Then SetLog("Click $aArmyTrainButton", $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton", $COLOR_DEBUG)
 		If Not $g_bUseRandomClick Then
 			Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293") ; Button Army Overview
 		Else
@@ -1501,7 +1504,7 @@ Func OpenArmyWindow()
 		$iCount += 1
 		If $iCount = 5 And IsMainPage(1) Then
 			If _Sleep($DELAYTRAIN4) Then Return ; wait before click
-			If $g_iDebugSetlogTrain Then SetLog("Click $aArmyTrainButton", $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton", $COLOR_DEBUG)
 			If Not $g_bUseRandomClick Then
 				Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0293") ; Button Army Overview
 			Else
@@ -1541,10 +1544,10 @@ Func IsArmyWindow($bSetLog = False, $iTabNumber = 0)
 	If _CheckPixel($aIsTrainPgChk1, True) Then
 		While $i < 1
 			If Not $g_bRunState Then Return
-			If $g_iDebugSetlogTrain Then Setlog("$CheckIT[0]: " & $CheckIT[0])
-			If $g_iDebugSetlogTrain Then Setlog("$CheckIT[1]: " & $CheckIT[1])
-			If $g_iDebugSetlogTrain Then Setlog("$CheckIT[2]: " & Hex($CheckIT[2], 6))
-			If $g_iDebugSetlogTrain Then Setlog("$CheckIT[3]: " & $CheckIT[3])
+			If $g_bDebugSetlogTrain Then Setlog("$CheckIT[0]: " & $CheckIT[0])
+			If $g_bDebugSetlogTrain Then Setlog("$CheckIT[1]: " & $CheckIT[1])
+			If $g_bDebugSetlogTrain Then Setlog("$CheckIT[2]: " & Hex($CheckIT[2], 6))
+			If $g_bDebugSetlogTrain Then Setlog("$CheckIT[3]: " & $CheckIT[3])
 			If _ColorCheck(_GetPixelColor($CheckIT[0], $CheckIT[1], True), Hex($CheckIT[2], 6), $CheckIT[3]) Then ExitLoop
 
 			If _Sleep($DELAYISTRAINPAGE2) Then ExitLoop
@@ -1552,15 +1555,15 @@ Func IsArmyWindow($bSetLog = False, $iTabNumber = 0)
 		WEnd
 	Else
 		$i = 1
-		If $bSetLog Or $g_iDebugSetlogTrain Then SetLog("Cannot find Red X | TAB " & $txt, $COLOR_ERROR) ; in case of $i > 10 in while loop
+		If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("Cannot find Red X | TAB " & $txt, $COLOR_ERROR) ; in case of $i > 10 in while loop
 	EndIf
 
 	If $i < 1 Then
-		If ($g_iDebugSetlog = 1 Or $g_iDebugClick = 1) Or $bSetLog Or $g_iDebugSetlogTrain Then Setlog("**" & $txt & " OK**", $COLOR_DEBUG) ;Debug
+		If ($g_bDebugSetlog Or $g_bDebugClick) Or $bSetLog Or $g_bDebugSetlogTrain Then Setlog("**" & $txt & " OK**", $COLOR_DEBUG) ;Debug
 		Return True
 	Else
-		If $bSetLog Or $g_iDebugSetlogTrain Then SetLog("You are not in " & $txt & " | TAB " & $iTabNumber, $COLOR_ERROR) ; in case of $i > 10 in while loop
-		If $g_iDebugImageSave = 1 Then DebugImageSave("IsTrainPage")
+		If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("You are not in " & $txt & " | TAB " & $iTabNumber, $COLOR_ERROR) ; in case of $i > 10 in while loop
+		If $g_bDebugImageSave Then DebugImageSave("IsTrainPage")
 		Return False
 	EndIf
 
@@ -1872,7 +1875,7 @@ Func OpenTrainTabNumber($iTabNumber, $sWhereFrom)
 	If IsTrainPage() Then
 		Click($aTabNumber[$iTabNumber][0], $aTabNumber[$iTabNumber][1], 2, 200)
 		If _Sleep(1500) Then Return
-		If IsArmyWindow(False, $iTabNumber) Then Setlog("Opening " & $Message[$iTabNumber] & $g_iDebugSetlogTrain = 1 ? "(Called from " & $sWhereFrom & ")" : "", $COLOR_INFO)
+		If IsArmyWindow(False, $iTabNumber) Then Setlog("Opening " & $Message[$iTabNumber] & $g_bDebugSetlogTrain ? "(Called from " & $sWhereFrom & ")" : "", $COLOR_INFO)
 	Else
 		Setlog(" - Error Clicking On " & ($iTabNumber >= 0 And $iTabNumber < UBound($Message)) ? ($Message[$iTabNumber]) : ("Not selectable") & " Tab!", $COLOR_ERROR)
 	EndIf
@@ -2137,12 +2140,12 @@ Func GetOCRCurrent($x_start, $y_start)
 		$aResult[1] = Number($aTempResult[1])
 		; Case to use this function os Spells will be <= 22 , 11*2
 		If $aResult[1] <= 22 Then
-			If $g_iDebugSetlogTrain Then Setlog("$g_iTotalSpellValue: " & $g_iTotalSpellValue, $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Then Setlog("$g_iTotalSpellValue: " & $g_iTotalSpellValue, $COLOR_DEBUG)
 			$aResult[1] = $g_iTotalSpellValue
 			$aResult[2] = $g_iTotalSpellValue - $aResult[0]
 			; May 2017 Update the Army Camp Value on Train page is DOUBLE Value
 		ElseIf $aResult[1] <> $g_iTotalCampSpace Then
-			If $g_iDebugSetlogTrain Then Setlog("$g_iTotalCampSpace: " & $g_iTotalCampSpace, $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Then Setlog("$g_iTotalCampSpace: " & $g_iTotalCampSpace, $COLOR_DEBUG)
 			$aResult[1] = $g_iTotalCampSpace
 			$aResult[2] = $g_iTotalCampSpace - $aResult[0]
 		EndIf
@@ -2231,7 +2234,7 @@ EndFunc   ;==>getReceivedTroops
 Func TestTrainRevamp2()
 	$g_bRunState = True
 
-	$g_iDebugOcr = 1
+	$g_bDebugOcr = True
 	Setlog("Start......OpenArmy Window.....")
 
 	Local $timer = __TimerInit()
@@ -2241,7 +2244,7 @@ Func TestTrainRevamp2()
 	Setlog("Imgloc Troops Time: " & Round(__TimerDiff($timer) / 1000, 2) & "'s")
 
 	Setlog("End......OpenArmy Window.....")
-	$g_iDebugOcr = 0
+	$g_bDebugOcr = False
 	$g_bRunState = False
 EndFunc   ;==>TestTrainRevamp2
 
@@ -2283,9 +2286,9 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	If $g_bRunState = False Then Return
 
 	; 	DEBUG
-	If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then
-		$bLocalDebugOCR = $g_iDebugOcr
-		$g_iDebugOcr = 1 ; enable the OCR debug
+	If $g_bDebugSetlogTrain Or $DebugLogs Then
+		$bLocalDebugOCR = $g_bDebugOcr
+		$g_bDebugOcr = True ; enable the OCR debug
 		$TempColorToCheck = _GetPixelColor(223, 594, True)
 		Setlog("CheckValuesCost|ColorToCheck: " & $TempColorToCheck)
 	EndIf
@@ -2301,10 +2304,10 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	EndIf
 
 	; 	DEBUG
-	If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then
+	If $g_bDebugSetlogTrain Or $DebugLogs Then
 		Setlog("- Current resources:")
 		Setlog(" - Elixir: " & _NumberFormat($nElixirCurrent) & " / Dark Elixir: " & _NumberFormat($nDarkCurrent), $COLOR_INFO)
-		$g_iDebugOcr = $bLocalDebugOCR ; disable OCR Debug
+		$g_bDebugOcr = $bLocalDebugOCR ; disable OCR Debug
 	EndIf
 
 	Local $troopCost = 0
@@ -2318,31 +2321,31 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	EndIf
 
 	;	DEBUG
-	If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then SetLog("Individual Cost " & $Troop & "= " & $troopCost)
+	If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Individual Cost " & $Troop & "= " & $troopCost)
 
 	; Cost of the Troop&Spell x the quantities
 	$troopCost *= $troopQuantity
 
 	; 	DEBUG
-	If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then SetLog("Total Cost " & $Troop & "= " & $troopCost)
+	If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Total Cost " & $Troop & "= " & $troopCost)
 
 	If IsDarkTroop($Troop) Then
 		; If is Dark Troop
-		If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then SetLog("Dark Troop " & $Troop & " Is Dark Troop")
+		If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Dark Troop " & $Troop & " Is Dark Troop")
 		If $troopCost <= $nDarkCurrent Then
 			Return True
 		EndIf
 		Return False
 	ElseIf IsElixirSpell($Troop) Then
 		; If is Elixir Spell
-		If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then SetLog("Spell " & $Troop & " Is Elixir Spell")
+		If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Spell " & $Troop & " Is Elixir Spell")
 		If $troopCost <= $nElixirCurrent Then
 			Return True
 		EndIf
 		Return False
 	ElseIf IsDarkSpell($Troop) Then
 		; If is Dark Spell
-		If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then SetLog("Dark Spell " & $Troop & " Is Dark Spell")
+		If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Dark Spell " & $Troop & " Is Dark Spell")
 		If $troopCost <= $nDarkCurrent Then
 			Return True
 		EndIf
@@ -2350,7 +2353,7 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	Else
 		; If Isn't Dark Troop And Spells, Then is Elixir Troop : )
 		If $troopCost <= $nElixirCurrent Then
-			If $g_iDebugSetlogTrain = 1 Or $DebugLogs Then SetLog("Troop " & $Troop & " Is Elixir Troop")
+			If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Troop " & $Troop & " Is Elixir Troop")
 			Return True
 		EndIf
 		Return False

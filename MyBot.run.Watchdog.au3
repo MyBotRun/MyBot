@@ -17,12 +17,8 @@
 #Au3Stripper_Parameters=/rsln
 #AutoIt3Wrapper_Change2CUI=y
 #pragma compile(Console, true)
-#pragma compile(Icon, "Images\MyBot.ico")
-#pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
+#include "MyBot.run.version.au3"
 #pragma compile(ProductName, My Bot Watchdog)
-#pragma compile(ProductVersion, 7.2.3)
-#pragma compile(FileVersion, 7.2.3)
-#pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
 
 ; Enforce variable declarations
@@ -45,8 +41,10 @@ Global Const $COLOR_SUCCESS = 0x006600 ; Dark Green, Action, method, or process 
 Global Const $COLOR_DEBUG = $COLOR_PURPLE ; Purple, basic debug color
 
 ; Global Variables
+Global $g_WatchDogLogStatusBar = False
+Global $g_WatchOnlyClientPID = Default
 Global $g_bRunState = True
-Global $frmBot = 0 ; Dummy form for messages
+Global $g_hFrmBot = 0 ; Dummy form for messages
 Global $g_iGlobalActiveBotsAllowed = 0 ; Dummy
 Global $g_hMutextOrSemaphoreGlobalActiveBots = 0 ; Dummy
 Global $g_hStatusBar = 0 ; Dummy
@@ -55,22 +53,33 @@ Global $hStarted = 0 ; Timer handle watchdog started
 Global $bCloseWhenAllBotsUnregistered = True ; Automatically close watchdog when all bots closed
 Global $iTimeoutBroadcast = 15000 ; Milliseconds of sending broadcast messages to bots
 Global $iTimeoutCheckBot = 5000 ; Milliseconds bots are checked if restart required
-Global $iTimeoutRestartBot = 120000 ; Milliseconds un-responsive bot is launched again
+Global $iTimeoutRestartBot = 180000 ; Milliseconds un-responsive bot is launched again
 Global $iTimeoutAutoClose = 60000 ; Milliseconds watchdog automatically closed when no bot available, -1 = disabled
 Global $hTimeoutAutoClose = 0 ; Timer Handle for $iTimeoutAutoClose
+Global $g_bBotLaunchOption_NoBotSlot = True
+Global $g_iDebugWindowMessages = 0
 
 Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $DELAYSLEEP = 500
-Global $g_iDebugSetlog = 0
+Global $g_bDebugSetlog = False
+
+; used by API
+Global Enum $eLootGold, $eLootElixir, $eLootDarkElixir, $eLootTrophy, $eLootCount
+Global $g_aiCurrentLoot[$eLootCount] = [0, 0, 0, 0] ; current stats
+Global $g_iStatsTotalGain[$eLootCount] = [0, 0, 0, 0]
+Global $g_iStatsLastAttack[$eLootCount] = [0, 0, 0, 0]
+Global $g_iStatsBonusLast[$eLootCount] = [0, 0, 0, 0]
 
 ; Dummy functions
 Func _GUICtrlStatusBar_SetText($a, $b)
-EndFunc
+EndFunc   ;==>_GUICtrlStatusBar_SetText
+Func _GUICtrlStatusBar_SetTextEx($a, $b)
+EndFunc   ;==>_GUICtrlStatusBar_SetTextEx
 Func GetTranslated($a, $b, $c)
-EndFunc
+EndFunc   ;==>GetTranslated
 Func GetTranslatedFileIni($a, $b, $c)
-EndFunc
+EndFunc   ;==>GetTranslatedFileIni
 
 Func SetLog($String, $Color = $COLOR_BLACK, $LogPrefix = "L ")
 	Local $log = $LogPrefix & TimeDebug() & $String
@@ -97,8 +106,11 @@ Func _SleepMilli($iMilliSec)
 	_SleepMicro(Int($iMilliSec * 1000))
 EndFunc   ;==>_SleepMilli
 
-Global $sBotVersion = "v7.2.2" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
-Global $sBotTitle = "My Bot Watchdog " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
+Func UpdateManagedMyBot($aBotDetails)
+	Return True
+EndFunc   ;==>UpdateManagedMyBot
+
+Global $g_sBotTitle = "My Bot Watchdog " & $g_sBotVersion ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
 
@@ -110,11 +122,12 @@ Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
 $hMutex_BotTitle = CreateMutex($sWatchdogMutex)
 If $hMutex_BotTitle = 0 Then
 	;MsgBox($MB_OK + $MB_ICONINFORMATION, $sBotTitle, "My Bot Watchdog is already running.")
-	Exit
+	SetLog($g_sBotTitle & " is already running")
+	Exit 2
 EndIf
 
 ; create dummy form for Window Messsaging
-$frmBot = GUICreate($sBotTitle, 32, 32)
+$g_hFrmBot = GUICreate($g_sBotTitle, 32, 32)
 $hStarted = __TimerInit() ; Timer handle watchdog started
 $hTimeoutAutoClose = $hStarted
 
@@ -123,7 +136,7 @@ Local $iActiveBots = 0
 While 1
 	$iActiveBots = UBound(GetManagedMyBotDetails())
 	SetDebugLog("Broadcast query bot state, registered bots: " & $iActiveBots)
-	_WinAPI_BroadcastSystemMessage($WM_MYBOTRUN_API_1_0, $iActiveBots, $frmBot, $BSF_POSTMESSAGE + $BSF_IGNORECURRENTTASK, $BSM_APPLICATIONS)
+	_WinAPI_BroadcastSystemMessage($WM_MYBOTRUN_API, 0x0100 + $iActiveBots, $g_hFrmBot, $BSF_POSTMESSAGE + $BSF_IGNORECURRENTTASK, $BSM_APPLICATIONS)
 
 	Local $hLoopTimer = __TimerInit()
 	Local $hCheckTimer = __TimerInit()
@@ -137,14 +150,15 @@ While 1
 	WEnd
 
 	; log active bots
-	$iActiveBots = GetActiveMyBotCount($iTimeoutBroadcast + 3000)
+	$iActiveBots = GetActiveMyBotCount($iTimeoutBroadcast * 2)
 	SetDebugLog("Active bots: " & $iActiveBots)
 
 	; automatically close watchdog when no bot available
 	If $iTimeoutAutoClose > -1 And __TimerDiff($hTimeoutAutoClose) > $iTimeoutAutoClose Then
 		If UBound(GetManagedMyBotDetails()) = 0 Then
-			SetLog("Closing " & $sBotTitle & "as no running bot found")
+			SetLog("Closing " & $g_sBotTitle & " as no running bot found")
 			$iExitCode = 1
+			ExitLoop
 		EndIf
 		$hTimeoutAutoClose = __TimerInit() ; timeout starts again
 	EndIf
@@ -154,3 +168,6 @@ WEnd
 ReleaseMutex($hMutex_BotTitle)
 DllClose("ntdll.dll")
 Exit ($iExitCode)
+
+; Reference function so stripper is not removing it
+UpdateManagedMyBot(True)

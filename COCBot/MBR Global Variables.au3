@@ -17,6 +17,7 @@
 #include <APIErrorsConstants.au3>
 #include <WindowsConstants.au3>
 #include <WinAPI.au3>
+#include <WinAPISys.au3>
 #include <Process.au3>
 #include <Math.au3> ; Added for Weak Base
 #include <ButtonConstants.au3>
@@ -53,6 +54,7 @@
 #include <GuiListView.au3>
 #include <GUIToolTip.au3>
 #include <Crypt.au3>
+#include <Timers.au3>
 
 Global Const $g_sLogoPath = @ScriptDir & "\Images\Logo.png"
 Global Const $g_sLogoUrlPath = @ScriptDir & "\Images\LogoURL.png"
@@ -75,63 +77,44 @@ Global $g_iVILLAGE_OFFSET[3] = [0, 0, 1]
 ; <><><><><><><><><><><><><><><><><><>
 ; <><><><> debug flags <><><><>
 ; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-
-Local Const $UserDebugEnable = 0 ; <<< change this value equal to 1, to enable USER debug mode when posting bugs in MBR forums!
-
-; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-; <><><><> Individual error flags for debugging individual sections of code!   			<><><><>
-; <><><><> Can be manually set when required, Enabled when = 1, disabled when = 0 	   <><><><>
-; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-Global $g_iDebugClick = $UserDebugEnable ; Debug Bot Clicks and when docked, display current mouse position and RGB color
-Global $g_iDebugSetlog = $UserDebugEnable ; Verbose log messages, or extra log messages most everywhere
-Global $g_iDebugOcr = $UserDebugEnable ; Creates \Lib\Debug folder and collects OCR images of text capture plus creates OCR log file
-Global $g_iDebugImageSave = $UserDebugEnable ; Save images at key points to allow review/verify emulator window status
-Global $g_iDebugBuildingPos = $UserDebugEnable ; extra information about buildings detected while searching for base to attack
-Global $g_iDebugSetlogTrain = $UserDebugEnable ; verbose log information during troop training
-Global $g_iDebugWindowMessages = $UserDebugEnable ; 0=off, 1=most Window Messages, 2=all Window Messages
-Global $g_iDebugAndroidEmbedded = $UserDebugEnable ; Extra Android messages when using dock mode
-Global $g_iDebugWalls = $UserDebugEnable ;  extra information about wall finding
-Global $g_iDebugGetLocation = $UserDebugEnable ;make a image of each structure detected with getlocation
-Global $g_iDebugSearchArea = $UserDebugEnable ; search area logging
-Global $g_iDebugRedArea = $UserDebugEnable ; display red line data captured
+Global $g_bDebugAndroid = False ; Debug Android
+Global $g_bDebugClick = False ; Debug Bot Clicks and when docked, display current mouse position and RGB color
+Global $g_bDebugSetlog = False ; Verbose log messages, or extra log messages most everywhere
+Global $g_bDebugOcr = False ; Creates \Lib\Debug folder and collects OCR images of text capture plus creates OCR log file
+Global $g_bDebugImageSave = False ; Save images at key points to allow review/verify emulator window status
+Global $g_bDebugBuildingPos = False ; extra information about buildings detected while searching for base to attack
+Global $g_bDebugSetlogTrain = False ; verbose log information during troop training
+Global $g_iDebugWindowMessages = 0 ; 0=off, 1=most Window Messages, 2=all Window Messages
+Global $g_bDebugAndroidEmbedded = False ; Extra Android messages when using dock mode
+Global $g_bDebugGetLocation = False ;make a image of each structure detected with getlocation
+Global $g_bDebugRedArea = False ; display red line data captured
 Global $g_hDebugAlwaysSaveFullScreenTimer = 0 ; __TimerInit() to save every screen capture at full size for 5 Minutes
-
-; <><><><> Enabled when = "True", disabled when = "False"  <><><><>
-Global $g_bDebugSmartZap = ($UserDebugEnable ? True : False) ; verbose logs for SmartZap users
-
-; <><><><> Enable these flags when debugging Attack CSV Scripts! <><><><>
-Global $g_iDebugAttackCSV = $UserDebugEnable ; Verbose log output of actual attack script plus bot actions
-Global $g_iDebugMakeIMGCSV = $UserDebugEnable ; Saves "clean" iamge and image with all drop points and detected buildings marked
+Global $g_bDebugSmartZap = False ; verbose logs for SmartZap users
+Global $g_bDebugAttackCSV = False ; Verbose log output of actual attack script plus bot actions
+Global $g_bDebugMakeIMGCSV = False ; Saves "clean" iamge and image with all drop points and detected buildings marked
 
 ; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 ; <><><><> ONLY Enable items below this line when debugging special errors listed!! <><><><>
 ; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 ; <><><><> Capture image of every base during village search! <><><><>
-Global $g_iDebugVillageSearchImages = 0 ; will fill drive with huge number of images, enable "Delete Temp Files" to reduce lag created with too many images in folder
-
+Global $g_bDebugVillageSearchImages = False ; will fill drive with huge number of images, enable "Delete Temp Files" to reduce lag created with too many images in folder
 ; <><><><> Debug Dead Base search problems <><><><>
-Global $g_iDebugDeadBaseImage = 0 ; Enable collection of zombie base images where loot is above search filter, no dead base detected
+Global $g_bDebugDeadBaseImage = False ; Enable collection of zombie base images where loot is above search filter, no dead base detected
 Global $g_aiSearchEnableDebugDeadBaseImage = 200 ; If $g_iDebugDeadBaseImage is 0 and more than these searches reached, set $g_iDebugDeadBaseImage = 1, 0 = disabled
-
 ; <><><><> Enable when debugging Milk attack errors! <><><><>
-Global $g_iDebugResourcesOffset = 0 ;make images with offset to check correct adjust values
-Global $g_iDebugMilkingIMGmake = 0
-Global $g_iDebugContinueSearchElixir = 0 ; SLOW... if =1 search elixir check all images even if capacity < mincapacity and make debug image in temp folder if no match all images
-
+Global $g_bDebugResourcesOffset = False ;make images with offset to check correct adjust values
+Global $g_bDebugMilkingIMGmake = False
+Global $g_bDebugContinueSearchElixir = False ; SLOW... if =1 search elixir check all images even if capacity < mincapacity and make debug image in temp folder if no match all images
 ; <><><><> Enable this flag to test Donation code, but DOES NOT DONATE! <><><><>
-Global $g_iDebugOCRdonate = 0 ; Creates OCR/image data and simulate, but do not donate
-
+Global $g_bDebugOCRdonate = False ; Creates OCR/image data and simulate, but do not donate
 ; <><><><> Only enable this when debugging Android zoom out issues! <><><><>
-Global $g_iDebugDisableZoomout = 0
-Global $g_iDebugDisableVillageCentering = 0
-
+Global $g_bDebugDisableZoomout = False
+Global $g_bDebugDisableVillageCentering = False
 ; <><><><> Only used to debug GDI memory leaks! <><><><>
 Global $g_iDebugGDICount = 0 ; monitor bot GDI Handle count, 0 = Disabled, <> 0 = Enabled
-
 ; <><><><> Only used to debug language translations! <><><><>
-Global $g_iDebugMultilanguage = 0 ; Debug translated GUI messages, displays section/# of translate for GUI elements instead of actual text
-
+Global $g_bDebugMultilanguage = False ; Debug translated GUI messages, displays section/# of translate for GUI elements instead of actual text
 ; <><><><> debugging use only variables <><><><>
 
 ; Enabled saving of enemy villages when deadbase is active
@@ -181,6 +164,9 @@ Global $g_hHBitmap ; Handle Image for pixel functions
 Global $g_hHBitmap2 ; handle to Device Context (DC) with graphics captured by _captureregion2()
 Global $g_bOcrForceCaptureRegion = True ; When True take new $g_hHBitmap2 screenshot of OCR area otherwise create area from existing (fullscreen!) $g_hHBitmap2
 
+Global $g_iGuiMode = 1 ; GUI Mode: 1 = normal, main form and all controls created, 2 = mini, main form only with buttons, 0 = GUI less, without any form
+Global $g_bGuiRemote = False ; GUI Remote flag
+Global $g_iGuiPID = @AutoItPID
 Global $g_iDpiAwarenessMode = 1 ; 0 = Disable new DPI Desktop handling, 1 = Enable and set DPI Awareness as needed
 
 ;Global $sFile = @ScriptDir & "\Icons\logo.gif"
@@ -200,6 +186,9 @@ Global $g_sAndroidGameClass = ".GameApp" ; Default CoC Game Class, loaded from c
 Global $g_sUserGameDistributor = "Google" ; User Added CoC Game Distributor, loaded from config.ini
 Global $g_sUserGamePackage = "com.supercell.clashofclans" ; User Added CoC Game Package, loaded from config.ini
 Global $g_sUserGameClass = ".GameApp" ; User Added CoC Game Class, loaded from config.ini
+
+Global $g_hAndroidLaunchTime = 0 ; __TimerInit() when Android was last launched
+Global $g_iAndroidRebootHours = 24 ; Default hours when Android gets automatically rebooted
 
 ; embed
 Global Const $g_bAndroidShieldPreWin8 = (_WinAPI_GetVersion() < 6.2) ; Layered Child Window only support for WIN_8 and later
@@ -370,8 +359,10 @@ Global $g_iAndroidAdbClickGroup = 10 ; 1 Disables grouping clicks; > 1 number of
 Global Const $g_iAndroidAdbClickGroupDelay = 50 ; Additional delay in Milliseconds after group of ADB clicks sent (sleep in Android is executed!)
 Global $g_bAndroidAdbKeepClicksActive = False ; Track KeepClicks mode regardless of enabled or not (poor mans deploy troops detection)
 
-Global $g_aiAndroidTimeLag[4] = [0, 0, 0, 0] ; Timer varibales for time lag calculation
-Global Const $g_iAndroidTimeLagThreshold = 5 ; Time lag Seconds per Minute when CoC gets restarted
+Global $g_aiAndroidTimeLag[6] = [0, 0, 0, 0, 0, 0] ; Timer varibales for time lag calculation
+Global Const $g_iAndroidTimeLagThreshold = 5 ; Time lag Seconds per Minute when Android gets restarted
+Global Const $g_iAndroidTimeLagRebootThreshold = 2 ; Reboot Andoid after # of time lag problems
+Global Const $g_iAndroidTimeLagResetProblemCountMinutes = 5 ; Reset time lag problem count after specified Minutes
 
 Global Const $g_iAndroidRebootPageErrorCount = 5 ; Reboots Android automatically after so many IsPage errors (uses $AndroidPageError[0] and $g_iAndroidRebootPageErrorPerMinutes)
 Global Const $g_iAndroidRebootPageErrorPerMinutes = 10 ; Reboot Android if $AndroidPageError[0] errors occurred in $g_iAndroidRebootPageErrorPerMinutes Minutes
@@ -409,9 +400,6 @@ Global $__VBoxExtraData ; Virtualbox extra data details of android instance
 ; <><><><><><><><><><><><><><><><><><><><><><><><>
 #Tidy_On
 #EndRegion Android.au3
-
-; Tooltips
-Global $g_hToolTip = 0
 
 ; set ImgLoc threads use
 Global $g_iGlobalActiveBotsAllowed = EnvGet("NUMBER_OF_PROCESSORS") ; Number of parallel running bots allowed
@@ -456,6 +444,7 @@ Global $g_bBotLaunchOption_NoWatchdog = False ; If true bot will not launch the 
 Global $g_bBotLaunchOption_ForceDpiAware = False ; If true bot will run in DPI Aware 100% scaling when possible
 Global $g_iBotLaunchOption_Dock = 0 ; If 1 bot will dock Android, 2 dock and slide/hide bot
 Global $g_bBotLaunchOption_NoBotSlot = False ; If True, bot slot Mutex are not used in function LockBotSlot
+Global $g_iBotLaunchOption_Help = False ; If specified, bot just shows command line options and exits
 Global $g_asCmdLine[1] = [0] ; Clone of $CmdLine without options, please use instead of $CmdLine
 Global Const $g_sWorkingDir = @WorkingDir ; Working Directory at bot launch
 
@@ -466,6 +455,8 @@ Global $g_hMutex_MyBot = 0
 
 ; Detected Bot Instance thru watchdog registration
 Global $g_BotInstanceCount = 0
+Global $g_WatchOnlyClientPID = Default
+Global $g_WatchDogLogStatusBar = False
 
 ; Arrays to hold stat information
 Global $g_aiWeakBaseStats
@@ -485,6 +476,10 @@ Global $g_hLibUser32DLL = DllOpen("user32.dll") ; handle to user32.dll, DllClose
 Global Const $g_sLibIconPath = $g_sLibPath & "\MBRBOT.dll" ; icon library
 Global Const $g_sTHSnipeAttacksPath = @ScriptDir & "\CSV\THSnipe"
 Global Const $g_sCSVAttacksPath = @ScriptDir & "\CSV\Attack"
+Global Const $g_sIcnMBisland = @ScriptDir & "\Images\bbico.png"
+Global Const $g_sIcnBldGold = @ScriptDir & "\Images\gold.png"
+Global Const $g_sIcnBldElixir = @ScriptDir & "\Images\elixir.png"
+Global Const $g_sIcnBldTrophy = @ScriptDir & "\Images\trophy.png"
 
 ; Improve GUI interactions by disabling bot window redraw
 Global $g_iRedrawBotWindowMode = 2 ; 0 = disabled, 1 = Redraw always entire bot window, 2 = Redraw only required bot window area (or entire bot if control not specified)
@@ -511,7 +506,7 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, _
 		$eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, _
 		$eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, _
-		$eArabic, $eIcnElixirCollectorL5, $eIcnClockTower, $eIcnBuilderHall, $eIcnGoldMineL5, $eIcnGemMine
+		$eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
@@ -526,6 +521,7 @@ Global $g_bBotMoveRequested = False ; should the bot be moved
 Global $g_bBotShrinkExpandToggleRequested = False ; should the bot be slided
 Global $g_bRestart = False
 Global $g_bRunState = False
+Global $g_bIdleState = False ; bot is in Idle() routine waiting for things to finish
 Global $g_bBtnAttackNowPressed = False ; Set to true if any of the 3 attack now buttons are pressed
 Global $g_iCommandStop = -1
 Global $g_bMeetCondStop = False
@@ -543,6 +539,8 @@ Global $g_bGForcePBTUpdate = False
 Global $g_bQuicklyFirstStart = True
 Global $g_bQuickAttack = False
 Global $g_sTimeBeforeTrain = ""
+Global $g_hAttackTimer = 0 ; Timer for knowing when attack starts, in 30 Sec. attack automatically starts and lasts for 3 Minutes
+Global $g_iAttackTimerOffset = Default ; Offset of timer to attack really started
 
 ; -1 = don't use red line, 0 = ImgLoc raw red line routine (default), 1 = New ImgLoc based deployable red line routine, 2 = Original red line routine
 Global Const $REDLINE_IMGLOC_RAW = 0
@@ -596,25 +594,25 @@ Global Const $g_aiTroopTrainTime[$eTroopCount] = [ _
 		36, 90, 180, 600, 360, 600, 120]
 ; Zero element contains number of levels, elements 1 thru n contain cost of that level troop
 Global Const $g_aiTroopCostPerLevel[$eTroopCount][9] = [ _
-		[7, 25, 40, 60, 100, 150, 200, 250], _ 				 ; Archer
-		[7, 50, 80, 120, 200, 300, 400, 500], _ 				 ;Barbarian
-		[8, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000], _ ; Giant
-		[7, 25, 40, 60, 80, 100, 150, 200], _ 				 ; Goblin
-		[6, 1000, 1500, 2000, 2500, 3000, 3500], _ 			 ; WallBreaker
-		[7, 2000, 2500, 3000, 3500, 4000, 4500, 5000], _ 	 ; Balloon
-		[7, 1500, 2000, 2500, 3000, 3500, 4000, 4500], _ 	 ; Wizard
-		[4, 5000, 6000, 8000, 10000], _						 ;Healer
-		[6, 25000, 29000, 33000, 37000, 42000, 46000], _ 	 ; Dragon
-		[5, 28000, 32000, 36000, 40000, 45000], _ 			 ; Pekka
-		[5, 15000, 16000, 17000, 18000, 19000], _ 			 ; BabyDragon
-		[4, 4200, 4800, 5400, 6000], _  						 ; Miner
-		[7, 6, 7, 8, 9, 10, 11, 12], _ 						 ; Minion
-		[7, 40, 45, 52, 58, 65, 90, 115], _					 ; HogRider
-		[5, 70, 100, 130, 160, 190], _ 						 ;Valkyrie
-		[6, 450, 525, 600, 675, 750, 825], _ 				 ; Golem
-		[3, 250, 350, 450], _ 								 ; Witch
-		[4, 390, 450, 510, 570], _  							 ;Lavahound
-		[3, 130, 150, 170]] ; Bowler
+		[7, 25, 40, 60, 100, 150, 200, 250], _ 					; Archer
+		[7, 50, 80, 120, 200, 300, 400, 500], _ 				; Barbarian
+		[8, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000], _ 	; Giant
+		[7, 25, 40, 60, 80, 100, 150, 200], _ 				 	; Goblin
+		[7, 1000, 1500, 2000, 2500, 3000, 3500, 4000], _ 		; WallBreaker
+		[7, 2000, 2500, 3000, 3500, 4000, 4500, 5000], _ 	 	; Balloon
+		[8, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000], _  ; Wizard
+		[5, 5000, 6000, 8000, 10000, 15000], _					; Healer
+		[6, 25000, 29000, 33000, 37000, 42000, 46000], _ 		; Dragon
+		[6, 28000, 32000, 36000, 40000, 45000, 50000], _ 		; Pekka
+		[5, 15000, 16000, 17000, 18000, 19000], _ 			 	; BabyDragon
+		[5, 4200, 4800, 5200, 5600, 6000], _  					; Miner
+		[7, 6, 7, 8, 9, 10, 11, 12], _ 							; Minion
+		[7, 40, 45, 52, 58, 65, 90, 115], _					 	; HogRider
+		[5, 70, 100, 130, 160, 190], _ 						 	; Valkyrie
+		[7, 450, 525, 600, 675, 750, 825, 900], _ 				; Golem
+		[3, 250, 350, 450], _ 								 	; Witch
+		[4, 390, 450, 510, 570], _  							; Lavahound
+		[3, 130, 150, 170]] 									; Bowler
 Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 5, 2, 5, 8, 30, 12, 30, 6]
 
 ; Spells
@@ -626,16 +624,16 @@ Global Const $g_aiSpellSpace[$eSpellCount] = [2, 2, 2, 2, 2, 4, 1, 1, 1, 1]
 Global Const $g_aiSpellTrainTime[$eSpellCount] = [360, 360, 360, 360, 360, 720, 180, 180, 180, 180]
 ; Zero element contains number of levels, elements 1 thru n contain cost of that level spell
 Global Const $g_aiSpellCostPerLevel[$eSpellCount][8] = [ _
-		[7, 15000, 16500, 18000, 20000, 22000, 24000, 26000], _ ;LightningSpell
-		[7, 15000, 16500, 18000, 19000, 21000, 23000, 25000], _ 	 ;HealSpell
-		[5, 23000, 25000, 27000, 30000, 33000], _     		 ;RageSpell
-		[3, 23000, 27000, 31000], _        					 ;JumpSpell
-		[6, 23000, 26000, 29000, 31000, 33000, 35000], _ ;FreezeSpell
-		[5, 38000, 39000, 41000, 43000, 45000], _					 ;CloneSpell
-		[5, 95, 110, 125, 140, 155], _         				 ;PoisonSpell
-		[4, 125, 140, 160, 180], _    						 ;EarthquakeSpell
-		[4, 80, 85, 60, 95], _								 ;HasteSpell
-		[4, 110, 120, 130, 140]] ;SkeletonSpell
+		[7, 15000, 16500, 18000, 20000, 22000, 24000, 26000], _  ;LightningSpell
+		[7, 15000, 16500, 18000, 19000, 21000, 23000, 25000], _  ;HealSpell
+		[5, 23000, 25000, 27000, 30000, 33000], _     			 ;RageSpell
+		[3, 23000, 27000, 31000], _        						 ;JumpSpell
+		[6, 23000, 26000, 29000, 31000, 33000, 35000], _ 		 ;FreezeSpell
+		[5, 38000, 39000, 41000, 43000, 45000], _				 ;CloneSpell
+		[5, 95, 110, 125, 140, 155], _         					 ;PoisonSpell
+		[4, 125, 140, 160, 180], _    							 ;EarthquakeSpell
+		[4, 80, 85, 90, 95], _									 ;HasteSpell
+		[4, 110, 120, 130, 140]] 								 ;SkeletonSpell
 Global Const $g_aiSpellDonateXP[$eSpellCount] = [10, 10, 10, 10, 10, 0, 5, 5, 5, 5]
 
 ; Hero Bitmaped Values
@@ -815,6 +813,30 @@ Global $g_iUpgradeWallMinGold = 0, $g_iUpgradeWallMinElixir = 0
 Global $g_iUpgradeWallLootType = 0, $g_bUpgradeWallSaveBuilder = False
 Global $g_iCmbUpgradeWallsLevel = 6
 Global $g_aiWallsCurrentCount[13] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
+
+; Auto Upgrade
+Global $g_ichkAutoUpgrade = 0
+Global $g_ichkIgnoreTH = 0, $g_ichkIgnoreKing = 0, $g_ichkIgnoreQueen = 0, $g_ichkIgnoreWarden = 0, $g_ichkIgnoreCC = 0, $g_ichkIgnoreLab = 0
+Global $g_ichkIgnoreBarrack = 0, $g_ichkIgnoreDBarrack = 0, $g_ichkIgnoreFactory = 0, $g_ichkIgnoreDFactory = 0
+Global $g_ichkIgnoreGColl = 0, $g_ichkIgnoreEColl = 0, $g_ichkIgnoreDColl = 0
+Global $g_iSmartMinGold = 150000, $g_iSmartMinElixir = 150000, $g_iSmartMinDark = 1500
+Global $g_ichkUpgradesToIgnore[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ichkResourcesToIgnore[3] = [0, 0, 0]
+Global $g_iCurrentLineOffset = 0, $g_iNextLineOffset = 0
+Global $g_aUpgradeNameLevel ; [Nb of elements in Array, Name, Level]
+Global $g_aUpgradeResourceCostDuration[3] = ["", "", ""] ; Resource, Cost, Duration
+
+Global $g_sBldgText, $g_sBldgLevel
+Global $g_aUpgradeName[3] = ["", "", ""]
+Global $g_iUpgradeCost
+Global $g_sUpgradeResource = 0
+Global $g_sUpgradeDuration
+
+; Builder Base
+Global $g_ichkBBSuggestedUpgrades = 0, $g_ichkBBSuggestedUpgradesIgnoreGold = 0, $g_ichkBBSuggestedUpgradesIgnoreElixir = 0, $g_ichkBBSuggestedUpgradesIgnoreHall = 0
+Global $g_ichkPlacingNewBuildings = 0
+
+Global $g_iQuickMISX = 0, $g_iQuickMISY = 0
 
 ; <><><><> Village / Achievements <><><><>
 Global $g_iUnbrkMode = 0, $g_iUnbrkWait = 5
@@ -1054,6 +1076,7 @@ Global $g_bDeleteLogs = True, $g_iDeleteLogsDays = 2, $g_bDeleteTemp = True, $g_
 Global $g_bAutoStart = False, $g_iAutoStartDelay = 10
 Global $b_iAutoRestartDelay = 0 ; Automatically restart bot after so many Seconds, 0 = disabled
 Global $g_bCheckGameLanguage = True
+Global $g_bAutoUpdateGame = False
 Global $g_bAutoAlignEnable = True, $g_iAutoAlignPosition = 0, $g_iAutoAlignOffsetX = 10, $g_iAutoAlignOffsetY = 10
 Global $g_bUpdatingWhenMinimized = True ; Alternative Minimize Window routine for bot that enables window updates when minimized
 Global $g_bHideWhenMinimized = False ; Hide bot window in taskbar when minimized
@@ -1172,6 +1195,7 @@ Global Const $g_iMaxWardenLevel = 20
 Global Const $g_afKingUpgCost[45] = [10, 12.5, 15, 17.5, 20, 22.5, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 185, 188, 191, 194, 197]
 Global Const $g_afQueenUpgCost[45] = [40, 22.5, 25, 27.5, 30, 32.5, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 129, 133, 137, 141, 145, 149, 153, 157, 161, 165, 169, 173, 177, 181, 185, 190, 192, 194, 196, 198]
 ; Grand Warden Upgrade Costs = Elixir in xx.xK
+Global $g_iWardenLevel = -1
 Global Const $g_afWardenUpgCost[20] = [6, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.4, 8.8, 9.1, 9.4, 9.6, 9.8, 10]
 
 ; Special Bot activities active
@@ -1544,5 +1568,6 @@ $g_oBldgImages.add($eBldgWizTower & "_" & "1", @ScriptDir & "\imgxml\Buildings\W
 $g_oBldgImages.add($eBldgMortar & "_" & "0", @ScriptDir & "\imgxml\Buildings\Mortars")
 $g_oBldgImages.add($eBldgAirDefense & "_" & "0", @ScriptDir & "\imgxml\Buildings\ADefense")
 
+; ================================================== BB FEATURES PART ================================================== ;
+Global $g_iGoldBB = 0, $g_iElixirBB = 0, $g_iTrophiesBB = 0, $g_aBuilder[2] = [0,0]
 ; EOF
-

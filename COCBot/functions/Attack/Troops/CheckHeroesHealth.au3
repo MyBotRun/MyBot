@@ -30,14 +30,14 @@ Func CheckHeroesHealth()
 
 			If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
 
-			If $g_iDebugSetlog = 1 Then
+			If $g_bDebugSetlog Then
 				Setlog(" CheckHeroesHealth started ")
 				If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
 			EndIf
 
 			If $g_bCheckKingPower Then
 				Local $KingPixelColor = _GetPixelColor($aKingHealthCopy[0], $aKingHealthCopy[1], $g_bCapturePixel)
-				If $g_iDebugSetlog = 1 Then Setlog(" King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog(" King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aKingHealthCopy, $KingPixelColor, "Red+Blue") Then
 					SetLog("King is getting weak, Activating King's power", $COLOR_INFO)
 					SelectDropTroop($g_iKingSlot)
@@ -46,7 +46,7 @@ Func CheckHeroesHealth()
 			EndIf
 			If $g_bCheckQueenPower Then
 				Local $QueenPixelColor = _GetPixelColor($aQueenHealthCopy[0], $aQueenHealthCopy[1], $g_bCapturePixel)
-				If $g_iDebugSetlog = 1 Then Setlog(" Queen _GetPixelColor(" & $aQueenHealthCopy[0] & "," & $aQueenHealthCopy[1] & "): " & $QueenPixelColor, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog(" Queen _GetPixelColor(" & $aQueenHealthCopy[0] & "," & $aQueenHealthCopy[1] & "): " & $QueenPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aQueenHealthCopy, $QueenPixelColor, "Red+Blue") Then
 					SetLog("Queen is getting weak, Activating Queen's power", $COLOR_INFO)
 					SelectDropTroop($g_iQueenSlot)
@@ -55,7 +55,7 @@ Func CheckHeroesHealth()
 			EndIf
 			If $g_bCheckWardenPower Then
 				Local $WardenPixelColor = _GetPixelColor($aWardenHealthCopy[0], $aWardenHealthCopy[1], $g_bCapturePixel)
-				If $g_iDebugSetlog = 1 Then Setlog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aWardenHealthCopy, $WardenPixelColor, "Red+Blue") Then
 					SetLog("Grand Warden is getting weak, Activating Warden's power", $COLOR_INFO)
 					SelectDropTroop($g_iWardenSlot)

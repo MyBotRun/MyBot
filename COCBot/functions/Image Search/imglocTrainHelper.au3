@@ -27,10 +27,10 @@ EndFunc   ;==>imglocTestQuickTrain
 
 
 Func QuickTrain($quickTrainOption, $bOpenAndClose = True, $forceDebug = False)
-	If $g_iDebugImageSave = True Then
+	If $g_bDebugImageSave Then
 		$forceDebug = True
 	EndIf
-	If $forceDebug = True Then SetLog("QUICKTRAINDEBUG : START", $COLOR_RED)
+	If $forceDebug = True Then SetLog("QUICKTRAINDEBUG : START", $COLOR_ERROR)
 	SetLog("Starting Quick Train", $COLOR_INFO)
 	Local $retry = 5 ;#times it retries to find buttons
 	If $bOpenAndClose = True Then
@@ -115,12 +115,12 @@ EndFunc   ;==>QuickTrain
 
 Func imglocTrainIfAvailable($nTroopEnum, $iQuantity, $imglocFoundArray)
 	Local $sTroopName = decodeTroopEnum($nTroopEnum)
-	If $g_iDebugSetlog = 1 Then SetLog($sTroopName & " / " & $nTroopEnum & " training if available!", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetLog($sTroopName & " / " & $nTroopEnum & " training if available!", $COLOR_DEBUG)
 	Local $aLineValue
 	For $iFA = 0 To UBound($imglocFoundArray) - 1
 		$aLineValue = $imglocFoundArray[$iFA] ; this should be an array of objectname,objectpoints,filename
 		If $aLineValue[0] = $sTroopName Then ; found troop/spell to click
-			If $g_iDebugSetlog = 1 Then SetLog($sTroopName & " / " & $nTroopEnum & " found. Checking availability!", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetLog($sTroopName & " / " & $nTroopEnum & " found. Checking availability!", $COLOR_DEBUG)
 			;lets recheck if button is still available for clicking
 			Local $tmpRectArea = GetDummyRectangle($aLineValue[1], 20) ; get diamond from coords string using 20px distance
 			Local $tmpTileName = $aLineValue[2] ; holds file path needed to recheck if still available for click
@@ -142,10 +142,10 @@ Func imglocFindAvailableToTrain($sTrainType)
 	Local $maxReturnPoints = 1 ; only need one match for each image
 	Local $returnProps = "objectname,objectpoints,filepath"
 	Local $sDirectory = @ScriptDir & "\imgxml\newtrainwindow\" & $sTrainType & "\"
-	If $g_iDebugSetlog = 1 Then SetLog("imgloc Searching Regular Troops :  in " & $sCocDiamond & " using " & $sDirectory, $COLOR_INFO)
+	If $g_bDebugSetlog Then SetLog("imgloc Searching Regular Troops :  in " & $sCocDiamond & " using " & $sDirectory, $COLOR_INFO)
 	Local $bForceCapture = True ; force CaptureScreen
 	;aux data
-	If $g_iDebugSetlog = 1 Then SetLog("imgloc train search : " & $sTrainType, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetLog("imgloc train search : " & $sTrainType, $COLOR_DEBUG)
 	Local $hTimer = __TimerInit()
 	Local $result = findMultiple($sDirectory, $sCocDiamond, $redLines, $minLevel, $maxLevel, $maxReturnPoints, $returnProps, $bForceCapture)
 	Return $result

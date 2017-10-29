@@ -17,7 +17,7 @@
 ;
 Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = False)
 
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Begin getArmyHeroTime:", $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("Begin getArmyHeroTime:", $COLOR_DEBUG)
 
 	; validate hero troop type input, must be hero enum value or "all"
 	If $iHeroType <> $eHeroKing And $iHeroType <> $eHeroQueen And $iHeroType <> $eHeroWarden And StringInStr($iHeroType, "all", $STR_NOCASESENSEBASIC) = 0 Then
@@ -54,12 +54,12 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 		$sResult = ArmyHeroStatus($index) ; OCR slot for status information
 		If $sResult <> "" Then ; we found something
 			If StringInStr($sResult, "heal", $STR_NOCASESENSEBASIC) = 0 Then
-				If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then
+				If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then
 					SetLog("Hero slot#" & $index + 1 & " status: " & $sResult & " :skip time read", $COLOR_PURPLE)
 				EndIf
 				ContinueLoop ; if do not find hero healing, then do not read time
 			Else
-				If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("Hero slot#" & $index + 1 & " status: " & $sResult, $COLOR_DEBUG)
+				If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Hero slot#" & $index + 1 & " status: " & $sResult, $COLOR_DEBUG)
 			EndIf
 		Else
 			SetLog("Hero slot#" & $index + 1 & " Status read problem!", $COLOR_ERROR)
@@ -70,7 +70,7 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 		If $sResult <> "" Then
 
 			$aResultHeroes[$index] = ConvertOCRTime($aHeroRemainData[$index][2] & " recover" , $sResult, True) ; update global array
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("Remaining " & $aHeroRemainData[$index][2] & " recover time: " & StringFormat("%.2f", $aResultHeroes[$index]), $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Remaining " & $aHeroRemainData[$index][2] & " recover time: " & StringFormat("%.2f", $aResultHeroes[$index]), $COLOR_DEBUG)
 
 			If $iHeroType = $aHeroRemainData[$index][3] Then ; if only one hero requested, then set return value and exit loop
 				$iRemainTrainHeroTimer = Number($aResultHeroes[$index])
@@ -86,7 +86,7 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 						SetLog("Can not read remaining " & $aHeroRemainData[$index][2] & " train time", $COLOR_ERROR)
 						ExitLoop
 					Else
-						If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("Bad read remain " & $aHeroRemainData[$index][2] & " recover time, but not enabled", $COLOR_DEBUG)
+						If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Bad read remain " & $aHeroRemainData[$index][2] & " recover time, but not enabled", $COLOR_DEBUG)
 					EndIf
 				Next
 			EndIf

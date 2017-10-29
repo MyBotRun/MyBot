@@ -1,3 +1,33 @@
+* **V7.3**
+ * Add Auto Update for Normal and Builder Base and Builder Base Stats (thx to DocOC team and ViperZ)
+ * Add MEmu 3.5.0.2 DirectX support
+ * Add Clash Of Magic support, https://www.clashofmagic.net/
+   Server 3: http://download825.mediafireuserdownload.com/g29mv74piaqg/jeab7w484b77n86/Magic-CoC_S3-9.105-R1.apk
+   http://www.tomzpot.com/android-games/clash-of-magic-9-105-10-private-server-september-2017/
+ * Add Mini GUI mode to run launch more 10 bots (can be also enabled with command line option /minigui or /mg)
+   New title bar icon to switch between normal and mini GUI mode
+ * Add automatic Android reboot after configured run-time hours (default is 24) to prevent severy Android issues like memory leak, graphics error etc.
+ * Add /? command line option to show help on additonal command line paramter and options
+ * Fix wall upgrade not saving resources for enabled non-repeated building upgrades when a builder is available
+ * Fix Wait For Clan Castle Spell not getting detected sometimes
+ * Fix Log Messages when Heroes are not enabled to auto Upgrade
+ * Fix Balloon Donation Issues
+ * Fix Wall Upgrade Ignoring Auto Warden Upgrade when checking if enough Elixir is available
+ * Fix Several Bugs and outdated values by @NguyenAnhHD
+ * Fix Clone Spell not getting brewed before going to Attack by @ViperZ
+ * Improve Weak Base Eagle Lvl 2 Detection
+ * Improve Dead Base Collector Lvl 11 Detection
+ * Improve village measuring with secondary images to fix zoom out loop when village cannot be measured
+ * Improve remaing attack time calculation
+ * Improve bot launch time when no Android Emulator command line parameter was specified
+ * Improve Android reboot on time lag after 2 detections
+ * Improve watchdog process restarting unresponsive bots after 3 Minutes (was 2 Minutes) and Bot API window communication
+ * Improve ADB Click&Drag for input drag mode (when not accurate Click&Drag script is used)
+ * Update ProfileReport Code & OCR
+ * Show bot window when Android Window activated (both ways)
+ * Bot start/stop/pause and resume added to tray menu
+ * New MyBot.run.MiniGui "reference app for modders/devs" controlling bot backend process using Window Messages
+
 * **V7.2.5**
  * Add Inferno Lvl 5 to Weak Base Images/GUI settings, add Lvl 4 tile and lowered tolerance
  * Lower Eagle Lvl 1 tolerance for better Weak Base detection

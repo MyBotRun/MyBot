@@ -32,10 +32,10 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 
 	If $g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 0 And $g_aiAttackStdDropSides[$LB] = 4 Then ; Used for DES Side Attack (need to know the side the DES is on)
 		$result = DllCall($g_hLibMyBot, "str", "getRedAreaSideBuilding", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingDES)
-		If $g_iDebugSetlog Then Setlog("Debug: Redline with DES Side chosen")
+		If $g_bDebugSetlog Then Setlog("Debug: Redline with DES Side chosen")
 	ElseIf $g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 0 And $g_aiAttackStdDropSides[$LB] = 5 Then ; Used for TH Side Attack (need to know the side the TH is on)
 		$result = DllCall($g_hLibMyBot, "str", "getRedAreaSideBuilding", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingTH)
-		If $g_iDebugSetlog Then Setlog("Debug: Redline with TH Side chosen")
+		If $g_bDebugSetlog Then Setlog("Debug: Redline with TH Side chosen")
 	Else ; Normal getRedArea
 
 		Switch $iMode
@@ -61,7 +61,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 			Case $REDLINE_ORIGINAL ; Original red line routine
 				Local $result = DllCall($g_hLibMyBot, "str", "getRedArea", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation)
 		EndSwitch
-		If $g_iDebugSetlog Then Setlog("Debug: Redline chosen")
+		If $g_bDebugSetlog Then Setlog("Debug: Redline chosen")
 	EndIf
 
 	If IsArray($result) Then
@@ -170,12 +170,9 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 	ReDim $g_aiPixelRedArea[UBound($g_aiPixelTopLeft) + UBound($g_aiPixelBottomLeft) + UBound($g_aiPixelTopRight) + UBound($g_aiPixelBottomRight)]
 	ReDim $g_aiPixelRedAreaFurther[UBound($g_aiPixelRedArea)]
 
-	;If Milking Attack ($g_aiAttackAlgorithm[$DB] = 2) or AttackCSV skip calc of troops further offset (archers drop points for standard attack)
-	; but need complete calc if use standard attack after milking attack ($MilkAttackAfterStandardAtk =1) and use redarea ($g_abAttackStdSmartAttack[$MA] = True)
-	;If $g_iDebugSetlog = 1 Then Setlog("REDAREA matchmode " & $g_iMatchMode & " atkalgorithm[0] = " & $g_aiAttackAlgorithm[$DB] & " $g_bMilkAttackAfterScriptedAtkEnable = " & $g_bMilkAttackAfterScriptedAtkEnable , $COLOR_DEBUG1)
 	Local $a
 	If $g_iMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 2 Then
-		If $g_iDebugSetlog = 1 Then setlog("redarea no calc pixel further (quick)", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetLog("redarea no calc pixel further (quick)", $COLOR_DEBUG)
 		Local $count = 0
 		ReDim $g_aiPixelTopLeftFurther[UBound($g_aiPixelTopLeft)]
 		For $i = 0 To UBound($g_aiPixelTopLeft) - 1
@@ -207,7 +204,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 			$count += 1
 		Next
 	Else
-		If $g_iDebugSetlog = 1 Then setlog("redarea calc pixel further", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetLog("redarea calc pixel further", $COLOR_DEBUG)
 		Local $count = 0
 		ReDim $g_aiPixelTopLeftFurther[UBound($g_aiPixelTopLeft)]
 		For $i = 0 To UBound($g_aiPixelTopLeft) - 1
@@ -306,7 +303,7 @@ EndFunc   ;==>SortRedline
 
 Func SortByDistance($PixelList, ByRef $StartPixel, ByRef $EndPixel, ByRef $iInvalid)
 
-	If $g_iDebugSetlog = 1 Then SetDebugLog("SortByDistance Start = " & PixelToString($StartPixel, ',') & " : " & PixelArrayToString($PixelList, ","))
+	If $g_bDebugSetlog Then SetDebugLog("SortByDistance Start = " & PixelToString($StartPixel, ',') & " : " & PixelArrayToString($PixelList, ","))
 	Local $iMax = UBound($PixelList) - 1
 	Local $iMin2 = 0
 	Local $iMax2 = $iMax
@@ -371,7 +368,6 @@ Func SortByDistance($PixelList, ByRef $StartPixel, ByRef $EndPixel, ByRef $iInva
 		$EndPixel[1] = $lastPixel[1]
 	EndIf
 
-	;If $g_iDebugSetlog = 1 Then SetDebugLog("SortByDistance Done : " & PixelArrayToString($Sorted, ","))
 	Return $Sorted
 
 EndFunc   ;==>SortByDistance

@@ -16,7 +16,7 @@
 ;
 Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
 
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("Begin getArmyTroopTime:", $COLOR_DEBUG1)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyTroopTime:", $COLOR_DEBUG1)
 
 	$g_aiTimeTrain[0] = 0 ; reset time
 

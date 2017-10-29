@@ -17,7 +17,7 @@ Func AndroidBackButton($bCheckRunState = True)
 	If (IsDeclared("bCheckRunState") <> 0 And $bCheckRunState) And Not $g_bRunState Then Return False
 	;SendAdbCommand("shell input keyevent 4", False)
 	AndroidAdbSendShellCommand("input keyevent 4")
-	If $g_iDebugSetlog = 1 Then Setlog("Used Adb to press back button", $COLOR_INFO)
+	If $g_bDebugAndroid Then Setlog("Used Adb to press back button", $COLOR_INFO)
 	Return True
 EndFunc   ;==>AndroidBackButton
 
@@ -40,6 +40,6 @@ Func AndroidHomeButton($bCheckRunState = True)
 	If (IsDeclared("bCheckRunState") <> 0 And $bCheckRunState) And Not $g_bRunState Then Return False
 	;SendAdbCommand("shell input keyevent 3", False)
 	AndroidAdbSendShellCommand("input keyevent 3")
-	If $g_iDebugSetlog = 1 Then Setlog("Used Adb to press home button", $COLOR_INFO)
+	If $g_bDebugAndroid Then Setlog("Used Adb to press home button", $COLOR_INFO)
 	Return True
 EndFunc   ;==>AndroidHomeButton

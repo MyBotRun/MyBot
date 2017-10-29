@@ -47,7 +47,7 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 		If _Sleep($DELAYREQUESTCC1) Then ExitLoop
 		$iCount += 1
 		If $iCount > 5 Then
-			If $g_iDebugSetlog = 1 Then Setlog("RequestCC Army Window issue!", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog("RequestCC Army Window issue!", $COLOR_DEBUG)
 			ExitLoop ; wait 6*500ms = 3 seconds max
 		EndIf
 	WEnd
@@ -86,7 +86,7 @@ Func _makerequest()
 	While Not ( _ColorCheck(_GetPixelColor($aCancRequestCCBtn[0], $aCancRequestCCBtn[1], True), Hex($aCancRequestCCBtn[2], 6), $aCancRequestCCBtn[3]))
 		If _Sleep($DELAYMAKEREQUEST1) Then ExitLoop
 		$icount += 1
-		If $g_iDebugSetlog = 1 Then Setlog("$icount2 = " & $icount & ", " & _GetPixelColor($aCancRequestCCBtn[0], $aCancRequestCCBtn[1], True), $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("$icount2 = " & $icount & ", " & _GetPixelColor($aCancRequestCCBtn[0], $aCancRequestCCBtn[1], True), $COLOR_DEBUG)
 		If $icount > 20 Then ExitLoop ; wait 21*500ms = 10.5 seconds max
 	WEnd
 	If $icount > 20 Then
@@ -110,11 +110,11 @@ Func _makerequest()
 		While Not _ColorCheck(_GetPixelColor($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], True), Hex(0x5fac10, 6), 20)
 			If _Sleep($DELAYMAKEREQUEST1) Then ExitLoop
 			$icount += 1
-			If $g_iDebugSetlog = 1 Then Setlog("$icount3 = " & $icount & ", " & _GetPixelColor($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], True), $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog("$icount3 = " & $icount & ", " & _GetPixelColor($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], True), $COLOR_DEBUG)
 			If $icount > 25 Then ExitLoop ; wait 26*500ms = 13 seconds max
 		WEnd
 		If $icount > 25 Then
-			If $g_iDebugSetlog = 1 Then SetLog("Send request button not found", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetLog("Send request button not found", $COLOR_DEBUG)
 			CheckMainScreen(False) ;emergency exit
 		EndIf
 		If $g_bChkBackgroundMode = False And $g_bNoFocusTampering = False Then ControlFocus($g_hAndroidWindow, "", "") ; make sure Android has window focus

@@ -30,13 +30,13 @@ Func GetXPosOfArmySlot($slotNumber, $xOffsetFor11Slot)
 			_ColorCheck(_GetPixelColor(17, 643, True), Hex(0x434343, 6), 10) ; Slot deployed / Gray / More than 11 Slots
 
 
-	If $g_iDebugSetlog = 1 Then
+	If $g_bDebugSetlog Then
 		Setlog(" Slot 0  _ColorCheck 0x478AC6 at (17," & 643 & "): " & $CheckSlot12, $COLOR_DEBUG) ;Debug
 		$SlotPixelColorTemp = _GetPixelColor(17, 643, $g_bCapturePixel)
 		Setlog(" Slot 0  _GetPixelColo(17," & 643 & "): " & $SlotPixelColorTemp, $COLOR_DEBUG) ;Debug
 	EndIf
 
-	If $CheckSlot12 = False Then
+	If Not $CheckSlot12 Then
 		Return $xOffsetFor11Slot + $SlotComp + ($slotNumber * 72)
 	Else
 		Return $xOffsetFor11Slot + $SlotComp + ($slotNumber * 72) - 13

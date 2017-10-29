@@ -39,36 +39,32 @@ Func CreateBotProfiles()
 			GUICtrlSetState(-1, $GUI_HIDE)
 			; GUICtrlSetOnEvent(-1, "txtVillageName") - No longer needed
 
-		Local $bIconAdd = _GUIImageList_Create(24, 24, 4)
+		; Local static to avoid GDI Handle leak
+		Static $bIconAdd = 0
+		If $bIconAdd = 0 Then
+			$bIconAdd = _GUIImageList_Create(24, 24, 4)
 			_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd.bmp")
-			_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_2.bmp")
-			_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_2.bmp")
-			_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd_4.bmp")
-			_GUIImageList_AddBitmap($bIconAdd, @ScriptDir & "\images\Button\iconAdd.bmp")
-		Local $bIconConfirm = _GUIImageList_Create(24, 24, 4)
+		EndIf
+		Static $bIconConfirm = 0
+		If $bIconConfirm = 0 Then
+			$bIconConfirm = _GUIImageList_Create(24, 24, 4)
 			_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm.bmp")
-			_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_2.bmp")
-			_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_2.bmp")
-			_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm_4.bmp")
-			_GUIImageList_AddBitmap($bIconConfirm, @ScriptDir & "\images\Button\iconConfirm.bmp")
-		Local $bIconDelete = _GUIImageList_Create(24, 24, 4)
+		EndIf
+		Static $bIconDelete = 0
+		If $bIconDelete = 0 Then
+			$bIconDelete = _GUIImageList_Create(24, 24, 4)
 			_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete.bmp")
-			_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_2.bmp")
-			_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_2.bmp")
-			_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete_4.bmp")
-			_GUIImageList_AddBitmap($bIconDelete, @ScriptDir & "\images\Button\iconDelete.bmp")
-		Local $bIconCancel = _GUIImageList_Create(24, 24, 4)
+		EndIf
+		Static $bIconCancel = 0
+		If $bIconCancel = 0 Then
+			$bIconCancel = _GUIImageList_Create(24, 24, 4)
 			_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel.bmp")
-			_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_2.bmp")
-			_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_2.bmp")
-			_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel_4.bmp")
-			_GUIImageList_AddBitmap($bIconCancel, @ScriptDir & "\images\Button\iconCancel.bmp")
-		Local $bIconEdit = _GUIImageList_Create(24, 24, 4)
+		EndIf
+		Static $bIconEdit = 0
+		If $bIconEdit = 0 Then
+			$bIconEdit = _GUIImageList_Create(24, 24, 4)
 			_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit.bmp")
-			_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_2.bmp")
-			_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_2.bmp")
-			_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit_4.bmp")
-			_GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit.bmp")
+		EndIf
 
 		$g_hBtnAddProfile = GUICtrlCreateButton("", $x + 135, $y, 24, 24)
 			_GUICtrlButton_SetImageList($g_hBtnAddProfile, $bIconAdd, 4)

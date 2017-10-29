@@ -97,7 +97,7 @@ Func RemoveDupNearby(ByRef $sLocCoord, $iDistance = 8)
 	Local $aLoc1, $aLoc2, $bRemovedDuplicate = False
 	Local $sTmpVector = ""
 #comments-start
-	If $g_iDebugSetlog = 1 Then ; debug log values till know code is working...
+	If $g_bDebugSetlog Then ; debug log values till know code is working...
 		Local $sText = "INPUT $aCoord"
 		Setlog("INPUT $aCoord count= " & $aCoord[0], $COLOR_DEBUG)
 		Setlog("INPUT $sLocCoord= " & $sLocCoord, $COLOR_DEBUG)
@@ -163,7 +163,7 @@ Func RemoveDupNearby(ByRef $sLocCoord, $iDistance = 8)
 			EndIf
 		EndIf
 
-		If $g_iDebugSetlog = 1 And $aCoord[0] <> $aCoord2[0] Then
+		If $g_bDebugSetlog And $aCoord[0] <> $aCoord2[0] Then
 			SetDebuglog("Duplicate objectpoints found, removed: " & $aCoord[0] - $aCoord2[0], $COLOR_INFO)
 			SetDebuglog("Final Coords count= " & $aCoord2[0], $COLOR_DEBUG)
 		EndIf
@@ -202,14 +202,14 @@ EndFunc   ;==>RemoveDupNearby
 ; ===============================================================================================================================
 Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $iDistance = 8)
 
-	If $g_iDebugSetlog = 1 Then Setlog("Begin AddPoints_RemoveDuplicate", $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then Setlog("Begin AddPoints_RemoveDuplicate", $COLOR_DEBUG1)
 
 	Local $aCoord1 = StringSplit($sLoc1Coord, "|")
 	Local $aCoord2 = StringSplit($sLoc2Coord, "|")
 	Local $aLoc1, $aLoc2
 	Local $iPointsAdded = 0
 #comments-start
-	If $g_iDebugSetlog = 1 Then ; debug log values till know code is working...
+	If $g_bDebugSetlog Then ; debug log values till know code is working...
 		Local $sText = "INPUT $aCoord1"
 		Setlog("INPUT $aCoord1 count " & $aCoord1[0], $COLOR_DEBUG)
 		For $p = 1 To $aCoord1[0]
@@ -246,7 +246,7 @@ Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $
 			EndIf
 		Next
 #comments-start
-		If $g_iDebugSetlog = 1 Then ; debug log values till know code is working...
+		If $g_bDebugSetlog Then ; debug log values till know code is working...
 			Local $sText = "OUTPUT $aCoord1"
 			Setlog("OUTPUT $aCoord1 count " & $aCoord1[0], $COLOR_DEBUG)
 			For $p = 1 To $aCoord1[0]

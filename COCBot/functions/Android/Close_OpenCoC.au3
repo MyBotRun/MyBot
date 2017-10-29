@@ -124,9 +124,9 @@ Func WaitnOpenCoC($iWaitTime, $bFullRestart = False, $bSuspendComputer = False, 
 	If Not StartAndroidCoC() Then Return
 	If Not $g_bRunState Then Return
 
-	If $g_iDebugSetlog = 1 Then setlog("CoC Restarted, Waiting for completion", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then setlog("CoC Restarted, Waiting for completion", $COLOR_DEBUG)
 
-	If $bFullRestart = True Then
+	If $bFullRestart Then
 		checkMainScreen() ; Use checkMainScreen to restart CoC, and waitMainScreen to handle Take A Break wait, or other errors.
 		$g_bRestart = True
 	Else
@@ -162,7 +162,7 @@ Func PoliteCloseCoC($sSource = "Unknown_", $bPoliteCloseCoC = $g_bPoliteCloseCoC
 				If ClickOkay("ExitOkay_" & $sSource, True) = True Then ExitLoop ; Confirm okay to exit
 				If $i > 10 Then
 					Setlog("Can not find Okay button to exit CoC, Forcefully Closing CoC", $COLOR_ERROR)
-					If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
+					If $g_bDebugImageSave Then DebugImageSave($sSource)
 					CloseCoC()
 					ExitLoop
 				EndIf
@@ -187,7 +187,7 @@ Func PoliteCloseCoC($sSource = "Unknown_", $bPoliteCloseCoC = $g_bPoliteCloseCoC
 						$btnExit = FindExitButton($g_sAndroidGameDistributor)
 						If IsArray($btnExit) Then
 							Click($btnExit[0] + 71, $btnExit[1] + 64) ; click offsets for the transparent window
-							If $g_iDebugSetlog Then Setlog($g_sAndroidGameDistributor & " Click offset X|Y = 71|64", $COLOR_DEBUG)
+							If $g_bDebugSetlog Then SetLog($g_sAndroidGameDistributor & " Click offset X|Y = 71|64", $COLOR_DEBUG)
 							ExitLoop
 						EndIf
 					Case "VIVO", "Xiaomi"
@@ -211,13 +211,13 @@ Func PoliteCloseCoC($sSource = "Unknown_", $bPoliteCloseCoC = $g_bPoliteCloseCoC
 						ContinueCase
 					Case Else
 						Setlog("Polite Close Unsupported - " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
-						If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
+						If $g_bDebugImageSave Then DebugImageSave($sSource)
 						CloseCoC()
 						ExitLoop
 				EndSwitch
 				If $i > 10 Then
 					Setlog("Can not find exit button: " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
-					If $g_iDebugImageSave = 1 Then DebugImageSave($sSource)
+					If $g_bDebugImageSave Then DebugImageSave($sSource)
 					CloseCoC()
 					ExitLoop
 				EndIf

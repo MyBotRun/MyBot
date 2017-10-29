@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func MilkingAttackStructure($vectstr)
-	If $g_iDebugSetlog = 1 Then SetLog("###### Attack " & $vectstr & "######")
+	If $g_bDebugSetlog Then SetLog("###### Attack " & $vectstr & "######")
 	Local $vect = StringSplit($vectstr, ".", 2)
 	If UBound($vect) = 4 Then ; (only 1 point)
 		Local $temp = $vect[3]
@@ -28,10 +28,10 @@ Func MilkingAttackStructure($vectstr)
 			$troopxwave = Random($g_iMilkFarmTroopForWaveMin, $g_iMilkFarmTroopForWaveMax, 1)
 		EndIf
 
-		If $g_iDebugSetlog = 1 Then Setlog("drop n.: " & $troopxwave & " troops | structure:" & $vect[0])
+		If $g_bDebugSetlog Then Setlog("drop n.: " & $troopxwave & " troops | structure:" & $vect[0])
 		Local $skipdelay = False
 		For $i = 1 To $g_iMilkFarmTroopMaxWaves
-			If $g_iDebugSetlog = 1 Then Setlog("Wave attack number " & $i)
+			If $g_bDebugSetlog Then Setlog("Wave attack number " & $i)
 			$skipdelay = False
 			If IsAttackPage() Then
 
@@ -53,15 +53,13 @@ Func MilkingAttackStructure($vectstr)
 							Local $rndpos = Random(3, UBound($vect) - 1, 1)
 						EndIf
 
-						;If $g_iDebugSetlog=1 Then Setlog(">drop using position " & $rndpos & ": " & $vect[$rndpos] )
 						$pixel = StringSplit($vect[$rndpos], "-", 2)
 						Local $delaypoint = 0
 
 						If UBound($pixel) = 2 Then
-							;If $g_iDebugSetlog=1 Then etlog("Click( " & $pixel[0] & ", " & $pixel[1] & " , 1, " & $delayPoint & ",#0777)")
 							Click($pixel[0], $pixel[1], 1, $delaypoint, "#0777")
 						Else
-							If $g_iDebugSetlog = 1 Then Setlog("MilkingAttackStructure error #1")
+							If $g_bDebugSetlog Then Setlog("MilkingAttackStructure error #1")
 						EndIf
 					Next
 				Else
@@ -75,14 +73,13 @@ Func MilkingAttackStructure($vectstr)
 					$pixel = StringSplit($vect[$rndpos], "-", 2)
 
 					If UBound($pixel) = 2 Then
-						;If $g_iDebugSetlog=1 Then Setlog("Click( " & $pixel[0] & ", " & $pixel[1] & " ," &  $troopxwave& ", "0,#0778)")
 						Click($pixel[0], $pixel[1], $troopxwave, Random(2, 7, 1), "#0778")
 					Else
-						If $g_iDebugSetlog = 1 Then Setlog("MilkingAttackStructure error #1")
+						If $g_bDebugSetlog Then Setlog("MilkingAttackStructure error #1")
 					EndIf
 				EndIf
 			Else
-				If $g_iDebugSetlog = 1 Then Setlog("You are not in Attack phase")
+				If $g_bDebugSetlog Then Setlog("You are not in Attack phase")
 				Return
 			EndIf
 
@@ -93,7 +90,7 @@ Func MilkingAttackStructure($vectstr)
 				Else
 					$delayfromwaves = Random($g_iMilkFarmDelayFromWavesMin, $g_iMilkFarmDelayFromWavesMax, 1)
 				EndIf
-				If $g_iDebugSetlog = 1 Then Setlog("wait " & $delayfromwaves)
+				If $g_bDebugSetlog Then Setlog("wait " & $delayfromwaves)
 				If _Sleep($delayfromwaves) Then Return ;wait before attack new structure.
 			EndIf
 		Next

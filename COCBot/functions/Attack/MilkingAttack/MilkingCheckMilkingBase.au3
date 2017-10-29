@@ -20,7 +20,7 @@ Func CheckMilkingBase($matchDB, $dbBase)
 	If $matchDB And $g_aiAttackAlgorithm[$DB] = 2 Then ;MilkingAttack
 		If (($g_iMilkAttackType = 1 And $dbBase) Or ($g_iMilkAttackType = 0)) Then ;if milking attack enabled high cpu(attacktype=0) or lowcpu and match $dbase Collectors...
 			Local $TimeCheckMilkingAttack = __TimerInit()
-			If $g_iDebugSetlog = 1 Then Setlog("Check Milking...", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog("Check Milking...", $COLOR_DEBUG)
 			MilkingDetectRedArea()
 			$MilkingExtractorsMatch = MilkingDetectElixirExtractors()
 			If $MilkingExtractorsMatch > 0 Then
@@ -29,28 +29,28 @@ Func CheckMilkingBase($matchDB, $dbBase)
 
 			If StringLen($g_sMilkFarmObjectivesSTR) > 0 Then
 				If $g_iMilkAttackType = 1 Then
-					If $g_iDebugSetlog = 1 Then Setlog("Milking match LOW CPU SETTINGS", $COLOR_DEBUG)
-					If $g_iDebugSetlog = 1 Then Setlog("objectives: " & $g_sMilkFarmObjectivesSTR, $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog("Milking match LOW CPU SETTINGS", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog("objectives: " & $g_sMilkFarmObjectivesSTR, $COLOR_DEBUG)
 				Else
-					If $g_iDebugSetlog = 1 Then Setlog("Milking match HIGH CPU SETTINGS", $COLOR_DEBUG)
-					If $g_iDebugSetlog = 1 Then Setlog("objectives: " & $g_sMilkFarmObjectivesSTR, $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog("Milking match HIGH CPU SETTINGS", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog("objectives: " & $g_sMilkFarmObjectivesSTR, $COLOR_DEBUG)
 				EndIf
 			Else
-				If $g_iDebugSetlog = 1 Then Setlog("Milking no match", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog("Milking no match", $COLOR_DEBUG)
 				If $g_bMilkAttackAfterTHSnipeEnable And $g_bMilkFarmSnipeEvenIfNoExtractorsFound Then
-					If $g_iDebugSetlog = 1 Then Setlog("Milking no match but Snipe even if no structures detected... check...", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog("Milking no match but Snipe even if no structures detected... check...", $COLOR_DEBUG)
 					If $g_iSearchTH = "-" Then FindTownHall(True)
 					If $g_iSearchTH <> "-" Then
 						$g_bMilkingAttackOutside = True
 						If SearchTownHallLoc() Then ;check if townhall position it is outside
-							If $g_iDebugSetlog = 1 Then Setlog("Milking Attack TH outside match!", $COLOR_DEBUG)
+							If $g_bDebugSetlog Then Setlog("Milking Attack TH outside match!", $COLOR_DEBUG)
 							$g_bMilkingAttackOutside = True
 						Else
-							If $g_iDebugSetlog = 1 Then Setlog("TH it is not outside, skip attack")
+							If $g_bDebugSetlog Then Setlog("TH it is not outside, skip attack")
 						EndIf
 						$g_bMilkingAttackOutside = False
 					Else
-						If $g_iDebugSetlog = 1 Then Setlog("Cannot detect Townhall, skip THsnipe")
+						If $g_bDebugSetlog Then Setlog("Cannot detect Townhall, skip THsnipe")
 					EndIf
 				EndIf
 			EndIf

@@ -58,7 +58,7 @@ Func _SleepStatus($iDelay, $iSleep = True, $bDirection = True, $CheckRunState = 
 			EndSelect
 
 			$hLastUpdate = __TimerInit()
-			_GUICtrlStatusBar_SetText($g_hStatusBar, " Status: " & $sTimeWait & $sTimeLeftLapse)
+			_GUICtrlStatusBar_SetTextEx($g_hStatusBar, " Status: " & $sTimeWait & $sTimeLeftLapse)
 		EndIf
 		_Sleep($DELAYSLEEP)
 		$bUpdate = __TimerDiff($hLastUpdate) > 750

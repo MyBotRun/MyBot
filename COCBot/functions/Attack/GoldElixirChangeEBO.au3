@@ -51,7 +51,7 @@ Func GoldElixirChangeEBO()
 		If $g_abStopAtkNoLoot1Enable[$g_iMatchMode] Then
 			$z = $x
 		Else
-			$z = 60 * 3 * 1000
+			$z = AttackRemainingTime()
 		EndIf
 	EndIf
 
@@ -80,7 +80,14 @@ Func GoldElixirChangeEBO()
 
 	;MAIN LOOP
 	Local $iBegin = __TimerInit()
-	While __TimerDiff($iBegin) < $z
+
+	Local $iSuspendAndroidTimeOffset = SuspendAndroidTime()
+	SetDebugLog("GoldElixirChangeEBO: Start waiting for battle end, Wait: " & $z & ", Offset: " & $iSuspendAndroidTimeOffset)
+
+	Local $iTime = 0
+	Local $bOneLoop = True
+	While $bOneLoop Or ($iTime < $z And $z > 0 And $iTime >= 0)
+		$bOneLoop = False
 		;HEALTH HEROES
 		CheckHeroesHealth()
 
@@ -118,13 +125,25 @@ Func GoldElixirChangeEBO()
 		CheckHeroesHealth()
 
 		;WRITE LOG
-		$txtDiff = Round(($z - __TimerDiff($iBegin)) / 1000, 1)
-		If Number($txtDiff) < 0 Then $txtDiff = 0
+		$txtDiff = Round(($z - (__TimerDiff($iBegin) - SuspendAndroidTime() + $iSuspendAndroidTimeOffset)) / 1000, 0)
+		If Number($txtDiff) < 0 Then
+			$txtDiff = "0s"
+		Else
+			Local $m = Int($txtDiff / 60)
+			Local $s = $txtDiff - $m * 60
+			$txtDiff = ""
+			If $m > 0 Then $txtDiff = $m & "m "
+			$txtDiff &= $s & "s"
+		EndIf
 		$NoResourceOCR = StringLen($Gold2) = 0 And StringLen($Elixir2) = 0 And StringLen($DarkElixir2) = 0
 		If $NoResourceOCR Then
-			SetLog("detected [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage & " |  Exit now ", $COLOR_INFO)
+			SetLog("Exit now, [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage, $COLOR_INFO)
 		Else
-			SetLog("detected [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage & " |  Exit in " & StringReplace(StringFormat("%2i", $txtDiff), "-", "") & " sec.", $COLOR_INFO)
+			If $g_bDebugSetlog Then
+				SetLog("Exit in " & $txtDiff & ", [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage & ", Suspend-Time: " & $g_iSuspendAndroidTime & ", Suspend-Count: " & $g_iSuspendAndroidTimeCount &  ", Offset: " & $iSuspendAndroidTimeOffset, $COLOR_INFO)
+			Else
+				SetLog("Exit in " & $txtDiff & ", [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage, $COLOR_INFO)
+			EndIf
 		EndIf
 
 		If Number($CurDamage) >= 92 Then
@@ -198,6 +217,7 @@ Func GoldElixirChangeEBO()
 			Return True
 		EndIf
 
+		$iTime = __TimerDiff($iBegin) - SuspendAndroidTime() + $iSuspendAndroidTimeOffset
 	WEnd ; END MAIN LOOP
 
 	;Priority Check... Exit To protect Hero Health
@@ -250,7 +270,7 @@ Func GoldElixirChangeEBO()
 			SetLog("Gold & Elixir & DE no change detected, waiting...", $COLOR_SUCCESS)
 		EndIf
 	Else
-		If $g_iDebugSetlog = 1 Then
+		If $g_bDebugSetlog Then
 			Setlog("Gold1: " & Number($Gold1) & "  Gold2: " & Number($Gold2), $COLOR_DEBUG)
 			Setlog("Elixir1: " & Number($Elixir1) & "  Elixir2: " & Number($Elixir2), $COLOR_DEBUG)
 			Setlog("Dark Elixir1: " & Number($DarkElixir1) & "  Dark Elixir2: " & Number($DarkElixir2), $COLOR_DEBUG)
@@ -260,20 +280,3 @@ Func GoldElixirChangeEBO()
 	Return True
 
 EndFunc   ;==>GoldElixirChangeEBO
-
-
-Func OverallDamage($OverallDamage = 30, $SetLog = True)
-
-	Local $Damage = Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY))
-
-	If $SetLog = True Then
-		SetLog("Overall Damage: " & $Damage & "%")
-	EndIf
-
-	If $Damage >= $OverallDamage Then
-		Return True
-	Else
-		Return False
-	EndIf
-
-EndFunc   ;==>OverallDamage

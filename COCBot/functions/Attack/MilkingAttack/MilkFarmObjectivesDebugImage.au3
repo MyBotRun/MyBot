@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 
 Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
-	If $g_iDebugMilkingIMGmake = 1 Then
+	If $g_bDebugMilkingIMGmake Then
 		_CaptureRegion()
 		Local $EditedImage
 		$EditedImage = $g_hBitmap
@@ -109,10 +109,10 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 						_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + $g_iMilkFarmOffsetY + $g_iMilkFarmOffsetYStep * $multiplier, $pixel[0] + $resourceoffsetx + $g_iMilkFarmOffsetX + $g_iMilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $hPen)
 					EndIf
 				Else
-					If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesDebugImage #1", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesDebugImage #1", $COLOR_DEBUG)
 				EndIf
 			Else
-				If $g_iDebugSetlog = 1 Then Setlog("MilkFarmObjectivesDebugImage #2", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesDebugImage #2", $COLOR_DEBUG)
 			EndIf
 
 		Next

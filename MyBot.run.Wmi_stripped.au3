@@ -1,12 +1,7 @@
 #NoTrayIcon
 #RequireAdmin
 #pragma compile(Console, true)
-#pragma compile(Icon, "Images\MyBot.ico")
-#pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
-#pragma compile(ProductName, My Bot)
-#pragma compile(ProductVersion, 7.2.3)
-#pragma compile(FileVersion, 7.2.3)
-#pragma compile(LegalCopyright, © https://mybot.run)
+#pragma compile(ProductName, My Bot Wmi)
 #pragma compile(Out, MyBot.run.Wmi.exe) ; Required
 Opt("MustDeclareVars", 1)
 Global Const $tagPOINT = "struct;long X;long Y;endstruct"

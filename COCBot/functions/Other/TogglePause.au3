@@ -19,7 +19,7 @@ Func TogglePause()
 	TogglePauseImpl("Button")
 EndFunc   ;==>TogglePause
 
-Func TogglePauseImpl($Source)
+Func TogglePauseImpl($Source, $bDelayed = False)
 	If Not $g_bRunState Then Return
 	ResumeAndroid()
 	$g_bBotPaused = Not $g_bBotPaused
@@ -28,7 +28,7 @@ Func TogglePauseImpl($Source)
 		Return
 	EndIf
 	TogglePauseUpdateState($Source)
-	TogglePauseSleep()
+	If $bDelayed = False Then TogglePauseSleep()
 EndFunc   ;==>TogglePauseImpl
 
 Func TogglePauseUpdateState($Source)
@@ -47,6 +47,7 @@ Func TogglePauseUpdateState($Source)
 		PushMsg("Pause", $Source)
 		GUICtrlSetState($g_hBtnPause, $GUI_HIDE)
 		GUICtrlSetState($g_hBtnResume, $GUI_SHOW)
+		TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Resume", "Resume bot"))
 		;GUICtrlSetState($btnMakeScreenshot, $GUI_ENABLE)
 	Else
 		AndroidShield("TogglePauseImpl resumed")
@@ -60,6 +61,7 @@ Func TogglePauseUpdateState($Source)
 		PushMsg("Resume", $Source)
 		GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
 		GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
+		TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Pause", "Pause bot"))
 		;GUICtrlSetState($btnMakeScreenshot, $GUI_DISABLE)
 		;ZoomOut()
 	EndIf

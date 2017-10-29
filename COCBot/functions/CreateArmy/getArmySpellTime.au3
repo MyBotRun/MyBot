@@ -16,16 +16,16 @@
 ;
 Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
 
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Begin getArmySpellTime:", $COLOR_DEBUG1)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("Begin getArmySpellTime:", $COLOR_DEBUG1)
 
 	$g_aiTimeTrain[1] = 0 ; reset time
 
 	If $CheckWindow Then
-		If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
+		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)
 			Return ; not open, not requested to be open - error.
-		ElseIf $bOpenArmyWindow = True Then
-			If openArmyOverview() = False Then
+		ElseIf $bOpenArmyWindow Then
+			If Not openArmyOverview() Then
 				SetError(2)
 				Return ; not open, requested to be open - error.
 			EndIf
@@ -37,7 +37,7 @@ Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSet
 	Local $sResultSpells = getRemainTrainTimer(495, 315) ;Get time via OCR.
 	$g_aiTimeTrain[1] = ConvertOCRTime("Spells", $sResultSpells, $bSetLog) ; update global array
 
-	If $bCloseArmyWindow = True Then
+	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf

@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 Func WaitForClouds()
 
-	If $g_iDebugSetlog = 1 Then Setlog("Begin WaitForClouds:", $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then Setlog("Begin WaitForClouds:", $COLOR_DEBUG1)
 
 	Local $iCount = 0
 	Local $bigCount = 0, $iLastTime = 0
@@ -42,7 +42,7 @@ Func WaitForClouds()
 			$maxSearchCount = Random(600, 840, 1) ; random range 2.5-3.5 minutes
 			$maxLongSearchCount = Random(80, 85, 1) ; random range 200-300 minutes
 	EndSwitch
-	If $g_iDebugSetlog Then ; display random values if debug log
+	If $g_bDebugSetlog Then ; display random values if debug log
 		SetLog("RANDOM: $maxSearchCount= " & $maxSearchCount & "= " & Round($maxSearchCount / $DELAYGETRESOURCES1, 2) & " min between cloud chk", $COLOR_DEBUG)
 		SetLog("RANDOM: $maxLongSearchCount= " & $maxLongSearchCount & "= " & Round(($maxSearchCount / $DELAYGETRESOURCES1) * $maxLongSearchCount, 2) & " min max search time", $COLOR_DEBUG)
 	EndIf
@@ -81,7 +81,7 @@ Func WaitForClouds()
 			CloseCoC(True)
 			Return
 		EndIf
-		If $g_iDebugSetlog = 1 Then _GUICtrlStatusBar_SetText($g_hStatusBar, " Status: Loop to clean screen without Clouds, # " & $iCount)
+		If $g_bDebugSetlog Then _GUICtrlStatusBar_SetTextEx($g_hStatusBar, " Status: Loop to clean screen without Clouds, # " & $iCount)
 		$iSearchTime = __TimerDiff($hMinuteTimer) / 60000 ;get time since minute timer start in minutes
 		If $iSearchTime >= $iLastTime + 1 Then
 			Setlog("Cloud wait time " & StringFormat("%.1f", $iSearchTime) & " minute(s)", $COLOR_INFO)
@@ -123,10 +123,10 @@ Func EnableLongSearch()
 	Local $result = ""
 	Local $iCount, $jCount, $kCount, $wCount
 
-	If $g_iDebugSetlog = 1 Then Setlog("Begin EnableLongSearch:", $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then Setlog("Begin EnableLongSearch:", $COLOR_DEBUG1)
 
 	If Int($g_aiCurrentLoot[$eLootTrophy]) < 3700 Then ; If not searching Champion 1 or higher, skip long waiting to return and restart due error
-		If $g_iDebugSetlog = 1 Then Setlog("Long cloud search not enabled due trophy count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Long cloud search not enabled due trophy count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
 		Return False
 	EndIf
 
@@ -180,7 +180,7 @@ Func EnableLongSearch()
 		If chkSurrenderBtn() = True Then Return True ; check if clouds are gone and stop waiting
 		If chkAttackSearchPersonalBreak() = True Then Return False ; OCR check for Personal Break while in clouds, return after PB prep
 		If chkAttackSearchFail() = 1 Then Return True ; OCR text for search fail message, and press rety if available, success continue searching
-		If $g_iDebugSetlog = 1 Then SetLog("Cloud Search Text not found...", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetLog("Cloud Search Text not found...", $COLOR_DEBUG)
 		Return False
 	EndIf
 
@@ -223,7 +223,7 @@ Func chkAttackSearchPersonalBreak()
 	EndIf
 	If $g_bForceSinglePBLogoff And _DateIsValid($g_sPBStartTime) Then ; silly feature to use with long clouds, but check if single PB is enabled.
 		Local $iTimeTillPBTstartSec = Int(_DateDiff('s', $g_sPBStartTime, _NowCalc())) ; time in seconds
-		If $g_iDebugSetlog = 1 Then Setlog("PB starts in: " & $iTimeTillPBTstartSec & " Seconds", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("PB starts in: " & $iTimeTillPBTstartSec & " Seconds", $COLOR_DEBUG)
 		If $iTimeTillPBTstartSec >= 0 Then ; test if PBT date/time in past (positive value) or future (negative value
 			Setlog("Prepare base before user forced Break..", $COLOR_INFO)
 			CheckBaseQuick(True, "cloud") ; check and restock base before exit.
@@ -237,12 +237,12 @@ Func btnSearchFailRetry()
 	; verify retry button exists, and press button, return false if button not found
 	Local $offColors[3][3] = [[0x121311, 50, 8], [0x6EBC1F, 55, 21], [0x11110F, 90, 7]] ; 2nd=Black in "R", 3rd=green centered under text, 4th=black in v of letter "Y" ; before 2017 May update 0x000000 0x60B014 0x020201
 	Local $ButtonPixel = _MultiPixelSearch(364, 405 + $g_iMidOffsetY, 466, 430 + $g_iMidOffsetY, 1, 1, Hex(0x171814, 6), $offColors, 20) ; first vertical black pixel of Retry button edge ; before 2017 May update 0x000000
-	If $g_iDebugSetlog = 1 Then Setlog("Retry btn clr chk-#1: " & 	_GetPixelColor(368, 347 + $g_iMidOffsetY + 60, True) & ", #2: " & _
+	If $g_bDebugSetlog Then Setlog("Retry btn clr chk-#1: " & 	_GetPixelColor(368, 347 + $g_iMidOffsetY + 60, True) & ", #2: " & _
 																	_GetPixelColor(368 + 50, 347 + 8 + $g_iMidOffsetY + 60, True) & ", #3: " & _
 																	_GetPixelColor(368 + 55, 347 + 21 + $g_iMidOffsetY + 60, True) & ", #4: " & _
 																	_GetPixelColor(368 + 90, 347 + 7 + $g_iMidOffsetY + 60, True), $COLOR_DEBUG) ; after 2017 May update Y +60
 	If IsArray($ButtonPixel) Then
-		If $g_iDebugSetlog = 1 Then
+		If $g_bDebugSetlog Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
 			Setlog("Retry Btn Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _
 														_GetPixelColor($ButtonPixel[0] + 50, $ButtonPixel[1] + 8, True) & ", #3: " & _
@@ -260,7 +260,7 @@ Func chkSurrenderBtn()
 	Local $wCount = 0
 	While 1
 		If _CheckPixel($aSurrenderButton, $g_bCapturePixel, Default, "Surrender btn wait #" & $wCount, $COLOR_DEBUG) = True Then
-			If $g_iDebugSetlog = 1 Then Setlog("Surrender button found, clouds gone, continue...", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then Setlog("Surrender button found, clouds gone, continue...", $COLOR_DEBUG)
 			Return True
 		EndIf
 		If _Sleep($DELAYSLEEP) Then Return

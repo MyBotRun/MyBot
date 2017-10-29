@@ -47,7 +47,7 @@ Func imglocCheckWall()
 						Return True
 					Else
 						ClickP($aAway, 1, 0, "#0931") ;Click Away
-						If $g_iDebugSetlog Then
+						If $g_bDebugSetlog Then
 							Setlog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is not a Wall Level: " & $levelWall & ". It was: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG) ;debug
 						Else
 							Setlog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is not a Wall Level: " & $levelWall & ".", $COLOR_ERROR)
@@ -98,7 +98,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 	; Process results
 	If $result[0] <> "" Then
 		; Get the keys for the dictionary item.
-		If $g_iDebugSetlog Then SetLog(" imglocFindMyWall search returned : " & $result[0])
+		If $g_bDebugSetlog Then SetLog(" imglocFindMyWall search returned : " & $result[0])
 		Local $aKeys = StringSplit($result[0], "|", $STR_NOCOUNT)
 		; Loop through the array
 		ReDim $FoundWalls[UBound($aKeys)]

@@ -62,7 +62,7 @@ Func UpgradeBuilding()
 
 	For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1
 
-		If $g_iDebugSetlog = 1 Then SetlogUpgradeValues($iz) ; massive debug data dump for each upgrade
+		If $g_bDebugSetlog Then SetlogUpgradeValues($iz) ; massive debug data dump for each upgrade
 
 		If $g_abBuildingUpgradeEnable[$iz] = False Then ContinueLoop ; Is the upgrade checkbox selected?
 
@@ -79,7 +79,7 @@ Func UpgradeBuilding()
 			If $bChkAllRptUpgrade = False Then
 				$iDTDiff = Int(_DateDiff("n", _NowCalc(), $sNextCheckTime)) ; get date/time difference for repeat upgrade check
 				If @error Then _logErrorDateDiff(@error)
-				If $g_iDebugSetlog = 1 Then
+				If $g_bDebugSetlog Then
 					Setlog("Delay time between repeat upgrade checks = " & $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)] & " Min", $COLOR_DEBUG)
 					SetLog("Delay time remaining = " & $iDTDiff & " Min", $COLOR_DEBUG)
 				EndIf
@@ -87,7 +87,7 @@ Func UpgradeBuilding()
 					$sNextCheckTime = _DateAdd("n", $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)], _NowCalc()) ; create new check date/time
 					If @error Then _logErrorDateAdd(@error) ; log Date function errors
 					$bChkAllRptUpgrade = True ; set flag to allow entire array of updates to get updated values if delay time is past.
-					If $g_iDebugSetlog = 1 Then SetLog("New delayed check time=  " & $sNextCheckTime, $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetLog("New delayed check time=  " & $sNextCheckTime, $COLOR_DEBUG)
 				EndIf
 			EndIf
 
@@ -97,12 +97,12 @@ Func UpgradeBuilding()
 					_logErrorDateDiff(@error)
 					$iUpGrdEndTimeDiff = 0
 				EndIf
-				If $g_iDebugSetlog = 1 Then SetLog("Difference between upgrade end and NOW= " & $iUpGrdEndTimeDiff & " Min", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetLog("Difference between upgrade end and NOW= " & $iUpGrdEndTimeDiff & " Min", $COLOR_DEBUG)
 			EndIf
 
 			If $bChkAllRptUpgrade = True Or $iUpGrdEndTimeDiff < 0 Then ; when past delay time or past end time for previous upgrade then check status
 				If UpgradeValue($iz, True) = False Then ; try to get new upgrade values
-					If $g_iDebugSetlog = 1 Then SetlogUpgradeValues($iz) ; Debug data for when upgrade is not ready or done repeating
+					If $g_bDebugSetlog Then SetlogUpgradeValues($iz) ; Debug data for when upgrade is not ready or done repeating
 					Setlog("Repeat upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " not ready yet", $COLOR_ERROR)
 					ContinueLoop ; Not ready yet..
 				ElseIf ($iAvailBldr <= 0) Then
@@ -114,7 +114,7 @@ Func UpgradeBuilding()
 		EndIf
 
 		SetLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Selected", $COLOR_SUCCESS) ; Tell logfile which upgrade working on.
-		If $g_iDebugSetlog = 1 Then SetLog("-Upgrade location =  " & "(" & $g_avBuildingUpgrades[$iz][0] & "," & $g_avBuildingUpgrades[$iz][1] & ")", $COLOR_DEBUG) ;Debug
+		If $g_bDebugSetlog Then SetLog("-Upgrade location =  " & "(" & $g_avBuildingUpgrades[$iz][0] & "," & $g_avBuildingUpgrades[$iz][1] & ")", $COLOR_DEBUG) ;Debug
 		If _Sleep($DELAYUPGRADEBUILDING1) Then Return
 
 		Switch $g_avBuildingUpgrades[$iz][3] ;Change action based on upgrade type!
@@ -163,7 +163,7 @@ Func UpgradeBuilding()
 		EndSwitch
 
 		$g_avBuildingUpgrades[$iz][7] = _NowCalc() ; what is date:time now
-		If $g_iDebugSetlog = 1 Then SetLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Started @ " & $g_avBuildingUpgrades[$iz][7], $COLOR_SUCCESS)
+		If $g_bDebugSetlog Then SetLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Started @ " & $g_avBuildingUpgrades[$iz][7], $COLOR_SUCCESS)
 		Local $aArray = StringSplit($g_avBuildingUpgrades[$iz][6], ' ', BitOR($STR_CHRSPLIT, $STR_NOCOUNT)) ;separate days, hours
 		If IsArray($aArray) Then
 			Local $iRemainingTimeMin = 0
@@ -180,9 +180,9 @@ Func UpgradeBuilding()
 						$sTime = StringTrimRight($aArray[$i], 1) ; removing the "m"
 						$iRemainingTimeMin += Int($sTime) ; add minutes
 					Case Else
-						Setlog("Upgrade #" & $iz + 1 & " OCR time invalid" & $aArray[$i], $COLOR_WARNING)
+						SetLog("Upgrade #" & $iz + 1 & " OCR time invalid" & $aArray[$i], $COLOR_WARNING)
 				EndSelect
-				If $g_iDebugSetlog = 1 Then Setlog("Upgrade Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetLog("Upgrade Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_DEBUG)
 			Next
 			$g_avBuildingUpgrades[$iz][7] = _DateAdd('n', Floor($iRemainingTimeMin), _NowCalc()) ; add the time required to NOW to finish the upgrade
 			If @error Then _logErrorDateAdd(@error)
@@ -241,14 +241,14 @@ Func UpgradeNormal($inum)
 	If $g_avBuildingUpgrades[$inum][3] = "Gold" Then
 		Local $offColors[3][3] = [[0xD6714B, 47, 37], [0xF0E850, 70, 0], [0xF4F8F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel gold, 4th pixel edge of button
 		$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 650 + $g_iBottomOffsetY, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
-		If $g_iDebugSetlog = 1 And IsArray($ButtonPixel) Then
+		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
 			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 	Else ;Use elxir button
 		Local $offColors[3][3] = [[0xBC5B31, 38, 32], [0xF84CF9, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel pink, 4th pixel edge of button
 		$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 650 + $g_iBottomOffsetY, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
-		If $g_iDebugSetlog = 1 And IsArray($ButtonPixel) Then
+		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
 			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 38, $ButtonPixel[1] + 32, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
@@ -257,7 +257,7 @@ Func UpgradeNormal($inum)
 		If _Sleep($DELAYUPGRADENORMAL2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0297") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADENORMAL3) Then Return ; Wait for window to open
-		If $g_iDebugImageSave = 1 Then DebugImageSave("UpgradeRegBtn1")
+		If $g_bDebugImageSave Then DebugImageSave("UpgradeRegBtn1")
 		Local $aBldgUpgradeWinChk[4] = [687, 161 + $g_iMidOffsetY, 0xCD1419, 20] ; Red pixel on botton X to close window
 		If _WaitForCheckPixel($aBldgUpgradeWinChk, $g_bCapturePixel,Default, "BldgUpgradeWinChk", Default, Default, 100) Then ; wait up to 2 seconds for hero upgrade window to open
 			If _ColorCheck(_GetPixelColor(459, 490 + $g_iMidOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(459, 494 + $g_iMidOffsetY), Hex(0xE70A12, 6), 20) And _
@@ -270,7 +270,7 @@ Func UpgradeNormal($inum)
 			Else
 				Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADENORMAL3) Then Return
-				If $g_iDebugImageSave = 1 Then DebugImageSave("UpgradeRegBtn2")
+				If $g_bDebugImageSave Then DebugImageSave("UpgradeRegBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Upgrade Fail #" & $inum + 1 & " " & $g_avBuildingUpgrades[$inum][4] & " No Loot!", $COLOR_ERROR)
 					ClickP($aAway, 2, 0, "#0300") ;Click Away to close windows
@@ -311,7 +311,7 @@ Func UpgradeNormal($inum)
 			Else
 				Click(670, 510 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADENORMAL3) Then Return
-				If $g_iDebugImageSave = 1 Then DebugImageSave("UpgradeRegBtn2")
+				If $g_bDebugImageSave Then DebugImageSave("UpgradeRegBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Upgrade Fail #" & $inum + 1 & " " & $g_avBuildingUpgrades[$inum][4] & " No Loot!", $COLOR_RED)
 					ClickP($aAway, 2, 0, "#0300") ;Click Away to close windows
@@ -361,14 +361,14 @@ Func UpgradeHero($inum)
 	Local $offColors[3][3] = [[0xE07B50, 41, 23], [0x282020, 72, 0], [0xF4F5F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
 	$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 620 + $g_iBottomOffsetY, 1, 1, Hex(0xF5F6F2, 6), $offColors, 30) ; first gray/white pixel of button
 	If IsArray($ButtonPixel) Then
-		If $g_iDebugSetlog = 1 And IsArray($ButtonPixel) Then
+		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
 			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
 			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
-		If $g_iDebugImageSave = 1 Then DebugImageSave("UpgradeDarkBtn1")
+		If $g_bDebugImageSave Then DebugImageSave("UpgradeDarkBtn1")
 		Local $aHeroUpgradeWinChk[4] = [729, 128 + $g_iMidOffsetY, 0xCD161D, 20] ; Red pixel on botton X to close window
 		If _WaitForCheckPixel($aHeroUpgradeWinChk, $g_bCapturePixel,Default, "HeroUpgradeWinChk", Default, Default, 100) Then ; wait up to 2 seconds for hero upgrade window to open
 			If _ColorCheck(_GetPixelColor(691, 523 + $g_iMidOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(691, 527 + $g_iMidOffsetY), Hex(0xE70A12, 6), 20) And _
@@ -380,7 +380,7 @@ Func UpgradeHero($inum)
 				Click(660, 515 + $g_iMidOffsetY, 1, 0, "#0307") ; Click upgrade buttton
 				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
-				If $g_iDebugImageSave = 1 Then DebugImageSave("UpgradeDarkBtn2")
+				If $g_bDebugImageSave Then DebugImageSave("UpgradeDarkBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Upgrade Fail #" & $inum + 1 & " " & $g_avBuildingUpgrades[$inum][4] & " No DE!", $COLOR_ERROR)
 					ClickP($aAway, 2, 0, "#0309") ;Click Away to close windows

@@ -15,7 +15,7 @@
 #include-once
 
 Global $g_hGUI_UPGRADE = 0, $g_hGUI_UPGRADE_TAB = 0, $g_hGUI_UPGRADE_TAB_ITEM1 = 0, $g_hGUI_UPGRADE_TAB_ITEM2 = 0, $g_hGUI_UPGRADE_TAB_ITEM3 = 0, _
-	   $g_hGUI_UPGRADE_TAB_ITEM4 = 0
+	   $g_hGUI_UPGRADE_TAB_ITEM4 = 0, $g_hGUI_UPGRADE_TAB_ITEM5 = 0
 
 ; Lab
 Global $g_hChkAutoLabUpgrades = 0, $g_hCmbLaboratory = 0, $g_hLblNextUpgrade = 0, $g_hBtnResetLabUpgradeTime = 0, $g_hPicLabUpgrade = 0
@@ -42,8 +42,17 @@ Global $g_hLblWallCost = 0, $g_hBtnFindWalls = 0
 Global $g_ahWallsCurrentCount[13] = [-1,-1,-1,-1,0,0,0,0,0,0,0,0,0] ; elements 0 to 3 are not referenced
 Global $g_ahPicWallsLevel[13] = [-1,-1,-1,-1,0,0,0,0,0,0,0,0,0] ; elements 0 to 3 are not referenced
 
+; Auto Upgrade
+Global $g_chkAutoUpgrade = 0, $g_FirstAutoUpgradeLabel = 0, $g_AutoUpgradeLog = 0
+Global $g_SmartMinGold = 0, $g_SmartMinElixir = 0, $g_SmartMinDark = 0
+Global $g_chkResourcesToIgnore[3] = [0, 0, 0]
+Global $g_chkUpgradesToIgnore[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Func CreateVillageUpgrade()
+
+   ; ensure all language translation are created
+   InitTranslatedTextUpgradeTab()
+
    $g_hGUI_UPGRADE = _GUICreate("", $g_iSizeWGrpTab2, $g_iSizeHGrpTab2, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_VILLAGE)
    ;GUISetBkColor($COLOR_WHITE, $g_hGUI_UPGRADE)
 
@@ -55,6 +64,8 @@ Func CreateVillageUpgrade()
    CreateHeroesSubTab()
    $g_hGUI_UPGRADE_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_03_STab_03", "Buildings"))
    CreateBuildingsSubTab()
+   $g_hGUI_UPGRADE_TAB_ITEM5 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_03_STab_05", "Auto Upgrade"))
+   CreateAutoUpgradeSubTab()
    $g_hGUI_UPGRADE_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_03_STab_04", "Walls"))
    CreateWallsSubTab()
    GUICtrlCreateTabItem("")
@@ -366,3 +377,99 @@ Func CreateWallsSubTab()
 		$g_ahPicWallsLevel[12] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall12, $x+27, $y-2, 24, 24)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
+
+; Author ........: Roro-Titi
+; Modified ......: Team AiO MOD++ (2017)
+Func CreateAutoUpgradeSubTab()
+
+	Local $x = 25, $y = 45
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "Group_01", "Auto Upgrade"), $x - 20, $y - 20, $g_iSizeWGrpTab3, 100)
+
+	$g_chkAutoUpgrade = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "chkAutoUpgrade", "Enable Auto Upgrade"), $x - 5, $y, -1, -1)
+		_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "chkAutoUpgrade_Info_01", "Check box to enable automatically starting Upgrades from builders menu"))
+		GUICtrlSetOnEvent(-1, "chkAutoUpgrade")
+
+	$g_FirstAutoUpgradeLabel = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "Label_01", "Save"), $x, $y + 32, -1, -1)
+	$g_SmartMinGold = GUICtrlCreateInput("150000", $x + 33, $y + 29, 60, 21, BitOR($ES_CENTER, $ES_NUMBER))
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 98, $y + 32, 16, 16)
+	$g_SmartMinElixir = GUICtrlCreateInput("150000", $x + 118, $y + 29, 60, 21, BitOR($ES_CENTER, $ES_NUMBER))
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 183, $y + 32, 16, 16)
+	$g_SmartMinDark = GUICtrlCreateInput("1500", $x + 203, $y + 29, 60, 21, BitOR($ES_CENTER, $ES_NUMBER))
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 268, $y + 32, 16, 16)
+	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "Label_02", "after launching upgrade"), $x + 290, $y + 32, -1, -1)
+
+	$g_chkResourcesToIgnore[0] = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "Ignore_01", "Ignore Gold Upgrades"), $x, $y + 55, -1, -1)
+	GUICtrlSetOnEvent(-1, "chkResourcesToIgnore")
+	$g_chkResourcesToIgnore[1] = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "Ignore_02", "Ignore Elixir Upgrades"), $x + 130, $y + 55, -1, -1)
+	GUICtrlSetOnEvent(-1, "chkResourcesToIgnore")
+	$g_chkResourcesToIgnore[2] = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "Ignore_03", "Ignore Dark Elixir Upgrades"), $x + 258, $y + 55, -1, -1)
+	GUICtrlSetOnEvent(-1, "chkResourcesToIgnore")
+
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "Group_02", "Upgrades to ignore"), $x - 20, $y + 85, $g_iSizeWGrpTab3, 137)
+
+	Local $x = 21, $y = 100
+	Local $iIconSize = 32
+	Local $xOff = (40 - $iIconSize) / 2
+	Local $yRow1 = 50
+	Local $yRow2 = 110
+	Local $yChkOff = 32
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTH11, $x + 5, $y + $yRow1, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[0] = GUICtrlCreateCheckbox("", $x + 20 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x + 95, $y + $yRow1, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[1] = GUICtrlCreateCheckbox("", $x + 110 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x + 140, $y + $yRow1, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[2] = GUICtrlCreateCheckbox("", $x + 155 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x + 185, $y + $yRow1, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[3] = GUICtrlCreateCheckbox("", $x + 200 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x + 275, $y + $yRow1, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[4] = GUICtrlCreateCheckbox("", $x + 290 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnLaboratory, $x + 365, $y + $yRow1, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[5] = GUICtrlCreateCheckbox("", $x + 380 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBarrack, $x + 5, $y + $yRow2, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[6] = GUICtrlCreateCheckbox("", $x + 20 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDarkBarrack, $x + 50, $y + $yRow2, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[7] = GUICtrlCreateCheckbox("", $x + 65 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSpellFactory, $x + 140, $y + $yRow2, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[8] = GUICtrlCreateCheckbox("", $x + 155 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDarkSpellFactory, $x + 185, $y + $yRow2, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[9] = GUICtrlCreateCheckbox("", $x + 200 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMine, $x + 275, $y + $yRow2, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[10] = GUICtrlCreateCheckbox("", $x + 290 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 320, $y + $yRow2, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[11] = GUICtrlCreateCheckbox("", $x + 335 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDrill, $x + 365, $y + $yRow2, $iIconSize, $iIconSize)
+	$g_chkUpgradesToIgnore[12] = GUICtrlCreateCheckbox("", $x + 380 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+	GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	$g_AutoUpgradeLog = GUICtrlCreateEdit("", $x - 16, 275, $g_iSizeWGrpTab3, 127, BitOR($GUI_SS_DEFAULT_EDIT, $ES_READONLY))
+	GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design - AutoUpgrade", "AutoUpgradeLog", "------------------------------------------------ AUTO UPGRADE LOG ------------------------------------------------"))
+
+EndFunc   ;==>CreateAutoUpgradeGUI

@@ -104,7 +104,7 @@ Func getBuilders($x_start, $y_start) ;  -> Gets Builders number - main screen --
 EndFunc   ;==>getBuilders
 
 Func getProfile($x_start, $y_start) ;  -> Gets Attack Win/Defense Win/Donated/Received values - profile screen --> getProfile(160,268)  troops donation
-	Return getOcrAndCapture("coc-profile", $x_start, $y_start, 46, 11, True)
+	Return getOcrAndCapture("coc-profile", $x_start, $y_start, 50, 12, True)
 EndFunc   ;==>getProfile
 
 Func getTroopCountSmall($x_start, $y_start) ;  -> Gets troop amount on Attack Screen for non-selected troop kind
@@ -203,7 +203,7 @@ Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColo
 	Else
 		$String = $sLogText & " " & $result
 	EndIf
-	If $g_iDebugSetlog = 1 Then ; if enabled generate debug log message
+	If $g_bDebugSetlog Then ; if enabled generate debug log message
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	ElseIf $result <> "" Then ;
 		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
@@ -220,7 +220,7 @@ Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Defa
 	Else
 		$String = $sLogText & " " & $result
 	EndIf
-	If $g_iDebugSetlog = 1 Then ; if enabled generate debug log message
+	If $g_bDebugSetlog Then ; if enabled generate debug log message
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	ElseIf $result <> "" Then ;
 		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
@@ -248,7 +248,7 @@ Func getCloudTextShort($x_start, $y_start, $sLogText = Default, $LogTextColor = 
 	; Get 3 characters of yellow text in center of attack search window during extended cloud waiting (388,378)
 	; Full text length is 316 pixels, some is covered by chat window when open
 	Local $result = getOcrAndCapture("coc-cloudsearch", $x_start, $y_start, 51, 27)
-	If $g_iDebugSetlog = 1 And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
+	If $g_bDebugSetlog And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
 		Local $String = $sLogText & $result
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	EndIf
@@ -259,7 +259,7 @@ Func getCloudFailShort($x_start, $y_start, $sLogText = Default, $LogTextColor = 
 	; Get 6 characters of pink text in center of attack search window during failed attack search (271, 381)
 	; Full text length is 318 pixels, on checking for 1st 6 characters
 	Local $result = getOcrAndCapture("coc-cloudfail", $x_start, $y_start, 72, 24)
-	If $g_iDebugSetlog = 1 And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
+	If $g_bDebugSetlog And $sLogText <> Default And IsString($sLogText) Then ; if enabled generate debug log message
 		Local $String = $sLogText & $result
 		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
 	EndIf
@@ -374,7 +374,7 @@ Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpa
 EndFunc   ;==>getOcrAndCapture
 
 Func getOcr(ByRef Const $_hHBitmap, $language)
-	Local $result = DllCallMyBot("ocr", "ptr", $_hHBitmap, "str", $language, "int", $g_iDebugOcr)
+	Local $result = DllCallMyBot("ocr", "ptr", $_hHBitmap, "str", $language, "int", $g_bDebugOcr ? 1 : 0)
 	If IsArray($result) Then
 		Return $result[0]
 	Else
@@ -389,10 +389,10 @@ Func getOcrImgLoc(ByRef Const $_hHBitmap, $sLanguage)
 	Local $extError = @extended
 	If $error Then
 		_logErrorDLLCall($g_hLibImgLoc, $error)
-		If $g_iDebugSetlog = 1 Then SetLog(" imgloc DLL Error : " & $error & " --- " & $extError)
+		If $g_bDebugSetlog Then SetLog(" imgloc DLL Error : " & $error & " --- " & $extError)
 		Return SetError(2, $extError, "") ; Set external error code = 2 for DLL error
 	EndIf
-	If $g_iDebugImageSave = 1 Then DebugImageSave($sLanguage, False)
+	If $g_bDebugImageSave Then DebugImageSave($sLanguage, False)
 
 	If IsArray($result) Then
 		Return $result[0]

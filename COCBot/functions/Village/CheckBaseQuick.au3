@@ -38,7 +38,7 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 
 	If IsMainPage() Then ; check for main page
 
-		If $g_iDebugSetlog = 1 Then Setlog("CheckBaseQuick now...", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("CheckBaseQuick now...", $COLOR_DEBUG)
 
 		RequestCC() ; fill CC
 		If _Sleep($DELAYRUNBOT1) Then Return
@@ -61,9 +61,9 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 			If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
 				; Train()
 				TrainRevamp()
-				If $g_bRestart = True Then Return
+				If $g_bRestart Then Return
 			Else
-				If $g_iDebugSetlogTrain = 1 Then Setlog("skip train. " & $g_iActualTrainSkip + 1 & "/" & $g_iMaxTrainSkip, $color_purple)
+				If $g_bDebugSetlogTrain Then Setlog("skip train. " & $g_iActualTrainSkip + 1 & "/" & $g_iMaxTrainSkip, $color_purple)
 				$g_iActualTrainSkip = $g_iActualTrainSkip + 1
 				CheckOverviewFullArmy(True, False) ; use true parameter to open train overview window
 				If IsArmyWindow(False, $ArmyTAB) Then CheckExistentArmy("Spells") ; Imgloc Method
@@ -80,7 +80,7 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 		If _Sleep($DELAYRUNBOT1) Then Return
 
 	Else
-		If $g_iDebugSetlog = 1 Then Setlog("Not on main page, CheckBaseQuick skipped", $COLOR_WARNING)
+		If $g_bDebugSetlog Then Setlog("Not on main page, CheckBaseQuick skipped", $COLOR_WARNING)
 	EndIf
 
 	If $bStopRecursion = True Then $g_bDisableBreakCheck = False ; reset flag to stop checking for attackdisable messages, stop recursion

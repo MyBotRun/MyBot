@@ -108,31 +108,31 @@ Func CreateAttackSearchDeadBaseMilking()
 		   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase Attack Milking", "CapacityStructure_01", "0-4%"),$x, $y)
 		   $x = 21
 		   $y = 273
-		   GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_0_70_A.bmp", $x , $y, 25, 25 )
+		   _GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_0_70_A.bmp", $x , $y, 25, 25 )
 		   $x = 65
 		   $y = 255
 		   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase Attack Milking", "CapacityStructure_02", "5-19%"),$x, $y)
 		   $x = 66
 		   $y = 273
-		   GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_1_70_A.bmp", $x , $y, 25, 25 )
+		   _GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_1_70_A.bmp", $x , $y, 25, 25 )
 		   $x = 117
 		   $y = 255
 		   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase Attack Milking", "CapacityStructure_03", "20-74%"),$x, $y)
 		   $x = 121
 		   $y = 273
-		   GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_2_70_A.bmp", $x , $y, 25, 25 )
+		   _GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_2_70_A.bmp", $x , $y, 25, 25 )
 		   $x = 173
 		   $y = 255
 		   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase Attack Milking", "CapacityStructure_04", "75-89%"),$x, $y)
 		   $x = 176
 		   $y = 273
-		   GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_3_70_A.bmp", $x , $y, 25, 25 )
+		   _GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_3_70_A.bmp", $x , $y, 25, 25 )
 		   $x = 224
 		   $y = 255
 		   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase Attack Milking", "CapacityStructure_05", "90-100%"),$x, $y)
 		   $x = 232
 		   $y = 273
-		   GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_4_70_A.bmp", $x , $y, 25, 25 )
+		   _GUICtrlCreatePic(@ScriptDir & "\Images\CapacityStructure\elixir_8_4_70_A.bmp", $x , $y, 25, 25 )
 	   GUICtrlCreateGroup("", -99, -99, 1, 1)
 
    ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

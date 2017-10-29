@@ -16,8 +16,8 @@
 
 Func ReArm()
 
-	If $g_bChkTrap = False Then Return ; If re-arm is not enable in GUI return and skip this code
-	If $g_abNotNeedAllTime[0] = False Then Return
+	If Not $g_bChkTrap Then Return ; If re-arm is not enable in GUI return and skip this code
+	If Not $g_abNotNeedAllTime[0] Then Return
 
 	SetLog("Checking if Village needs Rearming..", $COLOR_INFO)
 
@@ -27,7 +27,6 @@ Func ReArm()
 	$ImagesToUse[0] = @ScriptDir & "\imgxml\rearm\Traps_0_90.xml"
 	$ImagesToUse[1] = @ScriptDir & "\imgxml\rearm\Xbow_0_90.xml"
 	$ImagesToUse[2] = @ScriptDir & "\imgxml\rearm\Inferno_0_90.xml"
-	$g_fToleranceImgLoc = 0.90
 	Local $locate = 0
 	Local $t = 0
 	;--- End -----
@@ -56,14 +55,14 @@ Func ReArm()
 			Local $res = DllCallMyBot("FindTile", "handle", $g_hHBitmap2, "str", $ImagesToUse[$i], "str", "FV", "int", 1)
 			If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 			If IsArray($res) Then
-				If $g_iDebugSetlog = 1 Then SetLog("DLL Call succeeded " & $res[0], $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetLog("DLL Call succeeded " & $res[0], $COLOR_INFO)
 				If $res[0] = "0" Or $res[0] = "" Then
-					If $g_iDebugSetlog = 1 Then SetLog("No Button found")
+					If $g_bDebugSetlog Then SetLog("No Button found")
 				ElseIf StringLeft($res[0], 2) = "-1" Then
 					SetLog("DLL Error: " & $res[0], $COLOR_ERROR)
 				Else
 					Local $expRet = StringSplit($res[0], "|", $STR_NOCOUNT)
-					If UBound($expRet) > 1 Then 
+					If UBound($expRet) > 1 Then
 						Local $posPoint = StringSplit($expRet[1], ",", $STR_NOCOUNT)
 						If UBound($posPoint) > 1 Then
 							Local $ButtonX = 125 + Int($posPoint[0])
@@ -72,7 +71,7 @@ Func ReArm()
 							If _Sleep($DELAYREARM1) Then Return
 							Click(515, 400, 1, 0, "#0226")
 							If _Sleep($DELAYREARM4) Then Return
-							If isGemOpen(True) = True Then
+							If isGemOpen(True) Then
 								Setlog("Not enough loot to rearm traps.....", $COLOR_ERROR)
 								Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
 								If _Sleep($DELAYREARM1) Then Return

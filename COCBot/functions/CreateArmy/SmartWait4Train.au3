@@ -18,9 +18,9 @@
 Func SmartWait4Train()
 	Static $ichkCloseWaitSpell = 0, $ichkCloseWaitHero = 0
 
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Begin SmartWait4Train:", $COLOR_DEBUG1)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("Begin SmartWait4Train:", $COLOR_DEBUG1)
 
-	If $g_bCloseWhileTrainingEnable = False Then Return ; Skip if not enabled
+	If Not $g_bCloseWhileTrainingEnable Then Return ; Skip if not enabled
 
 	Local $iExitCount = 0
 	If _Sleep($DELAYSMARTWAIT) Then Return ; first start 500ms so no false "**Main Window FAIL**" pops up
@@ -33,7 +33,7 @@ Func SmartWait4Train()
 		EndIf
 	WEnd
 
-	If $g_bCloseWhileTrainingEnable = False And $g_bCloseWithoutShield = False Then Return ; skip if nothing selected in GUI
+	If Not $g_bCloseWhileTrainingEnable And Not $g_bCloseWithoutShield Then Return ; skip if nothing selected in GUI
 
 	Local $aResult, $iActiveHero
 	Local $aHeroResult[3]
@@ -48,8 +48,8 @@ Func SmartWait4Train()
 	Local $iShieldTime = 0, $iDiffDateTime = 0, $iDiffTime = 0
 	Local $RandomAddPercent = Random(0, $g_iCloseRandomTimePercent / 100) ; generate random percentage between 0 and user set GUI value
 	Local $MinimumTimeClose = Number($g_iCloseMinimumTime * 60) ; Minimum time required to close
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Random add percent = " & StringFormat("%.4f", $RandomAddPercent), $COLOR_DEBUG)
-	If $g_iDebugSetlog = 1 Then Setlog("$MinimumTimeClose = " & $MinimumTimeClose & "s", $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("Random add percent = " & StringFormat("%.4f", $RandomAddPercent), $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("$MinimumTimeClose = " & $MinimumTimeClose & "s", $COLOR_DEBUG)
 
 	; Determine state of $StopEmulator flag
 	Local $StopEmulator = False
@@ -61,7 +61,7 @@ Func SmartWait4Train()
 
 	; Determine what wait mode(s) are enabled
 	If IsArray($g_asShieldStatus) And (StringInStr($g_asShieldStatus[0], "shield", $STR_NOCASESENSEBASIC) Or StringInStr($g_asShieldStatus[0], "guard", $STR_NOCASESENSEBASIC)) Then
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("Have shield till " & $g_asShieldStatus[2] & ", close game while wait for train)", $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Have shield till " & $g_asShieldStatus[2] & ", close game while wait for train)", $COLOR_DEBUG)
 		$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) ; close if we have a shield
 	EndIf
 	If _Sleep($DELAYRESPOND) Then Return
@@ -76,24 +76,24 @@ Func SmartWait4Train()
 			$g_asShieldStatus = $aResult ; Update new values
 		EndIf
 		If IsArray($g_asShieldStatus) And (StringInStr($g_asShieldStatus[0], "shield", $STR_NOCASESENSEBASIC) Or StringInStr($g_asShieldStatus[0], "guard", $STR_NOCASESENSEBASIC)) Then ; check shield after update
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("Have shield till " & $g_asShieldStatus[2] & ", close game while wait for train)", $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Have shield till " & $g_asShieldStatus[2] & ", close game while wait for train)", $COLOR_DEBUG)
 			$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD)
 		EndIf
 	EndIf
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 And IsArray($g_asShieldStatus) Then Setlog("Shield Status:" & $g_asShieldStatus[0] & ", till " & $g_asShieldStatus[2], $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog And IsArray($g_asShieldStatus) Then Setlog("Shield Status:" & $g_asShieldStatus[0] & ", till " & $g_asShieldStatus[2], $COLOR_DEBUG)
 
 	Local $result = OpenArmyWindow() ; Open train overview
 	If $result = False Then
-		If $g_iDebugImageSave = 1 Or $g_iDebugSetlogTrain = 1 Then Debugimagesave("SmartWait4Troop2_")
+		If $g_bDebugImageSave Or $g_bDebugSetlogTrain Then DebugImageSave("SmartWait4Troop2_")
 	EndIf
 	If _Sleep($DELAYRESPOND) Then Return
 
 
 	; Get troop training time remaining if enabled
-	If $g_bCloseWithoutShield = True Or BitAND($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) = $TRAINWAIT_SHIELD Then
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("$g_bCloseWithoutShield enabled", $COLOR_DEBUG)
+	If $g_bCloseWithoutShield Or BitAND($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) = $TRAINWAIT_SHIELD Then
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("$g_bCloseWithoutShield enabled", $COLOR_DEBUG)
 		getArmyTroopTime() ; update for Oct 2016
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("getArmyTroopTime returned: " & $g_aiTimeTrain[0], $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmyTroopTime returned: " & $g_aiTimeTrain[0], $COLOR_DEBUG)
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_aiTimeTrain[0] > 0 Then
 			If $g_bCloseRandomTime = True Then
@@ -101,31 +101,31 @@ Func SmartWait4Train()
 			EndIf
 			$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_TROOP)
 		EndIf
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("$iTrainWaitCloseFlag:" & $iTrainWaitCloseFlag & ", troop time = " & StringFormat("%.2f", $g_aiTimeTrain[0]), $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("$iTrainWaitCloseFlag:" & $iTrainWaitCloseFlag & ", troop time = " & StringFormat("%.2f", $g_aiTimeTrain[0]), $COLOR_DEBUG)
 	EndIf
 
 	; get spell training time remaining if enabled
-	If ($g_bCloseWithoutShield = True Or BitAND($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) = $TRAINWAIT_SHIELD) And IsWaitforSpellsActive() Then
+	If ($g_bCloseWithoutShield Or BitAND($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) = $TRAINWAIT_SHIELD) And IsWaitforSpellsActive() Then
 		$ichkCloseWaitSpell = 1
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("$ichkCloseWaitSpell enabled", $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("$ichkCloseWaitSpell enabled", $COLOR_DEBUG)
 		getArmySpellTime()
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("getArmySpellTime returned: " & $g_aiTimeTrain[1], $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmySpellTime returned: " & $g_aiTimeTrain[1], $COLOR_DEBUG)
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_aiTimeTrain[1] > 0 Then
-			If $g_bCloseRandomTime = True Then
+			If $g_bCloseRandomTime Then
 				$g_aiTimeTrain[1] += $g_aiTimeTrain[1] * $RandomAddPercent ; add some random percent
 			EndIf
 			$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_SPELL)
 		EndIf
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("$iTrainWaitCloseFlag:" & $iTrainWaitCloseFlag & ", spell time = " & StringFormat("%.2f", $g_aiTimeTrain[1]), $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("$iTrainWaitCloseFlag:" & $iTrainWaitCloseFlag & ", spell time = " & StringFormat("%.2f", $g_aiTimeTrain[1]), $COLOR_DEBUG)
 	Else
 		$ichkCloseWaitSpell = 0
 	EndIf
 
 	; get hero regen time remaining if enabled
-	If ($g_bCloseWithoutShield = True Or BitAND($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) = $TRAINWAIT_SHIELD) And IsWaitforHeroesActive() Then
+	If ($g_bCloseWithoutShield Or BitAND($iTrainWaitCloseFlag, $TRAINWAIT_SHIELD) = $TRAINWAIT_SHIELD) And IsWaitforHeroesActive() Then
 		$ichkCloseWaitHero = 1
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("$ichkCloseWaitHero enabled", $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("$ichkCloseWaitHero enabled", $COLOR_DEBUG)
 		For $j = 0 To UBound($aResult) - 1
 			$aHeroResult[$j] = 0 ; reset old values
 		Next
@@ -139,13 +139,13 @@ Func SmartWait4Train()
 			Setlog("getArmyHeroTime OCR fail, exit SmartWait!", $COLOR_ERROR)
 			Return ; quit when ocr fai, stop trying to close while training this time
 		EndIf
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("getArmyHeroTime returned: " & $aHeroResult[0] & ":" & $aHeroResult[1] & ":" & $aHeroResult[2], $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmyHeroTime returned: " & $aHeroResult[0] & ":" & $aHeroResult[1] & ":" & $aHeroResult[2], $COLOR_DEBUG)
 		If _Sleep($DELAYRESPOND) Then Return
 		If $aHeroResult[0] > 0 Or $aHeroResult[1] > 0 Or $aHeroResult[2] > 0 Then ; check if hero is enabled to use/wait and set wait time
 			For $pTroopType = $eKing To $eWarden ; check all 3 hero
 				Local $iHeroIdx = $pTroopType - $eKing
 				For $pMatchMode = $DB To $LB ; check only DB and LB (TS has no wait option!)
-					If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then
+					If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then
 						SetLog("$pTroopType: " & NameOfTroop($pTroopType) & ", $pMatchMode: " & $g_asModeText[$pMatchMode], $COLOR_DEBUG)
 						Setlog("TroopToBeUsed: " & IsSpecialTroopToBeUsed($pMatchMode, $pTroopType) & ", Hero Wait Status= " & IsSearchModeActiveMini($pMatchMode) & " & " & IsSpecialTroopToBeUsed($pMatchMode, $pTroopType) & " & " & ($g_iHeroUpgrading[$iHeroIdx] <> 1) & " & " & ($g_iHeroWaitAttackNoBit[$pMatchMode][$iHeroIdx] = 1), $COLOR_DEBUG)
 						SetLog("$g_aiAttackUseHeroes[" & $pMatchMode & "]= " & $g_aiAttackUseHeroes[$pMatchMode] & ", $g_aiSearchHeroWaitEnable[" & $pMatchMode & "]= " & $g_aiSearchHeroWaitEnable[$pMatchMode] & ", $g_iHeroUpgradingBit=" & $g_iHeroUpgradingBit, $COLOR_DEBUG)
@@ -163,7 +163,7 @@ Func SmartWait4Train()
 							$g_aiTimeTrain[2] = $aHeroResult[$iActiveHero] ; use exact time
 						EndIf
 						$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_HERO)
-						If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then
+						If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then
 							SetLog("Wait enabled: " & NameOfTroop($pTroopType) & ":" & $g_asModeText[$pMatchMode] & ", $iTrainWaitCloseFlag:" & $iTrainWaitCloseFlag & ", Hero Time:" & $aHeroResult[$iActiveHero] & ", Wait Time: " & StringFormat("%.2f", $g_aiTimeTrain[2]), $COLOR_DEBUG)
 						EndIf
 					EndIf
@@ -171,7 +171,7 @@ Func SmartWait4Train()
 				If _Sleep($DELAYRESPOND) Then Return
 			Next
 		Else
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("getArmyHeroTime return all zero hero wait times", $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmyHeroTime return all zero hero wait times", $COLOR_DEBUG)
 		EndIf
 		If $g_aiTimeTrain[2] > 0 Then
 			If $g_bCloseRandomTime = True Then
@@ -179,7 +179,7 @@ Func SmartWait4Train()
 			EndIf
 			$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_HERO)
 		EndIf
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("$iTrainWaitCloseFlag:" & $iTrainWaitCloseFlag & ", hero time = " & StringFormat("%.2f", $g_aiTimeTrain[2]), $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("$iTrainWaitCloseFlag:" & $iTrainWaitCloseFlag & ", hero time = " & StringFormat("%.2f", $g_aiTimeTrain[2]), $COLOR_DEBUG)
 	Else
 		$ichkCloseWaitHero = 0
 		$g_aiTimeTrain[2] = 0 ; clear hero remain time if disabled during stop
@@ -226,27 +226,27 @@ Func SmartWait4Train()
 			Return ; stop trying to close while training this time
 	EndSwitch
 
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then
 		Setlog("Training time values: " & StringFormat("%.2f", $g_aiTimeTrain[0]) & " : " & StringFormat("%.2f", $g_aiTimeTrain[1]) & " : " & StringFormat("%.2f", $g_aiTimeTrain[2]), $COLOR_DEBUG)
 		SetLog("$iTrainWaitTime = " & StringFormat("%.2f", $iTrainWaitTime) & " minutes", $COLOR_DEBUG)
 		Setlog("$iTrainWaitCloseFlag: " & $iTrainWaitCloseFlag)
 	EndIf
 
 	; Adjust train wait time if CC request is enabled to ensure CC is full before troops are done training
-	If $g_bRequestTroopsEnable = True And $g_iCCRemainTime > 0 And $g_iCCRemainTime < $iTrainWaitTime Then
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Wait time reduced for CC from: " & StringFormat("%.2f", $iTrainWaitTime) & " To " & StringFormat("%.2f", $g_iCCRemainTime), $COLOR_DEBUG)
+	If $g_bRequestTroopsEnable And $g_iCCRemainTime > 0 And $g_iCCRemainTime < $iTrainWaitTime Then
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Wait time reduced for CC from: " & StringFormat("%.2f", $iTrainWaitTime) & " To " & StringFormat("%.2f", $g_iCCRemainTime), $COLOR_DEBUG)
 		$iTrainWaitTime = $g_iCCRemainTime ; Set wait time based on time remaining in CC request to ensure CC is full
 	EndIf
 
 	$iTrainWaitTime = $iTrainWaitTime * 60 ; convert $iTrainWaitTime to seconds instead of minutes returned from OCR
 
 	$sNowTime = _NowCalc() ; find/store time right now
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Train end time: " & _DateAdd("s", Int($iTrainWaitTime), $sNowTime), $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Train end time: " & _DateAdd("s", Int($iTrainWaitTime), $sNowTime), $COLOR_DEBUG)
 
 	If IsArray($g_asShieldStatus) And _DateIsValid($g_asShieldStatus[2]) Then ;check for valid shield time
 		$iShieldTime = _DateDiff("s", $sNowTime, $g_asShieldStatus[2]) ; find seconds until shield expires
 		If @error Then _logErrorDateDiff(@error)
-		If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Shield time remain: " & $iShieldTime & " seconds", $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Shield time remain: " & $iShieldTime & " seconds", $COLOR_DEBUG)
 		; subtract 45 seconds from actual Shield to allow for misc emulator/App start & stop delays, to prevent being attacked
 		; immediately after Guard shield expires when you have no grace time.  Feature required to avoid losing trophy when trophy pushing
 		If $iShieldTime < 45 Then
@@ -257,42 +257,42 @@ Func SmartWait4Train()
 	EndIf
 
 	$iDiffTime = $iShieldTime - ($iTrainWaitTime) ; Find difference between train and shield time.
-	If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Time Train:Shield:Diff " & ($iTrainWaitTime) & ":" & $iShieldTime & ":" & $iDiffTime, $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Time Train:Shield:Diff " & ($iTrainWaitTime) & ":" & $iShieldTime & ":" & $iDiffTime, $COLOR_DEBUG)
 
 	If ($iTrainWaitTime >= $MinimumTimeClose) Then ; are close times above minumum close time in GUI?
 		If $iShieldTime > 0 Then ; is shield time positive?
 			If $iDiffTime <= 0 Then ; is shield time less than total train time?
 				; close game = $iShieldTime because less than train time remaining
 				Setlog("Smart wait while shield time = " & StringFormat("%.2f", $iShieldTime / 60) & " Minutes", $COLOR_INFO)
-				If ($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyAlertSmartWaitTime = True Then NotifyPushToBoth($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_01", "Smart Wait While Shield Time = ") & StringFormat("%.2f", $iShieldTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
+				If ($g_bNotifyPBEnable Or $g_bNotifyTGEnable) And $g_bNotifyAlertSmartWaitTime Then NotifyPushToBoth($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_01", "Smart Wait While Shield Time = ") & StringFormat("%.2f", $iShieldTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
 				UniversalCloseWaitOpenCoC($iShieldTime * 1000, "SmartWait4Train_", $StopEmulator, $bFullRestart, $bSuspendComputer)
 				$g_bRestart = True ; Set flag to exit idle loop to deal with potential user changes to GUI
 				ResetTrainTimeArray()
 			Else ; close game  = $iTrainWaitTime because shield is larger than train time
 				Setlog("Smart wait train time = " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_INFO)
-				If ($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyAlertSmartWaitTime = True Then NotifyPushToBoth($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_04", "Smart Wait Train Time = ") & StringFormat("%.2f", $iTrainWaitTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
+				If ($g_bNotifyPBEnable Or $g_bNotifyTGEnable) And $g_bNotifyAlertSmartWaitTime Then NotifyPushToBoth($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_04", "Smart Wait Train Time = ") & StringFormat("%.2f", $iTrainWaitTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
 				UniversalCloseWaitOpenCoC($iTrainWaitTime * 1000, "SmartWait4Train_", $StopEmulator, $bFullRestart, $bSuspendComputer)
 				$g_bRestart = True ; Set flag to exit idle loop to deal with potential user changes to GUI
 				ResetTrainTimeArray()
 			EndIf
 			; if shield is zero, or not available, then check all 3 close without shield flags
-		ElseIf ($g_bCloseWithoutShield = True And $g_aiTimeTrain[0] > 0) Or ($ichkCloseWaitSpell = 1 And $g_aiTimeTrain[1] > 0) Or ($ichkCloseWaitHero = 1 And $g_aiTimeTrain[2] > 0) Then
+		ElseIf ($g_bCloseWithoutShield And $g_aiTimeTrain[0] > 0) Or ($ichkCloseWaitSpell = 1 And $g_aiTimeTrain[1] > 0) Or ($ichkCloseWaitHero = 1 And $g_aiTimeTrain[2] > 0) Then
 			;when no shield close game for $iTrainWaitTime time as determined above
 			Setlog("Smart Wait time = " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_INFO)
-			If ($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyAlertSmartWaitTime = True Then NotifyPushToBoth($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_05", "Smart Wait Time = ") & StringFormat("%.2f", $iTrainWaitTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
+			If ($g_bNotifyPBEnable Or $g_bNotifyTGEnable) And $g_bNotifyAlertSmartWaitTime Then NotifyPushToBoth($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_05", "Smart Wait Time = ") & StringFormat("%.2f", $iTrainWaitTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
 			UniversalCloseWaitOpenCoC($iTrainWaitTime * 1000, "SmartWait4TrainNoShield_", $StopEmulator, $bFullRestart, $bSuspendComputer)
 			$g_bRestart = True ; Set flag to exit idle loop to deal with potential user changes to GUI
 			ResetTrainTimeArray()
 		Else
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("$ichkCloseWaitSpell=" & $ichkCloseWaitSpell & ", $g_aiTimeTrain[1]=" & $g_aiTimeTrain[1], $COLOR_DEBUG)
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("$ichkCloseWaitHero=" & $ichkCloseWaitHero & ", $g_aiTimeTrain[2]=" & $g_aiTimeTrain[2], $COLOR_DEBUG)
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then Setlog("Troop training with time remaining not enabled, skip SmartWait game exit", $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("$ichkCloseWaitSpell=" & $ichkCloseWaitSpell & ", $g_aiTimeTrain[1]=" & $g_aiTimeTrain[1], $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("$ichkCloseWaitHero=" & $ichkCloseWaitHero & ", $g_aiTimeTrain[2]=" & $g_aiTimeTrain[2], $COLOR_DEBUG)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Troop training with time remaining not enabled, skip SmartWait game exit", $COLOR_DEBUG)
 		EndIf
 	Else
-		Setlog("Smart Wait Time < Minimum Time Required To Close [" & ($MinimumTimeClose / 60) & " Min]", $COLOR_INFO)
-		Setlog("Wait Train Time = " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_INFO)
-		Setlog("Remain Shield Time = " & StringFormat("%.2f", $iShieldTime / 60) & " Minutes", $COLOR_INFO)
-		Setlog("Not Close CoC Just Wait In The Main Screen", $COLOR_INFO)
+		SetLog("Smart Wait Time < Minimum Time Required To Close [" & ($MinimumTimeClose / 60) & " Min]", $COLOR_INFO)
+		SetLog("Wait Train Time = " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_INFO)
+		SetLog("Remain Shield Time = " & StringFormat("%.2f", $iShieldTime / 60) & " Minutes", $COLOR_INFO)
+		SetLog("Not Close CoC Just Wait In The Main Screen", $COLOR_INFO)
 		; Just wait without close the CoC
 		If ($iShieldTime < $iTrainWaitTime) And ($g_bCloseWithoutShield = False) Then ; only wait for lessor of shield time or training time due risk of app timeout with longer wait times
 			_SleepStatus($iShieldTime * 1000)

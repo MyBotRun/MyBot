@@ -21,7 +21,7 @@ Func GetTranslated($iSection = -1, $iKey = -1, $sText = "", $var1 = Default, $va
 	Local $sDefaultText, $g_sLanguageText
 
 	;If GetTranslated was called without correct parameters return value -2 to show the coder there is a mistake made somewhere (debug)
-	If $g_iDebugMultilanguage = 1 Then Return ($iSection & "-" & $iKey)
+	If $g_bDebugMultilanguage Then Return ($iSection & "-" & $iKey)
 	If $iSection = -1 Or $iKey = -1 Or $sText = "" Then Return "-2"
 
 	Local $bOutBound = False
@@ -98,7 +98,7 @@ Func DetectLanguage()
 	If Not FileExists(@ScriptDir & "\Languages\" & $g_sLanguage & ".ini") Then $g_sLanguage = ""
 	If $g_sLanguage = "" Then
 		Local $OSLang = @OSLang
-		If $g_iDebugSetlog Then SetLog("Detected language code: " & $OSLang)
+		If $g_bDebugSetlog Then SetLog("Detected language code: " & $OSLang)
 		Switch $OSLang;get language
 
 			Case Hex(0x0004, 4)

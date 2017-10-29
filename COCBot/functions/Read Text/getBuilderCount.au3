@@ -39,11 +39,11 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 				$g_iFreeBuilderCount = Int($aGetBuilders[0]) ; update global values
 				If $g_iTestFreeBuilderCount <> -1 Then $g_iFreeBuilderCount = $g_iTestFreeBuilderCount ; used for test cases
 				$g_iTotalBuilderCount = Int($aGetBuilders[1])
-				If $g_iDebugSetlog = 1 And $bSuppressLog = False Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCount & "/" & $g_iTotalBuilderCount, $COLOR_DEBUG)
+				If $g_bDebugSetlog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCount & "/" & $g_iTotalBuilderCount, $COLOR_DEBUG)
 			Else
 				$g_iFreeBuilderCountBB = Int($aGetBuilders[0]) ; update global values
 				$g_iTotalBuilderCountBB = Int($aGetBuilders[1])
-				If $g_iDebugSetlog = 1 And $bSuppressLog = False Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB, $COLOR_DEBUG)
+				If $g_bDebugSetlog And Not $bSuppressLog Then SetLog("No. of Free/Total Builders: " & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB, $COLOR_DEBUG)
 			EndIf
 			Return True ; Happy Monkey returns!
 		Else
@@ -54,7 +54,7 @@ Func getBuilderCount($bSuppressLog = False, $bBuilderBase = False)
 		SetLog("Unable to read Builders info at this time", $COLOR_ERROR)
 		; drop down to error handling code
 	EndIf
-	If $g_iDebugSetlog = 1 Or $g_iDebugImageSave = 1 Then DebugImageSave("getBuilderCount_")
+	If $g_bDebugSetlog Or $g_bDebugImageSave Then DebugImageSave("getBuilderCount_")
 	If checkObstacles() Then checkMainScreen() ; trap common error messages
 	Return False
 

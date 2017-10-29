@@ -109,11 +109,13 @@ Func createProfile($bCreateNew = False)
 EndFunc   ;==>createProfile
 
 Func setupProfile()
-	If GUICtrlRead($g_hCmbProfile) = "<No Profiles>" Then
-		; Set profile name to the text box value if no profiles are found.
-		$g_sProfileCurrentName = StringRegExpReplace(GUICtrlRead($g_hTxtVillageName), '[/:*?"<>|]', '_')
-	Else
-		$g_sProfileCurrentName = GUICtrlRead($g_hCmbProfile)
+	If $g_iGuiMode = 1 Then
+		If GUICtrlRead($g_hCmbProfile) = "<No Profiles>" Then
+			; Set profile name to the text box value if no profiles are found.
+			$g_sProfileCurrentName = StringRegExpReplace(GUICtrlRead($g_hTxtVillageName), '[/:*?"<>|]', '_')
+		Else
+			$g_sProfileCurrentName = GUICtrlRead($g_hCmbProfile)
+		EndIf
 	EndIf
 
 	; Create the profile if needed, this also sets the variables if the profile exists.

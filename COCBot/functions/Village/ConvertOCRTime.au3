@@ -26,12 +26,12 @@ Func ConvertOCRTime($WhereRead, $ToConvert, $bSetLog = True)
 		ElseIf StringInStr($ToConvert, "s") > 1 Then
 			$iRemainTimer = Number(StringTrimRight($ToConvert, 1)) / 60 ; removing the "s" and convert to minutes
 		Else
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog($WhereRead & ": Bad OCR string", $COLOR_ERROR)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog($WhereRead & ": Bad OCR string", $COLOR_ERROR)
 		EndIf
 		If $bSetLog Then SetLog($WhereRead & " time: " & StringFormat("%.2f", $iRemainTimer) & " min", $COLOR_INFO)
 	Else
 		If Not $g_bFullArmySpells Then
-			If $g_iDebugSetlogTrain = 1 Or $g_iDebugSetlog = 1 Then SetLog("Can not read remaining time for " & $WhereRead, $COLOR_ERROR)
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Can not read remaining time for " & $WhereRead, $COLOR_ERROR)
 		EndIf
 	EndIf
 	Return $iRemainTimer

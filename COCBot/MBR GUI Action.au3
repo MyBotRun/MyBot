@@ -59,12 +59,19 @@ Func BotStart($bAutostartDelay = 0)
 		SetLog("Background Mode not supported for " & $g_sAndroidEmulator & " and has been disabled", $COLOR_ERROR)
 	EndIf
 
+	; update bottom buttons
 	GUICtrlSetState($g_hBtnStart, $GUI_HIDE)
 	GUICtrlSetState($g_hBtnStop, $GUI_SHOW)
 	GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
 	GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 	GUICtrlSetState($g_hBtnSearchMode, $GUI_HIDE)
 	GUICtrlSetState($g_hChkBackgroundMode, $GUI_DISABLE)
+
+	; update try items
+	TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Stop", "Stop bot"))
+	TrayItemSetState($g_hTiPause, $TRAY_ENABLE)
+	TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Pause", "Pause bot"))
+
 	EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
 
 	DisableGuiControls()
@@ -145,6 +152,7 @@ Func BotStop()
 
 	EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
 
+	; update bottom buttons
 	GUICtrlSetState($g_hChkBackgroundMode, $GUI_ENABLE)
 	GUICtrlSetState($g_hBtnStart, $GUI_SHOW)
 	GUICtrlSetState($g_hBtnStop, $GUI_HIDE)
@@ -160,6 +168,10 @@ Func BotStop()
 	GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
 	GUICtrlSetState($g_hPicTwoArrowShield, $GUI_SHOW)
 	GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
+
+	; update try items
+	TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Start", "Start bot"))
+	TrayItemSetState($g_hTiPause, $TRAY_DISABLE)
 
 	SetLogCentered(" Bot Stop ", Default, $COLOR_ACTION)
 	If Not $g_bSearchMode Then

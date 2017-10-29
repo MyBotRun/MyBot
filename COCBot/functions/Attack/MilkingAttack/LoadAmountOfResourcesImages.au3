@@ -24,31 +24,18 @@ Func LoadAmountOfResourcesImages()
 		$x = _FileListToArrayRec(@ScriptDir & "\images\CapacityStructure\", "elixir_" & $t & $useImages, $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 		;_ArrayDisplay($x)
 		If UBound($x) > 0 Then $g_asCapacityStructureElixir[$t] = $x
-
-;~ 		For $i = 0 To UBound($g_asCapacityStructureElixir[$t]) - 1
-;~			Local $a = $g_asCapacityStructureElixir[$t]
-;~ 			If $g_iDebugSetlog=1 Then SetLog("$g_asCapacityStructureElixir[" & $t & "][" & $i & "]:" & $a[$i] & @CRLF)
-;~ 		Next
 	Next
 	For $t = 0 To 8
 		$g_asDestroyedMineIMG[$t] = StringSplit("", "")
 		;put in a temp array the list of files matching condition "*_*_*_*.bmp"
 		$x = _FileListToArrayRec(@ScriptDir & "\images\CapacityStructure\", "destroyed_mine_" & $t & $useImages, $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 		If UBound($x) > 0 Then $g_asDestroyedMineIMG[$t] = $x
-;~ 		For $i = 0 To UBound($g_asDestroyedMineIMG[$t]) - 1
-;~			Local $a = $g_asDestroyedMineIMG[$t]
-;~ 			If $g_iDebugSetlog=1 Then SetLog("$g_asDestroyedMineIMG[" & $t & "][" & $i & "]:" & $[$i] & @CRLF)
-;~ 		Next
 	Next
 	For $t = 0 To 8
 		$g_asDestroyedElixirIMG[$t] = StringSplit("", "")
 		;put in a temp array the list of files matching condition "*_*_*_*.bmp"
 		$x = _FileListToArrayRec(@ScriptDir & "\images\CapacityStructure\", "destroyed_elixir_" & $t & $useImages, $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 		If UBound($x) > 0 Then $g_asDestroyedElixirIMG[$t] = $x
-;~ 		For $i = 0 To UBound($g_asDestroyedElixirIMG[$t]) - 1
-;~			Local $a = $g_asDestroyedElixirIMG[$t]
-;~ 			If $g_iDebugSetlog=1 Then SetLog("$g_asDestroyedElixirIMG[" & $t & "][" & $i & "]:" & $a[$i] & @CRLF)
-;~ 		Next
 		If UBound($x) > 0 Then $g_asCapacityStructureElixir[$t] = $x
 	Next
 	For $t = 0 To 8
@@ -56,10 +43,6 @@ Func LoadAmountOfResourcesImages()
 		;put in a temp array the list of files matching condition "*_*_*_*.bmp"
 		$x = _FileListToArrayRec(@ScriptDir & "\images\CapacityStructure\", "destroyed_dark_" & $t & $useImages, $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 		If UBound($x) > 0 Then $g_asDestroyedDarkIMG[$t] = $x
-;~ 		For $i = 0 To UBound($g_asDestroyedDarkIMG[$t]) - 1
-;~			Local $a = $g_asDestroyedDarkIMG[$t]
-;~ 			If $g_iDebugSetlog=1 Then SetLog("$g_asDestroyedDarkIMG[" & $t & "][" & $i & "]:" & $a[$i] & @CRLF)
-;~ 		Next
 	Next
 
 EndFunc   ;==>LoadAmountOfResourcesImages

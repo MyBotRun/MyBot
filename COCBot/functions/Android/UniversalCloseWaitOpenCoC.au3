@@ -19,7 +19,7 @@
 ; ===============================================================================================================================
 Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer_", $StopEmulator = False, $bFullRestart = False, $bSuspendComputer = False)
 
-	If $g_iDebugSetlog = 1 Then Setlog("Begin UniversalCloseWaitOpenCoC:", $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then Setlog("Begin UniversalCloseWaitOpenCoC:", $COLOR_DEBUG1)
 
 	Local $sWaitTime = ""
 	Local $iMin, $iSec, $iHour, $iWaitSec, $StopAndroidFlag
@@ -59,7 +59,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 			$StopAndroidFlag = 1
 			SetLog("Code Monkey provided bad stop emulator flag value", $COLOR_ERROR)
 	EndSelect
-	If $g_iDebugSetlog = 1 Then Setlog("Stop Android flag : Input flag " & $StopAndroidFlag & " : " & $StopEmulator, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then Setlog("Stop Android flag : Input flag " & $StopAndroidFlag & " : " & $StopEmulator, $COLOR_DEBUG)
 	If _Sleep($DELAYRESPOND) Then Return False
 
 	Switch $StopAndroidFlag

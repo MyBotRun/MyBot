@@ -351,7 +351,7 @@ Func chkTroopOrder($bSetLog = True)
 			GUICtrlSetState($g_ahCmbTroopOrder[$i], $GUI_DISABLE) ; disable combo boxes
 		Next
 		SetDefaultTroopGroup($bSetLog) ; Reset troopgroup values to default
-		If ($bSetLog Or $g_iDebugSetlogTrain = 1) And $g_bCustomTrainOrderEnable Then
+		If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then
 			Local $sNewTrainList = ""
 			For $i = 0 To $eTroopCount - 1
 				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
@@ -644,7 +644,7 @@ Func BtnTroopOrderSet()
 EndFunc   ;==>BtnTroopOrderSet
 
 Func ChangeSpellsBrewOrder()
-	If $g_iDebugSetlog = 1 Or $g_iDebugSetlogTrain = 1 Then Setlog("Begin Func ChangeSpellsBrewOrder()", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlog Or $g_bDebugSetlogTrain Then Setlog("Begin Func ChangeSpellsBrewOrder()", $COLOR_DEBUG) ;Debug
 
 	Local $NewTroopOrder[$eSpellCount]
 	Local $iUpdateCount = 0
@@ -683,7 +683,7 @@ EndFunc   ;==>ChangeSpellsBrewOrder
 
 Func ChangeTroopTrainOrder()
 
-	If $g_iDebugSetlog = 1 Or $g_iDebugSetlogTrain = 1 Then Setlog("Begin Func ChangeTroopTrainOrder()", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlog Or $g_bDebugSetlogTrain Then Setlog("Begin Func ChangeTroopTrainOrder()", $COLOR_DEBUG) ;Debug
 
 	Local $NewTroopOrder[$eTroopCount]
 	Local $iUpdateCount = 0
@@ -724,7 +724,7 @@ Func SetDefaultTroopGroup($bSetLog = True)
 		$g_aiTrainOrder[$i] = $i
 	Next
 
-	If ($bSetLog Or $g_iDebugSetlogTrain = 1) And $g_bCustomTrainOrderEnable Then Setlog("Default troop training order set", $COLOR_SUCCESS)
+	If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then Setlog("Default troop training order set", $COLOR_SUCCESS)
 EndFunc   ;==>SetDefaultTroopGroup
 
 Func SetDefaultSpellsGroup($bSetLog = True)
@@ -732,28 +732,28 @@ Func SetDefaultSpellsGroup($bSetLog = True)
 		$g_aiBrewOrder[$i] = $i
 	Next
 
-	If ($bSetLog Or $g_iDebugSetlogTrain = 1) And $g_bCustomTrainOrderEnable Then Setlog("Default Spells Brew order set", $COLOR_SUCCESS)
+	If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then Setlog("Default Spells Brew order set", $COLOR_SUCCESS)
 EndFunc   ;==>SetDefaultSpellsGroup
 
 Func IsUseCustomSpellsOrder()
 	For $i = 0 To UBound($g_aiCmbCustomBrewOrder) - 1 ; Check if custom train order has been used, to select log message
 		If $g_aiCmbCustomBrewOrder[$i] = -1 Then
-			If $g_iDebugSetlogTrain = 1 And $g_bCustomBrewOrderEnable Then Setlog("Custom Spell order not used...", $COLOR_DEBUG) ;Debug
+			If $g_bDebugSetlogTrain And $g_bCustomBrewOrderEnable Then Setlog("Custom Spell order not used...", $COLOR_DEBUG) ;Debug
 			Return False
 		EndIf
 	Next
-	If $g_iDebugSetlogTrain = 1 And $g_bCustomBrewOrderEnable Then Setlog("Custom Spell order used...", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlogTrain And $g_bCustomBrewOrderEnable Then Setlog("Custom Spell order used...", $COLOR_DEBUG) ;Debug
 	Return True
 EndFunc   ;==>IsUseCustomSpellsOrder
 
 Func IsUseCustomTroopOrder()
 	For $i = 0 To UBound($g_aiCmbCustomTrainOrder) - 1 ; Check if custom train order has been used, to select log message
 		If $g_aiCmbCustomTrainOrder[$i] = -1 Then
-			If $g_iDebugSetlogTrain = 1 And $g_bCustomTrainOrderEnable Then Setlog("Custom train order not used...", $COLOR_DEBUG) ;Debug
+			If $g_bDebugSetlogTrain And $g_bCustomTrainOrderEnable Then Setlog("Custom train order not used...", $COLOR_DEBUG) ;Debug
 			Return False
 		EndIf
 	Next
-	If $g_iDebugSetlogTrain = 1 And $g_bCustomTrainOrderEnable Then Setlog("Custom train order used...", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlogTrain And $g_bCustomTrainOrderEnable Then Setlog("Custom train order used...", $COLOR_DEBUG) ;Debug
 	Return True
 EndFunc   ;==>IsUseCustomTroopOrder
 

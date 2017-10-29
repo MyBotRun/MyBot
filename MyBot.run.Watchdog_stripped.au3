@@ -1,13 +1,9 @@
 #NoTrayIcon
 #RequireAdmin
 #pragma compile(Console, true)
-#pragma compile(Icon, "Images\MyBot.ico")
-#pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductName, My Bot Watchdog)
-#pragma compile(ProductVersion, 7.2.3)
-#pragma compile(FileVersion, 7.2.3)
-#pragma compile(LegalCopyright, © https://mybot.run)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
+Global $g_sBotVersion = "v7.3"
 Opt("MustDeclareVars", 1)
 Global Const $WAIT_TIMEOUT = 258
 Global Const $STDERR_MERGED = 8
@@ -471,22 +467,30 @@ EndFunc
 Global $hNtDll = DllOpen("ntdll.dll")
 Global Const $COLOR_ERROR = $COLOR_RED
 Global Const $COLOR_DEBUG = $COLOR_PURPLE
+Global $g_WatchDogLogStatusBar = False
+Global $g_WatchOnlyClientPID = Default
 Global $g_bRunState = True
-Global $frmBot = 0
+Global $g_hFrmBot = 0
 Global $g_hStatusBar = 0
 Global $hMutex_BotTitle = 0
 Global $hStarted = 0
 Global $bCloseWhenAllBotsUnregistered = True
 Global $iTimeoutBroadcast = 15000
 Global $iTimeoutCheckBot = 5000
-Global $iTimeoutRestartBot = 120000
+Global $iTimeoutRestartBot = 180000
 Global $iTimeoutAutoClose = 60000
 Global $hTimeoutAutoClose = 0
+Global $g_iDebugWindowMessages = 0
 Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $DELAYSLEEP = 500
-Global $g_iDebugSetlog = 0
-Func _GUICtrlStatusBar_SetText($a, $b)
+Global $g_bDebugSetlog = False
+Global Enum $eLootGold, $eLootElixir, $eLootDarkElixir, $eLootTrophy, $eLootCount
+Global $g_aiCurrentLoot[$eLootCount] = [0, 0, 0, 0]
+Global $g_iStatsTotalGain[$eLootCount] = [0, 0, 0, 0]
+Global $g_iStatsLastAttack[$eLootCount] = [0, 0, 0, 0]
+Global $g_iStatsBonusLast[$eLootCount] = [0, 0, 0, 0]
+Func _GUICtrlStatusBar_SetTextEx($a, $b)
 EndFunc
 Func SetLog($String, $Color = $COLOR_BLACK, $LogPrefix = "L ")
 Local $log = $LogPrefix & TimeDebug() & $String
@@ -505,83 +509,202 @@ EndFunc
 Func _SleepMilli($iMilliSec)
 _SleepMicro(Int($iMilliSec * 1000))
 EndFunc
-Global $sBotVersion = "v7.2.2"
-Global $sBotTitle = "My Bot Watchdog " & $sBotVersion & " "
+Func UpdateManagedMyBot($aBotDetails)
+Return True
+EndFunc
+Global $g_sBotTitle = "My Bot Watchdog " & $g_sBotVersion
 Opt("WinTitleMatchMode", 3)
-Global $sWatchdogMutex = "MyBot.run/ManageFarm"
-Global $WM_MYBOTRUN_API_1_0 = _WinAPI_RegisterWindowMessage("MyBot.run/API/1.0")
-Global $WM_MYBOTRUN_STATE_1_0 = _WinAPI_RegisterWindowMessage("MyBot.run/STATE/1.0")
+Global Enum $g_eBotDetailsBotForm = 0, $g_eBotDetailsTimer, $g_eBotDetailsProfile, $g_eBotDetailsCommandLine, $g_eBotDetailsTitle, $g_eBotDetailsRunState, $g_eBotDetailsPaused, $g_eBotDetailsLaunched, $g_eBotDetailsVerifyCount, $g_eBotDetailsBotStateStruct, $g_eBotDetailsOptionalStruct, $g_eBotDetailsArraySize
+Global $tagSTRUCT_BOT_STATE = "struct" & ";hwnd BotHWnd" & ";hwnd AndroidHWnd" & ";boolean RunState" & ";boolean Paused" & ";boolean Launched" & ";uint64 g_hTimerSinceStarted" & ";uint g_iTimePassed" & ";char Profile[64]" & ";char AndroidEmulator[32]" & ";char AndroidInstance[32]" & ";int StructType" & ";ptr StructPtr" & ";boolean RegisterInHost" & ";endstruct"
+Global Enum $g_eSTRUCT_NONE = 0, $g_eSTRUCT_STATUS_BAR, $g_eSTRUCT_UPDATE_STATS
+Global $tagSTRUCT_STATUS_BAR = "struct;char Text[255];endstruct"
+Global $tagSTRUCT_UPDATE_STATS = "struct" & ";long g_aiCurrentLoot[" & UBound($g_aiCurrentLoot) & "]" & ";long g_iFreeBuilderCount" & ";long g_iTotalBuilderCount" & ";long g_iGemAmount" & ";long g_iStatsTotalGain[" & UBound($g_iStatsTotalGain) & "]" & ";long g_iStatsLastAttack[" & UBound($g_iStatsLastAttack) & "]" & ";long g_iStatsBonusLast[" & UBound($g_iStatsBonusLast) & "]" & ";int g_iFirstAttack" & ";int g_aiAttackedCount" & ";int g_iSkippedVillageCount" & ";endstruct"
+Global $tBotState = DllStructCreate($tagSTRUCT_BOT_STATE)
+Global $tStatusBar = DllStructCreate($tagSTRUCT_STATUS_BAR)
+Global $tUpdateStats = DllStructCreate($tagSTRUCT_UPDATE_STATS)
+Global $API_VERSION = "1.1"
+Global $sWatchdogMutex = "MyBot.run/ManageFarm/" & $API_VERSION
+Global $WM_MYBOTRUN_API = _WinAPI_RegisterWindowMessage("MyBot.run/API/" & $API_VERSION)
+SetDebugLog("MyBot.run/API/1.1 Message ID = " & $WM_MYBOTRUN_API)
+Global $WM_MYBOTRUN_STATE = _WinAPI_RegisterWindowMessage("MyBot.run/STATE/" & $API_VERSION)
+SetDebugLog("MyBot.run/STATE/1.1 Message ID = " & $WM_MYBOTRUN_STATE)
+Func _MemoryOpen($iv_Pid, $iv_DesiredAccess = 0x1F0FFF, $if_InheritHandle = 1)
+If Not ProcessExists($iv_Pid) Then
+SetError(1)
+Return 0
+EndIf
+Local $ah_Handle[2] = [DllOpen('kernel32.dll')]
+If @Error Then
+SetError(2)
+Return 0
+EndIf
+Local $av_OpenProcess = DllCall($ah_Handle[0], 'int', 'OpenProcess', 'int', $iv_DesiredAccess, 'int', $if_InheritHandle, 'int', $iv_Pid)
+If @Error Then
+DllClose($ah_Handle[0])
+SetError(3)
+Return 0
+EndIf
+$ah_Handle[1] = $av_OpenProcess[0]
+Return $ah_Handle
+EndFunc
+Func _MemoryClose($ah_Handle)
+If Not IsArray($ah_Handle) Then
+SetError(1)
+Return 0
+EndIf
+DllCall($ah_Handle[0], 'int', 'CloseHandle', 'int', $ah_Handle[1])
+If Not @Error Then
+DllClose($ah_Handle[0])
+Return 1
+Else
+DllClose($ah_Handle[0])
+SetError(2)
+Return 0
+EndIf
+EndFunc
+Func _MemoryReadStruct($iv_Address, $ah_Handle, ByRef $tStruct)
+If Not IsArray($ah_Handle) Then
+SetError(1)
+Return 0
+EndIf
+DllCall($ah_Handle[0], 'int', 'ReadProcessMemory', 'int', $ah_Handle[1], 'int', $iv_Address, 'ptr', DllStructGetPtr($tStruct), 'int', DllStructGetSize($tStruct), 'int', '')
+If Not @Error Then
+Return 1
+Else
+SetError(6)
+Return 0
+EndIf
+EndFunc
 Global $g_ahManagedMyBotDetails[0]
-GUIRegisterMsg($WM_MYBOTRUN_API_1_0, "WM_MYBOTRUN_API_1_0_HOST")
-GUIRegisterMsg($WM_MYBOTRUN_STATE_1_0, "WM_MYBOTRUN_STATE_1_0")
-Func WM_MYBOTRUN_API_1_0_HOST($hWind, $iMsg, $wParam, $lParam)
-$hWind = 0
-Switch BitAND($wParam, 0xFFFF)
-Case 0x0000 + 1
-Local $_frmBot = HWnd($lParam)
+GUIRegisterMsg($WM_MYBOTRUN_API, "WM_MYBOTRUN_API_HOST")
+GUIRegisterMsg($WM_MYBOTRUN_STATE, "WM_MYBOTRUN_STATE")
+Func WM_MYBOTRUN_API_HOST($hWind, $iMsg, $wParam, $lParam)
+If $g_iDebugWindowMessages Then SetDebugLog("API-HOST: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam)
+$hWind = HWnd($lParam)
 Local $wParamHi = BitShift($wParam, 16)
+Local $wParamLo = BitAND($wParam, 0xFFFF)
+Switch $wParamLo
+Case 0x00FF, 0x01FF
+$hWind = 0
+Case 0x1040 + 2
+$hWind = 0
+UnregisterManagedMyBotClient($lParam)
+Case Else
 Local $_RunState = BitAND($wParamHi, 1) > 0
 Local $_TPaused = BitAND($wParamHi, 2) > 0
-GetManagedMyBotDetails($_frmBot, $_RunState, $_TPaused)
-Case 0x1040 + 2
-Local $_frmBot = $lParam
-Local $wParamHi = BitShift($wParam, 16)
-UnregisterManagedMyBotClient($_frmBot)
+Local $_bLaunched = BitAND($wParamHi, 4) > 0
+GetManagedMyBotDetails($hWind, $g_WatchOnlyClientPID, $_RunState, $_TPaused, $_bLaunched)
+$hWind = 0
 EndSwitch
 If $hWind <> 0 Then
 _WinAPI_PostMessage($hWind, $iMsg, $wParam, $lParam)
 EndIf
 EndFunc
-Func WM_MYBOTRUN_STATE_1_0($hWind, $iMsg, $wParam, $lParam)
-SetDebugLog("STATE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam)
+Func WM_MYBOTRUN_STATE($hWind, $iMsg, $wParam, $lParam)
+If $g_iDebugWindowMessages Then SetDebugLog("API-HOST-STATE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam)
+Local $_frmBot = HWnd($lParam)
+Local $pid = WinGetProcess($_frmBot)
+If $pid Then
+Local $hMem = _MemoryOpen($pid)
+If _MemoryReadStruct($wParam, $hMem, $tBotState) = 1 Then
+Local $_RunState = DllStructGetData($tBotState, "RunState")
+Local $_TPaused = DllStructGetData($tBotState, "Paused")
+Local $_bLaunched = DllStructGetData($tBotState, "Launched")
+GetManagedMyBotDetails($_frmBot, $g_WatchOnlyClientPID, $_RunState, $_TPaused, $_bLaunched, Default, $tBotState, $hMem)
+Else
+SetDebugLog("API-HOST-STATE: Cannot read memory from process: " & $pid)
+EndIf
+_MemoryClose($hMem)
+Else
+SetDebugLog("API-HOST-STATE: Cannot access PID for Window Handle: " & $lParam)
+EndIf
 EndFunc
-Func GetManagedMyBotDetails($hFrmBot = Default, $_RunState = Default, $_TPaused = Default, $iVerifyCount = 2)
+Func UpdateManagedMyBotArray(ByRef $a, ByRef $pid, ByRef $sTitle, ByRef $_RunState, ByRef $_TPaused, ByRef $_bLaunched, ByRef $iVerifyCount, ByRef $_tBotState, ByRef $hMem, $aLoaded = Default)
+$a[$g_eBotDetailsTimer] = __TimerInit()
+$a[$g_eBotDetailsTitle] = $sTitle
+If $_RunState <> Default Then $a[$g_eBotDetailsRunState] = $_RunState
+If $_TPaused <> Default Then $a[$g_eBotDetailsPaused] = $_TPaused
+If $_bLaunched <> Default Then $a[$g_eBotDetailsLaunched] = $_bLaunched
+$a[$g_eBotDetailsVerifyCount] = $iVerifyCount
+Local $bRegisterInHost = True
+If $_tBotState <> Default Then
+$a[$g_eBotDetailsBotStateStruct] = $_tBotState
+Local $tStruct = 0
+If UBound($aLoaded) >= UBound($a) Then
+$tStruct = $aLoaded[$g_eBotDetailsOptionalStruct]
+Else
+$a[$g_eBotDetailsProfile] = DllStructGetData($tBotState, "Profile")
+$bRegisterInHost = DllStructGetData($tBotState, "RegisterInHost")
+If $hMem <> Default Then
+Local $eStructType = DllStructGetData($tBotState, "StructType")
+Local $pStructPtr = DllStructGetData($tBotState, "StructPtr")
+Switch $eStructType
+Case $g_eSTRUCT_STATUS_BAR
+If $g_iDebugWindowMessages Then SetDebugLog("UpdateManagedMyBotArray: Reading StatusBar Text")
+If _MemoryReadStruct($pStructPtr, $hMem, $tStatusBar) = 1 Then
+$tStruct = $tStatusBar
+If $g_WatchDogLogStatusBar Then SetDebugLog("PID: " & $pid & ", StatusBar Text: " & DllStructGetData($tStatusBar, "Text"))
+EndIf
+Case $g_eSTRUCT_UPDATE_STATS
+If $g_iDebugWindowMessages Then SetDebugLog("UpdateManagedMyBotArray: Reading Update Stats")
+If _MemoryReadStruct($pStructPtr, $hMem, $tUpdateStats) = 1 Then
+$tStruct = $tUpdateStats
+If $g_iDebugWindowMessages Then SetDebugLog("UpdateManagedMyBotArray: Update Stats read")
+EndIf
+EndSwitch
+EndIf
+EndIf
+$a[$g_eBotDetailsOptionalStruct] = $tStruct
+EndIf
+Return $bRegisterInHost
+EndFunc
+Func GetManagedMyBotDetails($hFrmBot = Default, $iFilterPID = Default, $_RunState = Default, $_TPaused = Default, $_bLaunched = Default, $iVerifyCount = Default, $_tBotState = Default, $hMem = Default)
 If $hFrmBot = Default Then Return $g_ahManagedMyBotDetails
+If $iVerifyCount = Default Then $iVerifyCount = 2
 If IsHWnd($hFrmBot) = 0 Then Return -1
+If $iFilterPID <> Default And WinGetProcess($hFrmBot) <> $iFilterPID Then Return -2
 Local $pid = WinGetProcess($hFrmBot)
-Local $g_sAndroidTitle = WinGetTitle($hFrmBot)
+Local $sTitle = WinGetTitle($hFrmBot)
 If $pid = -1 Then SetLog("Process not found for Window Handle: " & $hFrmBot)
+Local $aNew[$g_eBotDetailsArraySize]
+Local $bRegisterInHost = UpdateManagedMyBotArray($aNew, $pid, $sTitle, $_RunState, $_TPaused, $_bLaunched, $iVerifyCount, $_tBotState, $hMem)
+Local $sProfile = $aNew[$g_eBotDetailsProfile]
 For $i = 0 To UBound($g_ahManagedMyBotDetails) - 1
 If $i > UBound($g_ahManagedMyBotDetails) - 1 Then ExitLoop
 Local $a = $g_ahManagedMyBotDetails[$i]
-If $a[0] = $hFrmBot Then
-$a[1] = __TimerInit()
-If $_RunState <> Default Then $a[4] = $_RunState
-If $_TPaused <> Default Then $a[5] = $_TPaused
-$a[6] = $iVerifyCount
+If $a[$g_eBotDetailsBotForm] = $hFrmBot Then
+UpdateManagedMyBotArray($a, $pid, $sTitle, $_RunState, $_TPaused, $_bLaunched, $iVerifyCount, $_tBotState, $hMem, $aNew)
 $g_ahManagedMyBotDetails[$i] = $a
-SetDebugLog("Bot Window state received: " & GetManagedMyBotInfoString($a))
+If $g_iDebugWindowMessages Then SetDebugLog("Bot Window state received: " & GetManagedMyBotInfoString($a))
+Execute("UpdateManagedMyBot($a)")
 Return $a
 EndIf
-If $a[3] = $g_sAndroidTitle Then
-SetDebugLog("Remove registered Bot Window Handle " & $a[0] & ", as new instance detected")
+If($sProfile And $a[$g_eBotDetailsProfile] = $sProfile) Or(Not $sProfile And $a[$g_eBotDetailsTitle] = $sTitle) Then
+SetDebugLog("Remove registered Bot Window Handle " & $a[$g_eBotDetailsBotForm] & ", as new instance detected")
 _ArrayDelete($g_ahManagedMyBotDetails, $i)
 $i -= 1
 EndIf
 Next
-ReDim $g_ahManagedMyBotDetails[UBound($g_ahManagedMyBotDetails) + 1]
-Local $a[7]
-$a[0] = $hFrmBot
-$a[1] = __TimerInit()
-$a[2] = ProcessGetCommandLine($pid)
-$a[3] = $g_sAndroidTitle
-$a[4] = $_RunState
-$a[5] = $_TPaused
-$a[6] = $iVerifyCount
-If $a[1] = -1 Then SetLog("Command line not found for Window Handle/PID: " & $hFrmBot & "/" & $pid)
-$g_ahManagedMyBotDetails[$i] = $a
-SetDebugLog("New Bot Window Handle registered: " & GetManagedMyBotInfoString($a))
-Return $a
+$aNew[$g_eBotDetailsBotForm] = $hFrmBot
+If Execute("UpdateManagedMyBot($aNew)") Then
+$aNew[$g_eBotDetailsCommandLine] = ProcessGetCommandLine($pid)
+Local $i = UBound($g_ahManagedMyBotDetails)
+ReDim $g_ahManagedMyBotDetails[$i + 1]
+If $aNew[$g_eBotDetailsCommandLine] = -1 Then SetLog("Command line not found for Window Handle/PID: " & $hFrmBot & "/" & $pid)
+$g_ahManagedMyBotDetails[$i] = $aNew
+SetDebugLog("New Bot Window Handle registered: " & GetManagedMyBotInfoString($aNew))
+EndIf
+Return $aNew
 EndFunc
 Func GetManagedMyBotInfoString(ByRef $a)
-If UBound($a) < 7 Then Return "unknown"
-Return $a[0] & ", " & $a[2] & ", " & $a[3] & ", " &($a[4] ? "running" : "not running") & ", " &($a[5] ? "paused" : "not paused")
+If UBound($a) < $g_eBotDetailsArraySize Then Return "unknown"
+Return "HWnd=" & $a[$g_eBotDetailsBotForm] & ", PID=" & WinGetProcess($a[$g_eBotDetailsBotForm]) & ", " & $a[$g_eBotDetailsProfile] & ", " & $a[$g_eBotDetailsTitle] & ", " &($a[$g_eBotDetailsRunState] ? "running" : "not running") & ", " &($a[$g_eBotDetailsPaused] ? "paused" : "not paused") & ", " &($a[$g_eBotDetailsLaunched] ? "launched" : "launching") & ", " & $a[$g_eBotDetailsCommandLine]
 EndFunc
 Func UnregisterManagedMyBotClient($hFrmBot)
 SetDebugLog("Try to un-register Bot Window Handle: " & $hFrmBot)
 For $i = 0 To UBound($g_ahManagedMyBotDetails) - 1
 Local $a = $g_ahManagedMyBotDetails[$i]
-If $a[0] = $hFrmBot Then
+If $a[$g_eBotDetailsBotForm] = $hFrmBot Then
 _ArrayDelete($g_ahManagedMyBotDetails, $i)
 Local $Result = 1
 If IsHWnd($hFrmBot) Then
@@ -591,7 +714,7 @@ SetDebugLog("Inaccessible Bot Window Handle un-registered: " & $hFrmBot)
 $Result = -1
 EndIf
 If $bCloseWhenAllBotsUnregistered = True And UBound($g_ahManagedMyBotDetails) = 0 Then
-SetLog("Closing " & $sBotTitle & "as all bots closed")
+SetLog("Closing " & $g_sBotTitle & " as all bots closed")
 Exit(1)
 EndIf
 Return $Result
@@ -603,24 +726,24 @@ EndFunc
 Func CheckManagedMyBot($iTimeout)
 For $i = 0 To UBound($g_ahManagedMyBotDetails) - 1
 Local $a = $g_ahManagedMyBotDetails[$i]
-If __TimerDiff($a[1]) > $iTimeout Then
-If $a[6] > 0 Then
-$a[6] -= 1
+If __TimerDiff($a[$g_eBotDetailsTimer]) > $iTimeout Then
+If $a[$g_eBotDetailsVerifyCount] > 0 Then
+$a[$g_eBotDetailsVerifyCount] -= 1
 $g_ahManagedMyBotDetails[$i] = $a
 ContinueLoop
 EndIf
 _ArrayDelete($g_ahManagedMyBotDetails, $i)
-Local $cmd = $a[2]
-Local $g_sAndroidTitle = $a[3]
+Local $cmd = $a[$g_eBotDetailsCommandLine]
+Local $g_sBotTitle = $a[$g_eBotDetailsTitle]
 For $j = 0 To UBound($g_ahManagedMyBotDetails) - 1
 $a = $g_ahManagedMyBotDetails[$j]
-If $a[3] = $g_sAndroidTitle Then
-SetDebugLog("Bot already restarted, window title: " & $g_sAndroidTitle)
-Return WinGetProcess($a[0])
+If $a[$g_eBotDetailsTitle] = $g_sBotTitle Then
+SetDebugLog("Bot already restarted, window title: " & $g_sBotTitle)
+Return WinGetProcess($a[$g_eBotDetailsBotForm])
 EndIf
 Next
 If StringInStr($cmd, " /restart") = 0 Then $cmd &= " /restart"
-If $a[4] Then
+If $a[$g_eBotDetailsRunState] Then
 If StringInStr($cmd, " /autostart") = 0 Then $cmd &= " /autostart"
 EndIf
 SetDebugLog("Restarting bot: " & $cmd)
@@ -633,10 +756,10 @@ Func GetActiveMyBotCount($iTimeout)
 Local $iCount = 0
 For $i = 0 To UBound($g_ahManagedMyBotDetails) - 1
 Local $a = $g_ahManagedMyBotDetails[$i]
-If __TimerDiff($a[1]) <= $iTimeout Then
+If __TimerDiff($a[$g_eBotDetailsTimer]) <= $iTimeout Then
 $iCount += 1
 Else
-SetDebugLog("Bot not responding with Window Handle: " & $a[0])
+SetDebugLog("Bot not responding with Window Handle: " & $a[$g_eBotDetailsBotForm])
 EndIf
 Next
 Return $iCount
@@ -678,7 +801,7 @@ If $bLogged = False Then
 $bLogged = True
 SetLog($sWaitMessage)
 EndIf
-If $g_hStatusBar Then _GUICtrlStatusBar_SetText($g_hStatusBar, $sWaitMessage)
+_GUICtrlStatusBar_SetTextEx($g_hStatusBar, $sWaitMessage)
 EndIf
 _Sleep($iDelay, True, False)
 WEnd
@@ -777,16 +900,16 @@ EndFunc
 Global $g_RunPipe_hProcess = 0
 Global $g_RunPipe_hThread = 0
 Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
-If $bUseSemaphore = True Then
+If $bUseSemaphore Then
 Local $hSemaphore = LockSemaphore(StringReplace($cmd, "\", "/"), "Waiting to launch: " & $cmd)
 EndIf
 Local $data, $pid, $hStdIn[2], $hStdOut[2], $hTimer, $hProcess, $hThread
 If StringLen($param) > 0 Then $cmd &= " " & $param
 $hTimer = __TimerInit()
 $process_killed = False
-If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG)
+If $g_bDebugSetlog Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG)
 $pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut, $hProcess, $hThread)
-If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole: command launched", $COLOR_DEBUG)
+If $g_bDebugSetlog Then Setlog("Func LaunchConsole: command launched", $COLOR_DEBUG)
 If $pid = 0 Then
 SetLog("Launch faild: " & $cmd, $COLOR_ERROR)
 If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
@@ -800,7 +923,7 @@ $data &= ReadPipe($hStdOut[0])
 Until($timeout > 0 And __TimerDiff($hTimer) > $timeout) Or $iWaitResult <> $WAIT_TIMEOUT
 If ProcessExists($pid) Then
 If ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread) = 1 Then
-If $g_iDebugSetlog = 1 Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
+If $g_bDebugSetlog Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
 $process_killed = True
 EndIf
 Else
@@ -809,8 +932,8 @@ EndIf
 $g_RunPipe_hProcess = 0
 $g_RunPipe_hThread = 0
 CleanLaunchOutput($data)
-If $g_iDebugSetlog = 1 Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
-If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
+If $g_bDebugSetlog Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
+If $bUseSemaphore Then UnlockSemaphore($hSemaphore)
 Return $data
 EndFunc
 Func ProcessGetCommandLine($pid, $strComputer = ".")
@@ -931,9 +1054,10 @@ Return $iCurrentTimeMSec - $iTimeMsec
 EndFunc
 $hMutex_BotTitle = CreateMutex($sWatchdogMutex)
 If $hMutex_BotTitle = 0 Then
-Exit
+SetLog($g_sBotTitle & " is already running")
+Exit 2
 EndIf
-$frmBot = GUICreate($sBotTitle, 32, 32)
+$g_hFrmBot = GUICreate($g_sBotTitle, 32, 32)
 $hStarted = __TimerInit()
 $hTimeoutAutoClose = $hStarted
 Local $iExitCode = 0
@@ -941,7 +1065,7 @@ Local $iActiveBots = 0
 While 1
 $iActiveBots = UBound(GetManagedMyBotDetails())
 SetDebugLog("Broadcast query bot state, registered bots: " & $iActiveBots)
-_WinAPI_BroadcastSystemMessage($WM_MYBOTRUN_API_1_0, $iActiveBots, $frmBot, $BSF_POSTMESSAGE + $BSF_IGNORECURRENTTASK, $BSM_APPLICATIONS)
+_WinAPI_BroadcastSystemMessage($WM_MYBOTRUN_API, 0x0100 + $iActiveBots, $g_hFrmBot, $BSF_POSTMESSAGE + $BSF_IGNORECURRENTTASK, $BSM_APPLICATIONS)
 Local $hLoopTimer = __TimerInit()
 Local $hCheckTimer = __TimerInit()
 While __TimerDiff($hLoopTimer) < $iTimeoutBroadcast
@@ -951,12 +1075,13 @@ CheckManagedMyBot($iTimeoutRestartBot)
 $hCheckTimer = __TimerInit()
 EndIf
 WEnd
-$iActiveBots = GetActiveMyBotCount($iTimeoutBroadcast + 3000)
+$iActiveBots = GetActiveMyBotCount($iTimeoutBroadcast * 2)
 SetDebugLog("Active bots: " & $iActiveBots)
 If $iTimeoutAutoClose > -1 And __TimerDiff($hTimeoutAutoClose) > $iTimeoutAutoClose Then
 If UBound(GetManagedMyBotDetails()) = 0 Then
-SetLog("Closing " & $sBotTitle & "as no running bot found")
+SetLog("Closing " & $g_sBotTitle & " as no running bot found")
 $iExitCode = 1
+ExitLoop
 EndIf
 $hTimeoutAutoClose = __TimerInit()
 EndIf
@@ -964,3 +1089,4 @@ WEnd
 ReleaseMutex($hMutex_BotTitle)
 DllClose("ntdll.dll")
 Exit($iExitCode)
+UpdateManagedMyBot(True)

@@ -23,6 +23,12 @@ Global $g_hBtnLocateKingAltar = 0, $g_hBtnLocateQueenAltar = 0, $g_hBtnLocateWar
 Global $g_hChkTreasuryCollect = 0, $g_hTxtTreasuryGold = 0, $g_hTxtTreasuryElixir = 0, $g_hTxtTreasuryDark = 0
 
 Global $g_hChkCollectBuilderBase = 0, $g_hChkStartClockTowerBoost = 0, $g_hChkCTBoostBlderBz = 0
+Global $g_alblBldBaseStats[4] = ["", "", ""]
+
+; ================================================== BB FEATURES PART ================================================== ;
+Global $g_alblBldBaseStats[4] = ["", "", ""], $g_chkCollectBldGE = 0, $g_chkCollectBldGems = 0, $g_chkActivateClockTower = 0
+Global $g_chkBBSuggestedUpgrades = 0, $g_chkBBSuggestedUpgradesIgnoreGold = 0 , $g_chkBBSuggestedUpgradesIgnoreElixir , $g_chkBBSuggestedUpgradesIgnoreHall = 0
+Global $g_chkPlacingNewBuildings = 0
 
 Func CreateVillageMisc()
    $g_hGUI_MISC = _GUICreate("", $g_iSizeWGrpTab2, $g_iSizeHGrpTab2, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_VILLAGE)
@@ -231,7 +237,25 @@ Func CreateMiscNormalVillageSubTab()
 EndFunc
 
 Func CreateMiscBuilderBaseSubTab()
-   Local $x = 15, $y = 45
+    Local $x = 15, $y = 45
+
+	GUICtrlCreateGroup("Builders Base Stats", $x - 10, $y - 20, 442, 50)
+
+		_GUICtrlCreatePic($g_sIcnBldGold, $x, $y - 2, 24, 24)
+		$g_alblBldBaseStats[$eLootGold] = GUICtrlCreateLabel("---", $x + 35, $y + 2, 100, -1)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+
+		_GUICtrlCreatePic($g_sIcnBldElixir, $x + 140, $y - 2, 24, 24)
+		$g_alblBldBaseStats[$eLootElixir] = GUICtrlCreateLabel("---", $x + 175, $y + 2, 100, -1)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+
+		_GUICtrlCreatePic($g_sIcnBldTrophy, $x + 280, $y - 2, 24, 24)
+		$g_alblBldBaseStats[$eLootTrophy] = GUICtrlCreateLabel("---", $x + 315, $y + 2, 100, -1)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+   Local $x = 15, $y = 100
    GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_4", "Collect && Activate"), $x - 10, $y - 20, $g_iSizeWGrpTab3, 80)
    		GUICtrlCreateIcon($g_sLibIconPath, $eIcnGoldMineL5, $x + 7, $y, 24, 24)
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixirCollectorL5, $x + 32, $y, 24, 24)
@@ -248,4 +272,32 @@ Func CreateMiscBuilderBaseSubTab()
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCTBoostBlderBz_Info_01", "boost only when the builder is busy"))
 			GUICtrlSetState (-1, $GUI_DISABLE)
    GUICtrlCreateGroup("", -99, -99, 1, 1)
+   
+; New group
+	Local $x = 13, $y = 190
+
+	GUICtrlCreateGroup("Suggested Upgrades ", $x - 10, $y - 20, 442, 233)
+
+		_GUICtrlCreatePic($g_sIcnMBisland, $x , $y , 64, 64)
+		$g_chkBBSuggestedUpgrades = GUICtrlCreateCheckbox("Suggested Upgrades", $x + 70, $y + 25, -1, -1)
+			;GUICtrlSetState(-1, $GUI_UNCHECKED)
+			GUICtrlSetOnEvent(-1, "chkActivateBBSuggestedUpgrades")
+		$g_chkBBSuggestedUpgradesIgnoreGold = GUICtrlCreateCheckbox("Ignore Gold values", $x + 200, $y + 15, -1, -1)
+			;GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
+			GUICtrlSetOnEvent(-1, "chkActivateBBSuggestedUpgradesGold")
+		$g_chkBBSuggestedUpgradesIgnoreElixir = GUICtrlCreateCheckbox("Ignore Elixir values", $x + 200, $y + 40, -1, -1)
+			;GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
+			GUICtrlSetOnEvent(-1, "chkActivateBBSuggestedUpgradesElixir")
+		$g_chkBBSuggestedUpgradesIgnoreHall = GUICtrlCreateCheckbox("Ignore Builder Hall", $x + 320, $y + 28, -1, -1)
+			;GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
+			GUICtrlSetOnEvent(-1, "chkActivateBBSuggestedUpgradesGold")
+
+	Local $x = 13, $y = 200
+		$g_chkPlacingNewBuildings = GUICtrlCreateCheckbox("Build 'New' tagged buildings", $x + 70, $y + 60, -1, -1)
+			GUICtrlSetOnEvent(-1, "chkPlacingNewBuildings")
+
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+	
 EndFunc
+
+

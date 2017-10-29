@@ -14,13 +14,14 @@
 ; ===============================================================================================================================
 
 Global $g_sNO_COC, $g_sUNKNOWN_COC
-Global $_g_asDISTRIBUTORS[20][4]
+Global $_g_asDISTRIBUTORS[24][4]
 
 Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language is detected
 	$g_sNO_COC = "<" & GetTranslatedFileIni("MBR Distributors", "NO_COC", "No COC") & ">"
 	$g_sUNKNOWN_COC = "<" & GetTranslatedFileIni("MBR Distributors", "Unknown_COC", "Unknown COC") & ">"
 
-	Dim $_g_asDISTRIBUTORS[20][4] = [ _
+	; Clash Of Magic private server, https://www.clashofmagic.net/, Server 3: http://download825.mediafireuserdownload.com/g29mv74piaqg/jeab7w484b77n86/Magic-CoC_S3-9.105-R1.apk
+	Dim $_g_asDISTRIBUTORS[24][4] = [ _
 			["Google", "com.supercell.clashofclans", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_01", "Google")], _
 			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_02", "Kunlun")], _
 			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_03", "Qihoo")], _
@@ -40,7 +41,11 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 			["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_17", "Microvirt")], _
 			["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_18", "Yeshen")], _
 			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_19", "Aiyouxi")], _
-			["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.tencent.tmgp.supercell.clashofclans.GameAppTencent", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_20", "Tencent")] _
+			["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.tencent.tmgp.supercell.clashofclans.GameAppTencent", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_20", "Tencent")], _
+			["Clash Of Magic, The Black Magic: S1", "net.clashofmagic.s1", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_21", "Clash Of Magic, The Black Magic: S1")], _
+			["Clash Of Magic, The Power Of Magic: S2", "net.clashofmagic.s2", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_22", "Clash Of Magic, The Power Of Magic: S2")], _
+			["Clash Of Magic, The Hall Of Magic: S3", "net.clashofmagic.s3", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_23", "Clash Of Magic, The Hall Of Magic: S3")], _
+			["Clash Of Magic, The Hall Of Magic 2: S4", "net.clashofmagic.s4", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_24", "Clash Of Magic, The Hall Of Magic 2: S4")] _
 			]
 EndFunc   ;==>InitializeCOCDistributors
 
@@ -48,7 +53,7 @@ Func GetCOCDistributors()
 	Static $s_asDistributorsLoaded = -1
 	If $s_asDistributorsLoaded <> -1 And $g_iBotLaunchTime = 0 Then Return $s_asDistributorsLoaded ; retutn cached list only during bot launch to prevent rare freeze due to CTRITICAL_SECTION deack lock
 	SetDebugLog("Retrieving CoC distributors")
-	Local $sPkgList = StringReplace(_AndroidAdbSendShellCommand("pm list packages clashofclans"), "package:", "")
+	Local $sPkgList = StringReplace(_AndroidAdbSendShellCommand("pm list packages clashofclans;pm list packages clashofmagic"), "package:", "")
 	If @error <> 0 Or $sPkgList = "" Then Return SetError(1, 0, "") ; ADB error or No COC installed error
 
 	Local $aPkgList = StringSplit($sPkgList, @LF, $STR_ENTIRESPLIT)
