@@ -1,4 +1,4 @@
 [general]
-version    = "v7.3"
+version    = "v7.3.1"
 messagenew = "Works with May 22 Game Update!\nPlus new features and fixes\nFor more information, go to \nhttps://mybot.run\n\n Always free and open source."
-messageold = "A new version of MyBot (v7.3) is available!\nPlease download the latest from:\nhttps://mybot.run"
+messageold = "A new version of MyBot (v7.3.1) is available!\nPlease download the latest from:\nhttps://mybot.run"
