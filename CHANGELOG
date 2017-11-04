@@ -3,14 +3,14 @@
  * Fix missing Valkyrie level 6
  * Fix Custom Donate not working properly
  * Fix logs not refresh after switching from Mini to Normal GUI Mode
- * Fix Android Window hide/show and manual repositioning
+ * Fix Android Window hide/show and manual re-positioning
  * Fix Builder Base having Problems zooming out sometimes
- * Fix loading auto uprade min resource configuration when using /mg command line options
+ * Fix loading auto upgrade min resource configuration when using /mg command line options
  * Fix enabled GUI Controls when switching from mini to normal mode in waiting run mode
  * Improve CC Spell drop when same type exists in Army (CSV RECALC not required anymore)
  * Improve hero upgrade detection
  * Improve bot rebooting Android when Gfx Errors (missing objects) detected
- * Imporve window position of bot and Android window for new profile
+ * Improve window position of bot and Android window for new profile
  * Add /console option to show console window with raw logs
  * Update Italian Language File by @quisazadrah
 
