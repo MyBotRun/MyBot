@@ -16,7 +16,7 @@
 #AutoIt3Wrapper_Run_Au3Stripper=y
 #Au3Stripper_Parameters=/rsln
 #AutoIt3Wrapper_Change2CUI=y
-#pragma compile(Console, true)
+;#pragma compile(Console, true)
 #include "MyBot.run.version.au3"
 #pragma compile(ProductName, My Bot Watchdog)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
@@ -41,6 +41,9 @@ Global Const $COLOR_SUCCESS = 0x006600 ; Dark Green, Action, method, or process 
 Global Const $COLOR_DEBUG = $COLOR_PURPLE ; Purple, basic debug color
 
 ; Global Variables
+Global Const $g_sLibPath = @ScriptDir & "\lib" ;lib directory contains dll's
+Global Const $g_sLibIconPath = $g_sLibPath & "\MBRBOT.dll" ; icon library
+Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eBtnTest, $eIcnBuilder, $eIcnCC, $eIcnGUI
 Global $g_WatchDogLogStatusBar = False
 Global $g_WatchOnlyClientPID = Default
 Global $g_bRunState = True
@@ -63,6 +66,7 @@ Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $DELAYSLEEP = 500
 Global $g_bDebugSetlog = False
+Global $g_asCmdLine = [0]
 
 ; used by API
 Global Enum $eLootGold, $eLootElixir, $eLootDarkElixir, $eLootTrophy, $eLootCount
@@ -83,7 +87,7 @@ EndFunc   ;==>GetTranslatedFileIni
 
 Func SetLog($String, $Color = $COLOR_BLACK, $LogPrefix = "L ")
 	Local $log = $LogPrefix & TimeDebug() & $String
-	ConsoleWrite($log & @CRLF) ; Always write any log to console
+	_ConsoleWrite($log & @CRLF) ; Always write any log to console
 EndFunc   ;==>SetLog
 
 Func SetDebugLog($String, $Color = $COLOR_DEBUG, $LogPrefix = "D ")
@@ -118,6 +122,24 @@ Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
 #include "COCBot\functions\Other\ApiHost.au3"
 #include "COCBot\functions\Other\LaunchConsole.au3"
 #include "COCBot\functions\Other\Time.au3"
+
+; Handle Command Line Launch Options and fill $g_asCmdLine
+If $CmdLine[0] > 0 Then
+	For $i = 1 To $CmdLine[0]
+		Switch $CmdLine[$i]
+			Case "/console", "/c", "-console", "-c"
+				_WinAPI_AllocConsole()
+				_WinAPI_SetConsoleIcon($g_sLibIconPath, $eIcnGUI)
+			Case Else
+				$g_asCmdLine[0] += 1
+				ReDim $g_asCmdLine[$g_asCmdLine[0] + 1]
+				$g_asCmdLine[$g_asCmdLine[0]] = $CmdLine[$i]
+		EndSwitch
+	Next
+EndIf
+
+; Update Console Window (if it exists)
+DllCall("kernel32.dll", "bool", "SetConsoleTitle", "str", "Console " & $g_sBotTitle)
 
 $hMutex_BotTitle = CreateMutex($sWatchdogMutex)
 If $hMutex_BotTitle = 0 Then

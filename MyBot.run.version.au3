@@ -13,8 +13,8 @@
 ; AutoIt version pragmas
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
-#pragma compile(ProductVersion, 7.3)
-#pragma compile(FileVersion, 7.3)
+#pragma compile(ProductVersion, 7.3.1)
+#pragma compile(FileVersion, 7.3.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 
-Global $g_sBotVersion = "v7.3" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()
+Global $g_sBotVersion = "v7.3.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also use on Checkversion()

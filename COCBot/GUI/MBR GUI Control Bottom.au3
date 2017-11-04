@@ -232,12 +232,12 @@ EndFunc   ;==>updateBtnHideState
 Func btnHide()
 	If Not $g_bIsHidden Then
 		GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_False", "Show"))
-		HideAndroidWindow(True, Default, Default, "btnHide")
 		$g_bIsHidden = True
+		HideAndroidWindow(True, Default, Default, "btnHide")
 	ElseIf $g_bIsHidden Then
 		GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_True", "Hide"))
-		HideAndroidWindow(False, Default, Default, "btnHide")
 		$g_bIsHidden = False
+		HideAndroidWindow(False, Default, Default, "btnHide")
 	EndIf
 EndFunc   ;==>btnHide
 
@@ -361,6 +361,7 @@ Func DisableGuiControls($bOptimizedRedraw = True)
 EndFunc   ;==>DisableGuiControls
 
 Func ToggleGuiControls($bEnabled, $bOptimizedRedraw = True)
+	$g_bGuiControlsEnabled = $bEnabled
 	If $g_iGuiMode <> 1 Then Return
 	If $bOptimizedRedraw Then Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "ToggleGuiControls")
 	If Not $bEnabled Then

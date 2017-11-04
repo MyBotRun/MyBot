@@ -108,11 +108,11 @@ Func CreateBotOptions()
 		   _GUICtrlSetTip(-1, $sTxtTip)
 		   GUICtrlSetLimit(-1, 2)
 	   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblAlignOffsetX", "Offset") & ":", $x + 85, $y + 4, -1, -1)
-	   $g_hTxtAlignOffsetX = GUICtrlCreateInput("10", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	   $g_hTxtAlignOffsetX = GUICtrlCreateInput("", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		   _GUICtrlSetTip(-1, $sTxtTip)
 		   GUICtrlSetLimit(-1, 2)
 		   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "TxtAlignOffsetX_Info_01", "Offset horizontal pixels between Android Emulator and BOT windows.")
-	   $g_hTxtAlignOffsetY= GUICtrlCreateInput("0", $x + 150, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	   $g_hTxtAlignOffsetY= GUICtrlCreateInput("", $x + 150, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 		   _GUICtrlSetTip(-1, $sTxtTip)
 		   GUICtrlSetLimit(-1, 2)
 		   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "TxtAlignOffsetY_Info_01", "Offset vertical pixels between Android Emulator and BOT windows.")
@@ -126,7 +126,7 @@ Func CreateBotOptions()
 							  GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_05", "SNAP: Bot BottomRight to Android") & "|" & _
 							  GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_06", "SNAP: Bot BottomLeft to Android") & "|" & _
 							  GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_07", "DOCK: Android into Bot"), _
-							  GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_03", -1))
+							  GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_07", -1))
 		   _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Info_01", "0,0: Reposition Android Emulator screen to position 0,0 on windows desktop and align Bot window right or left to it.") & @CRLF & _
 							  GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Info_02", "SNAP: Only reorder windows, Align Bot window to Android Emulator window at Top Right, Top Left, Bottom Right or Bottom Left.\r\n" & _
 												    "DOCK: Integrate Android Screen into bot window."))

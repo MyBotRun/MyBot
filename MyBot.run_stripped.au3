@@ -2,7 +2,7 @@
 #RequireAdmin
 #pragma compile(ProductName, My Bot)
 #pragma compile(Out, MyBot.run.exe) ; Required
-Global $g_sBotVersion = "v7.3"
+Global $g_sBotVersion = "v7.3.1"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -48,6 +48,7 @@ Global Const $WM_CLOSE = 0x0010
 Global Const $WM_ACTIVATEAPP = 0x001C
 Global Const $WM_GETFONT = 0x0031
 Global Const $WM_NOTIFY = 0x004E
+Global Const $WM_SETICON = 0x0080
 Global Const $WM_NCACTIVATE = 0x0086
 Global Const $WM_KEYDOWN = 0x0100
 Global Const $WM_KEYUP = 0x0101
@@ -90,6 +91,7 @@ Global Const $SWP_NOACTIVATE = 0x0010
 Global Const $SWP_FRAMECHANGED = 0x0020
 Global Const $SWP_SHOWWINDOW = 0x0040
 Global Const $SWP_HIDEWINDOW = 0x0080
+Global Const $SWP_NOOWNERZORDER = 0x0200
 Global Const $SWP_NOREPOSITION = 0x0200
 Global Const $SWP_NOSENDCHANGING = 0x0400
 Global Const $ASSIGN_EXISTFAIL = 4
@@ -600,6 +602,13 @@ EndFunc
 Func _WinAPI_GetStockObject($iObject)
 Local $aResult = DllCall("gdi32.dll", "handle", "GetStockObject", "int", $iObject)
 If @error Then Return SetError(@error, @extended, 0)
+Return $aResult[0]
+EndFunc
+Func _WinAPI_GetStdHandle($iStdHandle)
+If $iStdHandle < 0 Or $iStdHandle > 2 Then Return SetError(2, 0, -1)
+Local Const $aHandle[3] = [-10, -11, -12]
+Local $aResult = DllCall("kernel32.dll", "handle", "GetStdHandle", "dword", $aHandle[$iStdHandle])
+If @error Then Return SetError(@error, @extended, -1)
 Return $aResult[0]
 EndFunc
 Func _WinAPI_GetSystemMetrics($iIndex)
@@ -1116,11 +1125,6 @@ Local $aRet = DllCall('user32.dll', 'bool', 'RegisterShellHookWindow', 'hwnd', $
 If @error Then Return SetError(@error, @extended, False)
 Return $aRet[0]
 EndFunc
-Func _WinAPI_SetActiveWindow($hWnd)
-Local $aRet = DllCall('user32.dll', 'int', 'SetActiveWindow', 'hwnd', $hWnd)
-If @error Then Return SetError(@error, @extended, 0)
-Return $aRet[0]
-EndFunc
 Func __EnumDefaultProc($pData, $lParam)
 #forceref $lParam
 Local $iLength = _WinAPI_StrLen($pData)
@@ -1215,6 +1219,7 @@ Global Const $GUI_SHOW = 16
 Global Const $GUI_HIDE = 32
 Global Const $GUI_ENABLE = 64
 Global Const $GUI_DISABLE = 128
+Global Const $GUI_FOCUS = 256
 Global Const $GUI_FONTUNDER = 4
 Global Const $GUI_DOCKLEFT = 0x0002
 Global Const $GUI_DOCKBOTTOM = 0x0040
@@ -6021,6 +6026,7 @@ Global $g_hHBitmap
 Global $g_hHBitmap2
 Global $g_bOcrForceCaptureRegion = True
 Global $g_iGuiMode = 1
+Global $g_bGuiControlsEnabled = True
 Global $g_bGuiRemote = False
 Global $g_iGuiPID = @AutoItPID
 Global $g_iDpiAwarenessMode = 1
@@ -6206,6 +6212,7 @@ Global $g_bBotLaunchOption_NoWatchdog = False
 Global $g_bBotLaunchOption_ForceDpiAware = False
 Global $g_iBotLaunchOption_Dock = 0
 Global $g_bBotLaunchOption_NoBotSlot = False
+Global $g_iBotLaunchOption_Console = False
 Global $g_iBotLaunchOption_Help = False
 Global $g_asCmdLine[1] = [0]
 Global Const $g_sWorkingDir = @WorkingDir
@@ -6283,7 +6290,7 @@ Global Const $g_asTroopNamesPlural[$eTroopCount] = [ "Barbarians", "Archers", "G
 Global Const $g_asTroopShortNames[$eTroopCount] = [ "Barb", "Arch", "Giant", "Gobl", "Wall", "Ball", "Wiza", "Heal", "Drag", "Pekk", "BabyD", "Mine", "Mini", "Hogs", "Valk", "Gole", "Witc", "Lava", "Bowl"]
 Global Const $g_aiTroopSpace[$eTroopCount] = [ 1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 5, 2, 5, 8, 30, 12, 30, 6]
 Global Const $g_aiTroopTrainTime[$eTroopCount] = [ 20, 24, 120, 28, 60, 120, 120, 480, 720, 720, 360, 120, 36, 90, 180, 600, 360, 600, 120]
-Global Const $g_aiTroopCostPerLevel[$eTroopCount][9] = [ [7, 25, 40, 60, 100, 150, 200, 250], [7, 50, 80, 120, 200, 300, 400, 500], [8, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000], [7, 25, 40, 60, 80, 100, 150, 200], [7, 1000, 1500, 2000, 2500, 3000, 3500, 4000], [7, 2000, 2500, 3000, 3500, 4000, 4500, 5000], [8, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000], [5, 5000, 6000, 8000, 10000, 15000], [6, 25000, 29000, 33000, 37000, 42000, 46000], [6, 28000, 32000, 36000, 40000, 45000, 50000], [5, 15000, 16000, 17000, 18000, 19000], [5, 4200, 4800, 5200, 5600, 6000], [7, 6, 7, 8, 9, 10, 11, 12], [7, 40, 45, 52, 58, 65, 90, 115], [5, 70, 100, 130, 160, 190], [7, 450, 525, 600, 675, 750, 825, 900], [3, 250, 350, 450], [4, 390, 450, 510, 570], [3, 130, 150, 170]]
+Global Const $g_aiTroopCostPerLevel[$eTroopCount][9] = [ [7, 25, 40, 60, 100, 150, 200, 250], [7, 50, 80, 120, 200, 300, 400, 500], [8, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000], [7, 25, 40, 60, 80, 100, 150, 200], [7, 1000, 1500, 2000, 2500, 3000, 3500, 4000], [7, 2000, 2500, 3000, 3500, 4000, 4500, 5000], [8, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000], [5, 5000, 6000, 8000, 10000, 15000], [6, 25000, 29000, 33000, 37000, 42000, 46000], [6, 28000, 32000, 36000, 40000, 45000, 50000], [5, 15000, 16000, 17000, 18000, 19000], [5, 4200, 4800, 5200, 5600, 6000], [7, 6, 7, 8, 9, 10, 11, 12], [7, 40, 45, 52, 58, 65, 90, 115], [6, 70, 100, 130, 160, 190, 220], [7, 450, 525, 600, 675, 750, 825, 900], [3, 250, 350, 450], [4, 390, 450, 510, 570], [3, 130, 150, 170]]
 Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 5, 2, 5, 8, 30, 12, 30, 6]
 Global Enum $eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellClone, $eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellCount
 Global Const $g_asSpellNames[$eSpellCount] = ["Lightning", "Heal", "Rage", "Jump", "Freeze", "Clone", "Poison", "Earthquake", "Haste", "Skeleton"]
@@ -6500,7 +6507,8 @@ Global $g_iAtkTBEnableCount = 150, $g_iAtkTBMaxTHLevel = 0, $g_iAtkTBMode = 0
 Global $g_bSearchReductionEnable = False, $g_iSearchReductionCount = 20, $g_iSearchReductionGold = 2000, $g_iSearchReductionElixir = 2000, $g_iSearchReductionGoldPlusElixir = 4000, $g_iSearchReductionDark = 100, $g_iSearchReductionTrophy = 2
 Global $g_iSearchDelayMin = 0, $g_iSearchDelayMax = 0
 Global $g_bSearchAttackNowEnable = False, $g_iSearchAttackNowDelay = 0, $g_bSearchRestartEnable = False, $g_iSearchRestartLimit = 25, $g_bSearchAlertMe = True
-Global $g_iActivateKQCondition = "Auto", $g_bActivateWardenCondition = False, $g_iDelayActivateKQ = 9000, $g_iDelayActivateW = 10000
+Global $g_iActivateQueen = 0, $g_iActivateKing = 0, $g_iActivateWarden = 0
+Global $g_iDelayActivateQueen = 9000, $g_iDelayActivateKing = 9000, $g_iDelayActivateWarden = 10000
 Global $g_aHeroesTimerActivation[$eHeroCount] = [0, 0, 0]
 Global $g_bAttackPlannerEnable = False, $g_bAttackPlannerCloseCoC = False, $g_bAttackPlannerCloseAll = False, $g_bAttackPlannerSuspendComputer = False, $g_bAttackPlannerRandomEnable = False, $g_iAttackPlannerRandomTime = 0, $g_iAttackPlannerRandomTime = 0, $g_bAttackPlannerDayLimit = False, $g_iAttackPlannerDayMin = 12, $g_iAttackPlannerDayMax = 15
 Global $g_abPlannedAttackWeekDays[7] = [True, True, True, True, True, True, True]
@@ -6519,7 +6527,7 @@ Global $g_bAutoStart = False, $g_iAutoStartDelay = 10
 Global $b_iAutoRestartDelay = 0
 Global $g_bCheckGameLanguage = True
 Global $g_bAutoUpdateGame = False
-Global $g_bAutoAlignEnable = True, $g_iAutoAlignPosition = 0, $g_iAutoAlignOffsetX = 10, $g_iAutoAlignOffsetY = 10
+Global $g_bAutoAlignEnable = False, $g_iAutoAlignPosition = "EMBED", $g_iAutoAlignOffsetX = "", $g_iAutoAlignOffsetY = ""
 Global $g_bUpdatingWhenMinimized = True
 Global $g_bHideWhenMinimized = False
 Global $g_bUseRandomClick = False
@@ -6529,12 +6537,13 @@ Global $g_bForceSinglePBLogoff = 0, $g_iSinglePBForcedLogoffTime = 18, $g_iSingl
 Global $g_bAutoResumeEnable = 0, $g_iAutoResumeTime = 5
 Global $g_bDisableNotifications = False
 Global $g_bForceClanCastleDetection = 0
-Global $g_iFrmBotPosX = -1
-Global $g_iFrmBotPosY = -1
-Global $g_iAndroidPosX = -1
-Global $g_iAndroidPosY = -1
-Global $g_iFrmBotDockedPosX = -1
-Global $g_iFrmBotDockedPosY = -1
+Global Const $g_WIN_POS_DEFAULT = 0xFFFFFFF
+Global $g_iFrmBotPosX = $g_WIN_POS_DEFAULT
+Global $g_iFrmBotPosY = $g_WIN_POS_DEFAULT
+Global $g_iAndroidPosX = $g_WIN_POS_DEFAULT
+Global $g_iAndroidPosY = $g_WIN_POS_DEFAULT
+Global $g_iFrmBotDockedPosX = $g_WIN_POS_DEFAULT
+Global $g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT
 Global $g_iFrmBotAddH = 0
 Global $g_bIsHidden = False
 Global $g_aiBSpos[2]
@@ -6738,7 +6747,9 @@ Global Const $g_sAnotherDevice = @ScriptDir & "\imgxml\other\device*"
 Global Const $g_sCocStopped = @ScriptDir & "\imgxml\other\CocStopped*"
 Global Const $g_sCocReconnecting = @ScriptDir & "\imgxml\other\CocReconnecting*"
 Global Const $g_sAppRateNever = @ScriptDir & "\imgxml\other\RateNever*"
+Global Const $g_sGfxError = @ScriptDir & "\imgxml\other\GfxError*"
 Global $g_bMinorObstacle = False
+Global $g_bGfxError = False
 Global Const $g_iTaBChkAttack = 0x01
 Global Const $g_iTaBChkIdle = 0x02
 Global Const $g_iTaBChkTime = 0x04
@@ -8165,6 +8176,10 @@ $aPos = WinGetPos($g_hAndroidWindow)
 EndIf
 EndIf
 AndroidQueueReboot(False)
+If($g_iAndroidPosX = $g_WIN_POS_DEFAULT Or $g_iAndroidPosY = $g_WIN_POS_DEFAULT) And UBound($aPos) > 1 Then
+$g_iAndroidPosX = $aPos[0]
+$g_iAndroidPosY = $aPos[1]
+EndIf
 If $currHWnD = 0 Or $currHWnD <> $g_hAndroidWindow Then
 If $g_bAndroidEmbedded = False And IsArray($aPos) = 1 And($g_bIsHidden = False Or($aPos[0] > -30000 Or $aPos[1] > -30000)) Then
 SetDebugLog("Move Android Window '" & $g_sAndroidTitle & "' to position: " & $g_iAndroidPosX & ", " & $g_iAndroidPosY)
@@ -10293,15 +10308,21 @@ Next
 SetDebugLog("Android process " & $sPackage & " not running")
 Return 0
 EndFunc
-Func AndroidToFront($sSource = "Unknown")
+Func AndroidToFront($hHWndAfter = $HWND_TOPMOST, $sSource = "Unknown")
 SetDebugLog("AndroidToFront: Source " & $sSource)
-WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_TOPMOST, 0, False)
-WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $hHWndAfter, 0, False)
+If $hHWndAfter = $HWND_TOPMOST Then WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 EndFunc
-Func HideAndroidWindow($bHide = True, $bActivateWhenShow = Default, $bFastCheck = Default, $sSource = "Unknown")
-If $bActivateWhenShow = Default Then $bActivateWhenShow = True
+Func ShowAndroidWindow($hHWndAfter = Default, $bRestorePosAndActivateWindow = Default, $bFastCheck = Default, $sSource = "Unknown")
+Return HideAndroidWindow(False, $bRestorePosAndActivateWindow, $bFastCheck, $sSource & "->ShowAndroidWindow", $hHWndAfter)
+EndFunc
+Func HideAndroidWindow($bHide = True, $bRestorePosAndActivateWhenShow = Default, $bFastCheck = Default, $sSource = "Unknown", $hHWndAfter = Default)
+If $bRestorePosAndActivateWhenShow = Default Then $bRestorePosAndActivateWhenShow = True
 If $bFastCheck = Default Then $bFastCheck = True
+If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
+SetDebugLog("HideAndroidWindow: " & $bHide & ", " & $bRestorePosAndActivateWhenShow & ", " & $bFastCheck & ", " & $sSource)
 ResumeAndroid()
+SetError(0)
 If $bFastCheck Then
 If Not IsHWnd($g_hAndroidWindow) Then SetError(1)
 Else
@@ -10312,14 +10333,18 @@ If @error <> 0 Or AndroidEmbedded() Then Return SetError(0, 0, 0)
 If $bHide = True Then
 WinMove($g_hAndroidWindow, "", -32000, -32000)
 ElseIf $bHide = False Then
-If $bActivateWhenShow Then
+If $bRestorePosAndActivateWhenShow Then
+WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
 WinActivate($g_hAndroidWindow)
 Else
-AndroidToFront($sSource & "->HideAndroidWindow")
+Local $a = WinGetPos($g_hAndroidWindow)
+If UBound($a) > 1 And($a[0] < -30000 Or $a[1] < -30000) Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+_WinAPI_ShowWindow($g_hAndroidWindow, @SW_SHOWNOACTIVATE)
 EndIf
-WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+AndroidToFront($hHWndAfter, $sSource & "->HideAndroidWindow")
 EndIf
-Execute("Hide" & $g_sAndroidEmulator & "Window($bHide)")
+Execute("Hide" & $g_sAndroidEmulator & "Window($bHide, $hHWndAfter)")
+SetError(0)
 EndFunc
 Func AndroidPicturePathAutoConfig($myPictures = Default, $subDir = Default, $bSetLog = Default)
 If $subDir = Default Then $subDir = $g_sAndroidEmulator & " Photo"
@@ -10927,8 +10952,6 @@ SetDebugLog("Re-use existing bot log control")
 _WinAPI_SetParent($g_hTxtLog, $g_hGUI_LOG)
 _WinAPI_SetWindowLong($g_hTxtLog, $GWL_HWNDPARENT, $g_hGUI_LOG)
 WinSetState($g_hTxtLog, "", @SW_RESTORE)
-_GUICtrlRichEdit_SetSel($g_hTxtLog, 0, 0)
-_GUICtrlRichEdit_SetSel($g_hTxtLog, -1, -1)
 Else
 $g_hTxtLog = _GUICtrlRichEdit_Create($g_hGUI_LOG, "", 0, 0, 20, 20, BitOR($ES_MULTILINE, $ES_READONLY, $WS_VSCROLL, $WS_HSCROLL, $ES_UPPERCASE, $ES_AUTOHSCROLL, $ES_AUTOVSCROLL, $ES_NUMBER, 0x200), $WS_EX_STATICEDGE)
 EndIf
@@ -10939,8 +10962,6 @@ SetDebugLog("Re-use existing attack log control")
 _WinAPI_SetParent($g_hTxtAtkLog, $g_hGUI_LOG)
 _WinAPI_SetWindowLong($g_hTxtAtkLog, $GWL_HWNDPARENT, $g_hGUI_LOG)
 WinSetState($g_hTxtAtkLog, "", @SW_RESTORE)
-_GUICtrlRichEdit_SetSel($g_hTxtAtkLog, 0, 0)
-_GUICtrlRichEdit_SetSel($g_hTxtAtkLog, -1, -1)
 Else
 $g_hTxtAtkLog = _GUICtrlRichEdit_Create($g_hGUI_LOG, "", 0, 0, 20, 20, BitOR($ES_MULTILINE, $ES_READONLY, $WS_VSCROLL, 8908), $WS_EX_STATICEDGE)
 EndIf
@@ -16653,7 +16674,10 @@ _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-S
 GUICtrlSetState(-1, $GUI_CHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
-Global $g_hRadAutoAbilities = 0, $g_hRadManAbilities = 0, $g_hTxtManAbilities = 0, $g_hChkUseWardenAbility = 0, $g_hTxtWardenAbility = 0
+Global $g_hRadAutoQueenAbility = 0, $g_hRadAutoKingAbility = 0, $g_hRadAutoWardenAbility = 0
+Global $g_hRadManQueenAbility = 0, $g_hRadManKingAbility = 0, $g_hRadManWardenAbility = 0
+Global $g_hTxtManQueenAbility = 0, $g_hTxtManKingAbility = 0, $g_hTxtManWardenAbility = 0
+Global $g_hRadBothQueenAbility = 0, $g_hRadBothKingAbility = 0, $g_hRadBothWardenAbility = 0
 Global $g_hChkAttackPlannerEnable = 0, $g_hChkAttackPlannerCloseCoC = 0, $g_hChkAttackPlannerCloseAll = 0, $g_hChkAttackPlannerSuspendComputer = 0, $g_hChkAttackPlannerRandom = 0, $g_hCmbAttackPlannerRandom = 0, $g_hChkAttackPlannerDayLimit = 0, $g_hCmbAttackPlannerDayMin = 0, $g_hCmbAttackPlannerDayMax = 0
 Global $g_ahChkAttackWeekdays[7] = [0,0,0,0,0,0,0], $g_ahChkAttackHours[24] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 Global $g_hLbAttackPlannerRandom = 0, $g_hLbAttackPlannerDayLimit = 0, $g_ahChkAttackWeekdaysE = 0, $g_ahChkAttackHoursE1 = 0, $g_ahChkAttackHoursE2 = 0
@@ -16665,33 +16689,74 @@ Func CreateAttackSearchOptionsAttack()
 Local $sTxtTip = ""
 Local $x = 25, $y = 45
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_01", "Hero Abilities"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 95)
-_GUICtrlCreateIcon($g_sLibIconPath, $eIcnHeroes, $x, $y, 64, 64)
-$x += 82
-$y -= 4
-$g_hRadAutoAbilities = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)."), $x, $y - 4 , -1, -1)
+_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x, $y, 22, 22)
+GUIStartGroup()
+$x += 30
+$g_hRadAutoQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
 $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetState(-1, $GUI_CHECKED)
-$y += 15
-$g_hRadManAbilities = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
+$x += 145
+$g_hRadManQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
 $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetState(-1, $GUI_UNCHECKED)
-$g_hTxtManAbilities = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$g_hTxtManQueenAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetLimit(-1, 2)
 GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
-$y += 30
-$g_hChkUseWardenAbility = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkUseWardenAbility", "Forced activation of Warden Ability after") & ":", $x + 1, $y, -1, -1)
-$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkUseWardenAbility_Info_01", "Force Eternal Tome ability of Grand Warden on a timer.")
+$x += 145
+$g_hRadBothQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_02", "Activate the Ability when Hero becomes weak or when timer runs out")
 _GUICtrlSetTip(-1, $sTxtTip)
-GUICtrlSetOnEvent(-1, "ChkUseWardenAbility")
-$g_hTxtWardenAbility = GUICtrlCreateInput("10", $x + 230, $y + 2, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtUseWardenAbility_Info_01", "Set the time in seconds for Timed Activation of Grand Warden Ability.")
+GUICtrlSetState(-1, $GUI_UNCHECKED)
+Local $x = 25, $y = 69
+_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x, $y, 22, 22)
+GUIStartGroup()
+$x += 30
+$g_hRadAutoKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
+_GUICtrlSetTip(-1, $sTxtTip)
+GUICtrlSetState(-1, $GUI_CHECKED)
+$x += 145
+$g_hRadManKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
+_GUICtrlSetTip(-1, $sTxtTip)
+GUICtrlSetState(-1, $GUI_UNCHECKED)
+$g_hTxtManKingAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetLimit(-1, 2)
-GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 263, $y + 4, -1, -1)
+GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
+$x += 145
+$g_hRadBothKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_02", "Activate the Ability when Hero becomes weak or when timer runs out")
+_GUICtrlSetTip(-1, $sTxtTip)
+GUICtrlSetState(-1, $GUI_UNCHECKED)
+Local $x = 25, $y = 95
+_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x, $y , 22, 22)
+GUIStartGroup()
+$x += 30
+$g_hRadAutoWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
+_GUICtrlSetTip(-1, $sTxtTip)
+GUICtrlSetState(-1, $GUI_CHECKED)
+$x += 145
+$g_hRadManWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
+_GUICtrlSetTip(-1, $sTxtTip)
+GUICtrlSetState(-1, $GUI_UNCHECKED)
+$g_hTxtManWardenAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
+_GUICtrlSetTip(-1, $sTxtTip)
+GUICtrlSetLimit(-1, 2)
+GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
+$x += 145
+$g_hRadBothWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_02", "Activate the Ability when Hero becomes weak or when timer runs out")
+_GUICtrlSetTip(-1, $sTxtTip)
+GUICtrlSetState(-1, $GUI_UNCHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 Local $x = 25, $y = 145
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_02", "Attack Schedule"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 138)
@@ -17494,17 +17559,17 @@ GUICtrlSetOnEvent(-1, "chkDisposeWindows")
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetLimit(-1, 2)
 GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "LblAlignOffsetX", "Offset") & ":", $x + 85, $y + 4, -1, -1)
-$g_hTxtAlignOffsetX = GUICtrlCreateInput("10", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$g_hTxtAlignOffsetX = GUICtrlCreateInput("", $x + 120, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetLimit(-1, 2)
 $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "TxtAlignOffsetX_Info_01", "Offset horizontal pixels between Android Emulator and BOT windows.")
-$g_hTxtAlignOffsetY= GUICtrlCreateInput("0", $x + 150, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$g_hTxtAlignOffsetY= GUICtrlCreateInput("", $x + 150, $y + 2, 25, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetLimit(-1, 2)
 $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "TxtAlignOffsetY_Info_01", "Offset vertical pixels between Android Emulator and BOT windows.")
 $y += 23
 $g_hCmbAlignmentOptions = GUICtrlCreateCombo("", $x, $y, 175, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_01", "0,0: Android Emulator-Bot") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_02", "0,0: Bot-Android Emulator") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_03", "SNAP: Bot TopRight to Android") &"|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_04", "SNAP: Bot TopLeft to Android") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_05", "SNAP: Bot BottomRight to Android") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_06", "SNAP: Bot BottomLeft to Android") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_07", "DOCK: Android into Bot"), GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_03", -1))
+GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_01", "0,0: Android Emulator-Bot") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_02", "0,0: Bot-Android Emulator") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_03", "SNAP: Bot TopRight to Android") &"|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_04", "SNAP: Bot TopLeft to Android") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_05", "SNAP: Bot BottomRight to Android") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_06", "SNAP: Bot BottomLeft to Android") & "|" & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_07", "DOCK: Android into Bot"), GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Item_07", -1))
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Info_01", "0,0: Reposition Android Emulator screen to position 0,0 on windows desktop and align Bot window right or left to it.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "CmbAlignmentOptions_Info_02", "SNAP: Only reorder windows, Align Bot window to Android Emulator window at Top Right, Top Left, Bottom Right or Bottom Left.\r\n" & "DOCK: Integrate Android Screen into bot window."))
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -19216,7 +19281,17 @@ Case 2
 $_GUI_MAIN_WIDTH = $_MINIGUI_MAIN_WIDTH
 $_GUI_MAIN_HEIGHT = $_MINIGUI_MAIN_HEIGHT
 EndSwitch
-$g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP, $g_iFrmBotPosX, $g_iFrmBotPosY, BitOR($WS_MINIMIZEBOX, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $iStyle))
+$g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP,($g_iFrmBotPosX = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosX),($g_iFrmBotPosY = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosY), BitOR($WS_MINIMIZEBOX, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $iStyle))
+If $g_iFrmBotPosX = $g_WIN_POS_DEFAULT Or $g_iFrmBotPosY = $g_WIN_POS_DEFAULT Then
+Local $a = WinGetPos($g_hFrmBot)
+If UBound($a) > 1 Then
+$g_iFrmBotPosX = $a[0]
+$g_iFrmBotPosY = $a[1]
+Else
+$g_iFrmBotPosX = 100
+$g_iFrmBotPosY = 100
+EndIf
+EndIf
 GUISetIcon($g_sLibIconPath, $eIcnGUI)
 If $g_iGuiMode = 0 Then
 UpdateBotTitle()
@@ -19921,12 +19996,12 @@ EndFunc
 Func btnHide()
 If Not $g_bIsHidden Then
 GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_False", "Show"))
-HideAndroidWindow(True, Default, Default, "btnHide")
 $g_bIsHidden = True
+HideAndroidWindow(True, Default, Default, "btnHide")
 ElseIf $g_bIsHidden Then
 GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_True", "Hide"))
-HideAndroidWindow(False, Default, Default, "btnHide")
 $g_bIsHidden = False
+HideAndroidWindow(False, Default, Default, "btnHide")
 EndIf
 EndFunc
 Func updateBtnEmbed()
@@ -20027,6 +20102,7 @@ Func DisableGuiControls($bOptimizedRedraw = True)
 Return ToggleGuiControls(False, $bOptimizedRedraw)
 EndFunc
 Func ToggleGuiControls($bEnabled, $bOptimizedRedraw = True)
+$g_bGuiControlsEnabled = $bEnabled
 If $g_iGuiMode <> 1 Then Return
 If $bOptimizedRedraw Then Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "ToggleGuiControls")
 If Not $bEnabled Then
@@ -21558,21 +21634,6 @@ WEnd
 If $bErrorCondition = True Then
 SetError(1)
 Return
-EndIf
-EndFunc
-Func ChkUseWardenAbility()
-If $g_iTownHallLevel > 10 Or $g_iTownHallLevel = 0 Then
-If GUICtrlRead($g_hChkUseWardenAbility) = $GUI_CHECKED Then
-GUICtrlSetState($g_hTxtWardenAbility, $GUI_ENABLE)
-$g_bActivateWardenCondition = True
-Else
-GUICtrlSetState($g_hTxtWardenAbility, $GUI_DISABLE)
-$g_bActivateWardenCondition = False
-EndIf
-Else
-GUICtrlSetState($g_hChkUseWardenAbility, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-GUICtrlSetState($g_hTxtWardenAbility, $GUI_DISABLE)
-$g_bActivateWardenCondition = False
 EndIf
 EndFunc
 Func CmbDBTH()
@@ -23416,7 +23477,7 @@ $g_bDebugClick =(GUICtrlRead($g_hChkDebugClick) = $GUI_CHECKED)
 SetDebugLog("DebugClick " &($g_bDebugClick ? "enabled" : "disabled"))
 EndFunc
 Func chkDebugSetlog()
-$g_bDebugSetlog =(GUICtrlRead($g_hChkDebugSetlog))
+$g_bDebugSetlog =(GUICtrlRead($g_hChkDebugSetlog) = $GUI_CHECKED)
 SetDebugLog("DebugSetlog " &($g_bDebugSetlog ? "enabled" : "disabled"))
 EndFunc
 Func chkDebugDisableZoomout()
@@ -23473,6 +23534,13 @@ SetLog("Testing getArmyHeroTime()", $COLOR_INFO)
 $result = getArmyHeroTime("all")
 If @error Then $result = "Error " & @error & ", " & @extended & ", " &((IsArray($result)) ?(_ArrayToString($result, ",")) :($result))
 SetLog("Result getArmyHeroTime() = " & $result, $COLOR_INFO)
+$result = ""
+SetLog("Testing ArmyHeroStatus()", $COLOR_INFO)
+For $i = 0 To 2
+$result &= " " & ArmyHeroStatus($i)
+Next
+If @error Then $result = "Error " & @error & ", " & @extended & ", " &((IsArray($result)) ?(_ArrayToString($result, ",")) :($result))
+SetLog("Result ArmyHeroStatus(0, 1, 2) = " & $result, $COLOR_INFO)
 SetLog("Testing Train DONE", $COLOR_INFO)
 EndImageTest()
 $g_bDebugOcr = $currentOCR
@@ -23529,6 +23597,7 @@ SetLog(_PadStringCenter(" Test SendText end ", 54, "="), $COLOR_INFO)
 $g_bRunState = $currentRunState
 EndFunc
 Func btnTestAttackBar()
+BeginImageTest()
 Local $currentOCR = $g_bDebugOcr
 Local $currentRunState = $g_bRunState
 _GUICtrlTab_ClickTab($g_hTabMain, 0)
@@ -23557,6 +23626,7 @@ Local $Date = @MDAY & "." & @MON & "." & @YEAR
 Local $Time = @HOUR & "." & @MIN & "." & @SEC
 $debugfile = "Test_Attack_Bar_" & $g_sBotVersion & "_" & $Date & "_" & $Time & ".png"
 _GDIPlus_ImageSaveToFile($g_hBitmap, $savefolder & $debugfile)
+EndImageTest()
 SetLog(_PadStringCenter(" Test Attack Bar end ", 54, "="), $COLOR_INFO)
 ShellExecute($savefolder)
 $g_bDebugOcr = $currentOCR
@@ -24922,14 +24992,15 @@ If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_SHELLHOOK: $hWin=" & 
 If $hWin = $g_hFrmBot And $lParam And BitAND($wParam, $HSHELL_WINDOWACTIVATED) And Not AndroidEmbedded() Then
 Select
 Case $lParam = $g_hAndroidWindow
-BotToFront()
+BotMinimizeRestore(False, "GUIControl_WM_SHELLHOOK", False, 0, $lParam)
+If Not $g_bIsHidden Then HideAndroidWindow(False, False, Default, "GUIControl_WM_SHELLHOOK")
 EndSelect
 EndIf
 EndFunc
 Func GUIControl_WM_ACTIVATEAPP($hWin, $iMsg, $wParam, $lParam)
 If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_ACTIVATEAPP: $hWin=" & $hWin & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", Active=" & _WinAPI_GetActiveWindow(), Default, True)
 If $wParam Then
-If Not $g_bIsHidden And Not AndroidEmbedded() Then HideAndroidWindow(False, False, Default, "GUIControl_WM_ACTIVATEAPP")
+If Not $g_bIsHidden And Not AndroidEmbedded() Then ShowAndroidWindow($g_hFrmBot, False, Default, "GUIControl_WM_ACTIVATEAPP")
 Else
 If BitAND($g_iBotDesignFlags, 2) And $g_bAndroidEmbedded And Not $g_bBotDockedShrinked Then BotShrinkExpandToggle()
 EndIf
@@ -25383,9 +25454,9 @@ EndFunc
 Func BotMinimizeRequest()
 BotMinimize("MinimizeButton", False, 500)
 EndFunc
-Func BotToFront()
-WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $HWND_TOPMOST, 0, False)
-WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+Func BotToFront($hHWndAfter = $HWND_TOPMOST)
+WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $hHWndAfter, 0, False)
+If $hHWndAfter = $HWND_TOPMOST Then WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 EndFunc
 Func CheckBotZOrder($bCheckOnly = False, $bForceZOrder = False)
 If $g_iAndroidEmbedMode = 1 And $g_bBotDockedShrinked Then
@@ -25677,8 +25748,13 @@ tabVillage()
 InitializeMainGUI(True)
 DestroySplashScreen()
 applyConfig(False)
-If $g_bRunState Then DisableGuiControls()
+If Not $g_bGuiControlsEnabled Then DisableGuiControls()
 SetRedrawBotWindow(False, Default, Default, Default, "BotGuiModeToggle")
+_GUICtrlRichEdit_SetSel($g_hTxtLog, 0, 0)
+_GUICtrlRichEdit_SetSel($g_hTxtLog, -1, -1)
+_GUICtrlRichEdit_SetSel($g_hTxtAtkLog, 0, 0)
+_GUICtrlRichEdit_SetSel($g_hTxtAtkLog, -1, -1)
+GUICtrlSetState($g_hTabMain, $GUI_FOCUS)
 EndSwitch
 WinMove2($g_hFrmBotBottom, "", 0, $_GUI_MAIN_HEIGHT - $_GUI_BOTTOM_HEIGHT + $_GUI_MAIN_TOP, -1, -1, 0, 0, False)
 Local $xComp = $g_aFrmBotPosInit[2] - $_GUI_MAIN_WIDTH_OLD
@@ -25747,7 +25823,7 @@ $g_hStruct_SleepMicro = 0
 UnregisterManagedMyBotHost()
 If $bExit = True Then Exit
 EndFunc
-Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = False, $iStayMinimizedMillis = 0)
+Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = False, $iStayMinimizedMillis = 0, $hHWndAfter = $HWND_TOP)
 Static $siStayMinimizedMillis = 0
 Static $shStayMinimizedTimer = 0
 If $bMinimize Then
@@ -25767,7 +25843,7 @@ _WinAPI_SetWindowLong($g_hFrmBot, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($g_h
 EndIf
 If _WinAPI_IsIconic($g_hFrmBot) Then WinSetState($g_hFrmBot, "", @SW_RESTORE)
 If _WinAPI_IsIconic($g_hAndroidWindow) Then WinSetState($g_hAndroidWindow, "", @SW_RESTORE)
-WinMove2($g_hFrmBot, "", -32000, -32000, -1, -1, 0, $SWP_SHOWWINDOW, False)
+WinMove2($g_hFrmBot, "", -32000, -32000, -1, -1, 0, BitOR($SWP_SHOWWINDOW, $SWP_NOACTIVATE), False)
 Else
 If $g_bHideWhenMinimized Then
 WinMove2($g_hFrmBot, "", -1, -1, -1, -1, 0, $SWP_HIDEWINDOW, False)
@@ -25775,7 +25851,7 @@ _WinAPI_SetWindowLong($g_hFrmBot, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($g_h
 EndIf
 WinSetState($g_hFrmBot, "", @SW_MINIMIZE)
 EndIf
-If Not $g_bIsHidden Then HideAndroidWindow(True, Default, Default, "BotMinimizeRestore")
+If Not $g_bIsHidden Then HideAndroidWindow(True, False, Default, "BotMinimizeRestore")
 Return True
 EndIf
 If $siStayMinimizedMillis > 0 And __TimerDiff($shStayMinimizedTimer) < $siStayMinimizedMillis Then
@@ -25797,14 +25873,14 @@ _WinAPI_SetWindowLong($g_hFrmBot, $GWL_EXSTYLE, BitAND($iExStyle, BitNOT($WS_EX_
 EndIf
 If _WinAPI_IsIconic($g_hFrmBot) Then WinSetState($g_hFrmBot, "", @SW_RESTORE)
 If $g_bAndroidAdbScreencap = False And $g_bRunState = True And $g_bBotPaused = False And _WinAPI_IsIconic($g_hAndroidWindow) Then WinSetState($g_hAndroidWindow, "", @SW_RESTORE)
-WinMove2($g_hFrmBot, "", $botPosX, $botPosY, -1, -1, $HWND_TOP, $SWP_SHOWWINDOW)
-_WinAPI_SetActiveWindow($g_hFrmBot)
-_WinAPI_SetFocus($g_hFrmBot)
+WinMove2($g_hFrmBot, "", $botPosX, $botPosY, -1, -1, $hHWndAfter, BitOR($SWP_SHOWWINDOW, $SWP_NOACTIVATE))
 If _CheckWindowVisibility($g_hFrmBot, $aPos) Then
 SetDebugLog("Bot Window '" & $g_sAndroidTitle & "' not visible, moving to position: " & $aPos[0] & ", " & $aPos[1])
 WinMove2($g_hFrmBot, "", $aPos[0], $aPos[1])
 EndIf
 WinSetTrans($g_hFrmBot, "", 255)
+BotToFront($hHWndAfter)
+If Not $g_bIsHidden And $hHWndAfter <> $g_hAndroidWindow Then HideAndroidWindow(False, False, Default, "BotMinimizeRestore", $g_hFrmBot)
 Return True
 EndFunc
 Func BotMinimize($sCaller, $iForceUpdatingWhenMinimized = False, $iStayMinimizedMillis = 0)
@@ -26459,7 +26535,7 @@ If $bWriteToLogFile = Default Then $bWriteToLogFile = True
 Local $log = $LogPrefix & $debugTime & $sLogMessage
 If $bConsoleWrite = True And $sLogMessage <> "" Then
 Local $sLevel = GetLogLevel($Color)
-ConsoleWrite($sLevel & $log & @CRLF)
+_ConsoleWrite($sLevel & $log & @CRLF)
 EndIf
 If $g_hLogFile = 0 And $g_sProfileLogsPath Then
 CreateLogFile()
@@ -26536,7 +26612,7 @@ Local $sLog = $sLogPrefix & TimeDebug() & $sLogMessage
 If $g_bDebugSetlog And $bSilentSetLog = False Then
 _SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, True, $sLogPrefix)
 Else
-If $sLogMessage <> "" Then ConsoleWrite(GetLogLevel($sColor) & $sLog & @CRLF)
+If $sLogMessage <> "" Then _ConsoleWrite(GetLogLevel($sColor) & $sLog & @CRLF)
 If $g_hLogFile = 0 And $g_sProfileLogsPath Then CreateLogFile()
 If $g_hLogFile Then
 __FileWriteLog($g_hLogFile, $sLog)
@@ -26984,7 +27060,7 @@ $DarkE = getDarkElixirVillageSearch(48, 126)
 If _Sleep(50) Then Return
 If Number($DarkE) <(Number($g_iSearchDark) *(Number($g_iDESideEndMin) / 100)) Then
 If $g_bDESideEndAQWeak And $g_bDropQueen And $g_bCheckQueenPower = False Then
-If $g_iActivateKQCondition = "Auto" Then
+If $g_iActivateQueen = 0 Then
 $g_iDarkLow = 1
 SetLog("Low De. De = ( " & $DarkE & " ) and AQ health Low. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
 Return False
@@ -26995,7 +27071,7 @@ Return False
 EndIf
 EndIf
 If $g_bDESideEndBKWeak And $g_bDropKing And $g_bCheckKingPower = False Then
-If $g_iActivateKQCondition = "Auto" Then
+If $g_iActivateKing = 0 Then
 $g_iDarkLow = 1
 SetLog("Low De. De = ( " & $DarkE & " ) and BK health Low. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
 Return False
@@ -27191,19 +27267,19 @@ SetLog("Exit in " & $txtDiff & ", [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]
 EndIf
 EndIf
 If Number($CurDamage) >= 92 Then
-If($g_bCheckKingPower = True Or $g_bCheckQueenPower = True Or $g_bCheckWardenPower = True) And $g_iActivateKQCondition = "Auto" Then
-If $g_bCheckKingPower = True Then
-SetLog("Activating King's power to restore some health before leaving with a 3 Star", $COLOR_INFO)
+If($g_bCheckKingPower = True Or $g_bCheckQueenPower = True Or $g_bCheckWardenPower = True) Then
+If $g_bCheckKingPower = True And $g_iActivateKing = 0 Then
+SetLog("Activating King's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 If IsAttackPage() Then SelectDropTroop($g_iKingSlot)
 $g_bCheckKingPower = False
 EndIf
-If $g_bCheckQueenPower = True Then
-SetLog("Activating Queen's power to restore some health before leaving with a 3 Star", $COLOR_INFO)
+If $g_bCheckQueenPower = True And $g_iActivateQueen = 0 Then
+SetLog("Activating Queen's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 If IsAttackPage() Then SelectDropTroop($g_iQueenSlot)
 $g_bCheckQueenPower = False
 EndIf
-If $g_bCheckWardenPower = True Then
-SetLog("Activating Warden's power to restore some health before leaving with a 3 Star", $COLOR_INFO)
+If $g_bCheckWardenPower = True And $g_iActivateWarden = 0 Then
+SetLog("Activating Warden's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 If IsAttackPage() Then SelectDropTroop($g_iWardenSlot)
 $g_bCheckWardenPower = False
 EndIf
@@ -27303,11 +27379,9 @@ If $Remaining = False Then
 $g_bDropKing = False
 $g_bDropQueen = False
 $g_bDropWarden = False
-If($g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition) Then
-For $i = $eHeroBarbarianKing To $eHeroGrandWarden
-$g_aHeroesTimerActivation[$i] = 0
-Next
-EndIf
+If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
+If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
+If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then $g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
 EndIf
 Local $troopsnumber = 0
 If $g_bDebugSetlog Then SetLog("PrepareAttack for " & $pMatchMode & " " & $g_asModeText[$pMatchMode], $COLOR_DEBUG)
@@ -27826,7 +27900,7 @@ ExitLoop
 EndIf
 For $i = $eBarb To $eBowl
 LaunchTroop($i, $nbSides, 0, 1)
-If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
+If $g_iActivateQueen = 0 Or $g_iActivateKing = 0 Or $g_iActivateWarden = 0 Then CheckHeroesHealth()
 If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
 Next
 Next
@@ -28083,8 +28157,14 @@ $g_avAttackTroops[$iArch][1] = Number(ReadTroopQuantity($iArch))
 WEnd
 If _Sleep($DELAYBARCH1) Then ExitLoop
 If $g_bCheckKingPower Or $g_bCheckQueenPower Then
-SetLog("Waiting " & $g_iDelayActivateKQ / 1000 & " seconds before activating Hero abilities", $COLOR_SUCCESS)
-If _Sleep($g_iDelayActivateKQ) Then Return
+Local $iWaitTime = 0
+If Number($g_iActivateKing) > Number($g_iActivateQueen) Then
+$iWaitTime = $g_iActivateKing
+ElseIf Number($g_iActivateQueen) > Number($g_iActivateKing) Then
+$iWaitTime = $g_iActivateQueen
+EndIf
+SetLog("Waiting " & $iWaitTime / 1000 & " seconds before activating Hero abilities", $COLOR_SUCCESS)
+If _Sleep($iWaitTime) Then Return
 If $g_bCheckKingPower Then
 SetLog("Activate King's power", $COLOR_INFO)
 Click(GetXPosOfArmySlot($iKing, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0083")
@@ -29357,7 +29437,7 @@ Return False
 EndFunc
 Func debugAttackCSV($string)
 If $g_bDebugAttackCSV Then
-ConsoleWrite("A " & TimeDebug() & $string & @CRLF)
+_ConsoleWrite("A " & TimeDebug() & $string & @CRLF)
 Local $hfile = FileOpen($g_sProfileLogsPath & "debugAttackCSV.log", $FO_APPEND)
 _FileWriteLog($hfile, $string)
 FileClose($hfile)
@@ -29405,10 +29485,11 @@ Return
 EndIf
 Local $bHeroDrop =($iTroopIndex = $eWarden ? True : False)
 Local $troopPosition = -1
+Local $troopCount = -1
 For $i = 0 To UBound($g_avAttackTroops) - 1
-If $g_avAttackTroops[$i][0] = $iTroopIndex Then
+If $g_avAttackTroops[$i][0] = $iTroopIndex And $g_avAttackTroops[$i][1] >= $troopCount Then
 $troopPosition = $i
-ExitLoop
+$troopCount = $g_avAttackTroops[$i][1]
 EndIf
 Next
 Local $usespell = True
@@ -29513,6 +29594,7 @@ Setlog("Drop Spell AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2
 Else
 AttackClick($pixel[0], $pixel[1], $qty2, $delayPoint, $delayDropLast, "#0667")
 EndIf
+If $g_avAttackTroops[$troopPosition][1] > 0 Then $g_avAttackTroops[$troopPosition][1] -= 1
 Case Else
 Setlog("Error parsing line")
 EndSwitch
@@ -30547,7 +30629,12 @@ $BACK_LEFT = "BOTTOM-LEFT-DOWN"
 $BACK_RIGHT = "BOTTOM-LEFT-UP"
 EndSwitch
 Case Else
+Switch StringLeft($command, 1)
+Case ";", "#", "'"
+debugAttackCSV("comment line")
+Case Else
 Setlog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
+EndSwitch
 EndSwitch
 Else
 If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard: row " & $iLine + 1, $COLOR_ERROR)
@@ -33317,78 +33404,93 @@ EndFunc
 Func CheckHeroesHealth()
 If $g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower Then
 ForceCaptureRegion()
-If $g_iActivateKQCondition = "Auto" Then
-Local $aKingHealthCopy = $aKingHealth
-$aKingHealthCopy[0] = GetXPosOfArmySlot($g_iKingSlot, 68) + 2
+Local $aDisplayTime[$eHeroCount] = [0, 0, 0]
+If $g_bDebugSetlog Then
+Setlog("CheckHeroesHealth() for Queen started ")
+If _Sleep($DELAYRESPOND) Then Return
+EndIf
+If $g_iActivateQueen = 0 Or $g_iActivateQueen = 2 Then
 Local $aQueenHealthCopy = $aQueenHealth
 $aQueenHealthCopy[0] = GetXPosOfArmySlot($g_iQueenSlot, 68) + 3
-Local $aWardenHealthCopy = $aWardenHealth
-$aWardenHealthCopy[0] = GetXPosOfArmySlot($g_iWardenSlot, 68)
-If _Sleep($DELAYRESPOND) Then Return
-If $g_bDebugSetlog Then
-Setlog(" CheckHeroesHealth started ")
-If _Sleep($DELAYRESPOND) Then Return
-EndIf
-If $g_bCheckKingPower Then
-Local $KingPixelColor = _GetPixelColor($aKingHealthCopy[0], $aKingHealthCopy[1], $g_bCapturePixel)
-If $g_bDebugSetlog Then Setlog(" King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
-If Not _CheckPixel2($aKingHealthCopy, $KingPixelColor, "Red+Blue") Then
-SetLog("King is getting weak, Activating King's power", $COLOR_INFO)
-SelectDropTroop($g_iKingSlot)
-$g_bCheckKingPower = False
-EndIf
-EndIf
 If $g_bCheckQueenPower Then
 Local $QueenPixelColor = _GetPixelColor($aQueenHealthCopy[0], $aQueenHealthCopy[1], $g_bCapturePixel)
 If $g_bDebugSetlog Then Setlog(" Queen _GetPixelColor(" & $aQueenHealthCopy[0] & "," & $aQueenHealthCopy[1] & "): " & $QueenPixelColor, $COLOR_DEBUG)
 If Not _CheckPixel2($aQueenHealthCopy, $QueenPixelColor, "Red+Blue") Then
-SetLog("Queen is getting weak, Activating Queen's power", $COLOR_INFO)
+SetLog("Queen is getting weak, Activating Queen's ability", $COLOR_INFO)
 SelectDropTroop($g_iQueenSlot)
 $g_bCheckQueenPower = False
 EndIf
 EndIf
-If $g_bCheckWardenPower Then
-Local $WardenPixelColor = _GetPixelColor($aWardenHealthCopy[0], $aWardenHealthCopy[1], $g_bCapturePixel)
-If $g_bDebugSetlog Then Setlog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
-If Not _CheckPixel2($aWardenHealthCopy, $WardenPixelColor, "Red+Blue") Then
-SetLog("Grand Warden is getting weak, Activating Warden's power", $COLOR_INFO)
-SelectDropTroop($g_iWardenSlot)
-$g_bCheckWardenPower = False
 EndIf
-EndIf
-EndIf
-If $g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition Then
-Local $aDisplayTime[$eHeroCount] = [0, 0, 0]
-If $g_bCheckKingPower And $g_iActivateKQCondition = "Manual" Then
-If $g_aHeroesTimerActivation[$eHeroBarbarianKing] <> 0 Then
-$aDisplayTime[$eHeroBarbarianKing] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroBarbarianKing]) / 1000)
-EndIf
-If $g_iDelayActivateKQ / 1000 <= $aDisplayTime[$eHeroBarbarianKing] Then
-SetLog("Activating King's power after " & $aDisplayTime[$eHeroBarbarianKing] & "'s", $COLOR_INFO)
-SelectDropTroop($g_iKingSlot)
-$g_bCheckKingPower = False
-$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
-EndIf
-EndIf
-If $g_bCheckQueenPower And $g_iActivateKQCondition = "Manual" Then
+If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then
+If $g_bCheckQueenPower Then
 If $g_aHeroesTimerActivation[$eHeroArcherQueen] <> 0 Then
 $aDisplayTime[$eHeroArcherQueen] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroArcherQueen]) / 1000)
 EndIf
-If $g_iDelayActivateKQ / 1000 <= $aDisplayTime[$eHeroArcherQueen] Then
-SetLog("Activating Queen's power after " & $aDisplayTime[$eHeroArcherQueen] & "'s", $COLOR_INFO)
+If $g_iDelayActivateQueen / 1000 <= $aDisplayTime[$eHeroArcherQueen] Then
+SetLog("Activating Queen's ability after " & $aDisplayTime[$eHeroArcherQueen] & "'s", $COLOR_INFO)
 SelectDropTroop($g_iQueenSlot)
 $g_bCheckQueenPower = False
 $g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
 EndIf
 EndIf
-If $g_bCheckWardenPower And($g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition) Then
+EndIf
+If $g_bDebugSetlog Then
+Setlog("CheckHeroesHealth() for King started ")
+If _Sleep($DELAYRESPOND) Then Return
+EndIf
+If $g_iActivateKing = 0 Or $g_iActivateKing = 2 Then
+Local $aKingHealthCopy = $aKingHealth
+$aKingHealthCopy[0] = GetXPosOfArmySlot($g_iKingSlot, 68) + 2
+If $g_bCheckKingPower Then
+Local $KingPixelColor = _GetPixelColor($aKingHealthCopy[0], $aKingHealthCopy[1], $g_bCapturePixel)
+If $g_bDebugSetlog Then Setlog(" King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
+If Not _CheckPixel2($aKingHealthCopy, $KingPixelColor, "Red+Blue") Then
+SetLog("King is getting weak, Activating King's ability", $COLOR_INFO)
+SelectDropTroop($g_iKingSlot)
+$g_bCheckKingPower = False
+EndIf
+EndIf
+EndIf
+If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then
+If $g_bCheckKingPower Then
+If $g_aHeroesTimerActivation[$eHeroBarbarianKing] <> 0 Then
+$aDisplayTime[$eHeroBarbarianKing] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroBarbarianKing]) / 1000)
+EndIf
+If $g_iDelayActivateKing / 1000 <= $aDisplayTime[$eHeroBarbarianKing] Then
+SetLog("Activating King's ability after " & $aDisplayTime[$eHeroBarbarianKing] & "'s", $COLOR_INFO)
+SelectDropTroop($g_iKingSlot)
+$g_bCheckKingPower = False
+$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
+EndIf
+EndIf
+EndIf
+If $g_bDebugSetlog Then
+Setlog("CheckHeroesHealth() for Warden started ")
+If _Sleep($DELAYRESPOND) Then Return
+EndIf
+If $g_iActivateWarden = 0 Or $g_iActivateWarden = 2 Then
+Local $aWardenHealthCopy = $aWardenHealth
+$aWardenHealthCopy[0] = GetXPosOfArmySlot($g_iWardenSlot, 68)
+If $g_bCheckWardenPower Then
+Local $WardenPixelColor = _GetPixelColor($aWardenHealthCopy[0], $aWardenHealthCopy[1], $g_bCapturePixel)
+If $g_bDebugSetlog Then Setlog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
+If Not _CheckPixel2($aWardenHealthCopy, $WardenPixelColor, "Red+Blue") Then
+SetLog("Grand Warden is getting weak, Activating Warden's ability", $COLOR_INFO)
+SelectDropTroop($g_iWardenSlot)
+$g_bCheckWardenPower = False
+EndIf
+EndIf
+EndIf
+If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then
+If $g_bCheckWardenPower Then
 If $g_aHeroesTimerActivation[$eHeroGrandWarden] <> 0 Then
 $aDisplayTime[$eHeroGrandWarden] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroGrandWarden]) / 1000)
 EndIf
-If($g_bActivateWardenCondition And $g_iDelayActivateW / 1000 <= $aDisplayTime[$eHeroGrandWarden]) Or($g_iActivateKQCondition = "Manual" And $g_bActivateWardenCondition = False And $g_iDelayActivateKQ / 1000 <= $aDisplayTime[$eHeroGrandWarden]) Then
-SetLog("Activating Warden's power after " & $aDisplayTime[$eHeroGrandWarden] & "'s", $COLOR_INFO)
+If $g_iDelayActivateWarden / 1000 <= $aDisplayTime[$eHeroGrandWarden] Then
+SetLog("Activating Warden's ability after " & $aDisplayTime[$eHeroGrandWarden] & "'s", $COLOR_INFO)
 SelectDropTroop($g_iWardenSlot)
-$g_bCheckWardenPower = False
+$g_bCheckKingPower = False
 $g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
 EndIf
 EndIf
@@ -33468,7 +33570,7 @@ Else
 SetDebugLog("King dropped 2nd time, Check Power flag not changed")
 EndIf
 $g_bDropKing = True
-If $g_iActivateKQCondition = "Manual" Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = __TimerInit()
+If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = __TimerInit()
 If _Sleep($DELAYDROPHEROES2) Then Return
 EndIf
 If _Sleep($DELAYDROPHEROES1) Then Return
@@ -33483,7 +33585,7 @@ Else
 SetDebugLog("Queen dropped 2nd time, Check Power flag not changed")
 EndIf
 $g_bDropQueen = True
-If $g_iActivateKQCondition = "Manual" Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = __TimerInit()
+If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = __TimerInit()
 If _Sleep($DELAYDROPHEROES2) Then Return
 EndIf
 If _Sleep($DELAYDROPHEROES1) Then Return
@@ -33498,9 +33600,7 @@ Else
 SetDebugLog("Warden dropped 2nd time, Check Power flag not changed")
 EndIf
 $g_bDropWarden = True
-If $g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition Then
-$g_aHeroesTimerActivation[$eHeroGrandWarden] = __TimerInit()
-EndIf
+If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then $g_aHeroesTimerActivation[$eHeroGrandWarden] = __TimerInit()
 If _Sleep($DELAYDROPHEROES2) Then Return
 EndIf
 EndFunc
@@ -35033,7 +35133,7 @@ EndIf
 EndFunc
 Func ArmyHeroStatus($i)
 Local $sImageDir = "trainwindow-HeroStatus-bundle", $sResult = ""
-Local Const $aHeroesRect[3][4] = [[660, 349, 673, 361], [734, 349, 747, 361], [807, 349, 822, 361]]
+Local Const $aHeroesRect[3][4] = [[655, 340, 680, 365], [730, 340, 755, 365], [805, 340, 830, 365]]
 _CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
 Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $sImageDir, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
 If $res[0] <> "" Then
@@ -38302,7 +38402,7 @@ EndIf
 UpdateStats()
 ClickP($aAway, 1, 300, "#0329")
 EndFunc
-Func decodeMultipleCoords($coords)
+Func decodeMultipleCoords($coords, $iDedupX = 0, $iDedupY = 0)
 Local $retCoords[1] = [""]
 Local $p, $pOff = 0
 Local $aCoordsSplit = StringSplit($coords, "|", $STR_NOCOUNT)
@@ -38315,7 +38415,22 @@ EndIf
 For $p = 0 To UBound($retCoords) - 1
 $retCoords[$p] = decodeSingleCoord($aCoordsSplit[$p + $pOff])
 Next
-Return $retCoords
+If UBound($retCoords) = 1 Or($iDedupX = 0 And $iDedupY = 0) Then Return $retCoords
+Local $aFinalCoords[1] = [$retCoords[0]]
+Local $c1, $c2, $k
+For $i = 1 To UBound($retCoords) - 1
+$c1 = $retCoords[$i]
+$k = UBound($aFinalCoords) - 1
+For $j = 0 To $k
+$c2 = $aFinalCoords[$j]
+If($iDedupX > 0 And Abs($c1[0] - $c2[0]) < $iDedupX) Or($iDedupY > 0 And Abs($c1[1] - $c2[1]) < $iDedupY) Then
+ContinueLoop 2
+EndIf
+Next
+ReDim $aFinalCoords[$k + 2]
+$aFinalCoords[$k + 1] = $c1
+Next
+Return $aFinalCoords
 EndFunc
 Func decodeSingleCoord($coords)
 Local $aCoordsSplit = StringSplit($coords, ",", $STR_NOCOUNT)
@@ -39381,12 +39496,13 @@ SetLog("DLL Error: " & $res[0] & ", AttackBarCheck", $COLOR_RED)
 Else
 Local $aKeys = StringSplit($res[0], "|", $STR_NOCOUNT)
 ReDim $aResult[UBound($aKeys)][6]
+Local $iResultAddDup = 0
 For $i = 0 To UBound($aKeys) - 1
 If $g_bRunState = False Then Return
-$aResult[$i][0] = RetrieveImglocProperty($aKeys[$i], "objectname")
+$aResult[$i + $iResultAddDup][0] = RetrieveImglocProperty($aKeys[$i], "objectname")
 $aValue = RetrieveImglocProperty($aKeys[$i], "objectpoints")
-$aCoords = StringSplit($aValue, "|", $STR_NOCOUNT)
-$aCoordsSplit = StringSplit($aCoords[0], ",", $STR_NOCOUNT)
+$aCoords = decodeMultipleCoords($aValue, 50)
+$aCoordsSplit = $aCoords[0]
 If UBound($aCoordsSplit) = 2 Then
 $aCoordArray[0][0] = $aCoordsSplit[0]
 $aCoordArray[0][1] = $aCoordsSplit[1]
@@ -39394,23 +39510,23 @@ Else
 $aCoordArray[0][0] = -1
 $aCoordArray[0][1] = -1
 EndIf
-If $g_bDebugSetlog Then Setlog($aResult[$i][0] & " | $aCoordArray: " & $aCoordArray[0][0] & "-" & $aCoordArray[0][1])
-If UBound($aCoords) > 1 And StringInStr($aResult[$i][0], "Spell") <> 0 Then
-If $g_bDebugSetlog Then Setlog($aResult[$i][0] & " detected twice!")
-Local $aCoordsSplit2 = StringSplit($aCoords[1], ",", $STR_NOCOUNT)
+If $g_bDebugSetlog Then Setlog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aCoordArray[0][0] & "-" & $aCoordArray[0][1])
+$aResult[$i + $iResultAddDup][1] = Number($aCoordArray[0][0])
+$aResult[$i + $iResultAddDup][2] = Number($aCoordArray[0][1])
+Local $iMultipleCoords = UBound($aCoords)
+If $iMultipleCoords > 1 And StringInStr($aResult[$i + $iResultAddDup][0], "Spell") <> 0 Then
+If $g_bDebugSetlog Then Setlog($aResult[$i + $iResultAddDup][0] & " detected " & $iMultipleCoords & " times!")
+Local $aCoordsSplit2 = $aCoords[1]
 If UBound($aCoordsSplit2) = 2 Then
-If $aCoordsSplit2[0] < $aCoordsSplit[0] Then
-$aCoordArray[0][0] = $aCoordsSplit2[0]
-$aCoordArray[0][1] = $aCoordsSplit2[1]
-If $g_bDebugSetlog Then Setlog($aResult[$i][0] & " | $aCoordArray: " & $aCoordArray[0][0] & "-" & $aCoordArray[0][1])
-EndIf
+$iResultAddDup += 1
+ReDim $aResult[UBound($aKeys) + $iResultAddDup][6]
+$aResult[$i + $iResultAddDup][0] = $aResult[$i + $iResultAddDup - 1][0]
+$aResult[$i + $iResultAddDup][1] = $aCoordsSplit2[0]
+$aResult[$i + $iResultAddDup][2] = $aCoordsSplit2[1]
+If $g_bDebugSetlog Then Setlog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aResult[$i + $iResultAddDup][1] & "-" & $aResult[$i + $iResultAddDup][2])
 Else
-$aCoordArray[0][0] = -1
-$aCoordArray[0][1] = -1
 EndIf
 EndIf
-$aResult[$i][1] = Number($aCoordArray[0][0])
-$aResult[$i][2] = Number($aCoordArray[0][1])
 Next
 _ArraySort($aResult, 0, 0, 0, 1)
 If Not $Remaining Then
@@ -39605,7 +39721,7 @@ If CheckAndroidRunning(False) = False Then Return
 getBSPos()
 WinGetAndroidHandle()
 If Not $g_bChkBackgroundMode And $g_hAndroidWindow <> 0 Then
-AndroidToFront("checkMainScreen")
+AndroidToFront(Default, "checkMainScreen")
 EndIf
 If $g_bAndroidAdbScreencap = False And _WinAPI_IsIconic($g_hAndroidWindow) Then WinSetState($g_hAndroidWindow, "", @SW_RESTORE)
 EndIf
@@ -39663,6 +39779,7 @@ Local $msg, $x, $y, $Result
 $g_bMinorObstacle = False
 _CaptureRegions()
 If checkObstacles_Network() Then Return True
+If checkObstacles_GfxError() Then Return True
 Local $bIsOnBuilderIsland = _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel)
 If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
 SetLog("Detected Builder Base, trying to switch back to Main Village")
@@ -39900,6 +40017,13 @@ CloseCoC(True)
 If _Sleep($DELAYCHECKOBSTACLES3) Then Return
 Return True
 EndFunc
+Func checkObstacles_RebootAndroid()
+If TestCapture() Then Return "Reboot Android"
+OcrForceCaptureRegion(True)
+$g_bGfxError = True
+CheckAndroidReboot()
+Return True
+EndFunc
 Func checkObstacles_StopBot($msg)
 SetLog($msg, $COLOR_ERROR)
 If($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyAlertMaintenance = True Then NotifyPushToBoth($msg)
@@ -39944,6 +40068,14 @@ SetLog("Network Connection lost, waiting...", $COLOR_ERROR)
 EndIf
 Else
 $hCocReconnectingTimer = 0
+EndIf
+Return False
+EndFunc
+Func checkObstacles_GfxError($bForceCapture = False, $bRebootAndroid = True)
+If UBound(decodeMultipleCoords(FindImage("GfxError", $g_sGfxError, "ECD", 5, $bForceCapture))) >= 5 Then
+SetLog("Gfx Errors detected, Reloading Android...", $COLOR_ERROR)
+If $bRebootAndroid Then Return checkObstacles_RebootAndroid()
+Return True
 EndIf
 Return False
 EndFunc
@@ -41159,6 +41291,11 @@ Return True
 EndFunc
 Func CheckAndroidRebootCondition($bRebootAndroid = True, $bLogOnly = False)
 If $g_hAndroidLaunchTime = 0 Then InitAndroidRebootCondition(True)
+If $g_bGfxError Then
+$g_bGfxError = False
+SetLog("Reboot " & $g_sAndroidEmulator & " (" & $g_sAndroidInstance & ") due to detected Gfx Errors")
+Return True
+EndIF
 If $g_iAndroidRebootHours <= 0 Then Return False
 Local $iLaunched = __TimerDiff($g_hAndroidLaunchTime)
 If $bLogOnly = True Then
@@ -42458,20 +42595,21 @@ Func CheckScreenLeapDroid($bSetLog = True)
 If Not InitAndroid() Then Return False
 Return True
 EndFunc
-Func EmbedLeapDroid($bEmbed = Default)
+Func EmbedLeapDroid($bEmbed = Default, $hHWndAfter = Default)
 If $bEmbed = Default Then $bEmbed = $g_bAndroidEmbedded
+If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
 Local $aWin = _WinAPI_EnumProcessWindows(GetAndroidPid(), False)
 Local $i
-Local $hQTool = 0
+Local $hToolbar = 0
 For $i = 1 To UBound($aWin) - 1
 Local $h = $aWin[$i][0]
 Local $c = $aWin[$i][1]
 If $c = "QTool" Then
-$hQTool = $h
+$hToolbar = $h
 ExitLoop
 EndIf
 Next
-If $hQTool = 0 Then
+If $hToolbar = 0 Then
 SetDebugLog("EmbedLeapDroid(" & $bEmbed & "): QTool Window not found, list of windows:" & $c, Default, True)
 For $i = 1 To UBound($aWin) - 1
 Local $h = $aWin[$i][0]
@@ -42479,9 +42617,13 @@ Local $c = $aWin[$i][1]
 SetDebugLog("EmbedLeapDroid(" & $bEmbed & "): Handle = " & $h & ", Class = " & $c, Default, True)
 Next
 Else
-SetDebugLog("EmbedLeapDroid(" & $bEmbed & "): $hQTool=" & $hQTool, Default, True)
-WinMove2($hQTool, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
-_WinAPI_ShowWindow($hQTool,($bEmbed ? @SW_HIDE : @SW_SHOWNOACTIVATE))
+SetDebugLog("EmbedLeapDroid(" & $bEmbed & "): $hToolbar=" & $hToolbar, Default, True)
+If $bEmbed Then WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+_WinAPI_ShowWindow($hToolbar,($bEmbed ? @SW_HIDE : @SW_SHOWNOACTIVATE))
+If Not $bEmbed Then
+WinMove2($hToolbar, "", -1, -1, -1, -1, $hHWndAfter, 0, False)
+If $hHWndAfter = $HWND_TOPMOST Then WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+EndIf
 EndIf
 EndFunc
 Func LeapDroidBotStartEvent()
@@ -42592,7 +42734,7 @@ EndIf
 Return 0
 EndFunc
 Func InitNox($bCheckOnly = False)
-Local $process_killed, $aRegExResult, $g_sAndroidAdbDeviceHost, $g_sAndroidAdbDevicePort, $oops = 0
+Local $process_killed, $aRegexResult, $g_sAndroidAdbDeviceHost, $g_sAndroidAdbDevicePort, $oops = 0
 Local $Version = RegRead($g_sHKLM & "\SOFTWARE" & $g_sWow6432Node & "\Microsoft\Windows\CurrentVersion\Uninstall\Nox\", "DisplayVersion")
 SetError(0, 0, 0)
 Local $path = GetNoxPath()
@@ -42626,17 +42768,17 @@ $g_sAndroidVersion = $Version
 $__Nox_Path = $path
 $g_sAndroidPath = $__Nox_Path
 $__VBoxManage_Path = $VBoxFile
-$aRegExResult = StringRegExp($__VBoxVMinfo, ".*host ip = ([^,]+), .* guest port = 5555", $STR_REGEXPARRAYMATCH)
+$aRegexResult = StringRegExp($__VBoxVMinfo, ".*host ip = ([^,]+), .* guest port = 5555", $STR_REGEXPARRAYMATCH)
 If Not @error Then
-$g_sAndroidAdbDeviceHost = $aRegExResult[0]
+$g_sAndroidAdbDeviceHost = $aRegexResult[0]
 If $g_bDebugAndroid Then Setlog("Func LaunchConsole: Read $g_sAndroidAdbDeviceHost = " & $g_sAndroidAdbDeviceHost, $COLOR_DEBUG)
 Else
 $oops = 1
 SetLog("Cannot read " & $g_sAndroidEmulator & "(" & $g_sAndroidInstance & ") ADB Device Host", $COLOR_ERROR)
 EndIf
-$aRegExResult = StringRegExp($__VBoxVMinfo, "name = .*host port = (\d{3,5}), .* guest port = 5555", $STR_REGEXPARRAYMATCH)
+$aRegexResult = StringRegExp($__VBoxVMinfo, "name = .*host port = (\d{3,5}), .* guest port = 5555", $STR_REGEXPARRAYMATCH)
 If Not @error Then
-$g_sAndroidAdbDevicePort = $aRegExResult[0]
+$g_sAndroidAdbDevicePort = $aRegexResult[0]
 If $g_bDebugAndroid Then Setlog("Func LaunchConsole: Read $g_sAndroidAdbDevicePort = " & $g_sAndroidAdbDevicePort, $COLOR_DEBUG)
 Else
 $oops = 1
@@ -42648,10 +42790,10 @@ Else
 SetLog("Using ADB default device " & $g_sAndroidAdbDevice & " for " & $g_sAndroidEmulator, $COLOR_ERROR)
 EndIf
 $g_sAndroidPicturesPath = "(/mnt/shared/Other|/mnt/shell/emulated/0/Download/other)"
-$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'Other', Host path: '(.*)'.*", $STR_REGEXPARRAYGLOBALMATCH)
+$aRegexResult = StringRegExp($__VBoxVMinfo, "Name: 'Other', Host path: '(.*)'.*", $STR_REGEXPARRAYGLOBALMATCH)
 If Not @error Then
 $g_bAndroidSharedFolderAvailable = True
-$g_sAndroidPicturesHostPath = $aRegExResult[UBound($aRegExResult) - 1] & "\"
+$g_sAndroidPicturesHostPath = $aRegexResult[UBound($aRegexResult) - 1] & "\"
 Else
 If FileExists(@MyDocumentsDir & "\Nox_share\") Then
 $g_bAndroidSharedFolderAvailable = True
@@ -42721,10 +42863,10 @@ EndFunc
 Func CheckScreenNox($bSetLog = True)
 If Not InitAndroid() Then Return False
 Local $aValues[2][2] = [ ["vbox_dpi", "160"], ["vbox_graph_mode", $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight & "-16"] ]
-Local $i, $Value, $iErrCnt = 0, $process_killed, $aRegExResult
+Local $i, $Value, $iErrCnt = 0, $process_killed, $aRegexResult
 For $i = 0 To UBound($aValues) - 1
-$aRegExResult = StringRegExp($__VBoxGuestProperties, "Name: " & $aValues[$i][0] & ", value: (.+), timestamp:", $STR_REGEXPARRAYMATCH)
-If @error = 0 Then $Value = $aRegExResult[0]
+$aRegexResult = StringRegExp($__VBoxGuestProperties, "Name: " & $aValues[$i][0] & ", value: (.+), timestamp:", $STR_REGEXPARRAYMATCH)
+If @error = 0 Then $Value = $aRegexResult[0]
 If $Value <> $aValues[$i][1] Then
 If $iErrCnt = 0 Then
 If $bSetLog Then
@@ -42752,10 +42894,10 @@ For $PID In ProcessesExist($g_sAndroidProgramPath, "", 1)
 Local $currentInstance = $g_sAndroidInstance
 Local $CommandLine = ProcessGetCommandLine($PID)
 SetDebugLog("GetNoxRunningInstance: Found """ & $CommandLine & """ by PID=" & $PID)
-Local $aRegExResult = StringRegExp($CommandLine, ".*""-clone:([^""]+)"".*|.*-clone:([\S]+).*", $STR_REGEXPARRAYMATCH)
+Local $aRegexResult = StringRegExp($CommandLine, ".*""-clone:([^""]+)"".*|.*-clone:([\S]+).*", $STR_REGEXPARRAYMATCH)
 If @error = 0 Then
-$g_sAndroidInstance = $aRegExResult[0]
-If $g_sAndroidInstance = "" Then $g_sAndroidInstance = $aRegExResult[1]
+$g_sAndroidInstance = $aRegexResult[0]
+If $g_sAndroidInstance = "" Then $g_sAndroidInstance = $aRegexResult[1]
 SetDebugLog("Running " & $g_sAndroidEmulator & " instance is """ & $g_sAndroidInstance & """")
 EndIf
 If WinGetAndroidHandle() <> 0 Then
@@ -42781,11 +42923,12 @@ If _Sleep(500) Then Return False
 $aPos = WinGetPos($g_hAndroidWindow)
 ControlClick($g_hAndroidWindow, "", "", "left", 1, $aPos[2] - 46, 18)
 EndFunc
-Func HideNoxWindow($bHide = True)
-Return EmbedNox($bHide)
+Func HideNoxWindow($bHide = True, $hHWndAfter = Default)
+Return EmbedNox($bHide, $hHWndAfter)
 EndFunc
-Func EmbedNox($bEmbed = Default)
+Func EmbedNox($bEmbed = Default, $hHWndAfter = Default)
 If $bEmbed = Default Then $bEmbed = $g_bAndroidEmbedded
+If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
 Local $aWin = _WinAPI_EnumProcessWindows(GetAndroidPid(), False)
 Local $i
 Local $hToolbar = 0
@@ -42812,7 +42955,12 @@ SetDebugLog("EmbedNox(" & $bEmbed & "): Handle = " & $h & ", Class = " & $c, Def
 Next
 Else
 SetDebugLog("EmbedNox(" & $bEmbed & "): $hToolbar=" & $hToolbar, Default, True)
-WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST,($bEmbed ? $SWP_HIDEWINDOW : $SWP_SHOWWINDOW), False)
+If $bEmbed Then
+WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, $SWP_HIDEWINDOW, False, False)
+Else
+WinMove2($hToolbar, "", -1, -1, -1, -1, $hHWndAfter, $SWP_SHOWWINDOW, False, False)
+If $hHWndAfter = $HWND_TOPMOST Then WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, $SWP_SHOWWINDOW, False, False)
+EndIf
 EndIf
 EndFunc
 Func OpenKOPLAYER($bRestart = False)
@@ -43002,20 +43150,21 @@ Next
 If $iErrCnt > 0 Then Return False
 Return True
 EndFunc
-Func EmbedKOPLAYER($bEmbed = Default)
+Func EmbedKOPLAYER($bEmbed = Default, $hHWndAfter = Default)
 If $bEmbed = Default Then $bEmbed = $g_bAndroidEmbedded
+If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
 Local $aWin = _WinAPI_EnumProcessWindows(GetAndroidPid(), False)
 Local $i
-Local $hTool = 0
+Local $hToolbar = 0
 For $i = 1 To UBound($aWin) - 1
 Local $h = $aWin[$i][0]
 Local $c = $aWin[$i][1]
 If $c = "Qt5QWindowToolSaveBits" Then
-$hTool = $h
+$hToolbar = $h
 ExitLoop
 EndIf
 Next
-If $hTool = 0 Then
+If $hToolbar = 0 Then
 SetDebugLog("EmbedKOPLAYER(" & $bEmbed & "): Qt5QWindowToolSaveBits Window not found, list of windows:" & $c, Default, True)
 For $i = 1 To UBound($aWin) - 1
 Local $h = $aWin[$i][0]
@@ -43023,9 +43172,13 @@ Local $c = $aWin[$i][1]
 SetDebugLog("EmbedKOPLAYER(" & $bEmbed & "): Handle = " & $h & ", Class = " & $c, Default, True)
 Next
 Else
-SetDebugLog("EmbedKOPLAYER(" & $bEmbed & "): $hTool=" & $hTool, Default, True)
-WinMove2($hTool, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
-_WinAPI_ShowWindow($hTool,($bEmbed ? @SW_HIDE : @SW_SHOWNOACTIVATE))
+SetDebugLog("EmbedKOPLAYER(" & $bEmbed & "): $hToolbar=" & $hToolbar, Default, True)
+If $bEmbed Then WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+_WinAPI_ShowWindow($hToolbar,($bEmbed ? @SW_HIDE : @SW_SHOWNOACTIVATE))
+If Not $bEmbed Then
+WinMove2($hToolbar, "", -1, -1, -1, -1, $hHWndAfter, 0, False)
+If $hHWndAfter = $HWND_TOPMOST Then WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+EndIf
 EndIf
 EndFunc
 Func OpeniTools($bRestart = False)
@@ -43237,11 +43390,12 @@ If AndroidPicturePathAutoConfig(Default, Default, $bSetLog) Then $iErrCnt += 1
 If $iErrCnt > 0 Then Return False
 Return True
 EndFunc
-Func HideiToolsWindow($bHide = True)
-Return EmbediTools($bHide)
+Func HideiToolsWindow($bHide = True, $hHWndAfter = Default)
+Return EmbediTools($bHide, $hHWndAfter)
 EndFunc
-Func EmbediTools($bEmbed = Default)
+Func EmbediTools($bEmbed = Default, $hHWndAfter = Default)
 If $bEmbed = Default Then $bEmbed = $g_bAndroidEmbedded
+If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
 Local $aWin = _WinAPI_EnumProcessWindows(GetAndroidPid(), False)
 Local $i
 Local $hToolbar = 0
@@ -43271,11 +43425,19 @@ SetDebugLog("EmbediTools(" & $bEmbed & "): Handle = " & $h & ", Class = " & $c, 
 Next
 Else
 SetDebugLog("EmbediTools(" & $bEmbed & "): $hToolbar=" & $hToolbar, Default, True)
-WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+If $bEmbed Then WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 _WinAPI_ShowWindow($hToolbar,($bEmbed ? @SW_HIDE : @SW_SHOWNOACTIVATE))
+If Not $bEmbed Then
+WinMove2($hToolbar, "", -1, -1, -1, -1, $hHWndAfter, 0, False)
+If $hHWndAfter = $HWND_TOPMOST Then WinMove2($hToolbar, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+EndIf
 For $i = 0 To UBound($hAddition) - 1
-WinMove2($hAddition[$i], "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+If $bEmbed Then WinMove2($hAddition[$i], "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 _WinAPI_ShowWindow($hAddition[$i],($bEmbed ? @SW_HIDE : @SW_SHOWNOACTIVATE))
+If Not $bEmbed Then
+WinMove2($hAddition[$i], "", -1, -1, -1, -1, $hHWndAfter, 0, False)
+If $hHWndAfter = $HWND_TOPMOST Then WinMove2($hAddition[$i], "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+EndIf
 Next
 EndIf
 EndFunc
@@ -43947,7 +44109,7 @@ Local $g_hFrmBotWidth = $g_aFrmBotPosInit[2] + $aPosCtl[2] + 2
 Local $g_hFrmBotHeight = $g_aFrmBotPosInit[3] + $g_iFrmBotAddH + $g_aFrmBotPosInit[7]
 $g_hProcShieldInput[3] = True
 $g_bAndroidEmbedded = True
-If $g_iFrmBotDockedPosX = -1 And $g_iFrmBotDockedPosY = -1 Then
+If $g_iFrmBotDockedPosX = $g_WIN_POS_DEFAULT Or $g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT Then
 If $g_iFrmBotPosX < $g_iAndroidPosX Then
 $g_iFrmBotDockedPosX = $g_iFrmBotPosX
 $g_iFrmBotDockedPosY = $g_iFrmBotPosY
@@ -45366,7 +45528,7 @@ Setlog("# GetLocationBuilding error code: " & $sEmsg, $COLOR_ERROR)
 EndFunc
 Func FindPos()
 getBSPos()
-AndroidToFront("FindPos")
+AndroidToFront(Default, "FindPos")
 Local $wasDown = AndroidShieldForceDown(True, True)
 While 1
 If _IsPressed("01") Or _IsPressed("02") Then
@@ -45740,13 +45902,19 @@ WindowsArrange("EMBED", $g_iAutoAlignOffsetX, $g_iAutoAlignOffsetY)
 EndSwitch
 EndIf
 EndFunc
-Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter = 0, $iFlags = 0, $bCheckAfterPos = True)
+Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter = 0, $iFlags = 0, $bCheckAfterPos = True, $bIconCheck = True)
+If $WinTitle = $g_hFrmBot And $g_iGuiMode = 0 Then Return $WinTitle
 Local $hWin = WinGetHandle($WinTitle, $WinText)
-If $WinTitle = $g_hFrmBot And $g_iGuiMode = 0 Then Return $hWin
-If _WinAPI_IsIconic($hWin) Then
+If @error Then Return 0
+If $bIconCheck And _WinAPI_IsIconic($hWin) Then
 SetDebugLog("Window " & $WinTitle &(($WinTitle <> $hWin) ? "(" & $hWin & ")" : "") & " restored", $COLOR_ACTION)
 WinSetState($hWin, "", @SW_RESTORE)
 EndIf
+Local $NoMove = $x = -1 And $y = -1
+Local $NoResize = $w = -1 And $h = -1
+Local $NOZORDER =($hAfter = 0 ? BitOR($SWP_NOZORDER, $SWP_NOOWNERZORDER) : 0)
+$bCheckAfterPos = $bCheckAfterPos And(Not $NoMove Or Not $NoResize)
+If Not $NoMove Or Not $NoResize Then
 Local $aPos = WinGetPos($hWin)
 If @error <> 0 Or Not IsArray($aPos) Then
 SetError(1, @extended, -1)
@@ -45757,9 +45925,6 @@ If IsArray($aPPos) Then
 $aPos[0] -= $aPPos[0]
 $aPos[1] -= $aPPos[1]
 EndIf
-Local $NoMove = $x = -1 And $y = -1
-Local $NoResize = $w = -1 And $h = -1
-Local $NOZORDER =($hAfter = 0 ? $SWP_NOZORDER : 0)
 If $x = -1 Or $y = -1 Or $w = -1 Or $h = -1 Then
 If $x = -1 Then $x = $aPos[0]
 If $y = -1 Then $y = $aPos[1]
@@ -45768,6 +45933,7 @@ If $h = -1 Then $h = $aPos[3]
 EndIf
 $NoMove = $NoMove Or($x = $aPos[0] And $y = $aPos[1])
 $NoResize = $NoResize Or($w = $aPos[2] And $h = $aPos[3])
+EndIf
 If $g_bWinMove2_Compatible And $NoResize = False Then
 WinMove($WinTitle, $WinText, $x, $y, $w, $h)
 _WinAPI_SetWindowPos($hWin, $hAfter, 0, 0, 0, 0, BitOR($SWP_NOSIZE, $SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags))
@@ -47750,6 +47916,40 @@ EndIf
 Local $aResult = DllCall("kernel32.dll", "bool", "CreateProcessW", $sAppNameType, $sAppName, "struct*", $tCommand, "struct*", $tSecurity, "struct*", $tThread, "bool", $bInherit, "dword", $iFlags, "struct*", $pEnviron, $sDirType, $sDir, "struct*", $tStartupInfo, "struct*", $tProcess)
 If @error Then Return SetError(@error, @extended, False)
 Return $aResult[0]
+EndFunc
+Func _WinAPI_AllocConsole()
+Local $aResult = DllCall("kernel32.dll", "bool", "AllocConsole")
+If @error Then Return SetError(@error, @extended, False)
+Return $aResult[0]
+EndFunc
+Func _WinAPI_SetConsoleIcon($g_sLibIconPath, $nIconID)
+Local $hIcon = DllStructCreate("int")
+Local $Result = DllCall("shell32.dll", "int", "ExtractIconEx", "str", $g_sLibIconPath, "int", $nIconID - 1, "hwnd", 0, "ptr", DllStructGetPtr($hIcon), "int", 1)
+If UBound($Result) > 0 Then
+$Result = $Result[0]
+If $Result > 0 Then
+$Result = DllCall("kernel32.dll", "bool", "SetConsoleIcon", "ptr", DllStructGetData($hIcon, 1))
+$Result = DllCall("kernel32.dll", "hwnd", "GetConsoleWindow")
+Local $error = @error, $extended = @extended
+If UBound($Result) > 0 Then
+Local $hConsole = $Result[0]
+_SendMessage($hConsole, $WM_SETICON, 0, DllStructGetData($hIcon, 1))
+_SendMessage($hConsole, $WM_SETICON, 1, DllStructGetData($hIcon, 1))
+Sleep(50)
+EndIf
+DllCall("user32.dll", "int", "DestroyIcon", "hwnd", DllStructGetData($hIcon, 1))
+If $error Then Return SetError($error, $extended, False)
+Return True
+EndIf
+EndIf
+If @error Then Return SetError(@error, @extended, False)
+EndFunc
+Func _ConsoleWrite($Text)
+Local $hFile, $pBuffer, $iToWrite, $iWritten, $tBuffer = DllStructCreate("char[" & StringLen($Text) & "]")
+DllStructSetData($tBuffer, 1, $Text)
+$hFile = _WinAPI_GetStdHandle(1)
+_WinAPI_WriteFile($hFile, $tBuffer, StringLen($Text), $iWritten)
+Return $iWritten
 EndFunc
 Func FindExitButton($sButtonName)
 Local $aCoor
@@ -51866,7 +52066,6 @@ Setlog("pos in row: " & $donateposinrow, $COLOR_ERROR)
 setlog("coordinate: " & 365 +($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
 debugimagesave("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asTroopNames[$iTroopIndex] & "_")
 EndIf
-If $g_bDebugOCRdonate Then
 If $g_bQuickTrainEnable Then
 Local $icount = 0
 For $x = 0 To $Quant
@@ -51896,7 +52095,6 @@ If $iTroopIndex >= $eTroopBarbarian And $iTroopIndex <= $eTroopBowler Then
 $g_iTotalDonateCapacity -=($Quant * $g_aiTroopSpace[$iTroopIndex])
 If $g_iDonTroopsLimit = $Quant Then
 $g_bSkipDonTroops = True
-EndIf
 EndIf
 EndIf
 Else
@@ -52794,7 +52992,7 @@ Setlog($g_sAndroidEmulator & " is not open", $COLOR_ERROR)
 SetError(1)
 Return
 EndIf
-AndroidToFront("LocateUpgrades")
+AndroidToFront(Default, "LocateUpgrades")
 Local $wasDown = AndroidShieldForcedDown()
 AndroidShield("LocateUpgrades")
 Local $MsgBox, $stext
@@ -54526,11 +54724,11 @@ EndIf
 Local $bSufficentResourceToUpgrade = False
 Switch $g_aUpgradeResourceCostDuration[0]
 Case "Gold"
-If $g_aiCurrentLoot[$eLootGold] >=($g_aUpgradeResourceCostDuration[1] + GUICtrlRead($g_SmartMinGold)) Then $bSufficentResourceToUpgrade = True
+If $g_aiCurrentLoot[$eLootGold] >=($g_aUpgradeResourceCostDuration[1] + $g_iSmartMinGold) Then $bSufficentResourceToUpgrade = True
 Case "Elixir"
-If $g_aiCurrentLoot[$eLootElixir] >=($g_aUpgradeResourceCostDuration[1] + GUICtrlRead($g_SmartMinElixir)) Then $bSufficentResourceToUpgrade = True
+If $g_aiCurrentLoot[$eLootElixir] >=($g_aUpgradeResourceCostDuration[1] + $g_iSmartMinElixir) Then $bSufficentResourceToUpgrade = True
 Case "Dark Elixir"
-If $g_aiCurrentLoot[$eLootDarkElixir] >=($g_aUpgradeResourceCostDuration[1] + GUICtrlRead($g_iSmartMinDark)) Then $bSufficentResourceToUpgrade = True
+If $g_aiCurrentLoot[$eLootDarkElixir] >=($g_aUpgradeResourceCostDuration[1] + $g_iSmartMinDark) Then $bSufficentResourceToUpgrade = True
 EndSwitch
 If Not $bSufficentResourceToUpgrade Then
 SetLog("Unsufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade...", $COLOR_WARNING)
@@ -57738,7 +57936,8 @@ EndIf
 ReleaseMutex($hMutex)
 Local $cmd = """" & @ScriptDir & "\MyBot.run.Watchdog.exe"""
 If @Compiled = 0 Then $cmd = """" & @AutoItExe & """ /AutoIt3ExecuteScript """ & @ScriptDir & "\MyBot.run.Watchdog.au3" & """"
-Local $pid = Run($cmd, @ScriptDir, @SW_HIDE)
+If $g_iBotLaunchOption_Console Then $cmd &= " /console"
+Local $pid = Run($cmd, @ScriptDir)
 If $pid = 0 Then
 SetLog("Cannot launch watchdog", $COLOR_RED)
 Return 0
@@ -58014,10 +58213,10 @@ SetDebugLog("applyConfig(), call number " & $iApplyConfigCount)
 setMaxDegreeOfParallelism($g_iThreads)
 setProcessingPoolSize($g_iGlobalThreads)
 If $g_bAndroidEmbedded = False Then
-If $g_iFrmBotPosX > -30000 And $g_iFrmBotPosY > -30000 And $g_bFrmBotMinimized = False Then WinMove($g_hFrmBot, "", $g_iFrmBotPosX, $g_iFrmBotPosY)
-If $g_iAndroidPosX > -30000 And $g_iAndroidPosY > -30000 And $g_bIsHidden = False Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+If $g_iFrmBotPosX > -30000 And $g_iFrmBotPosY > -30000 And $g_bFrmBotMinimized = False And $g_iFrmBotPosX <> $g_WIN_POS_DEFAULT And $g_iFrmBotPosY <> $g_WIN_POS_DEFAULT Then WinMove($g_hFrmBot, "", $g_iFrmBotPosX, $g_iFrmBotPosY)
+If $g_iAndroidPosX > -30000 And $g_iAndroidPosY > -30000 And $g_bIsHidden = False And $g_iAndroidPosX <> $g_WIN_POS_DEFAULT And $g_iAndroidPosY <> $g_WIN_POS_DEFAULT Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
 Else
-If $g_iFrmBotDockedPosX > -30000 And $g_iFrmBotDockedPosY > -30000 And $g_bFrmBotMinimized = False Then WinMove($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY)
+If $g_iFrmBotDockedPosX > -30000 And $g_iFrmBotDockedPosY > -30000 And $g_bFrmBotMinimized = False And $g_iFrmBotDockedPosX <> $g_WIN_POS_DEFAULT And $g_iFrmBotDockedPosY <> $g_WIN_POS_DEFAULT Then WinMove($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY)
 EndIf
 If $g_iGuiMode <> 1 Then
 If $g_iGuiMode = 2 Then
@@ -58942,16 +59141,18 @@ EndFunc
 Func ApplyConfig_600_29($TypeReadSave)
 Switch $TypeReadSave
 Case "Read"
-Switch $g_iActivateKQCondition
-Case "Manual"
-GUICtrlSetState($g_hRadManAbilities, $GUI_CHECKED)
-Case "Auto"
-GUICtrlSetState($g_hRadAutoAbilities, $GUI_CHECKED)
-EndSwitch
-GUICtrlSetData($g_hTxtManAbilities,($g_iDelayActivateKQ / 1000))
-GUICtrlSetState($g_hChkUseWardenAbility, $g_bActivateWardenCondition ? $GUI_CHECKED : $GUI_UNCHECKED)
-GUICtrlSetData($g_hTxtWardenAbility,($g_iDelayActivateW / 1000))
-ChkUseWardenAbility()
+GUICtrlSetState($g_hRadAutoQueenAbility, $g_iActivateQueen = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadManQueenAbility, $g_iActivateQueen = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadBothQueenAbility, $g_iActivateQueen = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetData($g_hTxtManQueenAbility,($g_iDelayActivateQueen / 1000))
+GUICtrlSetState($g_hRadAutoKingAbility, $g_iActivateKing = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadManKingAbility, $g_iActivateKing = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadBothKingAbility, $g_iActivateKing = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetData($g_hTxtManKingAbility,($g_iDelayActivateKing / 1000))
+GUICtrlSetState($g_hRadAutoWardenAbility, $g_iActivateWarden = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadManWardenAbility, $g_iActivateWarden = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadBothWardenAbility, $g_iActivateWarden = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetData($g_hTxtManWardenAbility,($g_iDelayActivateWarden / 1000))
 GUICtrlSetState($g_hChkAttackPlannerEnable, $g_bAttackPlannerEnable = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkAttackPlannerCloseCoC, $g_bAttackPlannerCloseCoC = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkAttackPlannerCloseAll, $g_bAttackPlannerCloseAll = True ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -58975,10 +59176,30 @@ For $i = 0 To 23
 GUICtrlSetState($g_ahChkDropCCHours[$i], $g_abPlannedDropCCHours[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
 Next
 Case "Save"
-$g_iActivateKQCondition = GUICtrlRead($g_hRadManAbilities) = $GUI_CHECKED ? "Manual" : "Auto"
-$g_iDelayActivateKQ = GUICtrlRead($g_hTxtManAbilities) * 1000
-$g_bActivateWardenCondition =(GUICtrlRead($g_hChkUseWardenAbility) = $GUI_CHECKED)
-$g_iDelayActivateW = GUICtrlRead($g_hTxtWardenAbility) * 1000
+If GUICtrlRead($g_hRadAutoQueenAbility) = $GUI_CHECKED Then
+$g_iActivateQueen = 0
+ElseIf GUICtrlRead($g_hRadManQueenAbility) = $GUI_CHECKED Then
+$g_iActivateQueen = 1
+ElseIf GUICtrlRead($g_hRadBothQueenAbility) = $GUI_CHECKED Then
+$g_iActivateQueen = 2
+EndIf
+$g_iDelayActivateQueen = GUICtrlRead($g_hTxtManQueenAbility) * 1000
+If GUICtrlRead($g_hRadAutoKingAbility) = $GUI_CHECKED Then
+$g_iActivateKing = 0
+ElseIf GUICtrlRead($g_hRadManKingAbility) = $GUI_CHECKED Then
+$g_iActivateKing = 1
+ElseIf GUICtrlRead($g_hRadBothKingAbility) = $GUI_CHECKED Then
+$g_iActivateKing = 2
+EndIf
+$g_iDelayActivateKing = GUICtrlRead($g_hTxtManKingAbility) * 1000
+If GUICtrlRead($g_hRadAutoWardenAbility) = $GUI_CHECKED Then
+$g_iActivateWarden = 0
+ElseIf GUICtrlRead($g_hRadManWardenAbility) = $GUI_CHECKED Then
+$g_iActivateWarden = 1
+ElseIf GUICtrlRead($g_hRadBothWardenAbility) = $GUI_CHECKED Then
+$g_iActivateWarden = 2
+EndIf
+$g_iDelayActivateWarden = GUICtrlRead($g_hTxtManWardenAbility) * 1000
 $g_bAttackPlannerEnable =(GUICtrlRead($g_hChkAttackPlannerEnable) = $GUI_CHECKED)
 $g_bAttackPlannerCloseCoC =(GUICtrlRead($g_hChkAttackPlannerCloseCoC) = $GUI_CHECKED)
 $g_bAttackPlannerCloseAll =(GUICtrlRead($g_hChkAttackPlannerCloseAll) = $GUI_CHECKED)
@@ -59889,23 +60110,23 @@ SetDebugLog("Read Config " & $g_sProfileConfigPath)
 IniReadS($g_iThreads, $g_sProfileConfigPath, "general", "threads", $g_iThreads, "int")
 If $g_iThreads < 0 Then $g_iThreads = 0
 IniReadS($g_iBotDesignFlags, $g_sProfileConfigPath, "general", "botDesignFlags", 0, "int")
-IniReadS($g_iFrmBotPosX, $g_sProfileConfigPath, "general", "frmBotPosX", -1, "int")
-IniReadS($g_iFrmBotPosY, $g_sProfileConfigPath, "general", "frmBotPosY", -1, "int")
+IniReadS($g_iFrmBotPosX, $g_sProfileConfigPath, "general", "frmBotPosX", $g_iFrmBotPosX, "int")
+IniReadS($g_iFrmBotPosY, $g_sProfileConfigPath, "general", "frmBotPosY", $g_iFrmBotPosY, "int")
 If $g_iFrmBotPosX < -30000 Or $g_iFrmBotPosY < -30000 Then
-$g_iFrmBotPosX = -1
-$g_iFrmBotPosY = -1
+$g_iFrmBotPosX = $g_WIN_POS_DEFAULT
+$g_iFrmBotPosY = $g_WIN_POS_DEFAULT
 EndIf
-IniReadS($g_iAndroidPosX, $g_sProfileConfigPath, "general", "AndroidPosX", -1, "int")
-IniReadS($g_iAndroidPosY, $g_sProfileConfigPath, "general", "AndroidPosY", -1, "int")
+IniReadS($g_iAndroidPosX, $g_sProfileConfigPath, "general", "AndroidPosX", $g_iAndroidPosX, "int")
+IniReadS($g_iAndroidPosY, $g_sProfileConfigPath, "general", "AndroidPosY", $g_iAndroidPosY, "int")
 If $g_iAndroidPosX < -30000 Or $g_iAndroidPosY < -30000 Then
-$g_iAndroidPosX = -1
-$g_iAndroidPosY = -1
+$g_iAndroidPosX = $g_WIN_POS_DEFAULT
+$g_iAndroidPosY = $g_WIN_POS_DEFAULT
 EndIf
-IniReadS($g_iFrmBotDockedPosX, $g_sProfileConfigPath, "general", "frmBotDockedPosX", -1, "int")
-IniReadS($g_iFrmBotDockedPosY, $g_sProfileConfigPath, "general", "frmBotDockedPosY", -1, "int")
+IniReadS($g_iFrmBotDockedPosX, $g_sProfileConfigPath, "general", "frmBotDockedPosX", $g_iFrmBotDockedPosX, "int")
+IniReadS($g_iFrmBotDockedPosY, $g_sProfileConfigPath, "general", "frmBotDockedPosY", $g_iFrmBotDockedPosY, "int")
 If $g_iFrmBotDockedPosX < -30000 Or $g_iFrmBotDockedPosY < -30000 Then
-$g_iFrmBotDockedPosX = -1
-$g_iFrmBotDockedPosY = -1
+$g_iFrmBotDockedPosX = $g_WIN_POS_DEFAULT
+$g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT
 EndIf
 IniReadS($g_iRedrawBotWindowMode, $g_sProfileConfigPath, "general", "RedrawBotWindowMode", 2, "int")
 ReadConfig_Android()
@@ -60387,10 +60608,12 @@ IniReadS($g_iAtkTSAddTilesWhileTrain, $g_sProfileConfigPath, "search", "SWTtiles
 IniReadS($g_iAtkTSAddTilesFullTroops, $g_sProfileConfigPath, "search", "THaddTiles", 2, "int")
 EndFunc
 Func ReadConfig_600_29()
-IniReadS($g_iActivateKQCondition, $g_sProfileConfigPath, "attack", "ActivateKQ", "Auto")
-IniReadS($g_iDelayActivateKQ, $g_sProfileConfigPath, "attack", "delayActivateKQ", 9000, "int")
-IniReadS($g_bActivateWardenCondition, $g_sProfileConfigPath, "attack", "ActivateWarden", False, "Bool")
-IniReadS($g_iDelayActivateW, $g_sProfileConfigPath, "attack", "delayActivateW", 10000, "int")
+IniReadS($g_iActivateQueen, $g_sProfileConfigPath, "attack", "ActivateQueen", 0, "int")
+IniReadS($g_iActivateKing, $g_sProfileConfigPath, "attack", "ActivateKing", 0, "int")
+IniReadS($g_iActivateWarden, $g_sProfileConfigPath, "attack", "ActivateWarden", 0, "int")
+IniReadS($g_iDelayActivateQueen, $g_sProfileConfigPath, "attack", "delayActivateQueen", 9000, "int")
+IniReadS($g_iDelayActivateQueen, $g_sProfileConfigPath, "attack", "delayActivateKing", 9000, "int")
+IniReadS($g_iDelayActivateWarden, $g_sProfileConfigPath, "attack", "delayActivateWarden", 10000, "int")
 $g_bAttackPlannerEnable =(IniRead($g_sProfileConfigPath, "planned", "chkAttackPlannerEnable", "0") = "1")
 $g_bAttackPlannerCloseCoC =(IniRead($g_sProfileConfigPath, "planned", "chkAttackPlannerCloseCoC", "0") = "1")
 $g_bAttackPlannerCloseAll =(IniRead($g_sProfileConfigPath, "planned", "chkAttackPlannerCloseAll", "0") = "1")
@@ -60630,7 +60853,7 @@ IniReadS($g_bRestarted, $g_sProfileConfigPath, "general", "Restarted", $g_bResta
 If $g_bBotLaunchOption_Autostart = True Then $g_bRestarted = True
 $g_bCheckGameLanguage =(IniRead($g_sProfileConfigPath, "General", "ChkLanguage", "1") = "1")
 IniReadS($g_bAutoAlignEnable, $g_sProfileConfigPath, "general", "DisposeWindows", False, "Bool")
-IniReadS($g_iAutoAlignPosition, $g_sProfileConfigPath, "general", "DisposeWindowsPos", "SNAP-TR")
+IniReadS($g_iAutoAlignPosition, $g_sProfileConfigPath, "general", "DisposeWindowsPos", "EMBED")
 IniReadS($g_iAutoAlignOffsetX, $g_sProfileConfigPath, "other", "WAOffsetX", "")
 IniReadS($g_iAutoAlignOffsetY, $g_sProfileConfigPath, "other", "WAOffsetY", "")
 IniReadS($g_bHideWhenMinimized, $g_sProfileConfigPath, "general", "HideWhenMinimized", False, "Bool")
@@ -61050,9 +61273,9 @@ Next
 For $i = 0 To 2
 _Ini_Add("Auto Upgrade", "chkResourcesToIgnore[" & $i & "]", $g_ichkResourcesToIgnore[$i])
 Next
-_Ini_Add("Auto Upgrade", "SmartMinGold", GUICtrlRead($g_SmartMinGold))
-_Ini_Add("Auto Upgrade", "SmartMinElixir", GUICtrlRead($g_SmartMinElixir))
-_Ini_Add("Auto Upgrade", "SmartMinDark", GUICtrlRead($g_SmartMinDark))
+_Ini_Add("Auto Upgrade", "SmartMinGold", $g_iSmartMinGold)
+_Ini_Add("Auto Upgrade", "SmartMinElixir", $g_iSmartMinElixir)
+_Ini_Add("Auto Upgrade", "SmartMinDark", $g_iSmartMinDark)
 EndFunc
 Func SaveConfig_600_17()
 ApplyConfig_600_17(GetApplyConfigSaveAction())
@@ -61253,10 +61476,12 @@ _Ini_Add("search", "THaddTiles", $g_iAtkTSAddTilesFullTroops)
 EndFunc
 Func SaveConfig_600_29()
 ApplyConfig_600_29(GetApplyConfigSaveAction())
-_Ini_Add("attack", "ActivateKQ", $g_iActivateKQCondition)
-_Ini_Add("attack", "delayActivateKQ", $g_iDelayActivateKQ)
-_Ini_Add("attack", "ActivateWarden", $g_bActivateWardenCondition ? 1 : 0)
-_Ini_Add("attack", "delayActivateW", $g_iDelayActivateW)
+_Ini_Add("attack", "ActivateQueen", $g_iActivateQueen)
+_Ini_Add("attack", "ActivateKing", $g_iActivateKing)
+_Ini_Add("attack", "ActivateWarden", $g_iActivateWarden)
+_Ini_Add("attack", "delayActivateQueen", $g_iDelayActivateQueen)
+_Ini_Add("attack", "delayActivateKing", $g_iDelayActivateKing)
+_Ini_Add("attack", "delayActivateWarden", $g_iDelayActivateWarden)
 _Ini_Add("planned", "chkAttackPlannerEnable", $g_bAttackPlannerEnable ? 1 : 0)
 _Ini_Add("planned", "chkAttackPlannerCloseCoC", $g_bAttackPlannerCloseCoC ? 1 : 0)
 _Ini_Add("planned", "chkAttackPlannerCloseAll", $g_bAttackPlannerCloseAll ? 1 : 0)
@@ -63369,6 +63594,10 @@ Case "/minigui", "/mg", "-minigui", "-mg"
 $g_iGuiMode = 2
 Case "/nogui", "/ng", "-nogui", "-ng"
 $g_iGuiMode = 0
+Case "/console", "/c", "-console", "-c"
+$g_iBotLaunchOption_Console = True
+_WinAPI_AllocConsole()
+_WinAPI_SetConsoleIcon($g_sLibIconPath, $eIcnGUI)
 Case "/?", "/h", "/help", "-?", "-h", "-help"
 $g_iBotLaunchOption_Help = True
 Case Else
@@ -63563,7 +63792,7 @@ SplashStep(GetTranslatedFileIni("MBR GUI Design - Loading", "Waiting_for_Remote_
 SetDebugLog("Wait for GUI Process...")
 Local $timer = __TimerInit()
 While $g_iGuiPID = @AutoItPID And __TimerDiff($timer) < 60000
-_Sleep(50)
+Sleep(50)
 WEnd
 If $g_iGuiPID = @AutoItPID Then
 SetDebugLog("GUI Process not received, close bot")
@@ -63627,6 +63856,8 @@ If _Sleep($DELAYRUNBOT1) Then Return
 checkMainScreen()
 If $g_bRestart = True Then ContinueLoop
 chkShieldStatus()
+If $g_bRestart = True Then ContinueLoop
+checkObstacles()
 If $g_bRestart = True Then ContinueLoop
 If $g_bQuicklyFirstStart = True Then
 $g_bQuicklyFirstStart = False

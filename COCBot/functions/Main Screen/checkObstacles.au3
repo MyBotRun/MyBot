@@ -39,6 +39,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 	_CaptureRegions()
 
 	If checkObstacles_Network() Then Return True
+	If checkObstacles_GfxError() Then Return True
 	Local $bIsOnBuilderIsland = _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel)
 	If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
 		SetLog("Detected Builder Base, trying to switch back to Main Village")
@@ -303,6 +304,16 @@ Func checkObstacles_ReloadCoC($point = $aAway, $debugtxt = "")
 	Return True
 EndFunc   ;==>checkObstacles_ReloadCoC
 
+; It's more stable to restart CoC app than click the message restarting the game
+Func checkObstacles_RebootAndroid()
+	;PureClickP($point, 1, 0, $debugtxt)
+	If TestCapture() Then Return "Reboot Android"
+	OcrForceCaptureRegion(True)
+	$g_bGfxError = True
+	CheckAndroidReboot()
+	Return True
+EndFunc   ;==>checkObstacles_ReloadCoC
+
 Func checkObstacles_StopBot($msg)
 	SetLog($msg, $COLOR_ERROR)
 	If ($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyAlertMaintenance = True Then NotifyPushToBoth($msg)
@@ -356,6 +367,16 @@ Func checkObstacles_Network($bForceCapture = False, $bReloadCoC = True)
 
 	Return False
 EndFunc   ;==>checkObstacles_Network
+
+Func checkObstacles_GfxError($bForceCapture = False, $bRebootAndroid = True)
+	If UBound(decodeMultipleCoords(FindImage("GfxError", $g_sGfxError, "ECD", 5, $bForceCapture))) >= 5 Then
+		SetLog("Gfx Errors detected, Reloading Android...", $COLOR_ERROR)
+		If $bRebootAndroid Then Return checkObstacles_RebootAndroid()
+		Return True
+	EndIf
+
+	Return False
+EndFunc   ;==>checkObstacles_GfxError
 
 Func UpdateGame()
 	; launch Play Store

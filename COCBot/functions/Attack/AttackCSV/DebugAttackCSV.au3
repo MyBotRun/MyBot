@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 Func debugAttackCSV($string)
 	If $g_bDebugAttackCSV Then
-		ConsoleWrite("A " & TimeDebug() & $string & @CRLF)
+		_ConsoleWrite("A " & TimeDebug() & $string & @CRLF)
 		Local $hfile = FileOpen($g_sProfileLogsPath & "debugAttackCSV.log", $FO_APPEND)
 		_FileWriteLog($hfile, $string)
 		FileClose($hfile)

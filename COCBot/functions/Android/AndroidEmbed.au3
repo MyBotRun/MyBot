@@ -390,7 +390,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 		$g_hProcShieldInput[3] = True
 		$g_bAndroidEmbedded = True
 
-		If $g_iFrmBotDockedPosX = -1 And $g_iFrmBotDockedPosY = -1 Then
+		If $g_iFrmBotDockedPosX = $g_WIN_POS_DEFAULT Or $g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT Then
 			; determine x position based on bot / android arrangement
 			If $g_iFrmBotPosX < $g_iAndroidPosX Then
 				$g_iFrmBotDockedPosX = $g_iFrmBotPosX

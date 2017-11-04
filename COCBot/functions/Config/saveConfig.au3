@@ -430,7 +430,7 @@ EndFunc   ;==>SaveConfig_600_16
 
 Func SaveConfig_auto()
 	ApplyConfig_auto(GetApplyConfigSaveAction())
-; Auto Upgrade
+	; Auto Upgrade
 	_Ini_Add("Auto Upgrade", "chkAutoUpgrade", $g_ichkAutoUpgrade)
 	For $i = 0 To 12
 		_Ini_Add("Auto Upgrade", "chkUpgradesToIgnore[" & $i & "]", $g_ichkUpgradesToIgnore[$i])
@@ -438,9 +438,9 @@ Func SaveConfig_auto()
 	For $i = 0 To 2
 		_Ini_Add("Auto Upgrade", "chkResourcesToIgnore[" & $i & "]", $g_ichkResourcesToIgnore[$i])
 	Next
-	_Ini_Add("Auto Upgrade", "SmartMinGold", GUICtrlRead($g_SmartMinGold))
-	_Ini_Add("Auto Upgrade", "SmartMinElixir", GUICtrlRead($g_SmartMinElixir))
-	_Ini_Add("Auto Upgrade", "SmartMinDark", GUICtrlRead($g_SmartMinDark))
+	_Ini_Add("Auto Upgrade", "SmartMinGold", $g_iSmartMinGold)
+	_Ini_Add("Auto Upgrade", "SmartMinElixir", $g_iSmartMinElixir)
+	_Ini_Add("Auto Upgrade", "SmartMinDark", $g_iSmartMinDark)
 EndFunc   ;==>SaveConfig_auto
 
 Func SaveConfig_600_17()
@@ -671,10 +671,12 @@ EndFunc   ;==>SaveConfig_600_28_TS
 Func SaveConfig_600_29()
 	; <><><><> Attack Plan / Search & Attack / Options / Attack <><><><>
 	ApplyConfig_600_29(GetApplyConfigSaveAction())
-	_Ini_Add("attack", "ActivateKQ", $g_iActivateKQCondition)
-	_Ini_Add("attack", "delayActivateKQ", $g_iDelayActivateKQ)
-	_Ini_Add("attack", "ActivateWarden", $g_bActivateWardenCondition ? 1 : 0)
-	_Ini_Add("attack", "delayActivateW", $g_iDelayActivateW)
+	_Ini_Add("attack", "ActivateQueen", $g_iActivateQueen)
+	_Ini_Add("attack", "ActivateKing", $g_iActivateKing)
+	_Ini_Add("attack", "ActivateWarden", $g_iActivateWarden)
+	_Ini_Add("attack", "delayActivateQueen", $g_iDelayActivateQueen)
+	_Ini_Add("attack", "delayActivateKing", $g_iDelayActivateKing)
+	_Ini_Add("attack", "delayActivateWarden", $g_iDelayActivateWarden)
 	_Ini_Add("planned", "chkAttackPlannerEnable", $g_bAttackPlannerEnable ? 1 : 0)
 	_Ini_Add("planned", "chkAttackPlannerCloseCoC", $g_bAttackPlannerCloseCoC ? 1 : 0)
 	_Ini_Add("planned", "chkAttackPlannerCloseAll", $g_bAttackPlannerCloseAll ? 1 : 0)
@@ -1094,6 +1096,6 @@ Func GetApplyConfigSaveAction()
 	If $g_iGuiMode <> 1 Then
 		Return "Save(disabled)"
 	EndIf
-	
+
 	Return "Save"
 EndFunc   ;==>GetApplyConfigSaveAction

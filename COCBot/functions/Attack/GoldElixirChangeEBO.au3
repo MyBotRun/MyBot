@@ -108,7 +108,6 @@ Func GoldElixirChangeEBO()
 			If _Sleep($DELAYGOLDELIXIRCHANGEEBO1) Then Return
 			$Gold2 = getGoldVillageSearch(48, 69)
 		EndIf
-;		If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
 		$Elixir2 = getElixirVillageSearch(48, 69 + 29)
 		$Trophies = getTrophyVillageSearch(48, 69 + 99)
 		CheckHeroesHealth()
@@ -147,19 +146,19 @@ Func GoldElixirChangeEBO()
 		EndIf
 
 		If Number($CurDamage) >= 92 Then
-			If ($g_bCheckKingPower = True Or $g_bCheckQueenPower = True Or $g_bCheckWardenPower = True) And $g_iActivateKQCondition = "Auto" Then
-				If $g_bCheckKingPower = True Then
-					SetLog("Activating King's power to restore some health before leaving with a 3 Star", $COLOR_INFO)
+			If ($g_bCheckKingPower = True Or $g_bCheckQueenPower = True Or $g_bCheckWardenPower = True) Then
+				If $g_bCheckKingPower = True And $g_iActivateKing = 0 Then
+					SetLog("Activating King's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 					If IsAttackPage() Then SelectDropTroop($g_iKingSlot) ;If King was not activated: Boost King before Battle ends with a 3 Star
 					$g_bCheckKingPower = False
 				EndIf
-				If $g_bCheckQueenPower = True Then
-					SetLog("Activating Queen's power to restore some health before leaving with a 3 Star", $COLOR_INFO)
+				If $g_bCheckQueenPower = True And $g_iActivateQueen = 0 Then
+					SetLog("Activating Queen's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 					If IsAttackPage() Then SelectDropTroop($g_iQueenSlot) ;If Queen was not activated: Boost Queen before Battle ends with a 3 Star
 					$g_bCheckQueenPower = False
 				EndIf
-				If $g_bCheckWardenPower = True Then
-					SetLog("Activating Warden's power to restore some health before leaving with a 3 Star", $COLOR_INFO)
+				If $g_bCheckWardenPower = True And $g_iActivateWarden = 0 Then
+					SetLog("Activating Warden's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 					If IsAttackPage() Then SelectDropTroop($g_iWardenSlot) ;If Queen was not activated: Boost Queen before Battle ends with a 3 Star
 					$g_bCheckWardenPower = False
 				EndIf

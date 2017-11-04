@@ -50,7 +50,7 @@ Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Defaul
 	Local $log = $LogPrefix & $debugTime & $sLogMessage
 	If $bConsoleWrite = True And $sLogMessage <> "" Then
 		Local $sLevel = GetLogLevel($Color)
-		ConsoleWrite($sLevel & $log & @CRLF) ; Always write any log to console
+		_ConsoleWrite($sLevel & $log & @CRLF) ; Always write any log to console
 	EndIf
 	If $g_hLogFile = 0 And $g_sProfileLogsPath Then
 		CreateLogFile()
@@ -142,7 +142,7 @@ Func SetDebugLog($sLogMessage, $sColor = $COLOR_DEBUG, $bSilentSetLog = False, $
 	If $g_bDebugSetlog And $bSilentSetLog = False Then
 		_SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, True, $sLogPrefix)
 	Else
-		If $sLogMessage <> "" Then ConsoleWrite(GetLogLevel($sColor) & $sLog & @CRLF) ; Always write any log to console
+		If $sLogMessage <> "" Then _ConsoleWrite(GetLogLevel($sColor) & $sLog & @CRLF) ; Always write any log to console
 		If $g_hLogFile = 0 And $g_sProfileLogsPath Then CreateLogFile()
 		If $g_hLogFile Then
 			__FileWriteLog($g_hLogFile, $sLog)

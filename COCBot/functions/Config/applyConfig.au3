@@ -24,10 +24,13 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 
 	; Saved window positions
 	If $g_bAndroidEmbedded = False Then
-		If $g_iFrmBotPosX > -30000 And $g_iFrmBotPosY > -30000 And $g_bFrmBotMinimized = False Then WinMove($g_hFrmBot, "", $g_iFrmBotPosX, $g_iFrmBotPosY)
-		If $g_iAndroidPosX > -30000 And $g_iAndroidPosY > -30000 And $g_bIsHidden = False Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+		If $g_iFrmBotPosX > -30000 And $g_iFrmBotPosY > -30000 And $g_bFrmBotMinimized = False _
+			And $g_iFrmBotPosX <> $g_WIN_POS_DEFAULT And $g_iFrmBotPosY <> $g_WIN_POS_DEFAULT Then WinMove($g_hFrmBot, "", $g_iFrmBotPosX, $g_iFrmBotPosY)
+		If $g_iAndroidPosX > -30000 And $g_iAndroidPosY > -30000 And $g_bIsHidden = False _
+			And $g_iAndroidPosX <> $g_WIN_POS_DEFAULT And $g_iAndroidPosY <> $g_WIN_POS_DEFAULT Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
 	Else
-		If $g_iFrmBotDockedPosX > -30000 And $g_iFrmBotDockedPosY > -30000 And $g_bFrmBotMinimized = False Then WinMove($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY)
+		If $g_iFrmBotDockedPosX > -30000 And $g_iFrmBotDockedPosY > -30000 And $g_bFrmBotMinimized = False _
+			And $g_iFrmBotDockedPosX <> $g_WIN_POS_DEFAULT And $g_iFrmBotDockedPosY <> $g_WIN_POS_DEFAULT Then WinMove($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY)
 	EndIf
 
 	If $g_iGuiMode <> 1 Then
@@ -161,7 +164,7 @@ Func ApplyConfig_Profile($TypeReadSave)
 			EndIf
 			$g_iGlobalThreads = Int(GUICtrlRead($g_hTxtGlobalThreads))
 	EndSwitch
-EndFunc
+EndFunc   ;==>ApplyConfig_Profile
 
 Func ApplyConfig_Android($TypeReadSave)
 	; <><><><> Bot / Android <><><><>
@@ -284,7 +287,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			chkActivateBBSuggestedUpgradesGold()
 			chkActivateBBSuggestedUpgradesElixir()
 			chkPlacingNewBuildings()
-			
+
 		Case "Save"
 			$g_bChkBotStop = (GUICtrlRead($g_hChkBotStop) = $GUI_CHECKED)
 			$g_iCmbBotCommand = _GUICtrlComboBox_GetCurSel($g_hCmbBotCommand)
@@ -575,9 +578,9 @@ Func ApplyConfig_600_16($TypeReadSave)
 EndFunc   ;==>ApplyConfig_600_16
 
 Func ApplyConfig_auto($TypeReadSave)
-; Auto Upgrade
-    Switch $TypeReadSave
-	    Case "Read"
+	; Auto Upgrade
+	Switch $TypeReadSave
+		Case "Read"
 			GUICtrlSetState($g_chkAutoUpgrade, $g_ichkAutoUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			For $i = 0 To 12
 				GUICtrlSetState($g_chkUpgradesToIgnore[$i], $g_ichkUpgradesToIgnore[$i] = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -599,8 +602,8 @@ Func ApplyConfig_auto($TypeReadSave)
 			Next
 			$g_iSmartMinGold = GUICtrlRead($g_SmartMinGold)
 			$g_iSmartMinElixir = GUICtrlRead($g_SmartMinElixir)
-			$g_iSmartMinDark = GUICtrlRead($g_SmartMinDark)	
-    EndSwitch			
+			$g_iSmartMinDark = GUICtrlRead($g_SmartMinDark)
+    EndSwitch
 EndFunc   ;==>ApplyConfig_auto
 
 Func ApplyConfig_600_17($TypeReadSave)
@@ -1106,16 +1109,21 @@ Func ApplyConfig_600_29($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / Attack <><><><>
 	Switch $TypeReadSave
 		Case "Read"
-			Switch $g_iActivateKQCondition
-				Case "Manual"
-					GUICtrlSetState($g_hRadManAbilities, $GUI_CHECKED)
-				Case "Auto"
-					GUICtrlSetState($g_hRadAutoAbilities, $GUI_CHECKED)
-			EndSwitch
-			GUICtrlSetData($g_hTxtManAbilities, ($g_iDelayActivateKQ / 1000))
-			GUICtrlSetState($g_hChkUseWardenAbility, $g_bActivateWardenCondition ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtWardenAbility, ($g_iDelayActivateW / 1000))
-			ChkUseWardenAbility()
+			GUICtrlSetState($g_hRadAutoQueenAbility, $g_iActivateQueen = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hRadManQueenAbility, $g_iActivateQueen = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hRadBothQueenAbility, $g_iActivateQueen = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetData($g_hTxtManQueenAbility, ($g_iDelayActivateQueen / 1000))
+
+			GUICtrlSetState($g_hRadAutoKingAbility, $g_iActivateKing = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hRadManKingAbility, $g_iActivateKing = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hRadBothKingAbility, $g_iActivateKing = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetData($g_hTxtManKingAbility, ($g_iDelayActivateKing / 1000))
+
+			GUICtrlSetState($g_hRadAutoWardenAbility, $g_iActivateWarden = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hRadManWardenAbility, $g_iActivateWarden = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hRadBothWardenAbility, $g_iActivateWarden = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetData($g_hTxtManWardenAbility, ($g_iDelayActivateWarden / 1000))
+
 			GUICtrlSetState($g_hChkAttackPlannerEnable, $g_bAttackPlannerEnable = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAttackPlannerCloseCoC, $g_bAttackPlannerCloseCoC = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAttackPlannerCloseAll, $g_bAttackPlannerCloseAll = True ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -1140,10 +1148,33 @@ Func ApplyConfig_600_29($TypeReadSave)
 				GUICtrlSetState($g_ahChkDropCCHours[$i], $g_abPlannedDropCCHours[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
 		Case "Save"
-			$g_iActivateKQCondition = GUICtrlRead($g_hRadManAbilities) = $GUI_CHECKED ? "Manual" : "Auto"
-			$g_iDelayActivateKQ = GUICtrlRead($g_hTxtManAbilities) * 1000
-			$g_bActivateWardenCondition = (GUICtrlRead($g_hChkUseWardenAbility) = $GUI_CHECKED)
-			$g_iDelayActivateW = GUICtrlRead($g_hTxtWardenAbility) * 1000
+			If GUICtrlRead($g_hRadAutoQueenAbility) = $GUI_CHECKED Then
+				$g_iActivateQueen = 0
+			ElseIf GUICtrlRead($g_hRadManQueenAbility) = $GUI_CHECKED Then
+				$g_iActivateQueen = 1
+			ElseIf GUICtrlRead($g_hRadBothQueenAbility) = $GUI_CHECKED Then
+				$g_iActivateQueen = 2
+			EndIf
+			$g_iDelayActivateQueen = GUICtrlRead($g_hTxtManQueenAbility) * 1000
+
+			If GUICtrlRead($g_hRadAutoKingAbility) = $GUI_CHECKED Then
+				$g_iActivateKing = 0
+			ElseIf GUICtrlRead($g_hRadManKingAbility) = $GUI_CHECKED Then
+				$g_iActivateKing = 1
+			ElseIf GUICtrlRead($g_hRadBothKingAbility) = $GUI_CHECKED Then
+				$g_iActivateKing = 2
+			EndIf
+			$g_iDelayActivateKing = GUICtrlRead($g_hTxtManKingAbility) * 1000
+
+			If GUICtrlRead($g_hRadAutoWardenAbility) = $GUI_CHECKED Then
+				$g_iActivateWarden = 0
+			ElseIf GUICtrlRead($g_hRadManWardenAbility) = $GUI_CHECKED Then
+				$g_iActivateWarden = 1
+			ElseIf GUICtrlRead($g_hRadBothWardenAbility) = $GUI_CHECKED Then
+				$g_iActivateWarden = 2
+			EndIf
+			$g_iDelayActivateWarden = GUICtrlRead($g_hTxtManWardenAbility) * 1000
+
 			$g_bAttackPlannerEnable = (GUICtrlRead($g_hChkAttackPlannerEnable) = $GUI_CHECKED)
 			$g_bAttackPlannerCloseCoC = (GUICtrlRead($g_hChkAttackPlannerCloseCoC) = $GUI_CHECKED)
 			$g_bAttackPlannerCloseAll = (GUICtrlRead($g_hChkAttackPlannerCloseAll) = $GUI_CHECKED)

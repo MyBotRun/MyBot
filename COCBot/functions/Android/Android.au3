@@ -259,6 +259,10 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 		EndIf
 
 		AndroidQueueReboot(False)
+		If ($g_iAndroidPosX = $g_WIN_POS_DEFAULT Or $g_iAndroidPosY = $g_WIN_POS_DEFAULT) And UBound($aPos) > 1 Then
+			$g_iAndroidPosX = $aPos[0]
+			$g_iAndroidPosY = $aPos[1]
+		EndIf
 		If $currHWnD = 0 Or $currHWnD <> $g_hAndroidWindow Then
 			; Restore original Android Window position
 			If $g_bAndroidEmbedded = False And IsArray($aPos) = 1 And ($g_bIsHidden = False Or ($aPos[0] > -30000 Or $aPos[1] > -30000)) Then
@@ -2939,8 +2943,8 @@ EndFunc   ;==>AndroidInvalidState
 Func CheckAndroidReboot($bRebootAndroid = True)
 
 	If CheckAndroidTimeLag($bRebootAndroid) = True _
-		Or CheckAndroidPageError($bRebootAndroid) = True _
-		Or CheckAndroidRebootCondition($bRebootAndroid) = True Then
+			Or CheckAndroidPageError($bRebootAndroid) = True _
+			Or CheckAndroidRebootCondition($bRebootAndroid) = True Then
 
 		; Reboot Android
 		Local $_NoFocusTampering = $g_bNoFocusTampering
@@ -2981,16 +2985,23 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True)
 	Return 0
 EndFunc   ;==>GetAndroidProcessPID
 
-Func AndroidToFront($sSource = "Unknown")
+Func AndroidToFront($hHWndAfter = $HWND_TOPMOST, $sSource = "Unknown")
 	SetDebugLog("AndroidToFront: Source " & $sSource)
-	WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_TOPMOST, 0, False)
-	WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+	WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $hHWndAfter, 0, False)
+	If $hHWndAfter = $HWND_TOPMOST Then WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 EndFunc   ;==>AndroidToFront
 
-Func HideAndroidWindow($bHide = True, $bActivateWhenShow = Default, $bFastCheck = Default, $sSource = "Unknown")
-	If $bActivateWhenShow = Default Then $bActivateWhenShow = True
+Func ShowAndroidWindow($hHWndAfter = Default, $bRestorePosAndActivateWindow = Default, $bFastCheck = Default, $sSource = "Unknown")
+	Return HideAndroidWindow(False, $bRestorePosAndActivateWindow, $bFastCheck, $sSource & "->ShowAndroidWindow", $hHWndAfter)
+EndFunc   ;==>ShowAndroidWindow
+
+Func HideAndroidWindow($bHide = True, $bRestorePosAndActivateWhenShow = Default, $bFastCheck = Default, $sSource = "Unknown", $hHWndAfter = Default)
+	If $bRestorePosAndActivateWhenShow = Default Then $bRestorePosAndActivateWhenShow = True
 	If $bFastCheck = Default Then $bFastCheck = True
+	If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
+	SetDebugLog("HideAndroidWindow: " & $bHide & ", " & $bRestorePosAndActivateWhenShow & ", " & $bFastCheck & ", " & $sSource)
 	ResumeAndroid()
+	SetError(0)
 	If $bFastCheck Then
 		If Not IsHWnd($g_hAndroidWindow) Then SetError(1)
 	Else
@@ -3002,14 +3013,18 @@ Func HideAndroidWindow($bHide = True, $bActivateWhenShow = Default, $bFastCheck 
 	If $bHide = True Then
 		WinMove($g_hAndroidWindow, "", -32000, -32000)
 	ElseIf $bHide = False Then
-		If $bActivateWhenShow Then
+		If $bRestorePosAndActivateWhenShow Then
+			WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
 			WinActivate($g_hAndroidWindow)
 		Else
-			AndroidToFront($sSource & "->HideAndroidWindow")
+			Local $a = WinGetPos($g_hAndroidWindow)
+			If UBound($a) > 1 And ($a[0] < -30000 Or $a[1] < -30000) Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+			_WinAPI_ShowWindow($g_hAndroidWindow, @SW_SHOWNOACTIVATE)
 		EndIf
-		WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+		AndroidToFront($hHWndAfter, $sSource & "->HideAndroidWindow")
 	EndIf
-	Execute("Hide" & $g_sAndroidEmulator & "Window($bHide)")
+	Execute("Hide" & $g_sAndroidEmulator & "Window($bHide, $hHWndAfter)")
+	SetError(0)
 EndFunc   ;==>HideAndroidWindow
 
 Func AndroidPicturePathAutoConfig($myPictures = Default, $subDir = Default, $bSetLog = Default)

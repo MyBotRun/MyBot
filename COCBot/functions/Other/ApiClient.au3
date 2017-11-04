@@ -215,7 +215,8 @@ Func LaunchWatchdog()
 	ReleaseMutex($hMutex)
 	Local $cmd = """" & @ScriptDir & "\MyBot.run.Watchdog.exe"""
 	If @Compiled = 0 Then $cmd = """" & @AutoItExe & """ /AutoIt3ExecuteScript """ & @ScriptDir & "\MyBot.run.Watchdog.au3" & """"
-	Local $pid = Run($cmd, @ScriptDir, @SW_HIDE)
+	If $g_iBotLaunchOption_Console Then $cmd &= " /console"
+	Local $pid = Run($cmd, @ScriptDir)
 	If $pid = 0 Then
 		SetLog("Cannot launch watchdog", $COLOR_RED)
 		Return 0

@@ -29,11 +29,9 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 		$g_bDropKing = False ; reset hero dropped flags
 		$g_bDropQueen = False
 		$g_bDropWarden = False
-		If ($g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition) Then ; Zero Hero activation timers
-			For $i = $eHeroBarbarianKing To $eHeroGrandWarden
-				$g_aHeroesTimerActivation[$i] = 0
-			Next
-		EndIf
+		If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
+		If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
+		If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then $g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
 	EndIf
 
 	Local $troopsnumber = 0

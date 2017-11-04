@@ -143,9 +143,21 @@ Func CreateMainGUI()
 		$_GUI_MAIN_WIDTH = $_MINIGUI_MAIN_WIDTH
 		$_GUI_MAIN_HEIGHT = $_MINIGUI_MAIN_HEIGHT
 	EndIf
-	$g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP, $g_iFrmBotPosX, $g_iFrmBotPosY, _
+	$g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP, ($g_iFrmBotPosX = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosX), ($g_iFrmBotPosY = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosY), _
 			BitOR($WS_MINIMIZEBOX, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $iStyle))
 
+	; update $g_iFrmBotPosX and $g_iFrmBotPosY for default position
+	If $g_iFrmBotPosX = $g_WIN_POS_DEFAULT Or $g_iFrmBotPosY = $g_WIN_POS_DEFAULT Then
+		Local $a = WinGetPos($g_hFrmBot)
+		If UBound($a) > 1 Then
+			$g_iFrmBotPosX = $a[0]
+			$g_iFrmBotPosY = $a[1]
+		Else
+			$g_iFrmBotPosX = 100
+			$g_iFrmBotPosY = 100
+		EndIf
+	EndIf
+	
 	; Set Main Window icon
 	GUISetIcon($g_sLibIconPath, $eIcnGUI)
 

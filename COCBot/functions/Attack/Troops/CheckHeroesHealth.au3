@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........:
-; Modified ......: MonkeyHunter(03-2017)
+; Modified ......: MonkeyHunter(03-2017), Fliegerfaust (11-2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -17,96 +17,107 @@ Func CheckHeroesHealth()
 	If $g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower Then
 		ForceCaptureRegion() ; ensure no screenshot caching kicks in
 
-		If $g_iActivateKQCondition = "Auto" Then
+		Local $aDisplayTime[$eHeroCount] = [0, 0, 0] ; array to hold converted timerdiff into seconds
 
-			Local $aKingHealthCopy = $aKingHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
-			$aKingHealthCopy[0] = GetXPosOfArmySlot($g_iKingSlot, 68) + 2
+		If $g_bDebugSetlog Then
+			Setlog("CheckHeroesHealth() for Queen started ")
+			If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
+		EndIf
 
+		If $g_iActivateQueen = 0 Or $g_iActivateQueen = 2 Then
 			Local $aQueenHealthCopy = $aQueenHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
 			$aQueenHealthCopy[0] = GetXPosOfArmySlot($g_iQueenSlot, 68) + 3
 
-			Local $aWardenHealthCopy = $aWardenHealth
-			$aWardenHealthCopy[0] = GetXPosOfArmySlot($g_iWardenSlot, 68)
-
-			If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
-
-			If $g_bDebugSetlog Then
-				Setlog(" CheckHeroesHealth started ")
-				If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
-			EndIf
-
-			If $g_bCheckKingPower Then
-				Local $KingPixelColor = _GetPixelColor($aKingHealthCopy[0], $aKingHealthCopy[1], $g_bCapturePixel)
-				If $g_bDebugSetlog Then Setlog(" King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
-				If Not _CheckPixel2($aKingHealthCopy, $KingPixelColor, "Red+Blue") Then
-					SetLog("King is getting weak, Activating King's power", $COLOR_INFO)
-					SelectDropTroop($g_iKingSlot)
-					$g_bCheckKingPower = False
-				EndIf
-			EndIf
 			If $g_bCheckQueenPower Then
 				Local $QueenPixelColor = _GetPixelColor($aQueenHealthCopy[0], $aQueenHealthCopy[1], $g_bCapturePixel)
 				If $g_bDebugSetlog Then Setlog(" Queen _GetPixelColor(" & $aQueenHealthCopy[0] & "," & $aQueenHealthCopy[1] & "): " & $QueenPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aQueenHealthCopy, $QueenPixelColor, "Red+Blue") Then
-					SetLog("Queen is getting weak, Activating Queen's power", $COLOR_INFO)
+					SetLog("Queen is getting weak, Activating Queen's ability", $COLOR_INFO)
 					SelectDropTroop($g_iQueenSlot)
 					$g_bCheckQueenPower = False
 				EndIf
 			EndIf
-			If $g_bCheckWardenPower Then
-				Local $WardenPixelColor = _GetPixelColor($aWardenHealthCopy[0], $aWardenHealthCopy[1], $g_bCapturePixel)
-				If $g_bDebugSetlog Then Setlog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
-				If Not _CheckPixel2($aWardenHealthCopy, $WardenPixelColor, "Red+Blue") Then
-					SetLog("Grand Warden is getting weak, Activating Warden's power", $COLOR_INFO)
-					SelectDropTroop($g_iWardenSlot)
-					$g_bCheckWardenPower = False
-				EndIf
-			EndIf
-
 		EndIf
-
-		If $g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition Then
-
-			Local $aDisplayTime[$eHeroCount] = [0, 0, 0] ; array to hold converted timerdiff into seconds
-
-			If $g_bCheckKingPower And $g_iActivateKQCondition = "Manual" Then
-				If $g_aHeroesTimerActivation[$eHeroBarbarianKing] <> 0 Then
-					$aDisplayTime[$eHeroBarbarianKing] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroBarbarianKing]) / 1000) ; seconds
-				EndIf
-				If $g_iDelayActivateKQ / 1000 <= $aDisplayTime[$eHeroBarbarianKing] Then
-					SetLog("Activating King's power after " & $aDisplayTime[$eHeroBarbarianKing] & "'s", $COLOR_INFO)
-					SelectDropTroop($g_iKingSlot)
-					$g_bCheckKingPower = False ; Reset check power flag
-					$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0 ; Reset Timer
-				EndIf
-			EndIf
-
-			If $g_bCheckQueenPower And $g_iActivateKQCondition = "Manual" Then
+		If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then
+			If $g_bCheckQueenPower Then
 				If $g_aHeroesTimerActivation[$eHeroArcherQueen] <> 0 Then
 					$aDisplayTime[$eHeroArcherQueen] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroArcherQueen]) / 1000) ; seconds
 				EndIf
-				If $g_iDelayActivateKQ / 1000 <= $aDisplayTime[$eHeroArcherQueen] Then
-					SetLog("Activating Queen's power after " & $aDisplayTime[$eHeroArcherQueen] & "'s", $COLOR_INFO)
+				If $g_iDelayActivateQueen / 1000 <= $aDisplayTime[$eHeroArcherQueen] Then
+					SetLog("Activating Queen's ability after " & $aDisplayTime[$eHeroArcherQueen] & "'s", $COLOR_INFO)
 					SelectDropTroop($g_iQueenSlot)
 					$g_bCheckQueenPower = False ; Reset check power flag
 					$g_aHeroesTimerActivation[$eHeroArcherQueen] = 0 ; Reset Timer
 				EndIf
 			EndIf
+		EndIf
 
-			If $g_bCheckWardenPower And ($g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition) Then
+		If $g_bDebugSetlog Then
+			Setlog("CheckHeroesHealth() for King started ")
+			If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
+		EndIf
+
+		If $g_iActivateKing = 0 Or $g_iActivateKing = 2 Then
+			Local $aKingHealthCopy = $aKingHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
+			$aKingHealthCopy[0] = GetXPosOfArmySlot($g_iKingSlot, 68) + 2
+
+			If $g_bCheckKingPower Then
+				Local $KingPixelColor = _GetPixelColor($aKingHealthCopy[0], $aKingHealthCopy[1], $g_bCapturePixel)
+				If $g_bDebugSetlog Then Setlog(" King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
+				If Not _CheckPixel2($aKingHealthCopy, $KingPixelColor, "Red+Blue") Then
+					SetLog("King is getting weak, Activating King's ability", $COLOR_INFO)
+					SelectDropTroop($g_iKingSlot)
+					$g_bCheckKingPower = False
+				EndIf
+			EndIf
+		EndIf
+		If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then
+			If $g_bCheckKingPower Then
+				If $g_aHeroesTimerActivation[$eHeroBarbarianKing] <> 0 Then
+					$aDisplayTime[$eHeroBarbarianKing] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroBarbarianKing]) / 1000) ; seconds
+				EndIf
+				If $g_iDelayActivateKing / 1000 <= $aDisplayTime[$eHeroBarbarianKing] Then
+					SetLog("Activating King's ability after " & $aDisplayTime[$eHeroBarbarianKing] & "'s", $COLOR_INFO)
+					SelectDropTroop($g_iKingSlot)
+					$g_bCheckKingPower = False ; Reset check power flag
+					$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0 ; Reset Timer
+				EndIf
+			EndIf
+		EndIf
+
+		If $g_bDebugSetlog Then
+			Setlog("CheckHeroesHealth() for Warden started ")
+			If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
+		EndIf
+
+		If $g_iActivateWarden = 0 Or $g_iActivateWarden = 2 Then
+			Local $aWardenHealthCopy = $aWardenHealth
+			$aWardenHealthCopy[0] = GetXPosOfArmySlot($g_iWardenSlot, 68)
+
+			If $g_bCheckWardenPower Then
+				Local $WardenPixelColor = _GetPixelColor($aWardenHealthCopy[0], $aWardenHealthCopy[1], $g_bCapturePixel)
+				If $g_bDebugSetlog Then Setlog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
+				If Not _CheckPixel2($aWardenHealthCopy, $WardenPixelColor, "Red+Blue") Then
+					SetLog("Grand Warden is getting weak, Activating Warden's ability", $COLOR_INFO)
+					SelectDropTroop($g_iWardenSlot)
+					$g_bCheckWardenPower = False
+				EndIf
+			EndIf
+		EndIf
+		If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then
+			If $g_bCheckWardenPower Then
 				If $g_aHeroesTimerActivation[$eHeroGrandWarden] <> 0 Then
 					$aDisplayTime[$eHeroGrandWarden] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroGrandWarden]) / 1000) ; seconds
 				EndIf
-				If ($g_bActivateWardenCondition And $g_iDelayActivateW / 1000 <= $aDisplayTime[$eHeroGrandWarden]) Or _  	 ; check the forced timer just for Warden
-						($g_iActivateKQCondition = "Manual" And $g_bActivateWardenCondition = False And $g_iDelayActivateKQ / 1000 <= $aDisplayTime[$eHeroGrandWarden]) Then ; check regular timer from ALL heroes
-					SetLog("Activating Warden's power after " & $aDisplayTime[$eHeroGrandWarden] & "'s", $COLOR_INFO)
+				If $g_iDelayActivateWarden / 1000 <= $aDisplayTime[$eHeroGrandWarden] Then
+					SetLog("Activating Warden's ability after " & $aDisplayTime[$eHeroGrandWarden] & "'s", $COLOR_INFO)
 					SelectDropTroop($g_iWardenSlot)
-					$g_bCheckWardenPower = False ; Reset check power flag
+					$g_bCheckKingPower = False ; Reset check power flag
 					$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0 ; Reset Timer
 				EndIf
 			EndIf
-
 		EndIf
+
 		If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
 	EndIf
 EndFunc   ;==>CheckHeroesHealth

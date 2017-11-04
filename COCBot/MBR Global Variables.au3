@@ -165,6 +165,7 @@ Global $g_hHBitmap2 ; handle to Device Context (DC) with graphics captured by _c
 Global $g_bOcrForceCaptureRegion = True ; When True take new $g_hHBitmap2 screenshot of OCR area otherwise create area from existing (fullscreen!) $g_hHBitmap2
 
 Global $g_iGuiMode = 1 ; GUI Mode: 1 = normal, main form and all controls created, 2 = mini, main form only with buttons, 0 = GUI less, without any form
+Global $g_bGuiControlsEnabled = True
 Global $g_bGuiRemote = False ; GUI Remote flag
 Global $g_iGuiPID = @AutoItPID
 Global $g_iDpiAwarenessMode = 1 ; 0 = Disable new DPI Desktop handling, 1 = Enable and set DPI Awareness as needed
@@ -444,6 +445,7 @@ Global $g_bBotLaunchOption_NoWatchdog = False ; If true bot will not launch the 
 Global $g_bBotLaunchOption_ForceDpiAware = False ; If true bot will run in DPI Aware 100% scaling when possible
 Global $g_iBotLaunchOption_Dock = 0 ; If 1 bot will dock Android, 2 dock and slide/hide bot
 Global $g_bBotLaunchOption_NoBotSlot = False ; If True, bot slot Mutex are not used in function LockBotSlot
+Global $g_iBotLaunchOption_Console = False ; Console option used
 Global $g_iBotLaunchOption_Help = False ; If specified, bot just shows command line options and exits
 Global $g_asCmdLine[1] = [0] ; Clone of $CmdLine without options, please use instead of $CmdLine
 Global Const $g_sWorkingDir = @WorkingDir ; Working Directory at bot launch
@@ -608,7 +610,7 @@ Global Const $g_aiTroopCostPerLevel[$eTroopCount][9] = [ _
 		[5, 4200, 4800, 5200, 5600, 6000], _  					; Miner
 		[7, 6, 7, 8, 9, 10, 11, 12], _ 							; Minion
 		[7, 40, 45, 52, 58, 65, 90, 115], _					 	; HogRider
-		[5, 70, 100, 130, 160, 190], _ 						 	; Valkyrie
+		[6, 70, 100, 130, 160, 190, 220], _ 				 	; Valkyrie
 		[7, 450, 525, 600, 675, 750, 825, 900], _ 				; Golem
 		[3, 250, 350, 450], _ 								 	; Witch
 		[4, 390, 450, 510, 570], _  							; Lavahound
@@ -1043,7 +1045,8 @@ Global $g_iSearchDelayMin = 0, $g_iSearchDelayMax = 0
 Global $g_bSearchAttackNowEnable = False, $g_iSearchAttackNowDelay = 0, $g_bSearchRestartEnable = False, $g_iSearchRestartLimit = 25, $g_bSearchAlertMe = True
 
 ; <><><><> Attack Plan / Search & Attack / Options / Attack <><><><>
-Global $g_iActivateKQCondition = "Auto", $g_bActivateWardenCondition = False, $g_iDelayActivateKQ = 9000, $g_iDelayActivateW = 10000
+Global $g_iActivateQueen = 0, $g_iActivateKing = 0, $g_iActivateWarden = 0
+Global $g_iDelayActivateQueen = 9000, $g_iDelayActivateKing = 9000, $g_iDelayActivateWarden = 10000
 Global $g_aHeroesTimerActivation[$eHeroCount] = [0, 0, 0] ; $eHeroBarbarianKing | $eHeroArcherQueen | $eHeroGrandWarden
 Global $g_bAttackPlannerEnable = False, $g_bAttackPlannerCloseCoC = False, $g_bAttackPlannerCloseAll = False, $g_bAttackPlannerSuspendComputer = False, $g_bAttackPlannerRandomEnable = False, _
 		$g_iAttackPlannerRandomTime = 0, $g_iAttackPlannerRandomTime = 0, $g_bAttackPlannerDayLimit = False, $g_iAttackPlannerDayMin = 12, $g_iAttackPlannerDayMax = 15
@@ -1077,7 +1080,7 @@ Global $g_bAutoStart = False, $g_iAutoStartDelay = 10
 Global $b_iAutoRestartDelay = 0 ; Automatically restart bot after so many Seconds, 0 = disabled
 Global $g_bCheckGameLanguage = True
 Global $g_bAutoUpdateGame = False
-Global $g_bAutoAlignEnable = True, $g_iAutoAlignPosition = 0, $g_iAutoAlignOffsetX = 10, $g_iAutoAlignOffsetY = 10
+Global $g_bAutoAlignEnable = False, $g_iAutoAlignPosition = "EMBED", $g_iAutoAlignOffsetX = "", $g_iAutoAlignOffsetY = ""
 Global $g_bUpdatingWhenMinimized = True ; Alternative Minimize Window routine for bot that enables window updates when minimized
 Global $g_bHideWhenMinimized = False ; Hide bot window in taskbar when minimized
 Global $g_bUseRandomClick = False
@@ -1107,12 +1110,13 @@ Global $g_bForceClanCastleDetection = 0
 #EndRegion GUI Variables
 
 ; Android & MBR window
-Global $g_iFrmBotPosX = -1 ; Position X of the GUI
-Global $g_iFrmBotPosY = -1 ; Position Y of the GUI
-Global $g_iAndroidPosX = -1 ; Position X of the Android Window (undocked)
-Global $g_iAndroidPosY = -1 ; Position Y of the Android Window (undocked)
-Global $g_iFrmBotDockedPosX = -1 ; Position X of the docked GUI
-Global $g_iFrmBotDockedPosY = -1 ; Position Y of the docked GUI
+Global Const $g_WIN_POS_DEFAULT = 0xFFFFFFF
+Global $g_iFrmBotPosX = $g_WIN_POS_DEFAULT ; Position X of the GUI
+Global $g_iFrmBotPosY = $g_WIN_POS_DEFAULT ; Position Y of the GUI
+Global $g_iAndroidPosX = $g_WIN_POS_DEFAULT ; Position X of the Android Window (undocked)
+Global $g_iAndroidPosY = $g_WIN_POS_DEFAULT ; Position Y of the Android Window (undocked)
+Global $g_iFrmBotDockedPosX = $g_WIN_POS_DEFAULT ; Position X of the docked GUI
+Global $g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT ; Position Y of the docked GUI
 Global $g_iFrmBotAddH = 0 ; Additional Height of GUI (e.g. when Android docked)
 Global $g_bIsHidden = False ; If hidden or not
 Global $g_aiBSpos[2] ; Inside Android window positions relative to the screen, [x,y]
@@ -1411,7 +1415,9 @@ Global Const $g_sAnotherDevice = @ScriptDir & "\imgxml\other\device*"
 Global Const $g_sCocStopped = @ScriptDir & "\imgxml\other\CocStopped*"
 Global Const $g_sCocReconnecting = @ScriptDir & "\imgxml\other\CocReconnecting*"
 Global Const $g_sAppRateNever = @ScriptDir & "\imgxml\other\RateNever*"
+Global Const $g_sGfxError = @ScriptDir & "\imgxml\other\GfxError*"
 Global $g_bMinorObstacle = False
+Global $g_bGfxError = False ; True when Android Gfx Errors detected that will initiate Android reboot
 
 ; TakeABreak - Personal Break Timer
 Global Const $g_iTaBChkAttack = 0x01 ; code for PB warning when searching attack

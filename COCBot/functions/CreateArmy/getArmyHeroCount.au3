@@ -118,7 +118,7 @@ EndFunc   ;==>getArmyHeroCount
 
 Func ArmyHeroStatus($i)
 	Local $sImageDir = "trainwindow-HeroStatus-bundle", $sResult = ""
-	Local Const $aHeroesRect[3][4] = [[660, 349, 673, 361], [734, 349, 747, 361], [807, 349, 822, 361]]
+	Local Const $aHeroesRect[3][4] = [[655, 340, 680, 365], [730, 340, 755, 365], [805, 340, 830, 365]]
 
 	; Perform the search
 	_CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])

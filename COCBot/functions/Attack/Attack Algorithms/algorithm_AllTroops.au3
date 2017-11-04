@@ -220,10 +220,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		For $i = $eBarb To $eBowl ; launch all remaining troops
 			;If $i = $eBarb Or $i = $eArch Then
 			LaunchTroop($i, $nbSides, 0, 1)
-			If $g_iActivateKQCondition = "Auto" Then CheckHeroesHealth()
-			;Else
-			;	 LaunchTroop($i, $nbSides, 0, 1, 2)
-			;EndIf
+			If $g_iActivateQueen = 0 Or $g_iActivateKing = 0 Or $g_iActivateWarden = 0 Then CheckHeroesHealth()
 			If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
 		Next
 	Next

@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func decodeMultipleCoords($coords)
+Func decodeMultipleCoords($coords, $iDedupX = 0, $iDedupY = 0)
 	;returns array of N coordinates [0=x, 1=y][0=x1, 1=y1]
 	Local $retCoords[1] = [""]
 	Local $p, $pOff = 0
@@ -29,7 +29,27 @@ Func decodeMultipleCoords($coords)
 		$retCoords[$p] = decodeSingleCoord($aCoordsSplit[$p + $pOff])
 	Next
 
-	Return $retCoords
+	If UBound($retCoords) = 1 Or ($iDedupX = 0 And $iDedupY = 0) Then Return $retCoords ; no dedup, return array
+
+	; dedup coords
+	Local $aFinalCoords[1] = [$retCoords[0]]
+	Local $c1, $c2, $k
+	For $i = 1 To UBound($retCoords) - 1
+		$c1 = $retCoords[$i]
+		$k = UBound($aFinalCoords) - 1
+		For $j = 0 To $k
+			$c2 = $aFinalCoords[$j]
+			If ($iDedupX > 0 And Abs($c1[0] - $c2[0]) < $iDedupX) Or ($iDedupY > 0 And Abs($c1[1] - $c2[1]) < $iDedupY) Then
+				; duplicate coord
+				ContinueLoop 2
+			EndIf
+		Next
+		; add coord
+		ReDim $aFinalCoords[$k + 2]
+		$aFinalCoords[$k + 1] = $c1
+	Next
+
+	Return $aFinalCoords
 EndFunc   ;==>decodeMultipleCoords
 
 Func decodeSingleCoord($coords)

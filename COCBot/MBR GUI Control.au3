@@ -195,7 +195,9 @@ Func GUIControl_WM_SHELLHOOK($hWin, $iMsg, $wParam, $lParam)
 		Select
 			Case $lParam = $g_hAndroidWindow
 				; show bot without activating
-				BotToFront()
+				;BotToFront($lParam)
+				BotMinimizeRestore(False, "GUIControl_WM_SHELLHOOK", False, 0, $lParam)
+				If Not $g_bIsHidden Then HideAndroidWindow(False, False, Default, "GUIControl_WM_SHELLHOOK") ; Android can be hidden
 			#cs moved to GUIControl_WM_ACTIVATEAPP as it enters here without activating the bot
 			Case Not $g_bIsHidden And $lParam = $g_hFrmBot ;And WinActive($g_hFrmBot)
 				; show Android without activating
@@ -213,7 +215,7 @@ Func GUIControl_WM_ACTIVATEAPP($hWin, $iMsg, $wParam, $lParam)
 		; bot activated
 		;If BitAND($g_iBotDesignFlags, 2) And $g_bAndroidEmbedded And $g_bBotDockedShrinked Then BotShrinkExpandToggle() ; auto expand bot again
 		; show Android without activating
-		If Not $g_bIsHidden And Not AndroidEmbedded() Then HideAndroidWindow(False, False, Default, "GUIControl_WM_ACTIVATEAPP")
+		If Not $g_bIsHidden And Not AndroidEmbedded() Then ShowAndroidWindow($g_hFrmBot, False, Default, "GUIControl_WM_ACTIVATEAPP")
 	Else
 		; bot deactivated
 		If BitAND($g_iBotDesignFlags, 2) And $g_bAndroidEmbedded And Not $g_bBotDockedShrinked Then BotShrinkExpandToggle() ; auto shrink bot again ;
@@ -780,9 +782,9 @@ Func BotMinimizeRequest()
 	BotMinimize("MinimizeButton", False, 500)
 EndFunc   ;==>BotMinimizeRequest
 
-Func BotToFront()
-	WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $HWND_TOPMOST, 0, False)
-	WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+Func BotToFront($hHWndAfter = $HWND_TOPMOST)
+	WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $hHWndAfter, 0, False)
+	If $hHWndAfter = $HWND_TOPMOST Then WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 EndFunc   ;==>BotToFront
 
 Func CheckBotZOrder($bCheckOnly = False, $bForceZOrder = False)
@@ -1142,9 +1144,17 @@ Func BotGuiModeToggle()
 			; apply config
 			applyConfig(False)
 
-			If $g_bRunState Then DisableGuiControls()
+			If Not $g_bGuiControlsEnabled Then DisableGuiControls()
 
 			SetRedrawBotWindow(False, Default, Default, Default, "BotGuiModeToggle")
+
+			; now refresh the logs
+			_GUICtrlRichEdit_SetSel($g_hTxtLog, 0, 0) ; select top
+			_GUICtrlRichEdit_SetSel($g_hTxtLog, -1, -1) ; select end
+			_GUICtrlRichEdit_SetSel($g_hTxtAtkLog, 0, 0) ; select top
+			_GUICtrlRichEdit_SetSel($g_hTxtAtkLog, -1, -1) ; select end
+			; avoid the cursor in attack log by selecting tab
+			GUICtrlSetState($g_hTabMain, $GUI_FOCUS)
 
 	EndSwitch
 
@@ -1255,7 +1265,7 @@ Func BotClose($SaveConfig = Default, $bExit = True)
 	If $bExit = True Then Exit
 EndFunc   ;==>BotClose
 
-Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = False, $iStayMinimizedMillis = 0)
+Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = False, $iStayMinimizedMillis = 0, $hHWndAfter = $HWND_TOP)
 
 	Static $siStayMinimizedMillis = 0
 	Static $shStayMinimizedTimer = 0
@@ -1282,7 +1292,7 @@ Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = Fal
 			EndIf
 			If _WinAPI_IsIconic($g_hFrmBot) Then WinSetState($g_hFrmBot, "", @SW_RESTORE)
 			If _WinAPI_IsIconic($g_hAndroidWindow) Then WinSetState($g_hAndroidWindow, "", @SW_RESTORE)
-			WinMove2($g_hFrmBot, "", -32000, -32000, -1, -1, 0, $SWP_SHOWWINDOW, False)
+			WinMove2($g_hFrmBot, "", -32000, -32000, -1, -1, 0, BitOR($SWP_SHOWWINDOW, $SWP_NOACTIVATE), False)
 		Else
 			If $g_bHideWhenMinimized Then
 				WinMove2($g_hFrmBot, "", -1, -1, -1, -1, 0, $SWP_HIDEWINDOW, False)
@@ -1292,7 +1302,7 @@ Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = Fal
 			;WinSetState($g_hAndroidWindow, "", @SW_MINIMIZE)
 		EndIf
 		; Hide also Android
-		If Not $g_bIsHidden Then HideAndroidWindow(True, Default, Default, "BotMinimizeRestore")
+		If Not $g_bIsHidden Then HideAndroidWindow(True, False, Default, "BotMinimizeRestore")
 		;ReleaseMutex($hMutex)
 		Return True
 	EndIf
@@ -1320,14 +1330,17 @@ Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = Fal
 	EndIf
 	If _WinAPI_IsIconic($g_hFrmBot) Then WinSetState($g_hFrmBot, "", @SW_RESTORE)
 	If $g_bAndroidAdbScreencap = False And $g_bRunState = True And $g_bBotPaused = False And _WinAPI_IsIconic($g_hAndroidWindow) Then WinSetState($g_hAndroidWindow, "", @SW_RESTORE)
-	WinMove2($g_hFrmBot, "", $botPosX, $botPosY, -1, -1, $HWND_TOP, $SWP_SHOWWINDOW)
-	_WinAPI_SetActiveWindow($g_hFrmBot)
-	_WinAPI_SetFocus($g_hFrmBot)
+	WinMove2($g_hFrmBot, "", $botPosX, $botPosY, -1, -1, $hHWndAfter, BitOR($SWP_SHOWWINDOW, $SWP_NOACTIVATE))
+	;_WinAPI_SetActiveWindow($g_hFrmBot)
+	;_WinAPI_SetFocus($g_hFrmBot)
 	If _CheckWindowVisibility($g_hFrmBot, $aPos) Then
 		SetDebugLog("Bot Window '" & $g_sAndroidTitle & "' not visible, moving to position: " & $aPos[0] & ", " & $aPos[1])
 		WinMove2($g_hFrmBot, "", $aPos[0], $aPos[1])
 	EndIf
 	WinSetTrans($g_hFrmBot, "", 255) ; is set to 1 when "Hide when minimized" is enabled after some time, so restore it
+	BotToFront($hHWndAfter)
+	; Show also Android
+	If Not $g_bIsHidden And $hHWndAfter <> $g_hAndroidWindow Then HideAndroidWindow(False, False, Default, "BotMinimizeRestore", $g_hFrmBot)
 	;ReleaseMutex($hMutex)
 	Return True
 

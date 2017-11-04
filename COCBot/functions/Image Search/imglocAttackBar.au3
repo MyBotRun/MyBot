@@ -65,16 +65,17 @@ Func AttackBarCheck($Remaining = False)
 
 			; Redimension the result array to allow for the new entries
 			ReDim $aResult[UBound($aKeys)][6]
+			Local $iResultAddDup = 0
 
 			; Loop through the array
 			For $i = 0 To UBound($aKeys) - 1
 				If $g_bRunState = False Then Return
 				; Get the property values
-				$aResult[$i][0] = RetrieveImglocProperty($aKeys[$i], "objectname")
+				$aResult[$i + $iResultAddDup][0] = RetrieveImglocProperty($aKeys[$i], "objectname")
 				; Get the coords property
 				$aValue = RetrieveImglocProperty($aKeys[$i], "objectpoints")
-				$aCoords = StringSplit($aValue, "|", $STR_NOCOUNT)
-				$aCoordsSplit = StringSplit($aCoords[0], ",", $STR_NOCOUNT)
+				$aCoords = decodeMultipleCoords($aValue, 50) ; dedup coords by x on 50 pixel
+				$aCoordsSplit = $aCoords[0]
 				If UBound($aCoordsSplit) = 2 Then
 					; Store the coords into a two dimensional array
 					$aCoordArray[0][0] = $aCoordsSplit[0] ; X coord.
@@ -83,26 +84,30 @@ Func AttackBarCheck($Remaining = False)
 					$aCoordArray[0][0] = -1
 					$aCoordArray[0][1] = -1
 				EndIf
-				If $g_bDebugSetlog Then Setlog($aResult[$i][0] & " | $aCoordArray: " & $aCoordArray[0][0] & "-" & $aCoordArray[0][1])
+				If $g_bDebugSetlog Then Setlog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aCoordArray[0][0] & "-" & $aCoordArray[0][1])
+				; Store the coords array as a sub-array
+				$aResult[$i + $iResultAddDup][1] = Number($aCoordArray[0][0])
+				$aResult[$i + $iResultAddDup][2] = Number($aCoordArray[0][1])
 				;;;;;;;; If exist Castle Spell ;;;;;;;
-				If UBound($aCoords) > 1 And StringInStr($aResult[$i][0], "Spell") <> 0 Then
-					If $g_bDebugSetlog Then Setlog($aResult[$i][0] & " detected twice!")
-					Local $aCoordsSplit2 = StringSplit($aCoords[1], ",", $STR_NOCOUNT)
+				Local $iMultipleCoords = UBound($aCoords)
+				If $iMultipleCoords > 1 And StringInStr($aResult[$i + $iResultAddDup][0], "Spell") <> 0 Then
+					If $g_bDebugSetlog Then Setlog($aResult[$i + $iResultAddDup][0] & " detected " & $iMultipleCoords & " times!")
+					
+					Local $aCoordsSplit2 = $aCoords[1]
 					If UBound($aCoordsSplit2) = 2 Then
-						; Store the coords into a two dimensional array
-						If $aCoordsSplit2[0] < $aCoordsSplit[0] Then
-							$aCoordArray[0][0] = $aCoordsSplit2[0] ; X coord.
-							$aCoordArray[0][1] = $aCoordsSplit2[1] ; Y coord.
-							If $g_bDebugSetlog Then Setlog($aResult[$i][0] & " | $aCoordArray: " & $aCoordArray[0][0] & "-" & $aCoordArray[0][1])
-						EndIf
+						; add slot
+						$iResultAddDup += 1
+						ReDim $aResult[UBound($aKeys) + $iResultAddDup][6]
+						$aResult[$i + $iResultAddDup][0] = $aResult[$i + $iResultAddDup - 1][0] ; same objectname
+						$aResult[$i + $iResultAddDup][1] = $aCoordsSplit2[0]
+						$aResult[$i + $iResultAddDup][2] = $aCoordsSplit2[1]
+						If $g_bDebugSetlog Then Setlog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aResult[$i + $iResultAddDup][1] & "-" & $aResult[$i + $iResultAddDup][2])
 					Else
-						$aCoordArray[0][0] = -1
-						$aCoordArray[0][1] = -1
+						; don't invalidate anything
+						;$aCoordArray[0][0] = -1
+						;$aCoordArray[0][1] = -1
 					EndIf
 				EndIf
-				; Store the coords array as a sub-array
-				$aResult[$i][1] = Number($aCoordArray[0][0])
-				$aResult[$i][2] = Number($aCoordArray[0][1])
 			Next
 
 			_ArraySort($aResult, 0, 0, 0, 1) ; Sort By X position , will be the Slot 0 to $i
@@ -140,7 +145,7 @@ Func AttackBarCheck($Remaining = False)
 							$aResult[$i][3] = 1
 							$aResult[$i][4] = $Slottemp[1]
 						Else
-							$aResult[$i][3] = Number(getTroopCountBig(Number($Slottemp[0]), 636)) ; For Bigg Numbers , when the troops is selected
+							$aResult[$i][3] = Number(getTroopCountBig(Number($Slottemp[0]), 636)) ; For Big Numbers, when the troops is selected
 							$aResult[$i][4] = $Slottemp[1]
 							If $aResult[$i][3] = "" Or $aResult[$i][3] = 0 Then
 								$aResult[$i][3] = Number(getTroopCountSmall(Number($Slottemp[0]), 641)) ; For small Numbers
@@ -148,12 +153,12 @@ Func AttackBarCheck($Remaining = False)
 							EndIf
 							If StringInStr($aResult[$i][0], "ESpell") <> 0 And $g_bSmartZapEnable = True Then
 								$aResult[$i][5] = getTroopsSpellsLevel(Number($Slottemp[0]) + $iSlotCompensation, 704)
-								If $aResult[$i][5] <> "" Then $g_iESpellLevel = $aResult[$i][5] ; If they aren't empty will store the correct level , or will be level 1 , just in case
+								If $aResult[$i][5] <> "" Then $g_iESpellLevel = $aResult[$i][5] ; If they aren't empty will store the correct level, or will be level 1 , just in case
 								If $g_bDebugSmartZap = True Then Setlog("EarthQuake Detected with level " & $aResult[$i][5], $COLOR_DEBUG)
 							EndIf
 							If StringInStr($aResult[$i][0], "LSpell") <> 0 And $g_bSmartZapEnable = True Then
 								$aResult[$i][5] = getTroopsSpellsLevel(Number($Slottemp[0]) + $iSlotCompensation, 704)
-								If $aResult[$i][5] <> "" Then $g_iLSpellLevel = $aResult[$i][5] ; If they aren't empty will store the correct level , or will be level 1 , just in case
+								If $aResult[$i][5] <> "" Then $g_iLSpellLevel = $aResult[$i][5] ; If they aren't empty will store the correct level, or will be level 1 , just in case
 								If $g_bDebugSmartZap = True Then Setlog("Lightning Detected with level " & $aResult[$i][5], $COLOR_DEBUG)
 							EndIf
 						EndIf

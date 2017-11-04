@@ -110,7 +110,7 @@ Func DELow()
 		If _Sleep(50) Then Return
 		If Number($DarkE) < (Number($g_iSearchDark) * (Number($g_iDESideEndMin) / 100)) Then ; Second check if Dark Elixer is below set minimum
 			If $g_bDESideEndAQWeak And $g_bDropQueen And $g_bCheckQueenPower = False Then
-				If $g_iActivateKQCondition = "Auto" Then
+				If $g_iActivateQueen = 0 Then
 					$g_iDarkLow = 1
 					SetLog("Low De. De = ( " & $DarkE & " ) and AQ health Low. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
 					Return False
@@ -121,7 +121,7 @@ Func DELow()
 				EndIf
 			EndIf
 			If $g_bDESideEndBKWeak And $g_bDropKing And $g_bCheckKingPower = False Then
-				If $g_iActivateKQCondition = "Auto" Then
+				If $g_iActivateKing = 0 Then
 					$g_iDarkLow = 1
 					SetLog("Low De. De = ( " & $DarkE & " ) and BK health Low. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
 					Return False

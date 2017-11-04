@@ -2,7 +2,7 @@
 #RequireAdmin
 #pragma compile(ProductName, My Bot Mini Gui)
 #pragma compile(Out, MyBot.run.MiniGui.exe) ; Required
-Global $g_sBotVersion = "v7.3"
+Global $g_sBotVersion = "v7.3.1"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -18,6 +18,7 @@ Global Const $SWP_NOZORDER = 0x0004
 Global Const $SWP_NOACTIVATE = 0x0010
 Global Const $SWP_SHOWWINDOW = 0x0040
 Global Const $SWP_HIDEWINDOW = 0x0080
+Global Const $SWP_NOOWNERZORDER = 0x0200
 Global Const $SWP_NOREPOSITION = 0x0200
 Global Const $SWP_NOSENDCHANGING = 0x0400
 Global Const $MB_APPLMODAL = 0
@@ -418,6 +419,13 @@ Local $aResult = DllCall("user32.dll", "hwnd", "GetParent", "hwnd", $hWnd)
 If @error Then Return SetError(@error, @extended, 0)
 Return $aResult[0]
 EndFunc
+Func _WinAPI_GetStdHandle($iStdHandle)
+If $iStdHandle < 0 Or $iStdHandle > 2 Then Return SetError(2, 0, -1)
+Local Const $aHandle[3] = [-10, -11, -12]
+Local $aResult = DllCall("kernel32.dll", "handle", "GetStdHandle", "dword", $aHandle[$iStdHandle])
+If @error Then Return SetError(@error, @extended, -1)
+Return $aResult[0]
+EndFunc
 Func _WinAPI_GetWindowLong($hWnd, $iIndex)
 Local $sFuncName = "GetWindowLongW"
 If @AutoItX64 Then $sFuncName = "GetWindowLongPtrW"
@@ -531,6 +539,12 @@ EndFunc
 Func _WinAPI_WaitForSingleObject($hHandle, $iTimeout = -1)
 Local $aResult = DllCall("kernel32.dll", "INT", "WaitForSingleObject", "handle", $hHandle, "dword", $iTimeout)
 If @error Then Return SetError(@error, @extended, -1)
+Return $aResult[0]
+EndFunc
+Func _WinAPI_WriteFile($hFile, $pBuffer, $iToWrite, ByRef $iWritten, $tOverlapped = 0)
+Local $aResult = DllCall("kernel32.dll", "bool", "WriteFile", "handle", $hFile, "struct*", $pBuffer, "dword", $iToWrite, "dword*", 0, "struct*", $tOverlapped)
+If @error Then Return SetError(@error, @extended, False)
+$iWritten = $aResult[4]
 Return $aResult[0]
 EndFunc
 Func _WinAPI_BroadcastSystemMessage($iMsg, $wParam = 0, $lParam = 0, $iFlags = 0, $iRecipients = 0)
@@ -1520,6 +1534,7 @@ Global Const $WS_EX_NOACTIVATE = 0x08000000
 Global Const $WS_EX_TOOLWINDOW = 0x00000080
 Global Const $WM_MOVE = 0x0003
 Global Const $WM_CLOSE = 0x0010
+Global Const $WM_SETICON = 0x0080
 Global Const $WM_COMMAND = 0x0111
 Global Const $WM_SYSCOMMAND = 0x0112
 Global Const $STARTF_USESHOWWINDOW = 0x1
@@ -2849,7 +2864,8 @@ Global $g_iAtkTBEnableCount = 150, $g_iAtkTBMaxTHLevel = 0, $g_iAtkTBMode = 0
 Global $g_bSearchReductionEnable = False, $g_iSearchReductionCount = 20, $g_iSearchReductionGold = 2000, $g_iSearchReductionElixir = 2000, $g_iSearchReductionGoldPlusElixir = 4000, $g_iSearchReductionDark = 100, $g_iSearchReductionTrophy = 2
 Global $g_iSearchDelayMin = 0, $g_iSearchDelayMax = 0
 Global $g_bSearchAttackNowEnable = False, $g_iSearchAttackNowDelay = 0, $g_bSearchRestartEnable = False, $g_iSearchRestartLimit = 25, $g_bSearchAlertMe = True
-Global $g_iActivateKQCondition = "Auto", $g_bActivateWardenCondition = False, $g_iDelayActivateKQ = 9000, $g_iDelayActivateW = 10000
+Global $g_iActivateQueen = 0, $g_iActivateKing = 0, $g_iActivateWarden = 0
+Global $g_iDelayActivateQueen = 9000, $g_iDelayActivateKing = 9000, $g_iDelayActivateWarden = 10000
 Global $g_bAttackPlannerEnable = False, $g_bAttackPlannerCloseCoC = False, $g_bAttackPlannerCloseAll = False, $g_bAttackPlannerSuspendComputer = False, $g_bAttackPlannerRandomEnable = False, $g_iAttackPlannerRandomTime = 0, $g_iAttackPlannerRandomTime = 0, $g_bAttackPlannerDayLimit = False, $g_iAttackPlannerDayMin = 12, $g_iAttackPlannerDayMax = 15
 Global $g_abPlannedAttackWeekDays[7] = [True, True, True, True, True, True, True]
 Global $g_abPlannedattackHours[24] = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
@@ -2864,7 +2880,7 @@ Global $g_bCheckVersion = True
 Global $g_bDeleteLogs = True, $g_iDeleteLogsDays = 2, $g_bDeleteTemp = True, $g_iDeleteTempDays = 2, $g_bDeleteLoots = True, $g_iDeleteLootsDays = 2
 Global $g_bAutoStart = False, $g_iAutoStartDelay = 10
 Global $g_bCheckGameLanguage = True
-Global $g_bAutoAlignEnable = True, $g_iAutoAlignPosition = 0, $g_iAutoAlignOffsetX = 10, $g_iAutoAlignOffsetY = 10
+Global $g_bAutoAlignEnable = False, $g_iAutoAlignPosition = "EMBED", $g_iAutoAlignOffsetX = "", $g_iAutoAlignOffsetY = ""
 Global $g_bUpdatingWhenMinimized = True
 Global $g_bHideWhenMinimized = False
 Global $g_bUseRandomClick = False
@@ -2874,12 +2890,13 @@ Global $g_bForceSinglePBLogoff = 0, $g_iSinglePBForcedLogoffTime = 18, $g_iSingl
 Global $g_bAutoResumeEnable = 0, $g_iAutoResumeTime = 5
 Global $g_bDisableNotifications = False
 Global $g_bForceClanCastleDetection = 0
-Global $g_iFrmBotPosX = -1
-Global $g_iFrmBotPosY = -1
-Global $g_iAndroidPosX = -1
-Global $g_iAndroidPosY = -1
-Global $g_iFrmBotDockedPosX = -1
-Global $g_iFrmBotDockedPosY = -1
+Global Const $g_WIN_POS_DEFAULT = 0xFFFFFFF
+Global $g_iFrmBotPosX = $g_WIN_POS_DEFAULT
+Global $g_iFrmBotPosY = $g_WIN_POS_DEFAULT
+Global $g_iAndroidPosX = $g_WIN_POS_DEFAULT
+Global $g_iAndroidPosY = $g_WIN_POS_DEFAULT
+Global $g_iFrmBotDockedPosX = $g_WIN_POS_DEFAULT
+Global $g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT
 Global $g_bGUIControlDisabled = False
 Global Const $g_sDirLanguages = @ScriptDir & "\Languages\"
 Global Const $g_sDefaultLanguage = "English"
@@ -3709,6 +3726,40 @@ Local $aResult = DllCall("kernel32.dll", "bool", "CreateProcessW", $sAppNameType
 If @error Then Return SetError(@error, @extended, False)
 Return $aResult[0]
 EndFunc
+Func _WinAPI_AllocConsole()
+Local $aResult = DllCall("kernel32.dll", "bool", "AllocConsole")
+If @error Then Return SetError(@error, @extended, False)
+Return $aResult[0]
+EndFunc
+Func _WinAPI_SetConsoleIcon($g_sLibIconPath, $nIconID)
+Local $hIcon = DllStructCreate("int")
+Local $Result = DllCall("shell32.dll", "int", "ExtractIconEx", "str", $g_sLibIconPath, "int", $nIconID - 1, "hwnd", 0, "ptr", DllStructGetPtr($hIcon), "int", 1)
+If UBound($Result) > 0 Then
+$Result = $Result[0]
+If $Result > 0 Then
+$Result = DllCall("kernel32.dll", "bool", "SetConsoleIcon", "ptr", DllStructGetData($hIcon, 1))
+$Result = DllCall("kernel32.dll", "hwnd", "GetConsoleWindow")
+Local $error = @error, $extended = @extended
+If UBound($Result) > 0 Then
+Local $hConsole = $Result[0]
+_SendMessage($hConsole, $WM_SETICON, 0, DllStructGetData($hIcon, 1))
+_SendMessage($hConsole, $WM_SETICON, 1, DllStructGetData($hIcon, 1))
+Sleep(50)
+EndIf
+DllCall("user32.dll", "int", "DestroyIcon", "hwnd", DllStructGetData($hIcon, 1))
+If $error Then Return SetError($error, $extended, False)
+Return True
+EndIf
+EndIf
+If @error Then Return SetError(@error, @extended, False)
+EndFunc
+Func _ConsoleWrite($Text)
+Local $hFile, $pBuffer, $iToWrite, $iWritten, $tBuffer = DllStructCreate("char[" & StringLen($Text) & "]")
+DllStructSetData($tBuffer, 1, $Text)
+$hFile = _WinAPI_GetStdHandle(1)
+_WinAPI_WriteFile($hFile, $tBuffer, StringLen($Text), $iWritten)
+Return $iWritten
+EndFunc
 Func TimeDebug()
 Return "[" & @YEAR & "-" & @MON & "-" & @MDAY & " " & _NowTime(5) & "." & @MSEC & "] "
 EndFunc
@@ -3727,13 +3778,19 @@ $iTimeMsec = $iTimeMsec - 4294967296
 EndIf
 Return $iCurrentTimeMSec - $iTimeMsec
 EndFunc
-Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter = 0, $iFlags = 0, $bCheckAfterPos = True)
+Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter = 0, $iFlags = 0, $bCheckAfterPos = True, $bIconCheck = True)
+If $WinTitle = $g_hFrmBot And $g_iGuiMode = 0 Then Return $WinTitle
 Local $hWin = WinGetHandle($WinTitle, $WinText)
-If $WinTitle = $g_hFrmBot And $g_iGuiMode = 0 Then Return $hWin
-If _WinAPI_IsIconic($hWin) Then
+If @error Then Return 0
+If $bIconCheck And _WinAPI_IsIconic($hWin) Then
 SetDebugLog("Window " & $WinTitle &(($WinTitle <> $hWin) ? "(" & $hWin & ")" : "") & " restored", $COLOR_ACTION)
 WinSetState($hWin, "", @SW_RESTORE)
 EndIf
+Local $NoMove = $x = -1 And $y = -1
+Local $NoResize = $w = -1 And $h = -1
+Local $NOZORDER =($hAfter = 0 ? BitOR($SWP_NOZORDER, $SWP_NOOWNERZORDER) : 0)
+$bCheckAfterPos = $bCheckAfterPos And(Not $NoMove Or Not $NoResize)
+If Not $NoMove Or Not $NoResize Then
 Local $aPos = WinGetPos($hWin)
 If @error <> 0 Or Not IsArray($aPos) Then
 SetError(1, @extended, -1)
@@ -3744,9 +3801,6 @@ If IsArray($aPPos) Then
 $aPos[0] -= $aPPos[0]
 $aPos[1] -= $aPPos[1]
 EndIf
-Local $NoMove = $x = -1 And $y = -1
-Local $NoResize = $w = -1 And $h = -1
-Local $NOZORDER =($hAfter = 0 ? $SWP_NOZORDER : 0)
 If $x = -1 Or $y = -1 Or $w = -1 Or $h = -1 Then
 If $x = -1 Then $x = $aPos[0]
 If $y = -1 Then $y = $aPos[1]
@@ -3755,6 +3809,7 @@ If $h = -1 Then $h = $aPos[3]
 EndIf
 $NoMove = $NoMove Or($x = $aPos[0] And $y = $aPos[1])
 $NoResize = $NoResize Or($w = $aPos[2] And $h = $aPos[3])
+EndIf
 If $g_bWinMove2_Compatible And $NoResize = False Then
 WinMove($WinTitle, $WinText, $x, $y, $w, $h)
 _WinAPI_SetWindowPos($hWin, $hAfter, 0, 0, 0, 0, BitOR($SWP_NOSIZE, $SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags))
@@ -4122,7 +4177,17 @@ If $g_iGuiMode = 2 Then
 $_GUI_MAIN_WIDTH = $_MINIGUI_MAIN_WIDTH
 $_GUI_MAIN_HEIGHT = $_MINIGUI_MAIN_HEIGHT
 EndIf
-$g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP, $g_iFrmBotPosX, $g_iFrmBotPosY, BitOR($WS_MINIMIZEBOX, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $iStyle))
+$g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP,($g_iFrmBotPosX = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosX),($g_iFrmBotPosY = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosY), BitOR($WS_MINIMIZEBOX, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $iStyle))
+If $g_iFrmBotPosX = $g_WIN_POS_DEFAULT Or $g_iFrmBotPosY = $g_WIN_POS_DEFAULT Then
+Local $a = WinGetPos($g_hFrmBot)
+If UBound($a) > 1 Then
+$g_iFrmBotPosX = $a[0]
+$g_iFrmBotPosY = $a[1]
+Else
+$g_iFrmBotPosX = 100
+$g_iFrmBotPosY = 100
+EndIf
+EndIf
 GUISetIcon($g_sLibIconPath, $eIcnGUI)
 TraySetIcon($g_sLibIconPath, $eIcnGUI)
 Opt("TrayMenuMode", 3)
@@ -4358,23 +4423,23 @@ SetDebugLog("Read Config " & $g_sProfileConfigPath)
 IniReadS($g_iThreads, $g_sProfileConfigPath, "general", "threads", $g_iThreads, "int")
 If $g_iThreads < 0 Then $g_iThreads = 0
 IniReadS($g_iBotDesignFlags, $g_sProfileConfigPath, "general", "botDesignFlags", 0, "int")
-IniReadS($g_iFrmBotPosX, $g_sProfileConfigPath, "general", "frmBotPosX", -1, "int")
-IniReadS($g_iFrmBotPosY, $g_sProfileConfigPath, "general", "frmBotPosY", -1, "int")
+IniReadS($g_iFrmBotPosX, $g_sProfileConfigPath, "general", "frmBotPosX", $g_iFrmBotPosX, "int")
+IniReadS($g_iFrmBotPosY, $g_sProfileConfigPath, "general", "frmBotPosY", $g_iFrmBotPosY, "int")
 If $g_iFrmBotPosX < -30000 Or $g_iFrmBotPosY < -30000 Then
-$g_iFrmBotPosX = -1
-$g_iFrmBotPosY = -1
+$g_iFrmBotPosX = $g_WIN_POS_DEFAULT
+$g_iFrmBotPosY = $g_WIN_POS_DEFAULT
 EndIf
-IniReadS($g_iAndroidPosX, $g_sProfileConfigPath, "general", "AndroidPosX", -1, "int")
-IniReadS($g_iAndroidPosY, $g_sProfileConfigPath, "general", "AndroidPosY", -1, "int")
+IniReadS($g_iAndroidPosX, $g_sProfileConfigPath, "general", "AndroidPosX", $g_iAndroidPosX, "int")
+IniReadS($g_iAndroidPosY, $g_sProfileConfigPath, "general", "AndroidPosY", $g_iAndroidPosY, "int")
 If $g_iAndroidPosX < -30000 Or $g_iAndroidPosY < -30000 Then
-$g_iAndroidPosX = -1
-$g_iAndroidPosY = -1
+$g_iAndroidPosX = $g_WIN_POS_DEFAULT
+$g_iAndroidPosY = $g_WIN_POS_DEFAULT
 EndIf
-IniReadS($g_iFrmBotDockedPosX, $g_sProfileConfigPath, "general", "frmBotDockedPosX", -1, "int")
-IniReadS($g_iFrmBotDockedPosY, $g_sProfileConfigPath, "general", "frmBotDockedPosY", -1, "int")
+IniReadS($g_iFrmBotDockedPosX, $g_sProfileConfigPath, "general", "frmBotDockedPosX", $g_iFrmBotDockedPosX, "int")
+IniReadS($g_iFrmBotDockedPosY, $g_sProfileConfigPath, "general", "frmBotDockedPosY", $g_iFrmBotDockedPosY, "int")
 If $g_iFrmBotDockedPosX < -30000 Or $g_iFrmBotDockedPosY < -30000 Then
-$g_iFrmBotDockedPosX = -1
-$g_iFrmBotDockedPosY = -1
+$g_iFrmBotDockedPosX = $g_WIN_POS_DEFAULT
+$g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT
 EndIf
 IniReadS($g_iRedrawBotWindowMode, $g_sProfileConfigPath, "general", "RedrawBotWindowMode", 2, "int")
 ReadConfig_Android()
@@ -4856,10 +4921,12 @@ IniReadS($g_iAtkTSAddTilesWhileTrain, $g_sProfileConfigPath, "search", "SWTtiles
 IniReadS($g_iAtkTSAddTilesFullTroops, $g_sProfileConfigPath, "search", "THaddTiles", 2, "int")
 EndFunc
 Func ReadConfig_600_29()
-IniReadS($g_iActivateKQCondition, $g_sProfileConfigPath, "attack", "ActivateKQ", "Auto")
-IniReadS($g_iDelayActivateKQ, $g_sProfileConfigPath, "attack", "delayActivateKQ", 9000, "int")
-IniReadS($g_bActivateWardenCondition, $g_sProfileConfigPath, "attack", "ActivateWarden", False, "Bool")
-IniReadS($g_iDelayActivateW, $g_sProfileConfigPath, "attack", "delayActivateW", 10000, "int")
+IniReadS($g_iActivateQueen, $g_sProfileConfigPath, "attack", "ActivateQueen", 0, "int")
+IniReadS($g_iActivateKing, $g_sProfileConfigPath, "attack", "ActivateKing", 0, "int")
+IniReadS($g_iActivateWarden, $g_sProfileConfigPath, "attack", "ActivateWarden", 0, "int")
+IniReadS($g_iDelayActivateQueen, $g_sProfileConfigPath, "attack", "delayActivateQueen", 9000, "int")
+IniReadS($g_iDelayActivateQueen, $g_sProfileConfigPath, "attack", "delayActivateKing", 9000, "int")
+IniReadS($g_iDelayActivateWarden, $g_sProfileConfigPath, "attack", "delayActivateWarden", 10000, "int")
 $g_bAttackPlannerEnable =(IniRead($g_sProfileConfigPath, "planned", "chkAttackPlannerEnable", "0") = "1")
 $g_bAttackPlannerCloseCoC =(IniRead($g_sProfileConfigPath, "planned", "chkAttackPlannerCloseCoC", "0") = "1")
 $g_bAttackPlannerCloseAll =(IniRead($g_sProfileConfigPath, "planned", "chkAttackPlannerCloseAll", "0") = "1")
@@ -5099,7 +5166,7 @@ IniReadS($g_bRestarted, $g_sProfileConfigPath, "general", "Restarted", $g_bResta
 If $g_bBotLaunchOption_Autostart = True Then $g_bRestarted = True
 $g_bCheckGameLanguage =(IniRead($g_sProfileConfigPath, "General", "ChkLanguage", "1") = "1")
 IniReadS($g_bAutoAlignEnable, $g_sProfileConfigPath, "general", "DisposeWindows", False, "Bool")
-IniReadS($g_iAutoAlignPosition, $g_sProfileConfigPath, "general", "DisposeWindowsPos", "SNAP-TR")
+IniReadS($g_iAutoAlignPosition, $g_sProfileConfigPath, "general", "DisposeWindowsPos", "EMBED")
 IniReadS($g_iAutoAlignOffsetX, $g_sProfileConfigPath, "other", "WAOffsetX", "")
 IniReadS($g_iAutoAlignOffsetY, $g_sProfileConfigPath, "other", "WAOffsetY", "")
 IniReadS($g_bHideWhenMinimized, $g_sProfileConfigPath, "general", "HideWhenMinimized", False, "Bool")
@@ -5440,7 +5507,7 @@ EndFunc
 Global Enum $eBotUpdateStats = $eBotClose + 1
 Func SetLog($String, $Color = $COLOR_BLACK, $LogPrefix = "L ")
 Local $log = $LogPrefix & TimeDebug() & $String
-ConsoleWrite($log & @CRLF)
+_ConsoleWrite($log & @CRLF)
 EndFunc
 Func SetDebugLog($String, $Color = $COLOR_DEBUG, $LogPrefix = "D ")
 Return SetLog($String, $Color, $LogPrefix)
@@ -5495,6 +5562,9 @@ Case "/minigui", "/mg", "-minigui", "-mg"
 $g_iGuiMode = 2
 Case "/nogui", "/ng", "-nogui", "-ng"
 $g_iGuiMode = 0
+Case "/console", "/c", "-console", "-c"
+_WinAPI_AllocConsole()
+_WinAPI_SetConsoleIcon($g_sLibIconPath, $eIcnGUI)
 Case Else
 If StringInStr($CmdLine[$i], "/guipid=") Then
 Local $guidpid = Int(StringMid($CmdLine[$i], 9))
@@ -6250,7 +6320,7 @@ If $g_WatchOnlyClientPID = Default And __TimerDiff($hTimer) > $g_iBotBackendFind
 $bCheck = False
 SetLog("My Bot backend process not found, launching now...")
 SetDebugLog("My Bot backend process launching: " & $cmd)
-$pid = Run($cmd, @ScriptDir, @SW_HIDE)
+$pid = Run($cmd, @ScriptDir)
 If $pid = 0 Then
 SetLog("Cannot launch My Bot backend process", $COLOR_RED)
 Return 0

@@ -701,24 +701,6 @@ Func chkSpellWaitError()
 	EndIf
 EndFunc
 
-Func ChkUseWardenAbility()
-
-	If $g_iTownHallLevel > 10 Or $g_iTownHallLevel = 0 Then ; Must be TH11 to have warden, or starting without TH level set
-		If GUICtrlRead($g_hChkUseWardenAbility) = $GUI_CHECKED Then
-			GUICtrlSetState($g_hTxtWardenAbility, $GUI_ENABLE)
-			$g_bActivateWardenCondition = True
-		Else
-			GUICtrlSetState($g_hTxtWardenAbility, $GUI_DISABLE)
-			$g_bActivateWardenCondition = False
-		EndIf
-	Else
-		GUICtrlSetState($g_hChkUseWardenAbility, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
-		GUICtrlSetState($g_hTxtWardenAbility, $GUI_DISABLE)
-		$g_bActivateWardenCondition = False
-	EndIf
-
-EndFunc
-
 Func CmbDBTH()
 	_GUI_Value_STATE("HIDE", $g_aGroupListPicDBMaxTH)
 	Local $iCmbValue = _GUICtrlComboBox_GetCurSel($g_hCmbDBTH) + 6

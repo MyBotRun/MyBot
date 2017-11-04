@@ -1,9 +1,8 @@
 #NoTrayIcon
 #RequireAdmin
-#pragma compile(Console, true)
 #pragma compile(ProductName, My Bot Watchdog)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
-Global $g_sBotVersion = "v7.3"
+Global $g_sBotVersion = "v7.3.1"
 Opt("MustDeclareVars", 1)
 Global Const $WAIT_TIMEOUT = 258
 Global Const $STDERR_MERGED = 8
@@ -51,6 +50,12 @@ Global Const $BSF_IGNORECURRENTTASK = 0x0002
 Global Const $BSF_POSTMESSAGE = 0x0010
 Global Const $BSM_APPLICATIONS = 0x10
 Global Const $HANDLE_FLAG_INHERIT = 0x00000001
+Func _SendMessage($hWnd, $iMsg, $wParam = 0, $lParam = 0, $iReturn = 0, $wParamType = "wparam", $lParamType = "lparam", $sReturnType = "lresult")
+Local $aResult = DllCall("user32.dll", $sReturnType, "SendMessageW", "hwnd", $hWnd, "uint", $iMsg, $wParamType, $wParam, $lParamType, $lParam)
+If @error Then Return SetError(@error, @extended, "")
+If $iReturn >= 0 And $iReturn <= 4 Then Return $aResult[$iReturn]
+Return $aResult
+EndFunc
 Global Const $HGDI_ERROR = Ptr(-1)
 Global Const $INVALID_HANDLE_VALUE = Ptr(-1)
 Global Const $KF_EXTENDED = 0x0100
@@ -62,6 +67,13 @@ Global Const $LLKHF_UP = BitShift($KF_UP, 8)
 Func _WinAPI_CloseHandle($hObject)
 Local $aResult = DllCall("kernel32.dll", "bool", "CloseHandle", "handle", $hObject)
 If @error Then Return SetError(@error, @extended, False)
+Return $aResult[0]
+EndFunc
+Func _WinAPI_GetStdHandle($iStdHandle)
+If $iStdHandle < 0 Or $iStdHandle > 2 Then Return SetError(2, 0, -1)
+Local Const $aHandle[3] = [-10, -11, -12]
+Local $aResult = DllCall("kernel32.dll", "handle", "GetStdHandle", "dword", $aHandle[$iStdHandle])
+If @error Then Return SetError(@error, @extended, -1)
 Return $aResult[0]
 EndFunc
 Func _WinAPI_PostMessage($hWnd, $iMsg, $wParam, $lParam)
@@ -88,6 +100,12 @@ EndFunc
 Func _WinAPI_WaitForSingleObject($hHandle, $iTimeout = -1)
 Local $aResult = DllCall("kernel32.dll", "INT", "WaitForSingleObject", "handle", $hHandle, "dword", $iTimeout)
 If @error Then Return SetError(@error, @extended, -1)
+Return $aResult[0]
+EndFunc
+Func _WinAPI_WriteFile($hFile, $pBuffer, $iToWrite, ByRef $iWritten, $tOverlapped = 0)
+Local $aResult = DllCall("kernel32.dll", "bool", "WriteFile", "handle", $hFile, "struct*", $pBuffer, "dword", $iToWrite, "dword*", 0, "struct*", $tOverlapped)
+If @error Then Return SetError(@error, @extended, False)
+$iWritten = $aResult[4]
 Return $aResult[0]
 EndFunc
 Func _WinAPI_BroadcastSystemMessage($iMsg, $wParam = 0, $lParam = 0, $iFlags = 0, $iRecipients = 0)
@@ -467,6 +485,9 @@ EndFunc
 Global $hNtDll = DllOpen("ntdll.dll")
 Global Const $COLOR_ERROR = $COLOR_RED
 Global Const $COLOR_DEBUG = $COLOR_PURPLE
+Global Const $g_sLibPath = @ScriptDir & "\lib"
+Global Const $g_sLibIconPath = $g_sLibPath & "\MBRBOT.dll"
+Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eBtnTest, $eIcnBuilder, $eIcnCC, $eIcnGUI
 Global $g_WatchDogLogStatusBar = False
 Global $g_WatchOnlyClientPID = Default
 Global $g_bRunState = True
@@ -485,6 +506,7 @@ Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $DELAYSLEEP = 500
 Global $g_bDebugSetlog = False
+Global $g_asCmdLine = [0]
 Global Enum $eLootGold, $eLootElixir, $eLootDarkElixir, $eLootTrophy, $eLootCount
 Global $g_aiCurrentLoot[$eLootCount] = [0, 0, 0, 0]
 Global $g_iStatsTotalGain[$eLootCount] = [0, 0, 0, 0]
@@ -494,7 +516,7 @@ Func _GUICtrlStatusBar_SetTextEx($a, $b)
 EndFunc
 Func SetLog($String, $Color = $COLOR_BLACK, $LogPrefix = "L ")
 Local $log = $LogPrefix & TimeDebug() & $String
-ConsoleWrite($log & @CRLF)
+_ConsoleWrite($log & @CRLF)
 EndFunc
 Func SetDebugLog($String, $Color = $COLOR_DEBUG, $LogPrefix = "D ")
 Return SetLog($String, $Color, $LogPrefix)
@@ -888,6 +910,7 @@ EndIf
 EndIf
 Return SetError(1, 0, "")
 EndFunc
+Global Const $WM_SETICON = 0x0080
 Global Const $STARTF_USESHOWWINDOW = 0x1
 Global Const $STARTF_USESTDHANDLES = 0x100
 Func _NamedPipes_CreatePipe(ByRef $hReadPipe, ByRef $hWritePipe, $tSecurity = 0, $iSize = 0)
@@ -1034,6 +1057,40 @@ Local $aResult = DllCall("kernel32.dll", "bool", "CreateProcessW", $sAppNameType
 If @error Then Return SetError(@error, @extended, False)
 Return $aResult[0]
 EndFunc
+Func _WinAPI_AllocConsole()
+Local $aResult = DllCall("kernel32.dll", "bool", "AllocConsole")
+If @error Then Return SetError(@error, @extended, False)
+Return $aResult[0]
+EndFunc
+Func _WinAPI_SetConsoleIcon($g_sLibIconPath, $nIconID)
+Local $hIcon = DllStructCreate("int")
+Local $Result = DllCall("shell32.dll", "int", "ExtractIconEx", "str", $g_sLibIconPath, "int", $nIconID - 1, "hwnd", 0, "ptr", DllStructGetPtr($hIcon), "int", 1)
+If UBound($Result) > 0 Then
+$Result = $Result[0]
+If $Result > 0 Then
+$Result = DllCall("kernel32.dll", "bool", "SetConsoleIcon", "ptr", DllStructGetData($hIcon, 1))
+$Result = DllCall("kernel32.dll", "hwnd", "GetConsoleWindow")
+Local $error = @error, $extended = @extended
+If UBound($Result) > 0 Then
+Local $hConsole = $Result[0]
+_SendMessage($hConsole, $WM_SETICON, 0, DllStructGetData($hIcon, 1))
+_SendMessage($hConsole, $WM_SETICON, 1, DllStructGetData($hIcon, 1))
+Sleep(50)
+EndIf
+DllCall("user32.dll", "int", "DestroyIcon", "hwnd", DllStructGetData($hIcon, 1))
+If $error Then Return SetError($error, $extended, False)
+Return True
+EndIf
+EndIf
+If @error Then Return SetError(@error, @extended, False)
+EndFunc
+Func _ConsoleWrite($Text)
+Local $hFile, $pBuffer, $iToWrite, $iWritten, $tBuffer = DllStructCreate("char[" & StringLen($Text) & "]")
+DllStructSetData($tBuffer, 1, $Text)
+$hFile = _WinAPI_GetStdHandle(1)
+_WinAPI_WriteFile($hFile, $tBuffer, StringLen($Text), $iWritten)
+Return $iWritten
+EndFunc
 Func TimeDebug()
 Return "[" & @YEAR & "-" & @MON & "-" & @MDAY & " " & _NowTime(5) & "." & @MSEC & "] "
 EndFunc
@@ -1052,6 +1109,20 @@ $iTimeMsec = $iTimeMsec - 4294967296
 EndIf
 Return $iCurrentTimeMSec - $iTimeMsec
 EndFunc
+If $CmdLine[0] > 0 Then
+For $i = 1 To $CmdLine[0]
+Switch $CmdLine[$i]
+Case "/console", "/c", "-console", "-c"
+_WinAPI_AllocConsole()
+_WinAPI_SetConsoleIcon($g_sLibIconPath, $eIcnGUI)
+Case Else
+$g_asCmdLine[0] += 1
+ReDim $g_asCmdLine[$g_asCmdLine[0] + 1]
+$g_asCmdLine[$g_asCmdLine[0]] = $CmdLine[$i]
+EndSwitch
+Next
+EndIf
+DllCall("kernel32.dll", "bool", "SetConsoleTitle", "str", "Console " & $g_sBotTitle)
 $hMutex_BotTitle = CreateMutex($sWatchdogMutex)
 If $hMutex_BotTitle = 0 Then
 SetLog($g_sBotTitle & " is already running")

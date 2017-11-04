@@ -51,7 +51,7 @@ Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drop
 			SetDebugLog("King dropped 2nd time, Check Power flag not changed") ; do nothing as hero already dropped
 		EndIf
 		$g_bDropKing = True ; Set global flag hero dropped
-		If $g_iActivateKQCondition = "Manual" Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = __TimerInit() ; initialize fixed activation timer
+		If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = __TimerInit() ; initialize fixed activation timer
 		If _Sleep($DELAYDROPHEROES2) Then Return
 	EndIf
 
@@ -68,7 +68,7 @@ Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drop
 			SetDebugLog("Queen dropped 2nd time, Check Power flag not changed") ; do nothing as hero already dropped
 		EndIf
 		$g_bDropQueen = True ; Set global flag hero dropped
-		If $g_iActivateKQCondition = "Manual" Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = __TimerInit() ; initialize fixed activation timer
+		If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = __TimerInit() ; initialize fixed activation timer
 		If _Sleep($DELAYDROPHEROES2) Then Return
 	EndIf
 
@@ -85,9 +85,7 @@ Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drop
 			SetDebugLog("Warden dropped 2nd time, Check Power flag not changed") ; do nothing as hero already dropped
 		EndIf
 		$g_bDropWarden = True ; Set global flag hero dropped
-		If $g_iActivateKQCondition = "Manual" Or $g_bActivateWardenCondition Then
-			$g_aHeroesTimerActivation[$eHeroGrandWarden] = __TimerInit() ; initialize fixed activation timer
-		EndIf
+		If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then $g_aHeroesTimerActivation[$eHeroGrandWarden] = __TimerInit() ; initialize fixed activation timer
 		If _Sleep($DELAYDROPHEROES2) Then Return
 	EndIf
 

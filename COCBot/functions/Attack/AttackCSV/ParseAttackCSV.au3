@@ -711,7 +711,13 @@ Func ParseAttackCSV($debug = False)
 						EndSwitch
 
 					Case Else
-						Setlog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
+						Switch StringLeft($command, 1)
+							Case ";", "#", "'"
+								; also comment
+								debugAttackCSV("comment line")
+							Case Else
+							Setlog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
+						EndSwitch
 				EndSwitch
 			Else
 				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard: row " & $iLine + 1, $COLOR_ERROR)

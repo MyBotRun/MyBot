@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 Func FindPos()
 	getBSPos()
-	AndroidToFront("FindPos") ; Activate Android Window
+	AndroidToFront(Default, "FindPos") ; Activate Android Window
 	Local $wasDown = AndroidShieldForceDown(True, True)
 	While 1
 		If _IsPressed("01") Or _IsPressed("02") Then

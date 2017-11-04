@@ -179,11 +179,11 @@ Func AutoUpgrade()
 		; if Cost of upgrade + Value set in settings to be kept after upgrade > Current village resource, make boolean True and can continue
 		Switch $g_aUpgradeResourceCostDuration[0]
 			Case "Gold"
-				If $g_aiCurrentLoot[$eLootGold] >= ($g_aUpgradeResourceCostDuration[1] + GUICtrlRead($g_SmartMinGold)) Then $bSufficentResourceToUpgrade = True
+				If $g_aiCurrentLoot[$eLootGold] >= ($g_aUpgradeResourceCostDuration[1] + $g_iSmartMinGold) Then $bSufficentResourceToUpgrade = True
 			Case "Elixir"
-				If $g_aiCurrentLoot[$eLootElixir] >= ($g_aUpgradeResourceCostDuration[1] + GUICtrlRead($g_SmartMinElixir)) Then $bSufficentResourceToUpgrade = True
+				If $g_aiCurrentLoot[$eLootElixir] >= ($g_aUpgradeResourceCostDuration[1] + $g_iSmartMinElixir) Then $bSufficentResourceToUpgrade = True
 			Case "Dark Elixir"
-				If $g_aiCurrentLoot[$eLootDarkElixir] >= ($g_aUpgradeResourceCostDuration[1] + GUICtrlRead($g_iSmartMinDark)) Then $bSufficentResourceToUpgrade = True
+				If $g_aiCurrentLoot[$eLootDarkElixir] >= ($g_aUpgradeResourceCostDuration[1] + $g_iSmartMinDark) Then $bSufficentResourceToUpgrade = True
 		EndSwitch
 		; if boolean still False, we can't launch upgrade, exiting...
 		If Not $bSufficentResourceToUpgrade Then

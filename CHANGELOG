@@ -1,10 +1,26 @@
+* **V7.3.1**
+ * Split Hero Ability Activation Methods for each Hero and add new Option
+ * Fix missing Valkyrie level 6
+ * Fix Custom Donate not working properly
+ * Fix logs not refresh after switching from Mini to Normal GUI Mode
+ * Fix Android Window hide/show and manual repositioning
+ * Fix Builder Base having Problems zooming out sometimes
+ * Fix loading auto uprade min resource configuration when using /mg command line options
+ * Fix enabled GUI Controls when switching from mini to normal mode in waiting run mode
+ * Improve CC Spell drop when same type exists in Army (CSV RECALC not required anymore)
+ * Improve hero upgrade detection
+ * Improve bot rebooting Android when Gfx Errors (missing objects) detected
+ * Imporve window position of bot and Android window for new profile
+ * Add /console option to show console window with raw logs
+ * Update Italian Language File by @quisazadrah
+
 * **V7.3**
  * Add Auto Update for Normal and Builder Base and Builder Base Stats (thx to DocOC team and ViperZ)
  * Add MEmu 3.5.0.2 DirectX support
  * Add Clash Of Magic support, https://www.clashofmagic.net/
    Server 3: http://download825.mediafireuserdownload.com/g29mv74piaqg/jeab7w484b77n86/Magic-CoC_S3-9.105-R1.apk
    http://www.tomzpot.com/android-games/clash-of-magic-9-105-10-private-server-september-2017/
- * Add Mini GUI mode to run launch more 10 bots (can be also enabled with command line option /minigui or /mg)
+ * Add Mini GUI mode to run/launch more than 10 bots (can be also enabled with command line option /minigui or /mg)
    New title bar icon to switch between normal and mini GUI mode
  * Add automatic Android reboot after configured run-time hours (default is 24) to prevent severy Android issues like memory leak, graphics error etc.
  * Add /? command line option to show help on additonal command line paramter and options

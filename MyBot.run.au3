@@ -212,6 +212,10 @@ Func ProcessCommandLine()
 					$g_iGuiMode = 2
 				Case "/nogui", "/ng", "-nogui", "-ng"
 					$g_iGuiMode = 0
+				Case "/console", "/c", "-console", "-c"
+					$g_iBotLaunchOption_Console = True
+					_WinAPI_AllocConsole()
+					_WinAPI_SetConsoleIcon($g_sLibIconPath, $eIcnGUI)
 				Case "/?", "/h", "/help", "-?", "-h", "-help"
 					; show command line help and exit
 					$g_iBotLaunchOption_Help = True
@@ -557,7 +561,7 @@ Func FinalInitialization(Const $sAI)
 		Local $timer = __TimerInit()
 		While $g_iGuiPID = @AutoItPID And __TimerDiff($timer) < 60000
 			; wait for GUI Process updating $g_iGuiPID
-			_Sleep(50)
+			Sleep(50) ; must be Sleep as no run state!
 		WEnd
 		If $g_iGuiPID = @AutoItPID Then
 			SetDebugLog("GUI Process not received, close bot")
@@ -660,6 +664,8 @@ Func runBot() ;Bot that runs everything in order
 		checkMainScreen()
 		If $g_bRestart = True Then ContinueLoop
 		chkShieldStatus()
+		If $g_bRestart = True Then ContinueLoop
+		checkObstacles() ; trap common error messages also check for reconnecting animation
 		If $g_bRestart = True Then ContinueLoop
 
 		If $g_bQuicklyFirstStart = True Then

@@ -16,7 +16,7 @@
 
 Func TestLanguage()
 	If $g_bRunState Then
-		; test "builder" word top of sceen
+		; test the word "Attack!" on the Attack Button in the lower left corner
 		If getOcrLanguage($aDetectLang[0], $aDetectLang[1]) = "english" Then
 			Setlog("Language setting is English: Correct.", $COLOR_INFO)
 		Else

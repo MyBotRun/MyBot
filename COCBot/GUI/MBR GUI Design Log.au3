@@ -42,8 +42,6 @@ Func CreateLogTab($hWHndLogsOnly = False)
 		_WinAPI_SetParent($g_hTxtLog, $g_hGUI_LOG)
 		_WinAPI_SetWindowLong($g_hTxtLog, $GWL_HWNDPARENT, $g_hGUI_LOG)
 		WinSetState($g_hTxtLog, "", @SW_RESTORE)
-		_GUICtrlRichEdit_SetSel($g_hTxtLog, 0, 0) ; select end
-		_GUICtrlRichEdit_SetSel($g_hTxtLog, -1, -1) ; select end
 	Else
 		$g_hTxtLog = _GUICtrlRichEdit_Create($g_hGUI_LOG, "", 0, 0, 20, 20, BitOR($ES_MULTILINE, $ES_READONLY, $WS_VSCROLL, $WS_HSCROLL, $ES_UPPERCASE, $ES_AUTOHSCROLL, $ES_AUTOVSCROLL, $ES_NUMBER, 0x200), $WS_EX_STATICEDGE)
 		; Enable word wrap in log file, nice, but better keep warp disabled
@@ -59,8 +57,6 @@ Func CreateLogTab($hWHndLogsOnly = False)
 		_WinAPI_SetParent($g_hTxtAtkLog, $g_hGUI_LOG)
 		_WinAPI_SetWindowLong($g_hTxtAtkLog, $GWL_HWNDPARENT, $g_hGUI_LOG)
 		WinSetState($g_hTxtAtkLog, "", @SW_RESTORE)
-		_GUICtrlRichEdit_SetSel($g_hTxtAtkLog, 0, 0) ; select end
-		_GUICtrlRichEdit_SetSel($g_hTxtAtkLog, -1, -1) ; select end
 	Else
 		$g_hTxtAtkLog = _GUICtrlRichEdit_Create($g_hGUI_LOG, "", 0, 0, 20, 20, BitOR($ES_MULTILINE, $ES_READONLY, $WS_VSCROLL, 8908), $WS_EX_STATICEDGE) ; 8909 = $ES_NUMBER, $ES_AUTOHSCROLL, $ES_AUTOVSCROLL, $ES_MULTILINE, $ES_UPPERCASE, 0x200
 	EndIf
