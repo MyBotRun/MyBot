@@ -19,15 +19,7 @@ Func hasElixirStorage($bForceCapture = False)
 
 	Local $has = False
 
-	;aux data
-	Local $sCocDiamond = "ECD" ;
-	Local $redLines = $g_sImglocRedline ; if TH was Search then redline is set!
-	Local $minLevel = 0
-	Local $maxLevel = 1000
-	Local $maxReturnPoints = 0 ; all positions
-	Local $returnProps = "objectname,objectpoints,objectlevel"
-	Local $sDirectory = @ScriptDir & "\imgxml\deadbase\elix\storage\"
-	Local $result = findMultiple($sDirectory, $sCocDiamond, $redLines, $minLevel, $maxLevel, $maxReturnPoints, $returnProps, $bForceCapture)
+	Local $result = findMultiple($g_sImgElixirStorage, "ECD", $g_sImglocRedline, 0, 1000, 0, "objectname,objectpoints,objectlevel", $bForceCapture)
 
 	If IsArray($result) Then
 		For $matchedValues In $result

@@ -1,3 +1,29 @@
+* **V7.3.2**
+ * Add BlueSatcks 3.50.x support
+ * Add Nox 6.0.0 support
+ * Add Quick Train Combo System
+ * Add Unlimited Boost Option
+ * Add Android option to close Android when bot exists
+ * Add Android Lollipop support tested with Nox 6.0.0 and MEmu 3.6.2, support system messages are out of sync, other device connected, rate CoC and general error
+ * Add more options for Custom Donate
+ * Add notify Start button
+ * Fix army not yet ready when wait for CC Spell is used in disable search type and not used in enabled search type
+ * Fix Bot not removing wrong Spells when Custom Spell Brew Order is enabled (thanks to @Sjakie1987 for helping)
+ * Fix SmartWait4Train waiting for normal hero recovery when hero is boosted
+ * Fix Auto Upgrade not honoring the reserved builder for walls
+ * Fix Auto Upgrade not upgrading lower levels
+ * Fix Builder Base Auto Upgrade stop checking further upgrades when not enough resources
+ * Fix Builder Base Auto Upgrade not upgrading Battle Machine
+ * Fix bot z-order change when not docked and Android Window should stay in front of bot
+ * Fix update stats when switching bot from mini to normal GUI mode
+ * Fix Android Window positioning and force Android Window always on top when background mode disabled
+ * Fix ADB path favoring current Android Emulator, save path in profile.ini and allow to rename/delete Android ADB.EXE to improve multi-bot environments of different vendors
+ * Fix missing icon and version info on compiled bot files
+ * Add Builder Base rebuild Battle Machine support
+ * Add /HideAndroid command line option to hide Android automatically when bot auto-starts
+ * Add Android Emulator, Instance and Device information to ADB Shell Console Window
+ * Update Vietnamese language
+
 * **V7.3.1**
  * Split Hero Ability Activation Methods for each Hero and add new Option
  * Fix missing Valkyrie level 6

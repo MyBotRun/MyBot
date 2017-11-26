@@ -24,7 +24,7 @@ Func BoostKing()
 		If _Sleep($DELAYBOOSTHEROES4) Then Return
 	EndIf
 
-	BoostStructure("Barbarian King", "King", $g_aiKingAltarPos, $g_iCmbBoostBarbarianKing, $g_hCmbBoostBarbarianKing)
+	If BoostStructure("Barbarian King", "King", $g_aiKingAltarPos, $g_iCmbBoostBarbarianKing, $g_hCmbBoostBarbarianKing) Then $g_aiHeroBoost[$eHeroBarbarianKing] = _NowCalc()
 
 	If _Sleep($DELAYBOOSTBARRACKS5) Then Return
 	checkMainScreen(False) ; Check for errors during function
@@ -42,7 +42,7 @@ Func BoostQueen()
 		If _Sleep($DELAYBOOSTHEROES4) Then Return
 	EndIf
 
-	BoostStructure("Archer Queen", "Quee", $g_aiQueenAltarPos, $g_iCmbBoostArcherQueen, $g_hCmbBoostArcherQueen)
+	If BoostStructure("Archer Queen", "Quee", $g_aiQueenAltarPos, $g_iCmbBoostArcherQueen, $g_hCmbBoostArcherQueen) Then $g_aiHeroBoost[$eHeroArcherQueen] = _NowCalc()
 
 	If _Sleep($DELAYBOOSTBARRACKS5) Then Return
 	checkMainScreen(False) ; Check for errors during function
@@ -59,7 +59,7 @@ Func BoostWarden()
 		If _Sleep($DELAYBOOSTHEROES4) Then Return
 	EndIf
 
-	BoostStructure("Grand Warden", "Warden", $g_aiWardenAltarPos, $g_iCmbBoostWarden, $g_hCmbBoostWarden)
+	If BoostStructure("Grand Warden", "Warden", $g_aiWardenAltarPos, $g_iCmbBoostWarden, $g_hCmbBoostWarden) Then $g_aiHeroBoost[$eHeroGrandWarden] = _NowCalc()
 
 	If _Sleep($DELAYBOOSTBARRACKS5) Then Return
 	checkMainScreen(False) ; Check for errors during function

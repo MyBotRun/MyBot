@@ -196,8 +196,8 @@ Func GUIControl_WM_SHELLHOOK($hWin, $iMsg, $wParam, $lParam)
 			Case $lParam = $g_hAndroidWindow
 				; show bot without activating
 				;BotToFront($lParam)
-				BotMinimizeRestore(False, "GUIControl_WM_SHELLHOOK", False, 0, $lParam)
-				If Not $g_bIsHidden Then HideAndroidWindow(False, False, Default, "GUIControl_WM_SHELLHOOK") ; Android can be hidden
+				BotMinimizeRestore(False, "GUIControl_WM_SHELLHOOK", False, 0, $g_hAndroidWindow)
+				;If Not $g_bIsHidden Then HideAndroidWindow(False, False, Default, "GUIControl_WM_SHELLHOOK") ; Android can be hidden
 			#cs moved to GUIControl_WM_ACTIVATEAPP as it enters here without activating the bot
 			Case Not $g_bIsHidden And $lParam = $g_hFrmBot ;And WinActive($g_hFrmBot)
 				; show Android without activating
@@ -214,8 +214,8 @@ Func GUIControl_WM_ACTIVATEAPP($hWin, $iMsg, $wParam, $lParam)
 	If $wParam Then
 		; bot activated
 		;If BitAND($g_iBotDesignFlags, 2) And $g_bAndroidEmbedded And $g_bBotDockedShrinked Then BotShrinkExpandToggle() ; auto expand bot again
-		; show Android without activating
-		If Not $g_bIsHidden And Not AndroidEmbedded() Then ShowAndroidWindow($g_hFrmBot, False, Default, "GUIControl_WM_ACTIVATEAPP")
+		; show Android behind bot without activating it
+		If Not $g_bFlushGuiLogActive And Not $g_bIsHidden And Not AndroidEmbedded() And $g_bChkBackgroundMode Then ShowAndroidWindow($g_hFrmBot, False, Default, "GUIControl_WM_ACTIVATEAPP")
 	Else
 		; bot deactivated
 		If BitAND($g_iBotDesignFlags, 2) And $g_bAndroidEmbedded And Not $g_bBotDockedShrinked Then BotShrinkExpandToggle() ; auto shrink bot again ;
@@ -475,8 +475,6 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnResume()
 		Case $g_hBtnHide
 			btnHide()
-			;Case $g_hBtnEmbed
-			;	btnEmbed()
 		Case $btnResetStats
 			btnResetStats()
 		Case $g_hBtnAttackNowDB
@@ -557,8 +555,6 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnTestDeadBaseFolder()
 		Case $g_hBtnTestTHimgloc
 			imglocTHSearch()
-		Case $g_hBtnTestQuickTrainsimgloc
-			imglocTestQuickTrain(1)
 		Case $g_hBtnTestimglocTroopBar
 			TestImglocTroopBar()
 		Case $g_hBtnTestAttackCSV
@@ -581,6 +577,8 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnTestWeakBase()
 		Case $g_hBtnTestClickAway
 			btnTestClickAway()
+		Case $g_hBtnTestAutoUpgrade
+			AutoUpgrade(True)
 	EndSwitch
 
 	If $lParam = $g_hCmbGUILanguage Then
@@ -784,7 +782,7 @@ EndFunc   ;==>BotMinimizeRequest
 
 Func BotToFront($hHWndAfter = $HWND_TOPMOST)
 	WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $hHWndAfter, 0, False)
-	If $hHWndAfter = $HWND_TOPMOST Then WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+	If $hHWndAfter = $HWND_TOPMOST Or $hHWndAfter = $HWND_TOP Then WinMove2($g_hFrmBot, "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 EndFunc   ;==>BotToFront
 
 Func CheckBotZOrder($bCheckOnly = False, $bForceZOrder = False)
@@ -973,7 +971,7 @@ Func BotShrinkExpandToggleExecute()
 	$aPos[3] = $g_aFrmBotPosInit[3] + $g_iFrmBotAddH + $g_aFrmBotPosInit[7]
 	Local $bAndroidShieldEnabled = $g_bAndroidShieldEnabled
 	$g_bAndroidShieldEnabled = False ; disable should to prevent flickering
-	$g_bBotDockedShrinked = (($g_bBotDockedShrinked) ? (False) : (True)) ; set new shrink mode
+	$g_bBotDockedShrinked = Not $g_bBotDockedShrinked ; set new shrink mode
 	If Not $g_bBotDockedShrinked Then GUISetState(@SW_HIDE, $g_hFrmBotLogoUrlSmall)
 
 	Local $aBtnSize = $_GUI_MAIN_BUTTON_SIZE
@@ -986,11 +984,7 @@ Func BotShrinkExpandToggleExecute()
 	EndIf
 	Local $iMode = (($g_bBotDockedShrinked) ? (1) : (-1))
 	Local $aPosBtn = ControlGetPos($g_hFrmBot, "", $g_hFrmBotButtons)
-	If $bAndroidShieldEnabled And $g_bAndroidShieldPreWin8 Then
-		; disable should to prevent flickering
-		If $g_hFrmBotEmbeddedShield Then GUISetState(@SW_HIDE, $g_hFrmBotEmbeddedShield)
-		If $g_hFrmBotEmbeddedMouse Then GUISetState(@SW_HIDE, $g_hFrmBotEmbeddedMouse)
-	EndIf
+	Local $bAnimate = $bAndroidShieldEnabled And Not $g_bAndroidShieldPreWin8 And $g_bChkBackgroundMode
 	;_SendMessage($g_hFrmBotEx, $WM_SETREDRAW, False, 0)
 	;_SendMessage($g_hFrmBotBottom, $WM_SETREDRAW, False, 0)
 	GUISetState(@SW_HIDE, $g_hFrmBotEx)
@@ -999,21 +993,24 @@ Func BotShrinkExpandToggleExecute()
 	Local $fStep = $_GUI_MAIN_WIDTH / $iSteps
 	Local $bGetAnimationSpeed = True
 	Local $iAnimationDelay = 0
-	For $i = 1 To $iSteps
-		Local $iWidth = Round($aPos[2] - $i * $fStep * $iMode, 0)
-		Local $iChange = $iWidth - $aPos[2]
-		If $bGetAnimationSpeed Then Local $hTimer = __TimerInit()
-		WinMove2($g_hFrmBot, "", -1, -1, $iWidth, $aPos[3], 0, 0, False)
-		WinMove2($g_hFrmBotButtons, "", $iAndroidWidth + 2 - $aBtnSize[0] * $_GUI_MAIN_BUTTON_COUNT + $iChange + (($g_bBotDockedShrinked) ? ($_GUI_MAIN_WIDTH) : (0)), $aPosBtn[1], -1, -1, 0, 0, False)
-		If $bGetAnimationSpeed Then
-			$iAnimationDelay = 100 / $iSteps - __TimerDiff($hTimer)
-		EndIf
-		If $iAnimationDelay > 0 Then _SleepMilli($iAnimationDelay)
-	Next
+	If $bAnimate Then
+		For $i = 1 To $iSteps
+			Local $iWidth = Round($aPos[2] - $i * $fStep * $iMode, 0)
+			Local $iChange = $iWidth - $aPos[2]
+			If $bGetAnimationSpeed Then Local $hTimer = __TimerInit()
+			WinMove2($g_hFrmBot, "", -1, -1, $iWidth, $aPos[3], 0, 0, False)
+			WinMove2($g_hFrmBotButtons, "", $iAndroidWidth + 2 - $aBtnSize[0] * $_GUI_MAIN_BUTTON_COUNT + $iChange + (($g_bBotDockedShrinked) ? ($_GUI_MAIN_WIDTH) : (0)), $aPosBtn[1], -1, -1, 0, 0, False)
+			If $bGetAnimationSpeed Then
+				$iAnimationDelay = 100 / $iSteps - __TimerDiff($hTimer)
+			EndIf
+			If $iAnimationDelay > 0 Then _SleepMilli($iAnimationDelay)
+		Next
+	EndIf
 	; update buttons
 	GUICtrlSetState($g_hLblBotShrink, (($g_bBotDockedShrinked) ? ($GUI_HIDE) : ($GUI_SHOW)))
 	GUICtrlSetState($g_hLblBotExpand, (($g_bBotDockedShrinked) ? ($GUI_SHOW) : ($GUI_HIDE)))
 	WinSetTrans($g_hFrmBotButtons, "", (($g_bBotDockedShrinked) ? (210) : (254))) ; trick to hide buttons from Android Screen that is not always refreshing
+	WinMove2($g_hFrmBot, "", -1, -1, $aPos[2] - $_GUI_MAIN_WIDTH * $iMode, $aPos[3], 0, 0, False)
 	WinMove2($g_hFrmBotButtons, "", $iAndroidWidth + 2 + (($g_bBotDockedShrinked) ? (-$aBtnSize[0] * $_GUI_MAIN_BUTTON_COUNT) : ($_GUI_MAIN_WIDTH - $aBtnSize[0] * $_GUI_MAIN_BUTTON_COUNT)), $aPosBtn[1], -1, -1, 0, 0, False)
 	If $g_bBotDockedShrinked Then
 		WinMove2($g_hFrmBotLogoUrlSmall, "", $iAndroidWidth + 2 + (($g_bBotDockedShrinked) ? (-$aBtnSize[0] * $_GUI_MAIN_BUTTON_COUNT) : ($_GUI_MAIN_WIDTH - $aBtnSize[0] * $_GUI_MAIN_BUTTON_COUNT)) - 290, $aPosBtn[1], -1, -1, 0, 0, False)
@@ -1027,10 +1024,6 @@ Func BotShrinkExpandToggleExecute()
 	;_WinAPI_UpdateWindow($g_hFrmBotBottom)
 	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEx)
 	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotBottom)
-	If $bAndroidShieldEnabled And $g_bAndroidShieldPreWin8 Then
-		If $g_hFrmBotEmbeddedShield Then GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEmbeddedShield)
-		If $g_hFrmBotEmbeddedMouse Then GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEmbeddedMouse)
-	EndIf
 	If $g_bBotDockedShrinked Then CheckBotShrinkExpandButton()
 	SetDebugLog("BotShrinkExpandToggle: Bot " & (($g_bBotDockedShrinked) ? ("collapsed") : ("expanded")))
 	$g_bAndroidShieldEnabled = $bAndroidShieldEnabled
@@ -1139,6 +1132,9 @@ Func BotGuiModeToggle()
 
 			InitializeMainGUI(True)
 
+			; update stats
+			UpdateStats(True)
+
 			DestroySplashScreen()
 
 			; apply config
@@ -1232,15 +1228,28 @@ Func BotClose($SaveConfig = Default, $bExit = True)
 	ResumeAndroid()
 	SetLog("Closing " & $g_sBotTitle & " now ...")
 	LockBotSlot(False)
-	AndroidEmbed(False) ; detach Android Window
-	AndroidShieldDestroy() ; destroy Shield Hooks
-	AndroidBotStopEvent() ; signal android that bot is now stoppting
 
 	If $SaveConfig = True Then
 		setupProfile()
 		SaveConfig()
 	EndIf
-	AndroidAdbTerminateShellInstance()
+
+	; ensure windows are not top anymore
+	$g_bChkBackgroundMode = True
+
+	AndroidEmbed(False) ; detach Android Window
+	AndroidShieldDestroy() ; destroy Shield Hooks
+
+	If $g_bAndroidCloseWithBot And $g_hAndroidWindow Then
+		$g_bRunState = True
+		CloseAndroid("BotClose")
+		$g_bRunState = False
+	Else
+		AndroidBotStopEvent() ; signal android that bot is now stoppting
+		AndroidToFront(Default, "BotClose")
+		AndroidAdbTerminateShellInstance()
+	EndIf
+
 	; Close Mutexes
 	If $g_hMutex_BotTitle <> 0 Then ReleaseMutex($g_hMutex_BotTitle)
 	If $g_hMutex_Profile <> 0 Then ReleaseMutex($g_hMutex_Profile)
@@ -1302,7 +1311,7 @@ Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = Fal
 			;WinSetState($g_hAndroidWindow, "", @SW_MINIMIZE)
 		EndIf
 		; Hide also Android
-		If Not $g_bIsHidden Then HideAndroidWindow(True, False, Default, "BotMinimizeRestore")
+		If $g_bChkBackgroundMode And Not $g_bIsHidden Then HideAndroidWindow(True, False, Default, "BotMinimizeRestore")
 		;ReleaseMutex($hMutex)
 		Return True
 	EndIf
@@ -1340,7 +1349,7 @@ Func BotMinimizeRestore($bMinimize, $sCaller, $iForceUpdatingWhenMinimized = Fal
 	WinSetTrans($g_hFrmBot, "", 255) ; is set to 1 when "Hide when minimized" is enabled after some time, so restore it
 	BotToFront($hHWndAfter)
 	; Show also Android
-	If Not $g_bIsHidden And $hHWndAfter <> $g_hAndroidWindow Then HideAndroidWindow(False, False, Default, "BotMinimizeRestore", $g_hFrmBot)
+	If $g_bChkBackgroundMode And Not $g_bIsHidden And $hHWndAfter <> $g_hAndroidWindow Then HideAndroidWindow(False, False, Default, "BotMinimizeRestore", $g_hFrmBot)
 	;ReleaseMutex($hMutex)
 	Return True
 

@@ -14,17 +14,19 @@
 ; ===============================================================================================================================
 
 Func isProblemAffect($bNeedCaptureRegion = False)
-	If Not _ColorCheck(_GetPixelColor(253, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0x282828, 6), 10) Then
+	Local $iGray = 0x282828
+	If $g_iAndroidVersionAPI >= $g_iAndroidLollipop Then $iGray = 0x424242
+	If Not _ColorCheck(_GetPixelColor(253, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex($iGray, 6), 10) Then
 		Return False
-	ElseIf Not _ColorCheck(_GetPixelColor(373, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0x282828, 6), 10) Then
+	ElseIf Not _ColorCheck(_GetPixelColor(373, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex($iGray, 6), 10) Then
 		Return False
-	ElseIf Not _ColorCheck(_GetPixelColor(473, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0x282828, 6), 10) Then
+	ElseIf Not _ColorCheck(_GetPixelColor(473, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex($iGray, 6), 10) Then
 		Return False
-	ElseIf Not _ColorCheck(_GetPixelColor(283, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0x282828, 6), 10) Then
+	ElseIf Not _ColorCheck(_GetPixelColor(283, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex($iGray, 6), 10) Then
 		Return False
-	ElseIf Not _ColorCheck(_GetPixelColor(320, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0x282828, 6), 10) Then
+	ElseIf Not _ColorCheck(_GetPixelColor(320, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex($iGray, 6), 10) Then
 		Return False
-	ElseIf Not _ColorCheck(_GetPixelColor(594, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex(0x282828, 6), 10) Then
+	ElseIf Not _ColorCheck(_GetPixelColor(594, 395 + $g_iMidOffsetY, $bNeedCaptureRegion), Hex($iGray, 6), 10) Then
 		Return False
 	ElseIf _ColorCheck(_GetPixelColor(823, 32, $bNeedCaptureRegion), Hex(0xF8FCFF, 6), 10) Then
 		Return False

@@ -35,9 +35,13 @@ Func BoostBarracks()
 		If $ClickResult = True Then
 			Local $GemResult = IsGemWindowOpen(True)
 			If $GemResult = True Then
-				If $g_iCmbBoostBarracks >= 1 Then $g_iCmbBoostBarracks -= 1
-				Setlog(" Total remain cycles to boost Barracks:" & $g_iCmbBoostBarracks, $COLOR_GREEN)
-				GUICtrlSetData($g_hCmbBoostBarracks, $g_iCmbBoostBarracks)
+				If $g_iCmbBoostBarracks >= 1 And $g_iCmbBoostBarracks <= 24 Then
+					$g_iCmbBoostBarracks -= 1
+					Setlog(" Total remain cycles to boost Barracks:" & $g_iCmbBoostBarracks, $COLOR_GREEN)
+					GUICtrlSetData($g_hCmbBoostBarracks, $g_iCmbBoostBarracks)
+				ElseIf $g_iCmbBoostBarracks = 25 Then
+					Setlog(" Total remain cycles to boost Barracks: Unlimited", $COLOR_GREEN)
+				EndIf
 			EndIf
 		EndIf
 
@@ -63,9 +67,13 @@ Func BoostSpellFactory()
 			If $ClickResult = True Then
 				Local $GemResult = IsGemWindowOpen(True)
 				If $GemResult = True Then
-					If $g_iCmbBoostSpellFactory >= 1 Then $g_iCmbBoostSpellFactory -= 1
-					Setlog(" Total remain cycles to boost Spells:" & $g_iCmbBoostSpellFactory, $COLOR_GREEN)
-					GUICtrlSetData($g_hCmbBoostSpellFactory, $g_iCmbBoostSpellFactory)
+					If $g_iCmbBoostSpellFactory >= 1 And $g_iCmbBoostSpellFactory <= 24 Then
+						$g_iCmbBoostSpellFactory -= 1
+						Setlog(" Total remain cycles to boost Spells:" & $g_iCmbBoostSpellFactory, $COLOR_GREEN)
+						GUICtrlSetData($g_hCmbBoostSpellFactory, $g_iCmbBoostSpellFactory)
+					ElseIf $g_iCmbBoostSpellFactory = 25 Then
+						Setlog(" Total remain cycles to boost Spells: Unlimited", $COLOR_GREEN)
+					EndIf
 				EndIf
 			EndIf
 

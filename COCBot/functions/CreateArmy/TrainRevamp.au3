@@ -98,7 +98,7 @@ Func CheckCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	If $iReturnCamp = 1 Then
 		OpenTrainTabNumber($QuickTrainTAB, "CheckCamp()")
 		If _Sleep(1000) Then Return
-		TrainArmyNumber($g_iQuickTrainArmyNum)
+		TrainArmyNumber($g_bQuickTrainArmy)
 		If _Sleep(700) Then Return
 	EndIf
 	If $iReturnCamp = 0 Then
@@ -333,7 +333,7 @@ Func IsFullClanCastleSpells($bReturnOnly = False)
 	Local $bCCSpellFull = False
 	Local $ToReturn = False
 	If Not $g_bRunState Then Return
-	If Not $g_abSearchCastleSpellsWaitEnable[$DB] And Not $g_abSearchCastleSpellsWaitEnable[$LB] Then
+	If (Not $g_abAttackTypeEnable[$DB] Or Not $g_abSearchCastleSpellsWaitEnable[$DB]) And (Not $g_abAttackTypeEnable[$LB] Or Not $g_abSearchCastleSpellsWaitEnable[$LB]) Then
 		$ToReturn = True
 		If Not $bReturnOnly Then
 			Return $ToReturn
@@ -342,7 +342,7 @@ Func IsFullClanCastleSpells($bReturnOnly = False)
 		EndIf
 	EndIf
 
-	If $g_iCurrentCCSpell = $g_iTotalCCSpell Then $bCCSpellFull = True
+	If $g_iCurrentCCSpell = $g_iTotalCCSpell And $g_iTotalCCSpell > 0 Then $bCCSpellFull = True
 
 	If $bCCSpellFull And (($g_abAttackTypeEnable[$DB] And $g_abSearchCastleSpellsWaitEnable[$DB]) Or ($g_abAttackTypeEnable[$LB] And $g_abSearchCastleSpellsWaitEnable[$LB])) Then
 		If $g_bDebugSetlogTrain Then Setlog("Getting current available spell in Clan Castle.")
@@ -1347,7 +1347,6 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $bSetLog = True)
 		; Elixir Troops
 		For $i = 0 To $eTroopCount - 1
 			Local $troopIndex = $g_aiTrainOrder[$i]
-			;SetDebugLog($ii & ": " & $troopIndex & " " & $g_aiCurrentTroops[$troopIndex] & " " & $g_asTroopShortNames[$troopIndex] & " " & $g_aiArmyCompTroops[$troopIndex])
 			If $g_aiArmyCompTroops[$troopIndex] > 0 Then
 				$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$troopIndex]
 				$ToReturn[UBound($ToReturn) - 1][1] = $g_aiArmyCompTroops[$troopIndex]
@@ -1358,7 +1357,6 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $bSetLog = True)
 		; Spells
 		For $i = 0 To $eSpellCount - 1
 			Local $BrewIndex = $g_aiBrewOrder[$i]
-			If $g_bRunState = False Then Return
 			If TotalSpellsToBrewInGUI() = 0 Then ExitLoop
 			If $g_aiArmyCompSpells[$BrewIndex] > 0 Then
 				If HowManyTimesWillBeUsed($g_asSpellShortNames[$BrewIndex]) > 0 Then
@@ -1391,8 +1389,6 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $bSetLog = True)
 			; Check Elixir Troops needed quantity to Train
 			For $ii = 0 To $eTroopCount - 1
 				Local $troopIndex = $g_aiTrainOrder[$ii]
-				;SetDebugLog($ii & ": " & $troopIndex & " " & $g_aiCurrentTroops[$troopIndex] & " " & $g_asTroopShortNames[$troopIndex] & " " & $g_aiArmyCompTroops[$troopIndex])
-				If $g_bRunState = False Then Return
 				If $g_aiArmyCompTroops[$troopIndex] > 0 Then
 					$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$troopIndex]
 					$ToReturn[UBound($ToReturn) - 1][1] = $g_aiArmyCompTroops[$troopIndex] - $g_aiCurrentTroops[$troopIndex]
@@ -1403,7 +1399,6 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $bSetLog = True)
 			; Check Spells needed quantity to Brew
 			For $i = 0 To $eSpellCount - 1
 				Local $BrewIndex = $g_aiBrewOrder[$i]
-				If $g_bRunState = False Then Return
 				If TotalSpellsToBrewInGUI() = 0 Then ExitLoop
 				If $g_aiArmyCompSpells[$BrewIndex] > 0 Then
 					$ToReturn[UBound($ToReturn) - 1][0] = $g_asSpellShortNames[$BrewIndex]
@@ -1415,8 +1410,6 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $bSetLog = True)
 			; Check Elixir Troops Extra Quantity
 			For $ii = 0 To $eTroopCount - 1
 				Local $troopIndex = $g_aiTrainOrder[$ii]
-				If $g_bRunState = False Then Return
-				;SetDebugLog($ii & ": " & $troopIndex & " " & $g_aiCurrentTroops[$troopIndex] & " " & $g_asTroopShortNames[$troopIndex] & " " & $g_aiArmyCompTroops[$troopIndex])
 				If $g_aiCurrentTroops[$troopIndex] > 0 Then
 					If $g_aiArmyCompTroops[$troopIndex] - $g_aiCurrentTroops[$troopIndex] < 0 Then
 						$ToReturn[UBound($ToReturn) - 1][0] = $g_asTroopShortNames[$troopIndex]
@@ -1429,10 +1422,9 @@ Func WhatToTrain($ReturnExtraTroopsOnly = False, $bSetLog = True)
 			; Check Spells Extra Quantity
 			For $i = 0 To $eSpellCount - 1
 				Local $BrewIndex = $g_aiBrewOrder[$i]
-				If $g_bRunState = False Then Return
 				If TotalSpellsToBrewInGUI() = 0 Then ExitLoop
-				If $g_aiCurrentSpells[$i] > 0 Then
-					If $g_aiArmyCompSpells[$i] - $g_aiCurrentSpells[$BrewIndex] < 0 Then
+				If $g_aiCurrentSpells[$BrewIndex] > 0 Then
+					If $g_aiArmyCompSpells[$BrewIndex] - $g_aiCurrentSpells[$BrewIndex] < 0 Then
 						$ToReturn[UBound($ToReturn) - 1][0] = $g_asSpellShortNames[$BrewIndex]
 						$ToReturn[UBound($ToReturn) - 1][1] = Abs($g_aiArmyCompSpells[$BrewIndex] - $g_aiCurrentSpells[$BrewIndex])
 						ReDim $ToReturn[UBound($ToReturn) + 1][2]
@@ -1881,23 +1873,25 @@ Func OpenTrainTabNumber($iTabNumber, $sWhereFrom)
 	EndIf
 EndFunc   ;==>OpenTrainTabNumber
 
-Func TrainArmyNumber($iArmyNumber)
+Func TrainArmyNumber($Army)
 
-	$iArmyNumber = $iArmyNumber - 1
 	Local $a_TrainArmy[3][4] = [[784, 368, 0x71BB2B, 10], [784, 485, 0x74BD2D, 10], [784, 602, 0x73BD2D, 10]]
 	Setlog("Using Quick Train Tab.")
 	If $g_bRunState = False Then Return
 
 	If IsArmyWindow(False, $QuickTrainTAB) Then
-		; _ColorCheck($nColor1, $nColor2, $sVari = 5, $Ignore = "")
-		If _ColorCheck(_GetPixelColor($a_TrainArmy[$iArmyNumber][0], $a_TrainArmy[$iArmyNumber][1], True), Hex($a_TrainArmy[$iArmyNumber][2], 6), $a_TrainArmy[$iArmyNumber][3]) Then
-			Click($a_TrainArmy[$iArmyNumber][0], $a_TrainArmy[$iArmyNumber][1], 1)
-			SetLog("Making the Army " & $iArmyNumber + 1, $COLOR_INFO)
-			If _Sleep(1000) Then Return
-		Else
-			Setlog(" - Error Clicking On Army: " & $iArmyNumber + 1 & "| Pixel was :" & _GetPixelColor($a_TrainArmy[$iArmyNumber][0], $a_TrainArmy[$iArmyNumber][1], True), $COLOR_WARNING)
-			Setlog(" - Please 'edit' the Army " & $iArmyNumber + 1 & " before start the BOT!", $COLOR_ERROR)
-		EndIf
+		For $Num = 0 To 2
+			If $Army[$Num] Then
+				If _ColorCheck(_GetPixelColor($a_TrainArmy[$Num][0], $a_TrainArmy[$Num][1], True), Hex($a_TrainArmy[$Num][2], 6), $a_TrainArmy[$Num][3]) Then
+					Click($a_TrainArmy[$Num][0], $a_TrainArmy[$Num][1], 1)
+					SetLog("Making the Army " & $Num + 1, $COLOR_INFO)
+					If _Sleep(500) Then Return
+				Else
+					Setlog(" - Error Clicking On Army: " & $Num + 1 & "| Pixel was :" & _GetPixelColor($a_TrainArmy[$Num][0], $a_TrainArmy[$Num][1], True), $COLOR_ORANGE)
+					Setlog(" - Please 'edit' the Army " & $Num + 1 & " before start the BOT!!!", $COLOR_RED)
+				EndIf
+			EndIf
+		Next
 	Else
 		Setlog(" - Error Clicking On Army! You are not on the Quicktrain Tab", $COLOR_ERROR)
 	EndIf

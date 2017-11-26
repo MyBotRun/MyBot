@@ -17,9 +17,8 @@ Func drillSearch()
 	Local $aReturnResult[0][4]
 	Local $pixelerror = 15
 
-	Local $directory = @ScriptDir & "\imgxml\Storages\Drills"
 	Local $Maxpositions = 0 ; Return all found Positions
-	Local $aResult = multiMatches($directory, $Maxpositions, "ECD", "ECD")
+	Local $aResult = multiMatches($g_sImgSearchDrill, $Maxpositions, "ECD", "ECD")
 
 	For $iResult = 1 To UBound($aResult) - 1 ; Loop through all resultrows, skipping first row, which is searcharea, each matched img has its own row, if no resultrow, for is skipped
 		If _Sleep(10) Then Return
@@ -68,10 +67,8 @@ EndFunc   ;==>drillSearch
 
 Func CheckDrillLvl($x, $y)
 	_CaptureRegion2($x - 25, $y - 25, $x + 25, $y + 25)
-	Local $directory = @ScriptDir & "\imgxml\Storages\Drills\Level"
-	Local $Maxpositions = 1
 
-	Local $aResult = multiMatches($directory, $Maxpositions, "FV", "FV", "", 0, 1000, False)
+	Local $aResult = multiMatches($g_sImgSearchDrillLevel, 1, "FV", "FV", "", 0, 1000, False)
 
 	If $g_bDebugSmartZap = True Then SetLog("CheckDrillLvl: UBound($aresult) = " & UBound($aResult), $COLOR_DEBUG)
 	If UBound($aResult) > 1 Then

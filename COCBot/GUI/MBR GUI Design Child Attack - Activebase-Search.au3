@@ -37,24 +37,24 @@ Global $g_hGrpABFilter = 0, $g_hPicABMinGold = 0, $g_hPicABMinElixir = 0, $g_hPi
 Global $g_ahPicABMaxTH[12]
 
 Func CreateAttackSearchActiveBaseSearch()
-   Local $sTxtLightningSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortLightningSpells", -1)
-   Local $sTxtHealSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortHealSpells", -1)
-   Local $sTxtRageSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortRageSpells", -1)
-   Local $sTxtJumpSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortJumpSpells", -1)
-   Local $sTxtFreezeSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortFreezeSpells", -1)
-   Local $sTxtPoisonSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortPoisonSpells", -1)
-   Local $sTxtEarthquakeSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortEarthquakeSpells", -1)
-   Local $sTxtHasteSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortHasteSpells", -1)
-   Local $sTxtSkeletonSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortSkeletonSpells", -1)
+	Local $sTxtLightningSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortLightningSpells", -1)
+	Local $sTxtHealSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortHealSpells", -1)
+	Local $sTxtRageSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortRageSpells", -1)
+	Local $sTxtJumpSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortJumpSpells", -1)
+	Local $sTxtFreezeSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortFreezeSpells", -1)
+	Local $sTxtPoisonSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortPoisonSpells", -1)
+	Local $sTxtEarthquakeSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortEarthquakeSpells", -1)
+	Local $sTxtHasteSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortHasteSpells", -1)
+	Local $sTxtSkeletonSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortSkeletonSpells", -1)
 
-   Local $sTxtTip = ""
-   Local $x = 25, $y = 45
+	Local $sTxtTip = ""
+	Local $x = 25, $y = 45
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "Group_01", -1), $x - 20, $y - 20, 190, $g_iSizeHGrpTab4)
-		$x -= 15
-		$g_hChkABActivateSearches = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches",  -1), $x, $y, 68, 18)
+	$x -= 15
+		$g_hChkABActivateSearches = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches", -1), $x, $y, 68, 18)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_02", -1))
-			GUICtrlSetState(-1,$GUI_UNCHECKED)
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetOnEvent(-1, "chkABActivateSearches")
 		$g_hTxtABSearchesMin = GUICtrlCreateInput("1", $x + 70, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMinSearches_Info_01", -1) & @CRLF & @CRLF & _
@@ -69,120 +69,134 @@ Func CreateAttackSearchActiveBaseSearch()
 			GUICtrlSetLimit(-1, 6)
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMagnifier, $x + 163, $y + 1, 16, 16)
 
-    $y +=21
-		$g_hChkABActivateTropies = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies",  -1), $x, $y, 68, 18)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
+	$y += 21
+		$g_hChkABActivateTropies = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies", -1), $x, $y, 68, 18)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
 			GUICtrlSetOnEvent(-1, "chkABActivateTropies")
 		$g_hTxtABTropiesMin = GUICtrlCreateInput("0", $x + 70, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			GUICtrlSetState(-1,$GUI_DISABLE)
+			GUICtrlSetState(-1, $GUI_DISABLE)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMinTropies_Info_01", -1) & @CRLF & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
 			GUICtrlSetLimit(-1, 6)
 		$g_hLblABTropies = GUICtrlCreateLabel("-", $x + 113, $y + 2, -1, -1)
-			GUICtrlSetState(-1,$GUI_DISABLE)
+			GUICtrlSetState(-1, $GUI_DISABLE)
 		$g_hTxtABTropiesMax = GUICtrlCreateInput("6000", $x + 120, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			GUICtrlSetState(-1,$GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMaxTropies_Info_01", -1) & @CRLF & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
+			GUICtrlSetState(-1, $GUI_DISABLE)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMaxTropies_Info_01", -1) & @CRLF & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
 			GUICtrlSetLimit(-1, 6)
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrophy, $x + 163, $y + 1, 16, 16)
 
-	$y +=21
+	$y += 21
 		$g_hChkABActivateCamps = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateCamps", -1), $x, $y, 110, 18)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateCamps_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkABActivateCamps")
 		$g_hLblABArmyCamps = GUICtrlCreateLabel(ChrW(8805), $x + 113 - 1, $y + 2, -1, -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1,$GUI_DISABLE)
+			GUICtrlSetState(-1, $GUI_DISABLE)
 		$g_hTxtABArmyCamps = GUICtrlCreateInput("100", $x + 120, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1,$GUI_DISABLE)
+			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetLimit(-1, 6)
 		GUICtrlCreateLabel("%", $x + 163 + 3, $y + 4, -1, -1)
-			GUICtrlSetState(-1,$GUI_DISABLE)
+			GUICtrlSetState(-1, $GUI_DISABLE)
 
-	$y +=23
+	$y += 23
 		$g_hPicABHeroesWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHourGlass, $x - 1, $y + 3, 16, 16)
-		$g_hTxtABHeroesWait = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtHeroesWait",  -1) & ":", $x + 20, $y + 4, 180, 18)
+		$g_hTxtABHeroesWait = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtHeroesWait", -1) & ":", $x + 20, $y + 4, 180, 18)
 
 	$y += 20
 	$x += 20
-		$g_hChkABKingWait = GUICtrlCreateCheckbox("", $x , $y + 55, 16, 16)
-			   Local $sTxtKingWait = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtHeroesWait_Info_01", -1)
-			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
-						  GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_02", -1)
-			   _GUICtrlSetTip(-1, $sTxtTip)
- 			GUICtrlSetOnEvent(-1, "chkABKingWait")
+		$g_hChkABKingWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
+			Local $sTxtKingWait = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtHeroesWait_Info_01", -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_02", -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetOnEvent(-1, "chkABKingWait")
 		$g_hPicABKingWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x - 18, $y + 4, 48, 48)
- 			_GUICtrlSetTip(-1, $sTxtTip)
+			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicABKingSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingKing, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1,$GUI_HIDE)
+			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$x += 55
-		$g_hChkABQueenWait = GUICtrlCreateCheckbox("", $x , $y + 55, 16, 16)
- 			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
-						  GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_02", -1)
-			   _GUICtrlSetTip(-1, $sTxtTip)
- 			GUICtrlSetOnEvent(-1, "chkABQueenWait")
- 		$g_hPicABQueenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x - 18, $y + 4, 48, 48)
- 			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABQueenWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_02", -1)
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetOnEvent(-1, "chkABQueenWait")
+		$g_hPicABQueenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x - 18, $y + 4, 48, 48)
+			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicABQueenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingQueen, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1,$GUI_HIDE)
+			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$x += 55
- 		$g_hChkABWardenWait = GUICtrlCreateCheckbox("", $x , $y + 55, 16, 16)
-			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
-						  GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_02", -1)
- 			GUICtrlSetOnEvent(-1, "chkABWardenWait")
- 		$g_hPicABWardenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x - 18, $y + 4, 48, 48)
- 			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hChkABWardenWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_02", -1)
+			GUICtrlSetOnEvent(-1, "chkABWardenWait")
+		$g_hPicABWardenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x - 18, $y + 4, 48, 48)
+			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicABWardenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingWarden, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1,$GUI_HIDE)
+			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$y += 80
 	$x = 8
-	  $g_hPicABLightSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnLightSpell, $x, $y, 22, 22)
-	  $g_hPicABHealSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHealSpell, $x+23, $y, 22, 22)
-	  $g_hPicABRageSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnRageSpell, $x+46, $y, 22, 22)
-	  $g_hPicABJumpSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnJumpSpell , $x+69, $y, 22, 22)
-	  $g_hPicABFreezeSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnFreezeSpell , $x+92, $y, 22, 22)
-	  $g_hPicABPoisonSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnPoisonSpell , $x+115, $y, 22, 22)
-	  $g_hPicABEarthquakeSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnEarthquakeSpell , $x+138, $y, 22, 22)
-	  $g_hPicABHasteSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHasteSpell, $x+161, $y, 22, 22)
+		$g_hPicABLightSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnLightSpell, $x, $y, 22, 22)
+		$g_hPicABHealSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHealSpell, $x + 23, $y, 22, 22)
+		$g_hPicABRageSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnRageSpell, $x + 46, $y, 22, 22)
+		$g_hPicABJumpSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnJumpSpell, $x + 69, $y, 22, 22)
+		$g_hPicABFreezeSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnFreezeSpell, $x + 92, $y, 22, 22)
+		$g_hPicABPoisonSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnPoisonSpell, $x + 115, $y, 22, 22)
+		$g_hPicABEarthquakeSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnEarthquakeSpell, $x + 138, $y, 22, 22)
+		$g_hPicABHasteSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHasteSpell, $x + 161, $y, 22, 22)
 
 	$y += 22
 	$x = 10
 	$x = 10
-	    $g_hChkABSpellsWait = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait", -1), $x, $y, -1, -1)
- 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait_Info_01", -1) & @CRLF & _
+		$g_hChkABSpellsWait = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait", -1), $x, $y, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait_Info_01", -1) & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait_Info_02", -1))
- 			GUICtrlSetOnEvent(-1, "chkABSpellsWait")
+			GUICtrlSetOnEvent(-1, "chkABSpellsWait")
 
 		$g_hChkABWaitForCastleSpell = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastleSpell", -1), $x, $y + 25, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastleSpell_Info_01", -1))
 			GUICtrlSetOnEvent(-1, "chkABWaitForCCSpell")
 
 		$g_hCmbABWaitForCastleSpell = GUICtrlCreateCombo(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbWaitForCastleSpell", -1), $x, $y + 50, 70, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			GUICtrlSetData(-1, $sTxtLightningSpells & "|" & $sTxtHealSpells & "|" & $sTxtRageSpells & "|" & $sTxtJumpSpells & "|" & $sTxtFreezeSpells & "|" & $sTxtPoisonSpells & "|" & $sTxtEarthquakeSpells & "|" & $sTxtHasteSpells & "|" & $sTxtSkeletonSpells)
+			GUICtrlSetData(-1, $sTxtLightningSpells & "|" & _
+							   $sTxtHealSpells & "|" & _
+							   $sTxtRageSpells & "|" & _
+							   $sTxtJumpSpells & "|" & _
+							   $sTxtFreezeSpells & "|" & _
+							   $sTxtPoisonSpells & "|" & _
+							   $sTxtEarthquakeSpells & "|" & _
+							   $sTxtHasteSpells & "|" & _
+							   $sTxtSkeletonSpells)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastleSpell_Info_01", -1))
 			GUICtrlSetOnEvent(-1, "cmbABWaitForCCSpell")
 		$g_hTxtABWaitForCastleSpell = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWaitForCastleSpell", "And"), $x + 80, $y + 53, -1, -1)
-		$g_hCmbABWaitForCastleSpell2 = GUICtrlCreateCombo(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbWaitForCastleSpell", -1),$x + 110, $y + 50, 70, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			GUICtrlSetData(-1, $sTxtPoisonSpells & "|" & $sTxtEarthquakeSpells & "|" & $sTxtHasteSpells & "|" & $sTxtSkeletonSpells)
+		$g_hCmbABWaitForCastleSpell2 = GUICtrlCreateCombo(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbWaitForCastleSpell", -1), $x + 110, $y + 50, 70, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			GUICtrlSetData(-1, $sTxtPoisonSpells & "|" & _
+							   $sTxtEarthquakeSpells & "|" & _
+							   $sTxtHasteSpells & "|" & _
+							   $sTxtSkeletonSpells)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastleSpell_Info_01", -1))
 
 		$g_hChkABWaitForCastleTroops = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastleTroops", -1), $x, $y + 75, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkWaitForCastleTroops_Info_01", -1))
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-    Local $x = 220, $y = 45
+	Local $x = 220, $y = 45
 	$g_hGrpABFilter = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "Group_02", -1), $x - 20, $y - 20, 225, $g_iSizeHGrpTab4)
-		$x -= 15
-		$g_hCmbABMeetGE = GUICtrlCreateCombo("", $x , $y + 10, 65, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+	$x -= 15
+		$g_hCmbABMeetGE = GUICtrlCreateCombo("", $x, $y + 10, 65, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Item_01", -1) & "|" & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Item_02", -1) & "|" & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Item_03", -1), GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "CmbMeetGE_Item_01", -1))
@@ -198,7 +212,7 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_hPicABMinGold = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 137, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$y += 21
+	$y += 21
 		$g_hTxtABMinElixir = GUICtrlCreateInput("80000", $x + 85, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinElixir_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
@@ -206,17 +220,17 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_hPicABMinElixir = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 137, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-	    $y -= 11
+	$y -= 11
 		$g_hTxtABMinGoldPlusElixir = GUICtrlCreateInput("160000", $x + 85, $y, 50, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinGoldPlusElixir_Info_01", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 6)
 			GUICtrlSetState (-1, $GUI_HIDE)
- 		$g_hPicABMinGPEGold = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGoldElixir, $x + 137, $y + 1, 16, 16)
- 			_GUICtrlSetTip(-1, $sTxtTip)
- 			GUICtrlSetState (-1, $GUI_HIDE)
+		$g_hPicABMinGPEGold = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGoldElixir, $x + 137, $y + 1, 16, 16)
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetState (-1, $GUI_HIDE)
 
-		$y += 34
+	$y += 34
 		$g_hChkABMeetDE = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetDE", -1), $x, $y, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkABMeetDE")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetDE_Info_01", -1))
@@ -228,8 +242,8 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_hPicABMinDarkElixir = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 137, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$y += 24
-		$g_hChkABMeetTrophy = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies",  -1), $x, $y, -1, -1)
+	$y += 24
+		$g_hChkABMeetTrophy = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies", -1), $x, $y, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkABMeetTrophy")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTrophy_Info_01", -1))
 		$g_hTxtABMinTrophy = GUICtrlCreateInput("0", $x + 85, $y, 20, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -246,7 +260,7 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_hPicABMinTrophies = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrophy, $x + 137, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$y += 24
+	$y += 24
 		$g_hChkABMeetTH = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR Global GUI Design", "LblTownhall", -1), $x, $y, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkABMeetTH")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTH_Info_01", -1))
@@ -275,15 +289,15 @@ Func CreateAttackSearchActiveBaseSearch()
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState (-1, $GUI_HIDE)
 
-		$y += 24
+	$y += 24
 		$g_hChkABMeetTHO = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO", -1), $x, $y, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO_Info_01", -1))
-		$y += 24
+	$y += 24
 
-		GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "Group_03", -1), $x, $y, 215, 100)
-		$x += 5
-		$y += 20
-		Local $xStartColumn = $x, $yStartColumn = $y
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "Group_03", -1), $x, $y, 215, 100)
+	$x += 5
+	$y += 20
+	Local $xStartColumn = $x, $yStartColumn = $y
 		$g_ahChkMaxMortar[$LB] = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMaxMortar", -1))
 			GUICtrlSetOnEvent(-1, "chkABWeakBase")
@@ -295,7 +309,7 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_ahPicWeakMortar[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnMortar, $x + 75, $y - 2, 24, 24)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$y +=24
+	$y += 24
 		$g_ahChkMaxWizTower[$LB] = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMaxWizTower", -1))
 			GUICtrlSetOnEvent(-1, "chkABWeakBase")
@@ -307,7 +321,7 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_ahPicWeakWizTower[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnWizTower, $x + 75, $y - 2, 24, 24)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$y += 24
+	$y += 24
 		$g_ahChkMaxAirDefense[$LB] = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMaxAirDefense", -1))
 			GUICtrlSetOnEvent(-1, "chkABWeakBase")
@@ -319,8 +333,8 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_ahPicWeakAirDefense[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnAirdefense, $x + 75, $y - 2, 24, 24)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$x = $xStartColumn + 104
-		$y = $yStartColumn
+	$x = $xStartColumn + 104
+	$y = $yStartColumn
 		$g_ahChkMaxXBow[$LB] = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMaxXBow", -1))
 			GUICtrlSetOnEvent(-1, "chkABWeakBase")
@@ -332,7 +346,7 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_ahPicWeakXBow[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnXBow3, $x + 75, $y - 2, 24, 24)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$y +=24
+	$y += 24
 		$g_ahChkMaxInferno[$LB] = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMaxInferno", -1))
 			GUICtrlSetOnEvent(-1, "chkABWeakBase")
@@ -344,7 +358,7 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_ahPicWeakInferno[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnInferno4, $x + 75, $y - 2, 24, 24)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$y +=24
+	$y += 24
 		$g_ahChkMaxEagle[$LB] = GUICtrlCreateCheckbox("", $x, $y, 17, 17)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMaxEagle", -1))
 			GUICtrlSetOnEvent(-1, "chkABWeakBase")
@@ -356,10 +370,10 @@ Func CreateAttackSearchActiveBaseSearch()
 		$g_ahPicWeakEagle[$LB] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnEagleArt, $x + 75, $y - 2, 24, 24)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		$y += 44
-		$x = $xStartColumn
+	$y += 44
+	$x = $xStartColumn
 		$g_ahChkMeetOne[$LB] = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetOne", -1), $x, $y, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetOne_Info_01", -1))
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
- EndFunc
+EndFunc   ;==>CreateAttackSearchActiveBaseSearch

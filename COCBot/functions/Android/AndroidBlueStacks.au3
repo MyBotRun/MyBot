@@ -140,14 +140,30 @@ Func OpenBlueStacks2($bRestart = False)
 
 EndFunc   ;==>OpenBlueStacks2
 
+Func GetBlueStacksXAdbPath()
+	Local $adbPath = $__BlueStacks_Path & "HD-Adb.exe"
+	If FileExists($adbPath) Then Return $adbPath
+	Return ""
+EndFunc   ;==>GetBlueStacksXAdbPath
+
+Func GetBlueStacksAdbPath()
+	Return GetBlueStacksXAdbPath()
+EndFunc   ;==>GetBlueStacksAdbPath
+
+Func GetBlueStacks2AdbPath()
+	Return GetBlueStacksXAdbPath()
+EndFunc   ;==>GetBlueStacks2AdbPath
+
 Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMode = False)
 
 	; more recent BlueStacks 2 version install VirtualBox based "plus" mode by default
 	Local $plusMode = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "Engine") = "plus" And $bLegacyMode = False
-	Local $frontend_exe = "HD-Frontend.exe"
-	If $plusMode = True Then $frontend_exe = "HD-Plus-Frontend.exe"
+	Local $frontend_exe = ["HD-Frontend.exe", "HD-Player.exe"]
+	If $plusMode = True Then
+		Local $frontend_exe = "HD-Plus-Frontend.exe"
+	EndIf
 
-	Local $i, $aFiles[3] = [$frontend_exe, "HD-Adb.exe", "HD-Quit.exe"]
+	Local $i, $aFiles = [$frontend_exe, "HD-Adb.exe", "HD-Quit.exe"] ; first element can be $frontend_exe array!
 	Local $Values[4][3] = [ _
 			["Screen Width", $g_iAndroidClientWidth, $g_iAndroidClientWidth], _
 			["Screen Height", $g_iAndroidClientHeight, $g_iAndroidClientHeight], _
@@ -164,11 +180,25 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 	EndIf
 	$__BlueStacks_Path = StringReplace($__BlueStacks_Path, "\\", "\")
 
-	For $i = 0 To UBound($aFiles) - 1
+	Local $sPreferredADB = FindPreferredAdbPath()
+	If $sPreferredADB Then _ArrayDelete($aFiles, 1)
 
-		Local $File = $__BlueStacks_Path & $aFiles[$i]
-		If Not FileExists($File) Then
-			If $plusMode And $aFiles[$i] = $frontend_exe Then
+	For $i = 0 To UBound($aFiles) - 1
+		Local $File
+		Local $bFileFound = False
+		Local $aFiles2 = $aFiles[$i]
+		If Not IsArray($aFiles2) Then Local $aFiles2 = [$aFiles[$i]]
+		For $j = 0 To UBound($aFiles2) - 1
+			$File = $__BlueStacks_Path & $aFiles2[$j]
+			$bFileFound = FileExists($File)
+			If $bFileFound Then
+				; check if $frontend_exe is array, then convert
+				If $i = 0 And IsArray($frontend_exe) Then $frontend_exe = $aFiles2[$j]
+				ExitLoop
+			EndIf
+		Next
+		If Not $bFileFound Then
+			If $plusMode And Not $bLegacyMode And $i = 0 Then
 				; try legacy mode
 				SetDebugLog("Cannot find " & $g_sAndroidEmulator & " file:" & $File, $COLOR_ACTION)
 				SetDebugLog("Try legacy mode", $COLOR_ACTION)
@@ -181,7 +211,6 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 			EndIf
 			Return False
 		EndIf
-
 	Next
 
 	If Not $bCheckOnly Then
@@ -198,7 +227,7 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 		; update global variables
 		$g_sAndroidPath = $__BlueStacks_Path
 		$g_sAndroidProgramPath = $__BlueStacks_Path & $frontend_exe
-		$g_sAndroidAdbPath = FindPreferredAdbPath()
+		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $__BlueStacks_Path & "HD-Adb.exe"
 		$g_sAndroidVersion = $__BlueStacks_Version
 		For $i = 0 To 5

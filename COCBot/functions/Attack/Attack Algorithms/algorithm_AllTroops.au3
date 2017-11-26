@@ -81,14 +81,20 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	If ($nbSides = 0) Then Return
 	If _Sleep($DELAYALGORITHM_ALLTROOPS2) Then Return
 
+	Local $GiantComp = $g_ahTxtTrainArmyTroopCount[$eTroopGiant]
+	Local $g_iSlotsGiants = 1
+	If Number($GiantComp) > 16 Or (Number($GiantComp) >= 8 And $nbSides = 4) Then $g_iSlotsGiants = 2
+	If Number($GiantComp) > 20 Or (Number($GiantComp) >= 12 And $nbSides = 4) Then $g_iSlotsGiants = 0
+
 	; $ListInfoDeploy = [Troop, No. of Sides, $WaveNb, $MaxWaveNb, $slotsPerEdge]
 	If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 4 Then ; Customise DE side wave deployment here
 		Switch $g_aiAttackStdDropOrder[$g_iMatchMode]
 			Case 0
 				Local $listInfoDeploy[21][5] = [[$eGole, $nbSides, 1, 1, 2] _
 						, [$eLava, $nbSides, 1, 1, 2] _
-						, [$eGiant, $nbSides, 1, 1, 2] _
+						, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, [$eDrag, $nbSides, 1, 1, 0] _
+						, ["CC", 1, 1, 1, 1] _
 						, [$eBall, $nbSides, 1, 1, 0] _
 						, [$eBabyD, $nbSides, 1, 1, 1] _
 						, [$eHogs, $nbSides, 1, 1, 1] _
@@ -102,7 +108,6 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, [$eMini, $nbSides, 1, 1, 0] _
 						, [$eWitc, $nbSides, 1, 1, 1] _
 						, [$eGobl, $nbSides, 1, 1, 0] _
-						, ["CC", 1, 1, 1, 1] _
 						, [$eHeal, $nbSides, 1, 1, 1] _
 						, [$ePekk, $nbSides, 1, 1, 1] _
 						, ["HEROES", 1, 2, 1, 1] _
@@ -116,13 +121,13 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, ["HEROES", 1, 2, 1, 1] _
 						]
 			Case 2
-				Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, 2] _
+				Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
+						, ["CC", 1, 1, 1, 1] _
 						, [$eWall, $nbSides, 1, 1, 2] _
 						, [$eBarb, $nbSides, 1, 2, 2] _
 						, [$eArch, $nbSides, 1, 3, 3] _
 						, [$eBarb, $nbSides, 2, 2, 2] _
 						, [$eArch, $nbSides, 2, 3, 3] _
-						, ["CC", 1, 1, 1, 1] _
 						, ["HEROES", 1, 2, 1, 0] _
 						, [$eHogs, $nbSides, 1, 1, 1] _
 						, [$eWiza, $nbSides, 1, 1, 0] _
@@ -137,8 +142,9 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			Case 0
 				Local $listInfoDeploy[21][5] = [[$eGole, $nbSides, 1, 1, 2] _
 						, [$eLava, $nbSides, 1, 1, 2] _
-						, [$eGiant, $nbSides, 1, 1, 2] _
+						, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, [$eDrag, $nbSides, 1, 1, 0] _
+						, ["CC", 1, 1, 1, 1] _
 						, [$eBall, $nbSides, 1, 1, 0] _
 						, [$eBabyD, $nbSides, 1, 1, 0] _
 						, [$eHogs, $nbSides, 1, 1, 1] _
@@ -152,7 +158,6 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, [$eMini, $nbSides, 1, 1, 0] _
 						, [$eWitc, $nbSides, 1, 1, 1] _
 						, [$eGobl, $nbSides, 1, 1, 0] _
-						, ["CC", 1, 1, 1, 1] _
 						, [$eHeal, $nbSides, 1, 1, 1] _
 						, [$ePekk, $nbSides, 1, 1, 1] _
 						, ["HEROES", 1, 2, 1, 1] _
@@ -166,13 +171,13 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, ["HEROES", 1, 2, 1, 1] _
 						]
 			Case 2
-				Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, 2] _
+				Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
+						, ["CC", 1, 1, 1, 1] _
 						, [$eBarb, $nbSides, 1, 2, 0] _
 						, [$eWall, $nbSides, 1, 1, 1] _
 						, [$eArch, $nbSides, 1, 2, 0] _
 						, [$eBarb, $nbSides, 2, 2, 0] _
 						, [$eGobl, $nbSides, 1, 2, 0] _
-						, ["CC", 1, 1, 1, 1] _
 						, [$eHogs, $nbSides, 1, 1, 1] _
 						, [$eWiza, $nbSides, 1, 1, 0] _
 						, [$eMini, $nbSides, 1, 1, 0] _
@@ -182,13 +187,13 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						]
 			Case Else
 				SetLog("Algorithm type unavailable, defaulting to regular", $COLOR_ERROR)
-				Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, 2] _
+				Local $listInfoDeploy[13][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
+						, ["CC", 1, 1, 1, 1] _
 						, [$eBarb, $nbSides, 1, 2, 0] _
 						, [$eWall, $nbSides, 1, 1, 1] _
 						, [$eArch, $nbSides, 1, 2, 0] _
 						, [$eBarb, $nbSides, 2, 2, 0] _
 						, [$eGobl, $nbSides, 1, 2, 0] _
-						, ["CC", 1, 1, 1, 1] _
 						, [$eHogs, $nbSides, 1, 1, 1] _
 						, [$eWiza, $nbSides, 1, 1, 0] _
 						, [$eMini, $nbSides, 1, 1, 0] _
@@ -251,7 +256,7 @@ Func SetSlotSpecialTroops()
 	If $g_bDebugSetlog Then
 		SetLog("SetSlotSpecialTroops() King Slot: " & $g_iKingSlot, $COLOR_DEBUG)
 		SetLog("SetSlotSpecialTroops() Queen Slot: " & $g_iQueenSlot, $COLOR_DEBUG)
-        SetLog("SetSlotSpecialTroops() Warden Slot: " & $g_iWardenSlot, $COLOR_DEBUG)
+		SetLog("SetSlotSpecialTroops() Warden Slot: " & $g_iWardenSlot, $COLOR_DEBUG)
 		SetLog("SetSlotSpecialTroops() Clan Castle Slot: " & $g_iClanCastleSlot, $COLOR_DEBUG)
 	EndIf
 

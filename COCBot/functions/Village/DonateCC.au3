@@ -329,6 +329,38 @@ Func DonateCC($Check = False)
 						Next
 					EndIf
 
+					If $g_abChkDonateTroop[$eCustomC] And CheckDonateTroop(99, $g_asTxtDonateTroop[$eCustomC], $g_asTxtBlacklistTroop[$eCustomC], $ClanString) Then
+						For $i = 0 To 2
+							If $g_aiDonateCustomTrpNumC[$i][0] < $eBarb Then
+								$g_aiDonateCustomTrpNumC[$i][0] = $eArch ; Change strange small numbers to archer
+							ElseIf $g_aiDonateCustomTrpNumC[$i][0] > $eBowl Then
+								ContinueLoop ; If "Nothing" is selected then continue
+							EndIf
+							If $g_aiDonateCustomTrpNumC[$i][1] < 1 Then
+								ContinueLoop ; If donate number is smaller than 1 then continue
+							ElseIf $g_aiDonateCustomTrpNumC[$i][1] > 8 Then
+								$g_aiDonateCustomTrpNumC[$i][1] = 8 ; Number larger than 8 is unnecessary
+							EndIf
+							DonateTroopType($g_aiDonateCustomTrpNumC[$i][0], $g_aiDonateCustomTrpNumC[$i][1], $g_abChkDonateTroop[$eCustomC]) ;;; Donate Custom Troop using DonateTroopType3
+						Next
+					EndIf
+
+					If $g_abChkDonateTroop[$eCustomD] And CheckDonateTroop(99, $g_asTxtDonateTroop[$eCustomD], $g_asTxtBlacklistTroop[$eCustomD], $ClanString) Then
+						For $i = 0 To 2
+							If $g_aiDonateCustomTrpNumD[$i][0] < $eBarb Then
+								$g_aiDonateCustomTrpNumD[$i][0] = $eArch ; Change strange small numbers to archer
+							ElseIf $g_aiDonateCustomTrpNumD[$i][0] > $eBowl Then
+								ContinueLoop ; If "Nothing" is selected then continue
+							EndIf
+							If $g_aiDonateCustomTrpNumD[$i][1] < 1 Then
+								ContinueLoop ; If donate number is smaller than 1 then continue
+							ElseIf $g_aiDonateCustomTrpNumD[$i][1] > 8 Then
+								$g_aiDonateCustomTrpNumD[$i][1] = 8 ; Number larger than 8 is unnecessary
+							EndIf
+							DonateTroopType($g_aiDonateCustomTrpNumD[$i][0], $g_aiDonateCustomTrpNumD[$i][1], $g_abChkDonateTroop[$eCustomD]) ;;; Donate Custom Troop using DonateTroopType4
+						Next
+					EndIf
+
 					If Not $g_bSkipDonTroops Then
 						For $i = 0 To UBound($g_aiDonateTroopPriority) - 1
 							Local $iTroopIndex = $g_aiDonateTroopPriority[$i]
@@ -417,6 +449,52 @@ Func DonateCC($Check = False)
 									$g_aiDonateCustomTrpNumB[$i][1] = 8 ; Number larger than 8 is unnecessary
 								EndIf
 								DonateTroopType($g_aiDonateCustomTrpNumB[$i][0], $g_aiDonateCustomTrpNumB[$i][1], $g_abChkDonateAllTroop[$eCustomB], $bDonateAllTroop) ;;; Donate Custom Troop using DonateTroopType2
+							Next
+
+						Case $g_abChkDonateAllTroop[$eCustomC]
+							For $i = 0 To 2
+								If $g_aiDonateCustomTrpNumC[$i][0] < $eBarb Then
+									$g_aiDonateCustomTrpNumC[$i][0] = $eArch ; Change strange small numbers to archer
+								ElseIf $g_aiDonateCustomTrpNumC[$i][0] > $eBowl Then
+									DonateWindow($bClose)
+									$bDonate = True
+									$y = $g_aiDonatePixel[1] + 50
+									If _Sleep($DELAYDONATECC2) Then ExitLoop
+									ContinueLoop ; If "Nothing" is selected then continue
+								EndIf
+								If $g_aiDonateCustomTrpNumC[$i][1] < 1 Then
+									DonateWindow($bClose)
+									$bDonate = True
+									$y = $g_aiDonatePixel[1] + 50
+									If _Sleep($DELAYDONATECC2) Then ExitLoop
+									ContinueLoop ; If donate number is smaller than 1 then continue
+								ElseIf $g_aiDonateCustomTrpNumC[$i][1] > 8 Then
+									$g_aiDonateCustomTrpNumC[$i][1] = 8 ; Number larger than 8 is unnecessary
+								EndIf
+								DonateTroopType($g_aiDonateCustomTrpNumC[$i][0], $g_aiDonateCustomTrpNumC[$i][1], $g_abChkDonateAllTroop[$eCustomC], $bDonateAllTroop) ;;; Donate Custom Troop using DonateTroopType3
+							Next
+
+						Case $g_abChkDonateAllTroop[$eCustomD]
+							For $i = 0 To 2
+								If $g_aiDonateCustomTrpNumD[$i][0] < $eBarb Then
+									$g_aiDonateCustomTrpNumD[$i][0] = $eArch ; Change strange small numbers to archer
+								ElseIf $g_aiDonateCustomTrpNumD[$i][0] > $eBowl Then
+									DonateWindow($bClose)
+									$bDonate = True
+									$y = $g_aiDonatePixel[1] + 50
+									If _Sleep($DELAYDONATECC2) Then ExitLoop
+									ContinueLoop ; If "Nothing" is selected then continue
+								EndIf
+								If $g_aiDonateCustomTrpNumD[$i][1] < 1 Then
+									DonateWindow($bClose)
+									$bDonate = True
+									$y = $g_aiDonatePixel[1] + 50
+									If _Sleep($DELAYDONATECC2) Then ExitLoop
+									ContinueLoop ; If donate number is smaller than 1 then continue
+								ElseIf $g_aiDonateCustomTrpNumD[$i][1] > 8 Then
+									$g_aiDonateCustomTrpNumD[$i][1] = 8 ; Number larger than 8 is unnecessary
+								EndIf
+								DonateTroopType($g_aiDonateCustomTrpNumD[$i][0], $g_aiDonateCustomTrpNumD[$i][1], $g_abChkDonateAllTroop[$eCustomD], $bDonateAllTroop) ;;; Donate Custom Troop using DonateTroopType4
 							Next
 
 						Case Else
@@ -1075,7 +1153,7 @@ Func DetectSlotTroop(Const $iTroopIndex)
 		Local $x1 = $x + 75
 		Local $y1 = $y + 43
 
-		$FullTemp = SearchImgloc(@ScriptDir & "\imgxml\DonateCC\Troops\", $x, $y, $x1, $y1)
+		$FullTemp = SearchImgloc($g_sImgDonateTroops, $x, $y, $x1, $y1)
 		If $g_bDebugSetlog Then Setlog("Troop Slot: " & $Slot & " SearchImgloc returned:" & $FullTemp[0] & ".", $COLOR_DEBUG)
 
 		If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
@@ -1101,7 +1179,7 @@ Func DetectSlotTroop(Const $iTroopIndex)
 		Local $x1 = $x + 75
 		Local $y1 = $y + 43
 
-		$FullTemp = SearchImgloc(@ScriptDir & "\imgxml\DonateCC\Troops\", $x, $y, $x1, $y1)
+		$FullTemp = SearchImgloc($g_sImgDonateTroops, $x, $y, $x1, $y1)
 		If $g_bDebugSetlog Then Setlog("Troop Slot: " & $Slot & " SearchImgloc returned:" & $FullTemp[0] & ".", $COLOR_DEBUG)
 
 		If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
@@ -1134,7 +1212,7 @@ Func DetectSlotSpell(Const $iSpellIndex)
 		Local $x1 = $x + 75
 		Local $y1 = $y + 43
 
-		$FullTemp = SearchImgloc(@ScriptDir & "\imgxml\DonateCC\Spells\", $x, $y, $x1, $y1)
+		$FullTemp = SearchImgloc($g_sImgDonateSpells, $x, $y, $x1, $y1)
 		If $g_bDebugSetlog Then Setlog("Spell Slot: " & $Slot & " SearchImgloc returned:" & $FullTemp[0] & ".", $COLOR_DEBUG)
 
 		If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop

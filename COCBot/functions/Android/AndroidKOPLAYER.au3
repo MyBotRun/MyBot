@@ -103,7 +103,8 @@ Func InitKOPLAYER($bCheckOnly = False)
 		Return False
 	EndIf
 
-	If FileExists(GetKOPLAYERAdbPath()) = False Then
+	Local $sPreferredADB = FindPreferredAdbPath()
+	If $sPreferredADB = "" And FileExists(GetKOPLAYERAdbPath()) = False Then
 		If Not $bCheckOnly Then
 			SetLog("Serious error has occurred: Cannot find " & $g_sAndroidEmulator & ":", $COLOR_RED)
 			SetLog($KOPLAYER_Path & "adb.exe", $COLOR_RED)
@@ -134,7 +135,7 @@ Func InitKOPLAYER($bCheckOnly = False)
 		EndIf
 		; update global variables
 		$g_sAndroidProgramPath = $KOPLAYER_Path & "KOPLAYER.exe"
-		$g_sAndroidAdbPath = FindPreferredAdbPath()
+		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = GetKOPLAYERAdbPath()
 		$g_sAndroidVersion = $KOPLAYERVersion
 		$__KOPLAYER_Path = $KOPLAYER_Path

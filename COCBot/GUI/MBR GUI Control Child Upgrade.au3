@@ -24,7 +24,7 @@ Func InitTranslatedTextUpgradeTab()
 		"With your settings, Auto Upgrade will be completely ineffective\r\n" & _
 		"and will not launch any upgrade... You must deselect one or more\r\n" & _
 		"ignored resource.")
-EndFunc
+EndFunc   ;==>InitTranslatedTextUpgradeTab
 
 Func btnLocateUpgrades()
 	Local $wasRunState = $g_bRunState
@@ -324,14 +324,14 @@ Func btnWalls()
 EndFunc   ;==>btnWalls
 
 Func chkAutoUpgrade()
-	If GUICtrlRead($g_chkAutoUpgrade) = $GUI_CHECKED Then
-		$g_ichkAutoUpgrade = 1
-		For $i = $g_FirstAutoUpgradeLabel To $g_AutoUpgradeLog
+	If GUICtrlRead($g_hChkAutoUpgrade) = $GUI_CHECKED Then
+		$g_iChkAutoUpgrade = 1
+		For $i = $g_hLblAutoUpgrade To $g_hTxtAutoUpgradeLog
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
 	Else
-		$g_ichkAutoUpgrade = 0
-		For $i = $g_FirstAutoUpgradeLabel To $g_AutoUpgradeLog
+		$g_iChkAutoUpgrade = 0
+		For $i = $g_hLblAutoUpgrade To $g_hTxtAutoUpgradeLog
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
@@ -339,12 +339,12 @@ EndFunc   ;==>chkAutoUpgrade
 
 Func chkResourcesToIgnore()
 	For $i = 0 To 2
-		$g_ichkResourcesToIgnore[$i] = GUICtrlRead($g_chkResourcesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
+		$g_iChkResourcesToIgnore[$i] = GUICtrlRead($g_hChkResourcesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
 	Next
 
 	Local $iIgnoredResources = 0
 	For $i = 0 To 2
-		If $g_ichkResourcesToIgnore[$i] = 1 Then $iIgnoredResources += 1
+		If $g_iChkResourcesToIgnore[$i] = 1 Then $iIgnoredResources += 1
 	Next
 	Switch $iIgnoredResources
 		Case 2
@@ -358,6 +358,6 @@ EndFunc   ;==>chkResourcesToIgnore
 
 Func chkUpgradesToIgnore()
 	For $i = 0 To 12
-		$g_ichkUpgradesToIgnore[$i] = GUICtrlRead($g_chkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
+		$g_iChkUpgradesToIgnore[$i] = GUICtrlRead($g_hChkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
 	Next
 EndFunc   ;==>chkUpgradesToIgnore

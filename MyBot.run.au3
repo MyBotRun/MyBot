@@ -36,6 +36,7 @@ Global $g_hFrmBot = 0 ; The main GUI window
 #include "COCBot\functions\Config\DelayTimes.au3"
 #include "COCBot\GUI\MBR GUI Design Splash.au3"
 #include "COCBot\functions\Config\ScreenCoordinates.au3"
+#include "COCBot\functions\Config\ImageDirectories.au3"
 #include "COCBot\functions\Other\ExtMsgBox.au3"
 #include "COCBot\functions\Other\MBRFunc.au3"
 #include "COCBot\functions\Android\Android.au3"
@@ -66,10 +67,13 @@ MainLoop()
 
 Func UpdateBotTitle()
 	Local $sTitle = "My Bot " & $g_sBotVersion
+	Local $sConsoleTitle ; Console title has also Android Emulator Name
 	If $g_sBotTitle = "" Then
 		$g_sBotTitle = $sTitle
+		$sConsoleTitle = $sTitle
 	Else
 		$g_sBotTitle = $sTitle & " (" & ($g_sAndroidInstance <> "" ? $g_sAndroidInstance : $g_sAndroidEmulator) & ")" ;Do not change this. If you do, multiple instances will not work.
+		$sConsoleTitle = $sTitle & " " & $g_sAndroidEmulator & " (" & ($g_sAndroidInstance <> "" ? $g_sAndroidInstance : $g_sAndroidEmulator) & ")"
 	EndIf
 	If $g_hFrmBot <> 0 Then
 		; Update Bot Window Title also
@@ -77,7 +81,7 @@ Func UpdateBotTitle()
 		GUICtrlSetData($g_hLblBotTitle, $g_sBotTitle)
 	EndIf
 	; Update Console Window (if it exists)
-	DllCall("kernel32.dll", "bool", "SetConsoleTitle", "str", "Console " & $g_sBotTitle)
+	DllCall("kernel32.dll", "bool", "SetConsoleTitle", "str", "Console " & $sConsoleTitle)
 	; Update try icon title
 	TraySetToolTip($g_sBotTitle)
 
@@ -89,11 +93,6 @@ Func InitializeBot()
 	ProcessCommandLine()
 
 	SetupProfileFolder() ; Setup profile folders
-
-	If $g_iBotLaunchOption_Help Then
-		ShowCommandLineHelp()
-		Exit
-	EndIf
 
 	SetLogCentered(" BOT LOG ") ; Initial text for log
 
@@ -108,6 +107,20 @@ Func InitializeBot()
 	SetDebugLog("@OSServicePack: " & @OSServicePack)
 	SetDebugLog("Primary Display: " & @DesktopWidth & " x " & @DesktopHeight & " - " & @DesktopDepth & "bit")
 
+	DetectLanguage()
+	If $g_iBotLaunchOption_Help Then
+		ShowCommandLineHelp()
+		Exit
+	EndIf
+
+	InitAndroidConfig()
+
+	; early load of config
+	Local $bConfigRead = FileExists($g_sProfileConfigPath)
+	If $bConfigRead Or FileExists($g_sProfileBuildingPath) Then
+		readConfig()
+	EndIf
+
 	Local $sAndroidInfo = ""
 	; Disabled process priority tampering as not best practice
 	;Local $iBotProcessPriority = _ProcessGetPriority(@AutoItPID)
@@ -115,8 +128,6 @@ Func InitializeBot()
 
 	_Crypt_Startup()
 	__GDIPlus_Startup() ; Start GDI+ Engine (incl. a new thread)
-
-	InitAndroidConfig()
 
 	If FileExists(@ScriptDir & "\EnableMBRDebug.txt") Then ; Set developer mode
 		$g_bDevMode = True
@@ -129,13 +140,6 @@ Func InitializeBot()
 				EndIf
 			Next
 		EndIf
-	EndIf
-
-	; early load of config
-	Local $bConfigRead = False
-	If FileExists($g_sProfileConfigPath) Or FileExists($g_sProfileBuildingPath) Then
-		readConfig()
-		$bConfigRead = True
 	EndIf
 
 	CreateMainGUI() ; Just create the main window
@@ -206,12 +210,14 @@ Func ProcessCommandLine()
 					$g_iBotLaunchOption_Dock = 2
 				Case "/nobotslot", "/nbs", "-nobotslot", "-nbs"
 					$g_bBotLaunchOption_NoBotSlot = True
-				Case "/debug", "/debugmode", "/dev", "-debug", "-debugmode", "-dev"
+				Case "/debug", "/debugmode", "/dev", "/dm", "-debug", "-debugmode", "-dev", "-dm"
 					$g_bDevMode = True
 				Case "/minigui", "/mg", "-minigui", "-mg"
 					$g_iGuiMode = 2
 				Case "/nogui", "/ng", "-nogui", "-ng"
 					$g_iGuiMode = 0
+				Case "/hideandroid", "/ha", "-hideandroid", "-ha"
+					$g_bBotLaunchOption_HideAndroid = True
 				Case "/console", "/c", "-console", "-c"
 					$g_iBotLaunchOption_Console = True
 					_WinAPI_AllocConsole()
@@ -374,7 +380,7 @@ Func InitializeMBR(ByRef $sAI, $bConfigRead)
 
 	; multilanguage
 	If Not FileExists(@ScriptDir & "\Languages") Then DirCreate(@ScriptDir & "\Languages")
-	DetectLanguage()
+	;DetectLanguage()
 	_ReadFullIni()
 	; must be called after language is detected
 	TranslateTroopNames()
@@ -610,10 +616,16 @@ Func MainLoop()
 		If $g_bRestarted = True Then $iDelay = 0
 		$iStartDelay = $iDelay * 1000
 		$g_iBotAction = $eBotStart
+		; check if android should be hidden
+		If $g_bBotLaunchOption_HideAndroid Then $g_bIsHidden = True
 	EndIf
 
 	While 1
 		_Sleep($DELAYSLEEP, True, False)
+
+		If Not $g_bRunState And ($g_bNotifyPBEnable Or $g_bNotifyTGEnable) And $g_bNotifyRemoteEnable Then
+			NotifyRemoteControlProcBtnStart()
+		EndIf
 
 		Switch $g_iBotAction
 			Case $eBotStart
@@ -1130,7 +1142,7 @@ Func _RunFunction($action)
  			AutoUpgrade()
 			_Sleep($DELAYRUNBOT3)
 		Case "BuilderBase"
-			If isOnBuilderIsland() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost) And SwitchBetweenBases()) Then
+			If isOnBuilderIsland() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades) And SwitchBetweenBases()) Then
 				CollectBuilderBase()
 				BuilderBaseReport()
 				StartClockTowerBoost()

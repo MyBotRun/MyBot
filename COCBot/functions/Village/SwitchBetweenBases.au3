@@ -15,7 +15,7 @@
 
 Func SwitchBetweenBases($bCheckMainScreen = True)
 	Local $sSwitchFrom, $sSwitchTo, $sBack = "", $bIsOnBuilderBase = False, $aButtonCoords
-	Local $sTile, $sTilePath, $sRegionToSearch
+	Local $sTile, $sTileDir, $sRegionToSearch
 
 	If Not $g_bRunState Then Return
 
@@ -24,18 +24,20 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 		$sSwitchTo = "Normal Village"
 		$sBack = " back"
 		$bIsOnBuilderBase = True
-		$sTile = "BoatBuilderBase_0_89.xml"
+		$sTile = "BoatBuilderBase"
+		$sTileDir = $g_sImgBoatBB
 		$sRegionToSearch = "487,44,708,242"
 	Else
 		$sSwitchFrom = "Normal Village"
 		$sSwitchTo = "Builder Base"
 		$bIsOnBuilderBase = False
-		$sTile = "BoatNormalVillage_0_89.xml"
+		$sTile = "BoatNormalVillage"
+		$sTileDir = $g_sImgBoat
 		$sRegionToSearch = "66,432,388,627"
 	EndIf
 
 	ZoomOut() ; ensure bot is visible
-	$aButtonCoords = decodeSingleCoord(findImageInPlace($sTile, @ScriptDir & "\imgxml\Boat\" & $sTile,  $sRegionToSearch))
+	$aButtonCoords = decodeSingleCoord(findImageInPlace($sTile, $sTileDir,  $sRegionToSearch))
 	If UBound($aButtonCoords) > 1 Then
 		SetLog("Going to " & $sSwitchTo, $COLOR_INFO)
 		ClickP($aButtonCoords)
@@ -49,7 +51,7 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 			ForceCaptureRegion()
 			$bSwitched = isOnBuilderIsland(True) <> $bIsOnBuilderBase
 		WEnd
-		
+
 		If $bSwitched Then
 			SetLog("Successfully went" & $sBack & " to the " & $sSwitchTo & "!", $COLOR_SUCCESS)
 			If $bCheckMainScreen = True Then checkMainScreen(True, Not $bIsOnBuilderBase)

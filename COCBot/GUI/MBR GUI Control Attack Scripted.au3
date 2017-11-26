@@ -34,7 +34,6 @@ Func PopulateComboScriptsFilesDB()
 	GUICtrlSetData($g_hLblNotesScriptDB, "")
 EndFunc   ;==>PopulateComboScriptsFilesDB
 
-
 Func PopulateComboScriptsFilesAB()
 	Dim $FileSearch, $NewFile
 	$FileSearch = FileFindFirstFile($g_sCSVAttacksPath & "\*.csv")
@@ -54,11 +53,6 @@ Func PopulateComboScriptsFilesAB()
 	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameAB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameAB, ""))
 	GUICtrlSetData($g_hLblNotesScriptAB, "")
 EndFunc   ;==>PopulateComboScriptsFilesAB
-
-
-
-
-
 
 
 Func cmbScriptNameDB()
@@ -86,7 +80,6 @@ Func cmbScriptNameDB()
 
 EndFunc   ;==>cmbScriptNameDB
 
-
 Func cmbScriptNameAB()
 
 	Local $tempvect1 = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameAB)
@@ -113,7 +106,6 @@ Func cmbScriptNameAB()
 EndFunc   ;==>cmbScriptNameAB
 
 
-
 Func UpdateComboScriptNameDB()
 	Local $indexofscript = _GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB)
 	Local $scriptname
@@ -123,7 +115,6 @@ Func UpdateComboScriptNameDB()
 	cmbScriptNameDB()
 EndFunc   ;==>UpdateComboScriptNameDB
 
-
 Func UpdateComboScriptNameAB()
 	Local $indexofscript = _GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB)
 	Local $scriptname
@@ -132,9 +123,6 @@ Func UpdateComboScriptNameAB()
 	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameAB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameAB, $scriptname))
 	cmbScriptNameAB()
 EndFunc   ;==>UpdateComboScriptNameAB
-
-
-
 
 
 Func EditScriptDB()
@@ -199,7 +187,6 @@ Func NewScriptDB()
 	EndIf
 EndFunc   ;==>NewScriptDB
 
-
 Func NewScriptAB()
 	Local $filenameScript = InputBox(GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_Create", -1), GetTranslatedFileIni("MBR Popups", "Func_AttackCSVAssignDefaultScriptName_New_0", -1) & ":")
 	If StringLen($filenameScript) > 0 Then
@@ -220,7 +207,6 @@ Func NewScriptAB()
 		EndIf
 	EndIf
 EndFunc   ;==>NewScriptAB
-
 
 
 ;Parse this first on load of bot, needed outside the function to update current language.ini file. Used on Func DuplicateABScript() and DuplicateDBScript()

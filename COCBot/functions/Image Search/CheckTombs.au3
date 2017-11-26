@@ -21,15 +21,12 @@ Func CheckTombs()
 	; Timer
 	Local $hTimer = __TimerInit()
 
-	; tombs function to Parallel Search
-	Local $directory = @ScriptDir & "\imgxml\Resources\Tombs"
-
 	; Setup arrays, including default return values for $return
 	Local $return[7] = ["None", "None", 0, 0, 0, "", ""]
 	Local $TombsXY[2] = [0, 0]
 
 	; Perform a parallel search with all images inside the directory
-	Local $aResult = returnSingleMatchOwnVillage($directory)
+	Local $aResult = returnSingleMatchOwnVillage($g_sImgClearTombs)
 
 	If UBound($aResult) > 1 Then
 		; Now loop through the array to modify values, select the highest entry to return
@@ -79,19 +76,16 @@ EndFunc   ;==>CheckTombs
 Func CleanYard()
 
 	; Early exist if noting to do
-	If $g_bChkCleanYard = False And $g_bChkGemsBox = False And Not TestCapture() Then Return
+	If Not $g_bChkCleanYard And Not $g_bChkGemsBox And Not TestCapture() Then Return
 
 	; Timer
 	Local $hObstaclesTimer = __TimerInit()
 
 	; Get Builders available
-	If getBuilderCount() = False Then Return ; update builder data, return if problem
+	If Not getBuilderCount() Then Return ; update builder data, return if problem
 	If _Sleep($DELAYRESPOND) Then Return
 
 	; Obstacles function to Parallel Search , will run all pictures inside the directory
-	Local $directory = @ScriptDir & "\imgxml\Resources\Obstacles"
-
-	If $g_iDetectedImageType = 1 Then $directory = @ScriptDir & "\imgxml\Obstacles_Snow" ; Snow theme
 
 	; Setup arrays, including default return values for $return
 	Local $Filename = ""
@@ -99,15 +93,10 @@ Func CleanYard()
 	Local $CleanYardXY
 	Local $sCocDiamond = $CocDiamondECD
 	Local $redLines = $sCocDiamond
-	Local $minLevel = 0
-	Local $maxLevel = 1000
-	Local $maxReturnPoints = 10 ; $g_iFreeBuilderCount
-	Local $returnProps = "objectname,objectlevel,objectpoints"
-	Local $bForceCapture = True
-	Local $NoBuilders = $g_iFreeBuilderCount < 1
+	Local $bNoBuilders = $g_iFreeBuilderCount < 1
 
 	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard = True And Number($g_aiCurrentLoot[$eLootElixir]) > 50000 Then
-		Local $aResult = findMultiple($directory, $sCocDiamond, $redLines, $minLevel, $maxLevel, $maxReturnPoints, $returnProps, $bForceCapture)
+		Local $aResult = findMultiple($g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard, $sCocDiamond, $redLines, 0, 1000, 10, "objectname,objectlevel,objectpoints", True)
 		If IsArray($aResult) Then
 			For $matchedValues In $aResult
 				Local $aPoints = decodeMultipleCoords($matchedValues[2])
@@ -136,16 +125,13 @@ Func CleanYard()
 		EndIf
 	EndIf
 
-	; GemBox function to Parallel Search , will run all pictures inside the directory
-	Local $directoryGemBox = @ScriptDir & "\imgxml\Resources\GemBox"
-
 	; Setup arrays, including default return values for $return
 	Local $return[7] = ["None", "None", 0, 0, 0, "", ""]
 	Local $GemBoxXY[2] = [0, 0]
 
 	; Perform a parallel search with all images inside the directory
-	If ($g_iFreeBuilderCount > 0 And $g_bChkGemsBox = True And Number($g_aiCurrentLoot[$eLootElixir]) > 50000) Or TestCapture() Then
-		Local $aResult = multiMatches($directoryGemBox, 1, $sCocDiamond, $sCocDiamond)
+	If ($g_iFreeBuilderCount > 0 And $g_bChkGemsBox And Number($g_aiCurrentLoot[$eLootElixir]) > 50000) Or TestCapture() Then
+		Local $aResult = multiMatches($g_sImgGemBox, 1, $sCocDiamond, $sCocDiamond)
 		If UBound($aResult) > 1 Then
 			; Now loop through the array to modify values, select the highest entry to return
 			For $i = 1 To UBound($aResult) - 1
@@ -193,7 +179,7 @@ Func CleanYard()
 		EndIf
 	EndIf
 
-	If $NoBuilders Then
+	If $bNoBuilders Then
 		SetLog("No Builders available to remove Obstacles!")
 	Else
 		If $Locate = 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > 50000 Then SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)

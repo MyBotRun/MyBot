@@ -78,15 +78,13 @@ Func donateCCWBLUserImageCollect($x, $y)
 
 			;search chat divider line
 			Local $founddivider
-			Local $chat_divider = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdivider_0_98.xml"
-			Local $chat_divider_hidden = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdividerhidden_0_98.xml"
-			;_CaptureRegion2()
+
 			Local $iAllFilesCount = 0
-			Local $res = FindImageInPlace("DCCWBL", $chat_divider, "0," & $y - 90 & "," & $x - 30 & "," & $y, False)
+			Local $res = FindImageInPlace("DCCWBL", $g_sImgChatDivider, "0," & $y - 90 & "," & $x - 30 & "," & $y, False)
 			If $res = "" Then
 				;SetLog("No Chat divider found, try to found hidden chat divider", $COLOR_ERROR)
 				;search chat divider hidden
-				Local $reshidden = FindImageInPlace("DCCWBL", $chat_divider_hidden, "0," & $y - 90 & "," & $x - 30 & "," & $y, False)
+				Local $reshidden = FindImageInPlace("DCCWBL", $g_sImgChatDividerHidden, "0," & $y - 90 & "," & $x - 30 & "," & $y, False)
 				If $reshidden = "" Then
 					If $g_bDebugSetlog Then SetLog("No Chat divider hidden found", $COLOR_ERROR)
 				Else

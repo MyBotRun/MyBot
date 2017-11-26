@@ -120,7 +120,8 @@ Func InitDroid4X($bCheckOnly = False)
 		Return False
 	EndIf
 
-	If FileExists($__Droid4X_Path & "adb.exe") = False Then
+	Local $sPreferredADB = FindPreferredAdbPath()
+	If $sPreferredADB = "" And FileExists($__Droid4X_Path & "adb.exe") = False Then
 		If Not $bCheckOnly Then
 			SetLog("Serious error has occurred: Cannot find " & $g_sAndroidEmulator & ":", $COLOR_ERROR)
 			SetLog($__Droid4X_Path & "adb.exe", $COLOR_ERROR)
@@ -176,7 +177,7 @@ Func InitDroid4X($bCheckOnly = False)
 		; update global variables
 		$g_sAndroidProgramPath = $__Droid4X_Path & "Droid4X.exe"
 		$g_sAndroidPath = $__Droid4X_Path
-		$g_sAndroidAdbPath = FindPreferredAdbPath()
+		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $__Droid4X_Path & "adb.exe"
 		$g_sAndroidVersion = $__Droid4X_Version
 		; Update Window Title if instance has been configured

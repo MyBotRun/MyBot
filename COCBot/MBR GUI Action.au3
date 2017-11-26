@@ -55,7 +55,7 @@ Func BotStart($bAutostartDelay = 0)
 
 	If BitAND($g_iAndroidSupportFeature, 1 + 2) = 0 And $g_bChkBackgroundMode = True Then
 		GUICtrlSetState($g_hChkBackgroundMode, $GUI_UNCHECKED)
-		chkBackground() ; Invoke Event manually
+		UpdateChkBackground() ; Invoke Event manually
 		SetLog("Background Mode not supported for " & $g_sAndroidEmulator & " and has been disabled", $COLOR_ERROR)
 	EndIf
 

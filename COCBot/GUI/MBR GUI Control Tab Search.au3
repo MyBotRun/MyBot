@@ -541,7 +541,7 @@ Func cmbDBWaitForCCSpell()
 		GUICtrlSetState($g_hCmbDBWaitForCastleSpell2, $GUI_ENABLE)
 		GUICtrlSetState($g_hTxtDBWaitForCastleSpell, $GUI_ENABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>cmbDBWaitForCCSpell
 
 Func cmbABWaitForCCSpell()
 	Local $iSpellSelection = _GUICtrlComboBox_GetCurSel($g_hCmbABWaitForCastleSpell)
@@ -552,7 +552,7 @@ Func cmbABWaitForCCSpell()
 		GUICtrlSetState($g_hCmbABWaitForCastleSpell2, $GUI_ENABLE)
 		GUICtrlSetState($g_hTxtABWaitForCastleSpell, $GUI_ENABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>cmbABWaitForCCSpell
 
 Func chkDBSpellsWait()
 	If $g_iTownHallLevel > 4 Or $g_iTownHallLevel = 0 Then ; Must be TH5+ to have spells
@@ -576,7 +576,7 @@ Func chkDBSpellsWait()
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
-EndFunc
+EndFunc   ;==>chkDBSpellsWait
 
 Func chkABSpellsWait()
 	If $g_iTownHallLevel > 4 Or $g_iTownHallLevel = 0 Then ; Must be TH5+ to have spells
@@ -600,7 +600,7 @@ Func chkABSpellsWait()
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
 	EndIf
-EndFunc
+EndFunc   ;==>chkABSpellsWait
 
 Func chkSpellWaitError()
 
@@ -699,7 +699,7 @@ Func chkSpellWaitError()
 		SetError(1)
 		Return
 	EndIf
-EndFunc
+EndFunc   ;==>chkSpellWaitError
 
 Func CmbDBTH()
 	_GUI_Value_STATE("HIDE", $g_aGroupListPicDBMaxTH)

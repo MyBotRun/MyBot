@@ -254,5 +254,5 @@ Func MakeSavePresetMessage()
 EndFunc   ;==>MakeSavePresetMessage
 
 Func btnStrategyFolder()
-	ShellExecute("explorer",$g_sProfilePresetPath)
-EndFunc
+	ShellExecute("explorer", $g_sProfilePresetPath)
+EndFunc   ;==>btnStrategyFolder

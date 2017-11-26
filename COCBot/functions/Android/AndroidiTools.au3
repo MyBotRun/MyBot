@@ -137,7 +137,8 @@ Func InitiTools($bCheckOnly = False)
 		Return False
 	EndIf
 
-	If FileExists($iTools_Path & "tools\adb.exe") = 0 Then
+	Local $sPreferredADB = FindPreferredAdbPath()
+	If $sPreferredADB = "" And FileExists($iTools_Path & "tools\adb.exe") = 0 Then
 		If Not $bCheckOnly Then
 			SetLog("Serious error has occurred: Cannot find " & $g_sAndroidEmulator & ":", $COLOR_ERROR)
 			SetLog($iTools_Path & "tools\adb.exe", $COLOR_ERROR)
@@ -174,7 +175,7 @@ Func InitiTools($bCheckOnly = False)
 
 		; update global variables
 		$g_sAndroidProgramPath = $iTools_Path & "iToolsAVM.exe"
-		$g_sAndroidAdbPath = FindPreferredAdbPath()
+		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $iTools_Path & "tools\adb.exe"
 		$g_sAndroidVersion = ""
 		$__iTools_Path = $iTools_Path

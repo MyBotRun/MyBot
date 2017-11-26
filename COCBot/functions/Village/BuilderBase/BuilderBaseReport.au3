@@ -13,41 +13,34 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func BuilderBaseReport()
+Func BuilderBaseReport($bBypass = False, $bSetLog = True)
+	PureClickP($aAway, 1, 0, "#0319") ;Click Away
+	If _Sleep($DELAYVILLAGEREPORT1) Then Return
 
-	; coc-ms [GOLD][ELIXIR][GEMS][Trophies]
-	; coc-Builders [Builders]
+	Switch $bBypass
+		Case False
+			If $bSetLog Then SetLog("Builder Base Report", $COLOR_INFO)
+		Case True
+			If $bSetLog Then SetLog("Updating Builder Base Resource Values", $COLOR_INFO)
+		Case Else
+			If $bSetLog Then SetLog("Village Report Error, You have been a BAD programmer!", $COLOR_ERROR)
+	EndSwitch
 
-	; [0] = Trophies , [1] = Gold , [2] = Elixir , [3] = Builder available
-	; [0] = OCR name , [1] = X , [2] = Y , [3] = length
-	Local Const $a_ReScreenPosition[4][4] = [["coc-ms", 67, 84, 135], ["coc-ms", 705, 23, 101], ["coc-ms", 705, 72, 101], ["coc-Builders", 410, 23, 40]]
+	If Not $bSetLog Then SetLog("Village Report", $COLOR_INFO)
 
-	For $i = 0 To 3 ; all 3 Resources  + Available Builder
-		Local $_sReturn = getResourcesBuilderBase($a_ReScreenPosition[$i][0], $a_ReScreenPosition[$i][1], $a_ReScreenPosition[$i][2], $a_ReScreenPosition[$i][3])
-		Switch $i
-			Case 0
-				If $_sReturn <> "" Then $g_iTrophiesBB = Number($_sReturn)
-				GUICtrlSetData($g_alblBldBaseStats[$eLootTrophy], _NumberFormat($g_iTrophiesBB))
-			Case 1
-				If $_sReturn <> "" Then $g_iGoldBB = Number($_sReturn)
-				GUICtrlSetData($g_alblBldBaseStats[$eLootGold], _NumberFormat($g_iGoldBB))
-			Case 2
-				If $_sReturn <> "" Then $g_iElixirBB = Number($_sReturn)
-				GUICtrlSetData($g_alblBldBaseStats[$eLootElixir], _NumberFormat($g_iElixirBB))
-			Case 3
-				If $_sReturn <> "" Then
-					Local $a_Temp = StringSplit($_sReturn, "#", $STR_NOCOUNT)
-					$g_aBuilder[0] = UBound($a_Temp) = 2 ? Number($a_Temp[0]) : 0
-					$g_aBuilder[1] = UBound($a_Temp) = 2 ? Number($a_Temp[1]) : 0
-					If UBound($a_Temp) <> 2 Then Setlog("Master Builder OCR issue!", $COLOR_ERROR)
-				EndIf
-		EndSwitch
-	Next
+	getBuilderCount($bSetLog, True) ; update builder data
+	If _Sleep($DELAYRESPOND) Then Return
+
+	$g_aiCurrentLootBB[$eLootTrophyBB] = getTrophyMainScreen(67, 84)
+	$g_aiCurrentLootBB[$eLootGoldBB] = getResourcesMainScreen(705, 23)
+	$g_aiCurrentLootBB[$eLootElixirBB] = getResourcesMainScreen(705, 72)
+	If $bSetLog Then SetLog(" [G]: " & _NumberFormat($g_aiCurrentLootBB[$eLootGoldBB]) & " [E]: " & _NumberFormat($g_aiCurrentLootBB[$eLootElixirBB]) & "[T]: " & _NumberFormat($g_aiCurrentLootBB[$eLootTrophyBB]), $COLOR_SUCCESS)
+
+	If Not $bBypass Then ; update stats
+		UpdateStats()
+	EndIf
 EndFunc   ;==>BuilderBaseReport
 
-Func getResourcesBuilderBase($OCRname, $x_start, $y_start, $length) ; -> Gets Resources on Builder Base
-	Return getOcrAndCapture($OCRname, $x_start, $y_start, $length, 18, True)
-EndFunc   ;==>getResourcesBuilderBase
 
 
 

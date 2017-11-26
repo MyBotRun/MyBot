@@ -25,146 +25,151 @@ Global $g_hRadAutoAbilities = 0, $g_hRadManAbilities = 0, $g_hTxtManAbilities = 
 ; Attack schedule
 Global $g_hChkAttackPlannerEnable = 0, $g_hChkAttackPlannerCloseCoC = 0, $g_hChkAttackPlannerCloseAll = 0, $g_hChkAttackPlannerSuspendComputer = 0, $g_hChkAttackPlannerRandom = 0, _
 	   $g_hCmbAttackPlannerRandom = 0, $g_hChkAttackPlannerDayLimit = 0, $g_hCmbAttackPlannerDayMin = 0, $g_hCmbAttackPlannerDayMax = 0
-Global $g_ahChkAttackWeekdays[7] = [0,0,0,0,0,0,0], $g_ahChkAttackHours[24] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+Global $g_ahChkAttackWeekdays[7] = [0, 0, 0, 0, 0, 0, 0], $g_ahChkAttackHours[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Global $g_hLbAttackPlannerRandom = 0, $g_hLbAttackPlannerDayLimit = 0, $g_ahChkAttackWeekdaysE = 0, $g_ahChkAttackHoursE1 = 0, $g_ahChkAttackHoursE2 = 0
 
 ; Clan castle
-Global $g_hChkDropCCHoursEnable = 0, $g_ahChkDropCCHours[24] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+Global $g_hChkDropCCHoursEnable = 0, $g_ahChkDropCCHours[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 GLobal $g_hLblDropCChour = 0, $g_ahLblDropCChoursE = 0
-GLobal $g_hLblDropCChours[12] = [0,0,0,0,0,0,0,0,0,0,0,0]
+GLobal $g_hLblDropCChours[12] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_ahChkDropCCHoursE1 = 0, $g_ahChkDropCCHoursE2 = 0
 
 Func CreateAttackSearchOptionsAttack()
 
-   Local $sTxtTip = ""
-   Local $x = 25, $y = 45
+	Local $sTxtTip = ""
+	Local $x = 25, $y = 45
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_01", "Hero Abilities"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 95)
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x, $y, 22, 22)
-		GUIStartGroup()
-		$x += 30
-			$g_hRadAutoQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetState(-1, $GUI_CHECKED)
-		$x += 145
-			$g_hRadManQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetState(-1, $GUI_UNCHECKED)
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x, $y, 22, 22)
+	GUIStartGroup()
+	$x += 30
+		$g_hRadAutoQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetState(-1, $GUI_CHECKED)
+	$x += 145
+		$g_hRadManQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
 
-		   $g_hTxtManQueenAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
-			   _GUICtrlSetTip(-1, $sTxtTip)
-			   GUICtrlSetLimit(-1, 2)
-		   GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
-		$x += 145
-			$g_hRadBothQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
+		$g_hTxtManQueenAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetLimit(-1, 2)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
+	$x += 145
+		$g_hRadBothQueenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_02", "Activate the Ability when Hero becomes weak or when timer runs out")
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 
-
-   Local $x = 25, $y = 69
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x, $y, 22, 22)
-		GUIStartGroup()
-		$x += 30
-			$g_hRadAutoKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetState(-1, $GUI_CHECKED)
-		$x += 145
-			$g_hRadManKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetState(-1, $GUI_UNCHECKED)
-
-		   $g_hTxtManKingAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
-			   _GUICtrlSetTip(-1, $sTxtTip)
-			   GUICtrlSetLimit(-1, 2)
-		   GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
-
-		$x += 145
-			$g_hRadBothKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_02", "Activate the Ability when Hero becomes weak or when timer runs out")
+	Local $x = 25, $y = 69
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x, $y, 22, 22)
+	GUIStartGroup()
+	$x += 30
+		$g_hRadAutoKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetState(-1, $GUI_CHECKED)
+	$x += 145
+		$g_hRadManKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
-   Local $x = 25, $y = 95
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x, $y , 22, 22)
-		GUIStartGroup()
-		$x += 30
-			$g_hRadAutoWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetState(-1, $GUI_CHECKED)
-		$x += 145
-			$g_hRadManWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetState(-1, $GUI_UNCHECKED)
 
-		   $g_hTxtManWardenAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			   $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
-			   _GUICtrlSetTip(-1, $sTxtTip)
-			   GUICtrlSetLimit(-1, 2)
-		   GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
+		$g_hTxtManKingAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetLimit(-1, 2)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
 
-		$x += 145
-			$g_hRadBothWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
+	$x += 145
+		$g_hRadBothKingAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_02", "Activate the Ability when Hero becomes weak or when timer runs out")
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 
+	Local $x = 25, $y = 95
+	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x, $y , 22, 22)
+	GUIStartGroup()
+	$x += 30
+		$g_hRadAutoWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities", "Auto activate (red zone)"), $x, $y, -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_01", "Activate the Ability when the Hero becomes weak.") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadAutoAbilities_Info_02", "Heroes are checked and activated individually.")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetState(-1, $GUI_CHECKED)
+	$x += 145
+		$g_hRadManWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities", "Timed after") & ":", $x , $y , -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_01", "Activate the Ability on a timer.") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadManAbilities_Info_02", "All Heroes are activated at the same time.")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
+
+		$g_hTxtManWardenAbility = GUICtrlCreateInput("9", $x + 80, $y + 3, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtManAbilities_Info_01", "Set the time in seconds for Timed Activation of Hero Abilities.")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetLimit(-1, 2)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "sec.", -1), $x + 115, $y + 4, -1, -1)
+
+	$x += 145
+		$g_hRadBothWardenAbility = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_01", "Check Both"), $x, $y, -1, -1)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "RadBothAbilities_Info_02", "Activate the Ability when Hero becomes weak or when timer runs out")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-    Local $x = 25, $y = 145
-    GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_02", "Attack Schedule"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 138)
+	Local $x = 25, $y = 145
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_02", "Attack Schedule"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 138)
 	$x -= 5
-		$g_hChkAttackPlannerEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerEnable", "Enable Schedule"), $x, $y-5, -1, -1)
+		$g_hChkAttackPlannerEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerEnable", "Enable Schedule"), $x, $y - 5, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerEnable_Info_01", "This option will allow you to schedule attack times") & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerEnable_Info_02", "Bot continues to run and will attack only when schedule allows"))
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerEnable")
-		$g_hChkAttackPlannerCloseCoC = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerCloseCoC", "Close CoC"), $x, $y+14, -1, -1)
+		$g_hChkAttackPlannerCloseCoC = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerCloseCoC", "Close CoC"), $x, $y + 14, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerCloseCoC_Info_01", "This option will close CoC app when not scheduled to Search & Attack!") & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlanner_Info_01", "Bot Continues to run and will restart when schedule allows"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerCloseCoC")
-		$g_hChkAttackPlannerCloseAll = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerCloseAll", "Close emulator"), $x, $y+33, -1, -1)
+		$g_hChkAttackPlannerCloseAll = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerCloseAll", "Close emulator"), $x, $y + 33, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerCloseAll_Info_01", "This option will close emulator when not scheduled to Search & Attack!") & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlanner_Info_01",-1))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerCloseAll")
-		$g_hChkAttackPlannerSuspendComputer = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerSuspendComputer", "Suspend Computer"), $x, $y+52, -1, -1)
+		$g_hChkAttackPlannerSuspendComputer = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerSuspendComputer", "Suspend Computer"), $x, $y + 52, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerSuspendComputer_Info_01", "This option will suspend computer when not scheduled to Search & Attack!") & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlanner_Info_01",-1))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerSuspendComputer")
-		$g_hChkAttackPlannerRandom = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerRandom", "Random Disable"), $x, $y+71, -1, -1)
+		$g_hChkAttackPlannerRandom = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerRandom", "Random Disable"), $x, $y + 71, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerRandom_Info_01", "This option will randomly stop attacking") & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlanner_Info_01",-1))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerRandom")
-		$g_hCmbAttackPlannerRandom = GUICtrlCreateCombo("",  $x + 110 , $y+69, 37, 16, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$g_hCmbAttackPlannerRandom = GUICtrlCreateCombo("", $x + 110, $y + 69, 37, 16, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerRandom_Info_02", "Select number of hours to stop attacking"))
 			GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20", "4")
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "cmbAttackPlannerRandom")
-		$g_hLbAttackPlannerRandom = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "hrs", "hrs"), $x+148, $y+73, -1,-1)
+		$g_hLbAttackPlannerRandom = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "hrs", "hrs"), $x + 148, $y + 73, -1,-1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_hChkAttackPlannerDayLimit = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerDayLimit", "Daily Limit"), $x, $y+90, -1, -1)
+		$g_hChkAttackPlannerDayLimit = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerDayLimit", "Daily Limit"), $x, $y + 90, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlannerDayLimit_Info_01", "Will randomly stop attacking when exceed random number of attacks between range selected") & @CRLF & _
 							   GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "ChkAttackPlanner_Info_01",-1))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkAttackPlannerDayLimit")
-		$g_hCmbAttackPlannerDayMin = GUICtrlCreateInput("12",  $x+100 , $y+92, 37, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$g_hCmbAttackPlannerDayMin = GUICtrlCreateInput("12", $x + 100, $y + 92, 37, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtMinLbAttackPlannerDayLimit_Info_01", "Enter minimum number of attacks allowed per day"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetLimit(-1, 3)
 			GUICtrlSetOnEvent(-1, "cmbAttackPlannerDayMin")
-		$g_hLbAttackPlannerDayLimit = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "LbAttackPlannerDayLimit", "to"), $x+142, $y+94, -1,-1)
+		$g_hLbAttackPlannerDayLimit = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "LbAttackPlannerDayLimit", "to"), $x + 142, $y + 94, -1, -1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_hCmbAttackPlannerDayMax = GUICtrlCreateInput("15",  $x+157 , $y+94, 37, 18,  BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$g_hCmbAttackPlannerDayMax = GUICtrlCreateInput("15", $x + 157, $y + 94, 37, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "TxtMaxLbAttackPlannerDayLimit_Info_01", "Enter maximum number of attacks allowed per day"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetLimit(-1, 3)
@@ -229,7 +234,7 @@ Func CreateAttackSearchOptionsAttack()
 
 	$x -= 25
 	$y += 17
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Hour", "Hour") & ":", $x , $y, -1, 15)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Hour", "Hour") & ":", $x, $y, -1, 15)
 			$sTxtTip = GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", "Only during these hours of each day")
 			_GUICtrlSetTip(-1, $sTxtTip)
 		GUICtrlCreateLabel(" 0", $x + 30, $y, 13, 15)
@@ -256,7 +261,7 @@ Func CreateAttackSearchOptionsAttack()
 			_GUICtrlSetTip(-1, $sTxtTip)
 		GUICtrlCreateLabel("11", $x + 195, $y, 13, 15)
 			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel("X", $x + 214, $y+1, 11, 11)
+		GUICtrlCreateLabel("X", $x + 214, $y + 1, 11, 11)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$y += 15
@@ -307,7 +312,7 @@ Func CreateAttackSearchOptionsAttack()
 		$g_ahChkAttackHours[11] = GUICtrlCreateCheckbox("", $x + 195, $y, 15, 15)
 		   GUICtrlSetState(-1, $GUI_CHECKED)
 		   GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahChkAttackHoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
+		$g_ahChkAttackHoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y + 1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 		   _GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGoldStar, 0)
 		   GUICtrlSetState(-1, $GUI_UNCHECKED)
 		   GUICtrlSetState(-1, $GUI_DISABLE)
@@ -365,18 +370,17 @@ Func CreateAttackSearchOptionsAttack()
 			GUICtrlSetState(-1, $GUI_CHECKED)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahChkAttackHoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
+		$g_ahChkAttackHoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y + 1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGoldStar, 0)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Clear_set_row_of_boxes", -1))
 			GUICtrlSetOnEvent(-1, "chkattackHoursE2")
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "PM", "PM"), $x + 10, $y)
-
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-    Local $x = 25, $y = 290
-    GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_03", "ClanCastle"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 102)
+	Local $x = 25, $y = 290
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-Attack", "Group_03", "ClanCastle"), $x - 20, $y - 20, $g_iSizeWGrpTab4, 102)
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x, $y + 8, 64, 64)
 
 	$y -= 8
@@ -387,11 +391,11 @@ Func CreateAttackSearchOptionsAttack()
 
 	$x += 188
 	$y += 20
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", -1), $x+8, $y)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", -1), $x + 8, $y)
 
 	$y += 14
 	$x -= 21
-		$g_hLblDropCChour = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Hour",  -1) & ":", $x , $y, -1, 15)
+		$g_hLblDropCChour = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Hour", -1) & ":", $x, $y, -1, 15)
 			Local $sTxtTip = GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hLblDropCChours[0] = GUICtrlCreateLabel(" 0", $x + 30, $y, 13, 15)
@@ -406,9 +410,9 @@ Func CreateAttackSearchOptionsAttack()
 		$g_hLblDropCChours[9] = GUICtrlCreateLabel(" 9", $x + 165, $y, 13, 15)
 		$g_hLblDropCChours[10] = GUICtrlCreateLabel("10", $x + 180, $y, 13, 15)
 		$g_hLblDropCChours[11] = GUICtrlCreateLabel("11", $x + 195, $y, 13, 15)
-		$g_ahLblDropCChoursE = GUICtrlCreateLabel("X", $x + 213, $y+2, 11, 11)
+		$g_ahLblDropCChoursE = GUICtrlCreateLabel("X", $x + 213, $y + 2, 11, 11)
 
-    $y += 15
+	$y += 15
 		$g_ahChkDropCCHours[0] = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)
 			GUICtrlSetState(-1, $GUI_CHECKED )
 			GUICtrlSetState(-1, $GUI_DISABLE)
@@ -458,7 +462,7 @@ Func CreateAttackSearchOptionsAttack()
 			GUICtrlSetState(-1, $GUI_CHECKED )
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahChkDropCCHoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
+		$g_ahChkDropCCHoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y + 1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGoldStar, 0)
 			GUICtrlSetState(-1, $GUI_UNCHECKED )
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Clear_set_row_of_boxes", -1))
@@ -515,7 +519,7 @@ Func CreateAttackSearchOptionsAttack()
 			GUICtrlSetState(-1, $GUI_CHECKED )
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahChkDropCCHoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y+1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
+		$g_ahChkDropCCHoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y + 1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGoldStar, 0)
 			GUICtrlSetState(-1, $GUI_UNCHECKED )
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Clear_set_row_of_boxes", -1))
@@ -523,4 +527,4 @@ Func CreateAttackSearchOptionsAttack()
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "PM", -1), $x + 10, $y)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-EndFunc
+EndFunc   ;==>CreateAttackSearchOptionsAttack

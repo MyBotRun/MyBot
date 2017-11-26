@@ -92,9 +92,8 @@ Func GetTrainPos(Const $iIndex)
 	Else
 	; Get the Image path to search
 	If $iIndex >= $eBarb And $iIndex <= $eBowl Then
-		Local $sDirectory = @ScriptDir & "\imgxml\Train\Train_Train\"
 		Local $sFilter = String($g_asTroopShortNames[$iIndex]) & "*"
-		Local $asImageToUse = _FileListToArray($sDirectory, $sFilter, $FLTA_FILES, True)
+		Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
 		If $g_bDebugSetlogTrain Then setlog("$asImageToUse Troops: " & $asImageToUse[1])
 		$aTrainPos = GetVariable($asImageToUse[1], $iIndex)
 		$aTrainArmy[$iIndex] = $aTrainPos
@@ -102,9 +101,8 @@ Func GetTrainPos(Const $iIndex)
 	EndIf
 
 	If $iIndex >= $eLSpell And $iIndex <= $eSkSpell Then
-		Local $sDirectory = @ScriptDir & "\imgxml\Train\Spell_Train\"
 		Local $sFilter = String($g_asSpellShortNames[$iIndex - $eLSpell]) & "*"
-		Local $asImageToUse = _FileListToArray($sDirectory, $sFilter, $FLTA_FILES, True)
+		Local $asImageToUse = _FileListToArray($g_sImgTrainSpells, $sFilter, $FLTA_FILES, True)
 		If $g_bDebugSetlogTrain Then setlog("$asImageToUse Spell: " & $asImageToUse[1])
 		$aTrainPos = GetVariable($asImageToUse[1], $iIndex)
 		$aTrainArmy[$iIndex] = $aTrainPos

@@ -209,7 +209,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 			$aPosLog = ControlGetPos($g_hFrmBotEx, "", $g_hGUI_LOG)
 			ControlMove($g_hFrmBotEx, "", $g_hGUI_LOG, Default, Default, $aPosLog[2], $aPosLog[3] - $g_iFrmBotAddH)
 			$g_bAndroidEmbedded = False
-			WinMove2($g_hFrmBot, "", $g_iFrmBotPosX, $g_iFrmBotPosY, $g_aFrmBotPosInit[2], $g_aFrmBotPosInit[3] + $g_aFrmBotPosInit[7], 0, 0, False)
+			WinMove2($g_hFrmBot, "", $g_iFrmBotPosX, $g_iFrmBotPosY, $g_aFrmBotPosInit[2], $g_aFrmBotPosInit[3] + $g_aFrmBotPosInit[7], $HWND_NOTOPMOST, 0, False)
 			updateBtnEmbed()
 
 			$g_iLogDividerY -= $g_iFrmBotAddH
@@ -425,7 +425,7 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 		If $g_bDebugAndroidEmbedded Then SetDebugLog("AndroidEmbed: $aPosLog[] = " & $aPosLog[0] & ", " & $aPosLog[1] & ", " & $aPosLog[2] & ", " & $aPosLog[3], Default, True)
 		WinMove($g_hGUI_LOG, "", $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, $aPosLog[2], $aPosLog[3] + $g_iFrmBotAddH)
 
-		WinMove2($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY, $g_hFrmBotWidth, $g_hFrmBotHeight, 0, 0, False)
+		WinMove2($g_hFrmBot, "", $g_iFrmBotDockedPosX, $g_iFrmBotDockedPosY, $g_hFrmBotWidth, $g_hFrmBotHeight, ($g_bChkBackgroundMode ? $HWND_NOTOPMOST : $HWND_TOPMOST), 0, False)
 
 		$g_aiAndroidEmbeddedCtrlTarget[0] = $hCtrlTarget
 		$g_aiAndroidEmbeddedCtrlTarget[1] = $hCtrlTargetParent

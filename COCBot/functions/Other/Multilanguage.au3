@@ -1021,7 +1021,7 @@ Func DetectLanguage()
 		If FileExists($g_sDirLanguages & "/" & $langName & ".ini") Then;if language file found
 			SetLog("Language file " & $langName & ".ini found in " & $g_sDirLanguages)
 			$g_sLanguage = $langName
-			IniWrite($g_sProfileConfigPath, "other", "language", $g_sLanguage)
+			If FileExists($g_sProfileConfigPath) Then IniWrite($g_sProfileConfigPath, "other", "language", $g_sLanguage)
 		Else;otherwise, use english if the language isn't available yet
 			SetLog("Language file for " & $langName & " not found! Defaulting to English", $COLOR_ERROR)
 			$g_sLanguage = $g_sDefaultLanguage

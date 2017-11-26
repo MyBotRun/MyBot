@@ -498,6 +498,71 @@ Func NotifyGetLastMessageFromTelegram()
 
 EndFunc   ;==>NotifyGetLastMessageFromTelegram
 
+Func _IsInternet(); Checking the connection of the card to the Internet
+    Local $Ret = DllCall('wininet.dll', 'int', 'InternetGetConnectedState', 'dword*', 0x20, 'dword', 0)
+    If @error Then
+        Return SetError(1, 0, 0)
+    EndIf
+    Local $Error = _WinAPI_GetLastError()
+    Return SetError((Not ($Error = 0)), $Error, $Ret[0])
+EndFunc   ;==>_IsInternet
+
+Func NotifyGetLastMessageFromTelegramBtnStart()
+	If $g_bDebugSetlog Then SetDebugLog("Notify | NotifyGetLastMessageFromTelegramBtnStart()")
+
+	Local $TGLastMessage = ""
+	If Not $g_bNotifyTGEnable Or $g_sNotifyTGToken = "" Then Return
+
+	Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
+	If @error Then
+		SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
+		Return
+	EndIf
+
+	$oHTTP.Open("Get", "https://api.telegram.org/bot" & $g_sNotifyTGToken & "/getupdates", False)
+	Execute('$oHTTP.Send()')
+	$oHTTP.WaitForResponse
+	Local $Result = Execute('$oHTTP.ResponseText')
+	Local $chat_id = _StringBetween($Result, 'm":{"id":', ',"f')
+	$g_sTGChatID = _ArrayPop($chat_id)
+	If $g_bDebugSetlog Then Setlog("Telegram $g_sTGChatID:" & $g_sTGChatID)
+
+	Local $uid = _StringBetween($Result, 'update_id":', '"message"') ;take update id
+	$g_sTGLast_UID = StringTrimRight(_ArrayPop($uid), 2)
+
+	Local $findstr2 = StringRegExp(StringUpper($Result), '"TEXT":"')
+	If $findstr2 = 1 Then
+		Local $rmessage = _StringBetween($Result, 'text":"', '"}}') ;take message
+		$TGLastMessage = _ArrayPop($rmessage) ;take last message
+		If $g_bDebugSetlog Then Setlog("Telegram $TGLastMessage:" & $TGLastMessage)
+	EndIf
+
+	If $g_bDebugSetlog Then Setlog("Telegram $g_sTGLast_UID:" & $g_sTGLast_UID)
+
+	$oHTTP.Open("Get", "https://api.telegram.org/bot" & $g_sNotifyTGToken & "/getupdates?offset=" & $g_sTGLast_UID, False)
+	Execute('$oHTTP.Send()')
+	$oHTTP.WaitForResponse
+	Local $Result2 = Execute('$oHTTP.ResponseText')
+
+	If _IsInternet() < 1 Then
+	     Setlog("Telegram: Check your internet connection! No Connection..", $COLOR_ERROR)
+		 Return
+	EndIf
+
+	Local $findstr2 = StringRegExp(StringUpper($Result2), '"TEXT":"')
+	If $findstr2 = 1 Then
+		Local $rmessage = _StringBetween($Result2, 'text":"', '"}}') ;take message
+		$TGLastMessage = _ArrayPop($rmessage) ;take last message
+		If $TGLastMessage = "" Then
+			Local $rmessage = _StringBetween($Result2, 'text":"', '","entities"') ;take message
+			$TGLastMessage = _ArrayPop($rmessage) ;take last message
+		EndIf
+		If $g_bDebugSetlog Then Setlog("Telegram - $TGLastMessage:" & $TGLastMessage)
+		Return $TGLastMessage
+	EndIf
+
+EndFunc   ;==>NotifyGetLastMessageFromTelegram
+
 Func NotifyActivateKeyboardOnTelegram($TGMsg)
 	If $g_bDebugSetlog Then SetDebugLog("Notify | NotifyActivateKeyboardOnTelegram($TGMsg): " & $TGMsg)
 
@@ -518,6 +583,7 @@ Func NotifyActivateKeyboardOnTelegram($TGMsg)
 			'\ud83d\udcaa ' & GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS") & '","' & _
 			'\u2753 ' & GetTranslatedFileIni("MBR Func_Notify", "HELP", "HELP") & '"],["' & _
 			'\u25aa ' & GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP") & '","' & _
+			'\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START") & '","' & _
 			'\ud83d\udd00 ' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE") & '","' & _
 			'\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "RESUME", "RESUME") & '","' & _
 			'\ud83d\udd01 ' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART") & '"],["' & _
@@ -534,6 +600,25 @@ Func NotifyActivateKeyboardOnTelegram($TGMsg)
 	$g_iTGLastRemote = $g_sTGLast_UID
 
 EndFunc   ;==>NotifyActivateKeyboardOnTelegram
+
+Func NotifyRemoteControlProcBtnStart()
+	If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" Then
+		$g_sTGLastMessage = NotifyGetLastMessageFromTelegramBtnStart()
+		Local $TGActionMSG = StringUpper(StringStripWS($g_sTGLastMessage, $STR_STRIPLEADING + $STR_STRIPTRAILING + $STR_STRIPSPACES)) ;upercase & remove space laset message
+		If $g_bDebugSetlog Then Setlog("Telegram | NotifyRemoteControlProcBtnStart $TGActionMSG : " & $TGActionMSG)
+		If $g_bDebugSetlog Then Setlog("Telegram | NotifyRemoteControlProcBtnStart $g_iTGLastRemote : " & $g_iTGLastRemote)
+		If $g_bDebugSetlog Then Setlog("Telegram | NotifyRemoteControlProcBtnStart $g_sTGLast_UID : " & $g_sTGLast_UID)
+		If $g_iTGLastRemote <> $g_sTGLast_UID Then
+			$g_iTGLastRemote = $g_sTGLast_UID
+
+				Switch $TGActionMSG
+					Case GetTranslatedFileIni("MBR Func_Notify", "START", "START"), '\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START")
+						btnStart()
+						NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_01", "Request to Start...") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_02", "Your bot is now started..."))
+				EndSwitch
+		EndIf
+    EndIf
+EndFunc   ;==>NotifyRemoteControlProcBtnStart
 ; Telegram ---------------------------------
 
 
@@ -771,7 +856,7 @@ Func NotifyRemoteControlProc()
 
 
 	;Telegram ---------------------------------------------------------------------------------
-	If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" Then
+	If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" And $g_bRunState Then
 		$g_sTGLastMessage = NotifyGetLastMessageFromTelegram()
 		Local $TGActionMSG = StringUpper(StringStripWS($g_sTGLastMessage, $STR_STRIPLEADING + $STR_STRIPTRAILING + $STR_STRIPSPACES)) ;upercase & remove space laset message
 		If $g_bDebugSetlog Then Setlog("Telegram | NotifyRemoteControlProc $TGActionMSG : " & $TGActionMSG)
@@ -788,6 +873,7 @@ Func NotifyRemoteControlProc()
 						Local $txtHelp = "Telegram " & GetTranslatedFileIni("MBR Func_Notify", "HELP", "HELP") & " " & GetTranslatedFileIni("MBR Func_Notify", "Bot_Info_01", "- You can remotely control your bot sending COMMANDS from the following list:")
 						$txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "HELP", -1) & " " & GetTranslatedFileIni("MBR Func_Notify", "HELP_Info_01", "- send this help message")
 						$txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART") & " " & GetTranslatedFileIni("MBR Func_Notify", "RESTART_Info_01", "- restart the Emulator and bot named") & " <" & $g_sNotifyOrigin & ">"
+						$txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "START", "START") & " " & GetTranslatedFileIni("MBR Func_Notify", "START_Info_01", "- start the bot named") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP") & " " & GetTranslatedFileIni("MBR Func_Notify", "STOP_Info_01", "- stop the bot named") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE") & " " & GetTranslatedFileIni("MBR Func_Notify", "PAUSE_Info_01", "- pause the bot named") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "RESUME", "RESUME") & " " & GetTranslatedFileIni("MBR Func_Notify", "RESUME_Info_01", "- resume the bot named") & " <" & $g_sNotifyOrigin & ">"
@@ -814,6 +900,11 @@ Func NotifyRemoteControlProc()
 						NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_16", "Request to Restart") & "...\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_09", "Your bot and Emulator are now restarting..."))
 						SaveConfig()
 						RestartBot()
+					Case GetTranslatedFileIni("MBR Func_Notify", "START", "START"), '\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START")
+						If $g_bRunState = True Then
+							SetLog("Notify Telegram" & ": " & "Your bot is currently started, no action was taken", $COLOR_SUCCESS)
+							NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_01", "Request to Start...") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_03", "Your bot is currently started, no action was taken"))
+						EndIf
 					Case GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP"), '\U25AA ' & GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP")
 						SetLog("Notify Telegram: Your request has been received. Bot is now stopped", $COLOR_GREEN)
 						If $g_bRunState = True Then

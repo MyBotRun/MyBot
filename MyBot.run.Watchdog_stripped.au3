@@ -2,7 +2,14 @@
 #RequireAdmin
 #pragma compile(ProductName, My Bot Watchdog)
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
-Global $g_sBotVersion = "v7.3.1"
+#pragma compile(Icon, "Images\MyBot.ico")
+#pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
+#pragma compile(ProductVersion, 7.3.2)
+#pragma compile(FileVersion, 7.3.2)
+#pragma compile(LegalCopyright, © https://mybot.run)
+#Au3Stripper_Off
+#Au3Stripper_On
+Global $g_sBotVersion = "v7.3.2 b5"
 Opt("MustDeclareVars", 1)
 Global Const $WAIT_TIMEOUT = 258
 Global Const $STDERR_MERGED = 8
@@ -1062,19 +1069,23 @@ Local $aResult = DllCall("kernel32.dll", "bool", "AllocConsole")
 If @error Then Return SetError(@error, @extended, False)
 Return $aResult[0]
 EndFunc
-Func _WinAPI_SetConsoleIcon($g_sLibIconPath, $nIconID)
+Func _WinAPI_SetConsoleIcon($g_sLibIconPath, $nIconID, $hWnD = Default)
 Local $hIcon = DllStructCreate("int")
 Local $Result = DllCall("shell32.dll", "int", "ExtractIconEx", "str", $g_sLibIconPath, "int", $nIconID - 1, "hwnd", 0, "ptr", DllStructGetPtr($hIcon), "int", 1)
 If UBound($Result) > 0 Then
 $Result = $Result[0]
 If $Result > 0 Then
+Local $error = 0, $extended = 0
+If $hWnD = Default Then
 $Result = DllCall("kernel32.dll", "bool", "SetConsoleIcon", "ptr", DllStructGetData($hIcon, 1))
 $Result = DllCall("kernel32.dll", "hwnd", "GetConsoleWindow")
-Local $error = @error, $extended = @extended
-If UBound($Result) > 0 Then
-Local $hConsole = $Result[0]
-_SendMessage($hConsole, $WM_SETICON, 0, DllStructGetData($hIcon, 1))
-_SendMessage($hConsole, $WM_SETICON, 1, DllStructGetData($hIcon, 1))
+$error = @error
+$extended = @extended
+If UBound($Result) > 0 Then $hWnD = $Result[0]
+EndIf
+If IsHWnd($hWnD) Then
+_SendMessage($hWnD, $WM_SETICON, 0, DllStructGetData($hIcon, 1))
+_SendMessage($hWnD, $WM_SETICON, 1, DllStructGetData($hIcon, 1))
 Sleep(50)
 EndIf
 DllCall("user32.dll", "int", "DestroyIcon", "hwnd", DllStructGetData($hIcon, 1))

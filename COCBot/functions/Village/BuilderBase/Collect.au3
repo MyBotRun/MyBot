@@ -28,12 +28,11 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False)
 	If _Sleep($DELAYCOLLECT2) Then Return
 
 	; Collect function to Parallel Search , will run all pictures inside the directory
-	Local $sDirectory = @ScriptDir & "\imgxml\Resources\BuildersBase\Collect"
 	; Setup arrays, including default return values for $return
 	Local $sFilename = ""
 	Local $aCollectXY, $t
 
-	Local $aResult = multiMatches($sDirectory, 0, "FV", "FV")
+	Local $aResult = multiMatches($g_sImgCollectRessources, 0, "FV", "FV")
 
 	If UBound($aResult) > 1 Then ; we have an array with data of images found
 		For $i = 1 To UBound($aResult) - 1  ; loop through array rows
@@ -48,5 +47,6 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False)
 		Next
 	EndIf
 
+	If _Sleep($DELAYCOLLECT3) Then Return
 	If $bSwitchToNV Then SwitchBetweenBases() ; Switching back to the normal Village
 EndFunc

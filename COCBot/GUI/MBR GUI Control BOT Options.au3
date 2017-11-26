@@ -166,7 +166,7 @@ Func txtSinglePBTimeForced()
 EndFunc   ;==>txtSinglePBTimeForced
 
 Func chkAutoResume()
-	$g_bAutoResumeEnable = (GUICtrlRead($g_hChkAutoResume) = $GUI_CHECKED)
+	GUICtrlSetState($g_hTxtAutoResumeTime, GUICtrlRead($g_hChkAutoResume) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkAutoResume
 
 Func txtGlobalActiveBotsAllowed()
@@ -423,22 +423,8 @@ EndFunc   ;==>btnTestClickDrag
 
 Func btnTestImage()
 
-	Local $hBMP = 0, $hHBMP = 0
-	Local $sImageFile = FileOpenDialog("Select CoC screenshot to test, cancel to use live screenshot", $g_sProfileTempPath, "Image (*.png)", $FD_FILEMUSTEXIST, "", $g_hFrmBot)
-	If @error <> 0 Then
-		SetLog("Testing image cancelled, taking screenshot from " & $g_sAndroidEmulator, $COLOR_INFO)
-		_CaptureRegion()
-		$hHBMP = $g_hHBitmap
-		TestCapture($hHBMP)
-	Else
-		SetLog("Testing image " & $sImageFile, $COLOR_INFO)
-		; load test image
-		$hBMP = _GDIPlus_BitmapCreateFromFile($sImageFile)
-		$hHBMP = _GDIPlus_BitmapCreateDIBFromBitmap($hBMP)
-		_GDIPlus_BitmapDispose($hBMP)
-		TestCapture($hHBMP)
-		SetLog("Testing image hHBitmap = " & $hHBMP)
-	EndIf
+	Local $sImageFile = BeginImageTest() ; get image for testing
+	If $sImageFile = False Then $sImageFile = "Live Screenshot"
 
 	Local $i
 	Local $result
@@ -448,9 +434,9 @@ Func btnTestImage()
 
 	For $i = 0 To 0
 
-		SetLog("Testing image #" & $i & " " & $sImageFile, $COLOR_INFO)
-
-		_CaptureRegion()
+		SetLog("Testing isProblemAffect...", $COLOR_SUCCESS)
+		$result = isProblemAffect(False)
+		SetLog("Testing isProblemAffect DONE, $Result=" & $result, $COLOR_SUCCESS)
 
 		SetLog("Testing checkObstacles...", $COLOR_SUCCESS)
 		$result = checkObstacles()
@@ -468,6 +454,7 @@ Func btnTestImage()
 		SetLog("$aNoCloudsAttack pixel check: " & _CheckPixel($aNoCloudsAttack, $g_bCapturePixel))
 		SetLog("Testing WaitForClouds DONE", $COLOR_SUCCESS)
 
+		#cs
 		SetLog("Testing checkAttackDisable...", $COLOR_SUCCESS)
 		SetLog("Testing checkAttackDisable($g_iTaBChkAttack)...", $COLOR_SUCCESS)
 		SetLog("checkAttackDisable($g_iTaBChkAttack) = " & checkAttackDisable($g_iTaBChkAttack))
@@ -476,12 +463,12 @@ Func btnTestImage()
 		SetLog("Testing checkAttackDisable($g_iTaBChkTime)...", $COLOR_SUCCESS)
 		SetLog("checkAttackDisable($g_iTaBChkTime) = " & checkAttackDisable($g_iTaBChkTime))
 		SetLog("Testing checkAttackDisable DONE", $COLOR_SUCCESS)
+		#ce
 	Next
 
 	SetLog("Testing finished", $COLOR_INFO)
 
-	_WinAPI_DeleteObject($hHBMP)
-	TestCapture(0)
+	EndImageTest() ; clear test image handle
 
 	$g_bRunState = $currentRunState
 
@@ -867,7 +854,7 @@ Func BeginImageTest($directory = $g_sProfileTempPath)
 	_GDIPlus_BitmapDispose($hBMP)
 	TestCapture($hHBMP)
 	SetLog("Testing image hHBitmap = " & $hHBMP)
-	Return True
+	Return $sImageFile
 EndFunc   ;==>BeginImageTest
 
 Func EndImageTest()

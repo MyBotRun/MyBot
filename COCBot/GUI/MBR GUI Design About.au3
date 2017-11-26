@@ -107,7 +107,15 @@ Func ShowCommandLineHelp()
 
 	; add controls
 	Local $hRichEdit = _GUICtrlRichEdit_Create($g_hGUI_CommandLineHelp, "", 2, 0, 646, 667, $WS_VSCROLL + $ES_MULTILINE)
-	_GUICtrlRichEdit_StreamFromFile($hRichEdit, @ScriptDir & "\Help\CommandLineParameter.rtf")
+	Local $sHelpFile = @ScriptDir & "\Help\CommandLineParameter"
+	If $g_sLanguage <> $g_sDefaultLanguage Then
+		If FileExists($sHelpFile & "_" & $g_sLanguage & ".rtf") Then
+			$sHelpFile &= "_" & $g_sLanguage
+		Else
+			SetDebugLog("Help file not available: " & $sHelpFile & "_" & $g_sLanguage & ".rtf")
+		EndIf
+	EndIf
+	_GUICtrlRichEdit_StreamFromFile($hRichEdit, $sHelpFile & ".rtf")
 	_GUICtrlRichEdit_SetReadOnly($hRichEdit)
 	_GUICtrlRichEdit_SetScrollPos($hRichEdit, 0, 0) ; scroll to top
 	Local $hClose = GUICtrlCreateButton("Close", 300, 670, 50)

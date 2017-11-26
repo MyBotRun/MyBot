@@ -37,9 +37,9 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 	Local $iAdditional = 75
 
 	If isOnBuilderIsland(True) Then
-		$sDirectory = @ScriptDir & "\imgxml\village\BuilderBase"
+		$sDirectory = $g_sImgZoomOutDirBB
 	Else
-		$sDirectory = @ScriptDir & "\imgxml\village\NormalVillage"
+		$sDirectory = $g_sImgZoomOutDir
 	EndIf
 
 	Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & "*.*", $FLTA_FILES)

@@ -28,27 +28,25 @@ Global $g_hGUI_DEADBASE_TAB = 0, $g_hGUI_DEADBASE_TAB_ITEM1 = 0, $g_hGUI_DEADBAS
 
 Func CreateAttackSearchDeadBase()
 
-   $g_hGUI_DEADBASE = _GUICreate("", $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_SEARCH)
-   ;GUISetBkColor($COLOR_WHITE, $g_hGUI_DEADBASE)
-   ;creating subchilds first!
-   CreateAttackSearchDeadBaseStandard()
-   CreateAttackSearchDeadBaseScripted()
-   CreateAttackSearchDeadBaseMilking()
-   GUISwitch($g_hGUI_DEADBASE)
+	$g_hGUI_DEADBASE = _GUICreate("", $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_SEARCH)
+	;GUISetBkColor($COLOR_WHITE, $g_hGUI_DEADBASE)
 
-   $g_hGUI_DEADBASE_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
-   $g_hGUI_DEADBASE_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_01", "Search"))
-   CreateAttackSearchDeadBaseSearch()
+	;creating subchilds first!
+	CreateAttackSearchDeadBaseStandard()
+	CreateAttackSearchDeadBaseScripted()
+	CreateAttackSearchDeadBaseMilking()
 
-   $g_hGUI_DEADBASE_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_02", "Attack"))
-   CreateAttackSearchDeadBaseAttack()
+	GUISwitch($g_hGUI_DEADBASE)
+	$g_hGUI_DEADBASE_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
+	$g_hGUI_DEADBASE_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_01", "Search"))
+		CreateAttackSearchDeadBaseSearch()
+	$g_hGUI_DEADBASE_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_02", "Attack"))
+		CreateAttackSearchDeadBaseAttack()
+	$g_hGUI_DEADBASE_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_03", "End Battle"))
+		CreateAttackSearchDeadBaseEndBattle()
+	$g_hGUI_DEADBASE_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_01_STab_01", "Collectors"))
+		CreateAttackSearchDeadBaseCollectors()
+	GUICtrlCreateTabItem("")
 
-   $g_hGUI_DEADBASE_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_03", "End Battle"))
-   CreateAttackSearchDeadBaseEndBattle()
-
-   $g_hGUI_DEADBASE_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_01_STab_01", "Collectors"))
-   CreateAttackSearchDeadBaseCollectors()
-
-   ;GUISetState()
-EndFunc
+EndFunc   ;==>CreateAttackSearchDeadBase
 

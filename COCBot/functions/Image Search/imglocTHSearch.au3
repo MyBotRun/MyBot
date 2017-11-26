@@ -20,8 +20,6 @@ Global $IMGLOCTHFAR
 Global $IMGLOCTHRDISTANCE
 
 Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
-	;set THSearch Values for multisearch
-	;Local $xdirectory = @ScriptDir & "\imgxml\ImgLocTH"
 	Local $xdirectory = "imglocth-bundle"
 	Local $xdirectoryb = "imglocth2-bundle"
 	Local $sCocDiamond = "ECD"

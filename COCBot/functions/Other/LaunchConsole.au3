@@ -378,19 +378,23 @@ Func _WinAPI_AllocConsole()
 	Return $aResult[0]
 EndFunc   ;==>_WinAPI_AllocConsole
 
-Func _WinAPI_SetConsoleIcon($g_sLibIconPath, $nIconID)
+Func _WinAPI_SetConsoleIcon($g_sLibIconPath, $nIconID, $hWnD = Default)
 	Local $hIcon = DllStructCreate("int")
 	Local $Result = DllCall("shell32.dll", "int", "ExtractIconEx", "str", $g_sLibIconPath, "int", $nIconID - 1, "hwnd", 0, "ptr", DllStructGetPtr($hIcon), "int", 1)
 	If UBound($Result) > 0 Then
 		$Result = $Result[0]
 		If $Result > 0 Then
-			$Result = DllCall("kernel32.dll", "bool", "SetConsoleIcon", "ptr", DllStructGetData($hIcon, 1))
-			$Result = DllCall("kernel32.dll", "hwnd", "GetConsoleWindow")
-			Local $error = @error, $extended = @extended
-			If UBound($Result) > 0 Then
-				Local $hConsole = $Result[0]
-				_SendMessage($hConsole, $WM_SETICON, 0, DllStructGetData($hIcon, 1)) ; SMALL_ICON
-				_SendMessage($hConsole, $WM_SETICON, 1, DllStructGetData($hIcon, 1)) ; BIG_ICON
+			Local $error = 0, $extended = 0
+			If $hWnD = Default Then
+				$Result = DllCall("kernel32.dll", "bool", "SetConsoleIcon", "ptr", DllStructGetData($hIcon, 1))
+				$Result = DllCall("kernel32.dll", "hwnd", "GetConsoleWindow")
+				$error = @error
+				$extended = @extended
+				If UBound($Result) > 0 Then	$hWnD = $Result[0]
+			EndIf
+			If IsHWnd($hWnD) Then
+				_SendMessage($hWnD, $WM_SETICON, 0, DllStructGetData($hIcon, 1)) ; SMALL_ICON
+				_SendMessage($hWnD, $WM_SETICON, 1, DllStructGetData($hIcon, 1)) ; BIG_ICON
 				Sleep(50) ; little wait before detroying icon
 			EndIf
 			DllCall("user32.dll", "int", "DestroyIcon", "hwnd", DllStructGetData($hIcon, 1))

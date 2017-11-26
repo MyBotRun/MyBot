@@ -17,15 +17,12 @@ Func easyPreySearch()
 	Local $aReturnResult[0][3]
 	Local $pixelerror = 10, $iMaxCombDist = 60
 
-	Local $directory = @ScriptDir & "\imgxml\easybuildings"
-	Local $Maxpositions = 0 ; Return all found Positions
-
 	For $iLoop = 1 To 3 ; Search 3 times
 		If $iLoop > 1 Then ; with 5 sec pause inbetween, so whole search covers a time intervall of around 10 sec
 			If _Sleep(5000) Then Return
 		EndIf
-		
-		Local $aResult = multiMatches($directory, $Maxpositions, "ECD", "ECD")
+
+		Local $aResult = multiMatches($g_sImgEasyBuildings, 0, "ECD", "ECD")
 		If $g_bDebugSmartZap = True Then
 			If UBound($aResult) = 2 Then
 				SetLog("1 target type found in " & $iLoop & ". searchround.", $COLOR_DEBUG)
@@ -33,7 +30,7 @@ Func easyPreySearch()
 				SetLog(UBound($aResult) - 1 & " target types found in " & $iLoop & ". searchround.", $COLOR_DEBUG)
 			EndIf
 		EndIf
-	
+
 		For $iResult = 1 To UBound($aResult) - 1 ; Loop through all resultrows, skipping first row, which is searcharea, each matched img has its own row, if no resultrow, for is skipped
 			If _Sleep(10) Then Return
 			Local $aTemp[0][2]
@@ -45,7 +42,7 @@ Func easyPreySearch()
 			_ArrayAdd($aReturnResult, $aTemp) ; Adding temp array to return array
 		Next
 	Next
-	
+
 	; Removing Duplicate Targets
 	Local $iResult = 0
 	While $iResult < UBound($aReturnResult)

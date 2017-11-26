@@ -161,7 +161,8 @@ Func InitLeapDroid($bCheckOnly = False)
 		Return False
 	EndIf
 
-	If FileExists($LeapDroid_Path & "adb.exe") = 0 Then
+	Local $sPreferredADB = FindPreferredAdbPath()
+	If $sPreferredADB = "" And FileExists($LeapDroid_Path & "adb.exe") = 0 Then
 		If Not $bCheckOnly Then
 			SetLog("Serious error has occurred: Cannot find " & $g_sAndroidEmulator & ":", $COLOR_ERROR)
 			SetLog($LeapDroid_Path & "adb.exe", $COLOR_ERROR)
@@ -199,7 +200,7 @@ Func InitLeapDroid($bCheckOnly = False)
 
 		; update global variables
 		$g_sAndroidProgramPath = $LeapDroid_Path & "LeapdroidVM.exe"
-		$g_sAndroidAdbPath = FindPreferredAdbPath()
+		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $LeapDroid_Path & "adb.exe"
 		$g_sAndroidVersion = $LeapDroidVersion
 		$__LeapDroid_Path = $LeapDroid_Path

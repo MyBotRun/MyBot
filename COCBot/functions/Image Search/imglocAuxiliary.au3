@@ -13,7 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func decodeMultipleCoords($coords, $iDedupX = 0, $iDedupY = 0)
+Func decodeMultipleCoords($coords, $iDedupX = -1, $iDedupY = -1, $iSorted = -1)
 	;returns array of N coordinates [0=x, 1=y][0=x1, 1=y1]
 	Local $retCoords[1] = [""]
 	Local $p, $pOff = 0
@@ -29,25 +29,46 @@ Func decodeMultipleCoords($coords, $iDedupX = 0, $iDedupY = 0)
 		$retCoords[$p] = decodeSingleCoord($aCoordsSplit[$p + $pOff])
 	Next
 
-	If UBound($retCoords) = 1 Or ($iDedupX = 0 And $iDedupY = 0) Then Return $retCoords ; no dedup, return array
+	If UBound($retCoords) = 1 Or ($iDedupX < 1 And $iDedupY < 1 And $iSorted = -1) Then Return $retCoords ; no dedup, return array
 
 	; dedup coords
-	Local $aFinalCoords[1] = [$retCoords[0]]
-	Local $c1, $c2, $k
-	For $i = 1 To UBound($retCoords) - 1
-		$c1 = $retCoords[$i]
-		$k = UBound($aFinalCoords) - 1
-		For $j = 0 To $k
-			$c2 = $aFinalCoords[$j]
-			If ($iDedupX > 0 And Abs($c1[0] - $c2[0]) < $iDedupX) Or ($iDedupY > 0 And Abs($c1[1] - $c2[1]) < $iDedupY) Then
-				; duplicate coord
-				ContinueLoop 2
-			EndIf
+	If $iDedupX > 0 Or $iDedupY > 0 Then
+		Local $aFinalCoords[1] = [$retCoords[0]]
+		Local $c1, $c2, $k, $inX, $inY
+		For $i = 1 To UBound($retCoords) - 1
+			$c1 = $retCoords[$i]
+			$k = UBound($aFinalCoords) - 1
+			For $j = 0 To $k
+				$c2 = $aFinalCoords[$j]
+				$inX = Abs($c1[0] - $c2[0]) < $iDedupX
+				$inY = Abs($c1[1] - $c2[1]) < $iDedupY
+				If ($iDedupY < 1 And $inX) Or ($iDedupX < 1 And $inY) Or ($inX And $inY) Then
+					; duplicate coord
+					ContinueLoop 2
+				EndIf
+			Next
+			; add coord
+			ReDim $aFinalCoords[$k + 2]
+			$aFinalCoords[$k + 1] = $c1
 		Next
-		; add coord
-		ReDim $aFinalCoords[$k + 2]
-		$aFinalCoords[$k + 1] = $c1
-	Next
+	Else
+		Local $aFinalCoords = $retCoords
+	EndIf
+	If $iSorted = 0 Or $iSorted = 1 Then
+		Local $a[UBound($aFinalCoords)][2]
+		For $i = 0 To UBound($aFinalCoords) - 1
+			$c1 = $aFinalCoords[$i]
+			$a[$i][0] = $c1[0]
+			$a[$i][1] = $c1[1]
+		Next
+		_ArraySort($a, 0, 0, 0, $iSorted)
+		For $i = 0 To UBound($a) - 1
+			$c1 = $aFinalCoords[$i]
+			$c1[0] = $a[$i][0]
+			$c1[1] = $a[$i][1]
+			$aFinalCoords[$i] = $c1
+		Next
+	EndIf
 
 	Return $aFinalCoords
 EndFunc   ;==>decodeMultipleCoords
@@ -114,9 +135,9 @@ Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $ma
 	If IsString($buttonTileArrayOrPatternOrFullPath) Then
 		$sButtons = $buttonTileArrayOrPatternOrFullPath
 		If StringInStr($buttonTileArrayOrPatternOrFullPath, "*") > 0 Then
-			Local $aFiles = _FileListToArray(@ScriptDir & "\imgxml\imglocbuttons", $sButtons, $FLTA_FILES, True)
+			Local $aFiles = _FileListToArray($g_sImgImgLocButtons, $sButtons, $FLTA_FILES, True)
 			If UBound($aFiles) < 2 Or $aFiles[0] < 1 Then
-				Return SetError(1, 1, "No files in " & @ScriptDir & "\imgxml\imglocbuttons") ; Set external error code = 1 for bad input values
+				Return SetError(1, 1, "No files in " & $g_sImgImgLocButtons) ; Set external error code = 1 for bad input values
 			EndIf
 			Local $a[0], $j
 			$j = 0
@@ -232,7 +253,10 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = "282,85|306,85|306,130|282,130"
 		Case "DownDonation" ;mainwindow - only when chat window is visible
 			$btnDiamond = "282,635|306,635|306,680|282,680"
-
+		Case "Treasury"
+			$btnDiamond = "125,610|740,610|740,715|125,715"
+		Case "Collect"
+			$btnDiamond = "350,450|505,450|505,521|350,521"
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch
@@ -428,13 +452,13 @@ Func GetDiamondFromRect($rect)
 			SetDebugLog("GetDiamondFromRect : Bad Input Values : " & $rect, $COLOR_ERROR)
 			Return SetError(1, 1, $returnvalue)
 		EndIf
-		$RectValues[3] = $RectValues[1] + StringLeft($RectValues[2], $i - 1) - 1
+		$RectValues[3] = $RectValues[1] + StringLeft($RectValues[2], $i - 1)
 		$i = StringInStr($RectValues[1], "(")
 		If $i = 0 Then
 			SetDebugLog("GetDiamondFromRect : Bad Input Values : " & $rect, $COLOR_ERROR)
 			Return SetError(1, 2, $returnvalue)
 		EndIf
-		$RectValues[2] = $RectValues[0] + StringMid($RectValues[1], $i + 1) - 1
+		$RectValues[2] = $RectValues[0] + StringMid($RectValues[1], $i + 1)
 		$RectValues[1] = StringLeft($RectValues[1], $i - 1)
 	EndIf
 	If UBound($RectValues) < 4 Then

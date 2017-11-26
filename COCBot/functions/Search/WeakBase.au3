@@ -15,7 +15,7 @@
 
 Func createWeakBaseStats()
 	; Get the directory file contents as keys for the stats file
-	Local $aKeys = _FileListToArrayRec(@ScriptDir & "\imgxml\Buildings", "*.xml", $FLTAR_FILES, $FLTAR_RECUR, $FLTAR_SORT, $FLTAR_NOPATH)
+	Local $aKeys = _FileListToArrayRec($g_sImgWeakBaseBuildingsDir, "*.xml", $FLTAR_FILES, $FLTAR_RECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 	; Create our return array
 	Local $return[UBound($aKeys) - 1][2]
 
@@ -37,7 +37,7 @@ EndFunc   ;==>createWeakBaseStats
 
 Func readWeakBaseStats()
 	; Get the directory file contents as keys for the stats file
-	Local $aKeys = _FileListToArrayRec(@ScriptDir & "\imgxml\Buildings", "*.xml", $FLTAR_FILES, $FLTAR_RECUR, $FLTAR_SORT, $FLTAR_NOPATH)
+	Local $aKeys = _FileListToArrayRec($g_sImgWeakBaseBuildingsDir, "*.xml", $FLTAR_FILES, $FLTAR_RECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 	; Create our return array
 	Local $return[UBound($aKeys) - 1][2]
 
@@ -154,8 +154,6 @@ EndFunc   ;==>IsWeakBaseActive
 
 Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $iDefenseType, ByRef $performSearch, $guiEnabledArray, $bForceCaptureRegion = True)
 
-	; defenseSearch($aResult, @ScriptDir & "\imgxml\Buildings\Eagle", $townHallLevel, $g_aiFilterMaxEagleLevel, $eWeakEagle, $performSearch, $g_abFilterMaxEagleEnable, $bForceCaptureRegion)
-
 	; Setup default return coords of 0,0
 	Local $defaultCoords[1][2] = [[0, 0]]
 
@@ -221,16 +219,16 @@ Func weakBaseCheck($townHallLevel = 11, $redlines = "", $bForceCaptureRegion = T
 	Local $hWeakTimer = __TimerInit()
 
 	; Check Eagle Artillery first as there is less images to process, mortars may not be needed.
-	$aEagleResults = defenseSearch($aResult, @ScriptDir & "\imgxml\Buildings\Eagle", $townHallLevel, $g_aiFilterMaxEagleLevel, $eWeakEagle, $performSearch, $g_abFilterMaxEagleEnable, $bForceCaptureRegion)
-	$aInfernoResults = defenseSearch($aResult, @ScriptDir & "\imgxml\Buildings\Infernos", $townHallLevel, $g_aiFilterMaxInfernoLevel, $eWeakInferno, $performSearch, $g_abFilterMaxInfernoEnable, $bForceCaptureRegion)
-	$aXBowResults = defenseSearch($aResult, @ScriptDir & "\imgxml\Buildings\Xbow", $townHallLevel, $g_aiFilterMaxXBowLevel, $eWeakXBow, $performSearch, $g_abFilterMaxXBowEnable, $bForceCaptureRegion)
+	$aEagleResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsEagleDir, $townHallLevel, $g_aiFilterMaxEagleLevel, $eWeakEagle, $performSearch, $g_abFilterMaxEagleEnable, $bForceCaptureRegion)
+	$aInfernoResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsInfernoDir, $townHallLevel, $g_aiFilterMaxInfernoLevel, $eWeakInferno, $performSearch, $g_abFilterMaxInfernoEnable, $bForceCaptureRegion)
+	$aXBowResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsXbowDir, $townHallLevel, $g_aiFilterMaxXBowLevel, $eWeakXBow, $performSearch, $g_abFilterMaxXBowEnable, $bForceCaptureRegion)
 	If $g_iDetectedImageType = 1 Then
-		$aWizardTowerResults = defenseSearch($aResult, @ScriptDir & "\imgxml\Buildings\WTower_Snow", $townHallLevel, $g_aiFilterMaxWizTowerLevel, $eWeakWizard, $performSearch, $g_abFilterMaxWizTowerEnable, $bForceCaptureRegion)
+		$aWizardTowerResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsWizTowerSnowDir, $townHallLevel, $g_aiFilterMaxWizTowerLevel, $eWeakWizard, $performSearch, $g_abFilterMaxWizTowerEnable, $bForceCaptureRegion)
 	Else
-		$aWizardTowerResults = defenseSearch($aResult, @ScriptDir & "\imgxml\Buildings\WTower", $townHallLevel, $g_aiFilterMaxWizTowerLevel, $eWeakWizard, $performSearch, $g_abFilterMaxWizTowerEnable, $bForceCaptureRegion)
+		$aWizardTowerResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsWizTowerDir, $townHallLevel, $g_aiFilterMaxWizTowerLevel, $eWeakWizard, $performSearch, $g_abFilterMaxWizTowerEnable, $bForceCaptureRegion)
 	EndIf
-	$aMortarResults = defenseSearch($aResult, @ScriptDir & "\imgxml\Buildings\Mortars", $townHallLevel, $g_aiFilterMaxMortarLevel, $eWeakMortar, $performSearch, $g_abFilterMaxMortarEnable, $bForceCaptureRegion)
-	$aAirDefenseResults = defenseSearch($aResult, @ScriptDir & "\imgxml\Buildings\ADefense", $townHallLevel, $g_aiFilterMaxAirDefenseLevel, $eWeakAirDefense, $performSearch, $g_abFilterMaxAirDefenseEnable, $bForceCaptureRegion)
+	$aMortarResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsMortarsDir, $townHallLevel, $g_aiFilterMaxMortarLevel, $eWeakMortar, $performSearch, $g_abFilterMaxMortarEnable, $bForceCaptureRegion)
+	$aAirDefenseResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsAirDefenseDir, $townHallLevel, $g_aiFilterMaxAirDefenseLevel, $eWeakAirDefense, $performSearch, $g_abFilterMaxAirDefenseEnable, $bForceCaptureRegion)
 
 	; Fill the array that will be returned with the various results, only store the results if its a valid array
 	For $i = 1 To UBound($aResult) - 1

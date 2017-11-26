@@ -137,7 +137,8 @@ Func InitMEmu($bCheckOnly = False)
 		Return False
 	EndIf
 
-	If FileExists($MEmu_Path & "adb.exe") = 0 Then
+	Local $sPreferredADB = FindPreferredAdbPath()
+	If $sPreferredADB = "" And FileExists($MEmu_Path & "adb.exe") = 0 Then
 		If Not $bCheckOnly Then
 			SetLog("Serious error has occurred: Cannot find " & $g_sAndroidEmulator & ":", $COLOR_ERROR)
 			SetLog($MEmu_Path & "adb.exe", $COLOR_ERROR)
@@ -168,7 +169,7 @@ Func InitMEmu($bCheckOnly = False)
 		EndIf
 		; update global variables
 		$g_sAndroidProgramPath = $MEmu_Path & "MEmu.exe"
-		$g_sAndroidAdbPath = FindPreferredAdbPath()
+		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $MEmu_Path & "adb.exe"
 		$g_sAndroidVersion = $MEmuVersion
 		$__MEmu_Path = $MEmu_Path

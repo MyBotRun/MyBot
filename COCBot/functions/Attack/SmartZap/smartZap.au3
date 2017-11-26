@@ -110,7 +110,7 @@ Func smartZap($minDE = -1)
 			, ["Donated", $eLSpell, -1, -1, 0] _
 			, ["Donated", $eESpell, -1, -1, 0]]
 	Local $bZapDrills = True
-	
+
 	; If smartZap is not checked, exit.
 	If $g_bDebugSmartZap = True Then SetLog("$g_bSmartZapEnable = " & $g_bSmartZapEnable & " | $g_bNoobZap = " & $g_bNoobZap, $COLOR_DEBUG)
 	If $g_bSmartZapEnable = False Then Return $performedZap
@@ -176,7 +176,7 @@ Func smartZap($minDE = -1)
 		; Offset the drill level based on town hall level
 		$drillLvlOffset = getDrillOffset()
 		If $g_bDebugSmartZap = True Then SetLog("Drill Level Offset is: " & Number($drillLvlOffset), $COLOR_DEBUG)
-	
+
 		; Offset the number of spells based on town hall level
 		$spellAdjust = getSpellOffset()
 		If $g_bDebugSmartZap = True Then SetLog("Spell Adjust is: " & Number($spellAdjust), $COLOR_DEBUG)
@@ -240,7 +240,7 @@ Func smartZap($minDE = -1)
 		Else
 			If $g_bDebugSmartZap = True Then SetLog("$g_iSearchDark = " & Number($g_iSearchDark) & " | $g_iSmartZapMinDE = " & Number($g_iSmartZapMinDE), $COLOR_DEBUG)
 		EndIf
-	
+
 		If $g_bDebugSmartZap = True Then
 			SetLog("$g_iSmartZapExpectedDE| Expected DE value:" & Number($g_iSmartZapExpectedDE), $COLOR_DEBUG)
 			SetLog("$g_abStopAtkNoLoot1Enable[$DB] = " & $g_abStopAtkNoLoot1Enable[$DB] & ", $g_aiStopAtkNoLoot1Time[$DB] = " & $g_aiStopAtkNoLoot1Time[$DB] & "s", $COLOR_DEBUG)
@@ -250,7 +250,7 @@ Func smartZap($minDE = -1)
 	If $bZapDrills Then
 		; Get Drill locations and info
 		Local $aDarkDrills = drillSearch()
-	
+
 		; Get the number of drills
 		If UBound($aDarkDrills) = 0 Then
 			SetLog("No drills found!", $COLOR_INFO)
@@ -258,9 +258,9 @@ Func smartZap($minDE = -1)
 		Else
 			SetLog(" - Number of Dark Elixir Drills: " & UBound($aDarkDrills), $COLOR_INFO)
 		EndIf
-	
+
 		_ArraySort($aDarkDrills, 1, 0, 0, 3)
-	
+
 		Local $itotalStrikeGain = 0
 	EndIf
 
@@ -509,8 +509,8 @@ Func smartZap($minDE = -1)
 	Else
 		Return $performedZap
 	EndIf
-	
-	If _CheckPixel($aWonOneStar, True) Then 
+
+	If _CheckPixel($aWonOneStar, True) Then
 		SetLog("One Star already reached.", $COLOR_INFO)
 		Return $performedZap
 	EndIf
@@ -529,7 +529,7 @@ Func smartZap($minDE = -1)
 
 	Local $iPercentageNeeded = 50 - getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)
 	SetLog("Percentage needed: " & $iPercentageNeeded, $COLOR_INFO)
-	
+
 	_ArrayDelete($aSpells, 2)
 	Local $aEasyPrey = easyPreySearch()
 	If UBound($aEasyPrey) = 0 Then
@@ -564,8 +564,8 @@ Func smartZap($minDE = -1)
 		_ArrayDelete($aEasyPrey, 0)
 		If _Sleep(6000) Then Return
 	Wend
-	
-	If _CheckPixel($aWonOneStar, True) Then 
+
+	If _CheckPixel($aWonOneStar, True) Then
 		SetLog("Hooray, One Star reached, we have won!", $COLOR_INFO)
 	EndIf
 	Return $performedZap
@@ -593,10 +593,8 @@ EndFunc   ;==>zapBuilding
 
 Func ReCheckDrillExist($x, $y)
 	_CaptureRegion2($x - 25, $y - 25, $x + 25, $y + 25)
-	Local $directory = @ScriptDir & "\imgxml\Storages\Drills"
-	Local $Maxpositions = 1
 
-	Local $aResult = multiMatches($directory, $Maxpositions, "FV", "FV", "", 0, 1000, False) ; Setting Force Captureregion to false, else it will recapture the whole screen, finding any drill
+	Local $aResult = multiMatches($g_sImgSearchDrill, 1, "FV", "FV", "", 0, 1000, False) ; Setting Force Captureregion to false, else it will recapture the whole screen, finding any drill
 
 	If UBound($aResult) > 1 Then
 		If $g_bDebugSmartZap = True Then SetLog("ReCheckDrillExist: Yes| " & UBound($aResult), $COLOR_SUCCESS)

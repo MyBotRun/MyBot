@@ -52,6 +52,7 @@ Func BotDetectFirstTime()
 		Setlog("Warning: TownHall level below 6 NOT RECOMMENDED!", $COLOR_ERROR)
 		Setlog("Proceed with caution as errors may occur.", $COLOR_ERROR)
 	EndIf
+	If $g_iTownHallLevel < 2 Or ($g_aiTownHallPos[1] = "" Or $g_aiTownHallPos[1] = -1) Then LocateTownHall()
 
 	;If _Sleep($DELAYBOTDETECT1) Then Return
 	;ClanLevel()

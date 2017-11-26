@@ -5,10 +5,25 @@ List of Supported Android Emulator
 Newer versions of Android Emulators listed here might work.
 The once listed here have been tested and do work.
 
+Nox
+===
+http://en.bignox.com/
+Versions 6.0.0, 5.2.1.0, 5.1.0.0, 5.0.0.1, 5.0.0.0, 3.8.1.3, 3.8.0.x, 3.7.6.x, 3.7.5.1, 3.7.5, 3.7.3, 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.3.0, 3.1.0, 3.0.0
+MyBot Command Line Key: Nox
+Default Instance Key: nox
+Second Instance Key:  Nox_1
+
+Known issues/bugs: Only in low computer screen resolutions and when Android Window doesn't have android screen size of 860x732
+due to different window size, MyBot resizing fails for any version. Bot set Nox to fixed size to avoid any resize issues.
+Since 3.3.0 Nox support also DirectX that can be used for faster Screen-Capture. Nox prior to 3.3.0 in docked mode supports only
+mouse click when using mouse, click and drop to move objects does not work. Newer versions since 3.7.3 support setting of
+framerates and 20 fps or lower significantly reduce CPU load.
+Nox 6.0.0.0 has issues with CoC (it crashes) and only runs stable with Lollipop Android 5.1 image.
+
 MEmu
 ====
 http://www.memuplay.com/
-Versions 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1
@@ -18,7 +33,7 @@ Known issues/bugs: None
 BlueStacks
 ==========
 http://www.bluestacks.com/
-Version 3.7.x, 2.7.x, 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x, 0.9.x, 0.8.x
+Version 3.50.63.2536, 3.7.x, 2.7.x, 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x, 0.9.x, 0.8.x
 MyBot Command Line Key (0.8.x - 0.11.x): BlueStacks
 MyBot Command Line Key (2.x/3.x): BlueStacks2
 Default Instance Key: Android
@@ -37,6 +52,19 @@ Default Instance Key: KOPLAYER
 Second Instance Key:  KOPLAYER_1
 
 Known issues/bugs: None
+
+iTools AVM
+==========
+http://pro.itools.cn/simulate/
+Version 2.0.8.9, 2.0.7.9, 2.0.6.8
+MyBot Command Line Key: iTools
+Default Instance Key: iToolsVM
+Second Instance Key:  iToolsVM_01
+
+Known issues/bugs: Background mode only supported when iTools running in DirectX mode.
+Application is in Chinese and Android also. You can change Android language, but will not be saved.
+Tampering guestproperties and making the vbox VirtualBox file somehow read-only can work, see:
+https://mybot.run/forums/index.php?/topic/26023-itools-avm-support/
 
 Droid4X
 =======
@@ -65,33 +93,6 @@ Window focus get changed a lot by LeapDroid, to fix this install custom qt4 libr
 https://mybot.run/forums/index.php?/topic/22912-new-leapdroid-support/
 Installation of BlueStacks and LeapDroid at the same time is not advised, as LeapDroid ADB device name is same as BlueStacks.
 You must change vm1 ADB port with command line, e.g. "C:\Program Files\LeapDroid\vboxmanage" guestproperty set vm1 adb_port 5510
-
-iTools AVM
-==========
-http://pro.itools.cn/simulate/
-Version 2.0.8.9, 2.0.7.9, 2.0.6.8
-MyBot Command Line Key: iTools
-Default Instance Key: iToolsVM
-Second Instance Key:  iToolsVM_01
-
-Known issues/bugs: Background mode only supported when iTools running in DirectX mode.
-Application is in Chinese and Android also. You can change Android language, but will not be saved.
-Tampering guestproperties and making the vbox VirtualBox file somehow read-only can work, see:
-https://mybot.run/forums/index.php?/topic/26023-itools-avm-support/
-
-Nox
-===
-http://en.bignox.com/
-Versions 5.0.0.1, 5.0.0.0, 3.8.1.3, 3.8.0.x, 3.7.6.x, 3.7.5.1, 3.7.5, 3.7.3, 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.3.0, 3.1.0, 3.0.0
-MyBot Command Line Key: Nox
-Default Instance Key: nox
-Second Instance Key:  Nox_1
-
-Known issues/bugs: Only in low computer screen resolutions and when Android Window doesn't have android screen size of 860x732
-due to different window size, MyBot resizing fails for any version. Bot set Nox to fixed size to avoid any resize issues.
-Since 3.3.0 Nox support also DirectX that can be used for faster Screen-Capture. Nox prior to 3.3.0 in docked mode supports only
-mouse click when using mouse, click and drop to move objects does not work. Newer versions since 3.7.3 support setting of
-framerates and 20 fps or lower significantly reduce CPU load.
 
 
 MyBot Feature & Functions Matrix (not complete yet!)

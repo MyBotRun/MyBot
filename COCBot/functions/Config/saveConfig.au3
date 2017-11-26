@@ -46,7 +46,13 @@ Func SaveProfileConfig($sIniFile = Default, $bForceWrite = False)
 	If $bForceWrite Or IniRead($sIniFile, "general", "globalthreads", "-") = "-" Then
 		IniWrite($sIniFile, "general", "globalthreads", $g_iGlobalThreads)
 	EndIf
+	SaveProfileConfigAdbPath($sIniFile)
 EndFunc   ;==>SaveProfileConfig
+
+Func SaveProfileConfigAdbPath($sIniFile = Default, $sAdbPath = $g_sAndroidAdbPath)
+	If $sIniFile = Default Then $sIniFile = $g_sProfilePath & "\profile.ini"
+	IniWrite($sIniFile, "general", "adb.path", $sAdbPath)
+EndFunc   ;==>SaveProfileConfigAdbPath
 
 Func SaveWeakBaseStats()
 	_Ini_Clear()
@@ -259,6 +265,7 @@ Func SaveConfig_Android()
 	_Ini_Add("android", "emulator", $g_sAndroidEmulator)
 	_Ini_Add("android", "instance", $g_sAndroidInstance)
 	_Ini_Add("android", "reboot.hours", $g_iAndroidRebootHours)
+	_Ini_Add("android", "close", ($g_bAndroidCloseWithBot ? "1" : "0"))
 
 EndFunc   ;==>SaveConfig_Android
 
@@ -317,12 +324,12 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "ChkCollectBuildersBase", $g_bChkCollectBuilderBase ? 1 : 0)
 	_Ini_Add("other", "ChkStartClockTowerBoost", $g_bChkStartClockTowerBoost ? 1 : 0)
 	_Ini_Add("other", "ChkCTBoostBlderBz", $g_bChkCTBoostBlderBz ? 1 : 0)
-	_Ini_Add("other", "g_chkBBSuggestedUpgrades", $g_ichkBBSuggestedUpgrades)
-	_Ini_Add("other", "g_chkBBSuggestedUpgradesIgnoreGold", $g_ichkBBSuggestedUpgradesIgnoreGold)
-	_Ini_Add("other", "g_chkBBSuggestedUpgradesIgnoreElixir", $g_ichkBBSuggestedUpgradesIgnoreElixir)
-	_Ini_Add("other", "g_chkBBSuggestedUpgradesIgnoreHall", $g_ichkBBSuggestedUpgradesIgnoreHall)
+	_Ini_Add("other", "ChkBBSuggestedUpgrades", $g_iChkBBSuggestedUpgrades)
+	_Ini_Add("other", "ChkBBSuggestedUpgradesIgnoreGold", $g_iChkBBSuggestedUpgradesIgnoreGold)
+	_Ini_Add("other", "ChkBBSuggestedUpgradesIgnoreElixir", $g_iChkBBSuggestedUpgradesIgnoreElixir)
+	_Ini_Add("other", "ChkBBSuggestedUpgradesIgnoreHall", $g_iChkBBSuggestedUpgradesIgnoreHall)
 
-	_Ini_Add("other", "g_chkPlacingNewBuildings", $g_ichkPlacingNewBuildings)
+	_Ini_Add("other", "ChkPlacingNewBuildings", $g_iChkPlacingNewBuildings)
 EndFunc   ;==>SaveConfig_600_6
 
 Func SaveConfig_600_9()
@@ -366,6 +373,10 @@ Func SaveConfig_600_12()
 			$sIniName = "CustomA"
 		ElseIf $i = $eCustomB Then
 			$sIniName = "CustomB"
+		ElseIf $i = $eCustomC Then
+			$sIniName = "CustomC"
+		ElseIf $i = $eCustomD Then
+			$sIniName = "CustomD"
 		EndIf
 
 		_Ini_Add("donate", "chkDonate" & $sIniName, $g_abChkDonateTroop[$i] ? 1 : 0)
@@ -389,6 +400,10 @@ Func SaveConfig_600_12()
 		_Ini_Add("donate", "txtDonateCustomA" & $i + 1, $g_aiDonateCustomTrpNumA[$i][1])
 		_Ini_Add("donate", "cmbDonateCustomB" & $i + 1, $g_aiDonateCustomTrpNumB[$i][0])
 		_Ini_Add("donate", "txtDonateCustomB" & $i + 1, $g_aiDonateCustomTrpNumB[$i][1])
+		_Ini_Add("donate", "cmbDonateCustomC" & $i + 1, $g_aiDonateCustomTrpNumC[$i][0])
+		_Ini_Add("donate", "txtDonateCustomC" & $i + 1, $g_aiDonateCustomTrpNumC[$i][1])
+		_Ini_Add("donate", "cmbDonateCustomD" & $i + 1, $g_aiDonateCustomTrpNumD[$i][0])
+		_Ini_Add("donate", "txtDonateCustomD" & $i + 1, $g_aiDonateCustomTrpNumD[$i][1])
 	Next
 
 	_Ini_Add("donate", "chkExtraAlphabets", $g_bChkExtraAlphabets ? 1 : 0)
@@ -431,16 +446,16 @@ EndFunc   ;==>SaveConfig_600_16
 Func SaveConfig_auto()
 	ApplyConfig_auto(GetApplyConfigSaveAction())
 	; Auto Upgrade
-	_Ini_Add("Auto Upgrade", "chkAutoUpgrade", $g_ichkAutoUpgrade)
+	_Ini_Add("Auto Upgrade", "ChkAutoUpgrade", $g_iChkAutoUpgrade)
 	For $i = 0 To 12
-		_Ini_Add("Auto Upgrade", "chkUpgradesToIgnore[" & $i & "]", $g_ichkUpgradesToIgnore[$i])
+		_Ini_Add("Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i])
 	Next
 	For $i = 0 To 2
-		_Ini_Add("Auto Upgrade", "chkResourcesToIgnore[" & $i & "]", $g_ichkResourcesToIgnore[$i])
+		_Ini_Add("Auto Upgrade", "ChkResourcesToIgnore[" & $i & "]", $g_iChkResourcesToIgnore[$i])
 	Next
-	_Ini_Add("Auto Upgrade", "SmartMinGold", $g_iSmartMinGold)
-	_Ini_Add("Auto Upgrade", "SmartMinElixir", $g_iSmartMinElixir)
-	_Ini_Add("Auto Upgrade", "SmartMinDark", $g_iSmartMinDark)
+	_Ini_Add("Auto Upgrade", "SmartMinGold", $g_iTxtSmartMinGold)
+	_Ini_Add("Auto Upgrade", "SmartMinElixir", $g_iTxtSmartMinElixir)
+	_Ini_Add("Auto Upgrade", "SmartMinDark", $g_iTxtSmartMinDark)
 EndFunc   ;==>SaveConfig_auto
 
 Func SaveConfig_600_17()
@@ -1005,7 +1020,9 @@ Func SaveConfig_600_52_1()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
 	ApplyConfig_600_52_1(GetApplyConfigSaveAction())
 	_Ini_Add("other", "ChkUseQTrain", $g_bQuickTrainEnable ? 1 : 0)
-	_Ini_Add("troop", "QuickTrainArmyNum", $g_iQuickTrainArmyNum)
+	_Ini_Add("troop", "QuickTrainArmy1", $g_bQuickTrainArmy[0] ? 1 : 0)
+	_Ini_Add("troop", "QuickTrainArmy2", $g_bQuickTrainArmy[1] ? 1 : 0)
+	_Ini_Add("troop", "QuickTrainArmy3", $g_bQuickTrainArmy[2] ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_52_1
 
 Func SaveConfig_600_52_2()

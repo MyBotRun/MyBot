@@ -155,8 +155,9 @@ Func InitNox($bCheckOnly = False)
 	Local $AdbFile = $path & "nox_adb.exe"
 	Local $VBoxFile = $RtPath & "BigNoxVMMgr.exe"
 
-	Local $Files[3] = [$NoxFile, $AdbFile, $VBoxFile]
-	Local $File
+	Local $Files = [$NoxFile, $AdbFile, $VBoxFile]
+	Local $sPreferredADB = FindPreferredAdbPath()
+	If $sPreferredADB Then _ArrayDelete($Files, 1)
 
 	For $File In $Files
 		If FileExists($File) = False Then
@@ -182,7 +183,7 @@ Func InitNox($bCheckOnly = False)
 		EndIf
 		; update global variables
 		$g_sAndroidProgramPath = $NoxFile
-		$g_sAndroidAdbPath = FindPreferredAdbPath()
+		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = GetNoxAdbPath()
 		$g_sAndroidVersion = $Version
 		$__Nox_Path = $path

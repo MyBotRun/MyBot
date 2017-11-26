@@ -37,7 +37,7 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 		If _Sleep($DELAYCOLLECT2) Then Return
 
 		Local $sCTCoords, $aCTCoords, $aCTBoost
-		$sCTCoords = findImage("ClockTowerAvailable", @ScriptDir & "\imgxml\Resources\BuildersBase\ClockTower\ClockTowerAvailable*.xml", "FV", 1, True) ; Search for Clock Tower
+		$sCTCoords = findImage("ClockTowerAvailable", $g_sImgStartCTBoost, "FV", 1, True) ; Search for Clock Tower
 		If $sCTCoords <> "" Then
 			$aCTCoords = StringSplit($sCTCoords, ",", $STR_NOCOUNT)
 			ClickP($aCTCoords)

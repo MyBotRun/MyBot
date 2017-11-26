@@ -148,6 +148,7 @@ Func btnRenameConfirm()
 			SetLog("If you are seeing this log message there is something wrong.", $COLOR_ERROR)
 	EndSwitch
 EndFunc   ;==>btnRenameConfirm
+
 Func cmbBotCond()
 	If _GUICtrlComboBox_GetCurSel($g_hCmbBotCond) = 15 Then
 		If _GUICtrlComboBox_GetCurSel($g_hCmbHoursStop) = 0 Then _GUICtrlComboBox_SetCurSel($g_hCmbHoursStop, 1)
@@ -162,9 +163,11 @@ Func chkBotStop()
 	If GUICtrlRead($g_hChkBotStop) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hCmbBotCommand, $GUI_ENABLE)
 		GUICtrlSetState($g_hCmbBotCond, $GUI_ENABLE)
+		_GUI_Value_STATE("ENABLE", $g_hTxtRestartGold & "#" & $g_hTxtRestartElixir & "#" & $g_hTxtRestartDark)
 	Else
 		GUICtrlSetState($g_hCmbBotCommand, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbBotCond, $GUI_DISABLE)
+		_GUI_Value_STATE("DISABLE", $g_hTxtRestartGold & "#" & $g_hTxtRestartElixir & "#" & $g_hTxtRestartDark)
 	EndIf
 EndFunc   ;==>chkBotStop
 
@@ -234,7 +237,7 @@ Func btnLocateTownHall()
 	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
 	Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Locating_your_TH", "If you locating your TH because you upgraded,") & @CRLF & _
 			GetTranslatedFileIni("MBR Popups", "Must_restart_bot", "then you must restart bot!!!") & @CRLF & @CRLF & _
-			GetTranslatedFileIni("MBR Popups", "OK_to_restart_bot", "Click OK to restart bot, ") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", "Or Click Cancel to exit") & @CRLF
+			GetTranslatedFileIni("MBR Popups", "OK_to_restart_bot", "Click OK to restart bot,") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", "Or Click Cancel to exit") & @CRLF
 	Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Close_Bot", "Close Bot Please!"), $stext, 120)
 	If $g_bDebugSetlog Then Setlog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
 	If $MsgBox = 1 Then
@@ -486,24 +489,25 @@ Func TxtMaxTrophy()
 	EndIf
 EndFunc   ;==>TxtMaxTrophy
 
- Func chkTrophyHeroes()
+Func chkTrophyHeroes()
 	If  GUICtrlRead($g_hChkTrophyHeroes) = $GUI_CHECKED  Then
-	   GUICtrlSetState($g_hLblTrophyHeroesPriority, $GUI_ENABLE)
-	   GUICtrlSetState($g_hCmbTrophyHeroesPriority, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblTrophyHeroesPriority, $GUI_ENABLE)
+		GUICtrlSetState($g_hCmbTrophyHeroesPriority, $GUI_ENABLE)
 	Else
-	   GUICtrlSetState($g_hLblTrophyHeroesPriority, $GUI_DISABLE)
-	   GUICtrlSetState($g_hCmbTrophyHeroesPriority, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblTrophyHeroesPriority, $GUI_DISABLE)
+		GUICtrlSetState($g_hCmbTrophyHeroesPriority, $GUI_DISABLE)
 	EndIf
-
- EndFunc   ;==>chkTrophyHeroes
+EndFunc   ;==>chkTrophyHeroes
 
 Func ChkCollect()
 	If  GUICtrlRead($g_hChkCollect) = $GUI_CHECKED  Then
 		GUICtrlSetState($g_hChkTreasuryCollect, $GUI_ENABLE)
 	Else
+		GUICtrlSetState($g_hChkTreasuryCollect, $GUI_UNCHECKED)
 		GUICtrlSetState($g_hChkTreasuryCollect, $GUI_DISABLE)
 	EndIf
-EndFunc		;==> ChkCollect
+	ChkTreasuryCollect()
+EndFunc   ;==>ChkCollect
 
 Func ChkTreasuryCollect()
 	If  GUICtrlRead($g_hChkTreasuryCollect) = $GUI_CHECKED  Then
@@ -515,7 +519,7 @@ Func ChkTreasuryCollect()
 		GUICtrlSetState($g_hTxtTreasuryElixir, $GUI_DISABLE)
 		GUICtrlSetState($g_hTxtTreasuryDark, $GUI_DISABLE)
 	EndIf
-EndFunc		;==> ChkTreasuryCollect
+EndFunc   ;==>ChkTreasuryCollect
 
 Func chkStartClockTowerBoost()
 	If GUICtrlRead($g_hChkStartClockTowerBoost) = $GUI_CHECKED Then

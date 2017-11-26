@@ -26,24 +26,22 @@ Global $g_hGUI_ACTIVEBASE_TAB = 0, $g_hGUI_ACTIVEBASE_TAB_ITEM1 = 0, $g_hGUI_ACT
 
 Func CreateAttackSearchActiveBase()
 
-   $g_hGUI_ACTIVEBASE = _GUICreate("", $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_SEARCH)
-   ;GUISetBkColor($COLOR_WHITE, $g_hGUI_ACTIVEBASE)
+	$g_hGUI_ACTIVEBASE = _GUICreate("", $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_SEARCH)
+	;GUISetBkColor($COLOR_WHITE, $g_hGUI_ACTIVEBASE)
 
-   ;creating subchilds first!
-   CreateAttackSearchActiveBaseStandard()
-   CreateAttackSearchActiveBaseScripted()
-   GUISwitch($g_hGUI_ACTIVEBASE)
+	;creating subchilds first!
+	CreateAttackSearchActiveBaseStandard()
+	CreateAttackSearchActiveBaseScripted()
 
-   $g_hGUI_ACTIVEBASE_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
-   $g_hGUI_ACTIVEBASE_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_01", -1))
-   CreateAttackSearchActiveBaseSearch()
+	GUISwitch($g_hGUI_ACTIVEBASE)
+	$g_hGUI_ACTIVEBASE_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
+	$g_hGUI_ACTIVEBASE_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_01", -1))
+		CreateAttackSearchActiveBaseSearch()
+	$g_hGUI_ACTIVEBASE_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_02", -1))
+		CreateAttackSearchActiveBaseAttack()
+	$g_hGUI_ACTIVEBASE_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_03", -1))
+		CreateAttackSearchActiveBaseEndBattle()
+	GUICtrlCreateTabItem("")
 
-   $g_hGUI_ACTIVEBASE_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_02", -1))
-   CreateAttackSearchActiveBaseAttack()
-
-   $g_hGUI_ACTIVEBASE_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_02_STab_0X_STab_03", -1))
-   CreateAttackSearchActiveBaseEndBattle()
-
-   ;GUISetState()
-EndFunc
+EndFunc   ;==>CreateAttackSearchActiveBase
 

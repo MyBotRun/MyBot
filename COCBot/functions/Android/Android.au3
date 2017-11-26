@@ -51,7 +51,7 @@ Func InitAndroidConfig($bRestart = False)
 	$g_iAndroidWindowWidth = $g_avAndroidAppConfig[$g_iAndroidConfig][7] ; Expected Width of android window
 	$g_iAndroidWindowHeight = $g_avAndroidAppConfig[$g_iAndroidConfig][8] ; Expected height of android window
 	$g_iAndroidAdbSuCommand = "" ; Android path to su
-	$g_sAndroidAdbPath = "" ; Path to executable HD-Adb.exe or adb.exe
+	;$g_sAndroidAdbPath = "" ; Path to executable HD-Adb.exe or adb.exe
 	$g_sAndroidAdbDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][10] ; full device name ADB connects to
 	$g_iAndroidSupportFeature = $g_avAndroidAppConfig[$g_iAndroidConfig][11] ; 0 = Not available, 1 = Available, 2 = Available using ADB (experimental!)
 	$g_sAndroidShellPrompt = $g_avAndroidAppConfig[$g_iAndroidConfig][12] ; empty string not available, '# ' for rooted and '$ ' for not rooted android
@@ -68,9 +68,9 @@ Func InitAndroidConfig($bRestart = False)
 	$g_bAndroidBackgroundLaunched = False ; True when Android was launched in headless mode without a window
 	$g_bUpdateAndroidWindowTitle = False ; If Android has always same title (like LeapDroid) instance name will be added
 	; screencap might have disabled backgroundmode
-	If $g_bAndroidAdbScreencap And IsDeclared("g_hChkBackground") Then
-		; when GUI is initialized, update background checkbox
-		chkBackground()
+	If $g_bAndroidAdbScreencap Then
+		; update background checkbox
+		UpdateChkBackground()
 	EndIf
 
 	UpdateHWnD($g_hAndroidWindow, False) ; Ensure $g_sAppClassInstance is properly set
@@ -267,7 +267,7 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 			; Restore original Android Window position
 			If $g_bAndroidEmbedded = False And IsArray($aPos) = 1 And ($g_bIsHidden = False Or ($aPos[0] > -30000 Or $aPos[1] > -30000)) Then
 				SetDebugLog("Move Android Window '" & $g_sAndroidTitle & "' to position: " & $g_iAndroidPosX & ", " & $g_iAndroidPosY)
-				WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+				HideAndroidWindow(False, Default, Default, "WinGetAndroidHandle:1", 0)
 				$aPos[0] = $g_iAndroidPosX
 				$aPos[1] = $g_iAndroidPosY
 			EndIf
@@ -289,7 +289,7 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 			EndIf
 			If $g_bIsHidden = True And ($aPos[0] > -30000 Or $aPos[1] > -30000) Then
 				; rehide Android
-				WinMove($g_hAndroidWindow, "", -32000, -32000)
+				HideAndroidWindow(True, Default, Default, "WinGetAndroidHandle:2")
 			EndIf
 		EndIf
 		$g_bWinGetAndroidHandleActive = False
@@ -700,14 +700,25 @@ Func DetectInstalledAndroid()
 	SetDebugLog("Found no installed Android Emulator")
 EndFunc   ;==>DetectInstalledAndroid
 
-; Find preferred Adb Path. Priority is MEmu, Droid4X. If non found, empty string is returned.
+; Find preferred Adb Path. Current Android ADB is used and saved in profile.ini and shared across instances.
 Func FindPreferredAdbPath()
 	Local $adbPath, $i
-	For $i = 0 To UBound($g_avAndroidAppConfig) - 1
-		$adbPath = Execute("Get" & $g_avAndroidAppConfig[$i][0] & "AdbPath()")
-		If $adbPath <> "" Then Return $adbPath
-	Next
-	Return ""
+	If FileExists($g_sAndroidAdbPath) Then
+		Return $g_sAndroidAdbPath
+	EndIf
+	$adbPath = Execute("Get" & $g_sAndroidEmulator & "AdbPath()")
+
+	If $adbPath = "" Then
+		; first first of support Android
+		For $i = 0 To UBound($g_avAndroidAppConfig) - 1
+			$adbPath = Execute("Get" & $g_avAndroidAppConfig[$i][0] & "AdbPath()")
+			If $adbPath <> "" Then ExitLoop
+		Next
+	EndIf
+	If $adbPath <> "" Then
+		SaveProfileConfigAdbPath(Default, $adbPath) ; ensure profile.ini is saved as quickly as possible with new ADB path
+	EndIf
+	Return $adbPath
 EndFunc   ;==>FindPreferredAdbPath
 
 Func CompareAndUpdate(ByRef $UpdateWhenDifferent, Const $New)
@@ -1503,6 +1514,10 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 			If $pathFound = False Then
 				SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
 			EndIf
+
+			; update $g_iAndroidSystemAPI ; getprop ro.build.version.sdk
+			$g_iAndroidVersionAPI = Int(AndroidAdbSendShellCommand("getprop ro.build.version.sdk", Default, $wasRunState, False))
+			SetDebugLog("Android Version API = " & $g_iAndroidVersionAPI)
 		EndIf
 		If $g_bAndroidAdbInstance = True Then
 			$s = ""
@@ -2350,7 +2365,6 @@ Func AndroidMoveMouseAnywhere()
 		Local $data2 = DllStructCreate("byte[" & DllStructGetSize($data) & "]", DllStructGetPtr($data))
 
 		Local $iWritten = 0
-		Local $sleep = ""
 		Local $hFileOpen = _WinAPI_CreateFile($hostPath & $Filename, 1, 4)
 		If $hFileOpen = 0 Then
 			Local $error = _WinAPI_GetLastError()
@@ -2361,7 +2375,7 @@ Func AndroidMoveMouseAnywhere()
 	EndIf
 
 	$g_bSilentSetLog = True
-	AndroidAdbSendShellCommand("dd if=""" & $androidPath & $Filename & """ of=" & $g_sAndroidMouseDevice & " obs=" & $iToWrite & ">/dev/null 2>&1" & $sleep, Default)
+	AndroidAdbSendShellCommand("dd if=""" & $androidPath & $Filename & """ of=" & $g_sAndroidMouseDevice & " obs=" & $iToWrite & ">/dev/null 2>&1", Default)
 	If BitAND($g_iAndroidSecureFlags, 2) = 2 Then
 		; delete file
 		FileDelete($hostPath & $Filename)
@@ -2985,10 +2999,11 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True)
 	Return 0
 EndFunc   ;==>GetAndroidProcessPID
 
-Func AndroidToFront($hHWndAfter = $HWND_TOPMOST, $sSource = "Unknown")
+Func AndroidToFront($hHWndAfter = Default, $sSource = "Unknown")
+	If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
 	SetDebugLog("AndroidToFront: Source " & $sSource)
 	WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $hHWndAfter, 0, False)
-	If $hHWndAfter = $HWND_TOPMOST Then WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
+	If $g_bChkBackgroundMode And ($hHWndAfter = $HWND_TOPMOST Or $hHWndAfter = $HWND_TOP) Then WinMove2(GetAndroidDisplayHWnD(), "", -1, -1, -1, -1, $HWND_NOTOPMOST, 0, False)
 EndFunc   ;==>AndroidToFront
 
 Func ShowAndroidWindow($hHWndAfter = Default, $bRestorePosAndActivateWindow = Default, $bFastCheck = Default, $sSource = "Unknown")
@@ -2996,7 +3011,6 @@ Func ShowAndroidWindow($hHWndAfter = Default, $bRestorePosAndActivateWindow = De
 EndFunc   ;==>ShowAndroidWindow
 
 Func HideAndroidWindow($bHide = True, $bRestorePosAndActivateWhenShow = Default, $bFastCheck = Default, $sSource = "Unknown", $hHWndAfter = Default)
-	If $bRestorePosAndActivateWhenShow = Default Then $bRestorePosAndActivateWhenShow = True
 	If $bFastCheck = Default Then $bFastCheck = True
 	If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
 	SetDebugLog("HideAndroidWindow: " & $bHide & ", " & $bRestorePosAndActivateWhenShow & ", " & $bFastCheck & ", " & $sSource)
@@ -3013,15 +3027,22 @@ Func HideAndroidWindow($bHide = True, $bRestorePosAndActivateWhenShow = Default,
 	If $bHide = True Then
 		WinMove($g_hAndroidWindow, "", -32000, -32000)
 	ElseIf $bHide = False Then
-		If $bRestorePosAndActivateWhenShow Then
-			WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
-			WinActivate($g_hAndroidWindow)
-		Else
-			Local $a = WinGetPos($g_hAndroidWindow)
-			If UBound($a) > 1 And ($a[0] < -30000 Or $a[1] < -30000) Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
-			_WinAPI_ShowWindow($g_hAndroidWindow, @SW_SHOWNOACTIVATE)
-		EndIf
-		AndroidToFront($hHWndAfter, $sSource & "->HideAndroidWindow")
+		Switch $bRestorePosAndActivateWhenShow
+			Case True
+				; move and activate
+				WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+				WinActivate($g_hAndroidWindow)
+			Case False
+				; don't move, only when hidden
+				Local $a = WinGetPos($g_hAndroidWindow)
+				If UBound($a) > 1 And ($a[0] < -30000 Or $a[1] < -30000) Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+				_WinAPI_ShowWindow($g_hAndroidWindow, @SW_SHOWNOACTIVATE)
+			Case Default
+				; just move
+				Local $a = WinGetPos($g_hAndroidWindow)
+				If UBound($a) > 1 And ($a[0] <> $g_iAndroidPosX Or $a[1] <> $g_iAndroidPosY) Then WinMove($g_hAndroidWindow, "", $g_iAndroidPosX, $g_iAndroidPosY)
+		EndSwitch
+		If $hHWndAfter <> $g_hAndroidWindow Then AndroidToFront($hHWndAfter, $sSource & "->HideAndroidWindow")
 	EndIf
 	Execute("Hide" & $g_sAndroidEmulator & "Window($bHide, $hHWndAfter)")
 	SetError(0)
@@ -3102,6 +3123,11 @@ Func OpenAdbShell($bRunInitScript = True)
 			EndIf
 		Next
 	Until $hWnd <> 0 Or __TimerDiff($hTimer) > 3000
+	If $hWnd <> 0 Then
+		; update title with instance name
+		_WinAPI_SetWindowText($hWnd, "ADB Shell: " & $g_sAndroidEmulator & " (" & $g_sAndroidInstance & "), Device = " & $g_sAndroidAdbDevice)
+		_WinAPI_SetConsoleIcon($g_sLibIconPath, $eIcnGUI, $hWnd)
+	EndIf
 	If $hWnd <> 0 And $g_iAndroidAdbSuCommand <> "" Then
 		SetLog("Send Shell command: " & $g_iAndroidAdbSuCommand)
 		ControlSend($hWnd, "", "", $g_iAndroidAdbSuCommand & "{ENTER}")
@@ -3236,9 +3262,6 @@ Func UpdateAndroidBackgroundMode()
 			SetLog("Unsupported Android Background Mode " & $iMode, $COLOR_ERROR)
 	EndSwitch
 
-	If IsDeclared("g_hChkBackground") Then
-		; when GUI is initialized, update background checkbox
-		chkBackground()
-	EndIf
+	; update background checkbox
+	UpdateChkBackground()
 EndFunc   ;==>UpdateAndroidBackgroundMode
-

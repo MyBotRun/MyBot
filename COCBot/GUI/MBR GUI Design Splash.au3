@@ -25,7 +25,6 @@ Global $g_hSplashMutex = 0
 #include "MBR GUI Control Splash.au3"
 
 #Region Splash
-
 Func CreateSplashScreen($iSteps = Default)
 
 	Local $iGuiState = @SW_SHOWNOACTIVATE
@@ -96,5 +95,4 @@ Func CreateSplashScreen($iSteps = Default)
 	EndIf
 
 EndFunc   ;==>CreateSplashScreen
-
 #EndRegion Splash

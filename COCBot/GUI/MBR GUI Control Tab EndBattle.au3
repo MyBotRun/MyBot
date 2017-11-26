@@ -80,6 +80,54 @@ Func chkStopAtkABNoLoot2()
 	EndIf
 EndFunc   ;==>chkStopAtkABNoLoot2
 
+Func chkDBEndPercentHigher()
+	If GUICtrlRead($g_hChkDBEndPercentHigher) = $GUI_CHECKED Then
+		$g_abStopAtkPctHigherEnable[$DB] = True
+		GUICtrlSetState($g_hTxtDBPercentHigher, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblDBPercentHigherSec, $GUI_ENABLE)
+	Else
+		$g_abStopAtkPctHigherEnable[$DB] = False
+		GUICtrlSetState($g_hTxtDBPercentHigher, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblDBPercentHigherSec, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkDBEndPercentHigher
+
+Func chkDBEndPercentChange()
+	If GUICtrlRead($g_hChkDBEndPercentChange) = $GUI_CHECKED Then
+		$g_abStopAtkPctHigherEnable[$DB] = True
+		GUICtrlSetState($g_hTxtDBPercentChange, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblDBPercentChangeSec, $GUI_ENABLE)
+	Else
+		$g_abStopAtkPctHigherEnable[$DB] = False
+		GUICtrlSetState($g_hTxtDBPercentChange, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblDBPercentChangeSec, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkDBEndPercentChange
+
+Func chkABEndPercentHigher()
+	If GUICtrlRead($g_hChkABEndPercentHigher) = $GUI_CHECKED Then
+		$g_abStopAtkPctHigherEnable[$LB] = True
+		GUICtrlSetState($g_hTxtABPercentHigher, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblABPercentHigherSec, $GUI_ENABLE)
+	Else
+		$g_abStopAtkPctHigherEnable[$LB] = False
+		GUICtrlSetState($g_hTxtABPercentHigher, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblABPercentHigherSec, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkABEndPercentHigher
+
+Func chkABEndPercentChange()
+	If GUICtrlRead($g_hChkABEndPercentChange) = $GUI_CHECKED Then
+		$g_abStopAtkPctHigherEnable[$LB] = True
+		GUICtrlSetState($g_hTxtABPercentChange, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblABPercentChangeSec, $GUI_ENABLE)
+	Else
+		$g_abStopAtkPctHigherEnable[$LB] = False
+		GUICtrlSetState($g_hTxtABPercentChange, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblABPercentChangeSec, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkABEndPercentChange
+
 Func chkDESideEB()
 	If GUICtrlRead($g_hChkDESideEB) = $GUI_CHECKED Then
 		For $i = $g_hTxtDELowEndMin To $g_hLblDEEndAq

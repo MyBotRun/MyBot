@@ -133,6 +133,14 @@ Func InitiateLayout()
 EndFunc   ;==>InitiateLayout
 
 Func chkBackground()
+	If IsDeclared("g_hChkBackgroundMode") Then
+		UpdateChkBackground()
+		; update Android Window always on top
+		AndroidToFront(Default, "chkBackground")
+	EndIf
+EndFunc   ;==>chkBackground
+
+Func UpdateChkBackground()
 	If GUICtrlRead($g_hChkBackgroundMode) = $GUI_CHECKED Then
 		$g_bChkBackgroundMode = True
 		updateBtnHideState($GUI_ENABLE)
@@ -143,7 +151,7 @@ Func chkBackground()
 	If CheckDpiAwareness() Then
 		; DPI awareness changed
 	EndIf
-EndFunc   ;==>chkBackground
+EndFunc   ;==>UpdateChkBackground
 
 Func IsStopped()
 	If $g_bRunState Then Return False
@@ -218,27 +226,34 @@ Func reHide()
 	WinGetAndroidHandle()
 	If $g_bIsHidden And $g_hAndroidWindow <> 0 And Not $g_bAndroidEmbedded Then
 		SetDebugLog("Hide " & $g_sAndroidEmulator & " Window after restart")
-		Return WinMove($g_hAndroidWindow, "", -32000, -32000)
+		Local $Result = HideAndroidWindow(True, Default, Default, "reHide") ;WinMove($g_hAndroidWindow, "", -32000, -32000)
+		updateBtnHideState()
+		Return $Result
 	EndIf
 	Return 0
 EndFunc   ;==>reHide
 
 Func updateBtnHideState($newState = $GUI_ENABLE)
+	If $g_hBtnHide = 0 Then Return
 	Local $hideState = GUICtrlGetState($g_hBtnHide)
 	Local $newHideState = ($g_bAndroidEmbedded = True ? $GUI_DISABLE : $newState)
 	If $hideState <> $newHideState Then GUICtrlSetState($g_hBtnHide, $newHideState)
+	Local $sText
+	If $g_bIsHidden Then
+		$sText = GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_False", "Show")
+	Else
+		$sText = GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_True", "Hide")
+	EndIf
+	If GUICtrlRead($g_hBtnHide) <> $sText Then
+		; update text
+		GUICtrlSetData($g_hBtnHide, $sText)
+	EndIf
 EndFunc   ;==>updateBtnHideState
 
 Func btnHide()
-	If Not $g_bIsHidden Then
-		GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_False", "Show"))
-		$g_bIsHidden = True
-		HideAndroidWindow(True, Default, Default, "btnHide")
-	ElseIf $g_bIsHidden Then
-		GUICtrlSetData($g_hBtnHide, GetTranslatedFileIni("MBR GUI Control Bottom", "Func_btnHide_True", "Hide"))
-		$g_bIsHidden = False
-		HideAndroidWindow(False, Default, Default, "btnHide")
-	EndIf
+	$g_bIsHidden = Not $g_bIsHidden
+	HideAndroidWindow($g_bIsHidden, Default, Default, "btnHide")
+	updateBtnHideState()
 EndFunc   ;==>btnHide
 
 Func updateBtnEmbed()
