@@ -26,6 +26,7 @@ Func MBRFunc($Start = True)
 			SetDebugLog($g_sMBRLib & " opened.")
 			; set processing pool size immediately
 			setProcessingPoolSize($g_iGlobalThreads)
+			setMaxDegreeOfParallelism($g_iThreads)
 		Case False
 			DllClose($g_hLibMyBot)
 			;DllClose($g_hLibImgLoc)
@@ -53,6 +54,12 @@ EndFunc   ;==>_DllCallMyBot
 Func DllCallMyBot($sFunc, $sType1 = Default, $vParam1 = Default, $sType2 = Default, $vParam2 = Default, $sType3 = Default, $vParam3 = Default, $sType4 = Default, $vParam4 = Default, $sType5 = Default, $vParam5 = Default _
 		, $sType6 = Default, $vParam6 = Default, $sType7 = Default, $vParam7 = Default, $sType8 = Default, $vParam8 = Default, $sType9 = Default, $vParam9 = Default, $sType10 = Default, $vParam10 = Default)
 	If $g_bCloudsActive = False And ((BitAND($g_iAndroidSuspendModeFlags, 1) > 0 And ($g_bAttackActive Or $g_bVillageSearchActive)) Or BitAND($g_iAndroidSuspendModeFlags, 2) > 0) Then ; $g_bVillageSearchActive disabled as it would significantly increase re-connection error during search
+		Local $sFileOrFolder = Default
+		Switch $sFunc
+			Case "SearchMultipleTilesBetweenLevels", "FindTile"
+				$sFileOrFolder = $vParam2
+		EndSwitch
+		If $g_bDebugBetaVersion And $sFileOrFolder <> Default And StringInStr($sFileOrFolder, "\") And FileExists($sFileOrFolder) = 0 Then SetLog("Cannot access path: " & $sFileOrFolder, $COLOR_ERROR)
 		; suspend Android now
 		Local $bWasSuspended = SuspendAndroid()
 		Local $aResult = _DllCallMyBot($sFunc, $sType1, $vParam1, $sType2, $vParam2, $sType3, $vParam3, $sType4, $vParam4, $sType5, $vParam5, $sType6, $vParam6, $sType7, $vParam7, $sType8, $vParam8, $sType9, $vParam9, $sType10, $vParam10)

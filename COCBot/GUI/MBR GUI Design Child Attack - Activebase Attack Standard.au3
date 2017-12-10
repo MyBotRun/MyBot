@@ -19,6 +19,7 @@ Global $g_hCmbStandardDropOrderAB = 0, $g_hCmbStandardDropSidesAB = 0, $g_hCmbSt
 	   $g_hCmbSmartDeployAB = 0, $g_hChkAttackNearGoldMineAB = 0, $g_hChkAttackNearElixirCollectorAB = 0, $g_hChkAttackNearDarkElixirDrillAB = 0
 
 Global $g_hLblSmartDeployAB = 0, $g_hPicAttackNearDarkElixirDrillAB = 0
+Global $g_hBtnCustomDropOrderAB = 0
 
 Func CreateAttackSearchActiveBaseStandard()
 
@@ -111,6 +112,12 @@ Func CreateAttackSearchActiveBaseStandard()
 				_GUICtrlSetTip(-1, $sTxtTip)
 			$g_hPicAttackNearDarkElixirDrillAB = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDrill, $x + 20 , $y - 3, 24, 24)
 				_GUICtrlSetTip(-1, $sTxtTip)
+
+		$y += 40
+		$x = 98
+			$g_hBtnCustomDropOrderAB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "BtnCustomDropOrder", -1), $x, $y, 85, 25)
+				_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "BtnCustomDropOrder_Info_01", -1))
+				GUICtrlSetOnEvent(-1, "CustomDropOrder")
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 EndFunc   ;==>CreateAttackSearchActiveBaseStandard

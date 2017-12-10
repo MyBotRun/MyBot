@@ -157,7 +157,7 @@ Func GetVariable(Const $ImageToUse, Const $iIndex)
 	_CaptureRegion2(25, 375, 840, 548)
 
 	;Local $asResult = DllCallMybot($g_hLibImgLoc, "str", "FindTile", "handle", $g_hHBitmap2, "str", $ImageToUse, "str", "FV", "int", 1)
-	Local $asResult = DllCall($g_hLibImgLoc, "str", "FindTile", "handle", $g_hHBitmap2, "str", $ImageToUse, "str", "FV", "int", 1)
+	Local $asResult = DllCallMyBot("FindTile", "handle", $g_hHBitmap2, "str", $ImageToUse, "str", "FV", "int", 1)
 
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 

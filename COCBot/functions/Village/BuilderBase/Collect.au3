@@ -32,7 +32,7 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False)
 	Local $sFilename = ""
 	Local $aCollectXY, $t
 
-	Local $aResult = multiMatches($g_sImgCollectRessources, 0, "FV", "FV")
+	Local $aResult = multiMatches($g_sImgCollectRessourcesBB, 0, "FV", "FV")
 
 	If UBound($aResult) > 1 Then ; we have an array with data of images found
 		For $i = 1 To UBound($aResult) - 1  ; loop through array rows

@@ -718,3 +718,30 @@ Func CmbBullyMaxTH()
 	Local $iCmbValue = _GUICtrlComboBox_GetCurSel($g_hCmbBullyMaxTH) + 6
 	GUICtrlSetState($g_ahPicBullyMaxTH[$iCmbValue], $GUI_SHOW)
 EndFunc   ;==>CmbBullyMaxTH
+
+Func dbCheckAll()
+	If BitAND(GUICtrlRead($g_hChkDBActivateSearches), GUICtrlRead($g_hChkDBActivateTropies), GUICtrlRead($g_hChkDBActivateCamps), GUICtrlRead($g_hChkDBSpellsWait)) = $GUI_UNCHECKED Then
+		GUICtrlSetState($g_hChkDeadbase, $GUI_UNCHECKED)
+	Else
+		GUICtrlSetState($g_hChkDeadbase, $GUI_CHECKED)
+	EndIf
+	tabSEARCH()
+EndFunc   ;==>dbCheckAll
+
+Func abCheckAll()
+	If BitAND(GUICtrlRead($g_hChkABActivateSearches), GUICtrlRead($g_hChkABActivateTropies), GUICtrlRead($g_hChkABActivateCamps), GUICtrlRead($g_hChkABSpellsWait)) = $GUI_UNCHECKED Then
+		GUICtrlSetState($g_hChkActivebase, $GUI_UNCHECKED)
+	Else
+		GUICtrlSetState($g_hChkActivebase, $GUI_CHECKED)
+	EndIf
+	tabSEARCH()
+EndFunc   ;==>abCheckAll
+
+Func tsCheckAll()
+	If BitAND(GUICtrlRead($g_hChkTSActivateSearches), GUICtrlRead($g_hChkTSActivateTropies), GUICtrlRead($g_hChkTSActivateCamps)) = $GUI_UNCHECKED Then
+		GUICtrlSetState($g_hChkTHSnipe, $GUI_UNCHECKED)
+	Else
+		GUICtrlSetState($g_hChkTHSnipe, $GUI_CHECKED)
+	EndIf
+	tabSEARCH()
+EndFunc   ;==>tsCheckAll

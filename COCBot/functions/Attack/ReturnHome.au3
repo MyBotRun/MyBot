@@ -32,18 +32,18 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			WEnd
 			If IsAttackPage() Then smartZap() ; Check to see if we should zap the DE Drills
 			;If Heroes were not activated: Hero Ability activation before End of Battle to restore health
-			If ($g_bCheckKingPower = True Or $g_bCheckQueenPower = True Or $g_bCheckWardenPower = True) Then
+			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower) Then
 				;_CaptureRegion()
 				If _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False Then ; If not already at Return Homescreen
-					If $g_bCheckKingPower = True Then
+					If $g_bCheckKingPower Then
 						SetLog("Activating King's power to restore some health before EndBattle", $COLOR_INFO)
 						If IsAttackPage() Then SelectDropTroop($g_iKingSlot) ;If King was not activated: Boost King before EndBattle to restore some health
 					EndIf
-					If $g_bCheckQueenPower = True Then
+					If $g_bCheckQueenPower Then
 						SetLog("Activating Queen's power to restore some health before EndBattle", $COLOR_INFO)
 						If IsAttackPage() Then SelectDropTroop($g_iQueenSlot) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
 					EndIf
-					If $g_bCheckWardenPower = True Then
+					If $g_bCheckWardenPower Then
 						SetLog("Activating Warden's power to restore some health before EndBattle", $COLOR_INFO)
 						If IsAttackPage() Then SelectDropTroop($g_iWardenSlot) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
 					EndIf

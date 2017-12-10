@@ -190,6 +190,37 @@ Func UpdateAndroidWindowState()
 	Return $bChanged
 EndFunc   ;==>UpdateAndroidWindowState
 
+Func GetAndroidControlClass($bCheck = False, $bInit = False)
+	If $bInit = False And ($bCheck = False Or IsString($g_sAppClassInstance) Or IsHWnd($g_sAppClassInstance)) Then Return SetError(0, 0, $g_sAppClassInstance)
+	; Handle not found, try to update
+	$g_hAndroidControl = 0
+	$g_sAppClassInstance = $g_avAndroidAppConfig[$g_iAndroidConfig][3]
+	Local $hAndroidWin = GetCurrentAndroidHWnD()
+	If IsHWnd($hAndroidWin) Then
+		; ok, Android Window exists
+		Local $hCtrl = ControlGetHandle2($hAndroidWin, $g_sAppPaneName, $g_sAppClassInstance, 100, 100)
+		If $hCtrl = 0 Then
+			Return SetError(1, 0, $g_sAppClassInstance)
+		EndIf
+		Local $AppClass = $g_sControlGetHandle2_Classname
+		If BitAND($g_iAndroidSupportFeature, 256) > 0 Then $AppClass = $hCtrl
+		If $g_sAppClassInstance <> $AppClass Then
+			SetDebugLog("Update $g_sAppClassInstance to: " & $AppClass)
+		EndIf
+		$g_sAppClassInstance = $AppClass
+		Local $hWinParent = __WinAPI_GetParent($hCtrl)
+		If $hWinParent = 0 Then
+			$g_sAppClassInstance = $g_avAndroidAppConfig[$g_iAndroidConfig][3]
+			Return SetError(1, 0, $g_sAppClassInstance)
+		EndIf
+		; all good
+		$g_hAndroidControl = $hWinParent
+		Return SetError(0, 0, $g_sAppClassInstance)
+	EndIf
+	; Android not found
+	Return SetError(0, 0, $g_sAppClassInstance)
+EndFunc   ;==>GetAndroidControlClass
+
 Func UpdateHWnD($hWin, $bRestart = True)
 	If $hWin = 0 Then
 		If $g_hAndroidWindow <> 0 And $bRestart Then
@@ -197,7 +228,7 @@ Func UpdateHWnD($hWin, $bRestart = True)
 			;$g_bIsClientSyncError = True ; quick restart search
 		EndIf
 		$g_hAndroidWindow = 0
-		$g_hAndroidControl = 0
+		GetAndroidControlClass(True, True)
 		ResetAndroidProcess()
 		InitAndroidRebootCondition(False)
 		Return False
@@ -218,24 +249,9 @@ Func UpdateHWnD($hWin, $bRestart = True)
 		If GetProcessDpiAwareness(GetAndroidPid()) = 0 Then	AndroidDpiAwareness()
 		EndIf
 	#ce
-	Local $hCtrl = ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance, 100, 100)
-	If $hCtrl = 0 Then
-		$g_hAndroidControl = 0
-		Return False
-	EndIf
-	Local $AppClass = $g_sControlGetHandle2_Classname
-	If BitAND($g_iAndroidSupportFeature, 256) > 0 Then $AppClass = $hCtrl
-	If $g_sAppClassInstance <> $AppClass Then
-		SetDebugLog("Update $g_sAppClassInstance to: " & $AppClass)
-	EndIf
-	$g_sAppClassInstance = $AppClass
-	Local $hWinParent = __WinAPI_GetParent($hCtrl)
-	If $hWinParent = 0 Then
-		$g_hAndroidControl = 0
-		Return False
-	EndIf
-	$g_hAndroidControl = $hWinParent
-	Return True
+	GetAndroidControlClass(True, True)
+	If @error Then Return SetError(1, 0, False)
+	Return SetError(0, 0, True)
 EndFunc   ;==>UpdateHWnD
 
 Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)

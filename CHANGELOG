@@ -1,3 +1,17 @@
+* **V7.3.3**
+* Add MEmu 3.6.7.0 DirectX+ support
+* Add Drop Order Troops
+* Fix ignoring collect DE drill
+* Fix Train Window identify Clan Castle Spells
+* Fix Battle exit "when percentage doesn't change" not working (did exit when damage is above percentage, thanks to @mhk2012)
+* Fix "Image Threads for this bot" setting using always "Image Threads for all bots" setting
+* Fix Treasury not honoring minimum collect values (thanks to @mhk2012)
+* Fix Android initialization variables introduced in prior release causing Android ADB Port error and general bot failure
+* Fix Nox OpenGL mode
+* Fix a bug not find the ReplayShare button
+* Improve thread handlng to better balance concurrent thread usage when multiple bots run
+* Update Italian language (by @quisazadrah)
+
 * **V7.3.2**
  * Add BlueStacks 3.50.x support
  * Add Nox 6.0.0 support

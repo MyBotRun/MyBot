@@ -780,7 +780,8 @@ EndFunc   ;==>CloseUnsupportedBlueStacks2
 
 Func CloseUnsupportedBlueStacksX($bClose = True)
 	Local $WinTitleMatchMode = Opt("WinTitleMatchMode", -3) ; in recent 2.3.x can be also "BlueStacks App Player"
-	If IsArray(ControlGetPos("Bluestacks App Player", "", "")) Or ProcessExists2(RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Config\", "PartnerExePath")) Then ; $g_avAndroidAppConfig[1][4]
+	Local $sPartnerExePath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Config\", "PartnerExePath")
+	If IsArray(ControlGetPos("Bluestacks App Player", "", "")) Or ($sPartnerExePath And ProcessExists2($sPartnerExePath)) Then ; $g_avAndroidAppConfig[1][4]
 		Opt("WinTitleMatchMode", $WinTitleMatchMode)
 		; Offical "Bluestacks App Player" v2.0 not supported because it changes the Android Screen!!!
 		If $bClose = True Then

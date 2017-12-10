@@ -218,10 +218,10 @@ Func Barch() ;Attack Algorithm for Barch
 		If $g_bCheckKingPower Or $g_bCheckQueenPower Then
 			Local $iWaitTime = 0
 
-			If Number($g_iActivateKing) > Number($g_iActivateQueen)  Then
-				$iWaitTime = $g_iActivateKing
-			ElseIf Number($g_iActivateQueen) > Number($g_iActivateKing) Then
-				$iWaitTime = $g_iActivateQueen
+			If Int($g_iDelayActivateKing) > Int($g_iDelayActivateQueen)  Then
+				$iWaitTime = Int($g_iDelayActivateKing)
+			ElseIf Int($g_iDelayActivateQueen) > Int($g_iDelayActivateKing) Then
+				$iWaitTime = Int($g_iDelayActivateQueen)
 			EndIf
 
 			SetLog("Waiting " & $iWaitTime / 1000 & " seconds before activating Hero abilities", $COLOR_SUCCESS)

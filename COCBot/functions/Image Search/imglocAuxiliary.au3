@@ -86,7 +86,7 @@ EndFunc   ;==>decodeSingleCoord
 Func RetrieveImglocProperty($key, $property)
 	; Get the property
 	Local $aValue = DllCall($g_hLibImgLoc, "str", "GetProperty", "str", $key, "str", $property)
-	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)  ; check for error with DLL call
+	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error) ; check for error with DLL call
 	If UBound($aValue) = 0 Then
 		Return ""
 	EndIf
@@ -753,9 +753,96 @@ Func decodeTroopName($sName)
 
 EndFunc   ;==>decodeTroopName
 
+Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
+	If $iY < 490 Then
+		Switch $iX ; Troops & Spells Slots
+			Case 0 To 94 ; Slot 1
+				If $iY < 315 Then Return 35 ; Troops
+				If $iY > 315 Then Return 40 ; Spells
+
+			Case 95 To 170 ; Slot 2
+				If $iY < 315 Then Return 111 ; Troops
+				If $iY > 315 Then Return 120 ; Spell
+
+			Case 171 To 243 ; Slot 3
+				If $iY < 315 Then Return 184 ; Troops
+				If $iY > 315 Then Return 195 ; Spell
+
+			Case 244 To 307 ; Slot 4
+				If $iY < 315 Then Return 255 ; Troops
+				If $iY > 315 Then Return 272 ; Spell
+
+			Case 308 To 392 ; Slot 5
+				If $iY < 315 Then Return 330 ; Troops
+				If $iY > 315 Then Return 341 ; Spell
+
+			Case 393 To 464 ; Slot 6
+				If $iY < 315 Then Return 403 ; Troops
+				If $iY > 315 Then Return 415 ; Spell
+
+			Case 465 To 537 ; Slot 7
+				If $iY < 315 Then Return 477 ; Troops
+				If $iY > 315 Then Return 485 ; Spell
+			Case 538 To 610 ; Slot 8
+				Return 551  ; Troops
+
+			Case 611 To 682 ; Slot 9
+				If $iY < 315 Then Return 625 ; Troops
+				If $iY > 315 Then Return 619 ; Heroes
+
+			Case 683 To 752 ; Slot 10
+				If $iY < 315 Then Return 694 ; Troops
+				If $iY > 315 Then Return 691 ; Heroes
+
+			Case 753 To 825 ; Slot 11
+				Return 764 ; Troops
+
+		EndSwitch
+	Else ;CC Troops & Spells
+		Switch $iX
+			Case 0 To 94 ; CC Troops Slot 1
+				Return 35
+
+			Case 95 To 170 ; CC Troops Slot 2
+				Return 111
+
+			Case 171 To 243 ; CC Troops Slot 3
+				Return 184
+
+			Case 244 To 307 ; CC Troops Slot 4
+				Return 255
+
+			Case 308 To 392 ; CC Troops Slot 5
+				Return 330
+
+			Case 393 To 464 ; CC Troops Slot 6
+				Return 403
+
+			Case 510 To 580 ; CC Spell Slot 1
+				Return 533
+			Case 581 To 599 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
+				Return 578
+			Case 600 To 660 ; CC Spell Slot 2
+				Return 610
+		EndSwitch
+	EndIf
+EndFunc   ;==>Slot
 
 Func GetDummyRectangle($sCoords, $ndistance)
 	;creates a dummy rectangle to be used by Reduced Image Capture
 	Local $aCoords = StringSplit($sCoords, ",", $STR_NOCOUNT)
 	Return Number($aCoords[0]) - $ndistance & "," & Number($aCoords[1]) - $ndistance & "," & Number($aCoords[0]) + $ndistance & "," & Number($aCoords[1]) + $ndistance
 EndFunc   ;==>GetDummyRectangle
+
+
+Func ImgLogDebugProps($result)
+	If UBound($result) < 1 Then Return False
+	Local $resultArr = StringSplit($result[0], "|", $STR_NOCOUNT)
+	Local $returnData = StringSplit("objectname,objectlevel,objectpoints", ",", $STR_NOCOUNT)
+	For $rs = 0 To UBound($resultArr) - 1
+		For $rD = 0 To UBound($returnData) - 1 ; cycle props
+			Local $returnLine = RetrieveImglocProperty($resultArr[$rs], $returnData[$rD])
+			SetLog("ImgLogDebugProps : " & $resultArr[$rs] & "->" & $returnData[$rD] & " -> " & $returnLine)
+		Next
+	Next
+EndFunc

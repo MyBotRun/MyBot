@@ -409,7 +409,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 	If $bForceCaptureRegion = True Then _CaptureRegion2()
 
 	; Perform the search
-	Local $res = DllCall($g_hLibImgLoc, "str", "SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", $fullCocAreas, "Int", $maxReturnPoints, "str", $redlines, "Int", $minLevel, "Int", $maxLevelSearch)
+	Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", $fullCocAreas, "Int", $maxReturnPoints, "str", $redlines, "Int", $minLevel, "Int", $maxLevelSearch)
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 
 	; Get the redline data if needed

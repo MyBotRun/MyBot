@@ -206,6 +206,8 @@ Func SaveRegularConfig()
 	SaveConfig_600_31()
 	; <><><><> Attack Plan / Search & Attack / Options / Trophy Settings <><><><>
 	SaveConfig_600_32()
+	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
+	SaveConfig_600_33()
 	; <><><><> Bot / Options <><><><>
 	SaveConfig_600_35()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
@@ -980,6 +982,14 @@ Func SaveConfig_600_32()
 	_Ini_Add("search", "chkTrophyAtkDead", $g_bDropTrophyAtkDead ? 1 : 0)
 	_Ini_Add("search", "DTArmyMin", $g_iDropTrophyArmyMinPct)
 EndFunc   ;==>SaveConfig_600_32
+
+Func SaveConfig_600_33()
+	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
+	_Ini_Add("DropOrder", "chkDropOrder", $g_bCustomDropOrderEnable ? 1 : 0)
+	For $p = 0 To UBound($g_aiCmbCustomDropOrder) - 1
+		_Ini_Add("DropOrder", "cmbDropOrder" & $p, $g_aiCmbCustomDropOrder[$p])
+	Next
+EndFunc   ;==>SaveConfig_600_33
 
 Func SaveConfig_600_35()
 	; <><><><> Bot / Options <><><><>

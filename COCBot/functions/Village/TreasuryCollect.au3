@@ -58,8 +58,6 @@ Func TreasuryCollect()
 		SetLog("Treasury not full yet", $COLOR_INFO)
 	EndIf
 
-	$bForceCollect = True
-
 	; Treasury window open, user msg logged, time to collect loot!
 	; check for collect treasury full GUI condition enabled and low resources
 	If $bForceCollect Or ($g_bChkTreasuryCollect And ((Number($g_aiCurrentLoot[$eLootGold]) <= $g_iTxtTreasuryGold) Or (Number($g_aiCurrentLoot[$eLootElixir]) <= $g_iTxtTreasuryElixir) Or (Number($g_aiCurrentLoot[$eLootDarkElixir]) <= $g_iTxtTreasuryDark))) Then
@@ -70,10 +68,10 @@ Func TreasuryCollect()
 			If ClickOkay("ConfirmCollectTreasury") Then ; Click Okay to confirm collect treasury loot
 				SetLog("Treasury collected successfully.", $COLOR_SUCCESS)
 			Else
-				SetLog("Error in TreasuryCollect(): Cannot Click Okay Button on Collect screen", $COLOR_ERROR)
+				SetLog("Cannot Click Okay Button on Treasury Collect screen", $COLOR_ERROR)
 			EndIf
 		Else
-			SetLog("Error in TreasuryCollect(): Cannot find the Collect Button", $COLOR_ERROR)
+			SetDebugLog("Error in TreasuryCollect(): Cannot find the Collect Button", $COLOR_ERROR)
 		EndIf
 	Else
 		ClickP($aAway, 1, 0, "#0438") ; Click away

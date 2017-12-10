@@ -257,7 +257,7 @@ Func DonateCC($Check = False)
 					; no message, this CC has no Spell capability
 					If $g_bDebugSetlog Then Setlog("This CC cannot accept spells, skip spell donation...", $COLOR_DEBUG)
 					$g_bSkipDonSpells = True
-				ElseIf $g_iSpellFactorySize = 0 Then
+				ElseIf $g_iCurrentSpells = 0 Then
 					If $g_bDebugSetlog Then Setlog("No spells available, skip spell donation...", $COLOR_DEBUG) ;Debug
 					Setlog("No spells available, skip spell donation...", $COLOR_ORANGE)
 					$g_bSkipDonSpells = True
@@ -1253,7 +1253,7 @@ Func SkipDonateNearFullTroops($bSetLog = False, $aHeroResult = Default)
 			Local $rIsWaitforHeroesActive = IsWaitforHeroesActive()
 			If $rIsWaitforHeroesActive Then
 				If $aHeroResult = Default Or Not IsArray($aHeroResult) Then
-					If Not OpenArmyWindow() Then Return False ; Return False if failed to Open Army Window
+					If Not OpenArmyOverview() Then Return False ; Return False if failed to Open Army Window
 					$aHeroResult = getArmyHeroTime("all")
 				EndIf
 				If @error Or UBound($aHeroResult) < 3 Then

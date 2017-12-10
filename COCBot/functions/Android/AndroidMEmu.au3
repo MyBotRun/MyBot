@@ -106,14 +106,18 @@ Func GetMEmuBackgroundMode()
 	Local $aRegExResult = StringRegExp($__VBoxGuestProperties, "Name: graphics_render_mode, value: (.+), timestamp:", $STR_REGEXPARRAYMATCH)
 	If @error = 0 Then
 		Local $graphics_render_mode = $aRegExResult[0]
+		SetDebugLog($g_sAndroidEmulator & " instance " & $g_sAndroidInstance & " rendering mode is " & $graphics_render_mode)
 		Switch $graphics_render_mode
-			Case "1"
+			Case "1" ; DirectX
 				Return $g_iAndroidBackgroundModeDirectX
-			Case Else
+			Case "2" ; DirectX+ available in version 3.6.7.0
+				Return $g_iAndroidBackgroundModeDirectX
+			Case Else ; fallback to OpenGL
 				Return $g_iAndroidBackgroundModeOpenGL
 		EndSwitch
 	EndIf
 
+	; fallback to OpenGL
 	Return $g_iAndroidBackgroundModeOpenGL
 EndFunc   ;==>GetMEmuBackgroundMode
 

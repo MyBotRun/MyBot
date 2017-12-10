@@ -38,7 +38,7 @@ Func IsSearchModeActive($g_iMatchMode, $nocheckHeroes = False, $bNoLog = False)
 
 	If GetCurTotalSpell() = $totalSpellsToBrew And $g_abSearchSpellsWaitEnable[$g_iMatchMode] Then
 		$g_bCheckSpells = True
-	ElseIf $g_bFullArmySpells = True And $g_abSearchSpellsWaitEnable[$g_iMatchMode] Then
+	ElseIf $g_bFullArmySpells And $g_abSearchSpellsWaitEnable[$g_iMatchMode] Then
 		$g_bCheckSpells = True
 	ElseIf $g_abSearchSpellsWaitEnable[$g_iMatchMode] = False Then
 		$g_bCheckSpells = True

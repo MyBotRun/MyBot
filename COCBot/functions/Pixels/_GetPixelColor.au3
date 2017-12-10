@@ -21,7 +21,7 @@
 
 Func _GetPixelColor($iX, $iY, $bNeedCapture = False, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	Local $aPixelColor = 0
-	If $bNeedCapture = False Or $g_bRunState = False Then
+	If Not $bNeedCapture Or Not $g_bRunState Then
 		$aPixelColor = _GDIPlus_BitmapGetPixel($g_hBitmap, $iX, $iY)
 	Else
 		_CaptureRegion($iX - 1, $iY - 1, $iX + 1, $iY + 1)

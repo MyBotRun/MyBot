@@ -103,4 +103,14 @@ Func CreateBotAndroid()
 			GUICtrlSetOnEvent(-1, "OpenPlayStoreNovaLauncher")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
+	$y += 130
+	$x -= 60
+		GUICtrlCreateLabel("Command line Help ?", $x - 20, $y - 20, 220, 24, $SS_RIGHT)
+			GUICtrlSetOnEvent(-1, "ShowCommandLineHelp")
+			GUICtrlSetCursor(-1, 0)
+			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
+			_GUICtrlSetTip(-1, "Click here to get help about command line and option for MyBot.run!")
+			GUICtrlSetColor(-1, $COLOR_NAVY)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
 EndFunc   ;==>CreateBotAndroid

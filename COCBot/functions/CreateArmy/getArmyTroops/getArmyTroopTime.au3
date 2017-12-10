@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: getArmyTroopTime
 ; Description ...: Obtains time reamining in mimutes for Troops Training - Army Overview window
@@ -14,13 +13,13 @@
 ; Example .......: No
 ; ===============================================================================================================================
 ;
-Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
+Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckWindow = True, $bSetLog = True, $bNeedCapture = True)
 
-	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyTroopTime:", $COLOR_DEBUG1)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmyTroopTime():", $COLOR_DEBUG1)
 
 	$g_aiTimeTrain[0] = 0 ; reset time
 
-	If $CheckWindow Then
+	If $bCheckWindow Then
 		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)
 			Return ; not open, not requested to be open - error.
@@ -34,7 +33,7 @@ Func getArmyTroopTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSet
 	EndIf
 
 
-	Local $sResultTroops = getRemainTrainTimer(756, 169) ;Get time via OCR.
+	Local $sResultTroops = getRemainTrainTimer(756, 169, $bNeedCapture) ;Get time via OCR.
 	$g_aiTimeTrain[0] = ConvertOCRTime("Troops", $sResultTroops, $bSetLog) ; update global array
 
 	If $bCloseArmyWindow Then

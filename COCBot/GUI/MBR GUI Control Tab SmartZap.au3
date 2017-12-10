@@ -12,6 +12,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include-once
 
 Func chkSmartLightSpell()
 	If GUICtrlRead($g_hChkSmartLightSpell) = $GUI_CHECKED Then

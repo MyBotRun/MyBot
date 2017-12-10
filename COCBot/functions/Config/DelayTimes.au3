@@ -291,6 +291,7 @@ Global Const $DELAYMAKEREQUEST1 = 500
 Global Const $DELAYMAKEREQUEST2 = 1500
 
 ;Train
+Global Const $DELAYTRAIN1 = 1000
 Global Const $DELAYTRAIN4 = 200
 Global Const $DELAYTRAIN6 = 20 ; click
 Global Const $DELAYTRAIN8 = 5000 ; wait for a while to desapear the 'received castle troops' msg

@@ -28,12 +28,10 @@ Func checkArmyCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bGetHer
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	GetArmyCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	getArmyCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	;getArmyTroopCount() ; OLD METTHOD to detect troops on army over view window
-
-	CheckExistentArmy("Troops", $bSetLog)
+	getArmyTroops(False, False, False, $bSetLog)
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
 	getArmyTroopTime(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
@@ -48,7 +46,7 @@ Func checkArmyCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bGetHer
 	getArmySpellCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	CheckExistentArmy("Spells", $bSetLog) ; Imgloc Method
+	getArmySpells(False,False, False, $bSetLog)
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
 	getArmySpellTime(False, False, $bSetLog, False) ; Last parameter is to check the Army Window

@@ -275,3 +275,8 @@ Func cmbBalanceDR()
 		_GUICtrlComboBox_SetCurSel($g_hCmbCCReceived, 0)
 	EndIf
 EndFunc   ;==>cmbBalanceDR
+
+Func Doncheck()
+	tabDONATE() ; just call tabDONATE()
+EndFunc   ;==>Doncheck
+

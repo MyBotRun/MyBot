@@ -112,6 +112,8 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 	ApplyConfig_600_31($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / Trophy Settings <><><><>
 	ApplyConfig_600_32($TypeReadSave)
+	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
+	ApplyConfig_600_33($TypeReadSave)
 	; <><><><> Bot / Options <><><><>
 	ApplyConfig_600_35($TypeReadSave)
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
@@ -204,7 +206,7 @@ Func ApplyConfig_Debug($TypeReadSave)
 			GUICtrlSetState($g_hChkdebugAttackCSV, $g_bDebugAttackCSV ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkMakeIMGCSV, $g_bDebugMakeIMGCSV ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDebugSmartZap, $g_bDebugSmartZap ? $GUI_CHECKED : $GUI_UNCHECKED)
-			If $g_bDevMode = True Then
+			If $g_bDevMode Then
 				GUICtrlSetState($g_hChkDebugSetlog, $GUI_ENABLE)
 				GUICtrlSetState($g_hChkDebugOCR, $GUI_ENABLE)
 				GUICtrlSetState($g_hChkDebugImageSave, $GUI_ENABLE)
@@ -1173,7 +1175,7 @@ Func ApplyConfig_600_29($TypeReadSave)
 			ElseIf GUICtrlRead($g_hRadBothQueenAbility) = $GUI_CHECKED Then
 				$g_iActivateQueen = 2
 			EndIf
-			$g_iDelayActivateQueen = GUICtrlRead($g_hTxtManQueenAbility) * 1000
+			$g_iDelayActivateQueen = Int(GUICtrlRead($g_hTxtManQueenAbility) * 1000)
 
 			If GUICtrlRead($g_hRadAutoKingAbility) = $GUI_CHECKED Then
 				$g_iActivateKing = 0
@@ -1182,7 +1184,7 @@ Func ApplyConfig_600_29($TypeReadSave)
 			ElseIf GUICtrlRead($g_hRadBothKingAbility) = $GUI_CHECKED Then
 				$g_iActivateKing = 2
 			EndIf
-			$g_iDelayActivateKing = GUICtrlRead($g_hTxtManKingAbility) * 1000
+			$g_iDelayActivateKing = Int(GUICtrlRead($g_hTxtManKingAbility) * 1000)
 
 			If GUICtrlRead($g_hRadAutoWardenAbility) = $GUI_CHECKED Then
 				$g_iActivateWarden = 0
@@ -1191,7 +1193,7 @@ Func ApplyConfig_600_29($TypeReadSave)
 			ElseIf GUICtrlRead($g_hRadBothWardenAbility) = $GUI_CHECKED Then
 				$g_iActivateWarden = 2
 			EndIf
-			$g_iDelayActivateWarden = GUICtrlRead($g_hTxtManWardenAbility) * 1000
+			$g_iDelayActivateWarden = Int(GUICtrlRead($g_hTxtManWardenAbility) * 1000)
 
 			$g_bAttackPlannerEnable = (GUICtrlRead($g_hChkAttackPlannerEnable) = $GUI_CHECKED)
 			$g_bAttackPlannerCloseCoC = (GUICtrlRead($g_hChkAttackPlannerCloseCoC) = $GUI_CHECKED)
@@ -1807,6 +1809,36 @@ Func ApplyConfig_600_32($TypeReadSave)
 			$g_iDropTrophyArmyMinPct = GUICtrlRead($g_hTxtDropTrophyArmyMin)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_32
+
+Func ApplyConfig_600_33($TypeReadSave)
+	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
+	Switch $TypeReadSave
+		Case "Read"
+			GUICtrlSetState($g_hChkCustomDropOrderEnable, $g_bCustomDropOrderEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
+			chkDropOrder()
+			For $p = 0 To UBound($g_ahCmbDropOrder) - 1
+				_GUICtrlComboBox_SetCurSel($g_ahCmbDropOrder[$p], $g_aiCmbCustomDropOrder[$p])
+				_GUICtrlSetImage($g_ahImgDropOrder[$p], $g_sLibIconPath, $g_aiDropOrderIcon[$g_aiCmbCustomDropOrder[$p] + 1])
+			Next
+			If $g_bCustomDropOrderEnable Then ; only update troop train order if enabled
+				If Not ChangeDropOrder() Then ; process error
+					SetDefaultDropOrderGroup()
+					GUICtrlSetState($g_hChkCustomDropOrderEnable, $GUI_UNCHECKED)
+					$g_bCustomDropOrderEnable = False
+					GUICtrlSetState($g_hBtnDropOrderSet, $GUI_DISABLE) ; disable button
+					GUICtrlSetState($g_hBtnRemoveDropOrder, $GUI_DISABLE)
+					For $i = 0 To UBound($g_ahCmbDropOrder) - 1
+						GUICtrlSetState($g_ahCmbDropOrder[$i], $GUI_DISABLE) ; disable combo boxes
+					Next
+				EndIf
+			EndIf
+		Case "Save"
+			$g_bCustomDropOrderEnable = (GUICtrlRead($g_hChkCustomDropOrderEnable) = $GUI_CHECKED)
+			For $p = 0 To UBound($g_ahCmbDropOrder) - 1
+				$g_aiCmbCustomDropOrder[$p] = _GUICtrlComboBox_GetCurSel($g_ahCmbDropOrder[$p])
+			Next
+	EndSwitch
+EndFunc   ;==>ApplyConfig_600_33
 
 Func ApplyConfig_600_35($TypeReadSave)
 	; <><><><> Bot / Options <><><><>

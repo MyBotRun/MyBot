@@ -14,13 +14,13 @@
 ; Example .......: No
 ; ===============================================================================================================================
 ;
-Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
+Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckWindow = True, $bSetLog = True, $bNeedCapture = True)
 
-	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("Begin getArmySpellTime:", $COLOR_DEBUG1)
+	If $g_bDebugSetlogTrain Then Setlog("getArmySpellTime():", $COLOR_DEBUG1)
 
 	$g_aiTimeTrain[1] = 0 ; reset time
 
-	If $CheckWindow Then
+	If $bCheckWindow Then
 		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)
 			Return ; not open, not requested to be open - error.
@@ -33,8 +33,7 @@ Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSet
 		EndIf
 	EndIf
 
-	; Local $sResultSpells = getRemainTrainTimer(751, 161) ;Get time via OCR.
-	Local $sResultSpells = getRemainTrainTimer(495, 315) ;Get time via OCR.
+	Local $sResultSpells = getRemainTrainTimer(495, 315, $bNeedCapture) ;Get time via OCR.
 	$g_aiTimeTrain[1] = ConvertOCRTime("Spells", $sResultSpells, $bSetLog) ; update global array
 
 	If $bCloseArmyWindow Then

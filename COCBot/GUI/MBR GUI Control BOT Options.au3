@@ -196,10 +196,10 @@ EndFunc   ;==>txtGlobalThreads
 Func txtThreads()
 	Local $iValue = Int(GUICtrlRead($g_hTxtThreads))
 	If $g_iThreads <> $iValue Then
-		; value changed... for globally changed values, save immediately
+		; value changed...
 		SetDebugLog("Threading: Using " & $g_iThreads & " threads for parallelism changedd to " & $iValue)
 		$g_iThreads = $iValue
-		SaveProfileConfig(Default, True)
+		setMaxDegreeOfParallelism($g_iThreads)
 	EndIf
 EndFunc   ;==>txtThreads
 
@@ -275,12 +275,12 @@ Func btnTestTrain()
 	SetLog("Testing checkArmyCamp()", $COLOR_INFO)
 	$result = checkArmyCamp()
 	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
-	SetLog("Result checkArmyCamp() = " & $result, $COLOR_INFO)
+	SetLog("Result checkArmyCamp() = " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result)), $COLOR_INFO)
 
 	SetLog("Testing getArmyHeroTime()", $COLOR_INFO)
 	$result = getArmyHeroTime("all")
 	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
-	SetLog("Result getArmyHeroTime() = " & $result, $COLOR_INFO)
+	SetLog("Result getArmyHeroTime() = " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result)), $COLOR_INFO)
 
 	$result = "";
 	SetLog("Testing ArmyHeroStatus()", $COLOR_INFO)
@@ -288,9 +288,17 @@ Func btnTestTrain()
 		$result &= " " & ArmyHeroStatus($i)
 	Next
 	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
-	SetLog("Result ArmyHeroStatus(0, 1, 2) = " & $result, $COLOR_INFO)
-	SetLog("Testing Train DONE", $COLOR_INFO)
+	SetLog("Result ArmyHeroStatus(0, 1, 2) = " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result)), $COLOR_INFO)
 
+	SetLog("Testing GetCurCCSpell()", $COLOR_INFO)
+	$result = GetCurCCSpell(1)
+	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result))
+	SetLog("Result GetCurCCSpell(1) = " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result)), $COLOR_INFO)
+	$result = GetCurCCSpell(2)
+	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result))
+	SetLog("Result GetCurCCSpell(2) = " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result)), $COLOR_INFO)
+
+	SetLog("Testing Train DONE", $COLOR_INFO)
 	EndImageTest()
 
 	$g_bDebugOcr = $currentOCR
@@ -365,7 +373,7 @@ Func btnTestAttackBar()
 	SetLog(_PadStringCenter(" Test Attack Bar begin (" & $g_sBotVersion & ")", 54, "="), $COLOR_INFO)
 
 	_CaptureRegion2(0, 571 + $g_iBottomOffsetY, 859, 671 + $g_iBottomOffsetY)
-	Local $result = DllCall($g_hLibMyBot, "str", "searchIdentifyTroop", "ptr", $g_hHBitmap2)
+	Local $result = DllCallMyBot("searchIdentifyTroop", "ptr", $g_hHBitmap2)
 	Setlog("DLL Troopsbar list: " & $result[0], $COLOR_DEBUG)
 	If $g_bForceClanCastleDetection Then $result[0] = FixClanCastle($result[0])
 	Local $aTroopDataList = StringSplit($result[0], "|")
@@ -891,7 +899,7 @@ Func btnTestOcrMemory()
 	_CaptureRegion2(162, 200, 162 + 120, 200 + 27)
 
 	For $i = 1 To 5000
-		DllCall($g_hLibMyBot, "str", "ocr", "ptr", $g_hHBitmap2, "str", "coc-DonTroops", "int", $g_bDebugOcr ? 1 : 0)
+		DllCallMyBot("ocr", "ptr", $g_hHBitmap2, "str", "coc-DonTroops", "int", $g_bDebugOcr ? 1 : 0)
 		;getOcr($g_hHBitmap2, "coc-DonTroops")
 		;getOcrAndCapture("coc-DonTroops", 162, 200, 120, 27, True)
 
@@ -911,3 +919,20 @@ EndFunc   ;==>btnTestWeakBase
 Func btnTestClickAway()
 	ClickP($aAway, 2, 0)
 EndFunc   ;==>btnTestClickAway
+
+Func btnTestUpgradeWindow()
+	Local $currentRunState = $g_bRunState
+	Local $iCurrFreeBuilderCount = $g_iFreeBuilderCount
+	$g_iTestFreeBuilderCount = 5
+	$g_bRunState = True
+	BeginImageTest()
+	Local $result
+	SetLog("Testing LocateUpgrade", $COLOR_INFO)
+	;$result = UpgradeNormal(0, True)
+	SetLog("Result = " & $result, $COLOR_INFO)
+	EndImageTest()
+	; restore original state
+	$g_iTestFreeBuilderCount = -1
+	$g_iFreeBuilderCount = $iCurrFreeBuilderCount
+	$g_bRunState = $currentRunState
+EndFunc

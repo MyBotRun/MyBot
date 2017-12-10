@@ -226,6 +226,8 @@ Func ReadRegularConfig()
 	ReadConfig_600_31()
 	; <><><><> Attack Plan / Search & Attack / Options / Trophy Settings <><><><>
 	ReadConfig_600_32()
+	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
+	ReadConfig_600_33()
 	; <><><><> Bot / Options <><><><>
 	ReadConfig_600_35()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
@@ -846,7 +848,7 @@ Func ReadConfig_600_29()
 	IniReadS($g_iActivateKing, $g_sProfileConfigPath, "attack", "ActivateKing", 0, "int")
 	IniReadS($g_iActivateWarden, $g_sProfileConfigPath, "attack", "ActivateWarden", 0, "int")
 	IniReadS($g_iDelayActivateQueen, $g_sProfileConfigPath, "attack", "delayActivateQueen", 9000, "int")
-	IniReadS($g_iDelayActivateQueen, $g_sProfileConfigPath, "attack", "delayActivateKing", 9000, "int")
+	IniReadS($g_iDelayActivateKing, $g_sProfileConfigPath, "attack", "delayActivateKing", 9000, "int")
 	IniReadS($g_iDelayActivateWarden, $g_sProfileConfigPath, "attack", "delayActivateWarden", 10000, "int")
 
 	$g_bAttackPlannerEnable = (IniRead($g_sProfileConfigPath, "planned", "chkAttackPlannerEnable", "0") = "1")
@@ -1097,6 +1099,14 @@ Func ReadConfig_600_32()
 	IniReadS($g_bDropTrophyAtkDead, $g_sProfileConfigPath, "search", "chkTrophyAtkDead", False, "Bool")
 	IniReadS($g_iDropTrophyArmyMinPct, $g_sProfileConfigPath, "search", "DTArmyMin", 70, "int")
 EndFunc   ;==>ReadConfig_600_32
+
+Func ReadConfig_600_33()
+	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
+	IniReadS($g_bCustomDropOrderEnable, $g_sProfileConfigPath, "DropOrder", "chkDropOrder", False, "Bool")
+	For $p = 0 To UBound($g_aiCmbCustomDropOrder) - 1
+		IniReadS($g_aiCmbCustomDropOrder[$p], $g_sProfileConfigPath, "DropOrder", "cmbDropOrder" & $p, -1)
+	Next
+EndFunc   ;==>ReadConfig_600_33
 
 Func ReadConfig_600_35()
 	; <><><><> Bot / Options <><><><>

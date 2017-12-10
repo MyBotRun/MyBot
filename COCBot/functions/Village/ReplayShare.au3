@@ -48,7 +48,7 @@ Func ReplayShare($bShareLastReplay)
 			$sRndMessage = $asReplayText[Random(1, $asReplayText[0], 1)] ; Get Random String from Array
 		EndIf
 
-		If _CheckPixel($aBlueShareReplayButton) Then ; Is the Share Button for the Replay available?
+		If _CheckPixel($aBlueShareReplayButton, True) Then ; Is the Share Button for the Replay available?
 			ClickP($aBlueShareReplayButton, 1, 0, "#0238") ; Click Share Button
 			If _Sleep($DELAYREPLAYSHARE1) Then Return
 			Click(300, 120, 1, 0, "#0239") ;Select Text Area to put in the Random Message from GUI
@@ -65,7 +65,7 @@ Func ReplayShare($bShareLastReplay)
 			If _Sleep($DELAYREPLAYSHARE1) Then Return
 			Click(530, 210 + $g_iMidOffsetY, 1, 0, "#0240") ;Click the Send Button
 			$sLastTimeShared = _NowCalc ; Update the Date where the last Replay got shared
-		ElseIf _CheckPixel($aGrayShareReplayButton) Then ; Is the Share Button for the Replay not available?
+		ElseIf _CheckPixel($aGrayShareReplayButton, True) Then ; Is the Share Button for the Replay not available?
 			SetLog("Sharing latest Attack is not enabled right now, storing it and share later!") ; Cooldown is not over yet! Probably User shared a Replay and started Bot afterwards
 			ClickP($aAway, 1, 0, "#0235")
 		Else ; Neither of Blue or Gray Button State got found? Maybe Replay got deleted or Button was not found

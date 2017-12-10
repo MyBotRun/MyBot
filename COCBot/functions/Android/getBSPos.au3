@@ -136,7 +136,7 @@ EndFunc   ;==>getBSPos
 
 Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWidthFirst = Default)
 	Static $asControlSize[6][4]
-	Local $aControlSize = ControlGetPos(GetCurrentAndroidHWnD(), $g_sAppPaneName, $g_sAppClassInstance)
+	Local $aControlSize = ControlGetPos(GetCurrentAndroidHWnD(), $g_sAppPaneName, GetAndroidControlClass(True))
 	Local $aControlSizeInitial = $aControlSize
 
 	;If Not $g_bRunState Or $FastCheck Then Return $aControlSize
@@ -327,7 +327,7 @@ Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWid
 		EndIf
 
 	Else
-		SetDebugLog($sPre & "WARNING: Cannot resize " & $g_sAndroidEmulator & " window, control not available", $COLOR_ERROR)
+		SetDebugLog($sPre & "WARNING: Cannot resize " & $g_sAndroidEmulator & " window, control '" & $g_sAppClassInstance & "' not available", $COLOR_ERROR)
 	EndIf
 
 	If $bResizedOK Then

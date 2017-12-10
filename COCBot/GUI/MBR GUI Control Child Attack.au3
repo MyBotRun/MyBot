@@ -573,3 +573,46 @@ Func sldVSDelay()
 		GUICtrlSetData($g_hLblTextMaxVSDelay, GetTranslatedFileIni("MBR Global GUI Design", "seconds", "seconds"))
 	EndIf
  EndFunc   ;==>sldVSDelay
+ 
+ Func dbCheck()
+	$g_abAttackTypeEnable[$DB] = (GUICtrlRead($g_hChkDeadbase) = $GUI_CHECKED)
+
+	If $g_iBotLaunchTime > 0 Then _GUICtrlTab_SetCurFocus($g_hGUI_SEARCH_TAB, 0) ; activate deadbase tab
+	If BitAND(GUICtrlRead($g_hChkDBActivateSearches), GUICtrlRead($g_hChkDBActivateTropies), GUICtrlRead($g_hChkDBActivateCamps), GUICtrlRead($g_hChkDBSpellsWait)) = $GUI_UNCHECKED Then
+		GUICtrlSetState($g_hChkDBActivateSearches, $GUI_CHECKED)
+		chkDBActivateSearches() ; this includes a call to dbCheckall() -> tabSEARCH()
+	Else
+		tabSEARCH() ; just call tabSEARCH()
+	EndIf
+EndFunc   ;==>dbCheck
+
+Func abCheck()
+	$g_abAttackTypeEnable[$LB] = (GUICtrlRead($g_hChkActivebase) = $GUI_CHECKED)
+
+	If $g_iBotLaunchTime > 0 Then _GUICtrlTab_SetCurFocus($g_hGUI_SEARCH_TAB, 1)
+	If BitAND(GUICtrlRead($g_hChkABActivateSearches), GUICtrlRead($g_hChkABActivateTropies), GUICtrlRead($g_hChkABActivateCamps), GUICtrlRead($g_hChkABSpellsWait)) = $GUI_UNCHECKED Then
+		GUICtrlSetState($g_hChkABActivateSearches, $GUI_CHECKED)
+		chkABActivateSearches() ; this includes a call to abCheckall() -> tabSEARCH()
+	Else
+		tabSEARCH() ; just call tabSEARCH()
+	EndIf
+EndFunc   ;==>abCheck
+
+Func tsCheck()
+	$g_abAttackTypeEnable[$TS] = (GUICtrlRead($g_hChkTHSnipe) = $GUI_CHECKED)
+
+	If $g_iBotLaunchTime > 0 Then _GUICtrlTab_SetCurFocus($g_hGUI_SEARCH_TAB, 2)
+	If BitAND(GUICtrlRead($g_hChkTSActivateSearches), GUICtrlRead($g_hChkTSActivateTropies), GUICtrlRead($g_hChkTSActivateCamps)) = $GUI_UNCHECKED Then
+		GUICtrlSetState($g_hChkTSActivateSearches, $GUI_CHECKED)
+		chkTSActivateSearches() ; this includes a call to tsCheckall() -> tabSEARCH()
+	Else
+		tabSEARCH() ; just call tabSEARCH()
+	EndIf
+EndFunc   ;==>tsCheck
+
+Func bullyCheck()
+	$g_abAttackTypeEnable[$TB] = (GUICtrlRead($g_hChkBully) = $GUI_CHECKED)
+
+	If $g_iBotLaunchTime > 0 Then _GUICtrlTab_SetCurFocus($g_hGUI_SEARCH_TAB, 3)
+	tabSEARCH()
+EndFunc   ;==>bullyCheck

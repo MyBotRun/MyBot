@@ -20,7 +20,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 	EndIf
 
 	If $bNeedCapture Then _CaptureRegion2($Left, $Top, $Right, $Bottom)
-	Local $Res = DllCall($g_hLibMyBot,"str", "SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
+	Local $Res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 
 	If IsArray($Res) Then

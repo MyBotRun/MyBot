@@ -94,11 +94,11 @@ EndFunc   ;==>chkDBEndPercentHigher
 
 Func chkDBEndPercentChange()
 	If GUICtrlRead($g_hChkDBEndPercentChange) = $GUI_CHECKED Then
-		$g_abStopAtkPctHigherEnable[$DB] = True
+		$g_abStopAtkPctNoChangeEnable[$DB] = True
 		GUICtrlSetState($g_hTxtDBPercentChange, $GUI_ENABLE)
 		GUICtrlSetState($g_hLblDBPercentChangeSec, $GUI_ENABLE)
 	Else
-		$g_abStopAtkPctHigherEnable[$DB] = False
+		$g_abStopAtkPctNoChangeEnable[$DB] = False
 		GUICtrlSetState($g_hTxtDBPercentChange, $GUI_DISABLE)
 		GUICtrlSetState($g_hLblDBPercentChangeSec, $GUI_DISABLE)
 	EndIf
@@ -118,11 +118,11 @@ EndFunc   ;==>chkABEndPercentHigher
 
 Func chkABEndPercentChange()
 	If GUICtrlRead($g_hChkABEndPercentChange) = $GUI_CHECKED Then
-		$g_abStopAtkPctHigherEnable[$LB] = True
+		$g_abStopAtkPctNoChangeEnable[$LB] = True
 		GUICtrlSetState($g_hTxtABPercentChange, $GUI_ENABLE)
 		GUICtrlSetState($g_hLblABPercentChangeSec, $GUI_ENABLE)
 	Else
-		$g_abStopAtkPctHigherEnable[$LB] = False
+		$g_abStopAtkPctNoChangeEnable[$LB] = False
 		GUICtrlSetState($g_hTxtABPercentChange, $GUI_DISABLE)
 		GUICtrlSetState($g_hLblABPercentChangeSec, $GUI_DISABLE)
 	EndIf

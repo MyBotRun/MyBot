@@ -146,18 +146,18 @@ Func GoldElixirChangeEBO()
 		EndIf
 
 		If Number($CurDamage) >= 92 Then
-			If ($g_bCheckKingPower = True Or $g_bCheckQueenPower = True Or $g_bCheckWardenPower = True) Then
-				If $g_bCheckKingPower = True And $g_iActivateKing = 0 Then
+			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower) Then
+				If $g_bCheckKingPower And $g_iActivateKing = 0 Then
 					SetLog("Activating King's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 					If IsAttackPage() Then SelectDropTroop($g_iKingSlot) ;If King was not activated: Boost King before Battle ends with a 3 Star
 					$g_bCheckKingPower = False
 				EndIf
-				If $g_bCheckQueenPower = True And $g_iActivateQueen = 0 Then
+				If $g_bCheckQueenPower And $g_iActivateQueen = 0 Then
 					SetLog("Activating Queen's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 					If IsAttackPage() Then SelectDropTroop($g_iQueenSlot) ;If Queen was not activated: Boost Queen before Battle ends with a 3 Star
 					$g_bCheckQueenPower = False
 				EndIf
-				If $g_bCheckWardenPower = True And $g_iActivateWarden = 0 Then
+				If $g_bCheckWardenPower And $g_iActivateWarden = 0 Then
 					SetLog("Activating Warden's ability to restore some health before leaving with a 3 Star", $COLOR_INFO)
 					If IsAttackPage() Then SelectDropTroop($g_iWardenSlot) ;If Queen was not activated: Boost Queen before Battle ends with a 3 Star
 					$g_bCheckWardenPower = False

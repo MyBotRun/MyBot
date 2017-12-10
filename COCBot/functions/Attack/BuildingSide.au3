@@ -109,31 +109,31 @@ Func DELow()
 		$DarkE = getDarkElixirVillageSearch(48, 126)
 		If _Sleep(50) Then Return
 		If Number($DarkE) < (Number($g_iSearchDark) * (Number($g_iDESideEndMin) / 100)) Then ; Second check if Dark Elixer is below set minimum
-			If $g_bDESideEndAQWeak And $g_bDropQueen And $g_bCheckQueenPower = False Then
+			If $g_bDESideEndAQWeak And $g_bDropQueen And Not $g_bCheckQueenPower Then
 				If $g_iActivateQueen = 0 Then
 					$g_iDarkLow = 1
-					SetLog("Low De. De = ( " & $DarkE & " ) and AQ health Low. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
+					SetLog("Low De. De = ( " & $DarkE & " ) and AQ health Low. Return to protect Heroes.  Returning immediately", $COLOR_SUCCESS)
 					Return False
 				ElseIf Not _ColorCheck(_GetPixelColor(68 + (72 * $g_iQueenSlot), 572, True), Hex(0x72F50B, 6), 120, "Heroes") Then
 					$g_iDarkLow = 1
-					SetLog("Low De. De = ( " & $DarkE & " ) and AQ health Low. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
+					SetLog("Low De. De = ( " & $DarkE & " ) and AQ health Low. Return to protect Heroes.  Returning immediately", $COLOR_SUCCESS)
 					Return False
 				EndIf
 			EndIf
-			If $g_bDESideEndBKWeak And $g_bDropKing And $g_bCheckKingPower = False Then
+			If $g_bDESideEndBKWeak And $g_bDropKing And Not $g_bCheckKingPower Then
 				If $g_iActivateKing = 0 Then
 					$g_iDarkLow = 1
-					SetLog("Low De. De = ( " & $DarkE & " ) and BK health Low. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
+					SetLog("Low De. De = ( " & $DarkE & " ) and BK health Low. Return to protect Heroes.  Returning immediately", $COLOR_SUCCESS)
 					Return False
 				ElseIf Not _ColorCheck(_GetPixelColor(68 + (72 * $g_iKingSlot), 572, True), Hex(0x4FD404, 6), 120, "Heroes") Then
 					$g_iDarkLow = 1
-					SetLog("Low De. De = ( " & $DarkE & " ) and BK health Low. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
+					SetLog("Low De. De = ( " & $DarkE & " ) and BK health Low. Return to protect Heroes.  Returning immediately", $COLOR_SUCCESS)
 					Return False
 				EndIf
 			EndIf
 			If $g_bDESideEndOneStar Then
 				If _ColorCheck(_GetPixelColor($aWonOneStar[0], $aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) Then
-					SetLog("Low De. De = ( " & $DarkE & " ) and 1 star achieved. Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
+					SetLog("Low De. De = ( " & $DarkE & " ) and 1 star achieved. Return to protect Heroes.  Returning immediately", $COLOR_SUCCESS)
 					$g_iDarkLow = 1
 					Return False
 				Else
@@ -142,8 +142,8 @@ Func DELow()
 					Return False
 				EndIf
 			EndIf
-			If $g_bDESideEndAQWeak = False And $g_bDESideEndBKWeak = False And $g_bDESideEndOneStar = False Then
-				SetLog("Low De. De = ( " & $DarkE & " ). Return to protect Royals.  Returning immediately", $COLOR_SUCCESS)
+			If Not $g_bDESideEndAQWeak And Not $g_bDESideEndBKWeak And Not $g_bDESideEndOneStar Then
+				SetLog("Low De. De = ( " & $DarkE & " ). Return to protect Heroes.  Returning immediately", $COLOR_SUCCESS)
 				Return False
 			EndIf
 		EndIf

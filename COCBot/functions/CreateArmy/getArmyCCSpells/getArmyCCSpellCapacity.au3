@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 #include-once
 
-Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
+Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True, $bNeedCapture = True)
 
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyCCSpellCapacity:", $COLOR_DEBUG1)
 
@@ -37,11 +37,11 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 
 	; Verify spell current and total capacity
 	If $g_abSearchCastleSpellsWaitEnable[$DB] Or $g_abSearchCastleSpellsWaitEnable[$LB] Then ; only use this code if the user has enabled Wait For CC Spells
-		$sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1]) ; OCR read Spells and total capacity
+		$sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 
 		$iCount = 0 ; reset OCR loop counter
 		While $sCCSpellsInfo = "" ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
-			$sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1]) ; OCR read Spells and total capacity
+			$sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 			$iCount += 1
 			If $iCount > 10 Then ExitLoop ; try reading 30 times for 250+150ms OCR for 4 sec
 			If _Sleep($DELAYCHECKARMYCAMP5) Then Return ; Wait 250ms
@@ -52,20 +52,20 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 
 		If IsArray($aGetCCSpellsSize) Then
 			If $aGetCCSpellsSize[0] > 1 Then
-				$g_iTotalCCSpell = Number($aGetCCSpellsSize[2])
-				$g_iCurrentCCSpell = Number($aGetCCSpellsSize[1])
+				$g_iTotalCCSpells = Number($aGetCCSpellsSize[2])
+				$g_iCurrentCCSpells = Number($aGetCCSpellsSize[1])
 			Else
 				Setlog("CC Spells size read error.", $COLOR_ERROR) ; log if there is read error
-				$g_iTotalCCSpell = 0
-				$g_iCurrentCCSpell = 0
+				$g_iTotalCCSpells = 0
+				$g_iCurrentCCSpells = 0
 			EndIf
 		Else
 			Setlog("CC Spells size read error.", $COLOR_ERROR) ; log if there is read error
-			$g_iTotalCCSpell = 0
-			$g_iCurrentCCSpell = 0
+			$g_iTotalCCSpells = 0
+			$g_iCurrentCCSpells = 0
 		EndIf
 
-		SetLog("Total Clancastle Spells: " & $g_iCurrentCCSpell & "/" & $g_iTotalCCSpell)
+		SetLog("Total Clan Castle Spells: " & $g_iCurrentCCSpells & "/" & $g_iTotalCCSpells)
 	EndIf
 
 	If $bCloseArmyWindow Then
