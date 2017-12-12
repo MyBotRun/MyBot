@@ -44,7 +44,7 @@ Func FindAdsXButton()
 	Local $aPosXY = ""
 
 	$sCoor = GetDiamondFromRect(GetButtonRectangle("AdsX"))
-	$result = findMultiple($sDirectory, $sCoor, "FV", 0, 0, 1, $sReturnProps, False)
+	$result = findMultiple($sDirectory, $sCoor, $sCoor, 0, 0, 1, $sReturnProps, False)
 
 	If IsArray($result) then
 		$aPosXY = StringSplit(($result[0])[0], ",", $STR_NOCOUNT)

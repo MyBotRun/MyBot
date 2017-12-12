@@ -4,12 +4,12 @@
 #pragma compile(Out, MyBot.run.exe) ; Required
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
-#pragma compile(ProductVersion, 7.3.3)
-#pragma compile(FileVersion, 7.3.3)
+#pragma compile(ProductVersion, 7.3.4)
+#pragma compile(FileVersion, 7.3.4)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.3.3"
+Global $g_sBotVersion = "v7.3.4"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -6004,6 +6004,7 @@ Global $g_bDebugSmartZap = False
 Global $g_bDebugAttackCSV = False
 Global $g_bDebugMakeIMGCSV = False
 Global $g_bDebugBetaVersion = StringInStr($g_sBotVersion, " b") > 0
+Global $g_bDebugFuncTime = False
 Global $g_bDebugVillageSearchImages = False
 Global $g_bDebugDeadBaseImage = False
 Global $g_aiSearchEnableDebugDeadBaseImage = 200
@@ -27431,6 +27432,48 @@ If $sPad = Default Then $sPad = "="
 If $bClearLog = True Then ClearLog($g_hTxtLog)
 _SetLog(_PadStringCenter($String, 53, $sPad), $Color, "Lucida Console", 8)
 EndFunc
+Global $g_oStopWatches = ObjCreate("Scripting.Dictionary")
+If Not IsDeclared("g_bDebugFuncTime") Then Global $g_bDebugFuncTime = False
+Func StopWatchStart($sTag)
+StopWatchStopPushTag($sTag)
+$g_oStopWatches($sTag) = __TimerInit()
+EndFunc
+Func StopWatchLevel()
+Local $iLevel = $g_oStopWatches("__CURRENT_TAG_LEVEL__")
+If IsNumber($iLevel) = 0 Then $iLevel = 0
+Return $iLevel
+EndFunc
+Func StopWatchStopPushTag($sTag)
+Local $iLevel = StopWatchLevel()
+$g_oStopWatches("__CURRENT_TAG__" & $iLevel) = $sTag
+$g_oStopWatches("__CURRENT_TAG_LEVEL__") = $iLevel + 1
+Return $iLevel
+EndFunc
+Func StopWatchStopPopTag($iNewLevel = Default)
+Local $iLevel = StopWatchLevel() - 1
+$g_oStopWatches("__CURRENT_TAG_LEVEL__") = $iLevel
+Return $g_oStopWatches("__CURRENT_TAG__" & $iLevel)
+EndFunc
+Func StopWatchStopLog($sTag = Default, $iNewLevel = Default, $bLog = True)
+Local $sTagLevel = StopWatchStopPopTag()
+If $sTag = Default Then
+$sTag = $sTagLevel
+ElseIf $sTag <> $sTagLevel Then
+SetLog("StopWatch Level mismatch: " & $sTag & " <> " & $sTagLevel, $COLOR_ERROR)
+EndIf
+Local $hTimer = $g_oStopWatches($sTag)
+$g_oStopWatches.Remove($sTag)
+SetLog($sTag & " Execution-time: " & __TimerDiff($hTimer))
+If $iNewLevel <> Default Then
+While StopWatchLevel() > $iNewLevel
+StopWatchStopLog(Default, Default, $bLog)
+WEnd
+EndIf
+EndFunc
+Func StopWatchReturn($iNewLevel, $bLog = $g_bDebugFuncTime)
+Local $iCurLevel = StopWatchLevel()
+If $iNewLevel <> $iCurLevel Then StopWatchStopLog(Default, $iNewLevel, $bLog)
+EndFunc
 Global Enum $iOAER_bSet_ErrLine, $iOAER_bIn_Proc, $iOAER_bUse_StdOut, $iOAER_iPID, $iOAER_hErr_Callback, $iOAER_hErr_WinHook, $iOAER_sUserFunc, $iOAER_vUserParams, $iOAER_iCOMErrorNumber, $iOAER_sCOMErrorDesc, $iOAER_Total
 Global $aOAER_DATA[$iOAER_Total]
 Func _OnAutoItErrorRegister()
@@ -34199,7 +34242,7 @@ EndIf
 If(Int($g_iDelayActivateWarden) / 1000) <= $aDisplayTime[$eHeroGrandWarden] Then
 SetLog("Activating Warden's ability after " & $aDisplayTime[$eHeroGrandWarden] & "'s", $COLOR_INFO)
 SelectDropTroop($g_iWardenSlot)
-$g_bCheckKingPower = False
+$g_bCheckWardenPower = False
 $g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
 EndIf
 EndIf
@@ -34981,7 +35024,7 @@ Return $aReturnResult
 EndFunc
 Func CheckDrillLvl($x, $y)
 _CaptureRegion2($x - 25, $y - 25, $x + 25, $y + 25)
-Local $aResult = multiMatches($g_sImgSearchDrillLevel, 1, "FV", "FV", "", 0, 1000, False)
+Local $aResult = multiMatches($g_sImgSearchDrillLevel, 1, "DCD", $g_sImglocRedline, "", 0, 1000, False)
 If $g_bDebugSmartZap = True Then SetLog("CheckDrillLvl: UBound($aresult) = " & UBound($aResult), $COLOR_DEBUG)
 If UBound($aResult) > 1 Then
 If $g_bDebugSmartZap = True Then SetLog("CheckDrillLvl: $aresult[" &(UBound($aResult) - 1) & "][2] = " & $aResult[UBound($aResult) - 1][2], $COLOR_DEBUG)
@@ -35587,7 +35630,7 @@ Return $Spells[$iSpell][1]
 EndFunc
 Func ReCheckDrillExist($x, $y)
 _CaptureRegion2($x - 25, $y - 25, $x + 25, $y + 25)
-Local $aResult = multiMatches($g_sImgSearchDrill, 1, "FV", "FV", "", 0, 1000, False)
+Local $aResult = multiMatches($g_sImgSearchDrill, 1, "DCD", $g_sImglocRedline, "", 0, 1000, False)
 If UBound($aResult) > 1 Then
 If $g_bDebugSmartZap = True Then SetLog("ReCheckDrillExist: Yes| " & UBound($aResult), $COLOR_SUCCESS)
 Return True
@@ -35647,7 +35690,15 @@ Return False
 EndIf
 EndFunc
 Func checkArmyCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bGetHeroesTime = False, $bSetLog = True)
-If $g_bDebugSetlogTrain Then SETLOG("Begin checkArmyCamp:", $COLOR_DEBUG1)
+Local $iStopWatchLevel = StopWatchLevel()
+Local $Result = _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetLog)
+StopWatchReturn($iStopWatchLevel)
+Return $Result
+EndFunc
+Func _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetLog)
+If $g_bDebugFuncTime Then StopWatchStart("checkArmyCamp")
+If $g_bDebugSetlogTrain Then SetLog("Begin checkArmyCamp:", $COLOR_DEBUG1)
+If $g_bDebugFuncTime Then StopWatchStart("IsTrainPage/openArmyOverview")
 If $bOpenArmyWindow = False And IsTrainPage() = False Then
 SetError(1)
 Return
@@ -35658,33 +35709,61 @@ Return
 EndIf
 If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 EndIf
+If $g_bDebugFuncTime Then StopWatchStopLog()
+If $g_bDebugFuncTime Then StopWatchStart("getArmyCapacity")
 getArmyCapacity(False, False, $bSetLog, False)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
+If $g_bDebugFuncTime Then StopWatchStart("getArmyTroops")
 getArmyTroops(False, False, False, $bSetLog)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
+If $g_bDebugFuncTime Then StopWatchStart("getArmyTroopTime")
 getArmyTroopTime(False, False, $bSetLog, False)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
 Local $HeroesRegenTime
+If $g_bDebugFuncTime Then StopWatchStart("getArmyHeroCount")
 getArmyHeroCount(False, False, $bSetLog, False)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
-If $bGetHeroesTime = True Then $HeroesRegenTime = getArmyHeroTime("all", $bSetLog)
+If $bGetHeroesTime = True Then
+If $g_bDebugFuncTime Then StopWatchStart("getArmyHeroTime")
+$HeroesRegenTime = getArmyHeroTime("all", $bSetLog)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
+EndIf
+If $g_bDebugFuncTime Then StopWatchStart("getArmySpellCapacity")
 getArmySpellCapacity(False, False, $bSetLog, False)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
+If $g_bDebugFuncTime Then StopWatchStart("getArmySpells")
 getArmySpells(False,False, False, $bSetLog)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
+If $g_bDebugFuncTime Then StopWatchStart("getArmySpellTime")
 getArmySpellTime(False, False, $bSetLog, False)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
+If $g_bDebugFuncTime Then StopWatchStart("getArmyCCSpellCapacity")
 getArmyCCSpellCapacity(False, False, $bSetLog, False)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
+If $g_bDebugFuncTime Then StopWatchStart("getArmyCCStatus")
 getArmyCCStatus(False, False, $bSetLog, False)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 If _Sleep($DELAYCHECKARMYCAMP6) Then Return
-If Not $g_bFullArmy Then DeleteExcessTroops()
+If Not $g_bFullArmy Then
+If $g_bDebugFuncTime Then StopWatchStart("DeleteExcessTroops")
+DeleteExcessTroops()
+If $g_bDebugFuncTime Then StopWatchStopLog()
+EndIf
 If $bCloseArmyWindow Then
 ClickP($aAway, 1, 0, "#0000")
 If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 EndIf
 If $g_bDebugSetlogTrain Then SetLog("End checkArmyCamp: canRequestCC= " & $g_bCanRequestCC & ", fullArmy= " & $g_bFullArmy, $COLOR_DEBUG)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 Return $HeroesRegenTime
 EndFunc
 Func IsTroopToDonateOnly($pTroopType)
@@ -36180,7 +36259,7 @@ If _Sleep(500) Then Return
 EndIf
 Local $iReturnCamp = TestMaxCamp()
 If $iReturnCamp = 1 Then
-OpenQuickTrainTab(True)
+If Not OpenQuickTrainTab(True) Then Return
 If _Sleep(1000) Then Return
 TrainArmyNumber($g_bQuickTrainArmy)
 If _Sleep(700) Then Return
@@ -36196,7 +36275,7 @@ EndIf
 EndFunc
 Func TestMaxCamp()
 Local $ToReturn = 0
-OpenTroopsTab(True)
+If Not OpenTroopsTab(True) Then Return
 If _Sleep(250) Then Return
 Local $ArmyCamp = GetOCRCurrent(48, 160)
 If UBound($ArmyCamp) = 3 Then
@@ -36235,12 +36314,12 @@ EndIf
 If _Sleep($DELAYRESPOND) Then Return
 If IsQueueEmpty("Troops") Then
 If Not $g_bRunState Then Return
-OpenArmyTab(True)
+If Not OpenArmyTab(True) Then Return
 $rWhatToTrain = WhatToTrain(False, False)
 TrainUsingWhatToTrain($rWhatToTrain)
 Else
 If Not $g_bRunState Then Return
-OpenArmyTab(True)
+If Not OpenArmyTab(True) Then Return
 EndIf
 If _Sleep($DELAYRESPOND) Then Return
 $rWhatToTrain = WhatToTrain(False, False)
@@ -36248,7 +36327,7 @@ If DoWhatToTrainContainSpell($rWhatToTrain) Then
 If IsQueueEmpty("Spells") Then
 TrainUsingWhatToTrain($rWhatToTrain, True)
 Else
-OpenArmyTab(True)
+If Not OpenArmyTab(True) Then Return
 EndIf
 EndIf
 If _Sleep(250) Then Return
@@ -36265,7 +36344,7 @@ Local $iTotalSpellsToBrew = 0
 Local $bFullArmyHero = False
 If Not OpenArmyOverview(False) Then Return
 If _Sleep(250) Then Return
-OpenArmyTab(True)
+If Not OpenArmyTab(True) Then Return
 If _Sleep(250) Then Return
 CheckArmyCamp(False, False, False, True)
 If $g_bDebugSetlogTrain Then
@@ -36578,9 +36657,9 @@ If UBound($rWTT) = 1 And $rWTT[0][0] = "Arch" And $rWTT[0][1] = 0 Then
 Return True
 EndIf
 If Not $bSpellsOnly Then
-OpenTroopsTab(True)
+If Not OpenTroopsTab(True) Then Return
 Else
-OpenSpellsTab(True)
+If Not OpenSpellsTab(True) Then Return
 EndIf
 Switch $g_bIsFullArmywithHeroesAndSpells
 Case False
@@ -36705,8 +36784,8 @@ If $Quantity = 9999 Then
 SetLog("Brewing " & $sSpellName & " Spell Cancelled " & @CRLF & "                  Reason: Enough as set in GUI " & @CRLF & "                               This Spell not used in Attack")
 Return True
 EndIf
-If $g_bRunState = False Then Return
-OpenSpellsTab(True)
+If Not $g_bRunState Then Return
+If Not OpenSpellsTab(True) Then Return
 Select
 Case $g_bIsFullArmywithHeroesAndSpells = False
 If _ColorCheck(_GetPixelColor(230, 208, True), Hex(0x677CB5, 6), 30) = False Then RemoveExtraTroopsQueue()
@@ -36928,7 +37007,7 @@ If UBound($toRemove) > 0 Then
 Local $rGetSlotNumber = GetSlotNumber()
 Local $rGetSlotNumberSpells = GetSlotNumber(True)
 If Not IsQueueEmpty("Troops") Then
-OpenTroopsTab(True)
+If Not OpenTroopsTab(True) Then Return
 For $i = 0 To(UBound($toRemove) - 1)
 If Not $g_bRunState Then Return
 If IsSpellToBrew($toRemove[$i][0]) Then ExitLoop
@@ -36942,7 +37021,7 @@ Next
 EndIf
 If Not IsQueueEmpty("Spells") Then
 If TotalSpellsToBrewInGUI() > 0 Then
-OpenSpellsTab(True)
+If Not OpenSpellsTab(True) Then Return
 For $i = $CounterToRemove To(UBound($toRemove) - 1)
 If $g_bRunState = False Then Return
 If IsAlreadyTraining($toRemove[$i][0], True) Then
@@ -36953,7 +37032,7 @@ EndIf
 Next
 EndIf
 EndIf
-OpenArmyTab(True)
+If Not OpenArmyTab(True) Then Return
 $toRemove = WhatToTrain(True, False)
 $rGetSlotNumber = GetSlotNumber()
 $rGetSlotNumberSpells = GetSlotNumber(True)
@@ -37105,9 +37184,9 @@ Return False
 EndIf
 If Not $bSkipTabCheck Then
 If $sType = "Troops" Then
-OpenTroopsTab(True)
+If Not OpenTroopsTab(True) Then Return
 Else
-OpenSpellsTab(True)
+If Not OpenSpellsTab(True) Then Return
 EndIf
 EndIf
 If Not $g_bIsFullArmywithHeroesAndSpells Then
@@ -37497,9 +37576,9 @@ EndIf
 EndFunc
 Func DeleteQueued($sArmyTypeQueued, $iOffsetQueued = 802)
 If $sArmyTypeQueued = "Troops" Then
-OpenTroopsTab(True)
+If Not OpenTroopsTab(True) Then Return
 ElseIf $sArmyTypeQueued = "Spells" Then
-OpenSpellsTab(True)
+If Not OpenSpellsTab(True) Then Return
 Else
 Return
 EndIf
@@ -37539,7 +37618,7 @@ $g_aiDonateTroops[$j] = 0
 EndIf
 Next
 Next
-OpenTroopsTab(True)
+If Not OpenTroopsTab(True) Then Return
 For $i = 0 To UBound($avDefaultTroopGroup, 1) - 1
 If $g_bRunState = False Then Return
 $Plural = 0
@@ -37609,7 +37688,7 @@ $avDefaultTroopGroup[$j][4] = 0
 Next
 EndIf
 If $areThereDonSpell > 0 Then
-OpenSpellsTab(True)
+If Not OpenSpellsTab(True) Then Return
 For $i = 0 To $eSpellCount - 1
 If $g_bRunState = False Then Return
 If $g_aiDonateSpells[$i] > 0 Then
@@ -37653,7 +37732,7 @@ Func CheckIsFullQueuedAndNotFullArmy()
 SetLog(" - Checking: FULL Queue and Not Full Army", $COLOR_INFO)
 Local $CheckTroop[4] = [824, 243, 0x949522, 20]
 If Not $g_bRunState Then Return
-OpenTroopsTab(True)
+If Not OpenTroopsTab(True) Then Return
 Local $aArmyCamp = GetOCRCurrent(48, 160)
 If UBound($aArmyCamp) = 3 And $aArmyCamp[2] < 0 Then
 If _ColorCheck(_GetPixelColor($CheckTroop[0], $CheckTroop[1], True), Hex($CheckTroop[2], 6), $CheckTroop[3]) Then
@@ -37674,7 +37753,7 @@ SetLog(" - Checking: Empty Queue and Not Full Army", $COLOR_ACTION1)
 Local $CheckTroop[4] = [820, 220, 0xCFCFC8, 15]
 Local $CheckTroop1[4] = [390, 130, 0x78BE2B, 15]
 If Not $g_bRunState Then Return
-OpenTroopsTab(True)
+If Not OpenTroopsTab(True) Then Return
 Local $aArmyCamp = GetOCRCurrent(48, 160)
 If UBound($aArmyCamp) = 3 And $aArmyCamp[2] > 0 Then
 If _ColorCheck(_GetPixelColor($CheckTroop[0], $CheckTroop[1], True), Hex($CheckTroop[2], 6), $CheckTroop[3]) Then
@@ -37744,8 +37823,8 @@ EndFunc
 Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 Local $TempColorToCheck = ""
 Local $nElixirCurrent = 0, $nDarkCurrent = 0, $bLocalDebugOCR = 0
-If _sleep(1000) Then Return
-If $g_bRunState = False Then Return
+If _Sleep(1000) Then Return
+If Not $g_bRunState Then Return
 If $g_bDebugSetlogTrain Or $DebugLogs Then
 $bLocalDebugOCR = $g_bDebugOcr
 $g_bDebugOcr = True
@@ -38192,7 +38271,9 @@ _Sleep($DELAYTRAIN1)
 WEnd
 EndIf
 Local $sTroopDiamond = GetDiamondFromRect("23,215,840,255")
-Local $aCurrentTroops = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Troops", $sTroopDiamond, "FV", 0, 1000, 0, "objectname,objectpoints", $bNeedCapture)
+If $g_bDebugFuncTime Then StopWatchStart("findMultiple, \imgxml\ArmyOverview\Troops")
+Local $aCurrentTroops = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Troops", $sTroopDiamond, $sTroopDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture)
+If $g_bDebugFuncTime Then StopWatchStopLog()
 Local $aTempTroopArray, $aTroopCoords
 Local $sTroopName = ""
 Local $iTroopIndex = -1, $iDropTrophyIndex = -1
@@ -38432,7 +38513,7 @@ EndIf
 If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 EndIf
 Local $sSpellDiamond = GetDiamondFromRect("23,366,585,400")
-Local $aCurrentSpells = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Spells", $sSpellDiamond, "FV", 0, 1000, 0,"objectname,objectpoints", $bNeedCapture)
+Local $aCurrentSpells = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Spells", $sSpellDiamond, $sSpellDiamond, 0, 1000, 0,"objectname,objectpoints", $bNeedCapture)
 Local $aTempSpellArray, $aSpellCoords
 Local $sSpellName = ""
 Local $iSpellIndex = -1
@@ -48738,7 +48819,7 @@ Local $sReturnProps = "objectpoints"
 Local $result = ""
 Local $aPosXY = ""
 $sCoor = GetDiamondFromRect(GetButtonRectangle("AdsX"))
-$result = findMultiple($sDirectory, $sCoor, "FV", 0, 0, 1, $sReturnProps, False)
+$result = findMultiple($sDirectory, $sCoor, $sCoor, 0, 0, 1, $sReturnProps, False)
 If IsArray($result) then
 $aPosXY = StringSplit(($result[0])[0], ",", $STR_NOCOUNT)
 If $g_bDebugSetlog Then Setlog("FindAdsXButton: " & $g_sAndroidGameDistributor & " AdsX Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
@@ -54819,7 +54900,7 @@ If _Sleep($DELAYREARM2) Then Return
 Local $bReArmed = False
 Local $sDiamond = GetDiamondFromRect("245,620,615,700")
 Local $aTempArray, $aTempBtnCoords
-Local $aRearmOptions = findMultiple($g_sImgRearm, $sDiamond, "FV", 0, 1000, 3, "objectname,objectpoints", True)
+Local $aRearmOptions = findMultiple($g_sImgRearm, $sDiamond, $sDiamond, 0, 1000, 3, "objectname,objectpoints", True)
 If $aRearmOptions <> "" And IsArray($aRearmOptions) Then
 For $i = 0 To UBound($aRearmOptions, 1) - 1
 $aTempArray = $aRearmOptions[$i]

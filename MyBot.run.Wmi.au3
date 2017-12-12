@@ -129,3 +129,6 @@ Func GetTranslated($a, $b, $c)
 EndFunc
 Func GetTranslatedFileIni($a, $b, $c)
 EndFunc
+Func _GUICtrlStatusBar_SetTextEx($hWnd, $sText = "", $iPart = 0, $iUFlag = 0)
+EndFunc
+

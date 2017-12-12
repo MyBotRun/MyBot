@@ -68,7 +68,7 @@ EndFunc   ;==>drillSearch
 Func CheckDrillLvl($x, $y)
 	_CaptureRegion2($x - 25, $y - 25, $x + 25, $y + 25)
 
-	Local $aResult = multiMatches($g_sImgSearchDrillLevel, 1, "FV", "FV", "", 0, 1000, False)
+	Local $aResult = multiMatches($g_sImgSearchDrillLevel, 1, "DCD", $g_sImglocRedline, "", 0, 1000, False)
 
 	If $g_bDebugSmartZap = True Then SetLog("CheckDrillLvl: UBound($aresult) = " & UBound($aResult), $COLOR_DEBUG)
 	If UBound($aResult) > 1 Then

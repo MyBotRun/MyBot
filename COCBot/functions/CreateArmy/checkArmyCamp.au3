@@ -14,51 +14,88 @@
 ; ===============================================================================================================================
 
 Func checkArmyCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bGetHeroesTime = False, $bSetLog = True)
+	Local $iStopWatchLevel = StopWatchLevel()
+	Local $Result = _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetLog)
+	StopWatchReturn($iStopWatchLevel)
+	Return $Result
+EndFunc
 
-	If $g_bDebugSetlogTrain Then SETLOG("Begin checkArmyCamp:", $COLOR_DEBUG1)
+Func _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetLog)
+	If $g_bDebugFuncTime Then StopWatchStart("checkArmyCamp")
 
+	If $g_bDebugSetlogTrain Then SetLog("Begin checkArmyCamp:", $COLOR_DEBUG1)
+
+	If $g_bDebugFuncTime Then StopWatchStart("IsTrainPage/openArmyOverview")
 	If $bOpenArmyWindow = False And IsTrainPage() = False Then ; check for train page
 		SetError(1)
-		Return ; not open, not requested to be open - error.
+		Return; not open, not requested to be open - error.
 	ElseIf $bOpenArmyWindow = True Then
 		If openArmyOverview() = False Then
 			SetError(2)
-			Return ; not open, requested to be open - error.
+			Return; not open, requested to be open - error.
 		EndIf
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyCapacity")
 	getArmyCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyTroops")
 	getArmyTroops(False, False, False, $bSetLog)
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyTroopTime")
 	getArmyTroopTime(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
 	Local $HeroesRegenTime
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyHeroCount")
 	getArmyHeroCount(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
-	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
-	If $bGetHeroesTime = True Then $HeroesRegenTime = getArmyHeroTime("all", $bSetLog)
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
+	If $bGetHeroesTime = True Then
+		If $g_bDebugFuncTime Then StopWatchStart("getArmyHeroTime")
+		$HeroesRegenTime = getArmyHeroTime("all", $bSetLog)
+		If $g_bDebugFuncTime Then StopWatchStopLog()
+		If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
+	EndIf
+
+	If $g_bDebugFuncTime Then StopWatchStart("getArmySpellCapacity")
 	getArmySpellCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
+	If $g_bDebugFuncTime Then StopWatchStart("getArmySpells")
 	getArmySpells(False,False, False, $bSetLog)
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
+	If $g_bDebugFuncTime Then StopWatchStart("getArmySpellTime")
 	getArmySpellTime(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyCCSpellCapacity")
 	getArmyCCSpellCapacity(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyCCStatus")
 	getArmyCCStatus(False, False, $bSetLog, False) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	If Not $g_bFullArmy Then DeleteExcessTroops()
+	If Not $g_bFullArmy Then
+		If $g_bDebugFuncTime Then StopWatchStart("DeleteExcessTroops")
+		DeleteExcessTroops()
+		If $g_bDebugFuncTime Then StopWatchStopLog()
+	EndIf
 
 	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
@@ -67,6 +104,7 @@ Func checkArmyCamp($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bGetHer
 
 	If $g_bDebugSetlogTrain Then SetLog("End checkArmyCamp: canRequestCC= " & $g_bCanRequestCC & ", fullArmy= " & $g_bFullArmy, $COLOR_DEBUG)
 
+	If $g_bDebugFuncTime Then StopWatchStopLog()
 	Return $HeroesRegenTime
 
 EndFunc   ;==>checkArmyCamp

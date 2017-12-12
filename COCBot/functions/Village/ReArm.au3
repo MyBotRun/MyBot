@@ -38,7 +38,7 @@ Func ReArm()
 	Local $bReArmed = False
 	Local $sDiamond = GetDiamondFromRect("245,620,615,700")
 	Local $aTempArray, $aTempBtnCoords
-    Local $aRearmOptions = findMultiple($g_sImgRearm, $sDiamond, "FV", 0, 1000, 3, "objectname,objectpoints", True)
+    Local $aRearmOptions = findMultiple($g_sImgRearm, $sDiamond, $sDiamond, 0, 1000, 3, "objectname,objectpoints", True)
 
 	If $aRearmOptions <> "" And IsArray($aRearmOptions) Then
 		For $i = 0 To UBound($aRearmOptions, 1) - 1

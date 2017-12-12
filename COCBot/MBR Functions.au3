@@ -14,6 +14,7 @@
 ; ===============================================================================================================================
 ;#include-once
 #include "functions\Other\SetLog.au3"
+#include "functions\Other\StopWatch.au3"
 ;#include "functions\Other\Synchronization.au3" ; now included in LaunchConsole.au3
 #include "functions\Other\OnAutoItErrorRegisterBot.au3"
 

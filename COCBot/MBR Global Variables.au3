@@ -93,6 +93,7 @@ Global $g_bDebugSmartZap = False ; verbose logs for SmartZap users
 Global $g_bDebugAttackCSV = False ; Verbose log output of actual attack script plus bot actions
 Global $g_bDebugMakeIMGCSV = False ; Saves "clean" iamge and image with all drop points and detected buildings marked
 Global $g_bDebugBetaVersion = StringInStr($g_sBotVersion, " b") > 0
+Global $g_bDebugFuncTime = False ; Log Function execution time (where implemented)
 
 ; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 ; <><><><> ONLY Enable items below this line when debugging special errors listed!! <><><><>

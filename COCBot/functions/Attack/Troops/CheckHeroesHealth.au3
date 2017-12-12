@@ -112,7 +112,7 @@ Func CheckHeroesHealth()
 				If (Int($g_iDelayActivateWarden) / 1000) <= $aDisplayTime[$eHeroGrandWarden] Then
 					SetLog("Activating Warden's ability after " & $aDisplayTime[$eHeroGrandWarden] & "'s", $COLOR_INFO)
 					SelectDropTroop($g_iWardenSlot)
-					$g_bCheckKingPower = False ; Reset check power flag
+					$g_bCheckWardenPower = False ; Reset check power flag
 					$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0 ; Reset Timer
 				EndIf
 			EndIf

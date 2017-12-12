@@ -1,3 +1,8 @@
+* **V7.3.4**
+* Fix redline detection freezing bot when computer doesn't have enough "free" CPUs
+* Fix image processing time for Train Window, SmartZap and ReArm
+* Fix King not activating when Warden was activated
+
 * **V7.3.3**
 * Add MEmu 3.6.7.0 DirectX+ support
 * Add Drop Order Troops
