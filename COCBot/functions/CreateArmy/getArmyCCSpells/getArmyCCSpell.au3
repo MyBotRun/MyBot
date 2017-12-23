@@ -17,13 +17,13 @@ Func getArmyCCSpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 
 	If $g_bDebugSetlogTrain Then SetLog("getArmyCCSpells():", $COLOR_DEBUG)
 
-	If Not $bOpenArmyWindow  Then
+	If Not $bOpenArmyWindow Then
 		If $bCheckWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)
 			Return ; not open, not requested to be open - error.
 		EndIf
 	ElseIf $bOpenArmyWindow Then
-		If Not OpenArmyOverview() Then
+		If Not OpenArmyOverview(True, "getArmyCCSpells()") Then
 			SetError(2)
 			Return ; not open, requested to be open - error.
 		EndIf
@@ -44,7 +44,7 @@ Func getArmyCCSpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 		For $i = 0 To UBound($aCurrentCCSpells, 1) - 1 ; Loop through found Spells
 			$aTempSpellArray = $aCurrentCCSpells[$i] ; Declare Array to Temp Array
 
-			$iSpellIndex = TroopIndexLookup($aTempSpellArray[0], "getArmySpells()") - $eLSpell ; Get the Index of the Spell from the ShortName
+			$iSpellIndex = TroopIndexLookup($aTempSpellArray[0], "getArmyCCSpells()") - $eLSpell ; Get the Index of the Spell from the ShortName
 
 			If StringInStr($aTempSpellArray[1], "|") Then
 				$aSpells = StringSplit($aTempSpellArray[1], "|")
@@ -66,4 +66,4 @@ Func getArmyCCSpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
-EndFunc
+EndFunc   ;==>getArmyCCSpells

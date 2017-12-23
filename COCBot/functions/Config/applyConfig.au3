@@ -1336,7 +1336,7 @@ Func ApplyConfig_600_29_DB_Scripted($TypeReadSave)
 			Local $scriptname
 			_GUICtrlComboBox_GetLBText($g_hCmbScriptNameDB, $indexofscript, $scriptname)
 			$g_sAttackScrScriptName[$DB] = $scriptname
-			IniWriteS($g_sProfileConfigPath, "attack", "ScriptDB", $g_sAttackScrScriptName[$LB])
+			IniWriteS($g_sProfileConfigPath, "attack", "ScriptDB", $g_sAttackScrScriptName[$DB])
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_29_DB_Scripted
 

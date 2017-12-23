@@ -23,7 +23,7 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 			Return ; not open, not requested to be open - error.
 		EndIf
 	ElseIf $bOpenArmyWindow Then
-		If Not OpenArmyOverview() Then
+		If Not OpenArmyOverview(True, "getArmySpells()") Then
 			SetError(2)
 			Return ; not open, requested to be open - error.
 		EndIf
@@ -50,7 +50,7 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 			$g_aiCurrentSpells[$iSpellIndex] = Number(getBarracksNewTroopQuantity(Slot($aSpellCoords[0], $aSpellCoords[1]), 341, $bNeedCapture)) ; Get The Quantity of the Spell, Slot() Does return the exact spot to read the Number from
 
 			$sSpellName = $g_aiCurrentSpells[$iSpellIndex] >= 2 ? $g_asSpellNames[$iSpellIndex] & " Spells" : $g_asSpellNames[$iSpellIndex] & " Spell" ; Select the right Spell Name, If more than one then use Spells at the end
-			If $bSetLog Then SetLog("- " & $g_aiCurrentSpells[$iSpellIndex] & "x " & $sSpellName) ; Log What Spell is available and How many
+			If $bSetLog Then SetLog(" - " & $g_aiCurrentSpells[$iSpellIndex] & " " & $sSpellName & " Brewed", $COLOR_SUCCESS) ; Log What Spell is available and How many
 		Next
 	EndIf
 
@@ -58,4 +58,4 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
-EndFunc
+EndFunc   ;==>getArmySpells

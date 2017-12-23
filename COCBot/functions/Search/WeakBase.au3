@@ -144,7 +144,22 @@ Func getIsWeak($aResults, $searchType)
 			And $aResults[$eWeakInferno][2] <= Number($g_aiFilterMaxInfernoLevel[$searchType]) _
 			And $aResults[$eWeakXBow][2] <= Number($g_aiFilterMaxXBowLevel[$searchType]) _
 			And $aResults[$eWeakWizard][2] <= Number($g_aiFilterMaxWizTowerLevel[$searchType]) _
-			And $aResults[$eWeakMortar][2] <= Number($g_aiFilterMaxMortarLevel[$searchType])
+			And $aResults[$eWeakMortar][2] <= Number($g_aiFilterMaxMortarLevel[$searchType]) _
+			And $aResults[$eWeakAirDefense][2] <= Number($g_aiFilterMaxAirDefenseLevel[$searchType])
+
+	Local $text = "DB"
+	If $searchType = 1 Then $text = "LB"
+	Setlog("================ Weak Base Detection Start ================")
+	If $g_abFilterMaxEagleEnable[$searchType] Then Setlog("[" & $text & "] Eagle level " & $g_aiFilterMaxEagleLevel[$searchType] & " as max, detection higher level : " & $aResults[$eWeakEagle][2], $COLOR_DEBUG)
+	If $g_abFilterMaxInfernoEnable[$searchType] Then Setlog("[" & $text & "] Inferno level " & $g_aiFilterMaxInfernoLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakInferno][2], $COLOR_DEBUG)
+	If $g_abFilterMaxXBowEnable[$searchType] Then Setlog("[" & $text & "] XBow level " & $g_aiFilterMaxXBowLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakXBow][2], $COLOR_DEBUG)
+	If $g_abFilterMaxWizTowerEnable[$searchType] Then Setlog("[" & $text & "] WTower level " & $g_aiFilterMaxWizTowerLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakWizard][2], $COLOR_DEBUG)
+	If $g_abFilterMaxMortarEnable[$searchType] Then Setlog("[ " & $text & "] Mortar level " & $g_aiFilterMaxMortarLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakMortar][2], $COLOR_DEBUG)
+	If $g_abFilterMaxAirDefenseEnable[$searchType] Then Setlog("[" & $text & "] AirDef level " & $g_aiFilterMaxAirDefenseLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakAirDefense][2], $COLOR_DEBUG)
+	Setlog("Is a Weak Base? " & $aResults)
+	Setlog("================ Weak Base Detection Stop =================")
+	Return $aResults
+
 EndFunc   ;==>getIsWeak
 
 Func IsWeakBaseActive($type)
@@ -409,7 +424,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 	If $bForceCaptureRegion = True Then _CaptureRegion2()
 
 	; Perform the search
-	Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", $fullCocAreas, "Int", $maxReturnPoints, "str", $redlines, "Int", $minLevel, "Int", $maxLevelSearch)
+	Local $res = DllCall($g_hLibImgLoc, "str", "SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", $fullCocAreas, "Int", $maxReturnPoints, "str", $redlines, "Int", $minLevel, "Int", $maxLevelSearch)
 	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
 
 	; Get the redline data if needed

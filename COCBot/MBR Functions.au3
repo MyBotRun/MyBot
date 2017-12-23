@@ -109,7 +109,7 @@
 #include "functions\CreateArmy\TrainIt.au3"
 
 #include "functions\CreateArmy\getArmyTroops\getArmyTroopTime.au3"
-#include "functions\CreateArmy\getArmyTroops\getArmyCapacity.au3"
+#include "functions\CreateArmy\getArmyTroops\getArmyTroopCapacity.au3"
 #include "functions\CreateArmy\getArmyTroops\getArmyTroops.au3"
 
 #include "functions\CreateArmy\getArmyHeroes\getArmyHeroCount.au3"

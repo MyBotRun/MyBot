@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: getArmySpellTime
 ; Description ...: Obtains time reamining in mimutes for spells Training - Army Overview window
@@ -13,7 +12,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-;
+
 Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckWindow = True, $bSetLog = True, $bNeedCapture = True)
 
 	If $g_bDebugSetlogTrain Then Setlog("getArmySpellTime():", $COLOR_DEBUG1)
@@ -25,7 +24,7 @@ Func getArmySpellTime($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChe
 			SetError(1)
 			Return ; not open, not requested to be open - error.
 		ElseIf $bOpenArmyWindow Then
-			If Not openArmyOverview() Then
+			If Not openArmyOverview(True, "getArmySpellTime()") Then
 				SetError(2)
 				Return ; not open, requested to be open - error.
 			EndIf

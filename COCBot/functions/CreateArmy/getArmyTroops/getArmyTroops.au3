@@ -23,7 +23,7 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 			Return ; not open, not requested to be open - error.
 		EndIf
 	ElseIf $bOpenArmyWindow Then
-		If Not OpenArmyOverview() Then
+		If Not OpenArmyOverview(True, "getArmyTroops()") Then
 			SetError(2)
 			Return ; not open, requested to be open - error.
 		EndIf
@@ -64,7 +64,7 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 			If $iDropTrophyIndex <> -1 Then $g_avDTtroopsToBeUsed[$iDropTrophyIndex][1] += $g_aiCurrentTroops[$iTroopIndex] ; If there was a Match in the Array then add the Troop Quantity to it
 
 			$sTroopName = $g_aiCurrentTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex] ; Select the right Troop Name, If more than one then use the Plural
-			If $bSetLog Then SetLog("- " & $g_aiCurrentTroops[$iTroopIndex] & "x " & $sTroopName) ; Log What Troop is available and How many
+			If $bSetLog Then SetLog(" - " & $g_aiCurrentTroops[$iTroopIndex] & " " & $sTroopName & " Available", $COLOR_SUCCESS) ; Log What Troop is available and How many
 		Next
 	EndIf
 

@@ -106,6 +106,7 @@ EndFunc   ;==>CompareResources
 Func CompareTH($pMode)
 	Local $THL = -1, $THLO = -1
 
+	If $g_iSearchTH = 6 Then $g_iSearchTH = "4-6"
 	For $i = 0 To 5 ;add th11
 		If $g_iSearchTH = $g_asTHText[$i] Then $THL = $i
 	Next

@@ -44,7 +44,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 
 	Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & "*.*", $FLTA_FILES)
 	If @error Then
-		SetLog("Error: Missing stone files", $COLOR_ERROR)
+		SetLog("Error: Missing stone files (" & @error & ")", $COLOR_ERROR)
 		Return $aResult
 	EndIf
 	; use stoneBlueStacks2A stones first
@@ -59,7 +59,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 	Next
 	Local $aTreeFiles = _FileListToArray($sDirectory, $sTreePrefix & "*.*", $FLTA_FILES)
 	If @error Then
-		SetLog("Error: Missing tree files", $COLOR_ERROR)
+		SetLog("Error: Missing tree (" & @error & ")", $COLOR_ERROR)
 		Return $aResult
 	EndIf
 	Local $i, $findImage, $sArea, $a

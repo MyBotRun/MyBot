@@ -52,7 +52,7 @@ Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drop
 		EndIf
 		$g_bDropKing = True ; Set global flag hero dropped
 		If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = __TimerInit() ; initialize fixed activation timer
-		If _Sleep($DELAYDROPHEROES2) Then Return
+		If _Sleep($DELAYDROPHEROES1) Then Return
 	EndIf
 
 	If _Sleep($DELAYDROPHEROES1) Then Return
@@ -69,7 +69,7 @@ Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drop
 		EndIf
 		$g_bDropQueen = True ; Set global flag hero dropped
 		If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = __TimerInit() ; initialize fixed activation timer
-		If _Sleep($DELAYDROPHEROES2) Then Return
+		If _Sleep($DELAYDROPHEROES1) Then Return
 	EndIf
 
 	If _Sleep($DELAYDROPHEROES1) Then Return
@@ -86,7 +86,7 @@ Func dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $WardenSlot = -1) ;Drop
 		EndIf
 		$g_bDropWarden = True ; Set global flag hero dropped
 		If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then $g_aHeroesTimerActivation[$eHeroGrandWarden] = __TimerInit() ; initialize fixed activation timer
-		If _Sleep($DELAYDROPHEROES2) Then Return
+		If _Sleep($DELAYDROPHEROES1) Then Return
 	EndIf
 
 EndFunc   ;==>dropHeroes

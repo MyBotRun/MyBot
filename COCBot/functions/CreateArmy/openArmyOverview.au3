@@ -12,7 +12,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func OpenArmyOverview($bCheckMain = True)
+Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 
 	If $bCheckMain Then
 		If Not IsMainPage() Then ; check for main page, avoid random troop drop
@@ -23,7 +23,7 @@ Func OpenArmyOverview($bCheckMain = True)
 	EndIf
 
 	If WaitforPixel(28, 505 + $g_iBottomOffsetY, 30, 507 + $g_iBottomOffsetY, Hex(0xEEB145, 6), 5, 10) Then
-		If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton", $COLOR_SUCCESS)
+		If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton" & " (Called from " & $sWhereFrom & ")", $COLOR_SUCCESS)
 		If Not $g_bUseRandomClick Then
 			ClickP($aArmyTrainButton, 1, 0, "#0293") ; Button Army Overview
 		Else
@@ -40,23 +40,23 @@ Func OpenArmyOverview($bCheckMain = True)
 
 EndFunc   ;==>openArmyOverview
 
-Func OpenArmyTab($bSetLog = True)
-	Return OpenTrainTab("Army Tab", $aArmyTab, $bSetLog)
-EndFunc
+Func OpenArmyTab($bSetLog = True, $sWhereFrom = "Undefined")
+	Return OpenTrainTab("Army Tab", $aArmyTab, $bSetLog, $sWhereFrom)
+EndFunc   ;==>OpenArmyTab
 
-Func OpenTroopsTab($bSetLog = True)
-	Return OpenTrainTab("Troops Tab", $aTroopsTab, $bSetLog)
-EndFunc
+Func OpenTroopsTab($bSetLog = True, $sWhereFrom = "Undefined")
+	Return OpenTrainTab("Troops Tab", $aTroopsTab, $bSetLog, $sWhereFrom)
+EndFunc   ;==>OpenTroopsTab
 
-Func OpenSpellsTab($bSetLog = True)
-	Return OpenTrainTab("Spells Tab", $aSpellsTab, $bSetLog)
-EndFunc
+Func OpenSpellsTab($bSetLog = True, $sWhereFrom = "Undefined")
+	Return OpenTrainTab("Spells Tab", $aSpellsTab, $bSetLog, $sWhereFrom)
+EndFunc   ;==>OpenSpellsTab
 
-Func OpenQuickTrainTab($bSetLog = True)
-	Return OpenTrainTab("Quick Train Tab", $aQuickTrainTab, $bSetLog)
-EndFunc
+Func OpenQuickTrainTab($bSetLog = True, $sWhereFrom = "Undefined")
+	Return OpenTrainTab("Quick Train Tab", $aQuickTrainTab, $bSetLog, $sWhereFrom)
+EndFunc   ;==>OpenQuickTrainTab
 
-Func OpenTrainTab($sTab, $aPixelToCheck, $bSetLog = True)
+Func OpenTrainTab($sTab, $aPixelToCheck, $bSetLog = True, $sWhereFrom = "Undefined")
 
 	If Not IsTrainPage() Then
 		SetLog("Error in OpenTrainTab: Cannot find the Army Overview Window", $COLOR_ERROR)
@@ -65,17 +65,18 @@ Func OpenTrainTab($sTab, $aPixelToCheck, $bSetLog = True)
 	EndIf
 
 	If Not _CheckPixel($aPixelToCheck, True) Then
-		If $bSetLog Then SetLog("Open " & $sTab)
+		If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("Open " & $sTab & " (Called from " & $sWhereFrom & ")", $COLOR_INFO)
 		ClickP($aPixelToCheck)
 		If Not _WaitForCheckPixel($aPixelToCheck, True) Then
 			SetLog("Error in OpenTrainTab: Cannot open " & $sTab & ". Pixel to check did not appear", $COLOR_ERROR)
 			SetError(1)
 			Return False
 		EndIf
+		If _Sleep(1500) Then Return
 		Return True
 	Else
 		; Already on Tab we want :)
 		Return True
 	EndIf
 
-EndFunc
+EndFunc   ;==>OpenTrainTab

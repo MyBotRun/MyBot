@@ -55,9 +55,9 @@ Func SmartWait4Train()
 	Local $StopEmulator = False
 	Local $bFullRestart = False
 	Local $bSuspendComputer = False
-	If $g_bCloseRandom = True Then $StopEmulator = "random"
-	If $g_bCloseEmulator = True Then $StopEmulator = True
-	If $g_bSuspendComputer = True Then $bSuspendComputer = True
+	If $g_bCloseRandom Then $StopEmulator = "random"
+	If $g_bCloseEmulator Then $StopEmulator = True
+	If $g_bSuspendComputer Then $bSuspendComputer = True
 
 	; Determine what wait mode(s) are enabled
 	If IsArray($g_asShieldStatus) And (StringInStr($g_asShieldStatus[0], "shield", $STR_NOCASESENSEBASIC) Or StringInStr($g_asShieldStatus[0], "guard", $STR_NOCASESENSEBASIC)) Then
@@ -82,8 +82,8 @@ Func SmartWait4Train()
 	EndIf
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog And IsArray($g_asShieldStatus) Then Setlog("Shield Status:" & $g_asShieldStatus[0] & ", till " & $g_asShieldStatus[2], $COLOR_DEBUG)
 
-	Local $result = OpenArmyOverview() ; Open train overview
-	If $result = False Then
+	Local $result = OpenArmyOverview(True, "SmartWait4Train()") ; Open train overview
+	If Not $result Then
 		If $g_bDebugImageSave Or $g_bDebugSetlogTrain Then DebugImageSave("SmartWait4Troop2_")
 	EndIf
 	If _Sleep($DELAYRESPOND) Then Return
@@ -96,7 +96,7 @@ Func SmartWait4Train()
 		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmyTroopTime returned: " & $g_aiTimeTrain[0], $COLOR_DEBUG)
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_aiTimeTrain[0] > 0 Then
-			If $g_bCloseRandomTime = True Then
+			If $g_bCloseRandomTime Then
 				$g_aiTimeTrain[0] += $g_aiTimeTrain[0] * $RandomAddPercent ; add some random percent
 			EndIf
 			$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_TROOP)
@@ -157,9 +157,9 @@ Func SmartWait4Train()
 					EndIf
 					If $iActiveHero <> -1 And $aHeroResult[$iActiveHero] > 0 Then ; valid time?
 						; check exact time & existing time is less than new time
-						If $g_bCloseRandomTime = True And $g_aiTimeTrain[2] < $aHeroResult[$iActiveHero] Then
+						If $g_bCloseRandomTime And $g_aiTimeTrain[2] < $aHeroResult[$iActiveHero] Then
 							$g_aiTimeTrain[2] = $aHeroResult[$iActiveHero] + ($aHeroResult[$iActiveHero] * $RandomAddPercent) ; add some random percent
-						ElseIf $g_bCloseExactTime = True And $g_aiTimeTrain[2] < $aHeroResult[$iActiveHero] Then
+						ElseIf $g_bCloseExactTime And $g_aiTimeTrain[2] < $aHeroResult[$iActiveHero] Then
 							$g_aiTimeTrain[2] = $aHeroResult[$iActiveHero] ; use exact time
 						EndIf
 						$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_HERO)
@@ -174,7 +174,7 @@ Func SmartWait4Train()
 			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmyHeroTime return all zero hero wait times", $COLOR_DEBUG)
 		EndIf
 		If $g_aiTimeTrain[2] > 0 Then
-			If $g_bCloseRandomTime = True Then
+			If $g_bCloseRandomTime Then
 				$g_aiTimeTrain[2] += $g_aiTimeTrain[2] * $RandomAddPercent ; add some random percent
 			EndIf
 			$iTrainWaitCloseFlag = BitOR($iTrainWaitCloseFlag, $TRAINWAIT_HERO)
@@ -186,7 +186,7 @@ Func SmartWait4Train()
 	EndIf
 
 	; update CC remaining time till next request if request made and CC not full
-	If $g_iCCRemainTime = 0 And _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
+	If $g_iCCRemainTime = 0 And _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, True), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) And Not _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
 		getArmyCCStatus()
 	EndIf
 
