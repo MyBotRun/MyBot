@@ -1,3 +1,23 @@
+* **V7.3.5**
+* Fix request troop button not found * Dec Update
+* Fix OCR for remaining clancastle request * Dec Update
+* Fix OCR for remaining Laboratory * Dec Update
+* Fix cannot find edit/okay button on army overview * Dec Update
+* Fix snow theme detection * Dec Update
+* Fix Boost Barracks/Spell Factory * Dec Update
+* Fix Weakbase conditionals with Air Defenses Level
+* Fix wait for spells ready not working
+* Fix lavahound donation
+* Fix Nox Shared Folder path to > v5.2.0
+* Fix some issues on Attack report Loot
+* Fix TH level 6 filter conditional not working
+* Fix making wrong donated spells
+* Improve ReadTroopQuantity function (from DocOC Team)
+* Improve troop training log messages
+* Improve wait for clouds pixel check for Imgloc image detection
+* Update levels and costs for troops/heroes * Dec Update
+* Update Italian language (by @quisazadrah)
+
 * **V7.3.4**
 * Fix redline detection freezing bot when computer doesn't have enough "free" CPUs
 * Fix image processing time for Train Window, SmartZap and ReArm

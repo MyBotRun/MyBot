@@ -75,6 +75,7 @@ Func ReplayShare($bShareLastReplay)
 	Else
 		SetLog("Skip Replay Sharing because the 30 minutes cooldown is not over yet!")
 	EndIf
+	ClickP($aAway, 1, 0, "#0235") ;Click away any open Windows
 EndFunc   ;==>ReplayShare
 
 #cs

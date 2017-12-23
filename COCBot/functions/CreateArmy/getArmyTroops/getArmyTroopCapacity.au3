@@ -1,7 +1,7 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: getArmyTroopCapacity
 ; Description ...: Obtains current and total capacity of troops from Training - Army Overview window
-; Syntax ........: getArmyCapacity([$bOpenArmyWindow = False[, $bCloseArmyWindow = False]])
+; Syntax ........: getArmyTroopCapacity([$bOpenArmyWindow = False[, $bCloseArmyWindow = False]])
 ; Parameters ....: $bOpenArmyWindow     - [optional] a boolean value. Default is False.
 ;                  $bCloseArmyWindow    - [optional] a boolean value. Default is False.
 ; Return values .: None
@@ -13,16 +13,17 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+
 Func getArmyTroopCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckWindow = True, $bSetLog = True, $bNeedCapture = True)
 
-	If $g_bDebugSetlogTrain Then SetLog("getArmyCapacity():", $COLOR_DEBUG1)
+	If $g_bDebugSetlogTrain Then SetLog("getArmyTroopsCapacity():", $COLOR_DEBUG1)
 
 	If $bCheckWindow Then
 		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)
 			Return ; not open, not requested to be open - error.
 		ElseIf $bOpenArmyWindow Then
-			If Not OpenArmyOverview() Then
+			If Not OpenArmyOverview(True, "getArmyTroopCapacity()") Then
 				SetError(2)
 				Return ; not open, requested to be open - error.
 			EndIf
@@ -138,4 +139,3 @@ Func getArmyTroopCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 	EndIf
 
 EndFunc   ;==>getArmyCapacity
-

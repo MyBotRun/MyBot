@@ -293,7 +293,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		If $noMatchTxt <> "" Then
 			;SetLog(_PadStringCenter(" " & StringMid($noMatchTxt, 3) & " ", 50, "~"), $COLOR_DEBUG)
 			SetLog($GetResourcesTXT, $COLOR_BLACK, "Lucida Console", 7.5)
-			SetLog("      " & StringMid($noMatchTxt, 3), $COLOR_BLACK, "Lucida Console", 7.5)
+			SetLog("      " & StringMid($noMatchTxt, 3), $COLOR_ACTION, "Lucida Console", 7.5)
 			$logwrited = True
 		EndIf
 
@@ -445,7 +445,7 @@ Func SearchLimit($iSkipped)
 		WEnd
 		$g_bIsSearchLimit = True
 		ReturnHome(False, False) ;If End battle is available
-		getArmyCapacity(True, True)
+		getArmyTroopCapacity(True, True)
 		$g_bRestart = True ; set force runbot restart flag
 		$g_bIsClientSyncError = True ; set OOS flag for fast restart
 		Return True

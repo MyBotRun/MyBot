@@ -594,7 +594,7 @@ EndFunc   ;==>zapBuilding
 Func ReCheckDrillExist($x, $y)
 	_CaptureRegion2($x - 25, $y - 25, $x + 25, $y + 25)
 
-	Local $aResult = multiMatches($g_sImgSearchDrill, 1, "DCD", $g_sImglocRedline, "", 0, 1000, False) ; Setting Force Captureregion to false, else it will recapture the whole screen, finding any drill
+	Local $aResult = multiMatches($g_sImgSearchDrill, 1, "FV", "FV", "", 0, 1000, False) ; Setting Force Captureregion to false, else it will recapture the whole screen, finding any drill
 
 	If UBound($aResult) > 1 Then
 		If $g_bDebugSmartZap = True Then SetLog("ReCheckDrillExist: Yes| " & UBound($aResult), $COLOR_SUCCESS)

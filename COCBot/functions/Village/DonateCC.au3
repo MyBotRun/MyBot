@@ -14,7 +14,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Global $g_abPrepDon[4] = [False, False, False, False]
+Global $g_aiPrepDon[4] = [0, 0, 0, 0]
 Global $g_iTotalDonateCapacity, $g_iTotalDonateSpellCapacity
 Global $g_iDonTroopsLimit = 8, $iDonSpellsLimit = 1, $g_iDonTroopsAv = 0, $g_iDonSpellsAv = 0
 Global $g_iDonTroopsQuantityAv = 0, $g_iDonTroopsQuantity = 0, $g_iDonSpellsQuantityAv = 0, $g_iDonSpellsQuantity = 0
@@ -23,35 +23,35 @@ Global $g_bDonateAllRespectBlk = False ; is turned on off durning donate all sec
 Global $g_aiDonatePixel ; array holding x, y position of donate button in chat window
 
 Func PrepareDonateCC()
-	$g_abPrepDon[0] = 0
-	$g_abPrepDon[1] = 0
+	$g_aiPrepDon[0] = 0
+	$g_aiPrepDon[1] = 0
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
-		$g_abPrepDon[0] = BitOR($g_abPrepDon[0], ($g_abChkDonateTroop[$i] ? 1 : 0))
-		$g_abPrepDon[1] = BitOR($g_abPrepDon[1], ($g_abChkDonateAllTroop[$i] ? 1 : 0))
+		$g_aiPrepDon[0] = BitOR($g_aiPrepDon[0], ($g_abChkDonateTroop[$i] ? 1 : 0))
+		$g_aiPrepDon[1] = BitOR($g_aiPrepDon[1], ($g_abChkDonateAllTroop[$i] ? 1 : 0))
 	Next
 
-	$g_abPrepDon[2] = 0
-	$g_abPrepDon[3] = 0
+	$g_aiPrepDon[2] = 0
+	$g_aiPrepDon[3] = 0
 	For $i = 0 To $eSpellCount - 1
 		If $i <> $eSpellClone Then
-			$g_abPrepDon[2] = BitOR($g_abPrepDon[2], ($g_abChkDonateSpell[$i] ? 1 : 0))
-			$g_abPrepDon[3] = BitOR($g_abPrepDon[3], ($g_abChkDonateAllSpell[$i] ? 1 : 0))
+			$g_aiPrepDon[2] = BitOR($g_aiPrepDon[2], ($g_abChkDonateSpell[$i] ? 1 : 0))
+			$g_aiPrepDon[3] = BitOR($g_aiPrepDon[3], ($g_abChkDonateAllSpell[$i] ? 1 : 0))
 		EndIf
 	Next
 
-	$g_iActiveDonate = BitOR($g_abPrepDon[0], $g_abPrepDon[1], $g_abPrepDon[2], $g_abPrepDon[3])
+	$g_iActiveDonate = BitOR($g_aiPrepDon[0], $g_aiPrepDon[1], $g_aiPrepDon[2], $g_aiPrepDon[3])
 EndFunc   ;==>PrepareDonateCC
 
-Func DonateCC($Check = False)
+Func DonateCC($bCheckForNewMsg = False)
 
-	Local $bDonateTroop = $g_abPrepDon[0]
+	Local $bDonateTroop = ($g_aiPrepDon[0] = 1)
 
-	Local $bDonateAllTroop = $g_abPrepDon[1]
+	Local $bDonateAllTroop = ($g_aiPrepDon[1] = 1)
 
-	Local $bDonateSpell = $g_abPrepDon[2]
-	Local $bDonateAllSpell = $g_abPrepDon[3]
+	Local $bDonateSpell = ($g_aiPrepDon[2] = 1)
+	Local $bDonateAllSpell = ($g_aiPrepDon[3] = 1)
 
-	Local $bDonate = $g_iActiveDonate
+	Local $bDonate = ($g_iActiveDonate = 1)
 
 	Local $bOpen = True, $bClose = False
 
@@ -74,10 +74,8 @@ Func DonateCC($Check = False)
 	Local $y = 90
 
 	;check for new chats first
-	If $Check Then
-		If Not _ColorCheck(_GetPixelColor(26, 312 + $g_iMidOffsetY, True), Hex(0xf00810, 6), 20) And $g_iCommandStop <> 3 Then
-			Return ;exit if no new chats
-		EndIf
+	If $bCheckForNewMsg Then
+		If Not _ColorCheck(_GetPixelColor(26, 312 + $g_iMidOffsetY, True), Hex(0xf00810, 6), 20) And $g_iCommandStop <> 3 Then Return ;exit if no new chats
 	EndIf
 
 	;Opens clan tab and verbose in log
@@ -92,9 +90,6 @@ Func DonateCC($Check = False)
 	While 1
 		;If Clan tab is selected.
 		If _ColorCheck(_GetPixelColor(189, 24, True), Hex(0x706C50, 6), 20) Then ; color med gray
-			;If _Sleep(200) Then Return ;small delay to allow tab to completely open
-			;Clan tab already Selected no click needed
-			;ClickP($aClanTab, 1, 0, "#0169") ; clicking clan tab
 			ExitLoop
 		EndIf
 		;If Global tab is selected.
@@ -118,7 +113,6 @@ Func DonateCC($Check = False)
 	; add scroll here
 	While 1
 		ForceCaptureRegion()
-		;$Scroll = _PixelSearch(288, 640 + $g_iBottomOffsetY, 290, 655 + $g_iBottomOffsetY, Hex(0x588800, 6), 20)
 		$y = 90
 		$Scroll = _PixelSearch(293, 8 + $y, 295, 23 + $y, Hex(0xFFFFFF, 6), 20)
 		If IsArray($Scroll) And _ColorCheck(_GetPixelColor(300, 110, True), Hex(0x509808, 6), 20) Then ; a second pixel for the green
@@ -145,14 +139,9 @@ Func DonateCC($Check = False)
 			$donateCCfilter = donateCCWBLUserImageCollect($g_aiDonatePixel[0], $g_aiDonatePixel[1])
 
 			;reset every run
-			$bDonate = False ; donate only for one request at a time
+			$bDonate = False
 			$g_bSkipDonTroops = False
-			;removed because we can launch donateCC previous to read TH level and status of dark spell factory
-;~ 			If $g_iTownHallLevel < 8 Or $numFactoryDarkSpellAvaiables = 0 Then ; if you are a < TH8 you don't have a Dark Spells Factory OR Dark Spells Factory is Upgrading
-;~ 				$g_bSkipDonSpells = True
-;~ 			Else
 			$g_bSkipDonSpells = False
-;~ 			EndIf
 
 			;Read chat request for DonateTroop and DonateSpell
 			If $bDonateTroop Or $bDonateSpell And $donateCCfilter Then
@@ -293,7 +282,7 @@ Func DonateCC($Check = False)
 					ContinueLoop ; go to next button if already donated, maybe this is an impossible case..
 				EndIf
 
-				If $bDonateTroop = 1 And $g_bSkipDonTroops = False Then
+				If $bDonateTroop And Not $g_bSkipDonTroops Then
 					If $g_bDebugSetlog Then Setlog("Troop checkpoint.", $COLOR_DEBUG)
 
 					;;; Custom Combination Donate by ChiefM3, edited by MonkeyHunter
@@ -374,7 +363,7 @@ Func DonateCC($Check = False)
 
 				EndIf
 
-				If $bDonateSpell = 1 And Not $g_bSkipDonSpells Then
+				If $bDonateSpell And Not $g_bSkipDonSpells Then
 					If $g_bDebugSetlog Then Setlog("Spell checkpoint.", $COLOR_DEBUG)
 
 					For $i = 0 To UBound($g_aiDonateSpellPriority) - 1
@@ -999,7 +988,7 @@ Func DonateWindowCap(ByRef $g_bSkipDonTroops, ByRef $g_bSkipDonSpells)
 				;Setlog("Donate Troops: " & $g_iDonTroopsAv & "/" & $g_iDonTroopsLimit)
 			EndIf
 		Else
-			Setlog("Error reading the Castle Troop Capacity...", $COLOR_ERROR) ; log if there is read error
+			Setlog("Error reading the Castle Troop Capacity", $COLOR_ERROR) ; log if there is read error
 			$g_iDonTroopsAv = 0
 			$g_iDonTroopsLimit = 0
 		EndIf
@@ -1015,10 +1004,9 @@ Func DonateWindowCap(ByRef $g_bSkipDonTroops, ByRef $g_bSkipDonSpells)
 			If $aTempReadCCSpellsCap[2] > 0 Then
 				$g_iDonSpellsAv = $aTempReadCCSpellsCap[1]
 				$iDonSpellsLimit = $aTempReadCCSpellsCap[2]
-				;Setlog("Donate Spells: " & $g_iDonSpellsAv & "/" & $iDonSpellsLimit)
 			EndIf
 		Else
-			Setlog("Error reading the Castle Spells Capacity...", $COLOR_ERROR) ; log if there is read error
+			Setlog("Error reading the Castle Spells Capacity", $COLOR_ERROR) ; log if there is read error
 			$g_iDonSpellsAv = 0
 			$iDonSpellsLimit = 0
 		EndIf
@@ -1039,9 +1027,12 @@ Func DonateWindowCap(ByRef $g_bSkipDonTroops, ByRef $g_bSkipDonSpells)
 	If Not $g_bSkipDonSpells And $g_iDonTroopsAv < $g_iDonTroopsLimit And $g_iDonSpellsAv = $iDonSpellsLimit Then Setlog("Donate Troops: " & $g_iDonTroopsAv & "/" & $g_iDonTroopsLimit)
 	If Not $g_bSkipDonTroops And $g_iDonTroopsAv = $g_iDonTroopsLimit And $g_iDonSpellsAv < $iDonSpellsLimit Then Setlog("Donate Spells: " & $g_iDonSpellsAv & "/" & $iDonSpellsLimit)
 
-	If $g_bDebugSetlog Then Setlog("$g_bSkipDonTroops: " & $g_bSkipDonTroops, $COLOR_DEBUG)
-	If $g_bDebugSetlog Then Setlog("$g_bSkipDonSpells: " & $g_bSkipDonSpells, $COLOR_DEBUG)
-	If $g_bDebugSetlog Then Setlog("DonateCapWindow End", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then
+		SetLog("$g_bSkipDonTroops: " & $g_bSkipDonTroops, $COLOR_DEBUG)
+		SetLog("$g_bSkipDonSpells: " & $g_bSkipDonSpells, $COLOR_DEBUG)
+		SetLog("DonateCapWindow End", $COLOR_DEBUG)
+	EndIf
+
 EndFunc   ;==>DonateWindowCap
 
 Func RemainingCCcapacity()
@@ -1253,7 +1244,7 @@ Func SkipDonateNearFullTroops($bSetLog = False, $aHeroResult = Default)
 			Local $rIsWaitforHeroesActive = IsWaitforHeroesActive()
 			If $rIsWaitforHeroesActive Then
 				If $aHeroResult = Default Or Not IsArray($aHeroResult) Then
-					If Not OpenArmyOverview() Then Return False ; Return False if failed to Open Army Window
+					If Not OpenArmyOverview(True, "SkipDonateNearFullTroops()") Then Return False ; Return False if failed to Open Army Window
 					$aHeroResult = getArmyHeroTime("all")
 				EndIf
 				If @error Or UBound($aHeroResult) < 3 Then

@@ -748,6 +748,9 @@ Func runBot() ;Bot that runs everything in order
 					If Unbreakable() = True Then ContinueLoop
 				EndIf
 			EndIf
+			If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then ; Train Donate only - force a donate cc everytime, Ignore any SkipDonate Near Full Values
+				If BalanceDonRec(True) Then DonateCC()
+			EndIf
 			Local $aRndFuncList = ['Laboratory', 'UpgradeHeroes', 'UpgradeBuilding', 'BuilderBase']
 			While 1
 				If $g_bRunState = False Then Return
@@ -844,9 +847,7 @@ Func _Idle() ;Sequence that runs until Full Army
 		If $g_iCommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_SUCCESS)
 		Local $hTimer = __TimerInit()
 		Local $iReHere = 0
-		;PrepareDonateCC()
 
-		;If $g_bDonateSkipNearFullEnable = True Then getArmyCapacity(true,true)
 		If $g_iActiveDonate And $g_bChkDonate Then
 			Local $aHeroResult = CheckArmyCamp(True, True, True, False)
 			While $iReHere < 7
@@ -964,7 +965,7 @@ EndFunc   ;==>_Idle
 
 Func AttackMain() ;Main control for attack functions
 	;LoadAmountOfResourcesImages() ; for debug
-	getArmyCapacity(True, True)
+	getArmyTroopCapacity(True, True)
 	If IsSearchAttackEnabled() Then
 		If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
 			If $g_bUseCCBalanced = True Then ;launch profilereport() only if option balance D/R it's activated
@@ -1031,7 +1032,7 @@ Func QuickAttack()
 	Local $quicklymilking = 0
 	Local $quicklythsnipe = 0
 
-	getArmyCapacity(True, True)
+	getArmyTroopCapacity(True, True)
 
 	If ($g_aiAttackAlgorithm[$DB] = 2 And IsSearchModeActive($DB)) Or (IsSearchModeActive($TS)) Then
 		VillageReport()
@@ -1087,14 +1088,13 @@ Func _RunFunction($action)
 			_Sleep($DELAYRUNBOT3)
 		Case "DonateCC"
 			If $g_iActiveDonate And $g_bChkDonate Then
-				;If $g_bDonateSkipNearFullEnable = True and $g_bFirstStart = False Then getArmyCapacity(True, True)
 				If SkipDonateNearFullTroops(True) = False And BalanceDonRec(True) Then DonateCC()
 				If _Sleep($DELAYRUNBOT1) = False Then checkMainScreen(False)
 			EndIf
 		Case "DonateCC,Train"
 			If $g_iActiveDonate And $g_bChkDonate Then
 				If $g_bFirstStart Then
-					getArmyCapacity(True, False)
+					getArmyTroopCapacity(True, False)
 					getArmySpellCapacity(False, True)
 				EndIf
 				If SkipDonateNearFullTroops(True) = False And BalanceDonRec(True) Then DonateCC()

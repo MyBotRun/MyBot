@@ -29,7 +29,7 @@ Func Laboratory()
 	$g_iUpgradeMinDark = Number($g_iUpgradeMinDark)
 
 	$g_iLaboratoryElixirCost = 0
-	If $g_bAutoLabUpgradeEnable = False Then Return ; Lab upgrade not enabled.
+	If Not $g_bAutoLabUpgradeEnable Then Return ; Lab upgrade not enabled.
 
 	If $g_iCmbLaboratory = 0 Then
 		SetLog("Laboratory enabled, but no troop upgrade selected", $COLOR_WARNING)
@@ -48,7 +48,7 @@ Func Laboratory()
 	If @error Then _logErrorDateDiff(@error)
 	If $g_bDebugSetlog Then SetLog($g_avLabTroops[$g_iCmbLaboratory][3] & " Lab end time: " & $g_sLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
 
-	If $g_bRunState = False Then Return
+	If Not $g_bRunState Then Return
 	If $TimeDiff <= 0 Then
 		SetLog("Checking Troop Upgrade in Laboratory ...", $COLOR_INFO)
 	Else
@@ -104,7 +104,7 @@ Func Laboratory()
 					If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				EndIf
 			EndIf
-			If $g_bRunState = False Then Return
+			If Not $g_bRunState Then Return
 		Next
 		$g_iFirstTimeLab = 1
 	EndIf
@@ -129,7 +129,7 @@ Func Laboratory()
 						If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 					EndIf
 				EndIf
-				If $g_bRunState = False Then Return
+				If Not $g_bRunState Then Return
 			Next
 			$g_iFirstTimeLab += 2
 		EndIf
@@ -155,7 +155,7 @@ Func Laboratory()
 						If $g_bDebugSetlog Then Setlog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 					EndIf
 				EndIf
-				If $g_bRunState = False Then Return
+				If Not $g_bRunState Then Return
 			Next
 			$g_iFirstTimeLab += 4
 		EndIf
@@ -173,7 +173,7 @@ Func Laboratory()
 		If _Sleep($DELAYLABORATORY2) Then Return
 		; upgrade in process and time not recorded?  Then update completion time!
 		If $g_sLabUpgradeTime = "" Or $TimeDiff <= 0 Then
-			$Result = getRemainTLaboratory(282, 277) ; Try to read white text showing actual time left for upgrade
+			$Result = getRemainTLaboratory(270, 257) ; Try to read white text showing actual time left for upgrade
 			If $g_bDebugSetlog Then Setlog($g_avLabTroops[$g_iCmbLaboratory][3] & " OCR Remaining Lab Time = " & $Result, $COLOR_DEBUG)
 			$aArray = StringSplit($Result, ' ', BitOR($STR_CHRSPLIT, $STR_NOCOUNT)) ;separate days, hours, minutes, seconds
 			If IsArray($aArray) Then

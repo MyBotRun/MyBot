@@ -91,8 +91,15 @@ Func WaitForClouds()
 				resetAttackSearch()
 				Return
 			EndIf
+			; Check if CoC app restarted without notice (where android restarted app automatically with same PID), and returned to main base
+			If _CheckPixel($aIsMain, $g_bCapturePixel)  Then
+				SetLog("Strange error detected! 'WaitforClouds' returned to main base unexpectedly, OOS restart initiated", $COLOR_ERROR)
+				$g_bRestart = True ; Set flag for OOS restart condition
+				resetAttackSearch()
+				Return
+			EndIf
 			; attempt to enable GUI during long wait?
-			If $iSearchTime > 2 And $bEnabledGUI = False Then
+			If $iSearchTime > 2 And Not $bEnabledGUI Then
 				AndroidShieldForceDown(True)
 				EnableGuiControls() ; enable bot controls is more than 2 minutes wait
 				SetLog("Enabled bot controls due to long wait time", $COLOR_SUCCESS)
@@ -234,7 +241,7 @@ Func chkAttackSearchPersonalBreak()
 EndFunc   ;==>chkAttackSearchPersonalBreak
 
 Func btnSearchFailRetry()
-	; verify retry button exists, and press button, return false if button not found
+#cs	; verify retry button exists, and press button, return false if button not found
 	Local $offColors[3][3] = [[0x121311, 50, 8], [0x6EBC1F, 55, 21], [0x11110F, 90, 7]] ; 2nd=Black in "R", 3rd=green centered under text, 4th=black in v of letter "Y" ; before 2017 May update 0x000000 0x60B014 0x020201
 	Local $ButtonPixel = _MultiPixelSearch(364, 405 + $g_iMidOffsetY, 466, 430 + $g_iMidOffsetY, 1, 1, Hex(0x171814, 6), $offColors, 20) ; first vertical black pixel of Retry button edge ; before 2017 May update 0x000000
 	If $g_bDebugSetlog Then Setlog("Retry btn clr chk-#1: " & 	_GetPixelColor(368, 347 + $g_iMidOffsetY + 60, True) & ", #2: " & _
@@ -250,6 +257,11 @@ Func btnSearchFailRetry()
 														_GetPixelColor($ButtonPixel[0] + 90, $ButtonPixel[1] + 7, True), $COLOR_DEBUG) ; before 2017 May update + (0, 0) (144, 0) (54, 17) (54, 27)
 		EndIf
 		Click($ButtonPixel[0] + 68, $ButtonPixel[1] + 13, 1, 0, "#0512") ; Click Retry Button ; before 2017 May update + (75, 25)
+		Return True
+	EndIf
+#ce
+	If QuickMIS("BC1", @ScriptDir & "\imgxml\Resources\Clouds", 270, 400, 600, 500) Then
+		Click($g_iQuickMISX + 270, $g_iQuickMISY + 400, 1, 0, "#0512")
 		Return True
 	EndIf
 	Return False

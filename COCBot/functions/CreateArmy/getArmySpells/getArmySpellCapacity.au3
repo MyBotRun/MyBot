@@ -23,7 +23,7 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 			SetError(1)
 			Return ; not open, not requested to be open - error.
 		ElseIf $bOpenArmyWindow Then
-			If Not OpenArmyOverview() Then
+			If Not OpenArmyOverview(True, "getArmySpellCapacity()") Then
 				SetError(2)
 				Return ; not open, requested to be open - error.
 			EndIf
@@ -31,6 +31,7 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		EndIf
 	EndIf
 
+	Local $g_iTotalSpells = 0
 	Local $aGetSpellCap[3] = ["", "", ""]
 	Local $iCount
 	Local $sSpellsInfo = ""
@@ -39,6 +40,7 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 	If $g_iTotalSpellValue > 0 Then ; only use this code if the user had input spells to brew ... and assign the spells quantity
 		$sSpellsInfo = getArmyCampCap($aArmySpellSize[0], $aArmySpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 
+		$iCount = 0 ; reset OCR loop counter
 		While $sSpellsInfo = "" ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
 			$sSpellsInfo = getArmyCampCap($aArmySpellSize[0], $aArmySpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 			$iCount += 1
@@ -56,12 +58,12 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 			Else
 				Setlog("Error in getArmySpellCapacity: Couldn't reall all Capacity Values", $COLOR_ERROR) ; log if there is read error
 				$g_iCurrentSpells = 0
-				$g_iTotalSpells = 0
+				$g_iTotalSpells = $g_iTotalSpellValue
 			EndIf
 		Else
-			Setlog("SError in getArmySpellCapacity: $aGetCCSpell is not an Array", $COLOR_ERROR) ; log if there is read error
+			Setlog("Error in getArmySpellCapacity: $aGetCCSpell is not an Array", $COLOR_ERROR) ; log if there is read error
 			$g_iCurrentSpells = 0
-			$g_iTotalSpells = 0
+			$g_iTotalSpells = $g_iTotalSpellValue
 		EndIf
 
 		If $bSetLog Then SetLog("Total Spell Factory Capacity: " & $g_iCurrentSpells & "/" & $g_iTotalSpells)

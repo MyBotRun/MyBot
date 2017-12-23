@@ -19,8 +19,8 @@ Func CheckImageType()
 	If _Sleep($DELAYCHECKIMAGETYPE1) Then Return
 	If Not IsMainPage() Then ClickP($aAway, 2, 20, "#0467") ;Click Away Again
 
-	Local $x = 200
-	Local $y = 130
+	Local $x = 165
+	Local $y = 150
 	Local $x1 = $x + 60
 	Local $y1 = $y + 80
 

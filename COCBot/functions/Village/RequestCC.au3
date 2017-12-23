@@ -52,22 +52,25 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 		EndIf
 	WEnd
 
-	Local $color = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True)
+	Local $color1 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, True)	; Gray/Green color at 20px below Letter "R"
+	Local $color2 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True)		; White/Green color at Letter "R"
 
-	If _ColorCheck($color, Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5]) Then
-		;can make a request
-		Local $x = _makerequest()
-	ElseIf _ColorCheck($color, Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
-		;request has already been made
-		SetLog("Request has already been made")
-	ElseIf _ColorCheck($color, Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
+	If _ColorCheck($color1, Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5]) Then
 		;clan full or not in clan
 		SetLog("Your Clan Castle is already full or you are not in a clan.")
 		$g_bCanRequestCC = False
+	ElseIf _ColorCheck($color1, Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
+		If _ColorCheck($color2, Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
+			;can make a request
+			Local $x = _makerequest()
+		Else
+			;request has already been made
+			SetLog("Request has already been made")
+		EndIf
 	Else
 		;no button request found
 		SetLog("Cannot detect button request troops.")
-		setlog("The Pixel on " & $aRequestTroopsAO[0] & "-" & $aRequestTroopsAO[1] & " was: " & $color, $COLOR_ERROR)
+		Setlog("The Pixel on " & $aRequestTroopsAO[0] & "-" & $aRequestTroopsAO[1] & " was: " & $color1, $COLOR_ERROR)
 	EndIf
 
 	;exit from army overview
@@ -75,7 +78,6 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	If $ClickPAtEnd Then ClickP($aAway, 2, 0, "#0335")
 
 EndFunc   ;==>RequestCC
-
 
 Func _makerequest()
 	;click button request troops

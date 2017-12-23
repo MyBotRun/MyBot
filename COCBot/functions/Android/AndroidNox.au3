@@ -229,6 +229,14 @@ Func InitNox($bCheckOnly = False)
 					; Just in case of 'Other' Folder doesn't exist
 					DirCreate($g_sAndroidPicturesHostPath)
 				EndIf
+			; > Nox v5.2.0.0
+			ElseIf FileExists(@HomeDrive & @HomePath & "\Nox_share\") Then
+				$g_bAndroidSharedFolderAvailable = True
+				$g_sAndroidPicturesHostPath = @HomeDrive & @HomePath & "\Nox_share\"
+				If Not FileExists($g_sAndroidPicturesHostPath) Then
+					; Just in case of 'Other' Folder doesn't exist
+					DirCreate($g_sAndroidPicturesHostPath)
+				EndIf
 			Else
 				$g_bAndroidSharedFolderAvailable = False
 				$g_bAndroidAdbScreencap = False

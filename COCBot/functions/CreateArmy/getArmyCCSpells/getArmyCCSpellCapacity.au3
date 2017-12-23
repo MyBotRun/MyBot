@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 #include-once
 
-Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True, $bNeedCapture = True)
+Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $CheckWindow = True, $bSetLog = True, $bNeedCapture = True)
 
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyCCSpellCapacity:", $COLOR_DEBUG1)
 
@@ -22,8 +22,8 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)
 			Return ; not open, not requested to be open - error.
-		ElseIf $bOpenArmyWindow = True Then
-			If Not OpenArmyOverview() Then
+		ElseIf $bOpenArmyWindow Then
+			If Not OpenArmyOverview(True, "getArmyCCSpellCapacity()") Then
 				SetError(2)
 				Return ; not open, requested to be open - error.
 			EndIf
@@ -65,7 +65,7 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 			$g_iCurrentCCSpells = 0
 		EndIf
 
-		SetLog("Total Clan Castle Spells: " & $g_iCurrentCCSpells & "/" & $g_iTotalCCSpells)
+		If $bSetLog Then SetLog("Total Clan Castle Spells: " & $g_iCurrentCCSpells & "/" & $g_iTotalCCSpells)
 	EndIf
 
 	If $bCloseArmyWindow Then

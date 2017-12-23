@@ -4,12 +4,12 @@
 #pragma compile(Out, MyBot.run.MiniGui.exe) ; Required
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
-#pragma compile(ProductVersion, 7.3.4)
-#pragma compile(FileVersion, 7.3.4)
+#pragma compile(ProductVersion, 7.3.5)
+#pragma compile(FileVersion, 7.3.5)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.3.4"
+Global $g_sBotVersion = "v7.3.5"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -2612,7 +2612,7 @@ Global $__MEmu_Idx = _ArraySearch($g_avAndroidAppConfig, "MEmu", 0, 0, 0, 0, 1, 
 Global $__BS2_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks2", 0, 0, 0, 0, 1, 0)
 Global $__BS_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks", 0, 0, 0, 0, 1, 0)
 Global $__KOPLAYER_Idx = _ArraySearch($g_avAndroidAppConfig, "KOPLAYER", 0, 0, 0, 0, 1, 0)
-Global $__LeapDroid_IDx = _ArraySearch($g_avAndroidAppConfig, "LeapDroid", 0, 0, 0, 0, 1, 0)
+Global $__LeapDroid_Idx = _ArraySearch($g_avAndroidAppConfig, "LeapDroid", 0, 0, 0, 0, 1, 0)
 Global $__iTools_Idx = _ArraySearch($g_avAndroidAppConfig, "iTools", 0, 0, 0, 0, 1, 0)
 Global $__Droid4X_Idx = _ArraySearch($g_avAndroidAppConfig, "Droid4X", 0, 0, 0, 0, 1, 0)
 Global $__Nox_Idx = _ArraySearch($g_avAndroidAppConfig, "Nox", 0, 0, 0, 0, 1, 0)

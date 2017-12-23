@@ -13,8 +13,8 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-;
-Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSetLog = True, $CheckWindow = True)
+
+Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $CheckWindow = True, $bSetLog = True)
 
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyHeroCount:", $COLOR_DEBUG)
 
@@ -23,7 +23,7 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSet
 			SetError(1)
 			Return ; not open, not requested to be open - error.
 		ElseIf $bOpenArmyWindow Then
-			If Not OpenArmyOverview() Then
+			If Not OpenArmyOverview(True, "getArmyHeroCount()") Then
 				SetError(2)
 				Return ; not open, requested to be open - error.
 			EndIf
@@ -44,13 +44,13 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bSet
 		If $sResult <> "" Then ; we found something, figure out what?
 			Select
 				Case StringInStr($sResult, "king", $STR_NOCASESENSEBASIC)
-					If $bSetLog Then Setlog(" - Barbarian King available", $COLOR_SUCCESS)
+					If $bSetLog Then Setlog(" - Barbarian King Available", $COLOR_SUCCESS)
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroKing)
 				Case StringInStr($sResult, "queen", $STR_NOCASESENSEBASIC)
-					If $bSetLog Then Setlog(" - Archer Queen available", $COLOR_SUCCESS)
+					If $bSetLog Then Setlog(" - Archer Queen Available", $COLOR_SUCCESS)
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroQueen)
 				Case StringInStr($sResult, "warden", $STR_NOCASESENSEBASIC)
-					If $bSetLog Then Setlog(" - Grand Warden available", $COLOR_SUCCESS)
+					If $bSetLog Then Setlog(" - Grand Warden Available", $COLOR_SUCCESS)
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroWarden)
 				Case StringInStr($sResult, "heal", $STR_NOCASESENSEBASIC)
 					If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then

@@ -32,7 +32,7 @@ Global $g_sImgCollectRessources = @ScriptDir & "\imgxml\Resources\Collect"
 Global $g_sImgCollectLootCart = @ScriptDir & "\imgxml\Resources\LootCart\LootCart_0_85.xml"
 Global $g_sImgRearm = @ScriptDir & "\imgxml\rearm\"
 Global $g_sImgBoat = @ScriptDir & "\imgxml\Boat\BoatNormalVillage_0_89.xml"
-Global $g_sImgZoomOutDir = @ScriptDir & "\imgxml\village\NormalVillage"
+Global $g_sImgZoomOutDir = @ScriptDir & "\imgxml\village\NormalVillage\"
 Global $g_sImgCheckWallDir = @ScriptDir & "\imgxml\Walls"
 Global $g_sImgClearTombs = @ScriptDir & "\imgxml\Resources\Tombs"
 Global $g_sImgCleanYard = @ScriptDir & "\imgxml\Resources\Obstacles"
@@ -43,7 +43,7 @@ Global $g_sImgGemBox = @ScriptDir & "\imgxml\Resources\GemBox"
 #Region Builder Base
 Global $g_sImgCollectRessourcesBB = @ScriptDir & "\imgxml\Resources\BuildersBase\Collect"
 Global $g_sImgBoatBB = @ScriptDir & "\imgxml\Boat\BoatBuilderBase_0_89.xml"
-Global $g_sImgZoomOutDirBB = @ScriptDir & "\imgxml\village\BuilderBase"
+Global $g_sImgZoomOutDirBB = @ScriptDir & "\imgxml\village\BuilderBase\"
 Global $g_sImgStartCTBoost = @ScriptDir & "\imgxml\Resources\BuildersBase\ClockTower\ClockTowerAvailable*.xml"
 #EndRegion
 
