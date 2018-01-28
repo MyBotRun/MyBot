@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), Boju (11-2016), MR.ViPER (11-2016), CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -367,7 +367,7 @@ Func chkTroopOrder($bSetLog = True)
 				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
 			Next
 			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
-			Setlog("Current train order= " & $sNewTrainList, $COLOR_INFO)
+			SetLog("Current train order= " & $sNewTrainList, $COLOR_INFO)
 		EndIf
 	EndIf
 EndFunc   ;==>chkTroopOrder
@@ -541,25 +541,25 @@ Func BtnSpellsOrderSet()
 		If @error Then
 			Switch @error
 				Case 1
-					Setlog("Code problem, can not continue till fixed!", $COLOR_ERROR)
+					SetLog("Code problem, can not continue till fixed!", $COLOR_ERROR)
 				Case 2
-					Setlog("Bad Combobox selections, please fix!", $COLOR_ERROR)
+					SetLog("Bad Combobox selections, please fix!", $COLOR_ERROR)
 				Case 3
-					Setlog("Unable to Change Spells Brew Order due bad change count!", $COLOR_ERROR)
+					SetLog("Unable to Change Spells Brew Order due bad change count!", $COLOR_ERROR)
 				Case Else
-					Setlog("Monkey ate bad banana, something wrong with ChangeSpellsBrewOrder() code!", $COLOR_ERROR)
+					SetLog("Monkey ate bad banana, something wrong with ChangeSpellsBrewOrder() code!", $COLOR_ERROR)
 			EndSwitch
 			_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight)
 		Else
-			Setlog("Spells Brew order changed successfully!", $COLOR_SUCCESS)
+			SetLog("Spells Brew order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eSpellCount - 1
 				$sNewTrainList &= $g_asSpellShortNames[$g_aiBrewOrder[$i]] & ", "
 			Next
 			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
-			Setlog("Spells Brew order= " & $sNewTrainList, $COLOR_INFO)
+			SetLog("Spells Brew order= " & $sNewTrainList, $COLOR_INFO)
 		EndIf
 	Else
-		Setlog("Must use all Spells and No duplicate troop names!", $COLOR_ERROR)
+		SetLog("Must use all Spells and No duplicate troop names!", $COLOR_ERROR)
 		_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	EndIf
 	;	GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE)
@@ -628,25 +628,25 @@ Func BtnTroopOrderSet()
 		If @error Then
 			Switch @error
 				Case 1
-					Setlog("Code problem, can not continue till fixed!", $COLOR_ERROR)
+					SetLog("Code problem, can not continue till fixed!", $COLOR_ERROR)
 				Case 2
-					Setlog("Bad Combobox selections, please fix!", $COLOR_ERROR)
+					SetLog("Bad Combobox selections, please fix!", $COLOR_ERROR)
 				Case 3
-					Setlog("Unable to Change Troop Train Order due bad change count!", $COLOR_ERROR)
+					SetLog("Unable to Change Troop Train Order due bad change count!", $COLOR_ERROR)
 				Case Else
-					Setlog("Monkey ate bad banana, something wrong with ChangeTroopTrainOrder() code!", $COLOR_ERROR)
+					SetLog("Monkey ate bad banana, something wrong with ChangeTroopTrainOrder() code!", $COLOR_ERROR)
 			EndSwitch
 			_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 		Else
-			Setlog("Troop training order changed successfully!", $COLOR_SUCCESS)
+			SetLog("Troop training order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eTroopCount - 1
 				$sNewTrainList &= $g_asTroopShortNames[$g_aiTrainOrder[$i]] & ", "
 			Next
 			$sNewTrainList = StringTrimRight($sNewTrainList, 2)
-			Setlog("Troop train order= " & $sNewTrainList, $COLOR_INFO)
+			SetLog("Troop train order= " & $sNewTrainList, $COLOR_INFO)
 		EndIf
 	Else
-		Setlog("Must use all troops and No duplicate troop names!", $COLOR_ERROR)
+		SetLog("Must use all troops and No duplicate troop names!", $COLOR_ERROR)
 		_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	EndIf
 ;	GUICtrlSetState($g_hBtnTroopOrderSet, $GUI_DISABLE)
@@ -654,7 +654,7 @@ Func BtnTroopOrderSet()
 EndFunc   ;==>BtnTroopOrderSet
 
 Func ChangeSpellsBrewOrder()
-	If $g_bDebugSetlog Or $g_bDebugSetlogTrain Then Setlog("Begin Func ChangeSpellsBrewOrder()", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlog Or $g_bDebugSetlogTrain Then SetLog("Begin Func ChangeSpellsBrewOrder()", $COLOR_DEBUG) ;Debug
 
 	Local $NewTroopOrder[$eSpellCount]
 	Local $iUpdateCount = 0
@@ -682,7 +682,7 @@ Func ChangeSpellsBrewOrder()
 		Next
 		_GUICtrlSetImage($g_ahImgSpellsOrderSet, $g_sLibIconPath, $eIcnGreenLight)
 	Else
-		Setlog($iUpdateCount & "|" & $eSpellCount & " - Error - Bad Spells assignment in ChangeSpellsBrewOrder()", $COLOR_ERROR)
+		SetLog($iUpdateCount & "|" & $eSpellCount & " - Error - Bad Spells assignment in ChangeSpellsBrewOrder()", $COLOR_ERROR)
 		SetError(3, 0, False)
 		Return
 	EndIf
@@ -693,7 +693,7 @@ EndFunc   ;==>ChangeSpellsBrewOrder
 
 Func ChangeTroopTrainOrder()
 
-	If $g_bDebugSetlog Or $g_bDebugSetlogTrain Then Setlog("Begin Func ChangeTroopTrainOrder()", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlog Or $g_bDebugSetlogTrain Then SetLog("Begin Func ChangeTroopTrainOrder()", $COLOR_DEBUG) ;Debug
 
 	Local $NewTroopOrder[$eTroopCount]
 	Local $iUpdateCount = 0
@@ -721,7 +721,7 @@ Func ChangeTroopTrainOrder()
 		Next
 		_GUICtrlSetImage($g_ahImgTroopOrderSet, $g_sLibIconPath, $eIcnGreenLight)
 	Else
-		Setlog($iUpdateCount & "|" & $eTroopCount & " - Error - Bad troop assignment in ChangeTroopTrainOrder()", $COLOR_ERROR)
+		SetLog($iUpdateCount & "|" & $eTroopCount & " - Error - Bad troop assignment in ChangeTroopTrainOrder()", $COLOR_ERROR)
 		SetError(3, 0, False)
 		Return
 	EndIf
@@ -734,7 +734,7 @@ Func SetDefaultTroopGroup($bSetLog = True)
 		$g_aiTrainOrder[$i] = $i
 	Next
 
-	If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then Setlog("Default troop training order set", $COLOR_SUCCESS)
+	If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then SetLog("Default troop training order set", $COLOR_SUCCESS)
 EndFunc   ;==>SetDefaultTroopGroup
 
 Func SetDefaultSpellsGroup($bSetLog = True)
@@ -742,28 +742,28 @@ Func SetDefaultSpellsGroup($bSetLog = True)
 		$g_aiBrewOrder[$i] = $i
 	Next
 
-	If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then Setlog("Default Spells Brew order set", $COLOR_SUCCESS)
+	If ($bSetLog Or $g_bDebugSetlogTrain) And $g_bCustomTrainOrderEnable Then SetLog("Default Spells Brew order set", $COLOR_SUCCESS)
 EndFunc   ;==>SetDefaultSpellsGroup
 
 Func IsUseCustomSpellsOrder()
 	For $i = 0 To UBound($g_aiCmbCustomBrewOrder) - 1 ; Check if custom train order has been used, to select log message
 		If $g_aiCmbCustomBrewOrder[$i] = -1 Then
-			If $g_bDebugSetlogTrain And $g_bCustomBrewOrderEnable Then Setlog("Custom Spell order not used...", $COLOR_DEBUG) ;Debug
+			If $g_bDebugSetlogTrain And $g_bCustomBrewOrderEnable Then SetLog("Custom Spell order not used...", $COLOR_DEBUG) ;Debug
 			Return False
 		EndIf
 	Next
-	If $g_bDebugSetlogTrain And $g_bCustomBrewOrderEnable Then Setlog("Custom Spell order used...", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlogTrain And $g_bCustomBrewOrderEnable Then SetLog("Custom Spell order used...", $COLOR_DEBUG) ;Debug
 	Return True
 EndFunc   ;==>IsUseCustomSpellsOrder
 
 Func IsUseCustomTroopOrder()
 	For $i = 0 To UBound($g_aiCmbCustomTrainOrder) - 1 ; Check if custom train order has been used, to select log message
 		If $g_aiCmbCustomTrainOrder[$i] = -1 Then
-			If $g_bDebugSetlogTrain And $g_bCustomTrainOrderEnable Then Setlog("Custom train order not used...", $COLOR_DEBUG) ;Debug
+			If $g_bDebugSetlogTrain And $g_bCustomTrainOrderEnable Then SetLog("Custom train order not used...", $COLOR_DEBUG) ;Debug
 			Return False
 		EndIf
 	Next
-	If $g_bDebugSetlogTrain And $g_bCustomTrainOrderEnable Then Setlog("Custom train order used...", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlogTrain And $g_bCustomTrainOrderEnable Then SetLog("Custom train order used...", $COLOR_DEBUG) ;Debug
 	Return True
 EndFunc   ;==>IsUseCustomTroopOrder
 

@@ -5,8 +5,8 @@
 ; Parameters ....: $debug               - [optional]
 ; Return values .: None
 ; Author ........: Sardo (2016)
-; Modified ......: MMHK (07-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Modified ......: MMHK (07-2017)(01-2018)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -29,7 +29,7 @@ Func ParseAttackCSV($debug = False)
 	Else
 		Local $filename = $g_sAttackScrScriptName[$LB]
 	EndIf
-	Setlog("execute " & $filename)
+	SetLog("execute " & $filename)
 
 	Local $f, $line, $acommand, $command
 	Local $value1 = "", $value2 = "", $value3 = "", $value4 = "", $value5 = "", $value6 = "", $value7 = "", $value8 = "", $value9 = ""
@@ -42,11 +42,12 @@ Func ParseAttackCSV($debug = False)
 			$sErrorText = "" ; empty error text each row
 			debugAttackCSV("line: " & $iLine + 1)
 			If @error = -1 Then ExitLoop
-			If $debug = True Then Setlog("parse line:<<" & $line & ">>")
+			If $debug = True Then SetLog("parse line:<<" & $line & ">>")
 			debugAttackCSV("line content: " & $line)
 			$acommand = StringSplit($line, "|")
 			If $acommand[0] >= 8 Then
 				$command = StringStripWS(StringUpper($acommand[1]), $STR_STRIPTRAILING)
+				If $command = "TRAIN" Or $command = "REDLN" Or $command = "DRPLN" Or $command = "CCREQ" Then ContinueLoop ; discard setting commands
 				; Set values
 				For $i = 2 To (UBound($acommand) - 1)
 					Assign("value" & Number($i - 1), StringStripWS(StringUpper($acommand[$i]), $STR_STRIPTRAILING))
@@ -123,7 +124,7 @@ Func ParseAttackCSV($debug = False)
 							$sErrorText = "value2"
 						EndIf
 						If $sErrorText <> "" Then ; log error message
-							Setlog("Discard row, bad " & $sErrorText & " parameter: row " & $iLine + 1)
+							SetLog("Discard row, bad " & $sErrorText & " parameter: row " & $iLine + 1)
 							debugAttackCSV("Discard row, bad " & $sErrorText & " parameter: row " & $iLine + 1)
 						Else ; debuglog vectors
 							For $i = 0 To UBound(Execute("$ATTACKVECTOR_" & $value1)) - 1
@@ -269,7 +270,7 @@ Func ParseAttackCSV($debug = False)
 							EndIf
 						Next
 						If $sErrorText <> "" Then
-							Setlog("Discard row, " & $sErrorText & ": row " & $iLine + 1)
+							SetLog("Discard row, " & $sErrorText & ": row " & $iLine + 1)
 							debugAttackCSV("Discard row, " & $sErrorText & ": row " & $iLine + 1)
 						Else
 							DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
@@ -330,7 +331,7 @@ Func ParseAttackCSV($debug = False)
 								$Trophies = getTrophyVillageSearch(48, 69 + 69)
 							EndIf
 							CheckHeroesHealth()
-							If $g_bDebugSetlog Then SetLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
+							If $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 							;EXIT IF RESOURCES = 0
 							If $g_abStopAtkNoResources[$g_iMatchMode] And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
 								If NOT $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO) ; log if not down above
@@ -362,11 +363,11 @@ Func ParseAttackCSV($debug = False)
 						PrepareAttack($g_iMatchMode, True)
 					Case "SIDE"
 						ReleaseClicks()
-						Setlog("Calculate main side... ")
+						SetLog("Calculate main side... ")
 						Local $heightTopLeft = 0, $heightTopRight = 0, $heightBottomLeft = 0, $heightBottomRight = 0
 						If StringUpper($value8) = "TOP-LEFT" Or StringUpper($value8) = "TOP-RIGHT" Or StringUpper($value8) = "BOTTOM-LEFT" Or StringUpper($value8) = "BOTTOM-RIGHT" Then
 							$MAINSIDE = StringUpper($value8)
-							Setlog("Forced side: " & StringUpper($value8), $COLOR_INFO)
+							SetLog("Forced side: " & StringUpper($value8), $COLOR_INFO)
 							$bForceSideExist = True
 						Else
 
@@ -501,7 +502,7 @@ Func ParseAttackCSV($debug = False)
 								$sidename = "BOTTOM-LEFT"
 							EndIf
 
-							Setlog("Mainside: " & $sidename & " (top-left:" & $heightTopLeft & " top-right:" & $heightTopRight & " bottom-left:" & $heightBottomLeft & " bottom-right:" & $heightBottomRight)
+							SetLog("Mainside: " & $sidename & " (top-left:" & $heightTopLeft & " top-right:" & $heightTopRight & " bottom-left:" & $heightBottomLeft & " bottom-right:" & $heightBottomRight)
 							$MAINSIDE = $sidename
 						EndIf
 
@@ -547,7 +548,7 @@ Func ParseAttackCSV($debug = False)
 					Case "SIDEB"
 						ReleaseClicks()
 						If $bForceSideExist = False Then
-							Setlog("Recalculate main side for additional defense buildings... ", $COLOR_INFO)
+							SetLog("Recalculate main side for additional defense buildings... ", $COLOR_INFO)
 
 							Switch StringLeft(Slice8($g_aiCSVEagleArtilleryPos), 1)
 								Case 1, 2
@@ -668,7 +669,7 @@ Func ParseAttackCSV($debug = False)
 								$sidename = "BOTTOM-LEFT"
 							EndIf
 
-							Setlog("New Mainside: " & $sidename & " (top-left:" & $heightTopLeft & " top-right:" & $heightTopRight & " bottom-left:" & $heightBottomLeft & " bottom-right:" & $heightBottomRight, $COLOR_INFO)
+							SetLog("New Mainside: " & $sidename & " (top-left:" & $heightTopLeft & " top-right:" & $heightTopRight & " bottom-left:" & $heightBottomLeft & " bottom-right:" & $heightBottomRight, $COLOR_INFO)
 							$MAINSIDE = $sidename
 						EndIf
 						Switch $MAINSIDE
@@ -716,11 +717,11 @@ Func ParseAttackCSV($debug = False)
 								; also comment
 								debugAttackCSV("comment line")
 							Case Else
-							Setlog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
+							SetLog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
 						EndSwitch
 				EndSwitch
 			Else
-				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then Setlog("attack row error, discard: row " & $iLine + 1, $COLOR_ERROR)
+				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then SetLog("attack row error, discard: row " & $iLine + 1, $COLOR_ERROR)
 			EndIf
 			If $bWardenDrop = True Then  ;Check hero, but skip Warden if was dropped with sleepafter to short to allow icon update
 				Local $bHold = $g_bCheckWardenPower ; store existing flag state, should be true?

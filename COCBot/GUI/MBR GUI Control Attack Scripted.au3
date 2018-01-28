@@ -5,8 +5,8 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Modified ......: CodeSlinger69 (2017), MMHK (01-2008)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -263,6 +263,218 @@ Func DuplicateScriptAB()
 		EndIf
 	EndIf
 EndFunc   ;==>DuplicateScriptAB
+
+Func ApplyScriptDB()
+	Local $iApply = 0
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0]]
+	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
+	Local $sCSVCCReq = ""
+	Local $aTemp = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameDB)
+	Local $sFilename = $aTemp[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB) + 1]
+
+	SetLog("CSV settings apply starts", $COLOR_INFO)
+	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVHeros, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
+	If Not $iApply Then
+		SetLog("CSV settings apply failed", $COLOR_ERROR)
+		Return
+	EndIf
+
+	$iApply = 0
+	For $i = 0 To UBound($aiCSVTroops) - 1
+		If $aiCSVTroops[$i] > 0 Then $iApply += 1
+	Next
+	For $i = 0 To UBound($aiCSVSpells) - 1
+		If $aiCSVSpells[$i] > 0 Then $iApply += 1
+	Next
+	If $iApply > 0 Then
+		For $t = 0 To UBound($aiCSVTroops) - 1 ; set troops to level 1 if none on GUI
+			If $aiCSVTroops[$t] > 0 And $g_aiTrainArmyTroopLevel[$t] = 0 Then $g_aiTrainArmyTroopLevel[$t] = 1
+		Next
+		$g_aiArmyCompTroops = $aiCSVTroops
+		For $s = 0 To UBound($aiCSVSpells) - 1 ; set spells to level 1 if none on GUI
+			If $aiCSVSpells[$s] > 0 And $g_aiTrainArmySpellLevel[$s] = 0 Then $g_aiTrainArmySpellLevel[$s] = 1
+		Next
+		$g_aiArmyCompSpells = $aiCSVSpells
+		ApplyConfig_600_52_2("Read")
+		SetComboTroopComp() ; GUI refresh
+		lblTotalCountSpell2()
+		SetLog("CSV Train settings applied", $COLOR_SUCCESS)
+	EndIf
+
+	$iApply = 0
+	For $i = 0 To UBound($aiCSVHeros) - 1
+		If $aiCSVHeros[$i][0] > 0 Then $iApply += 1
+	Next
+	If $iApply > 0 Then
+		For $h = 0 To UBound($aiCSVHeros) - 1
+			If $aiCSVHeros[$h][0] > 0 Then
+				Switch $h
+					Case $eHeroBarbarianKing
+						$g_iActivateKing = $aiCSVHeros[$h][0] - 1
+						$g_iDelayActivateKing = $aiCSVHeros[$h][1]
+					Case $eHeroArcherQueen
+						$g_iActivateQueen = $aiCSVHeros[$h][0] - 1
+						$g_iDelayActivateQueen = $aiCSVHeros[$h][1]
+					Case $eHeroGrandWarden
+						$g_iActivateWarden = $aiCSVHeros[$h][0] - 1
+						$g_iDelayActivateWarden = $aiCSVHeros[$h][1]
+				EndSwitch
+			EndIf
+		Next
+		radHerosApply()
+		SetLog("CSV Hero Ability settings applied", $COLOR_SUCCESS)
+
+		GUICtrlSetState($g_hChkDBKingAttack, $aiCSVHeros[$eHeroBarbarianKing][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBKingAttack))
+		GUICtrlSetState($g_hChkDBQueenAttack, $aiCSVHeros[$eHeroArcherQueen][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBQueenAttack))
+		GUICtrlSetState($g_hChkDBWardenAttack, $aiCSVHeros[$eHeroGrandWarden][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBWardenAttack))
+		SetLog("CSV 'Attack with' Hero settings applied", $COLOR_SUCCESS)
+	EndIf
+
+	If $sCSVCCReq <> "" Then
+		GUICtrlSetState($g_hChkDBDropCC, $GUI_CHECKED)
+		SetLog("CSV 'Attack with' CC settings applied", $COLOR_SUCCESS)
+	EndIf
+
+	$iApply = 0
+	Local $ahChkDBSpell = StringSplit($g_aGroupAttackDBSpell, "#", 2)
+	If IsArray($ahChkDBSpell) Then
+		For $i = 0 To UBound($ahChkDBSpell) - 1
+			GUICtrlSetState($ahChkDBSpell[$i], $aiCSVSpells[$i] > 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			If $aiCSVSpells[$i] > 0 Then $iApply += 1
+		Next
+		If $iApply > 0 Then SetLog("CSV 'Attack with' Spell settings applied", $COLOR_SUCCESS)
+	EndIf
+
+	If $iCSVRedlineRoutineItem > 0 And $iCSVRedlineRoutineItem <= _GUICtrlComboBox_GetCount($g_hCmbScriptRedlineImplDB) + 1 Then
+		_GUICtrlComboBox_SetCurSel($g_hCmbScriptRedlineImplDB, $iCSVRedlineRoutineItem - 1)
+		cmbScriptRedlineImplDB()
+		SetLog("CSV Red Line settings applied", $COLOR_SUCCESS)
+	Else
+		If $iCSVRedlineRoutineItem <> 0 Then SetLog("CSV Red Line settings out of bounds", $COLOR_ERROR)
+	EndIf
+	If $iCSVDroplineEdgeItem > 0 And $iCSVDroplineEdgeItem <= _GUICtrlComboBox_GetCount($g_hCmbScriptDroplineDB) + 1 Then
+		_GUICtrlComboBox_SetCurSel($g_hCmbScriptDroplineDB, $iCSVDroplineEdgeItem - 1)
+		cmbScriptDroplineDB()
+		SetLog("CSV Drop Line settings applied", $COLOR_SUCCESS)
+	Else
+		If $iCSVDroplineEdgeItem <> 0 Then SetLog("CSV Drop Line settings out of bounds", $COLOR_ERROR)
+	EndIf
+
+	If $sCSVCCReq <> "" Then
+		$g_bRequestTroopsEnable = True
+		$g_sRequestTroopsText = $sCSVCCReq
+		ApplyConfig_600_11("Read")
+		SetLog("CSV CC Request settings applied", $COLOR_SUCCESS)
+	EndIf
+EndFunc   ;==>ApplyScriptDB
+
+Func ApplyScriptAB()
+	Local $iApply = 0
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0]]
+	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
+	Local $sCSVCCReq = ""
+	Local $aTemp = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameAB)
+	Local $sFilename = $aTemp[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB) + 1]
+
+	SetLog("CSV settings apply starts", $COLOR_INFO)
+	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVHeros, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
+	If Not $iApply Then
+		SetLog("CSV settings apply failed", $COLOR_ERROR)
+		Return
+	EndIf
+
+	$iApply = 0
+	For $i = 0 To UBound($aiCSVTroops) - 1
+		If $aiCSVTroops[$i] > 0 Then $iApply += 1
+	Next
+	For $i = 0 To UBound($aiCSVSpells) - 1
+		If $aiCSVSpells[$i] > 0 Then $iApply += 1
+	Next
+	If $iApply > 0 Then
+		For $t = 0 To UBound($aiCSVTroops) - 1 ; set troops to level 1 if none on GUI
+			If $aiCSVTroops[$t] > 0 And $g_aiTrainArmyTroopLevel[$t] = 0 Then $g_aiTrainArmyTroopLevel[$t] = 1
+		Next
+		$g_aiArmyCompTroops = $aiCSVTroops
+		For $s = 0 To UBound($aiCSVSpells) - 1 ; set spells to level 1 if none on GUI
+			If $aiCSVSpells[$s] > 0 And $g_aiTrainArmySpellLevel[$s] = 0 Then $g_aiTrainArmySpellLevel[$s] = 1
+		Next
+		$g_aiArmyCompSpells = $aiCSVSpells
+		ApplyConfig_600_52_2("Read")
+		SetComboTroopComp() ; GUI refresh
+		lblTotalCountSpell2()
+		SetLog("CSV Train settings applied", $COLOR_SUCCESS)
+	EndIf
+
+	$iApply = 0
+	For $i = 0 To UBound($aiCSVHeros) - 1
+		If $aiCSVHeros[$i][0] > 0 Then $iApply += 1
+	Next
+	If $iApply > 0 Then
+		For $h = 0 To UBound($aiCSVHeros) - 1
+			If $aiCSVHeros[$h][0] > 0 Then
+				Switch $h
+					Case $eHeroBarbarianKing
+						$g_iActivateKing = $aiCSVHeros[$h][0] - 1
+						$g_iDelayActivateKing = $aiCSVHeros[$h][1]
+					Case $eHeroArcherQueen
+						$g_iActivateQueen = $aiCSVHeros[$h][0] - 1
+						$g_iDelayActivateQueen = $aiCSVHeros[$h][1]
+					Case $eHeroGrandWarden
+						$g_iActivateWarden = $aiCSVHeros[$h][0] - 1
+						$g_iDelayActivateWarden = $aiCSVHeros[$h][1]
+				EndSwitch
+			EndIf
+		Next
+		radHerosApply()
+		SetLog("CSV Hero Ability settings applied", $COLOR_SUCCESS)
+
+		GUICtrlSetState($g_hChkABKingAttack, $aiCSVHeros[$eHeroBarbarianKing][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABKingAttack))
+		GUICtrlSetState($g_hChkABQueenAttack, $aiCSVHeros[$eHeroArcherQueen][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABQueenAttack))
+		GUICtrlSetState($g_hChkABWardenAttack, $aiCSVHeros[$eHeroGrandWarden][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABWardenAttack))
+		SetLog("CSV 'Attack with' Hero settings applied", $COLOR_SUCCESS)
+	EndIf
+
+	If $sCSVCCReq <> "" Then
+		GUICtrlSetState($g_hChkABDropCC, $GUI_CHECKED)
+		SetLog("CSV 'Attack with' CC settings applied", $COLOR_SUCCESS)
+	EndIf
+
+	$iApply = 0
+	Local $ahChkABSpell = StringSplit($GroupAttackABSpell, "#", 2)
+	If IsArray($ahChkABSpell) Then
+		For $i = 0 To UBound($ahChkABSpell) - 1
+			GUICtrlSetState($ahChkABSpell[$i], $aiCSVSpells[$i] > 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			If $aiCSVSpells[$i] > 0 Then $iApply += 1
+		Next
+		If $iApply > 0 Then SetLog("CSV 'Attack with' Spell settings applied", $COLOR_SUCCESS)
+	EndIf
+
+	If $iCSVRedlineRoutineItem > 0 And $iCSVRedlineRoutineItem <= _GUICtrlComboBox_GetCount($g_hCmbScriptRedlineImplAB) + 1 Then
+		_GUICtrlComboBox_SetCurSel($g_hCmbScriptRedlineImplAB, $iCSVRedlineRoutineItem - 1)
+		cmbScriptRedlineImplAB()
+		SetLog("CSV Red Line settings applied", $COLOR_SUCCESS)
+	Else
+		If $iCSVRedlineRoutineItem <> 0 Then SetLog("CSV Red Line settings out of bounds", $COLOR_ERROR)
+	EndIf
+	If $iCSVDroplineEdgeItem > 0 And $iCSVDroplineEdgeItem <= _GUICtrlComboBox_GetCount($g_hCmbScriptDroplineAB) + 1 Then
+		_GUICtrlComboBox_SetCurSel($g_hCmbScriptDroplineAB, $iCSVDroplineEdgeItem - 1)
+		cmbScriptDroplineAB()
+		SetLog("CSV Drop Line settings applied", $COLOR_SUCCESS)
+	Else
+		If $iCSVDroplineEdgeItem <> 0 Then SetLog("CSV Drop Line settings out of bounds", $COLOR_ERROR)
+	EndIf
+
+	If $sCSVCCReq <> "" Then
+		$g_bRequestTroopsEnable = True
+		$g_sRequestTroopsText = $sCSVCCReq
+		ApplyConfig_600_11("Read")
+		SetLog("CSV CC Request settings applied", $COLOR_SUCCESS)
+	EndIf
+EndFunc   ;==>ApplyScriptAB
 
 Func cmbScriptRedlineImplDB()
 	$g_aiAttackScrRedlineRoutine[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbScriptRedlineImplDB)

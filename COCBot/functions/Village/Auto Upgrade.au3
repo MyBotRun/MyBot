@@ -16,7 +16,7 @@ Func randomSleep($SleepTime, $Range = 0)
 	If $g_bRunState = False Then Return
 	If $Range = 0 Then $Range = Round($SleepTime / 5)
 	Local $SleepTimeF = Random($SleepTime - $Range, $SleepTime + $Range, 1)
-	If $g_bDebugClick Then Setlog("Default sleep : " & $SleepTime & " - Random sleep : " & $SleepTimeF, $COLOR_ORANGE)
+	If $g_bDebugClick Then SetLog("Default sleep : " & $SleepTime & " - Random sleep : " & $SleepTimeF, $COLOR_ORANGE)
 	If _Sleep($SleepTimeF) Then Return
 EndFunc   ;==>randomSleep
 

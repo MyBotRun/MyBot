@@ -6,7 +6,7 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,6 +17,11 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 
 	Static $iApplyConfigCount = 0
 	$iApplyConfigCount += 1
+	If $g_bApplyConfigIsActive Then
+		SetDebugLog("applyConfig(), already running, exit")
+		Return
+	EndIf
+	$g_bApplyConfigIsActive = True
 	SetDebugLog("applyConfig(), call number " & $iApplyConfigCount)
 
 	setMaxDegreeOfParallelism($g_iThreads)
@@ -43,6 +48,7 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 			EndSwitch
 		EndIf
 		UpdateBotTitle()
+		$g_bApplyConfigIsActive = False
 		Return
 	EndIf
 
@@ -115,7 +121,9 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
 	ApplyConfig_600_33($TypeReadSave)
 	; <><><><> Bot / Options <><><><>
-	ApplyConfig_600_35($TypeReadSave)
+	ApplyConfig_600_35_1($TypeReadSave)
+	; <><><><> Bot / Profile / Switch Account <><><><>
+	ApplyConfig_600_35_2($TypeReadSave)
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
 	; Quick train
 	ApplyConfig_600_52_1($TypeReadSave)
@@ -151,6 +159,8 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 
 	; Reenabling window redraw - Keep this last....
 	If $bRedrawAtExit Then SetRedrawBotWindow($bWasRdraw, Default, Default, Default, "applyConfig")
+
+	$g_bApplyConfigIsActive = False
 EndFunc   ;==>applyConfig
 
 Func ApplyConfig_Profile($TypeReadSave)
@@ -193,8 +203,10 @@ Func ApplyConfig_Debug($TypeReadSave)
 	; <><><><> Bot / Debug <><><><>
 	Switch $TypeReadSave
 		Case "Read"
-			GUICtrlSetState($g_hChkDebugClick, $g_bDebugClick ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDebugSetlog, $g_bDebugSetlog ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDebugAndroid, $g_bDebugAndroid ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDebugClick, $g_bDebugClick ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDebugFunc, ($g_bDebugFuncTime And $g_bDebugFuncCall) ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDebugDisableZoomout, $g_bDebugDisableZoomout ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDebugDisableVillageCentering, $g_bDebugDisableVillageCentering ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDebugDeadbaseImage, $g_bDebugDeadBaseImage ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -207,19 +219,27 @@ Func ApplyConfig_Debug($TypeReadSave)
 			GUICtrlSetState($g_hChkMakeIMGCSV, $g_bDebugMakeIMGCSV ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDebugSmartZap, $g_bDebugSmartZap ? $GUI_CHECKED : $GUI_UNCHECKED)
 			If $g_bDevMode Then
-				GUICtrlSetState($g_hChkDebugSetlog, $GUI_ENABLE)
+				GUICtrlSetState($g_hChkDebugFunc, $GUI_ENABLE)
+				GUICtrlSetState($g_hChkDebugDisableZoomout, $GUI_ENABLE)
+				GUICtrlSetState($g_hChkDebugDisableVillageCentering, $GUI_ENABLE)
+				GUICtrlSetState($g_hChkDebugDeadbaseImage, $GUI_ENABLE)
 				GUICtrlSetState($g_hChkDebugOCR, $GUI_ENABLE)
 				GUICtrlSetState($g_hChkDebugImageSave, $GUI_ENABLE)
 				GUICtrlSetState($g_hChkdebugBuildingPos, $GUI_ENABLE)
 				GUICtrlSetState($g_hChkdebugTrain, $GUI_ENABLE)
-				GUICtrlSetState($g_hChkMakeIMGCSV, $GUI_ENABLE)
+				GUICtrlSetState($g_hChkDebugOCRDonate, $GUI_ENABLE)
 				GUICtrlSetState($g_hChkdebugAttackCSV, $GUI_ENABLE)
+				GUICtrlSetState($g_hChkMakeIMGCSV, $GUI_ENABLE)
 				GUICtrlSetState($g_hChkDebugSmartZap, $GUI_ENABLE)
 			EndIf
 		Case "Save"
+			$g_bDebugSetlog = (GUICtrlRead($g_hChkDebugSetlog) = $GUI_CHECKED)
+			$g_bDebugAndroid = (GUICtrlRead($g_hChkDebugAndroid) = $GUI_CHECKED)
 			$g_bDebugClick = (GUICtrlRead($g_hChkDebugClick) = $GUI_CHECKED)
 			If $g_bDevMode Then
-				$g_bDebugSetlog = (GUICtrlRead($g_hChkDebugSetlog) = $GUI_CHECKED)
+				Local $bDebugFunc = (GUICtrlRead($g_hChkDebugFunc) = $GUI_CHECKED)
+				$g_bDebugFuncTime = $bDebugFunc
+				$g_bDebugFuncCall = $bDebugFunc
 				$g_bDebugDisableZoomout = (GUICtrlRead($g_hChkDebugDisableZoomout) = $GUI_CHECKED)
 				$g_bDebugDisableVillageCentering = (GUICtrlRead($g_hChkDebugDisableVillageCentering) = $GUI_CHECKED)
 				$g_bDebugDeadBaseImage = (GUICtrlRead($g_hChkDebugDeadbaseImage) = $GUI_CHECKED)
@@ -1129,21 +1149,7 @@ Func ApplyConfig_600_29($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / Attack <><><><>
 	Switch $TypeReadSave
 		Case "Read"
-			GUICtrlSetState($g_hRadAutoQueenAbility, $g_iActivateQueen = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hRadManQueenAbility, $g_iActivateQueen = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hRadBothQueenAbility, $g_iActivateQueen = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtManQueenAbility, ($g_iDelayActivateQueen / 1000))
-
-			GUICtrlSetState($g_hRadAutoKingAbility, $g_iActivateKing = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hRadManKingAbility, $g_iActivateKing = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hRadBothKingAbility, $g_iActivateKing = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtManKingAbility, ($g_iDelayActivateKing / 1000))
-
-			GUICtrlSetState($g_hRadAutoWardenAbility, $g_iActivateWarden = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hRadManWardenAbility, $g_iActivateWarden = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hRadBothWardenAbility, $g_iActivateWarden = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtManWardenAbility, ($g_iDelayActivateWarden / 1000))
-
+			radHerosApply()
 			GUICtrlSetState($g_hChkAttackPlannerEnable, $g_bAttackPlannerEnable = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAttackPlannerCloseCoC, $g_bAttackPlannerCloseCoC = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAttackPlannerCloseAll, $g_bAttackPlannerCloseAll = True ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -1323,8 +1329,8 @@ Func ApplyConfig_600_29_DB_Scripted($TypeReadSave)
 			Local $tempindex = _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameDB, $g_sAttackScrScriptName[$DB])
 			If $tempindex = -1 Then
 				$tempindex = 0
-				Setlog("Previous saved Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
-				Setlog("Automatically setted a default script, please check your config", $COLOR_ERROR)
+				SetLog("Previous saved Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
+				SetLog("Automatically setted a default script, please check your config", $COLOR_ERROR)
 			EndIf
 			_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameDB, $tempindex)
 			cmbScriptNameDB()
@@ -1397,8 +1403,8 @@ Func ApplyConfig_600_29_DB_Milking($TypeReadSave)
 			Local $tempindex = _GUICtrlComboBox_FindStringExact($g_hCmbMilkingCSVScriptName, $g_sMilkAttackCSVscript)
 			If $tempindex = -1 Then
 				$tempindex = 0
-				Setlog("Previous saved Milking Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
-				Setlog("Automatically setted a default script, please check your config", $COLOR_ERROR)
+				SetLog("Previous saved Milking Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
+				SetLog("Automatically setted a default script, please check your config", $COLOR_ERROR)
 			EndIf
 			_GUICtrlComboBox_SetCurSel($g_hCmbMilkingCSVScriptName, $tempindex)
 			; Advanced
@@ -1568,8 +1574,8 @@ Func ApplyConfig_600_29_LB_Scripted($TypeReadSave)
 			Local $tempindex = _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameAB, $g_sAttackScrScriptName[$LB])
 			If $tempindex = -1 Then
 				$tempindex = 0
-				Setlog("Previous saved Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
-				Setlog("Automatically setted a default script, please check your config", $COLOR_ERROR)
+				SetLog("Previous saved Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
+				SetLog("Automatically setted a default script, please check your config", $COLOR_ERROR)
 			EndIf
 			_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameAB, $tempindex)
 			cmbScriptNameAB()
@@ -1840,7 +1846,7 @@ Func ApplyConfig_600_33($TypeReadSave)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_33
 
-Func ApplyConfig_600_35($TypeReadSave)
+Func ApplyConfig_600_35_1($TypeReadSave)
 	; <><><><> Bot / Options <><><><>
 	Switch $TypeReadSave
 		Case "Read"
@@ -1916,7 +1922,36 @@ Func ApplyConfig_600_35($TypeReadSave)
 			$g_bDisableNotifications = (GUICtrlRead($g_hChkDisableNotifications) = $GUI_CHECKED)
 			$g_bForceClanCastleDetection = (GUICtrlRead($g_hChkFixClanCastle) = $GUI_CHECKED)
 	EndSwitch
-EndFunc   ;==>ApplyConfig_600_35
+EndFunc   ;==>ApplyConfig_600_35_1
+
+Func ApplyConfig_600_35_2($TypeReadSave)
+	; <><><><> Bot / Profile / Switch Account <><><><>
+	Switch $TypeReadSave
+		Case "Read"
+			_GUICtrlComboBox_SetCurSel($g_hCmbSwitchAcc, $g_iCmbSwitchAcc)
+			GUICtrlSetState($g_hChkSwitchAcc, $g_bChkSwitchAcc ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkSmartSwitch, $g_bChkSmartSwitch ? $GUI_CHECKED : $GUI_UNCHECKED)
+			_GUICtrlComboBox_SetCurSel($g_hCmbTotalAccount, $g_iTotalAcc - 1)
+			For $i = 0 To 7
+				GUICtrlSetState($g_ahChkAccount[$i], $g_abAccountNo[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
+				_GUICtrlComboBox_SetCurSel($g_ahCmbProfile[$i], _GUICtrlComboBox_FindStringExact($g_ahCmbProfile[$i], $g_asProfileName[$i]))
+				GUICtrlSetState($g_ahChkDonate[$i], $g_abDonateOnly[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
+			Next
+			_GUICtrlComboBox_SetCurSel($g_hCmbTrainTimeToSkip, $g_iTrainTimeToSkip)
+			_cmbSwitchAcc(False)
+		Case "Save"
+			$g_iCmbSwitchAcc = _GUICtrlComboBox_GetCurSel($g_hCmbSwitchAcc)
+			$g_bChkSwitchAcc = (GUICtrlRead($g_hChkSwitchAcc) = $GUI_CHECKED)
+			$g_bChkSmartSwitch = (GUICtrlRead($g_hChkSmartSwitch) = $GUI_CHECKED)
+			$g_iTotalAcc = _GUICtrlComboBox_GetCurSel($g_hCmbTotalAccount) + 1 ; at least 2 accounts needed
+			For $i = 0 To 7
+				$g_abAccountNo[$i] = (GUICtrlRead($g_ahChkAccount[$i]) = $GUI_CHECKED)
+				$g_asProfileName[$i] = GUICtrlRead($g_ahCmbProfile[$i])
+				$g_abDonateOnly[$i] = (GUICtrlRead($g_ahChkDonate[$i]) = $GUI_CHECKED)
+			Next
+			$g_iTrainTimeToSkip = _GUICtrlComboBox_GetCurSel($g_hCmbTrainTimeToSkip)
+	EndSwitch
+EndFunc   ;==>ApplyConfig_600_35_2
 
 Func ApplyConfig_600_52_1($TypeReadSave)
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>

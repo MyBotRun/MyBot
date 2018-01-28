@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-02)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -25,23 +25,23 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
 		$Result = getShieldInfo() ; get expire time of shield
 
-		If @error Then Setlog("chkShieldStatus Shield OCR error= " & @error & "Extended= " & @extended, $COLOR_ERROR)
+		If @error Then SetLog("chkShieldStatus Shield OCR error= " & @error & "Extended= " & @extended, $COLOR_ERROR)
 		If _Sleep($DELAYRESPOND) Then Return
 
 		If IsArray($Result) Then
 			Local $iShieldExp = _DateDiff('n', $Result[2], _NowCalc())
 			If Abs($iShieldExp) > 0 Then
 				Local $sFormattedDiff = _Date_Difference(_NowCalc(), $Result[2], 4)
-				Setlog("Shield expires in: " & $sFormattedDiff)
+				SetLog("Shield expires in: " & $sFormattedDiff)
 			Else
-				Setlog("Shield has expired")
+				SetLog("Shield has expired")
 			EndIf
 
 			If _DateIsValid($g_asShieldStatus[2]) Then ; if existing global shield time is valid
 				$ichkTime = Abs(Int(_DateDiff('s', $g_asShieldStatus[2], $Result[2]))) ; compare old and new time
 				If $ichkTime > 60 Then ; test if more than 60 seconds different in case of attack while shield has reduced time
 					$bForceChkPBT = True ; update PB time
-					If $g_bDebugSetlog Then Setlog("Shield time changed: " & $ichkTime & " Sec, Force PBT OCR: " & $bForceChkPBT, $COLOR_WARNING)
+					If $g_bDebugSetlog Then SetDebugLog("Shield time changed: " & $ichkTime & " Sec, Force PBT OCR: " & $bForceChkPBT, $COLOR_WARNING)
 				EndIf
 			EndIf
 
@@ -49,24 +49,24 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
 			If $g_bChkBotStop = True And $g_iCmbBotCond >= 19 Then ; is Halt mode enabled and With Shield selected?
 				If $g_asShieldStatus[0] = "shield" Then ; verify shield
-					Setlog("Shield found, Halt Attack Now!", $COLOR_INFO)
+					SetLog("Shield found, Halt Attack Now!", $COLOR_INFO)
 					$g_bWaitShield = True
 					$g_bIsClientSyncError = False ; cancel OOS restart to enable BotCommand to process Halt mode
 					$g_bIsSearchLimit = False ; reset search limit flag to enable BotCommand to process Halt mode
 				Else
 					$g_bWaitShield = False
 					If $g_bMeetCondStop = True Then
-						Setlog("Shield expired, resume attacking", $COLOR_INFO)
+						SetLog("Shield expired, resume attacking", $COLOR_INFO)
 						$g_bTrainEnabled = True
 						$g_bDonationEnabled = True
 						$g_bMeetCondStop = False
 					Else
-						If $g_bDebugSetlog Then Setlog("Halt With Shield: Shield not found...", $COLOR_DEBUG)
+						If $g_bDebugSetlog Then SetDebugLog("Halt With Shield: Shield not found...", $COLOR_DEBUG)
 					EndIf
 				EndIf
 			EndIf
 		Else
-			If $g_bDebugSetlog Then Setlog("Bad getShieldInfo() return value: " & $Result, $COLOR_ERROR)
+			If $g_bDebugSetlog Then SetDebugLog("Bad getShieldInfo() return value: " & $Result, $COLOR_ERROR)
 			If _Sleep($DELAYRESPOND) Then Return
 
 			For $i = 0 To UBound($g_asShieldStatus) - 1 ; clear global shieldstatus if no shield data returned
@@ -82,7 +82,7 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 		$ichkPBTime = Int(_DateDiff('s', $g_sPBStartTime, _NowCalc())) ; compare existing shield date/time to now.
 		If $ichkPBTime >= 295 Then
 			$bForceChkPBT = True ; test if PBT date/time in more than 5 minutes past, force update
-			If $g_bDebugSetlog Then Setlog("Found old PB time= " & $ichkPBTime & " Seconds, Force update:" & $bForceChkPBT, $COLOR_WARNING)
+			If $g_bDebugSetlog Then SetDebugLog("Found old PB time= " & $ichkPBTime & " Seconds, Force update:" & $bForceChkPBT, $COLOR_WARNING)
 		EndIf
 	EndIf
 
@@ -92,8 +92,8 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
 		$Result = getPBTime() ; Get time in future that PBT starts
 
-		If @error Then Setlog("chkShieldStatus getPBTime OCR error= " & @error & ", Extended= " & @extended, $COLOR_ERROR)
-		;If $g_bDebugSetlog Then Setlog("getPBTime() returned: " & $Result, $COLOR_DEBUG)
+		If @error Then SetLog("chkShieldStatus getPBTime OCR error= " & @error & ", Extended= " & @extended, $COLOR_ERROR)
+		;If $g_bDebugSetlog Then SetDebugLog("getPBTime() returned: " & $Result, $COLOR_DEBUG)
 		If _Sleep($DELAYRESPOND) Then Return
 
 		If _DateIsValid($Result) Then
@@ -101,7 +101,12 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
 			If Abs($iTimeTillPBTstartMin) > 0 Then
 				Local $sFormattedDiff = _Date_Difference(_DateAdd("n", -1, _NowCalc()), $Result, 4)
-				Setlog("Personal Break starts in: " & $sFormattedDiff)
+				SetLog("Personal Break starts in: " & $sFormattedDiff)
+				Local $CorrectstringPB_GUI = StringReplace($sFormattedDiff, StringInStr($sFormattedDiff, " hours ") >= 1 ? " hours " : " hour ", "h")
+				$CorrectstringPB_GUI = StringReplace($CorrectstringPB_GUI, StringInStr($CorrectstringPB_GUI, " minutes ") >= 1 ? " minutes " : " minute ", "'")
+				$g_aiPersonalBreak[$g_iCurAccount] = $CorrectstringPB_GUI
+			Else
+				$g_aiPersonalBreak[$g_iCurAccount] = ""
 			EndIf
 
 			If $iTimeTillPBTstartMin < -(Int($g_iSinglePBForcedEarlyExitTime)) Then
@@ -111,10 +116,11 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 			Else
 				$g_sPBStartTime = "" ; clear value, can not log off ealy.
 			EndIf
-			If $g_bDebugSetlog Then Setlog("Early Log Off time=" & $g_sPBStartTime & ", In " & _DateDiff('n', $g_sPBStartTime, _NowCalc()) & " Minutes", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("Early Log Off time=" & $g_sPBStartTime & ", In " & _DateDiff('n', $g_sPBStartTime, _NowCalc()) & " Minutes", $COLOR_DEBUG)
 		Else
-			Setlog("Bad getPBTtime() return value: " & $Result, $COLOR_ERROR)
+			SetLog("Bad getPBTtime() return value: " & $Result, $COLOR_ERROR)
 			$g_sPBStartTime = "" ; reset to force update next pass
+			$g_aiPersonalBreak[$g_iCurAccount] = ""
 		EndIf
 	EndIf
 

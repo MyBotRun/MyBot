@@ -7,7 +7,7 @@
 ; Return values .: True or False
 ; Author ........: Hervidero (2015-may-21)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -51,7 +51,7 @@ Func isInsideDiamond($aCoords)
 	ConvertToVillagePos($xD, $yD)
 	$Right = $xD
 
-	;If $g_bDebugSetlog Then SetLog("isInsideDiamond coordinates updated by offset: " & $Left & ", " & $Right & ", " & $Top & ", " & $Bottom, $COLOR_DEBUG)
+	;If $g_bDebugSetlog Then SetDebugLog("isInsideDiamond coordinates updated by offset: " & $Left & ", " & $Right & ", " & $Top & ", " & $Bottom, $COLOR_DEBUG)
 
 	Local $aDiamond[2][2] = [[$Left, $Top], [$Right, $Bottom]]
 	Local $aMiddle = [($aDiamond[0][0] + $aDiamond[1][0]) / 2, ($aDiamond[0][1] + $aDiamond[1][1]) / 2]
@@ -62,19 +62,19 @@ Func isInsideDiamond($aCoords)
 
 	If ($DX / $aSize[0] + $DY / $aSize[1] <= 1) Then
 		If $x < 68 And $y > 316 Then ; coordinates where the game will click on the CHAT tab (safe margin)
-			If $g_bDebugSetlog Then SetDebuglog("Coordinate Inside Village, but Exclude CHAT")
+			If $g_bDebugSetlog Then SetDebugLog("Coordinate Inside Village, but Exclude CHAT")
 			Return False
 		ElseIf $y < 63 Then ; coordinates where the game will click on the BUILDER button or SHIELD button (safe margin)
-			If $g_bDebugSetlog Then SetDebuglog("Coordinate Inside Village, but Exclude BUILDER")
+			If $g_bDebugSetlog Then SetDebugLog("Coordinate Inside Village, but Exclude BUILDER")
 			Return False
 		ElseIf $x > 692 And $y > 156 And $y < 210 Then ; coordinates where the game will click on the GEMS button (safe margin)
-			If $g_bDebugSetlog Then SetDebuglog("Coordinate Inside Village, but Exclude GEMS")
+			If $g_bDebugSetlog Then SetDebugLog("Coordinate Inside Village, but Exclude GEMS")
 			Return False
 		EndIf
-		;If $g_bDebugSetlog Then SetDebuglog("Coordinate Inside Village", $COLOR_DEBUG)
+		;If $g_bDebugSetlog Then SetDebugLog("Coordinate Inside Village", $COLOR_DEBUG)
 		Return True ; Inside Village
 	Else
-		If $g_bDebugSetlog Then SetDebuglog("Coordinate Outside Village")
+		If $g_bDebugSetlog Then SetDebugLog("Coordinate Outside Village")
 		Return False ; Outside Village
 	EndIf
 

@@ -6,7 +6,7 @@
 ; Return values .:None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func MilkingAttackStructure($vectstr)
-	If $g_bDebugSetlog Then SetLog("###### Attack " & $vectstr & "######")
+	If $g_bDebugSetlog Then SetDebugLog("###### Attack " & $vectstr & "######")
 	Local $vect = StringSplit($vectstr, ".", 2)
 	If UBound($vect) = 4 Then ; (only 1 point)
 		Local $temp = $vect[3]
@@ -28,10 +28,10 @@ Func MilkingAttackStructure($vectstr)
 			$troopxwave = Random($g_iMilkFarmTroopForWaveMin, $g_iMilkFarmTroopForWaveMax, 1)
 		EndIf
 
-		If $g_bDebugSetlog Then Setlog("drop n.: " & $troopxwave & " troops | structure:" & $vect[0])
+		If $g_bDebugSetlog Then SetDebugLog("drop n.: " & $troopxwave & " troops | structure:" & $vect[0])
 		Local $skipdelay = False
 		For $i = 1 To $g_iMilkFarmTroopMaxWaves
-			If $g_bDebugSetlog Then Setlog("Wave attack number " & $i)
+			If $g_bDebugSetlog Then SetDebugLog("Wave attack number " & $i)
 			$skipdelay = False
 			If IsAttackPage() Then
 
@@ -59,7 +59,7 @@ Func MilkingAttackStructure($vectstr)
 						If UBound($pixel) = 2 Then
 							Click($pixel[0], $pixel[1], 1, $delaypoint, "#0777")
 						Else
-							If $g_bDebugSetlog Then Setlog("MilkingAttackStructure error #1")
+							If $g_bDebugSetlog Then SetDebugLog("MilkingAttackStructure error #1")
 						EndIf
 					Next
 				Else
@@ -75,11 +75,11 @@ Func MilkingAttackStructure($vectstr)
 					If UBound($pixel) = 2 Then
 						Click($pixel[0], $pixel[1], $troopxwave, Random(2, 7, 1), "#0778")
 					Else
-						If $g_bDebugSetlog Then Setlog("MilkingAttackStructure error #1")
+						If $g_bDebugSetlog Then SetDebugLog("MilkingAttackStructure error #1")
 					EndIf
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("You are not in Attack phase")
+				If $g_bDebugSetlog Then SetDebugLog("You are not in Attack phase")
 				Return
 			EndIf
 
@@ -90,7 +90,7 @@ Func MilkingAttackStructure($vectstr)
 				Else
 					$delayfromwaves = Random($g_iMilkFarmDelayFromWavesMin, $g_iMilkFarmDelayFromWavesMax, 1)
 				EndIf
-				If $g_bDebugSetlog Then Setlog("wait " & $delayfromwaves)
+				If $g_bDebugSetlog Then SetDebugLog("wait " & $delayfromwaves)
 				If _Sleep($delayfromwaves) Then Return ;wait before attack new structure.
 			EndIf
 		Next

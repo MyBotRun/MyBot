@@ -12,7 +12,7 @@
 ; Return values .: None
 ; Author ........: KnowJack (07-2015)
 ; Modified ......: Sardo (08-2015), Boju (06-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -27,6 +27,7 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 		EndIf
 
 		If $iTimes <> 1 Then
+			KeepClicks()
 			If FastCaptureRegion() Then
 				For $i = 0 To ($iTimes - 1)
 					If isProblemAffect(True) Then checkMainScreen(False) ; Check for BS/CoC errors
@@ -58,6 +59,7 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 				EndIf
 				If _Sleep($iSpeed, False) Then Return
 			EndIf
+			ReleaseClicks()
 		Else
 			Local $sLogText = Default
 			If $g_bDebugSetlogTrain Then $sLogText = "TrainClick " & $iX & "," & $iY & "," & $iTimes

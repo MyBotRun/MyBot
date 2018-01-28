@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: ProMac (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -116,7 +116,7 @@ Func MainSuggestedUpgradeCode()
 	If isOnBuilderIsland(True) Then
 		; Will Open the Suggested Window and check if is OK
 		If ClickOnBuilder() Then
-			Setlog(" - Upg Window Opened successfully", $COLOR_INFO)
+			SetLog(" - Upg Window Opened successfully", $COLOR_INFO)
 			Local $y = 102, $y1 = 132, $step = 30, $x = 400, $x1 = 540
 			; Only 3 possible Icons appears on Window
 			For $i = 0 To 2
@@ -134,18 +134,18 @@ Func MainSuggestedUpgradeCode()
 							$bSkipGoldCheck = True
 						Case "New"
 							If $g_iChkPlacingNewBuildings = 1 Then
-								Setlog("[" & $i + 1 & "]" & " New Building detected, Placing it...", $COLOR_INFO)
+								SetLog("[" & $i + 1 & "]" & " New Building detected, Placing it...", $COLOR_INFO)
 								If NewBuildings($aResult) Then
 									ExitLoop
 								EndIf
 								$bSkipGoldCheck = True
 							EndIf
 						Case "NoResources"
-							Setlog("[" & $i + 1 & "]" & " Not enough Elixir, continuing...", $COLOR_INFO)
+							SetLog("[" & $i + 1 & "]" & " Not enough Elixir, continuing...", $COLOR_INFO)
 							;ExitLoop ; continue as suggested upgrades are not ordered by amount
 							$bSkipGoldCheck = True
 						Case Else
-							;Setlog("[" & $i + 1 & "]" & " Unsupport Elixir icon '" & $aResult[2] & "', continuing...", $COLOR_INFO)
+							;SetLog("[" & $i + 1 & "]" & " Unsupport Elixir icon '" & $aResult[2] & "', continuing...", $COLOR_INFO)
 					EndSwitch
 				EndIf
 
@@ -161,16 +161,16 @@ Func MainSuggestedUpgradeCode()
 							EndIf
 						Case "New"
 							If $g_iChkPlacingNewBuildings = 1 Then
-								Setlog("[" & $i + 1 & "]" & " New Building detected, Placing it...", $COLOR_INFO)
+								SetLog("[" & $i + 1 & "]" & " New Building detected, Placing it...", $COLOR_INFO)
 								If NewBuildings($aResult) Then
 									ExitLoop
 								EndIf
 							EndIf
 						Case "NoResources"
-							Setlog("[" & $i + 1 & "]" & " Not enough Gold, continuing...", $COLOR_INFO)
+							SetLog("[" & $i + 1 & "]" & " Not enough Gold, continuing...", $COLOR_INFO)
 							;ExitLoop ; continue as suggested upgrades are not ordered by amount
 						Case Else
-							;Setlog("[" & $i + 1 & "]" & " Unsupport Gold icon '" & $aResult[2] & "', continuing...", $COLOR_INFO)
+							;SetLog("[" & $i + 1 & "]" & " Unsupport Gold icon '" & $aResult[2] & "', continuing...", $COLOR_INFO)
 					EndSwitch
 				EndIf
 
@@ -193,7 +193,7 @@ Func ClickOnBuilder()
 	Local Const $Screencap = True
 
 	; Master Builder is not available return
-	If $g_iFreeBuilderCountBB = 0 Then Setlog("No Master Builder available! [" & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB & "]", $COLOR_INFO)
+	If $g_iFreeBuilderCountBB = 0 Then SetLog("No Master Builder available! [" & $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB & "]", $COLOR_INFO)
 
 	; Master Builder available
 	If $g_iFreeBuilderCountBB > 0 Then
@@ -212,7 +212,7 @@ Func ClickOnBuilder()
 			$sDebugText = "BB Pixel problem"
 		EndIf
 	EndIf
-	If $sDebugText <> "" Then Setlog("Problem on Suggested Upg Window: [" & $sDebugText & "]", $COLOR_ERROR)
+	If $sDebugText <> "" Then SetLog("Problem on Suggested Upg Window: [" & $sDebugText & "]", $COLOR_ERROR)
 	Return False
 EndFunc   ;==>ClickOnBuilder
 
@@ -259,10 +259,10 @@ Func GetUpgradeButton($sUpgButtom = "", $Debug = False)
 	If QuickMIS("BC1", $g_sImgAutoUpgradeBtnDir, 300, 650, 600, 720, True, $Debug) Then
 		Local $sBuildingName = getNameBuilding(242, 584)
 		If _Sleep(500) Then Return
-		Setlog("Building: " & $sBuildingName, $COLOR_INFO)
+		SetLog("Building: " & $sBuildingName, $COLOR_INFO)
 		; Verify if is Builder Hall and If is to Upgrade
 		If StringInStr($sBuildingName, "Hall") > 0 And $g_iChkBBSuggestedUpgradesIgnoreHall Then
-			Setlog("Ups! Builder Hall is not to Upgrade!", $COLOR_ERROR)
+			SetLog("Ups! Builder Hall is not to Upgrade!", $COLOR_ERROR)
 			Return False
 			#cs
 				ElseIf StringInStr($sBuildingName, "Battle") > 0 Then
@@ -275,12 +275,12 @@ Func GetUpgradeButton($sUpgButtom = "", $Debug = False)
 		If _Sleep(1500) Then Return
 		If QuickMIS("BC1", $sUpgButtom, $aBtnPos[0], $aBtnPos[1], $aBtnPos[0] + $aBtnPos[2], $aBtnPos[1] + $aBtnPos[3], True, $Debug) Then
 			Click($g_iQuickMISX + $aBtnPos[0], $g_iQuickMISY + $aBtnPos[1], 1)
-			Setlog($sBuildingName & " Upgrading!", $COLOR_INFO)
+			SetLog($sBuildingName & " Upgrading!", $COLOR_INFO)
 			ClickP($aAway, 1, 0, "#0121")
 			Return True
 		Else
 			ClickP($aAway, 1, 0, "#0121")
-			Setlog("Not enough Resources to Upgrade " & $sBuildingName & " !", $COLOR_ERROR)
+			SetLog("Not enough Resources to Upgrade " & $sBuildingName & " !", $COLOR_ERROR)
 		EndIf
 
 	EndIf
@@ -301,7 +301,7 @@ Func NewBuildings($aResult)
 		; If exist Clocks
 		Local $ClocksCoordinates = QuickMIS("CX", $g_sImgAutoUpgradeClock, 20, 250, 775, 530, $Screencap, $Debug)
 		If UBound($ClocksCoordinates) > 0 Then
-			Setlog("[Clocks]: " & UBound($ClocksCoordinates), $COLOR_DEBUG)
+			SetLog("[Clocks]: " & UBound($ClocksCoordinates), $COLOR_DEBUG)
 			For $i = 0 To UBound($ClocksCoordinates) - 1
 				; Prepare the coordinates
 				Local $Coordinates = StringSplit($ClocksCoordinates[$i], ",", 2)
@@ -313,7 +313,7 @@ Func NewBuildings($aResult)
 				; Coordinates for Slot Zone from Clock position
 				Local $x = ($Coordinates[0] + 20), $y = ($Coordinates[1] + 250) - 135, $x1 = ($Coordinates[0] + 20) + 220, $y1 = ($Coordinates[1] + 250) + 52
 				; Lets see if exist resources
-				If $g_bDebugSetlog Then Setlog("[x]: " & $x & " [y]: " & $y & " [x1]: " & $x1 & " [y1]: " & $y1, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog("[x]: " & $x & " [y]: " & $y & " [x1]: " & $x1 & " [y1]: " & $y1, $COLOR_DEBUG)
 				If QuickMIS("BC1", $g_sImgAutoUpgradeZero, $x, $y, $x1, $y1, $Screencap, $Debug) Then
 					; Lets se if exist or NOT the Yellow Arrow, If Doesnt exist the [i] icon than exist the Yellow arrow , DONE
 					If Not QuickMIS("BC1", $g_sImgAutoUpgradeInfo, $x, $y, $x1, $y1, $Screencap, $Debug) Then
@@ -322,7 +322,7 @@ Func NewBuildings($aResult)
 						; Lets search for the Correct Symbol on field
 						If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgYes, 150, 150, 650, 550, $Screencap, $Debug) Then
 							Click($g_iQuickMISX + 150, $g_iQuickMISY + 150, 1)
-							Setlog("Placed a new Building on Builder Island! [" & $g_iQuickMISX + 150 & "," & $g_iQuickMISY + 150 & "]", $COLOR_INFO)
+							SetLog("Placed a new Building on Builder Island! [" & $g_iQuickMISX + 150 & "," & $g_iQuickMISY + 150 & "]", $COLOR_INFO)
 							If _Sleep(1000) Then Return
 							; Lets check if exist the [x] , Some Buildings like Traps when you place one will give other to place automaticly!
 							If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 150, 150, 650, 550, $Screencap, $Debug) Then
@@ -331,27 +331,27 @@ Func NewBuildings($aResult)
 							Return True
 						Else
 							If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 150, 150, 650, 550, $Screencap, $Debug) Then
-								Setlog("Sorry! Wrong place to deploy a new building on BB! [" & $g_iQuickMISX + 150 & "," & $g_iQuickMISY + 150 & "]", $COLOR_ERROR)
+								SetLog("Sorry! Wrong place to deploy a new building on BB! [" & $g_iQuickMISX + 150 & "," & $g_iQuickMISY + 150 & "]", $COLOR_ERROR)
 								Click($g_iQuickMISX + 150, $g_iQuickMISY + 150, 1)
 							Else
-								Setlog("Error on Undo symbol!", $COLOR_ERROR)
+								SetLog("Error on Undo symbol!", $COLOR_ERROR)
 							EndIf
 						EndIf
 					Else
 						If $i = UBound($ClocksCoordinates) - 1 Then
-							If $g_bDebugSetlog Then Setlog("Slot without enough resources![1]", $COLOR_DEBUG)
+							If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources![1]", $COLOR_DEBUG)
 							Click(820, 38, 1) ; exit from Shop
 							ExitLoop
 						EndIf
 						ContinueLoop
 					EndIf
 				Else
-					If $g_bDebugSetlog Then Setlog("Slot without enough resources![2]", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources![2]", $COLOR_DEBUG)
 					If $i = UBound($ClocksCoordinates) - 1 Then Click(820, 38, 1)
 				EndIf
 			Next
 		Else
-			Setlog("Slot without enough resources![3]", $COLOR_INFO)
+			SetLog("Slot without enough resources![3]", $COLOR_INFO)
 			Click(820, 38, 1) ; exit from Shop
 		EndIf
 	EndIf

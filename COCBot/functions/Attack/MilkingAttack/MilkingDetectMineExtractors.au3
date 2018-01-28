@@ -6,7 +6,7 @@
 ; Return values .:None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,10 +16,10 @@
 Func MilkingDetectMineExtractors()
 
 	If $g_bMilkFarmAttackGoldMines And $g_aiCurrentLoot[$eLootGold] >= $g_iMilkFarmLimitGold Then
-		If $g_bDebugSetlog Then SetLog("skip attack of gold mines, current gold (" & $g_aiCurrentLoot[$eLootGold] & ") >= limit (" & $g_iMilkFarmLimitGold & ")", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("skip attack of gold mines, current gold (" & $g_aiCurrentLoot[$eLootGold] & ") >= limit (" & $g_iMilkFarmLimitGold & ")", $COLOR_DEBUG)
 		Return 0
 	Else
-		If $g_bDebugSetlog Then SetLog("current gold (" & $g_aiCurrentLoot[$eLootGold] & ") < limit (" & $g_iMilkFarmLimitGold & ")", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("current gold (" & $g_aiCurrentLoot[$eLootGold] & ") < limit (" & $g_iMilkFarmLimitGold & ")", $COLOR_DEBUG)
 	EndIf
 
 
@@ -75,25 +75,25 @@ Func MilkingDetectMineExtractors()
 								$Minediscard += 1
 							EndIf
 						Else
-							If $g_bDebugSetlog Then Setlog(" - discard #4 no match conditions", $COLOR_DEBUG)
+							If $g_bDebugSetlog Then SetDebugLog(" - discard #4 no match conditions", $COLOR_DEBUG)
 							$Minediscard += 1
 						EndIf
 					Else
-						If $g_bDebugSetlog Then Setlog(" - discard #3 out of insidediamond", $COLOR_DEBUG)
+						If $g_bDebugSetlog Then SetDebugLog(" - discard #3 out of insidediamond", $COLOR_DEBUG)
 					EndIf
 				Else
-					If $g_bDebugSetlog Then Setlog(" - discard #2 no pixel coordinate", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog(" - discard #2 no pixel coordinate", $COLOR_DEBUG)
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog(" - discard #1 no valid point", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog(" - discard #1 no valid point", $COLOR_DEBUG)
 				$Minediscard += 1
 			EndIf
 		Next
 		If StringLen($MilkFarmAtkPixelListMINESTR) > 1 Then $MilkFarmAtkPixelListMINESTR = StringLeft($MilkFarmAtkPixelListMINESTR, StringLen($MilkFarmAtkPixelListMINESTR) - 1)
-		If $g_bDebugSetlog Then Setlog("> Mine Extractors to attack list: " & $MilkFarmAtkPixelListMINESTR, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("> Mine Extractors to attack list: " & $MilkFarmAtkPixelListMINESTR, $COLOR_DEBUG)
 		Local $htimerLocateMine = Round(__TimerDiff($hTimer) / 1000, 2)
-		If $g_bDebugSetlog Then Setlog("> Mine Extractors found: " & $Minefounds & " | match conditions: " & $Minematch & " | discard " & $Minediscard, $COLOR_INFO)
-		If $g_bDebugSetlog Then SetLog("> Mine Extractors position detectecd in " & $htimerLocateMine & " seconds", $COLOR_INFO)
+		If $g_bDebugSetlog Then SetDebugLog("> Mine Extractors found: " & $Minefounds & " | match conditions: " & $Minematch & " | discard " & $Minediscard, $COLOR_INFO)
+		If $g_bDebugSetlog Then SetDebugLog("> Mine Extractors position detectecd in " & $htimerLocateMine & " seconds", $COLOR_INFO)
 		Return $Minematch
 	Else
 		Return 0

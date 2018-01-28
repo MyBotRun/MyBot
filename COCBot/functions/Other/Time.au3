@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -30,7 +30,7 @@ EndFunc   ;==>TimeDebug
 ; Return values .: Returns number of milliseconds since PC was started
 ; Author ........: MonkeyHunter (2017-3)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -54,7 +54,7 @@ EndFunc   ;==>__TimerInit
 ; Return values .: None
 ; Author ........: MonkeyHunter (2017-3)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -84,7 +84,7 @@ EndFunc   ;==>__TimerDiff
 ; Return values .: Returns performance counter value based on system clock
 ; Author ........: MonkeyHunter (2017-3)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -97,7 +97,7 @@ Func _HPTimerInit()
 	Local $iTimerCount = _WinAPI_QueryPerformanceCounter()
 	If $iTimerCount = 0 Then
 		Local $err = _WinAPI_GetLastError()
-		Setlog("QueryPerformanceCounter error code: " & $err, $COLOR_ERROR)
+		SetLog("QueryPerformanceCounter error code: " & $err, $COLOR_ERROR)
 		SetError(1, $err, 0)
 		Return
 	EndIf
@@ -105,7 +105,7 @@ Func _HPTimerInit()
 		$g_iHPTimerFreq = _WinAPI_QueryPerformanceFrequency() ; update counts per second if not known
 		If $g_iHPTimerFreq = 0 Then
 			Local $err = _WinAPI_GetLastError()
-			Setlog("QueryPerformanceFrequency error code: " & $err, $COLOR_ERROR)
+			SetLog("QueryPerformanceFrequency error code: " & $err, $COLOR_ERROR)
 		Else
 			SetDebugLog("QueryPerformanceFrequency is: " & $g_iHPTimerFreq)
 		EndIf
@@ -122,7 +122,7 @@ EndFunc   ;==>_HPTimerInit
 ; Return values .: integer time in milliseconds
 ; Author ........: MonkeyHunter (2017-3)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -142,7 +142,7 @@ Func _HPTimerDiff($iOldTimerCount)
 		Return
 	EndIf
 	If $g_iHPTimerFreq = 0 Then
-		Setlog("QueryPerformanceFrequency error code: " & $err & " ,Abort timer check", $COLOR_ERROR)
+		SetLog("QueryPerformanceFrequency error code: " & $err & " ,Abort timer check", $COLOR_ERROR)
 		Return 0
 	EndIf
 	#cs ; disabled, as effect was not as hoped

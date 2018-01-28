@@ -7,7 +7,7 @@
 ; Return values .: $sTroopname
 ; Author ........: Unknown (2015)
 ; Modified ......: ZengZeng (01-2016), Hervidero (01-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

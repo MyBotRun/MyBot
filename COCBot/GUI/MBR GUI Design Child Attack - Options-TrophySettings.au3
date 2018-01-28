@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -113,8 +113,8 @@ Func CreateAttackSearchOptionsTrophySettings()
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & "|" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & "|" & _
 			""
-			If $g_bDebugSetlog Then Setlog($txtPriorityDefault)
-			If $g_bDebugSetlog Then Setlog($txtPriorityList)
+			If $g_bDebugSetlog Then SetDebugLog($txtPriorityDefault)
+			If $g_bDebugSetlog Then SetDebugLog($txtPriorityList)
 			GUICtrlSetData(-1, $txtPriorityList , $txtPriorityDefault)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 

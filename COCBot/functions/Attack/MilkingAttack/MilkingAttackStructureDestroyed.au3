@@ -6,7 +6,7 @@
 ; Return values .:True or False
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -28,7 +28,7 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 		Case Else
 			Local $px = StringSplit("0-0", "-", 2)
 			Local $name = ""
-			If $g_bDebugSetlog Then Setlog("MilkingAttackStructureDestroyed error #1")
+			If $g_bDebugSetlog Then SetDebugLog("MilkingAttackStructureDestroyed error #1")
 	EndSwitch
 	$pixel[0] += $px[0]
 	$pixel[1] += $px[1]
@@ -46,7 +46,7 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 		ElseIf $name = "Dark" Then
 			$aDestroyedImgFilenames = $g_asDestroyedDarkIMG[$level]
 		EndIf
-		If $g_bDebugSetlog Then Setlog("##start search in vector Destroyed" & $name & "IMG" & $level & ": numbers of files=" & UBound($aDestroyedImgFilenames), $COLOR_SUCCESS)
+		If $g_bDebugSetlog Then SetDebugLog("##start search in vector Destroyed" & $name & "IMG" & $level & ": numbers of files=" & UBound($aDestroyedImgFilenames), $COLOR_SUCCESS)
 		For $t = UBound($aDestroyedImgFilenames) - 1 To 1 Step -1 ;
 			Local $filename = $aDestroyedImgFilenames[$t]
 
@@ -55,8 +55,8 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 
 			$found = _ImageSearch(@ScriptDir & "\images\CapacityStructure\" & $filename, 1, $posx, $posy, $tolerance)
 			If $found = 1 Then
-				If $g_bDebugSetlog Then Setlog("IMAGECHECK OK " & $filename, $COLOR_DEBUG)
-				If $g_bDebugSetlog Then SetLog(">>Structure Destroyed! (" & $name & "," & $level & "," & $tolerance & ")", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("IMAGECHECK OK " & $filename, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog(">>Structure Destroyed! (" & $name & "," & $level & "," & $tolerance & ")", $COLOR_ERROR)
 				Return True
 				ExitLoop
 			Else
@@ -68,6 +68,6 @@ Func MilkingAttackStructureDestroyed($type, $level, $coordinate)
 		EndIf
 		Return False
 	Else
-		If $g_bDebugSetlog Then Setlog("error MilkingAttackStructureDestroyed #1")
+		If $g_bDebugSetlog Then SetDebugLog("error MilkingAttackStructureDestroyed #1")
 	EndIf
 EndFunc   ;==>MilkingAttackStructureDestroyed

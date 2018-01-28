@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Heridero, Zengzeng (2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,20 +14,20 @@
 ; ===============================================================================================================================
 Func CheckPrerequisites($bSilent = False)
 	Local $isAllOK = True
-	Local $isNetFramework4Installed = isNetFramework4Installed()
-	;Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
+	;Local $isNetFramework4Installed = isNetFramework4Installed()
+	Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
 	Local $isVC2010Installed = isVC2010Installed()
-	If ($isNetFramework4Installed = False Or $isVC2010Installed = False) Then
+	If ($isNetFramework4dot5Installed = False Or $isVC2010Installed = False) Then
+		#cs
 		If ($isNetFramework4Installed = False And Not $bSilent) Then
 			SetLog("The .Net Framework 4.0 is not installed", $COLOR_ERROR)
 			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=17718", $COLOR_ERROR)
 		EndIf
-		#cs
+		#ce
 		If ($isNetFramework4dot5Installed = False And Not $bSilent) Then
 			SetLog("The .Net Framework 4.5 is not installed", $COLOR_ERROR)
 			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=30653", $COLOR_ERROR)
 		EndIf
-		#ce
 		If ($isVC2010Installed = False And Not $bSilent) Then
 			SetLog("The VC 2010 x86 is not installed", $COLOR_ERROR)
 			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=5555", $COLOR_ERROR)
@@ -40,7 +40,6 @@ Func CheckPrerequisites($bSilent = False)
 
 	If $isAllOK = False And Not $bSilent Then
 		GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
-		$g_bAutoStart = False
 		$g_bRestarted = False
 	EndIf
 	Return $isAllOK
@@ -79,12 +78,11 @@ Func isEveryFileInstalled($bSilent = False)
 	Local $bResult = False, $iCount = 0
 
 	; folders and files needed checking
-	Local $aCheckFiles[9] = [@ScriptDir & "\COCBot", _
+	Local $aCheckFiles = [@ScriptDir & "\COCBot", _
 			$g_sLibPath, _
 			@ScriptDir & "\Images", _
 			$g_sLibMyBotPath, _
 			$g_sLibImageSearchPath, _
-			$g_sLibImgLocPath, _
 			$g_sLibIconPath, _
 			$g_sLibPath & "\opencv_core220.dll", _
 			$g_sLibPath & "\opencv_imgproc220.dll"]
@@ -102,9 +100,9 @@ Func isEveryFileInstalled($bSilent = False)
 		$sText2 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_02", "Please extract all files and folders and start this program again!")
 		$sText3 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_03", "Sorry, Start button disabled until fixed!")
 
-		Setlog($sText1, $COLOR_ERROR)
-		Setlog($sText2, $COLOR_ERROR)
-		Setlog($sText3, $COLOR_ERROR)
+		SetLog($sText1, $COLOR_ERROR)
+		SetLog($sText2, $COLOR_ERROR)
+		SetLog($sText3, $COLOR_ERROR)
 
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), $sText1, $sText2, 0)
@@ -118,9 +116,9 @@ Func isEveryFileInstalled($bSilent = False)
 				$sText2 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_05", 'You have renamed the file "MyBot.run.exe"! Please change it back to MyBot.run.exe and restart the bot!')
 				$sText3 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_03", "Sorry, Start button disabled until fixed!")
 
-				Setlog($sText1, $COLOR_ERROR)
-				Setlog($sText2, $COLOR_ERROR)
-				Setlog($sText3, $COLOR_ERROR)
+				SetLog($sText1, $COLOR_ERROR)
+				SetLog($sText2, $COLOR_ERROR)
+				SetLog($sText3, $COLOR_ERROR)
 
 				_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 				$MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), $sText1, $sText2, 0)

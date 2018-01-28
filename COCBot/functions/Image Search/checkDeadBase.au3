@@ -7,7 +7,7 @@
 ; Return values .: True if it is, returns false if it is not a dead base
 ; Author ........:  AtoZ , DinoBot (01-2015)
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -99,7 +99,7 @@ Func checkDeadBaseNew()
 	Local $minCollectorLevel = 0
 	Local $maxCollectorLevel = 0
 	Local $anyFillLevel[2] = [False, False] ; 50% and 100%
-	If $g_bDebugSetlog Then SetLog("Checking Deadbase With IMGLOC START", $COLOR_WARNING)
+	If $g_bDebugSetlog Then SetDebugLog("Checking Deadbase With IMGLOC START", $COLOR_WARNING)
 
 	For $i = 6 To 12
 		If $g_abCollectorLevelEnabled[$i] Then
@@ -113,7 +113,7 @@ Func checkDeadBaseNew()
 		Return True
 	EndIf
 
-	If $g_bDebugSetlog Then SetLog("Checking Deadbase With IMGLOC START", $COLOR_WARNING)
+	If $g_bDebugSetlog Then SetDebugLog("Checking Deadbase With IMGLOC START", $COLOR_WARNING)
 
 	Local $TotalMatched = 0
 	Local $Matched[2] = [-1, -1]
@@ -135,13 +135,13 @@ Func checkDeadBaseNew()
 
 	Local $dbFound = $TotalMatched >= $g_iCollectorMatchesMin
 	If $dbFound Then
-		If $g_bDebugSetlog Then SetLog("IMGLOC : FOUND DEADBASE !!! Matched: " & $TotalMatched & "/" & $g_iCollectorMatchesMin & ": " & UBound($aPoints), $COLOR_GREEN)
+		If $g_bDebugSetlog Then SetDebugLog("IMGLOC : FOUND DEADBASE !!! Matched: " & $TotalMatched & "/" & $g_iCollectorMatchesMin & ": " & UBound($aPoints), $COLOR_GREEN)
 	Else
 		If $g_bDebugSetlog Then
 			If $Matched[0] = -1 And $Matched[1] = -1 Then
-				SetLog("IMGLOC : NOT A DEADBASE!!! ", $COLOR_INFO)
+				SetDebugLog("IMGLOC : NOT A DEADBASE!!! ", $COLOR_INFO)
 			Else
-				SetLog("IMGLOC : DEADBASE NOT MATCHED Matched: " & $TotalMatched & "/" & $g_iCollectorMatchesMin, $COLOR_WARNING)
+				SetDebugLog("IMGLOC : DEADBASE NOT MATCHED Matched: " & $TotalMatched & "/" & $g_iCollectorMatchesMin, $COLOR_WARNING)
 			EndIf
 		EndIf
 	EndIf
@@ -179,7 +179,7 @@ Func imglocIsDeadBase(ByRef $aPos, $FillLevel = 100, $minCollectorLevel = 0, $ma
 	Local $TotalMatched = 0
 	Local $fillIndex = GetCollectorIndexByFillLevel($FillLevel)
 
-	If $g_bDebugSetlog Then SetLog("IMGLOC : Searching Deadbase for FillLevel/MinLevel/MaxLevel: " & $FillLevel & "/" & $minLevel & "/" & $maxLevel & " using " & $sDirectory, $COLOR_INFO)
+	If $g_bDebugSetlog Then SetDebugLog("IMGLOC : Searching Deadbase for FillLevel/MinLevel/MaxLevel: " & $FillLevel & "/" & $minLevel & "/" & $maxLevel & " using " & $sDirectory, $COLOR_INFO)
 
 	Local $result = findMultiple($sDirectory, $sCocDiamond, $redLines, $minLevel, $maxLevel, $maxReturnPoints, $returnProps, $bForceCapture)
 	If IsArray($result) Then
@@ -210,7 +210,7 @@ Func imglocIsDeadBase(ByRef $aPos, $FillLevel = 100, $minCollectorLevel = 0, $ma
 						Local $c = Sqrt($a * $a + $b * $b)
 						If $c < 25 Then
 							; duplicate point: skip
-							If $g_bDebugSetlog Then SetLog("IMGLOC : Searching Deadbase ignore duplicate collector " & $matchedValues[0] & " at " & $aP[0] & ", " & $aP[1], $COLOR_INFO)
+							If $g_bDebugSetlog Then SetDebugLog("IMGLOC : Searching Deadbase ignore duplicate collector " & $matchedValues[0] & " at " & $aP[0] & ", " & $aP[1], $COLOR_INFO)
 							$bSkipPoint = True
 							$found -= 1
 							ExitLoop
@@ -244,7 +244,7 @@ Func checkDeadBaseSuperNew($bForceCapture = True, $sFillDirectory = @ScriptDir &
 	Local $minCollectorLevel = 0
 	Local $maxCollectorLevel = 0
 	Local $anyFillLevel[2] = [False, False] ; 50% and 100%
-	If $g_bDebugSetlog Then SetLog("Checking Deadbase With IMGLOC START (super new)", $COLOR_WARNING)
+	If $g_bDebugSetlog Then SetDebugLog("Checking Deadbase With IMGLOC START (super new)", $COLOR_WARNING)
 
 	For $i = 6 To 12
 		If $g_abCollectorLevelEnabled[$i] Then
@@ -258,7 +258,7 @@ Func checkDeadBaseSuperNew($bForceCapture = True, $sFillDirectory = @ScriptDir &
 		Return True
 	EndIf
 
-	If $g_bDebugSetlog Then SetLog("Checking Deadbase With IMGLOC START", $COLOR_WARNING)
+	If $g_bDebugSetlog Then SetDebugLog("Checking Deadbase With IMGLOC START", $COLOR_WARNING)
 
 	Local $TotalMatched = 0
 	Local $Matched[2] = [-1, -1]
@@ -306,7 +306,7 @@ Func checkDeadBaseSuperNew($bForceCapture = True, $sFillDirectory = @ScriptDir &
 								$aPos[$i] = $aP
 								$aP = $bP ; just for logging
 							EndIf
-							If $g_bDebugSetlog Then SetLog("IMGLOC : Searching Deadbase ignore duplicate collector with fill level " & $aP[2] & " at " & $aP[0] & ", " & $aP[1], $COLOR_INFO)
+							If $g_bDebugSetlog Then SetDebugLog("IMGLOC : Searching Deadbase ignore duplicate collector with fill level " & $aP[2] & " at " & $aP[0] & ", " & $aP[1], $COLOR_INFO)
 							$bSkipPoint = True
 							$found -= 1
 							ExitLoop
@@ -345,7 +345,7 @@ Func checkDeadBaseSuperNew($bForceCapture = True, $sFillDirectory = @ScriptDir &
 			$lvl = $aP[3] ; update level variable as modified above
 			If $lvl = 0 Then
 				; collector level not identified
-				If $g_bDebugSetlog Then SetLog("IMGLOC : Searching Deadbase no collector identified with fill level " & $fill & " at " & $x & ", " & $y, $COLOR_INFO)
+				If $g_bDebugSetlog Then SetDebugLog("IMGLOC : Searching Deadbase no collector identified with fill level " & $fill & " at " & $x & ", " & $y, $COLOR_INFO)
 				ContinueLoop ; jump to next collector
 			EndIf
 
@@ -354,12 +354,12 @@ Func checkDeadBaseSuperNew($bForceCapture = True, $sFillDirectory = @ScriptDir &
 				Local $fillIndex = GetCollectorIndexByFillLevel($fill)
 				If $fillIndex < $g_aiCollectorLevelFill[$lvl] Then
 					; collector fill level not reached
-					If $g_bDebugSetlog Then SetLog("IMGLOC : Searching Deadbase collector level " & $lvl & " found but not enough elixir, fill level " & $fill & " at " & $x & ", " & $y, $COLOR_INFO)
+					If $g_bDebugSetlog Then SetDebugLog("IMGLOC : Searching Deadbase collector level " & $lvl & " found but not enough elixir, fill level " & $fill & " at " & $x & ", " & $y, $COLOR_INFO)
 					ContinueLoop ; jump to next collector
 				EndIf
 			Else
 				; collector is not enabled
-				If $g_bDebugSetlog Then SetLog("IMGLOC : Searching Deadbase collector level " & $lvl & " found but not enabled, fill level " & $fill & " at " & $x & ", " & $y, $COLOR_INFO)
+				If $g_bDebugSetlog Then SetDebugLog("IMGLOC : Searching Deadbase collector level " & $lvl & " found but not enabled, fill level " & $fill & " at " & $x & ", " & $y, $COLOR_INFO)
 				ContinueLoop ; jump to next collector
 			EndIf
 
@@ -371,11 +371,11 @@ Func checkDeadBaseSuperNew($bForceCapture = True, $sFillDirectory = @ScriptDir &
 	Local $dbFound = $TotalMatched >= $g_iCollectorMatchesMin
 	If $g_bDebugSetlog Then
 		If $foundFilledCollectors = False Then
-			SetLog("IMGLOC : NOT A DEADBASE!!!", $COLOR_INFO)
+			SetDebugLog("IMGLOC : NOT A DEADBASE!!!", $COLOR_INFO)
 		ElseIf $dbFound = False Then
-			SetLog("IMGLOC : DEADBASE NOT MATCHED: " & $TotalMatched & "/" & $g_iCollectorMatchesMin, $COLOR_WARNING)
+			SetDebugLog("IMGLOC : DEADBASE NOT MATCHED: " & $TotalMatched & "/" & $g_iCollectorMatchesMin, $COLOR_WARNING)
 		Else
-			SetLog("IMGLOC : FOUND DEADBASE !!! Matched: " & $TotalMatched & "/" & $g_iCollectorMatchesMin & ": " & UBound($aPoints), $COLOR_GREEN)
+			SetDebugLog("IMGLOC : FOUND DEADBASE !!! Matched: " & $TotalMatched & "/" & $g_iCollectorMatchesMin & ": " & UBound($aPoints), $COLOR_GREEN)
 		EndIf
 	EndIf
 

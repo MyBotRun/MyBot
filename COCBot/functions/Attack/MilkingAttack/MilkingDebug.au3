@@ -6,7 +6,7 @@
 ; Return values .:None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,26 +17,26 @@ Func MilkingDebug()
 	Local $debugselogLocal = $g_bDebugSetlog
 	Local $MilkingExtractorsMatch
 	$g_bDebugSetlog = True
-	Setlog("1 - Zoom out")
+	SetLog("1 - Zoom out")
 	CheckZoomOut()
 	Local $TimeCheckMilkingAttack = __TimerInit()
-	Setlog("2 - Detect Elixir Collectors")
-	Setlog("  2.1 Detect RedArea")
+	SetLog("2 - Detect Elixir Collectors")
+	SetLog("  2.1 Detect RedArea")
 	MilkingDetectRedArea()
 	$g_sMilkFarmObjectivesSTR = ""
-;~ 	Setlog("  2.2 Detect Elixir Extractors")
+;~ 	SetLog("  2.2 Detect Elixir Extractors")
 ;~ 	$MilkingExtractorsMatch = MilkingDetectElixirExtractors()
 
-	Setlog("  2.2bis detect elixir extractors2")
+	SetLog("  2.2bis detect elixir extractors2")
 	$MilkingExtractorsMatch = MilkingDetectElixirExtractors()
 
-	Setlog("  2.3 Detect Mine Extractors")
+	SetLog("  2.3 Detect Mine Extractors")
 	$MilkingExtractorsMatch += MilkingDetectMineExtractors()
-	Setlog("  2.4 Detect Dark Elixir Extractors")
+	SetLog("  2.4 Detect Dark Elixir Extractors")
 	Local $TimeCheckMilkingAttackSeconds = Round(__TimerDiff($TimeCheckMilkingAttack) / 1000, 2)
-	Setlog("Computing Time Milking Attack : " & $TimeCheckMilkingAttackSeconds & " seconds", $COLOR_INFO)
+	SetLog("Computing Time Milking Attack : " & $TimeCheckMilkingAttackSeconds & " seconds", $COLOR_INFO)
 	$g_bDebugSetlog = $debugselogLocal
-	Setlog("Make DebugImage")
+	SetLog("Make DebugImage")
 	MilkFarmObjectivesDebugImage($g_sMilkFarmObjectivesSTR, 0)
 
 EndFunc   ;==>MilkingDebug
@@ -54,7 +54,7 @@ Func CheckMilkingBaseTest()
 	If @error = 4 Then
 		MsgBox(0, "", "No Files in folder " & @ScriptDir & "\images\Milking\Elixir")
 	EndIf
-	Setlog("Locate Elixir...")
+	SetLog("Locate Elixir...")
 	; Local $hTimer = __TimerInit()
 
 	_CaptureRegion2()
@@ -72,25 +72,25 @@ Func CheckMilkingBaseTest()
 		Local $temp = StringSplit($ElixirVect[$i], "#", 2) ;TEMP ["2", "404-325"]
 		If UBound($temp) = 2 Then
 
-			Setlog("examine elixir vector #" & $i & " placed in " & $ElixirVect[$i], $COLOR_ERROR)
+			SetLog("examine elixir vector #" & $i & " placed in " & $ElixirVect[$i], $COLOR_ERROR)
 			Local $pixelTemp = StringSplit($ElixirVect[$i], "-", 2)
 			$pixelTemp[0] += 0
 			$pixelTemp[1] += 10
 			Local $arrPixelsCloser = _FindPixelCloser($g_aiPixelRedArea, $pixelTemp, 1)
-			Setlog("pixelcloser=" & $arrPixelsCloser & "ubound = " & UBound($arrPixelsCloser))
+			SetLog("pixelcloser=" & $arrPixelsCloser & "ubound = " & UBound($arrPixelsCloser))
 			For $t = 0 To UBound($arrPixelsCloser) - 1
 				Local $temp = $arrPixelsCloser[$t]
 
-				Setlog("$arrPixelsCloser " & $arrPixelsCloser[$t] & " ubound = " & UBound($temp) & " " & $temp[0] & "-" & $temp[1])
+				SetLog("$arrPixelsCloser " & $arrPixelsCloser[$t] & " ubound = " & UBound($temp) & " " & $temp[0] & "-" & $temp[1])
 			Next
 
 			If UBound($arrPixelsCloser) > 1 Then
 ;~ 						For $m = 1 To UBound($arrPixelsCloser) - 1 Step 2
-;~ 							Setlog( $arrPixelsCloser[$m],$COLOR_DEBUG1)
+;~ 							SetLog( $arrPixelsCloser[$m],$COLOR_DEBUG1)
 ;~ 							If $m+1 < Ubound($arrPixelsCloser) Then
 ;~ 								Local $arrTemp3x = $arrPixelsCloser[$m]
 ;~ 								Local $arrTemp3y = $arrPixelsCloser[$m + 1]
-;~ 								Setlog($arrTemp3x & " - " & $arrTemp3y)
+;~ 								SetLog($arrTemp3x & " - " & $arrTemp3y)
 ;~ 								If (($arrTemp3x-$pixelTemp[0])^2 + ($arrTemp3y - $pixelTemp[1])^2 < ($tmpPixelCloser2x-$pixelTemp[0])^2 + ($tmpPixelCloser2y - $pixelTemp[1])^2) Then
 ;~ 									$tmpPixelCloser2x = $arrTemp3x
 ;~ 									$tmpPixelCloser2y= $arrTemp3y
@@ -130,10 +130,10 @@ Func CheckMilkingBaseTest()
 ;~ 								Local $temp = $arrPixelsCloser[$i]
 ;~ 								If Ubound($temp)>1 Then
 ;~ 									For $j= 0 To Ubound($temp) -1
-;~ 										Setlog($temp[$j])
+;~ 										SetLog($temp[$j])
 ;~ 									Next
 ;~ 								Else
-;~ 									Setlog($temp)
+;~ 									SetLog($temp)
 ;~ 								EndIf
 ;~ 							Next
 ;~ 						EndIf
@@ -147,10 +147,10 @@ Func CheckMilkingBaseTest()
 ;~ 				EndIf
 
 		Else
-			If $g_bDebugSetlog Then Setlog(" - discard #1 no valid point", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog(" - discard #1 no valid point", $COLOR_DEBUG)
 			$elixirdiscard += 1
 		EndIf
-		Setlog("............ next ..........")
+		SetLog("............ next ..........")
 	Next
 ;~ 	If StringLen($MilkFarmAtkPixelListSTR) > 1 Then
 ;~ 		$MilkFarmAtkPixelListSTR = StringLeft($MilkFarmAtkPixelListSTR, StringLen($MilkFarmAtkPixelListSTR) - 1)

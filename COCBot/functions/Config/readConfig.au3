@@ -5,8 +5,8 @@
 ; Parameters ....: NA
 ; Return values .: NA
 ; Author ........:
-; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Modified ......: CodeSlinger69 (01-2018)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,6 +15,11 @@
 
 Func readConfig($inputfile = $g_sProfileConfigPath) ;Reads config and sets it to the variables
 	Static $iReadConfigCount = 0
+	If $g_bReadConfigIsActive Then
+		SetDebugLog("readConfig(), already running, exit")
+		Return
+	EndIf
+	$g_bReadConfigIsActive = True
 	$iReadConfigCount += 1
 	SetDebugLog("readConfig(), call number " & $iReadConfigCount)
 
@@ -24,6 +29,8 @@ Func readConfig($inputfile = $g_sProfileConfigPath) ;Reads config and sets it to
 	ReadProfileConfig()
 	If FileExists($g_sProfileBuildingPath) Then ReadBuildingConfig()
 	If FileExists($g_sProfileConfigPath) Then ReadRegularConfig()
+
+	$g_bReadConfigIsActive = False
 EndFunc   ;==>readConfig
 
 Func ReadProfileConfig($sIniFile = $g_sProfilePath & "\profile.ini")
@@ -104,6 +111,9 @@ Func ReadBuildingConfig()
 		IniReadS($g_aiLaboratoryPos[0], $g_sProfileBuildingPath, "upgrade", "LabPosX", -1, "int")
 		IniReadS($g_aiLaboratoryPos[1], $g_sProfileBuildingPath, "upgrade", "LabPosY", -1, "int")
 	EndIf
+
+	IniReadS($g_aiLastGoodWallPos[0], $g_sProfileBuildingPath, "upgrade", "xLastGoodWallPos", -1, "int")
+	IniReadS($g_aiLastGoodWallPos[1], $g_sProfileBuildingPath, "upgrade", "yLastGoodWallPos", -1, "int")
 
 	IniReadS($g_iTotalCampSpace, $g_sProfileBuildingPath, "other", "totalcamp", 0, "int")
 
@@ -229,7 +239,9 @@ Func ReadRegularConfig()
 	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
 	ReadConfig_600_33()
 	; <><><><> Bot / Options <><><><>
-	ReadConfig_600_35()
+	ReadConfig_600_35_1()
+	; <><><><> Bot / Profile / Switch Account <><><><>
+	ReadConfig_600_35_2()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
 	; Quick train
 	ReadConfig_600_52_1()
@@ -260,9 +272,13 @@ EndFunc   ;==>ReadRegularConfig
 
 Func ReadConfig_Debug()
 	; Debug settings
+	$g_bDebugSetlog = IniRead($g_sProfileConfigPath, "debug", "debugsetlog", 0) = 1 ? True : False
+	$g_bDebugAndroid = IniRead($g_sProfileConfigPath, "debug", "debugAndroid", 0) = 1 ? True : False
 	$g_bDebugClick = IniRead($g_sProfileConfigPath, "debug", "debugsetclick", 0) = 1 ? True : False
 	If $g_bDevMode Then
-		$g_bDebugSetlog = IniRead($g_sProfileConfigPath, "debug", "debugsetlog", 0) = 1 ? True : False
+		Local $bDebugFunc = IniRead($g_sProfileConfigPath, "debug", "debugFunc", 0) = 1 ? True : False
+		$g_bDebugFuncTime = $bDebugFunc
+		$g_bDebugFuncCall = $bDebugFunc
 		$g_bDebugDisableZoomout = IniRead($g_sProfileConfigPath, "debug", "disablezoomout", 0) = 1 ? True : False
 		$g_bDebugDisableVillageCentering = IniRead($g_sProfileConfigPath, "debug", "disablevillagecentering", 0) = 1 ? True : False
 		$g_bDebugDeadBaseImage = IniRead($g_sProfileConfigPath, "debug", "debugdeadbaseimage", 0) = 1 ? True : False
@@ -309,6 +325,7 @@ Func ReadConfig_Android()
 	$g_iAndroidSuspendModeFlags = Int(IniRead($g_sProfileConfigPath, "android", "suspend.mode", $g_iAndroidSuspendModeFlags))
 	$g_iAndroidRebootHours = Int(IniRead($g_sProfileConfigPath, "android", "reboot.hours", $g_iAndroidRebootHours))
 	$g_bAndroidCloseWithBot = Int(IniRead($g_sProfileConfigPath, "android", "close", $g_bAndroidCloseWithBot ? 1 : 0)) = 1
+	$g_iAndroidProcessAffinityMask = Int(IniRead($g_sProfileConfigPath, "android", "process.affinity.mask", $g_iAndroidProcessAffinityMask))
 
 	If $g_bBotLaunchOption_Restart = True Or $g_asCmdLine[0] < 2 Then
 		; for now only read when bot crashed and restarted through watchdog or nofify event
@@ -1108,7 +1125,7 @@ Func ReadConfig_600_33()
 	Next
 EndFunc   ;==>ReadConfig_600_33
 
-Func ReadConfig_600_35()
+Func ReadConfig_600_35_1()
 	; <><><><> Bot / Options <><><><>
 	$g_bDisableSplash = (IniRead($g_sProfileConfigPath, "General", "ChkDisableSplash", "0") = "1")
 	$g_bCheckVersion = (IniRead($g_sProfileConfigPath, "General", "ChkVersion", "1") = "1")
@@ -1141,7 +1158,55 @@ Func ReadConfig_600_35()
 	$g_iAutoResumeTime = Int(IniRead($g_sProfileConfigPath, "other", "AutoResumeTime", 5))
 	IniReadS($g_bDisableNotifications, $g_sProfileConfigPath, "other", "ChkDisableNotifications", False, "Bool")
 	$g_bForceClanCastleDetection = (IniRead($g_sProfileConfigPath, "other", "ChkFixClanCastle", "0") = "1")
-EndFunc   ;==>ReadConfig_600_35
+EndFunc   ;==>ReadConfig_600_35_1
+
+Func ReadConfig_600_35_2()
+	; <><><><> Bot / Profile / Switch Account <><><><>
+	Local $sSwitchAccFile
+	$g_iCmbSwitchAcc = 0
+	$g_bChkSwitchAcc = False
+	For $g = 1 To 8
+		; find group this profile belongs to: no switch profile config is saved in config.ini on purpose!
+		$sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $g & ".ini"
+		If FileExists($sSwitchAccFile) = 0 Then ContinueLoop
+		Local $sProfile
+		Local $bEnabled
+		For $i = 1 To Int(IniRead($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", 0)) + 1
+			$bEnabled = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "") = "1"
+			If $bEnabled Then
+				$bEnabled = IniRead($sSwitchAccFile, "SwitchAccount", "AccountNo." & $i, "") = "1"
+				If $bEnabled Then
+					$sProfile = IniRead($sSwitchAccFile, "SwitchAccount", "ProfileName." & $i, "")
+					If $sProfile = $g_sProfileCurrentName Then
+						; found current profile
+						$g_iCmbSwitchAcc = $g
+						ExitLoop
+					EndIf
+				EndIf
+			EndIf
+		Next
+
+		If $g_iCmbSwitchAcc Then
+			ReadConfig_SwitchAccounts()
+			ExitLoop
+		EndIf
+	Next
+EndFunc   ;==>ReadConfig_600_35_2
+
+Func ReadConfig_SwitchAccounts()
+	If $g_iCmbSwitchAcc Then
+		Local $sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $g_iCmbSwitchAcc & ".ini"
+		$g_bChkSwitchAcc = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "") = "1"
+		$g_bChkSmartSwitch = IniRead($sSwitchAccFile, "SwitchAccount", "SmartSwitch", "0") = "1"
+		$g_iTotalAcc = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", "-1"))
+		$g_iTrainTimeToSkip = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TrainTimeToSkip", "1"))
+		For $i = 1 To 8
+			$g_abAccountNo[$i - 1] = IniRead($sSwitchAccFile, "SwitchAccount", "AccountNo." & $i, "") = "1"
+			$g_asProfileName[$i - 1] = IniRead($sSwitchAccFile, "SwitchAccount", "ProfileName." & $i, "")
+			$g_abDonateOnly[$i - 1] = IniRead($sSwitchAccFile, "SwitchAccount", "DonateOnly." & $i, "0") = "1"
+		Next
+	EndIf
+EndFunc   ;==>ReadConfig_SwitchAccounts
 
 Func ReadConfig_600_52_1()
 	; <><><><> Attack Plan / Train Army / Troops/Spells <><><><>

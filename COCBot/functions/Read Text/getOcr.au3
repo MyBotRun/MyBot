@@ -3,7 +3,7 @@
 ; Description ...: Gets complete value of gold/Elixir/DarkElixir/Trophy/Gem xxx,xxx
 ; Author ........: Didipe (2015)
 ; Modified ......: ProMac (2015), Hervidero (2015-12), MMHK (2016-12), MR.ViPER (2017-4)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -388,8 +388,8 @@ Func getOcrImgLoc(ByRef Const $_hHBitmap, $sLanguage)
 	Local $error = @error ; Store error values as they reset at next function call
 	Local $extError = @extended
 	If $error Then
-		_logErrorDLLCall($g_hLibImgLoc, $error)
-		If $g_bDebugSetlog Then SetLog(" imgloc DLL Error : " & $error & " --- " & $extError)
+		_logErrorDLLCall($g_hLibMyBot, $error)
+		If $g_bDebugSetlog Then SetDebugLog(" imgloc DLL Error : " & $error & " --- " & $extError)
 		Return SetError(2, $extError, "") ; Set external error code = 2 for DLL error
 	EndIf
 	If $g_bDebugImageSave Then DebugImageSave($sLanguage, False)

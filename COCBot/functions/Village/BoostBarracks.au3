@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MR.ViPER (9/9/2016)
 ; Modified ......: MR.ViPER (17/10/2016), Fliegerfaust (21/12/2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,25 +21,31 @@ Func BoostSpellFactory()
 EndFunc   ;==>BoostSpellFactory
 
 Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
+	Local $boosted = False
 
-	If Not $g_bTrainEnabled Or $iCmbBoost <= 0 Then Return
+	If Not $g_bTrainEnabled Or $iCmbBoost <= 0 Then Return $boosted
 
 	Local $aHours = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 	If Not $g_abBoostBarracksHours[$aHours[0]] Then
 		SetLog("Boosting " & $sName & " isn't planned, skipping", $COLOR_INFO)
-		Return
+		Return $boosted
 	EndIf
 
+	Local $sIsAre = "are"
 	SetLog("Boosting " & $sName, $COLOR_INFO)
 
 	If OpenArmyOverview(True, "BoostTrainBuilding()") Then
-
 		If $sName = "Barracks" Then
-			OpenTroopsTab(False, "BoostTrainBuilding()")
+			OpenTroopsTab(True, "BoostTrainBuilding()")
+		ElseIf $sName = "Spell Factory" Then
+			OpenSpellsTab(True, "BoostTrainBuilding()")
+			$sIsAre = "is"
 		Else
-			OpenSpellsTab(False, "BoostTrainBuilding()")
+			SetDebugLog("BoostTrainBuilding(): $sName called with a wrong Value.", $COLOR_ERROR)
+			ClickP($aAway, 1, 0, "#0161")
+			_Sleep($DELAYBOOSTBARRACKS2)
+			Return $boosted
 		EndIf
-
 		Local $aBoostBtn = findButton("BoostBarrack")
 		If IsArray($aBoostBtn) Then
 			ClickP($aBoostBtn)
@@ -54,23 +60,23 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 					If $iCmbBoost >= 1 And $iCmbBoost <= 24 Then
 						$iCmbBoost -= 1
 						_GUICtrlComboBox_SetCurSel($iCmbBoostCtrl, $iCmbBoost)
-						Setlog("Remaining " & $sName & " Boosts: " & $iCmbBoost, $COLOR_SUCCESS)
+						SetLog("Remaining " & $sName & " Boosts: " & $iCmbBoost, $COLOR_SUCCESS)
 					ElseIf $iCmbBoost = 25 Then
-						Setlog("Remain " & $sName & " Boosts: Unlimited", $COLOR_SUCCESS)
+						SetLog("Remain " & $sName & " Boosts: Unlimited", $COLOR_SUCCESS)
 					EndIf
+					$boosted = True
 				EndIf
-				_Sleep($DELAYBOOSTBARRACKS1)
-				ClickP($aAway, 1, 0, "#0161")
-				Return True
 			EndIf
 		Else
 			If IsArray(findButton("BarrackBoosted")) Then
-				SetLog( $sName & " is already boosted", $COLOR_INFO)
+				SetLog($sName & " " & $sIsAre & " already boosted", $COLOR_SUCCESS)
 			Else
 				SetLog($sName & "boost button not found", $COLOR_ERROR)
-			ClickP($aAway, 1, 0, "#0161")
-			Return False
 			EndIf
 		EndIf
 	EndIf
+
+	ClickP($aAway, 1, 0, "#0161")
+	_Sleep($DELAYBOOSTBARRACKS2)
+	Return $boosted
 EndFunc

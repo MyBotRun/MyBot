@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: (2014)
 ; Modified ......: HungLe (may-2015) Sardo 2015-08
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkMainscreen, isProblemAffect
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -35,7 +35,7 @@ Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
 			If isProblemAffectBeforeClick($i) Then
-				If $g_bDebugClick Then Setlog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
+				If $g_bDebugClick Then SetLog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
 				Return ; if need to clear screen do not click
@@ -46,7 +46,7 @@ Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 		Next
 	Else
 		If isProblemAffectBeforeClick() Then
-			If $g_bDebugClick Then Setlog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
+			If $g_bDebugClick Then SetLog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 			checkMainScreen(False)
 			SuspendAndroid($SuspendMode)
 			Return ; if need to clear screen do not click
@@ -63,13 +63,18 @@ Func _ControlClick($x, $y)
 	Local $hWin = (($useHWnD) ? ($g_hAndroidWindow) : ($g_hAndroidControl))
 	$x = Int($x) + $g_aiMouseOffset[0]
 	$y = Int($y) + $g_aiMouseOffset[1]
+	If $g_bAndroidEmbedded = False Then
+		; special fix for incorrect mouse offset in Android Window (undocked)
+		$x += $g_aiMouseOffsetWindowOnly[0]
+		$y += $g_aiMouseOffsetWindowOnly[1]
+	EndIf
 	If $hWin = $g_hAndroidWindow Then
 		$x += $g_aiBSrpos[0]
 		$y += $g_aiBSrpos[1]
 	EndIf
 	If $g_iAndroidControlClickMode = 0 Then
 		Opt("MouseClickDelay", $g_iAndroidControlClickDelay) ;Default: 10 milliseconds
-		Opt("MouseClickDownDelay", $g_iAndroidControlClickDownDelay) ;Default: 10 milliseconds
+		Opt("MouseClickDownDelay", $g_iAndroidControlClickDownDelay) ;Default: 2 milliseconds
 		Return ControlClick($hWin, "", "", "left", "1", $x, $y)
 	EndIf
 	Local $WM_LBUTTONDOWN = 0x0201, $WM_LBUTTONUP = 0x0202
@@ -78,7 +83,7 @@ Func _ControlClick($x, $y)
 	_SendMessage($hWin, $WM_LBUTTONDOWN, 0x0001, $lParam)
 	_SleepMicro($g_iAndroidControlClickDownDelay * 1000)
 	_SendMessage($hWin, $WM_LBUTTONUP, 0x0000, $lParam)
-	_SleepMicro($g_iAndroidControlClickDelay * 1000) ; sleep 25 Milliseconds
+	_SleepMicro($g_iAndroidControlClickDelay * 1000)
 	Return 1
 EndFunc   ;==>_ControlClick
 
@@ -169,7 +174,7 @@ Func GemClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 				Return False
 			EndIf
 			If isProblemAffectBeforeClick($i) Then
-				If $g_bDebugClick Then Setlog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
+				If $g_bDebugClick Then SetLog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
 				Return ; if need to clear screen do not click
@@ -188,7 +193,7 @@ Func GemClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 			Return False
 		EndIf
 		If isProblemAffectBeforeClick() Then
-			If $g_bDebugClick Then Setlog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
+			If $g_bDebugClick Then SetLog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ERROR, "Verdana", "7.5", 0)
 			checkMainScreen(False)
 			SuspendAndroid($SuspendMode)
 			Return ; if need to clear screen do not click

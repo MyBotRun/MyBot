@@ -6,7 +6,7 @@
 ; Return values .: True if boosted, False if not
 ; Author ........: Cosote Oct. 2016
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -38,7 +38,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 	If $ok = True Then
 		Local $Boost = findButton("BoostOne")
 		If IsArray($Boost) Then
-			If $g_bDebugSetlog Then Setlog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 			Click($Boost[0], $Boost[1], 1, 0, "#0463")
 			If _Sleep($DELAYBOOSTHEROES1) Then Return
 			$Boost = findButton("GEM")
@@ -58,7 +58,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 					$boosted = True
 				EndIf
 			Else
-				SetLog($sName & " is already Boosted", $COLOR_ERROR)
+				SetLog($sName & " is already Boosted", $COLOR_SUCCESS)
 			EndIf
 			If _Sleep($DELAYBOOSTHEROES3) Then Return
 			ClickP($aAway, 1, 0, "#0465")

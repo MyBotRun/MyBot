@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -51,7 +51,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -64,7 +64,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -77,7 +77,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -90,7 +90,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("MilkFarmObjectivesSTR_INSERT Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -99,7 +99,7 @@ Func MilkFarmObjectivesSTR_INSERT($type, $level, $coordinate)
 			$g_sMilkFarmObjectivesSTR &= $ResourceToInsert
 		EndIf
 	Else
-		If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesSTR_INSERT Discard error #1 " & $pixel & " " & UBound($pixel), $COLOR_ERROR)
+		If $g_bDebugSetlog Then SetDebugLog("MilkFarmObjectivesSTR_INSERT Discard error #1 " & $pixel & " " & UBound($pixel), $COLOR_ERROR)
 	EndIf
 
 	Return $ResourceToInsertQty

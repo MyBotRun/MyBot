@@ -11,15 +11,15 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (04-2016)
 ; Modified ......: Cosote (06-2016), MonkeyHunter (07-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer_", $StopEmulator = False, $bFullRestart = False, $bSuspendComputer = False)
+Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "Unknown", $StopEmulator = False, $bFullRestart = False, $bSuspendComputer = False)
 
-	If $g_bDebugSetlog Then Setlog("Begin UniversalCloseWaitOpenCoC:", $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then SetDebugLog("Begin UniversalCloseWaitOpenCoC:", $COLOR_DEBUG1)
 
 	Local $sWaitTime = ""
 	Local $iMin, $iSec, $iHour, $iWaitSec, $StopAndroidFlag
@@ -48,7 +48,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 				Case Else
 					$msg = "One Bad Monkey Error!"
 			EndSwitch
-			Setlog("Random close option= " & $StopAndroidFlag & $msg, $COLOR_SUCCESS)
+			SetLog("Random close option= " & $StopAndroidFlag & $msg, $COLOR_SUCCESS)
 		Case StringInStr($StopEmulator, "idle", $STR_NOCASESENSEBASIC)
 			$StopAndroidFlag = 0
 		Case $StopEmulator = False
@@ -59,7 +59,7 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 			$StopAndroidFlag = 1
 			SetLog("Code Monkey provided bad stop emulator flag value", $COLOR_ERROR)
 	EndSelect
-	If $g_bDebugSetlog Then Setlog("Stop Android flag : Input flag " & $StopAndroidFlag & " : " & $StopEmulator, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("Stop Android flag : Input flag " & $StopAndroidFlag & " : " & $StopEmulator, $COLOR_DEBUG)
 	If _Sleep($DELAYRESPOND) Then Return False
 
 	Switch $StopAndroidFlag
@@ -76,8 +76,13 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "RudeUnknownProgrammer
 			EndIf
 			If _Sleep($DELAYRESPOND) Then Return False
 			OpenCoC()
-		Case 1 ; close CoC app only
-			PoliteCloseCoC($sSource)
+		Case 1 ; close CoC app only (after 2017/Dec. only jump to home-screen to avoid CoC launch delay)
+			Local $bSendHome = True
+			If $bSendHome Then
+				AndroidHomeButton()
+			Else
+				PoliteCloseCoC($sSource)
+			EndIf
 			If _Sleep(3000) Then Return False ; Wait 3 sec.
 			If $iWaitTime > 0 Then
 				If $iWaitTime > 30000 Then

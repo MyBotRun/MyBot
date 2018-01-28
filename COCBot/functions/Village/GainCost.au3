@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Boju (11-2016)
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -63,6 +63,12 @@ Func EndGainCost($Type)
 				$g_iDElixirFromDrills += $tempDElixirCollected
 				$g_iStatsTotalGain[$eLootDarkElixir] += $tempDElixirCollected
 			EndIf
+
+			If ProfileSwitchAccountEnabled() Then
+				$g_aiGoldTotalAcc[$g_iCurAccount] += $tempGoldCollected
+				$g_aiElixirTotalAcc[$g_iCurAccount] += $tempElixirCollected
+				$g_aiDarkTotalAcc[$g_iCurAccount] += $tempDElixirCollected
+			EndIf
 		Case "Train"
 			Local $tempElixirSpent = 0
 			Local $tempDElixirSpent = 0
@@ -76,6 +82,11 @@ Func EndGainCost($Type)
 				$tempDElixirSpent = ($g_aiTempGainCost[2] - $g_aiCurrentLoot[$eLootDarkElixir])
 				$g_iTrainCostDElixir += $tempDElixirSpent
 				$g_iStatsTotalGain[$eLootDarkElixir] -= $tempDElixirSpent
+			EndIf
+
+			If ProfileSwitchAccountEnabled() Then
+				$g_aiElixirTotalAcc[$g_iCurAccount] -= $tempElixirSpent
+				$g_aiDarkTotalAcc[$g_iCurAccount] -= $tempDElixirSpent
 			EndIf
 	EndSwitch
 

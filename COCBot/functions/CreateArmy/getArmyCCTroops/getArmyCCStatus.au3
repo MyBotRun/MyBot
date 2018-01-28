@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: MonkeyHunter (06-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,7 +15,7 @@
 
 Func getArmyCCStatus($bOpenArmyWindow = False, $bCloseArmyWindow = False, $CheckWindow = True, $bSetLog = True, $bNeedCapture = True)
 
-	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then Setlog("Begin getArmyCCStatus:", $COLOR_DEBUG1)
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyCCStatus:", $COLOR_DEBUG1)
 
 	$g_iCCRemainTime = 0 ; reset global time
 
@@ -38,10 +38,10 @@ Func getArmyCCStatus($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Check
 
 	If Not $g_bCanRequestCC Then
 		If _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, $bNeedCapture), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) And Not _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], $bNeedCapture), Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
-			If $bSetLog Then Setlog(" - Clan Castle request already made.", $COLOR_INFO)
+			If $bSetLog Then SetLog(" - Clan Castle request already made.", $COLOR_INFO)
 		EndIf
 		If _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, $bNeedCapture), Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5]) And _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], $bNeedCapture), Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
-			If $bSetLog Then Setlog("Clan Castle Full/No Clan.", $COLOR_INFO)
+			If $bSetLog Then SetLog("Clan Castle Full/No Clan.", $COLOR_INFO)
 		EndIf
 	EndIf
 

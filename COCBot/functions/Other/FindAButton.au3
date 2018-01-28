@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MMHK (11-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -28,11 +28,11 @@ Func FindExitButton($sButtonName)
 		$aPosXY = StringSplit(($result[0])[0], ",", $STR_NOCOUNT)
 		$aPosXY[0] += $aCoor[0]
 		$aPosXY[1] += $aCoor[1]
-		If $g_bDebugSetlog Then Setlog("FindExitButton: " & $sButtonName & " Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("FindExitButton: " & $sButtonName & " Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
 		Return $aPosXY
 	EndIf
 
-	If $g_bDebugSetlog Then SetLog("FindExitButton: " & $sButtonName & " NOT Found" , $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("FindExitButton: " & $sButtonName & " NOT Found" , $COLOR_DEBUG)
 	Return $aPosXY
 EndFunc   ;==>FindExitButton
 
@@ -48,11 +48,11 @@ Func FindAdsXButton()
 
 	If IsArray($result) then
 		$aPosXY = StringSplit(($result[0])[0], ",", $STR_NOCOUNT)
-		If $g_bDebugSetlog Then Setlog("FindAdsXButton: " & $g_sAndroidGameDistributor & " AdsX Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("FindAdsXButton: " & $g_sAndroidGameDistributor & " AdsX Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
 		Return $aPosXY
 	EndIf
 
-	If $g_bDebugSetlog Then Setlog("FindAdsXButton: " & $g_sAndroidGameDistributor & " NOT Found", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("FindAdsXButton: " & $g_sAndroidGameDistributor & " NOT Found", $COLOR_DEBUG)
 	Return $aPosXY
 EndFunc   ;==>FindAdsXButton
 

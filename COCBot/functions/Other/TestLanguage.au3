@@ -7,7 +7,7 @@
 ; Author ........: Sardo (2015-06)
 ; Modified ......: Hervidero(2015)
 ;
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -18,7 +18,7 @@ Func TestLanguage()
 	If $g_bRunState Then
 		; test the word "Attack!" on the Attack Button in the lower left corner
 		If getOcrLanguage($aDetectLang[0], $aDetectLang[1]) = "english" Then
-			Setlog("Language setting is English: Correct.", $COLOR_INFO)
+			SetLog("Language setting is English: Correct.", $COLOR_INFO)
 		Else
 			SetLog("Language setting is Wrong: Change CoC language to English!", $COLOR_ERROR)
 			btnStop()

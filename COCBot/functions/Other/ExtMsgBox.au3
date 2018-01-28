@@ -9,7 +9,7 @@
 ; Author(s) .....: Melba23, based on some original code by photonbuddy & YellowLab, and KaFu (default font data)
 ; Link ..........: https://www.autoitscript.com/forum/topic/109096-extended-message-box-bugfix-version-9-aug-16/
 ;
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -279,7 +279,7 @@ EndFunc   ;==>_ExtMsgBoxSet
 ; Author ........: Melba23, based on some original code by photonbuddy & YellowLab
 ; Example........; Yes
 ;=====================================================================================================================
-; CS69 Jan 2017 - default $hWin parameter to $g_hFrmBot so it doesn't have to be set everytime this function is called
+; CS69 Jan 2018 - default $hWin parameter to $g_hFrmBot so it doesn't have to be set everytime this function is called
 Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = $g_hFrmBot, $iVPos = 0, $bMain = True)
 
 	; Set default sizes for message box

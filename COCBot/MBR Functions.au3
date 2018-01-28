@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -46,6 +46,7 @@
 #include "functions\Attack\AttackCSV\Slice8.au3"
 #include "functions\Attack\AttackCSV\CleanRedArea.au3"
 #include "functions\Attack\AttackCSV\ChkAttackCSVConfig.au3"
+#include "functions\Attack\AttackCSV\ParseAttackCSV_Settings_variables.au3"
 
 #include "functions\Attack\MilkingAttack\Algorithm_MilkingAttack.au3"
 #include "functions\Attack\MilkingAttack\AmountOfResourcesInStructure.au3"
@@ -277,6 +278,7 @@
 #include "functions\Other\ClickZoneR.au3"
 #include "functions\Village\CheckNeedOpenTrain.au3"
 #include "functions\Village\SwitchBetweenBases.au3"
+#include "functions\Village\SwitchAccount.au3"
 
 #include "functions\Village\BuilderBase\Collect.au3"
 #include "functions\Village\BuilderBase\StartClockTowerBoost.au3"

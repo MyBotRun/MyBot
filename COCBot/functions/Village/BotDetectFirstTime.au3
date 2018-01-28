@@ -3,7 +3,7 @@
 ; Description ...: This script detects your builings on the first run
 ; Author ........: HungLe (april-2015)
 ; Modified ......: Hervidero (april-2015),(may-2015), HungLe (may-2015), KnowJack(July 2015), Sardo 2015-08, CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -33,13 +33,13 @@ Func BotDetectFirstTime()
 			Local $pixel = $PixelTHHere[0]
 			$g_aiTownHallPos[0] = $pixel[0]
 			$g_aiTownHallPos[1] = $pixel[1]
-			If $g_bDebugSetlog Then SetLog("DLLc# Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
+			If $g_bDebugSetlog Then SetDebugLog("DLLc# Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
 		EndIf
 		If $g_aiTownHallPos[1] = "" Or $g_aiTownHallPos[1] = -1 Then
 			imglocTHSearch(True, True) ; search th on myvillage
 			$g_aiTownHallPos[0] = $g_iTHx
 			$g_aiTownHallPos[1] = $g_iTHy
-			If $g_bDebugSetlog Then SetLog("OldDDL Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
+			If $g_bDebugSetlog Then SetDebugLog("OldDDL Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_ERROR)
 		EndIf
 		SetLog("Townhall: (" & $g_aiTownHallPos[0] & "," & $g_aiTownHallPos[1] & ")", $COLOR_DEBUG)
 	EndIf
@@ -49,8 +49,8 @@ Func BotDetectFirstTime()
 		If IsArray($Result) Then $g_iTownHallLevel = 0 ; Check for error finding TH level, and reset to zero if yes
 	EndIf
 	If Number($g_iTownHallLevel) > 1 And Number($g_iTownHallLevel) < 6 Then
-		Setlog("Warning: TownHall level below 6 NOT RECOMMENDED!", $COLOR_ERROR)
-		Setlog("Proceed with caution as errors may occur.", $COLOR_ERROR)
+		SetLog("Warning: TownHall level below 6 NOT RECOMMENDED!", $COLOR_ERROR)
+		SetLog("Proceed with caution as errors may occur.", $COLOR_ERROR)
 	EndIf
 	If $g_iTownHallLevel < 2 Or ($g_aiTownHallPos[1] = "" Or $g_aiTownHallPos[1] = -1) Then LocateTownHall()
 
@@ -105,7 +105,7 @@ Func BotDetectFirstTime()
 
 	;Boju Display TH Level in Stats
 	_GUI_Value_STATE("HIDE", $g_aGroupListTHLevels)
-	If $g_bDebugSetlog Then Setlog("Select TH Level:" & Number($g_iTownHallLevel), $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("Select TH Level:" & Number($g_iTownHallLevel), $COLOR_DEBUG)
 	GUICtrlSetState($g_ahPicTHLevels[$g_iTownHallLevel], $GUI_SHOW)
 	GUICtrlSetData($g_hLblTHLevels, $g_iTownHallLevel)
 

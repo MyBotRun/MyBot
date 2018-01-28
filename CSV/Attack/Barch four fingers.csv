@@ -1,8 +1,29 @@
-NOTE  |Author: Sardo - ver. 1.0 - 05.01.2016 
+NOTE  |Author: Sardo - ver. 1.0 - 05.01.2016
 NOTE  |
 NOTE  |Attack: FF Barch, +2 tile from redline
 NOTE  |Make these Troops: Barbarians 50%, Archers 50%
 NOTE  |Will drop Barb, Arch, All Heroes and Castle if enabled from GUI
+
+      |_TROOPNAME_|__FLEXIBLE_|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+TRAIN |Arch       |0          |75         |100        |100        |110        |120        |130        |
+TRAIN |Barb       |1          |75         |100        |100        |110        |120        |130        |
+TRAIN |BabyD      |0          |0          |0          |0          |0          |0          |0          |
+
+TRAIN |RSpell     |0          |0          |0          |0          |0          |0          |0          |
+TRAIN |CSpell     |0          |0          |0          |0          |0          |0          |0          |
+TRAIN |HaSpell    |0          |0          |0          |0          |0          |0          |0          |
+
+      |_TROOPNAME_|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|Hero Abilities: 1.Auto 2.Timed 3.Both
+TRAIN |King       |0          |0          |1          |1          |1          |1          |1          |auto
+TRAIN |Queen      |0          |0          |0          |0          |29         |29         |29         |timed after 9 sec.
+TRAIN |Warden     |0          |0          |0          |0          |0          |0          |312        |both: auto or timed after 12 sec.
+
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+REDLN |0          |0          |3          |1          |0          |3          |4          |4          |1.RAW 2.POINTS 3.ORIGINAL 4.EDGES
+DRPLN |0          |0          |5          |2          |0          |3          |0          |0          |1.CORNER 2.POINT 3.FULLCORNER 4.FULLPOINT 5.NONE
+
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+CCREQ |           |           |any        |           |any        |           |miners rage|bowlers    |
 
       |---------------------------------------- four fingers barch start -----------------------------|
 
@@ -27,7 +48,7 @@ MAKE  |M          |FRONT-RIGHT|5          |1          |INT-EXT    |2          |2
 MAKE  |N          |RIGHT-FRONT|5          |1          |INT-EXT    |2          |2          |           |
 MAKE  |O          |LEFT-BACK  |5          |1          |INT-EXT    |2          |2          |           |
 MAKE  |P          |BACK-LEFT  |5          |1          |INT-EXT    |2          |2          |           |
-      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS 
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS
 DROP  |A-B-C-D    |6-10       |4-5        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             20-25 barb
 DROP  |E-F-G-H    |1-4        |4-5        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             16-20 barb
 DROP  |I-J-K-L    |3-5        |3-4        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             20-25 barb
@@ -62,7 +83,7 @@ WAIT  |500-1000   |           |           |           |           |           | 
       |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|MAKE VECTORS TO DROP KINK, QUEEN and CASTLE
 MAKE  |Q          |RANDOM     |70         |1          |INT-EXT    |2          |2          |           |random side to drop king, at 1 tile from redarea
 MAKE  |R          |RANDOM     |70         |3          |INT-EXT    |2          |2          |           |random side to drop queen and castle, at 3 tiles from redarea
-      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS 
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS
 DROP  |Q          |3          |10         |king       |0          |0          |100-500    |           |launch King                                                       king
 DROP  |R          |8          |15         |castle     |0          |0          |500-1000   |           |launch Castle                                                     castle
 DROP  |R          |3          |2          |queen      |0          |0          |100-500    |           |launch Queen                                                      queen
@@ -88,7 +109,7 @@ MAKE  |M          |FRONT-RIGHT|5          |1          |INT-EXT    |2          |2
 MAKE  |N          |RIGHT-FRONT|5          |1          |INT-EXT    |2          |2          |           |
 MAKE  |O          |LEFT-BACK  |5          |1          |INT-EXT    |2          |2          |           |
 MAKE  |P          |BACK-LEFT  |5          |1          |INT-EXT    |2          |2          |           |
-      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS 
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP BARBARIANS
 DROP  |A-B-C-D    |6-10       |5-7        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             25-35 barb
 DROP  |E-F-G-H    |1-4        |5-7        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             20-30 barb
 DROP  |I-J-K-L    |3-5        |4-5        |barb       |0          |0          |0          |           |launch barbarians using all 4 vectors concurrently...             25-35 barb

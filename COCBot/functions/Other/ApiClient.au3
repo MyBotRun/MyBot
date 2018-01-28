@@ -3,7 +3,7 @@
 ; Description ...: Register Windows Message and provides functions to communicate between bots and manage bot application
 ; Author ........: cosote (12-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ;                  Read/write memory: https://www.autoitscript.com/forum/topic/104117-shared-memory-variables-demo/
 ; Related .......:
@@ -24,7 +24,7 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 	Local $wParamHi = 0
 	If $g_bRunState = True Then $wParamHi += 1
 	If $g_bBotPaused = True Then $wParamHi += 2
-	If Not $g_iBotLaunchTime = 0 Then $wParamHi += 4 ; bot launched
+	If IsBotLaunched() Then $wParamHi += 4 ; bot launched
 
 	Local $wParamLo = BitAND($wParam, 0xFFFF)
 	Local $bRegisterHost = True
@@ -45,7 +45,7 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 			$wParamHi = 0
 			If $g_bRunState = True Then $wParamHi += 1
 			If $g_bBotPaused = True Then $wParamHi += 2
-			If Not $g_iBotLaunchTime = 0 Then $wParamHi += 4 ; bot launched
+			If IsBotLaunched() Then $wParamHi += 4 ; bot launched
 			$wParam += BitShift($wParamHi, -16)
 
 		Case 0x0100 To 0x01FF ; query bot detailed state
@@ -77,7 +77,7 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 			If $g_bRunState = False Then
 				$wParamHi = 1
 				;If $g_bBotPaused = True Then $wParamHi += 2
-				If Not $g_iBotLaunchTime = 0 Then $wParamHi += 4 ; bot launched
+				If IsBotLaunched() Then $wParamHi += 4 ; bot launched
 				btnStart()
 			EndIf
 			$wParam += BitShift($wParamHi, -16)
@@ -88,7 +88,7 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 			If $g_bRunState = True Then
 				$wParamHi = 0
 				;If $g_bBotPaused = True Then $wParamHi += 2
-				If Not $g_iBotLaunchTime = 0 Then $wParamHi += 4 ; bot launched
+				If IsBotLaunched() Then $wParamHi += 4 ; bot launched
 				btnStop()
 			EndIf
 			$wParam += BitShift($wParamHi, -16)
@@ -100,7 +100,7 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 				$wParamHi = 0
 				If $g_bRunState = True Then $wParamHi += 1
 				;If $g_bBotPaused = True Then $wParamHi += 2
-				If Not $g_iBotLaunchTime = 0 Then $wParamHi += 4 ; bot launched
+				If IsBotLaunched() Then $wParamHi += 4 ; bot launched
 				TogglePauseImpl("ManageFarm")
 			EndIf
 			$wParam += BitShift($wParamHi, -16)
@@ -112,7 +112,7 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 				$wParamHi = 2
 				If $g_bRunState = True Then $wParamHi += 1
 				;If $g_bBotPaused = True Then $wParamHi += 2
-				If Not $g_iBotLaunchTime = 0 Then $wParamHi += 4 ; bot launched
+				If IsBotLaunched() Then $wParamHi += 4 ; bot launched
 				TogglePauseImpl("ManageFarm", True)
 				#cs
 					$wParam += BitShift($wParamHi, -16)
@@ -137,7 +137,7 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 			$wParamHi = 0
 			If $g_bRunState = True Then $wParamHi += 1
 			If $g_bBotPaused = True Then $wParamHi += 2
-			If Not $g_iBotLaunchTime = 0 Then $wParamHi += 4 ; bot launched
+			If IsBotLaunched() Then $wParamHi += 4 ; bot launched
 			btnMakeScreenshot()
 			$wParam += BitShift($wParamHi, -16)
 
@@ -147,7 +147,7 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 			$wParamHi = 0
 			If $g_bRunState = True Then $wParamHi += 1
 			If $g_bBotPaused = True Then $wParamHi += 2
-			If Not $g_iBotLaunchTime = 0 Then $wParamHi += 4 ; bot launched
+			If IsBotLaunched() Then $wParamHi += 4 ; bot launched
 			Local $pid = WinGetProcess($hWind)
 			If $pid <> 0 And $pid <> -1 Then
 				$g_iGuiPID = $pid
@@ -158,6 +158,11 @@ Func WM_MYBOTRUN_API_CLIENT($hWind, $iMsg, $wParam, $lParam)
 		Case Else ; do nothing
 			$hWind = 0
 	EndSwitch
+
+	If Not IsBotLaunched() Then
+		; bot is still launching, so don't report anything
+		$hWind = 0
+	EndIf
 
 	If $hWind <> 0 Then
 		Local $a = GetManagedMyBotHost($hWind, True, $bRegisterHost)
@@ -236,7 +241,7 @@ Func PrepareStructBotState(ByRef $tBotState, $eStructType = Default, $pStructPtr
 	DllStructSetData($tBotState, "AndroidHWnd", $g_hAndroidWindow) ; Android Window Handle
 	DllStructSetData($tBotState, "RunState", $g_bRunState) ; Boolean
 	DllStructSetData($tBotState, "Paused", $g_bBotPaused) ; Boolean
-	DllStructSetData($tBotState, "Launched", Not $g_iBotLaunchTime = 0) ; Boolean
+	DllStructSetData($tBotState, "Launched", IsBotLaunched()) ; Boolean
 	DllStructSetData($tBotState, "g_hTimerSinceStarted", $g_hTimerSinceStarted) ; uint64
 	DllStructSetData($tBotState, "g_iTimePassed", $g_iTimePassed) ;uint
 	DllStructSetData($tBotState, "Profile", $g_sProfileCurrentName) ; String

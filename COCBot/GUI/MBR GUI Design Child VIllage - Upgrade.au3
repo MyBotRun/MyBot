@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -406,8 +406,6 @@ Func CreateWallsSubTab()
 
 EndFunc   ;==>CreateWallsSubTab
 
-; Author ........: Roro-Titi
-; Modified ......: Team AiO MOD++ (2017)
 Func CreateAutoUpgradeSubTab()
 
 	Local $x = 25, $y = 45

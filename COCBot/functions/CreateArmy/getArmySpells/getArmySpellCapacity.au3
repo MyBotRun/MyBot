@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -56,12 +56,12 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 				$g_iTotalSpells = Number($aGetSpellCap[2])
 				$g_iCurrentSpells = Number($aGetSpellCap[1])
 			Else
-				Setlog("Error in getArmySpellCapacity: Couldn't reall all Capacity Values", $COLOR_ERROR) ; log if there is read error
+				SetLog("Error in getArmySpellCapacity: Couldn't reall all Capacity Values", $COLOR_ERROR) ; log if there is read error
 				$g_iCurrentSpells = 0
 				$g_iTotalSpells = $g_iTotalSpellValue
 			EndIf
 		Else
-			Setlog("Error in getArmySpellCapacity: $aGetCCSpell is not an Array", $COLOR_ERROR) ; log if there is read error
+			SetLog("Error in getArmySpellCapacity: $aGetCCSpell is not an Array", $COLOR_ERROR) ; log if there is read error
 			$g_iCurrentSpells = 0
 			$g_iTotalSpells = $g_iTotalSpellValue
 		EndIf
@@ -69,7 +69,7 @@ Func getArmySpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		If $bSetLog Then SetLog("Total Spell Factory Capacity: " & $g_iCurrentSpells & "/" & $g_iTotalSpells)
 	EndIf
 
-	If $g_iTotalSpells <> $g_iTotalSpellValue And $bSetLog Then Setlog("Warning: Total Spell Capacity is not the same as in GUI", $COLOR_WARNING)
+	If $g_iTotalSpells <> $g_iTotalSpellValue And $bSetLog Then SetLog("Warning: Total Spell Capacity is not the same as in GUI", $COLOR_WARNING)
 
 	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0000") ;Click Away

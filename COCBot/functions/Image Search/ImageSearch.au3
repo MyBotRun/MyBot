@@ -9,7 +9,7 @@
 ;                  $Tolerance           - allowable variation in finding image.
 ; Return values .:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -36,7 +36,7 @@ EndFunc   ;==>_ImageSearch
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -99,7 +99,7 @@ Func _ImageSearchAreaImgLoc($findImage, $resultPosition, $x1, $y1, $right, $bott
 	Local $MaxReturnPoints = 1
 
 	Local $res = DllCallMyBot("FindTile", "handle", $hHBMP, "str", $findImage, "str", $sArea, "Int", $MaxReturnPoints)
-	If @error Then _logErrorDLLCall($g_sLibImgLocPath, @error)
+	If @error Then _logErrorDLLCall($g_sLibMyBotPath, @error)
 	If IsArray($res) Then
 		If $res[0] = "0" Or $res[0] = "" Then
 			;SetLog($findImage & " not found", $COLOR_GREEN)

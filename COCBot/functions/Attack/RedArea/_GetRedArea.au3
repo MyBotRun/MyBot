@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -32,10 +32,10 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 
 	If $g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 0 And $g_aiAttackStdDropSides[$LB] = 4 Then ; Used for DES Side Attack (need to know the side the DES is on)
 		$result = DllCall($g_hLibMyBot, "str", "getRedAreaSideBuilding", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingDES)
-		If $g_bDebugSetlog Then Setlog("Debug: Redline with DES Side chosen")
+		If $g_bDebugSetlog Then SetDebugLog("Debug: Redline with DES Side chosen")
 	ElseIf $g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 0 And $g_aiAttackStdDropSides[$LB] = 5 Then ; Used for TH Side Attack (need to know the side the TH is on)
 		$result = DllCall($g_hLibMyBot, "str", "getRedAreaSideBuilding", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingTH)
-		If $g_bDebugSetlog Then Setlog("Debug: Redline with TH Side chosen")
+		If $g_bDebugSetlog Then SetDebugLog("Debug: Redline with TH Side chosen")
 	Else ; Normal getRedArea
 
 		Switch $iMode
@@ -61,7 +61,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 			Case $REDLINE_ORIGINAL ; Original red line routine
 				Local $result = DllCall($g_hLibMyBot, "str", "getRedArea", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation)
 		EndSwitch
-		If $g_bDebugSetlog Then Setlog("Debug: Redline chosen")
+		If $g_bDebugSetlog Then SetDebugLog("Debug: Redline chosen")
 	EndIf
 
 	If IsArray($result) Then
@@ -172,7 +172,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 
 	Local $a
 	If $g_iMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 2 Then
-		If $g_bDebugSetlog Then SetLog("redarea no calc pixel further (quick)", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("redarea no calc pixel further (quick)", $COLOR_DEBUG)
 		Local $count = 0
 		ReDim $g_aiPixelTopLeftFurther[UBound($g_aiPixelTopLeft)]
 		For $i = 0 To UBound($g_aiPixelTopLeft) - 1
@@ -204,7 +204,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 			$count += 1
 		Next
 	Else
-		If $g_bDebugSetlog Then SetLog("redarea calc pixel further", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("redarea calc pixel further", $COLOR_DEBUG)
 		Local $count = 0
 		ReDim $g_aiPixelTopLeftFurther[UBound($g_aiPixelTopLeft)]
 		For $i = 0 To UBound($g_aiPixelTopLeft) - 1

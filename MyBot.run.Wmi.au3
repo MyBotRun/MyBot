@@ -3,7 +3,7 @@
 ; Description ...: This file contens the Sequence that runs all MBR Bot
 ; Author ........: cosote (03-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -39,6 +39,7 @@ Opt("MustDeclareVars", 1)
 Global $g_sWmiTestApi = ""
 Global $g_bRunState = True
 Global $g_bDebugSetlog = False
+Global $g_bDebugAndroid = False
 Global $g_iGlobalActiveBotsAllowed = 0 ; Dummy
 Global $g_hMutextOrSemaphoreGlobalActiveBots = 0 ; Dummy
 Global $g_bBotLaunchOption_NoBotSlot = True

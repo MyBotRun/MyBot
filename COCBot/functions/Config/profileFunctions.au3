@@ -3,7 +3,7 @@
 ; Description ...: Functions for the new profile system
 ; Author ........: LunaEclipse(02-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; ===============================================================================================================================
 
@@ -11,12 +11,14 @@ Func setupProfileComboBox()
 	; Array to store Profile names to add to ComboBox
 	Local $profileString = ""
 	Local $aProfiles = _FileListToArray($g_sProfilePath, "*", $FLTA_FOLDERS)
+	Local $aProfileList = ["<No Profiles>"]
 	If @error Then
 		; No folders for profiles so lets set the combo box to a generic entry
-		$profileString = "<No Profiles>"
+		$profileString = $aProfileList[0]
 	Else
 		; Lets create a new array without the first entry which is a count for populating the combo box
-		Local $aProfileList[$aProfiles[0]]
+		Local $a[$aProfiles[0]]
+		$aProfileList = $a
 		For $i = 1 To $aProfiles[0]
 			$aProfileList[$i - 1] = $aProfiles[$i]
 		Next
@@ -24,11 +26,18 @@ Func setupProfileComboBox()
 		; Convert the array into a string
 		$profileString = _ArrayToString($aProfileList, "|")
 	EndIf
+	$g_asProfiles = $aProfileList
+	SetDebugLog("Profiles found: " & $profileString)
 
 	; Clear the combo box current data in case profiles were deleted
 	GUICtrlSetData($g_hCmbProfile, "", "")
 	; Set the new data of available profiles
 	GUICtrlSetData($g_hCmbProfile, $profileString, "<No Profiles>")
+	For $i = 0 To 7
+		GUICtrlSetData($g_ahCmbProfile[$i], "")
+		GUICtrlSetData($g_ahCmbProfile[$i], "|" & $profileString)
+		_GUICtrlComboBox_SetCurSel($g_ahCmbProfile[$i], 0)
+	Next
 EndFunc   ;==>setupProfileComboBox
 
 Func renameProfile()
@@ -53,6 +62,10 @@ EndFunc   ;==>renameProfile
 
 Func deleteProfile()
 	Local $sProfile = GUICtrlRead($g_hCmbProfile)
+	If aquireProfileMutex($sProfile, False, True) = 0 Then
+		Return False
+	EndIf
+	releaseProfileMutex($sProfile)
 	Local $deletePath = $g_sProfilePath & "\" & $sProfile
 	If FileExists($deletePath) Then
 		If $sProfile = $g_sProfileCurrentName Then
@@ -69,7 +82,9 @@ Func deleteProfile()
 		EndIf
 		; Remove the directory and all files and sub folders.
 		DirRemove($deletePath, $DIR_REMOVE)
+		Return True
 	EndIf
+	Return False
 EndFunc   ;==>deleteProfile
 
 Func createProfile($bCreateNew = False)
@@ -108,29 +123,70 @@ Func createProfile($bCreateNew = False)
 	If FileExists($g_sProfileConfigPath) = 0 Then SetLog("New Profile '" & $g_sProfileCurrentName & "' created")
 EndFunc   ;==>createProfile
 
-Func setupProfile()
-	If $g_iGuiMode = 1 Then
+Func setupProfile($sProfile = Default)
+	If IsString($sProfile) Then
+		; use as new profile
+	ElseIf $g_iGuiMode = 1 Then
 		If GUICtrlRead($g_hCmbProfile) = "<No Profiles>" Then
 			; Set profile name to the text box value if no profiles are found.
-			$g_sProfileCurrentName = StringRegExpReplace(GUICtrlRead($g_hTxtVillageName), '[/:*?"<>|]', '_')
+			$sProfile = StringRegExpReplace(GUICtrlRead($g_hTxtVillageName), '[/:*?"<>|]', '_')
 		Else
-			$g_sProfileCurrentName = GUICtrlRead($g_hCmbProfile)
+			$sProfile = GUICtrlRead($g_hCmbProfile)
+		EndIf
+	Else
+		$sProfile = $g_sProfileCurrentName
+	EndIf
+
+	If aquireProfileMutex($sProfile, False, True) = 0 Then
+		Return False
+	EndIf
+	If $g_sProfileCurrentName And $g_sProfileCurrentName <> $sProfile Then
+		releaseProfileMutex($g_sProfileCurrentName)
+		If $g_hLogFile <> 0 Then
+			FileClose($g_hLogFile)
+			$g_hLogFile = 0
+		EndIf
+
+		If $g_hAttackLogFile <> 0 Then
+			FileClose($g_hAttackLogFile)
+			$g_hAttackLogFile = 0
 		EndIf
 	EndIf
+
+	$g_sProfileCurrentName = $sProfile
 
 	; Create the profile if needed, this also sets the variables if the profile exists.
 	createProfile()
 	; Set the profile name on the village info group.
 	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
+
+	Return True
 EndFunc   ;==>setupProfile
 
-Func selectProfile()
-	If _GUICtrlComboBox_FindStringExact($g_hCmbProfile, String($g_sProfileCurrentName)) <> -1 Then
+Func selectProfile($sProfile = Default)
+	If IsString($sProfile) Then
+		; use profile
+	ElseIf _GUICtrlComboBox_FindStringExact($g_hCmbProfile, String($g_sProfileCurrentName)) <> -1 Then
+		; just select profile in profile combobox
 		_GUICtrlComboBox_SelectString($g_hCmbProfile, String($g_sProfileCurrentName))
 	Else
 		Local $comboBoxArray = _GUICtrlComboBox_GetListArray($g_hCmbProfile)
-		$g_sProfileCurrentName = $comboBoxArray[1]
+		If UBound($comboBoxArray) > 1 Then
+			$sProfile = $comboBoxArray[1]
+		Else
+			$sProfile = $g_sProfileCurrentName
+		EndIf
+	EndIf
+
+	If IsString($sProfile) Then
+		If aquireProfileMutex($sProfile, False, True) = 0 Then
+			Return False
+		EndIf
+		If $g_sProfileCurrentName <> $sProfile Then
+			releaseProfileMutex($g_sProfileCurrentName)
+		EndIf
+		$g_sProfileCurrentName = $sProfile
 
 		; Create the profile if needed, this also sets the variables if the profile exists.
 		createProfile()
@@ -143,4 +199,69 @@ Func selectProfile()
 	; Set the profile name on the village info group.
 	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
+	Return True
 EndFunc   ;==>selectProfile
+
+Func aquireProfileMutex($sProfile = Default, $bReturnOnlyMutex = Default, $bShowMsgBox = False)
+	If $sProfile = Default Then $sProfile = $g_sProfileCurrentName
+	If $bReturnOnlyMutex = Default Then $bReturnOnlyMutex = False
+	; check if mutex is or can be aquired
+	Local $iProfile = _ArraySearch($g_ahMutex_Profile, $sProfile, 0, 0, 0, 0, 1, 0)
+	If $iProfile >= 0 Then
+		; Mutex already aquired
+		If $bReturnOnlyMutex Then
+			Return $g_ahMutex_Profile[$iProfile][1]
+		EndIf
+		Return 2
+	EndIf
+
+	; try to aquire mutex
+	Local $hMutex_Profile = CreateMutex(StringReplace($g_sProfilePath & "\" & $sProfile, "\", "-"))
+	If $bReturnOnlyMutex Then
+		Return $hMutex_Profile
+	EndIf
+
+	Local $sMsg = StringRegExpReplace(GetTranslatedFileIni("MBR GUI Design - Loading", "Msg_Android_instance_02", "My Bot with Profile %s is already in use.\r\n\r\n", $sProfile), "[\r\n]", "")
+
+	If $hMutex_Profile = 0 Then
+		; mutex already in use
+		SetLog($sMsg, $COLOR_ERROR)
+		;SetLog($sMsg, "Cannot switch to profile " & $sProfile, $COLOR_ERROR)
+		If $bShowMsgBox Then
+			MsgBox(BitOR($MB_OK, $MB_ICONINFORMATION, $MB_TOPMOST), $g_sBotTitle, $sMsg)
+		EndIf
+		Return 0
+	EndIf
+
+	; add mutex to array
+	SetDebugLog("Aquire Mutex for Profile: " & $sProfile)
+	$iProfile = UBound($g_ahMutex_Profile)
+	ReDim $g_ahMutex_Profile[$iProfile + 1][2]
+	$g_ahMutex_Profile[$iProfile][0] = $sProfile
+	$g_ahMutex_Profile[$iProfile][1] = $hMutex_Profile
+
+	Return 1
+EndFunc   ;==>aquireProfileMutex
+
+Func releaseProfileMutex($sProfile = Default)
+	If $sProfile = Default Then $sProfile = $g_sProfileCurrentName
+	Local $iProfile = _ArraySearch($g_ahMutex_Profile, $sProfile, 0, 0, 0, 0, 1, 0)
+	If $iProfile >= 0 Then
+		SetDebugLog("Release Mutex for Profile: " & $sProfile)
+		ReleaseMutex($g_ahMutex_Profile[$iProfile][1])
+		_ArrayDelete($g_ahMutex_Profile, $iProfile)
+		Return True
+	EndIf
+	Return False
+EndFunc   ;==>releaseProfileMutex
+
+Func releaseProfilesMutex($bCurrentAlso = False)
+	If UBound($g_ahMutex_Profile) > 0 Then
+ 		Local $iReleased = 0
+		For $i = 0 To UBound($g_ahMutex_Profile) - 1
+			If $bCurrentAlso Or $g_sProfileCurrentName <> $g_ahMutex_Profile[$i - $iReleased][0] Then
+				If releaseProfileMutex($g_ahMutex_Profile[$i - $iReleased][0]) Then $iReleased += 1
+			EndIf
+		Next
+	EndIf
+EndFunc   ;==>releaseProfilesMutex

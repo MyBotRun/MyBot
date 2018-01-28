@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Sardo (08-2015), KnowJack(10-2015), kaganus (10-2015), ProMac (04-2016), Codeslinger69 (01-2017), Fliegerfaust (11-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -38,7 +38,7 @@ Func Collect($bCheckTreasury = True)
 			$aCollectXY = $aResult[$i][5] ; Coords
 			If IsArray($aCollectXY) Then ; found array of locations
 				$t = Random(0, UBound($aCollectXY) - 1, 1) ; SC May 2017 update only need to pick one of each to collect all
-				If $g_bDebugSetlog Then SetLog($sFileName & " found, random pick(" & $aCollectXY[$t][0] & "," & $aCollectXY[$t][1] & ")", $COLOR_GREEN)
+				If $g_bDebugSetlog Then SetDebugLog($sFileName & " found, random pick(" & $aCollectXY[$t][0] & "," & $aCollectXY[$t][1] & ")", $COLOR_GREEN)
 				If IsMainPage() Then Click($aCollectXY[$t][0], $aCollectXY[$t][1], 1, 0, "#0430")
 				If _Sleep($DELAYCOLLECT2) Then Return
 			EndIf
@@ -69,11 +69,11 @@ Func Collect($bCheckTreasury = True)
 						$CountGetInfo += 1
 						If $CountGetInfo >= 5 Then Return
 					WEnd
-					If $g_bDebugSetlog Then SetLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 					If @error Then Return SetError(0, 0, 0)
 					If $sInfo[0] > 1 Or $sInfo[0] = "" Then
 						If StringInStr($sInfo[1], "Loot") = 0 Then
-							If $g_bDebugSetlog Then SetLog("Bad Loot Cart location", $COLOR_ACTION)
+							If $g_bDebugSetlog Then SetDebugLog("Bad Loot Cart location", $COLOR_ACTION)
 						Else
 							If IsMainPage() Then Click($aLootCartBtn[0], $aLootCartBtn[1], 1, 0, "#0331") ;Click loot cart button
 						EndIf
@@ -82,7 +82,7 @@ Func Collect($bCheckTreasury = True)
 			SetLog("Error in Collect(): Loot Cart Coordinates are not inside the Village (X: " & $aLootCart[0] & " | Y: " & $aLootCart[1], $COLOR_ERROR)
 		EndIf
 	Else
-		SetLog("No Loot Cart found on your Village", $COLOR_INFO)
+		SetLog("No Loot Cart found on your Village", $COLOR_SUCCESS)
 	EndIf
 
 	If $g_bChkTreasuryCollect And $bCheckTreasury Then TreasuryCollect()

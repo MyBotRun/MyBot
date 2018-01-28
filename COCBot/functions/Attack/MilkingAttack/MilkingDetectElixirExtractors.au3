@@ -6,7 +6,7 @@
 ; Return values .:None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -17,10 +17,10 @@ Func MilkingDetectElixirExtractors()
 	;detect elixir extractors position according to settings: amount of resource and level.
 
 	If $g_bMilkFarmAttackElixirExtractors And $g_aiCurrentLoot[$eLootElixir] >= $g_iMilkFarmLimitElixir Then
-		If $g_bDebugSetlog Then setlog("skip attack of elixir extractors, current elixir (" & $g_aiCurrentLoot[$eLootElixir] & ") >= limit (" & $g_iMilkFarmLimitElixir & ")", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("skip attack of elixir extractors, current elixir (" & $g_aiCurrentLoot[$eLootElixir] & ") >= limit (" & $g_iMilkFarmLimitElixir & ")", $COLOR_DEBUG)
 		Return 0
 	Else
-		If $g_bDebugSetlog Then setlog("current elixir (" & $g_aiCurrentLoot[$eLootElixir] & ") < limit (" & $g_iMilkFarmLimitElixir & ")", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("current elixir (" & $g_aiCurrentLoot[$eLootElixir] & ") < limit (" & $g_iMilkFarmLimitElixir & ")", $COLOR_DEBUG)
 	EndIf
 
 	$g_sMilkFarmObjectivesSTR = ""
@@ -35,7 +35,7 @@ Func MilkingDetectElixirExtractors()
 	Local $elixirdiscard = 0
 	Local $redareapointsnearstructure = ""
 	For $i = 0 To UBound($ElixirVect) - 1
-		If $g_bDebugSetlog Then Setlog($i & " : " & $ElixirVect[$i]) ;[15:51:30] 0 : 2#405-325 -> level 6
+		If $g_bDebugSetlog Then SetDebugLog($i & " : " & $ElixirVect[$i]) ;[15:51:30] 0 : 2#405-325 -> level 6
 		;03.02 check isinsidediamond
 		Local $temp = StringSplit($ElixirVect[$i], "#", 2) ;TEMP ["2", "404-325"]
 		If UBound($temp) = 2 Then
@@ -55,15 +55,15 @@ Func MilkingDetectElixirExtractors()
 								$g_sMilkFarmObjectivesSTR &= $redareapointsnearstructure
 								$elixirmatch += 1
 							Else
-								If $g_bDebugSetlog Then Setlog(" - discard #6 skip locate elixir", $COLOR_DEBUG)
+								If $g_bDebugSetlog Then SetDebugLog(" - discard #6 skip locate elixir", $COLOR_DEBUG)
 								$elixirdiscard += 1
 							EndIf
 						Else
-							If $g_bDebugSetlog Then Setlog(" - discard #5 no match condition % amount of elixir", $COLOR_DEBUG)
+							If $g_bDebugSetlog Then SetDebugLog(" - discard #5 no match condition % amount of elixir", $COLOR_DEBUG)
 							$elixirdiscard += 1
 						EndIf
 					Else
-						If $g_bDebugSetlog Then Setlog(" - discard #4 no redarea points matching conditions", $COLOR_DEBUG)
+						If $g_bDebugSetlog Then SetDebugLog(" - discard #4 no redarea points matching conditions", $COLOR_DEBUG)
 						$elixirdiscard += 1
 					EndIf
 
@@ -89,24 +89,24 @@ Func MilkingDetectElixirExtractors()
 
 
 				Else
-					If $g_bDebugSetlog Then Setlog(" - discard #3 out of insidediamond", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog(" - discard #3 out of insidediamond", $COLOR_DEBUG)
 					$elixirdiscard += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog(" - discard #2 no pixel coordinate", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog(" - discard #2 no pixel coordinate", $COLOR_DEBUG)
 				$elixirdiscard += 1
 			EndIf
 		Else
-			If $g_bDebugSetlog Then Setlog(" - discard #1 no valid point", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog(" - discard #1 no valid point", $COLOR_DEBUG)
 			$elixirdiscard += 1
 		EndIf
 	Next
 	If StringLen($MilkFarmAtkPixelListSTR) > 1 Then
 		$MilkFarmAtkPixelListSTR = StringLeft($MilkFarmAtkPixelListSTR, StringLen($MilkFarmAtkPixelListSTR) - 1)
 	EndIf
-	If $g_bDebugSetlog Then Setlog("> Elixir Extractors to attack list: " & $MilkFarmAtkPixelListSTR, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("> Elixir Extractors to attack list: " & $MilkFarmAtkPixelListSTR, $COLOR_DEBUG)
 	Local $htimerLocateElixir = Round(__TimerDiff($hTimer) / 1000, 2)
-	If $g_bDebugSetlog Then Setlog("> Elixir Extractors found: " & $elixirfounds & " | match conditions: " & $elixirmatch & " | discard " & $elixirdiscard, $COLOR_INFO)
-	If $g_bDebugSetlog Then SetLog("> Elixir Extractors position and %full detectecd in " & $htimerLocateElixir & " seconds", $COLOR_INFO)
+	If $g_bDebugSetlog Then SetDebugLog("> Elixir Extractors found: " & $elixirfounds & " | match conditions: " & $elixirmatch & " | discard " & $elixirdiscard, $COLOR_INFO)
+	If $g_bDebugSetlog Then SetDebugLog("> Elixir Extractors position and %full detectecd in " & $htimerLocateElixir & " seconds", $COLOR_INFO)
 	Return $elixirmatch
 EndFunc   ;==>MilkingDetectElixirExtractors

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2015-06)
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -150,7 +150,7 @@ EndFunc   ;==>VersionNumFromVersionTXT
 Func _PrintLogVersion($message)
 	Local $messagevet = StringSplit($message, "\n", 1)
 	If Not (IsArray($messagevet)) Then
-		Setlog($message)
+		SetLog($message)
 	Else
 		For $i = 1 To $messagevet[0]
 			If StringLen($messagevet[$i]) <= 53 Then

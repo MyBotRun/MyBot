@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (02-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -127,15 +127,23 @@ Func GetNoxAdbPath()
 EndFunc   ;==>GetNoxAdbPath
 
 Func GetNoxBackgroundMode()
+	Local $iDirectX = $g_iAndroidBackgroundModeDirectX
+	Local $iOpenGL = $g_iAndroidBackgroundModeOpenGL
+	; hack for super strange Windows Fall Creator Update with OpenGL and DirectX problems
+	If @OSBuild >= 16299 Then
+		SetDebugLog("DirectX/OpenGL Fix applied for Windows Build 16299")
+		$iDirectX = $g_iAndroidBackgroundModeOpenGL
+		$iOpenGL = $g_iAndroidBackgroundModeDirectX
+	EndIf
 	; get OpenGL/DirectX config
 	Local $sConfig = GetNoxConfigFile()
 	If $sConfig Then
 		Local $graphic_engine_type = IniRead($sConfig, "setting", "graphic_engine_type", "") ; 0 = OpenGL, 1 = DirectX
 		Switch $graphic_engine_type
 			Case "0"
-				Return $g_iAndroidBackgroundModeOpenGL
+				Return $iOpenGL
 			Case "1"
-				Return $g_iAndroidBackgroundModeDirectX
+				Return $iDirectX
 			Case Else
 				SetLog($g_sAndroidEmulator & " unsupported Graphics Engine Type " & $graphic_engine_type, $COLOR_WARNING)
 		EndSwitch
@@ -192,7 +200,7 @@ Func InitNox($bCheckOnly = False)
 		$aRegexResult = StringRegExp($__VBoxVMinfo, ".*host ip = ([^,]+), .* guest port = 5555", $STR_REGEXPARRAYMATCH)
 		If Not @error Then
 			$g_sAndroidAdbDeviceHost = $aRegexResult[0]
-			If $g_bDebugAndroid Then Setlog("Func LaunchConsole: Read $g_sAndroidAdbDeviceHost = " & $g_sAndroidAdbDeviceHost, $COLOR_DEBUG)
+			If $g_bDebugAndroid Then SetDebugLog("Func LaunchConsole: Read $g_sAndroidAdbDeviceHost = " & $g_sAndroidAdbDeviceHost, $COLOR_DEBUG)
 		Else
 			$oops = 1
 			SetLog("Cannot read " & $g_sAndroidEmulator & "(" & $g_sAndroidInstance & ") ADB Device Host", $COLOR_ERROR)
@@ -201,7 +209,7 @@ Func InitNox($bCheckOnly = False)
 		$aRegexResult = StringRegExp($__VBoxVMinfo, "name = .*host port = (\d{3,5}), .* guest port = 5555", $STR_REGEXPARRAYMATCH)
 		If Not @error Then
 			$g_sAndroidAdbDevicePort = $aRegexResult[0]
-			If $g_bDebugAndroid Then Setlog("Func LaunchConsole: Read $g_sAndroidAdbDevicePort = " & $g_sAndroidAdbDevicePort, $COLOR_DEBUG)
+			If $g_bDebugAndroid Then SetDebugLog("Func LaunchConsole: Read $g_sAndroidAdbDevicePort = " & $g_sAndroidAdbDevicePort, $COLOR_DEBUG)
 		Else
 			$oops = 1
 			SetLog("Cannot read " & $g_sAndroidEmulator & "(" & $g_sAndroidInstance & ") ADB Device Port", $COLOR_ERROR)

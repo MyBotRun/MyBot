@@ -7,7 +7,7 @@
 ; Return values .:None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -109,10 +109,10 @@ Func MilkFarmObjectivesDebugImage($vector, $maxtiles = 0)
 						_GDIPlus_GraphicsDrawLine($hGraphic, $pixel[0] + $resourceoffsetx, $pixel[1] + $resourceoffsety + $g_iMilkFarmOffsetY + $g_iMilkFarmOffsetYStep * $multiplier, $pixel[0] + $resourceoffsetx + $g_iMilkFarmOffsetX + $g_iMilkFarmOffsetXStep * $multiplier, $pixel[1] + $resourceoffsety, $hPen)
 					EndIf
 				Else
-					If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesDebugImage #1", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog("MilkFarmObjectivesDebugImage #1", $COLOR_DEBUG)
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkFarmObjectivesDebugImage #2", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog("MilkFarmObjectivesDebugImage #2", $COLOR_DEBUG)
 			EndIf
 
 		Next

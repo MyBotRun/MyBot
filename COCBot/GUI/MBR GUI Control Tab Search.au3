@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), CodeSlinger69 [2017], MonkeyHunter (03-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -565,7 +565,7 @@ Func chkDBSpellsWait()
 			If @error Then
 				GUICtrlSetState($g_hChkDBSpellsWait, $GUI_UNCHECKED)
 				$g_abSearchSpellsWaitEnable[$DB] = False
-				Setlog("Wait for Spells disabled due training count error", $COLOR_ERROR)
+				SetLog("Wait for Spells disabled due training count error", $COLOR_ERROR)
 			EndIf
 		Else
 			$g_abSearchSpellsWaitEnable[$DB] = False
@@ -589,7 +589,7 @@ Func chkABSpellsWait()
 			If @error Then
 				GUICtrlSetState($g_hChkABSpellsWait, $GUI_UNCHECKED)
 				$g_abSearchSpellsWaitEnable[$LB] = False
-				Setlog("Wait for Spells disabled due training count error", $COLOR_ERROR)
+				SetLog("Wait for Spells disabled due training count error", $COLOR_ERROR)
 			EndIf
 		Else
 			$g_abSearchSpellsWaitEnable[$LB] = False
@@ -651,7 +651,7 @@ Func chkSpellWaitError()
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 480)
 			While 1
 				$MsgBox3 = _ExtMsgBox(128, "1|2|3|4|5|6|7", GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_MsgBox_12", "You are a WINNER!!"), $sFunnyText, 900, $g_hFrmBot)
-				If @error Then Setlog("_ExtMsgBox error: " & @error, $COLOR_ERROR)
+				If @error Then SetLog("_ExtMsgBox error: " & @error, $COLOR_ERROR)
 				If $iCount > 7 And Int($MsgBox3) = Random(1,8,1) Then
 					ExitLoop
 				Else

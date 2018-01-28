@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (Jun/Aug-2015),Sardo 2015-08,Monkeyhunter(2106-2)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -45,7 +45,7 @@ Func UpgradeBuilding()
 	If $iUpgradeAction < 0 Then Return False
 	$iUpgradeAction = 0 ; Reset action
 
-	Setlog("Checking Upgrades", $COLOR_INFO)
+	SetLog("Checking Upgrades", $COLOR_INFO)
 
 	VillageReport(True, True) ; Get current loot available after training troops and update free builder status
 	$iAvailGold = Number($g_aiCurrentLoot[$eLootGold])
@@ -56,7 +56,7 @@ Func UpgradeBuilding()
 	$iAvailBldr = $g_iFreeBuilderCount - ($g_bUpgradeWallSaveBuilder = True ? 1 : 0)
 
 	If $iAvailBldr <= 0 Then
-		Setlog("No builder available for upgrade process")
+		SetLog("No builder available for upgrade process")
 		Return False
 	EndIf
 
@@ -70,7 +70,7 @@ Func UpgradeBuilding()
 
 		; Check free builder in case of multiple upgrades, but skip check when time to check repeated upgrades.
 		If $iAvailBldr <= 0 And $bChkAllRptUpgrade = False Then
-			Setlog("No builder available for #" & $iz + 1 & ", " & $g_avBuildingUpgrades[$iz][4])
+			SetLog("No builder available for #" & $iz + 1 & ", " & $g_avBuildingUpgrades[$iz][4])
 			Return False
 		EndIf
 
@@ -80,14 +80,14 @@ Func UpgradeBuilding()
 				$iDTDiff = Int(_DateDiff("n", _NowCalc(), $sNextCheckTime)) ; get date/time difference for repeat upgrade check
 				If @error Then _logErrorDateDiff(@error)
 				If $g_bDebugSetlog Then
-					Setlog("Delay time between repeat upgrade checks = " & $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)] & " Min", $COLOR_DEBUG)
-					SetLog("Delay time remaining = " & $iDTDiff & " Min", $COLOR_DEBUG)
+					SetDebugLog("Delay time between repeat upgrade checks = " & $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)] & " Min", $COLOR_DEBUG)
+					SetDebugLog("Delay time remaining = " & $iDTDiff & " Min", $COLOR_DEBUG)
 				EndIf
 				If $iDTDiff < 0 Then ; check dwell time clock to avoid checking repeats too often
 					$sNextCheckTime = _DateAdd("n", $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)], _NowCalc()) ; create new check date/time
 					If @error Then _logErrorDateAdd(@error) ; log Date function errors
 					$bChkAllRptUpgrade = True ; set flag to allow entire array of updates to get updated values if delay time is past.
-					If $g_bDebugSetlog Then SetLog("New delayed check time=  " & $sNextCheckTime, $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog("New delayed check time=  " & $sNextCheckTime, $COLOR_DEBUG)
 				EndIf
 			EndIf
 
@@ -97,24 +97,24 @@ Func UpgradeBuilding()
 					_logErrorDateDiff(@error)
 					$iUpGrdEndTimeDiff = 0
 				EndIf
-				If $g_bDebugSetlog Then SetLog("Difference between upgrade end and NOW= " & $iUpGrdEndTimeDiff & " Min", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog("Difference between upgrade end and NOW= " & $iUpGrdEndTimeDiff & " Min", $COLOR_DEBUG)
 			EndIf
 
 			If $bChkAllRptUpgrade = True Or $iUpGrdEndTimeDiff < 0 Then ; when past delay time or past end time for previous upgrade then check status
 				If UpgradeValue($iz, True) = False Then ; try to get new upgrade values
 					If $g_bDebugSetlog Then SetlogUpgradeValues($iz) ; Debug data for when upgrade is not ready or done repeating
-					Setlog("Repeat upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " not ready yet", $COLOR_ERROR)
+					SetLog("Repeat upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " not ready yet", $COLOR_ERROR)
 					ContinueLoop ; Not ready yet..
 				ElseIf ($iAvailBldr <= 0) Then
 					; must stop upgrade attempt if no builder here, due bypass of available builder check when $bChkAllRptUpgrade=true to get updated building values.
-					Setlog("No builder available for " & $g_avBuildingUpgrades[$iz][4])
+					SetLog("No builder available for " & $g_avBuildingUpgrades[$iz][4])
 					ContinueLoop
 				EndIf
 			EndIf
 		EndIf
 
 		SetLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Selected", $COLOR_SUCCESS) ; Tell logfile which upgrade working on.
-		If $g_bDebugSetlog Then SetLog("-Upgrade location =  " & "(" & $g_avBuildingUpgrades[$iz][0] & "," & $g_avBuildingUpgrades[$iz][1] & ")", $COLOR_DEBUG) ;Debug
+		If $g_bDebugSetlog Then SetDebugLog("-Upgrade location =  " & "(" & $g_avBuildingUpgrades[$iz][0] & "," & $g_avBuildingUpgrades[$iz][1] & ")", $COLOR_DEBUG) ;Debug
 		If _Sleep($DELAYUPGRADEBUILDING1) Then Return
 
 		Switch $g_avBuildingUpgrades[$iz][3] ;Change action based on upgrade type!
@@ -125,7 +125,7 @@ Func UpgradeBuilding()
 				EndIf
 				If UpgradeNormal($iz) = False Then ContinueLoop
 				$iUpgradeAction += 2 ^ ($iz + 1)
-				Setlog("Gold used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
+				SetLog("Gold used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
 				$g_iNbrOfBuildingsUppedGold += 1
 				$g_iCostGoldBuilding += $g_avBuildingUpgrades[$iz][2]
 				UpdateStats()
@@ -138,7 +138,7 @@ Func UpgradeBuilding()
 				EndIf
 				If UpgradeNormal($iz) = False Then ContinueLoop
 				$iUpgradeAction += 2 ^ ($iz + 1)
-				Setlog("Elixir used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
+				SetLog("Elixir used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
 				$g_iNbrOfBuildingsUppedElixir += 1
 				$g_iCostElixirBuilding += $g_avBuildingUpgrades[$iz][2]
 				UpdateStats()
@@ -151,19 +151,19 @@ Func UpgradeBuilding()
 				EndIf
 				If UpgradeHero($iz) = False Then ContinueLoop
 				$iUpgradeAction += 2 ^ ($iz + 1)
-				Setlog("Dark Elixir used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
+				SetLog("Dark Elixir used = " & $g_avBuildingUpgrades[$iz][2], $COLOR_INFO)
 				$g_iNbrOfHeroesUpped += 1
 				$g_iCostDElixirHero += $g_avBuildingUpgrades[$iz][2]
 				UpdateStats()
 				$iAvailDark -= $g_avBuildingUpgrades[$iz][2]
 				$iAvailBldr -= 1
 			Case Else
-				Setlog("Something went wrong with loot type on Upgradebuilding module on #" & $iz + 1, $COLOR_ERROR)
+				SetLog("Something went wrong with loot type on Upgradebuilding module on #" & $iz + 1, $COLOR_ERROR)
 				ExitLoop
 		EndSwitch
 
 		$g_avBuildingUpgrades[$iz][7] = _NowCalc() ; what is date:time now
-		If $g_bDebugSetlog Then SetLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Started @ " & $g_avBuildingUpgrades[$iz][7], $COLOR_SUCCESS)
+		If $g_bDebugSetlog Then SetDebugLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Started @ " & $g_avBuildingUpgrades[$iz][7], $COLOR_SUCCESS)
 		Local $aArray = StringSplit($g_avBuildingUpgrades[$iz][6], ' ', BitOR($STR_CHRSPLIT, $STR_NOCOUNT)) ;separate days, hours
 		If IsArray($aArray) Then
 			Local $iRemainingTimeMin = 0
@@ -182,19 +182,19 @@ Func UpgradeBuilding()
 					Case Else
 						SetLog("Upgrade #" & $iz + 1 & " OCR time invalid" & $aArray[$i], $COLOR_WARNING)
 				EndSelect
-				If $g_bDebugSetlog Then SetLog("Upgrade Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog("Upgrade Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_DEBUG)
 			Next
 			$g_avBuildingUpgrades[$iz][7] = _DateAdd('n', Floor($iRemainingTimeMin), _NowCalc()) ; add the time required to NOW to finish the upgrade
 			If @error Then _logErrorDateAdd(@error)
 			SetLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Finishes @ " & $g_avBuildingUpgrades[$iz][7], $COLOR_SUCCESS)
 			GUICtrlSetData($g_hTxtUpgradeEndTime[$iz], $g_avBuildingUpgrades[$iz][7])
 		Else
-			Setlog("Non critical error processing upgrade time for " & "#" & $iz + 1 & ": " & $g_avBuildingUpgrades[$iz][4], $COLOR_WARNING)
+			SetLog("Non critical error processing upgrade time for " & "#" & $iz + 1 & ": " & $g_avBuildingUpgrades[$iz][4], $COLOR_WARNING)
 		EndIf
 
 	Next
 	If $iUpgradeAction <= 0 Then
-		Setlog("No Upgrades Available", $COLOR_SUCCESS)
+		SetLog("No Upgrades Available", $COLOR_SUCCESS)
 	Else
 		saveConfig()
 	EndIf
@@ -242,15 +242,15 @@ Func UpgradeNormal($inum)
 		Local $offColors[3][3] = [[0xD6714B, 47, 37], [0xF0E850, 70, 0], [0xF4F8F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel gold, 4th pixel edge of button
 		$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 650 + $g_iBottomOffsetY, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
 		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 	Else ;Use elxir button
 		Local $offColors[3][3] = [[0xBC5B31, 38, 32], [0xF84CF9, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel pink, 4th pixel edge of button
 		$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 650 + $g_iBottomOffsetY, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
 		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 38, $ButtonPixel[1] + 32, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 38, $ButtonPixel[1] + 32, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 	EndIf
 	If IsArray($ButtonPixel) Then
@@ -342,11 +342,11 @@ Func UpgradeNormal($inum)
 				Return True
 			EndIf
 		Else
-			Setlog("Upgrade #" & $inum + 1 & " window open fail", $COLOR_ERROR)
+			SetLog("Upgrade #" & $inum + 1 & " window open fail", $COLOR_ERROR)
 			ClickP($aAway, 2, 0, "#0302") ;Click Away
 		EndIf
 	Else
-		Setlog("Upgrade #" & $inum + 1 & " Error finding button", $COLOR_ERROR)
+		SetLog("Upgrade #" & $inum + 1 & " Error finding button", $COLOR_ERROR)
 		ClickP($aAway, 2, 0, "#0303") ;Click Away
 		Return False
 	EndIf
@@ -362,8 +362,8 @@ Func UpgradeHero($inum)
 	$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 620 + $g_iBottomOffsetY, 1, 1, Hex(0xF5F6F2, 6), $offColors, 30) ; first gray/white pixel of button
 	If IsArray($ButtonPixel) Then
 		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
@@ -410,11 +410,11 @@ Func UpgradeHero($inum)
 				Return True
 			EndIf
 		Else
-			Setlog("Upgrade #" & $inum + 1 & " window open fail", $COLOR_ERROR)
+			SetLog("Upgrade #" & $inum + 1 & " window open fail", $COLOR_ERROR)
 			ClickP($aAway, 2, 0, "#0311") ;Click Away to close windows
 		EndIf
 	Else
-		Setlog("Upgrade #" & $inum + 1 & " Error finding button", $COLOR_ERROR)
+		SetLog("Upgrade #" & $inum + 1 & " Error finding button", $COLOR_ERROR)
 		ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
 		Return False
 	EndIf
@@ -423,21 +423,21 @@ EndFunc   ;==>UpgradeHero
 Func SetlogUpgradeValues($i)
 	Local $j
 	For $j = 0 To UBound($g_avBuildingUpgrades, 2) - 1
-		Setlog("$g_avBuildingUpgrades[" & $i & "][" & $j & "]= " & $g_avBuildingUpgrades[$i][$j], $COLOR_DEBUG)
+		SetLog("$g_avBuildingUpgrades[" & $i & "][" & $j & "]= " & $g_avBuildingUpgrades[$i][$j], $COLOR_DEBUG)
 	Next
-	;Setlog("$g_hChkUpgrade= " & GUICtrlRead($g_hChkUpgrade[$i]) & "|" & $g_abBuildingUpgradeEnable[$i], $COLOR_DEBUG) ; upgrade selection box
-	;Setlog("$g_hTxtUpgradeName= " & GUICtrlRead($g_hTxtUpgradeName[$i]) & "|" &  $g_avBuildingUpgrades[$i][4], $COLOR_DEBUG) ;  Unit Name
-	;Setlog("$g_hTxtUpgradeLevel= " & GUICtrlRead($g_hTxtUpgradeLevel[$i]) & "|" & $g_aiUpgradeLevel[$i], $COLOR_DEBUG) ; Unit Level
-	;Setlog("$g_hPicUpgradeType= " & GUICtrlRead($g_hPicUpgradeType[$i]) & "|" & $g_aiPicUpgradeStatus[$i], $COLOR_DEBUG) ; status image
-	;Setlog("$g_hTxtUpgradeValue= " & GUICtrlRead($g_hTxtUpgradeValue[$i]) & "|" & $g_avBuildingUpgrades[$i][2], $COLOR_DEBUG) ; Upgrade value
-	;Setlog("$g_hTxtUpgradeTime= " & GUICtrlRead($g_hTxtUpgradeTime[$i]) & "|" & $g_avBuildingUpgrades[$i][6], $COLOR_DEBUG) ; Upgrade time
-	;Setlog("$g_hChkUpgradeRepeat= " & GUICtrlRead($g_hChkUpgradeRepeat[$i]) & "|" & $g_abUpgradeRepeatEnable, $COLOR_DEBUG) ; repeat box
-	Setlog("$g_hChkUpgrade= " & $g_abBuildingUpgradeEnable[$i], $COLOR_DEBUG) ; upgrade selection box
-	Setlog("$g_hTxtUpgradeName= " & $g_avBuildingUpgrades[$i][4], $COLOR_DEBUG) ;  Unit Name
-	Setlog("$g_hTxtUpgradeLevel= " & $g_aiUpgradeLevel[$i], $COLOR_DEBUG) ; Unit Level
-	Setlog("$g_hPicUpgradeType= " & $g_aiPicUpgradeStatus[$i], $COLOR_DEBUG) ; status image
-	Setlog("$g_hTxtUpgradeValue= " & $g_avBuildingUpgrades[$i][2], $COLOR_DEBUG) ; Upgrade value
-	Setlog("$g_hTxtUpgradeTime= " & $g_avBuildingUpgrades[$i][6], $COLOR_DEBUG) ; Upgrade time
-	Setlog("$g_hTxtUpgradeEndTime= " & $g_avBuildingUpgrades[$i][7], $COLOR_DEBUG) ; Upgrade End time
-	Setlog("$g_hChkUpgradeRepeat= " & $g_abUpgradeRepeatEnable, $COLOR_DEBUG) ; repeat box
+	;SetLog("$g_hChkUpgrade= " & GUICtrlRead($g_hChkUpgrade[$i]) & "|" & $g_abBuildingUpgradeEnable[$i], $COLOR_DEBUG) ; upgrade selection box
+	;SetLog("$g_hTxtUpgradeName= " & GUICtrlRead($g_hTxtUpgradeName[$i]) & "|" &  $g_avBuildingUpgrades[$i][4], $COLOR_DEBUG) ;  Unit Name
+	;SetLog("$g_hTxtUpgradeLevel= " & GUICtrlRead($g_hTxtUpgradeLevel[$i]) & "|" & $g_aiUpgradeLevel[$i], $COLOR_DEBUG) ; Unit Level
+	;SetLog("$g_hPicUpgradeType= " & GUICtrlRead($g_hPicUpgradeType[$i]) & "|" & $g_aiPicUpgradeStatus[$i], $COLOR_DEBUG) ; status image
+	;SetLog("$g_hTxtUpgradeValue= " & GUICtrlRead($g_hTxtUpgradeValue[$i]) & "|" & $g_avBuildingUpgrades[$i][2], $COLOR_DEBUG) ; Upgrade value
+	;SetLog("$g_hTxtUpgradeTime= " & GUICtrlRead($g_hTxtUpgradeTime[$i]) & "|" & $g_avBuildingUpgrades[$i][6], $COLOR_DEBUG) ; Upgrade time
+	;SetLog("$g_hChkUpgradeRepeat= " & GUICtrlRead($g_hChkUpgradeRepeat[$i]) & "|" & $g_abUpgradeRepeatEnable, $COLOR_DEBUG) ; repeat box
+	SetLog("$g_hChkUpgrade= " & $g_abBuildingUpgradeEnable[$i], $COLOR_DEBUG) ; upgrade selection box
+	SetLog("$g_hTxtUpgradeName= " & $g_avBuildingUpgrades[$i][4], $COLOR_DEBUG) ;  Unit Name
+	SetLog("$g_hTxtUpgradeLevel= " & $g_aiUpgradeLevel[$i], $COLOR_DEBUG) ; Unit Level
+	SetLog("$g_hPicUpgradeType= " & $g_aiPicUpgradeStatus[$i], $COLOR_DEBUG) ; status image
+	SetLog("$g_hTxtUpgradeValue= " & $g_avBuildingUpgrades[$i][2], $COLOR_DEBUG) ; Upgrade value
+	SetLog("$g_hTxtUpgradeTime= " & $g_avBuildingUpgrades[$i][6], $COLOR_DEBUG) ; Upgrade time
+	SetLog("$g_hTxtUpgradeEndTime= " & $g_avBuildingUpgrades[$i][7], $COLOR_DEBUG) ; Upgrade End time
+	SetLog("$g_hChkUpgradeRepeat= " & $g_abUpgradeRepeatEnable, $COLOR_DEBUG) ; repeat box
 EndFunc   ;==>SetlogUpgradeValues

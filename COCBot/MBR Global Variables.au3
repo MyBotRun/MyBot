@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Everyone all the time  :)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -77,9 +77,11 @@ Global $g_iVILLAGE_OFFSET[3] = [0, 0, 1]
 ; <><><><><><><><><><><><><><><><><><>
 ; <><><><> debug flags <><><><>
 ; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+Global $g_bDebugSetlog = False ; Verbose log messages, or extra log messages most everywhere
 Global $g_bDebugAndroid = False ; Debug Android
 Global $g_bDebugClick = False ; Debug Bot Clicks and when docked, display current mouse position and RGB color
-Global $g_bDebugSetlog = False ; Verbose log messages, or extra log messages most everywhere
+Global $g_bDebugFuncTime = False ; Log Function execution time (where implemented)
+Global $g_bDebugFuncCall = False ; Log Function call hierarchy (where implemented)
 Global $g_bDebugOcr = False ; Creates \Lib\Debug folder and collects OCR images of text capture plus creates OCR log file
 Global $g_bDebugImageSave = False ; Save images at key points to allow review/verify emulator window status
 Global $g_bDebugBuildingPos = False ; extra information about buildings detected while searching for base to attack
@@ -92,8 +94,7 @@ Global $g_hDebugAlwaysSaveFullScreenTimer = 0 ; __TimerInit() to save every scre
 Global $g_bDebugSmartZap = False ; verbose logs for SmartZap users
 Global $g_bDebugAttackCSV = False ; Verbose log output of actual attack script plus bot actions
 Global $g_bDebugMakeIMGCSV = False ; Saves "clean" iamge and image with all drop points and detected buildings marked
-Global $g_bDebugBetaVersion = StringInStr($g_sBotVersion, " b") > 0
-Global $g_bDebugFuncTime = False ; Log Function execution time (where implemented)
+Global $g_bDebugBetaVersion = StringInStr($g_sBotVersion, " b") > 0 ; not saved and only used for special beta releases
 
 ; <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 ; <><><><> ONLY Enable items below this line when debugging special errors listed!! <><><><>
@@ -324,14 +325,18 @@ Global $g_iAndroidEmbedMode ; Android Dock Mode: -1 = Not available, 0 = Normal 
 Global $g_bAndroidBackgroundLaunch ; Enabled Android Background launch using Windows Scheduled Task
 Global $g_bAndroidBackgroundLaunched ; True when Android was launched in headless mode without a window
 Global $g_iAndroidControlClickDelay = 10 ; 10 is Default (Milliseconds)
-Global $g_iAndroidControlClickDownDelay = 0 ; 10 is Default (Milliseconds)
+Global $g_iAndroidControlClickDownDelay = 2 ; 2 is Default (Milliseconds)
 Global $g_iAndroidControlClickWindow = 0 ; 0 = Click the Android Control, 1 = Click the Android Window
 Global $g_iAndroidControlClickMode = 0 ; 0 = Use AutoIt ControlClick, 1 = Use _SendMessage
 Global $g_bAndroidCloseWithBot = False ; Close Android when bot closes
 
+Global $g_iAndroidProcessAffinityMask = 0
+
 ; Android details
+; Supported Android Versions, used for some ImgLoc functions and in GetAndroidCodeName()
 Global Const $g_iAndroidJellyBean = 17
 Global Const $g_iAndroidLollipop = 21
+Global Const $g_iAndroidNougat = 24
 Global $g_iAndroidVersionAPI = $g_iAndroidJellyBean ; getprop ro.build.version.sdk
 
 ; Updated in UpdateAndroidConfig() and $g_sAndroidEmulator&Init() as well
@@ -419,7 +424,7 @@ Global $g_iGlobalThreads = 0 ; Used by ImgLoc for parallism (shared by all bot i
 Global $g_iThreads = 0 ; Used by ImgLoc for parallism (for this bot instance), 0 = use as many threads as processors, 1..x = use only specified number of threads
 
 ; Profile file/folder paths
-Global Const $g_sProfilePath = @ScriptDir & "\Profiles"
+Global $g_sProfilePath = @ScriptDir & "\Profiles"
 Global Const $g_sProfilePresetPath = @ScriptDir & "\Strategies"
 Global $g_sProfileCurrentName = "" ; Name of profile currently being used
 Global $g_sProfileConfigPath = "" ; Path to the current config.ini being used in this profile
@@ -429,6 +434,10 @@ Global $g_sProfileLogsPath = "", $g_sProfileLootsPath = "", $g_sProfileTempPath 
 Global $g_sProfileDonateCapturePath = "", $g_sProfileDonateCaptureWhitelistPath = "", $g_sProfileDonateCaptureBlacklistPath = "" ; Paths to donate related folders for this profile
 Global $g_sProfileSecondaryInputFileName = ""
 Global $g_sProfileSecondaryOutputFileName = ""
+Global $g_asProfiles = [] ; Array String of available profiles, initialized in func setupProfileComboBox()
+Global $g_bReadConfigIsActive = False
+Global $g_bSaveConfigIsActive = False
+Global $g_bApplyConfigIsActive = False
 
 ; Logging
 Global $g_hTxtLogTimer = __TimerInit() ; Timer Handle of last log
@@ -438,6 +447,7 @@ Global $g_bSilentSetLog = False ; No logs to Log Control when enabled
 Global $g_sLogFileName = ""
 Global $g_hLogFile = 0
 Global $g_hAttackLogFile = 0
+Global $g_hSwitchLogFile = 0
 Global $g_bFlushGuiLogActive = False ; when RichEdit Log control get updated, focus change occur and this flag is required to avoid focus change due to GUIControl_WM_ACTIVATEAPP events
 
 ; Used in _Sleep.au3 to control various administrative tasks when idle
@@ -463,7 +473,8 @@ Global Const $g_sWorkingDir = @WorkingDir ; Working Directory at bot launch
 
 ; Mutex Handles
 Global $g_hMutex_BotTitle = 0
-Global $g_hMutex_Profile = 0
+Global $g_ahMutex_Profile = [] ; 2-dimensional Array, 0=Profile Name, 1=Profile Mutex
+Global $g_ahMutex_SwitchAccountsGroup = [0, 0] ; one row: 0=Switch Accounts Group No., 1=Mutex
 Global $g_hMutex_MyBot = 0
 
 ; Detected Bot Instance thru watchdog registration
@@ -478,10 +489,8 @@ Global $g_aiWeakBaseStats
 Global Const $g_sLibPath = @ScriptDir & "\lib" ;lib directory contains dll's
 Global Const $g_sLibImageSearchPath = $g_sLibPath & "\ImageSearchDLL.dll" ; ImageSearch library
 Global Const $g_sMBRLib = "MyBot.run.dll"
-Global Const $g_sLibMyBotPath = $g_sLibPath & "\MyBot.run.dll" ; main MBR library (containing also ImgLoc, formally MBRFunctions.dll)
-Global Const $g_sLibImgLocPath = $g_sLibMyBotPath ; main MBR library (containing also ImgLoc, formally MyBotRunImgLoc.dll)
-;Global Const $g_sLibImgLocPath = $g_sLibPath & "\MyBotRunImgLoc.dll" ; Last Image Library from @trlopes with all Legal Information need on LGPL
-Global $g_hLibImgLoc = -1 ; handle to imgloc library (now included in MyBot.run.dll)
+Global $g_bLibMyBotActive = False ; call to MyBot DLL is active
+Global Const $g_sLibMyBotPath = $g_sLibPath & "\" & $g_sMBRLib ; main MBR library (containing also ImgLoc, formally MBRFunctions.dll)
 Global $g_hLibMyBot = -1 ; handle to MyBot.run.dll library
 Global $g_hLibNTDLL = DllOpen("ntdll.dll") ; handle to ntdll.dll, DllClose($g_hLibNTDLL) not required
 Global $g_hLibUser32DLL = DllOpen("user32.dll") ; handle to user32.dll, DllClose($g_hLibUser32DLL) not required
@@ -537,7 +546,7 @@ Global $g_bRestart = False
 Global $g_bRunState = False
 Global $g_bIdleState = False ; bot is in Idle() routine waiting for things to finish
 Global $g_bBtnAttackNowPressed = False ; Set to true if any of the 3 attack now buttons are pressed
-Global $g_iCommandStop = -1
+Global $g_iCommandStop = -1 ; -1 = None, 0 = Halt Attack, 3 = Set from 0 to 3 if army full and training is enabled
 Global $g_bMeetCondStop = False
 Global $g_bRestarted = ($g_bBotLaunchOption_Autostart ? True : False)
 Global $g_bFirstStart = True
@@ -833,6 +842,7 @@ Global $g_iUpgradeWallMinGold = 0, $g_iUpgradeWallMinElixir = 0
 Global $g_iUpgradeWallLootType = 0, $g_bUpgradeWallSaveBuilder = False
 Global $g_iCmbUpgradeWallsLevel = 6
 Global $g_aiWallsCurrentCount[13] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
+Global $g_aiLastGoodWallPos[2] = [-1, -1]
 
 ; Auto Upgrade
 Global $g_iChkAutoUpgrade = 0
@@ -1138,7 +1148,13 @@ Global $g_bForceClanCastleDetection = 0
 ; <<< nothing here >>>
 
 ; <><><><> Bot / Profiles <><><><>
-; <<< nothing here >>>
+Global $g_iCmbSwitchAcc = 0, $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_iTrainTimeToSkip = 0, $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False
+Global $g_iTotalAcc = -1, $g_iNextAccount, $g_iCurAccount
+Global $g_abAccountNo[8], $g_asProfileName[8], $g_abDonateOnly[8]
+Global $g_aiAttackedCountSwitch[8], $g_iActiveSwitchCounter = 0, $g_iDonateSwitchCounter = 0
+Global $g_aiRemainTrainTime[8], $g_aiTimerStart[8], $g_abPBActive[8]
+Global $g_aiGoldTotalAcc[8], $g_aiElixirTotalAcc[8], $g_aiDarkTotalAcc[8], $g_aiTrophyLootAcc[8], $g_aiSkippedVillageCountAcc[8], $g_aiAttackedCountAcc[8] ; Total Gain
+Global $g_aiGoldCurrentAcc[8], $g_aiElixirCurrentAcc[8], $g_aiDarkCurrentAcc[8], $g_aiTrophyCurrentAcc[8], $g_aiFreeBuilderCountAcc[8], $g_aiTotalBuilderCountAcc[8], $g_aiGemAmountAcc[8], $g_aiPersonalBreak[8] ; village report
 
 ; <><><><> Bot / Stats <><><><>
 ; <<< nothing here >>>
@@ -1506,7 +1522,8 @@ Global $g_aWeakDefenseNames = ["None", "Eagle Artillery", "Inferno Tower", "XBow
 ; Building variables used by CSV attacks
 Global Enum $eBldgRedLine, $eBldgTownHall, $eBldgGoldM, $eBldgElixirC, $eBldgDrill, $eBldgGoldS, $eBldgElixirS, $eBldgDarkS, $eBldgEagle, $eBldgInferno, $eBldgXBow, $eBldgWizTower, $eBldgMortar, $eBldgAirDefense
 Global $g_sBldgNames = ["Red Line", "Town Hall", "Gold Mine", "Elixir Collector", "Dark Elixir Drill", "Gold Storage", "Elixir Storage", "Dark Elixir Storage", "Eagle Artillery", "Inferno Tower", "XBow", "Wizard Tower", "Mortar", "Air Defense"]
-
+Global Const $g_iMaxCapTroopTH[12] = [0, 20, 30, 70, 80, 135, 150, 200, 200, 220, 240, 260] ; element 0 is a dummy
+Global Const $g_iMaxCapSpellTH[12] = [0, 0, 0, 0, 0, 2, 4, 6, 7, 9, 11, 11] ; element 0 is a dummy
 Global $g_oBldgAttackInfo = ObjCreate("Scripting.Dictionary") ; stores building information of base being attacked
 $g_oBldgAttackInfo.CompareMode = 1 ; use case in-sensitve compare for key values
 

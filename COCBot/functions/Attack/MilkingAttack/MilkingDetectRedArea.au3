@@ -6,7 +6,7 @@
 ; Return values .:None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,7 @@ Func MilkingDetectRedArea()
 	_CaptureRegion2()
 	_GetRedArea()
 	Local $htimerREDAREA = Round(__TimerDiff($hTimer) / 1000, 2)
-	If $g_bDebugSetlog Then SetLog("> RedArea completed in " & $htimerREDAREA & " seconds", $COLOR_INFO)
+	If $g_bDebugSetlog Then SetDebugLog("> RedArea completed in " & $htimerREDAREA & " seconds", $COLOR_INFO)
 
 	;02 - DEPURE REDAREA BAD POINTS -----------------------------------------------------------------------------------------------------------------------
 	CleanRedArea($g_aiPixelTopLeft)

@@ -7,14 +7,14 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015), MonkeyHunter (01-2016), CodeSlinger69 (01-2017), MonkeyHunter (03-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
-	If $g_bDebugSetlog Then Setlog("ReturnHome function... (from matchmode=" & $g_iMatchMode & " - " & $g_asModeText[$g_iMatchMode] & ")", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("ReturnHome function... (from matchmode=" & $g_iMatchMode & " - " & $g_asModeText[$g_iMatchMode] & ")", $COLOR_DEBUG)
 	Local $counter = 0
 	Local $hBitmap_Scaled
 	Local $i, $j
@@ -50,7 +50,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 				EndIf
 			EndIf
 		Else
-			If $g_bDebugSetlog Then Setlog("Battle already over", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("Battle already over", $COLOR_DEBUG)
 		EndIf
 	EndIf
 
@@ -109,7 +109,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			If _Sleep($DELAYRETURNHOME5) Then Return
 		WEnd
 	Else
-		If $g_bDebugSetlog Then Setlog("Battle already over.", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("Battle already over.", $COLOR_DEBUG)
 	EndIf
 	If _Sleep($DELAYRETURNHOME2) Then Return ; short wait for return to main
 

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: z0mbie (2015)
 ; Modified ......: Master1st (09-2015), ProMac (10-2015), MonkeyHunter (06-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -41,7 +41,7 @@ Func UpgradeHeroes()
 
 	;Check if Auto Lab Upgrade is enabled and if a Dark Troop is selected for Upgrade. If yes, it has priority!
 	If $g_bAutoLabUpgradeEnable And $g_iCmbLaboratory >= 19 Then
-		Setlog("Laboratory needs DE to Upgrade :  " & $g_avLabTroops[$g_iCmbLaboratory][3])
+		SetLog("Laboratory needs DE to Upgrade :  " & $g_avLabTroops[$g_iCmbLaboratory][3])
 		SetLog("Skipping the Heroes Upgrade!")
 		Return
 	EndIf
@@ -53,7 +53,7 @@ Func UpgradeHeroes()
 		If Not getBuilderCount() Then Return ; update builder data, return if problem
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
-			SetLog("Not enough Builders available to upgrade the Archer Queen", $COLOR_ERROR)
+			SetLog("Not enough Builders available to upgrade the Archer Queen")
 			Return
 		EndIf
 		QueenUpgrade()
@@ -66,7 +66,7 @@ Func UpgradeHeroes()
 		If Not getBuilderCount() Then Return ; update builder data, return if problem
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
-			SetLog("Not enough Builders available to upgrade the Barbarian King", $COLOR_ERROR)
+			SetLog("Not enough Builders available to upgrade the Barbarian King")
 			Return
 		EndIf
 		KingUpgrade()
@@ -79,7 +79,7 @@ Func UpgradeHeroes()
 		If Not getBuilderCount() Then Return ; update builder data, return if problem
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
-			SetLog("Not enough Builders available to upgrade the Grand Warden", $COLOR_ERROR)
+			SetLog("Not enough Builders available to upgrade the Grand Warden")
 			Return
 		EndIf
 		WardenUpgrade()
@@ -94,8 +94,9 @@ Func QueenUpgrade()
 
 	SetLog("Upgrade Queen")
 	ClickP($aTopLeftClient, 1, 0, "#0166") ; Click away
-	If _Sleep(500) Then Return
+	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	BuildingClickP($g_aiQueenAltarPos) ;Click Queen Altar
+	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get Queen info and Level
 	Local $sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
@@ -108,7 +109,7 @@ Func QueenUpgrade()
 		$CountGetInfo += 1
 		If $CountGetInfo >= 50 Then Return
 	WEnd
-	If $g_bDebugSetlog Then SetLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 	If @error Then Return SetError(0, 0, 0)
 
 
@@ -130,6 +131,9 @@ Func QueenUpgrade()
 				Return
 			EndIf
 		EndIf
+	Else
+		SetLog("Bad Queen OCR", $COLOR_ERROR)
+		Return
 	EndIf
 
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
@@ -137,9 +141,9 @@ Func QueenUpgrade()
 	;##### Get updated village elixir and dark elixir values
 	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootDarkElixir] = Number(getResourcesMainScreen(728, 123))
-		If $g_bDebugSetlog Then SetLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
 	Else
-		If $g_bDebugSetlog Then Setlog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
 	EndIf
 
 	If $g_aiCurrentLoot[$eLootDarkElixir] < ($g_afQueenUpgCost[$aHeroLevel] * 1000) + $g_iUpgradeMinDark Then
@@ -152,8 +156,8 @@ Func QueenUpgrade()
 
 	If IsArray($ButtonPixel) Then
 		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
@@ -182,10 +186,10 @@ Func QueenUpgrade()
 				UpdateStats()
 			EndIf
 		Else
-			Setlog("Upgrade Queen window open fail", $COLOR_ERROR)
+			SetLog("Upgrade Queen window open fail", $COLOR_ERROR)
 		EndIf
 	Else
-		Setlog("Upgrade Queen error finding button", $COLOR_ERROR)
+		SetLog("Upgrade Queen error finding button", $COLOR_ERROR)
 	EndIf
 
 	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
@@ -198,8 +202,10 @@ Func KingUpgrade()
 	Local $aHeroLevel = 0
 
 	SetLog("Upgrade King")
+	ClickP($aTopLeftClient, 1, 0, "#0166") ; Click away
+	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	BuildingClickP($g_aiKingAltarPos) ;Click King Altar
-	If _Sleep(500) Then Return
+	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
 	;Get King info
 	Local $sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
@@ -212,7 +218,7 @@ Func KingUpgrade()
 		$CountGetInfo += 1
 		If $CountGetInfo >= 50 Then Return
 	WEnd
-	If $g_bDebugSetlog Then SetLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 	If @error Then Return SetError(0, 0, 0)
 
 	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -233,6 +239,9 @@ Func KingUpgrade()
 				Return
 			EndIf
 		EndIf
+	Else
+		SetLog("Bad King OCR", $COLOR_ERROR)
+		Return
 	EndIf
 
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
@@ -240,9 +249,9 @@ Func KingUpgrade()
 	;##### Get updated village elixir and dark elixir values
 	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootDarkElixir] = Number(getResourcesMainScreen(728, 123))
-		If $g_bDebugSetlog Then SetLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
 	Else
-		If $g_bDebugSetlog Then Setlog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
 	EndIf
 	If _Sleep(100) Then Return
 
@@ -256,8 +265,8 @@ Func KingUpgrade()
 
 	If IsArray($ButtonPixel) Then
 		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
@@ -286,10 +295,10 @@ Func KingUpgrade()
 				UpdateStats()
 			EndIf
 		Else
-			Setlog("Upgrade King window open fail", $COLOR_ERROR)
+			SetLog("Upgrade King window open fail", $COLOR_ERROR)
 		EndIf
 	Else
-		Setlog("Upgrade King error finding button", $COLOR_ERROR)
+		SetLog("Upgrade King error finding button", $COLOR_ERROR)
 	EndIf
 
 	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
@@ -301,11 +310,13 @@ Func WardenUpgrade()
 	If Not $g_bUpgradeWardenEnable Then Return
 
 	If Number($g_iTownHallLevel) <= 10 Then
-		Setlog("Must have TH 11 for Grand Warden upgrade", $COLOR_ERROR)
+		SetLog("Must have TH 11 for Grand Warden upgrade", $COLOR_ERROR)
 		Return
 	EndIf
 
 	SetLog("Upgrade Grand Warden")
+	ClickP($aTopLeftClient, 1, 0, "#0166") ; Click away
+	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	ClickP($g_aiWardenAltarPos, 1, 0, "#8888") ;Click Warden Altar
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
@@ -320,7 +331,7 @@ Func WardenUpgrade()
 		$CountGetInfo += 1
 		If $CountGetInfo = 50 Then Return
 	WEnd
-	If $g_bDebugSetlog Then SetLog(_ArrayToString($sInfo, " "))
+	If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "))
 	If @error Then Return SetError(0, 0, 0)
 
 	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -341,6 +352,9 @@ Func WardenUpgrade()
 				Return
 			EndIf
 		EndIf
+	Else
+		SetLog("Bad Warden OCR", $COLOR_ERROR)
+		Return
 	EndIf
 
 	If _Sleep($DELAYUPGRADEHERO1) Then Return
@@ -348,7 +362,7 @@ Func WardenUpgrade()
 	;##### Get updated village elixir values
 	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(705, 74)
-		If $g_bDebugSetlog Then SetLog("Updating village values [E]: " & $g_aiCurrentLoot[$eLootElixir], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("Updating village values [E]: " & $g_aiCurrentLoot[$eLootElixir], $COLOR_DEBUG)
 	Else
 		$g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(710, 74)
 	EndIf
@@ -363,16 +377,16 @@ Func WardenUpgrade()
 	Local $ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 620 + $g_iBottomOffsetY, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
 	If IsArray($ButtonPixel) Then
 		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
 		If $g_bDebugSetlog Then DebugImageSave("UpgradeElixirBtn1")
-		If $g_bDebugSetlog Then Setlog("pixel: " & _GetPixelColor(718, 120 + $g_iMidOffsetY, True) & " expected " & Hex(0xDD0408, 6) & " result: " & _ColorCheck(_GetPixelColor(718, 120 + $g_iMidOffsetY, True), Hex(0xDD0408, 6), 20), $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("pixel: " & _GetPixelColor(718, 120 + $g_iMidOffsetY, True) & " expected " & Hex(0xDD0408, 6) & " result: " & _ColorCheck(_GetPixelColor(718, 120 + $g_iMidOffsetY, True), Hex(0xDD0408, 6), 20), $COLOR_DEBUG)
 		If _ColorCheck(_GetPixelColor(718, 120 + $g_iMidOffsetY, True), Hex(0xDD0408, 6), 20) Then ; Check if the Hero Upgrade window is open
-			If $g_bDebugSetlog Then Setlog("pixel1: " & _GetPixelColor(692, 525 + $g_iMidOffsetY, True) & " expected " & Hex(0xFFFFFF, 6) & " result: " & (_ColorCheck(_GetPixelColor(692, 525 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 20)), $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("pixel1: " & _GetPixelColor(692, 525 + $g_iMidOffsetY, True) & " expected " & Hex(0xFFFFFF, 6) & " result: " & (_ColorCheck(_GetPixelColor(692, 525 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 20)), $COLOR_DEBUG)
 			If Not (_ColorCheck(_GetPixelColor(692, 525 + $g_iMidOffsetY, True), Hex(0xFFFFFF, 6), 20)) Then ; Check for Red Zero = means not enough loot!
 				SetLog("Warden Upgrade Fail! No Elixir!", $COLOR_ERROR)
 				ClickP($aAway, 1, 0, "#0306") ;Click Away to close window
@@ -395,10 +409,10 @@ Func WardenUpgrade()
 				UpdateStats()
 			EndIf
 		Else
-			Setlog("Upgrade Warden window open fail", $COLOR_ERROR)
+			SetLog("Upgrade Warden window open fail", $COLOR_ERROR)
 		EndIf
 	Else
-		Setlog("Upgrade Warden error finding button", $COLOR_ERROR)
+		SetLog("Upgrade Warden error finding button", $COLOR_ERROR)
 	EndIf
 
 	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows

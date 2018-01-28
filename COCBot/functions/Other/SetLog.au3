@@ -13,7 +13,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -23,7 +23,9 @@
 
 Global $g_oTxtLogInitText = ObjCreate("Scripting.Dictionary")
 Global $g_oTxtAtkLogInitText = ObjCreate("Scripting.Dictionary")
-
+Global $g_oTxtSALogInitText = ObjCreate("Scripting.Dictionary")
+Global $g_bSilentSetDebugLog = False
+Global $g_aLastStatusBar
 
 Func SetLog($sLogMessage, $iColor = Default, $sFont = Default, $iFontSize = Default, $iStatusbar = Default, $bConsoleWrite = Default) ;Sets the text for the log
 	If $sLogMessage <> "" Then Return _SetLog($sLogMessage, $iColor, $sFont, $iFontSize, $iStatusbar, $bConsoleWrite)
@@ -70,6 +72,8 @@ Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Defaul
 	$a[3] = $FontSize
 	$a[4] = $statusbar
 	$a[5] = $time
+	If $statusbar Then $g_aLastStatusBar = $a
+
 	If $g_hLogFile = 0 Then
 		; could not write to log file, so add additional info (does happen only before config file is available)
 		ReDim $a[8]
@@ -135,9 +139,10 @@ Func SetLogText(ByRef $hTxtLog, ByRef $sLogMessage, ByRef $Color, ByRef $Font, B
 	_GUICtrlRichEdit_AppendTextColor($hTxtLog, $sLogMessage & @CRLF, _ColorConvert($Color), False)
 EndFunc   ;==>SetLogText
 
-Func SetDebugLog($sLogMessage, $sColor = $COLOR_DEBUG, $bSilentSetLog = False, $Font = Default, $FontSize = Default, $statusbar = 0)
+Func SetDebugLog($sLogMessage, $sColor = $COLOR_DEBUG, $bSilentSetLog = Default, $Font = Default, $FontSize = Default, $statusbar = 0)
 	Local $sLogPrefix = "D "
 	Local $sLog = $sLogPrefix & TimeDebug() & $sLogMessage
+	If $bSilentSetLog = Default Then $bSilentSetLog = $g_bSilentSetDebugLog
 
 	If $g_bDebugSetlog And $bSilentSetLog = False Then
 		_SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, True, $sLogPrefix)
@@ -202,12 +207,6 @@ Func FlushGuiLog(ByRef $hTxtLog, ByRef $oTxtLog, $bUpdateStatus = False, $sLogMu
 
 		If $bUpdateStatus = True And ($g_hStatusBar Or $g_iGuiMode <> 1) And $iSize > 4 And $a[4] = 1 Then
 			$sLastStatus = $a[0]
-			; only till CR/LF or text overwrites
-			Local $iPosCr = StringInStr($sLastStatus, Chr(13))
-			Local $iPosLf = StringInStr($sLastStatus, Chr(10))
-			Local $iPos = $iPosCr
-			If $iPosLf > 0 And $iPosLf < $iPosCr Then $iPos = $iPosLf
-			If $iPos > 0 Then $sLastStatus = StringLeft($sLastStatus, $iPos - 1)
 		EndIf
 	Next
 
@@ -232,17 +231,37 @@ Func FlushGuiLog(ByRef $hTxtLog, ByRef $oTxtLog, $bUpdateStatus = False, $sLogMu
 	Return $iLogs
 EndFunc   ;==>FlushGuiLog
 
+Func UpdateStatusBar($sText)
+	; only till CR/LF or text overwrites
+	Local $iPosCr = StringInStr($sText, Chr(13))
+	Local $iPosLf = StringInStr($sText, Chr(10))
+	Local $iPos = $iPosCr
+	If $iPosLf > 0 And $iPosLf < $iPosCr Then $iPos = $iPosLf
+	If $iPos > 0 Then $sText = StringLeft($sText, $iPos - 1)
+	_GUICtrlStatusBar_SetTextEx($g_hStatusBar, "Status : " & $sText)
+EndFunc   ;==>UpdateStatusBar
+
 Func CheckPostponedLog($bNow = False)
 	;SetDebugLog("CheckPostponedLog: Entered, $bNow=" & $bNow & ", count=" & $g_oTxtLogInitText.Count & ", $g_hTxtLog=" & $g_hTxtLog & ", $g_iGuiMode=" & $g_iGuiMode)
 	Local $iLogs = 0
 	If $g_bCriticalMessageProcessing Or ($bNow = False And __TimerDiff($g_hTxtLogTimer) < $g_iTxtLogTimerTimeout) Then Return 0
 
-	If $g_oTxtLogInitText.Count > 0 And ($g_hTxtLog Or $g_iGuiMode <> 1) Then
-		$iLogs += FlushGuiLog($g_hTxtLog, $g_oTxtLogInitText, True, "txtLog")
+	If $g_oTxtLogInitText.Count > 0 And ($g_iGuiMode <> 1 Or $g_hTxtLog) Then
+		If $g_hTxtLog And UBound($g_aLastStatusBar) > 0 And BitAND(WinGetState($g_hGUI_LOG), 2) = 0 Then
+			; Update StatusBar at least
+			UpdateStatusBar($g_aLastStatusBar[0])
+			$g_aLastStatusBar = 0
+		Else
+			$iLogs += FlushGuiLog($g_hTxtLog, $g_oTxtLogInitText, True, "txtLog")
+		EndIf
 	EndIf
 
-	If $g_oTxtAtkLogInitText.Count > 0 And ($g_hTxtAtkLog Or $g_iGuiMode <> 1) Then
+	If $g_oTxtAtkLogInitText.Count > 0 And ($g_iGuiMode <> 1 Or ($g_hTxtAtkLog And BitAND(WinGetState($g_hGUI_LOG), 2))) Then
 		$iLogs += FlushGuiLog($g_hTxtAtkLog, $g_oTxtAtkLogInitText, False, "txtAtkLog")
+	EndIf
+
+	If $g_oTxtSALogInitText.Count > 0 And ($g_iGuiMode <> 1 Or ($g_hTxtSALog And BitAND(WinGetState($g_hGUI_LOG_SA), 2))) Then
+		$iLogs += FlushGuiLog($g_hTxtSALog, $g_oTxtSALogInitText, False, "txtSALog")
 	EndIf
 
 	$g_hTxtLogTimer = __TimerInit()
@@ -280,10 +299,31 @@ Func SetAtkLog($String1, $String2 = "", $Color = $COLOR_BLACK, $Font = "Lucida C
 
 EndFunc   ;==>SetAtkLog
 
+Func SetSwitchAccLog($String, $Color = $COLOR_BLACK, $Font = "Verdana", $FontSize = 7.5, $time = True)
+	If $time = True Then
+		$time = Time()
+	Else
+		$time = 0
+	EndIf
+
+	If $g_hSwitchLogFile = 0 Then CreateSwitchLogFile()
+	_FileWriteLog($g_hSwitchLogFile, $String)
+
+	Dim $a[6]
+	$a[0] = $String
+	$a[1] = $Color
+	$a[2] = $Font
+	$a[3] = $FontSize
+	$a[4] = 0 ; no status bar update
+	$a[5] = $time
+	$g_oTxtSALogInitText($g_oTxtSALogInitText.Count + 1) = $a
+
+EndFunc   ;==>SetSwitchAccLog
+
 Func AtkLogHead()
 	SetAtkLog(_PadStringCenter(" " & GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_01", "ATTACK LOG") & " ", 71, "="), "", $COLOR_BLACK, "MS Shell Dlg", 8.5)
-	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                  --------  LOOT --------       ----- BONUS ------'), "")
-	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|TIME|TROP.|SEARCH|   GOLD| ELIXIR|DARK EL|TR.|S|  GOLD|ELIXIR|  DE|L.'), "")
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                      --------  LOOT --------       ----- BONUS ------'), "")
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|AC|TIME.|TROP.|SEARCH|   GOLD| ELIXIR|DARK EL|TR.|S|  GOLD|ELIXIR|  DE|L.'), "")
 EndFunc   ;==>AtkLogHead
 
 Func __FileWriteLog($handle, $text)
@@ -304,3 +344,10 @@ Func SetLogCentered($String, $sPad = Default, $Color = Default, $bClearLog = Fal
 	If $bClearLog = True Then ClearLog($g_hTxtLog)
 	_SetLog(_PadStringCenter($String, 53, $sPad), $Color, "Lucida Console", 8)
 EndFunc   ;==>SetLogCentered
+
+Func SetDebugLogSilent($bSilent = Default)
+	If $bSilent = Default Then $bSilent = True
+	Local $bWasSilent = $g_bSilentSetDebugLog
+	$g_bSilentSetDebugLog = $bSilent
+	Return $bWasSilent
+EndFunc   ;==>SetDebugLogSilent

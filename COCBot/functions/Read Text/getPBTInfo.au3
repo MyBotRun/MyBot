@@ -8,7 +8,7 @@
 ; ...............: Sets @error if buttons not found properly or problem with OCR of PBT time, and sets @extended with string error message
 ; Author ........: MonkeyHunter (2016-02)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -27,22 +27,22 @@ Func getPBTInfo()
 	$aPBTReturnResult[1] = StringFormat("%02s", $iHour) & ":" & StringFormat("%02s", $iMin) & ":" & StringFormat("%02s", $iSec)
 
 	If IsMainPage() = False Then ; check for main page or do not try
-		Setlog("Not on Main page to read PBT information", $COLOR_ERROR)
+		SetLog("Not on Main page to read PBT information", $COLOR_ERROR)
 		Return
 	EndIf
 
 	Select ; Check for Shield type
 		Case _CheckPixel($aNoShield, $g_bCapturePixel)
 			$aPBTReturnResult[0] = "none"
-			If $g_bDebugSetlog Then Setlog("No shield active", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("No shield active", $COLOR_DEBUG)
 		Case _CheckPixel($aHaveShield, $g_bCapturePixel)
 			$aPBTReturnResult[0] = "shield" ; check for shield
-			If $g_bDebugSetlog Then Setlog("Shield Active", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("Shield Active", $COLOR_DEBUG)
 		Case _CheckPixel($aHavePerGuard, $g_bCapturePixel)
 			$aPBTReturnResult[0] = "guard" ; check for personal guard timer
-			If $g_bDebugSetlog Then Setlog("Guard Active", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("Guard Active", $COLOR_DEBUG)
 		Case Else
-			Setlog("Sorry, Monkey needs more bananas to read shield type", $COLOR_ERROR) ; Check for pixel colors errors!
+			SetLog("Sorry, Monkey needs more bananas to read shield type", $COLOR_ERROR) ; Check for pixel colors errors!
 			If $g_bDebugImageSave Then DebugImageSave("ShieldInfo_", $g_bCapturePixel, "png", False)
 			SetError(1, "Bad shield type pixel read")
 			Return
@@ -55,15 +55,15 @@ Func getPBTInfo()
 	While _CheckPixel($aIsShieldInfo, $g_bCapturePixel) = False ; check for open shield info window
 		If _Sleep($DELAYPERSONALSHIELD2) Then Return
 		$Result = getAttackDisable(180, 156 + $g_iMidOffsetY) ; Try to grab Ocr for PBT warning message as it can randomly block pixel check
-		If $g_bDebugSetlog Then Setlog("OCR PBT warning= " & $Result, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("OCR PBT warning= " & $Result, $COLOR_DEBUG)
 		If (StringLen($Result) > 3) And StringRegExp($Result, "[a-w]", $STR_REGEXPMATCH) Then ; Check string for valid characters
-			Setlog("Personal Break Warning found!", $COLOR_INFO)
+			SetLog("Personal Break Warning found!", $COLOR_INFO)
 			$bPBTStart = True
 			ExitLoop
 		EndIf
 		$iCount += 1
 		If $iCount > 20 Then ; Wait ~10-12 seconds for window to open before error return
-			Setlog("PBT information window failed to open", $COLOR_DEBUG)
+			SetLog("PBT information window failed to open", $COLOR_DEBUG)
 			If $g_bDebugImageSave Then DebugImageSave("PBTInfo_", $g_bCapturePixel, "png", False)
 			ClickP($aAway, 1, 0, "#9999") ; close window if opened
 			If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
@@ -74,13 +74,13 @@ Func getPBTInfo()
 	If _CheckPixel($aIsShieldInfo, $g_bCapturePixel) Or $bPBTStart Then
 
 		$sTimeResult = getOcrPBTtime(555, 499 + $g_iMidOffsetY) ; read PBT time
-		If $g_bDebugSetlog Then Setlog("OCR PBT Time= " & $sTimeResult, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("OCR PBT Time= " & $sTimeResult, $COLOR_DEBUG)
 		If $sTimeResult = "" Then ; try a 2nd time after a short delay if slow PC and null read
 			If _Sleep($DELAYPERSONALSHIELD2) Then Return ; pause for slow PC
 			$sTimeResult = getOcrPBTtime(555, 499 + $g_iMidOffsetY) ; read PBT time
-			If $g_bDebugSetlog Then Setlog("OCR2 PBT Time= " & $sTimeResult, $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("OCR2 PBT Time= " & $sTimeResult, $COLOR_DEBUG)
 			If $sTimeResult = "" Then ; error if no read value
-				Setlog("strange error, no PBT value found?", $COLOR_ERROR)
+				SetLog("strange error, no PBT value found?", $COLOR_ERROR)
 				SetError(2, "Bad time value OCR read")
 				ClickP($aAway, 1, 0, "#9999") ; close window
 				If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
@@ -107,14 +107,14 @@ Func getPBTInfo()
 							$iSec = Number($aString[2])
 						EndIf
 					Case Else
-						Setlog("strange error, unexpected PBT value?", $COLOR_ERROR)
+						SetLog("strange error, unexpected PBT value?", $COLOR_ERROR)
 						SetError(3, "Error processing time string")
 						ClickP($aAway, 1, 0, "#9999") ; close window
 						If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
 						Return $aPBTReturnResult ; return zero value
 				EndSelect
 			Case Else
-				Setlog("Error processing PBT time string: " & $sTimeResult, $COLOR_ERROR)
+				SetLog("Error processing PBT time string: " & $sTimeResult, $COLOR_ERROR)
 				SetError(4, "Error processing time string")
 				ClickP($aAway, 1, 0, "#9999") ; close window
 				If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
@@ -122,18 +122,18 @@ Func getPBTInfo()
 		EndSwitch
 
 		$aPBTReturnResult[1] = StringFormat("%02s", $iHour) & ":" & StringFormat("%02s", $iMin) & ":" & StringFormat("%02s", $iSec)
-		If $g_bDebugSetlog Then Setlog("PBT Time String = " & $aPBTReturnResult[1], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("PBT Time String = " & $aPBTReturnResult[1], $COLOR_DEBUG)
 
 		$iPBTSeconds = ($iHour * 3600) + ($iMin * 60) + $iSec ; add time into total seconds
-		If $g_bDebugSetlog Then Setlog("Computed PBT Seconds = " & $iPBTSeconds, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("Computed PBT Seconds = " & $iPBTSeconds, $COLOR_DEBUG)
 
 		If $bPBTStart Then
 			$aPBTReturnResult[2] = _DateAdd('s', -10, _NowCalc()) ; Calc time -10 seconds before now.
 		Else
 			$aPBTReturnResult[2] = _DateAdd('s', $iPBTSeconds, _NowCalc()) ; Calc actual expire time from now.
 		EndIf
-		If @error Then Setlog("_DateAdd error= " & @error, $COLOR_ERROR)
-		If $g_bDebugSetlog Then Setlog("PBT starts: " & $aPBTReturnResult[2], $COLOR_INFO)
+		If @error Then SetLog("_DateAdd error= " & @error, $COLOR_ERROR)
+		If $g_bDebugSetlog Then SetDebugLog("PBT starts: " & $aPBTReturnResult[2], $COLOR_INFO)
 		If _Sleep($DELAYPERSONALSHIELD1) Then Return
 
 		ClickP($aAway, 1, 0, "#9999") ; close window
@@ -141,7 +141,7 @@ Func getPBTInfo()
 
 		Return $aPBTReturnResult
 	Else
-		If $g_bDebugSetlog Then SetLog("PBT Info window failed to open for PBT OCR", $COLOR_ERROR)
+		If $g_bDebugSetlog Then SetDebugLog("PBT Info window failed to open for PBT OCR", $COLOR_ERROR)
 	EndIf
 
 EndFunc   ;==>getPBTInfo

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (12-2015)
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,7 +15,8 @@
 #include-once
 
 Global Const $g_sAdbScriptsPath = $g_sLibPath & "\adb.scripts" ; ADD script and event files folder
-Global Const $g_sAndroidAdbPrompt = "mybot.run:" ; Single instance of ADB PS1 prompt
+Global $g_sAndroidAdbPrompt = "mybot.run:" ; Unique ADB PS1 prompt
+Global $g_bAndroidAdbPromptUseGiven = True ; Don't set custom prompt with PS1, use default
 Global $g_iAndroidCoCPid = 0 ; Android CoC process PID for suspend and resume
 Global $g_iAndroidAdbProcess = [0, 0, 0, 0, 0] ; Single instance of ADB used for screencap, 0: PID, 1: StdIn handles, 2: StdOut handles, 3: Process handle, 4: Thread handle
 Global $g_aiAndroidAdbClicks[1] = [-1] ; Stores clicks after KeepClicks() called, fired and emptied with ReleaseClicks()
@@ -36,6 +37,7 @@ Global $g_iSuspendAndroidTime = 0
 Global $g_iSuspendAndroidTimeCount = 0
 Global $g_hSuspendAndroidTimer = 0
 Global $g_aiMouseOffset = [0, 0]
+Global $g_aiMouseOffsetWindowOnly = [0, 0]
 
 Func InitAndroidConfig($bRestart = False)
 	If $bRestart = False Then
@@ -236,6 +238,15 @@ Func UpdateHWnD($hWin, $bRestart = True)
 	If $g_hAndroidWindow <> 0 And $bRestart Then
 		$g_bRestart = True ; Android likely crashed
 		;$g_bIsClientSyncError = True ; quick restart search
+	EndIf
+
+	If $g_iAndroidProcessAffinityMask Then
+		Local $pid = WinGetProcess($hWin)
+		Local $ai_Handle = _WinAPI_OpenProcess($PROCESS_ALL_ACCESS, False, $pid)
+		If $ai_Handle Then
+			_WinAPI_SetProcessAffinityMask($ai_Handle, $g_iAndroidProcessAffinityMask)
+			;_WinAPI_CloseHandle($hProcess)
+		EndIf
 	EndIf
 
 	$g_hAndroidWindow = $hWin
@@ -988,10 +999,16 @@ Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
 EndFunc   ;==>_OpenAndroid
 
 Func StartAndroidCoC()
-	Return RestartAndroidCoC(False, False)
+	FuncEnter(StartAndroidCoC)
+	Return FuncReturn(RestartAndroidCoC(False, False, False))
 EndFunc   ;==>StartAndroidCoC
 
-Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True)
+Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True)
+	FuncEnter(RestartAndroidCoC)
+	Return FuncReturn(_RestartAndroidCoC($bInitAndroid, $bRestart, $bStopCoC))
+EndFunc   ;==>RestartAndroidCoC
+
+Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True)
 	$g_bSkipFirstZoomout = False
 	ResumeAndroid()
 	If Not $g_bRunState Then Return False
@@ -1009,8 +1026,12 @@ Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True)
 	ResetAndroidProcess()
 	Local $sRestart = ""
 	If $bRestart = True Then
-		SetLog("Please wait for CoC restart......", $COLOR_INFO) ; Let user know we need time...
-		$sRestart = "-S "
+		If $bStopCoC Then
+			SetLog("Please wait for CoC restart.....", $COLOR_INFO) ; Let user know we need time...
+			$sRestart = "-S "
+		Else
+			SetLog("Please wait for CoC restart....", $COLOR_INFO) ; Let user know we need time...
+		EndIf
 	Else
 		SetLog("Launch Clash of Clans now...", $COLOR_SUCCESS)
 	EndIf
@@ -1043,14 +1064,13 @@ Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True)
 	InitAndroidTimeLag()
 
 	Return True
-EndFunc   ;==>RestartAndroidCoC
+EndFunc   ;==>_RestartAndroidCoC
 
 ; Reset variables that track running CoC App
 Func ResetAndroidProcess()
 	$g_iAndroidCoCPid = 0
 	$g_bMainWindowOk = False
 EndFunc   ;==>ResetAndroidProcess
-
 
 Func CloseAndroid($sSource)
 	ResumeAndroid()
@@ -1410,7 +1430,6 @@ Func CheckScreenAndroid($ClientWidth, $ClientHeight, $bSetLog = True)
 	EndIf
 
 	; check display font size
-	AndroidAdbLaunchShellInstance()
 	Local $s_font_scale = AndroidAdbSendShellCommand("settings get system font_scale")
 	Local $font_scale = Number($s_font_scale)
 	If $font_scale > 0 Then
@@ -1442,6 +1461,28 @@ Func AndroidSetFontSizeNormal()
 	AndroidAdbSendShellCommand("settings put system font_scale 1.0", Default, Default, False)
 EndFunc   ;==>AndroidSetFontSizeNormal
 
+Func AndroidInitPrompt()
+	If Not $g_bAndroidAdbInstance Then Return
+	Local $s
+	Sleep(250)
+	If $g_bAndroidAdbPromptUseGiven Then
+		AndroidAdbSendShellCommand("", -250, Default, False, False) ; just send enter to clear any incomplete entered command (required for BlueStacks N)
+		$s = AndroidAdbSendShellCommand("", -500, Default, False, False)
+		If $s Then
+			; assume this is the prompt
+			$g_sAndroidAdbPrompt = $s
+			SetDebugLog("Initialize shell prompt with '" & $g_sAndroidAdbPrompt & "'")
+		Else
+			SetLog("ADB Prompt not identified!", $COLOR_ERROR)
+			SetDebugLog("ADB Result: " & $s, $COLOR_ERROR)
+		EndIf
+	Else
+		SetDebugLog("Initialize shell prompt with '" & $g_sAndroidAdbPrompt & "'")
+		$s = AndroidAdbSendShellCommand(@LF & "PS1=" & $g_sAndroidAdbPrompt, -500, Default, False) ; set prompt to unique string $g_sAndroidAdbPrompt
+	EndIf
+	Return $s
+EndFunc   ;==>AndroidInitPrompt
+
 Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
 	If $wasRunState = Default Then $wasRunState = $g_bRunState
 	If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
@@ -1453,7 +1494,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 		Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder
 		If FileExists($hostFolder) = 1 Then
 			SetDebugLog($hostFolder & " exists")
-			Local $aTools[1] = ["sleep"]
+			Local $aTools[1] = ["toybox"]
 			Local $tool
 			For $tool In $aTools
 				Local $srcFile = $g_sAdbScriptsPath & "\" & $tool
@@ -1478,7 +1519,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 				If BitAND($g_iAndroidSupportFeature, 1) = 0 Then $g_bChkBackgroundMode = False ; disable also background mode the hard way
 				Return SetError(1, 0)
 			Else
-				AndroidAdbSendShellCommand("PS1=" & $g_sAndroidAdbPrompt, Default, $wasRunState, False) ; set prompt to unique string $g_sAndroidAdbPrompt
+				AndroidInitPrompt()
 			EndIf
 		EndIf
 
@@ -1551,7 +1592,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 			If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\shell.init." & $g_sAndroidEmulator & ".script") = 1 Then $scriptFile = "shell.init." & $g_sAndroidEmulator & ".script"
 			If $scriptFile = "" Then $scriptFile = "shell.init.script"
 			$s &= AndroidAdbSendShellCommandScript($scriptFile, Default, Default, 3000, $wasRunState, False)
-			$s &= AndroidAdbSendShellCommand("PS1=" & $g_sAndroidAdbPrompt, Default, $wasRunState, False) ; set prompt to unique string $g_sAndroidAdbPrompt
+			$s &= AndroidInitPrompt()
 			Local $error = @error
 			SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
 			If $error <> 0 Then
@@ -1601,15 +1642,15 @@ Func AndroidAdbTerminateShellInstance()
 	SuspendAndroid($SuspendMode)
 EndFunc   ;==>AndroidAdbTerminateShellInstance
 
-Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True)
+Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
 	Local $wasAllowed = $g_bTogglePauseAllowed
 	$g_bTogglePauseAllowed = False
-	Local $Result = _AndroidAdbSendShellCommand($cmd, $timeout, $wasRunState, $EnsureShellInstance)
+	Local $Result = _AndroidAdbSendShellCommand($cmd, $timeout, $wasRunState, $EnsureShellInstance, $bStripPrompt)
 	$g_bTogglePauseAllowed = $wasAllowed
 	Return SetError(@error, @extended, $Result)
 EndFunc   ;==>AndroidAdbSendShellCommand
 
-Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True)
+Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
 	Static $iCommandErrors = 0 ; restart ADB on too many errors
 	Local $_SilentSetLog = $g_bSilentSetLog
 	If $timeout = Default Then $timeout = 3000 ; default is 3 sec.
@@ -1633,7 +1674,7 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 			SetDebugLog("ADB Shell instance not initialized, cannot execute: " & $cmd, $COLOR_ERROR)
 			Return SetError(1, 0, "")
 		EndIf
-		ReadPipe($aReadPipe[0])
+		ReadPipe($aReadPipe[0]) ; clear anything in read pipe first
 		If $cmd = Default Then
 			; nothing to launch
 		Else
@@ -1644,12 +1685,17 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 			EndIf
 			$sentBytes = WritePipe($aWritePipe[1], $cmd & @LF)
 		EndIf
-		While $timeout > 0 And @error = 0 And StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) <> @LF & $g_sAndroidAdbPrompt And __TimerDiff($hTimer) < $timeout
-			Sleep(10)
+		If $timeout <> 0 Then
+			While @error = 0 And ($timeout < 0 Or StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) <> @LF & $g_sAndroidAdbPrompt) And __TimerDiff($hTimer) < Abs($timeout)
+				Sleep(10)
+				$s &= ReadPipe($aReadPipe[0])
+				$loopCount += 1
+				If $wasRunState And Not $g_bRunState Then ExitLoop ; stop pressed here, exit without error
+			WEnd
+		Else
+			; no timeout, just read pipe once
 			$s &= ReadPipe($aReadPipe[0])
-			$loopCount += 1
-			If $wasRunState And Not $g_bRunState Then ExitLoop ; stop pressed here, exit without error
-		WEnd
+		EndIf
 	Else
 		; invoke new single ADB shell command
 		$cleanOutput = False
@@ -1662,14 +1708,14 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 				SetDebugLog("Execute ADB shell command: " & $cmd)
 				;$g_bSilentSetLog = $_SilentSetLog
 			EndIf
-			$s = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell " & $cmd, $process_killed, $timeout)
+			$s = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell " & $cmd, $process_killed, Abs($timeout))
 		EndIf
 	EndIf
 
 	If $cleanOutput Then
 		Local $i = StringInStr($s, @LF)
 		If $i > 0 Then $s = StringMid($s, $i) ; remove echo'd command
-		If StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) = @LF & $g_sAndroidAdbPrompt Then $s = StringLeft($s, StringLen($s) - StringLen($g_sAndroidAdbPrompt) - 1) ; remove tailing prompt
+		If $bStripPrompt And StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) = @LF & $g_sAndroidAdbPrompt Then $s = StringLeft($s, StringLen($s) - StringLen($g_sAndroidAdbPrompt) - 1) ; remove tailing prompt
 		CleanLaunchOutput($s)
 		If StringLeft($s, 1) = @LF Then $s = StringMid($s, 2) ; remove starting @LF
 	EndIf
@@ -2270,7 +2316,6 @@ Func AndroidAdbScript($scriptTag, $variablesArray = Default, $timeout = Default,
 	If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & "." & $g_sAndroidEmulator & ".getevent") = 1 Then $scriptFile = $scriptTag & "." & $g_sAndroidEmulator & ".getevent"
 	If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\" & $scriptTag & ".script") = 1 Then $scriptFile = $scriptTag & ".script"
 	If $scriptFile = "" Then $scriptFile = $scriptTag & ".getevent"
-	If FileExists($g_sAdbScriptsPath & "\" & $scriptFile) = 0 Then Return SetError(1, 0, 0)
 	AndroidAdbSendShellCommandScript($scriptFile, $variablesArray, Default, $timeout, $wasRunState)
 	Return SetError(@error, @extended, (@error = 0 ? 1 : 0))
 EndFunc   ;==>AndroidAdbScript
@@ -2830,14 +2875,14 @@ Func SuspendAndroid($SuspendMode = True, $bDebugLog = Default, $bForceSuspendAnd
 			SuspendAndroidTime(True) ; reset timer
 			Return False
 		EndIf
-		Local $s = AndroidAdbSendShellCommand("kill -STOP " & $g_iAndroidCoCPid) ; suspend CoC
+		Local $s = AndroidAdbSendShellCommand("kill -STOP " & $g_iAndroidCoCPid, 0) ; suspend CoC
 		If StringInStr($s, "No such process") > 0 Then
 			$g_iAndroidCoCPid = GetAndroidProcessPID(Default, False)
 			If $g_iAndroidCoCPid = 0 Then
 				SuspendAndroidTime(True) ; reset timer
 				Return False
 			EndIf
-			$s = AndroidAdbSendShellCommand("kill -STOP " & $g_iAndroidCoCPid) ; suspend CoC
+			$s = AndroidAdbSendShellCommand("kill -STOP " & $g_iAndroidCoCPid, 0) ; suspend CoC
 		EndIf
 		$g_bAndroidSuspended = True
 	Else
@@ -3145,6 +3190,7 @@ Func OpenAdbShell($bRunInitScript = True)
 		_WinAPI_SetConsoleIcon($g_sLibIconPath, $eIcnGUI, $hWnd)
 	EndIf
 	If $hWnd <> 0 And $g_iAndroidAdbSuCommand <> "" Then
+		ControlSend($hWnd, "", "", "{ENTER}") ; first send just enter (required for BlueStacks N)
 		SetLog("Send Shell command: " & $g_iAndroidAdbSuCommand)
 		ControlSend($hWnd, "", "", $g_iAndroidAdbSuCommand & "{ENTER}")
 	EndIf
@@ -3281,3 +3327,14 @@ Func UpdateAndroidBackgroundMode()
 	; update background checkbox
 	UpdateChkBackground()
 EndFunc   ;==>UpdateAndroidBackgroundMode
+
+
+Func GetAndroidCodeName($iAPI = $g_iAndroidVersionAPI)
+
+	If $iAPI >= $g_iAndroidNougat Then Return "Nougat"
+	If $iAPI >= $g_iAndroidLollipop Then Return "Lollipop"
+	If $iAPI >= $g_iAndroidJellyBean Then Return "JellyBean"
+
+	SetDebugLog("Unsupport Android API Version: " & $iAPI, $COLOR_ERROR)
+	Return ""
+EndFunc   ;==>GetAndroidCodeName

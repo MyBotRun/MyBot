@@ -4,7 +4,7 @@
 ; Syntax ........: $g_sImgxxx = @ScriptDir & "\imgxml\xxx\"
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,17 +14,15 @@
 Global $g_sImgImgLocButtons = @ScriptDir & "\imgxml\imglocbuttons"
 
 #Region Obstacles
+Global Const $g_sImgAnyoneThere = @ScriptDir & "\imgxml\other\AnyoneThere[[Android]]*"
 Global Const $g_sImgPersonalBreak = @ScriptDir & "\imgxml\other\break*"
-Global Const $g_sImgAnotherDevice = @ScriptDir & "\imgxml\other\device*"
+Global Const $g_sImgAnotherDevice = @ScriptDir & "\imgxml\other\Device[[Android]]*"
 Global Const $g_sImgCocStopped = @ScriptDir & "\imgxml\other\CocStopped*"
 Global Const $g_sImgCocReconnecting = @ScriptDir & "\imgxml\other\CocReconnecting*"
-Global Const $g_sImgAppRateNever = @ScriptDir & "\imgxml\other\RateNever*"
+Global Const $g_sImgAppRateNever = @ScriptDir & "\imgxml\other\RateNever[[Android]]*"
 Global Const $g_sImgGfxError = @ScriptDir & "\imgxml\other\GfxError*"
-; Lollipop images
-Global Const $g_sImgAnotherDeviceLollipop = @ScriptDir & "\imgxml\other\LollipopDevice*"
-Global Const $g_sImgErrorLollipop = @ScriptDir & "\imgxml\other\LollipopError*"
-Global Const $g_sImgOutOfSyncLollipop = @ScriptDir & "\imgxml\other\LollipopOos*"
-Global Const $g_sImgAppRateNeverLollipop = @ScriptDir & "\imgxml\other\LollipopRateNever*"
+Global Const $g_sImgError = @ScriptDir & "\imgxml\other\Error[[Android]]*"
+Global Const $g_sImgOutOfSync = @ScriptDir & "\imgxml\other\Oos[[Android]]*"
 #EndRegion
 
 #Region Main Village
@@ -38,6 +36,7 @@ Global $g_sImgClearTombs = @ScriptDir & "\imgxml\Resources\Tombs"
 Global $g_sImgCleanYard = @ScriptDir & "\imgxml\Resources\Obstacles"
 Global $g_sImgCleanYardSnow = @ScriptDir & "\imgxml\Obstacles_Snow"
 Global $g_sImgGemBox = @ScriptDir & "\imgxml\Resources\GemBox"
+Global $g_sImgCollectReward = @ScriptDir & "\imgxml\Resources\ClaimReward"
 #EndRegion
 
 #Region Builder Base
@@ -102,4 +101,9 @@ Global $g_sImgWeakBaseBuildingsAirDefenseDir = @ScriptDir & "\imgxml\Buildings\A
 Global $g_sImgSearchDrill = @ScriptDir & "\imgxml\Storages\Drills"
 Global $g_sImgSearchDrillLevel = @ScriptDir & "\imgxml\Storages\Drills\Level"
 Global $g_sImgEasyBuildings = @ScriptDir & "\imgxml\easybuildings"
+#EndRegion
+
+#Region SwitchAcc
+Global Const $g_sImgGoogleSelectAccount = @ScriptDir & "\imgxml\other\GoogleSelectAccount*"
+Global Const $g_sImgGoogleSelectEmail = @ScriptDir & "\imgxml\other\GoogleSelectEmail*"
 #EndRegion

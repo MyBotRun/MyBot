@@ -5,7 +5,7 @@
 ; Description ...: Verify if you are in the correct window...
 ; Author ........: Sardo (2015)
 ; Modified ......: ProMac (2015), MonkeyHunter (12-2015)
-; Remarks .......: This file is part of MyBot Copyright 2015-2017
+; Remarks .......: This file is part of MyBot Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -33,7 +33,7 @@ EndFunc   ;==>IsPageLoop
 Func IsTrainPage($bSetLog = True, $iLoop = 30)
 
 	If IsPageLoop($aIsTrainPgChk1, $iLoop) Then
-		If ($g_bDebugSetlog Or $g_bDebugClick) And $bSetLog Then Setlog("**Army Window OK**", $COLOR_ACTION)
+		If ($g_bDebugSetlog Or $g_bDebugClick) And $bSetLog Then SetLog("**Army Window OK**", $COLOR_ACTION)
 		Return True
 	EndIf
 

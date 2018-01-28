@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (12-2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -100,6 +100,14 @@ Func GetMEmuAdbPath()
 EndFunc   ;==>GetMEmuAdbPath
 
 Func GetMEmuBackgroundMode()
+	Local $iDirectX = $g_iAndroidBackgroundModeDirectX
+	Local $iOpenGL = $g_iAndroidBackgroundModeOpenGL
+	; hack for super strange Windows Fall Creator Update with OpenGL and DirectX problems
+	If @OSBuild >= 16299 Then
+		SetDebugLog("DirectX/OpenGL Fix applied for Windows Build 16299")
+		$iDirectX = $g_iAndroidBackgroundModeOpenGL
+		$iOpenGL = $g_iAndroidBackgroundModeDirectX
+	EndIf
 	; Only OpenGL is supported up to version 3.1.2.5
 
 	; get OpenGL/DirectX config
@@ -109,16 +117,16 @@ Func GetMEmuBackgroundMode()
 		SetDebugLog($g_sAndroidEmulator & " instance " & $g_sAndroidInstance & " rendering mode is " & $graphics_render_mode)
 		Switch $graphics_render_mode
 			Case "1" ; DirectX
-				Return $g_iAndroidBackgroundModeDirectX
+				Return $iDirectX
 			Case "2" ; DirectX+ available in version 3.6.7.0
-				Return $g_iAndroidBackgroundModeDirectX
+				Return $iDirectX
 			Case Else ; fallback to OpenGL
-				Return $g_iAndroidBackgroundModeOpenGL
+				Return $iOpenGL
 		EndSwitch
 	EndIf
 
 	; fallback to OpenGL
-	Return $g_iAndroidBackgroundModeOpenGL
+	Return $iOpenGL
 EndFunc   ;==>GetMEmuBackgroundMode
 
 Func InitMEmu($bCheckOnly = False)
@@ -182,7 +190,7 @@ Func InitMEmu($bCheckOnly = False)
 		$aRegExResult = StringRegExp($__VBoxVMinfo, "name = ADB.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)
 		If Not @error Then
 			$g_sAndroidAdbDeviceHost = $aRegExResult[0]
-			If $g_bDebugAndroid Then Setlog("Func LaunchConsole: Read $g_sAndroidAdbDeviceHost = " & $g_sAndroidAdbDeviceHost, $COLOR_DEBUG)
+			If $g_bDebugAndroid Then SetDebugLog("Func LaunchConsole: Read $g_sAndroidAdbDeviceHost = " & $g_sAndroidAdbDeviceHost, $COLOR_DEBUG)
 		Else
 			$oops = 1
 			SetLog("Cannot read " & $g_sAndroidEmulator & "(" & $g_sAndroidInstance & ") ADB Device Host", $COLOR_ERROR)
@@ -191,7 +199,7 @@ Func InitMEmu($bCheckOnly = False)
 		$aRegExResult = StringRegExp($__VBoxVMinfo, "name = ADB.*host port = (\d{3,5}),", $STR_REGEXPARRAYMATCH)
 		If Not @error Then
 			$g_sAndroidAdbDevicePort = $aRegExResult[0]
-			If $g_bDebugAndroid Then Setlog("Func LaunchConsole: Read $g_sAndroidAdbDevicePort = " & $g_sAndroidAdbDevicePort, $COLOR_DEBUG)
+			If $g_bDebugAndroid Then SetDebugLog("Func LaunchConsole: Read $g_sAndroidAdbDevicePort = " & $g_sAndroidAdbDevicePort, $COLOR_DEBUG)
 		Else
 			$oops = 1
 			SetLog("Cannot read " & $g_sAndroidEmulator & "(" & $g_sAndroidInstance & ") ADB Device Port", $COLOR_ERROR)

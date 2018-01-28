@@ -8,7 +8,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -53,7 +53,7 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -66,7 +66,7 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -79,7 +79,7 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -92,7 +92,7 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 					$ResourceToInsertQty += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then Setlog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
+				If $g_bDebugSetlog Then SetDebugLog("MilkingRedAreaPointsNearStructure Discard error #3", $COLOR_ERROR)
 			EndIf
 		Next
 
@@ -100,10 +100,10 @@ Func MilkingRedAreaPointsNearStructure($type, $level, $coordinate)
 ;~ 			If StringLen($g_sMilkFarmObjectivesSTR) > 0 Then $g_sMilkFarmObjectivesSTR &= "|"
 ;~ 			$g_sMilkFarmObjectivesSTR &= $ResourceToInsert
 ;~ 		EndIf
-		If $g_bDebugSetlog Then Setlog("$ResourceToInsertQty = " & $ResourceToInsertQty & " value " & $ResourceToInsert, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("$ResourceToInsertQty = " & $ResourceToInsertQty & " value " & $ResourceToInsert, $COLOR_DEBUG)
 		Return $ResourceToInsert
 	Else
-		If $g_bDebugSetlog Then Setlog("MilkingRedAreaPointsNearStructure Discard error #1 " & $pixelCoord & " " & UBound($pixelCoord), $COLOR_ERROR)
+		If $g_bDebugSetlog Then SetDebugLog("MilkingRedAreaPointsNearStructure Discard error #1 " & $pixelCoord & " " & UBound($pixelCoord), $COLOR_ERROR)
 	EndIf
 
 ;~ 	Return $ResourceToInsertQty

@@ -11,7 +11,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -176,7 +176,7 @@ EndFunc   ;==>MakeDropPoints
 ; 					  : 4 = strange programming error?
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -235,14 +235,14 @@ Func MakeTargetDropPoints($side, $pointsQty, $addtiles, $building)
 			Next
 			If $aLocation = "" Then
 				; error check?
-				Setlog("Building location not found on side, random pick", $COLOR_ERROR)
+				SetLog("Building location not found on side, random pick", $COLOR_ERROR)
 				If IsArray($aBuildingLoc[0]) Then $aLocation = $aBuildingLoc[0]
 			EndIf
 		Else ; use only building found even if not on user chosen side?
 			$aLocation = $aBuildingLoc[0]
 		EndIf
 	Else
-		Setlog($g_sBldgNames[$BuildingEnum] & " _LOCATION not an array", $COLOR_ERROR)
+		SetLog($g_sBldgNames[$BuildingEnum] & " _LOCATION not an array", $COLOR_ERROR)
 		Return SetError(3, 0, "")
 	EndIf
 
@@ -287,7 +287,7 @@ Func MakeTargetDropPoints($side, $pointsQty, $addtiles, $building)
 			Return GetListPixel($Output, ",", "MakeTargetDropPoints NEARPOINTS") ;imgloc DLL calls return comma separated values
 		Case Else
 			; impossible?
-			Setlog("Strange MakeTargetDropPoint Error", $COLOR_ERROR)
+			SetLog("Strange MakeTargetDropPoint Error", $COLOR_ERROR)
 			Return SetError(6, 0, "")
 	EndSwitch
 

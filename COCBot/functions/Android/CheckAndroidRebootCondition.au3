@@ -6,7 +6,7 @@
 ; Return values .: True if Android reboot should be initiated, False otherwise
 ; Author ........: Cosote (10-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2016-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2016-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

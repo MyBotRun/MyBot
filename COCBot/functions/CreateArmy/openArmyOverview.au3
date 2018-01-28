@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (01-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -65,7 +65,7 @@ Func OpenTrainTab($sTab, $aPixelToCheck, $bSetLog = True, $sWhereFrom = "Undefin
 	EndIf
 
 	If Not _CheckPixel($aPixelToCheck, True) Then
-		If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("Open " & $sTab & " (Called from " & $sWhereFrom & ")", $COLOR_INFO)
+		If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("Open " & $sTab & ($g_bDebugSetlogTrain ? " (Called from " & $sWhereFrom & ")" : ""), $COLOR_INFO)
 		ClickP($aPixelToCheck)
 		If Not _WaitForCheckPixel($aPixelToCheck, True) Then
 			SetLog("Error in OpenTrainTab: Cannot open " & $sTab & ". Pixel to check did not appear", $COLOR_ERROR)

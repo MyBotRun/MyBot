@@ -1,3 +1,30 @@
+* **V7.4**
+* Add Switch Accounts feature
+* Add BlueStacks N support, still using Android Emulator Key BlueStacks2 (https://www.bluestacks.com/download-android-n.html)
+* Add apply button for CSV settings parsing. Refer "Barch four fingers.csv" for sample commands
+* Fix Google Account selection at CoC start breaking bot operation by always selecting first account
+* Fix MEmu 2.5/2.6 clicks opening/closing toolbar
+* Fix MEmu & Nox DirectX Background Mode not working on Windows Build 16299 - Fall Creators Update (also OpenGL must be selected in Android to actually use DirectX)
+* Fix BlueStacks DPI 160 when missing in bootparameters
+* Fix BlueStacks 3.50 and newer mouse off when running un-docked
+* Fix Bot crash when army contains a special event troop
+* Fix sometimes ignore donate
+* Fix Building OCR not reading 46 properly
+* Fix Boost Button not found when boosting
+* Fix Error "Selected Upgrade Window Opening Error, try again" by increasing wait time for window
+* Fix Page error count increased and stuck on train tabs when Barracks/Spell Factory are already boosted
+* Fix switching between Mini and Normal GUI showing Copycat warning or corrupting configuration or GUI
+* Fix Add Profile not saving current before swicthing to new (thanks to @mhk2012)
+* Fix double launching CoC on Android system messages
+* Fix Log GUI refresh issues in Debug Messages mode
+* Fix Watchdog re-launching bots that cannot run (profile or Android already in use)
+* Fix Microsoft .Net Framework 4.5 is not installed check
+* Improve reloading instead of restarting CoC to avoid new CoC load wait after Dec. Update
+* Improve Wall Upgrade, upgrade adjacent walls first, continous upgrade and autoswitch to next level
+* Improve SmartZap, reducing idle times
+* Improve Eagle Lvl 2 and Gembox tiles
+* Improve Clear Tombstones
+
 * **V7.3.5**
 * Fix request troop button not found * Dec Update
 * Fix OCR for remaining clancastle request * Dec Update

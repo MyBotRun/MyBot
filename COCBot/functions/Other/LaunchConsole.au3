@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (2015-12)
 ; Modified ......: Cosote (2016-08)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -28,6 +28,8 @@ Global $g_RunPipe_hThread = 0
 
 Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
 
+	Local $bDebug = $g_bDebugSetlog Or $g_bDebugAndroid
+
 	If $bUseSemaphore Then
 		Local $hSemaphore = LockSemaphore(StringReplace($cmd, "\", "/"), "Waiting to launch: " & $cmd)
 	EndIf
@@ -40,9 +42,9 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 	$hTimer = __TimerInit()
 	$process_killed = False
 
-	If $g_bDebugSetlog Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG) ; Debug Run
+	If $bDebug Then SetLog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG) ; Debug Run
 	$pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut, $hProcess, $hThread)
-	If $g_bDebugSetlog Then Setlog("Func LaunchConsole: command launched", $COLOR_DEBUG)
+	If $bDebug Then SetLog("Func LaunchConsole: command launched", $COLOR_DEBUG)
 	If $pid = 0 Then
 		SetLog("Launch faild: " & $cmd, $COLOR_ERROR)
 		If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
@@ -59,7 +61,7 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 
 	If ProcessExists($pid) Then
 		If ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread) = 1 Then
-			If $g_bDebugSetlog Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
+			If $bDebug Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
 			$process_killed = True
 		EndIf
 	Else
@@ -69,7 +71,7 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 	$g_RunPipe_hThread = 0
 	CleanLaunchOutput($data)
 
-	If $g_bDebugSetlog Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG) ; Debug Run Output
+	If $bDebug Then SetLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG) ; Debug Run Output
 	If $bUseSemaphore Then UnlockSemaphore($hSemaphore)
 	Return $data
 EndFunc   ;==>LaunchConsole
@@ -297,6 +299,7 @@ Func RunPipe($program, $workdir, $show_flag, $opt_flag, ByRef $hStdIn, ByRef $hS
 		Return $pid
 	EndIf
 
+	SetDebugLog("RunPipe: Failed creating new process: " & $program)
 	; close handles
 	ClosePipe(0, $hStdIn, $hStdOut, 0, 0)
 

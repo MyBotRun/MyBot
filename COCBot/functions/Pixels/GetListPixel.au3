@@ -3,7 +3,7 @@
 ; Description ...: Pixel and Locate Image functions
 ; Author ........: HungLe (april-2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -69,13 +69,13 @@ EndFunc   ;==>GetPixelListDistance
 Func GetLocationItem($functionName)
 	If $g_bDebugSetlog Or $g_bDebugBuildingPos Then
 		Local $hTimer = __TimerInit()
-		Setlog("GetLocationItem(" & $functionName & ")", $COLOR_DEBUG)
+		SetLog("GetLocationItem(" & $functionName & ")", $COLOR_DEBUG)
 	EndIf
 	Local $resultHere = DllCall($g_hLibMyBot, "str", $functionName, "ptr", $g_hHBitmap2)
 	If UBound($resultHere) > 0 Then
-		If $g_bDebugBuildingPos Then Setlog("#*# " & $functionName & ": " & $resultHere[0] & "calc in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
+		If $g_bDebugBuildingPos Then SetLog("#*# " & $functionName & ": " & $resultHere[0] & "calc in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
 		Return GetListPixel($resultHere[0])
 	Else
-		If $g_bDebugBuildingPos Then Setlog("#*# " & $functionName & ": NONE calc in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
+		If $g_bDebugBuildingPos Then SetLog("#*# " & $functionName & ": NONE calc in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_DEBUG1)
 	EndIf
 EndFunc   ;==>GetLocationItem

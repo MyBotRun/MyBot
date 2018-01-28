@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: LunaEclipse(February, 2016)
 ; Modified ......: TheRevenor (November, 2016), TheRevenor (Desember, 2017), CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

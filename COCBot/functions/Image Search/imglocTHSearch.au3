@@ -6,7 +6,7 @@
 ; Return values .: None , sets several global variables
 ; Author ........: Trlopes (10-2016)
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -39,7 +39,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 	;aux data
 	Local $propsNames = StringSplit($returnProps, ",", $STR_NOCOUNT)
-	If $g_bDebugSetlog Then SetLog("imgloc TH search Start", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("imgloc TH search Start", $COLOR_DEBUG)
 	Local $numRetry = 1 ; try to find TH twice (one retry)
 
 	For $retry = 0 To $numRetry
@@ -73,7 +73,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 			Local $iBestResult = 0
 			If UBound($result) > 1 Then
-				If $g_bDebugSetlog Then SetLog("imgloc Found Multiple TH : " & UBound($result), $COLOR_INFO)
+				If $g_bDebugSetlog Then SetDebugLog("imgloc Found Multiple TH : " & UBound($result), $COLOR_INFO)
 				; search for highest level
 				Local $iHighestLvl = 0
 				For $iResult = 0 To UBound($result) - 1
@@ -89,13 +89,13 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 						EndSwitch
 					Next
 				Next
-				If $g_bDebugSetlog Then SetLog("imgloc Found Multiple TH : Using index " & $iBestResult, $COLOR_INFO)
+				If $g_bDebugSetlog Then SetDebugLog("imgloc Found Multiple TH : Using index " & $iBestResult, $COLOR_INFO)
 			EndIf
 			If UBound($result) > 0 Then
-				If $g_bDebugSetlog Then SetLog("imgloc Found TH : ", $COLOR_INFO)
+				If $g_bDebugSetlog Then SetDebugLog("imgloc Found TH : ", $COLOR_INFO)
 				Local $propsValues = $result[$iBestResult]
 				For $pv = 0 To UBound($propsValues) - 1
-					If $g_bDebugSetlog Then SetLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
+					If $g_bDebugSetlog Then SetDebugLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
 					Switch $propsNames[$pv]
 						Case "objectname"
 							;nothing to do
@@ -196,11 +196,11 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 		If $iLvlFound > 0 Then
 			$iFindTime += __TimerDiff($hTimer) ; add total TH search time in milliseconds
-			If $g_bDebugSetlog Then SetLog("imgloc THSearch Calculated  (in " & Round($iFindTime / 1000, 2) & " seconds) :")
+			If $g_bDebugSetlog Then SetDebugLog("imgloc THSearch Calculated  (in " & Round($iFindTime / 1000, 2) & " seconds) :")
 			ExitLoop ; TH was found
 		Else
 			If $g_bDebugImageSave And $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
-			If $g_bDebugSetlog Then SetLog("imgloc THSearch Notfound, Retry:  " & $retry)
+			If $g_bDebugSetlog Then SetDebugLog("imgloc THSearch Notfound, Retry:  " & $retry)
 		EndIf
 
 	Next ; retry

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2015-11), Hervidero (2015-11), Boju (2017-04)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot Copyright 2015-2017
+; Remarks .......: This file is part of MyBot Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -98,7 +98,7 @@ Func DetectLanguage()
 	If Not FileExists(@ScriptDir & "\Languages\" & $g_sLanguage & ".ini") Then $g_sLanguage = ""
 	If $g_sLanguage = "" Then
 		Local $OSLang = @OSLang
-		If $g_bDebugSetlog Then SetLog("Detected language code: " & $OSLang)
+		If $g_bDebugSetlog Then SetDebugLog("Detected language code: " & $OSLang)
 		Switch $OSLang;get language
 
 			Case Hex(0x0004, 4)

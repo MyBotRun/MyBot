@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (08-2015), TheMaster1st (09-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -21,7 +21,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 	$iCount = 0
 	For $i = 0 To 105 ;105*2000 = 3.5 Minutes
 		If Not $g_bRunState Then Return
-		If $g_bDebugSetlog Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
+		If $g_bDebugSetlog Then SetDebugLog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		$iCount += 1
 		Local $hWin = $g_hAndroidWindow
 		If TestCapture() = False Then
@@ -37,7 +37,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 		EndIf
 		_CaptureRegion()
 		If _CheckPixel($aIsMain, $g_bNoCapturePixel) Then ;Checks for Main Screen
-			If $g_bDebugSetlog Then Setlog("Screen cleared, WaitMainScreen exit", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("Screen cleared, WaitMainScreen exit", $COLOR_DEBUG)
 			Return
 		Else
 			If Not TestCapture() And _Sleep($DELAYWAITMAINSCREEN1) Then Return
@@ -64,7 +64,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 	While 1
 		If Not $g_bRunState Then Return
 		SetLog("Unable to load CoC, attempt to fix it...", $COLOR_ERROR)
-		If $g_bDebugSetlog Then Setlog("Restart Loop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop data
+		If $g_bDebugSetlog Then SetDebugLog("Restart Loop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop data
 		CloseAndroid("waitMainScreen") ; Android must die!
 		If _Sleep(1000) Then Return
 		OpenAndroid(True) ; Open BS and restart CoC
@@ -95,7 +95,7 @@ Func waitMainScreenMini()
 	For $i = 0 To 60 ;30*2000 = 1 Minutes
 		If Not $g_bRunState Then Return
 		If Not TestCapture() And WinGetAndroidHandle() = 0 Then ExitLoop ; sets @error to 1
-		If $g_bDebugSetlog Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
+		If $g_bDebugSetlog Then SetDebugLog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		$iCount += 1
 		_CaptureRegion()
 		If Not _CheckPixel($aIsMain, $g_bNoCapturePixel) Then ;Checks for Main Screen

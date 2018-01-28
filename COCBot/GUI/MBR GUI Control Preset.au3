@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MyBot.run team
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -62,7 +62,7 @@ Func PresetLoadConf()
 	applyConfig(False) ; bot window redraw stays disabled!
 	_GUICtrlTab_ClickTab($g_hTabMain, 0)
 	SetRedrawBotWindow(True, Default, Default, Default, "PresetLoadConf") ; enable redraw again, applyConfig(False) keeps it disabled
-	Setlog("Config " & $filename & " LOADED!", $COLOR_SUCCESS)
+	SetLog("Config " & $filename & " LOADED!", $COLOR_SUCCESS)
 	$g_sProfileSecondaryInputFileName = ""
 EndFunc   ;==>PresetLoadConf
 
@@ -103,7 +103,7 @@ Func PresetSaveConf()
 	readconfig()
 	applyConfig()
 	_GUICtrlTab_ClickTab($g_hTabMain, 0)
-	Setlog("Config " & $filename & " SAVED!", $COLOR_SUCCESS)
+	SetLog("Config " & $filename & " SAVED!", $COLOR_SUCCESS)
 	$g_sProfileSecondaryOutputFileName = ""
 
 EndFunc   ;==>PresetSaveConf

@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2015-06)
 ; Modified ......: Hervidero, ProMac (2015-10), MonkeyHunter (2016-2)
-; Remarks .......: This file is part of MyBot Copyright 2015-2017
+; Remarks .......: This file is part of MyBot Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -29,7 +29,7 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 
 	    If $g_bScreenshotHideName Then
 			If $g_aiClanCastlePos[0] = -1 Or $g_aiClanCastlePos[1] = -1 Then
-				Setlog("Screenshot warning: Locate the Clan Castle to hide the clanname!", $COLOR_ERROR)
+				SetLog("Screenshot warning: Locate the Clan Castle to hide the clanname!", $COLOR_ERROR)
 			EndIf
 			_GDIPlus_GraphicsFillRect($hGraphic, 0, 0, 250, 63, $hBrush) ;draw filled rectangle on the image to hide the user IGN
 			If $g_aiClanCastlePos[0] <> -1 Then

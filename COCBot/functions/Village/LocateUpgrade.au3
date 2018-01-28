@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: KnowJack (April-2015)
 ; Modified ......: KnowJack (Jun/Aug-2015),Sardo 2015-08,Monkeyhunter(2106-2)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -25,12 +25,12 @@ Func LocateUpgrades()
 	WinGetAndroidHandle()
 
 	If $g_hAndroidWindow <> 0 And $g_bAndroidBackgroundLaunched = True Then ; Android is running in background mode, so restart Android
-		Setlog("Reboot " & $g_sAndroidEmulator & " for Window access", $COLOR_ERROR)
+		SetLog("Reboot " & $g_sAndroidEmulator & " for Window access", $COLOR_ERROR)
 		RebootAndroid(True)
 	EndIf
 
 	If $g_hAndroidWindow = 0 Then ; If not found, Android is not open so exit politely
-		Setlog($g_sAndroidEmulator & " is not open", $COLOR_ERROR)
+		SetLog($g_sAndroidEmulator & " is not open", $COLOR_ERROR)
 		SetError(1)
 		Return
 	EndIf
@@ -40,7 +40,7 @@ Func LocateUpgrades()
 	Local $wasDown = AndroidShieldForcedDown()
 	AndroidShield("LocateUpgrades") ; Update shield status due to manual $g_bRunState
 
-	;	Setlog("Upgrade Buildings and Auto Wall Upgrade Can Not Use same Loot Type!", $COLOR_SUCCESS)  = disabled due v7.0 skipwallupgrade code
+	;	SetLog("Upgrade Buildings and Auto Wall Upgrade Can Not Use same Loot Type!", $COLOR_SUCCESS)  = disabled due v7.0 skipwallupgrade code
 	Local $MsgBox, $stext
 	Local $icount = 0
 	Local $hGraphic = 0
@@ -106,14 +106,14 @@ Func LocateUpgrades()
 						$g_aiPicUpgradeStatus[$icount] = $eIcnYellowLight
 						_Sleep(750)
 					Else
-						Setlog("Bad location recorded, location skipped?", $COLOR_ERROR)
+						SetLog("Bad location recorded, location skipped?", $COLOR_ERROR)
 						$g_avBuildingUpgrades[$icount][0] = -1
 						$g_avBuildingUpgrades[$icount][1] = -1
 						ContinueLoop ; Whoops, here we go again...
 					EndIf
 				Case 2 ; No! we are done!
 					If $icount = 0 Then ; if no upgrades located, reset all values and return
-						Setlog("Locate Upgrade Cancelled", $COLOR_WARNING)
+						SetLog("Locate Upgrade Cancelled", $COLOR_WARNING)
 						btnResetUpgrade()
 						AndroidGraphicsGdiEnd()
 						AndroidShieldForceDown($wasDown)
@@ -121,13 +121,13 @@ Func LocateUpgrades()
 					EndIf
 					ExitLoop
 				Case 3 ; cancel all upgrades
-					Setlog("Locate Upgrade Cancelled", $COLOR_WARNING)
+					SetLog("Locate Upgrade Cancelled", $COLOR_WARNING)
 					btnResetUpgrade()
 					AndroidGraphicsGdiEnd()
 					AndroidShieldForceDown($wasDown)
 					Return False
 				Case Else
-					Setlog("Impossible value (" & $MsgBox & ") from Msgbox, you have been a bad programmer!", $COLOR_DEBUG)
+					SetLog("Impossible value (" & $MsgBox & ") from Msgbox, you have been a bad programmer!", $COLOR_DEBUG)
 			EndSwitch
 
 			ClickP($aAway, 1, 0, "#0210") ;Click Away to close windows
@@ -150,7 +150,7 @@ Func CheckUpgrades() ; Valdiate and determine the cost and type of the upgrade a
 		Local $MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), GetTranslatedFileIni("MBR Popups", "Notice", "Notice"), $stext, 15, $g_hFrmBot)
 		If _Sleep($DELAYCHECKUPGRADES) Then Return
 		If $MsgBox <> 1 Then
-			Setlog("Something weird happened in getting upgrade values, try again", $COLOR_ERROR)
+			SetLog("Something weird happened in getting upgrade values, try again", $COLOR_ERROR)
 			Return False
 		EndIf
 	EndIf
@@ -164,7 +164,7 @@ Func CheckUpgrades() ; Valdiate and determine the cost and type of the upgrade a
 
 		If UpgradeValue($iz) = False Then ; Get the upgrade cost, name, level, and time
 			If $g_abUpgradeRepeatEnable[$iz] = True And $g_avBuildingUpgrades[$iz][4] <> "" Then ContinueLoop ; If repeat is checked and bldg has name, then get value later.
-			Setlog("Locate Upgrade #" & $iz + 1 & " Value Error, try again", $COLOR_ERROR)
+			SetLog("Locate Upgrade #" & $iz + 1 & " Value Error, try again", $COLOR_ERROR)
 			_GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $eIcnRedLight) ; change indicator back to red showing location invalid
 			GUICtrlSetData($g_hTxtUpgradeName[$iz], "") ; Clear GUI Name
 			GUICtrlSetData($g_hTxtUpgradeLevel[$iz], "") ; Clear GUI Level
@@ -203,13 +203,13 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		; check for upgrade in process
 		Local $offColors[3][3] = [[0x000000, 44, 17], [0xE07740, 69, 31], [0xF2F7F1, 81, 0]] ; 2nd pixel black broken hammer, 3rd pixel lt brown handle, 4th pixel white edge of button
 		Local $ButtonPixel = _MultiPixelSearch(284, 572, 570, 615, 1, 1, Hex(0x000000, 6), $offColors, 25) ; first pixel blackon side of button
-		If $g_bDebugSetlog Then Setlog("Pixel Color #1: " & _GetPixelColor(389, 572, True) & ", #2: " & _GetPixelColor(433, 589, True) & ", #3: " & _GetPixelColor(458, 603, True) & ", #4: " & _GetPixelColor(470, 572, True), $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("Pixel Color #1: " & _GetPixelColor(389, 572, True) & ", #2: " & _GetPixelColor(433, 589, True) & ", #3: " & _GetPixelColor(458, 603, True) & ", #4: " & _GetPixelColor(470, 572, True), $COLOR_DEBUG)
 		If IsArray($ButtonPixel) Then
 			If $g_bDebugSetlog Or $bOopsFlag Then
-				Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-				Setlog("Pixel Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 44, $ButtonPixel[1] + 17, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 69, $ButtonPixel[1] + 31, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 81, $ButtonPixel[1], True), $COLOR_DEBUG)
+				SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+				SetLog("Pixel Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 44, $ButtonPixel[1] + 17, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 69, $ButtonPixel[1] + 31, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 81, $ButtonPixel[1], True), $COLOR_DEBUG)
 			EndIf
-			Setlog("Selection #" & $inum + 1 & " Upgrade in process - Skipped!", $COLOR_WARNING)
+			SetLog("Selection #" & $inum + 1 & " Upgrade in process - Skipped!", $COLOR_WARNING)
 			ClickP($aAway, 1, 0, "#0999") ;Click Away to close windows
 			Return False
 		EndIf
@@ -245,27 +245,27 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			$g_avBuildingUpgrades[$inum][5] = $aResult[2] ; Sotre bdlg level
 			GUICtrlSetData($g_hTxtUpgradeLevel[$inum], $g_avBuildingUpgrades[$inum][5]) ; Set GUI level to match $g_avBuildingUpgrades variable
 		Else
-			Setlog("Error: Level for Upgrade not found?", $COLOR_ERROR)
+			SetLog("Error: Level for Upgrade not found?", $COLOR_ERROR)
 		EndIf
 	Else
-		Setlog("Error: Name & Level for Upgrade not found?", $COLOR_ERROR)
+		SetLog("Error: Name & Level for Upgrade not found?", $COLOR_ERROR)
 	EndIf
-	Setlog("Upgrade Name = " & $g_avBuildingUpgrades[$inum][4] & ", Level = " & $g_avBuildingUpgrades[$inum][5], $COLOR_INFO) ;Debug
+	SetLog("Upgrade Name = " & $g_avBuildingUpgrades[$inum][4] & ", Level = " & $g_avBuildingUpgrades[$inum][5], $COLOR_INFO) ;Debug
 
 	; check for normal gold upgrade
 	Local $offColors[3][3] = [[0xD6714B, 47, 37], [0xF0E850, 70, 0], [0xF4F8F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel gold, 4th pixel edge of button
 	$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 620 + $g_iBottomOffsetY, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
 	If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-		Setlog("GoldButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-		Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+		SetLog("GoldButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+		SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 	EndIf
 
 	If IsArray($ButtonPixel) = 0 Then ; If its not normal gold upgrade, then try to find elixir upgrade button
 		Local $offColors[3][3] = [[0xBC5B31, 38, 32], [0xF84CF9, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel pink, 4th pixel edge of button
 		$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 620 + $g_iBottomOffsetY, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
 		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			Setlog("ElixirButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 38, $ButtonPixel[1] + 32, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("ElixirButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 38, $ButtonPixel[1] + 32, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 	EndIf
 
@@ -273,19 +273,19 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		Local $offColors[3][3] = [[0xE07B50, 41, 23], [0x282020, 72, 0], [0xF4F5F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
 		$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 620 + $g_iBottomOffsetY, 1, 1, Hex(0xF5F6F2, 6), $offColors, 25) ; first gray/white pixel of button4
 		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			Setlog("HeroButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("HeroButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 	EndIf
 
 	If IsArray($ButtonPixel) Then
 		If $g_bDebugSetlog Or $bOopsFlag Then
-			Setlog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			Setlog("#1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
+			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
+			SetLog("#1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
 		EndIf
 
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0213") ; Click Upgrade Button
-		If _Sleep($DELAYUPGRADEVALUE3) Then Return
+		If _Sleep($DELAYUPGRADEVALUE5) Then Return
 
 		If $bOopsFlag = True And $g_bDebugImageSave Then DebugImageSave("UpgradeView")
 
@@ -294,11 +294,11 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			Case _ColorCheck(_GetPixelColor(687, 161 + $g_iMidOffsetY), Hex(0xCD1419, 6), 20) ; Check if the building Upgrade window is open red bottom of white X to close
 				If _ColorCheck(_GetPixelColor(351, 485 + $g_iMidOffsetY), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
 					If $g_abUpgradeRepeatEnable[$inum] = True Then
-						Setlog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_ERROR)
+						SetLog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_ERROR)
 						$g_abUpgradeRepeatEnable[$inum] = False
 						GUICtrlSetState($g_hChkUpgradeRepeat[$inum], $GUI_UNCHECKED) ; Change repeat selection box to unchecked
 					Else
-						Setlog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_ERROR)
+						SetLog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_ERROR)
 					EndIf
 					ClearUpgradeInfo($inum) ; clear upgrade information
 					_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnRedLight)
@@ -319,17 +319,17 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 				If $g_avBuildingUpgrades[$inum][2] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then $bOopsFlag = True ; set error flag for user to set value if not repeat upgrade
 
 				$g_avBuildingUpgrades[$inum][6] = getBldgUpgradeTime(195, 307 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
-				Setlog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)
+				SetLog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)
 				If $g_avBuildingUpgrades[$inum][6] <> "" Then $g_avBuildingUpgrades[$inum][7] = "" ; Clear old upgrade end time
 
 			Case _ColorCheck(_GetPixelColor(719, 118 + $g_iMidOffsetY), Hex(0xDF0408, 6), 20) ; Check if the Hero Upgrade window is open
 				If _ColorCheck(_GetPixelColor(400, 485 + $g_iMidOffsetY), Hex(0xE0403D, 6), 20) Then ; Check if upgrade requires upgrade to TH and can not be completed
 					If $g_abUpgradeRepeatEnable[$inum] = True Then
-						Setlog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_ERROR)
+						SetLog("Selection #" & $inum + 1 & " can not repeat upgrade, need TH upgrade - Skipped!", $COLOR_ERROR)
 						$g_abUpgradeRepeatEnable[$inum] = False
 						GUICtrlSetState($g_hChkUpgradeRepeat[$inum], $GUI_UNCHECKED) ; Change repeat selection box to unchecked
 					Else
-						Setlog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_ERROR)
+						SetLog("Selection #" & $inum + 1 & " upgrade not available, need TH upgrade - Skipped!", $COLOR_ERROR)
 					EndIf
 					ClearUpgradeInfo($inum) ; clear upgrade information
 					_GUICtrlSetImage($g_hPicUpgradeType[$inum], $g_sLibIconPath, $eIcnRedLight)
@@ -346,12 +346,12 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 				If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getUpgradeResource(598, 519 + $g_iMidOffsetY)) ;read RED upgrade text
 				If $g_avBuildingUpgrades[$inum][2] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then $bOopsFlag = True ; set error flag for user to set value
 				$g_avBuildingUpgrades[$inum][6] = getHeroUpgradeTime(464, 527 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
-				Setlog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)
+				SetLog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)
 				If $g_avBuildingUpgrades[$inum][6] <> "" Then $g_avBuildingUpgrades[$inum][7] = "" ; Clear old upgrade end time
 
 			Case Else
 				If isGemOpen(True) Then ClickP($aAway, 1, 0, "#0216")
-				Setlog("Selected Upgrade Window Opening Error, try again", $COLOR_ERROR)
+				SetLog("Selected Upgrade Window Opening Error, try again", $COLOR_ERROR)
 				ClearUpgradeInfo($inum) ; clear upgrade information
 				ClickP($aAway, 1, 0, "#0217") ;Click Away
 				Return False
@@ -368,12 +368,12 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 
 			$inputbox = InputBox(GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_07", "Text Read Error"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_08", "Enter the cost of the upgrade"), $iLoot, "", -1, -1, $aBotLoc[0] + 125, $aBotLoc[1] + 225, -1, $g_hFrmBot)
 			If @error Then
-				Setlog("InputBox error, data reset. Try again", $COLOR_ERROR)
+				SetLog("InputBox error, data reset. Try again", $COLOR_ERROR)
 				ClearUpgradeInfo($inum) ; clear upgrade information
 				Return False
 			EndIf
 			$g_avBuildingUpgrades[$inum][2] = Int($inputbox)
-			Setlog("User input value = " & $g_avBuildingUpgrades[$inum][2], $COLOR_DEBUG)
+			SetLog("User input value = " & $g_avBuildingUpgrades[$inum][2], $COLOR_DEBUG)
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 			Local $stext = GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_09", "Save copy of upgrade image for developer analysis ?")
 			Local $MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "YES_NO", "YES|NO"), GetTranslatedFileIni("MBR Popups", "Notice", "Notice"), $stext, 60, $g_hFrmBot)
@@ -382,7 +382,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		If $g_avBuildingUpgrades[$inum][3] = "" And $bOopsFlag = True And $bRepeat = False Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
 			$inputbox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_10", "   GOLD   |  ELIXIR  |DARK ELIXIR"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_11",  "Need User Help"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_12", "Select Upgrade Type:"), 0, $g_hFrmBot)
-			If $g_bDebugSetlog Then Setlog(" _MsgBox returned = " & $inputbox, $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog(" _MsgBox returned = " & $inputbox, $COLOR_DEBUG)
 			Switch $inputbox
 				Case 1
 					$g_avBuildingUpgrades[$inum][3] = "Gold"
@@ -394,22 +394,22 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					SetLog("Silly programmer made an error!", $COLOR_WARNING)
 					$g_avBuildingUpgrades[$inum][3] = "HaHa"
 			EndSwitch
-			Setlog("User selected type = " & $g_avBuildingUpgrades[$inum][3], $COLOR_DEBUG)
+			SetLog("User selected type = " & $g_avBuildingUpgrades[$inum][3], $COLOR_DEBUG)
 		EndIf
 		If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][3] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then ;report loot error if exists
-			Setlog("Error finding loot info " & $inum & ", Loot = " & $g_avBuildingUpgrades[$inum][2] & ", Type= " & $g_avBuildingUpgrades[$inum][3], $COLOR_ERROR)
+			SetLog("Error finding loot info " & $inum & ", Loot = " & $g_avBuildingUpgrades[$inum][2] & ", Type= " & $g_avBuildingUpgrades[$inum][3], $COLOR_ERROR)
 			$g_avBuildingUpgrades[$inum][0] = -1 ; Clear upgrade location value as it is invalid
 			$g_avBuildingUpgrades[$inum][1] = -1 ; Clear upgrade location value as it  is invalid
 			ClickP($aAway, 2, 0, "#0218") ;Click Away
 			Return False
 		EndIf
-		Setlog("Upgrade #" & $inum + 1 & " Value = " & _NumberFormat($g_avBuildingUpgrades[$inum][2]) & " " & $g_avBuildingUpgrades[$inum][3], $COLOR_INFO) ; debug & document cost of upgrade
+		SetLog("Upgrade #" & $inum + 1 & " Value = " & _NumberFormat($g_avBuildingUpgrades[$inum][2]) & " " & $g_avBuildingUpgrades[$inum][3], $COLOR_INFO) ; debug & document cost of upgrade
 	Else
 		If $g_abUpgradeRepeatEnable[$inum] = False Then
-			Setlog("Upgrade selection problem - data cleared, please try again", $COLOR_ERROR)
+			SetLog("Upgrade selection problem - data cleared, please try again", $COLOR_ERROR)
 			ClearUpgradeInfo($inum)
 		ElseIf $g_abUpgradeRepeatEnable[$inum] = True Then
-			Setlog("Repeat upgrade problem - will retry value update later", $COLOR_ERROR)
+			SetLog("Repeat upgrade problem - will retry value update later", $COLOR_ERROR)
 		EndIf
 		ClickP($aAway, 2, 0, "#0219") ;Click Away
 		Return False

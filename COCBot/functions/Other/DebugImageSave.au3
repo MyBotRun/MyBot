@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: KnowJack (Aug 2015)
 ; Modified ......: Sardo (2016-01)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -64,7 +64,7 @@ Func DebugImageSave($TxtName = "Unknown", $capturenew = Default, $extensionpng =
 	_GDIPlus_ImageSaveToFile($EditedImage, $filename)
 	_GDIPlus_BitmapDispose($EditedImage)
 
-	If $g_bDebugSetlog Then Setlog($filename, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog($filename, $COLOR_DEBUG)
 
 	If _Sleep($DELAYDEBUGIMAGESAVE1) Then Return
 

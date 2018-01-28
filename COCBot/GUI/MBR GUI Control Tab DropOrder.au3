@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Kychera (5-2017)
 ; Modified ......: NguyenAnhHD [12-2017]
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -158,26 +158,26 @@ Func BtnDropOrderSet()
 		If @error Then
 			Switch @error
 				Case 1
-					Setlog("Code problem, can not continue till fixed!", $COLOR_ERROR)
+					SetLog("Code problem, can not continue till fixed!", $COLOR_ERROR)
 				Case 2
-					Setlog("Bad Combobox selections, please fix!", $COLOR_ERROR)
+					SetLog("Bad Combobox selections, please fix!", $COLOR_ERROR)
 				Case 3
-					Setlog("Unable to Change Troop Drop Order due bad change count!", $COLOR_ERROR)
+					SetLog("Unable to Change Troop Drop Order due bad change count!", $COLOR_ERROR)
 				Case Else
-					Setlog("Monkey ate bad banana, something wrong with ChangeTroopDropOrder() code!", $COLOR_ERROR)
+					SetLog("Monkey ate bad banana, something wrong with ChangeTroopDropOrder() code!", $COLOR_ERROR)
 			EndSwitch
 			_GUICtrlSetImage($g_ahImgDropOrderSet, $g_sLibIconPath, $eIcnRedLight)
 		Else
-			Setlog("Troop droping order changed successfully!", $COLOR_SUCCESS)
+			SetLog("Troop droping order changed successfully!", $COLOR_SUCCESS)
 			For $i = 0 To $eDropOrderCount - 1
 				$sNewDropList &= $g_asDropOrderNames[$g_aiCmbCustomDropOrder[$i]] & ", "
 			Next
 			$sNewDropList = StringTrimRight($sNewDropList, 2)
-			Setlog("Troops Dropping Order= " & $sNewDropList, $COLOR_INFO)
+			SetLog("Troops Dropping Order= " & $sNewDropList, $COLOR_INFO)
 
 		EndIf
 	Else
-		Setlog("Must use all troops and No duplicate troop names!", $COLOR_ERROR)
+		SetLog("Must use all troops and No duplicate troop names!", $COLOR_ERROR)
 		_GUICtrlSetImage($g_ahImgDropOrderSet, $g_sLibIconPath, $eIcnRedLight)
 	EndIf
 	SetRedrawBotWindow($bWasRedraw, Default, Default, Default, "BtnDropOrderSet")
@@ -193,7 +193,7 @@ Func IsUseCustomDropOrder()
 EndFunc   ;==>IsUseCustomDropOrder
 
 Func ChangeDropOrder()
-	If $g_bDebugSetlog Then Setlog("Begin Func ChangeDropOrder()", $COLOR_DEBUG) ;Debug
+	If $g_bDebugSetlog Then SetDebugLog("Begin Func ChangeDropOrder()", $COLOR_DEBUG) ;Debug
 
 	Local $NewDropOrder[$eDropOrderCount]
 	Local $iUpdateCount = 0
@@ -221,7 +221,7 @@ Func ChangeDropOrder()
 		Next
 		_GUICtrlSetImage($g_ahImgDropOrderSet, $g_sLibIconPath, $eIcnGreenLight)
 	Else
-		Setlog($iUpdateCount & "|" & $eDropOrderCount & " - Error - Bad troop assignment in ChangeTroopDropOrder()", $COLOR_ERROR)
+		SetLog($iUpdateCount & "|" & $eDropOrderCount & " - Error - Bad troop assignment in ChangeTroopDropOrder()", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -232,5 +232,5 @@ Func SetDefaultDropOrderGroup($bSetLog = True)
 	For $i = 0 To $eDropOrderCount - 1
 		$g_aiDropOrder[$i] = $i
 	Next
-	If $bSetLog And $g_bCustomDropOrderEnable Then Setlog("Default drop order set", $COLOR_SUCCESS)
+	If $bSetLog And $g_bCustomDropOrderEnable Then SetLog("Default drop order set", $COLOR_SUCCESS)
 EndFunc   ;==>SetDefaultDropOrderGroup

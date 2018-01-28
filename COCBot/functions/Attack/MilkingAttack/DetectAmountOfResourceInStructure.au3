@@ -9,7 +9,7 @@
 ; Return values .:$capacityanalized-how many resources were detected in the building
 ; Author ........: Sardo (2016)
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -43,13 +43,13 @@ Func DetectAmountOfResourceInStructure($type, $coordinate, $level, $mincapacity)
 			EndIf
 			If $capacityanalized < $mincapacity And Not $g_bDebugContinueSearchElixir Then
 				;stop search... do not search below minimum capacity
-				If $g_bDebugSetlog Then Setlog("IMAGECKECK STOP, capacity < mincapacity " & $filename, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog("IMAGECKECK STOP, capacity < mincapacity " & $filename, $COLOR_DEBUG)
 				Return -1
 				ExitLoop
 			Else
 				$found = _ImageSearch(@ScriptDir & "\images\CapacityStructure\" & $a[$t], 1, $posx, $posy, $tolerance)
 				If $found = 1 Then
-					If $g_bDebugSetlog Then Setlog("IMAGECKECK OK (" & $tolerance & ") " & $filename, $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog("IMAGECKECK OK (" & $tolerance & ") " & $filename, $COLOR_DEBUG)
 					If $g_bDebugImageSave Then DebugImageSave("IMAGECKECK OK (" & $tolerance & ") " & $filename, False)
 					Return $capacityanalized
 					ExitLoop
@@ -59,7 +59,7 @@ Func DetectAmountOfResourceInStructure($type, $coordinate, $level, $mincapacity)
 		If $found = 0 Then
 			;DebugImageSave("elixir_" & $level & "_X_70_A_(" & $coordinate[0] & "," & $coordinate[1] & ")_", False)
 			If $g_bDebugImageSave Then DebugImageSave("elixir_" & $level & "_", False)
-			If $g_bDebugSetlog Then SetLog("FAIL STRUCTURE POSITION (" & $coordinate[0] & "," & $coordinate[1] & ") level " & $level & " (" & $level + 4 & ")", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("FAIL STRUCTURE POSITION (" & $coordinate[0] & "," & $coordinate[1] & ") level " & $level & " (" & $level + 4 & ")", $COLOR_DEBUG)
 		EndIf
 		Return -1
 	Else

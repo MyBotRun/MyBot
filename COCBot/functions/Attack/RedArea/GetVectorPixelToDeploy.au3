@@ -7,7 +7,7 @@
 ;                  $sizeVector          - Number of pixel for the vector
 ; Return values .: vector of pixel
 ; Author ........: didipe
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

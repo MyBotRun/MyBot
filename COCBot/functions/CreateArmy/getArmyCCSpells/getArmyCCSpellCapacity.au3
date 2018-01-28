@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017), Fliegerfaust (03-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -47,7 +47,7 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 			If _Sleep($DELAYCHECKARMYCAMP5) Then Return ; Wait 250ms
 		WEnd
 
-		If $g_bDebugSetlogTrain Then Setlog("$sCCSpellsInfo = " & $sCCSpellsInfo, $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Then SetLog("$sCCSpellsInfo = " & $sCCSpellsInfo, $COLOR_DEBUG)
 		$aGetCCSpellsSize = StringSplit($sCCSpellsInfo, "#") ; split the existen Spells from the total Spell factory capacity
 
 		If IsArray($aGetCCSpellsSize) Then
@@ -55,12 +55,12 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 				$g_iTotalCCSpells = Number($aGetCCSpellsSize[2])
 				$g_iCurrentCCSpells = Number($aGetCCSpellsSize[1])
 			Else
-				Setlog("CC Spells size read error.", $COLOR_ERROR) ; log if there is read error
+				SetLog("CC Spells size read error.", $COLOR_ERROR) ; log if there is read error
 				$g_iTotalCCSpells = 0
 				$g_iCurrentCCSpells = 0
 			EndIf
 		Else
-			Setlog("CC Spells size read error.", $COLOR_ERROR) ; log if there is read error
+			SetLog("CC Spells size read error.", $COLOR_ERROR) ; log if there is read error
 			$g_iTotalCCSpells = 0
 			$g_iCurrentCCSpells = 0
 		EndIf

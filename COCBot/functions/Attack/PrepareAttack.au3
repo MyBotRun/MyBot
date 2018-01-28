@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -35,7 +35,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 	EndIf
 
 	Local $troopsnumber = 0
-	If $g_bDebugSetlog Then SetLog("PrepareAttack for " & $pMatchMode & " " & $g_asModeText[$pMatchMode], $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("PrepareAttack for " & $pMatchMode & " " & $g_asModeText[$pMatchMode], $COLOR_DEBUG)
 	If $Remaining Then
 		SetLog("Checking remaining unused troops for: " & $g_asModeText[$pMatchMode], $COLOR_INFO)
 	Else
@@ -52,7 +52,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 
 	Local $Plural = 0
 	Local $result = AttackBarCheck($Remaining)
-	If $g_bDebugSetlog Then SetLog("DLL Troopsbar list: " & $result, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("DLL Troopsbar list: " & $result, $COLOR_DEBUG)
 	Local $aTroopDataList = StringSplit($result, "|")
 	Local $aTemp[12][3]
 	If $result <> "" Then
@@ -74,7 +74,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 			If $troopKind < $eKing Then
 				;normal troop
 				If Not IsTroopToBeUsed($pMatchMode, $troopKind) Then
-					If $g_bDebugSetlog Then Setlog("Discard use of troop " & $troopKind & " " & NameOfTroop($troopKind), $COLOR_ERROR)
+					If $g_bDebugSetlog Then SetDebugLog("Discard use of troop " & $troopKind & " " & NameOfTroop($troopKind), $COLOR_ERROR)
 					$g_avAttackTroops[$i][0] = -1
 					$g_avAttackTroops[$i][1] = 0
 					$troopKind = -1
@@ -97,7 +97,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 					$troopKind = $g_avAttackTroops[$i][1]
 					$troopsnumber += 1
 				Else
-					If $g_bDebugSetlog Then Setlog($aTemp[$i][2] & " » Discard use hero/poison " & $troopKind & " " & NameOfTroop($troopKind), $COLOR_ERROR)
+					If $g_bDebugSetlog Then SetDebugLog($aTemp[$i][2] & " » Discard use hero/poison " & $troopKind & " " & NameOfTroop($troopKind), $COLOR_ERROR)
 					$troopKind = -1
 				EndIf
 			EndIf
@@ -111,7 +111,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 
 	;ResumeAndroid()
 
-	If $g_bDebugSetlog Then Setlog("troopsnumber  = " & $troopsnumber)
+	If $g_bDebugSetlog Then SetDebugLog("troopsnumber  = " & $troopsnumber)
 	Return $troopsnumber
 EndFunc   ;==>PrepareAttack
 

@@ -6,7 +6,7 @@
 ; Return values .:None
 ; Author ........: Sardo (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,7 @@ Func MilkingDetectDarkExtractors()
 		If $g_bDebugSetlog And $g_bMilkFarmAttackDarkDrills = False Then SetLog("skip attack of dark drills", $COLOR_DEBUG)
 		Return 0
 	Else
-		If $g_bDebugSetlog Then SetLog("current dark (" & $g_aiCurrentLoot[$eLootDarkElixir] & ") < limit (" & $g_iMilkFarmLimitDark & ")", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("current dark (" & $g_aiCurrentLoot[$eLootDarkElixir] & ") < limit (" & $g_iMilkFarmLimitDark & ")", $COLOR_DEBUG)
 	EndIf
 
 
@@ -70,27 +70,27 @@ Func MilkingDetectDarkExtractors()
 								$Drilldiscard += 1
 							EndIf
 						Else
-							If $g_bDebugSetlog Then SetLog(" - discard #4 no match conditions", $COLOR_DEBUG)
+							If $g_bDebugSetlog Then SetDebugLog(" - discard #4 no match conditions", $COLOR_DEBUG)
 							$Drilldiscard += 1
 						EndIf
 					Else
-						If $g_bDebugSetlog Then SetLog(" - discard #3 out of insidediamond", $COLOR_DEBUG)
+						If $g_bDebugSetlog Then SetDebugLog(" - discard #3 out of insidediamond", $COLOR_DEBUG)
 						$Drilldiscard += 1
 					EndIf
 				Else
-					If $g_bDebugSetlog Then SetLog(" - discard #2 no pixel coordinate", $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog(" - discard #2 no pixel coordinate", $COLOR_DEBUG)
 					$Drilldiscard += 1
 				EndIf
 			Else
-				If $g_bDebugSetlog Then SetLog(" - discard #1 no valid point", $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog(" - discard #1 no valid point", $COLOR_DEBUG)
 				$Drilldiscard += 1
 			EndIf
 		Next
 		If StringLen($MilkFarmAtkPixelListDRILLSTR) > 1 Then $MilkFarmAtkPixelListDRILLSTR = StringLeft($MilkFarmAtkPixelListDRILLSTR, StringLen($MilkFarmAtkPixelListDRILLSTR) - 1)
-		If $g_bDebugSetlog Then SetLog("> Drill Extractors to attack list: " & $MilkFarmAtkPixelListDRILLSTR, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("> Drill Extractors to attack list: " & $MilkFarmAtkPixelListDRILLSTR, $COLOR_DEBUG)
 		Local $htimerLocateDrill = Round(__TimerDiff($hTimer) / 1000, 2)
-		If $g_bDebugSetlog Then Setlog("> Drill Extractors found: " & $Drillfounds & " | match conditions: " & $Drillmatch & " | discard " & $Drilldiscard, $COLOR_INFO)
-		If $g_bDebugSetlog Then SetLog("> Drill Extractors position detectecd in " & $htimerLocateDrill & " seconds", $COLOR_INFO)
+		If $g_bDebugSetlog Then SetDebugLog("> Drill Extractors found: " & $Drillfounds & " | match conditions: " & $Drillmatch & " | discard " & $Drilldiscard, $COLOR_INFO)
+		If $g_bDebugSetlog Then SetDebugLog("> Drill Extractors position detectecd in " & $htimerLocateDrill & " seconds", $COLOR_INFO)
 		Return $Drillmatch
 	Else
 		Return 0

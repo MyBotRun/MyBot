@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
 ; Modified ......: Hervidero (2015), KnowJack(July 2015), CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -44,6 +44,7 @@ Func Initiate()
 		EndIf
 
 		$g_bFirstStart = True
+		$g_bInitiateSwitchAcc = True
 
 		If $g_bNotifyDeleteAllPushesOnStart Then _DeletePush()
 
@@ -308,7 +309,7 @@ Func GetFont()
 	For $i = 0 To UBound($DefaultFont) - 1
 		$sText &= " $DefaultFont[" & $i & "]= " & $DefaultFont[$i] & ", "
 	Next
-	Setlog($sText, $COLOR_DEBUG)
+	SetLog($sText, $COLOR_DEBUG)
 EndFunc   ;==>GetFont
 
 Func btnVillageStat($source = "")

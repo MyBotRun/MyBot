@@ -6,7 +6,7 @@
 ; Return values .:
 ; Authors .......: Saviart, Hervidero
 ; Modified ......: Hervidero, ProMac, KnowJack (05-2015), Sardo (08-2015) , ProMac (01-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -50,7 +50,7 @@ Func ReArm()
 				Click(515, 400, 1, 0, "#0226")
 				If _Sleep($DELAYREARM4) Then Return
 				If isGemOpen(True) Then
-					Setlog("Not enough loot to rearm traps.....", $COLOR_ERROR)
+					SetLog("Not enough loot to rearm traps.....", $COLOR_ERROR)
 					Click(585, 252, 1, 0, "#0227") ; Click close gem window "X"
 					If _Sleep($DELAYREARM1) Then Return
 				Else

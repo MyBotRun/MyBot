@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-2)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -42,7 +42,7 @@ EndFunc   ;==>_logErrorDLLCall
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-2)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -58,7 +58,7 @@ Func _logErrorDateDiff($ErrorCode)
 		Case 3
 			$sEmsg = "3| Invalid $sEndDate"
 	EndSwitch
-	Setlog("_DateDiff error code = " & $sEmsg, $COLOR_ERROR)
+	SetLog("_DateDiff error code = " & $sEmsg, $COLOR_ERROR)
 EndFunc   ;==>_logErrorDateDiff
 
 ; #FUNCTION# ====================================================================================================================
@@ -69,7 +69,7 @@ EndFunc   ;==>_logErrorDateDiff
 ; Return values .: None
 ; Author ........: MonkeyHunter (2016-2)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -85,7 +85,7 @@ Func _logErrorDateAdd($ErrorCode)
 		Case 3
 			$sEmsg = "3| Invalid $sEndDate"
 	EndSwitch
-	Setlog("_DateAdd error code = " & $sEmsg, $COLOR_ERROR)
+	SetLog("_DateAdd error code = " & $sEmsg, $COLOR_ERROR)
 EndFunc   ;==>_logErrorDateAdd
 
 Func _logErrorGetBuilding($ErrorCode)
@@ -98,5 +98,5 @@ Func _logErrorGetBuilding($ErrorCode)
 		Case Else
 			$sEmsg = "Slap Code Monkey!"
 	EndSwitch
-	Setlog("# GetLocationBuilding error code: " & $sEmsg, $COLOR_ERROR)
+	SetLog("# GetLocationBuilding error code: " & $sEmsg, $COLOR_ERROR)
 EndFunc   ;==>_logErrorGetBuilding

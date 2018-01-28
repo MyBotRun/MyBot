@@ -4,12 +4,12 @@
 #pragma compile(Out, MyBot.run.MiniGui.exe) ; Required
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
-#pragma compile(ProductVersion, 7.3.5)
-#pragma compile(FileVersion, 7.3.5)
+#pragma compile(ProductVersion, 7.4)
+#pragma compile(FileVersion, 7.4)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.3.5"
+Global $g_sBotVersion = "v7.4"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -2551,8 +2551,11 @@ Global Const $g_iDEFAULT_HEIGHT = 780
 Global Const $g_iDEFAULT_WIDTH = 860
 Global Const $g_iMidOffsetY = Int(($g_iDEFAULT_HEIGHT - 720) / 2)
 Global $g_hBotLaunchTime = __TimerInit()
-Global $g_bDebugClick = False
 Global $g_bDebugSetlog = False
+Global $g_bDebugAndroid = False
+Global $g_bDebugClick = False
+Global $g_bDebugFuncTime = False
+Global $g_bDebugFuncCall = False
 Global $g_bDebugOcr = False
 Global $g_bDebugImageSave = False
 Global $g_bDebugBuildingPos = False
@@ -2647,6 +2650,7 @@ Global $g_iAndroidEmbedMode
 Global $g_bAndroidBackgroundLaunch
 Global $g_bAndroidBackgroundLaunched
 Global $g_bAndroidCloseWithBot = False
+Global $g_iAndroidProcessAffinityMask = 0
 Global $g_bInitAndroidActive = False
 Global $g_sAndroidProgramPath = ""
 Global $b_sAndroidProgramWerFaultExcluded = True
@@ -2670,7 +2674,7 @@ If IsNumber($g_iGlobalActiveBotsAllowed) = 0 Or $g_iGlobalActiveBotsAllowed < 1 
 Global $g_hMutextOrSemaphoreGlobalActiveBots = 0
 Global $g_iGlobalThreads = 0
 Global $g_iThreads = 0
-Global Const $g_sProfilePath = @ScriptDir & "\Profiles"
+Global $g_sProfilePath = @ScriptDir & "\Profiles"
 Global $g_sProfileCurrentName = ""
 Global $g_sProfileConfigPath = ""
 Global $g_sProfileBuildingStatsPath = ""
@@ -2678,6 +2682,7 @@ Global $g_sProfileBuildingPath = ""
 Global $g_sProfileLogsPath = "", $g_sProfileLootsPath = "", $g_sProfileTempPath = "", $g_sProfileTempDebugPath = ""
 Global $g_sProfileDonateCapturePath = "", $g_sProfileDonateCaptureWhitelistPath = "", $g_sProfileDonateCaptureBlacklistPath = ""
 Global $g_sProfileSecondaryInputFileName = ""
+Global $g_bReadConfigIsActive = False
 Global $g_hTxtLogTimer = __TimerInit()
 Global $g_hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $g_pStruct_SleepMicro = DllStructGetPtr($g_hStruct_SleepMicro)
@@ -2800,6 +2805,7 @@ Global $g_iUpgradeWallMinGold = 0, $g_iUpgradeWallMinElixir = 0
 Global $g_iUpgradeWallLootType = 0, $g_bUpgradeWallSaveBuilder = False
 Global $g_iCmbUpgradeWallsLevel = 6
 Global $g_aiWallsCurrentCount[13] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiLastGoodWallPos[2] = [-1, -1]
 Global $g_iChkAutoUpgrade = 0
 Global $g_iTxtSmartMinGold = 150000, $g_iTxtSmartMinElixir = 150000, $g_iTxtSmartMinDark = 1500
 Global $g_iChkUpgradesToIgnore[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -2911,6 +2917,9 @@ Global $g_bForceSinglePBLogoff = 0, $g_iSinglePBForcedLogoffTime = 18, $g_iSingl
 Global $g_bAutoResumeEnable = 0, $g_iAutoResumeTime = 5
 Global $g_bDisableNotifications = False
 Global $g_bForceClanCastleDetection = 0
+Global $g_iCmbSwitchAcc = 0, $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_iTrainTimeToSkip = 0, $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False
+Global $g_iTotalAcc = -1, $g_iNextAccount, $g_iCurAccount
+Global $g_abAccountNo[8], $g_asProfileName[8], $g_abDonateOnly[8]
 Global Const $g_WIN_POS_DEFAULT = 0xFFFFFFF
 Global $g_iFrmBotPosX = $g_WIN_POS_DEFAULT
 Global $g_iFrmBotPosY = $g_WIN_POS_DEFAULT
@@ -3613,6 +3622,7 @@ EndFunc
 Global $g_RunPipe_hProcess = 0
 Global $g_RunPipe_hThread = 0
 Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
+Local $bDebug = $g_bDebugSetlog Or $g_bDebugAndroid
 If $bUseSemaphore Then
 Local $hSemaphore = LockSemaphore(StringReplace($cmd, "\", "/"), "Waiting to launch: " & $cmd)
 EndIf
@@ -3620,9 +3630,9 @@ Local $data, $pid, $hStdIn[2], $hStdOut[2], $hTimer, $hProcess, $hThread
 If StringLen($param) > 0 Then $cmd &= " " & $param
 $hTimer = __TimerInit()
 $process_killed = False
-If $g_bDebugSetlog Then Setlog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG)
+If $bDebug Then SetLog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG)
 $pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut, $hProcess, $hThread)
-If $g_bDebugSetlog Then Setlog("Func LaunchConsole: command launched", $COLOR_DEBUG)
+If $bDebug Then SetLog("Func LaunchConsole: command launched", $COLOR_DEBUG)
 If $pid = 0 Then
 SetLog("Launch faild: " & $cmd, $COLOR_ERROR)
 If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
@@ -3636,7 +3646,7 @@ $data &= ReadPipe($hStdOut[0])
 Until($timeout > 0 And __TimerDiff($hTimer) > $timeout) Or $iWaitResult <> $WAIT_TIMEOUT
 If ProcessExists($pid) Then
 If ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread) = 1 Then
-If $g_bDebugSetlog Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
+If $bDebug Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
 $process_killed = True
 EndIf
 Else
@@ -3645,7 +3655,7 @@ EndIf
 $g_RunPipe_hProcess = 0
 $g_RunPipe_hThread = 0
 CleanLaunchOutput($data)
-If $g_bDebugSetlog Then Setlog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
+If $bDebug Then SetLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
 If $bUseSemaphore Then UnlockSemaphore($hSemaphore)
 Return $data
 EndFunc
@@ -3703,6 +3713,7 @@ $hProcess = DllStructGetData($ProcessInformation, "hProcess")
 $hThread = DllStructGetData($ProcessInformation, "hThread")
 Return $pid
 EndIf
+SetDebugLog("RunPipe: Failed creating new process: " & $program)
 ClosePipe(0, $hStdIn, $hStdOut, 0, 0)
 EndFunc
 Func ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread)
@@ -4372,12 +4383,18 @@ Return $controlID
 EndFunc
 Func readConfig($inputfile = $g_sProfileConfigPath)
 Static $iReadConfigCount = 0
+If $g_bReadConfigIsActive Then
+SetDebugLog("readConfig(), already running, exit")
+Return
+EndIf
+$g_bReadConfigIsActive = True
 $iReadConfigCount += 1
 SetDebugLog("readConfig(), call number " & $iReadConfigCount)
 $g_aiWeakBaseStats = readWeakBaseStats()
 ReadProfileConfig()
 If FileExists($g_sProfileBuildingPath) Then ReadBuildingConfig()
 If FileExists($g_sProfileConfigPath) Then ReadRegularConfig()
+$g_bReadConfigIsActive = False
 EndFunc
 Func ReadProfileConfig($sIniFile = $g_sProfilePath & "\profile.ini")
 If FileExists($sIniFile) = 0 Then Return False
@@ -4424,6 +4441,8 @@ IniReadS($g_aiWardenAltarPos[1], $g_sProfileBuildingPath, "other", "yWardenAltar
 IniReadS($g_aiLaboratoryPos[0], $g_sProfileBuildingPath, "upgrade", "LabPosX", -1, "int")
 IniReadS($g_aiLaboratoryPos[1], $g_sProfileBuildingPath, "upgrade", "LabPosY", -1, "int")
 EndIf
+IniReadS($g_aiLastGoodWallPos[0], $g_sProfileBuildingPath, "upgrade", "xLastGoodWallPos", -1, "int")
+IniReadS($g_aiLastGoodWallPos[1], $g_sProfileBuildingPath, "upgrade", "yLastGoodWallPos", -1, "int")
 IniReadS($g_iTotalCampSpace, $g_sProfileBuildingPath, "other", "totalcamp", 0, "int")
 For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1
 $g_avBuildingUpgrades[$iz][0] = IniRead($g_sProfileBuildingPath, "upgrade", "xupgrade" & $iz, "-1")
@@ -4501,7 +4520,8 @@ ReadConfig_600_30_TS()
 ReadConfig_600_31()
 ReadConfig_600_32()
 ReadConfig_600_33()
-ReadConfig_600_35()
+ReadConfig_600_35_1()
+ReadConfig_600_35_2()
 ReadConfig_600_52_1()
 ReadConfig_600_52_2()
 ReadConfig_600_54()
@@ -4509,9 +4529,13 @@ ReadConfig_600_56()
 ReadConfig_641_1()
 EndFunc
 Func ReadConfig_Debug()
+$g_bDebugSetlog = IniRead($g_sProfileConfigPath, "debug", "debugsetlog", 0) = 1 ? True : False
+$g_bDebugAndroid = IniRead($g_sProfileConfigPath, "debug", "debugAndroid", 0) = 1 ? True : False
 $g_bDebugClick = IniRead($g_sProfileConfigPath, "debug", "debugsetclick", 0) = 1 ? True : False
 If $g_bDevMode Then
-$g_bDebugSetlog = IniRead($g_sProfileConfigPath, "debug", "debugsetlog", 0) = 1 ? True : False
+Local $bDebugFunc = IniRead($g_sProfileConfigPath, "debug", "debugFunc", 0) = 1 ? True : False
+$g_bDebugFuncTime = $bDebugFunc
+$g_bDebugFuncCall = $bDebugFunc
 $g_bDebugDisableZoomout = IniRead($g_sProfileConfigPath, "debug", "disablezoomout", 0) = 1 ? True : False
 $g_bDebugDisableVillageCentering = IniRead($g_sProfileConfigPath, "debug", "disablevillagecentering", 0) = 1 ? True : False
 $g_bDebugDeadBaseImage = IniRead($g_sProfileConfigPath, "debug", "debugdeadbaseimage", 0) = 1 ? True : False
@@ -4556,6 +4580,7 @@ $g_iAndroidInactiveTransparency = Int(IniRead($g_sProfileConfigPath, "android", 
 $g_iAndroidSuspendModeFlags = Int(IniRead($g_sProfileConfigPath, "android", "suspend.mode", $g_iAndroidSuspendModeFlags))
 $g_iAndroidRebootHours = Int(IniRead($g_sProfileConfigPath, "android", "reboot.hours", $g_iAndroidRebootHours))
 $g_bAndroidCloseWithBot = Int(IniRead($g_sProfileConfigPath, "android", "close", $g_bAndroidCloseWithBot ? 1 : 0)) = 1
+$g_iAndroidProcessAffinityMask = Int(IniRead($g_sProfileConfigPath, "android", "process.affinity.mask", $g_iAndroidProcessAffinityMask))
 If $g_bBotLaunchOption_Restart = True Or $g_asCmdLine[0] < 2 Then
 Local $sAndroidEmulator = IniRead($g_sProfileConfigPath, "android", "emulator", "")
 Local $sAndroidInstance = IniRead($g_sProfileConfigPath, "android", "instance", "")
@@ -5206,7 +5231,7 @@ For $p = 0 To UBound($g_aiCmbCustomDropOrder) - 1
 IniReadS($g_aiCmbCustomDropOrder[$p], $g_sProfileConfigPath, "DropOrder", "cmbDropOrder" & $p, -1)
 Next
 EndFunc
-Func ReadConfig_600_35()
+Func ReadConfig_600_35_1()
 $g_bDisableSplash =(IniRead($g_sProfileConfigPath, "General", "ChkDisableSplash", "0") = "1")
 $g_bCheckVersion =(IniRead($g_sProfileConfigPath, "General", "ChkVersion", "1") = "1")
 IniReadS($g_bDeleteLogs, $g_sProfileConfigPath, "deletefiles", "DeleteLogs", True, "Bool")
@@ -5236,6 +5261,48 @@ $g_bAutoResumeEnable =(IniRead($g_sProfileConfigPath, "other", "ChkAutoResume", 
 $g_iAutoResumeTime = Int(IniRead($g_sProfileConfigPath, "other", "AutoResumeTime", 5))
 IniReadS($g_bDisableNotifications, $g_sProfileConfigPath, "other", "ChkDisableNotifications", False, "Bool")
 $g_bForceClanCastleDetection =(IniRead($g_sProfileConfigPath, "other", "ChkFixClanCastle", "0") = "1")
+EndFunc
+Func ReadConfig_600_35_2()
+Local $sSwitchAccFile
+$g_iCmbSwitchAcc = 0
+$g_bChkSwitchAcc = False
+For $g = 1 To 8
+$sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $g & ".ini"
+If FileExists($sSwitchAccFile) = 0 Then ContinueLoop
+Local $sProfile
+Local $bEnabled
+For $i = 1 To Int(IniRead($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", 0)) + 1
+$bEnabled = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "") = "1"
+If $bEnabled Then
+$bEnabled = IniRead($sSwitchAccFile, "SwitchAccount", "AccountNo." & $i, "") = "1"
+If $bEnabled Then
+$sProfile = IniRead($sSwitchAccFile, "SwitchAccount", "ProfileName." & $i, "")
+If $sProfile = $g_sProfileCurrentName Then
+$g_iCmbSwitchAcc = $g
+ExitLoop
+EndIf
+EndIf
+EndIf
+Next
+If $g_iCmbSwitchAcc Then
+ReadConfig_SwitchAccounts()
+ExitLoop
+EndIf
+Next
+EndFunc
+Func ReadConfig_SwitchAccounts()
+If $g_iCmbSwitchAcc Then
+Local $sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $g_iCmbSwitchAcc & ".ini"
+$g_bChkSwitchAcc = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "") = "1"
+$g_bChkSmartSwitch = IniRead($sSwitchAccFile, "SwitchAccount", "SmartSwitch", "0") = "1"
+$g_iTotalAcc = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", "-1"))
+$g_iTrainTimeToSkip = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TrainTimeToSkip", "1"))
+For $i = 1 To 8
+$g_abAccountNo[$i - 1] = IniRead($sSwitchAccFile, "SwitchAccount", "AccountNo." & $i, "") = "1"
+$g_asProfileName[$i - 1] = IniRead($sSwitchAccFile, "SwitchAccount", "ProfileName." & $i, "")
+$g_abDonateOnly[$i - 1] = IniRead($sSwitchAccFile, "SwitchAccount", "DonateOnly." & $i, "0") = "1"
+Next
+EndIf
 EndFunc
 Func ReadConfig_600_52_1()
 $g_bQuickTrainEnable =(IniRead($g_sProfileConfigPath, "other", "ChkUseQTrain", "0") = "1")

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: GkevinOD (2014), Hervidero (2015)
 ; Modified ......: Cosote (12-2015), KnowJack (08-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -29,7 +29,7 @@ Func OpenBlueStacks($bRestart = False)
 	$cmdPar = GetAndroidProgramParameter()
 	$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
 	$ErrorResult = ControlGetHandle("BlueStacks Error", "", "") ; Check for BS error window handle if it opens
-	If $g_bDebugAndroid Then Setlog("$PID= " & $PID & ", $ErrorResult = " & $ErrorResult, $COLOR_DEBUG)
+	If $g_bDebugAndroid Then SetDebugLog("$PID= " & $PID & ", $ErrorResult = " & $ErrorResult, $COLOR_DEBUG)
 	If $PID = 0 Or $ErrorResult <> 0 Then ; IF ShellExecute failed or BS opens error window = STOP
 		SetError(1, 1, -1)
 		Return False
@@ -295,9 +295,9 @@ EndFunc   ;==>InitBlueStacks
 
 Func InitBlueStacks2($bCheckOnly = False)
 	Local $bInstalled = InitBlueStacksX($bCheckOnly, True)
-	If $bInstalled And StringInStr($__BlueStacks_Version, "2.") <> 1 Then
+	If $bInstalled And StringInStr($__BlueStacks_Version, "2.") <> 1 And StringInStr($__BlueStacks_Version, "3.") <> 1 And StringInStr($__BlueStacks_Version, "4.") <> 1 Then
 		If Not $bCheckOnly Then
-			SetLog("BlueStacks supported version 2 not found", $COLOR_ERROR)
+			SetLog("BlueStacks supported version 2.x, 3.x or 4.x not found", $COLOR_ERROR)
 			SetError(1, @extended, False)
 		EndIf
 		Return False
@@ -305,6 +305,17 @@ Func InitBlueStacks2($bCheckOnly = False)
 
 	If $bInstalled And Not $bCheckOnly Then
 		$__VBoxManage_Path = $__BlueStacks_Path & "BstkVMMgr.exe"
+		; Also required for BS3 2.55.70.1203
+		Local $bs3 = GetVersionNormalized("2.50.0.0")
+		local $bsNow = GetVersionNormalized($__BlueStacks_Version)
+		If StringInStr($__BlueStacks_Version, "4.") = 1 Or (StringInStr($__BlueStacks_Version, "2.") = 1 And $bsNow >= $bs3) Then
+			; Mouse clicks in Window are off by -13 on Y-axis, so set special value now
+			Local $aOff = [0, 13]
+			If $g_aiMouseOffsetWindowOnly[0] <> $aOff[0] Or $g_aiMouseOffsetWindowOnly[1] <> $aOff[1] Then
+				$g_aiMouseOffsetWindowOnly = $aOff
+				SetDebugLog("BlueStacks " & $__BlueStacks_Version & ": Adjust mouse clicks when running undocked by: " & $aOff[0] & ", " & $aOff[1])
+			EndIf
+		EndIf
 
 		; read ADB port
 		Local $BstAdbPort = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config\", "BstAdbPort")
@@ -346,7 +357,7 @@ Func RestartBlueStacksXCoC()
 	Local $cmdOutput
 	If Not InitAndroid() Then Return False
 	If WinGetAndroidHandle() = 0 Then Return False
-	$cmdOutput = AndroidAdbSendShellCommand("am start -W -S -n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, 60000) ; timeout of 1 Minute
+	$cmdOutput = AndroidAdbSendShellCommand("am start -W -n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, 60000) ; timeout of 1 Minute ; disabled -S due to long wait after 2017 Dec. Update
 	SetLog("Please wait for CoC restart......", $COLOR_INFO) ; Let user know we need time...
 	Return True
 EndFunc   ;==>RestartBlueStacksXCoC
@@ -373,17 +384,9 @@ Func CheckScreenBlueStacksX($bSetLog = True)
 		$Value = RegRead($REGISTRY_KEY_DIRECTORY, $aValues[$i][0])
 		If $Value <> $aValues[$i][1] Then
 			If $iErrCnt = 0 Then
-				If $bSetLog Then
-					SetLog("MyBot doesn't work with " & $g_sAndroidEmulator & " screen configuration!", $COLOR_ERROR)
-				Else
-					SetDebugLog("MyBot doesn't work with " & $g_sAndroidEmulator & " screen configuration!", $COLOR_ERROR)
-				EndIf
+				SetDebugLog("MyBot doesn't work with " & $g_sAndroidEmulator & " screen configuration!", $COLOR_ERROR)
 			EndIf
-			If $bSetLog Then
-				SetLog("Setting of " & $aValues[$i][0] & " is " & $Value & " and will be changed to " & $aValues[$i][1], $COLOR_ERROR)
-			Else
-				SetDebugLog("Setting of " & $aValues[$i][0] & " is " & $Value & " and will be changed to " & $aValues[$i][1], $COLOR_ERROR)
-			EndIf
+			SetDebugLog("Setting of " & $aValues[$i][0] & " is " & $Value & " and will be changed to " & $aValues[$i][1], $COLOR_ERROR)
 			$iErrCnt += 1
 		EndIf
 	Next
@@ -395,13 +398,12 @@ Func CheckScreenBlueStacksX($bSetLog = True)
 		; get last match!
 		$DPI = $aRegExResult[UBound($aRegExResult) - 1]
 		If $DPI <> 160 Then
-			If $bSetLog Then
-				SetLog("DPI is " & $DPI & " and will be changed to 160", $COLOR_ERROR)
-			Else
-				SetDebugLog("DPI is " & $DPI & " and will be changed to 160", $COLOR_ERROR)
-			EndIf
+			SetDebugLog("DPI is " & $DPI & " and will be changed to 160", $COLOR_ERROR)
 			$iErrCnt += 1
 		EndIf
+	Else
+		SetDebugLog("DPI is missing and will be set to 160", $COLOR_ERROR)
+		$iErrCnt += 1
 	EndIf
 	If $iErrCnt > 0 Then Return False
 	Return True
@@ -427,6 +429,9 @@ Func SetScreenBlueStacks()
 	$BootParameter = StringRegExpReplace($BootParameter, "DPI=\d+", "DPI=160")
 	If @error = 0 Then
 		RegWrite($REGISTRY_KEY_DIRECTORY, "BootParameters", "REG_SZ", $BootParameter)
+	Else
+		; DPI=160 was missing
+		RegWrite($REGISTRY_KEY_DIRECTORY, "BootParameters", "REG_SZ", $BootParameter & " DPI=160")
 	EndIf
 EndFunc   ;==>SetScreenBlueStacks
 
@@ -639,11 +644,11 @@ Func CloseBlueStacks()
 			ServiceStop($aServiceList[$iIndex])
 			If @error Then
 				$bOops = True
-				If $g_bDebugAndroid Then Setlog($aServiceList[$iIndex] & "errored trying to stop", $COLOR_WARNING)
+				If $g_bDebugAndroid Then SetDebugLog($aServiceList[$iIndex] & "errored trying to stop", $COLOR_WARNING)
 			EndIf
 		Next
 		If $bOops Then
-			If $g_bDebugAndroid Then Setlog("Service Stop issues, Stopping BS 2nd time", $COLOR_WARNING)
+			If $g_bDebugAndroid Then SetDebugLog("Service Stop issues, Stopping BS 2nd time", $COLOR_WARNING)
 			KillBSProcess()
 			If _SleepStatus(5000) Then Return
 		EndIf
@@ -712,13 +717,13 @@ Func KillBSProcess()
 
 	For $iIndex = 0 To UBound($aBS_FileNames) - 1
 		$aBS_FileNames[$iIndex][1] = ProcessExists($aBS_FileNames[$iIndex][0]) ; Find the PID for each BS file name that is running
-		If $g_bDebugAndroid Then Setlog($aBS_FileNames[$iIndex][0] & " PID = " & $aBS_FileNames[$iIndex][1], $COLOR_DEBUG)
+		If $g_bDebugAndroid Then SetDebugLog($aBS_FileNames[$iIndex][0] & " PID = " & $aBS_FileNames[$iIndex][1], $COLOR_DEBUG)
 		If $aBS_FileNames[$iIndex][1] > 0 Then ; If it is running, then kill it
 			ShellExecute(@WindowsDir & "\System32\taskkill.exe", " -t -pid " & $aBS_FileNames[$iIndex][1], "", Default, @SW_HIDE)
 			If _Sleep(1000) Then Return ; Give OS time to work
 		EndIf
 		If ProcessExists($aBS_FileNames[$iIndex][1]) Then ; If it is still running, then force kill it
-			If $g_bDebugAndroid Then Setlog($aBS_FileNames[$iIndex][0] & " 1st Kill failed, trying again", $COLOR_DEBUG)
+			If $g_bDebugAndroid Then SetDebugLog($aBS_FileNames[$iIndex][0] & " 1st Kill failed, trying again", $COLOR_DEBUG)
 			ShellExecute(@WindowsDir & "\System32\taskkill.exe", "-f -t -pid " & $aBS_FileNames[$iIndex][1], "", Default, @SW_HIDE)
 			If _Sleep(500) Then Return ; Give OS time to work
 		EndIf
@@ -735,7 +740,7 @@ Func ServiceStop($sServiceName)
 
 	$Result = RunWait(@ComSpec & " /c " & 'net stop ' & $sServiceName, "", @SW_HIDE)
 	If @error Then
-		Setlog("net stop service failed on " & $sServiceName & ", Result= " & $Result, $COLOR_ERROR)
+		SetLog("net stop service failed on " & $sServiceName & ", Result= " & $Result, $COLOR_ERROR)
 		SetError(1, @extended, -1)
 		Return
 	EndIf
@@ -770,7 +775,7 @@ Func ServiceStop($sServiceName)
 	If $g_bDebugAndroid And $svcWaitIterations > 15 Then
 		SetLog("Failed to stop service " & $sServiceName, $COLOR_ERROR)
 	Else
-		If $g_bDebugAndroid Then SetLog($sServiceName & "Service stopped successfully", $COLOR_SUCCESS)
+		If $g_bDebugAndroid Then SetDebugLog($sServiceName & "Service stopped successfully", $COLOR_SUCCESS)
 	EndIf
 EndFunc   ;==>ServiceStop
 

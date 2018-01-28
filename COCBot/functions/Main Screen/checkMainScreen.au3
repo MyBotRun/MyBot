@@ -7,13 +7,22 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015) , TheMaster1st(2015), Fliegerfaust (06-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkObstacles(), waitMainScreen()
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main screen
+
+Func checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in main screen
+	FuncEnter(checkMainScreen)
+	Return FuncReturn(_checkMainScreen($bSetLog, $bBuilderBase))
+EndFunc   ;==>checkMainScreen
+
+Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in main screen
+	
+	If $bSetLog = Default Then $bSetLog = True
+	If $bBuilderBase = Default Then $bBuilderBase = False
 
 	Local $iCount, $bObstacleResult
 	Local $aPixelToCheck = $aIsMain
@@ -45,7 +54,7 @@ Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main 
 		If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 
 		$bObstacleResult = checkObstacles($bBuilderBase)
-		If $g_bDebugSetlog Then Setlog("CheckObstacles Result = " & $bObstacleResult, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("CheckObstacles Result = " & $bObstacleResult, $COLOR_DEBUG)
 
 		If (Not $bObstacleResult And $g_bMinorObstacle) Then
 			$g_bMinorObstacle = False
@@ -76,4 +85,4 @@ Func checkMainScreen($bSetLog = True, $bBuilderBase = False) ;Checks if in main 
 
 	;Execute Notify Pending Actions
 	NotifyPendingActions()
-EndFunc   ;==>checkMainScreen
+EndFunc   ;==>_checkMainScreen

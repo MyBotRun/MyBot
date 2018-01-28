@@ -5,8 +5,8 @@
 ; Parameters ....: NA
 ; Return values .: NA
 ; Author ........:
-; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Modified ......: CodeSlinger69 (01-2018)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,6 +16,12 @@
 Func saveConfig()
 
 	If $g_iGuiMode = 0 Then Return
+
+	If $g_bSaveConfigIsActive Then
+		SetDebugLog("saveConfig(), already running, exit")
+		Return
+	EndIf
+	$g_bSaveConfigIsActive = True
 
 	Local $t = __TimerInit()
 
@@ -35,6 +41,8 @@ Func saveConfig()
 	;SetDebugLog("SaveRegularConfig(), time = " & Round(__TimerDiff($t)/1000, 2) & " sec")
 
 	SetDebugLog("SaveConfig(), time = " & Round(__TimerDiff($t) / 1000, 2) & " sec")
+
+	$g_bSaveConfigIsActive = False
 EndFunc   ;==>saveConfig
 
 Func SaveProfileConfig($sIniFile = Default, $bForceWrite = False)
@@ -99,6 +107,9 @@ Func SaveBuildingConfig()
 
 	_Ini_Add("other", "xWardenAltarPos", $g_aiWardenAltarPos[0])
 	_Ini_Add("other", "yWardenAltarPos", $g_aiWardenAltarPos[1])
+
+	_Ini_Add("upgrade", "xLastGoodWallPos", $g_aiLastGoodWallPos[0])
+	_Ini_Add("upgrade", "yLastGoodWallPos", $g_aiLastGoodWallPos[1])
 
 	; <><><><> Village / Upgrade - Lab <><><><>
 	ApplyConfig_600_14(GetApplyConfigSaveAction())
@@ -209,7 +220,9 @@ Func SaveRegularConfig()
 	; <><><><> Attack Plan / Search & Attack / Drop Order Troops <><><><>
 	SaveConfig_600_33()
 	; <><><><> Bot / Options <><><><>
-	SaveConfig_600_35()
+	SaveConfig_600_35_1()
+	; <><><><> Bot / Profile / Switch Account <><><><>
+	SaveConfig_600_35_2()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
 	; Quick train
 	SaveConfig_600_52_1()
@@ -268,6 +281,7 @@ Func SaveConfig_Android()
 	_Ini_Add("android", "instance", $g_sAndroidInstance)
 	_Ini_Add("android", "reboot.hours", $g_iAndroidRebootHours)
 	_Ini_Add("android", "close", ($g_bAndroidCloseWithBot ? "1" : "0"))
+	_Ini_Add("android", "process.affinity.mask", $g_iAndroidProcessAffinityMask)
 
 EndFunc   ;==>SaveConfig_Android
 
@@ -276,7 +290,9 @@ Func SaveConfig_Debug()
 	ApplyConfig_Debug(GetApplyConfigSaveAction())
 	; <><><><> Bot / Debug <><><><>
 	_Ini_Add("debug", "debugsetlog", $g_bDebugSetlog ? 1 : 0)
+	_Ini_Add("debug", "debugAndroid", $g_bDebugAndroid ? 1 : 0)
 	_Ini_Add("debug", "debugsetclick", $g_bDebugClick ? 1 : 0)
+	_Ini_Add("debug", "debugFunc", ($g_bDebugFuncTime And $g_bDebugFuncCall)? 1 : 0)
 	_Ini_Add("debug", "disablezoomout", $g_bDebugDisableZoomout ? 1 : 0)
 	_Ini_Add("debug", "disablevillagecentering", $g_bDebugDisableVillageCentering ? 1 : 0)
 	_Ini_Add("debug", "debugdeadbaseimage", $g_bDebugDeadBaseImage ? 1 : 0)
@@ -991,9 +1007,9 @@ Func SaveConfig_600_33()
 	Next
 EndFunc   ;==>SaveConfig_600_33
 
-Func SaveConfig_600_35()
+Func SaveConfig_600_35_1()
 	; <><><><> Bot / Options <><><><>
-	ApplyConfig_600_35(GetApplyConfigSaveAction())
+	ApplyConfig_600_35_1(GetApplyConfigSaveAction())
 	_Ini_Add("other", "language", $g_sLanguage)
 	_Ini_Add("General", "ChkDisableSplash", $g_bDisableSplash ? 1 : 0)
 	_Ini_Add("General", "ChkVersion", $g_bCheckVersion ? 1 : 0)
@@ -1024,7 +1040,51 @@ Func SaveConfig_600_35()
 	_Ini_Add("other", "AutoResumeTime", $g_iAutoResumeTime)
 	_Ini_Add("other", "ChkDisableNotifications", $g_bDisableNotifications)
 	_Ini_Add("other", "ChkFixClanCastle", $g_bForceClanCastleDetection ? 1 : 0)
-EndFunc   ;==>SaveConfig_600_35
+EndFunc   ;==>SaveConfig_600_35_1
+
+Func SaveConfig_600_35_2()
+	; <><><><> Bot / Profile / Switch Account <><><><>
+	ApplyConfig_600_35_2(GetApplyConfigSaveAction())
+
+	Local $sSwitchAccFile
+	Local $iCmbSwitchAcc = $g_iCmbSwitchAcc
+	If $iCmbSwitchAcc = 0 Then
+		; find group this profile belongs to: no switch profile config is saved in config.ini on purpose!
+		For $g = 1 To 8
+			$sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $g & ".ini"
+			If FileExists($sSwitchAccFile) = 0 Then ContinueLoop
+			Local $sProfile
+			Local $bEnabled
+			For $i = 1 To 8
+				$bEnabled = IniRead($sSwitchAccFile, "SwitchAccount", "Enable" & $i, "") = "1"
+				If $bEnabled Then
+					$bEnabled = IniRead($sSwitchAccFile, "SwitchAccount", "AccountNo." & $i, "") = "1"
+					If $bEnabled Then
+						$sProfile = IniRead($sSwitchAccFile, "SwitchAccount", "ProfileName." & $i, "")
+						If $sProfile = $g_sProfileCurrentName Then
+							; found current profile
+							$iCmbSwitchAcc = $g
+							ExitLoop 2
+						EndIf
+					EndIf
+				EndIf
+			Next
+		Next
+	EndIf
+	If $iCmbSwitchAcc Then
+		$sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $iCmbSwitchAcc & ".ini"
+		IniWrite($sSwitchAccFile, "SwitchAccount", "Enable", $g_bChkSwitchAcc ? 1 : 0)
+		IniWrite($sSwitchAccFile, "SwitchAccount", "SmartSwitch", $g_bChkSmartSwitch ? 1 : 0)
+		IniWrite($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", $g_iTotalAcc)
+		IniWrite($sSwitchAccFile, "SwitchAccount", "TrainTimeToSkip", $g_iTrainTimeToSkip)
+		For $i = 1 To 8
+			IniWrite($sSwitchAccFile, "SwitchAccount", "AccountNo." & $i, $g_abAccountNo[$i - 1] ? 1 : 0)
+			IniWrite($sSwitchAccFile, "SwitchAccount", "ProfileName." & $i, $g_asProfileName[$i - 1])
+			IniWrite($sSwitchAccFile, "SwitchAccount", "DonateOnly." & $i, $g_abDonateOnly[$i - 1] ? 1 : 0)
+		Next
+	EndIf
+
+EndFunc   ;==>SaveConfig_600_35_2
 
 Func SaveConfig_600_52_1()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>

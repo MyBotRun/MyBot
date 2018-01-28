@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (09-2016)
 ; Modified ......: Boju (02-2017), Fliegerfaust(11-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,7 +15,7 @@
 #include-once
 
 Func TreasuryCollect()
-	If $g_bDebugSetlog Then SetLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
+	If $g_bDebugSetlog Then SetDebugLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
 	If Not $g_bRunState Then Return ; ensure bot is running
 
 	ClickP($aAway, 1, 0, "#0441") ; clear open windows - Click Away before reading village data
@@ -45,7 +45,7 @@ Func TreasuryCollect()
 	EndIf
 
 	If Not _WaitForCheckPixel($aTreasuryWindow, $g_bCapturePixel, Default, "Wait treasury window:") Then
-		Setlog("Treasury window not found!", $COLOR_ERROR)
+		SetLog("Treasury window not found!", $COLOR_ERROR)
 		Return
 	EndIf
 

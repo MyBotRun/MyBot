@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: mikemikemikecoc (2016)
 ; Modified ......: CodeSlinger69 (2017), MonkeyHunter (05-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -33,8 +33,8 @@ Func SplashStep($status, $bIncreaseStep = True)
 			$iStartY = Int(@DesktopHeight - 50 - $aSplashInfo[3]) ; compute starting Y position just above bottom of display
 			$iStartX = Int((@DesktopWidth / 2) - ($aSplashInfo[2] / 2)) ; compute starting X position in middle of display
 			$iStep = Int($iStartY / ($g_iSplashTotalSteps - 1))
-			;SetDebuglog("SplashStep " & $g_iSplashCurrentStep & " X:Y= " & $aSplashInfo[0] & ":" & $aSplashInfo[1] & ", W:H= " & $aSplashInfo[2] & ":" & $aSplashInfo[3], $COLOR_DEBUG)
-			;SetDebuglog("$iStartX= " & $iStartX & ", $iStartY= " & $iStartY & ", $iStep= " & $iStep, $COLOR_DEBUG)
+			;SetDebugLog("SplashStep " & $g_iSplashCurrentStep & " X:Y= " & $aSplashInfo[0] & ":" & $aSplashInfo[1] & ", W:H= " & $aSplashInfo[2] & ":" & $aSplashInfo[3], $COLOR_DEBUG)
+			;SetDebugLog("$iStartX= " & $iStartX & ", $iStartY= " & $iStartY & ", $iStep= " & $iStep, $COLOR_DEBUG)
 		EndIf
 		; bottom to top with little shuffle added
 		Local $aSplashLoc[10][2] = [[-100, 0], [100, $iStep], [-100, $iStep * 2], [100, $iStep * 3], [-100, $iStep * 4], [100, $iStep * 5], [-100, $iStep * 6], [100, $iStep * 7], [-100, $iStep * 8], [0, $iStep * 9]]

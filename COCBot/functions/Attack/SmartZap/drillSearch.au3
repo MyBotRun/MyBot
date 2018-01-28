@@ -6,7 +6,7 @@
 ; Return values .: Array with data on Dark Elixir Drills found in search
 ; Author ........: TripleM (01-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func drillSearch()
-	Local $aReturnResult[0][4]
+	Local $aReturnResult[0][5]
 	Local $pixelerror = 15
 
 	Local $Maxpositions = 0 ; Return all found Positions
@@ -26,8 +26,10 @@ Func drillSearch()
 		_ArrayAdd($aTemp, $aResult[$iResult][5]) ; Copy Positionarray to temp array
 		_ArrayColInsert($aTemp, 2) ; Adding Level Column
 		_ArrayColInsert($aTemp, 3) ; Adding Hold Column
+		_ArrayColInsert($aTemp, 4) ; Adding Last Zap Column
 		For $iRow = 0 To UBound($aTemp) - 1
 			$aTemp[$iRow][2] = $aResult[$iResult][2] ; Setting Level Column to Result Level
+			$aTemp[$iRow][4] = 0 ; Set Last Zap to 0
 		Next
 		_ArrayAdd($aReturnResult, $aTemp) ; Adding temp array to return array
 	Next

@@ -1,0 +1,79 @@
+NOTE  |Author: Cosote - ver. 1.0 - 2016-06-09
+NOTE  |Giarch FFF (Fast Four Fingers), killa123123 edition
+NOTE  |Attack: FF Giarch, +1 tile from redline, fast with no delays
+NOTE  |Make these Troops: Archers 100%, 16 Giants
+NOTE  |Will drop 16 Giants in 1st wave, 160 Archs in 2nd wave, all Heroes and Castle if enabled from GUI and then remaining (gets rid of barbs!)
+
+      |---------------------------------------- four fingers gibarch start -----------------------------|
+
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE |
+SIDE  |1          |1          |1          |0          |0          |0          |0          |            |
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|MAKE VECTORS
+MAKE  |A          |FRONT-RIGHT|12         |0          |INT-EXT    |2          |2          |           |
+MAKE  |B          |FRONT-LEFT |12         |0          |INT-EXT    |2          |2          |           |
+MAKE  |C          |RIGHT-FRONT|12         |0          |INT-EXT    |2          |2          |           |
+MAKE  |D          |LEFT-FRONT |12         |0          |INT-EXT    |2          |2          |           |
+MAKE  |E          |BACK-RIGHT |12         |0          |INT-EXT    |2          |2          |           |
+MAKE  |F          |BACK-LEFT  |12         |0          |INT-EXT    |2          |2          |           |
+MAKE  |G          |RIGHT-BACK |12         |0          |INT-EXT    |2          |2          |           |
+MAKE  |H          |LEFT-BACK  |12         |0          |INT-EXT    |2          |2          |           |
+MAKE  |I          |FRONT-RIGHT|12         |3          |INT-EXT    |2          |2          |           |
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|MAKE VECTORS TO DROP KINK, QUEEN and CASTLE
+MAKE  |Q          |RANDOM     |70         |0          |INT-EXT    |2          |2          |           |random side to drop king, at 1 tile from redarea
+MAKE  |R          |RANDOM     |70         |0          |INT-EXT    |2          |2          |           |random side to drop queen and castle, at 3 tiles from redarea
+MAKE  |S          |FRONT-RIGHT|12         |-4         |INT-EXT    |2          |2          |           |
+MAKE  |T          |FRONT-RIGHT|12         |-8         |INT-EXT    |2          |2          |           |
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP GIANT, ARCH
+DROP  |A-B-C-D    |6          |1          |giant      |0          |0          |0          |           |1st wave
+DROP  |E-F-G-H    |6          |1          |giant      |0          |0          |0          |           |
+DROP  |A-B-C-D    |6          |1          |giant      |0          |0          |0          |           |
+DROP  |E-F-G-H    |6          |1          |giant      |0          |0          |0          |           |
+
+;WAIT  |2000-2000  |           |           |           |           |           |           |           |Add a wait time; during wait time also CHECK exit values (exit if no resource left, exit if one or two starts reach)
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|DROP HEROES
+DROP  |A-B-C-D    |1-12       |12         |arch       |0          |0          |0          |           |2nd wave
+DROP  |E-F-G-H    |1-12       |12         |arch       |0          |0          |0          |           |
+DROP  |A-B-C-D    |1-12       |12         |arch       |0          |0          |0          |           |
+DROP  |E-F-G-H    |1-12       |12         |arch       |0          |0          |0          |           |
+DROP  |A          |3          |1          |castle     |0          |0          |0          |           |launch Castle                                                     castle
+DROP  |A          |3          |1          |king       |0          |0          |0          |           |launch King                                                       king
+DROP  |A          |3          |1          |queen      |0          |0          |0          |           |launch Queen                                                      queen
+DROP  |A          |3          |1          |Warden     |0          |0          |0          |           |launch Grand Warden                                               warden
+DROP  |I          |2,3,3,4    |4          |heal       |0          |0          |0          |           |launch Healer                                                     heal
+
+DROP  |T          |3          |1          |fspell     |0          |0          |0          |           |launch freeze spell
+DROP  |T          |3          |1          |lspell     |0          |0          |0          |           |launch lightning spell
+DROP  |S          |3          |1          |cspell     |0          |0          |0          |           |launch clone spell
+DROP  |S          |3          |2          |espell     |0          |0          |0          |           |launch earthquake spell
+DROP  |S          |3          |1          |pspell     |0          |0          |0          |           |launch poison spell 
+DROP  |S          |3          |1          |rspell     |0          |0          |0          |           |launch rage spell 
+DROP  |S          |3          |1          |hspell     |0          |0          |0          |           |launch heal spell
+DROP  |S          |3          |1          |haspell    |0          |0          |0          |           |launch haste spell
+DROP  |S          |3          |1          |skspell    |0          |0          |0          |           |launch skeleton spell
+DROP  |S          |3          |1          |jspell     |0          |0          |0          |           |launch jump spell
+DROP  |A-B-C-D    |1-12       |20         |barb       |0          |0          |0          |           |drop barb just to get rid of
+
+DROP  |T          |3          |1          |fspell     |0          |0          |0          |           |launch freeze spell
+DROP  |T          |3          |1          |lspell     |0          |0          |0          |           |launch lightning spell
+DROP  |T          |3          |1          |cspell     |0          |0          |0          |           |launch clone spell
+DROP  |T          |3          |2          |espell     |0          |0          |0          |           |launch earthquake spell
+DROP  |T          |3          |1          |pspell     |0          |0          |0          |           |launch poison spell 
+DROP  |T          |3          |1          |rspell     |0          |0          |0          |           |launch rage spell 
+DROP  |T          |3          |1          |hspell     |0          |0          |0          |           |launch heal spell
+DROP  |T          |3          |1          |haspell    |0          |0          |0          |           |launch haste spell
+DROP  |T          |3          |1          |skspell    |0          |0          |0          |           |launch skeleton spell
+DROP  |T          |3          |1          |jspell     |0          |0          |0          |           |launch jump spell
+RECALC|           |           |           |           |           |           |           |           |recalculate remaining troops and then launch...
+
+DROP  |D-C-B-A    |6          |1          |giant      |0          |0          |0          |           |3rd wave remaining
+DROP  |D-C-B-A    |1,3,5,7,9  |5          |arch       |0          |0          |0          |           |
+DROP  |H-G-F-E    |6          |1          |giant      |0          |0          |0          |           |
+DROP  |H-G-F-E    |2,4,6,8,10 |5          |arch       |0          |0          |0          |           |
+
+      |------------------------------------ four fingers giarch end-----------------------------------|
+      |Change log
+      |2016-11-26 ver. 1.1 Updated to MBR 6.3, added Healer
+      |2016-06-09 ver. 1.0 Initial release for killa123123

@@ -10,7 +10,7 @@
 ; Return values .: None
 ; Author ........: Malkey from https://www.autoitscript.com/forum/topic/89034-check-if-a-point-is-within-various-defined-closed-shapes/
 ; Modified ......: MonkeyHunter (05-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -45,7 +45,7 @@ EndFunc   ;==>_IsPointInPoly
 ; Return values .: True if inside polygon
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -53,7 +53,7 @@ EndFunc   ;==>_IsPointInPoly
 ; ===============================================================================================================================
 Func IsPointOnSide($aCoords, $sSide)
 	If IsArray($aCoords) = False Then
-		Setlog("IsPointOnSide() coordinates array not recognized", $COLOR_ERROR)
+		SetLog("IsPointOnSide() coordinates array not recognized", $COLOR_ERROR)
 		Return SetError(1, 0, "")
 	EndIf
 	Switch $sSide
@@ -67,7 +67,7 @@ Func IsPointOnSide($aCoords, $sSide)
 		Case "BR", "BOTTOM-RIGHT-UP", "BOTTOM-RIGHT-DOWN"
 			Local $aPoints[5][2] = [[3, 0], [425, 345], [845, 345], [425, 660], [425, 345]]
 		Case Else
-			Setlog("IsPointOnSide() 'side' string not recognized", $COLOR_ERROR)
+			SetLog("IsPointOnSide() 'side' string not recognized", $COLOR_ERROR)
 			Return SetError(1, 0, "")
 	EndSwitch
 	Return _IsPointInPoly($aCoords[0], $aCoords[1], $aPoints)
@@ -83,7 +83,7 @@ EndFunc   ;==>IsPointOnSide
 ; Return values .: New count of locations in string
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -91,7 +91,7 @@ EndFunc   ;==>IsPointOnSide
 ; ===============================================================================================================================
 Func RemoveDupNearby(ByRef $sLocCoord, $iDistance = 8)
 
-	SetDebuglog("Begin RemoveDupNearby", $COLOR_DEBUG1)
+	SetDebugLog("Begin RemoveDupNearby", $COLOR_DEBUG1)
 
 	Local $aCoord = StringSplit($sLocCoord, "|")
 	Local $aLoc1, $aLoc2, $bRemovedDuplicate = False
@@ -99,12 +99,12 @@ Func RemoveDupNearby(ByRef $sLocCoord, $iDistance = 8)
 #comments-start
 	If $g_bDebugSetlog Then ; debug log values till know code is working...
 		Local $sText = "INPUT $aCoord"
-		Setlog("INPUT $aCoord count= " & $aCoord[0], $COLOR_DEBUG)
-		Setlog("INPUT $sLocCoord= " & $sLocCoord, $COLOR_DEBUG)
+		SetLog("INPUT $aCoord count= " & $aCoord[0], $COLOR_DEBUG)
+		SetLog("INPUT $sLocCoord= " & $sLocCoord, $COLOR_DEBUG)
 		For $p = 1 To $aCoord[0]
 			$sText &= "[" & $p & "}:" & $aCoord[$p] & "; "
 		Next
-		Setlog($sText, $COLOR_DEBUG)
+		SetLog($sText, $COLOR_DEBUG)
 	EndIf
 #comments-end
 	If IsArray($aCoord) Then
@@ -119,20 +119,20 @@ Func RemoveDupNearby(ByRef $sLocCoord, $iDistance = 8)
 					If $aLoc2[0] = 2 Then
 						; is new location inside rectangle of existing location +/- $iDistance using WINAPI
 						If _WinAPI_PtInRectEx($aLoc2[1], $aLoc2[2], $aLoc1[1] - $iDistance, $aLoc1[2] - $iDistance, $aLoc1[1] + $iDistance, $aLoc1[2] + $iDistance) = True Then
-							SetDebuglog("Duplicate location found, skipping: " & $aLoc2[1] & "," & $aLoc2[2], $COLOR_INFO)
+							SetDebugLog("Duplicate location found, skipping: " & $aLoc2[1] & "," & $aLoc2[2], $COLOR_INFO)
 							$aCoord[$np] = "" ; zero out location points
 							$bRemovedDuplicate = True
 						EndIf
 					Else
-						Setlog("RemoveDupNearby stringsplit value error!", $COLOR_ERROR)
+						SetLog("RemoveDupNearby stringsplit value error!", $COLOR_ERROR)
 					EndIf
 				Next
 			Else
-				Setlog("RemoveDupNearby string value error!", $COLOR_ERROR)
+				SetLog("RemoveDupNearby string value error!", $COLOR_ERROR)
 			EndIf
 		Next
 	Else
-		Setlog("RemoveDupNearby location string paramenter error!", $COLOR_ERROR)
+		SetLog("RemoveDupNearby location string paramenter error!", $COLOR_ERROR)
 	EndIf
 
 	If $bRemovedDuplicate = True Then
@@ -151,21 +151,21 @@ Func RemoveDupNearby(ByRef $sLocCoord, $iDistance = 8)
 		If StringInStr($sTmpVector, "|", $STR_NOCASESENSEBASIC) > 0 Then ; have more than 1 location
 			Local $aCoord2 = StringSplit($sTmpVector, "|") ; split to obtain new coord count
 			If @error Then
-				SetDebuglog("$sTmpVector string split failed: " & $aCoord2[1] & " , skip duplicate removal", $COLOR_WARNING)
+				SetDebugLog("$sTmpVector string split failed: " & $aCoord2[1] & " , skip duplicate removal", $COLOR_WARNING)
 				Return $aCoord[0] ; failsafe exit = always return same count as given
 			EndIf
 		Else ; have one location
 			If $sTmpVector <> "" then  ; if not empty
 				Local $aCoord2 = [ 1, $sTmpVector]
 			Else
-				SetDebuglog("Impossible error: RemoveDupNearby removed all points!", $COLOR_ERROR)
+				SetDebugLog("Impossible error: RemoveDupNearby removed all points!", $COLOR_ERROR)
 				Return $aCoord[0]
 			EndIf
 		EndIf
 
 		If $g_bDebugSetlog And $aCoord[0] <> $aCoord2[0] Then
-			SetDebuglog("Duplicate objectpoints found, removed: " & $aCoord[0] - $aCoord2[0], $COLOR_INFO)
-			SetDebuglog("Final Coords count= " & $aCoord2[0], $COLOR_DEBUG)
+			SetDebugLog("Duplicate objectpoints found, removed: " & $aCoord[0] - $aCoord2[0], $COLOR_INFO)
+			SetDebugLog("Final Coords count= " & $aCoord2[0], $COLOR_DEBUG)
 		EndIf
 
 		$sLocCoord = $sTmpVector ; If no errors in count, change BYREF string to new one.
@@ -194,7 +194,7 @@ EndFunc   ;==>RemoveDupNearby
 ; Return values .: Returns new count of locations in $sLoc1Coord - adds new points to Existing location string by reference
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -202,7 +202,7 @@ EndFunc   ;==>RemoveDupNearby
 ; ===============================================================================================================================
 Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $iDistance = 8)
 
-	If $g_bDebugSetlog Then Setlog("Begin AddPoints_RemoveDuplicate", $COLOR_DEBUG1)
+	If $g_bDebugSetlog Then SetDebugLog("Begin AddPoints_RemoveDuplicate", $COLOR_DEBUG1)
 
 	Local $aCoord1 = StringSplit($sLoc1Coord, "|")
 	Local $aCoord2 = StringSplit($sLoc2Coord, "|")
@@ -211,13 +211,13 @@ Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $
 #comments-start
 	If $g_bDebugSetlog Then ; debug log values till know code is working...
 		Local $sText = "INPUT $aCoord1"
-		Setlog("INPUT $aCoord1 count " & $aCoord1[0], $COLOR_DEBUG)
+		SetLog("INPUT $aCoord1 count " & $aCoord1[0], $COLOR_DEBUG)
 		For $p = 1 To $aCoord1[0]
 			$sText &= "[" & $p & "}:" & $aCoord1[$p] & "; "
 		Next
 		SetLog($sText, $COLOR_DEBUG)
 		$sText = "INPUT $aCoord2"
-		Setlog("INPUT $aCoord2 count " & $aCoord2[0], $COLOR_DEBUG)
+		SetLog("INPUT $aCoord2 count " & $aCoord2[0], $COLOR_DEBUG)
 		For $p = 1 To $aCoord2[0]
 			$sText &= "[" & $p & "}:" & $aCoord2[$p] & "; "
 		Next
@@ -234,27 +234,27 @@ Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $
 					If $aLoc2[0] = 2 Then
 						; is new location inside rectangle of existing location +/- $iDistance using WINAPI
 						If _WinAPI_PtInRectEx($aLoc2[1], $aLoc2[2], $aLoc1[1] - $iDistance, $aLoc1[2] - $iDistance, $aLoc1[1] + $iDistance, $aLoc1[2] + $iDistance) = True Then
-							SetDebuglog("Duplicate location found, skipping: " & $aLoc2[1] & "," & $aLoc2[2], $COLOR_INFO)
+							SetDebugLog("Duplicate location found, skipping: " & $aLoc2[1] & "," & $aLoc2[2], $COLOR_INFO)
 							$aCoord2[$np] = "" ; zero out location points
 						EndIf
 					Else
-						Setlog("RemoveDuplicatePoints New string value error!", $COLOR_ERROR)
+						SetLog("RemoveDuplicatePoints New string value error!", $COLOR_ERROR)
 					EndIf
 				Next
 			Else
-				Setlog("RemoveDuplicatePoints Existing string value error!", $COLOR_ERROR)
+				SetLog("RemoveDuplicatePoints Existing string value error!", $COLOR_ERROR)
 			EndIf
 		Next
 #comments-start
 		If $g_bDebugSetlog Then ; debug log values till know code is working...
 			Local $sText = "OUTPUT $aCoord1"
-			Setlog("OUTPUT $aCoord1 count " & $aCoord1[0], $COLOR_DEBUG)
+			SetLog("OUTPUT $aCoord1 count " & $aCoord1[0], $COLOR_DEBUG)
 			For $p = 1 To $aCoord1[0]
 				$sText &= "[" & $p & "}:" & $aCoord1[$p] & "; "
 			Next
 			SetLog($sText, $COLOR_DEBUG)
 			$sText = "OUTPUT $aCoord2"
-			Setlog("OUTPUT $aCoord2 count " & $aCoord2[0], $COLOR_DEBUG)
+			SetLog("OUTPUT $aCoord2 count " & $aCoord2[0], $COLOR_DEBUG)
 			For $p = 1 To $aCoord2[0]
 				$sText &= "[" & $p & "}:" & $aCoord2[$p] & "; "
 			Next
@@ -270,16 +270,16 @@ Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $
 				EndIf
 				If ($aCoord1[0] + $iPointsAdded) >= $iReturnpoints Then ; Stop adding points if reached maximum allowed.
 					If $aCoord2[0] > $np And $aCoord2[$np + 1] <> "" Then
-						Setlog("AddPoints_RemoveDuplicate found more locatons then requested!", $COLOR_ERROR)
-						Setlog("Location string truncated to max requested: " & $iReturnpoints, $COLOR_ERROR)
+						SetLog("AddPoints_RemoveDuplicate found more locatons then requested!", $COLOR_ERROR)
+						SetLog("Location string truncated to max requested: " & $iReturnpoints, $COLOR_ERROR)
 						ExitLoop
 					EndIf
 				EndIf
 			EndIf
 		Next
-		SetDebuglog("Final $sLoc1Coord= "& $sLoc1Coord, $COLOR_DEBUG)
+		SetDebugLog("Final $sLoc1Coord= "& $sLoc1Coord, $COLOR_DEBUG)
 	Else
-		Setlog("RemoveDuplicatePoints location string paramenter error!", $COLOR_ERROR)
+		SetLog("RemoveDuplicatePoints location string paramenter error!", $COLOR_ERROR)
 	EndIf
 
 	Return ($aCoord1[0] + $iPointsAdded)
@@ -300,7 +300,7 @@ EndFunc   ;==>AddPoints_RemoveDuplicate
 ; Return values .: FALSE if any location is on outside when $sSide - "IN"  or FALSE when any location is on inside when $sSide = "OUT", TRUE when all locations met conditions
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -312,16 +312,16 @@ Func IsNearCircle($aTargetLoc, $aBuildingNearPoints, $iDistance = 25, $sSide = "
 		Local $CheckX = $aTargetLoc[0]
 		Local $CheckY = $aTargetLoc[1]
 	Else
-		Setlog("Target building is not location array", $COLOR_ERROR)
+		SetLog("Target building is not location array", $COLOR_ERROR)
 		Return SetError(1, 0, False)
 	EndIf
 
 	If IsArray($aBuildingNearPoints) = False Then ; verify location array
-		Setlog("Building near points are not location array(s)", $COLOR_ERROR)
+		SetLog("Building near points are not location array(s)", $COLOR_ERROR)
 		Return SetError(2, 0, False)
 	EndIf
 
-	If $sSide <> "IN" Or $sSide <> "OUT" Then Setlog("Input parameter SIDE error IsNearCircle!", $COLOR_ERROR) ; Check $sSide parameter
+	If $sSide <> "IN" Or $sSide <> "OUT" Then SetLog("Input parameter SIDE error IsNearCircle!", $COLOR_ERROR) ; Check $sSide parameter
 
 	Local $aNearBldg
 	For $loc = 0 To UBound($aBuildingNearPoints) - 1

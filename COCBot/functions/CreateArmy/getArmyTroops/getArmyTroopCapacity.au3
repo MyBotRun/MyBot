@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -47,7 +47,7 @@ Func getArmyTroopCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return ; Wait 250ms before reading again
 		ForceCaptureRegion()
 		$sArmyInfo = getArmyCampCap($aArmyCampSize[0], $aArmyCampSize[1], $bNeedCapture) ; OCR read army trained and total
-		If $g_bDebugSetlogTrain Then Setlog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Then SetLog("OCR $sArmyInfo = " & $sArmyInfo, $COLOR_DEBUG)
 		If StringInStr($sArmyInfo, "#", 0, 1) < 2 Then ContinueLoop ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
 
 		$aGetArmyCap = StringSplit($sArmyInfo, "#") ; split the trained troop number from the total troop number
@@ -71,9 +71,9 @@ Func getArmyTroopCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 	If $iCount <= 99 Then
 		$g_CurrentCampUtilization = $tmpCurCamp
 		If $g_iTotalCampSpace = 0 Then $g_iTotalCampSpace = $tmpTotalCamp
-		If $g_bDebugSetlogTrain Then Setlog("$g_CurrentCampUtilization = " & $g_CurrentCampUtilization & ", $g_iTotalCampSpace = " & $g_iTotalCampSpace, $COLOR_DEBUG)
+		If $g_bDebugSetlogTrain Then SetLog("$g_CurrentCampUtilization = " & $g_CurrentCampUtilization & ", $g_iTotalCampSpace = " & $g_iTotalCampSpace, $COLOR_DEBUG)
 	Else
-		Setlog("Army size read error, Troop numbers may not train correctly", $COLOR_ERROR) ; log if there is read error
+		SetLog("Army size read error, Troop numbers may not train correctly", $COLOR_ERROR) ; log if there is read error
 		$g_CurrentCampUtilization = 0
 		CheckOverviewFullArmy()
 	EndIf
@@ -90,7 +90,7 @@ Func getArmyTroopCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 					"(This window closes in 2 Minutes with value of " & $proposedTotalCamp & ")", $proposedTotalCamp, "", 330, 220, Default, Default, 120, $g_hFrmBot)
 			Local $error = @error
 			If $error = 1 Then
-				Setlog("Army Camp User input cancelled, still using " & $g_iTotalCampSpace, $COLOR_ACTION)
+				SetLog("Army Camp User input cancelled, still using " & $g_iTotalCampSpace, $COLOR_ACTION)
 			Else
 				If $error = 2 Then
 					; Cancelled, using proposed value
@@ -101,10 +101,10 @@ Func getArmyTroopCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 				If $error = 0 Then
 					$g_iTotalCampForcedValue = $g_iTotalCampSpace
 					$g_bTotalCampForced = True
-					Setlog("Army Camp User input = " & $g_iTotalCampSpace, $COLOR_INFO)
+					SetLog("Army Camp User input = " & $g_iTotalCampSpace, $COLOR_INFO)
 				Else
 					; timeout
-					Setlog("Army Camp proposed value = " & $g_iTotalCampSpace, $COLOR_ACTION)
+					SetLog("Army Camp proposed value = " & $g_iTotalCampSpace, $COLOR_ACTION)
 				EndIf
 			EndIf
 		Else

@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: ProMac 2015
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -97,7 +97,7 @@ Func _LocateQueenAltar()
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $g_bDebugSetlog Then SetLog($sInfo[1] & $sInfo[2])
+		If $g_bDebugSetlog Then SetDebugLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -231,7 +231,7 @@ Func _LocateKingAltar()
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $g_bDebugSetlog Then SetLog($sInfo[1] & $sInfo[2])
+		If $g_bDebugSetlog Then SetDebugLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -370,7 +370,7 @@ Func _LocateWardenAltar()
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $g_bDebugSetlog Then SetLog($sInfo[1] & $sInfo[2])
+		If $g_bDebugSetlog Then SetDebugLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
