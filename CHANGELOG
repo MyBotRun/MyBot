@@ -1,3 +1,6 @@
+* **V7.4.1**
+* Fix BlueStacks reboot loop due to DPI=160 not correctly set in registry
+
 * **V7.4**
 * Add Switch Accounts feature
 * Add BlueStacks N support, still using Android Emulator Key BlueStacks2 (https://www.bluestacks.com/download-android-n.html)

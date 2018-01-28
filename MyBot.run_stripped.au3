@@ -9,7 +9,7 @@
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.4"
+Global $g_sBotVersion = "v7.4.1"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -43535,7 +43535,7 @@ RegWrite($REGISTRY_KEY_DIRECTORY, "WindowWidth", "REG_DWORD", $g_iAndroidClientW
 $REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance
 Local $BootParameter = RegRead($REGISTRY_KEY_DIRECTORY, "BootParameters")
 $BootParameter = StringRegExpReplace($BootParameter, "DPI=\d+", "DPI=160")
-If @error = 0 Then
+If @error = 0 And @extended > 0 Then
 RegWrite($REGISTRY_KEY_DIRECTORY, "BootParameters", "REG_SZ", $BootParameter)
 Else
 RegWrite($REGISTRY_KEY_DIRECTORY, "BootParameters", "REG_SZ", $BootParameter & " DPI=160")
