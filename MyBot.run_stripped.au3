@@ -9,7 +9,7 @@
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.4.1"
+Global $g_sBotVersion = "v7.4.2"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -7082,6 +7082,7 @@ Global Const $DELAYTRAIN6 = 20
 Global Const $DELAYTRAIN8 = 5000
 Global Const $DELAYLVUP = 150
 Global Const $DELAYISTRAINPAGE2 = 1000
+Global Const $DELAYAUTOUPGRADEBUILDING1 = 1000
 Global Const $DELAYUPGRADEBUILDING1 = 200
 Global Const $DELAYUPGRADEBUILDING2 = 500
 Global Const $DELAYUPGRADENORMAL1 = 700
@@ -41461,6 +41462,7 @@ EndIf
 If $bNeedCapture Then _CaptureRegion2($Left, $Top, $Right, $Bottom)
 Local $Res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $directory, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
 If @error Then _logErrorDLLCall($g_sLibMyBotPath, @error)
+If $g_bDebugImageSave Then DebugImageSave("QuickMIS_" & $ValueReturned, False)
 If IsArray($Res) Then
 If $Debug Then _ArrayDisplay($Res)
 If $g_bDebugSetlog Then SetDebugLog("DLL Call succeeded " & $Res[0], $COLOR_PURPLE)
@@ -43553,8 +43555,10 @@ RegWrite($REGISTRY_KEY_DIRECTORY, "FEControlBar", "REG_DWORD", "0")
 $REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance
 Local $BootParameter = RegRead($REGISTRY_KEY_DIRECTORY, "BootParameters")
 $BootParameter = StringRegExpReplace($BootParameter, "DPI=\d+", "DPI=160")
-If @error = 0 Then
+If @error = 0 And @extended > 0 Then
 RegWrite($REGISTRY_KEY_DIRECTORY, "BootParameters", "REG_SZ", $BootParameter)
+Else
+RegWrite($REGISTRY_KEY_DIRECTORY, "BootParameters", "REG_SZ", $BootParameter & " DPI=160")
 EndIf
 EndFunc
 Func RebootBlueStacksSetScreen()
@@ -56755,7 +56759,7 @@ While 1
 $iLoopAmount += 1
 If $iLoopAmount >= $iLoopMax Or $iLoopAmount >= 12 Then ExitLoop
 ClickP($aAway, 1, 0, "#0000")
-randomSleep(1000)
+randomSleep($DELAYAUTOUPGRADEBUILDING1)
 VillageReport()
 If $g_iFreeBuilderCount < 1 Then
 SetLog("No builder available... Skipping Auto Upgrade...", $COLOR_WARNING)
@@ -56770,7 +56774,7 @@ SetLog("Unable to find the Builder menu button... Exiting Auto Upgrade...", $COL
 ExitLoop
 EndIf
 Click(295, 30)
-If _Sleep(1000) Then Return
+If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 If QuickMIS("BC1", $g_sImgAUpgradeZero, 180, 80 + $g_iNextLineOffset, 480, 350) Then
 SetLog("Possible upgrade found !", $COLOR_SUCCESS)
 $g_iCurrentLineOffset = $g_iNextLineOffset + $g_iQuickMISY
@@ -56784,7 +56788,7 @@ $g_iNextLineOffset = $g_iCurrentLineOffset
 ContinueLoop
 EndIf
 Click(180 + $g_iQuickMISX, 80 + $g_iCurrentLineOffset)
-If _Sleep(500) Then Return
+If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 If Not QuickMIS("BC1", $g_sImgAUpgradeUpgradeBtn, 120, 630, 740, 670) Then
 SetLog("No upgrade here... Wrong click, looking next...", $COLOR_WARNING)
 ContinueLoop
@@ -56831,7 +56835,7 @@ $g_iNextLineOffset = $g_iCurrentLineOffset
 ContinueLoop
 EndIf
 Click(120 + $g_iQuickMISX, 630 + $g_iQuickMISY)
-If _Sleep(1000) Then Return
+If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 Switch $g_aUpgradeNameLevel[1]
 Case "Barbarian King", "Archer Queen", "Grand Warden"
 $g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 690, 540, 730, 580)

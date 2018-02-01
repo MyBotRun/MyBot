@@ -304,6 +304,9 @@ Global Const $g_iQuickTrainButtonRetryDelay = 1000
 Global Const $DELAYISTRAINPAGE1 = 100
 Global Const $DELAYISTRAINPAGE2 = 1000
 
+;AutoUpgradeBuilding
+Global Const $DELAYAUTOUPGRADEBUILDING1 = 1000
+
 ;UpgradeBuilding
 Global Const $DELAYUPGRADEBUILDING1 = 200
 Global Const $DELAYUPGRADEBUILDING2 = 500

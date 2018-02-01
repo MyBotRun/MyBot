@@ -1,3 +1,7 @@
+* **V7.4.2**
+* Fix BlueStacks2 reboot loop due to DPI=160 not correctly set in registry
+* Fix "No upgrade here... Wrong click.." auto upgrade error
+
 * **V7.4.1**
 * Fix BlueStacks reboot loop due to DPI=160 not correctly set in registry
 
