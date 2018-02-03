@@ -131,7 +131,7 @@ Func DonateCC($bCheckForNewMsg = False)
 
 		If _Sleep($DELAYDONATECC2) Then ExitLoop
 		ForceCaptureRegion()
-		$g_aiDonatePixel = _MultiPixelSearch(202, $y, 224, 660 + $g_iBottomOffsetY, 50, 1, Hex(0x98D057, 6), $aChatDonateBtnColors, 20)
+		$g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
 		If IsArray($g_aiDonatePixel) Then ; if Donate Button found
 			If $g_bDebugSetlog Then SetDebugLog("$g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
 
@@ -526,7 +526,7 @@ Func DonateCC($bCheckForNewMsg = False)
 		EndIf
 		;ck for more donate buttons
 		ForceCaptureRegion()
-		$g_aiDonatePixel = _MultiPixelSearch(202, $y, 224, 660 + $g_iBottomOffsetY, 50, 1, Hex(0x98D057, 6), $aChatDonateBtnColors, 20)
+		$g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
 		If IsArray($g_aiDonatePixel) Then
 			If $g_bDebugSetlog Then SetDebugLog("More Donate buttons found, new $g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
 			ContinueLoop
@@ -934,7 +934,7 @@ Func DonateWindow($bOpen = True)
 	$iRight += $g_aiDonatePixel[0] + 1
 	$iBottom += $g_aiDonatePixel[1] + 1
 	ForceCaptureRegion()
-	Local $g_aiDonatePixelCheck = _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, 50, 1, Hex(0x98D057, 6), $aChatDonateBtnColors, 15)
+	Local $g_aiDonatePixelCheck = _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 15)
 	If IsArray($g_aiDonatePixelCheck) Then
 		Click($g_aiDonatePixel[0] + 50, $g_aiDonatePixel[1] + 10, 1, 0, "#0174")
 	Else
@@ -947,6 +947,7 @@ Func DonateWindow($bOpen = True)
 	Local $icount = 0
 	While Not (_ColorCheck(_GetPixelColor(331, $g_aiDonatePixel[1], True, "DonateWindow"), Hex(0xffffff, 6), 0))
 		If _Sleep($DELAYDONATEWINDOW2) Then Return
+		ForceCaptureRegion()
 		;_CaptureRegion(0, 0, 320 + $g_iMidOffsetY, $g_aiDonatePixel[1] + 30 + $YComp)
 		$icount += 1
 		If $icount = 20 Then ExitLoop
@@ -956,6 +957,7 @@ Func DonateWindow($bOpen = True)
 	; Will search in $Y column = 410 for the first pure white color and determinate that position the $DonationWindowTemp
 	$g_iDonationWindowY = 0
 
+	ForceCaptureRegion()
 	Local $aDonWinOffColors[1][3] = [[0xFFFFFF, 0, 2]]
 	Local $aDonationWindow = _MultiPixelSearch(628, 0, 630, $g_iDEFAULT_HEIGHT, 1, 1, Hex(0xFFFFFF, 6), $aDonWinOffColors, 10)
 

@@ -9,7 +9,7 @@
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.4.2"
+Global $g_sBotVersion = "v7.4.3"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -234,6 +234,7 @@ If @error Then Return SetError(@error, @extended, "")
 If $iReturn >= 0 And $iReturn <= 4 Then Return $aResult[$iReturn]
 Return $aResult
 EndFunc
+Global Const $STR_NOCASESENSE = 0
 Global Const $STR_CASESENSE = 1
 Global Const $STR_NOCASESENSEBASIC = 2
 Global Const $STR_STRIPLEADING = 1
@@ -6122,7 +6123,7 @@ Global $__MEmu_PhoneLayout = "2"
 Global $__MEmu_Window[4][5] = [ ["3.0.8", $g_iDEFAULT_WIDTH + 40, $g_iDEFAULT_HEIGHT - 14, 36, "-1"], ["2.6.2", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40, "2"], ["2.5.0", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"], ["2.2.1", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"] ]
 Global $__Droid4X_Window[3][3] = [ ["0.10.0", $g_iDEFAULT_WIDTH + 6, $g_iDEFAULT_HEIGHT + 53], ["0.8.6", $g_iDEFAULT_WIDTH + 10, $g_iDEFAULT_HEIGHT + 50] ]
 Global $__Nox_Config[1][2] = [ ["3.3.0", "[CLASS:subWin; INSTANCE:1]|[TEXT:QWidgetClassWindow; CLASS:Qt5QWindowIcon]"] ]
-Global $g_avAndroidAppConfig[8][16] = [ ["Nox", "nox", "No", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10,0, "127.0.0.1:62001", 1 + 2 + 4 + 8 + 16 + 32 + 256,'# ', '(nox Virtual Input|Android Input|Android_Input)', 0, 2], ["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 51,$g_iDEFAULT_HEIGHT - 12,0, "127.0.0.1:21503", 2 + 4 + 8 + 16 + 32, '# ', 'Microvirt Virtual Input', 0, 2], ["BlueStacks2","Android", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 2 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["iTools", "iToolsVM","iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13,0, "127.0.0.1:54001", 1 + 2 + 8 + 16 + 32 + 64, '# ', 'iTools Virtual PassThrough Input', 0, 1], ["KOPLAYER", "KOPLAYER","KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 64,$g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 1 + 2 + 4 + 8 + 16 + 32, '# ', 'ttVM Virtual Input', 0, 2], ["Droid4X", "droid4x", "Droid4X ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 10,$g_iDEFAULT_HEIGHT + 50,0, "127.0.0.1:26944", 2 + 4 + 8 + 16 + 32, '# ', 'droid4x Virtual Input', 0, 2], ["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "emulator-5554", 1 + 8 + 16 + 32, '# ', 'qwerty2', 1, 1] ]
+Global $g_avAndroidAppConfig[8][16] = [ ["Nox", "nox", "No", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10,0, "127.0.0.1:62001", 1 + 2 + 4 + 8 + 16 + 32 + 256,'# ', '(nox Virtual Input|Android Input|Android_Input)', 0, 2], ["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 51,$g_iDEFAULT_HEIGHT - 12,0, "127.0.0.1:21503", 2 + 4 + 8 + 16 + 32, '# ', '(Microvirt Virtual Input|User Input)', 0, 2], ["BlueStacks2","Android", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 2 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["iTools", "iToolsVM","iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13,0, "127.0.0.1:54001", 1 + 2 + 8 + 16 + 32 + 64, '# ', 'iTools Virtual PassThrough Input', 0, 1], ["KOPLAYER", "KOPLAYER","KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 64,$g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 1 + 2 + 4 + 8 + 16 + 32, '# ', 'ttVM Virtual Input', 0, 2], ["Droid4X", "droid4x", "Droid4X ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 10,$g_iDEFAULT_HEIGHT + 50,0, "127.0.0.1:26944", 2 + 4 + 8 + 16 + 32, '# ', 'droid4x Virtual Input', 0, 2], ["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "emulator-5554", 1 + 8 + 16 + 32, '# ', 'qwerty2', 1, 1] ]
 Global $__MEmu_Idx = _ArraySearch($g_avAndroidAppConfig, "MEmu", 0, 0, 0, 0, 1, 0)
 Global $__BS2_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks2", 0, 0, 0, 0, 1, 0)
 Global $__BS_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks", 0, 0, 0, 0, 1, 0)
@@ -6172,6 +6173,7 @@ Global $g_iAndroidControlClickDownDelay = 2
 Global $g_iAndroidControlClickWindow = 0
 Global $g_iAndroidControlClickMode = 0
 Global $g_bAndroidCloseWithBot = False
+Global $g_bAndroidInitialized = False
 Global $g_iAndroidProcessAffinityMask = 0
 Global Const $g_iAndroidJellyBean = 17
 Global Const $g_iAndroidLollipop = 21
@@ -7300,7 +7302,7 @@ Global $NextBtn[4] = [780, 546 + $g_iBottomOffsetY, 0xD34300, 20]
 Global $aRequestTroopsAO[6] = [754, 580, 0x919191, 0x6DB630, 0xFFFFFE, 15]
 Global Const $aOpenChatTab[4] = [19, 335 + $g_iMidOffsetY, 0xE88D27, 20]
 Global Const $aCloseChat[4] = [331, 330 + $g_iMidOffsetY, 0xF0951D, 20]
-Global Const $aChatDonateBtnColors[4][4] = [[0x050505, 0, -4, 30], [0x89CA31, 0, 13, 15], [0x89CA31, 0, 16, 15], [0xFFFFFF, 21, 7, 5]]
+Global Const $aChatDonateBtnColors[4][4] = [[0x0d0d0d, 0, -4, 20], [0xdaf582, 10, 0, 20], [0xcdef75, 10, 5, 20], [0xFFFFFF, 24, 9, 10]]
 Global Const $aAtkRprtDECheck[4] = [459, 372 + $g_iMidOffsetY, 0x433350, 20]
 Global Const $aAtkRprtTrophyCheck[4] = [327, 189 + $g_iMidOffsetY, 0x3B321C, 30]
 Global Const $aAtkRprtDECheck2[4] = [678, 418 + $g_iMidOffsetY, 0x030000, 30]
@@ -8180,6 +8182,7 @@ Global $g_hSuspendAndroidTimer = 0
 Global $g_aiMouseOffset = [0, 0]
 Global $g_aiMouseOffsetWindowOnly = [0, 0]
 Func InitAndroidConfig($bRestart = False)
+FuncEnter(InitAndroidConfig)
 If $bRestart = False Then
 $g_sAndroidEmulator = $g_avAndroidAppConfig[$g_iAndroidConfig][0]
 $g_sAndroidInstance = $g_avAndroidAppConfig[$g_iAndroidConfig][1]
@@ -8211,6 +8214,7 @@ If $g_bAndroidAdbScreencap Then
 UpdateChkBackground()
 EndIf
 UpdateHWnD($g_hAndroidWindow, False)
+FuncReturn()
 EndFunc
 Func AndroidSupportFeaturesSet($iValue, $iIdx = $g_iAndroidConfig)
 $g_avAndroidAppConfig[$iIdx][11] = BitOR($g_avAndroidAppConfig[$iIdx][11], $iValue)
@@ -8254,6 +8258,7 @@ EndIf
 Return StringMid(_Crypt_HashData($Filename, $CALG_SHA1), 3)
 EndFunc
 Func UpdateAndroidConfig($instance = Default, $emulator = Default)
+FuncEnter(UpdateAndroidConfig)
 If $emulator <> Default Then
 For $i = 0 To UBound($g_avAndroidAppConfig) - 1
 If $g_avAndroidAppConfig[$i][0] = $emulator Then
@@ -8280,7 +8285,7 @@ $g_sAndroidPicturesHostFolder = "mybot.run\"
 EndIf
 Local $Result = InitAndroid(False, False)
 SetDebugLog("UpdateAndroidConfig(""" & $instance & """) END")
-Return $Result
+Return FuncReturn($Result)
 EndFunc
 Func UpdateAndroidWindowState()
 Local $bChanged = Execute("Update" & $g_sAndroidEmulator & "WindowState()")
@@ -8314,6 +8319,7 @@ EndIf
 Return SetError(0, 0, $g_sAppClassInstance)
 EndFunc
 Func UpdateHWnD($hWin, $bRestart = True)
+FuncEnter(UpdateHWnD)
 If $hWin = 0 Then
 If $g_hAndroidWindow <> 0 And $bRestart Then
 $g_bRestart = True
@@ -8322,7 +8328,7 @@ $g_hAndroidWindow = 0
 GetAndroidControlClass(True, True)
 ResetAndroidProcess()
 InitAndroidRebootCondition(False)
-Return False
+Return FuncReturn(False)
 EndIf
 If $g_hAndroidWindow <> 0 And $bRestart Then
 $g_bRestart = True
@@ -8339,13 +8345,14 @@ CheckDpiAwareness()
 InitAndroidTimeLag()
 ResetAndroidProcess()
 GetAndroidControlClass(True, True)
-If @error Then Return SetError(1, 0, False)
-Return SetError(0, 0, True)
+If @error Then Return FuncReturn(SetError(1, 0, False))
+Return FuncReturn(SetError(0, 0, True))
 EndFunc
 Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
+FuncEnter(WinGetAndroidHandle)
 If $bInitAndroid = Default Then $bInitAndroid = $g_bInitAndroidActive = False
 If $g_bWinGetAndroidHandleActive = True Then
-Return $g_hAndroidWindow
+Return FuncReturn($g_hAndroidWindow)
 EndIf
 $g_bWinGetAndroidHandleActive = True
 Local $currHWnD = $g_hAndroidWindow
@@ -8391,11 +8398,11 @@ HideAndroidWindow(True, Default, Default, "WinGetAndroidHandle:2")
 EndIf
 EndIf
 $g_bWinGetAndroidHandleActive = False
-Return $g_hAndroidWindow
+Return FuncReturn($g_hAndroidWindow)
 EndIf
 If $g_bAndroidBackgroundLaunch = False And $bTestPid = False Then
 $g_bWinGetAndroidHandleActive = False
-Return $g_hAndroidWindow
+Return FuncReturn($g_hAndroidWindow)
 EndIf
 If $g_hAndroidWindow <> 0 Then
 If $g_hAndroidWindow = ProcessExists2($g_hAndroidWindow) Then
@@ -8420,7 +8427,7 @@ If $pid <> 0 Then
 SetDebugLog("Found " & $g_sAndroidEmulator & $instance & " process " & $pid & " ('" & $commandLine & "')")
 If $bTestPid = True Then
 $g_bWinGetAndroidHandleActive = False
-Return $pid
+Return FuncReturn($pid)
 EndIf
 If $g_bAndroidAdbScreencap = True And $g_bAndroidAdbClick = False And AndroidAdbClickSupported() = True Then
 SetLog("Enabled ADB Click to support background mode", $COLOR_ACTION)
@@ -8461,7 +8468,7 @@ $g_bInitAndroid = True
 $g_bAndroidBackgroundLaunched = False
 EndIf
 $g_bWinGetAndroidHandleActive = False
-Return $g_hAndroidWindow
+Return FuncReturn($g_hAndroidWindow)
 EndFunc
 Func GetAndroidPid()
 Local $h = WinGetAndroidHandle(Default, True)
@@ -8646,6 +8653,7 @@ Local $pid = ProcessExists2("", $uuid, 1, 1)
 Return $pid
 EndFunc
 Func GetAndroidRunningInstance($bStrictCheck = True)
+FuncEnter(GetAndroidRunningInstance)
 Local $runningInstance = Execute("Get" & $g_sAndroidEmulator & "RunningInstance(" & $bStrictCheck & ")")
 Local $i
 If $runningInstance = "" And @error <> 0 Then
@@ -8676,12 +8684,12 @@ EndIf
 Next
 EndIf
 If $a[0] <> 0 Then SetDebugLog("Running " & $g_sAndroidEmulator & " instance is """ & $g_sAndroidInstance & """")
-Return $a
+Return FuncReturn($a)
 EndIf
-Return $runningInstance
+Return FuncReturn($runningInstance)
 EndFunc
 Func DetectRunningAndroid()
-SetDebugLog("DetectRunningAndroid()")
+FuncEnter(DetectRunningAndroid)
 $g_bFoundRunningAndroid = False
 Local $i, $iCurrentConfig = $g_iAndroidConfig
 $g_bSilentSetLog = True
@@ -8698,7 +8706,7 @@ $g_bInitAndroid = True
 If InitAndroid() = True Then
 SetDebugLog("Found running " & $g_sAndroidEmulator & " " & $g_sAndroidVersion)
 EndIf
-Return
+Return FuncReturn()
 EndIf
 EndIf
 Next
@@ -8707,9 +8715,10 @@ $g_iAndroidConfig = $iCurrentConfig
 UpdateAndroidConfig()
 $g_bSilentSetLog = False
 SetDebugLog("Found no running Android Emulator")
+FuncReturn()
 EndFunc
 Func DetectInstalledAndroid()
-SetDebugLog("DetectInstalledAndroid()")
+FuncEnter(DetectInstalledAndroid)
 Local $i, $CurrentConfig = $g_iAndroidConfig
 $g_bSilentSetLog = True
 For $i = 0 To UBound($g_avAndroidAppConfig) - 1
@@ -8719,7 +8728,7 @@ If UpdateAndroidConfig() Then
 $g_bFoundInstalledAndroid = True
 $g_bSilentSetLog = False
 SetDebugLog("Found installed " & $g_sAndroidEmulator & " " & $g_sAndroidVersion)
-Return
+Return FuncReturn()
 EndIf
 Next
 $g_iAndroidConfig = $CurrentConfig
@@ -8727,6 +8736,7 @@ $g_bInitAndroid = True
 UpdateAndroidConfig()
 $g_bSilentSetLog = False
 SetDebugLog("Found no installed Android Emulator")
+FuncReturn()
 EndFunc
 Func FindPreferredAdbPath()
 Local $adbPath, $i
@@ -8757,9 +8767,11 @@ If $ReturnInitial Then Return $i2
 Return $i
 EndFunc
 Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
+FuncEnter(InitAndroid)
 If $bCheckOnly = False And $g_bInitAndroid = False Then
-Return True
+Return FuncReturn(True)
 EndIf
+$g_bAndroidInitialized = False
 $g_bInitAndroidActive = True
 Local $aPriorValues = [ $g_sAndroidEmulator , $g_iAndroidConfig , $g_sAndroidVersion , $g_sAndroidInstance , $g_sAndroidTitle , $g_sAndroidProgramPath , GetAndroidProgramParameter() ,((IsArray($g_avAndroidProgramFileVersionInfo) ? _ArrayToString($g_avAndroidProgramFileVersionInfo, ",", 1) : "not available")) , $g_iAndroidSecureFlags , $g_sAndroidAdbPath , $__VBoxManage_Path , $g_sAndroidAdbDevice , $g_sAndroidPicturesPath , $g_sAndroidPicturesHostPath , $g_sAndroidPicturesHostFolder , $g_sAndroidMouseDevice , $g_bAndroidAdbScreencap , $g_bAndroidAdbInput , $g_bAndroidAdbClick , $g_bAndroidAdbClickDrag ,($g_bChkBackgroundMode = True ? "enabled" : "disabled") , $g_bNoFocusTampering ]
 SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $g_sAndroidEmulator)
@@ -8831,12 +8843,13 @@ WinGetAndroidHandle()
 InitAndroidTimeLag()
 InitAndroidPageError()
 $g_bInitAndroid = Not $successful
+$g_bAndroidInitialized = True
 Else
 If $bCheckOnly = False Then $g_bInitAndroid = True
 EndIf
 SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $g_sAndroidEmulator & " END, initialization successful = " & $successful & ", result = " & $Result)
 $g_bInitAndroidActive = False
-Return $Result
+Return FuncReturn($Result)
 EndFunc
 Func GetAndroidProgramParameter($bAlternative = False)
 Local $parameter = Execute("Get" & $g_sAndroidEmulator & "ProgramParameter(" & $bAlternative & ")")
@@ -8856,11 +8869,12 @@ If $Result = "" And @error <> 0 Then $Result = ""
 Return $Result
 EndFunc
 Func OpenAndroid($bRestart = False, $bStartOnlyAndroid = False, $wasRunState = $g_bRunState)
+FuncEnter(OpenAndroid)
 Static $OpenAndroidActive = 0
 If $OpenAndroidActive >= $g_iOpenAndroidActiveMaxTry Then
 SetLog("Cannot open " & $g_sAndroidEmulator & ", tried " & $OpenAndroidActive & " times...", $COLOR_ERROR)
 btnStop()
-Return False
+Return FuncReturn(False)
 EndIf
 $OpenAndroidActive += 1
 If $OpenAndroidActive > 1 Then
@@ -8871,7 +8885,7 @@ Local $Result = _OpenAndroid($bRestart, $bStartOnlyAndroid)
 If $bStartOnlyAndroid = True And $wasRunState = False Then $g_bRunState = False
 WinGetAndroidHandle()
 $OpenAndroidActive -= 1
-Return $Result
+Return FuncReturn($Result)
 EndFunc
 Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
 ResumeAndroid()
@@ -8977,28 +8991,30 @@ $g_iAndroidCoCPid = 0
 $g_bMainWindowOk = False
 EndFunc
 Func CloseAndroid($sSource)
+FuncEnter(CloseAndroid)
 ResumeAndroid()
 ResetAndroidProcess()
 SetLog("Stopping " & $g_sAndroidEmulator & "....", $COLOR_INFO)
 SetDebugLog("CloseAndroid, caller: " & $sSource)
 AndroidEmbed(False)
 AndroidAdbTerminateShellInstance()
-If Not $g_bRunState Then Return False
+If Not $g_bRunState Then Return FuncReturn(False)
 SetLog("Please wait for full " & $g_sAndroidEmulator & " shutdown...", $COLOR_SUCCESS)
 Local $pid = GetAndroidPid()
 If ProcessExists2($pid) Then
 KillProcess($pid, "CloseAndroid")
-If _SleepStatus(1000) Then Return False
+If _SleepStatus(1000) Then Return FuncReturn(False)
 EndIf
 Local $Result = Execute("Close" & $g_sAndroidEmulator & "()")
-If Not $g_bRunState Then Return False
+If Not $g_bRunState Then Return FuncReturn(False)
 If ProcessExists($pid) Then
 SetLog("Failed to stop " & $g_sAndroidEmulator, $COLOR_ERROR)
 Else
 SetLog($g_sAndroidEmulator & " stopped successfully", $COLOR_SUCCESS)
 EndIf
-If Not $g_bRunState Then Return False
+If Not $g_bRunState Then Return FuncReturn(False)
 RemoveGhostTrayIcons()
+Return FuncReturn(True)
 EndFunc
 Func CloseVboxAndroidSvc()
 Local $process_killed
@@ -9007,6 +9023,7 @@ LaunchConsole($__VBoxManage_Path, "controlvm " & $g_sAndroidInstance & " powerof
 If _SleepStatus(3000) Then Return
 EndFunc
 Func CheckAndroidRunning($bQuickCheck = True, $bStartIfRequired = True, $bStartOnlyAndroid = False)
+FuncEnter(CheckAndroidRunning)
 Local $hWin = $g_hAndroidWindow
 If WinGetAndroidHandle() = 0 Or($bQuickCheck = False And $g_bAndroidBackgroundLaunched = False And AndroidControlAvailable() = 0) Then
 SetDebugLog($g_sAndroidEmulator & " not running")
@@ -9017,9 +9034,9 @@ Else
 RebootAndroid()
 EndIf
 EndIf
-Return False
+Return FuncReturn(False)
 EndIf
-Return True
+Return FuncReturn(True)
 EndFunc
 Func SetScreenAndroid()
 ResumeAndroid()
@@ -9069,6 +9086,48 @@ Return True
 EndIf
 WEnd
 Return False
+EndFunc
+Func FindAvaiableInstances($sVboxManage = $__VBoxManage_Path)
+Local $a = []
+If FileExists($sVboxManage) = 0 Then
+If $g_bDebugAndroid Then SetDebugLog("Cannot check for available " & $g_sAndroidEmulator & " instances: VBoxManager.exe not available", $COLOR_ERROR)
+Return $a
+EndIf
+ResumeAndroid()
+Local $cmdOutput, $connected_to, $running, $process_killed, $hMyTimer
+$cmdOutput = LaunchConsole($sVboxManage, "list vms", $process_killed)
+If $g_bDebugAndroid Then SetDebugLog("Available " & $g_sAndroidEmulator & " instances: " & $cmdOutput, $COLOR_ERROR)
+$a = StringRegExp($cmdOutput, """(.*?)""", $STR_REGEXPARRAYGLOBALMATCH)
+Return $a
+EndFunc
+Func GetAndroidVMinfo(ByRef $sVMinfo, $sVboxManage = $__VBoxManage_Path)
+Local $process_killed
+Local $as_Instances
+$sVMinfo = LaunchConsole($sVboxManage, "showvminfo " & $g_sAndroidInstance, $process_killed)
+If StringInStr($sVMinfo, "Could not find a registered machine named") > 0 Then
+$as_Instances = FindAvaiableInstances($sVboxManage)
+For $s In $as_Instances
+If StringCompare($g_sAndroidInstance, $s, $STR_NOCASESENSE) = 0 Then
+SetDebugLog("Using " & $g_sAndroidEmulator & " instance " & $s & " (" & $g_sAndroidInstance & " not found!)", $COLOR_ERROR)
+$g_sAndroidInstance = $s
+$sVMinfo = LaunchConsole($sVboxManage, "showvminfo " & $g_sAndroidInstance, $process_killed)
+ExitLoop
+EndIf
+Next
+EndIf
+If StringInStr($sVMinfo, "Could not find a registered machine named") > 0 Then
+SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
+If UBound($as_Instances) = 0 Then
+SetLog("No " & $g_sAndroidEmulator & " instance found, please check installation", $COLOR_ERROR)
+Else
+SetLog("Available " & $g_sAndroidEmulator & " instances are:", $COLOR_ERROR)
+For $s In $as_Instances
+SetLog($s, $COLOR_ERROR)
+Next
+EndIf
+Return False
+EndIf
+Return True
 EndFunc
 Func WaitForAndroidBootCompleted($WaitInSec = 120, $hTimer = 0)
 ResumeAndroid()
@@ -9219,14 +9278,15 @@ EndSwitch
 Return $connected_to
 EndFunc
 Func RebootAndroid($bRestart = True, $bStartOnlyAndroid = False)
+FuncEnter(RebootAndroid)
 ResumeAndroid()
-If Not $g_bRunState Then Return False
+If Not $g_bRunState Then Return FuncReturn(False)
 If CloseUnsupportedAndroid() Then
 Else
 CloseAndroid("RebootAndroid")
 EndIf
-If _Sleep(1000) Then Return False
-Return OpenAndroid($bRestart, $bStartOnlyAndroid)
+If _Sleep(1000) Then Return FuncReturn(False)
+Return FuncReturn(OpenAndroid($bRestart, $bStartOnlyAndroid))
 EndFunc
 Func RebootAndroidSetScreenDefault()
 ResumeAndroid()
@@ -9307,6 +9367,8 @@ EndIf
 Return $s
 EndFunc
 Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+FuncEnter(AndroidAdbLaunchShellInstance)
+If Not $g_bAndroidInitialized Then Return FuncReturn()
 If $wasRunState = Default Then $wasRunState = $g_bRunState
 If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 Local $SuspendMode = ResumeAndroid()
@@ -9327,7 +9389,7 @@ Next
 EndIf
 If $g_bAndroidAdbInstance = True Then
 If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-Return SetError(3, 0)
+Return FuncReturn(SetError(3, 0))
 EndIf
 AndroidAdbTerminateShellInstance()
 $g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
@@ -9337,14 +9399,14 @@ $g_bAndroidAdbScreencap = False
 $g_bAndroidAdbClick = False
 $g_bAndroidAdbInput = False
 If BitAND($g_iAndroidSupportFeature, 1) = 0 Then $g_bChkBackgroundMode = False
-Return SetError(1, 0)
+Return FuncReturn(SetError(1, 0))
 Else
 AndroidInitPrompt()
 EndIf
 EndIf
 If True Then
 If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-Return SetError(3, 0)
+Return FuncReturn(SetError(3, 0))
 EndIf
 Local $pathFound = False
 Local $iMount
@@ -9381,7 +9443,7 @@ SetLog("Waiting for shared folder to get mounted...", $COLOR_GREEN)
 Else
 SetDebugLog("Still waiting for shared folder to get mounted...")
 EndIf
-If _Sleep(6000) Then Return
+If _Sleep(6000) Then Return FuncReturn()
 Next
 If $pathFound = False Then
 SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
@@ -9400,12 +9462,12 @@ Local $error = @error
 SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
 If $error <> 0 Then
 SuspendAndroid($SuspendMode)
-Return
+Return FuncReturn()
 EndIf
 EndIf
 If StringLen($g_sAndroidMouseDevice) > 0 And $g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] Then
 If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-Return SetError(3, 0)
+Return FuncReturn(SetError(3, 0))
 EndIf
 If StringInStr($g_sAndroidMouseDevice, "/dev/input/event") = 0 Then
 $s = AndroidAdbSendShellCommand("getevent -p", Default, $wasRunState, False)
@@ -9415,19 +9477,26 @@ If @error = 0 Then
 $g_sAndroidMouseDevice = $aRegExResult[0]
 SetDebugLog("Using " & $g_sAndroidMouseDevice & " for mouse events")
 Else
+$aRegExResult = StringRegExp($s, "(\/dev\/input\/event\d+)[\r\n]+.+"".+""((?!\/dev\/input\/event)[\s\S])+ABS \(\d+\): 0035.+max " & $g_iGAME_WIDTH & ".+\n.+0036.+max " & $g_iGAME_HEIGHT, $STR_REGEXPARRAYMATCH)
+If @error = 0 Then
+SetDebugLog("Using " & $aRegExResult[0] & " for mouse events (" & $g_sAndroidMouseDevice & " not found)")
+$g_sAndroidMouseDevice = $aRegExResult[0]
+Else
 $g_bAndroidAdbClick = False
 SetLog($g_sAndroidEmulator & " cannot use ADB for mouse events, """ & $g_sAndroidMouseDevice & """ not found", $COLOR_ERROR)
 SuspendAndroid($SuspendMode)
-Return SetError(2, 1)
+Return FuncReturn(SetError(2, 1))
+ENdIf
 EndIf
 EndIf
 SuspendAndroid($SuspendMode)
-Return SetError(0, 1)
+Return FuncReturn(SetError(0, 1))
 Else
 SetDebugLog($g_sAndroidEmulator & " ADB use " & $g_sAndroidMouseDevice & " for mouse events")
 EndIf
 EndIf
 SetError(0, 0)
+FuncReturn()
 EndFunc
 Func AndroidAdbTerminateShellInstance()
 Local $SuspendMode = ResumeAndroid()
@@ -9442,11 +9511,13 @@ EndIf
 SuspendAndroid($SuspendMode)
 EndFunc
 Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
+FuncEnter(AndroidAdbSendShellCommand)
+If Not $g_bAndroidInitialized Then Return FuncReturn()
 Local $wasAllowed = $g_bTogglePauseAllowed
 $g_bTogglePauseAllowed = False
 Local $Result = _AndroidAdbSendShellCommand($cmd, $timeout, $wasRunState, $EnsureShellInstance, $bStripPrompt)
 $g_bTogglePauseAllowed = $wasAllowed
-Return SetError(@error, @extended, $Result)
+Return FuncReturn(SetError(@error, @extended, $Result))
 EndFunc
 Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
 Static $iCommandErrors = 0
@@ -10781,11 +10852,12 @@ Dim $_g_asDISTRIBUTORS[24][4] = [ ["Google", "com.supercell.clashofclans", "com.
 ["Clash Of Magic, The Hall Of Magic 2: S4", "net.clashofmagic.s4", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_24", "Clash Of Magic, The Hall Of Magic 2: S4")] ]
 EndFunc
 Func GetCOCDistributors()
+FuncEnter(GetCOCDistributors)
 Static $s_asDistributorsLoaded = -1
-If $s_asDistributorsLoaded <> -1 And Not IsBotLaunched() Then Return $s_asDistributorsLoaded
+If $s_asDistributorsLoaded <> -1 And Not IsBotLaunched() Then Return FuncReturn($s_asDistributorsLoaded)
 SetDebugLog("Retrieving CoC distributors")
-Local $sPkgList = StringReplace(_AndroidAdbSendShellCommand("pm list packages clashofclans;pm list packages clashofmagic"), "package:", "")
-If @error <> 0 Or $sPkgList = "" Then Return SetError(1, 0, "")
+Local $sPkgList = StringReplace(AndroidAdbSendShellCommand("pm list packages clashofclans;pm list packages clashofmagic"), "package:", "")
+If @error <> 0 Or $sPkgList = "" Then Return FuncReturn(SetError(1, 0, ""))
 Local $aPkgList = StringSplit($sPkgList, @LF, $STR_ENTIRESPLIT)
 Local $aDList[0]
 Local $bFirstTimeWDJ = True
@@ -10811,8 +10883,8 @@ EndIf
 EndIf
 Next
 If Not IsBotLaunched() Then $s_asDistributorsLoaded = $aDList
-If UBound($aDList) = 0 Then Return SetError(2, 0, "")
-Return SetError(0, 0, $aDList)
+If UBound($aDList) = 0 Then Return FuncReturn(SetError(2, 0, ""))
+Return FuncReturn(SetError(0, 0, $aDList))
 EndFunc
 Func GetCOCPackage($sDistributor)
 Local $iIndex = _ArraySearch($_g_asDISTRIBUTORS, $sDistributor, 0, 0, 0, 0, 1, 3)
@@ -26119,6 +26191,7 @@ $g_iAndroidBackgroundMode = _GUICtrlComboBox_GetCurSel($g_hCmbAndroidBackgroundM
 UpdateAndroidBackgroundMode()
 EndFunc
 Func BotStart($bAutostartDelay = 0)
+FuncEnter(BotStart)
 ResumeAndroid()
 CalCostCamp()
 CalCostSpell()
@@ -26168,14 +26241,14 @@ SetLog("Bot Auto Starting in " & Round($bAutostartDelay / 1000, 0) & " seconds",
 _SleepStatus($bAutostartDelay)
 EndIf
 LockBotSlot(True)
-If $g_bRunState = False Then Return
+If $g_bRunState = False Then Return FuncReturn()
 Local $Result = False
 If WinGetAndroidHandle() = 0 Then
 $Result = OpenAndroid(False)
 EndIf
 SetDebugLog("Android Window Handle: " & WinGetAndroidHandle())
 If $g_hAndroidWindow <> 0 Then
-If Not $g_bRunState Then Return
+If Not $g_bRunState Then Return FuncReturn()
 If $g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable() Then
 If Not $Result Then
 $Result = InitiateLayout()
@@ -26184,7 +26257,7 @@ Else
 SetLog("Current " & $g_sAndroidEmulator & " Window not supported by MyBot", $COLOR_ERROR)
 $Result = RebootAndroid(False)
 EndIf
-If Not $g_bRunState Then Return
+If Not $g_bRunState Then Return FuncReturn()
 Local $hWndActive = $g_hAndroidWindow
 If $g_bNoFocusTampering = False And $g_bAndroidBackgroundLaunched = False And $g_bAndroidEmbedded = False Then
 Local $hTimer = __TimerInit()
@@ -26195,7 +26268,7 @@ $hWndActive = WinActivate($g_hAndroidWindow)
 WEnd
 WinActivate($activeHWnD)
 EndIf
-If Not $g_bRunState Then Return
+If Not $g_bRunState Then Return FuncReturn()
 If $hWndActive = $g_hAndroidWindow And($g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable()) Then
 Initiate()
 Else
@@ -26206,8 +26279,10 @@ Else
 SetLog("Cannot start " & $g_sAndroidEmulator & ", please check log", $COLOR_ERROR)
 btnStop()
 EndIf
+FuncReturn()
 EndFunc
 Func BotStop()
+FuncEnter(BotStop)
 LockBotSlot(False)
 releaseProfilesMutex()
 ResumeAndroid()
@@ -26251,30 +26326,33 @@ $g_bSearchMode = False
 EndIf
 __ObjEventEnds()
 ReduceBotMemory()
+FuncReturn()
 EndFunc
 Func BotSearchMode()
+FuncEnter(BotSearchMode)
 $g_bSearchMode = True
 $g_bRestart = False
 $g_bIsClientSyncError = False
 If $g_iFirstRun = 1 Then $g_iFirstRun = -1
 btnStart()
 checkMainScreen(False)
-If _Sleep(100) Then Return
+If _Sleep(100) Then Return FuncReturn()
 $g_aiCurrentLoot[$eLootTrophy] = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
-If _Sleep(100) Then Return
+If _Sleep(100) Then Return FuncReturn()
 CheckIfArmyIsReady()
 ClickP($aAway, 2, 0, "")
-If _Sleep(100) Then Return
+If _Sleep(100) Then Return FuncReturn()
 If(IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
-If _Sleep(100) Then Return
+If _Sleep(100) Then Return FuncReturn()
 PrepareSearch()
-If _Sleep(1000) Then Return
+If _Sleep(1000) Then Return FuncReturn()
 VillageSearch()
-If _Sleep(100) Then Return
+If _Sleep(100) Then Return FuncReturn()
 Else
 SetLog("Your Army is not prepared, check the Attack/train options")
 EndIf
 btnStop()
+FuncReturn()
 EndFunc
 Func InitializeMainGUI($bGuiModeUpdate = False)
 InitializeControlVariables()
@@ -41001,6 +41079,8 @@ Local $aCoords = StringSplit($sCoords, ",", $STR_NOCOUNT)
 Return Number($aCoords[0]) - $ndistance & "," & Number($aCoords[1]) - $ndistance & "," & Number($aCoords[0]) + $ndistance & "," & Number($aCoords[1]) + $ndistance
 EndFunc
 Func imglocCheckWall()
+Local $iXClickOffset = 0
+Local $iYClickOffset = 0
 Local $iXRange = 16
 Local $iYRange = 14
 Local $iLastGoodWallx = $g_aiLastGoodWallPos[0]
@@ -41008,6 +41088,11 @@ Local $iLastGoodWally = $g_aiLastGoodWallPos[1]
 ConvertToVillagePos($iLastGoodWallx, $iLastGoodWally)
 If _Sleep(500) Then Return
 Local $levelWall = $g_iCmbUpgradeWallsLevel + 4
+Switch $levelWall
+Case 10
+Local $iXClickOffset = 2
+Local $iYClickOffset = 2
+EndSwitch
 SetLog("Searching for Wall(s) level: " & $levelWall & ". Using imgloc: ", $COLOR_SUCCESS)
 Local $FoundWalls[1]
 $FoundWalls[0] = ""
@@ -41040,6 +41125,8 @@ If($g_aiLastGoodWallPos[0] > 0) And($g_aiLastGoodWallPos[1] > 0) Then
 $aCoord[0] = $aCoord[0] + $iLastGoodWallx - $iXRange
 $aCoord[1] = $aCoord[1] + $iLastGoodWally - $iYRange
 EndIf
+$aCoord[0] = $aCoord[0] + $iXClickOffset
+$aCoord[1] = $aCoord[1] + $iYClickOffset
 SetLog("Checking if found position is a Wall and of desired level.", $COLOR_SUCCESS)
 GemClick($aCoord[0], $aCoord[1])
 If _Sleep(500) Then Return
@@ -41065,6 +41152,8 @@ ClickP($aAway, 1, 0, "#0932")
 EndIf
 Next
 Next
+$g_aiLastGoodWallPos[0] = -1
+$g_aiLastGoodWallPos[1] = -1
 EndIf
 Return False
 EndFunc
@@ -41668,8 +41757,8 @@ checkObstacles_ResetSearch()
 Return True
 EndIf
 If UBound(decodeSingleCoord(FindImageInPlace("Break", $g_sImgPersonalBreak, "165,287,335,325", False))) > 1 Then
-If TestCapture() Then Return "Village must take a break"
 SetLog("Village must take a break, wait ...", $COLOR_ERROR)
+If TestCapture() Then Return "Village must take a break"
 PushMsg("TakeBreak")
 If _SleepStatus($DELAYCHECKOBSTACLES4) Then Return
 checkObstacles_ReloadCoC($aReloadButton, "#0128")
@@ -43898,11 +43987,7 @@ EndIf
 If Not $bCheckOnly Then
 InitAndroidConfig(True)
 $__VBoxManage_Path = $VirtualBox_Path & "VBoxManage.exe"
-$__VBoxVMinfo = LaunchConsole($__VBoxManage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
-If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
-Return False
-EndIf
+If Not GetAndroidVMinfo($__VBoxVMinfo, $__VBoxManage_Path) Then Return False
 $aRegExResult = StringRegExp($__VBoxVMinfo, "ADB_PORT.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)
 If Not @error Then
 $g_sAndroidAdbDeviceHost = $aRegExResult[0]
@@ -44158,11 +44243,7 @@ Return False
 EndIf
 If Not $bCheckOnly Then
 InitAndroidConfig(True)
-$__VBoxVMinfo = LaunchConsole($MEmu_Manage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
-If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
-Return False
-EndIf
+If Not GetAndroidVMinfo($__VBoxVMinfo, $MEmu_Manage_Path) Then Return False
 $g_sAndroidProgramPath = $MEmu_Path & "MEmu.exe"
 $g_sAndroidAdbPath = $sPreferredADB
 If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $MEmu_Path & "adb.exe"
@@ -44464,11 +44545,7 @@ Return False
 EndIf
 If Not $bCheckOnly Then
 InitAndroidConfig(True)
-$__VBoxVMinfo = LaunchConsole($LeapDroid_Manage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
-If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
-Return False
-EndIf
+If Not GetAndroidVMinfo($__VBoxVMinfo, $LeapDroid_Manage_Path) Then Return False
 $__VBoxGuestProperties = LaunchConsole($LeapDroid_Manage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 $g_sAndroidProgramPath = $LeapDroid_Path & "LeapdroidVM.exe"
 $g_sAndroidAdbPath = $sPreferredADB
@@ -44734,11 +44811,7 @@ EndIf
 Next
 If Not $bCheckOnly Then
 InitAndroidConfig(True)
-$__VBoxVMinfo = LaunchConsole($VBoxFile, "showvminfo " & $g_sAndroidInstance, $process_killed)
-If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
-Return False
-EndIf
+If Not GetAndroidVMinfo($__VBoxVMinfo, $VBoxFile) Then Return False
 $g_sAndroidProgramPath = $NoxFile
 $g_sAndroidAdbPath = $sPreferredADB
 If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = GetNoxAdbPath()
@@ -45034,11 +45107,7 @@ Return False
 EndIf
 If Not $bCheckOnly Then
 InitAndroidConfig(True)
-$__VBoxVMinfo = LaunchConsole($KOPLAYER_Manage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
-If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_RED)
-Return False
-EndIf
+If Not GetAndroidVMinfo($__VBoxVMinfo, $KOPLAYER_Manage_Path) Then Return False
 $g_sAndroidProgramPath = $KOPLAYER_Path & "KOPLAYER.exe"
 $g_sAndroidAdbPath = $sPreferredADB
 If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = GetKOPLAYERAdbPath()
@@ -45287,11 +45356,7 @@ Return False
 EndIf
 If Not $bCheckOnly Then
 InitAndroidConfig(True)
-$__VBoxVMinfo = LaunchConsole($iTools_Manage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
-If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
-Return False
-EndIf
+If Not GetAndroidVMinfo($__VBoxVMinfo, $iTools_Manage_Path) Then Return False
 $g_sAndroidProgramPath = $iTools_Path & "iToolsAVM.exe"
 $g_sAndroidAdbPath = $sPreferredADB
 If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $iTools_Path & "tools\adb.exe"
@@ -50539,8 +50604,18 @@ EndFunc
 Func _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
 _CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
 Local $offColorVariation = UBound($offColor, 2) > 3
-For $x = 0 To $iRight - $iLeft Step $xSkip
-For $y = 0 To $iBottom - $iTop Step $ySkip
+Local $xRange = $iRight - $iLeft
+Local $yRange = $iBottom - $iTop
+If $xSkip < 0 Then
+$xRange = Abs($xSkip)
+$xSkip = 1
+EndIf
+If $ySkip < 0 Then
+$yRange = Abs($ySkip)
+$ySkip = 1
+EndIf
+For $x = 0 To $xRange Step $xSkip
+For $y = 0 To $yRange Step $ySkip
 If _ColorCheck(_GetPixelColor($x, $y), $firstColor, $iColorVariation) Then
 Local $allchecked = True
 Local $iCV = $iColorVariation
@@ -50563,8 +50638,18 @@ EndFunc
 Func _MultiPixelSearch2($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
 _CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
 Local $offColorVariation = UBound($offColor, 2) > 3
-For $y = 0 To $iBottom - $iTop Step $ySkip
-For $x = 0 To $iRight - $iLeft Step $xSkip
+Local $xRange = $iRight - $iLeft
+Local $yRange = $iBottom - $iTop
+If $xSkip < 0 Then
+$xRange = Abs($xSkip)
+$xSkip = 1
+EndIf
+If $ySkip < 0 Then
+$yRange = Abs($ySkip)
+$ySkip = 1
+EndIf
+For $y = 0 To $yRange Step $ySkip
+For $x = 0 To $xRange Step $xSkip
 If _ColorCheck(_GetPixelColor($x, $y), $firstColor, $iColorVariation) Then
 Local $allchecked = True
 Local $iCV = $iColorVariation
@@ -53722,7 +53807,7 @@ checkAttackDisable($g_iTaBChkIdle)
 $ClanString = ""
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ForceCaptureRegion()
-$g_aiDonatePixel = _MultiPixelSearch(202, $y, 224, 660 + $g_iBottomOffsetY, 50, 1, Hex(0x98D057, 6), $aChatDonateBtnColors, 20)
+$g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
 If IsArray($g_aiDonatePixel) Then
 If $g_bDebugSetlog Then SetDebugLog("$g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
 $donateCCfilter = donateCCWBLUserImageCollect($g_aiDonatePixel[0], $g_aiDonatePixel[1])
@@ -54069,7 +54154,7 @@ ClickP($aAway, 1, 0, "#0171")
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 EndIf
 ForceCaptureRegion()
-$g_aiDonatePixel = _MultiPixelSearch(202, $y, 224, 660 + $g_iBottomOffsetY, 50, 1, Hex(0x98D057, 6), $aChatDonateBtnColors, 20)
+$g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
 If IsArray($g_aiDonatePixel) Then
 If $g_bDebugSetlog Then SetDebugLog("More Donate buttons found, new $g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
 ContinueLoop
@@ -54374,7 +54459,7 @@ $iTop += $g_aiDonatePixel[1]
 $iRight += $g_aiDonatePixel[0] + 1
 $iBottom += $g_aiDonatePixel[1] + 1
 ForceCaptureRegion()
-Local $g_aiDonatePixelCheck = _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, 50, 1, Hex(0x98D057, 6), $aChatDonateBtnColors, 15)
+Local $g_aiDonatePixelCheck = _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 15)
 If IsArray($g_aiDonatePixelCheck) Then
 Click($g_aiDonatePixel[0] + 50, $g_aiDonatePixel[1] + 10, 1, 0, "#0174")
 Else
@@ -54385,10 +54470,12 @@ If _Sleep($DELAYDONATEWINDOW1) Then Return
 Local $icount = 0
 While Not(_ColorCheck(_GetPixelColor(331, $g_aiDonatePixel[1], True, "DonateWindow"), Hex(0xffffff, 6), 0))
 If _Sleep($DELAYDONATEWINDOW2) Then Return
+ForceCaptureRegion()
 $icount += 1
 If $icount = 20 Then ExitLoop
 WEnd
 $g_iDonationWindowY = 0
+ForceCaptureRegion()
 Local $aDonWinOffColors[1][3] = [[0xFFFFFF, 0, 2]]
 Local $aDonationWindow = _MultiPixelSearch(628, 0, 630, $g_iDEFAULT_HEIGHT, 1, 1, Hex(0xFFFFFF, 6), $aDonWinOffColors, 10)
 If IsArray($aDonationWindow) Then
@@ -60927,13 +61014,14 @@ EndIf
 Return False
 EndFunc
 Func createProfile($bCreateNew = False)
+FuncReturn(createProfile)
 If $bCreateNew = True Then
 setupProfileComboBox()
 setupProfile()
 saveConfig()
 setupProfileComboBox()
 selectProfile()
-Return
+Return FuncReturn()
 EndIf
 DirCreate($g_sProfilePath & "\" & $g_sProfileCurrentName)
 If Not FileExists($g_sProfilePath & "\profile.ini") Then
@@ -60950,8 +61038,10 @@ DirCreate($g_sProfileDonateCapturePath)
 DirCreate($g_sProfileDonateCaptureWhitelistPath)
 DirCreate($g_sProfileDonateCaptureBlacklistPath)
 If FileExists($g_sProfileConfigPath) = 0 Then SetLog("New Profile '" & $g_sProfileCurrentName & "' created")
+FuncReturn()
 EndFunc
 Func setupProfile($sProfile = Default)
+FuncEnter(setupProfile)
 If IsString($sProfile) Then
 ElseIf $g_iGuiMode = 1 Then
 If GUICtrlRead($g_hCmbProfile) = "<No Profiles>" Then
@@ -60963,7 +61053,7 @@ Else
 $sProfile = $g_sProfileCurrentName
 EndIf
 If aquireProfileMutex($sProfile, False, True) = 0 Then
-Return False
+Return FuncReturn(False)
 EndIf
 If $g_sProfileCurrentName And $g_sProfileCurrentName <> $sProfile Then
 releaseProfileMutex($g_sProfileCurrentName)
@@ -60980,9 +61070,10 @@ $g_sProfileCurrentName = $sProfile
 createProfile()
 GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
 GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
-Return True
+Return FuncReturn(True)
 EndFunc
 Func selectProfile($sProfile = Default)
+FuncEnter(selectProfile)
 If IsString($sProfile) Then
 ElseIf _GUICtrlComboBox_FindStringExact($g_hCmbProfile, String($g_sProfileCurrentName)) <> -1 Then
 _GUICtrlComboBox_SelectString($g_hCmbProfile, String($g_sProfileCurrentName))
@@ -60996,7 +61087,7 @@ EndIf
 EndIf
 If IsString($sProfile) Then
 If aquireProfileMutex($sProfile, False, True) = 0 Then
-Return False
+Return FuncReturn(False)
 EndIf
 If $g_sProfileCurrentName <> $sProfile Then
 releaseProfileMutex($g_sProfileCurrentName)
@@ -61009,7 +61100,7 @@ _GUICtrlComboBox_SetCurSel($g_hCmbProfile, 0)
 EndIf
 GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
 GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
-Return True
+Return FuncReturn(True)
 EndFunc
 Func aquireProfileMutex($sProfile = Default, $bReturnOnlyMutex = Default, $bShowMsgBox = False)
 If $sProfile = Default Then $sProfile = $g_sProfileCurrentName
@@ -63099,6 +63190,7 @@ Next
 EndFunc
 Func ReadRegularConfig()
 SetDebugLog("Read Config " & $g_sProfileConfigPath)
+ReadConfig_Debug()
 IniReadS($g_iThreads, $g_sProfileConfigPath, "general", "threads", $g_iThreads, "int")
 If $g_iThreads < 0 Then $g_iThreads = 0
 IniReadS($g_iBotDesignFlags, $g_sProfileConfigPath, "general", "botDesignFlags", 0, "int")
@@ -63122,7 +63214,6 @@ $g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT
 EndIf
 IniReadS($g_iRedrawBotWindowMode, $g_sProfileConfigPath, "general", "RedrawBotWindowMode", 2, "int")
 ReadConfig_Android()
-ReadConfig_Debug()
 ReadConfig_600_1()
 ReadConfig_600_6()
 ReadConfig_600_9()
@@ -66649,6 +66740,18 @@ SetDebugLog("Bot title updated to: " & $g_sBotTitle)
 EndFunc
 Func InitializeBot()
 ProcessCommandLine()
+If FileExists(@ScriptDir & "\EnableMBRDebug.txt") Then
+$g_bDevMode = True
+Local $aText = FileReadToArray(@ScriptDir & "\EnableMBRDebug.txt")
+If Not @error Then
+For $l = 0 To UBound($aText) - 1
+If StringInStr($aText[$l], "DISABLEWATCHDOG", $STR_NOCASESENSEBASIC) <> 0 Then
+$g_bBotLaunchOption_NoWatchdog = True
+SetDebugLog("Watch Dog disabled by Developer Mode File Command", $COLOR_INFO)
+EndIf
+Next
+EndIf
+EndIf
 SetupProfileFolder()
 SetLogCentered(" BOT LOG ")
 SetSwitchAccLog(_PadStringCenter(" SwitchAcc LOG ", 25, "="), $COLOR_BLACK, "Lucida Console", 8, False)
@@ -66665,18 +66768,6 @@ EndIf
 Local $sAndroidInfo = ""
 _Crypt_Startup()
 __GDIPlus_Startup()
-If FileExists(@ScriptDir & "\EnableMBRDebug.txt") Then
-$g_bDevMode = True
-Local $aText = FileReadToArray(@ScriptDir & "\EnableMBRDebug.txt")
-If Not @error Then
-For $l = 0 To UBound($aText) - 1
-If StringInStr($aText[$l], "DISABLEWATCHDOG", $STR_NOCASESENSEBASIC) <> 0 Then
-$g_bBotLaunchOption_NoWatchdog = True
-SetDebugLog("Watch Dog disabled by Developer Mode File Command", $COLOR_INFO)
-EndIf
-Next
-EndIf
-EndIf
 CreateMainGUI()
 CreateSplashScreen()
 If Not $g_bBotLaunchOption_NoWatchdog Then LaunchWatchdog()

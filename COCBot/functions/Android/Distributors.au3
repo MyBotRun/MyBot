@@ -50,11 +50,12 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 EndFunc   ;==>InitializeCOCDistributors
 
 Func GetCOCDistributors()
+	FuncEnter(GetCOCDistributors)
 	Static $s_asDistributorsLoaded = -1
-	If $s_asDistributorsLoaded <> -1 And Not IsBotLaunched() Then Return $s_asDistributorsLoaded ; retutn cached list only during bot launch to prevent rare freeze due to CTRITICAL_SECTION deack lock
+	If $s_asDistributorsLoaded <> -1 And Not IsBotLaunched() Then Return FuncReturn($s_asDistributorsLoaded) ; retutn cached list only during bot launch to prevent rare freeze due to CTRITICAL_SECTION deack lock
 	SetDebugLog("Retrieving CoC distributors")
-	Local $sPkgList = StringReplace(_AndroidAdbSendShellCommand("pm list packages clashofclans;pm list packages clashofmagic"), "package:", "")
-	If @error <> 0 Or $sPkgList = "" Then Return SetError(1, 0, "") ; ADB error or No COC installed error
+	Local $sPkgList = StringReplace(AndroidAdbSendShellCommand("pm list packages clashofclans;pm list packages clashofmagic"), "package:", "")
+	If @error <> 0 Or $sPkgList = "" Then Return FuncReturn(SetError(1, 0, "")) ; ADB error or No COC installed error
 
 	Local $aPkgList = StringSplit($sPkgList, @LF, $STR_ENTIRESPLIT)
 	Local $aDList[0]
@@ -82,8 +83,8 @@ Func GetCOCDistributors()
 		EndIf
 	Next
 	If Not IsBotLaunched() Then $s_asDistributorsLoaded = $aDList
-	If UBound($aDList) = 0 Then Return SetError(2, 0, "") ; All are unrecognized COC packages error
-	Return SetError(0, 0, $aDList)
+	If UBound($aDList) = 0 Then Return FuncReturn(SetError(2, 0, "")) ; All are unrecognized COC packages error
+	Return FuncReturn(SetError(0, 0, $aDList))
 EndFunc   ;==>GetCOCDistributors
 
 Func GetCOCPackage($sDistributor)

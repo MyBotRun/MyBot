@@ -88,7 +88,7 @@ Func deleteProfile()
 EndFunc   ;==>deleteProfile
 
 Func createProfile($bCreateNew = False)
-
+	FuncReturn(createProfile)
 	If $bCreateNew = True Then
 		; create new profile (recursive call from setupProfile() and selectProfile() !!!)
 		setupProfileComboBox()
@@ -97,7 +97,7 @@ Func createProfile($bCreateNew = False)
 		; applyConfig()
 		setupProfileComboBox()
 		selectProfile()
-		Return
+		Return FuncReturn()
 	EndIf
 
 	; create the profile directory if it doesn't already exist.
@@ -121,9 +121,11 @@ Func createProfile($bCreateNew = False)
 	DirCreate($g_sProfileDonateCaptureBlacklistPath)
 
 	If FileExists($g_sProfileConfigPath) = 0 Then SetLog("New Profile '" & $g_sProfileCurrentName & "' created")
+	FuncReturn()
 EndFunc   ;==>createProfile
 
 Func setupProfile($sProfile = Default)
+	FuncEnter(setupProfile)
 	If IsString($sProfile) Then
 		; use as new profile
 	ElseIf $g_iGuiMode = 1 Then
@@ -138,7 +140,7 @@ Func setupProfile($sProfile = Default)
 	EndIf
 
 	If aquireProfileMutex($sProfile, False, True) = 0 Then
-		Return False
+		Return FuncReturn(False)
 	EndIf
 	If $g_sProfileCurrentName And $g_sProfileCurrentName <> $sProfile Then
 		releaseProfileMutex($g_sProfileCurrentName)
@@ -161,10 +163,11 @@ Func setupProfile($sProfile = Default)
 	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
 
-	Return True
+	Return FuncReturn(True)
 EndFunc   ;==>setupProfile
 
 Func selectProfile($sProfile = Default)
+	FuncEnter(selectProfile)
 	If IsString($sProfile) Then
 		; use profile
 	ElseIf _GUICtrlComboBox_FindStringExact($g_hCmbProfile, String($g_sProfileCurrentName)) <> -1 Then
@@ -181,7 +184,7 @@ Func selectProfile($sProfile = Default)
 
 	If IsString($sProfile) Then
 		If aquireProfileMutex($sProfile, False, True) = 0 Then
-			Return False
+			Return FuncReturn(False)
 		EndIf
 		If $g_sProfileCurrentName <> $sProfile Then
 			releaseProfileMutex($g_sProfileCurrentName)
@@ -199,7 +202,7 @@ Func selectProfile($sProfile = Default)
 	; Set the profile name on the village info group.
 	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
-	Return True
+	Return FuncReturn(True)
 EndFunc   ;==>selectProfile
 
 Func aquireProfileMutex($sProfile = Default, $bReturnOnlyMutex = Default, $bShowMsgBox = False)

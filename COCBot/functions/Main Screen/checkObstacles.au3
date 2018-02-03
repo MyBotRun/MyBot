@@ -97,8 +97,8 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 		;;;;;;;##### 2- Take a break #####;;;;;;;
 
 		If UBound(decodeSingleCoord(FindImageInPlace("Break", $g_sImgPersonalBreak, "165,287,335,325", False))) > 1 Then ; used for all 3 different break messages
-			If TestCapture() Then Return "Village must take a break"
 			SetLog("Village must take a break, wait ...", $COLOR_ERROR)
+			If TestCapture() Then Return "Village must take a break"
 			PushMsg("TakeBreak")
 			If _SleepStatus($DELAYCHECKOBSTACLES4) Then Return ; 2 Minutes
 			checkObstacles_ReloadCoC($aReloadButton, "#0128") ;Click on reload button

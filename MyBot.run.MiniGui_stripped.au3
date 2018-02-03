@@ -9,7 +9,7 @@
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.4.2"
+Global $g_sBotVersion = "v7.4.3"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -2610,7 +2610,7 @@ Global $g_iAndroidAdbClicksTroopDeploySize = 0
 Global $g_bAndroidAdbInstanceEnabled = True
 Global $g_iAndroidSuspendModeFlags = 1
 Global $g_bNoFocusTampering = False
-Global $g_avAndroidAppConfig[8][16] = [ ["Nox", "nox", "No", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10,0, "127.0.0.1:62001", 1 + 2 + 4 + 8 + 16 + 32 + 256,'# ', '(nox Virtual Input|Android Input|Android_Input)', 0, 2], ["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 51,$g_iDEFAULT_HEIGHT - 12,0, "127.0.0.1:21503", 2 + 4 + 8 + 16 + 32, '# ', 'Microvirt Virtual Input', 0, 2], ["BlueStacks2","Android", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 2 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["iTools", "iToolsVM","iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13,0, "127.0.0.1:54001", 1 + 2 + 8 + 16 + 32 + 64, '# ', 'iTools Virtual PassThrough Input', 0, 1], ["KOPLAYER", "KOPLAYER","KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 64,$g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 1 + 2 + 4 + 8 + 16 + 32, '# ', 'ttVM Virtual Input', 0, 2], ["Droid4X", "droid4x", "Droid4X ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 10,$g_iDEFAULT_HEIGHT + 50,0, "127.0.0.1:26944", 2 + 4 + 8 + 16 + 32, '# ', 'droid4x Virtual Input', 0, 2], ["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "emulator-5554", 1 + 8 + 16 + 32, '# ', 'qwerty2', 1, 1] ]
+Global $g_avAndroidAppConfig[8][16] = [ ["Nox", "nox", "No", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10,0, "127.0.0.1:62001", 1 + 2 + 4 + 8 + 16 + 32 + 256,'# ', '(nox Virtual Input|Android Input|Android_Input)', 0, 2], ["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 51,$g_iDEFAULT_HEIGHT - 12,0, "127.0.0.1:21503", 2 + 4 + 8 + 16 + 32, '# ', '(Microvirt Virtual Input|User Input)', 0, 2], ["BlueStacks2","Android", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 2 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["iTools", "iToolsVM","iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13,0, "127.0.0.1:54001", 1 + 2 + 8 + 16 + 32 + 64, '# ', 'iTools Virtual PassThrough Input', 0, 1], ["KOPLAYER", "KOPLAYER","KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 64,$g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 1 + 2 + 4 + 8 + 16 + 32, '# ', 'ttVM Virtual Input', 0, 2], ["Droid4X", "droid4x", "Droid4X ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 10,$g_iDEFAULT_HEIGHT + 50,0, "127.0.0.1:26944", 2 + 4 + 8 + 16 + 32, '# ', 'droid4x Virtual Input', 0, 2], ["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "emulator-5554", 1 + 8 + 16 + 32, '# ', 'qwerty2', 1, 1] ]
 Global $__MEmu_Idx = _ArraySearch($g_avAndroidAppConfig, "MEmu", 0, 0, 0, 0, 1, 0)
 Global $__BS2_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks2", 0, 0, 0, 0, 1, 0)
 Global $__BS_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks", 0, 0, 0, 0, 1, 0)
@@ -4466,6 +4466,7 @@ Next
 EndFunc
 Func ReadRegularConfig()
 SetDebugLog("Read Config " & $g_sProfileConfigPath)
+ReadConfig_Debug()
 IniReadS($g_iThreads, $g_sProfileConfigPath, "general", "threads", $g_iThreads, "int")
 If $g_iThreads < 0 Then $g_iThreads = 0
 IniReadS($g_iBotDesignFlags, $g_sProfileConfigPath, "general", "botDesignFlags", 0, "int")
@@ -4489,7 +4490,6 @@ $g_iFrmBotDockedPosY = $g_WIN_POS_DEFAULT
 EndIf
 IniReadS($g_iRedrawBotWindowMode, $g_sProfileConfigPath, "general", "RedrawBotWindowMode", 2, "int")
 ReadConfig_Android()
-ReadConfig_Debug()
 ReadConfig_600_1()
 ReadConfig_600_6()
 ReadConfig_600_9()

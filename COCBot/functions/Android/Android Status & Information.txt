@@ -23,7 +23,7 @@ Nox 6.0.0.0 has issues with CoC (it crashes) and only runs stable with Lollipop 
 MEmu
 ====
 http://www.memuplay.com/
-Versions 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1

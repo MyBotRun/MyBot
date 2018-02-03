@@ -171,14 +171,7 @@ Func InitMEmu($bCheckOnly = False)
 	; Read ADB host and Port
 	If Not $bCheckOnly Then
 		InitAndroidConfig(True) ; Restore default config
-
-		$__VBoxVMinfo = LaunchConsole($MEmu_Manage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
-		; check if instance is known
-		If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-			; Unknown vm
-			SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
-			Return False
-		EndIf
+		If Not GetAndroidVMinfo($__VBoxVMinfo, $MEmu_Manage_Path) Then Return False
 		; update global variables
 		$g_sAndroidProgramPath = $MEmu_Path & "MEmu.exe"
 		$g_sAndroidAdbPath = $sPreferredADB

@@ -144,13 +144,7 @@ Func InitDroid4X($bCheckOnly = False)
 		InitAndroidConfig(True) ; Restore default config
 
 		$__VBoxManage_Path = $VirtualBox_Path & "VBoxManage.exe"
-		$__VBoxVMinfo = LaunchConsole($__VBoxManage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
-		; check if instance is known
-		If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-			; Unknown vm
-			SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
-			Return False
-		EndIf
+		If Not GetAndroidVMinfo($__VBoxVMinfo, $__VBoxManage_Path) Then Return False
 		$aRegExResult = StringRegExp($__VBoxVMinfo, "ADB_PORT.*host ip = ([^,]+),", $STR_REGEXPARRAYMATCH)
 		If Not @error Then
 			$g_sAndroidAdbDeviceHost = $aRegExResult[0]

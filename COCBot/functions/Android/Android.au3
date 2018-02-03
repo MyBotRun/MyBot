@@ -40,6 +40,7 @@ Global $g_aiMouseOffset = [0, 0]
 Global $g_aiMouseOffsetWindowOnly = [0, 0]
 
 Func InitAndroidConfig($bRestart = False)
+	FuncEnter(InitAndroidConfig)
 	If $bRestart = False Then
 		$g_sAndroidEmulator = $g_avAndroidAppConfig[$g_iAndroidConfig][0]
 		$g_sAndroidInstance = $g_avAndroidAppConfig[$g_iAndroidConfig][1]
@@ -76,6 +77,7 @@ Func InitAndroidConfig($bRestart = False)
 	EndIf
 
 	UpdateHWnD($g_hAndroidWindow, False) ; Ensure $g_sAppClassInstance is properly set
+	FuncReturn()
 EndFunc   ;==>InitAndroidConfig
 
 Func AndroidSupportFeaturesSet($iValue, $iIdx = $g_iAndroidConfig)
@@ -149,6 +151,7 @@ EndFunc   ;==>GetSecureFilename
 ; Update Global Android variables based on $g_iAndroidConfig index
 ; Calls "Update" & $g_sAndroidEmulator & "Config()"
 Func UpdateAndroidConfig($instance = Default, $emulator = Default)
+	FuncEnter(UpdateAndroidConfig)
 	If $emulator <> Default Then
 		; Update $g_iAndroidConfig
 		For $i = 0 To UBound($g_avAndroidAppConfig) - 1
@@ -182,7 +185,7 @@ Func UpdateAndroidConfig($instance = Default, $emulator = Default)
 	Local $Result = InitAndroid(False, False)
 
 	SetDebugLog("UpdateAndroidConfig(""" & $instance & """) END")
-	Return $Result
+	Return FuncReturn($Result)
 EndFunc   ;==>UpdateAndroidConfig
 
 Func UpdateAndroidWindowState()
@@ -224,6 +227,7 @@ Func GetAndroidControlClass($bCheck = False, $bInit = False)
 EndFunc   ;==>GetAndroidControlClass
 
 Func UpdateHWnD($hWin, $bRestart = True)
+	FuncEnter(UpdateHWnD)
 	If $hWin = 0 Then
 		If $g_hAndroidWindow <> 0 And $bRestart Then
 			$g_bRestart = True ; Android likely crashed
@@ -233,7 +237,7 @@ Func UpdateHWnD($hWin, $bRestart = True)
 		GetAndroidControlClass(True, True)
 		ResetAndroidProcess()
 		InitAndroidRebootCondition(False)
-		Return False
+		Return FuncReturn(False)
 	EndIf
 	If $g_hAndroidWindow <> 0 And $bRestart Then
 		$g_bRestart = True ; Android likely crashed
@@ -261,14 +265,15 @@ Func UpdateHWnD($hWin, $bRestart = True)
 		EndIf
 	#ce
 	GetAndroidControlClass(True, True)
-	If @error Then Return SetError(1, 0, False)
-	Return SetError(0, 0, True)
+	If @error Then Return FuncReturn(SetError(1, 0, False))
+	Return FuncReturn(SetError(0, 0, True))
 EndFunc   ;==>UpdateHWnD
 
 Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
+	FuncEnter(WinGetAndroidHandle)
 	If $bInitAndroid = Default Then $bInitAndroid = $g_bInitAndroidActive = False
 	If $g_bWinGetAndroidHandleActive = True Then
-		Return $g_hAndroidWindow
+		Return FuncReturn($g_hAndroidWindow)
 	EndIf
 	$g_bWinGetAndroidHandleActive = True
 	Local $currHWnD = $g_hAndroidWindow
@@ -320,13 +325,13 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 			EndIf
 		EndIf
 		$g_bWinGetAndroidHandleActive = False
-		Return $g_hAndroidWindow
+		Return FuncReturn($g_hAndroidWindow)
 	EndIf
 
 	If $g_bAndroidBackgroundLaunch = False And $bTestPid = False Then
 		; Headless mode support not enabled
 		$g_bWinGetAndroidHandleActive = False
-		Return $g_hAndroidWindow
+		Return FuncReturn($g_hAndroidWindow)
 	EndIf
 
 	; Now check headless mode
@@ -357,7 +362,7 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 				SetDebugLog("Found " & $g_sAndroidEmulator & $instance & " process " & $pid & " ('" & $commandLine & "')")
 				If $bTestPid = True Then
 					$g_bWinGetAndroidHandleActive = False
-					Return $pid
+					Return FuncReturn($pid)
 				EndIf
 				If $g_bAndroidAdbScreencap = True And $g_bAndroidAdbClick = False And AndroidAdbClickSupported() = True Then
 					SetLog("Enabled ADB Click to support background mode", $COLOR_ACTION)
@@ -401,7 +406,7 @@ Func WinGetAndroidHandle($bInitAndroid = Default, $bTestPid = False)
 	EndIf
 
 	$g_bWinGetAndroidHandleActive = False
-	Return $g_hAndroidWindow
+	Return FuncReturn($g_hAndroidWindow)
 
 EndFunc   ;==>WinGetAndroidHandle
 
@@ -625,6 +630,7 @@ EndFunc   ;==>GetVBoxAndroidSvcPid
 ; Checks if Android is running and returns array of window handle and instance name
 ; $bStrictCheck = False includes "unsupported" ways of launching Android (like BlueStacks2 default launch shortcut)
 Func GetAndroidRunningInstance($bStrictCheck = True)
+	FuncEnter(GetAndroidRunningInstance)
 	Local $runningInstance = Execute("Get" & $g_sAndroidEmulator & "RunningInstance(" & $bStrictCheck & ")")
 	Local $i
 	If $runningInstance = "" And @error <> 0 Then ; Not implemented
@@ -658,14 +664,14 @@ Func GetAndroidRunningInstance($bStrictCheck = True)
 			Next
 		EndIf
 		If $a[0] <> 0 Then SetDebugLog("Running " & $g_sAndroidEmulator & " instance is """ & $g_sAndroidInstance & """")
-		Return $a
+		Return FuncReturn($a)
 	EndIf
-	Return $runningInstance
+	Return FuncReturn($runningInstance)
 EndFunc   ;==>GetAndroidRunningInstance
 
 ; Detects first running Android Window is present based on $g_avAndroidAppConfig array sequence
 Func DetectRunningAndroid()
-	SetDebugLog("DetectRunningAndroid()")
+	FuncEnter(DetectRunningAndroid)
 	; Find running Android Emulator
 	$g_bFoundRunningAndroid = False
 
@@ -687,7 +693,7 @@ Func DetectRunningAndroid()
 				If InitAndroid() = True Then
 					SetDebugLog("Found running " & $g_sAndroidEmulator & " " & $g_sAndroidVersion)
 				EndIf
-				Return
+				Return FuncReturn()
 			EndIf
 		EndIf
 	Next
@@ -698,11 +704,12 @@ Func DetectRunningAndroid()
 	UpdateAndroidConfig()
 	$g_bSilentSetLog = False
 	SetDebugLog("Found no running Android Emulator")
+	FuncReturn()
 EndFunc   ;==>DetectRunningAndroid
 
 ; Detects first installed Adnroid Emulator installation based on $g_avAndroidAppConfig array sequence
 Func DetectInstalledAndroid()
-	SetDebugLog("DetectInstalledAndroid()")
+	FuncEnter(DetectInstalledAndroid)
 	; Find installed Android Emulator
 
 	Local $i, $CurrentConfig = $g_iAndroidConfig
@@ -715,7 +722,7 @@ Func DetectInstalledAndroid()
 			$g_bFoundInstalledAndroid = True
 			$g_bSilentSetLog = False
 			SetDebugLog("Found installed " & $g_sAndroidEmulator & " " & $g_sAndroidVersion)
-			Return
+			Return FuncReturn()
 		EndIf
 	Next
 
@@ -725,6 +732,7 @@ Func DetectInstalledAndroid()
 	UpdateAndroidConfig()
 	$g_bSilentSetLog = False
 	SetDebugLog("Found no installed Android Emulator")
+	FuncReturn()
 EndFunc   ;==>DetectInstalledAndroid
 
 ; Find preferred Adb Path. Current Android ADB is used and saved in profile.ini and shared across instances.
@@ -762,10 +770,12 @@ Func IncrUpdate(ByRef $i, $ReturnInitial = True)
 EndFunc   ;==>IncrUpdate
 
 Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
+	FuncEnter(InitAndroid)
 	If $bCheckOnly = False And $g_bInitAndroid = False Then
 		;SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $g_sAndroidEmulator & " is already initialized");
-		Return True
+		Return FuncReturn(True)
 	EndIf
+	$g_bAndroidInitialized = False
 	$g_bInitAndroidActive = True
 	Local $aPriorValues = [ _
 			$g_sAndroidEmulator _
@@ -878,12 +888,13 @@ Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
 		InitAndroidTimeLag()
 		InitAndroidPageError()
 		$g_bInitAndroid = Not $successful
+		$g_bAndroidInitialized = True
 	Else
 		If $bCheckOnly = False Then $g_bInitAndroid = True
 	EndIf
 	SetDebugLog("InitAndroid(" & $bCheckOnly & "): " & $g_sAndroidEmulator & " END, initialization successful = " & $successful & ", result = " & $Result)
 	$g_bInitAndroidActive = False
-	Return $Result
+	Return FuncReturn($Result)
 EndFunc   ;==>InitAndroid
 
 Func GetAndroidProgramParameter($bAlternative = False)
@@ -910,12 +921,13 @@ Func AndroidBotStopEvent()
 EndFunc   ;==>AndroidBotStopEvent
 
 Func OpenAndroid($bRestart = False, $bStartOnlyAndroid = False, $wasRunState = $g_bRunState)
+	FuncEnter(OpenAndroid)
 	Static $OpenAndroidActive = 0
 
 	If $OpenAndroidActive >= $g_iOpenAndroidActiveMaxTry Then
 		SetLog("Cannot open " & $g_sAndroidEmulator & ", tried " & $OpenAndroidActive & " times...", $COLOR_ERROR)
 		btnStop()
-		Return False
+		Return FuncReturn(False)
 	EndIf
 	$OpenAndroidActive += 1
 	If $OpenAndroidActive > 1 Then
@@ -926,7 +938,7 @@ Func OpenAndroid($bRestart = False, $bStartOnlyAndroid = False, $wasRunState = $
 	If $bStartOnlyAndroid = True And $wasRunState = False Then $g_bRunState = False
 	WinGetAndroidHandle()
 	$OpenAndroidActive -= 1
-	Return $Result
+	Return FuncReturn($Result)
 EndFunc   ;==>OpenAndroid
 
 Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
@@ -1073,6 +1085,7 @@ Func ResetAndroidProcess()
 EndFunc   ;==>ResetAndroidProcess
 
 Func CloseAndroid($sSource)
+	FuncEnter(CloseAndroid)
 	ResumeAndroid()
 
 	ResetAndroidProcess()
@@ -1085,28 +1098,28 @@ Func CloseAndroid($sSource)
 
 	AndroidAdbTerminateShellInstance()
 
-	If Not $g_bRunState Then Return False
+	If Not $g_bRunState Then Return FuncReturn(False)
 
 	SetLog("Please wait for full " & $g_sAndroidEmulator & " shutdown...", $COLOR_SUCCESS)
 	Local $pid = GetAndroidPid()
 	If ProcessExists2($pid) Then
 		KillProcess($pid, "CloseAndroid")
-		If _SleepStatus(1000) Then Return False
+		If _SleepStatus(1000) Then Return FuncReturn(False)
 	EndIf
 
 	; Call special Android close
 	Local $Result = Execute("Close" & $g_sAndroidEmulator & "()")
 
-	If Not $g_bRunState Then Return False
+	If Not $g_bRunState Then Return FuncReturn(False)
 	If ProcessExists($pid) Then
 		SetLog("Failed to stop " & $g_sAndroidEmulator, $COLOR_ERROR)
 	Else
 		SetLog($g_sAndroidEmulator & " stopped successfully", $COLOR_SUCCESS)
 	EndIf
 
-	If Not $g_bRunState Then Return False
+	If Not $g_bRunState Then Return FuncReturn(False)
 	RemoveGhostTrayIcons() ; Remove ghost icon if left behind
-
+	Return FuncReturn(True)
 EndFunc   ;==>CloseAndroid
 
 Func CloseVboxAndroidSvc()
@@ -1118,6 +1131,7 @@ Func CloseVboxAndroidSvc()
 EndFunc   ;==>CloseVboxAndroidSvc
 
 Func CheckAndroidRunning($bQuickCheck = True, $bStartIfRequired = True, $bStartOnlyAndroid = False)
+	FuncEnter(CheckAndroidRunning)
 	Local $hWin = $g_hAndroidWindow
 	If WinGetAndroidHandle() = 0 Or ($bQuickCheck = False And $g_bAndroidBackgroundLaunched = False And AndroidControlAvailable() = 0) Then
 		SetDebugLog($g_sAndroidEmulator & " not running")
@@ -1128,9 +1142,9 @@ Func CheckAndroidRunning($bQuickCheck = True, $bStartIfRequired = True, $bStartO
 				RebootAndroid()
 			EndIf
 		EndIf
-		Return False
+		Return FuncReturn(False)
 	EndIf
-	Return True
+	Return FuncReturn(True)
 EndFunc   ;==>CheckAndroidRunning
 
 Func SetScreenAndroid()
@@ -1187,6 +1201,53 @@ Func WaitForRunningVMS($WaitInSec = 120, $hTimer = 0)
 	WEnd
 	Return False
 EndFunc   ;==>WaitForRunningVMS
+
+Func FindAvaiableInstances($sVboxManage = $__VBoxManage_Path)
+	Local $a = []
+	If FileExists($sVboxManage) = 0 Then
+		If $g_bDebugAndroid Then SetDebugLog("Cannot check for available " & $g_sAndroidEmulator & " instances: VBoxManager.exe not available", $COLOR_ERROR)
+		Return $a
+	EndIf
+	ResumeAndroid()
+	Local $cmdOutput, $connected_to, $running, $process_killed, $hMyTimer
+	$cmdOutput = LaunchConsole($sVboxManage, "list vms", $process_killed)
+	If $g_bDebugAndroid Then SetDebugLog("Available " & $g_sAndroidEmulator & " instances: " & $cmdOutput, $COLOR_ERROR)
+	$a = StringRegExp($cmdOutput, """(.*?)""", $STR_REGEXPARRAYGLOBALMATCH)
+	Return $a
+EndFunc   ;==>FindAvaiableInstances
+
+Func GetAndroidVMinfo(ByRef $sVMinfo, $sVboxManage = $__VBoxManage_Path)
+	Local $process_killed
+	Local $as_Instances
+	$sVMinfo = LaunchConsole($sVboxManage, "showvminfo " & $g_sAndroidInstance, $process_killed)
+	; check if instance is known
+	If StringInStr($sVMinfo, "Could not find a registered machine named") > 0 Then
+		$as_Instances = FindAvaiableInstances($sVboxManage)
+		For $s In $as_Instances
+			If StringCompare($g_sAndroidInstance, $s, $STR_NOCASESENSE) = 0 Then
+				SetDebugLog("Using " & $g_sAndroidEmulator & " instance " & $s & " (" & $g_sAndroidInstance & " not found!)", $COLOR_ERROR)
+				$g_sAndroidInstance = $s
+				$sVMinfo = LaunchConsole($sVboxManage, "showvminfo " & $g_sAndroidInstance, $process_killed)
+				ExitLoop
+			EndIf
+		Next
+	EndIf
+
+	If StringInStr($sVMinfo, "Could not find a registered machine named") > 0 Then
+		; Unknown vm
+		SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
+		If UBound($as_Instances) = 0 Then
+			SetLog("No " & $g_sAndroidEmulator & " instance found, please check installation", $COLOR_ERROR)
+		Else
+			SetLog("Available " & $g_sAndroidEmulator & " instances are:", $COLOR_ERROR)
+			For $s In $as_Instances
+				SetLog($s, $COLOR_ERROR)
+			Next
+		EndIf
+		Return False
+	EndIf
+	Return True
+EndFunc   ;==>GetAndroidVMinfo
 
 Func WaitForAndroidBootCompleted($WaitInSec = 120, $hTimer = 0)
 	ResumeAndroid()
@@ -1368,8 +1429,9 @@ Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $bStartOnlyAnd
 EndFunc   ;==>ConnectAndroidAdb
 
 Func RebootAndroid($bRestart = True, $bStartOnlyAndroid = False)
+	FuncEnter(RebootAndroid)
 	ResumeAndroid()
-	If Not $g_bRunState Then Return False
+	If Not $g_bRunState Then Return FuncReturn(False)
 
 	; Close Android
 	If CloseUnsupportedAndroid() Then
@@ -1378,10 +1440,10 @@ Func RebootAndroid($bRestart = True, $bStartOnlyAndroid = False)
 		; Close Emulator
 		CloseAndroid("RebootAndroid")
 	EndIf
-	If _Sleep(1000) Then Return False
+	If _Sleep(1000) Then Return FuncReturn(False)
 
 	; Start Android
-	Return OpenAndroid($bRestart, $bStartOnlyAndroid)
+	Return FuncReturn(OpenAndroid($bRestart, $bStartOnlyAndroid))
 EndFunc   ;==>RebootAndroid
 
 Func RebootAndroidSetScreenDefault()
@@ -1484,6 +1546,8 @@ Func AndroidInitPrompt()
 EndFunc   ;==>AndroidInitPrompt
 
 Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+	FuncEnter(AndroidAdbLaunchShellInstance)
+	If Not $g_bAndroidInitialized Then Return FuncReturn()
 	If $wasRunState = Default Then $wasRunState = $g_bRunState
 	If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 		Local $SuspendMode = ResumeAndroid()
@@ -1506,7 +1570,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 		EndIf
 		If $g_bAndroidAdbInstance = True Then
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-				Return SetError(3, 0)
+				Return FuncReturn(SetError(3, 0))
 			EndIf
 			AndroidAdbTerminateShellInstance()
 			;$g_iAndroidAdbProcess[0] = Run($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED))
@@ -1517,7 +1581,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 				$g_bAndroidAdbClick = False
 				$g_bAndroidAdbInput = False
 				If BitAND($g_iAndroidSupportFeature, 1) = 0 Then $g_bChkBackgroundMode = False ; disable also background mode the hard way
-				Return SetError(1, 0)
+				Return FuncReturn(SetError(1, 0))
 			Else
 				AndroidInitPrompt()
 			EndIf
@@ -1527,7 +1591,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 		;If StringInStr($g_sAndroidPicturesPath, "|", $STR_NOCASESENSEBASIC) > 0 Then
 		If True Then ; always validate picture patch
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-				Return SetError(3, 0)
+				Return FuncReturn(SetError(3, 0))
 			EndIf
 			Local $pathFound = False
 			Local $iMount
@@ -1566,7 +1630,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 				Else
 					SetDebugLog("Still waiting for shared folder to get mounted...")
 				EndIf
-				If _Sleep(6000) Then Return
+				If _Sleep(6000) Then Return FuncReturn()
 			Next
 			If $pathFound = False Then
 				SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
@@ -1597,13 +1661,13 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 			SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
 			If $error <> 0 Then
 				SuspendAndroid($SuspendMode)
-				Return
+				Return FuncReturn()
 			EndIf
 		EndIf
 		; check mouse device
 		If StringLen($g_sAndroidMouseDevice) > 0 And $g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] Then
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-				Return SetError(3, 0)
+				Return FuncReturn(SetError(3, 0))
 			EndIf
 			If StringInStr($g_sAndroidMouseDevice, "/dev/input/event") = 0 Then
 				; use getevent to find mouse input device
@@ -1614,19 +1678,27 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 					$g_sAndroidMouseDevice = $aRegExResult[0]
 					SetDebugLog("Using " & $g_sAndroidMouseDevice & " for mouse events")
 				Else
-					$g_bAndroidAdbClick = False
-					SetLog($g_sAndroidEmulator & " cannot use ADB for mouse events, """ & $g_sAndroidMouseDevice & """ not found", $COLOR_ERROR)
-					SuspendAndroid($SuspendMode)
-					Return SetError(2, 1)
+					; ok, now use first device with 35/36 expected dimensions
+					$aRegExResult = StringRegExp($s, "(\/dev\/input\/event\d+)[\r\n]+.+"".+""((?!\/dev\/input\/event)[\s\S])+ABS \(\d+\): 0035.+max " & $g_iGAME_WIDTH & ".+\n.+0036.+max " & $g_iGAME_HEIGHT, $STR_REGEXPARRAYMATCH)
+					If @error = 0 Then
+						SetDebugLog("Using " & $aRegExResult[0] & " for mouse events (" & $g_sAndroidMouseDevice & " not found)")
+						$g_sAndroidMouseDevice = $aRegExResult[0]
+					Else
+						$g_bAndroidAdbClick = False
+						SetLog($g_sAndroidEmulator & " cannot use ADB for mouse events, """ & $g_sAndroidMouseDevice & """ not found", $COLOR_ERROR)
+						SuspendAndroid($SuspendMode)
+						Return FuncReturn(SetError(2, 1))
+					ENdIf
 				EndIf
 			EndIf
 			SuspendAndroid($SuspendMode)
-			Return SetError(0, 1)
+			Return FuncReturn(SetError(0, 1))
 		Else
 			SetDebugLog($g_sAndroidEmulator & " ADB use " & $g_sAndroidMouseDevice & " for mouse events")
 		EndIf
 	EndIf
 	SetError(0, 0)
+	FuncReturn()
 EndFunc   ;==>AndroidAdbLaunchShellInstance
 
 Func AndroidAdbTerminateShellInstance()
@@ -1643,11 +1715,13 @@ Func AndroidAdbTerminateShellInstance()
 EndFunc   ;==>AndroidAdbTerminateShellInstance
 
 Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
+	FuncEnter(AndroidAdbSendShellCommand)
+	If Not $g_bAndroidInitialized Then Return FuncReturn()
 	Local $wasAllowed = $g_bTogglePauseAllowed
 	$g_bTogglePauseAllowed = False
 	Local $Result = _AndroidAdbSendShellCommand($cmd, $timeout, $wasRunState, $EnsureShellInstance, $bStripPrompt)
 	$g_bTogglePauseAllowed = $wasAllowed
-	Return SetError(@error, @extended, $Result)
+	Return FuncReturn(SetError(@error, @extended, $Result))
 EndFunc   ;==>AndroidAdbSendShellCommand
 
 Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)

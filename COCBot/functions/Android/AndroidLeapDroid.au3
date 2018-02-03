@@ -189,13 +189,7 @@ Func InitLeapDroid($bCheckOnly = False)
 	If Not $bCheckOnly Then
 		InitAndroidConfig(True) ; Restore default config
 
-		$__VBoxVMinfo = LaunchConsole($LeapDroid_Manage_Path, "showvminfo " & $g_sAndroidInstance, $process_killed)
-		; check if instance is known
-		If StringInStr($__VBoxVMinfo, "Could not find a registered machine named") > 0 Then
-			; Unknown vm
-			SetLog("Cannot find " & $g_sAndroidEmulator & " instance " & $g_sAndroidInstance, $COLOR_ERROR)
-			Return False
-		EndIf
+		If Not GetAndroidVMinfo($__VBoxVMinfo, $LeapDroid_Manage_Path) Then Return False
 		$__VBoxGuestProperties = LaunchConsole($LeapDroid_Manage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 
 		; update global variables

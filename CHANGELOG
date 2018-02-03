@@ -1,3 +1,9 @@
+* **V7.4.3**
+* Add MEmu 5 support
+* Fix DonateCC find donation button and not detecting opening window sometimes
+* Fix Android System Personal Break not detected in BlueStacks 0.x (and other Androids)
+* Improve Android Instance handling supporting case insensitive instance names and listing available instances when specified not found
+
 * **V7.4.2**
 * Fix BlueStacks2 reboot loop due to DPI=160 not correctly set in registry
 * Fix "No upgrade here... Wrong click.." auto upgrade error

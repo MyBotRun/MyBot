@@ -14,6 +14,8 @@
 ; ===============================================================================================================================
 
 Func imglocCheckWall()
+	Local $iXClickOffset = 0
+	Local $iYClickOffset = 0
 	Local $iXRange = 16
 	Local $iYRange = 14
 	Local $iLastGoodWallx = $g_aiLastGoodWallPos[0]
@@ -23,6 +25,13 @@ Func imglocCheckWall()
 	If _Sleep(500) Then Return
 
 	Local $levelWall = $g_iCmbUpgradeWallsLevel + 4
+	
+	Switch $levelWall
+	Case 10
+		Local $iXClickOffset = 2
+		Local $iYClickOffset = 2
+	EndSwitch
+
 
 	SetLog("Searching for Wall(s) level: " & $levelWall & ". Using imgloc: ", $COLOR_SUCCESS)
 	;name , level , coords
@@ -59,6 +68,8 @@ Func imglocCheckWall()
 					$aCoord[0] = $aCoord[0] + $iLastGoodWallx - $iXRange
 					$aCoord[1] = $aCoord[1] + $iLastGoodWally - $iYRange
 				EndIf
+				$aCoord[0] = $aCoord[0] + $iXClickOffset
+				$aCoord[1] = $aCoord[1] + $iYClickOffset
 				SetLog("Checking if found position is a Wall and of desired level.", $COLOR_SUCCESS)
 				;try click
 				GemClick($aCoord[0], $aCoord[1])
@@ -85,6 +96,8 @@ Func imglocCheckWall()
 				EndIf
 			Next
 		Next
+		$g_aiLastGoodWallPos[0] = -1
+		$g_aiLastGoodWallPos[1] = -1
 	EndIf
 	Return False
 

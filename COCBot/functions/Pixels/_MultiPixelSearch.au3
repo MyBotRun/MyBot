@@ -27,8 +27,19 @@
 Func _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
 	Local $offColorVariation = UBound($offColor, 2) > 3
-	For $x = 0 To $iRight - $iLeft Step $xSkip
-		For $y = 0 To $iBottom - $iTop Step $ySkip
+	Local $xRange = $iRight - $iLeft
+	Local $yRange = $iBottom - $iTop
+	If $xSkip < 0 Then
+		$xRange = Abs($xSkip)
+		$xSkip = 1
+	EndIf
+	If $ySkip < 0 Then
+		$yRange = Abs($ySkip)
+		$ySkip = 1
+	EndIf
+
+	For $x = 0 To $xRange Step $xSkip
+		For $y = 0 To $yRange Step $ySkip
 			If _ColorCheck(_GetPixelColor($x, $y), $firstColor, $iColorVariation) Then
 				Local $allchecked = True
 				Local $iCV = $iColorVariation
@@ -54,8 +65,18 @@ Func _MultiPixelSearchDebug($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $f
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
 	Local $sPixelColor
 	Local $offColorVariation = UBound($offColor, 2) > 3
-	For $x = 0 To $iRight - $iLeft Step $xSkip
-		For $y = 0 To $iBottom - $iTop Step $ySkip
+	Local $xRange = $iRight - $iLeft
+	Local $yRange = $iBottom - $iTop
+	If $xSkip < 0 Then
+		$xRange = Abs($xSkip)
+		$xSkip = 1
+	EndIf
+	If $ySkip < 0 Then
+		$yRange = Abs($ySkip)
+		$ySkip = 1
+	EndIf
+	For $x = 0 To $xRange Step $xSkip
+		For $y = 0 To $yRange Step $ySkip
 			$sPixelColor = _GetPixelColor($x, $y, $g_bNoCapturePixel)
 			If _ColorCheck($sPixelColor , $firstColor, $iColorVariation) Then
 				SetDebugLog("Search At Loc: " & $x+$iLeft & " , " & $y+$iTop & ", MPSDebug Pix#1: " & $sPixelColor)
@@ -83,8 +104,18 @@ EndFunc   ;==>_MultiPixelSearchDebug
 Func _MultiPixelSearch2($iLeft, $iTop, $iRight, $iBottom, $xSkip, $ySkip, $firstColor, $offColor, $iColorVariation)
 	_CaptureRegion($iLeft, $iTop, $iRight, $iBottom)
 	Local $offColorVariation = UBound($offColor, 2) > 3
-	For $y = 0 To $iBottom - $iTop Step $ySkip
-		For $x = 0 To $iRight - $iLeft Step $xSkip
+	Local $xRange = $iRight - $iLeft
+	Local $yRange = $iBottom - $iTop
+	If $xSkip < 0 Then
+		$xRange = Abs($xSkip)
+		$xSkip = 1
+	EndIf
+	If $ySkip < 0 Then
+		$yRange = Abs($ySkip)
+		$ySkip = 1
+	EndIf
+	For $y = 0 To $yRange Step $ySkip
+		For $x = 0 To $xRange Step $xSkip
 			If _ColorCheck(_GetPixelColor($x, $y), $firstColor, $iColorVariation) Then
 				Local $allchecked = True
 				Local $iCV = $iColorVariation
