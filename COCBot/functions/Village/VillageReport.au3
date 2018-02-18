@@ -44,6 +44,7 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 		$g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(701, 74)
 		$g_iGemAmount = getResourcesMainScreen(719, 123)
 		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($g_aiCurrentLoot[$eLootGold]) & " [E]: " & _NumberFormat($g_aiCurrentLoot[$eLootElixir]) & " [GEM]: " & _NumberFormat($g_iGemAmount), $COLOR_SUCCESS)
+		If ProfileSwitchAccountEnabled() Then $g_aiCurrentLoot[$eLootDarkElixir] = "" ; prevent applying Dark Elixir of previous account to current account
 	EndIf
 	If ProfileSwitchAccountEnabled() Then
 		$g_aiFreeBuilderCountAcc[$g_iCurAccount] = $g_iFreeBuilderCount

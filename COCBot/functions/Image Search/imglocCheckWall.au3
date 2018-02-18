@@ -28,8 +28,11 @@ Func imglocCheckWall()
 	
 	Switch $levelWall
 	Case 10
-		Local $iXClickOffset = 2
-		Local $iYClickOffset = 2
+		$iXClickOffset = 2
+		$iYClickOffset = 2
+	Case 11
+		$iXClickOffset = 1
+		$iYClickOffset = -2
 	EndSwitch
 
 

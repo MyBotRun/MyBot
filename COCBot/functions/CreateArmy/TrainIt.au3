@@ -94,7 +94,7 @@ Func GetTrainPos(Const $iIndex)
 	If $iIndex >= $eBarb And $iIndex <= $eBowl Then
 		Local $sFilter = String($g_asTroopShortNames[$iIndex]) & "*"
 		Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
-		If $g_bDebugSetlogTrain Then setlog("$asImageToUse Troops: " & $asImageToUse[1])
+		If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & $asImageToUse[1])
 		$aTrainPos = GetVariable($asImageToUse[1], $iIndex)
 		$aTrainArmy[$iIndex] = $aTrainPos
 		Return $aTrainPos
@@ -103,7 +103,7 @@ Func GetTrainPos(Const $iIndex)
 	If $iIndex >= $eLSpell And $iIndex <= $eSkSpell Then
 		Local $sFilter = String($g_asSpellShortNames[$iIndex - $eLSpell]) & "*"
 		Local $asImageToUse = _FileListToArray($g_sImgTrainSpells, $sFilter, $FLTA_FILES, True)
-		If $g_bDebugSetlogTrain Then setlog("$asImageToUse Spell: " & $asImageToUse[1])
+		If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Spell: " & $asImageToUse[1])
 		$aTrainPos = GetVariable($asImageToUse[1], $iIndex)
 		$aTrainArmy[$iIndex] = $aTrainPos
 		Return $aTrainPos

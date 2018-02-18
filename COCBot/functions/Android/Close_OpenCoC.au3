@@ -14,11 +14,11 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func CloseCoC($ReOpenCoC = False)
+Func CloseCoC($ReOpenCoC = False, $bCheckRunState = True)
 	FuncEnter(CloseCoC)
 	$g_bSkipFirstZoomout = False
 	ResumeAndroid()
-	If Not $g_bRunState Then Return FuncReturn()
+	If $bCheckRunState And Not $g_bRunState Then Return FuncReturn()
 
 	Local $Adb = ""
 	If $ReOpenCoC Then
@@ -27,12 +27,12 @@ Func CloseCoC($ReOpenCoC = False)
 		SetLog("Closing CoC......", $COLOR_ERROR) ; Let user know what we do...
 	EndIf
 	WinGetAndroidHandle()
-	If Not $g_bRunState Then Return FuncReturn()
+	If $bCheckRunState And Not $g_bRunState Then Return FuncReturn()
 	;SendAdbCommand("shell am force-stop " & $g_sAndroidGamePackage)
 	;AndroidHomeButton()
 	AndroidAdbSendShellCommand("am force-stop " & $g_sAndroidGamePackage, Default, Default, False)
 	ResetAndroidProcess()
-	If Not $g_bRunState Then Return FuncReturn()
+	If $bCheckRunState And Not $g_bRunState Then Return FuncReturn()
 	If $ReOpenCoC Then
 		OpenCoC()
 		$g_bRestart = True

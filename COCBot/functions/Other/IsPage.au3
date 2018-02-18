@@ -197,11 +197,11 @@ Func IsReturnHomeBattlePage($useReturnValue = False, $makeDebugImageScreenshot =
 
 EndFunc   ;==>IsReturnHomeBattlePage
 
-Func IsPostDefenseSummaryPage()
+Func IsPostDefenseSummaryPage($bCapture = True)
 	;check for loot lost summary screen after base defense when log on and base is being attacked.
 	Local $result
-	Local $GoldSpot = _GetPixelColor(330, 201 + $g_iMidOffsetY, $g_bCapturePixel) ; Gold Emblem
-	Local $ElixirSpot = _GetPixelColor(334, 233 + $g_iMidOffsetY, $g_bCapturePixel) ; Elixir Emblem
+	Local $GoldSpot = _GetPixelColor(330, 201 + $g_iMidOffsetY, $bCapture) ; Gold Emblem
+	Local $ElixirSpot = _GetPixelColor(334, 233 + $g_iMidOffsetY, $bCapture) ; Elixir Emblem
 
 	$result = _ColorCheck($GoldSpot, Hex(0xF6E851, 6), 20) And _ColorCheck($ElixirSpot, Hex(0xE835E8, 6), 20)
 

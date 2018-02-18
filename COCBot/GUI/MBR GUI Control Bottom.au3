@@ -17,7 +17,6 @@
 Global $g_aFrmBotBottomCtrlState, $g_hFrmBotEmbeddedShield = 0, $g_hFrmBotEmbeddedMouse = 0, $g_hFrmBotEmbeddedGraphics = 0
 
 Func Initiate()
-	Static $bCheckLanguageFirst = False
 	WinGetAndroidHandle()
 	If $g_hAndroidWindow <> 0 And ($g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable()) Then
 		SetLogCentered(" " & $g_sBotTitle & " Powered by MyBot.run ", "~", $COLOR_DEBUG)
@@ -75,10 +74,7 @@ Func Initiate()
 			BotDetectFirstTime()
 			If Not $g_bRunState Then Return
 
-			If Not $bCheckLanguageFirst And $g_bCheckGameLanguage Then
-				TestLanguage()
-				$bCheckLanguageFirst = True
-			EndIf
+			If $g_bCheckGameLanguage Then TestLanguage()
 			If Not $g_bRunState Then Return
 
 			runBot()

@@ -15,6 +15,7 @@
 #RequireAdmin
 #AutoIt3Wrapper_UseX64=7n
 ;#AutoIt3Wrapper_Res_HiDpi=Y ; HiDpi will be set during run-time!
+;#AutoIt3Wrapper_Run_AU3Check=n ; enable when running in folder with umlauts!
 #AutoIt3Wrapper_Run_Au3Stripper=y
 #Au3Stripper_Parameters=/rsln /MI=3
 ;/SV=0
@@ -312,7 +313,7 @@ Func InitializeAndroid($bConfigRead)
 
 	CleanSecureFiles()
 
-	GetCOCDistributors() ; realy load of distributors to prevent rare bot freeze during boot
+	GetCOCDistributors() ; load of distributors to prevent rare bot freeze during boot
 
 EndFunc   ;==>InitializeAndroid
 
@@ -475,6 +476,7 @@ Func SetupFilesAndFolders()
 
 	;DirCreate($sTemplates)
 	DirCreate($g_sProfilePresetPath)
+	DirCreate($g_sPrivateProfilePath & "\" & $g_sProfileCurrentName)
 	DirCreate($g_sProfilePath & "\" & $g_sProfileCurrentName)
 	DirCreate($g_sProfileLogsPath)
 	DirCreate($g_sProfileLootsPath)

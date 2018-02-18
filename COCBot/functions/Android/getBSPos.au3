@@ -289,7 +289,7 @@ Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWid
 									; early abort when cannot be resized
 									Local $bXinc = $aControlSize[0] > $asControlSize[$RetryCount1][0] And $asControlSize[$RetryCount1][0] > $asControlSize[$RetryCount1 - 1][0]
 									Local $bYinc = $aControlSize[1] > $asControlSize[$RetryCount1][1] And $asControlSize[$RetryCount1][1] > $asControlSize[$RetryCount1 - 1][1]
-									If ($bXinc And Not $bYinc) Or (Not $bXinc And $bYinc) Then
+									If ($bXinc And Not $bYinc) Or (Not $bXinc And $bYinc) Or ($aControlSize[2] < $g_iAndroidClientWidth / 2 Or $aControlSize[2] > $g_iAndroidClientWidth * 1.5 Or $aControlSize[3] < $g_iAndroidClientHeight / 2 Or $aControlSize[3] > $g_iAndroidClientHeight * 1.5) Then
 										SetLog($g_sAndroidEmulator & " window cannot be resized, abort", $COLOR_ERROR)
 										Return $aControlSize
 									EndIf

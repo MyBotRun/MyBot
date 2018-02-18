@@ -121,7 +121,7 @@ Func CheckMilkingBaseTest()
 ;~ 				$tmpPixelCloser2[0] = $tmpPixelCloser2x
 ;~ 				$tmpPixelCloser2[1] = $tmpPixelCloser2y
 
-;~ 				setlog("Launch point = " & $tmpPixelCloser2[0] & " : " & $tmpPixelCloser2[1])
+;~ 				SetLog("Launch point = " & $tmpPixelCloser2[0] & " : " & $tmpPixelCloser2[1])
 
 
 ;~ 				if false then
@@ -142,7 +142,7 @@ Func CheckMilkingBaseTest()
 ;~ 	;~ 					If $tmpDist > 0 And $tmpDist < Number($NbPixelmaxExposed) Then
 ;~ 	;~ 						Local $tmpArrayOfPixel[1]
 ;~ 	;~ 						$tmpArrayOfPixel[0] = $pixelTemp
-;~ 	;~ 						_ArrayAdd($g_aiPixelElixirToAttack, $tmpArrayOfPixel)
+;~ 	;~ 						_ArrayAdd($g_aiPixelElixirToAttack, $tmpArrayOfPixel, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 ;~ 	;~ 					EndIf
 ;~ 				EndIf
 
@@ -165,17 +165,17 @@ Func CheckMilkingBaseTest()
 
 ;~ 		For $i = 0 to ubound($g_aiPixelElixirToAttack)-1
 ;~ 			Local $pixelTemp = $g_aiPixelElixirToAttack[$i]
-;~ 	;		setlog("$pixelTemp[0] $pixelTemp[1] " & $pixelTemp[0] & " " & $pixelTemp[1])
+;~ 	;		SetLog("$pixelTemp[0] $pixelTemp[1] " & $pixelTemp[0] & " " & $pixelTemp[1])
 ;~ 			Local $CocSearchArea = string($pixelTemp[0] - 20) & "|" & string($pixelTemp[1] - 20) & "|" & string($pixelTemp[0] + 20) & "|" & string($pixelTemp[1] + 20)
 ;~ 			Local $CocDiamond = string($pixelTemp[0]) & "," & string($pixelTemp[1] - 20) & "|" & string($pixelTemp[0]-20) & "," & string($pixelTemp[1]) & "|" &  string($pixelTemp[0]) & "," & string($pixelTemp[1] + 20) & "|" & string($pixelTemp[0] + 20) & "," & string($pixelTemp[1])
-;~ 	;		setlog("$CocSearchArea = " & $CocSearchArea & "  $CocDiamond = " & $CocDiamond)
+;~ 	;		SetLog("$CocSearchArea = " & $CocSearchArea & "  $CocDiamond = " & $CocDiamond)
 ;~ 			For $t = 1 To $newElixADV[0]
 ;~ 				If FileExists(@ScriptDir & "\images\Milking\Elixir\" & $newElixADV[$t]) Then
 ;~ 					$res = ""
 ;~ 					$res = DllCall($g_sLibPath & "\MyBotRunImgLoc.dll", "str", "SearchTile", "handle", $sendHBitmap, "str", @ScriptDir & "\images\Milking\Elixir\" & $newElixADV[$t], "float", $SimilarityMilk , "str", $CocSearchArea, "str", $CocDiamond)
-;~ 	;				setlog("$res = " & $res)
+;~ 	;				SetLog("$res = " & $res)
 ;~ 					If IsArray($res) Then
-;~ 	;					setlog("$res[0] = " & $res[0])
+;~ 	;					SetLog("$res[0] = " & $res[0])
 ;~ 						If $res[0] = "0" Then
 ;~ 							$res = ""
 ;~ 						ElseIf $res[0] = "-1" Then
@@ -193,12 +193,12 @@ Func CheckMilkingBaseTest()
 ;~ 										_GDIPlus_GraphicsDrawRect($hGraphic, $ElixirLocationx - 5, $ElixirLocationy - 5, 10, 10, $hPen)
 ;~ 										_GDIPlus_GraphicsDrawString($hGraphic, $ImageInfo, $ElixirLocationx , $ElixirLocationy - 30, "Arial", 15)
 ;~ 									EndIf
-;~ 									_ArrayAdd($g_aiPixelNearCollector, $expRet)
+;~ 									_ArrayAdd($g_aiPixelNearCollector, $expRet, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 ;~ 									Local $batsav = $newElixADV[$t]
 ;~ 									addstatmilk("Elixir", $batsav)
-;~ 									setlog("file = " & $newElixADV[$t])
+;~ 									SetLog("file = " & $newElixADV[$t])
 ;~ 									$ZombieFoundEli += 1
-;~ 									setlog("$ElixirLocationx, $ElixirLocationy = " & $ElixirLocationx & " : " & $ElixirLocationy)
+;~ 									SetLog("$ElixirLocationx, $ElixirLocationy = " & $ElixirLocationx & " : " & $ElixirLocationy)
 ;~ 									If $ZombieFoundEli = 7 Then
 ;~ 										ExitLoop (3)
 ;~ 									else

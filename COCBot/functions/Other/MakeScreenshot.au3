@@ -50,7 +50,7 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 				SetLog("Screenshot saved: " & $TargetDir & $filename)
 			EndIf
 		Else
-			SetLog("Screenshot file not created!", $COLOR_ERROR)
+			SetLog("Screenshot file not created: " & $TargetDir & $filename, $COLOR_ERROR)
 		EndIf
 		$g_bMakeScreenshotNow = False
 		;reduce mem

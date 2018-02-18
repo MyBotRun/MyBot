@@ -350,21 +350,21 @@ Func SmartAttackStrategy($imode)
 				If $g_abAttackStdSmartNearCollectors[$imode][0] Then
 					$g_aiPixelMine = GetLocationMine()
 					If (IsArray($g_aiPixelMine)) Then
-						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelMine)
+						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelMine, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 					EndIf
 				EndIf
 				; If drop troop near elixir collector
 				If $g_abAttackStdSmartNearCollectors[$imode][1] Then
 					$g_aiPixelElixir = GetLocationElixir()
 					If (IsArray($g_aiPixelElixir)) Then
-						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelElixir)
+						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelElixir, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 					EndIf
 				EndIf
 				; If drop troop near dark elixir drill
 				If $g_abAttackStdSmartNearCollectors[$imode][2] Then
 					$g_aiPixelDarkElixir = GetLocationDarkElixir()
 					If (IsArray($g_aiPixelDarkElixir)) Then
-						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelDarkElixir)
+						_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelDarkElixir, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 					EndIf
 				EndIf
 				SetLog("Located  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")

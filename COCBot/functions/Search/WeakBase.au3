@@ -540,7 +540,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 				Case UBound($aBldgCoord) > 0 And IsArray($aBldgCoord[0]) ; single row with array
 					Local $aPixelb = $aBldgCoord[0]
 					$sText = PixelToString($aPixelb, ":")
-				Case UBound($aBldgCoord) > 0 And IsArray($aBldgCoord[0]) = 0
+				Case UBound($aBldgCoord) = 2 And IsArray($aBldgCoord[0]) = 0 ; Check if $aBldCoord has 2 rows otherwise PixelToString throws an error
 					$sText = PixelToString($aBldgCoord, ":")
 				Case Else
 					$sText = "Monkey ate bad banana!"

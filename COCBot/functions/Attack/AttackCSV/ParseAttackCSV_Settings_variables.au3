@@ -88,11 +88,11 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 					Case "TRAIN"
 						$iTroopIndex = TroopIndexLookup($asCommand[$iTroopNameCol], "ParseAttackCSV_Settings_variables")
 						If $iTroopIndex = -1 Then
-							Setlog("CSV troop name '" & $asCommand[$iTroopNameCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
+							SetLog("CSV troop name '" & $asCommand[$iTroopNameCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
 							ContinueLoop ; discard TRAIN commands due to the invalid troop name
 						EndIf
 						If int($asCommand[$iTHCol]) <= 0 Then
-							If $asCommand[$iTHCol] <> "0" Then Setlog("CSV troop amount/setting '" & $asCommand[$iTHCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
+							If $asCommand[$iTHCol] <> "0" Then SetLog("CSV troop amount/setting '" & $asCommand[$iTHCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
 							ContinueLoop ; discard TRAIN commands due to the invalid troop amount/setting ex. int(chars)=0, negative #. "0" won't get alerted
 						EndIf
 						Switch $iTroopIndex
@@ -105,7 +105,7 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 								Local $iHeroRadioItem = int(StringLeft($asCommand[$iTHCol], 1))
 								Local $iHeroTimed = Int(StringTrimLeft($asCommand[$iTHCol], 1))
 								If $iHeroRadioItem <= 0 Or $iHeroRadioItem > $iHeroRadioItemTotal Or $iHeroTimed < 0 Or $iHeroTimed > $iHeroTimedLimit Then
-									Setlog("CSV hero ability setting '" & $asCommand[$iTHCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
+									SetLog("CSV hero ability setting '" & $asCommand[$iTHCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
 									ContinueLoop ; discard TRAIN commands due to prefix 0 or exceed # of radios
 								EndIf
 								$aiCSVHeros[$iTroopIndex - $eKing][0] = $iHeroRadioItem

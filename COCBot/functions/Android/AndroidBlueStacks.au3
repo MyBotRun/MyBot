@@ -20,9 +20,12 @@ EndFunc   ;==>OpenBS
 Func OpenBlueStacks($bRestart = False)
 
 	Local $hTimer, $iCount = 0, $cmdPar
-	Local $PID, $ErrorResult, $connected_to
+	Local $PID, $ErrorResult, $connected_to, $process_killed
 
 	SetLog("Starting BlueStacks and Clash Of Clans", $COLOR_SUCCESS)
+
+	; always start ADB first to avoid ADB connection problems
+	LaunchConsole($g_sAndroidAdbPath, "start-server", $process_killed)
 
 	;$PID = ShellExecute($__BlueStacks_Path & "HD-RunApp.exe", "-p " & $g_sAndroidGamePackage & " -a " & $g_sAndroidGamePackage & $g_sAndroidGameClass)  ;Start BS and CoC with command line
 	;$PID = ShellExecute($__BlueStacks_Path & "HD-Frontend.exe", $g_sAndroidInstance) ;Start BS and CoC with command line
@@ -77,6 +80,9 @@ Func OpenBlueStacks2($bRestart = False)
 	SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
 
 	CloseUnsupportedBlueStacks2()
+
+	; always start ADB first to avoid ADB connection problems
+	LaunchConsole($g_sAndroidAdbPath, "start-server", $process_killed)
 
 	$hTimer = __TimerInit()
 	WinGetAndroidHandle()

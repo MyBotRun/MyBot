@@ -37,7 +37,7 @@ Func SearchTownHallLoc()
 
 	; New Tile px on 44x44 map size : X = 16px and Y = 12px
 
-	;setlog("th add tiles = " & $addtiles)
+	;SetLog("th add tiles = " & $addtiles)
 	If $g_iSearchTH <> "-" Then
 		If isInsideDiamondXY($g_iTHx, $g_iTHy) = False Then Return False
 

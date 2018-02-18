@@ -1,3 +1,26 @@
+﻿* **V7.4.4**
+* Add AutoIt 3.3.14.3 support (though not advided to use, as still not all problems are resolved!)
+* Add CoC shared_prefs folder support to Switch Accounts supporting also SuperCell ID accounts (saved in current users documents folder in MyBot.run-Profiles)
+* Add allows account switching in the order: Donate - Shortest Active - Donate.....
+* Add Automatically change the EN language when the language is wrong
+* Add Not wait for Heroes when upgrade detected
+* Fix DonateCC find donation button when opening donation window
+* Fix Array-Error in weak-base routine
+* Fix the stats for Dark Elixir using the previous account
+* Fix no "External Edges" option for some languages
+* Fix donate stats negative values on stats reset
+* Fix unnecessary restart of CoC
+* Fix ADB communication when Android is unrooted
+* Fix Trouble finding research button
+* Fix bot crash at launch when profile already in use
+* Fix obstacles check not closing Google Play Games Accounts List
+* Fix zoom-out issues and bot not working when special umlauts exist in installation path
+* Fix BlueStacks not connecting ADB when ADB daemon not running before BlueStacks launch
+* Improve Debug Button - Test Click Drag with user coor input, image save
+* Improve Log file handling and create new log file only if none had been created in this and prior hour
+* Update Arabic Language File (by @awssaad)
+* Update Russian Language File (by @Vlab97)
+
 * **V7.4.3**
 * Add MEmu 5 support
 * Fix DonateCC find donation button and not detecting opening window sometimes

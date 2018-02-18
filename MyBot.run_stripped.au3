@@ -9,7 +9,7 @@
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.4.3"
+Global $g_sBotVersion = "v7.4.4"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -1437,6 +1437,7 @@ Global Const $GMEM_MOVEABLE = 0x0002
 Global Const $MEM_COMMIT = 0x00001000
 Global Const $MEM_RESERVE = 0x00002000
 Global Const $PAGE_READWRITE = 0x00000004
+Global Const $PAGE_EXECUTE_READWRITE = 0x00000040
 Global Const $MEM_RELEASE = 0x00008000
 Global Const $tagMEMMAP = "handle hProc;ulong_ptr Size;ptr Mem"
 Func _MemFree(ByRef $tMemMap)
@@ -1490,9 +1491,19 @@ Local $aResult = DllCall("kernel32.dll", "bool", "WriteProcessMemory", "handle",
 If @error Then Return SetError(@error, @extended, False)
 Return $aResult[0]
 EndFunc
+Func _MemVirtualAlloc($pAddress, $iSize, $iAllocation, $iProtect)
+Local $aResult = DllCall("kernel32.dll", "ptr", "VirtualAlloc", "ptr", $pAddress, "ulong_ptr", $iSize, "dword", $iAllocation, "dword", $iProtect)
+If @error Then Return SetError(@error, @extended, 0)
+Return $aResult[0]
+EndFunc
 Func _MemVirtualAllocEx($hProcess, $pAddress, $iSize, $iAllocation, $iProtect)
 Local $aResult = DllCall("kernel32.dll", "ptr", "VirtualAllocEx", "handle", $hProcess, "ptr", $pAddress, "ulong_ptr", $iSize, "dword", $iAllocation, "dword", $iProtect)
 If @error Then Return SetError(@error, @extended, 0)
+Return $aResult[0]
+EndFunc
+Func _MemVirtualFree($pAddress, $iSize, $iFreeType)
+Local $aResult = DllCall("kernel32.dll", "bool", "VirtualFree", "ptr", $pAddress, "ulong_ptr", $iSize, "dword", $iFreeType)
+If @error Then Return SetError(@error, @extended, False)
 Return $aResult[0]
 EndFunc
 Func _MemVirtualFreeEx($hProcess, $pAddress, $iSize, $iFreeType)
@@ -6240,6 +6251,7 @@ Global $g_hMutextOrSemaphoreGlobalActiveBots = 0
 Global $g_iGlobalThreads = 0
 Global $g_iThreads = 0
 Global $g_sProfilePath = @ScriptDir & "\Profiles"
+Global $g_sPrivateProfilePath = @MyDocumentsDir & "\MyBot.run-Profiles"
 Global Const $g_sProfilePresetPath = @ScriptDir & "\Strategies"
 Global $g_sProfileCurrentName = ""
 Global $g_sProfileConfigPath = ""
@@ -6249,7 +6261,7 @@ Global $g_sProfileLogsPath = "", $g_sProfileLootsPath = "", $g_sProfileTempPath 
 Global $g_sProfileDonateCapturePath = "", $g_sProfileDonateCaptureWhitelistPath = "", $g_sProfileDonateCaptureBlacklistPath = ""
 Global $g_sProfileSecondaryInputFileName = ""
 Global $g_sProfileSecondaryOutputFileName = ""
-Global $g_asProfiles = []
+Global $g_asProfiles[0]
 Global $g_bReadConfigIsActive = False
 Global $g_bSaveConfigIsActive = False
 Global $g_bApplyConfigIsActive = False
@@ -6280,7 +6292,7 @@ Global $g_iBotLaunchOption_Help = False
 Global $g_asCmdLine[1] = [0]
 Global Const $g_sWorkingDir = @WorkingDir
 Global $g_hMutex_BotTitle = 0
-Global $g_ahMutex_Profile = []
+Global $g_ahMutex_Profile[0][2]
 Global $g_ahMutex_SwitchAccountsGroup = [0, 0]
 Global $g_hMutex_MyBot = 0
 Global $g_BotInstanceCount = 0
@@ -6537,6 +6549,8 @@ Global $g_aiSearchHeroWaitEnable[$g_iModeCount] = [0, 0, 0]
 Global $g_abSearchSpellsWaitEnable[$g_iModeCount] = [False, False, False]
 Global $g_abSearchCastleSpellsWaitEnable[$g_iModeCount] = [False, False, False], $g_aiSearchCastleSpellsWaitRegular[$g_iModeCount] = [0, 0, 0], $g_aiSearchCastleSpellsWaitDark[$g_iModeCount] = [0, 0, 0]
 Global $g_abSearchCastleTroopsWaitEnable[$g_iModeCount] = [False, False, False]
+Global $g_aiSearchNotWaitHeroesEnable[$g_iModeCount] = [0, 0, 0]
+Global $g_iSearchNotWaitHeroesEnable = -1
 Global $g_aiFilterMeetGE[$g_iModeCount] = [0, 0, 0], $g_aiFilterMinGold[$g_iModeCount] = [0, 0, 0], $g_aiFilterMinElixir[$g_iModeCount] = [0, 0, 0], $g_aiFilterMinGoldPlusElixir[$g_iModeCount] = [0, 0, 0]
 Global $g_abFilterMeetDEEnable[$g_iModeCount] = [False, False, False], $g_aiFilterMeetDEMin[$g_iModeCount] = [0, 0, 0]
 Global $g_abFilterMeetTrophyEnable[$g_iModeCount] = [False, False, False], $g_aiFilterMeetTrophyMin[$g_iModeCount] = [0, 0, 0], $g_aiFilterMeetTrophyMax[$g_iModeCount] = [99, 99, 99]
@@ -6613,7 +6627,7 @@ Global $g_bAutoResumeEnable = 0, $g_iAutoResumeTime = 5
 Global $g_bDisableNotifications = False
 Global $g_bForceClanCastleDetection = 0
 Global $g_iCmbSwitchAcc = 0, $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_iTrainTimeToSkip = 0, $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False
-Global $g_iTotalAcc = -1, $g_iNextAccount, $g_iCurAccount
+Global $g_iTotalAcc = -1, $g_iNextAccount, $g_iCurAccount, $g_bChkSharedPrefs = False, $g_bDonateLikeCrazy = False
 Global $g_abAccountNo[8], $g_asProfileName[8], $g_abDonateOnly[8]
 Global $g_aiAttackedCountSwitch[8], $g_iActiveSwitchCounter = 0, $g_iDonateSwitchCounter = 0
 Global $g_aiRemainTrainTime[8], $g_aiTimerStart[8], $g_abPBActive[8]
@@ -7321,6 +7335,7 @@ Global $NextBtnRND[4] = [710, 530 + $g_iMidOffsetY, 830, 570 + $g_iMidOffsetY]
 Global $aButtonSetting[4] = [820, 550 + $g_iMidOffsetY, 0xFFFFFF, 10]
 Global $aButtonConnected[4] = [430, 380 + $g_iMidOffsetY, 0xD8F480, 20]
 Global $aButtonDisconnected[4] = [430, 380 + $g_iMidOffsetY, 0xFF7C81, 20]
+Global $aButtonSuperCellIdConnected[4] = [430, 235, 0x6eb730, 20]
 Global $aListAccount[4] = [165, 350 + $g_iMidOffsetY, 0xFFFFFF, 10]
 Global $aButtonVillageLoad[4] = [515, 411 + $g_iMidOffsetY, 0x6EBD1F, 20]
 Global $aTextBox[4] = [320, 160 + $g_iMidOffsetY, 0xFFFFFF, 10]
@@ -7355,6 +7370,10 @@ Global $aTrainESpell[4] = [-1, -1, -1, -1]
 Global $aTrainHaSpell[4] = [-1, -1, -1, -1]
 Global $aTrainSkSpell[4] = [-1, -1, -1, -1]
 Global $aTrainArmy[$eArmyCount] = [$aTrainBarb, $aTrainArch, $aTrainGiant, $aTrainGobl, $aTrainWall, $aTrainBall, $aTrainWiza, $aTrainHeal, $aTrainDrag, $aTrainPekk, $aTrainBabyD, $aTrainMine, $aTrainMini, $aTrainHogs, $aTrainValk, $aTrainGole, $aTrainWitc, $aTrainLava, $aTrainBowl, 0, 0, 0, 0, $aTrainLSpell, $aTrainHSpell, $aTrainRSpell, $aTrainJSpell, $aTrainFSpell, $aTrainCSpell, $aTrainPSpell, $aTrainESpell, $aTrainHaSpell, $aTrainSkSpell]
+Global $aButtonLanguage[4] = [210, 375 + $g_iMidOffsetY, 0xD0E978, 20]
+Global $aListLanguage[4] = [110, 90 + $g_iMidOffsetY, 0xFFFFFF, 10]
+Global $aEnglishLanguage[4] = [420, 140 + $g_iMidOffsetY, 0xD7D5C7, 20]
+Global $aLanguageOkay[4] = [510, 420 + $g_iMidOffsetY, 0x6FBD1F, 20]
 Global $g_sImgImgLocButtons = @ScriptDir & "\imgxml\imglocbuttons"
 Global Const $g_sImgAnyoneThere = @ScriptDir & "\imgxml\other\AnyoneThere[[Android]]*"
 Global Const $g_sImgPersonalBreak = @ScriptDir & "\imgxml\other\break*"
@@ -8035,8 +8054,11 @@ Local $aResult
 If $g_bCloudsActive = False And((BitAND($g_iAndroidSuspendModeFlags, 1) > 0 And($g_bAttackActive Or $g_bVillageSearchActive)) Or BitAND($g_iAndroidSuspendModeFlags, 2) > 0) Then
 Local $sFileOrFolder = Default
 Switch $sFunc
-Case "SearchMultipleTilesBetweenLevels", "FindTile"
+Case "SearchMultipleTilesBetweenLevels", "FindTile", "SearchTile", "SearchMultipleTilesLevel", "SearchMultipleTiles", "RecheckTile", "DoOCR"
+If StringLeft($vParam2, 1) <> "-" Then
 $sFileOrFolder = $vParam2
+$vParam2 = "-" & _Base64Encode(StringToBinary($vParam2, 4), 1024)
+EndIf
 EndSwitch
 If $g_bDebugBetaVersion And $sFileOrFolder <> Default And StringInStr($sFileOrFolder, "\") And FileExists($sFileOrFolder) = 0 Then SetLog("Cannot access path: " & $sFileOrFolder, $COLOR_ERROR)
 Local $bWasSuspended = SuspendAndroid()
@@ -8181,6 +8203,7 @@ Global $g_iSuspendAndroidTimeCount = 0
 Global $g_hSuspendAndroidTimer = 0
 Global $g_aiMouseOffset = [0, 0]
 Global $g_aiMouseOffsetWindowOnly = [0, 0]
+Global $g_PushedSharedPrefsProfile
 Func InitAndroidConfig($bRestart = False)
 FuncEnter(InitAndroidConfig)
 If $bRestart = False Then
@@ -8967,7 +8990,8 @@ EndIf
 ConnectAndroidAdb()
 If Not $g_bRunState Then Return False
 If Not $g_bRunState Then Return False
-$cmdOutput = AndroidAdbSendShellCommand("am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, 60000)
+If $g_bChkSharedPrefs And HaveSharedPrefs() And $g_PushedSharedPrefsProfile <> $g_sProfileCurrentName Then PushSharedPrefs()
+$cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 60000)
 If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
 SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_ERROR)
 SetLog("Unable to continue........", $COLOR_WARNING)
@@ -9164,15 +9188,15 @@ If IsAdbTCP() Then
 $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "connect " & $g_sAndroidAdbDevice, $process_killed)
 $connected_to = StringInStr($cmdOutput, "connected to") > 0
 If $connected_to Then
-$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell whoami", $process_killed)
+$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell echo $USER:$USER_ID", $process_killed)
 $connected_to = StringInStr($cmdOutput, "device ") = 0 And $process_killed = False
 EndIf
 Else
-$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell whoami", $process_killed)
-$connected_to = StringInStr($cmdOutput, " not ") = 0 And $process_killed = False
+$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell echo $USER:$USER_ID", $process_killed)
+$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0 And $process_killed = False
 EndIf
 Else
-$connected_to = StringInStr($cmdOutput, " not ") = 0
+$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0
 EndIf
 Return $connected_to
 EndFunc
@@ -9354,7 +9378,7 @@ If $g_bAndroidAdbPromptUseGiven Then
 AndroidAdbSendShellCommand("", -250, Default, False, False)
 $s = AndroidAdbSendShellCommand("", -500, Default, False, False)
 If $s Then
-$g_sAndroidAdbPrompt = $s
+$g_sAndroidAdbPrompt = StringStripWS($s, $STR_STRIPLEADING)
 SetDebugLog("Initialize shell prompt with '" & $g_sAndroidAdbPrompt & "'")
 Else
 SetLog("ADB Prompt not identified!", $COLOR_ERROR)
@@ -9367,8 +9391,16 @@ EndIf
 Return $s
 EndFunc
 Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+Static $bAndroidAdbLaunchShellInstanceActive = False
+If $bAndroidAdbLaunchShellInstanceActive Then Return
 FuncEnter(AndroidAdbLaunchShellInstance)
-If Not $g_bAndroidInitialized Then Return FuncReturn()
+$bAndroidAdbLaunchShellInstanceActive = True
+Local $Result = _AndroidAdbLaunchShellInstance($wasRunState, $rebootAndroidIfNeccessary)
+$bAndroidAdbLaunchShellInstanceActive = False
+Return FuncReturn($Result)
+EndFunc
+Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+If Not $g_bAndroidInitialized Then Return
 If $wasRunState = Default Then $wasRunState = $g_bRunState
 If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 Local $SuspendMode = ResumeAndroid()
@@ -9389,7 +9421,7 @@ Next
 EndIf
 If $g_bAndroidAdbInstance = True Then
 If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-Return FuncReturn(SetError(3, 0))
+Return SetError(3, 0)
 EndIf
 AndroidAdbTerminateShellInstance()
 $g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
@@ -9399,14 +9431,14 @@ $g_bAndroidAdbScreencap = False
 $g_bAndroidAdbClick = False
 $g_bAndroidAdbInput = False
 If BitAND($g_iAndroidSupportFeature, 1) = 0 Then $g_bChkBackgroundMode = False
-Return FuncReturn(SetError(1, 0))
+Return SetError(1, 0)
 Else
 AndroidInitPrompt()
 EndIf
 EndIf
 If True Then
 If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-Return FuncReturn(SetError(3, 0))
+Return SetError(3, 0)
 EndIf
 Local $pathFound = False
 Local $iMount
@@ -9428,7 +9460,7 @@ For $i = 0 To UBound($aRegExResult) - 1
 $path = $aRegExResult[$i]
 If $path = "" Then ContinueLoop
 If StringRight($path, 1) <> "/" Then $path &= "/"
-$s = AndroidAdbSendShellCommand("ls '" & $path & $dummyFile & "'", Default, $wasRunState, False)
+$s = AndroidAdbSendShellCommand("set result=$(ls '" & $path & $dummyFile & "' >&2)", Default, $wasRunState, False)
 If StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error:") = 0 Then
 $pathFound = True
 $g_sAndroidPicturesPath = $path
@@ -9443,7 +9475,7 @@ SetLog("Waiting for shared folder to get mounted...", $COLOR_GREEN)
 Else
 SetDebugLog("Still waiting for shared folder to get mounted...")
 EndIf
-If _Sleep(6000) Then Return FuncReturn()
+If _Sleep(6000) Then Return
 Next
 If $pathFound = False Then
 SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
@@ -9462,12 +9494,12 @@ Local $error = @error
 SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
 If $error <> 0 Then
 SuspendAndroid($SuspendMode)
-Return FuncReturn()
+Return
 EndIf
 EndIf
 If StringLen($g_sAndroidMouseDevice) > 0 And $g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] Then
 If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-Return FuncReturn(SetError(3, 0))
+Return SetError(3, 0)
 EndIf
 If StringInStr($g_sAndroidMouseDevice, "/dev/input/event") = 0 Then
 $s = AndroidAdbSendShellCommand("getevent -p", Default, $wasRunState, False)
@@ -9485,18 +9517,17 @@ Else
 $g_bAndroidAdbClick = False
 SetLog($g_sAndroidEmulator & " cannot use ADB for mouse events, """ & $g_sAndroidMouseDevice & """ not found", $COLOR_ERROR)
 SuspendAndroid($SuspendMode)
-Return FuncReturn(SetError(2, 1))
-ENdIf
+Return SetError(2, 1)
+EndIf
 EndIf
 EndIf
 SuspendAndroid($SuspendMode)
-Return FuncReturn(SetError(0, 1))
+Return SetError(0, 1)
 Else
 SetDebugLog($g_sAndroidEmulator & " ADB use " & $g_sAndroidMouseDevice & " for mouse events")
 EndIf
 EndIf
 SetError(0, 0)
-FuncReturn()
 EndFunc
 Func AndroidAdbTerminateShellInstance()
 Local $SuspendMode = ResumeAndroid()
@@ -9508,7 +9539,6 @@ SetDebugLog("ADB shell not terminated, PID = " & $g_iAndroidAdbProcess[0], $COLO
 EndIf
 $g_iAndroidAdbProcess[0] = 0
 EndIf
-SuspendAndroid($SuspendMode)
 EndFunc
 Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
 FuncEnter(AndroidAdbSendShellCommand)
@@ -9550,7 +9580,7 @@ EndIf
 $sentBytes = WritePipe($aWritePipe[1], $cmd & @LF)
 EndIf
 If $timeout <> 0 Then
-While @error = 0 And($timeout < 0 Or StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) <> @LF & $g_sAndroidAdbPrompt) And __TimerDiff($hTimer) < Abs($timeout)
+While @error = 0 And($timeout < 0 Or StringCompare(StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1), @LF & $g_sAndroidAdbPrompt, $STR_CASESENSE) <> 0) And __TimerDiff($hTimer) < Abs($timeout)
 Sleep(10)
 $s &= ReadPipe($aReadPipe[0])
 $loopCount += 1
@@ -9573,9 +9603,13 @@ EndIf
 If $cleanOutput Then
 Local $i = StringInStr($s, @LF)
 If $i > 0 Then $s = StringMid($s, $i)
-If $bStripPrompt And StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) = @LF & $g_sAndroidAdbPrompt Then $s = StringLeft($s, StringLen($s) - StringLen($g_sAndroidAdbPrompt) - 1)
+If $bStripPrompt And StringCompare(StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1), @LF & $g_sAndroidAdbPrompt, $STR_CASESENSE) = 0 Then $s = StringLeft($s, StringLen($s) - StringLen($g_sAndroidAdbPrompt) - 1)
 CleanLaunchOutput($s)
 If StringLeft($s, 1) = @LF Then $s = StringMid($s, 2)
+Else
+If StringLeft($s, 1) = @LF Then $s = StringMid($s, 2)
+If StringRight($s, 1) = @LF Then $s = StringLeft($s, StringLen($s) - 1)
+If StringRight($s, 1) = @CR Then $s = StringLeft($s, StringLen($s) - 1)
 EndIf
 Local $sRemove = "WARNING: linker: libdvm.so has text relocations. This is wasting memory and is a security risk. Please fix."
 If StringLen($s) >= StringLen($sRemove) And StringLeft($s, StringLen($sRemove)) = $sRemove Then
@@ -9586,7 +9620,7 @@ If $g_bAndroidAdbInstance = True And $g_bDebugAndroid And StringLen($s) > 0 Then
 SuspendAndroid($SuspendMode)
 Local $error =(($g_bRunState = False Or __TimerDiff($hTimer) < $timeout Or $timeout < 1) ? 0 : 1)
 If $error <> 0 Then
-SetDebugLog("(" & $iCommandErrors & "): ADB shell command error " & $error & ": " & $s, $COLOR_ERROR)
+SetDebugLog("(" & $iCommandErrors & "): ADB shell command error " & $error & " (" & $g_sAndroidAdbPrompt & "): " & $s, $COLOR_ERROR)
 $iCommandErrors += 1
 EndIf
 If $__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY > 0 Then Sleep($__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY)
@@ -10585,12 +10619,12 @@ EndFunc
 Func GetAndroidProcessPID($sPackage = Default, $bForeground = True)
 If $sPackage = Default Then $sPackage = $g_sAndroidGamePackage
 If AndroidInvalidState() Then Return 0
-Local $cmd = "ps -p|grep """ & $g_sAndroidGamePackage & """"
+Local $cmd = "set result=$(ps -p|grep """ & $g_sAndroidGamePackage & """ >&2)"
 Local $output = AndroidAdbSendShellCommand($cmd)
 $output = StringStripWS($output, 7)
 Local $aPkgList[0][26]
 Local $iCols
-_ArrayAdd($aPkgList, $output, 0, " ", @LF)
+_ArrayAdd($aPkgList, $output, 0, " ", @LF, $ARRAYFILL_FORCE_STRING)
 For $i = 1 To UBound($aPkgList)
 $iCols = _ArraySearch($aPkgList, "", 0, 0, 0, 0, 1, $i, True)
 If $iCols > 9 And $aPkgList[$i - 1][$iCols - 1] = $g_sAndroidGamePackage Then
@@ -10843,6 +10877,114 @@ If $iAPI >= $g_iAndroidJellyBean Then Return "JellyBean"
 SetDebugLog("Unsupport Android API Version: " & $iAPI, $COLOR_ERROR)
 Return ""
 EndFunc
+Func HaveSharedPrefs($sProfile = $g_sProfileCurrentName, $BothNewOrOld = Default)
+If $sProfile = Default then $sProfile = $g_sProfileCurrentName
+Return(($BothNewOrOld = Default Or $BothNewOrOld = True) And UBound(_FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES)) > 1) Or(($BothNewOrOld = Default Or $BothNewOrOld = False) And UBound(_FileListToArray($g_sProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES)) > 1)
+EndFunc
+Func PullSharedPrefs($sProfile = $g_sProfileCurrentName)
+Local $bWasRunState = $g_bRunState
+Local $process_killed
+DirCreate($g_sPrivateProfilePath & "\" & $sProfile)
+Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " pull /data/data/" & $g_sAndroidGamePackage & "/shared_prefs """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs""", $process_killed)
+Local $Result = False
+If StringInStr($cmdOutput, "files pulled") > 0 And StringInStr($cmdOutput, @LF & "0 files pulled") = 0 Then
+$Result = True
+Else
+SetDebugLog("ADB pull failed, try to use host shared folder")
+Local $androidFolder = StringReplace($g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile, " ", "\ ")
+AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+AndroidAdbSendShellCommand("set result=$(mkdir -p " & $androidFolder & " >&2)")
+$cmdOutput = AndroidAdbSendShellCommand("set result=$(cp -R /data/data/" & $g_sAndroidGamePackage & "/shared_prefs " & $androidFolder & " >&2)")
+If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "usage: cp") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
+Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
+If(FileExists($hostFolder) = 1 Or DirCreate($hostFolder) = 1) Then
+Local $i = 0
+Local $iFiles = 0
+While $iFiles < 1 And $i < 12
+$iFiles = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
+_Sleep(250, True, $bWasRunState)
+$i += 1
+WEnd
+If DirMove($hostFolder & "\shared_prefs", $g_sPrivateProfilePath & "\" & $sProfile, $FC_OVERWRITE) = 1 Then
+AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+$Result = True
+Else
+SetLog("Cannot move shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile, $COLOR_ERROR)
+EndIf
+Else
+SetLog("Cannot pull shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile, $COLOR_ERROR)
+EndIf
+Else
+SetLog("Cannot copy shared_prefs to " & $androidFolder, $COLOR_ERROR)
+EndIf
+EndIf
+If $Result Then
+Local $a = _FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES, True)
+If UBound($a) > 1 Then
+Local $a2[UBound($a) - 1][2]
+For $i = 1 To $a[0]
+Local $a3 = FileGetTime($a[$i], 0)
+$a2[$i - 1][0] = $a[$i]
+$a2[$i - 1][1] = _ArrayToString($a3, "-", -1, 2) & " " & _ArrayToString($a3, ":", 3, -1)
+Next
+SetDebugLog(_ArrayToString($a2, ","))
+EndIf
+SetLog("Pulled shared_prefs of profile " & $sProfile)
+Else
+SetLog("Error pulling shared_prefs of profile " & $sProfile, $COLOR_ERROR)
+EndIf
+Return $Result
+EndFunc
+Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = True)
+Local $bWasRunState = $g_bRunState
+Local $process_killed
+Local $bHaveNew = HaveSharedPrefs($sProfile, True)
+Local $bHaveOld = HaveSharedPrefs($sProfile, False)
+If Not $bHaveNew And Not $bHaveOld Then
+SetLog("Profile " & $sProfile & " doesn't have shared_prefs folder", $COLOR_GREEN)
+Return False
+EndIf
+If $bCloseGameIfRunning And GetAndroidProcessPID(Default, $bWasRunState) Then
+CloseCoC(False, False)
+EndIf
+If Not $bHaveNew And $bHaveOld Then
+SetLog("Migrate shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile)
+If DirMove($g_sProfilePath & "\" & $sProfile & "\shared_prefs", $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs") Then
+DirRemove($g_sProfilePath & "\" & $sProfile & "\shared_prefs")
+Else
+SetLog("Migration of shared_prefs failed", $COLOR_ERROR)
+EndIf
+EndIf
+Local $Result = False
+Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " push """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs"" /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", $process_killed)
+If StringInStr($cmdOutput, "files pushed") > 0 And StringInStr($cmdOutput, @LF & "0 files pushed") = 0 Then
+$Result = True
+Else
+SetDebugLog("ADB push failed, try to use host shared folder")
+Local $androidFolder = StringReplace($g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile, " ", "\ ")
+AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
+If DirCopy($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", $hostFolder & "\shared_prefs", $FC_OVERWRITE) = 1 Then
+$cmdOutput = AndroidAdbSendShellCommand("set result=$(cp " & $androidFolder & "/shared_prefs/* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
+If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "usage: cp") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
+AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+$Result = True
+Else
+SetLog("Cannot copy sharef_prefs to /data/data/" & $g_sAndroidGamePackage, $COLOR_ERROR)
+EndIf
+Else
+SetLog("Cannot copy shared_prefs to " & $hostFolder, $COLOR_ERROR)
+EndIf
+EndIf
+If $Result Then
+AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
+SetLog("Pushed shared_prefs of profile " & $sProfile)
+$g_PushedSharedPrefsProfile = $sProfile
+Else
+SetLog("Error pushing shared_prefs of profile " & $sProfile, $COLOR_ERROR)
+EndIf
+Return $Result
+EndFunc
 Global $g_sNO_COC, $g_sUNKNOWN_COC
 Global $_g_asDISTRIBUTORS[24][4]
 Func InitializeCOCDistributors()
@@ -10869,14 +11011,14 @@ $wasSilentSetLog = $g_bSilentSetLog
 $g_bSilentSetLog = True
 SetLog("Unrecognized COC Package: " & $aPkgList[$i])
 $g_bSilentSetLog = $wasSilentSetLog
-If $aPkgList[$i] = $g_sUserGamePackage Then _ArrayAdd($aDList, $g_sUserGameDistributor)
+If $aPkgList[$i] = $g_sUserGamePackage Then _ArrayAdd($aDList, $g_sUserGameDistributor, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 Else
 If $iIndex <> 5 Then
-_ArrayAdd($aDList, $_g_asDISTRIBUTORS[$iIndex][3])
+_ArrayAdd($aDList, $_g_asDISTRIBUTORS[$iIndex][3], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 Else
 If $bFirstTimeWDJ Then
-_ArrayAdd($aDList, $_g_asDISTRIBUTORS[5][3])
-_ArrayAdd($aDList, $_g_asDISTRIBUTORS[12][3])
+_ArrayAdd($aDList, $_g_asDISTRIBUTORS[5][3], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
+_ArrayAdd($aDList, $_g_asDISTRIBUTORS[12][3], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 $bFirstTimeWDJ = False
 EndIf
 EndIf
@@ -15318,7 +15460,7 @@ EndFunc
 Global $g_hChkDBActivateSearches = 0, $g_hTxtDBSearchesMin = 0, $g_hTxtDBSearchesMax = 0
 Global $g_hChkDBActivateTropies = 0, $g_hTxtDBTropiesMin = 0, $g_hTxtDBTropiesMax = 0
 Global $g_hChkDBActivateCamps = 0, $g_hTxtDBArmyCamps = 0
-Global $g_hChkDBKingWait = 0, $g_hChkDBQueenWait = 0, $g_hChkDBWardenWait = 0
+Global $g_hChkDBKingWait = 0, $g_hChkDBQueenWait = 0, $g_hChkDBWardenWait = 0, $g_hChkNotWaitHeros = 0, $g_hChkDBNotWaitHeroes = 0
 Global $g_hChkDBSpellsWait = 0, $g_hChkDBWaitForCastleSpell = 0, $g_hCmbDBWaitForCastleSpell = 0, $g_hCmbDBWaitForCastleSpell = 0,$g_hCmbDBWaitForCastleSpell2 = 0, $g_hTxtDBWaitForCastleSpell = 0, $g_hChkDBWaitForCastleTroops = 0
 Global $g_hLblDBSearches = 0, $g_hLblDBTropies = 0, $g_hLblDBArmyCamps = 0
 Global $g_hPicDBHeroesWait = 0, $g_hTxtDBHeroesWait = 0, $g_hPicDBKingWait = 0, $g_hPicDBKingSleepWait = 0, $g_hPicDBQueenWait = 0, $g_hPicDBQueenSleepWait = 0, $g_hPicDBWardenWait = 0, $g_hPicDBWardenSleepWait = 0
@@ -15419,7 +15561,12 @@ _GUICtrlSetTip(-1, $sTxtTip)
 $g_hPicDBWardenSleepWait=_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingWarden, $x - 18, $y + 4, 48, 48)
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetState(-1, $GUI_HIDE)
-$y += 80
+$y += 75
+$x = 10
+$g_hChkDBNotWaitHeroes = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkNotWaitHeroes", "Not wait for Heroes when upgrade"), $x, $y, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkNotWaitHeroes_Info_01", "Continue to attack, when Upgrade heroes and enable Wait for heroes."))
+GUICtrlSetOnEvent(-1, "chkNotWaitHeroes")
+$y += 25
 $x = 8
 $g_hPicDBLightSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnLightSpell, $x, $y, 22, 22)
 $g_hPicDBHealSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHealSpell, $x + 23, $y, 22, 22)
@@ -16132,7 +16279,7 @@ EndFunc
 Global $g_hChkABActivateSearches = 0, $g_hTxtABSearchesMin = 0, $g_hTxtABSearchesMax = 0
 Global $g_hChkABActivateTropies = 0, $g_hTxtABTropiesMin = 0, $g_hTxtABTropiesMax = 0
 Global $g_hChkABActivateCamps = 0, $g_hTxtABArmyCamps = 0
-Global $g_hChkABKingWait = 0, $g_hChkABQueenWait = 0, $g_hChkABWardenWait = 0
+Global $g_hChkABKingWait = 0, $g_hChkABQueenWait = 0, $g_hChkABWardenWait = 0, $g_hChkABNotWaitHeroes = 0
 Global $g_hChkABSpellsWait = 0, $g_hChkABWaitForCastleSpell = 0, $g_hCmbABWaitForCastleSpell = 0,$g_hCmbABWaitForCastleSpell2 = 0, $g_hTxtABWaitForCastleSpell = 0, $g_hChkABWaitForCastleTroops = 0
 Global $g_hLblABSearches = 0, $g_hLblABTropies = 0, $g_hLblABArmyCamps = 0
 Global $g_hPicABHeroesWait = 0, $g_hTxtABHeroesWait = 0, $g_hPicABKingWait = 0, $g_hPicABKingSleepWait = 0, $g_hPicABQueenWait = 0, $g_hPicABQueenSleepWait = 0, $g_hPicABWardenWait = 0, $g_hPicABWardenSleepWait = 0
@@ -16232,7 +16379,12 @@ _GUICtrlSetTip(-1, $sTxtTip)
 $g_hPicABWardenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingWarden, $x - 18, $y + 4, 48, 48)
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetState(-1, $GUI_HIDE)
-$y += 80
+$y += 75
+$x = 10
+$g_hChkABNotWaitHeroes = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkNotWaitHeroes", -1), $x, $y, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkNotWaitHeroes_Info_01", -1))
+GUICtrlSetOnEvent(-1, "chkNotWaitHeroes")
+$y += 25
 $x = 8
 $g_hPicABLightSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnLightSpell, $x, $y, 22, 22)
 $g_hPicABHealSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHealSpell, $x + 23, $y, 22, 22)
@@ -16243,7 +16395,6 @@ $g_hPicABPoisonSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnPoisonSpell,
 $g_hPicABEarthquakeSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnEarthquakeSpell, $x + 138, $y, 22, 22)
 $g_hPicABHasteSpellWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnHasteSpell, $x + 161, $y, 22, 22)
 $y += 22
-$x = 10
 $x = 10
 $g_hChkABSpellsWait = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait", -1), $x, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait_Info_01", -1) & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkSpellsWait_Info_02", -1))
@@ -18417,7 +18568,7 @@ $g_hBtnTestRequestCC = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design 
 $y += $yNext
 $g_hBtnTestAttackBar = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestAttackBar", "Test Attack Bar"), $x, $y, 140, 25)
 $y += $yNext
-$g_hBtnTestClickDrag = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestClickDrag", "Test Click Drag (scrolling)"), $x, $y, 140, 25)
+$g_hBtnTestClickDrag = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestClickDrag", "Test Click Drag"), $x, $y, 140, 25)
 $y += $yNext
 $g_hBtnTestImage = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestImage", "Test Image"), $x, $y, 140, 25)
 $y += $yNext
@@ -18466,8 +18617,8 @@ $g_hBtnConsoleWindow = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design 
 $y -= $yNext
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
-Global $g_hCmbProfile = 0, $g_hTxtVillageName = 0, $g_hBtnAddProfile = 0, $g_hBtnConfirmAddProfile = 0, $g_hBtnConfirmRenameProfile = 0, $g_hBtnDeleteProfile = 0, $g_hBtnCancelProfileChange = 0, $g_hBtnRenameProfile = 0
-Global $g_hChkSwitchAcc = 0, $g_hCmbSwitchAcc = 0, $g_hCmbTotalAccount = 0, $g_hChkSmartSwitch = 0, $g_hCmbTrainTimeToSkip = 0, $g_ahChkAccount[8], $g_ahCmbProfile[8], $g_ahChkDonate[8]
+Global $g_hCmbProfile = 0, $g_hTxtVillageName = 0, $g_hBtnAddProfile = 0, $g_hBtnConfirmAddProfile = 0, $g_hBtnConfirmRenameProfile = 0, $g_hBtnDeleteProfile = 0, $g_hBtnCancelProfileChange = 0, $g_hBtnRenameProfile = 0, $g_hBtnPullSharedPrefs = 0, $g_hBtnPushSharedPrefs = 0
+Global $g_hChkSwitchAcc = 0, $g_hCmbSwitchAcc = 0, $g_hChkSharedPrefs = 0, $g_hCmbTotalAccount = 0, $g_hChkSmartSwitch = 0, $g_hCmbTrainTimeToSkip = 0, $g_hChkDonateLikeCrazy = 0, $g_ahChkAccount[8], $g_ahCmbProfile[8], $g_ahChkDonate[8]
 Func CreateBotProfiles()
 Local $x = 25, $y = 45
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "Group_01", "Switch Profiles"), $x - 20, $y - 20, $g_iSizeWGrpTab2, 55)
@@ -18508,6 +18659,16 @@ If $bIconEdit = 0 Then
 $bIconEdit = _GUIImageList_Create(24, 24, 4)
 _GUIImageList_AddBitmap($bIconEdit, @ScriptDir & "\images\Button\iconEdit.bmp")
 EndIf
+Static $bIconPush = 0
+If $bIconPush = 0 Then
+$bIconPush = _GUIImageList_Create(24, 24, 4)
+_GUIImageList_AddBitmap($bIconPush, @ScriptDir & "\images\Button\iconPush.bmp")
+EndIf
+Static $bIconPull = 0
+If $bIconPull = 0 Then
+$bIconPull = _GUIImageList_Create(24, 24, 4)
+_GUIImageList_AddBitmap($bIconPull, @ScriptDir & "\images\Button\iconPull.bmp")
+EndIf
 $g_hBtnAddProfile = GUICtrlCreateButton("", $x + 135, $y, 24, 24)
 _GUICtrlButton_SetImageList($g_hBtnAddProfile, $bIconAdd, 4)
 GUICtrlSetOnEvent(-1, "btnAddConfirm")
@@ -18537,6 +18698,14 @@ $g_hBtnRenameProfile = GUICtrlCreateButton("", $x + 194, $y, 24, 24)
 _GUICtrlButton_SetImageList($g_hBtnRenameProfile, $bIconEdit, 4)
 GUICtrlSetOnEvent(-1, "btnRenameConfirm")
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "BtnRenameProfile_Info_01", "Rename Profile"))
+$g_hBtnPullSharedPrefs = GUICtrlCreateButton("", $x + 224, $y, 24, 24)
+_GUICtrlButton_SetImageList($g_hBtnPullSharedPrefs, $bIconPull, 4)
+GUICtrlSetOnEvent(-1, "btnPullSharedPrefs")
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "BtnPullSharedPrefs_Info_01", "Pull CoC shared_prefs folder"))
+$g_hBtnPushSharedPrefs = GUICtrlCreateButton("", $x + 254, $y, 24, 24)
+_GUICtrlButton_SetImageList($g_hBtnPushSharedPrefs, $bIconPush, 4)
+GUICtrlSetOnEvent(-1, "btnPushSharedPrefs")
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "BtnPushSharedPrefs_Info_01", "Push CoC shared_prefs folder"))
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 Local $x = 25, $y = 105
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "Group_02", "Switch Accounts"), $x - 20, $y - 20, $g_iSizeWGrpTab2, $g_iSizeHGrpTab4)
@@ -18555,12 +18724,19 @@ _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "
 $g_hCmbTotalAccount = GUICtrlCreateCombo("", $x + 345, $y - 1, 77, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 GUICtrlSetData(-1, "2 accounts|3 accounts|4 accounts|5 accounts|6 accounts|7 accounts|8 accounts", "2 accounts")
 GUICtrlSetOnEvent(-1, "cmbTotalAcc")
-GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "CmbTotalAccount", "Total CoC Accounts") & ": ", $x + 220, $y + 3, -1, -1)
+GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "CmbTotalAccount", "Total CoC Accounts") & ": ", $x + 220, $y + 4, -1, -1)
+$g_hChkSharedPrefs = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "ChkSharedPrefs", "Switch Accounts using shared_prefs folder"), $x + 204, $y - 25, -1, -1)
+GUICtrlSetOnEvent(-1, "chkSharedPrefs")
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "ChkSharedPrefs_Info_01", "Push and pull CoC shared_prefs folder. Usefull when GUI switch fails or using accounts with SuperCell ID."))
 $y += 23
 $g_hChkSmartSwitch = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "ChkSmartSwitch", "Smart switch"), $x, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "ChkSmartSwitch_Info_01", "Switch to account with the shortest remain training time"))
 GUICtrlSetState(-1, $GUI_UNCHECKED)
-GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "CmbTrainTime", "Skip switch if train time") & " <", $x + 220, $y + 3, -1, -1)
+GUICtrlSetOnEvent(-1, "chkSmartSwitch")
+$g_hChkDonateLikeCrazy = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "DonateLikeCrazy", "Donate like Crazy"), $x + 100, $y, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "DonateLikeCrazy_Info_01", "Enable it allows account switching in the order: Donate - Shortest Active - Donate - Shortest Active  - Donate...!"))
+GUICtrlSetOnEvent(-1, "chkSmartSwitch")
+GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "CmbTrainTime", "Skip switch if train time") & " <", $x + 220, $y + 4, -1, -1)
 $g_hCmbTrainTimeToSkip = GUICtrlCreateCombo("", $x + 345, $y - 1, 77, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 GUICtrlSetData(-1, "0 minute|1 minute|2 minutes|3 minutes|4 minutes|5 minutes|6 minutes|7 minutes|8 minutes|9 minutes", "1 minute")
 $y += 23
@@ -19926,7 +20102,7 @@ $sText = "Active developers: "
 GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 GUICtrlSetColor(-1, $COLOR_NAVY)
-$sText = "Cosote, Fliegerfaust, NguyenAnhHD"
+$sText = "Cosote, Fliegerfaust, MHK2012, MMHK, NguyenAnhHD, TripleM"
 GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 $y += 60
@@ -19934,7 +20110,7 @@ $sText = "Inactive developers: "
 GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 GUICtrlSetColor(-1, $COLOR_NAVY)
-$sText = "Boju, Codeslinger69, Ezeck0001, Hervidero, IceCube, Kaganus, MMHK, MR.ViPeR, Sardo, TheRevenor, TripleM, Trlopes"
+$sText = "Boju, Codeslinger69, Ezeck0001, Hervidero, IceCube, Kaganus, MR.ViPeR, Sardo, TheRevenor, Trlopes"
 GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 $y += 50
@@ -20390,9 +20566,9 @@ Global $aTabControlsStrategies, $aTabControlsBot, $aTabControlsStats
 Global $oAlwaysEnabledControls = ObjCreate("Scripting.Dictionary")
 Func InitializeControlVariables()
 $g_aGroupSearchDB = $g_hGrpDBFilter&"#"&$g_hCmbDBMeetGE&"#"&$g_hTxtDBMinGold&"#"&$g_hPicDBMinGold&"#"&$g_hTxtDBMinElixir&"#"&$g_hPicDBMinElixir&"#"& $g_hTxtDBMinGoldPlusElixir&"#"&$g_hPicDBMinGPEGold&"#"&$g_hChkDBMeetDE&"#"&$g_hTxtDBMinDarkElixir&"#"&$g_hPicDBMinDarkElixir&"#"&$g_hChkDBMeetTrophy&"#"& $g_hTxtDBMinTrophy&"#"&$g_hTxtDBMaxTrophy&"#"&$g_hPicDBMinTrophies&"#"&$g_hChkDBMeetTH&"#"&$g_hCmbDBTH&"#"&$g_hChkDBMeetTHO&"#"& $g_ahChkMeetOne[$DB]&"#"& $g_ahChkMaxMortar[$DB]&"#"&$g_ahCmbWeakMortar[$DB]&"#"&$g_ahPicWeakMortar[$DB]&"#"&$g_ahChkMaxWizTower[$DB]&"#"&$g_ahCmbWeakWizTower[$DB]&"#"& $g_ahPicWeakWizTower[$DB]&"#"& $g_ahChkMaxXBow[$DB]&"#"&$g_ahCmbWeakXBow[$DB]&"#"&$g_ahPicWeakXBow[$DB]&"#"&$g_ahChkMaxInferno[$DB]&"#"&$g_ahCmbWeakInferno[$DB]&"#"& $g_ahPicWeakInferno[$DB]&"#"&$g_ahChkMaxEagle[$DB]&"#"&$g_ahCmbWeakEagle[$DB]&"#"&$g_ahPicWeakEagle[$DB]
-$groupHerosDB = $g_hPicDBHeroesWait&"#"&$g_hTxtDBHeroesWait&"#"&$g_hChkDBKingWait&"#"&$g_hChkDBQueenWait&"#"&$g_hChkDBWardenWait&"#"&$g_hPicDBKingWait&"#"& $g_hPicDBQueenWait&"#"&$g_hPicDBWardenWait
+$groupHerosDB = $g_hPicDBHeroesWait&"#"&$g_hTxtDBHeroesWait&"#"&$g_hChkDBKingWait&"#"&$g_hChkDBQueenWait&"#"&$g_hChkDBWardenWait&"#"&$g_hPicDBKingWait&"#"& $g_hPicDBQueenWait&"#"&$g_hPicDBWardenWait&"#"&$g_hChkDBNotWaitHeroes
 $groupSearchAB = $g_hGrpABFilter&"#"&$g_hCmbABMeetGE&"#"&$g_hTxtABMinGold&"#"&$g_hPicABMinGold&"#"&$g_hTxtABMinElixir&"#"&$g_hPicABMinElixir&"#"& $g_hTxtABMinGoldPlusElixir&"#"&$g_hPicABMinGPEGold&"#"&$g_hChkABMeetDE&"#"&$g_hTxtABMinDarkElixir&"#"& $g_hPicABMinDarkElixir&"#"&$g_hChkABMeetTrophy&"#"& $g_hTxtABMinTrophy&"#"&$g_hTxtABMaxTrophy&"#"&$g_hPicABMinTrophies&"#"&$g_hChkABMeetTH&"#"&$g_hCmbABTH&"#"&$g_hChkABMeetTHO&"#"& $g_ahChkMeetOne[$LB]&"#"& $g_ahChkMaxMortar[$LB]&"#"&$g_ahCmbWeakMortar[$LB]&"#"&$g_ahPicWeakMortar[$LB]&"#"&$g_ahChkMaxWizTower[$LB]&"#"&$g_ahCmbWeakWizTower[$LB]&"#"& $g_ahPicWeakWizTower[$LB]&"#"&$g_ahChkMaxXBow[$LB]&"#"&$g_ahCmbWeakXBow[$LB]&"#"&$g_ahPicWeakXBow[$LB]&"#"&$g_ahChkMaxInferno[$LB]&"#"& $g_ahCmbWeakInferno[$LB]&"#"&$g_ahPicWeakInferno[$LB]&"#"&$g_ahChkMaxEagle[$LB]&"#"&$g_ahCmbWeakEagle[$LB]&"#"&$g_ahPicWeakEagle[$LB]
-$groupHerosAB = $g_hPicABHeroesWait&"#"&$g_hTxtABHeroesWait&"#"&$g_hChkABKingWait&"#"&$g_hChkABQueenWait&"#"&$g_hChkABWardenWait&"#"&$g_hPicABKingWait&"#"& $g_hPicABQueenWait&"#"&$g_hPicABWardenWait
+$groupHerosAB = $g_hPicABHeroesWait&"#"&$g_hTxtABHeroesWait&"#"&$g_hChkABKingWait&"#"&$g_hChkABQueenWait&"#"&$g_hChkABWardenWait&"#"&$g_hPicABKingWait&"#"& $g_hPicABQueenWait&"#"&$g_hPicABWardenWait&"#"&$g_hChkABNotWaitHeroes
 $groupSpellsDB = $g_hChkDBSpellsWait&"#"&$g_hPicDBLightSpellWait&"#"&$g_hPicDBHealSpellWait&"#"&$g_hPicDBRageSpellWait&"#"&$g_hPicDBJumpSpellWait&"#"& $g_hPicDBFreezeSpellWait&"#"&$g_hPicDBPoisonSpellWait&"#"&$g_hPicDBEarthquakeSpellWait&"#"&$g_hPicDBHasteSpellWait
 $groupSpellsAB = $g_hChkABSpellsWait&"#"&$g_hPicABLightSpellWait&"#"&$g_hPicABHealSpellWait&"#"&$g_hPicABRageSpellWait&"#"&$g_hPicABJumpSpellWait&"#"& $g_hPicABFreezeSpellWait&"#"&$g_hPicABPoisonSpellWait&"#"&$g_hPicABEarthquakeSpellWait&"#"&$g_hPicABHasteSpellWait
 $groupSearchTS = $g_hGrpTSFilter&"#"&$g_hCmbTSMeetGE&"#"&$g_hTxtTSMinGold&"#"&$g_hPicTSMinGold&"#"&$g_hTxtTSMinElixir&"#"&$g_hPicTSMinElixir&"#"& $g_hTxtTSMinGoldPlusElixir&"#"&$g_hPicTSMinGPEGold&"#"&$g_hChkTSMeetDE&"#"&$g_hTxtTSMinDarkElixir&"#"&$g_hPicTSMinDarkElixir&"#"& $g_hLblAddTiles&"#"&$g_hLblAddTiles2&"#"&$g_hLblSWTTiles&"#"&$g_hTxtSWTTiles&"#"&$g_hLblTHadd&"#"&$g_hTxtTHaddTiles
@@ -20560,7 +20736,6 @@ Next
 EndFunc
 Global $g_aFrmBotBottomCtrlState, $g_hFrmBotEmbeddedShield = 0, $g_hFrmBotEmbeddedMouse = 0, $g_hFrmBotEmbeddedGraphics = 0
 Func Initiate()
-Static $bCheckLanguageFirst = False
 WinGetAndroidHandle()
 If $g_hAndroidWindow <> 0 And($g_bAndroidBackgroundLaunched = True Or AndroidControlAvailable()) Then
 SetLogCentered(" " & $g_sBotTitle & " Powered by MyBot.run ", "~", $COLOR_DEBUG)
@@ -20608,10 +20783,7 @@ If Not $g_bRunState Then Return
 If Not $g_bSearchMode Then
 BotDetectFirstTime()
 If Not $g_bRunState Then Return
-If Not $bCheckLanguageFirst And $g_bCheckGameLanguage Then
-TestLanguage()
-$bCheckLanguageFirst = True
-EndIf
+If $g_bCheckGameLanguage Then TestLanguage()
 If Not $g_bRunState Then Return
 runBot()
 EndIf
@@ -21996,7 +22168,7 @@ EndFunc
 Func EnableSearchPanels($mode)
 Switch $mode
 Case $DB
-If GUICtrlRead($g_hChkDBActivateSearches) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBActivateTropies) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBActivateCamps) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBSpellsWait) = $GUI_CHECKED Then
+If GUICtrlRead($g_hChkDBActivateSearches) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBActivateTropies) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBActivateCamps) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBNotWaitHeroes) = $GUI_CHECKED Or GUICtrlRead($g_hChkDBSpellsWait) = $GUI_CHECKED Then
 _GUI_Value_STATE("SHOW", $groupHerosDB)
 _GUI_Value_STATE("SHOW", $g_aGroupSearchDB)
 _GUI_Value_STATE("SHOW", $groupSpellsDB)
@@ -22007,7 +22179,7 @@ _GUI_Value_STATE("HIDE", $g_aGroupSearchDB)
 _GUI_Value_STATE("HIDE", $groupSpellsDB)
 EndIf
 Case $LB
-If GUICtrlRead($g_hChkABActivateSearches) = $GUI_CHECKED Or GUICtrlRead($g_hChkABActivateTropies) = $GUI_CHECKED Or GUICtrlRead($g_hChkABActivateCamps) = $GUI_CHECKED Or GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkABSpellsWait) = $GUI_CHECKED Then
+If GUICtrlRead($g_hChkABActivateSearches) = $GUI_CHECKED Or GUICtrlRead($g_hChkABActivateTropies) = $GUI_CHECKED Or GUICtrlRead($g_hChkABActivateCamps) = $GUI_CHECKED Or GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED Or GUICtrlRead($g_hChkABNotWaitHeroes) = $GUI_CHECKED Or GUICtrlRead($g_hChkABSpellsWait) = $GUI_CHECKED Then
 _GUI_Value_STATE("SHOW", $groupHerosAB)
 _GUI_Value_STATE("SHOW", $groupSearchAB)
 _GUI_Value_STATE("SHOW", $groupSpellsAB)
@@ -22428,6 +22600,12 @@ Else
 GUICtrlSetState($g_hChkTHSnipe, $GUI_CHECKED)
 EndIf
 tabSEARCH()
+EndFunc
+Func chkNotWaitHeroes()
+If $g_abAttackTypeEnable[$DB] Then $g_iSearchNotWaitHeroesEnable = $g_aiSearchNotWaitHeroesEnable[$DB]
+If $g_abAttackTypeEnable[$LB] Then
+If $g_iSearchNotWaitHeroesEnable <> 0 Then $g_iSearchNotWaitHeroesEnable = $g_aiSearchNotWaitHeroesEnable[$LB]
+EndIf
 EndFunc
 Func btnMilkingOptions()
 EndFunc
@@ -24772,6 +24950,7 @@ If GUICtrlRead($g_hChkSwitchAcc) = $GUI_CHECKED And aquireSwitchAccountMutex($g_
 For $i = $g_hCmbTotalAccount To $g_ahChkDonate[7]
 GUICtrlSetState($i, $GUI_ENABLE)
 Next
+chkSmartSwitch()
 Else
 releaseSwitchAccountMutex()
 For $i = $g_hCmbTotalAccount To $g_ahChkDonate[7]
@@ -24835,6 +25014,7 @@ For $i = $g_hCmbTotalAccount To $g_ahChkDonate[7]
 GUICtrlSetState($i,(($bEnable) ? $GUI_ENABLE : $GUI_DISABLE))
 Next
 cmbTotalAcc()
+chkSmartSwitch()
 $s_bActive = False
 EndFunc
 Func cmbTotalAcc()
@@ -24848,6 +25028,14 @@ _GUI_Value_STATE("HIDE", $g_ahChkAccount[$i] & "#" & $g_ahCmbProfile[$i] & "#" &
 EndIf
 chkAccount($i)
 Next
+EndFunc
+Func chkSmartSwitch()
+If GUICtrlRead($g_hChkSmartSwitch) = $GUI_CHECKED Then
+GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_ENABLE)
+Else
+GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_DISABLE)
+EndIf
 EndFunc
 Func chkAccount($i)
 If GUICtrlRead($g_ahChkAccount[$i]) = $GUI_CHECKED Then
@@ -24889,6 +25077,9 @@ If @GUI_CtrlId = $g_ahCmbProfile[$i] Then
 Return cmbSwitchAccProfile($i)
 EndIf
 Next
+EndFunc
+Func chkSharedPrefs()
+$g_bChkSharedPrefs = GUICtrlRead($g_hChkSharedPrefs) = $GUI_CHECKED
 EndFunc
 Func chkDebugSetLog()
 $g_bDebugSetlog =(GUICtrlRead($g_hChkDebugSetlog) = $GUI_CHECKED)
@@ -25068,18 +25259,23 @@ $g_bDebugOcr = $currentOCR
 $g_bRunState = $currentRunState
 EndFunc
 Func btnTestClickDrag()
-Local $i
+Local $sUserInputCoor = InputBox("Coordinators", "x1,y1,x2,y2", "650,473,323,473")
+Local $asCoor = StringSplit($sUserInputCoor, ",")
+If @error Or $asCoor[0] <> 4 Then
+SetLog("Please try again with the correct format...", $COLOR_ERROR)
+Return
+EndIf
 SetLog("Testing Click drag functionality...", $COLOR_INFO)
-For $i = 0 To 4
-SetLog("Click x1/y1=100/600 and drag to x2/y2=150/600", $COLOR_INFO)
-ClickDrag(100, 600, 150, 600)
-Next
-SetDebugLog("Waiting 3 Seconds...")
-_SleepStatus(3000, True, True, False)
-For $i = 0 To 4
-SetLog("Click x1/y1=150/600 and drag to x2/y2=100/600", $COLOR_INFO)
-ClickDrag(150, 600, 100, 600)
-Next
+SetLog("Drag from (" & $asCoor[1] & "," & $asCoor[2] & ") to (" & $asCoor[3] & "," & $asCoor[4] & ")", $COLOR_DEBUG)
+ClickDrag(Int($asCoor[1]), Int($asCoor[2]), Int($asCoor[3]), Int($asCoor[4]))
+SetLog("Sleep 3 seconds...", $COLOR_DEBUG)
+_Sleep(3000, True, False)
+SetLog("Save the image...", $COLOR_DEBUG)
+DebugImageSave("TestClickDrag")
+SetLog("Sleep 1 seconds...", $COLOR_DEBUG)
+_Sleep(1000, True, False)
+SetLog("Drag back", $COLOR_DEBUG)
+ClickDrag(Int($asCoor[3]), Int($asCoor[4]), Int($asCoor[1]), Int($asCoor[2]))
 EndFunc
 Func btnTestImage()
 Local $sImageFile = BeginImageTest()
@@ -25703,6 +25899,8 @@ GUICtrlSetState($g_hBtnDeleteProfile, $GUI_HIDE)
 GUICtrlSetState($g_hBtnCancelProfileChange, $GUI_SHOW)
 GUICtrlSetState($g_hBtnConfirmRenameProfile, $GUI_HIDE)
 GUICtrlSetState($g_hBtnRenameProfile, $GUI_HIDE)
+GUICtrlSetState($g_hBtnPullSharedPrefs, $GUI_HIDE)
+GUICtrlSetState($g_hBtnPushSharedPrefs, $GUI_HIDE)
 Case $g_hBtnConfirmAddProfile
 Local $newProfileName = StringRegExpReplace(GUICtrlRead($g_hTxtVillageName), '[/:*?"<>|]', '_')
 If FileExists($g_sProfilePath & "\" & $newProfileName) Then
@@ -25722,6 +25920,8 @@ GUICtrlSetState($g_hBtnDeleteProfile, $GUI_SHOW)
 GUICtrlSetState($g_hBtnCancelProfileChange, $GUI_HIDE)
 GUICtrlSetState($g_hBtnConfirmRenameProfile, $GUI_HIDE)
 GUICtrlSetState($g_hBtnRenameProfile, $GUI_SHOW)
+GUICtrlSetState($g_hBtnPullSharedPrefs, $GUI_SHOW)
+GUICtrlSetState($g_hBtnPushSharedPrefs, $GUI_SHOW)
 If GUICtrlGetState($g_hBtnDeleteProfile) <> $GUI_ENABLE Then GUICtrlSetState($g_hBtnDeleteProfile, $GUI_ENABLE)
 If GUICtrlGetState($g_hBtnRenameProfile) <> $GUI_ENABLE Then GUICtrlSetState($g_hBtnRenameProfile, $GUI_ENABLE)
 Case Else
@@ -25752,6 +25952,8 @@ GUICtrlSetState($g_hBtnCancelProfileChange, $GUI_HIDE)
 GUICtrlSetState($g_hBtnDeleteProfile, $GUI_SHOW)
 GUICtrlSetState($g_hBtnConfirmRenameProfile, $GUI_HIDE)
 GUICtrlSetState($g_hBtnRenameProfile, $GUI_SHOW)
+GUICtrlSetState($g_hBtnPullSharedPrefs, $GUI_SHOW)
+GUICtrlSetState($g_hBtnPushSharedPrefs, $GUI_SHOW)
 Case Else
 SetLog("If you are seeing this log message there is something wrong.", $COLOR_ERROR)
 EndSwitch
@@ -25776,6 +25978,8 @@ GUICtrlSetState($g_hBtnDeleteProfile, $GUI_HIDE)
 GUICtrlSetState($g_hBtnCancelProfileChange, $GUI_SHOW)
 GUICtrlSetState($g_hBtnRenameProfile, $GUI_HIDE)
 GUICtrlSetState($g_hBtnConfirmRenameProfile, $GUI_SHOW)
+GUICtrlSetState($g_hBtnPullSharedPrefs, $GUI_HIDE)
+GUICtrlSetState($g_hBtnPushSharedPrefs, $GUI_HIDE)
 Case $g_hBtnConfirmRenameProfile
 Local $newProfileName = StringRegExpReplace(GUICtrlRead($g_hTxtVillageName), '[/:*?"<>|]', '_')
 If FileExists($g_sProfilePath & "\" & $newProfileName) Then
@@ -25794,9 +25998,17 @@ GUICtrlSetState($g_hBtnCancelProfileChange, $GUI_HIDE)
 GUICtrlSetState($g_hBtnDeleteProfile, $GUI_SHOW)
 GUICtrlSetState($g_hBtnConfirmRenameProfile, $GUI_HIDE)
 GUICtrlSetState($g_hBtnRenameProfile, $GUI_SHOW)
+GUICtrlSetState($g_hBtnPullSharedPrefs, $GUI_SHOW)
+GUICtrlSetState($g_hBtnPushSharedPrefs, $GUI_SHOW)
 Case Else
 SetLog("If you are seeing this log message there is something wrong.", $COLOR_ERROR)
 EndSwitch
+EndFunc
+Func btnPullSharedPrefs()
+PullSharedPrefs()
+EndFunc
+Func btnPushSharedPrefs()
+PushSharedPrefs()
 EndFunc
 Func cmbBotCond()
 If _GUICtrlComboBox_GetCurSel($g_hCmbBotCond) = 15 Then
@@ -25837,15 +26049,18 @@ LocateWardenAltar()
 EndFunc
 Func btnLocateTownHall()
 Local $wasRunState = $g_bRunState
+Local $g_iOldTownHallLevel = $g_iTownHallLevel
 $g_bRunState = True
 ZoomOut()
 LocateTownHall()
+If Not $g_iOldTownHallLevel = $g_iTownHallLevel Then
 _ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
 Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Locating_your_TH", "If you locating your TH because you upgraded,") & @CRLF & GetTranslatedFileIni("MBR Popups", "Must_restart_bot", "then you must restart bot!!!") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "OK_to_restart_bot", "Click OK to restart bot,") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", "Or Click Cancel to exit") & @CRLF
 Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Close_Bot", "Close Bot Please!"), $stext, 120)
 If $g_bDebugSetlog Then SetDebugLog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
 If $MsgBox = 1 Then
 RestartBot(False, $wasRunState)
+EndIf
 EndIf
 $g_bRunState = $wasRunState
 AndroidShield("btnLocateTownHall")
@@ -26291,8 +26506,8 @@ $g_bBotPaused = False
 $g_bTogglePauseAllowed = True
 EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
 EnableGuiControls()
-DistributorsUpdateGUI()
 AndroidBotStopEvent()
+AndroidAdbTerminateShellInstance()
 AndroidShield("btnStop", Default)
 EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
 GUICtrlSetState($g_hChkBackgroundMode, $GUI_ENABLE)
@@ -28002,6 +28217,52 @@ _WinAPI_FreeConsole()
 $bConsoleAllocated = False
 EndIf
 EndFunc
+Global $_B64E_CodeBuffer, $_B64E_CodeBufferMemory, $_B64E_Init, $_B64E_EncodeData, $_B64E_EncodeEnd
+Func _B64E_Exit()
+$_B64E_CodeBuffer = 0
+_MemVirtualFree($_B64E_CodeBufferMemory, 0, $MEM_RELEASE)
+EndFunc
+Func _Base64EncodeInit($LineBreak = 76)
+If Not IsDllStruct($_B64E_CodeBuffer) Then
+If @AutoItX64 Then
+Local $Opcode = '0x89C08D42034883EC0885D2C70100000000C64104000F49C2C7410800000000C1F80283E20389410C740683C00189410C4883C408C389C94883EC3848895C242848897424304889CB8B0A83F901742083F9024889D87444C6000A4883C001488B74243029D8488B5C24284883C438C30FB67204E803020000BA3D0000004080FE3F7F08480FBEF60FB614308813C643013D488D4303C643023DEBBC0FB67204E8D7010000BA3D0000004080FE3F7F08480FBEF60FB614308813C643013D488D4302EB9489DB4883EC68418B014863D248895C242848897424304C89C348897C24384C896424484C89CE83F80148896C24404C896C24504C897424584C897C24604C8D2411410FB6790474434D89C64989CD0F82F700000083F8024C89C5747B31C0488B5C2428488B742430488B7C2438488B6C24404C8B6424484C8B6C24504C8B7424584C8B7C24604883C468C34C89C54989CF4D39E70F840B010000450FBE374D8D6F014489F025F0000000C1F80409C7E8040100004080FF3FBA3D0000007F08480FBEFF0FB614384489F78855004883C50183E70FC1E7024D39E50F84B2000000450FB675004983C5014489F025C0000000C1F80609C7E8BD0000004080FF3FBA3D0000007F08480FBEFF0FB61438BF3F0000008855004421F74C8D7502E896000000480FBED70FB604108845018B460883C0013B460C89460875104C8D7503C645020AC7460800000000904D39E5742E410FBE7D004D8D7D01498D6E01E8560000004889FA83E70348C1EA02C1E70483E23F0FB60410418806E913FFFFFF4489F040887E04C7060000000029D8E9CCFEFFFF89E840887E04C7060200000029D8E9B9FEFFFF89E840887E04C7060100000029D8E9A6FEFFFFE8400000004142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392B2F58C3'
+Else
+Local $Opcode = '0x89C08B4C24088B44240489CAC1FA1FC1EA1E01CAC1FA0283E103C70000000000C6400400C740080000000089500C740683C20189500CC2100089C983EC0C8B4C2414895C24048B5C2410897424088B1183FA01741D83FA0289D87443C6000A83C0018B74240829D88B5C240483C40CC210000FB67104E80C020000BA3D00000089F180F93F7F0989F20FBEF20FB6143088138D4303C643013DC643023DEBBD0FB67104E8DF010000BA3D00000089F180F93F7F0989F20FBEF20FB6143088138D4302C643013DEB9489DB83EC3C895C242C8B5C244C896C24388B542440897424308B6C2444897C24348B030FB6730401D583F801742D8B4C24488954241C0F820101000083F80289CF747D31C08B5C242C8B7424308B7C24348B6C243883C43CC210008B4C244889D739EF0F84400100008D57010FBE3F89542418894C241489F825F0000000C1F80409C6897C241CE8330100008B542418C644240C3D8B4C241489C789F03C3F7F0B0FBEF00FB604378844240C0FB644240C8D790188018B74241C83E60FC1E60239EA0F84CB0000000FB60A83C2018954241C89C825C0000000C1F80609C6884C2414E8D8000000BA3D0000000FB64C24148944240C89F03C3F7F0B0FBEF08B44240C0FB6143083E13F881789CEE8AD00000089F10FBED18D4F020FB604108847018B430883C0013B430C894308750EC647020A8D4F03C7430800000000396C241C743A8B44241C8B7C241C0FBE30894C241483C701E8650000008B4C241489F283E60381E2FC000000C1EA02C1E6040FB60410880183C101E9E4FEFFFF89F088430489C8C703000000002B442448E9B2FEFFFF89F189F8884B04C703020000002B442448E99CFEFFFF89F088430489C8C703010000002B442448E986FEFFFFE8400000004142434445464748494A4B4C4D4E4F505152535455565758595A6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435363738392B2F58C3'
+EndIf
+$_B64E_Init =(StringInStr($Opcode, "89C0") - 3) / 2
+$_B64E_EncodeData =(StringInStr($Opcode, "89DB") - 3) / 2
+$_B64E_EncodeEnd =(StringInStr($Opcode, "89C9") - 3) / 2
+$Opcode = Binary($Opcode)
+$_B64E_CodeBufferMemory = _MemVirtualAlloc(0, BinaryLen($Opcode), $MEM_COMMIT, $PAGE_EXECUTE_READWRITE)
+$_B64E_CodeBuffer = DllStructCreate("byte[" & BinaryLen($Opcode) & "]", $_B64E_CodeBufferMemory)
+DllStructSetData($_B64E_CodeBuffer, 1, $Opcode)
+OnAutoItExitRegister("_B64E_Exit")
+EndIf
+Local $State = DllStructCreate("byte[16]")
+DllCall("user32.dll", "none", "CallWindowProc", "ptr", DllStructGetPtr($_B64E_CodeBuffer) + $_B64E_Init, "ptr", DllStructGetPtr($State), "uint", $LineBreak, "int", 0, "int", 0)
+Return $State
+EndFunc
+Func _Base64EncodeData(ByRef $State, $Data)
+If Not IsDllStruct($_B64E_CodeBuffer) Or Not IsDllStruct($State) Then Return SetError(1, 0, "")
+$Data = Binary($Data)
+Local $InputLen = BinaryLen($Data)
+Local $Input = DllStructCreate("byte[" & $InputLen & "]")
+DllStructSetData($Input, 1, $Data)
+Local $OputputLen = Ceiling(BinaryLen($Data) * 1.4) + 3
+Local $Output = DllStructCreate("char[" & $OputputLen & "]")
+DllCall("user32.dll", "int", "CallWindowProc", "ptr", DllStructGetPtr($_B64E_CodeBuffer) + $_B64E_EncodeData, "ptr", DllStructGetPtr($Input), "uint", $InputLen, "ptr", DllStructGetPtr($Output), "ptr", DllStructGetPtr($State))
+Return DllStructGetData($Output, 1)
+EndFunc
+Func _Base64EncodeEnd(ByRef $State)
+If Not IsDllStruct($_B64E_CodeBuffer) Or Not IsDllStruct($State) Then Return SetError(1, 0, "")
+Local $Output = DllStructCreate("char[5]")
+DllCall("user32.dll", "int", "CallWindowProc", "ptr", DllStructGetPtr($_B64E_CodeBuffer) + $_B64E_EncodeEnd, "ptr", DllStructGetPtr($Output), "ptr", DllStructGetPtr($State), "int", 0, "int", 0)
+Return DllStructGetData($Output, 1)
+EndFunc
+Func _Base64Encode($Data, $LineBreak = 76)
+Local $State = _Base64EncodeInit($LineBreak)
+Return _Base64EncodeData($State, $Data) & _Base64EncodeEnd($State)
+EndFunc
 Global $g_oTxtLogInitText = ObjCreate("Scripting.Dictionary")
 Global $g_oTxtAtkLogInitText = ObjCreate("Scripting.Dictionary")
 Global $g_oTxtSALogInitText = ObjCreate("Scripting.Dictionary")
@@ -29601,19 +29862,19 @@ Global $g_aiPixelNearCollector[0]
 If $g_abAttackStdSmartNearCollectors[$imode][0] Then
 $g_aiPixelMine = GetLocationMine()
 If(IsArray($g_aiPixelMine)) Then
-_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelMine)
+_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelMine, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 EndIf
 EndIf
 If $g_abAttackStdSmartNearCollectors[$imode][1] Then
 $g_aiPixelElixir = GetLocationElixir()
 If(IsArray($g_aiPixelElixir)) Then
-_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelElixir)
+_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelElixir, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 EndIf
 EndIf
 If $g_abAttackStdSmartNearCollectors[$imode][2] Then
 $g_aiPixelDarkElixir = GetLocationDarkElixir()
 If(IsArray($g_aiPixelDarkElixir)) Then
-_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelDarkElixir)
+_ArrayAdd($g_aiPixelNearCollector, $g_aiPixelDarkElixir, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 EndIf
 EndIf
 SetLog("Located  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
@@ -32605,11 +32866,11 @@ Switch $asCommand[$iCommandCol]
 Case "TRAIN"
 $iTroopIndex = TroopIndexLookup($asCommand[$iTroopNameCol], "ParseAttackCSV_Settings_variables")
 If $iTroopIndex = -1 Then
-Setlog("CSV troop name '" & $asCommand[$iTroopNameCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
+SetLog("CSV troop name '" & $asCommand[$iTroopNameCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
 ContinueLoop
 EndIf
 If int($asCommand[$iTHCol]) <= 0 Then
-If $asCommand[$iTHCol] <> "0" Then Setlog("CSV troop amount/setting '" & $asCommand[$iTHCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
+If $asCommand[$iTHCol] <> "0" Then SetLog("CSV troop amount/setting '" & $asCommand[$iTHCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
 ContinueLoop
 EndIf
 Switch $iTroopIndex
@@ -32622,7 +32883,7 @@ Case $eKing To $eWarden
 Local $iHeroRadioItem = int(StringLeft($asCommand[$iTHCol], 1))
 Local $iHeroTimed = Int(StringTrimLeft($asCommand[$iTHCol], 1))
 If $iHeroRadioItem <= 0 Or $iHeroRadioItem > $iHeroRadioItemTotal Or $iHeroTimed < 0 Or $iHeroTimed > $iHeroTimedLimit Then
-Setlog("CSV hero ability setting '" & $asCommand[$iTHCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
+SetLog("CSV hero ability setting '" & $asCommand[$iTHCol] & "' is unrecognized - Line: " & $iLine + 1, $COLOR_ERROR)
 ContinueLoop
 EndIf
 $aiCSVHeros[$iTroopIndex - $eKing][0] = $iHeroRadioItem
@@ -36049,7 +36310,7 @@ Local $aResult = multiMatches($g_sImgSearchDrill, $Maxpositions, "ECD", "ECD")
 For $iResult = 1 To UBound($aResult) - 1
 If _Sleep(10) Then Return
 Local $aTemp[0][2]
-_ArrayAdd($aTemp, $aResult[$iResult][5])
+_ArrayAdd($aTemp, $aResult[$iResult][5], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 _ArrayColInsert($aTemp, 2)
 _ArrayColInsert($aTemp, 3)
 _ArrayColInsert($aTemp, 4)
@@ -36057,7 +36318,7 @@ For $iRow = 0 To UBound($aTemp) - 1
 $aTemp[$iRow][2] = $aResult[$iResult][2]
 $aTemp[$iRow][4] = 0
 Next
-_ArrayAdd($aReturnResult, $aTemp)
+_ArrayAdd($aReturnResult, $aTemp, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 Next
 Local $iResult = 0
 While $iResult < UBound($aReturnResult)
@@ -36170,12 +36431,12 @@ EndIf
 For $iResult = 1 To UBound($aResult) - 1
 If _Sleep(10) Then Return
 Local $aTemp[0][2]
-_ArrayAdd($aTemp, $aResult[$iResult][5])
+_ArrayAdd($aTemp, $aResult[$iResult][5], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 _ArrayColInsert($aTemp, 2)
 For $iRow = 0 To UBound($aTemp) - 1
 $aTemp[$iRow][2] = 1
 Next
-_ArrayAdd($aReturnResult, $aTemp)
+_ArrayAdd($aReturnResult, $aTemp, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 Next
 Next
 Local $iResult = 0
@@ -39095,7 +39356,7 @@ Else
 If $iIndex >= $eBarb And $iIndex <= $eBowl Then
 Local $sFilter = String($g_asTroopShortNames[$iIndex]) & "*"
 Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
-If $g_bDebugSetlogTrain Then setlog("$asImageToUse Troops: " & $asImageToUse[1])
+If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & $asImageToUse[1])
 $aTrainPos = GetVariable($asImageToUse[1], $iIndex)
 $aTrainArmy[$iIndex] = $aTrainPos
 Return $aTrainPos
@@ -39103,7 +39364,7 @@ EndIf
 If $iIndex >= $eLSpell And $iIndex <= $eSkSpell Then
 Local $sFilter = String($g_asSpellShortNames[$iIndex - $eLSpell]) & "*"
 Local $asImageToUse = _FileListToArray($g_sImgTrainSpells, $sFilter, $FLTA_FILES, True)
-If $g_bDebugSetlogTrain Then setlog("$asImageToUse Spell: " & $asImageToUse[1])
+If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Spell: " & $asImageToUse[1])
 $aTrainPos = GetVariable($asImageToUse[1], $iIndex)
 $aTrainArmy[$iIndex] = $aTrainPos
 Return $aTrainPos
@@ -39481,19 +39742,31 @@ Switch $i
 Case 0
 $sMessage = "-Barbarian King"
 If($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroKing) = $eHeroKing) Or($g_abAttackTypeEnable[$LB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroKing) = $eHeroKing) Then
+If $g_iSearchNotWaitHeroesEnable Then
+$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroKing)
+Else
 SetLog("Warning: King Upgrading & Wait enabled, Disable Wait for King or may never attack!", $COLOR_ERROR)
+EndIf
 _GUI_Value_STATE("SHOW", $groupKingSleeping)
 EndIf
 Case 1
 $sMessage = "-Archer Queen"
 If($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroQueen) = $eHeroQueen) Or($g_abAttackTypeEnable[$LB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroQueen) = $eHeroQueen) Then
+If $g_iSearchNotWaitHeroesEnable Then
+$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroQueen)
+Else
 SetLog("Warning: Queen Upgrading & Wait enabled, Disable Wait for Queen or may never attack!", $COLOR_ERROR)
+EndIf
 _GUI_Value_STATE("SHOW", $groupQueenSleeping)
 EndIf
 Case 2
 $sMessage = "-Grand Warden"
 If($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroWarden) = $eHeroWarden) Or($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden) Then
+If $g_iSearchNotWaitHeroesEnable Then
+$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroWarden)
+Else
 SetLog("Warning: Warden Upgrading & Wait enabled, Disable Wait for Warden or may never attack!", $COLOR_ERROR)
+EndIf
 _GUI_Value_STATE("SHOW", $groupWardenSleeping)
 EndIf
 Case Else
@@ -39576,9 +39849,9 @@ SetLog("Hero slot#" & $index + 1 & " Status read problem!", $COLOR_ERROR)
 EndIf
 $sResult = getRemainTHero($aHeroRemainData[$index][0], $aHeroRemainData[$index][1])
 If $sResult <> "" Then
-$aResultHeroes[$index] = ConvertOCRTime($aHeroRemainData[$index][2] & " recover" , $sResult, True)
+$aResultHeroes[$index] = ConvertOCRTime($aHeroRemainData[$index][2] & " recover" , $sResult, False)
 If _DateDiff("h", $g_aiHeroBoost[$index], _NowCalc()) < 1 Then $aResultHeroes[$index] /= 4
-If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Remaining " & $aHeroRemainData[$index][2] & " recover time: " & StringFormat("%.2f", $aResultHeroes[$index]), $COLOR_DEBUG)
+SetLog("Remaining " & $aHeroRemainData[$index][2] & " recover time: " & StringFormat("%.2f", $aResultHeroes[$index]), $COLOR_INFO)
 If $iHeroType = $aHeroRemainData[$index][3] Then
 $iRemainTrainHeroTimer = Number($aResultHeroes[$index])
 ExitLoop
@@ -41090,8 +41363,11 @@ If _Sleep(500) Then Return
 Local $levelWall = $g_iCmbUpgradeWallsLevel + 4
 Switch $levelWall
 Case 10
-Local $iXClickOffset = 2
-Local $iYClickOffset = 2
+$iXClickOffset = 2
+$iYClickOffset = 2
+Case 11
+$iXClickOffset = 1
+$iYClickOffset = -2
 EndSwitch
 SetLog("Searching for Wall(s) level: " & $levelWall & ". Using imgloc: ", $COLOR_SUCCESS)
 Local $FoundWalls[1]
@@ -41638,13 +41914,13 @@ EndFunc
 Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default)
 If $bSetLog = Default Then $bSetLog = True
 If $bBuilderBase = Default Then $bBuilderBase = False
-Local $iCount, $bObstacleResult
+Local $i, $iErrorCount, $iCheckBeforeRestartAndroidCount, $bObstacleResult, $bContinue
 Local $aPixelToCheck = $aIsMain
 If $bSetLog Then
 SetLog("Trying to locate Main Screen")
 EndIf
 If Not TestCapture() Then
-If CheckAndroidRunning(False) = False Then Return
+If CheckAndroidRunning(False) = False Then Return False
 getBSPos()
 WinGetAndroidHandle()
 If Not $g_bChkBackgroundMode And $g_hAndroidWindow <> 0 Then
@@ -41652,41 +41928,66 @@ AndroidToFront(Default, "checkMainScreen")
 EndIf
 If $g_bAndroidAdbScreencap = False And _WinAPI_IsIconic($g_hAndroidWindow) Then WinSetState($g_hAndroidWindow, "", @SW_RESTORE)
 EndIf
-$iCount = 0
+$i = 0
+$iErrorCount = 0
+$iCheckBeforeRestartAndroidCount = 3
 If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderIsland
-While _CaptureRegions() And(Not _CheckPixel($aPixelToCheck, $g_bNoCapturePixel) Or checkObstacles_Network(False, False))
+Local $bLocated
+While _CaptureRegions() And Not _checkMainScreenImage($bLocated, $aPixelToCheck)
+$i += 1
 If TestCapture() Then
 SetLog("Main Screen not Located", $COLOR_ERROR)
 ExitLoop
 EndIf
 WinGetAndroidHandle()
-If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 $bObstacleResult = checkObstacles($bBuilderBase)
-If $g_bDebugSetlog Then SetDebugLog("CheckObstacles Result = " & $bObstacleResult, $COLOR_DEBUG)
-If(Not $bObstacleResult And $g_bMinorObstacle) Then
+SetDebugLog("CheckObstacles[" & $i & "] Result = " & $bObstacleResult, $COLOR_DEBUG)
+$bContinue = False
+If Not $bObstacleResult Then
+If $g_bMinorObstacle Then
 $g_bMinorObstacle = False
-ElseIf(Not $bObstacleResult And Not $g_bMinorObstacle) Then
+$bContinue = True
+Else
+If $i > $iCheckBeforeRestartAndroidCount Then
+DebugImageSave("checkMainScreen_RestartCoC", False)
 RestartAndroidCoC()
+$bContinue = True
+EndIf
+EndIf
 Else
 $g_bRestart = True
+$bContinue = True
 EndIf
+If $bContinue Then
 waitMainScreen()
-If Not $g_bRunState Then Return
-If @extended Then Return SetError(1, 1, -1)
-If @error Then $iCount += 1
-If $iCount > 2 Then
+If Not $g_bRunState Then Return False
+If @extended Then Return SetError(1, 1, False)
+If @error Then $iErrorCount += 1
+If $iErrorCount > 2 Then
 SetLog("Unable to fix the window error", $COLOR_ERROR)
 CloseCoC(True)
 ExitLoop
 EndIf
+Else
+If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
+EndIf
 WEnd
-ZoomOut()
-If Not $g_bRunState Then Return
+If $bLocated Then ZoomOut()
+If Not $g_bRunState Then Return False
 If $bSetLog Then
-SetLog("Main Screen Located", $COLOR_SUCCESS)
+If $bLocated Then
+SetLog("Main Screen located", $COLOR_SUCCESS)
+Else
+SetLog("Main Screen not located", $COLOR_ERROR)
+EndIf
 EndIf
 DisposeWindows()
 NotifyPendingActions()
+Return $bLocated
+EndFunc
+Func _checkMainScreenImage(ByRef $bLocated, $aPixelToCheck)
+$bLocated = _CheckPixel($aPixelToCheck, $g_bNoCapturePixel) And Not checkObstacles_Network(False, False)
+Return $bLocated
 EndFunc
 Func checkObstacles($bBuilderBase = False)
 FuncEnter(checkObstacles)
@@ -41816,7 +42117,7 @@ If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 If _SleepStatus($iMaintenanceWaitTime) Then Return
 checkObstacles_ResetSearch()
 Case Else
-If $g_bDebugImageSave Then DebugImageSave("ChkObstaclesReloadMsg_")
+If $g_bDebugImageSave Then DebugImageSave("ChkObstaclesReloadMsg_", False)
 Local $sRegion = "220,420(60,25)"
 If $g_iAndroidVersionAPI >= $g_iAndroidLollipop Then
 $sRegion = "555,400(60,25)"
@@ -41917,7 +42218,7 @@ ReturnHome(False, False)
 Return True
 EndIf
 If _CheckPixel($aNoCloudsAttack, $g_bNoCapturePixel) Then
-$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xF4F7E3, 6), 10)
+$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xF4F7E3, 6), 10, False)
 If IsArray($aMessage) Then
 SetDebugLog("checkObstacles: Found Return Home button")
 PureClick(67, 602 + $g_iBottomOffsetY, 1, 0, "#0138")
@@ -41925,8 +42226,8 @@ If _Sleep($DELAYCHECKOBSTACLES2) Then Return
 Return True
 EndIf
 EndIf
-If IsPostDefenseSummaryPage() Then
-$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xE0E1CE, 6), 10)
+If IsPostDefenseSummaryPage(False) Then
+$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xE0E1CE, 6), 10, False)
 If IsArray($aMessage) Then
 SetDebugLog("checkObstacles: Found Post Defense Summary to close")
 PureClick(67, 602 + $g_iBottomOffsetY, 1, 0, "#0138")
@@ -41945,7 +42246,7 @@ If _Sleep($DELAYCHECKOBSTACLES2) Then Return
 Return checkObstacles_ReloadCoC()
 EndIf
 If $bHasTopBlackBar Then
-SetDebugLog("checkObstacles: Found Android Screen")
+SetDebugLog("checkObstacles: Found Black Android Screen")
 EndIf
 CheckGoogleSelectAccount()
 Return False
@@ -42551,7 +42852,7 @@ SetLog("Waiting for Main Screen")
 $iCount = 0
 For $i = 0 To 105
 If Not $g_bRunState Then Return
-If $g_bDebugSetlog Then SetDebugLog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG)
+If $g_bDebugSetlog Then SetDebugLog("ChkObstl Loop = " & $i & ", ExitLoop = " & $iCount, $COLOR_DEBUG)
 $iCount += 1
 Local $hWin = $g_hAndroidWindow
 If TestCapture() = False Then
@@ -42655,21 +42956,21 @@ AndroidAdbSendShellCommand("input keyevent 3")
 If $g_bDebugAndroid Then SetDebugLog("Used Adb to press home button", $COLOR_INFO)
 Return True
 EndFunc
-Func CloseCoC($ReOpenCoC = False)
+Func CloseCoC($ReOpenCoC = False, $bCheckRunState = True)
 FuncEnter(CloseCoC)
 $g_bSkipFirstZoomout = False
 ResumeAndroid()
-If Not $g_bRunState Then Return FuncReturn()
+If $bCheckRunState And Not $g_bRunState Then Return FuncReturn()
 If $ReOpenCoC Then
 SetLog("Please wait for CoC restart......", $COLOR_ERROR)
 Else
 SetLog("Closing CoC......", $COLOR_ERROR)
 EndIf
 WinGetAndroidHandle()
-If Not $g_bRunState Then Return FuncReturn()
+If $bCheckRunState And Not $g_bRunState Then Return FuncReturn()
 AndroidAdbSendShellCommand("am force-stop " & $g_sAndroidGamePackage, Default, Default, False)
 ResetAndroidProcess()
-If Not $g_bRunState Then Return FuncReturn()
+If $bCheckRunState And Not $g_bRunState Then Return FuncReturn()
 If $ReOpenCoC Then
 OpenCoC()
 $g_bRestart = True
@@ -43333,8 +43634,9 @@ Return OpenAndroid($bRestart)
 EndFunc
 Func OpenBlueStacks($bRestart = False)
 Local $hTimer, $iCount = 0, $cmdPar
-Local $PID, $ErrorResult, $connected_to
+Local $PID, $ErrorResult, $connected_to, $process_killed
 SetLog("Starting BlueStacks and Clash Of Clans", $COLOR_SUCCESS)
+LaunchConsole($g_sAndroidAdbPath, "start-server", $process_killed)
 $cmdPar = GetAndroidProgramParameter()
 $PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
 $ErrorResult = ControlGetHandle("BlueStacks Error", "", "")
@@ -43373,6 +43675,7 @@ SetLog("Starting " & $g_sAndroidEmulator & " and Clash Of Clans", $COLOR_SUCCESS
 If Not InitAndroid() Then Return False
 SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
 CloseUnsupportedBlueStacks2()
+LaunchConsole($g_sAndroidAdbPath, "start-server", $process_killed)
 $hTimer = __TimerInit()
 WinGetAndroidHandle()
 Local $bStopIfLaunchFails = False
@@ -45711,7 +46014,7 @@ EndIf
 If $RetryCount1 > 0 And $RetryCount1 < 6 And $RetryCount2 = 0 Then
 Local $bXinc = $aControlSize[0] > $asControlSize[$RetryCount1][0] And $asControlSize[$RetryCount1][0] > $asControlSize[$RetryCount1 - 1][0]
 Local $bYinc = $aControlSize[1] > $asControlSize[$RetryCount1][1] And $asControlSize[$RetryCount1][1] > $asControlSize[$RetryCount1 - 1][1]
-If($bXinc And Not $bYinc) Or(Not $bXinc And $bYinc) Then
+If($bXinc And Not $bYinc) Or(Not $bXinc And $bYinc) Or($aControlSize[2] < $g_iAndroidClientWidth / 2 Or $aControlSize[2] > $g_iAndroidClientWidth * 1.5 Or $aControlSize[3] < $g_iAndroidClientHeight / 2 Or $aControlSize[3] > $g_iAndroidClientHeight * 1.5) Then
 SetLog($g_sAndroidEmulator & " window cannot be resized, abort", $COLOR_ERROR)
 Return $aControlSize
 EndIf
@@ -47468,10 +47771,29 @@ If $g_hLogFile <> 0 Then
 FileClose($g_hLogFile)
 $g_hLogFile = 0
 EndIf
+Local $aOldLogs = _FileListToArray($g_sProfileLogsPath, @YEAR & "-" & @MON & "-" & @MDAY & "_" & @HOUR & ".*.log", $FLTA_FILES)
+If UBound($aOldLogs) < 2 Then
+Local $aDate, $aTime, $YEAR, $MON, $MDAY, $HOUR
+_DateTimeSplit(_DateAdd("h", -1, _NowCalc()), $aDate, $aTime)
+$YEAR = StringFormat("%04d", $aDate[1])
+$MON = StringFormat("%02d", $aDate[2])
+$MDAY = StringFormat("%02d", $aDate[3])
+$HOUR = StringFormat("%02d", $aTime[1])
+$aOldLogs = _FileListToArray($g_sProfileLogsPath, $YEAR & "-" & $MON & "-" & $MDAY & "_" & $HOUR & ".*.log", $FLTA_FILES)
+EndIf
+Local $sLogPath
+If UBound($aOldLogs) > 1 Then
+_ArraySort($aOldLogs, 1, 1, 0)
+$g_sLogFileName = $aOldLogs[1]
+$sLogPath = $g_sProfileLogsPath & $g_sLogFileName
+$g_hLogFile = FileOpen($sLogPath, $FO_APPEND)
+SetDebugLog("Append to log file: " & $sLogPath)
+Else
 $g_sLogFileName = @YEAR & "-" & @MON & "-" & @MDAY & "_" & @HOUR & "." & @MIN & "." & @SEC & ".log"
-Local $sLogPath = $g_sProfileLogsPath & $g_sLogFileName
+$sLogPath = $g_sProfileLogsPath & $g_sLogFileName
 $g_hLogFile = FileOpen($sLogPath, $FO_APPEND)
 SetDebugLog("Created log file: " & $sLogPath)
+EndIf
 If IsBotLaunched() Then
 SetDebugLog("Android: " & $g_sAndroidEmulator)
 SetDebugLog("Android Instance: " & $g_sAndroidInstance)
@@ -47555,11 +47877,18 @@ $exist = False
 EndIf
 EndIf
 WEnd
-If $capturenew Then _CaptureRegion2()
+If IsBool($capturenew) And $capturenew Then
+_CaptureRegion2()
+EndIf
+If IsPtr($capturenew) Then
+_GDIPlus_ImageSaveToFile($capturenew, $filename)
+If $g_bDebugSetlog Then SetDebugLog("DebugImageSave(" & $capturenew & ") " & $filename, $COLOR_DEBUG)
+Else
 Local $EditedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
 _GDIPlus_ImageSaveToFile($EditedImage, $filename)
 _GDIPlus_BitmapDispose($EditedImage)
-If $g_bDebugSetlog Then SetDebugLog($filename, $COLOR_DEBUG)
+If $g_bDebugSetlog Then SetDebugLog("DebugImageSave " & $filename, $COLOR_DEBUG)
+EndIf
 If _Sleep($DELAYDEBUGIMAGESAVE1) Then Return
 EndFunc
 Func _logErrorDLLCall($sDllName, $ErrorCode)
@@ -48240,7 +48569,7 @@ Else
 SetLog("Screenshot saved: " & $TargetDir & $filename)
 EndIf
 Else
-SetLog("Screenshot file not created!", $COLOR_ERROR)
+SetLog("Screenshot file not created: " & $TargetDir & $filename, $COLOR_ERROR)
 EndIf
 $g_bMakeScreenshotNow = False
 _GDIPlus_BrushDispose($hBrush)
@@ -48330,14 +48659,58 @@ EndIf
 Return SetError(0, 0,($error = 0 ? True : False))
 EndFunc
 Func TestLanguage()
-If $g_bRunState Then
+If Not $g_bRunState Then Return
 If getOcrLanguage($aDetectLang[0], $aDetectLang[1]) = "english" Then
 SetLog("Language setting is English: Correct.", $COLOR_INFO)
-Else
+Return True
+ElseIf Not ChangeLanguage() Then
 SetLog("Language setting is Wrong: Change CoC language to English!", $COLOR_ERROR)
 btnStop()
 EndIf
+EndFunc
+Func ChangeLanguage()
+SetLog("Change Language To English", $COLOR_INFO)
+If IsMainPage() Then Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
+If _Sleep(500) Then Return False
+For $i = 0 To 20
+If _ColorCheck(_GetPixelColor($aButtonLanguage[0], $aButtonLanguage[1], True), Hex($aButtonLanguage[2], 6), $aButtonLanguage[3]) Then
+Click($aButtonLanguage[0], $aButtonLanguage[1], 1, 1000)
+SetLog("   1. Click Language Button")
+If _Sleep(200) Then Return False
+ExitLoop
 EndIf
+If $i = 20 Then Return False
+If _Sleep(900) Then Return False
+Next
+For $i = 0 To 20
+If _ColorCheck(_GetPixelColor($aListLanguage[0], $aListLanguage[1], True), Hex($aListLanguage[2], 6), $aListLanguage[3]) Then
+ClickDrag(Random(370, 375, 1), Random(170, 175, 1), Random(370, 375, 1), Random(590, 595, 1), 200)
+If _Sleep(200) Then Return False
+ClickDrag(Random(370, 375, 1), Random(170, 175, 1), Random(370, 375, 1), Random(380, 385, 1), 200)
+If _Sleep(900) Then Return False
+If _ColorCheck(_GetPixelColor($aEnglishLanguage[0], $aEnglishLanguage[1], True), Hex($aEnglishLanguage[2], 6), $aEnglishLanguage[3]) Then
+Click($aEnglishLanguage[0], $aEnglishLanguage[1], 1, 1000)
+SetLog("   2. Click English Language")
+If _Sleep(300) Then Return False
+ExitLoop
+EndIf
+EndIf
+If $i = 20 Then Return False
+If _Sleep(900) Then Return False
+Next
+For $i = 0 To 10
+If _ColorCheck(_GetPixelColor($aLanguageOkay[0], $aLanguageOkay[1], True), Hex($aLanguageOkay[2], 6), $aLanguageOkay[3]) Then
+If _Sleep(250) Then Return False
+Click($aLanguageOkay[0], $aLanguageOkay[1], 1, 0, "Click OKAY")
+SetLog("   3. Click OKAY")
+SetLog("Please wait for loading CoC...!")
+waitMainScreen()
+Return True
+EndIf
+If $i = 10 Then Return False
+If _Sleep(900) Then Return False
+Next
+Return False
 EndFunc
 Func Deletefiles($Folder, $Filter, $daydiff = 120, $type = 0, $Recursion = $FLTAR_NORECUR)
 Local $x
@@ -48555,7 +48928,7 @@ $iOldCurrentLoot[$eLootElixir] = $g_aiCurrentLoot[$eLootElixir]
 EndIf
 If $iOldCurrentLoot[$eLootDarkElixir] <> $g_aiCurrentLoot[$eLootDarkElixir] And $g_iStatsStartedWith[$eLootDarkElixir] <> "" Then
 $bStatsUpdated = True
-GUICtrlSetData($g_hLblResultDeNow, _NumberFormat($g_aiCurrentLoot[$eLootDarkElixir], True))
+GUICtrlSetData($g_hLblResultDeNow, _NumberFormat($g_aiCurrentLoot[$eLootDarkElixir], False))
 $iOldCurrentLoot[$eLootDarkElixir] = $g_aiCurrentLoot[$eLootDarkElixir]
 EndIf
 If $iOldCurrentLoot[$eLootTrophy] <> $g_aiCurrentLoot[$eLootTrophy] Then
@@ -48730,8 +49103,10 @@ For $i = 0 To $eTroopCount - 1
 If $g_aiDonateStatsTroops[$i][0] <> $g_aiDonateStatsTroops[$i][1] Then
 $bStatsUpdated = True
 GUICtrlSetData($g_hLblDonTroop[$i], _NumberFormat($g_aiDonateStatsTroops[$i][0], True))
+If $g_aiDonateStatsTroops[$i][0] > $g_aiDonateStatsTroops[$i][1] Then
 $g_iTotalDonateStatsTroops +=($g_aiDonateStatsTroops[$i][0] - $g_aiDonateStatsTroops[$i][1])
 $g_iTotalDonateStatsTroopsXP +=(($g_aiDonateStatsTroops[$i][0] - $g_aiDonateStatsTroops[$i][1]) * $g_aiTroopDonateXP[$i])
+EndIf
 $g_aiDonateStatsTroops[$i][1] = $g_aiDonateStatsTroops[$i][0]
 $bDonateTroopsStatsChanged = True
 EndIf
@@ -48746,8 +49121,10 @@ For $i = 0 To $eSpellCount - 1
 If $g_aiDonateStatsSpells[$i][0] <> $g_aiDonateStatsSpells[$i][1] And $i <> $eSpellClone Then
 $bStatsUpdated = True
 GUICtrlSetData($g_hLblDonSpell[$i], _NumberFormat($g_aiDonateStatsSpells[$i][0], True))
+If $g_aiDonateStatsSpells[$i][0] > $g_aiDonateStatsSpells[$i][1] Then
 $g_iTotalDonateStatsSpells +=($g_aiDonateStatsSpells[$i][0] - $g_aiDonateStatsSpells[$i][1])
 $g_iTotalDonateStatsSpellsXP +=(($g_aiDonateStatsSpells[$i][0] - $g_aiDonateStatsSpells[$i][1]) * $g_aiSpellDonateXP[$i])
+EndIf
 $g_aiDonateStatsSpells[$i][1] = $g_aiDonateStatsSpells[$i][0]
 $bDonateSpellsStatsChanged = True
 EndIf
@@ -48873,7 +49250,7 @@ If ProfileSwitchAccountEnabled() Then
 For $i = 0 To 7
 GUICtrlSetData($g_ahLblResultGoldNowAcc[$i], _NumberFormat($g_aiGoldCurrentAcc[$i], True))
 GUICtrlSetData($g_ahLblResultElixirNowAcc[$i], _NumberFormat($g_aiElixirCurrentAcc[$i], True))
-GUICtrlSetData($g_ahLblResultDENowAcc[$i], _NumberFormat($g_aiDarkCurrentAcc[$i], True))
+GUICtrlSetData($g_ahLblResultDENowAcc[$i], _NumberFormat($g_aiDarkCurrentAcc[$i], False))
 GUICtrlSetData($g_ahLblResultTrophyNowAcc[$i], _NumberFormat($g_aiTrophyCurrentAcc[$i], True))
 If $g_aiGemAmountAcc[$i] < 10000 Then
 GUICtrlSetData($g_ahLblResultGemNowAcc[$i], _NumberFormat($g_aiGemAmountAcc[$i], True))
@@ -49282,7 +49659,7 @@ EndIf
 Return $result[0]
 EndFunc
 Func _ObjErrMsg($sFunctionName, $iErrorCode)
-SetDebugLog("Dictionary Error: " & $sFunctionName & " code: " & $iErrorCode, $COLOR_ERROR)
+SetDebugLog("Dictionary Error: " & $sFunctionName & " code: " & $iErrorCode, $COLOR_ERROR, True)
 EndFunc
 Func _ObjAdd(ByRef $oDICT, $KEY, $VALUE)
 If Not IsObj($oDICT) Then
@@ -49534,10 +49911,10 @@ Else
 Return True
 EndIf
 EndFunc
-Func IsPostDefenseSummaryPage()
+Func IsPostDefenseSummaryPage($bCapture = True)
 Local $result
-Local $GoldSpot = _GetPixelColor(330, 201 + $g_iMidOffsetY, $g_bCapturePixel)
-Local $ElixirSpot = _GetPixelColor(334, 233 + $g_iMidOffsetY, $g_bCapturePixel)
+Local $GoldSpot = _GetPixelColor(330, 201 + $g_iMidOffsetY, $bCapture)
+Local $ElixirSpot = _GetPixelColor(334, 233 + $g_iMidOffsetY, $bCapture)
 $result = _ColorCheck($GoldSpot, Hex(0xF6E851, 6), 20) And _ColorCheck($ElixirSpot, Hex(0xE835E8, 6), 20)
 If $result Then
 If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Post Defense Page visible**", $COLOR_ACTION)
@@ -51346,7 +51723,9 @@ $coords = $aResult[$i][5]
 If IsArray($coords) Then
 For $j = 0 To UBound($coords) - 1
 Local $coord = $coords[$j]
+If UBound($coord) > 1 Then
 addInfoToDebugImage($hGraphic, $hPen, $aResult[$i][0], $coord[0], $coord[1])
+EndIf
 Next
 EndIf
 EndIf
@@ -51777,7 +52156,7 @@ $sText = PixelArrayToString($aBldgCoord, ",")
 Case UBound($aBldgCoord) > 0 And IsArray($aBldgCoord[0])
 Local $aPixelb = $aBldgCoord[0]
 $sText = PixelToString($aPixelb, ":")
-Case UBound($aBldgCoord) > 0 And IsArray($aBldgCoord[0]) = 0
+Case UBound($aBldgCoord) = 2 And IsArray($aBldgCoord[0]) = 0
 $sText = PixelToString($aBldgCoord, ":")
 Case Else
 $sText = "Monkey ate bad banana!"
@@ -53907,7 +54286,6 @@ ElseIf $g_iTotalDonateSpellCapacity = -1 Then
 If $g_bDebugSetlog Then SetDebugLog("This CC cannot accept spells, skip spell donation...", $COLOR_DEBUG)
 $g_bSkipDonSpells = True
 ElseIf $g_iCurrentSpells = 0 Then
-If $g_bDebugSetlog Then SetDebugLog("No spells available, skip spell donation...", $COLOR_DEBUG)
 SetLog("No spells available, skip spell donation...", $COLOR_ORANGE)
 $g_bSkipDonSpells = True
 EndIf
@@ -54147,11 +54525,10 @@ Next
 EndIf
 $g_bDonateAllRespectBlk = False
 EndIf
-DonateWindow($bClose)
 $bDonate = True
 $y = $g_aiDonatePixel[1] + 50
 ClickP($aAway, 1, 0, "#0171")
-If _Sleep($DELAYDONATECC2) Then ExitLoop
+If _Sleep($DELAYDONATEWINDOW1) Then ExitLoop
 EndIf
 ForceCaptureRegion()
 $g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
@@ -54271,7 +54648,7 @@ $detectedSlot = $Slot
 If $g_bDebugOCRdonate Then $g_bDebugOcr = $oldDebugOcr
 If $Slot = -1 Then Return
 If $Slot < 0 Or $Slot > 11 Then
-setlog("Invalid slot # found = " & $Slot & " for " & $g_asTroopNames[$iTroopIndex], $COLOR_ERROR)
+SetLog("Invalid slot # found = " & $Slot & " for " & $g_asTroopNames[$iTroopIndex], $COLOR_ERROR)
 Return
 EndIf
 If $g_bDebugSetlog Then SetDebugLog("slot found = " & $Slot & ", " & $g_asTroopNames[$Slot], $COLOR_DEBUG)
@@ -54292,7 +54669,7 @@ If $g_bDebugOCRdonate Then
 SetLog("donate", $COLOR_ERROR)
 SetLog("row: " & $donaterow, $COLOR_ERROR)
 SetLog("pos in row: " & $donateposinrow, $COLOR_ERROR)
-setlog("coordinate: " & 365 +($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
+SetLog("coordinate: " & 365 +($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
 debugimagesave("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asTroopNames[$iTroopIndex] & "_")
 EndIf
 If $g_bQuickTrainEnable Then
@@ -54328,10 +54705,10 @@ EndIf
 EndIf
 Else
 If $g_bDebugOCRdonate Then
-SetLog("donate", $color_RED)
-SetLog("row: " & $donaterow, $color_RED)
-SetLog("pos in row: " & $donateposinrow, $color_red)
-setlog("coordinate: " & 365 +($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $color_red)
+SetLog("donate", $COLOR_ERROR)
+SetLog("row: " & $donaterow, $COLOR_ERROR)
+SetLog("pos in row: " & $donateposinrow, $COLOR_ERROR)
+SetLog("coordinate: " & 365 +($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
 debugimagesave("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asTroopNames[$iTroopIndex] & "_")
 EndIf
 If $g_bQuickTrainEnable = True Then
@@ -54405,7 +54782,7 @@ If $g_bDebugSetlog Then SetDebugLog("slot found = " & $Slot, $COLOR_DEBUG)
 If $g_bDebugOCRdonate Then $g_bDebugOcr = $oldDebugOcr
 If $Slot = -1 Then Return
 If $Slot < 12 Or $Slot > 17 Then
-setlog("Invalid slot # found = " & $Slot & " for " & $g_asSpellNames[$iSpellIndex], $COLOR_ERROR)
+SetLog("Invalid slot # found = " & $Slot & " for " & $g_asSpellNames[$iSpellIndex], $COLOR_ERROR)
 Return
 EndIf
 $donaterow = 3
@@ -54418,7 +54795,7 @@ If $g_bDebugOCRdonate Then
 SetLog("donate", $COLOR_ERROR)
 SetLog("row: " & $donaterow, $COLOR_ERROR)
 SetLog("pos in row: " & $donateposinrow, $COLOR_ERROR)
-setlog("coordinate: " & 365 +($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
+SetLog("coordinate: " & 365 +($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
 debugimagesave("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asSpellNames[$iSpellIndex] & "_")
 EndIf
 If Not $g_bDebugOCRdonate Then
@@ -54459,7 +54836,7 @@ $iTop += $g_aiDonatePixel[1]
 $iRight += $g_aiDonatePixel[0] + 1
 $iBottom += $g_aiDonatePixel[1] + 1
 ForceCaptureRegion()
-Local $g_aiDonatePixelCheck = _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 15)
+Local $g_aiDonatePixelCheck = _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
 If IsArray($g_aiDonatePixelCheck) Then
 Click($g_aiDonatePixel[0] + 50, $g_aiDonatePixel[1] + 10, 1, 0, "#0174")
 Else
@@ -56439,6 +56816,7 @@ $g_aiCurrentLoot[$eLootGold] = getResourcesMainScreen(701, 23)
 $g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(701, 74)
 $g_iGemAmount = getResourcesMainScreen(719, 123)
 If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($g_aiCurrentLoot[$eLootGold]) & " [E]: " & _NumberFormat($g_aiCurrentLoot[$eLootElixir]) & " [GEM]: " & _NumberFormat($g_iGemAmount), $COLOR_SUCCESS)
+If ProfileSwitchAccountEnabled() Then $g_aiCurrentLoot[$eLootDarkElixir] = ""
 EndIf
 If ProfileSwitchAccountEnabled() Then
 $g_aiFreeBuilderCountAcc[$g_iCurAccount] = $g_iFreeBuilderCount
@@ -57303,7 +57681,7 @@ EndFunc
 Func _DeletePush()
 If $g_bDebugSetlog Then SetDebugLog("Notify | _DeletePush()")
 NotifyDeletePushBullet()
-SetLog("Delete all previous PushBullet messages...", $COLOR_BLUE)
+SetLog("Delete all previous PushBullet messages...", $COLOR_INFO)
 EndFunc
 Func PushMsg($Message, $Source = "")
 If $g_bDebugSetlog Then SetDebugLog("Notify | PushMsg()")
@@ -57401,7 +57779,7 @@ If $g_bNotifyPBEnable And $g_sNotifyPBToken <> "" Then
 $g_bNotifyForced = False
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Get", "https://api.pushbullet.com/v2/devices", False)
@@ -57410,7 +57788,7 @@ $oHTTP.Send()
 $oHTTP.WaitForResponse
 Local $Result = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
-SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_RED)
+SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_ERROR)
 Return
 EndIf
 Local $g_sAnotherDevice_iden = _StringBetween($Result, 'iden":"', '"')
@@ -57426,7 +57804,7 @@ EndIf
 If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Get", "https://api.telegram.org/bot" & $g_sNotifyTGToken & "/getupdates", False)
@@ -57434,7 +57812,7 @@ $oHTTP.Send()
 $oHTTP.WaitForResponse
 Local $Result = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
-SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_RED)
+SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
 Return
 EndIf
 Local $chat_id = _StringBetween($Result, 'm":{"id":', ',"f')
@@ -57508,7 +57886,7 @@ Local $timeUTC = _Date_Time_SystemTimeToDateTimeStr($tSystem, 1)
 Local $timestamplimit = 0
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Get", "https://api.pushbullet.com/v2/pushes?active=true&modified_after=" & $timestamplimit, False)
@@ -57519,7 +57897,7 @@ $oHTTP.Send()
 $oHTTP.WaitForResponse
 Local $Result = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
-SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_RED)
+SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_ERROR)
 Return
 EndIf
 Local $findstr = StringRegExp($Result, ',"created":')
@@ -57543,7 +57921,7 @@ Next
 EndIf
 EndIf
 If $msgdeleted > 0 Then
-SetLog("Notify PushBullet: removed " & $msgdeleted & " messages older than " & $g_iNotifyDeletePushesOlderThanHours & " h ", $COLOR_GREEN)
+SetLog("Notify PushBullet: removed " & $msgdeleted & " messages older than " & $g_iNotifyDeletePushesOlderThanHours & " h ", $COLOR_SUCCESS)
 EndIf
 EndFunc
 Func NotifyPushFileToPushBullet($File, $Folder, $FileType, $body)
@@ -57553,7 +57931,7 @@ If $g_bNotifyPBEnable = True And $g_sNotifyPBToken <> "" Then
 If FileExists($g_sProfilePath & "\" & $g_sProfileCurrentName & '\' & $Folder & '\' & $File) Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Post", "https://api.pushbullet.com/v2/upload-request", False)
@@ -57565,7 +57943,7 @@ $oHTTP.Send($pPush)
 $oHTTP.WaitForResponse
 Local $Result = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
-SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_RED)
+SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_ERROR)
 Return
 EndIf
 Local $upload_url = _StringBetween($Result, 'upload_url":"', '"')
@@ -57583,11 +57961,11 @@ $oHTTP.SetRequestHeader("Content-Type", "application/json")
 Local $pPush = '{"type": "file", "file_name": "' & $File & '", "file_type": "' & $FileType & '", "file_url": "' & $file_url[0] & '", "body": "' & $body & '"}'
 $oHTTP.Send($pPush)
 Else
-SetLog("Notify PushBullet: Unable to send file " & $File, $COLOR_RED)
+SetLog("Notify PushBullet: Unable to send file " & $File, $COLOR_ERROR)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_03", "Unable to Upload File") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_04", "Occured an error type") & " 1 " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_01", "uploading file to PushBullet server") & "...")
 EndIf
 Else
-SetLog("Notify PushBullet: Unable to send file " & $File, $COLOR_RED)
+SetLog("Notify PushBullet: Unable to send file " & $File, $COLOR_ERROR)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_03", "Unable to Upload File") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_04", "Occured an error type") & " 2 " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_01", "uploading file to PushBullet server") & "...")
 EndIf
 EndIf
@@ -57598,7 +57976,7 @@ If(Not $g_bNotifyPBEnable Or $g_sNotifyPBToken = "") And(Not $g_bNotifyTGEnable 
 If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 Local $url = "https://api.telegram.org/bot"
@@ -57617,7 +57995,7 @@ If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" Then
 If FileExists($g_sProfilePath & "\" & $g_sProfileCurrentName & '\' & $Folder & '\' & $File) Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 Local $sCmd = "/sendPhoto"
@@ -57635,7 +58013,7 @@ $oHTTP.Send($pPush)
 $oHTTP.WaitForResponse
 If $g_bDebugSetlog Then SetDebugLog("$oHTTP.ResponseText: " & $oHTTP.ResponseText)
 Else
-SetLog("Notify Telegram: Unable to send file " & $File, $COLOR_RED)
+SetLog("Notify Telegram: Unable to send file " & $File, $COLOR_ERROR)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_03", "Unable to Upload File") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_02", "Occured an error type 2 uploading file to Telegram server..."))
 EndIf
 EndIf
@@ -57646,7 +58024,7 @@ Local $TGLastMessage = ""
 If Not $g_bNotifyTGEnable Or $g_sNotifyTGToken = "" Then Return
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Get", "https://api.telegram.org/bot" & $g_sNotifyTGToken & "/getupdates", False)
@@ -57654,7 +58032,7 @@ $oHTTP.Send()
 $oHTTP.WaitForResponse
 Local $Result = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
-SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_RED)
+SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
 Return
 EndIf
 Local $chat_id = _StringBetween($Result, 'm":{"id":', ',"f')
@@ -57674,7 +58052,7 @@ $oHTTP.Send()
 $oHTTP.WaitForResponse
 Local $Result2 = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
-SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_RED)
+SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
 Return
 EndIf
 Local $findstr2 = StringRegExp(StringUpper($Result2), '"TEXT":"')
@@ -57746,7 +58124,7 @@ Func NotifyActivateKeyboardOnTelegram($TGMsg)
 If $g_bDebugSetlog Then SetDebugLog("Notify | NotifyActivateKeyboardOnTelegram($TGMsg): " & $TGMsg)
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 Local $url = "https://api.telegram.org/bot"
@@ -57782,7 +58160,7 @@ If(Not $g_bNotifyPBEnable And Not $g_bNotifyTGEnable) Or Not $g_bNotifyRemoteEna
 If $g_bNotifyPBEnable And $g_sNotifyPBToken <> "" Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 Local $pushbulletApiUrl
@@ -57799,7 +58177,7 @@ $oHTTP.Send()
 $oHTTP.WaitForResponse
 Local $Result = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
-SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_RED)
+SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_ERROR)
 Return
 EndIf
 Local $modified = _StringBetween($Result, '"modified":', ',', "", False)
@@ -57846,20 +58224,20 @@ $txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & $g
 $txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & GetTranslatedFileIni("MBR Func_Notify", "BUILDER", "BUILDER")
 $txtHelp &= '\n' & GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & $g_sNotifyOrigin & " " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOTHD", "SCREENSHOTHD")
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-For-Help_Info_02", "Request for Help") & "\n" & $txtHelp)
-SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Help has been sent", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Help has been sent", $COLOR_SUCCESS)
 NotifyDeleteMessageFromPushBullet($iden[$x])
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & GetTranslatedFileIni("MBR Func_Notify", "DELETE", "DELETE")
 NotifyDeletePushBullet()
-SetLog("Notify PushBullet: Your request has been received.", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received.", $COLOR_SUCCESS)
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART")
 NotifyDeleteMessageFromPushBullet($iden[$x])
-SetLog("Notify PushBullet: Your request has been received. Bot and Android Emulator restarting...", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received. Bot and Android Emulator restarting...", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_16", "Request to Restart") & "...\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_05", "Your bot and Emulator are now restarting") & "...")
 SaveConfig()
 RestartBot()
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP")
 NotifyDeleteMessageFromPushBullet($iden[$x])
-SetLog("Notify PushBullet: Your request has been received. Bot is now stopped", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received. Bot is now stopped", $COLOR_SUCCESS)
 If $g_bRunState = True Then
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_01", "Request to Stop") & "..." & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_06", "Your bot is now stopping") & "...")
 btnStop()
@@ -57882,7 +58260,7 @@ Else
 TogglePauseImpl("Push")
 EndIf
 Else
-SetLog("Notify PushBullet: Your bot is currently paused, no action was taken", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your bot is currently paused, no action was taken", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_17", "Request to Pause") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_11", "Your bot is currently paused, no action was taken"))
 EndIf
 NotifyDeleteMessageFromPushBullet($iden[$x])
@@ -57890,63 +58268,63 @@ Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_s
 If $g_bBotPaused = True And $g_bRunState = True Then
 TogglePauseImpl("Push")
 Else
-SetLog("Notify PushBullet: Your bot is currently resumed, no action was taken", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your bot is currently resumed, no action was taken", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_18", "Request to Resume") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Resumed_Info_01", "Your bot is currently resumed, no action was taken"))
 EndIf
 NotifyDeleteMessageFromPushBullet($iden[$x])
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "STATS", "STATS")
-SetLog("Notify PushBullet: Your request has been received. Statistics sent", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received. Statistics sent", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Stats_Info_02", "Stats Village Report") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Stats_Info_05", "At Start") & "\n[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_iStatsStartedWith[$eLootGold]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_iStatsStartedWith[$eLootElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-DE_Info_01", "DE") & "]: " & _NumberFormat($g_iStatsStartedWith[$eLootDarkElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iStatsStartedWith[$eLootTrophy] & "\n\n" & GetTranslatedFileIni("MBR Func_Notify", "Stats-Now_Info_01", "Now (Current Resources)") & "\n[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_aiCurrentLoot[$eLootGold]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_aiCurrentLoot[$eLootElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-DE_Info_01", "DE") & "]: " & _NumberFormat($g_aiCurrentLoot[$eLootDarkElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_aiCurrentLoot[$eLootTrophy] & " [" & GetTranslatedFileIni("MBR Func_Notify", "GEM_Info_01", "GEM") & "]: " & $g_iGemAmount & "\n \n [" & GetTranslatedFileIni("MBR Func_Notify", "Free-Builders_Info_01", "No. of Free Builders") & "]: " & $g_iFreeBuilderCount & "\n [" & GetTranslatedFileIni("MBR Func_Notify", "Wall-Up_Info_01", "No. of Wall Up") & "]: " & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & ": " & $g_iNbrOfWallsUppedGold & "/ " & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & ": " & $g_iNbrOfWallsUppedElixir & "\n\n" & GetTranslatedFileIni("MBR Func_Notify", "Attack_Info_01", "Attacked") & ": " & $g_aiAttackedCount & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Skip_Info_02", "Skipped") & ": " & $g_iSkippedVillageCount)
 NotifyDeleteMessageFromPushBullet($iden[$x])
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG")
-SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Log is now sent", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Log is now sent", $COLOR_SUCCESS)
 NotifyPushFileToPushBullet($g_sLogFileName, GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_02", "logs"), "text/plain; charset=utf-8", $g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_03", "Current Log") & " \n")
 NotifyDeleteMessageFromPushBullet($iden[$x])
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "LASTRAID", "LASTRAID")
 If $g_sAttackFile <> "" Then
-SetLog("Notify PushBullet: Push Last Raid Snapshot...", $COLOR_GREEN)
+SetLog("Notify PushBullet: Push Last Raid Snapshot...", $COLOR_SUCCESS)
 NotifyPushFileToPushBullet($g_sAttackFile, GetTranslatedFileIni("MBR Func_Notify", "Loots_Info_01", "Loots"), "image/jpeg", $g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_01", "Last Raid") & " \n" & $g_sAttackFile)
 Else
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT_Info_02", "There is no last raid screenshot") & ".")
 SetLog("There is no last raid screenshot.")
-SetLog("Notify PushBullet: Your request has been received. Last Raid txt sent", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received. Last Raid txt sent", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_02", "Last Raid txt") & "\n" & "[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootGold]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-DE_Info_01", "DE") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootDarkElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iStatsLastAttack[$eLootTrophy])
 EndIf
 NotifyDeleteMessageFromPushBullet($iden[$x])
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT", "LASTRAIDTXT")
-SetLog("Notify PushBullet: Your request has been received. Last Raid txt sent", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received. Last Raid txt sent", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_02", "Last Raid txt") & "\n" & "[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootGold]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-DE_Info_01", "DE") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootDarkElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iStatsLastAttack[$eLootTrophy])
 NotifyDeleteMessageFromPushBullet($iden[$x])
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT", "SCREENSHOT")
-SetLog("Notify PushBullet: ScreenShot request received", $COLOR_GREEN)
+SetLog("Notify PushBullet: ScreenShot request received", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT_Info_03", "Chief, your request for Screenshot will be processed ASAP"))
 $g_bPBRequestScreenshot = True
 $g_bNotifyForced = False
 NotifyDeleteMessageFromPushBullet($iden[$x])
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOTHD", "SCREENSHOTHD")
-SetLog("Notify PushBullet: ScreenShot HD request received", $COLOR_GREEN)
+SetLog("Notify PushBullet: ScreenShot HD request received", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT_Info_03", "Chief, your request for Screenshot will be processed ASAP"))
 $g_bPBRequestScreenshot = True
 $g_bPBRequestScreenshotHD = True
 $g_bNotifyForced = False
 NotifyDeleteMessageFromPushBullet($iden[$x])
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "BUILDER", "BUILDER")
-SetLog("Notify PushBullet: Builder Status request received", $COLOR_GREEN)
+SetLog("Notify PushBullet: Builder Status request received", $COLOR_SUCCESS)
 $g_bPBRequestBuilderInfo = True
 NotifyDeleteMessageFromPushBullet($iden[$x])
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "BUILDER_Info_04", "Chief, your request for Builder Info will be processed ASAP"))
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "SHIELD", "SHIELD")
-SetLog("Notify PushBullet: Shield Status request received", $COLOR_GREEN)
+SetLog("Notify PushBullet: Shield Status request received", $COLOR_SUCCESS)
 $g_bPBRequestShieldInfo = True
 $g_bNotifyForced = False
 NotifyDeleteMessageFromPushBullet($iden[$x])
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SHIELD_Info_02", "Chief, your request for Shield Info will be processed ASAP"))
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS", "RESETSTATS")
 btnResetStats()
-SetLog("Notify PushBullet: Your request has been received. Statistics resetted", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received. Statistics resetted", $COLOR_SUCCESS)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS_Info_02", "Statistics resetted."))
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS")
-SetLog("Notify PushBullet: Your request has been received. Sending Troop/Spell Stats...", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received. Sending Troop/Spell Stats...", $COLOR_SUCCESS)
 Local $txtTroopStats = " | " & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_01", "Troops/Spells set to Train") & ":\n" & "Barbs:" & $g_aiArmyCompTroops[$eTroopBarbarian] & " Arch:" & $g_aiArmyCompTroops[$eTroopArcher] & " Gobl:" & $g_aiArmyCompTroops[$eTroopGoblin] & "\n" & "Giant:" & $g_aiArmyCompTroops[$eTroopGiant] & " WallB:" & $g_aiArmyCompTroops[$eTroopWallBreaker] & " Wiza:" & $g_aiArmyCompTroops[$eTroopWizard] & "\n" & "Balloon:" & $g_aiArmyCompTroops[$eTroopBalloon] & " Heal:" & $g_aiArmyCompTroops[$eTroopHealer] & " Dragon:" & $g_aiArmyCompTroops[$eTroopDragon] & " Pekka:" & $g_aiArmyCompTroops[$eTroopPekka] & "\n" & "Mini:" & $g_aiArmyCompTroops[$eTroopMinion] & " Hogs:" & $g_aiArmyCompTroops[$eTroopHogRider] & " Valks:" & $g_aiArmyCompTroops[$eTroopValkyrie] & "\n" & "Golem:" & $g_aiArmyCompTroops[$eTroopGolem] & " Witch:" & $g_aiArmyCompTroops[$eTroopWitch] & " Lava:" & $g_aiArmyCompTroops[$eTroopLavaHound] & "\n" & "LSpell:" & $g_aiArmyCompSpells[$eSpellLightning] & " HeSpell:" & $g_aiArmyCompSpells[$eSpellHeal] & " RSpell:" & $g_aiArmyCompSpells[$eSpellRage] & " JSpell:" & $g_aiArmyCompSpells[$eSpellJump] & "\n" & "FSpell:" & $g_aiArmyCompSpells[$eSpellFreeze] & " PSpell:" & $g_aiArmyCompSpells[$eSpellPoison] & " ESpell:" & $g_aiArmyCompSpells[$eSpellEarthquake] & " HaSpell:" & $g_aiArmyCompSpells[$eSpellHaste] & "\n"
 $txtTroopStats &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_02", "Current Trained Troops & Spells") & ":"
 $txtTroopStats &= "\n\n" & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_03", "Current Army Camp") & ": " & $g_CurrentCampUtilization & "/" & $g_iTotalCampSpace
@@ -57962,22 +58340,22 @@ GUICtrlSetState($g_hChkBotStop, $GUI_UNCHECKED)
 btnStop()
 btnStart()
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNATE")
-SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Hibernate PC", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Hibernate PC", $COLOR_SUCCESS)
 NotifyPushToPushBullet(GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE_Info_02", "PC Hibernate sequence initiated"))
 Shutdown(64)
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN")
-SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Shutdown PC", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Shutdown PC", $COLOR_SUCCESS)
 NotifyPushToPushBullet(GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN_Info_02", "PC Shutdown sequence initiated"))
 Shutdown(5)
 Case GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY")
-SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Standby PC", $COLOR_GREEN)
+SetLog("Notify PushBullet: Your request has been received from " & $g_sNotifyOrigin & ". Standby PC", $COLOR_SUCCESS)
 NotifyPushToPushBullet(GetTranslatedFileIni("MBR Func_Notify", "STANDBY_Info_02", "PC Standby sequence initiated"))
 Shutdown(32)
 Case Else
 Local $lenstr = StringLen(GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & "")
 Local $teststr = StringLeft($body[$x], $lenstr)
 If $teststr =(GetTranslatedFileIni("MBR Func_Notify", "Bot", -1) & " " & StringUpper($g_sNotifyOrigin) & " " & "") Then
-SetLog("Notify PushBullet: received command syntax wrong, command ignored.", $COLOR_RED)
+SetLog("Notify PushBullet: received command syntax wrong, command ignored.", $COLOR_ERROR)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Command-Not-Recognized", "Command not recognized") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-For-Help_Info_01", "Please push BOT HELP to obtain a complete command list."))
 NotifyDeleteMessageFromPushBullet($iden[$x])
 EndIf
@@ -58026,9 +58404,9 @@ $txtHelp &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNA
 $txtHelp &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN") & " " & GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN_Info_01", "- Shut down host PC")
 $txtHelp &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY") & " " & GetTranslatedFileIni("MBR Func_Notify", "STANDBY_Info_01", "- Standby host PC")
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-For-Help_Info_02", "Request for Help") & "\n" & $txtHelp)
-SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Help has been sent", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Help has been sent", $COLOR_SUCCESS)
 Case GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART"), '\UD83D\UDD01 ' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART")
-SetLog("Notify Telegram: Your request has been received.", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received.", $COLOR_SUCCESS)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_16", "Request to Restart") & "...\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_09", "Your bot and Emulator are now restarting..."))
 SaveConfig()
 RestartBot()
@@ -58038,7 +58416,7 @@ SetLog("Notify Telegram" & ": " & "Your bot is currently started, no action was 
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_01", "Request to Start...") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_03", "Your bot is currently started, no action was taken"))
 EndIf
 Case GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP"), '\U25AA ' & GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP")
-SetLog("Notify Telegram: Your request has been received. Bot is now stopped", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received. Bot is now stopped", $COLOR_SUCCESS)
 If $g_bRunState = True Then
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_02", "Request to Stop...") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_03", "Your bot is now stopping..."))
 btnStop()
@@ -58048,7 +58426,7 @@ EndIf
 Case GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE"), '\UD83D\UDD00 ' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE")
 If $g_bBotPaused = False And $g_bRunState = True Then
 If( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1], True), Hex($NextBtn[2], 6), $NextBtn[3])) = False And IsAttackPage() Then
-SetLog("Notify Telegram: Unable to pause during attack", $COLOR_RED)
+SetLog("Notify Telegram: Unable to pause during attack", $COLOR_ERROR)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_17", "Request to Pause") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_08", "Unable to pause during attack, try again later."))
 ElseIf( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1], True), Hex($NextBtn[2], 6), $NextBtn[3])) = True And IsAttackPage() Then
 ReturnHome(False, False)
@@ -58061,18 +58439,18 @@ Else
 TogglePauseImpl("Push")
 EndIf
 Else
-SetLog("Notify Telegram: Your bot is currently paused, no action was taken", $COLOR_GREEN)
+SetLog("Notify Telegram: Your bot is currently paused, no action was taken", $COLOR_SUCCESS)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_17", "Request to Pause") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_11", "Your bot is currently paused, no action was taken"))
 EndIf
 Case GetTranslatedFileIni("MBR Func_Notify", "RESUME", "RESUME"), '\U25B6 ' & GetTranslatedFileIni("MBR Func_Notify", "RESUME", "RESUME")
 If $g_bBotPaused = True And $g_bRunState = True Then
 TogglePauseImpl("Push")
 Else
-SetLog("Notify Telegram: Your bot is currently resumed, no action was taken", $COLOR_GREEN)
+SetLog("Notify Telegram: Your bot is currently resumed, no action was taken", $COLOR_SUCCESS)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_18", "Request to Resume") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_12", "Your bot is currently resumed, no action was taken"))
 EndIf
 Case GetTranslatedFileIni("MBR Func_Notify", "STATS", "STATS"), '\UD83D\UDCC8 ' & GetTranslatedFileIni("MBR Func_Notify", "STATS", "STATS")
-SetLog("Notify Telegram: Your request has been received. Statistics sent", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received. Statistics sent", $COLOR_SUCCESS)
 Local $GoldGainPerHour = "0 / h"
 Local $ElixirGainPerHour = "0 / h"
 Local $DarkGainPerHour = "0 / h"
@@ -58097,46 +58475,46 @@ $txtStats &= $g_aiAttackedCount & "\n" & GetTranslatedFileIni("MBR Func_Notify",
 $txtStats &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_07", "Run Time") & ": " & GUICtrlRead($g_hLblResultRuntime)
 NotifyPushToTelegram($g_sNotifyOrigin & $txtStats)
 Case GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG"), '\UD83D\UDCCB ' & GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG")
-SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Log is now sent", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Log is now sent", $COLOR_SUCCESS)
 NotifyPushFileToTelegram($g_sLogFileName, "Logs", "text\/plain; charset=utf-8", $g_sNotifyOrigin & " | Current Log " & "\n")
 Case GetTranslatedFileIni("MBR Func_Notify", "LASTRAID", "LASTRAID"), '\UD83C\UDF04 ' & GetTranslatedFileIni("MBR Func_Notify", "LASTRAID", "LASTRAID")
 If $g_sLootFileName <> "" Then
 NotifyPushFileToTelegram($g_sLootFileName, "Loots", "image/jpeg", $g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_05", "Last Raid") & "\n" & $g_sLootFileName)
-SetLog("Notify Telegram: Push Last Raid Snapshot...", $COLOR_GREEN)
+SetLog("Notify Telegram: Push Last Raid Snapshot...", $COLOR_SUCCESS)
 Else
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_03", "There is no last raid screenshot."))
 SetLog("There is no last raid screenshot.")
-SetLog("Notify Telegram: Your request has been received. Last Raid txt sent", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received. Last Raid txt sent", $COLOR_SUCCESS)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_04", "Last Raid txt") & "\n" & "[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootGold]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootElixir]) & " [D]: " & _NumberFormat($g_iStatsLastAttack[$eLootDarkElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iStatsLastAttack[$eLootTrophy])
 EndIf
 Case GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT", "LASTRAIDTXT"), '\UD83D\UDCC4 ' & GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT", "LASTRAIDTXT")
-SetLog("Notify Telegram: Your request has been received. Last Raid txt sent", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received. Last Raid txt sent", $COLOR_SUCCESS)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_04", "Last Raid txt") & "\n" & "[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootGold]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootElixir]) & " [D]: " & _NumberFormat($g_iStatsLastAttack[$eLootDarkElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iStatsLastAttack[$eLootTrophy])
 Case GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT", "SCREENSHOT")
-SetLog("Notify Telegram: ScreenShot request received", $COLOR_GREEN)
+SetLog("Notify Telegram: ScreenShot request received", $COLOR_SUCCESS)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT_Info_03", "Chief, your request for Screenshot will be processed ASAP"))
 $g_bTGRequestScreenshot = True
 Case GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOTHD", "SCREENSHOTHD"), '\UD83D\UDCF7 ' & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT", "SCREENSHOT")
-SetLog("Notify Telegram: ScreenShot HD request received", $COLOR_GREEN)
+SetLog("Notify Telegram: ScreenShot HD request received", $COLOR_SUCCESS)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT_Info_03", "Chief, your request for Screenshot will be processed ASAP"))
 $g_bTGRequestScreenshot = True
 $g_bTGRequestScreenshotHD = True
 $g_bNotifyForced = False
 Case GetTranslatedFileIni("MBR Func_Notify", "BUILDER", "BUILDER"), '\UD83D\UDD28 ' & GetTranslatedFileIni("MBR Func_Notify", "BUILDER", "BUILDER")
-SetLog("Notify Telegram: Builder Status request received", $COLOR_GREEN)
+SetLog("Notify Telegram: Builder Status request received", $COLOR_SUCCESS)
 $g_bTGRequestBuilderInfo = True
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "BUILDER_Info_04", "Chief, your request for Builder Info will be processed ASAP"))
 Case GetTranslatedFileIni("MBR Func_Notify", "SHIELD", "SHIELD"), '\UD83D\UDD30 ' & GetTranslatedFileIni("MBR Func_Notify", "SHIELD", "SHIELD")
-SetLog("Notify Telegram: Shield Status request received", $COLOR_GREEN)
+SetLog("Notify Telegram: Shield Status request received", $COLOR_SUCCESS)
 $g_bTGRequestShieldInfo = True
 $g_bNotifyForced = False
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SHIELD_Info_02", "Chief, your request for Shield Info will be processed ASAP"))
 Case GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS", "RESETSTATS")
 btnResetStats()
-SetLog("Notify Telegram: Your request has been received. Statistics resetted", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received. Statistics resetted", $COLOR_SUCCESS)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS_Info_02", "Statistics resetted."))
 Case GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS"), '\UD83D\UDCAA ' & GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS")
-SetLog("Notify Telegram: Your request has been received. Sending Troop/Spell Stats...", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received. Sending Troop/Spell Stats...", $COLOR_SUCCESS)
 Local $txtTroopStats = " | " & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_01", "Troops/Spells Train Status") & ":\n" & "Barbs:" & $g_aiCurrentTroops[$eTroopBarbarian] & " of " & $g_aiArmyCompTroops[$eTroopBarbarian] & " | Arch:" & $g_aiCurrentTroops[$eTroopArcher] & " of " & $g_aiArmyCompTroops[$eTroopArcher] & " | Gobl:" &$g_aiCurrentTroops[$eTroopGoblin] & " of " & $g_aiArmyCompTroops[$eTroopGoblin] & "\n" & "Giant:" & $g_aiCurrentTroops[$eTroopGiant] & " of " & $g_aiArmyCompTroops[$eTroopGiant] & " | WallB:" & $g_aiCurrentTroops[$eTroopWallBreaker] & " of " & $g_aiArmyCompTroops[$eTroopWallBreaker] & " | Wiza:" & $g_aiCurrentTroops[$eTroopWizard] & " of " & $g_aiArmyCompTroops[$eTroopWizard] & "\n" & "Balloon:" & $g_aiCurrentTroops[$eTroopBalloon] & " of " & $g_aiArmyCompTroops[$eTroopBalloon] & " | Heal:" & $g_aiCurrentTroops[$eTroopHealer] & " of " & $g_aiArmyCompTroops[$eTroopHealer] & " | Dragon:" & $g_aiCurrentTroops[$eTroopDragon] & " of " & $g_aiArmyCompTroops[$eTroopDragon] & " | Pekka:" & $g_aiCurrentTroops[$eTroopPekka] & " of " & $g_aiArmyCompTroops[$eTroopPekka] & "\n" & "Mini:" & $g_aiCurrentTroops[$eTroopMinion] & " of " & $g_aiArmyCompTroops[$eTroopMinion] & " | Hogs:" & $g_aiCurrentTroops[$eTroopHogRider] & " of " & $g_aiArmyCompTroops[$eTroopHogRider] & " | Valks:" & $g_aiCurrentTroops[$eTroopValkyrie] & " of " & $g_aiArmyCompTroops[$eTroopValkyrie] & "\n" & "Golem:" & $g_aiCurrentTroops[$eTroopGolem] & " of " & $g_aiArmyCompTroops[$eTroopGolem] & " | Witch:" & $g_aiCurrentTroops[$eTroopWitch] & " of " & $g_aiArmyCompTroops[$eTroopWitch] & " | Lava:" & $g_aiCurrentTroops[$eTroopLavaHound] & " of " & $g_aiArmyCompTroops[$eTroopLavaHound] & "\n" & "LSpell:" & $g_aiCurrentSpells[$eSpellLightning] & " of " & $g_aiArmyCompSpells[$eSpellLightning] & " | HeSpell:" & $g_aiCurrentSpells[$eSpellHeal] & " of " & $g_aiArmyCompSpells[$eSpellHeal] & " | RSpell:" & $g_aiCurrentSpells[$eSpellRage] & " of " & $g_aiArmyCompSpells[$eSpellRage] & " | JSpell:" & $g_aiCurrentSpells[$eSpellJump] & " of " & $g_aiArmyCompSpells[$eSpellJump] & "\n" & "FSpell:" & $g_aiCurrentSpells[$eSpellFreeze] & " of " & $g_aiArmyCompSpells[$eSpellFreeze] & " | PSpell:" & $g_aiCurrentSpells[$eSpellPoison] & " of " & $g_aiArmyCompSpells[$eSpellPoison] & " | ESpell:" & $g_aiCurrentSpells[$eSpellEarthquake] & " of " & $g_aiArmyCompSpells[$eSpellEarthquake] & " | HaSpell:" & $g_aiCurrentSpells[$eSpellHaste] & " of " & $g_aiArmyCompSpells[$eSpellHaste] & "\n"
 $txtTroopStats &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_05", "Current Capacities") & ":"
 $txtTroopStats &= "\n" & " " & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_06", "- Army Camp") & ": " & $g_CurrentCampUtilization & "/" & $g_iTotalCampSpace
@@ -58155,15 +58533,15 @@ NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_N
 btnStop()
 btnStart()
 Case GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNATE"), '\UD83D\UDCA4 ' & GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNATE")
-SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Hibernate PC", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Hibernate PC", $COLOR_SUCCESS)
 NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE_Info_02", "PC Hibernate sequence initiated"))
 Shutdown(64)
 Case GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN"), '\U26A1 ' & StringUpper(GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN"))
-SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Shutdown PC", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Shutdown PC", $COLOR_SUCCESS)
 NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN_Info_02", "PC Shutdown sequence initiated"))
 Shutdown(5)
 Case GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY"), GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY")
-SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Standby PC", $COLOR_GREEN)
+SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Standby PC", $COLOR_SUCCESS)
 NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "STANDBY_Info_02", "PC Standby sequence initiated"))
 Shutdown(32)
 EndSwitch
@@ -58177,7 +58555,7 @@ If(Not $g_bNotifyPBEnable Or $g_sNotifyPBToken = "") And(Not $g_bNotifyTGEnable 
 If $g_bNotifyPBEnable And $g_sNotifyPBToken <> "" Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
@@ -58193,7 +58571,7 @@ EndIf
 If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 Local $url = "https://api.telegram.org/bot"
@@ -58245,8 +58623,8 @@ Case "LastRaid"
 If($g_bNotifyPBEnable Or $g_bNotifyTGEnable) And $g_bNotifyAlerLastRaidTXT Then
 NotifyPushToBoth($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_02", "Last Raid txt") & "\n" & "[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootGold]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-DE_Info_01", "DE") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootDarkElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iStatsLastAttack[$eLootTrophy])
 If _Sleep($DELAYPUSHMSG1) Then Return
-If $g_bNotifyPBEnable = True Then SetLog("Notify PushBullet: Last Raid Text has been sent!", $COLOR_GREEN)
-If $g_bNotifyTGEnable = True Then SetLog("Notify Telegram: Last Raid Text has been sent!", $COLOR_GREEN)
+If $g_bNotifyPBEnable = True Then SetLog("Notify PushBullet: Last Raid Text has been sent!", $COLOR_SUCCESS)
+If $g_bNotifyTGEnable = True Then SetLog("Notify Telegram: Last Raid Text has been sent!", $COLOR_SUCCESS)
 EndIf
 If($g_bNotifyPBEnable Or $g_bNotifyTGEnable) And $g_bNotifyAlerLastRaidIMG Then
 Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
@@ -58260,14 +58638,14 @@ $hBitmap_Scaled = _GDIPlus_ImageResize($g_hBitmap, _GDIPlus_ImageGetWidth($g_hBi
 _GDIPlus_ImageSaveToFile($hBitmap_Scaled, $g_sProfileLootsPath & $g_sAttackFile)
 _GDIPlus_ImageDispose($hBitmap_Scaled)
 EndIf
-If $g_bNotifyPBEnable Then SetLog("Notify PushBullet: Last Raid screenshot has been sent!", $COLOR_GREEN)
-If $g_bNotifyTGEnable Then SetLog("Notify Telegram: Last Raid screenshot has been sent!", $COLOR_GREEN)
+If $g_bNotifyPBEnable Then SetLog("Notify PushBullet: Last Raid screenshot has been sent!", $COLOR_SUCCESS)
+If $g_bNotifyTGEnable Then SetLog("Notify Telegram: Last Raid screenshot has been sent!", $COLOR_SUCCESS)
 NotifyPushFileToBoth($g_sAttackFile, "Loots", "image/jpeg", $g_sNotifyOrigin & " | " & "Last Raid" & "\n" & $g_sAttackFile)
 If _Sleep($DELAYPUSHMSG1) Then Return
 Local $iDelete = FileDelete($g_sProfileLootsPath & $g_sAttackFile)
 If Not $iDelete Then
-If $g_bNotifyPBEnable Then SetLog("Notify PushBullet: An error occurred deleting temporary screenshot file.", $COLOR_RED)
-If $g_bNotifyTGEnable Then SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_RED)
+If $g_bNotifyPBEnable Then SetLog("Notify PushBullet: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
+If $g_bNotifyTGEnable Then SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
 EndIf
 EndIf
 Case "FoundWalls"
@@ -58290,7 +58668,7 @@ Local $iAvailBldr = $g_iFreeBuilderCount -($g_bUpgradeWallSaveBuilder ? 1 : 0)
 If $iAvailBldr > 0 Then
 If $iReportIdleBuilder <> $iAvailBldr Then
 NotifyPushToBoth($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Stats_Info_03", "You have") & " " & $iAvailBldr & " " & GetTranslatedFileIni("MBR Func_Notify", "BUILDER_Info_03", "builder(s) idle."))
-SetLog("You have " & $iAvailBldr & " builder(s) idle.", $COLOR_GREEN)
+SetLog("You have " & $iAvailBldr & " builder(s) idle.", $COLOR_SUCCESS)
 $iReportIdleBuilder = $iAvailBldr
 EndIf
 Else
@@ -58327,14 +58705,14 @@ EndIf
 Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 _GDIPlus_ImageSaveToFile($hBitmap_Scaled, $g_sProfileTempPath & $Screnshotfilename)
 _GDIPlus_ImageDispose($hBitmap_Scaled)
-If $g_bPBRequestScreenshot = True Or $g_bTGRequestScreenshot = True Then
-If $g_bPBRequestScreenshot = True And $g_bNotifyPBEnable = True Then
+If $g_bPBRequestScreenshot Or $g_bTGRequestScreenshot Then
+If $g_bPBRequestScreenshot And $g_bNotifyPBEnable Then
 NotifyPushFileToPushBullet($Screnshotfilename, "Temp", "image/jpeg", $g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT_Info_04", "Screenshot of your village") & " " & "\n" & $Screnshotfilename)
-SetLog("Notify PushBullet: Screenshot sent!", $COLOR_GREEN)
+SetLog("Notify PushBullet: Screenshot sent!", $COLOR_SUCCESS)
 EndIf
-If $g_bTGRequestScreenshot = True And $g_bNotifyTGEnable = True Then
+If $g_bTGRequestScreenshot And $g_bNotifyTGEnable Then
 NotifyPushFileToTelegram($Screnshotfilename, "Temp", "image/jpeg", $g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT_Info_04", "Screenshot of your village") & " " & "\n" & $Screnshotfilename)
-SetLog("Notify Telegram: Screenshot sent!", $COLOR_GREEN)
+SetLog("Notify Telegram: Screenshot sent!", $COLOR_SUCCESS)
 EndIf
 EndIf
 $g_bPBRequestScreenshot = False
@@ -58344,8 +58722,8 @@ $g_bTGRequestScreenshotHD = False
 If _Sleep($DELAYPUSHMSG2) Then Return
 Local $iDelete = FileDelete($g_sProfileTempPath & $Screnshotfilename)
 If Not $iDelete Then
-If $g_bNotifyPBEnable Then SetLog("Notify PushBullet: An error occurred deleting temporary screenshot file.", $COLOR_RED)
-If $g_bNotifyTGEnable Then SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_RED)
+If $g_bNotifyPBEnable Then SetLog("Notify PushBullet: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
+If $g_bNotifyTGEnable Then SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
 EndIf
 Case "BuilderInfo"
 Click(0, 0, 5)
@@ -58356,12 +58734,12 @@ Local $Time = @HOUR & "." & @MIN
 _CaptureRegion(224, 74, 446, 262)
 Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 _GDIPlus_ImageSaveToFile($g_hBitmap, $g_sProfileTempPath & $Screnshotfilename)
-If $g_bPBRequestBuilderInfo = True Or $g_bTGRequestBuilderInfo = True Then
-If $g_bPBRequestBuilderInfo = True And $g_bNotifyPBEnable = True Then
+If $g_bPBRequestBuilderInfo Or $g_bTGRequestBuilderInfo Then
+If $g_bPBRequestBuilderInfo And $g_bNotifyPBEnable Then
 NotifyPushFileToPushBullet($Screnshotfilename, "Temp", "image/jpeg", $g_sNotifyOrigin & " | " & "Builder Information" & "\n" & $Screnshotfilename)
 SetLog("Notify PushBullet: Builder Information sent!", $COLOR_GREEN)
 EndIf
-If $g_bTGRequestBuilderInfo = True And $g_bNotifyTGEnable = True Then
+If $g_bTGRequestBuilderInfo And $g_bNotifyTGEnable Then
 NotifyPushFileToTelegram($Screnshotfilename, "Temp", "image/jpeg", $g_sNotifyOrigin & " | " & "Builder Information" & "\n" & $Screnshotfilename)
 SetLog("Notify Telegram: Builder Information sent!", $COLOR_GREEN)
 EndIf
@@ -58371,8 +58749,8 @@ $g_bTGRequestBuilderInfo = False
 If _Sleep($DELAYPUSHMSG2) Then Return
 Local $iDelete = FileDelete($g_sProfileTempPath & $Screnshotfilename)
 If Not $iDelete Then
-If $g_bNotifyPBEnable Then SetLog("Notify PushBullet: An error occurred deleting temporary screenshot file.", $COLOR_RED)
-If $g_bNotifyTGEnable Then SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_RED)
+If $g_bNotifyPBEnable Then SetLog("Notify PushBullet: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
+If $g_bNotifyTGEnable Then SetLog("Notify Telegram: An error occurred deleting temporary screenshot file.", $COLOR_ERROR)
 EndIf
 Click(0, 0, 5)
 Case "ShieldInfo"
@@ -58425,7 +58803,7 @@ If $g_bNotifyPBEnable And $g_sNotifyPBToken <> "" Then
 If FileExists($g_sProfilePath & "\" & $g_sProfileCurrentName & '\' & $Folder & '\' & $File) Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("PushBullet Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Post", "https://api.pushbullet.com/v2/upload-request", False)
@@ -58437,7 +58815,7 @@ $oHTTP.Send($pPush)
 $oHTTP.WaitForResponse
 Local $Result = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
-SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_RED)
+SetLog("PushBullet status is: " & $oHTTP.Status, $COLOR_ERROR)
 Return
 EndIf
 Local $upload_url = _StringBetween($Result, 'upload_url":"', '"')
@@ -58456,11 +58834,11 @@ Local $pPush = '{"type": "file", "file_name": "' & $File & '", "file_type": "' &
 $oHTTP.Send($pPush)
 $oHTTP.WaitForResponse
 Else
-SetLog(GetTranslatedFileIni("MBR Func_Notify", "Notify_001", "Notify PushBullet") & ": " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_05", "Unable to send file") & " " & $File, $COLOR_RED)
+SetLog(GetTranslatedFileIni("MBR Func_Notify", "Notify_001", "Notify PushBullet") & ": " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_05", "Unable to send file") & " " & $File, $COLOR_ERROR)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_03", "Unable to Upload File") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_04", "Occured an error type") & " 1 " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_01", "uploading file to PushBullet server") & "...")
 EndIf
 Else
-SetLog("Notify PushBullet: Unable to send file " & $File, $COLOR_RED)
+SetLog("Notify PushBullet: Unable to send file " & $File, $COLOR_ERROR)
 NotifyPushToPushBullet($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_03", "Unable to Upload File") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_04", "Occured an error type") & " 2 " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_01", "uploading file to PushBullet server") & "...")
 EndIf
 EndIf
@@ -58468,7 +58846,7 @@ If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" Then
 If FileExists($g_sProfilePath & "\" & $g_sProfileCurrentName & '\' & $Folder & '\' & $File) Then
 Local $oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 If @error Then
-SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_RED)
+SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 Local $telegram_url = "https://api.telegram.org/bot" & $g_sNotifyTGToken & "/sendPhoto"
@@ -58479,7 +58857,7 @@ Local $pPush = '{"type": "file", "file_name": "' & $File & '", "file_type": "' &
 $oHTTP.Send($pPush)
 $oHTTP.WaitForResponse
 Else
-SetLog("Notify Telegram: Unable to send file " & $File, $COLOR_RED)
+SetLog("Notify Telegram: Unable to send file " & $File, $COLOR_ERROR)
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_03", "Unable to Upload File") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Uploading-File_Info_02", "Occured an error type 2 uploading file to Telegram server..."))
 EndIf
 EndIf
@@ -58538,7 +58916,7 @@ EndIf
 $iAvailElixir = Number($sElixirCount)
 $iAvailDark = Number($sDarkCount)
 BuildingClickP($g_aiLaboratoryPos, "#0197")
-If _Sleep($DELAYLABORATORY1) Then Return
+If _Sleep($DELAYLABORATORY3) Then Return
 Local $offColors[4][3] = [[0x708CB0, 37, 34], [0x603818, 50, 43], [0xD5FC58, 61, 8], [0x000000, 82, 0]]
 Local $ButtonPixel = _MultiPixelSearch(433, 565 + $g_iBottomOffsetY, 562, 619 + $g_iBottomOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 30)
 If IsArray($ButtonPixel) Then
@@ -59917,7 +60295,7 @@ If _Sleep(500) Then Return
 Else
 $nMinRemainTrain = CheckTroopTimeAllAccount($bForceSwitch)
 If $g_bChkSmartSwitch = 1 Then
-If $nMinRemainTrain <= 1 And Not $bForceSwitch Then
+If $nMinRemainTrain <= 1 And Not $bForceSwitch And Not $g_bDonateLikeCrazy Then
 If $g_bDebugSetlog Then SetDebugLog("Switch to or Stay at Active Account: " & $g_iNextAccount + 1, $COLOR_DEBUG)
 $g_iDonateSwitchCounter = 0
 Else
@@ -59963,18 +60341,33 @@ $StartOnlineTime = 0
 $g_bInitiateSwitchAcc = False
 EndIf
 If $StartOnlineTime <> 0 And Not $g_bReMatchAcc Then SetSwitchAccLog(" - Acc " & $g_iCurAccount + 1 & ", online: " & Round(TimerDiff($StartOnlineTime) / 1000 / 60, 1) & "m")
+Local $bSharedPrefs = $g_bChkSharedPrefs And HaveSharedPrefs($g_asProfileName[$g_iNextAccount])
+If $bSharedPrefs And $g_PushedSharedPrefsProfile = $g_asProfileName[$g_iNextAccount] Then
+$bResult = True
+$bSharedPrefs = False
+SetLog("Profile shared_prefs already pushed")
+Else
 If IsMainPage() Then Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
 If _Sleep(500) Then Return
 While 1
-Switch SwitchCOCAcc_DisconnectConnect($bResult)
+Switch SwitchCOCAcc_DisconnectConnect($bResult, $bSharedPrefs)
 Case "OK"
 Case "Error"
 ExitLoop
 Case "Exit"
 Return
 EndSwitch
-Switch SwitchCOCAcc_ClickAccount($bResult, $NextAccount)
+Switch SwitchCOCAcc_ClickAccount($bResult, $NextAccount, $bSharedPrefs)
 Case "OK"
+If $g_bChkSharedPrefs Then
+If $bSharedPrefs Then
+CloseCoC(False)
+$bResult = True
+ExitLoop
+Else
+SetLog($g_asProfileName[$g_iNextAccount] & " missing shared_prefs, using normal switch account", $COLOR_WARNING)
+EndIf
+EndIf
 Case "Error"
 ExitLoop
 Case "Exit"
@@ -59990,6 +60383,7 @@ EndSwitch
 ExitLoop
 WEnd
 If _Sleep(500) Then Return
+EndIf
 If $bResult = True Then
 $iRetry = 0
 $g_bReMatchAcc = False
@@ -60008,8 +60402,30 @@ $g_sProfileCurrentName = $g_asProfileName[$g_iNextAccount]
 LoadProfile(False)
 EndIf
 EndIf
+If $bSharedPrefs Then
+SetLog("Please wait for loading CoC...!")
+PushSharedPrefs()
+OpenCoC()
+EndIf
 $StartOnlineTime = TimerInit()
 SetSwitchAccLog("Switched to Acc [" & $NextAccount + 1 & "]", $COLOR_SUCCESS)
+If $g_bChkSharedPrefs Then
+waitMainScreen()
+If IsMainPage() Then
+Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
+If _Sleep(500) Then Return
+Switch SwitchCOCAcc_DisconnectConnect($bResult, $g_bChkSharedPrefs)
+Case "OK"
+Case "Error"
+Case "Exit"
+Return
+EndSwitch
+Switch SwitchCOCAcc_ClickAccount($bResult, $NextAccount, $g_bChkSharedPrefs, False)
+Case "OK"
+PullSharedPrefs()
+EndSwitch
+EndIf
+EndIf
 Else
 $iRetry += 1
 $g_bReMatchAcc = True
@@ -60027,17 +60443,30 @@ waitMainScreen()
 If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 runBot()
 EndFunc
-Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult)
+Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult, $bDisconnectOnly = $g_bChkSharedPrefs)
 For $i = 0 To 20
 If _ColorCheck(_GetPixelColor($aButtonConnected[0], $aButtonConnected[1], True), Hex($aButtonConnected[2], 6), $aButtonConnected[3]) Then
-Click($aButtonConnected[0], $aButtonConnected[1], 2, 1000)
+If $bDisconnectOnly = False Then
 SetLog("   1. Click Connect & Disconnect")
+Click($aButtonConnected[0], $aButtonConnected[1], 2, 1000)
 If _Sleep(200) Then Return "Exit"
+Else
+SetLog("   1. Click Connected")
+Click($aButtonConnected[0], $aButtonConnected[1], 1, 1000)
+If _Sleep(200) Then Return "Exit"
+EndIf
 Return "OK"
 ElseIf _ColorCheck(_GetPixelColor($aButtonDisconnected[0], $aButtonDisconnected[1], True), Hex($aButtonDisconnected[2], 6), $aButtonDisconnected[3]) Then
-Click($aButtonDisconnected[0], $aButtonDisconnected[1])
+If $bDisconnectOnly = False Then
 SetLog("   1. Click Disconnect")
+Click($aButtonDisconnected[0], $aButtonDisconnected[1])
 If _Sleep(200) Then Return "Exit"
+Else
+SetLog("Account already disconnected")
+EndIf
+Return "OK"
+ElseIf _ColorCheck(_GetPixelColor($aButtonSuperCellIdConnected[0], $aButtonSuperCellIdConnected[1], True), Hex($aButtonSuperCellIdConnected[2], 6), $aButtonSuperCellIdConnected[3]) Then
+SetLog("Account connected to SuperCell ID, cannot disconnect")
 Return "OK"
 EndIf
 If $i = 20 Then
@@ -60048,53 +60477,76 @@ If _Sleep(900) Then Return "Exit"
 Next
 Return ""
 EndFunc
-Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $NextAccount)
+Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $NextAccount, $bStayDisconnected = $g_bChkSharedPrefs, $bLateDisconnectButtonCheck = True)
+FuncEnter(SwitchCOCAcc_ClickAccount)
 Local $YCoord = Int(373.5 - $g_iTotalAcc * 36.5 + 73 * $NextAccount)
 For $i = 0 To 20
 If _ColorCheck(_GetPixelColor($aListAccount[0], $aListAccount[1], True), Hex($aListAccount[2], 6), $aListAccount[3]) Then
-If _Sleep(600) Then Return "Exit"
-Click(383, $YCoord)
+If $bStayDisconnected Then
+ClickP($aAway, 1, 0, "#0000")
+Return FuncReturn("OK")
+EndIf
+If _Sleep(600) Then Return FuncReturn("Exit")
 SetLog("   2. Click Account [" & $NextAccount + 1 & "]")
-If _Sleep(600) Then Return "Exit"
-Return "OK"
-ElseIf _ColorCheck(_GetPixelColor($aButtonDisconnected[0], $aButtonDisconnected[1], True), Hex($aButtonDisconnected[2], 6), $aButtonDisconnected[3]) And $i = 6 Then
-If _Sleep(250) Then Return "Exit"
-Click($aButtonDisconnected[0], $aButtonDisconnected[1])
+Click(383, $YCoord)
+If _Sleep(600) Then Return FuncReturn("Exit")
+Return FuncReturn("OK")
+ElseIf(Not $bLateDisconnectButtonCheck Or $i = 6) And _ColorCheck(_GetPixelColor($aButtonDisconnected[0], $aButtonDisconnected[1], True), Hex($aButtonDisconnected[2], 6), $aButtonDisconnected[3]) Then
+If $bStayDisconnected Then
+ClickP($aAway, 1, 0, "#0000")
+Return FuncReturn("OK")
+EndIf
+If _Sleep(250) Then Return FuncReturn("Exit")
 SetLog("   1.1. Click Disconnect again")
-If _Sleep(600) Then Return "Exit"
+Click($aButtonDisconnected[0], $aButtonDisconnected[1])
+If _Sleep(600) Then Return FuncReturn("Exit")
+ElseIf _ColorCheck(_GetPixelColor($aButtonSuperCellIdConnected[0], $aButtonSuperCellIdConnected[1], True), Hex($aButtonSuperCellIdConnected[2], 6), $aButtonSuperCellIdConnected[3]) Then
+If $bStayDisconnected Then
+ClickP($aAway, 1, 0, "#0000")
+Return FuncReturn("OK")
+EndIf
 EndIf
 If $i = 20 Then
 $bResult = False
-Return "Error"
+Return FuncReturn("Error")
 EndIf
-If _Sleep(900) Then Return "Exit"
+If _Sleep(900) Then Return FuncReturn("Exit")
 Next
-Return ""
+Return FuncReturn("")
 EndFunc
-Func SwitchCOCAcc_ConfirmAccount(ByRef $bResult, $iStep = 3)
+Func SwitchCOCAcc_ConfirmAccount(ByRef $bResult, $iStep = 3, $bDisconnectAfterSwitch = $g_bChkSharedPrefs)
 For $i = 0 To 30
 If _ColorCheck(_GetPixelColor($aButtonConnected[0], $aButtonConnected[1], True), Hex($aButtonConnected[2], 6), $aButtonConnected[3]) Then
 SetLog("Already in current account")
+If $bDisconnectAfterSwitch Then
+Switch SwitchCOCAcc_DisconnectConnect($bResult)
+Case "OK"
+Case "Error"
+Return "Error"
+Case "Exit"
+Return "Exit"
+EndSwitch
+EndIf
 ClickP($aAway, 2, 0, "#0167")
 If _Sleep(500) Then Return "Exit"
 $bResult = True
 Return "OK"
 ElseIf _ColorCheck(_GetPixelColor($aButtonVillageLoad[0], $aButtonVillageLoad[1], True), Hex($aButtonVillageLoad[2], 6), $aButtonVillageLoad[3]) Then
 If _Sleep(250) Then Return "Exit"
-Click($aButtonVillageLoad[0], $aButtonVillageLoad[1], 1, 0, "Click Load")
 SetLog("   " & $iStep & ". Click Load button")
+Click($aButtonVillageLoad[0], $aButtonVillageLoad[1], 1, 0, "Click Load")
 For $j = 0 To 25
 If _ColorCheck(_GetPixelColor($aButtonVillageOkay[0], $aButtonVillageOkay[1], True), Hex($aButtonVillageOkay[2], 6), $aButtonVillageOkay[3]) Then
 If _Sleep(250) Then Return "Exit"
-Click($aButtonVillageOkay[0], $aButtonVillageOkay[1], 1, 0, "Click OKAY")
 SetLog("   " &($iStep + 1) & ". Click OKAY")
+Click($aButtonVillageOkay[0], $aButtonVillageOkay[1], 1, 0, "Click OKAY")
 SetLog("Please wait for loading CoC...!")
 $bResult = True
 Return "OK"
 ElseIf _ColorCheck(_GetPixelColor($aTextBox[0], $aTextBox[1], True), Hex($aTextBox[2], 6), $aTextBox[3]) Then
 If _Sleep(250) Then Return "Exit"
-Click($aTextBox[0], $aTextBox[1], 1, 0, "Click Text box")
 SetLog("   " &($iStep + 1) & ". Click text box & type CONFIRM")
+Click($aTextBox[0], $aTextBox[1], 1, 0, "Click Text box")
 If _Sleep(500) Then Return "Exit"
 AndroidSendText("CONFIRM")
 ExitLoop
@@ -60108,10 +60560,25 @@ Next
 For $k = 0 To 10
 If _ColorCheck(_GetPixelColor($aButtonVillageOkay[0], $aButtonVillageOkay[1], True), Hex($aButtonVillageOkay[2], 6), $aButtonVillageOkay[3]) Then
 If _Sleep(250) Then Return "Exit"
-Click($aButtonVillageOkay[0], $aButtonVillageOkay[1], 1, 0, "Click OKAY")
 SetLog("   " &($iStep + 2) & ". Click OKAY")
+Click($aButtonVillageOkay[0], $aButtonVillageOkay[1], 1, 0, "Click OKAY")
 SetLog("Please wait for loading CoC...!")
 $bResult = True
+If $bDisconnectAfterSwitch Then
+If Not checkMainScreen() Then
+SetLog("Cannot Disconnect account", $COLOR_ERROR)
+Return "Error"
+EndIf
+Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
+If _Sleep(500) Then Return
+Switch SwitchCOCAcc_DisconnectConnect($bResult)
+Case "OK"
+Case "Error"
+Return "Error"
+Case "Exit"
+Return "Exit"
+EndSwitch
+EndIf
 Return "OK"
 EndIf
 If $k = 10 Then
@@ -60244,10 +60711,16 @@ Return False
 EndFunc
 Func CheckGoogleSelectAccount($bSelectFirst = True)
 Local $bResult = True
-If _ColorCheck(_GetPixelColor($aListAccount[0], $aListAccount[1], False), Hex($aListAccount[2], 6), $aListAccount[3]) Then
+Local $pColor = _GetPixelColor($aListAccount[0], $aListAccount[1], False)
+If _ColorCheck($pColor, Hex($aListAccount[2], 6), $aListAccount[3]) Then
 SetDebugLog("Found open Google Accounts list pixel")
 If UBound(decodeSingleCoord(FindImageInPlace("GoogleSelectAccount", $g_sImgGoogleSelectAccount, "180,400(90,300)", False))) > 1 Then
 SetLog("Found open Google Accounts list")
+If $g_bChkSharedPrefs Then
+SetLog("Close Google Accounts list")
+Click(90, 400)
+Return True
+EndIf
 Local $a = decodeSingleCoord(FindImageInPlace("GoogleSelectEmail", $g_sImgGoogleSelectEmail, "220,80(400,600)", False))
 If UBound($a) > 1 Then
 SetLog("   1. Click first Google Account")
@@ -60265,6 +60738,8 @@ EndIf
 Else
 SetDebugLog("Open Google Accounts list not verified")
 EndIf
+Else
+If $g_bDebugSetlog Then SetDebugLog("CheckGoogleSelectAccount pixel color: " & $pColor)
 EndIf
 Return $bResult
 EndFunc
@@ -60988,6 +61463,11 @@ FileClose($g_hAttackLogFile)
 $g_hAttackLogFile = 0
 EndIf
 DirMove($originalPath, $newPath, $FC_NOOVERWRITE)
+$originalPath = $g_sPrivateProfilePath & "\" & GUICtrlRead($g_hCmbProfile)
+$newPath = $g_sPrivateProfilePath & "\" & $g_sProfileCurrentName
+If FileExists($originalPath) Then
+DirMove($originalPath, $newPath, $FC_NOOVERWRITE)
+EndIf
 EndIf
 EndFunc
 Func deleteProfile()
@@ -61009,12 +61489,16 @@ $g_hAttackLogFile = 0
 EndIf
 EndIf
 DirRemove($deletePath, $DIR_REMOVE)
+$deletePath = $g_sPrivateProfilePath & "\" & $sProfile
+If FileExists($deletePath) Then
+DirRemove($deletePath, $DIR_REMOVE)
+EndIf
 Return True
 EndIf
 Return False
 EndFunc
 Func createProfile($bCreateNew = False)
-FuncReturn(createProfile)
+FuncEnter(createProfile)
 If $bCreateNew = True Then
 setupProfileComboBox()
 setupProfile()
@@ -61024,6 +61508,7 @@ selectProfile()
 Return FuncReturn()
 EndIf
 DirCreate($g_sProfilePath & "\" & $g_sProfileCurrentName)
+DirCreate($g_sPrivateProfilePath & "\" & $g_sProfileCurrentName)
 If Not FileExists($g_sProfilePath & "\profile.ini") Then
 Local $hFile = FileOpen($g_sProfilePath & "\profile.ini", $FO_APPEND + $FO_CREATEPATH)
 FileWriteLine($hFile, "[general]")
@@ -61112,7 +61597,7 @@ Return $g_ahMutex_Profile[$iProfile][1]
 EndIf
 Return 2
 EndIf
-Local $hMutex_Profile = CreateMutex(StringReplace($g_sProfilePath & "\" & $sProfile, "\", "-"))
+Local $hMutex_Profile = CreateMutex("MyBot.run-Profile-" & $sProfile)
 If $bReturnOnlyMutex Then
 Return $hMutex_Profile
 EndIf
@@ -61167,14 +61652,14 @@ If $asParts[1] <> $sCurrentSection Then
 $sCurrentSection = $asParts[1]
 FileWriteLine($hFile, "[" & $sCurrentSection & "]")
 If $g_sProfileSecondaryOutputFileName <> "" Then
-If $sCurrentSection = "search" Or $sCurrentSection = "attack" Or $sCurrentSection = "troop" Or $sCurrentSection = "spells" Or $sCurrentSection = "milkingattack" Or $sCurrentSection = "endbattle" Or $sCurrentSection = "collectors" then
+If $sCurrentSection = "search" Or $sCurrentSection = "attack" Or $sCurrentSection = "troop" Or $sCurrentSection = "spells" Or $sCurrentSection = "milkingattack" Or $sCurrentSection = "endbattle" Or $sCurrentSection = "collectors" Or $sCurrentSection = "DropOrder" Or $sCurrentSection = "SmartZap" Or $sCurrentSection = "planned" Then
 FileWriteLine($g_sProfileSecondaryOutputFileName, "[" & $sCurrentSection & "]")
 EndIF
 EndIf
 EndIf
 FileWriteLine($hFile, $asParts[2] & "=" & $g_asIniTable[$i][1])
 If $g_sProfileSecondaryOutputFileName <> "" Then
-If $sCurrentSection = "search" Or $sCurrentSection = "attack" Or $sCurrentSection = "troop" Or $sCurrentSection = "spells" Or $sCurrentSection = "milkingattack" Or $sCurrentSection = "endbattle" Or $sCurrentSection = "collectors" Then
+If $sCurrentSection = "search" Or $sCurrentSection = "attack" Or $sCurrentSection = "troop" Or $sCurrentSection = "spells" Or $sCurrentSection = "milkingattack" Or $sCurrentSection = "endbattle" Or $sCurrentSection = "collectors" Or $sCurrentSection = "DropOrder" Or $sCurrentSection = "SmartZap" Or $sCurrentSection = "planned" Then
 FileWriteLine($g_sProfileSecondaryOutputFileName, $asParts[2] & "=" & $g_asIniTable[$i][1])
 EndIf
 EndIf
@@ -61925,6 +62410,7 @@ GUICtrlSetState($g_hChkDeadbase, $g_abAttackTypeEnable[$DB] ? $GUI_CHECKED : $GU
 GUICtrlSetState($g_hChkDBKingWait, BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroKing) = $eHeroKing ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkDBQueenWait, BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroQueen) = $eHeroQueen ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkDBWardenWait, BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroWarden) = $eHeroWarden ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkDBNotWaitHeroes, $g_aiSearchNotWaitHeroesEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 $g_iHeroWaitAttackNoBit[$DB][0] = GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED ? 1 : 0
 $g_iHeroWaitAttackNoBit[$DB][1] = GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED ? 1 : 0
 $g_iHeroWaitAttackNoBit[$DB][2] = GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED ? 1 : 0
@@ -61981,6 +62467,8 @@ $g_aiSearchCampsPct[$DB] = Int(GUICtrlRead($g_hTxtDBArmyCamps))
 $g_iHeroWaitAttackNoBit[$DB][0] = GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED ? 1 : 0
 $g_iHeroWaitAttackNoBit[$DB][1] = GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED ? 1 : 0
 $g_iHeroWaitAttackNoBit[$DB][2] = GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED ? 1 : 0
+$g_aiSearchNotWaitHeroesEnable[$DB] = GUICtrlRead($g_hChkDBNotWaitHeroes) = $GUI_CHECKED ? 1 : 0
+chkNotWaitHeroes()
 $g_abSearchSpellsWaitEnable[$DB] =(GUICtrlRead($g_hChkDBSpellsWait) = $GUI_CHECKED)
 $g_abSearchCastleSpellsWaitEnable[$DB] =(GUICtrlRead($g_hChkDBWaitForCastleSpell) = $GUI_CHECKED)
 $g_aiSearchCastleSpellsWaitRegular[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbDBWaitForCastleSpell)
@@ -62032,6 +62520,7 @@ GUICtrlSetState($g_hChkActivebase, $g_abAttackTypeEnable[$LB] ? $GUI_CHECKED : $
 GUICtrlSetState($g_hChkABKingWait, BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroKing) = $eHeroKing ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkABQueenWait, BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroQueen) = $eHeroQueen ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkABWardenWait, BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkABNotWaitHeroes, $g_aiSearchNotWaitHeroesEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 $g_iHeroWaitAttackNoBit[$LB][0] = GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED ? 1 : 0
 $g_iHeroWaitAttackNoBit[$LB][1] = GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED ? 1 : 0
 $g_iHeroWaitAttackNoBit[$LB][2] = GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED ? 1 : 0
@@ -62088,6 +62577,8 @@ $g_aiSearchCampsPct[$LB] = Int(GUICtrlRead($g_hTxtABArmyCamps))
 $g_iHeroWaitAttackNoBit[$LB][0] = GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED ? 1 : 0
 $g_iHeroWaitAttackNoBit[$LB][1] = GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED ? 1 : 0
 $g_iHeroWaitAttackNoBit[$LB][2] = GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED ? 1 : 0
+$g_aiSearchNotWaitHeroesEnable[$LB] = GUICtrlRead($g_hChkABNotWaitHeroes) = $GUI_CHECKED ? 1 : 0
+ChkNotWaitHeroes()
 $g_abSearchSpellsWaitEnable[$LB] =(GUICtrlRead($g_hChkABSpellsWait) = $GUI_CHECKED)
 $g_abSearchCastleSpellsWaitEnable[$LB] =(GUICtrlRead($g_hChkABWaitForCastleSpell) = $GUI_CHECKED)
 $g_aiSearchCastleSpellsWaitRegular[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbABWaitForCastleSpell)
@@ -62892,7 +63383,9 @@ Switch $TypeReadSave
 Case "Read"
 _GUICtrlComboBox_SetCurSel($g_hCmbSwitchAcc, $g_iCmbSwitchAcc)
 GUICtrlSetState($g_hChkSwitchAcc, $g_bChkSwitchAcc ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkSharedPrefs, $g_bChkSharedPrefs ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkSmartSwitch, $g_bChkSmartSwitch ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkDonateLikeCrazy, $g_bDonateLikeCrazy ? $GUI_CHECKED : $GUI_UNCHECKED)
 _GUICtrlComboBox_SetCurSel($g_hCmbTotalAccount, $g_iTotalAcc - 1)
 For $i = 0 To 7
 GUICtrlSetState($g_ahChkAccount[$i], $g_abAccountNo[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -62903,8 +63396,10 @@ _GUICtrlComboBox_SetCurSel($g_hCmbTrainTimeToSkip, $g_iTrainTimeToSkip)
 _cmbSwitchAcc(False)
 Case "Save"
 $g_iCmbSwitchAcc = _GUICtrlComboBox_GetCurSel($g_hCmbSwitchAcc)
+$g_bChkSharedPrefs =(GUICtrlRead($g_hChkSharedPrefs) = $GUI_CHECKED)
 $g_bChkSwitchAcc =(GUICtrlRead($g_hChkSwitchAcc) = $GUI_CHECKED)
 $g_bChkSmartSwitch =(GUICtrlRead($g_hChkSmartSwitch) = $GUI_CHECKED)
+$g_bDonateLikeCrazy =(GUICtrlRead($g_hChkDonateLikeCrazy) = $GUI_CHECKED)
 $g_iTotalAcc = _GUICtrlComboBox_GetCurSel($g_hCmbTotalAccount) + 1
 For $i = 0 To 7
 $g_abAccountNo[$i] =(GUICtrlRead($g_ahChkAccount[$i]) = $GUI_CHECKED)
@@ -63616,6 +64111,7 @@ IniReadS($temp1, $g_sProfileConfigPath, "attack", "DBKingWait", $eHeroNone)
 IniReadS($temp2, $g_sProfileConfigPath, "attack", "DBQueenWait", $eHeroNone)
 IniReadS($temp3, $g_sProfileConfigPath, "attack", "DBWardenWait", $eHeroNone)
 $g_aiSearchHeroWaitEnable[$DB] = BitOR(Int($temp1 > $eHeroNone ? $eHeroKing : 0), Int($temp2 > $eHeroNone ? $eHeroQueen : 0), Int($temp3 > $eHeroNone ? $eHeroWarden : 0))
+IniReadS($g_aiSearchNotWaitHeroesEnable[$DB], $g_sProfileConfigPath, "attack", "DBNotWaitHeroes", 0, "int")
 $g_iHeroWaitAttackNoBit[$DB][0] =($temp1 > $eHeroNone) ? 1 : 0
 $g_iHeroWaitAttackNoBit[$DB][1] =($temp2 > $eHeroNone) ? 1 : 0
 $g_iHeroWaitAttackNoBit[$DB][2] =($temp3 > $eHeroNone) ? 1 : 0
@@ -63665,6 +64161,7 @@ IniReadS($temp1, $g_sProfileConfigPath, "attack", "ABKingWait", $eHeroNone)
 IniReadS($temp2, $g_sProfileConfigPath, "attack", "ABQueenWait", $eHeroNone)
 IniReadS($temp3, $g_sProfileConfigPath, "attack", "ABWardenWait", $eHeroNone)
 $g_aiSearchHeroWaitEnable[$LB] = BitOR(Int($temp1 > $eHeroNone ? $eHeroKing : 0), Int($temp2 > $eHeroNone ? $eHeroQueen : 0), Int($temp3 > $eHeroNone ? $eHeroWarden : 0))
+IniReadS($g_aiSearchNotWaitHeroesEnable[$LB], $g_sProfileConfigPath, "attack", "ABNotWaitHeroes", 0, "int")
 $g_iHeroWaitAttackNoBit[$LB][0] =($temp1 > $eHeroNone) ? 1 : 0
 $g_iHeroWaitAttackNoBit[$LB][1] =($temp2 > $eHeroNone) ? 1 : 0
 $g_iHeroWaitAttackNoBit[$LB][2] =($temp3 > $eHeroNone) ? 1 : 0
@@ -64017,8 +64514,10 @@ EndFunc
 Func ReadConfig_SwitchAccounts()
 If $g_iCmbSwitchAcc Then
 Local $sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $g_iCmbSwitchAcc & ".ini"
-$g_bChkSwitchAcc = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "") = "1"
+$g_bChkSwitchAcc = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "0") = "1"
+$g_bChkSharedPrefs = IniRead($sSwitchAccFile, "SwitchAccount", "SharedPrefs", $g_bChkSharedPrefs ? "1" : "0") = "1"
 $g_bChkSmartSwitch = IniRead($sSwitchAccFile, "SwitchAccount", "SmartSwitch", "0") = "1"
+$g_bDonateLikeCrazy = IniRead($sSwitchAccFile, "SwitchAccount", "DonateLikeCrazy", "0") = "1"
 $g_iTotalAcc = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", "-1"))
 $g_iTrainTimeToSkip = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TrainTimeToSkip", "1"))
 For $i = 1 To 8
@@ -64553,6 +65052,7 @@ _Ini_Add("search", "DBEnableAfterArmyCamps", $g_aiSearchCampsPct[$DB])
 _Ini_Add("attack", "DBKingWait", $g_iHeroWaitAttackNoBit[$DB][0])
 _Ini_Add("attack", "DBQueenWait", $g_iHeroWaitAttackNoBit[$DB][1])
 _Ini_Add("attack", "DBWardenWait", $g_iHeroWaitAttackNoBit[$DB][2])
+_Ini_Add("attack", "DBNotWaitHeroes", $g_aiSearchNotWaitHeroesEnable[$DB] ? 1 : 0)
 _Ini_Add("search", "ChkDBSpellsWait", $g_abSearchSpellsWaitEnable[$DB] ? 1 : 0)
 _Ini_Add("search", "ChkDBCastleSpellWait", $g_abSearchCastleSpellsWaitEnable[$DB] ? 1 : 0)
 _Ini_Add("search", "cmbDBWaitForCastleSpell", $g_aiSearchCastleSpellsWaitRegular[$DB])
@@ -64598,6 +65098,7 @@ _Ini_Add("search", "ABEnableAfterArmyCamps", $g_aiSearchCampsPct[$LB])
 _Ini_Add("attack", "ABKingWait", $g_iHeroWaitAttackNoBit[$LB][0])
 _Ini_Add("attack", "ABQueenWait", $g_iHeroWaitAttackNoBit[$LB][1])
 _Ini_Add("attack", "ABWardenWait", $g_iHeroWaitAttackNoBit[$LB][2])
+_Ini_Add("attack", "ABNotWaitHeroes", $g_aiSearchNotWaitHeroesEnable[$LB] ? 1 : 0)
 _Ini_Add("search", "ChkABSpellsWait", $g_abSearchSpellsWaitEnable[$LB] ? 1 : 0)
 _Ini_Add("search", "ChkABCastleSpellWait", $g_abSearchCastleSpellsWaitEnable[$LB] ? 1 : 0)
 _Ini_Add("search", "cmbABWaitForCastleSpell", $g_aiSearchCastleSpellsWaitRegular[$LB])
@@ -64971,7 +65472,9 @@ EndIf
 If $iCmbSwitchAcc Then
 $sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $iCmbSwitchAcc & ".ini"
 IniWrite($sSwitchAccFile, "SwitchAccount", "Enable", $g_bChkSwitchAcc ? 1 : 0)
+IniWrite($sSwitchAccFile, "SwitchAccount", "SharedPrefs", $g_bChkSharedPrefs ? 1 : 0)
 IniWrite($sSwitchAccFile, "SwitchAccount", "SmartSwitch", $g_bChkSmartSwitch ? 1 : 0)
+IniWrite($sSwitchAccFile, "SwitchAccount", "DonateLikeCrazy", $g_bDonateLikeCrazy ? 1 : 0)
 IniWrite($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", $g_iTotalAcc)
 IniWrite($sSwitchAccFile, "SwitchAccount", "TrainTimeToSkip", $g_iTrainTimeToSkip)
 For $i = 1 To 8
@@ -66960,6 +67463,7 @@ SetDebugLog("My Bot is " &($g_bOnlyInstance ? "" : "not ") & "the only running i
 EndFunc
 Func SetupFilesAndFolders()
 DirCreate($g_sProfilePresetPath)
+DirCreate($g_sPrivateProfilePath & "\" & $g_sProfileCurrentName)
 DirCreate($g_sProfilePath & "\" & $g_sProfileCurrentName)
 DirCreate($g_sProfileLogsPath)
 DirCreate($g_sProfileLootsPath)

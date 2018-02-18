@@ -77,7 +77,9 @@ Func captureDebugImage($aResult, $subDirectory)
 					; Loop through all found points for the item and add them to the image
 					For $j = 0 To UBound($coords) - 1
 						Local $coord = $coords[$j]
-						addInfoToDebugImage($hGraphic, $hPen, $aResult[$i][0], $coord[0], $coord[1])
+						If UBound($coord) > 1 Then
+							addInfoToDebugImage($hGraphic, $hPen, $aResult[$i][0], $coord[0], $coord[1])
+						EndIf
 					Next
 				EndIf
 			EndIf

@@ -70,7 +70,7 @@ Func Laboratory()
 
 	BuildingClickP($g_aiLaboratoryPos, "#0197") ;Click Laboratory
 
-	If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
+	If _Sleep($DELAYLABORATORY3) Then Return ; Wait for window to open
 	; Find Research Button
 	Local $offColors[4][3] = [[0x708CB0, 37, 34], [0x603818, 50, 43], [0xD5FC58, 61, 8], [0x000000, 82, 0]] ; 2nd pixel Blue blade, 3rd pixel brown handle, 4th pixel Green cross, 5th black button edge
 	Local $ButtonPixel = _MultiPixelSearch(433, 565 + $g_iBottomOffsetY, 562, 619 + $g_iBottomOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 30) ; Black pixel of button edge

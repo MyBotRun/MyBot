@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func _ObjErrMsg($sFunctionName, $iErrorCode)
-	SetDebugLog("Dictionary Error: " & $sFunctionName & " code: " & $iErrorCode, $COLOR_ERROR)
+	SetDebugLog("Dictionary Error: " & $sFunctionName & " code: " & $iErrorCode, $COLOR_ERROR, True)
 EndFunc   ;==>_ObjErrMsg
 
 Func _ObjAdd(ByRef $oDICT, $KEY, $VALUE)

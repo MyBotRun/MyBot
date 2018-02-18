@@ -34,12 +34,12 @@ Func easyPreySearch()
 		For $iResult = 1 To UBound($aResult) - 1 ; Loop through all resultrows, skipping first row, which is searcharea, each matched img has its own row, if no resultrow, for is skipped
 			If _Sleep(10) Then Return
 			Local $aTemp[0][2]
-			_ArrayAdd($aTemp, $aResult[$iResult][5]) ; Copy Positionarray to temp array
+			_ArrayAdd($aTemp, $aResult[$iResult][5], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING) ; Copy Positionarray to temp array
 			_ArrayColInsert($aTemp, 2) ; Adding Weight Column
 			For $iRow = 0 To UBound($aTemp) - 1
 				$aTemp[$iRow][2] = 1 ; Setting Weight Column to 1
 			Next
-			_ArrayAdd($aReturnResult, $aTemp) ; Adding temp array to return array
+			_ArrayAdd($aReturnResult, $aTemp, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING) ; Adding temp array to return array
 		Next
 	Next
 

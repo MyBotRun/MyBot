@@ -69,14 +69,14 @@ Func GetCOCDistributors()
 			$g_bSilentSetLog = True
 			SetLog("Unrecognized COC Package: " & $aPkgList[$i])
 			$g_bSilentSetLog = $wasSilentSetLog
-			If $aPkgList[$i] = $g_sUserGamePackage Then _ArrayAdd($aDList, $g_sUserGameDistributor) ;add unknown installed apk info here when matched users ini
+			If $aPkgList[$i] = $g_sUserGamePackage Then _ArrayAdd($aDList, $g_sUserGameDistributor, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING) ;add unknown installed apk info here when matched users ini
 		Else
 			If $iIndex <> 5 Then
-				_ArrayAdd($aDList, $_g_asDISTRIBUTORS[$iIndex][3])
+				_ArrayAdd($aDList, $_g_asDISTRIBUTORS[$iIndex][3], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 			Else
 				If $bFirstTimeWDJ Then ; Speciall treatment for wdj same name package
-					_ArrayAdd($aDList, $_g_asDISTRIBUTORS[5][3])
-					_ArrayAdd($aDList, $_g_asDISTRIBUTORS[12][3])
+					_ArrayAdd($aDList, $_g_asDISTRIBUTORS[5][3], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
+					_ArrayAdd($aDList, $_g_asDISTRIBUTORS[12][3], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING)
 					$bFirstTimeWDJ = False
 				EndIf
 			EndIf

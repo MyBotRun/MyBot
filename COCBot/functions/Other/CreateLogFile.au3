@@ -18,11 +18,33 @@ Func CreateLogFile()
 	   $g_hLogFile = 0
     EndIf
 
-	$g_sLogFileName = @YEAR & "-" & @MON & "-" & @MDAY & "_" & @HOUR & "." & @MIN & "." & @SEC & ".log"
-	Local $sLogPath = $g_sProfileLogsPath & $g_sLogFileName
-	$g_hLogFile = FileOpen($sLogPath, $FO_APPEND)
-	SetDebugLog("Created log file: " & $sLogPath)
-	
+	; reduce number of log files by creating new only if not created in last 2 hours
+	Local $aOldLogs = _FileListToArray($g_sProfileLogsPath, @YEAR & "-" & @MON & "-" & @MDAY & "_" & @HOUR & ".*.log", $FLTA_FILES)
+	If UBound($aOldLogs) < 2 Then
+		Local $aDate, $aTime, $YEAR, $MON, $MDAY, $HOUR
+		_DateTimeSplit(_DateAdd("h", -1, _NowCalc()), $aDate, $aTime)
+		$YEAR = StringFormat("%04d", $aDate[1])
+		$MON = StringFormat("%02d", $aDate[2])
+		$MDAY = StringFormat("%02d", $aDate[3])
+		$HOUR = StringFormat("%02d", $aTime[1])
+		$aOldLogs = _FileListToArray($g_sProfileLogsPath, $YEAR & "-" & $MON & "-" & $MDAY & "_" & $HOUR & ".*.log", $FLTA_FILES)
+	EndIf
+
+	Local $sLogPath
+	If UBound($aOldLogs) > 1 Then
+		; sort descending
+		_ArraySort($aOldLogs, 1, 1, 0)
+		$g_sLogFileName = $aOldLogs[1]
+		$sLogPath = $g_sProfileLogsPath & $g_sLogFileName
+		$g_hLogFile = FileOpen($sLogPath, $FO_APPEND)
+		SetDebugLog("Append to log file: " & $sLogPath)
+	Else
+		$g_sLogFileName = @YEAR & "-" & @MON & "-" & @MDAY & "_" & @HOUR & "." & @MIN & "." & @SEC & ".log"
+		$sLogPath = $g_sProfileLogsPath & $g_sLogFileName
+		$g_hLogFile = FileOpen($sLogPath, $FO_APPEND)
+		SetDebugLog("Created log file: " & $sLogPath)
+	EndIf
+
 	If IsBotLaunched() Then
 		; Android info
 		SetDebugLog("Android: " & $g_sAndroidEmulator)
@@ -36,7 +58,7 @@ Func CreateLogFile()
 		SetDebugLog("Android VBoxManage Path: " & $__VBoxManage_Path)
 		SetDebugLog("Android ADB Shared Folder: " & $g_sAndroidPicturesPath)
 	EndIf
-	
+
 	; Debug Output of launch parameter
 	SetDebugLog("Full Command Line: " & _ArrayToString($CmdLine, " "))
 	SetDebugLog("@AutoItExe: " & @AutoItExe)

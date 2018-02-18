@@ -38,6 +38,7 @@ Global $g_iSuspendAndroidTimeCount = 0
 Global $g_hSuspendAndroidTimer = 0
 Global $g_aiMouseOffset = [0, 0]
 Global $g_aiMouseOffsetWindowOnly = [0, 0]
+Global $g_PushedSharedPrefsProfile ; Last Profile name shared_prefs were pushed
 
 Func InitAndroidConfig($bRestart = False)
 	FuncEnter(InitAndroidConfig)
@@ -1052,7 +1053,8 @@ Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True
 	;AndroidAdbTerminateShellInstance()
 	If Not $g_bRunState Then Return False
 	;$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
-	$cmdOutput = AndroidAdbSendShellCommand("am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, 60000) ; timeout of 1 Minute
+	If $g_bChkSharedPrefs And HaveSharedPrefs() And $g_PushedSharedPrefsProfile <> $g_sProfileCurrentName Then PushSharedPrefs()
+	$cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 60000) ; timeout of 1 Minute
 	If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
 		SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_ERROR)
 		SetLog("Unable to continue........", $COLOR_WARNING)
@@ -1288,16 +1290,16 @@ Func IsAdbConnected($cmdOutput = Default)
 			$connected_to = StringInStr($cmdOutput, "connected to") > 0
 			If $connected_to Then
 				; also check whoami
-				$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell whoami", $process_killed)
+				$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell echo $USER:$USER_ID", $process_killed)
 				$connected_to = StringInStr($cmdOutput, "device ") = 0 And $process_killed = False
 			EndIf
 		Else
-			$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell whoami", $process_killed)
-			$connected_to = StringInStr($cmdOutput, " not ") = 0 And $process_killed = False
+			$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell echo $USER:$USER_ID", $process_killed)
+			$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0 And $process_killed = False
 		EndIf
 	Else
 		; $cmdOutput was specified
-		$connected_to = StringInStr($cmdOutput, " not ") = 0
+		$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0
 	EndIf
 	Return $connected_to
 EndFunc   ;==>IsAdbConnected
@@ -1532,7 +1534,7 @@ Func AndroidInitPrompt()
 		$s = AndroidAdbSendShellCommand("", -500, Default, False, False)
 		If $s Then
 			; assume this is the prompt
-			$g_sAndroidAdbPrompt = $s
+			$g_sAndroidAdbPrompt = StringStripWS($s, $STR_STRIPLEADING)
 			SetDebugLog("Initialize shell prompt with '" & $g_sAndroidAdbPrompt & "'")
 		Else
 			SetLog("ADB Prompt not identified!", $COLOR_ERROR)
@@ -1546,8 +1548,19 @@ Func AndroidInitPrompt()
 EndFunc   ;==>AndroidInitPrompt
 
 Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+	Static $bAndroidAdbLaunchShellInstanceActive = False
+	If $bAndroidAdbLaunchShellInstanceActive Then Return
+
 	FuncEnter(AndroidAdbLaunchShellInstance)
-	If Not $g_bAndroidInitialized Then Return FuncReturn()
+	$bAndroidAdbLaunchShellInstanceActive = True
+	Local $Result = _AndroidAdbLaunchShellInstance($wasRunState, $rebootAndroidIfNeccessary)
+	$bAndroidAdbLaunchShellInstanceActive = False
+
+	Return FuncReturn($Result)
+EndFunc
+
+Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+	If Not $g_bAndroidInitialized Then Return
 	If $wasRunState = Default Then $wasRunState = $g_bRunState
 	If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 		Local $SuspendMode = ResumeAndroid()
@@ -1570,7 +1583,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 		EndIf
 		If $g_bAndroidAdbInstance = True Then
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-				Return FuncReturn(SetError(3, 0))
+				Return SetError(3, 0)
 			EndIf
 			AndroidAdbTerminateShellInstance()
 			;$g_iAndroidAdbProcess[0] = Run($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED))
@@ -1581,7 +1594,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 				$g_bAndroidAdbClick = False
 				$g_bAndroidAdbInput = False
 				If BitAND($g_iAndroidSupportFeature, 1) = 0 Then $g_bChkBackgroundMode = False ; disable also background mode the hard way
-				Return FuncReturn(SetError(1, 0))
+				Return SetError(1, 0)
 			Else
 				AndroidInitPrompt()
 			EndIf
@@ -1591,7 +1604,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 		;If StringInStr($g_sAndroidPicturesPath, "|", $STR_NOCASESENSEBASIC) > 0 Then
 		If True Then ; always validate picture patch
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-				Return FuncReturn(SetError(3, 0))
+				Return SetError(3, 0)
 			EndIf
 			Local $pathFound = False
 			Local $iMount
@@ -1614,7 +1627,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 					$path = $aRegExResult[$i]
 					If $path = "" Then ContinueLoop
 					If StringRight($path, 1) <> "/" Then $path &= "/"
-					$s = AndroidAdbSendShellCommand("ls '" & $path & $dummyFile & "'", Default, $wasRunState, False)
+					$s = AndroidAdbSendShellCommand("set result=$(ls '" & $path & $dummyFile & "' >&2)", Default, $wasRunState, False)
 					If StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error:") = 0 Then
 						$pathFound = True
 						$g_sAndroidPicturesPath = $path
@@ -1630,7 +1643,7 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 				Else
 					SetDebugLog("Still waiting for shared folder to get mounted...")
 				EndIf
-				If _Sleep(6000) Then Return FuncReturn()
+				If _Sleep(6000) Then Return
 			Next
 			If $pathFound = False Then
 				SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
@@ -1661,13 +1674,13 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 			SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
 			If $error <> 0 Then
 				SuspendAndroid($SuspendMode)
-				Return FuncReturn()
+				Return
 			EndIf
 		EndIf
 		; check mouse device
 		If StringLen($g_sAndroidMouseDevice) > 0 And $g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] Then
 			If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
-				Return FuncReturn(SetError(3, 0))
+				Return SetError(3, 0)
 			EndIf
 			If StringInStr($g_sAndroidMouseDevice, "/dev/input/event") = 0 Then
 				; use getevent to find mouse input device
@@ -1687,18 +1700,17 @@ Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecce
 						$g_bAndroidAdbClick = False
 						SetLog($g_sAndroidEmulator & " cannot use ADB for mouse events, """ & $g_sAndroidMouseDevice & """ not found", $COLOR_ERROR)
 						SuspendAndroid($SuspendMode)
-						Return FuncReturn(SetError(2, 1))
-					ENdIf
+						Return SetError(2, 1)
+					EndIf
 				EndIf
 			EndIf
 			SuspendAndroid($SuspendMode)
-			Return FuncReturn(SetError(0, 1))
+			Return SetError(0, 1)
 		Else
 			SetDebugLog($g_sAndroidEmulator & " ADB use " & $g_sAndroidMouseDevice & " for mouse events")
 		EndIf
 	EndIf
 	SetError(0, 0)
-	FuncReturn()
 EndFunc   ;==>AndroidAdbLaunchShellInstance
 
 Func AndroidAdbTerminateShellInstance()
@@ -1711,7 +1723,6 @@ Func AndroidAdbTerminateShellInstance()
 		EndIf
 		$g_iAndroidAdbProcess[0] = 0
 	EndIf
-	SuspendAndroid($SuspendMode)
 EndFunc   ;==>AndroidAdbTerminateShellInstance
 
 Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
@@ -1760,11 +1771,12 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 			$sentBytes = WritePipe($aWritePipe[1], $cmd & @LF)
 		EndIf
 		If $timeout <> 0 Then
-			While @error = 0 And ($timeout < 0 Or StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) <> @LF & $g_sAndroidAdbPrompt) And __TimerDiff($hTimer) < Abs($timeout)
+			While @error = 0 And ($timeout < 0 Or StringCompare(StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1), @LF & $g_sAndroidAdbPrompt, $STR_CASESENSE) <> 0) And __TimerDiff($hTimer) < Abs($timeout)
 				Sleep(10)
 				$s &= ReadPipe($aReadPipe[0])
 				$loopCount += 1
 				If $wasRunState And Not $g_bRunState Then ExitLoop ; stop pressed here, exit without error
+				;SetDebugLog("Prompt-Check: tail is '"  & StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) & "', result " & StringCompare(StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1), @LF & $g_sAndroidAdbPrompt, $STR_CASESENSE))
 			WEnd
 		Else
 			; no timeout, just read pipe once
@@ -1789,9 +1801,14 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 	If $cleanOutput Then
 		Local $i = StringInStr($s, @LF)
 		If $i > 0 Then $s = StringMid($s, $i) ; remove echo'd command
-		If $bStripPrompt And StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1) = @LF & $g_sAndroidAdbPrompt Then $s = StringLeft($s, StringLen($s) - StringLen($g_sAndroidAdbPrompt) - 1) ; remove tailing prompt
+		If $bStripPrompt And StringCompare(StringRight($s, StringLen($g_sAndroidAdbPrompt) + 1), @LF & $g_sAndroidAdbPrompt, $STR_CASESENSE) = 0 Then $s = StringLeft($s, StringLen($s) - StringLen($g_sAndroidAdbPrompt) - 1) ; remove tailing prompt
 		CleanLaunchOutput($s)
 		If StringLeft($s, 1) = @LF Then $s = StringMid($s, 2) ; remove starting @LF
+	Else
+		If StringLeft($s, 1) = @LF Then $s = StringMid($s, 2) ; remove starting @LF
+		; always strip tailing CR/LF
+		If StringRight($s, 1) = @LF Then $s = StringLeft($s, StringLen($s) - 1)
+		If StringRight($s, 1) = @CR Then $s = StringLeft($s, StringLen($s) - 1)
 	EndIf
 
 	; remove LeapDroid WARNING: linker: libdvm.so has text relocations. This is wasting memory and is a security risk. Please fix.
@@ -1805,7 +1822,7 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 	SuspendAndroid($SuspendMode)
 	Local $error = (($g_bRunState = False Or __TimerDiff($hTimer) < $timeout Or $timeout < 1) ? 0 : 1)
 	If $error <> 0 Then
-		SetDebugLog("(" & $iCommandErrors & "): ADB shell command error " & $error & ": " & $s, $COLOR_ERROR)
+		SetDebugLog("(" & $iCommandErrors & "): ADB shell command error " & $error & " (" & $g_sAndroidAdbPrompt & "): " & $s, $COLOR_ERROR)
 		$iCommandErrors += 1
 	EndIf
 	If $__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY > 0 Then Sleep($__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY)
@@ -3111,13 +3128,14 @@ EndFunc   ;==>CheckAndroidReboot
 Func GetAndroidProcessPID($sPackage = Default, $bForeground = True)
 	If $sPackage = Default Then $sPackage = $g_sAndroidGamePackage
 	; u0_a58    4395  580   1135308 187040 14    -6    0     0     ffffffff 00000000 S com.supercell.clashofclans
+	; u0_a14    3415  73    1683660 118948 14    -6    0     0     ffffffff b7492365 S com.supercell.clashofclans
 	If AndroidInvalidState() Then Return 0
-	Local $cmd = "ps -p|grep """ & $g_sAndroidGamePackage & """"
+	Local $cmd = "set result=$(ps -p|grep """ & $g_sAndroidGamePackage & """ >&2)"
 	Local $output = AndroidAdbSendShellCommand($cmd)
 	$output = StringStripWS($output, 7)
 	Local $aPkgList[0][26] ; adjust to any suffisent size to accommodate
 	Local $iCols
-	_ArrayAdd($aPkgList, $output, 0, " ", @LF)
+	_ArrayAdd($aPkgList, $output, 0, " ", @LF, $ARRAYFILL_FORCE_STRING)
 	For $i = 1 To UBound($aPkgList)
 		$iCols = _ArraySearch($aPkgList, "", 0, 0, 0, 0, 1, $i, True)
 		If $iCols > 9 And $aPkgList[$i - 1][$iCols - 1] = $g_sAndroidGamePackage Then
@@ -3412,3 +3430,141 @@ Func GetAndroidCodeName($iAPI = $g_iAndroidVersionAPI)
 	SetDebugLog("Unsupport Android API Version: " & $iAPI, $COLOR_ERROR)
 	Return ""
 EndFunc   ;==>GetAndroidCodeName
+
+Func HaveSharedPrefs($sProfile = $g_sProfileCurrentName, $BothNewOrOld = Default)
+	If $sProfile = Default then $sProfile = $g_sProfileCurrentName
+	Return (($BothNewOrOld = Default Or $BothNewOrOld = True) And UBound(_FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES)) > 1) _
+		Or (($BothNewOrOld = Default Or $BothNewOrOld = False) And UBound(_FileListToArray($g_sProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES)) > 1)
+EndFunc   ;==>HaveSharedPrefs
+
+Func PullSharedPrefs($sProfile = $g_sProfileCurrentName)
+	Local $bWasRunState = $g_bRunState
+	Local $process_killed
+	DirCreate($g_sPrivateProfilePath & "\" & $sProfile) ; ensure again that private profile folder exists, because adb pull and DirMove requires it
+	Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " pull /data/data/" & $g_sAndroidGamePackage & "/shared_prefs """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs""", $process_killed)
+	Local $Result = False
+	If StringInStr($cmdOutput, "files pulled") > 0 And StringInStr($cmdOutput, @LF & "0 files pulled") = 0 Then
+		; OK, files pulled
+		$Result = True
+	Else
+		SetDebugLog("ADB pull failed, try to use host shared folder")
+		Local $androidFolder = StringReplace($g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile, " ", "\ ")
+		AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+		AndroidAdbSendShellCommand("set result=$(mkdir -p " & $androidFolder & " >&2)")
+		$cmdOutput = AndroidAdbSendShellCommand("set result=$(cp -R /data/data/" & $g_sAndroidGamePackage & "/shared_prefs " & $androidFolder & " >&2)")
+		If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "usage: cp") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
+			; move folder
+			Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
+			If (FileExists($hostFolder) = 1 Or DirCreate($hostFolder) = 1) Then
+				Local $i = 0
+				Local $iFiles = 0
+				While $iFiles < 1 And $i < 12
+					$iFiles = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
+					_Sleep(250, True, $bWasRunState)
+					$i += 1
+				WEnd
+				If DirMove($hostFolder & "\shared_prefs", $g_sPrivateProfilePath & "\" & $sProfile, $FC_OVERWRITE) = 1 Then
+					; OK, files pulled
+					;AndroidAdbSendShellCommand("set result=$(ls -l " & $androidFolder & "\shared_prefs >&2)")
+					AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+					$Result = True
+				Else
+					SetLog("Cannot move shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile, $COLOR_ERROR)
+				EndIf
+			Else
+				SetLog("Cannot pull shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile, $COLOR_ERROR)
+			EndIf
+		Else
+			SetLog("Cannot copy shared_prefs to " & $androidFolder, $COLOR_ERROR)
+		EndIf
+	EndIf
+
+	If $Result Then
+		Local $a = _FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES, True)
+		If UBound($a) > 1 Then
+			Local $a2[UBound($a) - 1][2]
+			For $i = 1 To $a[0]
+				Local $a3 = FileGetTime($a[$i], 0)
+				$a2[$i - 1][0] = $a[$i]
+				$a2[$i - 1][1] = _ArrayToString($a3, "-", -1, 2) & " " & _ArrayToString($a3, ":", 3, -1)
+			Next
+			SetDebugLog(_ArrayToString($a2, ","))
+		EndIf
+		SetLog("Pulled shared_prefs of profile " & $sProfile)
+	Else
+		; something went wrong
+		SetLog("Error pulling shared_prefs of profile " & $sProfile, $COLOR_ERROR)
+	EndIf
+	Return $Result
+EndFunc   ;==>PullSharedPrefs
+
+Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = True)
+	Local $bWasRunState = $g_bRunState
+	Local $process_killed
+
+	Local $bHaveNew = HaveSharedPrefs($sProfile, True)
+	Local $bHaveOld = HaveSharedPrefs($sProfile, False)
+
+	If Not $bHaveNew And Not $bHaveOld Then
+		SetLog("Profile " & $sProfile & " doesn't have shared_prefs folder", $COLOR_GREEN)
+		Return False
+	EndIf
+
+	If $bCloseGameIfRunning And GetAndroidProcessPID(Default, $bWasRunState) Then
+		CloseCoC(False, False)
+	EndIf
+
+	If Not $bHaveNew And $bHaveOld Then
+		; If shared_prefs doesn't exists in private profile path, check if it must be migrated
+		SetLog("Migrate shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile)
+		If DirMove($g_sProfilePath & "\" & $sProfile & "\shared_prefs", $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs") Then
+			DirRemove($g_sProfilePath & "\" & $sProfile & "\shared_prefs")
+			; Ok
+		Else
+			SetLog("Migration of shared_prefs failed", $COLOR_ERROR)
+		EndIf
+	EndIf
+
+	Local $Result = False
+	Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " push """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs"" /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", $process_killed)
+	If StringInStr($cmdOutput, "files pushed") > 0 And StringInStr($cmdOutput, @LF & "0 files pushed") = 0 Then
+		; OK, files pushed
+		$Result = True
+	Else
+		SetDebugLog("ADB push failed, try to use host shared folder")
+		Local $androidFolder = StringReplace($g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile, " ", "\ ")
+		AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+		Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
+		; copy folder
+		If DirCopy($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", $hostFolder & "\shared_prefs", $FC_OVERWRITE) = 1 Then
+			Local $i = 0
+			#cs
+				Do
+				$cmdOutput = AndroidAdbSendShellCommand("cp " & $androidFolder & "/shared_prefs/* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs")
+				If _Sleep(250, True, $bWasRunState) Then Return False
+				$i += 1
+				Until StringInStr($cmdOutput, "No such file or directory") = 0 Or $i > 40
+			#ce
+			$cmdOutput = AndroidAdbSendShellCommand("set result=$(cp " & $androidFolder & "/shared_prefs/* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
+			If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "usage: cp") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
+				; OK, files pushed
+				AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+				$Result = True
+			Else
+				SetLog("Cannot copy sharef_prefs to /data/data/" & $g_sAndroidGamePackage, $COLOR_ERROR)
+			EndIf
+		Else
+			SetLog("Cannot copy shared_prefs to " & $hostFolder, $COLOR_ERROR)
+		EndIf
+	EndIf
+
+	If $Result Then
+		AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
+		SetLog("Pushed shared_prefs of profile " & $sProfile)
+		$g_PushedSharedPrefsProfile = $sProfile
+	Else
+		; something went wrong
+		SetLog("Error pushing shared_prefs of profile " & $sProfile, $COLOR_ERROR)
+	EndIf
+	Return $Result
+EndFunc   ;==>PushSharedPrefs

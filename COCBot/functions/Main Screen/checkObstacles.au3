@@ -159,7 +159,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 				checkObstacles_ResetSearch()
 			Case Else
 				;  Add check for game update and Rate CoC error messages
-				If $g_bDebugImageSave Then DebugImageSave("ChkObstaclesReloadMsg_") ; debug only
+				If $g_bDebugImageSave Then DebugImageSave("ChkObstaclesReloadMsg_", False) ; debug only
 				;$Result = getOcrRateCoc(228, 390 + $g_iMidOffsetY, "Check Obstacles getOCRRateCoC= ")
 				Local $sRegion = "220,420(60,25)"
 				If $g_iAndroidVersionAPI >= $g_iAndroidLollipop Then
@@ -268,7 +268,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 		Return True
 	EndIf
 	If _CheckPixel($aNoCloudsAttack, $g_bNoCapturePixel) Then ; Prevent drop of troops while searching
-		$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xF4F7E3, 6), 10)
+		$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xF4F7E3, 6), 10, False)
 		If IsArray($aMessage) Then
 			SetDebugLog("checkObstacles: Found Return Home button")
 			; If _ColorCheck(_GetPixelColor(67,  602 + $g_iBottomOffsetY), Hex(0xDCCCA9, 6), 10) = False Then  ; add double check?
@@ -277,8 +277,8 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 			Return True
 		EndIf
 	EndIf
-	If IsPostDefenseSummaryPage() Then
-		$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xE0E1CE, 6), 10)
+	If IsPostDefenseSummaryPage(False) Then
+		$aMessage = _PixelSearch(23, 566 + $g_iBottomOffsetY, 36, 580 + $g_iBottomOffsetY, Hex(0xE0E1CE, 6), 10, False)
 		If IsArray($aMessage) Then
 			SetDebugLog("checkObstacles: Found Post Defense Summary to close")
 			PureClick(67, 602 + $g_iBottomOffsetY, 1, 0, "#0138") ;Check if Return Home button available
@@ -301,7 +301,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 
 	If $bHasTopBlackBar Then
 		; if black bar at top, e.g. in Android home screen, restart CoC
-		SetDebugLog("checkObstacles: Found Android Screen")
+		SetDebugLog("checkObstacles: Found Black Android Screen")
 	EndIf
 
 	; check if google account list shown and select first

@@ -426,6 +426,7 @@ Global $g_iThreads = 0 ; Used by ImgLoc for parallism (for this bot instance), 0
 
 ; Profile file/folder paths
 Global $g_sProfilePath = @ScriptDir & "\Profiles"
+Global $g_sPrivateProfilePath = @MyDocumentsDir & "\MyBot.run-Profiles" ; Used to save private & very sensitive profile information like shared_prefs (notification tokens will be saved in future here also)
 Global Const $g_sProfilePresetPath = @ScriptDir & "\Strategies"
 Global $g_sProfileCurrentName = "" ; Name of profile currently being used
 Global $g_sProfileConfigPath = "" ; Path to the current config.ini being used in this profile
@@ -435,7 +436,7 @@ Global $g_sProfileLogsPath = "", $g_sProfileLootsPath = "", $g_sProfileTempPath 
 Global $g_sProfileDonateCapturePath = "", $g_sProfileDonateCaptureWhitelistPath = "", $g_sProfileDonateCaptureBlacklistPath = "" ; Paths to donate related folders for this profile
 Global $g_sProfileSecondaryInputFileName = ""
 Global $g_sProfileSecondaryOutputFileName = ""
-Global $g_asProfiles = [] ; Array String of available profiles, initialized in func setupProfileComboBox()
+Global $g_asProfiles[0] ; Array String of available profiles, initialized in func setupProfileComboBox()
 Global $g_bReadConfigIsActive = False
 Global $g_bSaveConfigIsActive = False
 Global $g_bApplyConfigIsActive = False
@@ -474,7 +475,7 @@ Global Const $g_sWorkingDir = @WorkingDir ; Working Directory at bot launch
 
 ; Mutex Handles
 Global $g_hMutex_BotTitle = 0
-Global $g_ahMutex_Profile = [] ; 2-dimensional Array, 0=Profile Name, 1=Profile Mutex
+Global $g_ahMutex_Profile[0][2] ; 2-dimensional Array, 0=Profile Name, 1=Profile Mutex
 Global $g_ahMutex_SwitchAccountsGroup = [0, 0] ; one row: 0=Switch Accounts Group No., 1=Mutex
 Global $g_hMutex_MyBot = 0
 
@@ -985,6 +986,8 @@ Global $g_abSearchSpellsWaitEnable[$g_iModeCount] = [False, False, False]
 Global $g_abSearchCastleSpellsWaitEnable[$g_iModeCount] = [False, False, False], $g_aiSearchCastleSpellsWaitRegular[$g_iModeCount] = [0, 0, 0], _
 		$g_aiSearchCastleSpellsWaitDark[$g_iModeCount] = [0, 0, 0]
 Global $g_abSearchCastleTroopsWaitEnable[$g_iModeCount] = [False, False, False]
+Global $g_aiSearchNotWaitHeroesEnable[$g_iModeCount] = [0, 0, 0]
+Global $g_iSearchNotWaitHeroesEnable = -1
 ; Search - Filters
 Global $g_aiFilterMeetGE[$g_iModeCount] = [0, 0, 0], $g_aiFilterMinGold[$g_iModeCount] = [0, 0, 0], $g_aiFilterMinElixir[$g_iModeCount] = [0, 0, 0], _
 		$g_aiFilterMinGoldPlusElixir[$g_iModeCount] = [0, 0, 0]
@@ -1150,7 +1153,7 @@ Global $g_bForceClanCastleDetection = 0
 
 ; <><><><> Bot / Profiles <><><><>
 Global $g_iCmbSwitchAcc = 0, $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_iTrainTimeToSkip = 0, $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False
-Global $g_iTotalAcc = -1, $g_iNextAccount, $g_iCurAccount
+Global $g_iTotalAcc = -1, $g_iNextAccount, $g_iCurAccount, $g_bChkSharedPrefs = False, $g_bDonateLikeCrazy = False
 Global $g_abAccountNo[8], $g_asProfileName[8], $g_abDonateOnly[8]
 Global $g_aiAttackedCountSwitch[8], $g_iActiveSwitchCounter = 0, $g_iDonateSwitchCounter = 0
 Global $g_aiRemainTrainTime[8], $g_aiTimerStart[8], $g_abPBActive[8]

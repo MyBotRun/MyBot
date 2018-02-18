@@ -13,6 +13,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 ;#include-once
+#include "functions\Other\Base64.au3"
 #include "functions\Other\SetLog.au3"
 #include "functions\Other\StopWatch.au3"
 ;#include "functions\Other\Synchronization.au3" ; now included in LaunchConsole.au3

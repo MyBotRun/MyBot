@@ -20,11 +20,11 @@ Func checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in 
 EndFunc   ;==>checkMainScreen
 
 Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in main screen
-	
+
 	If $bSetLog = Default Then $bSetLog = True
 	If $bBuilderBase = Default Then $bBuilderBase = False
 
-	Local $iCount, $bObstacleResult
+	Local $i, $iErrorCount, $iCheckBeforeRestartAndroidCount, $bObstacleResult, $bContinue
 	Local $aPixelToCheck = $aIsMain
 
 	If $bSetLog Then
@@ -32,7 +32,7 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 	EndIf
 
 	If Not TestCapture() Then
-		If CheckAndroidRunning(False) = False Then Return
+		If CheckAndroidRunning(False) = False Then Return False
 		getBSPos() ; Update $g_hAndroidWindow and Android Window Positions
 		WinGetAndroidHandle()
 		If Not $g_bChkBackgroundMode And $g_hAndroidWindow <> 0 Then
@@ -41,43 +41,63 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 		EndIf
 		If $g_bAndroidAdbScreencap = False And _WinAPI_IsIconic($g_hAndroidWindow) Then WinSetState($g_hAndroidWindow, "", @SW_RESTORE)
 	EndIf
-	$iCount = 0
+
+	$i = 0
+	$iErrorCount = 0
+	$iCheckBeforeRestartAndroidCount = 3
 
 	If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderIsland
-
-	While _CaptureRegions() And (Not _CheckPixel($aPixelToCheck, $g_bNoCapturePixel) Or checkObstacles_Network(False, False))
+	Local $bLocated
+	While _CaptureRegions() And Not _checkMainScreenImage($bLocated, $aPixelToCheck)
+		$i += 1
 		If TestCapture() Then
 			SetLog("Main Screen not Located", $COLOR_ERROR)
 			ExitLoop
 		EndIf
 		WinGetAndroidHandle()
-		If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 
 		$bObstacleResult = checkObstacles($bBuilderBase)
-		If $g_bDebugSetlog Then SetDebugLog("CheckObstacles Result = " & $bObstacleResult, $COLOR_DEBUG)
+		SetDebugLog("CheckObstacles[" & $i & "] Result = " & $bObstacleResult, $COLOR_DEBUG)
 
-		If (Not $bObstacleResult And $g_bMinorObstacle) Then
-			$g_bMinorObstacle = False
-		ElseIf (Not $bObstacleResult And Not $g_bMinorObstacle) Then
-			RestartAndroidCoC() ; Need to try to restart CoC
+		$bContinue = False
+		If Not $bObstacleResult Then
+			If $g_bMinorObstacle Then
+				$g_bMinorObstacle = False
+				$bContinue = True
+			Else
+				If $i > $iCheckBeforeRestartAndroidCount Then
+					DebugImageSave("checkMainScreen_RestartCoC", False) ; why do we need to restart ?
+					RestartAndroidCoC() ; Need to try to restart CoC
+					$bContinue = True
+				EndIf
+			EndIf
 		Else
 			$g_bRestart = True
+			$bContinue = True
 		EndIf
-		waitMainScreen() ; Due to differeneces in PC speed, let waitMainScreen test for CoC restart
-		If Not $g_bRunState Then Return
-		If @extended Then Return SetError(1, 1, -1)
-		If @error Then $iCount += 1
-		If $iCount > 2 Then
-			SetLog("Unable to fix the window error", $COLOR_ERROR)
-			CloseCoC(True)
-			ExitLoop
+		If $bContinue Then
+			waitMainScreen() ; Due to differeneces in PC speed, let waitMainScreen test for CoC restart
+			If Not $g_bRunState Then Return False
+			If @extended Then Return SetError(1, 1, False)
+			If @error Then $iErrorCount += 1
+			If $iErrorCount > 2 Then
+				SetLog("Unable to fix the window error", $COLOR_ERROR)
+				CloseCoC(True)
+				ExitLoop
+			EndIf
+		Else
+			If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 		EndIf
 	WEnd
-	ZoomOut()
-	If Not $g_bRunState Then Return
+	If $bLocated Then ZoomOut()
+	If Not $g_bRunState Then Return False
 
 	If $bSetLog Then
-		SetLog("Main Screen Located", $COLOR_SUCCESS)
+		If $bLocated Then
+			SetLog("Main Screen located", $COLOR_SUCCESS)
+		Else
+			SetLog("Main Screen not located", $COLOR_ERROR)
+		EndIf
 	EndIf
 
 	;After checkscreen dispose windows
@@ -85,4 +105,11 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 
 	;Execute Notify Pending Actions
 	NotifyPendingActions()
+
+	Return $bLocated
 EndFunc   ;==>_checkMainScreen
+
+Func _checkMainScreenImage(ByRef $bLocated, $aPixelToCheck)
+	$bLocated = _CheckPixel($aPixelToCheck, $g_bNoCapturePixel) And Not checkObstacles_Network(False, False)
+	Return $bLocated
+EndFunc

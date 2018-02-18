@@ -209,6 +209,7 @@ Func chkSwitchAcc()
 		For $i = $g_hCmbTotalAccount To $g_ahChkDonate[7]
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
+		chkSmartSwitch()
 	Else
 		releaseSwitchAccountMutex()
 		For $i = $g_hCmbTotalAccount To $g_ahChkDonate[7]
@@ -280,6 +281,7 @@ Func _cmbSwitchAcc($bReadSaveConfig = True)
 		GUICtrlSetState($i, (($bEnable) ? $GUI_ENABLE : $GUI_DISABLE))
 	Next
 	cmbTotalAcc()
+	chkSmartSwitch()
 	$s_bActive = False
 EndFunc   ;==>_cmbSwitchAcc
 
@@ -295,6 +297,15 @@ Func cmbTotalAcc()
 		chkAccount($i)
 	Next
 EndFunc   ;==>cmbTotalAcc
+
+Func chkSmartSwitch()
+	If GUICtrlRead($g_hChkSmartSwitch) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_UNCHECKED)
+		GUICtrlSetState($g_hChkDonateLikeCrazy, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkSmartSwitch
 
 Func chkAccount($i)
 	If GUICtrlRead($g_ahChkAccount[$i]) = $GUI_CHECKED Then
@@ -350,6 +361,10 @@ Func cmbSwitchAccProfileX()
 		EndIf
 	Next
 EndFunc   ;==>cmbSwitchAccProfileX
+
+Func chkSharedPrefs()
+	$g_bChkSharedPrefs = GUICtrlRead($g_hChkSharedPrefs) = $GUI_CHECKED
+EndFunc   ;==>chkSharedPrefs
 
 ; #DEBUG FUNCTION# ==============================================================================================================
 
@@ -572,21 +587,30 @@ EndFunc   ;==>btnTestAttackBar
 
 
 Func btnTestClickDrag()
+	Local $sUserInputCoor = InputBox("Coordinators", "x1,y1,x2,y2", "650,473,323,473")
+	Local $asCoor = StringSplit($sUserInputCoor, ",")
 
-	Local $i
+	If @error Or $asCoor[0] <> 4 Then
+		SetLog("Please try again with the correct format...", $COLOR_ERROR)
+		Return
+	EndIf
 
 	SetLog("Testing Click drag functionality...", $COLOR_INFO)
-	For $i = 0 To 4
-		SetLog("Click x1/y1=100/600 and drag to x2/y2=150/600", $COLOR_INFO)
-		ClickDrag(100, 600, 150, 600)
-	Next
-	SetDebugLog("Waiting 3 Seconds...")
-	_SleepStatus(3000, True, True, False)
-	For $i = 0 To 4
-		SetLog("Click x1/y1=150/600 and drag to x2/y2=100/600", $COLOR_INFO)
-		ClickDrag(150, 600, 100, 600)
-	Next
 
+	SetLog("Drag from (" & $asCoor[1] & "," & $asCoor[2] & ") to (" & $asCoor[3] & "," & $asCoor[4] & ")", $COLOR_DEBUG)
+	ClickDrag(Int($asCoor[1]), Int($asCoor[2]), Int($asCoor[3]), Int($asCoor[4]))
+
+	SetLog("Sleep 3 seconds...", $COLOR_DEBUG)
+	_Sleep(3000, True, False)
+
+	SetLog("Save the image...", $COLOR_DEBUG)
+	DebugImageSave("TestClickDrag")
+
+	SetLog("Sleep 1 seconds...", $COLOR_DEBUG)
+	_Sleep(1000, True, False)
+
+	SetLog("Drag back", $COLOR_DEBUG)
+	ClickDrag(Int($asCoor[3]), Int($asCoor[4]), Int($asCoor[1]), Int($asCoor[2]))
 EndFunc   ;==>btnTestClickDrag
 
 Func btnTestImage()

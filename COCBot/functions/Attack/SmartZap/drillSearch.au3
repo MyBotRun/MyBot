@@ -23,7 +23,7 @@ Func drillSearch()
 	For $iResult = 1 To UBound($aResult) - 1 ; Loop through all resultrows, skipping first row, which is searcharea, each matched img has its own row, if no resultrow, for is skipped
 		If _Sleep(10) Then Return
 		Local $aTemp[0][2]
-		_ArrayAdd($aTemp, $aResult[$iResult][5]) ; Copy Positionarray to temp array
+		_ArrayAdd($aTemp, $aResult[$iResult][5], 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING) ; Copy Positionarray to temp array
 		_ArrayColInsert($aTemp, 2) ; Adding Level Column
 		_ArrayColInsert($aTemp, 3) ; Adding Hold Column
 		_ArrayColInsert($aTemp, 4) ; Adding Last Zap Column
@@ -31,7 +31,7 @@ Func drillSearch()
 			$aTemp[$iRow][2] = $aResult[$iResult][2] ; Setting Level Column to Result Level
 			$aTemp[$iRow][4] = 0 ; Set Last Zap to 0
 		Next
-		_ArrayAdd($aReturnResult, $aTemp) ; Adding temp array to return array
+		_ArrayAdd($aReturnResult, $aTemp, 0, "|", @CRLF, $ARRAYFILL_FORCE_STRING) ; Adding temp array to return array
 	Next
 
 	Local $iResult = 0

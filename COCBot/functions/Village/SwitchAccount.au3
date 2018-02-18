@@ -138,7 +138,7 @@ Func CheckSwitchAcc()
 		$nMinRemainTrain = CheckTroopTimeAllAccount($bForceSwitch)
 
 		If $g_bChkSmartSwitch = 1 Then ; Smart switch
-			If $nMinRemainTrain <= 1 And Not $bForceSwitch Then ; Active (force switch shall give priority to Donate Account)
+			If $nMinRemainTrain <= 1 And Not $bForceSwitch And Not $g_bDonateLikeCrazy Then ; Active (force switch shall give priority to Donate Account)
 				If $g_bDebugSetlog Then SetDebugLog("Switch to or Stay at Active Account: " & $g_iNextAccount + 1, $COLOR_DEBUG)
 				$g_iDonateSwitchCounter = 0
 			Else
@@ -197,48 +197,65 @@ Func SwitchCOCAcc($NextAccount)
 
 	If $StartOnlineTime <> 0 And Not $g_bReMatchAcc Then SetSwitchAccLog(" - Acc " & $g_iCurAccount + 1 & ", online: " & Round(TimerDiff($StartOnlineTime) / 1000 / 60, 1) & "m")
 
-	If IsMainPage() Then Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
-	If _Sleep(500) Then Return
+	Local $bSharedPrefs = $g_bChkSharedPrefs And HaveSharedPrefs($g_asProfileName[$g_iNextAccount])
+	If $bSharedPrefs And $g_PushedSharedPrefsProfile = $g_asProfileName[$g_iNextAccount] Then
+		; shared prefs already pushed
+		$bResult = True
+		$bSharedPrefs = False ; don't push again
+		SetLog("Profile shared_prefs already pushed")
+	Else
+		If IsMainPage() Then Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
+		If _Sleep(500) Then Return
+		While 1
 
-	While 1
+			Switch SwitchCOCAcc_DisconnectConnect($bResult, $bSharedPrefs)
+				Case "OK"
+					; all good
+				Case "Error"
+					; some problem
+					ExitLoop
+				Case "Exit"
+					; no $g_bRunState
+					Return
+			EndSwitch
 
-		Switch SwitchCOCAcc_DisconnectConnect($bResult)
-			Case "OK"
-				; all good
-			Case "Error"
-				; some problem
-				ExitLoop
-			Case "Exit"
-				; no $g_bRunState
-				Return
-		EndSwitch
+			Switch SwitchCOCAcc_ClickAccount($bResult, $NextAccount, $bSharedPrefs)
+				Case "OK"
+					; all good
+					If $g_bChkSharedPrefs Then
+						If $bSharedPrefs Then
+							CloseCoC(False)
+							$bResult = True
+							ExitLoop
+						Else
+							SetLog($g_asProfileName[$g_iNextAccount] & " missing shared_prefs, using normal switch account", $COLOR_WARNING)
+						EndIf
+					EndIf
+				Case "Error"
+					; some problem
+					ExitLoop
+				Case "Exit"
+					; no $g_bRunState
+					Return
+			EndSwitch
 
-		Switch SwitchCOCAcc_ClickAccount($bResult, $NextAccount)
-			Case "OK"
-				; all good
-			Case "Error"
-				; some problem
-				ExitLoop
-			Case "Exit"
-				; no $g_bRunState
-				Return
-		EndSwitch
+			Switch SwitchCOCAcc_ConfirmAccount($bResult)
+				Case "OK"
+					; all good
+				Case "Error"
+					; some problem
+					ExitLoop
+				Case "Exit"
+					; no $g_bRunState
+					Return
+			EndSwitch
 
-		Switch SwitchCOCAcc_ConfirmAccount($bResult)
-			Case "OK"
-				; all good
-			Case "Error"
-				; some problem
-				ExitLoop
-			Case "Exit"
-				; no $g_bRunState
-				Return
-		EndSwitch
+			ExitLoop
+		WEnd
 
-		ExitLoop
-	WEnd
+		If _Sleep(500) Then Return
+	EndIf
 
-	If _Sleep(500) Then Return
 	If $bResult = True Then
 		$iRetry = 0
 		$g_bReMatchAcc = False
@@ -259,8 +276,40 @@ Func SwitchCOCAcc($NextAccount)
 				LoadProfile(False)
 			EndIf
 		EndIf
+		If $bSharedPrefs Then
+			SetLog("Please wait for loading CoC...!")
+			PushSharedPrefs()
+			OpenCoC()
+		EndIf
+
 		$StartOnlineTime = TimerInit()
 		SetSwitchAccLog("Switched to Acc [" & $NextAccount + 1 & "]", $COLOR_SUCCESS)
+
+		If $g_bChkSharedPrefs Then
+			; disconnect account again for saving shared_prefs
+			waitMainScreen()
+			If IsMainPage() Then
+				Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
+				If _Sleep(500) Then Return
+				Switch SwitchCOCAcc_DisconnectConnect($bResult, $g_bChkSharedPrefs)
+					Case "OK"
+						; all good
+					Case "Error"
+						; some problem
+						;ExitLoop
+					Case "Exit"
+						; no $g_bRunState
+						Return
+				EndSwitch
+
+				Switch SwitchCOCAcc_ClickAccount($bResult, $NextAccount, $g_bChkSharedPrefs, False)
+					Case "OK"
+						; all good
+						PullSharedPrefs()
+				EndSwitch
+			EndIf
+		EndIf
+
 	Else
 		$iRetry += 1
 		$g_bReMatchAcc = True
@@ -280,18 +329,32 @@ Func SwitchCOCAcc($NextAccount)
 
 EndFunc   ;==>SwitchCOCAcc
 
-Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult)
+Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult, $bDisconnectOnly = $g_bChkSharedPrefs)
 	For $i = 0 To 20 ; Checking Green Connect Button continuously in 20sec
 		If _ColorCheck(_GetPixelColor($aButtonConnected[0], $aButtonConnected[1], True), Hex($aButtonConnected[2], 6), $aButtonConnected[3]) Then ;	Green
-			Click($aButtonConnected[0], $aButtonConnected[1], 2, 1000) ; Click Connect & Disconnect
-			SetLog("   1. Click Connect & Disconnect")
-			If _Sleep(200) Then Return "Exit"
+			If $bDisconnectOnly = False Then
+				SetLog("   1. Click Connect & Disconnect")
+				Click($aButtonConnected[0], $aButtonConnected[1], 2, 1000) ; Click Connect & Disconnect
+				If _Sleep(200) Then Return "Exit"
+			Else
+				SetLog("   1. Click Connected")
+				Click($aButtonConnected[0], $aButtonConnected[1], 1, 1000) ; Click Disconnect
+				If _Sleep(200) Then Return "Exit"
+			EndIf
 			;ExitLoop
 			Return "OK"
 		ElseIf _ColorCheck(_GetPixelColor($aButtonDisconnected[0], $aButtonDisconnected[1], True), Hex($aButtonDisconnected[2], 6), $aButtonDisconnected[3]) Then ; Red
-			Click($aButtonDisconnected[0], $aButtonDisconnected[1]) ; Click Disconnect
-			SetLog("   1. Click Disconnect")
-			If _Sleep(200) Then Return "Exit"
+			If $bDisconnectOnly = False Then
+				SetLog("   1. Click Disconnect")
+				Click($aButtonDisconnected[0], $aButtonDisconnected[1]) ; Click Disconnect
+				If _Sleep(200) Then Return "Exit"
+			Else
+				SetLog("Account already disconnected")
+			EndIf
+			;ExitLoop
+			Return "OK"
+		ElseIf _ColorCheck(_GetPixelColor($aButtonSuperCellIdConnected[0], $aButtonSuperCellIdConnected[1], True), Hex($aButtonSuperCellIdConnected[2], 6), $aButtonSuperCellIdConnected[3]) Then ; Green
+			SetLog("Account connected to SuperCell ID, cannot disconnect")
 			;ExitLoop
 			Return "OK"
 		EndIf
@@ -305,36 +368,63 @@ Func SwitchCOCAcc_DisconnectConnect(ByRef $bResult)
 	Return "" ; should never get here
 EndFunc   ;==>SwitchCOCAcc_DisconnectConnect
 
-Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $NextAccount)
+Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $NextAccount, $bStayDisconnected = $g_bChkSharedPrefs, $bLateDisconnectButtonCheck = True)
+	FuncEnter(SwitchCOCAcc_ClickAccount)
 	Local $YCoord = Int(373.5 - $g_iTotalAcc * 36.5 + 73 * $NextAccount)
 	For $i = 0 To 20 ; Checking Account List continuously in 20sec
 		If _ColorCheck(_GetPixelColor($aListAccount[0], $aListAccount[1], True), Hex($aListAccount[2], 6), $aListAccount[3]) Then ;	Grey
-			If _Sleep(600) Then Return "Exit"
-			Click(383, $YCoord) ; Click Account
+			If $bStayDisconnected Then
+				ClickP($aAway, 1, 0, "#0000") ;Click Away
+				Return FuncReturn("OK")
+			EndIf
+			If _Sleep(600) Then Return FuncReturn("Exit")
 			SetLog("   2. Click Account [" & $NextAccount + 1 & "]")
-			If _Sleep(600) Then Return "Exit"
+			Click(383, $YCoord) ; Click Account
+			If _Sleep(600) Then Return FuncReturn("Exit")
 			;ExitLoop
-			Return "OK"
-		ElseIf _ColorCheck(_GetPixelColor($aButtonDisconnected[0], $aButtonDisconnected[1], True), Hex($aButtonDisconnected[2], 6), $aButtonDisconnected[3]) And $i = 6 Then ; Red, double click did not work, try click Disconnect 1 more time
-			If _Sleep(250) Then Return "Exit"
-			Click($aButtonDisconnected[0], $aButtonDisconnected[1]) ; Click Disconnect
+			Return FuncReturn("OK")
+		ElseIf (Not $bLateDisconnectButtonCheck Or $i = 6) And _ColorCheck(_GetPixelColor($aButtonDisconnected[0], $aButtonDisconnected[1], True), Hex($aButtonDisconnected[2], 6), $aButtonDisconnected[3]) Then ; Red, double click did not work, try click Disconnect 1 more time
+			If $bStayDisconnected Then
+				ClickP($aAway, 1, 0, "#0000") ;Click Away
+				Return FuncReturn("OK")
+			EndIf
+			If _Sleep(250) Then Return FuncReturn("Exit")
 			SetLog("   1.1. Click Disconnect again")
-			If _Sleep(600) Then Return "Exit"
+			Click($aButtonDisconnected[0], $aButtonDisconnected[1]) ; Click Disconnect
+			If _Sleep(600) Then Return FuncReturn("Exit")
+		ElseIf _ColorCheck(_GetPixelColor($aButtonSuperCellIdConnected[0], $aButtonSuperCellIdConnected[1], True), Hex($aButtonSuperCellIdConnected[2], 6), $aButtonSuperCellIdConnected[3]) Then ; Green
+			;SetLog("Account connected to SuperCell ID, cannot disconnect")
+			If $bStayDisconnected Then
+				ClickP($aAway, 1, 0, "#0000") ;Click Away
+				Return FuncReturn("OK")
+			EndIf
 		EndIf
 		If $i = 20 Then
 			$bResult = False
 			;ExitLoop 2
-			Return "Error"
+			Return FuncReturn("Error")
 		EndIf
-		If _Sleep(900) Then Return "Exit"
+		If _Sleep(900) Then Return FuncReturn("Exit")
 	Next
-	Return "" ; should never get here
+	Return FuncReturn("") ; should never get here
 EndFunc   ;==>SwitchCOCAcc_ClickAccount
 
-Func SwitchCOCAcc_ConfirmAccount(ByRef $bResult, $iStep = 3)
+Func SwitchCOCAcc_ConfirmAccount(ByRef $bResult, $iStep = 3, $bDisconnectAfterSwitch = $g_bChkSharedPrefs)
 	For $i = 0 To 30 ; Checking Load Button continuously in 30sec
 		If _ColorCheck(_GetPixelColor($aButtonConnected[0], $aButtonConnected[1], True), Hex($aButtonConnected[2], 6), $aButtonConnected[3]) Then ; Green
 			SetLog("Already in current account")
+			If $bDisconnectAfterSwitch Then
+				Switch SwitchCOCAcc_DisconnectConnect($bResult)
+					Case "OK"
+						; all good
+					Case "Error"
+						; some problem
+						Return "Error"
+					Case "Exit"
+						; no $g_bRunState
+						Return "Exit"
+				EndSwitch
+			EndIf
 			ClickP($aAway, 2, 0, "#0167") ; Click Away
 			If _Sleep(500) Then Return "Exit"
 			$bResult = True
@@ -342,22 +432,22 @@ Func SwitchCOCAcc_ConfirmAccount(ByRef $bResult, $iStep = 3)
 			Return "OK"
 		ElseIf _ColorCheck(_GetPixelColor($aButtonVillageLoad[0], $aButtonVillageLoad[1], True), Hex($aButtonVillageLoad[2], 6), $aButtonVillageLoad[3]) Then ; Load Button
 			If _Sleep(250) Then Return "Exit"
-			Click($aButtonVillageLoad[0], $aButtonVillageLoad[1], 1, 0, "Click Load") ; Click Load
 			SetLog("   " & $iStep & ". Click Load button")
+			Click($aButtonVillageLoad[0], $aButtonVillageLoad[1], 1, 0, "Click Load") ; Click Load
 
 			For $j = 0 To 25 ; Checking Text Box and OKAY Button continuously in 25sec
 				If _ColorCheck(_GetPixelColor($aButtonVillageOkay[0], $aButtonVillageOkay[1], True), Hex($aButtonVillageOkay[2], 6), $aButtonVillageOkay[3]) Then ; with modified texts.csv OKAY Button may be already green
 					If _Sleep(250) Then Return "Exit"
-					Click($aButtonVillageOkay[0], $aButtonVillageOkay[1], 1, 0, "Click OKAY")
 					SetLog("   " & ($iStep + 1) & ". Click OKAY")
+					Click($aButtonVillageOkay[0], $aButtonVillageOkay[1], 1, 0, "Click OKAY")
 					SetLog("Please wait for loading CoC...!")
 					$bResult = True
 					;ExitLoop 2
 					Return "OK"
 				ElseIf _ColorCheck(_GetPixelColor($aTextBox[0], $aTextBox[1], True), Hex($aTextBox[2], 6), $aTextBox[3]) Then ; Pink (close icon)
 					If _Sleep(250) Then Return "Exit"
-					Click($aTextBox[0], $aTextBox[1], 1, 0, "Click Text box")
 					SetLog("   " & ($iStep + 1) & ". Click text box & type CONFIRM")
+					Click($aTextBox[0], $aTextBox[1], 1, 0, "Click Text box")
 					If _Sleep(500) Then Return "Exit"
 					AndroidSendText("CONFIRM")
 					ExitLoop
@@ -373,10 +463,30 @@ Func SwitchCOCAcc_ConfirmAccount(ByRef $bResult, $iStep = 3)
 			For $k = 0 To 10 ; Checking OKAY Button continuously in 10sec
 				If _ColorCheck(_GetPixelColor($aButtonVillageOkay[0], $aButtonVillageOkay[1], True), Hex($aButtonVillageOkay[2], 6), $aButtonVillageOkay[3]) Then
 					If _Sleep(250) Then Return "Exit"
-					Click($aButtonVillageOkay[0], $aButtonVillageOkay[1], 1, 0, "Click OKAY")
 					SetLog("   " & ($iStep + 2) & ". Click OKAY")
+					Click($aButtonVillageOkay[0], $aButtonVillageOkay[1], 1, 0, "Click OKAY")
 					SetLog("Please wait for loading CoC...!")
 					$bResult = True
+					If $bDisconnectAfterSwitch Then
+						If Not checkMainScreen() Then
+							SetLog("Cannot Disconnect account", $COLOR_ERROR)
+							Return "Error"
+						EndIf
+						Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
+						If _Sleep(500) Then Return
+
+						Switch SwitchCOCAcc_DisconnectConnect($bResult)
+							Case "OK"
+								; all good
+							Case "Error"
+								; some problem
+								Return "Error"
+							Case "Exit"
+								; no $g_bRunState
+								Return "Exit"
+						EndSwitch
+					EndIf
+
 					;ExitLoop 2
 					Return "OK"
 				EndIf
@@ -539,8 +649,8 @@ EndFunc   ;==>releaseSwitchAccountMutex
 Func CheckGoogleSelectAccount($bSelectFirst = True)
 
 	Local $bResult = True
-
-	If _ColorCheck(_GetPixelColor($aListAccount[0], $aListAccount[1], False), Hex($aListAccount[2], 6), $aListAccount[3]) Then ;	Grey
+	Local $pColor = _GetPixelColor($aListAccount[0], $aListAccount[1], False)
+	If _ColorCheck($pColor, Hex($aListAccount[2], 6), $aListAccount[3]) Then ; White
 
 		SetDebugLog("Found open Google Accounts list pixel")
 
@@ -548,6 +658,12 @@ Func CheckGoogleSelectAccount($bSelectFirst = True)
 		If UBound(decodeSingleCoord(FindImageInPlace("GoogleSelectAccount", $g_sImgGoogleSelectAccount, "180,400(90,300)", False))) > 1 Then
 			; Google Account selection found
 			SetLog("Found open Google Accounts list")
+
+			If $g_bChkSharedPrefs Then
+				SetLog("Close Google Accounts list")
+				Click(90, 400) ; Close Window
+				Return True
+			EndIf
 
 			Local $a = decodeSingleCoord(FindImageInPlace("GoogleSelectEmail", $g_sImgGoogleSelectEmail, "220,80(400,600)", False))
 			If UBound($a) > 1 Then
@@ -569,6 +685,8 @@ Func CheckGoogleSelectAccount($bSelectFirst = True)
 		Else
 			SetDebugLog("Open Google Accounts list not verified")
 		EndIf
+	Else
+		If $g_bDebugSetlog Then SetDebugLog("CheckGoogleSelectAccount pixel color: " & $pColor)
 	EndIf
 
 	Return $bResult

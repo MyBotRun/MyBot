@@ -55,9 +55,18 @@ Func renameProfile()
 			$g_hAttackLogFile = 0
 		EndIf
 
-		; Remove the directory and all files and sub folders.
+		; rename the directory and all files and sub folders.
 		DirMove($originalPath, $newPath, $FC_NOOVERWRITE)
+		
+		; rename also private pofile folder
+		$originalPath = $g_sPrivateProfilePath & "\" & GUICtrlRead($g_hCmbProfile)
+		$newPath = $g_sPrivateProfilePath & "\" & $g_sProfileCurrentName
+		If FileExists($originalPath) Then
+			; Remove the directory and all files and sub folders.
+			DirMove($originalPath, $newPath, $FC_NOOVERWRITE)
+		EndIf
 	EndIf
+	
 EndFunc   ;==>renameProfile
 
 Func deleteProfile()
@@ -82,13 +91,19 @@ Func deleteProfile()
 		EndIf
 		; Remove the directory and all files and sub folders.
 		DirRemove($deletePath, $DIR_REMOVE)
+		
+		$deletePath = $g_sPrivateProfilePath & "\" & $sProfile
+		If FileExists($deletePath) Then
+			; Remove the directory and all files and sub folders.
+			DirRemove($deletePath, $DIR_REMOVE)
+		EndIf
 		Return True
 	EndIf
 	Return False
 EndFunc   ;==>deleteProfile
 
 Func createProfile($bCreateNew = False)
-	FuncReturn(createProfile)
+	FuncEnter(createProfile)
 	If $bCreateNew = True Then
 		; create new profile (recursive call from setupProfile() and selectProfile() !!!)
 		setupProfileComboBox()
@@ -102,6 +117,7 @@ Func createProfile($bCreateNew = False)
 
 	; create the profile directory if it doesn't already exist.
 	DirCreate($g_sProfilePath & "\" & $g_sProfileCurrentName)
+	DirCreate($g_sPrivateProfilePath & "\" & $g_sProfileCurrentName)
 
 	; If the Profiles file does not exist create it.
 	If Not FileExists($g_sProfilePath & "\profile.ini") Then
@@ -218,8 +234,9 @@ Func aquireProfileMutex($sProfile = Default, $bReturnOnlyMutex = Default, $bShow
 		Return 2
 	EndIf
 
-	; try to aquire mutex
-	Local $hMutex_Profile = CreateMutex(StringReplace($g_sProfilePath & "\" & $sProfile, "\", "-"))
+	; try to aquire mutex, since 7.4.4 beta 3, it's not using full pathname anymore to ensure shared_prefs with same village name is not used by different bot installs
+	; Local $hMutex_Profile = CreateMutex(StringReplace($g_sProfilePath & "\" & $sProfile, "\", "-"))
+	Local $hMutex_Profile = CreateMutex("MyBot.run-Profile-" & $sProfile)
 	If $bReturnOnlyMutex Then
 		Return $hMutex_Profile
 	EndIf
@@ -260,7 +277,7 @@ EndFunc   ;==>releaseProfileMutex
 
 Func releaseProfilesMutex($bCurrentAlso = False)
 	If UBound($g_ahMutex_Profile) > 0 Then
- 		Local $iReleased = 0
+		Local $iReleased = 0
 		For $i = 0 To UBound($g_ahMutex_Profile) - 1
 			If $bCurrentAlso Or $g_sProfileCurrentName <> $g_ahMutex_Profile[$i - $iReleased][0] Then
 				If releaseProfileMutex($g_ahMutex_Profile[$i - $iReleased][0]) Then $iReleased += 1

@@ -186,6 +186,7 @@ Func EnableSearchPanels($mode)
 			   GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBNotWaitHeroes) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBSpellsWait) = $GUI_CHECKED Then
 				_GUI_Value_STATE("SHOW", $groupHerosDB)
 				;search
@@ -221,6 +222,7 @@ Func EnableSearchPanels($mode)
 			   GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABNotWaitHeroes) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABSpellsWait) = $GUI_CHECKED Then
 				_GUI_Value_STATE("SHOW", $groupHerosAB)
 				;search
@@ -745,3 +747,10 @@ Func tsCheckAll()
 	EndIf
 	tabSEARCH()
 EndFunc   ;==>tsCheckAll
+
+Func chkNotWaitHeroes()
+	If $g_abAttackTypeEnable[$DB] Then $g_iSearchNotWaitHeroesEnable = $g_aiSearchNotWaitHeroesEnable[$DB]
+	If $g_abAttackTypeEnable[$LB] Then
+		If $g_iSearchNotWaitHeroesEnable <> 0 Then $g_iSearchNotWaitHeroesEnable = $g_aiSearchNotWaitHeroesEnable[$LB]
+	EndIf
+EndFunc   ;==>ChkNotWaitHeroes
