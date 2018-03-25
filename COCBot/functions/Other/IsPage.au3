@@ -93,12 +93,12 @@ Func IsMainPageBuilderBase($iLoop = 30)
 
 	If IsPageLoop($aIsOnBuilderIsland, $iLoop) Then
 		$g_bMainWindowOk = True
-		If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window OK**", $COLOR_ACTION)
+		If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window Builder Base OK**", $COLOR_ACTION)
 		Return True
 	EndIf
 
 	$g_bMainWindowOk = False
-	If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window FAIL**", $COLOR_ACTION)
+	If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window Builder Base FAIL**", $COLOR_ACTION)
 	If $g_bDebugImageSave Then DebugImageSave("IsMainPageBuilderBase")
 	If $iLoop > 1 Then AndroidPageError("IsMainPageBase")
 	Return False

@@ -21,7 +21,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 	$iCount = 0
 	For $i = 0 To 105 ;105*2000 = 3.5 Minutes
 		If Not $g_bRunState Then Return
-		If $g_bDebugSetlog Then SetDebugLog("ChkObstl Loop = " & $i & ", ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
+		If $g_bDebugSetlog Then SetDebugLog("waitMainScreen ChkObstl Loop = " & $i & ", ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		$iCount += 1
 		Local $hWin = $g_hAndroidWindow
 		If TestCapture() = False Then
@@ -95,7 +95,7 @@ Func waitMainScreenMini()
 	For $i = 0 To 60 ;30*2000 = 1 Minutes
 		If Not $g_bRunState Then Return
 		If Not TestCapture() And WinGetAndroidHandle() = 0 Then ExitLoop ; sets @error to 1
-		If $g_bDebugSetlog Then SetDebugLog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
+		If $g_bDebugSetlog Then SetDebugLog("waitMainScreenMini ChkObstl Loop = " & $i & " ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		$iCount += 1
 		_CaptureRegion()
 		If Not _CheckPixel($aIsMain, $g_bNoCapturePixel) Then ;Checks for Main Screen

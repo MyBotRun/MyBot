@@ -16,7 +16,7 @@
 
 ;Global $g_hGUI_NEWSMARTZAP = 0
 Global $g_hChkSmartLightSpell = 0, $g_hChkSmartEQSpell = 0, $g_hChkNoobZap = 0, $g_hChkSmartZapDB = 0, $g_hChkSmartZapSaveHeroes = 0, _
-	   $g_hTxtSmartMinDark = 0, $g_hTxtSmartExpectedDE = 0, $g_hChkDebugSmartZap = 0, $g_hChkSmartZapFTW = 0
+	   $g_hTxtSmartZapMinDE = 0, $g_hTxtSmartExpectedDE = 0, $g_hChkDebugSmartZap = 0, $g_hChkSmartZapFTW = 0
 
 Global $g_hLblSmartUseLSpell = 0, $g_hLblSmartUseEQSpell = 0,  $g_hLblSmartZap = 0, $g_hLblNoobZap = 0, $g_hLblSmartLightningUsed = 0, $g_hLblSmartEarthQuakeUsed = 0
 
@@ -72,7 +72,7 @@ Func CreateAttackNewSmartZap()
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 200 + 9, $y + 11, 24, 24)
 		GUICtrlCreateGroup("", $x + 199, $y - 1, 192, 106)
 		$g_hLblSmartZap = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-SmartZap", "LblSmartZap", "Min. amount of Dark Elixir") & ":", $x + 160 + 79, $y + 12, -1, -1)
-		$g_hTxtSmartMinDark = GUICtrlCreateInput("350", $x + 289, $y + 32, 90, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$g_hTxtSmartZapMinDE = GUICtrlCreateInput("350", $x + 289, $y + 32, 90, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-SmartZap", "LblSmartZap_Info_01", "Set the Value of the minimum amount of Dark Elixir in the Drills"))
 			GUICtrlSetLimit(-1, 3)
 			GUICtrlSetOnEvent(-1, "txtMinDark")

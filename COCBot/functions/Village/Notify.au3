@@ -498,13 +498,13 @@ Func NotifyGetLastMessageFromTelegram()
 
 EndFunc   ;==>NotifyGetLastMessageFromTelegram
 
-Func _IsInternet(); Checking the connection of the card to the Internet
-    Local $Ret = DllCall('wininet.dll', 'int', 'InternetGetConnectedState', 'dword*', 0x20, 'dword', 0)
-    If @error Then
-        Return SetError(1, 0, 0)
-    EndIf
-    Local $Error = _WinAPI_GetLastError()
-    Return SetError((Not ($Error = 0)), $Error, $Ret[0])
+Func _IsInternet() ; Checking the connection of the card to the Internet
+	Local $Ret = DllCall('wininet.dll', 'int', 'InternetGetConnectedState', 'dword*', 0x20, 'dword', 0)
+	If @error Then
+		Return SetError(1, 0, 0)
+	EndIf
+	Local $Error = _WinAPI_GetLastError()
+	Return SetError((Not ($Error = 0)), $Error, $Ret[0])
 EndFunc   ;==>_IsInternet
 
 Func NotifyGetLastMessageFromTelegramBtnStart()
@@ -545,8 +545,8 @@ Func NotifyGetLastMessageFromTelegramBtnStart()
 	Local $Result2 = Execute('$oHTTP.ResponseText')
 
 	If _IsInternet() < 1 Then
-	     SetLog("Telegram: Check your internet connection! No Connection..", $COLOR_ERROR)
-		 Return
+		SetLog("Telegram: Check your internet connection! No Connection..", $COLOR_ERROR)
+		Return
 	EndIf
 
 	Local $findstr2 = StringRegExp(StringUpper($Result2), '"TEXT":"')
@@ -561,7 +561,7 @@ Func NotifyGetLastMessageFromTelegramBtnStart()
 		Return $TGLastMessage
 	EndIf
 
-EndFunc   ;==>NotifyGetLastMessageFromTelegram
+EndFunc   ;==>NotifyGetLastMessageFromTelegramBtnStart
 
 Func NotifyActivateKeyboardOnTelegram($TGMsg)
 	If $g_bDebugSetlog Then SetDebugLog("Notify | NotifyActivateKeyboardOnTelegram($TGMsg): " & $TGMsg)
@@ -612,13 +612,13 @@ Func NotifyRemoteControlProcBtnStart()
 		If $g_iTGLastRemote <> $g_sTGLast_UID Then
 			$g_iTGLastRemote = $g_sTGLast_UID
 
-				Switch $TGActionMSG
-					Case GetTranslatedFileIni("MBR Func_Notify", "START", "START"), '\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START")
-						btnStart()
-						NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_01", "Request to Start...") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_02", "Your bot is now started..."))
-				EndSwitch
+			Switch $TGActionMSG
+				Case GetTranslatedFileIni("MBR Func_Notify", "START", "START"), '\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START")
+					btnStart()
+					NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_01", "Request to Start...") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_02", "Your bot is now started..."))
+			EndSwitch
 		EndIf
-    EndIf
+	EndIf
 	SetDebugLogSilent($bWasSilent)
 EndFunc   ;==>NotifyRemoteControlProcBtnStart
 ; Telegram ---------------------------------
@@ -966,6 +966,9 @@ Func NotifyRemoteControlProc()
 						$txtStats &= $g_iNbrOfWallsUppedGold & "/ [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & $g_iNbrOfWallsUppedElixir & "\n\n" & GetTranslatedFileIni("MBR Func_Notify", "Attack_Info_01", "Attacked") & ": "
 						$txtStats &= $g_aiAttackedCount & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Skip_Info_02", "Skipped") & ": " & $g_iSkippedVillageCount
 						$txtStats &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_07", "Run Time") & ": " & GUICtrlRead($g_hLblResultRuntime)
+						$txtStats &= "\n\n" & "Clan Games:"
+						$txtStats &= "\n" & "[T]: " & GUICtrlRead($g_hLblRemainTime) & " [S]: " & GUICtrlRead($g_hLblYourScore)
+						$txtStats &= "\n" & " "
 						NotifyPushToTelegram($g_sNotifyOrigin & $txtStats)
 					Case GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG"), '\UD83D\UDCCB ' & GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG")
 						SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Log is now sent", $COLOR_SUCCESS)
@@ -1010,7 +1013,7 @@ Func NotifyRemoteControlProc()
 						SetLog("Notify Telegram: Your request has been received. Sending Troop/Spell Stats...", $COLOR_SUCCESS)
 						; $g_aiCurrentTroops[$eTroopCount] is the current troops quantities
 						Local $txtTroopStats = " | " & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_01", "Troops/Spells Train Status") & ":\n" & _
-								"Barbs:" & $g_aiCurrentTroops[$eTroopBarbarian] & " of " & $g_aiArmyCompTroops[$eTroopBarbarian] & " | Arch:" & $g_aiCurrentTroops[$eTroopArcher] & " of " & $g_aiArmyCompTroops[$eTroopArcher] & " | Gobl:" &$g_aiCurrentTroops[$eTroopGoblin] & " of " &  $g_aiArmyCompTroops[$eTroopGoblin] & "\n" & _
+								"Barbs:" & $g_aiCurrentTroops[$eTroopBarbarian] & " of " & $g_aiArmyCompTroops[$eTroopBarbarian] & " | Arch:" & $g_aiCurrentTroops[$eTroopArcher] & " of " & $g_aiArmyCompTroops[$eTroopArcher] & " | Gobl:" & $g_aiCurrentTroops[$eTroopGoblin] & " of " & $g_aiArmyCompTroops[$eTroopGoblin] & "\n" & _
 								"Giant:" & $g_aiCurrentTroops[$eTroopGiant] & " of " & $g_aiArmyCompTroops[$eTroopGiant] & " | WallB:" & $g_aiCurrentTroops[$eTroopWallBreaker] & " of " & $g_aiArmyCompTroops[$eTroopWallBreaker] & " | Wiza:" & $g_aiCurrentTroops[$eTroopWizard] & " of " & $g_aiArmyCompTroops[$eTroopWizard] & "\n" & _
 								"Balloon:" & $g_aiCurrentTroops[$eTroopBalloon] & " of " & $g_aiArmyCompTroops[$eTroopBalloon] & " | Heal:" & $g_aiCurrentTroops[$eTroopHealer] & " of " & $g_aiArmyCompTroops[$eTroopHealer] & " | Dragon:" & $g_aiCurrentTroops[$eTroopDragon] & " of " & $g_aiArmyCompTroops[$eTroopDragon] & " | Pekka:" & $g_aiCurrentTroops[$eTroopPekka] & " of " & $g_aiArmyCompTroops[$eTroopPekka] & "\n" & _
 								"Mini:" & $g_aiCurrentTroops[$eTroopMinion] & " of " & $g_aiArmyCompTroops[$eTroopMinion] & " | Hogs:" & $g_aiCurrentTroops[$eTroopHogRider] & " of " & $g_aiArmyCompTroops[$eTroopHogRider] & " | Valks:" & $g_aiCurrentTroops[$eTroopValkyrie] & " of " & $g_aiArmyCompTroops[$eTroopValkyrie] & "\n" & _

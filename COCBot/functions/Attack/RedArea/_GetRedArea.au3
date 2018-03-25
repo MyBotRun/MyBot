@@ -384,6 +384,7 @@ Func PixelArrayToString(Const ByRef $PixelList, $sDelim = "-")
 EndFunc   ;==>PixelArrayToString
 
 Func PixelToString(Const ByRef $Pixel, $sDelim = "-")
+	If UBound($Pixel) < 2 Then Return ""
 	Return $Pixel[0] & $sDelim & $Pixel[1]
 EndFunc   ;==>PixelToString
 

@@ -381,6 +381,7 @@ Global Const $g_iAndroidTimeLagRebootThreshold = 2 ; Reboot Andoid after # of ti
 Global Const $g_iAndroidTimeLagResetProblemCountMinutes = 5 ; Reset time lag problem count after specified Minutes
 
 Global Const $g_iAndroidRebootPageErrorCount = 5 ; Reboots Android automatically after so many IsPage errors (uses $AndroidPageError[0] and $g_iAndroidRebootPageErrorPerMinutes)
+Global Const $g_iAndroidRebootAdbCommandErrorCount = 10 ; Reboots Android automatically after so many ADB command erros
 Global Const $g_iAndroidRebootPageErrorPerMinutes = 10 ; Reboot Android if $AndroidPageError[0] errors occurred in $g_iAndroidRebootPageErrorPerMinutes Minutes
 Global $g_hProcShieldInput[5] = [0, 0, False, False, 0] ; Stores Android Shield variables and states
 
@@ -451,6 +452,7 @@ Global $g_hLogFile = 0
 Global $g_hAttackLogFile = 0
 Global $g_hSwitchLogFile = 0
 Global $g_bFlushGuiLogActive = False ; when RichEdit Log control get updated, focus change occur and this flag is required to avoid focus change due to GUIControl_WM_ACTIVATEAPP events
+Global $g_iLogCheckFreeSpaceMB = 100 ; If > 0, check every 10 Minutes when logging messages, that at least 100 MB are free on profile folder or bot stops
 
 ; Used in _Sleep.au3 to control various administrative tasks when idle
 Global $g_hStruct_SleepMicro = DllStructCreate("int64 time;") ; holds the _SleepMilli sleep time in 100-nanoseconds
@@ -628,7 +630,7 @@ Global Const $g_aiTroopCostPerLevel[$eTroopCount][9] = [ _
 		[8, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000], _  ; Wizard
 		[5, 5000, 6000, 8000, 10000, 15000], _					; Healer
 		[6, 25000, 29000, 33000, 37000, 42000, 46000], _ 		; Dragon
-		[6, 28000, 32000, 36000, 40000, 45000, 50000], _ 		; Pekka
+		[7, 28000, 32000, 36000, 40000, 45000, 50000, 55000], _ ; Pekka
 		[5, 15000, 16000, 17000, 18000, 19000], _ 			 	; BabyDragon
 		[5, 4200, 4800, 5200, 5600, 6000], _  					; Miner
 		[7, 6, 7, 8, 9, 10, 11, 12], _ 							; Minion
@@ -1152,8 +1154,10 @@ Global $g_bForceClanCastleDetection = 0
 ; <<< nothing here >>>
 
 ; <><><><> Bot / Profiles <><><><>
-Global $g_iCmbSwitchAcc = 0, $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_iTrainTimeToSkip = 0, $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False
-Global $g_iTotalAcc = -1, $g_iNextAccount, $g_iCurAccount, $g_bChkSharedPrefs = False, $g_bDonateLikeCrazy = False
+Global $g_iCmbSwitchAcc = 0 ; Group switch accounts
+Global $g_bChkGooglePlay = True, $g_bChkSuperCellID = False, $g_bChkSharedPrefs = False ; Accounts switch mode
+Global $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_bDonateLikeCrazy = False, $g_iTotalAcc = -1, $g_iTrainTimeToSkip = 0
+Global $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False, $g_iNextAccount, $g_iCurAccount
 Global $g_abAccountNo[8], $g_asProfileName[8], $g_abDonateOnly[8]
 Global $g_aiAttackedCountSwitch[8], $g_iActiveSwitchCounter = 0, $g_iDonateSwitchCounter = 0
 Global $g_aiRemainTrainTime[8], $g_aiTimerStart[8], $g_abPBActive[8]
@@ -1633,3 +1637,20 @@ $g_oBldgImages.add($eBldgWizTower & "_" & "1", @ScriptDir & "\imgxml\Buildings\W
 $g_oBldgImages.add($eBldgMortar & "_" & "0", @ScriptDir & "\imgxml\Buildings\Mortars")
 $g_oBldgImages.add($eBldgAirDefense & "_" & "0", @ScriptDir & "\imgxml\Buildings\ADefense")
 ; EOF
+
+; Clan Games v3
+Global $g_bChkClanGamesAir = 0, $g_bChkClanGamesGround = 0, $g_bChkClanGamesMisc = 0
+Global $g_bChkClanGamesEnabled = 0
+Global $g_bChkClanGamesLoot = 0
+Global $g_bChkClanGamesBattle = 0
+Global $g_bChkClanGamesDestruction = 0
+Global $g_bChkClanGamesAirTroop = 0
+Global $g_bChkClanGamesGroundTroop = 0
+Global $g_bChkClanGamesMiscellaneous = 0
+Global $g_bChkClanGamesPurge = 0
+Global $g_bChkClanGamesStopBeforeReachAndPurge = 0
+Global $g_bChkClanGamesDebug = 0
+Global $g_iPurgeJobCount[8] = [0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_iPurgeMax = 5 ; [0] is unlimited , 1-10
+
+Global $g_bChkCollectFreeMagicItems = True

@@ -4,12 +4,12 @@
 #pragma compile(Out, MyBot.run.exe) ; Required
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
-#pragma compile(ProductVersion, 7.4)
-#pragma compile(FileVersion, 7.4)
+#pragma compile(ProductVersion, 7.5)
+#pragma compile(FileVersion, 7.5)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.4.4"
+Global $g_sBotVersion = "v7.5"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -147,15 +147,12 @@ Global Const $FLTAR_NOPATH = 0
 Global Const $FLTAR_RELPATH = 1
 Global Const $MB_OK = 0
 Global Const $MB_OKCANCEL = 1
-Global Const $MB_YESNO = 4
-Global Const $MB_ICONERROR = 16
 Global Const $MB_ICONWARNING = 48
 Global Const $MB_ICONINFORMATION = 64
 Global Const $MB_APPLMODAL = 0
 Global Const $MB_SYSTEMMODAL = 4096
 Global Const $MB_TOPMOST = 0x00040000
 Global Const $IDOK = 1
-Global Const $IDYES = 6
 Global Const $SE_PRIVILEGE_ENABLED = 0x00000002
 Global Enum $SECURITYANONYMOUS = 0, $SECURITYIDENTIFICATION, $SECURITYIMPERSONATION, $SECURITYDELEGATION
 Global Const $TOKEN_QUERY = 0x00000008
@@ -1239,6 +1236,7 @@ Global Const $GUI_HIDE = 32
 Global Const $GUI_ENABLE = 64
 Global Const $GUI_DISABLE = 128
 Global Const $GUI_FOCUS = 256
+Global Const $GUI_FONTNORMAL = 0
 Global Const $GUI_FONTUNDER = 4
 Global Const $GUI_DOCKLEFT = 0x0002
 Global Const $GUI_DOCKBOTTOM = 0x0040
@@ -1886,6 +1884,7 @@ Global Const $SS_RIGHT = 0x2
 Global Const $SS_BLACKRECT = 0x4
 Global Const $SS_GRAYRECT = 0x5
 Global Const $SS_WHITERECT = 0x6
+Global Const $SS_BITMAP = 0xE
 Global Const $SS_SUNKEN = 0x1000
 Global Const $STM_SETIMAGE = 0x0172
 Global Const $TCS_MULTILINE = 0x00000200
@@ -3186,404 +3185,6 @@ Case Else
 Return SetError(2, 0, False)
 EndSwitch
 Return UBound($aArray, $UBOUND_ROWS)
-EndFunc
-Func _ArrayDisplay(Const ByRef $aArray, $sTitle = Default, $sArrayRange = Default, $iFlags = Default, $vUser_Separator = Default, $sHeader = Default, $iMax_ColWidth = Default, $iAlt_Color = Default, $hUser_Function = Default)
-If $sTitle = Default Then $sTitle = "ArrayDisplay"
-If $sArrayRange = Default Then $sArrayRange = ""
-If $iFlags = Default Then $iFlags = 0
-If $vUser_Separator = Default Then $vUser_Separator = ""
-If $sHeader = Default Then $sHeader = ""
-If $iMax_ColWidth = Default Then $iMax_ColWidth = 350
-If $iAlt_Color = Default Then $iAlt_Color = 0
-If $hUser_Function = Default Then $hUser_Function = 0
-Local $iTranspose = BitAND($iFlags, 1)
-Local $iColAlign = BitAND($iFlags, 6)
-Local $iVerbose = BitAND($iFlags, 8)
-Local $iButtonMargin =((BitAND($iFlags, 32)) ?(0) :((BitAND($iFlags, 16)) ?(20) :(40)))
-Local $iNoRow = BitAND($iFlags, 64)
-Local $sMsg = "", $iRet = 1
-If IsArray($aArray) Then
-Local $iDimension = UBound($aArray, $UBOUND_DIMENSIONS), $iRowCount = UBound($aArray, $UBOUND_ROWS), $iColCount = UBound($aArray, $UBOUND_COLUMNS)
-If $iDimension > 2 Then
-$sMsg = "Larger than 2D array passed to function"
-$iRet = 2
-EndIf
-Else
-$sMsg = "No array variable passed to function"
-EndIf
-If $sMsg Then
-If $iVerbose And MsgBox($MB_SYSTEMMODAL + $MB_ICONERROR + $MB_YESNO, "ArrayDisplay Error: " & $sTitle, $sMsg & @CRLF & @CRLF & "Exit the script?") = $IDYES Then
-Exit
-Else
-Return SetError($iRet, 0, "")
-EndIf
-EndIf
-Local $iCW_ColWidth = Number($vUser_Separator)
-Local $sAD_Separator = ChrW(0xFAB1)
-Local $sCurr_Separator = Opt("GUIDataSeparatorChar", $sAD_Separator)
-If $vUser_Separator = "" Then $vUser_Separator = $sCurr_Separator
-Local $vTmp, $iRowLimit = 65525, $iColLimit = 250
-Local $iDataRow = $iRowCount
-Local $iDataCol = $iColCount
-Local $iItem_Start = 0, $iItem_End = $iRowCount - 1, $iSubItem_Start = 0, $iSubItem_End =(($iDimension = 2) ?($iColCount - 1) :(0))
-Local $bRange_Flag = False, $avRangeSplit
-If $sArrayRange Then
-Local $aArray_Range = StringRegExp($sArrayRange & "||", "(?U)(.*)\|", 3)
-If $aArray_Range[0] Then
-$avRangeSplit = StringSplit($aArray_Range[0], ":")
-If @error Then
-$iItem_End = Number($avRangeSplit[1])
-Else
-$iItem_Start = Number($avRangeSplit[1])
-$iItem_End = Number($avRangeSplit[2])
-EndIf
-EndIf
-If $iItem_Start > $iItem_End Then
-$vTmp = $iItem_Start
-$iItem_Start = $iItem_End
-$iItem_End = $vTmp
-EndIf
-If $iItem_Start < 0 Then $iItem_Start = 0
-If $iItem_End > $iRowCount - 1 Then $iItem_End = $iRowCount - 1
-If $iItem_Start <> 0 Or $iItem_End <> $iRowCount - 1 Then $bRange_Flag = True
-If $iDimension = 2 And $aArray_Range[1] Then
-$avRangeSplit = StringSplit($aArray_Range[1], ":")
-If @error Then
-$iSubItem_End = Number($avRangeSplit[1])
-Else
-$iSubItem_Start = Number($avRangeSplit[1])
-$iSubItem_End = Number($avRangeSplit[2])
-EndIf
-If $iSubItem_Start > $iSubItem_End Then
-$vTmp = $iSubItem_Start
-$iSubItem_Start = $iSubItem_End
-$iSubItem_End = $vTmp
-EndIf
-If $iSubItem_Start < 0 Then $iSubItem_Start = 0
-If $iSubItem_End > $iColCount - 1 Then $iSubItem_End = $iColCount - 1
-If $iSubItem_Start <> 0 Or $iSubItem_End <> $iColCount - 1 Then $bRange_Flag = True
-EndIf
-EndIf
-Local $sDisplayData = "[" & $iDataRow
-Local $bTruncated = False
-If $iTranspose Then
-If $iItem_End - $iItem_Start > $iColLimit Then
-$bTruncated = True
-$iItem_End = $iItem_Start + $iColLimit - 1
-EndIf
-Else
-If $iItem_End - $iItem_Start > $iRowLimit Then
-$bTruncated = True
-$iItem_End = $iItem_Start + $iRowLimit - 1
-EndIf
-EndIf
-If $bTruncated Then
-$sDisplayData &= "*]"
-Else
-$sDisplayData &= "]"
-EndIf
-If $iDimension = 2 Then
-$sDisplayData &= " [" & $iDataCol
-If $iTranspose Then
-If $iSubItem_End - $iSubItem_Start > $iRowLimit Then
-$bTruncated = True
-$iSubItem_End = $iSubItem_Start + $iRowLimit - 1
-EndIf
-Else
-If $iSubItem_End - $iSubItem_Start > $iColLimit Then
-$bTruncated = True
-$iSubItem_End = $iSubItem_Start + $iColLimit - 1
-EndIf
-EndIf
-If $bTruncated Then
-$sDisplayData &= "*]"
-Else
-$sDisplayData &= "]"
-EndIf
-EndIf
-Local $sTipData = ""
-If $bTruncated Then $sTipData &= "Truncated"
-If $bRange_Flag Then
-If $sTipData Then $sTipData &= " - "
-$sTipData &= "Range set"
-EndIf
-If $iTranspose Then
-If $sTipData Then $sTipData &= " - "
-$sTipData &= "Transposed"
-EndIf
-Local $asHeader = StringSplit($sHeader, $sCurr_Separator, $STR_NOCOUNT)
-If UBound($asHeader) = 0 Then Local $asHeader[1] = [""]
-$sHeader = "Row"
-Local $iIndex = $iSubItem_Start
-If $iTranspose Then
-For $j = $iItem_Start To $iItem_End
-$sHeader &= $sAD_Separator & "Col " & $j
-Next
-Else
-If $asHeader[0] Then
-For $iIndex = $iSubItem_Start To $iSubItem_End
-If $iIndex >= UBound($asHeader) Then ExitLoop
-$sHeader &= $sAD_Separator & $asHeader[$iIndex]
-Next
-EndIf
-For $j = $iIndex To $iSubItem_End
-$sHeader &= $sAD_Separator & "Col " & $j
-Next
-EndIf
-If $iNoRow Then $sHeader = StringTrimLeft($sHeader, 4)
-If $iVerbose And($iItem_End - $iItem_Start + 1) *($iSubItem_End - $iSubItem_Start + 1) > 10000 Then
-SplashTextOn("ArrayDisplay", "Preparing display" & @CRLF & @CRLF & "Please be patient", 300, 100)
-EndIf
-Local $iBuffer = 4094
-If $iTranspose Then
-$vTmp = $iItem_Start
-$iItem_Start = $iSubItem_Start
-$iSubItem_Start = $vTmp
-$vTmp = $iItem_End
-$iItem_End = $iSubItem_End
-$iSubItem_End = $vTmp
-EndIf
-Local $avArrayText[$iItem_End - $iItem_Start + 1]
-For $i = $iItem_Start To $iItem_End
-If Not $iNoRow Then $avArrayText[$i - $iItem_Start] = "[" & $i & "]"
-For $j = $iSubItem_Start To $iSubItem_End
-If $iDimension = 1 Then
-If $iTranspose Then
-Switch VarGetType($aArray[$j])
-Case "Array"
-$vTmp = "{Array}"
-Case Else
-$vTmp = $aArray[$j]
-EndSwitch
-Else
-Switch VarGetType($aArray[$i])
-Case "Array"
-$vTmp = "{Array}"
-Case Else
-$vTmp = $aArray[$i]
-EndSwitch
-EndIf
-Else
-If $iTranspose Then
-Switch VarGetType($aArray[$j][$i])
-Case "Array"
-$vTmp = "{Array}"
-Case Else
-$vTmp = $aArray[$j][$i]
-EndSwitch
-Else
-Switch VarGetType($aArray[$i][$j])
-Case "Array"
-$vTmp = "{Array}"
-Case Else
-$vTmp = $aArray[$i][$j]
-EndSwitch
-EndIf
-EndIf
-If StringLen($vTmp) > $iBuffer Then $vTmp = StringLeft($vTmp, $iBuffer)
-$avArrayText[$i - $iItem_Start] &= $sAD_Separator & $vTmp
-Next
-If $iNoRow Then $avArrayText[$i - $iItem_Start] = StringTrimLeft($avArrayText[$i - $iItem_Start], 1)
-Next
-Local Const $_ARRAYCONSTANT_GUI_DOCKBOTTOM = 64
-Local Const $_ARRAYCONSTANT_GUI_DOCKBORDERS = 102
-Local Const $_ARRAYCONSTANT_GUI_DOCKHEIGHT = 512
-Local Const $_ARRAYCONSTANT_GUI_DOCKLEFT = 2
-Local Const $_ARRAYCONSTANT_GUI_DOCKRIGHT = 4
-Local Const $_ARRAYCONSTANT_GUI_DOCKHCENTER = 8
-Local Const $_ARRAYCONSTANT_GUI_EVENT_CLOSE = -3
-Local Const $_ARRAYCONSTANT_GUI_FOCUS = 256
-Local Const $_ARRAYCONSTANT_GUI_BKCOLOR_LV_ALTERNATE = 0xFE000000
-Local Const $_ARRAYCONSTANT_SS_CENTER = 0x1
-Local Const $_ARRAYCONSTANT_SS_CENTERIMAGE = 0x0200
-Local Const $_ARRAYCONSTANT_LVM_GETITEMCOUNT =(0x1000 + 4)
-Local Const $_ARRAYCONSTANT_LVM_GETITEMRECT =(0x1000 + 14)
-Local Const $_ARRAYCONSTANT_LVM_GETCOLUMNWIDTH =(0x1000 + 29)
-Local Const $_ARRAYCONSTANT_LVM_SETCOLUMNWIDTH =(0x1000 + 30)
-Local Const $_ARRAYCONSTANT_LVM_GETITEMSTATE =(0x1000 + 44)
-Local Const $_ARRAYCONSTANT_LVM_GETSELECTEDCOUNT =(0x1000 + 50)
-Local Const $_ARRAYCONSTANT_LVM_SETEXTENDEDLISTVIEWSTYLE =(0x1000 + 54)
-Local Const $_ARRAYCONSTANT_LVS_EX_GRIDLINES = 0x1
-Local Const $_ARRAYCONSTANT_LVIS_SELECTED = 0x2
-Local Const $_ARRAYCONSTANT_LVS_SHOWSELALWAYS = 0x8
-Local Const $_ARRAYCONSTANT_LVS_EX_FULLROWSELECT = 0x20
-Local Const $_ARRAYCONSTANT_WS_EX_CLIENTEDGE = 0x0200
-Local Const $_ARRAYCONSTANT_WS_MAXIMIZEBOX = 0x00010000
-Local Const $_ARRAYCONSTANT_WS_MINIMIZEBOX = 0x00020000
-Local Const $_ARRAYCONSTANT_WS_SIZEBOX = 0x00040000
-Local Const $_ARRAYCONSTANT_WM_SETREDRAW = 11
-Local Const $_ARRAYCONSTANT_LVSCW_AUTOSIZE = -1
-Local $iCoordMode = Opt("GUICoordMode", 1)
-Local $iOrgWidth = 210, $iHeight = 200, $iMinSize = 250
-Local $hGUI = GUICreate($sTitle, $iOrgWidth, $iHeight, Default, Default, BitOR($_ARRAYCONSTANT_WS_SIZEBOX, $_ARRAYCONSTANT_WS_MINIMIZEBOX, $_ARRAYCONSTANT_WS_MAXIMIZEBOX))
-Local $aiGUISize = WinGetClientSize($hGUI)
-Local $iButtonWidth_2 = $aiGUISize[0] / 2
-Local $iButtonWidth_3 = $aiGUISize[0] / 3
-Local $idListView = GUICtrlCreateListView($sHeader, 0, 0, $aiGUISize[0], $aiGUISize[1] - $iButtonMargin, $_ARRAYCONSTANT_LVS_SHOWSELALWAYS)
-GUICtrlSetBkColor($idListView, $_ARRAYCONSTANT_GUI_BKCOLOR_LV_ALTERNATE)
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_SETEXTENDEDLISTVIEWSTYLE, $_ARRAYCONSTANT_LVS_EX_GRIDLINES, $_ARRAYCONSTANT_LVS_EX_GRIDLINES)
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_SETEXTENDEDLISTVIEWSTYLE, $_ARRAYCONSTANT_LVS_EX_FULLROWSELECT, $_ARRAYCONSTANT_LVS_EX_FULLROWSELECT)
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_SETEXTENDEDLISTVIEWSTYLE, $_ARRAYCONSTANT_WS_EX_CLIENTEDGE, $_ARRAYCONSTANT_WS_EX_CLIENTEDGE)
-Local $idCopy_ID = 9999, $idCopy_Data = 99999, $idData_Label = 99999, $idUser_Func = 99999, $idExit_Script = 99999
-If $iButtonMargin Then
-$idCopy_ID = GUICtrlCreateButton("Copy Data && Hdr/Row", 0, $aiGUISize[1] - $iButtonMargin, $iButtonWidth_2, 20)
-$idCopy_Data = GUICtrlCreateButton("Copy Data Only", $iButtonWidth_2, $aiGUISize[1] - $iButtonMargin, $iButtonWidth_2, 20)
-If $iButtonMargin = 40 Then
-Local $iButtonWidth_Var = $iButtonWidth_2
-Local $iOffset = $iButtonWidth_2
-If IsFunc($hUser_Function) Then
-$idUser_Func = GUICtrlCreateButton("Run User Func", $iButtonWidth_3, $aiGUISize[1] - 20, $iButtonWidth_3, 20)
-$iButtonWidth_Var = $iButtonWidth_3
-$iOffset = $iButtonWidth_3 * 2
-EndIf
-$idExit_Script = GUICtrlCreateButton("Exit Script", $iOffset, $aiGUISize[1] - 20, $iButtonWidth_Var, 20)
-$idData_Label = GUICtrlCreateLabel($sDisplayData, 0, $aiGUISize[1] - 20, $iButtonWidth_Var, 18, BitOR($_ARRAYCONSTANT_SS_CENTER, $_ARRAYCONSTANT_SS_CENTERIMAGE))
-Select
-Case $bTruncated Or $iTranspose Or $bRange_Flag
-GUICtrlSetColor($idData_Label, 0xFF0000)
-GUICtrlSetTip($idData_Label, $sTipData)
-EndSelect
-EndIf
-EndIf
-GUICtrlSetResizing($idListView, $_ARRAYCONSTANT_GUI_DOCKBORDERS)
-GUICtrlSetResizing($idCopy_ID, $_ARRAYCONSTANT_GUI_DOCKLEFT + $_ARRAYCONSTANT_GUI_DOCKBOTTOM + $_ARRAYCONSTANT_GUI_DOCKHEIGHT)
-GUICtrlSetResizing($idCopy_Data, $_ARRAYCONSTANT_GUI_DOCKRIGHT + $_ARRAYCONSTANT_GUI_DOCKBOTTOM + $_ARRAYCONSTANT_GUI_DOCKHEIGHT)
-GUICtrlSetResizing($idData_Label, $_ARRAYCONSTANT_GUI_DOCKLEFT + $_ARRAYCONSTANT_GUI_DOCKBOTTOM + $_ARRAYCONSTANT_GUI_DOCKHEIGHT)
-GUICtrlSetResizing($idUser_Func, $_ARRAYCONSTANT_GUI_DOCKHCENTER + $_ARRAYCONSTANT_GUI_DOCKBOTTOM + $_ARRAYCONSTANT_GUI_DOCKHEIGHT)
-GUICtrlSetResizing($idExit_Script, $_ARRAYCONSTANT_GUI_DOCKRIGHT + $_ARRAYCONSTANT_GUI_DOCKBOTTOM + $_ARRAYCONSTANT_GUI_DOCKHEIGHT)
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_WM_SETREDRAW, 0, 0)
-Local $idItem
-For $i = 0 To UBound($avArrayText) - 1
-$idItem = GUICtrlCreateListViewItem($avArrayText[$i], $idListView)
-If $iAlt_Color Then
-GUICtrlSetBkColor($idItem, $iAlt_Color)
-EndIf
-Next
-If $iColAlign Then
-Local Const $_ARRAYCONSTANT_LVCF_FMT = 0x01
-Local Const $_ARRAYCONSTANT_LVM_SETCOLUMNW =(0x1000 + 96)
-Local $tColumn = DllStructCreate("uint Mask;int Fmt;int CX;ptr Text;int TextMax;int SubItem;int Image;int Order;int cxMin;int cxDefault;int cxIdeal")
-DllStructSetData($tColumn, "Mask", $_ARRAYCONSTANT_LVCF_FMT)
-DllStructSetData($tColumn, "Fmt", $iColAlign / 2)
-Local $pColumn = DllStructGetPtr($tColumn)
-For $i = 1 To $iSubItem_End - $iSubItem_Start + 1
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_SETCOLUMNW, $i, $pColumn)
-Next
-EndIf
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_WM_SETREDRAW, 1, 0)
-Local $iBorder = 45
-If UBound($avArrayText) > 20 Then
-$iBorder += 20
-EndIf
-Local $iWidth = $iBorder, $iColWidth = 0, $aiColWidth[$iSubItem_End - $iSubItem_Start + 2], $iMin_ColWidth = 55
-For $i = 0 To $iSubItem_End - $iSubItem_Start + 1
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_SETCOLUMNWIDTH, $i, $_ARRAYCONSTANT_LVSCW_AUTOSIZE)
-$iColWidth = GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_GETCOLUMNWIDTH, $i, 0)
-If $iColWidth < $iMin_ColWidth Then
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_SETCOLUMNWIDTH, $i, $iMin_ColWidth)
-$iColWidth = $iMin_ColWidth
-EndIf
-$iWidth += $iColWidth
-$aiColWidth[$i] = $iColWidth
-Next
-If $iNoRow Then $iWidth -= 55
-If $iWidth > @DesktopWidth - 100 Then
-$iWidth = $iBorder
-For $i = 0 To $iSubItem_End - $iSubItem_Start + 1
-If $aiColWidth[$i] > $iMax_ColWidth Then
-GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_SETCOLUMNWIDTH, $i, $iMax_ColWidth)
-$iWidth += $iMax_ColWidth
-Else
-$iWidth += $aiColWidth[$i]
-EndIf
-Next
-EndIf
-If $iWidth > @DesktopWidth - 100 Then
-$iWidth = @DesktopWidth - 100
-ElseIf $iWidth < $iMinSize Then
-$iWidth = $iMinSize
-EndIf
-Local $tRECT = DllStructCreate("struct; long Left;long Top;long Right;long Bottom; endstruct")
-DllCall("user32.dll", "struct*", "SendMessageW", "hwnd", GUICtrlGetHandle($idListView), "uint", $_ARRAYCONSTANT_LVM_GETITEMRECT, "wparam", 0, "struct*", $tRECT)
-Local $aiWin_Pos = WinGetPos($hGUI)
-Local $aiLV_Pos = ControlGetPos($hGUI, "", $idListView)
-$iHeight =((UBound($avArrayText) + 2) *(DllStructGetData($tRECT, "Bottom") - DllStructGetData($tRECT, "Top"))) + $aiWin_Pos[3] - $aiLV_Pos[3]
-If $iHeight > @DesktopHeight - 100 Then
-$iHeight = @DesktopHeight - 100
-ElseIf $iHeight < $iMinSize Then
-$iHeight = $iMinSize
-EndIf
-If $iVerbose Then SplashOff()
-GUISetState(@SW_HIDE, $hGUI)
-WinMove($hGUI, "",(@DesktopWidth - $iWidth) / 2,(@DesktopHeight - $iHeight) / 2, $iWidth, $iHeight)
-GUISetState(@SW_SHOW, $hGUI)
-Local $iOnEventMode = Opt("GUIOnEventMode", 0), $iMsg
-While 1
-$iMsg = GUIGetMsg()
-Switch $iMsg
-Case $_ARRAYCONSTANT_GUI_EVENT_CLOSE
-ExitLoop
-Case $idCopy_ID, $idCopy_Data
-Local $iSel_Count = GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_GETSELECTEDCOUNT, 0, 0)
-If $iVerbose And(Not $iSel_Count) And($iItem_End - $iItem_Start) *($iSubItem_End - $iSubItem_Start) > 10000 Then
-SplashTextOn("ArrayDisplay", "Copying data" & @CRLF & @CRLF & "Please be patient", 300, 100)
-EndIf
-Local $sClip = "", $sItem, $aSplit
-For $i = 0 To $iItem_End - $iItem_Start
-If $iSel_Count And Not(GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_GETITEMSTATE, $i, $_ARRAYCONSTANT_LVIS_SELECTED)) Then
-ContinueLoop
-EndIf
-$sItem = $avArrayText[$i]
-If $iMsg = $idCopy_Data Then
-$sItem = StringRegExpReplace($sItem, "^\[\d+\].(.*)$", "$1")
-EndIf
-If $iCW_ColWidth Then
-$aSplit = StringSplit($sItem, $sAD_Separator)
-$sItem = ""
-For $j = 1 To $aSplit[0]
-$sItem &= StringFormat("%-" & $iCW_ColWidth + 1 & "s", StringLeft($aSplit[$j], $iCW_ColWidth))
-Next
-Else
-$sItem = StringReplace($sItem, $sAD_Separator, $vUser_Separator)
-EndIf
-$sClip &= $sItem & @CRLF
-Next
-If $iMsg = $idCopy_ID Then
-If $iCW_ColWidth Then
-$aSplit = StringSplit($sHeader, $sAD_Separator)
-$sItem = ""
-For $j = 1 To $aSplit[0]
-$sItem &= StringFormat("%-" & $iCW_ColWidth + 1 & "s", StringLeft($aSplit[$j], $iCW_ColWidth))
-Next
-Else
-$sItem = StringReplace($sHeader, $sAD_Separator, $vUser_Separator)
-EndIf
-$sClip = $sItem & @CRLF & $sClip
-EndIf
-ClipPut($sClip)
-SplashOff()
-GUICtrlSetState($idListView, $_ARRAYCONSTANT_GUI_FOCUS)
-Case $idUser_Func
-Local $aiSelItems[$iRowLimit] = [0]
-For $i = 0 To GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_GETITEMCOUNT, 0, 0)
-If GUICtrlSendMsg($idListView, $_ARRAYCONSTANT_LVM_GETITEMSTATE, $i, $_ARRAYCONSTANT_LVIS_SELECTED) Then
-$aiSelItems[0] += 1
-$aiSelItems[$aiSelItems[0]] = $i + $iItem_Start
-EndIf
-Next
-ReDim $aiSelItems[$aiSelItems[0] + 1]
-$hUser_Function($aArray, $aiSelItems)
-GUICtrlSetState($idListView, $_ARRAYCONSTANT_GUI_FOCUS)
-Case $idExit_Script
-GUIDelete($hGUI)
-Exit
-EndSwitch
-WEnd
-GUIDelete($hGUI)
-Opt("GUICoordMode", $iCoordMode)
-Opt("GUIOnEventMode", $iOnEventMode)
-Opt("GUIDataSeparatorChar", $sCurr_Separator)
-Return 1
 EndFunc
 Func _ArrayFindAll(Const ByRef $aArray, $vValue, $iStart = 0, $iEnd = 0, $iCase = 0, $iCompare = 0, $iSubItem = 0, $bRow = False)
 If $iStart = Default Then $iStart = 0
@@ -6223,6 +5824,7 @@ Global Const $g_iAndroidTimeLagThreshold = 5
 Global Const $g_iAndroidTimeLagRebootThreshold = 2
 Global Const $g_iAndroidTimeLagResetProblemCountMinutes = 5
 Global Const $g_iAndroidRebootPageErrorCount = 5
+Global Const $g_iAndroidRebootAdbCommandErrorCount = 10
 Global Const $g_iAndroidRebootPageErrorPerMinutes = 10
 Global $g_hProcShieldInput[5] = [0, 0, False, False, 0]
 Global $g_bSkipFirstZoomout = False
@@ -6274,6 +5876,7 @@ Global $g_hLogFile = 0
 Global $g_hAttackLogFile = 0
 Global $g_hSwitchLogFile = 0
 Global $g_bFlushGuiLogActive = False
+Global $g_iLogCheckFreeSpaceMB = 100
 Global $g_hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $g_pStruct_SleepMicro = DllStructGetPtr($g_hStruct_SleepMicro)
 Global Const $g_iEmptyWorkingSetAndroid = 0
@@ -6366,7 +5969,7 @@ Global Const $g_asTroopNamesPlural[$eTroopCount] = [ "Barbarians", "Archers", "G
 Global Const $g_asTroopShortNames[$eTroopCount] = [ "Barb", "Arch", "Giant", "Gobl", "Wall", "Ball", "Wiza", "Heal", "Drag", "Pekk", "BabyD", "Mine", "Mini", "Hogs", "Valk", "Gole", "Witc", "Lava", "Bowl"]
 Global Const $g_aiTroopSpace[$eTroopCount] = [ 1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 6, 2, 5, 8, 30, 12, 30, 6]
 Global Const $g_aiTroopTrainTime[$eTroopCount] = [ 20, 24, 120, 28, 60, 120, 120, 480, 720, 720, 360, 120, 36, 90, 180, 600, 360, 600, 120]
-Global Const $g_aiTroopCostPerLevel[$eTroopCount][9] = [ [7, 25, 40, 60, 100, 150, 200, 250], [7, 50, 80, 120, 200, 300, 400, 500], [8, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000], [7, 25, 40, 60, 80, 100, 150, 200], [7, 1000, 1500, 2000, 2500, 3000, 3500, 4000], [7, 2000, 2500, 3000, 3500, 4000, 4500, 5000], [8, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000], [5, 5000, 6000, 8000, 10000, 15000], [6, 25000, 29000, 33000, 37000, 42000, 46000], [6, 28000, 32000, 36000, 40000, 45000, 50000], [5, 15000, 16000, 17000, 18000, 19000], [5, 4200, 4800, 5200, 5600, 6000], [7, 6, 7, 8, 9, 10, 11, 12], [7, 40, 45, 52, 58, 65, 90, 115], [6, 70, 100, 130, 160, 190, 220], [7, 450, 525, 600, 675, 750, 825, 900], [3, 250, 350, 450], [4, 390, 450, 510, 570], [3, 130, 150, 170]]
+Global Const $g_aiTroopCostPerLevel[$eTroopCount][9] = [ [7, 25, 40, 60, 100, 150, 200, 250], [7, 50, 80, 120, 200, 300, 400, 500], [8, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000], [7, 25, 40, 60, 80, 100, 150, 200], [7, 1000, 1500, 2000, 2500, 3000, 3500, 4000], [7, 2000, 2500, 3000, 3500, 4000, 4500, 5000], [8, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000], [5, 5000, 6000, 8000, 10000, 15000], [6, 25000, 29000, 33000, 37000, 42000, 46000], [7, 28000, 32000, 36000, 40000, 45000, 50000, 55000], [5, 15000, 16000, 17000, 18000, 19000], [5, 4200, 4800, 5200, 5600, 6000], [7, 6, 7, 8, 9, 10, 11, 12], [7, 40, 45, 52, 58, 65, 90, 115], [6, 70, 100, 130, 160, 190, 220], [7, 450, 525, 600, 675, 750, 825, 900], [3, 250, 350, 450], [4, 390, 450, 510, 570], [3, 130, 150, 170]]
 Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 5, 2, 5, 8, 30, 12, 30, 6]
 Global Enum $eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellClone, $eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellCount
 Global Const $g_asSpellNames[$eSpellCount] = ["Lightning", "Heal", "Rage", "Jump", "Freeze", "Clone", "Poison", "Earthquake", "Haste", "Skeleton"]
@@ -6626,8 +6229,10 @@ Global $g_bForceSinglePBLogoff = 0, $g_iSinglePBForcedLogoffTime = 18, $g_iSingl
 Global $g_bAutoResumeEnable = 0, $g_iAutoResumeTime = 5
 Global $g_bDisableNotifications = False
 Global $g_bForceClanCastleDetection = 0
-Global $g_iCmbSwitchAcc = 0, $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_iTrainTimeToSkip = 0, $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False
-Global $g_iTotalAcc = -1, $g_iNextAccount, $g_iCurAccount, $g_bChkSharedPrefs = False, $g_bDonateLikeCrazy = False
+Global $g_iCmbSwitchAcc = 0
+Global $g_bChkGooglePlay = True, $g_bChkSuperCellID = False, $g_bChkSharedPrefs = False
+Global $g_bChkSwitchAcc = False, $g_bChkSmartSwitch = False, $g_bDonateLikeCrazy = False, $g_iTotalAcc = -1, $g_iTrainTimeToSkip = 0
+Global $g_bInitiateSwitchAcc = True, $g_bReMatchAcc = False, $g_bWaitForCCTroopSpell = False, $g_iNextAccount, $g_iCurAccount
 Global $g_abAccountNo[8], $g_asProfileName[8], $g_abDonateOnly[8]
 Global $g_aiAttackedCountSwitch[8], $g_iActiveSwitchCounter = 0, $g_iDonateSwitchCounter = 0
 Global $g_aiRemainTrainTime[8], $g_aiTimerStart[8], $g_abPBActive[8]
@@ -6941,6 +6546,20 @@ $g_oBldgImages.add($eBldgWizTower & "_" & "0", @ScriptDir & "\imgxml\Buildings\W
 $g_oBldgImages.add($eBldgWizTower & "_" & "1", @ScriptDir & "\imgxml\Buildings\WTowerSnow")
 $g_oBldgImages.add($eBldgMortar & "_" & "0", @ScriptDir & "\imgxml\Buildings\Mortars")
 $g_oBldgImages.add($eBldgAirDefense & "_" & "0", @ScriptDir & "\imgxml\Buildings\ADefense")
+Global $g_bChkClanGamesAir = 0, $g_bChkClanGamesGround = 0, $g_bChkClanGamesMisc = 0
+Global $g_bChkClanGamesEnabled = 0
+Global $g_bChkClanGamesLoot = 0
+Global $g_bChkClanGamesBattle = 0
+Global $g_bChkClanGamesDestruction = 0
+Global $g_bChkClanGamesAirTroop = 0
+Global $g_bChkClanGamesGroundTroop = 0
+Global $g_bChkClanGamesMiscellaneous = 0
+Global $g_bChkClanGamesPurge = 0
+Global $g_bChkClanGamesStopBeforeReachAndPurge = 0
+Global $g_bChkClanGamesDebug = 0
+Global $g_iPurgeJobCount[8] = [0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_iPurgeMax = 5
+Global $g_bChkCollectFreeMagicItems = True
 Global Const $DELAYSLEEP = 100
 Global Const $DELAYWAITFORPOPUP = 1500
 Global Const $DELAYCLOUDSCLEARED = 1000
@@ -7314,7 +6933,6 @@ Global $aWonTwoStarAtkRprt[4] = [398, 180 + $g_iMidOffsetY, 0xD0D6D0, 30]
 Global $aWonThreeStarAtkRprt[4] = [534, 180 + $g_iMidOffsetY, 0xC8CAC7, 30]
 Global $NextBtn[4] = [780, 546 + $g_iBottomOffsetY, 0xD34300, 20]
 Global $aRequestTroopsAO[6] = [754, 580, 0x919191, 0x6DB630, 0xFFFFFE, 15]
-Global Const $aOpenChatTab[4] = [19, 335 + $g_iMidOffsetY, 0xE88D27, 20]
 Global Const $aCloseChat[4] = [331, 330 + $g_iMidOffsetY, 0xF0951D, 20]
 Global Const $aChatDonateBtnColors[4][4] = [[0x0d0d0d, 0, -4, 20], [0xdaf582, 10, 0, 20], [0xcdef75, 10, 5, 20], [0xFFFFFF, 24, 9, 10]]
 Global Const $aAtkRprtDECheck[4] = [459, 372 + $g_iMidOffsetY, 0x433350, 20]
@@ -7332,14 +6950,19 @@ Global $aArmyTrainButtonRND[4] = [20, 540 + $g_iMidOffsetY, 55, 570 + $g_iMidOff
 Global $aAttackButtonRND[4] = [20, 610 + $g_iMidOffsetY, 100, 670 + $g_iMidOffsetY]
 Global $aFindMatchButtonRND[4] = [200, 510 + $g_iMidOffsetY, 300, 530 + $g_iMidOffsetY]
 Global $NextBtnRND[4] = [710, 530 + $g_iMidOffsetY, 830, 570 + $g_iMidOffsetY]
+Global $aLoginWithSupercellID[4] = [305, 600 + $g_iMidOffsetY, 0xB1E25A, 20]
 Global $aButtonSetting[4] = [820, 550 + $g_iMidOffsetY, 0xFFFFFF, 10]
 Global $aButtonConnected[4] = [430, 380 + $g_iMidOffsetY, 0xD8F480, 20]
 Global $aButtonDisconnected[4] = [430, 380 + $g_iMidOffsetY, 0xFF7C81, 20]
-Global $aButtonSuperCellIdConnected[4] = [430, 235, 0x6eb730, 20]
 Global $aListAccount[4] = [165, 350 + $g_iMidOffsetY, 0xFFFFFF, 10]
 Global $aButtonVillageLoad[4] = [515, 411 + $g_iMidOffsetY, 0x6EBD1F, 20]
 Global $aTextBox[4] = [320, 160 + $g_iMidOffsetY, 0xFFFFFF, 10]
 Global $aButtonVillageOkay[4] = [500, 170 + $g_iMidOffsetY, 0x81CA2D, 20]
+Global $aButtonConnectedSCID[4] = [430, 205 + $g_iMidOffsetY, 0x6EB730, 20]
+Global $aButtonLogOutSCID[4] = [700, 400 + $g_iMidOffsetY, 0x308AFB, 20]
+Global $aButtonConfirmSCID[4] = [460, 410 + $g_iMidOffsetY, 0x328AFB, 20]
+Global $aListAccountSCID[4] = [490, 185 + $g_iMidOffsetY, 0x000000, 10]
+Global $aCloseTabSCID[4] = [732, 145]
 Global $aTrainBarb[4] = [-1, -1, -1, -1]
 Global $aTrainArch[4] = [-1, -1, -1, -1]
 Global $aTrainGiant[4] = [-1, -1, -1, -1]
@@ -7436,8 +7059,83 @@ Global $g_sImgWeakBaseBuildingsAirDefenseDir = @ScriptDir & "\imgxml\Buildings\A
 Global $g_sImgSearchDrill = @ScriptDir & "\imgxml\Storages\Drills"
 Global $g_sImgSearchDrillLevel = @ScriptDir & "\imgxml\Storages\Drills\Level"
 Global $g_sImgEasyBuildings = @ScriptDir & "\imgxml\easybuildings"
+Global Const $g_sImgLoginWithSupercellID = @ScriptDir & "\imgxml\other\LoginWithSupercellID*"
 Global Const $g_sImgGoogleSelectAccount = @ScriptDir & "\imgxml\other\GoogleSelectAccount*"
 Global Const $g_sImgGoogleSelectEmail = @ScriptDir & "\imgxml\other\GoogleSelectEmail*"
+Global Const $g_sImgCaravan = @ScriptDir & "\imgxml\Resources\Clan Games Images\MainLoop\Caravan"
+Global Const $g_sImgStart = @ScriptDir & "\imgxml\Resources\Clan Games Images\MainLoop\Start"
+Global Const $g_sImgPurge = @ScriptDir & "\imgxml\Resources\Clan Games Images\MainLoop\Purge"
+Global Const $g_sImgCoolPurge = @ScriptDir & "\imgxml\Resources\Clan Games Images\MainLoop\Gem"
+Global Const $g_sImgTrashPurge = @ScriptDir & "\imgxml\Resources\Clan Games Images\MainLoop\Trash"
+Global Const $g_sImgOkayPurge = @ScriptDir & "\imgxml\Resources\Clan Games Images\MainLoop\Okay"
+Global Const $g_sImgReward = @ScriptDir & "\imgxml\Resources\Clan Games Images\MainLoop\Reward"
+Global Const $g_sImageBuilerGames = @ScriptDir & "\imgxml\Resources\Clan Games Images\MainLoop\BuilderGames"
+Global Const $g_sImgGold = @ScriptDir & "\imgxml\Resources\Clan Games Images\Loot Challenges\Gold Challenge"
+Global Const $g_sImgElixir = @ScriptDir & "\imgxml\Resources\Clan Games Images\Loot Challenges\Elixir Challenge"
+Global Const $g_sImgDark = @ScriptDir & "\imgxml\Resources\Clan Games Images\Loot Challenges\Dark Elixir Challenge\"
+Global Const $g_sImgGoldG = @ScriptDir & "\imgxml\Resources\Clan Games Images\Loot Challenges\Gold Grab"
+Global Const $g_sImgElixirE = @ScriptDir & "\imgxml\Resources\Clan Games Images\Loot Challenges\Elixir Embezzlement"
+Global Const $g_sImgDarkEH = @ScriptDir & "\imgxml\Resources\Clan Games Images\Loot Challenges\Dark Elixir Heist"
+Global Const $g_sImgStar = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\Star Collector"
+Global Const $g_sImgLordD = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\Lord of Destruction"
+Global Const $g_sImgPileVict = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\Pile Of Victories"
+Global Const $g_sImgHunt3 = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\Hunt for Three Stars"
+Global Const $g_sImgWStreak = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\Winning Streak"
+Global Const $g_sImgWStreakC = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\Confirm_WinningStreak"
+Global Const $g_sImgSlayingT = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\Slaying The Titans"
+Global Const $g_sImgNoMagicZone = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\No-Magic Zone"
+Global Const $g_sImgNoHeroics = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\No Heroics Allowed"
+Global Const $g_sImgAttUp = @ScriptDir & "\imgxml\Resources\Clan Games Images\Battle Challenges\Attack Up"
+Global Const $g_sImgCannon = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Cannon Carnage"
+Global Const $g_sImgArcherT = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Archer Tower Assault"
+Global Const $g_sImgMortar = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Mortar Mauling"
+Global Const $g_sImgAirDef = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy Air Defenses"
+Global Const $g_sImgWizard = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Wizard Tower Warfare"
+Global Const $g_sImgAirS = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy Air Sweepers"
+Global Const $g_sImgTesla = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy Tesla Towers"
+Global Const $g_sImgBombT = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy Bomb Towers"
+Global Const $g_sImgXBow = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy X-Bows"
+Global Const $g_sImgInferno = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy Inferno Towers"
+Global Const $g_sImgEagle = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Eagle Artillery Elimination"
+Global Const $g_sImgCCC = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Clan Castle Charge"
+Global Const $g_sImgGoldRaid = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Gold Storage Raid"
+Global Const $g_sImgElixirR = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Elixir Storage Raid"
+Global Const $g_sImgDESRaid = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Dark Elixir Storage Raid"
+Global Const $g_sImgGoldMM = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Gold Mine Mayhem"
+Global Const $g_sImgElixirPE = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Elixir Pump Elimination"
+Global Const $g_sImgDarkEP = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Dark Elixir Plumbers"
+Global Const $g_sImgLab = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Laboratory Strike"
+Global Const $g_sImgSFact = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Spell Factory Sabotage"
+Global Const $g_sImgDSFact = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Dark Spell Factory Sabotage"
+Global Const $g_sImgBBAltar = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy Barbarian King Altars"
+Global Const $g_sImgAQAltar = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy Archer Queen Altars"
+Global Const $g_sImgGWAltar = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Destroy Grand Warden Altars"
+Global Const $g_sImgHeroHunt = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Hero Level Hunter"
+Global Const $g_sImgKingHunt = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\King Level Hunter"
+Global Const $g_sImgQueenHunt = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Queen Level Hunter"
+Global Const $g_sImgWardenHunt = @ScriptDir & "\imgxml\Resources\Clan Games Images\Destruction Challenges\Warden Level Hunter"
+Global Const $g_sImgValk = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Valk"
+Global Const $g_sImgArch = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Arch"
+Global Const $g_sImgBarb = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Barb"
+Global Const $g_sImgBowl = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Bowl"
+Global Const $g_sImgGiant = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Giant"
+Global Const $g_sImgGobl = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Gobl"
+Global Const $g_sImgGole = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Gole"
+Global Const $g_sImgHeal = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Heal"
+Global Const $g_sImgHogs = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Hogs"
+Global Const $g_sImgMine = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Mine"
+Global Const $g_sImgPekka = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Pekka"
+Global Const $g_sImgWall = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Wall"
+Global Const $g_sImgWitch = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Witch"
+Global Const $g_sImgWiza = @ScriptDir & "\imgxml\Resources\Clan Games Images\Ground Troop Challenges\Wiza"
+Global Const $g_sImgBabyD = @ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\BabyD"
+Global Const $g_sImgBall = @ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\Ball"
+Global Const $g_sImgDrag = @ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\Drag"
+Global Const $g_sImgLava = @ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\Lava"
+Global Const $g_sImgMini = @ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\Mini"
+Global Const $g_sImgGard = @ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Gardening Exercise"
+Global Const $g_sImgDonS = @ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Donate Spells"
+Global Const $g_sImgDonH = @ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Helping Hand"
 Func _StringSize($sText, $iSize = 8.5, $iWeight = 400, $iAttrib = 0, $sName = "", $iMaxWidth = 0, $hWnd = 0)
 If $iSize = Default Then $iSize = 8.5
 If $iWeight = Default Then $iWeight = 400
@@ -8203,7 +7901,9 @@ Global $g_iSuspendAndroidTimeCount = 0
 Global $g_hSuspendAndroidTimer = 0
 Global $g_aiMouseOffset = [0, 0]
 Global $g_aiMouseOffsetWindowOnly = [0, 0]
-Global $g_PushedSharedPrefsProfile
+Global $g_bPullPushSharedPrefsAbdCommand = False
+Global $g_PushedSharedPrefsProfile = ""
+Global $g_PushedSharedPrefsProfile_Timer = 0
 Func InitAndroidConfig($bRestart = False)
 FuncEnter(InitAndroidConfig)
 If $bRestart = False Then
@@ -8936,7 +8636,7 @@ InitAndroidRebootCondition(True)
 If $bStartOnlyAndroid Then
 Return True
 EndIf
-If $bStartOnlyAndroid = False And Not InitiateLayout() Then Return False
+If Not InitiateLayout() Then Return False
 WinGetAndroidHandle(False)
 If Not $g_bRunState Then Return False
 AndroidBotStartEvent()
@@ -8990,7 +8690,7 @@ EndIf
 ConnectAndroidAdb()
 If Not $g_bRunState Then Return False
 If Not $g_bRunState Then Return False
-If $g_bChkSharedPrefs And HaveSharedPrefs() And $g_PushedSharedPrefsProfile <> $g_sProfileCurrentName Then PushSharedPrefs()
+If $g_bChkSharedPrefs And HaveSharedPrefs() And $g_PushedSharedPrefsProfile <> $g_sProfileCurrentName And($g_PushedSharedPrefsProfile_Timer = 0 Or __TimerDiff($g_PushedSharedPrefsProfile_Timer) > 120000) Then PushSharedPrefs()
 $cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 60000)
 If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
 SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_ERROR)
@@ -9122,6 +8822,7 @@ Local $cmdOutput, $connected_to, $running, $process_killed, $hMyTimer
 $cmdOutput = LaunchConsole($sVboxManage, "list vms", $process_killed)
 If $g_bDebugAndroid Then SetDebugLog("Available " & $g_sAndroidEmulator & " instances: " & $cmdOutput, $COLOR_ERROR)
 $a = StringRegExp($cmdOutput, """(.*?)""", $STR_REGEXPARRAYGLOBALMATCH)
+If @error Then Local $a = []
 Return $a
 EndFunc
 Func GetAndroidVMinfo(ByRef $sVMinfo, $sVboxManage = $__VBoxManage_Path)
@@ -9189,14 +8890,14 @@ $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "connect " & $g_sAndroidAdbDevice
 $connected_to = StringInStr($cmdOutput, "connected to") > 0
 If $connected_to Then
 $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell echo $USER:$USER_ID", $process_killed)
-$connected_to = StringInStr($cmdOutput, "device ") = 0 And $process_killed = False
+$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0 And StringInStr($cmdOutput, "error: ") = 0 And StringInStr($cmdOutput, "device ") = 0 And $process_killed = False
 EndIf
 Else
 $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell echo $USER:$USER_ID", $process_killed)
-$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0 And $process_killed = False
+$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0 And StringInStr($cmdOutput, "error: ") = 0 And $process_killed = False
 EndIf
 Else
-$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0
+$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0 And StringInStr($cmdOutput, "error: ") = 0
 EndIf
 Return $connected_to
 EndFunc
@@ -9230,16 +8931,21 @@ Next
 Return ReleaseAdbDaemonMutex($hMutex, True)
 EndFunc
 Func ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $bStartOnlyAndroid = False, $timeout = 15000)
+FuncEnter(ConnectAndroidAdb)
+Return FuncReturn(_ConnectAndroidAdb($rebootAndroidIfNeccessary, $bStartOnlyAndroid, $timeout))
+EndFunc
+Func _ConnectAndroidAdb($rebootAndroidIfNeccessary = $g_bRunState, $bStartOnlyAndroid = False, $timeout = 15000)
 If $g_sAndroidAdbPath = "" Or FileExists($g_sAndroidAdbPath) = 0 Then
 SetLog($g_sAndroidEmulator & " ADB Path not valid: " & $g_sAndroidAdbPath, $COLOR_ERROR)
-Return False
+Return 0
 EndIf
 ResumeAndroid()
+Local $bRebooted = False
 If $rebootAndroidIfNeccessary = True Then
 WinGetAndroidHandle()
 If AndroidInvalidState() Then
 SetDebugLog("ConnectAndroidAdb: Reboot Android as it's not running")
-RebootAndroid(True, $bStartOnlyAndroid)
+$bRebooted = RebootAndroid(True, $bStartOnlyAndroid)
 EndIf
 EndIf
 Local $hMutex = AquireAdbDaemonMutex()
@@ -9249,10 +8955,10 @@ Local $timer = __TimerInit()
 Local $timerReInit = $timer
 While __TimerDiff($timer) < $timeout
 $connected_to = IsAdbConnected()
-If $connected_to Then Return ReleaseAdbDaemonMutex($hMutex, True)
+If $connected_to Then Return ReleaseAdbDaemonMutex($hMutex, 1)
 Local $ms = $timeout - __TimerDiff($timer)
 If $ms > 3000 Then $ms = 3000
-If _Sleep($ms) Then Return ReleaseAdbDaemonMutex($hMutex, False)
+If _Sleep($ms) Then Return ReleaseAdbDaemonMutex($hMutex, 0)
 If __TimerDiff($timerReInit) >= 10000 Then
 $timerReInit = __TimerInit()
 $g_bInitAndroid = True
@@ -9266,10 +8972,11 @@ $connected_to = IsAdbConnected()
 ReleaseAdbDaemonMutex($hMutex)
 If Not $connected_to And $g_bRunState = True And $rebootAndroidIfNeccessary = True Then
 SetLog("ADB cannot connect to " & $g_sAndroidEmulator & ", restart emulator now...", $COLOR_ERROR)
-If Not RebootAndroid() Then Return False
+$bRebooted = RebootAndroid()
+If Not $bRebooted Then Return 0
 $connected_to = ConnectAndroidAdb(False, $bStartOnlyAndroid)
 If Not $connected_to Then
-If Not $g_bRunState Then Return False
+If Not $g_bRunState Then Return 0
 SetLog("ADB really cannot connect to " & $g_sAndroidEmulator & "!", $COLOR_ERROR)
 SetLog("Please restart bot, emulator and/or PC...", $COLOR_ERROR)
 EndIf
@@ -9278,10 +8985,11 @@ Case 1
 ReleaseAdbDaemonMutex($hMutex)
 If $rebootAndroidIfNeccessary Then
 SetDebugLog("ConnectAndroidAdb: Reboot Android due to ADB connection problems...", $COLOR_ERROR)
-If Not RebootAndroid() Then Return False
+$bRebooted = RebootAndroid()
+If Not $bRebooted Then Return 0
 Else
 SetDebugLog("ConnectAndroidAdb: Reboot Android nor ADB Daemon not allowed", $COLOR_ERROR)
-Return False
+Return 0
 EndIf
 $connected_to = IsAdbConnected()
 If Not $connected_to Then
@@ -9293,13 +9001,13 @@ KillProcess($pids[$i], $g_sAndroidAdbPath)
 Next
 $connected_to = ConnectAndroidAdb(False, $bStartOnlyAndroid)
 If Not $connected_to Then
-If Not $g_bRunState Then Return False
+If Not $g_bRunState Then Return 0
 SetLog("ADB really cannot connect to " & $g_sAndroidEmulator & "!", $COLOR_ERROR)
 SetLog("Please restart bot, emulator and/or PC...", $COLOR_ERROR)
 EndIf
 EndIf
 EndSwitch
-Return $connected_to
+Return(($connected_to) ?(($bRebooted) ?(2) :(1)) :(0))
 EndFunc
 Func RebootAndroid($bRestart = True, $bStartOnlyAndroid = False)
 FuncEnter(RebootAndroid)
@@ -9372,6 +9080,7 @@ AndroidAdbSendShellCommand("settings put system font_scale 1.0", Default, Defaul
 EndFunc
 Func AndroidInitPrompt()
 If Not $g_bAndroidAdbInstance Then Return
+Local $bIdentified = False
 Local $s
 Sleep(250)
 If $g_bAndroidAdbPromptUseGiven Then
@@ -9380,11 +9089,13 @@ $s = AndroidAdbSendShellCommand("", -500, Default, False, False)
 If $s Then
 $g_sAndroidAdbPrompt = StringStripWS($s, $STR_STRIPLEADING)
 SetDebugLog("Initialize shell prompt with '" & $g_sAndroidAdbPrompt & "'")
+$bIdentified = True
 Else
-SetLog("ADB Prompt not identified!", $COLOR_ERROR)
+SetDebugLog("ADB Prompt not identified!", $COLOR_ERROR)
 SetDebugLog("ADB Result: " & $s, $COLOR_ERROR)
 EndIf
-Else
+EndIf
+If Not $bIdentified Then
 SetDebugLog("Initialize shell prompt with '" & $g_sAndroidAdbPrompt & "'")
 $s = AndroidAdbSendShellCommand(@LF & "PS1=" & $g_sAndroidAdbPrompt, -500, Default, False)
 EndIf
@@ -9392,17 +9103,17 @@ Return $s
 EndFunc
 Func AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
 Static $bAndroidAdbLaunchShellInstanceActive = False
-If $bAndroidAdbLaunchShellInstanceActive Then Return
+Local $bWasActive = $bAndroidAdbLaunchShellInstanceActive
 FuncEnter(AndroidAdbLaunchShellInstance)
 $bAndroidAdbLaunchShellInstanceActive = True
-Local $Result = _AndroidAdbLaunchShellInstance($wasRunState, $rebootAndroidIfNeccessary)
-$bAndroidAdbLaunchShellInstanceActive = False
+Local $Result = _AndroidAdbLaunchShellInstance($wasRunState,(($bWasActive) ?(False) :($rebootAndroidIfNeccessary)))
+$bAndroidAdbLaunchShellInstanceActive = $bWasActive
 Return FuncReturn($Result)
 EndFunc
 Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
-If Not $g_bAndroidInitialized Then Return
 If $wasRunState = Default Then $wasRunState = $g_bRunState
-If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
+Local $iConnected
+If Not $g_bAndroidInitialized Or $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 Local $SuspendMode = ResumeAndroid()
 InitAndroid()
 Local $s
@@ -9420,13 +9131,17 @@ EndIf
 Next
 EndIf
 If $g_bAndroidAdbInstance = True Then
-If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
+$iConnected = ConnectAndroidAdb($rebootAndroidIfNeccessary)
+If $iConnected = 0 Or($iConnected = 2 And $g_iAndroidAdbProcess[0] = 0) Then
 Return SetError(3, 0)
+ElseIf $iConnected = 2 And $g_iAndroidAdbProcess[0] Then
+Return SetError(0, 0)
 EndIf
 AndroidAdbTerminateShellInstance()
 $g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
 If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 SetLog($g_sAndroidEmulator & " error launching ADB for background mode, zoom-out, mouse click and input", $COLOR_ERROR)
+$g_iAndroidAdbProcess[0] = 0
 $g_bAndroidAdbScreencap = False
 $g_bAndroidAdbClick = False
 $g_bAndroidAdbInput = False
@@ -9437,8 +9152,11 @@ AndroidInitPrompt()
 EndIf
 EndIf
 If True Then
-If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
+$iConnected = ConnectAndroidAdb($rebootAndroidIfNeccessary)
+If $iConnected = 0 Or($iConnected = 2 And $g_iAndroidAdbProcess[0] = 0) Then
 Return SetError(3, 0)
+ElseIf $iConnected = 2 And $g_iAndroidAdbProcess[0] Then
+Return SetError(0, 0)
 EndIf
 Local $pathFound = False
 Local $iMount
@@ -9498,8 +9216,11 @@ Return
 EndIf
 EndIf
 If StringLen($g_sAndroidMouseDevice) > 0 And $g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] Then
-If ConnectAndroidAdb($rebootAndroidIfNeccessary) = False Then
+$iConnected = ConnectAndroidAdb($rebootAndroidIfNeccessary)
+If $iConnected = 0 Or($iConnected = 2 And $g_iAndroidAdbProcess[0] = 0) Then
 Return SetError(3, 0)
+ElseIf $iConnected = 2 And $g_iAndroidAdbProcess[0] Then
+Return SetError(0, 0)
 EndIf
 If StringInStr($g_sAndroidMouseDevice, "/dev/input/event") = 0 Then
 $s = AndroidAdbSendShellCommand("getevent -p", Default, $wasRunState, False)
@@ -9532,6 +9253,7 @@ EndFunc
 Func AndroidAdbTerminateShellInstance()
 Local $SuspendMode = ResumeAndroid()
 If $g_iAndroidAdbProcess[0] <> 0 Then
+If _AndroidAdbSendShellCommand("exit", 500, Default, False, False, True) Then _AndroidAdbSendShellCommand("exit", 0, Default, False, False, True)
 If ClosePipe($g_iAndroidAdbProcess[0], $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4]) = 1 Then
 SetDebugLog("ADB shell terminated, PID = " & $g_iAndroidAdbProcess[0])
 Else
@@ -9540,16 +9262,16 @@ EndIf
 $g_iAndroidAdbProcess[0] = 0
 EndIf
 EndFunc
-Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
+Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True, $bNoShellTerminate = False)
 FuncEnter(AndroidAdbSendShellCommand)
 If Not $g_bAndroidInitialized Then Return FuncReturn()
 Local $wasAllowed = $g_bTogglePauseAllowed
 $g_bTogglePauseAllowed = False
-Local $Result = _AndroidAdbSendShellCommand($cmd, $timeout, $wasRunState, $EnsureShellInstance, $bStripPrompt)
+Local $Result = _AndroidAdbSendShellCommand($cmd, $timeout, $wasRunState, $EnsureShellInstance, $bStripPrompt, $bNoShellTerminate)
 $g_bTogglePauseAllowed = $wasAllowed
 Return FuncReturn(SetError(@error, @extended, $Result))
 EndFunc
-Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True)
+Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True, $bNoShellTerminate = False)
 Static $iCommandErrors = 0
 If $timeout = Default Then $timeout = 3000
 If $wasRunState = Default Then $wasRunState = $g_bRunState
@@ -9625,9 +9347,14 @@ $iCommandErrors += 1
 EndIf
 If $__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY > 0 Then Sleep($__TEST_ERROR_SLOW_ADB_SHELL_COMMAND_DELAY)
 $g_iAndroidAdbAutoTerminateCount += 1
-If $iCommandErrors > 10 Or(Mod($g_iAndroidAdbAutoTerminateCount, $g_iAndroidAdbAutoTerminate) = 0 And $EnsureShellInstance = True) Then
+If $iCommandErrors > $g_iAndroidRebootAdbCommandErrorCount Or(Mod($g_iAndroidAdbAutoTerminateCount, $g_iAndroidAdbAutoTerminate) = 0 And $EnsureShellInstance = True) Then
+If $iCommandErrors > $g_iAndroidRebootAdbCommandErrorCount Then
 $iCommandErrors = 0
-AndroidAdbTerminateShellInstance()
+RebootAndroid()
+Else
+$iCommandErrors = 0
+If $bNoShellTerminate = False Then AndroidAdbTerminateShellInstance()
+EndIf
 EndIf
 Return SetError($error, Int(__TimerDiff($hTimer)) & "ms,#" & $loopCount, $s)
 EndFunc
@@ -10877,72 +10604,119 @@ If $iAPI >= $g_iAndroidJellyBean Then Return "JellyBean"
 SetDebugLog("Unsupport Android API Version: " & $iAPI, $COLOR_ERROR)
 Return ""
 EndFunc
-Func HaveSharedPrefs($sProfile = $g_sProfileCurrentName, $BothNewOrOld = Default)
-If $sProfile = Default then $sProfile = $g_sProfileCurrentName
+Func HaveSharedPrefs($sProfile = $g_sProfileCurrentName, $BothNewOrOld = Default, $bReturnArray = False)
+If $sProfile = Default Then $sProfile = $g_sProfileCurrentName
+If Not $bReturnArray Then
 Return(($BothNewOrOld = Default Or $BothNewOrOld = True) And UBound(_FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES)) > 1) Or(($BothNewOrOld = Default Or $BothNewOrOld = False) And UBound(_FileListToArray($g_sProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES)) > 1)
+EndIf
+Local $aFiles
+If $BothNewOrOld = Default Or $BothNewOrOld = True Then
+$aFiles = _FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES, True)
+EndIf
+If($BothNewOrOld = Default And UBound($aFiles) < 2) Or $BothNewOrOld = False Then
+$aFiles = _FileListToArray($g_sProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES, True)
+EndIf
+If UBound($aFiles) < 1 Then Local $aFiles = [0]
+Return SetError(0, 0, $aFiles)
 EndFunc
 Func PullSharedPrefs($sProfile = $g_sProfileCurrentName)
-Local $bWasRunState = $g_bRunState
 Local $process_killed
 DirCreate($g_sPrivateProfilePath & "\" & $sProfile)
-Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " pull /data/data/" & $g_sAndroidGamePackage & "/shared_prefs """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs""", $process_killed)
+Local $cmdOutput
 Local $Result = False
-If StringInStr($cmdOutput, "files pulled") > 0 And StringInStr($cmdOutput, @LF & "0 files pulled") = 0 Then
-$Result = True
+Local $iFiles = 5
+Local $iFilesPulled = 0
+SetDebugLog("Pulling shared_pref of profile " & $sProfile)
+DirRemove($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs_tmp", 1)
+DirMove($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs_tmp")
+If FileExists($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs") Then
+SetLog("Cannot rename " & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", $COLOR_ERROR)
+SetLog("Error pulling shared_prefs of profile " & $sProfile, $COLOR_ERROR)
+Return SetError(0, 0, $Result)
+EndIf
+If $g_bPullPushSharedPrefsAbdCommand Then
+$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " pull /data/data/" & $g_sAndroidGamePackage & "/shared_prefs """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs""", $process_killed)
 Else
-SetDebugLog("ADB pull failed, try to use host shared folder")
+$cmdOutput = ""
+EndIf
+If StringInStr($cmdOutput, "files pulled") > 0 And StringInStr($cmdOutput, @LF & "0 files pulled") = 0 And StringInStr($cmdOutput, "failed to ") = 0 And StringInStr($cmdOutput, "Permission denied") = 0 Then
+Local $aRegExResult = StringRegExp($cmdOutput, "(\d+) files pulled", $STR_REGEXPARRAYMATCH)
+If Not @error Then
+$iFilesPulled = Number($aRegExResult[0])
+EndIf
+$Result = $iFilesPulled >= $iFiles
+If Not $Result Then SetLog("Pulled " & $iFilesPulled & " files of " & $iFiles & " total", $COLOR_ERROR)
+Else
+If $g_bPullPushSharedPrefsAbdCommand Then SetDebugLog("ADB pull failed, try to use host shared folder")
+$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
+$iFiles = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
+If $iFiles >= 5 And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
 Local $androidFolder = StringReplace($g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile, " ", "\ ")
 AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
-AndroidAdbSendShellCommand("set result=$(mkdir -p " & $androidFolder & " >&2)")
-$cmdOutput = AndroidAdbSendShellCommand("set result=$(cp -R /data/data/" & $g_sAndroidGamePackage & "/shared_prefs " & $androidFolder & " >&2)")
-If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "usage: cp") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
+AndroidAdbSendShellCommand("set result=$(mkdir -p " & $androidFolder & "/shared_prefs >&2)")
+AndroidAdbSendShellCommand("set result=$(cp /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* " & $androidFolder & "/shared_prefs >&2)")
+$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l " & $androidFolder & "/shared_prefs/ >&2)")
+$iFilesPulled = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
+If $iFilesPulled >= $iFiles And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
 Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
-If(FileExists($hostFolder) = 1 Or DirCreate($hostFolder) = 1) Then
-Local $i = 0
-Local $iFiles = 0
-While $iFiles < 1 And $i < 12
-$iFiles = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
-_Sleep(250, True, $bWasRunState)
-$i += 1
-WEnd
-If DirMove($hostFolder & "\shared_prefs", $g_sPrivateProfilePath & "\" & $sProfile, $FC_OVERWRITE) = 1 Then
+$iFilesPulled = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
+If $iFilesPulled >= $iFiles Then
+FileDelete($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs")
+DirRemove($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", 1)
+DirCreate($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs")
+If FileCopy($hostFolder & "\shared_prefs\*", $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", $FC_OVERWRITE) And UBound(_FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES)) - 1 >= $iFiles Then
 AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
 $Result = True
 Else
-SetLog("Cannot move shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile, $COLOR_ERROR)
+SetLog("Cannot copy shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile, $COLOR_ERROR)
 EndIf
 Else
-SetLog("Cannot pull shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile, $COLOR_ERROR)
+SetLog("Cannot copy shared_prefs to " & $hostFolder, $COLOR_ERROR)
 EndIf
 Else
 SetLog("Cannot copy shared_prefs to " & $androidFolder, $COLOR_ERROR)
 EndIf
-EndIf
-If $Result Then
-Local $a = _FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES, True)
-If UBound($a) > 1 Then
-Local $a2[UBound($a) - 1][2]
-For $i = 1 To $a[0]
-Local $a3 = FileGetTime($a[$i], 0)
-$a2[$i - 1][0] = $a[$i]
-$a2[$i - 1][1] = _ArrayToString($a3, "-", -1, 2) & " " & _ArrayToString($a3, ":", 3, -1)
-Next
-SetDebugLog(_ArrayToString($a2, ","))
-EndIf
-SetLog("Pulled shared_prefs of profile " & $sProfile)
 Else
+SetLog($g_sAndroidGamePackage & " has no valid shared_prefs folder or it cannot be accessed", $COLOR_ERROR)
+EndIf
+EndIf
+Local $aFiles = _FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES, True)
+$iFilesPulled = UBound($aFiles) - 1
+If $Result Then $Result = $iFilesPulled >= $iFiles
+If $Result Then
+DirRemove($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs_tmp", 1)
+Local $a[$iFilesPulled][2]
+For $i = 1 To $aFiles[0]
+Local $aFileTime = FileGetTime($aFiles[$i], 0)
+$a[$i - 1][0] = $aFiles[$i]
+$a[$i - 1][1] = _ArrayToString($aFileTime, "-", -1, 2) & " " & _ArrayToString($aFileTime, ":", 3, -1)
+Next
+SetDebugLog(_ArrayToString($a, ","))
+SetLog("Pulled shared_prefs of profile " & $sProfile & " (" & $iFilesPulled & " files)")
+Else
+DirRemove($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", 1)
+DirMove($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs_tmp", $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs")
 SetLog("Error pulling shared_prefs of profile " & $sProfile, $COLOR_ERROR)
 EndIf
-Return $Result
+Return SetError(0, 0, $Result)
 EndFunc
 Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = True)
+Local $Result = False
 Local $bWasRunState = $g_bRunState
 Local $process_killed
-Local $bHaveNew = HaveSharedPrefs($sProfile, True)
-Local $bHaveOld = HaveSharedPrefs($sProfile, False)
+Local $cmdOutput
+Local $aNewFiles = HaveSharedPrefs($sProfile, True, True)
+Local $bHaveNew = UBound($aNewFiles) > 1
+Local $bHaveOld = HaveSharedPrefs($sProfile, False, True)
 If Not $bHaveNew And Not $bHaveOld Then
-SetLog("Profile " & $sProfile & " doesn't have shared_prefs folder", $COLOR_GREEN)
-Return False
+SetLog("Profile " & $sProfile & " doesn't have shared_prefs folder to push", $COLOR_RED)
+Return SetError(0, 0, $Result)
+EndIf
+SetDebugLog("Pushing shared_pref of profile " & $sProfile)
+$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
+If StringInStr($cmdOutput, "No such file or directory") Then
+SetLog("Please launch game one time before pushing shared_prefs", $COLOR_ERROR)
+Return SetError(0, 0, $Result)
 EndIf
 If $bCloseGameIfRunning And GetAndroidProcessPID(Default, $bWasRunState) Then
 CloseCoC(False, False)
@@ -10950,24 +10724,51 @@ EndIf
 If Not $bHaveNew And $bHaveOld Then
 SetLog("Migrate shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile)
 If DirMove($g_sProfilePath & "\" & $sProfile & "\shared_prefs", $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs") Then
-DirRemove($g_sProfilePath & "\" & $sProfile & "\shared_prefs")
+DirRemove($g_sProfilePath & "\" & $sProfile & "\shared_prefs", 1)
+$aNewFiles = HaveSharedPrefs($sProfile, True, True)
 Else
 SetLog("Migration of shared_prefs failed", $COLOR_ERROR)
 EndIf
 EndIf
-Local $Result = False
-Local $cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " push """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs"" /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", $process_killed)
-If StringInStr($cmdOutput, "files pushed") > 0 And StringInStr($cmdOutput, @LF & "0 files pushed") = 0 Then
-$Result = True
+Local $iFiles = UBound($aNewFiles) - 1
+Local $iFilesPushed = 0
+If $g_bPullPushSharedPrefsAbdCommand Then
+$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " push """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs"" /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", $process_killed)
 Else
-SetDebugLog("ADB push failed, try to use host shared folder")
+$cmdOutput = ""
+EndIf
+If StringInStr($cmdOutput, "files pushed") > 0 And StringInStr($cmdOutput, @LF & "0 files pushed") = 0 And StringInStr($cmdOutput, "failed to ") = 0 And StringInStr($cmdOutput, "Permission denied") = 0 Then
+Local $aRegExResult = StringRegExp($cmdOutput, "(\d+) files pushed", $STR_REGEXPARRAYMATCH)
+If Not @error Then
+$iFilesPushed = Number($aRegExResult[0])
+EndIf
+$Result = $iFilesPushed >= $iFiles
+If Not $Result Then SetLog("Pushed " & $iFilesPushed & " files of " & $iFiles & " total", $COLOR_ERROR)
+Else
+If $g_bPullPushSharedPrefsAbdCommand Then SetDebugLog("ADB push failed, try to use host shared folder")
+$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/ >&2)")
+Local $aLs = Ls_l_ToArray($cmdOutput)
+SetDebugLog("Game folder: " & _ArrayToString($aLs))
+Local $iSharedPrefs = _ArraySearch($aLs, "shared_prefs")
+If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 And $iSharedPrefs > -1 Then
 Local $androidFolder = StringReplace($g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile, " ", "\ ")
 AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+AndroidAdbSendShellCommand("set result=$(mkdir -p " & $androidFolder & "/shared_prefs >&2)")
 Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
-If DirCopy($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", $hostFolder & "\shared_prefs", $FC_OVERWRITE) = 1 Then
-$cmdOutput = AndroidAdbSendShellCommand("set result=$(cp " & $androidFolder & "/shared_prefs/* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
-If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "usage: cp") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
+Local $iFilesInShared = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
+If FileExists($hostFolder & "\shared_prefs") And $iFilesInShared < 1 Then
+If FileCopy($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs\*", $hostFolder & "\shared_prefs", $FC_OVERWRITE) And UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1 >= $iFiles Then
+AndroidAdbSendShellCommand("set result=$(rm /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* >&2)")
+AndroidAdbSendShellCommand("set result=$(cp " & $androidFolder & "/shared_prefs/* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
+$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l " & $androidFolder & "/shared_prefs/ >&2)")
+$iFilesPushed = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
+If $iFilesPushed >= $iFiles And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
 AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+Local $sPerm = Ls_l_PermissionsToNumber($aLs[$iSharedPrefs][0])
+Local $sOwn = $aLs[$iSharedPrefs][1] & ":" & $aLs[$iSharedPrefs][2]
+If $g_iAndroidVersionAPI >= $g_iAndroidNougat Then $sOwn = $aLs[$iSharedPrefs][2] & ":" & $aLs[$iSharedPrefs][3]
+AndroidAdbSendShellCommand("set result=$(chmod " & $sPerm & " /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* >&2)")
+AndroidAdbSendShellCommand("set result=$(chown " & $sOwn & " /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* >&2)")
 $Result = True
 Else
 SetLog("Cannot copy sharef_prefs to /data/data/" & $g_sAndroidGamePackage, $COLOR_ERROR)
@@ -10975,15 +10776,59 @@ EndIf
 Else
 SetLog("Cannot copy shared_prefs to " & $hostFolder, $COLOR_ERROR)
 EndIf
+Else
+SetLog("Cannot create empty folder " & $androidFolder & "/shared_prefs", $COLOR_ERROR)
+EndIf
+Else
+SetLog($g_sAndroidGamePackage & " has no shared_prefs or cannot be accessed, please launch game first", $COLOR_ERROR)
+EndIf
 EndIf
 If $Result Then
-AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
-SetLog("Pushed shared_prefs of profile " & $sProfile)
+AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
+SetLog("Pushed shared_prefs of profile " & $sProfile & " (" & $iFilesPushed & " files)")
 $g_PushedSharedPrefsProfile = $sProfile
+$g_PushedSharedPrefsProfile_Timer = __TimerInit()
 Else
 SetLog("Error pushing shared_prefs of profile " & $sProfile, $COLOR_ERROR)
 EndIf
-Return $Result
+Return SetError(0, 0, $Result)
+EndFunc
+Func Ls_l_FilesOnly($aFiles)
+If UBound($aFiles) < 1 Then Return $aFiles
+Local $i = 0
+While $i < UBound($aFiles)
+If IsString($aFiles[$i]) And StringLeft($aFiles[$i], 1) <> "-" Then
+_ArrayDelete($aFiles, $i)
+Else
+$i += 1
+EndIf
+WEnd
+Return $aFiles
+EndFunc
+Func Ls_l_PermissionsToNumber($sPerm)
+If StringLen($sPerm) <> 10 Then Return 770
+Local $n = ""
+For $u = 0 To 2
+Local $p = 0
+If StringMid($sPerm, $u * 3 + 2, 1) = "r" Then $p += 4
+If StringMid($sPerm, $u * 3 + 3, 1) = "w" Then $p += 2
+If StringMid($sPerm, $u * 3 + 4, 1) = "x" Then $p += 1
+$n &= $p
+Next
+Return $n
+EndFunc
+Func Ls_l_ToArray($sOutput)
+$sOutput = StringStripWS($sOutput, $STR_STRIPSPACES)
+Local $aFiles = StringSplit($sOutput, @LF, $STR_NOCOUNT)
+Local $aResult[UBound($aFiles)][0]
+For $i = 0 To UBound($aFiles) - 1
+Local $aFile = StringSplit($aFiles[$i], " ", $STR_NOCOUNT)
+If UBound($aFile) > UBound($aResult, 2) Then ReDim $aResult[UBound($aFiles)][UBound($aFile)]
+For $j = 0 To UBound($aFile) - 1
+$aResult[$i][$j] = $aFile[$j]
+Next
+Next
+Return $aResult
 EndFunc
 Global $g_sNO_COC, $g_sUNKNOWN_COC
 Global $_g_asDISTRIBUTORS[24][4]
@@ -11439,16 +11284,23 @@ GUICtrlSetOnEvent(-1, "btnAtkLogCopyClipboard")
 If $g_bBtnColor Then GUICtrlSetBkColor(-1, 0x22C4F5)
 EndFunc
 Global $g_hGUI_VILLAGE = 0
-Global $g_hGUI_MISC = 0, $g_hGUI_MISC_TAB = 0, $g_hGUI_MISC_TAB_ITEM1 = 0, $g_hGUI_MISC_TAB_ITEM2 = 0
+Global $g_hGUI_MISC = 0, $g_hGUI_MISC_TAB = 0, $g_hGUI_MISC_TAB_ITEM1 = 0, $g_hGUI_MISC_TAB_ITEM2 = 0, $g_hGUI_MISC_TAB_ITEM3 = 0
 Global $g_hChkBotStop = 0, $g_hCmbBotCommand = 0, $g_hCmbBotCond = 0, $g_hCmbHoursStop = 0
 Global $g_hTxtRestartGold = 0, $g_hTxtRestartElixir = 0, $g_hTxtRestartDark = 0
 Global $g_hChkTrap = 1, $g_hChkCollect = 1, $g_hChkTombstones = 1, $g_hChkCleanYard = 0, $g_hChkGemsBox = 0
 Global $g_hBtnLocateKingAltar = 0, $g_hBtnLocateQueenAltar = 0, $g_hBtnLocateWardenAltar = 0, $g_hBtnLocateLaboratory = 0, $g_hBtnResetBuilding = 0
-Global $g_hChkTreasuryCollect = 0, $g_hTxtTreasuryGold = 0, $g_hTxtTreasuryElixir = 0, $g_hTxtTreasuryDark = 0
+Global $g_hChkTreasuryCollect = 0, $g_hTxtTreasuryGold = 0, $g_hTxtTreasuryElixir = 0, $g_hTxtTreasuryDark = 0 , $g_hChkFreeMagicItems = 0
 Global $g_alblBldBaseStats[4] = ["", "", ""]
 Global $g_hChkCollectBuilderBase = 0, $g_hChkStartClockTowerBoost = 0, $g_hChkCTBoostBlderBz = 0
 Global $g_hChkBBSuggestedUpgrades = 0, $g_hChkBBSuggestedUpgradesIgnoreGold = 0 , $g_hChkBBSuggestedUpgradesIgnoreElixir , $g_hChkBBSuggestedUpgradesIgnoreHall = 0
 Global $g_hChkPlacingNewBuildings = 0
+Global $g_hChkClanGamesAir = 0, $g_hChkClanGamesGround = 0, $g_hChkClanGamesMisc = 0
+Global $g_hChkClanGamesEnabled = 0
+Global $g_hChkClanGamesLoot = 0 , $g_hChkClanGamesBattle =0 , $g_hChkClanGamesDestruction = 0 , $g_hChkClanGamesAirTroop = 0 , $g_hChkClanGamesGroundTroop = 0 , $g_hChkClanGamesMiscellaneous = 0
+Global $g_hChkClanGamesPurge = 0 , $g_hcmbPurgeLimit = 0 , $g_hChkClanGamesStopBeforeReachAndPurge = 0
+Global $g_hTxtClanGamesLog = 0
+Global $g_hChkClanGamesDebug = 0
+Global $g_hLblRemainTime = 0 , $g_hLblYourScore = 0
 Func CreateVillageMisc()
 $g_hGUI_MISC = _GUICreate("", $g_iSizeWGrpTab2, $g_iSizeHGrpTab2, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_VILLAGE)
 GUISwitch($g_hGUI_MISC)
@@ -11457,6 +11309,8 @@ $g_hGUI_MISC_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI
 CreateMiscNormalVillageSubTab()
 $g_hGUI_MISC_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "MISC_TAB_ITEM2", "Builder Base"))
 CreateMiscBuilderBaseSubTab()
+$g_hGUI_MISC_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "MISC_TAB_ITEM3", "Clan Games"))
+CreateMiscClanGamesV3SubTab()
 GUICtrlCreateTabItem("")
 EndFunc
 Func CreateMiscNormalVillageSubTab()
@@ -11571,6 +11425,10 @@ _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGembox, $x + 32, $y, 24, 24)
 $g_hChkGemsBox = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkGemsBox", "Remove GemBox"), $x + 100, $y + 4, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkGemsBox_Info_01", "Check this to automatically clear GemBox."))
 GUICtrlSetState(-1, $GUI_UNCHECKED)
+$g_hChkFreeMagicItems = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkFreeMagicItems", "Collect Free Magic Items"), $x + 250, $y + 4, -1, -1)
+$y -= 64
+Local const $icon = @ScriptDir & "\images\Potion.bmp"
+GUICtrlCreatePic($icon, $x + 300, $y + 20, 36, 47, $SS_BITMAP)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 Local $x = 20, $y = 363
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_03", "Locate Manually"), $x - 15, $y - 20, $g_iSizeWGrpTab3, 60)
@@ -11657,6 +11515,49 @@ Local $x = 15, $y = 200
 $g_hChkPlacingNewBuildings = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkPlacingNewBuildings", "Build 'New' tagged buildings"), $x + 70, $y + 60, -1, -1)
 GUICtrlSetOnEvent(-1, "chkPlacingNewBuildings")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
+EndFunc
+Func CreateMiscClanGamesV3SubTab()
+Local Const $g_sLibIconPathMOD = @ScriptDir & "\images\ClanGames.bmp"
+Local $x = 15, $y = 45
+GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_CG", "Clan Games"), $x - 10, $y - 20, $g_iSizeWGrpTab3, 245)
+GUICtrlCreatePic($g_sLibIconPathMOD, $x + 5, $y, 94, 128, $SS_BITMAP)
+GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesTimeRemaining", "Time Remaining"), $x - 5, $y + 135, 110, 40)
+$g_hLblRemainTime = GUICtrlCreateLabel("0d 00h", $x + 15, $y + 135 + 15, 65, 17, $SS_CENTER)
+GUICtrlSetFont(-1, 9.5, $FW_BOLD, $GUI_FONTNORMAL)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesYourScore", "Your Score"), $x - 5, $y + 158 + 20, 110, 40)
+$g_hLblYourScore = GUICtrlCreateLabel("0/0", $x + 15, $y + 158 + 35, 65, 17, $SS_CENTER)
+GUICtrlSetFont(-1, 9.5, $FW_BOLD, $GUI_FONTNORMAL)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$x = 150
+$g_hChkClanGamesEnabled = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesEnabled", "Clan Games"), $x, $y, -1, -1)
+GUICtrlSetOnEvent(-1, "chkActivateClangames")
+$g_hChkClanGamesDebug = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesDebug", "Debug"), $x + 205, $y, -1, -1)
+$x += 25
+$y += 25
+$g_hChkClanGamesLoot = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesLoot", "Loot Challenges"), $x, $y, -1, -1)
+$y += 25
+$g_hChkClanGamesBattle = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesBattle", "Battle Challenges"), $x, $y, -1, -1)
+$y += 25
+$g_hChkClanGamesDestruction = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesDestruction", "Destruction Challenges"), $x, $y, -1, -1)
+$y += 25
+$g_hChkClanGamesAirTroop = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesAirTroop", "Air Troops Challenges"), $x, $y, -1, -1)
+$y += 25
+$g_hChkClanGamesGroundTroop = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesGroundTroop", "Ground Troops Challenges"), $x, $y, -1, -1)
+$y += 25
+$g_hChkClanGamesMiscellaneous = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesMiscellaneous", "Miscellaneous Challenges"), $x, $y, -1, -1)
+$y += 25
+$g_hChkClanGamesPurge = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesPurge", "Purge Versus Battles Events"), $x, $y, -1, -1)
+GUICtrlSetOnEvent(-1, "chkPurgeLimits")
+$g_hcmbPurgeLimit = GUICtrlCreateCombo("" , $x + 155, $y, 70, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+GUICtrlSetData(-1, "Unlimited| 1x| 2x| 3x| 4x| 5x| 6x| 7x| 8x| 9x|10x", " 5x")
+$y += 25
+$g_hChkClanGamesStopBeforeReachAndPurge = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesStopBeforeReachAndPurge", "Stop before completing your limit and only Purge"), $x, $y, -1, -1)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+$x = 15
+$y = 45
+$g_hTxtClanGamesLog = GUICtrlCreateEdit("", $x - 10, 275, $g_iSizeWGrpTab3, 127, BitOR($GUI_SS_DEFAULT_EDIT, $ES_READONLY, $ES_AUTOVSCROLL))
+GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtClanGamesLog", "--------------------------------------------------------- Clan Games LOG ------------------------------------------------"))
 EndFunc
 Global $g_hGUI_DONATE = 0, $g_hGUI_DONATE_TAB = 0, $g_hGUI_DONATE_TAB_ITEM1 = 0, $g_hGUI_DONATE_TAB_ITEM2 = 0, $g_hGUI_DONATE_TAB_ITEM3 = 0
 Global $g_hChkRequestTroopsEnable = 0, $g_hTxtRequestCC = 0, $g_ahChkRequestCCHours[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -17790,7 +17691,7 @@ GUICtrlSetOnEvent(-1, "chkDropCCHoursE2")
 GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "PM", -1), $x + 10, $y)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
-Global $g_hChkSmartLightSpell = 0, $g_hChkSmartEQSpell = 0, $g_hChkNoobZap = 0, $g_hChkSmartZapDB = 0, $g_hChkSmartZapSaveHeroes = 0, $g_hTxtSmartMinDark = 0, $g_hTxtSmartExpectedDE = 0, $g_hChkDebugSmartZap = 0, $g_hChkSmartZapFTW = 0
+Global $g_hChkSmartLightSpell = 0, $g_hChkSmartEQSpell = 0, $g_hChkNoobZap = 0, $g_hChkSmartZapDB = 0, $g_hChkSmartZapSaveHeroes = 0, $g_hTxtSmartZapMinDE = 0, $g_hTxtSmartExpectedDE = 0, $g_hChkDebugSmartZap = 0, $g_hChkSmartZapFTW = 0
 Global $g_hLblSmartUseLSpell = 0, $g_hLblSmartUseEQSpell = 0, $g_hLblSmartZap = 0, $g_hLblNoobZap = 0, $g_hLblSmartLightningUsed = 0, $g_hLblSmartEarthQuakeUsed = 0
 Func CreateAttackNewSmartZap()
 Local $x = 25, $y = 45
@@ -17838,7 +17739,7 @@ $y -= 55
 _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 200 + 9, $y + 11, 24, 24)
 GUICtrlCreateGroup("", $x + 199, $y - 1, 192, 106)
 $g_hLblSmartZap = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Options-SmartZap", "LblSmartZap", "Min. amount of Dark Elixir") & ":", $x + 160 + 79, $y + 12, -1, -1)
-$g_hTxtSmartMinDark = GUICtrlCreateInput("350", $x + 289, $y + 32, 90, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$g_hTxtSmartZapMinDE = GUICtrlCreateInput("350", $x + 289, $y + 32, 90, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Options-SmartZap", "LblSmartZap_Info_01", "Set the Value of the minimum amount of Dark Elixir in the Drills"))
 GUICtrlSetLimit(-1, 3)
 GUICtrlSetOnEvent(-1, "txtMinDark")
@@ -18618,7 +18519,7 @@ $y -= $yNext
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
 Global $g_hCmbProfile = 0, $g_hTxtVillageName = 0, $g_hBtnAddProfile = 0, $g_hBtnConfirmAddProfile = 0, $g_hBtnConfirmRenameProfile = 0, $g_hBtnDeleteProfile = 0, $g_hBtnCancelProfileChange = 0, $g_hBtnRenameProfile = 0, $g_hBtnPullSharedPrefs = 0, $g_hBtnPushSharedPrefs = 0
-Global $g_hChkSwitchAcc = 0, $g_hCmbSwitchAcc = 0, $g_hChkSharedPrefs = 0, $g_hCmbTotalAccount = 0, $g_hChkSmartSwitch = 0, $g_hCmbTrainTimeToSkip = 0, $g_hChkDonateLikeCrazy = 0, $g_ahChkAccount[8], $g_ahCmbProfile[8], $g_ahChkDonate[8]
+Global $g_hChkSwitchAcc = 0, $g_hCmbSwitchAcc = 0, $g_hChkSharedPrefs = 0, $g_hCmbTotalAccount = 0, $g_hChkSmartSwitch = 0, $g_hCmbTrainTimeToSkip = 0, $g_hChkDonateLikeCrazy = 0, $g_ahChkAccount[8], $g_ahCmbProfile[8], $g_ahChkDonate[8], $g_hRadSwitchGooglePlay = 0, $g_hRadSwitchSuperCellID = 0, $g_hRadSwitchSharedPrefs = 0
 Func CreateBotProfiles()
 Local $x = 25, $y = 45
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "Group_01", "Switch Profiles"), $x - 20, $y - 20, $g_iSizeWGrpTab2, 55)
@@ -18725,9 +18626,16 @@ $g_hCmbTotalAccount = GUICtrlCreateCombo("", $x + 345, $y - 1, 77, -1, BitOR($CB
 GUICtrlSetData(-1, "2 accounts|3 accounts|4 accounts|5 accounts|6 accounts|7 accounts|8 accounts", "2 accounts")
 GUICtrlSetOnEvent(-1, "cmbTotalAcc")
 GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "CmbTotalAccount", "Total CoC Accounts") & ": ", $x + 220, $y + 4, -1, -1)
-$g_hChkSharedPrefs = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "ChkSharedPrefs", "Switch Accounts using shared_prefs folder"), $x + 204, $y - 25, -1, -1)
-GUICtrlSetOnEvent(-1, "chkSharedPrefs")
-_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "ChkSharedPrefs_Info_01", "Push and pull CoC shared_prefs folder. Usefull when GUI switch fails or using accounts with SuperCell ID."))
+$g_hRadSwitchGooglePlay = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "RadSwitchGooglePlay", "Google Play"), $x + 185, $y - 30, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "RadSwitchGooglePlay_Info_01", "Only support for all Google Play accounts"))
+GUICtrlSetState(-1, $GUI_CHECKED)
+GUICtrlSetOnEvent(-1, "chkAccSwitchMode")
+$g_hRadSwitchSuperCellID = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "RadSwitchSuperCellID", "SuperCell ID"), $x + 265, $y - 30, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "RadSwitchSuperCellID_Info_01", "Only support for all SuperCell ID accounts"))
+GUICtrlSetOnEvent(-1, "chkAccSwitchMode")
+$g_hRadSwitchSharedPrefs = GUICtrlCreateRadio(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "RadSwitchSharedPrefs", "Shared_prefs"), $x + 345, $y - 30, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "RadSwitchSharedPrefs_Info_01", "Support for Google Play and SuperCell ID accounts"))
+GUICtrlSetOnEvent(-1, "chkAccSwitchMode")
 $y += 23
 $g_hChkSmartSwitch = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "ChkSmartSwitch", "Smart switch"), $x, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "ChkSmartSwitch_Info_01", "Switch to account with the shortest remain training time"))
@@ -20854,9 +20762,8 @@ Func btnStop()
 If $g_bRunState Then
 EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
 $g_bRunState = False
-$g_iBotAction = $eBotStop
-ReduceBotMemory()
 EndIf
+$g_iBotAction = $eBotStop
 EndFunc
 Func btnSearchMode()
 EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
@@ -23446,10 +23353,10 @@ GUICtrlSetState($g_hChkNoobZap, $GUI_ENABLE)
 GUICtrlSetState($g_hChkSmartEQSpell, $GUI_ENABLE)
 GUICtrlSetState($g_hLblSmartUseLSpell, $GUI_SHOW)
 If GUICtrlRead($g_hChkNoobZap) = $GUI_CHECKED Then
-GUICtrlSetState($g_hTxtSmartMinDark, $GUI_ENABLE)
+GUICtrlSetState($g_hTxtSmartZapMinDE, $GUI_ENABLE)
 GUICtrlSetState($g_hTxtSmartExpectedDE, $GUI_ENABLE)
 Else
-GUICtrlSetState($g_hTxtSmartMinDark, $GUI_DISABLE)
+GUICtrlSetState($g_hTxtSmartZapMinDE, $GUI_DISABLE)
 GUICtrlSetState($g_hTxtSmartExpectedDE, $GUI_DISABLE)
 EndIf
 $g_bSmartZapEnable = True
@@ -23457,7 +23364,7 @@ Else
 GUICtrlSetState($g_hChkSmartZapDB, $GUI_DISABLE)
 GUICtrlSetState($g_hChkSmartZapSaveHeroes, $GUI_DISABLE)
 GUICtrlSetState($g_hChkSmartZapFTW, $GUI_DISABLE)
-GUICtrlSetState($g_hTxtSmartMinDark, $GUI_DISABLE)
+GUICtrlSetState($g_hTxtSmartZapMinDE, $GUI_DISABLE)
 GUICtrlSetState($g_hChkNoobZap, $GUI_DISABLE)
 GUICtrlSetState($g_hChkSmartEQSpell, $GUI_DISABLE)
 GUICtrlSetState($g_hLblSmartUseLSpell, $GUI_HIDE)
@@ -23467,11 +23374,11 @@ EndIf
 EndFunc
 Func chkNoobZap()
 If GUICtrlRead($g_hChkNoobZap) = $GUI_CHECKED Then
-GUICtrlSetState($g_hTxtSmartMinDark, $GUI_ENABLE)
+GUICtrlSetState($g_hTxtSmartZapMinDE, $GUI_ENABLE)
 GUICtrlSetState($g_hTxtSmartExpectedDE, $GUI_ENABLE)
 $g_bNoobZap = True
 Else
-GUICtrlSetState($g_hTxtSmartMinDark, $GUI_DISABLE)
+GUICtrlSetState($g_hTxtSmartZapMinDE, $GUI_DISABLE)
 GUICtrlSetState($g_hTxtSmartExpectedDE, $GUI_DISABLE)
 $g_bNoobZap = False
 EndIf
@@ -23495,7 +23402,7 @@ Func chkSmartZapSaveHeroes()
 $g_bSmartZapSaveHeroes =(GUICtrlRead($g_hChkSmartZapSaveHeroes) = $GUI_CHECKED)
 EndFunc
 Func txtMinDark()
-$g_iSmartZapMinDE = GUICtrlRead($g_hTxtSmartMinDark)
+$g_iSmartZapMinDE = GUICtrlRead($g_hTxtSmartZapMinDE)
 EndFunc
 Func txtExpectedDE()
 $g_iSmartZapExpectedDE = GUICtrlRead($g_hTxtSmartExpectedDE)
@@ -24950,7 +24857,6 @@ If GUICtrlRead($g_hChkSwitchAcc) = $GUI_CHECKED And aquireSwitchAccountMutex($g_
 For $i = $g_hCmbTotalAccount To $g_ahChkDonate[7]
 GUICtrlSetState($i, $GUI_ENABLE)
 Next
-chkSmartSwitch()
 Else
 releaseSwitchAccountMutex()
 For $i = $g_hCmbTotalAccount To $g_ahChkDonate[7]
@@ -25014,7 +24920,6 @@ For $i = $g_hCmbTotalAccount To $g_ahChkDonate[7]
 GUICtrlSetState($i,(($bEnable) ? $GUI_ENABLE : $GUI_DISABLE))
 Next
 cmbTotalAcc()
-chkSmartSwitch()
 $s_bActive = False
 EndFunc
 Func cmbTotalAcc()
@@ -25078,8 +24983,24 @@ Return cmbSwitchAccProfile($i)
 EndIf
 Next
 EndFunc
-Func chkSharedPrefs()
-$g_bChkSharedPrefs = GUICtrlRead($g_hChkSharedPrefs) = $GUI_CHECKED
+Func chkAccSwitchMode()
+If GUICtrlRead($g_hRadSwitchGooglePlay) = $GUI_CHECKED Then
+$g_bChkGooglePlay = True
+$g_bChkSuperCellID = False
+$g_bChkSharedPrefs = False
+ElseIf GUICtrlRead($g_hRadSwitchSuperCellID) = $GUI_CHECKED Then
+$g_bChkGooglePlay = False
+$g_bChkSuperCellID = True
+$g_bChkSharedPrefs = False
+ElseIf GUICtrlRead($g_hRadSwitchSharedPrefs) = $GUI_CHECKED Then
+$g_bChkGooglePlay = False
+$g_bChkSuperCellID = False
+$g_bChkSharedPrefs = True
+Else
+$g_bChkGooglePlay = False
+$g_bChkSuperCellID = False
+$g_bChkSharedPrefs = False
+EndIf
 EndFunc
 Func chkDebugSetLog()
 $g_bDebugSetlog =(GUICtrlRead($g_hChkDebugSetlog) = $GUI_CHECKED)
@@ -26326,6 +26247,44 @@ Else
 GUICtrlSetState($g_hChkCTBoostBlderBz, $GUI_DISABLE)
 EndIf
 EndFunc
+Func chkActivateClangames()
+If GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
+GUICtrlSetState($g_hChkClanGamesAir, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesGround, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesMisc, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesLoot, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesBattle, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesDestruction, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesAirTroop, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesPurge, $GUI_ENABLE)
+If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED then GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
+GUICtrlSetState($g_hChkClanGamesDebug, $GUI_ENABLE)
+Else
+GUICtrlSetState($g_hChkClanGamesAir, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesGround, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesMisc, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesLoot, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesBattle, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesDestruction, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesAirTroop, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_DISABLE)
+GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesPurge, $GUI_DISABLE)
+GUICtrlSetState($g_hChkClanGamesDebug, $GUI_DISABLE)
+EndIf
+EndFunc
+Func chkPurgeLimits()
+If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED AND GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
+GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
+Else
+GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
+EndIf
+EndFunc
 Func LoadCOCDistributorsComboBox()
 Local $sDistributors = $g_sNO_COC
 Local $aDistributorsData = GetCOCDistributors()
@@ -26408,6 +26367,7 @@ EndFunc
 Func BotStart($bAutostartDelay = 0)
 FuncEnter(BotStart)
 ResumeAndroid()
+CleanSecureFiles()
 CalCostCamp()
 CalCostSpell()
 $g_bRunState = True
@@ -28273,6 +28233,7 @@ If $sLogMessage <> "" Then Return _SetLog($sLogMessage, $iColor, $sFont, $iFontS
 EndFunc
 Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Default, $statusbar = Default, $time = Default, $bConsoleWrite = Default, $LogPrefix = Default, $bPostponed = Default, $bSilentSetLog = Default, $bWriteToLogFile = Default)
 Local Static $bActive = False
+Local Static $hLogCheckFreeSpaceTimer = 0
 If $Color = Default Then $Color = $COLOR_BLACK
 If $Font = Default Then $Font = "Verdana"
 If $FontSize = Default Then $FontSize = 7.5
@@ -28314,6 +28275,18 @@ If $bActive Then Return
 $bActive = True
 If(($g_hTxtLog <> 0 Or $g_iGuiMode <> 1) And $g_bRunState = False) Or($bPostponed = False And __TimerDiff($g_hTxtLogTimer) >= $g_iTxtLogTimerTimeout) Then
 CheckPostponedLog()
+If $g_iLogCheckFreeSpaceMB And $g_bRunState Then
+If $hLogCheckFreeSpaceTimer = 0 Or __TimerDiff($hLogCheckFreeSpaceTimer) > 600000 Then
+Local $fFree = DriveSpaceFree($g_sProfilePath & "\" & $g_sProfileCurrentName)
+If $hLogCheckFreeSpaceTimer = 0 Then SetDebugLog("Free disk space is " & $fFree & " MB")
+$hLogCheckFreeSpaceTimer = __TimerInit()
+If @error = 0 And $fFree < $g_iLogCheckFreeSpaceMB Then
+$hLogCheckFreeSpaceTimer = 0
+SetLog("Less than " & $g_iLogCheckFreeSpaceMB & " MB free disk space, bot is stopping!", $COLOR_ERROR)
+If $g_bRunState Then btnStop()
+EndIf
+EndIf
+EndIf
 EndIf
 $bActive = False
 EndFunc
@@ -29468,8 +29441,7 @@ If $g_abAttackTypeEnable[$TS] = 1 And $g_iMatchMode = $TS Then $g_bFirstStart = 
 SetLog("Returning Home", $COLOR_INFO)
 If $g_bRunState = False Then Return
 If Not(IsReturnHomeBattlePage(True, False)) Then
-$i = 0
-While 1
+For $i = 0 To 5
 If $g_bDebugSetlog Then SetDebugLog("Wait for surrender button to appear #" & $i)
 If _CheckPixel($aSurrenderButton, $g_bCapturePixel) Then
 If IsAttackPage() Then
@@ -29487,16 +29459,11 @@ If ReturnHomeMainPage() Then Return
 If $j > 10 Then ExitLoop
 If _Sleep($DELAYRETURNHOME5) Then Return
 WEnd
-Else
-$i += 1
 EndIf
-Else
-$i += 1
 EndIf
 If ReturnHomeMainPage() Then Return
-If $i > 5 Then ExitLoop
 If _Sleep($DELAYRETURNHOME5) Then Return
-WEnd
+Next
 Else
 If $g_bDebugSetlog Then SetDebugLog("Battle already over.", $COLOR_DEBUG)
 EndIf
@@ -34464,6 +34431,7 @@ $s = StringMid($s, 2)
 Return $s
 EndFunc
 Func PixelToString(Const ByRef $Pixel, $sDelim = "-")
+If UBound($Pixel) < 2 Then Return ""
 Return $Pixel[0] & $sDelim & $Pixel[1]
 EndFunc
 Func _SortRedline($redline, $sDelim = ",")
@@ -38003,7 +37971,9 @@ $aShouldRemove[1] = $CCSpell2[0][3]
 EndIf
 EndIf
 Case 2
-If($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") And($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
+If $g_aiSearchCastleSpellsWaitRegular[$Mode] <= 5 And $g_aiSearchCastleSpellsWaitRegular[$Mode] > 0 Then
+$aShouldRemove[0] = $CCSpell1[0][3]
+ElseIf($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") And($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
 $aShouldRemove[0] = $CCSpell1[0][3]
 ElseIf($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") Or($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
 $aShouldRemove[0] = 1
@@ -38052,7 +38022,7 @@ For $i = 0 To(UBound($rWTT) - 1)
 If Not $g_bRunState Then Return
 If $rWTT[$i][1] > 0 Then
 If IsSpellToBrew($rWTT[$i][0]) Then
-BrewUsingWhatToTrain($rWTT[$i][0], $rWTT[$i][1])
+If $bSpellsOnly Then BrewUsingWhatToTrain($rWTT[$i][0], $rWTT[$i][1])
 ContinueLoop
 Else
 If $bSpellsOnly Then ContinueLoop
@@ -38107,7 +38077,7 @@ For $i = 0 To(UBound($rWTT) - 1)
 If Not $g_bRunState Then Return
 If $rWTT[$i][1] > 0 Then
 If IsSpellToBrew($rWTT[$i][0]) Then
-BrewUsingWhatToTrain($rWTT[$i][0], $rWTT[$i][1])
+If $bSpellsOnly Then BrewUsingWhatToTrain($rWTT[$i][0], $rWTT[$i][1])
 ContinueLoop
 Else
 If $bSpellsOnly Then ContinueLoop
@@ -41021,28 +40991,40 @@ If $g_bDebugSetlog Then SetDebugLog("******** findMultiple *** END ***", $COLOR_
 Return ""
 EndIf
 EndFunc
-Func GetDiamondFromRect($rect)
-Local $returnvalue = "", $i
+Func GetRectArray($rect, $bLogError = True)
+Local $a = []
 Local $RectValues = StringSplit($rect, ",", $STR_NOCOUNT)
 If UBound($RectValues) = 3 Then
 ReDim $RectValues[4]
 $i = StringInStr($RectValues[2], ")")
 If $i = 0 Then
-SetDebugLog("GetDiamondFromRect : Bad Input Values : " & $rect, $COLOR_ERROR)
-Return SetError(1, 1, $returnvalue)
+If $bLogError Then SetDebugLog("GetRectArray : Bad Input Values : " & $rect, $COLOR_ERROR)
+Return SetError(1, 1, $a)
 EndIf
 $RectValues[3] = $RectValues[1] + StringLeft($RectValues[2], $i - 1)
 $i = StringInStr($RectValues[1], "(")
 If $i = 0 Then
-SetDebugLog("GetDiamondFromRect : Bad Input Values : " & $rect, $COLOR_ERROR)
-Return SetError(1, 2, $returnvalue)
+If $bLogError Then SetDebugLog("GetRectArray : Bad Input Values : " & $rect, $COLOR_ERROR)
+Return SetError(1, 2, $a)
 EndIf
 $RectValues[2] = $RectValues[0] + StringMid($RectValues[1], $i + 1)
 $RectValues[1] = StringLeft($RectValues[1], $i - 1)
 EndIf
 If UBound($RectValues) < 4 Then
+If $bLogError Then SetDebugLog("GetRectArray : Bad Input Values : " & $rect, $COLOR_ERROR)
+Return SetError(1, 3, $a)
+EndIf
+Return SetError(0, 0, $RectValues)
+EndFunc
+Func GetDiamondFromRect($rect)
+SetError(0)
+Local $returnvalue = "", $i
+Local $RectValues = IsArray($rect) ? $rect : GetRectArray($rect, False)
+Local $error = @error, $extended = @extended
+If UBound($RectValues) < 4 Then
+If $error = 0 Then $error = 1
 SetDebugLog("GetDiamondFromRect : Bad Input Values : " & $rect, $COLOR_ERROR)
-Return SetError(1, 3, $returnvalue)
+Return SetError($error, $extended, $returnvalue)
 EndIf
 Local $DiamdValues[4]
 Local $X = Number($RectValues[0])
@@ -41059,8 +41041,8 @@ EndFunc
 Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = True, $AndroidTag = Default)
 If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : > " & $sImageName & " - " & $sImageTile & " - " & $place, $COLOR_INFO)
 Local $returnvalue = ""
-Local $sImageArea = GetDiamondFromRect($place)
-Local $aPlaces = StringSplit($place, ",", $STR_NOCOUNT)
+Local $aPlaces = GetRectArray($place)
+Local $sImageArea = GetDiamondFromRect($aPlaces)
 If $bForceCaptureRegion = True Then
 $sImageArea = "FV"
 _CaptureRegion2(Number($aPlaces[0]), Number($aPlaces[1]), Number($aPlaces[2]), Number($aPlaces[3]))
@@ -41829,7 +41811,6 @@ Local $Res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBit
 If @error Then _logErrorDLLCall($g_sLibMyBotPath, @error)
 If $g_bDebugImageSave Then DebugImageSave("QuickMIS_" & $ValueReturned, False)
 If IsArray($Res) Then
-If $Debug Then _ArrayDisplay($Res)
 If $g_bDebugSetlog Then SetDebugLog("DLL Call succeeded " & $Res[0], $COLOR_PURPLE)
 If $Res[0] = "" Or $Res[0] = "0" Then
 If $g_bDebugSetlog Then SetDebugLog("No Button found")
@@ -41852,7 +41833,7 @@ SetLog("DLL Error", $COLOR_RED)
 Else
 Switch $ValueReturned
 Case "BC1"
-Local $Result = ""
+Local $Result = "" , $Name = ""
 Local $KeyValue = StringSplit($Res[0], "|", $STR_NOCOUNT)
 For $i = 0 To UBound($KeyValue) - 1
 Local $DLLRes = DllCallMyBot("GetProperty", "str", $KeyValue[$i], "str", "objectpoints")
@@ -41863,7 +41844,11 @@ Local $aCords = decodeMultipleCoords($Result, 60, 10, 1)
 Local $aCord = $aCords[0]
 $g_iQuickMISX = $aCord[0]
 $g_iQuickMISY = $aCord[1]
-If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & $Result & ", using " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_PURPLE)
+$Name = RetrieveImglocProperty($KeyValue[0], "objectname")
+If $g_bDebugSetlog Or $Debug Then
+SetDebugLog($ValueReturned & " Found: " & $Result & ", using " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_PURPLE)
+DebugQuickMIS($Left, $Top, "BC1_detected[" & $Name & "_" & $g_iQuickMISX + $Left & "x" & $g_iQuickMISY + $Top & "]")
+EndIf
 Return True
 Case "CX"
 Local $Result = ""
@@ -41906,6 +41891,22 @@ Return UBound($MultiImageSearchResult)
 EndSwitch
 EndIf
 EndIf
+EndFunc
+Func DebugQuickMIS($x, $y, $DebugText)
+_CaptureRegion2()
+Local $subDirectory = $g_sProfileTempDebugPath & "QuickMIS"
+DirCreate($subDirectory)
+Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+Local $Time = @HOUR & "." & @MIN & "." & @SEC
+Local $filename = String($Date & "_" & $Time & "_" & $DebugText & "_.png")
+Local $editedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
+Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($editedImage)
+Local $hPenRED = _GDIPlus_PenCreate(0xFFFF0000, 3)
+_GDIPlus_GraphicsDrawRect($hGraphic, $g_iQuickMISX - 5 + $x, $g_iQuickMISY - 5 + $y, 10, 10, $hPenRED)
+_GDIPlus_ImageSaveToFile($editedImage, $subDirectory & "\" & $filename)
+_GDIPlus_PenDispose($hPenRED)
+_GDIPlus_GraphicsDispose($hGraphic)
+_GDIPlus_BitmapDispose($editedImage)
 EndFunc
 Func checkMainScreen($bSetLog = Default, $bBuilderBase = Default)
 FuncEnter(checkMainScreen)
@@ -41999,20 +42000,20 @@ If _ColorCheck(_GetPixelColor(383, 405), Hex(0xF0BE70, 6), 20) Then
 SetLog("Found Switch Account dialog...!", $COLOR_INFO)
 PureClick(383, 375 + $g_iMidOffsetY, 1, 0, "Click Cancel")
 EndIf
-If $checkObstaclesActive = True Then Return FuncReturn(True)
 Local $wasForce = OcrForceCaptureRegion(False)
+Local $checkObstaclesWasActive = $checkObstaclesActive
 $checkObstaclesActive = True
-Local $Result = _checkObstacles($bBuilderBase)
+Local $Result = _checkObstacles($bBuilderBase, $checkObstaclesWasActive)
 OcrForceCaptureRegion($wasForce)
-$checkObstaclesActive = False
+$checkObstaclesActive = $checkObstaclesWasActive
 Return FuncReturn($Result)
 EndFunc
-Func _checkObstacles($bBuilderBase = False)
+Func _checkObstacles($bBuilderBase = False, $bRecursive = False)
 Local $msg, $x, $y, $Result
 $g_bMinorObstacle = False
 _CaptureRegions()
 If checkObstacles_Network() Then Return True
-If checkObstacles_GfxError() Then Return True
+If Not $bRecursive And checkObstacles_GfxError() Then Return True
 Local $bIsOnBuilderIsland = _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel)
 If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
 SetLog("Detected Builder Base, trying to switch back to Main Village")
@@ -42052,7 +42053,7 @@ SetLog("Another Device has connected, waiting " & Floor(Mod($g_iAnotherDeviceWai
 PushMsg("AnotherDevice")
 EndIf
 If _SleepStatus($g_iAnotherDeviceWaitTime * 1000) Then Return
-checkObstacles_ReloadCoC($aReloadButton, "#0127")
+If Not $bRecursive Then checkObstacles_ReloadCoC($aReloadButton, "#0127")
 If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 checkObstacles_ResetSearch()
 Return True
@@ -42062,7 +42063,7 @@ SetLog("Village must take a break, wait ...", $COLOR_ERROR)
 If TestCapture() Then Return "Village must take a break"
 PushMsg("TakeBreak")
 If _SleepStatus($DELAYCHECKOBSTACLES4) Then Return
-checkObstacles_ReloadCoC($aReloadButton, "#0128")
+If Not $bRecursive Then checkObstacles_ReloadCoC($aReloadButton, "#0128")
 If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 checkObstacles_ResetSearch()
 Return True
@@ -42137,7 +42138,7 @@ Return checkObstacles_StopBot($msg)
 Else
 Switch UpdateGame()
 Case True, Default
-Return checkObstacles_ReloadCoC()
+If Not $bRecursive Then Return checkObstacles_ReloadCoC()
 Case False
 $msg = "Game Update failed, Bot must stop!!"
 Return checkObstacles_StopBot($msg)
@@ -42164,10 +42165,10 @@ EndIf
 SetLog("Warning: Can not find type of Reload error message", $COLOR_ERROR)
 EndSelect
 If TestCapture() Then Return "Village is out of sync or inactivity or connection lost or maintenance"
-Return checkObstacles_ReloadCoC($aReloadButton, "#0131")
+If Not $bRecursive Then Return checkObstacles_ReloadCoC($aReloadButton, "#0131")
 EndIf
 If TestCapture() = 0 And GetAndroidProcessPID() = 0 Then
-Return checkObstacles_ReloadCoC()
+If Not $bRecursive Then Return checkObstacles_ReloadCoC()
 EndIf
 Local $bHasTopBlackBar = _ColorCheck(_GetPixelColor(10, 3), Hex(0x000000, 6), 1) And _ColorCheck(_GetPixelColor(300, 6), Hex(0x000000, 6), 1) And _ColorCheck(_GetPixelColor(600, 9), Hex(0x000000, 6), 1)
 If _ColorCheck(_GetPixelColor(235, 209 + $g_iMidOffsetY), Hex(0x9E3826, 6), 20) Then
@@ -42243,12 +42244,14 @@ PushMsg("CoCError")
 If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 PureClick($CSFoundCoords[0], $CSFoundCoords[1], 1, 0, "#0129")
 If _Sleep($DELAYCHECKOBSTACLES2) Then Return
-Return checkObstacles_ReloadCoC()
+If Not $bRecursive Then Return checkObstacles_ReloadCoC()
 EndIf
 If $bHasTopBlackBar Then
 SetDebugLog("checkObstacles: Found Black Android Screen")
 EndIf
-CheckGoogleSelectAccount()
+If Not CheckGoogleSelectAccount() Then
+CheckLoginWithSupercellID()
+EndIf
 Return False
 EndFunc
 Func checkObstacles_ReloadCoC($point = Default, $debugtxt = "")
@@ -42852,7 +42855,7 @@ SetLog("Waiting for Main Screen")
 $iCount = 0
 For $i = 0 To 105
 If Not $g_bRunState Then Return
-If $g_bDebugSetlog Then SetDebugLog("ChkObstl Loop = " & $i & ", ExitLoop = " & $iCount, $COLOR_DEBUG)
+If $g_bDebugSetlog Then SetDebugLog("waitMainScreen ChkObstl Loop = " & $i & ", ExitLoop = " & $iCount, $COLOR_DEBUG)
 $iCount += 1
 Local $hWin = $g_hAndroidWindow
 If TestCapture() = False Then
@@ -42917,7 +42920,7 @@ SetLog("Waiting for Main Screen after " & $g_sAndroidEmulator & " restart", $COL
 For $i = 0 To 60
 If Not $g_bRunState Then Return
 If Not TestCapture() And WinGetAndroidHandle() = 0 Then ExitLoop
-If $g_bDebugSetlog Then SetDebugLog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG)
+If $g_bDebugSetlog Then SetDebugLog("waitMainScreenMini ChkObstl Loop = " & $i & " ExitLoop = " & $iCount, $COLOR_DEBUG)
 $iCount += 1
 _CaptureRegion()
 If Not _CheckPixel($aIsMain, $g_bNoCapturePixel) Then
@@ -44435,7 +44438,7 @@ SetLog("Starting " & $g_sAndroidEmulator & " and Clash Of Clans", $COLOR_SUCCESS
 Local $launchAndroid =(WinGetAndroidHandle() = 0 ? True : False)
 If $launchAndroid Then
 $cmdPar = GetAndroidProgramParameter()
-$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath, 30)
+$PID = LaunchAndroid($g_sAndroidProgramPath, $cmdPar, $g_sAndroidPath)
 If $PID = 0 Then
 SetError(1, 1, -1)
 Return False
@@ -49755,10 +49758,10 @@ $Text = "Array Contents: "
 Select
 Case UBound($array, 1) > 1 And IsArray($array[1])
 $Text &= PixelArrayToString($array, ",")
-Case IsArray($array[0])
+Case UBound($array[0]) = 2
 Local $aPixel = $array[0]
 $Text &= PixelToString($aPixel, ";")
-Case IsArray($array[0]) = 0
+Case UBound($array) = 2 And IsArray($array[0]) = 0
 $Text &= PixelToString($array, ":")
 Case Else
 $Text = "Monkey found bad banana!"
@@ -49834,11 +49837,11 @@ EndFunc
 Func IsMainPageBuilderBase($iLoop = 30)
 If IsPageLoop($aIsOnBuilderIsland, $iLoop) Then
 $g_bMainWindowOk = True
-If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window OK**", $COLOR_ACTION)
+If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window Builder Base OK**", $COLOR_ACTION)
 Return True
 EndIf
 $g_bMainWindowOk = False
-If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window FAIL**", $COLOR_ACTION)
+If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window Builder Base FAIL**", $COLOR_ACTION)
 If $g_bDebugImageSave Then DebugImageSave("IsMainPageBuilderBase")
 If $iLoop > 1 Then AndroidPageError("IsMainPageBase")
 Return False
@@ -52153,7 +52156,7 @@ Local $sText
 Select
 Case UBound($aBldgCoord, 1) > 1 And IsArray($aBldgCoord[1])
 $sText = PixelArrayToString($aBldgCoord, ",")
-Case UBound($aBldgCoord) > 0 And IsArray($aBldgCoord[0])
+Case UBound($aBldgCoord) > 0 And UBound($aBldgCoord[0]) = 2
 Local $aPixelb = $aBldgCoord[0]
 $sText = PixelToString($aPixelb, ":")
 Case UBound($aBldgCoord) = 2 And IsArray($aBldgCoord[0]) = 0
@@ -53281,65 +53284,27 @@ EndIf
 If _Sleep($DELAYCLOUDSCLEARED) Then Return
 EndFunc
 Func EnableLongSearch()
-Local $result = ""
-Local $iCount, $jCount, $kCount, $wCount
+Local $iCount
 If $g_bDebugSetlog Then SetDebugLog("Begin EnableLongSearch:", $COLOR_DEBUG1)
 If Int($g_aiCurrentLoot[$eLootTrophy]) < 3700 Then
 If $g_bDebugSetlog Then SetDebugLog("Long cloud search not enabled due trophy count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
 Return False
 EndIf
-If chkSearchText() = True Then
 $iCount = 0
 While 1
-If _CheckPixel($aOpenChatTab, $g_bCapturePixel, Default, "OpenChatTab check", $COLOR_DEBUG) Then
-ClickP($aOpenChatTab, 1, 0, "#0510")
-If _Sleep($DELAYGETRESOURCES1) Then Return
-$jCount = 0
-While 1
-If _CheckPixel($aCloseChat, $g_bCapturePixel, Default, "CloseChatTab check", $COLOR_DEBUG) Then
-ClickP($aCloseChat, 1, 0, "#0511")
-$kCount = 0
-While 1
-If _Sleep($DELAYSLEEP) Then Return
-$result = getCloudTextShort(260, 349 + $g_iMidOffsetY, "Cloud Search Text: sea=", $COLOR_DEBUG, Default)
-If _CheckPixel($aCloseChat, $g_bCapturePixel, Default, "CloseChatTab check", $COLOR_DEBUG) Then
-$kCount += 1
-ElseIf $result <> "" And StringInStr($result, "sea", $STR_NOCASESENSEBASIC) > 0 Then
-Return True
-Else
-Return True
-EndIf
-$kCount += 1
-If $kCount > 30 Then
-If chkSurrenderBtn() = True Then Return True
-SetLog("Warning - Found CloseChat Btn still open during search extension", $COLOR_WARNING)
-Return False
-EndIf
-WEnd
-EndIf
-If _Sleep($DELAYSLEEP) Then Return
-$jCount += 1
-If $jCount > 50 Then
-If chkSurrenderBtn() = True Then Return True
-SetLog("Warning - Not find CloseChat tab during search extension", $COLOR_WARNING)
-Return False
-EndIf
-WEnd
-EndIf
-$iCount += 1
-If $iCount > 30 Then
-If chkSurrenderBtn() = True Then Return True
-SetLog("Cloud Search Text found, but chat button not found, restart search..", $COLOR_ERROR)
-Return False
-EndIf
-WEnd
-Else
 If chkSurrenderBtn() = True Then Return True
 If chkAttackSearchPersonalBreak() = True Then Return False
 If chkAttackSearchFail() = 1 Then Return True
+If chkSearchText() = False Then
 If $g_bDebugSetlog Then SetDebugLog("Cloud Search Text not found...", $COLOR_DEBUG)
 Return False
+Else
+Click(271, 351 + $g_iMidOffsetY)
 EndIf
+If _Sleep(5000) Then Return
+$iCount += 1
+If $iCount > 6 Then Return True
+WEnd
 EndFunc
 Func chkSearchText()
 Local $result
@@ -54181,77 +54146,70 @@ ContinueLoop
 EndIf
 ExitLoop
 WEnd
+Local $itime = TimerInit()
+Local $iBenchmark
+Local $Buttons = 0
 While $bDonate
 checkAttackDisable($g_iTaBChkIdle)
 $ClanString = ""
+$itime = TimerInit()
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ForceCaptureRegion()
 $g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get all Buttons in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 If IsArray($g_aiDonatePixel) Then
+$Buttons += 1
+If $g_bDebugSetlog Then SetDebugLog("***** Donate Request Number " & $Buttons & " *****", $COLOR_ACTION)
 If $g_bDebugSetlog Then SetDebugLog("$g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
 $donateCCfilter = donateCCWBLUserImageCollect($g_aiDonatePixel[0], $g_aiDonatePixel[1])
 $bDonate = False
 $g_bSkipDonTroops = False
 $g_bSkipDonSpells = False
 If $bDonateTroop Or $bDonateSpell And $donateCCfilter Then
-If $g_bChkExtraAlphabets Then
-SetLog("Using OCR to read Latin and Cyrillic derived alphabets..", $COLOR_ACTION)
+Local $Alphabets[4] = [$g_bChkExtraAlphabets, $g_bChkExtraChinese, $g_bChkExtraKorean, $g_bChkExtraPersian]
+Local $Yaxis[4] = [50, 26, 26, 31]
+Local $TextAlphabetsNames[4] = ["Cyrillic and Latin", "Chinese", "Korean", "Persian"]
+Local $AlphabetFunctions[4] = ["getChatString", "getChatStringChinese", "getChatStringKorean", "getChatStringPersian"]
+Local $BlankSpaces = ""
+For $i = 0 To UBound($Alphabets) - 1
+If $i = 0 Then
+Local $coordinates[3] = [50, 36, 23]
+Local $OcrName =($Alphabets[$i] = True) ?("coc-latin-cyr") :("coc-latinA")
+Local $log = "Latin"
+If $Alphabets[$i] Then $log = $TextAlphabetsNames[$i]
 $ClanString = ""
-$ClanString = getChatString(30, $g_aiDonatePixel[1] - 50, "coc-latin-cyr")
-If $ClanString = "" Then
-$ClanString = getChatString(30, $g_aiDonatePixel[1] - 36, "coc-latin-cyr")
-Else
-$ClanString &= " " & getChatString(30, $g_aiDonatePixel[1] - 36, "coc-latin-cyr")
-EndIf
+SetLog("Using OCR to read " & $log & " derived alphabets.", $COLOR_ACTION)
+For $j = 0 To 2
 If $ClanString = "" Or $ClanString = " " Then
-$ClanString = getChatString(30, $g_aiDonatePixel[1] - 23, "coc-latin-cyr")
-Else
-$ClanString &= " " & getChatString(30, $g_aiDonatePixel[1] - 23, "coc-latin-cyr")
+$ClanString &= $BlankSpaces & getChatString(30, $g_aiDonatePixel[1] - $coordinates[$j], $OcrName)
+If $g_bDebugSetlog Then SetDebugLog("$OcrName: " & $OcrName)
+If $g_bDebugSetlog Then SetDebugLog("$coordinates: " & $coordinates[$j])
+If $g_bDebugSetlog Then SetDebugLog("$ClanString: " & $ClanString)
+If $ClanString <> "" And $ClanString <> " " Then ExitLoop
 EndIf
-If _Sleep($DELAYDONATECC2) Then ExitLoop
+If $ClanString <> "" Then $BlankSpaces = " "
+Next
 Else
-SetLog("Using OCR to read Latin derived alphabets..", $COLOR_ACTION)
-$ClanString = ""
-$ClanString = getChatString(30, $g_aiDonatePixel[1] - 50, "coc-latinA")
-If $ClanString = "" Then
-$ClanString = getChatString(30, $g_aiDonatePixel[1] - 36, "coc-latinA")
-Else
-$ClanString &= " " & getChatString(30, $g_aiDonatePixel[1] - 36, "coc-latinA")
-EndIf
+If $Alphabets[$i] Then
 If $ClanString = "" Or $ClanString = " " Then
-$ClanString = getChatString(30, $g_aiDonatePixel[1] - 23, "coc-latinA")
-Else
-$ClanString &= " " & getChatString(30, $g_aiDonatePixel[1] - 23, "coc-latinA")
+SetLog("Using OCR to read " & $TextAlphabetsNames[$i] & " alphabets.", $COLOR_ACTION)
+#Au3Stripper_Off
+$ClanString &= $BlankSpaces & Call($AlphabetFunctions[$i], 30, $g_aiDonatePixel[1] - $Yaxis[$i])
+#Au3Stripper_On
+If @error = 0xDEAD And @extended = 0xBEEF Then SetLog("[DonatCC] Function " & $AlphabetFunctions[$i] & "() had a problem.")
+If $g_bDebugSetlog Then SetDebugLog("$OcrName: " & $OcrName)
+If $g_bDebugSetlog Then SetDebugLog("$Yaxis: " & $Yaxis[$i])
+If $g_bDebugSetlog Then SetDebugLog("$ClanString: " & $ClanString)
+If $ClanString <> "" And $ClanString <> " " Then ExitLoop
 EndIf
-If _Sleep($DELAYDONATECC2) Then ExitLoop
 EndIf
-If $g_bChkExtraChinese Then
-SetLog("Using OCR to read the Chinese alphabet..", $COLOR_ACTION)
-If $ClanString = "" Then
-$ClanString = getChatStringChinese(30, $g_aiDonatePixel[1] - 24)
-Else
-$ClanString &= " " & getChatStringChinese(30, $g_aiDonatePixel[1] - 24)
 EndIf
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-EndIf
-If $g_bChkExtraKorean Then
-SetLog("Using OCR to read the Korean alphabet..", $COLOR_ACTION)
-If $ClanString = "" Then
-$ClanString = getChatStringKorean(30, $g_aiDonatePixel[1] - 24)
-Else
-$ClanString &= " " & getChatStringKorean(30, $g_aiDonatePixel[1] - 24)
-EndIf
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-EndIf
-If $g_bChkExtraPersian Then
-SetLog("Using OCR to read the Persian alphabet..", $COLOR_ACTION)
-If $ClanString = "" Then
-$ClanString = getChatStringPersian(30, $g_aiDonatePixel[1] - 31)
-Else
-$ClanString &= " " & getChatStringPersian(30, $g_aiDonatePixel[1] - 31)
-EndIf
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-EndIf
+Next
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get Request OCR in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 If $ClanString = "" Or $ClanString = " " Then
 SetLog("Unable to read Chat Request!", $COLOR_ERROR)
 $bDonate = True
@@ -54270,6 +54228,9 @@ ElseIf(($bDonateAllTroop And $bDonateAllSpell) Or($bDonateAllTroop And Not $bDon
 SetLog("Skip reading chat requests. Donate all is enabled!", $COLOR_ACTION)
 EndIf
 RemainingCCcapacity()
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get remaining CC capacity in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 If Not $donateCCfilter Then
 SetLog("Skip Donation at this Clan Mate...", $COLOR_ACTION)
 $g_bSkipDonTroops = True
@@ -54295,16 +54256,21 @@ $bDonate = True
 $y = $g_aiDonatePixel[1] + 50
 ContinueLoop
 EndIf
-If _Sleep(1000) Then Return
+If _Sleep($DELAYDONATECC3) Then Return
 If($g_bSkipDonTroops And $g_bSkipDonSpells) Or Not DonateWindow($bOpen) Then
 $bDonate = True
 $y = $g_aiDonatePixel[1] + 50
 SetLog("Donate Window did not open - Exiting Donate", $COLOR_ERROR)
 ExitLoop
 EndIf
+Local $eCustom[4] = [$eCustomA, $eCustomB, $eCustomC, $eCustomD]
+Local $eDonateCustom[4] = [$g_aiDonateCustomTrpNumA, $g_aiDonateCustomTrpNumB, $g_aiDonateCustomTrpNumC, $g_aiDonateCustomTrpNumD]
 If $bDonateTroop Or $bDonateSpell Then
 If $g_bDebugSetlog Then SetDebugLog("Troop/Spell checkpoint.", $COLOR_DEBUG)
 DonateWindowCap($g_bSkipDonTroops, $g_bSkipDonSpells)
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get available donate cap in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 If $g_bSkipDonTroops And $g_bSkipDonSpells Then
 DonateWindow($bClose)
 $bDonate = True
@@ -54314,76 +54280,39 @@ ContinueLoop
 EndIf
 If $bDonateTroop And Not $g_bSkipDonTroops Then
 If $g_bDebugSetlog Then SetDebugLog("Troop checkpoint.", $COLOR_DEBUG)
-If $g_abChkDonateTroop[$eCustomA] And CheckDonateTroop(99, $g_asTxtDonateTroop[$eCustomA], $g_asTxtBlacklistTroop[$eCustomA], $ClanString) Then
+For $x = 0 To UBound($eDonateCustom) - 1
+If $g_abChkDonateTroop[$eCustom[$x]] And CheckDonateTroop(99, $g_asTxtDonateTroop[$eCustom[$x]], $g_asTxtBlacklistTroop[$eCustom[$x]], $ClanString) Then
+Local $CorrectDonateCustom = $eDonateCustom[$x]
 For $i = 0 To 2
-If $g_aiDonateCustomTrpNumA[$i][0] < $eBarb Then
-$g_aiDonateCustomTrpNumA[$i][0] = $eArch
-ElseIf $g_aiDonateCustomTrpNumA[$i][0] > $eBowl Then
+If $CorrectDonateCustom[$i][0] < $eBarb Then
+$CorrectDonateCustom[$i][0] = $eArch
+ElseIf $CorrectDonateCustom[$i][0] > $eBowl Then
 ContinueLoop
 EndIf
-If $g_aiDonateCustomTrpNumA[$i][1] < 1 Then
+If $CorrectDonateCustom[$i][1] < 1 Then
 ContinueLoop
-ElseIf $g_aiDonateCustomTrpNumA[$i][1] > 8 Then
-$g_aiDonateCustomTrpNumA[$i][1] = 8
+ElseIf $CorrectDonateCustom[$i][1] > 8 Then
+$CorrectDonateCustom[$i][1] = 8
 EndIf
-DonateTroopType($g_aiDonateCustomTrpNumA[$i][0], $g_aiDonateCustomTrpNumA[$i][1], $g_abChkDonateTroop[$eCustomA])
+DonateTroopType($CorrectDonateCustom[$i][0], $CorrectDonateCustom[$i][1], $g_abChkDonateTroop[$eCustom[$x]])
+If _Sleep($DELAYDONATECC3) Then ExitLoop
 Next
 EndIf
-If $g_abChkDonateTroop[$eCustomB] And CheckDonateTroop(99, $g_asTxtDonateTroop[$eCustomB], $g_asTxtBlacklistTroop[$eCustomB], $ClanString) Then
-For $i = 0 To 2
-If $g_aiDonateCustomTrpNumB[$i][0] < $eBarb Then
-$g_aiDonateCustomTrpNumB[$i][0] = $eArch
-ElseIf $g_aiDonateCustomTrpNumB[$i][0] > $eBowl Then
-ContinueLoop
-EndIf
-If $g_aiDonateCustomTrpNumB[$i][1] < 1 Then
-ContinueLoop
-ElseIf $g_aiDonateCustomTrpNumB[$i][1] > 8 Then
-$g_aiDonateCustomTrpNumB[$i][1] = 8
-EndIf
-DonateTroopType($g_aiDonateCustomTrpNumB[$i][0], $g_aiDonateCustomTrpNumB[$i][1], $g_abChkDonateTroop[$eCustomB])
 Next
-EndIf
-If $g_abChkDonateTroop[$eCustomC] And CheckDonateTroop(99, $g_asTxtDonateTroop[$eCustomC], $g_asTxtBlacklistTroop[$eCustomC], $ClanString) Then
-For $i = 0 To 2
-If $g_aiDonateCustomTrpNumC[$i][0] < $eBarb Then
-$g_aiDonateCustomTrpNumC[$i][0] = $eArch
-ElseIf $g_aiDonateCustomTrpNumC[$i][0] > $eBowl Then
-ContinueLoop
-EndIf
-If $g_aiDonateCustomTrpNumC[$i][1] < 1 Then
-ContinueLoop
-ElseIf $g_aiDonateCustomTrpNumC[$i][1] > 8 Then
-$g_aiDonateCustomTrpNumC[$i][1] = 8
-EndIf
-DonateTroopType($g_aiDonateCustomTrpNumC[$i][0], $g_aiDonateCustomTrpNumC[$i][1], $g_abChkDonateTroop[$eCustomC])
-Next
-EndIf
-If $g_abChkDonateTroop[$eCustomD] And CheckDonateTroop(99, $g_asTxtDonateTroop[$eCustomD], $g_asTxtBlacklistTroop[$eCustomD], $ClanString) Then
-For $i = 0 To 2
-If $g_aiDonateCustomTrpNumD[$i][0] < $eBarb Then
-$g_aiDonateCustomTrpNumD[$i][0] = $eArch
-ElseIf $g_aiDonateCustomTrpNumD[$i][0] > $eBowl Then
-ContinueLoop
-EndIf
-If $g_aiDonateCustomTrpNumD[$i][1] < 1 Then
-ContinueLoop
-ElseIf $g_aiDonateCustomTrpNumD[$i][1] > 8 Then
-$g_aiDonateCustomTrpNumD[$i][1] = 8
-EndIf
-DonateTroopType($g_aiDonateCustomTrpNumD[$i][0], $g_aiDonateCustomTrpNumD[$i][1], $g_abChkDonateTroop[$eCustomD])
-Next
-EndIf
 If Not $g_bSkipDonTroops Then
 For $i = 0 To UBound($g_aiDonateTroopPriority) - 1
 Local $iTroopIndex = $g_aiDonateTroopPriority[$i]
 If $g_abChkDonateTroop[$iTroopIndex] Then
 If CheckDonateTroop($iTroopIndex, $g_asTxtDonateTroop[$iTroopIndex], $g_asTxtBlacklistTroop[$iTroopIndex], $ClanString) Then
 DonateTroopType($iTroopIndex)
+If _Sleep($DELAYDONATECC3) Then ExitLoop
 EndIf
 EndIf
 Next
 EndIf
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get Donated troops in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 EndIf
 If $bDonateSpell And Not $g_bSkipDonSpells Then
 If $g_bDebugSetlog Then SetDebugLog("Spell checkpoint.", $COLOR_DEBUG)
@@ -54392,9 +54321,13 @@ Local $iSpellIndex = $g_aiDonateSpellPriority[$i]
 If $g_abChkDonateSpell[$iSpellIndex] Then
 If CheckDonateSpell($iSpellIndex, $g_asTxtDonateSpell[$iSpellIndex], $g_asTxtBlacklistSpell[$iSpellIndex], $ClanString) Then
 DonateSpellType($iSpellIndex)
+If _Sleep($DELAYDONATECC3) Then ExitLoop
 EndIf
 EndIf
 Next
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get Donated Spells in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 EndIf
 EndIf
 If $bDonateAllTroop Or $bDonateAllSpell Then
@@ -54402,6 +54335,9 @@ If $g_bDebugSetlog Then SetDebugLog("Troop/Spell All checkpoint.", $COLOR_DEBUG)
 $g_bDonateAllRespectBlk = True
 If $bDonateAllTroop And Not $g_bSkipDonTroops Then
 DonateWindowCap($g_bSkipDonTroops, $g_bSkipDonSpells)
+$iBenchmark = TimerDiff($itime)
+Setlog("Get available donate cap (to all) in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 If $g_bSkipDonTroops And $g_bSkipDonSpells Then
 DonateWindow($bClose)
 $bDonate = True
@@ -54410,96 +54346,33 @@ If _Sleep($DELAYDONATECC2) Then ExitLoop
 ContinueLoop
 EndIf
 If $g_bDebugSetlog Then SetDebugLog("Troop All checkpoint.", $COLOR_DEBUG)
-Select
-Case $g_abChkDonateAllTroop[$eCustomA]
+For $x = 0 To 4
+If $x <> 4 Then
+If $g_abChkDonateAllTroop[$eCustom[$x]] Then
+Local $CorrectDonateCustom = $eDonateCustom[$x]
 For $i = 0 To 2
-If $g_aiDonateCustomTrpNumA[$i][0] < $eBarb Then
-$g_aiDonateCustomTrpNumA[$i][0] = $eArch
-ElseIf $g_aiDonateCustomTrpNumA[$i][0] > $eBowl Then
+If $CorrectDonateCustom[$i][0] < $eBarb Then
+$CorrectDonateCustom[$i][0] = $eArch
+ElseIf $CorrectDonateCustom[$i][0] > $eBowl Then
 DonateWindow($bClose)
 $bDonate = True
 $y = $g_aiDonatePixel[1] + 50
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ContinueLoop
 EndIf
-If $g_aiDonateCustomTrpNumA[$i][1] < 1 Then
+If $CorrectDonateCustom[$i][1] < 1 Then
 DonateWindow($bClose)
 $bDonate = True
 $y = $g_aiDonatePixel[1] + 50
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ContinueLoop
-ElseIf $g_aiDonateCustomTrpNumA[$i][1] > 8 Then
-$g_aiDonateCustomTrpNumA[$i][1] = 8
+ElseIf $CorrectDonateCustom[$i][1] > 8 Then
+$CorrectDonateCustom[$i][1] = 8
 EndIf
-DonateTroopType($g_aiDonateCustomTrpNumA[$i][0], $g_aiDonateCustomTrpNumA[$i][1], $g_abChkDonateAllTroop[$eCustomA], $bDonateAllTroop)
+DonateTroopType($CorrectDonateCustom[$i][0], $CorrectDonateCustom[$i][1], $g_abChkDonateAllTroop[$eCustom[$x]], $bDonateAllTroop)
 Next
-Case $g_abChkDonateAllTroop[$eCustomB]
-For $i = 0 To 2
-If $g_aiDonateCustomTrpNumB[$i][0] < $eBarb Then
-$g_aiDonateCustomTrpNumB[$i][0] = $eArch
-ElseIf $g_aiDonateCustomTrpNumB[$i][0] > $eBowl Then
-DonateWindow($bClose)
-$bDonate = True
-$y = $g_aiDonatePixel[1] + 50
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-ContinueLoop
 EndIf
-If $g_aiDonateCustomTrpNumB[$i][1] < 1 Then
-DonateWindow($bClose)
-$bDonate = True
-$y = $g_aiDonatePixel[1] + 50
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-ContinueLoop
-ElseIf $g_aiDonateCustomTrpNumB[$i][1] > 8 Then
-$g_aiDonateCustomTrpNumB[$i][1] = 8
-EndIf
-DonateTroopType($g_aiDonateCustomTrpNumB[$i][0], $g_aiDonateCustomTrpNumB[$i][1], $g_abChkDonateAllTroop[$eCustomB], $bDonateAllTroop)
-Next
-Case $g_abChkDonateAllTroop[$eCustomC]
-For $i = 0 To 2
-If $g_aiDonateCustomTrpNumC[$i][0] < $eBarb Then
-$g_aiDonateCustomTrpNumC[$i][0] = $eArch
-ElseIf $g_aiDonateCustomTrpNumC[$i][0] > $eBowl Then
-DonateWindow($bClose)
-$bDonate = True
-$y = $g_aiDonatePixel[1] + 50
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-ContinueLoop
-EndIf
-If $g_aiDonateCustomTrpNumC[$i][1] < 1 Then
-DonateWindow($bClose)
-$bDonate = True
-$y = $g_aiDonatePixel[1] + 50
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-ContinueLoop
-ElseIf $g_aiDonateCustomTrpNumC[$i][1] > 8 Then
-$g_aiDonateCustomTrpNumC[$i][1] = 8
-EndIf
-DonateTroopType($g_aiDonateCustomTrpNumC[$i][0], $g_aiDonateCustomTrpNumC[$i][1], $g_abChkDonateAllTroop[$eCustomC], $bDonateAllTroop)
-Next
-Case $g_abChkDonateAllTroop[$eCustomD]
-For $i = 0 To 2
-If $g_aiDonateCustomTrpNumD[$i][0] < $eBarb Then
-$g_aiDonateCustomTrpNumD[$i][0] = $eArch
-ElseIf $g_aiDonateCustomTrpNumD[$i][0] > $eBowl Then
-DonateWindow($bClose)
-$bDonate = True
-$y = $g_aiDonatePixel[1] + 50
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-ContinueLoop
-EndIf
-If $g_aiDonateCustomTrpNumD[$i][1] < 1 Then
-DonateWindow($bClose)
-$bDonate = True
-$y = $g_aiDonatePixel[1] + 50
-If _Sleep($DELAYDONATECC2) Then ExitLoop
-ContinueLoop
-ElseIf $g_aiDonateCustomTrpNumD[$i][1] > 8 Then
-$g_aiDonateCustomTrpNumD[$i][1] = 8
-EndIf
-DonateTroopType($g_aiDonateCustomTrpNumD[$i][0], $g_aiDonateCustomTrpNumD[$i][1], $g_abChkDonateAllTroop[$eCustomD], $bDonateAllTroop)
-Next
-Case Else
+Else
 For $i = 0 To UBound($g_aiDonateTroopPriority) - 1
 Local $iTroopIndex = $g_aiDonateTroopPriority[$i]
 If $g_abChkDonateAllTroop[$iTroopIndex] Then
@@ -54509,7 +54382,11 @@ EndIf
 ExitLoop
 EndIf
 Next
-EndSelect
+EndIf
+Next
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get Donated troops (to all) in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 EndIf
 If $bDonateAllSpell And Not $g_bSkipDonSpells Then
 If $g_bDebugSetlog Then SetDebugLog("Spell All checkpoint.", $COLOR_DEBUG)
@@ -54522,6 +54399,9 @@ EndIf
 ExitLoop
 EndIf
 Next
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get Donated Spells (to all)  in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
+$itime = TimerInit()
 EndIf
 $g_bDonateAllRespectBlk = False
 EndIf
@@ -54532,6 +54412,8 @@ If _Sleep($DELAYDONATEWINDOW1) Then ExitLoop
 EndIf
 ForceCaptureRegion()
 $g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
+$iBenchmark = TimerDiff($itime)
+If $g_bDebugSetlog Then SetDebugLog("Get more donate buttons in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
 If IsArray($g_aiDonatePixel) Then
 If $g_bDebugSetlog Then SetDebugLog("More Donate buttons found, new $g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
 ContinueLoop
@@ -54894,7 +54776,7 @@ $g_iDonSpellsAv = $aTempReadCCSpellsCap[1]
 $iDonSpellsLimit = $aTempReadCCSpellsCap[2]
 EndIf
 Else
-SetLog("Error reading the Castle Spells Capacity", $COLOR_ERROR)
+SetLog("Are you able to donate Spells? ", $COLOR_ERROR)
 $g_iDonSpellsAv = 0
 $iDonSpellsLimit = 0
 EndIf
@@ -54950,12 +54832,12 @@ $iCapTroopsTotal = 35
 EndIf
 EndIf
 Else
-SetLog("Error reading the Castle Troop Capacity...", $COLOR_ERROR)
+SetLog("Error reading the Castle Troop Capacity[1]...", $COLOR_ERROR)
 $iDonatedTroops = 0
 $iCapTroopsTotal = 0
 EndIf
 Else
-SetLog("Error reading the Castle Troop Capacity...", $COLOR_ERROR)
+SetLog("Error reading the Castle Troop Capacity[2]...", $COLOR_ERROR)
 $iDonatedTroops = 0
 $iCapTroopsTotal = 0
 EndIf
@@ -54969,12 +54851,12 @@ $iDonatedSpells = $aTempCapSpells[1]
 $iCapSpellsTotal = $aTempCapSpells[2]
 EndIf
 Else
-SetLog("Error reading the Castle Spell Capacity...", $COLOR_ERROR)
+SetLog("Error reading the Castle Spell Capacity[1]...", $COLOR_ERROR)
 $iDonatedSpells = 0
 $iCapSpellsTotal = 0
 EndIf
 Else
-SetLog("Error reading the Castle Spell Capacity...", $COLOR_ERROR)
+SetLog("Error reading the Castle Spell Capacity[2]...", $COLOR_ERROR)
 $iDonatedSpells = 0
 $iCapSpellsTotal = 0
 EndIf
@@ -55120,7 +55002,7 @@ Else
 Return False
 EndIf
 EndFunc
-Func BalanceDonRec($bSetlog = False)
+Func BalanceDonRec($bSetLog = False)
 If Not $g_bDonationEnabled Then Return False
 If Not $g_bUseCCBalanced Then Return True
 If $g_iCommandStop = 0 And $g_bTrainEnabled Then Return True
@@ -55130,7 +55012,7 @@ If $g_bUseCCBalanced Then
 If $g_iTroopsDonated = 0 And $g_iTroopsReceived = 0 Then ProfileReport()
 If Number($g_iTroopsReceived) <> 0 Then
 If Number(Number($g_iTroopsDonated) / Number($g_iTroopsReceived)) >=(Number($g_iCCDonated) / Number($g_iCCReceived)) Then
-If $bSetlog Then SetLog("Skipping Donation because Donate/Recieve Ratio is wrong", $COLOR_INFO)
+If $bSetLog Then SetLog("Skipping Donation because Donate/Recieve Ratio is wrong", $COLOR_INFO)
 Return False
 Else
 Return True
@@ -55267,8 +55149,13 @@ DirCreate($g_sProfileTempDebugPath & "\SkippedZombies\")
 DirCreate($g_sProfileTempDebugPath & "\Zombies\")
 setZombie()
 EndIf
+For $i = 0 to 5
 $g_aiCurrentLoot[$eLootTrophy] = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 SetDebugLog("Current Trophy Count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
+If $g_aiCurrentLoot[$eLootTrophy] <> "" then ExitLoop
+If _Sleep(1000) then return
+ClickP($aAway, 1, 0, "#0000")
+Next
 If Number($g_aiCurrentLoot[$eLootTrophy]) <= Number($g_iDropTrophyMax) Then Return
 Local $bHaveTroops = False
 For $i = 0 To UBound($g_avDTtroopsToBeUsed, 1) - 1
@@ -57248,7 +57135,7 @@ SetLog("No upgrade available... Exiting Auto Upgrade...", $COLOR_INFO)
 ExitLoop
 EndIf
 If QuickMIS("NX",$g_sImgAUpgradeObst, 180, 80 + $g_iCurrentLineOffset - 15, 480, 80 + $g_iCurrentLineOffset + 15) <> "none" Then
-SetLog("This is a New Building or an Equipment... Looking next...", $COLOR_WARNING)
+SetLog("This is a New Building or an Equipment, looking next...", $COLOR_WARNING)
 $g_iNextLineOffset = $g_iCurrentLineOffset
 ContinueLoop
 EndIf
@@ -57256,12 +57143,14 @@ Click(180 + $g_iQuickMISX, 80 + $g_iCurrentLineOffset)
 If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 If Not QuickMIS("BC1", $g_sImgAUpgradeUpgradeBtn, 120, 630, 740, 670) Then
 SetLog("No upgrade here... Wrong click, looking next...", $COLOR_WARNING)
+$g_iNextLineOffset = $g_iCurrentLineOffset
 ContinueLoop
 EndIf
 $g_aUpgradeNameLevel = BuildingInfo(242, 520 + $g_iBottomOffsetY)
 If $g_aUpgradeNameLevel[0] = "" Then
-SetLog("Error when trying to get upgrade name and level... Exiting Auto Upgrade...", $COLOR_ERROR)
-ExitLoop
+SetLog("Error when trying to get upgrade name and level, looking next...", $COLOR_ERROR)
+$g_iNextLineOffset = $g_iCurrentLineOffset
+ContinueLoop
 EndIf
 Local $bMustIgnoreUpgrade = False
 Switch $g_aUpgradeNameLevel[1]
@@ -57295,7 +57184,7 @@ Case Else
 $bMustIgnoreUpgrade = False
 EndSwitch
 If $bMustIgnoreUpgrade = True Then
-SetLog("This upgrade must be ignored... Looking next...", $COLOR_WARNING)
+SetLog("This upgrade must be ignored, looking next...", $COLOR_WARNING)
 $g_iNextLineOffset = $g_iCurrentLineOffset
 ContinueLoop
 EndIf
@@ -57313,8 +57202,9 @@ $g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(195, 307 + $g_iMidOffset
 EndSwitch
 For $i = 0 To 2
 If $g_aUpgradeResourceCostDuration[$i] = "" Then
-SetLog("Error when trying to get upgrade details... Exiting Auto Upgrade...", $COLOR_ERROR)
-ExitLoop 2
+SetLog("Error when trying to get upgrade details, looking next...", $COLOR_ERROR)
+$g_iNextLineOffset = $g_iCurrentLineOffset
+ContinueLoop 2
 EndIf
 Next
 Local $bMustIgnoreResource = False
@@ -57329,7 +57219,7 @@ Case Else
 $bMustIgnoreResource = False
 EndSwitch
 If $bMustIgnoreResource = True Then
-SetLog("This resource must be ignored... Looking next...", $COLOR_WARNING)
+SetLog("This resource must be ignored, looking next...", $COLOR_WARNING)
 $g_iNextLineOffset = $g_iCurrentLineOffset
 ContinueLoop
 EndIf
@@ -57343,8 +57233,9 @@ Case "Dark Elixir"
 If $g_aiCurrentLoot[$eLootDarkElixir] >=($g_aUpgradeResourceCostDuration[1] + $g_iTxtSmartMinDark) Then $bSufficentResourceToUpgrade = True
 EndSwitch
 If Not $bSufficentResourceToUpgrade Then
-SetLog("Unsufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade...", $COLOR_WARNING)
-ExitLoop
+SetLog("Unsufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade, looking Next...", $COLOR_WARNING)
+$g_iNextLineOffset = $g_iCurrentLineOffset
+ContinueLoop
 EndIf
 Switch $g_aUpgradeNameLevel[1]
 Case "Barbarian King", "Archer Queen", "Grand Warden"
@@ -58473,6 +58364,9 @@ $txtStats &= "\n\n" & GetTranslatedFileIni("MBR Func_Notify", "Free-Builders_Inf
 $txtStats &= $g_iNbrOfWallsUppedGold & "/ [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & $g_iNbrOfWallsUppedElixir & "\n\n" & GetTranslatedFileIni("MBR Func_Notify", "Attack_Info_01", "Attacked") & ": "
 $txtStats &= $g_aiAttackedCount & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Skip_Info_02", "Skipped") & ": " & $g_iSkippedVillageCount
 $txtStats &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_07", "Run Time") & ": " & GUICtrlRead($g_hLblResultRuntime)
+$txtStats &= "\n\n" & "Clan Games:"
+$txtStats &= "\n" & "[T]: " & GUICtrlRead($g_hLblRemainTime) & " [S]: " & GUICtrlRead($g_hLblYourScore)
+$txtStats &= "\n" & " "
 NotifyPushToTelegram($g_sNotifyOrigin & $txtStats)
 Case GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG"), '\UD83D\UDCCB ' & GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG")
 SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Log is now sent", $COLOR_SUCCESS)
@@ -58515,7 +58409,7 @@ SetLog("Notify Telegram: Your request has been received. Statistics resetted", $
 NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS_Info_02", "Statistics resetted."))
 Case GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS"), '\UD83D\UDCAA ' & GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS")
 SetLog("Notify Telegram: Your request has been received. Sending Troop/Spell Stats...", $COLOR_SUCCESS)
-Local $txtTroopStats = " | " & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_01", "Troops/Spells Train Status") & ":\n" & "Barbs:" & $g_aiCurrentTroops[$eTroopBarbarian] & " of " & $g_aiArmyCompTroops[$eTroopBarbarian] & " | Arch:" & $g_aiCurrentTroops[$eTroopArcher] & " of " & $g_aiArmyCompTroops[$eTroopArcher] & " | Gobl:" &$g_aiCurrentTroops[$eTroopGoblin] & " of " & $g_aiArmyCompTroops[$eTroopGoblin] & "\n" & "Giant:" & $g_aiCurrentTroops[$eTroopGiant] & " of " & $g_aiArmyCompTroops[$eTroopGiant] & " | WallB:" & $g_aiCurrentTroops[$eTroopWallBreaker] & " of " & $g_aiArmyCompTroops[$eTroopWallBreaker] & " | Wiza:" & $g_aiCurrentTroops[$eTroopWizard] & " of " & $g_aiArmyCompTroops[$eTroopWizard] & "\n" & "Balloon:" & $g_aiCurrentTroops[$eTroopBalloon] & " of " & $g_aiArmyCompTroops[$eTroopBalloon] & " | Heal:" & $g_aiCurrentTroops[$eTroopHealer] & " of " & $g_aiArmyCompTroops[$eTroopHealer] & " | Dragon:" & $g_aiCurrentTroops[$eTroopDragon] & " of " & $g_aiArmyCompTroops[$eTroopDragon] & " | Pekka:" & $g_aiCurrentTroops[$eTroopPekka] & " of " & $g_aiArmyCompTroops[$eTroopPekka] & "\n" & "Mini:" & $g_aiCurrentTroops[$eTroopMinion] & " of " & $g_aiArmyCompTroops[$eTroopMinion] & " | Hogs:" & $g_aiCurrentTroops[$eTroopHogRider] & " of " & $g_aiArmyCompTroops[$eTroopHogRider] & " | Valks:" & $g_aiCurrentTroops[$eTroopValkyrie] & " of " & $g_aiArmyCompTroops[$eTroopValkyrie] & "\n" & "Golem:" & $g_aiCurrentTroops[$eTroopGolem] & " of " & $g_aiArmyCompTroops[$eTroopGolem] & " | Witch:" & $g_aiCurrentTroops[$eTroopWitch] & " of " & $g_aiArmyCompTroops[$eTroopWitch] & " | Lava:" & $g_aiCurrentTroops[$eTroopLavaHound] & " of " & $g_aiArmyCompTroops[$eTroopLavaHound] & "\n" & "LSpell:" & $g_aiCurrentSpells[$eSpellLightning] & " of " & $g_aiArmyCompSpells[$eSpellLightning] & " | HeSpell:" & $g_aiCurrentSpells[$eSpellHeal] & " of " & $g_aiArmyCompSpells[$eSpellHeal] & " | RSpell:" & $g_aiCurrentSpells[$eSpellRage] & " of " & $g_aiArmyCompSpells[$eSpellRage] & " | JSpell:" & $g_aiCurrentSpells[$eSpellJump] & " of " & $g_aiArmyCompSpells[$eSpellJump] & "\n" & "FSpell:" & $g_aiCurrentSpells[$eSpellFreeze] & " of " & $g_aiArmyCompSpells[$eSpellFreeze] & " | PSpell:" & $g_aiCurrentSpells[$eSpellPoison] & " of " & $g_aiArmyCompSpells[$eSpellPoison] & " | ESpell:" & $g_aiCurrentSpells[$eSpellEarthquake] & " of " & $g_aiArmyCompSpells[$eSpellEarthquake] & " | HaSpell:" & $g_aiCurrentSpells[$eSpellHaste] & " of " & $g_aiArmyCompSpells[$eSpellHaste] & "\n"
+Local $txtTroopStats = " | " & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_01", "Troops/Spells Train Status") & ":\n" & "Barbs:" & $g_aiCurrentTroops[$eTroopBarbarian] & " of " & $g_aiArmyCompTroops[$eTroopBarbarian] & " | Arch:" & $g_aiCurrentTroops[$eTroopArcher] & " of " & $g_aiArmyCompTroops[$eTroopArcher] & " | Gobl:" & $g_aiCurrentTroops[$eTroopGoblin] & " of " & $g_aiArmyCompTroops[$eTroopGoblin] & "\n" & "Giant:" & $g_aiCurrentTroops[$eTroopGiant] & " of " & $g_aiArmyCompTroops[$eTroopGiant] & " | WallB:" & $g_aiCurrentTroops[$eTroopWallBreaker] & " of " & $g_aiArmyCompTroops[$eTroopWallBreaker] & " | Wiza:" & $g_aiCurrentTroops[$eTroopWizard] & " of " & $g_aiArmyCompTroops[$eTroopWizard] & "\n" & "Balloon:" & $g_aiCurrentTroops[$eTroopBalloon] & " of " & $g_aiArmyCompTroops[$eTroopBalloon] & " | Heal:" & $g_aiCurrentTroops[$eTroopHealer] & " of " & $g_aiArmyCompTroops[$eTroopHealer] & " | Dragon:" & $g_aiCurrentTroops[$eTroopDragon] & " of " & $g_aiArmyCompTroops[$eTroopDragon] & " | Pekka:" & $g_aiCurrentTroops[$eTroopPekka] & " of " & $g_aiArmyCompTroops[$eTroopPekka] & "\n" & "Mini:" & $g_aiCurrentTroops[$eTroopMinion] & " of " & $g_aiArmyCompTroops[$eTroopMinion] & " | Hogs:" & $g_aiCurrentTroops[$eTroopHogRider] & " of " & $g_aiArmyCompTroops[$eTroopHogRider] & " | Valks:" & $g_aiCurrentTroops[$eTroopValkyrie] & " of " & $g_aiArmyCompTroops[$eTroopValkyrie] & "\n" & "Golem:" & $g_aiCurrentTroops[$eTroopGolem] & " of " & $g_aiArmyCompTroops[$eTroopGolem] & " | Witch:" & $g_aiCurrentTroops[$eTroopWitch] & " of " & $g_aiArmyCompTroops[$eTroopWitch] & " | Lava:" & $g_aiCurrentTroops[$eTroopLavaHound] & " of " & $g_aiArmyCompTroops[$eTroopLavaHound] & "\n" & "LSpell:" & $g_aiCurrentSpells[$eSpellLightning] & " of " & $g_aiArmyCompSpells[$eSpellLightning] & " | HeSpell:" & $g_aiCurrentSpells[$eSpellHeal] & " of " & $g_aiArmyCompSpells[$eSpellHeal] & " | RSpell:" & $g_aiCurrentSpells[$eSpellRage] & " of " & $g_aiArmyCompSpells[$eSpellRage] & " | JSpell:" & $g_aiCurrentSpells[$eSpellJump] & " of " & $g_aiArmyCompSpells[$eSpellJump] & "\n" & "FSpell:" & $g_aiCurrentSpells[$eSpellFreeze] & " of " & $g_aiArmyCompSpells[$eSpellFreeze] & " | PSpell:" & $g_aiCurrentSpells[$eSpellPoison] & " of " & $g_aiArmyCompSpells[$eSpellPoison] & " | ESpell:" & $g_aiCurrentSpells[$eSpellEarthquake] & " of " & $g_aiArmyCompSpells[$eSpellEarthquake] & " | HaSpell:" & $g_aiCurrentSpells[$eSpellHaste] & " of " & $g_aiArmyCompSpells[$eSpellHaste] & "\n"
 $txtTroopStats &= "\n" & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_05", "Current Capacities") & ":"
 $txtTroopStats &= "\n" & " " & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_06", "- Army Camp") & ": " & $g_CurrentCampUtilization & "/" & $g_iTotalCampSpace
 $txtTroopStats &= "\n" & " " & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_04", "- Spells") & ": " & $g_iCurrentSpells & "/" & $g_iTotalTrainSpaceSpell
@@ -60349,6 +60243,7 @@ SetLog("Profile shared_prefs already pushed")
 Else
 If IsMainPage() Then Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
 If _Sleep(500) Then Return
+If $g_bChkGooglePlay Or $g_bChkSharedPrefs Then
 While 1
 Switch SwitchCOCAcc_DisconnectConnect($bResult, $bSharedPrefs)
 Case "OK"
@@ -60382,6 +60277,32 @@ Return
 EndSwitch
 ExitLoop
 WEnd
+ElseIf $g_bChkSuperCellID Then
+While 1
+Switch SwitchCOCAcc_ConnectedSCID($bResult)
+Case "OK"
+Case "Error"
+ExitLoop
+Case "Exit"
+Return
+EndSwitch
+Switch SwitchCOCAcc_ConfirmSCID($bResult)
+Case "OK"
+Case "Error"
+ExitLoop
+Case "Exit"
+Return
+EndSwitch
+Switch SwitchCOCAcc_ClickAccountSCID($bResult, $NextAccount)
+Case "OK"
+Case "Error"
+ExitLoop
+Case "Exit"
+Return
+EndSwitch
+ExitLoop
+WEnd
+EndIf
 If _Sleep(500) Then Return
 EndIf
 If $bResult = True Then
@@ -60465,8 +60386,8 @@ Else
 SetLog("Account already disconnected")
 EndIf
 Return "OK"
-ElseIf _ColorCheck(_GetPixelColor($aButtonSuperCellIdConnected[0], $aButtonSuperCellIdConnected[1], True), Hex($aButtonSuperCellIdConnected[2], 6), $aButtonSuperCellIdConnected[3]) Then
-SetLog("Account connected to SuperCell ID, cannot disconnect")
+ElseIf _ColorCheck(_GetPixelColor($aButtonConnectedSCID[0], $aButtonConnectedSCID[1], True), Hex($aButtonConnectedSCID[2], 6), $aButtonConnectedSCID[3]) Then
+SetLog("Account connected to SuperCell ID")
 Return "OK"
 EndIf
 If $i = 20 Then
@@ -60500,7 +60421,7 @@ If _Sleep(250) Then Return FuncReturn("Exit")
 SetLog("   1.1. Click Disconnect again")
 Click($aButtonDisconnected[0], $aButtonDisconnected[1])
 If _Sleep(600) Then Return FuncReturn("Exit")
-ElseIf _ColorCheck(_GetPixelColor($aButtonSuperCellIdConnected[0], $aButtonSuperCellIdConnected[1], True), Hex($aButtonSuperCellIdConnected[2], 6), $aButtonSuperCellIdConnected[3]) Then
+ElseIf _ColorCheck(_GetPixelColor($aButtonConnectedSCID[0], $aButtonConnectedSCID[1], True), Hex($aButtonConnectedSCID[2], 6), $aButtonConnectedSCID[3]) Then
 If $bStayDisconnected Then
 ClickP($aAway, 1, 0, "#0000")
 Return FuncReturn("OK")
@@ -60582,6 +60503,100 @@ EndIf
 Return "OK"
 EndIf
 If $k = 10 Then
+$bResult = False
+Return "Error"
+EndIf
+If _Sleep(900) Then Return "Exit"
+Next
+EndIf
+If $i = 30 Then
+$bResult = False
+Return "Error"
+EndIf
+If _Sleep(900) Then Return "Exit"
+Next
+Return ""
+EndFunc
+Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
+For $i = 0 To 20
+If _ColorCheck(_GetPixelColor($aButtonConnectedSCID[0], $aButtonConnectedSCID[1], True), Hex($aButtonConnectedSCID[2], 6), $aButtonConnectedSCID[3]) Then
+Click($aButtonConnectedSCID[0], $aButtonConnectedSCID[1], 1, 0, "Click Connected SC_ID")
+Setlog("   1. Click Connected Supercell ID")
+If _Sleep(2500) Then Return "Exit"
+Return "OK"
+EndIf
+If $i = 20 Then
+$bResult = False
+Return "Error"
+EndIf
+If _Sleep(900) Then Return "Exit"
+Next
+Return ""
+EndFunc
+Func SwitchCOCAcc_ConfirmSCID(ByRef $bResult)
+For $i = 0 To 20
+If _ColorCheck(_GetPixelColor($aButtonLogOutSCID[0], $aButtonLogOutSCID[1], True), Hex($aButtonLogOutSCID[2], 6), $aButtonLogOutSCID[3]) Then
+SetLog("   2. Click Log Out Supercell ID")
+Click($aButtonLogOutSCID[0], $aButtonLogOutSCID[1], 2, 500, "Click Log Out SC_ID")
+If _Sleep(500) Then Return "Exit"
+For $j = 0 To 10
+If _ColorCheck(_GetPixelColor($aButtonConfirmSCID[0], $aButtonConfirmSCID[1], True), Hex($aButtonConfirmSCID[2], 6), $aButtonConfirmSCID[3]) Then
+SetLog("   3. Click Confirm Supercell ID")
+Click($aButtonConfirmSCID[0], $aButtonConfirmSCID[1], 1, 0, "Click Confirm SC_ID")
+If _Sleep(500) Then Return "Exit"
+Return "OK"
+EndIf
+If $j = 10 Then
+$bResult = False
+Return "Error"
+EndIf
+If _Sleep(900) Then Return "Exit"
+Next
+EndIf
+If $i = 20 Then
+$bResult = False
+Return "Error"
+EndIf
+If _Sleep(900) Then Return "Exit"
+Next
+Return ""
+EndFunc
+Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 4)
+Local $YCoord = Int(336 + 73.5 * $NextAccount)
+Local $iRetryCloseSCIDTab = 0
+For $i = 0 To 30
+If _ColorCheck(_GetPixelColor($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], True), Hex($aLoginWithSupercellID[2], 6), $aLoginWithSupercellID[3]) Then
+SetLog("   " & $iStep & ". Click Log in with Supercell ID")
+Click($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], 1, 0, "Click Log in with SC_ID")
+If _Sleep(3000) Then Return "Exit"
+For $j = 0 To 20
+If _ColorCheck(_GetPixelColor($aListAccountSCID[0], $aListAccountSCID[1], True), Hex($aListAccountSCID[2], 6), $aListAccountSCID[3]) Then
+If $NextAccount >= 4 Then
+$YCoord = Int(408 - 73.5 *($g_iTotalAcc - $NextAccount))
+ClickDrag(700, 590, 700, 172, 2000)
+If _Sleep(500) Then Return "Exit"
+EndIf
+Click(270, $YCoord)
+SetLog("   " &($iStep + 1) & ". Click Account [" & $NextAccount + 1 & "] Supercell ID")
+If _Sleep(500) Then Return "Exit"
+SetLog("Please wait for loading CoC...!")
+$bResult = True
+Return "OK"
+ElseIf $j = 10 Then
+$iRetryCloseSCIDTab += 1
+If $iRetryCloseSCIDTab <= 3 Then
+SetLog("   " & $iStep & ".5 Click Close Tab Supercell ID")
+Click($aCloseTabSCID[0], $aCloseTabSCID[1], 1, 0, "Click Close Tab SC_ID")
+If _Sleep(500) Then Return "Exit"
+$i = 0
+ExitLoop
+Else
+$iRetryCloseSCIDTab = 0
+$bResult = False
+Return "Error"
+EndIf
+EndIf
+If $j = 20 Then
 $bResult = False
 Return "Error"
 EndIf
@@ -60710,7 +60725,7 @@ EndIf
 Return False
 EndFunc
 Func CheckGoogleSelectAccount($bSelectFirst = True)
-Local $bResult = True
+Local $bResult = False
 Local $pColor = _GetPixelColor($aListAccount[0], $aListAccount[1], False)
 If _ColorCheck($pColor, Hex($aListAccount[2], 6), $aListAccount[3]) Then
 SetDebugLog("Found open Google Accounts list pixel")
@@ -60725,6 +60740,7 @@ Local $a = decodeSingleCoord(FindImageInPlace("GoogleSelectEmail", $g_sImgGoogle
 If UBound($a) > 1 Then
 SetLog("   1. Click first Google Account")
 ClickP($a)
+$bResult = True
 Switch SwitchCOCAcc_ConfirmAccount($bResult, 2)
 Case "OK"
 Case "Error"
@@ -60740,6 +60756,45 @@ SetDebugLog("Open Google Accounts list not verified")
 EndIf
 Else
 If $g_bDebugSetlog Then SetDebugLog("CheckGoogleSelectAccount pixel color: " & $pColor)
+EndIf
+Return $bResult
+EndFunc
+Func CheckLoginWithSupercellID()
+Local $bResult = False
+Local $pColor = _GetPixelColor($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], False)
+If _ColorCheck($pColor, Hex($aLoginWithSupercellID[2], 6), $aLoginWithSupercellID[3]) Then
+SetDebugLog("Found Log in with Supercell ID pixel")
+If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "415,615(125,30)", False))) > 1 Then
+SetLog("Verified Log in with Supercell ID boot screen")
+If HaveSharedPrefs($g_sProfileCurrentName) Then
+SetLog("Close CoC and push shared_prefs for Supercell ID screen...")
+PushSharedPrefs()
+Return True
+Else
+If $g_bChkSuperCellID And ProfileSwitchAccountEnabled() Then
+Local $NextAccount = 0
+$bResult = True
+For $i = 0 To $g_iTotalAcc
+If $g_abAccountNo[$i] = True And SwitchAccountEnabled($i) And $g_asProfileName[$i] = $g_sProfileCurrentName Then $NextAccount = $i
+Next
+Switch SwitchCOCAcc_ClickAccountSCID($bResult, $NextAccount, 1)
+Case "OK"
+Case "Error"
+Return
+Case "Exit"
+Return
+EndSwitch
+Else
+SetLog("Cannot close Supercell ID screen, shared_prefs not pulled.", $COLOR_ERROR)
+SetLog("Please resolve Supercell ID screen manually, close CoC", $COLOR_INFO)
+SetLog("and then pull shared_prefs in tab Bot/Profiles.", $COLOR_INFO)
+EndIf
+EndIf
+Else
+SetDebugLog("Log in with Supercell ID boot screen not verified")
+EndIf
+Else
+If $g_bDebugSetlog Then SetDebugLog("LoginWithSupercellID pixel color: " & $pColor)
 EndIf
 Return $bResult
 EndFunc
@@ -60793,6 +60848,516 @@ SetSwitchAccLog($sNewProfile & " active!", $COLOR_ERROR)
 EndIf
 Return False
 EndIf
+EndFunc
+Func _ClanGames()
+If Not $g_bChkClanGamesEnabled Then Return
+Local $sINIPath = StringReplace($g_sProfileConfigPath, "config.ini" , "ClanGames_config.ini")
+If Not FileExists($sINIPath) then ClanGamesChallenges("" , True, $sINIPath, $g_bChkClanGamesDebug)
+ClickP($aAway, 1, 0, "#0000")
+SetLog("Entering Clan Games...", $COLOR_INFO)
+If _Sleep(500) Then Return
+Local $TabChallengesPosition[2] = [820, 130]
+Local $sTimeRemain = "", $sEventName = "", $getCapture = True
+Local Static $YourAccScore[8][2] = [[-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True], [-1, True]]
+If isProblemAffect(True) Then checkMainScreen(False)
+If Not IsClanGamesWindow() Then Return
+If Not IsClanGamesEvent() Then Return
+Local $ScoreLimits = GetTimesAndScores()
+If $ScoreLimits = -1 Or UBound($ScoreLimits) <> 2 Then Return
+If _Sleep(3000) Then Return
+SetLog("Your Score is: " & Int($ScoreLimits[0]), $COLOR_INFO)
+If Int($ScoreLimits[0]) = Int($ScoreLimits[1]) Then
+SetLog("Your Score limit was reached, Congrats...")
+ClickP($aAway, 1, 0, "#0000")
+Return
+ElseIf Int($ScoreLimits[0]) + 200 > Int($ScoreLimits[1]) Then
+SetLog("Your Score limit is almost reached...")
+If $g_bChkClanGamesStopBeforeReachAndPurge Then
+If CooldownTime() Then Return
+If IsEventRunning() Then Return
+SetLog("Stop before completing your limit and only Purge")
+$sEventName = "Builder Base Challenges to Purge"
+If PurgeEvent($g_sImgPurge, $sEventName, True) Then $g_iPurgeJobCount[$g_iCurAccount] += 1
+ClickP($aAway, 1, 0, "#0000")
+Return
+EndIf
+EndIf
+If $YourAccScore[$g_iCurAccount][0] = -1 Then $YourAccScore[$g_iCurAccount][0] = $ScoreLimits[0]
+If CooldownTime() Then Return
+If $g_bRunState = False Then Return
+If IsEventRunning() Then Return
+If $g_bRunState = False Then Return
+Local $x = 281, $y = 150, $x1 = 775, $y1 = 545
+If $g_bChkClanGamesDebug Then SetLog("Your TownHall Level is " & $g_iTownHallLevel)
+If isProblemAffect(True) Then checkMainScreen(False)
+If $g_bChkClanGamesLoot Then
+SetLog("Checking 6 Loot Challenges", $COLOR_DEBUG)
+Local $LootChallenges = ClanGamesChallenges("$LootChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
+_ArraySort($LootChallenges, 0, 0, 0, 3)
+For $i = 0 To UBound($LootChallenges) - 1
+If $g_iTownHallLevel < $LootChallenges[$i][2] Then ContinueLoop
+If $LootChallenges[$i][3] = 0 then ContinueLoop
+If QuickMIS("BC1", $LootChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Found " & $LootChallenges[$i][1] & " Event", $COLOR_SUCCESS)
+$sEventName = "Loot Event | " & $LootChallenges[$i][1]
+Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
+If _Sleep(1750) Then Return
+If ClickOnEvent($YourAccScore, $ScoreLimits, $sEventName, $getCapture) Then Return
+ClickP($TabChallengesPosition, 2, 0, "#Tab")
+EndIf
+If _Sleep(50) Then Return
+If $g_bRunState = False Then Return
+Next
+EndIf
+If $g_bChkClanGamesAirTroop Then
+SetLog("Checking 5 Air Troops Challenges", $COLOR_DEBUG)
+Local $AirTroopChallenges = ClanGamesChallenges("$AirTroopChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
+For $i = 0 To UBound($AirTroopChallenges) - 1
+Local $TroopIndex = Int(Eval("eTroop" & $AirTroopChallenges[$i][1]))
+If $g_aiArmyCompTroops[$TroopIndex] < 1 Then
+If $g_bChkClanGamesDebug Then SetLog("[" & $AirTroopChallenges[$i][1] & "] No " & $g_asTroopNames[$TroopIndex] & " on your army composition.")
+ContinueLoop
+ElseIf $g_aiArmyCompTroops[$TroopIndex] > 0 And $g_aiArmyCompTroops[$TroopIndex] < $AirTroopChallenges[$i][3] Then
+If $g_bChkClanGamesDebug Then SetLog("[" & $AirTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiArmyCompTroops[$TroopIndex] & "/" & $AirTroopChallenges[$i][3] & "]")
+ContinueLoop
+EndIf
+If QuickMIS("BC1", $AirTroopChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Found " & $AirTroopChallenges[$i][1] & " Event", $COLOR_SUCCESS)
+$sEventName = "Troops Event | " & $AirTroopChallenges[$i][1]
+Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
+If _Sleep(1750) Then Return
+If ClickOnEvent($YourAccScore, $ScoreLimits, $sEventName, $getCapture) Then Return
+ClickP($TabChallengesPosition, 2, 0, "#Tab")
+EndIf
+If _Sleep(50) Then Return
+If $g_bRunState = False Then Return
+Next
+EndIf
+If $g_bChkClanGamesGroundTroop Then
+SetLog("Checking 14 Ground Troops Challenges", $COLOR_DEBUG)
+Local $GroundTroopChallenges = ClanGamesChallenges("$GroundTroopChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
+For $i = 0 To UBound($GroundTroopChallenges) - 1
+Local $TroopIndex = Int(Eval("eTroop" & $GroundTroopChallenges[$i][1]))
+If $g_aiArmyCompTroops[$TroopIndex] < 1 Then
+If $g_bChkClanGamesDebug Then SetLog("[" & $GroundTroopChallenges[$i][1] & "] No " & $g_asTroopNames[$TroopIndex] & " on your army composition.")
+ContinueLoop
+ElseIf $g_aiArmyCompTroops[$TroopIndex] > 0 And $g_aiArmyCompTroops[$TroopIndex] < $GroundTroopChallenges[$i][3] Then
+If $g_bChkClanGamesDebug Then SetLog("[" & $GroundTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiArmyCompTroops[$TroopIndex] & "/" & $GroundTroopChallenges[$i][3] & "]")
+ContinueLoop
+EndIf
+If QuickMIS("BC1", $GroundTroopChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Found " & $GroundTroopChallenges[$i][1] & " Event", $COLOR_SUCCESS)
+$sEventName = "Troops Event | " & $GroundTroopChallenges[$i][1]
+Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
+If _Sleep(1750) Then Return
+If ClickOnEvent($YourAccScore, $ScoreLimits, $sEventName, $getCapture) Then Return
+ClickP($TabChallengesPosition, 2, 0, "#Tab")
+EndIf
+If _Sleep(50) Then Return
+If $g_bRunState = False Then Return
+Next
+EndIf
+If $g_bChkClanGamesBattle Then
+SetLog("Checking 9 Battle Challenges", $COLOR_DEBUG)
+Local $BattleChallenges = ClanGamesChallenges("$BattleChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
+_ArraySort($BattleChallenges, 0, 0, 0, 3)
+For $i = 0 To UBound($BattleChallenges) - 1
+If $g_iTownHallLevel < $BattleChallenges[$i][2] Then ContinueLoop
+If $BattleChallenges[$i][3] = 0 then ContinueLoop
+If $BattleChallenges[$i][1] = "Attack Up" And $g_iTownHallLevel = 11 then ContinueLoop
+If $BattleChallenges[$i][1] = "Slaying The Titans" And Int($g_aiCurrentLoot[$eLootTrophy]) < 4100 then ContinueLoop
+If $BattleChallenges[$i][1] = "No-Magic Zone" And($g_bSmartZapEnable = True Or($g_iMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 1) Or($g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 1)) then ContinueLoop
+If $BattleChallenges[$i][1] = "No Heroics Allowed" And((Int($g_aiAttackUseHeroes[$DB]) > $eHeroNone And $g_iMatchMode = $DB) Or(Int($g_aiAttackUseHeroes[$LB]) > $eHeroNone And $g_iMatchMode = $LB)) then ContinueLoop
+If QuickMIS("BC1", $BattleChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Found " & $BattleChallenges[$i][1] & " Event", $COLOR_SUCCESS)
+$sEventName = "Battle Event | " & $BattleChallenges[$i][1]
+Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
+If _Sleep(1750) Then Return
+If $BattleChallenges[$i][1] = "Pile Of Victories" Then
+If QuickMIS("BC1", $g_sImgWStreakC, $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Winning Streak Detected , wrong Event.. continuing", $COLOR_WARNING)
+If $g_iTownHallLevel < 9 Then
+ClickP($TabChallengesPosition, 2, 0, "#Tab")
+ContinueLoop
+EndIf
+$sEventName = "Battle Event | Winning Streak"
+EndIf
+EndIf
+If ClickOnEvent($YourAccScore, $ScoreLimits, $sEventName, $getCapture) Then Return
+ClickP($TabChallengesPosition, 2, 0, "#Tab")
+EndIf
+If _Sleep(50) Then Return
+If $g_bRunState = False Then Return
+Next
+EndIf
+If $g_bChkClanGamesDestruction Then
+SetLog("Checking 28 Destruction Challenges", $COLOR_DEBUG)
+Local $DestructionChallenges = ClanGamesChallenges("$DestructionChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
+_ArraySort($DestructionChallenges, 0, 0, 0, 3)
+For $i = 0 To UBound($DestructionChallenges) - 1
+If $g_iTownHallLevel < $DestructionChallenges[$i][2] Then ContinueLoop
+If $DestructionChallenges[$i][3] = 0 then ContinueLoop
+If $DestructionChallenges[$i][1] = "Hero Level Hunter" Or $DestructionChallenges[$i][1] = "King Level Hunter" Or $DestructionChallenges[$i][1] = "Queen Level Hunter" Or $DestructionChallenges[$i][1] = "Warden Level Hunter" And((Int($g_aiAttackUseHeroes[$DB]) = $eHeroNone And $g_iMatchMode = $DB) Or(Int($g_aiAttackUseHeroes[$LB]) = $eHeroNone And $g_iMatchMode = $LB)) then ContinueLoop
+If QuickMIS("BC1", $DestructionChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Found " & $DestructionChallenges[$i][1] & " Event", $COLOR_SUCCESS)
+$sEventName = "Destruction Event | " & $DestructionChallenges[$i][1]
+Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
+If _Sleep(1750) Then Return
+If ClickOnEvent($YourAccScore, $ScoreLimits, $sEventName, $getCapture) Then Return
+ClickP($TabChallengesPosition, 2, 0, "#Tab")
+EndIf
+If _Sleep(50) Then Return
+If $g_bRunState = False Then Return
+Next
+EndIf
+If $g_bChkClanGamesMiscellaneous Then
+SetLog("Checking 3 Miscellaneous Challenges", $COLOR_DEBUG)
+Local $MiscChallenges = ClanGamesChallenges("$MiscChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
+_ArraySort($MiscChallenges, 0, 0, 0, 3)
+For $i = 0 To UBound($MiscChallenges) - 1
+If $MiscChallenges[$i][3] = 0 then ContinueLoop
+If $MiscChallenges[$i][1] = "Gardening Exercise" And $g_iFreeBuilderCount < 1 Then ContinueLoop
+If $g_iTownHallLevel < $MiscChallenges[$i][2] Then ContinueLoop
+If $MiscChallenges[$i][1] = "Helping Hand" And Not $g_iActiveDonate Then ContinueLoop
+If $MiscChallenges[$i][1] = "Donate Spells" And($g_aiPrepDon[2] = 0 And $g_aiPrepDon[3] = 0) Then ContinueLoop
+If QuickMIS("BC1", $MiscChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Found " & $MiscChallenges[$i][1] & " Event", $COLOR_SUCCESS)
+$sEventName = "Miscellaneous Event | " & $MiscChallenges[$i][1]
+Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
+If _Sleep(1750) Then Return
+If ClickOnEvent($YourAccScore, $ScoreLimits, $sEventName, $getCapture) Then Return
+ClickP($TabChallengesPosition, 2, 0, "#Tab")
+EndIf
+If _Sleep(50) Then Return
+If $g_bRunState = False Then Return
+Next
+EndIf
+If $g_bChkClanGamesPurge Then
+If $g_iPurgeJobCount[$g_iCurAccount] + 1 < $g_iPurgeMax Or $g_iPurgeMax = 0 Then
+Local $Txt = $g_iPurgeMax
+If $g_iPurgeMax = 0 Then $Txt = "Unlimited"
+SetLog("Current Purge Jobs " & $g_iPurgeJobCount[$g_iCurAccount] + 1 & " at max of " & $Txt, $COLOR_INFO)
+$sEventName = "Builder Base Challenges to Purge"
+If PurgeEvent($g_sImgPurge, $sEventName, True) Then
+$g_iPurgeJobCount[$g_iCurAccount] += 1
+Else
+SetLog("No Builder Base Event found to Purge", $COLOR_WARNING)
+EndIf
+EndIf
+Return
+EndIf
+SetLog("No Event found, Check your settings", $COLOR_WARNING)
+ClickP($aAway, 1, 0, "#0000")
+If _Sleep(2000) Then Return
+EndFunc
+Func IsClanGamesWindow($getCapture = True)
+If QuickMIS("BC1", $g_sImgCaravan, 200, 55, 300, 135, $getCapture, False) Then
+SetLog("Caravan available... Entering Clan Games...", $COLOR_SUCCESS)
+Click($g_iQuickMISX + 200, $g_iQuickMISY + 55)
+If _Sleep(2500) Then Return
+If QuickMIS("BC1", $g_sImgReward, 760, 480, 830, 570, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Your Reward is Ready", $COLOR_INFO)
+ClickP($aAway, 1, 0, "#0000")
+If _Sleep(2000) Then Return
+Return False
+EndIf
+If _ColorCheck(_GetPixelColor(384, 388, True), Hex(0xFFFFFF, 6), 5) Then
+Local $sTimeRemain = getOcrTimeGameTime(380, 461)
+SetLog("Clan Games will start in " & $sTimeRemain, $COLOR_INFO)
+GUICtrlSetData($g_hLblRemainTime, $sTimeRemain)
+GUICtrlSetState($g_hLblRemainTime, $GUI_ENABLE)
+ClickP($aAway, 1, 0, "#0000")
+If _Sleep(2000) Then Return
+Return False
+EndIf
+Else
+SetLog("Caravan not available...", $COLOR_WARNING)
+ClickP($aAway, 1, 0, "#0000")
+Return False
+EndIf
+If _Sleep(2000) Then Return
+Return True
+EndFunc
+Func IsClanGamesEvent($getCapture = True)
+If QuickMIS("BC1", $g_sImageBuilerGames, 20, 75, 110, 115, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Builder Games Event detected!", $COLOR_INFO)
+If GUICtrlRead($g_hLblRemainTime) <> "BG Event" Then GUICtrlSetData($g_hLblRemainTime, "BG Event")
+ClickP($aAway, 1, 0, "#0000")
+If _Sleep(2000) Then Return
+Return False
+EndIf
+Return True
+EndFunc
+Func GetTimesAndScores()
+Local $rest = -1, $YourScore = "", $ScoreLimits, $sTimeRemain
+$sTimeRemain = StringReplace(getOcrTimeGameTime(50, 479), " ", "")
+If Not _IsValideOCR($sTimeRemain) Then
+SetLog("Get Time Remain error!!!", $COLOR_WARNING)
+Return -1
+EndIf
+SetLog("Clan Games Time Remaining: " & $sTimeRemain, $COLOR_INFO)
+GUICtrlSetData($g_hLblRemainTime, $sTimeRemain)
+GUICtrlSetState($g_hLblRemainTime, $GUI_ENABLE)
+For $i = 0 To 10
+$YourScore = getOcrYourScore(55, 533)
+If $g_bChkClanGamesDebug Then SetLog("Your OCR score: " & $YourScore)
+$YourScore = StringReplace($YourScore, "#", "/")
+$ScoreLimits = StringSplit($YourScore, "/", $STR_NOCOUNT)
+If UBound($ScoreLimits) > 1 Then
+If $rest = Int($ScoreLimits[0]) Then ExitLoop
+$rest = Int($ScoreLimits[0])
+Else
+Return -1
+EndIf
+If _Sleep(800) Then Return
+If $i = 10 Then Return -1
+Next
+GUICtrlSetData($g_hLblYourScore, $YourScore)
+GUICtrlSetState($g_hLblYourScore, $GUI_ENABLE)
+Return $ScoreLimits
+EndFunc
+Func CooldownTime($getCapture = True)
+If QuickMIS("BC1", $g_sImgCoolPurge, 480, 370, 570, 410, $getCapture, False) Then
+SetLog("Cooldown Purge Detected", $COLOR_INFO)
+ClickP($aAway, 1, 0, "#0000")
+Return True
+EndIf
+Return False
+EndFunc
+Func IsEventRunning()
+If Not _ColorCheck(_GetPixelColor(304, 257, True), Hex(0x53E050, 6), 5) Then
+SetLog("An Event is already in progress !", $COLOR_SUCCESS)
+If $g_bChkClanGamesDebug then SetLog("[0]: " & _GetPixelColor(304, 257, True))
+ClickP($aAway, 1, 0, "#0000")
+Return True
+Else
+SetLog("No event under progress... Lets look for one...", $COLOR_INFO)
+Return False
+EndIf
+EndFunc
+Func ClickOnEvent(ByRef $YourAccScore, $ScoreLimits, $sEventName, $getCapture)
+If $YourAccScore[$g_iCurAccount][1] = False Then
+Local $Text = "", $color = $COLOR_SUCCESS
+If $YourAccScore[$g_iCurAccount][0] <> $ScoreLimits[0] Then
+$Text = "You Won " & $ScoreLimits[0] - $YourAccScore[$g_iCurAccount][0] & "pts in last Event"
+Else
+$Text = "You could not complete the last event!!"
+$color = $COLOR_WARNING
+EndIf
+SetLog($Text, $color)
+_FileWriteLog($g_sProfileLogsPath & "\ClanGames.log", " [" & $g_sProfileCurrentName & "] - " & $Text)
+EndIf
+$YourAccScore[$g_iCurAccount][1] = False
+$YourAccScore[$g_iCurAccount][0] = $ScoreLimits[0]
+If $g_bChkClanGamesDebug then SetLog("ClickOnEvent $YourAccScore[" & $g_iCurAccount & "][1]: " & $YourAccScore[$g_iCurAccount][1])
+If $g_bChkClanGamesDebug then SetLog("ClickOnEvent $YourAccScore[" & $g_iCurAccount & "][0]: " & $YourAccScore[$g_iCurAccount][0])
+If Not StartsEvent($sEventName, False, $getCapture, $g_bChkClanGamesDebug) Then Return False
+ClickP($aAway, 1, 0, "#0000")
+Return True
+EndFunc
+Func StartsEvent($sEventName, $g_bPurgeJob = False, $getCapture = True, $g_bChkClanGamesDebug = False)
+If $g_bRunState = False Then Return
+If QuickMIS("BC1", $g_sImgStart, 220, 150, 830, 580, $getCapture, $g_bChkClanGamesDebug) Then
+Local $Timer = GetEventTimeInMinutes($g_iQuickMISX + 220, $g_iQuickMISY + 150)
+SetLog("Starting  Event" & " ["& $Timer & " min]", $COLOR_SUCCESS)
+Click($g_iQuickMISX + 220, $g_iQuickMISY + 150)
+GUICtrlSetData($g_hTxtClanGamesLog, @CRLF & _NowDate() & " " & _NowTime() & " [" & $g_sProfileCurrentName & "] - Starting " & $sEventName & " for " & $Timer & " min", 1)
+_FileWriteLog($g_sProfileLogsPath & "\ClanGames.log", " [" & $g_sProfileCurrentName & "] - Starting " & $sEventName & " for "& $Timer & " min")
+If $g_bPurgeJob Then
+If _Sleep(2000) Then Return
+If QuickMIS("BC1", $g_sImgTrashPurge, 220, 150, 830, 580, $getCapture, $g_bChkClanGamesDebug) Then
+Click($g_iQuickMISX + 220, $g_iQuickMISY + 150)
+If _Sleep(1200) Then Return
+SetLog("Click Trash", $COLOR_INFO)
+If QuickMIS("BC1", $g_sImgOkayPurge, 440, 400, 580, 450, $getCapture, $g_bChkClanGamesDebug) Then
+SetLog("Click OK", $COLOR_INFO)
+Click($g_iQuickMISX + 440, $g_iQuickMISY + 400)
+SetLog("Purging a job on progress !", $COLOR_SUCCESS)
+GUICtrlSetData($g_hTxtClanGamesLog, @CRLF & _NowDate() & " " & _NowTime() & " [" & $g_sProfileCurrentName & "] - [" & $g_iPurgeJobCount[$g_iCurAccount] + 1 & "] - Purging Event ", 1)
+_FileWriteLog($g_sProfileLogsPath & "\ClanGames.log", " [" & $g_sProfileCurrentName & "] - [" & $g_iPurgeJobCount[$g_iCurAccount] + 1 & "] - Purging Event ")
+ClickP($aAway, 1, 0, "#0000")
+Else
+SetLog("$g_sImgOkayPurge Issue!!!", $COLOR_WARNING)
+Return False
+EndIf
+Else
+SetLog("$g_sImgTrashPurge Issue!!!", $COLOR_WARNING)
+Return False
+EndIf
+EndIf
+Return True
+Else
+SetLog("Didn't Get the Green Start Button Event!!", $COLOR_WARNING)
+If $g_bChkClanGamesDebug Then SetLog("[X: " & 220 & " Y:" & 150 & " X1: " & 830 & " Y1: " & 580 & "]", $COLOR_WARNING)
+ClickP($aAway, 1, 0, "#0000")
+Return False
+EndIf
+EndFunc
+Func PurgeEvent($directoryImage, $sEventName, $getCapture = True)
+SetLog("Checking Builder Base Challenges to Purge", $COLOR_DEBUG)
+Local $x = 281, $y = 150, $x1 = 775, $y1 = 545
+If QuickMIS("BC1", $directoryImage, $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
+Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
+SetLog("Starting Impossible Job to purge...", $COLOR_INFO)
+If _Sleep(1500) Then Return
+If StartsEvent($sEventName, True, $getCapture, $g_bChkClanGamesDebug) Then
+ClickP($aAway, 1, 0, "#0000")
+Return True
+EndIf
+EndIf
+Return False
+EndFunc
+Func _IsValideOCR($sString)
+If StringInStr($sString, "d") > 0 Or StringInStr($sString, "h") > 0 Or StringInStr($sString, "m") > 0 Or StringInStr($sString, "s") > 0 Then Return True
+Return False
+EndFunc
+Func Ocr2Minutes($StringOCR)
+If Not _IsValideOCR($StringOCR) Then Return 0
+Local $temp
+If StringInStr($StringOCR, "d") > 0 then
+$temp = StringSplit($StringOCR, "d" , $STR_NOCOUNT)
+Local $d = Int($temp[0])
+Local $h = Int(StringReplace($temp[1],"h" , ""))
+Return($d * 24)* 60 +($h * 60)
+ElseIf StringInStr($StringOCR, "h") > 0 then
+$temp = StringSplit($StringOCR, "h" , $STR_NOCOUNT)
+Local $h = Int($temp[0])
+Local $m = Int(StringReplace($temp[1],"m" , ""))
+Return($h * 60) + $m
+ElseIf StringInStr($StringOCR, "m") > 0 Then
+$temp = StringSplit($StringOCR, "m" , $STR_NOCOUNT)
+Return Int($temp[0])
+ElseIf StringInStr($StringOCR, "s") > 0 Then
+Return 1
+EndIf
+Return 0
+EndFunc
+Func GetEventTimeInMinutes($iXStartBtn , $iYStartBtn , $bIsStartBtn = True )
+Local $XAxis = $iXStartBtn - 163
+Local $YAxis = $iYStartBtn + 8
+If Not $bIsStartBtn then
+$XAxis = $iXStartBtn - 163
+$YAxis = $iYStartBtn + 8
+EndIf
+Local $Ocr = getOcrEventTime($XAxis, $YAxis)
+Return Ocr2Minutes($Ocr)
+EndFunc
+Func getOcrTimeGameTime($x_start, $y_start)
+Return getOcrAndCapture("coc-clangames", $x_start, $y_start, 116, 31, True)
+EndFunc
+Func getOcrYourScore($x_start, $y_start)
+Return getOcrAndCapture("coc-ms", $x_start, $y_start, 120, 18, True)
+EndFunc
+Func getOcrEventTime($x_start, $y_start)
+Return getOcrAndCapture("coc-events", $x_start, $y_start, 80, 20, True)
+EndFunc
+Func ClanGamesChallenges($sReturnArray, $makeIni = False , $sINIPath = "", $debug = False)
+Local $LootChallenges[6][5] = [ [$g_sImgGold, "Gold Challenge" , 7, 5, 8], [$g_sImgElixir, "Elixir Challenge" , 7, 5, 8], [$g_sImgDark, "Dark Elixir Challenge" , 8, 5, 8], [$g_sImgGoldG, "Gold Grab" , 3, 1, 1], [$g_sImgElixirE, "Elixir Embezzlement" , 3, 1, 1], [$g_sImgDarkEH, "Dark Elixir Heist" , 9, 3, 1]]
+Local $AirTroopChallenges[5][4] = [ [$g_sImgMini, "Minion" , 7, 20], [$g_sImgBall, "Balloon" , 4, 12], [$g_sImgDrag, "Dragon" , 7, 6], [$g_sImgBabyD, "BabyDragon" , 9, 4], [$g_sImgLava, "Lavahound" , 9, 3]]
+Local $GroundTroopChallenges[14][4] = [ [$g_sImgArch, "Archer" , 1, 30], [$g_sImgBarb, "Barbarian" , 1, 30], [$g_sImgGiant, "Giant" , 1, 10], [$g_sImgGobl, "Goblin" , 2, 20], [$g_sImgWall, "WallBreaker" , 3, 6], [$g_sImgWiza, "Wizard" , 5, 12], [$g_sImgHeal, "Healer" , 6, 3], [$g_sImgHogs, "HogRider" , 7, 10], [$g_sImgMine, "Miner" , 10, 8], [$g_sImgPekka, "Pekka" , 8, 2], [$g_sImgWitch, "Witch" , 9, 4], [$g_sImgBowl, "Bowler" , 10, 8], [$g_sImgValk, "Valkyrie" , 8, 8], [$g_sImgGole, "Golem" , 8, 2]]
+Local $BattleChallenges[9][5] = [ [$g_sImgStar, "Star Collector" , 3, 1, 8], [$g_sImgLordD, "Lord of Destruction" , 3, 1, 8], [$g_sImgPileVict, "Pile Of Victories" , 3, 1, 8], [$g_sImgHunt3, "Hunt for Three Stars" , 10,5 ,8], [$g_sImgWStreak, "Winning Streak" , 9, 5, 8], [$g_sImgSlayingT, "Slaying The Titans" , 11,2, 5], [$g_sImgNoHeroics, "No Heroics Allowed" , 3 ,5, 8], [$g_sImgNoMagicZone,"No-Magic Zone" , 3 ,5, 8], [$g_sImgAttUp, "Attack Up" , 3 ,1, 8]]
+Local $DestructionChallenges[28][5] = [ [$g_sImgCannon, "Cannon Carnage" , 3, 1, 1], [$g_sImgArcherT, "Archer Tower Assault" , 3, 1, 1], [$g_sImgMortar, "Mortar Mauling" , 3, 1, 1], [$g_sImgAirDef, "Destroy Air Defenses" , 7, 2, 1], [$g_sImgWizard, "Wizard Tower Warfare" , 3, 1, 1], [$g_sImgAirS, "Destroy Air Sweepers" , 8, 4, 1], [$g_sImgTesla, "Destroy Tesla Towers" , 7, 5, 1], [$g_sImgBombT, "Destroy Bomb Towers" , 8, 2, 1], [$g_sImgXBow, "Destroy X-Bows" , 9, 5, 1], [$g_sImgInferno, "Destroy Inferno Towers" , 11,5, 1], [$g_sImgEagle, "Eagle Artillery Elimination" , 11,5, 1], [$g_sImgCCC, "Clan Castle Charge" , 5, 2, 1], [$g_sImgGoldRaid, "Gold Storage Raid" , 3, 2, 1], [$g_sImgElixirR, "Elixir Storage Raid" , 3, 1, 1], [$g_sImgDESRaid, "Dark Elixir Storage Raid" , 8, 3, 1], [$g_sImgGoldMM, "Gold Mine Mayhem" , 3, 1, 1], [$g_sImgElixirPE, "Elixir Pump Elimination" , 3, 1, 1], [$g_sImgDarkEP, "Dark Elixir Plumbers" , 3, 1, 1], [$g_sImgLab, "Laboratory Strike" , 3, 1, 1], [$g_sImgSFact, "Spell Factory Sabotage" , 3, 1, 1], [$g_sImgDSFact, "Dark Spell Factory Sabotage" , 8, 1, 1], [$g_sImgBBAltar, "Destroy Barbarian King Altars" , 9, 4, 1], [$g_sImgAQAltar, "Destroy Archer Queen Altars" , 10,5, 1], [$g_sImgGWAltar, "Destroy Grand Warden Altars" , 11,5, 1], [$g_sImgHeroHunt, "Hero Level Hunter" , 9, 5, 8], [$g_sImgKingHunt, "King Level Hunter" , 9, 5, 8], [$g_sImgQueenHunt, "Queen Level Hunter" , 10,5, 8], [$g_sImgWardenHunt, "Warden Level Hunter" , 11,5, 8]]
+Local $MiscChallenges[3][5] = [ [$g_sImgGard, "Gardening Exercise", 3, 1, 8], [$g_sImgDonS, "Donate Spells" , 9, 3, 8], [$g_sImgDonH, "Helping Hand" , 6, 2, 8]]
+Local $LocalINI = $sINIPath
+If $LocalINI = "" Then $LocalINI = StringReplace($g_sProfileConfigPath, "config.ini" , "ClanGames_config.ini")
+If $debug Then Setlog(" - Ini Path: " & $LocalINI)
+Local $section[4] = ["Loot Challenges", "Battle Challenges", "Destruction Challenges" , "Misc Challenges"]
+Local $array[4] = [$LootChallenges, $BattleChallenges, $DestructionChallenges, $MiscChallenges]
+Local $ResultIni = "" , $TempChallenge , $tempXSector
+If $makeIni = False Then
+Switch $sReturnArray
+Case "$AirTroopChallenges"
+Return $AirTroopChallenges
+Case "$GroundTroopChallenges"
+Return $GroundTroopChallenges
+Case "$LootChallenges"
+$TempChallenge = $array[0]
+$tempXSector = $section[0]
+Case "$BattleChallenges"
+$TempChallenge = $array[1]
+$tempXSector = $section[1]
+Case "$DestructionChallenges"
+$TempChallenge = $array[2]
+$tempXSector = $section[2]
+Case "$MiscChallenges"
+$TempChallenge = $array[3]
+$tempXSector = $section[3]
+EndSwitch
+If $debug then Setlog("[" & $tempXSector & "]")
+For $j = 0 to Ubound($TempChallenge) - 1
+$ResultIni = Int(IniRead($LocalINI, $tempXSector, $TempChallenge[$j][1], $TempChallenge[$j][3]))
+$TempChallenge[$j][3] = IsNumber($ResultIni) = 1 ? Int($ResultIni) : 0
+If $TempChallenge[$j][3] > 5 Then $TempChallenge[$j][3] = 5
+If $TempChallenge[$j][3] < 0 Then $TempChallenge[$j][3] = 0
+If $debug Then Setlog(" - " & $TempChallenge[$j][1] & ": " & $TempChallenge[$j][3])
+If $TempChallenge[$j][3] = 0 And not $debug then Setlog(" - " & $TempChallenge[$j][1] & " was disabled by INI file.")
+$ResultIni = ""
+Next
+Return $TempChallenge
+Else
+Local $File = FileOpen($LocalINI, $FO_APPEND)
+Local $HelpText = "; - MyBotRun 2018 - " & @CRLF & "; - 'Event name' = 'Priority' [1~5][easiest to the hardest] , '0' to disable the event" & @CRLF & "; - Remember on GUI you can enable/disable an entire Section" & @CRLF & "; - Do not change any event name" & @CRLF & "; - Deleting this file will restore the defaults values."& @CRLF & @CRLF
+FileWrite($File, $HelpText)
+FileClose($File)
+For $i = 0 To UBound($array) -1
+$TempChallenge = $array[$i]
+If $debug Then Setlog("[" & $section[$i] & "]")
+For $j = 0 to UBound($TempChallenge) -1
+If IniWrite($LocalINI, $section[$i], $TempChallenge[$j][1], $TempChallenge[$j][3]) <> 1 Then SetLog("Error on :" & $section[$i] & "|" & $TempChallenge[$j][1], $COLOR_WARNING)
+If $debug Then Setlog(" - " & $TempChallenge[$j][1] & ": " & $TempChallenge[$j][3])
+If _sleep(100) Then Return
+Next
+$TempChallenge = Null
+Next
+EndIf
+EndFunc
+Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
+Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscount"
+Func CollectFreeMagicItems($bTest = False)
+If Not $g_bChkCollectFreeMagicItems Then Return
+If Not $g_bRunState Then Return
+ClickP($aAway, 1, 0, "#0332")
+If Not IsMainPage() Then Return
+SetLog("Collecting Free Magic Items", $COLOR_INFO)
+If _Sleep($DELAYCOLLECT2) Then Return
+If QuickMIS("BC1", $g_sImgTrader, 120, 160, 210, 215, True, False) Then
+SetLog("Trader available... Entering Daily Discounts", $COLOR_SUCCESS)
+Click($g_iQuickMISX + 120, $g_iQuickMISY + 160)
+If _Sleep(1500) Then Return
+Else
+SetLog("Trader unvailable...", $COLOR_INFO)
+Return
+EndIf
+If Not QuickMIS("BC1", $g_sImgDailyDiscountWindow, 280, 175, 345, 210, True, False) Then
+ClickP($aAway, 1, 0, "#0332")
+Return
+EndIf
+If Not $g_bRunState Then Return
+Local $aOcrPositions[3][2] = [[200, 439], [390, 439], [580, 439]]
+Local $aResults[3] = ["", "", ""]
+For $i = 0 To 2
+If _ColorCheck(_GetPixelColor($aOcrPositions[$i][0], $aOcrPositions[$i][1] + 5, True), Hex(0x5D79C5, 6), 5) Then
+$aResults[$i] = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 80, 25, True)
+If Not $bTest Then
+If $aResults[$i] = "FREE" Then
+Click($aOcrPositions[$i][0], $aOcrPositions[$i][1], 2, 500)
+SetLog("Free Magic Item Detected.", $COLOR_INFO)
+ClickP($aAway, 2, 0, "#0332")
+If _Sleep(1000) Then Return
+Return
+Else
+$aResults[$i] = $aResults[$i] & " Gems"
+EndIf
+EndIf
+Else
+$aResults[$i] = "Collected"
+EndIf
+If Not $g_bRunState Then Return
+Next
+SetLog("Daily Discounts: " & $aResults[0] & " | " & $aResults[1] & " | " & $aResults[2])
+SetLog("Nothing Free to collect!", $COLOR_INFO)
+ClickP($aAway, 2, 0, "#0332")
+If _Sleep(1000) Then Return
 EndFunc
 Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False)
 If Not $g_bChkCollectBuilderBase Then Return
@@ -61654,7 +62219,7 @@ FileWriteLine($hFile, "[" & $sCurrentSection & "]")
 If $g_sProfileSecondaryOutputFileName <> "" Then
 If $sCurrentSection = "search" Or $sCurrentSection = "attack" Or $sCurrentSection = "troop" Or $sCurrentSection = "spells" Or $sCurrentSection = "milkingattack" Or $sCurrentSection = "endbattle" Or $sCurrentSection = "collectors" Or $sCurrentSection = "DropOrder" Or $sCurrentSection = "SmartZap" Or $sCurrentSection = "planned" Then
 FileWriteLine($g_sProfileSecondaryOutputFileName, "[" & $sCurrentSection & "]")
-EndIF
+EndIf
 EndIf
 EndIf
 FileWriteLine($hFile, $asParts[2] & "=" & $g_asIniTable[$i][1])
@@ -61883,6 +62448,7 @@ GUICtrlSetState($g_hChkTombstones, $g_bChkTombstones ? $GUI_CHECKED : $GUI_UNCHE
 GUICtrlSetState($g_hChkCleanYard, $g_bChkCleanYard ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkGemsBox, $g_bChkGemsBox ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkTreasuryCollect, $g_bChkTreasuryCollect ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkFreeMagicItems, $g_bChkCollectFreeMagicItems ? $GUI_CHECKED : $GUI_UNCHECKED)
 ChkTreasuryCollect()
 GUICtrlSetData($g_hTxtTreasuryGold, $g_iTxtTreasuryGold)
 GUICtrlSetData($g_hTxtTreasuryElixir, $g_iTxtTreasuryElixir)
@@ -61900,6 +62466,22 @@ chkActivateBBSuggestedUpgrades()
 chkActivateBBSuggestedUpgradesGold()
 chkActivateBBSuggestedUpgradesElixir()
 chkPlacingNewBuildings()
+GUICtrlSetState($g_hChkClanGamesAir, $g_bChkClanGamesAir ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesGround, $g_bChkClanGamesGround ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesMisc, $g_bChkClanGamesMisc ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesEnabled, $g_bChkClanGamesEnabled ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesPurge, $g_bChkClanGamesPurge ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $g_bChkClanGamesStopBeforeReachAndPurge ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesDebug, $g_bChkClanGamesDebug ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesLoot, $g_bChkClanGamesLoot ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesBattle, $g_bChkClanGamesBattle ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesDestruction, $g_bChkClanGamesDestruction ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesAirTroop, $g_bChkClanGamesAirTroop ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesGroundTroop, $g_bChkClanGamesGroundTroop ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkClanGamesMiscellaneous, $g_bChkClanGamesMiscellaneous ? $GUI_CHECKED : $GUI_UNCHECKED)
+_GUICtrlComboBox_SetCurSel($g_hcmbPurgeLimit, $g_iPurgeMax)
+chkActivateClangames()
+chkPurgeLimits()
 Case "Save"
 $g_bChkBotStop =(GUICtrlRead($g_hChkBotStop) = $GUI_CHECKED)
 $g_iCmbBotCommand = _GUICtrlComboBox_GetCurSel($g_hCmbBotCommand)
@@ -61912,6 +62494,7 @@ $g_bChkTrap =(GUICtrlRead($g_hchkTrap) = $GUI_CHECKED)
 $g_bChkCollect =(GUICtrlRead($g_hChkCollect) = $GUI_CHECKED)
 $g_bChkTombstones =(GUICtrlRead($g_hChkTombstones) = $GUI_CHECKED)
 $g_bChkCleanYard =(GUICtrlRead($g_hChkCleanYard) = $GUI_CHECKED)
+$g_bChkCollectFreeMagicItems =(GUICtrlRead($g_hChkFreeMagicItems) = $GUI_CHECKED)
 $g_bChkGemsBox =(GUICtrlRead($g_hChkGemsBox) = $GUI_CHECKED)
 $g_bChkTreasuryCollect =(GUICtrlRead($g_hChkTreasuryCollect) = $GUI_CHECKED)
 $g_iTxtTreasuryGold = GUICtrlRead($g_hTxtTreasuryGold)
@@ -61925,6 +62508,20 @@ $g_iChkBBSuggestedUpgradesIgnoreGold =(GUICtrlRead($g_hChkBBSuggestedUpgradesIgn
 $g_iChkBBSuggestedUpgradesIgnoreElixir =(GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreElixir) = $GUI_CHECKED) ? 1 : 0
 $g_iChkBBSuggestedUpgradesIgnoreHall =(GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreHall) = $GUI_CHECKED) ? 1 : 0
 $g_iChkPlacingNewBuildings =(GUICtrlRead($g_hChkPlacingNewBuildings) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesAir =(GUICtrlRead($g_hChkClanGamesAir) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesGround =(GUICtrlRead($g_hChkClanGamesGround) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesMisc =(GUICtrlRead($g_hChkClanGamesMisc) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesEnabled =(GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesPurge =(GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesStopBeforeReachAndPurge =(GUICtrlRead($g_hChkClanGamesStopBeforeReachAndPurge) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesDebug =(GUICtrlRead($g_hChkClanGamesDebug) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesLoot =(GUICtrlRead($g_hChkClanGamesLoot) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesBattle =(GUICtrlRead($g_hChkClanGamesBattle) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesDestruction =(GUICtrlRead($g_hChkClanGamesDestruction) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesAirTroop =(GUICtrlRead($g_hChkClanGamesAirTroop) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesGroundTroop =(GUICtrlRead($g_hChkClanGamesGroundTroop) = $GUI_CHECKED) ? 1 : 0
+$g_bChkClanGamesMiscellaneous =(GUICtrlRead($g_hChkClanGamesMiscellaneous) = $GUI_CHECKED) ? 1 : 0
+$g_iPurgeMax = _GUICtrlComboBox_GetCurSel($g_hcmbPurgeLimit)
 EndSwitch
 EndFunc
 Func ApplyConfig_600_9($TypeReadSave)
@@ -63383,7 +63980,21 @@ Switch $TypeReadSave
 Case "Read"
 _GUICtrlComboBox_SetCurSel($g_hCmbSwitchAcc, $g_iCmbSwitchAcc)
 GUICtrlSetState($g_hChkSwitchAcc, $g_bChkSwitchAcc ? $GUI_CHECKED : $GUI_UNCHECKED)
-GUICtrlSetState($g_hChkSharedPrefs, $g_bChkSharedPrefs ? $GUI_CHECKED : $GUI_UNCHECKED)
+If $g_bChkGooglePlay Then
+GUICtrlSetState($g_hRadSwitchGooglePlay, $GUI_CHECKED)
+GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_UNCHECKED)
+EndIf
+If $g_bChkSuperCellID Then
+GUICtrlSetState($g_hRadSwitchGooglePlay, $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_CHECKED)
+GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_UNCHECKED)
+EndIf
+If $g_bChkSharedPrefs Then
+GUICtrlSetState($g_hRadSwitchGooglePlay, $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_UNCHECKED)
+GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_CHECKED)
+EndIf
 GUICtrlSetState($g_hChkSmartSwitch, $g_bChkSmartSwitch ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkDonateLikeCrazy, $g_bDonateLikeCrazy ? $GUI_CHECKED : $GUI_UNCHECKED)
 _GUICtrlComboBox_SetCurSel($g_hCmbTotalAccount, $g_iTotalAcc - 1)
@@ -63396,8 +64007,10 @@ _GUICtrlComboBox_SetCurSel($g_hCmbTrainTimeToSkip, $g_iTrainTimeToSkip)
 _cmbSwitchAcc(False)
 Case "Save"
 $g_iCmbSwitchAcc = _GUICtrlComboBox_GetCurSel($g_hCmbSwitchAcc)
-$g_bChkSharedPrefs =(GUICtrlRead($g_hChkSharedPrefs) = $GUI_CHECKED)
 $g_bChkSwitchAcc =(GUICtrlRead($g_hChkSwitchAcc) = $GUI_CHECKED)
+$g_bChkGooglePlay =(GUICtrlRead($g_hRadSwitchGooglePlay) = $GUI_CHECKED)
+$g_bChkSuperCellID =(GUICtrlRead($g_hRadSwitchSuperCellID) = $GUI_CHECKED)
+$g_bChkSharedPrefs =(GUICtrlRead($g_hRadSwitchSharedPrefs) = $GUI_CHECKED)
 $g_bChkSmartSwitch =(GUICtrlRead($g_hChkSmartSwitch) = $GUI_CHECKED)
 $g_bDonateLikeCrazy =(GUICtrlRead($g_hChkDonateLikeCrazy) = $GUI_CHECKED)
 $g_iTotalAcc = _GUICtrlComboBox_GetCurSel($g_hCmbTotalAccount) + 1
@@ -63529,7 +64142,7 @@ GUICtrlSetState($g_hChkNoobZap, $g_bNoobZap = True ? $GUI_CHECKED : $GUI_UNCHECK
 GUICtrlSetState($g_hChkSmartZapDB, $g_bSmartZapDB = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkSmartZapSaveHeroes, $g_bSmartZapSaveHeroes = True ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkSmartZapFTW, $g_bSmartZapFTW = True ? $GUI_CHECKED : $GUI_UNCHECKED)
-GUICtrlSetData($g_hTxtSmartMinDark, $g_iSmartZapMinDE)
+GUICtrlSetData($g_hTxtSmartZapMinDE, $g_iSmartZapMinDE)
 GUICtrlSetData($g_hTxtSmartExpectedDE, $g_iSmartZapExpectedDE)
 chkSmartLightSpell()
 Case "Save"
@@ -63539,7 +64152,7 @@ $g_bNoobZap =(GUICtrlRead($g_hChkNoobZap) = $GUI_CHECKED)
 $g_bSmartZapDB =(GUICtrlRead($g_hChkSmartZapDB) = $GUI_CHECKED)
 $g_bSmartZapSaveHeroes =(GUICtrlRead($g_hChkSmartZapSaveHeroes) = $GUI_CHECKED)
 $g_bSmartZapFTW =(GUICtrlRead($g_hChkSmartZapFTW) = $GUI_CHECKED)
-$g_iSmartZapMinDE = Int(GUICtrlRead($g_hTxtSmartMinDark))
+$g_iSmartZapMinDE = Int(GUICtrlRead($g_hTxtSmartZapMinDE))
 $g_iSmartZapExpectedDE = Int(GUICtrlRead($g_hTxtSmartExpectedDE))
 EndSwitch
 EndFunc
@@ -63831,6 +64444,7 @@ IniReadS($g_bChkCollect, $g_sProfileConfigPath, "other", "chkCollect", True, "Bo
 IniReadS($g_bChkTombstones, $g_sProfileConfigPath, "other", "chkTombstones", True, "Bool")
 IniReadS($g_bChkCleanYard, $g_sProfileConfigPath, "other", "chkCleanYard", False, "Bool")
 IniReadS($g_bChkGemsBox, $g_sProfileConfigPath, "other", "chkGemsBox", False, "Bool")
+IniReadS($g_bChkCollectFreeMagicItems, $g_sProfileConfigPath, "other", "ChkCollectFreeMagicItems", False, "Bool")
 IniReadS($g_bChkTreasuryCollect, $g_sProfileConfigPath, "other", "ChkTreasuryCollect", False, "Bool")
 IniReadS($g_iTxtTreasuryGold, $g_sProfileConfigPath, "other", "minTreasurygold", 0, "int")
 IniReadS($g_iTxtTreasuryElixir, $g_sProfileConfigPath, "other", "minTreasuryelixir", 0, "int")
@@ -63843,6 +64457,20 @@ IniReadS($g_iChkBBSuggestedUpgradesIgnoreGold, $g_sProfileConfigPath, "other", "
 IniReadS($g_iChkBBSuggestedUpgradesIgnoreElixir, $g_sProfileConfigPath, "other", "ChkBBSuggestedUpgradesIgnoreElixir", $g_iChkBBSuggestedUpgradesIgnoreElixir, "Int")
 IniReadS($g_iChkBBSuggestedUpgradesIgnoreHall, $g_sProfileConfigPath, "other", "ChkBBSuggestedUpgradesIgnoreHall", $g_iChkBBSuggestedUpgradesIgnoreHall, "Int")
 IniReadS($g_iChkPlacingNewBuildings, $g_sProfileConfigPath, "other", "ChkPlacingNewBuildings", $g_iChkPlacingNewBuildings, "Int")
+IniReadS($g_bChkClanGamesAir, $g_sProfileConfigPath, "other", "ChkClanGamesAir", False, "Bool")
+IniReadS($g_bChkClanGamesGround, $g_sProfileConfigPath, "other", "ChkClanGamesGround", False, "Bool")
+IniReadS($g_bChkClanGamesMisc, $g_sProfileConfigPath, "other", "ChkClanGamesMisc", False, "Bool")
+IniReadS($g_bChkClanGamesEnabled, $g_sProfileConfigPath, "other", "ChkClanGamesEnabled", False, "Bool")
+IniReadS($g_bChkClanGamesPurge, $g_sProfileConfigPath, "other", "ChkClanGamesPurge", False, "Bool")
+IniReadS($g_bChkClanGamesStopBeforeReachAndPurge, $g_sProfileConfigPath, "other", "ChkClanGamesStopBeforeReachAndPurge", False, "Bool")
+IniReadS($g_bChkClanGamesDebug, $g_sProfileConfigPath, "other", "ChkClanGamesDebug", False, "Bool")
+IniReadS($g_bChkClanGamesLoot, $g_sProfileConfigPath, "other", "ChkClanGamesLoot", False, "Bool")
+IniReadS($g_bChkClanGamesBattle, $g_sProfileConfigPath, "other", "ChkClanGamesBattle", False, "Bool")
+IniReadS($g_bChkClanGamesDestruction, $g_sProfileConfigPath, "other", "ChkClanGamesDestruction", False, "Bool")
+IniReadS($g_bChkClanGamesAirTroop, $g_sProfileConfigPath, "other", "ChkClanGamesAirTroop", False, "Bool")
+IniReadS($g_bChkClanGamesGroundTroop, $g_sProfileConfigPath, "other", "ChkClanGamesGroundTroop", False, "Bool")
+IniReadS($g_bChkClanGamesMiscellaneous, $g_sProfileConfigPath, "other", "ChkClanGamesMiscellaneous", False, "Bool")
+IniReadS($g_iPurgeMax, $g_sProfileConfigPath, "other", "PurgeMax", 5, "int")
 EndFunc
 Func ReadConfig_600_9()
 IniReadS($g_iUnbrkMode, $g_sProfileConfigPath, "Unbreakable", "chkUnbreakable", 0, "int")
@@ -64515,7 +65143,9 @@ Func ReadConfig_SwitchAccounts()
 If $g_iCmbSwitchAcc Then
 Local $sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $g_iCmbSwitchAcc & ".ini"
 $g_bChkSwitchAcc = IniRead($sSwitchAccFile, "SwitchAccount", "Enable", "0") = "1"
-$g_bChkSharedPrefs = IniRead($sSwitchAccFile, "SwitchAccount", "SharedPrefs", $g_bChkSharedPrefs ? "1" : "0") = "1"
+$g_bChkGooglePlay = IniRead($sSwitchAccFile, "SwitchAccount", "GooglePlay", "0") = "1"
+$g_bChkSuperCellID = IniRead($sSwitchAccFile, "SwitchAccount", "SuperCellID", "0") = "1"
+$g_bChkSharedPrefs = IniRead($sSwitchAccFile, "SwitchAccount", "SharedPrefs", "0") = "1"
 $g_bChkSmartSwitch = IniRead($sSwitchAccFile, "SwitchAccount", "SmartSwitch", "0") = "1"
 $g_bDonateLikeCrazy = IniRead($sSwitchAccFile, "SwitchAccount", "DonateLikeCrazy", "0") = "1"
 $g_iTotalAcc = Int(IniRead($sSwitchAccFile, "SwitchAccount", "TotalCocAccount", "-1"))
@@ -64833,6 +65463,7 @@ _Ini_Add("other", "chkTrap", $g_bChkTrap ? 1 : 0)
 _Ini_Add("other", "chkCollect", $g_bChkCollect ? 1 : 0)
 _Ini_Add("other", "chkTombstones", $g_bChkTombstones ? 1 : 0)
 _Ini_Add("other", "chkCleanYard", $g_bChkCleanYard ? 1 : 0)
+_Ini_Add("other", "ChkCollectFreeMagicItems", $g_bChkCollectFreeMagicItems ? 1 : 0)
 _Ini_Add("other", "chkGemsBox", $g_bChkGemsBox ? 1 : 0)
 _Ini_Add("other", "ChkTreasuryCollect", $g_bChkTreasuryCollect ? 1 : 0)
 _Ini_Add("other", "minTreasurygold", $g_iTxtTreasuryGold)
@@ -64846,6 +65477,20 @@ _Ini_Add("other", "ChkBBSuggestedUpgradesIgnoreGold", $g_iChkBBSuggestedUpgrades
 _Ini_Add("other", "ChkBBSuggestedUpgradesIgnoreElixir", $g_iChkBBSuggestedUpgradesIgnoreElixir)
 _Ini_Add("other", "ChkBBSuggestedUpgradesIgnoreHall", $g_iChkBBSuggestedUpgradesIgnoreHall)
 _Ini_Add("other", "ChkPlacingNewBuildings", $g_iChkPlacingNewBuildings)
+_Ini_Add("other", "ChkClanGamesAir", $g_bChkClanGamesAir ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesGround", $g_bChkClanGamesGround ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesMisc", $g_bChkClanGamesMisc ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesEnabled", $g_bChkClanGamesEnabled ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesPurge", $g_bChkClanGamesPurge ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesStopBeforeReachAndPurge", $g_bChkClanGamesStopBeforeReachAndPurge ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesDebug", $g_bChkClanGamesDebug ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesLoot", $g_bChkClanGamesLoot ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesBattle", $g_bChkClanGamesBattle ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesDestruction", $g_bChkClanGamesDestruction ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesAirTroop", $g_bChkClanGamesAirTroop ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesGroundTroop ", $g_bChkClanGamesGroundTroop ? 1 : 0)
+_Ini_Add("other", "ChkClanGamesMiscellaneous", $g_bChkClanGamesMiscellaneous ? 1 : 0)
+_Ini_Add("other", "PurgeMax", $g_iPurgeMax)
 EndFunc
 Func SaveConfig_600_9()
 ApplyConfig_600_9(GetApplyConfigSaveAction())
@@ -65472,6 +66117,8 @@ EndIf
 If $iCmbSwitchAcc Then
 $sSwitchAccFile = $g_sProfilePath & "\SwitchAccount.0" & $iCmbSwitchAcc & ".ini"
 IniWrite($sSwitchAccFile, "SwitchAccount", "Enable", $g_bChkSwitchAcc ? 1 : 0)
+IniWrite($sSwitchAccFile, "SwitchAccount", "GooglePlay", $g_bChkGooglePlay ? 1 : 0)
+IniWrite($sSwitchAccFile, "SwitchAccount", "SuperCellID", $g_bChkSuperCellID ? 1 : 0)
 IniWrite($sSwitchAccFile, "SwitchAccount", "SharedPrefs", $g_bChkSharedPrefs ? 1 : 0)
 IniWrite($sSwitchAccFile, "SwitchAccount", "SmartSwitch", $g_bChkSmartSwitch ? 1 : 0)
 IniWrite($sSwitchAccFile, "SwitchAccount", "DonateLikeCrazy", $g_bDonateLikeCrazy ? 1 : 0)
@@ -66868,6 +67515,10 @@ GetDroid4XBackgroundMode()
 GetKOPLAYERBackgroundMode()
 GetMEmuBackgroundMode()
 GetNoxBackgroundMode()
+getChatString(0, 0, 0)
+getChatStringChinese(0, 0)
+getChatStringKorean(0, 0)
+getChatStringPersian(0, 0)
 EndFunc
 Func ReferenceGlobals()
 If True Then Return
@@ -67211,6 +67862,7 @@ $a1 = $aTrainESpell
 $a1 = $aTrainHaSpell
 $a1 = $aTrainSkSpell
 $a1 = $aTrainArmy
+$a1 = $aLoginWithSupercellID
 EndFunc
 Opt("GUIResizeMode", $GUI_DOCKALL)
 Opt("GUIEventOptions", 1)
@@ -67639,7 +68291,7 @@ AddIdleTime()
 If $g_bRunState = False Then Return
 If $g_bRestart = True Then ContinueLoop
 If IsSearchAttackEnabled() Then
-Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC,Train', 'BoostBarracks', 'BoostSpellFactory', 'BoostKing', 'BoostQueen', 'BoostWarden', 'RequestCC']
+Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC,Train', 'BoostBarracks', 'BoostSpellFactory', 'BoostKing', 'BoostQueen', 'BoostWarden', 'RequestCC', 'CollectFreeMagicItems']
 While 1
 If $g_bRunState = False Then Return
 If $g_bRestart = True Then ContinueLoop 2
@@ -67859,6 +68511,7 @@ WEnd
 EndFunc
 Func AttackMain()
 getArmyTroopCapacity(True, True)
+ClickP($aAway, 1, 0, "#0000")
 If IsSearchAttackEnabled() Then
 If(IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
 If ProfileSwitchAccountEnabled() And($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCountAcc[$g_iCurAccount] - 2) Then checkSwitchAcc()
@@ -67878,6 +68531,8 @@ If $g_bDebugSetlog Then
 SetDebugLog(_PadStringCenter(" Hero status check" & BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $g_iHeroAvailable) & "|" & $g_aiSearchHeroWaitEnable[$DB] & "|" & $g_iHeroAvailable, 54, "="), $COLOR_DEBUG)
 SetDebugLog(_PadStringCenter(" Hero status check" & BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $g_iHeroAvailable) & "|" & $g_aiSearchHeroWaitEnable[$LB] & "|" & $g_iHeroAvailable, 54, "="), $COLOR_DEBUG)
 EndIf
+_ClanGames()
+ClickP($aAway, 1, 0, "#0000")
 PrepareSearch()
 If $g_bOutOfGold = True Then Return
 If $g_bRestart = True Then Return
@@ -68032,6 +68687,8 @@ MainSuggestedUpgradeCode()
 SwitchBetweenBases()
 EndIf
 _Sleep($DELAYRUNBOT3)
+Case "CollectFreeMagicItems"
+CollectFreeMagicItems()
 Case ""
 SetDebugLog("Function call doesn't support empty string, please review array size", $COLOR_ERROR)
 Case Else

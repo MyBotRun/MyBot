@@ -173,9 +173,8 @@ Func btnStop()
 		; always invoked in MyBot.run.au3!
 		EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
 		$g_bRunState = False ; Exit BotStart()
-		$g_iBotAction = $eBotStop
-		ReduceBotMemory()
 	EndIf
+	$g_iBotAction = $eBotStop
 EndFunc   ;==>btnStop
 
 Func btnSearchMode()

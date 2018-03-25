@@ -76,7 +76,7 @@ Func _AutoUpgrade()
 
 		; check in the line of the 000 if we can see "New" or the Gear of the equipment, in this case, will not do the upgrade
 		If QuickMIS("NX",$g_sImgAUpgradeObst, 180, 80 + $g_iCurrentLineOffset - 15, 480, 80 + $g_iCurrentLineOffset + 15) <> "none" Then
-			SetLog("This is a New Building or an Equipment... Looking next...", $COLOR_WARNING)
+			SetLog("This is a New Building or an Equipment, looking next...", $COLOR_WARNING)
 			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
@@ -89,14 +89,16 @@ Func _AutoUpgrade()
 		If Not QuickMIS("BC1", $g_sImgAUpgradeUpgradeBtn, 120, 630, 740, 670) Then
 			SetLog("No upgrade here... Wrong click, looking next...", $COLOR_WARNING)
 			;$g_iNextLineOffset = $g_iCurrentLineOffset -> not necessary finally, but in case, I keep lne commented
+			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
 
 		; get the name and actual level of upgrade selected, if strings are empty, will exit Auto Upgrade, an error happens
 		$g_aUpgradeNameLevel = BuildingInfo(242, 520 + $g_iBottomOffsetY)
 		If $g_aUpgradeNameLevel[0] = "" Then
-			SetLog("Error when trying to get upgrade name and level... Exiting Auto Upgrade...", $COLOR_ERROR)
-			ExitLoop
+			SetLog("Error when trying to get upgrade name and level, looking next...", $COLOR_ERROR)
+			$g_iNextLineOffset = $g_iCurrentLineOffset
+			ContinueLoop
 		EndIf
 
 		Local $bMustIgnoreUpgrade = False
@@ -134,7 +136,7 @@ Func _AutoUpgrade()
 
 		; check if the upgrade name is on the list of upgrades that must be ignored
 		If $bMustIgnoreUpgrade = True Then
-			SetLog("This upgrade must be ignored... Looking next...", $COLOR_WARNING)
+			SetLog("This upgrade must be ignored, looking next...", $COLOR_WARNING)
 			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
@@ -157,8 +159,9 @@ Func _AutoUpgrade()
 		; if one of the value is empty, there is an error, we must exit Auto Upgrade
 		For $i = 0 To 2
 			If $g_aUpgradeResourceCostDuration[$i] = "" Then
-				SetLog("Error when trying to get upgrade details... Exiting Auto Upgrade...", $COLOR_ERROR)
-				ExitLoop 2
+				SetLog("Error when trying to get upgrade details, looking next...", $COLOR_ERROR)
+				$g_iNextLineOffset = $g_iCurrentLineOffset
+				ContinueLoop 2
 			EndIf
 		Next
 
@@ -177,7 +180,7 @@ Func _AutoUpgrade()
 
 		; check if the resource of the upgrade must be ignored
 		If $bMustIgnoreResource = True Then
-			SetLog("This resource must be ignored... Looking next...", $COLOR_WARNING)
+			SetLog("This resource must be ignored, looking next...", $COLOR_WARNING)
 			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
@@ -195,8 +198,9 @@ Func _AutoUpgrade()
 		EndSwitch
 		; if boolean still False, we can't launch upgrade, exiting...
 		If Not $bSufficentResourceToUpgrade Then
-			SetLog("Unsufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade...", $COLOR_WARNING)
-			ExitLoop
+			SetLog("Unsufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade, looking Next...", $COLOR_WARNING)
+			$g_iNextLineOffset = $g_iCurrentLineOffset
+			ContinueLoop
 		EndIf
 
 		; final click on upgrade button, click coord is get looking at upgrade type (heroes have a diferent place for Upgrade button)

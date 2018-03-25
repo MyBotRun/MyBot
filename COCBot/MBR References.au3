@@ -225,6 +225,11 @@ Func ReferenceFunctions()
 	GetKOPLAYERBackgroundMode()
 	GetMEmuBackgroundMode()
 	GetNoxBackgroundMode()
+	; DonateCC.au3
+	getChatString(0, 0, 0)
+	getChatStringChinese(0, 0)
+	getChatStringKorean(0, 0)
+	getChatStringPersian(0, 0)
 EndFunc   ;==>ReferenceFunctions
 
 Func ReferenceGlobals()
@@ -582,4 +587,8 @@ Func ReferenceGlobals()
 	$a1 = $aTrainSkSpell
 
 	$a1 = $aTrainArmy
+
+	; fix stripper bugs
+	$a1 = $aLoginWithSupercellID
+
 EndFunc   ;==>ReferenceGlobals

@@ -1,4 +1,24 @@
-﻿* **V7.4.4**
+﻿* **V7.5**
+* Add Clan Games support (special thx go to ViperZ and Uncle Xbenk)
+* Add Collect free magic poisons
+* Add support for SuperCell ID accounts switch
+* Fix DonateCC "Unable to read Chat Request" in both Chinese languages and Korean language
+* Fix "Log in with Supercell ID" screen (push CoC shared_prefs folder if detected, click by account list when shared_prefs is not available and switch accounts enabled)
+* Fix rare "ADB Prompt not identified!" issue
+* Fix multiple sharef_prefs folders problem and push not working on newer ADB versions
+* Fix permission and owner when pushing sharef_prefs folder
+* Fix waiting in the cloud not found Clan button
+* Fix check treasury when button is smaller than usual due to Clan Games
+* Fix never returning from battle when CoC hanging in network re-connecting state with "End Battle" button
+* Fix ADB connection error when rebooting Android on error
+* Fix ADB connection error when Android is not properly working
+* Fix shared_prefs push for Android Nougat
+* Fix bot config.ini reset when no space left in profile path (100 MB required free disk space)
+* Fix auto upgrade on main base not stopping on first upgrade without enough resources
+* Fix auto upgrade new buildings on Builder Island
+* Fix brew Spells unconditionally, When the troops queue was empty, create the spells without checking if they were already in the queue.
+
+* **V7.4.4**
 * Add AutoIt 3.3.14.3 support (though not advided to use, as still not all problems are resolved!)
 * Add CoC shared_prefs folder support to Switch Accounts supporting also SuperCell ID accounts (saved in current users documents folder in MyBot.run-Profiles)
 * Add allows account switching in the order: Donate - Shortest Active - Donate.....

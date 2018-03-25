@@ -569,7 +569,9 @@ Func CompareCCSpellWithGUI($CCSpell1, $CCSpell2, $CastleCapacity)
 
 				Case 2 ; Two Spells on Slot 1
 
-					If ($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") And ($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
+					If $g_aiSearchCastleSpellsWaitRegular[$Mode] <= 5 And $g_aiSearchCastleSpellsWaitRegular[$Mode] > 0 Then ; Should be a Regular Spell not a Dark Spell
+						$aShouldRemove[0] = $CCSpell1[0][3]
+					ElseIf ($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") And ($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
 						$aShouldRemove[0] = $CCSpell1[0][3]
 					ElseIf ($sCCSpell <> $CCSpell1[0][0] And $sCCSpell <> "Any") Or ($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
 						$aShouldRemove[0] = 1
@@ -633,7 +635,7 @@ Func TrainUsingWhatToTrain($rWTT, $bSpellsOnly = False)
 				If Not $g_bRunState Then Return
 				If $rWTT[$i][1] > 0 Then ; If Count to Train Was Higher Than ZERO
 					If IsSpellToBrew($rWTT[$i][0]) Then
-						BrewUsingWhatToTrain($rWTT[$i][0], $rWTT[$i][1])
+						If $bSpellsOnly Then BrewUsingWhatToTrain($rWTT[$i][0], $rWTT[$i][1])
 						ContinueLoop
 					Else
 						If $bSpellsOnly Then ContinueLoop
@@ -692,7 +694,7 @@ Func TrainUsingWhatToTrain($rWTT, $bSpellsOnly = False)
 				If Not $g_bRunState Then Return
 				If $rWTT[$i][1] > 0 Then ; If Count to Train Was Higher Than ZERO
 					If IsSpellToBrew($rWTT[$i][0]) Then
-						BrewUsingWhatToTrain($rWTT[$i][0], $rWTT[$i][1])
+						If $bSpellsOnly Then BrewUsingWhatToTrain($rWTT[$i][0], $rWTT[$i][1])
 						ContinueLoop
 					Else
 						If $bSpellsOnly Then ContinueLoop

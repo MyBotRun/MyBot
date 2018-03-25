@@ -27,23 +27,28 @@ Func checkObstacles($bBuilderBase = False) ;Checks if something is in the way fo
 		PureClick(383, 375 + $g_iMidOffsetY, 1, 0, "Click Cancel")
 	EndIf
 	; prevent recursion
-	If $checkObstaclesActive = True Then Return FuncReturn(True)
+	;If $checkObstaclesActive = True Then
+	; delay recursion
+	;	_Sleep(1000)
+	;	Return FuncReturn(True)
+	;EndIf
 	Local $wasForce = OcrForceCaptureRegion(False)
+	Local $checkObstaclesWasActive = $checkObstaclesActive
 	$checkObstaclesActive = True
-	Local $Result = _checkObstacles($bBuilderBase)
+	Local $Result = _checkObstacles($bBuilderBase, $checkObstaclesWasActive)
 	OcrForceCaptureRegion($wasForce)
-	$checkObstaclesActive = False
+	$checkObstaclesActive = $checkObstaclesWasActive
 	Return FuncReturn($Result)
 EndFunc   ;==>checkObstacles
 
-Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way for mainscreen
+Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if something is in the way for mainscreen
 	Local $msg, $x, $y, $Result
 	$g_bMinorObstacle = False
 
 	_CaptureRegions()
 
 	If checkObstacles_Network() Then Return True
-	If checkObstacles_GfxError() Then Return True
+	If Not $bRecursive And checkObstacles_GfxError() Then Return True
 	Local $bIsOnBuilderIsland = _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel)
 	If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
 		SetLog("Detected Builder Base, trying to switch back to Main Village")
@@ -89,7 +94,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 				PushMsg("AnotherDevice")
 			EndIf
 			If _SleepStatus($g_iAnotherDeviceWaitTime * 1000) Then Return ; Wait as long as user setting in GUI, default 120 seconds
-			checkObstacles_ReloadCoC($aReloadButton, "#0127")
+			If Not $bRecursive Then checkObstacles_ReloadCoC($aReloadButton, "#0127")
 			If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 			checkObstacles_ResetSearch()
 			Return True
@@ -101,7 +106,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 			If TestCapture() Then Return "Village must take a break"
 			PushMsg("TakeBreak")
 			If _SleepStatus($DELAYCHECKOBSTACLES4) Then Return ; 2 Minutes
-			checkObstacles_ReloadCoC($aReloadButton, "#0128") ;Click on reload button
+			If Not $bRecursive Then checkObstacles_ReloadCoC($aReloadButton, "#0128") ;Click on reload button
 			If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 			checkObstacles_ResetSearch()
 			Return True
@@ -182,7 +187,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 						Switch UpdateGame()
 							Case True, Default
 								; Update completed or not required
-								Return checkObstacles_ReloadCoC()
+								If Not $bRecursive Then Return checkObstacles_ReloadCoC()
 							Case False
 								; Update failed
 								$msg = "Game Update failed, Bot must stop!!"
@@ -211,12 +216,12 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 				SetLog("Warning: Can not find type of Reload error message", $COLOR_ERROR)
 		EndSelect
 		If TestCapture() Then Return "Village is out of sync or inactivity or connection lost or maintenance"
-		Return checkObstacles_ReloadCoC($aReloadButton, "#0131") ; Click for out of sync or inactivity or connection lost or maintenance
+		If Not $bRecursive Then Return checkObstacles_ReloadCoC($aReloadButton, "#0131") ; Click for out of sync or inactivity or connection lost or maintenance
 	EndIf
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	If TestCapture() = 0 And GetAndroidProcessPID() = 0 Then
 		; CoC not running
-		Return checkObstacles_ReloadCoC() ; just start CoC (but first close it!)
+		If Not $bRecursive Then Return checkObstacles_ReloadCoC() ; just start CoC (but first close it!)
 	EndIf
 	Local $bHasTopBlackBar = _ColorCheck(_GetPixelColor(10, 3), Hex(0x000000, 6), 1) And _ColorCheck(_GetPixelColor(300, 6), Hex(0x000000, 6), 1) And _ColorCheck(_GetPixelColor(600, 9), Hex(0x000000, 6), 1)
 	If _ColorCheck(_GetPixelColor(235, 209 + $g_iMidOffsetY), Hex(0x9E3826, 6), 20) Then
@@ -296,7 +301,7 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 		;PureClick(250 + $x, 328 + $g_iMidOffsetY + $y, 1, 0, "#0129");Check for "CoC has stopped error, looking for OK message" on screen
 		PureClick($CSFoundCoords[0], $CSFoundCoords[1], 1, 0, "#0129") ;Check for "CoC has stopped error, looking for OK message" on screen
 		If _Sleep($DELAYCHECKOBSTACLES2) Then Return
-		Return checkObstacles_ReloadCoC()
+		If Not $bRecursive Then Return checkObstacles_ReloadCoC()
 	EndIf
 
 	If $bHasTopBlackBar Then
@@ -305,7 +310,10 @@ Func _checkObstacles($bBuilderBase = False) ;Checks if something is in the way f
 	EndIf
 
 	; check if google account list shown and select first
-	CheckGoogleSelectAccount()
+	If Not CheckGoogleSelectAccount() Then
+		; check Log in with Supercell ID login screen
+		CheckLoginWithSupercellID()
+	EndIf
 
 	Return False
 EndFunc   ;==>_checkObstacles

@@ -558,3 +558,52 @@ Func chkStartClockTowerBoost()
 		GUICtrlSetState($g_hChkCTBoostBlderBz, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkStartClockTowerBoost
+
+
+
+Func chkActivateClangames()
+	If GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hChkClanGamesAir, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesGround, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesMisc, $GUI_ENABLE)
+
+		;V3
+		GUICtrlSetState($g_hChkClanGamesLoot, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesBattle, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesDestruction, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesAirTroop, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_ENABLE)
+
+		GUICtrlSetState($g_hChkClanGamesPurge, $GUI_ENABLE)
+		If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED then GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGamesDebug, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($g_hChkClanGamesAir, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesGround, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesMisc, $GUI_DISABLE)
+
+		;V3
+		GUICtrlSetState($g_hChkClanGamesLoot, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesBattle, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesDestruction, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesAirTroop, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_DISABLE)
+		GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_DISABLE)
+
+		GUICtrlSetState($g_hChkClanGamesPurge, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesDebug, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>chkActivateClangames
+
+Func chkPurgeLimits()
+	If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED AND _
+	   GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
+	EndIf
+EndFunc

@@ -18,7 +18,7 @@ Func decodeMultipleCoords($coords, $iDedupX = -1, $iDedupY = -1, $iSorted = -1)
 	Local $retCoords
 	Local $aEmpty[1] = [""]
 	Local $p, $pOff = 0
-;	SetDebugLog("**decodeMultipleCoords: " & $coords, $COLOR_DEBUG)
+	;	SetDebugLog("**decodeMultipleCoords: " & $coords, $COLOR_DEBUG)
 	Local $aCoordsSplit = StringSplit($coords, "|", $STR_NOCOUNT)
 	If StringInStr($aCoordsSplit[0], ",") > 0 Then
 		Local $retCoords[UBound($aCoordsSplit)]
@@ -292,7 +292,7 @@ Func UpdateImgeTile(ByRef $sImageTile, $AndroidTag = Default)
 	EndIf
 
 	Return True
-EndFunc
+EndFunc   ;==>UpdateImgeTile
 
 Func findImage($sImageName, $sImageTile, $sImageArea, $maxReturnPoints = 1, $bForceCapture = True, $AndroidTag = Default)
 	If $AndroidTag = Default Then $AndroidTag = True
@@ -473,31 +473,45 @@ Func findMultiple($directory, $sCocDiamond, $redLines, $minLevel = 0, $maxLevel 
 
 EndFunc   ;==>findMultiple
 
-Func GetDiamondFromRect($rect)
-	;receives "StartX,StartY,EndX,EndY" or "StartX,StartY(Width,Height)"
-	;returns "StartX,StartY|EndX,StartY|EndX,EndY|StartX,EndY"
-	Local $returnvalue = "", $i
+;receives "StartX,StartY,EndX,EndY" or "StartX,StartY(Width,Height)" and returns 0 based array
+Func GetRectArray($rect, $bLogError = True)
+	Local $a = []
 	Local $RectValues = StringSplit($rect, ",", $STR_NOCOUNT)
 	If UBound($RectValues) = 3 Then
 		ReDim $RectValues[4]
 		; check for width and height
 		$i = StringInStr($RectValues[2], ")")
 		If $i = 0 Then
-			SetDebugLog("GetDiamondFromRect : Bad Input Values : " & $rect, $COLOR_ERROR)
-			Return SetError(1, 1, $returnvalue)
+			If $bLogError Then SetDebugLog("GetRectArray : Bad Input Values : " & $rect, $COLOR_ERROR)
+			Return SetError(1, 1, $a)
 		EndIf
 		$RectValues[3] = $RectValues[1] + StringLeft($RectValues[2], $i - 1)
 		$i = StringInStr($RectValues[1], "(")
 		If $i = 0 Then
-			SetDebugLog("GetDiamondFromRect : Bad Input Values : " & $rect, $COLOR_ERROR)
-			Return SetError(1, 2, $returnvalue)
+			If $bLogError Then SetDebugLog("GetRectArray : Bad Input Values : " & $rect, $COLOR_ERROR)
+			Return SetError(1, 2, $a)
 		EndIf
 		$RectValues[2] = $RectValues[0] + StringMid($RectValues[1], $i + 1)
 		$RectValues[1] = StringLeft($RectValues[1], $i - 1)
 	EndIf
 	If UBound($RectValues) < 4 Then
+		If $bLogError Then SetDebugLog("GetRectArray : Bad Input Values : " & $rect, $COLOR_ERROR)
+		Return SetError(1, 3, $a)
+	EndIf
+	Return SetError(0, 0, $RectValues)
+EndFunc   ;==>GetRectArray
+
+Func GetDiamondFromRect($rect)
+	;receives "StartX,StartY,EndX,EndY" or "StartX,StartY(Width,Height)"
+	;returns "StartX,StartY|EndX,StartY|EndX,EndY|StartX,EndY"
+	SetError(0)
+	Local $returnvalue = "", $i
+	Local $RectValues = IsArray($rect) ? $rect : GetRectArray($rect, False)
+	Local $error = @error, $extended = @extended
+	If UBound($RectValues) < 4 Then
+		If $error = 0 Then $error = 1
 		SetDebugLog("GetDiamondFromRect : Bad Input Values : " & $rect, $COLOR_ERROR)
-		Return SetError(1, 3, $returnvalue)
+		Return SetError($error, $extended, $returnvalue)
 	EndIf
 	Local $DiamdValues[4]
 	Local $X = Number($RectValues[0])
@@ -517,8 +531,8 @@ Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = T
 	;returns string with X,Y of ACTUALL FULL SCREEN coordinates or Empty if not found
 	If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : > " & $sImageName & " - " & $sImageTile & " - " & $place, $COLOR_INFO)
 	Local $returnvalue = ""
-	Local $sImageArea = GetDiamondFromRect($place)
-	Local $aPlaces = StringSplit($place, ",", $STR_NOCOUNT)
+	Local $aPlaces = GetRectArray($place)
+	Local $sImageArea = GetDiamondFromRect($aPlaces)
 	If $bForceCaptureRegion = True Then
 		$sImageArea = "FV"
 		_CaptureRegion2(Number($aPlaces[0]), Number($aPlaces[1]), Number($aPlaces[2]), Number($aPlaces[3]))
@@ -818,7 +832,7 @@ Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 				If $iY < 315 Then Return 477 ; Troops
 				If $iY > 315 Then Return 485 ; Spell
 			Case 538 To 610 ; Slot 8
-				Return 551  ; Troops
+				Return 551 ; Troops
 
 			Case 611 To 682 ; Slot 9
 				If $iY < 315 Then Return 625 ; Troops
@@ -879,4 +893,4 @@ Func ImgLogDebugProps($result)
 			SetLog("ImgLogDebugProps : " & $resultArr[$rs] & "->" & $returnData[$rD] & " -> " & $returnLine)
 		Next
 	Next
-EndFunc
+EndFunc   ;==>ImgLogDebugProps

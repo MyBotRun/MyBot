@@ -79,8 +79,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 
 	; ---- CLICK SURRENDER BUTTON ----
 	If Not (IsReturnHomeBattlePage(True, False)) Then ; check if battle is already over
-		$i = 0 ; Reset Loop counter
-		While 1 ; dynamic wait loop for surrender button to appear
+		For $i = 0 To 5 ; dynamic wait loop for surrender button to appear (if end battle or surrender button are not found in 5*(200)ms + 10*(200)ms or 3 seconds, then give up.)
 			If $g_bDebugSetlog Then SetDebugLog("Wait for surrender button to appear #" & $i)
 			If _CheckPixel($aSurrenderButton, $g_bCapturePixel) Then ;is surrender button is visible?
 				If IsAttackPage() Then ; verify still on attack page, and battle has not ended magically before clicking
@@ -98,16 +97,11 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 						If $j > 10 Then ExitLoop ; if Okay button not found in 10*(200)ms or 2 seconds, then give up.
 						If _Sleep($DELAYRETURNHOME5) Then Return
 					WEnd
-				Else
-					$i += 1
 				EndIf
-			Else
-				$i += 1
 			EndIf
 			If ReturnHomeMainPage() Then Return
-			If $i > 5 Then ExitLoop ; if end battle or surrender button are not found in 5*(200)ms + 10*(200)ms or 3 seconds, then give up.
 			If _Sleep($DELAYRETURNHOME5) Then Return
-		WEnd
+		Next
 	Else
 		If $g_bDebugSetlog Then SetDebugLog("Battle already over.", $COLOR_DEBUG)
 	EndIf

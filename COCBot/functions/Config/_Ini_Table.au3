@@ -86,7 +86,7 @@ Func _Ini_Save($filename)
 						$sCurrentSection = "SmartZap" Or _
 						$sCurrentSection = "planned" Then
 					FileWriteLine($g_sProfileSecondaryOutputFileName, "[" & $sCurrentSection & "]")
-				EndIF
+				EndIf
 			EndIf
 		EndIf
 

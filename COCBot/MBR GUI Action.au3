@@ -16,6 +16,7 @@
 Func BotStart($bAutostartDelay = 0)
 	FuncEnter(BotStart)
 	ResumeAndroid()
+	CleanSecureFiles()
 	CalCostCamp()
 	CalCostSpell()
 
