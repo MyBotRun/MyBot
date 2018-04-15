@@ -13,14 +13,12 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
-Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscount"
-Global $g_sImgBuyDealWindow = @ScriptDir & "\imgxml\FreeMagicItems\BuyDeal"
-
 Func CollectFreeMagicItems($bTest = False)
-
 	If Not $g_bChkCollectFreeMagicItems Then Return
 	If Not $g_bRunState Then Return
+
+	Local Static $iLastTimeChecked = 0
+	If $iLastTimeChecked = @MDAY Then Return
 
 	ClickP($aAway, 1, 0, "#0332") ;Click Away
 
@@ -31,11 +29,11 @@ Func CollectFreeMagicItems($bTest = False)
 
 	; Check Trader Icon on Main Village
 	If QuickMIS("BC1", $g_sImgTrader, 120, 160, 210, 215, True, False) Then
-		SetLog("Trader available... Entering Daily Discounts", $COLOR_SUCCESS)
+		SetLog("Trader available, Entering Daily Discounts", $COLOR_SUCCESS)
 		Click($g_iQuickMISX + 120, $g_iQuickMISY + 160)
 		If _Sleep(1500) Then Return
 	Else
-		SetLog("Trader unvailable...", $COLOR_INFO)
+		SetLog("Trader unvailable", $COLOR_INFO)
 		Return
 	EndIf
 
@@ -49,29 +47,34 @@ Func CollectFreeMagicItems($bTest = False)
 	Local $aOcrPositions[3][2] = [[200, 439], [390, 439], [580, 439]]
 	Local $aResults[3] = ["", "", ""]
 
+	$iLastTimeChecked = @MDAY
+
 	For $i = 0 To 2
+		$aResults[$i] = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 80, 25, True)
 		; 5D79C5 ; >Blue Background price
-		If _ColorCheck(_GetPixelColor($aOcrPositions[$i][0], $aOcrPositions[$i][1] + 5, True), Hex(0x5D79C5, 6), 5) Then
-			$aResults[$i] = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 80, 25, True)
+		If $aResults[$i] <> "" Then
 			If Not $bTest Then
 				If $aResults[$i] = "FREE" Then
 					Click($aOcrPositions[$i][0], $aOcrPositions[$i][1], 2, 500)
-					SetLog("Free Magic Item Detected.", $COLOR_INFO)
+					SetLog("Free Magic Item detected", $COLOR_INFO)
 					ClickP($aAway, 2, 0, "#0332") ;Click Away
 					If _Sleep(1000) Then Return
 					Return
 				Else
-					$aResults[$i] = $aResults[$i] & " Gems"
+					If _ColorCheck(_GetPixelColor($aOcrPositions[$i][0], $aOcrPositions[$i][1] + 5, True), Hex(0x5D79C5, 6), 5) Then
+						$aResults[$i] = $aResults[$i] & " Gems"
+					Else
+						$aResults[$i] = Int($aResults[$i]) > 0 ? "No Space In Castle" : "Collected"
+					EndIf
 				EndIf
 			EndIf
-		Else
-			$aResults[$i] = "Collected"
 		EndIf
+
 		If Not $g_bRunState Then Return
 	Next
 
 	SetLog("Daily Discounts: " & $aResults[0] & " | " & $aResults[1] & " | " & $aResults[2])
-	SetLog("Nothing Free to collect!", $COLOR_INFO)
+	SetLog("Nothing free to collect!", $COLOR_INFO)
 	ClickP($aAway, 2, 0, "#0332") ;Click Away
 	If _Sleep(1000) Then Return
 EndFunc   ;==>CollectFreeMagicItems

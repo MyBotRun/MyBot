@@ -126,12 +126,12 @@ Func _ClanGames()
 			; Verify if the Troops exist in your Army Composition
 			Local $TroopIndex = Int(Eval("eTroop" & $AirTroopChallenges[$i][1]))
 			; If doesn't Exist the Troop on your Army
-			If $g_aiArmyCompTroops[$TroopIndex] < 1 Then
+			If $g_aiCurrentTroops[$TroopIndex] < 1 Then
 				If $g_bChkClanGamesDebug Then SetLog("[" & $AirTroopChallenges[$i][1] & "] No " & $g_asTroopNames[$TroopIndex] & " on your army composition.")
 				ContinueLoop
 				; If Exist BUT not is required quantities
-			ElseIf $g_aiArmyCompTroops[$TroopIndex] > 0 And $g_aiArmyCompTroops[$TroopIndex] < $AirTroopChallenges[$i][3] Then
-				If $g_bChkClanGamesDebug Then SetLog("[" & $AirTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiArmyCompTroops[$TroopIndex] & "/" & $AirTroopChallenges[$i][3] & "]")
+			ElseIf $g_aiCurrentTroops[$TroopIndex] > 0 And $g_aiCurrentTroops[$TroopIndex] < $AirTroopChallenges[$i][3] Then
+				If $g_bChkClanGamesDebug Then SetLog("[" & $AirTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiCurrentTroops[$TroopIndex] & "/" & $AirTroopChallenges[$i][3] & "]")
 				ContinueLoop
 			EndIf
 
@@ -159,12 +159,12 @@ Func _ClanGames()
 			; Verify if the Troops exist in your Army Composition
 			Local $TroopIndex = Int(Eval("eTroop" & $GroundTroopChallenges[$i][1]))
 			; If doesn't Exist the Troop on your Army
-			If $g_aiArmyCompTroops[$TroopIndex] < 1 Then
+			If $g_aiCurrentTroops[$TroopIndex] < 1 Then
 				If $g_bChkClanGamesDebug Then SetLog("[" & $GroundTroopChallenges[$i][1] & "] No " & $g_asTroopNames[$TroopIndex] & " on your army composition.")
 				ContinueLoop
 				; If Exist BUT not is required quantities
-			ElseIf $g_aiArmyCompTroops[$TroopIndex] > 0 And $g_aiArmyCompTroops[$TroopIndex] < $GroundTroopChallenges[$i][3] Then
-				If $g_bChkClanGamesDebug Then SetLog("[" & $GroundTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiArmyCompTroops[$TroopIndex] & "/" & $GroundTroopChallenges[$i][3] & "]")
+			ElseIf $g_aiCurrentTroops[$TroopIndex] > 0 And $g_aiCurrentTroops[$TroopIndex] < $GroundTroopChallenges[$i][3] Then
+				If $g_bChkClanGamesDebug Then SetLog("[" & $GroundTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiCurrentTroops[$TroopIndex] & "/" & $GroundTroopChallenges[$i][3] & "]")
 				ContinueLoop
 			EndIf
 

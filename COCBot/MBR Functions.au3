@@ -147,7 +147,7 @@
 #include "functions\Main Screen\checkAttackDisable.au3"
 #include "functions\Main Screen\RemoveGhostTrayIcons.au3"
 #include "functions\Main Screen\waitMainScreen.au3"
-#include "functions\Main Screen\isOnBuilderIsland.au3"
+#include "functions\Main Screen\isOnBuilderBase.au3"
 
 ; Android support for MEmu, LeapDroid, Droid4X, Nox, BlueStacks...
 #include "functions\Android\AndroidMenuShortcuts.au3"

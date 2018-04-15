@@ -312,9 +312,11 @@ Func InitBlueStacks2($bCheckOnly = False)
 	If $bInstalled And Not $bCheckOnly Then
 		$__VBoxManage_Path = $__BlueStacks_Path & "BstkVMMgr.exe"
 		; Also required for BS3 2.55.70.1203
+		; 2.56.75.1279 doesn't need any compensation!!
 		Local $bs3 = GetVersionNormalized("2.50.0.0")
+		Local $bs3WithFrame = GetVersionNormalized("2.56.75")
 		local $bsNow = GetVersionNormalized($__BlueStacks_Version)
-		If StringInStr($__BlueStacks_Version, "4.") = 1 Or (StringInStr($__BlueStacks_Version, "2.") = 1 And $bsNow >= $bs3) Then
+		If StringInStr($__BlueStacks_Version, "4.") = 1 Or (StringInStr($__BlueStacks_Version, "2.") = 1 And $bsNow >= $bs3 And $bsNow < $bs3WithFrame) Then
 			; Mouse clicks in Window are off by -13 on Y-axis, so set special value now
 			Local $aOff = [0, 13]
 			If $g_aiMouseOffsetWindowOnly[0] <> $aOff[0] Or $g_aiMouseOffsetWindowOnly[1] <> $aOff[1] Then

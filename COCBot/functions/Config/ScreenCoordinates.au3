@@ -17,7 +17,7 @@ Global $aIsReloadError[4] = [457, 301 + $g_iMidOffsetY, 0x33B5E5, 10] ; Pixel Se
 Global $aIsMain[4] = [278, 9, 0x77BDE0, 20] ; Main Screen, Builder Info Icon
 Global $aIsMainGrayed[4] = [278, 9, 0x3C5F70, 15] ; Main Screen, Builder Info Icon grayed
 
-Global $aIsOnBuilderIsland[4] = [838, 18, 0xffff46, 10] ; Check the Gold Coin from resources , is a square not round
+Global $aIsOnBuilderBase[4] = [838, 18, 0xffff46, 10] ; Check the Gold Coin from resources , is a square not round
 
 Global $aTopLeftClient[4] = [1, 1, 0x000000, 0] ; TopLeftClient: Tolerance not needed
 Global $aTopMiddleClient[4] = [475, 1, 0x000000, 0] ; TopMiddleClient: Tolerance not needed
@@ -95,7 +95,7 @@ Global $aDetectLang[2] = [16, 634 + $g_iBottomOffsetY] ; Detect Language, bottom
 Global $aGreenArrowTrainTroops[2] = [389, 125]
 Global $aGreenArrowBrewSpells[2] = [585, 125]
 Global $g_aShopWindowOpen[4] = [804, 54, 0xC00508, 15] ; Red pixel in lower right corner of RED X to close shop window
-Global $aTreasuryWindow[4] = [689, 172 + $g_iMidOffsetY, 0xFF8D95, 20] ; Redish pixel above X to close treasury window
+Global $aTreasuryWindow[4] = [689, 138 + $g_iMidOffsetY, 0xFF8D95, 20] ; Redish pixel above X to close treasury window
 Global $aAttackForTreasury[4] = [88, 619 + $g_iMidOffsetY, 0xF0EBE8, 5] ; Red pixel below X to close treasury window
 Global $aAtkHasDarkElixir[4]  = [ 31, 144, 0x282020, 10] ; Attack Page, Check for DE icon
 Global $aVillageHasDarkElixir[4] = [837, 134, 0x3D2D3D, 10] ; Main Page, Base has dark elixir storage
@@ -182,7 +182,7 @@ Global $aTextBox[4] = [320, 160 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Text box, Whit
 Global $aButtonVillageOkay[4] = [500, 170 + $g_iMidOffsetY, 0x81CA2D, 20] ; Okay button, Green
 ;SuperCell ID
 Global $aButtonConnectedSCID[4] = [430, 205 + $g_iMidOffsetY, 0x6EB730, 20] ; Setting creen, Supercell ID Connected button
-Global $aButtonLogOutSCID[4] = [700, 400 + $g_iMidOffsetY, 0x308AFB, 20] ; Supercell ID, Log Out button
+Global $aButtonLogOutSCID[4] = [700,  285 + $g_iMidOffsetY, 0x308AFB, 20] ; Supercell ID, Log Out button
 Global $aButtonConfirmSCID[4] = [460, 410 + $g_iMidOffsetY, 0x328AFB, 20] ; Supercell ID, Confirm button
 Global $aListAccountSCID[4] = [490, 185 + $g_iMidOffsetY, 0x000000, 10] ; Supercell ID, Black check in word "ID"
 Global $aCloseTabSCID[4] = [732, 145] ; Button Close Supercell ID tab
