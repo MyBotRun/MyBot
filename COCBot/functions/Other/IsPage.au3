@@ -91,7 +91,7 @@ EndFunc   ;==>IsMainPage
 
 Func IsMainPageBuilderBase($iLoop = 30)
 
-	If IsPageLoop($aIsOnBuilderBase, $iLoop) Then
+	If IsPageLoop($aIsOnBuilderIsland, $iLoop) Then
 		$g_bMainWindowOk = True
 		If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window Builder Base OK**", $COLOR_ACTION)
 		Return True
