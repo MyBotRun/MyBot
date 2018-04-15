@@ -36,7 +36,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 
 	Local $iAdditional = 75
 
-	If isOnBuilderIsland(True) Then
+	If isOnBuilderBase(True) Then
 		$sDirectory = $g_sImgZoomOutDirBB
 	Else
 		$sDirectory = $g_sImgZoomOutDir
@@ -79,7 +79,7 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 			$bottom = $y0 + $iAdditional
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
 			;SetDebugLog("GetVillageSize check for image " & $findImage)
-			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, False))
+			$a = decodeSingleCoord(findImage($findImage, $sDirectory & $findImage, $sArea, 1, False))
 			If UBound($a) = 2 Then
 				$x = Int($a[0])
 				$y = Int($a[1])

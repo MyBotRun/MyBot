@@ -98,8 +98,13 @@ Func CheckSwitchAcc()
 	Local $bReachAttackLimit = ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCountAcc[$g_iCurAccount] - 2)
 	Local $bForceSwitch = False
 	Local $nMinRemainTrain, $iWaitTime
+	Local $aActibePBTaccounts = _ArrayFindAll($g_abPBActive, True)
 
 	SetLog("Start Switch Account...!", $COLOR_INFO)
+
+	; Force Switch when PBT detected
+	If $g_abPBActive[$g_iCurAccount] = True Then $bForceSwitch = True
+
 	If $g_iCommandStop = 0 Then ; Forced to switch when in halt attack mode
 		SetLog("This account is in halt attack mode, switching to another account", $COLOR_ACTION)
 		SetSwitchAccLog(" - HaltAttack, Force switch")
@@ -129,10 +134,10 @@ Func CheckSwitchAcc()
 
 	Local $sLogSkip = ""
 	If Not $g_abDonateOnly[$g_iCurAccount] And $iWaitTime <= $g_iTrainTimeToSkip And Not $bForceSwitch Then
-		If $iWaitTime > 0 Then $sLogSkip = " in " & Round($iWaitTime, 1) & "m"
+		If $iWaitTime > 0 Then $sLogSkip = " in " & Round($iWaitTime, 1) & " mins"
 		SetLog("Army is ready" & $sLogSkip & ", skip switching account", $COLOR_INFO)
 		SetSwitchAccLog(" - Army is ready" & $sLogSkip)
-		SetSwitchAccLog("Stay at [" & $g_iNextAccount + 1 & "]", $COLOR_SUCCESS)
+		SetSwitchAccLog("Stay at [" & $g_iCurAccount + 1 & "]", $COLOR_SUCCESS)
 		If _Sleep(500) Then Return
 	Else
 		$nMinRemainTrain = CheckTroopTimeAllAccount($bForceSwitch)
@@ -166,6 +171,29 @@ Func CheckSwitchAcc()
 			WEnd
 		EndIf
 
+		; Just a loop for all acc to check it if necessary
+		For $i = 0 To $g_iTotalAcc
+			; Check if the next account is PBT and IF the remain Train Time is Less/More than 2 minutes
+			If $g_abPBActive[$g_iNextAccount] And $g_aiRemainTrainTime[$g_iNextAccount] > 2 Then
+				SetLog("Account " & $g_iNextAccount + 1 & " is in a Personal Break Time!", $COLOR_INFO)
+				SetSwitchAccLog(" - Account " & $g_iNextAccount + 1 & " is in PTB")
+				$g_iNextAccount = $g_iNextAccount + 1
+				If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0
+			Else
+				ExitLoop
+			EndIf
+		Next
+
+		If UBound($aActibePBTaccounts) + UBound($aDonateAccount) = UBound($aActiveAccount) Then
+			SetLog("All accounts set to Donate and/or are in PBT!", $COLOR_INFO)
+			SetSwitchAccLog("All accounts in PBT/Donate:")
+			; Just a Good User Log
+			For $i = 0 To $g_iTotalAcc
+				If $g_abDonateOnly[$i] Then SetSwitchAccLog(" - Donate Acc [" & $i + 1 & "]")
+				If $g_abPBActive[$i] Then SetSwitchAccLog(" - PBT Acc [" & $i + 1 & "]")
+			NExt
+		EndIf
+
 		If $g_iNextAccount <> $g_iCurAccount Then
 			If $g_bRequestTroopsEnable And $g_bCanRequestCC Then
 				SetLog("Try Request troops before switching account", $COLOR_INFO)
@@ -175,7 +203,7 @@ Func CheckSwitchAcc()
 			SwitchCOCAcc($g_iNextAccount)
 		Else
 			SetLog("Staying in this account")
-			SetSwitchAccLog("Stay at [" & $g_iNextAccount + 1 & "]", $COLOR_SUCCESS)
+			SetSwitchAccLog("Stay at [" & $g_iCurAccount + 1 & "]", $COLOR_SUCCESS)
 		EndIf
 	EndIf
 
@@ -556,6 +584,8 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 			Return "OK"
 		EndIf
 
+		SetDebugLog("Checking Green Connected button x:" & $aButtonConnectedSCID[0] & " y:" & $aButtonConnectedSCID[1] & " : " & _GetPixelColor($aButtonConnectedSCID[0], $aButtonConnectedSCID[1], True))
+
 		If $i = 20 Then
 			$bResult = False
 			;ExitLoop 2
@@ -589,6 +619,8 @@ Func SwitchCOCAcc_ConfirmSCID(ByRef $bResult)
 				If _Sleep(900) Then Return "Exit"
 			Next
 		EndIf
+
+		SetDebugLog("Checking LogOut & Confirm button x:" & $aButtonLogOutSCID[0] & " y:" & $aButtonLogOutSCID[1] & " : " & _GetPixelColor($aButtonLogOutSCID[0], $aButtonLogOutSCID[1], True))
 
 		If $i = 20 Then
 			$bResult = False
@@ -636,6 +668,8 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 4)
 						Return "Error"
 					EndIf
 				EndIf
+
+				SetDebugLog("Checking Account List x:" & $aListAccountSCID[0] & " y:" & $aListAccountSCID[1] & " : " & _GetPixelColor($aListAccountSCID[0], $aListAccountSCID[1], True))
 				If $j = 20 Then
 					$bResult = False
 					;ExitLoop 2
@@ -645,6 +679,8 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 4)
 			Next
 
 		EndIf
+
+		SetDebugLog("Checking 'Log in with SuperCell ID' buttonn' x:" & $aLoginWithSupercellID[0] & " y:" & $aLoginWithSupercellID[1] & " : " & _GetPixelColor($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], True))
 		If $i = 30 Then
 			$bResult = False
 			;ExitLoop 2
@@ -699,7 +735,7 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False) ; Return the minimum rem
 	Local $abAccountNo = AccountNoActive()
 	Local $iMinRemainTrain
 	If $bExcludeCurrent = False Then
-		$g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain) ; remaintraintime of current account - in minutes
+		If $g_abPBActive[$g_iCurAccount] = False Then $g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain) ; remaintraintime of current account - in minutes If not PBT
 		$g_aiTimerStart[$g_iCurAccount] = TimerInit() ; start counting elapse of training time of current account
 	EndIf
 
@@ -726,6 +762,8 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False) ; Return the minimum rem
 	Next
 
 	$iMinRemainTrain = _ArrayMax($g_aiRemainTrainTime)
+
+	; now let's recheck the correct account to be next
 	For $i = 0 To $g_iTotalAcc
 		If $bExcludeCurrent And $i = $g_iCurAccount Then ContinueLoop
 		If $abAccountNo[$i] And Not $g_abDonateOnly[$i] Then ;	Only check Active profiles

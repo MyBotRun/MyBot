@@ -4,12 +4,12 @@
 #pragma compile(Out, MyBot.run.exe) ; Required
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
-#pragma compile(ProductVersion, 7.5)
-#pragma compile(FileVersion, 7.5)
+#pragma compile(ProductVersion, 7.5.1)
+#pragma compile(FileVersion, 7.5.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.5"
+Global $g_sBotVersion = "v7.5.1"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -6632,7 +6632,7 @@ Global Const $DELAYCHECKOBSTACLES8 = 900000
 Global Const $DELAYCHECKOBSTACLES9 = 1200000
 Global Const $DELAYCHECKOBSTACLES10 = 1800000
 Global Const $DELAYISGEMOPEN1 = 350
-Global Const $DELAYISBUILDERISLAND = 300
+Global Const $DELAYISBUILDERBASE = 300
 Global Const $DELAYWAITMAINSCREEN1 = 2000
 Global Const $DELAYZOOMOUT1 = 1500
 Global Const $DELAYZOOMOUT2 = 200
@@ -6850,7 +6850,7 @@ Global $aCenterHomeVillageClickDrag = [160, 665]
 Global $aIsReloadError[4] = [457, 301 + $g_iMidOffsetY, 0x33B5E5, 10]
 Global $aIsMain[4] = [278, 9, 0x77BDE0, 20]
 Global $aIsMainGrayed[4] = [278, 9, 0x3C5F70, 15]
-Global $aIsOnBuilderIsland[4] = [838, 18, 0xffff46, 10]
+Global $aIsOnBuilderBase[4] = [838, 18, 0xffff46, 10]
 Global $aTopLeftClient[4] = [1, 1, 0x000000, 0]
 Global $aTopRightClient[4] = [850, 1, 0x000000, 0]
 Global $aIsConnectLost[4] = [255, 271 + $g_iMidOffsetY, 0x33B5E5, 20]
@@ -6914,7 +6914,7 @@ Global $aDetectLang[2] = [16, 634 + $g_iBottomOffsetY]
 Global $aGreenArrowTrainTroops[2] = [389, 125]
 Global $aGreenArrowBrewSpells[2] = [585, 125]
 Global $g_aShopWindowOpen[4] = [804, 54, 0xC00508, 15]
-Global $aTreasuryWindow[4] = [689, 172 + $g_iMidOffsetY, 0xFF8D95, 20]
+Global $aTreasuryWindow[4] = [689, 138 + $g_iMidOffsetY, 0xFF8D95, 20]
 Global $aAttackForTreasury[4] = [88, 619 + $g_iMidOffsetY, 0xF0EBE8, 5]
 Global $aAtkHasDarkElixir[4] = [ 31, 144, 0x282020, 10]
 Global $aVillageHasDarkElixir[4] = [837, 134, 0x3D2D3D, 10]
@@ -6959,7 +6959,7 @@ Global $aButtonVillageLoad[4] = [515, 411 + $g_iMidOffsetY, 0x6EBD1F, 20]
 Global $aTextBox[4] = [320, 160 + $g_iMidOffsetY, 0xFFFFFF, 10]
 Global $aButtonVillageOkay[4] = [500, 170 + $g_iMidOffsetY, 0x81CA2D, 20]
 Global $aButtonConnectedSCID[4] = [430, 205 + $g_iMidOffsetY, 0x6EB730, 20]
-Global $aButtonLogOutSCID[4] = [700, 400 + $g_iMidOffsetY, 0x308AFB, 20]
+Global $aButtonLogOutSCID[4] = [700, 285 + $g_iMidOffsetY, 0x308AFB, 20]
 Global $aButtonConfirmSCID[4] = [460, 410 + $g_iMidOffsetY, 0x328AFB, 20]
 Global $aListAccountSCID[4] = [490, 185 + $g_iMidOffsetY, 0x000000, 10]
 Global $aCloseTabSCID[4] = [732, 145]
@@ -7018,6 +7018,8 @@ Global $g_sImgCleanYard = @ScriptDir & "\imgxml\Resources\Obstacles"
 Global $g_sImgCleanYardSnow = @ScriptDir & "\imgxml\Obstacles_Snow"
 Global $g_sImgGemBox = @ScriptDir & "\imgxml\Resources\GemBox"
 Global $g_sImgCollectReward = @ScriptDir & "\imgxml\Resources\ClaimReward"
+Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
+Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscount"
 Global $g_sImgCollectRessourcesBB = @ScriptDir & "\imgxml\Resources\BuildersBase\Collect"
 Global $g_sImgBoatBB = @ScriptDir & "\imgxml\Boat\BoatBuilderBase_0_89.xml"
 Global $g_sImgZoomOutDirBB = @ScriptDir & "\imgxml\village\BuilderBase\"
@@ -10835,8 +10837,7 @@ Global $_g_asDISTRIBUTORS[24][4]
 Func InitializeCOCDistributors()
 $g_sNO_COC = "<" & GetTranslatedFileIni("MBR Distributors", "NO_COC", "No COC") & ">"
 $g_sUNKNOWN_COC = "<" & GetTranslatedFileIni("MBR Distributors", "Unknown_COC", "Unknown COC") & ">"
-Dim $_g_asDISTRIBUTORS[24][4] = [ ["Google", "com.supercell.clashofclans", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_01", "Google")], ["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_02", "Kunlun")], ["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_03", "Qihoo")], ["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_04", "Baidu")], ["9game", "com.supercell.clashofclans.uc", "com.supercell.clashofclans.uc.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_05", "9game")], ["Wandoujia/Downjoy", "com.supercell.clashofclans.wdj", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_06", "Wandoujia/Downjoy")], ["Huawei", "com.supercell.clashofclans.huawei", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_07", "Huawei")], ["OPPO", "com.supercell.clashofclans.nearme.gamecenter", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_08", "OPPO")], ["VIVO", "com.supercell.clashofclans.vivo", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_09", "VIVO")], ["Anzhi", "com.supercell.clashofclans.anzhi", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_10", "Anzhi")], ["Kaopu", "com.supercell.clashofclans.ewan.kaopu", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_11", "Kaopu")], ["Lenovo", "com.supercell.clashofclans.lenovo", "com.supercell.clashofclans.GameAppKunlun", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_12", "Lenovo")], ["Guopan", "com.supercell.clashofclans.wdj", "com.flamingo.sdk.view.WDJSplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_13", "Guopan")], ["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.clashofclans.mi.GameAppXiaomi", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_14", "Xiaomi")], ["Haimawan", "com.supercell.clashofclans.ewan.hm", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_15", "Haimawan")], ["Leshi", "com.supercell.clashofclans.ewan.leshi", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_16", "Leshi")], ["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_17", "Microvirt")], ["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_18", "Yeshen")], ["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_19", "Aiyouxi")], ["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.tencent.tmgp.supercell.clashofclans.GameAppTencent", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_20", "Tencent")], ["Clash Of Magic, The Black Magic: S1", "net.clashofmagic.s1", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_21", "Clash Of Magic, The Black Magic: S1")], ["Clash Of Magic, The Power Of Magic: S2", "net.clashofmagic.s2", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_22", "Clash Of Magic, The Power Of Magic: S2")], ["Clash Of Magic, The Hall Of Magic: S3", "net.clashofmagic.s3", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_23", "Clash Of Magic, The Hall Of Magic: S3")], _
-["Clash Of Magic, The Hall Of Magic 2: S4", "net.clashofmagic.s4", "com.supercell.clashofclans.GameApp", GetTranslatedFileIni("MBR Distributors", "Emulator_Item_24", "Clash Of Magic, The Hall Of Magic 2: S4")] ]
+Dim $_g_asDISTRIBUTORS[24][4] = [ ["Google", "com.supercell.clashofclans", "com.supercell.clashofclans.GameApp", "Google"], ["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.clashofclans.GameAppKunlun", "Kunlun"], ["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.clashofclans.GameAppKunlun","Qihoo"], ["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.clashofclans.GameAppKunlun", "Baidu"], ["9game", "com.supercell.clashofclans.uc", "com.supercell.clashofclans.uc.GameApp", "9game"], ["Wandoujia/Downjoy", "com.supercell.clashofclans.wdj", "com.supercell.clashofclans.GameAppKunlun", "Wandoujia/Downjoy"], ["Huawei", "com.supercell.clashofclans.huawei", "com.supercell.clashofclans.GameAppKunlun", "Huawei"], ["OPPO", "com.supercell.clashofclans.nearme.gamecenter", "com.supercell.clashofclans.GameAppKunlun", "OPPO"], ["VIVO", "com.supercell.clashofclans.vivo", "com.supercell.clashofclans.GameAppKunlun", "VIVO"], ["Anzhi", "com.supercell.clashofclans.anzhi", "com.supercell.clashofclans.GameAppKunlun", "Anzhi"], ["Kaopu", "com.supercell.clashofclans.ewan.kaopu", "com.supercell.clashofclans.GameAppKunlun", "Kaopu"], ["Lenovo", "com.supercell.clashofclans.lenovo", "com.supercell.clashofclans.GameAppKunlun", "Lenovo"], ["Guopan", "com.supercell.clashofclans.wdj", "com.flamingo.sdk.view.WDJSplashActivity", "Guopan"], ["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.clashofclans.mi.GameAppXiaomi","Xiaomi"], ["Haimawan", "com.supercell.clashofclans.ewan.hm", "cn.ewan.supersdk.activity.SplashActivity", "Haimawan"], ["Leshi", "com.supercell.clashofclans.ewan.leshi", "cn.ewan.supersdk.activity.SplashActivity", "Leshi"], ["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", "Microvirt"], ["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity","Yeshen"], ["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity","Aiyouxi"], ["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.tencent.tmgp.supercell.clashofclans.GameAppTencent","Tencent"], ["Clash Of Magic, The Black Magic: S1", "net.clashofmagic.s1", "com.supercell.clashofclans.GameApp", "Clash Of Magic, The Black Magic: S1"], ["Clash Of Magic, The Power Of Magic: S2", "net.clashofmagic.s2", "com.supercell.clashofclans.GameApp","Clash Of Magic, The Power Of Magic: S2"], ["Clash Of Magic, The Hall Of Magic: S3", "net.clashofmagic.s3", "com.supercell.clashofclans.GameApp", "Clash Of Magic, The Hall Of Magic: S3"], ["Clash Of Magic, The Hall Of Magic 2: S4", "net.clashofmagic.s4", "com.supercell.clashofclans.GameApp", "Clash Of Magic, The Hall Of Magic 2: S4"] ]
 EndFunc
 Func GetCOCDistributors()
 FuncEnter(GetCOCDistributors)
@@ -20010,7 +20011,7 @@ $sText = "Active developers: "
 GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 GUICtrlSetColor(-1, $COLOR_NAVY)
-$sText = "Cosote, Fliegerfaust, MHK2012, MMHK, NguyenAnhHD, TripleM"
+$sText = "Cosote, Fliegerfaust, MHK2012, MMHK, TripleM"
 GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 $y += 60
@@ -40541,7 +40542,7 @@ Local $aPoints = decodeMultipleCoords($matchedValues[2])
 $Filename = $matchedValues[0]
 For $i = 0 To UBound($aPoints) - 1
 $CleanYardXY = $aPoints[$i]
-If isInsideDiamondXY($CleanYardXY[0], $CleanYardXY[1]) Then
+If UBound($CleanYardXY) > 1 And isInsideDiamondXY($CleanYardXY[0], $CleanYardXY[1]) Then
 If $g_bDebugSetlog Then SetDebugLog($Filename & " found (" & $CleanYardXY[0] & "," & $CleanYardXY[1] & ")", $COLOR_SUCCESS)
 If IsMainPage() Then Click($CleanYardXY[0], $CleanYardXY[1], 1, 0, "#0430")
 $Locate = 1
@@ -41847,7 +41848,7 @@ $g_iQuickMISY = $aCord[1]
 $Name = RetrieveImglocProperty($KeyValue[0], "objectname")
 If $g_bDebugSetlog Or $Debug Then
 SetDebugLog($ValueReturned & " Found: " & $Result & ", using " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_PURPLE)
-DebugQuickMIS($Left, $Top, "BC1_detected[" & $Name & "_" & $g_iQuickMISX + $Left & "x" & $g_iQuickMISY + $Top & "]")
+If $g_bDebugImageSave Then DebugQuickMIS($Left, $Top, "BC1_detected[" & $Name & "_" & $g_iQuickMISX + $Left & "x" & $g_iQuickMISY + $Top & "]")
 EndIf
 Return True
 Case "CX"
@@ -41932,7 +41933,7 @@ EndIf
 $i = 0
 $iErrorCount = 0
 $iCheckBeforeRestartAndroidCount = 3
-If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderIsland
+If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderBase
 Local $bLocated
 While _CaptureRegions() And Not _checkMainScreenImage($bLocated, $aPixelToCheck)
 $i += 1
@@ -42012,9 +42013,11 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False)
 Local $msg, $x, $y, $Result
 $g_bMinorObstacle = False
 _CaptureRegions()
+If Not $bRecursive Then
 If checkObstacles_Network() Then Return True
-If Not $bRecursive And checkObstacles_GfxError() Then Return True
-Local $bIsOnBuilderIsland = _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel)
+If checkObstacles_GfxError() Then Return True
+EndIf
+Local $bIsOnBuilderIsland = _CheckPixel($aIsOnBuilderBase, $g_bNoCapturePixel)
 If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
 SetLog("Detected Builder Base, trying to switch back to Main Village")
 If SwitchBetweenBases(False) Then
@@ -42053,7 +42056,7 @@ SetLog("Another Device has connected, waiting " & Floor(Mod($g_iAnotherDeviceWai
 PushMsg("AnotherDevice")
 EndIf
 If _SleepStatus($g_iAnotherDeviceWaitTime * 1000) Then Return
-If Not $bRecursive Then checkObstacles_ReloadCoC($aReloadButton, "#0127")
+checkObstacles_ReloadCoC($aReloadButton, "#0127", $bRecursive)
 If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 checkObstacles_ResetSearch()
 Return True
@@ -42063,7 +42066,7 @@ SetLog("Village must take a break, wait ...", $COLOR_ERROR)
 If TestCapture() Then Return "Village must take a break"
 PushMsg("TakeBreak")
 If _SleepStatus($DELAYCHECKOBSTACLES4) Then Return
-If Not $bRecursive Then checkObstacles_ReloadCoC($aReloadButton, "#0128")
+checkObstacles_ReloadCoC($aReloadButton, "#0128", $bRecursive)
 If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 checkObstacles_ResetSearch()
 Return True
@@ -42165,10 +42168,10 @@ EndIf
 SetLog("Warning: Can not find type of Reload error message", $COLOR_ERROR)
 EndSelect
 If TestCapture() Then Return "Village is out of sync or inactivity or connection lost or maintenance"
-If Not $bRecursive Then Return checkObstacles_ReloadCoC($aReloadButton, "#0131")
+checkObstacles_ReloadCoC($aReloadButton, "#0131", $bRecursive)
 EndIf
 If TestCapture() = 0 And GetAndroidProcessPID() = 0 Then
-If Not $bRecursive Then Return checkObstacles_ReloadCoC()
+Return checkObstacles_ReloadCoC(Default, "", $bRecursive)
 EndIf
 Local $bHasTopBlackBar = _ColorCheck(_GetPixelColor(10, 3), Hex(0x000000, 6), 1) And _ColorCheck(_GetPixelColor(300, 6), Hex(0x000000, 6), 1) And _ColorCheck(_GetPixelColor(600, 9), Hex(0x000000, 6), 1)
 If _ColorCheck(_GetPixelColor(235, 209 + $g_iMidOffsetY), Hex(0x9E3826, 6), 20) Then
@@ -42244,7 +42247,7 @@ PushMsg("CoCError")
 If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 PureClick($CSFoundCoords[0], $CSFoundCoords[1], 1, 0, "#0129")
 If _Sleep($DELAYCHECKOBSTACLES2) Then Return
-If Not $bRecursive Then Return checkObstacles_ReloadCoC()
+Return checkObstacles_ReloadCoC(Default, "", $bRecursive)
 EndIf
 If $bHasTopBlackBar Then
 SetDebugLog("checkObstacles: Found Black Android Screen")
@@ -42254,17 +42257,17 @@ CheckLoginWithSupercellID()
 EndIf
 Return False
 EndFunc
-Func checkObstacles_ReloadCoC($point = Default, $debugtxt = "")
+Func checkObstacles_ReloadCoC($point = Default, $debugtxt = "", $bRecursive = False)
 If TestCapture() Then Return "Reload CoC"
 ForceCaptureRegion(True)
 OcrForceCaptureRegion(True)
 If $point = Default Then
-CloseCoC(True)
+If Not $bRecursive Then CloseCoC(True)
 Else
 If UBound($point) > 1 Then
 PureClickP($point, 1, 0, $debugtxt)
 EndIf
-OpenCoC()
+If Not $bRecursive Then OpenCoC()
 EndIf
 If _Sleep($DELAYCHECKOBSTACLES3) Then Return
 Return True
@@ -42938,10 +42941,10 @@ EndIf
 Next
 Return SetError(1, 0, -1)
 EndFunc
-Func isOnBuilderIsland($bNeedCaptureRegion = False)
-_Sleep($DELAYISBUILDERISLAND)
-If _CheckPixel($aIsOnBuilderIsland, $bNeedCaptureRegion) Then
-If $g_bDebugSetlog Then SetDebugLog("Builder Island Builder detected", $COLOR_DEBUG)
+Func isOnBuilderBase($bNeedCaptureRegion = False)
+_Sleep($DELAYISBUILDERBASE)
+If _CheckPixel($aIsOnBuilderBase, $bNeedCaptureRegion) Then
+If $g_bDebugSetlog Then SetDebugLog("Builder Base Builder detected", $COLOR_DEBUG)
 Return True
 Else
 Return False
@@ -43839,8 +43842,9 @@ EndIf
 If $bInstalled And Not $bCheckOnly Then
 $__VBoxManage_Path = $__BlueStacks_Path & "BstkVMMgr.exe"
 Local $bs3 = GetVersionNormalized("2.50.0.0")
+Local $bs3WithFrame = GetVersionNormalized("2.56.75")
 local $bsNow = GetVersionNormalized($__BlueStacks_Version)
-If StringInStr($__BlueStacks_Version, "4.") = 1 Or(StringInStr($__BlueStacks_Version, "2.") = 1 And $bsNow >= $bs3) Then
+If StringInStr($__BlueStacks_Version, "4.") = 1 Or(StringInStr($__BlueStacks_Version, "2.") = 1 And $bsNow >= $bs3 And $bsNow < $bs3WithFrame) Then
 Local $aOff = [0, 13]
 If $g_aiMouseOffsetWindowOnly[0] <> $aOff[0] Or $g_aiMouseOffsetWindowOnly[1] <> $aOff[1] Then
 $g_aiMouseOffsetWindowOnly = $aOff
@@ -49835,7 +49839,7 @@ If $iLoop > 1 Then AndroidPageError("IsMainPage")
 Return False
 EndFunc
 Func IsMainPageBuilderBase($iLoop = 30)
-If IsPageLoop($aIsOnBuilderIsland, $iLoop) Then
+If IsPageLoop($aIsOnBuilderBase, $iLoop) Then
 $g_bMainWindowOk = True
 If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Main Window Builder Base OK**", $COLOR_ACTION)
 Return True
@@ -59617,7 +59621,7 @@ Local $sDirectory
 Local $stone[6] = [0, 0, 0, 0, 0, ""], $tree[6] = [0, 0, 0, 0, 0, ""]
 Local $x0, $y0, $d0, $x, $y, $x1, $y1, $right, $bottom, $a
 Local $iAdditional = 75
-If isOnBuilderIsland(True) Then
+If isOnBuilderBase(True) Then
 $sDirectory = $g_sImgZoomOutDirBB
 Else
 $sDirectory = $g_sImgZoomOutDir
@@ -59654,7 +59658,7 @@ $y1 = $y0 - $iAdditional
 $right = $x0 + $iAdditional
 $bottom = $y0 + $iAdditional
 $sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
-$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, False))
+$a = decodeSingleCoord(findImage($findImage, $sDirectory & $findImage, $sArea, 1, False))
 If UBound($a) = 2 Then
 $x = Int($a[0])
 $y = Int($a[1])
@@ -60046,13 +60050,12 @@ If Not $bToReturn Then ClickP($aAway, 1, 0, "#0332")
 Return $bToReturn
 EndFunc
 Func SwitchBetweenBases($bCheckMainScreen = True)
-Local $sSwitchFrom, $sSwitchTo, $sBack = "", $bIsOnBuilderBase = False, $aButtonCoords
+Local $sSwitchFrom, $sSwitchTo, $bIsOnBuilderBase = False, $aButtonCoords
 Local $sTile, $sTileDir, $sRegionToSearch
 If Not $g_bRunState Then Return
-If isOnBuilderIsland(True) Then
+If isOnBuilderBase(True) Then
 $sSwitchFrom = "Builder Base"
 $sSwitchTo = "Normal Village"
-$sBack = " back"
 $bIsOnBuilderBase = True
 $sTile = "BoatBuilderBase"
 $sTileDir = $g_sImgBoatBB
@@ -60076,20 +60079,19 @@ Local $bSwitched = False
 While __TimerDiff($hTimerHandle) < 3000 And Not $bSwitched
 _Sleep(250)
 ForceCaptureRegion()
-$bSwitched = isOnBuilderIsland(True) <> $bIsOnBuilderBase
+$bSwitched = isOnBuilderBase(True) <> $bIsOnBuilderBase
 WEnd
 If $bSwitched Then
-SetLog("Successfully went" & $sBack & " to the " & $sSwitchTo & "!", $COLOR_SUCCESS)
-If $bCheckMainScreen = True Then checkMainScreen(True, Not $bIsOnBuilderBase)
+If $bCheckMainScreen Then checkMainScreen(True, Not $bIsOnBuilderBase)
 Return True
 Else
-SetLog("Failed to go" & $sBack & " to the " & $sSwitchTo & "!", $COLOR_ERROR)
+SetLog("Failed to go to the " & $sSwitchTo, $COLOR_ERROR)
 EndIf
 Else
 If $bIsOnBuilderBase Then
-SetLog("Cannot find the Boat on the Coast!", $COLOR_ERROR)
+SetLog("Cannot find the Boat on the Coast", $COLOR_ERROR)
 Else
-SetLog("Cannot find the Boat on the Coast! Maybe it is still broken or not visible?", $COLOR_ERROR)
+SetLog("Cannot find the Boat on the Coast. Maybe it is still broken or not visible", $COLOR_ERROR)
 EndIf
 EndIf
 Return False
@@ -60156,7 +60158,9 @@ Local $aDonateAccount = _ArrayFindAll($g_abDonateOnly, True)
 Local $bReachAttackLimit =($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCountAcc[$g_iCurAccount] - 2)
 Local $bForceSwitch = False
 Local $nMinRemainTrain, $iWaitTime
+Local $aActibePBTaccounts = _ArrayFindAll($g_abPBActive, True)
 SetLog("Start Switch Account...!", $COLOR_INFO)
+If $g_abPBActive[$g_iCurAccount] = True Then $bForceSwitch = True
 If $g_iCommandStop = 0 Then
 SetLog("This account is in halt attack mode, switching to another account", $COLOR_ACTION)
 SetSwitchAccLog(" - HaltAttack, Force switch")
@@ -60181,10 +60185,10 @@ EndIf
 EndIf
 Local $sLogSkip = ""
 If Not $g_abDonateOnly[$g_iCurAccount] And $iWaitTime <= $g_iTrainTimeToSkip And Not $bForceSwitch Then
-If $iWaitTime > 0 Then $sLogSkip = " in " & Round($iWaitTime, 1) & "m"
+If $iWaitTime > 0 Then $sLogSkip = " in " & Round($iWaitTime, 1) & " mins"
 SetLog("Army is ready" & $sLogSkip & ", skip switching account", $COLOR_INFO)
 SetSwitchAccLog(" - Army is ready" & $sLogSkip)
-SetSwitchAccLog("Stay at [" & $g_iNextAccount + 1 & "]", $COLOR_SUCCESS)
+SetSwitchAccLog("Stay at [" & $g_iCurAccount + 1 & "]", $COLOR_SUCCESS)
 If _Sleep(500) Then Return
 Else
 $nMinRemainTrain = CheckTroopTimeAllAccount($bForceSwitch)
@@ -60210,6 +60214,24 @@ $g_iNextAccount += 1
 If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0
 WEnd
 EndIf
+For $i = 0 To $g_iTotalAcc
+If $g_abPBActive[$g_iNextAccount] And $g_aiRemainTrainTime[$g_iNextAccount] > 2 Then
+SetLog("Account " & $g_iNextAccount + 1 & " is in a Personal Break Time!", $COLOR_INFO)
+SetSwitchAccLog(" - Account " & $g_iNextAccount + 1 & " is in PTB")
+$g_iNextAccount = $g_iNextAccount + 1
+If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0
+Else
+ExitLoop
+EndIf
+Next
+If UBound($aActibePBTaccounts) + UBound($aDonateAccount) = UBound($aActiveAccount) Then
+SetLog("All accounts set to Donate and/or are in PBT!", $COLOR_INFO)
+SetSwitchAccLog("All accounts in PBT/Donate:")
+For $i = 0 To $g_iTotalAcc
+If $g_abDonateOnly[$i] Then SetSwitchAccLog(" - Donate Acc [" & $i + 1 & "]")
+If $g_abPBActive[$i] Then SetSwitchAccLog(" - PBT Acc [" & $i + 1 & "]")
+NExt
+EndIf
 If $g_iNextAccount <> $g_iCurAccount Then
 If $g_bRequestTroopsEnable And $g_bCanRequestCC Then
 SetLog("Try Request troops before switching account", $COLOR_INFO)
@@ -60219,7 +60241,7 @@ If Not IsMainPage() Then checkMainScreen()
 SwitchCOCAcc($g_iNextAccount)
 Else
 SetLog("Staying in this account")
-SetSwitchAccLog("Stay at [" & $g_iNextAccount + 1 & "]", $COLOR_SUCCESS)
+SetSwitchAccLog("Stay at [" & $g_iCurAccount + 1 & "]", $COLOR_SUCCESS)
 EndIf
 EndIf
 EndFunc
@@ -60525,6 +60547,7 @@ Setlog("   1. Click Connected Supercell ID")
 If _Sleep(2500) Then Return "Exit"
 Return "OK"
 EndIf
+SetDebugLog("Checking Green Connected button x:" & $aButtonConnectedSCID[0] & " y:" & $aButtonConnectedSCID[1] & " : " & _GetPixelColor($aButtonConnectedSCID[0], $aButtonConnectedSCID[1], True))
 If $i = 20 Then
 $bResult = False
 Return "Error"
@@ -60553,6 +60576,7 @@ EndIf
 If _Sleep(900) Then Return "Exit"
 Next
 EndIf
+SetDebugLog("Checking LogOut & Confirm button x:" & $aButtonLogOutSCID[0] & " y:" & $aButtonLogOutSCID[1] & " : " & _GetPixelColor($aButtonLogOutSCID[0], $aButtonLogOutSCID[1], True))
 If $i = 20 Then
 $bResult = False
 Return "Error"
@@ -60596,6 +60620,7 @@ $bResult = False
 Return "Error"
 EndIf
 EndIf
+SetDebugLog("Checking Account List x:" & $aListAccountSCID[0] & " y:" & $aListAccountSCID[1] & " : " & _GetPixelColor($aListAccountSCID[0], $aListAccountSCID[1], True))
 If $j = 20 Then
 $bResult = False
 Return "Error"
@@ -60603,6 +60628,7 @@ EndIf
 If _Sleep(900) Then Return "Exit"
 Next
 EndIf
+SetDebugLog("Checking 'Log in with SuperCell ID' buttonn' x:" & $aLoginWithSupercellID[0] & " y:" & $aLoginWithSupercellID[1] & " : " & _GetPixelColor($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], True))
 If $i = 30 Then
 $bResult = False
 Return "Error"
@@ -60646,7 +60672,7 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False)
 Local $abAccountNo = AccountNoActive()
 Local $iMinRemainTrain
 If $bExcludeCurrent = False Then
-$g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain)
+If $g_abPBActive[$g_iCurAccount] = False Then $g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain)
 $g_aiTimerStart[$g_iCurAccount] = TimerInit()
 EndIf
 SetSwitchAccLog(" - Train times: ")
@@ -60914,11 +60940,11 @@ SetLog("Checking 5 Air Troops Challenges", $COLOR_DEBUG)
 Local $AirTroopChallenges = ClanGamesChallenges("$AirTroopChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
 For $i = 0 To UBound($AirTroopChallenges) - 1
 Local $TroopIndex = Int(Eval("eTroop" & $AirTroopChallenges[$i][1]))
-If $g_aiArmyCompTroops[$TroopIndex] < 1 Then
+If $g_aiCurrentTroops[$TroopIndex] < 1 Then
 If $g_bChkClanGamesDebug Then SetLog("[" & $AirTroopChallenges[$i][1] & "] No " & $g_asTroopNames[$TroopIndex] & " on your army composition.")
 ContinueLoop
-ElseIf $g_aiArmyCompTroops[$TroopIndex] > 0 And $g_aiArmyCompTroops[$TroopIndex] < $AirTroopChallenges[$i][3] Then
-If $g_bChkClanGamesDebug Then SetLog("[" & $AirTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiArmyCompTroops[$TroopIndex] & "/" & $AirTroopChallenges[$i][3] & "]")
+ElseIf $g_aiCurrentTroops[$TroopIndex] > 0 And $g_aiCurrentTroops[$TroopIndex] < $AirTroopChallenges[$i][3] Then
+If $g_bChkClanGamesDebug Then SetLog("[" & $AirTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiCurrentTroops[$TroopIndex] & "/" & $AirTroopChallenges[$i][3] & "]")
 ContinueLoop
 EndIf
 If QuickMIS("BC1", $AirTroopChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
@@ -60938,11 +60964,11 @@ SetLog("Checking 14 Ground Troops Challenges", $COLOR_DEBUG)
 Local $GroundTroopChallenges = ClanGamesChallenges("$GroundTroopChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
 For $i = 0 To UBound($GroundTroopChallenges) - 1
 Local $TroopIndex = Int(Eval("eTroop" & $GroundTroopChallenges[$i][1]))
-If $g_aiArmyCompTroops[$TroopIndex] < 1 Then
+If $g_aiCurrentTroops[$TroopIndex] < 1 Then
 If $g_bChkClanGamesDebug Then SetLog("[" & $GroundTroopChallenges[$i][1] & "] No " & $g_asTroopNames[$TroopIndex] & " on your army composition.")
 ContinueLoop
-ElseIf $g_aiArmyCompTroops[$TroopIndex] > 0 And $g_aiArmyCompTroops[$TroopIndex] < $GroundTroopChallenges[$i][3] Then
-If $g_bChkClanGamesDebug Then SetLog("[" & $GroundTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiArmyCompTroops[$TroopIndex] & "/" & $GroundTroopChallenges[$i][3] & "]")
+ElseIf $g_aiCurrentTroops[$TroopIndex] > 0 And $g_aiCurrentTroops[$TroopIndex] < $GroundTroopChallenges[$i][3] Then
+If $g_bChkClanGamesDebug Then SetLog("[" & $GroundTroopChallenges[$i][1] & "] You need more " & $g_asTroopNames[$TroopIndex] & " [" & $g_aiCurrentTroops[$TroopIndex] & "/" & $GroundTroopChallenges[$i][3] & "]")
 ContinueLoop
 EndIf
 If QuickMIS("BC1", $GroundTroopChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
@@ -61311,21 +61337,21 @@ $TempChallenge = Null
 Next
 EndIf
 EndFunc
-Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
-Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscount"
 Func CollectFreeMagicItems($bTest = False)
 If Not $g_bChkCollectFreeMagicItems Then Return
 If Not $g_bRunState Then Return
+Local Static $iLastTimeChecked = 0
+If $iLastTimeChecked = @MDAY Then Return
 ClickP($aAway, 1, 0, "#0332")
 If Not IsMainPage() Then Return
 SetLog("Collecting Free Magic Items", $COLOR_INFO)
 If _Sleep($DELAYCOLLECT2) Then Return
 If QuickMIS("BC1", $g_sImgTrader, 120, 160, 210, 215, True, False) Then
-SetLog("Trader available... Entering Daily Discounts", $COLOR_SUCCESS)
+SetLog("Trader available, Entering Daily Discounts", $COLOR_SUCCESS)
 Click($g_iQuickMISX + 120, $g_iQuickMISY + 160)
 If _Sleep(1500) Then Return
 Else
-SetLog("Trader unvailable...", $COLOR_INFO)
+SetLog("Trader unvailable", $COLOR_INFO)
 Return
 EndIf
 If Not QuickMIS("BC1", $g_sImgDailyDiscountWindow, 280, 175, 345, 210, True, False) Then
@@ -61335,27 +61361,30 @@ EndIf
 If Not $g_bRunState Then Return
 Local $aOcrPositions[3][2] = [[200, 439], [390, 439], [580, 439]]
 Local $aResults[3] = ["", "", ""]
+$iLastTimeChecked = @MDAY
 For $i = 0 To 2
-If _ColorCheck(_GetPixelColor($aOcrPositions[$i][0], $aOcrPositions[$i][1] + 5, True), Hex(0x5D79C5, 6), 5) Then
 $aResults[$i] = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 80, 25, True)
+If $aResults[$i] <> "" Then
 If Not $bTest Then
 If $aResults[$i] = "FREE" Then
 Click($aOcrPositions[$i][0], $aOcrPositions[$i][1], 2, 500)
-SetLog("Free Magic Item Detected.", $COLOR_INFO)
+SetLog("Free Magic Item detected", $COLOR_INFO)
 ClickP($aAway, 2, 0, "#0332")
 If _Sleep(1000) Then Return
 Return
 Else
+If _ColorCheck(_GetPixelColor($aOcrPositions[$i][0], $aOcrPositions[$i][1] + 5, True), Hex(0x5D79C5, 6), 5) Then
 $aResults[$i] = $aResults[$i] & " Gems"
-EndIf
-EndIf
 Else
-$aResults[$i] = "Collected"
+$aResults[$i] = Int($aResults[$i]) > 0 ? "No Space In Castle" : "Collected"
+EndIf
+EndIf
+EndIf
 EndIf
 If Not $g_bRunState Then Return
 Next
 SetLog("Daily Discounts: " & $aResults[0] & " | " & $aResults[1] & " | " & $aResults[2])
-SetLog("Nothing Free to collect!", $COLOR_INFO)
+SetLog("Nothing free to collect!", $COLOR_INFO)
 ClickP($aAway, 2, 0, "#0332")
 If _Sleep(1000) Then Return
 EndFunc
@@ -61498,7 +61527,7 @@ Func MainSuggestedUpgradeCode()
 If $g_iChkBBSuggestedUpgrades = 0 Then Return
 Local $bDebug = False
 Local $bScreencap = True
-If isOnBuilderIsland(True) Then
+If isOnBuilderBase(True) Then
 If ClickOnBuilder() Then
 SetLog(" - Upg Window Opened successfully", $COLOR_INFO)
 Local $y = 102, $y1 = 132, $step = 30, $x = 400, $x1 = 540
@@ -68510,6 +68539,7 @@ EndIf
 WEnd
 EndFunc
 Func AttackMain()
+If ProfileSwitchAccountEnabled() And $g_abDonateOnly[$g_iCurAccount] Then Return
 getArmyTroopCapacity(True, True)
 ClickP($aAway, 1, 0, "#0000")
 If IsSearchAttackEnabled() Then
@@ -68679,7 +68709,7 @@ _Sleep($DELAYRUNBOT3)
 AutoUpgrade()
 _Sleep($DELAYRUNBOT3)
 Case "BuilderBase"
-If isOnBuilderIsland() Or(($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades) And SwitchBetweenBases()) Then
+If isOnBuilderBase() Or(($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades) And SwitchBetweenBases()) Then
 CollectBuilderBase()
 BuilderBaseReport()
 StartClockTowerBoost()

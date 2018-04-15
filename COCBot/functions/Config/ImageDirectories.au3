@@ -37,6 +37,9 @@ Global $g_sImgCleanYard = @ScriptDir & "\imgxml\Resources\Obstacles"
 Global $g_sImgCleanYardSnow = @ScriptDir & "\imgxml\Obstacles_Snow"
 Global $g_sImgGemBox = @ScriptDir & "\imgxml\Resources\GemBox"
 Global $g_sImgCollectReward = @ScriptDir & "\imgxml\Resources\ClaimReward"
+Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
+Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscount"
+Global $g_sImgBuyDealWindow = @ScriptDir & "\imgxml\FreeMagicItems\BuyDeal"
 #EndRegion
 
 #Region Builder Base

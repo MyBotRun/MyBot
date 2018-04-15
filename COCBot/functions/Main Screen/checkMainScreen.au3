@@ -46,7 +46,7 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 	$iErrorCount = 0
 	$iCheckBeforeRestartAndroidCount = 3
 
-	If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderIsland
+	If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderBase
 	Local $bLocated
 	While _CaptureRegions() And Not _checkMainScreenImage($bLocated, $aPixelToCheck)
 		$i += 1

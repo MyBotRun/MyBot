@@ -1,6 +1,18 @@
-﻿* **V7.5**
+﻿* **V7.5.1**
+* Fixed Switch account on SC_ID log out Button
+* Fixed Personal Break time stuck on reload button
+* Fixed Personal Break time not forcing to switch to another account
+* Fixed Bluestacks v3 undocked and request troops
+* Fixed Wizard detection on attack bar
+* Fixed Treasury Window check for CoC v10.134.11 (9th april 2018)
+* Improve Switch Account check for donation only accounts + PBT account = All account, goes to a none PBT village.
+* Improve collect free magic items and 'No Space in Clan Castle'
+* Improve Clan Games and Quick Train for Troops Challenges
+* Update Russian Language File (by @Vlab97)
+
+* **V7.5**
 * Add Clan Games support (special thx go to ViperZ and Uncle Xbenk)
-* Add Collect free magic poisons
+* Add Collect Free Magic Items
 * Add support for SuperCell ID accounts switch
 * Fix DonateCC "Unable to read Chat Request" in both Chinese languages and Korean language
 * Fix "Log in with Supercell ID" screen (push CoC shared_prefs folder if detected, click by account list when shared_prefs is not available and switch accounts enabled)

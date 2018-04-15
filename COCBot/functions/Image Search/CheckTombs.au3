@@ -103,7 +103,7 @@ Func CleanYard()
 				$Filename = $matchedValues[0] ; Filename
 				For $i = 0 To UBound($aPoints) - 1
 					$CleanYardXY = $aPoints[$i] ; Coords
-					If isInsideDiamondXY($CleanYardXY[0], $CleanYardXY[1]) Then ; secure x because of clan chat tab
+					If UBound($CleanYardXY) > 1 And isInsideDiamondXY($CleanYardXY[0], $CleanYardXY[1]) Then ; secure x because of clan chat tab
 						If $g_bDebugSetlog Then SetDebugLog($Filename & " found (" & $CleanYardXY[0] & "," & $CleanYardXY[1] & ")", $COLOR_SUCCESS)
 						If IsMainPage() Then Click($CleanYardXY[0], $CleanYardXY[1], 1, 0, "#0430")
 						$Locate = 1

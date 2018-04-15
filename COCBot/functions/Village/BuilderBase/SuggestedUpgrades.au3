@@ -113,7 +113,7 @@ Func MainSuggestedUpgradeCode()
 	Local $bScreencap = True
 
 	; Check if you are on Builder island
-	If isOnBuilderIsland(True) Then
+	If isOnBuilderBase(True) Then
 		; Will Open the Suggested Window and check if is OK
 		If ClickOnBuilder() Then
 			SetLog(" - Upg Window Opened successfully", $COLOR_INFO)
