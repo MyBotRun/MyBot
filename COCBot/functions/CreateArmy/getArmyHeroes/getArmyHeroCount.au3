@@ -140,6 +140,66 @@ Func ArmyHeroStatus($i)
 		If StringInStr($aKeys[0], "xml", $STR_NOCASESENSEBASIC) Then
 			Local $aResult = StringSplit($aKeys[0], "_", $STR_NOCOUNT)
 			$sResult = $aResult[0]
+			;setlog("$i , $sResult :"& $i  & ", " & $sResult )
+			
+			Select
+				Case $i = "King" Or $i = 0 Or $i = $eKing
+					Switch $sResult
+						Case "heal" ; Blue
+							GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingGreen, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingBlue, $GUI_SHOW)
+						Case "upgrade" ; Red
+							GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingGreen, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingBlue, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingRed, $GUI_SHOW)
+						Case "king" ; Green
+							GUICtrlSetState($g_hPicKingGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingBlue, $GUI_HIDE)
+							GUICtrlSetState($g_hPicKingGreen, $GUI_SHOW)
+					EndSwitch
+					
+				Case $i = "Queen" Or $i = 1 Or $i = $eQueen
+					Switch $sResult
+						Case "heal" ; Blue
+							GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenGreen, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenBlue, $GUI_SHOW)
+						Case "upgrade" ; Red
+							GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenGreen, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenBlue, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenRed, $GUI_SHOW)
+						Case "queen" ; Green
+							GUICtrlSetState($g_hPicQueenGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenBlue, $GUI_HIDE)
+							GUICtrlSetState($g_hPicQueenGreen, $GUI_SHOW)
+					EndSwitch
+					
+				Case $i = "Warden" Or $i = 2 Or $i = $eWarden
+					Switch $sResult
+						Case "heal" ; Blue
+							GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenGreen, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenBlue, $GUI_SHOW)
+						Case "upgrade" ; Red
+							GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenGreen, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenRed, $GUI_SHOW)
+						Case "warden" ; Green
+							GUICtrlSetState($g_hPicWardenGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
+							GUICtrlSetState($g_hPicWardenGreen, $GUI_SHOW)							
+					EndSwitch
+			EndSelect
 			Return $sResult
 		EndIf
 	EndIf
@@ -147,11 +207,99 @@ Func ArmyHeroStatus($i)
 	;return 'none' if there was a problem with the search ; or no Hero slot
 	Switch $i
 		Case 0
+			GUICtrlSetState($g_hPicKingGreen, $GUI_HIDE)
+			GUICtrlSetState($g_hPicKingRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicKingBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicKingGray, $GUI_SHOW)
 			Return "none"
 		Case 1
+			GUICtrlSetState($g_hPicQueenGreen, $GUI_HIDE)
+			GUICtrlSetState($g_hPicQueenRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicQueenBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicQueenGray, $GUI_SHOW)		
 			Return "none"
 		Case 2
+			GUICtrlSetState($g_hPicWardenGreen, $GUI_HIDE)
+			GUICtrlSetState($g_hPicWardenRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicWardenGray, $GUI_SHOW)
 			Return "none"
 	EndSwitch
 
 EndFunc   ;==>ArmyHeroStatus
+
+Func LabGuiDisplay() ; called from main loop to get an early status for indictors in bot bottom
+
+	;CLOSE ARMY WINDOW
+	ClickP($aAway, 2, 0, "#0346") ;Click Away
+	If _Sleep(1500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
+
+	;=================Section 2 Lab Gui
+
+	; If $g_bAutoLabUpgradeEnable = True Then  ====>>>> TODO : or use this or make a checkbox on GUI
+	; make sure lab is located, if not locate lab
+	If $g_aiLaboratoryPos[0] <= 0 Or $g_aiLaboratoryPos[1] <= 0 Then
+		SetLog("Laboratory Location not found!", $COLOR_ERROR)
+		LocateLab() ; Lab location unknown, so find it.
+		If $g_aiLaboratoryPos[0] = 0 Or $g_aiLaboratoryPos[1] = 0 Then
+			SetLog("Problem locating Laboratory, train laboratory position before proceeding", $COLOR_ERROR)
+			;============Hide Red  Hide Green  Show Gray==
+			GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
+			GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
+			;============================================
+			Return
+		EndIf
+	EndIf
+	BuildingClickP($g_aiLaboratoryPos, "#0197") ;Click Laboratory
+	If _Sleep(1500) Then Return ; Wait for window to open
+	; Find Research Button
+
+	If QuickMIS("BC1", @ScriptDir & "\imgxml\Lab\Research", 200, 620, 700, 700) Then
+		;If $g_iDebugImageSave = 1 Then DebugImageSave("LabUpgrade") ; Debug Only
+		Click($g_iQuickMISX + 200, $g_iQuickMISY + 620)
+		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
+	Else
+		Setlog("Trouble finding research button, try again...", $COLOR_WARNING)
+		ClickP($aAway, 2, $DELAYLABORATORY4, "#0199")
+		;===========Hide Red  Hide Green  Show Gray==
+		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
+		;===========================================
+		Return
+	EndIf
+
+	; check for upgrade in process - look for green in finish upgrade with gems button
+	If _ColorCheck(_GetPixelColor(730, 200, True), Hex(0xA2CB6C, 6), 20) Then ; Look for light green in upper right corner of lab window.
+		SetLog("Laboratory is Running. ", $COLOR_INFO)
+		;==========Hide Red  Show Green Hide Gray===
+		GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabGreen, $GUI_SHOW)
+		;===========================================
+		If _Sleep($DELAYLABORATORY2) Then Return
+		ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
+		Return True
+	ElseIf _ColorCheck(_GetPixelColor(730, 200, True), Hex(0x8088B0, 6), 20) Then ; Look for light purple in upper right corner of lab window.
+		SetLog("Laboratory has Stopped", $COLOR_INFO)
+		ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
+		;========Show Red  Hide Green  Hide Gray=====
+		GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabRed, $GUI_SHOW)
+		;============================================
+		ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
+		Return
+	Else
+		SetLog("Unable to determine Lab Status", $COLOR_INFO)
+		ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
+		;========Hide Red  Hide Green  Show Gray======
+		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
+		;=============================================
+		Return
+	EndIf
+	; EndIf
+EndFunc   ;==>LabGuiDisplay

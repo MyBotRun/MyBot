@@ -39,7 +39,9 @@ Func _ClanGames()
 	If Not IsClanGamesWindow() Then Return
 
 	; Check if is a Clan or Builder Games Event
-	If Not IsClanGamesEvent() Then Return
+	If $g_bChkClanGamesOnly = 1 then
+		If Not IsClanGamesEvent() Then Return
+	EndIf
 
 	; Let's get some information , like Remain Timer, Score and limit
 	Local $ScoreLimits = GetTimesAndScores()

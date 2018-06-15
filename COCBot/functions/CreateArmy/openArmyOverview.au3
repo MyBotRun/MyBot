@@ -38,45 +38,55 @@ Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 	EndIf
 	Return True
 
-EndFunc   ;==>openArmyOverview
+EndFunc   ;==>OpenArmyOverview
 
 Func OpenArmyTab($bSetLog = True, $sWhereFrom = "Undefined")
-	Return OpenTrainTab("Army Tab", $aArmyTab, $bSetLog, $sWhereFrom)
+	Return OpenTrainTab("Army Tab", $bSetLog, $sWhereFrom)
 EndFunc   ;==>OpenArmyTab
 
 Func OpenTroopsTab($bSetLog = True, $sWhereFrom = "Undefined")
-	Return OpenTrainTab("Troops Tab", $aTroopsTab, $bSetLog, $sWhereFrom)
+	Return OpenTrainTab("Train Troops Tab", $bSetLog, $sWhereFrom)
 EndFunc   ;==>OpenTroopsTab
 
 Func OpenSpellsTab($bSetLog = True, $sWhereFrom = "Undefined")
-	Return OpenTrainTab("Spells Tab", $aSpellsTab, $bSetLog, $sWhereFrom)
+	Return OpenTrainTab("Brew Spells Tab", $bSetLog, $sWhereFrom)
 EndFunc   ;==>OpenSpellsTab
 
+Func OpenSiegeMachinesTab($bSetLog = True, $sWhereFrom = "Undefined")
+	Return OpenTrainTab("Build Siege Machines Tab", $bSetLog, $sWhereFrom)
+EndFunc   ;==>OpenSiegeMachinesTab
+
 Func OpenQuickTrainTab($bSetLog = True, $sWhereFrom = "Undefined")
-	Return OpenTrainTab("Quick Train Tab", $aQuickTrainTab, $bSetLog, $sWhereFrom)
+	Return OpenTrainTab("Quick Train Tab", $bSetLog, $sWhereFrom)
 EndFunc   ;==>OpenQuickTrainTab
 
-Func OpenTrainTab($sTab, $aPixelToCheck, $bSetLog = True, $sWhereFrom = "Undefined")
+Func OpenTrainTab($sTab, $bSetLog = True, $sWhereFrom = "Undefined")
 
 	If Not IsTrainPage() Then
-		SetLog("Error in OpenTrainTab: Cannot find the Army Overview Window", $COLOR_ERROR)
+		SetDebugLog("Error in OpenTrainTab: Cannot find the Army Overview Window", $COLOR_ERROR)
 		SetError(1)
 		Return False
 	EndIf
 
-	If Not _CheckPixel($aPixelToCheck, True) Then
-		If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("Open " & $sTab & ($g_bDebugSetlogTrain ? " (Called from " & $sWhereFrom & ")" : ""), $COLOR_INFO)
-		ClickP($aPixelToCheck)
-		If Not _WaitForCheckPixel($aPixelToCheck, True) Then
-			SetLog("Error in OpenTrainTab: Cannot open " & $sTab & ". Pixel to check did not appear", $COLOR_ERROR)
-			SetError(1)
-			Return False
+	If $bSetLog Or $g_bDebugSetlogTrain Then SetLog("Open " & $sTab & ($g_bDebugSetlogTrain ? " (Called from " & $sWhereFrom & ")" : ""), $COLOR_INFO)
+
+	Local $aTabButton = findButton(StringStripWS($sTab, 8), Default, 1, True)
+	If IsArray($aTabButton) And UBound($aTabButton, 1) = 2 Then
+		$aIsTabOpen[0] = $aTabButton[0]
+		If Not _CheckPixel($aIsTabOpen, True) Then
+			ClickP($aTabButton)
+			If Not _WaitForCheckPixel($aIsTabOpen, True) Then
+				SetLog("Error in OpenTrainTab: Cannot open " & $sTab & ". Pixel to check did not appear", $COLOR_ERROR)
+				SetError(1)
+				Return False
+			EndIf
 		EndIf
-		If _Sleep(1500) Then Return
-		Return True
 	Else
-		; Already on Tab we want :)
-		Return True
+		SetDebugLog("Error in OpenTrainTab: $aTabButton is no valid Array", $COLOR_ERROR)
+		SetError(1)
+		Return False
 	EndIf
 
+	If _Sleep(200) Then Return
+	Return True
 EndFunc   ;==>OpenTrainTab

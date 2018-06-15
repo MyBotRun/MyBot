@@ -1,0 +1,90 @@
+NOTE  |Author: Z E C K v2.2 [29.05.2018]
+NOTE  |             ★★★TH-10★★★
+NOTE  |Train: 3 Heal-s, 8 Witc-s, 17 Bowl-s   Spells: 3 Rage, 2 Jump, 1 Poizon In CC : Giants or Bowlers and Haste
+NOTE  |
+NOTE  |             ★★★TH-11★★★
+NOTE  |Train: 4 Heal-s, 8 Witc-s, 18 Bowl-s   Spells: 3 Rage, 2 Jump, 1 Poizon In CC : Giants or Bowlers and Rage
+NOTE  |    Script work on "EXTERNAL EDGES"
+
+      |----------------------------------------BoWiHe Start-------------------------------------------|
+      |                                          Z E C K                                              |
+
+      |_TROOPNAME_|__FLEXIBLE_|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+TRAIN |Bowl       |0          |0          |0          |0          |0          |17         |18         |	  
+TRAIN |Witc       |0          |0          |0          |0          |0          |7          |8          |
+TRAIN |Heal       |0          |0          |0          |0          |0          |3          |4          |
+
+TRAIN |RSpell     |0          |0          |0          |0          |0          |3          |3          |
+TRAIN |JSpell     |0          |0          |0          |0          |0          |2          |2          |
+TRAIN |PSpell     |0          |0          |0          |0          |0          |1          |1          |
+
+      |_TROOPNAME_|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+TRAIN |King       |0          |0          |0          |0          |0          |1          |1          |
+TRAIN |Queen      |0          |0          |0          |0          |0          |1          |1          |
+TRAIN |Warden     |0          |0          |0          |0          |0          |0          |1          |
+
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+REDLN |0          |0          |0          |0          |0          |0          |4          |4          |
+DRPLN |0          |0          |0          |0          |0          |0          |0          |0          |
+
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+CCREQ |           |           |           |           |           |           |Giant Haste|Giant  Rage|
+
+	  |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|
+SIDE  |0          |0          |0          |0          |0          |0          |10         |           |
+      |EAGLE      |INFERNO    |XBOW       |WIZTOWER   |MORTAR     |AIRDEFENSE |GEMBOX     |GEMBOX     |
+SIDEB |9          |0          |0          |0          |0          |0          |0          |0          |
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|BUILDING___|
+MAKE  |A          |FRONT-LEFT |10         |0          |EXT-INT    |0          |5          |           |
+MAKE  |B          |FRONT-RIGHT|10         |0          |INT-EXT    |0          |5          |           |
+MAKE  |Z          |FRONT-RIGHT|10         |0          |EXT-INT    |0          |5          |           |
+MAKE  |K          |FRONT-LEFT |10         |0          |INT-EXT    |0          |5          |           |
+MAKE  |C          |FRONT-LEFT |10         |-7         |INT-EXT    |0          |5          |           |
+MAKE  |D          |FRONT-RIGHT|10         |-8         |INT-EXT    |0          |5          |           |
+MAKE  |L          |FRONT-RIGHT|10         |-6         |INT-EXT    |0          |5          |           |
+MAKE  |V          |FRONT-RIGHT|10         |-13.5      |INT-EXT    |0          |5          |           |
+MAKE  |E          |FRONT-LEFT |10         |-17        |INT-EXT    |0          |5          |           |
+MAKE  |F          |FRONT-RIGHT|10         |-18        |INT-EXT    |0          |5          |           |
+MAKE  |H          |FRONT-RIGHT|10         |-24        |INT-EXT    |0          |5          |           |
+MAKE  |M          |LEFT-FRONT |10         |0          |EXT-INT    |0          |5          |           |
+MAKE  |N          |RIGHT-FRONT|10         |0          |EXT-INT    |0          |5          |           |
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |L          |1          |1          |JSpell     |50-70      |0          |300-350    |           |
+DROP  |V          |1          |1          |JSpell     |50-70      |0          |300-350    |           |
+WAIT  |1000-1300  |           |           |           |           |           |           |           |  
+DROP  |A          |1,2        |2          |Witc       |50-70      |37-50      |400-450    |           |
+DROP  |A          |1          |1          |Heal       |50-70      |37-50      |400-450    |           |
+DROP  |A          |2          |1          |Bowl       |50-70      |37-50      |400-450    |           |
+DROP  |B          |9,10       |2          |Witc       |50-70      |37-50      |400-450    |           |
+DROP  |B          |10         |1          |Heal       |50-70      |37-50      |400-450    |           |
+DROP  |B          |9          |1          |Bowl       |50-70      |37-50      |400-450    |           |
+WAIT  |3000-5000  |           |           |           |           |           |           |           |
+DROP  |A          |10         |1          |Castle     |50-70      |37-50      |600-700    |           |
+DROP  |A          |4,6,8,10   |4          |Bowl       |50-70      |37-50      |15-20      |           |
+DROP  |B          |1,3,5,6    |4          |Bowl       |50-70      |37-50      |15-20      |           |
+DROP  |Z          |5,7,9,10   |4          |Bowl       |50-70      |37-50      |15-20      |           |
+DROP  |K          |1,2,4,6    |4          |Bowl       |50-70      |37-50      |400-450    |           |
+DROP  |A          |8          |1          |Heal       |50-70      |37-50      |200-250    |           |
+DROP  |B          |2          |1          |Heal       |50-70      |37-50      |400-450    |           |
+DROP  |A          |8,10       |2          |Witc       |50-70      |60-70      |15-20      |           |
+DROP  |B          |2,4        |2          |Witc       |50-70      |60-70      |400-450    |           |
+DROP  |A          |10         |1          |Warden     |50-70      |0          |150-200    |           |
+DROP  |A          |9          |1          |King       |50-70      |0          |150-200    |           |
+DROP  |A          |10         |1          |Queen      |50-70      |0          |150-200    |           |
+DROP  |C          |4          |1          |RSpell     |50-70      |0          |150-200    |           |
+DROP  |D          |1          |1          |RSpell     |50-70      |0          |150-200    |           |
+DROP  |D          |5          |1          |RSpell     |50-70      |0          |150-200    |           |
+WAIT  |1000-1300  |           |           |           |           |           |           |           |
+DROP  |F          |1          |1          |PSpell     |50-70      |0          |350-400    |           |
+WAIT  |3000-3300  |           |           |           |           |           |           |           |
+DROP  |F          |1          |1          |RSpell     |50-70      |0          |150-200    |           |
+DROP  |E          |1          |1          |HaSpell    |50-70      |0          |300-350    |           |
+DROP  |H          |3          |1          |HaSpell    |50-70      |0          |150-200    |           |
+WAIT  |4500-5000  |           |           |           |           |           |           |           |
+DROP  |A          |10         |1          |Warden     |50-70      |0          |200-250    |           |
+DROP  |M-N        |7-10       |1          |REMAIN     |50-70      |100        |50-100     |           |
+
+      |                                                                                               |
+      |---------------------------------------BoWiHe End----------------------------------------------|

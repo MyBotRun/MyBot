@@ -4,26 +4,26 @@ NOTE  |Attack: FF Barch, +2 tile from redline
 NOTE  |Make these Troops: Barbarians 50%, Archers 50%
 NOTE  |Will drop Barb, Arch, All Heroes and Castle if enabled from GUI
 
-      |_TROOPNAME_|__FLEXIBLE_|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
-TRAIN |Arch       |0          |75         |100        |100        |110        |120        |130        |
-TRAIN |Barb       |1          |75         |100        |100        |110        |120        |130        |
-TRAIN |BabyD      |0          |0          |0          |0          |0          |0          |0          |
+      |_TROOPNAME_|__FLEXIBLE_|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|
+TRAIN |Arch       |0          |75         |100        |100        |110        |120        |130        |140        |
+TRAIN |Barb       |1          |75         |100        |100        |110        |120        |130        |140        |
+TRAIN |BabyD      |0          |0          |0          |0          |0          |0          |0          |0          |
 
-TRAIN |RSpell     |0          |0          |0          |0          |0          |0          |0          |
-TRAIN |CSpell     |0          |0          |0          |0          |0          |0          |0          |
-TRAIN |HaSpell    |0          |0          |0          |0          |0          |0          |0          |
+TRAIN |RSpell     |0          |0          |0          |0          |0          |0          |0          |0          |
+TRAIN |CSpell     |0          |0          |0          |0          |0          |0          |0          |0          |
+TRAIN |HaSpell    |0          |0          |0          |0          |0          |0          |0          |0          |
 
-      |_TROOPNAME_|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|Hero Abilities: 1.Auto 2.Timed 3.Both
-TRAIN |King       |0          |0          |1          |1          |1          |1          |1          |auto
-TRAIN |Queen      |0          |0          |0          |0          |29         |29         |29         |timed after 9 sec.
-TRAIN |Warden     |0          |0          |0          |0          |0          |0          |312        |both: auto or timed after 12 sec.
+      |_TROOPNAME_|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|Hero Abilities: 1.Auto 2.Timed 3.Both
+TRAIN |King       |0          |0          |1          |1          |1          |1          |1          |1          |auto
+TRAIN |Queen      |0          |0          |0          |0          |29         |29         |29         |29         |timed after 9 sec.
+TRAIN |Warden     |0          |0          |0          |0          |0          |0          |312        |312        |both: auto or timed after 12 sec.
 
-      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
-REDLN |0          |0          |3          |1          |0          |3          |4          |4          |1.RAW 2.POINTS 3.ORIGINAL 4.EDGES
-DRPLN |0          |0          |5          |2          |0          |3          |0          |0          |1.CORNER 2.POINT 3.FULLCORNER 4.FULLPOINT 5.NONE
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|
+REDLN |0          |0          |3          |1          |0          |3          |4          |4          |4          |1.RAW 2.POINTS 3.ORIGINAL 4.EDGES
+DRPLN |0          |0          |5          |2          |0          |3          |0          |0          |0          |1.CORNER 2.POINT 3.FULLCORNER 4.FULLPOINT 5.NONE
 
-      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
-CCREQ |           |           |any        |           |any        |           |miners rage|bowlers    |
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|
+CCREQ |           |           |any        |           |any        |           |miners rage|bowlers    |eDrag      |
 
       |---------------------------------------- four fingers barch start -----------------------------|
 
@@ -143,4 +143,13 @@ DROP  |M-N-O-P    |1-3        |4-5        |arch       |0          |0          |5
       |                                                                                               |
       |------------------------------------- four fingers barch end-----------------------------------|
 
+      |Barb -> Barbarian	Arch -> Archer		Giant -> Giant		Gobl -> Goblin		Wall -> Wall Breaker	Ball -> Balloon
+      |Wiza -> Wizard		Heal -> Healer		Drag -> Dragon		Pekk -> Pekka		BabyD -> Baby Dragon	Mine -> Miner			EDrag -> Electro Dragon
+      |
+      |Mini -> Minion		Hogs -> Hog Rider	Valk -> Valkyrie	Gole -> Golem		Witc -> Witch			Lava -> Lava Hound		Bowl -> Bowler
+      |
+      |LSpell -> Lightning Spell	HSpell -> Heal Spell	RSpell -> Rage Spell	JSpell -> Jump Spell	FSpell -> Freeze Spell		CSpell -> Clone Spell
+      |PSpell -> Poison Spell		ESpell -> Earthquake	HaSpell -> Haste 		SkSpell -> Skeleton
+      |
+      |Castle -> Clan Castle	King -> Barbarian King		Queen -> Archer Queen	Warden -> Grand Warden
 

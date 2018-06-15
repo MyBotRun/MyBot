@@ -4,12 +4,12 @@
 #pragma compile(Out, MyBot.run.Watchdog.exe) ; Required
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
-#pragma compile(ProductVersion, 7.5.1)
-#pragma compile(FileVersion, 7.5.1)
+#pragma compile(ProductVersion, 7.5.2)
+#pragma compile(FileVersion, 7.5.2)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.5.1"
+Global $g_sBotVersion = "v7.5.2"
 Opt("MustDeclareVars", 1)
 Global Const $WAIT_TIMEOUT = 258
 Global Const $STDERR_MERGED = 8

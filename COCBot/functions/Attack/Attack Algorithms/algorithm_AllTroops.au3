@@ -90,7 +90,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		Switch $g_aiAttackStdDropOrder[$g_iMatchMode]
 			Case 0
 				If $g_bCustomDropOrderEnable Then
-					Local $listInfoDeploy[21][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+					Local $listInfoDeploy[22][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 						[MatchTroopDropName(1), MatchSidesDrop(1), MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 						[MatchTroopDropName(2), MatchSidesDrop(2), MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 						[MatchTroopDropName(3), MatchSidesDrop(3), MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -110,9 +110,10 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						[MatchTroopDropName(17), MatchSidesDrop(17), MatchTroopWaveNb(17), 1, MatchSlotsPerEdge(17)], _
 						[MatchTroopDropName(18), MatchSidesDrop(18), MatchTroopWaveNb(18), 1, MatchSlotsPerEdge(18)], _
 						[MatchTroopDropName(19), MatchSidesDrop(19), MatchTroopWaveNb(19), 1, MatchSlotsPerEdge(19)], _
-						[MatchTroopDropName(20), MatchSidesDrop(20), MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)]]
+						[MatchTroopDropName(20), MatchSidesDrop(20), MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)], _
+						[MatchTroopDropName(21), MatchSidesDrop(21), MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)]]
 				Else
-					Local $listInfoDeploy[21][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[22][5] = [[$eGole, $nbSides, 1, 1, 2] _
 						, [$eLava, $nbSides, 1, 1, 2] _
 						, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, [$eDrag, $nbSides, 1, 1, 0] _
@@ -123,6 +124,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, [$eValk, $nbSides, 1, 1, 0] _
 						, [$eBowl, $nbSides, 1, 1, 0] _
 						, [$eMine, $nbSides, 1, 1, 0] _
+						, [$eEDrag, $nbSides, 1, 1, 0] _
 						, [$eBarb, $nbSides, 1, 1, 0] _
 						, [$eWall, $nbSides, 1, 1, 1] _
 						, [$eArch, $nbSides, 1, 1, 0] _
@@ -164,7 +166,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		Switch $g_aiAttackStdDropOrder[$g_iMatchMode]
 			Case 0
 				If $g_bCustomDropOrderEnable Then
-					Local $listInfoDeploy[21][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+					Local $listInfoDeploy[22][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 						[MatchTroopDropName(1), MatchSidesDrop(1), MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 						[MatchTroopDropName(2), MatchSidesDrop(2), MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 						[MatchTroopDropName(3), MatchSidesDrop(3), MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -184,9 +186,10 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						[MatchTroopDropName(17), MatchSidesDrop(17), MatchTroopWaveNb(17), 1, MatchSlotsPerEdge(17)], _
 						[MatchTroopDropName(18), MatchSidesDrop(18), MatchTroopWaveNb(18), 1, MatchSlotsPerEdge(18)], _
 						[MatchTroopDropName(19), MatchSidesDrop(19), MatchTroopWaveNb(19), 1, MatchSlotsPerEdge(19)], _
-						[MatchTroopDropName(20), MatchSidesDrop(20), MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)]]
+						[MatchTroopDropName(20), MatchSidesDrop(20), MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)], _
+						[MatchTroopDropName(21), MatchSidesDrop(21), MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)]]
 				Else
-					Local $listInfoDeploy[21][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[22][5] = [[$eGole, $nbSides, 1, 1, 2] _
 						, [$eLava, $nbSides, 1, 1, 2] _
 						, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, [$eDrag, $nbSides, 1, 1, 0] _
@@ -197,6 +200,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, [$eValk, $nbSides, 1, 1, 0] _
 						, [$eBowl, $nbSides, 1, 1, 0] _
 						, [$eMine, $nbSides, 1, 1, 0] _
+						, [$eEDrag, $nbSides, 1, 1, 0] _
 						, [$eBarb, $nbSides, 1, 1, 0] _
 						, [$eWall, $nbSides, 1, 1, 1] _
 						, [$eArch, $nbSides, 1, 1, 0] _

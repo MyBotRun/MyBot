@@ -19,10 +19,10 @@ Func CheckPrerequisites($bSilent = False)
 	Local $isVC2010Installed = isVC2010Installed()
 	If ($isNetFramework4dot5Installed = False Or $isVC2010Installed = False) Then
 		#cs
-		If ($isNetFramework4Installed = False And Not $bSilent) Then
+			If ($isNetFramework4Installed = False And Not $bSilent) Then
 			SetLog("The .Net Framework 4.0 is not installed", $COLOR_ERROR)
 			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=17718", $COLOR_ERROR)
-		EndIf
+			EndIf
 		#ce
 		If ($isNetFramework4dot5Installed = False And Not $bSilent) Then
 			SetLog("The .Net Framework 4.5 is not installed", $COLOR_ERROR)
@@ -38,10 +38,24 @@ Func CheckPrerequisites($bSilent = False)
 	If Not checkAutoitVersion($bSilent) Then $isAllOK = False
 	checkIsAdmin($bSilent)
 
+	If @DesktopHeight <= 768 Then
+		Opt('WinTitleMatchMode', 4)
+		Local $pos = ControlGetPos("classname=Shell_TrayWnd", "", "")
+		If Not @error Then
+			If $pos[2] > $pos[3] Then
+				SetLog("Please set your taskbar location to Right!", $COLOR_ERROR)
+				SetLog("TASKBAR SIZE: " & $pos[2] & "," & $pos[3], $COLOR_ERROR)
+				$isAllOK = False
+			EndIf
+		EndIf
+		Opt('WinTitleMatchMode', 3)
+	EndIf
+
 	If $isAllOK = False And Not $bSilent Then
 		GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 		$g_bRestarted = False
 	EndIf
+
 	Return $isAllOK
 EndFunc   ;==>CheckPrerequisites
 
@@ -66,7 +80,7 @@ Func isNetFramework4dot5Installed()
 EndFunc   ;==>isNetFramework4dot5Installed
 
 Func isVC2010Installed()
-	Local $hDll = DLLOpen("msvcp100.dll")
+	Local $hDll = DllOpen("msvcp100.dll")
 	Local $success = $hDll <> -1
 	If $success = False Then Return $success
 	DllClose($hDll)

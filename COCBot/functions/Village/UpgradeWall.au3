@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: ProMac (2015), HungLe (2015)
-; Modified ......: Sardo 2015-08, KnowJack (Aug 2105), MonkeyHunter(06-2016) , trlopes ( 2016 )
+; Modified ......: Sardo (08-2015), KnowJack (08-2015), MonkeyHunter(06-2016) , trlopes (07-2016)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkwall.au3
@@ -22,14 +22,14 @@ Func UpgradeWall()
 			ClickP($aAway, 1, 0, "#0313") ; click away
 			Local $MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $g_iWallCost) > Number($g_iUpgradeWallMinGold) ; Check if enough Gold
 			Local $MinWallElixir = Number($g_aiCurrentLoot[$eLootElixir] - $g_iWallCost) > Number($g_iUpgradeWallMinElixir) ; Check if enough Elixir
-			
+
 			While ($g_iUpgradeWallLootType = 0 And $MinWallGold) Or ($g_iUpgradeWallLootType = 1 And $MinWallElixir) Or ($g_iUpgradeWallLootType = 2 And ($MinWallGold Or $MinWallElixir))
 
 				Switch $g_iUpgradeWallLootType
 					Case 0
 						If $MinWallGold Then
 							SetLog("Upgrading Wall using Gold", $COLOR_SUCCESS)
-							If imglocCheckWall() Then 
+							If imglocCheckWall() Then
 								If Not UpgradeWallGold() Then
 									SetLog("Upgrade with Gold failed, skipping...", $COLOR_ERROR)
 									Return
@@ -92,18 +92,18 @@ Func UpgradeWall()
 							EndIf
 						EndIf
 				EndSwitch
-	
+
 				; Check Builder/Shop if open by accident
 				If _CheckPixel($g_aShopWindowOpen, $g_bCapturePixel, Default, "ChkShopOpen", $COLOR_DEBUG) = True Then
 					Click(820, 40, 1, 0, "#0315") ; Close it
 				EndIf
-	
+
 				ClickP($aAway, 1, 0, "#0314") ; click away
 				VillageReport(True, True)
 				$MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $g_iWallCost) > Number($g_iUpgradeWallMinGold) ; Check if enough Gold
 				$MinWallElixir = Number($g_aiCurrentLoot[$eLootElixir] - $g_iWallCost) > Number($g_iUpgradeWallMinElixir) ; Check if enough Elixir
 
-			Wend
+			WEnd
 		Else
 			SetLog("No free builder, Upgrade Walls skipped..", $COLOR_ERROR)
 		EndIf
@@ -210,26 +210,27 @@ EndFunc   ;==>UpgradeWallElixir
 
 Func SkipWallUpgrade() ; Dynamic Upgrades
 
-	InireadS($g_iUpgradeWallLootType, $g_sProfileConfigPath, "upgrade", "use-storage", "0") ; Reset Variable to User Selection
+	IniReadS($g_iUpgradeWallLootType, $g_sProfileConfigPath, "upgrade", "use-storage", "0") ; Reset Variable to User Selection
 
 	Local $iUpgradeAction = 0
 	Local $iBuildingsNeedGold = 0
 	Local $iBuildingsNeedElixir = 0
 	Local $iAvailBuilderCount = 0
-	
-	Switch $g_iTownHallLevel
-	Case 0 To 8
-		If $g_iTownHallLevel < $g_iCmbUpgradeWallsLevel + 3 Then
-			SetLog("Skip Wall upgrade -insufficient TH-Level", $COLOR_WARNING)
-			Return True
-		EndIf
-	Case Else
-		If $g_iTownHallLevel < $g_iCmbUpgradeWallsLevel + 4 Then
-			SetLog("Skip Wall upgrade -insufficient TH-Level", $COLOR_WARNING)
-			Return True
-		EndIf
-	EndSwitch
 
+	Switch $g_iTownHallLevel
+		Case 5 To 8 ;Start at Townhall 5 because any Wall Level below 4 is not supported anyways
+			If $g_iTownHallLevel < $g_iCmbUpgradeWallsLevel + 4 Then
+				SetLog("Skip Wall upgrade -insufficient TH-Level", $COLOR_WARNING)
+				Return True
+			EndIf
+		Case 9 To 12
+			If $g_iTownHallLevel < $g_iCmbUpgradeWallsLevel + 3 Then
+				SetLog("Skip Wall upgrade -insufficient TH-Level", $COLOR_WARNING)
+				Return True
+			EndIf
+		Case Else
+			Return True
+	EndSwitch
 
 	If Not getBuilderCount() Then Return True ; update builder data, return true to skip if problem
 	If _Sleep($DELAYRESPOND) Then Return True
@@ -353,5 +354,5 @@ Func SwitchToNextWallLevel() ; switches wall level to upgrade to next level
 		Return True
 	EndIf
 	Return False
-EndFunc   ;==>SkipWallUpgrade
+EndFunc   ;==>SwitchToNextWallLevel
 

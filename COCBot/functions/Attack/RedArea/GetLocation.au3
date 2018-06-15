@@ -166,7 +166,7 @@ EndFunc   ;==>GetLocationDarkElixirWithLevel
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func GetLocationBuilding($iBuildingType, $iAttackingTH = 11, $bForceCaptureRegion = True)
+Func GetLocationBuilding($iBuildingType, $iAttackingTH = 12, $bForceCaptureRegion = True)
 
 	If $g_bDebugSetlog Then SetDebugLog("Begin GetLocationBuilding: " & $g_sBldgNames[$iBuildingType], $COLOR_DEBUG1)
 	Local $hTimer = __TimerInit() ; timer to track image detection time
@@ -180,7 +180,7 @@ Func GetLocationBuilding($iBuildingType, $iAttackingTH = 11, $bForceCaptureRegio
 	Local $tempNewLevel, $tempExistingLevel, $sLocCoord, $sNearCoord, $sFarCoord, $directory, $iCountUpdate
 
 	; error proof TH level
-	If $iAttackingTH = "-" Then $iAttackingTH = 11
+	If $iAttackingTH = "-" Then $iAttackingTH = 12
 
 	; Get path to image file
 	If _ObjSearch($g_oBldgImages, $iBuildingType & "_" & $g_iDetectedImageType) = True Then ; check if image exists to prevent error when snow images are not avialable for building type

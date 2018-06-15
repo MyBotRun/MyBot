@@ -42,6 +42,30 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 		SetLog("Initiating attack for: " & $g_asModeText[$pMatchMode], $COLOR_ERROR)
 	EndIf
 
+	; JUNE 2018 @PROMAC
+	; Lets Select The CC and not the Siege Machine ; $eCastle
+	If Not $Remaining  And IsTroopToBeUsed($pMatchMode, $eCastle) Then
+		If QuickMIS("BC1", $g_sImgSwitchSiegeMacines, 28, 698, 820, 726, True, False) Then
+			Setlog("Switching button in a Siege Machine detected.")
+			; Was detectable lets click
+			Click($g_iQuickMISX + 28, $g_iQuickMISY + 698, 1)
+			; wait to appears the new small window
+			Local $lastX = $g_iQuickMISX , $LastX1 = $g_iQuickMISX + 165 , $lastY = $g_iQuickMISY
+			If _Sleep(1500) then return
+			; Lets detect the CC and click
+			If QuickMIS("BC1", $g_sImgSwitchSiegeCastle, $lastX, 535, $LastX1, 560, True, False) Then
+				; Was detectable lets click
+				Click($g_iQuickMISX + $lastX, $g_iQuickMISY + 535, 1)
+				Setlog("Clan Castle troops selected!", $COLOR_SUCCESS)
+			Else
+				; If was not detectable lets click again on green icon to hide the window!
+				Click($lastX + 28, $lastY + 698, 1)
+			EndIf
+			If _Sleep(1500) then return
+		EndIf
+	EndIf
+	;
+
 	_CaptureRegion2(0, 571 + $g_iBottomOffsetY, 859, 671 + $g_iBottomOffsetY)
 	If _Sleep($DELAYPREPAREATTACK1) Then Return
 

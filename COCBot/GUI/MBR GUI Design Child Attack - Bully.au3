@@ -19,7 +19,7 @@ Global $g_hGUI_BULLY = 0
 Global $g_hTxtATBullyMode = 0, $g_hCmbBullyMaxTH = 0, $g_hRadBullyUseDBAttack = 0, $g_hRadBullyUseLBAttack = 0
 Global $g_hGrpBullyAtkCombo = 0, $g_hLblBullyMode = 0, $g_hLblATBullyMode = 0
 
-Global $g_ahPicBullyMaxTH[12]
+Global $g_ahPicBullyMaxTH[13]
 
 Func CreateAttackSearchBully()
 
@@ -46,7 +46,7 @@ Func CreateAttackSearchBully()
 			$g_hCmbBullyMaxTH = GUICtrlCreateCombo("", $x + 85, $y, 50, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Bully", "CmbBullyMaxTH_Info_01", "TH Bully: Max. Townhall level to bully.")
 				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetData(-1, "4-6|7|8|9|10|11", "4-6")
+				GUICtrlSetData(-1, "4-6|7|8|9|10|11|12", "4-6")
 				GUICtrlSetOnEvent(-1, "CmbBullyMaxTH")
 			$g_ahPicBullyMaxTH[6] = _GUICtrlCreateIcon($g_sLibIconPath, $eHdV06, $x + 137, $y - 3, 24, 24)
 				_GUICtrlSetTip(-1, $sTxtTip)
@@ -64,6 +64,8 @@ Func CreateAttackSearchBully()
 				_GUICtrlSetTip(-1, $sTxtTip)
 				GUICtrlSetState (-1, $GUI_HIDE)
 			$g_ahPicBullyMaxTH[11] = _GUICtrlCreateIcon($g_sLibIconPath, $eHdV11, $x + 137, $y - 3, 24, 24)
+				_GUICtrlSetTip(-1, $sTxtTip)
+			$g_ahPicBullyMaxTH[12] = _GUICtrlCreateIcon($g_sLibIconPath, $eHdV12, $x + 137, $y - 3, 24, 24)
 				_GUICtrlSetTip(-1, $sTxtTip)
 				GUICtrlSetState (-1, $GUI_HIDE)
 

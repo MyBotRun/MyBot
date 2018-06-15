@@ -636,7 +636,8 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 4)
 	Local $YCoord = Int(336 + 73.5 * $NextAccount)
 	Local $iRetryCloseSCIDTab = 0
 	For $i = 0 To 30 ; Checking "Log in with SuperCell ID" button continuously in 30sec
-		If _ColorCheck(_GetPixelColor($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], True), Hex($aLoginWithSupercellID[2], 6), $aLoginWithSupercellID[3]) Then
+		If _ColorCheck(_GetPixelColor($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], True), Hex($aLoginWithSupercellID[2], 6), $aLoginWithSupercellID[3]) And _
+		_ColorCheck(_GetPixelColor($aLoginWithSupercellID2[0], $aLoginWithSupercellID2[1], True), Hex($aLoginWithSupercellID2[2], 6), $aLoginWithSupercellID2[3]) Then
 			SetLog("   " & $iStep & ". Click Log in with Supercell ID")
 			Click($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], 1, 0, "Click Log in with SC_ID")
 			If _Sleep(3000) Then Return "Exit"
@@ -882,12 +883,14 @@ Func CheckLoginWithSupercellID()
 
 	Local $bResult = False
 	Local $pColor = _GetPixelColor($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], False)
-	If _ColorCheck($pColor, Hex($aLoginWithSupercellID[2], 6), $aLoginWithSupercellID[3]) Then ; Upper green button section "Log in with Supercell ID"
+	Local $pColor1 = _GetPixelColor($aLoginWithSupercellID2[0], $aLoginWithSupercellID2[1], False)
+	; Green Button and White Font
+	If _ColorCheck($pColor, Hex($aLoginWithSupercellID[2], 6), $aLoginWithSupercellID[3]) And _ColorCheck($pColor1, Hex($aLoginWithSupercellID2[2], 6), $aLoginWithSupercellID2[3]) then
 
 		SetDebugLog("Found Log in with Supercell ID pixel")
 
 		; Account List check be there, validate with imgloc
-		If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "415,615(125,30)", False))) > 1 Then
+		If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "318,678(125,30)", False))) > 1 Then
 			; Google Account selection found
 			SetLog("Verified Log in with Supercell ID boot screen")
 
@@ -924,7 +927,10 @@ Func CheckLoginWithSupercellID()
 			SetDebugLog("Log in with Supercell ID boot screen not verified")
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("LoginWithSupercellID pixel color: " & $pColor)
+		If $g_bDebugSetlog Then
+			SetDebugLog("LoginWithSupercellID Button pixel color: " & $pColor)
+			SetDebugLog("LoginWithSupercellID Font pixel color: " & $pColor1)
+		EndIf
 	EndIf
 
 	Return $bResult

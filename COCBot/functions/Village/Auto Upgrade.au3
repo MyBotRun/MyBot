@@ -86,7 +86,7 @@ Func _AutoUpgrade()
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 
 		; check if any wrong click by verifying the presence of the Upgrade button (the hammer)
-		If Not QuickMIS("BC1", $g_sImgAUpgradeUpgradeBtn, 120, 630, 740, 670) Then
+		If Not QuickMIS("BC1", $g_sImgAUpgradeUpgradeBtn, 120, 630, 740, 680) Then
 			SetLog("No upgrade here... Wrong click, looking next...", $COLOR_WARNING)
 			;$g_iNextLineOffset = $g_iCurrentLineOffset -> not necessary finally, but in case, I keep lne commented
 			$g_iNextLineOffset = $g_iCurrentLineOffset

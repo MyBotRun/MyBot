@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 
 Global $g_aiPrepDon[4] = [0, 0, 0, 0]
-Global $g_iTotalDonateCapacity, $g_iTotalDonateSpellCapacity
+Global $g_iTotalDonateTroopCapacity, $g_iTotalDonateSpellCapacity, $g_iTotalDonateSiegeMachineCapacity
 Global $g_iDonTroopsLimit = 8, $iDonSpellsLimit = 1, $g_iDonTroopsAv = 0, $g_iDonSpellsAv = 0
 Global $g_iDonTroopsQuantityAv = 0, $g_iDonTroopsQuantity = 0, $g_iDonSpellsQuantityAv = 0, $g_iDonSpellsQuantity = 0
 Global $g_bSkipDonTroops = False, $g_bSkipDonSpells = False
@@ -235,7 +235,7 @@ Func DonateCC($bCheckForNewMsg = False)
 				$g_bSkipDonTroops = True
 				$g_bSkipDonSpells = True
 			Else
-				If $g_iTotalDonateCapacity <= 0 Then
+				If $g_iTotalDonateTroopCapacity <= 0 Then
 					SetLog("Clan Castle troops are full, skip troop donation...", $COLOR_ACTION)
 					$g_bSkipDonTroops = True
 				EndIf
@@ -566,11 +566,11 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $Custom = False, Cons
 	Local $donateposinrow = -1
 	Local $sTextToAll = ""
 
-	If $g_iTotalDonateCapacity = 0 Then Return
+	If $g_iTotalDonateTroopCapacity = 0 Then Return
 	If $g_bDebugSetlog Then SetDebugLog("$DonateTroopType Start: " & $g_asTroopNames[$iTroopIndex], $COLOR_DEBUG)
 
 	; Space to donate troop?
-	$g_iDonTroopsQuantityAv = Floor($g_iTotalDonateCapacity / $g_aiTroopSpace[$iTroopIndex])
+	$g_iDonTroopsQuantityAv = Floor($g_iTotalDonateTroopCapacity / $g_aiTroopSpace[$iTroopIndex])
 	If $g_iDonTroopsQuantityAv < 1 Then
 		SetLog("Sorry Chief! " & $g_asTroopNamesPlural[$iTroopIndex] & " don't fit in the remaining space!")
 		Return
@@ -600,7 +600,7 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $Custom = False, Cons
 		SetLog("Invalid slot # found = " & $Slot & " for " & $g_asTroopNames[$iTroopIndex], $COLOR_ERROR)
 		Return
 	EndIf
-	If $g_bDebugSetlog Then SetDebugLog("slot found = " & $Slot & ", " & $g_asTroopNames[$Slot], $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("slot found = " & $Slot & ", " & $g_asTroopNames[$iTroopIndex], $COLOR_DEBUG)
 	$donaterow = 1 ;first row of troops
 	$donateposinrow = $Slot
 	If $Slot >= 6 And $Slot <= 11 Then
@@ -663,7 +663,7 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $Custom = False, Cons
 			; Adjust Values for donated troops to prevent a Double ghost donate to stats and train
 			If $iTroopIndex >= $eTroopBarbarian And $iTroopIndex <= $eTroopBowler Then
 				;Reduce iTotalDonateCapacity by troops donated
-				$g_iTotalDonateCapacity -= ($Quant * $g_aiTroopSpace[$iTroopIndex])
+				$g_iTotalDonateTroopCapacity -= ($Quant * $g_aiTroopSpace[$iTroopIndex])
 				;If donated max allowed troop qty set $g_bSkipDonTroops = True
 				If $g_iDonTroopsLimit = $Quant Then
 					$g_bSkipDonTroops = True
@@ -718,7 +718,7 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $Custom = False, Cons
 			; Adjust Values for donated troops to prevent a Double ghost donate to stats and train
 			If $iTroopIndex >= $eTroopBarbarian And $iTroopIndex <= $eTroopBowler Then
 				;Reduce iTotalDonateCapacity by troops donated
-				$g_iTotalDonateCapacity -= ($g_iDonTroopsQuantity * $g_aiTroopSpace[$iTroopIndex])
+				$g_iTotalDonateTroopCapacity -= ($g_iDonTroopsQuantity * $g_aiTroopSpace[$iTroopIndex])
 				;If donated max allowed troop qty set $g_bSkipDonTroops = True
 				If $g_iDonTroopsLimit = $g_iDonTroopsQuantity Then
 					$g_bSkipDonTroops = True
@@ -959,34 +959,43 @@ EndFunc   ;==>DonateWindowCap
 
 Func RemainingCCcapacity()
 	; Remaining CC capacity of requested troops from your ClanMates
-	; Will return the $g_iTotalDonateCapacity with that capacity for use in donation logic.
+	; Will return the $g_iTotalDonateTroopCapacity with that capacity for use in donation logic.
 
-	Local $aCapTroops = "", $aTempCapTroops = "", $aCapSpells = "", $aTempCapSpells
-	Local $iDonatedTroops = 0, $iDonatedSpells = 0
-	Local $iCapTroopsTotal = 0, $iCapSpellsTotal = 0
+	Local $sCapTroops = "", $aTempCapTroops, $sCapSpells = "", $aTempCapSpells, $sCapSiegeMachine = "", $aTempCapSiegeMachine
+	Local $iDonatedTroops = 0, $iDonatedSpells = 0, $iDonatedSiegeMachine = 0
+	Local $iCapTroopsTotal = 0, $iCapSpellsTotal = 0, $iCapSiegeMachineTotal = 0
 
-	$g_iTotalDonateCapacity = -1
+	$g_iTotalDonateTroopCapacity = -1
 	$g_iTotalDonateSpellCapacity = -1
 
 	; Verify with OCR the Donation Clan Castle capacity
-	If $g_bDebugSetlog Then SetDebugLog("Started dual getOcrSpaceCastleDonate", $COLOR_DEBUG)
-	$aCapTroops = getOcrSpaceCastleDonate(49, $g_aiDonatePixel[1]) ; when the request is troops+spell
-	$aCapSpells = getOcrSpaceCastleDonate(154, $g_aiDonatePixel[1]) ; when the request is troops+spell
+	If $g_bDebugSetLog Then SetDebugLog("Start dual getOcrSpaceCastleDonate", $COLOR_DEBUG)
 
-	If $g_bDebugSetlog Then SetDebugLog("$aCapTroops :" & $aCapTroops, $COLOR_DEBUG)
-	If $g_bDebugSetlog Then SetDebugLog("$aCapSpells :" & $aCapSpells, $COLOR_DEBUG)
-
-	If Not (StringInStr($aCapTroops, "#") Or StringInStr($aCapSpells, "#")) Then ; verify if the string is valid or it is just a number from request without spell
-		If $g_bDebugSetlog Then SetDebugLog("Started single getOcrSpaceCastleDonate", $COLOR_DEBUG)
-		$aCapTroops = getOcrSpaceCastleDonate(78, $g_aiDonatePixel[1]) ; when the Request don't have Spell
-
-		If $g_bDebugSetlog Then SetDebugLog("$aCapTroops :" & $aCapTroops, $COLOR_DEBUG)
-		$aCapSpells = -1
+	$sCapTroops = getOcrSpaceCastleDonate(27, $g_aiDonatePixel[1])
+	If StringInStr($sCapTroops, "#") Then ;CC got Troops & Spells & Siege Machine
+		$sCapSpells = getOcrSpaceCastleDonate(110, $g_aiDonatePixel[1])
+		$sCapSiegeMachine = getOcrSpaceCastleDonate(170, $g_aiDonatePixel[1])
+	Else
+		$sCapTroops = getOcrSpaceCastleDonate(60, $g_aiDonatePixel[1])
+		If StringRegExp($sCapTroops, "#([0-9]{2})") = 1 Then ; CC got Troops & Spells
+			$sCapSpells = getOcrSpaceCastleDonate(160, $g_aiDonatePixel[1])
+			$sCapSiegeMachine = -1
+		Else
+			$sCapTroops = getOcrSpaceCastleDonate(82, $g_aiDonatePixel[1])
+			$sCapSpells = -1
+			$sCapSiegeMachine = -1
+		EndIf
 	EndIf
 
-	If $aCapTroops <> "" Then
+	If $g_bDebugSetLog Then
+		SetDebugLog("$sCapTroops :" & $sCapTroops, $COLOR_DEBUG)
+		SetDebugLog("$sCapSpells :" & $sCapSpells, $COLOR_DEBUG)
+		SetDebugLog("$sCapSiegeMachine :" & $sCapSiegeMachine, $COLOR_DEBUG)
+	EndIf
+
+	If $sCapTroops <> "" And StringInStr($sCapTroops, "#") Then
 		; Splitting the XX/XX
-		$aTempCapTroops = StringSplit($aCapTroops, "#")
+		$aTempCapTroops = StringSplit($sCapTroops, "#")
 
 		; Local Variables to use
 		If $aTempCapTroops[0] >= 2 Then
@@ -1013,10 +1022,10 @@ Func RemainingCCcapacity()
 		$iCapTroopsTotal = 0
 	EndIf
 
-	If $aCapSpells <> -1 Then
-		If $aCapSpells <> "" Then
+	If $sCapSpells <> -1 Then
+		If $sCapSpells <> "" Then
 			; Splitting the XX/XX
-			$aTempCapSpells = StringSplit($aCapSpells, "#")
+			$aTempCapSpells = StringSplit($sCapSpells, "#")
 
 			; Local Variables to use
 			If $aTempCapSpells[0] >= 2 Then
@@ -1038,21 +1047,45 @@ Func RemainingCCcapacity()
 		EndIf
 	EndIf
 
-	; $g_iTotalDonateCapacity it will be use to determinate the quantity of kind troop to donate
-	$g_iTotalDonateCapacity = ($iCapTroopsTotal - $iDonatedTroops)
-	If $aCapSpells <> -1 Then $g_iTotalDonateSpellCapacity = ($iCapSpellsTotal - $iDonatedSpells)
 
-	If $g_iTotalDonateCapacity < 0 Then
-		SetLog("Unable to read Castle Capacity!", $COLOR_ERROR)
-	Else
-		If $aCapSpells <> -1 Then
-			SetLog("Chat Troops: " & $iDonatedTroops & "/" & $iCapTroopsTotal & ", Spells: " & $iDonatedSpells & "/" & $iCapSpellsTotal)
+	If $sCapSiegeMachine <> -1 Then
+		If $sCapSiegeMachine <> "" Then
+			; Splitting the XX/XX
+			$aTempCapSiegeMachine = StringSplit($sCapSiegeMachine, "#")
+
+			; Local Variables to use
+			If $aTempCapSiegeMachine[0] >= 2 Then
+				; Note - stringsplit always returns an array even if no values split!
+				If $g_bDebugSetlog Then SetDebugLog("$aTempCapSiegeMachine splitted :" & $aTempCapSiegeMachine[1] & "/" & $aTempCapSiegeMachine[2], $COLOR_DEBUG)
+				If $aTempCapSiegeMachine[2] > 0 Then
+					$iDonatedSiegeMachine = $aTempCapSiegeMachine[1]
+					$iCapSiegeMachineTotal = $aTempCapSiegeMachine[2]
+				EndIf
+			Else
+				SetLog("Error reading the Castle Siege Machine Capacity[1]...", $COLOR_ERROR) ; log if there is read error
+				$iDonatedSiegeMachine = 0
+				$iCapSiegeMachineTotal = 0
+			EndIf
 		Else
-			SetLog("Chat Troops: " & $iDonatedTroops & "/" & $iCapTroopsTotal)
+			SetLog("Error reading the Castle Siege Machine Capacity[2]...", $COLOR_ERROR) ; log if there is read error
+			$iDonatedSiegeMachine = 0
+			$iCapSiegeMachineTotal = 0
 		EndIf
 	EndIf
 
-	;;Return $g_iTotalDonateCapacity
+	; $g_iTotalDonateTroopCapacity it will be use to determinate the quantity of kind troop to donate
+	$g_iTotalDonateTroopCapacity = ($iCapTroopsTotal - $iDonatedTroops)
+	If $sCapSpells <> -1 Then $g_iTotalDonateSpellCapacity = ($iCapSpellsTotal - $iDonatedSpells)
+	If $sCapSiegeMachine <> -1 Then $g_iTotalDonateSiegeMachineCapacity = ($iCapSiegeMachineTotal - $iDonatedSiegeMachine)
+
+	If $g_iTotalDonateTroopCapacity < 0 Then
+		SetLog("Unable to read Clan Castle Capacity!", $COLOR_ERROR)
+	Else
+		Local $sSpellText = $sCapSpells <> -1 ? ", Spells: " & $iDonatedSpells & "/" & $iCapSpellsTotal : ""
+		Local $sSiegeMachineText = $sCapSiegeMachine <> -1 ? ", Siege Machine: " & $iDonatedSiegeMachine & "/" & $iCapSiegeMachineTotal : ""
+
+		SetLog("Chat Troops: " & $iDonatedTroops & "/" & $iCapTroopsTotal & $sSpellText & $sSiegeMachineText)
+	EndIf
 
 EndFunc   ;==>RemainingCCcapacity
 
@@ -1071,9 +1104,9 @@ Func DetectSlotTroop(Const $iTroopIndex)
 		If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
 
 		If $FullTemp[0] <> "" Then
+			Local $iFoundTroopIndex = TroopIndexLookup($FullTemp[0])
 			For $i = $eTroopBarbarian To $eTroopBowler
-				Local $sTmp = StringStripWS(StringLeft($g_asTroopNames[$i], 4), $STR_STRIPTRAILING)
-				If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
+				If $iFoundTroopIndex = $i Then
 					If $g_bDebugSetlog Then SetDebugLog("Detected " & $g_asTroopNames[$i], $COLOR_DEBUG)
 					If $iTroopIndex = $i Then Return $Slot
 					ExitLoop
@@ -1098,8 +1131,8 @@ Func DetectSlotTroop(Const $iTroopIndex)
 
 		If $FullTemp[0] <> "" Then
 			For $i = $eTroopBalloon To $eTroopBowler
-				Local $sTmp = StringStripWS(StringLeft($g_asTroopNames[$i], 4), $STR_STRIPTRAILING)
-				If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
+				Local $iFoundTroopIndex = TroopIndexLookup($FullTemp[0])
+				If $iFoundTroopIndex = $i Then
 					If $g_bDebugSetlog Then SetDebugLog("Detected " & $g_asTroopNames[$i], $COLOR_DEBUG)
 					If $iTroopIndex = $i Then Return $Slot
 					ExitLoop

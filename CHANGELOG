@@ -1,4 +1,27 @@
-﻿* **V7.5.1**
+﻿* **V7.5.2**
+* Added Electro Dragon Support
+* Added TH12 Images
+* Added Clan Castle Selection on Attack (Siege Machine not supported yet)
+* Added Capacity OCR for Siege on Donations (Siege Machine donating not supported yet)
+* Added TH12 CSV settings support. Refer "Barch four fingers.csv" for sample commands
+* Added Verification the display resolution and taskbar on Prerequisites
+* Added TH12 Giga Tesla upgrade support (both auto and manual)
+* Added Attack Now Button (Useful for CSV Testing) in Debug mode 
+* Added Heroes and Laboratory status to bot UI
+* Fixed Remaining time for CC request - June Update
+* Fixed Donations - June Update
+* Fixed Attack Bar - June Update
+* Fixed Train Tabs - June Update
+* Fixed Remain Train Time - June Update
+* Fixed Request Clan Castle Troops - June Update
+* Fixed Freeze Spell Attack/Train/Donate - June Update
+* Fixed Spells CC on Army Window - June Update
+* Fixed SuperCell ID Login main page- June Update
+* Fixed Buildings Upgrade - June Update
+* Updated Troop/Spell/Hero Values - June Update
+* Updated Wall Values - June Update
+
+* **V7.5.1**
 * Fixed Switch account on SC_ID log out Button
 * Fixed Personal Break time stuck on reload button
 * Fixed Personal Break time not forcing to switch to another account

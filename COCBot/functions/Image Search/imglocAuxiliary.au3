@@ -261,6 +261,8 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = "350,450|505,450|505,521|350,521"
 		Case "BoostBarrack", "BarrackBoosted"
 			$btnDiamond = GetDiamondFromRect("630,280,850,360")
+		Case "ArmyTab", "TrainTroopsTab", "BrewSpellsTab", "BuildSiegeMachinesTab", "QuickTrainTab"
+			$btnDiamond = GetDiamondFromRect("18,100,800,150")
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch
@@ -698,6 +700,8 @@ Func decodeTroopEnum($tEnum)
 			Return "BabyDragon"
 		Case $eMine
 			Return "Miner"
+		Case $eEDrag
+			Return "ElectroDragon"
 		Case $eBowl
 			Return "Bowler"
 		Case $eESpell
@@ -772,6 +776,8 @@ Func decodeTroopName($sName)
 			Return $eBabyD
 		Case "Miner"
 			Return $eMine
+		Case "ElectroDragon"
+			Return $eEDrag
 		Case "Bowler"
 			Return $eBowl
 		Case "EarthquakeSpell"

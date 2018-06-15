@@ -1,0 +1,87 @@
+NOTE  |Author: Z E C K v6.1 [09.04.2018]                    
+NOTE  |TH- 9 T: 2 LavaH, 26 Ball-s, 15 Mini-s, 4 Rages, 1 Haste + 1 Haste and Ball-s in CC                      
+NOTE  |TH-10 T: 3 LavaH, 24 Ball-s, 15 Mini-s, 4 Rages, 3 Haste + 1 Haste and Ball-s in CC         
+NOTE  |TH-11 T: 4 LavaH, 22 Ball-s, 15 Mini-s, 4 Rages, 3 Haste + 2 Haste Or 1 Rage and Ball-s in CC
+NOTE  |    Script work on "EXTERNAL EDGES"
+
+	  |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|
+SIDE  |0          |0          |0          |0          |0          |0          |9          |           |
+      |EAGLE      |INFERNO    |XBOW       |WIZTOWER   |MORTAR     |AIRDEFENSE |GEMBOX     |GEMBOX     |
+SIDEB |10         |5          |0          |0          |0          |0          |0          |0          |
+
+      |------------------------------------LavaLoonion Start------------------------------------------|
+      |                                          Z E C K                                              |
+	  
+      |_TROOPNAME_|__FLEXIBLE_|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+TRAIN |Ball       |0          |0          |0          |0          |26         |24         |22         |
+TRAIN |Mini       |0          |0          |0          |0          |15         |15         |15         |
+TRAIN |Lava       |0          |0          |0          |0          |2          |3          |4          |
+
+TRAIN |RSpell     |0          |0          |0          |0          |4          |4          |4          |
+TRAIN |HaSpell    |0          |0          |0          |0          |1          |3          |3          |
+
+      |_TROOPNAME_|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+TRAIN |King       |0          |0          |0          |0          |0          |0          |0          |
+TRAIN |Queen      |0          |0          |0          |0          |0          |0          |0          |
+TRAIN |Warden     |0          |0          |0          |0          |0          |0          |0          |
+
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+REDLN |0          |0          |0          |0          |0          |4          |4          |4          |
+DRPLN |0          |0          |0          |0          |0          |0          |0          |0          |
+
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|
+CCREQ |           |           |           |           |           |Ball  Haste|Ball  Haste|Ball   Rage|
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|BUILDING___|
+MAKE  |A          |FRONT-LEFT |10         |0          |EXT-INT    |0          |5          |           |
+MAKE  |B          |FRONT-RIGHT|10         |0          |INT-EXT    |0          |5          |           |
+MAKE  |Z          |FRONT-RIGHT|10         |0          |EXT-INT    |0          |5          |           |
+MAKE  |K          |FRONT-LEFT |10         |0          |INT-EXT    |0          |5          |           |
+MAKE  |C          |FRONT-LEFT |10         |-7         |INT-EXT    |0          |5          |           |
+MAKE  |D          |FRONT-RIGHT|10         |-8         |INT-EXT    |0          |5          |           |
+MAKE  |E          |FRONT-LEFT |10         |-16        |INT-EXT    |0          |5          |           |
+MAKE  |F          |FRONT-RIGHT|10         |-17        |INT-EXT    |0          |5          |           |
+MAKE  |G          |FRONT-LEFT |10         |-24        |INT-EXT    |0          |5          |           |
+MAKE  |H          |FRONT-RIGHT|10         |-23        |INT-EXT    |0          |5          |           |
+MAKE  |O          |LEFT-BACK  |10         |0          |EXT-INT    |0          |5          |           |
+MAKE  |P          |RIGHT-BACK |10         |0          |EXT-INT    |0          |5          |           |
+MAKE  |R          |BACK-RIGHT |10         |0          |INT-EXT    |0          |5          |           |
+MAKE  |J          |BACK-LEFT  |10         |0          |INT-EXT    |0          |5          |           |
+MAKE  |M          |LEFT-FRONT |10         |0          |INT-EXT    |0          |5          |           |
+MAKE  |N          |RIGHT-FRONT|10         |0          |EXT-INT    |0          |5          |           |
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|
+DROP  |A-Z        |6          |1          |Lava       |50-70      |27-50      |200-250    |           |
+DROP  |B-K        |2          |1          |Lava       |50-70      |27-50      |200-250    |           |
+DROP  |A          |10         |1          |Castle     |0          |0          |150-170    |           |
+DROP  |A          |4,5,6,8,10 |6          |Ball       |50-70      |27-50      |15-20      |           |
+DROP  |B          |1,3,4,5,5,6|6          |Ball       |50-70      |27-50      |15-20      |           |
+DROP  |Z          |3,5,7,9,10 |6          |Ball       |55-70      |27-50      |15-20      |           |
+DROP  |K          |1,3,4,5,6,7|6          |Ball       |55-70      |27-50      |15-20      |           |
+DROP  |A          |5,7,9,10   |4          |Ball       |50-70      |27-50      |50-70      |           |
+DROP  |A          |10         |1          |Warden     |70-100     |           |50-70      |           |
+DROP  |D          |1          |1          |RSpell     |50-100     |0          |200-250    |           |
+DROP  |C          |4          |1          |HaSpell    |50-100     |0          |150-170    |           |
+DROP  |D          |5          |1          |HaSpell    |50-100     |0          |150-200    |           |
+WAIT  |1100-1200  |           |           |           |           |           |           |           |
+DROP  |E          |5          |1          |RSpell     |50-100     |0          |190-200    |           |
+DROP  |E          |1          |1          |RSpell     |50-100     |0          |190-200    |           |
+DROP  |F          |4          |1          |RSpell     |50-100     |0          |0          |           |
+WAIT  |1200-1300  |           |           |           |           |           |           |           |
+DROP  |M          |5,6,7,8    |4          |Mini       |50-70      |27-50      |90-100     |           |
+DROP  |A          |7,9,10     |3          |Mini       |50-70      |27-50      |15-20      |           |
+DROP  |B          |1,2,3      |3          |Mini       |50-70      |27-50      |90-100     |           |
+DROP  |N          |2,3,4,5,6  |5          |Mini       |50-70      |27-50      |15-20      |           |
+WAIT  |3000-3200  |           |           |           |           |           |           |           |
+DROP  |A          |10         |1          |Warden     |50-100     |           |50-70      |           |
+DROP  |G          |3          |1          |RSpell     |0          |0          |250-300    |           |
+DROP  |H          |3          |1          |HaSpell    |0          |0          |250-300    |           |
+DROP  |G          |4          |1          |HaSpell    |0          |0          |250-300    |           |
+DROP  |G          |1          |1          |HaSpell    |0          |0          |250-300    |           |
+WAIT  |1500-1700  |           |           |           |           |           |           |           |
+DROP  |R          |5          |1          |King       |0          |0          |400-500    |           |
+DROP  |J          |5          |1          |Queen      |0          |0          |500-700    |           |
+DROP  |A-B        |1-8        |1          |REMAIN     |50-70      |100        |50-100     |           |
+
+      |                                                                                               |
+      |-------------------------------------LavaLoonion End-------------------------------------------|

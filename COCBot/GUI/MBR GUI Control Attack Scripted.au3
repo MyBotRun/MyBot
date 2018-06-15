@@ -266,7 +266,7 @@ EndFunc   ;==>DuplicateScriptAB
 
 Func ApplyScriptDB()
 	Local $iApply = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0]]
 	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
@@ -274,7 +274,7 @@ Func ApplyScriptDB()
 	Local $aTemp = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameDB)
 	Local $sFilename = $aTemp[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB) + 1]
 
-	SetLog("CSV settings apply starts", $COLOR_INFO)
+	SetLog("CSV settings apply starts: " & $sFilename, $COLOR_INFO)
 	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVHeros, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
 	If Not $iApply Then
 		SetLog("CSV settings apply failed", $COLOR_ERROR)
@@ -372,7 +372,7 @@ EndFunc   ;==>ApplyScriptDB
 
 Func ApplyScriptAB()
 	Local $iApply = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0]]
 	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
@@ -380,7 +380,7 @@ Func ApplyScriptAB()
 	Local $aTemp = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameAB)
 	Local $sFilename = $aTemp[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB) + 1]
 
-	SetLog("CSV settings apply starts", $COLOR_INFO)
+	SetLog("CSV settings apply starts: " & $sFilename, $COLOR_INFO)
 	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVHeros, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
 	If Not $iApply Then
 		SetLog("CSV settings apply failed", $COLOR_ERROR)
@@ -503,3 +503,14 @@ EndFunc   ;==>cmbScriptDroplineDB
 Func cmbScriptDroplineAB()
 	$g_aiAttackScrDroplineEdge[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbScriptDroplineAB)
 EndFunc   ;==>cmbScriptDroplineAB
+
+Func AttackNow()
+	Local $tempbRunState = $g_bRunState
+	$g_aiAttackAlgorithm[$LB] = 1										; Select Scripted Attack
+	$g_sAttackScrScriptName[$LB] = GuiCtrlRead($g_hCmbScriptNameAB)		; Select Scripted Attack File From The Combo Box, Cos it wasn't refreshing until pressing Start button
+	$g_iMatchMode = $LB													; Select Live Base As Attack Type
+	$g_bRunState = True
+	PrepareAttack($g_iMatchMode)										;
+		Attack()			; Fire xD
+	$g_bRunState = $tempbRunState
+EndFunc   ;==>AttackNow

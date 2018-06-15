@@ -26,14 +26,14 @@ Func LoadTranslatedDropOrderList()
 	Global $g_asDropOrderList = ["", _
 		"Barbarians", "Archers", "Giants", "Goblins", _
 		"Wall Breakers", "Balloons", "Wizards", "Healers", _
-		"Dragons", "Pekkas", "Baby Dragons", "Miners", _
+		"Dragons", "Pekkas", "Baby Dragons", "Miners", "Electro Dragons", _
 		"Minions", "Hog Riders", "Valkyries", "Golems", _
 		"Witches", "Lava Hounds", "Bowlers", "Clan Castle", "Heroes"]
 EndFunc   ;==>LoadTranslatedDropOrderList
 
 Global $g_hChkCustomDropOrderEnable = 0
-Global $g_ahCmbDropOrder[$eDropOrderCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahImgDropOrder[$eDropOrderCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahCmbDropOrder[$eDropOrderCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahImgDropOrder[$eDropOrderCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hBtnDropOrderSet = 0, $g_ahImgDropOrderSet = 0
 Global $g_hBtnRemoveDropOrder = 0
 
