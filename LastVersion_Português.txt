@@ -1,4 +1,4 @@
 [general]
-version    = "v7.5.1"
-messagenew = "Works with December 2017 Game Update!\nPlus new features and fixes\nFor more information, go to \nhttps://mybot.run\n\n Always free and open source."
-messageold = "A new version of MyBot (v7.5.1) is available!\nPlease download the latest from:\nhttps://mybot.run"
+version    = "v7.5.2"
+messagenew = "Works with June 2018 Update!\nPlus new features and fixes\nFor more information, go to \nhttps://mybot.run\n\n Always free and open source."
+messageold = "A new version of MyBot (v7.5.2) is available!\nPlease download the latest from:\nhttps://mybot.run"
