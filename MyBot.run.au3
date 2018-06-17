@@ -1143,9 +1143,8 @@ Func _RunFunction($action)
 		Case "BoostWarden"
 			BoostWarden()
 		Case "LabCheck"
-			Setlog("Checking Lab Status", $COLOR_INFO)
 			LabGuiDisplay()
-			_Sleep($DELAYRUNBOT3)	
+			_Sleep($DELAYRUNBOT3)
 		Case "RequestCC"
 			RequestCC()
 			If _Sleep($DELAYRUNBOT1) = False Then checkMainScreen(False)

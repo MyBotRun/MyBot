@@ -42,10 +42,12 @@ Func CheckPrerequisites($bSilent = False)
 		Opt('WinTitleMatchMode', 4)
 		Local $pos = ControlGetPos("classname=Shell_TrayWnd", "", "")
 		If Not @error Then
-			If $pos[2] > $pos[3] Then
-				SetLog("Please set your taskbar location to Right!", $COLOR_ERROR)
-				SetLog("TASKBAR SIZE: " & $pos[2] & "," & $pos[3], $COLOR_ERROR)
-				$isAllOK = False
+			If $pos[2] > $pos[3] And Int($pos[3]) + 732 > 768 Then
+				SetLog("Display: " & @DesktopWidth & "," & @DesktopHeight, $COLOR_ERROR)
+				SetLog("Windows TaskBar: " & $pos[2] & "," & $pos[3], $COLOR_ERROR)
+				SetLog("Emulator[732] and taskbar[" & $pos[3] & "] doesn't fit on your display!", $COLOR_ERROR)
+				SetLog("Please set your Windows taskbar location to Right!", $COLOR_ERROR)
+				;$isAllOK = False
 			EndIf
 		EndIf
 		Opt('WinTitleMatchMode', 3)

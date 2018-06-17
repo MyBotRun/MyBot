@@ -17,8 +17,8 @@ Func CollectFreeMagicItems($bTest = False)
 	If Not $g_bChkCollectFreeMagicItems Then Return
 	If Not $g_bRunState Then Return
 
-	Local Static $iLastTimeChecked = 0
-	If $iLastTimeChecked = @MDAY Then Return
+	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
+	If $iLastTimeChecked[$g_iCurAccount] = @MDAY Then Return
 
 	ClickP($aAway, 1, 0, "#0332") ;Click Away
 
@@ -47,7 +47,7 @@ Func CollectFreeMagicItems($bTest = False)
 	Local $aOcrPositions[3][2] = [[200, 439], [390, 439], [580, 439]]
 	Local $aResults[3] = ["", "", ""]
 
-	$iLastTimeChecked = @MDAY
+	$iLastTimeChecked[$g_iCurAccount] = @MDAY
 
 	For $i = 0 To 2
 		$aResults[$i] = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 80, 25, True)

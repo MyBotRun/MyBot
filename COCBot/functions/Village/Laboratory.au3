@@ -22,7 +22,7 @@ Global Const $sColorMaxTroop = Hex(0xFFC360, 6) ; relative location: 23,60; troo
 Func Laboratory()
 
 	;Create local static array to hold upgrade values
-	Static $aUpgradeValue[30] = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Static $aUpgradeValue[31] = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $iAvailElixir, $iAvailDark, $sElixirCount, $sDarkCount, $TimeDiff, $aArray, $Result
 
 	$g_iUpgradeMinElixir = Number($g_iUpgradeMinElixir)
@@ -92,13 +92,13 @@ Func Laboratory()
 
 	If $g_iFirstTimeLab = 0 Then ; Need to get upgrade value for troops on page 1, only do this on 1st cycle of function
 		For $i = 1 To 10
-			$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+			$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] , $g_avLabTroops[$i][1] + 70)
 			If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
-			If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 49999 Then ; check if blank or below min value for any upgrade on page 1
-				$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+			If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 49999 Then ; check if blank or below min value for any upgrade on page 1
+				$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] , $g_avLabTroops[$i][1] + 70)
 				If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 			EndIf
-			If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 49999 Then ; check if blank or below min value for any upgrade on page 1
+			If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 49999 Then ; check if blank or below min value for any upgrade on page 1
 				If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
 					$aUpgradeValue[$i] = -1
 					If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Is Maxed already, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
@@ -111,24 +111,29 @@ Func Laboratory()
 
 	If $g_avLabTroops[$g_iCmbLaboratory][2] >= 1 Then ;Check if troop located on page 2 of lab window and Move to three icon squares to get spells
 		;_PostMessage_ClickDrag(650, 423 + $g_iMidOffsetY, 545, 423 + $g_iMidOffsetY, "left", 1000)
-		ClickDrag(650, 443 + $g_iMidOffsetY, 323, 443 + $g_iMidOffsetY, 1000)
+		ClickDrag(650, 443 + $g_iMidOffsetY, 125, 443 + $g_iMidOffsetY, 1000)
 		;_PostMessage_ClickDrag(734, 393, 643, 393, "left", 1500)
 		If _Sleep($DELAYLABORATORY3) Then Return
 		If $g_bDebugSetlog Then LabTroopImages2() ; Debug Only
 		If $g_iFirstTimeLab < 2 Then
 			For $i = 11 To 18
-				$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-				If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
-				If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then ; check if blank or below min value for any upgrade on page 2
-					$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-					If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
-				EndIf
-				If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then ; check if blank or below min value for any upgrade on page 2
-					If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
-						$aUpgradeValue[$i] = -1
-						If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+				; Make a loop for possible issues on dragClick , just a small oofset value to get White/Red OCR numbers
+				For $j = 0 to 1
+					Local $iOffset = ($j = 1) ? (-15) : (0)
+					$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0]  - $iOffset, $g_avLabTroops[$i][1] + 70)
+					If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+					If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 9999 Then ; check if blank or below min value for any upgrade on page 2
+						$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] - $iOffset , $g_avLabTroops[$i][1] + 70)
+						If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] - $iOffset & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 					EndIf
-				EndIf
+					If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 9999 Then ; check if blank or below min value for any upgrade on page 2
+						If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
+							$aUpgradeValue[$i] = -1
+							If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+						EndIf
+					EndIf
+					If Int($aUpgradeValue[$i]) > 1000 then ExitLoop
+				Next
 				If Not $g_bRunState Then Return
 			Next
 			$g_iFirstTimeLab += 2
@@ -137,19 +142,19 @@ Func Laboratory()
 
 	If $g_avLabTroops[$g_iCmbLaboratory][2] = 2 Then ;Check if troop located on next page of lab window and Move to page for upgrade values
 		;_PostMessage_ClickDrag(734, 423 + $g_iMidOffsetY, 3, 423 + $g_iMidOffsetY, "left", 2000)
-		ClickDrag(734, 443 + $g_iMidOffsetY, 3, 443 + $g_iMidOffsetY, 2000)
+		ClickDrag(650, 443 + $g_iMidOffsetY, 114, 443 + $g_iMidOffsetY, 1000)
 		;_PostMessage_ClickDrag(734, 393, 643, 393, "left", 1500)
 		If _Sleep($DELAYLABORATORY3) Then Return
 		If $g_bDebugSetlog Then LabTroopImages3() ; Debug Only
 		If $g_iFirstTimeLab < 4 Then
-			For $i = 19 To 29
-				$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+			For $i = 19 To 30
+				$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0], $g_avLabTroops[$i][1] + 70)
 				If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
-				If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then ; check if blank or below min value for any upgrade on page 2
-					$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+				If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 9999 Then ; check if blank or below min value for any upgrade on page 2
+					$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] , $g_avLabTroops[$i][1] + 70)
 					If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				EndIf
-				If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then ; check if blank or below min value for any upgrade on page 2
+				If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 9999 Then ; check if blank or below min value for any upgrade on page 2
 					If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
 						$aUpgradeValue[$i] = -1
 						If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
@@ -163,7 +168,7 @@ Func Laboratory()
 
 	; Track Elixir cost for Wall Upgrade check
 	Switch $g_iCmbLaboratory
-		Case 1 To 18 ; regular elixir
+		Case 1 To 19 ; regular elixir
 			If $aUpgradeValue[$g_iCmbLaboratory] > 0 Then $g_iLaboratoryElixirCost = $aUpgradeValue[$g_iCmbLaboratory]
 	EndSwitch
 
@@ -230,7 +235,7 @@ Func Laboratory()
 		Return False
 	EndIf
 	Switch $g_iCmbLaboratory ;Change messaging based on troop number
-		Case 1 To 18 ; regular elixir
+		Case 1 To 19 ; regular elixir
 			If $iAvailElixir < ($aUpgradeValue[$g_iCmbLaboratory] + $g_iUpgradeMinElixir) Then
 				SetLog("Insufficent Elixir for " & $g_avLabTroops[$g_iCmbLaboratory][3] & ", Lab requires: " & $aUpgradeValue[$g_iCmbLaboratory] & " + " & $g_iUpgradeMinElixir & " user reserve, available: " & $iAvailElixir, $COLOR_INFO)
 				ClickP($aAway, 2, $DELAYLABORATORY4, "#0355")
@@ -242,7 +247,7 @@ Func Laboratory()
 				Return True
 			EndIf
 
-		Case 19 To 29 ; Dark Elixir
+		Case 20 To 30; Dark Elixir
 			If $iAvailDark < $aUpgradeValue[$g_iCmbLaboratory] + $g_iUpgradeMinDark Then
 				SetLog("Insufficent Dark Elixir for " & $g_avLabTroops[$g_iCmbLaboratory][3] & ", Lab requires: " & $aUpgradeValue[$g_iCmbLaboratory] & " + " & $g_iUpgradeMinDark & " user reserve, available: " & $iAvailDark, $COLOR_INFO)
 				ClickP($aAway, 2, $DELAYLABORATORY4, "#0357")
@@ -374,7 +379,7 @@ Func LabUpgrade()
 
 			If isGemOpen(True) = False Then ; check for gem window
 				; check for green button to use gems to finish upgrade, checking if upgrade actually started
-				If Not (_ColorCheck(_GetPixelColor(625, 266 + $g_iMidOffsetY, True), Hex(0x6CB91D, 6), 20) Or _ColorCheck(_GetPixelColor(660, 266 + $g_iMidOffsetY, True), Hex(0x6CB91D, 6), 20)) Then
+				If Not (_ColorCheck(_GetPixelColor(625, 218 + $g_iMidOffsetY, True), Hex(0x6fbd1f, 6), 15) Or _ColorCheck(_GetPixelColor(660, 218 + $g_iMidOffsetY, True), Hex(0x6fbd1f, 6), 15)) Then
 					SetLog("Something went wrong with " & $g_avLabTroops[$g_iCmbLaboratory][3] & " Upgrade, try again.", $COLOR_ERROR)
 					ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0360")
 					Return False

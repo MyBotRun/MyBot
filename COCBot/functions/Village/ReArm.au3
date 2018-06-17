@@ -36,7 +36,7 @@ Func ReArm()
 
 
 	Local $bReArmed = False
-	Local $sDiamond = GetDiamondFromRect("245,620,615,700")
+	Local $sDiamond = GetDiamondFromRect("200,620,750,700")
 	Local $aTempArray, $aTempBtnCoords
     Local $aRearmOptions = findMultiple($g_sImgRearm, $sDiamond, $sDiamond, 0, 1000, 3, "objectname,objectpoints", True)
 

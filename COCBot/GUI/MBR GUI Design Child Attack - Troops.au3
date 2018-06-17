@@ -243,9 +243,9 @@ Func CreateTroopsSpellsSubTab()
 		$g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon] = GUICtrlCreateInput("0", $x + 1, $y + 29, 30, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtSetPerc & " " & $sTroopName & " " & $sTxtSetPerc2)
 			GUICtrlSetState(-1, $GUI_HIDE)
-			GUICtrlSetLimit(-1, 3)
+			GUICtrlSetLimit(-1, 2)
 			GUICtrlSetOnEvent(-1, "TrainTroopCountEdit")
-	
+
     $x += 38
 		; Minions
 		Local $sTroopName = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMinions", "Minions")
@@ -258,8 +258,8 @@ Func CreateTroopsSpellsSubTab()
 		$g_ahTxtTrainArmyTroopCount[$eTroopMinion] = GUICtrlCreateInput("0", $x + 1, $y + 29, 30, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtSetPerc & " " & $sTroopName & " " & $sTxtSetPerc2)
 			GUICtrlSetState(-1, $GUI_HIDE)
-			GUICtrlSetLimit(-1, 2)
-			GUICtrlSetOnEvent(-1, "TrainTroopCountEdit")	
+			GUICtrlSetLimit(-1, 3)
+			GUICtrlSetOnEvent(-1, "TrainTroopCountEdit")
 
 	$x += 38
 		; Valkyries
@@ -397,8 +397,8 @@ Func CreateTroopsSpellsSubTab()
 			_GUICtrlSetTip(-1, $sTxtSetPerc & " " & $sTroopName & " " & $sTxtSetPerc2)
 			GUICtrlSetState(-1, $GUI_HIDE)
 			GUICtrlSetLimit(-1, 2)
-			GUICtrlSetOnEvent(-1, "TrainTroopCountEdit")		
-			
+			GUICtrlSetOnEvent(-1, "TrainTroopCountEdit")
+
 	$x += 38
 		; Hogs
 		Local $sTroopName = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHogRiders", "Hog Riders")

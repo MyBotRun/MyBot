@@ -29,7 +29,7 @@ Global $g_hLblVillageReportTemp = 0
 Global $g_hlblKing = 0, $g_hPicKingGray = 0, $g_hPicKingBlue = 0, $g_hPicKingRed = 0, $g_hPicKingGreen = 0
 Global $g_hlblQueen = 0, $g_hPicQueenGray = 0, $g_hPicQueenBlue = 0, $g_hPicQueenRed = 0, $g_hPicQueenGreen = 0
 Global $g_hlblWarden = 0, $g_hPicWardenGray = 0, $g_hPicWardenBlue = 0, $g_hPicWardenRed = 0, $g_hPicWardenGreen = 0
-Global $g_hlblLab = 0, $g_hPicLabGray = 0, $g_hPicLabRed = 0, $g_hPicLabGreen = 0						 
+Global $g_hlblLab = 0, $g_hPicLabGray = 0, $g_hPicLabRed = 0, $g_hPicLabGreen = 0
 
 Func CreateBottomPanel()
 	Local $sTxtTip = ""
@@ -83,18 +83,18 @@ Func CreateBottomPanel()
 			If $g_bGuiRemote Then GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "chkBackground")
 			GUICtrlSetState(-1, (($g_bAndroidAdbScreencap = True) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
-			
-		$g_hLblVersion = GUICtrlCreateLabel($g_sBotVersion, $x + 120, $y + 77, 60, 17, $SS_LEFT ) ; 
-			GUICtrlSetColor(-1, $COLOR_MEDGRAY)	
-			
-			
+
+		$g_hLblVersion = GUICtrlCreateLabel($g_sBotVersion, $x + 120, $y + 77, 60, 17, $SS_LEFT ) ;
+			GUICtrlSetColor(-1, $COLOR_MEDGRAY)
+
+
 		$g_hBtnAttackNowDB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowDB", "DB Attack!"), $x + 190, $y - 4, 60, -1)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_hBtnAttackNowLB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowLB", "LB Attack!"), $x + 190, $y + 23, 60, -1)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_hBtnAttackNowTS = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowTS", "TH Snipe!"), $x + 190, $y + 50, 60, -1)
 			GUICtrlSetState(-1, $GUI_HIDE)
-		$g_hLblDonate = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Bottom", "LblDonate", "Support the development"), $x + 224, $y + 80, 220, 24, $SS_RIGHT)
+		$g_hLblDonate = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Bottom", "LblDonate", "Support the development"), $x + 270, $y + 80, 165, 24, $SS_RIGHT)
 			GUICtrlSetCursor(-1, 0) ; https://www.autoitscript.com/autoit3/docs/functions/MouseGetCursor.htm
 			GUICtrlSetFont(-1, 8.5, $FW_BOLD) ;, $GUI_FONTITALIC + $GUI_FONTUNDER)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Bottom", "LblDonate_Info_01", "Paypal Donate?"))
@@ -125,7 +125,7 @@ Func CreateBottomPanel()
 
 ;New section for royal and lab status
 	Local $x = 202, $y = $y_bottom + 5
-		$sTxtTip = "Gray - Not Read, Green - Ready to Use, Blue - Healing, Red - Upgrading"
+		$sTxtTip = GetTranslatedFileIni("MBR GUI Design Bottom","GrpStatus_Info_01", "Gray - Not Read, Green - Ready to Use, Blue - Healing, Red - Upgrading")
 		$g_hlblKing = GUICtrlCreateLabel("King", $x, $y, 50, 16, $SS_LEFT)
 			;GUICtrlSetBkColor(-1, 0xE1E1E1)
 			_GUICtrlSetTip(-1, $sTxtTip)
@@ -138,7 +138,7 @@ Func CreateBottomPanel()
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_hPicKingRed = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnRedShield, $x + 53, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)																	 
+			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$y += 25
@@ -151,22 +151,22 @@ Func CreateBottomPanel()
 	  		_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_hPicQueenGreen = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGreenShield, $x + 53, $y, 16, 16 )
-	  		_GUICtrlSetTip(-1, $sTxtTip)																	 
+	  		_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_hPicQueenRed = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnRedShield, $x + 53, $y, 16, 16 )
 	  		_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
-																								
 
-	$y += 25	   
+
+	$y += 25
 		$g_hlblWarden = GUICtrlCreateLabel("Warden", $x, $y, 50, 16, $SS_LEFT)
 	  		_GUICtrlSetTip(-1, $sTxtTip)
 			;GUICtrlSetBkColor(-1, 0xE1E1E1)
 		$g_hPicWardenGray = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGrayShield, $x + 53 , $y, 16, 16 )
-	  		_GUICtrlSetTip(-1, $sTxtTip)						 
+	  		_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicWardenBlue = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnBlueShield, $x + 53, $y, 16, 16 )
 	  		_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, $GUI_HIDE)																			  
+			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_hPicWardenGreen = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGreenShield, $x + 53, $y, 16, 16 )
 	  		_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
@@ -175,7 +175,7 @@ Func CreateBottomPanel()
 			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$y += 25
-		$sTxtTip = "Green - Lab is Running, Red - Lab Has Stopped"
+		$sTxtTip = GetTranslatedFileIni("MBR GUI Design Bottom","GrpStatus_Info_02", "Green - Lab is Running, Red - Lab Has Stopped")
 		$g_hlblLab = GUICtrlCreateLabel("Lab", $x, $y, 50, 16, $SS_LEFT)
 	  		_GUICtrlSetTip(-1, $sTxtTip)
 			;GUICtrlSetBkColor(-1, 0xE1E1E1)
@@ -240,6 +240,6 @@ Func CreateBottomPanel()
 	   $x = 335
 	   $g_hLblVillageReportTemp = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Bottom", "LblVillageReportTemp_01", "Village Report") & @CRLF & GetTranslatedFileIni("MBR GUI Design Bottom", "LblVillageReportTemp_02", "will appear here") & @CRLF & GetTranslatedFileIni("MBR GUI Design Bottom", "LblVillageReportTemp_03", "on first run."), $x , $y + 5, 80, 45, BITOR($SS_CENTER, $BS_MULTILINE))
 
-   GUICtrlCreateGroup("", -99, -99, 1, 1)	
+   GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 EndFunc   ;==>CreateBottomPanel

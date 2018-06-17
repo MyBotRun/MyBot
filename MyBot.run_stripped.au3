@@ -9,7 +9,7 @@
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.5.2"
+Global $g_sBotVersion = "v7.5.3"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -5970,7 +5970,7 @@ Global Const $g_asTroopShortNames[$eTroopCount] = [ "Barb", "Arch", "Giant", "Go
 Global Const $g_aiTroopSpace[$eTroopCount] = [ 1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 6, 30, 2, 5, 8, 30, 12, 30, 6]
 Global Const $g_aiTroopTrainTime[$eTroopCount] = [ 20, 24, 120, 28, 60, 120, 120, 480, 720, 720, 360, 120, 1440, 36, 90, 180, 600, 360, 600, 120]
 Global Const $g_aiTroopCostPerLevel[$eTroopCount][10] = [ [8, 25, 40, 60, 100, 150, 200, 250, 300], [8, 50, 80, 120, 200, 300, 400, 500, 600], [9, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000, 4500], [7, 25, 40, 60, 80, 100, 150, 200], [8, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500], [8, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500], [9, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500], [5, 5000, 6000, 8000, 10000, 15000], [7, 18000, 20000, 22000, 24000, 26000, 28000, 30000], [8, 21000, 24000, 27000, 30000, 33000, 35000, 37000, 39000], [6, 15000, 16000, 17000, 18000, 19000, 20000], [6, 4200, 4800, 5200, 5600, 6000, 6400], [3, 36000, 40000, 44000], [8, 6, 7, 8, 9, 10, 11, 12, 13], [8, 40, 45, 52, 58, 65, 90, 115, 140], [7, 70, 100, 130, 160, 190, 220, 250], [8, 450, 525, 600, 675, 750, 825, 900, 975], [4, 250, 350, 450, 550], [5, 390, 450, 510, 570, 630], [4, 130, 150, 170, 190]]
-Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 5, 30, 2, 5, 8, 30, 12, 30, 6]
+Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 6, 30, 2, 5, 8, 30, 12, 30, 6]
 Global Enum $eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellClone, $eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellCount
 Global Const $g_asSpellNames[$eSpellCount] = ["Lightning", "Heal", "Rage", "Jump", "Freeze", "Clone", "Poison", "Earthquake", "Haste", "Skeleton"]
 Global Const $g_asSpellShortNames[$eSpellCount] = ["LSpell", "HSpell", "RSpell", "JSpell", "FSpell", "CSpell", "PSpell", "ESpell", "HaSpell", "SkSpell"]
@@ -6427,8 +6427,8 @@ Global Enum $ArmyTAB, $TrainTroopsTAB, $BrewSpellsTAB, $QuickTrainTAB
 Global $g_bCheckSpells = False
 Global $g_avLabTroops[31][5]
 Func TranslateTroopNames()
-Dim $g_avLabTroops[31][5] = [ [-1, -1, -1, GetTranslatedFileIni("MBR Global GUI Design", "None", "None"), $eIcnBlank], [123, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBarbarians", "Barbarians"), $eIcnBarbarian], [123, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtArchers", "Archers"), $eIcnArcher], [230, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtGiants", "Giants"), $eIcnGiant], [230, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtGoblins", "Goblins"), $eIcnGoblin], [337, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallBreakers", "Wall Breakers"), $eIcnWallBreaker], [337, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBalloons", "Balloons"), $eIcnBalloon], [443, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWizards", "Wizards"), $eIcnWizard], [443, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHealers", "Healers"), $eIcnHealer], [550, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtDragons", "Dragons"), $eIcnDragon], [550, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtPekkas", "Pekkas"), $eIcnPekka], [319, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBabyDragons", "Baby Dragons"), $eIcnBabyDragon], [319, 447 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMiners", "Miners"), $eIcnMiner], [426, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtElectroDragons", "Electro Dragons"), $eIcnElectroDragon], [426, 447 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtLightningSpells", "Lightning Spell"), $eIcnLightSpell], [533, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtHealingSpells", "Healing Spell"), $eIcnHealSpell], [533, 447 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtRageSpells", "Rage Spell"), $eIcnRageSpell], [640, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtJumpSpells", "Jump Spell"), $eIcnJumpSpell], [640, 447 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtFreezeSpells", "Freeze Spell"), $eIcnFreezeSpell], [109, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtCloneSpells", "Clone Spell"), $eIcnCloneSpell], [109, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtPoisonSpells", "Poison Spell"), $eIcnPoisonSpell], [216, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtEarthQuakeSpells", "EarthQuake Spell"), $eIcnEarthQuakeSpell], [216, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtHasteSpells", "Haste Spell"), $eIcnHasteSpell], [322, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtSkeletonSpells", "Skeleton Spell"), $eIcnSkeletonSpell], [322, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMinions", "Minions"), $eIcnMinion], [429, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHogRiders", "Hog Riders"), $eIcnHogRider], [429, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtValkyries", "Valkyries"), $eIcnValkyrie], [536, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtGolems", "Golems"), $eIcnGolem], [536, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWitches", "Witches"), $eIcnWitch], _
-[642, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtLavaHounds", "Lava Hounds"), $eIcnLavaHound], [642, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBowlers", "Bowlers"), $eIcnBowler]]
+Dim $g_avLabTroops[31][5] = [ [-1, -1, -1, GetTranslatedFileIni("MBR Global GUI Design", "None", "None"), $eIcnBlank], [123, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBarbarians", "Barbarians"), $eIcnBarbarian], [123, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtArchers", "Archers"), $eIcnArcher], [230, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtGiants", "Giants"), $eIcnGiant], [230, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtGoblins", "Goblins"), $eIcnGoblin], [337, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallBreakers", "Wall Breakers"), $eIcnWallBreaker], [337, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBalloons", "Balloons"), $eIcnBalloon], [443, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWizards", "Wizards"), $eIcnWizard], [443, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHealers", "Healers"), $eIcnHealer], [550, 340 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtDragons", "Dragons"), $eIcnDragon], [550, 447 + $g_iMidOffsetY, 0, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtPekkas", "Pekkas"), $eIcnPekka], [123, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBabyDragons", "Baby Dragons"), $eIcnBabyDragon], [123, 447 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMiners", "Miners"), $eIcnMiner], [230, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtElectroDragons", "Electro Dragons"), $eIcnElectroDragon], [230, 447 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtLightningSpells", "Lightning Spell"), $eIcnLightSpell], [337, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtHealingSpells", "Healing Spell"), $eIcnHealSpell], [337, 447 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtRageSpells", "Rage Spell"), $eIcnRageSpell], [443, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtJumpSpells", "Jump Spell"), $eIcnJumpSpell], [443, 447 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtFreezeSpells", "Freeze Spell"), $eIcnFreezeSpell], [550, 340 + $g_iMidOffsetY, 1, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtCloneSpells", "Clone Spell"), $eIcnCloneSpell], [550, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtPoisonSpells", "Poison Spell"), $eIcnPoisonSpell], [123, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtEarthQuakeSpells", "EarthQuake Spell"), $eIcnEarthQuakeSpell], [123, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtHasteSpells", "Haste Spell"), $eIcnHasteSpell], [230, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtSkeletonSpells", "Skeleton Spell"), $eIcnSkeletonSpell], [230, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMinions", "Minions"), $eIcnMinion], [337, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHogRiders", "Hog Riders"), $eIcnHogRider], [337, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtValkyries", "Valkyries"), $eIcnValkyrie], [443, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtGolems", "Golems"), $eIcnGolem], [443, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWitches", "Witches"), $eIcnWitch], _
+[550, 340 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtLavaHounds", "Lava Hounds"), $eIcnLavaHound], [550, 447 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBowlers", "Bowlers"), $eIcnBowler]]
 EndFunc
 Global Const $g_aiDonateTroopPriority[$eTroopCount] = [ $eTroopLavaHound, $eTroopElectroDragon, $eTroopGolem, $eTroopPekka, $eTroopDragon, $eTroopWitch, $eTroopHealer, $eTroopBabyDragon, $eTroopValkyrie, $eTroopBowler, $eTroopMiner, $eTroopGiant, $eTroopBalloon, $eTroopHogRider, $eTroopWizard, $eTroopWallBreaker, $eTroopMinion, $eTroopArcher, $eTroopBarbarian, $eTroopGoblin]
 Global Const $g_aiDonateSpellPriority[$eSpellCount] = [ $eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton]
@@ -11183,7 +11183,7 @@ $g_hBtnAttackNowLB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bo
 GUICtrlSetState(-1, $GUI_HIDE)
 $g_hBtnAttackNowTS = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowTS", "TH Snipe!"), $x + 190, $y + 50, 60, -1)
 GUICtrlSetState(-1, $GUI_HIDE)
-$g_hLblDonate = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Bottom", "LblDonate", "Support the development"), $x + 224, $y + 80, 220, 24, $SS_RIGHT)
+$g_hLblDonate = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Bottom", "LblDonate", "Support the development"), $x + 270, $y + 80, 165, 24, $SS_RIGHT)
 GUICtrlSetCursor(-1, 0)
 GUICtrlSetFont(-1, 8.5, $FW_BOLD)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Bottom", "LblDonate_Info_01", "Paypal Donate?"))
@@ -11196,7 +11196,7 @@ $g_hPicArrowRight = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnArrowRight, $x + 24
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetState(-1, $GUI_SHOW)
 Local $x = 202, $y = $y_bottom + 5
-$sTxtTip = "Gray - Not Read, Green - Ready to Use, Blue - Healing, Red - Upgrading"
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Bottom","GrpStatus_Info_01", "Gray - Not Read, Green - Ready to Use, Blue - Healing, Red - Upgrading")
 $g_hlblKing = GUICtrlCreateLabel("King", $x, $y, 50, 16, $SS_LEFT)
 _GUICtrlSetTip(-1, $sTxtTip)
 $g_hPicKingGray = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGrayShield, $x + 53, $y, 16, 16)
@@ -11239,7 +11239,7 @@ $g_hPicWardenRed = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnRedShield, $x + 53, 
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetState(-1, $GUI_HIDE)
 $y += 25
-$sTxtTip = "Green - Lab is Running, Red - Lab Has Stopped"
+$sTxtTip = GetTranslatedFileIni("MBR GUI Design Bottom","GrpStatus_Info_02", "Green - Lab is Running, Red - Lab Has Stopped")
 $g_hlblLab = GUICtrlCreateLabel("Lab", $x, $y, 50, 16, $SS_LEFT)
 _GUICtrlSetTip(-1, $sTxtTip)
 $g_hPicLabGray = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGrayShield, $x + 53 , $y, 16, 16 )
@@ -13716,12 +13716,11 @@ _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_
 GUICtrlSetLimit(-1, 7)
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-Local $x = 25, $y = 170
-GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "Group_02", "Walls counter"), $x - 20, $y - 20, $g_iSizeWGrpTab3, 100)
-$x -= 3
-$g_ahWallsCurrentCount[4] = GUICtrlCreateInput("0", $x - 10, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+Local $x = 25, $y = 175
+GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "Group_02", "Walls counter"), $x - 20, $y - 20, $g_iSizeWGrpTab3, 95)
+$g_ahWallsCurrentCount[4] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", "Input number of Walls level") & " 4 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", "you have."))
-$g_ahPicWallsLevel[4] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall04, $x + 17, $y - 2, 24, 24)
+$g_ahPicWallsLevel[4] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall04, $x + 27, $y - 2, 24, 24)
 $x += 80
 $g_ahWallsCurrentCount[5] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", -1) & " 5 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", -1))
@@ -13739,8 +13738,6 @@ $g_ahWallsCurrentCount[8] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_S
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", -1) & " 8 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", -1))
 $g_ahPicWallsLevel[8] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall08, $x + 27, $y - 2, 24, 24)
 Local $x = 25
-$x -= 3
-$x += 10
 $y += 40
 $g_ahWallsCurrentCount[9] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", -1) & " 9 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", -1))
@@ -14345,7 +14342,7 @@ GUICtrlSetFont(-1, 7, 400)
 $g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon] = GUICtrlCreateInput("0", $x + 1, $y + 29, 30, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, $sTxtSetPerc & " " & $sTroopName & " " & $sTxtSetPerc2)
 GUICtrlSetState(-1, $GUI_HIDE)
-GUICtrlSetLimit(-1, 3)
+GUICtrlSetLimit(-1, 2)
 GUICtrlSetOnEvent(-1, "TrainTroopCountEdit")
 $x += 38
 Local $sTroopName = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMinions", "Minions")
@@ -14358,7 +14355,7 @@ GUICtrlSetFont(-1, 7, 400)
 $g_ahTxtTrainArmyTroopCount[$eTroopMinion] = GUICtrlCreateInput("0", $x + 1, $y + 29, 30, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, $sTxtSetPerc & " " & $sTroopName & " " & $sTxtSetPerc2)
 GUICtrlSetState(-1, $GUI_HIDE)
-GUICtrlSetLimit(-1, 2)
+GUICtrlSetLimit(-1, 3)
 GUICtrlSetOnEvent(-1, "TrainTroopCountEdit")
 $x += 38
 Local $sTroopName = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtValkyries", "Valkyries")
@@ -26630,6 +26627,9 @@ GUICtrlSetState($g_hBtnAttackNowLB, $GUI_HIDE)
 GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
 GUICtrlSetState($g_hPicTwoArrowShield, $GUI_SHOW)
 GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
+For $i = $g_hlblKing to $g_hPicLabRed
+GUICtrlSetState($i, $GUI_SHOW)
+NExt
 TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Start", "Start bot"))
 TrayItemSetState($g_hTiPause, $TRAY_DISABLE)
 SetLogCentered(" Bot Stop ", Default, $COLOR_ACTION)
@@ -40030,8 +40030,11 @@ Return "none"
 EndSwitch
 EndFunc
 Func LabGuiDisplay()
+Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
+If $iLastTimeChecked[$g_iCurAccount] < @HOUR + 1 And Not $g_bSearchAttackNowEnable And $iLastTimeChecked[$g_iCurAccount] <> 0 Then Return
 ClickP($aAway, 2, 0, "#0346")
 If _Sleep(1500) Then Return
+Setlog("Checking Lab Status", $COLOR_INFO)
 If $g_aiLaboratoryPos[0] <= 0 Or $g_aiLaboratoryPos[1] <= 0 Then
 SetLog("Laboratory Location not found!", $COLOR_ERROR)
 LocateLab()
@@ -40071,6 +40074,7 @@ GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
 GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
 GUICtrlSetState($g_hPicLabRed, $GUI_SHOW)
 ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
+$g_sLabUpgradeTime = ""
 Return
 Else
 SetLog("Unable to determine Lab Status", $COLOR_INFO)
@@ -40080,6 +40084,7 @@ GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
 GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
 Return
 EndIf
+$iLastTimeChecked[$g_iCurAccount] = @HOUR
 EndFunc
 Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = False)
 If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyHeroTime:", $COLOR_DEBUG)
@@ -48438,10 +48443,11 @@ If @DesktopHeight <= 768 Then
 Opt('WinTitleMatchMode', 4)
 Local $pos = ControlGetPos("classname=Shell_TrayWnd", "", "")
 If Not @error Then
-If $pos[2] > $pos[3] Then
-SetLog("Please set your taskbar location to Right!", $COLOR_ERROR)
-SetLog("TASKBAR SIZE: " & $pos[2] & "," & $pos[3], $COLOR_ERROR)
-$isAllOK = False
+If $pos[2] > $pos[3] And Int($pos[3]) + 732 > 768 Then
+SetLog("Display: " & @DesktopWidth & "," & @DesktopHeight, $COLOR_ERROR)
+SetLog("Windows TaskBar: " & $pos[2] & "," & $pos[3], $COLOR_ERROR)
+SetLog("Emulator[732] and taskbar[" & $pos[3] & "] doesn't fit on your display!", $COLOR_ERROR)
+SetLog("Please set your Windows taskbar location to Right!", $COLOR_ERROR)
 EndIf
 EndIf
 Opt('WinTitleMatchMode', 3)
@@ -51565,10 +51571,10 @@ Func getResourcesBonusPerc($x_start, $y_start)
 Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 48, 16, True)
 EndFunc
 Func getLabUpgrdResourceWht($x_start, $y_start)
-Return getOcrAndCapture("coc-lab-w", $x_start, $y_start, 60, 14, True)
+Return getOcrAndCapture("coc-lab-w", $x_start, $y_start, 70, 14, True)
 EndFunc
 Func getLabUpgrdResourceRed($x_start, $y_start)
-Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 60, 14, True)
+Return getOcrAndCapture("coc-lab-r", $x_start, $y_start, 70, 14, True)
 EndFunc
 Func getBldgUpgradeTime($x_start, $y_start)
 Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 42, 18)
@@ -52799,6 +52805,9 @@ GUICtrlSetState($g_hBtnAttackNowLB, $GUI_SHOW)
 GUICtrlSetState($g_hBtnAttackNowTS, $GUI_SHOW)
 GUICtrlSetState($g_hPicTwoArrowShield, $GUI_HIDE)
 GUICtrlSetState($g_hLblVersion, $GUI_HIDE)
+For $i = $g_hlblKing to $g_hPicLabRed
+GUICtrlSetState($i, $GUI_HIDE)
+Next
 EndIf
 If $g_bIsClientSyncError = False And $g_bIsSearchLimit = False Then
 $g_iSearchCount = 0
@@ -53061,6 +53070,9 @@ GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
 GUICtrlSetState($g_hPicTwoArrowShield, $GUI_SHOW)
 GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
 $g_bBtnAttackNowPressed = False
+For $i = $g_hlblKing to $g_hPicLabRed
+GUICtrlSetState($i, $GUI_SHOW)
+Next
 EndIf
 If $g_bSearchAlertMe Then
 TrayTip($g_asModeText[$g_iMatchMode] & " Match Found!", "Gold: " & $g_iSearchGold & "; Elixir: " & $g_iSearchElixir & "; Dark: " & $g_iSearchDark & "; Trophy: " & $g_iSearchTrophy, "", 0)
@@ -53809,6 +53821,11 @@ ElseIf $iCmbBoost = 25 Then
 SetLog("Remain " & $sName & " Boosts: Unlimited", $COLOR_SUCCESS)
 EndIf
 $boosted = True
+If $sName = "Barracks" Then
+$g_aiTimeTrain[0] = 0
+Else
+$g_aiTimeTrain[1] = 0
+EndIf
 EndIf
 EndIf
 Else
@@ -56894,7 +56911,7 @@ If _Sleep($DELAYREARM4) Then Return
 If IsMainPage() Then BuildingClickP($g_aiTownHallPos, "#0225")
 If _Sleep($DELAYREARM2) Then Return
 Local $bReArmed = False
-Local $sDiamond = GetDiamondFromRect("245,620,615,700")
+Local $sDiamond = GetDiamondFromRect("200,620,750,700")
 Local $aTempArray, $aTempBtnCoords
 Local $aRearmOptions = findMultiple($g_sImgRearm, $sDiamond, $sDiamond, 0, 1000, 3, "objectname,objectpoints", True)
 If $aRearmOptions <> "" And IsArray($aRearmOptions) Then
@@ -59113,7 +59130,7 @@ Global Const $sColorMaxLvl = Hex(0xFFFFFF, 6)
 Global Const $sColorNotPossible = Hex(0xC0C0C0, 6)
 Global Const $sColorMaxTroop = Hex(0xFFC360, 6)
 Func Laboratory()
-Static $aUpgradeValue[30] = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Static $aUpgradeValue[31] = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Local $iAvailElixir, $iAvailDark, $sElixirCount, $sDarkCount, $TimeDiff, $aArray, $Result
 $g_iUpgradeMinElixir = Number($g_iUpgradeMinElixir)
 $g_iUpgradeMinDark = Number($g_iUpgradeMinDark)
@@ -59171,13 +59188,13 @@ EndIf
 If $g_bDebugSetlog Then LabTroopImages1()
 If $g_iFirstTimeLab = 0 Then
 For $i = 1 To 10
-$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] , $g_avLabTroops[$i][1] + 70)
 If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
-If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 49999 Then
-$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 49999 Then
+$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] , $g_avLabTroops[$i][1] + 70)
 If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 EndIf
-If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 49999 Then
+If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 49999 Then
 If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
 $aUpgradeValue[$i] = -1
 If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Is Maxed already, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
@@ -59188,41 +59205,45 @@ Next
 $g_iFirstTimeLab = 1
 EndIf
 If $g_avLabTroops[$g_iCmbLaboratory][2] >= 1 Then
-ClickDrag(650, 443 + $g_iMidOffsetY, 323, 443 + $g_iMidOffsetY, 1000)
+ClickDrag(650, 443 + $g_iMidOffsetY, 125, 443 + $g_iMidOffsetY, 1000)
 If _Sleep($DELAYLABORATORY3) Then Return
 If $g_bDebugSetlog Then LabTroopImages2()
 If $g_iFirstTimeLab < 2 Then
 For $i = 11 To 18
-$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+For $j = 0 to 1
+Local $iOffset =($j = 1) ?(-15) :(0)
+$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] - $iOffset, $g_avLabTroops[$i][1] + 70)
 If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
-If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then
-$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
-If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 9999 Then
+$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] - $iOffset , $g_avLabTroops[$i][1] + 70)
+If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] - $iOffset & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 EndIf
-If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then
+If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 9999 Then
 If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
 $aUpgradeValue[$i] = -1
 If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 EndIf
 EndIf
+If Int($aUpgradeValue[$i]) > 1000 then ExitLoop
+Next
 If Not $g_bRunState Then Return
 Next
 $g_iFirstTimeLab += 2
 EndIf
 EndIf
 If $g_avLabTroops[$g_iCmbLaboratory][2] = 2 Then
-ClickDrag(734, 443 + $g_iMidOffsetY, 3, 443 + $g_iMidOffsetY, 2000)
+ClickDrag(650, 443 + $g_iMidOffsetY, 114, 443 + $g_iMidOffsetY, 1000)
 If _Sleep($DELAYLABORATORY3) Then Return
 If $g_bDebugSetlog Then LabTroopImages3()
 If $g_iFirstTimeLab < 4 Then
-For $i = 19 To 29
-$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+For $i = 19 To 30
+$aUpgradeValue[$i] = getLabUpgrdResourceRed($g_avLabTroops[$i][0], $g_avLabTroops[$i][1] + 70)
 If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Red text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
-If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then
-$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] + 13, $g_avLabTroops[$i][1] + 74)
+If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 9999 Then
+$aUpgradeValue[$i] = getLabUpgrdResourceWht($g_avLabTroops[$i][0] , $g_avLabTroops[$i][1] + 70)
 If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " White text upgrade value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 EndIf
-If $aUpgradeValue[$i] = "" Or $aUpgradeValue[$i] < 9999 Then
+If $aUpgradeValue[$i] = "" Or Int($aUpgradeValue[$i]) < 9999 Then
 If _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 77, True), $sColorMaxLvl, 20) And _ColorCheck(_GetPixelColor($g_avLabTroops[$i][0] + 77, $g_avLabTroops[$i][1] + 82, True), $sColorMaxLvl, 20) Then
 $aUpgradeValue[$i] = -1
 If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$i][3] & " Is Maxed already, $aUpgradeValue now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
@@ -59234,7 +59255,7 @@ $g_iFirstTimeLab += 4
 EndIf
 EndIf
 Switch $g_iCmbLaboratory
-Case 1 To 18
+Case 1 To 19
 If $aUpgradeValue[$g_iCmbLaboratory] > 0 Then $g_iLaboratoryElixirCost = $aUpgradeValue[$g_iCmbLaboratory]
 EndSwitch
 If _ColorCheck(_GetPixelColor(625, 266 + $g_iMidOffsetY, True), Hex(0x6CB91D, 6), 20) Or _ColorCheck(_GetPixelColor(660, 266 + $g_iMidOffsetY, True), Hex(0x6CB91D, 6), 20) Then
@@ -59296,7 +59317,7 @@ ClickP($aAway, 2, $DELAYLABORATORY4, "#0354")
 Return False
 EndIf
 Switch $g_iCmbLaboratory
-Case 1 To 18
+Case 1 To 19
 If $iAvailElixir <($aUpgradeValue[$g_iCmbLaboratory] + $g_iUpgradeMinElixir) Then
 SetLog("Insufficent Elixir for " & $g_avLabTroops[$g_iCmbLaboratory][3] & ", Lab requires: " & $aUpgradeValue[$g_iCmbLaboratory] & " + " & $g_iUpgradeMinElixir & " user reserve, available: " & $iAvailElixir, $COLOR_INFO)
 ClickP($aAway, 2, $DELAYLABORATORY4, "#0355")
@@ -59307,7 +59328,7 @@ SetLog("Elixir used = " & $aUpgradeValue[$g_iCmbLaboratory], $COLOR_INFO)
 ClickP($aAway, 2, $DELAYLABORATORY4, "#0356")
 Return True
 EndIf
-Case 19 To 29
+Case 20 To 30
 If $iAvailDark < $aUpgradeValue[$g_iCmbLaboratory] + $g_iUpgradeMinDark Then
 SetLog("Insufficent Dark Elixir for " & $g_avLabTroops[$g_iCmbLaboratory][3] & ", Lab requires: " & $aUpgradeValue[$g_iCmbLaboratory] & " + " & $g_iUpgradeMinDark & " user reserve, available: " & $iAvailDark, $COLOR_INFO)
 ClickP($aAway, 2, $DELAYLABORATORY4, "#0357")
@@ -59408,7 +59429,7 @@ Click(660, 520 + $g_iMidOffsetY, 1, 0, "#0202")
 If _Sleep($DELAYLABUPGRADE1) Then Return
 EndIf
 If isGemOpen(True) = False Then
-If Not(_ColorCheck(_GetPixelColor(625, 266 + $g_iMidOffsetY, True), Hex(0x6CB91D, 6), 20) Or _ColorCheck(_GetPixelColor(660, 266 + $g_iMidOffsetY, True), Hex(0x6CB91D, 6), 20)) Then
+If Not(_ColorCheck(_GetPixelColor(625, 218 + $g_iMidOffsetY, True), Hex(0x6fbd1f, 6), 15) Or _ColorCheck(_GetPixelColor(660, 218 + $g_iMidOffsetY, True), Hex(0x6fbd1f, 6), 15)) Then
 SetLog("Something went wrong with " & $g_avLabTroops[$g_iCmbLaboratory][3] & " Upgrade, try again.", $COLOR_ERROR)
 ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0360")
 Return False
@@ -60967,6 +60988,7 @@ If _Sleep(900) Then Return "Exit"
 Next
 EndIf
 SetDebugLog("Checking 'Log in with SuperCell ID' buttonn' x:" & $aLoginWithSupercellID[0] & " y:" & $aLoginWithSupercellID[1] & " : " & _GetPixelColor($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], True))
+SetDebugLog("Checking 'Log in with SuperCell ID' White Font' x:" & $aLoginWithSupercellID2[0] & " y:" & $aLoginWithSupercellID2[1] & " : " & _GetPixelColor($aLoginWithSupercellID2[0], $aLoginWithSupercellID2[1], True))
 If $i = 30 Then
 $bResult = False
 Return "Error"
@@ -61684,8 +61706,8 @@ EndFunc
 Func CollectFreeMagicItems($bTest = False)
 If Not $g_bChkCollectFreeMagicItems Then Return
 If Not $g_bRunState Then Return
-Local Static $iLastTimeChecked = 0
-If $iLastTimeChecked = @MDAY Then Return
+Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
+If $iLastTimeChecked[$g_iCurAccount] = @MDAY Then Return
 ClickP($aAway, 1, 0, "#0332")
 If Not IsMainPage() Then Return
 SetLog("Collecting Free Magic Items", $COLOR_INFO)
@@ -61705,7 +61727,7 @@ EndIf
 If Not $g_bRunState Then Return
 Local $aOcrPositions[3][2] = [[200, 439], [390, 439], [580, 439]]
 Local $aResults[3] = ["", "", ""]
-$iLastTimeChecked = @MDAY
+$iLastTimeChecked[$g_iCurAccount] = @MDAY
 For $i = 0 To 2
 $aResults[$i] = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 80, 25, True)
 If $aResults[$i] <> "" Then
@@ -69048,7 +69070,6 @@ BoostQueen()
 Case "BoostWarden"
 BoostWarden()
 Case "LabCheck"
-Setlog("Checking Lab Status", $COLOR_INFO)
 LabGuiDisplay()
 _Sleep($DELAYRUNBOT3)
 Case "RequestCC"

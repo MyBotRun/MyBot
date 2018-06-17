@@ -1,4 +1,17 @@
-﻿* **V7.5.2**
+﻿* **V7.5.3**
+* Fixed Miner XP Value , reported by @Spartan
+* Fixed Wizard detection on attack bar reported by @liam0603
+* Fixed Smartwait4Train when Barracks are boosted , reported by @sleepnmojo
+* Fixed Attack Now buttons and New status icons issue , reported by @vLab97  
+* Fixed Boost button detection on Heroes , reported by @Mantaka 
+* Fixed Rearm on TH12 when exist 7 button , reported by @HArchH
+* Fixed Input Train digit limits to Minions and Electro Dragon , reported by @jwodonto
+* Fixed Laboratory Troops and Spells Upgrades - June 2018
+* Improved the setlog on Prerequisites
+* Improved the Check Laboratory status
+* Updated Russian translate by @vLab97
+
+* **V7.5.2**
 * Added Electro Dragon Support
 * Added TH12 Images
 * Added Clan Castle Selection on Attack (Siege Machine not supported yet)

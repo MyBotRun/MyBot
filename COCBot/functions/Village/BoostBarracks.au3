@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 Func BoostBarracks()
 	Return BoostTrainBuilding("Barracks", $g_iCmbBoostBarracks, $g_hCmbBoostBarracks)
-EndFunc
+EndFunc   ;==>BoostBarracks
 
 Func BoostSpellFactory()
 	Return BoostTrainBuilding("Spell Factory", $g_iCmbBoostSpellFactory, $g_hCmbBoostSpellFactory)
@@ -65,6 +65,12 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 						SetLog("Remain " & $sName & " Boosts: Unlimited", $COLOR_SUCCESS)
 					EndIf
 					$boosted = True
+					; Force to get the Remain Time
+					If $sName = "Barracks" Then
+						$g_aiTimeTrain[0] = 0 ; reset Troop remaining time
+					Else
+						$g_aiTimeTrain[1] = 0 ; reset Spells remaining time
+					EndIf
 				EndIf
 			EndIf
 		Else
@@ -79,4 +85,4 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 	ClickP($aAway, 1, 0, "#0161")
 	_Sleep($DELAYBOOSTBARRACKS2)
 	Return $boosted
-EndFunc
+EndFunc   ;==>BoostTrainBuilding
