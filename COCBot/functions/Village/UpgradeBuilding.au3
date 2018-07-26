@@ -23,7 +23,7 @@ Func UpgradeBuilding()
 	Local $iAvailBldr, $iAvailGold, $iAvailElixir, $iAvailDark
 	Local $Endtime, $Endperiod, $TimeAdd
 	Local $iUpGrdEndTimeDiff = 0
-	Local $aCheckFrequency[9] = [5, 15, 20, 30, 60, 60, 120, 240, 240] ; Dwell Time in minutes between each repeat upgrade check TH3-11
+	Local $aCheckFrequency[10] = [5, 15, 20, 30, 60, 60, 120, 240, 240, 240] ; Dwell Time in minutes between each repeat upgrade check TH3-12
 	;  $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)]  ; returns dwell time based on user THlevel, range from 3=[0] to 11=[7]
 	Local $iDTDiff
 	Local $bChkAllRptUpgrade = False
@@ -238,22 +238,12 @@ Func UpgradeNormal($inum)
 		EndIf
 	EndIf
 
-	If $g_avBuildingUpgrades[$inum][3] = "Gold" Then
-		Local $offColors[3][3] = [[0xD6714B, 47, 37], [0xF0E850, 70, 0], [0xF4F8F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel gold, 4th pixel edge of button
-		$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 650 + $g_iBottomOffsetY, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
-		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
-		EndIf
-	Else ;Use elxir button
-		Local $offColors[3][3] = [[0xBC5B31, 38, 32], [0xF84CF9, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel pink, 4th pixel edge of button
-		$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 650 + $g_iBottomOffsetY, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
-		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 38, $ButtonPixel[1] + 32, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
-		EndIf
-	EndIf
-	If IsArray($ButtonPixel) Then
+	If QuickMIS("BC1", $g_sImgAUpgradeUpgradeBtn, 120, 630, 740, 680) Then
+		Local $ButtonPixel[2]
+		$ButtonPixel[0] = 120 + $g_iQuickMISX
+		$ButtonPixel[1] = 630 + $g_iQuickMISY
+		If $g_bDebugSetlog Then SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG)
+
 		If _Sleep($DELAYUPGRADENORMAL2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0297") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADENORMAL3) Then Return ; Wait for window to open
@@ -358,13 +348,12 @@ Func UpgradeHero($inum)
 	BuildingClick($g_avBuildingUpgrades[$inum][0], $g_avBuildingUpgrades[$inum][1], "#0304") ; Select the item to be upgrade
 	If _Sleep($DELAYUPGRADEHERO1) Then Return ; Wait for window to open
 
-	Local $offColors[3][3] = [[0xE07B50, 41, 23], [0x282020, 72, 0], [0xF4F5F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel black, 4th pixel edge of button
-	$ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 620 + $g_iBottomOffsetY, 1, 1, Hex(0xF5F6F2, 6), $offColors, 30) ; first gray/white pixel of button
-	If IsArray($ButtonPixel) Then
-		If $g_bDebugSetlog And IsArray($ButtonPixel) Then
-			SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			SetLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 41, $ButtonPixel[1] + 23, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 72, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
-		EndIf
+	If QuickMIS("BC1", $g_sImgAUpgradeUpgradeBtn, 120, 630, 740, 680) Then
+		Local $ButtonPixel[2]
+		$ButtonPixel[0] = 120 + $g_iQuickMISX
+		$ButtonPixel[1] = 630 + $g_iQuickMISY
+		If $g_bDebugSetlog Then SetLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG)
+
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open

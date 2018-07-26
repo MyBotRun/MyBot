@@ -88,23 +88,25 @@ Func AttackBarCheck($Remaining = False)
 				$aResult[$i + $iResultAddDup][2] = Number($aCoordArray[0][1])
 				;;;;;;;; If exist Castle Spell ;;;;;;;
 				Local $iMultipleCoords = UBound($aCoords)
+				; Check if exist a double Castle Spells but with different levels
 				If $iMultipleCoords > 1 And StringInStr($aResult[$i + $iResultAddDup][0], "Spell") <> 0 Then
 					If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " detected " & $iMultipleCoords & " times!")
-
-					Local $aCoordsSplit2 = $aCoords[1]
-					If UBound($aCoordsSplit2) = 2 Then
-						; add slot
-						$iResultAddDup += 1
-						ReDim $aResult[UBound($aKeys) + $iResultAddDup][6]
-						$aResult[$i + $iResultAddDup][0] = $aResult[$i + $iResultAddDup - 1][0] ; same objectname
-						$aResult[$i + $iResultAddDup][1] = $aCoordsSplit2[0]
-						$aResult[$i + $iResultAddDup][2] = $aCoordsSplit2[1]
-						If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aResult[$i + $iResultAddDup][1] & "-" & $aResult[$i + $iResultAddDup][2])
-					Else
-						; don't invalidate anything
-						;$aCoordArray[0][0] = -1
-						;$aCoordArray[0][1] = -1
-					EndIf
+					For $j = 0 To $iMultipleCoords - 1
+						Local $aCoordsSplit2 = $aCoords[$j]
+						If UBound($aCoordsSplit2) = 2 Then
+							; add slot
+							$iResultAddDup += 1
+							ReDim $aResult[UBound($aKeys) + $iResultAddDup][6]
+							$aResult[$i + $iResultAddDup][0] = $aResult[$i + $iResultAddDup - 1][0] ; same objectname
+							$aResult[$i + $iResultAddDup][1] = $aCoordsSplit2[0]
+							$aResult[$i + $iResultAddDup][2] = $aCoordsSplit2[1]
+							If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aResult[$i + $iResultAddDup][1] & "-" & $aResult[$i + $iResultAddDup][2])
+						Else
+							; don't invalidate anything
+							;$aCoordArray[0][0] = -1
+							;$aCoordArray[0][1] = -1
+						EndIf
+					Next
 				EndIf
 			Next
 
@@ -145,7 +147,7 @@ Func AttackBarCheck($Remaining = False)
 						Else
 							; In case of Spells + Heroes
 							; June 2018 Update
-							If StringInStr($aResult[$i][0], "Spell") <> 0 And $CheckSlotwHero = True then
+							If StringInStr($aResult[$i][0], "Spell") <> 0 And $CheckSlotwHero = True Then
 								$Slottemp[0] = $Slottemp[0] + 13
 								$iSlotCompensation = -6
 							EndIf

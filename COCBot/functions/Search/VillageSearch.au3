@@ -33,7 +33,13 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	Local $weakBaseValues
 	Local $logwrited = False
 	Local $iSkipped = 0
-
+	Local $bReturnToPickupHero = False
+	Local $abHeroUse[3] = [False, False, False]
+	For $i = 0 to 2
+		$abHeroUse[$i] = ($g_abSearchSearchesEnable[$DB] ? IsSpecialTroopToBeUsed($DB, $eKing + $i) : False) _
+							Or ($g_abSearchSearchesEnable[$LB] ? IsSpecialTroopToBeUsed($LB, $eKing + $i) : False)
+	Next
+	
 	If $g_bDebugDeadBaseImage Or $g_aiSearchEnableDebugDeadBaseImage > 0 Then
 		DirCreate($g_sProfileTempDebugPath & "\SkippedZombies\")
 		DirCreate($g_sProfileTempDebugPath & "\Zombies\")
@@ -69,14 +75,11 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	EndIf
 
 	If $g_bSearchAttackNowEnable Then
+		HideShields(True)
 		GUICtrlSetState($g_hBtnAttackNowDB, $GUI_SHOW)
 		GUICtrlSetState($g_hBtnAttackNowLB, $GUI_SHOW)
 		GUICtrlSetState($g_hBtnAttackNowTS, $GUI_SHOW)
-		GUICtrlSetState($g_hPicTwoArrowShield, $GUI_HIDE)
-		GUICtrlSetState($g_hLblVersion, $GUI_HIDE)
-		For $i = $g_hlblKing to $g_hPicLabRed
-			GUICtrlSetState($i, $GUI_HIDE)
-		Next
+		;GUICtrlSetState($g_hLblVersion, $GUI_HIDE)
 	EndIf
 
 	If $g_bIsClientSyncError = False And $g_bIsSearchLimit = False Then
@@ -304,8 +307,21 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 			SetLog($GetResourcesTXT, $COLOR_BLACK, "Lucida Console", 7.5)
 		EndIf
 
-		; Return Home on Search limit
-		If SearchLimit($iSkipped + 1) Then Return True
+		If $g_bSearchRestartPickupHero Then
+			For $i = 0 To 2 ; check all 3 hero
+				If Not $abHeroUse[$i] Or Not _DateIsValid($g_asHeroHealTime[$i]) Then ContinueLoop
+				Local $iTimeTillHeroHealed = Int(_DateDiff('s', _NowCalc(), $g_asHeroHealTime[$i])) ; hero time in seconds
+				SetDebugLog($g_asHeroNames[$i] & " will be ready in " & $iTimeTillHeroHealed & " seconds")
+				If $iTimeTillHeroHealed <= 0 Then
+					$bReturnToPickupHero = True
+					$g_asHeroHealTime[$i] = ""
+					SetLog($g_asHeroNames[$i] & " is ready. Return home to pick " & ($i <> 1 ? "him" : "her") & " up to join the attack")
+					ExitLoop ; found 1 Hero is ready, skip checking other heros
+				EndIf
+			Next
+		EndIf		
+		; Return Home on Search limit or Hero healed
+		If SearchLimit($iSkipped + 1, $bReturnToPickupHero) Then Return True
 
 		If CheckAndroidReboot() = True Then
 			$g_bRestart = True
@@ -414,12 +430,9 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		GUICtrlSetState($g_hBtnAttackNowDB, $GUI_HIDE)
 		GUICtrlSetState($g_hBtnAttackNowLB, $GUI_HIDE)
 		GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
-		GUICtrlSetState($g_hPicTwoArrowShield, $GUI_SHOW)
-		GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
+		HideShields(False)
+		;GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
 		$g_bBtnAttackNowPressed = False
-		For $i = $g_hlblKing to $g_hPicLabRed
-			GUICtrlSetState($i, $GUI_SHOW)
-		Next
 	EndIf
 
 	;--- write in log match found ----
@@ -439,8 +452,8 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 EndFunc   ;==>_VillageSearch
 
-Func SearchLimit($iSkipped)
-	If $g_bSearchRestartEnable And $iSkipped >= Number($g_iSearchRestartLimit) Then
+Func SearchLimit($iSkipped, $bReturnToPickupHero = False)
+	If $bReturnToPickupHero Or ($g_bSearchRestartEnable And $iSkipped >= Number($g_iSearchRestartLimit)) Then
 		Local $Wcount = 0
 		While _CheckPixel($aSurrenderButton, $g_bCapturePixel) = False
 			If _Sleep($DELAYSEARCHLIMIT) Then Return

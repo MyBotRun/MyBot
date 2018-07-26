@@ -22,7 +22,7 @@ Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 		EndIf
 	EndIf
 
-	If WaitforPixel(28, 505 + $g_iBottomOffsetY, 30, 507 + $g_iBottomOffsetY, Hex(0xEEB145, 6), 5, 10) Then
+	If WaitforPixel(23, 505 + $g_iBottomOffsetY, 53, 507 + $g_iBottomOffsetY, Hex(0xEEB344, 6), 5, 10) Then
 		If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton" & " (Called from " & $sWhereFrom & ")", $COLOR_SUCCESS)
 		If Not $g_bUseRandomClick Then
 			ClickP($aArmyTrainButton, 1, 0, "#0293") ; Button Army Overview

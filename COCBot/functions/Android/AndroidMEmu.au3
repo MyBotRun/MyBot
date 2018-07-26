@@ -422,3 +422,18 @@ Func UpdateMEmuWindowState()
 
 	Return $bChanged
 EndFunc   ;==>UpdateMEmuWindowState
+
+Func CheckClickAdbNewVersions()
+	If $g_sAndroidEmulator <> "MEmu" Then Return
+	If $g_bAndroidAdbClickEnabled And $g_bAndroidAdbClick Then Return
+
+	Local $MEmuVersion = GetVersionNormalized($g_sAndroidVersion)
+	Local $NewMemu = GetVersionNormalized("5.3.2")
+
+	If $MEmuVersion >= $NewMemu And AndroidAdbClickSupported() Then
+		SetDebugLog(" - Using ADB clicks for MEmu v" & $g_sAndroidVersion)
+		; Enable Android ADB mouse click
+		$g_bAndroidAdbClickEnabled = True
+		$g_bAndroidAdbClick = True
+	EndIf
+EndFunc   ;==>CheckClickAdbNewVersions

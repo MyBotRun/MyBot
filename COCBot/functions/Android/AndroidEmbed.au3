@@ -258,10 +258,11 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 
 	If $g_bAndroidEmbedded = True And $bForceEmbed = False Then
 		If $g_hAndroidWindow = $HWnD2 Then
+			Local $a = AndroidEmbed_HWnD_Position()
 			;SetDebugLog("Android Window already embedded", Default, True)
 			If $targetIsHWnD = False Then
 				; Ensure android is still hidden
-				WinMove2($g_hAndroidWindow, "", $aPosCtl[2] + 2, $g_aFrmBotPosInit[5], -1, -1, $HWND_BOTTOM)
+				WinMove2($g_hAndroidWindow, "", $a[0], $a[1], -1, -1, $HWND_BOTTOM)
 			EndIf
 
 			Return False
@@ -628,7 +629,11 @@ Func AndroidEmbed_HWnD_Position($bForShield = False, $bDetachedShield = Default,
 			;$aPos[0] = $aPosCtl[2] + 2
 			;$aPos[1] = $g_aFrmBotPosInit[5]
 			$aPos[0] = 0
-			$aPos[1] = $aPosCtl[3]
+			If $g_bAndroidEmbeddedWindowZeroPosition Then
+				$aPos[1] = 0
+			Else
+				$aPos[1] = $aPosCtl[3]
+			EndIf
 		Else
 			$aPos[0] = 0
 			$aPos[1] = 0

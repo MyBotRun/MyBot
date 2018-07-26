@@ -28,7 +28,7 @@
 #include "functions\Attack\Unbreakable.au3"
 
 #include "functions\Attack\Attack Algorithms\algorithm_AllTroops.au3"
-#include "functions\Attack\Attack Algorithms\algorithm_Barch.au3"
+;#include "functions\Attack\Attack Algorithms\algorithm_Barch.au3"
 #include "functions\Attack\Attack Algorithms\algorithmTH.au3"
 #include "functions\Attack\Attack Algorithms\THAttackTypes.au3"
 #include "functions\Attack\Attack Algorithms\AttackFromCSV.au3"

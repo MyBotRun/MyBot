@@ -130,7 +130,7 @@ EndFunc   ;==>getArmyHeroCount
 
 Func ArmyHeroStatus($i)
 	Local $sImageDir = "trainwindow-HeroStatus-bundle", $sResult = ""
-	Local Const $aHeroesRect[3][4] = [[655, 340, 680, 365], [730, 340, 755, 365], [805, 340, 830, 365]]
+	Local Const $aHeroesRect[3][4] = [[655, 340, 680, 370], [730, 340, 755, 370], [805, 340, 830, 370]]
 
 	; Perform the search
 	_CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
@@ -230,8 +230,20 @@ EndFunc   ;==>ArmyHeroStatus
 
 Func LabGuiDisplay() ; called from main loop to get an early status for indictors in bot bottom
 
-	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
-	If $iLastTimeChecked[$g_iCurAccount] < @HOUR + 1 And Not $g_bSearchAttackNowEnable And $iLastTimeChecked[$g_iCurAccount] <> 0 Then Return
+	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0] , $iDateCalc
+
+		; Check if is a valid date and Calculated the number of minutes from remain time Lab and now
+	If _DateIsValid($g_sLabUpgradeTime) Then
+		$iDateCalc = _DateDiff('n', _NowCalc(), $g_sLabUpgradeTime)
+	Else
+		; Check the number of hours from last check
+		$iDateCalc =_DateDiff('n', $iLastTimeChecked[$g_iCurAccount], _NowCalc())
+		; A check each 6 hours [6*60 = 360]
+		If $iDateCalc = 360 then $iDateCalc = 0
+	EndIf
+
+	If $iDateCalc <> 0 And Not $g_bSearchAttackNowEnable And $iLastTimeChecked[$g_iCurAccount] <> 0 Then Return
+
 	;CLOSE ARMY WINDOW
 	ClickP($aAway, 2, 0, "#0346") ;Click Away
 	If _Sleep(1500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
@@ -258,6 +270,8 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 	BuildingClickP($g_aiLaboratoryPos, "#0197") ;Click Laboratory
 	If _Sleep(1500) Then Return ; Wait for window to open
 	; Find Research Button
+
+	$iLastTimeChecked[$g_iCurAccount] = _NowCalc()
 
 	If QuickMIS("BC1", @ScriptDir & "\imgxml\Lab\Research", 200, 620, 700, 700) Then
 		;If $g_iDebugImageSave = 1 Then DebugImageSave("LabUpgrade") ; Debug Only
@@ -307,7 +321,26 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		Return
 	EndIf
 
-	$iLastTimeChecked[$g_iCurAccount] = @HOUR
-
 	; EndIf
 EndFunc   ;==>LabGuiDisplay
+
+Func HideShields($bHide = False)
+	Local Static $ShieldState[19]
+	Local $counter
+	If $bHide = True Then
+		$counter = 0
+		For $i = $g_hlblKing to $g_hPicLabGreen
+			$ShieldState[$counter] = GUICtrlGetState($i)
+			GUICtrlSetState($i, $GUI_HIDE)
+			$counter += 1
+		Next
+	Else
+		$counter = 0
+		For $i = $g_hlblKing to $g_hPicLabGreen
+			If $ShieldState[$counter] = 80 Then
+				GUICtrlSetState($i, $GUI_SHOW )
+			EndIf
+			$counter += 1
+		Next
+	EndIf
+EndFunc

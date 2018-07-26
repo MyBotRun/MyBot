@@ -8,22 +8,20 @@ The once listed here have been tested and do work.
 Nox
 ===
 http://en.bignox.com/
-Versions 6.0.1.0, 6.0.0.0, 5.2.1.0, 5.1.0.0, 5.0.0.1, 5.0.0.0, 3.8.1.3, 3.8.0.x, 3.7.6.x, 3.7.5.1, 3.7.5, 3.7.3, 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.3.0, 3.1.0, 3.0.0
+Versions 6.2.0.0, 6.0.1.0, 6.0.0.0, 5.2.1.0, 5.1.0.0, 5.0.0.1, 5.0.0.0, 3.8.1.3, 3.8.0.x, 3.7.6.x, 3.7.5.1, 3.7.5, 3.7.3, 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.3.0, 3.1.0, 3.0.0
 MyBot Command Line Key: Nox
 Default Instance Key: nox
 Second Instance Key:  Nox_1
 
-Known issues/bugs: Only in low computer screen resolutions and when Android Window doesn't have android screen size of 860x732
+Info/known issues/bugs: Only in low computer screen resolutions and when Android Window doesn't have android screen size of 860x732
 due to different window size, MyBot resizing fails for any version. Bot set Nox to fixed size to avoid any resize issues.
-Since 3.3.0 Nox support also DirectX that can be used for faster Screen-Capture. Nox prior to 3.3.0 in docked mode supports only
-mouse click when using mouse, click and drop to move objects does not work. Newer versions since 3.7.3 support setting of
+Since 3.3.0 Nox support also DirectX that can be used for faster Screen-Capture. Newer versions since 3.7.3 support setting of
 framerates and 20 fps or lower significantly reduce CPU load.
-Nox 6.0.0.0 has issues with CoC (it crashes) and only runs stable with Lollipop Android 5.1 image.
 
 MEmu
 ====
 http://www.memuplay.com/
-Versions 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 5.3.2.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1
@@ -39,9 +37,9 @@ MyBot Command Line Key (2.x/3.x): BlueStacks2
 Default Instance Key: Android
 Second Instance Key (only for BlueStacks 3.x):  Android_1
 
-Known issues/bugs: True Background mode using ADB not available (no ADB screencap & no ADB mouse click).
+Known issues/bugs: True Background mode using ADB not available for older versions (no ADB screencap & no ADB mouse click).
 ADB connection for BlueStacks2 can require one-time ADB daemon restart (initiated automatically by bot).
-ADB connection does interfere with LeapDroid default instance, review LeapDroid section to change ADB port.
+ADB connection does interfere with LeapDroid default instance when running at the same time, review LeapDroid section to change ADB port.
 
 KOPLAYER
 ========

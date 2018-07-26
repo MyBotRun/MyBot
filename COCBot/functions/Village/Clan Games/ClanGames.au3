@@ -120,7 +120,7 @@ Func _ClanGames()
 
 	; Lets test the Air Troops Challenges
 	If $g_bChkClanGamesAirTroop Then
-		SetLog("Checking 5 Air Troops Challenges", $COLOR_DEBUG)
+		SetLog("Checking 6 Air Troops Challenges", $COLOR_DEBUG)
 		;[0] = Path Directory , [1] = Event Name , [2] = TH level , [3] = Event Quantities
 		Local $AirTroopChallenges = ClanGamesChallenges("$AirTroopChallenges" , False, $sINIPath, $g_bChkClanGamesDebug)
 
@@ -606,12 +606,13 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False , $sINIPath = "", $debu
 				[$g_sImgElixirE, 	"Elixir Embezzlement"	, 3, 1, 1], _ ; Loot a total of 500,000 TO 1,500,000 from Multiplayer Battle 	|1h-2d 	|100-600
 				[$g_sImgDarkEH, 	"Dark Elixir Heist"		, 9, 3, 1]]   ; Loot a total of 1,500 TO 12,500 from Multiplayer Battle 		|1h-2d 	|100-600
 
-	Local $AirTroopChallenges[5][4] = [ _
-				[$g_sImgMini, 		"Minion"			, 7, 20], _		; Earn 2-5 Stars from Multiplayer Battles using 20 Minions			|3h-8h	|40-100
-				[$g_sImgBall, 		"Balloon"			, 4, 12], _		; Earn 2-5 Stars from Multiplayer Battles using 12 Balloons		|3h-8h	|40-100
-				[$g_sImgDrag, 		"Dragon"			, 7,  6], _		; Earn 2-5 Stars from Multiplayer Battles using 6 Dragons			|3h-8h	|40-100
-				[$g_sImgBabyD, 		"BabyDragon"		, 9,  4], _		; Earn 2-5 Stars from Multiplayer Battles using 4 Baby Dragons		|3h-8h	|40-100
-				[$g_sImgLava, 		"Lavahound"			, 9,  3]]  		; Earn 2-5 Stars from Multiplayer Battles using 3 Lava Hounds		|3h-8h	|40-100
+	Local $AirTroopChallenges[6][4] = [ _
+				[$g_sImgMini, 		"Minion"				, 7, 20], _		; Earn 2-5 Stars from Multiplayer Battles using 20 Minions			|3h-8h	|40-100
+				[$g_sImgBall, 		"Balloon"				, 4, 12], _		; Earn 2-5 Stars from Multiplayer Battles using 12 Balloons			|3h-8h	|40-100
+				[$g_sImgDrag, 		"Dragon"				, 7,  6], _		; Earn 2-5 Stars from Multiplayer Battles using 6 Dragons			|3h-8h	|40-100
+				[$g_sImgBabyD, 		"BabyDragon"			, 9,  4], _		; Earn 2-5 Stars from Multiplayer Battles using 4 Baby Dragons		|3h-8h	|40-100
+				[$g_sImgLava, 		"ElectroDragon"			,10,  2], _  	; Earn 2-4 Stars from Multiplayer Battles using 2 Electro Dragon	|3h-8h	|40-300
+				[$g_sImgLava, 		"Lavahound"				, 9,  3]]  		; Earn 2-5 Stars from Multiplayer Battles using 3 Lava Hounds		|3h-8h	|40-100
 
 	Local $GroundTroopChallenges[14][4] = [ _
 				[$g_sImgArch, 		"Archer"		, 1, 30], _				 ; Earn 2-5 Stars from Multiplayer Battles using 30 Barbarians		|3h-8h	|40-100

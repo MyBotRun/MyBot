@@ -1,15 +1,60 @@
-﻿* **V7.5.3**
+﻿* **V7.5.4**
+* Added Electro Dragon in to Clan Games
+* Added Only request donation, when specific Clan Castle type is missing by @Demen
+* Added Restart search to pick healed heroes up by @Demen
+* Fixed Issue on waiting for heroes and exist Barbarian King upgrading
+* Fixed When the Heroes are not prepared and log doesn't say nothing
+* Fixed The url issue on Support Development label, reported by @Hecki
+* Fixed Correct profile log when is switch account
+* Fixed Train Skip counter issue, idle loop until reaching train time , fix by @Demen
+* Fixed Rare situations when exist a double Castle Spells but with different levels by @Demen
+* Fixed Tencent CoC Version in Infinite Start Loop , reported by @PoH98
+* Fixed Embedded user clicks for Nox 6.2.0.0
+* Fixed Remove clan castle spell slots - June 2018
+* Fixed Donate window with 7 slots per row
+* Fixed Correct path for ImageDetection, reported by @alepitta
+* Fixed Hogs donation, reported by @dharyadi
+* Fixed New coordinates for full army check - June 2018 Update
+* Fixed Switch accounts and PBT + Disable accounts check
+* Fixed Switch accounts + Halt Attack + Smart Switch issue, reported by @rbrt
+* Fixed Rearm/Reload button problems when there are more then 7 buttons, reported by @HarchH
+* Fixed Lab Debug Icon Save
+* Fixed Lab icon coordinates
+* Fixed Lab resource OCR
+* Fixed Lab "Max Level" detection
+* Fixed Lab "Lab Upgrade Required" detection
+* Fixed Wall upgrade resource check
+* Fixed Wall upgrade priority check
+* Fixed Hero upgrade priority check
+* Fixed Lab add sieges
+* Fixed Lab "Not Unlocked" detection
+* Fixed Lab not unlocked treated as read error
+* Fixed Lab 2nd page click drag
+* Fixed Lab window random coordinates
+* Fixed Lab OCR won't read again (wrong flag) after read error
+* Fixed Lab apply read flag wrongly on "lab upgrade required" and "not unlocked"
+* Fixed Lab OCR read flag won't reset when bot starts, except bot shut down completely
+* Fixed Lab OCR white 3 5 6 8, thx ProMac
+* Fixed Building upgrade repeat checks Array error for TH12
+* Fixed Building upgrade Error finding button for TH12
+* Fixed Android hold back ADB click causing infinite Android reboots because clicks never released
+* Improved Test click drag
+* Improved The Lab check , reported by @Demen
+* Updated Chinese Simplified Translations by @PoH98
+* Updated Android information file
+
+* **V7.5.3**
 * Fixed Miner XP Value , reported by @Spartan
 * Fixed Wizard detection on attack bar reported by @liam0603
 * Fixed Smartwait4Train when Barracks are boosted , reported by @sleepnmojo
-* Fixed Attack Now buttons and New status icons issue , reported by @vLab97  
-* Fixed Boost button detection on Heroes , reported by @Mantaka 
+* Fixed Attack Now buttons and New status icons issue , reported by @vLab97
+* Fixed Boost button detection on Heroes , reported by @Mantaka
 * Fixed Rearm on TH12 when exist 7 button , reported by @HArchH
 * Fixed Input Train digit limits to Minions and Electro Dragon , reported by @jwodonto
 * Fixed Laboratory Troops and Spells Upgrades - June 2018
 * Improved the setlog on Prerequisites
 * Improved the Check Laboratory status
-* Updated Russian translate by @vLab97
+* Updated Russian Translations by @VLab97
 
 * **V7.5.2**
 * Added Electro Dragon Support
@@ -19,7 +64,7 @@
 * Added TH12 CSV settings support. Refer "Barch four fingers.csv" for sample commands
 * Added Verification the display resolution and taskbar on Prerequisites
 * Added TH12 Giga Tesla upgrade support (both auto and manual)
-* Added Attack Now Button (Useful for CSV Testing) in Debug mode 
+* Added Attack Now Button (Useful for CSV Testing) in Debug mode
 * Added Heroes and Laboratory status to bot UI
 * Fixed Remaining time for CC request - June Update
 * Fixed Donations - June Update

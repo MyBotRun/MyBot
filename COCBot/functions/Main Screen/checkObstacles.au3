@@ -316,10 +316,17 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		SetDebugLog("checkObstacles: Found Black Android Screen")
 	EndIf
 
+	If $g_bOnlySCIDAccounts Then
+		SetDebugLog("check Log in with Supercell ID login by Clicks")
+		; check Log in with Supercell ID login screen by Clicks
+		CheckLoginWithSupercellIDScreen()
+	EndIf
+
 	; check if google account list shown and select first
 	If Not CheckGoogleSelectAccount() Then
-		; check Log in with Supercell ID login screen
-		CheckLoginWithSupercellID()
+		SetDebugLog("check Log in with Supercell ID login by shared_prefs")
+		; check Log in with Supercell ID login screen by shared_prefs
+		If CheckLoginWithSupercellID() then Return True
 	EndIf
 
 	Return False

@@ -36,14 +36,18 @@ Func ReArm()
 
 
 	Local $bReArmed = False
-	Local $sDiamond = GetDiamondFromRect("200,620,750,700")
+	Local $sDiamond = GetButtonDiamond("Rearm")
 	Local $aTempArray, $aTempBtnCoords
-    Local $aRearmOptions = findMultiple($g_sImgRearm, $sDiamond, $sDiamond, 0, 1000, 3, "objectname,objectpoints", True)
+	Local $aRearmedAlready[1] = ["None"] ;None is a dummy value
+
+	Local $aRearmOptions = findMultiple($g_sImgRearm, $sDiamond, $sDiamond, 0, 1000, 3, "objectname,objectpoints", True)
 
 	If $aRearmOptions <> "" And IsArray($aRearmOptions) Then
-		For $i = 0 To UBound($aRearmOptions, 1) - 1
+		For $i = 0 To UBound($aRearmOptions, $UBOUND_ROWS) - 1
 			$aTempArray = $aRearmOptions[$i]
-			If UBound($aTempArray, 1) = 2 Then
+			SetDebugLog("Rearm() $aRearmOptions[" & $i & "]: " & _ArrayToString($aTempArray))
+			If UBound($aTempArray) >= 2 Then
+				If _ArraySearch($aRearmedAlready, $aTempArray[0]) <> -1 Then ContinueLoop
 				$aTempBtnCoords = StringSplit($aTempArray[1], ",", $STR_NOCOUNT)
 				If IsMainPage() Then ClickP($aTempBtnCoords, 1, 0, "#0330")
 				If _Sleep($DELAYREARM1) Then Return
@@ -60,9 +64,11 @@ Func ReArm()
 					$bReArmed = True
 					If _Sleep($DELAYREARM1) Then Return
 				EndIf
+			_ArrayAdd($aRearmedAlready,$aTempArray[0])
 			EndIf
 		Next
 	EndIf
+
 
 	If Not $bReArmed Then
 		SetLog("Rearm not needed!", $COLOR_SUCCESS)

@@ -233,7 +233,22 @@ Func CheckIfArmyIsReady()
 	EndIf
 
 	$g_bCheckSpells = CheckSpells()
-	$bFullArmyHero = BitAND($g_aiSearchHeroWaitEnable[$DB], $g_iHeroAvailable) > 0 Or BitAND($g_aiSearchHeroWaitEnable[$LB], $g_iHeroAvailable) > 0 Or ($g_aiSearchHeroWaitEnable[$DB] = $eHeroNone And $g_aiSearchHeroWaitEnable[$LB] = $eHeroNone)
+
+	$bFullArmyHero = (BitAND($g_aiSearchHeroWaitEnable[$DB], $g_iHeroAvailable) = $g_aiSearchHeroWaitEnable[$DB] And $g_abAttackTypeEnable[$DB]) Or _
+					 (BitAND($g_aiSearchHeroWaitEnable[$LB], $g_iHeroAvailable) = $g_aiSearchHeroWaitEnable[$LB] And $g_abAttackTypeEnable[$LB]) Or _
+					 ($g_aiSearchHeroWaitEnable[$DB] = $eHeroNone And $g_aiSearchHeroWaitEnable[$LB] = $eHeroNone)
+
+	If $g_bDebugSetlogTrain Then
+		Setlog("Heroes are Ready: " & String($bFullArmyHero))
+		Setlog("Heroes Available Num: " & $g_iHeroAvailable) 										;  	$eHeroNone = 0, $eHeroKing = 1, $eHeroQueen = 2, $eHeroWarden = 4
+		Setlog("Search Hero Wait Enable [$DB] Num: " & $g_aiSearchHeroWaitEnable[$DB]) 				; 	what you are waiting for : 1 is King , 3 is King + Queen , etc etc
+		Setlog("Search Hero Wait Enable [$LB] Num: " & $g_aiSearchHeroWaitEnable[$LB])
+		Setlog("Dead Base BitAND: " & BitAND($g_aiSearchHeroWaitEnable[$DB], $g_iHeroAvailable))
+		Setlog("Live Base BitAND: " & BitAND($g_aiSearchHeroWaitEnable[$LB], $g_iHeroAvailable))
+		Setlog("Are you 'not' waiting for Heroes: " & String($g_aiSearchHeroWaitEnable[$DB] = $eHeroNone And $g_aiSearchHeroWaitEnable[$LB] = $eHeroNone))
+		Setlog("Is Wait for Heroes Active : " & IsWaitforHeroesActive())
+	EndIf
+
 	$bFullArmyCCSpells = IsFullClanCastleSpells()
 	$bFullArmyCCTroops = IsFullClanCastleTroops()
 
@@ -435,7 +450,7 @@ Func RemoveCastleSpell($Slots)
 
 	If _Sleep(500) Then Return
 
-	Local $pos[2] = [575, 575], $pos2[2] = [645, 575]
+	Local $pos[2] = [515, 575], $pos2[2] = [585, 575]
 
 	If $Slots[0] > 0 Then
 		ClickRemoveTroop($pos, $Slots[0], $g_iTrainClickDelay) ; Click on Remove button as much as needed
@@ -1186,7 +1201,7 @@ Func RemoveExtraTroopsQueue() ; Will remove All Extra troops in queue If there's
 	;Local $x = 834
 	If $g_bIsFullArmywithHeroesAndSpells Then Return True
 
-	Local Const $y = 259, $yRemoveBtn = 200, $xDecreaseRemoveBtn = 10
+	Local Const $y = 186, $yRemoveBtn = 200, $xDecreaseRemoveBtn = 10
 	Local $bColorCheck = False, $bGotRemoved = False
 	For $x = 834 To 58 Step -70
 		If Not $g_bRunState Then Return

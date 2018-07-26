@@ -40,7 +40,7 @@ Func UpgradeHeroes()
 	EndIf
 
 	;Check if Auto Lab Upgrade is enabled and if a Dark Troop is selected for Upgrade. If yes, it has priority!
-	If $g_bAutoLabUpgradeEnable And $g_iCmbLaboratory >= 19 Then
+	If $g_bAutoLabUpgradeEnable And $g_iCmbLaboratory >= 20 And $g_iCmbLaboratory <= 30 Then
 		SetLog("Laboratory needs DE to Upgrade :  " & $g_avLabTroops[$g_iCmbLaboratory][3])
 		SetLog("Skipping the Heroes Upgrade!")
 		Return

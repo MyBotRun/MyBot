@@ -1024,6 +1024,7 @@ Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True)
 EndFunc   ;==>RestartAndroidCoC
 
 Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True)
+	ClearClicks() ; it can happen the clicks are hold back, ensure it's cleared
 	$g_bSkipFirstZoomout = False
 	ResumeAndroid()
 	If Not $g_bRunState Then Return False
@@ -1748,6 +1749,7 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 EndFunc   ;==>_AndroidAdbLaunchShellInstance
 
 Func AndroidAdbTerminateShellInstance()
+	ClearClicks() ; it can happen the clicks are hold back, ensure it's cleared
 	Local $SuspendMode = ResumeAndroid()
 	If $g_iAndroidAdbProcess[0] <> 0 Then
 		; send exit to shell
@@ -2489,10 +2491,14 @@ Func ReleaseClicks($minClicksToRelease = 0, $ReleaseClicksEnabled = $g_bAndroidA
 			Return False
 		EndIf
 	EndIf
+	ClearClicks()
+EndFunc   ;==>ReleaseClicks
+
+Func ClearClicks()
 	$g_bAndroidAdbKeepClicksActive = False
 	ReDim $g_aiAndroidAdbClicks[1]
 	$g_aiAndroidAdbClicks[0] = -1
-EndFunc   ;==>ReleaseClicks
+EndFunc   ;==>ClearClicks
 
 Func AndroidAdbClickSupported()
 	Return BitAND($g_iAndroidSupportFeature, 4) = 4
@@ -2591,6 +2597,7 @@ Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = Tru
 	If $times < 1 Then Return SetError(0, 0)
 	Local $i = 0, $j = 0
 	Local $Click = [$x, $y, "down-up"]
+	Local $aiAndroidAdbClicks
 	Local $ReleaseClicks = ($x = Default And $y = Default And $g_aiAndroidAdbClicks[0] > 0)
 	If $ReleaseClicks = False And $g_aiAndroidAdbClicks[0] > -1 Then
 		Local $pos = $g_aiAndroidAdbClicks[0]
@@ -2662,6 +2669,7 @@ Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = Tru
 
 	If $ReleaseClicks = True Then
 		If $g_bDebugAndroid Or $g_bDebugClick Then SetDebugLog("Release clicks: queue size = " & $g_aiAndroidAdbClicks[0])
+		Local $aiAndroidAdbClicks = $g_aiAndroidAdbClicks ; create copy of $g_aiAndroidAdbClicks as it could be modified during execution
 	Else
 		Execute($g_sAndroidEmulator & "AdjustClickCoordinates($x,$y)")
 	EndIf
@@ -2736,7 +2744,7 @@ Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = Tru
 				Local $BTN_TOUCH_DOWN = True
 				Local $BTN_TOUCH_UP = True
 				If $ReleaseClicks = True Then
-					$Click = $g_aiAndroidAdbClicks[($i - 1) * $recordsNum + $j + 1]
+					$Click = $aiAndroidAdbClicks[($i - 1) * $recordsNum + $j + 1] ; fixed Array variable has incorrect number of subscripts
 					$x = $Click[0]
 					$y = $Click[1]
 					Execute($g_sAndroidEmulator & "AdjustClickCoordinates($x,$y)")
@@ -3166,29 +3174,54 @@ Func CheckAndroidReboot($bRebootAndroid = True)
 
 EndFunc   ;==>CheckAndroidReboot
 
-Func GetAndroidProcessPID($sPackage = Default, $bForeground = True)
+Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount = 0)
 	If $sPackage = Default Then $sPackage = $g_sAndroidGamePackage
-	; u0_a58    4395  580   1135308 187040 14    -6    0     0     ffffffff 00000000 S com.supercell.clashofclans
-	; u0_a14    3415  73    1683660 118948 14    -6    0     0     ffffffff b7492365 S com.supercell.clashofclans
+	; - USER  - PID - PPID  - VSS  - RSS  -   PRIO - NICE - RTPRIO - SCHED - WCHAN  - EIP    - STATE - NAME
+	; u0_a58    4395  580   1135308 187040     14    -6        0      0     ffffffff 00000000    S      com.supercell.clashofclans
+	; u0_a27    2912  142   663800  98656      30    10        0      3     ffffffff b7591617    S      com.tencent.tmgp.supercell.clashofclans
+	; u0_a26    2740  73    1601704 76380      20    0         0      0     ffffffff b7489435    S      com.supercell.clashofclans.guopan
 	If AndroidInvalidState() Then Return 0
 	Local $cmd = "set result=$(ps -p|grep """ & $g_sAndroidGamePackage & """ >&2)"
 	Local $output = AndroidAdbSendShellCommand($cmd)
+	SetDebugLog("$g_sAndroidGamePackage: " & $g_sAndroidGamePackage)
+	SetDebugLog("GetAndroidProcessPID StdOut :" & $output)
 	$output = StringStripWS($output, 7)
 	Local $aPkgList[0][26] ; adjust to any suffisent size to accommodate
 	Local $iCols
 	_ArrayAdd($aPkgList, $output, 0, " ", @LF, $ARRAYFILL_FORCE_STRING)
+
+	Local $CorrectSCHED = "0"
+	Switch $g_sAndroidGamePackage
+		Case $g_sAndroidGamePackage = "com.tencent.tmgp.supercell.clashofclans"
+			; scheduling policy : SCHED_BATCH = 3
+			$CorrectSCHED = "3"
+		Case Else
+			; scheduling policy : SCHED_NORMAL = 0
+			$CorrectSCHED = "0"
+	EndSwitch
+
 	For $i = 1 To UBound($aPkgList)
 		$iCols = _ArraySearch($aPkgList, "", 0, 0, 0, 0, 1, $i, True)
 		If $iCols > 9 And $aPkgList[$i - 1][$iCols - 1] = $g_sAndroidGamePackage Then
 			; process running
-			If $bForeground = True And $aPkgList[$i - 1][8] <> "0" Then
+			If $bForeground = True And $aPkgList[$i - 1][8] <> $CorrectSCHED Then
 				; not foreground
+				If $iRetryCount < 2 Then
+					; retry 2 times
+					Sleep(100)
+					Return GetAndroidProcessPID($sPackage, $bForeground, $iRetryCount + 1)
+				EndIf
 				SetDebugLog("Android process " & $sPackage & " not running in foreground")
 				Return 0
 			EndIf
 			Return Int($aPkgList[$i - 1][1])
 		EndIf
 	Next
+	If $iRetryCount < 2 Then
+		; retry 2 times
+		Sleep(100)
+		Return GetAndroidProcessPID($sPackage, $bForeground, $iRetryCount + 1)
+	EndIf
 	SetDebugLog("Android process " & $sPackage & " not running")
 	Return 0
 EndFunc   ;==>GetAndroidProcessPID

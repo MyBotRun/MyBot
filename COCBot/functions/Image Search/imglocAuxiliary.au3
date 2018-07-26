@@ -263,6 +263,8 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = GetDiamondFromRect("630,280,850,360")
 		Case "ArmyTab", "TrainTroopsTab", "BrewSpellsTab", "BuildSiegeMachinesTab", "QuickTrainTab"
 			$btnDiamond = GetDiamondFromRect("18,100,800,150")
+		Case "Rearm"
+			$btnDiamond = "110,620|730,620|750,700|111,700"
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch

@@ -99,6 +99,7 @@ Func checkAttackDisable($iSource, $Result = "")
 						checkObstacles()
 						ExitLoop
 					EndIf
+					If Not $g_bRunState Then ExitLoop
 				WEnd
 				If _CheckPixel($aIsAttackPage, $g_bCapturePixel) Then
 					If TestCapture() Then

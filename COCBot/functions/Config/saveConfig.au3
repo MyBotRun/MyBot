@@ -389,6 +389,12 @@ Func SaveConfig_600_11()
 	; <><><><> Village / Donate - Request <><><><>
 	_Ini_Add("planned", "RequestHoursEnable", $g_bRequestTroopsEnable ? 1 : 0)
 	_Ini_Add("donate", "txtRequest", $g_sRequestTroopsText)
+	; Request Type - Demen
+	_Ini_Add("donate", "RequestType_Troop", $g_abRequestType[0] ? 1 : 0)
+	_Ini_Add("donate", "RequestType_Spell", $g_abRequestType[1] ? 1 : 0)
+	_Ini_Add("donate", "RequestType_Siege", $g_abRequestType[2] ? 1 : 0)
+	_Ini_Add("donate", "RequestCountCC_Troop", $g_iRequestCountCCTroop)
+	_Ini_Add("donate", "RequestCountCC_Spell", $g_iRequestCountCCSpell)
 	Local $string = ""
 	For $i = 0 To 23
 		$string &= ($g_abRequestCCHours[$i] ? "1" : "0") & "|"
@@ -597,6 +603,7 @@ Func SaveConfig_600_28()
 	_Ini_Add("general", "attacknowdelay", $g_iSearchAttackNowDelay)
 	_Ini_Add("search", "ChkRestartSearchLimit", $g_bSearchRestartEnable ? 1 : 0)
 	_Ini_Add("search", "RestartSearchLimit", $g_iSearchRestartLimit)
+	_Ini_Add("search", "RestartSearchPickupHero", $g_bSearchRestartPickupHero ? 1 : 0)
 	_Ini_Add("general", "AlertSearch", $g_bSearchAlertMe ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_28
 
@@ -1063,6 +1070,10 @@ Func SaveConfig_600_35_1()
 	_Ini_Add("other", "AutoResumeTime", $g_iAutoResumeTime)
 	_Ini_Add("other", "ChkDisableNotifications", $g_bDisableNotifications)
 	_Ini_Add("other", "ChkFixClanCastle", $g_bForceClanCastleDetection ? 1 : 0)
+
+	_Ini_Add("ProfileSCID", "OnlySCIDAccounts", $g_bOnlySCIDAccounts ? 1 : 0)
+	_Ini_Add("ProfileSCID", "WhatSCIDAccount2Use", $g_iWhatSCIDAccount2Use)
+
 EndFunc   ;==>SaveConfig_600_35_1
 
 Func SaveConfig_600_35_2()

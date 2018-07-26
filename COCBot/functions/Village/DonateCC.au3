@@ -596,16 +596,16 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $Custom = False, Cons
 	If $Slot = -1 Then Return
 
 	; figure out row/position
-	If $Slot < 0 Or $Slot > 11 Then
+	If $Slot < 0 Or $Slot > 13 Then
 		SetLog("Invalid slot # found = " & $Slot & " for " & $g_asTroopNames[$iTroopIndex], $COLOR_ERROR)
 		Return
 	EndIf
 	If $g_bDebugSetlog Then SetDebugLog("slot found = " & $Slot & ", " & $g_asTroopNames[$iTroopIndex], $COLOR_DEBUG)
 	$donaterow = 1 ;first row of troops
 	$donateposinrow = $Slot
-	If $Slot >= 6 And $Slot <= 11 Then
+	If $Slot >= 7 And $Slot <= 13 Then
 		$donaterow = 2 ;second row of troops
-		$Slot = $Slot - 6
+		$Slot = $Slot - 7
 		$donateposinrow = $Slot
 		$YComp = 88 ; correct 860x780
 	EndIf
@@ -779,12 +779,12 @@ Func DonateSpellType(Const $iSpellIndex, $Quant = 0, Const $Custom = False, Cons
 	If $Slot = -1 Then Return
 
 	; figure out row/position
-	If $Slot < 12 Or $Slot > 17 Then
+	If $Slot < 14 Or $Slot > 20 Then
 		SetLog("Invalid slot # found = " & $Slot & " for " & $g_asSpellNames[$iSpellIndex], $COLOR_ERROR)
 		Return
 	EndIf
 	$donaterow = 3 ;row of spells
-	$Slot = $Slot - 12
+	$Slot = $Slot - 14
 	$donateposinrow = $Slot
 	$YComp = 203 ; correct 860x780
 
@@ -1092,7 +1092,7 @@ EndFunc   ;==>RemainingCCcapacity
 Func DetectSlotTroop(Const $iTroopIndex)
 	Local $FullTemp
 
-	For $Slot = 0 To 5
+	For $Slot = 0 To 6
 		Local $x = 343 + (68 * $Slot)
 		Local $y = $g_iDonationWindowY + 37
 		Local $x1 = $x + 75
@@ -1118,8 +1118,8 @@ Func DetectSlotTroop(Const $iTroopIndex)
 		EndIf
 	Next
 
-	For $Slot = 6 To 11
-		Local $x = 343 + (68 * ($Slot - 6))
+	For $Slot = 7 To 13
+		Local $x = 343 + (68 * ($Slot - 7))
 		Local $y = $g_iDonationWindowY + 124
 		Local $x1 = $x + 75
 		Local $y1 = $y + 43
@@ -1151,8 +1151,8 @@ EndFunc   ;==>DetectSlotTroop
 Func DetectSlotSpell(Const $iSpellIndex)
 	Local $FullTemp
 
-	For $Slot = 12 To 17
-		Local $x = 343 + (68 * ($Slot - 12))
+	For $Slot = 14 To 20
+		Local $x = 343 + (68 * ($Slot - 14))
 		Local $y = $g_iDonationWindowY + 241
 		Local $x1 = $x + 75
 		Local $y1 = $y + 43

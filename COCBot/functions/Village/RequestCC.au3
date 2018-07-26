@@ -30,20 +30,21 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	SetLog("Requesting Clan Castle Troops", $COLOR_INFO)
 
 	;open army overview
-	If IsMainPage() Then
+	If IsMainPage(5) Then
 		If Not $g_bUseRandomClick Then
 			Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0334")
 		Else
 			ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
 		EndIf
 	EndIf
+
 	If _Sleep($DELAYREQUESTCC1) Then Return
 
 	checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
 
 	;wait to see army overview
 	Local $iCount = 0
-	While IsTrainPage() = False
+	While IsTrainPage(False, 2) = False
 		If _Sleep($DELAYREQUESTCC1) Then ExitLoop
 		$iCount += 1
 		If $iCount > 5 Then
@@ -52,8 +53,8 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 		EndIf
 	WEnd
 
-	Local $color1 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, True)	; Gray/Green color at 20px below Letter "R"
-	Local $color2 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True)		; White/Green color at Letter "R"
+	Local $color1 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, True) ; Gray/Green color at 20px below Letter "R"
+	Local $color2 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True) ; White/Green color at Letter "R"
 
 	If _ColorCheck($color1, Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5]) Then
 		;clan full or not in clan
@@ -62,7 +63,42 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	ElseIf _ColorCheck($color1, Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
 		If _ColorCheck($color2, Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
 			;can make a request
-			Local $x = _makerequest()
+			; Request Type - Demen
+			Local $bNeedRequest = False, $aCheckCCNotFull[3] = [24, 455, 631], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
+			If Not $g_abRequestType[0] And Not $g_abRequestType[1] And Not $g_abRequestType[2] Then
+				SetDebugLog("Request for Specific CC is not enable")
+				$bNeedRequest = True
+			Else
+				Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
+				For $i = 0 To 2
+					If $g_abRequestType[$i] Then
+						If _ColorCheck(_GetPixelColor($aCheckCCNotFull[$i], 470, True), Hex(0xDC363A , 6), 30) Then ; red symbol
+							SetDebugLog("Found CC " & $sLog[$i] & " not full")
+							If $aiRequestCountCC[$i] = 0 or $aiRequestCountCC[$i] >= 40 - $i * 38 Then
+								$bNeedRequest = True
+							Else 
+								Local $sCCReceived = getOcrAndCapture("coc-ms", 289 + $i * 183, 468, 60, 16, True, False, True) ; read CC (troops 0/40 or spells 0/2)
+								SetDebugLog("Read CC " & ($i = 0 ? "Troops: " : "Spells: ") & $sCCReceived)
+								Local $aCCReceived = StringSplit($sCCReceived, "#", $STR_NOCOUNT) ; split the trained troop number from the total troop number
+								If IsArray($aCCReceived) Then
+									If Number($aCCReceived[0]) < $aiRequestCountCC[$i] Then $bNeedRequest = True
+									If Not $bNeedRequest Or $g_bDebugSetlog Then SetLog("Already received " & Number($aCCReceived[0]) & ($i = 0 ? " CC Troops." : " CC Spells."))
+								EndIf
+							EndIf
+						Else
+							SetLog("CC " & $sLog[$i] & " is full" & ($i > 0 ? " or not available." : "."))
+						EndIf
+						If $bNeedRequest Then ExitLoop
+					Else
+						SetDebugLog("RequestType does not care about " & $sLog[$i])
+					EndIf
+				Next
+			EndIf
+
+			If $bNeedRequest Then
+				Local $x = _makerequest()
+			EndIf
+
 		Else
 			;request has already been made
 			SetLog("Request has already been made")
@@ -84,14 +120,14 @@ Func _makerequest()
 	Click($aRequestTroopsAO[0], $aRequestTroopsAO[1], 1, 0, "0336") ;Select text for request
 
 	;wait window
-	Local $icount = 0
+	Local $iCount = 0
 	While Not ( _ColorCheck(_GetPixelColor($aCancRequestCCBtn[0], $aCancRequestCCBtn[1], True), Hex($aCancRequestCCBtn[2], 6), $aCancRequestCCBtn[3]))
 		If _Sleep($DELAYMAKEREQUEST1) Then ExitLoop
-		$icount += 1
-		If $g_bDebugSetlog Then SetDebugLog("$icount2 = " & $icount & ", " & _GetPixelColor($aCancRequestCCBtn[0], $aCancRequestCCBtn[1], True), $COLOR_DEBUG)
-		If $icount > 20 Then ExitLoop ; wait 21*500ms = 10.5 seconds max
+		$iCount += 1
+		If $g_bDebugSetlog Then SetDebugLog("$icount2 = " & $iCount & ", " & _GetPixelColor($aCancRequestCCBtn[0], $aCancRequestCCBtn[1], True), $COLOR_DEBUG)
+		If $iCount > 20 Then ExitLoop ; wait 21*500ms = 10.5 seconds max
 	WEnd
-	If $icount > 20 Then
+	If $iCount > 20 Then
 		SetLog("Request has already been made, or request window not available", $COLOR_ERROR)
 		ClickP($aAway, 2, 0, "#0257")
 		If _Sleep($DELAYMAKEREQUEST2) Then Return
@@ -108,14 +144,14 @@ Func _makerequest()
 			EndIf
 		EndIf
 		If _Sleep($DELAYMAKEREQUEST2) Then Return ; wait time for text request to complete
-		$icount = 0
+		$iCount = 0
 		While Not _ColorCheck(_GetPixelColor($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], True), Hex(0x5fac10, 6), 20)
 			If _Sleep($DELAYMAKEREQUEST1) Then ExitLoop
-			$icount += 1
-			If $g_bDebugSetlog Then SetDebugLog("$icount3 = " & $icount & ", " & _GetPixelColor($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], True), $COLOR_DEBUG)
-			If $icount > 25 Then ExitLoop ; wait 26*500ms = 13 seconds max
+			$iCount += 1
+			If $g_bDebugSetlog Then SetDebugLog("$icount3 = " & $iCount & ", " & _GetPixelColor($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], True), $COLOR_DEBUG)
+			If $iCount > 25 Then ExitLoop ; wait 26*500ms = 13 seconds max
 		WEnd
-		If $icount > 25 Then
+		If $iCount > 25 Then
 			If $g_bDebugSetlog Then SetDebugLog("Send request button not found", $COLOR_DEBUG)
 			CheckMainScreen(False) ;emergency exit
 		EndIf

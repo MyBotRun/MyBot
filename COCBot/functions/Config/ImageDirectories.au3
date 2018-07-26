@@ -28,7 +28,7 @@ Global Const $g_sImgOutOfSync = @ScriptDir & "\imgxml\other\Oos[[Android]]*"
 #Region Main Village
 Global $g_sImgCollectRessources = @ScriptDir & "\imgxml\Resources\Collect"
 Global $g_sImgCollectLootCart = @ScriptDir & "\imgxml\Resources\LootCart\LootCart_0_85.xml"
-Global $g_sImgRearm = @ScriptDir & "\imgxml\rearm\"
+Global $g_sImgRearm = @ScriptDir & "\imgxml\rearm"
 Global $g_sImgBoat = @ScriptDir & "\imgxml\Boat\BoatNormalVillage_0_89.xml"
 Global $g_sImgZoomOutDir = @ScriptDir & "\imgxml\village\NormalVillage\"
 Global $g_sImgCheckWallDir = @ScriptDir & "\imgxml\Walls"
@@ -87,7 +87,7 @@ Global $g_sImgArmyOverviewSpells = @ScriptDir & "\imgxml\ArmyOverview\Spells" ; 
 
 #Region Attack
 Global $g_sImgAttackBarDir = @ScriptDir & "\imgxml\AttackBar"
-Global $g_sImgSwitchSiegeMacines = @ScriptDir & "\imgxml\SwitchSiegeMachines\Siege"
+Global $g_sImgSwitchSiegeMachine = @ScriptDir & "\imgxml\SwitchSiegeMachines\Siege"
 Global $g_sImgSwitchSiegeCastle = @ScriptDir & "\imgxml\SwitchSiegeMachines\Castle"
 #EndRegion
 
@@ -191,6 +191,7 @@ Global Const $g_sImgBall = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\
 Global Const $g_sImgDrag = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\Drag"
 Global Const $g_sImgLava = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\Lava"
 Global Const $g_sImgMini = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\Mini"
+Global Const $g_sImgEdrag = 		@ScriptDir & "\imgxml\Resources\Clan Games Images\Air Troop Challenges\EDrag"
 
 Global Const $g_sImgGard = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Gardening Exercise"
 Global Const $g_sImgDonS = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Donate Spells"

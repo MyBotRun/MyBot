@@ -21,7 +21,9 @@ Global $g_hChkRequestTroopsEnable = 0, $g_hTxtRequestCC = 0, $g_ahChkRequestCCHo
 Global $g_hChkRequestCCHoursE1 = 0, $g_hChkRequestCCHoursE2 = 0
 Global $g_hGrpRequestCC = 0, $g_hLblRequestCCHoursAM = 0, $g_hLblRequestCCHoursPM = 0
 Global $g_hLblRequestCChour = 0, $g_ahLblRequestCChoursE = 0
-GLobal $g_hLblRequestCChours[12] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hLblRequestCChours[12] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hLblRequestType, $g_hChkRequestType_Troops, $g_hChkRequestType_Spells, $g_hChkRequestType_Siege
+Global $g_hTxtRequestCountCCTroop, $g_hTxtRequestCountCCSpell
 
 ; Donate
 Global $g_hChkExtraAlphabets = 0, $g_hChkExtraChinese = 0, $g_hChkExtraKorean = 0, $g_hChkExtraPersian = 0
@@ -110,6 +112,41 @@ Func CreateRequestSubTab()
 		$g_hTxtRequestCC = GUICtrlCreateInput(GetTranslatedFileIni("MBR GUI Design Child Village - Donate-CC", "TxtRequestCC", "Anything please"), $x + 40 + 30, $y + 15, 214, 20, BitOR($SS_CENTER, $ES_AUTOHSCROLL))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Donate-CC", "TxtRequestCC_Info_01", "This text is used on your request for troops in the Clan chat."))
+
+	; Request Type (Demen)
+	$y += 25
+		$g_hLblRequestType = GUICtrlCreateLabel("when lacking ", $x + 70, $y + 23)
+			_GUICtrlSetTip(-1, "Not send request when all the checked items are full")
+		$g_hChkRequestType_Troops = GUICtrlCreateCheckbox("Troops", $x + 140, $y + 20)
+			_GUICtrlSetTip(-1, "Send request when CC Troop is not full")
+			GUICtrlSetState(-1, $GUI_CHECKED)
+			GUICtrlSetOnEvent(-1, "chkRequestCountCC")
+		$g_hChkRequestType_Spells = GUICtrlCreateCheckbox("Spells", $x + 195, $y + 20)
+			_GUICtrlSetTip(-1, "Send request when CC Spell is not full")
+			GUICtrlSetState(-1, $GUI_CHECKED)
+			GUICtrlSetOnEvent(-1, "chkRequestCountCC")
+		$g_hChkRequestType_Siege = GUICtrlCreateCheckbox("Siege Machine", $x + 250, $y + 20)
+			_GUICtrlSetTip(-1, "Send request when CC Siege Machine is not received")
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
+	
+	$y += 25
+		GUICtrlCreateLabel("if less than ", $x + 70, $y + 23)
+		$g_hTxtRequestCountCCTroop = GUICtrlCreateInput("0", $x + 140, $y + 20, 25, 16, BitOR($SS_RIGHT, $ES_NUMBER))
+			GUICtrlSetLimit(-1, 2)
+			_GUICtrlSetTip(-1, "Do not request when already received that many CC Troops" & @CRLF & "Set to either ""0"" or ""40+"" when full CC Troop wanted")
+			If GUICtrlRead($g_hChkRequestType_Troops) = $GUI_CHECKED Then
+				GUICtrlSetState(-1, $GUI_ENABLE)
+			Else
+				GUICtrlSetState(-1, $GUI_DISABLE)
+			EndIf
+		$g_hTxtRequestCountCCSpell = GUICtrlCreateInput("0", $x + 195, $y + 20, 25, 16, BitOR($SS_RIGHT, $ES_NUMBER))
+			GUICtrlSetLimit(-1, 1)
+			_GUICtrlSetTip(-1, "Do not request when already received that many CC Spells" & @CRLF & "Set to either ""0"" or ""2+"" when full CC Spell wanted")
+			If GUICtrlRead($g_hChkRequestType_Spells) = $GUI_CHECKED Then
+				GUICtrlSetState(-1, $GUI_ENABLE)
+			Else
+				GUICtrlSetState(-1, $GUI_DISABLE)
+			EndIf
 
 	$x += 29 + 30
 	$y += 60

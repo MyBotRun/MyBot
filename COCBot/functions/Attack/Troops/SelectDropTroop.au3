@@ -14,5 +14,6 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func SelectDropTroop($Troop)
+	; Red button 'End Battle' Check | $aIsAttackPage[4] = [56, 548 + $g_iBottomOffsetY, 0xcf0d0e, 20] ; red button "end battle" 860x780
 	If IsAttackPage() Then Click(GetXPosOfArmySlot($Troop, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0111") ;860x780
 EndFunc   ;==>SelectDropTroop

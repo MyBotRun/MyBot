@@ -176,6 +176,23 @@ Func btnPushSharedPrefs()
 	PushSharedPrefs()
 EndFunc
 
+Func OnlySCIDAccounts()
+	; $g_hChkOnlySCIDAccounts
+	If GUICtrlRead($g_hChkOnlySCIDAccounts) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hCmbWhatSCIDAccount2Use, $GUI_ENABLE)
+		WhatSCIDAccount2Use()
+		$g_bOnlySCIDAccounts = True
+	Else
+		GUICtrlSetState($g_hCmbWhatSCIDAccount2Use, $GUI_DISABLE)
+		$g_bOnlySCIDAccounts = False
+	EndIf
+EndFunc
+
+Func WhatSCIDAccount2Use()
+	; $g_hCmbWhatSCIDAccount2Use
+	$g_iWhatSCIDAccount2Use = _GUICtrlComboBox_GetCurSel($g_hCmbWhatSCIDAccount2Use)
+EndFunc
+
 Func cmbBotCond()
 	If _GUICtrlComboBox_GetCurSel($g_hCmbBotCond) = 15 Then
 		If _GUICtrlComboBox_GetCurSel($g_hCmbHoursStop) = 0 Then _GUICtrlComboBox_SetCurSel($g_hCmbHoursStop, 1)

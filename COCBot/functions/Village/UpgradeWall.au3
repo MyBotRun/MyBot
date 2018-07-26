@@ -317,13 +317,8 @@ Func SkipWallUpgrade() ; Dynamic Upgrades
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;##### Verify the Upgrade troop kind in Laboratory , if is elixir Spell/Troop , the Lab have priority #####;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	Local $bMinWallElixir = Number($g_aiCurrentLoot[$eLootElixir]) > ($g_iWallCost + Number($g_iLaboratoryElixirCost) + Number($g_iUpgradeWallMinElixir)) ; Check if enough Elixir
-	If $g_bAutoLabUpgradeEnable And $g_iCmbLaboratory >= 1 And $g_iCmbLaboratory <= 18 And Not $bMinWallElixir Then
-		For $i = 1 To 18
-			If $g_iCmbLaboratory = $i Then
-				Local $sName = $g_avLabTroops[$i][3]
-				ExitLoop
-			EndIf
-		Next
+	If $g_bAutoLabUpgradeEnable And $g_iCmbLaboratory >= 1 And Not ($g_iCmbLaboratory >= 20 And $g_iCmbLaboratory <= 30) And Not $bMinWallElixir Then
+		Local $sName = $g_avLabTroops[$g_iCmbLaboratory][3]
 		Local $LabElixirNeeded = $g_iLaboratoryElixirCost
 		If $LabElixirNeeded = 0 Then $LabElixirNeeded = "unknown" ; trap error condition of unknown value
 		Switch $g_iUpgradeWallLootType
@@ -345,10 +340,14 @@ Func SkipWallUpgrade() ; Dynamic Upgrades
 EndFunc   ;==>SkipWallUpgrade
 
 Func SwitchToNextWallLevel() ; switches wall level to upgrade to next level
-	If $g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] = 0 And $g_iCmbUpgradeWallsLevel < 7 Then
+	If $g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] = 0 And $g_iCmbUpgradeWallsLevel < 8 Then
 		EnableGuiControls()
 		_GUICtrlComboBox_SetCurSel($g_hCmbWalls, $g_iCmbUpgradeWallsLevel + 1)
 		cmbWalls()
+		If $g_iCmbUpgradeWallsLevel = 4 Then
+			GUICtrlSetState($g_hRdoUseElixirGold, $GUI_CHECKED)
+			GUICtrlSetData($g_hTxtWallMinElixir, GUICtrlRead($g_hTxtWallMinGold))
+		EndIf
 		SaveConfig()
 		DisableGuiControls()
 		Return True

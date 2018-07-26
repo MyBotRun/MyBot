@@ -66,13 +66,14 @@ Func OpenCoC()
 	WinGetAndroidHandle()
 	;AndroidHomeButton()
 	If _Sleep(500) Then Return FuncReturn()
-	If Not StartAndroidCoC() Then Return FuncReturn()
 	If Not $g_bRunState Then Return FuncReturn()
+	If Not StartAndroidCoC() Then Return FuncReturn()
 	While _CheckPixel($aIsMain, True) = False ; Wait for MainScreen
 		$iCount += 1
 		If _Sleep(100) Then Return FuncReturn()
 		If checkObstacles() Then $iCount += 1
 		If $iCount > 250 Then ExitLoop
+		If Not $g_bRunState Then ExitLoop
 	WEnd
 	FuncReturn()
 EndFunc   ;==>OpenCoC
@@ -174,6 +175,7 @@ Func PoliteCloseCoC($sSource = "Unknown_", $bPoliteCloseCoC = $g_bPoliteCloseCoC
 					ExitLoop
 				EndIf
 				$i += 1
+				If Not $g_bRunState Then ExitLoop
 			WEnd
 		Else
 			Local $btnExit
@@ -229,6 +231,7 @@ Func PoliteCloseCoC($sSource = "Unknown_", $bPoliteCloseCoC = $g_bPoliteCloseCoC
 					ExitLoop
 				EndIf
 				$i += 1
+				If Not $g_bRunState Then ExitLoop
 			WEnd
 		EndIf
 	Else

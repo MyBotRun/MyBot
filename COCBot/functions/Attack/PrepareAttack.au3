@@ -45,21 +45,26 @@ Func PrepareAttack($pMatchMode, $Remaining = False) ;Assigns troops
 	; JUNE 2018 @PROMAC
 	; Lets Select The CC and not the Siege Machine ; $eCastle
 	If Not $Remaining  And IsTroopToBeUsed($pMatchMode, $eCastle) Then
-		If QuickMIS("BC1", $g_sImgSwitchSiegeMacines, 28, 698, 820, 726, True, False) Then
-			Setlog("Switching button in a Siege Machine detected.")
+		If QuickMIS("BC1", $g_sImgSwitchSiegeMachine, 28, 698, 820, 726, True, False) Then
+			Setlog("Switching button in a Siege Machine/CC detected.")
 			; Was detectable lets click
 			Click($g_iQuickMISX + 28, $g_iQuickMISY + 698, 1)
 			; wait to appears the new small window
-			Local $lastX = $g_iQuickMISX , $LastX1 = $g_iQuickMISX + 165 , $lastY = $g_iQuickMISY
+			Local $lastX = $g_iQuickMISX + 28 , $LastX1 = $g_iQuickMISX + 250 , $lastY = $g_iQuickMISY + 698
+			Local $compFor2Sieges = 100
 			If _Sleep(1500) then return
 			; Lets detect the CC and click
-			If QuickMIS("BC1", $g_sImgSwitchSiegeCastle, $lastX, 535, $LastX1, 560, True, False) Then
+			If QuickMIS("BC1", $g_sImgSwitchSiegeCastle, $lastX - $compFor2Sieges , 535, $LastX1, 560, True, False) Then
 				; Was detectable lets click
-				Click($g_iQuickMISX + $lastX, $g_iQuickMISY + 535, 1)
+				Click($g_iQuickMISX + ($lastX - $compFor2Sieges), $g_iQuickMISY + 535, 1)
 				Setlog("Clan Castle troops selected!", $COLOR_SUCCESS)
 			Else
+				If $g_bDebugImageSave Then DebugImageSave("PrepareAttack_SwitchSiege")
+				If _Sleep(1000) then return
 				; If was not detectable lets click again on green icon to hide the window!
-				Click($lastX + 28, $lastY + 698, 1)
+				Click($lastX, $lastY , 1)
+				If _sleep(250) then return
+				Click(35, 595 + $g_iBottomOffsetY, 1, 0, "#0111") ;860x780
 			EndIf
 			If _Sleep(1500) then return
 		EndIf

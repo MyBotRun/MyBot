@@ -31,23 +31,23 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 		EndIf
 		If _Sleep($DELAYCHECKFULLARMY2) Then Return
 		Local $j = 0
-		While Not _ColorCheck(_GetPixelColor(114, 535 + $g_iMidOffsetY, True), Hex(0xE8E8E0, 6), 20)
-			If $g_bDebugSetlogTrain Then SetLog("OverView TabColor=" & _GetPixelColor(114, 535 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+		While Not _ColorCheck(_GetPixelColor(136, 129, True), Hex(0xE8E8E0, 6), 20) ; "ARMY tab"
+			If $g_bDebugSetlogTrain Then SetLog("OverView TabColor=" & _GetPixelColor(136, 129, True), $COLOR_DEBUG)
 			If _Sleep($DELAYCHECKFULLARMY1) Then Return ; wait for Train Window to be ready.
 			$j += 1
 			If $j > 15 Then ExitLoop
 		WEnd
 		If $j > 15 Then
-			SetLog("Training Overview Window didn't open", $COLOR_ERROR)
+			SetLog("Army Window didn't open", $COLOR_ERROR)
 			Return
 		EndIf
 	EndIf
 
 	If _sleep($DELAYCHECKFULLARMY2) Then Return
-	Local $Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(128, 176, True), Hex(0x90C030, 6), 20)
+	Local $Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(37, 177, True), Hex(0x91C030, 6), 20)
 	If Not $Pixel Then
 		If _sleep($DELAYCHECKFULLARMY2) Then Return
-		$Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(128, 176, True), Hex(0x90C030, 6), 20)
+		$Pixel = _CheckPixel($aIsCampFull, True) And _ColorCheck(_GetPixelColor(37, 177, True), Hex(0x91C030, 6), 20)
 	EndIf
 
 	If $g_bDebugSetlogTrain Then SetLog("Checking Overview for full army [!] " & $Pixel & ", " & _GetPixelColor(128, 176, True), $COLOR_DEBUG)
