@@ -209,7 +209,7 @@ Func DropTrophy()
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0180") ;Drop Queen
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 										SelectDropTroop($g_iQueenSlot) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
-										ReturnHome(False, False) ;Return home no screenshot
+										ReturnfromDropTrophies()
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										ExitLoop
 									EndIf
@@ -222,7 +222,7 @@ Func DropTrophy()
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0178") ;Drop King
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 										SelectDropTroop($g_iKingSlot) ;If King was not activated: Boost King before EndBattle to restore some health
-										ReturnHome(False, False) ;Return home no screenshot
+										ReturnfromDropTrophies()
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										ExitLoop
 									EndIf
@@ -235,7 +235,7 @@ Func DropTrophy()
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0000") ;Drop Warden
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 										SelectDropTroop($g_iWardenSlot) ;If Warden was not activated: Boost Warden before EndBattle to restore some health
-										ReturnHome(False, False) ;Return home no screenshot
+										ReturnfromDropTrophies()
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										ExitLoop
 									EndIf

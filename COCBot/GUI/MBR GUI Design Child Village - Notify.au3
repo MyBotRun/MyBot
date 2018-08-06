@@ -16,10 +16,11 @@
 Global $g_hGUI_NOTIFY = 0, $g_hGUI_NOTIFY_TAB = 0, $g_hGUI_NOTIFY_TAB_ITEM2 = 0, $g_hGUI_NOTIFY_TAB_ITEM6 = 0
 
 Global $g_hGrpNotify = 0
-Global $g_hChkNotifyPBEnable = 0, $g_hTxtNotifyPBToken = 0, $g_hChkNotifyTGEnable = 0, $g_hTxtNotifyTGToken = 0
+; Global $g_hChkNotifyPBEnable = 0, $g_hTxtNotifyPBToken = 0
+Global $g_hChkNotifyTGEnable = 0, $g_hTxtNotifyTGToken = 0
 Global $g_hChkNotifyRemote = 0, $g_hTxtNotifyOrigin = 0
-Global $g_hChkNotifyDeleteAllPBPushes = 0, $g_hBtnNotifyDeleteMessages = 0, $g_hChkNotifyDeleteOldPBPushes = 0, $g_hCmbNotifyPushHours = 0, _
-	   $g_hChkNotifyAlertMatchFound = 0, $g_hChkNotifyAlertLastRaidIMG = 0, $g_hChkNotifyAlertLastRaidTXT = 0, $g_hChkNotifyAlertCampFull = 0, _
+; Global $g_hChkNotifyDeleteAllPBPushes = 0, $g_hBtnNotifyDeleteMessages = 0, $g_hChkNotifyDeleteOldPBPushes = 0, $g_hCmbNotifyPushHours = 0, _
+Global $g_hChkNotifyAlertMatchFound = 0, $g_hChkNotifyAlertLastRaidIMG = 0, $g_hChkNotifyAlertLastRaidTXT = 0, $g_hChkNotifyAlertCampFull = 0, _
 	   $g_hChkNotifyAlertUpgradeWall = 0, $g_hChkNotifyAlertOutOfSync = 0, $g_hChkNotifyAlertTakeBreak = 0, $g_hChkNotifyAlertBuilderIdle = 0, _
 	   $g_hChkNotifyAlertVillageStats = 0, $g_hChkNotifyAlertLastAttack = 0, $g_hChkNotifyAlertAnotherDevice = 0, $g_hChkNotifyAlertMaintenance = 0, _
 	   $g_hChkNotifyAlertBAN = 0, $g_hChkNotifyBOTUpdate = 0, $g_hChkNotifyAlertSmartWaitTime = 0
@@ -37,7 +38,7 @@ Func CreateVillageNotify()
 
 	GUISwitch($g_hGUI_NOTIFY)
 	$g_hGUI_NOTIFY_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab2, $g_iSizeHGrpTab2, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
-	$g_hGUI_NOTIFY_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_05_STab_01", "PushBullet/Telegram"))
+	$g_hGUI_NOTIFY_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_05_STab_01", "Telegram"))
 		CreatePushBulletTelegramSubTab()
 	$g_hGUI_NOTIFY_TAB_ITEM6 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_05_STab_02", "Notify Schedule"))
 		CreateNotifyScheduleSubTab()
@@ -48,50 +49,15 @@ EndFunc   ;==>CreateVillageNotify
 Func CreatePushBulletTelegramSubTab()
 	Local $sTxtTip = ""
 	Local $x = 25, $y = 45
-	$g_hGrpNotify = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "Group_01", "PushBullet/Telegram Notify") & " " & $g_sNotifyVersion, $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
+	$g_hGrpNotify = GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "Group_01", "Telegram Notify") & " " & $g_sNotifyVersion, $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
 
-	$x -= 10
-		_GUICtrlCreateIcon ($g_sLibIconPath, $eIcnNotify, $x + 3, $y, 32, 32)
-		$g_hChkNotifyPBEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyPBEnable", "Enable PushBullet"), $x + 40, $y + 5)
-			GUICtrlSetOnEvent(-1, "chkPBTGenabled")
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyPBEnable_Info_01", "Enable PushBullet notifications"))
-		$g_hChkNotifyDeleteAllPBPushes = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyDeleteAllPBPushes", "Delete Msg on Start"), $x + 160, $y)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyDeleteAllPBPushes_Info_01", "It will delete all previous push notification when you start bot"))
-			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_hBtnNotifyDeleteMessages = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "BtnNotifyDeleteMessages", "Delete all Msg now"), $x + 300, $y, 100, 20)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "BtnNotifyDeleteMessages_Info_01", "Click here to delete all PushBullet messages."))
-			GUICtrlSetOnEvent(-1, "btnDeletePBMessages")
-			If $g_bBtnColor then GUICtrlSetBkColor(-1, 0x5CAD85)
-			GUICtrlSetState(-1, $GUI_DISABLE)
-
-	$y += 22
-		$g_hChkNotifyDeleteOldPBPushes = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyDeleteOldPBPushes", "Delete Msg older than"), $x + 160, $y)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyDeleteOldPBPushes_Info_01", "Delete all previous push notification older than specified hour"))
-			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetOnEvent(-1, "chkDeleteOldPBPushes")
-		$g_hCmbNotifyPushHours = GUICtrlCreateCombo("", $x + 300, $y, 100, 35, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "CmbNotifyPushHours_Info_01", "Set the interval for messages to be deleted."))
-			Local $sTxtHours = GetTranslatedFileIni("MBR Global GUI Design", "Hours", -1)
-			GUICtrlSetData(-1, "1 " & GetTranslatedFileIni("MBR Global GUI Design", "Hour",  -1) &"|2 " & $sTxtHours & "|3 " & $sTxtHours & "|4 " & $sTxtHours & "|5 " & $sTxtHours & "|6 " & _
-									$sTxtHours & "|7 " & $sTxtHours & "|8 " &$sTxtHours & "|9 " & $sTxtHours & "|10 " & $sTxtHours & "|11 " & $sTxtHours & "|12 " & _
-									$sTxtHours & "|13 " & $sTxtHours & "|14 " & $sTxtHours & "|15 " & $sTxtHours & "|16 " & $sTxtHours & "|17 " & $sTxtHours & "|18 " & _
-									$sTxtHours & "|19 " & $sTxtHours & "|20 " & $sTxtHours & "|21 " & $sTxtHours & "|22 " & $sTxtHours & "|23 " & $sTxtHours & "|24 " & $sTxtHours )
-			_GUICtrlComboBox_SetCurSel(-1,0)
-			GUICtrlSetState (-1, $GUI_DISABLE)
-
-	$y += 30
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyPBToken", "Token (PushBullet)") & ":", $x, $y, -1, -1, $SS_RIGHT)
-		$g_hTxtNotifyPBToken = GUICtrlCreateInput("", $x + 120, $y - 3, 280, 19)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyPBToken_Info_01", "You need a Token to use PushBullet notifications. Get a token from PushBullet.com"))
-			GUICtrlSetState(-1, $GUI_DISABLE)
-
-	$y += 20
 		_GUICtrlCreateIcon ($g_sLibIconPath, $eIcnTelegram, $x + 3, $y, 32, 32)
 		$g_hChkNotifyTGEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyTGEnable", "Enable Telegram"), $x + 40, $y + 5)
 			GUICtrlSetOnEvent(-1, "chkPBTGenabled")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyTGEnable_Info_01", "Enable Telegram notifications"))
 
 	$y += 40
+	$x -= 10
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyTGToken", "Token (Telegram)") & ":", $x, $y, -1, -1, $SS_RIGHT)
 		$g_hTxtNotifyTGToken = GUICtrlCreateInput("", $x + 120, $y - 3, 280, 19)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyTGToken_Info_01", "You need a Token to use Telegram notifications. Get a token from Telegram.com"))
@@ -99,7 +65,7 @@ Func CreatePushBulletTelegramSubTab()
 
 	$y += 30
 		$g_hChkNotifyRemote = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyRemote", "Remote Control"), $x + 10, $y)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyRemote_Info_01", "Enables PushBullet Remote function"))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyRemote_Info_01", "Enables Telegram Remote function"))
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyOrigin", "Origin") & ":", $x + 120, $y + 3, -1, -1, $SS_RIGHT)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyOrigin_Info_01", "Origin - Village name.")
@@ -109,7 +75,7 @@ Func CreatePushBulletTelegramSubTab()
 			GUICtrlSetState(-1, $GUI_DISABLE)
 
 	$y += 25
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyOptions", "Send a PushBullet/Telegram message for these options") & ":", $x, $y, -1, -1, $SS_RIGHT)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyOptions", "Send a Telegram message for these options") & ":", $x, $y, -1, -1, $SS_RIGHT)
 
 	$y += 15
 		$g_hChkNotifyAlertMatchFound = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyAlertMatchFound", "Match Found"), $x + 10, $y)
@@ -163,11 +129,12 @@ Func CreatePushBulletTelegramSubTab()
 		$g_hChkNotifyBOTUpdate = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyBOTUpdate", "BOT Update"), $x + 210, $y, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyBOTUpdate_Info_01", "Send an Alert when there is a new version of the bot."))
 			GUICtrlSetState(-1, $GUI_DISABLE)
+	$y += 70
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyHelp", "Help ?"), $x + 197, $y + 93, 220, 24, $SS_RIGHT)
 			GUICtrlSetOnEvent(-1, "NotifyHelp")
 			GUICtrlSetCursor(-1, 0)
 			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyHelp_Info_01", "Click here to get Help about Notify Remote commands to PushBullet and Telegram"))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyHelp_Info_01", "Click here to get Help about Notify Remote commands to Telegram"))
 			GUICtrlSetColor(-1, $COLOR_NAVY)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -181,7 +148,7 @@ Func CreateNotifyScheduleSubTab()
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_05_STab_02", -1), $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
 	$x += 10
 	$y += 10
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPBNotify, $x - 5, $y, 64, 64, $BS_ICON)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTelegram, $x - 5, $y, 64, 64, $BS_ICON)
 		$g_hChkNotifyOnlyHours = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", "Only during these hours of each day"), $x + 70, $y - 6)
 			GUICtrlSetOnEvent(-1, "chkNotifyHours")
 

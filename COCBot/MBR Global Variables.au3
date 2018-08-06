@@ -533,7 +533,8 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, _
 		$eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, _
 		$eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, _
-		$eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield
+		$eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield, _
+		$eIcnBattleB , $eIcnWallW, $eIcnSiegeCost, $eIcnBoostPotion
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
@@ -591,7 +592,7 @@ Global Const $DROPLINE_DROPPOINTS_ONLY = 4
 ; Complete list of all deployable/trainable objects
 Global Enum $eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, $eEDrag, _
 		$eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eKing, $eQueen, $eWarden, $eCastle, _
-		$eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eArmyCount
+		$eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eWallW, $eBattleB, $eArmyCount
 
 ; Attack types
 Global Enum $DB, $LB, $TS, $MA, $TB, $DT ; DeadBase, ActiveBase, TownhallSnipe, Milking Attack, TownhallBully, DropTrophy
@@ -665,6 +666,20 @@ Global Const $g_aiSpellCostPerLevel[$eSpellCount][8] = [ _
 		[5, 110, 120, 130, 140, 150]] 							 ;SkeletonSpell
 Global Const $g_aiSpellDonateXP[$eSpellCount] = [10, 10, 10, 10, 10, 0, 5, 5, 5, 5]
 
+;Siege Machines
+Global Enum $eSiegeWallWrecker, $eSiegeBattleBlimp, $eSiegeMachineCount
+
+Global Const $g_asSiegeMachineNames[$eSiegeMachineCount] = ["Wall Wrecker", "Battle Blimp"]
+Global Const $g_asSiegeMachineShortNames[$eSiegeMachineCount] = ["WallW", "BattleB"]
+Global Const $g_aiSiegeMachineSpace[$eSiegeMachineCount] = [1, 1]
+Global Const $g_aiSiegeMachineTrainTimePerLevel[$eSiegeMachineCount][4] = [ _
+		[3, 1200, 1500, 1800], _  ; Wall Wrecker
+		[3, 1200, 1500, 1800]]    ; Battle Blimp
+Global Const $g_aiSiegeMachineCostPerLevel[$eSiegeMachineCount][4] = [ _
+		[3, 100000, 125000, 150000], _  ; Wall Wrecker
+		[3, 100000, 125000, 150000]]    ; Battle Blimp
+Global Const $g_aiSiegeMachineDonateXP[$eSiegeMachineCount] = [1, 1]
+
 ; Hero Bitmaped Values
 Global Enum $eHeroNone = 0, $eHeroKing = 1, $eHeroQueen = 2, $eHeroWarden = 4
 
@@ -725,6 +740,13 @@ Func TroopIndexLookup(Const $sName, Const $sSource = "")
 		EndIf
 	Next
 
+    ; is the name a siege machine?
+	For $i = 0 To UBound($g_asSiegeMachineShortNames) - 1
+		If $sName = $g_asSiegeMachineShortNames[$i] Then
+			Return $i + $eWallW
+		EndIf
+	Next
+
 	; is the name "castle"?
 	If $sName = "castle" Then Return $eCastle
 
@@ -745,6 +767,8 @@ Func GetTroopName(Const $iIndex)
 		Return $g_asSpellNames[$iIndex - $eLSpell]
 	ElseIf $iIndex >= $eKing And $iIndex <= $eWarden Then
 		Return $g_asHeroNames[$iIndex - $eKing]
+	ElseIf $iIndex >= $eWallW And $iIndex <= $eBattleB Then
+		Return $g_asSiegeMachineNames[$iIndex - $eWallW]
 	ElseIf $iIndex = $eCastle Then
 		Return "Clan Castle"
 	EndIf
@@ -788,17 +812,17 @@ Global $g_bRequestTroopsEnable = False
 Global $g_sRequestTroopsText = ""
 Global $g_abRequestCCHours[24] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
 Global $g_abRequestType[3] = [True, True, False] ; (0 = Troop, 1 = Spell, 2 = Siege Machine)
-Global $g_iRequestCountCCTroop = 0, $g_iRequestCountCCSpell = 0
+Global $g_iRequestCountCCTroop = 0, $g_iRequestCountCCSpell = 0, $g_iClanCastleSpellsWaitFirst = 0, $g_iClanCastleSpellsWaitSecond = 0
 
 ; <><><><> Village / Donate - Donate <><><><>
 Global $g_bChkDonate = True
 Global Enum $eCustomA = $eTroopCount, $eCustomB = $eTroopCount + 1
 Global Enum $eCustomC = $eTroopCount + 2, $eCustomD = $eTroopCount + 3
 Global Const $g_iCustomDonateConfigs = 4
-Global $g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-Global $g_abChkDonateAllTroop[$eTroopCount + $g_iCustomDonateConfigs] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-Global $g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs] = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] ; array of pipe-delimited list of strings to match to a request string
-Global $g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs] = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] ; array of pipe-delimited list of strings to prevent a match to a request string
+Global $g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+Global $g_abChkDonateAllTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+Global $g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] ; array of pipe-delimited list of strings to match to a request string
+Global $g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] ; array of pipe-delimited list of strings to prevent a match to a request string
 
 Global $g_abChkDonateSpell[$eSpellCount] = [False, False, False, False, False, False, False, False, False, False] ; element $eSpellClone (5) is unused
 Global $g_abChkDonateAllSpell[$eSpellCount] = [False, False, False, False, False, False, False, False, False, False] ; element $eSpellClone (5) is unused
@@ -884,10 +908,6 @@ Global $g_iUnbrkMinGold = 50000, $g_iUnbrkMinElixir = 50000, $g_iUnbrkMaxGold = 
 Global Const $g_sCurlPath = $g_sLibPath & "\curl\curl.exe" ; Curl used on PushBullet
 Global $g_bNotifyForced = False
 Global $g_sTGChatID = ""
-Global $g_bPBRequestScreenshot = False
-Global $g_bPBRequestScreenshotHD = False
-Global $g_bPBRequestBuilderInfo = False
-Global $g_bPBRequestShieldInfo = False
 Global $g_bTGRequestScreenshot = False
 Global $g_bTGRequestScreenshotHD = False
 Global $g_bTGRequestBuilderInfo = False
@@ -897,8 +917,6 @@ Global $g_sTGLast_UID = ""
 Global $g_sTGLastMessage = ""
 Global $g_sAttackFile = ""
 
-;PushBullet
-Global $g_bNotifyPBEnable = False, $g_sNotifyPBToken = ""
 ;Telegram
 Global $g_bNotifyTGEnable = False, $g_sNotifyTGToken = ""
 ;Remote Control
@@ -918,15 +936,20 @@ Global $g_bQuickTrainEnable = False
 Global $g_bQuickTrainArmy[3] = [True, False, False]
 Global $g_aiArmyCompTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiArmyCompSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiArmyCompSiegeMachine[$eSiegeMachineCount] = [0, 0]
 Global $g_aiTrainArmyTroopLevel[$eTroopCount] = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiTrainArmySpellLevel[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiTrainArmySiegeMachineLevel[$eSiegeMachineCount] = [0, 0]
 Global $g_iTrainArmyFullTroopPct = 100
 Global $g_bTotalCampForced = False, $g_iTotalCampForcedValue = 200
 Global $g_bForceBrewSpells = False
 Global $g_iTotalSpellValue = 0
+Global $g_bDoubleTrain, $g_bDoubleTrainDone = False, $g_bChkMultiClick ; DoubleTrain Demen
+Global $g_abDoubleTrainDone[8] = [False, False, False, False, False, False, False, False]; DoubleTrain Demen
+
 
 ; <><><><> Attack Plan / Train Army / Boost <><><><>
-Global $g_iCmbBoostBarracks = 0, $g_iCmbBoostSpellFactory = 0, $g_iCmbBoostBarbarianKing = 0, $g_iCmbBoostArcherQueen = 0, $g_iCmbBoostWarden = 0
+Global $g_iCmbBoostBarracks = 0, $g_iCmbBoostSpellFactory = 0, $g_iCmbBoostBarbarianKing = 0, $g_iCmbBoostArcherQueen = 0, $g_iCmbBoostWarden = 0, $g_iCmbBoostEverything = 0
 Global $g_abBoostBarracksHours[24] = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
 
 ; <><><><> Attack Plan / Train Army / Train Order <><><><>
@@ -989,11 +1012,11 @@ Global $g_abSearchTropiesEnable[$g_iModeCount] = [False, False, False], $g_aiSea
 Global $g_abSearchCampsEnable[$g_iModeCount] = [False, False, False], $g_aiSearchCampsPct[$g_iModeCount] = [0, 0, 0] ; Camp limit
 Global $g_aiSearchHeroWaitEnable[$g_iModeCount] = [0, 0, 0] ; Heroes wait status for attack; these are 3 bools (one for each hero) bitmapped onto an integer
 Global $g_abSearchSpellsWaitEnable[$g_iModeCount] = [False, False, False]
-Global $g_abSearchCastleSpellsWaitEnable[$g_iModeCount] = [False, False, False], $g_aiSearchCastleSpellsWaitRegular[$g_iModeCount] = [0, 0, 0], _
-		$g_aiSearchCastleSpellsWaitDark[$g_iModeCount] = [0, 0, 0]
-Global $g_abSearchCastleTroopsWaitEnable[$g_iModeCount] = [False, False, False]
+Global $g_abSearchCastleWaitEnable[$g_iModeCount] = [False, False, False]
 Global $g_aiSearchNotWaitHeroesEnable[$g_iModeCount] = [0, 0, 0]
 Global $g_iSearchNotWaitHeroesEnable = -1
+Global $g_abSearchSiegeWaitEnable[$g_iModeCount] = [False, False, False] , $g_aiSearchSiegeWait[$g_iModeCount] = [0, 0, 0]
+
 ; Search - Filters
 Global $g_aiFilterMeetGE[$g_iModeCount] = [0, 0, 0], $g_aiFilterMinGold[$g_iModeCount] = [0, 0, 0], $g_aiFilterMinElixir[$g_iModeCount] = [0, 0, 0], _
 		$g_aiFilterMinGoldPlusElixir[$g_iModeCount] = [0, 0, 0]
@@ -1010,7 +1033,7 @@ Global $g_abFilterMeetOneConditionEnable[$g_iModeCount] = [False, False, False]
 ; Attack
 Global $g_iSlotsGiants = 1
 Global $g_aiAttackAlgorithm[$g_iModeCount] = [0, 0, 0], $g_aiAttackTroopSelection[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_aiAttackUseHeroes[$g_iModeCount] = [0, 0, 0], _
-		$g_abAttackDropCC[$g_iModeCount] = [0, 0, 0]
+		$g_abAttackDropCC[$g_iModeCount] = [0, 0, 0] , $g_aiAttackUseSiege[$g_iModeCount] = [0, 0, 0]
 Global $g_abAttackUseLightSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseHealSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseRageSpell[$g_iModeCount] = [0, 0, 0], _
 		$g_abAttackUseJumpSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseFreezeSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseCloneSpell[$g_iModeCount] = [0, 0, 0], _
 		$g_abAttackUsePoisonSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseEarthquakeSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseHasteSpell[$g_iModeCount] = [0, 0, 0], _
@@ -1061,6 +1084,11 @@ Global $g_bMilkAttackAfterTHSnipeEnable = False, $g_iMilkFarmTHMaxTilesFromBorde
 		$g_bMilkAttackAfterScriptedAtkEnable = False, $g_sMilkAttackCSVscript = "Barch four fingers"
 Global $g_bMilkFarmForceToleranceEnable = False, $g_iMilkFarmForceToleranceNormal = 31, $g_iMilkFarmForceToleranceBoosted = 31, $g_iMilkFarmForceToleranceDestroyed = 31
 
+; <><><><> Attack Plan / Search & Attack / Deadbase / Attack / SmartFarm <><><><>
+Global $g_iTxtInsidePercentage = 0 , $g_iTxtOutsidePercentage = 0 , $g_bDebugSmartFarm = False
+Global $g_iSidesAttack = 0
+Global $g_iPercentageDamage = 0
+
 ; <><><><> Attack Plan / Search & Attack / Deadbase / End Battle <><><><>
 ; <<< nothing here - all in common Search & Attack grouping >>>
 
@@ -1103,7 +1131,7 @@ Global $g_bSearchReductionEnable = False, $g_iSearchReductionCount = 20, $g_iSea
 		$g_iSearchReductionDark = 100, $g_iSearchReductionTrophy = 2
 Global $g_iSearchDelayMin = 0, $g_iSearchDelayMax = 0
 Global $g_bSearchAttackNowEnable = False, $g_iSearchAttackNowDelay = 0, $g_bSearchRestartEnable = False, $g_iSearchRestartLimit = 25, $g_bSearchAlertMe = True, $g_bSearchRestartPickupHero = False
-Global $g_asHeroHealTime[3] = ["", "", ""] 
+Global $g_asHeroHealTime[3] = ["", "", ""]
 
 ; <><><><> Attack Plan / Search & Attack / Options / Attack <><><><>
 Global $g_iActivateQueen = 0, $g_iActivateKing = 0, $g_iActivateWarden = 0
@@ -1197,10 +1225,8 @@ Global Const $g_sDirLanguages = @ScriptDir & "\Languages\"
 Global Const $g_sDefaultLanguage = "English"
 
 ; Notify
-Global Const $g_sNotifyVersion = "Revamp v1.5.8"
+Global Const $g_sNotifyVersion = "v2.0"
 Global Const $g_iPBRemoteControlInterval = 60000 ; 60 secs
-Global Const $g_iPBDeleteOldPushesInterval = 1800000 ; 30 mins
-Global $g_bNotifyDeleteAllPushesNow = False
 Global $g_sLootFileName = ""
 
 ; Stats
@@ -1215,7 +1241,7 @@ Global $g_iSkippedVillageCount = 0, $g_iDroppedTrophyCount = 0 ; skipped village
 Global $g_iCostGoldWall = 0, $g_iCostElixirWall = 0, $g_iCostGoldBuilding = 0, $g_iCostElixirBuilding = 0, $g_iCostDElixirHero = 0 ; wall, building and hero upgrade costs
 Global $g_iNbrOfWallsUpped = 0, $g_iNbrOfWallsUppedGold = 0, $g_iNbrOfWallsUppedElixir = 0
 Global $g_iNbrOfBuildingsUppedGold = 0, $g_iNbrOfBuildingsUppedElixir = 0, $g_iNbrOfHeroesUpped = 0 ; number of wall, building, hero upgrades with gold, elixir, delixir
-Global $g_iSearchCost = 0, $g_iTrainCostElixir = 0, $g_iTrainCostDElixir = 0 ; search and train troops cost
+Global $g_iSearchCost = 0, $g_iTrainCostElixir = 0, $g_iTrainCostDElixir = 0 , $g_iTrainCostGold = 0; search and train troops cost
 Global $g_iNbrOfOoS = 0 ; number of Out of Sync occurred
 Global $g_iNbrOfTHSnipeFails = 0, $g_iNbrOfTHSnipeSuccess = 0 ; number of fails and success while TH Sniping
 Global $g_iGoldFromMines = 0, $g_iElixirFromCollectors = 0, $g_iDElixirFromDrills = 0 ; number of resources gain by collecting mines, collectors, drills
@@ -1249,6 +1275,7 @@ Global $g_aiCurrentLootBB[$eLootCountBB] = [0, 0, 0] ; current stats on builders
 ; Army camps
 Global $g_iArmyCapacity = 0 ; Calculated percentage of troops currently in camp / total camp space, expressed as an integer from 0 to 100
 Global $g_iTotalTrainSpaceSpell = 0
+Global $g_iTotalTrainSpaceSiege = 0
 Global $g_iCurrentSpells = 0 ; Current Spells
 Global $g_iCurrentCCSpells = 0, $g_iTotalCCSpells = 0
 Global $g_bFullArmySpells = False ; true when $g_iTotalTrainSpaceSpell = $iTotalSpellSpace in getArmySpellCount
@@ -1306,7 +1333,7 @@ Global Const $g_aaiTopRightDropPoints[5][2] = [[466, 60], [556, 120], [622, 170]
 Global Const $g_aaiBottomLeftDropPoints[5][2] = [[81, 390], [174, 475], [235, 521], [299, 570], [390, 610]]
 Global Const $g_aaiBottomRightDropPoints[5][2] = [[466, 600], [554, 555], [615, 510], [678, 460], [765, 394]]
 Global Const $g_aaiEdgeDropPoints[4] = [$g_aaiBottomRightDropPoints, $g_aaiTopLeftDropPoints, $g_aaiBottomLeftDropPoints, $g_aaiTopRightDropPoints]
-Global Const $g_aiUseAllTroops[33] = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, $eEDrag, $eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell]
+Global Const $g_aiUseAllTroops[35] = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, $eEDrag, $eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eWallW, $eBattleB]
 Global Const $g_aiUseBarracks[27] = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, $eEDrag, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
 Global Const $g_aiUseBarbs[15] = [$eBarb, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
 Global Const $g_aiUseArchs[15] = [$eArch, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell]
@@ -1322,9 +1349,10 @@ Global Const $g_aaiTroopsToBeUsed[12] = [$g_aiUseAllTroops, $g_aiUseBarracks, $g
 Global $g_bTHSnipeUsedKing = False
 Global $g_bTHSnipeUsedQueen = False
 Global $g_bTHSnipeUsedWarden = False
-Global $g_avAttackTroops[12][2] ;11 Slots of troops -  Name, Amount
+Global $g_avAttackTroops[22][2] ;11 Slots of troops -  Name, Amount (+ 11 extended slots Slot11+)
 Global $g_bFullArmy = False ;Check for full army or not
 Global $g_iKingSlot = -1, $g_iQueenSlot = -1, $g_iWardenSlot = -1, $g_iClanCastleSlot = -1
+Global $g_iTotalAttackSlot = 10, $g_bDraggedAttackBar = False ; Slot11+
 
 ; Attack - Heroes
 Global $g_iHeroWaitAttackNoBit[$g_iModeCount][3] ; Heroes wait status for attack
@@ -1416,7 +1444,7 @@ Global $g_bMilkingAttackOutside = False
 Global $g_bTrainEnabled = True
 Global $g_bIsFullArmywithHeroesAndSpells = False
 Global $g_bOutOfElixir = False ; Flag for out of elixir to train troops
-Global $g_aiTimeTrain[3] = [0, 0, 0] ; [Troop remaining time], [Spells remaining time], [Hero remaining time - when possible]
+Global $g_aiTimeTrain[4] = [0, 0, 0, 0] ; [Troop remaining time], [Spells remaining time], [Hero remaining time - when possible], [Siege remain Time]
 Global Enum $ArmyTAB, $TrainTroopsTAB, $BrewSpellsTAB, $QuickTrainTAB
 Global $g_bCheckSpells = False
 Global $g_bCheckClanCastleTroops = False
@@ -1456,8 +1484,8 @@ Func TranslateTroopNames()
 			[433, 444 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWitches", "Witches"), $eIcnWitch], _
 			[540, 337 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtLavaHounds", "Lava Hounds"), $eIcnLavaHound], _
 			[540, 444 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBowlers", "Bowlers"), $eIcnBowler], _
-			[647, 337 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallWreckers", "Wall Wreckers"), $eIcnBowler], _
-			[647, 444 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleBlimps", "Battle Blimps"), $eIcnBowler]]
+			[647, 337 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallWreckers", "Wall Wreckers"), $eIcnWallW], _
+			[647, 444 + $g_iMidOffsetY, 2, GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleBlimps", "Battle Blimps"), $eIcnBattleB]]
 EndFunc   ;==>TranslateTroopNames
 
 ; Donate
@@ -1470,12 +1498,14 @@ Global Const $g_aiDonateSpellPriority[$eSpellCount] = [ _
 		$eSpellHaste, $eSpellSkeleton]
 Global $g_aiDonateStatsTroops[$eTroopCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 Global $g_aiDonateStatsSpells[$eSpellCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+Global $g_aiDonateStatsSieges[$eSiegeMachineCount][2] = [[0, 0], [0, 0]]
 Global $g_iTotalDonateStatsTroops = 0, $g_iTotalDonateStatsTroopsXP = 0
 Global $g_iTotalDonateStatsSpells = 0, $g_iTotalDonateStatsSpellsXP = 0
+Global $g_iTotalDonateStatsSiegeMachines = 0, $g_iTotalDonateStatsSiegeMachinesXP = 0
 Global $g_iActiveDonate = -1 ; -1 means not set yet
-Global $g_aiDonateTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiDonateSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_aiCurrentTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_aiCurrentCCTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentCCSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiDonateTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiDonateSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiDonateSiegeMachines[$eSiegeMachineCount] = [0, 0]
+Global $g_aiCurrentTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentSiegeMachines[$eSiegeMachineCount] = [0, 0]
+Global $g_aiCurrentCCTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentCCSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentCCSiegeMachines[$eSiegeMachineCount] = [0, 0]
 Global $g_bDonationEnabled = True
 Global $g_iTroopsDonated = 0
 Global $g_iTroopsReceived = 0
@@ -1662,8 +1692,35 @@ Global $g_bChkClanGamesDebug = 0
 Global $g_iPurgeJobCount[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_iPurgeMax = 5 ; [0] is unlimited , 1-10
 
+; Collect Free Magic Items
 Global $g_bChkCollectFreeMagicItems = True
 
 ; SC_ID without shared_prefs
 GloBal $g_bOnlySCIDAccounts =  False
 Global $g_iWhatSCIDAccount2Use = 0
+
+; All Variables to DB sqlite
+Global $g_bUseStatistics = False
+Global $g_hSQLiteDB = Null
+Global Const $g_sTabletName = "mybotrun"
+Global $g_sDate = Null
+Global $g_sProfilename = Null
+Global $g_sSearchCount = Null
+Global $g_sAttacksides = Null
+Global $g_sResourcesIN = Null
+Global $g_sResourcesOUT = Null
+Global $g_sResBySide = Null
+Global $g_sOppThlevel = Null
+Global $g_sOppGold = Null
+Global $g_sOppElixir = Null
+Global $g_sOppDE = Null
+Global $g_sOppTrophies = Null
+Global $g_sTotalDamage = Null
+Global $g_sLootGold = Null
+Global $g_sLootElixir = Null
+Global $g_sLootDE = Null
+Global $g_sLeague = Null
+Global $g_sBonusGold = Null
+Global $g_sBonusElixir = Null
+Global $g_sBonusDE = Null
+Global $g_sPercentagesResources = Null

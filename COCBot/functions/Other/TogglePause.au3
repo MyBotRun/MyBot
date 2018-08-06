@@ -78,7 +78,7 @@ Func TogglePauseSleep()
 			TogglePause()
 		EndIf
 		$counter = $counter + 1
-		If ($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyRemoteEnable = True And $counter = 200 Then
+		If $g_bNotifyTGEnable And $g_bNotifyRemoteEnable And $counter = 200 Then
 			NotifyRemoteControl()
 			$counter = 0
 		EndIf

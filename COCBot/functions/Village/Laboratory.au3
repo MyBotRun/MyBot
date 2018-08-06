@@ -468,7 +468,7 @@ Func LabUpgrade()
 					ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0360")
 					Return False
 				EndIf
-				SetLog("Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][3] & " in your laboratory is complete...", $COLOR_SUCCESS)
+				SetLog("Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][3] & " in your laboratory started with success...", $COLOR_SUCCESS)
 				PushMsg("LabSuccess")
 				If _Sleep($DELAYLABUPGRADE2) Then Return
 				$g_bAutoLabUpgradeEnable = False ;reset enable lab upgrade flag

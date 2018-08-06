@@ -201,7 +201,7 @@ Func _ClanGames()
 			If $BattleChallenges[$i][3] = 0 then ContinueLoop
 
 			; If you are a TH11 , doesn't exist the TH12
-			If $BattleChallenges[$i][1] = "Attack Up" And $g_iTownHallLevel = 11 then ContinueLoop
+			If $BattleChallenges[$i][1] = "Attack Up" And $g_iTownHallLevel > 11 then ContinueLoop
 			; Check your Trophy Range
 			If $BattleChallenges[$i][1] = "Slaying The Titans" And Int($g_aiCurrentLoot[$eLootTrophy]) < 4100 then ContinueLoop
 			; Check if exist a probability to use any Spell
@@ -299,6 +299,12 @@ Func _ClanGames()
 
 			; 4 - If you don't Donate Spells , $g_aiPrepDon[2] = Donate Spells , $g_aiPrepDon[3] = Donate All Spells [PrepareDonateCC()]
 			If $MiscChallenges[$i][1] = "Donate Spells" And ($g_aiPrepDon[2] = 0 And $g_aiPrepDon[3] = 0) Then ContinueLoop
+
+			; 5 - If you don't use Blimp
+			If $MiscChallenges[$i][1] = "Battle Blimp" And Not ($g_aiAttackUseSiege[$DB] = 2 Or $g_aiAttackUseSiege[$LB] = 2) And $g_aiArmyCompSiegeMachine[$eSiegeBattleBlimp] = 0 Then ContinueLoop
+
+			; 6 - If you don't use Wrecker
+			If $MiscChallenges[$i][1] = "Wall Wrecker" And Not ($g_aiAttackUseSiege[$DB] = 1 Or $g_aiAttackUseSiege[$LB] = 1) And $g_aiArmyCompSiegeMachine[$eSiegeWallWrecker] = 0 Then ContinueLoop
 
 			If QuickMIS("BC1", $MiscChallenges[$i][0], $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
 				SetLog("Found " & $MiscChallenges[$i][1] & " Event", $COLOR_SUCCESS)
@@ -671,10 +677,13 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False , $sINIPath = "", $debu
 				[$g_sImgQueenHunt, 	"Queen Level Hunter"			, 10,5, 8], _ ; Knockout 50 Level Queen on Multiplayer Battles				|8h		|100
 				[$g_sImgWardenHunt, "Warden Level Hunter"			, 11,5, 8]]   ; Knockout 20 Level Warden on Multiplayer Battles				|8h		|100
 
-	Local $MiscChallenges[3][5] = [ _
+	Local $MiscChallenges[5][5] = [ _
 				[$g_sImgGard,	 	"Gardening Exercise", 3, 1, 8], _ 	; Clear 5 obstacles from your Home Village or Builder Base		|8h	|50
 				[$g_sImgDonS,	 	"Donate Spells"		, 9, 3, 8], _ 	; Donate a total of 10 housing space worth of spells			|8h	|50
-				[$g_sImgDonH,	 	"Helping Hand"		, 6, 2, 8]]   	; Donate a total of 100 housing space worth of troops			|8h	|50
+				[$g_sImgDonH,	 	"Helping Hand"		, 6, 2, 8], _   ; Donate a total of 100 housing space worth of troops			|8h	|50
+				[$g_sImgSiegeb, 	"Battle Blimp"		,12, 5, 1], _  	; Earn 2-4 Stars from Multiplayer Battles using 1 Battle Blimp	|3h-8h	|40-300
+				[$g_sImgSiegeWW,    "Wall Wrecker"		,12, 5, 1]] 	; Earn 2-5 Stars from Multiplayer Battles using 1 Wall Wrecker 	|3h-8h	|40-100
+
 
 
 	; Just in Case

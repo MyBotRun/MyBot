@@ -29,6 +29,7 @@ Func GoldElixirChangeEBO()
 	$Elixir1 = getElixirVillageSearch(48, 69 + 29)
 	$Trophies = getTrophyVillageSearch(48, 69 + 99)
 	$Damage = getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)
+	If Number($Damage) > Number($g_iPercentageDamage) Then $g_iPercentageDamage = Number($Damage)
 	If $Trophies <> "" Then ; If trophy value found, then base has Dark Elixir
 		If _Sleep($DELAYGOLDELIXIRCHANGEEBO1) Then Return
 		$DarkElixir1 = getDarkElixirVillageSearch(48, 69 + 57)
@@ -72,6 +73,7 @@ Func GoldElixirChangeEBO()
 	; Early Check if Percentage is alreay higher than set
 	If $g_abStopAtkPctHigherEnable[$g_iMatchMode] And Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)) > Number($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) Then
 		SetLog("Overall Damage above " & Number($g_aiStopAtkPctHigherAmt[$g_iMatchMode]), $COLOR_SUCCESS)
+		$g_iPercentageDamage = Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY))
 		$z = 0
 	EndIf
 
@@ -145,6 +147,8 @@ Func GoldElixirChangeEBO()
 			EndIf
 		EndIf
 
+		If Number($CurDamage) > Number($g_iPercentageDamage) Then $g_iPercentageDamage = Number($CurDamage)
+
 		If Number($CurDamage) >= 92 Then
 			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower) Then
 				If $g_bCheckKingPower And $g_iActivateKing = 0 Then
@@ -201,6 +205,7 @@ Func GoldElixirChangeEBO()
 
 		If $g_abStopAtkPctHigherEnable[$g_iMatchMode] And Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)) > Number($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) Then
 			SetLog("Overall Damage above " & Number($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) & ", exit", $COLOR_SUCCESS)
+			$g_iPercentageDamage = Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY))
 			ExitLoop
 		EndIf
 
@@ -213,6 +218,7 @@ Func GoldElixirChangeEBO()
 		;RETURN IF DAMAGE CHANGE DETECTED
 		If $g_abStopAtkPctNoChangeEnable[$g_iMatchMode] And (Number($Damage) <> Number($CurDamage)) Then
 			SetLog("Overall Damage Percentage change detected, waiting...", $COLOR_SUCCESS)
+			$g_iPercentageDamage = Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY))
 			Return True
 		EndIf
 
@@ -244,6 +250,7 @@ Func GoldElixirChangeEBO()
 	EndIf
 
 	If $g_abStopAtkPctHigherEnable[$g_iMatchMode] And Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)) > Number($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) Then
+		$g_iPercentageDamage = Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY))
 		Return False
 	EndIf
 

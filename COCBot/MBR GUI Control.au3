@@ -495,12 +495,6 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnAttackNowTS()
 			;Case $idMENU_DONATE_SUPPORT
 			;	ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
-		Case $g_hBtnNotifyDeleteMessages
-			If $g_bRunState Then
-				btnDeletePBMessages() ; call with flag when bot is running to execute on _sleep() idle
-			Else
-				PushMsg("DeleteAllPBMessages") ; call directly when bot is stopped
-			EndIf
 		Case $g_hBtnMakeScreenshot
 			If $g_bRunState Then
 				; call with flag when bot is running to execute on _sleep() idle
@@ -548,7 +542,8 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $g_hChkMakeIMGCSV
 			chkmakeIMGCSV()
 		Case $g_hBtnTestTrain
-			btnTestTrain()
+			;btnTestTrain()
+			TestSmartFarm()
 		Case $g_hBtnTestDonateCC
 			btnTestDonateCC()
 		Case $g_hBtnTestRequestCC
@@ -572,7 +567,11 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $g_hBtnTestimglocTroopBar
 			TestImglocTroopBar()
 		Case $g_hBtnTestAttackCSV
-			btnTestAttackCSV()
+			Local $RuntimeA = $g_bRunState
+			$g_bRunState = True
+			Setlog("Army Window Test")
+			_checkArmyCamp(False,False,False, True)
+			$g_bRunState = $RuntimeA
 		Case $g_hBtnTestBuildingLocation
 			btnTestGetLocationBuilding()
 		Case $g_hBtnTestFindButton
@@ -599,6 +598,20 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnTestSmartWait()
 		Case $g_hBtnConsoleWindow
 			btnConsoleWindow()
+		Case $g_hBtnTestTrainsimgloc
+
+			Local $RuntimeA = $g_bRunState
+			$g_bRunState = True
+			Setlog("Queued Spells Test")
+			CheckQueueSpells()
+			$g_bRunState = $RuntimeA
+		Case $g_hBtnTestQuickTrainsimgloc
+
+			Local $RuntimeA = $g_bRunState
+			$g_bRunState = True
+			Setlog("Queued Troops Test")
+			CheckQueueTroops()
+			$g_bRunState = $RuntimeA
 	EndSwitch
 
 	If $lParam = $g_hCmbGUILanguage Then
@@ -1944,6 +1957,7 @@ Func tabDeadbase()
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_STANDARD)
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_SCRIPTED)
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_MILKING)
+			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_SMARTFARM)
 	EndSelect
 
 EndFunc   ;==>tabDeadbase
@@ -2003,7 +2017,7 @@ Func Bind_ImageList($nCtrl, ByRef $hImageList)
 
 		Case $g_hGUI_VILLAGE_TAB
 			; the icons for village tab
-			Local $aIconIndex = [$eIcnTH1, $eIcnCC, $eIcnLaboratory, $eIcnAchievements, $eIcnPBNotify]
+			Local $aIconIndex = [$eIcnTH1, $eIcnCC, $eIcnLaboratory, $eIcnAchievements, $eIcnTelegram]
 
 		Case $g_hGUI_TRAINARMY_TAB
 			; the icons for army tab
@@ -2022,7 +2036,7 @@ Func Bind_ImageList($nCtrl, ByRef $hImageList)
 
 		Case $g_hGUI_NOTIFY_TAB
 			; the icons for NOTIFY tab
-			Local $aIconIndex = [$eIcnPBNotify, $eIcnHourGlass]
+			Local $aIconIndex = [$eIcnTelegram, $eIcnHourGlass]
 
 		Case $g_hGUI_ATTACK_TAB
 			; the icons for attack tab

@@ -48,6 +48,7 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 	Local $iTroopIndex = -1, $iDropTrophyIndex = -1
 	Local $aCurrentTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
 	Local $aTroopsForTropyDropEmpty[6][2] = [["Barb", 0], ["Arch", 0], ["Giant", 0], ["Wall", 0], ["Gobl", 0], ["Mini", 0]] ; Local Copy to reset Troop Drop Trophy Array
+	Local $aCurrentTroopsLog[$eTroopCount][3] ; [0] = Name [1] = Quantities [3] Xaxis
 
 	$g_aiCurrentTroops = $aCurrentTroopsEmpty ; Reset Current Troops Array
 	$g_avDTtroopsToBeUsed = $aTroopsForTropyDropEmpty ; Reset Drop Trophy Troops Array
@@ -67,9 +68,18 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 			If $iDropTrophyIndex <> -1 Then $g_avDTtroopsToBeUsed[$iDropTrophyIndex][1] += $g_aiCurrentTroops[$iTroopIndex] ; If there was a Match in the Array then add the Troop Quantity to it
 
 			$sTroopName = $g_aiCurrentTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex] ; Select the right Troop Name, If more than one then use the Plural
-			If $bSetLog Then SetLog(" - " & $g_aiCurrentTroops[$iTroopIndex] & " " & $sTroopName & " Available", $COLOR_SUCCESS) ; Log What Troop is available and How many
+			;If $bSetLog Then SetLog(" - " & $g_aiCurrentTroops[$iTroopIndex] & " " & $sTroopName & " Available", $COLOR_SUCCESS) ; Log What Troop is available and How many
+			$aCurrentTroopsLog[$iTroopIndex][0] = $sTroopName
+			$aCurrentTroopsLog[$iTroopIndex][1] = $g_aiCurrentTroops[$iTroopIndex]
+			$aCurrentTroopsLog[$iTroopIndex][2] = Slot($aTroopCoords[0], $aTroopCoords[1])
 		Next
 	EndIf
+
+	; Just a good log from left to right
+	_ArraySort($aCurrentTroopsLog, 0, 0, 0, 2)
+	For $index = 0 To UBound($aCurrentTroopsLog) - 1
+		If $aCurrentTroopsLog[$index][1] > 0 And $bSetLog Then SetLog(" - " & $aCurrentTroopsLog[$index][1] & " " & $aCurrentTroopsLog[$index][0] & " Available", $COLOR_SUCCESS)
+	Next
 
 	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0000") ;Click Away

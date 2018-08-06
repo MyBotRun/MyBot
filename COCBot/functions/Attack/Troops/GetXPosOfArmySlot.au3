@@ -24,6 +24,8 @@ Func GetXPosOfArmySlot($slotNumber, $xOffsetFor11Slot)
 
 	If $slotNumber = $g_iKingSlot Or $slotNumber = $g_iQueenSlot Or $slotNumber = $g_iWardenSlot Then $xOffsetFor11Slot += 8
 
+	If $g_bDraggedAttackBar Then Return $xOffsetFor11Slot + $SlotComp + ($slotNumber * 72) + 14 ; Slot11+
+
 	; check Dark color on slot 0 to verify if exists > 11 slots
 	; $SlotPixelColor = _ColorCheck(_GetPixelColor(17, 580 + $g_iBottomOffsetY, True), Hex(0x07202A, 6), 20)
 	$CheckSlot12 = _ColorCheck(_GetPixelColor(17, 643, True), Hex(0x478AC6, 6), 15) Or _  	 ; Slot Filled / Background Blue / More than 11 Slots

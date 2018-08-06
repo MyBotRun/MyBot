@@ -17,6 +17,7 @@ Func ParseAttackCSV($debug = False)
 	Local $bForceSideExist = False
 	Local $sErrorText, $sTargetVectors = ""
 	Local $iTroopIndex, $bWardenDrop = False
+	Local $sides2drop[4] = [False, False , False , False]
 
 	For $v = 0 To 25  ; Zero all 26 vectors from last atttack in case here is error MAKE'ing new vectors
 		Assign("ATTACKVECTOR_" & Chr(65+$v), "", $ASSIGN_EXISTFAIL) ; start with character "A" = ASCII 65
@@ -69,6 +70,7 @@ Func ParseAttackCSV($debug = False)
 										Else
 											$sidex &= "RIGHT"
 										EndIf
+										$sides2drop[0] = True
 									Case 2
 										$sidex = "BACK_"
 										If Random(0, 1, 1) = 0 Then
@@ -76,6 +78,7 @@ Func ParseAttackCSV($debug = False)
 										Else
 											$sidex &= "RIGHT"
 										EndIf
+										$sides2drop[1] = True
 									Case 3
 										$sidex = "LEFT_"
 										If Random(0, 1, 1) = 0 Then
@@ -83,6 +86,7 @@ Func ParseAttackCSV($debug = False)
 										Else
 											$sidex &= "BACK"
 										EndIf
+										$sides2drop[2] = True
 									Case 4
 										$sidex = "RIGHT_"
 										If Random(0, 1, 1) = 0 Then
@@ -90,6 +94,7 @@ Func ParseAttackCSV($debug = False)
 										Else
 											$sidex &= "BACK"
 										EndIf
+										$sides2drop[3] = True
 								EndSwitch
 							EndIf
 							If CheckCsvValues("MAKE", 1, $value1) And CheckCsvValues("MAKE", 5, $value5) Then
@@ -732,6 +737,9 @@ Func ParseAttackCSV($debug = False)
 				CheckHeroesHealth()
 			EndIf
 			If _Sleep($DELAYRESPOND) Then  Return ; check for pause/stop after each line of CSV
+		Next
+		For $i = 0 to 3
+			If $sides2drop[$i] then $g_iSidesAttack +=1
 		Next
 		ReleaseClicks()
 	Else

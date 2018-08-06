@@ -8,7 +8,7 @@
 ;                  $slotsPerEdge        - a string value.
 ; Return values .: None
 ; Author ........:
-; Modified ......:
+; Modified ......: ProMac (07-2018)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -49,24 +49,11 @@ Func GetPixelDropTroop($troop, $number, $slotsPerEdge)
 		$newPixelBottomRight = $g_aiPixelBottomRight
 	EndIf
 
-	If ($slotsPerEdge = 1) Then
-		$newPixelTopLeft = GetVectorPixelAverage($newPixelTopLeft, 0)
-		$newPixelBottomLeft = GetVectorPixelAverage($newPixelBottomLeft, 1)
-		$newPixelTopRight = GetVectorPixelAverage($newPixelTopRight, 1)
-		$newPixelBottomRight = GetVectorPixelAverage($newPixelBottomRight, 0)
-	ElseIf ($slotsPerEdge = 2) Then
-		$newPixelTopLeft = GetVectorPixelOnEachSide($newPixelTopLeft, 0)
-		$newPixelBottomLeft = GetVectorPixelOnEachSide($newPixelBottomLeft, 1)
-		$newPixelTopRight = GetVectorPixelOnEachSide($newPixelTopRight, 1)
-		$newPixelBottomRight = GetVectorPixelOnEachSide($newPixelBottomRight, 0)
-	Else
-		debugRedArea("GetPixelDropTroop :  $slotsPerEdge [" & $slotsPerEdge & "] ")
-		$newPixelTopLeft = GetVectorPixelToDeploy($newPixelTopLeft, 0, $slotsPerEdge)
-		$newPixelBottomLeft = GetVectorPixelToDeploy($newPixelBottomLeft, 1, $slotsPerEdge)
-		$newPixelTopRight = GetVectorPixelToDeploy($newPixelTopRight, 1, $slotsPerEdge)
-		$newPixelBottomRight = GetVectorPixelToDeploy($newPixelBottomRight, 0, $slotsPerEdge)
+	$newPixelTopLeft = GetVectorPixelOnEachSide2($newPixelTopLeft, 0, $slotsPerEdge)
+	$newPixelBottomLeft = GetVectorPixelOnEachSide2($newPixelBottomLeft, 1, $slotsPerEdge)
+	$newPixelTopRight = GetVectorPixelOnEachSide2($newPixelTopRight, 1, $slotsPerEdge)
+	$newPixelBottomRight = GetVectorPixelOnEachSide2($newPixelBottomRight, 0, $slotsPerEdge)
 
-	EndIf
 	Local $g_aaiEdgeDropPointsPixelToDrop[4] = [$newPixelBottomRight, $newPixelTopLeft, $newPixelBottomLeft, $newPixelTopRight]
 	Return $g_aaiEdgeDropPointsPixelToDrop
 EndFunc   ;==>GetPixelDropTroop

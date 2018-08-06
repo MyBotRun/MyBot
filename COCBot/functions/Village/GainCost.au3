@@ -70,8 +70,16 @@ Func EndGainCost($Type)
 				$g_aiDarkTotalAcc[$g_iCurAccount] += $tempDElixirCollected
 			EndIf
 		Case "Train"
+			Local $tempGoldSpent = 0
 			Local $tempElixirSpent = 0
 			Local $tempDElixirSpent = 0
+
+			If $g_aiTempGainCost[0] <> "" And $g_aiCurrentLoot[$eLootGold] <> "" And $g_aiTempGainCost[0] <> $g_aiCurrentLoot[$eLootGold] Then
+				$tempGoldSpent = ($g_aiTempGainCost[0] - $g_aiCurrentLoot[$eLootGold])
+				$g_iTrainCostGold += $tempGoldSpent
+				$g_iStatsTotalGain[$eLootGold] -= $tempGoldSpent
+			EndIf
+
 			If $g_aiTempGainCost[1] <> "" And $g_aiCurrentLoot[$eLootElixir] <> "" And $g_aiTempGainCost[1] <> $g_aiCurrentLoot[$eLootElixir] Then
 				$tempElixirSpent = ($g_aiTempGainCost[1] - $g_aiCurrentLoot[$eLootElixir])
 				$g_iTrainCostElixir += $tempElixirSpent
@@ -85,6 +93,7 @@ Func EndGainCost($Type)
 			EndIf
 
 			If ProfileSwitchAccountEnabled() Then
+				$g_aiGoldTotalAcc[$g_iCurAccount] -= $tempGoldSpent
 				$g_aiElixirTotalAcc[$g_iCurAccount] -= $tempElixirSpent
 				$g_aiDarkTotalAcc[$g_iCurAccount] -= $tempDElixirSpent
 			EndIf

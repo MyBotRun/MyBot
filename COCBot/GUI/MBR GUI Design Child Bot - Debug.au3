@@ -116,7 +116,7 @@ Func CreateBotDebug()
 	Local $x = 300
 	$y = 40
 	Local $yNext = 30
-		$g_hBtnTestTrain = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestTrain", "Test Train"), $x, $y, 140, 25)
+		$g_hBtnTestTrain = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestTrain", "Smart Farm"), $x, $y, 140, 25)
 	$y += $yNext
 
 		$g_hBtnTestDonateCC = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestDonateCC", "Test Donate"), $x, $y, 140, 25)
@@ -143,10 +143,10 @@ Func CreateBotDebug()
 		$g_hBtnTestTHimgloc = GUICtrlCreateButton("imgloc TH", $x, $y, 140, 25)
 	$y += $yNext
 
-		$g_hBtnTestTrainsimgloc = GUICtrlCreateButton("New Train Test", $x, $y, 140, 25)
+		$g_hBtnTestTrainsimgloc = GUICtrlCreateButton("Queued Spells", $x, $y, 140, 25)
 	$y += $yNext
 
-		$g_hBtnTestQuickTrainsimgloc = GUICtrlCreateButton("Quick Train Test", $x, $y, 140, 25)
+		$g_hBtnTestQuickTrainsimgloc = GUICtrlCreateButton("Queued Troops", $x, $y, 140, 25)
 
 	$y += $yNext
 		$g_hBtnTestOcrMemory = GUICtrlCreateButton("OCR Memory Test", $x, $y, 140, 25)
@@ -165,7 +165,7 @@ Func CreateBotDebug()
 		$g_hBtnTestCleanYard = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestCleanYard", "Test Clean Yard"), $x - 145, $y, 140, 25)
 	$y -= $yNext
 
-		$g_hBtnTestAttackCSV = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestAttackCSV", "Test Attack CSV"), $x, $y, 140, 25)
+		$g_hBtnTestAttackCSV = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestAttackCSV", "Army Window"), $x, $y, 140, 25)
 		$g_hBtnTestBuildingLocation = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestBuildingLocation", "Find Building"), $x - 145, $y, 140, 25)
 	$y -= $yNext
 

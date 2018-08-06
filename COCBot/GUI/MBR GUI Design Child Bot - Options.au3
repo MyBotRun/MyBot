@@ -24,6 +24,8 @@ Global $g_hTxtGlobalActiveBotsAllowed = 0, $g_hTxtGlobalThreads = 0, $g_hTxtThre
 Global $g_hChkBotCustomTitleBarClick = 0, $g_hChkBotAutoSlideClick = 0, $g_hChkHideWhenMinimized = 0, $g_hChkUseRandomClick = 0, $g_hChkScreenshotType = 0, _
 	   $g_hChkScreenshotHideName = 0, $g_hTxtTimeAnotherDevice = 0
 Global $g_hChkSinglePBTForced = 0, $g_hTxtSinglePBTimeForced = 0, $g_hTxtPBTimeForcedExit = 0, $g_hChkFixClanCastle = 0, $g_hChkAutoResume = 0, $g_hTxtAutoResumeTime = 0, $g_hChkDisableNotifications = 0
+Global $g_hChkSqlite = 0
+Global $g_hBtnExportData = 0
 
 Func CreateBotOptions()
 
@@ -221,7 +223,7 @@ Func CreateBotOptions()
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$y += 51
-	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_07", "Other Options"), $x - 20, $y - 20, 225, 85)
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "Group_07", "Other Options"), $x - 20, $y - 20, 225, 122)
 		$g_hChkSinglePBTForced = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkSinglePBTForced", "Force Single PB logoff"), $x, $y, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkSinglePBTForced")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkSinglePBTForced_Info_01", "This forces bot to exit CoC only one time prior to normal start of PB"))
@@ -247,6 +249,17 @@ Func CreateBotOptions()
 		$g_hChkFixClanCastle = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkFixClanCastle", "Force Clan Castle Detection"), $x, $y + 2, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkFixClanCastle_Info_01", "If clan Castle it is undetected and it is NOT placed in the last slot, force bot to consider the undetected slot as Clan Castle"))
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
+
+	$y += 20
+		$g_hChkSqlite = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkSqlite", "Use SQLite for statistics"), $x, $y + 2, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkSqlite_Info_01", "Will collect data from attacks to SQlite, exporting to CSV.") & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkSqlite_Info_02", "Excellent to use with Smart-Farm, to collect sides, resources inside and outside, etc."))
+			GUICtrlSetOnEvent(-1, "chkSQLite")
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
+
+		$g_hBtnExportData = GUICtrlCreateButton( GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "BtnExportData", "ExportData"), $x + 137 , $y + 14)
+			GUICtrlSetOnEvent(-1, "SQLiteExport")
+
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 EndFunc   ;==>CreateBotOptions

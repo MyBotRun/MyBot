@@ -19,7 +19,7 @@ Global $g_aiDonIcons[21] = [$eIcnDonBarbarian, $eIcnDonArcher, $eIcnDonGiant, $e
 							$eIcnDonWitch, $eIcnDonLavaHound, $eIcnDonBowler, $eIcnDonBlank]
 
 Func btnDonateTroop()
-	For $i = 0 To $eTroopCount-1 + $g_iCustomDonateConfigs
+	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs + $eSiegeMachineCount
 		If @GUI_CtrlId = $g_ahBtnDonateTroop[$i] Then
 			If GUICtrlGetState($g_ahGrpDonateTroop[$i]) = BitOR($GUI_HIDE, $GUI_ENABLE) Then
 				_DonateBtn($g_ahGrpDonateTroop[$i], $g_ahTxtBlacklistTroop[$i]) ;Hide/Show controls on Donate tab
@@ -47,7 +47,7 @@ Func btnDonateBlacklist()
 EndFunc   ;==>btnDonateBlacklist
 
 Func chkDonateTroop()
-	For $i = 0 To $eTroopCount-1 + $g_iCustomDonateConfigs
+	For $i = 0 To $eTroopCount-1 + $g_iCustomDonateConfigs + $eSiegeMachineCount
 		If @GUI_CtrlId = $g_ahChkDonateTroop[$i] Then
 			If GUICtrlRead($g_ahChkDonateTroop[$i]) = $GUI_CHECKED Then
 				_DonateControls($i)
@@ -59,7 +59,7 @@ Func chkDonateTroop()
 EndFunc   ;==>chkDonateTroop
 
 Func chkDonateAllTroop()
-	For $i = 0 To $eTroopCount-1 + $g_iCustomDonateConfigs
+	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 		If @GUI_CtrlId = $g_ahChkDonateAllTroop[$i] Then
 			_DonateAllControls($i, GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_CHECKED ? True : False)
 			ExitLoop
@@ -150,7 +150,7 @@ EndFunc   ;==>_DonateBtn
 Func _DonateControls($iTroopIndex)
 	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "_DonateControls")
 
-	For $i = 0 To $eTroopCount-1 + $g_iCustomDonateConfigs
+	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs + $eSiegeMachineCount
 		If $i = $iTroopIndex Then
 			GUICtrlSetBkColor($g_ahLblDonateTroop[$i], $COLOR_ORANGE)
 		Else
@@ -168,7 +168,7 @@ Func _DonateAllControls($iTroopIndex, $Set)
 	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "_DonateAllControls")
 
 	If $Set = True Then
-		For $i = 0 To $eTroopCount-1 + $g_iCustomDonateConfigs
+		For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 			GUICtrlSetBkColor($g_ahLblDonateTroop[$i], $i = $iTroopIndex ? $COLOR_NAVY : $GUI_BKCOLOR_TRANSPARENT)
 
 			If $i <> $iTroopIndex Then

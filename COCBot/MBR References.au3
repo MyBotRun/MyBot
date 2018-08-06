@@ -596,4 +596,7 @@ Func ReferenceGlobals()
 
 	$a1 = $aiCloseDefaultPOS
 
+	$a1 = $TELEGRAM_URL
+	$a1 = $HTTP_STATUS_OK
+
 EndFunc   ;==>ReferenceGlobals

@@ -19,7 +19,7 @@
 Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = True)
 	Static $hTimer_SetTime = 0
 	Static $hTimer_PBRemoteControlInterval = 0
-	Static $hTimer_PBDeleteOldPushesInterval = 0
+	;Static $hTimer_PBDeleteOldPushesInterval = 0
 	Static $hTimer_EmptyWorkingSetAndroid = 0
 	Static $hTimer_EmptyWorkingSetBot = 0
 	Static $b_Sleep_Active = False
@@ -61,16 +61,16 @@ Func _Sleep($iDelay, $iSleep = True, $CheckRunState = True, $SleepWhenPaused = T
 		If $iDelay > 0 And __TimerDiff($g_hTxtLogTimer) >= $g_iTxtLogTimerTimeout Then
 
 			; Notify stuff
-			If $g_bNotifyDeleteAllPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
+			; If $g_bNotifyDeleteAllPushesNow = True Then PushMsg("DeleteAllPBMessages") ; only when button is pushed, and only when on a sleep cyle
 
 			If __TimerDiff($hTimer_PBRemoteControlInterval) >= $g_iPBRemoteControlInterval Or ($hTimer_PBRemoteControlInterval = 0 And $g_bNotifyRemoteEnable) Then
 				NotifyRemoteControl()
 				$hTimer_PBRemoteControlInterval = __TimerInit()
 			EndIf
-			If __TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $g_iPBDeleteOldPushesInterval Or ($hTimer_PBDeleteOldPushesInterval = 0 And $g_bNotifyDeletePushesOlderThan) Then
-				PushBulletDeleteOldPushes()
-				$hTimer_PBDeleteOldPushesInterval = __TimerInit()
-			EndIf
+;~ 			If __TimerDiff($hTimer_PBDeleteOldPushesInterval) >= $g_iPBDeleteOldPushesInterval  Then
+;~ 				PushBulletDeleteOldPushes()
+;~ 				$hTimer_PBDeleteOldPushesInterval = __TimerInit()
+;~ 			EndIf
 
 			; Android & Bot Stuff
 			If (($g_iEmptyWorkingSetAndroid > 0 And __TimerDiff($hTimer_EmptyWorkingSetAndroid) >= $g_iEmptyWorkingSetAndroid * 1000) Or $hTimer_EmptyWorkingSetAndroid = 0) And $g_bRunState And TestCapture() = False Then

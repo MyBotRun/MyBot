@@ -21,12 +21,12 @@ framerates and 20 fps or lower significantly reduce CPU load.
 MEmu
 ====
 http://www.memuplay.com/
-Versions 5.3.2.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 5.2.3.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1
 
-Known issues/bugs: None
+Known issues/bugs: **Newest versions , 5.3.2 or 5.5.5 doesn't work the _ControlClick with window not active
 
 BlueStacks
 ==========
@@ -106,7 +106,7 @@ WinAPI/DirectX background | No            | Yes           | Yes, DirectX    | Ye
 AndroidScreencap          | Yes           | No            | Yes             | Yes           | Yes           | No, mem leak   | Yes           | Yes
 AndroidZoomOut            | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes
 AndroidClick*             | Yes           | No            | Yes             | Yes           | Yes           | No             | Yes           | Yes
-_ControlClick             | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes
+_ControlClick             | Yes**         | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes
 AndroidClickDrag          | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes
 _PostMessage_ClickDrag    | No            | Yes, not used | Yes, not used   | No            | No            | No             | No            | No
 AndroidSendText*          | Yes           | Yes           | Yes             | Yes           | Yes           | Yes            | Yes           | Yes

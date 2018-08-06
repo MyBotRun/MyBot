@@ -16,7 +16,8 @@
 Func isOnBuilderBase($bNeedCaptureRegion = False)
 	_Sleep($DELAYISBUILDERBASE)
 
-	If _CheckPixel($aIsOnBuilderBase, $bNeedCaptureRegion) Then
+	Local $ImagePath = @ScriptDir & "\imgxml\village\Page\BuilderIsland\"
+	If QuickMIS("BC1", $ImagePath, 260, 0, 406, 54, $bNeedCaptureRegion, $g_bDebugSetlog) Then
 		If $g_bDebugSetlog Then SetDebugLog("Builder Base Builder detected", $COLOR_DEBUG)
 		Return True
 	Else

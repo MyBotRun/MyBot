@@ -60,7 +60,7 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 		If Not ($g_bFullArmy) And $g_bTrainEnabled = True Then
 			If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
 				; Train()
-				TrainRevamp()
+				TrainSystem()
 				If $g_bRestart Then Return
 			Else
 				If $g_bDebugSetlogTrain Then SetLog("skip train. " & $g_iActualTrainSkip + 1 & "/" & $g_iMaxTrainSkip, $color_purple)

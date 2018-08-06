@@ -512,50 +512,6 @@ Func chkABWardenWait()
 	EndIf
 EndFunc   ;==>chkABWardenWait
 
-Func chkDBWaitForCCSpell()
-	If GUICtrlRead($g_hChkDBWaitForCastleSpell) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hCmbDBWaitForCastleSpell, $GUI_ENABLE)
-		cmbDBWaitForCCSpell()
-	Else
-		GUICtrlSetState($g_hCmbDBWaitForCastleSpell, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtDBWaitForCastleSpell, $GUI_DISABLE)
-		GUICtrlSetState($g_hCmbDBWaitForCastleSpell2, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkDBWaitForCCSpell
-
-Func chkABWaitForCCSpell()
-	If GUICtrlRead($g_hChkABWaitForCastleSpell) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hCmbABWaitForCastleSpell, $GUI_ENABLE)
-		cmbABWaitForCCSpell()
-	Else
-		GUICtrlSetState($g_hCmbABWaitForCastleSpell, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtABWaitForCastleSpell, $GUI_DISABLE)
-		GUICtrlSetState($g_hCmbABWaitForCastleSpell2, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkABWaitForCCSpell
-
-Func cmbDBWaitForCCSpell()
-	Local $iSpellSelection = _GUICtrlComboBox_GetCurSel($g_hCmbDBWaitForCastleSpell)
-	If $iSpellSelection > 0 And  $iSpellSelection < 6 Then
-		GUICtrlSetState($g_hCmbDBWaitForCastleSpell2, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtDBWaitForCastleSpell, $GUI_DISABLE)
-	Else
-		GUICtrlSetState($g_hCmbDBWaitForCastleSpell2, $GUI_ENABLE)
-		GUICtrlSetState($g_hTxtDBWaitForCastleSpell, $GUI_ENABLE)
-	EndIf
-EndFunc   ;==>cmbDBWaitForCCSpell
-
-Func cmbABWaitForCCSpell()
-	Local $iSpellSelection = _GUICtrlComboBox_GetCurSel($g_hCmbABWaitForCastleSpell)
-	If $iSpellSelection > 0 And  $iSpellSelection < 6 Then
-		GUICtrlSetState($g_hCmbABWaitForCastleSpell2, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtABWaitForCastleSpell, $GUI_DISABLE)
-	Else
-		GUICtrlSetState($g_hCmbABWaitForCastleSpell2, $GUI_ENABLE)
-		GUICtrlSetState($g_hTxtABWaitForCastleSpell, $GUI_ENABLE)
-	EndIf
-EndFunc   ;==>cmbABWaitForCCSpell
-
 Func chkDBSpellsWait()
 	If $g_iTownHallLevel > 4 Or $g_iTownHallLevel = 0 Then ; Must be TH5+ to have spells
 		For $i = $g_hPicDBLightSpellWait To $g_hPicDBHasteSpellWait

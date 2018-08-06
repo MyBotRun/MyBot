@@ -86,3 +86,23 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 	_Sleep($DELAYBOOSTBARRACKS2)
 	Return $boosted
 EndFunc   ;==>BoostTrainBuilding
+
+Func BoostEverything()
+	; Verifying existent Variables to run this routine
+	If AllowBoosting("Everything", $g_iCmbBoostEverything) = False Then Return
+
+	SetLog("Boosting Everything .....", $COLOR_INFO)
+	If $g_aiClanCastlePos[0] = "" Or $g_aiClanCastlePos[0] = -1 Then
+		LocateClanCastle()
+		SaveConfig()
+		If _Sleep($DELAYBOOSTBARRACKS2) Then Return
+	EndIf
+
+	Return BoostPotion("Everything", "Castle", $g_aiClanCastlePos, $g_iCmbBoostEverything, $g_hCmbBoostEverything) = _NowCalc()
+	$g_aiTimeTrain[0] = 0 ; reset Troop remaining time
+	$g_aiTimeTrain[1] = 0 ; reset Spells remaining time
+	$g_aiTimeTrain[2] = 0 ; reset Heroes remaining time
+
+	If _Sleep($DELAYBOOSTBARRACKS3) Then Return
+	checkMainScreen(False) ; Check for errors during function
+EndFunc   ;==>BoostEverything

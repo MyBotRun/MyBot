@@ -39,7 +39,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		$abHeroUse[$i] = ($g_abSearchSearchesEnable[$DB] ? IsSpecialTroopToBeUsed($DB, $eKing + $i) : False) _
 							Or ($g_abSearchSearchesEnable[$LB] ? IsSpecialTroopToBeUsed($LB, $eKing + $i) : False)
 	Next
-	
+
 	If $g_bDebugDeadBaseImage Or $g_aiSearchEnableDebugDeadBaseImage > 0 Then
 		DirCreate($g_sProfileTempDebugPath & "\SkippedZombies\")
 		DirCreate($g_sProfileTempDebugPath & "\Zombies\")
@@ -195,6 +195,13 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		; ----------------- WRITE LOG OF ENEMY RESOURCES -----------------------------------
 		Local $GetResourcesTXT = StringFormat("%3s", $g_iSearchCount) & "> [G]:" & StringFormat("%7s", $g_iSearchGold) & " [E]:" & StringFormat("%7s", $g_iSearchElixir) & " [D]:" & StringFormat("%5s", $g_iSearchDark) & " [T]:" & StringFormat("%2s", $g_iSearchTrophy) & $THString
 
+		; Stats Attack
+		$g_sSearchCount = $g_iSearchCount
+		$g_sOppGold = $g_iSearchGold
+		$g_sOppElixir = $g_iSearchElixir
+		$g_sOppDE = $g_iSearchDark
+		$g_sOppTrophies = $g_iSearchTrophy
+
 		; ----------------- CHECK DEAD BASE -------------------------------------------------
 		If Not $g_bRunState Then Return
 		; check deadbase if no milking attack or milking attack but low cpu settings  ($g_iMilkAttackType=1)
@@ -319,7 +326,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 					ExitLoop ; found 1 Hero is ready, skip checking other heros
 				EndIf
 			Next
-		EndIf		
+		EndIf
 		; Return Home on Search limit or Hero healed
 		If SearchLimit($iSkipped + 1, $bReturnToPickupHero) Then Return True
 

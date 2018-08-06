@@ -57,11 +57,28 @@ Func IsSearchModeActive($g_iMatchMode, $nocheckHeroes = False, $bNoLog = False)
 			$bMatchModeEnabled = False
 	EndSwitch
 
+
+	Local $bcheckSiege = False
+	If $g_abSearchSiegeWaitEnable[$g_iMatchMode] Then
+		If (($g_aiAttackUseSiege[$g_iMatchMode] = 1 And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeWallWrecker] > 0)) Or _
+			($g_aiAttackUseSiege[$g_iMatchMode] = 2 And ($g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBattleBlimp] > 0)) Or _
+			$g_aiAttackUseSiege[$g_iMatchMode] = 0) Then
+			$bcheckSiege = True
+		EndIf
+	Else
+		$bcheckSiege = True
+	EndIf
+
 	If Not $bMatchModeEnabled Then Return False ; exit if no DB, LB, TS mode enabled
 
-	If $checkHeroes And $g_bCheckSpells Then ;If $checkHeroes Then
+	If $checkHeroes And $g_bCheckSpells And $bcheckSiege Then ;If $checkHeroes Then
 		If ($checkSearches Or $g_abSearchSearchesEnable[$g_iMatchMode] = False) And ($checkTropies Or $g_abSearchTropiesEnable[$g_iMatchMode] = False) And ($checkArmyCamps Or $g_abSearchCampsEnable[$g_iMatchMode] = False) Then
-			If $g_bDebugSetlog And Not $bNoLog Then SetLog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies & ",$checkArmyCamps=" & $checkArmyCamps & ",$checkHeroes=" & $checkHeroes & ",$g_bCheckSpells=" & $g_bCheckSpells & ")", $COLOR_INFO) ;If  = 1 Then SetLog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies &",$checkArmyCamps=" & $checkArmyCamps & ",$checkHeroes=" & $checkHeroes & ")" , $COLOR_INFO)
+			If $g_bDebugSetlog And Not $bNoLog Then SetLog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & _
+																						  ",$checkTropies=" & $checkTropies & _
+																						  ",$checkArmyCamps=" & $checkArmyCamps & _
+																						  ",$checkHeroes=" & $checkHeroes & _
+																						  ",$g_bCheckSpells=" & $g_bCheckSpells & _
+																						  ",$bcheckSiege=" & $bcheckSiege & ")", $COLOR_INFO)
 			Return True
 		Else
 			If $g_bDebugSetlog And Not $bNoLog Then
@@ -81,12 +98,16 @@ Func IsSearchModeActive($g_iMatchMode, $nocheckHeroes = False, $bNoLog = False)
 				Local $txtSpells = "Fail"
 				If $g_bCheckSpells Then $txtSpells = "Success"
 				If $g_abSearchSpellsWaitEnable[$g_iMatchMode] Then SetLog("Full spell status: " & $g_bFullArmySpells & " | " & $txtSpells, $COLOR_INFO)
+				Local $txtSieges = $bcheckSiege = True ? "Success" : "Fail"
+				If $g_abSearchSiegeWaitEnable[$g_iMatchMode] Then SetLog("Siege status: " & $bcheckSiege, $COLOR_INFO)
 			EndIf
 			Return False
 		EndIf
 	ElseIf $checkHeroes = 0 Then
 		If $g_bDebugSetlog And Not $bNoLog Then SetLog("Heroes not ready", $COLOR_DEBUG)
 		Return False
+	ElseIf Not $bcheckSiege Then
+		If $g_bDebugSetlog And Not $bNoLog Then SetLog("Siege not ready", $COLOR_DEBUG)
 	Else
 		If $g_bDebugSetlog And Not $bNoLog Then SetLog("Spells not ready", $COLOR_DEBUG)
 		Return False
@@ -147,3 +168,28 @@ Func IsWaitforHeroesActive()
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforHeroesActive = False", $COLOR_DEBUG)
 	Return False
 EndFunc   ;==>IsWaitforHeroesActive
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: IsWaitforSiegeMachine
+; Description ...: Checks if Wait for Siege Machine is enabled for all enabled attack modes
+; Syntax ........: IsWaitforSiegeMachine()
+; Parameters ....: none
+; Return values .: Returns True if Wait for any Siege is enabled for any enabled attack mode, false if not
+; Author ........: ProMac (07-2018)
+; Modified ......:
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+Func IsWaitforSiegeMachine()
+	For $i = $DB To $g_iModeCount - 1
+		If $g_abAttackTypeEnable[$i] And $g_abSearchSiegeWaitEnable[$i] Then
+			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforSiegeMachine = True", $COLOR_DEBUG)
+			Return True
+		EndIf
+	Next
+	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("IsWaitforSiegeMachine = False", $COLOR_DEBUG)
+	Return False
+EndFunc   ;==>IsWaitforSiegeMachine

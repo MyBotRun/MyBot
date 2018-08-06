@@ -36,7 +36,7 @@ Func MatchTroopDropName($Num)
 			Return $eBabyD
 		Case 11
 			Return $eMine
-		case 12
+		Case 12
 			Return $eEDrag
 		Case 13
 			Return $eMini
@@ -60,6 +60,7 @@ Func MatchTroopDropName($Num)
 EndFunc   ;==>MatchTroopDropName
 
 Func MatchSlotsPerEdge($Num)
+	; 0 = spread in all deploy points each side , 1 = one deploy point , 2 = 2 deploy points
 	Switch _GUICtrlComboBox_GetCurSel($g_ahCmbDropOrder[$Num])
 		Case 0 ;$eBarb
 			Return 0
@@ -70,11 +71,7 @@ Func MatchSlotsPerEdge($Num)
 		Case 3 ;$eGobl
 			Return 0
 		Case 4 ;$eWall
-			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
-				Return 1
-			Else
-				Return 2
-			EndIf
+			Return 1
 		Case 5 ;$eBall
 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
 				Return 0
@@ -82,11 +79,7 @@ Func MatchSlotsPerEdge($Num)
 				Return 2
 			EndIf
 		Case 6 ;$eWiza
-			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
-				Return 0
-			Else
-				Return 2
-			EndIf
+			Return 0
 		Case 7 ;$eHeal
 			Return 1
 		Case 8 ;$eDrag

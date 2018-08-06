@@ -30,7 +30,7 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	SetLog("Requesting Clan Castle Troops", $COLOR_INFO)
 
 	;open army overview
-	If IsMainPage(5) Then
+	If IsMainPage(1) Then
 		If Not $g_bUseRandomClick Then
 			Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0334")
 		Else
@@ -53,6 +53,11 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 		EndIf
 	WEnd
 
+	If $ClickPAtEnd Then
+		getArmyCCSpellCapacity(False, False, False)
+		CheckCCSpells()
+	EndIf
+
 	Local $color1 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, True) ; Gray/Green color at 20px below Letter "R"
 	Local $color2 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True) ; White/Green color at Letter "R"
 
@@ -63,34 +68,17 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	ElseIf _ColorCheck($color1, Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
 		If _ColorCheck($color2, Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
 			;can make a request
-			; Request Type - Demen
-			Local $bNeedRequest = False, $aCheckCCNotFull[3] = [24, 455, 631], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
+			Local $bNeedRequest = False
 			If Not $g_abRequestType[0] And Not $g_abRequestType[1] And Not $g_abRequestType[2] Then
 				SetDebugLog("Request for Specific CC is not enable")
 				$bNeedRequest = True
+			ElseIf Not $ClickPAtEnd Then
+				$bNeedRequest = True
 			Else
-				Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
 				For $i = 0 To 2
-					If $g_abRequestType[$i] Then
-						If _ColorCheck(_GetPixelColor($aCheckCCNotFull[$i], 470, True), Hex(0xDC363A , 6), 30) Then ; red symbol
-							SetDebugLog("Found CC " & $sLog[$i] & " not full")
-							If $aiRequestCountCC[$i] = 0 or $aiRequestCountCC[$i] >= 40 - $i * 38 Then
-								$bNeedRequest = True
-							Else 
-								Local $sCCReceived = getOcrAndCapture("coc-ms", 289 + $i * 183, 468, 60, 16, True, False, True) ; read CC (troops 0/40 or spells 0/2)
-								SetDebugLog("Read CC " & ($i = 0 ? "Troops: " : "Spells: ") & $sCCReceived)
-								Local $aCCReceived = StringSplit($sCCReceived, "#", $STR_NOCOUNT) ; split the trained troop number from the total troop number
-								If IsArray($aCCReceived) Then
-									If Number($aCCReceived[0]) < $aiRequestCountCC[$i] Then $bNeedRequest = True
-									If Not $bNeedRequest Or $g_bDebugSetlog Then SetLog("Already received " & Number($aCCReceived[0]) & ($i = 0 ? " CC Troops." : " CC Spells."))
-								EndIf
-							EndIf
-						Else
-							SetLog("CC " & $sLog[$i] & " is full" & ($i > 0 ? " or not available." : "."))
-						EndIf
-						If $bNeedRequest Then ExitLoop
-					Else
-						SetDebugLog("RequestType does not care about " & $sLog[$i])
+					If Not IsFullClanCastleType($i) Then 
+						$bNeedRequest = True
+						ExitLoop
 					EndIf
 				Next
 			EndIf
@@ -161,3 +149,301 @@ Func _makerequest()
 	EndIf
 
 EndFunc   ;==>_makerequest
+
+Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine = 2
+	Local $aCheckCCNotFull[3] = [24, 455, 631], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
+	Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
+	If Not $g_abRequestType[$CCType] And ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2]) Then
+		If $g_bDebugSetlog Then SetLog($sLog[$CCType] & " not cared about.")
+		Return True
+	Else
+		If _ColorCheck(_GetPixelColor($aCheckCCNotFull[$CCType], 470, True), Hex(0xDC363A , 6), 30) Then ; red symbol
+			SetDebugLog("Found CC " & $sLog[$CCType] & " not full")
+			If $aiRequestCountCC[$CCType] = 0 or $aiRequestCountCC[$CCType] >= 40 - $CCType * 38 Then
+				Return False
+			Else 
+				Local $sCCReceived = getOcrAndCapture("coc-ms", 289 + $CCType * 183, 468, 60, 16, True, False, True) ; read CC (troops 0/40 or spells 0/2)
+				SetDebugLog("Read CC " & $sLog[$CCType] & "s: " & $sCCReceived)
+				Local $aCCReceived = StringSplit($sCCReceived, "#", $STR_NOCOUNT) ; split the trained troop number from the total troop number
+				If IsArray($aCCReceived) Then
+					If $g_bDebugSetlog Then SetLog("Already received " & Number($aCCReceived[0]) & " CC " & $sLog[$CCType] & ($aCCReceived[0] = 1 ? "." : "s."))
+					If Number($aCCReceived[0]) < $aiRequestCountCC[$CCType] Then Return False
+				Else
+					Return False
+				EndIf
+			EndIf
+		Else
+			SetLog("CC " & $sLog[$CCType] & " is full" & ($CCType > 0 ? " or not available." : "."))
+			Return True
+		EndIf
+	EndIf
+EndFunc	  ;==>IsFullClanCastle
+
+Func IsFullClanCastle()
+	Local $bNeedRequest = False
+	If Not $g_bRunState Then Return
+
+	If Not $g_abSearchCastleWaitEnable[$DB] And Not $g_abSearchCastleWaitEnable[$LB] Then
+		Return True
+	EndIf
+
+	If ($g_abAttackTypeEnable[$DB] And $g_abSearchCastleWaitEnable[$DB]) Or ($g_abAttackTypeEnable[$LB] And $g_abSearchCastleWaitEnable[$LB]) Then
+		CheckCCSpells()
+		For $i = 0 To 2
+			If Not IsFullClanCastleType($i) Then 
+				$bNeedRequest = True
+				ExitLoop
+			EndIf
+		Next
+		If $bNeedRequest Then
+			$g_bCanRequestCC = True
+			RequestCC(False, "IsFullClanCastle")
+			Return False
+		EndIf
+	EndIf
+	Return True
+EndFunc   ;==>IsFullClanCastle
+
+Func CheckCCSpells()
+	If Not $g_abRequestType[1] Then Return
+	
+	Local $sCurCCSpell1 = "", $sCurCCSpell2 = "", $aShouldRemove[2] = [0, 0], $rColCheckFullCCTroops = False
+	Local $bCCSpellFull = False
+
+	If Not $g_bRunState Then Return
+
+	If $g_iCurrentCCSpells = $g_iTotalCCSpells And $g_iTotalCCSpells > 0 Then
+		If $g_bDebugSetlog Then SetLog("Getting current available spell in Clan Castle.")
+		; Imgloc Detection
+		If $g_iTotalCCSpells >= 1 Then $sCurCCSpell1 = GetCurCCSpell(1)
+		If $g_iTotalCCSpells >= 2 Then $sCurCCSpell2 = GetCurCCSpell(2)
+
+		; Compare the detection with the GUI selection
+		$aShouldRemove = CompareCCSpellWithGUI($sCurCCSpell1, $sCurCCSpell2, $g_iTotalCCSpells)
+
+		; Debug
+		If $g_iTotalCCSpells >= 2 Then
+			If $g_bDebugSetlog Then SetLog("Slot 1 to remove: " & $aShouldRemove[0])
+			If $g_bDebugSetlog Then SetLog("Slot 2 to remove: " & $aShouldRemove[1])
+		ElseIf $g_iTotalCCSpells = 1 Then
+			If $g_bDebugSetlog Then SetLog("Slot 1 to remove: " & $aShouldRemove[0])
+		EndIf
+
+		If $aShouldRemove[0] > 0 Or $aShouldRemove[1] > 0 Then
+			SetLog("Removing unwanted Clancastle Spells!", $COLOR_INFO)
+			RemoveCastleSpell($aShouldRemove)
+			If _Sleep(1000) Then Return
+		EndIf
+	EndIf
+EndFunc   ;==>CheckCCSpells
+
+Func RemoveCastleSpell($Slots)
+
+	If $Slots[0] = 0 And $Slots[1] = 0 Then Return
+
+	If Not _ColorCheck(_GetPixelColor(806, 516, True), Hex(0xCEEF76, 6), 25) Then ; If no 'Edit Army' Button found in army tab to edit troops
+		SetLog("Cannot find/verify 'Edit Army' Button in Army tab", $COLOR_WARNING)
+		Return False ; Exit function
+	EndIf
+
+	Click(Random(715, 825, 1), Random(507, 545, 1)) ; Click on Edit Army Button
+	If Not $g_bRunState Then Return
+
+	If _Sleep(500) Then Return
+
+	Local $pos[2] = [515, 575], $pos2[2] = [585, 575]
+
+	If $Slots[0] > 0 Then
+		ClickRemoveTroop($pos, $Slots[0], $g_iTrainClickDelay) ; Click on Remove button as much as needed
+	EndIf
+	If $Slots[1] > 0 Then
+		ClickRemoveTroop($pos2, $Slots[1], $g_iTrainClickDelay)
+	EndIf
+
+	If _Sleep(400) Then Return
+
+	If Not _ColorCheck(_GetPixelColor(806, 567, True), Hex(0xCEEF76, 6), 25) Then ; If no 'Okay' button found in army tab to save changes
+		SetLog("Cannot find/verify 'Okay' Button in Army tab", $COLOR_WARNING)
+		ClickP($aAway, 2, 0, "#0346") ; Click Away, Necessary! due to possible errors/changes
+		If _Sleep(400) Then OpenArmyOverview(True, "RemoveCastleSpell()") ; Open Army Window AGAIN
+		Return False ; Exit Function
+	EndIf
+
+	If _Sleep(700) Then Return
+
+	Click(Random(720, 815, 1), Random(558, 589, 1)) ; Click on 'Okay' button to save changes
+
+	If _Sleep(1200) Then Return
+
+	If Not _ColorCheck(_GetPixelColor(508, 428, True), Hex(0xFFFFFF, 6), 30) Then ; If no 'Okay' button found to verify that we accept the changes
+		SetLog("Cannot find/verify 'Okay #2' Button in Army tab", $COLOR_WARNING)
+		ClickP($aAway, 2, 0, "#0346") ;Click Away
+		Return False ; Exit function
+	EndIf
+
+	Click(Random(445, 583, 1), Random(402, 455, 1)) ; Click on 'Okay' button to Save changes... Last button
+
+	SetLog("Clan Castle Spell Removed", $COLOR_SUCCESS)
+	If _Sleep(200) Then Return
+	Return True
+EndFunc   ;==>RemoveCastleSpell
+
+Func CompareCCSpellWithGUI($CCSpell1, $CCSpell2, $CastleCapacity)
+
+	; $CCSpells are an array with the Detected Spell :
+	; $CCSpell1[0][0] = Name , [0][1] = X , [0][2] = Y , [0][3] = Quantities
+	; $CCSpell2[0][0] = Name , [0][1] = X , [0][2] = Y , [0][3] = Quantities , IS "" if was not detected or is not necessary
+
+	If $g_bDebugSetlog Then ; Just For debug
+		For $i = 0 To UBound($CCSpell1, $UBOUND_COLUMNS) - 1
+			SetLog("$CCSpell1[0][" & $i & "]: " & $CCSpell1[0][$i])
+		Next
+		If $CCSpell2 <> "" And $CastleCapacity = 2 And $CCSpell1[0][3] < 2 Then ; IF the Castle is = 2 and the previous Spell quantity was only 1
+			For $i = 0 To UBound($CCSpell2, $UBOUND_COLUMNS) - 1
+				SetLog("$CCSpell2[0][" & $i & "]: " & $CCSpell2[0][$i])
+			Next
+		EndIf
+	EndIf
+
+	If Not $g_bRunState Then Return
+	If _Sleep(100) Then Return
+
+	Local $sCCSpell, $sCCSpell2, $aShouldRemove[2] = [0, 0]
+
+	If $CastleCapacity = 0 Or $CastleCapacity = "" Then Return $aShouldRemove
+
+	Switch $g_iClanCastleSpellsWaitFirst
+		Case 0
+			$sCCSpell = "Any"
+		Case 1
+			$sCCSpell = "LSpell"
+		Case 2
+			$sCCSpell = "HSpell"
+		Case 3
+			$sCCSpell = "RSpell"
+		Case 4
+			$sCCSpell = "JSpell"
+		Case 5
+			$sCCSpell = "FSpell"
+		Case 6
+			$sCCSpell = "PSpell"
+		Case 7
+			$sCCSpell = "ESpell"
+		Case 8
+			$sCCSpell = "HaSpell"
+		Case 9
+			$sCCSpell = "SkSpell"
+	EndSwitch
+
+	Switch $g_iClanCastleSpellsWaitSecond
+		Case 0
+			$sCCSpell2 = "Any"
+		Case 1
+			$sCCSpell2 = "FSpell"
+		Case 2
+			$sCCSpell2 = "PSpell"
+		Case 3
+			$sCCSpell2 = "ESpell"
+		Case 4
+			$sCCSpell2 = "HaSpell"
+		Case 5
+			$sCCSpell2 = "SkSpell"
+	EndSwitch
+
+	If $g_bDebugSetlog Then SetLog("$sCCSpell: " & $sCCSpell & ", $sCCSpell2: " & $sCCSpell2)
+	Switch $CCSpell1[0][3] ; Switch through all possible results
+
+		Case 1 ; One Spell on Slot 1
+
+			If $sCCSpell <> "Any" Then
+				If $sCCSpell <> $CCSpell1[0][0] Then ; First Spell not in Slot 1
+					If $g_bDebugSetlog Then SetLog("First Spell not in Slot 1")
+					If $CastleCapacity = 2 And $g_iClanCastleSpellsWaitFirst > 4 Then
+						If $sCCSpell <> $CCSpell2[0][0] Then ; First Spell not in Slot 2, so check Second Spell
+							If $g_bDebugSetlog Then SetLog("First Spell not in Slot 2")
+							If $sCCSpell2 <> "Any" Then
+								If $sCCSpell2 <> $CCSpell1[0][0] Then ; Second Spell not in Slot 1, so remove this one
+									If $g_bDebugSetlog Then SetLog("Second Spell not in Slot 1")
+									$aShouldRemove[0] = $CCSpell1[0][3]
+									If $sCCSpell2 <> $CCSpell2[0][0] Then ; Second Spell not in Slot 2, so remove this one
+										If $g_bDebugSetlog Then SetLog("Second Spell not in Slot 2")
+										$aShouldRemove[1] = $CCSpell2[0][3]
+									Else
+										If $g_bDebugSetlog Then SetLog("Second Spell in Slot 2")
+									EndIf
+								Else
+									If $g_bDebugSetlog Then SetLog("Second Spell in Slot 1")
+								EndIf
+							Else
+								$aShouldRemove[1] = $CCSpell2[0][3] ; When "Any" as Second Spell, just remove one Spell
+							EndIf
+						Else
+							If $g_bDebugSetlog Then SetLog("First Spell in Slot 2") ; Second Spell not in Slot 1, so remove this one
+							If $sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any" Then
+								If $g_bDebugSetlog Then SetLog("Second Spell not in Slot 1")
+								$aShouldRemove[0] = $CCSpell1[0][3]
+							Else
+								If $g_bDebugSetlog Then SetLog("Second Spell in Slot 1")
+							EndIf
+						EndIf
+					Else
+						$aShouldRemove[0] = $CCSpell1[0][3]
+					EndIf
+				Else
+					If $g_bDebugSetlog Then SetLog("First Spell in Slot 1")
+					If $CastleCapacity = 2 And $g_iClanCastleSpellsWaitFirst > 4 Then
+						If $sCCSpell2 <> $CCSpell2[0][0] And $sCCSpell2 <> "Any" Then ; Second Spell not in Slot 2
+							If $g_bDebugSetlog Then SetLog("Second Spell not in Slot 2")
+							$aShouldRemove[1] = $CCSpell2[0][3]
+						Else
+							If $g_bDebugSetlog Then SetLog("Second Spell in Slot 2")
+						EndIf
+					EndIf
+				EndIf
+			EndIf
+
+		Case 2 ; Two Spells on Slot 1
+
+			If $sCCSpell <> "Any" Then
+				If $g_iClanCastleSpellsWaitFirst < 5 And $g_iClanCastleSpellsWaitFirst > 0 Then ; Should be a 2 Space Spell not a 1 Space Spell
+					$aShouldRemove[0] = $CCSpell1[0][3]
+				ElseIf ($sCCSpell <> $CCSpell1[0][0]) And ($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
+					$aShouldRemove[0] = $CCSpell1[0][3]
+				ElseIf ($sCCSpell <> $CCSpell1[0][0]) Or ($sCCSpell2 <> $CCSpell1[0][0] And $sCCSpell2 <> "Any") Then
+					$aShouldRemove[0] = 1
+				EndIf
+			EndIf
+
+		Case Else ; Mistakes were made?
+			Return $aShouldRemove
+	EndSwitch
+
+	Return $aShouldRemove
+
+EndFunc   ;==>CompareCCSpellWithGUI
+
+Func GetCurCCSpell($iSpellSlot = 1)
+	If Not $g_bRunState Then Return
+	Local $x1 = 451, $x2 = 575, $y1 = 500, $y2 = 585
+
+	If $iSpellSlot = 1 Then
+		;Nothing
+	ElseIf $iSpellSlot = 2 Then
+		$x1 = 530
+		$x2 = 605
+	Else
+		If $g_bDebugSetlog Then SetDebugLog("GetCurCCSpell() called with the wrong argument!", $COLOR_ERROR)
+		Return
+	EndIf
+
+	Local $res = SearchArmy($g_sImgArmyOverviewSpells, $x1, $y1, $x2, $y2, "CCSpells", True)
+
+	If ValidateSearchArmyResult($res) Then
+		For $i = 0 To UBound($res) - 1
+			SetLog(" - " & $g_asSpellNames[TroopIndexLookup($res[$i][0], "GetCurCCSpell") - $eLSpell], $COLOR_SUCCESS)
+		Next
+		Return $res
+	EndIf
+
+	Return ""
+EndFunc   ;==>GetCurCCSpell

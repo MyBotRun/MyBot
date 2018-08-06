@@ -836,23 +836,18 @@ Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 				If $iY < 315 Then Return 403 ; Troops
 				If $iY > 315 Then Return 415 ; Spell
 
-			Case 465 To 537 ; Slot 7
+			Case 465 To 540 ; Slot 7
 				If $iY < 315 Then Return 477 ; Troops
 				If $iY > 315 Then Return 485 ; Spell
 			Case 538 To 610 ; Slot 8
 				Return 551 ; Troops
 
 			Case 611 To 682 ; Slot 9
-				If $iY < 315 Then Return 625 ; Troops
-				If $iY > 315 Then Return 619 ; Heroes
+				Return 620 ; Siege Machines & Heroes
 
 			Case 683 To 752 ; Slot 10
-				If $iY < 315 Then Return 694 ; Troops
-				If $iY > 315 Then Return 691 ; Heroes
-
-			Case 753 To 825 ; Slot 11
-				Return 764 ; Troops
-
+				If $iY > 315 Then Return 691 ; Heroes & Siege Machine slot 0
+				Return 700 ; Siege Machines slot 1
 		EndSwitch
 	Else ;CC Troops & Spells
 		Switch $iX
@@ -874,12 +869,14 @@ Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 			Case 393 To 464 ; CC Troops Slot 6
 				Return 403
 
-			Case 510 To 580 ; CC Spell Slot 1
-				Return 533
-			Case 581 To 599 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
-				Return 578
-			Case 600 To 660 ; CC Spell Slot 2
-				Return 610
+			Case 450 To 510; CC Spell Slot 1
+				Return 475
+			Case 511 To 550 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
+				Return 510
+			Case 551 To 605 ; CC Spell Slot 2
+				Return 555
+			Case 625 To 700 ; CC Siege Machines
+				Return 650
 		EndSwitch
 	EndIf
 EndFunc   ;==>Slot

@@ -51,10 +51,10 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		If checkObstacles_Network() Then Return True
 		If checkObstacles_GfxError() Then Return True
 	EndIf
-	Local $bIsOnBuilderIsland = _CheckPixel($aIsOnBuilderBase, $g_bNoCapturePixel)
+	Local $bIsOnBuilderIsland = isOnBuilderBase()
 	If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
 		SetLog("Detected Builder Base, trying to switch back to Main Village")
-		If SwitchBetweenBases(False) Then
+		If SwitchBetweenBases() Then
 			$g_bMinorObstacle = True
 			If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 			Return False
@@ -165,7 +165,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 						SetLog("Error reading Maintenance Break time?", $COLOR_ERROR)
 				EndSelect
 				SetLog("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....", $COLOR_ERROR)
-				If ($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyAlertMaintenance = True Then NotifyPushToBoth("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....")
+				If $g_bNotifyTGEnable And $g_bNotifyAlertMaintenance = True Then NotifyPushToTelegram("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....")
 				If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 				If _SleepStatus($iMaintenanceWaitTime) Then Return
 				checkObstacles_ResetSearch()
@@ -362,7 +362,7 @@ EndFunc   ;==>checkObstacles_RebootAndroid
 Func checkObstacles_StopBot($msg)
 	SetLog($msg, $COLOR_ERROR)
 	If TestCapture() Then Return $msg
-	If ($g_bNotifyPBEnable = True Or $g_bNotifyTGEnable = True) And $g_bNotifyAlertMaintenance = True Then NotifyPushToBoth($msg)
+	If $g_bNotifyTGEnable And $g_bNotifyAlertMaintenance Then NotifyPushToTelegram($msg)
 	OcrForceCaptureRegion(True)
 	Btnstop() ; stop bot
 	Return True

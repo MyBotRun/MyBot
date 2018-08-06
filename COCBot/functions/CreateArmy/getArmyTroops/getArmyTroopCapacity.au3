@@ -127,6 +127,7 @@ Func getArmyTroopCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		$g_bFullArmy = True
 	Else
 		$g_bFullArmy = False
+		$g_bIsFullArmywithHeroesAndSpells = False
 	EndIf
 
 	If $g_CurrentCampUtilization >= $g_iTotalCampSpace * $g_aiSearchCampsPct[$DB] / 100 And $g_abSearchCampsEnable[$DB] And IsSearchModeActive($DB) Then $g_bFullArmy = True

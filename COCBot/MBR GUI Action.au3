@@ -19,6 +19,7 @@ Func BotStart($bAutostartDelay = 0)
 	CleanSecureFiles()
 	CalCostCamp()
 	CalCostSpell()
+	CalCostSiege()
 
 	$g_bRunState = True
 	$g_bTogglePauseAllowed = True
@@ -46,13 +47,10 @@ Func BotStart($bAutostartDelay = 0)
 	SaveConfig()
 	readConfig()
 	applyConfig(False) ; bot window redraw stays disabled!
+	CreaTableDB()
 
 	; Initial ObjEvents for the Autoit objects errors
 	__ObjEventIni()
-
-	;Reset Telegram message
-	NotifyGetLastMessageFromTelegram()
-	$g_iTGLastRemote = $g_sTGLast_UID
 
 	If BitAND($g_iAndroidSupportFeature, 1 + 2) = 0 And $g_bChkBackgroundMode = True Then
 		GUICtrlSetState($g_hChkBackgroundMode, $GUI_UNCHECKED)

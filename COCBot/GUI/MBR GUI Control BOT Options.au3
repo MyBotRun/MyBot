@@ -87,7 +87,10 @@ Func chkDisableNotifications()
 EndFunc   ;==>chkDisableNotifications
 
 Func chkUseRandomClick()
-	$g_bUseRandomClick = (GUICtrlRead($g_hChkUseRandomClick) = $GUI_CHECKED)
+	$g_bRunState = True
+	getArmySiegeMachines()
+	$g_bRunState = False
+	;$g_bUseRandomClick = (GUICtrlRead($g_hChkUseRandomClick) = $GUI_CHECKED)
 EndFunc   ;==>chkUseRandomClick
 #cs
 	Func chkUpdatingWhenMinimized()
@@ -525,6 +528,8 @@ Func btnTestDonateCC()
 	EndIf
 	SetLog("Detecting Troops...")
 	DetectSlotTroop($eBowl)
+	SetLog("Detecting Sieges...")
+	DetectSlotSiege($eSiegeBattleBlimp)
 	SetLog("Detecting Spells...")
 	DetectSlotSpell($eSkSpell)
 	SetLog(_PadStringCenter(" Test DonateCC end ", 54, "="), $COLOR_INFO)
@@ -1156,3 +1161,19 @@ EndFunc   ;==>btnTestSmartWait
 Func btnConsoleWindow()
 	ConsoleWindow()
 EndFunc   ;==>btnConsoleWindow
+
+Func chkSQLite()
+	$g_bUseStatistics = GUICtrlRead($g_hChkSqlite) = $GUI_CHECKED
+EndFunc   ;==>chkSQLite
+
+Func SQLiteExport()
+
+	If Not $g_bUseStatistics Then
+		Setlog("")
+		Return
+	EndIf
+	Setlog("Exporting data from SQlite, please wait!", $COLOR_ACTION)
+	ExportDataBase(False)
+	Setlog("Export successfully completed.", $COLOR_SUCCESS)
+
+EndFunc   ;==>SQLiteExport

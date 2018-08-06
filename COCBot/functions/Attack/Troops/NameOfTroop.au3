@@ -42,7 +42,7 @@ Func NameOfTroop($iKind, $iPlural = 0)
 		Case $eMine
 			$sTroopname = "Miner"
         Case $eEDrag
-			$sTroopname = "Electro Dragon"			
+			$sTroopname = "Electro Dragon"
 		Case $eMini
 			$sTroopname = "Minion"
 		Case $eHogs
@@ -89,6 +89,10 @@ Func NameOfTroop($iKind, $iPlural = 0)
 			$sTroopname = "Haste Spell"
 		Case $eSkSpell
 			$sTroopname = "Skeleton Spell"
+		Case $eWallW
+			$sTroopname = "Wall Wrecker"
+		Case $eBattleB
+			$sTroopname = "Battle Blimp"
 		Case Else
 			Return "" ; error or unknown case
 	EndSwitch

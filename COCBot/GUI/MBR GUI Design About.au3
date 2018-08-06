@@ -23,7 +23,7 @@ Func CreateAboutTab()
 	; GUISetBkColor($COLOR_WHITE, $g_hGUI_ABOUT)
 
 	Local $sText = ""
-	Local $x = 18, $y = 15 + $_GUI_MAIN_TOP
+	Local $x = 18, $y = 10 + $_GUI_MAIN_TOP
 	;$g_hLblCreditsBckGrnd = GUICtrlCreateLabel("", $x - 20, $y - 20, 454, 380)  ; adds fixed white background for entire tab, if using "Labels"
 	;GUICtrlSetBkColor(-1, $COLOR_WHITE)
 	$sText = "My Bot is brought to you by a worldwide team of open source" & @CRLF & _
@@ -50,16 +50,25 @@ Func CreateAboutTab()
 	GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 	GUICtrlSetColor(-1, $COLOR_NAVY)
-	$sText = "Cosote, Fliegerfaust, MMHK, TripleM"
+	$sText = "Fliegerfaust, MMHK and TripleM"
 	GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 
-	$y += 60
+	$y += 35
+	$sText = "Special participation at v7.6: "
+	GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
+	GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
+	GUICtrlSetColor(-1, $COLOR_NAVY)
+	$sText = "Demen, Hecki, ProMac and ViperZ"
+	GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
+	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
+
+	$y += 35
 	$sText = "Inactive developers: "
 	GUICtrlCreateLabel($sText, $x - 5, $y, 410, 20, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9.5, $FW_BOLD, Default, "Arial")
 	GUICtrlSetColor(-1, $COLOR_NAVY)
-	$sText = "Boju, Codeslinger69, Ezeck0001, Hervidero, IceCube, Kaganus, MR.ViPeR, Sardo, TheRevenor, Trlopes"
+	$sText = "Boju, Codeslinger69, Cosote, Ezeck0001, Hervidero, IceCube, Kaganus, MR.ViPeR, Sardo, TheRevenor, Trlopes"
 	GUICtrlCreateLabel($sText, $x + 5, $y + 15, 410, 50, BitOR($WS_VISIBLE, $ES_AUTOVSCROLL, $SS_LEFT), 0)
 	GUICtrlSetFont(-1, 9, $FW_MEDIUM, Default, "Arial")
 

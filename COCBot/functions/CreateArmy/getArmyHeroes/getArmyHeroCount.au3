@@ -235,9 +235,13 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		; Check if is a valid date and Calculated the number of minutes from remain time Lab and now
 	If _DateIsValid($g_sLabUpgradeTime) Then
 		$iDateCalc = _DateDiff('n', _NowCalc(), $g_sLabUpgradeTime)
+		SetDebugLog("Lab LabUpgradeTime: " & $g_sLabUpgradeTime)
+		SetDebugLog("Lab DateCalc: " & $iDateCalc)
 	Else
 		; Check the number of hours from last check
 		$iDateCalc =_DateDiff('n', $iLastTimeChecked[$g_iCurAccount], _NowCalc())
+		SetDebugLog("Lab LastTimeChecked: " & $iLastTimeChecked[$g_iCurAccount])
+		SetDebugLog("Lab DateCalc: " & $iDateCalc)
 		; A check each 6 hours [6*60 = 360]
 		If $iDateCalc = 360 then $iDateCalc = 0
 	EndIf

@@ -52,6 +52,7 @@ Global $g_sImgStartCTBoost = @ScriptDir & "\imgxml\Resources\BuildersBase\ClockT
 #Region DonateCC
 Global $g_sImgDonateTroops = @ScriptDir & "\imgxml\DonateCC\Troops\"
 Global $g_sImgDonateSpells = @ScriptDir & "\imgxml\DonateCC\Spells\"
+Global $g_sImgDonateSiege = @ScriptDir & "\imgxml\DonateCC\SiegeMachines\"
 Global $g_sImgChatDivider = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdivider_0_98.xml"
 Global $g_sImgChatDividerHidden = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdividerhidden_0_98.xml"
 #EndRegion
@@ -89,6 +90,8 @@ Global $g_sImgArmyOverviewSpells = @ScriptDir & "\imgxml\ArmyOverview\Spells" ; 
 Global $g_sImgAttackBarDir = @ScriptDir & "\imgxml\AttackBar"
 Global $g_sImgSwitchSiegeMachine = @ScriptDir & "\imgxml\SwitchSiegeMachines\Siege"
 Global $g_sImgSwitchSiegeCastle = @ScriptDir & "\imgxml\SwitchSiegeMachines\Castle"
+Global $g_sImgSwitchSiegeWallWrecker = @ScriptDir & "\imgxml\SwitchSiegeMachines\WallWrecker"
+Global $g_sImgSwitchSiegeBattleBlimp = @ScriptDir & "\imgxml\SwitchSiegeMachines\BattleBlimp"
 #EndRegion
 
 #Region Search
@@ -196,6 +199,8 @@ Global Const $g_sImgEdrag = 		@ScriptDir & "\imgxml\Resources\Clan Games Images\
 Global Const $g_sImgGard = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Gardening Exercise"
 Global Const $g_sImgDonS = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Donate Spells"
 Global Const $g_sImgDonH = 			@ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Helping Hand"
+Global Const $g_sImgSiegeWW =		@ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\WWrecker"
+Global Const $g_sImgSiegeb  = 		@ScriptDir & "\imgxml\Resources\Clan Games Images\Miscellaneous Challenges\Blimp"
 
 
 #EndRegion

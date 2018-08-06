@@ -27,6 +27,8 @@ Global $g_hPicABLightSpell = 0, $g_hPicABHealSpell = 0, $g_hPicABRageSpell = 0, 
 Global $g_hChkTHSnipeBeforeLBEnable = 0, $g_hTxtTHSnipeBeforeLBTiles = 0, $g_hCmbTHSnipeBeforeLBScript = 0
 Global $g_hLblTHSnipeBeforeLBTiles = 0
 
+Global $g_hCmbABSiege = 0
+
 Func CreateAttackSearchActiveBaseAttack()
 	Local $sTxtTip = ""
 	Local $x = 25, $y = 40
@@ -185,6 +187,17 @@ Func CreateAttackSearchActiveBaseAttack()
 				GUICtrlSetState(-1, $GUI_DISABLE)
 		LoadABSnipeAttacks()
 		_GUICtrlComboBox_SetCurSel($g_hCmbTHSnipeBeforeLBScript, _GUICtrlComboBox_FindStringExact($g_hCmbTHSnipeBeforeLBScript, "Bam"))
+		GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	Local $x = 10, $y = 332
+		GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Group_03", -1), $x - 5, $y , 145, 40, $SS_CENTER)
+
+			$g_hCmbABSiege = GUICtrlCreateCombo("", $x, $y + 14, 130, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+				GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_01", -1) & "|" & _
+									   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_02", -1) & "|" & _
+									   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_03", -1), GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_01", -1))
+				GUICtrlSetOnEvent(-1, "cmbABSiege")
+
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 EndFunc   ;==>CreateAttackSearchActiveBaseAttack

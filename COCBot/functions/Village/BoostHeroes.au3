@@ -25,6 +25,7 @@ Func BoostKing()
 	EndIf
 
 	If BoostStructure("Barbarian King", "King", $g_aiKingAltarPos, $g_iCmbBoostBarbarianKing, $g_hCmbBoostBarbarianKing) Then $g_aiHeroBoost[$eHeroBarbarianKing] = _NowCalc()
+	$g_aiTimeTrain[2] = 0 ; reset Heroes remaining time
 
 	If _Sleep($DELAYBOOSTBARRACKS3) Then Return
 	checkMainScreen(False) ; Check for errors during function
@@ -43,6 +44,7 @@ Func BoostQueen()
 	EndIf
 
 	If BoostStructure("Archer Queen", "Quee", $g_aiQueenAltarPos, $g_iCmbBoostArcherQueen, $g_hCmbBoostArcherQueen) Then $g_aiHeroBoost[$eHeroArcherQueen] = _NowCalc()
+	$g_aiTimeTrain[2] = 0 ; reset Heroes remaining time
 
 	If _Sleep($DELAYBOOSTBARRACKS3) Then Return
 	checkMainScreen(False) ; Check for errors during function
@@ -60,6 +62,7 @@ Func BoostWarden()
 	EndIf
 
 	If BoostStructure("Grand Warden", "Warden", $g_aiWardenAltarPos, $g_iCmbBoostWarden, $g_hCmbBoostWarden) Then $g_aiHeroBoost[$eHeroGrandWarden] = _NowCalc()
+	$g_aiTimeTrain[2] = 0 ; reset Heroes remaining time
 
 	If _Sleep($DELAYBOOSTBARRACKS3) Then Return
 	checkMainScreen(False) ; Check for errors during function

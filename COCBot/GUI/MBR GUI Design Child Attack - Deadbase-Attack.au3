@@ -27,6 +27,8 @@ Global $g_hPicDBLightSpell = 0, $g_hPicDBHealSpell = 0, $g_hPicDBRageSpell = 0, 
 Global $g_hChkTHSnipeBeforeDBEnable = 0, $g_hTxtTHSnipeBeforeDBTiles = 0, $g_hCmbTHSnipeBeforeDBScript = 0
 Global $g_hLblTHSnipeBeforeDBTiles = 0
 
+Global $g_hCmbDBSiege = 0
+
 Func CreateAttackSearchDeadBaseAttack()
 	Local $sTxtTip = ""
 	Local $x = 25, $y = 40
@@ -37,7 +39,8 @@ Func CreateAttackSearchDeadBaseAttack()
 				_GUICtrlSetTip(-1, "")
 				GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Algorithm_Item_01", "Standard Attack") & "|" & _
 								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Algorithm_Item_02", "Scripted Attack") & "|" & _
-								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Algorithm_Item_03", "Milking Attack"), GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Algorithm_Item_01", -1))
+								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Algorithm_Item_03", "Milking Attack") & "|" & _
+								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Algorithm_Item_04", "SmartFarm Attack"), GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Algorithm_Item_01", -1))
 				GUICtrlSetOnEvent(-1, "cmbDBAlgorithm")
 
 		$y += 30
@@ -162,7 +165,7 @@ Func CreateAttackSearchDeadBaseAttack()
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	Local $x = 10, $y = 268
-		GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Group_02", "TH Snipe"), $x - 5, $y - 20, 145, 84,$SS_CENTER)
+		GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Group_02", "TH Snipe"), $x - 5, $y - 20, 145, 84, $SS_CENTER)
 			$g_hChkTHSnipeBeforeDBEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "ChkTHSnipeBeforeEnable", "Snipe TH External first"), $x, $y - 5, -1, -1)
 				_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "ChkTHSnipeBeforeEnable_Info_01", "If TH is external start with a TH Snipe"))
 				GUICtrlSetOnEvent(-1, "chkTHSnipeBeforeDBEnable")
@@ -186,6 +189,17 @@ Func CreateAttackSearchDeadBaseAttack()
 				;GUICtrlSetOnEvent(-1, "cmbAttackTHType")
 		LoadDBSnipeAttacks()
 		_GUICtrlComboBox_SetCurSel($g_hCmbTHSnipeBeforeDBScript, _GUICtrlComboBox_FindStringExact($g_hCmbTHSnipeBeforeDBScript, "Bam"))
+		GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	Local $x = 10, $y = 332
+		GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Group_03", "Siege Machines"), $x - 5, $y , 145, 40, $SS_CENTER)
+
+			$g_hCmbDBSiege = GUICtrlCreateCombo("", $x, $y + 14, 130, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_01", "Castle only") & "|" & _
+								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_02", "Wall Wrecker") & "|" & _
+								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_03", "Battle Blimp"), GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_01", -1))
+			GUICtrlSetOnEvent(-1, "cmbDBSiege")
+
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 EndFunc   ;==>CreateAttackSearchDeadBaseAttack

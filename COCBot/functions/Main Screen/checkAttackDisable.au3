@@ -147,6 +147,7 @@ Func checkAttackDisable($iSource, $Result = "")
 		If $g_aiRemainTrainTime[$g_iCurAccount] < $g_iSinglePBForcedLogoffTime Then
 			$g_aiRemainTrainTime[$g_iCurAccount] = $g_iSinglePBForcedLogoffTime
 			$g_abPBActive[$g_iCurAccount] = True
+			$g_aiTimerStart[$g_iCurAccount] = TimerInit() ; init timer for forced PBT
 		EndIf
 		Local $iAllcounts = 0, $iAllAccountsPBactive = 0
 		For $i = 0 To $g_iTotalAcc

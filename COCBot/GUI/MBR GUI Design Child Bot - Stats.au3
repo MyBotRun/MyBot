@@ -27,7 +27,7 @@ Global $g_hPicResultDEStart = 0, $g_hLblStatsSZRev1 = 0, $g_hLblStatsSZRev2 = 0,
 
 ; Misc
 Global $g_hLblResultRuntime = 0, $g_hLblNbrOfOoS = 0, $g_hLblResultVillagesAttacked = 0, $g_hLblResultVillagesSkipped = 0, $g_hLblResultTrophiesDropped = 0
-Global $g_hLblSearchCost = 0, $g_hLblTrainCostElixir = 0, $g_hLblTrainCostDElixir = 0, $g_hLblGoldFromMines = 0, $g_hLblElixirFromCollectors = 0, $g_hLblDElixirFromDrills = 0
+Global $g_hLblSearchCost = 0, $g_hLblTrainCostElixir = 0, $g_hLblTrainCostDElixir = 0, $g_hLblTrainCostGold = 0, $g_hLblGoldFromMines = 0, $g_hLblElixirFromCollectors = 0, $g_hLblDElixirFromDrills = 0
 Global $g_hLblWallGoldMake = 0, $g_hLblWallElixirMake = 0, $g_hLblNbrOfBuildingUpgGold = 0, $g_hLblNbrOfBuildingUpgElixir = 0, $g_hLblNbrOfHeroUpg = 0
 Global $g_hLblWallUpgCostGold = 0, $g_hLblWallUpgCostElixir = 0, $g_hLblBuildingUpgCostGold = 0, $g_hLblBuildingUpgCostElixir = 0, $g_hLblHeroUpgCost = 0
 
@@ -40,6 +40,7 @@ Global $g_hLblNbrOfDetectedMines[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLb
 ; Donations
 Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hLblDonSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hLblDonSiegel[$eSiegeMachineCount] = [0, 0]
 Global $g_hLblTotalTroopsQ = 0, $g_hLblTotalTroopsXP = 0, $g_hLblTotalSpellsQ = 0, $g_hLblTotalSpellsXP = 0
 
 ; Multi Stats
@@ -489,6 +490,18 @@ Func CreateMiscSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
+
+	$y += 20
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWallW, $x + 22, $y, 16, 16)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTrain-Cost-Gold_Info_01", "Gold spent for Building Siege Machines")
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTrain-Cost-Gold", "Build Cost Gold") & ":", $x + 45, $y + 2, -1, 17)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hLblTrainCostGold = GUICtrlCreateLabel("0", $x + 150, $y + 2, 70, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
 	$y += 20
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMine, $x + 22, $y, 16, 16)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblGold-collected_Info_01", "Gold gained by collecting mines")
@@ -522,7 +535,7 @@ Func CreateMiscSubTab()
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$x = $xStart + 5
-	$y = $yStart + 165
+	$y = $yStart + 185
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblUpgrades-Made", "Upgrades Made"), $x - 20, $y - 32, 187, 17, $SS_CENTER)
 			GUICtrlSetBkColor(-1, 0xD4D4D4)
 		GUICtrlCreateLabel("", $x + 35 + 130, $y - 32, 30, 17, $SS_CENTER)
@@ -584,7 +597,7 @@ Func CreateMiscSubTab()
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$x = $xStart + 180
-	$y = $yStart + 165
+	$y = $yStart + 185
 	$y -= 10
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWallGold, $x + 22, $y, 16, 16)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblWallUpg-Cost-by-Gold_Info_01", "The cost of gold used by bot while upgrading walls")
@@ -992,7 +1005,7 @@ Func CreateDonationsSubTab()
 	Local $sTxtTip = ""
 	Local $xStart = 25, $yStart = 45
 	Local $x = $xStart + 3, $y = $yStart + 20
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblStatsDonElixir-Troops", "Elixir Troops"), $x - 20, $y - 32, 187, 17, $SS_CENTER)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblStatsDonElixir-Troops", "Elixir Troops / Siege Machines"), $x - 20, $y - 32, 187, 17, $SS_CENTER)
 			GUICtrlSetBkColor(-1, 0xC3C3C3)
 		GUICtrlCreateLabel("", $x + 35 + 130, $y - 32, 30, 17, $SS_CENTER)
 			GUICtrlSetBkColor(-1, 0xC3C3C3)
@@ -1115,6 +1128,17 @@ Func CreateDonationsSubTab()
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
+		; SIEGE
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWallW, $x + 145, $y, 24, 24)
+			$sTxtTip = ""
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(":", $x + 175, $y + 4, -1, 17)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		$g_hLblDonSiegel[$eSiegeWallWrecker] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
 	$y += 28
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBalloon, $x - 10, $y, 24, 24)
 			$sTxtTip = ""
@@ -1135,6 +1159,18 @@ Func CreateDonationsSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
+
+		; SIEGE
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBattleB, $x + 145, $y, 24, 24)
+			$sTxtTip = ""
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(":", $x + 175, $y + 4, -1, 17)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		$g_hLblDonSiegel[$eSiegeBattleBlimp] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$x = $xStart + 232
@@ -1214,6 +1250,7 @@ Func CreateDonationsSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
+
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$x = $xStart + 3

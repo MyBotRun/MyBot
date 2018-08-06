@@ -20,7 +20,7 @@ Func UpdateStats($bForceUpdate = False)
 	; old values
 	Static $s_iOldSmartZapGain = 0, $s_iOldNumLSpellsUsed = 0, $s_iOldNumEQSpellsUsed = 0
 	Static $topgoldloot = 0, $topelixirloot = 0, $topdarkloot = 0, $topTrophyloot = 0
-	Static $bDonateTroopsStatsChanged = False, $bDonateSpellsStatsChanged = False
+	Static $bDonateTroopsStatsChanged = False, $bDonateSpellsStatsChanged = False, $bDonateSiegeStatsChanged = False
 	Static $iOldFreeBuilderCount, $iOldTotalBuilderCount, $iOldGemAmount ; builder and gem amounts
 	Static $iOldCurrentLoot[$eLootCount] ; current stats
 	Static $iOldTotalLoot[$eLootCount] ; total stats
@@ -29,7 +29,7 @@ Func UpdateStats($bForceUpdate = False)
 	Static $iOldSkippedVillageCount, $iOldDroppedTrophyCount ; skipped village and dropped trophy counts
 	Static $iOldCostGoldWall, $iOldCostElixirWall, $iOldCostGoldBuilding, $iOldCostElixirBuilding, $iOldCostDElixirHero ; wall, building and hero upgrade costs
 	Static $iOldNbrOfWallsUppedGold, $iOldNbrOfWallsUppedElixir, $iOldNbrOfBuildingsUppedGold, $iOldNbrOfBuildingsUppedElixir, $iOldNbrOfHeroesUpped ; number of wall, building, hero upgrades with gold, elixir, delixir
-	Static $iOldSearchCost, $iOldTrainCostElixir, $iOldTrainCostDElixir ; search and train troops cost
+	Static $iOldSearchCost, $iOldTrainCostElixir, $iOldTrainCostDElixir, $iOldTrainCostGold ; search and train troops cost
 	Static $iOldNbrOfOoS ; number of Out of Sync occurred
 	Static $iOldNbrOfTHSnipeFails, $iOldNbrOfTHSnipeSuccess ; number of fails and success while TH Sniping
 	Static $iOldGoldFromMines, $iOldElixirFromCollectors, $iOldDElixirFromDrills ; number of resources gain by collecting mines, collectors, drills
@@ -50,6 +50,7 @@ Func UpdateStats($bForceUpdate = False)
 		$topTrophyloot = 0
 		$bDonateTroopsStatsChanged = True
 		$bDonateSpellsStatsChanged = True
+		$bDonateSiegeStatsChanged = True
 		$iOldFreeBuilderCount = 0
 		$iOldTotalBuilderCount = 0
 		$iOldGemAmount = 0 ; builder and gem amounts
@@ -72,6 +73,7 @@ Func UpdateStats($bForceUpdate = False)
 		$iOldSearchCost = 0
 		$iOldTrainCostElixir = 0
 		$iOldTrainCostDElixir = 0 ; search and train troops cost
+		$iOldTrainCostGold = 0 ; Build Sieges
 		$iOldNbrOfOoS = 0 ; number of Out of Sync occurred
 		$iOldNbrOfTHSnipeFails = 0
 		$iOldNbrOfTHSnipeSuccess = 0 ; number of fails and success while TH Sniping
@@ -395,6 +397,12 @@ Func UpdateStats($bForceUpdate = False)
 		$iOldTrainCostDElixir = $g_iTrainCostDElixir
 	EndIf
 
+	If $iOldTrainCostGold <> $g_iTrainCostGold Then
+		$bStatsUpdated = True
+		GUICtrlSetData($g_hLblTrainCostGold, _NumberFormat($g_iTrainCostGold, True))
+		$iOldTrainCostGold = $g_iTrainCostGold
+	EndIf
+
 	If $iOldNbrOfOoS <> $g_iNbrOfOoS Then
 		$bStatsUpdated = True
 		GUICtrlSetData($g_hLblNbrOfOoS, $g_iNbrOfOoS)
@@ -470,6 +478,28 @@ Func UpdateStats($bForceUpdate = False)
 		$bDonateSpellsStatsChanged = False
 	EndIf
 
+	For $i = 0 To $eSiegeMachineCount - 1
+		If $g_aiDonateStatsSieges[$i][0] <> $g_aiDonateStatsSieges[$i][1] Then
+			$bStatsUpdated = True
+			GUICtrlSetData($g_hLblDonSiegel[$i], _NumberFormat($g_aiDonateStatsSieges[$i][0], True))
+			If $g_aiDonateStatsSieges[$i][0] > $g_aiDonateStatsSieges[$i][1] Then
+				$g_iTotalDonateStatsSiegeMachines += ($g_aiDonateStatsSieges[$i][0] - $g_aiDonateStatsSieges[$i][1])
+				$g_iTotalDonateStatsSiegeMachinesXP += (($g_aiDonateStatsSieges[$i][0] - $g_aiDonateStatsSieges[$i][1]) * $g_aiSiegeMachineDonateXP[$i])
+			EndIf
+			$g_aiDonateStatsSieges[$i][1] = $g_aiDonateStatsSieges[$i][0]
+			$bDonateSiegeStatsChanged = True
+			$g_iTotalDonateStatsTroopsXP = $g_iTotalDonateStatsSiegeMachinesXP + $g_iTotalDonateStatsTroopsXP
+			$g_iTotalDonateStatsTroops = $g_iTotalDonateStatsTroops + $g_iTotalDonateStatsSiegeMachines
+		EndIf
+	Next
+
+	If $bDonateSiegeStatsChanged Then
+		$bStatsUpdated = True
+		; TODO
+		;GUICtrlSetData($g_hLblTotalTroopsQ, _NumberFormat($g_iTotalDonateStatsTroops, True))
+		GUICtrlSetData($g_hLblTotalTroopsQ, _NumberFormat($g_iTotalDonateStatsTroops, True))
+		GUICtrlSetData($g_hLblTotalTroopsXP, _NumberFormat($g_iTotalDonateStatsTroopsXP, True))
+	EndIf
 
 	If $s_iOldSmartZapGain <> $g_iSmartZapGain Then
 		$bStatsUpdated = True
@@ -693,6 +723,7 @@ Func ResetStats()
 	$g_iSearchCost = 0
 	$g_iTrainCostElixir = 0
 	$g_iTrainCostDElixir = 0
+	$g_iTrainCostGold = 0
 	$g_iNbrOfOoS = 0
 	$g_iNbrOfTHSnipeFails = 0
 	$g_iNbrOfTHSnipeSuccess = 0
@@ -723,10 +754,16 @@ Func ResetStats()
 		EndIf
 	Next
 
+	For $i = 0 To $eSiegeMachineCount - 1
+		$g_aiDonateStatsSieges[$i][0] = 0
+	Next
+
 	$g_iTotalDonateStatsTroops = 0
 	$g_iTotalDonateStatsTroopsXP = 0
 	$g_iTotalDonateStatsSpells = 0
 	$g_iTotalDonateStatsSpellsXP = 0
+	$g_iTotalDonateStatsSiegeMachines = 0
+	$g_iTotalDonateStatsSiegeMachinesXP = 0
 	If ProfileSwitchAccountEnabled() Then
 		For $i = 0 To $g_iTotalAcc
 			$g_aiGoldTotalAcc[$i] = 0

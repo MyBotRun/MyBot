@@ -147,7 +147,8 @@ Func EnableLongSearch()
 			If $g_bDebugSetlog Then SetDebugLog("Cloud Search Text not found...", $COLOR_DEBUG)
 			Return False
 		Else
-			Click(271, 351 + $g_iMidOffsetY) ; click on text just to keep game alive
+			Local $KeepAlive[2] = [271, 351 + $g_iMidOffsetY]
+			ClickP($KeepAlive, 1, 0, "#0514") ; click on text just to keep game alive
 		EndIf
 
 		; Small delay

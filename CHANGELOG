@@ -1,4 +1,36 @@
-﻿* **V7.5.4**
+* **V7.6**
+* Added New Logo/banner by @Hecki
+* Added Double Train Army by @Demen
+* Added Support for attack bar with more than 11 slots by @Demen
+* Added Siege Machines at Train
+* Added Siege Machines at Donation.
+* Added Siege Machines at Clan Games.
+* Added Siege Machines at Attack.
+* Added Local DB [using SQLite] to collect more attack stats.
+* Added Smart-Farm Attack to standard dead bases attack
+* Added Boost using Magic Training Potion by @ViperZ
+* Added Telegram - Shutdown , Hibernate and Standby with a confirm message, just to avoid user errors
+* Added Telegram and invalid commands
+* Added Profile button to save current setting without having to start bot
+* Fixed Reset last command on Telegram 
+* Fixed UI Responsiveness when the telegram is checked
+* Fixed Forced PBT for Normal Switch
+* Fixed Some issues in switch from-to Builder base - Main Village, Get village measuring and zoomout
+* Fixed Village Measuring and Zoomout problem when the emulator is to slow
+* Fixed The Standby command on Telegram
+* Fixed Queued Troops and Spells new bundle of images
+* Improved Siege Switch and attack bar benchmarks, 'big' images had size reduction and screencaptures
+* Improved Switch between Bases
+* Improved Builder Base detection
+* Improved Bot function sequences, your army is ready to attack then before any other routine will train and attack
+* Improved Request CC, only "Wait for Castle" on Search Tab, settings are on Request Tab
+* Improved Request CC, enforce Spells even without "Wait for Castle"
+* Improved Donate CC, will not proceed with the routine if the words doesn't match , reducing times and logs , by @Demen
+* Improved Clone Detection on Army window and Spells Log
+* Removed PushBullet code because the limit of 100/month
+* Updated Android Status & Information.txt
+
+* **V7.5.4**
 * Added Electro Dragon in to Clan Games
 * Added Only request donation, when specific Clan Castle type is missing by @Demen
 * Added Restart search to pick healed heroes up by @Demen

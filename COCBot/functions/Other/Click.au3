@@ -423,7 +423,8 @@ Func _DecodeDebug($message)
 			Return $separator & "Attack Search - Press retry search button"
 		Case "#0513"
 			Return $separator & "Attack Search - Return Home button"
-
+		Case "#0514"
+			Return $separator & "Attack Search - Clouds, keep game alive"
 		Case "#0000"
 			Return $separator & " "
 

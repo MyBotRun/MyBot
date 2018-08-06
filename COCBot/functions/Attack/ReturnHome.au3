@@ -164,6 +164,8 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		If $g_bDebugSetlog Then SetDebugLog("Wait for Star Bonus window to appear #" & $counter)
 		If _Sleep($DELAYRETURNHOME4) Then Return
 		If StarBonus() Then SetLog("Star Bonus window closed chief!", $COLOR_INFO) ; Check for Star Bonus window to fill treasury (2016-01) update
+		$g_bFullArmy = False ; forcing check the army
+		$g_bIsFullArmywithHeroesAndSpells = False ; forcing check the army
 		If ReturnHomeMainPage() Then Return
 		$counter += 1
 		If $counter >= 50 Or isProblemAffect(True) Then
@@ -181,3 +183,48 @@ Func ReturnHomeMainPage()
 	EndIf
 	Return False
 EndFunc   ;==>ReturnHomeMainPage
+
+Func ReturnfromDropTrophies()
+
+	If $g_bDebugSetlog Then SetDebugLog(" -- ReturnfromDropTrophies -- ")
+
+	For $i = 0 To 5 ; dynamic wait loop for surrender button to appear (if end battle or surrender button are not found in 5*(200)ms + 10*(200)ms or 3 seconds, then give up.)
+		If $g_bDebugSetlog Then SetDebugLog("Wait for surrender button to appear #" & $i)
+		ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
+		Local $j = 0
+		While 1 ; dynamic wait for Okay button
+			If $g_bDebugSetlog Then SetDebugLog("Wait for OK button to appear #" & $j)
+			If IsEndBattlePage(True) Then
+				ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
+				ExitLoop 2
+			Else
+				$j += 1
+			EndIf
+			If $j > 10 Then ExitLoop ; if Okay button not found in 10*(200)ms or 2 seconds, then give up.
+			If _Sleep(100) Then Return
+			If _CheckPixel($aSurrenderButton, $g_bCapturePixel) Then ;is surrender button is visible?
+				ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
+			EndIf
+		WEnd
+		If _Sleep(100) Then Return
+	Next
+
+	Local $i = 0 ; Reset Loop counter
+	While 1
+		If $g_bDebugSetlog Then SetDebugLog("Wait for End Fight Scene to appear #" & $i)
+		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
+			If IsReturnHomeBattlePage() Then ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
+			ExitLoop
+		Else
+			$i += 1
+		EndIf
+		If $i > 10 Then ExitLoop ; if end battle window is not found in 10*200mms or 2 seconds, then give up.
+		If _Sleep(100) Then Return
+	WEnd
+	If _Sleep(100) Then Return ; short wait for screen to close
+	$g_bFullArmy = False ; forcing check the army
+	$g_bIsFullArmywithHeroesAndSpells = False ; forcing check the army
+	If ReturnHomeMainPage() Then Return
+	checkMainScreen()
+EndFunc   ;==>ReturnfromDropTrophies
+
