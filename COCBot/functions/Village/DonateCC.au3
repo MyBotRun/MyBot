@@ -114,7 +114,6 @@ Func DonateCC($bCheckForNewMsg = False)
 	WEnd
 
 	Local $Scroll
-	Local $donateCCfilter = False
 	; add scroll here
 	While 1
 		ForceCaptureRegion()
@@ -156,7 +155,11 @@ Func DonateCC($bCheckForNewMsg = False)
 			If $g_bDebugSetlog Then SetDebugLog("$g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
 
 			;;; Collect Donate users images
-			$donateCCfilter = donateCCWBLUserImageCollect($g_aiDonatePixel[0], $g_aiDonatePixel[1])
+			If Not donateCCWBLUserImageCollect($g_aiDonatePixel[0], $g_aiDonatePixel[1]) Then
+				SetLog("Skip Donation at this Clan Mate...", $COLOR_ACTION)
+				$y = $g_aiDonatePixel[1] + 50
+				ContinueLoop ; go to next button if cant read Castle Troops and Spells before the donate window opens
+			EndIf
 
 			;;; reset every run
 			$bDonate = False
@@ -165,7 +168,7 @@ Func DonateCC($bCheckForNewMsg = False)
 			$g_bSkipDonSiege = False
 
 			;;; Read chat request for DonateTroop and DonateSpell
-			If $bDonateTroop Or $bDonateSpell Or $bDonateSiege And $donateCCfilter Then
+			If $bDonateTroop Or $bDonateSpell Or $bDonateSiege Then
 
 				Local $Alphabets[4] = [$g_bChkExtraAlphabets, $g_bChkExtraChinese, $g_bChkExtraKorean, $g_bChkExtraPersian]
 				Local $Yaxis[4] = [50, 26, 26, 31]
@@ -251,7 +254,7 @@ Func DonateCC($bCheckForNewMsg = False)
 					EndIf
 					SetDebugLog("Chat Request matches a donate keyword, proceed with donating")
 				EndIf
-			ElseIf (($bDonateAllTroop And $bDonateAllSpell And Not $bDonateSiege) Or ($bDonateAllTroop And (Not $bDonateSpell Or Not $bDonateSiege)) Or ((Not $bDonateTroop Or Not $bDonateSiege) And $bDonateAllSpell)) And $donateCCfilter Then
+			ElseIf (($bDonateAllTroop And $bDonateAllSpell And Not $bDonateSiege) Or ($bDonateAllTroop And (Not $bDonateSpell Or Not $bDonateSiege)) Or ((Not $bDonateTroop Or Not $bDonateSiege) And $bDonateAllSpell)) Then
 				SetLog("Skip reading chat requests. Donate all is enabled!", $COLOR_ACTION)
 			EndIf
 
@@ -262,35 +265,27 @@ Func DonateCC($bCheckForNewMsg = False)
 			$itime = TimerInit()
 
 			;;; Donate Filter
-			If Not $donateCCfilter Then
-				SetLog("Skip Donation at this Clan Mate...", $COLOR_ACTION)
+			If $g_iTotalDonateTroopCapacity <= 0 Then
+				SetLog("Clan Castle troops are full, skip troop donation...", $COLOR_ACTION)
 				$g_bSkipDonTroops = True
+			EndIf
+			If $g_iTotalDonateSpellCapacity = 0 Then
+				SetLog("Clan Castle spells are full, skip spell donation...", $COLOR_ACTION)
 				$g_bSkipDonSpells = True
+			ElseIf $g_iTotalDonateSpellCapacity = -1 Then
+				; no message, this CC has no Spell capability
+				If $g_bDebugSetlog Then SetDebugLog("This CC cannot accept spells, skip spell donation...", $COLOR_DEBUG)
+				$g_bSkipDonSpells = True
+			ElseIf $g_iCurrentSpells = 0 Then
+				SetLog("No spells available, skip spell donation...", $COLOR_ORANGE)
+				$g_bSkipDonSpells = True
+			EndIf
+			If $g_iTotalDonateSiegeMachineCapacity = -1 Then
+				SetLog("This CC cannot accept Siege, skip Siege donation...", $COLOR_ACTION)
 				$g_bSkipDonSiege = True
-			Else
-				If $g_iTotalDonateTroopCapacity <= 0 Then
-					SetLog("Clan Castle troops are full, skip troop donation...", $COLOR_ACTION)
-					$g_bSkipDonTroops = True
-				EndIf
-				If $g_iTotalDonateSpellCapacity = 0 Then
-					SetLog("Clan Castle spells are full, skip spell donation...", $COLOR_ACTION)
-					$g_bSkipDonSpells = True
-				ElseIf $g_iTotalDonateSpellCapacity = -1 Then
-					; no message, this CC has no Spell capability
-					If $g_bDebugSetlog Then SetDebugLog("This CC cannot accept spells, skip spell donation...", $COLOR_DEBUG)
-					$g_bSkipDonSpells = True
-				ElseIf $g_iCurrentSpells = 0 Then
-					SetLog("No spells available, skip spell donation...", $COLOR_ORANGE)
-					$g_bSkipDonSpells = True
-				EndIf
-				If $g_iTotalDonateSiegeMachineCapacity = -1 Then
-					SetLog("This CC cannot accept Siege, skip Siege donation...", $COLOR_ACTION)
-					$g_bSkipDonSiege = True
-				ElseIf $g_iTotalDonateSiegeMachineCapacity = 0 Then
-					SetLog("Clan Castle Siege is full, skip Siege donation...", $COLOR_ACTION)
-					$g_bSkipDonSiege = True
-				EndIf
-
+			ElseIf $g_iTotalDonateSiegeMachineCapacity = 0 Then
+				SetLog("Clan Castle Siege is full, skip Siege donation...", $COLOR_ACTION)
+				$g_bSkipDonSiege = True
 			EndIf
 
 			;;; Flagged to Skip Check
@@ -302,7 +297,7 @@ Func DonateCC($bCheckForNewMsg = False)
 
 			;;; Open Donate Window
 			If _Sleep($DELAYDONATECC3) Then Return
-			If ($g_bSkipDonTroops And $g_bSkipDonSpells And $g_bSkipDonSiege) Or Not DonateWindow($bOpen) Then
+			If Not DonateWindow($bOpen) Then
 				$bDonate = True
 				$y = $g_aiDonatePixel[1] + 50
 				SetLog("Donate Window did not open - Exiting Donate", $COLOR_ERROR)

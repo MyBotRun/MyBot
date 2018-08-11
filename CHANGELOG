@@ -1,3 +1,13 @@
+* **V7.6.1**
+* Fixed Queen activation at scripted Attacks
+* Fixed Train Sieges on Quick Train , by @ChacalGyn
+* Fixed Train Sieges after donate all current sieges and camp is 0
+* Improved MEmu/Nox OpenGL and DirectX Render detection for Win10 Build 17134
+* Improved Heroes Upgrade, don't check a hero, which is already upgrading
+* Improved Heroes Upgrade, reserve builders for upgrading
+* Improved Wall Upgrade, allow upgrade by elixier, when Warden is already upgrading
+* Removed the Scheduler Notify Tab
+
 * **V7.6**
 * Added New Logo/banner by @Hecki
 * Added Double Train Army by @Demen

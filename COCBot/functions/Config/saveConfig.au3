@@ -489,6 +489,7 @@ Func SaveConfig_600_15()
 	_Ini_Add("upgrade", "UpgradeKing", $g_bUpgradeKingEnable ? 1 : 0)
 	_Ini_Add("upgrade", "UpgradeQueen", $g_bUpgradeQueenEnable ? 1 : 0)
 	_Ini_Add("upgrade", "UpgradeWarden", $g_bUpgradeWardenEnable ? 1 : 0)
+	_Ini_Add("upgrade", "HeroReservedBuilder", $g_iHeroReservedBuilder)
 EndFunc   ;==>SaveConfig_600_15
 
 Func SaveConfig_600_16()

@@ -110,13 +110,25 @@ EndFunc   ;==>CreateAboutTab
 
 Func ShowCommandLineHelp()
 
+	SetDebugLog ("Help File called from CrtlID: " & @GUI_CtrlId)
+
+	Local $PathHelp = "CommandLineParameter"
+
+	; This can be use for several Help Files
+	Switch @GUI_CtrlId
+		Case 2620 to 2670 ; Bot/Android/Help Handle
+			$PathHelp = "CommandLineParameter"
+		Case 1100 to 1150
+			$PathHelp = "NotifyHelp"
+	EndSwitch
+
 	UpdateBotTitle()
 	$g_hGUI_CommandLineHelp = GUICreate($g_sBotTitle & " - Command Line Help", 650, 700, -1, -1, BitOR($WS_CAPTION, $WS_POPUPWINDOW, $DS_MODALFRAME))
 	GUISetIcon($g_sLibIconPath, $eIcnGUI, $g_hGUI_CommandLineHelp)
 
 	; add controls
 	Local $hRichEdit = _GUICtrlRichEdit_Create($g_hGUI_CommandLineHelp, "", 2, 0, 646, 667, $WS_VSCROLL + $ES_MULTILINE)
-	Local $sHelpFile = @ScriptDir & "\Help\CommandLineParameter"
+	Local $sHelpFile = @ScriptDir & "\Help\" & $PathHelp
 	If $g_sLanguage <> $g_sDefaultLanguage Then
 		If FileExists($sHelpFile & "_" & $g_sLanguage & ".rtf") Then
 			$sHelpFile &= "_" & $g_sLanguage

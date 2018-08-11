@@ -90,6 +90,7 @@ Func NotifyPushToTelegram($pMessage)
 			Return
 		EndIf
 		$oHTTP.Open("Post", $TELEGRAM_URL & $g_sNotifyTGToken & "/sendMessage", False)
+		If (@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 		$oHTTP.SetRequestHeader("Content-Type", "application/json; charset=ISO-8859-1,utf-8")
 
 		Local $Date = @YEAR & '-' & @MON & '-' & @MDAY
@@ -98,6 +99,8 @@ Func NotifyPushToTelegram($pMessage)
 		$oHTTP.Send($TGPushMsg)
 		If $oHTTP.Status <> $HTTP_STATUS_OK Then
 			SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+			Local $text = _StringBetween($oHTTP.ResponseText, '"description":"', '"}')
+			Setlog($text[0])
 			Return
 		EndIf
 	EndIf
@@ -127,11 +130,14 @@ Func NotifyPushFileToTelegram($File, $Folder, $FileType, $body)
 			Local $telegram_urlAll = $TELEGRAM_URL & $g_sNotifyTGToken & $sCmd
 			Local $Result = RunWait($g_sCurlPath & " -i -X POST " & $telegram_urlAll & ' -F chat_id="' & $g_sTGChatID & '" -F ' & $sCmd1 & '=@"' & $g_sProfilePath & "\" & $g_sProfileCurrentName & '\' & $Folder & '\' & $File & '"', "", @SW_HIDE)
 			$oHTTP.Open("Post", $TELEGRAM_URL & $g_sNotifyTGToken & "/sendMessage", False)
+			If (@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 			$oHTTP.SetRequestHeader("Content-Type", "application/json; charset=ISO-8859-1,utf-8")
 			Local $pPush = '{"text":"' & $body & '", "chat_id":' & $g_sTGChatID & '}}'
 			$oHTTP.Send($pPush)
 			If $oHTTP.Status <> $HTTP_STATUS_OK Then
 				SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+				Local $text = _StringBetween($oHTTP.ResponseText, '"description":"', '"}')
+				Setlog($text[0])
 				Return
 			EndIf
 			$oHTTP.WaitForResponse
@@ -158,11 +164,14 @@ Func NotifyGetLastMessageFromTelegram()
 	EndIf
 
 	$oHTTP.Open("Get", $TELEGRAM_URL & $g_sNotifyTGToken & "/getupdates", False)
+	If (@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 	$oHTTP.Send()
 	$oHTTP.WaitForResponse
 	Local $Result = $oHTTP.ResponseText
 	If $oHTTP.Status <> 200 Then
 		SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+		Local $text = _StringBetween($oHTTP.ResponseText, '"description":"', '"}')
+		Setlog($text[0])
 		Return
 	EndIf
 
@@ -183,11 +192,14 @@ Func NotifyGetLastMessageFromTelegram()
 	If $g_bDebugSetlog Then SetDebugLog("Telegram $g_sTGLast_UID:" & $g_sTGLast_UID)
 
 	$oHTTP.Open("Get", $TELEGRAM_URL & $g_sNotifyTGToken & "/getupdates?offset=" & $g_sTGLast_UID, False)
+	If (@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 	$oHTTP.Send()
 	$oHTTP.WaitForResponse
 	Local $Result2 = $oHTTP.ResponseText
 	If $oHTTP.Status <> $HTTP_STATUS_OK Then
 		SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+		Local $text = _StringBetween($oHTTP.ResponseText, '"description":"', '"}')
+		Setlog($text[0])
 		Return
 	EndIf
 	If _IsInternet() < 1 Then
@@ -218,6 +230,7 @@ Func NotifyActivateKeyboardOnTelegram($TGMsg)
 		Return
 	EndIf
 	$oHTTP.Open("Post", $TELEGRAM_URL & $g_sNotifyTGToken & "/sendMessage", False)
+	If (@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 	$oHTTP.SetRequestHeader("Content-Type", "application/json; charset=ISO-8859-1,utf-8")
 
 	Local $TGPushMsg = '{"text": "' & $TGMsg & '", "chat_id":' & $g_sTGChatID & ', "reply_markup": {"keyboard": [["' & _
@@ -243,6 +256,7 @@ Func NotifyActivateKeyboardOnTelegram($TGMsg)
 	$oHTTP.Send($TGPushMsg)
 	If $oHTTP.Status <> $HTTP_STATUS_OK Then
 		SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+		Setlog(_StringBetween($oHTTP.ResponseText, '"description":"', '"}'))
 		Return
 	EndIf
 

@@ -127,10 +127,12 @@ Func GetNoxAdbPath()
 EndFunc   ;==>GetNoxAdbPath
 
 Func GetNoxBackgroundMode()
+
 	Local $iDirectX = $g_iAndroidBackgroundModeDirectX
 	Local $iOpenGL = $g_iAndroidBackgroundModeOpenGL
 	; hack for super strange Windows Fall Creator Update with OpenGL and DirectX problems
-	If @OSBuild >= 16299 Then
+	; doesn't have this issue with OSBuild : 17134
+	If @OSBuild >= 16299 And @OSBuild < 17134 Then
 		SetDebugLog("DirectX/OpenGL Fix applied for Windows Build 16299")
 		$iDirectX = $g_iAndroidBackgroundModeOpenGL
 		$iOpenGL = $g_iAndroidBackgroundModeDirectX

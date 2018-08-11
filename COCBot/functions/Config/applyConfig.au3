@@ -640,10 +640,13 @@ Func ApplyConfig_600_15($TypeReadSave)
 			chkUpgradeWarden()
 			chkDBWardenWait()
 			chkABWardenWait()
+			_GUICtrlComboBox_SetCurSel($g_hCmbHeroReservedBuilder, $g_iHeroReservedBuilder)
+			cmbHeroReservedBuilder()
 		Case "Save"
 			$g_bUpgradeKingEnable = (GUICtrlRead($g_hChkUpgradeKing) = $GUI_CHECKED)
 			$g_bUpgradeQueenEnable = (GUICtrlRead($g_hChkUpgradeQueen) = $GUI_CHECKED)
 			$g_bUpgradeWardenEnable = (GUICtrlRead($g_hChkUpgradeWarden) = $GUI_CHECKED)
+			$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_15
 

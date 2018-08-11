@@ -174,7 +174,7 @@ Func ResetLabUpgradeTime()
 EndFunc   ;==>ResetLabUpgradeTime
 
 Func chkUpgradeKing()
-	If $g_iTownHallLevel > 6 Or $g_iTownHallLevel = 0 Then ; Must be TH7 or above to have King
+	If $g_iTownHallLevel > 6 Then ; Must be TH7 or above to have King
 		GUICtrlSetState($g_hChkUpgradeKing, $GUI_ENABLE)
 		If GUICtrlRead($g_hChkUpgradeKing) = $GUI_CHECKED Then
 			$g_bUpgradeKingEnable = True
@@ -203,7 +203,7 @@ Func chkUpgradeKing()
 EndFunc   ;==>chkUpgradeKing
 
 Func chkUpgradeQueen()
-	If $g_iTownHallLevel > 8 Or $g_iTownHallLevel = 0 Then ; Must be TH9 or above to have Queen
+	If $g_iTownHallLevel > 8 Then ; Must be TH9 or above to have Queen
 		GUICtrlSetState($g_hChkUpgradeQueen, $GUI_ENABLE)
 		If GUICtrlRead($g_hChkUpgradeQueen) = $GUI_CHECKED Then
 			$g_bUpgradeQueenEnable = True
@@ -232,7 +232,7 @@ Func chkUpgradeQueen()
 EndFunc   ;==>chkUpgradeQueen
 
 Func chkUpgradeWarden()
-	If $g_iTownHallLevel > 10 Or $g_iTownHallLevel = 0 Then ; Must be TH11 to have warden
+	If $g_iTownHallLevel > 10 Then ; Must be TH11 to have warden
 		GUICtrlSetState($g_hChkUpgradeWarden, $GUI_ENABLE)
 		If GUICtrlRead($g_hChkUpgradeWarden) = $GUI_CHECKED Then
 			$g_bUpgradeWardenEnable = True
@@ -260,6 +260,27 @@ Func chkUpgradeWarden()
 	EndIf
 EndFunc   ;==>chkUpgradeWarden
 
+Func cmbHeroReservedBuilder()
+	$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
+	If $g_iTownHallLevel > 6 Then ; Must be TH7 or above to have Heroes
+		If $g_iTownHallLevel > 10 Then ; For TH11 enable up to 3 reserved builders
+			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3", "0")
+		ElseIf $g_iTownHallLevel > 8 Then ; For TH9 enable up to 2 reserved builders
+			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2", "0")
+		Else ; For TH7 enable up to 1 reserved builder
+			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1", "0")
+		EndIf
+		GUICtrlSetState($g_hCmbHeroReservedBuilder, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblHeroReservedBuilderTop, $GUI_ENABLE)
+		GUICtrlSetState($g_hLblHeroReservedBuilderBottom, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($g_hCmbHeroReservedBuilder, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblHeroReservedBuilderTop, $GUI_DISABLE)
+		GUICtrlSetState($g_hLblHeroReservedBuilderBottom, $GUI_DISABLE)
+	EndIf
+	_GUICtrlComboBox_SetCurSel($g_hCmbHeroReservedBuilder, $g_iHeroReservedBuilder)
+EndFunc   ;==>cmbHeroReservedBuilder
+	
 Func chkWalls()
 	If GUICtrlRead($g_hChkWalls) = $GUI_CHECKED Then
 		$g_bAutoUpgradeWallsEnable = True

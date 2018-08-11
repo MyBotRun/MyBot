@@ -49,7 +49,7 @@ Func UpgradeHeroes()
 	SetLog("Upgrading Heroes", $COLOR_INFO)
 
 	; ### Archer Queen ###
-	If $g_bUpgradeQueenEnable Then
+	If $g_bUpgradeQueenEnable And BitAND($g_iHeroUpgradingBit, $eHeroQueen) <> $eHeroQueen Then
 		If Not getBuilderCount() Then Return ; update builder data, return if problem
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
@@ -62,7 +62,7 @@ Func UpgradeHeroes()
 	EndIf
 
 	; ### Barbarian King ###
-	If $g_bUpgradeKingEnable Then
+	If $g_bUpgradeKingEnable And BitAND($g_iHeroUpgradingBit, $eHeroKing) <> $eHeroKing Then
 		If Not getBuilderCount() Then Return ; update builder data, return if problem
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
@@ -75,7 +75,7 @@ Func UpgradeHeroes()
 	EndIf
 
 	; ### Grand Warden ###
-	If $g_bUpgradeWardenEnable Then
+	If $g_bUpgradeWardenEnable And BitAND($g_iHeroUpgradingBit, $eHeroWarden) <> $eHeroWarden Then
 		If Not getBuilderCount() Then Return ; update builder data, return if problem
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
@@ -418,3 +418,22 @@ Func WardenUpgrade()
 	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
 
 EndFunc   ;==>WardenUpgrade
+
+Func ReservedBuildersForHeroes()
+	Local $iUsedBuildersForHeroes = Number(BitAND($g_iHeroUpgradingBit, $eHeroKing) = $eHeroKing ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroQueen) = $eHeroQueen ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroWarden) = $eHeroWarden ? 1 : 0)
+	If $g_bDebugSetlog Then
+		If $iUsedBuildersForHeroes = 1 Then 
+			SetLog($iUsedBuildersForHeroes & " builder is upgrading your heroes.", $COLOR_INFO)
+		Else
+			SetLog($iUsedBuildersForHeroes & " builders are upgrading your heroes.", $COLOR_INFO)
+		EndIf
+	EndIf
+	
+	Local $iFreeBuildersReservedForHeroes = _Max($g_iHeroReservedBuilder - $iUsedBuildersForHeroes, 0)
+	If $iFreeBuildersReservedForHeroes = 1 Then 
+		SetLog($iFreeBuildersReservedForHeroes & " free builder is reserved for heroes.", $COLOR_INFO)
+	Else
+		SetLog($iFreeBuildersReservedForHeroes & " free builders are reserved for heroes.", $COLOR_INFO)
+	EndIf
+	Return $iFreeBuildersReservedForHeroes
+EndFunc   ;==>ReservedBuildersForHeroes()

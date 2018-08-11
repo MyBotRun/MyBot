@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.6)
-#pragma compile(FileVersion, 7.6)
+#pragma compile(FileVersion, 7.6.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.6"
+Global $g_sBotVersion = "v7.6.1"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -6088,7 +6088,7 @@ Global $g_iCmbDonateFilter = 0
 Global $g_bDonateSkipNearFullEnable = 1
 Global $g_iDonateSkipNearFullPercent = 90
 Global $g_bAutoLabUpgradeEnable = False, $g_iCmbLaboratory = 0
-Global $g_bUpgradeKingEnable = False, $g_bUpgradeQueenEnable = False, $g_bUpgradeWardenEnable = False
+Global $g_bUpgradeKingEnable = False, $g_bUpgradeQueenEnable = False, $g_bUpgradeWardenEnable = False, $g_iHeroReservedBuilder = 0
 Global Const $g_iUpgradeSlots = 14
 Global $g_aiPicUpgradeStatus[$g_iUpgradeSlots] = [$eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops, $eIcnTroops]
 Global $g_abBuildingUpgradeEnable[$g_iUpgradeSlots] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
@@ -10919,6 +10919,25 @@ Next
 Next
 Return $aResult
 EndFunc
+Func CheckEmuNewVersions()
+Local $Version = GetVersionNormalized($g_sAndroidVersion)
+Local $NewVersion = ""
+Local $HelpLink = "Please visit MyBot Forum!"
+Switch $g_sAndroidEmulator
+Case "BlueStacks2"
+$NewVersion = GetVersionNormalized("3.50.0.0")
+Case "MEmu"
+$NewVersion = GetVersionNormalized("5.2.3.0")
+Case "Nox"
+$NewVersion = GetVersionNormalized("6.2.1.1")
+Case Else
+$NewVersion = GetVersionNormalized("1.1.0.0")
+EndSwitch
+If $Version > $NewVersion Then
+Setlog("You are using an unsupported " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ")!", $COLOR_ERROR)
+Setlog($HelpLink, $COLOR_INFO)
+EndIf
+EndFunc
 Global $g_sNO_COC, $g_sUNKNOWN_COC
 Global $_g_asDISTRIBUTORS[24][4]
 Func InitializeCOCDistributors()
@@ -13681,6 +13700,7 @@ EndFunc
 Global $g_hGUI_UPGRADE = 0, $g_hGUI_UPGRADE_TAB = 0, $g_hGUI_UPGRADE_TAB_ITEM1 = 0, $g_hGUI_UPGRADE_TAB_ITEM2 = 0, $g_hGUI_UPGRADE_TAB_ITEM3 = 0, $g_hGUI_UPGRADE_TAB_ITEM4 = 0, $g_hGUI_UPGRADE_TAB_ITEM5 = 0
 Global $g_hChkAutoLabUpgrades = 0, $g_hCmbLaboratory = 0, $g_hLblNextUpgrade = 0, $g_hBtnResetLabUpgradeTime = 0, $g_hPicLabUpgrade = 0
 Global $g_hChkUpgradeKing = 0, $g_hChkUpgradeQueen = 0, $g_hChkUpgradeWarden = 0, $g_hPicChkKingSleepWait = 0, $g_hPicChkQueenSleepWait = 0, $g_hPicChkWardenSleepWait = 0
+Global $g_hCmbHeroReservedBuilder = 0, $g_hLblHeroReservedBuilderTop = 0, $g_hLblHeroReservedBuilderBottom = 0
 Global $g_hChkUpgrade[$g_iUpgradeSlots] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hPicUpgradeStatus[$g_iUpgradeSlots] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hTxtUpgradeName[$g_iUpgradeSlots] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -13777,6 +13797,13 @@ _GUICtrlSetTip(-1, $sTxtTip)
 $g_hPicChkWardenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingWarden, $x + 18, $y, 64, 64)
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetState(-1,$GUI_HIDE)
+$x += 95
+$g_hLblHeroReservedBuilderTop = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "LblHeroReservedBuilderTop", "Reserve ") , $x, $y + 15, -1, -1)
+$g_hCmbHeroReservedBuilder = GUICtrlCreateCombo("", $x + 50, $y + 11, 30, 21, $CBS_DROPDOWNLIST, $WS_EX_RIGHT)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "CmbHeroReservedBuilder", "At least this many builders have to upgrade heroes, or wait for it."))
+GUICtrlSetData(-1, "|0|1|2|3", "0")
+GUICtrlSetOnEvent(-1, "cmbHeroReservedBuilder")
+$g_hLblHeroReservedBuilderBottom = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "LblHeroReservedBuilderBottom", "builder/s for hero upgrade"), $x, $y + 35, -1, -1)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
 Func CreateBuildingsSubTab()
@@ -14094,7 +14121,7 @@ GUICtrlSetColor(-1, $COLOR_INFO)
 GUICtrlSetCursor(-1, 0)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
-Global $g_hGUI_NOTIFY = 0, $g_hGUI_NOTIFY_TAB = 0, $g_hGUI_NOTIFY_TAB_ITEM2 = 0, $g_hGUI_NOTIFY_TAB_ITEM6 = 0
+Global $g_hGUI_NOTIFY = 0, $g_hGUI_NOTIFY_TAB = 0, $g_hGUI_NOTIFY_TAB_ITEM2 = 0
 Global $g_hGrpNotify = 0
 Global $g_hChkNotifyTGEnable = 0, $g_hTxtNotifyTGToken = 0
 Global $g_hChkNotifyRemote = 0, $g_hTxtNotifyOrigin = 0
@@ -14109,8 +14136,6 @@ GUISwitch($g_hGUI_NOTIFY)
 $g_hGUI_NOTIFY_TAB = GUICtrlCreateTab(0, 0, $g_iSizeWGrpTab2, $g_iSizeHGrpTab2, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
 $g_hGUI_NOTIFY_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_05_STab_01", "Telegram"))
 CreatePushBulletTelegramSubTab()
-$g_hGUI_NOTIFY_TAB_ITEM6 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_05_STab_02", "Notify Schedule"))
-CreateNotifyScheduleSubTab()
 GUICtrlCreateTabItem("")
 EndFunc
 Func CreatePushBulletTelegramSubTab()
@@ -14127,7 +14152,7 @@ GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify",
 $g_hTxtNotifyTGToken = GUICtrlCreateInput("", $x + 120, $y - 3, 280, 19)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyTGToken_Info_01", "You need a Token to use Telegram notifications. Get a token from Telegram.com"))
 GUICtrlSetState(-1, $GUI_DISABLE)
-$y += 30
+$y += 25
 $g_hChkNotifyRemote = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyRemote", "Remote Control"), $x + 10, $y)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyRemote_Info_01", "Enables Telegram Remote function"))
 GUICtrlSetState(-1, $GUI_DISABLE)
@@ -14188,68 +14213,24 @@ GUICtrlSetState(-1, $GUI_DISABLE)
 $g_hChkNotifyBOTUpdate = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyBOTUpdate", "BOT Update"), $x + 210, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyBOTUpdate_Info_01", "Send an Alert when there is a new version of the bot."))
 GUICtrlSetState(-1, $GUI_DISABLE)
-$y += 70
-GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyHelp", "Help ?"), $x + 197, $y + 93, 220, 24, $SS_RIGHT)
-GUICtrlSetOnEvent(-1, "NotifyHelp")
-GUICtrlSetCursor(-1, 0)
-GUICtrlSetFont(-1, 8.5, $FW_BOLD)
-_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyHelp_Info_01", "Click here to get Help about Notify Remote commands to Telegram"))
-GUICtrlSetColor(-1, $COLOR_NAVY)
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-EndFunc
-Func CreateNotifyScheduleSubTab()
-Local $x = 25
-Local $y = 150 - 105
-Local $sTxtTip = ""
-GUICtrlCreateGroup(GetTranslatedFileIni("MBR Main GUI", "Tab_02_STab_05_STab_02", -1), $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
-$x += 10
-$y += 10
-_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTelegram, $x - 5, $y, 64, 64, $BS_ICON)
-$g_hChkNotifyOnlyHours = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", "Only during these hours of each day"), $x + 70, $y - 6)
+$y += 20
+$y += 30
+$g_hChkNotifyOnlyHours = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", "Only during these hours of each day"), $x + 70, $y )
 GUICtrlSetOnEvent(-1, "chkNotifyHours")
 $x += 59
-$y += 85
+$y += 25
 $g_hLblNotifyhour = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Hour", "Hour") & ":", $x, $y, -1, 15)
 $sTxtTip = GetTranslatedFileIni("MBR Global GUI Design", "Only_during_hours", -1)
 _GUICtrlSetTip(-1, $sTxtTip)
-$g_hLblNotifyhours[0] = GUICtrlCreateLabel(" 0", $x + 30, $y)
-$g_hLblNotifyhours[1] = GUICtrlCreateLabel(" 1", $x + 45, $y)
-$g_hLblNotifyhours[2] = GUICtrlCreateLabel(" 2", $x + 60, $y)
-$g_hLblNotifyhours[3] = GUICtrlCreateLabel(" 3", $x + 75, $y)
-$g_hLblNotifyhours[4] = GUICtrlCreateLabel(" 4", $x + 90, $y)
-$g_hLblNotifyhours[5] = GUICtrlCreateLabel(" 5", $x + 105, $y)
-$g_hLblNotifyhours[6] = GUICtrlCreateLabel(" 6", $x + 120, $y)
-$g_hLblNotifyhours[7] = GUICtrlCreateLabel(" 7", $x + 135, $y)
-$g_hLblNotifyhours[8] = GUICtrlCreateLabel(" 8", $x + 150, $y)
-$g_hLblNotifyhours[9] = GUICtrlCreateLabel(" 9", $x + 165, $y)
-$g_hLblNotifyhours[10] = GUICtrlCreateLabel("10", $x + 180, $y)
-$g_hLblNotifyhours[11] = GUICtrlCreateLabel("11", $x + 195, $y)
+For $i = 0 to 11
+$g_hLblNotifyhours[$i] = GUICtrlCreateLabel(StringFormat("%2s", String($i)), $x + 30 +(15 * $i), $y)
+Next
 $g_ahLblNotifyhoursE = GUICtrlCreateLabel("X", $x + 214, $y + 1, 11, 11)
 $y += 15
-$g_hChkNotifyhours[0] = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)
+For $i = 0 to 11
+$g_hChkNotifyhours[$i] = GUICtrlCreateCheckbox("", $x + 30 +(15 * $i), $y, 15, 15)
 GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[1] = GUICtrlCreateCheckbox("", $x + 45, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[2] = GUICtrlCreateCheckbox("", $x + 60, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[3] = GUICtrlCreateCheckbox("", $x + 75, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[4] = GUICtrlCreateCheckbox("", $x + 90, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[5] = GUICtrlCreateCheckbox("", $x + 105, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[6] = GUICtrlCreateCheckbox("", $x + 120, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[7] = GUICtrlCreateCheckbox("", $x + 135, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[8] = GUICtrlCreateCheckbox("", $x + 150, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[9] = GUICtrlCreateCheckbox("", $x + 165, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[10] = GUICtrlCreateCheckbox("", $x + 180, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[11] = GUICtrlCreateCheckbox("", $x + 195, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
+Next
 $g_hChkNotifyhoursE1 = GUICtrlCreateCheckbox("", $x + 211, $y + 1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 _GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGoldStar, 0)
 GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
@@ -14257,43 +14238,21 @@ _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Clear_set_row_
 GUICtrlSetOnEvent(-1, "chkNotifyhoursE1")
 $g_hLblNotifyhoursAM = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "AM", -1), $x + 10, $y)
 $y += 15
-$g_hChkNotifyhours[12] = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)
+For $i = 12 to 23
+$g_hChkNotifyhours[$i] = GUICtrlCreateCheckbox("", $x + 30 +(15 *($i - 12)), $y, 15, 15)
 GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[13] = GUICtrlCreateCheckbox("", $x + 45, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[14] = GUICtrlCreateCheckbox("", $x + 60, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[15] = GUICtrlCreateCheckbox("", $x + 75, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[16] = GUICtrlCreateCheckbox("", $x + 90, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[17] = GUICtrlCreateCheckbox("", $x + 105, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[18] = GUICtrlCreateCheckbox("", $x + 120, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[19] = GUICtrlCreateCheckbox("", $x + 135, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[20] = GUICtrlCreateCheckbox("", $x + 150, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[21] = GUICtrlCreateCheckbox("", $x + 165, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[22] = GUICtrlCreateCheckbox("", $x + 180, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyhours[23] = GUICtrlCreateCheckbox("", $x + 195, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
+Next
 $g_hChkNotifyhoursE2 = GUICtrlCreateCheckbox("", $x + 211, $y + 1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 _GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGoldStar, 0)
 GUICtrlSetState(-1, $GUI_UNCHECKED + $GUI_DISABLE)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Clear_set_row_of_boxes", -1))
 GUICtrlSetOnEvent(-1, "chkNotifyhoursE2")
 $g_hLblNotifyhoursPM = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "PM", -1), $x + 10, $y)
-$x = 35
-$y = 220
-$g_hChkNotifyOnlyWeekDays = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR Global GUI Design", "Only_during_day", "Only during these day of week"), $x + 70, $y - 6)
+$y += 20
+$g_hChkNotifyOnlyWeekDays = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR Global GUI Design", "Only_during_day", "Only during these day of week"), $x + 11, $y )
 GUICtrlSetOnEvent(-1, "chkNotifyWeekDays")
 GUICtrlSetState(-1, $GUI_DISABLE)
-$x += 59
-$y += 19
+$y += 25
 GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Day", "Day") & ":", $x, $y, -1, 15)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Only_during_day", -1))
 $g_hLblNotifyWeekdays[0] = GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "Su", "Su"), $x + 30, $y)
@@ -14313,26 +14272,24 @@ _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Saturday", "Sa
 $g_ahLblNotifyWeekdaysE = GUICtrlCreateLabel("X", $x + 155, $y + 1, -1, 15)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Clear_set_row_of_boxes", -1))
 $y += 13
-$g_hChkNotifyWeekdays[0] = GUICtrlCreateCheckbox("", $x + 30, $y, 15, 15)
+For $i = 0 to 6
+$g_hChkNotifyWeekdays[$i] = GUICtrlCreateCheckbox("", $x + 30 +(17 * $i), $y, 15, 15)
 GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyWeekdays[1] = GUICtrlCreateCheckbox("", $x + 47, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyWeekdays[2] = GUICtrlCreateCheckbox("", $x + 64, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyWeekdays[3] = GUICtrlCreateCheckbox("", $x + 81, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyWeekdays[4] = GUICtrlCreateCheckbox("", $x + 99, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyWeekdays[5] = GUICtrlCreateCheckbox("", $x + 117, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
-$g_hChkNotifyWeekdays[6] = GUICtrlCreateCheckbox("", $x + 133, $y, 15, 15)
-GUICtrlSetState(-1, $GUI_CHECKED + $GUI_DISABLE)
+Next
 $g_ahChkNotifyWeekdaysE = GUICtrlCreateCheckbox("", $x + 151, $y + 1, 13, 13, BitOR($BS_PUSHLIKE, $BS_ICON))
 _GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGoldStar, 0)
 GUICtrlSetState(-1, $GUI_UNCHECKED)
 GUICtrlSetState(-1, $GUI_DISABLE)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Clear_set_row_of_boxes", -1))
 GUICtrlSetOnEvent(-1, "ChkNotifyWeekdaysE")
+$y += 15
+$x = 15
+GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyHelp", "Help ?"), $x + 310, $y , 100, 24, $SS_RIGHT)
+GUICtrlSetOnEvent(-1, "ShowCommandLineHelp")
+GUICtrlSetCursor(-1, 0)
+GUICtrlSetFont(-1, 8.5, $FW_BOLD)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "LblNotifyHelp_Info_01", "Click here to get Help about Notify Remote commands to Telegram"))
+GUICtrlSetColor(-1, $COLOR_NAVY)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
 Global $g_hGUI_VILLAGE_TAB = 0, $g_hGUI_VILLAGE_TAB_ITEM1 = 0, $g_hGUI_VILLAGE_TAB_ITEM2 = 0, $g_hGUI_VILLAGE_TAB_ITEM3 = 0, $g_hGUI_VILLAGE_TAB_ITEM4 = 0, $g_hGUI_VILLAGE_TAB_ITEM5 = 0
@@ -20511,11 +20468,19 @@ GUICtrlSetColor(-1, 0x000053)
 GUICtrlSetFont(-1, 6.5, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 EndFunc
 Func ShowCommandLineHelp()
+SetDebugLog("Help File called from CrtlID: " & @GUI_CtrlId)
+Local $PathHelp = "CommandLineParameter"
+Switch @GUI_CtrlId
+Case 2620 to 2670
+$PathHelp = "CommandLineParameter"
+Case 1100 to 1150
+$PathHelp = "NotifyHelp"
+EndSwitch
 UpdateBotTitle()
 $g_hGUI_CommandLineHelp = GUICreate($g_sBotTitle & " - Command Line Help", 650, 700, -1, -1, BitOR($WS_CAPTION, $WS_POPUPWINDOW, $DS_MODALFRAME))
 GUISetIcon($g_sLibIconPath, $eIcnGUI, $g_hGUI_CommandLineHelp)
 Local $hRichEdit = _GUICtrlRichEdit_Create($g_hGUI_CommandLineHelp, "", 2, 0, 646, 667, $WS_VSCROLL + $ES_MULTILINE)
-Local $sHelpFile = @ScriptDir & "\Help\CommandLineParameter"
+Local $sHelpFile = @ScriptDir & "\Help\" & $PathHelp
 If $g_sLanguage <> $g_sDefaultLanguage Then
 If FileExists($sHelpFile & "_" & $g_sLanguage & ".rtf") Then
 $sHelpFile &= "_" & $g_sLanguage
@@ -20994,7 +20959,7 @@ Dim $aTabControlsVillage = [$g_hGUI_VILLAGE_TAB, $g_hGUI_VILLAGE_TAB_ITEM1, $g_h
 Dim $aTabControlsMisc = [$g_hGUI_MISC_TAB, $g_hGUI_MISC_TAB_ITEM1, $g_hGUI_MISC_TAB_ITEM2]
 Dim $aTabControlsDonate = [$g_hGUI_DONATE_TAB, $g_hGUI_DONATE_TAB_ITEM1, $g_hGUI_DONATE_TAB_ITEM2, $g_hGUI_DONATE_TAB_ITEM3]
 Dim $aTabControlsUpgrade = [$g_hGUI_UPGRADE_TAB, $g_hGUI_UPGRADE_TAB_ITEM1, $g_hGUI_UPGRADE_TAB_ITEM2, $g_hGUI_UPGRADE_TAB_ITEM3, $g_hGUI_UPGRADE_TAB_ITEM4, $g_hGUI_UPGRADE_TAB_ITEM5]
-Dim $aTabControlsNotify = [$g_hGUI_NOTIFY_TAB, $g_hGUI_NOTIFY_TAB_ITEM2, $g_hGUI_NOTIFY_TAB_ITEM6]
+Dim $aTabControlsNotify = [$g_hGUI_NOTIFY_TAB, $g_hGUI_NOTIFY_TAB_ITEM2]
 Dim $aTabControlsAttack = [$g_hGUI_ATTACK_TAB, $g_hGUI_ATTACK_TAB_ITEM1, $g_hGUI_ATTACK_TAB_ITEM2, $g_hGUI_ATTACK_TAB_ITEM3]
 Dim $aTabControlsArmy = [$g_hGUI_TRAINARMY_TAB, $g_hGUI_TRAINARMY_TAB_ITEM1, $g_hGUI_TRAINARMY_TAB_ITEM2, $g_hGUI_TRAINARMY_TAB_ITEM3, $g_hGUI_TRAINARMY_TAB_ITEM4]
 Dim $aTabControlsSearch = [$g_hGUI_SEARCH_TAB, $g_hGUI_SEARCH_TAB_ITEM1, $g_hGUI_SEARCH_TAB_ITEM2, $g_hGUI_SEARCH_TAB_ITEM3, $g_hGUI_SEARCH_TAB_ITEM4, $g_hGUI_SEARCH_TAB_ITEM5]
@@ -21540,8 +21505,8 @@ _GUI_Value_STATE("ENABLE", $grpTrainTroops)
 _GUI_Value_STATE("ENABLE", $grpCookSpell)
 lblTotalCountTroop1()
 TotalSpellCountClick()
-lblTotalCountSiege()
 EndIf
+lblTotalCountSiege()
 EndFunc
 Func chkQuickTrainCombo()
 If GUICtrlRead($g_ahChkArmy[0]) = $GUI_UNCHECKED And GUICtrlRead($g_ahChkArmy[1]) = $GUI_UNCHECKED And GUICtrlRead($g_ahChkArmy[2]) = $GUI_UNCHECKED Then
@@ -21663,7 +21628,7 @@ GUICtrlSetData($g_hLblTotalTimeSiege, CalculTimeTo($iTotalTotalTimeSiege))
 GUICtrlSetData($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege)
 GUICtrlSetBkColor($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege <= 2 ? $COLOR_MONEYGREEN : $COLOR_RED)
 CalCostSiege()
-If $g_iTownHallLevel <> 12 and $g_iTownHallLevel > 0 then
+If $g_iTownHallLevel > 0 And $g_iTownHallLevel < 12 then
 $g_iTotalTrainSpaceSiege = 0
 GUICtrlSetBkColor($g_hLblCountTotalSiege,$COLOR_RED)
 _GUICtrlSetTip($g_hLblCountTotalSiege, GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "LblCountTotal_Info_03", "Workshop Level 1 Required!"))
@@ -24718,13 +24683,6 @@ GUICtrlSetState($g_hChkNotifyBOTUpdate, $GUI_DISABLE)
 GUICtrlSetState($g_hChkNotifyAlertSmartWaitTime, $GUI_DISABLE)
 EndIf
 EndFunc
-Func NotifyHelp()
-If FileExists(@ScriptDir & "\Help\NotifyHelp_" & $g_sLanguage & ".mht") Then
-ShellExecute(@ScriptDir & "\Help\NotifyHelp_" & $g_sLanguage & ".mht")
-ElseIf FileExists(@ScriptDir & "\Help\NotifyHelp_English.mht") Then
-ShellExecute(@ScriptDir & "\Help\NotifyHelp_English.mht")
-EndIf
-EndFunc
 Func chkNotifyHours()
 Local $b = GUICtrlRead($g_hChkNotifyOnlyHours) = $GUI_CHECKED
 For $i = 0 To 23
@@ -24895,7 +24853,7 @@ GUICtrlSetState($g_hBtnResetLabUpgradeTime, $GUI_DISABLE)
 EndIf
 EndFunc
 Func chkUpgradeKing()
-If $g_iTownHallLevel > 6 Or $g_iTownHallLevel = 0 Then
+If $g_iTownHallLevel > 6 Then
 GUICtrlSetState($g_hChkUpgradeKing, $GUI_ENABLE)
 If GUICtrlRead($g_hChkUpgradeKing) = $GUI_CHECKED Then
 $g_bUpgradeKingEnable = True
@@ -24922,7 +24880,7 @@ GUICtrlSetState($g_hChkUpgradeKing, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 EndIf
 EndFunc
 Func chkUpgradeQueen()
-If $g_iTownHallLevel > 8 Or $g_iTownHallLevel = 0 Then
+If $g_iTownHallLevel > 8 Then
 GUICtrlSetState($g_hChkUpgradeQueen, $GUI_ENABLE)
 If GUICtrlRead($g_hChkUpgradeQueen) = $GUI_CHECKED Then
 $g_bUpgradeQueenEnable = True
@@ -24949,7 +24907,7 @@ GUICtrlSetState($g_hChkUpgradeQueen, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 EndIf
 EndFunc
 Func chkUpgradeWarden()
-If $g_iTownHallLevel > 10 Or $g_iTownHallLevel = 0 Then
+If $g_iTownHallLevel > 10 Then
 GUICtrlSetState($g_hChkUpgradeWarden, $GUI_ENABLE)
 If GUICtrlRead($g_hChkUpgradeWarden) = $GUI_CHECKED Then
 $g_bUpgradeWardenEnable = True
@@ -24974,6 +24932,26 @@ EndIf
 Else
 GUICtrlSetState($g_hChkUpgradeWarden, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 EndIf
+EndFunc
+Func cmbHeroReservedBuilder()
+$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
+If $g_iTownHallLevel > 6 Then
+If $g_iTownHallLevel > 10 Then
+GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3", "0")
+ElseIf $g_iTownHallLevel > 8 Then
+GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2", "0")
+Else
+GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1", "0")
+EndIf
+GUICtrlSetState($g_hCmbHeroReservedBuilder, $GUI_ENABLE)
+GUICtrlSetState($g_hLblHeroReservedBuilderTop, $GUI_ENABLE)
+GUICtrlSetState($g_hLblHeroReservedBuilderBottom, $GUI_ENABLE)
+Else
+GUICtrlSetState($g_hCmbHeroReservedBuilder, $GUI_DISABLE)
+GUICtrlSetState($g_hLblHeroReservedBuilderTop, $GUI_DISABLE)
+GUICtrlSetState($g_hLblHeroReservedBuilderBottom, $GUI_DISABLE)
+EndIf
+_GUICtrlComboBox_SetCurSel($g_hCmbHeroReservedBuilder, $g_iHeroReservedBuilder)
 EndFunc
 Func chkWalls()
 If GUICtrlRead($g_hChkWalls) = $GUI_CHECKED Then
@@ -33103,27 +33081,27 @@ AttackClick($pixel[0], $pixel[1], $qty2, $delayPoint, $delayDropLast, "#0666")
 EndIf
 Case $eKing
 If $debug = True Then
-SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", " & $g_iKingSlot & ", -1, -1) ")
+SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", " & $troopPosition & ", -1, -1) ")
 Else
 dropHeroes($pixel[0], $pixel[1], $troopPosition, -1, -1)
 EndIf
 Case $eQueen
 If $debug = True Then
-SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ",-1," & $g_iQueenSlot & ", -1) ")
+SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ",-1," & $troopPosition & ", -1) ")
 Else
 dropHeroes($pixel[0], $pixel[1], -1, $troopPosition, -1)
 EndIf
 Case $eWarden
 If $debug = True Then
-SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", -1, -1," & $g_iWardenSlot & ") ")
+SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", -1, -1," & $troopPosition & ") ")
 Else
-dropHeroes($pixel[0], $pixel[1], -1, $troopPosition, -1)
+dropHeroes($pixel[0], $pixel[1], -1, -1, $troopPosition)
 EndIf
 Case $eCastle, $eWallW, $eBattleB
 If $debug = True Then
-SetLog("dropCC(" & $pixel[0] & ", " & $pixel[1] & ", " & $g_iClanCastleSlot & ")")
+SetLog("dropCC(" & $pixel[0] & ", " & $pixel[1] & ", " & $troopPosition & ")")
 Else
-dropHeroes($pixel[0], $pixel[1], -1, $troopPosition, -1)
+dropCC($pixel[0], $pixel[1], $troopPosition)
 EndIf
 Case $eLSpell To $eSkSpell
 If $debug = True Then
@@ -41680,21 +41658,33 @@ Select
 Case StringInStr($sResult, "king", $STR_NOCASESENSEBASIC)
 If $bSetLog Then SetLog(" - Barbarian King Available", $COLOR_SUCCESS)
 $g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroKing)
+$g_iHeroUpgrading[0] = 0
+$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroQueen,$eHeroWarden))
 Case StringInStr($sResult, "queen", $STR_NOCASESENSEBASIC)
 If $bSetLog Then SetLog(" - Archer Queen Available", $COLOR_SUCCESS)
 $g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroQueen)
+$g_iHeroUpgrading[1] = 0
+$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroWarden))
 Case StringInStr($sResult, "warden", $STR_NOCASESENSEBASIC)
 If $bSetLog Then SetLog(" - Grand Warden Available", $COLOR_SUCCESS)
 $g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroWarden)
+$g_iHeroUpgrading[2] = 0
+$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroQueen))
 Case StringInStr($sResult, "heal", $STR_NOCASESENSEBASIC)
 If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then
 Switch $i
 Case 0
 $sMessage = "-Barbarian King"
+$g_iHeroUpgrading[0] = 0
+$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroQueen,$eHeroWarden))
 Case 1
 $sMessage = "-Archer Queen"
+$g_iHeroUpgrading[1] = 0
+$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroWarden))
 Case 2
 $sMessage = "-Grand Warden"
+$g_iHeroUpgrading[2] = 0
+$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroQueen))
 Case Else
 $sMessage = "-Very Bad Monkey Needs"
 EndSwitch
@@ -41704,6 +41694,8 @@ Case StringInStr($sResult, "upgrade", $STR_NOCASESENSEBASIC)
 Switch $i
 Case 0
 $sMessage = "-Barbarian King"
+$g_iHeroUpgrading[0] = 1
+$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroKing)
 If($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroKing) = $eHeroKing) Or($g_abAttackTypeEnable[$LB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroKing) = $eHeroKing) Then
 If $g_iSearchNotWaitHeroesEnable Then
 $g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroKing)
@@ -41714,6 +41706,8 @@ _GUI_Value_STATE("SHOW", $groupKingSleeping)
 EndIf
 Case 1
 $sMessage = "-Archer Queen"
+$g_iHeroUpgrading[1] = 1
+$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroQueen)
 If($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroQueen) = $eHeroQueen) Or($g_abAttackTypeEnable[$LB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroQueen) = $eHeroQueen) Then
 If $g_iSearchNotWaitHeroesEnable Then
 $g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroQueen)
@@ -41724,6 +41718,8 @@ _GUI_Value_STATE("SHOW", $groupQueenSleeping)
 EndIf
 Case 2
 $sMessage = "-Grand Warden"
+$g_iHeroUpgrading[2] = 1
+$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroWarden)
 If($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroWarden) = $eHeroWarden) Or($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden) Then
 If $g_iSearchNotWaitHeroesEnable Then
 $g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroWarden)
@@ -41746,7 +41742,8 @@ Else
 If $bSetLog Then SetLog("Hero slot#" & $i + 1 & " status read problem!", $COLOR_ERROR)
 EndIf
 Next
-If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Status K|Q|W : " & BitAND($g_iHeroAvailable, $eHeroKing) & "|" & BitAND($g_iHeroAvailable, $eHeroQueen) & "|" & BitAND($g_iHeroAvailable, $eHeroWarden), $COLOR_DEBUG)
+If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Status  K|Q|W : " & BitAND($g_iHeroAvailable, $eHeroKing) & "|" & BitAND($g_iHeroAvailable, $eHeroQueen) & "|" & BitAND($g_iHeroAvailable, $eHeroWarden), $COLOR_DEBUG)
+If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Upgrade K|Q|W : " & BitAND($g_iHeroUpgradingBit, $eHeroKing) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroQueen) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroWarden), $COLOR_DEBUG)
 If $bCloseArmyWindow Then
 ClickP($aAway, 1, 0, "#0000")
 If _Sleep($DELAYCHECKARMYCAMP4) Then Return
@@ -42167,6 +42164,7 @@ Local $aTempSiegeArray, $aSiegeCoords
 Local $sSiegeName = ""
 Local $iSiegeIndex = -1
 Local $aCurrentTroopsEmpty[$eSiegeMachineCount] = [0, 0]
+$g_aiCurrentSiegeMachines = $aCurrentTroopsEmpty
 Local $sSiegeInfo = getArmyCampCap(758, 164, $bNeedCapture)
 If $g_bDebugSetlogTrain Then SetLog("OCR $sSiegeInfo = " & $sSiegeInfo, $COLOR_DEBUG)
 Local $aGetSiegeCap = StringSplit($sSiegeInfo, "#", $STR_NOCOUNT)
@@ -42176,7 +42174,6 @@ If Number($aGetSiegeCap[0]) = 0 then Return
 Else
 Return
 EndIf
-$g_aiCurrentSiegeMachines = $aCurrentTroopsEmpty
 If UBound($aCurrentSiegeMachines, 1) >= 1 Then
 For $i = 0 To UBound($aCurrentSiegeMachines, 1) - 1
 $aTempSiegeArray = $aCurrentSiegeMachines[$i]
@@ -44182,7 +44179,7 @@ If $g_bRunState = False Then Return
 If _Sleep(20) Then Return
 If UBound($Slottemp) = 2 Then
 SetDebugLog("OCR : " & $Slottemp[0] & "|SLOT: " & $Slottemp[1], $COLOR_DEBUG)
-If $aResult[$i][0] = "Castle" Or $aResult[$i][0] = "King" Or $aResult[$i][0] = "Queen" Or $aResult[$i][0] = "Warden" Then
+If $aResult[$i][0] = "Castle" Or $aResult[$i][0] = "King" Or $aResult[$i][0] = "Queen" Or $aResult[$i][0] = "Warden" Or $aResult[$i][0] = "WallW" Or $aResult[$i][0] = "BattleB" Then
 $aResult[$i][3] = 1
 Else
 $aResult[$i][3] = Number(getTroopCountSmall(Number($Slottemp[0]), 640))
@@ -46940,7 +46937,7 @@ EndFunc
 Func GetMEmuBackgroundMode()
 Local $iDirectX = $g_iAndroidBackgroundModeDirectX
 Local $iOpenGL = $g_iAndroidBackgroundModeOpenGL
-If @OSBuild >= 16299 Then
+If @OSBuild >= 16299 And @OSBuild < 17134 Then
 SetDebugLog("DirectX/OpenGL Fix applied for Windows Build 16299")
 $iDirectX = $g_iAndroidBackgroundModeOpenGL
 $iOpenGL = $g_iAndroidBackgroundModeDirectX
@@ -47181,17 +47178,6 @@ SetDebugLog($g_sAndroidEmulator & " " & $Values[$i][0] & " updated from " & $Val
 EndIf
 Next
 Return $bChanged
-EndFunc
-Func CheckClickAdbNewVersions()
-If $g_sAndroidEmulator <> "MEmu" Then Return
-If $g_bAndroidAdbClickEnabled And $g_bAndroidAdbClick Then Return
-Local $MEmuVersion = GetVersionNormalized($g_sAndroidVersion)
-Local $NewMemu = GetVersionNormalized("5.3.2")
-If $MEmuVersion >= $NewMemu And AndroidAdbClickSupported() Then
-SetDebugLog(" - Using ADB clicks for MEmu v" & $g_sAndroidVersion)
-$g_bAndroidAdbClickEnabled = True
-$g_bAndroidAdbClick = True
-EndIf
 EndFunc
 Func OpenLeapDroid($bRestart = False)
 Local $PID, $hTimer, $iCount = 0, $process_killed, $cmdOutput, $connected_to, $cmdPar
@@ -47532,7 +47518,7 @@ EndFunc
 Func GetNoxBackgroundMode()
 Local $iDirectX = $g_iAndroidBackgroundModeDirectX
 Local $iOpenGL = $g_iAndroidBackgroundModeOpenGL
-If @OSBuild >= 16299 Then
+If @OSBuild >= 16299 And @OSBuild < 17134 Then
 SetDebugLog("DirectX/OpenGL Fix applied for Windows Build 16299")
 $iDirectX = $g_iAndroidBackgroundModeOpenGL
 $iOpenGL = $g_iAndroidBackgroundModeDirectX
@@ -56780,7 +56766,6 @@ EndIf
 If _Sleep($DELAYDONATECC1) Then Return
 WEnd
 Local $Scroll
-Local $donateCCfilter = False
 While 1
 ForceCaptureRegion()
 $y = 90
@@ -56812,12 +56797,16 @@ If IsArray($g_aiDonatePixel) Then
 $Buttons += 1
 If $g_bDebugSetlog Then SetDebugLog("***** Donate Request Number " & $Buttons & " *****", $COLOR_ACTION)
 If $g_bDebugSetlog Then SetDebugLog("$g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
-$donateCCfilter = donateCCWBLUserImageCollect($g_aiDonatePixel[0], $g_aiDonatePixel[1])
+If Not donateCCWBLUserImageCollect($g_aiDonatePixel[0], $g_aiDonatePixel[1]) Then
+SetLog("Skip Donation at this Clan Mate...", $COLOR_ACTION)
+$y = $g_aiDonatePixel[1] + 50
+ContinueLoop
+EndIf
 $bDonate = False
 $g_bSkipDonTroops = False
 $g_bSkipDonSpells = False
 $g_bSkipDonSiege = False
-If $bDonateTroop Or $bDonateSpell Or $bDonateSiege And $donateCCfilter Then
+If $bDonateTroop Or $bDonateSpell Or $bDonateSiege Then
 Local $Alphabets[4] = [$g_bChkExtraAlphabets, $g_bChkExtraChinese, $g_bChkExtraKorean, $g_bChkExtraPersian]
 Local $Yaxis[4] = [50, 26, 26, 31]
 Local $TextAlphabetsNames[4] = ["Cyrillic and Latin", "Chinese", "Korean", "Persian"]
@@ -56895,19 +56884,13 @@ ContinueLoop
 EndIf
 SetDebugLog("Chat Request matches a donate keyword, proceed with donating")
 EndIf
-ElseIf(($bDonateAllTroop And $bDonateAllSpell And Not $bDonateSiege) Or($bDonateAllTroop And(Not $bDonateSpell Or Not $bDonateSiege)) Or((Not $bDonateTroop Or Not $bDonateSiege) And $bDonateAllSpell)) And $donateCCfilter Then
+ElseIf(($bDonateAllTroop And $bDonateAllSpell And Not $bDonateSiege) Or($bDonateAllTroop And(Not $bDonateSpell Or Not $bDonateSiege)) Or((Not $bDonateTroop Or Not $bDonateSiege) And $bDonateAllSpell)) Then
 SetLog("Skip reading chat requests. Donate all is enabled!", $COLOR_ACTION)
 EndIf
 RemainingCCcapacity()
 $iBenchmark = TimerDiff($itime)
 If $g_bDebugSetlog Then SetDebugLog("Get remaining CC capacity in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
 $itime = TimerInit()
-If Not $donateCCfilter Then
-SetLog("Skip Donation at this Clan Mate...", $COLOR_ACTION)
-$g_bSkipDonTroops = True
-$g_bSkipDonSpells = True
-$g_bSkipDonSiege = True
-Else
 If $g_iTotalDonateTroopCapacity <= 0 Then
 SetLog("Clan Castle troops are full, skip troop donation...", $COLOR_ACTION)
 $g_bSkipDonTroops = True
@@ -56929,14 +56912,13 @@ ElseIf $g_iTotalDonateSiegeMachineCapacity = 0 Then
 SetLog("Clan Castle Siege is full, skip Siege donation...", $COLOR_ACTION)
 $g_bSkipDonSiege = True
 EndIf
-EndIf
 If $g_bSkipDonTroops And $g_bSkipDonSpells And $g_bSkipDonSiege Then
 $bDonate = True
 $y = $g_aiDonatePixel[1] + 50
 ContinueLoop
 EndIf
 If _Sleep($DELAYDONATECC3) Then Return
-If($g_bSkipDonTroops And $g_bSkipDonSpells And $g_bSkipDonSiege) Or Not DonateWindow($bOpen) Then
+If Not DonateWindow($bOpen) Then
 $bDonate = True
 $y = $g_aiDonatePixel[1] + 50
 SetLog("Donate Window did not open - Exiting Donate", $COLOR_ERROR)
@@ -59817,7 +59799,7 @@ VillageReport(True, True)
 $iAvailGold = Number($g_aiCurrentLoot[$eLootGold])
 $iAvailElixir = Number($g_aiCurrentLoot[$eLootElixir])
 $iAvailDark = Number($g_aiCurrentLoot[$eLootDarkElixir])
-$iAvailBldr = $g_iFreeBuilderCount -($g_bUpgradeWallSaveBuilder = True ? 1 : 0)
+$iAvailBldr = $g_iFreeBuilderCount -($g_bUpgradeWallSaveBuilder = True ? 1 : 0) - ReservedBuildersForHeroes()
 If $iAvailBldr <= 0 Then
 SetLog("No builder available for upgrade process")
 Return False
@@ -60160,18 +60142,16 @@ If $g_iChkAutoUpgrade = 0 Then Return
 SetLog("Entering Auto Upgrade...", $COLOR_INFO)
 Local $iLoopAmount = 0
 Local $iLoopMax = 6
+Local $iAvailBldr = 0
 While 1
 $iLoopAmount += 1
 If $iLoopAmount >= $iLoopMax Or $iLoopAmount >= 12 Then ExitLoop
 ClickP($aAway, 1, 0, "#0000")
 randomSleep($DELAYAUTOUPGRADEBUILDING1)
-VillageReport()
-If $g_iFreeBuilderCount < 1 Then
+VillageReport(True, True)
+$iAvailBldr = $g_iFreeBuilderCount -($g_bUpgradeWallSaveBuilder = True ? 1 : 0) - ReservedBuildersForHeroes()
+If $iAvailBldr <= 0 Then
 SetLog("No builder available... Skipping Auto Upgrade...", $COLOR_WARNING)
-ExitLoop
-EndIf
-If $g_bUpgradeWallSaveBuilder And($g_iFreeBuilderCount < 2) Then
-SetLog("The only builder available must be kept for walls... Skipping Auto Upgrade...", $COLOR_WARNING)
 ExitLoop
 EndIf
 If Not(_ColorCheck(_GetPixelColor(275, 15, True), "F5F5ED", 20) = True) Then
@@ -60559,7 +60539,7 @@ EndSwitch
 EndIf
 If _Sleep($DELAYRESPOND) Then Return True
 EndIf
-If($g_iWardenLevel <> -1) And($g_iWardenLevel < $g_iMaxWardenLevel) And $g_bUpgradeWardenEnable And($g_iFreeBuilderCount >($g_bUpgradeWallSaveBuilder ? 1 : 0)) Then
+If($g_iWardenLevel <> -1) And($g_iWardenLevel < $g_iMaxWardenLevel) And $g_bUpgradeWardenEnable And BitAND($g_iHeroUpgradingBit, $eHeroWarden) <> $eHeroWarden And($g_iFreeBuilderCount >($g_bUpgradeWallSaveBuilder ? 1 : 0)) Then
 Local $bMinWardenElixir = Number($g_aiCurrentLoot[$eLootElixir]) >($g_iWallCost + $g_afWardenUpgCost[$g_iWardenLevel] * 1000000 + Number($g_iUpgradeWallMinElixir))
 If Not $bMinWardenElixir Then
 Switch $g_iUpgradeWallLootType
@@ -60671,6 +60651,7 @@ SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Post", $TELEGRAM_URL & $g_sNotifyTGToken & "/sendMessage", False)
+If(@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 $oHTTP.SetRequestHeader("Content-Type", "application/json; charset=ISO-8859-1,utf-8")
 Local $Date = @YEAR & '-' & @MON & '-' & @MDAY
 Local $Time = @HOUR & '.' & @MIN
@@ -60678,6 +60659,8 @@ Local $TGPushMsg = '{"text":"' & $pMessage & '\n' & $Date & '_' & $Time & '", "c
 $oHTTP.Send($TGPushMsg)
 If $oHTTP.Status <> $HTTP_STATUS_OK Then
 SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+Local $text = _StringBetween($oHTTP.ResponseText, '"description":"', '"}')
+Setlog($text[0])
 Return
 EndIf
 EndIf
@@ -60701,11 +60684,14 @@ EndIf
 Local $telegram_urlAll = $TELEGRAM_URL & $g_sNotifyTGToken & $sCmd
 Local $Result = RunWait($g_sCurlPath & " -i -X POST " & $telegram_urlAll & ' -F chat_id="' & $g_sTGChatID & '" -F ' & $sCmd1 & '=@"' & $g_sProfilePath & "\" & $g_sProfileCurrentName & '\' & $Folder & '\' & $File & '"', "", @SW_HIDE)
 $oHTTP.Open("Post", $TELEGRAM_URL & $g_sNotifyTGToken & "/sendMessage", False)
+If(@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 $oHTTP.SetRequestHeader("Content-Type", "application/json; charset=ISO-8859-1,utf-8")
 Local $pPush = '{"text":"' & $body & '", "chat_id":' & $g_sTGChatID & '}}'
 $oHTTP.Send($pPush)
 If $oHTTP.Status <> $HTTP_STATUS_OK Then
 SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+Local $text = _StringBetween($oHTTP.ResponseText, '"description":"', '"}')
+Setlog($text[0])
 Return
 EndIf
 $oHTTP.WaitForResponse
@@ -60726,11 +60712,14 @@ SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Get", $TELEGRAM_URL & $g_sNotifyTGToken & "/getupdates", False)
+If(@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 $oHTTP.Send()
 $oHTTP.WaitForResponse
 Local $Result = $oHTTP.ResponseText
 If $oHTTP.Status <> 200 Then
 SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+Local $text = _StringBetween($oHTTP.ResponseText, '"description":"', '"}')
+Setlog($text[0])
 Return
 EndIf
 Local $chat_id = _StringBetween($Result, 'm":{"id":', ',"f')
@@ -60746,11 +60735,14 @@ If $g_bDebugSetlog Then SetDebugLog("Telegram $TGLastMessage:" & $TGLastMessage)
 EndIf
 If $g_bDebugSetlog Then SetDebugLog("Telegram $g_sTGLast_UID:" & $g_sTGLast_UID)
 $oHTTP.Open("Get", $TELEGRAM_URL & $g_sNotifyTGToken & "/getupdates?offset=" & $g_sTGLast_UID, False)
+If(@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 $oHTTP.Send()
 $oHTTP.WaitForResponse
 Local $Result2 = $oHTTP.ResponseText
 If $oHTTP.Status <> $HTTP_STATUS_OK Then
 SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+Local $text = _StringBetween($oHTTP.ResponseText, '"description":"', '"}')
+Setlog($text[0])
 Return
 EndIf
 If _IsInternet() < 1 Then
@@ -60777,11 +60769,13 @@ SetLog("Telegram Obj Error code: " & Hex(@error, 8), $COLOR_ERROR)
 Return
 EndIf
 $oHTTP.Open("Post", $TELEGRAM_URL & $g_sNotifyTGToken & "/sendMessage", False)
+If(@error) Then Return SetError(1, 0, "__HttpGet/Post Error")
 $oHTTP.SetRequestHeader("Content-Type", "application/json; charset=ISO-8859-1,utf-8")
 Local $TGPushMsg = '{"text": "' & $TGMsg & '", "chat_id":' & $g_sTGChatID & ', "reply_markup": {"keyboard": [["' & '\ud83d\udcf7 ' & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT", "SCREENSHOT") & '","' & '\ud83d\udd28 ' & GetTranslatedFileIni("MBR Func_Notify", "BUILDER", "BUILDER") & '","' & '\ud83d\udd30 ' & GetTranslatedFileIni("MBR Func_Notify", "SHIELD", "SHIELD") & '"],["' & '\ud83d\udcc8 ' & GetTranslatedFileIni("MBR Func_Notify", "STATS", "STATS") & '","' & '\ud83d\udcaa ' & GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS") & '","' & '\u2753 ' & GetTranslatedFileIni("MBR Func_Notify", "HELP", "HELP") & '"],["' & '\u25aa ' & GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP") & '","' & '\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START") & '","' & '\ud83d\udd00 ' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE") & '","' & '\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "RESUME", "RESUME") & '","' & '\ud83d\udd01 ' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART") & '"],["' & '\ud83d\udccb ' & GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG") & '","' & '\ud83c\udf04 ' & GetTranslatedFileIni("MBR Func_Notify", "LASTRAID", "LASTRAID") & '","' & '\ud83d\udcc4 ' & GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT", "LASTRAIDTXT") & '"],["' & '\u2705 ' & GetTranslatedFileIni("MBR Func_Notify", "ATTACK ON ", "ATTACK ON") & '","' & '\u274C ' & GetTranslatedFileIni("MBR Func_Notify", "ATTACK OFF", "ATTACK OFF") & '"],["' & '\ud83d\udca4 ' & GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNATE") & '","' & '\u26a1 ' & GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN") & '","' & '\ud83d\udd06 ' & GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY") & '"]],"one_time_keyboard": false,"resize_keyboard":true}}'
 $oHTTP.Send($TGPushMsg)
 If $oHTTP.Status <> $HTTP_STATUS_OK Then
 SetLog("Telegram status is: " & $oHTTP.Status, $COLOR_ERROR)
+Setlog(_StringBetween($oHTTP.ResponseText, '"description":"', '"}'))
 Return
 EndIf
 $g_iTGLastRemote = $g_sTGLast_UID
@@ -61797,7 +61791,7 @@ SetLog("Skipping the Heroes Upgrade!")
 Return
 EndIf
 SetLog("Upgrading Heroes", $COLOR_INFO)
-If $g_bUpgradeQueenEnable Then
+If $g_bUpgradeQueenEnable And BitAND($g_iHeroUpgradingBit, $eHeroQueen) <> $eHeroQueen Then
 If Not getBuilderCount() Then Return
 If _Sleep($DELAYRESPOND) Then Return
 If $g_iFreeBuilderCount < 1 +($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
@@ -61807,7 +61801,7 @@ EndIf
 QueenUpgrade()
 If _Sleep($DELAYUPGRADEHERO1) Then Return
 EndIf
-If $g_bUpgradeKingEnable Then
+If $g_bUpgradeKingEnable And BitAND($g_iHeroUpgradingBit, $eHeroKing) <> $eHeroKing Then
 If Not getBuilderCount() Then Return
 If _Sleep($DELAYRESPOND) Then Return
 If $g_iFreeBuilderCount < 1 +($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
@@ -61817,7 +61811,7 @@ EndIf
 KingUpgrade()
 If _Sleep($DELAYUPGRADEHERO1) Then Return
 EndIf
-If $g_bUpgradeWardenEnable Then
+If $g_bUpgradeWardenEnable And BitAND($g_iHeroUpgradingBit, $eHeroWarden) <> $eHeroWarden Then
 If Not getBuilderCount() Then Return
 If _Sleep($DELAYRESPOND) Then Return
 If $g_iFreeBuilderCount < 1 +($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
@@ -62114,6 +62108,23 @@ Else
 SetLog("Upgrade Warden error finding button", $COLOR_ERROR)
 EndIf
 ClickP($aAway, 2, 0, "#0312")
+EndFunc
+Func ReservedBuildersForHeroes()
+Local $iUsedBuildersForHeroes = Number(BitAND($g_iHeroUpgradingBit, $eHeroKing) = $eHeroKing ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroQueen) = $eHeroQueen ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroWarden) = $eHeroWarden ? 1 : 0)
+If $g_bDebugSetlog Then
+If $iUsedBuildersForHeroes = 1 Then
+SetLog($iUsedBuildersForHeroes & " builder is upgrading your heroes.", $COLOR_INFO)
+Else
+SetLog($iUsedBuildersForHeroes & " builders are upgrading your heroes.", $COLOR_INFO)
+EndIf
+EndIf
+Local $iFreeBuildersReservedForHeroes = _Max($g_iHeroReservedBuilder - $iUsedBuildersForHeroes, 0)
+If $iFreeBuildersReservedForHeroes = 1 Then
+SetLog($iFreeBuildersReservedForHeroes & " free builder is reserved for heroes.", $COLOR_INFO)
+Else
+SetLog($iFreeBuildersReservedForHeroes & " free builders are reserved for heroes.", $COLOR_INFO)
+EndIf
+Return $iFreeBuildersReservedForHeroes
 EndFunc
 Func StarBonus()
 If $g_bDebugSetlog Then SetDebugLog("Begin Star Bonus window check", $COLOR_DEBUG1)
@@ -62743,7 +62754,7 @@ If IsWaitforSpellsActive() Then getArmySpellTime()
 $g_aiTimeTrain[2] = 0
 If IsWaitforHeroesActive() Then CheckWaitHero()
 ClickP($aAway, 1, 0, "#0000")
-$iWaitTime = _ArrayMax($g_aiTimeTrain)
+$iWaitTime = _ArrayMax($g_aiTimeTrain, 1, 0, 2)
 If $bReachAttackLimit And $iWaitTime <= 0 Then
 SetLog("This account has attacked twice in a row, switching to another account", $COLOR_INFO)
 SetSwitchAccLog(" - Reach attack limit: " & $g_aiAttackedCountAcc[$g_iCurAccount] - $g_aiAttackedCountSwitch[$g_iCurAccount])
@@ -63256,7 +63267,7 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False)
 Local $abAccountNo = AccountNoActive()
 Local $iMinRemainTrain
 If $bExcludeCurrent = False Then
-If $g_abPBActive[$g_iCurAccount] = False Then $g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain)
+If $g_abPBActive[$g_iCurAccount] = False Then $g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain, 1, 0, 2)
 $g_aiTimerStart[$g_iCurAccount] = TimerInit()
 EndIf
 SetSwitchAccLog(" - Train times: ")
@@ -65399,10 +65410,13 @@ GUICtrlSetState($g_hChkUpgradeWarden, $g_bUpgradeWardenEnable ? $GUI_CHECKED : $
 chkUpgradeWarden()
 chkDBWardenWait()
 chkABWardenWait()
+_GUICtrlComboBox_SetCurSel($g_hCmbHeroReservedBuilder, $g_iHeroReservedBuilder)
+cmbHeroReservedBuilder()
 Case "Save"
 $g_bUpgradeKingEnable =(GUICtrlRead($g_hChkUpgradeKing) = $GUI_CHECKED)
 $g_bUpgradeQueenEnable =(GUICtrlRead($g_hChkUpgradeQueen) = $GUI_CHECKED)
 $g_bUpgradeWardenEnable =(GUICtrlRead($g_hChkUpgradeWarden) = $GUI_CHECKED)
+$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
 EndSwitch
 EndFunc
 Func ApplyConfig_600_16($TypeReadSave)
@@ -67346,6 +67360,7 @@ Func ReadConfig_600_15()
 IniReadS($g_bUpgradeKingEnable, $g_sProfileConfigPath, "upgrade", "UpgradeKing", False, "Bool")
 IniReadS($g_bUpgradeQueenEnable, $g_sProfileConfigPath, "upgrade", "UpgradeQueen", False, "Bool")
 IniReadS($g_bUpgradeWardenEnable, $g_sProfileConfigPath, "upgrade", "UpgradeWarden", False, "Bool")
+IniReadS($g_iHeroReservedBuilder, $g_sProfileConfigPath, "upgrade", "HeroReservedBuilder", 0, "int")
 EndFunc
 Func ReadConfig_600_16()
 IniReadS($g_iUpgradeMinGold, $g_sProfileConfigPath, "upgrade", "minupgrgold", 100000, "int")
@@ -68314,6 +68329,7 @@ ApplyConfig_600_15(GetApplyConfigSaveAction())
 _Ini_Add("upgrade", "UpgradeKing", $g_bUpgradeKingEnable ? 1 : 0)
 _Ini_Add("upgrade", "UpgradeQueen", $g_bUpgradeQueenEnable ? 1 : 0)
 _Ini_Add("upgrade", "UpgradeWarden", $g_bUpgradeWardenEnable ? 1 : 0)
+_Ini_Add("upgrade", "HeroReservedBuilder", $g_iHeroReservedBuilder)
 EndFunc
 Func SaveConfig_600_16()
 _Ini_Add("upgrade", "minupgrgold", $g_iUpgradeMinGold)
@@ -70937,7 +70953,6 @@ SetLog(GetTranslatedFileIni("MBR GUI Design - Loading", "Msg_Android_instance_05
 EndIf
 DisableProcessWindowsGhosting()
 UpdateMainGUI()
-CheckClickAdbNewVersions()
 EndFunc
 Func MainLoop($bCheckPrerequisitesOK = True)
 Local $iStartDelay = 0
@@ -70949,6 +70964,7 @@ $g_iBotAction = $eBotStart
 If $g_bBotLaunchOption_HideAndroid Then $g_bIsHidden = True
 EndIf
 Local $hStarttime = _Timer_Init()
+CheckEmuNewVersions()
 NotifyGetLastMessageFromTelegram()
 $g_iTGLastRemote = $g_sTGLast_UID
 While 1

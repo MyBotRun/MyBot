@@ -100,10 +100,12 @@ Func GetMEmuAdbPath()
 EndFunc   ;==>GetMEmuAdbPath
 
 Func GetMEmuBackgroundMode()
+
 	Local $iDirectX = $g_iAndroidBackgroundModeDirectX
 	Local $iOpenGL = $g_iAndroidBackgroundModeOpenGL
 	; hack for super strange Windows Fall Creator Update with OpenGL and DirectX problems
-	If @OSBuild >= 16299 Then
+	; doesn't have this issue with OSBuild : 17134
+	If @OSBuild >= 16299 And @OSBuild < 17134 Then
 		SetDebugLog("DirectX/OpenGL Fix applied for Windows Build 16299")
 		$iDirectX = $g_iAndroidBackgroundModeOpenGL
 		$iOpenGL = $g_iAndroidBackgroundModeDirectX
@@ -422,18 +424,3 @@ Func UpdateMEmuWindowState()
 
 	Return $bChanged
 EndFunc   ;==>UpdateMEmuWindowState
-
-Func CheckClickAdbNewVersions()
-	If $g_sAndroidEmulator <> "MEmu" Then Return
-	If $g_bAndroidAdbClickEnabled And $g_bAndroidAdbClick Then Return
-
-	Local $MEmuVersion = GetVersionNormalized($g_sAndroidVersion)
-	Local $NewMemu = GetVersionNormalized("5.3.2")
-
-	If $MEmuVersion >= $NewMemu And AndroidAdbClickSupported() Then
-		SetDebugLog(" - Using ADB clicks for MEmu v" & $g_sAndroidVersion)
-		; Enable Android ADB mouse click
-		$g_bAndroidAdbClickEnabled = True
-		$g_bAndroidAdbClick = True
-	EndIf
-EndFunc   ;==>CheckClickAdbNewVersions

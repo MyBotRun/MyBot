@@ -49,6 +49,7 @@ Func getArmySiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 	Local $sSiegeName = ""
 	Local $iSiegeIndex = -1
 	Local $aCurrentTroopsEmpty[$eSiegeMachineCount] = [0, 0] ; Local Copy to reset Siege Machine Array
+	$g_aiCurrentSiegeMachines = $aCurrentTroopsEmpty ; Reset Current Siege Machine Array
 
 	; Get Siege Capacities
 	Local $sSiegeInfo = getArmyCampCap(758, 164, $bNeedCapture) ; OCR read Siege built and total
@@ -61,7 +62,6 @@ Func getArmySiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		Return
 	EndIf
 
-	$g_aiCurrentSiegeMachines = $aCurrentTroopsEmpty ; Reset Current Siege Machine Array
 	If UBound($aCurrentSiegeMachines, 1) >= 1 Then
 		For $i = 0 To UBound($aCurrentSiegeMachines, 1) - 1 ; Loop through found Troops
 			$aTempSiegeArray = $aCurrentSiegeMachines[$i] ; Declare Array to Temp Array

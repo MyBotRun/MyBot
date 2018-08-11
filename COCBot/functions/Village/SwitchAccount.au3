@@ -132,7 +132,7 @@ Func CheckSwitchAcc()
 
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 
-		$iWaitTime = _ArrayMax($g_aiTimeTrain)
+		$iWaitTime = _ArrayMax($g_aiTimeTrain, 1, 0, 2) ; Not check Siege Machine time: $g_aiTimeTrain[3]
 		If $bReachAttackLimit And $iWaitTime <= 0 Then
 			SetLog("This account has attacked twice in a row, switching to another account", $COLOR_INFO)
 			SetSwitchAccLog(" - Reach attack limit: " & $g_aiAttackedCountAcc[$g_iCurAccount] - $g_aiAttackedCountSwitch[$g_iCurAccount])
@@ -766,7 +766,7 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False) ; Return the minimum rem
 	Local $abAccountNo = AccountNoActive()
 	Local $iMinRemainTrain
 	If $bExcludeCurrent = False Then
-		If $g_abPBActive[$g_iCurAccount] = False Then $g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain) ; remaintraintime of current account - in minutes If not PBT
+		If $g_abPBActive[$g_iCurAccount] = False Then $g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain, 1, 0, 2) ; remaintraintime of current account - in minutes If not PBT
 		$g_aiTimerStart[$g_iCurAccount] = TimerInit() ; start counting elapse of training time of current account
 	EndIf
 

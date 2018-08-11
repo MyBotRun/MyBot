@@ -371,7 +371,7 @@ Func ExtendedAttackBarCheck($aLastTroop1stPage, $Remaining)
 					If _Sleep(20) Then Return ; Pause function
 					If UBound($Slottemp) = 2 Then
 						SetDebugLog("OCR : " & $Slottemp[0] & "|SLOT: " & $Slottemp[1], $COLOR_DEBUG) ;Debug
-						If $aResult[$i][0] = "Castle" Or $aResult[$i][0] = "King" Or $aResult[$i][0] = "Queen" Or $aResult[$i][0] = "Warden" Then
+						If $aResult[$i][0] = "Castle" Or $aResult[$i][0] = "King" Or $aResult[$i][0] = "Queen" Or $aResult[$i][0] = "Warden" Or $aResult[$i][0] = "WallW" Or $aResult[$i][0] = "BattleB" Then
 							$aResult[$i][3] = 1
 						Else
 							$aResult[$i][3] = Number(getTroopCountSmall(Number($Slottemp[0]), 640)) ; For small Numbers

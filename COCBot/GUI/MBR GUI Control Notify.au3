@@ -63,14 +63,6 @@ Func chkPBTGenabled()
 	EndIf
 EndFunc   ;==>chkPBTGenabled
 
-Func NotifyHelp()
-	If FileExists(@ScriptDir & "\Help\NotifyHelp_" & $g_sLanguage & ".mht") Then
-		ShellExecute(@ScriptDir & "\Help\NotifyHelp_" & $g_sLanguage & ".mht")
-	ElseIf FileExists(@ScriptDir & "\Help\NotifyHelp_English.mht") Then
-		ShellExecute(@ScriptDir & "\Help\NotifyHelp_English.mht")
-	EndIf
-EndFunc	;==>NotifyHelp
-
 Func chkNotifyHours()
 	Local $b = GUICtrlRead($g_hChkNotifyOnlyHours) = $GUI_CHECKED
 	For $i = 0 To 23

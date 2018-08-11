@@ -3769,3 +3769,26 @@ Func Ls_l_ToArray($sOutput)
 	Next
 	Return $aResult
 EndFunc   ;==>Ls_l_ToArray
+
+Func CheckEmuNewVersions()
+
+	Local $Version = GetVersionNormalized($g_sAndroidVersion)
+	Local $NewVersion = ""
+	Local $HelpLink = "Please visit MyBot Forum!"
+
+	Switch $g_sAndroidEmulator
+		Case "BlueStacks2"
+			$NewVersion = GetVersionNormalized("3.50.0.0") ; tested with 2.56.77.1326
+		Case "MEmu"
+			$NewVersion = GetVersionNormalized("5.2.3.0")
+		Case "Nox"
+			$NewVersion = GetVersionNormalized("6.2.1.1")
+		Case Else
+			$NewVersion = GetVersionNormalized("1.1.0.0")
+	EndSwitch
+
+	If $Version > $NewVersion Then
+		Setlog("You are using an unsupported " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ")!", $COLOR_ERROR)
+		Setlog($HelpLink, $COLOR_INFO)
+	EndIf
+EndFunc   ;==>CheckClickAdbNewVersions
