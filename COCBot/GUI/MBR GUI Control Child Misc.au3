@@ -561,10 +561,19 @@ EndFunc   ;==>chkTrophyHeroes
 
 Func ChkCollect()
 	If GUICtrlRead($g_hChkCollect) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hChkCollectCartFirst, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkTreasuryCollect, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtCollectGold, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtCollectElixir, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtCollectDark, $GUI_ENABLE)
 	Else
+		GUICtrlSetState($g_hChkCollectCartFirst, $GUI_UNCHECKED)
+		GUICtrlSetState($g_hChkCollectCartFirst, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkTreasuryCollect, $GUI_UNCHECKED)
 		GUICtrlSetState($g_hChkTreasuryCollect, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtCollectGold, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtCollectElixir, $GUI_DISABLE)
+		GUICtrlSetState($g_hTxtCollectDark, $GUI_DISABLE)
 	EndIf
 	ChkTreasuryCollect()
 EndFunc   ;==>ChkCollect
@@ -593,7 +602,7 @@ EndFunc   ;==>chkStartClockTowerBoost
 
 Func chkActivateClangames()
 	If GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hChkClanGamesOnly, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkClanGames60, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesAir, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesGround, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesMisc, $GUI_ENABLE)
@@ -611,7 +620,7 @@ Func chkActivateClangames()
 		GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesDebug, $GUI_ENABLE)
 	Else
-		GUICtrlSetState($g_hChkClanGamesOnly, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGames60, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesAir, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesGround, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesMisc, $GUI_DISABLE)

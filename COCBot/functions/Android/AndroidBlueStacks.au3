@@ -311,19 +311,8 @@ Func InitBlueStacks2($bCheckOnly = False)
 
 	If $bInstalled And Not $bCheckOnly Then
 		$__VBoxManage_Path = $__BlueStacks_Path & "BstkVMMgr.exe"
-		; Also required for BS3 2.55.70.1203
-		; 2.56.75.1279 doesn't need any compensation!!
-		Local $bs3 = GetVersionNormalized("2.50.0.0")
-		Local $bs3WithFrame = GetVersionNormalized("2.56.75")
-		local $bsNow = GetVersionNormalized($__BlueStacks_Version)
-		If StringInStr($__BlueStacks_Version, "4.") = 1 Or (StringInStr($__BlueStacks_Version, "2.") = 1 And $bsNow >= $bs3 And $bsNow < $bs3WithFrame) Then
-			; Mouse clicks in Window are off by -13 on Y-axis, so set special value now
-			Local $aOff = [0, 13]
-			If $g_aiMouseOffsetWindowOnly[0] <> $aOff[0] Or $g_aiMouseOffsetWindowOnly[1] <> $aOff[1] Then
-				$g_aiMouseOffsetWindowOnly = $aOff
-				SetDebugLog("BlueStacks " & $__BlueStacks_Version & ": Adjust mouse clicks when running undocked by: " & $aOff[0] & ", " & $aOff[1])
-			EndIf
-		EndIf
+
+		CheckBlueStacksVersionMod()
 
 		; read ADB port
 		Local $BstAdbPort = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config\", "BstAdbPort")
@@ -337,6 +326,52 @@ Func InitBlueStacks2($bCheckOnly = False)
 
 	Return $bInstalled
 EndFunc   ;==>InitBlueStacks2
+
+; Will Check all the differences between versions
+Func CheckBlueStacksVersionMod()
+	local $bsNow = GetVersionNormalized($__BlueStacks_Version)
+	Local $aOff = [0, 13]
+	; < 2.6.105.x - BS2
+	; Undocked -> Zoomout [OK] , Mouse[OK]
+	; Docked -> Zoomout [OK] , Mouse[OK]
+	; $__BlueStacks2Version_2_5_or_later = False
+
+	Local $bs3 = GetVersionNormalized("2.50.0.0")
+	; 2.50.53.x - BS3
+	; Undocked -> Zoomout [OK] , Mouse[Need compensation]
+	; Docked -> Zoomout [OK] , Mouse[OK]
+	; $__BlueStacks2Version_2_5_or_later = False
+
+	Local $bs3WithFrame = GetVersionNormalized("2.56.75")
+	; 2.56.75 excelent version - 2.56.77 - BS3
+	; Undocked -> Zoomout [NO*] , Mouse[OK] ; *$__BlueStacks2Version_2_5_or_later = True
+	; Docked -> Zoomout [OK] , Mouse[OK]
+
+	Local $bs3NNoFrame = GetVersionNormalized("4.0.0.0")
+	; 4.2.1.9724 - New N version
+	; Undocked -> Zoomout [OK] , Mouse[Need compensation]
+	; Docked -> Zoomout [OK] , Mouse[OK]
+
+	Local $bs3NWithFrame = GetVersionNormalized("4.3.28.0")
+	; 4.3.28.4020 Last version
+	; Undocked -> Zoomout [NO*] , Mouse[OK] ; *$__BlueStacks2Version_2_5_or_later = True
+	; Docked -> Zoomout [OK] , Mouse[OK]
+
+	If ($bsNow >= $bs3 And $bsNow < $bs3WithFrame) Or ($bsNow > $bs3NNoFrame And $bsNow < $bs3NWithFrame) Then
+		; Mouse clicks in Window are off by -13 on Y-axis, so set special value now
+		If $g_aiMouseOffsetWindowOnly[0] <> $aOff[0] Or $g_aiMouseOffsetWindowOnly[1] <> $aOff[1] Then
+			$g_aiMouseOffsetWindowOnly = $aOff
+			SetDebugLog("BlueStacks " & $__BlueStacks_Version & ": Adjust mouse clicks when running undocked by: " & $aOff[0] & ", " & $aOff[1])
+		EndIf
+	EndIf
+
+	;Zoomout Function when is not Docked
+	If $bsNow >= $bs3NWithFrame Or ($bsNow >= $bs3WithFrame And $bsNow < $bs3NNoFrame) Then
+		SetDebugLog("BlueStacks " & $__BlueStacks_Version & " adjustment on ZoomOut")
+		$__BlueStacks2Version_2_5_or_later = True
+	EndIf
+
+EndFunc
 
 Func GetBlueStacksBackgroundMode()
 	; Only DirectX-Mode is supported for Background Mode

@@ -15,7 +15,7 @@
 #include-once
 
 Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, _
-	$g_hTxtAndroidRebootHours = 0, $g_hChkAndroidCloseWithBot = 0
+	$g_hTxtAndroidRebootHours = 0, $g_hChkAndroidCloseWithBot = 0 , $g_hBtnAndroidEnableTouch = 0 , $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0
 
 Func CreateBotAndroid()
 
@@ -75,7 +75,7 @@ Func CreateBotAndroid()
 	$y += $h + 5
 	$y2 = $y
 	$w = 240
-	$h = 80
+	$h = 120
 	GUICtrlCreateGroup(GetTranslatedFileIni("Android Control", "Group_03", "Android Control"), $x - 20, $y - 20, $w, $h)
 	$y -= 2
 		$g_hBtnAndroidAdbShell = GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnAndroidAdbShell", "Start ADB Shell in new Console Window"), $x - 8, $y, 220, 25)
@@ -85,6 +85,11 @@ Func CreateBotAndroid()
 			GUICtrlSetOnEvent(-1, "AndroidHomeButton")
 		$g_hBtnAndroidBack = GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnAndroidBack", "Send Back"), $x - 8 + 115, $y, 105, 25)
 			GUICtrlSetOnEvent(-1, "AndroidBackButton")
+	$y += 30
+		$g_hBtnAndroidEnableTouch = GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "EnableShowTouchs", "Enable Touchs"), $x - 8, $y, 105, 25)
+			GUICtrlSetOnEvent(-1, "EnableShowTouchs")
+		$g_hBtnAndroidDisableTouch = GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "DisableShowTouchs", "Disable Touchs"), $x - 8 + 115, $y, 105, 25)
+			GUICtrlSetOnEvent(-1, "DisableShowTouchs")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	;$x = 25 + $g_iSizeWGrpTab2 - 2 - 10 - $w
@@ -103,8 +108,8 @@ Func CreateBotAndroid()
 
 	$y += 130
 	$x -= 60
-		GUICtrlCreateLabel("Command line Help ?", $x - 20, $y - 20, 220, 24, $SS_RIGHT)
-			GUICtrlSetOnEvent(-1, "ShowCommandLineHelp")
+		$g_lblHelpBot = GUICtrlCreateLabel("Command line Help ?", $x - 20, $y - 20, 220, 24, $SS_RIGHT)
+			GUICtrlSetOnEvent($g_lblHelpBot, "ShowCommandLineHelp")
 			GUICtrlSetCursor(-1, 0)
 			GUICtrlSetFont(-1, 8.5, $FW_BOLD)
 			_GUICtrlSetTip(-1, "Click here to get help about command line and option for MyBot.run!")

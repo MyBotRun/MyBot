@@ -421,19 +421,20 @@ EndFunc   ;==>WardenUpgrade
 
 Func ReservedBuildersForHeroes()
 	Local $iUsedBuildersForHeroes = Number(BitAND($g_iHeroUpgradingBit, $eHeroKing) = $eHeroKing ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroQueen) = $eHeroQueen ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroWarden) = $eHeroWarden ? 1 : 0)
-	If $g_bDebugSetlog Then
-		If $iUsedBuildersForHeroes = 1 Then 
-			SetLog($iUsedBuildersForHeroes & " builder is upgrading your heroes.", $COLOR_INFO)
-		Else
-			SetLog($iUsedBuildersForHeroes & " builders are upgrading your heroes.", $COLOR_INFO)
-		EndIf
+	If $iUsedBuildersForHeroes = 1 Then 
+		SetLog($iUsedBuildersForHeroes & " builder is upgrading your heroes.", $COLOR_INFO)
+	Else
+		SetLog($iUsedBuildersForHeroes & " builders are upgrading your heroes.", $COLOR_INFO)
 	EndIf
 	
-	Local $iFreeBuildersReservedForHeroes = _Max($g_iHeroReservedBuilder - $iUsedBuildersForHeroes, 0)
+	Local $iFreeBuildersReservedForHeroes = _Max(Number($g_iHeroReservedBuilder) - $iUsedBuildersForHeroes, 0)
 	If $iFreeBuildersReservedForHeroes = 1 Then 
 		SetLog($iFreeBuildersReservedForHeroes & " free builder is reserved for heroes.", $COLOR_INFO)
 	Else
 		SetLog($iFreeBuildersReservedForHeroes & " free builders are reserved for heroes.", $COLOR_INFO)
 	EndIf
+
+	If $g_bDebugSetlog Then SetLog("HeroBuilders R|Rn|W|F: " & $g_iHeroReservedBuilder & "|" & Number($g_iHeroReservedBuilder) & "|" & $iUsedBuildersForHeroes & "|" & $iFreeBuildersReservedForHeroes, $COLOR_DEBUG)
+
 	Return $iFreeBuildersReservedForHeroes
 EndFunc   ;==>ReservedBuildersForHeroes()

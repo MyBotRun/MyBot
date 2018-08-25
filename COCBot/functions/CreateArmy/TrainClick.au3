@@ -29,7 +29,7 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 		If $iTimes <> 1 Then
 			KeepClicks()
 			; Debug
-			If $g_bDebugClick Or $g_bDebugSetlogTrain Then SetLog("KeepClicks: " & KeepClicks() , $COLOR_DEBUG)
+			If $g_bDebugClick Or $g_bDebugSetlogTrain Then SetLog("KeepClicks: " & KeepClicks(), $COLOR_DEBUG)
 			; FastCaptureRegion = True when is set to use WinAPI+ BackgroundMode
 			If FastCaptureRegion() Then
 				; Will make a LOOP for each troop will check a color position ( gray[i] )
@@ -88,6 +88,6 @@ Func TrainClick($iX, $iY, $iTimes, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops
 	EndIf
 EndFunc   ;==>TrainClick
 
-Func TrainClickP($aPoint, $iHowOften, $iSpeed, $aWatchSpot, $sDebugTxt, $TypeTroops)
-	Return TrainClick($aPoint[0], $aPoint[1], $iHowOften, $iSpeed, $aWatchSpot, $sDebugTxt, $TypeTroops)
+Func TrainClickP($aPoint, $iHowOften, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops)
+	Return TrainClick($aPoint[0], $aPoint[1], $iHowOften, $iSpeed, $aWatchSpot, $sdebugtxt, $TypeTroops)
 EndFunc   ;==>TrainClickP

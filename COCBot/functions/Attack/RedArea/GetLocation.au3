@@ -64,6 +64,9 @@ Func GetLocationDarkElixir()
 	Return GetListPixel($aEndResult)
 EndFunc   ;==>GetLocationDarkElixir
 
+; ###############################################################################################################
+
+; USES OLD OPENCV DETECTION
 Func GetLocationTownHall()
 	Local $aEndResult = DllCall($g_hLibMyBot, "str", "getLocationTownHall", "ptr", $g_hHBitmap2)
 	If $g_bDebugBuildingPos Then SetLog("#*# GetLocationTownHall: " & $aEndResult[0], $COLOR_DEBUG)
@@ -72,6 +75,7 @@ Func GetLocationTownHall()
 	Return GetListPixel($aEndResult[0])
 EndFunc   ;==>GetLocationTownHall
 
+; USES OLD OPENCV DETECTION
 Func GetLocationDarkElixirStorageWithLevel()
 	Local $aEndResult = DllCall($g_hLibMyBot, "str", "getLocationDarkElixirStorageWithLevel", "ptr", $g_hHBitmap2)
 	If $g_bDebugBuildingPos Then SetLog("#*# GetLocationDarkElixirStorageWithLevel: " & $aEndResult[0], $COLOR_DEBUG)
@@ -80,6 +84,7 @@ Func GetLocationDarkElixirStorageWithLevel()
 	Return $aEndResult[0]
 EndFunc   ;==>GetLocationDarkElixirStorageWithLevel
 
+; USES OLD OPENCV DETECTION
 Func GetLocationDarkElixirStorage()
 	Local $aEndResult = DllCall($g_hLibMyBot, "str", "getLocationDarkElixirStorage", "ptr", $g_hHBitmap2)
 	If $g_bDebugBuildingPos Then SetLog("#*# GetLocationDarkElixirStorage: " & $aEndResult[0], $COLOR_DEBUG)
@@ -88,6 +93,7 @@ Func GetLocationDarkElixirStorage()
 	Return GetListPixel($aEndResult[0])
 EndFunc   ;==>GetLocationDarkElixirStorage
 
+; USES OLD OPENCV DETECTION
 Func GetLocationElixirWithLevel()
 	;Note about returned levels:
 	; Lvl 0 elixir collector from level 1 to level 4
@@ -113,6 +119,7 @@ Func GetLocationElixirWithLevel()
 	Return $aEndResult[0]
 EndFunc   ;==>GetLocationElixirWithLevel
 
+; USES OLD OPENCV DETECTION
 Func GetLocationMineWithLevel()
 	;Note about returned levels:
 	; Lvl 0 gold mine from level 1 to level 4

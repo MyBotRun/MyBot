@@ -66,6 +66,7 @@ Func GetPixelListDistance(Const $PixelArray, Const $iMaxAllowedPixelDistance)
 	Return $dTotal
 EndFunc   ;==>GetPixelListDistance
 
+; USES OLD OPENCV DETECTION
 Func GetLocationItem($functionName)
 	If $g_bDebugSetlog Or $g_bDebugBuildingPos Then
 		Local $hTimer = __TimerInit()

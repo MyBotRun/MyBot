@@ -561,52 +561,31 @@ Func btnTestSendText()
 EndFunc   ;==>btnTestSendText
 
 Func btnTestAttackBar()
-	BeginImageTest() ; get image for testing
-	Local $currentOCR = $g_bDebugOcr
-	Local $currentRunState = $g_bRunState
+	Local $bCurrentOCR = $g_bDebugOcr, $bCurrentRunState = $g_bRunState, $bCurrentDebugImage = $g_bDebugImageSave
+
 	_GUICtrlTab_ClickTab($g_hTabMain, 0)
 
 	$g_bDebugOcr = True
+    $g_bDebugImageSave = True
 	$g_bRunState = True
-	ForceCaptureRegion()
-	SetLog(_PadStringCenter(" Test Attack Bar begin (" & $g_sBotVersion & ")", 54, "="), $COLOR_INFO)
 
-	_CaptureRegion2(0, 571 + $g_iBottomOffsetY, 859, 671 + $g_iBottomOffsetY)
-	Local $result = DllCallMyBot("searchIdentifyTroop", "ptr", $g_hHBitmap2)
-	SetLog("DLL Troopsbar list: " & $result[0], $COLOR_DEBUG)
-	If $g_bForceClanCastleDetection Then $result[0] = FixClanCastle($result[0])
-	Local $aTroopDataList = StringSplit($result[0], "|")
-	Local $aTemp[12][3]
-	If $result[0] <> "" Then
-		For $i = 1 To $aTroopDataList[0]
-			Local $troopData = StringSplit($aTroopDataList[$i], "#", $STR_NOCOUNT)
-;~ 				$aTemp[Number($troopData[1])][0] = $troopData[0]
-;~ 				$aTemp[Number($troopData[1])][1] = Number($troopData[2])
-;~ 				SetLog("-" & NameOfTroop( $aTemp[$i][0]) & " pos  " & $aTemp[$i][0] & " qty " & $aTemp[$i][2])
-			If $troopData[0] = 17 Or $troopData[0] = 18 Or $troopData[0] = 19 Or $troopData[0] = 20 Then $troopData[2] = 1
-			SetLog("position: " & $troopData[1] & " | troop code: " & $troopData[0] & " troop name:" & NameOfTroop($troopData[0]) & " | qty: " & $troopData[2])
-		Next
+	SetLog(_PadStringCenter(" Begin AttackBar Detection", 54, "="), $COlOR_INFO)
+
+	Local $aAttackBar = StringSplit(AttackBarCheck(False, $DB, True), "|", $STR_NOCOUNT)
+	Local $aTroop
+
+	If IsArray($aAttackBar) And UBound($aAttackBar, 1) >= 1 Then
+	SetLog("Found " & UBound($aAttackBar, 1) & " Slots", $COlOR_SUCCESS)
+	For $i = 0 To UBound($aAttackBar, 1) - 1
+		$aTroop = StringSplit($aAttackBar[$i], "#", $STR_NOCOUNT)
+		If IsArray($aTroop) And UBound($aTroop, 1) = 3 Then SetLog("- Slot " & $aTroop[1] & ": " & $aTroop[2] & " " & GetTroopName($aTroop[0], $aTroop[2]), $COLOR_SUCCESS)
+	Next
 	EndIf
+	SetLog(_PadStringCenter(" End AttackBar Detection ", 54, "="), $COlOR_INFO)
 
-	;make snapshot start
-	_CaptureRegion(0, 630, $g_iDEFAULT_WIDTH)
-	Local $savefolder = $g_sProfileTempDebugPath
-	$savefolder = $g_sProfileTempDebugPath & "Test_Attack_Bar\"
-	DirCreate($savefolder)
-	Local $debugfile
-	Local $Date = @MDAY & "." & @MON & "." & @YEAR
-	Local $Time = @HOUR & "." & @MIN & "." & @SEC
-	$debugfile = "Test_Attack_Bar_" & $g_sBotVersion & "_" & $Date & "_" & $Time & ".png"
-	_GDIPlus_ImageSaveToFile($g_hBitmap, $savefolder & $debugfile)
-	;make snapshot end
-
-	EndImageTest() ; clear test image handle
-
-	SetLog(_PadStringCenter(" Test Attack Bar end ", 54, "="), $COLOR_INFO)
-	ShellExecute($savefolder)
-
-	$g_bDebugOcr = $currentOCR
-	$g_bRunState = $currentRunState
+	$g_bDebugOcr = $bCurrentOCR
+	$g_bDebugImageSave = $bCurrentDebugImage
+	$g_bRunState = $bCurrentRunState
 EndFunc   ;==>btnTestAttackBar
 
 

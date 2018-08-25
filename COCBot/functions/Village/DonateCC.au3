@@ -40,7 +40,7 @@ Func PrepareDonateCC()
 	Next
 	; Siege
 	For $i = $eSiegeWallWrecker To $eSiegeMachineCount - 1
-		$g_aiPrepDon[4] = BitOR($g_aiPrepDon[0], ($g_abChkDonateTroop[$eTroopCount - 1 + $g_iCustomDonateConfigs + $i] ? 1 : 0))
+		$g_aiPrepDon[4] = BitOR($g_aiPrepDon[4], ($g_abChkDonateTroop[$eTroopCount - 1 + $g_iCustomDonateConfigs + $i] ? 1 : 0))
 	Next
 
 	$g_iActiveDonate = BitOR($g_aiPrepDon[0], $g_aiPrepDon[1], $g_aiPrepDon[2], $g_aiPrepDon[3], $g_aiPrepDon[4])
@@ -230,29 +230,30 @@ Func DonateCC($bCheckForNewMsg = False)
 						SetLog("Chat Request: " & $ClanString)
 					EndIf
 
-					Local $Checked = False
-
-					; checking if Chat Request matches any donate keyword. If match, proceed with further steps. If not,
-					For $i = 0 To UBound($g_abChkDonateTroop) - 1 ; $eTroopCount (20) + $g_iCustomDonateConfigs (4) + $eSiegeMachineCount (2) - 1 = 26 - 1 = 25
-						If $g_abChkDonateTroop[$i] Then ; checking Troops, Custom & SiegeMachine
-							If $i < $eTroopCount + $g_iCustomDonateConfigs Then ; 0 - 23 (20 troops + 4 combos of custom donate)
-								If $g_bDebugSetlog Then SetDebugLog("Troop: [" & $i & "] checking!", $COLOR_DEBUG)
-								If CheckDonateTroop($i >= $eTroopCount ? 99 : $i, $g_asTxtDonateTroop[$i], $g_asTxtBlacklistTroop[$i], $ClanString) Then $Checked = True
-							Else
-								If $g_bDebugSetlog Then SetDebugLog("Siege: [" & $i - $eTroopCount - $g_iCustomDonateConfigs & "] checking!", $COLOR_DEBUG)
-								If CheckDonateSiege($i - $eTroopCount - $g_iCustomDonateConfigs, $g_asTxtDonateTroop[$i], $g_asTxtBlacklistTroop[$i], $ClanString) Then $Checked = True
+					; checking if Chat Request matches any donate keyword. If match, proceed with further steps.
+					If Not $bDonateAllTroop And Not $bDonateAllSpell Then
+						Local $Checked = False
+						For $i = 0 To UBound($g_abChkDonateTroop) - 1 ; $eTroopCount (20) + $g_iCustomDonateConfigs (4) + $eSiegeMachineCount (2) - 1 = 26 - 1 = 25
+							If $g_abChkDonateTroop[$i] Then ; checking Troops, Custom & SiegeMachine
+								If $i < $eTroopCount + $g_iCustomDonateConfigs Then ; 0 - 23 (20 troops + 4 combos of custom donate)
+									If $g_bDebugSetlog Then SetDebugLog("Troop: [" & $i & "] checking!", $COLOR_DEBUG)
+									If CheckDonateTroop($i >= $eTroopCount ? 99 : $i, $g_asTxtDonateTroop[$i], $g_asTxtBlacklistTroop[$i], $ClanString) Then $Checked = True
+								Else
+									If $g_bDebugSetlog Then SetDebugLog("Siege: [" & $i - $eTroopCount - $g_iCustomDonateConfigs & "] checking!", $COLOR_DEBUG)
+									If CheckDonateSiege($i - $eTroopCount - $g_iCustomDonateConfigs, $g_asTxtDonateTroop[$i], $g_asTxtBlacklistTroop[$i], $ClanString) Then $Checked = True
+								EndIf
 							EndIf
+							If $Checked = False And $i < UBound($g_abChkDonateSpell) And $g_abChkDonateSpell[$i] And CheckDonateSpell($i, $g_asTxtDonateSpell[$i], $g_asTxtBlacklistSpell[$i], $ClanString) Then $Checked = True
+							If $Checked Then ExitLoop
+						Next
+						If $Checked = False Then
+							SetDebugLog("Chat Request does not match any donate keyword, go to next request")
+							$bDonate = True
+							$y = $g_aiDonatePixel[1] + 50
+							ContinueLoop
 						EndIf
-						If $Checked = False AND $i < UBound($g_abChkDonateSpell) And $g_abChkDonateSpell[$i] And CheckDonateSpell($i, $g_asTxtDonateSpell[$i], $g_asTxtBlacklistSpell[$i], $ClanString) Then $Checked = True
-						If $Checked Then ExitLoop
-					Next
-					If $Checked = False Then
-						SetDebugLog("Chat Request does not match any donate keyword, go to next request")
-						$bDonate = True
-						$y = $g_aiDonatePixel[1] + 50
-						ContinueLoop
+						SetDebugLog("Chat Request matches a donate keyword, proceed with donating")
 					EndIf
-					SetDebugLog("Chat Request matches a donate keyword, proceed with donating")
 				EndIf
 			ElseIf (($bDonateAllTroop And $bDonateAllSpell And Not $bDonateSiege) Or ($bDonateAllTroop And (Not $bDonateSpell Or Not $bDonateSiege)) Or ((Not $bDonateTroop Or Not $bDonateSiege) And $bDonateAllSpell)) Then
 				SetLog("Skip reading chat requests. Donate all is enabled!", $COLOR_ACTION)
@@ -269,18 +270,24 @@ Func DonateCC($bCheckForNewMsg = False)
 				SetLog("Clan Castle troops are full, skip troop donation...", $COLOR_ACTION)
 				$g_bSkipDonTroops = True
 			EndIf
-			If $g_iTotalDonateSpellCapacity = 0 Then
+			If $g_iCurrentSpells = 0 Then
+				SetLog("No spells available, skip spell donation...", $COLOR_ORANGE)
+				$g_bSkipDonSpells = True
+			ElseIf $g_iTotalDonateSpellCapacity = 0 Then
 				SetLog("Clan Castle spells are full, skip spell donation...", $COLOR_ACTION)
 				$g_bSkipDonSpells = True
 			ElseIf $g_iTotalDonateSpellCapacity = -1 Then
 				; no message, this CC has no Spell capability
 				If $g_bDebugSetlog Then SetDebugLog("This CC cannot accept spells, skip spell donation...", $COLOR_DEBUG)
 				$g_bSkipDonSpells = True
-			ElseIf $g_iCurrentSpells = 0 Then
-				SetLog("No spells available, skip spell donation...", $COLOR_ORANGE)
-				$g_bSkipDonSpells = True
 			EndIf
-			If $g_iTotalDonateSiegeMachineCapacity = -1 Then
+			If Not $bDonateSiege Then
+				SetLog("Siege donation is not enabled, skip siege donation...", $COLOR_ACTION)
+				$g_bSkipDonSiege = True
+			ElseIf $g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 0 Then
+				SetLog("No siege machines available, skip siege donation...", $COLOR_ORANGE)
+				$g_bSkipDonSiege = True
+			ElseIf $g_iTotalDonateSiegeMachineCapacity = -1 Then
 				SetLog("This CC cannot accept Siege, skip Siege donation...", $COLOR_ACTION)
 				$g_bSkipDonSiege = True
 			ElseIf $g_iTotalDonateSiegeMachineCapacity = 0 Then
@@ -1094,17 +1101,23 @@ Func RemainingCCcapacity()
 	$g_iTotalDonateSpellCapacity = -1
 	$g_iTotalDonateSiegeMachineCapacity = -1
 
+	; Skip reading unnecessary items
+	Local $bDonateSpell = (($g_aiPrepDon[2] = 1) Or ($g_aiPrepDon[3] = 1)) And $g_iCurrentSpells > 0
+	Local $bDonateSiege = ($g_aiPrepDon[4] = 1) And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0)
+	SetDebugLog("$g_aiPrepDon[2]: " & $g_aiPrepDon[2] & "/$g_aiPrepDon[3]: " & $g_aiPrepDon[3] & ", $bDonateSpell: " & $bDonateSpell)
+	SetDebugLog("$g_aiPrepDon[4]: " & $g_aiPrepDon[4] & ", $bDonateSiege: " & $bDonateSiege)
+
 	; Verify with OCR the Donation Clan Castle capacity
 	If $g_bDebugSetLog Then SetDebugLog("Start dual getOcrSpaceCastleDonate", $COLOR_DEBUG)
 
 	$sCapTroops = getOcrSpaceCastleDonate(27, $g_aiDonatePixel[1])
 	If StringInStr($sCapTroops, "#") Then ;CC got Troops & Spells & Siege Machine
-		$sCapSpells = getOcrSpaceCastleDonate(110, $g_aiDonatePixel[1])
-		$sCapSiegeMachine = getOcrSpaceCastleDonate(170, $g_aiDonatePixel[1])
+		$sCapSpells = $bDonateSpell ? getOcrSpaceCastleDonate(110, $g_aiDonatePixel[1]) : -1
+		$sCapSiegeMachine = $bDonateSiege ? getOcrSpaceCastleDonate(170, $g_aiDonatePixel[1]) : -1
 	Else
 		$sCapTroops = getOcrSpaceCastleDonate(60, $g_aiDonatePixel[1])
 		If StringRegExp($sCapTroops, "#([0-9]{2})") = 1 Then ; CC got Troops & Spells
-			$sCapSpells = getOcrSpaceCastleDonate(160, $g_aiDonatePixel[1])
+			$sCapSpells = $bDonateSpell ? getOcrSpaceCastleDonate(160, $g_aiDonatePixel[1]) : -1
 			$sCapSiegeMachine = -1
 		Else
 			$sCapTroops = getOcrSpaceCastleDonate(82, $g_aiDonatePixel[1])

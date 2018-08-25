@@ -1,3 +1,34 @@
+* **V7.6.2**
+* Fixed Bluestacks 4.x and CoC PB message , different font and place. 
+* Fixed Siege Build when queued empty and camp is full, making a double sieges.
+* Fixed Conflict with Balloons and siege on attack bar, reported by @Black-sTyle-Vii
+* Fixed Donate only - Switch account and a second train army reported by @hrishikesh
+* Fixed UI translate code reported by @Black-sTyle-Vii
+* Fixed Group of 10 clicks issue,  when android click is enabled + Adb Screencapture
+* Fixed Deployed Sides [DS] at attack log when was csv attack
+* Fixed Failed Switch to Clash Castle at attack bar because the delay, reported by @Pepito
+* fixed Switch account and Heroes status , reseting hero status on account switch
+* Added Clan Games new version with option to 60min events
+* Added New method to get version from Github, using the github API.
+* Added Enable/Disable 'Show touch' on emulator under Android TAB
+* Added Check CC troops and remove unwanted
+* Improved BlueStacks newest versions Undocked and Docked
+* Improved Using Siege to attack deadbase while DropTrophy
+* Improved Collect, added conditions for collect
+* Improved Collect, optionally collect Loot Cart before Resources
+* Improved Delay between remaining troops drop
+* Improved COM obj errors detection to Telegram and change to InetRead
+* Improved Remain Troops, less clicks,  at Smart-Farm
+* Improved Double Train with making donated troops for army 1
+* Improved Donate CC - skip reading spell and siege when not needed
+* Improved SC_id login on MEmu 2.5.0 and 2.8.6 , smaller buttons! reported @NguyenAnhHD
+* Changed MyBot icons
+* Removed 24 unnecessary ocr/bundle files
+* Updated scripts Attacks to last version
+* Updated German lang file by @Black-sTyle-Vii
+* Updated Azerbaijani lang file by @Z E C K
+* Updated Turkish lang file by @Z E C K
+
 * **V7.6.1**
 * Fixed Queen activation at scripted Attacks
 * Fixed Train Sieges on Quick Train , by @ChacalGyn

@@ -331,6 +331,10 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "minrestartdark", $g_iTxtRestartDark)
 	_Ini_Add("other", "chkTrap", $g_bChkTrap ? 1 : 0)
 	_Ini_Add("other", "chkCollect", $g_bChkCollect ? 1 : 0)
+	_Ini_Add("other", "chkCollectCartFirst", $g_bChkCollectCartFirst ? 1 : 0)
+	_Ini_Add("other", "minCollectgold", $g_iTxtCollectGold)
+	_Ini_Add("other", "minCollectelixir", $g_iTxtCollectElixir)
+	_Ini_Add("other", "minCollectdark", $g_iTxtCollectDark)
 	_Ini_Add("other", "chkTombstones", $g_bChkTombstones ? 1 : 0)
 	_Ini_Add("other", "chkCleanYard", $g_bChkCleanYard ? 1 : 0)
 	_Ini_Add("other", "ChkCollectFreeMagicItems", $g_bChkCollectFreeMagicItems ? 1 : 0)
@@ -355,7 +359,7 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "ChkClanGamesMisc", $g_bChkClanGamesMisc ? 1 : 0)
 
 	_Ini_Add("other", "ChkClanGamesEnabled", $g_bChkClanGamesEnabled ? 1 : 0)
-	_Ini_Add("other", "ChkClanGamesOnly", $g_bChkClanGamesOnly ? 1 : 0)
+	_Ini_Add("other", "ChkClanGames60", $g_bChkClanGames60 ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesPurge", $g_bChkClanGamesPurge ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesStopBeforeReachAndPurge", $g_bChkClanGamesStopBeforeReachAndPurge ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesDebug", $g_bChkClanGamesDebug ? 1 : 0)
@@ -397,6 +401,10 @@ Func SaveConfig_600_11()
 	_Ini_Add("donate", "RequestCountCC_Spell", $g_iRequestCountCCSpell)
 	_Ini_Add("donate", "cmbClanCastleSpell", $g_iClanCastleSpellsWaitFirst)
 	_Ini_Add("donate", "cmbClanCastleSpell2", $g_iClanCastleSpellsWaitSecond)
+	For $i = 0 To 2
+		_Ini_Add("donate", "cmbClanCastleTroop" & $i, $g_aiClanCastleTroopWaitType[$i])
+		_Ini_Add("donate", "txtClanCastleTroop" & $i, $g_aiClanCastleTroopWaitQty[$i])
+	Next
 	Local $string = ""
 	For $i = 0 To 23
 		$string &= ($g_abRequestCCHours[$i] ? "1" : "0") & "|"
@@ -534,6 +542,7 @@ Func SaveConfig_600_18()
 	ApplyConfig_600_18(GetApplyConfigSaveAction())
 	_Ini_Add("notify", "TGEnabled", $g_bNotifyTGEnable ? 1 : 0)
 	_Ini_Add("notify", "TGToken", $g_sNotifyTGToken)
+	_Ini_Add("notify", "TGUserID", $g_sTGChatID)
 	;Remote Control
 	_Ini_Add("notify", "PBRemote", $g_bNotifyRemoteEnable ? 1 : 0)
 	_Ini_Add("notify", "HoursPushBullet", $g_iNotifyDeletePushesOlderThanHours)

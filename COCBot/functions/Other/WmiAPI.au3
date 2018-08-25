@@ -27,6 +27,7 @@ Func GetWmiObject()
 	; Win32_Process: https://msdn.microsoft.com/en-us/library/windows/desktop/aa394372(v=vs.85).aspx
 	; https://msdn.microsoft.com/en-us/library/aa393866(v=vs.85).aspx
 	If $g_oWMI = 0 Then $g_oWMI = ObjGet("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
+	If @error Or Not IsObj($g_oWMI) Then Return -1
 	Return $g_oWMI
 EndFunc   ;==>GetWmiObject
 
@@ -49,7 +50,9 @@ Func WmiQuery($sQuery)
 
 	Local $aProcesses[0]
 	SetDebugLog("WMI Query: " & $sQuery)
-	Local $oProcessColl = GetWmiObject().ExecQuery($sQuery, "WQL", 0x20 + 0x10)
+	Local $oObjc = GetWmiObject()
+	If $oObjc = -1 Or @error Then  Return 0
+	Local $oProcessColl = $oObjc.ExecQuery($sQuery, "WQL", 0x20 + 0x10)
 	For $Process In $oProcessColl
 		Local $aProcess[UBound($g_WmiFields)]
 		For $i = 0 To UBound($g_WmiFields) - 1

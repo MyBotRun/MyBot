@@ -1,9 +1,9 @@
 NOTE  |Army Composition: Preset: B.Arch
-NOTE  |For th7-11: Max 240 troops
+NOTE  |For th7-12: Max 280 troops
 NOTE  |Half Barbarians and Half Archers
 NOTE  |Heroes and Castle if selected
 NOTE  |
-NOTE  |Version 1.0 (Feb. 12th 2016)
+NOTE  |Version 1.1 (Aug. 18th 2018)
 
 
       |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE |USE RED LINE
@@ -27,16 +27,17 @@ MAKE  |Z          |LEFT-BACK  |10         |10         |INT-EXT    |5          |5
 
       |Drop original FF attack troops
       |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|____________|
-DROP  |A-B-C-D    |2-14       |13         |Barb       |0          |0          |0          |            |Drop Barb
-DROP  |E-F-G-H    |1-13       |13         |Barb       |0          |0          |0          |            |
-DROP  |A-B-C-D    |2-14       |13         |Arch       |0          |0          |0          |            |Drop Arch
-DROP  |E-F-G-H    |1-13       |13         |Arch       |0          |0          |0          |            |
+DROP  |A-B-C-D    |2-14       |15         |Barb       |0          |0          |0          |            |Drop Barb
+DROP  |E-F-G-H    |1-13       |15	  |Barb       |0          |0          |0          |            |
+DROP  |A-B-C-D    |2-14       |15         |Arch       |0          |0          |0          |            |Drop Arch
+DROP  |E-F-G-H    |1-13       |15         |Arch       |0          |0          |0          |            |
 DROP  |A-B-C-D    |2-14       |18         |Barb       |0          |0          |0          |            |Drop Barb (repeat)
-DROP  |E-F-G-H    |1-13       |18       |Barb       |0          |0          |0          |            |
+DROP  |E-F-G-H    |1-13       |18         |Barb       |0          |0          |0          |            |
 DROP  |A-B-C-D    |2-14       |18         |Arch       |0          |0          |0          |            |Drop Arch (repeat)
 DROP  |E-F-G-H    |1-13       |18         |Arch       |0          |0          |0          |            |
 
 DROP  |W          |1          |1          |Castle     |0          |0          |0          |            |Drop Castle
+DROP  |W          |1          |1          |WallW      |0          |0          |0          |            |Drop Castle
 
       |Drop heroes
 DROP  |X          |1          |1          |King       |0          |0          |0          |            |Drop King

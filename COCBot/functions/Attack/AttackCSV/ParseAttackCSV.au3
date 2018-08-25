@@ -17,11 +17,12 @@ Func ParseAttackCSV($debug = False)
 	Local $bForceSideExist = False
 	Local $sErrorText, $sTargetVectors = ""
 	Local $iTroopIndex, $bWardenDrop = False
-	Local $sides2drop[4] = [False, False , False , False]
+	; TL , TR , BL , BR
+	Local $sides2drop[4] = [False, False, False, False]
 
-	For $v = 0 To 25  ; Zero all 26 vectors from last atttack in case here is error MAKE'ing new vectors
-		Assign("ATTACKVECTOR_" & Chr(65+$v), "", $ASSIGN_EXISTFAIL) ; start with character "A" = ASCII 65
-		If @error Then SetLog("Failed to erase old vector: " & Chr(65+$v) & ", ask code monkey to fix!", $COLOR_ERROR)
+	For $v = 0 To 25 ; Zero all 26 vectors from last atttack in case here is error MAKE'ing new vectors
+		Assign("ATTACKVECTOR_" & Chr(65 + $v), "", $ASSIGN_EXISTFAIL) ; start with character "A" = ASCII 65
+		If @error Then SetLog("Failed to erase old vector: " & Chr(65 + $v) & ", ask code monkey to fix!", $COLOR_ERROR)
 	Next
 
 	;Local $filename = "attack1"
@@ -97,6 +98,16 @@ Func ParseAttackCSV($debug = False)
 										$sides2drop[3] = True
 								EndSwitch
 							EndIf
+							Switch Eval($sidex)
+								Case StringInStr(Eval($sidex), "TOP-LEFT") > 0
+									$sides2drop[0] = True
+								Case StringInStr(Eval($sidex), "TOP-RIGHT") > 0
+									$sides2drop[1] = True
+								Case StringInStr(Eval($sidex), "BOTTOM-LEFT") > 0
+									$sides2drop[2] = True
+								Case StringInStr(Eval($sidex), "BOTTOM-RIGHT") > 0
+									$sides2drop[3] = True
+							EndSwitch
 							If CheckCsvValues("MAKE", 1, $value1) And CheckCsvValues("MAKE", 5, $value5) Then
 								$sTargetVectors = StringReplace($sTargetVectors, $value3, "", Default, $STR_NOCASESENSEBASIC) ; if re-making a vector, must remove from target vector string
 								If CheckCsvValues("MAKE", 8, $value8) Then ; Vector is targeted towards building v7.2
@@ -339,7 +350,7 @@ Func ParseAttackCSV($debug = False)
 							If $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 							;EXIT IF RESOURCES = 0
 							If $g_abStopAtkNoResources[$g_iMatchMode] And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
-								If NOT $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO) ; log if not down above
+								If Not $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO) ; log if not down above
 								SetDebugLog("From Attackcsv: Gold & Elixir & DE = 0, end battle ", $COLOR_DEBUG)
 								$exitNoResources = 1
 								ExitLoop
@@ -722,13 +733,13 @@ Func ParseAttackCSV($debug = False)
 								; also comment
 								debugAttackCSV("comment line")
 							Case Else
-							SetLog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
+								SetLog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
 						EndSwitch
 				EndSwitch
 			Else
 				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then SetLog("attack row error, discard: row " & $iLine + 1, $COLOR_ERROR)
 			EndIf
-			If $bWardenDrop = True Then  ;Check hero, but skip Warden if was dropped with sleepafter to short to allow icon update
+			If $bWardenDrop = True Then ;Check hero, but skip Warden if was dropped with sleepafter to short to allow icon update
 				Local $bHold = $g_bCheckWardenPower ; store existing flag state, should be true?
 				$g_bCheckWardenPower = False ;temp disable warden health check
 				CheckHeroesHealth()
@@ -736,10 +747,10 @@ Func ParseAttackCSV($debug = False)
 			Else
 				CheckHeroesHealth()
 			EndIf
-			If _Sleep($DELAYRESPOND) Then  Return ; check for pause/stop after each line of CSV
+			If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop after each line of CSV
 		Next
-		For $i = 0 to 3
-			If $sides2drop[$i] then $g_iSidesAttack +=1
+		For $i = 0 To 3
+			If $sides2drop[$i] Then $g_iSidesAttack += 1
 		Next
 		ReleaseClicks()
 	Else

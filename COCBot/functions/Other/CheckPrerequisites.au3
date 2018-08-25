@@ -97,15 +97,24 @@ Func isEveryFileInstalled($bSilent = False)
 	Local $aCheckFiles = [@ScriptDir & "\COCBot", _
 			$g_sLibPath, _
 			@ScriptDir & "\Images", _
-			$g_sLibMyBotPath, _
-			$g_sLibImageSearchPath, _
-			$g_sLibIconPath, _
+			@ScriptDir & "\imgxml", _
+			$g_sLibPath & "\helper_functions.dll", _
+			$g_sLibPath & "\ImageSearchDLL.dll", _
+			$g_sLibPath & "\MBRBot.dll", _
+			$g_sLibPath & "\MyBot.run.dll", _
+			$g_sLibPath & "\sqlite3.dll", _
 			$g_sLibPath & "\opencv_core220.dll", _
 			$g_sLibPath & "\opencv_imgproc220.dll"]
 
 	For $vElement In $aCheckFiles
 		$iCount += FileExists($vElement)
 	Next
+	; How many .xml files in imgxml folder
+	Local $xmls = _FileListToArrayRec(@ScriptDir & "\imgxml\", "*.xml", $FLTAR_FILES + $FLTAR_NOHIDDEN, $FLTAR_RECUR, $FLTAR_NOSORT)
+	If IsArray($xmls) Then
+		If Number($xmls[0]) < 570 Then SetLog("Verify '\imgxml\' folder, found " & $xmls[0] & " *.xml files.", $COLOR_ERROR)
+	EndIf
+
 	If $iCount = UBound($aCheckFiles) Then
 		$bResult = True
 	ElseIf Not $bSilent Then

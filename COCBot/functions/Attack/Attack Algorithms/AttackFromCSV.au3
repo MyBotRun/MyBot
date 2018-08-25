@@ -602,6 +602,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	If $g_bCSVLocateStorageDarkElixir = True Then
 		$hTimer = __timerinit()
 		SuspendAndroid()
+		; USES OLD OPENCV DETECTION
 		Local $g_aiPixelDarkElixirStorage = GetLocationDarkElixirStorageWithLevel()
 		ResumeAndroid()
 		If _Sleep($DELAYRESPOND) Then Return

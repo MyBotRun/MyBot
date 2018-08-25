@@ -67,8 +67,6 @@ DROP  |A          |1          |1          |CASTLE     |0          |0          |3
 DROP  |A          |1          |1          |queen      |0          |0          |300        |           |   
 DROP  |A          |1          |1          |warden     |0          |0          |10000      |           |
 DROP  |A          |1          |1          |King       |0          |0          |300        |           |
-DROP  |A          |1          |1          |queen      |0          |0          |300        |           |   
-DROP  |A          |1          |1          |warden     |0          |0          |300        |           |
 
 RECALC|           |           |           |           |           |           |           |           |recalculate remaining troops and then launch...
 

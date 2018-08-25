@@ -57,6 +57,7 @@ EndFunc   ;==>GetBuildingEdge
 Func BuildingXY($TypeBuilding = $eSideBuildingDES)
 	Local $TypeBuildingName
 
+	; USES OLD OPENCV DETECTION
 	_CaptureRegion2(230, 170, 630, 440)
 	Switch $TypeBuilding
 		Case $eSideBuildingDES

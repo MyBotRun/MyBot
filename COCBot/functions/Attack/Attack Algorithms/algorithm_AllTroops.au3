@@ -277,9 +277,10 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			ExitLoop ;Check remaining quantities
 		EndIf
 		For $i = $eBarb To $eBowl ; launch all remaining troops
-			LaunchTroop($i, $nbSides, 1, 1, 1)
-			CheckHeroesHealth()
-			If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
+			If LaunchTroop($i, $nbSides, 1, 1, 1) Then
+				CheckHeroesHealth()
+				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
+			EndIf
 		Next
 	Next
 

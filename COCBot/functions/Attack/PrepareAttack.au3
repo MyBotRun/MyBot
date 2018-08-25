@@ -78,7 +78,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 				; wait to appears the new small window
 				Local $lastX = $g_iQuickMISX + 50, $LastX1 = $g_iQuickMISX + 300, $lastY = $g_iQuickMISY + 700
 				Local $compFor2Sieges = 50
-				If _Sleep(750) Then Return
+				If _Sleep(1250) Then Return
 				; Lets detect the CC & Sieges and click
 				Local $HowMany = QuickMIS("CX", $aPaths[$iDa], $lastX - $compFor2Sieges, 540, $LastX1, 560, True, False)
 
@@ -156,6 +156,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 				Else
 					If $g_bDebugImageSave Then DebugImageSave("PrepareAttack_SwitchSiege")
 					; If was not detectable lets click again on green icon to hide the window!
+					Setlog("Undetected " & NameOfTroop($ToUse) & " after click on switch btn!", $COLOR_DEBUG)
 					Click($lastX, $lastY, 1)
 					If _sleep(250) Then Return
 					Click(35, 595 + $g_iBottomOffsetY, 1, 0, "#0111") ;860x780

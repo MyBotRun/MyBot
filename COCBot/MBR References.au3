@@ -206,15 +206,8 @@ Func ReferenceFunctions()
 	IsClanInfoPage()
 	IsPixelColorGray(0)
 	_MultiPixelSearch2(0, 0, 0, 0, 0, 0, 0, 0, 0)
-	getArmyTroopQuantity(0, 0)
-	getArmyTroopKind(0, 0)
 	getBarracksTroopQuantity(0, 0)
-	getOcrSpellDetection(0, 0)
-	getOcrSpellQuantity(0, 0)
-	getOcrClanLevel(0, 0)
-	getOcrDonationTroopsDetection(0, 0)
 	getOcrOverAllDamage(0, 0)
-	getHeroStatus(0, 0)
 	returnAllMatches(0)
 	returnLowestLevelSingleMatch(0)
 	updateGlobalVillageOffset(0, 0)
@@ -588,14 +581,13 @@ Func ReferenceGlobals()
 	$a1 = $aTrainESpell
 	$a1 = $aTrainHaSpell
 	$a1 = $aTrainSkSpell
-
 	$a1 = $aTrainArmy
 
-	; fix stripper bugs
 	$a1 = $aLoginWithSupercellID
+	$a1 = $aButtonLogOutSCID
+	$a1 = $aButtonConfirmSCID
 
 	$a1 = $aiCloseDefaultPOS
-
 	$a1 = $TELEGRAM_URL
 	$a1 = $HTTP_STATUS_OK
 

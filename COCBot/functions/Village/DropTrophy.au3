@@ -106,18 +106,15 @@ Func DropTrophy()
 
 				If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 
+				$g_iSearchCount = 0
+				GetResources(False, $DT) ; no log, use $DT matchmode (DropThrophy)
+				If $g_bRestart Then Return ; exit func
+
 				If $g_bDropTrophyAtkDead Then
 					; Check for Dead Base on 1st search
 					$g_iAimGold[$DB] = $g_aiFilterMinGold[$DB]
 					$g_iAimElixir[$DB] = $g_aiFilterMinElixir[$DB]
 					$g_iAimGoldPlusElixir[$DB] = $g_aiFilterMinGoldPlusElixir[$DB]
-					$g_iSearchCount = 0
-					GetResources(False, $DT) ; no log, use $DT matchmode (DropThrophy)
-					If $g_bRestart Then Return ; exit func
-
-					SetLog("Identification of your troops:", $COLOR_INFO)
-					PrepareAttack($DT) ; ==== Troops :checks for type, slot, and quantity ===
-					If $g_bRestart Then Return
 
 					Local $G = (Number($g_iSearchGold) >= Number($g_iAimGold[$DB]))
 					Local $E = (Number($g_iSearchElixir) >= Number($g_iAimElixir[$DB]))
@@ -130,6 +127,9 @@ Func DropTrophy()
 						If checkDeadBase() Then
 
 							SetLog("      " & "Dead Base Found while dropping Trophies!", $COLOR_SUCCESS, "Lucida Console", 7.5)
+							SetLog("Identification of your troops:", $COLOR_INFO)
+							PrepareAttack($DB) ; ==== Troops :checks for type, slot, and quantity ===
+							If $g_bRestart Then Return
 							Attack()
 							$g_bFirstStart = True ;reset barracks upon return when attacked a Dead Base with 70%~100% troops capacity
 							ReturnHome($g_bTakeLootSnapShot)
@@ -142,17 +142,12 @@ Func DropTrophy()
 							SetLog("      " & "Not a Dead Base, resuming Trophy Dropping.", $COLOR_BLACK, "Lucida Console", 7.5)
 						EndIf
 					EndIf
-				Else
-					; Normal Drop Trophy, no check for Dead Base
-					$g_iSearchCount = 0
-					GetResources(False, $DT)
-					If $g_bRestart = True Then Return ; exit func
-
-					SetLog("Identification of your troops:", $COLOR_INFO)
-					PrepareAttack($DT) ; ==== Troops :checks for type, slot, and quantity ===
-					If $g_bRestart Then Return
-
 				EndIf
+
+				; Normal Drop Trophy, no check for Dead Base
+				SetLog("Identification of your troops:", $COLOR_INFO)
+				PrepareAttack($DT) ; ==== Troops :checks for type, slot, and quantity ===
+				If $g_bRestart Then Return
 
 				If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 

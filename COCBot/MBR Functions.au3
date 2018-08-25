@@ -129,7 +129,7 @@
 #include "functions\CreateArmy\getArmySiegeMachines\getArmySiegeMachines.au3"
 
 #include "functions\CreateArmy\getArmyCCTroops\getArmyCCStatus.au3"
-;#include "functions\CreateArmy\getArmyCCTroops\getArmyCCTroops.au3" Not in use yet, soonish hopefully
+#include "functions\CreateArmy\getArmyCCTroops\getArmyCCTroops.au3" ;for check & remove unwanted CC Troops
 
 #include "functions\CreateArmy\getArmyCCSpells\getArmyCCSpellCapacity.au3"
 #include "functions\CreateArmy\getArmyCCSpells\getArmyCCSpell.au3"

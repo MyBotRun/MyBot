@@ -50,8 +50,15 @@ EndFunc   ;==>chkRequestCCHours
 Func chkRequestCountCC()
 	If GUICtrlRead($g_hChkRequestType_Troops) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hTxtRequestCountCCTroop, $GUI_ENABLE)
+		For $i = $g_ahCmbClanCastleTroop[0] To $g_ahCmbClanCastleTroop[2]
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+		CmbClanCastleTroop()
 	Else
 		GUICtrlSetState($g_hTxtRequestCountCCTroop, $GUI_DISABLE)
+		For $i = $g_ahCmbClanCastleTroop[0] To $g_ahTxtClanCastleTroop[2]
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
 	EndIf
 	If GUICtrlRead($g_hChkRequestType_Spells) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hTxtRequestCountCCSpell, $GUI_ENABLE)
@@ -64,6 +71,16 @@ Func chkRequestCountCC()
 		GUICtrlSetState($g_hCmbClanCastleSpell2, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkRequestCountCC
+
+Func CmbClanCastleTroop()
+	For $i = 0 To UBound($g_ahCmbClanCastleTroop) - 1
+		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleTroop[$i]) <= $eTroopBowler Then
+			GUICtrlSetState($g_ahTxtClanCastleTroop[$i], $GUI_ENABLE)
+		Else
+			GUICtrlSetState($g_ahTxtClanCastleTroop[$i], $GUI_DISABLE)
+		EndIf
+	Next
+EndFunc   ;==>CmbClanCastleTroop
 
 Func cmbClanCastleSpell()
 	Local $iSpellSelection = _GUICtrlComboBox_GetCurSel($g_hCmbClanCastleSpell)

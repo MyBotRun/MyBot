@@ -564,8 +564,6 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnTestDeadBaseFolder()
 		Case $g_hBtnTestTHimgloc
 			imglocTHSearch()
-		Case $g_hBtnTestimglocTroopBar
-			TestImglocTroopBar()
 		Case $g_hBtnTestAttackCSV
 			Local $RuntimeA = $g_bRunState
 			$g_bRunState = True

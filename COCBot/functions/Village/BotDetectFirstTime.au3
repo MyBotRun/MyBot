@@ -28,6 +28,7 @@ Func BotDetectFirstTime()
 			Collect()
 		EndIf
 		_CaptureRegion2()
+		; USES OLD OPENCV DETECTION
 		Local $PixelTHHere = GetLocationItem("getLocationTownHall")
 		If UBound($PixelTHHere) > 0 Then
 			Local $pixel = $PixelTHHere[0]
@@ -68,13 +69,12 @@ Func BotDetectFirstTime()
 		EndIf
 	EndIf
 
-	If $g_bAutoLabUpgradeEnable = True Then
-		If _Sleep($DELAYBOTDETECT3) Then Return
-		If $g_aiLaboratoryPos[0] = "" Or $g_aiLaboratoryPos[0] = -1 Then
-			LocateLab()
-			SaveConfig()
-		EndIf
+	If _Sleep($DELAYBOTDETECT3) Then Return
+	If $g_aiLaboratoryPos[0] = "" Or $g_aiLaboratoryPos[0] = -1 Then
+		LocateLab()
+		SaveConfig()
 	EndIf
+
 
 	If (GUICtrlRead($g_hCmbBoostBarbarianKing) > 0) Or $g_bUpgradeKingEnable = True Then
 		If _Sleep($DELAYBOTDETECT3) Then Return
