@@ -1,3 +1,15 @@
+* **V7.6.3**
+* Fixed Google Play account switch
+* Fixed lab status display
+* Added Donate only troops and spells in queue
+* Added Double train siege machine when it is set to build only 1 type of siege machine
+* Added Translating troop list in Request CC to other languages
+* Improved multi-stats, improved SwitchAccount stats display for current account only
+* Improved CC spell selection
+* Improved check & remove unwanted CC spells
+* Improved lab check, only check once every 6 hours
+* Improved double train with less open & close army window
+
 * **V7.6.2**
 * Fixed Bluestacks 4.x and CoC PB message , different font and place. 
 * Fixed Siege Build when queued empty and camp is full, making a double sieges.

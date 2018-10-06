@@ -258,23 +258,17 @@ EndFunc   ;==>ArmyHeroStatus
 
 Func LabGuiDisplay() ; called from main loop to get an early status for indictors in bot bottom
 
-	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0] , $iDateCalc
+	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 
 		; Check if is a valid date and Calculated the number of minutes from remain time Lab and now
-	If _DateIsValid($g_sLabUpgradeTime) Then
-		$iDateCalc = _DateDiff('n', _NowCalc(), $g_sLabUpgradeTime)
-		SetDebugLog("Lab LabUpgradeTime: " & $g_sLabUpgradeTime)
-		SetDebugLog("Lab DateCalc: " & $iDateCalc)
-	Else
-		; Check the number of hours from last check
-		$iDateCalc =_DateDiff('n', $iLastTimeChecked[$g_iCurAccount], _NowCalc())
-		SetDebugLog("Lab LastTimeChecked: " & $iLastTimeChecked[$g_iCurAccount])
-		SetDebugLog("Lab DateCalc: " & $iDateCalc)
-		; A check each 6 hours [6*60 = 360]
-		If $iDateCalc = 360 then $iDateCalc = 0
+	If _DateIsValid($g_sLabUpgradeTime) And _DateIsValid($iLastTimeChecked[$g_iCurAccount]) Then
+		Local $iLabTime = _DateDiff('n', _NowCalc(), $g_sLabUpgradeTime)
+		Local $iLastCheck =_DateDiff('n', $iLastTimeChecked[$g_iCurAccount], _NowCalc()) ; elapse time from last check (minutes)
+		SetDebugLog("Lab LabUpgradeTime: " & $g_sLabUpgradeTime & ", Lab DateCalc: " & $iLabTime)
+		SetDebugLog("Lab LastCheck: " & $iLastTimeChecked[$g_iCurAccount] & ", Check DateCalc: " & $iLastCheck)
+		; A check each 6 hours [6*60 = 360] or when Lab research time finishes
+		If $iLabTime > 0 And $iLastCheck <= 360 Then Return
 	EndIf
-
-	If $iDateCalc <> 0 And Not $g_bSearchAttackNowEnable And $iLastTimeChecked[$g_iCurAccount] <> 0 Then Return
 
 	;CLOSE ARMY WINDOW
 	ClickP($aAway, 2, 0, "#0346") ;Click Away
@@ -329,6 +323,13 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		GUICtrlSetState($g_hPicLabGreen, $GUI_SHOW)
 		;===========================================
 		If _Sleep($DELAYLABORATORY2) Then Return
+		Local $sLabTimeOCR = getRemainTLaboratory(270, 257)
+		Local $iLabFinishTime = ConvertOCRTime("Lab Time", $sLabTimeOCR, False)
+		SetDebugLog("$sLabTimeOCR: " & $sLabTimeOCR & ", $iLabFinishTime = " & $iLabFinishTime & " m")
+		If $iLabFinishTime > 0 Then
+			$g_sLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), _NowCalc())
+			SetLog("Research will finish in " & $sLabTimeOCR & " (" & $g_sLabUpgradeTime & ")")
+		EndIf
 		ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
 		Return True
 	ElseIf _ColorCheck(_GetPixelColor(730, 200, True), Hex(0x8088B0, 6), 20) Then ; Look for light purple in upper right corner of lab window.
@@ -353,7 +354,6 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		Return
 	EndIf
 
-	; EndIf
 EndFunc   ;==>LabGuiDisplay
 
 Func HideShields($bHide = False)
@@ -361,14 +361,14 @@ Func HideShields($bHide = False)
 	Local $counter
 	If $bHide = True Then
 		$counter = 0
-		For $i = $g_hlblKing to $g_hPicLabGreen
+		For $i = $g_hlblKing to $g_hPicLabRed
 			$ShieldState[$counter] = GUICtrlGetState($i)
 			GUICtrlSetState($i, $GUI_HIDE)
 			$counter += 1
 		Next
 	Else
 		$counter = 0
-		For $i = $g_hlblKing to $g_hPicLabGreen
+		For $i = $g_hlblKing to $g_hPicLabRed
 			If $ShieldState[$counter] = 80 Then
 				GUICtrlSetState($i, $GUI_SHOW )
 			EndIf

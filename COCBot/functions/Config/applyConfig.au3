@@ -423,11 +423,13 @@ Func ApplyConfig_600_11($TypeReadSave)
 			GUICtrlSetState($g_hChkRequestType_Siege, $g_abRequestType[2] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetData($g_hTxtRequestCountCCTroop, $g_iRequestCountCCTroop)
 			GUICtrlSetData($g_hTxtRequestCountCCSpell, $g_iRequestCountCCSpell)
-			_GUICtrlComboBox_SetCurSel($g_hCmbClanCastleSpell, $g_iClanCastleSpellsWaitFirst)
-			_GUICtrlComboBox_SetCurSel($g_hCmbClanCastleSpell2, $g_iClanCastleSpellsWaitSecond)
 			For $i = 0 To 2
 				_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleTroop[$i] , $g_aiClanCastleTroopWaitType[$i])
 				GUICtrlSetData($g_ahTxtClanCastleTroop[$i], $g_aiClanCastleTroopWaitQty[$i])
+			Next
+			For $i = 0 To 1
+				_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i] , $g_aiClanCastleSpellWaitType[$i])
+				GUICtrlSetData($g_ahTxtClanCastleSpell[$i], $g_aiClanCastleSpellWaitQty[$i])
 			Next
 			chkRequestCountCC()
 			chkRequestCCHours()
@@ -444,11 +446,13 @@ Func ApplyConfig_600_11($TypeReadSave)
 			$g_abRequestType[2] = (GUICtrlRead($g_hChkRequestType_Siege) = $GUI_CHECKED)
 			$g_iRequestCountCCTroop = GUICtrlRead($g_hTxtRequestCountCCTroop)
 			$g_iRequestCountCCSpell = GUICtrlRead($g_hTxtRequestCountCCSpell)
-			$g_iClanCastleSpellsWaitFirst = _GUICtrlComboBox_GetCurSel($g_hCmbClanCastleSpell)
-			$g_iClanCastleSpellsWaitSecond = _GUICtrlComboBox_GetCurSel($g_hCmbClanCastleSpell2)
 			For $i = 0 To 2
 				$g_aiClanCastleTroopWaitType[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleTroop[$i])
 				$g_aiClanCastleTroopWaitQty[$i] = GUICtrlRead($g_ahTxtClanCastleTroop[$i])
+			Next
+			For $i = 0 To 1
+				$g_aiClanCastleSpellWaitType[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleSpell[$i])
+				$g_aiClanCastleSpellWaitQty[$i] = GUICtrlRead($g_ahTxtClanCastleSpell[$i])
 			Next
 			For $i = 0 To 23
 				$g_abRequestCCHours[$i] = (GUICtrlRead($g_ahChkRequestCCHours[$i]) = $GUI_CHECKED)
@@ -461,6 +465,8 @@ Func ApplyConfig_600_12($TypeReadSave)
 	Switch $TypeReadSave
 		Case "Read"
 			GUICtrlSetState($g_hChkDonate, $g_bChkDonate ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDonateQueueTroopOnly, $g_abChkDonateQueueOnly[0] ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDonateQueueSpellOnly, $g_abChkDonateQueueOnly[1] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Doncheck()
 			For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 				GUICtrlSetState($g_ahChkDonateTroop[$i], $g_abChkDonateTroop[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -550,6 +556,8 @@ Func ApplyConfig_600_12($TypeReadSave)
 
 		Case "Save"
 			$g_bChkDonate = (GUICtrlRead($g_hChkDonate) = $GUI_CHECKED)
+			$g_abChkDonateQueueOnly[0] = (GUICtrlRead($g_hChkDonateQueueTroopOnly) = $GUI_CHECKED)
+			$g_abChkDonateQueueOnly[1] = (GUICtrlRead($g_hChkDonateQueueSpellOnly) = $GUI_CHECKED)
 			For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 				$g_abChkDonateTroop[$i] = (GUICtrlRead($g_ahChkDonateTroop[$i]) = $GUI_CHECKED)
 				$g_abChkDonateAllTroop[$i] = (GUICtrlRead($g_ahChkDonateAllTroop[$i]) = $GUI_CHECKED)

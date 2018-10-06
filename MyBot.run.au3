@@ -737,8 +737,7 @@ Func runBot() ;Bot that runs everything in order
 				If $g_bRunState = False Then Return
 				If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 				If UBound($aRndFuncList) > 1 Then
-					Local $Index = Random(0, UBound($aRndFuncList), 1)
-					If $Index > UBound($aRndFuncList) - 1 Then $Index = UBound($aRndFuncList) - 1
+					Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
 					_RunFunction($aRndFuncList[$Index])
 					_ArrayDelete($aRndFuncList, $Index)
 				Else
@@ -759,8 +758,7 @@ Func runBot() ;Bot that runs everything in order
 					If $g_bRunState = False Then Return
 					If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 					If UBound($aRndFuncList) > 1 Then
-						Local $Index = Random(0, UBound($aRndFuncList), 1)
-						If $Index > UBound($aRndFuncList) - 1 Then $Index = UBound($aRndFuncList) - 1
+						Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
 						_RunFunction($aRndFuncList[$Index])
 						_ArrayDelete($aRndFuncList, $Index)
 					Else
@@ -775,8 +773,7 @@ Func runBot() ;Bot that runs everything in order
 					If $g_bRunState = False Then Return
 					If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 					If UBound($aRndFuncList) > 1 Then
-						Local $Index = Random(0, UBound($aRndFuncList), 1)
-						If $Index > UBound($aRndFuncList) - 1 Then $Index = UBound($aRndFuncList) - 1
+						Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
 						_RunFunction($aRndFuncList[$Index])
 						_ArrayDelete($aRndFuncList, $Index)
 					Else
@@ -800,8 +797,7 @@ Func runBot() ;Bot that runs everything in order
 				If $g_bRunState = False Then Return
 				If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 				If UBound($aRndFuncList) > 1 Then
-					$Index = Random(0, UBound($aRndFuncList), 1)
-					If $Index > UBound($aRndFuncList) - 1 Then $Index = UBound($aRndFuncList) - 1
+					$Index = Random(0, UBound($aRndFuncList) - 1, 1)
 					_RunFunction($aRndFuncList[$Index])
 					_ArrayDelete($aRndFuncList, $Index)
 				Else
@@ -931,8 +927,7 @@ Func _Idle() ;Sequence that runs until Full Army
 				If $g_bRestart = True Then ExitLoop
 				If CheckAndroidReboot() Then ContinueLoop 2
 				If UBound($aRndFuncList) > 1 Then
-					Local $Index = Random(0, UBound($aRndFuncList), 1)
-					If $Index > UBound($aRndFuncList) - 1 Then $Index = UBound($aRndFuncList) - 1
+					Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
 					_RunFunction($aRndFuncList[$Index])
 					_ArrayDelete($aRndFuncList, $Index)
 				Else
@@ -1024,7 +1019,7 @@ Func AttackMain() ;Main control for attack functions
 	ClickP($aAway, 1, 0, "#0000") ;Click Away to prevent any pages on top
 	If IsSearchAttackEnabled() Then
 		If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
-			If ProfileSwitchAccountEnabled() And ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCountAcc[$g_iCurAccount] - 2) Then checkSwitchAcc()
+            If ProfileSwitchAccountEnabled() And ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - 2) Then checkSwitchAcc()
 			If $g_bUseCCBalanced = True Then ;launch profilereport() only if option balance D/R it's activated
 				ProfileReport()
 				If Not $g_bRunState Then Return

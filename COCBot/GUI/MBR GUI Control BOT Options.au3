@@ -487,14 +487,6 @@ Func btnTestTrain()
 	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
 	SetLog("Result ArmyHeroStatus(0, 1, 2) = " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result)), $COLOR_INFO)
 
-	SetLog("Testing GetCurCCSpell()", $COLOR_INFO)
-	$result = GetCurCCSpell(1)
-	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result))
-	SetLog("Result GetCurCCSpell(1) = " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result)), $COLOR_INFO)
-	$result = GetCurCCSpell(2)
-	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result))
-	SetLog("Result GetCurCCSpell(2) = " & ((IsArray($result)) ? ("Array: " & _ArrayToString($result, ",")) : ($result)), $COLOR_INFO)
-
 	SetLog("Testing Train DONE", $COLOR_INFO)
 	EndImageTest()
 

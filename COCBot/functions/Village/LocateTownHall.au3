@@ -98,7 +98,7 @@ Func LocateTownHall($bLocationOnly = False)
 						Return False
 				EndSelect
 			Else
-				SetLog("Locate TH Success!", $COLOR_ERROR)
+				SetLog("Locate TH Success!", $COLOR_SUCCESS)
 			EndIf
 		EndIf
 		ExitLoop

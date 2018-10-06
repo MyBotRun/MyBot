@@ -20,6 +20,14 @@ Func VillageSearch()
 	$g_bCloudsActive = True
 
 	Local $Result = _VillageSearch()
+	If $g_bSearchAttackNowEnable Then
+		GUICtrlSetState($g_hBtnAttackNowDB, $GUI_HIDE)
+		GUICtrlSetState($g_hBtnAttackNowLB, $GUI_HIDE)
+		GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
+		HideShields(False)
+		;GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
+		$g_bBtnAttackNowPressed = False
+	EndIf
 
 	$g_bVillageSearchActive = False
 	$g_bCloudsActive = False
@@ -415,10 +423,6 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 			$g_iSearchCost += $g_aiSearchCost[$g_iTownHallLevel - 1]
 			$g_iStatsTotalGain[$eLootGold] -= $g_aiSearchCost[$g_iTownHallLevel - 1]
 		EndIf
-		If ProfileSwitchAccountEnabled() Then
-			$g_aiSkippedVillageCountAcc[$g_iCurAccount] += 1
-			If $g_iTownHallLevel <> "" And $g_iTownHallLevel > 0 Then $g_aiGoldTotalAcc[$g_iCurAccount] -= $g_aiSearchCost[$g_iTownHallLevel - 1]
-		EndIf
 		UpdateStats()
 
 	WEnd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;### Main Search Loop End ###;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -431,15 +435,6 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	;--- show buttons attacknow ----
 	If $g_bBtnAttackNowPressed = True Then
 		SetLogCentered(" Attack Now Pressed! ", "~", $COLOR_SUCCESS)
-	EndIf
-
-	If $g_bSearchAttackNowEnable Then
-		GUICtrlSetState($g_hBtnAttackNowDB, $GUI_HIDE)
-		GUICtrlSetState($g_hBtnAttackNowLB, $GUI_HIDE)
-		GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
-		HideShields(False)
-		;GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
-		$g_bBtnAttackNowPressed = False
 	EndIf
 
 	;--- write in log match found ----

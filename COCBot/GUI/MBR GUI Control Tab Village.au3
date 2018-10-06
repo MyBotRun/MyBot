@@ -62,13 +62,15 @@ Func chkRequestCountCC()
 	EndIf
 	If GUICtrlRead($g_hChkRequestType_Spells) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hTxtRequestCountCCSpell, $GUI_ENABLE)
-		GUICtrlSetState($g_hCmbClanCastleSpell, $GUI_ENABLE)
-		cmbClanCastleSpell()
+		For $i = $g_ahCmbClanCastleSpell[0] To $g_ahCmbClanCastleSpell[1]
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+		CmbClanCastleSpell()
 	Else
 		GUICtrlSetState($g_hTxtRequestCountCCSpell, $GUI_DISABLE)
-		GUICtrlSetState($g_hCmbClanCastleSpell, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtClanCastleSpell, $GUI_DISABLE)
-		GUICtrlSetState($g_hCmbClanCastleSpell2, $GUI_DISABLE)
+		For $i = $g_ahCmbClanCastleSpell[0] To $g_ahTxtClanCastleSpell[1]
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
 	EndIf
 EndFunc   ;==>chkRequestCountCC
 
@@ -82,16 +84,16 @@ Func CmbClanCastleTroop()
 	Next
 EndFunc   ;==>CmbClanCastleTroop
 
-Func cmbClanCastleSpell()
-	Local $iSpellSelection = _GUICtrlComboBox_GetCurSel($g_hCmbClanCastleSpell)
-	If $iSpellSelection < 5 Then
-		GUICtrlSetState($g_hCmbClanCastleSpell2, BitOR($GUI_HIDE, $GUI_DISABLE))
-		GUICtrlSetState($g_hTxtClanCastleSpell, BitOR($GUI_HIDE, $GUI_DISABLE))
-	Else
-		GUICtrlSetState($g_hCmbClanCastleSpell2, BitOR($GUI_SHOW, $GUI_ENABLE))
-		GUICtrlSetState($g_hTxtClanCastleSpell, BitOR($GUI_SHOW, $GUI_ENABLE))
-	EndIf
-EndFunc   ;==>cmbDBWaitForCCSpell
+Func CmbClanCastleSpell()
+	For $i = 0 To UBound($g_ahCmbClanCastleSpell) - 1
+		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleSpell[$i]) = $eCSpell - $eLSpell Then _GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $eSkSpell - $eLSpell + 1)
+		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleSpell[$i]) <= $eSkSpell - $eLSpell Then
+			GUICtrlSetState($g_ahTxtClanCastleSpell[$i], $GUI_ENABLE)
+		Else
+			GUICtrlSetState($g_ahTxtClanCastleSpell[$i], $GUI_DISABLE)
+		EndIf
+	Next
+EndFunc   ;==>CmbClanCastleSpell
 
 Func chkRequestCCHoursE1()
 	If GUICtrlRead($g_hChkRequestCCHoursE1) = $GUI_CHECKED And GUICtrlRead($g_ahChkRequestCCHours[0]) = $GUI_CHECKED Then

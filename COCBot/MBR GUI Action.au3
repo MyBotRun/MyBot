@@ -181,6 +181,7 @@ Func BotStop()
 	SetLogCentered(" Bot Stop ", Default, $COLOR_ACTION)
 	If Not $g_bSearchMode Then
 		If Not $g_bBotPaused Then $g_iTimePassed += Int(__TimerDiff($g_hTimerSinceStarted))
+		If ProfileSwitchAccountEnabled() And Not $g_bBotPaused Then $g_aiRunTime[$g_iCurAccount] += Int(__TimerDiff($g_ahTimerSinceSwitched[$g_iCurAccount]))
 		;AdlibUnRegister("SetTime")
 		$g_bRestart = True
 

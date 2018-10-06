@@ -46,15 +46,6 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($g_aiCurrentLoot[$eLootGold]) & " [E]: " & _NumberFormat($g_aiCurrentLoot[$eLootElixir]) & " [GEM]: " & _NumberFormat($g_iGemAmount), $COLOR_SUCCESS)
 		If ProfileSwitchAccountEnabled() Then $g_aiCurrentLoot[$eLootDarkElixir] = "" ; prevent applying Dark Elixir of previous account to current account
 	EndIf
-	If ProfileSwitchAccountEnabled() Then
-		$g_aiFreeBuilderCountAcc[$g_iCurAccount] = $g_iFreeBuilderCount
-		$g_aiTotalBuilderCountAcc[$g_iCurAccount] = $g_iTotalBuilderCount
-		$g_aiTrophyCurrentAcc[$g_iCurAccount] = $g_aiCurrentLoot[$eLootTrophy]
-		$g_aiGoldCurrentAcc[$g_iCurAccount] = $g_aiCurrentLoot[$eLootGold]
-		$g_aiElixirCurrentAcc[$g_iCurAccount] = $g_aiCurrentLoot[$eLootElixir]
-		$g_aiDarkCurrentAcc[$g_iCurAccount] = $g_aiCurrentLoot[$eLootDarkElixir]
-		$g_aiGemAmountAcc[$g_iCurAccount] = $g_iGemAmount
-    EndIf
 	If $bBypass = False Then ; update stats
 		UpdateStats()
 	EndIf

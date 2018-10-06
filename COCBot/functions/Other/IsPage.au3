@@ -30,6 +30,19 @@ Func IsPageLoop($aCheckPixel, $iLoop = 30, $bCapturePixel = $g_bCapturePixel)
 	Return $IsPage
 EndFunc   ;==>IsPageLoop
 
+Func IsSettingPage($bSetLog = True, $iLoop = 30)
+
+	If IsPageLoop($aIsSettingPage, $iLoop) Then
+		If ($g_bDebugSetlog Or $g_bDebugClick) And $bSetLog Then SetLog("**Setting Window OK**", $COLOR_ACTION)
+		Return True
+	EndIf
+
+	If $bSetLog Then SetLog("Cannot find Setting Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
+	If $g_bDebugImageSave Then DebugImageSave("IsSettingPage")
+	If $iLoop > 1 Then AndroidPageError("IsSettingPage")
+	Return False
+EndFunc   ;==>IsSettingPage
+
 Func IsTrainPage($bSetLog = True, $iLoop = 30)
 
 	If IsPageLoop($aIsTrainPgChk1, $iLoop) Then

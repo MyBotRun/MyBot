@@ -14,25 +14,37 @@
 ; ===============================================================================================================================
 
 Func ConvertOCRTime($WhereRead, $ToConvert, $bSetLog = True)
-	Local $iRemainTimer = 0, $sResultMinutes = "", $aResult
+	Local $iRemainTimer = 0, $aResult, $iDay = 0, $iHour = 0, $iMinute = 0, $iSecond = 0
+
 	If $ToConvert <> "" Then
+		If StringInStr($ToConvert, "d") > 1 Then
+			$aResult = StringSplit($ToConvert, "d", $STR_NOCOUNT)
+			; $aResult[0] will be the Day and the $aResult[1] will be the rest
+			$iDay = Number($aResult[0])
+			$ToConvert = $aResult[1]
+		EndIf
 		If StringInStr($ToConvert, "h") > 1 Then
 			$aResult = StringSplit($ToConvert, "h", $STR_NOCOUNT)
-			; $aResult[0] will be the Hour and the $aResult[1] will be the Minutes with the "m" at end
-			$sResultMinutes = StringTrimRight($aResult[1], 1) ; removing the "m"
-			$iRemainTimer = (Number($aResult[0]) * 60) + Number($sResultMinutes)
-		ElseIf StringInStr($ToConvert, "m") > 1 Then
-			$iRemainTimer = Number(StringTrimRight($ToConvert, 1)) ; removing the "m"
-		ElseIf StringInStr($ToConvert, "s") > 1 Then
-			$iRemainTimer = Number(StringTrimRight($ToConvert, 1)) / 60 ; removing the "s" and convert to minutes
-		Else
-			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog($WhereRead & ": Bad OCR string", $COLOR_ERROR)
+			$iHour = Number($aResult[0])
+			$ToConvert = $aResult[1]
 		EndIf
+		If StringInStr($ToConvert, "m") > 1 Then
+			$aResult = StringSplit($ToConvert, "m", $STR_NOCOUNT)
+			$iMinute = Number($aResult[0])
+			$ToConvert = $aResult[1]
+		EndIf
+		If StringInStr($ToConvert, "s") > 1 Then
+			$aResult = StringSplit($ToConvert, "s", $STR_NOCOUNT)
+			$iSecond = Number($aResult[0])
+		EndIf
+
+		$iRemainTimer = Round($iDay * 24 * 60 + $iHour * 60 + $iMinute + $iSecond / 60, 2)
+		If $iRemainTimer = 0 And $g_bDebugSetlog Then SetDebugLog($WhereRead & ": Bad OCR string", $COLOR_ERROR)
+
 		If $bSetLog Then SetLog($WhereRead & " time: " & StringFormat("%.2f", $iRemainTimer) & " min", $COLOR_INFO)
+
 	Else
-		If Not $g_bFullArmySpells Then
-			If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Can not read remaining time for " & $WhereRead, $COLOR_ERROR)
-		EndIf
+		If $g_bDebugSetlog Then SetDebugLog("Can not read remaining time for " & $WhereRead, $COLOR_ERROR)
 	EndIf
 	Return $iRemainTimer
 EndFunc   ;==>ConvertOCRTime

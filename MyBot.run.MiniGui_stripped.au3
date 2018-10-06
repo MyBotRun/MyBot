@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.6)
-#pragma compile(FileVersion, 7.6.2)
+#pragma compile(FileVersion, 7.6.3)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.6.2"
+Global $g_sBotVersion = "v7.6.3"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -2766,10 +2766,13 @@ Global $g_bRequestTroopsEnable = False
 Global $g_sRequestTroopsText = ""
 Global $g_abRequestCCHours[24] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
 Global $g_abRequestType[3] = [True, True, False]
-Global $g_iRequestCountCCTroop = 0, $g_iRequestCountCCSpell = 0, $g_iClanCastleSpellsWaitFirst = 0, $g_iClanCastleSpellsWaitSecond = 0
+Global $g_iRequestCountCCTroop = 0, $g_iRequestCountCCSpell = 0
 Global $g_aiCCTroopsExpected[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiCCSpellsExpected[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiClanCastleTroopWaitType[3], $g_aiClanCastleTroopWaitQty[3]
+Global $g_aiClanCastleSpellWaitType[2], $g_aiClanCastleSpellWaitQty[2]
 Global $g_bChkDonate = True
+Global $g_abChkDonateQueueOnly[2]
 Global Enum $eCustomA = $eTroopCount, $eCustomB = $eTroopCount + 1
 Global Enum $eCustomC = $eTroopCount + 2, $eCustomD = $eTroopCount + 3
 Global Const $g_iCustomDonateConfigs = 4
@@ -2844,7 +2847,7 @@ Global $g_iTrainArmyFullTroopPct = 100
 Global $g_bTotalCampForced = False, $g_iTotalCampForcedValue = 200
 Global $g_bForceBrewSpells = False
 Global $g_iTotalSpellValue = 0
-Global $g_bDoubleTrain, $g_bDoubleTrainDone = False, $g_bChkMultiClick
+Global $g_bDoubleTrain
 Global $g_abBoostBarracksHours[24] = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
 Global $g_bCustomTrainOrderEnable = False, $g_aiCmbCustomTrainOrder[$eTroopCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 Global $g_bCustomBrewOrderEnable = False, $g_aiCmbCustomBrewOrder[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
@@ -4758,16 +4761,22 @@ $g_abRequestType[1] =(IniRead($g_sProfileConfigPath, "donate", "RequestType_Spel
 $g_abRequestType[2] =(IniRead($g_sProfileConfigPath, "donate", "RequestType_Siege", "0") = "1")
 $g_iRequestCountCCTroop = Int(IniRead($g_sProfileConfigPath, "donate", "RequestCountCC_Troop", "0"))
 $g_iRequestCountCCSpell = Int(IniRead($g_sProfileConfigPath, "donate", "RequestCountCC_Spell", "0"))
-$g_iClanCastleSpellsWaitFirst = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleSpell", "0"))
-$g_iClanCastleSpellsWaitSecond = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleSpell2", "0"))
 For $i = 0 To $eTroopCount - 1
-$g_aiCCTroopsExpected[$i] =0
+$g_aiCCTroopsExpected[$i] = 0
+If $i < $eSpellCount Then $g_aiCCSpellsExpected[$i] = 0
 Next
 For $i = 0 To 2
 $g_aiClanCastleTroopWaitType[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleTroop" & $i, "20"))
 $g_aiClanCastleTroopWaitQty[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "txtClanCastleTroop" & $i, "0"))
 If $g_aiClanCastleTroopWaitType[$i] < $eTroopCount Then
 $g_aiCCTroopsExpected[$g_aiClanCastleTroopWaitType[$i]] += $g_aiClanCastleTroopWaitQty[$i]
+EndIf
+Next
+For $i = 0 To 1
+$g_aiClanCastleSpellWaitType[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleSpell" & $i, "10"))
+$g_aiClanCastleSpellWaitQty[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "txtClanCastleSpell" & $i, "0"))
+If $g_aiClanCastleSpellWaitType[$i] < $eSpellCount Then
+$g_aiCCSpellsExpected[$g_aiClanCastleSpellWaitType[$i]] += $g_aiClanCastleSpellWaitQty[$i]
 EndIf
 Next
 $g_abRequestCCHours = StringSplit(IniRead($g_sProfileConfigPath, "planned", "RequestHours", "1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1"), "|", $STR_NOCOUNT)
@@ -4777,6 +4786,8 @@ Next
 EndFunc
 Func ReadConfig_600_12()
 IniReadS($g_bChkDonate, $g_sProfileConfigPath, "donate", "Doncheck", True, "Bool")
+IniReadS($g_abChkDonateQueueOnly[0], $g_sProfileConfigPath, "donate", "chkDonateQueueOnly[0]", True, "Bool")
+IniReadS($g_abChkDonateQueueOnly[1], $g_sProfileConfigPath, "donate", "chkDonateQueueOnly[1]", True, "Bool")
 For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 Local $sIniName = ""
 If $i >= $eTroopBarbarian And $i <= $eTroopBowler Then

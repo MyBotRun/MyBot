@@ -76,12 +76,10 @@ Func InitiateSwitchAcc() ; Checking profiles setup in Mybot, First matching CoC 
 		SetLog("  - Account [" & $i + 1 & "]: " & $g_asProfileName[$i] & " - " & $sBotType)
 		SetSwitchAccLog("  - Acc. " & $i + 1 & ": " & $sBotType)
 
-		; reset all timers
-		$g_aiTimerStart[$i] = 0
-		$g_aiRemainTrainTime[$i] = 0
 		$g_abPBActive[$i] = False
 	Next
 	$g_iCurAccount = $g_iNextAccount ; make sure no crash
+	SwitchAccountVariablesReload("Reset")
 	SetLog("Let's start with Account [" & $g_iNextAccount + 1 & "]")
 	SwitchCOCAcc($g_iNextAccount)
 
@@ -95,7 +93,7 @@ Func CheckSwitchAcc()
 	If UBound($aActiveAccount) <= 1 Then Return
 
 	Local $aDonateAccount = _ArrayFindAll($g_abDonateOnly, True)
-	Local $bReachAttackLimit = ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCountAcc[$g_iCurAccount] - 2)
+	Local $bReachAttackLimit = ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - 2)
 	Local $bForceSwitch = False
 	Local $nMinRemainTrain, $iWaitTime
 	Local $aActibePBTaccounts = _ArrayFindAll($g_abPBActive, True)
@@ -108,14 +106,6 @@ Func CheckSwitchAcc()
 	If $g_iCommandStop = 0 Or $g_iCommandStop = 3 Then ; Forced to switch when in halt attack mode
 		SetLog("This account is in halt attack mode, switching to another account", $COLOR_ACTION)
 		SetSwitchAccLog(" - Halt Attack, Force switch")
-		; Force the remain train time to 120 min just in case of SmartSwitch checked
-		If $g_bChkSmartSwitch Then
-			$g_aiRemainTrainTime[$g_iCurAccount] = 120
-			$g_aiTimerStart[$g_iCurAccount] = TimerInit()
-			SetDebugLog("Halt Account " & $g_asProfileName[$g_iCurAccount] & " with " & $g_aiRemainTrainTime[$g_iCurAccount] & "'m")
-			SetDebugLog("Halt Account " & $g_iCurAccount + 1 & " with " & $g_aiTimerStart[$g_iCurAccount] & "'s")
-		EndIf
-		; Force switch
 		$bForceSwitch = True
 	ElseIf $g_bWaitForCCTroopSpell Then
 		SetLog("Still waiting for CC Troops/Spells, switching to another Account", $COLOR_ACTION)
@@ -135,7 +125,7 @@ Func CheckSwitchAcc()
 		$iWaitTime = _ArrayMax($g_aiTimeTrain, 1, 0, 2) ; Not check Siege Machine time: $g_aiTimeTrain[3]
 		If $bReachAttackLimit And $iWaitTime <= 0 Then
 			SetLog("This account has attacked twice in a row, switching to another account", $COLOR_INFO)
-			SetSwitchAccLog(" - Reach attack limit: " & $g_aiAttackedCountAcc[$g_iCurAccount] - $g_aiAttackedCountSwitch[$g_iCurAccount])
+			SetSwitchAccLog(" - Reach attack limit: " & $g_aiAttackedCount - $g_aiAttackedCountSwitch[$g_iCurAccount])
 			$bForceSwitch = True
 		EndIf
 	EndIf
@@ -164,12 +154,6 @@ Func CheckSwitchAcc()
 					SetSwitchAccLog(" - Donate Acc [" & $g_iNextAccount + 1 & "]")
 				Else ; Active
 					$g_iDonateSwitchCounter = 0
-					#cs					If $g_iCurAccount = $g_iNextAccount And $nMinRemainTrain > 3 Then ; Random
-						Local $iRandomElement = Random(0, UBound($aActiveAccount) - 1, 1)
-						$g_iNextAccount = $aActiveAccount[$iRandomElement]
-						SetLog("Still " & Round($nMinRemainTrain, 2) & " min until army is ready. Switch to a random account: " & $g_iNextAccount + 1, $COLOR_INFO)
-						SetSwitchAccLog(" - Random Acc [" & $g_iNextAccount + 1 & "]")
-					#ce					EndIf
 				EndIf
 			EndIf
 		Else ; Normal switch (continuous)
@@ -181,37 +165,22 @@ Func CheckSwitchAcc()
 				If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0 ; avoid idle Account
 				SetDebugLog("- While Account: " & $g_asProfileName[$g_iNextAccount] & " number: " & $g_iNextAccount + 1)
 			WEnd
-			If $g_abPBActive[$g_iNextAccount] Then ;   updated remain train time if PBT active
-				If $g_aiTimerStart[$g_iNextAccount] <> 0 Then $g_aiRemainTrainTime[$g_iNextAccount] -= Round(TimerDiff($g_aiTimerStart[$g_iNextAccount]) / 1000 / 60, 1)
-				$g_aiTimerStart[$g_iNextAccount] = TimerInit() ; reset timer
-			EndIf
 		EndIf
 
 		SetDebugLog("- Current Account: " & $g_asProfileName[$g_iCurAccount] & " number: " & $g_iCurAccount + 1)
 		SetDebugLog("- Next Account: " & $g_asProfileName[$g_iNextAccount] & " number: " & $g_iNextAccount + 1)
 
-		; Just a loop for all acc to check it if necessary
-		For $i = 0 To $g_iTotalAcc
-			; Check if the next account is PBT and IF the remain Train Time is Less/More than 2 minutes OR the account is disable
-			If ($g_abPBActive[$g_iNextAccount] And $g_aiRemainTrainTime[$g_iNextAccount] > 2) Or $abAccountNo[$g_iNextAccount] = False Then
-				If $abAccountNo[$g_iNextAccount] = False Then
-					SetLog("Account " & $g_iNextAccount + 1 & " disabled!", $COLOR_INFO)
-					SetSwitchAccLog(" - Account " & $g_iNextAccount + 1 & " disabled")
-				Else
-					SetLog("Account " & $g_iNextAccount + 1 & " is in a Personal Break Time!", $COLOR_INFO)
-					SetSwitchAccLog(" - Account " & $g_iNextAccount + 1 & " is in PTB")
-				EndIf
-
-				$g_iNextAccount = $g_iNextAccount + 1
-				If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0
-				While $abAccountNo[$g_iNextAccount] = False
-					$g_iNextAccount += 1
-					If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0 ; avoid idle Account
-				WEnd
-			Else
-				ExitLoop
-			EndIf
-		Next
+		; Check if the next account is PBT
+		If $g_abPBActive[$g_iNextAccount] Then
+			SetLog("Account " & $g_iNextAccount + 1 & " is in a Personal Break Time!", $COLOR_INFO)
+			SetSwitchAccLog(" - Account " & $g_iNextAccount + 1 & " is in PTB")
+			$g_iNextAccount = $g_iNextAccount + 1
+			If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0
+			While $abAccountNo[$g_iNextAccount] = False
+				$g_iNextAccount += 1
+				If $g_iNextAccount > $g_iTotalAcc Then $g_iNextAccount = 0 ; avoid idle Account
+			WEnd
+		EndIf
 
 		If UBound($aActibePBTaccounts) + UBound($aDonateAccount) = UBound($aActiveAccount) Then
 			SetLog("All accounts set to Donate and/or are in PBT!", $COLOR_INFO)
@@ -225,6 +194,7 @@ Func CheckSwitchAcc()
 
 		If $g_iNextAccount <> $g_iCurAccount Then
 			If $g_bRequestTroopsEnable And $g_bCanRequestCC Then
+				If _Sleep(1000) Then Return
 				SetLog("Try Request troops before switching account", $COLOR_INFO)
 				RequestCC(True)
 			EndIf
@@ -242,17 +212,9 @@ Func SwitchCOCAcc($NextAccount)
 	Local $abAccountNo = AccountNoActive()
 	If $NextAccount < 0 And $NextAccount > $g_iTotalAcc Then $NextAccount = _ArraySearch(True, $abAccountNo)
 	Static $iRetry = 0
-	Static $StartOnlineTime = 0
 	Local $bResult
 
 	SetLog("Switching to Account [" & $NextAccount + 1 & "]")
-
-	If $g_bInitiateSwitchAcc Then
-		$StartOnlineTime = 0
-		$g_bInitiateSwitchAcc = False
-	EndIf
-
-	If $StartOnlineTime <> 0 And Not $g_bReMatchAcc Then SetSwitchAccLog(" - Acc " & $g_iCurAccount + 1 & ", online: " & Round(TimerDiff($StartOnlineTime) / 1000 / 60, 1) & "m")
 
 	Local $bSharedPrefs = $g_bChkSharedPrefs And HaveSharedPrefs($g_asProfileName[$g_iNextAccount])
 	If $bSharedPrefs And $g_PushedSharedPrefsProfile = $g_asProfileName[$g_iNextAccount] Then
@@ -263,8 +225,10 @@ Func SwitchCOCAcc($NextAccount)
 	Else
 		If IsMainPage() Then Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
 		If _Sleep(500) Then Return
-		If $g_bChkGooglePlay Or $g_bChkSharedPrefs Then
-			While 1
+		While 1
+			If Not IsSettingPage() Then ExitLoop
+
+			If $g_bChkGooglePlay Or $g_bChkSharedPrefs Then
 				Switch SwitchCOCAcc_DisconnectConnect($bResult, $bSharedPrefs)
 					Case "OK"
 						; all good
@@ -275,7 +239,6 @@ Func SwitchCOCAcc($NextAccount)
 						; no $g_bRunState
 						Return
 				EndSwitch
-
 				Switch SwitchCOCAcc_ClickAccount($bResult, $NextAccount, $bSharedPrefs)
 					Case "OK"
 						; all good
@@ -295,7 +258,6 @@ Func SwitchCOCAcc($NextAccount)
 						; no $g_bRunState
 						Return
 				EndSwitch
-
 				Switch SwitchCOCAcc_ConfirmAccount($bResult)
 					Case "OK"
 						; all good
@@ -307,10 +269,7 @@ Func SwitchCOCAcc($NextAccount)
 						Return
 				EndSwitch
 
-				ExitLoop
-			WEnd
-		ElseIf $g_bChkSuperCellID Then
-			While 1
+			ElseIf $g_bChkSuperCellID Then
 				Switch SwitchCOCAcc_ConnectedSCID($bResult)
 					Case "OK"
 						; all good
@@ -321,7 +280,6 @@ Func SwitchCOCAcc($NextAccount)
 						; no $g_bRunState
 						Return
 				EndSwitch
-
 				Switch SwitchCOCAcc_ConfirmSCID($bResult)
 					Case "OK"
 						; all good
@@ -332,7 +290,6 @@ Func SwitchCOCAcc($NextAccount)
 						; no $g_bRunState
 						Return
 				EndSwitch
-
 				Switch SwitchCOCAcc_ClickAccountSCID($bResult, $NextAccount)
 					Case "OK"
 						; all good
@@ -344,20 +301,28 @@ Func SwitchCOCAcc($NextAccount)
 						Return
 				EndSwitch
 
-				ExitLoop
-			WEnd
-		EndIf
+			EndIf
+			ExitLoop
+		WEnd
 		If _Sleep(500) Then Return
 	EndIf
 
 	If $bResult = True Then
 		$iRetry = 0
 		$g_bReMatchAcc = False
-		$g_abNotNeedAllTime[0] = 1
-		$g_abNotNeedAllTime[1] = 1
-		ResetVariables("donated") ; reset for new account
-		$g_aiAttackedCountSwitch[$g_iCurAccount] = $g_aiAttackedCountAcc[$g_iCurAccount]
+
+		If Not $g_bInitiateSwitchAcc Then SwitchAccountVariablesReload("Save")
+		If $g_ahTimerSinceSwitched[$g_iCurAccount] <> 0 Then
+			If Not $g_bReMatchAcc Then SetSwitchAccLog(" - Acc " & $g_iCurAccount + 1 & ", online: " & Int(__TimerDiff($g_ahTimerSinceSwitched[$g_iCurAccount]) / 1000 / 60) & "m")
+			SetTime(True)
+			$g_aiRunTime[$g_iCurAccount] += __TimerDiff($g_ahTimerSinceSwitched[$g_iCurAccount])
+			$g_ahTimerSinceSwitched[$g_iCurAccount] = 0
+		EndIf
+
 		$g_iCurAccount = $NextAccount
+
+		$g_ahTimerSinceSwitched[$g_iCurAccount] = __TimerInit()
+		$g_bInitiateSwitchAcc = False
 		If $g_sProfileCurrentName <> $g_asProfileName[$g_iNextAccount] Then
 			If $g_iGuiMode = 1 Then
 				; normal GUI Mode
@@ -378,18 +343,8 @@ Func SwitchCOCAcc($NextAccount)
 			waitMainScreen()
 		EndIf
 
-		; Reseting Hero Status
-		$g_iHeroAvailable = $eHeroNone
-		$g_iHeroUpgradingBit = $eHeroNone
-		For $i = 0 To 2
-			$g_iHeroUpgrading[$i] = 0
-		Next
-
-		$StartOnlineTime = TimerInit()
+		SwitchAccountVariablesReload()
 		SetSwitchAccLog("Switched to Acc [" & $NextAccount + 1 & "]", $COLOR_SUCCESS)
-
-		; Reset the log
-		$g_hLogFile = 0
 
 		If $g_bChkSharedPrefs Then
 			; disconnect account again for saving shared_prefs
@@ -432,6 +387,7 @@ Func SwitchCOCAcc($NextAccount)
 		EndIf
 	EndIf
 	waitMainScreen()
+	CheckObstacles()
 	If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 	runBot()
 
@@ -478,7 +434,9 @@ EndFunc   ;==>SwitchCOCAcc_DisconnectConnect
 
 Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $NextAccount, $bStayDisconnected = $g_bChkSharedPrefs, $bLateDisconnectButtonCheck = True)
 	FuncEnter(SwitchCOCAcc_ClickAccount)
-	Local $YCoord = Int(373.5 - $g_iTotalAcc * 36.5 + 73 * $NextAccount)
+	Local $sGPlayAccount = @ScriptDir & "\imgxml\GooglePlay\Accounts"
+	Local $AccountsCoord[0][2]
+
 	For $i = 0 To 20 ; Checking Account List continuously in 20sec
 		If _ColorCheck(_GetPixelColor($aListAccount[0], $aListAccount[1], True), Hex($aListAccount[2], 6), $aListAccount[3]) Then ;	Grey
 			If $bStayDisconnected Then
@@ -486,11 +444,44 @@ Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $NextAccount, $bStayDisconnected 
 				Return FuncReturn("OK")
 			EndIf
 			If _Sleep(600) Then Return FuncReturn("Exit")
-			SetLog("   2. Click Account [" & $NextAccount + 1 & "]")
-			Click(383, $YCoord) ; Click Account
-			If _Sleep(600) Then Return FuncReturn("Exit")
-			;ExitLoop
-			Return FuncReturn("OK")
+
+			Local $XCoordinates = QuickMIS("CX", $sGPlayAccount, 155, 100, 705, 710, True, $g_bDebugImageSave)
+			If UBound($XCoordinates) <= 0 Then
+				SetLog("No GooglePlay accounts detected!!", $COLOR_ERROR)
+				Return FuncReturn("Error")
+			ElseIf UBound($XCoordinates) < $g_iTotalAcc + 1 Then
+				SetLog("Less GooglePlay accounts detected than configured!!", $COLOR_ERROR)
+				SetDebugLog("Detected: " & UBound($XCoordinates) & ", Configured: " & ($g_iTotalAcc + 1), $COLOR_DEBUG)
+				Return FuncReturn("Error")
+			ElseIf UBound($XCoordinates) > $g_iTotalAcc + 1 Then
+				SetLog("More GooglePlay accounts detected than configured!!", $COLOR_ERROR)
+				SetDebugLog("Detected: " & UBound($XCoordinates) & ", Configured: " & ($g_iTotalAcc + 1), $COLOR_DEBUG)
+				Return FuncReturn("Error")
+			Else
+				SetDebugLog("[GooglePlay Accounts]: " & UBound($XCoordinates), $COLOR_DEBUG)
+				ReDim $AccountsCoord[UBound($XCoordinates)][2]
+				For $j = 0 To UBound($XCoordinates) - 1
+					Local $Coordinates = StringSplit($XCoordinates[$j], ",", 2)
+					$AccountsCoord[$j][0] = $Coordinates[0] + 155
+					$AccountsCoord[$j][1] = $Coordinates[1] + 100
+				Next
+				_ArraySort($AccountsCoord, 0, 0, 0, 1) ; short by column 1 [Y]
+				For $j = 0 To UBound($AccountsCoord) - 1
+					SetDebugLog("[" & $j & "] Account coordinates: " & $AccountsCoord[$j][0] & "," & $AccountsCoord[$j][1] & " named: " & $g_asProfileName[$j])
+				Next
+				If $NextAccount + 1 > UBound($XCoordinates) Then
+					SetLog("You selected a GooglePlay undetected account!!", $COLOR_ERROR)
+					Return FuncReturn("Error")
+				EndIf
+				SetLog("   2. Click Account [" & $NextAccount + 1 & "]")
+				Click($AccountsCoord[$NextAccount][0], $AccountsCoord[$NextAccount][1], 1)
+				If _Sleep(600) Then Return FuncReturn("Exit")
+				Return FuncReturn("OK")
+			EndIf
+
+			If $g_bRunState = False Then Return
+			If _sleep(1000) Then Return FuncReturn("Exit")
+			Return FuncReturn("Error")
 		ElseIf (Not $bLateDisconnectButtonCheck Or $i = 6) And _ColorCheck(_GetPixelColor($aButtonDisconnected[0], $aButtonDisconnected[1], True), Hex($aButtonDisconnected[2], 6), $aButtonDisconnected[3]) Then ; Red, double click did not work, try click Disconnect 1 more time
 			If $bStayDisconnected Then
 				ClickP($aAway, 1, 0, "#0000") ;Click Away
@@ -824,10 +815,9 @@ EndFunc   ;==>CheckWaitHero
 Func CheckTroopTimeAllAccount($bExcludeCurrent = False) ; Return the minimum remain training time
 
 	Local $abAccountNo = AccountNoActive()
-	Local $iMinRemainTrain
+	Local $iMinRemainTrain = 999, $iRemainTrain, $bNextAccountDefined = False
 	If $bExcludeCurrent = False Then
-		If $g_abPBActive[$g_iCurAccount] = False Then $g_aiRemainTrainTime[$g_iCurAccount] = _ArrayMax($g_aiTimeTrain, 1, 0, 2) ; remaintraintime of current account - in minutes If not PBT
-		$g_aiTimerStart[$g_iCurAccount] = TimerInit() ; start counting elapse of training time of current account
+		If $g_abPBActive[$g_iCurAccount] = False Then $g_asTrainTimeFinish[$g_iCurAccount] = _DateAdd("n", _ArrayMax($g_aiTimeTrain, 1, 0, 2), _NowCalc())
 	EndIf
 
 	SetSwitchAccLog(" - Train times: ")
@@ -835,32 +825,21 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False) ; Return the minimum rem
 	For $i = 0 To $g_iTotalAcc
 		If $bExcludeCurrent And $i = $g_iCurAccount Then ContinueLoop
 		If $abAccountNo[$i] And Not $g_abDonateOnly[$i] Then ;	Only check Active profiles
-			If $g_aiTimerStart[$i] <> 0 Then
-				$g_aiRemainTrainTime[$i] -= Round(TimerDiff($g_aiTimerStart[$i]) / 1000 / 60, 1) ;   updated remain train time of Active accounts
-				$g_aiTimerStart[$i] = TimerInit() ; reset timer
-				If $g_aiRemainTrainTime[$i] >= 0 Then
-					SetLog("Account [" & $i + 1 & "]: " & $g_asProfileName[$i] & " will have full army in:" & $g_aiRemainTrainTime[$i] & " minutes")
-				Else
-					SetLog("Account [" & $i + 1 & "]: " & $g_asProfileName[$i] & " was ready:" & - $g_aiRemainTrainTime[$i] & " minutes ago")
+			If _DateIsValid($g_asTrainTimeFinish[$i]) Then
+				Local $iRemainTrain = _DateDiff("n", _NowCalc(), $g_asTrainTimeFinish[$i])
+				SetLog("Account [" & $i + 1 & "]: " & $g_asProfileName[$i] & "'s train time: " & $g_asTrainTimeFinish[$i] & " (" & $iRemainTrain & " minutes)")
+				If $iMinRemainTrain > $iRemainTrain Then
+					If Not $bNextAccountDefined Then $g_iNextAccount = $i
+					$iMinRemainTrain = $iRemainTrain
 				EndIf
-				SetSwitchAccLog("    Acc " & $i + 1 & ": " & $g_aiRemainTrainTime[$i] & "m")
+				SetSwitchAccLog("    Acc " & $i + 1 & ": " & $iRemainTrain & "m")
 			Else ; for accounts first Run
 				SetLog("Account [" & $i + 1 & "]: " & $g_asProfileName[$i] & " has not been read its remain train time")
-				$g_aiRemainTrainTime[$i] = -999
 				SetSwitchAccLog("    Acc " & $i + 1 & ": Unknown")
-			EndIf
-		EndIf
-	Next
-
-	$iMinRemainTrain = _ArrayMax($g_aiRemainTrainTime)
-
-	; now let's recheck the correct account to be next
-	For $i = 0 To $g_iTotalAcc
-		If $bExcludeCurrent And $i = $g_iCurAccount Then ContinueLoop
-		If $abAccountNo[$i] And Not $g_abDonateOnly[$i] Then ;	Only check Active profiles
-			If $g_aiRemainTrainTime[$i] < $iMinRemainTrain Then
-				$iMinRemainTrain = $g_aiRemainTrainTime[$i]
-				$g_iNextAccount = $i
+				If Not $bNextAccountDefined Then
+					$g_iNextAccount = $i
+					$bNextAccountDefined = True
+				EndIf
 			EndIf
 		EndIf
 	Next

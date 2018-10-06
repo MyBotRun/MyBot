@@ -97,7 +97,7 @@ Func DropTrophy()
 				If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
 				$bDropSuccessful = True
 				ZoomOut()
-				PrepareSearch()
+				PrepareSearch($DT)
 				If $g_bOutOfGold Or $g_bRestart Then Return
 
 				WaitForClouds() ; Wait for clouds to disappear

@@ -399,11 +399,13 @@ Func SaveConfig_600_11()
 	_Ini_Add("donate", "RequestType_Siege", $g_abRequestType[2] ? 1 : 0)
 	_Ini_Add("donate", "RequestCountCC_Troop", $g_iRequestCountCCTroop)
 	_Ini_Add("donate", "RequestCountCC_Spell", $g_iRequestCountCCSpell)
-	_Ini_Add("donate", "cmbClanCastleSpell", $g_iClanCastleSpellsWaitFirst)
-	_Ini_Add("donate", "cmbClanCastleSpell2", $g_iClanCastleSpellsWaitSecond)
 	For $i = 0 To 2
 		_Ini_Add("donate", "cmbClanCastleTroop" & $i, $g_aiClanCastleTroopWaitType[$i])
 		_Ini_Add("donate", "txtClanCastleTroop" & $i, $g_aiClanCastleTroopWaitQty[$i])
+	Next
+	For $i = 0 To 1
+		_Ini_Add("donate", "cmbClanCastleSpell" & $i, $g_aiClanCastleSpellWaitType[$i])
+		_Ini_Add("donate", "txtClanCastleSpell" & $i, $g_aiClanCastleSpellWaitQty[$i])
 	Next
 	Local $string = ""
 	For $i = 0 To 23
@@ -419,6 +421,8 @@ Func SaveConfig_600_12()
 	ApplyConfig_600_12(GetApplyConfigSaveAction())
 
 	_Ini_Add("donate", "Doncheck", $g_bChkDonate ? 1 : 0)
+	_Ini_Add("donate", "chkDonateQueueOnly[0]", $g_abChkDonateQueueOnly[0] ? 1 : 0)
+	_Ini_Add("donate", "chkDonateQueueOnly[1]", $g_abChkDonateQueueOnly[1] ? 1 : 0)
 
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 		Local $sIniName = ""

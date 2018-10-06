@@ -450,16 +450,22 @@ Func ReadConfig_600_11()
 	$g_abRequestType[2] = (IniRead($g_sProfileConfigPath, "donate", "RequestType_Siege", "0") = "1")
 	$g_iRequestCountCCTroop = Int(IniRead($g_sProfileConfigPath, "donate", "RequestCountCC_Troop", "0"))
 	$g_iRequestCountCCSpell = Int(IniRead($g_sProfileConfigPath, "donate", "RequestCountCC_Spell", "0"))
-	$g_iClanCastleSpellsWaitFirst = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleSpell", "0"))
-	$g_iClanCastleSpellsWaitSecond = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleSpell2", "0"))
 	For $i = 0 To $eTroopCount - 1
-		$g_aiCCTroopsExpected[$i] =0
+		$g_aiCCTroopsExpected[$i] = 0
+		If $i < $eSpellCount Then $g_aiCCSpellsExpected[$i] = 0
 	Next
 	For $i = 0 To 2
 		$g_aiClanCastleTroopWaitType[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleTroop" & $i, "20"))
 		$g_aiClanCastleTroopWaitQty[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "txtClanCastleTroop" & $i, "0"))
 		If $g_aiClanCastleTroopWaitType[$i] < $eTroopCount Then ; barb - bowl
 			$g_aiCCTroopsExpected[$g_aiClanCastleTroopWaitType[$i]] += $g_aiClanCastleTroopWaitQty[$i]
+		EndIf
+	Next
+	For $i = 0 To 1
+		$g_aiClanCastleSpellWaitType[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleSpell" & $i, "10"))
+		$g_aiClanCastleSpellWaitQty[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "txtClanCastleSpell" & $i, "0"))
+		If $g_aiClanCastleSpellWaitType[$i] < $eSpellCount Then ; LSpell - SkSpell
+			$g_aiCCSpellsExpected[$g_aiClanCastleSpellWaitType[$i]] += $g_aiClanCastleSpellWaitQty[$i]
 		EndIf
 	Next
 
@@ -472,6 +478,8 @@ EndFunc   ;==>ReadConfig_600_11
 Func ReadConfig_600_12()
 	; <><><><> Village / Donate - Donate <><><><>
 	IniReadS($g_bChkDonate, $g_sProfileConfigPath, "donate", "Doncheck", True, "Bool")
+	IniReadS($g_abChkDonateQueueOnly[0], $g_sProfileConfigPath, "donate", "chkDonateQueueOnly[0]", True, "Bool")
+	IniReadS($g_abChkDonateQueueOnly[1], $g_sProfileConfigPath, "donate", "chkDonateQueueOnly[1]", True, "Bool")
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 		Local $sIniName = ""
 		If $i >= $eTroopBarbarian And $i <= $eTroopBowler Then

@@ -13,12 +13,12 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func PrepareSearch() ;Click attack button and find match button, will break shield
+Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will break shield
 
 	SetLog("Going to Attack...", $COLOR_INFO)
 
 	; RestartSearchPickupHero - Check Remaining Heal Time
-	If $g_bSearchRestartPickupHero Then
+	If $g_bSearchRestartPickupHero And $Mode <> $DT Then
 		For $pTroopType = $eKing To $eWarden ; check all 3 hero
 			For $pMatchMode = $DB To $g_iModeCount - 1 ; check all attack modes
 				If IsSpecialTroopToBeUsed($pMatchMode, $pTroopType) Then

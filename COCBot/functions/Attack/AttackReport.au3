@@ -240,18 +240,11 @@ Func AttackReport()
 		EndIf
 	EndIf
 	$g_aiAttackedVillageCount[$g_iMatchMode] += 1
-	If ProfileSwitchAccountEnabled() Then
-		$g_aiGoldTotalAcc[$g_iCurAccount] += $g_iStatsLastAttack[$eLootGold] + $g_iStatsBonusLast[$eLootGold]
-		$g_aiElixirTotalAcc[$g_iCurAccount] += $g_iStatsLastAttack[$eLootElixir] + $g_iStatsBonusLast[$eLootElixir]
-		If $g_iStatsStartedWith[$eLootDarkElixir] <> "" Then
-			$g_aiDarkTotalAcc[$g_iCurAccount] += $g_iStatsLastAttack[$eLootDarkElixir] + $g_iStatsBonusLast[$eLootDarkElixir]
-		EndIf
-		$g_aiTrophyLootAcc[$g_iCurAccount] += $g_iStatsLastAttack[$eLootTrophy]
-		$g_aiAttackedCountAcc[$g_iCurAccount] += 1
-		SetSwitchAccLog(" - Acc. " & $g_iCurAccount + 1 & ", Attack: " & $g_aiAttackedCountAcc[$g_iCurAccount])
-	EndIf
 	UpdateStats()
 	UpdateSDataBase()
+	If ProfileSwitchAccountEnabled() Then
+		SetSwitchAccLog(" - Acc. " & $g_iCurAccount + 1 & ", Attack: " & $g_aiAttackedCount)
+	EndIf
 	$g_iActualTrainSkip = 0
 	$g_iPercentageDamage = 0
 	$g_iSidesAttack = 0

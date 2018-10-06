@@ -1632,41 +1632,26 @@ Func SetTime($bForceUpdate = False)
 		GUICtrlSetData($g_hLblResultRuntimeNow, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 	EndIf
 
-	; Return
-
-	Local Static $DisplayLoop = 0
-	If $DisplayLoop >= 30 Then ; Conserve Clock Cycles on Updating times
-		$DisplayLoop = 0
-		If ProfileSwitchAccountEnabled() Then
-			If GUICtrlRead($g_hGUI_STATS_TAB, 1) = $g_hGUI_STATS_TAB_ITEM5 Then
-				Local $abAccountNo = AccountNoActive()
-				For $i = 0 To $g_iTotalAcc ; Update time for all Accounts
-					If $abAccountNo[$i] And Not $g_abDonateOnly[$i] And $g_aiTimerStart[$i] <> 0 Then
-						Local $UpdateTrainTime = $g_aiRemainTrainTime[$i] - TimerDiff($g_aiTimerStart[$i]) / 60 / 1000 ; in minutes
-						Local $sReadyTime = ""
-						If Abs($UpdateTrainTime) >= 60 Then
-							$sReadyTime &= Int($UpdateTrainTime / 60) & "h " & Abs(Round(Mod($UpdateTrainTime, 60), 0)) & "m"
-						Else
-							$sReadyTime &= Int($UpdateTrainTime) & "m " & Abs(Round(Mod($UpdateTrainTime, 1) * 60, 0)) & "s"
-						EndIf
-
-						If $i = $g_iCurAccount Then
-							GUICtrlSetBkColor($g_ahLblTroopsTime[$i], $COLOR_GREEN)
-							GUICtrlSetColor($g_ahLblTroopsTime[$i], $COLOR_WHITE)
-						ElseIf $UpdateTrainTime < 0 Then
-							GUICtrlSetBkColor($g_ahLblTroopsTime[$i], $COLOR_RED)
-							GUICtrlSetColor($g_ahLblTroopsTime[$i], $COLOR_WHITE)
-						Else
-							GUICtrlSetBkColor($g_ahLblTroopsTime[$i], $COLOR_YELLOW)
-							GUICtrlSetColor($g_ahLblTroopsTime[$i], $COLOR_BLACK)
-						EndIf
-						GUICtrlSetData($g_ahLblTroopsTime[$i], $sReadyTime)
+	If ProfileSwitchAccountEnabled() Then
+		If GUICtrlRead($g_hGUI_STATS_TAB, 1) = $g_hGUI_STATS_TAB_ITEM5 Or $bForceUpdate Then
+			_TicksToTime(Int(__TimerDiff($g_ahTimerSinceSwitched[$g_iCurAccount]) + $g_aiRunTime[$g_iCurAccount]), $hour, $min, $sec)
+			GUICtrlSetData($g_ahLblResultRuntimeNowAcc[$g_iCurAccount], StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+			For $i = 0 To $g_iTotalAcc
+				If _DateIsValid($g_asTrainTimeFinish[$i]) Then
+					Local $iTime = _DateDiff("s", _NowCalc(), $g_asTrainTimeFinish[$i]) * 1000
+					_TicksToTime(Abs($iTime), $hour, $min, $sec)
+					GUICtrlSetData($g_ahLblTroopTime[$i], ($iTime < 0 ? "-" : "") & StringFormat("%02i:%02i", $min, $sec))
+					If $i = $g_iCurAccount Then
+						GUICtrlSetColor($g_ahLblTroopTime[$i], $COLOR_GREEN)
+					ElseIf $iTime < 0 Then
+						GUICtrlSetColor($g_ahLblTroopTime[$i], $COLOR_RED)
+					Else
+						GUICtrlSetColor($g_ahLblTroopTime[$i], $COLOR_BLACK)
 					EndIf
-				Next
-			EndIf
+			   EndIf
+			Next
 		EndIf
 	EndIf
-	$DisplayLoop += 1
 EndFunc   ;==>SetTime
 
 Func tabMain()

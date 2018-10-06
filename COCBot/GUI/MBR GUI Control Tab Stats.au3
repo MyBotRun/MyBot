@@ -31,23 +31,38 @@ Func UpdateMultiStats()
 	Local $iCmbTotalAcc = _GUICtrlComboBox_GetCurSel($g_hCmbTotalAccount) + 1 ; combobox data starts with 2
 	For $i = 0 To 7
 		If $bEnableSwitchAcc And $i <= $iCmbTotalAcc Then
-			For $j = $g_ahGrpVillageAcc[$i] To $g_ahLblHourlyStatsTrophyAcc[$i]
-				GUICtrlSetState($j, $GUI_SHOW)
-			Next
+			_GUI_Value_STATE("SHOW", $g_ahGrpDefaultAcc[$i])
+			If GUICtrlGetState($g_ahLblHourlyStatsGoldAcc[$i]) = $GUI_ENABLE + $GUI_HIDE Then _GUI_Value_STATE("SHOW", $g_ahGrpReportAcc[$i])
+
 			If GUICtrlRead($g_ahChkAccount[$i]) = $GUI_CHECKED Then
 				If GUICtrlRead($g_ahChkDonate[$i]) = $GUI_UNCHECKED Then
 					GUICtrlSetData($g_ahGrpVillageAcc[$i], GUICtrlRead($g_ahCmbProfile[$i]) & " (Active)")
 				Else
 					GUICtrlSetData($g_ahGrpVillageAcc[$i], GUICtrlRead($g_ahCmbProfile[$i]) & " (Donate)")
 				EndIf
-
 			Else
 				GUICtrlSetData($g_ahGrpVillageAcc[$i], GUICtrlRead($g_ahCmbProfile[$i]) & " (Idle)")
 			EndIf
 		Else
-			For $j = $g_ahGrpVillageAcc[$i] To $g_ahLblHourlyStatsTrophyAcc[$i]
-				GUICtrlSetState($j, $GUI_HIDE)
-			Next
+			_GUI_Value_STATE("HIDE", $g_ahGrpDefaultAcc[$i] & "#" & $g_ahGrpReportAcc[$i] & "#" & $g_ahGrpStatsAcc[$i])
 		EndIf
 	Next
 EndFunc   ;==>UpdateMultiStats
+
+Func SwitchVillageInfo()
+	For $i = 0 To 7
+		If @GUI_CtrlId = $g_ahPicArrowLeft[$i] Or @GUI_CtrlId = $g_ahPicArrowRight[$i] Then
+			Return _SwitchVillageInfo($i)
+		EndIf
+	Next
+EndFunc
+
+Func _SwitchVillageInfo($i)
+	If GUICtrlGetState($g_ahLblResultGoldNowAcc[$i]) = $GUI_ENABLE + $GUI_SHOW Then
+		_GUI_Value_STATE("HIDE", $g_ahGrpReportAcc[$i])
+		_GUI_Value_STATE("SHOW", $g_ahGrpStatsAcc[$i])
+	Else
+		_GUI_Value_STATE("HIDE", $g_ahGrpStatsAcc[$i])
+		_GUI_Value_STATE("SHOW", $g_ahGrpReportAcc[$i])
+	EndIf
+EndFunc

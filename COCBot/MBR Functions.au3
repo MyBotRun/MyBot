@@ -288,6 +288,7 @@
 #include "functions\Village\CheckNeedOpenTrain.au3"
 #include "functions\Village\SwitchBetweenBases.au3"
 #include "functions\Village\SwitchAccount.au3"
+#include "functions\Village\SwitchAccountVariablesReload.au3"
 #include "functions\Village\Clan Games\ClanGames.au3"
 #include "functions\Village\FreeMagicItems.au3"
 
