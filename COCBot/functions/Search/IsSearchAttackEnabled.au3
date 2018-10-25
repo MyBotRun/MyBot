@@ -174,13 +174,13 @@ Func _getDailyRandomStartEnd($iDuration = 4)
 		If $iStartHour <= @HOUR Then $iStartHour = @HOUR + 1.166 ; check if random start is before now, if yes add 70 minutes
 		$iEndHour = $iStartHour + $iDuration
 		If $g_bDebugSetlog Then SetDebugLog("StartHour: " & $iStartHour & "EndHour: " & $iEndHour, $COLOR_DEBUG)
-		$aNoAttackTimes[0] = _DateAdd("h", $iStartHour, _NowCalc()) ; create proper date/time string with start time
+		$aNoAttackTimes[0] = _DateAdd("h", Int($iStartHour), _NowCalc()) ; create proper date/time string with start time
 		If @error Then
 			_logErrorDateDiff(@error)
 			SetError(4, "Can not create random start time")
 			Return
 		EndIf
-		$aNoAttackTimes[1] = _DateAdd("h", $iEndHour, _NowCalc()) ; create proper date/time string with end time
+		$aNoAttackTimes[1] = _DateAdd("h", Int($iEndHour), _NowCalc()) ; create proper date/time string with end time
 		If @error Then
 			_logErrorDateDiff(@error)
 			SetError(5, "Can not create random end time")

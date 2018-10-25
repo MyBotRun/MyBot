@@ -102,7 +102,7 @@ Func getShieldInfo()
 	$iShieldSeconds = ($iDay * 86400) + ($iHour * 3600) + ($iMin * 60) + $iSec ; add time into total seconds
 	If $g_bDebugSetlog Then SetDebugLog("Computed Shield Seconds = " & $iShieldSeconds, $COLOR_DEBUG)
 
-	$aPBReturnResult[2] = _DateAdd('s', $iShieldSeconds, _NowCalc()) ; Find actual expire time from NOW.
+	$aPBReturnResult[2] = _DateAdd('s', Int($iShieldSeconds), _NowCalc()) ; Find actual expire time from NOW.
 	If @error Then SetLog("_DateAdd error= " & @error, $COLOR_ERROR)
 	If $g_bDebugSetlog Then SetDebugLog("Shield expires at: " & $aPBReturnResult[2], $COLOR_INFO)
 

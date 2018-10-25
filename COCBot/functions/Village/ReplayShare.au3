@@ -19,7 +19,7 @@ Func ReplayShare($bShareLastReplay)
 
 	Local Static $sLastTimeShared = ""
 
-	If $sLastTimeShared = "" Or _DateDiff("m", $sLastTimeShared, _NowCalc()) > 30  Then ; Go into here when Function got called the first time or Cooldown between shares is already over
+	If $sLastTimeShared = "" Or _DateDiff("n", $sLastTimeShared, _NowCalc()) > 30  Then ; Go into here when Function got called the first time or Cooldown between shares is already over
 		SetLog("Going to share the last Attack!")
 
 		ClickP($aAway, 1, 0, "#0235") ;Click away any open Windows

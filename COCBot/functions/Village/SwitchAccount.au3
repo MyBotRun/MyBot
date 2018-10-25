@@ -779,16 +779,7 @@ Func CheckWaitHero() ; get hero regen time remaining if enabled
 	$g_aiTimeTrain[2] = 0
 
 	$aHeroResult = getArmyHeroTime("all")
-
-	If @error Then
-		SetLog("getArmyHeroTime return error, exit Check Hero's wait time!", $COLOR_ERROR)
-		Return ; if error, then quit Check Hero's wait time
-	EndIf
-
-	If $aHeroResult = "" Then
-		SetLog("You have no hero or bad TH level detection Pls manually locate TH", $COLOR_ERROR)
-		Return
-	EndIf
+	If UBound($aHeroResult) < 3 Then Return ; OCR error
 
 	If _Sleep($DELAYRESPOND) Then Return
 	If $aHeroResult[0] > 0 Or $aHeroResult[1] > 0 Or $aHeroResult[2] > 0 Then ; check if hero is enabled to use/wait and set wait time
@@ -816,8 +807,9 @@ Func CheckTroopTimeAllAccount($bExcludeCurrent = False) ; Return the minimum rem
 
 	Local $abAccountNo = AccountNoActive()
 	Local $iMinRemainTrain = 999, $iRemainTrain, $bNextAccountDefined = False
-	If $bExcludeCurrent = False Then
-		If $g_abPBActive[$g_iCurAccount] = False Then $g_asTrainTimeFinish[$g_iCurAccount] = _DateAdd("n", _ArrayMax($g_aiTimeTrain, 1, 0, 2), _NowCalc())
+	If Not $bExcludeCurrent And Not $g_abPBActive[$g_iCurAccount] Then
+		$g_asTrainTimeFinish[$g_iCurAccount] = _DateAdd("n", Number(_ArrayMax($g_aiTimeTrain, 1, 0, 2)), _NowCalc())
+		SetDebugLog("Army times: Troop = " & $g_aiTimeTrain[0] & ", Spell = " & $g_aiTimeTrain[1] & ", Hero = " & $g_aiTimeTrain[2] & ", $g_asTrainTimeFinish = " & $g_asTrainTimeFinish[$g_iCurAccount])
 	EndIf
 
 	SetSwitchAccLog(" - Train times: ")

@@ -627,22 +627,22 @@ Global Const $g_aiTroopCostPerLevel[$eTroopCount][10] = [ _
 		[8, 50, 80, 120, 200, 300, 400, 500, 600], _ 			        ; Archer
 		[9, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000, 4500], _ 	    ; Giant
 		[7, 25, 40, 60, 80, 100, 150, 200], _ 				 	        ; Goblin
-		[8, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500], _          ; WallBreaker
+		[8, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750], _          ; WallBreaker
 		[8, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500], _ 	        ; Balloon
 		[9, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500], _    ; Wizard
 		[5, 5000, 6000, 8000, 10000, 15000], _					        ; Healer
 		[7, 18000, 20000, 22000, 24000, 26000, 28000, 30000], _         ; Dragon
 		[8, 21000, 24000, 27000, 30000, 33000, 35000, 37000, 39000], _  ; Pekka
-		[6, 15000, 16000, 17000, 18000, 19000, 20000], _ 			    ; BabyDragon
+		[6, 10000, 11000, 12000, 13000, 14000, 15000], _ 			    ; BabyDragon
 		[6, 4200, 4800, 5200, 5600, 6000, 6400], _  			        ; Miner
 		[3, 36000, 40000, 44000], _  		                 	        ; ElectroDragon
 		[8, 6, 7, 8, 9, 10, 11, 12, 13], _ 							    ; Minion
 		[8, 40, 45, 52, 58, 65, 90, 115, 140], _					    ; HogRider
 		[7, 70, 100, 130, 160, 190, 220, 250], _ 				 	    ; Valkyrie
-		[8, 450, 525, 600, 675, 750, 825, 900, 975], _ 				    ; Golem
-		[4, 250, 350, 450, 550], _ 								 	    ; Witch
+		[8, 300, 375, 450, 525, 600, 675, 750, 825], _ 				    ; Golem
+		[4, 175, 225, 275, 325], _ 								 	    ; Witch
 		[5, 390, 450, 510, 570, 630], _  							    ; Lavahound
-		[4, 130, 150, 170, 190]] 									    ; Bowler
+		[4, 110, 130, 150, 170]] 									    ; Bowler
 Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 6, 30, 2, 5, 8, 30, 12, 30, 6]
 
 ; Spells
@@ -676,9 +676,9 @@ Global Const $g_aiSiegeMachineTrainTimePerLevel[$eSiegeMachineCount][4] = [ _
 		[3, 1200, 1500, 1800], _  ; Wall Wrecker
 		[3, 1200, 1500, 1800]]    ; Battle Blimp
 Global Const $g_aiSiegeMachineCostPerLevel[$eSiegeMachineCount][4] = [ _
-		[3, 100000, 125000, 150000], _  ; Wall Wrecker
-		[3, 100000, 125000, 150000]]    ; Battle Blimp
-Global Const $g_aiSiegeMachineDonateXP[$eSiegeMachineCount] = [1, 1]
+		[3, 100000, 100000, 100000], _  ; Wall Wrecker
+		[3, 100000, 100000, 100000]]    ; Battle Blimp
+Global Const $g_aiSiegeMachineDonateXP[$eSiegeMachineCount] = [30, 30]
 
 ; Hero Bitmaped Values
 Global Enum $eHeroNone = 0, $eHeroKing = 1, $eHeroQueen = 2, $eHeroWarden = 4
@@ -1281,7 +1281,7 @@ Global $g_aiCurrentLootBB[$eLootCountBB] = [0, 0, 0] ; current stats on builders
 Global $g_iArmyCapacity = 0 ; Calculated percentage of troops currently in camp / total camp space, expressed as an integer from 0 to 100
 Global $g_iTotalTrainSpaceSpell = 0
 Global $g_iTotalTrainSpaceSiege = 0
-Global $g_iCurrentSpells = 0 ; Current Spells
+Global $g_iCurrentSpells ; Current Spells
 Global $g_iCurrentCCSpells = 0, $g_iTotalCCSpells = 0
 Global $g_bFullArmySpells = False ; true when $g_iTotalTrainSpaceSpell = $iTotalSpellSpace in getArmySpellCount
 Global $g_CurrentCampUtilization = 0, $g_iTotalCampSpace = 0
@@ -1499,7 +1499,7 @@ Global Const $g_aiDonateTroopPriority[$eTroopCount] = [ _
 		$eTroopValkyrie, $eTroopBowler, $eTroopMiner, $eTroopGiant, $eTroopBalloon, $eTroopHogRider, $eTroopWizard, _
 		$eTroopWallBreaker, $eTroopMinion, $eTroopArcher, $eTroopBarbarian, $eTroopGoblin]
 Global Const $g_aiDonateSpellPriority[$eSpellCount] = [ _
-		$eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellPoison, $eSpellEarthquake, _
+		$eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellClone, $eSpellPoison, $eSpellEarthquake, _
 		$eSpellHaste, $eSpellSkeleton]
 Global $g_aiDonateStatsTroops[$eTroopCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 Global $g_aiDonateStatsSpells[$eSpellCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
@@ -1517,8 +1517,7 @@ Global $g_iTroopsReceived = 0
 Global $g_iDonationWindowY = 0
 
 ; Drop trophy
-Global $g_bDisableDropTrophy = False ; this will be True if you tried to use Drop Throphy and did not have Tier 1 or 2 Troops to protect you expensive troops from being dropped.
-Global $g_avDTtroopsToBeUsed[6][2] = [["Barb", 0], ["Arch", 0], ["Giant", 0], ["Wall", 0], ["Gobl", 0], ["Mini", 0]] ; DT available troops [type, qty]
+Global $g_avDTtroopsToBeUsed[8][2] = [["Barb", 0], ["Arch", 0], ["Giant", 0], ["Wall", 0], ["Gobl", 0], ["Mini", 0], ["Ball", 0], ["Wiza", 0]] ; DT available troops [type, qty]
 
 ; Obstacles
 Global $g_bMinorObstacle = False
@@ -1558,9 +1557,9 @@ Global $g_iESpellLevel = 1
 Global Const $g_fDarkStealFactor = 0.75
 Global Const $g_fDarkFillLevel = 0.70
 ; Array to hold Total HP of DE Drills at each level (1-6)
-Global Const $g_aDrillLevelHP[6] = [800, 860, 920, 980, 1060, 1160]
+Global Const $g_aDrillLevelHP[7] = [800, 860, 920, 980, 1060, 1160, 1280]
 ; Array to hold Total Amount of DE available from Drill at each level (1-6)
-Global Const $g_aDrillLevelTotal[6] = [160, 300, 540, 840, 1280, 1800]
+Global Const $g_aDrillLevelTotal[7] = [160, 300, 540, 840, 1280, 1800, 2400]
 ; Array to hold Total Damage of Lightning Spell at each level (1-7)
 Global Const $g_aLSpellDmg[7] = [300, 360, 420, 480, 540, 600, 660]
 ; Array to hold Total Damage of Earthquake Spell at each level (1-4)

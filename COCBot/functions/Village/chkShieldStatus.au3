@@ -136,7 +136,7 @@ Func _Date_Difference($sStartDate, Const $sEndDate, Const $iGrain)
 		If $iUnit <> 0 Then
 			$sReturn &= $iUnit & " " & $aType[$i] & ($iUnit > 1 ? "s" : "") & " "
 		EndIf
-		$sStartDate = _DateAdd($aUnit[$i], $iUnit, $sStartDate)
+		$sStartDate = _DateAdd($aUnit[$i], Int($iUnit), $sStartDate)
 	Next
 
 	Return $sReturn

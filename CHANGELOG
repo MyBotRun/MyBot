@@ -1,3 +1,21 @@
+* **V7.6.4**
+* October Update Fixed Drop Trophies , Now the slots are not selected by default
+* October Update Fixed Heroes Recover timer when is boosted
+* October Update Fixed values to Train Costs, WB, Baby Dragon , Golem , Bowler and Witch
+* October Update Fixed values to Siege Build Costs
+* October Update Fixed Siege Donate XP to 30
+* Fixed Troop/Spell drop in CSV after hero activation
+* Fixed Switch Account when wait hero
+* Fixed Queued minion detection
+* Fixed Spells Donation
+* Fixed Hero Upgrade when boost potion present
+* Fixed ReplayShare every 30 minutes , reported/fixed by @Fahid.Mahmood
+* Fixed Hero Heal Time While Boosting , reported/fixed by @Fahid.Mahmood
+* Improved Healer detection on attack bar
+* Improved Laboratory White font number 9
+* Added Drop trophy with balloon, wizard and minion at any troop slot
+
+
 * **V7.6.3**
 * Fixed Google Play account switch
 * Fixed lab status display

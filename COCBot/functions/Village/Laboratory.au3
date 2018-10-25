@@ -428,13 +428,13 @@ Func LabUpgrade()
 					Switch $EndPeriod
 						Case "d"
 							$TimeAdd = (Int($EndTime) * 24 * 60) - 10 ; change days to minutes, minus 10 minute
-							$g_sLabUpgradeTime = _DateAdd('n', $TimeAdd, $StartTime) ; add the time required to finish the  upgrade
+							$g_sLabUpgradeTime = _DateAdd('n', Int($TimeAdd), $StartTime) ; add the time required to finish the  upgrade
 						Case "h"
 							$TimeAdd = (Int($EndTime) * 60) - 3 ; change hours to minutes, minus 3 minutes
-							$g_sLabUpgradeTime = _DateAdd('n', $TimeAdd, $StartTime) ; add the time required to finish the  upgrade
+							$g_sLabUpgradeTime = _DateAdd('n', Int($TimeAdd), $StartTime) ; add the time required to finish the  upgrade
 						Case "m"
 							$TimeAdd = Int($EndTime) ; change to minutes
-							$g_sLabUpgradeTime = _DateAdd('n', $TimeAdd, $StartTime) ; add the time required to finish the  upgrade
+							$g_sLabUpgradeTime = _DateAdd('n', Int($TimeAdd), $StartTime) ; add the time required to finish the  upgrade
 						Case Else
 							SetLog("Upgrade time period invalid, try again!", $COLOR_WARNING)
 					EndSwitch

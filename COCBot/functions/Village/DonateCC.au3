@@ -356,7 +356,7 @@ Func DonateCC($bCheckForNewMsg = False)
 				SetLog("Clan Castle troops are full, skip troop donation...", $COLOR_ACTION)
 				$g_bSkipDonTroops = True
 			EndIf
-			If $g_iCurrentSpells = 0 Then
+			If $g_iCurrentSpells = 0 And $g_iCurrentSpells <> "" Then
 				SetLog("No spells available, skip spell donation...", $COLOR_ORANGE)
 				$g_bSkipDonSpells = True
 			ElseIf $g_iTotalDonateSpellCapacity = 0 Then
@@ -488,7 +488,6 @@ Func DonateCC($bCheckForNewMsg = False)
 								DonateSpellType($iSpellIndex, $abDonateQueueOnly[1])
 								If _Sleep($DELAYDONATECC3) Then ExitLoop
 							EndIf
-							ExitLoop
 						EndIf
 					Next
 					$iBenchmark = TimerDiff($itime)
@@ -1135,9 +1134,9 @@ Func RemainingCCcapacity()
 	$g_iTotalDonateSiegeMachineCapacity = -1
 
 	; Skip reading unnecessary items
-	Local $bDonateSpell = (($g_aiPrepDon[2] = 1) Or ($g_aiPrepDon[3] = 1)) And $g_iCurrentSpells > 0
+	Local $bDonateSpell = ($g_aiPrepDon[2] = 1 Or $g_aiPrepDon[3] = 1) And ($g_iCurrentSpells > 0 Or $g_iCurrentSpells = "")
 	Local $bDonateSiege = ($g_aiPrepDon[4] = 1) And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0)
-	SetDebugLog("$g_aiPrepDon[2]: " & $g_aiPrepDon[2] & "/$g_aiPrepDon[3]: " & $g_aiPrepDon[3] & ", $bDonateSpell: " & $bDonateSpell)
+	SetDebugLog("$g_aiPrepDon[2]: " & $g_aiPrepDon[2] & ", $g_aiPrepDon[3]: " & $g_aiPrepDon[3] & ", $g_iCurrentSpells: " & $g_iCurrentSpells & ", $bDonateSpell: " & $bDonateSpell)
 	SetDebugLog("$g_aiPrepDon[4]: " & $g_aiPrepDon[4] & ", $bDonateSiege: " & $bDonateSiege)
 
 	; Verify with OCR the Donation Clan Castle capacity

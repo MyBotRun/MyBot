@@ -1291,7 +1291,7 @@ Func CheckQueueTroops($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 
 	Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\TroopQueued"
 
-	Local $aSearchResult = SearchArmy($Dir, 18, 182, $x, 261)
+	Local $aSearchResult = SearchArmy($Dir, 18, 182, $x, 261, $bGetQuantity ? "Queue" : "")
 
 	ReDim $aResult[UBound($aSearchResult)]
 
@@ -1304,12 +1304,13 @@ Func CheckQueueTroops($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 		If Not $g_bRunState Then Return
 		$aResult[$i] = $aSearchResult[$i][0]
 	Next
-	_ArrayReverse($aResult)
 
 	If $bGetQuantity Then
-		Local $aQuantities = GetQueueQuantity($aResult, $x - 64)
+		Local $aQuantities[UBound($aResult)][2]
 		Local $aQueueTroop[$eTroopCount]
 		For $i = 0 To (UBound($aQuantities) - 1)
+			$aQuantities[$i][0] = $aSearchResult[$i][0]
+			$aQuantities[$i][1]	= $aSearchResult[$i][3]
 			If $bSetLog Then SetLog("  - " & $g_asTroopNames[TroopIndexLookup($aQuantities[$i][0], "CheckQueueTroops")] & ": " & $aQuantities[$i][1] & "x", $COLOR_SUCCESS)
 			$aQueueTroop[TroopIndexLookup($aQuantities[$i][0])] += $aQuantities[$i][1]
 		Next
@@ -1317,6 +1318,7 @@ Func CheckQueueTroops($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 		Return $aQueueTroop
 	EndIf
 
+	_ArrayReverse($aResult)
 	Return $aResult
 EndFunc   ;==>CheckQueueTroops
 
@@ -1325,7 +1327,7 @@ Func CheckQueueSpells($bGetQuantity = True, $bSetLog = True, $x = 835, $bQtyWSlo
 	;$hTimer = TimerInit()
 	If $bSetLog Then SetLog("Checking Spells Queue...", $COLOR_INFO)
 
-	Local $aSearchResult = SearchArmy($sImageDir, 18, 215, $x, 230)
+	Local $aSearchResult = SearchArmy($sImageDir, 18, 215, $x, 230, $bGetQuantity ? "Queue" : "")
 	ReDim $aResult[UBound($aSearchResult)]
 
 	If $aSearchResult[0][0] = "" Then
@@ -1337,13 +1339,14 @@ Func CheckQueueSpells($bGetQuantity = True, $bSetLog = True, $x = 835, $bQtyWSlo
 		If Not $g_bRunState Then Return
 		$aResult[$i] = $aSearchResult[$i][0]
 	Next
-	_ArrayReverse($aResult)
 
 	If $bGetQuantity Then
-		Local $aQuantities = GetQueueQuantity($aResult, $x - 60)
+		Local $aQuantities[UBound($aResult)][2]
 		Local $aQueueSpell[$eSpellCount]
 		For $i = 0 To (UBound($aQuantities) - 1)
 			If Not $g_bRunState Then Return
+			$aQuantities[$i][0] = $aSearchResult[$i][0]
+			$aQuantities[$i][1] = $aSearchResult[$i][3]
 			If $bSetLog Then SetLog("  - " & $g_asSpellNames[TroopIndexLookup($aQuantities[$i][0], "CheckQueueSpells") - $eLSpell] & ": " & $aQuantities[$i][1] & "x", $COLOR_SUCCESS)
 			$aQueueSpell[TroopIndexLookup($aQuantities[$i][0]) - $eLSpell] += $aQuantities[$i][1]
 		Next
@@ -1351,31 +1354,9 @@ Func CheckQueueSpells($bGetQuantity = True, $bSetLog = True, $x = 835, $bQtyWSlo
 		Return $aQueueSpell
 	EndIf
 
+	_ArrayReverse($aResult)
 	Return $aResult
 EndFunc   ;==>CheckQueueSpells
-
-Func GetQueueQuantity($aAvailableTroops, $xQueue = 775)
-
-	If IsArray($aAvailableTroops) Then
-		If $aAvailableTroops[0] = "" Or StringLen($aAvailableTroops[0]) = 0 Then _ArrayDelete($aAvailableTroops, 0)
-		If $aAvailableTroops[UBound($aAvailableTroops) - 1] = "" Or StringLen($aAvailableTroops[UBound($aAvailableTroops) - 1]) = 0 Then _ArrayDelete($aAvailableTroops, Number(UBound($aAvailableTroops) - 1))
-
-		Local $aResult[UBound($aAvailableTroops)][2] = [["", 0]]
-		Local $x = $xQueue, $y = 192
-		_CaptureRegion2()
-
-		For $i = 0 To (UBound($aAvailableTroops) - 1)
-			If Not $g_bRunState Then Return
-			Local $iOCRResult = getQueueTroopsQuantity($x, $y)
-			$aResult[$i][0] = $aAvailableTroops[$i]
-			$aResult[$i][1] = $iOCRResult
-			; At end, update Coords to next troop
-			$x -= 71
-		Next
-		Return $aResult
-	EndIf
-	Return False
-EndFunc   ;==>GetQueueQuantity
 
 Func SearchArmy($sImageDir = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0, $sArmyType = "", $bSkipReceivedTroopsCheck = False)
 	; Setup arrays, including default return values for $return
@@ -1484,6 +1465,15 @@ Func SearchArmy($sImageDir = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0, $sArmyType = 
 			Else
 				$aResult[$i][3] = 0
 			EndIf
+		Next
+	EndIf
+
+	If $sArmyType = "Queue" Then
+		Local $xSlot
+		For $i = 0 To UBound($aResult) - 1
+			$xSlot = Int(Number($aResult[$i][1]) / 71) * 71 - 6
+			$aResult[$i][3] = Number(getQueueTroopsQuantity($xSlot, 192))
+			SetDebugLog($aResult[$i][0] & " (" & $xSlot & ") x" & $aResult[$i][3])
 		Next
 	EndIf
 
