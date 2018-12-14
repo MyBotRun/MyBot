@@ -19,10 +19,10 @@ Func CheckImageType()
 	If _Sleep($DELAYCHECKIMAGETYPE1) Then Return
 	If Not IsMainPage() Then ClickP($aAway, 2, 20, "#0467") ;Click Away Again
 
-	Local $x = 165
+	Local $x = 150
 	Local $y = 150
-	Local $x1 = $x + 60
-	Local $y1 = $y + 80
+	Local $x1 = $x + 50
+	Local $y1 = $y + 50
 
 	Local $directory = @ScriptDir & "\imgxml\SnowTheme"
 	Local $temp = SearchImgloc($directory, $x, $y, $x1, $y1)
@@ -37,22 +37,7 @@ Func CheckImageType()
 		EndIf
 	Else
 		$g_iDetectedImageType = 0 ; Normal Theme
-		SetLog("Normal Theme detected", $COLOR_RED)
+		SetLog("Normal Theme detected", $COLOR_ERROR)
 	EndIf
-
-;~ 	If _ColorCheck(_GetPixelColor($aImageTypeN1[0], $aImageTypeN1[1], True), Hex($aImageTypeN1[2], 6), $aImageTypeN1[3]) And _
-;~ 			_ColorCheck(_GetPixelColor($aImageTypeN2[0], $aImageTypeN2[1], True), Hex($aImageTypeN2[2], 6), $aImageTypeN2[3]) Then
-;~ 		$g_iDetectedImageType = 0; Normal Theme
-;~ 		SetLog("Normal Theme detected")
-;~ 	ElseIf _ColorCheck(_GetPixelColor($aImageTypeS1[0], $aImageTypeS1[1], True), Hex($aImageTypeS1[2], 6), $aImageTypeS1[3]) And _
-;~ 			_ColorCheck(_GetPixelColor($aImageTypeS2[0], $aImageTypeS2[1], True), Hex($aImageTypeS2[2], 6), $aImageTypeS2[3]) Then
-;~ 		$g_iDetectedImageType = 1;Snow Theme
-;~ 		SetLog("Snow Theme detected")
-;~ 	Else
-;~ 		$g_iDetectedImageType = 0; Default to Normal Theme
-;~ 		SetLog("Default Theme detected")
-;~ 	EndIf
-
-;~ 	readCollectorConfig();initialize collector fullness variables before loading images
 
 EndFunc   ;==>CheckImageType

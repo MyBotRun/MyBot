@@ -779,7 +779,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	EndIf
 
 	; 14 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
-	 SetSlotSpecialTroops()
+	SetSlotSpecialTroops()
 	If _Sleep($DELAYRESPOND) Then Return
 
 ;	If TestCapture() = True Then

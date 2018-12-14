@@ -16,6 +16,15 @@
 
 Func GetXPosOfArmySlot($slotNumber, $xOffsetFor11Slot)
 
+	If $slotNumber < 0 Or $slotNumber + 1 > UBound($g_avAttackTroops) Then
+		; invalid slot
+		Return 0
+	EndIf
+
+	; use x-cord from $g_avAttackTroops
+	Return $g_avAttackTroops[$slotNumber][2]
+
+	#cs
 	Local $CheckSlot12, $SlotPixelColorTemp, $SlotPixelColor1
 
 	$xOffsetFor11Slot -= 8
@@ -43,5 +52,5 @@ Func GetXPosOfArmySlot($slotNumber, $xOffsetFor11Slot)
 	Else
 		Return $xOffsetFor11Slot + $SlotComp + ($slotNumber * 72) - 13
 	EndIf
-
+	#ce
 EndFunc   ;==>GetXPosOfArmySlot

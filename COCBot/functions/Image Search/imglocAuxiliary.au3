@@ -706,6 +706,8 @@ Func decodeTroopEnum($tEnum)
 			Return "ElectroDragon"
 		Case $eBowl
 			Return "Bowler"
+		Case $eIceG
+			Return "IceGolem"	
 		Case $eESpell
 			Return "EarthquakeSpell"
 		Case $eFSpell
@@ -724,6 +726,8 @@ Func decodeTroopEnum($tEnum)
 			Return "RageSpell"
 		Case $eSkSpell
 			Return "SkeletonSpell"
+		Case $eBtSpell
+			Return "BatSpell"	
 		Case $eCSpell
 			Return "CloneSpell"
 		Case $eCastle
@@ -782,6 +786,8 @@ Func decodeTroopName($sName)
 			Return $eEDrag
 		Case "Bowler"
 			Return $eBowl
+		Case "IceGolem"
+			Return $eIceG	
 		Case "EarthquakeSpell"
 			Return $eESpell
 		Case "FreezeSpell"
@@ -800,6 +806,8 @@ Func decodeTroopName($sName)
 			Return $eRSpell
 		Case "SkeletonSpell"
 			Return $eSkSpell
+		Case "BatSpell"
+			Return $eBtSpell	
 		Case "CloneSpell"
 			Return $eCSpell
 		Case "Castle"

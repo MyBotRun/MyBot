@@ -87,10 +87,7 @@ Func chkDisableNotifications()
 EndFunc   ;==>chkDisableNotifications
 
 Func chkUseRandomClick()
-	$g_bRunState = True
-	getArmySiegeMachines()
-	$g_bRunState = False
-	;$g_bUseRandomClick = (GUICtrlRead($g_hChkUseRandomClick) = $GUI_CHECKED)
+	$g_bUseRandomClick = (GUICtrlRead($g_hChkUseRandomClick) = $GUI_CHECKED)
 EndFunc   ;==>chkUseRandomClick
 #cs
 	Func chkUpdatingWhenMinimized()
@@ -519,11 +516,11 @@ Func btnTestDonateCC()
 		Return False
 	EndIf
 	SetLog("Detecting Troops...")
-	DetectSlotTroop($eBowl)
+	DetectSlotTroop($eIceG)
 	SetLog("Detecting Sieges...")
-	DetectSlotSiege($eSiegeBattleBlimp)
+	DetectSlotSiege($eSiegeStoneSlammer)
 	SetLog("Detecting Spells...")
-	DetectSlotSpell($eSkSpell)
+	DetectSlotSpell($eBtSpell)
 	SetLog(_PadStringCenter(" Test DonateCC end ", 54, "="), $COLOR_INFO)
 	ShellExecute($g_sProfileTempDebugPath & "donateCC_")
 
@@ -561,6 +558,12 @@ Func btnTestAttackBar()
     $g_bDebugImageSave = True
 	$g_bRunState = True
 
+	If MsgBox($MB_YESNO, "Screenshot or Live Image", "Do you want to use a Screenshot instead of a Live Image?") = $IDYES Then
+	 Local $sImageFile = BeginImageTest() ; get image for testing
+	 If $sImageFile = False Then $sImageFile = "Live Screenshot"
+	EndIf
+
+
 	SetLog(_PadStringCenter(" Begin AttackBar Detection", 54, "="), $COlOR_INFO)
 
 	Local $aAttackBar = StringSplit(AttackBarCheck(False, $DB, True), "|", $STR_NOCOUNT)
@@ -570,10 +573,12 @@ Func btnTestAttackBar()
 	SetLog("Found " & UBound($aAttackBar, 1) & " Slots", $COlOR_SUCCESS)
 	For $i = 0 To UBound($aAttackBar, 1) - 1
 		$aTroop = StringSplit($aAttackBar[$i], "#", $STR_NOCOUNT)
-		If IsArray($aTroop) And UBound($aTroop, 1) = 3 Then SetLog("- Slot " & $aTroop[1] & ": " & $aTroop[2] & " " & GetTroopName($aTroop[0], $aTroop[2]), $COLOR_SUCCESS)
+		If IsArray($aTroop) And UBound($aTroop, 1) = 4 Then SetLog("- Slot " & $aTroop[1] & ": " & $aTroop[2] & " " & GetTroopName($aTroop[0], $aTroop[2]), $COLOR_SUCCESS)
 	Next
 	EndIf
 	SetLog(_PadStringCenter(" End AttackBar Detection ", 54, "="), $COlOR_INFO)
+
+	EndImageTest() ; clear test image handle
 
 	$g_bDebugOcr = $bCurrentOCR
 	$g_bDebugImageSave = $bCurrentDebugImage

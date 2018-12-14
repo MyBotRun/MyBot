@@ -40,10 +40,9 @@ Func CheckHeroesHealth()
 		EndIf
 
 		If $g_iActivateQueen = 0 Or $g_iActivateQueen = 2 Then
-			Local $aQueenHealthCopy = $aQueenHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
-			$aQueenHealthCopy[0] = GetXPosOfArmySlot($TempQueenSlot, 68) + 3 ; Slot11+
-
 			If $g_bCheckQueenPower Then
+				Local $aQueenHealthCopy = $aQueenHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
+				$aQueenHealthCopy[0] = GetXPosOfArmySlot($TempQueenSlot, 68) + $aQueenHealthCopy[4] ; Slot11+
 				Local $QueenPixelColor = _GetPixelColor($aQueenHealthCopy[0], $aQueenHealthCopy[1], $g_bCapturePixel)
 				If $g_bDebugSetlog Then SetDebugLog(" Queen _GetPixelColor(" & $aQueenHealthCopy[0] & "," & $aQueenHealthCopy[1] & "): " & $QueenPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aQueenHealthCopy, $QueenPixelColor, "Red+Blue") Then
@@ -75,10 +74,9 @@ Func CheckHeroesHealth()
 		EndIf
 
 		If $g_iActivateKing = 0 Or $g_iActivateKing = 2 Then
-			Local $aKingHealthCopy = $aKingHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
-			$aKingHealthCopy[0] = GetXPosOfArmySlot($TempKingSlot, 68) + 2 ; Slot11+
-
 			If $g_bCheckKingPower Then
+				Local $aKingHealthCopy = $aKingHealth ; copy ScreenCoordinates array to modify locally with dynamic X coordinate from slotposition
+				$aKingHealthCopy[0] = GetXPosOfArmySlot($TempKingSlot, 68) + $aKingHealthCopy[4] ; Slot11+
 				Local $KingPixelColor = _GetPixelColor($aKingHealthCopy[0], $aKingHealthCopy[1], $g_bCapturePixel)
 				If $g_bDebugSetlog Then SetDebugLog(" King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aKingHealthCopy, $KingPixelColor, "Red+Blue") Then
@@ -110,10 +108,9 @@ Func CheckHeroesHealth()
 		EndIf
 
 		If $g_iActivateWarden = 0 Or $g_iActivateWarden = 2 Then
-			Local $aWardenHealthCopy = $aWardenHealth
-			$aWardenHealthCopy[0] = GetXPosOfArmySlot($TempWardenSlot, 68) ; Slot11+
-
 			If $g_bCheckWardenPower Then
+				Local $aWardenHealthCopy = $aWardenHealth
+				$aWardenHealthCopy[0] = GetXPosOfArmySlot($TempWardenSlot, 68) + $aWardenHealthCopy[4] ; Slot11+
 				Local $WardenPixelColor = _GetPixelColor($aWardenHealthCopy[0], $aWardenHealthCopy[1], $g_bCapturePixel)
 				If $g_bDebugSetlog Then SetDebugLog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aWardenHealthCopy, $WardenPixelColor, "Red+Blue") Then

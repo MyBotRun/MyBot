@@ -47,15 +47,16 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 
 	Local $hStarttime = _Timer_Init()
 
-
-	; JULY 2018 @PROMAC
-	; Lets Select The CC Or Siege Machine ; $eCastle , $eWallW , $eBattleB
-	Local $aPaths = [$g_sImgSwitchSiegeCastle, $g_sImgSwitchSiegeWallWrecker, $g_sImgSwitchSiegeBattleBlimp]
+	; Lets Select The CC Or Siege Machine ; $eCastle , $eWallW , $eBattleB, $eStoneS
+	Local $aPaths = [$g_sImgSwitchSiegeCastle, $g_sImgSwitchSiegeWallWrecker, $g_sImgSwitchSiegeBattleBlimp, $g_sImgSwitchSiegeStoneSlammer]
 	Local $ToUse = $eCastle, $iDa = 0
 
 	If ($pMatchMode = $DB Or $pMatchMode = $LB Or $pMatchMode = $TS) And Not $Remaining Then
 		; Default is CC ,let's check Siege Machines , if is to be used and exist.
-		If $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] = 2 And ($g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBattleBlimp] > 0) Then
+		If $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] = 3 And ($g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeStoneSlammer] > 0) Then
+			$ToUse = $eStoneS
+			$iDa = 3
+		ElseIf $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] = 2 And ($g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeBattleBlimp] > 0) Then
 			$ToUse = $eBattleB
 			$iDa = 2
 		ElseIf $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] = 1 And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeWallWrecker] > 0) Then
@@ -80,7 +81,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 				Local $compFor2Sieges = 50
 				If _Sleep(1250) Then Return
 				; Lets detect the CC & Sieges and click
-				Local $HowMany = QuickMIS("CX", $aPaths[$iDa], $lastX - $compFor2Sieges, 540, $LastX1, 560, True, False)
+				Local $HowMany = QuickMIS("CX", $aPaths[$iDa], $lastX - $compFor2Sieges, 530, $LastX1, 560, True, False)
 
 				If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege HowMany: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 				If $g_bDebugSetlog Then SetDebugLog("Sleeps : " & 750 & "'ms")
@@ -174,27 +175,30 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 	For $i = 0 To UBound($g_avAttackTroops) - 1
 		$g_avAttackTroops[$i][0] = -1
 		$g_avAttackTroops[$i][1] = 0
+		$g_avAttackTroops[$i][2] = 0
 	Next
 
 	Local $Plural = 0
 	Local $result = AttackBarCheck($Remaining, $pMatchMode) ; adding $pMatchMode for not checking Slot11+ when DropTrophy attack
 	If $g_bDebugSetlog Then SetDebugLog("DLL Troopsbar list: " & $result, $COLOR_DEBUG)
 	Local $aTroopDataList = StringSplit($result, "|")
-	Local $aTemp[22][3] ; Slot11+
+	Local $aTemp[22][4] ; Slot11+
 	If $result <> "" Then
 		; example : 0#0#92|1#1#108|2#2#8|22#3#1|20#4#1|21#5#1|26#5#0|23#6#1|24#7#2|25#8#1|29#10#1
 		; [0] = Troop Enum Cross Reference [1] = Slot position [2] = Quantities
 		For $i = 1 To $aTroopDataList[0]
 			Local $troopData = StringSplit($aTroopDataList[$i], "#", $STR_NOCOUNT)
-			$aTemp[Number($troopData[1])][0] = $troopData[0]
-			$aTemp[Number($troopData[1])][1] = Number($troopData[2])
-			$aTemp[Number($troopData[1])][2] = Number($troopData[1])
+			$aTemp[Number($troopData[1])][0] = $troopData[0] ; troop name
+			$aTemp[Number($troopData[1])][1] = Number($troopData[2]) ; amount
+			$aTemp[Number($troopData[1])][2] = Number($troopData[1]) ; index
+			$aTemp[Number($troopData[1])][3] = Number($troopData[3]) ; x-coord
 		Next
 	EndIf
 	For $i = 0 To UBound($aTemp) - 1
 		If $aTemp[$i][0] = "" And $aTemp[$i][1] = "" Then
 			$g_avAttackTroops[$i][0] = -1
 			$g_avAttackTroops[$i][1] = 0
+			$g_avAttackTroops[$i][2] = 0
 		Else
 			Local $troopKind = $aTemp[$i][0]
 			If $troopKind < $eKing Then
@@ -203,12 +207,14 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 					If $g_bDebugSetlog Then SetDebugLog("Discard use of troop " & $troopKind & " " & NameOfTroop($troopKind), $COLOR_ERROR)
 					$g_avAttackTroops[$i][0] = -1
 					$g_avAttackTroops[$i][1] = 0
+					$g_avAttackTroops[$i][2] = 0
 					$troopKind = -1
 				Else
 					;use troop
 					;Setlog ("troopsnumber = " & $troopsnumber & "+ " &  Number( $aTemp[$i][1]))
 					$g_avAttackTroops[$i][0] = $aTemp[$i][0]
 					$g_avAttackTroops[$i][1] = $aTemp[$i][1]
+					$g_avAttackTroops[$i][2] = $aTemp[$i][3]
 					$troopsnumber += $aTemp[$i][1]
 				EndIf
 
@@ -219,6 +225,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 					;Setlog ("troopsnumber = " & $troopsnumber & "+1")
 					$g_avAttackTroops[$i][0] = $aTemp[$i][0]
 					$g_avAttackTroops[$i][1] = $aTemp[$i][1]
+					$g_avAttackTroops[$i][2] = $aTemp[$i][3]
 					If $g_avAttackTroops[$i][0] = $eKing Or $g_avAttackTroops[$i][0] = $eQueen Or $g_avAttackTroops[$i][0] = $eWarden Then $g_avAttackTroops[$i][1] = 1
 					$troopKind = $g_avAttackTroops[$i][1]
 					$troopsnumber += 1
@@ -230,12 +237,13 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 
 			$Plural = 0
 			If $aTemp[$i][1] > 1 Then $Plural = 1
-			If $troopKind <> -1 Then SetLog($aTemp[$i][2] & " » " & $g_avAttackTroops[$i][1] & " " & NameOfTroop($g_avAttackTroops[$i][0], $Plural), $COLOR_SUCCESS)
+			If $troopKind <> -1 Then SetLog($aTemp[$i][2] & " » " & $g_avAttackTroops[$i][1] & " " & NameOfTroop($g_avAttackTroops[$i][0], $Plural) & ", x: " & $g_avAttackTroops[$i][2], $COLOR_SUCCESS)
 
 		EndIf
 	Next
 
 	;ResumeAndroid()
+	SetSlotSpecialTroops()
 
 	If $g_bDebugSetlog Then SetDebugLog("troopsnumber  = " & $troopsnumber)
 	Return $troopsnumber
@@ -295,9 +303,13 @@ Func IsSpecialTroopToBeUsed($pMatchMode, $pTroopType)
 				If $g_abAttackUseCloneSpell[$iTempMode] Then Return True
 			Case $eSkSpell
 				If $g_abAttackUseSkeletonSpell[$iTempMode] Then Return True
+			Case $eBtSpell
+				If $g_abAttackUseBatSpell[$iTempMode] Then Return True
 			Case $eWallW
 				If $g_abAttackDropCC[$iTempMode] Then Return True
 			Case $eBattleB
+				If $g_abAttackDropCC[$iTempMode] Then Return True
+			Case $eStoneS
 				If $g_abAttackDropCC[$iTempMode] Then Return True
 			Case Else
 				Return False

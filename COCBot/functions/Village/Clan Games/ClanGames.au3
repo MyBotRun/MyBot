@@ -180,6 +180,7 @@ Func _ClanGames($test = False)
 
 	If UBound($aAllDetectionsOnScreen) > 0 Then
 		For $i = 0 To UBound($aAllDetectionsOnScreen) - 1
+			If IsBBChallenge($aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3]) Then ContinueLoop
 			Switch $aAllDetectionsOnScreen[$i][0]
 				Case "L"
 					If Not $g_bChkClanGamesLoot Then ContinueLoop
@@ -247,6 +248,14 @@ Func _ClanGames($test = False)
 					For $j = 0 To UBound($BattleChallenges) - 1
 						; Match the names
 						If $aAllDetectionsOnScreen[$i][1] = $BattleChallenges[$j][0] Then
+							; Verify the TH level and a few Challenge to destroy TH specific level
+							If $BattleChallenges[$j][1] = "Scrappy 6s" And ($g_iTownHallLevel < 5 Or $g_iTownHallLevel > 7) Then ExitLoop		; TH level 5-6-7
+							If $BattleChallenges[$j][1] = "Super 7s" And ($g_iTownHallLevel < 6 Or $g_iTownHallLevel > 8) Then ExitLoop			; TH level 6-7-8
+							If $BattleChallenges[$j][1] = "Exciting 8s" And ($g_iTownHallLevel < 7 Or $g_iTownHallLevel > 9) Then ExitLoop		; TH level 7-8-9
+							If $BattleChallenges[$j][1] = "Noble 9s" And ($g_iTownHallLevel < 8 Or $g_iTownHallLevel > 10) Then ExitLoop		; TH level 8-9-10
+							If $BattleChallenges[$j][1] = "Terrific 10s" And ($g_iTownHallLevel < 9 Or $g_iTownHallLevel > 11) Then ExitLoop	; TH level 9-10-11
+							If $BattleChallenges[$j][1] = "Exotic 11s" And $g_iTownHallLevel < 10 Then ExitLoop									; TH level 10-11-12
+							If $BattleChallenges[$j][1] = "Triumphant 12s" And $g_iTownHallLevel < 11 Then ExitLoop								; TH level 11-12
 							; Verify your TH level and Challenge
 							If $g_iTownHallLevel < $BattleChallenges[$j][2] Then ExitLoop
 							; Disable this event from INI File
@@ -256,7 +265,9 @@ Func _ClanGames($test = False)
 							; Check your Trophy Range
 							If $BattleChallenges[$j][1] = "Slaying The Titans" And Int($g_aiCurrentLoot[$eLootTrophy]) < 4100 Then ExitLoop
 							; Check if exist a probability to use any Spell
-							If $BattleChallenges[$j][1] = "No-Magic Zone" And ($g_bSmartZapEnable = True Or ($g_iMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 1) Or ($g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 1)) Then ExitLoop
+							; If $BattleChallenges[$j][1] = "No-Magic Zone" And ($g_bSmartZapEnable = True Or ($g_iMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 1) Or ($g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 1)) Then ExitLoop
+							; same as above, but SmartZap as condition removed, cause SZ does not necessary triggers every attack
+							If $BattleChallenges[$j][1] = "No-Magic Zone" And (($g_iMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 1) Or ($g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 1)) Then ExitLoop
 							; Check if you are using Heroes
 							If $BattleChallenges[$j][1] = "No Heroics Allowed" And ((Int($g_aiAttackUseHeroes[$DB]) > $eHeroNone And $g_iMatchMode = $DB) Or (Int($g_aiAttackUseHeroes[$LB]) > $eHeroNone And $g_iMatchMode = $LB)) Then ExitLoop
 							; [0]Event Name Full Name  , [1] Xaxis ,  [2] Yaxis , [3] difficulty
@@ -296,8 +307,8 @@ Func _ClanGames($test = False)
 							If $MiscChallenges[$j][3] = 0 Then ExitLoop
 
 							; Exceptions :
-							; 1 - "Gardening Exercise" needs at least a Free Builder
-							If $MiscChallenges[$j][1] = "Gardening Exercise" And $g_iFreeBuilderCount < 1 Then ExitLoop
+							; 1 - "Gardening Exercise" needs at least a Free Builder and "Remove Obstacles" enabled
+							 If $MiscChallenges[$j][1] = "Gardening Exercise" And ($g_iFreeBuilderCount < 1 Or Not $g_bChkCleanYard) Then ExitLoop 
 
 							; 2 - Verify your TH level and Challenge kind
 							If $g_iTownHallLevel < $MiscChallenges[$j][2] Then ExitLoop
@@ -713,7 +724,7 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False, $sINIPath = "", $debug
 			["Valk", 					"Valkyrie", 					 8,  8, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 8 Valkyries		|3h-8h	|40-100
 			["Gole", 					"Golem", 						 8,  2, 1]]   ; Earn 2-5 Stars from Multiplayer Battles using 2 Golems			|3h-8h	|40-100
 
-	Local $BattleChallenges[9][5] = [ _
+	Local $BattleChallenges[16][5] = [ _
 			["Start", 					"Star Collector", 				 3,  1, 8], _ ; Collect a total of 6-18 stars from Multiplayer Battles			|8h-2d	|100-600
 			["Destruction", 			"Lord of Destruction", 			 3,  1, 8], _ ; Gather a total of 100%-500% destruction from Multi Battles		|8h-2d	|100-600
 			["PileOfVictores", 			"Pile Of Victories", 			 3,  1, 8], _ ; Win 2-8 Multiplayer Battles										|8h-2d	|100-600
@@ -722,9 +733,16 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False, $sINIPath = "", $debug
 			["SlayingTitans", 			"Slaying The Titans", 			11,  2, 5], _ ; Win 5 Multiplayer Battles In Tital LEague						|5h		|300
 			["NoHero", 					"No Heroics Allowed", 			 3,  5, 8], _ ; Win stars without using Heroes									|8h		|100
 			["NoMagic", 				"No-Magic Zone", 				 3,  5, 8], _ ; Win stars without using Spells									|8h		|100
-			["AttackUp", 				"Attack Up", 					 3,  1, 8]]   ; Gain 3 Stars Against Certain Town Hall							|8h		|200
+			["Scrappy6s", 				"Scrappy 6s", 					 6,  1, 8], _ ; Gain 3 Stars Against Town Hall level 6							|8h		|200
+			["Super7s", 				"Super 7s", 					 7,  1, 8], _ ; Gain 3 Stars Against Town Hall level 7							|8h		|200
+			["Exciting8s", 				"Exciting 8s", 					 8,  1, 8], _ ; Gain 3 Stars Against Town Hall level 8							|8h		|200
+			["Noble9s", 				"Noble 9s", 					 9,  1, 8], _ ; Gain 3 Stars Against Town Hall level 9							|8h		|200
+			["Terrific10s", 			"Terrific 10s", 				10,  1, 8], _ ; Gain 3 Stars Against Town Hall level 10							|8h		|200
+			["Exotic11s", 			    "Exotic 11s", 					11,  1, 8], _ ; Gain 3 Stars Against Town Hall level 11							|8h		|200
+			["Triumphant12s", 			"Triumphant 12s", 				12,  1, 8], _ ; Gain 3 Stars Against Town Hall level 12							|8h		|200
+			["AttackUp", 				"Attack Up", 					 3,  1, 8]]   ; Gain 3 Stars Against Town Hall a level higher					|8h		|200
 
-	Local $DestructionChallenges[28][5] = [ _
+	Local $DestructionChallenges[30][5] = [ _
 			["Cannon", 					"Cannon Carnage", 				 3,  1, 1], _ ; Destroy 5-25 Cannons in Multiplayer Battles					|1h-8h	|75-350
 			["ArcherT", 				"Archer Tower Assault", 		 3,  1, 1], _ ; Destroy 5-20 Archer Towers in Multiplayer Battles			|1h-8h	|75-350
 			["Mortar", 					"Mortar Mauling", 				 3,  1, 1], _ ; Destroy 4-12 Mortars in Multiplayer Battles					|1h-8h	|40-350
@@ -746,6 +764,8 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False, $sINIPath = "", $debug
 			["Laboratory", 				"Laboratory Strike", 			 3,  1, 1], _ ; Destroy 2-6 Laboratories in Multiplayer Battles				|1h-8h	|40-200
 			["SFacto", 					"Spell Factory Sabotage", 		 3,  1, 1], _ ; Destroy 2-6 Spell Factories in Multiplayer Battles			|1h-8h	|40-200
 			["DESpell", 				"Dark Spell Factory Sabotage", 	 8,  1, 1], _ ; Destroy 2-6 Dark Spell Factories in Multiplayer Battles		|1h-8h	|40-200
+			["WallWhacker", 			"Wall Whacker", 				 3,  1, 1], _ ; Destroy 50-250 Walls in Multiplayer Battles					|
+			["BBreakdown",	 			"Building Breakdown", 			 3,  1, 1], _ ; Destroy 50-250 Buildings in Multiplayer Battles					|
 			["BKaltar", 				"Destroy Barbarian King Altars", 9,  4, 1], _ ; Destroy 2-5 Barbarian King Altars in Multiplayer Battles	|1h-8h	|50-150
 			["AQaltar", 				"Destroy Archer Queen Altars", 	10,  5, 1], _ ; Destroy 2-5 Archer Queen Altars in Multiplayer Battles		|1h-8h	|50-150
 			["GWaltar", 				"Destroy Grand Warden Altars", 	11,  5, 1], _ ; Destroy 2-5 Grand Warden Altars in Multiplayer Battles		|1h-8h	|50-150
@@ -836,4 +856,18 @@ Func GetEventInformation()
 		Return GetEventTimeInMinutes($g_iQuickMISX + 220, $g_iQuickMISY + 150)
 	EndIf
 	Return 0
-EndFunc
+EndFunc   ;==>GetEventInformation
+
+Func IsBBChallenge($xDetected, $yDetected)
+	Local $sColorBB = Hex(0x0D6687, 6)
+	Local $sColorNonBB = Hex(0x7DA9DD, 6)
+	Local $xToCheck = 299 + 126 * Int(($xDetected - 299) / 126)
+	Local $yToCheck = 156 + 160 * Int(($yDetected - 156) / 160)
+
+	If $g_bChkClanGamesDebug Then Setlog("IsBBChallenge() x = " & $xToCheck & ", y = " & $yToCheck & ", color = " & _GetPixelColor($xToCheck, $yToCheck, True) , $COLOR_INFO)
+
+	If _ColorCheck(_GetPixelColor($xToCheck, $yToCheck, True), $sColorBB, 5) Then
+		Return True
+	EndIf
+	Return False
+EndFunc   ;==>IsBBChallenge

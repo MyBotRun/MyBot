@@ -1038,6 +1038,7 @@ Func BotShrinkExpandToggleExecute()
 	;_SendMessage($g_hFrmBotBottom, $WM_SETREDRAW, False, 0)
 	GUISetState(@SW_HIDE, $g_hFrmBotEx)
 	GUISetState(@SW_HIDE, $g_hFrmBotBottom)
+
 	Local $iSteps = 10
 	Local $fStep = $_GUI_MAIN_WIDTH / $iSteps
 	Local $bGetAnimationSpeed = True

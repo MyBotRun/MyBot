@@ -116,6 +116,8 @@ Func SaveBuildingConfig()
 	_Ini_Add("upgrade", "upgradetroops", $g_bAutoLabUpgradeEnable ? 1 : 0)
 	_Ini_Add("upgrade", "upgradetroopname", $g_iCmbLaboratory)
 	_Ini_Add("upgrade", "upgradelabtime", $g_sLabUpgradeTime)
+	_Ini_Add("upgrade", "upgradelabelexircost", $g_iLaboratoryElixirCost)
+	_Ini_Add("upgrade", "upgradelabdelexircost", $g_iLaboratoryDElixirCost)
 
 	; <><><><> Village / Upgrade - Buildings <><><><>
 	ApplyConfig_600_16(GetApplyConfigSaveAction())
@@ -345,6 +347,7 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "minTreasurydark", $g_iTxtTreasuryDark)
 
 	_Ini_Add("other", "ChkCollectBuildersBase", $g_bChkCollectBuilderBase ? 1 : 0)
+	_Ini_Add("other", "ChkCleanBBYard", $g_bChkCleanBBYard ? 1 : 0)
 	_Ini_Add("other", "ChkStartClockTowerBoost", $g_bChkStartClockTowerBoost ? 1 : 0)
 	_Ini_Add("other", "ChkCTBoostBlderBz", $g_bChkCTBoostBlderBz ? 1 : 0)
 	_Ini_Add("other", "ChkBBSuggestedUpgrades", $g_iChkBBSuggestedUpgrades)
@@ -426,7 +429,7 @@ Func SaveConfig_600_12()
 
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 		Local $sIniName = ""
-		If $i >= $eTroopBarbarian And $i <= $eTroopBowler Then
+		If $i >= $eTroopBarbarian And $i <= $eTroopIceGolem Then
 			$sIniName = StringReplace($g_asTroopNamesPlural[$i], " ", "")
 		ElseIf $i = $eCustomA Then
 			$sIniName = "CustomA"
@@ -802,6 +805,7 @@ Func SaveConfig_600_29_DB()
 	_Ini_Add("attack", "DBHasteSpell", $g_abAttackUseHasteSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBCloneSpell", $g_abAttackUseCloneSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "DBSkeletonSpell", $g_abAttackUseSkeletonSpell[$DB] ? 1 : 0)
+	_Ini_Add("attack", "DBBatSpell", $g_abAttackUseBatSpell[$DB] ? 1 : 0)
 	_Ini_Add("attack", "THSnipeBeforeDBEnable", $g_bTHSnipeBeforeEnable[$DB] ? 1 : 0)
 	_Ini_Add("attack", "THSnipeBeforeDBTiles", $g_iTHSnipeBeforeTiles[$DB])
 	_Ini_Add("attack", "THSnipeBeforeDBScript", $g_iTHSnipeBeforeScript[$DB])
@@ -913,6 +917,7 @@ Func SaveConfig_600_29_LB()
 	_Ini_Add("attack", "ABEarthquakeSpell", $g_abAttackUseEarthquakeSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABHasteSpell", $g_abAttackUseHasteSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "ABSkeletonSpell", $g_abAttackUseSkeletonSpell[$LB] ? 1 : 0)
+	_Ini_Add("attack", "ABBatSpell", $g_abAttackUseBatSpell[$LB] ? 1 : 0)
 	_Ini_Add("attack", "THSnipeBeforeLBEnable", $g_bTHSnipeBeforeEnable[$LB] ? 1 : 0)
 	_Ini_Add("attack", "THSnipeBeforeLBTiles", $g_iTHSnipeBeforeTiles[$LB])
 	_Ini_Add("attack", "THSnipeBeforeLBScript", $g_iTHSnipeBeforeScript[$LB])
@@ -1033,7 +1038,7 @@ EndFunc   ;==>SaveConfig_600_30_TS
 Func SaveConfig_600_31()
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Collectors <><><><>
 	ApplyConfig_600_31(GetApplyConfigSaveAction())
-	For $i = 6 To 12
+	For $i = 6 To 13
 		_Ini_Add("collectors", "lvl" & $i & "Enabled", $g_abCollectorLevelEnabled[$i] ? 1 : 0)
 		_Ini_Add("collectors", "lvl" & $i & "fill", $g_aiCollectorLevelFill[$i])
 	Next

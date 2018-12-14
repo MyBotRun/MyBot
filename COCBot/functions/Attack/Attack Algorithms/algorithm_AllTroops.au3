@@ -116,7 +116,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							[MatchTroopDropName(20), MatchSidesDrop(20), MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)], _
 							[MatchTroopDropName(21), MatchSidesDrop(21), MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)]]
 				Else
-					Local $listInfoDeploy[22][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[23][5] = [[$eGole, $nbSides, 1, 1, 2] _
 							, [$eLava, $nbSides, 1, 1, 2] _
 							, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 							, [$eDrag, $nbSides, 1, 1, 0] _
@@ -137,6 +137,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							, [$eGobl, $nbSides, 1, 1, 0] _
 							, [$eHeal, $nbSides, 1, 1, 1] _
 							, [$ePekk, $nbSides, 1, 1, 1] _
+							, [$eIceG, $nbSides, 1, 1, 0] _
 							, ["HEROES", 1, 2, 1, 1] _
 							]
 				EndIf
@@ -192,7 +193,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							[MatchTroopDropName(20), MatchSidesDrop(20), MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)], _
 							[MatchTroopDropName(21), MatchSidesDrop(21), MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)]]
 				Else
-					Local $listInfoDeploy[22][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[23][5] = [[$eGole, $nbSides, 1, 1, 2] _
 							, [$eLava, $nbSides, 1, 1, 2] _
 							, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 							, [$eDrag, $nbSides, 1, 1, 0] _
@@ -202,6 +203,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							, [$eHogs, $nbSides, 1, 1, 1] _
 							, [$eValk, $nbSides, 1, 1, 0] _
 							, [$eBowl, $nbSides, 1, 1, 0] _
+							, [$eIceG, $nbSides, 1, 1, 0] _
 							, [$eMine, $nbSides, 1, 1, 0] _
 							, [$eEDrag, $nbSides, 1, 1, 0] _
 							, [$eBarb, $nbSides, 1, 1, 0] _
@@ -276,7 +278,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			If $g_bDebugSetlog Then SetDebugLog("No Wast time... exit, no troops usable left", $COLOR_DEBUG)
 			ExitLoop ;Check remaining quantities
 		EndIf
-		For $i = $eBarb To $eBowl ; launch all remaining troops
+		For $i = $eBarb To $eIceG ; launch all remaining troops
 			If LaunchTroop($i, $nbSides, 1, 1, 1) Then
 				CheckHeroesHealth()
 				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
@@ -296,7 +298,7 @@ Func SetSlotSpecialTroops()
 	$g_iWardenSlot = -1
 
 	For $i = 0 To UBound($g_avAttackTroops) - 1
-		If $g_avAttackTroops[$i][0] = $eCastle Or $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Then
+		If $g_avAttackTroops[$i][0] = $eCastle Or $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Or $g_avAttackTroops[$i][0] = $eStoneS Then
 			$g_iClanCastleSlot = $i
 		ElseIf $g_avAttackTroops[$i][0] = $eKing Then
 			$g_iKingSlot = $i

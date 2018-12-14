@@ -28,7 +28,7 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	EndIf
 
 	;open army overview
-	If Not OpenArmyOverview(True, "RequestCC()") Then Return
+	If $specifyText <> "IsFullClanCastle" And Not OpenArmyOverview(True, "RequestCC()") Then Return
 
 	If _Sleep($DELAYREQUESTCC1) Then Return
 
@@ -273,12 +273,12 @@ Func RemoveCastleArmy($aToRemove)
 	If _ArrayMax($aToRemove) = 0 Then Return
 
 	; Click 'Edit Army'
-	If Not _ColorCheck(_GetPixelColor(806, 516, True), Hex(0xCEEF76, 6), 25) Then ; If no 'Edit Army' Button found in army tab to edit troops
+	If Not _CheckPixel($aButtonEditArmy, True) Then ; If no 'Edit Army' Button found in army tab to edit troops
 		SetLog("Cannot find/verify 'Edit Army' Button in Army tab", $COLOR_WARNING)
 		Return False ; Exit function
 	EndIf
 
-	Click(Random(725, 825, 1), Random(507, 545, 1)) ; Click on Edit Army Button
+	ClickP($aButtonEditArmy, 1) ; Click Edit Army Button
 	If Not $g_bRunState Then Return
 
 	If _Sleep(500) Then Return
@@ -297,7 +297,7 @@ Func RemoveCastleArmy($aToRemove)
 
 	; Click Okay & confirm
 	Local $counter = 0
-	While Not _ColorCheck(_GetPixelColor(806, 567, True), Hex(0xCEEF76, 6), 25) ; If no 'Okay' button found in army tab to save changes
+	While Not _CheckPixel($aButtonRemoveTroopsOK1, True) ; If no 'Okay' button found in army tab to save changes
 		If _Sleep(200) Then Return
 		$counter += 1
 		If $counter <= 5 Then ContinueLoop
@@ -307,12 +307,12 @@ Func RemoveCastleArmy($aToRemove)
 		Return False ; Exit Function
 	WEnd
 
-	Click(Random(730, 815, 1), Random(558, 589, 1)) ; Click on 'Okay' button to save changes
+	ClickP($aButtonRemoveTroopsOK1, 1) ; Click on 'Okay' button to save changes
 
 	If _Sleep(400) Then Return
 
 	$counter = 0
-	While Not _ColorCheck(_GetPixelColor(508, 428, True), Hex(0xFFFFFF, 6), 30) ; If no 'Okay' button found to verify that we accept the changes
+	While Not _CheckPixel($aButtonRemoveTroopsOK2, True)  ; If no 'Okay' button found to verify that we accept the changes
 		If _Sleep(200) Then Return
 		$counter += 1
 		If $counter <= 5 Then ContinueLoop
@@ -321,7 +321,7 @@ Func RemoveCastleArmy($aToRemove)
 		Return False ; Exit function
 	WEnd
 
-	Click(Random(445, 583, 1), Random(402, 455, 1)) ; Click on 'Okay' button to Save changes... Last button
+	ClickP($aButtonRemoveTroopsOK2, 1) ; Click on 'Okay' button to Save changes... Last button
 
 	SetLog("Clan Castle Troops/Spells Removed", $COLOR_SUCCESS)
 	If _Sleep(200) Then Return

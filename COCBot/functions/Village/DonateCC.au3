@@ -41,7 +41,7 @@ Func PrepareDonateCC()
 	Next
 	; Siege
 	For $i = $eSiegeWallWrecker To $eSiegeMachineCount - 1
-		$g_aiPrepDon[4] = BitOR($g_aiPrepDon[4], ($g_abChkDonateTroop[$eTroopCount - 1 + $g_iCustomDonateConfigs + $i] ? 1 : 0))
+		$g_aiPrepDon[4] = BitOR($g_aiPrepDon[4], ($g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $i] ? 1 : 0))
 	Next
 
 	$g_iActiveDonate = BitOR($g_aiPrepDon[0], $g_aiPrepDon[1], $g_aiPrepDon[2], $g_aiPrepDon[3], $g_aiPrepDon[4])
@@ -88,21 +88,30 @@ Func IsDonateQueueOnly(ByRef $abDonateQueueOnly)
 
 			For $j = 0 To (UBound($aSearchResult) - 1)
 				Local $TroopIndex = TroopIndexLookup($aSearchResult[$j][0], "IsDonateQueueOnly()")
+				If $TroopIndex < 0 Then ContinueLoop
 				If _ColorCheck(_GetPixelColor($xQueue - $j * 70.5, 237, True), Hex(0xB9B747, 6), 20) Then ; the green check symbol [185, 183, 71]
 					If $i = 0 Then
-						$g_aiAvailQueuedTroop[$TroopIndex] += $aSearchResult[$j][1]
-						SetLog("  - " & $g_asTroopNames[$TroopIndex] & " x" & $aSearchResult[$j][1])
+						If _ArrayIndexValid($g_aiAvailQueuedTroop, $TroopIndex) Then
+							$g_aiAvailQueuedTroop[$TroopIndex] += $aSearchResult[$j][1]
+							SetLog("  - " & $g_asTroopNames[$TroopIndex] & " x" & $aSearchResult[$j][1])
+						EndIf
 					Else
-						$g_aiAvailQueuedSpell[$TroopIndex - $eLSpell] += $aSearchResult[$j][1]
-						SetLog("  - " & $g_asSpellNames[$TroopIndex - $eLSpell] & " x" & $aSearchResult[$j][1])
+						If _ArrayIndexValid($g_aiAvailQueuedSpell, $TroopIndex - $eLSpell) Then
+							$g_aiAvailQueuedSpell[$TroopIndex - $eLSpell] += $aSearchResult[$j][1]
+							SetLog("  - " & $g_asSpellNames[$TroopIndex - $eLSpell] & " x" & $aSearchResult[$j][1])
+						EndIf
 					EndIf
 				ElseIf $j = 0 Or ($j = 1 And $aSearchResult[1][0] = $aSearchResult[0][0]) Then
 					If $i = 0 Then
-						$g_aiAvailQueuedTroop[$TroopIndex] += $aSearchResult[$j][1]
-						SetLog("  - " & $g_asTroopNames[$TroopIndex] & " x" & $aSearchResult[$j][1] & " (training)")
+						If _ArrayIndexValid($g_aiAvailQueuedTroop, $TroopIndex) Then
+							$g_aiAvailQueuedTroop[$TroopIndex] += $aSearchResult[$j][1]
+							SetLog("  - " & $g_asTroopNames[$TroopIndex] & " x" & $aSearchResult[$j][1] & " (training)")
+						EndIf
 					Else
-						$g_aiAvailQueuedSpell[$TroopIndex - $eLSpell] += $aSearchResult[$j][1]
-						SetLog("  - " & $g_asSpellNames[$TroopIndex - $eLSpell] & " x" & $aSearchResult[$j][1] & " (training)")
+						If _ArrayIndexValid($g_aiAvailQueuedSpell, $TroopIndex - $eLSpell) Then
+							$g_aiAvailQueuedSpell[$TroopIndex - $eLSpell] += $aSearchResult[$j][1]
+							SetLog("  - " & $g_asSpellNames[$TroopIndex - $eLSpell] & " x" & $aSearchResult[$j][1] & " (training)")
+						EndIf
 					EndIf
 					ExitLoop
 				ElseIf $j >= 2 Then
@@ -113,6 +122,7 @@ Func IsDonateQueueOnly(ByRef $abDonateQueueOnly)
 		EndIf
 	Next
 	ClickP($aAway, 1, 0, "#0818") ;Click Away
+	If _Sleep($DELAYDONATECC2) Then Return
 
 EndFunc   ;==>IsDonateQueueOnly
 
@@ -198,6 +208,14 @@ Func DonateCC($bCheckForNewMsg = False)
 		EndIf
 		If _Sleep($DELAYDONATECC1) Then Return ; delay Allow 15x
 	WEnd
+
+	; check for "I Understand" button
+	Local $aCoord = decodeSingleCoord(findImage("I Understand", $g_sImgChatIUnterstand, GetDiamondFromRect("50,400,280,550")))
+	If UBound($aCoord) > 1 Then
+		SetLog("Clicking 'I Understand' button", $COLOR_ACTION)
+		ClickP($aCoord)
+		If _Sleep($DELAYDONATECC2) Then Return
+	EndIf
 
 	Local $Scroll
 	; add scroll here
@@ -370,7 +388,7 @@ Func DonateCC($bCheckForNewMsg = False)
 			If Not $bDonateSiege Then
 				SetLog("Siege donation is not enabled, skip siege donation...", $COLOR_ACTION)
 				$g_bSkipDonSiege = True
-			ElseIf $g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 0 Then
+			ElseIf $g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 0 And $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 0 Then
 				SetLog("No siege machines available, skip siege donation...", $COLOR_ORANGE)
 				$g_bSkipDonSiege = True
 			ElseIf $g_iTotalDonateSiegeMachineCapacity = -1 Then
@@ -430,7 +448,7 @@ Func DonateCC($bCheckForNewMsg = False)
 							For $i = 0 To 2
 								If $CorrectDonateCustom[$i][0] < $eBarb Then
 									$CorrectDonateCustom[$i][0] = $eArch ; Change strange small numbers to archer
-								ElseIf $CorrectDonateCustom[$i][0] > $eBowl Then
+								ElseIf $CorrectDonateCustom[$i][0] > $eIceG Then
 									ContinueLoop ; If "Nothing" is selected then continue
 								EndIf
 								If $CorrectDonateCustom[$i][1] < 1 Then
@@ -525,7 +543,7 @@ Func DonateCC($bCheckForNewMsg = False)
 								For $i = 0 To 2
 									If $CorrectDonateCustom[$i][0] < $eBarb Then
 										$CorrectDonateCustom[$i][0] = $eArch ; Change strange small numbers to archer
-									ElseIf $CorrectDonateCustom[$i][0] > $eBowl Then
+									ElseIf $CorrectDonateCustom[$i][0] > $eIceG Then
 										DonateWindow($bClose)
 										$bDonate = True
 										$y = $g_aiDonatePixel[1] + 50
@@ -812,7 +830,7 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 		EndIf
 
 		; Adjust Values for donated troops to prevent a Double ghost donate to stats and train
-		If $iTroopIndex >= $eTroopBarbarian And $iTroopIndex <= $eTroopBowler Then
+		If $iTroopIndex >= $eTroopBarbarian And $iTroopIndex <= $eTroopIceGolem Then
 			;Reduce iTotalDonateCapacity by troops donated
 			$g_iTotalDonateTroopCapacity -= ($Quant * $g_aiTroopSpace[$iTroopIndex])
 			;If donated max allowed troop qty set $g_bSkipDonTroops = True
@@ -1135,7 +1153,7 @@ Func RemainingCCcapacity()
 
 	; Skip reading unnecessary items
 	Local $bDonateSpell = ($g_aiPrepDon[2] = 1 Or $g_aiPrepDon[3] = 1) And ($g_iCurrentSpells > 0 Or $g_iCurrentSpells = "")
-	Local $bDonateSiege = ($g_aiPrepDon[4] = 1) And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0)
+	Local $bDonateSiege = ($g_aiPrepDon[4] = 1) And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0)
 	SetDebugLog("$g_aiPrepDon[2]: " & $g_aiPrepDon[2] & ", $g_aiPrepDon[3]: " & $g_aiPrepDon[3] & ", $g_iCurrentSpells: " & $g_iCurrentSpells & ", $bDonateSpell: " & $bDonateSpell)
 	SetDebugLog("$g_aiPrepDon[4]: " & $g_aiPrepDon[4] & ", $bDonateSiege: " & $bDonateSiege)
 
@@ -1276,13 +1294,13 @@ Func DetectSlotTroop(Const $iTroopIndex)
 
 		If $FullTemp[0] <> "" Then
 			Local $iFoundTroopIndex = TroopIndexLookup($FullTemp[0])
-			For $i = $eTroopBarbarian To $eTroopBowler
+			For $i = $eTroopBarbarian To $eTroopIceGolem
 				If $iFoundTroopIndex = $i Then
 					If $g_bDebugSetlog Then SetDebugLog("Detected " & $g_asTroopNames[$i], $COLOR_DEBUG)
 					If $iTroopIndex = $i Then Return $Slot
 					ExitLoop
 				EndIf
-				If $i = $eTroopBowler Then ; detection failed
+				If $i = $eTroopIceGolem Then ; detection failed
 					If $g_bDebugSetlog Then SetDebugLog("Slot: " & $Slot & "Troop Detection Failed", $COLOR_DEBUG)
 				EndIf
 			Next
@@ -1308,7 +1326,7 @@ Func DetectSlotTroop(Const $iTroopIndex)
 					If $iTroopIndex = $i Then Return $Slot
 					ExitLoop
 				EndIf
-				If $i = $eTroopBowler Then ; detection failed
+				If $i = $eTroopIceGolem Then ; detection failed
 					If $g_bDebugSetlog Then SetDebugLog("Slot: " & $Slot & "Troop Detection Failed", $COLOR_DEBUG)
 				EndIf
 			Next
@@ -1334,14 +1352,14 @@ Func DetectSlotSpell(Const $iSpellIndex)
 		If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
 
 		If $FullTemp[0] <> "" Then
-			For $i = $eSpellLightning To $eSpellSkeleton
+			For $i = $eSpellLightning To $eSpellBat
 				Local $sTmp = StringLeft($g_asSpellNames[$i], 4)
 				If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
 					If $g_bDebugSetlog Then SetDebugLog("Detected " & $g_asSpellNames[$i], $COLOR_DEBUG)
 					If $iSpellIndex = $i Then Return $Slot
 					ExitLoop
 				EndIf
-				If $i = $eSpellSkeleton Then ; detection failed
+				If $i = $eSpellBat Then ; detection failed
 					If $g_bDebugSetlog Then SetDebugLog("Slot: " & $Slot & "Spell Detection Failed", $COLOR_DEBUG)
 				EndIf
 			Next
@@ -1425,8 +1443,7 @@ Func SkipDonateNearFullTroops($bSetLog = False, $aHeroResult = Default)
 			Local $rIsWaitforHeroesActive = IsWaitforHeroesActive()
 			If $rIsWaitforHeroesActive Then
 				If $aHeroResult = Default Or Not IsArray($aHeroResult) Then
-					If Not OpenArmyOverview(True, "SkipDonateNearFullTroops()") Then Return False ; Return False if failed to Open Army Window
-					$aHeroResult = getArmyHeroTime("all")
+					$aHeroResult = getArmyHeroTime("all", True, True) ; including open & close army overview
 				EndIf
 				If @error Or UBound($aHeroResult) < 3 Then
 					SetLog("getArmyHeroTime return error: #" & @error & "|IA:" & IsArray($aHeroResult) & "," & UBound($aHeroResult) & ", exit SkipDonateNearFullTroops!", $COLOR_ERROR)

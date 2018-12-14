@@ -562,7 +562,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				[MatchTroopDropName(20), $nbSides, MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)], _
 				[MatchTroopDropName(21), $nbSides, MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)]]
 	Else
-		Local $listInfoDeploy[22][5] = [[$eGole, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[23][5] = [[$eGole, $nbSides, 1, 1, 2] _
 				, [$eLava, $nbSides, 1, 1, 2] _
 				, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 				, [$eDrag, $nbSides, 1, 1, 0] _
@@ -572,6 +572,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$eHogs, $nbSides, 1, 1, 1] _
 				, [$eValk, $nbSides, 1, 1, 0] _
 				, [$eBowl, $nbSides, 1, 1, 0] _
+				, [$eIceG, $nbSides, 1, 1, 0] _
 				, [$eMine, $nbSides, 1, 1, 0] _
 				, [$eEDrag, $nbSides, 1, 1, 0] _
 				, [$eWall, $nbSides, 1, 1, 1] _
@@ -607,7 +608,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 			If $g_bDebugSetlog Then SetDebugLog("No Wast time... exit, no troops usable left", $COLOR_DEBUG)
 			ExitLoop ;Check remaining quantities
 		EndIf
-		For $i = $eBarb To $eBowl ; launch all remaining troops
+		For $i = $eBarb To $eIceG ; launch all remaining troops
 			If LaunchTroop($i, $nbSides, 1, 1, 1) Then
 				CheckHeroesHealth()
 				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
@@ -720,7 +721,7 @@ Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $SID
 								If $g_bDebugSetlog Then SetDebugLog("Deploy CC $g_aaiBottomRightDropPoints")
 							EndIf
 
-							If ($g_bIsCCDropped = False And $infoTroopListArrPixel[0] = "CC") Then
+							If ($g_bIsCCDropped = False And $infoTroopListArrPixel[0] = "CC" And $i = $numberSidesDropTroop - 1) Then
 								dropCC($pixelRandomDropcc[0], $pixelRandomDropcc[1], $iCC)
 								$g_bIsCCDropped = True
 							ElseIf ($g_bIsHeroesDropped = False And $infoTroopListArrPixel[0] = "HEROES" And $i = $numberSidesDropTroop - 1) Then

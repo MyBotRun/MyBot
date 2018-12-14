@@ -47,7 +47,7 @@ Func SwitchAccountVariablesReload($sType = "Load")
 	Static $aiSmartZapGain = $aiZero, $aiNumEQSpellsUsed = $aiZero, $aiNumLSpellsUsed = $aiZero ; smart zap
 
 	; Lab time
-	Static $asLabUpgradeTime = $asEmpty, $aiLabStatus = $aiZero
+	Static $asLabUpgradeTime = $asEmpty, $aiLabStatus = $aiZero, $aiLabElixirCost = $aiZero, $aiLabDElixirCost = $aiZero
 
 	; First time switch account
 	Switch $sType
@@ -109,6 +109,8 @@ Func SwitchAccountVariablesReload($sType = "Load")
 
 			; Lab time
 			$asLabUpgradeTime = $asEmpty
+			$aiLabElixirCost = $aiZero
+			$aiLabDElixirCost = $aiZero
 			$aiLabStatus = $aiZero
 
 		Case "Save"
@@ -166,6 +168,8 @@ Func SwitchAccountVariablesReload($sType = "Load")
 
 			; Lab time
 			$asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime
+			$aiLabElixirCost[$g_iCurAccount] = $g_iLaboratoryElixirCost
+			$aiLabDElixirCost[$g_iCurAccount] = $g_iLaboratoryDElixirCost
 			If GUICtrlGetState($g_hPicLabGreen) = $GUI_ENABLE + $GUI_SHOW Then
 				$aiLabStatus[$g_iCurAccount] = 1
 			ElseIf GUICtrlGetState($g_hPicLabRed) = $GUI_ENABLE + $GUI_SHOW Then
@@ -229,6 +233,8 @@ Func SwitchAccountVariablesReload($sType = "Load")
 
 			; Lab time
 			$g_sLabUpgradeTime = $asLabUpgradeTime[$g_iCurAccount]
+			$g_iLaboratoryElixirCost = $aiLabElixirCost[$g_iCurAccount]
+			$g_iLaboratoryDElixirCost = $aiLabDElixirCost[$g_iCurAccount]
 			Local $Counter = 0
 			For $i = $g_hPicLabGray To $g_hPicLabRed
 				GUICtrlSetState($i, $GUI_HIDE)

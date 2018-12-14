@@ -136,7 +136,14 @@ EndFunc   ;==>getBSPos
 
 Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWidthFirst = Default)
 	Static $asControlSize[6][4]
-	Local $aControlSize = ControlGetPos(GetCurrentAndroidHWnD(), $g_sAppPaneName, GetAndroidControlClass(True))
+	If $g_bAndroidControlUseParentPos Then
+		; If true, control pos is used from parent control (only used to fix docking for Nox in DirectX mode)
+		Local $hCtrl = ControlGetHandle(GetCurrentAndroidHWnD(), $g_sAppPaneName, GetAndroidControlClass(True))
+		Local $hCtrlParent = _WinAPI_GetParent($hCtrl)
+		Local $aControlSize = ControlGetPos(GetCurrentAndroidHWnD(), "", $hCtrlParent)
+	Else
+		Local $aControlSize = ControlGetPos(GetCurrentAndroidHWnD(), $g_sAppPaneName, GetAndroidControlClass(True))
+	EndIf
 	Local $aControlSizeInitial = $aControlSize
 
 	;If Not $g_bRunState Or $FastCheck Then Return $aControlSize

@@ -86,8 +86,8 @@ EndFunc   ;==>CmbClanCastleTroop
 
 Func CmbClanCastleSpell()
 	For $i = 0 To UBound($g_ahCmbClanCastleSpell) - 1
-		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleSpell[$i]) = $eCSpell - $eLSpell Then _GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $eSkSpell - $eLSpell + 1)
-		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleSpell[$i]) <= $eSkSpell - $eLSpell Then
+		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleSpell[$i]) = $eCSpell - $eLSpell Then _GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $eBtSpell - $eLSpell + 1)
+		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleSpell[$i]) <= $eBtSpell - $eLSpell Then
 			GUICtrlSetState($g_ahTxtClanCastleSpell[$i], $GUI_ENABLE)
 		Else
 			GUICtrlSetState($g_ahTxtClanCastleSpell[$i], $GUI_DISABLE)

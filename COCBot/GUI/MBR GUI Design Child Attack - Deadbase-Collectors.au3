@@ -15,8 +15,8 @@
 #include-once
 
 Global $g_hChkDBDisableCollectorsFilter = 0
-Global $g_ahChkDBCollectorLevel[13] = [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0] ; elements 0 thru 5 are never referenced
-Global $g_ahCmbDBCollectorLevel[13] = [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0] ; elements 0 thru 5 are never referenced
+Global $g_ahChkDBCollectorLevel[14] = [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 thru 5 are never referenced
+Global $g_ahCmbDBCollectorLevel[14] = [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 thru 5 are never referenced
 Global $g_hCmbMinCollectorMatches = 0, $g_hSldCollectorTolerance = 0, $g_hLblCollectorWarning = 0
 
 Func CreateAttackSearchDeadBaseCollectors()
@@ -31,119 +31,24 @@ Func CreateAttackSearchDeadBaseCollectors()
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkDisableCollectorsFilter_Info_01", "Disable Collector Filter CHANGES DeadBase into another ActiveBase search"))
 
-	$y += 40
-		$g_ahChkDBCollectorLevel[6] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
-			$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel6_Info_01", "for level 6 elixir collectors during dead base detection.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
-			GUICtrlSetOnEvent(-1, "chkDBCollector")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel6", "Lvl 6. Must be >"), $x + 40, $y + 3, -1, -1)
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahCmbDBCollectorLevel[6] = GUICtrlCreateCombo("", $x + 125, $y, 75, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel6_Info_01", 'Select how full a level 6 collector needs to be for it to be marked "dead"'))
-			GUICtrlSetState(-1, $GUI_DISABLE)
-			GUICtrlSetData(-1, "50%|100%", "50%")
-			GUICtrlSetOnEvent(-1, "cmbDBCollector")
-		GUICtrlCreateLabel($g_hTxtFull, $x + 205, $y + 3)
-
-	$y += 25
-		$g_ahChkDBCollectorLevel[7] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
-			$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel7_Info_01", "for level 7 elixir collectors during dead base detection.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, $GUI_CHECKED)
-			GUICtrlSetOnEvent(-1, "chkDBCollector")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel7", "Lvl 7. Must be >"), $x + 40, $y + 3, -1, -1)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahCmbDBCollectorLevel[7] = GUICtrlCreateCombo("", $x + 125, $y, 75, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel7_Info_01", 'Select how full a level 7 collector needs to be for it to be marked "dead"'))
-			GUICtrlSetData(-1, "50%|100%", "50%")
-			GUICtrlSetOnEvent(-1, "cmbDBCollector")
-		GUICtrlCreateLabel($g_hTxtFull, $x + 205, $y + 3)
-
-	$y += 25
-		$g_ahChkDBCollectorLevel[8] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
-			$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel8_Info_01", "for level 8 elixir collectors during dead base detection.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, $GUI_CHECKED)
-			GUICtrlSetOnEvent(-1, "chkDBCollector")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel8", "Lvl 8. Must be >"), $x + 40, $y + 3, -1, -1)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahCmbDBCollectorLevel[8] = GUICtrlCreateCombo("", $x + 125, $y, 75, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel8_Info_01", 'Select how full a level 8 collector needs to be for it to be marked "dead"'))
-			GUICtrlSetData(-1, "50%|100%", "50%")
-			GUICtrlSetOnEvent(-1, "cmbDBCollector")
-		GUICtrlCreateLabel($g_hTxtFull, $x + 205, $y + 3)
-
-	$y += 25
-		$g_ahChkDBCollectorLevel[9] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
-			$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel9_Info_01", "for level 9 elixir collectors during dead base detection.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, $GUI_CHECKED)
-			GUICtrlSetOnEvent(-1, "chkDBCollector")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel9", "Lvl 9. Must be >"), $x + 40, $y + 3, -1, -1)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahCmbDBCollectorLevel[9] = GUICtrlCreateCombo("", $x + 125, $y, 75, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel9_Info_01", 'Select how full a level 9 collector needs to be for it to be marked "dead"'))
-			GUICtrlSetData(-1, "50%|100%", "50%")
-			GUICtrlSetOnEvent(-1, "cmbDBCollector")
-		GUICtrlCreateLabel($g_hTxtFull, $x + 205, $y + 3)
-
-	$y += 25
-		$g_ahChkDBCollectorLevel[10] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
-			$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel10_Info_01", "for level 10 elixir collectors during dead base detection.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, $GUI_CHECKED)
-			GUICtrlSetOnEvent(-1, "chkDBCollector")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel10", "Lvl 10. Must be >"), $x + 40, $y + 3, -1, -1)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahCmbDBCollectorLevel[10] = GUICtrlCreateCombo("", $x + 125, $y, 75, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel10_Info_01", 'Select how full a level 10 collector needs to be for it to be marked "dead"'))
-			GUICtrlSetData(-1, "50%|100%", "50%")
-			GUICtrlSetOnEvent(-1, "cmbDBCollector")
-		GUICtrlCreateLabel($g_hTxtFull, $x + 205, $y + 3)
-
-	$y += 25
-		$g_ahChkDBCollectorLevel[11] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
-			$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel11_Info_01", "for level 11 elixir collectors during dead base detection.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, $GUI_CHECKED)
-			GUICtrlSetOnEvent(-1, "chkDBCollector")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel11", "Lvl 11. Must be >"), $x + 40, $y + 3, -1, -1)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahCmbDBCollectorLevel[11] = GUICtrlCreateCombo("", $x + 125, $y, 75, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel11_Info_01", 'Select how full a level 11 collector needs to be for it to be marked "dead"'))
-			GUICtrlSetData(-1, "50%|100%", "50%")
-			GUICtrlSetOnEvent(-1, "cmbDBCollector")
-		GUICtrlCreateLabel($g_hTxtFull, $x + 205, $y + 3)
-
-	$y += 25
-		$g_ahChkDBCollectorLevel[12] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
-			$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel12_Info_01", "for level 12 elixir collectors during dead base detection.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetState(-1, $GUI_CHECKED)
-			GUICtrlSetOnEvent(-1, "chkDBCollector")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel12", "Lvl 12. Must be >"), $x + 40, $y + 3, -1, -1)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_ahCmbDBCollectorLevel[12] = GUICtrlCreateCombo("", $x + 125, $y, 75, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel12_Info_01", 'Select how full a level 12 collector needs to be for it to be marked "dead"'))
-			GUICtrlSetData(-1, "50%|100%", "50%")
-			GUICtrlSetOnEvent(-1, "cmbDBCollector")
-		GUICtrlCreateLabel($g_hTxtFull, $x + 205, $y + 3)
+	$y += 15
+	For $i = 6 To 13
+		$y += 25
+			$g_ahChkDBCollectorLevel[$i] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
+				$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel" & $i & "_Info_01", "for level " & $i & " elixir collectors during dead base detection.")
+				_GUICtrlSetTip(-1, $sTxtTip)
+				GUICtrlSetState(-1, ($i = 6 ? GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_DISABLE)) : $GUI_CHECKED))
+				GUICtrlSetOnEvent(-1, "chkDBCollector")
+			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 20, $y, 16, 16)
+				_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel" & $i, "Lvl " & $i & ". Must be >"), $x + 40, $y + 3, -1, -1)
+				_GUICtrlSetTip(-1, $sTxtTip)
+			$g_ahCmbDBCollectorLevel[$i] = GUICtrlCreateCombo("", $x + 125, $y, 75, 20, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+				_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblCollectorLevel" & $i & "_Info_01", "Select how full a level " & $i & ' collector needs to be for it to be marked "dead"'))
+				GUICtrlSetData(-1, "50%|100%", "50%")
+				GUICtrlSetOnEvent(-1, "cmbDBCollector")
+			GUICtrlCreateLabel($g_hTxtFull, $x + 205, $y + 3)
+	Next
 
 	$y += 25
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "LblMinCollectorMatches", "Collectors required"), $x, $y + 3, -1, -1)

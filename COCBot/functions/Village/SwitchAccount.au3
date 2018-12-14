@@ -170,8 +170,8 @@ Func CheckSwitchAcc()
 		SetDebugLog("- Current Account: " & $g_asProfileName[$g_iCurAccount] & " number: " & $g_iCurAccount + 1)
 		SetDebugLog("- Next Account: " & $g_asProfileName[$g_iNextAccount] & " number: " & $g_iNextAccount + 1)
 
-		; Check if the next account is PBT
-		If $g_abPBActive[$g_iNextAccount] Then
+		; Check if the next account is PBT and IF the remain train time is more than 2 minutes
+		If $g_abPBActive[$g_iNextAccount] And _DateDiff("n", _NowCalc(), $g_asTrainTimeFinish[$g_iNextAccount]) > 2 Then
 			SetLog("Account " & $g_iNextAccount + 1 & " is in a Personal Break Time!", $COLOR_INFO)
 			SetSwitchAccLog(" - Account " & $g_iNextAccount + 1 & " is in PTB")
 			$g_iNextAccount = $g_iNextAccount + 1

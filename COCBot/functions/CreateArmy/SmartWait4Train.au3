@@ -25,7 +25,7 @@ Func SmartWait4Train($iTestSeconds = Default)
 
 	Local $iExitCount = 0
 	If _Sleep($DELAYSMARTWAIT) Then Return ; first start 500ms so no false "**Main Window FAIL**" pops up
-	While IsMainPage(1) = False ; check & wait for main page to ensure can read shield information properly
+	While IsMainPage(2) = False ; check & wait for main page to ensure can read shield information properly
 		If _Sleep($DELAYIDLE1) Then Return
 		$iExitCount += 1
 		If $iExitCount > 25 Then ; 5 seconds before have error?

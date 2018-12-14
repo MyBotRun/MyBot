@@ -47,6 +47,7 @@ Global $g_sImgCollectRessourcesBB = @ScriptDir & "\imgxml\Resources\BuildersBase
 Global $g_sImgBoatBB = @ScriptDir & "\imgxml\Boat\BoatBuilderBase_0_89.xml"
 Global $g_sImgZoomOutDirBB = @ScriptDir & "\imgxml\village\BuilderBase\"
 Global $g_sImgStartCTBoost = @ScriptDir & "\imgxml\Resources\BuildersBase\ClockTower\ClockTowerAvailable*.xml"
+Global $g_sImgCleanBBYard = @ScriptDir & "\imgxml\Resources\ObstaclesBB"
 #EndRegion
 
 #Region DonateCC
@@ -55,6 +56,7 @@ Global $g_sImgDonateSpells = @ScriptDir & "\imgxml\DonateCC\Spells\"
 Global $g_sImgDonateSiege = @ScriptDir & "\imgxml\DonateCC\SiegeMachines\"
 Global $g_sImgChatDivider = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdivider_0_98.xml"
 Global $g_sImgChatDividerHidden = @ScriptDir & "\imgxml\DonateCC\donateccwbl\chatdividerhidden_0_98.xml"
+Global $g_sImgChatIUnterstand = @ScriptDir & "\imgxml\DonateCC\donateccwbl\iunderstand_0_95.xml"
 #EndRegion
 
 #Region Auto Upgrade Normal Village
@@ -92,6 +94,7 @@ Global $g_sImgSwitchSiegeMachine = @ScriptDir & "\imgxml\SwitchSiegeMachines\Sie
 Global $g_sImgSwitchSiegeCastle = @ScriptDir & "\imgxml\SwitchSiegeMachines\Castle"
 Global $g_sImgSwitchSiegeWallWrecker = @ScriptDir & "\imgxml\SwitchSiegeMachines\WallWrecker"
 Global $g_sImgSwitchSiegeBattleBlimp = @ScriptDir & "\imgxml\SwitchSiegeMachines\BattleBlimp"
+Global $g_sImgSwitchSiegeStoneSlammer = @ScriptDir & "\imgxml\SwitchSiegeMachines\StoneSlammer"
 #EndRegion
 
 #Region Search

@@ -296,6 +296,7 @@
 #include "functions\Village\BuilderBase\StartClockTowerBoost.au3"
 #include "functions\Village\BuilderBase\BuilderBaseReport.au3"
 #include "functions\Village\BuilderBase\SuggestedUpgrades.au3"
+#include "functions\Village\BuilderBase\CleanBBYard.au3"
 
 #include "functions\Other\Api.au3"
 #include "functions\Other\ApiClient.au3"

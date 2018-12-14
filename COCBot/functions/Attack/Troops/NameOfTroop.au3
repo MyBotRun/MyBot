@@ -57,6 +57,8 @@ Func NameOfTroop($iKind, $iPlural = 0)
 			$sTroopname = "Lava Hound"
 		Case $eBowl
 			$sTroopname = "Bowler"
+		Case $eIceG
+			$sTroopname = "Ice Golem"	
 		Case $eKing
 			$sTroopname = "King"
 			$iPlural = 0 ; safety reset, $sTroopname of $eKing cannot be plural
@@ -89,10 +91,14 @@ Func NameOfTroop($iKind, $iPlural = 0)
 			$sTroopname = "Haste Spell"
 		Case $eSkSpell
 			$sTroopname = "Skeleton Spell"
+		Case $eBtSpell
+			$sTroopname = "Bat Spell"	
 		Case $eWallW
 			$sTroopname = "Wall Wrecker"
 		Case $eBattleB
 			$sTroopname = "Battle Blimp"
+		Case $eStoneS
+			$sTroopname = "Stone Slammer"
 		Case Else
 			Return "" ; error or unknown case
 	EndSwitch

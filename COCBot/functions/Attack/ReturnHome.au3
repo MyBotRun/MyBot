@@ -109,7 +109,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 
 	TrayTip($g_sBotTitle, "", BitOR($TIP_ICONASTERISK, $TIP_NOSOUND)) ; clear village search match found message
 
-	CheckAndroidReboot(False)
+	If CheckAndroidReboot() Then Return
 
 	If $GoldChangeCheck Then
 		If IsAttackPage() Then
@@ -177,7 +177,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 EndFunc   ;==>ReturnHome
 
 Func ReturnHomeMainPage()
-	If IsMainPage(1) Then
+	If IsMainPage(2) Then
 		SetLogCentered(" BOT LOG ", Default, Default, True)
 		Return True
 	EndIf

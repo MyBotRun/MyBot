@@ -73,6 +73,7 @@ Func InitAndroidConfig($bRestart = False)
 	$g_bAndroidBackgroundLaunch = $g_bAndroidBackgroundLaunchEnabled = True ; Enabled Android Background launch using Windows Scheduled Task
 	$g_bAndroidBackgroundLaunched = False ; True when Android was launched in headless mode without a window
 	$g_bUpdateAndroidWindowTitle = False ; If Android has always same title (like LeapDroid) instance name will be added
+	$g_bAndroidControlUseParentPos = False ; If true, control pos is used from parent control (only used to fix docking for Nox in DirectX mode)
 	; screencap might have disabled backgroundmode
 	If $g_bAndroidAdbScreencap Then
 		; update background checkbox
@@ -540,15 +541,18 @@ Func _WinGetAndroidHandle($bFindByTitle = False)
 			If IsArray($aWinList) = 0 Then
 				Local $aWinList2 = _WinAPI_EnumProcessWindows($pid, True)
 				If IsArray($aWinList2) = 1 And $aWinList2[0][0] > 0 Then
-					Local $aWinList[$aWinList2[0][0] + 1][2]
+					Local $aWinList[$aWinList2[0][0] + 1][3]
 					$aWinList[0][0] = $aWinList2[0][0]
 					For $i = 1 To $aWinList2[0][0]
 						$aWinList[$i][0] = WinGetTitle($aWinList2[$i][0])
 						$aWinList[$i][1] = $aWinList2[$i][0]
+						$aWinList[$i][2] = $aWinList2[$i][1]
+						SetDebugLog("Found Android window: " & $aWinList[$i][0] & ", " & $aWinList[$i][1] & ", " & $aWinList[$i][2])
 					Next
 				EndIf
 			EndIf
 			If IsArray($aWinList) = 1 Then
+				SetDebugLog("Found " & $aWinList[0][0] & " windows, searching for '" & $g_sAppPaneName & "' with class '" & $g_sAppClassInstance & "'")
 				For $i = 1 To $aWinList[0][0]
 					$t = $aWinList[$i][0]
 					$hWin = $aWinList[$i][1]

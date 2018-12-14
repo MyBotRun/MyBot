@@ -16,7 +16,7 @@
 
 Func checkCollectors($log = False, $showLabel = True)
 	Local $anyCollectorsEnabled = 0
-	For $i = 6 To 12
+	For $i = 6 To 13
 		If $g_abCollectorLevelEnabled[$i] Then
 			$anyCollectorsEnabled = 1
 			ExitLoop
@@ -38,7 +38,7 @@ Func checkCollectors($log = False, $showLabel = True)
 EndFunc   ;==>checkCollectors
 
 Func chkDBCollector()
-	For $i = 6 To 12
+	For $i = 6 To 13
 		If $g_ahChkDBCollectorLevel[$i] = @GUI_CtrlId Then
 			If $i = 6 Then
 				$g_abCollectorLevelEnabled[6] = False
@@ -54,7 +54,7 @@ Func chkDBCollector()
 EndFunc   ;==>chkDBCollector
 
 Func cmbDBCollector()
-	For $i = 6 To 12
+	For $i = 6 To 13
 		If $g_ahCmbDBCollectorLevel[$i] = @GUI_CtrlId Then
 			$g_aiCollectorLevelFill[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbDBCollectorLevel[$i])
 			ExitLoop

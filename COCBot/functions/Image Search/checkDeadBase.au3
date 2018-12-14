@@ -101,7 +101,7 @@ Func checkDeadBaseNew()
 	Local $anyFillLevel[2] = [False, False] ; 50% and 100%
 	If $g_bDebugSetlog Then SetDebugLog("Checking Deadbase With IMGLOC START", $COLOR_WARNING)
 
-	For $i = 6 To 12
+	For $i = 6 To 13
 		If $g_abCollectorLevelEnabled[$i] Then
 			If $minCollectorLevel = 0 Then $minCollectorLevel = $i
 			If $i > $maxCollectorLevel Then $maxCollectorLevel = $i
@@ -246,7 +246,7 @@ Func checkDeadBaseSuperNew($bForceCapture = True, $sFillDirectory = @ScriptDir &
 	Local $anyFillLevel[2] = [False, False] ; 50% and 100%
 	If $g_bDebugSetlog Then SetDebugLog("Checking Deadbase With IMGLOC START (super new)", $COLOR_WARNING)
 
-	For $i = 6 To 12
+	For $i = 6 To 13
 		If $g_abCollectorLevelEnabled[$i] Then
 			If $minCollectorLevel = 0 Then $minCollectorLevel = $i
 			If $i > $maxCollectorLevel Then $maxCollectorLevel = $i

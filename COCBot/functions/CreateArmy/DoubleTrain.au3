@@ -359,7 +359,7 @@ Func CheckQueueSpellAndTrainRemain($ArmyCamp, $bDebug)
 	Local $iTotalQueue = 0
 	If $bDebug Then SetLog("Checking spell queue: " & $ArmyCamp[0] & "/" & $ArmyCamp[1] * 2, $COLOR_DEBUG)
 
-	Local $XQueueStart = 835
+	Local $XQueueStart = 839
 	For $i = 0 To 10
 		If _ColorCheck(_GetPixelColor(825 - $i * 70, 186, True), Hex(0xD7AFA9, 6), 20) Then ; Pink background found
 			$XQueueStart -= 70.5 * $i
@@ -417,10 +417,10 @@ Func DoubleTrainSiege($bDebug)
 	If Not OpenSiegeMachinesTab(True, "DoubleTrainSiege()") Then Return
 	If _Sleep(500) Then Return
 
-	Local $checkPixel[4] = [58, 556, 0x47717E, 10] ; WallW = 58 (BlimpB = 229)
+	Local $checkPixel[4] = [58, 556, 0x47717E, 10] ; WallW = 58, BlimpB = 229, Slammer = 400
 	; build 1st Army
 	For $i = $eSiegeWallWrecker To $eSiegeMachineCount - 1
-		If $i = $eSiegeBattleBlimp Then $checkPixel[0] = 229
+		$checkPixel[0] = 58 + $i * 171 ; 58 + 1 * 171 = 229, 58 + 2 * 171 = 400
 		If _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$i]) Then
 			If $g_aiCurrentSiegeMachines[$i] < $g_aiArmyCompSiegeMachine[$i] Then
 				Local $HowMany = $g_aiArmyCompSiegeMachine[$i] - $g_aiCurrentSiegeMachines[$i]
@@ -431,20 +431,28 @@ Func DoubleTrainSiege($bDebug)
 		EndIf
 	Next
 	; build 2nd Army
-    If $g_aiArmyCompSiegeMachine[$eSiegeWallWrecker] > 0 And $g_aiArmyCompSiegeMachine[$eSiegeBattleBlimp] > 0 Then ; train both types of siege
-        If $bDebug Then SetLog("Army has both types of siege. Double train siege might cause unbalance.", $COLOR_DEBUG)
-	Else
-		Local $iSiege = $g_aiArmyCompSiegeMachine[$eSiegeWallWrecker] > 0 ? $eSiegeWallWrecker : $eSiegeBattleBlimp ; 0 or 1
-		$checkPixel[0] = 58 + $iSiege * 171 ; 58 + 1 * 171 = 229
+	Local $iTotalSiegeTypeToBuild = 0, $iSiegeType = -1
+	For $i = $eSiegeWallWrecker To $eSiegeMachineCount - 1
+		If $g_aiArmyCompSiegeMachine[$i] > 0 Then
+			$iTotalSiegeTypeToBuild += 1
+			$iSiegeType = $i
+		EndIf
+		If $iTotalSiegeTypeToBuild >= 2 Then ExitLoop
+	Next
+
+    If $iTotalSiegeTypeToBuild >= 2 Then ; train more than 1 type of siege $eSiegeStoneSlammer
+        If $bDebug Then SetLog("Army has more than 1 type of siege. Double train siege might cause unbalance.", $COLOR_DEBUG)
+	ElseIf $iSiegeType >= $eSiegeWallWrecker And $iSiegeType <= $eSiegeMachineCount - 1 Then
+		$checkPixel[0] = 58 + $iSiegeType * 171 ; 58 + 1 * 171 = 229, 58 + 2 * 171 = 400
 		Local $iTotalMachineBuilt = 0
-		For $i = 1 To _Min(Number($g_aiArmyCompSiegeMachine[$iSiege]), 2) ; Maximum workshop space is 2
-			If _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiege]) Then
+		For $i = 1 To _Min(Number($g_aiArmyCompSiegeMachine[$iSiegeType]), 3) ; Maximum workshop space is 3
+			If _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeType]) Then
 				PureClick($checkPixel[0], $checkPixel[1], 1, $g_iTrainClickDelay)
 				$iTotalMachineBuilt += 1
 				If _Sleep(250) Then Return
 			EndIf
 		Next
-		If $iTotalMachineBuilt > 0 Then Setlog("Build " & $iTotalMachineBuilt & " " & $g_asSiegeMachineNames[$iSiege] & ($iTotalMachineBuilt >= 2 ? "s" : ""), $COLOR_SUCCESS)
+		If $iTotalMachineBuilt > 0 Then Setlog("Build " & $iTotalMachineBuilt & " " & $g_asSiegeMachineNames[$iSiegeType] & ($iTotalMachineBuilt >= 2 ? "s" : ""), $COLOR_SUCCESS)
 	EndIf
 	If _Sleep(250) Then Return
 EndFunc   ;==>DoubleTrainSiege

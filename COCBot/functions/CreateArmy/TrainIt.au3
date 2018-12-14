@@ -18,7 +18,7 @@
 
 Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 	If $g_bDebugSetlogTrain Then SetLog("Func TrainIt $iIndex=" & $iIndex & " $howMuch=" & $iQuantity & " $iSleep=" & $iSleep, $COLOR_DEBUG)
-	Local $bDark = ($iIndex >= $eMini And $iIndex <= $eBowl)
+	Local $bDark = ($iIndex >= $eMini And $iIndex <= $eIceG)
 	Local $iErrors = 0
 
 	For $i = 1 To 5 ; Do
@@ -91,7 +91,7 @@ Func GetTrainPos(Const $iIndex)
 		Return $aTrainPos
 	Else
 	; Get the Image path to search
-	If $iIndex >= $eBarb And $iIndex <= $eBowl Then
+	If $iIndex >= $eBarb And $iIndex <= $eIceG Then
 		Local $sFilter = String($g_asTroopShortNames[$iIndex]) & "*"
 		Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
 		If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & $asImageToUse[1])
@@ -100,7 +100,7 @@ Func GetTrainPos(Const $iIndex)
 		Return $aTrainPos
 	EndIf
 
-	If $iIndex >= $eLSpell And $iIndex <= $eSkSpell Then
+	If $iIndex >= $eLSpell And $iIndex <= $eBtSpell Then
 		Local $sFilter = String($g_asSpellShortNames[$iIndex - $eLSpell]) & "*"
 		Local $asImageToUse = _FileListToArray($g_sImgTrainSpells, $sFilter, $FLTA_FILES, True)
 		If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Spell: " & $asImageToUse[1])
@@ -117,12 +117,12 @@ EndFunc   ;==>GetTrainPos
 Func GetFullName(Const $iIndex, Const $aTrainPos)
 	If $g_bDebugSetlogTrain Then SetLog("GetFullName($iIndex=" & $iIndex & ")", $COLOR_DEBUG)
 
-	If $iIndex >= $eBarb And $iIndex <= $eBowl Then
+	If $iIndex >= $eBarb And $iIndex <= $eIceG Then
 		Local $sTroopType = ($iIndex >= $eMini ? "Dark" : "Normal")
 		Return GetFullNameSlot($aTrainPos, $sTroopType)
 	EndIf
 
-	If $iIndex >= $eLSpell And $iIndex <= $eSkSpell Then
+	If $iIndex >= $eLSpell And $iIndex <= $eBtSpell Then
 		Return GetFullNameSlot($aTrainPos, "Spell")
 	EndIf
 

@@ -37,45 +37,49 @@ Func UpgradeHeroes()
 	If $g_bUpgradeWardenEnable Then
 		If Not isInsideDiamond($g_aiWardenAltarPos) Then LocateWardenAltar()
 		If $g_aiWardenAltarPos[0] = -1 Or $g_aiWardenAltarPos[1] = -1 Then LocateWardenAltar()
-	EndIf
-
-	;Check if Auto Lab Upgrade is enabled and if a Dark Troop is selected for Upgrade. If yes, it has priority!
-	If $g_bAutoLabUpgradeEnable And $g_iCmbLaboratory >= 20 And $g_iCmbLaboratory <= 30 Then
-		SetLog("Laboratory needs DE to Upgrade :  " & $g_avLabTroops[$g_iCmbLaboratory][3])
-		SetLog("Skipping the Heroes Upgrade!")
-		Return
+		SaveConfig()
 	EndIf
 
 	SetLog("Upgrading Heroes", $COLOR_INFO)
 
-	; ### Archer Queen ###
-	If $g_bUpgradeQueenEnable And BitAND($g_iHeroUpgradingBit, $eHeroQueen) <> $eHeroQueen Then
-		If Not getBuilderCount() Then Return ; update builder data, return if problem
-		If _Sleep($DELAYRESPOND) Then Return
-		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
-			SetLog("Not enough Builders available to upgrade the Archer Queen")
-			Return
+	;Check if Auto Lab Upgrade is enabled and if a Dark Troop/Spell is selected for Upgrade. If yes, it has priority!
+	If $g_bAutoLabUpgradeEnable And $g_iLaboratoryDElixirCost > 0 Then
+		SetLog("Laboratory needs DE to Upgrade :  " & $g_iLaboratoryDElixirCost)
+		SetLog("Skipping the Queen and King Upgrade!")
+	Else
+		; ### Archer Queen ###
+		If $g_bUpgradeQueenEnable And BitAND($g_iHeroUpgradingBit, $eHeroQueen) <> $eHeroQueen Then
+			If Not getBuilderCount() Then Return ; update builder data, return if problem
+			If _Sleep($DELAYRESPOND) Then Return
+			If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
+				SetLog("Not enough Builders available to upgrade the Archer Queen")
+				Return
+			EndIf
+			QueenUpgrade()
+	
+			If _Sleep($DELAYUPGRADEHERO1) Then Return
 		EndIf
-		QueenUpgrade()
-
-		If _Sleep($DELAYUPGRADEHERO1) Then Return
-	EndIf
-
-	; ### Barbarian King ###
-	If $g_bUpgradeKingEnable And BitAND($g_iHeroUpgradingBit, $eHeroKing) <> $eHeroKing Then
-		If Not getBuilderCount() Then Return ; update builder data, return if problem
-		If _Sleep($DELAYRESPOND) Then Return
-		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
-			SetLog("Not enough Builders available to upgrade the Barbarian King")
-			Return
+	
+		; ### Barbarian King ###
+		If $g_bUpgradeKingEnable And BitAND($g_iHeroUpgradingBit, $eHeroKing) <> $eHeroKing Then
+			If Not getBuilderCount() Then Return ; update builder data, return if problem
+			If _Sleep($DELAYRESPOND) Then Return
+			If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then
+				SetLog("Not enough Builders available to upgrade the Barbarian King")
+				Return
+			EndIf
+			KingUpgrade()
+	
+			If _Sleep($DELAYUPGRADEHERO1) Then Return
 		EndIf
-		KingUpgrade()
-
-		If _Sleep($DELAYUPGRADEHERO1) Then Return
 	EndIf
 
 	; ### Grand Warden ###
-	If $g_bUpgradeWardenEnable And BitAND($g_iHeroUpgradingBit, $eHeroWarden) <> $eHeroWarden Then
+	;Check if Auto Lab Upgrade is enabled and if a Elixir Troop/Spell is selected for Upgrade. If yes, it has priority!
+	If $g_bAutoLabUpgradeEnable And $g_iLaboratoryElixirCost > 0 Then
+		SetLog("Laboratory needs Elixir to Upgrade :  " & $g_iLaboratoryElixirCost)
+		SetLog("Skipping the Warden Upgrade!")
+	ElseIf $g_bUpgradeWardenEnable And BitAND($g_iHeroUpgradingBit, $eHeroWarden) <> $eHeroWarden Then
 		If Not getBuilderCount() Then Return ; update builder data, return if problem
 		If _Sleep($DELAYRESPOND) Then Return
 		If $g_iFreeBuilderCount < 1 + ($g_bUpgradeWallSaveBuilder ? 1 : 0) Then

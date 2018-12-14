@@ -38,9 +38,9 @@ Global $g_hLblNbrOfDetectedMines[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLb
 	   $g_hLblNbrOfDetectedDrills[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLblSmartZap = 0, $g_hLblSmartLightningUsed = 0, $g_hLblSmartEarthQuakeUsed = 0
 
 ; Donations
-Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_hLblDonSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_hLblDonSiegel[$eSiegeMachineCount] = [0, 0]
+Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hLblDonSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hLblDonSiegel[$eSiegeMachineCount] = [0, 0, 0]
 Global $g_hLblTotalTroopsQ = 0, $g_hLblTotalTroopsXP = 0, $g_hLblTotalSpellsQ = 0, $g_hLblTotalSpellsXP = 0
 
 ; Multi Stats
@@ -1113,6 +1113,17 @@ Func CreateDonationsSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
+			
+		; SIEGE
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWallW, $x + 145, $y, 24, 24)
+			$sTxtTip = ""
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(":", $x + 175, $y + 4, -1, 17)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		$g_hLblDonSiegel[$eSiegeWallWrecker] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)	
 
 	$y += 28
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWallBreaker, $x - 10, $y, 24, 24)
@@ -1135,17 +1146,18 @@ Func CreateDonationsSubTab()
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
-		; SIEGE
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWallW, $x + 145, $y, 24, 24)
+			
+	; SIEGE
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBattleB, $x + 145, $y, 24, 24)
 			$sTxtTip = ""
 			_GUICtrlSetTip(-1, $sTxtTip)
 		GUICtrlCreateLabel(":", $x + 175, $y + 4, -1, 17)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-		$g_hLblDonSiegel[$eSiegeWallWrecker] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
+		$g_hLblDonSiegel[$eSiegeBattleBlimp] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
-
+			
 	$y += 28
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBalloon, $x - 10, $y, 24, 24)
 			$sTxtTip = ""
@@ -1166,17 +1178,17 @@ Func CreateDonationsSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
-
+			
 		; SIEGE
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBattleB, $x + 145, $y, 24, 24)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnStoneS, $x + 145, $y, 24, 24)
 			$sTxtTip = ""
 			_GUICtrlSetTip(-1, $sTxtTip)
 		GUICtrlCreateLabel(":", $x + 175, $y + 4, -1, 17)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-		$g_hLblDonSiegel[$eSiegeBattleBlimp] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
+		$g_hLblDonSiegel[$eSiegeStoneSlammer] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
-			_GUICtrlSetTip(-1, $sTxtTip)
+			_GUICtrlSetTip(-1, $sTxtTip)	
 
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -1214,6 +1226,16 @@ Func CreateDonationsSubTab()
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnIceGolem, $x + 95, $y, 24, 24)
+			$sTxtTip = ""
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(":", $x + 122, $y + 4, -1, 17)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		$g_hLblDonTroop[$eTroopIceGolem] = GUICtrlCreateLabel("0", $x + 100, $y + 4, 70, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+			
 	$y += 28
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnValkyrie, $x - 10, $y, 24, 24)
 			$sTxtTip = ""
@@ -1351,6 +1373,16 @@ Func CreateDonationsSubTab()
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
+			
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBatSpell, $x + 95, $y, 24, 24)
+			$sTxtTip = ""
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(":", $x + 122, $y + 4, -1, 17)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		$g_hLblDonSpell[$eSpellBat] = GUICtrlCreateLabel("0", $x + 115, $y + 4, 70, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)	
 
 	$y += 28
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnEarthQuakeSpell, $x - 10, $y, 24, 24)

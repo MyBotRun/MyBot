@@ -1,3 +1,28 @@
+* **V7.6.5**
+* Add Ice Golem Support @ViperZ
+* Add Bat Spell Support @ViperZ
+* Add Stone Slammer Support @ViperZ
+* Fixed Snow Theme Detection (December 2018 Update)
+* Fixed Request Clan Castle (December 2018 Update)
+* Fixed Edit/Remove Army (December 2018 Update)
+* Fixed Clan Games not opening due to snow (December 2018 Update)
+* Fixed Switch Account (December 2018 Update)
+* Fixed Laboratory (December 2018 Update)
+* Fixed Collectors Level 13 Snow Theme (December 2018 Update)
+* Fixed Laboratory Time Position Change, reported/fixed by Fahid.Mahmood (October 2018 Update)
+* Fixed new elixir collector level 13 (October 2018 Update)
+* Fixed new dark elixir drill level 7 (October 2018 Update)
+* Fixed error "Cannot open Army Overview window" when "Wait for Clan Castle" enabled and Castle is not full, fixed by @Demen
+* Fixed switch account never switch back to the account in personal break, fixed by @Demen
+* Fixed clan chat did not open when donating CC, fixed by @Demen
+* Fixed Nox 6.2.5.3 in DirectX rendering mode
+* Improved clan games, new challenges added
+* Improved the attack bar getting spells levels and quantities when exist heroes or not
+* Improved Laboratory, updates selected troop to max possible
+	If no further upgrade possible, or "Any" selected, cheapest upgrade will be done next
+	1 Dark Elixir is worth 50 Elixir in comparism context
+* Increased Android Launch Timout to 10 min
+
 * **V7.6.4**
 * October Update Fixed Drop Trophies , Now the slots are not selected by default
 * October Update Fixed Heroes Recover timer when is boosted
@@ -29,7 +54,7 @@
 * Improved double train with less open & close army window
 
 * **V7.6.2**
-* Fixed Bluestacks 4.x and CoC PB message , different font and place. 
+* Fixed Bluestacks 4.x and CoC PB message , different font and place.
 * Fixed Siege Build when queued empty and camp is full, making a double sieges.
 * Fixed Conflict with Balloons and siege on attack bar, reported by @Black-sTyle-Vii
 * Fixed Donate only - Switch account and a second train army reported by @hrishikesh
@@ -83,7 +108,7 @@
 * Added Telegram - Shutdown , Hibernate and Standby with a confirm message, just to avoid user errors
 * Added Telegram and invalid commands
 * Added Profile button to save current setting without having to start bot
-* Fixed Reset last command on Telegram 
+* Fixed Reset last command on Telegram
 * Fixed UI Responsiveness when the telegram is checked
 * Fixed Forced PBT for Normal Switch
 * Fixed Some issues in switch from-to Builder base - Main Village, Get village measuring and zoomout

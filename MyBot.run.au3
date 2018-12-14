@@ -888,24 +888,6 @@ Func _Idle() ;Sequence that runs until Full Army
 		If _Sleep($DELAYIDLE1) Then Return
 		If $g_iCommandStop = -1 Then SetLog("====== Waiting for full army ======", $COLOR_SUCCESS)
 		Local $hTimer = __TimerInit()
-		Local $iReHere = 0, $bNoCheckRedChatIcon = True
-
-		If $g_iActiveDonate And $g_bChkDonate Then
-			Local $aHeroResult = CheckArmyCamp(True, True, True, False)
-			While $iReHere < 7
-				If Not $g_bRunState Then Return
-				$iReHere += 1
-				If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then $bNoCheckRedChatIcon = ($iReHere = 1) ? False : True ; Just to force once to open and check Donations when is Halt mode
-				If $iReHere = 1 And SkipDonateNearFullTroops(True, $aHeroResult) = False And BalanceDonRec(True) Then
-					DonateCC($bNoCheckRedChatIcon)
-				ElseIf SkipDonateNearFullTroops(False, $aHeroResult) = False And BalanceDonRec(False) Then
-					DonateCC($bNoCheckRedChatIcon)
-				EndIf
-				If _Sleep($DELAYIDLE2) Then ExitLoop
-				If $g_bRestart = True Then ExitLoop
-				If CheckAndroidReboot() Then ContinueLoop 2
-			WEnd
-		EndIf
 		If _Sleep($DELAYIDLE1) Then ExitLoop
 		checkObstacles() ; trap common error messages also check for reconnecting animation
 		checkMainScreen(False) ; required here due to many possible exits
@@ -962,7 +944,7 @@ Func _Idle() ;Sequence that runs until Full Army
 		If $g_iCommandStop = 0 And $g_bTrainEnabled = True Then
 			If Not ($g_bIsFullArmywithHeroesAndSpells) Then
 				If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
-					If CheckNeedOpenTrain($g_sTimeBeforeTrain) Then TrainSystem()
+					If CheckNeedOpenTrain($g_sTimeBeforeTrain) Or (ProfileSwitchAccountEnabled() And $g_iActiveDonate And $g_bChkDonate) Then TrainSystem() ; force check trainsystem after donate and before switch account
 					If $g_bRestart = True Then ExitLoop
 					If _Sleep($DELAYIDLE1) Then ExitLoop
 					checkMainScreen(False)
@@ -1220,6 +1202,7 @@ Func _RunFunction($action)
 			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades) And SwitchBetweenBases()) Then
 				CollectBuilderBase()
 				BuilderBaseReport()
+				CleanBBYard()
 				StartClockTowerBoost()
 				MainSuggestedUpgradeCode()
 				; switch back to normal village

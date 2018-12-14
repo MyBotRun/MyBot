@@ -123,6 +123,8 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 			If $g_abAttackUseHasteSpell[$g_iMatchMode] = False Then $usespell = False
 		Case $eSkSpell
 			If $g_abAttackUseSkeletonSpell[$g_iMatchMode] = False Then $usespell = False
+		Case $eBtSpell
+			If $g_abAttackUseBatSpell[$g_iMatchMode] = False Then $usespell = False
 	EndSwitch
 
 	If $troopPosition = -1 Or $usespell = False Then
@@ -181,7 +183,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 					EndIf
 
 					Switch $iTroopIndex
-						Case $eBarb To $eBowl ; drop normal troops
+						Case $eBarb To $eIceG ; drop normal troops
 							If $debug = True Then
 								SetLog("AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else
@@ -205,13 +207,13 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 							Else
 								dropHeroes($pixel[0], $pixel[1], -1, -1, $troopPosition) ; was $g_iWardenSlot, Slot11+
 							EndIf
-						Case $eCastle, $eWallW, $eBattleB
+						Case $eCastle, $eWallW, $eBattleB, $eStoneS
 							If $debug = True Then
 								SetLog("dropCC(" & $pixel[0] & ", " & $pixel[1] & ", " & $troopPosition & ")")
 							Else
 								dropCC($pixel[0], $pixel[1], $troopPosition)
 							EndIf
-						Case $eLSpell To $eSkSpell
+						Case $eLSpell To $eBtSpell
 							If $debug = True Then
 								SetLog("Drop Spell AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else
