@@ -15,7 +15,6 @@
 #include-once
 #include <TreeViewConstants.au3>
 #include <GuiTreeView.au3>
-#include "GUITreeViewEx.au3"
 
 Global $g_hGUI_MISC = 0, $g_hGUI_MISC_TAB = 0, $g_hGUI_MISC_TAB_ITEM1 = 0, $g_hGUI_MISC_TAB_ITEM2 = 0, $g_hGUI_MISC_TAB_ITEM3 = 0
 
@@ -424,11 +423,7 @@ Func CreateMiscClanGamesV3SubTab()
 	$g_hPicChallengeIcon = GUICtrlCreatePic("", $x + 360, $y + 67, 40, 40, -1, -1)
 	$g_hLblChallengeInfoTid = GUICtrlCreateLabel("", $x + 267, $y + 113, 135, 52, -1, -1)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
-	For $i = $g_hGrpChallengeTid To $g_hLblChallengeInfoTid
-		GUICtrlSetState($i, $GUI_HIDE)
-	Next
-	_GUITreeViewEx_InitTV($g_hTreeClanGames)
-	; WM_NOTIFY message processing added in "MBR GUI Control.au3"
+	ClanGames_SetDescriptionState($GUI_HIDE)
 
 	; Read challenge data from CSV file (a real CSV file, not a MyBot CSV file)
 	Local Const $challengesCsv = @ScriptDir & "\challenges.csv"

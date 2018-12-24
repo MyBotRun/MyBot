@@ -103,7 +103,7 @@ Func _ClanGames_SelectedItemChanged($hWndFrom, $lParam)
 	Local $hItem = DllStructGetData($tTreeView, "NewhItem")
 	If $hItem = 0 Then
 		GUICtrlSetState($g_hCmbAttack, $GUI_DISABLE)
-		_ClanGames_SetDescriptionState($GUI_HIDE)
+		ClanGames_SetDescriptionState($GUI_HIDE)
 	Else
 		; Item has been selected
 		GUICtrlSetState($g_hCmbAttack, $GUI_ENABLE)
@@ -122,18 +122,18 @@ Func _ClanGames_SelectedItemChanged($hWndFrom, $lParam)
 			GUICtrlSetData($g_hLblChallengeScore, $g_aChallengeData[$i][$g_mChallengeColumns["Score"]])
 			GUICtrlSetData($g_hLblChallengeDuration, $duration)
 			GUICtrlSetImage($g_hPicChallengeIcon, @ScriptDir & "\images\ClanGames\40\" & $g_aChallengeData[$i][$g_mChallengeColumns["IconExportName"]] & ".gif")
-			_ClanGames_SetDescriptionState($GUI_SHOW)
+			ClanGames_SetDescriptionState($GUI_SHOW)
 		Else
-			_ClanGames_SetDescriptionState($GUI_HIDE)
+			ClanGames_SetDescriptionState($GUI_HIDE)
 		EndIf
 	EndIf
 EndFunc   ;==>_ClanGames_SelectedItemChanged
 
-Func _ClanGames_SetDescriptionState($state)
+Func ClanGames_SetDescriptionState($state)
 	For $i = $g_hGrpChallengeTid To $g_hLblChallengeInfoTid
 		GUICtrlSetState($i, $state)
 	Next
-EndFunc   ;==>_ClanGames_SetDescriptionState
+EndFunc   ;==>ClanGames_SetDescriptionState
 
 Func chkRequestCCHours()
 	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "chkRequestCCHours")
