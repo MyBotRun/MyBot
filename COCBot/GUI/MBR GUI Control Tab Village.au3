@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Sardo (2016)
-; Modified ......: CodeSlinger69 (2017)
+; Modified ......: eslindsey (2018)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -27,6 +27,113 @@
 ; Func ChkCollect()
 	; $g_bChkCollect = (GUICtrlRead($g_hChkCollect) = $GUI_CHECKED)
 ; EndFunc   ;==>ChkCollect
+
+Func TreeView_SetChildren($hWnd, $hItem, $bCheck)
+	Local $hChild = _GUICtrlTreeView_GetFirstChild($hWnd, $hItem)
+	While $hChild
+		_GUICtrlTreeView_SetChecked($hWnd, $hChild, $bCheck)
+		TreeView_SetChildren($hWnd, $hChild, $bCheck)
+		$hChild = _GUICtrlTreeView_GetNextSibling($hWnd, $hChild)
+	WEnd
+EndFunc   ;==>TreeView_CheckChildren
+
+Func TreeView_CheckParent($hWnd, $hItem)
+	Local $hParent = _GUICtrlTreeView_GetParentHandle($hWnd, $hItem)
+	If $hParent = 0 Or $hParent = $hWnd Then Return
+	Local $hChild = _GUICtrlTreeView_GetFirstChild($hWnd, $hParent)
+	Local $checked = 0, $total = 0
+	While $hChild
+		Switch _GUICtrlTreeView_GetStateImageIndex($hWnd, $hChild)
+			Case 2
+				$checked += 1
+			Case 3
+				$checked = 1
+				$total = 2
+				ExitLoop
+		EndSwitch
+		$total += 1
+		$hChild = _GUICtrlTreeView_GetNextSibling($hWnd, $hChild)
+	WEnd
+	If $checked = 0 Then
+		_GUICtrlTreeView_SetStateImageIndex($hWnd, $hParent, 1)
+	ElseIf $checked = $total Then
+		_GUICtrlTreeView_SetStateImageIndex($hWnd, $hParent, 2)
+	Else
+		_GUICtrlTreeView_SetStateImageIndex($hWnd, $hParent, 3)
+	EndIf
+	TreeView_CheckParent($hWnd, $hParent)
+EndFunc   ;==>TreeView_CheckParent
+
+Func ClanGames_WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
+	Local $tNotifyHdr = DllStructCreate($tagNMHDR, $lParam)
+	Local $hWndFrom = DllStructGetData($tNotifyHdr, "hWndFrom")
+	Local $code = DllStructGetData($tNotifyHdr, "Code")
+	Switch $hWndFrom
+		Case GUICtrlGetHandle($g_hTreeClanGames)         ; Clan Games TreeView
+			Switch $code
+				Case $TVN_ITEMCHANGEDA, $TVN_ITEMCHANGEDW   ; Item state changed
+					_ClanGames_ItemStateChanged($hWndFrom, $lParam)
+					Return
+				Case $TVN_SELCHANGEDA, $TVN_SELCHANGEDW     ; Selection changed
+					_ClanGames_SelectedItemChanged($hWndFrom, $lParam)
+					Return
+			EndSwitch
+	EndSwitch
+	Return $GUI_RUNDEFMSG
+EndFunc   ;==>ClanGames_WM_NOTIFY
+
+Func _ClanGames_ItemStateChanged($hWndFrom, $lParam)
+	Local $tItemChange = DllStructCreate($tagNMTVITEMCHANGE, $lParam)
+	Local $hItem = DllStructGetData($tItemChange, "hItem")
+	; State image index is stored in bits 8-11 of the item state, so why do I have to shift by 12 to get it?
+	Local $uStateNewImageIndex = BitAND(BitShift(DllStructGetData($tItemChange, "StateNew"), 12), 0xF)
+	Local $uStateOldImageIndex = BitAND(BitShift(DllStructGetData($tItemChange, "StateOld"), 12), 0xF)
+	If $uStateNewImageIndex <> $uStateOldImageIndex Then
+		If $uStateNewImageIndex = 3 Then
+			_GUICtrlTreeView_SetStateImageIndex($hWndFrom, $hItem, 1)
+			$uStateNewImageIndex = 1
+		EndIf
+		TreeView_SetChildren($hWndFrom, $hItem, $uStateNewImageIndex = 2)
+		TreeView_CheckParent($hWndFrom, $hItem)
+	EndIf
+EndFunc   ;==>_ClanGames_ItemStateChanged
+
+Func _ClanGames_SelectedItemChanged($hWndFrom, $lParam)
+	Local $tTreeView = DllStructCreate($tagNMTREEVIEW, $lParam)
+	Local $hItem = DllStructGetData($tTreeView, "NewhItem")
+	If $hItem = 0 Then
+		GUICtrlSetState($g_hCmbAttack, $GUI_DISABLE)
+		_ClanGames_SetDescriptionState($GUI_HIDE)
+	Else
+		; Item has been selected
+		GUICtrlSetState($g_hCmbAttack, $GUI_ENABLE)
+		Local $i = _GUICtrlTreeView_GetItemParam($hWndFrom, $hItem)
+		If $i Then
+			Local $dm = Number($g_aChallengeData[$i][$g_mChallengeColumns["DurationMinutes"]])
+			Local $dh = Mod(Floor($dm / 60), 24)
+			Local $dd = Floor($dm / 1440)
+			$dm = Mod($dm, 60)
+			Local $duration = ""
+			If $dd > 0 Then $duration &= $dd & "d "
+			If $dh > 0 Then $duration &= $dh & "h "
+			If $dm > 0 Then $duration &= $dm & "m "
+			GUICtrlSetData($g_hGrpChallengeTid, $g_aChallengeData[$i][$g_mChallengeColumns["TID"]])
+			GUICtrlSetData($g_hLblChallengeInfoTid, $g_aChallengeData[$i][$g_mChallengeColumns["InfoTID"]])
+			GUICtrlSetData($g_hLblChallengeScore, $g_aChallengeData[$i][$g_mChallengeColumns["Score"]])
+			GUICtrlSetData($g_hLblChallengeDuration, $duration)
+			GUICtrlSetImage($g_hPicChallengeIcon, @ScriptDir & "\images\ClanGames\40\" & $g_aChallengeData[$i][$g_mChallengeColumns["IconExportName"]] & ".gif")
+			_ClanGames_SetDescriptionState($GUI_SHOW)
+		Else
+			_ClanGames_SetDescriptionState($GUI_HIDE)
+		EndIf
+	EndIf
+EndFunc   ;==>_ClanGames_SelectedItemChanged
+
+Func _ClanGames_SetDescriptionState($state)
+	For $i = $g_hGrpChallengeTid To $g_hLblChallengeInfoTid
+		GUICtrlSetState($i, $state)
+	Next
+EndFunc   ;==>_ClanGames_SetDescriptionState
 
 Func chkRequestCCHours()
 	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "chkRequestCCHours")

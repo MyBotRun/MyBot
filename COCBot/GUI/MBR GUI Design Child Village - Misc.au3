@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........:
-; Modified ......: CodeSlinger69 (2017)
+; Modified ......: eslindsey (2018)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -13,6 +13,10 @@
 ; Example .......: No
 ; ===============================================================================================================================
 #include-once
+#include <TreeViewConstants.au3>
+#include <GuiTreeView.au3>
+#include "GUITreeViewEx.au3"
+
 Global $g_hGUI_MISC = 0, $g_hGUI_MISC_TAB = 0, $g_hGUI_MISC_TAB_ITEM1 = 0, $g_hGUI_MISC_TAB_ITEM2 = 0, $g_hGUI_MISC_TAB_ITEM3 = 0
 
 Global $g_hChkBotStop = 0, $g_hCmbBotCommand = 0, $g_hCmbBotCond = 0, $g_hCmbHoursStop = 0
@@ -31,6 +35,11 @@ Global $g_hChkPlacingNewBuildings = 0
 
 Global $g_hChkClanGamesAir = 0, $g_hChkClanGamesGround = 0, $g_hChkClanGamesMisc = 0
 Global $g_hChkClanGamesEnabled = 0 , $g_hChkClanGames60 = 0
+Global $g_hTreeClanGames = 0 , $g_hCmbAttack = 0
+Global $g_hGrpChallengeTid = 0 , $g_hLblChallengeInfoTid = 0 , $g_hLblChallengeScore = 0 , $g_hLblChallengeDuration = 0 , $g_hPicChallengeIcon = 0
+Global $g_aChallengeData
+Global $g_mChallengeColumns[]
+;~ TODO: Remove old checkboxes
 Global $g_hChkClanGamesLoot = 0 , $g_hChkClanGamesBattle =0 , $g_hChkClanGamesDestruction = 0 , $g_hChkClanGamesAirTroop = 0 , $g_hChkClanGamesGroundTroop = 0 , $g_hChkClanGamesMiscellaneous = 0
 Global $g_hChkClanGamesPurge = 0 , $g_hcmbPurgeLimit = 0 , $g_hChkClanGamesStopBeforeReachAndPurge = 0
 Global $g_hTxtClanGamesLog = 0
@@ -343,7 +352,7 @@ Func CreateMiscBuilderBaseSubTab()
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCollectBuildersBase_Info_01", "Check this to collect Ressources on the Builder Base"))
 		$g_hChkCleanBBYard = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCleanBBYard", "Remove Obstacles"), $x + 260, $y + 4, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkCleanBBYard_Info_01", "Check this to automatically clear Yard from Trees, Trunks, etc."))
-			GUICtrlSetState (-1, $GUI_ENABLE)	
+			GUICtrlSetState (-1, $GUI_ENABLE)
 
 	$y += 32
 		GUICtrlCreateIcon($g_sLibIconPath, $eIcnClockTower, $x + 32, $y, 24, 24)
@@ -378,42 +387,146 @@ EndFunc   ;==>CreateMiscBuilderBaseSubTab
 ; Clan Games v3
 Func CreateMiscClanGamesV3SubTab()
 
-	Local Const $g_sLibIconPathMOD = @ScriptDir & "\images\ClanGames.bmp"
-
 	; GUI SubTab
 	Local $x = 15, $y = 45
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_CG", "Clan Games"), $x - 10, $y - 20, $g_iSizeWGrpTab3, 245)
-		GUICtrlCreatePic($g_sLibIconPathMOD, $x + 5, $y, 94, 128, $SS_BITMAP)
 
-		GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesTimeRemaining", "Time Remaining"), $x - 5, $y + 135, 110, 40)
-			$g_hLblRemainTime = GUICtrlCreateLabel("0d 00h", $x + 15, $y + 135 + 15, 65, 17, $SS_CENTER)
-				GUICtrlSetFont(-1, 9.5, $FW_BOLD, $GUI_FONTNORMAL)
-		GUICtrlCreateGroup("", -99, -99, 1, 1)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesTimeRemaining", "Time Remaining"), $x, $y + 183, 80, 15)
+			GUICtrlSetFont(-1, 7)
+		$g_hLblRemainTime = GUICtrlCreateLabel("0d 00h", $x, $y + 183 + 15, 80, 15)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD, $GUI_FONTNORMAL)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesYourScore", "Your Score"), $x + 85, $y + 183, 80, 15)
+			GUICtrlSetFont(-1, 7)
+		$g_hLblYourScore = GUICtrlCreateLabel("0/0", $x + 85, $y + 183 + 15, 80, 15)
+			GUICtrlSetFont(-1, 9.5, $FW_BOLD, $GUI_FONTNORMAL)
 
-		GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesYourScore", "Your Score"), $x - 5, $y + 158 + 20, 110, 40)
-			$g_hLblYourScore = GUICtrlCreateLabel("0/0", $x + 15, $y + 158 + 35, 65, 17, $SS_CENTER)
-				GUICtrlSetFont(-1, 9.5, $FW_BOLD, $GUI_FONTNORMAL)
-		GUICtrlCreateGroup("", -99, -99, 1, 1)
-
-	$x = 150
 		$g_hChkClanGamesEnabled = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesEnabled", "Clan Games"), $x, $y, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkActivateClangames")
 		$g_hChkClanGames60 = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGames60", "No 60min Events"), $x + 100 , $y, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGames60_Info_01", "will not choose 60 minute events"))
 		$g_hChkClanGamesDebug = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesDebug", "Debug"), $x + 205, $y, -1, -1)
+
+	; Create the Clan Games challenges treeview
+	Local $iStyle = BitOR($TVS_HASBUTTONS, $TVS_HASLINES, $TVS_LINESATROOT, $TVS_DISABLEDRAGDROP, $TVS_SHOWSELALWAYS, $TVS_CHECKBOXES)
+	$g_hTreeClanGames = GUICtrlCreateTreeView($x, $y + 25, 252, 145, $iStyle, $WS_EX_CLIENTEDGE)
+	; Add the indeterminate state to the tree view's state image list
+	Local $hImgList = _GUICtrlTreeView_GetStateImageList(GUICtrlGetHandle($g_hTreeClanGames))
+	_GUIImageList_AddBitmap($hImgList, @ScriptDir & "\images\ClanGames\Indeterminate.bmp")
+	$g_hCmbAttack = GUICtrlCreateCombo("Use Default Attack", $x + 257, $y + 25, 155, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL, $WS_VSCROLL), $WS_EX_CLIENTEDGE)
+		GUICtrlSetState(-1, $GUI_DISABLE)
+	; Create the Clan Games selected challenge information section
+	$g_hGrpChallengeTid = GUICtrlCreateGroup("", $x + 257, $y + 50, 155, 120, -1, -1)
+		GUICtrlSetFont(-1, 9.5, $FW_BOLD, $GUI_FONTNORMAL)
+	GUICtrlCreatePic(@ScriptDir & "\images\ClanGames\Score.gif", $x + 267, $y + 70, 16, 16, -1, -1)
+	$g_hLblChallengeScore = GUICtrlCreateLabel("", $x + 286, $y + 72, 70, 15, -1, -1)
+	GUICtrlCreatePic(@ScriptDir & "\images\ClanGames\Duration.gif", $x + 267, $y + 90, 16, 16, -1, -1)
+	$g_hLblChallengeDuration = GUICtrlCreateLabel("", $x + 286, $y + 92, 70, 15, -1, -1)
+	$g_hPicChallengeIcon = GUICtrlCreatePic("", $x + 360, $y + 67, 40, 40, -1, -1)
+	$g_hLblChallengeInfoTid = GUICtrlCreateLabel("", $x + 267, $y + 113, 135, 52, -1, -1)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+	For $i = $g_hGrpChallengeTid To $g_hLblChallengeInfoTid
+		GUICtrlSetState($i, $GUI_HIDE)
+	Next
+	_GUITreeViewEx_InitTV($g_hTreeClanGames)
+	; WM_NOTIFY message processing added in "MBR GUI Control.au3"
+
+	; Read challenge data from CSV file (a real CSV file, not a MyBot CSV file)
+	Local Const $challengesCsv = @ScriptDir & "\challenges.csv"
+	Local Const $baseDir = @ScriptDir & "\images\ClanGames\"
+	Local Const $iconDir = $baseDir & "16\"
+	Local $i, $rc, $hImages
+	Local $m_headings[], $m_tids[], $m_images[]
+	$hImages = _GUIImageList_Create(16, 16, 5, 3)
+	_GUIImageList_AddBitmap($hImages, $iconDir & "white.bmp")
+	$rc = _FileReadToArray($challengesCsv, $g_aChallengeData, $FRTA_NOCOUNT, ",")
+	If $rc <> 0 Then
+		; Store the column numbers in a map to access by column name
+		For $i = 0 To UBound($g_aChallengeData, $UBOUND_COLUMNS) - 1
+			$g_mChallengeColumns[$g_aChallengeData[0][$i]] = $i
+		Next
+		; Store the challenge data in a global array to access later
+		_GUICtrlTreeView_BeginUpdate($g_hTreeClanGames)
+		_GUICtrlTreeView_SetNormalImageList($g_hTreeClanGames, $hImages)
+		For $i = 2 To UBound($g_aChallengeData) - 1
+			Local $set     = $g_aChallengeData[$i][$g_mChallengeColumns["Set"]]
+			Local $tid     = $g_aChallengeData[$i][$g_mChallengeColumns["TID"]]
+			Local $heading = $g_aChallengeData[$i][$g_mChallengeColumns["Heading"]]
+			Local $icon    = $g_aChallengeData[$i][$g_mChallengeColumns["IconExportName"]]
+			If Not $m_headings[$heading] Then
+				If Not $m_images[$heading] Then
+					$m_images[$heading] = _GUIImageList_AddBitmap($hImages, $baseDir & $heading & ".bmp")
+					If $m_images[$heading] = -1 Then
+						SetLog("Couldn't load image " & $baseDir & $heading & ".bmp", $COLOR_WARNING)
+						$m_images[$heading] = 0
+					EndIf
+				EndIf
+				$m_headings[$heading] = _GUICtrlTreeView_Add($g_hTreeClanGames, 0, $heading, $m_images[$heading], $m_images[$heading])
+			EndIf
+			If Not $m_tids[$tid] Then
+				If Not $m_images[$icon] Then
+					$m_images[$icon] = _GUIImageList_AddBitmap($hImages, $iconDir & $icon & ".bmp")
+					If $m_images[$icon] = -1 Then
+						SetLog("Couldn't load image " & $iconDir & $icon & ".bmp", $COLOR_WARNING)
+						$m_images[$icon] = 0
+					EndIf
+				EndIf
+				$m_tids[$tid] = _GUICtrlTreeView_AddChild($g_hTreeClanGames, $m_headings[$heading], $tid, $m_images[$icon], $m_images[$icon])
+			EndIf
+			Local $hItem = _GUICtrlTreeView_AddChild($g_hTreeClanGames, $m_tids[$tid], $set)
+			_GUICtrlTreeView_SetItemParam($g_hTreeClanGames, $hItem, $i)
+		Next
+		_GUICtrlTreeView_EndUpdate($g_hTreeClanGames)
+	Else
+		Local $err
+		Switch @error
+			Case 1
+				$err = "Error opening specified file"
+			Case 2
+				$err = "Unable to split the data"
+			Case 3
+				$err = "File lines have different numbers of fields"
+			Case 4
+				$err = "No delimiters found"
+		EndSwitch
+		SetLog($challengesCsv & ": " & $err, $COLOR_ERROR)
+	EndIf
+
+;~ 	$g_hTreeItemLoot = GUICtrlCreateTreeViewItem(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesLoot", "Loot Challenges"), $g_hTreeClanGames)
+;~ 	GUICtrlCreateTreeViewItem("Dark Elixir Challenge", $g_hTreeItemLoot)
+;~ 	GUICtrlCreateTreeViewItem("Elixir Challenge", $g_hTreeItemLoot)
+;~ 	GUICtrlCreateTreeViewItem("Gold Challenge", $g_hTreeItemLoot)
+;~ 	GUICtrlCreateTreeViewItem("Dark Elixir Heist", $g_hTreeItemLoot)
+;~ 	GUICtrlCreateTreeViewItem("Elixir Embezzlement", $g_hTreeItemLoot)
+;~ 	GUICtrlCreateTreeViewItem("Gold Grab", $g_hTreeItemLoot)
+;~ 	$g_hTreeItemBattle = GUICtrlCreateTreeViewItem(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesBattle", "Battle Challenges"), $g_hTreeClanGames)
+;~ 	$g_hTreeItemDestruction = GUICtrlCreateTreeViewItem(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesDestruction", "Destruction Challenges"), $g_hTreeClanGames)
+;~ 	GUICtrlCreateTreeViewItem("Destroy Air Sweepers",
+;~ 	$g_hTreeItemAir = GUICtrlCreateTreeViewItem(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesAirTroop", "Air Troops Challenges"), $g_hTreeClanGames)
+;~ 	$g_hTreeItemGround = GUICtrlCreateTreeViewItem(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesGroundTroop", "Ground Troops Challenges"), $g_hTreeClanGames)
+;~ 	$g_hTreeItemMisc = GUICtrlCreateTreeViewItem(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesMiscellaneous", "Miscellaneous Challenges"), $g_hTreeClanGames)
+
+;~ TODO: Remove old checkboxes
 	$x += 25
 	$y += 25
 		$g_hChkClanGamesLoot = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesLoot", "Loot Challenges"), $x, $y, -1, -1)
+		GUICtrlSetState($g_hChkClanGamesLoot, $GUI_HIDE)
 	$y += 25
 		$g_hChkClanGamesBattle = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesBattle", "Battle Challenges"), $x, $y, -1, -1)
+		GUICtrlSetState($g_hChkClanGamesBattle, $GUI_HIDE)
 	$y += 25
 		$g_hChkClanGamesDestruction = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesDestruction", "Destruction Challenges"), $x, $y, -1, -1)
+		GUICtrlSetState($g_hChkClanGamesDestruction, $GUI_HIDE)
 	$y += 25
 		$g_hChkClanGamesAirTroop = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesAirTroop", "Air Troops Challenges"), $x, $y, -1, -1)
+		GUICtrlSetState($g_hChkClanGamesAirTroop, $GUI_HIDE)
 	$y += 25
 		$g_hChkClanGamesGroundTroop = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesGroundTroop", "Ground Troops Challenges"), $x, $y, -1, -1)
+		GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_HIDE)
 	$y += 25
 		$g_hChkClanGamesMiscellaneous = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesMiscellaneous", "Miscellaneous Challenges"), $x, $y, -1, -1)
+		GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_HIDE)
+
+	$x += 170 - 25
 	$y += 25
 		$g_hChkClanGamesPurge = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkClanGamesPurge", "Purge Versus Battles Events"), $x, $y, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkPurgeLimits")

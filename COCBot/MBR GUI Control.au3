@@ -140,6 +140,13 @@ Func SetCriticalMessageProcessing($bEnterCritical = Default)
 	Return $wasCritical
 EndFunc   ;==>SetCriticalMessageProcessing
 
+Func SetTogglePauseAllowed($bTogglePauseAllowed = Default)
+	If $bTogglePauseAllowed = Default Then Return $g_bTogglePauseAllowed
+	Local $wasAllowed = $g_bTogglePauseAllowed
+	$g_bTogglePauseAllowed = $bTogglePauseAllowed
+	Return $wasAllowed
+EndFunc   ;==>SetTogglePauseAllowed
+
 Func UpdateFrmBotStyle()
 	If $g_iGuiMode = 0 Then Return False
 	#cs Works but causes bot window not to get activated anymore
@@ -230,8 +237,7 @@ EndFunc   ;==>GUIControl_WM_ACTIVATEAPP
 
 Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
 	Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
+	Local $wasAllowed = SetTogglePauseAllowed(False)
 	If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_NCACTIVATE: $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
 	Local $iActive = BitAND($wParam, 0x0000FFFF)
 	If $hWin = $g_hFrmBot Then
@@ -257,15 +263,14 @@ Func GUIControl_WM_NCACTIVATE($hWin, $iMsg, $wParam, $lParam)
 			AndroidShield("GUIControl_WM_NCACTIVATE", Default, False)
 		EndIf
 	EndIf
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	SetCriticalMessageProcessing($wasCritical)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_NCACTIVATE
 
 Func GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
 	Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
+	Local $wasAllowed = SetTogglePauseAllowed(False)
 	If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_FOCUS: $hWin=" & $hWin & ", $iMsg=" & Hex($iMsg, 8) & ", $wParam=" & $wParam & ", $lParam=" & $lParam, Default, True)
 	Local $iActive = BitAND($wParam, 0x0000FFFF)
 	Switch $hWin
@@ -287,7 +292,7 @@ Func GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
 				EndIf
 			#ce
 	EndSwitch
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	SetCriticalMessageProcessing($wasCritical)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_FOCUS
@@ -303,8 +308,7 @@ EndFunc   ;==>GetPixelFromWindow
 
 Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 	Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
+	Local $wasAllowed = SetTogglePauseAllowed(False)
 	Local $hWinMouse = $g_hFrmBotEmbeddedMouse
 	If $g_hFrmBotEmbeddedMouse = 0 Then $hWinMouse = (($g_iAndroidEmbedMode = 0) ? $g_hFrmBotEmbeddedShield : $g_hFrmBot)
 	If $g_iDebugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_MOUSE Received message: $hWin=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam & ",$hWinMouse=" & $hWinMouse, Default, True)
@@ -314,7 +318,7 @@ Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 		; wrong window of shield is up: block mouse
 		If $g_iDebugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_MOUSE block message: $hWin=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam & ",$hWinMouse=" & $hWinMouse, Default, True)
 		If $g_avAndroidShieldStatus[0] = True And $iMsg = $WM_LBUTTONDOWN And $hWin <> $g_hFrmBotButtons Then BotMoveRequest() ; move window
-		$g_bTogglePauseAllowed = $wasAllowed
+		SetTogglePauseAllowed($wasAllowed)
 		SetCriticalMessageProcessing($wasCritical)
 		Return $GUI_RUNDEFMSG
 	EndIf
@@ -348,7 +352,7 @@ Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 				Local $hInput = GUICtrlGetHandle($g_hFrmBotEmbeddedShieldInput)
 				_WinAPI_SetFocus($hInput)
 				AndroidShield("GUIControl_WM_MOUSE", Default, False, 0, True)
-				$g_bTogglePauseAllowed = $wasAllowed
+				SetTogglePauseAllowed($wasAllowed)
 				SetCriticalMessageProcessing($wasCritical)
 				Return $GUI_RUNDEFMSG
 			EndIf
@@ -362,7 +366,7 @@ Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 	EndSwitch
 	;#cs
 	If AndroidShieldHasFocus() = False Then
-		$g_bTogglePauseAllowed = $wasAllowed
+		SetTogglePauseAllowed($wasAllowed)
 		SetCriticalMessageProcessing($wasCritical)
 		Return $GUI_RUNDEFMSG
 	EndIf
@@ -380,7 +384,7 @@ Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 	EndIf
 	;Local $Result = _SendMessage($hCtrlTarget, $iMsg, $wParam, $lParam)
 	;#ce
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	SetCriticalMessageProcessing($wasCritical)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_MOUSE
@@ -392,8 +396,7 @@ Func GUIControl_AndroidEmbedded($hWin, $iMsg, $wParam, $lParam)
 		Return $GUI_RUNDEFMSG
 	EndIf
 	Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
+	Local $wasAllowed = SetTogglePauseAllowed(False)
 	Switch $iMsg
 		Case $WM_KEYDOWN, $WM_KEYUP, $WM_SYSKEYDOWN, $WM_SYSKEYUP, $WM_MOUSEWHEEL ; $WM_KEYFIRST To $WM_KEYLAST
 			If $iMsg = $WM_KEYUP And $wParam = 27 Then
@@ -418,28 +421,27 @@ Func GUIControl_AndroidEmbedded($hWin, $iMsg, $wParam, $lParam)
 				EndIf
 			EndIf
 	EndSwitch
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	SetCriticalMessageProcessing($wasCritical)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_AndroidEmbedded
 
-Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
+Func GUIControl_WM_COMMAND($hWnd, $iMsg, $wParam, $lParam)
 	If $g_bGUIControlDisabled = True Then Return $GUI_RUNDEFMSG
 	;Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
-	If $g_iDebugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
-	;#forceref $hWind, $iMsg, $wParam, $lParam
+	Local $wasAllowed = SetTogglePauseAllowed(False)
+	If $g_iDebugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_COMMAND: $hWnd=" & $hWnd & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	;#forceref $hWnd, $iMsg, $wParam, $lParam
 	Local $nNotifyCode = BitShift($wParam, 16)
 	Local $nID = BitAND($wParam, 0x0000FFFF)
 	Local $hCtrl = $lParam
-	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWind=" & $hWind & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $g_hFrmBot=" & $g_hFrmBot & @CRLF)
+	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWnd=" & $hWnd & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $g_hFrmBot=" & $g_hFrmBot & @CRLF)
 
 	; check shield status
-	If $hWind <> $g_hFrmBotEmbeddedShield And $hWind <> $g_hFrmBotEmbeddedGraphics And $hWind <> $g_hFrmBotEmbeddedMouse And $nID <> $g_hFrmBotEmbeddedShieldInput And $hWind <> $g_hFrmBotButtons Then
+	If $hWnd <> $g_hFrmBotEmbeddedShield And $hWnd <> $g_hFrmBotEmbeddedGraphics And $hWnd <> $g_hFrmBotEmbeddedMouse And $nID <> $g_hFrmBotEmbeddedShieldInput And $hWnd <> $g_hFrmBotButtons Then
 		If AndroidShieldHasFocus() = True Then
 			; update shield with inactive state
-			If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_COMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+			If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_COMMAND: $hWnd=" & $hWnd & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 			AndroidShield("GUIControl_WM_COMMAND", Default, False, 150, False)
 		EndIf
 	EndIf
@@ -616,22 +618,21 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		If $nNotifyCode = $CBN_SELCHANGE Then cmbLanguage()
 	EndIf
 
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_COMMAND
 
-Func GUIControl_WM_MOVE($hWind, $iMsg, $wParam, $lParam)
+Func GUIControl_WM_MOVE($hWnd, $iMsg, $wParam, $lParam)
 	;If $g_bGUIControlDisabled = True Then Return $GUI_RUNDEFMSG
 	If $g_bBotShrinkExpandToggleRequested Then Return $GUI_RUNDEFMSG ; bot shrinking is requested or active
 	Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
-	If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_MOVE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
-	If $hWind = $g_hFrmBot Then
+	Local $wasAllowed = SetTogglePauseAllowed(False)
+	If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_MOVE: $hWnd=" & $hWnd & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	If $hWnd = $g_hFrmBot Then
 		If $g_bUpdatingWhenMinimized And BotWindowCheck() = False And _WinAPI_IsIconic($g_hFrmBot) Then
 			; ensure bot is not really minimized (e.g. when you minimize all windows)
 			BotMinimize("GUIControl_WM_MOVE")
-			$g_bTogglePauseAllowed = $wasAllowed
+			SetTogglePauseAllowed($wasAllowed)
 			SetCriticalMessageProcessing($wasCritical)
 			Return $GUI_RUNDEFMSG
 		EndIf
@@ -675,18 +676,17 @@ Func GUIControl_WM_MOVE($hWind, $iMsg, $wParam, $lParam)
 		EndIf
 	EndIf
 
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	SetCriticalMessageProcessing($wasCritical)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_MOVE
 
-Func GUIControl_WM_SYSCOMMAND($hWind, $iMsg, $wParam, $lParam)
+Func GUIControl_WM_SYSCOMMAND($hWnd, $iMsg, $wParam, $lParam)
 	Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
-	If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_SYSCOMMAND: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	Local $wasAllowed = SetTogglePauseAllowed(False)
+	If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_SYSCOMMAND: $hWnd=" & $hWnd & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 	;If $__TEST_ERROR = True Then SetDebugLog("Bot WM_SYSCOMMAND: " & Hex($wParam, 4))
-	If $hWind = $g_hFrmBot Then ; Only close Bot when Bot Window sends Close Message
+	If $hWnd = $g_hFrmBot Then ; Only close Bot when Bot Window sends Close Message
 		Switch $wParam
 			Case $SC_MINIMIZE
 				BotMinimize("GUIControl_WM_SYSCOMMAND")
@@ -697,23 +697,27 @@ Func GUIControl_WM_SYSCOMMAND($hWind, $iMsg, $wParam, $lParam)
 				BotCloseRequest()
 		EndSwitch
 	EndIf
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	SetCriticalMessageProcessing($wasCritical)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_SYSCOMMAND
 
-Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
+Func GUIControl_WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 	;If $g_bGUIControlDisabled = True Then Return $GUI_RUNDEFMSG
 	Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
-	If $g_iDebugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	Local $wasAllowed = SetTogglePauseAllowed(False)
+	If $g_iDebugWindowMessages > 1 Then SetDebugLog("GUIControl_WM_NOTIFY: $hWnd=" & $hWnd & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 	Local $nNotifyCode = BitShift($wParam, 16)
 	Local $nID = BitAND($wParam, 0x0000FFFF)
 	Local $hCtrl = $lParam
 
-	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWind=" & $hWind & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $g_hFrmBot=" & $g_hFrmBot & @CRLF)
-	;GUIControl_WM_NOTIFY: $hWind=0x0055A084,$iMsg=78,$wParam=0x00000008,$lParam=0x0108BB30
+	; For Clan Games; only has to be run while stopped because control is diabled while running
+	If Not $g_bRunState Then
+		If ClanGames_WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam) <> $GUI_RUNDEFMSG Then Return
+	EndIf
+
+	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWnd=" & $hWnd & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $g_hFrmBot=" & $g_hFrmBot & @CRLF)
+	;GUIControl_WM_NOTIFY: $hWnd=0x0055A084,$iMsg=78,$wParam=0x00000008,$lParam=0x0108BB30
 	; WM_SYSCOMAND msdn: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646360(v=vs.85).aspx
 
 	Local $bCheckEmbeddedShield = True
@@ -744,24 +748,24 @@ Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
 
 	If $bCheckEmbeddedShield Then
 		; check shield status
-		If $hWind <> $g_hFrmBotEmbeddedShield And $hWind <> $g_hFrmBotEmbeddedGraphics And $hWind <> $g_hFrmBotEmbeddedMouse Then
+		If $hWnd <> $g_hFrmBotEmbeddedShield And $hWnd <> $g_hFrmBotEmbeddedGraphics And $hWnd <> $g_hFrmBotEmbeddedMouse Then
 			If AndroidShieldHasFocus() = True Then
 				; update shield with inactive state
-				If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_NOTIFY: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+				If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_NOTIFY: $hWnd=" & $hWnd & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 				AndroidShield("GUIControl_WM_NOTIFY", Default, False, 150, False)
 			EndIf
 		EndIf
 	EndIf
 
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	SetCriticalMessageProcessing($wasCritical)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_NOTIFY
 
-Func GUIControl_WM_CLOSE($hWind, $iMsg, $wParam, $lParam)
+Func GUIControl_WM_CLOSE($hWnd, $iMsg, $wParam, $lParam)
 	;Local $wasCritical = SetCriticalMessageProcessing(True)
-	If $g_iDebugWindowMessages > 0 Then SetDebugLog("GUIControl_WM_CLOSE: $hWind=" & $hWind & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
-	If $hWind = $g_hFrmBot Then
+	If $g_iDebugWindowMessages > 0 Then SetDebugLog("GUIControl_WM_CLOSE: $hWnd=" & $hWnd & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
+	If $hWnd = $g_hFrmBot Then
 		BotCloseRequest()
 	EndIf
 EndFunc   ;==>GUIControl_WM_CLOSE
@@ -769,8 +773,7 @@ EndFunc   ;==>GUIControl_WM_CLOSE
 Func GUIEvents()
 	;@GUI_WinHandle
 	;Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
+	Local $wasAllowed = SetTogglePauseAllowed(False)
 	Local $GUI_CtrlId = @GUI_CtrlId
 	If $g_bFrmBotMinimized And $GUI_CtrlId = $GUI_EVENT_MINIMIZE Then
 		; restore
@@ -794,7 +797,7 @@ Func GUIEvents()
 		Case Else
 			If $g_iDebugWindowMessages Then SetDebugLog("$GUI_EVENT: " & @GUI_CtrlId, Default, True)
 	EndSwitch
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 EndFunc   ;==>GUIEvents
 
 ; Open URL in default browser using ShellExecute
@@ -1245,11 +1248,10 @@ EndFunc   ;==>BotGuiModeToggle
 
 Func GUIControl_WM_MPAINT($hWin, $iMsg, $wParam, $lParam)
 	Local $wasCritical = SetCriticalMessageProcessing(True)
-	Local $wasAllowed = $g_bTogglePauseAllowed
-	$g_bTogglePauseAllowed = False
+	Local $wasAllowed = SetTogglePauseAllowed(False)
 	SetDebugLog("GUIControl_WM_MPAINT: $hWin=" & $hWin & ",$iMsg=" & $iMsg & ",$wParam=" & $wParam & ",$lParam=" & $lParam, Default, True)
 
-	$g_bTogglePauseAllowed = $wasAllowed
+	SetTogglePauseAllowed($wasAllowed)
 	SetCriticalMessageProcessing($wasCritical)
 	Return $GUI_RUNDEFMSG
 EndFunc   ;==>GUIControl_WM_MPAINT
