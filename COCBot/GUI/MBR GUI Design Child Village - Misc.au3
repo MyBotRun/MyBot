@@ -411,8 +411,10 @@ Func CreateMiscClanGamesV3SubTab()
 	; Add the indeterminate state to the tree view's state image list
 	Local $hImgList = _GUICtrlTreeView_GetStateImageList(GUICtrlGetHandle($g_hTreeClanGames))
 	_GUIImageList_AddBitmap($hImgList, @ScriptDir & "\images\ClanGames\Indeterminate.bmp")
-	$g_hCmbAttack = GUICtrlCreateCombo("Use Default Attack", $x + 257, $y + 25, 155, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL, $WS_VSCROLL), $WS_EX_CLIENTEDGE)
+	$g_hCmbAttack = GUICtrlCreateCombo("", $x + 257, $y + 25, 155, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL, $WS_VSCROLL), $WS_EX_CLIENTEDGE)
 		GUICtrlSetState(-1, $GUI_DISABLE)
+		_GUICtrlComboBox_SetDroppedWidth($g_hCmbAttack, 200)
+		GUICtrlSetOnEvent($g_hCmbAttack, "ClanGames_StrategyChanged")
 	; Create the Clan Games selected challenge information section
 	$g_hGrpChallengeTid = GUICtrlCreateGroup("", $x + 257, $y + 50, 155, 120, -1, -1)
 		GUICtrlSetFont(-1, 9.5, $FW_BOLD, $GUI_FONTNORMAL)
@@ -432,7 +434,7 @@ Func CreateMiscClanGamesV3SubTab()
 	Local $i, $rc, $hImages
 	Local $m_headings[], $m_tids[], $m_images[]
 	$hImages = _GUIImageList_Create(16, 16, 5, 3)
-	_GUIImageList_AddBitmap($hImages, $iconDir & "white.bmp")
+	_GUIImageList_AddBitmap($hImages, $baseDir & "white.bmp")
 	$rc = _FileReadToArray($challengesCsv, $g_aChallengeData, $FRTA_NOCOUNT, ",")
 	If $rc <> 0 Then
 		; Store the column numbers in a map to access by column name
@@ -467,7 +469,14 @@ Func CreateMiscClanGamesV3SubTab()
 				EndIf
 				$m_tids[$tid] = _GUICtrlTreeView_AddChild($g_hTreeClanGames, $m_headings[$heading], $tid, $m_images[$icon], $m_images[$icon])
 			EndIf
-			Local $hItem = _GUICtrlTreeView_AddChild($g_hTreeClanGames, $m_tids[$tid], $set)
+			If Not $m_images[$set] Then
+				$m_images[$set] = _GUIImageList_AddBitmap($hImages, $baseDir & $set & ".bmp")
+				If $m_images[$set] = -1 Then
+					SetLog("Couldn't load image " & $baseDir & $set & ".bmp", $COLOR_WARNING)
+					$m_images[$set] = 0
+				EndIf
+			EndIf
+			Local $hItem = _GUICtrlTreeView_AddChild($g_hTreeClanGames, $m_tids[$tid], $set, $m_images[$set], $m_images[$set])
 			_GUICtrlTreeView_SetItemParam($g_hTreeClanGames, $hItem, $i)
 		Next
 		_GUICtrlTreeView_EndUpdate($g_hTreeClanGames)
@@ -536,5 +545,7 @@ Func CreateMiscClanGamesV3SubTab()
 	$g_hTxtClanGamesLog = GUICtrlCreateEdit("", $x - 10, 275, $g_iSizeWGrpTab3, 127, BitOR($GUI_SS_DEFAULT_EDIT, $ES_READONLY, $ES_AUTOVSCROLL))
 	GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "TxtClanGamesLog", _
 			"--------------------------------------------------------- Clan Games LOG ------------------------------------------------"))
+
+	; Attack combo box gets populated in applyConfig()
 
 EndFunc   ;==>CreateMiscClanGamesV3SubTab

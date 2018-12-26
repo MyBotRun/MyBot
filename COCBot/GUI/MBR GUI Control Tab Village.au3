@@ -64,6 +64,38 @@ Func TreeView_CheckParent($hWnd, $hItem)
 	TreeView_CheckParent($hWnd, $hParent)
 EndFunc   ;==>TreeView_CheckParent
 
+Func PopulateAttackComboBox()
+	; Figure out what is currently selected
+	Local $sel
+	Local $hItem = _GUICtrlComboBox_GetCurSel($g_hCmbAttack)
+	_GUICtrlComboBox_GetLBText($g_hCmbAttack, $hItem, $sel)
+	; Reset the combo box
+	_GUICtrlComboBox_ResetContent($g_hCmbAttack)
+	; Populate the strategy files in the combo box
+	GUICtrlSetData($g_hCmbAttack, "Do Not Change Strategy|————————————————————|" & GetPresetComboBox())
+	; Restore previous selection
+	_GUICtrlComboBox_SetCurSel($g_hCmbAttack, 0)
+	If $hItem >= 2 Then
+		Local $newSel = _GUICtrlComboBox_FindStringExact($g_hCmbAttack, $sel)
+		If $newSel > -1 Then _GUICtrlComboBox_SetCurSel($g_hCmbAttack, $newSel)
+	EndIf
+EndFunc   ;==>PopulateAttackComboBox
+
+Func ClanGames_StrategyChanged()
+	Local $i = _GUICtrlComboBox_GetCurSel($g_hCmbAttack)
+	If $i = 1 Then Return  ; Ignore the separator line after "Do Not Change Strategy"
+	Local $hItem = _GUICtrlTreeView_GetSelection($g_hTreeClanGames)
+	Local $text = _GUICtrlTreeView_GetText($g_hTreeClanGames, $hItem)
+	Local $pos = StringInStr($text, " - ")
+	If $pos > 0 Then $text = StringLeft($text, $pos)
+	If $i > 1 Then
+		Local $comboText
+		_GUICtrlComboBox_GetLBText($g_hCmbAttack, $i, $comboText)
+		$text &= " - " & $comboText
+	EndIf
+	_GUICtrlTreeView_SetText($g_hTreeClanGames, $hItem, $text)
+EndFunc   ;==>ClanGames_StrategyChanged
+
 Func ClanGames_WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
 	Local $tNotifyHdr = DllStructCreate($tagNMHDR, $lParam)
 	Local $hWndFrom = DllStructGetData($tNotifyHdr, "hWndFrom")
@@ -101,13 +133,27 @@ EndFunc   ;==>_ClanGames_ItemStateChanged
 Func _ClanGames_SelectedItemChanged($hWndFrom, $lParam)
 	Local $tTreeView = DllStructCreate($tagNMTREEVIEW, $lParam)
 	Local $hItem = DllStructGetData($tTreeView, "NewhItem")
-	If $hItem = 0 Then
-		GUICtrlSetState($g_hCmbAttack, $GUI_DISABLE)
-		ClanGames_SetDescriptionState($GUI_HIDE)
-	Else
-		; Item has been selected
+	If $hItem = 0 Then Return
+;~ 		GUICtrlSetState($g_hCmbAttack, $GUI_DISABLE)
+;~ 		ClanGames_SetDescriptionState($GUI_HIDE)
+;~ 	Else
+		; If using a specific strategy, select it
+		Local $selText = _GUICtrlTreeView_GetText($g_hTreeClanGames, $hItem)
+		Local $i = StringInStr($selText, " - ")
+		If $i > 0 Then
+			$selText = StringMid($selText, $i + 3)
+			$i = _GUICtrlComboBox_FindStringExact($g_hCmbAttack, $selText)
+			If $i > -1 Then
+				_GUICtrlComboBox_SetCurSel($g_hCmbAttack, $i)
+			Else
+				_GUICtrlComboBox_SetCurSel($g_hCmbAttack, 0)
+			EndIf
+		Else
+			_GUICtrlComboBox_SetCurSel($g_hCmbAttack, 0)
+		EndIf
 		GUICtrlSetState($g_hCmbAttack, $GUI_ENABLE)
-		Local $i = _GUICtrlTreeView_GetItemParam($hWndFrom, $hItem)
+		; Update the clan games description section
+		$i = _GUICtrlTreeView_GetItemParam($hWndFrom, $hItem)
 		If $i Then
 			Local $dm = Number($g_aChallengeData[$i][$g_mChallengeColumns["DurationMinutes"]])
 			Local $dh = Mod(Floor($dm / 60), 24)
@@ -126,7 +172,7 @@ Func _ClanGames_SelectedItemChanged($hWndFrom, $lParam)
 		Else
 			ClanGames_SetDescriptionState($GUI_HIDE)
 		EndIf
-	EndIf
+;~ 	EndIf
 EndFunc   ;==>_ClanGames_SelectedItemChanged
 
 Func ClanGames_SetDescriptionState($state)

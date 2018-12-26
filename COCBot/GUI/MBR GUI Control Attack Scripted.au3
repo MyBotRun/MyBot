@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......: CodeSlinger69 (2017), MMHK (01-2008)
+; Modified ......: eslindsey (2018), CodeSlinger69 (2017), MMHK (01-2008)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -14,46 +14,38 @@
 ; ===============================================================================================================================
 #include-once
 
-Func PopulateComboScriptsFilesDB()
-	Dim $FileSearch, $NewFile
+Func GetComboScriptsFiles()
+	Local $FileSearch, $NewFile
 	$FileSearch = FileFindFirstFile($g_sCSVAttacksPath & "\*.csv")
-	Dim $output = ""
+	Local $output = ""
 	While True
 		$NewFile = FileFindNextFile($FileSearch)
 		If @error Then ExitLoop
-		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
+		$output &= StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
 	WEnd
 	FileClose($FileSearch)
 	;remove last |
-	$output = StringLeft($output, StringLen($output) - 1)
+	Return StringLeft($output, StringLen($output) - 1)
+EndFunc   ;==>GetComboScriptsFiles
+
+Func PopulateComboScriptsFiles($hCombo)
+	Local $output = GetComboScriptsFiles()
 	;reset combo box
-	_GUICtrlComboBox_ResetContent($g_hCmbScriptNameDB)
+	_GUICtrlComboBox_ResetContent($hCombo)
 	;set combo box
-	GUICtrlSetData($g_hCmbScriptNameDB, $output)
-	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameDB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameDB, ""))
+	GUICtrlSetData($hCombo, $output)
+	_GUICtrlComboBox_SetCurSel($hCombo, _GUICtrlComboBox_FindStringExact($hCombo, ""))
+EndFunc   ;==>PopulateComboScriptsFiles
+
+Func PopulateComboScriptsFilesDB()
+	PopulateComboScriptsFiles($g_hCmbScriptNameDB)
 	GUICtrlSetData($g_hLblNotesScriptDB, "")
 EndFunc   ;==>PopulateComboScriptsFilesDB
 
 Func PopulateComboScriptsFilesAB()
-	Dim $FileSearch, $NewFile
-	$FileSearch = FileFindFirstFile($g_sCSVAttacksPath & "\*.csv")
-	Dim $output = ""
-	While True
-		$NewFile = FileFindNextFile($FileSearch)
-		If @error Then ExitLoop
-		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
-	WEnd
-	FileClose($FileSearch)
-	;remove last |
-	$output = StringLeft($output, StringLen($output) - 1)
-	;reset combo box
-	_GUICtrlComboBox_ResetContent($g_hCmbScriptNameAB)
-	;set combo box
-	GUICtrlSetData($g_hCmbScriptNameAB, $output)
-	_GUICtrlComboBox_SetCurSel($g_hCmbScriptNameAB, _GUICtrlComboBox_FindStringExact($g_hCmbScriptNameAB, ""))
+	PopulateComboScriptsFiles($g_hCmbScriptNameAB)
 	GUICtrlSetData($g_hLblNotesScriptAB, "")
 EndFunc   ;==>PopulateComboScriptsFilesAB
-
 
 Func cmbScriptNameDB()
 

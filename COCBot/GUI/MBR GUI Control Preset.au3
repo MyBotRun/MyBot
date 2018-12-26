@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......: CodeSlinger69 (2017)
+; Modified ......: eslindsey (2018)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -14,22 +14,25 @@
 ; ===============================================================================================================================
 #include-once
 
-Func PopulatePresetComboBox()
+Func GetPresetComboBox()
 	Dim $FileSearch, $NewFile
 	$FileSearch = FileFindFirstFile($g_sProfilePresetPath & "\*.ini")
 	Dim $output = ""
 	While True
 		$NewFile = FileFindNextFile($FileSearch)
 		If @error Then ExitLoop
-		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
+		$output &= StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
 	WEnd
 	FileClose($FileSearch)
 	;remove last |
-	$output = StringLeft($output, StringLen($output) - 1)
+	Return StringLeft($output, StringLen($output) - 1)
+EndFunc
+
+Func PopulatePresetComboBox()
 	;reset combo box
 	_GUICtrlComboBox_ResetContent($g_hCmbPresetList)
 	;set combo box
-	GUICtrlSetData($g_hCmbPresetList, $output)
+	GUICtrlSetData($g_hCmbPresetList, GetPresetComboBox())
 
 EndFunc   ;==>PopulatePresetComboBox
 
