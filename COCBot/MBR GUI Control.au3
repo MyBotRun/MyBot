@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: GkevinOD (2014)
-; Modified ......: Hervidero (2015), kaganus (08-2015), CodeSlinger69 (01-2017)
+; Modified ......: Hervidero (2015), kaganus (08-2015), CodeSlinger69 (01-2017), eslindsey (2018)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
