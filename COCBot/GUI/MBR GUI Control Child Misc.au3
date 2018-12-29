@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: MyBot.run team
-; Modified ......:
+; Modified ......: eslindsey (2018)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -619,6 +619,10 @@ Func chkActivateClangames()
 		If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED then GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesDebug, $GUI_ENABLE)
+
+		;V4
+		GUICtrlSetState($g_hCmbAttack, $GUI_ENABLE)
+		GUICtrlSetState($g_hTreeClanGames, $GUI_ENABLE)
 	Else
 		GUICtrlSetState($g_hChkClanGames60, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesAir, $GUI_DISABLE)
@@ -637,6 +641,11 @@ Func chkActivateClangames()
 
 		GUICtrlSetState($g_hChkClanGamesPurge, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesDebug, $GUI_DISABLE)
+
+		;V4
+		GUICtrlSetState($g_hCmbAttack, $GUI_DISABLE)
+		GUICtrlSetState($g_hTreeClanGames, $GUI_DISABLE)
+		ClanGames_SetDescriptionState($GUI_HIDE)
 	EndIf
 EndFunc   ;==>chkActivateClangames
 

@@ -64,6 +64,76 @@ Func TreeView_CheckParent($hWnd, $hItem)
 	TreeView_CheckParent($hWnd, $hParent)
 EndFunc   ;==>TreeView_CheckParent
 
+Func ClanGames_PopulateTreeView()
+	; Read challenge data from CSV file (a real CSV file, not a MyBot CSV file)
+	Local Const $challengesCsv = @ScriptDir & "\challenges.csv"
+	Local Const $baseDir = @ScriptDir & "\images\ClanGames\"
+	Local Const $iconDir = $baseDir & "16\"
+	Local $i, $rc, $hImages
+	Local $m_headings[], $m_tids[], $m_images[]
+	$hImages = _GUIImageList_Create(16, 16, 5, 3)
+	_GUIImageList_AddBitmap($hImages, $baseDir & "white.bmp")
+	$rc = _FileReadToArray($challengesCsv, $g_aChallengeData, $FRTA_NOCOUNT, ",")
+	If $rc <> 0 Then
+		; Store the column numbers in a map to access by column name
+		For $i = 0 To UBound($g_aChallengeData, $UBOUND_COLUMNS) - 1
+			$g_mChallengeColumns[$g_aChallengeData[0][$i]] = $i
+		Next
+		; Store the challenge data in a global array to access later
+		_GUICtrlTreeView_BeginUpdate($g_hTreeClanGames)
+		_GUICtrlTreeView_SetNormalImageList($g_hTreeClanGames, $hImages)
+		For $i = 2 To UBound($g_aChallengeData) - 1
+			Local $set     = $g_aChallengeData[$i][$g_mChallengeColumns["Set"]]
+			Local $tid     = $g_aChallengeData[$i][$g_mChallengeColumns["TID"]]
+			Local $heading = $g_aChallengeData[$i][$g_mChallengeColumns["Heading"]]
+			Local $icon    = $g_aChallengeData[$i][$g_mChallengeColumns["IconExportName"]]
+			If Not $m_headings[$heading] Then
+				If Not $m_images[$heading] Then
+					$m_images[$heading] = _GUIImageList_AddBitmap($hImages, $baseDir & $heading & ".bmp")
+					If $m_images[$heading] = -1 Then
+						SetLog("Couldn't load image " & $baseDir & $heading & ".bmp", $COLOR_WARNING)
+						$m_images[$heading] = 0
+					EndIf
+				EndIf
+				$m_headings[$heading] = _GUICtrlTreeView_Add($g_hTreeClanGames, 0, $heading, $m_images[$heading], $m_images[$heading])
+			EndIf
+			If Not $m_tids[$tid] Then
+				If Not $m_images[$icon] Then
+					$m_images[$icon] = _GUIImageList_AddBitmap($hImages, $iconDir & $icon & ".bmp")
+					If $m_images[$icon] = -1 Then
+						SetLog("Couldn't load image " & $iconDir & $icon & ".bmp", $COLOR_WARNING)
+						$m_images[$icon] = 0
+					EndIf
+				EndIf
+				$m_tids[$tid] = _GUICtrlTreeView_AddChild($g_hTreeClanGames, $m_headings[$heading], $tid, $m_images[$icon], $m_images[$icon])
+			EndIf
+			If Not $m_images[$set] Then
+				$m_images[$set] = _GUIImageList_AddBitmap($hImages, $baseDir & $set & ".bmp")
+				If $m_images[$set] = -1 Then
+					SetLog("Couldn't load image " & $baseDir & $set & ".bmp", $COLOR_WARNING)
+					$m_images[$set] = 0
+				EndIf
+			EndIf
+			Local $hItem = _GUICtrlTreeView_AddChild($g_hTreeClanGames, $m_tids[$tid], $set, $m_images[$set], $m_images[$set])
+			_GUICtrlTreeView_SetItemParam($g_hTreeClanGames, $hItem, $i)
+		Next
+		_GUICtrlTreeView_EndUpdate($g_hTreeClanGames)
+	Else
+		Local $err
+		Switch @error
+			Case 1
+				$err = "Error opening specified file"
+			Case 2
+				$err = "Unable to split the data"
+			Case 3
+				$err = "File lines have different numbers of fields"
+			Case 4
+				$err = "No delimiters found"
+		EndSwitch
+		SetLog($challengesCsv & ": " & $err, $COLOR_ERROR)
+	EndIf
+EndFunc   ;==>ClanGames_PopulateTreeView
+
 Func PopulateAttackComboBox()
 	; Figure out what is currently selected
 	Local $sel
@@ -87,7 +157,7 @@ Func ClanGames_StrategyChanged()
 	Local $hItem = _GUICtrlTreeView_GetSelection($g_hTreeClanGames)
 	Local $text = _GUICtrlTreeView_GetText($g_hTreeClanGames, $hItem)
 	Local $pos = StringInStr($text, " - ")
-	If $pos > 0 Then $text = StringLeft($text, $pos)
+	If $pos > 0 Then $text = StringLeft($text, $pos - 1)
 	If $i > 1 Then
 		Local $comboText
 		_GUICtrlComboBox_GetLBText($g_hCmbAttack, $i, $comboText)
