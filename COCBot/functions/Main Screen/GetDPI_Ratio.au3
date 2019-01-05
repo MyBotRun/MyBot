@@ -7,7 +7,7 @@
 ; Return values .: Ratio of DPI to standard 96 DPI display
 ; Author ........: Spiff59 (AutoIt Forums posted 9/23/2013)
 ; Modified ......: KnowJack
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: None
 ; Link ..........: https://www.autoitscript.com/forum/topic/154885-autoit-and-dpi-awareness/
@@ -40,7 +40,7 @@ EndFunc   ;==>GetDPI_Ratio
 ; Return values .: None
 ; Author ........: Spiff59 (AutoIt Forums posted 9/23/2013)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: None
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki https://www.autoitscript.com/forum/topic/154885-autoit-and-dpi-awareness/

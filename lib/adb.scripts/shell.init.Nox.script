@@ -1,0 +1,2 @@
+echo Android Steady Shell PID=$PPID
+mount.vboxsf other /mnt/shell/emulated/0/Others

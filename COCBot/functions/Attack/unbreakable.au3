@@ -6,7 +6,7 @@
 ; Return values .: False if regular farming is needed to refill storage
 ; Author ........: KnowJack (07-2015)
 ; Modified ......: Sardo (08-2015), MonkeyHunter (12-2015)(6-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -78,13 +78,13 @@ Func Unbreakable()
 	While Number($iTrophyCurrent) > Number($g_iDropTrophyMax) ; verify that trophy dropped and didn't fail due misc errors searching
 		If $g_bDebugSetlog Then SetDebugLog("Drop Trophy Loop #" & $iCount + 1, $COLOR_DEBUG)
 		DropTrophy()
-		If _Sleep($DELAYUNBREAKABLE2) Then Return ; wait for home screen
+		If _Sleep($DELAYUNBREAKABLE2) Then Return True; wait for home screen
 		ClickP($aAway, 1, 0, "#0395") ;clear screen
-		If _Sleep($DELAYUNBREAKABLE1) Then Return ; wait for home screen
+		If _Sleep($DELAYUNBREAKABLE1) Then Return True; wait for home screen
 		$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 		If ($iCount > 2) And (Number($iTrophyCurrent) > Number($g_iDropTrophyMax)) Then ; If unable to drop trophy after a couple of tries, restart at main loop.
 			SetLog("Unable to drop trophy, trying again", $COLOR_ERROR)
-			If _Sleep(500) Then Return
+			If _Sleep(500) Then Return True
 			Return True
 		EndIf
 		$iCount += 1

@@ -6,7 +6,7 @@
 ; Return values .: True if compaired resources match the search conditions, False if not
 ; Author ........: (2014)
 ; Modified ......: AtoZ, Hervidero (2015), kaganus (June 2015, August 2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: VillageSearch, GetResources
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

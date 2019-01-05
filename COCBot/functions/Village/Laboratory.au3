@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: summoner
 ; Modified ......: KnowJack (2015-06), Sardo (2015-08), Monkeyhunter(2016-02,2016-04), MMHK(2018-06)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -77,7 +77,7 @@ Func Laboratory()
 	;Create local array to hold upgrade values
 	;Was static, but makes no sense in switch account context
 	Local $aUpgradeValue[36] = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $iAvailElixir, $iAvailDark, $sElixirCount, $sDarkCount, $TimeDiff, $aArray, $Result, $iCheapestCost = 0
+	Local $iAvailElixir, $iAvailDark, $sElixirCount, $sDarkCount, $TimeDiff, $aArray, $Result
 	Local $iXMoved = 0, $iYMoved = 0, $iFirstPageOffset = 0, $iLastPageOffset = 0
 	Local $iSelectedUpgrade = $g_iCmbLaboratory
 
@@ -308,26 +308,81 @@ Func Laboratory()
 	Next
 	
 	If $aUpgradeValue[$g_iCmbLaboratory] = -1 Then
+		Local $bPreferTraining = False, $iCheapestCost = 0
 		If $g_iCmbLaboratory = 0 Then
-			SetLog("No dedicated troop for upgrade selected, doing cheapest upgrade", $COLOR_ACTION)
+			SetLog("No dedicated troop for upgrade selected.", $COLOR_INFO)
 		Else
-			SetLog("No upgrade for " & $g_avLabTroops[$g_iCmbLaboratory][3] & " available, doing cheapest upgrade", $COLOR_ACTION)
+			SetLog("No upgrade for " & $g_avLabTroops[$g_iCmbLaboratory][3] & " available.", $COLOR_INFO)
 		EndIf
 		For $i = 1 To 35
-			Switch $i
-				Case 1 To 19 ; regular elixir
-					ContinueCase
-				Case 33 To 35
-					If $aUpgradeValue[$i] > 0 And ($iCheapestCost = 0 Or $aUpgradeValue[$i] < $iCheapestCost) Then
-						$iSelectedUpgrade = $i
-						$iCheapestCost = $aUpgradeValue[$i]
-					EndIf
-				Case 20 To 32; Dark Elixir, multiply value with 50
-					If $aUpgradeValue[$i] > 0 And ($iCheapestCost = 0 Or $aUpgradeValue[$i] * 50 < $iCheapestCost) Then
-						$iSelectedUpgrade = $i
-						$iCheapestCost = $aUpgradeValue[$i] * 50
-					EndIf
-			EndSwitch
+			If $aUpgradeValue[$i] > 0 Then ; is upgradeable
+				Switch $i
+					Case 1 To 13 ; regular elixir troop
+						If $g_bDebugSetlog Then SetLog($g_avLabTroops[$i][3] & " is upgradeable; ArmyCompCount = " & $g_aiArmyCompTroops[$i - 1] & ", Value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+						If $g_aiArmyCompTroops[$i - 1] > 0 Then ; is part of army composition
+							If Not $bPreferTraining Or $aUpgradeValue[$i] < $iCheapestCost Then ; if army composition was not prefered or is cheapest
+								$bPreferTraining = True
+								$iSelectedUpgrade = $i
+								$iCheapestCost = $aUpgradeValue[$i]
+							EndIf
+						ElseIf Not $bPreferTraining And ($iCheapestCost = 0 Or $aUpgradeValue[$i] < $iCheapestCost) Then ; army composition is not prefered but cheapest
+							$iSelectedUpgrade = $i
+							$iCheapestCost = $aUpgradeValue[$i]
+						EndIf
+					Case 14 To 19 ; regular elixir spell
+						If $g_bDebugSetlog Then SetLog($g_avLabTroops[$i][3] & " is upgradeable; ArmyCompCount = " & $g_aiArmyCompSpells[$i - 14] & ", Value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+						If $g_aiArmyCompSpells[$i - 14] > 0 Then ; is part of army composition
+							If Not $bPreferTraining Or $aUpgradeValue[$i] < $iCheapestCost Then ; if army composition was not prefered or is cheapest
+								$bPreferTraining = True
+								$iSelectedUpgrade = $i
+								$iCheapestCost = $aUpgradeValue[$i]
+							EndIf
+						ElseIf Not $bPreferTraining And ($iCheapestCost = 0 Or $aUpgradeValue[$i] < $iCheapestCost) Then ; army composition is not prefered but cheapest
+							$iSelectedUpgrade = $i
+							$iCheapestCost = $aUpgradeValue[$i]
+						EndIf
+					Case 20 To 24 ; dark elixir spell
+						If $g_bDebugSetlog Then SetLog($g_avLabTroops[$i][3] & " is upgradeable; ArmyCompCount = " & $g_aiArmyCompSpells[$i - 14] & ", Value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+						If $g_aiArmyCompSpells[$i - 14] > 0 Then ; is part of army composition
+							If Not $bPreferTraining Or $aUpgradeValue[$i] * 50 < $iCheapestCost Then ; if army composition was not prefered or is cheapest
+								$bPreferTraining = True
+								$iSelectedUpgrade = $i
+								$iCheapestCost = $aUpgradeValue[$i] * 50
+							EndIf
+						ElseIf Not $bPreferTraining And ($iCheapestCost = 0 Or $aUpgradeValue[$i] * 50 < $iCheapestCost) Then ; army composition is not prefered but cheapest
+							$iSelectedUpgrade = $i
+							$iCheapestCost = $aUpgradeValue[$i] * 50
+						EndIf
+					Case 25 To 32 ; dark elixir troop
+						If $g_bDebugSetlog Then SetLog($g_avLabTroops[$i][3] & " is upgradeable; ArmyCompCount = " & $g_aiArmyCompTroops[$i - 12] & ", Value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+						If $g_aiArmyCompTroops[$i - 12] > 0 Then ; is part of army composition
+							If Not $bPreferTraining Or $aUpgradeValue[$i] * 50 < $iCheapestCost Then ; if army composition was not prefered or is cheapest
+								$bPreferTraining = True
+								$iSelectedUpgrade = $i
+								$iCheapestCost = $aUpgradeValue[$i] * 50
+							EndIf
+						ElseIf Not $bPreferTraining And ($iCheapestCost = 0 Or $aUpgradeValue[$i] * 50 < $iCheapestCost) Then ; army composition is not prefered but cheapest
+							$iSelectedUpgrade = $i
+							$iCheapestCost = $aUpgradeValue[$i] * 50
+						EndIf
+					Case 33 To 35 ; siege machine
+						If $g_bDebugSetlog Then SetLog($g_avLabTroops[$i][3] & " is upgradeable; ArmyCompCount = " & $g_aiArmyCompSiegeMachine[$i - 33] & ", Value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
+						If $g_aiArmyCompTroops[$i - 33] > 0 Then ; is part of army composition
+							If Not $bPreferTraining Or $aUpgradeValue[$i] < $iCheapestCost Then ; if army composition was not prefered or is cheapest
+								$bPreferTraining = True
+								$iSelectedUpgrade = $i
+								$iCheapestCost = $aUpgradeValue[$i]
+							EndIf
+						ElseIf Not $bPreferTraining And ($iCheapestCost = 0 Or $aUpgradeValue[$i] < $iCheapestCost) Then ; army composition is not prefered but cheapest
+							$iSelectedUpgrade = $i
+							$iCheapestCost = $aUpgradeValue[$i]
+						EndIf
+					Case Else ; should never come here
+						ClickP($aAway, 2, $DELAYLABORATORY4, "#0353")
+						Return False
+				EndSwitch
+				If $g_bDebugSetlog Then SetLog("Army Comp is" & ($bPreferTraining ? " " : " not ") & "prefered. " & $g_avLabTroops[$iSelectedUpgrade][3] & " is currently selected. Cost = " & $iCheapestCost, $COLOR_DEBUG)
+			EndIf
 		Next
 		If $g_iCmbLaboratory = $iSelectedUpgrade Then
 			SetLog("No alternate troop for upgrade found", $COLOR_WARNING)

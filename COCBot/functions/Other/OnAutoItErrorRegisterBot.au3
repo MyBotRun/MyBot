@@ -4,18 +4,18 @@
 
 #CS
 	Name: 				OnAutoItErrorRegister - Register AutoIt critical error handler (syntax error usualy).
-	Author: 			Copyright © 2011-2015 CreatoR's Lab (G.Sandler), www.creator-lab.ucoz.ru, www.autoit-script.ru. All rights reserved.
+	Author: 			Copyright Â© 2011-2015 CreatoR's Lab (G.Sandler), www.creator-lab.ucoz.ru, www.autoit-script.ru. All rights reserved.
 	AutoIt version: 	3.3.10.2 - 3.3.12.0
 	UDF version:		2.0
 
 	Credits:
-						* JScript (João Carlos) - code parts and few ideas from _AutoItErrorTrap UDF.
+						* JScript (JoÃ£o Carlos) - code parts and few ideas from _AutoItErrorTrap UDF.
 
 	Notes:
 						* The UDF can not handle crashes that triggered by memory leaks, such as DllCall crashes, "Recursion level has been exceeded..." (when using hook method ($bUseStdOut = False)).
 						* When using StdOut method ($bUseStdOut = True), CUI not supported, and additional process executed to allow monitor for errors.
 						* After using _OnAutoItErrorUnRegister when $bUseStdOut = True, standard AutoIt error message will not be displayed on following syntax error.
-						* To use the "Send bug report" feature, there is need to fill related parameters (variables) under the «User Variables» section in UDF file (check the comments of these variables), or just build your own user function.
+						* To use the "Send bug report" feature, there is need to fill related parameters (variables) under the Â«User VariablesÂ» section in UDF file (check the comments of these variables), or just build your own user function.
 
 						[If $bSetErrLine is True...]
 							* Script must be executed before compilation (after any change in it), or use '#AutoIt3Wrapper_Run_Before=%autoitdir%\AutoIt3.exe "%in%" /BC_Strip' in your main script.

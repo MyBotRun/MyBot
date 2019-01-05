@@ -1,3 +1,28 @@
+* **V7.6.6**
+* Added check & remove unwanted CC siege machine
+* Fixed Custom Drop Order @ViperZ (December 2018 Update)
+* Fixed "Wait for Siege Machine", when bot is in "Halt Attack"
+* Fixed wait for CC Troops when CC Spells are not used and "Village/Req. & Donate/When lacking" options are not configured
+* Fixed several small bugs from previous Version
+* Fixed Rearm for Infernos and Xbows/Eagle
+* Fixed weak base detection when TH not detected to assume then TH12
+* Fixed exiting search due to zoom-out level, now it just measures village
+* Fixed reading quantity of Bat Spell in Clan castle
+* Fixed Heroes in AutoUpgrade
+* Fixed RequestCC can not request, cause Army Overview moves slightly
+* Fixed Haste donation
+* Fixed Clock tower boost
+* Fixed losing CoC Android shared_prefs when shared folder not available
+* Fixed BlueStacks2 support for all versions (incl. 4)
+* Fixed Smartfarm for Snow theme
+* Fixed shared folder detection for all android emulators
+* Fixed returning home from battle report
+* Fixed heroes activation when getting weak
+* Improved deadbase collector lvl 12 and lvl 13 (snow) and  50% detection
+* Improved Eagle lvl 1-3 weak base detection, also re-check weak-base after 5 sec.
+* Improved Laboratory, prefer units in current army composition
+* Improved Giant Deployment in SmartFarm/Standard Attack
+
 * **V7.6.5**
 * Add Ice Golem Support @ViperZ
 * Add Bat Spell Support @ViperZ

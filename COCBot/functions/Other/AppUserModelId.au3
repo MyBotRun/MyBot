@@ -10,7 +10,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Link ..........: https://www.autoitscript.com/forum/topic/168099-how-to-prevent-multiple-guis-from-combining-in-the-taskbar/
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Example .......: No

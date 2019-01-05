@@ -6,16 +6,16 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Sardo(06-2015), KnowJack(10-2015), Sardo (08-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func RequestCC($ClickPAtEnd = True, $specifyText = "")
+Func RequestCC($bClickPAtEnd = True, $sText = "")
 
-	If Not $g_bRequestTroopsEnable Or Not $g_bCanRequestCC Or Not $g_bDonationEnabled Then
+	If Not $g_bRequestTroopsEnable Or Not $g_bDonationEnabled Then
 		Return
 	EndIf
 
@@ -28,31 +28,36 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 	EndIf
 
 	;open army overview
-	If $specifyText <> "IsFullClanCastle" And Not OpenArmyOverview(True, "RequestCC()") Then Return
+	If $sText <> "IsFullClanCastle" And Not OpenArmyOverview(True, "RequestCC()") Then Return
 
 	If _Sleep($DELAYREQUESTCC1) Then Return
-
 	SetLog("Requesting Clan Castle reinforcements", $COLOR_INFO)
-
 	checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
+	If $bClickPAtEnd Then CheckCCArmy()
 
-	If $ClickPAtEnd Then CheckCCArmy()
+	Local $sSearchDiamond = GetDiamondFromRect("600,430,850,620")
+	Local Static $aRequestButtonPos[2] = [-1, -1]
 
-	Local $color1 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, True) ; Gray/Green color at 20px below Letter "R"
-	Local $color2 = _GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True) ; White/Green color at Letter "R"
+	Local $aRequestButton = findMultiple($g_sImgRequestCCButton, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
+	If Not IsArray($aRequestButton) Then
+		SetLog("Error in RequestCC(): $aRequestButton is no Array")
+		Return
+	EndIf
 
-	If _ColorCheck($color1, Hex($aRequestTroopsAO[2], 6), $aRequestTroopsAO[5]) Then
-		;clan full or not in clan
-		SetLog("Your Clan Castle is already full or you are not in a clan.")
-		$g_bCanRequestCC = False
-	ElseIf _ColorCheck($color1, Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) Then
-		If _ColorCheck($color2, Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5]) Then
-			;can make a request
+	If UBound($aRequestButton, 1) >= 1 Then
+		Local $sButtonState
+		Local $aRequestButtonSubResult = $aRequestButton[0]
+		$sButtonState = $aRequestButtonSubResult[0]
+		If $aRequestButtonPos[0] = -1 Then
+			$aRequestButtonPos = StringSplit($aRequestButtonSubResult[1], ",", $STR_NOCOUNT)
+		EndIf
+
+		If StringInStr($sButtonState, "Available", 0) > 0 Then
 			Local $bNeedRequest = False
 			If Not $g_abRequestType[0] And Not $g_abRequestType[1] And Not $g_abRequestType[2] Then
 				SetDebugLog("Request for Specific CC is not enable")
 				$bNeedRequest = True
-			ElseIf Not $ClickPAtEnd Then
+			ElseIf Not $bClickPAtEnd Then
 				$bNeedRequest = True
 			Else
 				For $i = 0 To 2
@@ -64,28 +69,28 @@ Func RequestCC($ClickPAtEnd = True, $specifyText = "")
 			EndIf
 
 			If $bNeedRequest Then
-				Local $x = _makerequest()
+				Local $x = _makerequest($aRequestButtonPos)
 			EndIf
-
+		ElseIf StringInStr($sButtonState, "Already", 0) > 0 Then
+			SetLog("Clan Castle Request has already been made", $COLOR_INFO)
+		ElseIf StringInStr($sButtonState, "Full", 0) > 0 Then
+			SetLog("Clan Castle is full or not available", $COLOR_INFO)
 		Else
-			;request has already been made
-			SetLog("Request has already been made")
+			SetLog("Error in RequestCC(): Couldn't detect Request Button State", $COLOR_ERROR)
 		EndIf
 	Else
-		;no button request found
-		SetLog("Cannot detect button request troops.")
-		SetLog("The Pixel on " & $aRequestTroopsAO[0] & "-" & $aRequestTroopsAO[1] & " was: " & $color1, $COLOR_ERROR)
+		SetLog("Error in RequestCC(): $aRequestButton did not return a Button State", $COLOR_ERROR)
 	EndIf
 
 	;exit from army overview
 	If _Sleep($DELAYREQUESTCC1) Then Return
-	If $ClickPAtEnd Then ClickP($aAway, 2, 0, "#0335")
+	If $bClickPAtEnd Then ClickP($aAway, 2, 0, "#0335")
 
 EndFunc   ;==>RequestCC
 
-Func _makerequest()
+Func _makerequest($aButtonPosition)
 	;click button request troops
-	Click($aRequestTroopsAO[0], $aRequestTroopsAO[1], 1, 0, "0336") ;Select text for request
+	ClickP($aButtonPosition, 1, 0, "0336") ;Select text for request
 
 	;wait window
 	Local $iCount = 0
@@ -101,7 +106,7 @@ Func _makerequest()
 		If _Sleep($DELAYMAKEREQUEST2) Then Return
 	Else
 		If $g_sRequestTroopsText <> "" Then
-			If $g_bChkBackgroundMode = False And $g_bNoFocusTampering = False Then ControlFocus($g_hAndroidWindow, "", "")
+			If Not $g_bChkBackgroundMode And Not $g_bNoFocusTampering Then ControlFocus($g_hAndroidWindow, "", "")
 			; fix for Android send text bug sending symbols like ``"
 			AndroidSendText($g_sRequestTroopsText, True)
 			Click($atxtRequestCCBtn[0], $atxtRequestCCBtn[1], 1, 0, "#0254") ;Select text for request $atxtRequestCCBtn[2] = [430, 140]
@@ -133,11 +138,12 @@ EndFunc   ;==>_makerequest
 Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine = 2
 	Local $aCheckCCNotFull[3] = [24, 455, 631], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
 	Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
-	If Not $g_abRequestType[$CCType] And ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2]) Then
+	Local $bCheckOnlyTroop = $g_abRequestType[0] = False And $g_abRequestType[1] = False And $g_abRequestType[2] = False
+	If Not $g_abRequestType[$CCType] And ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2] Or ($bCheckOnlyTroop And $CCType <> 0)) Then
 		If $g_bDebugSetlog Then SetLog($sLog[$CCType] & " not cared about.")
 		Return True
 	Else
-		If _ColorCheck(_GetPixelColor($aCheckCCNotFull[$CCType], 470, True), Hex(0xDC363A , 6), 30) Then ; red symbol
+		If _ColorCheck(_GetPixelColor($aCheckCCNotFull[$CCType], 470, True), Hex(0xDC363A, 6), 30) Then ; red symbol
 			SetDebugLog("Found CC " & $sLog[$CCType] & " not full")
 
 			; avoid total expected troops / spells is less than expected CC q'ty.
@@ -149,7 +155,7 @@ Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine =
 			If $aiRequestCountCC[0] > $iTotalExpectedTroop And $iTotalExpectedTroop > 0 Then $aiRequestCountCC[0] = $iTotalExpectedTroop
 			If $aiRequestCountCC[1] > $iTotalExpectedSpell And $iTotalExpectedSpell > 0 Then $aiRequestCountCC[1] = $iTotalExpectedSpell
 
-			If $aiRequestCountCC[$CCType] = 0 or $aiRequestCountCC[$CCType] >= 40 - $CCType * 38 Then
+			If $aiRequestCountCC[$CCType] = 0 Or $aiRequestCountCC[$CCType] >= 40 - $CCType * 38 Then
 				Return False
 			Else
 				Local $sCCReceived = getOcrAndCapture("coc-ms", 289 + $CCType * 183, 468, 60, 16, True, False, True) ; read CC (troops 0/40 or spells 0/2)
@@ -198,22 +204,23 @@ EndFunc   ;==>IsFullClanCastle
 Func CheckCCArmy()
 
 	Local $bSkipTroop = Not $g_abRequestType[0] Or _ArrayMin($g_aiClanCastleTroopWaitType) = $eTroopCount ; All 3 troop comboboxes are set = "any"
-	Local $bSkipSpell = Not $g_abRequestType[1] Or _ArrayMin($g_aiClanCastleSpellWaitType) = $eSpellCount ; All 2 spell comboboxes are set = "any"
+	Local $bSkipSpell = Not $g_abRequestType[1] Or _ArrayMin($g_aiClanCastleSpellWaitType) = $eSpellCount ; All 3 spell comboboxes are set = "any"
+	Local $bSkipSiege = Not $g_abRequestType[2] Or _ArrayMin($g_aiClanCastleSiegeWaitType) = $eSiegeMachineCount ; All 2 siege comboboxes are set = "any"
 
-	If $bSkipTroop And $bSkipSpell Then Return
+	If $bSkipTroop And $bSkipSpell And $bSkipSiege Then Return
 
-	Local $bNeedRemove = False, $aToRemove[7][2] ; 5 troop slots and 2 spell slots [X_Coord, Q'ty]
+	Local $bNeedRemove = False, $aToRemove[8][2] ; 5 troop slots + 2 spell slots + 1 siege slot [X_Coord, Q'ty]
 	Local $aTroopWSlot, $aSpellWSlot
 
 	For $i = 0 To 2
 		If $g_aiClanCastleTroopWaitQty[$i] = 0 And $g_aiClanCastleTroopWaitType[$i] < $eTroopCount Then $g_aiCCTroopsExpected[$g_aiClanCastleTroopWaitType[$i]] = 40 ; expect troop type only. Do not care about qty
-		If $i <= 1 And $g_aiClanCastleSpellWaitQty[$i] = 0 And $g_aiClanCastleSpellWaitType[$i] < $eSpellCount Then $g_aiCCSpellsExpected[$g_aiClanCastleSpellWaitType[$i]] = 2 ; expect spell type only. Do not care about qty
 	Next
 
-	SetLog("Getting current available " & ($bSkipTroop ? "spells " : ($bSkipSpell ? "troops " : "troops and spells ")) & "in Clan Castle...")
+	SetLog("Getting current army in Clan Castle...")
 
 	If Not $bSkipTroop Then $aTroopWSlot = getArmyCCTroops(False, False, False, True, True, True) ; X-Coord, Troop name index, Quantity
 	If Not $bSkipSpell Then $aSpellWSlot = getArmyCCSpells(False, False, False, True, True, True) ; X-Coord, Spell name index, Quantity
+	If Not $bSkipSiege Then getArmyCCSiegeMachines() ; getting value of $g_aiCurrentCCSiegeMachines
 
 	; CC troops
 	If IsArray($aTroopWSlot) Then
@@ -222,7 +229,7 @@ Func CheckCCArmy()
 			If $g_aiCurrentCCTroops[$i] > 0 Then SetDebugLog("Expecting " & $g_asTroopNames[$i] & ": " & $g_aiCCTroopsExpected[$i] & "x. Received: " & $g_aiCurrentCCTroops[$i])
 			If $iUnwanted > 0 Then
 				If Not $bNeedRemove Then
-					SetLog("Removing unexpected troops/spells:")
+					SetLog("Removing unexpected CC army:")
 					$bNeedRemove = True
 				EndIf
 				For $j = 0 To UBound($aTroopWSlot) - 1
@@ -245,7 +252,7 @@ Func CheckCCArmy()
 			If $g_aiCurrentCCSpells[$i] > 0 Then SetDebugLog("Expecting " & $g_asSpellNames[$i] & ": " & $g_aiCCSpellsExpected[$i] & "x. Received: " & $g_aiCurrentCCSpells[$i])
 			If $iUnwanted > 0 Then
 				If Not $bNeedRemove Then
-					SetLog("Removing unexpected spells:")
+					SetLog("Removing unexpected CC spells/siege machine:")
 					$bNeedRemove = True
 				EndIf
 				For $j = 0 To UBound($aSpellWSlot) - 1
@@ -254,14 +261,30 @@ Func CheckCCArmy()
 						$aToRemove[$j + 5][0] = $aSpellWSlot[$j][0]
 						$aToRemove[$j + 5][1] = _Min($aSpellWSlot[$j][2], $iUnwanted)
 						$iUnwanted -= $aToRemove[$j + 5][1]
-						SetLog(" - " & $aToRemove[$j + 5][1] & "x " & $g_asSpellNames[$i]  & ($aToRemove[$j + 5][1] > 1 ? " spells" : " spell") & ($g_bDebugSetlog ? (", at slot " & $j + 5 & ", x" & $aToRemove[$j + 5][0] + 35) : ""))
+						SetLog(" - " & $aToRemove[$j + 5][1] & "x " & $g_asSpellNames[$i] & ($aToRemove[$j + 5][1] > 1 ? " spells" : " spell") & ($g_bDebugSetlog ? (", at slot " & $j + 5 & ", x" & $aToRemove[$j + 5][0] + 35) : ""))
 					EndIf
 				Next
 			EndIf
 		Next
 	EndIf
 
-	; Removing CC Troops & Spells
+	; CC siege machine
+	If Not $bSkipSiege Then
+		For $i = 0 To $eSiegeMachineCount - 1
+			If $g_aiCurrentCCSiegeMachines[$i] > 0 Then SetDebugLog("Expecting " & $g_asSiegeMachineNames[$i] & ": " & $g_aiCCSiegeExpected[$i] & "x. Received: " & $g_aiCurrentCCSiegeMachines[$i])
+			If $g_aiCurrentCCSiegeMachines[$i] > $g_aiCCSiegeExpected[$i] Then
+				If Not $bNeedRemove Then
+					SetLog("Removing unexpected CC siege machine:")
+					$bNeedRemove = True
+				EndIf
+				$aToRemove[7][1] = 1
+				SetLog(" - " & $aToRemove[7][1] & "x " & $g_asSiegeMachineNames[$i])
+				ExitLoop
+			EndIf
+		Next
+	EndIf
+
+	; Removing CC Troops, Spells & Siege Machine
 	If $bNeedRemove Then
 		RemoveCastleArmy($aToRemove)
 		If _Sleep(1000) Then Return
@@ -270,7 +293,7 @@ EndFunc   ;==>CheckCCArmy
 
 Func RemoveCastleArmy($aToRemove)
 
-	If _ArrayMax($aToRemove) = 0 Then Return
+	If _ArrayMax($aToRemove, 0, -1, -1, 1) = 0 Then Return
 
 	; Click 'Edit Army'
 	If Not _CheckPixel($aButtonEditArmy, True) Then ; If no 'Edit Army' Button found in army tab to edit troops
@@ -284,10 +307,11 @@ Func RemoveCastleArmy($aToRemove)
 	If _Sleep(500) Then Return
 
 	; Click remove Troops & Spells
-	Local $aPos[2] = [72, 575]
+	Local $aPos[2] = [35, 575]
 	For $i = 0 To UBound($aToRemove) - 1
 		If $aToRemove[$i][1] > 0 Then
 			$aPos[0] = $aToRemove[$i][0] + 35
+			If $i = 7 Then $aPos[0] = 685 ; x-coordinate of Siege machine slot
 			SetDebugLog(" - Click at slot " & $i & ". (" & $aPos[0] & ") x " & $aToRemove[$i][1])
 			ClickRemoveTroop($aPos, $aToRemove[$i][1], $g_iTrainClickDelay) ; Click on Remove button as much as needed
 		EndIf
@@ -312,7 +336,7 @@ Func RemoveCastleArmy($aToRemove)
 	If _Sleep(400) Then Return
 
 	$counter = 0
-	While Not _CheckPixel($aButtonRemoveTroopsOK2, True)  ; If no 'Okay' button found to verify that we accept the changes
+	While Not _CheckPixel($aButtonRemoveTroopsOK2, True) ; If no 'Okay' button found to verify that we accept the changes
 		If _Sleep(200) Then Return
 		$counter += 1
 		If $counter <= 5 Then ContinueLoop
@@ -323,7 +347,7 @@ Func RemoveCastleArmy($aToRemove)
 
 	ClickP($aButtonRemoveTroopsOK2, 1) ; Click on 'Okay' button to Save changes... Last button
 
-	SetLog("Clan Castle Troops/Spells Removed", $COLOR_SUCCESS)
+	SetLog("Clan Castle army removed", $COLOR_SUCCESS)
 	If _Sleep(200) Then Return
 	Return True
 EndFunc   ;==>RemoveCastleArmy

@@ -1,232 +1,320 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: searchTroopBar
-; Description ...: Searches for the Troops and Spels in Troop Attack Bar
-; Syntax ........: searchTroopBar($directory, $maxReturnPoints = 1, $TroopBarSlots)
-; Parameters ....: $directory - tile location to perform search , $maxReturnPoints ( max number of coords returned ,   $TroopBarSlots array to hold return values
-; Return values .: $TroopBarSlots
+; Name ..........: AttackBarCheck
+; Description ...: Detects Army in the Attackbar and Returns Name, Slot, Amount and X Coordinate
+; Syntax ........: AttackBarCheck($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
+; Parameters ....: $bRemaining (First Check or for Remaining Troops), $pMatchMode (Attackmode that needs the Attackbar: $DB, $AB), $bDebug (Debug AttackbarCheck)
+; Return values .:
 ; Author ........: Trlopes (06-2016)
-; Modified ......: ProMac (12-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Modified ......: ProMac (12-2016), Fliegerfaust(12-2018)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
 Func AttackBarCheck($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
-
-	Local $iX1 = 0, $iY1 = 635, $iX2 = 835, $iY2 = 698
-	Static Local $bCheckSlot12 = False
-
-	If Not $bRemaining Then $bCheckSlot12 = False
+	Local Static $aAttackBar[0][8]
+	Local Static $bDoubleRow = False, $bCheckSlot12 = False
+	Local $sSearchDiamond = GetDiamondFromRect("0,635,835,698")
+	Local $iYBelowRowOne = 630, $aiOCRLocation[2] = [-1, -1], $aSlotAmountX[0][3]
 
 	If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True)
 
-	; Reset to level one the Spells level
-	$g_iLSpellLevel = 1
-	$g_iESpellLevel = 1
+	;Reset All Static Variables if the AttackBarCheck is not for Remaining
+	If Not $bRemaining Then
+		$bCheckSlot12 = False
+		$bDoubleRow = False
+		Local $aDummyArray[0][8]
+		$aAttackBar = $aDummyArray
+		$g_iLSpellLevel = 1
+		$g_iESpellLevel = 1
 
-	; Setup arrays, including default return values for $return
-	Local $aResult[1][6], $aCoordArray[1][2], $aCoords, $aCoordsSplit, $aValue, $sName, $aSlotAmountX[0][2]
+		;Check if Double Row is enabled aswell as has 12+ Slots
+		If _CheckPixel($aDoubRowAttackBar, True) Then
+			$bDoubleRow = True
+			$sSearchDiamond = GetDiamondFromRect("0,535,835,698")
+		ElseIf _CheckPixel($a12OrMoreSlots, True) Then
+			$bCheckSlot12 = True
+		EndIf
+		SetDebugLog("AttackBarCheck: DoubleRow= " & $bDoubleRow)
+	EndIf
 
 	If Not $g_bRunState Then Return
 
-	; Capture the screen for comparison
-	_CaptureRegion2($iX1, $iY1, $iX2, $iY2)
+	If UBound($aAttackBar) = 0 Or Not $bRemaining Then
+		Local $iAttackbarStart = __TimerInit()
+		Local $aTempArray, $aTempCoords, $aTempMultiCoords, $iRow = 1
 
-	Local $sFinalResult = "", $iAttackbarStart = __TimerInit()
+		Local $aAttackBarResult = findMultiple($g_sImgAttackBarDir, $sSearchDiamond, $sSearchDiamond, 0, 1000, 0, "objectname,objectpoints", True)
 
-	; Perform the search
-	Local $sAttBarRes = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $g_sImgAttackBarDir, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
-
-	If IsArray($sAttBarRes) Then
-		If $sAttBarRes[0] = "0" Or $sAttBarRes[0] = "" Then
-			SetLog("AttackBarCheck Error: Nothing found", $COLOR_ERROR)
-		ElseIf StringLeft($sAttBarRes[0], 2) = "-1" Then
-			SetLog("DLL Error: " & $sAttBarRes[0] & ", AttackBarCheck", $COLOR_ERROR)
-		Else
-			; Get the keys for the dictionary item.
-			Local $aKeys = StringSplit($sAttBarRes[0], "|", $STR_NOCOUNT)
-
-			; Redimension the result array to allow for the new entries
-			ReDim $aResult[UBound($aKeys)][6]
-			Local $iResultAddDup = 0
-
-			; Loop through the array
-			For $i = 0 To UBound($aKeys) - 1
-				If Not $g_bRunState Then Return
-				; Get the property values
-				$sName = RetrieveImglocProperty($aKeys[$i], "objectname")
-				; Get the coords property
-				$aValue = RetrieveImglocProperty($aKeys[$i], "objectpoints")
-				$aCoords = decodeMultipleCoords($aValue, 50) ; dedup coords by x on 50 pixel
-				If StringRegExp($sName, "(AmountX)", 0) Then
-					For $j = 0 To UBound($aCoords) - 1
-						$aCoordsSplit = $aCoords[$j]
-						_ArrayAdd($aSlotAmountX, $aCoordsSplit[0] & "|" & $aCoordsSplit[1], 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
-					Next
-				Else
-
-					$aResult[$i + $iResultAddDup][0] = $sName
-					$aCoordsSplit = $aCoords[0]
-					If StringRegExp($sName, "(King)|(Warden)|(Queen)", 0) Then
-						_ArrayAdd($aSlotAmountX, $aCoordsSplit[0] & "|" & $aCoordsSplit[1], 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
-					EndIf
-					If UBound($aCoordsSplit) = 2 Then
-						; Store the coords into a two dimensional array
-						$aCoordArray[0][0] = $aCoordsSplit[0] ; X coord.
-						$aCoordArray[0][1] = $aCoordsSplit[1] ; Y coord.
-					Else
-						$aCoordArray[0][0] = -1
-						$aCoordArray[0][1] = -1
-					EndIf
-					If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aCoordArray[0][0] & "-" & $aCoordArray[0][1])
-					; Store the coords array as a sub-array
-					$aResult[$i + $iResultAddDup][1] = Number($aCoordArray[0][0])
-					$aResult[$i + $iResultAddDup][2] = Number($aCoordArray[0][1])
-					;If a Clan Castle Spell exists
-					Local $iMultipleCoords = UBound($aCoords)
-					; Check if two Clan Castle Spells exist with different levels
-					If $iMultipleCoords > 1 And StringInStr($aResult[$i + $iResultAddDup][0], "Spell") <> 0 Then
-						If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " detected " & $iMultipleCoords & " times!")
-						For $j = 1 To $iMultipleCoords - 1
-							Local $aCoordsSplit2 = $aCoords[$j]
-							If UBound($aCoordsSplit2) = 2 Then
-								; add slot
-								$iResultAddDup += 1
-								ReDim $aResult[UBound($aKeys) + $iResultAddDup][6]
-								$aResult[$i + $iResultAddDup][0] = $aResult[$i + $iResultAddDup - 1][0] ; same objectname
-								$aResult[$i + $iResultAddDup][1] = $aCoordsSplit2[0]
-								$aResult[$i + $iResultAddDup][2] = $aCoordsSplit2[1]
-								If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aResult[$i + $iResultAddDup][1] & "-" & $aResult[$i + $iResultAddDup][2])
-							Else
-								; don't invalidate anything
-								;$aCoordArray[0][0] = -1
-								;$aCoordArray[0][1] = -1
-							EndIf
-						Next
-					EndIf
-				EndIf
-			Next
-
-			_ArraySort($aResult, 0, 0, 0, 1) ; Sort By X position , will be the Slot 0 to $i
-			_ArraySort($aSlotAmountX)
-
-			If $g_bDebugSetlog Then SetDebugLog("Attackbar detection completed in " & StringFormat("%.2f", _Timer_Diff($iAttackbarStart)) & " ms")
-			$iAttackbarStart = __TimerInit()
-
-			If Not $bRemaining And _CheckPixel($a12OrMoreSlots, True) Then $bCheckSlot12 = True
-
-			Local $iSPellLevelOCR = -8
-			For $i = 0 To UBound($aResult) - 1
-				Local $aTempSlot
-				If $aResult[$i][1] > 0 Then
-					If $g_bDebugSetlog Then SetDebugLog("SLOT : " & $i, $COLOR_DEBUG) ;Debug
-					If $g_bDebugSetlog Then SetDebugLog("Detection : " & $aResult[$i][0] & "|x" & $aResult[$i][1] & "|y" & $aResult[$i][2], $COLOR_DEBUG) ;Debug
-					$aTempSlot = SlotAttack(Number($aResult[$i][1]), $aSlotAmountX)
-					;
-					If $g_bRunState = False Then Return ; Stop function
-					If _Sleep(20) Then Return ; Pause function
-					If UBound($aTempSlot) = 3 Then
-						If $g_bDebugSetlog Then SetDebugLog("OCR : " & $aTempSlot[0] & "|SLOT: " & $aTempSlot[2], $COLOR_DEBUG) ;Debug
-						If $aResult[$i][0] = "Castle" Or $aResult[$i][0] = "King" Or $aResult[$i][0] = "Queen" Or $aResult[$i][0] = "Warden" Or $aResult[$i][0] = "WallW" Or $aResult[$i][0] = "BattleB" Or $aResult[$i][0] = "StoneS" Then
-							$aResult[$i][3] = 1
-							$aResult[$i][4] = $aTempSlot[2]
-						Else
-							$aResult[$i][3] = Number(getTroopCountBig(Number($aTempSlot[0] + $iX1), Number($aTempSlot[1] + $iY1) - 2)) ; For big numbers when the troop is selected
-							$aResult[$i][4] = $aTempSlot[2]
-							If $aResult[$i][3] = "" Or $aResult[$i][3] = 0 Then
-								$aResult[$i][3] = Number(getTroopCountSmall(Number($aTempSlot[0] + $iX1), Number($aTempSlot[1] + $iY1))) ; For small numbers when the troop isn't selected
-								$aResult[$i][4] = $aTempSlot[2]
-							EndIf
-
-							If StringInStr($aResult[$i][0], "ESpell") <> 0 And $g_bSmartZapEnable Then
-								$aResult[$i][5] = getTroopsSpellsLevel(Number($aTempSlot[0] + $iX1) + $iSPellLevelOCR, 704)
-								If $aResult[$i][5] <> "" Then $g_iESpellLevel = $aResult[$i][5] ; If they aren't empty will store the correct level, or will be level 1 , just in case
-								If $g_bDebugSmartZap Then SetLog("Earthquake Spell detected with level: " & $aResult[$i][5], $COLOR_DEBUG)
-							EndIf
-							If StringInStr($aResult[$i][0], "LSpell") <> 0 And $g_bSmartZapEnable Then
-								$aResult[$i][5] = getTroopsSpellsLevel(Number($aTempSlot[0] + $iX1) + $iSPellLevelOCR, 704)
-								If $aResult[$i][5] <> "" Then $g_iLSpellLevel = $aResult[$i][5] ; If they aren't empty will store the correct level, or will be level 1 , just in case
-								If $g_bDebugSmartZap Then SetLog("Lightning Spell detected with level: " & $aResult[$i][5], $COLOR_DEBUG)
-							EndIf
-						EndIf
-					Else
-						SetLog("Error while detecting Attackbar", $COLOR_ERROR)
-						SetLog("Detection: " & $aResult[$i][0] & "|X:" & $aResult[$i][1] & "|Y:" & $aResult[$i][2], $COLOR_DEBUG)
-						$aResult[$i][3] = -1
-						$aResult[$i][4] = -1
-					EndIf
-					$sFinalResult &= "|" & TroopIndexLookup($aResult[$i][0]) & "#" & $aResult[$i][4] & "#" & $aResult[$i][3] & "#" & $aResult[$i][1] ; Name#Index#Amount#x-coord
-				EndIf
-			Next
+		If UBound($aAttackBarResult) = 0 Then
+			SetLog("Error in AttackBarCheck(): Search did not return any results!", $COLOR_ERROR)
+			DebugImageSave("ErrorAttackBarCheck", False, Default, Default, "#1")
+			Return ""
 		EndIf
-	EndIf
 
-
-	If $g_bDebugSetlog Then SetDebugLog("Attackbar OCR completed in " & StringFormat("%.2f", __TimerDiff($iAttackbarStart)) & " ms")
-
-	If $bDebug Then
-		Local $iX1 = 0, $iY1 = 635, $iX2 = 853, $iY2 = 698
-		_CaptureRegion2($iX1, $iY1, $iX2, $iY2)
-
-		Local $sSubDir = $g_sProfileTempDebugPath & "AttackBarDetection"
-
-		DirCreate($sSubDir)
-
-		Local $sDate = @YEAR & "-" & @MON & "-" & @MDAY, $sTime = @HOUR & "." & @MIN & "." & @SEC
-		Local $sDebugImageName = String($sDate & "_" & $sTime & "_.png")
-		Local $hEditedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
-		Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($hEditedImage)
-		Local $hPenRED = _GDIPlus_PenCreate(0xFFFF0000, 3)
-
-		For $i = 0 To UBound($aResult) - 1
-			addInfoToDebugImage($hGraphic, $hPenRED, $aResult[$i][0], $aResult[$i][1], $aResult[$i][2])
+		;Add found Stuff into our Arrays
+		For $i = 0 To UBound($aAttackBarResult, 1) - 1
+			$aTempArray = $aAttackBarResult[$i]
+			$aTempMultiCoords = decodeMultipleCoords($aTempArray[1], 40, 40, -1)
+			For $j = 0 To UBound($aTempMultiCoords, 1) - 1
+				$aTempCoords = $aTempMultiCoords[$j]
+				If $bDoubleRow And $aTempCoords[1] >= $iYBelowRowOne Then $iRow = 2
+				If StringRegExp($aTempArray[0], "(AmountX)", 0) Then
+					_ArrayAdd($aSlotAmountX, $aTempCoords[0] & "|" & $aTempCoords[1] & "|" & $iRow, 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
+					$aiOCRLocation[$iRow - 1] = $aTempCoords[1] ; Store any OCR Location for later use on Heroes
+				Else
+					If StringRegExp($aTempArray[0], "(King)|(Queen)|(Warden)", 0) Then _ArrayAdd($aSlotAmountX, $aTempCoords[0] & "|" & $aTempCoords[1] & "|" & $iRow, 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
+					Local $aTempElement[1][8] = [[$aTempArray[0], $aTempCoords[0], $aTempCoords[1], -1, -1, -1, -1, $iRow]] ; trick to get the right variable types into our array. Delimiter Adding only gets us string which can't be sorted....
+					_ArrayAdd($aAttackBar, $aTempElement)
+				EndIf
+				$iRow = 1
+			Next
 		Next
 
-		_GDIPlus_ImageSaveToFile($hEditedImage, $sSubDir & "\" & $sDebugImageName)
-		_GDIPlus_PenDispose($hPenRED)
-		_GDIPlus_GraphicsDispose($hGraphic)
-		_GDIPlus_BitmapDispose($hEditedImage)
+		If UBound($aAttackBar, 1) = 0 Then
+			SetLog("Error in AttackBarCheck(): $aAttackBar has no results in it", $COLOR_ERROR)
+			Return ""
+		EndIf
+
+		;Sort the Arrays by X Position of the Results
+		_ArraySort($aAttackBar, 0, 0, 0, 1)
+		_ArraySort($aSlotAmountX)
+		If $bDoubleRow Then $aSlotAmountX = SortDoubleRowXElements($aSlotAmountX)
+
+		SetDebugLog("AttackBarCheck(): Finished Image Search in: " & StringFormat("%.2f", __TimerDiff($iAttackbarStart)) & " ms")
+		$iAttackbarStart = __TimerInit()
+
 	EndIf
 
+	#comments-start
+		$aAttackBar[n][8]
+		[n][0] = Name of the found Troop/Spell/Hero/Siege
+		[n][1] = The X Coordinate of the Troop/Spell/Hero/Siege
+		[n][2] = The Y Coordinate of the Troop/Spell/Hero/Siege
+		[n][3] = The Slot Number (Starts with 0)
+		[n][4] = The Amount
+		[n][5] = The X Coordinate of the Y beside the Amount
+		[n][6] = The Y Coordinate of the X beside the Amount
+		[n][7] = The Row where it is in (If Single Row all Should be 2)
+	#comments-end
+
+	Local $aFinalAttackBar[0][7]
+	Local $aiOCRY = [-1, -1]
+	If Not $bRemaining Then $aiOCRY = GetOCRYLocation($aSlotAmountX)
+	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(WallW)|(BattleB)|(StoneS)" ; TODO: check if (WallW)|(BattleB)|(StoneS) required
+
+	For $i = 0 To UBound($aAttackBar, 1) - 1
+		If $aAttackBar[$i][1] > 0 Then
+			Local $bRemoved = False
+			If Not $g_bRunState Then Return
+			If _Sleep(20) Then Return
+
+			If $bRemaining Then
+				$aTroopIsDeployed[0] = $aAttackBar[$i][5] - 15
+				$aTroopIsDeployed[1] = $aAttackBar[$i][6]
+				If _CheckPixel($aTroopIsDeployed, True) Then
+					; Troop got deployed already
+					$bRemoved = True
+					$aAttackBar[$i][4] = 0 ; set available troops to 0
+					If StringRegExp($aAttackBar[$i][0], $sKeepRemainTroops, 0) = 0 Then
+						SetDebugLog("AttackBarCheck(): Troop " + $aAttackBar[$i][0] + " already deployed, now removed")
+						ContinueLoop
+					Else
+						SetDebugLog("AttackBarCheck(): Troop " + $aAttackBar[$i][0] + " already deployed, but stays")
+					EndIf
+				EndIf
+			Else
+				Local $aTempSlot = AttackSlot(Number($aAttackBar[$i][1]), Number($aAttackBar[$i][7]), $aSlotAmountX)
+				$aAttackBar[$i][5] = Number($aTempSlot[0])
+				$aAttackBar[$i][6] = Number($aTempSlot[1])
+				$aAttackBar[$i][3] = Number($aTempSlot[2])
+				If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)", 0) And $aiOCRY[$aAttackBar[$i][7] - 1] <> -1 Then $aAttackBar[$i][6] = ($aiOCRY[$aAttackBar[$i][7] - 1] - 7)
+			EndIf
+
+			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Castle)|(WallW)|(BattleB)|(StoneS)", 0) Then
+				If Not $bRemoved Then $aAttackBar[$i][4] = 1
+			Else
+				If Not $bRemoved Then
+					$aAttackBar[$i][4] = Number(getTroopCountSmall(Number($aAttackBar[$i][5]), Number($aAttackBar[$i][6])))
+					If $aAttackBar[$i][4] = 0 Then $aAttackBar[$i][4] = Number(getTroopCountBig(Number($aAttackBar[$i][5]), Number($aAttackBar[$i][6] - 2)))
+				EndIf
+				If StringRegExp($aAttackBar[$i][0], "(LSpell)|(ESpell)", 0) And $g_bSmartZapEnable Then
+					Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 20, 704))
+					If StringInStr($aAttackBar[$i][0], "LSpell") <> 0 And $iSpellLevel > 0 Then $g_iLSpellLevel = $iSpellLevel
+					If StringInStr($aAttackBar[$i][0], "ESpell") <> 0 And $iSpellLevel > 0 Then $g_iESpellLevel = $iSpellLevel
+				EndIf
+			EndIf
+			; 0: Index, 1: Slot, 2: Amount, 3: X-Coord, 4: Y-Coord, 5: OCR X-Coord, 6: OCR Y-Coord
+			Local $aTempFinalArray[1][7] = [[TroopIndexLookup($aAttackBar[$i][0]), $aAttackBar[$i][3], $aAttackBar[$i][4], $aAttackBar[$i][1], $aAttackBar[$i][2], $aAttackBar[$i][5], $aAttackBar[$i][6]]]
+			_ArrayAdd($aFinalAttackBar, $aTempFinalArray)
+		EndIf
+	Next
+
 	; Drag left & checking extended troops from Slot11+ ONLY if not a smart attack
-	If ($pMatchMode <= $LB And $bCheckSlot12 And UBound($aResult) > 1 And $g_aiAttackAlgorithm[$pMatchMode] <> 3) Or $bDebug Then
-		SetDebuglog("$sFinalResult 1st page = " & $sFinalResult)
-		Local $aLastTroop1stPage[2]
-		$aLastTroop1stPage[0] = $aResult[UBound($aResult) - 1][0] ; Name of troop at last slot 1st page
-		$aLastTroop1stPage[1] = UBound(_ArrayFindAll($aResult, $aLastTroop1stPage[0])) ; Number of slots this troop appears in 1st page
-		SetDebuglog("$sLastTroop1stPage = " & $aLastTroop1stPage[0] & ", appears: " & $aLastTroop1stPage[1])
+	If ($pMatchMode <= $LB And $bCheckSlot12 And Not $bDoubleRow And UBound($aAttackBar) > 1 And $g_aiAttackAlgorithm[$pMatchMode] <> 3) Or ($bDebug And $bCheckSlot12) Then
 		DragAttackBar()
-		$sFinalResult &= ExtendedAttackBarCheck($aLastTroop1stPage, $bRemaining)
+		Local $aExtendedArray = ExtendedAttackBarCheck($aAttackBar, $bRemaining, $sSearchDiamond)
+		_ArrayAdd($aFinalAttackBar, $aExtendedArray)
+		$g_iTotalAttackSlot = UBound($aFinalAttackBar, 1) + 1
 		If Not $bRemaining Then DragAttackBar($g_iTotalAttackSlot, True) ; return drag
 	EndIf
 
-	$sFinalResult = StringTrimLeft($sFinalResult, 1)
-
-	Return $sFinalResult
+	_ArraySort($aFinalAttackBar, 0, 0, 0, 1) ; Sort Final Array by Slot Number
+	Return $aFinalAttackBar
 
 EndFunc   ;==>AttackBarCheck
 
-Func SlotAttack($iPosX, $aSlots)
-	Local $aTempSlot[3] = [0, 0, 0]
-	Local $iClosest = SearchNearest($aSlots, $iPosX)
-	Local $bLast = False
-	If $iClosest = _ArrayMaxIndex($aSlots, 0) And $aSlots[$iClosest][0] >= ($g_iGAME_WIDTH - 60) Then $bLast = True
+Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond)
 
-	If $iClosest >= 0 And $iClosest < UBound($aSlots) Then
-		$aTempSlot[0] = $bLast ? $g_iGAME_WIDTH - 53 : $aSlots[$iClosest][0] - 15 ; X Coord | Last Item to get OCRd needs to be compensated because it could happen that the Capture Rectangle gets out of boundary and image gets not usable
-		$aTempSlot[1] = $aSlots[$iClosest][1] - 7 ; Y Coord
-		$aTempSlot[2] = $iClosest
+	Local Static $aAttackBar[0][8]
+	Local $iLastSlotNumber = _ArrayMax($aAttackBarFirstSearch, 0, -1, -1, 3)
+	Local $sLastTroopName = $aAttackBarFirstSearch[_ArrayMaxIndex($aAttackBarFirstSearch, 0, -1, -1, 1)][0], $aiOCRLocation[2] = [-1, -1]
+	Local $aSlotAmountX[0][3]
+
+	;Reset All Static Variables if the AttackBarCheck is not for Remaining
+	If Not $bRemaining Then
+		Local $aDummyArray[0][8]
+		$aAttackBar = $aDummyArray
+		$g_iTotalAttackSlot = 11
 	EndIf
 
-	Return $aTempSlot
-EndFunc   ;==>SlotAttack
+	If Not $g_bRunState Then Return
 
-Func SearchNearest($aArray, $iNumber)
+	If UBound($aAttackBar) = 0 Or Not $bRemaining Then
+		Local $iAttackbarStart = __TimerInit()
+		Local $aTempArray, $aTempCoords, $aTempMultiCoords, $iRow = 1
+
+		Local $aAttackBarResult = findMultiple($g_sImgAttackBarDir, $sSearchDiamond, $sSearchDiamond, 0, 1000, 0, "objectname,objectpoints", True)
+
+		If UBound($aAttackBarResult) = 0 Then
+			SetLog("Error in AttackBarCheck(): Search did not return any results!", $COLOR_ERROR)
+			DebugImageSave("ErrorAttackBarCheck", False, Default, Default, "#2")
+			Return ""
+		EndIf
+
+		;Add found Stuff into our Arrays
+		For $i = 0 To UBound($aAttackBarResult, 1) - 1
+			$aTempArray = $aAttackBarResult[$i]
+			$aTempMultiCoords = decodeMultipleCoords($aTempArray[1], 60, 60, -1)
+			For $j = 0 To UBound($aTempMultiCoords, 1) - 1
+				$aTempCoords = $aTempMultiCoords[$j]
+				If StringRegExp($aTempArray[0], "(AmountX)", 0) Then
+					_ArrayAdd($aSlotAmountX, $aTempCoords[0] & "|" & $aTempCoords[1] & "|" & $iRow, 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
+					$aiOCRLocation[$iRow - 1] = $aTempCoords[1]
+				Else
+					If StringRegExp($aTempArray[0], "(King)|(Queen)|(Warden)", 0) Then _ArrayAdd($aSlotAmountX, $aTempCoords[0] & "|" & $aTempCoords[1] & "|" & $iRow, 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
+					Local $aTempElement[1][8] = [[$aTempArray[0], $aTempCoords[0], $aTempCoords[1], -1, -1, -1, -1, $iRow]]
+					_ArrayAdd($aAttackBar, $aTempElement)
+				EndIf
+			Next
+		Next
+
+		If UBound($aAttackBar, 1) = 0 Then
+			SetLog("Error in AttackBarCheck(): $aAttackBar has no results in it", $COLOR_ERROR)
+			Return ""
+		EndIf
+
+		;Sort the Arrays by X Position of the Results
+		_ArraySort($aAttackBar, 0, 0, 0, 1)
+		_ArraySort($aSlotAmountX)
+
+		SetDebugLog("AttackBarCheck(): Finished Image Search in: " & StringFormat("%.2f", __TimerDiff($iAttackbarStart)) & " ms")
+		$iAttackbarStart = __TimerInit()
+	EndIf
+
+	#comments-start
+		$aAttackBar[n][8]
+		[n][0] = Name of the found Troop/Spell/Hero/Siege
+		[n][1] = The X Coordinate of the Troop/Spell/Hero/Siege
+		[n][2] = The Y Coordinate of the Troop/Spell/Hero/Siege
+		[n][3] = The Slot Number (Starts with 0)
+		[n][4] = The Amount
+		[n][5] = The X Coordinate of the Y beside the Amount
+		[n][6] = The Y Coordinate of the X beside the Amount
+		[n][7] = The Row where it is in (If Single Row all Should be 2)
+	#comments-end
+
+	Local $aFinalAttackBar[0][7]
+	Local $aiOCRY = [-1, -1]
+	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(WallW)|(BattleB)|(StoneS)" ; TODO: check if (WallW)|(BattleB)|(StoneS) required
+
+	If Not $bRemaining Then
+		$aiOCRY = GetOCRYLocation($aSlotAmountX)
+		$aAttackBar = _ArrayExtract($aAttackBar, _ArraySearch($aAttackBar, $sLastTroopName, 0, 0, 0, 0, 1, 0) + 1)
+	EndIf
+	For $i = 0 To UBound($aAttackBar, 1) - 1
+		If $aAttackBar[$i][1] > 0 Then
+			Local $bRemoved = False
+			If Not $g_bRunState Then Return
+			If _Sleep(20) Then Return
+
+			If $bRemaining Then
+				$aTroopIsDeployed[0] = $aAttackBar[$i][5] - 15
+				$aTroopIsDeployed[1] = $aAttackBar[$i][6]
+				If _CheckPixel($aTroopIsDeployed, True) Then
+					; Troop got deployed already
+					$bRemoved = True
+					$aAttackBar[$i][4] = 0 ; set available troops to 0
+					If StringRegExp($aAttackBar[$i][0], $sKeepRemainTroops, 0) = 0 Then
+						SetDebugLog("AttackBarCheck(): Troop " + $aAttackBar[$i][0] + " already deployed, now removed")
+						ContinueLoop
+					Else
+						SetDebugLog("AttackBarCheck(): Troop " + $aAttackBar[$i][0] + " already deployed, but stays")
+					EndIf
+				EndIf
+			Else
+				Local $aTempSlot = AttackSlot(Number($aAttackBar[$i][1]), Number($aAttackBar[$i][7]), $aSlotAmountX)
+				$aAttackBar[$i][5] = Number($aTempSlot[0])
+				$aAttackBar[$i][6] = Number($aTempSlot[1])
+				$aAttackBar[$i][3] = Number($aTempSlot[2] + $iLastSlotNumber - 1)
+				If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)", 0) And $aiOCRY[$aAttackBar[$i][7] - 1] <> -1 Then $aAttackBar[$i][6] = ($aiOCRY[$aAttackBar[$i][7] - 1] - 7)
+			EndIf
+
+			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Castle)|(WallW)|(BattleB)|(StoneS)", 0) Then
+				If Not $bRemoved Then $aAttackBar[$i][4] = 1
+			Else
+				If Not $bRemoved Then
+					$aAttackBar[$i][4] = Number(getTroopCountSmall(Number($aAttackBar[$i][5]), Number($aAttackBar[$i][6])))
+					If $aAttackBar[$i][4] = 0 Then $aAttackBar[$i][4] = Number(getTroopCountBig(Number($aAttackBar[$i][5]), Number($aAttackBar[$i][6] - 2)))
+				EndIf
+				If StringRegExp($aAttackBar[$i][0], "(LSpell)|(ESpell)", 0) And $g_bSmartZapEnable Then
+					Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 20, 704))
+					If StringInStr($aAttackBar[$i][0], "LSpell") <> 0 And $iSpellLevel > 0 Then $g_iLSpellLevel = $iSpellLevel
+					If StringInStr($aAttackBar[$i][0], "ESpell") <> 0 And $iSpellLevel > 0 Then $g_iESpellLevel = $iSpellLevel
+				EndIf
+			EndIf
+			; 0: Index, 1: Slot, 2: Amount, 3: X-Coord, 4: Y-Coord, 5: OCR X-Coord, 6: OCR Y-Coord
+			Local $aTempFinalArray[1][7] = [[TroopIndexLookup($aAttackBar[$i][0]), $aAttackBar[$i][3], $aAttackBar[$i][4], $aAttackBar[$i][1], $aAttackBar[$i][2], $aAttackBar[$i][5], $aAttackBar[$i][6]]]
+			_ArrayAdd($aFinalAttackBar, $aTempFinalArray)
+		EndIf
+	Next
+
+	_ArraySort($aFinalAttackBar, 0, 0, 0, 1) ; Sort Final Array by Slot Number
+
+	Return $aFinalAttackBar
+EndFunc   ;==>ExtendedAttackBarCheck
+
+Func GetOCRYLocation($aArray)
+	Local $aiReturn[2] = [-1, -1], $aTempArray[0], $aTempArray2[0]
+	For $i = 0 To UBound($aArray, 1) - 1
+		If $aArray[$i][2] = 1 Then
+			_ArrayAdd($aTempArray, $aArray[$i][1])
+		Else
+			_ArrayAdd($aTempArray2, $aArray[$i][1])
+		EndIf
+	Next
+	$aiReturn[0] = _ArrayMin($aTempArray)
+	$aiReturn[1] = _ArrayMin($aTempArray2)
+
+	Return $aiReturn
+EndFunc   ;==>GetOCRYLocation
+
+Func SearchNearest($aArray, $iNumber, $iRow)
 	Local $iVal, $iValOld = _ArrayMax($aArray), $iReturn
 	For $i = 0 To UBound($aArray) - 1
 		$iVal = Abs($aArray[$i][0] - $iNumber)
-		If $iValOld >= $iVal Then
+		If $iValOld >= $iVal And $iRow = Number($aArray[$i][2]) Then
 			$iValOld = $iVal
 			$iReturn = $i
 		EndIf
@@ -234,153 +322,22 @@ Func SearchNearest($aArray, $iNumber)
 	Return $iReturn
 EndFunc   ;==>SearchNearest
 
-Func ExtendedAttackBarCheck($aLastTroop1stPage, $bRemaining)
-
-	Local $iX1 = 0, $iY1 = 635, $iX2 = 835, $iY2 = 698
-	Static $bCheckSlotwHero2 = False
-
-	; Setup arrays, including default return values for $return
-	Local $aResult[1][6], $aCoordArray[1][2], $aCoords, $aCoordsSplit, $aValue, $sName, $aSlotAmountX[0][2]
-	If Not $g_bRunState Then Return
-
-	; Capture the screen for comparison
-	_CaptureRegion2($iX1, $iY1, $iX2, $iY2)
-
-	Local $sFinalResult = ""
-	; Perform the search
-	Local $sAttBarRes = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $g_sImgAttackBarDir, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
-	If IsArray($sAttBarRes) Then
-		If $sAttBarRes[0] = "0" Or $sAttBarRes[0] = "" Then
-			SetLog("Imgloc|AttackBarCheck not found!", $COLOR_ERROR)
-		ElseIf StringLeft($sAttBarRes[0], 2) = "-1" Then
-			SetLog("DLL Error: " & $sAttBarRes[0] & ", AttackBarCheck", $COLOR_RED)
+Func SortDoubleRowXElements($aArray)
+	Local $aSecondRow[0][3]
+	Local $aNewSlotAmountX[0][3]
+	For $i = 0 To UBound($aArray) - 1
+		If $aArray[$i][2] = 2 Then
+			_ArrayAdd($aSecondRow, _ArrayExtract($aArray, $i, $i))
 		Else
-			; Get the keys for the dictionary item.
-			Local $aKeys = StringSplit($sAttBarRes[0], "|", $STR_NOCOUNT)
-
-			; Redimension the result array to allow for the new entries
-			ReDim $aResult[UBound($aKeys)][6]
-			Local $iResultAddDup = 0
-
-			; Loop through the array
-			For $i = 0 To UBound($aKeys) - 1
-				If Not $g_bRunState Then Return
-				; Get the property values
-				$sName = RetrieveImglocProperty($aKeys[$i], "objectname")
-				; Get the coords property
-				$aValue = RetrieveImglocProperty($aKeys[$i], "objectpoints")
-				$aCoords = decodeMultipleCoords($aValue, 50) ; dedup coords by x on 50 pixel
-
-				If StringRegExp($sName, "(AmountX)", 0) Then
-					For $j = 0 To UBound($aCoords) - 1
-						$aCoordsSplit = $aCoords[$j]
-						_ArrayAdd($aSlotAmountX, $aCoordsSplit[0] & "|" & $aCoordsSplit[1], 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
-					Next
-				Else
-					$aResult[$i + $iResultAddDup][0] = $sName
-					$aCoordsSplit = $aCoords[0]
-					If StringRegExp($sName, "(King)|(Warden)|(Queen)", 0) Then _ArrayAdd($aSlotAmountX, $aCoordsSplit[0] & "|" & $aCoordsSplit[1], 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
-					If UBound($aCoordsSplit) = 2 Then
-						; Store the coords into a two dimensional array
-						$aCoordArray[0][0] = $aCoordsSplit[0] ; X coord.
-						$aCoordArray[0][1] = $aCoordsSplit[1] ; Y coord.
-					Else
-						$aCoordArray[0][0] = -1
-						$aCoordArray[0][1] = -1
-					EndIf
-					If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aCoordArray[0][0] & "-" & $aCoordArray[0][1])
-					; Store the coords array as a sub-array
-					$aResult[$i + $iResultAddDup][1] = Number($aCoordArray[0][0])
-					$aResult[$i + $iResultAddDup][2] = Number($aCoordArray[0][1])
-					;If a Clan Castle Spell exists
-					Local $iMultipleCoords = UBound($aCoords)
-					; Check if two Clan Castle Spells exist with different levels
-					If $iMultipleCoords > 1 And StringInStr($aResult[$i + $iResultAddDup][0], "Spell") <> 0 Then
-						If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " detected " & $iMultipleCoords & " times!")
-						For $j = 1 To $iMultipleCoords - 1
-							Local $aCoordsSplit2 = $aCoords[$j]
-							If UBound($aCoordsSplit2) = 2 Then
-								; add slot
-								$iResultAddDup += 1
-								ReDim $aResult[UBound($aKeys) + $iResultAddDup][6]
-								$aResult[$i + $iResultAddDup][0] = $aResult[$i + $iResultAddDup - 1][0] ; same objectname
-								$aResult[$i + $iResultAddDup][1] = $aCoordsSplit2[0]
-								$aResult[$i + $iResultAddDup][2] = $aCoordsSplit2[1]
-								If $g_bDebugSetlog Then SetDebugLog($aResult[$i + $iResultAddDup][0] & " | $aCoordArray: " & $aResult[$i + $iResultAddDup][1] & "-" & $aResult[$i + $iResultAddDup][2])
-							Else
-								; don't invalidate anything
-								;$aCoordArray[0][0] = -1
-								;$aCoordArray[0][1] = -1
-							EndIf
-						Next
-					EndIf
-				EndIf
-			Next
-
-			_ArraySort($aResult, 0, 0, 0, 1) ; Sort By X position , will be the Slot 0 to $i
-			_ArraySort($aSlotAmountX)
-
-			Local $iSlotExtended = 0
-			Static $iFirstExtendedSlot = -1 ; Location of 1st extended troop after drag
-			If Not $bRemaining Then
-				$iFirstExtendedSlot = -1 ; Reset value for 1st time detecting troop bar
-			EndIf
-
-			Local $iFoundLastTroop1stPage
-			Local $bStart2ndPage = False
-			For $i = 0 To UBound($aResult) - 1
-				Local $aTempSlot
-				If $aResult[$i][1] > 0 Then
-					SetDebugLog("Slot : " & $i, $COLOR_DEBUG) ;Debug
-					SetDebugLog("Detection : " & $aResult[$i][0] & "|x" & $aResult[$i][1] & "|y" & $aResult[$i][2], $COLOR_DEBUG) ;Debug
-
-					; Finding where to start the 2nd page
-					If $aResult[$i][0] = $aLastTroop1stPage[0] And Not $bStart2ndPage Then
-						$iFoundLastTroop1stPage += 1
-						SetDebugLog("Found $aLastTroop1stPage[0]: " & $aResult[$i][0] & " x" & $iFoundLastTroop1stPage)
-						If $iFoundLastTroop1stPage >= $aLastTroop1stPage[1] Then $bStart2ndPage = True
-						ContinueLoop
-					EndIf
-					If Not $bStart2ndPage Then ContinueLoop
-
-					$aTempSlot = SlotAttack(Number($aResult[$i][1]), $aSlotAmountX)
-					If $iFirstExtendedSlot = -1 Then $iFirstExtendedSlot = $aTempSlot[2] ; flag only once
-					$iSlotExtended = $aTempSlot[2] - $iFirstExtendedSlot + 1
-					If Not $g_bRunState Then Return ; Stop function
-					If _Sleep(20) Then Return ; Pause function
-					If UBound($aTempSlot) = 3 Then
-						SetDebugLog("OCR : " & $aTempSlot[0] & "|SLOT: " & $aTempSlot[2], $COLOR_DEBUG) ;Debug
-						If $aResult[$i][0] = "Castle" Or $aResult[$i][0] = "King" Or $aResult[$i][0] = "Queen" Or $aResult[$i][0] = "Warden" Or $aResult[$i][0] = "WallW" Or $aResult[$i][0] = "BattleB" Or $aResult[$i][0] = "StoneS" Then
-							$aResult[$i][3] = 1
-						Else
-							$aResult[$i][3] = Number(getTroopCountSmall(Number($aTempSlot[0] + $iX1), Number($aTempSlot[1] + $iY1))) ; For small Numbers
-							If $aResult[$i][3] = "" Or $aResult[$i][3] = 0 Then
-								$aResult[$i][3] = Number(getTroopCountBig(Number($aTempSlot[0] + $iX1), Number($aTempSlot[1] + $iY1) - 4)) ; For Big Numbers , when the troops is selected
-							EndIf
-						EndIf
-						$aResult[$i][4] = ($aTempSlot[2] + 11) - $iFirstExtendedSlot
-					Else
-						Setlog("Problem with Attack bar detection!", $COLOR_ERROR)
-						SetLog("Detection : " & $aResult[$i][0] & "|x" & $aResult[$i][1] & "|y" & $aResult[$i][2], $COLOR_DEBUG)
-						$aResult[$i][3] = -1
-						$aResult[$i][4] = -1
-					EndIf
-					$sFinalResult &= "|" & TroopIndexLookup($aResult[$i][0]) & "#" & $aResult[$i][4] & "#" & $aResult[$i][3] & "#" & $aResult[$i][1]
-				EndIf
-			Next
-			If Not $bRemaining Then
-				$g_iTotalAttackSlot = $iSlotExtended + 10
-			EndIf
-
-			SetDebugLog("$iSlotExtended / $g_iTotalAttackSlot: " & $iSlotExtended & "/" & $g_iTotalAttackSlot)
-
+			_ArrayAdd($aNewSlotAmountX, _ArrayExtract($aArray, $i, $i))
 		EndIf
-	EndIf
+	Next
+	_ArraySort($aNewSlotAmountX)
+	_ArraySort($aSecondRow)
+	_ArrayAdd($aNewSlotAmountX, $aSecondRow)
 
-	SetDebugLog("Extended $sFinalResult: " & $sFinalResult)
-	Return $sFinalResult
-
-EndFunc   ;==>ExtendedAttackBarCheck
+	Return $aNewSlotAmountX
+EndFunc   ;==>SortDoubleRowXElements
 
 Func DragAttackBar($iTotalSlot = 20, $bBack = False)
 	If $g_iTotalAttackSlot > 10 Then $iTotalSlot = $g_iTotalAttackSlot
@@ -402,3 +359,49 @@ Func DragAttackBar($iTotalSlot = 20, $bBack = False)
 	$g_iCSVLastTroopPositionDropTroopFromINI = -1 ; after drag attack bar, need to clear last troop selected
 	Return $bAlreadyDrag
 EndFunc   ;==>DragAttackBar
+
+Func AttackSlot($iPosX, $iRow, $aSlots)
+	Local $aTempSlot[3] = [0, 0, 0]
+	Local $iClosest = SearchNearest($aSlots, $iPosX, $iRow)
+	Local $bLast = False
+	If $iClosest = _ArrayMaxIndex($aSlots, 0) And $aSlots[$iClosest][0] >= ($g_iGAME_WIDTH - 60) Then $bLast = True
+
+	If $iClosest >= 0 And $iClosest < UBound($aSlots) Then
+		$aTempSlot[0] = $bLast ? $g_iGAME_WIDTH - 53 : $aSlots[$iClosest][0] - 15 ; X Coord | Last Item to get OCRd needs to be compensated because it could happen that the Capture Rectangle gets out of boundary and image gets not usable
+		$aTempSlot[1] = $aSlots[$iClosest][1] - 7 ; Y Coord
+		$aTempSlot[2] = $iClosest
+	EndIf
+
+	Return $aTempSlot
+EndFunc   ;==>AttackSlot
+
+Func DebugAttackBarImage($aAttackBarResult)
+	#comments-start
+		If $g_bDebugSetlog Then SetDebugLog("Attackbar OCR completed in " & StringFormat("%.2f", __TimerDiff($iAttackbarStart)) & " ms")
+
+		If $bDebug Then
+		Local $iX1 = 0, $iY1 = 635, $iX2 = 853, $iY2 = 698
+		_CaptureRegion2($iX1, $iY1, $iX2, $iY2)
+
+		Local $sSubDir = $g_sProfileTempDebugPath & "AttackBarDetection"
+
+		DirCreate($sSubDir)
+
+		Local $sDate = @YEAR & "-" & @MON & "-" & @MDAY, $sTime = @HOUR & "." & @MIN & "." & @SEC
+		Local $sDebugImageName = String($sDate & "_" & $sTime & "_.png")
+		Local $hEditedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
+		Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($hEditedImage)
+		Local $hPenRED = _GDIPlus_PenCreate(0xFFFF0000, 3)
+
+		For $i = 0 To UBound($aResult) - 1
+		addInfoToDebugImage($hGraphic, $hPenRED, $aResult[$i][0], $aResult[$i][1], $aResult[$i][2])
+		Next
+
+		_GDIPlus_ImageSaveToFile($hEditedImage, $sSubDir & "\" & $sDebugImageName)
+		_GDIPlus_PenDispose($hPenRED)
+		_GDIPlus_GraphicsDispose($hGraphic)
+		_GDIPlus_BitmapDispose($hEditedImage)
+		EndIf
+
+	#comments-end
+EndFunc   ;==>DebugAttackBarImage

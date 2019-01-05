@@ -3,7 +3,7 @@
 ; Description ...: Detects what Image Type (Normal/Snow)Theme is on your village and sets the $g_iDetectedImageType used for deadbase and Townhall detection.
 ; Author ........: Hervidero (2015-12)
 ; Modified ......: CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot Copyright 2015-2018
+; Remarks .......: This file is part of MyBot Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Assign the Village Theme detected to $g_iDetectedImageType
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

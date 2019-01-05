@@ -95,7 +95,7 @@ Func _ClanGames($test = False)
 	; Check for BS/CoC errors just in case
 	If isProblemAffect(True) Then checkMainScreen(False)
 
-	Local $Rows = ["300,155,760,245", "300,315,760,405", "300,475,760,550"]
+	Local $FullArea = "300,155,765,550"
 
 	; Let's selected only the necessary images [Total=71]
 	Local $pathImages = @ScriptDir & "\imgxml\Resources\ClanGamesImages\Challenges"
@@ -119,62 +119,57 @@ Func _ClanGames($test = False)
 	; [0]=ChallengeName [1]=EventName [2]=Xaxis [3]=Yaxis
 	Local $aAllDetectionsOnScreen[0][4]
 
-	; we can make an image detection by row !!! can be faster?!!!
-	For $x = 0 To UBound($Rows) - 1
+	Local $sClanGamesWindow = GetDiamondFromRect($FullArea) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $aCurrentDetection = findMultiple($pathTemp, $sClanGamesWindow, $sClanGamesWindow, 0, 1000, 0, "objectname,objectpoints", True)
+	Local $aEachDetection
 
-		Setlog("Detecting the row number " & $x + 1)
-		Local $sClanGamesWindow = GetDiamondFromRect($Rows[$x]) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
-		Local $aCurrentDetection = findMultiple($pathTemp, $sClanGamesWindow, "", 0, 1000, 0, "objectname,objectpoints", True)
-		Local $aEachDetection
+	If $g_bChkClanGamesDebug Then Setlog("_ClanGames findMultiple (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+	$hTimer = TimerInit()
 
-		If $g_bChkClanGamesDebug Then Setlog("_ClanGames findMultiple (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
-		$hTimer = TimerInit()
+	; Let's split Names and Coordinates and populate a new array
+	If UBound($aCurrentDetection) > 0 Then
 
-		; Let's split Names and Coordinates and populate a new array
-		If UBound($aCurrentDetection) > 0 Then
+		; Temp Variables
+		Local $FullImageName, $StringCoordinates, $sString, $tempObbj, $tempObbjs, $aNames
 
-			; Temp Variables
-			Local $FullImageName, $StringCoordinates, $sString, $tempObbj, $tempObbjs, $aNames
+		For $i = 0 To UBound($aCurrentDetection) - 1
+			If _Sleep(50) Then Return ; just in case of PAUSE
+			If Not $g_bRunState Then Return ; Stop Button
 
-			For $i = 0 To UBound($aCurrentDetection) - 1
-				If _Sleep(50) Then Return ; just in case of PAUSE
-				If Not $g_bRunState Then Return ; Stop Button
+			$aEachDetection = $aCurrentDetection[$i]
+			; Justto debug
+			SetDebugLog(_ArrayToString($aEachDetection))
 
-				$aEachDetection = $aCurrentDetection[$i]
-				; Justto debug
-				SetDebugLog(_ArrayToString($aEachDetection))
+			$FullImageName = String($aEachDetection[0])
+			$StringCoordinates = $aEachDetection[1]
 
-				$FullImageName = String($aEachDetection[0])
-				$StringCoordinates = $aEachDetection[1]
+			If $FullImageName = "" Or $StringCoordinates = "" Then ContinueLoop
 
-				If $FullImageName = "" Or $StringCoordinates = "" Then ContinueLoop
+			; Exist more than One coordinate!?
+			If StringInStr($StringCoordinates, "|") Then
+				; Code to test the string if exist anomalies on string
+				$StringCoordinates = StringReplace($StringCoordinates, "||", "|")
+				$sString = StringRight($StringCoordinates, 1)
+				If $sString = "|" Then $StringCoordinates = StringTrimRight($StringCoordinates, 1)
+				; Split the coordinates
+				$tempObbjs = StringSplit($StringCoordinates, "|", $STR_NOCOUNT)
+				; Just get the first [0]
+				$tempObbj = StringSplit($tempObbjs[0], ",", $STR_NOCOUNT) ;  will be a string : 708,360
+				If UBound($tempObbj) <> 2 Then ContinueLoop
+			Else
+				$tempObbj = StringSplit($StringCoordinates, ",", $STR_NOCOUNT) ;  will be a string : 708,360
+				If UBound($tempObbj) <> 2 Then ContinueLoop
+			EndIf
 
-				; Exist more than One coordinate!?
-				If StringInStr($StringCoordinates, "|") Then
-					; Code to test the string if exist anomalies on string
-					$StringCoordinates = StringReplace($StringCoordinates, "||", "|")
-					$sString = StringRight($StringCoordinates, 1)
-					If $sString = "|" Then $StringCoordinates = StringTrimRight($StringCoordinates, 1)
-					; Split the coordinates
-					$tempObbjs = StringSplit($StringCoordinates, "|", $STR_NOCOUNT)
-					; Just get the first [0]
-					$tempObbj = StringSplit($tempObbjs[0], ",", $STR_NOCOUNT) ;  will be a string : 708,360
-					If UBound($tempObbj) <> 2 Then ContinueLoop
-				Else
-					$tempObbj = StringSplit($StringCoordinates, ",", $STR_NOCOUNT) ;  will be a string : 708,360
-					If UBound($tempObbj) <> 2 Then ContinueLoop
-				EndIf
+			$aNames = StringSplit($FullImageName, "-", $STR_NOCOUNT)
 
-				$aNames = StringSplit($FullImageName, "-", $STR_NOCOUNT)
-
-				ReDim $aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) + 1][4]
-				$aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) - 1][0] = $aNames[0] ; Challenge Name
-				$aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) - 1][1] = $aNames[1] ; Event Name
-				$aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) - 1][2] = $tempObbj[0] ; Xaxis
-				$aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) - 1][3] = $tempObbj[1] ; Yaxis
-			Next
-		EndIf
-	Next
+			ReDim $aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) + 1][4]
+			$aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) - 1][0] = $aNames[0] ; Challenge Name
+			$aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) - 1][1] = $aNames[1] ; Event Name
+			$aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) - 1][2] = $tempObbj[0] ; Xaxis
+			$aAllDetectionsOnScreen[UBound($aAllDetectionsOnScreen) - 1][3] = $tempObbj[1] ; Yaxis
+		Next
+	EndIf
 
 	Local $aSelectChallenges[0][5]
 

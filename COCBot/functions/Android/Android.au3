@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Cosote (12-2015)
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,7 +16,9 @@
 
 Global Const $g_sAdbScriptsPath = $g_sLibPath & "\adb.scripts" ; ADD script and event files folder
 Global $g_sAndroidAdbPrompt = "mybot.run:" ; Unique ADB PS1 prompt
-Global $g_bAndroidAdbPromptUseGiven = True ; Don't set custom prompt with PS1, use default
+Global $g_sAndroidAdbInstanceShellOptions = "" ; Additional shell options, only used by BlueStacks2 " -t -t"
+Global $g_sAndroidAdbShellOptions = "" ; Additional shell options when launch shell with command, only used by BlueStacks2 " /data/anr/../../system/xbin/bstk/su root"
+Global $g_bAndroidAdbPromptUseGiven = False ; If True, don't set custom prompt with PS1, use default
 Global $g_iAndroidCoCPid = 0 ; Android CoC process PID for suspend and resume
 Global $g_iAndroidAdbProcess = [0, 0, 0, 0, 0] ; Single instance of ADB used for screencap, 0: PID, 1: StdIn handles, 2: StdOut handles, 3: Process handle, 4: Thread handle
 Global $g_aiAndroidAdbClicks[1] = [-1] ; Stores clicks after KeepClicks() called, fired and emptied with ReleaseClicks()
@@ -74,6 +76,11 @@ Func InitAndroidConfig($bRestart = False)
 	$g_bAndroidBackgroundLaunched = False ; True when Android was launched in headless mode without a window
 	$g_bUpdateAndroidWindowTitle = False ; If Android has always same title (like LeapDroid) instance name will be added
 	$g_bAndroidControlUseParentPos = False ; If true, control pos is used from parent control (only used to fix docking for Nox in DirectX mode)
+	$g_sAndroidAdbInstanceShellOptions = "" ; Additional shell options, only used by BlueStacks2 " -t -t"
+	$g_sAndroidAdbShellOptions = "" ; Additional shell options when launch shell with command, only used by BlueStacks2 " /data/anr/../../system/xbin/bstk/su root"
+	; reset shared prefs variables
+	$g_PushedSharedPrefsProfile = ""
+	$g_PushedSharedPrefsProfile_Timer = 0
 	; screencap might have disabled backgroundmode
 	If $g_bAndroidAdbScreencap Then
 		; update background checkbox
@@ -1060,8 +1067,8 @@ Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True
 	;AndroidAdbTerminateShellInstance()
 	If Not $g_bRunState Then Return False
 	;$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass, $process_killed, 30 * 1000) ; removed "-W" option and added timeout (didn't exit sometimes)
-	If $g_bChkSharedPrefs And HaveSharedPrefs() And $g_PushedSharedPrefsProfile <> $g_sProfileCurrentName And _
-			($g_PushedSharedPrefsProfile_Timer = 0 Or __TimerDiff($g_PushedSharedPrefsProfile_Timer) > 120000) Then PushSharedPrefs()
+	If $g_bChkSharedPrefs And HaveSharedPrefs() And _
+		($g_PushedSharedPrefsProfile <> $g_sProfileCurrentName Or ($g_PushedSharedPrefsProfile_Timer = 0 Or __TimerDiff($g_PushedSharedPrefsProfile_Timer) > 120000)) Then PushSharedPrefs()
 
 	$cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 60000) ; timeout of 1 Minute
 	If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
@@ -1269,7 +1276,10 @@ Func WaitForAndroidBootCompleted($WaitInSec = 120, $hTimer = 0)
 	$hMyTimer = ($hTimer = 0 ? __TimerInit() : $hTimer)
 	While True
 		If Not $g_bRunState Then Return True
-		$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell getprop sys.boot_completed", $process_killed)
+		$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " getprop sys.boot_completed", $process_killed)
+		If InvalidAdbShellOptions($cmdOutput, "WaitForAndroidBootCompleted") Then
+			$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " getprop sys.boot_completed", $process_killed)
+		EndIf
 		If Not $g_bRunState Then Return True
 		; Test ADB is connected
 		$connected_to = IsAdbConnected($cmdOutput)
@@ -1301,12 +1311,16 @@ Func IsAdbConnected($cmdOutput = Default)
 			$connected_to = StringInStr($cmdOutput, "connected to") > 0
 			If $connected_to Then
 				; also check whoami
-				$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell echo $USER:$USER_ID", $process_killed)
+				$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " echo $USER:$USER_ID", $process_killed)
 				$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0 And StringInStr($cmdOutput, "error: ") = 0 And StringInStr($cmdOutput, "device ") = 0 And $process_killed = False
 			EndIf
 		Else
-			$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell echo $USER:$USER_ID", $process_killed)
+			$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " echo $USER:$USER_ID", $process_killed)
 			$connected_to = StringInStr($cmdOutput, " not ") = 0 And StringInStr($cmdOutput, "unable") = 0 And StringInStr($cmdOutput, "error: ") = 0 And $process_killed = False
+		EndIf
+		; check for /data/anr/../../system/xbin/bstk/su: not found
+		If Not $connected_to And InvalidAdbShellOptions($cmdOutput, "IsAdbConnected") Then
+			Return IsAdbConnected()
 		EndIf
 	Else
 		; $cmdOutput was specified
@@ -1549,8 +1563,9 @@ Func AndroidInitPrompt()
 	Local $bIdentified = False
 	Local $s
 	Sleep(250)
+	AndroidAdbSendShellCommand("", -250, Default, False, False) ; just send enter to clear any incomplete entered command (required for BlueStacks N)
+	AndroidAdbSendShellCommand("", -250, Default, False, False) ; just send enter again to clear any incomplete entered command (required for BlueStacks N)
 	If $g_bAndroidAdbPromptUseGiven Then
-		AndroidAdbSendShellCommand("", -250, Default, False, False) ; just send enter to clear any incomplete entered command (required for BlueStacks N)
 		$s = AndroidAdbSendShellCommand("", -500, Default, False, False)
 		If $s Then
 			; assume this is the prompt
@@ -1564,7 +1579,7 @@ Func AndroidInitPrompt()
 	EndIf
 	If Not $bIdentified Then
 		SetDebugLog("Initialize shell prompt with '" & $g_sAndroidAdbPrompt & "'")
-		$s = AndroidAdbSendShellCommand(@LF & "PS1=" & $g_sAndroidAdbPrompt, -500, Default, False) ; set prompt to unique string $g_sAndroidAdbPrompt
+		$s = AndroidAdbSendShellCommand("export PS1=" & $g_sAndroidAdbPrompt, -500, Default, False) ; set prompt to unique string $g_sAndroidAdbPrompt
 	EndIf
 	Return $s
 EndFunc   ;==>AndroidInitPrompt
@@ -1615,7 +1630,21 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 			EndIf
 			AndroidAdbTerminateShellInstance()
 			;$g_iAndroidAdbProcess[0] = Run($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED))
-			$g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell", "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
+			; avoid "Use multiple -t options to force remote PTY allocation." by using -t -t
+			$g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbInstanceShellOptions, "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
+			Sleep(500)
+			If $g_sAndroidAdbInstanceShellOptions And $g_iAndroidAdbProcess[0] <> 0 And ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
+				Local $aReadPipe = $g_iAndroidAdbProcess[2]
+				Local $output = ReadPipe($aReadPipe[0])
+				If StringInStr($output, "error: target doesn't support PTY") > 0 Or StringInStr($output, ": unknown option") Then
+					SetDebugLog("Shell instance option '" & $g_sAndroidAdbInstanceShellOptions & "' not supported and now disabled")
+					$g_sAndroidAdbInstanceShellOptions = ""
+					; try again
+					ClosePipe($g_iAndroidAdbProcess[0], $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
+					$g_iAndroidAdbProcess[0] = RunPipe($g_sAndroidAdbPath & " -s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbInstanceShellOptions, "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
+					Sleep(500)
+				EndIf
+			EndIf
 			If $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 				SetLog($g_sAndroidEmulator & " error launching ADB for background mode, zoom-out, mouse click and input", $COLOR_ERROR)
 				$g_iAndroidAdbProcess[0] = 0
@@ -1626,6 +1655,32 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 				Return SetError(1, 0)
 			Else
 				AndroidInitPrompt()
+			EndIf
+		EndIf
+
+		; call init script
+		If $g_bAndroidAdbInstance = True Then
+			$s = ""
+			; increase shell priority
+			#cs 2016-04-08 cosote Replaced by shell.init.script
+				Local $renice = "/system/xbin/renice -20 "
+				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
+				If StringInStr($s, "not found") > 0 Then
+				$renice = "renice -- -20 "
+				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
+				EndIf
+				$s &= AndroidAdbSendShellCommand("stop media", Default, $wasRunState, False) ; stop media service as it can consume up to 30% Android CPU
+			#ce
+			Local $scriptFile = ""
+			If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\shell.init." & $g_sAndroidEmulator & ".script") = 1 Then $scriptFile = "shell.init." & $g_sAndroidEmulator & ".script"
+			If $scriptFile = "" Then $scriptFile = "shell.init.script"
+			$s &= AndroidAdbSendShellCommandScript($scriptFile, Default, True, 3000, $wasRunState, False)
+			$s &= AndroidInitPrompt()
+			Local $error = @error
+			SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
+			If $error <> 0 Then
+				SuspendAndroid($SuspendMode)
+				Return
 			EndIf
 		EndIf
 
@@ -1643,26 +1698,23 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 			Local $pathFound = False
 			Local $iMount
 			For $iMount = 0 To 9
-				If $g_sAndroidPicturesPath = "" Then
-					SetDebugLog("Problem in configuration, $g_sAndroidPicturesPath is empty", $COLOR_ERROR)
-					ExitLoop
-				EndIf
 				$s = AndroidAdbSendShellCommand("mount", Default, $wasRunState, False)
 				Local $path = $g_sAndroidPicturesPath
 				If StringRight($path, 1) = "/" Then $path = StringLeft($path, StringLen($path) - 1)
-				Local $aRegExResult = StringRegExp($s, $path, $STR_REGEXPARRAYMATCH)
+				Local $aRegExResult = StringRegExp($s, "[^ ]+ ([^ ]+).+", $STR_REGEXPARRAYGLOBALMATCH)
 				SetError(0)
-				If UBound($aRegExResult) = 0 Then Local $aRegExResult = []
-				_ArrayConcatenate($aRegExResult, StringSplit(((StringLeft($path, 1) = "(" And StringRight($path, 1) = ")") ? StringMid($path, 2, StringLen($path) - 2) : $path), "|", $STR_NOCOUNT))
+				Local $aMounts[0]
+				If $path Then _ArrayConcatenate($aMounts, StringSplit(((StringLeft($path, 1) = "(" And StringRight($path, 1) = ")") ? StringMid($path, 2, StringLen($path) - 2) : $path), "|", $STR_NOCOUNT))
+				If UBound($aRegExResult) > 0 Then _ArrayConcatenate($aMounts, $aRegExResult)
 				; check which path contains dummy file
 				Local $dummyFile = StringMid(_Crypt_HashData($g_sBotTitle & _Now(), $CALG_SHA1), 3)
 				FileWriteLine($g_sAndroidPicturesHostPath & $dummyFile, _Now())
-				For $i = 0 To UBound($aRegExResult) - 1
-					$path = $aRegExResult[$i]
+				For $i = 0 To UBound($aMounts) - 1
+					$path = $aMounts[$i]
 					If $path = "" Then ContinueLoop
 					If StringRight($path, 1) <> "/" Then $path &= "/"
-					$s = AndroidAdbSendShellCommand("set result=$(ls '" & $path & $dummyFile & "' >&2)", Default, $wasRunState, False)
-					If StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error:") = 0 Then
+					$s = AndroidAdbSendShellCommand("set result=$(ls '" & $path & $dummyFile & "' >&2)", 10000, $wasRunState, False) ; use timeout of 10 Seconds
+					If StringInStr($s, $dummyFile) > 0 And StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error:") = 0 Then
 						$pathFound = True
 						$g_sAndroidPicturesPath = $path
 						SetDebugLog("Using " & $g_sAndroidPicturesPath & " for Android shared folder")
@@ -1679,37 +1731,15 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 				EndIf
 				If _Sleep(6000) Then Return
 			Next
+			$g_sAndroidPicturesPathAvailable = $pathFound
 			If $pathFound = False Then
 				SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
 			EndIf
-
+			; clear output
+			AndroidAdbSendShellCommand("", Default, $wasRunState, False)
 			; update $g_iAndroidSystemAPI ; getprop ro.build.version.sdk
 			$g_iAndroidVersionAPI = Int(AndroidAdbSendShellCommand("getprop ro.build.version.sdk", Default, $wasRunState, False))
 			SetDebugLog("Android Version API = " & $g_iAndroidVersionAPI)
-		EndIf
-		If $g_bAndroidAdbInstance = True Then
-			$s = ""
-			; increase shell priority
-			#cs 2016-04-08 cosote Replaced by shell.init.script
-				Local $renice = "/system/xbin/renice -20 "
-				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
-				If StringInStr($s, "not found") > 0 Then
-				$renice = "renice -- -20 "
-				$s = AndroidAdbSendShellCommand($renice & "$$", Default, $wasRunState, False) ; increase shell priority to maximum
-				EndIf
-				$s &= AndroidAdbSendShellCommand("stop media", Default, $wasRunState, False) ; stop media service as it can consume up to 30% Android CPU
-			#ce
-			Local $scriptFile = ""
-			If $scriptFile = "" And FileExists($g_sAdbScriptsPath & "\shell.init." & $g_sAndroidEmulator & ".script") = 1 Then $scriptFile = "shell.init." & $g_sAndroidEmulator & ".script"
-			If $scriptFile = "" Then $scriptFile = "shell.init.script"
-			$s &= AndroidAdbSendShellCommandScript($scriptFile, Default, Default, 3000, $wasRunState, False)
-			$s &= AndroidInitPrompt()
-			Local $error = @error
-			SetDebugLog("ADB shell launched, PID = " & $g_iAndroidAdbProcess[0] & ": " & $s)
-			If $error <> 0 Then
-				SuspendAndroid($SuspendMode)
-				Return
-			EndIf
 		EndIf
 		; check mouse device
 		If StringLen($g_sAndroidMouseDevice) > 0 And $g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] Then
@@ -1878,7 +1908,8 @@ Func _AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunStat
 			If $bNoShellTerminate = False Then AndroidAdbTerminateShellInstance()
 		EndIf
 	EndIf
-	Return SetError($error, Int(__TimerDiff($hTimer)) & "ms,#" & $loopCount, $s)
+	;Return SetError($error, Int(__TimerDiff($hTimer)) & "ms,#" & $loopCount, $s)
+	Return SetError($error, Int(__TimerDiff($hTimer)), $s)
 EndFunc   ;==>_AndroidAdbSendShellCommand
 
 Func GetBinaryEvent($type, $code, $value)
@@ -3363,6 +3394,8 @@ Func OpenAdbShell($bRunInitScript = True)
 		ControlSend($hWnd, "", "", "{ENTER}") ; first send just enter (required for BlueStacks N)
 		SetLog("Send Shell command: " & $g_iAndroidAdbSuCommand)
 		ControlSend($hWnd, "", "", $g_iAndroidAdbSuCommand & "{ENTER}")
+		ControlSend($hWnd, "", "", "{ENTER}")
+		ControlSend($hWnd, "", "", "{ENTER}")
 	EndIf
 	Return $iPid
 EndFunc   ;==>OpenAdbShell
@@ -3536,6 +3569,11 @@ Func PullSharedPrefs($sProfile = $g_sProfileCurrentName)
 	Local $iFiles = 5
 	Local $iFilesPulled = 0
 
+	If Not $g_sAndroidPicturesPathAvailable Then
+		SetLog("Shard folder in Android not availble, cannot pull shared_prefs", $COLOR_RED)
+		Return SetError(0, 0, $Result)
+	EndIf
+
 	SetDebugLog("Pulling shared_pref of profile " & $sProfile)
 
 	; create temporary backup of shared_prefs
@@ -3624,6 +3662,11 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 	Local $process_killed
 	Local $cmdOutput
 
+	If Not $g_sAndroidPicturesPathAvailable Then
+		SetLog("Shard folder in Android not availble, cannot push shared_prefs", $COLOR_RED)
+		Return SetError(0, 0, $Result)
+	EndIf
+
 	Local $aNewFiles = HaveSharedPrefs($sProfile, True, True)
 	Local $bHaveNew = UBound($aNewFiles) > 1
 	Local $bHaveOld = HaveSharedPrefs($sProfile, False, True)
@@ -3661,6 +3704,7 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 	Local $iFiles = UBound($aNewFiles) - 1
 	Local $iFilesPushed = 0
 
+	_Sleep(1000)
 	; use ADB push to transfer files
 	If $g_bPullPushSharedPrefsAbdCommand Then
 		$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " push """ & $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs"" /data/data/" & $g_sAndroidGamePackage & "/shared_prefs", $process_killed)
@@ -3694,8 +3738,9 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 				If FileCopy($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs\*", $hostFolder & "\shared_prefs", $FC_OVERWRITE) And UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1 >= $iFiles Then
 					AndroidAdbSendShellCommand("set result=$(rm /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* >&2)")
 					AndroidAdbSendShellCommand("set result=$(cp " & $androidFolder & "/shared_prefs/* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
-					$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l " & $androidFolder & "/shared_prefs/ >&2)")
+					$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
 					$iFilesPushed = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
+					$cmdOutput += AndroidAdbSendShellCommand("set result=$(ls -l " & $androidFolder & "/shared_prefs/ >&2)")
 					If $iFilesPushed >= $iFiles And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then ; And StringInStr($cmdOutput, "usage: cp") = 0
 						; OK, files pushed
 						AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
@@ -3725,6 +3770,7 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 		SetLog("Pushed shared_prefs of profile " & $sProfile & " (" & $iFilesPushed & " files)")
 		$g_PushedSharedPrefsProfile = $sProfile
 		$g_PushedSharedPrefsProfile_Timer = __TimerInit()
+		_Sleep(3000)
 	Else
 		; something went wrong
 		SetLog("Error pushing shared_prefs of profile " & $sProfile, $COLOR_ERROR)
@@ -3782,17 +3828,27 @@ Func CheckEmuNewVersions()
 
 	Switch $g_sAndroidEmulator
 		Case "BlueStacks2"
-			$NewVersion = GetVersionNormalized("4.0.0.0")
+			$NewVersion = GetVersionNormalized("4.33.0.0")
 		Case "MEmu"
-			$NewVersion = GetVersionNormalized("5.2.3.0")
+			$NewVersion = GetVersionNormalized("6.1.0.0")
 		Case "Nox"
-			$NewVersion = GetVersionNormalized("6.2.1.1")
+			$NewVersion = GetVersionNormalized("6.3.0.0")
 		Case Else
-			$NewVersion = GetVersionNormalized("1.1.0.0")
+			$NewVersion = GetVersionNormalized("99.0.0.0")
 	EndSwitch
 
 	If $Version > $NewVersion Then
-		Setlog("You are using an unsupported " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ")!", $COLOR_ERROR)
-		Setlog($HelpLink, $COLOR_INFO)
+		SetLog("You are using an unsupported " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ")!", $COLOR_ERROR)
+		SetLog($HelpLink, $COLOR_INFO)
 	EndIf
 EndFunc   ;==>CheckClickAdbNewVersions
+
+Func InvalidAdbShellOptions($cmdOutput, $source)
+	; check for /data/anr/../../system/xbin/bstk/su: not found
+	If $g_sAndroidAdbShellOptions And StringInStr($cmdOutput, ": not found") > 0 Then
+		SetDebugLog($source & ": Shell option '" & $g_sAndroidAdbShellOptions & "' not supported and now disabled")
+		$g_sAndroidAdbShellOptions = ""
+		Return True
+	EndIf
+	Return False
+EndFunc   ;==>InvalidAdbShellOptions

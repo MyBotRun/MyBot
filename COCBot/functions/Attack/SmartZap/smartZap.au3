@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: LunaEclipse(03-2016)
 ; Modified ......: TheRevenor(11-2016), ProMac(12-2016), TheRevenor(12-2016), TripleM(01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -28,13 +28,13 @@ Func displayZapLog(Const ByRef $aDarkDrills, Const ByRef $Spells)
 	If $Spells[0][4] + $Spells[1][4] + $Spells[2][4] = 0 Then
 		$spellsLeftString &= "None"
 	Else
-		If $Spells[2][4] > 0 Then $spellsLeftString &= $Spells[2][4] & " " & NameOfTroop($Spells[2][1], 1)
+		If $Spells[2][4] > 0 Then $spellsLeftString &= $Spells[2][4] & " " & GetTroopName($Spells[2][1], 2)
 		If $Spells[2][4] > 0 And $Spells[0][4] + $Spells[1][4] > 0 Then $spellsLeftString &= ", "
-		If $Spells[0][4] + $Spells[1][4] > 0 Then $spellsLeftString &= $Spells[0][4] + $Spells[1][4] & " " & NameOfTroop($Spells[1][1], 1)
+		If $Spells[0][4] + $Spells[1][4] > 0 Then $spellsLeftString &= $Spells[0][4] + $Spells[1][4] & " " & GetTroopName($Spells[1][1], 2)
 	EndIf
 	; Display the drill string if it contains any information
 	If $drillStealableString <> "Drills Lvl/Estimated Amount left: " Then
-		If $g_bNoobZap = False Then
+		If Not $g_bNoobZap Then
 			SetLog($drillStealableString, $COLOR_INFO)
 		Else
 			If $g_bDebugSmartZap = True Then SetLog($drillStealableString, $COLOR_DEBUG)
@@ -188,19 +188,19 @@ Func smartZap($minDE = -1)
 		For $i = 0 To UBound($g_avAttackTroops) - 1
 			If $g_avAttackTroops[$i][0] = $eLSpell Then
 				If $aSpells[0][4] = 0 Then
-					If $g_bDebugSmartZap = True Then SetLog(NameOfTroop($g_avAttackTroops[$i][0], 0) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
+					If $g_bDebugSmartZap Then SetLog(GetTroopName($g_avAttackTroops[$i][0]) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
 					$aSpells[0][2] = $i
 					$aSpells[0][3] = Number($g_iLSpellLevel) ; Get the Level on Attack bar
 					$aSpells[0][4] = $g_avAttackTroops[$i][1]
 				Else
-					If $g_bDebugSmartZap = True Then SetLog("Donated " & NameOfTroop($g_avAttackTroops[$i][0], 0) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
+					If $g_bDebugSmartZap = True Then SetLog("Donated " & GetTroopName($g_avAttackTroops[$i][0]) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
 					$aSpells[1][2] = $i
 					$aSpells[1][3] = Number($g_iLSpellLevel) ; Get the Level on Attack bar
 					$aSpells[1][4] = $g_avAttackTroops[$i][1]
 				EndIf
 			EndIf
 			If $g_avAttackTroops[$i][0] = $eESpell Then
-				If $g_bDebugSmartZap = True Then SetLog(NameOfTroop($g_avAttackTroops[$i][0], 0) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
+				If $g_bDebugSmartZap = True Then SetLog(GetTroopName($g_avAttackTroops[$i][0]) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
 				$aSpells[2][2] = $i
 				$aSpells[2][3] = Number($g_iESpellLevel) ; Get the Level on Attack bar
 				$aSpells[2][4] = $g_avAttackTroops[$i][1]
@@ -213,15 +213,15 @@ Func smartZap($minDE = -1)
 		Return $performedZap
 	Else
 		If $aSpells[0][4] > 0 Then
-			SetLog(" - Number of " & NameOfTroop($aSpells[0][1], 1) & " (Lvl " & $aSpells[0][3] & "): " & Number($aSpells[0][4]), $COLOR_INFO)
+			SetLog(" - Number of " & GetTroopName($aSpells[0][1], 2) & " (Lvl " & $aSpells[0][3] & "): " & Number($aSpells[0][4]), $COLOR_INFO)
 		EndIf
 		If $aSpells[1][4] > 0 Then
-			SetLog(" - Number of Donated " & NameOfTroop($aSpells[1][1], 1) & " (Lvl " & $aSpells[1][3] & "): " & Number($aSpells[1][4]), $COLOR_INFO)
+			SetLog(" - Number of Donated " & GetTroopName($aSpells[1][1], 2) & " (Lvl " & $aSpells[1][3] & "): " & Number($aSpells[1][4]), $COLOR_INFO)
 		EndIf
 	EndIf
 
 	If $aSpells[2][4] > 0 And $g_bEarthQuakeZap = True Then
-		SetLog(" - Number of " & NameOfTroop($aSpells[2][1], 1) & " (Lvl " & $aSpells[2][3] & "): " & Number($aSpells[2][4]), $COLOR_INFO)
+		SetLog(" - Number of " & GetTroopName($aSpells[2][1], 2) & " (Lvl " & $aSpells[2][3] & "): " & Number($aSpells[2][4]), $COLOR_INFO)
 	Else
 		$aSpells[2][4] = 0 ; remove the EQ , is not to use it
 	EndIf
@@ -230,7 +230,7 @@ Func smartZap($minDE = -1)
 		; Check to ensure there is at least the minimum amount of DE available.
 		If (Number($g_iSearchDark) < Number($minDE)) And $g_bNoobZap = True Then
 			SetLog("Dark Elixir is below minimum value [" & Number($g_iSmartZapMinDE) & "]!", $COLOR_INFO)
-			If $g_bDebugSmartZap = True Then SetLog("$g_iSearchDark|Current DE value: " & Number($g_iSearchDark), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("$g_iSearchDark|Current DE value: " & Number($g_iSearchDark), $COLOR_DEBUG)
 			$bZapDrills = False
 		ElseIf Number($g_iSearchDark) < ($g_aDrillLevelTotal[3 - $drillLvlOffset] / $g_aDrillLevelHP[3 - $drillLvlOffset] * $g_fDarkStealFactor * $g_aLSpellDmg[$aSpells[0][3] - 1] * $g_fDarkFillLevel) Then
 			SetLog("There is less Dark Elixir(" & Number($g_iSearchDark) & ") than", $COLOR_INFO)
@@ -238,10 +238,10 @@ Func smartZap($minDE = -1)
 			SetLog("Base is not worth a Zap!", $COLOR_INFO)
 			$bZapDrills = False
 		Else
-			If $g_bDebugSmartZap = True Then SetLog("$g_iSearchDark = " & Number($g_iSearchDark) & " | $g_iSmartZapMinDE = " & Number($g_iSmartZapMinDE), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("$g_iSearchDark = " & Number($g_iSearchDark) & " | $g_iSmartZapMinDE = " & Number($g_iSmartZapMinDE), $COLOR_DEBUG)
 		EndIf
 
-		If $g_bDebugSmartZap = True Then
+		If $g_bDebugSmartZap Then
 			SetLog("$g_iSmartZapExpectedDE| Expected DE value:" & Number($g_iSmartZapExpectedDE), $COLOR_DEBUG)
 			SetLog("$g_abStopAtkNoLoot1Enable[$DB] = " & $g_abStopAtkNoLoot1Enable[$DB] & ", $g_aiStopAtkNoLoot1Time[$DB] = " & $g_aiStopAtkNoLoot1Time[$DB] & "s", $COLOR_DEBUG)
 		EndIf
@@ -283,7 +283,7 @@ Func smartZap($minDE = -1)
 		If $aCluster <> -1 Then
 			Local $tLastZap = 0
 			For $i = 0 To UBound($aCluster[3]) - 1
-				If $aDarkDrills[($aCluster[3])[$i]][4] <> 0 Then 
+				If $aDarkDrills[($aCluster[3])[$i]][4] <> 0 Then
 					If $tLastZap = 0 Then
 						$tLastZap = __TimerDiff($aDarkDrills[($aCluster[3])[$i]][4])
 					Else
@@ -296,7 +296,7 @@ Func smartZap($minDE = -1)
 				Local $sToDelete = ""
 				Local $iToDelete = 0
 				For $i = 0 To UBound($aCluster[3]) - 1
-					If $aDarkDrills[($aCluster[3])[$i]][4] <> 0 Then 
+					If $aDarkDrills[($aCluster[3])[$i]][4] <> 0 Then
 						If ReCheckDrillExist($aDarkDrills[($aCluster[3])[$i]][0], $aDarkDrills[($aCluster[3])[$i]][1]) Then
 							$aDarkDrills[($aCluster[3])[$i]][4] = 0
 						Else
@@ -309,7 +309,7 @@ Func smartZap($minDE = -1)
 						EndIf
 					EndIf
 				Next
-				If $iToDelete > 1 Then 
+				If $iToDelete > 1 Then
 					SetLog("Removing " & $iToDelete & " destroyed drills from list.", $COLOR_ACTION)
 					_ArrayDelete($aDarkDrills, $sToDelete)
 					ContinueLoop
@@ -444,14 +444,14 @@ Func smartZap($minDE = -1)
 			$bZapDrills = False
 			ExitLoop
 		Else
-			If $g_bDebugSmartZap = True Then SetLog("$g_iSearchDark = " & Number($g_iSearchDark), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("$g_iSearchDark = " & Number($g_iSearchDark), $COLOR_DEBUG)
 		EndIf
 
 		; Check to make sure we actually zapped
-		If $skippedZap = False Then
-			If $g_bDebugSmartZap = True Then SetLog("$oldSearchDark = [" & Number($oldSearchDark) & "] - $g_iSearchDark = [" & Number($g_iSearchDark) & "]", $COLOR_DEBUG)
+		If Not $skippedZap Then
+			If $g_bDebugSmartZap Then SetLog("$oldSearchDark = [" & Number($oldSearchDark) & "] - $g_iSearchDark = [" & Number($g_iSearchDark) & "]", $COLOR_DEBUG)
 			$strikeGain = Number($oldSearchDark - $g_iSearchDark)
-			If $g_bDebugSmartZap = True Then SetLog("$strikeGain = " & Number($strikeGain), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("$strikeGain = " & Number($strikeGain), $COLOR_DEBUG)
 
 			$expectedDE = -1
 
@@ -479,7 +479,7 @@ Func smartZap($minDE = -1)
 				EndIf
 			EndIf
 
-			If $g_bDebugSmartZap = True Then SetLog("$expectedDE = " & Number($expectedDE), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("$expectedDE = " & Number($expectedDE), $COLOR_DEBUG)
 
 			; If change in DE is less than expected, remove the Drill from list. else, subtract change from assumed total
 			If $strikeGain < $expectedDE And $expectedDE <> -1 Then
@@ -536,7 +536,7 @@ Func smartZap($minDE = -1)
 			If $iTroops > 0 Then
 				For $i = 0 To UBound($g_avAttackTroops) - 1
 					If $g_avAttackTroops[$i][0] = $eLSpell Then
-						If $g_bDebugSmartZap = True Then SetLog("Donated " & NameOfTroop($g_avAttackTroops[$i][0], 0) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
+						If $g_bDebugSmartZap Then SetLog("Donated " & GetTroopName($g_avAttackTroops[$i][0]) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
 						$aSpells[1][2] = $i
 						$aSpells[1][3] = Number($g_iLSpellLevel) ; Get the Level on Attack bar
 						$aSpells[1][4] = $g_avAttackTroops[$i][1]
@@ -544,7 +544,7 @@ Func smartZap($minDE = -1)
 				Next
 			EndIf
 			If $aSpells[1][4] > 0 Then
-				SetLog("Woohoo, found a donated " & NameOfTroop($aSpells[1][1], 0) & " (Lvl " & $aSpells[1][3] & ").", $COLOR_INFO)
+				SetLog("Woohoo, found a donated " & GetTroopName($aSpells[1][1]) & " (Lvl " & $aSpells[1][3] & ").", $COLOR_INFO)
 			EndIf
 		EndIf
 
@@ -566,10 +566,10 @@ Func smartZap($minDE = -1)
 		Return $performedZap
 	Else
 		If $aSpells[0][4] > 0 Then
-			SetLog(" - Number of " & NameOfTroop($aSpells[0][1], 1) & " (Lvl " & $aSpells[0][3] & "): " & Number($aSpells[0][4]), $COLOR_INFO)
+			SetLog(" - Number of " & GetTroopName($aSpells[0][1], 2) & " (Lvl " & $aSpells[0][3] & "): " & Number($aSpells[0][4]), $COLOR_INFO)
 		EndIf
 		If $aSpells[1][4] > 0 Then
-			SetLog(" - Number of Donated " & NameOfTroop($aSpells[1][1], 1) & " (Lvl " & $aSpells[1][3] & "): " & Number($aSpells[1][4]), $COLOR_INFO)
+			SetLog(" - Number of Donated " & GetTroopName($aSpells[1][1], 2) & " (Lvl " & $aSpells[1][3] & "): " & Number($aSpells[1][4]), $COLOR_INFO)
 		EndIf
 	EndIf
 
@@ -626,13 +626,13 @@ Func zapBuilding(ByRef $Spells, $x, $y)
 		EndIf
 	Next
 	If $Spells[$iSpell][2] > -1 Then
-		SetLog("Dropping " & $Spells[$iSpell][0] & " " & String(NameOfTroop($Spells[$iSpell][1], 0)), $COLOR_ACTION)
+		SetLog("Dropping " & $Spells[$iSpell][0] & " " & String(GetTroopName($Spells[$iSpell][1])), $COLOR_ACTION)
 		SelectDropTroop($Spells[$iSpell][2])
 		If _Sleep($DELAYCASTSPELL1) Then Return
 		If IsAttackPage() Then Click($x, $y, 1, 0, "#0029")
 		$Spells[$iSpell][4] -= 1
 	Else
-		If $g_bDebugSmartZap = True Then SetLog("No " & String(NameOfTroop($Spells[$iSpell][1], 0)) & " Found", $COLOR_DEBUG)
+		If $g_bDebugSmartZap = True Then SetLog("No " & String(GetTroopName($Spells[$iSpell][1])) & " Found", $COLOR_DEBUG)
 	EndIf
 	Return $Spells[$iSpell][1]
 EndFunc   ;==>zapBuilding

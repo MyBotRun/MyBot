@@ -6,7 +6,7 @@
 ; Return values .: True if Not enough loot, and clicks away to close the window
 ; Author ........: KnowJack (05-2015)
 ; Modified ......: Sardo (08-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

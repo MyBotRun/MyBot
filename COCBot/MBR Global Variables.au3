@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Everyone all the time  :)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -354,6 +354,7 @@ Global $g_iAndroidClientWidth_Configured = 0 ; Android configured Screen Width
 Global $g_iAndroidClientHeight_Configured = 0 ; Android configured Screen Height
 Global $g_iAndroidLaunchWaitSec = 600 ; Seconds to wait for launching Android Simulator
 
+Global $g_sAndroidPicturesPathAvailable = False
 Global $g_sAndroidPicturesPath = "" ; Android mounted path to pictures on host
 Global $g_sAndroidPicturesHostPath = "" ; Windows host path to mounted pictures in android
 Global $g_bAndroidSharedFolderAvailable = True
@@ -770,7 +771,7 @@ Func GetTroopName(Const $iIndex, $iQuantity = 1)
 	If $iIndex >= $eBarb And $iIndex <= $eIceG Then
 		Return $iQuantity > 1 ? $g_asTroopNamesPlural[$iIndex] : $g_asTroopNames[$iIndex]
 	ElseIf $iIndex >= $eLSpell And $iIndex <= $eBtSpell Then
-		Return $iQuantity > 1 ? $g_asSpellNames[$iIndex - $eLSpell] & "Spells" : $g_asSpellNames[$iIndex - $eLSpell] & "Spell"
+		Return $iQuantity > 1 ? $g_asSpellNames[$iIndex - $eLSpell] & " Spells" : $g_asSpellNames[$iIndex - $eLSpell] & " Spell"
 	ElseIf $iIndex >= $eKing And $iIndex <= $eWarden Then
 		Return $g_asHeroNames[$iIndex - $eKing]
 	ElseIf $iIndex >= $eWallW And $iIndex <= $eStoneS Then
@@ -822,8 +823,10 @@ Global $g_abRequestType[3] = [True, True, False] ; (0 = Troop, 1 = Spell, 2 = Si
 Global $g_iRequestCountCCTroop = 0, $g_iRequestCountCCSpell = 0
 Global $g_aiCCTroopsExpected[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiCCSpellsExpected[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiCCSiegeExpected[$eSiegeMachineCount] = [0, 0, 0]
 Global $g_aiClanCastleTroopWaitType[3], $g_aiClanCastleTroopWaitQty[3]
-Global $g_aiClanCastleSpellWaitType[2], $g_aiClanCastleSpellWaitQty[2]
+Global $g_aiClanCastleSpellWaitType[3]
+Global $g_aiClanCastleSiegeWaitType[2]
 
 ; <><><><> Village / Donate - Donate <><><><>
 Global $g_bChkDonate = True
@@ -1294,7 +1297,6 @@ Global $g_CurrentCampUtilization = 0, $g_iTotalCampSpace = 0
 
 ; Upgrading - Lab
 Global $g_iLaboratoryElixirCost = 0, $g_iLaboratoryDElixirCost = 0
-Global $g_iFirstTimeLab = 0
 Global $g_sLabUpgradeTime = ""
 
 ; Upgrading - Wall
@@ -1318,6 +1320,7 @@ Global $g_bCloudsActive = False ;True when waiting for clouds
 Global $g_bAttackActive = False ;True when attacking Village
 
 ; Search
+Global Const $g_iMaxTHLevel = 12
 Global Const $g_asTHText[7] = ["4-6", "7", "8", "9", "10", "11", "12"]
 Global Const $g_aiSearchCost[12] = [10, 50, 75, 110, 170, 250, 380, 580, 750, 900, 1000, 1100]
 Global $g_bSearchMode = False
@@ -1360,7 +1363,7 @@ Global Const $g_aaiTroopsToBeUsed[12] = [$g_aiUseAllTroops, $g_aiUseBarracks, $g
 Global $g_bTHSnipeUsedKing = False
 Global $g_bTHSnipeUsedQueen = False
 Global $g_bTHSnipeUsedWarden = False
-Global $g_avAttackTroops[22][3] ;11 Slots of troops -  Name, Amount, x-coord (+ 11 extended slots Slot11+)
+Global $g_avAttackTroops[22][6] ;11 Slots of troops -  Name, Amount, x-coord (+ 11 extended slots Slot11+)
 Global $g_bFullArmy = False ;Check for full army or not
 Global $g_iKingSlot = -1, $g_iQueenSlot = -1, $g_iWardenSlot = -1, $g_iClanCastleSlot = -1
 Global $g_iTotalAttackSlot = 10, $g_bDraggedAttackBar = False ; Slot11+

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: ProMac(07-2018)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -78,7 +78,7 @@ Func TrainSiege()
 			If $aSearchResult[0][0] <> "" Then
 				For $i = 0 To UBound($aSearchResult) - 1
 					Local $tempSiege = TroopIndexLookup($aSearchResult[$i][0])
-					Setlog("- " & NameOfTroop($tempSiege) & " Queued.", $COLOR_INFO)
+					Setlog("- " & GetTroopName($tempSiege) & " Queued.", $COLOR_INFO)
 				Next
 			EndIf
 

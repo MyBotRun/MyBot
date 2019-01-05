@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Trlopes (2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -350,7 +350,7 @@ Func findImage($sImageName, $sImageTile, $sImageArea, $maxReturnPoints = 1, $bFo
 		Return
 	EndIf
 
-	If checkImglocError($result, "findImage", $sImageTile) = True Then
+	If checkImglocError($result, "findImage", $sImageTile) Then
 		If $g_bDebugSetlog And $g_bDebugImageSave Then DebugImageSave("findImage_" & $sImageName, True)
 		Return $aCoords
 	EndIf
@@ -707,7 +707,7 @@ Func decodeTroopEnum($tEnum)
 		Case $eBowl
 			Return "Bowler"
 		Case $eIceG
-			Return "IceGolem"	
+			Return "IceGolem"
 		Case $eESpell
 			Return "EarthquakeSpell"
 		Case $eFSpell
@@ -727,7 +727,7 @@ Func decodeTroopEnum($tEnum)
 		Case $eSkSpell
 			Return "SkeletonSpell"
 		Case $eBtSpell
-			Return "BatSpell"	
+			Return "BatSpell"
 		Case $eCSpell
 			Return "CloneSpell"
 		Case $eCastle
@@ -787,7 +787,7 @@ Func decodeTroopName($sName)
 		Case "Bowler"
 			Return $eBowl
 		Case "IceGolem"
-			Return $eIceG	
+			Return $eIceG
 		Case "EarthquakeSpell"
 			Return $eESpell
 		Case "FreezeSpell"
@@ -807,7 +807,7 @@ Func decodeTroopName($sName)
 		Case "SkeletonSpell"
 			Return $eSkSpell
 		Case "BatSpell"
-			Return $eBtSpell	
+			Return $eBtSpell
 		Case "CloneSpell"
 			Return $eCSpell
 		Case "Castle"
@@ -874,14 +874,14 @@ Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 			Case 308 To 392 ; CC Troops Slot 5
 				Return 330
 
-			Case 393 To 464 ; CC Troops Slot 6
+			Case 393 To 435 ; CC Troops Slot 6
 				Return 403
 
 			Case 450 To 510; CC Spell Slot 1
 				Return 475
-			Case 511 To 550 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
+			Case 511 To 535 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
 				Return 510
-			Case 551 To 605 ; CC Spell Slot 2
+			Case 536 To 605 ; CC Spell Slot 2
 				Return 555
 			Case 625 To 700 ; CC Siege Machines
 				Return 650

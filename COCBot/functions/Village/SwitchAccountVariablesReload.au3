@@ -233,6 +233,7 @@ Func SwitchAccountVariablesReload($sType = "Load")
 
 			; Lab time
 			$g_sLabUpgradeTime = $asLabUpgradeTime[$g_iCurAccount]
+			GUICtrlSetData($g_hLbLLabTime, "")
 			$g_iLaboratoryElixirCost = $aiLabElixirCost[$g_iCurAccount]
 			$g_iLaboratoryDElixirCost = $aiLabDElixirCost[$g_iCurAccount]
 			Local $Counter = 0
@@ -264,6 +265,24 @@ Func SwitchAccountVariablesReload($sType = "Load")
 				GUICtrlSetData($g_ahLblHourlyStatsGoldAcc[$i], _NumberFormat(Round($aiStatsTotalGain[$i][$eLootGold] / (Int(__TimerDiff($g_hTimerSinceStarted) + $g_iTimePassed)) * 3600)) & "k / h")
 				GUICtrlSetData($g_ahLblHourlyStatsElixirAcc[$i], _NumberFormat(Round($aiStatsTotalGain[$i][$eLootElixir] / (Int(__TimerDiff($g_hTimerSinceStarted) + $g_iTimePassed)) * 3600)) & "k / h")
 				GUICtrlSetData($g_ahLblHourlyStatsDarkAcc[$i], _NumberFormat(Round($aiStatsTotalGain[$i][$eLootDarkElixir] / (Int(__TimerDiff($g_hTimerSinceStarted) + $g_iTimePassed)) * 3600 * 1000)) & " / h")
+			Next
+
+		Case "SetTime"
+			Local $day, $hour, $min, $sec
+			For $i = 0 To $g_iTotalAcc
+				If _DateIsValid($asLabUpgradeTime[$i]) Then
+					Local $iLabTime = _DateDiff("s", _NowCalc(), $asLabUpgradeTime[$i]) * 1000
+					If $iLabTime > 0 Then
+						_TicksToDay($iLabTime, $day, $hour, $min, $sec)
+						GUICtrlSetData($g_ahLblLabTime[$i], $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+						GUICtrlSetColor($g_ahLblLabTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
+					Else
+						GUICtrlSetData($g_ahLblLabTime[$i], "")
+						$asLabUpgradeTime[$i] = ""
+					EndIf
+				Else
+					GUICtrlSetData($g_ahLblLabTime[$i], "")
+				EndIf
 			Next
 
 	EndSwitch

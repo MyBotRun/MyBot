@@ -7,7 +7,7 @@
 ; Author ........: Code Monkey #6
 ; Modified ......: kaganus (Jun/Aug 2015), Sardo 2015-07, KnowJack(Aug 2015) , The Master (2015), MonkeyHunter (02/08-2016),
 ;				   CodeSlinger69 (2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -44,8 +44,8 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	Local $bReturnToPickupHero = False
 	Local $abHeroUse[3] = [False, False, False]
 	For $i = 0 to 2
-		$abHeroUse[$i] = ($g_abSearchSearchesEnable[$DB] ? IsSpecialTroopToBeUsed($DB, $eKing + $i) : False) _
-							Or ($g_abSearchSearchesEnable[$LB] ? IsSpecialTroopToBeUsed($LB, $eKing + $i) : False)
+		$abHeroUse[$i] = ($g_abSearchSearchesEnable[$DB] ? IsUnitUsed($DB, $eKing + $i) : False) _
+							Or ($g_abSearchSearchesEnable[$LB] ? IsUnitUsed($LB, $eKing + $i) : False)
 	Next
 
 	If $g_bDebugDeadBaseImage Or $g_aiSearchEnableDebugDeadBaseImage > 0 Then
@@ -147,14 +147,21 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 			EndIf
 		Next
 
+		; reset village measures
+		setVillageOffset(0, 0, 1)
+		ConvertInternalExternArea()
+		
 		; only one capture here, very important for consistent debug images, zombies, redline calc etc.
 		ForceCaptureRegion()
 		_CaptureRegion2()
 
 		; measure enemy village (only if resources match)
+		Local $bAlwaysMeasure = True
 		For $i = 0 To $g_iModeCount - 1
-			If $match[$i] Then
+			If $match[$i] Or $bAlwaysMeasure Then
 				If CheckZoomOut("VillageSearch", True, False) = False Then
+					DebugImageSave("VillageSearchMeasureFailed", False, Default, Default) ; make clean snapshot as well
+					ExitLoop ; disable exiting search for December 2018 update due to zoomout issues
 					; check two more times, only required for snow theme (snow fall can make it easily fail), but don't hurt to keep it
 					$i = 0
 					Local $bMeasured
@@ -221,22 +228,39 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		; ----------------- CHECK WEAK BASE -------------------------------------------------
 		If (IsWeakBaseActive($DB) And $dbBase And ($match[$DB] Or $g_abFilterMeetOneConditionEnable[$DB])) Or _
 				(IsWeakBaseActive($LB) And ($match[$LB] Or $g_abFilterMeetOneConditionEnable[$LB])) Then
-
-			;let try to reduce weekbase time
-			If ($g_iSearchTH <> "-") Then
-				$weakBaseValues = IsWeakBase($g_iImglocTHLevel, $g_sImglocRedline, False)
-			Else
-				$weakBaseValues = IsWeakBase(11, "", False)
-			EndIf
-
+			; check twice if Eagle is active
+			Local $maxTry = 1
 			For $i = 0 To $g_iModeCount - 2
-				If IsWeakBaseActive($i) And (($i = $DB And $dbBase) Or $i <> $DB) And ($match[$i] Or $g_abFilterMeetOneConditionEnable[$i]) Then
-					If getIsWeak($weakBaseValues, $i) Then
-						$match[$i] = True
-					Else
-						$match[$i] = False
-						$noMatchTxt &= ", Not a Weak Base for " & $g_asModeText[$i]
+				If $g_abFilterMaxEagleEnable[$i] Then $maxTry = 2
+			Next
+			For $try = 1 To $maxTry ; check twice to be sure due to walking heroes
+				;let try to reduce weekbase time
+				If ($g_iSearchTH <> "-") Then
+					$weakBaseValues = IsWeakBase($g_iImglocTHLevel, $g_sImglocRedline, False)
+				Else
+					$weakBaseValues = IsWeakBase($g_iMaxTHLevel, "", False)
+				EndIf
+				Local $bIsWeak = False
+				For $i = 0 To $g_iModeCount - 2
+					If IsWeakBaseActive($i) And (($i = $DB And $dbBase) Or $i <> $DB) And ($match[$i] Or $g_abFilterMeetOneConditionEnable[$i]) Then
+						If getIsWeak($weakBaseValues, $i) Then
+							$match[$i] = True
+							$bIsWeak = True
+						Else
+							$match[$i] = False
+							$noMatchTxt &= ", Not a Weak Base for " & $g_asModeText[$i]
+							; don't check again
+							$try = 2
+						EndIf
 					EndIf
+				Next
+
+				If $bIsWeak And $try = 1 Then
+					ResumeAndroid()
+					If _Sleep(3000) Then Return ; wait 5 Seconds to give heroes time to "walk away"
+					ForceCaptureRegion()
+					_CaptureRegion2()
+					SuspendAndroid()
 				EndIf
 			Next
 		EndIf
@@ -439,7 +463,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 	;--- write in log match found ----
 	If $g_bSearchAlertMe Then
-		TrayTip($g_asModeText[$g_iMatchMode] & " Match Found!", "Gold: " & $g_iSearchGold & "; Elixir: " & $g_iSearchElixir & "; Dark: " & $g_iSearchDark & "; Trophy: " & $g_iSearchTrophy, "", 0)
+		TrayTip($g_sProfileCurrentName & ": " & $g_asModeText[$g_iMatchMode] & " Match Found!", "Gold: " & $g_iSearchGold & "; Elixir: " & $g_iSearchElixir & "; Dark: " & $g_iSearchDark & "; Trophy: " & $g_iSearchTrophy, "", 0)
 		If FileExists(@WindowsDir & "\media\Festival\Windows Exclamation.wav") Then
 			SoundPlay(@WindowsDir & "\media\Festival\Windows Exclamation.wav", 1)
 		ElseIf FileExists(@WindowsDir & "\media\Windows Exclamation.wav") Then

@@ -6,7 +6,7 @@
 ; Return values .: True if is on Builder Base
 ; Author ........: Fliegerfaust (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Click
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -15,10 +15,10 @@
 
 Func isOnBuilderBase($bNeedCaptureRegion = False)
 	_Sleep($DELAYISBUILDERBASE)
+	Local $aSearchResult = decodeSingleCoord(findImage("isOnBuilderBase", $g_sImgIsOnBB, GetDiamondFromRect("260,0,406,54"), 1, $bNeedCaptureRegion))
 
-	Local $ImagePath = @ScriptDir & "\imgxml\village\Page\BuilderIsland\"
-	If QuickMIS("BC1", $ImagePath, 260, 0, 406, 54, $bNeedCaptureRegion, $g_bDebugSetlog) Then
-		If $g_bDebugSetlog Then SetDebugLog("Builder Base Builder detected", $COLOR_DEBUG)
+	If IsArray($aSearchResult) And UBound($aSearchResult) = 2 Then
+		SetDebugLog("Builder Base Builder detected", $COLOR_DEBUG)
 		Return True
 	Else
 		Return False

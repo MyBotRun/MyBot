@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: wraithdu (AutoIt Forums)
 ; Modified ......: Cosote (12-2015), Knowjack (08-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://www.autoitscript.com/forum/topic/103871-_systray-udf, https://github.com/MyBotRun/MyBot/wiki

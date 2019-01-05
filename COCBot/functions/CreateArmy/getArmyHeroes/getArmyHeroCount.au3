@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: MonkeyHunter (06-2016), MR.ViPER (10-2016), Fliegerfaust (03-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -331,6 +331,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 			SetLog("Research will finish in " & $sLabTimeOCR & " (" & $g_sLabUpgradeTime & ")")
 		EndIf
 		ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
+		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
 		Return True
 	ElseIf _ColorCheck(_GetPixelColor(730, 200, True), Hex(0x8088B0, 6), 20) Then ; Look for light purple in upper right corner of lab window.
 		SetLog("Laboratory has Stopped", $COLOR_INFO)
@@ -339,9 +340,11 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabRed, $GUI_SHOW)
+		GUICtrlSetData($g_hLbLLabTime, "")
 		;============================================
 		ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
 		$g_sLabUpgradeTime = ""
+		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
 		Return
 	Else
 		SetLog("Unable to determine Lab Status", $COLOR_INFO)
@@ -350,6 +353,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
+		GUICtrlSetData($g_hLbLLabTime, "")
 		;=============================================
 		Return
 	EndIf
@@ -357,18 +361,18 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 EndFunc   ;==>LabGuiDisplay
 
 Func HideShields($bHide = False)
-	Local Static $ShieldState[19]
+	Local Static $ShieldState[20]
 	Local $counter
 	If $bHide = True Then
 		$counter = 0
-		For $i = $g_hlblKing to $g_hPicLabRed
+		For $i = $g_hlblKing to $g_hLbLLabTime
 			$ShieldState[$counter] = GUICtrlGetState($i)
 			GUICtrlSetState($i, $GUI_HIDE)
 			$counter += 1
 		Next
 	Else
 		$counter = 0
-		For $i = $g_hlblKing to $g_hPicLabRed
+		For $i = $g_hlblKing to $g_hLbLLabTime
 			If $ShieldState[$counter] = 80 Then
 				GUICtrlSetState($i, $GUI_SHOW )
 			EndIf

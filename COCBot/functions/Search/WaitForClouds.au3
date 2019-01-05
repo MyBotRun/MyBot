@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: MonkeyHunter (08-2016)
 ; Modified ......: MonkeyHunter (05-2017) MMHK (07-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -208,8 +208,9 @@ Func chkAttackSearchPersonalBreak()
 EndFunc   ;==>chkAttackSearchPersonalBreak
 
 Func btnSearchFailRetry()
-	If QuickMIS("BC1", @ScriptDir & "\imgxml\Resources\Clouds", 270, 400, 600, 500) Then
-		Click($g_iQuickMISX + 270, $g_iQuickMISY + 400, 1, 0, "#0512")
+	Local $aRetrySearchButton = decodeSingleCoord(findImage("Retry Search", $g_sImgRetrySearchButton, GetDiamondFromRect("270,400,600,500"), 1, True))
+	If IsArray($aRetrySearchButton) And UBound($aRetrySearchButton) = 2 Then
+		Click($aRetrySearchButton[0], $aRetrySearchButton[1], 1, 0, "#0512")
 		Return True
 	EndIf
 	Return False

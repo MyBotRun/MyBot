@@ -17,7 +17,7 @@
 ;                      9 = tree image file name
 ; Author ........: Cosote (Oct 17th 2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -149,7 +149,8 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 
 
 	; initial reference village had a width of 473.60282919315 (and not 440) and stone located at 226, 567, so center on that reference and used zoom factor on that size
-	Local $z = $c / 473.60282919315 ; don't use size of 440, as beta already using reference village
+	;Local $z = $c / 473.60282919315 ; don't use size of 440, as beta already using reference village
+	Local $z = $c / 458 ; 2019-01-02 Update village measuring as outer edges didn't align anymore
 
 	Local $stone_x_exp = $stone[2]
 	Local $stone_y_exp = $stone[3]

@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015), MonkeyHunter (01-2016), CodeSlinger69 (01-2017), MonkeyHunter (03-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -146,16 +146,19 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	If $GoldChangeCheck Then PushMsg("LastRaid")
 
 	$i = 0 ; Reset Loop counter
+	Local $iExitLoop = -1
 	While 1
 		If $g_bDebugSetlog Then SetDebugLog("Wait for End Fight Scene to appear #" & $i)
 		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
-			If IsReturnHomeBattlePage() Then ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
-			ExitLoop
-		Else
-			$i += 1
+			If IsReturnHomeBattlePage() Then
+				ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
+				; sometimes 1st click is not closing, so try again
+				$iExitLoop = $i
+			EndIf
 		EndIf
-		If $i > 10 Then ExitLoop ; if end battle window is not found in 10*200mms or 2 seconds, then give up.
+		If $i > 25 Or ($iExitLoop > -1 And $i > $iExitLoop) Then ExitLoop ; if end battle window is not found in 25*200mms or 5 seconds, then give up.
 		If _Sleep($DELAYRETURNHOME5) Then Return
+		$i += 1
 	WEnd
 	If _Sleep($DELAYRETURNHOME2) Then Return ; short wait for screen to close
 
@@ -209,19 +212,23 @@ Func ReturnfromDropTrophies()
 		If _Sleep(100) Then Return
 	Next
 
-	Local $i = 0 ; Reset Loop counter
+	$i = 0 ; Reset Loop counter
+	Local $iExitLoop = -1
 	While 1
 		If $g_bDebugSetlog Then SetDebugLog("Wait for End Fight Scene to appear #" & $i)
 		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
-			If IsReturnHomeBattlePage() Then ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
-			ExitLoop
+			If IsReturnHomeBattlePage() Then
+				ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
+				; sometimes 1st click is not closing, so check again
+				$iExitLoop = $i
+			EndIf
 		Else
 			$i += 1
 		EndIf
-		If $i > 10 Then ExitLoop ; if end battle window is not found in 10*200mms or 2 seconds, then give up.
-		If _Sleep(100) Then Return
+		If $i > 25 Or ($iExitLoop > -1 And $i > $iExitLoop) Then ExitLoop ; if end battle window is not found in 25*200mms or 5 seconds, then give up.
+		If _Sleep($DELAYRETURNHOME5) Then Return
 	WEnd
-	If _Sleep(100) Then Return ; short wait for screen to close
+	If _Sleep($DELAYRETURNHOME2) Then Return ; short wait for screen to close
 	$g_bFullArmy = False ; forcing check the army
 	$g_bIsFullArmywithHeroesAndSpells = False ; forcing check the army
 	If ReturnHomeMainPage() Then Return

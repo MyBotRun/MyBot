@@ -6,7 +6,7 @@
 ; Return values .:
 ; Author ........: LunaEclipse(April 2016)
 ; Modified ......: MonkeyHunter (04-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -274,7 +274,7 @@ Func weakBaseCheck($townHallLevel = 11, $redlines = "", $bForceCaptureRegion = T
 	Return $aResult
 EndFunc   ;==>weakBaseCheck
 
-Func IsWeakBase($townHallLevel = 11, $redlines = "", $bForceCaptureRegion = True)
+Func IsWeakBase($townHallLevel = $g_iMaxTHLevel, $redlines = "", $bForceCaptureRegion = True)
 	Local $aResult = weakBaseCheck($townHallLevel, $redlines, $bForceCaptureRegion)
 
 	; Forces the display of the various statistical displays, if set to true
@@ -335,7 +335,7 @@ EndFunc   ;==>IsWeakBase
 ; Return values .: 1D array with highest level matched data found
 ; Author ........: MonkeyHunter (04-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

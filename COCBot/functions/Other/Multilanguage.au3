@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: Sardo (2015-11), Hervidero (2015-11), Boju (2017-04)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot Copyright 2015-2018
+; Remarks .......: This file is part of MyBot Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

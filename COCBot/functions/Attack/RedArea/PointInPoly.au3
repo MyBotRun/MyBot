@@ -10,7 +10,7 @@
 ; Return values .: None
 ; Author ........: Malkey from https://www.autoitscript.com/forum/topic/89034-check-if-a-point-is-within-various-defined-closed-shapes/
 ; Modified ......: MonkeyHunter (05-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -45,7 +45,7 @@ EndFunc   ;==>_IsPointInPoly
 ; Return values .: True if inside polygon
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -83,7 +83,7 @@ EndFunc   ;==>IsPointOnSide
 ; Return values .: New count of locations in string
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -194,7 +194,7 @@ EndFunc   ;==>RemoveDupNearby
 ; Return values .: Returns new count of locations in $sLoc1Coord - adds new points to Existing location string by reference
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -300,7 +300,7 @@ EndFunc   ;==>AddPoints_RemoveDuplicate
 ; Return values .: FALSE if any location is on outside when $sSide - "IN"  or FALSE when any location is on inside when $sSide = "OUT", TRUE when all locations met conditions
 ; Author ........: MonkeyHunter (05-2017)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

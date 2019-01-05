@@ -7,7 +7,7 @@
 ; Return values .: None
 ; Author ........: KnowJack
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -20,7 +20,7 @@ Func BuildingInfo($iXstart, $iYstart)
 
 	$sBldgText = getNameBuilding($iXstart, $iYstart) ; Get Unit name and level with OCR
 	If $sBldgText = "" Then ; try a 2nd time after a short delay if slow PC
-		If _Sleep($DELAYBUILDINGINFO1) Then Return
+		If _Sleep($DELAYBUILDINGINFO1) Then Return $aResult
 		$sBldgText = getNameBuilding($iXstart, $iYstart) ; Get Unit name and level with OCR
 	EndIf
 	If $g_bDebugSetlog Then SetDebugLog("Read building Name String = " & $sBldgText, $COLOR_DEBUG) ;debug

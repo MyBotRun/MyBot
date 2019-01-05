@@ -488,7 +488,7 @@ Func _AddTiffTag(ByRef $sInfo, $nID, $vTag)
             _Add($sInfo, "Model", $vTag)
         ; 0x0111    StripOffsets
         Case 0x0112
-            _AddArray($sInfo, "Orientation", $vTag, ";Normal;Mirrored;180°;180° and mirrored;90° left and mirrored;90° right;90° right and mirrored;90° left")
+            _AddArray($sInfo, "Orientation", $vTag, ";Normal;Mirrored;180Â°;180Â° and mirrored;90Â° left and mirrored;90Â° right;90Â° right and mirrored;90Â° left")
         Case 0x0115
             _Add($sInfo, "SamplesPerPixel", $vTag)
         ; 0x0116    RowsPerStrip

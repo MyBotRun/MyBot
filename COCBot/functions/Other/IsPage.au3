@@ -5,7 +5,7 @@
 ; Description ...: Verify if you are in the correct window...
 ; Author ........: Sardo (2015)
 ; Modified ......: ProMac (2015), MonkeyHunter (12-2015)
-; Remarks .......: This file is part of MyBot Copyright 2015-2018
+; Remarks .......: This file is part of MyBot Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: Returns True or False
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -58,7 +58,7 @@ EndFunc   ;==>IsTrainPage
 
 Func IsAttackPage($bCapturePixel = $g_bCapturePixel)
 
-	If IsPageLoop($aIsAttackPage, 1, $bCapturePixel) Then
+	If IsPageLoop($aIsAttackPage, 1, $bCapturePixel) Or IsPageLoop($aDoubRowAttackBar, 1, $bCapturePixel) Then
 		If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Attack Window OK**", $COLOR_ACTION)
 		Return True
 	EndIf

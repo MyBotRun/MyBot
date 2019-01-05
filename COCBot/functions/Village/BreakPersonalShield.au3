@@ -8,7 +8,7 @@
 ; ...............: Sets @error if buttons not found properly and sets @extended with string error message
 ; Author ........: MonkeyHunter (2016-01)(2017-06)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

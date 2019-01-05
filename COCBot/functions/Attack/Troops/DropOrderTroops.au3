@@ -53,8 +53,10 @@ Func MatchTroopDropName($Num)
 		Case 19
 			Return $eBowl
 		Case 20
-			Return "CC"
+			Return $eIceG	
 		Case 21
+			Return "CC"
+		Case 22
 			Return "HEROES"
 	EndSwitch
 EndFunc   ;==>MatchTroopDropName
@@ -134,16 +136,18 @@ Func MatchSlotsPerEdge($Num)
 			Return 2
 		Case 19 ;$eBowl
 			Return 0
-		Case 20 ;CC
+		Case 20 ;$eIceG
+			Return 2	
+		Case 21 ;CC
 			Return 1
-		Case 21 ;HEROES
+		Case 22 ;HEROES
 			Return 1
 	EndSwitch
 EndFunc   ;==>MatchSlotsPerEdge
 
 Func MatchSidesDrop($Num)
 	Switch _GUICtrlComboBox_GetCurSel($g_ahCmbDropOrder[$Num])
-		Case 0 To 19 ;$eBarb to $eBowl
+		Case 0 To 20 ;$eBarb to $eIceG
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 0 Then Return 1
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 1 Then Return 2
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 2 Then Return 3
@@ -151,9 +155,9 @@ Func MatchSidesDrop($Num)
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 4 Then Return 4
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 5 Then Return 1
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 6 Then Return 1
-		Case 20
-			Return 1 ;CC
 		Case 21
+			Return 1 ;CC
+		Case 22
 			Return 1 ;HEROES
 	EndSwitch
 EndFunc   ;==>MatchSidesDrop

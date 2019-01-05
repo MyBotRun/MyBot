@@ -7,17 +7,17 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assigns troops
+Func PrepareAttack($pMatchMode, $bRemaining = False, $DebugSiege = False) ;Assigns troops
 
 	; Attack CSV has debug option to save attack line image, save have png of current $g_hHBitmap2
 	If ($pMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 1) Or ($pMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 1) Then
-		If $g_bDebugMakeIMGCSV And $Remaining = False And TestCapture() = 0 Then
+		If $g_bDebugMakeIMGCSV And $bRemaining = False And TestCapture() = 0 Then
 			If $g_iSearchTH = "-" Then ; If TH is unknown, try again to find as it is needed for filename
 				imglocTHSearch(True, False, False)
 			EndIf
@@ -25,7 +25,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 		EndIf
 	EndIf
 
-	If $Remaining = False Then ; reset Hero variables before attack if not checking remaining troops
+	If Not $bRemaining Then ; reset Hero variables before attack if not checking remaining troops
 		$g_bDropKing = False ; reset hero dropped flags
 		$g_bDropQueen = False
 		$g_bDropWarden = False
@@ -37,9 +37,8 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 		$g_bDraggedAttackBar = False
 	EndIf
 
-	Local $troopsnumber = 0
 	If $g_bDebugSetlog Then SetDebugLog("PrepareAttack for " & $pMatchMode & " " & $g_asModeText[$pMatchMode], $COLOR_DEBUG)
-	If $Remaining Then
+	If $bRemaining Then
 		SetLog("Checking remaining unused troops for: " & $g_asModeText[$pMatchMode], $COLOR_INFO)
 	Else
 		SetLog("Initiating attack for: " & $g_asModeText[$pMatchMode], $COLOR_ERROR)
@@ -51,7 +50,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 	Local $aPaths = [$g_sImgSwitchSiegeCastle, $g_sImgSwitchSiegeWallWrecker, $g_sImgSwitchSiegeBattleBlimp, $g_sImgSwitchSiegeStoneSlammer]
 	Local $ToUse = $eCastle, $iDa = 0
 
-	If ($pMatchMode = $DB Or $pMatchMode = $LB Or $pMatchMode = $TS) And Not $Remaining Then
+	If ($pMatchMode = $DB Or $pMatchMode = $LB Or $pMatchMode = $TS) And Not $bRemaining Then
 		; Default is CC ,let's check Siege Machines , if is to be used and exist.
 		If $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] = 3 And ($g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0 Or $g_aiCurrentCCSiegeMachines[$eSiegeStoneSlammer] > 0) Then
 			$ToUse = $eStoneS
@@ -68,8 +67,8 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 		EndIf
 
 		; Only procceds if necessary Drop the CC troops
-		If Not $Remaining And $g_abAttackDropCC[$pMatchMode] Then
-			Setlog("Let's use " & NameOfTroop($ToUse))
+		If Not $bRemaining And $g_abAttackDropCC[$pMatchMode] Then
+			Setlog("Let's use " & GetTroopName($ToUse))
 			If QuickMIS("BC1", $g_sImgSwitchSiegeMachine, 50, 700, 820, 720, True, False) Then
 				If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege Bar: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 				$hStarttime = _Timer_Init()
@@ -116,7 +115,7 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 						$aSiegeAvailable[UBound($aSiegeAvailable) - 1][2] = $SiegeLevel <> "" ? Number($SiegeLevel) : 1
 
 						If $DebugSiege Then
-							Local $Info = $i + 1 & "_" & NameOfTroop($ToUse) & "_L" & $aSiegeAvailable[UBound($aSiegeAvailable) - 1][2] & "_" & $x & "_" & $y
+							Local $Info = $i + 1 & "_" & GetTroopName($ToUse) & "_L" & $aSiegeAvailable[UBound($aSiegeAvailable) - 1][2] & "_" & $x & "_" & $y
 							addInfoToDebugImage($hGraphic, $hPenRED, $Info, $x, $y)
 							_GDIPlus_GraphicsDrawLine($hGraphic, 0, 587, 860, 587, $hPenRED)
 							_GDIPlus_GraphicsDrawLine($hGraphic, $x - 26, 0, $x - 26, 732, $hPenRED)
@@ -138,14 +137,14 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 						Next
 						Click($iFinalX, $iFinalY, 1)
 						Local $TextLog = $ToUse = $eCastle ? "" : " Level " & $iFinalLevel
-						Setlog(NameOfTroop($ToUse) & $TextLog & " selected!", $COLOR_SUCCESS)
+						Setlog(GetTroopName($ToUse) & $TextLog & " selected!", $COLOR_SUCCESS)
 					Else
 						If $g_bDebugImageSave Then DebugImageSave("PrepareAttack_SwitchSiege")
 						Click($lastX, $lastY, 1)
 					EndIf
 
 					If _sleep(250) Then Return
-					Click(35, 595 + $g_iBottomOffsetY, 1, 0, "#0111") ;860x780
+;~ 					Click(35, 595 + $g_iBottomOffsetY, 1, 0, "#0111") ;860x780 click 1st troop slot
 
 					If $DebugSiege Then
 						; Destroy the used GDI stuff
@@ -157,10 +156,10 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 				Else
 					If $g_bDebugImageSave Then DebugImageSave("PrepareAttack_SwitchSiege")
 					; If was not detectable lets click again on green icon to hide the window!
-					Setlog("Undetected " & NameOfTroop($ToUse) & " after click on switch btn!", $COLOR_DEBUG)
+					Setlog("Undetected " & GetTroopName($ToUse) & " after click on switch btn!", $COLOR_DEBUG)
 					Click($lastX, $lastY, 1)
 					If _sleep(250) Then Return
-					Click(35, 595 + $g_iBottomOffsetY, 1, 0, "#0111") ;860x780
+;~ 					Click(35, 595 + $g_iBottomOffsetY, 1, 0, "#0111") ;860x780 click 1st troop slot
 				EndIf
 				If _Sleep(750) Then Return
 			EndIf
@@ -169,157 +168,108 @@ Func PrepareAttack($pMatchMode, $Remaining = False, $DebugSiege = False) ;Assign
 	If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege Detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 	If $g_bDebugSetlog Then SetDebugLog("Sleeps : " & 250 + 750 & "'ms")
 
-	;_CaptureRegion2(0, 571 + $g_iBottomOffsetY, 859, 671 + $g_iBottomOffsetY)
 	If _Sleep($DELAYPREPAREATTACK1) Then Return
 
-	For $i = 0 To UBound($g_avAttackTroops) - 1
+	Local $iTroopNumber = 0
+	For $i = 0 To UBound($g_avAttackTroops, 1) - 1
 		$g_avAttackTroops[$i][0] = -1
 		$g_avAttackTroops[$i][1] = 0
 		$g_avAttackTroops[$i][2] = 0
+		$g_avAttackTroops[$i][3] = 0
+		$g_avAttackTroops[$i][4] = 0
+		$g_avAttackTroops[$i][5] = 0
 	Next
 
-	Local $Plural = 0
-	Local $result = AttackBarCheck($Remaining, $pMatchMode) ; adding $pMatchMode for not checking Slot11+ when DropTrophy attack
-	If $g_bDebugSetlog Then SetDebugLog("DLL Troopsbar list: " & $result, $COLOR_DEBUG)
-	Local $aTroopDataList = StringSplit($result, "|")
-	Local $aTemp[22][4] ; Slot11+
-	If $result <> "" Then
-		; example : 0#0#92|1#1#108|2#2#8|22#3#1|20#4#1|21#5#1|26#5#0|23#6#1|24#7#2|25#8#1|29#10#1
-		; [0] = Troop Enum Cross Reference [1] = Slot position [2] = Quantities
-		For $i = 1 To $aTroopDataList[0]
-			Local $troopData = StringSplit($aTroopDataList[$i], "#", $STR_NOCOUNT)
-			$aTemp[Number($troopData[1])][0] = $troopData[0] ; troop name
-			$aTemp[Number($troopData[1])][1] = Number($troopData[2]) ; amount
-			$aTemp[Number($troopData[1])][2] = Number($troopData[1]) ; index
-			$aTemp[Number($troopData[1])][3] = Number($troopData[3]) ; x-coord
+	Local $avAttackBar = AttackBarCheck($bRemaining, $pMatchMode)
+	If UBound($avAttackBar, 1) > 0 Then
+		For $i = 0 To UBound($avAttackBar, 1) - 1
+			If IsUnitUsed($pMatchMode, $avAttackBar[$i][0]) Then
+				$g_avAttackTroops[$avAttackBar[$i][1]][0] = Number($avAttackBar[$i][0]) ; Troop Index
+				$g_avAttackTroops[$avAttackBar[$i][1]][1] = Number($avAttackBar[$i][2]) ; Amount
+				$g_avAttackTroops[$avAttackBar[$i][1]][2] = Number($avAttackBar[$i][3]) ; X-Coord
+				$g_avAttackTroops[$avAttackBar[$i][1]][3] = Number($avAttackBar[$i][4]) ; Y-Coord
+				$g_avAttackTroops[$avAttackBar[$i][1]][4] = Number($avAttackBar[$i][5]) ; OCR X-Coord
+				$g_avAttackTroops[$avAttackBar[$i][1]][5] = Number($avAttackBar[$i][6]) ; OCR Y-Coord
+				$iTroopNumber += $avAttackBar[$i][2]
+				Local $sDebugText = $g_bDebugSetlog ? " (X:" & $avAttackBar[$i][3] & "|Y:" & $avAttackBar[$i][4] & "|OCR-X:" & $avAttackBar[$i][5] & "|OCR-Y:" & $avAttackBar[$i][6] & ")" : ""
+				SetLog($avAttackBar[$i][1] & ": " & $avAttackBar[$i][2] & " " & GetTroopName($avAttackBar[$i][0], $avAttackBar[$i][2]) & $sDebugText, $COLOR_SUCCESS)
+			Else
+				SetDebugLog("Discard use of " & GetTroopName($avAttackBar[$i][0]) & " (" & $avAttackBar[$i][0] & ")", $COLOR_ERROR)
+			EndIf
 		Next
 	EndIf
-	For $i = 0 To UBound($aTemp) - 1
-		If $aTemp[$i][0] = "" And $aTemp[$i][1] = "" Then
-			$g_avAttackTroops[$i][0] = -1
-			$g_avAttackTroops[$i][1] = 0
-			$g_avAttackTroops[$i][2] = 0
-		Else
-			Local $troopKind = $aTemp[$i][0]
-			If $troopKind < $eKing Then
-				;normal troop
-				If Not IsTroopToBeUsed($pMatchMode, $troopKind) Then
-					If $g_bDebugSetlog Then SetDebugLog("Discard use of troop " & $troopKind & " " & NameOfTroop($troopKind), $COLOR_ERROR)
-					$g_avAttackTroops[$i][0] = -1
-					$g_avAttackTroops[$i][1] = 0
-					$g_avAttackTroops[$i][2] = 0
-					$troopKind = -1
-				Else
-					;use troop
-					;Setlog ("troopsnumber = " & $troopsnumber & "+ " &  Number( $aTemp[$i][1]))
-					$g_avAttackTroops[$i][0] = $aTemp[$i][0]
-					$g_avAttackTroops[$i][1] = $aTemp[$i][1]
-					$g_avAttackTroops[$i][2] = $aTemp[$i][3]
-					$troopsnumber += $aTemp[$i][1]
-				EndIf
-
-			Else ;king, queen, warden , spells , Castle and Sieges
-				$g_avAttackTroops[$i][0] = $troopKind
-				If IsSpecialTroopToBeUsed($pMatchMode, $troopKind) Then
-					$troopsnumber += 1
-					;Setlog ("troopsnumber = " & $troopsnumber & "+1")
-					$g_avAttackTroops[$i][0] = $aTemp[$i][0]
-					$g_avAttackTroops[$i][1] = $aTemp[$i][1]
-					$g_avAttackTroops[$i][2] = $aTemp[$i][3]
-					If $g_avAttackTroops[$i][0] = $eKing Or $g_avAttackTroops[$i][0] = $eQueen Or $g_avAttackTroops[$i][0] = $eWarden Then $g_avAttackTroops[$i][1] = 1
-					$troopKind = $g_avAttackTroops[$i][1]
-					$troopsnumber += 1
-				Else
-					If $g_bDebugSetlog Then SetDebugLog($aTemp[$i][2] & " » Discard use Hero/Spell/Castle/Siege [" & $troopKind & "] " & NameOfTroop($troopKind), $COLOR_ERROR)
-					$troopKind = -1
-				EndIf
-			EndIf
-
-			$Plural = 0
-			If $aTemp[$i][1] > 1 Then $Plural = 1
-			If $troopKind <> -1 Then SetLog($aTemp[$i][2] & " » " & $g_avAttackTroops[$i][1] & " " & NameOfTroop($g_avAttackTroops[$i][0], $Plural) & ", x: " & $g_avAttackTroops[$i][2], $COLOR_SUCCESS)
-
-		EndIf
-	Next
-
-	;ResumeAndroid()
 	SetSlotSpecialTroops()
 
-	If $g_bDebugSetlog Then SetDebugLog("troopsnumber  = " & $troopsnumber)
-	Return $troopsnumber
+	Return $iTroopNumber
 EndFunc   ;==>PrepareAttack
 
-Func IsTroopToBeUsed($pMatchMode, $pTroopType)
-	If $pMatchMode = $DT Or $pMatchMode = $TB Then Return True
-	If $pMatchMode = $MA Then
-		Local $tempArr = $g_aaiTroopsToBeUsed[$g_aiAttackTroopSelection[$DB]]
-	Else
-		Local $tempArr = $g_aaiTroopsToBeUsed[$g_aiAttackTroopSelection[$pMatchMode]]
-	EndIf
-	For $x = 0 To UBound($tempArr) - 1
-		If $tempArr[$x] = $pTroopType Then
-			If $pMatchMode = $MA And $pTroopType = $eGobl Then ;exclude goblins in $MA
+Func IsUnitUsed($iMatchMode, $iTroopIndex)
+	Local $iTempMode = ($iMatchMode = $MA ? $DB : $iMatchMode)
+
+	If $iTroopIndex < $eKing Then ;Index is a Troop
+		If $iMatchMode = $DT Or $iMatchMode = $TB Then Return True
+		Local $aTempArray = $g_aaiTroopsToBeUsed[$g_aiAttackTroopSelection[$iTempMode]]
+		Local $iFoundAt = _ArraySearch($aTempArray, $iTroopIndex)
+		If $iFoundAt <> -1 Then
+			If $iMatchMode = $MA And $iTroopIndex = $eGobl Then
 				Return False
 			Else
 				Return True
 			EndIf
 		EndIf
-	Next
-	Return False
-EndFunc   ;==>IsTroopToBeUsed
+		Return False
+	Else ; Index is a Hero/Siege/Castle/Spell
+		Local $iTempMode = ($iMatchMode = $MA ? $DB : $iMatchMode)
 
-Func IsSpecialTroopToBeUsed($pMatchMode, $pTroopType)
-	Local $iTempMode = ($pMatchMode = $MA ? $DB : $pMatchMode)
+		If $iMatchMode <> $DB And $iMatchMode <> $LB And $iMatchMode <> $TS And $iMatchMode <> $MA Then
+			Return True
+		Else
+			Switch $iTroopIndex
+				Case $eKing
+					If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroKing) = $eHeroKing) Then Return True
+				Case $eQueen
+					If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroQueen) = $eHeroQueen) Then Return True
+				Case $eWarden
+					If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroWarden) = $eHeroWarden) Then Return True
+				Case $eCastle
+					If $g_abAttackDropCC[$iTempMode] Then Return True
+				Case $eLSpell
+					If $g_abAttackUseLightSpell[$iTempMode] Or $g_bSmartZapEnable Then Return True
+				Case $eHSpell
+					If $g_abAttackUseHealSpell[$iTempMode] Then Return True
+				Case $eRSpell
+					If $g_abAttackUseRageSpell[$iTempMode] Then Return True
+				Case $eJSpell
+					If $g_abAttackUseJumpSpell[$iTempMode] Then Return True
+				Case $eFSpell
+					If $g_abAttackUseFreezeSpell[$iTempMode] Then Return True
+				Case $ePSpell
+					If $g_abAttackUsePoisonSpell[$iTempMode] Then Return True
+				Case $eESpell
+					If $g_abAttackUseEarthquakeSpell[$iTempMode] = 1 Or $g_bSmartZapEnable Then Return True
+				Case $eHaSpell
+					If $g_abAttackUseHasteSpell[$iTempMode] Then Return True
+				Case $eCSpell
+					If $g_abAttackUseCloneSpell[$iTempMode] Then Return True
+				Case $eSkSpell
+					If $g_abAttackUseSkeletonSpell[$iTempMode] Then Return True
+				Case $eBtSpell
+					If $g_abAttackUseBatSpell[$iTempMode] Then Return True
+				Case $eWallW, $eBattleB, $eStoneS
+					If $g_abAttackDropCC[$iTempMode] Then Return True
+				Case Else
+					Return False
+			EndSwitch
+			Return False
+		EndIf
 
-	If $pMatchMode <> $DB And $pMatchMode <> $LB And $pMatchMode <> $TS And $pMatchMode <> $MA Then
-		Return True
-	Else
-		Switch $pTroopType
-			Case $eKing
-				If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroKing) = $eHeroKing) Then Return True
-			Case $eQueen
-				If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroQueen) = $eHeroQueen) Then Return True
-			Case $eWarden
-				If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroWarden) = $eHeroWarden) Then Return True
-			Case $eCastle
-				If $g_abAttackDropCC[$iTempMode] Then Return True
-			Case $eLSpell
-				If $g_abAttackUseLightSpell[$iTempMode] Or $g_bSmartZapEnable = True Then Return True
-			Case $eHSpell
-				If $g_abAttackUseHealSpell[$iTempMode] Then Return True
-			Case $eRSpell
-				If $g_abAttackUseRageSpell[$iTempMode] Then Return True
-			Case $eJSpell
-				If $g_abAttackUseJumpSpell[$iTempMode] Then Return True
-			Case $eFSpell
-				If $g_abAttackUseFreezeSpell[$iTempMode] Then Return True
-			Case $ePSpell
-				If $g_abAttackUsePoisonSpell[$iTempMode] Then Return True
-			Case $eESpell
-				If $g_abAttackUseEarthquakeSpell[$iTempMode] = 1 Or $g_bSmartZapEnable = True Then Return True
-			Case $eHaSpell
-				If $g_abAttackUseHasteSpell[$iTempMode] Then Return True
-			Case $eCSpell
-				If $g_abAttackUseCloneSpell[$iTempMode] Then Return True
-			Case $eSkSpell
-				If $g_abAttackUseSkeletonSpell[$iTempMode] Then Return True
-			Case $eBtSpell
-				If $g_abAttackUseBatSpell[$iTempMode] Then Return True
-			Case $eWallW
-				If $g_abAttackDropCC[$iTempMode] Then Return True
-			Case $eBattleB
-				If $g_abAttackDropCC[$iTempMode] Then Return True
-			Case $eStoneS
-				If $g_abAttackDropCC[$iTempMode] Then Return True
-			Case Else
-				Return False
-		EndSwitch
 		Return False
 	EndIf
-EndFunc   ;==>IsSpecialTroopToBeUsed
+	Return False
+EndFunc   ;==>IsUnitUsed
 
 Func AttackRemainingTime($bInitialze = Default)
-	If $bInitialze = True Then
+	If $bInitialze Then
 		$g_hAttackTimer = __TimerInit()
 		$g_iAttackTimerOffset = Default
 		SuspendAndroidTime(True) ; Reset suspend Android time for compensation when Android is suspended
@@ -342,7 +292,7 @@ Func AttackRemainingTime($bInitialze = Default)
 
 	EndIf
 
-	If $bInitialze = False Then Return
+	If Not $bInitialze Then Return
 
 	; Return remaining attack time
 	Local $iAttackTime = 3 * 60 * 1000
@@ -351,5 +301,3 @@ Func AttackRemainingTime($bInitialze = Default)
 	Return $iRemaining
 
 EndFunc   ;==>AttackRemainingTime
-
-

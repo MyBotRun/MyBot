@@ -63,10 +63,10 @@ Func InitiateSwitchAcc() ; Checking profiles setup in Mybot, First matching CoC 
 	For $i = 0 To $g_iTotalAcc
 		; listing all accounts
 		Local $sBotType = "Idle"
-		If $g_abAccountNo[$i] = True Then
+		If $g_abAccountNo[$i] Then
 			If SwitchAccountEnabled($i) Then
 				$sBotType = "Active"
-				If $g_abDonateOnly[$i] = True Then $sBotType = "Donate"
+				If $g_abDonateOnly[$i] Then $sBotType = "Donate"
 				If $g_iNextAccount = -1 Then $g_iNextAccount = $i
 				If $g_asProfileName[$i] = $g_sProfileCurrentName Then $g_iNextAccount = $i
 			Else
@@ -320,6 +320,7 @@ Func SwitchCOCAcc($NextAccount)
 		EndIf
 
 		$g_iCurAccount = $NextAccount
+		SwitchAccountVariablesReload()
 
 		$g_ahTimerSinceSwitched[$g_iCurAccount] = __TimerInit()
 		$g_bInitiateSwitchAcc = False
@@ -343,7 +344,6 @@ Func SwitchCOCAcc($NextAccount)
 			waitMainScreen()
 		EndIf
 
-		SwitchAccountVariablesReload()
 		SetSwitchAccLog("Switched to Acc [" & $NextAccount + 1 & "]", $COLOR_SUCCESS)
 
 		If $g_bChkSharedPrefs Then
@@ -447,10 +447,10 @@ Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $NextAccount, $bStayDisconnected 
 
 			Local $XCoordinates = QuickMIS("CX", $sGPlayAccount, 155, 100, 705, 710, True, $g_bDebugImageSave)
 			If UBound($XCoordinates) <= 0 Then
-				SetLog("No GooglePlay accounts detected!!", $COLOR_ERROR)
+				SetLog("No GooglePlay accounts detected!", $COLOR_ERROR)
 				Return FuncReturn("Error")
 			ElseIf UBound($XCoordinates) < $g_iTotalAcc + 1 Then
-				SetLog("Less GooglePlay accounts detected than configured!!", $COLOR_ERROR)
+				SetLog("Less GooglePlay accounts detected than configured!", $COLOR_ERROR)
 				SetDebugLog("Detected: " & UBound($XCoordinates) & ", Configured: " & ($g_iTotalAcc + 1), $COLOR_DEBUG)
 				Return FuncReturn("Error")
 			ElseIf UBound($XCoordinates) > $g_iTotalAcc + 1 Then
@@ -786,7 +786,7 @@ Func CheckWaitHero() ; get hero regen time remaining if enabled
 		For $pTroopType = $eKing To $eWarden ; check all 3 hero
 			For $pMatchMode = $DB To $g_iModeCount - 1 ; check all attack modes
 				$iActiveHero = -1
-				If IsSpecialTroopToBeUsed($pMatchMode, $pTroopType) And _
+				If IsUnitUsed($pMatchMode, $pTroopType) And _
 						BitOR($g_aiAttackUseHeroes[$pMatchMode], $g_aiSearchHeroWaitEnable[$pMatchMode]) = $g_aiAttackUseHeroes[$pMatchMode] Then ; check if Hero enabled to wait
 					$iActiveHero = $pTroopType - $eKing ; compute array offset to active hero
 				EndIf

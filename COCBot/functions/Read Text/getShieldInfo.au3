@@ -9,7 +9,7 @@
 ; ...............: Sets @error if buttons not found properly or problem with OCR of shield time, and sets @extended with string error message
 ; Author ........: MonkeyHunter (01-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -51,7 +51,7 @@ Func getShieldInfo()
 	$sTimeResult = getOcrGuardShield(484, 21) ; read Shield time
 	If $g_bDebugSetlog Then SetDebugLog("OCR Shield Time= " & $sTimeResult, $COLOR_DEBUG)
 	If $sTimeResult = "" Then ; try a 2nd time after a short delay if slow PC and null read
-		If _Sleep($DELAYPERSONALSHIELD2) Then Return ; pause for slow PC
+		If _Sleep($DELAYPERSONALSHIELD2) Then Return $aPBReturnResult ; pause for slow PC
 		$sTimeResult = getOcrGuardShield(484, 21) ; read Shield time
 		If $g_bDebugSetlog Then SetDebugLog("OCR2 Shield Time= " & $sTimeResult, $COLOR_DEBUG)
 		If $sTimeResult = "" Then ; error if no read value
@@ -62,7 +62,7 @@ Func getShieldInfo()
 		EndIf
 	EndIf
 
-	If _Sleep($DELAYPERSONALSHIELD3) Then Return ; improve pause/stop button response
+	If _Sleep($DELAYPERSONALSHIELD3) Then Return $aPBReturnResult ; improve pause/stop button response
 
 	$aString = StringSplit($sTimeResult, " ") ; split hours/minutes or minutes/seconds
 	Switch $aString[0]

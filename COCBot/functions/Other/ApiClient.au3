@@ -3,7 +3,7 @@
 ; Description ...: Register Windows Message and provides functions to communicate between bots and manage bot application
 ; Author ........: cosote (12-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ;                  Read/write memory: https://www.autoitscript.com/forum/topic/104117-shared-memory-variables-demo/
 ; Related .......:

@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: Promac (2015-04), KnowJack(2015-08), Hervidero (2016-01), MonkeyHunter (2016-01,05)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -196,7 +196,7 @@ Func DropTrophy()
 									If $g_iQueenSlot <> -1 Then
 										SetTrophyLoss()
 										SetLog("Deploying Queen", $COLOR_INFO)
-										Click(GetXPosOfArmySlot($g_iQueenSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0179") ;Select Queen
+										SelectDropTroop($g_iQueenSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0180") ;Drop Queen
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
@@ -209,7 +209,7 @@ Func DropTrophy()
 									If $g_iKingSlot <> -1 Then
 										SetTrophyLoss()
 										SetLog("Deploying King", $COLOR_INFO)
-										Click(GetXPosOfArmySlot($g_iKingSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0177") ;Select King
+										SelectDropTroop($g_iKingSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0178") ;Drop King
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
@@ -222,7 +222,7 @@ Func DropTrophy()
 									If $g_iWardenSlot <> -1 Then
 										SetTrophyLoss()
 										SetLog("Deploying Warden", $COLOR_INFO)
-										Click(GetXPosOfArmySlot($g_iWardenSlot, 68), 595 + $g_iBottomOffsetY, 1, 0, "#0000") ;Select Warden
+										SelectDropTroop($g_iWardenSlot)
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0000") ;Drop Warden
 										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop

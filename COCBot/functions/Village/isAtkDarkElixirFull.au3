@@ -6,7 +6,7 @@
 ; Return values .: True or False
 ; Author ........: Code Monkey #57 (send more bananas please!)
 ; Modified ......: MonkeyHunter (2015-12), Boju 04-2017
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

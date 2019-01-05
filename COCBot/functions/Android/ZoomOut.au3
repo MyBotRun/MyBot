@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........:
 ; Modified ......: KnowJack (07-2015), CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -103,7 +103,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 		Else
 			SetLog("Zooming Out", $COLOR_INFO)
 		EndIf
-		If _Sleep($DELAYZOOMOUT1) Then Return
+		If _Sleep($DELAYZOOMOUT1) Then Return True
 		If $bAndroidZoomOut Then
 			AndroidZoomOut(False) ; use new ADB zoom-out
 			ForceCaptureRegion()
@@ -120,7 +120,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 			If Not $bAndroidZoomOut Then
 			   ; original windows based zoom-out
 			   If $g_bDebugSetlog Then SetDebugLog("Index = "&$i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
-			   If _Sleep($DELAYZOOMOUT2) Then Return
+			   If _Sleep($DELAYZOOMOUT2) Then Return True
 			   If $g_bChkBackgroundMode = False And $g_bNoFocusTampering = False Then
 				  $Result0 = ControlFocus($g_hAndroidWindow, "", "")
 			   Else
@@ -136,7 +136,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 			EndIF
 
 			If $i > $delayCount Then
-				If _Sleep($DELAYZOOMOUT3) Then Return
+				If _Sleep($DELAYZOOMOUT3) Then Return True
 			EndIf
 			If $tryCtrlWheelScrollAfterCycles > 0 And $i > $tryCtrlWheelScrollAfterCycles Then $tryCtrlWheelScroll = True
 			If $i > $exitCount Then Return
@@ -179,7 +179,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 		EndIf
 
 		AndroidShield("ZoomOutCtrlWheelScroll") ; Update shield status
-		If _Sleep($DELAYZOOMOUT1) Then Return
+		If _Sleep($DELAYZOOMOUT1) Then Return True
 		If $AndroidZoomOut Then
 			AndroidZoomOut(False) ; use new ADB zoom-out
 			ForceCaptureRegion()
@@ -294,7 +294,7 @@ Func ZoomOutCtrlClick($ZoomOutOverWaters = False, $CenterMouseWhileZooming = Fal
 			EndIf
 		EndIf
 
-		If _Sleep($DELAYZOOMOUT1) Then Return
+		If _Sleep($DELAYZOOMOUT1) Then Return True
 		Local $aMousePos = MouseGetPos()
 
 		$i = 0

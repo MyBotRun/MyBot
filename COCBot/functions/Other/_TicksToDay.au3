@@ -12,7 +12,7 @@
 ;				   @error: 				1 - $iTicks < 0
 ; Author ........: MMHK (May-2016)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: _TicksToTime
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

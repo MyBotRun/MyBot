@@ -9,7 +9,7 @@
 ; Return values .: None
 ; Author ........: KnowJack (08-2015)
 ; Modified ......: TheMaster (2015), MonkeyHunter (12-2015/01-2016), Hervidero (12-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki

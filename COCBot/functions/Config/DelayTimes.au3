@@ -4,7 +4,7 @@
 ; Syntax ........: $iDelayXXXXXXYYY  : XXXX = function name using the delay, YYY = delay value or position of delay in file
 ; Author ........: Sardo (08-2015)
 ; Modified ......:
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2018
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -56,6 +56,7 @@ Global Const $DELAYDROPCC2 = 500 ;click
 ;dropHeroes
 Global Const $DELAYDROPHEROES1 = 300
 Global Const $DELAYDROPHEROES2 = 500
+Global Const $DELAYCHECKHEROESHEALTH = 4000
 
 ;GoldElixirChange
 Global Const $DELAYGOLDELIXIRCHANGE1 = 500
@@ -231,7 +232,7 @@ Global Const $DELAYGETTHLEVEL3 = 200 ; click
 
 
 ;Laboratory
-Global Const $DELAYLABORATORY1 = 750
+Global Const $DELAYLABORATORY1 = 1000
 Global Const $DELAYLABORATORY2 = 200
 Global Const $DELAYLABORATORY3 = 1000
 Global Const $DELAYLABORATORY4 = 200 ; click
@@ -372,6 +373,7 @@ Global Const $DELAYWAITATTACK1 = 60000
 Global Const $DELAYWAITATTACK2 = 300000
 
 ;Close Open
+Global Const $DELAYCLOSEOPEN500 = 500
 Global Const $DELAYCLOSEOPEN1000 = 1000
 Global Const $DELAYCLOSEOPEN1500 = 1500
 Global Const $DELAYCLOSEOPEN2000 = 2000
