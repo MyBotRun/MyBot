@@ -21,7 +21,7 @@ framerates and 20 fps or lower significantly reduce CPU load.
 MEmu
 ====
 http://www.memuplay.com/
-Versions 6.0.6.0, 5.3.2.0, 5.2.3.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 6.0.7.6, 6.0.6.0, 5.3.2.0, 5.2.3.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1
@@ -67,13 +67,15 @@ https://mybot.run/forums/index.php?/topic/26023-itools-avm-support/
 Droid4X
 =======
 http://droid4x.haimawan.com/
-http://dl.haima.me/download/D4XU/win/0.10.6/Setup.exe
-Versions 0.10.6 Beta, 0.10.5 Beta, 0.10.4 Beta, 0.10.3 Beta, 0.10.2 Beta, 0.10.1 Beta, 0.10.0 Beta, 0.9.0 Beta, 0.8.7 Beta, 0.8.6 Beta
+http://dl.haima.me/download/D4XU/win/0.10.7/Setup.exe
+Versions 0.10.7, 0.10.6, 0.10.5, 0.10.4, 0.10.3, 0.10.2, 0.10.1, 0.10.0, 0.9.0, 0.8.7, 0.8.6
 MyBot Command Line Key: Droid4X
 Default Instance Key: droid4x
 Second Instance Key:  droid4x_1
 
-Known issues/bugs: None
+Known issues/bugs: If Clash of Clans is not found in Play Store, download x86 version from apkmirror:
+https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=599520
+Bot "Install Play Store Apps" buttons don't work.
 
 LeapDroid
 =========

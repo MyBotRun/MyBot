@@ -64,6 +64,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 		$g_bIsClientSyncError = False
 		Return
 	Else
+		$g_bCloudsActive = True ; early set of clouds to ensure no android suspend occurs that might cause infinite waits...
 		If $g_bUseRandomClick = False Then
 			ClickP($aFindMatchButton, 1, 0, "#0150") ;Click Find a Match Button
 		Else

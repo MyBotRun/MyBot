@@ -54,10 +54,11 @@ Func SaveProfileConfig($sIniFile = Default, $bForceWrite = False)
 	If $bForceWrite Or IniRead($sIniFile, "general", "globalthreads", "-") = "-" Then
 		IniWrite($sIniFile, "general", "globalthreads", $g_iGlobalThreads)
 	EndIf
-	SaveProfileConfigAdbPath($sIniFile)
+	; Not used anymore since MBR v7.6.7
+	;_SaveProfileConfigAdbPath($sIniFile)
 EndFunc   ;==>SaveProfileConfig
 
-Func SaveProfileConfigAdbPath($sIniFile = Default, $sAdbPath = $g_sAndroidAdbPath)
+Func _SaveProfileConfigAdbPath($sIniFile = Default, $sAdbPath = $g_sAndroidAdbPath)
 	If $sIniFile = Default Then $sIniFile = $g_sProfilePath & "\profile.ini"
 	IniWrite($sIniFile, "general", "adb.path", $sAdbPath)
 EndFunc   ;==>SaveProfileConfigAdbPath
@@ -83,6 +84,9 @@ Func SaveBuildingConfig()
 	;Upgrades
 	_Ini_Add("upgrade", "LabPosX", $g_aiLaboratoryPos[0])
 	_Ini_Add("upgrade", "LabPosY", $g_aiLaboratoryPos[1])
+
+	_Ini_Add("upgrade", "StarLabPosX", $g_aiStarLaboratoryPos[0])
+	_Ini_Add("upgrade", "StarLabPosY", $g_aiStarLaboratoryPos[1])
 
 	_Ini_Add("other", "xTownHall", $g_aiTownHallPos[0])
 	_Ini_Add("other", "yTownHall", $g_aiTownHallPos[1])
@@ -115,9 +119,10 @@ Func SaveBuildingConfig()
 	ApplyConfig_600_14(GetApplyConfigSaveAction())
 	_Ini_Add("upgrade", "upgradetroops", $g_bAutoLabUpgradeEnable ? 1 : 0)
 	_Ini_Add("upgrade", "upgradetroopname", $g_iCmbLaboratory)
-;~ 	_Ini_Add("upgrade", "upgradelabtime", $g_sLabUpgradeTime)
 	_Ini_Add("upgrade", "upgradelabelexircost", $g_iLaboratoryElixirCost)
 	_Ini_Add("upgrade", "upgradelabdelexircost", $g_iLaboratoryDElixirCost)
+	_Ini_Add("upgrade", "upgradestartroops", $g_bAutoStarLabUpgradeEnable ? 1 : 0)
+	_Ini_Add("upgrade", "upgradestartroopname", $g_iCmbStarLaboratory)
 
 	; <><><><> Village / Upgrade - Buildings <><><><>
 	ApplyConfig_600_16(GetApplyConfigSaveAction())
@@ -516,7 +521,7 @@ EndFunc   ;==>SaveConfig_600_16
 Func SaveConfig_auto()
 	ApplyConfig_auto(GetApplyConfigSaveAction())
 	; Auto Upgrade
-	_Ini_Add("Auto Upgrade", "ChkAutoUpgrade", $g_iChkAutoUpgrade)
+	_Ini_Add("Auto Upgrade", "AutoUpgradeEnabled", $g_bAutoUpgradeEnabled)
 	For $i = 0 To 12
 		_Ini_Add("Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i])
 	Next
@@ -809,6 +814,7 @@ Func SaveConfig_600_29_DB()
 	_Ini_Add("attack", "THSnipeBeforeDBTiles", $g_iTHSnipeBeforeTiles[$DB])
 	_Ini_Add("attack", "THSnipeBeforeDBScript", $g_iTHSnipeBeforeScript[$DB])
 
+	_Ini_Add("attack", "DBAtkUseWardenMode", $g_aiAttackUseWardenMode[$DB])
 	_Ini_Add("attack", "DBAtkUseSiege", $g_aiAttackUseSiege[$DB])
 
 	SaveConfig_600_29_DB_Standard()
@@ -921,6 +927,7 @@ Func SaveConfig_600_29_LB()
 	_Ini_Add("attack", "THSnipeBeforeLBTiles", $g_iTHSnipeBeforeTiles[$LB])
 	_Ini_Add("attack", "THSnipeBeforeLBScript", $g_iTHSnipeBeforeScript[$LB])
 
+	_Ini_Add("attack", "ABAtkUseWardenMode", $g_aiAttackUseWardenMode[$LB])
 	_Ini_Add("attack", "ABAtkUseSiege", $g_aiAttackUseSiege[$LB])
 
 	SaveConfig_600_29_LB_Standard()

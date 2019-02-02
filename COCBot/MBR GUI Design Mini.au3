@@ -110,6 +110,7 @@ Global $g_hTiShow = 0, $g_hTiHide = 0, $g_hTiDonate = 0, $g_hTiAbout = 0, $g_hTi
 Global $g_aFrmBotPosInit[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hFirstControlToHide = 0, $g_hLastControlToHide = 0, $g_aiControlPrevState[1]
 Global $g_bFrmBotMinimized = False ; prevents bot flickering
+Global $g_lblHepNotify = 0, $g_lblHelpBot = 0
 
 Global $g_oCtrlIconData = ObjCreate("Scripting.Dictionary")
 
@@ -157,7 +158,7 @@ Func CreateMainGUI()
 			$g_iFrmBotPosY = 100
 		EndIf
 	EndIf
-	
+
 	; Set Main Window icon
 	GUISetIcon($g_sLibIconPath, $eIcnGUI)
 

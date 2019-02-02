@@ -1,5 +1,5 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: Boost any sstructure (King, Queen, Warden, Barracks, Spell Factory)
+; Name ..........: Boost any structure (King, Queen, Warden)
 ; Description ...:
 ; Syntax ........: BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 ; Parameters ....:

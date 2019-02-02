@@ -50,6 +50,7 @@ Func ParseAttackCSV($debug = False)
 			If $acommand[0] >= 8 Then
 				$command = StringStripWS(StringUpper($acommand[1]), $STR_STRIPTRAILING)
 				If $command = "TRAIN" Or $command = "REDLN" Or $command = "DRPLN" Or $command = "CCREQ" Then ContinueLoop ; discard setting commands
+				If $command = "SIDE" Or $command = "SIDEB" Then ContinueLoop ; discard attack side commands
 				; Set values
 				For $i = 2 To (UBound($acommand) - 1)
 					Assign("value" & Number($i - 1), StringStripWS(StringUpper($acommand[$i]), $STR_STRIPTRAILING))
@@ -377,6 +378,85 @@ Func ParseAttackCSV($debug = False)
 					Case "RECALC"
 						ReleaseClicks()
 						PrepareAttack($g_iMatchMode, True)
+
+					Case Else
+						Switch StringLeft($command, 1)
+							Case ";", "#", "'"
+								; also comment
+								debugAttackCSV("comment line")
+							Case Else
+								SetLog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
+						EndSwitch
+				EndSwitch
+			Else
+				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then SetLog("attack row error, discard: row " & $iLine + 1, $COLOR_ERROR)
+			EndIf
+			If $bWardenDrop = True Then ;Check hero, but skip Warden if was dropped with sleepafter to short to allow icon update
+				Local $bHold = $g_bCheckWardenPower ; store existing flag state, should be true?
+				$g_bCheckWardenPower = False ;temp disable warden health check
+				CheckHeroesHealth()
+				$g_bCheckWardenPower = $bHold ; restore flag state
+			Else
+				CheckHeroesHealth()
+			EndIf
+			If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop after each line of CSV
+		Next
+		For $i = 0 To 3
+			If $sides2drop[$i] Then $g_iSidesAttack += 1
+		Next
+		ReleaseClicks()
+	Else
+		SetLog("Cannot find attack file " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
+	EndIf
+EndFunc   ;==>ParseAttackCSV
+
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: ParseAttackCSV_MainSide
+; Description ...:
+; Syntax ........: ParseAttackCSV_MainSide([$debug = False])
+; Parameters ....: $debug               - [optional]
+; Return values .: None
+; Author ........: Sardo (2016)
+; Modified ......: MMHK (07-2017)(01-2018), Demen (2019)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
+Func ParseAttackCSV_MainSide($debug = False)
+
+	Local $bForceSideExist = False
+	;Local $filename = "attack1"
+	If $g_iMatchMode = $DB Then
+		Local $filename = $g_sAttackScrScriptName[$DB]
+	Else
+		Local $filename = $g_sAttackScrScriptName[$LB]
+	EndIf
+
+	Local $line, $acommand, $command
+	Local $value1 = "", $value2 = "", $value3 = "", $value4 = "", $value5 = "", $value6 = "", $value7 = "", $value8 = "", $value9 = ""
+	If FileExists($g_sCSVAttacksPath & "\" & $filename & ".csv") Then
+		Local $aLines = FileReadToArray($g_sCSVAttacksPath & "\" & $filename & ".csv")
+
+		; Read in lines of text until the EOF is reached
+		For $iLine = 0 To UBound($aLines) - 1
+			$line = $aLines[$iLine]
+			debugAttackCSV("line: " & $iLine + 1)
+			If @error = -1 Then ExitLoop
+			If $debug = True Then SetLog("parse line:<<" & $line & ">>")
+			debugAttackCSV("line content: " & $line)
+			$acommand = StringSplit($line, "|")
+			If $acommand[0] >= 8 Then
+				$command = StringStripWS(StringUpper($acommand[1]), $STR_STRIPTRAILING)
+				If $command <> "SIDE" And $command <> "SIDEB" Then ContinueLoop ; Only deal with SIDE and SIDEB commands
+				; Set values
+				For $i = 2 To (UBound($acommand) - 1)
+					Assign("value" & Number($i - 1), StringStripWS(StringUpper($acommand[$i]), $STR_STRIPTRAILING))
+				Next
+
+				Switch $command
 					Case "SIDE"
 						ReleaseClicks()
 						SetLog("Calculate main side... ")
@@ -728,32 +808,14 @@ Func ParseAttackCSV($debug = False)
 						EndSwitch
 
 					Case Else
-						Switch StringLeft($command, 1)
-							Case ";", "#", "'"
-								; also comment
-								debugAttackCSV("comment line")
-							Case Else
-								SetLog("attack row bad, discard: row " & $iLine + 1, $COLOR_ERROR)
-						EndSwitch
+						SetLog("No 'SIDE' or 'SIDEB' csv line found, using default attack side: " & $MAINSIDE)
 				EndSwitch
-			Else
-				If StringLeft($line, 7) <> "NOTE  |" And StringLeft($line, 7) <> "      |" And StringStripWS(StringUpper($line), 2) <> "" Then SetLog("attack row error, discard: row " & $iLine + 1, $COLOR_ERROR)
 			EndIf
-			If $bWardenDrop = True Then ;Check hero, but skip Warden if was dropped with sleepafter to short to allow icon update
-				Local $bHold = $g_bCheckWardenPower ; store existing flag state, should be true?
-				$g_bCheckWardenPower = False ;temp disable warden health check
-				CheckHeroesHealth()
-				$g_bCheckWardenPower = $bHold ; restore flag state
-			Else
-				CheckHeroesHealth()
-			EndIf
-			If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop after each line of CSV
-		Next
-		For $i = 0 To 3
-			If $sides2drop[$i] Then $g_iSidesAttack += 1
+		If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop after each line of CSV
 		Next
 		ReleaseClicks()
 	Else
 		SetLog("Cannot find attack file " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
 	EndIf
-EndFunc   ;==>ParseAttackCSV
+EndFunc   ;==>ParseAttackCSV_MainSide
+

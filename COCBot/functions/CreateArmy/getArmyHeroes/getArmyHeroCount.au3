@@ -299,12 +299,13 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 
 	$iLastTimeChecked[$g_iCurAccount] = _NowCalc()
 
-	If QuickMIS("BC1", @ScriptDir & "\imgxml\Lab\Research", 200, 620, 700, 700) Then
-		;If $g_iDebugImageSave = 1 Then DebugImageSave("LabUpgrade") ; Debug Only
-		Click($g_iQuickMISX + 200, $g_iQuickMISY + 620)
+	Local $aResearchButton = findButton("Research", Default, 1, True)
+	If IsArray($aResearchButton) And UBound($aResearchButton, 1) = 2 Then
+		If $g_bDebugImageSave Then DebugImageSave("StarLabUpgrade") ; Debug Only
+		ClickP($aResearchButton)
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
 	Else
-		Setlog("Trouble finding research button, try again...", $COLOR_WARNING)
+		SetLog("Cannot find the Laboratory Research Button!", $COLOR_ERROR)
 		ClickP($aAway, 2, $DELAYLABORATORY4, "#0199")
 		;===========Hide Red  Hide Green  Show Gray==
 		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)

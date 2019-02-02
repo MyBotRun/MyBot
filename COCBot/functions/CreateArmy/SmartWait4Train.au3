@@ -16,9 +16,11 @@
 #include-once
 
 Func SmartWait4Train($iTestSeconds = Default)
+	If Not $g_bRunState Then Return
+	
 	Static $ichkCloseWaitSpell = 0, $ichkCloseWaitHero = 0
 	Local $bTest = ($iTestSeconds <> Default)
-
+	
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin SmartWait4Train:", $COLOR_DEBUG1)
 
 	If Not $g_bCloseWhileTrainingEnable Then Return ; Skip if not enabled

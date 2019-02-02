@@ -560,6 +560,11 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 
 	AndroidShield("AndroidEmbed dock", Default, $CallWinGetAndroidHandle, 100)
 
+	If $g_bBotLaunchOption_HideAndroid Then
+		; hide bot
+		BotMinimizeRequest()
+	EndIf
+
 	Return True
 EndFunc   ;==>_AndroidEmbed
 

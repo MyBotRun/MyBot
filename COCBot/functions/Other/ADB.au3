@@ -17,7 +17,7 @@
 Func SendAdbCommand($cmd, $EnsureConnected = True)
 	Local $process_killed, $connected_to, $pid, $i
 
-	Local $data = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " " & $cmd, $process_killed)
+	Local $data = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " " & $cmd, $process_killed)
 	Local $error_device_not_found = (StringInStr($data, "device not found") > 0) Or $process_killed
 
 	If $error_device_not_found Then
@@ -30,7 +30,7 @@ Func SendAdbCommand($cmd, $EnsureConnected = True)
 		; connect and try again
 		If ConnectAndroidAdb() Then
 			; execute command again
-			$data = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " " & $cmd, $process_killed)
+			$data = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " " & $cmd, $process_killed)
 			$error_device_not_found = (StringInStr($data, "device not found") > 0) Or $process_killed
 		EndIf
 		If $error_device_not_found Then

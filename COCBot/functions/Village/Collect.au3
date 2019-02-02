@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........:
-; Modified ......: Sardo (08-2015), KnowJack(10-2015), kaganus (10-2015), ProMac (04-2016), Codeslinger69 (01-2017), Fliegerfaust (11-2017)
+; Modified ......: Sardo (08/2015), KnowJack(10/2015), kaganus (10/2015), ProMac (04/2016), Codeslinger69 (01/2017), Fliegerfaust (11/2017)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -15,8 +15,7 @@
 #include-once
 
 Func Collect($bCheckTreasury = True)
-	If Not $g_bChkCollect Then Return
-	If Not $g_bRunState Then Return
+	If Not $g_bChkCollect Or Not $g_bRunState Then Return
 
 	ClickP($aAway, 1, 0, "#0332") ;Click Away
 
@@ -24,7 +23,7 @@ Func Collect($bCheckTreasury = True)
 	checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
 
 	If $g_bChkCollectCartFirst And ($g_iTxtCollectGold = 0 Or $g_aiCurrentLoot[$eLootGold] < Number($g_iTxtCollectGold) Or $g_iTxtCollectElixir = 0 Or $g_aiCurrentLoot[$eLootElixir] < Number($g_iTxtCollectElixir) Or $g_iTxtCollectDark = 0 Or $g_aiCurrentLoot[$eLootDarkElixir] < Number($g_iTxtCollectDark)) Then CollectLootCart()
-	
+
 	SetLog("Collecting Resources", $COLOR_INFO)
 	If _Sleep($DELAYCOLLECT2) Then Return
 
@@ -41,17 +40,17 @@ Func Collect($bCheckTreasury = True)
 			Switch StringLower($sFileName)
 				Case "collectmines"
 					If $g_iTxtCollectGold <> 0 And $g_aiCurrentLoot[$eLootGold] >= Number($g_iTxtCollectGold) Then
-						SetLog("Gold is high enough, skip collecting...", $COLOR_ACTION)
+						SetLog("Gold is high enough, skip collecting", $COLOR_ACTION)
 						ContinueLoop
 					EndIf
 				Case "collectelix"
 					If $g_iTxtCollectElixir <> 0 And $g_aiCurrentLoot[$eLootElixir] >= Number($g_iTxtCollectElixir) Then
-						SetLog("Elixir is high enough, skip collecting...", $COLOR_ACTION)
+						SetLog("Elixir is high enough, skip collecting", $COLOR_ACTION)
 						ContinueLoop
 					EndIf
 				Case "collectdelix"
-					If $g_iTxtCollectDark <> 0 And $g_aiCurrentLoot[$eLootDarkElixir] >= Number($g_iTxtCollectDark) Then 
-						SetLog("Dark Elixier is high enough, skip collecting...", $COLOR_ACTION)
+					If $g_iTxtCollectDark <> 0 And $g_aiCurrentLoot[$eLootDarkElixir] >= Number($g_iTxtCollectDark) Then
+						SetLog("Dark Elixier is high enough, skip collecting", $COLOR_ACTION)
 						ContinueLoop
 					EndIf
 			EndSwitch
@@ -68,16 +67,13 @@ Func Collect($bCheckTreasury = True)
 	checkMainScreen(False) ; check if errors during function
 
 	If Not $g_bChkCollectCartFirst And ($g_iTxtCollectGold = 0 Or $g_aiCurrentLoot[$eLootGold] < Number($g_iTxtCollectGold) Or $g_iTxtCollectElixir = 0 Or $g_aiCurrentLoot[$eLootElixir] < Number($g_iTxtCollectElixir) Or $g_iTxtCollectDark = 0 Or $g_aiCurrentLoot[$eLootDarkElixir] < Number($g_iTxtCollectDark)) Then CollectLootCart()
-	
+
 	If $g_bChkTreasuryCollect And $bCheckTreasury Then TreasuryCollect()
 	EndGainCost("Collect")
 EndFunc   ;==>Collect
 
 Func CollectLootCart()
-	; Loot Cart Collect Function
-
-	SetLog("Searching for a Loot Cart..", $COLOR_INFO)
-
+	SetLog("Searching for a Loot Cart", $COLOR_INFO)
 
 	Local $aLootCart = decodeSingleCoord(findImage("LootCart", $g_sImgCollectLootCart, "ECD", 1, True))
 	If UBound($aLootCart) > 1 Then

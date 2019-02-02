@@ -145,6 +145,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 			SelectDropTroop($troopPosition) ; select the troop...
 			$g_iCSVLastTroopPositionDropTroopFromINI = $troopSlotConst
 			ReleaseClicks()
+			KeepClicks()
 		EndIf
 		;drop
 		For $i = $indexStart To $indexEnd

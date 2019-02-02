@@ -34,6 +34,9 @@ EndFunc   ;==>TogglePauseImpl
 Func TogglePauseUpdateState($Source)
 	$g_iActualTrainSkip = 0
 
+	; always resume Android (CoC game)
+	ResumeAndroid()
+
 	$g_bTogglePauseUpdateState = False
     If $g_bBotPaused Then
 		AndroidShield("TogglePauseImpl paused", False)

@@ -195,6 +195,7 @@ Func AttackReport()
 	$g_sBonusGold = $g_iStatsBonusLast[$eLootGold]
 	$g_sBonusElixir = $g_iStatsBonusLast[$eLootElixir]
 	$g_sBonusDE = $g_iStatsBonusLast[$eLootDarkElixir]
+	$g_sStarsEarned = $starsearned
 
 	Local $AtkLogTxtExtend
 	$AtkLogTxtExtend = "|"

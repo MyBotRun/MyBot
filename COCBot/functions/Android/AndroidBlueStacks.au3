@@ -24,8 +24,10 @@ Func OpenBlueStacks($bRestart = False)
 
 	SetLog("Starting BlueStacks and Clash Of Clans", $COLOR_SUCCESS)
 
+	If Not InitAndroid() Then Return False
+
 	; always start ADB first to avoid ADB connection problems
-	LaunchConsole($g_sAndroidAdbPath, "start-server", $process_killed)
+	LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "start-server", $process_killed)
 
 	;$PID = ShellExecute($__BlueStacks_Path & "HD-RunApp.exe", "-p " & $g_sAndroidGamePackage & " -a " & $g_sAndroidGamePackage & $g_sAndroidGameClass)  ;Start BS and CoC with command line
 	;$PID = ShellExecute($__BlueStacks_Path & "HD-Frontend.exe", $g_sAndroidInstance) ;Start BS and CoC with command line
@@ -82,7 +84,7 @@ Func OpenBlueStacks2($bRestart = False)
 	CloseUnsupportedBlueStacks2()
 
 	; always start ADB first to avoid ADB connection problems
-	LaunchConsole($g_sAndroidAdbPath, "start-server", $process_killed)
+	LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "start-server", $process_killed)
 
 	$hTimer = __TimerInit()
 	WinGetAndroidHandle()
@@ -311,8 +313,12 @@ Func InitBlueStacks2($bCheckOnly = False)
 
 	If $bInstalled And Not $bCheckOnly Then
 		$__VBoxManage_Path = $__BlueStacks_Path & "BstkVMMgr.exe"
-		$g_sAndroidAdbInstanceShellOptions = " -t -t" ; Additional shell options, only used by BlueStacks2 " -t -t"
-		$g_sAndroidAdbShellOptions = " /data/anr/../../system/xbin/bstk/su root" ; Additional shell options when launch shell with command, only used by BlueStacks2 " /data/anr/../../system/xbin/bstk/su root"
+		local $bsNow = GetVersionNormalized($__BlueStacks_Version)
+		If $bsNow > GetVersionNormalized("4.0") Then
+			; only Version 4 requires new options
+			;$g_sAndroidAdbInstanceShellOptions = " -t -t" ; Additional shell options, only used by BlueStacks2 " -t -t"
+			$g_sAndroidAdbShellOptions = " /data/anr/../../system/xbin/bstk/su root" ; Additional shell options when launch shell with command, only used by BlueStacks2 " /data/anr/../../system/xbin/bstk/su root"
+		EndIf
 
 		CheckBlueStacksVersionMod()
 

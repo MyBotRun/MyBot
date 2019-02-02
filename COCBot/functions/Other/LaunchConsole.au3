@@ -180,7 +180,7 @@ Func ProcessesExist($ProgramPath, $ProgramParameter = Default, $CompareMode = De
 	Local $PIDs[0]
 
 	For $Process In WmiQuery($query)
-		SetDebugLog($Process[0] & " = " & $Process[1])
+		SetDebugLog($Process[0] & " = " & $Process[2])
 		Local $processCommandLineCompare = StringReplace(StringReplace(StringReplace(StringReplace($Process[2], ".exe", "", 1), " ", ""), '"', ""), "'", "")
 		If ($CompareMode = 0 And $commandLineCompare = $processCommandLineCompare) Or _
 				($CompareMode = 0 And StringRight($commandLineCompare, StringLen($processCommandLineCompare)) = $processCommandLineCompare) Or _

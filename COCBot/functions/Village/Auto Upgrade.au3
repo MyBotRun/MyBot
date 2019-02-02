@@ -1,25 +1,17 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: Pico Auto Upgrade (v6.1)
-; Description ...: This file contains all functions of Pico Auto Upgrade feature
-; Syntax ........: ---
-; Parameters ....: ---
-; Return values .: ---
-; Author ........: RoroTiti
-; Modified ......: 22/07/2017 (full rewrite from A to Z)
-; Remarks .......: This file is part of MyBotRun. Copyright 2017
+; Name ..........:
+; Description ...:
+; Syntax ........:
+; Parameters ....:
+; Return values .:
+; Author ........:
+; Modified ......:
+; Remarks .......: This file is part of MyBotRun. Copyright 2015-2018
 ;                  MyBotRun is distributed under the terms of the GNU GPL
 ; Related .......: ---
 ; Link ..........: https://www.mybot.run
 ; Example .......: ---
 ;================================================================================================================================
-Func randomSleep($SleepTime, $Range = 0)
-	If $g_bRunState = False Then Return
-	If $Range = 0 Then $Range = Round($SleepTime / 5)
-	Local $SleepTimeF = Random($SleepTime - $Range, $SleepTime + $Range, 1)
-	If $g_bDebugClick Then SetLog("Default sleep : " & $SleepTime & " - Random sleep : " & $SleepTimeF, $COLOR_ORANGE)
-	If _Sleep($SleepTimeF) Then Return
-EndFunc   ;==>randomSleep
-
 Func AutoUpgrade($bTest = False)
 	Local $bWasRunState = $g_bRunState
 	$g_bRunState = True
@@ -29,28 +21,24 @@ Func AutoUpgrade($bTest = False)
 EndFunc
 
 Func _AutoUpgrade()
-	If $g_iChkAutoUpgrade = 0 Then Return ; disabled, no need to continue...
+	If Not $g_bAutoUpgradeEnabled Then Return
 
-	SetLog("Entering Auto Upgrade...", $COLOR_INFO)
+	SetLog("Starting Auto Upgrade", $COLOR_INFO)
 	Local $iLoopAmount = 0
 	Local $iLoopMax = 6
-	Local $iAvailBldr = 0
-	
+
 	While 1
 
 		$iLoopAmount += 1
 		If $iLoopAmount >= $iLoopMax Or $iLoopAmount >= 12 Then ExitLoop ; 6 loops max, to avoid infinite loop
 
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
-		randomSleep($DELAYAUTOUPGRADEBUILDING1)
+		If _sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 		VillageReport(True, True)
 
-		; If save wall builder is enable, make sure to reserve builder if enabled
-		; also reserve builders for hero upgrading
-		$iAvailBldr = $g_iFreeBuilderCount - ($g_bUpgradeWallSaveBuilder = True ? 1 : 0) - ReservedBuildersForHeroes()
-	
-		If $iAvailBldr <= 0 Then
-			SetLog("No builder available... Skipping Auto Upgrade...", $COLOR_WARNING)
+		;Check if there is a free builder for Auto Upgrade
+		If ($g_iFreeBuilderCount - ($g_bAutoUpgradeWallsEnable And $g_bUpgradeWallSaveBuilder ? 1 : 0) - ReservedBuildersForHeroes()) <= 0 Then
+			SetLog("No builder available. Skipping Auto Upgrade!", $COLOR_WARNING)
 			ExitLoop
 		EndIf
 

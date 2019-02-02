@@ -133,6 +133,7 @@ Func InitializeBot()
 
 	_Crypt_Startup()
 	__GDIPlus_Startup() ; Start GDI+ Engine (incl. a new thread)
+	TCPStartup() ; Start the TCP service.
 
 	;InitAndroidConfig()
 	CreateMainGUI() ; Just create the main window
@@ -210,6 +211,8 @@ Func ProcessCommandLine()
 					$g_iGuiMode = 0
 				Case "/hideandroid", "/ha", "-hideandroid", "-ha"
 					$g_bBotLaunchOption_HideAndroid = True
+				Case "/minimizebot", "/minbot", "/mb", "-minimizebot", "-minbot", "-mb"
+					$g_bBotLaunchOption_MinimizeBot = True
 				Case "/console", "/c", "-console", "-c"
 					$g_iBotLaunchOption_Console = True
 					ConsoleWindow()
@@ -618,6 +621,8 @@ Func MainLoop($bCheckPrerequisitesOK = True)
 		$g_iBotAction = $eBotStart
 		; check if android should be hidden
 		If $g_bBotLaunchOption_HideAndroid Then $g_bIsHidden = True
+		; check if bot should be minimized
+		If $g_bBotLaunchOption_MinimizeBot Then BotMinimizeRequest()
 	EndIf
 
 	Local $hStarttime = _Timer_Init()
@@ -1200,17 +1205,24 @@ Func _RunFunction($action)
 			_Sleep($DELAYRUNBOT3)
 		Case "BuilderBase"
 			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades) And SwitchBetweenBases()) Then
-				CollectBuilderBase()
 				BuilderBaseReport()
-				CleanBBYard()
+				CollectBuilderBase()
+				_Sleep($DELAYRUNBOT3)
 				StartClockTowerBoost()
+				_Sleep($DELAYRUNBOT3)
+				StarLaboratory()
+				_Sleep($DELAYRUNBOT3)
+				CleanBBYard()
+				_Sleep($DELAYRUNBOT3)
 				MainSuggestedUpgradeCode()
 				; switch back to normal village
+				BuilderBaseReport()
 				SwitchBetweenBases()
 			EndIf
 			_Sleep($DELAYRUNBOT3)
 		Case "CollectFreeMagicItems"
 			CollectFreeMagicItems()
+			_Sleep($DELAYRUNBOT3)
 		Case ""
 			SetDebugLog("Function call doesn't support empty string, please review array size", $COLOR_ERROR)
 		Case Else

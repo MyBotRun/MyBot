@@ -150,7 +150,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	While 1
 		If $g_bDebugSetlog Then SetDebugLog("Wait for End Fight Scene to appear #" & $i)
 		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
-			If IsReturnHomeBattlePage() Then
+			If IsReturnHomeBattlePage(True) Then
 				ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
 				; sometimes 1st click is not closing, so try again
 				$iExitLoop = $i
@@ -180,7 +180,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 EndFunc   ;==>ReturnHome
 
 Func ReturnHomeMainPage()
-	If IsMainPage(2) Then
+	If IsMainPage(1) Then
 		SetLogCentered(" BOT LOG ", Default, Default, True)
 		Return True
 	EndIf
@@ -217,7 +217,7 @@ Func ReturnfromDropTrophies()
 	While 1
 		If $g_bDebugSetlog Then SetDebugLog("Wait for End Fight Scene to appear #" & $i)
 		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
-			If IsReturnHomeBattlePage() Then
+			If IsReturnHomeBattlePage(True) Then
 				ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
 				; sometimes 1st click is not closing, so check again
 				$iExitLoop = $i

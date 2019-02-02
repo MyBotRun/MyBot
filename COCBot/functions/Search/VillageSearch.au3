@@ -96,6 +96,9 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 	If $g_bIsSearchLimit = True Then $g_bIsSearchLimit = False
 
+	; reset page errors
+	InitAndroidPageError()
+
 	While 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;### Main Search Loop ###;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 		; cleanup some vars used by imgloc just in case. usend in TH and DeadBase ( imgloc functions)
@@ -150,13 +153,13 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		; reset village measures
 		setVillageOffset(0, 0, 1)
 		ConvertInternalExternArea()
-		
+
 		; only one capture here, very important for consistent debug images, zombies, redline calc etc.
 		ForceCaptureRegion()
 		_CaptureRegion2()
 
 		; measure enemy village (only if resources match)
-		Local $bAlwaysMeasure = True
+		Local $bAlwaysMeasure = $g_bVillageSearchAlwaysMeasure
 		For $i = 0 To $g_iModeCount - 1
 			If $match[$i] Or $bAlwaysMeasure Then
 				If CheckZoomOut("VillageSearch", True, False) = False Then

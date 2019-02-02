@@ -16,7 +16,8 @@
 Func WaitForClouds()
 
 	If $g_bDebugSetlog Then SetDebugLog("Begin WaitForClouds:", $COLOR_DEBUG1)
-
+	$g_bCloudsActive = True
+	
 	Local $iCount = 0
 	Local $bigCount = 0, $iLastTime = 0
 	Local $hMinuteTimer, $iSearchTime
@@ -51,16 +52,17 @@ Func WaitForClouds()
 	Local $hMinuteTimer = __TimerInit() ; initialize timer for tracking search time
 
 	While $g_bRestart = False And _CaptureRegions() And _CheckPixel($aNoCloudsAttack) = False ; loop to wait for clouds to disappear
-		If _Sleep($DELAYGETRESOURCES1) Then Return
+		; notice: don't exit function with return in this loop, use ExitLoop ! ! !
+		If _Sleep($DELAYGETRESOURCES1) Then ExitLoop
 		$iCount += 1
 		If isProblemAffect(True) Then ; check for reload error messages and restart search if needed
 			resetAttackSearch()
-			Return
+			ExitLoop
 		EndIf
 		If $iCount >= $maxSearchCount Then ; If clouds do not clear in alloted time do something
 			If EnableLongSearch() = False Then ; Check if attacking in Champion 1 or higher league with long search that needs to be continued
 				resetAttackSearch()
-				Return
+				ExitLoop
 			Else
 				$bigCount += 1 ; Increment long wait time fail safe timer
 				If $bigCount > $maxLongSearchCount Then ; check maximum wait time
@@ -69,7 +71,7 @@ Func WaitForClouds()
 					$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
 					$g_bRestart = True
 					CloseCoC(True)
-					Return
+					ExitLoop
 				EndIf
 				$iCount = 0 ; reset outer loop value
 			EndIf
@@ -79,7 +81,7 @@ Func WaitForClouds()
 			$g_bIsClientSyncError = True
 			$g_bRestart = True
 			CloseCoC(True)
-			Return
+			ExitLoop
 		EndIf
 		If $g_bDebugSetlog Then _GUICtrlStatusBar_SetTextEx($g_hStatusBar, " Status: Loop to clean screen without Clouds, # " & $iCount)
 		$iSearchTime = __TimerDiff($hMinuteTimer) / 60000 ;get time since minute timer start in minutes
@@ -89,14 +91,14 @@ Func WaitForClouds()
 			; once a minute safety checks for search fail/retry msg and Personal Break events and early detection if CoC app has crashed inside emulator (Bluestacks issue mainly)
 			If chkAttackSearchFail() = 2 Or chkAttackSearchPersonalBreak() = True Or GetAndroidProcessPID() = 0 Then
 				resetAttackSearch()
-				Return
+				ExitLoop
 			EndIf
 			; Check if CoC app restarted without notice (where android restarted app automatically with same PID), and returned to main base
 			If _CheckPixel($aIsMain, $g_bCapturePixel) Then
 				SetLog("Strange error detected! 'WaitforClouds' returned to main base unexpectedly, OOS restart initiated", $COLOR_ERROR)
 				$g_bRestart = True ; Set flag for OOS restart condition
 				resetAttackSearch()
-				Return
+				ExitLoop
 			EndIf
 			; attempt to enable GUI during long wait?
 			If $iSearchTime > 2 And Not $bEnabledGUI Then

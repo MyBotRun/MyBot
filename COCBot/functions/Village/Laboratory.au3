@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: summoner
-; Modified ......: KnowJack (2015-06), Sardo (2015-08), Monkeyhunter(2016-02,2016-04), MMHK(2018-06)
+; Modified ......: KnowJack (06/2015), Sardo (08/2015), Monkeyhunter(04/2016), MMHK(06/2018)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -42,7 +42,7 @@ Global Const $aiIconDefaultPOS[36][2] = [ _
 			[327, 444 + $g_iMidOffsetY], _
 			[434, 337 + $g_iMidOffsetY], _
 			[434, 444 + $g_iMidOffsetY], _
-			[541, 337 + $g_iMidOffsetY], _ 
+			[541, 337 + $g_iMidOffsetY], _
 			[541, 444 + $g_iMidOffsetY], _
 			[647, 337 + $g_iMidOffsetY], _
 			[647, 444 + $g_iMidOffsetY], _
@@ -126,12 +126,13 @@ Func Laboratory()
 	If _Sleep($DELAYLABORATORY3) Then Return ; Wait for window to open
 
 	; Find Research Button
-	If QuickMIS("BC1", @ScriptDir & "\imgxml\Lab\Research", 200, 620, 700, 700) Then
-		If $g_bDebugImageSave Then DebugImageSave("LabUpgrade") ; Debug Only
-		Click($g_iQuickMISX + 200, $g_iQuickMISY + 620)
+	Local $aResearchButton = findButton("Research", Default, 1, True)
+	If IsArray($aResearchButton) And UBound($aResearchButton, 1) = 2 Then
+		If $g_bDebugImageSave Then DebugImageSave("StarLabUpgrade") ; Debug Only
+		ClickP($aResearchButton)
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
 	Else
-		Setlog("Trouble finding research button, try again...", $COLOR_WARNING)
+		SetLog("Cannot find the Laboratory Research Button!", $COLOR_ERROR)
 		ClickP($aAway, 2, $DELAYLABORATORY4, "#0199")
 		Return False
 	EndIf
@@ -174,6 +175,7 @@ Func Laboratory()
 		ClickP($aAway, 2, $DELAYLABORATORY4, "#0199")
 		Return False
 	EndIf
+
 	For $x = 0 To 10 ; check for an offset of icons on first page in lab
 		If Not (_ColorCheck(_GetPixelColor(114 + $x + $iXMoved, 410 + $iYMoved, True), $sColorBG, 10) And _
 			_ColorCheck(_GetPixelColor(114 + $x + $iXMoved, 520 + $iYMoved, True), $sColorBG, 10)) Then
@@ -182,7 +184,7 @@ Func Laboratory()
 		EndIf
 	Next
 	If $g_bDebugSetlog Then Setlog("Icon Offset on First Page: " & $iFirstPageOffset & "px", $COLOR_DEBUG)
-	For $i = 0 To 2 
+	For $i = 0 To 2
 		ClickDrag(635, 439 + $g_iMidOffsetY, 220, 439 + $g_iMidOffsetY, 250)
 	Next
 	If _Sleep($DELAYLABORATORY5) Then Return
@@ -194,7 +196,7 @@ Func Laboratory()
 		EndIf
 	Next
 	If $g_bDebugSetlog Then Setlog("Icon Offset on Last Page: " & $iLastPageOffset & "px", $COLOR_DEBUG)
-	For $i = 0 To 2 
+	For $i = 0 To 2
 		ClickDrag(220, 439 + $g_iMidOffsetY, 635, 439 + $g_iMidOffsetY, 250)
 	Next
 	If _Sleep($DELAYLABORATORY5) Then Return
@@ -205,7 +207,7 @@ Func Laboratory()
 		$g_avLabTroops[$i][1] = $aiIconDefaultPOS[$i][1] + $iYMoved
 		If $g_bDebugSetlog Then Setlog("New icon Y position of " & $g_avLabTroops[$i][3] & " : " & $g_avLabTroops[$i][1], $COLOR_DEBUG)
 	Next
-	
+
 	; First page
 	If $g_bDebugSetlog Then LabTroopImages(1, 12)
 	For $i = 1 To 12
@@ -233,10 +235,11 @@ Func Laboratory()
 			EndIf
 		EndIf
 		If Not $g_bRunState Then Return
+		$aUpgradeValue[$i] = Number($aUpgradeValue[$i])
 	Next
 
 	; Second page
-	For $i = 0 To 1 
+	For $i = 0 To 1
 		ClickDrag(615, 439 + $g_iMidOffsetY, 325, 439 + $g_iMidOffsetY, 250)
 	Next
 	If _Sleep($DELAYLABORATORY3) Then Return
@@ -272,10 +275,11 @@ Func Laboratory()
 			EndIf
 		EndIf
 		If Not $g_bRunState Then Return
+		$aUpgradeValue[$i] = Number($aUpgradeValue[$i])
 	Next
 
 	; Third page
-	For $i = 0 To 1 
+	For $i = 0 To 1
 		ClickDrag(620, 439 + $g_iMidOffsetY, 320, 439 + $g_iMidOffsetY, 250)
 	Next
 	If _Sleep($DELAYLABORATORY5) Then Return
@@ -305,8 +309,9 @@ Func Laboratory()
 			EndIf
 		EndIf
 		If Not $g_bRunState Then Return
+		$aUpgradeValue[$i] = Number($aUpgradeValue[$i])
 	Next
-	
+
 	If $aUpgradeValue[$g_iCmbLaboratory] = -1 Then
 		Local $bPreferTraining = False, $iCheapestCost = 0
 		If $g_iCmbLaboratory = 0 Then
@@ -396,7 +401,7 @@ Func Laboratory()
 	; Drag back to page 2 or 1
 	If $g_avLabTroops[$iSelectedUpgrade][2] < 2 Then ; when troop located on page 1 or 2
 		If $g_avLabTroops[$iSelectedUpgrade][2] = 1 Then ; page 2 position correction when stay on 2nd page
-			For $i = 0 To 1 
+			For $i = 0 To 1
 				ClickDrag(320, 439 + $g_iMidOffsetY, 620, 439 + $g_iMidOffsetY, 250)
 			Next
 			If _Sleep($DELAYLABORATORY3) Then Return
@@ -406,7 +411,7 @@ Func Laboratory()
 				Return False
 			EndIf
 		Else
-			For $i = 0 To 2 
+			For $i = 0 To 2
 				ClickDrag(220, 439 + $g_iMidOffsetY, 635, 439 + $g_iMidOffsetY, 250)
 			Next
 		EndIf

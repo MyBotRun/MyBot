@@ -5,23 +5,22 @@
 ; Syntax ........: LocateClanCastle()
 ; Parameters ....:
 ; Return values .: None
-; Author ........: Code Monkey #69
-; Modified ......: KnowJack (June 2015) Sardo 2015-08
+; Author ........:
+; Modified ......: KnowJack (06/2015) Sardo (08/2015)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func LocateClanCastle()
+Func LocateClanCastle($bCollect = True)
 	Local $stext, $MsgBox, $iSilly = 0, $iStupid = 0, $sErrorText = "", $sInfo
 
-	SetLog("Locating Clan Castle...", $COLOR_INFO)
+	SetLog("Locating Clan Castle", $COLOR_INFO)
 
-	If _GetPixelColor($aTopLeftClient[0], $aTopLeftClient[1], True) <> Hex($aTopLeftClient[2], 6) Or _GetPixelColor($aTopRightClient[0], $aTopRightClient[1], True) <> Hex($aTopRightClient[2], 6) Then
-		Zoomout()
-		Collect(False)
-	EndIf
+	WinGetAndroidHandle()
+	checkMainScreen()
+	If $bCollect Then Collect(False)
 
 	While 1
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
@@ -34,7 +33,7 @@ Func LocateClanCastle()
 			Local $aPos = FindPos()
 			$g_aiClanCastlePos[0] = $aPos[0]
 			$g_aiClanCastlePos[1] = $aPos[1]
-			If isInsideDiamond($g_aiClanCastlePos) = False Then
+			If Not isInsideDiamond($g_aiClanCastlePos) Then
 				$iStupid += 1
 				Select
 					Case $iStupid = 1
@@ -96,7 +95,7 @@ Func LocateClanCastle()
 				EndSelect
 			EndIf
 			If $sInfo[2] = "Broken" Then
-				SetLog("You did not rebuild your Clan Castle yet.", $COLOR_ACTION)
+				SetLog("You did not rebuild your Clan Castle yet", $COLOR_ACTION)
 			Else
 				SetLog("Your Clan Castle is at level: " & $sInfo[2], $COLOR_SUCCESS)
 			EndIf
@@ -111,5 +110,4 @@ Func LocateClanCastle()
 	WEnd
 
 	ClickP($aAway, 1, 200, "#0327")
-
 EndFunc   ;==>LocateClanCastle

@@ -55,6 +55,7 @@ Func CreateLogFile()
 		SetDebugLog("Android Program Path: " & $g_sAndroidProgramPath)
 		SetDebugLog("Android Program FileVersionInfo: " & ((IsArray($g_avAndroidProgramFileVersionInfo) ? _ArrayToString($g_avAndroidProgramFileVersionInfo, ",", 1) : "not available")))
 		SetDebugLog("Android ADB Path: " & $g_sAndroidAdbPath)
+		SetDebugLog("Android ADB Global Options: " & $g_sAndroidAdbGlobalOptions)
 		SetDebugLog("Android VBoxManage Path: " & $__VBoxManage_Path)
 		SetDebugLog("Android ADB Shared Folder: " & $g_sAndroidPicturesPath)
 	EndIf

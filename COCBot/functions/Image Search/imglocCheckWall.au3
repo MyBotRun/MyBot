@@ -113,8 +113,8 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 	Local $FoundWalls[1] = [""] ;
 
 	Local $redLines = $redline
-	Local $minLevel = $walllevel
-	Local $maxLevel = $walllevel
+	Local $minLevel = (IsNumber($walllevel) ? $walllevel : 1)
+	Local $maxLevel = (IsNumber($walllevel) ? $walllevel : 13)
 	Local $maxReturnPoints = $maxreturn
 
 	; Perform the search
@@ -126,7 +126,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 		_logErrorDLLCall($g_sLibMyBotPath, $error)
 		SetLog(" imgloc DLL Error imgloc " & $error & " --- " & $extError, $COLOR_RED)
 		SetError(2, $extError, $error) ; Set external error code = 2 for DLL error
-		Return
+		Return $FoundWalls
 	EndIf
 
 	If checkImglocError($result, "imglocFindWalls", $g_sImgCheckWallDir) = True Then

@@ -109,13 +109,21 @@ Func CreateAboutTab()
 EndFunc   ;==>CreateAboutTab
 
 Func ShowCommandLineHelp()
+	Return ShowHelp(Default)
+EndFunc   ;==>ShowCommandLineHelp
 
-	SetDebugLog ("Help File called from CrtlID: " & @GUI_CtrlId)
+Func ShowControlHelp()
+	Return ShowHelp(@GUI_CtrlId)
+EndFunc   ;==>ShowControlHelp
+
+Func ShowHelp($Source = Default)
+
+	SetDebugLog ("Help File called from: " & $source)
 
 	Local $PathHelp = "CommandLineParameter"
 
 	; This can be use for several Help Files
-	Switch @GUI_CtrlId
+	Switch $source
 		Case $g_lblHelpBot; Bot/Android/Help Handle
 			$PathHelp = "CommandLineParameter"
 		Case $g_lblHepNotify
@@ -123,10 +131,11 @@ Func ShowCommandLineHelp()
 	EndSwitch
 
 	UpdateBotTitle()
-	$g_hGUI_CommandLineHelp = GUICreate($g_sBotTitle & " - Command Line Help", 650, 700, -1, -1, BitOR($WS_CAPTION, $WS_POPUPWINDOW, $DS_MODALFRAME))
+	$g_hGUI_CommandLineHelp = GUICreate($g_sBotTitle & " - Command Line Help", 650, 700, -1, -1, BitOR($WS_CAPTION, $WS_POPUPWINDOW, $DS_MODALFRAME), $WS_EX_TOPMOST, $g_hFrmBot)
 	GUISetIcon($g_sLibIconPath, $eIcnGUI, $g_hGUI_CommandLineHelp)
 
 	; add controls
+	Local $hClose = GUICtrlCreateButton("Close", 300, 670, 50)
 	Local $hRichEdit = _GUICtrlRichEdit_Create($g_hGUI_CommandLineHelp, "", 2, 0, 646, 667, $WS_VSCROLL + $ES_MULTILINE)
 	Local $sHelpFile = @ScriptDir & "\Help\" & $PathHelp
 	If $g_sLanguage <> $g_sDefaultLanguage Then
@@ -139,11 +148,9 @@ Func ShowCommandLineHelp()
 	_GUICtrlRichEdit_StreamFromFile($hRichEdit, $sHelpFile & ".rtf")
 	_GUICtrlRichEdit_SetReadOnly($hRichEdit)
 	_GUICtrlRichEdit_SetScrollPos($hRichEdit, 0, 0) ; scroll to top
-	Local $hClose = GUICtrlCreateButton("Close", 300, 670, 50)
-
-	GUISetState(@SW_SHOW)
 
 	Local $iOpt = Opt("GUIOnEventMode", 0)
+	GUISetState(@SW_SHOW, $g_hGUI_CommandLineHelp)
 	While 1
 		Switch GUIGetMsg()
 			Case $GUI_EVENT_CLOSE, $hClose
@@ -153,5 +160,4 @@ Func ShowCommandLineHelp()
 
 	GUIDelete($g_hGUI_CommandLineHelp)
 	Opt("GUIOnEventMode", $iOpt)
-
-EndFunc   ;==>ShowCommandLineHelp
+EndFunc   ;==>ShowHelp

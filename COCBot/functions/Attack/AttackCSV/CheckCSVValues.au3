@@ -93,6 +93,10 @@ Func CheckCsvValues($instruction, $variablenumber, $variable)
 							Return True
 						Case "AIRDEFENSE"
 							Return True
+						Case "EX-WALL"
+							Return True
+						Case "IN-WALL"
+							Return True
 						Case Else
 							Return False
 					EndSwitch

@@ -1,3 +1,42 @@
+﻿* **V7.7**
+* Added Automatic Builder Base Troop Upgrades
+* Added Wall detection in CSV attack, see BoWiHe v3.2 by @Zeck for details
+* Added zoomout mode under Bot/Android/Android Options
+* Added /minimizebot command line option to minimize bot after auto-start
+* Added Grand Warden mode selection
+* Fixed Grand Warden Boosting when 7 Buttons exist
+* Fixed Auto Hero Upgrade Button not being found
+* Fixed BS2/BS3/BS4 adb connection issues, use dedicated adb daemon on free tcp port per instance
+* Fixed Cyrillic OCR
+* Fixed Extended Attackbar Slot Detection
+* Fixed infinite looping between home and builder base
+* Fixed bot running in a folder with umlauts
+* Fixed freeze in village search waiting for clouds to clear
+* Fixed command line help (parameter /? or /help)
+* Fixed help display when links used in bot
+* Fixed page error on Battle End Screen
+* Fixed array errors in multiple places when image search returned no result
+* Fixed bot crash when using screencap with wrong coordinates
+* Fixed bot running directly from UNC network path like \\mybot_pc\mybot_home\...
+* Fixed Android "reset" (soft reboot) when Bot is paused during Android suspend
+* Fixed Droid4X 0.10.7 support
+* Fixed wall upgrade using elsewhere needed recources, when upgrading more than one wall
+* Improved siege machine selection
+* Improved TH12 detection
+* Improved bot responsiveness during image processing
+* Improved android zoomout
+* Improved android accurate click&drag
+* Improved bot first time detection
+* Improved timed heroes activation to 3 digit number, e.g. 150 sec.
+* Improved detection for SmartFarm and SmartZap
+* Improved zoom-out error handling restarting android on multiple failures
+* Improved measuring village & centering village
+* Improved measuring builder base
+* Improved Eagle lvl 2 weak base detection
+* Improved frequent android restarts due to page error by resetting error counter when beginning to search villages
+* Improved last raid notify text @MikeD
+* Changed CoC launch to push shared_prefs only when account switching is enabled
+
 * **V7.6.6**
 * Added check & remove unwanted CC siege machine
 * Fixed Custom Drop Order @ViperZ (December 2018 Update)
@@ -24,9 +63,9 @@
 * Improved Giant Deployment in SmartFarm/Standard Attack
 
 * **V7.6.5**
-* Add Ice Golem Support @ViperZ
-* Add Bat Spell Support @ViperZ
-* Add Stone Slammer Support @ViperZ
+* Added Ice Golem Support @ViperZ
+* Added Bat Spell Support @ViperZ
+* Added Stone Slammer Support @ViperZ
 * Fixed Snow Theme Detection (December 2018 Update)
 * Fixed Request Clan Castle (December 2018 Update)
 * Fixed Edit/Remove Army (December 2018 Update)

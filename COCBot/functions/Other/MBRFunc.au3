@@ -56,26 +56,42 @@ Func DllCallMyBot($sFunc, $sType1 = Default, $vParam1 = Default, $sType2 = Defau
 		, $sType6 = Default, $vParam6 = Default, $sType7 = Default, $vParam7 = Default, $sType8 = Default, $vParam8 = Default, $sType9 = Default, $vParam9 = Default, $sType10 = Default, $vParam10 = Default)
 	$g_bLibMyBotActive = True
 	Local $aResult
-	If $g_bCloudsActive = False And ((BitAND($g_iAndroidSuspendModeFlags, 1) > 0 And ($g_bAttackActive Or $g_bVillageSearchActive)) Or BitAND($g_iAndroidSuspendModeFlags, 2) > 0) Then ; $g_bVillageSearchActive disabled as it would significantly increase re-connection error during search
-		Local $sFileOrFolder = Default
-		Switch $sFunc
-			Case "SearchMultipleTilesBetweenLevels", "FindTile", "SearchTile", "SearchMultipleTilesLevel", "SearchMultipleTiles", "RecheckTile", "DoOCR"
-				If StringLeft($vParam2, 1) <> "-" Then
-					$sFileOrFolder = $vParam2
-					$vParam2 = "-" & _Base64Encode(StringToBinary($vParam2, 4), 1024) ; support umlauts using Base64 UTF-8
-				EndIf
-		EndSwitch
-		If $g_bDebugBetaVersion And $sFileOrFolder <> Default And StringInStr($sFileOrFolder, "\") And FileExists($sFileOrFolder) = 0 Then SetLog("Cannot access path: " & $sFileOrFolder, $COLOR_ERROR)
-		; suspend Android now
-		Local $bWasSuspended = SuspendAndroid()
-		$aResult = _DllCallMyBot($sFunc, $sType1, $vParam1, $sType2, $vParam2, $sType3, $vParam3, $sType4, $vParam4, $sType5, $vParam5, $sType6, $vParam6, $sType7, $vParam7, $sType8, $vParam8, $sType9, $vParam9, $sType10, $vParam10)
-		; resume Android again (if it was not already suspended)
-		SuspendAndroid($bWasSuspended)
-	Else
-		$aResult = _DllCallMyBot($sFunc, $sType1, $vParam1, $sType2, $vParam2, $sType3, $vParam3, $sType4, $vParam4, $sType5, $vParam5, $sType6, $vParam6, $sType7, $vParam7, $sType8, $vParam8, $sType9, $vParam9, $sType10, $vParam10)
-	EndIf
+	Local $sFileOrFolder = Default
+	Switch $sFunc
+		Case "SearchMultipleTilesBetweenLevels", "FindTile", "SearchTile", "SearchMultipleTilesLevel", "SearchMultipleTiles", "RecheckTile", "DoOCR"
+			If StringLeft($vParam2, 1) <> "-" Then
+				$sFileOrFolder = $vParam2
+				$vParam2 = "-" & _Base64Encode(StringToBinary($vParam2, 4), 1024) ; support umlauts using Base64 UTF-8
+			EndIf
+	EndSwitch
+	If $g_bDebugBetaVersion And $sFileOrFolder <> Default And StringInStr($sFileOrFolder, "\") And FileExists($sFileOrFolder) = 0 Then SetLog("Cannot access path: " & $sFileOrFolder, $COLOR_ERROR)
+	; suspend Android now
+	Local $bWasSuspended = SuspendAndroid()
+	$aResult = _DllCallMyBot($sFunc, $sType1, $vParam1, $sType2, $vParam2, $sType3, $vParam3, $sType4, $vParam4, $sType5, $vParam5, $sType6, $vParam6, $sType7, $vParam7, $sType8, $vParam8, $sType9, $vParam9, $sType10, $vParam10)
+	Local $error = @error
+	Local $i = 1
+	While Not $error And $aResult[0] = "<GetAsyncResult>"
+		; when receiving "<GetAsyncResult>", dll waited already 100ms, and android should be resumed after 500ms for 100ms
+		If Mod($i + 5, 10) = 0 Then
+			SetDebugLog("Waiting for DLL async function " & $sFunc & " ...")
+			ResumeAndroid()
+		EndIf
+		$i += 1
+		If _Sleep(100) Then
+			ResumeAndroid()
+			$aResult[0] = ""
+			$g_bLibMyBotActive = False
+			Return SetError(0, 0, $aResult)
+		EndIf
+		SuspendAndroid()
+		$aResult = _DllCallMyBot("GetAsyncResult")
+		$error = @error
+	WEnd
+
+	; resume Android again (if it was not already suspended)
+	SuspendAndroid($bWasSuspended)
 	$g_bLibMyBotActive = False
-	Return $aResult
+	Return SetError($error, @extended, $aResult)
 EndFunc   ;==>DllCallMyBot
 
 Func debugMBRFunctions($iDebugSearchArea = 0, $iDebugRedArea = 0, $iDebugOcr = 0)

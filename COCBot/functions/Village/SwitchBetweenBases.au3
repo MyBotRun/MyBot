@@ -40,7 +40,7 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 		If $i = 1 Then
 			For $j = 0 To 6
 				AndroidShield("AndroidOnlyZoomOut") ; Update shield status
-				AndroidZoomOut(False, $j) ; use new ADB zoom-out, just incase forcing a zoomout without images detections
+				AndroidZoomOut($j, Default, ($g_iAndroidZoomoutMode <> 2)) ; use new ADB zoom-out, just incase forcing a zoomout without images detections
 				If Not $g_bRunState Then Return
 				If _sleep(100) Then Return
 			Next

@@ -206,6 +206,10 @@ Func MakeTargetDropPoints($side, $pointsQty, $addtiles, $building)
 			$BuildingEnum = $eBldgMortar
 		Case "AIRDEFENSE"
 			$BuildingEnum = $eBldgAirDefense
+		Case "EX-WALL"
+			$BuildingEnum = $eExternalWall
+		Case "IN-WALL"
+			$BuildingEnum = $eInternalWall
 		Case Else
 			SetLog("Defense name not understood", $COLOR_ERROR) ; impossible error as value is checked earlier
 			SetError(1, 0, "")
@@ -279,6 +283,7 @@ Func MakeTargetDropPoints($side, $pointsQty, $addtiles, $building)
 			Next
 			If isInsideDiamondRedArea($pixel) = False Then SetDebugLog("MakeTargetDropPoints() ADDTILES error!")
 			$sLoc = $pixel[0] & "-" & $pixel[1] ; make string for modified building location
+			SetLog("Target drop point for " &  $g_sBldgNames[$BuildingEnum] & " (adding " & $addtiles & " tiles): " & $sLoc)
 			Return GetListPixel($sLoc, "-", "MakeTargetDropPoints TARGET") ; return ADDTILES modified location array
 		Case 5
 			; drop point(s) are 5 points outside redline closest to building target as returned by GetDeployableNextTo($sPoints, $distance = 3, $redlineoverride = "")

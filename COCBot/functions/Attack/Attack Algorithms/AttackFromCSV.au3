@@ -754,6 +754,20 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		SetDebugLog("> " & $g_sBldgNames[$eBldgAirDefense] & " detection not need, skipping", $COLOR_DEBUG)
 	EndIf
 
+	; Calculate main attack side
+	ParseAttackCSV_MainSide()
+
+	; 12 - Wall
+	If $g_bCSVLocateWall Then
+		Local $aCSVExternalWall[1], $aCSVInternalWall[1]
+		If FindWallCSV($aCSVExternalWall, $aCSVInternalWall) Then
+			_ObjAdd($g_oBldgAttackInfo, $eExternalWall & "_LOCATION", $aCSVExternalWall) ; save array of locations
+			If @error Then _ObjErrMsg("_ObjAdd " & $g_sBldgNames[$eExternalWall] & " _LOCATION", @error) ; Log errors
+			_ObjAdd($g_oBldgAttackInfo, $eInternalWall & "_LOCATION", $aCSVInternalWall) ; save array of locations
+			If @error Then _ObjErrMsg("_ObjAdd " & $g_sBldgNames[$eInternalWall] & " _LOCATION", @error) ; Log errors
+		EndIf
+	EndIf
+
 	; Log total CSV prep time
 	SetLog(">> Total time: " & Round(__timerdiff($hTimerTOTAL) / 1000, 2) & " seconds", $COLOR_INFO)
 
@@ -793,3 +807,102 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 
 EndFunc   ;==>Algorithm_AttackCSV
 
+Func FindWallCSV(ByRef $aCSVExternalWall, ByRef $aCSVInternalWall)
+	SetLog("Searching for wall location...")
+
+	Local $aOuterWall[2], $aInnerWall[2], $bResult = False
+	Local $aiWallPos[1][3] ; x, y, distance to edge
+	Local $aEdgeCoord[2], $aCenterCoord[2] = [$ExternalArea[2][0], $ExternalArea[0][1]]
+
+	For $i = 0 To UBound($ExternalArea) - 1
+		If $MAINSIDE = $ExternalArea[$i][2] Then
+			$aEdgeCoord[0] = Number($ExternalArea[$i][0])
+			$aEdgeCoord[1] = Number($ExternalArea[$i][1])
+			ExitLoop
+		EndIf
+	Next
+
+	If $g_bDebugImageSave Then
+		_CaptureRegion2()
+		; Create the necessery GDI stuff
+		Local $subDirectory = $g_sProfileTempDebugPath & "CSVWall"
+		DirCreate($subDirectory)
+		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
+		Local $Time = @HOUR & "." & @MIN & "." & @SEC
+		Local $filename = String($Date & "_" & $Time & "_.png")
+		Local $editedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
+		Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($editedImage)
+		Local $hPenRED = _GDIPlus_PenCreate(0xFFFF0000, 3) ; Create a pencil Color FF0000/RED
+		Local $hPenBLUE = _GDIPlus_PenCreate(0xFF0000FF, 2)
+	EndIf
+
+	For $i = 0 To 2 ; 3 rectangulars from edge to center
+		Local $X1 = Int($aEdgeCoord[0] + $i * ($aEdgeCoord[0] < $aCenterCoord[0] ? 63 : -63))
+		Local $Y1 = Int($aEdgeCoord[1] + $i * ($aEdgeCoord[1] < $aCenterCoord[1] ? 47 : -47))
+		Local $X2 = Int($X1 + ($aEdgeCoord[0] < $aCenterCoord[0] ? 80 : -80))
+		Local $Y2 = Int($Y1 + ($aEdgeCoord[1] < $aCenterCoord[1] ? 60 : -60))
+
+		_CaptureRegion2(_Min($X1, $X2), _Min($Y1, $Y2), _Max($X1, $X2), _Max($Y1, $Y2))
+		Local $FoundWalls = imglocFindWalls("AnyWallLevel", "FV", "FV", 10)
+
+		If $g_bDebugImageSave Then _GDIPlus_GraphicsDrawRect($hGraphic, _Min($X1, $X2), _Min($Y1, $Y2), Abs($X1 - $X2), Abs ($Y1 - $Y2), $hPenBLUE)
+
+		If $FoundWalls[0] = "" Then ; nothing found
+			SetDebugLog("No wall(s) found in section " & $i + 1)
+		Else
+			Local $sWallString = _ArrayToString($FoundWalls)
+			Local $aWallCoordsArray = decodeMultipleCoords($sWallString, 7, 7)
+			SetDebugLog("Found " & UBound($aWallCoordsArray) & " walls in section " & $i + 1 & ": " & $sWallString)
+
+			For $j = 0 To UBound($aWallCoordsArray) - 1
+				Local $aTempPos = $aWallCoordsArray[$j]
+				Local $index = UBound($aiWallPos) - 1
+				$aiWallPos[$index][0] = $aTempPos[0] + _Min($X1, $X2)
+				$aiWallPos[$index][1] = $aTempPos[1] + _Min($Y1, $Y2)
+				$aiWallPos[$index][2] = Int(Sqrt(($aiWallPos[$index][0] - $aEdgeCoord[0]) ^ 2 + ($aiWallPos[$index][1] - $aEdgeCoord[1]) ^ 2))
+				ReDim $aiWallPos[UBound($aiWallPos) + 1][3]
+				If $g_bDebugImageSave Then _GDIPlus_GraphicsDrawEllipse($hGraphic, $aiWallPos[$index][0], $aiWallPos[$index][1], 3, 3, $hPenBLUE)
+			Next
+		EndIf
+	Next
+
+	If UBound($aiWallPos) > 1 And $aiWallPos[0][0] <> "" Then
+		_ArraySort($aiWallPos, 0, 0, 0, 2)
+		_ArrayDelete($aiWallPos, 0) ; remove 1st "" element
+		SetDebugLog(@CRLF & _ArrayToString($aiWallPos))
+
+		$aOuterWall[0] = $aiWallPos[0][0]
+		$aOuterWall[1] = $aiWallPos[0][1]
+
+		For $i = 0 To UBound($aiWallPos) - 1
+			If $i = 0 Then ContinueLoop
+			If $aiWallPos[$i][2] - $aiWallPos[0][2] >= 40 Then
+				$aInnerWall[0] = $aiWallPos[$i][0]
+				$aInnerWall[1] = $aiWallPos[$i][1]
+				ExitLoop
+			EndIf
+		Next
+
+		Setlog("External Wall: " & _ArrayToString($aOuterWall) & " , Internal Wall: " & _ArrayToString($aInnerWall))
+		If $aOuterWall[0] <> "" Then
+			$aCSVExternalWall[0] = $aOuterWall
+			$aCSVInternalWall[0] = $aInnerWall
+			If $g_bDebugImageSave Then
+				_GDIPlus_GraphicsDrawEllipse($hGraphic, $aOuterWall[0], $aOuterWall[1], 3, 3, $hPenRED)
+				_GDIPlus_GraphicsDrawEllipse($hGraphic, $aInnerWall[0], $aInnerWall[1], 3, 3, $hPenRED)
+			EndIf
+			$bResult = True
+		EndIf
+	Else
+		SetLog("No wall found")
+	EndIf
+	If $g_bDebugImageSave Then
+		; Destroy the used GDI stuff
+		_GDIPlus_ImageSaveToFile($editedImage, $subDirectory & "\" & $filename)
+		_GDIPlus_PenDispose($hPenRED)
+		_GDIPlus_GraphicsDispose($hGraphic)
+		_GDIPlus_BitmapDispose($editedImage)
+	EndIf
+
+	Return $bResult
+EndFunc

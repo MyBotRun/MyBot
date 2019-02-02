@@ -100,6 +100,7 @@ Func UpgradeWall()
 
 				ClickP($aAway, 1, 0, "#0314") ; click away
 				VillageReport(True, True)
+				If SkipWallUpgrade() Then Return
 				$MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $g_iWallCost) > Number($g_iUpgradeWallMinGold) ; Check if enough Gold
 				$MinWallElixir = Number($g_aiCurrentLoot[$eLootElixir] - $g_iWallCost) > Number($g_iUpgradeWallMinElixir) ; Check if enough Elixir
 

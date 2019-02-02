@@ -1,6 +1,6 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: Clan Games (V3)
-; Description ...: This file contains the Clan Gmes algorithm
+; Name ..........: Clan Games
+; Description ...: This file contains the Clan Games algorithm
 ; Syntax ........: ---
 ; Parameters ....: ---
 ; Return values .: ---
@@ -12,8 +12,6 @@
 ; Link ..........: https://www.mybot.run
 ; Example .......: ---
 ;================================================================================================================================
-
-; Main Loop Function
 Func _ClanGames($test = False)
 
 	; Check If this Feature is Enable on GUI.
@@ -303,7 +301,7 @@ Func _ClanGames($test = False)
 
 							; Exceptions :
 							; 1 - "Gardening Exercise" needs at least a Free Builder and "Remove Obstacles" enabled
-							 If $MiscChallenges[$j][1] = "Gardening Exercise" And ($g_iFreeBuilderCount < 1 Or Not $g_bChkCleanYard) Then ExitLoop 
+							 If $MiscChallenges[$j][1] = "Gardening Exercise" And ($g_iFreeBuilderCount < 1 Or Not $g_bChkCleanYard) Then ExitLoop
 
 							; 2 - Verify your TH level and Challenge kind
 							If $g_iTownHallLevel < $MiscChallenges[$j][2] Then ExitLoop

@@ -172,8 +172,24 @@ Func InitMEmu($bCheckOnly = False)
 
 	; Read ADB host and Port
 	If Not $bCheckOnly Then
+		; newer MEmu doesn't support yet ADB mouse click/minitouch
+		local $memuCurr = GetVersionNormalized($MEmuVersion)
+		Local $memu6 = GetVersionNormalized("6.0")
+		If $memuCurr > $memu6 Then
+			;SetDebugLog("Disable ADB Mouse Click as not support for " & $g_sAndroidEmulator & " version " & $MEmuVersion)
+			;AndroidSupportFeaturesRemove(4) ; disable ADB Mouse Click support
+		EndIf
+
 		InitAndroidConfig(True) ; Restore default config
 		If Not GetAndroidVMinfo($__VBoxVMinfo, $MEmu_Manage_Path) Then Return False
+
+		Local $sAdbPAth = GetMEmuAdbPath()
+		If $sAdbPAth Then
+			; to avoid MEmu "device offline" problems, force to use MEmu adb
+			$sPreferredADB = $sAdbPAth
+			$g_bAndroidAdbPortPerInstance = False
+		EndIf
+
 		; update global variables
 		$g_sAndroidProgramPath = $MEmu_Path & "MEmu.exe"
 		$g_sAndroidAdbPath = $sPreferredADB

@@ -64,7 +64,7 @@ Func _Ini_Save($filename)
 	FileCopy($filename, $filename & ".bak", $FC_OVERWRITE)
 
 	Local $hFile = FileOpen($filename, $FO_OVERWRITE + $FO_UTF16_LE)
-
+	FileWriteLine($hFile, ";" & TimeDebug() & "MyBot.run configuration saved: " & $filename)
 	Local $sCurrentSection = ""
 
 	For $i = 0 To $g_iIniLineCount - 1

@@ -27,6 +27,7 @@ Func ParseAttackCSV_Read_SIDE_variables()
 	$g_bCSVLocateWizTower = False
 	$g_bCSVLocateMortar = False
 	$g_bCSVLocateAirDefense = False
+	$g_bCSVLocateWall = False
 	; $g_bCSVLocateGemBox = False
 
 	If $g_iMatchMode = $DB Then
@@ -107,6 +108,10 @@ Func ParseAttackCSV_Read_SIDE_variables()
 									$g_bCSVLocateMortar = True
 								Case "AIRDEFENSE"
 									$g_bCSVLocateAirDefense = True
+								Case "EX-WALL"
+									$g_bCSVLocateWall = True
+								Case "IN-WALL"
+									$g_bCSVLocateWall = True
 								Case Else
 									SetDebugLog("Invalid MAKE building target name: " & $value8, $COLOR_WARNING)
 									debugAttackCSV("Invalid MAKE building target name: " & $value8)
