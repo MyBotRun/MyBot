@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.0)
+#pragma compile(FileVersion, 7.7.1)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7"
+Global $g_sBotVersion = "v7.7.1"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -2605,7 +2605,7 @@ Global $g_bAndroidCheckTimeLagEnabled = True
 Global $g_bAndroidAdbScreencapEnabled = True
 Global $g_bAndroidAdbClickDragEnabled = True
 Global $g_bAndroidAdbInputEnabled = True
-Global $g_bAndroidAdbClickEnabled = False
+Global $g_bAndroidAdbClickEnabled = True
 Global $g_bAndroidAdbClicksEnabled = False
 Global $g_iAndroidAdbClicksTroopDeploySize = 0
 Global $g_bAndroidAdbInstanceEnabled = True

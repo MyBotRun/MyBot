@@ -18,6 +18,8 @@
 #include "functions\Other\StopWatch.au3"
 ;#include "functions\Other\Synchronization.au3" ; now included in LaunchConsole.au3
 #include "functions\Other\OnAutoItErrorRegisterBot.au3"
+#Include "functions\Other\Json.au3"
+
 
 #include "functions\Attack\AttackReport.au3"
 #include "functions\Attack\AttackStats.au3"
@@ -297,6 +299,7 @@
 
 #include "functions\Other\Api.au3"
 #include "functions\Other\ApiClient.au3"
+#include "functions\Other\ForumAuthentication.au3"
 
 ; moved to the end to avoid any global declare issues
 #include "functions\Config\profileFunctions.au3"

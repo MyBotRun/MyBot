@@ -527,7 +527,7 @@ Func NotifyPushMessageToBoth($Message, $Source = "")
 				"k  [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-DE_Info_01", "DE") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootDarkElixir]) & _
 				"k %0A[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iStatsLastAttack[$eLootTrophy] & _
 				"  [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "%") & "]: " & $g_sTotalDamage & _
-				"%  [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "*") & "]: " & $g_sStarsEarned & _
+				"  [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "*") & "]: " & $g_sStarsEarned & _
 				"  [Tr#]: " & $g_aiCurrentLoot[$eLootTrophy])
 				If _Sleep($DELAYPUSHMSG1) Then Return
 				SetLog("Notify Telegram: Last Raid Text has been sent!", $COLOR_SUCCESS)

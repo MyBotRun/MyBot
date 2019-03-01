@@ -130,7 +130,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 	If $troopPosition = -1 Or Not $bUseSpell Then
 
 		If $bUseSpell Then
-			SetLog("No " & GetTroopName($iTroopIndex) & "  found in your attack troops list")
+			SetLog("No " & GetTroopName($iTroopIndex) & " found in your attack troops list")
 			debugAttackCSV("No " & GetTroopName($iTroopIndex) & " found in your attack troops list")
 		Else
 			If $g_bDebugSetlog Then SetDebugLog("Discard use " & GetTroopName($iTroopIndex), $COLOR_DEBUG)

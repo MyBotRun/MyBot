@@ -53,20 +53,34 @@ Func OpenKOPLAYER($bRestart = False)
 EndFunc   ;==>OpenKOPLAYER
 
 Func GetKOPLAYERProgramParameter($bAlternative = False)
-	If Not $bAlternative Or $g_sAndroidInstance <> $g_avAndroidAppConfig[$g_iAndroidConfig][1] Then
-		; should be launched with these parameter
-		Return "-n " & ($g_sAndroidInstance = "" ? $g_avAndroidAppConfig[$g_iAndroidConfig][1] : $g_sAndroidInstance)
+	Local $bVer2 = (GetVersionNormalized($g_sAndroidVersion) >= GetVersionNormalized("2.0"))
+	If $bVer2 Then
+		If Not $bAlternative Or $g_sAndroidInstance <> $g_avAndroidAppConfig[$g_iAndroidConfig][1] Then
+			Local $a = FindAvaiableInstances()
+			; should be launched with these parameter
+			Local $i = _ArraySearch($a, ($g_sAndroidInstance = "" ? $g_avAndroidAppConfig[$g_iAndroidConfig][1] : $g_sAndroidInstance))
+			If $i < 0 Then $i = 0
+			Return "-n " & $i
+		EndIf
+		; default instance gets launched as name "default" but vbox instance name is KOPLAYER (this is the alternative way)
+		Return "-n 0"
+	Else
+		If Not $bAlternative Or $g_sAndroidInstance <> $g_avAndroidAppConfig[$g_iAndroidConfig][1] Then
+			; should be launched with these parameter
+			Return "-n " & ($g_sAndroidInstance = "" ? $g_avAndroidAppConfig[$g_iAndroidConfig][1] : $g_sAndroidInstance)
+		EndIf
+		; default instance gets launched as name "default" but vbox instance name is KOPLAYER (this is the alternative way)
+		Return "-n default"
 	EndIf
-	; default instance gets launched as name "default" but vbox instance name is KOPLAYER (this is the alternative way)
-	Return "-n default"
 EndFunc   ;==>GetKOPLAYERProgramParameter
 
 Func IsKOPLAYERCommandLine($CommandLine)
-	SetDebugLog($CommandLine)
+	SetDebugLog("IsKOPLAYERCommandLine: " & $CommandLine)
 	Local $param1 = GetKOPLAYERProgramParameter()
 	Local $param2 = GetKOPLAYERProgramParameter(True)
 	If StringInStr($CommandLine, $param1 & " ") > 0 Or StringRight($CommandLine, StringLen($param1)) = $param1 Then Return True
 	If StringInStr($CommandLine, $param2 & " ") > 0 Or StringRight($CommandLine, StringLen($param2)) = $param2 Then Return True
+	If $g_sAndroidInstance = "KOPLAYER" And StringStripWS($CommandLine, 3) = $g_sAndroidProgramPath Then Return True
 	Return False
 EndFunc   ;==>IsKOPLAYERCommandLine
 
@@ -183,9 +197,9 @@ Func GetKOPLAYERBackgroundMode()
 	If Not @error Then
 		$sRenderMode = $aRegExResult[0]
 		Switch $sRenderMode
-			Case "DirectX"
+			Case "DirectX", "DirectXPlus"
 				Return $g_iAndroidBackgroundModeDirectX
-			Case "Opengl"
+			Case "Opengl", "OpenglPlus"
 				Return $g_iAndroidBackgroundModeOpenGL
 			Case Else
 				SetLog($g_sAndroidEmulator & " unsupported Render Mode " & $sRenderMode, $COLOR_WARNING)
@@ -204,6 +218,8 @@ Func SetScreenKOPLAYER()
 	$cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_graph_mode " & $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight & "-16", $process_killed)
 	; Set dpi
 	$cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
+	; Since version 2.0
+	$cmdOutput = LaunchConsole($__VBoxManage_Path, "setextradata " & $g_sAndroidInstance & " RenderWindowProp " & $g_iAndroidClientWidth & "*" & $g_iAndroidClientHeight & "*160", $process_killed)
 
 	Return True
 

@@ -1,4 +1,29 @@
-﻿* **V7.7**
+﻿* **V7.7.1**
+* Added MyBot.run Forum user authentication registration to bot fixing COPYCAT problems
+* Added Android click mode (minitouch or WinAPI) to Bot/Android options, default is now minitouch as it's most stable
+* Added REMAIN cmd in csv attack
+* Added KOPLAYER 2.0.0 support
+* Fixed "Troop ... is not available due to full queue"
+* Fixed "Cannot find/verify 'Okay' Button in Army tab #2"
+* Fixed minitouch port initialization
+* Fixed attackbar troop count detection, when count is 200+
+* Fixed minitouch group clicks deploy
+* Fixed LeapDroid render mode detecion
+* Fixed LeapDroid "device offline" problem
+* Fixed SmartFarm debug errors
+* Fixed hero sometime not dropped when CSV recalc not detecting hero anymore
+* Fixed stopping ADB shell instance when bot stopped
+* Fixed bot exeution when "Zone.Identifier" exist on exe or dll files
+* Improved BB boat detection to return to home base
+* Improved minitouch fixing tcp connection problems
+* Improved manual clicks when bot stopped/paused and bot is docked
+* Improved BlueStack/BlueStacks2 command line key to be used on any BlueStacks version
+* Improved MEmu smartwait closing CoC preventing CoC unresponsiveness crash
+* Improved Builder Base village measuring/zoomout
+* Improved one star battle end to activate also Warden
+* Improved Copycat warning
+
+* **V7.7**
 * Added Automatic Builder Base Troop Upgrades
 * Added Wall detection in CSV attack, see BoWiHe v3.2 by @Zeck for details
 * Added zoomout mode under Bot/Android/Android Options

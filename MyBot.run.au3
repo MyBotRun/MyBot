@@ -250,6 +250,7 @@ Func ProcessCommandLine()
 		$g_sProfileCurrentName = StringRegExpReplace($g_asCmdLine[1], '[/:*?"<>|]', '_')
 		If $g_asCmdLine[0] >= 2 Then
 			If StringInStr($g_asCmdLine[2], "BlueStacks3") Then $g_asCmdLine[2] = "BlueStacks2"
+			If StringInStr($g_asCmdLine[2], "BlueStacks4") Then $g_asCmdLine[2] = "BlueStacks2"
 		EndIf
 	ElseIf FileExists($g_sProfilePath & "\profile.ini") Then
 		$g_sProfileCurrentName = StringRegExpReplace(IniRead($g_sProfilePath & "\profile.ini", "general", "defaultprofile", ""), '[/:*?"<>|]', '_')
@@ -595,6 +596,8 @@ Func FinalInitialization(Const $sAI)
 	DisableProcessWindowsGhosting()
 
 	UpdateMainGUI()
+	
+	ForumAuthentication()
 
 EndFunc   ;==>FinalInitialization
 

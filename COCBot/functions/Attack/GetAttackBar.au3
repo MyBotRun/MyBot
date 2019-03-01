@@ -120,10 +120,10 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 					$bRemoved = True
 					$aAttackBar[$i][4] = 0 ; set available troops to 0
 					If StringRegExp($aAttackBar[$i][0], $sKeepRemainTroops, 0) = 0 Then
-						SetDebugLog("AttackBarCheck(): Troop " + $aAttackBar[$i][0] + " already deployed, now removed")
+						SetDebugLog("AttackBarCheck(): Troop " & $aAttackBar[$i][0] & " already deployed, now removed")
 						ContinueLoop
 					Else
-						SetDebugLog("AttackBarCheck(): Troop " + $aAttackBar[$i][0] + " already deployed, but stays")
+						SetDebugLog("AttackBarCheck(): Troop " & $aAttackBar[$i][0] & " already deployed, but stays")
 					EndIf
 				EndIf
 			Else
@@ -268,10 +268,10 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 					$bRemoved = True
 					$aAttackBar[$i][4] = 0 ; set available troops to 0
 					If StringRegExp($aAttackBar[$i][0], $sKeepRemainTroops, 0) = 0 Then
-						SetDebugLog("AttackBarCheck(): Troop " + $aAttackBar[$i][0] + " already deployed, now removed")
+						SetDebugLog("AttackBarCheck(): Troop " & $aAttackBar[$i][0] & " already deployed, now removed")
 						ContinueLoop
 					Else
-						SetDebugLog("AttackBarCheck(): Troop " + $aAttackBar[$i][0] + " already deployed, but stays")
+						SetDebugLog("AttackBarCheck(): Troop " & $aAttackBar[$i][0] & " already deployed, but stays")
 					EndIf
 				EndIf
 			Else

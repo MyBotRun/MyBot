@@ -19,7 +19,6 @@
 Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 	If $g_bDebugSetlogTrain Then SetLog("Func TrainIt $iIndex=" & $iIndex & " $howMuch=" & $iQuantity & " $iSleep=" & $iSleep, $COLOR_DEBUG)
 	Local $bDark = ($iIndex >= $eMini And $iIndex <= $eIceG)
-	Local $iErrors = 0
 
 	For $i = 1 To 5 ; Do
 
@@ -48,22 +47,23 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 					Return False
 				EndIf
 			Else
+				ForceCaptureRegion()
 				Local $sBadPixelColor = _GetPixelColor($aTrainPos[0], $aTrainPos[1], $g_bCapturePixel)
 				If $g_bDebugSetlogTrain Then SetLog("Positon X: " & $aTrainPos[0] & "| Y : " & $aTrainPos[1] & " |Color get: " & $sBadPixelColor & " | Need: " & $aTrainPos[2])
 				If StringMid($sBadPixelColor, 1, 2) = StringMid($sBadPixelColor, 3, 2) And StringMid($sBadPixelColor, 1, 2) = StringMid($sBadPixelColor, 5, 2) Then
 					; Pixel is gray, so queue is full -> nothing to inform the user about
 					SetLog("Troop " & GetTroopName($iIndex) & " is not available due to full queue", $COLOR_DEBUG)
 				Else
-					If $iErrors = 0 Then
-						Local $aEmptyArray[4] = [-1,-1,-1,-1]
-						$aTrainArmy[$iIndex] = $aEmptyArray
-						$iErrors += 1
-					Else
+					If Mod($i, 2) = 0 Then ; executed on $i = 2 or 4
 						If $g_bDebugSetlogTrain Then DebugImageSave("BadPixelCheck_" & GetTroopName($iIndex))
 						SetLog("Bad pixel check on troop position " & GetTroopName($iIndex), $COLOR_ERROR)
 						If $g_bDebugSetlogTrain Then SetLog("Train Pixel Color: " & $sBadPixelColor, $COLOR_DEBUG)
-						$iErrors = 0
 					EndIf
+				EndIf
+				If Mod($i, 2) = 1 Then ; executed on $i = 1, 3 or 5
+					; force detecting train slot again
+					Local $aEmptyArray[4] = [-1,-1,-1,-1]
+					$aTrainArmy[$iIndex] = $aEmptyArray
 				EndIf
 			EndIf
 		Else

@@ -184,8 +184,8 @@ Func Laboratory()
 		EndIf
 	Next
 	If $g_bDebugSetlog Then Setlog("Icon Offset on First Page: " & $iFirstPageOffset & "px", $COLOR_DEBUG)
-	For $i = 0 To 2
-		ClickDrag(635, 439 + $g_iMidOffsetY, 220, 439 + $g_iMidOffsetY, 250)
+	For $i = 0 To 3
+		ClickDrag(533, 439 + $g_iMidOffsetY, 213, 439 + $g_iMidOffsetY, 250)
 	Next
 	If _Sleep($DELAYLABORATORY5) Then Return
 	For $x = 0 To 5 ; check for an offset of icons on last page in lab
@@ -196,8 +196,8 @@ Func Laboratory()
 		EndIf
 	Next
 	If $g_bDebugSetlog Then Setlog("Icon Offset on Last Page: " & $iLastPageOffset & "px", $COLOR_DEBUG)
-	For $i = 0 To 2
-		ClickDrag(220, 439 + $g_iMidOffsetY, 635, 439 + $g_iMidOffsetY, 250)
+	For $i = 0 To 3
+		ClickDrag(213, 439 + $g_iMidOffsetY, 533, 439 + $g_iMidOffsetY, 250)
 	Next
 	If _Sleep($DELAYLABORATORY5) Then Return
 
@@ -240,7 +240,7 @@ Func Laboratory()
 
 	; Second page
 	For $i = 0 To 1
-		ClickDrag(615, 439 + $g_iMidOffsetY, 325, 439 + $g_iMidOffsetY, 250)
+		ClickDrag(533, 439 + $g_iMidOffsetY, 213, 439 + $g_iMidOffsetY, 250)
 	Next
 	If _Sleep($DELAYLABORATORY3) Then Return
 	If Not ClickDragLab($g_avLabTroops[14][0]) Then
@@ -280,7 +280,7 @@ Func Laboratory()
 
 	; Third page
 	For $i = 0 To 1
-		ClickDrag(620, 439 + $g_iMidOffsetY, 320, 439 + $g_iMidOffsetY, 250)
+		ClickDrag(533, 439 + $g_iMidOffsetY, 213, 439 + $g_iMidOffsetY, 250)
 	Next
 	If _Sleep($DELAYLABORATORY5) Then Return
 	If $g_bDebugSetlog Then LabTroopImages(21, 32)
@@ -402,7 +402,7 @@ Func Laboratory()
 	If $g_avLabTroops[$iSelectedUpgrade][2] < 2 Then ; when troop located on page 1 or 2
 		If $g_avLabTroops[$iSelectedUpgrade][2] = 1 Then ; page 2 position correction when stay on 2nd page
 			For $i = 0 To 1
-				ClickDrag(320, 439 + $g_iMidOffsetY, 620, 439 + $g_iMidOffsetY, 250)
+				ClickDrag(213, 439 + $g_iMidOffsetY, 533, 439 + $g_iMidOffsetY, 250)
 			Next
 			If _Sleep($DELAYLABORATORY3) Then Return
 			If Not ClickDragLab($g_avLabTroops[14][0]) Then
@@ -411,8 +411,8 @@ Func Laboratory()
 				Return False
 			EndIf
 		Else
-			For $i = 0 To 2
-				ClickDrag(220, 439 + $g_iMidOffsetY, 635, 439 + $g_iMidOffsetY, 250)
+			For $i = 0 To 3
+				ClickDrag(213, 439 + $g_iMidOffsetY, 533, 439 + $g_iMidOffsetY, 250)
 			Next
 		EndIf
 		If _Sleep($DELAYLABORATORY5) Then Return

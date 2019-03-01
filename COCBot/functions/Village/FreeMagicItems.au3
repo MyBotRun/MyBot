@@ -33,7 +33,7 @@ Func CollectFreeMagicItems($bTest = False)
 		Click($g_iQuickMISX + 120, $g_iQuickMISY + 160)
 		If _Sleep(1500) Then Return
 	Else
-		SetLog("Trader unvailable", $COLOR_INFO)
+		SetLog("Trader unavailable", $COLOR_INFO)
 		Return
 	EndIf
 

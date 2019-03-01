@@ -151,18 +151,7 @@ Func DropTrophy()
 				; Drop a Hero or Troop
 				If $g_bDropTrophyUseHeroes Then
 					;a) identify heroes avaiables...
-					$g_iKingSlot = -1
-					$g_iQueenSlot = -1
-					$g_iWardenSlot = -1
-					For $i = 0 To UBound($g_avAttackTroops) - 1
-						If $g_avAttackTroops[$i][0] = $eKing Then
-							$g_iKingSlot = $i
-						ElseIf $g_avAttackTroops[$i][0] = $eQueen Then
-							$g_iQueenSlot = $i
-						ElseIf $g_avAttackTroops[$i][0] = $eWarden Then
-							$g_iWardenSlot = $i
-						EndIf
-					Next
+					SetSlotSpecialTroops()
 
 					;b) calculate random drop point...
 					$aRandomEdge = $g_aaiEdgeDropPoints[Round(Random(0, 3))]

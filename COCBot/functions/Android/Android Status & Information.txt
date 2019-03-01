@@ -37,14 +37,16 @@ MyBot Command Line Key (2.x/3.x): BlueStacks2
 Default Instance Key: Android
 Second Instance Key (only for BlueStacks 3.x):  Android_1
 
-Known issues/bugs: True Background mode using ADB not available for older versions (no ADB screencap & no ADB mouse click).
+Known issues/bugs: True Background mode using ADB not available for older versions.
+Older versions might not install the right Clash of Clans APK: "CPU ABI incompatible" error in Play Store.
+In that case just install the latest arm-v7a version from apkmirror.com: https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=599517
 ADB connection for BlueStacks2 can require one-time ADB daemon restart (initiated automatically by bot).
 ADB connection does interfere with LeapDroid default instance when running at the same time, review LeapDroid section to change ADB port.
 
 KOPLAYER
 ========
 http://www.koplayer.com/
-Versions 1.4.1055, 1.4.1049
+Versions 2.0.0, 1.4.1055, 1.4.1049
 MyBot Command Line Key: KOPLAYER
 Default Instance Key: KOPLAYER
 Second Instance Key:  KOPLAYER_1

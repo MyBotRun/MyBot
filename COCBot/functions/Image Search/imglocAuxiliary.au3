@@ -112,7 +112,7 @@ Func checkImglocError(ByRef $imglocvalue, $funcName, $sTileSource = "", $sImageA
 			If $g_bDebugSetlog Then SetDebugLog($funcName & " imgloc search returned no results" & ($sImageArea ? " in " & $sImageArea : "")  & ($sTileSource ? " for '" & $sTileSource & "' !" : "!"), $COLOR_WARNING)
 			Return True
 		ElseIf StringLeft($imglocvalue[0], 2) = "-1" Then ;error
-			If $g_bDebugSetlog Then SetDebugLog($funcName & " - Imgloc DLL Error: " + $imglocvalue[0], $COLOR_ERROR)
+			If $g_bDebugSetlog Then SetDebugLog($funcName & " - Imgloc DLL Error: " & $imglocvalue[0], $COLOR_ERROR)
 			Return True
 		ElseIf StringLeft($imglocvalue[0], 2) = "-2" Then ;critical error
 			SetLog($funcName & " - Imgloc DLL Critical Error", $COLOR_RED)

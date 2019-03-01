@@ -102,29 +102,29 @@ Func GetLeapDroidAdbPath()
 EndFunc   ;==>GetLeapDroidAdbPath
 
 Func GetLeapDroidBackgroundMode()
-	; Only OpenGL is supported up to version 3.1.2.5
-
-	Local $files[2] = [@MyDocumentsDir & "\Leapdroid\Leapdroid Emulator\leapdroid.settings", GetLeapDroidPath() & "Leapdroid Emulator\leapdroid.settings"]
+	Local $files = [GetLeapDroidPath() & "Leapdroid\Leapdroid Emulator\leapdroid.settings", GetLeapDroidPath() & "Leapdroid Emulator\leapdroid.settings", @MyDocumentsDir & "\Leapdroid\Leapdroid Emulator\leapdroid.settings"]
 	Local $f, $p, $h
 
 	; Set width and height
 	For $f In $files
-		$p = StringMid($f, 1, StringInStr($f, "\", 0, -1))
-		If FileExists($p) Then
-			If FileExists($f) Then
-				Local $sSettings = FileRead($f)
-				Local $aRegExResult = StringRegExp($sSettings, "RENDERER=(\d+)", $STR_REGEXPARRAYMATCH)
-				If Not @error Then
-					Local $graphics_render_mode = $aRegExResult[0]
-					Switch $graphics_render_mode
-						Case "1"
-							Return $g_iAndroidBackgroundModeDirectX
-						Case Else
-							Return $g_iAndroidBackgroundModeOpenGL
-					EndSwitch
-				EndIf
-				ExitLoop
+		If FileExists($f) Then
+			SetDebugLog("Found LeapDroid settings file: " & $f)
+			Local $sSettings = FileRead($f)
+			Local $aRegExResult = StringRegExp($sSettings, "RENDERER=(\d+)", $STR_REGEXPARRAYMATCH)
+			If Not @error Then
+				Local $graphics_render_mode = $aRegExResult[0]
+				Switch $graphics_render_mode
+					Case "1"
+						Return $g_iAndroidBackgroundModeDirectX
+					Case Else
+						Return $g_iAndroidBackgroundModeOpenGL
+				EndSwitch
+			Else
+				SetDebugLog("LeapDroid settings file has now RENDERE setting in: " & $f, $COLOR_ERROR)
 			EndIf
+			ExitLoop
+		Else
+			SetDebugLog("LeapDroid settings file not available: " & $f)
 		EndIf
 	Next
 
@@ -190,6 +190,12 @@ Func InitLeapDroid($bCheckOnly = False)
 		InitAndroidConfig(True) ; Restore default config
 
 		If Not GetAndroidVMinfo($__VBoxVMinfo, $LeapDroid_Manage_Path) Then Return False
+		Local $sAdbPAth = GetLeapDroidAdbPath()
+		If $sAdbPAth Then
+			; to avoid LeapDroid "device offline" problems, force to use LeapDroid adb
+			$sPreferredADB = $sAdbPAth
+			$g_bAndroidAdbPortPerInstance = False
+		EndIf
 		$__VBoxGuestProperties = LaunchConsole($LeapDroid_Manage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 
 		; update global variables

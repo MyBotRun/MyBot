@@ -366,7 +366,27 @@ Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 		SetCriticalMessageProcessing($wasCritical)
 		Return $GUI_RUNDEFMSG
 	EndIf
-	If $iMsg <> $WM_MOUSEMOVE Or $g_iAndroidEmbedMode <> 0 Then
+
+	Local $bMinitouch = True
+	If $bMinitouch Then
+		Static $s_x, $s_y
+		Local $iBytesSent = 0
+		Switch $iMsg
+			Case $WM_MOUSEMOVE
+				If $s_x <> $x Or $s_y <> $y Then
+					$iBytesSent = Minitouch($x, $y, 0)
+				EndIf
+			Case $WM_LBUTTONDOWN
+				$iBytesSent = Minitouch($x, $y, 1)
+			Case $WM_LBUTTONUP
+				$iBytesSent = Minitouch($x, $y, 2)
+		EndSwitch
+		$bMinitouch = ($iBytesSent > 0)
+		$s_x = $x
+		$s_y = $y
+	EndIf
+
+	If Not $bMinitouch And ($iMsg <> $WM_MOUSEMOVE Or $g_iAndroidEmbedMode <> 0) Then
 		; not all message got thru here, so disabled
 		;$x += $g_aiMouseOffset[0]
 		;$y += $g_aiMouseOffset[1]

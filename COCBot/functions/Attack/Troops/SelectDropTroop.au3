@@ -22,8 +22,11 @@ EndFunc   ;==>SelectDropTroop
 Func GetSlotPosition($iSlotIndex, $bOCRPosition = False)
 	Local $aiReturnPosition[2] = [0, 0]
 
-	If $iSlotIndex < 0 Or $iSlotIndex + 1 > UBound($g_avAttackTroops, 1) Then Return $aiReturnPosition ;Invalid Slot Index returns Click Position X: 0 And Y:0
-
+	If $iSlotIndex < 0 Or $iSlotIndex > UBound($g_avAttackTroops, 1) - 1 Then 
+		SetDebugLog("GetSlotPosition(" & $iSlotIndex & ", " & $bOCRPosition & "): Invalid slot index: " & $iSlotIndex)
+		Return $aiReturnPosition ;Invalid Slot Index returns Click Position X: 0 And Y:0
+	EndIf
+		
 	If Not $bOCRPosition Then
 		$aiReturnPosition[0] = $g_avAttackTroops[$iSlotIndex][2]
 		$aiReturnPosition[1] = $g_avAttackTroops[$iSlotIndex][3]

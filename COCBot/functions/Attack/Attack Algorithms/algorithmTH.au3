@@ -304,7 +304,7 @@ Func CheckOneStar($DelayInSec = 0, $Log = True, $CheckHeroes = True)
 
 		If _Sleep(5) Then Return True
 		If $g_bRestart = True Then Return True
-		If $CheckHeroes = True And ($g_bCheckQueenPower = True Or $g_bCheckKingPower = True) Then CheckHeroesHealth() ;Check Heroes Health and activate their abilities if health is not green
+		If $CheckHeroes = True And ($g_bCheckQueenPower = True Or $g_bCheckKingPower = True Or $g_bCheckWardenPower = True) Then CheckHeroesHealth() ;Check Heroes Health and activate their abilities if health is not green
 		;check for one star
 		If _ColorCheck(_GetPixelColor($aWonOneStar[0], $aWonOneStar[1], True), Hex($aWonOneStar[2], 6), $aWonOneStar[3]) Then ;exit if 1 star
 			If $Log = True Then SetLog("Townhall has been destroyed!", $COLOR_ACTION)
@@ -325,6 +325,15 @@ Func CheckOneStar($DelayInSec = 0, $Log = True, $CheckHeroes = True)
 				SetLog("Activating King's power to restore some health before EndBattle", $COLOR_INFO)
 				SelectDropTroop($g_iKingSlot)
 				$g_bCheckKingPower = False
+			EndIf
+
+			If _Sleep(500) Then Return True
+			If $g_bRestart = True Then Return True
+
+			If $g_bCheckWardenPower = True Then
+				SetLog("Activating Warden's power to restore some health before EndBattle", $COLOR_INFO)
+				SelectDropTroop($g_iWardenSlot)
+				$g_bCheckWardenPower = False
 			EndIf
 
 			If $Log = True Then

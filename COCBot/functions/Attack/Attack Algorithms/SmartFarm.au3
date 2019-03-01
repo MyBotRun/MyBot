@@ -433,11 +433,11 @@ Func DebugImageSmartFarm($THdetails, $aIn, $aOut, $sTime, $BestSideToAttack, $re
 			$tempObbj = StringSplit($aIn[$i][5], "|", $STR_NOCOUNT) ; several detected points
 			For $t = 0 To UBound($tempObbj) - 1
 				$tempObbjs = StringSplit($tempObbj[$t], ",", $STR_NOCOUNT)
-				_GDIPlus_GraphicsDrawRect($hGraphic, $tempObbjs[0], $tempObbjs[1], 5, 5, $hPen2)
+				If UBound($tempObbjs) > 1 Then _GDIPlus_GraphicsDrawRect($hGraphic, $tempObbjs[0], $tempObbjs[1], 5, 5, $hPen2)
 			Next
 		Else
 			$tempObbj = StringSplit($aOut[$i][5], ",", $STR_NOCOUNT)
-			_GDIPlus_GraphicsDrawRect($hGraphic, $tempObbj[0], $tempObbj[1], 5, 5, $hPen2)
+			If UBound($tempObbj) > 1 Then _GDIPlus_GraphicsDrawRect($hGraphic, $tempObbj[0], $tempObbj[1], 5, 5, $hPen2)
 		EndIf
 		$tempObbj = Null
 		$tempObbjs = Null
@@ -452,11 +452,11 @@ Func DebugImageSmartFarm($THdetails, $aIn, $aOut, $sTime, $BestSideToAttack, $re
 			$tempObbj = StringSplit($aOut[$i][5], "|", $STR_NOCOUNT) ; several detected points
 			For $t = 0 To UBound($tempObbj) - 1
 				$tempObbjs = StringSplit($tempObbj[$t], ",", $STR_NOCOUNT)
-				_GDIPlus_GraphicsDrawRect($hGraphic, $tempObbjs[0], $tempObbjs[1], 5, 5, $hPen2)
+				If UBound($tempObbjs) > 1 Then _GDIPlus_GraphicsDrawRect($hGraphic, $tempObbjs[0], $tempObbjs[1], 5, 5, $hPen2)
 			Next
 		Else
 			$tempObbj = StringSplit($aOut[$i][5], ",", $STR_NOCOUNT)
-			_GDIPlus_GraphicsDrawRect($hGraphic, $tempObbj[0], $tempObbj[1], 5, 5, $hPen2)
+			If UBound($tempObbj) > 1 Then _GDIPlus_GraphicsDrawRect($hGraphic, $tempObbj[0], $tempObbj[1], 5, 5, $hPen2)
 		EndIf
 		$tempObbj = Null
 		$tempObbjs = Null
@@ -470,7 +470,7 @@ Func DebugImageSmartFarm($THdetails, $aIn, $aOut, $sTime, $BestSideToAttack, $re
 		$aTEMP = StringSplit($redline[$l], "|", 2)
 		For $i = 0 To UBound($aTEMP) - 1
 			$DecodeEachPoint = StringSplit($aTEMP[$i], ",", 2)
-			_GDIPlus_GraphicsDrawRect($hGraphic, $DecodeEachPoint[0], $DecodeEachPoint[1], 5, 5, $hPen2)
+			If UBound($DecodeEachPoint) > 1 Then _GDIPlus_GraphicsDrawRect($hGraphic, $DecodeEachPoint[0], $DecodeEachPoint[1], 5, 5, $hPen2)
 		Next
 	Next
 

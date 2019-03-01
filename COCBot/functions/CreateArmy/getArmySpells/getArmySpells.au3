@@ -50,6 +50,7 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 			If $iSpellIndex < 0 Then ContinueLoop
 
 			$aSpellCoords = StringSplit($aTempSpellArray[1], ",", $STR_NOCOUNT) ; Split the Coordinates where the Spell got found into X and Y
+			If UBound($aSpellCoords) < 2  Then ContinueLoop
 			$g_aiCurrentSpells[$iSpellIndex] = Number(getBarracksNewTroopQuantity(Slot($aSpellCoords[0], $aSpellCoords[1]), 341, $bNeedCapture)) ; Get The Quantity of the Spell, Slot() Does return the exact spot to read the Number from
 
 			$sSpellName = $g_aiCurrentSpells[$iSpellIndex] >= 2 ? $g_asSpellNames[$iSpellIndex] & " Spells" : $g_asSpellNames[$iSpellIndex] & " Spell" ; Select the right Spell Name, If more than one then use Spells at the end

@@ -16,6 +16,7 @@
 Func MBRFunc($Start = True)
 	Switch $Start
 		Case True
+			RemoveZoneIdentifiers()
 			$g_hLibMyBot = DllOpen($g_sLibMyBotPath)
 			If $g_hLibMyBot = -1 Then
 				SetLog($g_sMBRLib & " not found.", $COLOR_ERROR)
@@ -153,6 +154,49 @@ Func SetBotGuiPID($pid = $g_iGuiPID)
 	EndIf
 EndFunc   ;==>SetBotGuiPID
 
+Func CheckForumAuthentication()
+	If $g_hLibMyBot = -1 Then Return False ; Bot didn't finish launch yet
+	Local $result = DllCall($g_hLibMyBot, "boolean", "CheckForumAuthentication")
+	If @error Then
+		_logErrorDLLCall($g_sLibMyBotPath & ", CheckForumAuthentication:", @error)
+		Return SetError(@error)
+	EndIf
+	;dll return 0 on success, -1 on error
+	Local $bAuthenticated = False
+	If IsArray($result) Then
+		If $result[0] Then
+			SetLog(GetTranslatedFileIni("MBR Authentication", "BotIsAuthenticated", "MyBot.run is authenticated"), $COLOR_SUCCESS)
+			$bAuthenticated = True
+		Else
+			SetLog(GetTranslatedFileIni("MBR Authentication", "BotIsNotAuthenticated", "Error authenticating Mybot.run"), $COLOR_ERROR)
+		EndIf
+	Else
+		SetDebugLog($g_sMBRLib & " not found.", $COLOR_ERROR)
+	EndIf
+	Return $bAuthenticated
+EndFunc   ;==>CheckForumAuthentication
+
+Func ForumLogin($sUsername, $sPassword)
+	If $g_hLibMyBot = -1 Then Return False ; Bot didn't finish launch yet
+	Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", $sUsername, "str", $sPassword, "str", $g_sBotTitle)
+	If @error Then
+		_logErrorDLLCall($g_sLibMyBotPath & ", ForumLogin:", @error)
+		Return SetError(@error)
+	EndIf
+	;dll return 0 on success, -1 on error
+	If IsArray($result) Then
+		If StringInStr($result[0], '"access_token"') > 0 Then
+			SetDebugLog("Forum login successful, message length: " & StringLen($result[0]))
+			Return $result[0]
+		Else
+			SetDebugLog("Forum login failed, message: " & $result[0])
+			Return $result[0]
+		EndIf
+	Else
+		SetDebugLog($g_sMBRLib & " not found.", $COLOR_ERROR)
+	EndIf
+EndFunc   ;==>ForumLogin
+
 Func setVillageOffset($x, $y, $z)
 	DllCall($g_hLibMyBot, "str", "setVillageOffset", "int", $x, "int", $y, "float", $z)
 	$g_iVILLAGE_OFFSET[0] = $x
@@ -224,3 +268,26 @@ Func ReduceBotMemory($bDisposeCaptures = True)
 	If $g_iEmptyWorkingSetBot > 0 Then _WinAPI_EmptyWorkingSet(@AutoItPID) ; Reduce Working Set of Bot
 	;DllCall($g_hLibMyBot, "none", "gc") ; run .net garbage collection
 EndFunc   ;==>ReduceBotMemory
+
+Func RemoveZoneIdentifiers()
+	; remove the Zone.Identifier from any exe or dll
+	Local $aPaths = [@ScriptDir, $g_sLibPath]
+	For $i = 0 To UBound($aPaths) - 1
+		Local $sPath = $aPaths[$i]
+		Local $aFiles = _FileListToArray($sPath, "*", $FLTA_FILES, True)
+		For $j = 1 To $aFiles[0]
+			If StringRegExp($aFiles[$j], ".+[.](exe|dll)$") Then
+				Local $sStream = $aFiles[$j] & ":Zone.Identifier:$DATA"
+				Local $h = _WinAPI_CreateFile($sStream, 2, 2)
+				If $h Then
+					_WinAPI_CloseHandle($h)
+					If _WinAPI_DeleteFile($sStream) Then
+						SetDebugLog("Removed Zone.Identifier from file: " & $sStream)
+					Else
+						SetDebugLog("Failed to remove Zone.Identifier from file: " & $sStream, $COLOR_ERROR)
+					EndIf
+				EndIf
+			EndIf
+		Next
+	Next
+EndFunc   ;==>RemoveZoneIdentifiers

@@ -795,6 +795,67 @@ Func IncrUpdate(ByRef $i, $ReturnInitial = True)
 	Return $i
 EndFunc   ;==>IncrUpdate
 
+Func InitAndroidAdbPorts($bForce = False)
+
+	If $g_bAndroidAdbPortPerInstance Then
+		If $bForce Then $g_bAndroidAdbPort = 0
+		If Not $g_bAndroidAdbPort Then
+			; dynamically select port to use by mutex
+			Local $iPortStart = 5038, $iPortRange = 255
+			Local $iPort = $iPortStart, $iTcpIdx = 1, $iTcpMtIdx = 0, $iMtPort
+			Local $hMutex = 0
+			$g_sAndroidAdbGlobalOptions = ""
+			Local $aTcpTable = _TcpTable(5, "LISTENING")
+			If $g_hMutex_AdbDaemon Then
+				; release prior mutex
+				ReleaseMutex($g_hMutex_AdbDaemon)
+				$g_hMutex_AdbDaemon = 0
+			EndIf
+			While Not $hMutex And $iPort < $iPortStart + $iPortRange
+				; find next free port
+				For $i = $iTcpIdx To UBound($aTcpTable) -1
+					If $aTcpTable[$i][2] < $iPort Then
+						$iTcpIdx = $i + 1
+						ContinueLoop
+					ElseIf $aTcpTable[$i][0] = "adb.exe" Or $aTcpTable[$i][2] > $iPort Then
+						; re-use adb.exe or port is free
+						ExitLoop
+					Else
+						; cannot use that port
+						$iPort += 1
+					EndIf
+				Next
+				; now check for free minitouch port
+				$iMtPort = 0
+				$iTcpMtIdx = _ArrayBinarySearch($aTcpTable, $iPort + 1000, 0, 0, 2)
+				If $iTcpMtIdx = -1 Or ($iTcpMtIdx > 0 And $aTcpTable[$iTcpMtIdx][0] = "adb.exe") Then
+					; use minitouch port
+					$iMtPort = $iPort + 1000
+				EndIf
+				If $iMtPort Then
+					; try to use it
+					$hMutex = CreateMutex("MyBot.run/Adb-Port-" & $iPort)
+					If $hMutex Then
+						;_ArrayDisplay($aTcpTable)
+						$g_hMutex_AdbDaemon = $hMutex
+						$g_bAndroidAdbPort = $iPort
+						$g_bAndroidAdbMinitouchPort = $iMtPort
+						ExitLoop
+					EndIf
+				EndIf
+				$iPort += 1 ; try next port
+			WEnd
+		EndIf
+	EndIf
+	If $g_bAndroidAdbPort Then
+		SetDebugLog("Using ADB Daemon port " & $g_bAndroidAdbPort)
+		$g_sAndroidAdbGlobalOptions = "-P " & $g_bAndroidAdbPort
+	Else
+		SetDebugLog("Cannot aquire ADB Daemon port, using default", $COLOR_ERROR)
+		$g_bAndroidAdbMinitouchPort = 1111
+	EndIf
+EndFunc   ;==>InitAndroidAdbPorts
+
 Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
 	FuncEnter(InitAndroid)
 	If $bCheckOnly = False And $g_bInitAndroid = False Then
@@ -849,56 +910,7 @@ Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
 	Local $successful = @error = 0, $process_killed
 	If Not $bCheckOnly And $Result Then
 
-		If $g_bAndroidAdbPortPerInstance Then
-			If Not $g_bAndroidAdbPort Then
-				; dynamically select port to use by mutex
-				Local $iPortStart = 5038, $iPortRange = 255
-				Local $iPort = $iPortStart, $iTcpIdx = 1, $iTcpMtIdx = 0, $iMtPort
-				Local $hMutex = 0
-				$g_sAndroidAdbGlobalOptions = ""
-				Local $aTcpTable = _TcpTable(5, "LISTENING")
-				While Not $hMutex And $iPort < $iPortStart + $iPortRange
-					; find next free port
-					For $i = $iTcpIdx To UBound($aTcpTable) -1
-						If $aTcpTable[$i][2] < $iPort Then
-							$iTcpIdx = $i + 1
-							ContinueLoop
-						ElseIf $aTcpTable[$i][0] = "adb.exe" Or $aTcpTable[$i][2] > $iPort Then
-							; re-use adb.exe or port is free
-							ExitLoop
-						Else
-							; cannot use that port
-							$iPort += 1
-						EndIf
-					Next
-					; now check for free minitouch port
-					$iMtPort = 0
-					$iTcpMtIdx = _ArrayBinarySearch($aTcpTable, $iPort + 1000, 0, 0, 2)
-					If $iTcpMtIdx = -1 Or ($iTcpMtIdx > 0 And $aTcpTable[$iTcpMtIdx][0] = "adb.exe") Then
-						; use minitouch port
-						$iMtPort = $iPort + 1000
-					EndIf
-					If $iMtPort Then
-						; try to use it
-						$hMutex = CreateMutex("MyBot.run/Adb-Port-" & $iPort)
-						If $hMutex Then
-							$g_hMutex_AdbDaemon = $hMutex
-							$g_bAndroidAdbPort = $iPort
-							$g_bAndroidAdbMinitouchPort = $iMtPort
-							ExitLoop
-						EndIf
-					EndIf
-					$iPort += 1 ; try next port
-				WEnd
-			EndIf
-		EndIf
-		If $g_bAndroidAdbPort Then
-			SetDebugLog("Using ADB Daemon port " & $g_bAndroidAdbPort)
-			$g_sAndroidAdbGlobalOptions = "-P " & $g_bAndroidAdbPort
-		Else
-			SetDebugLog("Cannot aquire ADB Daemon port, using default", $COLOR_ERROR)
-			$g_bAndroidAdbMinitouchPort = 1111
-		EndIf
+		InitAndroidAdbPorts()
 
 		; exclude Android for WerFault reporting
 		If $b_sAndroidProgramWerFaultExcluded = True Then
@@ -1883,6 +1895,15 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 			; forward minitouch port
 			Local $process_killed
 			Local $output = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " forward tcp:" & $g_bAndroidAdbMinitouchPort & " localabstract:minitouch", $process_killed)
+			If StringInStr($output, "cannot bind") > 0 Then
+				; cannot bind TCP port, not available "anymore"
+				SetLog("Initialize Android ADB ports...")
+				; try again
+				AndroidAdbTerminateShellInstance()
+				InitAndroidAdbPorts(True)
+				_AndroidAdbLaunchShellInstance($wasRunState, $rebootAndroidIfNeccessary)
+				Return
+			EndIf
 			; connect socket
 			$g_bAndroidAdbMinitouchSocket = TCPConnect("127.0.0.1", $g_bAndroidAdbMinitouchPort)
 		EndIf
@@ -1909,7 +1930,7 @@ Func AndroidAdbTerminateShellInstance()
 		If ClosePipe($g_iAndroidAdbProcess[0], $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4]) = 1 Then
 			SetDebugLog("ADB shell terminated, PID = " & $g_iAndroidAdbProcess[0])
 		Else
-			SetDebugLog("ADB shell not terminated, PID = " & $g_iAndroidAdbProcess[0], $COLOR_ERROR)
+			SetDebugLog("ADB shell already terminated, PID = " & $g_iAndroidAdbProcess[0])
 		EndIf
 		$g_iAndroidAdbProcess[0] = 0
 	EndIf
@@ -2663,16 +2684,21 @@ Func AndroidMinitouchClickDrag($x1, $y1, $x2, $y2, $wasRunState = Default)
 	AndroidAdbLaunchShellInstance($wasRunState)
 	If $g_bAndroidAdbMinitouchSocket < 1 Then
 		SetLog("Minitouch not available", $COLOR_ERROR)
-		Return SetError(1, 0)
+		Return SetError(1, 0, 0)
 	EndIf
 
 	TCPRecv($g_bAndroidAdbMinitouchSocket, 256, 1)
 	Local $recv_state = [@error, @extended]
 	Local $bytes = TCPSend($g_bAndroidAdbMinitouchSocket, @LF)
 	Local $send_state = [@error, $bytes]
-	If $recv_state[0] Or $send_state[0] Or $send_state[1] <> 1 Then
-		SetLog("Cannot send minitouch data to " & $g_sAndroidEmulator & ", received " & $recv_state[1] & ", send " & $send_state[1], $COLOR_ERROR)
-		Return SetError(1, 0)
+	If ($recv_state[0] Or $send_state[0] Or $send_state[1] <> 1) Then
+		If $wasRunState Then
+			SetLog("Cannot send minitouch data to " & $g_sAndroidEmulator & ", received " & $recv_state[1] & ", send " & $send_state[1], $COLOR_ERROR)
+			; restart adb session that hopefully fixes the tcp issues
+			AndroidAdbTerminateShellInstance()
+			Return AndroidMinitouchClickDrag($x1, $y1, $x2, $y2, False)
+		EndIf
+		Return SetError(1, 0, 0)
 	EndIf
 
 	Local $sleepStart = 250
@@ -3140,6 +3166,51 @@ Func _AndroidFastClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = Tru
 	EndIf
 EndFunc   ;==>_AndroidFastClick
 
+; User for docked mouse touches, $iaAction: 0 = move, 1 = down, 2 = up
+; return bytes sent
+Func Minitouch($x, $y, $iAction = 0, $iDelay = 1)
+	If $g_bAndroidAdbMinitouchSocket < 1 Then Return -1
+
+	Static $x_dn, $y_dn
+	$x = Int($x)
+	$y = Int($y)
+	Execute($g_sAndroidEmulator & "AdjustClickCoordinates($x,$y)")
+
+	Local $iBytes = 0
+	Local $s
+	Local $t = ""
+	Switch $iAction
+		Case 0, 2 ; move or up
+			If $iAction = 0 Or $x_dn <> $x Or $y_dn <> $y Then
+				$s = "m 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF
+				$t &= $s
+				$iBytes += TCPSend($g_bAndroidAdbMinitouchSocket, $s)
+			EndIf
+			If $iAction = 2 Then ; up
+				;$s = "w " & $iDelay & @LF & "u 0 " & @LF & "c" & @LF
+				$s = "u 0 " & @LF & "c" & @LF
+				;For $i = 1 To 9
+				;	$s &= "u " & $i & @LF & "c" & @LF
+				;Next
+				$t &= $s
+				$iBytes += TCPSend($g_bAndroidAdbMinitouchSocket, $s)
+			EndIf
+		Case 1 ; down
+			;$s = "d 0 " & $x & " " & $y & " 50" & @LF & "w " & $iDelay & @LF & "c" & @LF
+			$s = "d 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF
+			$t &= $s
+			$iBytes += TCPSend($g_bAndroidAdbMinitouchSocket, $s)
+			$x_dn = $x
+			$y_dn = $y
+	EndSwitch
+
+	If $g_bDebugAndroid Then
+		SetDebugLog("Minitouch: " & StringReplace($t, @LF, ";"), $COLOR_INFO, True)
+	EndIf
+
+	Return $iBytes
+EndFunc   ;==>Minitouch
+
 Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True, $iRetryCount = 0)
 	Local $minSleep = $g_iAndroidControlClickDownDelay
 	Local $iDelay = $g_iAndroidControlClickDelay
@@ -3165,8 +3236,6 @@ Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect =
 		Return
 	EndIf
 
-	$x = Int($x)
-	$y = Int($y)
 	Local $wasRunState = $g_bRunState
 	Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder
 	Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/")
@@ -3195,11 +3264,25 @@ Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect =
 	Local $recv_state = [@error, @extended]
 	Local $bytes = TCPSend($g_bAndroidAdbMinitouchSocket, @LF)
 	Local $send_state = [@error, $bytes]
-	If $recv_state[0] Or $send_state[0] Or $send_state[1] <> 1 Then
+	If ($recv_state[0] Or $send_state[0] Or $send_state[1] <> 1) Then
 		SetLog("Cannot send minitouch data to " & $g_sAndroidEmulator & ", received " & $recv_state[1] & ", send " & $send_state[1], $COLOR_ERROR)
+		If $iRetryCount < 1 Then
+			; restart adb session that hopefully fixes the tcp issues
+			AndroidAdbTerminateShellInstance()
+			Return AndroidMinitouchClick($x, $y, $times, $speed, $checkProblemAffect, $iRetryCount + 1)
+		EndIf
 		Return SetError(1, 0)
 	EndIf
 
+	; consistency check
+	Local $ReleaseClicksCheck = ($x = Default And $y = Default And $g_aiAndroidAdbClicks[0] > 0)
+	If $ReleaseClicks <> $ReleaseClicksCheck Then
+		SetDebugLog("AndroidMinitouchClick: Release clicks condition changed from " & $ReleaseClicks & " to " & $ReleaseClicksCheck)
+		Return AndroidMinitouchClick($x, $y, $times, $speed, $checkProblemAffect, $iRetryCount)
+	EndIf
+
+	$x = Int($x)
+	$y = Int($y)
 	Local $loops = 1
 	Local $remaining = 0
 	Local $adjustSpeed = 0
@@ -3213,7 +3296,6 @@ Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect =
 		If $ReleaseClicks = False Then $adjustSpeed = $speed
 		$speed = 0 ; no need for speed now!
 	EndIf
-	Local $recordsNum = 10
 	Local $recordsClicks = ($times < $g_iAndroidAdbClickGroup ? $times : $g_iAndroidAdbClickGroup)
 	If $ReleaseClicks = True Then
 		If $g_bDebugAndroid Or $g_bDebugClick Then SetDebugLog("Release clicks: queue size = " & $g_aiAndroidAdbClicks[0])
@@ -3246,7 +3328,7 @@ Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect =
 				Local $BTN_TOUCH_DOWN = True
 				Local $BTN_TOUCH_UP = True
 				If $ReleaseClicks = True Then
-					$Click = $aiAndroidAdbClicks[($i - 1) * $recordsNum + $j + 1] ; fixed Array variable has incorrect number of subscripts
+					$Click = $aiAndroidAdbClicks[($i - 1) * $recordsClicks + $j + 1] ; seen here incorrect number of subscripts error
 					$x = $Click[0]
 					$y = $Click[1]
 					Execute($g_sAndroidEmulator & "AdjustClickCoordinates($x,$y)")
@@ -3667,6 +3749,9 @@ Func GetAndroidProcessPID($sPackage = Default, $bForeground = True, $iRetryCount
 	; u0_a58    4395  580   1135308 187040     14    -6        0      0     ffffffff 00000000    S      com.supercell.clashofclans
 	; u0_a27    2912  142   663800  98656      30    10        0      3     ffffffff b7591617    S      com.tencent.tmgp.supercell.clashofclans
 	; u0_a26    2740  73    1601704 76380      20    0         0      0     ffffffff b7489435    S      com.supercell.clashofclans.guopan
+	;USER      PID   PPID  VSIZE  RSS  PRIO  NICE  RTPRI SCHED  WCHAN            PC  NAME
+	;u0_a54    12560 84    1336996 189660 10    -10   0     0     futex_wait b7725424 S com.supercell.clashofclans
+	;u0_a54    13303 84    1338548 188464 16    -4    0     0     sys_epoll_ b7725424 S com.supercell.clashofclans
 	If AndroidInvalidState() Then Return 0
 	Local $cmd = "set result=$(ps -p|grep """ & $g_sAndroidGamePackage & """ >&2)"
 	Local $output = AndroidAdbSendShellCommand($cmd)
@@ -4228,6 +4313,7 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 				SetLog("Cannot create empty folder " & $androidFolder & "/shared_prefs", $COLOR_ERROR)
 			EndIf
 		Else
+			SetDebugLog("ADB command: ls -l /data/data/" & $g_sAndroidGamePackage & "/" & @LF & $cmdOutput)
 			SetLog($g_sAndroidGamePackage & " has no shared_prefs or cannot be accessed, please launch game first", $COLOR_ERROR)
 		EndIf
 	EndIf

@@ -184,8 +184,8 @@ Global $aCloseTabSCID[4] = [732, 145] ; Button Close Supercell ID tab
 
 ;Train
 Global $aButtonEditArmy[4] = [800, 542, 0xDDF685, 25]
-Global $aButtonRemoveTroopsOK1[4] = [778, 563, 0xDAF582, 25]
-Global $aButtonRemoveTroopsOK2[4] = [508, 428, 0xFFFFFF, 30]
+Global $aButtonRemoveTroopsOK1[4] = [747, 582, 0x76BF2F, 20]
+Global $aButtonRemoveTroopsOK2[4] = [500, 447, 0x6DBC1F, 20]
 
 Global $aTrainBarb[4]  = [-1, -1, -1, -1]
 Global $aTrainArch[4]  = [-1, -1, -1, -1]

@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 #include-once
 
-Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbAndroidZoomoutMode = 0, $g_hCmbSuspendAndroid = 0, _
+Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbAndroidZoomoutMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClick = 0, _
 	$g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, $g_hTxtAndroidRebootHours = 0, _
 	$g_hChkAndroidCloseWithBot = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0
 
@@ -31,7 +31,7 @@ Func CreateBotAndroid()
 	$y += $h + 5
 	$y2 = $y
 	$w = $g_iSizeWGrpTab2 - 2
-	$h = 21 + 5 * 25
+	$h = 21 + 6 * 25
 	GUICtrlCreateGroup(GetTranslatedFileIni("Android", "Android_Options", "Android Options"), $x - 20, $y - 20, $w, $h)
 		GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblBackgroundMode", "Screencapture Background Mode"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
 		$g_hCmbAndroidBackgroundMode = GUICtrlCreateCombo("", $x - 8 + 180 + 5, $y, 200, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
@@ -46,6 +46,10 @@ Func CreateBotAndroid()
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "CmbZoomoutMode_Info", 'Control how the zoomout is done. Default chooses usually Minitouch script, which is most stable.'))
 			_GUICtrlComboBox_SetCurSel(-1, $g_iAndroidZoomoutMode)
 			GUICtrlSetOnEvent(-1, "cmbAndroidBackgroundMode")
+	$y += 25
+		$g_hChkAndroidAdbClick = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkAdbClick", "Use minitouch for Click"), $x, $y, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAdbClick_Info", "Use minitouch for Android clicks.\r\nIf unchecked use WinAPI control messages."))
+			GUICtrlSetState(-1, (($g_bAndroidAdbClickEnabled) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
 	$y += 25
 		$g_hChkAndroidAdbClickDragScript = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkAdbClickDragScript", "Use minitouch for accurate Click && Drag"), $x, $y, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAdbClickDragScript_Info", "Use minitouch for accurate Click & Drag.\r\nIf unchecked use more compatible 'input swipe' or WinAPI."))

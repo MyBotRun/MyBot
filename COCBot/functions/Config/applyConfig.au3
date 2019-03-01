@@ -194,6 +194,8 @@ Func ApplyConfig_Android($TypeReadSave)
 			cmbCOCDistributors()
 			cmbAndroidBackgroundMode()
 			$g_iAndroidZoomoutMode = _GUICtrlComboBox_GetCurSel($g_hCmbAndroidZoomoutMode)
+			$g_bAndroidAdbClickEnabled = (GUICtrlRead($g_hChkAndroidAdbClick) = $GUI_CHECKED ? True : False)
+			$g_bAndroidAdbClick = $g_bAndroidAdbClickEnabled ; also update $g_bAndroidAdbClick as that one is actually used
 			$g_bAndroidAdbClickDragScript = (GUICtrlRead($g_hChkAndroidAdbClickDragScript) = $GUI_CHECKED ? True : False)
 			$g_bAndroidCloseWithBot = (GUICtrlRead($g_hChkAndroidCloseWithBot) = $GUI_CHECKED ? True : False)
 			$g_iAndroidRebootHours = Int(GUICtrlRead($g_hTxtAndroidRebootHours)) ; Hours are entered
