@@ -596,8 +596,6 @@ Func FinalInitialization(Const $sAI)
 	DisableProcessWindowsGhosting()
 
 	UpdateMainGUI()
-	
-	ForumAuthentication()
 
 EndFunc   ;==>FinalInitialization
 
@@ -626,6 +624,11 @@ Func MainLoop($bCheckPrerequisitesOK = True)
 		If $g_bBotLaunchOption_HideAndroid Then $g_bIsHidden = True
 		; check if bot should be minimized
 		If $g_bBotLaunchOption_MinimizeBot Then BotMinimizeRequest()
+	EndIf
+
+	If $bCheckPrerequisitesOK Then
+		; only when bot can run, register with forum
+		ForumAuthentication()
 	EndIf
 
 	Local $hStarttime = _Timer_Init()

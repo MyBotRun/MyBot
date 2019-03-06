@@ -1,4 +1,10 @@
-﻿* **V7.7.1**
+﻿* **V7.7.2**
+* Fixed forum authentication with non ansi characters like Hindi, Cyrillic or Asian
+* Fixed incorrect share folder detection when permission denied ocurres
+* Fixed removal of "Zone.Identifier" for files in lib\adb and lib\curl folders
+* Fixed forum authentication running before check prerequisites
+
+* **V7.7.1**
 * Added MyBot.run Forum user authentication registration to bot fixing COPYCAT problems
 * Added Android click mode (minitouch or WinAPI) to Bot/Android options, default is now minitouch as it's most stable
 * Added REMAIN cmd in csv attack

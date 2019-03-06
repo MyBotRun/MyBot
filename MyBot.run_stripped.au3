@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.1)
+#pragma compile(FileVersion, 7.7.2)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.1"
+Global $g_sBotVersion = "v7.7.2"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -8009,7 +8009,7 @@ Return $bAuthenticated
 EndFunc
 Func ForumLogin($sUsername, $sPassword)
 If $g_hLibMyBot = -1 Then Return False
-Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", $sUsername, "str", $sPassword, "str", $g_sBotTitle)
+Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", _Base64Encode(StringToBinary($sUsername, 4), 1024), "str", _Base64Encode(StringToBinary($sPassword, 4), 1024), "str", _Base64Encode(StringToBinary($g_sBotTitle, 4), 1024))
 If @error Then
 _logErrorDLLCall($g_sLibMyBotPath & ", ForumLogin:", @error)
 Return SetError(@error)
@@ -8087,7 +8087,7 @@ If $bDisposeCaptures = True Then _CaptureDispose()
 If $g_iEmptyWorkingSetBot > 0 Then _WinAPI_EmptyWorkingSet(@AutoItPID)
 EndFunc
 Func RemoveZoneIdentifiers()
-Local $aPaths = [@ScriptDir, $g_sLibPath]
+Local $aPaths = [@ScriptDir, $g_sLibPath, $g_sLibPath & "\adb", $g_sLibPath & "\curl"]
 For $i = 0 To UBound($aPaths) - 1
 Local $sPath = $aPaths[$i]
 Local $aFiles = _FileListToArray($sPath, "*", $FLTA_FILES, True)
@@ -9531,7 +9531,7 @@ $path = $aMounts[$i]
 If $path = "" Then ContinueLoop
 If StringRight($path, 1) <> "/" Then $path &= "/"
 $s = AndroidAdbSendShellCommand("set result=$(ls '" & $path & $dummyFile & "' >&2)", 10000, $wasRunState, False)
-If StringInStr($s, $dummyFile) > 0 And StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error:") = 0 Then
+If StringInStr($s, $dummyFile) > 0 And StringInStr($s, $dummyFile & ":") = 0 And StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error") = 0 And StringInStr($s, "Permission denied") = 0 Then
 $pathFound = True
 $g_sAndroidPicturesPath = $path
 SetDebugLog("Using " & $g_sAndroidPicturesPath & " for Android shared folder")
@@ -73041,7 +73041,6 @@ SetLog(GetTranslatedFileIni("MBR GUI Design - Loading", "Msg_Android_instance_05
 EndIf
 DisableProcessWindowsGhosting()
 UpdateMainGUI()
-ForumAuthentication()
 EndFunc
 Func MainLoop($bCheckPrerequisitesOK = True)
 Local $iStartDelay = 0
@@ -73052,6 +73051,9 @@ $iStartDelay = $iDelay * 1000
 $g_iBotAction = $eBotStart
 If $g_bBotLaunchOption_HideAndroid Then $g_bIsHidden = True
 If $g_bBotLaunchOption_MinimizeBot Then BotMinimizeRequest()
+EndIf
+If $bCheckPrerequisitesOK Then
+ForumAuthentication()
 EndIf
 Local $hStarttime = _Timer_Init()
 CheckEmuNewVersions()

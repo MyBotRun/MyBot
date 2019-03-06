@@ -1819,7 +1819,7 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 					If $path = "" Then ContinueLoop
 					If StringRight($path, 1) <> "/" Then $path &= "/"
 					$s = AndroidAdbSendShellCommand("set result=$(ls '" & $path & $dummyFile & "' >&2)", 10000, $wasRunState, False) ; use timeout of 10 Seconds
-					If StringInStr($s, $dummyFile) > 0 And StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error:") = 0 Then
+					If StringInStr($s, $dummyFile) > 0 And StringInStr($s, $dummyFile & ":") = 0 And StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error") = 0 And StringInStr($s, "Permission denied") = 0 Then
 						$pathFound = True
 						$g_sAndroidPicturesPath = $path
 						SetDebugLog("Using " & $g_sAndroidPicturesPath & " for Android shared folder")

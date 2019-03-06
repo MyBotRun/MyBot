@@ -178,7 +178,7 @@ EndFunc   ;==>CheckForumAuthentication
 
 Func ForumLogin($sUsername, $sPassword)
 	If $g_hLibMyBot = -1 Then Return False ; Bot didn't finish launch yet
-	Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", $sUsername, "str", $sPassword, "str", $g_sBotTitle)
+	Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", _Base64Encode(StringToBinary($sUsername, 4), 1024), "str", _Base64Encode(StringToBinary($sPassword, 4), 1024), "str", _Base64Encode(StringToBinary($g_sBotTitle, 4), 1024))
 	If @error Then
 		_logErrorDLLCall($g_sLibMyBotPath & ", ForumLogin:", @error)
 		Return SetError(@error)
@@ -271,7 +271,7 @@ EndFunc   ;==>ReduceBotMemory
 
 Func RemoveZoneIdentifiers()
 	; remove the Zone.Identifier from any exe or dll
-	Local $aPaths = [@ScriptDir, $g_sLibPath]
+	Local $aPaths = [@ScriptDir, $g_sLibPath, $g_sLibPath & "\adb", $g_sLibPath & "\curl"]
 	For $i = 0 To UBound($aPaths) - 1
 		Local $sPath = $aPaths[$i]
 		Local $aFiles = _FileListToArray($sPath, "*", $FLTA_FILES, True)
