@@ -140,6 +140,9 @@ Func InitKOPLAYER($bCheckOnly = False)
 	If Not $bCheckOnly Then
 		InitAndroidConfig(True) ; Restore default config
 
+		; to avoid KOPLAYER "device offline" problems, force to use default port
+		$g_bAndroidAdbPortPerInstance = False
+
 		If Not GetAndroidVMinfo($__VBoxVMinfo, $KOPLAYER_Manage_Path) Then Return False
 		; update global variables
 		$g_sAndroidProgramPath = $KOPLAYER_Path & "KOPLAYER.exe"
@@ -176,14 +179,8 @@ Func InitKOPLAYER($bCheckOnly = False)
 
 		; get screencap paths: Name: 'picture', Host path: 'C:\Users\Administrator\Pictures\KOPLAYER Photo' (machine mapping), writable
 		$g_sAndroidPicturesPath = "/mnt/shared/UserData/"
-		$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'UserData', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-		If Not @error Then
-			$g_sAndroidPicturesHostPath = StringReplace($aRegExResult[0], "/", "\") & "\"
-		Else
-			$g_bAndroidAdbScreencap = False
-			$g_sAndroidPicturesHostPath = ""
-			SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_RED)
-		EndIf
+		$g_sAndroidSharedFolderName = "UserData"
+		ConfigureSharedFolder(0) ; something like C:\Users\Administrator\AppData\Local\KOPLAYERData\UserData\
 
 	EndIf
 
@@ -220,6 +217,9 @@ Func SetScreenKOPLAYER()
 	$cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
 	; Since version 2.0
 	$cmdOutput = LaunchConsole($__VBoxManage_Path, "setextradata " & $g_sAndroidInstance & " RenderWindowProp " & $g_iAndroidClientWidth & "*" & $g_iAndroidClientHeight & "*160", $process_killed)
+
+	ConfigureSharedFolder(1, True)
+	ConfigureSharedFolder(2, True)
 
 	Return True
 
@@ -266,6 +266,10 @@ Func CheckScreenKOPLAYER($bSetLog = True)
 			$iErrCnt += 1
 		EndIf
 	Next
+
+	; check if shared folder exists
+	If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
+
 	If $iErrCnt > 0 Then Return False
 	Return True
 

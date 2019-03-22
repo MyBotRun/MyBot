@@ -5,7 +5,7 @@
 ; Parameters ....: $debug               - [optional]
 ; Return values .: None
 ; Author ........: Sardo (2016)
-; Modified ......: MMHK (07-2017)(01-2018)
+; Modified ......: MMHK (07/2017)(01/2018), TripleM (03/2019)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -319,9 +319,12 @@ Func ParseAttackCSV($debug = False)
 						ReleaseClicks($g_iAndroidAdbClicksTroopDeploySize)
 						If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop
 						;set flag if warden was dropped and sleep after delay was to short for icon to update properly
-						$iTroopIndex = TroopIndexLookup($value4, "ParseAttackCSV") ; obtain enum
-						$bWardenDrop = ($iTroopIndex = $eWarden) And ($sleepdrop1 < 1000)
+						If $value4 <> "REMAIN" Then
+							$iTroopIndex = TroopIndexLookup($value4, "ParseAttackCSV") ; obtain enum
+							$bWardenDrop = ($iTroopIndex = $eWarden) And ($sleepdrop1 < 1000)
+						EndIf
 					Case "WAIT"
+						Local $hSleepTimer = __TimerInit() ; Initialize the timer at first
 						ReleaseClicks()
 						;sleep time
 						Local $sleep1, $sleep2, $sleepvect
@@ -335,7 +338,7 @@ Func ParseAttackCSV($debug = False)
 								$sleep2 = 1
 							EndIf
 						Else
-							If Int($value3) > 0 Then
+							If Int($value1) > 0 Then
 								$sleep1 = Int($value1)
 								$sleep2 = Int($value1)
 							Else
@@ -349,7 +352,6 @@ Func ParseAttackCSV($debug = False)
 							Local $sleep = Int($sleep1)
 						EndIf
 						debugAttackCSV("wait " & $sleep)
-						;If _Sleep($sleep) Then Return
 						Local $Gold = 0
 						Local $Elixir = 0
 						Local $DarkElixir = 0
@@ -357,9 +359,63 @@ Func ParseAttackCSV($debug = False)
 						Local $exitOneStar = 0
 						Local $exitTwoStars = 0
 						Local $exitNoResources = 0
-						Local $hSleepTimer = __TimerInit()
+						Local $exitAttackEnded = 0
+						Local $bBreakOnTH = False
+						Local $bBreakOnSiege = False
+						Local $bBreakOnTHAndSiege = False
+						Local $aSiegeSlotPos = [0,0]
+						Local $tempvalue2 = StringStripWS($value2, $STR_STRIPALL) ; remove all whitespaces from parameter
+						If StringLen($tempvalue2) > 0 Then ; If parameter is not empty
+							Local $aParam = StringSplit($tempvalue2, ",", $STR_NOCOUNT) ; split parameter into subparameters "TH","Siege","TH+Siege"
+							For $iParam = 0 To UBound($aParam) - 1
+								Switch $aParam[$iParam]
+									Case "TH"
+										$bBreakOnTH = True
+									Case "SIEGE"
+										$bBreakOnSiege = True
+									Case "TH+SIEGE"
+										$bBreakOnTHAndSiege = True
+								EndSwitch
+							Next
+							SetDebugLog("$bBreakOnTH = " & $bBreakOnTH & ", $bBreakOnSiege = " & $bBreakOnSiege & ", $bBreakOnTHAndSiege = " & $bBreakOnTHAndSiege, $COLOR_INFO)
+							If $bBreakOnSiege Or $bBreakOnTHAndSiege Then 
+								debugAttackCSV("WAIT Condition Break on Siege Troop Drop set")
+								;Check if Siege is Available In Attackbar
+								For $i = 0 To UBound($g_avAttackTroops) - 1
+									If $g_avAttackTroops[$i][0] = $eCastle Then
+										SetDebugLog("WAIT Break on Siege Machine is set but Clan Castle Troop selected.", $COLOR_INFO)
+										ExitLoop
+									ElseIf $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Or $g_avAttackTroops[$i][0] = $eStoneS Then
+										Local $sSiegeName = GetTroopName($g_avAttackTroops[$i][0])
+										SetDebugLog("	" & $sSiegeName & " found. Let's Check If is Dropped Or Not?", $COLOR_SUCCESS)
+										;Check Siege Slot Quantity If It's 0 Means Siege Is Dropped
+										If ReadTroopQuantity($i) = 0 Then
+											SetDebugLog("	" & $sSiegeName & " is dropped.", $COLOR_SUCCESS)
+											;Get Siege Machine Slot For Checking Slot Grayed Out or Not
+											$aSiegeSlotPos = GetSlotPosition($i, True)
+										Else
+											SetDebugLog("	" & $sSiegeName & " is not dropped yet.", $COLOR_SUCCESS)
+										EndIf
+										ExitLoop
+									EndIf
+								Next
+								If $aSiegeSlotPos[0] = 0 And $aSiegeSlotPos[1] = 0 Then ; no dropped Siege found
+									SetDebugLog("WAIT no dropped Siege found, so unset Break on Siege.", $COLOR_INFO)
+									If $bBreakOnTHAndSiege Then $bBreakOnTH = True ; When "TH+Siege" is set, set it to only "TH"
+									$bBreakOnSiege = False
+									$bBreakOnTHAndSiege = False
+									If Not $bBreakOnTH Then ContinueLoop ; Don't wait, when "Siege" was the only condition, but not found
+								EndIf
+							EndIf
+						EndIf
 						While __TimerDiff($hSleepTimer) < $sleep
 							CheckHeroesHealth()
+							; When Break on Siege is active and troops dropped, return ASAP
+							If $bBreakOnSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) Then ContinueLoop 2
+							; When Break on TH Kill is active in case townhall destroyed, return ASAP
+							If $bBreakOnTH And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
+							; When Break on TH Kill And Siege is active, if both TH is destroyed and Siege troops are dropped, return ASAP
+							If $bBreakOnTHAndSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
 							;READ RESOURCES
 							$Gold = getGoldVillageSearch(48, 69)
 							$Elixir = getElixirVillageSearch(48, 69 + 29)
@@ -372,6 +428,13 @@ Func ParseAttackCSV($debug = False)
 								$Trophies = getTrophyVillageSearch(48, 69 + 69)
 							EndIf
 							CheckHeroesHealth()
+							; When Break on Siege is active and troops dropped, return ASAP
+							If $bBreakOnSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) Then ContinueLoop 2
+							; When Break on TH Kill is active in case townhall destroyed, return ASAP
+							If $bBreakOnTH And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
+							; When Break on TH Kill And Siege is active, if both TH is destroyed and Siege troops are dropped, return ASAP
+							If $bBreakOnTHAndSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
+							
 							If $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 							;EXIT IF RESOURCES = 0
 							If $g_abStopAtkNoResources[$g_iMatchMode] And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
@@ -395,9 +458,14 @@ Func ParseAttackCSV($debug = False)
 							If $g_abStopAtkPctHigherEnable[$g_iMatchMode] And Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)) > Int($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) Then
 								ExitLoop
 							EndIf
+							If _CheckPixel($aEndFightSceneBtn, True) And _CheckPixel($aEndFightSceneAvl, True) And _CheckPixel($aEndFightSceneReportGold, True) Then
+								SetDebugLog("From Attackcsv: Found End Fight Scene to close, exit", $COLOR_SUCCESS)
+								$exitAttackEnded = 1
+								ExitLoop
+							EndIf
 							If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop
 						WEnd
-						If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop ;stop parse CSV file, start exit battle procedure
+						If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Or $exitAttackEnded = 1 Then ExitLoop ;stop parse CSV file, start exit battle procedure
 
 					Case "RECALC"
 						ReleaseClicks()
@@ -433,6 +501,59 @@ Func ParseAttackCSV($debug = False)
 		SetLog("Cannot find attack file " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
 	EndIf
 EndFunc   ;==>ParseAttackCSV
+
+;This Function is used to check if siege dropped the troops
+Func CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos)
+	;Check Gray Pixel When Siege IS Dead.
+	If _ColorCheck(_GetPixelColor($aSiegeSlotPos[0] + 20, $aSiegeSlotPos[1] + 20, True, "WAIT--> IsSiegeDestroyed"), Hex(0x474747, 6), 10) Then
+		SetDebugLog("WAIT--> Siege Got Destroyed After " & Round(__TimerDiff($hSleepTimer)) & "ms.", $COLOR_SUCCESS)
+		Return True
+	EndIf
+	Return False
+EndFunc   ;==>CheckIfSiegeDroppedTheTroops
+
+;This Function is used to check if Townhall is destroyed
+Func CheckIfTownHallGotDestroyed($hSleepTimer)
+	Static $hPopupTimer = 0
+	Local $bIsTHDestroyed = False
+	; Check if got any star
+	Local $bWonOneStar = _CheckPixel($aWonOneStar, True)
+	Local $bWonTwoStar = _CheckPixel($aWonTwoStar, True)
+	; Check for the centrally popped up star
+	Local $bCentralStarPopup = _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) - 2, Int($g_iGAME_HEIGHT / 2) - 2, True), Hex(0xC0C4C0, 6), 20) And _
+							   _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) - 2, Int($g_iGAME_HEIGHT / 2) + 2, True), Hex(0xC0C4C0, 6), 20) And _
+							   _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) + 2, Int($g_iGAME_HEIGHT / 2) + 2, True), Hex(0xC0C4C0, 6), 20) And _
+							   _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) + 2, Int($g_iGAME_HEIGHT / 2) - 2, True), Hex(0xC0C4C0, 6), 20)
+	;Get Current Damge %
+	Local $iDamage = Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY))
+	
+	; Optimistic Trigger on Star Popup
+	If $bCentralStarPopup Then
+	; When damage < 50% TH is destroyed
+		If $iDamage < 50 Then
+			$bIsTHDestroyed = True
+	; When already one star, popup star is the second one for TH
+		ElseIf $bWonOneStar Then
+			$bIsTHDestroyed = True
+	; trying to catch the cornercase of two distinguishable popups within 1500 msec (time from popup to settle of a star)
+	; Initialize the Timer, when not initialized, or last initialization is more than 1500 msec old
+		ElseIf $hPopupTimer = 0 Or __TimerDiff($hPopupTimer) > 1500 Then
+			$hPopupTimer = __TimerInit()
+	; trigger, when 500ms after a star popup there is still a popped up star (the star usually stays less than half a sec)
+		ElseIf __TimerDiff($hPopupTimer) > 500 Then 
+			$bIsTHDestroyed = True
+		EndIf
+	; Failsafe Trigger: If Got 1 Star and Damage % < 50% then TH was taken before 50%
+	ElseIf $bWonOneStar And $iDamage < 50 Then
+		$bIsTHDestroyed = True
+	; Failsafe Trigger: If Got 2 Star and Damage % >= 50% then TH was taken after 50%
+	ElseIf $bWonTwoStar Then
+		$bIsTHDestroyed = True
+	EndIf
+	SetDebugLog("WAIT--> $iDamage: " & $iDamage & ", $bCentralStarPopup: " & $bCentralStarPopup & ", $bWonOneStar: " & $bWonOneStar & ", $bWonTwoStar: " & $bWonTwoStar & ", $bIsTHDestroyed: " & $bIsTHDestroyed, $COLOR_INFO)
+	If $bIsTHDestroyed Then SetDebugLog("WAIT--> Town Hall Got Destroyed After " & Round(__TimerDiff($hSleepTimer)) & "ms.", $COLOR_SUCCESS)
+	Return $bIsTHDestroyed
+EndFunc   ;==>CheckIfTownHallGotDestroyed
 
 
 ; #FUNCTION# ====================================================================================================================

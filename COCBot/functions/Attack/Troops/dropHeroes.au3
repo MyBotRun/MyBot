@@ -41,7 +41,7 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 	If $g_bDebugSetlog Then SetDebugLog("drop WARDEN = " & $bDropWarden, $COLOR_DEBUG)
 
 	If $bDropKing Then
-		SetLog("Dropping King", $COLOR_INFO)
+		SetLog("Dropping King at " & $iX & ", " & $iY, $COLOR_INFO)
 		SelectDropTroop($iKingSlotNumber, 1, Default, False)
 		If _Sleep($DELAYDROPHEROES2) Then Return
 		AttackClick($iX, $iY, 1, 0, 0, "#0093")
@@ -58,7 +58,7 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 	If _Sleep($DELAYDROPHEROES1) Then Return
 
 	If $bDropQueen Then
-		SetLog("Dropping Queen", $COLOR_INFO)
+		SetLog("Dropping Queen at " & $iX & ", " & $iY, $COLOR_INFO)
 		SelectDropTroop($iQueenSlotNumber, 1, Default, False)
 		If _Sleep($DELAYDROPHEROES2) Then Return
 		AttackClick($iX, $iY, 1, 0, 0, "#0095")
@@ -75,7 +75,7 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 	If _Sleep($DELAYDROPHEROES1) Then Return
 
 	If $bDropWarden Then
-		SetLog("Dropping Grand Warden", $COLOR_INFO)
+		SetLog("Dropping Grand Warden at " & $iX & ", " & $iY, $COLOR_INFO)
 		SelectDropTroop($iWardenSlotNumber, 1, Default, False)
 		If _Sleep($DELAYDROPHEROES2) Then Return
 		AttackClick($iX, $iY, 1, 0, 0, "#x999")

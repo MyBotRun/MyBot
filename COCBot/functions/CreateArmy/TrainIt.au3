@@ -170,19 +170,27 @@ Func GetVariable(Const $ImageToUse, Const $iIndex)
 		Else
 			If $g_bDebugSetlogTrain Then SetLog("String: " & $asResult[0])
 			Local $aResult = StringSplit($asResult[0], "|", $STR_NOCOUNT)
-			Local $aCoordinates = StringSplit($aResult[1], ",", $STR_NOCOUNT)
-			Local $iButtonX = 25 + Int($aCoordinates[0])
-			Local $iButtonY = 375 + Int($aCoordinates[1])
-			Local $sColorToCheck = "0x" & _GetPixelColor($iButtonX, $iButtonY, $g_bCapturePixel)
-			Local $iTolerance = 40
-			Local $aTrainPos[4] = [$iButtonX, $iButtonY, $sColorToCheck, $iTolerance]
-			If $g_bDebugSetlogTrain Then SetLog("Found: [" & $iButtonX & "," & $iButtonY & "]", $COLOR_SUCCESS)
-			If $g_bDebugSetlogTrain Then SetLog("$sColorToCheck: " & $sColorToCheck, $COLOR_SUCCESS)
-			If $g_bDebugSetlogTrain Then SetLog("$iTolerance: " & $iTolerance, $COLOR_SUCCESS)
-			Return $aTrainPos
+			If UBound($aResult) > 1 Then
+				Local $aCoordinates = StringSplit($aResult[1], ",", $STR_NOCOUNT)
+				If UBound($aCoordinates) > 1 Then
+					Local $iButtonX = 25 + Int($aCoordinates[0])
+					Local $iButtonY = 375 + Int($aCoordinates[1])
+					Local $sColorToCheck = "0x" & _GetPixelColor($iButtonX, $iButtonY, $g_bCapturePixel)
+					Local $iTolerance = 40
+					Local $aTrainPos[4] = [$iButtonX, $iButtonY, $sColorToCheck, $iTolerance]
+					If $g_bDebugSetlogTrain Then SetLog("Found: [" & $iButtonX & "," & $iButtonY & "]", $COLOR_SUCCESS)
+					If $g_bDebugSetlogTrain Then SetLog("$sColorToCheck: " & $sColorToCheck, $COLOR_SUCCESS)
+					If $g_bDebugSetlogTrain Then SetLog("$iTolerance: " & $iTolerance, $COLOR_SUCCESS)
+					Return $aTrainPos
+				Else
+					SetLog("Don't know how to train the troop with index " & $iIndex & " yet.")
+				EndIf
+			Else
+				SetLog("Don't know how to train the troop with index " & $iIndex & " yet..")
+			EndIf
 		EndIf
 	Else
-		SetLog("Don't know how to train the troop with index " & $iIndex & " yet")
+		SetLog("Don't know how to train the troop with index " & $iIndex & " yet...")
 	EndIf
 	Return $aTrainPos
 EndFunc   ;==>GetVariable

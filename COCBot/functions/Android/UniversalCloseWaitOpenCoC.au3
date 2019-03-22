@@ -77,7 +77,8 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "Unknown", $StopEmulat
 			If _Sleep($DELAYRESPOND) Then Return False
 			OpenCoC()
 		Case 1 ; close CoC app only (after 2017/Dec. only jump to home-screen to avoid CoC launch delay)
-			Local $bSendHome = ($g_sAndroidEmulator <> "MEmu") ; MEmu has issues with CoC running in background: it crashed... to avoid that use polite close
+			; Local $bSendHome = ($g_sAndroidEmulator <> "MEmu")
+			Local $bSendHome = False ; MEmu and BlueStacks 4 have issues with CoC running in background: it crashes... to avoid that use polite close
 			If $bSendHome Then
 				AndroidHomeButton()
 			Else

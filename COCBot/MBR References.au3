@@ -218,6 +218,8 @@ Func ReferenceFunctions()
 	GetKOPLAYERBackgroundMode()
 	GetMEmuBackgroundMode()
 	GetNoxBackgroundMode()
+	ConfigureSharedFolderBlueStacks()
+	ConfigureSharedFolderBlueStacks2()
 	; DonateCC.au3
 	getChatString(0, 0, 0)
 	getChatStringChinese(0, 0)

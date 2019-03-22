@@ -16,7 +16,7 @@
 
 Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbAndroidZoomoutMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClick = 0, _
 	$g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, $g_hTxtAndroidRebootHours = 0, _
-	$g_hChkAndroidCloseWithBot = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0
+	$g_hChkAndroidCloseWithBot = 0, $g_hChkUpdateSharedPrefs = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0
 
 Func CreateBotAndroid()
 
@@ -61,13 +61,17 @@ Func CreateBotAndroid()
 			GUICtrlSetState(-1, (($g_bAndroidCloseWithBot) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
 
 	$y += 25
-		GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblAndroidRebootHours", "Reboot Android in") & ":", $x + 17, $y + 2, -1, -1)
+		$g_hChkUpdateSharedPrefs = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs", "Update shared_prefs"), $x, $y, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs_Info", "Pull and push shared_prefs to reset zoom,\nset language to English, disable snow and rate popup."))
+			GUICtrlSetState(-1, (($g_bUpdateSharedPrefs) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
+
+		GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblAndroidRebootHours", "Reboot Android in") & ":", $x + 217, $y + 2, -1, -1)
 			$sTxtTip = GetTranslatedFileIni("Android", "LblAndroidRebootHours_Info", "Enter hours when Android will be automatically rebooted after specified run-time.")
 			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hTxtAndroidRebootHours = GUICtrlCreateInput($g_iAndroidRebootHours, $x + 177, $y + 1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+		$g_hTxtAndroidRebootHours = GUICtrlCreateInput($g_iAndroidRebootHours, $x + 327, $y + 1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetLimit(-1, 4)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "hrs", -1), $x + 212, $y + 2, -1, -1)
+		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "hrs", -1), $x + 362, $y + 2, -1, -1)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$y = $y2 + $h + 5
@@ -106,14 +110,17 @@ Func CreateBotAndroid()
 	;$x = 25 + $g_iSizeWGrpTab2 - 2 - 10 - $w
 	$x = 25 + 240 + 10 + 30
 	$y = $y2
-	$w = 125
-	$h = 80
+	$w = 145
+	$h = 110
 	GUICtrlCreateGroup(GetTranslatedFileIni("Android Control", "Group_04", "Install Play Store Apps"), $x - 20, $y - 20, $w, $h)
 	$y -= 2
-		GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreGame", "Clash of Clans"), $x - 8, $y, 100, 25)
+		GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreGame", "Clash of Clans"), $x - 8, $y, $w - 24, 25)
 			GUICtrlSetOnEvent(-1, "OpenPlayStoreGame")
 	$y += 30
-		GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreNovaLauncher", "Nova Launcher"), $x - 8, $y, 100, 25)
+		GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreGooglePlayServices", "Google Play Services"), $x - 8, $y, $w - 24, 25)
+			GUICtrlSetOnEvent(-1, "OpenPlayStoreGooglePlayServices")
+	$y += 30
+		GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreNovaLauncher", "Nova Launcher"), $x - 8, $y, $w - 24, 25)
 			GUICtrlSetOnEvent(-1, "OpenPlayStoreNovaLauncher")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 

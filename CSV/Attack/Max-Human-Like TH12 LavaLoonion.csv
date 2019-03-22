@@ -1,0 +1,73 @@
+NOTE  |Author: DUC4TI
+NOTE  |TH-level: 12
+NOTE  |set deploy line on "EXTERNAL EDGES"
+NOTE  |TRAIN 2 Lava Hounds, 36 Balloons, 20 Minions, 3 Rage, 3 Haste, 2 freeze 
+NOTE  |CC requirements: 1 Rage, 8 Balloons, 1 Siege Machine
+NOTE  |Siege setting: Any Siege Machine
+      |           |           |           |           |           |           |           |           |          
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|          
+SIDE  |0          |0          |0          |0          |0          |0          | 0         |           |          
+      |           |           |           |           |           |           |           |           |           
+      |EAGLE      |INFERNO    |XBOW       |WIZTOWER   |MORTAR     |AIRDEFENSE |AIRSWEEPER |           |           
+SIDEB |20         |0          |0          |0          |0          |0          |0          |           |           
+      |           |           |           |           |           |           |           |           |           
+      |VECTOR     |SIDE       |DROP_POINTS|ADDTILES   |VERSUS     |RANDOMX_PX |RANDOMY_PX |BUILDING   |           
+      |           |           |           |           |           |           |           |           |           
+MAKE  |A          |FRONT-LEFT |10         |2          |EXT-INT    |0          |0          |           |           
+MAKE  |B          |FRONT-RIGHT|10         |2          |INT-EXT    |0          |0          |           |           
+MAKE  |C          |FRONT-LEFT |10         |-4         |EXT-INT    |0          |0          |           |           
+MAKE  |D          |FRONT-RIGHT|10         |-5         |INT-EXT    |0          |0          |           |           
+MAKE  |E          |FRONT-LEFT |10         |-12        |EXT-INT    |0          |0          |           |           
+MAKE  |F          |FRONT-RIGHT|10         |-12        |INT-EXT    |0          |0          |           |           
+MAKE  |X          |FRONT-LEFT |1          |0          |IGNORE     |           |           |TOWNHALL   |           
+MAKE  |Y          |FRONT-LEFT |1          |0          |IGNORE     |           |           |EAGLE      |           
+      |           |           |           |           |           |           |           |           |           
+      |VECTOR     |INDEX      |QTY_X_VECT |TROOPNAME  |DELAY_DROP |DELAYCHANGE|SLEEPAFTER |           |           
+DROP  |A          |8          |1          |Lava       |70-90      |27-50      |200-250    |           |           
+DROP  |B          |3          |1          |Lava       |70-90      |27-50      |100-150    |           |           
+      |           |           |           |           |           |           |           |           |           
+DROP  |B          |1          |1          |Castle     |0          |0          |150-170    |           |           
+DROP  |B          |1          |1          |WallW      |0          |0          |150-170    |           |           
+DROP  |B          |1          |1          |BattleB    |0          |0          |150-170    |           |           
+DROP  |B          |1          |1          |StoneS     |0          |0          |150-170    |           |           
+      |           |           |           |           |           |           |           |           |           
+WAIT  |2000-2050  |           |           |           |           |           |           |           |           
+      |           |           |           |           |           |           |           |           |           
+DROP  |A          |6,7,8,9,10 |5          |Ball       |70-90      |27-50      |15-20      |           |           
+DROP  |B          |1,2,3,4,5  |5          |Ball       |70-90      |27-50      |15-20      |           |           
+DROP  |B          |4,3,2,1    |4          |Ball       |75-90      |27-50      |15-20      |           |           
+DROP  |A          |10,9,8,7   |4          |Ball       |70-90      |27-50      |15-20      |           |           
+DROP  |A          |6,7,8,9,10 |5          |Ball       |70-90      |27-50      |15-20      |           |           
+DROP  |B          |1,2,3,4,5  |5          |Ball       |70-90      |27-50      |15-20      |           |           
+DROP  |B          |4,3,2,1    |4          |Ball       |70-90      |27-50      |15-20      |           |           
+DROP  |A          |10,9,8,7   |4          |Ball       |70-90      |27-50      |15-20      |           |           
+DROP  |Y          |1          |1          |FSpell     |50-100     |0          |0          |           |           
+      |           |           |           |           |           |           |           |           |           
+DROP  |C          |8          |1          |HaSpell    |50-100     |0          |50-70      |           |           
+DROP  |D          |1          |1          |HaSpell    |50-100     |0          |50-70      |           |           
+DROP  |D          |4          |1          |HaSpell    |50-100     |0          |50-70      |           |           
+DROP  |B          |1          |1          |Warden     |70-100     |0          |100-150    |           |           
+      |           |           |           |           |           |           |           |           |           
+WAIT  |2000-2050  |           |           |           |           |           |           |           |           
+      |           |           |           |           |           |           |           |           |           
+DROP  |E          |8          |1          |RSpell     |50-100     |0          |50-70      |           |           
+DROP  |F          |1          |1          |RSpell     |50-100     |0          |50-70      |           |           
+DROP  |F          |4          |1          |RSpell     |50-100     |0          |50-70      |           |           
+      |           |           |           |           |           |           |           |           |           
+DROP  |A          |1,2,3,4,5  |5          |Mini       |75-90      |27-50      |40-70      |           |           
+DROP  |A          |6,7,8,9,10 |5          |Mini       |75-90      |27-50      |40-70      |           |           
+DROP  |B          |1,2,3,4,5  |5          |Mini       |75-90      |27-50      |40-70      |           |           
+DROP  |B          |6,7,8,9,10 |5          |Mini       |75-90      |27-50      |100-150    |           |           
+      |           |           |           |           |           |           |           |           |           
+WAIT  |2000-2050  |           |           |           |           |           |           |           |           
+      |           |           |           |           |           |           |           |           |           
+DROP  |B          |1          |1          |King       |70-100     |0          |150-180    |           |           
+DROP  |B          |1          |1          |Queen      |70-100     |0          |0          |           |           
+      |           |           |           |           |           |           |           |           |           
+WAIT  |60000      |TH,SIEGE   |           |           |           |           |           |           |           
+      |           |           |           |           |           |           |           |           |           
+DROP  |B          |1          |1          |Warden     |0          |0          |0          |           |Activate Grand Warden
+DROP  |X          |1          |1          |FSpell     |50-100     |0          |0          |           |           
+DROP  |X          |1          |1          |RSpell     |0          |0          |0          |           |           
+      |           |           |           |           |           |           |           |           |           
+DROP  |B          |1          |1          |Remain     |75-90      |27-50      |90-100     |           |           

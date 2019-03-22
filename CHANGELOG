@@ -1,4 +1,30 @@
-﻿* **V7.7.2**
+﻿* **V7.7.3**
+* Added Telegram notification when the lab is idle by @mitzu2250
+* Added Google Play Services button under Bot/Android Play Store to manually install/update Google Play Services
+* Added conditions "TH", "SIEGE" and "TH+SIEGE" to csv WAIT command, to break the wait early thx @Fahid.Mahmood for the inspiration
+*       see CSV HowTo Guide or Max-Human-Like TH12 LavaLoonion.csv for usage
+* Added Bot/Android "Update shared_prefs" option to always push and pull shared_prefs to reset zoom, set language to English, disable snow and rate popup
+* Fixed forum authentication crashing the bot with FileNotFoundException (as reported in Windows Event Log)
+* Fixed forum authentication http error 500
+* Fixed forum authentication interfering with watch dog
+* Fixed forum authentication due to windows permissions, saving .mybot.run.authentication file now in @AppDataDir (existing will be moved)
+* Fixed shared_prefs pull/push due to windows permissions, saving now in @AppDataDir\MyBot.run-Profiles (existing will be moved)
+* Fixed CSV attack with 11+ slots in attackbar
+* Fixed Telegram push for Smart Wait Time by @mitzu2250
+* Fixed Clangames "Caravan is not available"
+* Fixed minitouch click and click&drag for BlueStacks 4
+* Fixed KOPLAYER "device offline" problem
+* Fixed MEmu and BlueStacks CoC crashing when using home button or polite close
+* Fixed Nox DirectX mode for versions 3.3.0 - 6.2.0 ("Unsupported Nox screen size of 864 x 36" or similar)
+* Fixed Nox "Nox unsupported Graphics Engine Type" log message
+* Fixed Nox shared folder detection and disabled VM is running check (as it might not work)
+* Fixed missing shared folder by adding configuration to instance
+* Fixed docked mode manual mouse double click (fixed also mouse device issues for MEmu and LeapDroid)
+* Fixed LeapDroid and iTools version identification
+* Fixed check obstables not restarting CoC due to recursion
+* Improved running different Android Emulator by replacing emulator provided adb.exe with MyBot.run version
+
+* **V7.7.2**
 * Fixed forum authentication with non ansi characters like Hindi, Cyrillic or Asian
 * Fixed incorrect share folder detection when permission denied ocurres
 * Fixed removal of "Zone.Identifier" for files in lib\adb and lib\curl folders

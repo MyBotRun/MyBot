@@ -42,6 +42,7 @@ Func chkPBTGenabled()
 		GUICtrlSetState($g_hChkNotifyAlertBAN, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkNotifyBOTUpdate, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkNotifyAlertSmartWaitTime, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkNotifyAlertLaboratoryIdle, $GUI_ENABLE)
 	Else
 		GUICtrlSetState($g_hChkNotifyRemote, $GUI_DISABLE)
 		GUICtrlSetState($g_hTxtNotifyOrigin, $GUI_DISABLE)
@@ -60,6 +61,7 @@ Func chkPBTGenabled()
 		GUICtrlSetState($g_hChkNotifyAlertBAN, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkNotifyBOTUpdate, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkNotifyAlertSmartWaitTime, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkNotifyAlertLaboratoryIdle, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkPBTGenabled
 

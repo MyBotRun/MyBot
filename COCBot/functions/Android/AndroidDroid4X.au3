@@ -187,16 +187,8 @@ Func InitDroid4X($bCheckOnly = False)
 		; get screencap paths: Name: 'picture', Host path: 'C:\Users\Administrator\Pictures\MEmu Photo' (machine mapping), writable
 		; see also: VBoxManage setextradata droid4x VBoxInternal2/SharedFoldersEnableSymlinksCreate/picture 1
 		$g_sAndroidPicturesPath = "/mnt/shared/picture/"
-		$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'picture', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-		If Not @error Then
-			$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
-			$g_bAndroidSharedFolderAvailable = True
-		Else
-			SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
-			$g_sAndroidPicturesHostPath = ""
-			$g_bAndroidAdbScreencap = False
-			$g_bAndroidSharedFolderAvailable = False
-		EndIf
+		$g_sAndroidSharedFolderName = "picture"
+		ConfigureSharedFolder(0) ; something like C:\Users\Administrator\Pictures\Droid4X Photo\
 
 		WinGetAndroidHandle()
 
@@ -221,13 +213,8 @@ Func SetScreenDroid4X()
 	$cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
 
 	;vboxmanage sharedfolder add droid4x --name picture --hostpath "C:\Users\Administrator\Pictures\Droid4X Photo" --automount
-	AndroidPicturePathAutoConfig() ; ensure $g_sAndroidPicturesHostPath is set and exists
-	If $g_bAndroidSharedFolderAvailable = False And $g_bAndroidPicturesPathAutoConfig = True And FileExists($g_sAndroidPicturesHostPath) = 1 Then
-		; remove tailing backslash
-		Local $path = $g_sAndroidPicturesHostPath
-		If StringRight($path, 1) = "\" Then $path = StringLeft($path, StringLen($path) - 1)
-		$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name picture --hostpath """ & $path & """  --automount", $process_killed)
-	EndIf
+	ConfigureSharedFolder(1, True)
+	ConfigureSharedFolder(2, True)
 
 	Return True
 EndFunc   ;==>SetScreenDroid4X
@@ -270,7 +257,7 @@ Func CheckScreenDroid4X($bSetLog = True)
 	If $iErrCnt > 0 Then Return False
 
 	; check if shared folder exists
-	If AndroidPicturePathAutoConfig(Default, Default, $bSetLog) Then $iErrCnt += 1
+	If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
 
 	Return True
 

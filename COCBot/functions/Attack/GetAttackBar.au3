@@ -163,8 +163,10 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 		DragAttackBar()
 		Local $aExtendedArray = ExtendedAttackBarCheck($aAttackBar, $bRemaining, $sSearchDiamond)
 		_ArrayAdd($aFinalAttackBar, $aExtendedArray)
-		$g_iTotalAttackSlot = UBound($aFinalAttackBar, 1) + 1
-		If Not $bRemaining Then DragAttackBar($g_iTotalAttackSlot, True) ; return drag
+		If Not $bRemaining Then
+			$g_iTotalAttackSlot = UBound($aFinalAttackBar, 1) - 1
+			DragAttackBar($g_iTotalAttackSlot, True) ; return drag
+		EndIf
 	EndIf
 
 	_ArraySort($aFinalAttackBar, 0, 0, 0, 1) ; Sort Final Array by Slot Number

@@ -284,26 +284,21 @@ Func CheckIfArmyIsReady()
 		EndIf
 	EndIf
 
-	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
-		If $g_bFullArmy And $g_bCheckSpells And $bFullArmyHero And $bFullArmyCC And $bFullSiege Then
-			$g_bIsFullArmywithHeroesAndSpells = True
-			If $g_bFirstStart Then $g_bFirstStart = False
-		Else
-			If $g_bDebugSetlog Then
-				SetDebugLog(" $g_bFullArmy: " & String($g_bFullArmy), $COLOR_DEBUG)
-				SetDebugLog(" $g_bCheckSpells: " & String($g_bCheckSpells), $COLOR_DEBUG)
-				SetDebugLog(" $bFullArmyHero: " & String($bFullArmyHero), $COLOR_DEBUG)
-				SetDebugLog(" $bFullSiege: " & String($bFullSiege), $COLOR_DEBUG)
-				SetDebugLog(" $bFullArmyCC: " & String($bFullArmyCC), $COLOR_DEBUG)
-			EndIf
-			$g_bIsFullArmywithHeroesAndSpells = False
-		EndIf
-		If $g_bFullArmy And $g_bCheckSpells And $bFullArmyHero Then ; Force Switch while waiting for CC in SwitchAcc
-			If Not $bFullArmyCC Then $g_bWaitForCCTroopSpell = True
-		EndIf
+	If $g_bFullArmy And $g_bCheckSpells And $bFullArmyHero And $bFullArmyCC And $bFullSiege Then
+		$g_bIsFullArmywithHeroesAndSpells = True
+		If $g_bFirstStart Then $g_bFirstStart = False
 	Else
-		If $g_bDebugSetlog Then SetDebugLog(" Army not ready: IsSearchModeActive($DB)=" & IsSearchModeActive($DB) & ", checkCollectors(True, False)=" & checkCollectors(True, False) & ", IsSearchModeActive($LB)=" & IsSearchModeActive($LB) & ", IsSearchModeActive($TS)=" & IsSearchModeActive($TS), $COLOR_DEBUG)
+		If $g_bDebugSetlog Then
+			SetDebugLog(" $g_bFullArmy: " & String($g_bFullArmy), $COLOR_DEBUG)
+			SetDebugLog(" $g_bCheckSpells: " & String($g_bCheckSpells), $COLOR_DEBUG)
+			SetDebugLog(" $bFullArmyHero: " & String($bFullArmyHero), $COLOR_DEBUG)
+			SetDebugLog(" $bFullSiege: " & String($bFullSiege), $COLOR_DEBUG)
+			SetDebugLog(" $bFullArmyCC: " & String($bFullArmyCC), $COLOR_DEBUG)
+		EndIf
 		$g_bIsFullArmywithHeroesAndSpells = False
+	EndIf
+	If $g_bFullArmy And $g_bCheckSpells And $bFullArmyHero Then ; Force Switch while waiting for CC in SwitchAcc
+		If Not $bFullArmyCC Then $g_bWaitForCCTroopSpell = True
 	EndIf
 
 	Local $sLogText = ""

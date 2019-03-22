@@ -317,7 +317,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 
 	; check for upgrade in process - look for green in finish upgrade with gems button
 	If _ColorCheck(_GetPixelColor(730, 200, True), Hex(0xA2CB6C, 6), 20) Then ; Look for light green in upper right corner of lab window.
-		SetLog("Laboratory is Running. ", $COLOR_INFO)
+		SetLog("Laboratory is Running", $COLOR_INFO)
 		;==========Hide Red  Show Green Hide Gray===
 		GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
@@ -336,6 +336,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		Return True
 	ElseIf _ColorCheck(_GetPixelColor(730, 200, True), Hex(0x8088B0, 6), 20) Then ; Look for light purple in upper right corner of lab window.
 		SetLog("Laboratory has Stopped", $COLOR_INFO)
+		If $g_bNotifyTGEnable And $g_bNotifyAlertLaboratoryIdle Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_01", "Laboratory Idle") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_02", "Laboratory has Stopped"))
 		ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
 		;========Show Red  Hide Green  Hide Gray=====
 		GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)

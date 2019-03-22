@@ -87,8 +87,12 @@ Func CreateSplashScreen($iSteps = Default)
 			GUICtrlSetOnEvent(-1, "MoveSplashScreen")
 			$g_hSplashProgress = GUICtrlCreateProgress(15, $iY + $iT + $iB + 20, $iX - 30, 10, $PBS_SMOOTH, BitOR($WS_EX_TOPMOST, $WS_EX_WINDOWEDGE, $WS_EX_TOOLWINDOW)) ; Splash Progress
 			$g_lSplashStatus = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design - Loading", "SplashStep_Loading", "Loading..."), 15, $iY + $iT + $iB + 38, $iX - 30, 15, $SS_CENTER) ; Splash Title
+			GUICtrlSetOnEvent(-1, "MoveSplashScreen")
+		Else
+			$g_lSplashTitle = 0
+			$g_hSplashProgress = 0
+			$g_lSplashStatus = 0
 		EndIf
-		GUICtrlSetOnEvent(-1, "MoveSplashScreen")
 
 		; Cleanup GDI resources
 		_GDIPlus_BitmapDispose($hSplashImg)

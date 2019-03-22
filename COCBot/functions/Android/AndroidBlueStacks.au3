@@ -91,8 +91,6 @@ Func _OpenBlueStacks2($bRestart = False)
 
 	Local $hTimer, $iCount = 0, $cmdOutput, $process_killed, $i, $connected_to, $PID, $cmdPar
 
-	SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
-
 	CloseUnsupportedBlueStacks2()
 
 	; always start ADB first to avoid ADB connection problems
@@ -269,13 +267,8 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $__BlueStacks_Path & "HD-Adb.exe"
 		$g_sAndroidVersion = $__BlueStacks_Version
-		For $i = 0 To 5
-			If RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Name") = "BstSharedFolder" Then
-				$g_sAndroidPicturesPath = "/storage/sdcard/windows/BstSharedFolder/"
-				$g_sAndroidPicturesHostPath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Path")
-				ExitLoop
-			EndIf
-		Next
+
+		ConfigureSharedFolderBlueStacksX(0) ; something like D:\ProgramData\BlueStacks\Engine\UserData\SharedFolder\
 
 		SetDebugLog($g_sAndroidEmulator & " Engine 'Plus'-Mode: " & $plusMode)
 		SetDebugLog($g_sAndroidEmulator & " OEM Features: " & $OEMFeatures)
@@ -314,6 +307,37 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 
 EndFunc   ;==>InitBlueStacksX
 
+Func ConfigureSharedFolderBlueStacks($iMode = 0, $bSetLog = Default)
+	ConfigureSharedFolderBlueStacksX($iMode, $bSetLog)
+EndFunc   ;==>ConfigureSharedFolderBlueStacks
+
+Func ConfigureSharedFolderBlueStacks2($iMode = 0, $bSetLog = Default)
+	ConfigureSharedFolderBlueStacksX($iMode, $bSetLog)
+EndFunc   ;==>ConfigureSharedFolderBlueStacks2
+
+Func ConfigureSharedFolderBlueStacksX($iMode = 0, $bSetLog = Default)
+	If $bSetLog = Default Then $bSetLog = True
+	Local $bResult = False
+
+	Switch $iMode
+		Case 0 ; check that shared folder is configured in VM
+			For $i = 0 To 5
+				If RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Name") = "BstSharedFolder" Then
+					$bResult = True
+					$g_bAndroidSharedFolderAvailable = True
+					$g_sAndroidPicturesPath = "/storage/sdcard/windows/BstSharedFolder/"
+					$g_sAndroidPicturesHostPath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Path")
+					ExitLoop
+				EndIf
+			Next
+		Case 1 ; create missing shared folder
+		Case 2 ; Configure VM and add missing shared folder
+	EndSwitch
+
+	Return SetError(0, 0, $bResult)
+
+EndFunc   ;==>ConfigureSharedFolderBlueStacksX
+
 Func InitBlueStacks($bCheckOnly = False)
 	Local $bInstalled = InitBlueStacksX($bCheckOnly)
 	If $bInstalled And (GetVersionNormalized($__BlueStacks_Version) < GetVersionNormalized("0.8") Or GetVersionNormalized($__BlueStacks_Version) > GetVersionNormalized("2.0")) Then
@@ -349,6 +373,9 @@ Func InitBlueStacks2($bCheckOnly = False)
 			; only Version 4 requires new options
 			;$g_sAndroidAdbInstanceShellOptions = " -t -t" ; Additional shell options, only used by BlueStacks2 " -t -t"
 			$g_sAndroidAdbShellOptions = " /data/anr/../../system/xbin/bstk/su root" ; Additional shell options when launch shell with command, only used by BlueStacks2 " /data/anr/../../system/xbin/bstk/su root"
+
+			; tcp forward not working in BS4
+			$g_iAndroidAdbMinitouchMode = 1
 		EndIf
 
 		CheckBlueStacksVersionMod()
@@ -884,3 +911,4 @@ Func CloseUnsupportedBlueStacksX($bClose = True)
 	Opt("WinTitleMatchMode", $WinTitleMatchMode)
 	Return False
 EndFunc   ;==>CloseUnsupportedBlueStacksX
+

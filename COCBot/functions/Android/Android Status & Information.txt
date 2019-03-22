@@ -8,7 +8,7 @@ The once listed here have been tested and do work.
 Nox
 ===
 http://en.bignox.com/
-Versions 6.2.6.x, 6.2.5.3, 6.2.0.0, 6.0.1.0, 6.0.0.0, 5.2.1.0, 5.1.0.0, 5.0.0.1, 5.0.0.0, 3.8.1.3, 3.8.0.x, 3.7.6.x, 3.7.5.1, 3.7.5, 3.7.3, 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.3.0, 3.1.0, 3.0.0
+Versions 6.2.7.x, 6.2.6.x, 6.2.5.3, 6.2.0.0, 6.0.1.0, 6.0.0.0, 5.2.1.0, 5.1.0.0, 5.0.0.1, 5.0.0.0, 3.8.1.3, 3.8.0.x, 3.7.6.x, 3.7.5.1, 3.7.5, 3.7.3, 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.3.0, 3.1.0, 3.0.0
 MyBot Command Line Key: Nox
 Default Instance Key: nox
 Second Instance Key:  Nox_1
@@ -17,11 +17,16 @@ Info/known issues/bugs: Only in low computer screen resolutions and when Android
 due to different window size, MyBot resizing fails for any version. Bot set Nox to fixed size to avoid any resize issues.
 Since 3.3.0 Nox support also DirectX that can be used for faster Screen-Capture. Newer versions since 3.7.3 support setting of
 framerates and 20 fps or lower significantly reduce CPU load.
+Click delays should be 5ms down and 10ms up of clicks get lost.
+
+If you see errors like this "BigNoxVMMgr.exe: error: Code REGDB_E_CLASSNOTREG (0x80040154) - Class not registered (extended info not available)"
+your Nox installation is corrupt. Then open cmd.exe and register all dlls:
+FOR %1 IN ("C:\Program Files\Bignox\BigNoxVM\RT\*.DLL") DO REGSVR32 /S "%1"
 
 MEmu
 ====
 http://www.memuplay.com/
-Versions 6.0.7.6, 6.0.6.0, 5.3.2.0, 5.2.3.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 6.1.0, 6.0.7.6, 6.0.6.0, 5.3.2.0, 5.2.3.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1
@@ -31,11 +36,12 @@ Known issues/bugs: **Newest versions , 5.3.2 or 5.5.5 doesn't work the _ControlC
 BlueStacks
 ==========
 http://www.bluestacks.com/
-Version 4.32.x, 4.3.x, 3.50.x, 3.7.x, 2.7.x, 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x, 0.9.x, 0.8.x
+Find version 0.10.7.5601 here: https://filehippo.com/de/download_bluestacks_app_player/64518/
+Version 4.60.x, 4.50.x, 4.32.x, 4.3.x, 3.50.x, 3.7.x, 2.7.x, 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x, 0.9.x, 0.8.x
 MyBot Command Line Key (0.8.x - 0.11.x): BlueStacks
-MyBot Command Line Key (2.x/3.x): BlueStacks2
+MyBot Command Line Key (2.x/3.x/4.x): BlueStacks2
 Default Instance Key: Android
-Second Instance Key (only for BlueStacks 3.x):  Android_1
+Second Instance Key (only for BlueStacks 3.x/4.x):  Android_1
 
 Known issues/bugs: True Background mode using ADB not available for older versions.
 Older versions might not install the right Clash of Clans APK: "CPU ABI incompatible" error in Play Store.

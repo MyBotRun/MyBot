@@ -1,2 +1,3 @@
 echo Android Steady Shell PID=$PPID
+set export=$(mkdir /mnt/shell/emulated/0/Others 2>/dev/null)
 mount.vboxsf other /mnt/shell/emulated/0/Others

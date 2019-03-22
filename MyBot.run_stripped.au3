@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.2)
+#pragma compile(FileVersion, 7.7.3)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.2"
+Global $g_sBotVersion = "v7.7.3"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -67,6 +67,7 @@ Global Const $WM_SYSCOMMAND = 0x0112
 Global Const $WM_MOUSEMOVE = 0x0200
 Global Const $WM_LBUTTONDOWN = 0x0201
 Global Const $WM_LBUTTONUP = 0x0202
+Global Const $WM_LBUTTONDBLCLK = 0x0203
 Global Const $WM_RBUTTONDOWN = 0x0204
 Global Const $WM_RBUTTONUP = 0x0205
 Global Const $WM_MBUTTONDOWN = 0x0207
@@ -119,6 +120,7 @@ Global Const $FO_OVERWRITE = 2
 Global Const $FO_CREATEPATH = 8
 Global Const $FO_BINARY = 16
 Global Const $FO_UTF16_LE = 32
+Global Const $FO_UTF8_NOBOM = 256
 Global Const $FD_FILEMUSTEXIST = 1
 Global Const $CREATE_NEW = 1
 Global Const $CREATE_ALWAYS = 2
@@ -5848,7 +5850,8 @@ Global $g_bAndroidAdbInstanceEnabled = True
 Global $g_bAndroidSuspendedEnabled = True
 Global $g_iAndroidSuspendModeFlags = 1
 Global $g_bNoFocusTampering = False
-Global $g_iAndroidRecoverStrategy = 1
+Global $g_iAndroidRecoverStrategyDefault = 1
+Global $g_iAndroidRecoverStrategy = $g_iAndroidRecoverStrategyDefault
 Global $g_bTerminateAdbShellOnStop = False
 Global $__BlueStacks2Version_2_5_or_later = False
 Global $__MEmu_ToolBar_Width = 45
@@ -5856,16 +5859,16 @@ Global $__MEmu_SystemBar = 36
 Global $__MEmu_PhoneLayout = "2"
 Global $__MEmu_Window[4][5] = [ ["3.0.8", $g_iDEFAULT_WIDTH + 40, $g_iDEFAULT_HEIGHT - 14, 36, "-1"], ["2.6.2", $g_iDEFAULT_WIDTH + 48, $g_iDEFAULT_HEIGHT - 10, 40, "2"], ["2.5.0", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"], ["2.2.1", $g_iDEFAULT_WIDTH + 51, $g_iDEFAULT_HEIGHT - 12, 45, "0"] ]
 Global $__Droid4X_Window[3][3] = [ ["0.10.0", $g_iDEFAULT_WIDTH + 6, $g_iDEFAULT_HEIGHT + 53], ["0.8.6", $g_iDEFAULT_WIDTH + 10, $g_iDEFAULT_HEIGHT + 50] ]
-Global $__Nox_Config[2][3] = [ ["6.2.1", "[CLASS:subWin; INSTANCE:1]|[CLASS:AnglePlayer_0; INSTANCE:1]", True], ["3.3.0", "[CLASS:subWin; INSTANCE:1]|[TEXT:QWidgetClassWindow; CLASS:Qt5QWindowIcon]", False] ]
-Global $g_avAndroidAppConfig[8][16] = [ ["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "emulator-5554", 1 + 8 + 16 + 32, '# ', 'qwerty2', 1, 1], ["Nox", "nox", "No", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10,0, "127.0.0.1:62001", 1 + 2 + 4 + 8 + 16 + 32 + 256,'# ', '(nox Virtual Input|Android Input|Android_Input)', 0, 2], ["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 51,$g_iDEFAULT_HEIGHT - 12,0, "127.0.0.1:21503", 2 + 4 + 8 + 16 + 32, '# ', '(Microvirt Virtual Input|User Input)', 0, 2], ["BlueStacks2","Android", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 2 + 4 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 + 8 + 16 + 32 + 128,'$ ', 'BlueStacks Virtual Touch', 0, 1], ["iTools", "iToolsVM","iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13,0, "127.0.0.1:54001", 1 + 2 + 4 + 8 + 16 + 32 + 64, '# ', 'iTools Virtual PassThrough Input', 0, 1], ["KOPLAYER", "KOPLAYER","KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 64,$g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 1 + 2 + 4 + 8 + 16 + 32, '# ', 'ttVM Virtual Input', 0, 2], ["Droid4X", "droid4x", "Droid4X ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 10,$g_iDEFAULT_HEIGHT + 50,0, "127.0.0.1:26944", 2 + 4 + 8 + 16 + 32, '# ', 'droid4x Virtual Input', 0, 2] ]
+Global $__Nox_Config[1][3] = [ ["3.3.0", "[CLASS:subWin; INSTANCE:1]|[CLASS:AnglePlayer_0; INSTANCE:1]", True] ]
+Global $g_avAndroidAppConfig[8][16] = [ ["Nox", "nox", "No", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10,0, "127.0.0.1:62001", 1+2+4+8+16+32 +256+512, '# ', '(nox Virtual Input|Android Input|Android_Input)', 0, 2], ["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 51,$g_iDEFAULT_HEIGHT - 12,0, "127.0.0.1:21503", 2+4+8+16+32 +512, '# ', '(Microvirt Virtual Input|User Input)', 0, 2], ["BlueStacks2","Android", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1+2+4+8+16+32 +128, '$ ', 'BlueStacks Virtual Touch', 0, 1], ["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 +8+16+32 +128, '$ ', 'BlueStacks Virtual Touch', 0, 1], ["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "emulator-5554", 1 +8+16+32 +512, '# ', 'qwerty2', 1, 1], ["iTools", "iToolsVM","iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13,0, "127.0.0.1:54001", 1+2+4+8+16+32+64 +512, '# ', 'iTools Virtual PassThrough Input', 0, 1], ["KOPLAYER", "KOPLAYER","KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 64,$g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 1+2+4+8+16+32 +512, '# ', 'ttVM Virtual Input', 0, 2], ["Droid4X", "droid4x", "Droid4X ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 10,$g_iDEFAULT_HEIGHT + 50,0, "127.0.0.1:26944", 2+4+8+16+32 +512, '# ', 'droid4x Virtual Input', 0, 2] ]
+Global $__Nox_Idx = _ArraySearch($g_avAndroidAppConfig, "Nox", 0, 0, 0, 0, 1, 0)
 Global $__MEmu_Idx = _ArraySearch($g_avAndroidAppConfig, "MEmu", 0, 0, 0, 0, 1, 0)
 Global $__BS2_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks2", 0, 0, 0, 0, 1, 0)
 Global $__BS_Idx = _ArraySearch($g_avAndroidAppConfig, "BlueStacks", 0, 0, 0, 0, 1, 0)
-Global $__KOPLAYER_Idx = _ArraySearch($g_avAndroidAppConfig, "KOPLAYER", 0, 0, 0, 0, 1, 0)
 Global $__LeapDroid_Idx = _ArraySearch($g_avAndroidAppConfig, "LeapDroid", 0, 0, 0, 0, 1, 0)
 Global $__iTools_Idx = _ArraySearch($g_avAndroidAppConfig, "iTools", 0, 0, 0, 0, 1, 0)
+Global $__KOPLAYER_Idx = _ArraySearch($g_avAndroidAppConfig, "KOPLAYER", 0, 0, 0, 0, 1, 0)
 Global $__Droid4X_Idx = _ArraySearch($g_avAndroidAppConfig, "Droid4X", 0, 0, 0, 0, 1, 0)
-Global $__Nox_Idx = _ArraySearch($g_avAndroidAppConfig, "Nox", 0, 0, 0, 0, 1, 0)
 Global $g_bOnlyInstance = True
 Global $g_bFoundRunningAndroid = False
 Global $g_bFoundInstalledAndroid = False
@@ -5887,6 +5890,7 @@ Global $g_iAndroidClientHeight
 Global $g_iAndroidWindowWidth
 Global $g_iAndroidWindowHeight
 Global $g_bAndroidAdbUseMyBot = True
+Global $g_bAndroidAdbReplaceEmulatorVersion = True
 Global $g_sAndroidAdbPath
 Global $g_sAndroidAdbGlobalOptions
 Global $g_sAndroidAdbDevice
@@ -5904,14 +5908,15 @@ Global $g_bAndroidEmbed
 Global $g_iAndroidEmbedMode
 Global $g_bAndroidBackgroundLaunch
 Global $g_bAndroidBackgroundLaunched
-Global $g_iAndroidControlClickDelay = 10
 Global $g_iAndroidControlClickDownDelay = 5
+Global $g_iAndroidControlClickDelay = 10
 Global $g_iAndroidAdbClickGroup = 50
 Global $g_iAndroidAdbClickGroupDelay = 25
 Global $g_iAndroidControlClickWindow = 0
 Global $g_iAndroidControlClickMode = 0
 Global $g_bAndroidCloseWithBot = False
 Global $g_bAndroidInitialized = False
+Global $g_bUpdateSharedPrefs = False
 Global $g_iAndroidProcessAffinityMask = 0
 Global Const $g_iAndroidJellyBean = 17
 Global Const $g_iAndroidLollipop = 21
@@ -5928,6 +5933,7 @@ Global $g_sAndroidPicturesPathAvailable = False
 Global $g_sAndroidPicturesPath = ""
 Global $g_sAndroidPicturesHostPath = ""
 Global $g_bAndroidSharedFolderAvailable = True
+Global $g_sAndroidSharedFolderName = ""
 Global Const $g_iAndroidSecureFlags = 3
 Global $g_sAndroidPicturesHostFolder = ""
 Global $g_bAndroidPicturesPathAutoConfig = True
@@ -5979,8 +5985,8 @@ Global $g_hMutextOrSemaphoreGlobalActiveBots = 0
 Global $g_iGlobalThreads = 0
 Global $g_iThreads = 0
 Global $g_sProfilePath = @ScriptDir & "\Profiles"
-Global Const $g_sPrivateProfilePath = @MyDocumentsDir & "\MyBot.run-Profiles"
-Global Const $g_sPrivateAuthenticationFile = @MyDocumentsDir & "\MyBot.run-Profiles\.mybot.run.authentication"
+Global Const $g_sPrivateProfilePath = @AppDataDir & "\MyBot.run-Profiles"
+Global Const $g_sPrivateAuthenticationFile = @AppDataDir & "\.mybot.run.authentication"
 Global Const $g_sProfilePresetPath = @ScriptDir & "\Strategies"
 Global $g_sProfileCurrentName = ""
 Global $g_sProfileConfigPath = ""
@@ -6045,7 +6051,7 @@ Global Const $g_sIcnBldGold = @ScriptDir & "\Images\gold.png"
 Global Const $g_sIcnBldElixir = @ScriptDir & "\Images\elixir.png"
 Global Const $g_sIcnBldTrophy = @ScriptDir & "\Images\trophy.png"
 Global $g_iRedrawBotWindowMode = 2
-Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eBtnTest, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant, $eIcnTrap, $eIcnGoblin, $eIcnDonGoblin, $eIcnGold, $eIcnGolem, $eIcnDonGolem, $eIcnHealer, $eIcnDonHealer, $eIcnHogRider, $eIcnDonHogRider, $eIcnHealSpell, $eIcnInferno, $eIcnJumpSpell, $eIcnLavaHound, $eIcnDonLavaHound, $eIcnLightSpell, $eIcnMinion, $eIcnDonMinion, $eIcnPekka, $eIcnDonPekka, $eIcnTreasury, $eIcnRageSpell, $eIcnTroops, $eIcnHourGlass, $eIcnTH1, $eIcnTH10, $eIcnTrophy, $eIcnValkyrie, $eIcnDonValkyrie, $eIcnWall, $eIcnWallBreaker, $eIcnDonWallBreaker, $eIcnWitch, $eIcnDonWitch, $eIcnWizard, $eIcnDonWizard, $eIcnXbow, $eIcnBarrackBoost, $eIcnMine, $eIcnCamp, $eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnNotify, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack, $eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes, $eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnKing, $eIcnQueen, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenUpgr, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost, $eIcnQueenBoost, $eIcnWardenBoost, $eEmpty3, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain, $eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner, $eIcnNoShield, $eIcnDonCustomB, $eIcnAirdefense, $eIcnDarkBarrackBoost, $eIcnDarkElixirStorage, $eIcnSpellsCost, $eIcnTroopsCost, $eIcnResetButton, $eIcnNewSmartZap, $eIcnTrain, $eIcnAttack, $eIcnDelay, $eIcnReOrder, $eIcn2Arrow, $eIcnArrowLeft, $eIcnArrowRight, $eIcnAndroid, $eHdV04, $eHdV05, $eHdV06, $eHdV07, $eHdV08, $eHdV09, $eHdV10, $eHdV11, $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend, $eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, $eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield, $eIcnBattleB , $eIcnWallW, $eIcnSiegeCost, $eIcnBoostPotion, $eIcnBatSpell, $eIcnStoneS, $eIcnIceGolem, $eIcnStarLaboratory, $eIcnRagedBarbarian, $eIcnSneakyArcher, $eIcnBoxerGiant, $eIcnBetaMinion, $eIcnBomber, $eIcnBBBabyDragon, $eIcnCannonCart, $eIcnNightWitch, $eIcnDropShip, $eIcnSuperPekka, $eIcnBBWall01, $eIcnBBWall02, $eIcnBBWall03, $eIcnBBWall04, $eIcnBBWall05, $eIcnBBWall06, $eIcnBBWall07, $eIcnBBWall08
+Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eBtnTest, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant, $eIcnTrap, $eIcnGoblin, $eIcnDonGoblin, $eIcnGold, $eIcnGolem, $eIcnDonGolem, $eIcnHealer, $eIcnDonHealer, $eIcnHogRider, $eIcnDonHogRider, $eIcnHealSpell, $eIcnInferno, $eIcnJumpSpell, $eIcnLavaHound, $eIcnDonLavaHound, $eIcnLightSpell, $eIcnMinion, $eIcnDonMinion, $eIcnPekka, $eIcnDonPekka, $eIcnTreasury, $eIcnRageSpell, $eIcnTroops, $eIcnHourGlass, $eIcnTH1, $eIcnTH10, $eIcnTrophy, $eIcnValkyrie, $eIcnDonValkyrie, $eIcnWall, $eIcnWallBreaker, $eIcnDonWallBreaker, $eIcnWitch, $eIcnDonWitch, $eIcnWizard, $eIcnDonWizard, $eIcnXbow, $eIcnBarrackBoost, $eIcnMine, $eIcnCamp, $eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnNotify, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack, $eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes, $eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnKing, $eIcnQueen, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenUpgr, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost, $eIcnQueenBoost, $eIcnWardenBoost, $eEmpty3, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain, $eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner, $eIcnNoShield, $eIcnDonCustomB, $eIcnAirdefense, $eIcnDarkBarrackBoost, $eIcnDarkElixirStorage, $eIcnSpellsCost, $eIcnTroopsCost, $eIcnResetButton, $eIcnNewSmartZap, $eIcnTrain, $eIcnAttack, $eIcnDelay, $eIcnReOrder, $eIcn2Arrow, $eIcnArrowLeft, $eIcnArrowRight, $eIcnAndroid, $eHdV04, $eHdV05, $eHdV06, $eHdV07, $eHdV08, $eHdV09, $eHdV10, $eHdV11, $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend, $eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, $eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield, $eIcnBattleB, $eIcnWallW, $eIcnSiegeCost, $eIcnBoostPotion, $eIcnBatSpell, $eIcnStoneS, $eIcnIceGolem, $eIcnStarLaboratory, $eIcnRagedBarbarian, $eIcnSneakyArcher, $eIcnBoxerGiant, $eIcnBetaMinion, $eIcnBomber, $eIcnBBBabyDragon, $eIcnCannonCart, $eIcnNightWitch, $eIcnDropShip, $eIcnSuperPekka, $eIcnBBWall01, $eIcnBBWall02, $eIcnBBWall03, $eIcnBBWall04, $eIcnBBWall05, $eIcnBBWall06, $eIcnBBWall07, $eIcnBBWall08
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
 Global $eIcnAchievements = $eIcnMain
@@ -6262,7 +6268,7 @@ Global $g_sTGLastMessage = ""
 Global $g_sAttackFile = ""
 Global $g_bNotifyTGEnable = False, $g_sNotifyTGToken = ""
 Global $g_bNotifyRemoteEnable = False, $g_sNotifyOrigin = "", $g_bNotifyDeleteAllPushesOnStart = False, $g_bNotifyDeletePushesOlderThan = False, $g_iNotifyDeletePushesOlderThanHours = 4
-Global $g_bNotifyAlertMatchFound = False, $g_bNotifyAlerLastRaidIMG = False, $g_bNotifyAlerLastRaidTXT = False, $g_bNotifyAlertCampFull = False, $g_bNotifyAlertUpgradeWalls = False, $g_bNotifyAlertOutOfSync = False, $g_bNotifyAlertTakeBreak = False, $g_bNotifyAlertBulderIdle = False, $g_bNotifyAlertVillageReport = False, $g_bNotifyAlertLastAttack = False, $g_bNotifyAlertAnotherDevice = False, $g_bNotifyAlertMaintenance = False, $g_bNotifyAlertBAN = False, $g_bNotifyAlertBOTUpdate = False, $g_bNotifyAlertSmartWaitTime = False
+Global $g_bNotifyAlertMatchFound = False, $g_bNotifyAlerLastRaidIMG = False, $g_bNotifyAlerLastRaidTXT = False, $g_bNotifyAlertCampFull = False, $g_bNotifyAlertUpgradeWalls = False, $g_bNotifyAlertOutOfSync = False, $g_bNotifyAlertTakeBreak = False, $g_bNotifyAlertBulderIdle = False, $g_bNotifyAlertVillageReport = False, $g_bNotifyAlertLastAttack = False, $g_bNotifyAlertAnotherDevice = False, $g_bNotifyAlertMaintenance = False, $g_bNotifyAlertBAN = False, $g_bNotifyAlertBOTUpdate = False, $g_bNotifyAlertSmartWaitTime = False, $g_bNotifyAlertLaboratoryIdle = False
 Global $g_bNotifyScheduleHoursEnable = False, $g_bNotifyScheduleWeekDaysEnable = False
 Global $g_abNotifyScheduleHours[24] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
 Global $g_abNotifyScheduleWeekDays[7] = [False, False, False, False, False, False, False]
@@ -6420,7 +6426,7 @@ Global $g_iSkippedVillageCount = 0, $g_iDroppedTrophyCount = 0
 Global $g_iCostGoldWall = 0, $g_iCostElixirWall = 0, $g_iCostGoldBuilding = 0, $g_iCostElixirBuilding = 0, $g_iCostDElixirHero = 0
 Global $g_iNbrOfWallsUpped = 0, $g_iNbrOfWallsUppedGold = 0, $g_iNbrOfWallsUppedElixir = 0
 Global $g_iNbrOfBuildingsUppedGold = 0, $g_iNbrOfBuildingsUppedElixir = 0, $g_iNbrOfHeroesUpped = 0
-Global $g_iSearchCost = 0, $g_iTrainCostElixir = 0, $g_iTrainCostDElixir = 0 , $g_iTrainCostGold = 0
+Global $g_iSearchCost = 0, $g_iTrainCostElixir = 0, $g_iTrainCostDElixir = 0, $g_iTrainCostGold = 0
 Global $g_iNbrOfOoS = 0
 Global $g_iNbrOfTHSnipeFails = 0, $g_iNbrOfTHSnipeSuccess = 0
 Global $g_iGoldFromMines = 0, $g_iElixirFromCollectors = 0, $g_iDElixirFromDrills = 0
@@ -6724,7 +6730,7 @@ Global $g_bChkClanGamesDebug = 0
 Global $g_iPurgeJobCount[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_iPurgeMax = 5
 Global $g_bChkCollectFreeMagicItems = True
-GloBal $g_bOnlySCIDAccounts = False
+Global $g_bOnlySCIDAccounts = False
 Global $g_iWhatSCIDAccount2Use = 0
 Global $g_bUseStatistics = False
 Global $g_hSQLiteDB = Null
@@ -6975,10 +6981,15 @@ SetDebugLog("UpdateSplashTitle: " & $title)
 If $g_bDisableSplash Then Return
 GUICtrlSetData($g_lSplashTitle, $title)
 EndFunc
-Func DestroySplashScreen()
-If IsHWnd($g_hSplash) Then GUIDelete($g_hSplash)
+Func DestroySplashScreen($bReleaseMutex = True)
+If $g_hSplash And IsHWnd($g_hSplash) Then
+GUIDelete($g_hSplash)
+$g_hSplash = 0
+EndIf
+If $bReleaseMutex Then
 ReleaseMutex($g_hSplashMutex)
 $g_hSplashMutex = 0
+EndIf
 EndFunc
 Func MoveSplashScreen()
 _WinAPI_PostMessage($g_hSplash, $WM_SYSCOMMAND, 0xF012, 0)
@@ -7033,8 +7044,12 @@ $g_lSplashTitle = GUICtrlCreateLabel($g_sBotTitle, 15, $iY + $iT + $iB + 3, $iX 
 GUICtrlSetOnEvent(-1, "MoveSplashScreen")
 $g_hSplashProgress = GUICtrlCreateProgress(15, $iY + $iT + $iB + 20, $iX - 30, 10, $PBS_SMOOTH, BitOR($WS_EX_TOPMOST, $WS_EX_WINDOWEDGE, $WS_EX_TOOLWINDOW))
 $g_lSplashStatus = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design - Loading", "SplashStep_Loading", "Loading..."), 15, $iY + $iT + $iB + 38, $iX - 30, 15, $SS_CENTER)
-EndIf
 GUICtrlSetOnEvent(-1, "MoveSplashScreen")
+Else
+$g_lSplashTitle = 0
+$g_hSplashProgress = 0
+$g_lSplashStatus = 0
+EndIf
 _GDIPlus_BitmapDispose($hSplashImg)
 If $g_bDebugSetlog Then SetDebugLog("Splash created: $g_hSplash=" & $g_hSplash & ", $g_lSplashPic=" & $g_lSplashPic & ", $g_lSplashTitle=" & $g_lSplashTitle & ", $g_hSplashProgress=" & $g_hSplashProgress & ", $g_lSplashStatus=" & $g_lSplashStatus)
 If Not $bCustomWindow Then
@@ -7071,6 +7086,7 @@ Global $aCancelFight[4] = [822, 48, 0xD80408, 20]
 Global $aCancelFight2[4] = [830, 59, 0xD80408, 20]
 Global $aEndFightSceneBtn[4] = [429, 519 + $g_iMidOffsetY, 0xB8E35F, 20]
 Global $aEndFightSceneAvl[4] = [241, 196 + $g_iMidOffsetY, 0xFFF090, 20]
+Global $aEndFightSceneReportGold = $aEndFightSceneAvl
 Global $aReturnHomeButton[4] = [376, 567 + $g_iMidOffsetY, 0x60AC10, 20]
 Global $aChatTab[4] = [331, 325 + $g_iMidOffsetY, 0xF0951D, 20]
 Global $aChatTab2[4] = [331, 330 + $g_iMidOffsetY, 0xF0951D, 20]
@@ -7953,7 +7969,7 @@ EndFunc
 Func setAndroidPID($pid = GetAndroidPid())
 If $g_hLibMyBot = -1 Then Return
 SetDebugLog("setAndroidPID: $pid=" & $pid)
-Local $result = DllCall($g_hLibMyBot, "str", "setAndroidPID", "int", $pid)
+Local $result = DllCall($g_hLibMyBot, "str", "setAndroidPID", "int", $pid, "str", $g_sBotVersion, "str", $g_sAndroidEmulator, "str", $g_sAndroidVersion, "str", $g_sAndroidInstance)
 If @error Then
 _logErrorDLLCall($g_sLibMyBotPath & ", setAndroidPID:", @error)
 Return SetError(@error)
@@ -8009,7 +8025,7 @@ Return $bAuthenticated
 EndFunc
 Func ForumLogin($sUsername, $sPassword)
 If $g_hLibMyBot = -1 Then Return False
-Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", _Base64Encode(StringToBinary($sUsername, 4), 1024), "str", _Base64Encode(StringToBinary($sPassword, 4), 1024), "str", _Base64Encode(StringToBinary($g_sBotTitle, 4), 1024))
+Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", _Base64Encode(StringToBinary($sUsername, 4), 1024), "str", _Base64Encode(StringToBinary($sPassword, 4), 1024))
 If @error Then
 _logErrorDLLCall($g_sLibMyBotPath & ", ForumLogin:", @error)
 Return SetError(@error)
@@ -8111,6 +8127,8 @@ Global Const $g_sAdbScriptsPath = $g_sLibPath & "\adb.scripts"
 Global $g_sAndroidAdbPrompt = "mybot.run:"
 Global $g_bAndroidAdbPortPerInstance = True
 Global $g_bAndroidAdbPort = 0
+Global $g_iAndroidAdbMinitouchModeDefault = 1
+Global $g_iAndroidAdbMinitouchMode = $g_iAndroidAdbMinitouchModeDefault
 Global $g_bAndroidAdbMinitouchPort = 0
 Global $g_bAndroidAdbMinitouchSocket = 0
 Global $g_sAndroidAdbInstanceShellOptionsDefault = " -t -t"
@@ -8119,6 +8137,7 @@ Global $g_sAndroidAdbShellOptions = ""
 Global $g_bAndroidAdbPromptUseGiven = False
 Global $g_iAndroidCoCPid = 0
 Global $g_iAndroidAdbProcess = [0, 0, 0, 0, 0]
+Global $g_iAndroidAdbMinitouchProcess = [0, 0, 0, 0, 0]
 Global $g_aiAndroidAdbClicks[1] = [-1]
 Global $g_aiAndroidAdbStatsTotal[2][2] = [ [0, 0], [0, 0] ]
 Global $g_aiAndroidAdbStatsLast[2][12]
@@ -8138,6 +8157,11 @@ Global $g_aiMouseOffsetWindowOnly = [0, 0]
 Global $g_bPullPushSharedPrefsAbdCommand = False
 Global $g_PushedSharedPrefsProfile = ""
 Global $g_PushedSharedPrefsProfile_Timer = 0
+Global $g_bUpdateSharedPrefsLanguage = True
+Global $g_bUpdateSharedPrefsSnow = True
+Global $g_bUpdateSharedPrefsZoomLevel = True
+Global $g_bUpdateSharedPrefsGoogleDisconnected = True
+Global $g_bUpdateSharedPrefsRated = True
 Func InitAndroidConfig($bRestart = False)
 FuncEnter(InitAndroidConfig)
 If $bRestart = False Then
@@ -8163,6 +8187,7 @@ $g_bAndroidAdbClick = $g_bAndroidAdbClickEnabled = True And AndroidAdbClickSuppo
 $g_bAndroidAdbInput = $g_bAndroidAdbInputEnabled = True And BitAND($g_iAndroidSupportFeature, 8) = 8
 $g_bAndroidAdbInstance = $g_bAndroidAdbInstanceEnabled = True And BitAND($g_iAndroidSupportFeature, 16) = 16
 $g_bAndroidAdbClickDrag = $g_bAndroidAdbClickDragEnabled = True And BitAND($g_iAndroidSupportFeature, 32) = 32
+$g_bAndroidPicturesPathAutoConfig = BitAND($g_iAndroidSupportFeature, 512) > 0
 $g_bAndroidEmbed = $g_bAndroidEmbedEnabled = True And $g_iAndroidEmbedMode > -1
 $g_bAndroidBackgroundLaunch = $g_bAndroidBackgroundLaunchEnabled = True
 $g_bAndroidBackgroundLaunched = False
@@ -8171,6 +8196,8 @@ $g_bAndroidControlUseParentPos = False
 $g_sAndroidAdbInstanceShellOptions = $g_sAndroidAdbInstanceShellOptionsDefault
 $g_sAndroidAdbShellOptions = ""
 $g_bAndroidAdbPortPerInstance = True
+$g_iAndroidRecoverStrategy = $g_iAndroidRecoverStrategyDefault
+$g_iAndroidAdbMinitouchMode = $g_iAndroidAdbMinitouchModeDefault
 $g_PushedSharedPrefsProfile = ""
 $g_PushedSharedPrefsProfile_Timer = 0
 If $g_bAndroidAdbScreencap Then
@@ -8540,13 +8567,18 @@ If $pid <> 0 Then
 If IsArray($aWinList) = 0 Then
 Local $aWinList2 = _WinAPI_EnumProcessWindows($pid, True)
 If IsArray($aWinList2) = 1 And $aWinList2[0][0] > 0 Then
-Local $aWinList[$aWinList2[0][0] + 1][3]
+Local $aWinList[$aWinList2[0][0] + 1][5]
 $aWinList[0][0] = $aWinList2[0][0]
 For $i = 1 To $aWinList2[0][0]
+Local $aPos = WinGetPos($aWinList2[$i][0])
 $aWinList[$i][0] = WinGetTitle($aWinList2[$i][0])
 $aWinList[$i][1] = $aWinList2[$i][0]
 $aWinList[$i][2] = $aWinList2[$i][1]
-SetDebugLog("Found Android window: " & $aWinList[$i][0] & ", " & $aWinList[$i][1] & ", " & $aWinList[$i][2])
+If UBound($aPos) > 3 Then
+$aWinList[$i][3] = $aPos[2]
+$aWinList[$i][4] = $aPos[3]
+EndIf
+SetDebugLog("Found Android window: " & $aWinList[$i][0] & ", " & $aWinList[$i][1] & ", " & $aWinList[$i][2] & ", " & $aWinList[$i][3] & ", " & $aWinList[$i][4])
 Next
 EndIf
 EndIf
@@ -8555,7 +8587,7 @@ SetDebugLog("Found " & $aWinList[0][0] & " windows, searching for '" & $g_sAppPa
 For $i = 1 To $aWinList[0][0]
 $t = $aWinList[$i][0]
 $hWin = $aWinList[$i][1]
-If $pid = WinGetProcess($hWin) And ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance) <> 0 Then
+If $pid = WinGetProcess($hWin) And ControlGetHandle2($hWin, $g_sAppPaneName, $g_sAppClassInstance) <> 0 And $aWinList[$i][3] > 400 And $aWinList[$i][4] > 400 Then
 SetDebugLog("Found " & $g_sAndroidEmulator & " Window '" & $t & "' (" & $hWin & ") by PID " & $pid & " ('" & $commandLine & "')")
 UpdateHWnD($hWin)
 $g_sAndroidTitle = UpdateAndroidWindowTitle($g_hAndroidWindow, $t)
@@ -8705,15 +8737,24 @@ SetDebugLog("Found no installed Android Emulator")
 FuncReturn()
 EndFunc
 Func FindPreferredAdbPath()
-Local $adbPath, $i
-If $g_bAndroidAdbUseMyBot Then
 Local $sAdb = @ScriptDir & "\lib\adb\adb.exe"
-If FileExists($sAdb) Then Return $sAdb
+Local $aDll = ["AdbWinApi.dll", "AdbWinUsbApi.dll"]
+Local $adbPath = Execute("Get" & $g_sAndroidEmulator & "AdbPath()")
+Local $sAdbFolder = StringLeft($adbPath, StringInStr($adbPath, "\", 0, -1))
+Local $sAdbFile = StringMid($adbPath, StringLen($sAdbFolder) + 1)
+If $g_bAndroidAdbReplaceEmulatorVersion And $adbPath And FileExists($sAdb) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[0]) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[1]) And(FileGetSize($adbPath) <> FileGetSize($sAdb) Or FileGetSize($sAdbFolder & $aDll[0]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[0]) Or FileGetSize($sAdbFolder & $aDll[1]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[1])) Then
+If FileCopy($sAdb, $adbPath, 1) And FileCopy(@ScriptDir & "\lib\adb\" & $aDll[0], $sAdbFolder & $aDll[0], 1) And FileCopy(@ScriptDir & "\lib\adb\" & $aDll[1], $sAdbFolder & $aDll[1], 1) Then
+SetLog("Replaced " & $g_sAndroidEmulator & " ADB with MyBot.run version")
+Else
+SetLog("Cannot replace " & $g_sAndroidEmulator & " ADB with MyBot.run version", $COLOR_ERROR)
+EndIf
+EndIf
+If $g_bAndroidAdbUseMyBot And FileExists($sAdb) Then
+Return $sAdb
 EndIf
 If FileExists($g_sAndroidAdbPath) Then
 Return $g_sAndroidAdbPath
 EndIf
-$adbPath = Execute("Get" & $g_sAndroidEmulator & "AdbPath()")
 If $adbPath = "" Then
 For $i = 0 To UBound($g_avAndroidAppConfig) - 1
 $adbPath = Execute("Get" & $g_avAndroidAppConfig[$i][0] & "AdbPath()")
@@ -8736,7 +8777,7 @@ If $ReturnInitial Then Return $i2
 Return $i
 EndFunc
 Func InitAndroidAdbPorts($bForce = False)
-If $g_bAndroidAdbPortPerInstance Then
+Local $bUsePort = $g_bAndroidAdbPortPerInstance
 If $bForce Then $g_bAndroidAdbPort = 0
 If Not $g_bAndroidAdbPort Then
 Local $iPortStart = 5038, $iPortRange = 255
@@ -8749,7 +8790,7 @@ ReleaseMutex($g_hMutex_AdbDaemon)
 $g_hMutex_AdbDaemon = 0
 EndIf
 While Not $hMutex And $iPort < $iPortStart + $iPortRange
-For $i = $iTcpIdx To UBound($aTcpTable) -1
+For $i = $iTcpIdx To UBound($aTcpTable) - 1
 If $aTcpTable[$i][2] < $iPort Then
 $iTcpIdx = $i + 1
 ContinueLoop
@@ -8760,11 +8801,13 @@ $iPort += 1
 EndIf
 Next
 $iMtPort = 0
+If $g_iAndroidAdbMinitouchMode = 0 Then
 $iTcpMtIdx = _ArrayBinarySearch($aTcpTable, $iPort + 1000, 0, 0, 2)
 If $iTcpMtIdx = -1 Or($iTcpMtIdx > 0 And $aTcpTable[$iTcpMtIdx][0] = "adb.exe") Then
 $iMtPort = $iPort + 1000
 EndIf
-If $iMtPort Then
+EndIf
+If $iMtPort Or $g_iAndroidAdbMinitouchMode = 1 Then
 $hMutex = CreateMutex("MyBot.run/Adb-Port-" & $iPort)
 If $hMutex Then
 $g_hMutex_AdbDaemon = $hMutex
@@ -8776,13 +8819,16 @@ EndIf
 $iPort += 1
 WEnd
 EndIf
-EndIf
-If $g_bAndroidAdbPort Then
+If $bUsePort And $g_bAndroidAdbPort Then
 SetDebugLog("Using ADB Daemon port " & $g_bAndroidAdbPort)
 $g_sAndroidAdbGlobalOptions = "-P " & $g_bAndroidAdbPort
 Else
+If $g_bAndroidAdbPort Then
+SetDebugLog("Using default ADB Daemon port, minitouch port is " &($g_bAndroidAdbPort + 1000), $COLOR_ERROR)
+Else
 SetDebugLog("Cannot aquire ADB Daemon port, using default", $COLOR_ERROR)
 $g_bAndroidAdbMinitouchPort = 1111
+EndIf
 EndIf
 EndFunc
 Func InitAndroid($bCheckOnly = False, $bLogChangesOnly = True)
@@ -8813,6 +8859,16 @@ If(UBound($aResult) > 0 And $aResult[0] = $S_OK) Or RegWrite($g_sHKLM & "\Softwa
 SetDebugLog("Disabled WerFault for " & $sFileOnly)
 Else
 SetDebugLog("Cannot disable WerFault for " & $sFileOnly)
+EndIf
+Local $sPath = Execute("Get" & $g_sAndroidEmulator & "AdbPath()")
+If $sPath Then
+Local $sFileOnly = StringMid($sPath, StringInStr($sPath, "\", 0, -1) + 1)
+Local $aResult = DllCall("Wer.dll", "int", "WerAddExcludedApplication", "wstr", $sFileOnly, "bool", True)
+If(UBound($aResult) > 0 And $aResult[0] = $S_OK) Or RegWrite($g_sHKLM & "\Software\Microsoft\Windows\Windows Error Reporting\ExcludedApplications", $sFileOnly, "REG_DWORD", "1") = 1 Then
+SetDebugLog("Disabled WerFault for " & $sFileOnly)
+Else
+SetDebugLog("Cannot disable WerFault for " & $sFileOnly)
+EndIf
 EndIf
 EndIf
 If FileExists($__VBoxManage_Path) Then
@@ -8848,8 +8904,6 @@ If($g_sAndroidPicturesHostFolder <> "" Or BitAND($g_iAndroidSecureFlags, 1) = 1)
 DirCreate($g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder)
 EndIf
 ElseIf $g_sAndroidPicturesHostPath <> "" Then
-SetLog("Shared Folder doesn't exist, please fix:", $COLOR_ERROR)
-SetLog($g_sAndroidPicturesHostPath, $COLOR_ERROR)
 EndIf
 If CompareAndUpdate($aPriorValues[IncrUpdate($i)], $g_sAndroidPicturesHostPath) Or $bLogChangesOnly = False Then SetDebugLog("Android ADB Shared Folder on Host: " & $g_sAndroidPicturesHostPath)
 If CompareAndUpdate($aPriorValues[IncrUpdate($i)], $g_sAndroidPicturesHostFolder) Or $bLogChangesOnly = False Then SetDebugLog("Android ADB Shared SubFolder: " & $g_sAndroidPicturesHostFolder)
@@ -8990,7 +9044,7 @@ EndIf
 ConnectAndroidAdb()
 If Not $g_bRunState Then Return False
 If Not $g_bRunState Then Return False
-If ProfileSwitchAccountEnabled() And $g_bChkSharedPrefs And HaveSharedPrefs() And($g_PushedSharedPrefsProfile <> $g_sProfileCurrentName Or($g_PushedSharedPrefsProfile_Timer = 0 Or __TimerDiff($g_PushedSharedPrefsProfile_Timer) > 120000)) Then PushSharedPrefs()
+If((ProfileSwitchAccountEnabled() And $g_bChkSharedPrefs) Or $g_bUpdateSharedPrefs) And HaveSharedPrefs() And($g_bUpdateSharedPrefs Or $g_PushedSharedPrefsProfile <> $g_sProfileCurrentName Or($g_PushedSharedPrefsProfile_Timer = 0 Or __TimerDiff($g_PushedSharedPrefsProfile_Timer) > 120000)) Then PushSharedPrefs()
 $cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 60000)
 If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
 SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_ERROR)
@@ -9434,6 +9488,9 @@ If Not $g_bAndroidInitialized Or $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2(
 Local $SuspendMode = ResumeAndroid()
 InitAndroid()
 Local $s
+If(Not $g_sAndroidPicturesHostPath Or Not $g_bAndroidSharedFolderAvailable) And $g_bAndroidPicturesPathAutoConfig And $rebootAndroidIfNeccessary Then
+RebootAndroidSetScreenDefault()
+EndIf
 Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder
 If FileExists($hostFolder) = 1 Then
 SetDebugLog($hostFolder & " exists")
@@ -9525,7 +9582,12 @@ Local $aMounts[0]
 If $path Then _ArrayConcatenate($aMounts, StringSplit(((StringLeft($path, 1) = "(" And StringRight($path, 1) = ")") ? StringMid($path, 2, StringLen($path) - 2) : $path), "|", $STR_NOCOUNT))
 If UBound($aRegExResult) > 0 Then _ArrayConcatenate($aMounts, $aRegExResult)
 Local $dummyFile = StringMid(_Crypt_HashData($g_sBotTitle & _Now(), $CALG_SHA1), 3)
-FileWriteLine($g_sAndroidPicturesHostPath & $dummyFile, _Now())
+If FileWriteLine($g_sAndroidPicturesHostPath & $dummyFile, _Now()) Then
+SetDebugLog("Created dummy file: " & $g_sAndroidPicturesHostPath & $dummyFile)
+Else
+SetLog("Cannot create dummy file: " & $g_sAndroidPicturesHostPath & $dummyFile, $COLOR_ERROR)
+Return SetError(4, 0)
+EndIf
 For $i = 0 To UBound($aMounts) - 1
 $path = $aMounts[$i]
 If $path = "" Then ContinueLoop
@@ -9588,6 +9650,7 @@ If $g_bAndroidAdbMinitouchSocket Then
 TCPCloseSocket($g_bAndroidAdbMinitouchSocket)
 $g_bAndroidAdbMinitouchSocket = 0
 EndIf
+If $g_iAndroidAdbMinitouchMode = 0 Then
 If $g_bAndroidAdbMinitouchPort Then
 SetDebugLog($g_sAndroidEmulator & " initialize minitouch on port " & $g_bAndroidAdbMinitouchPort)
 Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/")
@@ -9605,11 +9668,13 @@ EndIf
 $g_bAndroidAdbMinitouchSocket = TCPConnect("127.0.0.1", $g_bAndroidAdbMinitouchPort)
 EndIf
 If $g_bAndroidAdbMinitouchSocket < 1 Then
-SetDebugLog($g_sAndroidEmulator & " minitouch not available", $COLOR_ERROR)
+SetDebugLog($g_sAndroidEmulator & " minitouch not available, switch to STDIN", $COLOR_ERROR)
 $g_bAndroidAdbMinitouchSocket = 0
-Return SetError(2, 1)
+$g_iAndroidAdbMinitouchMode = 1
 EndIf
-If $g_bAndroidAdbMinitouchSocket Then
+EndIf
+If $g_iAndroidAdbMinitouchMode = 1 Then
+AndroidAdbLaunchMinitouchShellInstance($wasRunState, $rebootAndroidIfNeccessary)
 EndIf
 SuspendAndroid($SuspendMode)
 EndIf
@@ -9631,6 +9696,7 @@ If $g_bAndroidAdbMinitouchSocket Then
 TCPCloseSocket($g_bAndroidAdbMinitouchSocket)
 $g_bAndroidAdbMinitouchSocket = 0
 EndIf
+AndroidAdbTerminateMinitouchShellInstance()
 EndFunc
 Func AndroidAdbSendShellCommand($cmd = Default, $timeout = Default, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True, $bNoShellTerminate = False)
 FuncEnter(AndroidAdbSendShellCommand)
@@ -9727,6 +9793,95 @@ If $bNoShellTerminate = False Then AndroidAdbTerminateShellInstance()
 EndIf
 EndIf
 Return SetError($error, Int(__TimerDiff($hTimer)), $s)
+EndFunc
+Func AndroidAdbLaunchMinitouchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+If Not $g_bAndroidInitialized Then Return SetError(2, 0)
+If $wasRunState = Default Then $wasRunState = $g_bRunState
+Local $iConnected
+If Not $g_bAndroidInitialized Or $g_iAndroidAdbMinitouchProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbMinitouchProcess[0]) <> $g_iAndroidAdbMinitouchProcess[0] Then
+Local $SuspendMode = ResumeAndroid()
+$iConnected = ConnectAndroidAdb($rebootAndroidIfNeccessary)
+If $iConnected = 0 Or($iConnected = 2 And $g_iAndroidAdbMinitouchProcess[0] = 0) Then
+Return SetError(3, 0)
+ElseIf $iConnected = 2 And $g_iAndroidAdbMinitouchProcess[0] Then
+Return SetError(0, 0)
+EndIf
+AndroidAdbTerminateMinitouchShellInstance()
+Local $cmdMinitouch = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/") & "minitouch -d " & $g_sAndroidMouseDevice & " -i"
+Local $cmd = '"' & $g_sAndroidAdbPath & '"' & AddSpace($g_sAndroidAdbGlobalOptions, 1) & " -s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbInstanceShellOptions & $g_sAndroidAdbShellOptions & " " & $cmdMinitouch
+SetDebugLog("Run pipe ADB shell for minituch: " & $cmd)
+$g_iAndroidAdbMinitouchProcess[0] = RunPipe($cmd, "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbMinitouchProcess[1], $g_iAndroidAdbMinitouchProcess[2], $g_iAndroidAdbMinitouchProcess[3], $g_iAndroidAdbMinitouchProcess[4])
+Sleep(500)
+If $g_sAndroidAdbInstanceShellOptions And $g_iAndroidAdbMinitouchProcess[0] <> 0 And ProcessExists2($g_iAndroidAdbMinitouchProcess[0]) <> $g_iAndroidAdbMinitouchProcess[0] Then
+Local $aReadPipe = $g_iAndroidAdbMinitouchProcess[2]
+Local $output = ReadPipe($aReadPipe[0])
+If InvalidAdbInstanceShellOptions($output, "AndroidAdbLaunchMinitouchShellInstance") Then
+ClosePipe($g_iAndroidAdbMinitouchProcess[0], $g_iAndroidAdbMinitouchProcess[1], $g_iAndroidAdbMinitouchProcess[2], $g_iAndroidAdbMinitouchProcess[3], $g_iAndroidAdbMinitouchProcess[4])
+$cmd = '"' & $g_sAndroidAdbPath & '"' & AddSpace($g_sAndroidAdbGlobalOptions, 1) & " -s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbInstanceShellOptions & $g_sAndroidAdbShellOptions & " " & $cmdMinitouch
+SetDebugLog("Run pipe ADB shell for minituch: " & $cmd)
+$g_iAndroidAdbMinitouchProcess[0] = RunPipe($cmd, "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
+Sleep(500)
+EndIf
+EndIf
+If $g_sAndroidAdbShellOptions And $g_iAndroidAdbMinitouchProcess[0] <> 0 And ProcessExists2($g_iAndroidAdbMinitouchProcess[0]) <> $g_iAndroidAdbMinitouchProcess[0] Then
+Local $aReadPipe = $g_iAndroidAdbMinitouchProcess[2]
+Local $output = ReadPipe($aReadPipe[0])
+If InvalidAdbShellOptions($output, "AndroidAdbLaunchMinitouchShellInstance") Then
+ClosePipe($g_iAndroidAdbMinitouchProcess[0], $g_iAndroidAdbMinitouchProcess[1], $g_iAndroidAdbMinitouchProcess[2], $g_iAndroidAdbMinitouchProcess[3], $g_iAndroidAdbMinitouchProcess[4])
+$cmd = '"' & $g_sAndroidAdbPath & '"' & AddSpace($g_sAndroidAdbGlobalOptions, 1) & " -s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbInstanceShellOptions & $g_sAndroidAdbShellOptions & " " & $cmdMinitouch
+SetDebugLog("Run pipe ADB shell for minituch: " & $cmd)
+$g_iAndroidAdbMinitouchProcess[0] = RunPipe($cmd, "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbProcess[1], $g_iAndroidAdbProcess[2], $g_iAndroidAdbProcess[3], $g_iAndroidAdbProcess[4])
+Sleep(500)
+EndIf
+EndIf
+If $g_iAndroidAdbMinitouchProcess[0] And ProcessExists2($g_iAndroidAdbMinitouchProcess[0]) = $g_iAndroidAdbMinitouchProcess[0] Then
+Else
+SetLog($g_sAndroidEmulator & " error launching ADB shell for minitouch", $COLOR_ERROR)
+$g_iAndroidAdbMinitouchProcess[0] = 0
+Return SetError(1, 0)
+EndIf
+EndIf
+SetError(0, 0)
+EndFunc
+Func AndroidAdbTerminateMinitouchShellInstance()
+Local $SuspendMode = ResumeAndroid()
+If $g_iAndroidAdbMinitouchProcess[0] <> 0 Then
+If ClosePipe($g_iAndroidAdbMinitouchProcess[0], $g_iAndroidAdbMinitouchProcess[1], $g_iAndroidAdbMinitouchProcess[2], $g_iAndroidAdbMinitouchProcess[3], $g_iAndroidAdbMinitouchProcess[4]) = 1 Then
+SetDebugLog("ADB minitouch shell terminated, PID = " & $g_iAndroidAdbMinitouchProcess[0])
+Else
+SetDebugLog("ADB minitouch shell already terminated, PID = " & $g_iAndroidAdbMinitouchProcess[0])
+EndIf
+$g_iAndroidAdbMinitouchProcess[0] = 0
+EndIf
+EndFunc
+Func AndroidAdbSendMinitouchShellCommand($cmd = Default, $iDelay = 0, $wasRunState = Default, $EnsureShellInstance = True, $bStripPrompt = True, $bNoShellTerminate = False)
+Static $iCommandErrors = 0
+If $wasRunState = Default Then $wasRunState = $g_bRunState
+Local $sentBytes = 0
+Local $SuspendMode = ResumeAndroid()
+SetError(0, 0, 0)
+If $EnsureShellInstance = True Then
+AndroidAdbLaunchMinitouchShellInstance($wasRunState)
+EndIf
+If @error <> 0 Then Return SetError(@error, 0, "")
+Local $aReadPipe = $g_iAndroidAdbMinitouchProcess[2]
+Local $aWritePipe = $g_iAndroidAdbMinitouchProcess[1]
+If UBound($aReadPipe) < 2 Or UBound($aWritePipe) < 2 Then
+SetDebugLog("ADB Minitiuch Shell instance not initialized, cannot execute: " & $cmd, $COLOR_ERROR)
+Return SetError(1, 0, "")
+EndIf
+ReadPipe($aReadPipe[0])
+If $cmd = Default Then
+Else
+If $g_bDebugAndroid Then
+SetDebugLog("Send ADB minitouch shell command: " & StringReplace($cmd, @LF, ";"))
+EndIf
+$sentBytes = WritePipe($aWritePipe[1], $cmd)
+EndIf
+If $iDelay Then Sleep($iDelay)
+Local $s = ReadPipe($aReadPipe[0])
+SuspendAndroid($SuspendMode)
+Return $s
 EndFunc
 Func GetBinaryEvent($type, $code, $value)
 Local $h, $hType, $hCode, $hValue
@@ -10211,6 +10366,7 @@ Return AndroidMinitouchClickDrag($x1, $y1, $x2, $y2, $wasRunState)
 EndFunc
 Func AndroidMinitouchClickDrag($x1, $y1, $x2, $y2, $wasRunState = Default)
 AndroidAdbLaunchShellInstance($wasRunState)
+If $g_iAndroidAdbMinitouchMode = 0 Then
 If $g_bAndroidAdbMinitouchSocket < 1 Then
 SetLog("Minitouch not available", $COLOR_ERROR)
 Return SetError(1, 0, 0)
@@ -10226,6 +10382,7 @@ AndroidAdbTerminateShellInstance()
 Return AndroidMinitouchClickDrag($x1, $y1, $x2, $y2, False)
 EndIf
 Return SetError(1, 0, 0)
+EndIf
 EndIf
 Local $sleepStart = 250
 Local $sleepMove = 10
@@ -10244,7 +10401,11 @@ Local $x = $x1, $y = $y1
 $send = "d 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF & "w " & $sleep & @LF
 $botSleep += $sleep
 If $g_bDebugAndroid Then SetDebugLog("minitouch: " & StringReplace($send, @LF, ";"))
+If $g_iAndroidAdbMinitouchMode = 0 Then
 TCPSend($g_bAndroidAdbMinitouchSocket, $send)
+Else
+AndroidAdbSendMinitouchShellCommand($send)
+EndIf
 $sleep = $sleepMove
 For $i = 1 To $loops
 $x += $x_steps
@@ -10262,13 +10423,21 @@ EndIf
 $send = "m 0 " & Int($x) & " " & Int($y) & " 50" & @LF & "c" & @LF & "w " & $sleep & @LF
 $botSleep += $sleep
 If $g_bDebugAndroid Then SetDebugLog("minitouch: " & StringReplace($send, @LF, ";"))
+If $g_iAndroidAdbMinitouchMode = 0 Then
 TCPSend($g_bAndroidAdbMinitouchSocket, $send)
+Else
+AndroidAdbSendMinitouchShellCommand($send)
+EndIf
 Next
 $sleep = $sleepMove
 $send = "u 0" & @LF & "c" & @LF & "w " & $sleep & @LF
 $botSleep += $sleep
 If $g_bDebugAndroid Then SetDebugLog("minitouch: " & StringReplace($send, @LF, ";"))
+If $g_iAndroidAdbMinitouchMode = 0 Then
 TCPSend($g_bAndroidAdbMinitouchSocket, $send)
+Else
+AndroidAdbSendMinitouchShellCommand($send)
+EndIf
 _Sleep($botSleep)
 Return SetError(0, 0, 1)
 EndFunc
@@ -10312,7 +10481,9 @@ ForceCaptureRegion()
 AndroidMinitouchClick($x, $y, $times, $speed, $checkProblemAffect)
 EndFunc
 Func Minitouch($x, $y, $iAction = 0, $iDelay = 1)
+If $g_iAndroidAdbMinitouchMode = 0 Then
 If $g_bAndroidAdbMinitouchSocket < 1 Then Return -1
+EndIf
 Static $x_dn, $y_dn
 $x = Int($x)
 $y = Int($y)
@@ -10320,22 +10491,50 @@ Execute($g_sAndroidEmulator & "AdjustClickCoordinates($x,$y)")
 Local $iBytes = 0
 Local $s
 Local $t = ""
+Local $sWait = ""
 Switch $iAction
 Case 0, 2
 If $iAction = 0 Or $x_dn <> $x Or $y_dn <> $y Then
-$s = "m 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF
+$s = "m 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF & $sWait
 $t &= $s
+If $g_iAndroidAdbMinitouchMode = 0 Then
 $iBytes += TCPSend($g_bAndroidAdbMinitouchSocket, $s)
+Else
+AndroidAdbSendMinitouchShellCommand($s)
+If @error Then
+Return SetError(@error, 0, 0)
+Else
+$iBytes += StringLen($s)
+EndIf
+EndIf
 EndIf
 If $iAction = 2 Then
-$s = "u 0 " & @LF & "c" & @LF
+$s = "u 0 " & @LF & "c" & @LF & $sWait
 $t &= $s
+If $g_iAndroidAdbMinitouchMode = 0 Then
 $iBytes += TCPSend($g_bAndroidAdbMinitouchSocket, $s)
+Else
+AndroidAdbSendMinitouchShellCommand($s)
+If @error Then
+Return SetError(@error, 0, 0)
+Else
+$iBytes += StringLen($s)
+EndIf
+EndIf
 EndIf
 Case 1
-$s = "d 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF
+$s = "d 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF & $sWait
 $t &= $s
+If $g_iAndroidAdbMinitouchMode = 0 Then
 $iBytes += TCPSend($g_bAndroidAdbMinitouchSocket, $s)
+Else
+AndroidAdbSendMinitouchShellCommand($s)
+If @error Then
+Return SetError(@error, 0, 0)
+Else
+$iBytes += StringLen($s)
+EndIf
+EndIf
 $x_dn = $x
 $y_dn = $y
 EndSwitch
@@ -10368,6 +10567,8 @@ $g_bSilentSetLog = $_SilentSetLog
 EndIf
 Return
 EndIf
+Local $bytes = 0
+Local $bytesSent = 0
 Local $wasRunState = $g_bRunState
 Local $hostPath = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder
 Local $androidPath = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/")
@@ -10383,6 +10584,7 @@ SetLog("Disabled " & $g_sAndroidEmulator & " ADB fast mouse click", $COLOR_ERROR
 Return SetError(1, 0)
 EndIf
 AndroidAdbLaunchShellInstance($wasRunState)
+If $g_iAndroidAdbMinitouchMode = 0 Then
 If $g_bAndroidAdbMinitouchSocket < 1 Then
 $g_bAndroidAdbClick = False
 SetLog("Disabled " & $g_sAndroidEmulator & " ADB fast mouse click", $COLOR_ERROR)
@@ -10390,7 +10592,7 @@ Return SetError(1, 0)
 EndIf
 TCPRecv($g_bAndroidAdbMinitouchSocket, 256, 1)
 Local $recv_state = [@error, @extended]
-Local $bytes = TCPSend($g_bAndroidAdbMinitouchSocket, @LF)
+$bytes = TCPSend($g_bAndroidAdbMinitouchSocket, @LF)
 Local $send_state = [@error, $bytes]
 If($recv_state[0] Or $send_state[0] Or $send_state[1] <> 1) Then
 SetLog("Cannot send minitouch data to " & $g_sAndroidEmulator & ", received " & $recv_state[1] & ", send " & $send_state[1], $COLOR_ERROR)
@@ -10399,6 +10601,7 @@ AndroidAdbTerminateShellInstance()
 Return AndroidMinitouchClick($x, $y, $times, $speed, $checkProblemAffect, $iRetryCount + 1)
 EndIf
 Return SetError(1, 0)
+EndIf
 EndIf
 Local $ReleaseClicksCheck =($x = Default And $y = Default And $g_aiAndroidAdbClicks[0] > 0)
 If $ReleaseClicks <> $ReleaseClicksCheck Then
@@ -10459,37 +10662,59 @@ $BTN_TOUCH_UP = StringInStr($up_down, "up") > 0
 EndIf
 Local $send = ""
 $bytes = 0
+$bytesSent = 0
 If $BTN_TOUCH_DOWN Then
 $send &= "d 0 " & $x & " " & $y & " 50" & @LF
 $send &= "c" & @LF
+If $g_iAndroidAdbMinitouchMode = 0 Then
 $bytes += TCPSend($g_bAndroidAdbMinitouchSocket, $send)
-$send = ""
+$bytesSent += StringLen($send)
+Else
+AndroidAdbSendMinitouchShellCommand($send)
+EndIf
 EndIf
 If $BTN_TOUCH_UP Then
+$send = ""
 Local $sleep = $minSleep
 If $speed > $minSleep And $times = 1 Then
 $sleep = $speed
 EndIf
 $send &= "w " & $sleep & @LF
+If $g_iAndroidAdbMinitouchMode = 0 Then
 $bytes += TCPSend($g_bAndroidAdbMinitouchSocket, $send)
+$bytesSent += StringLen($send)
+Else
+AndroidAdbSendMinitouchShellCommand($send)
+EndIf
 $send = ""
-_SleepMicro($sleep * 1000)
 $send &= "u 0" & @LF
 $send &= "c" & @LF
+$send &= "w " & $iDelay & @LF
+If $g_iAndroidAdbMinitouchMode = 0 Then
 $bytes += TCPSend($g_bAndroidAdbMinitouchSocket, $send)
-$send = ""
-_SleepMicro($iDelay * 1000)
+$bytesSent += StringLen($send)
+Else
+AndroidAdbSendMinitouchShellCommand($send)
+EndIf
+_SleepMicro(($iDelay + $sleep) * 1000)
 If $g_bDebugClick Then SetDebugLog("minitouch: d 0 " & $x & " " & $y & " 50, speed=" & $sleep & ", delay=" & $iDelay)
 EndIf
-$bytes += TCPSend($g_bAndroidAdbMinitouchSocket, $send)
-If $bytes < StringLen($send) Then SetDebugLog("minitouch: Faild to send " &(StringLen($send) - $bytes) & " bytes!", $COLOR_ERROR)
+If $g_iAndroidAdbMinitouchMode = 0 Then
+If $bytes < $bytesSent Then SetDebugLog("minitouch: Faild to send " &($bytesSent - $bytes) & " bytes!", $COLOR_ERROR)
+EndIf
 Next
 EndIf
 $g_bSilentSetLog = True
 $g_bSilentSetLog = $_SilentSetLog
+If False Then
 If $speed > 0 Then
 If $g_bDebugClick Then SetDebugLog("minitouch: wait between group clicks: " & $speed & " ms.")
-TCPSend($g_bAndroidAdbMinitouchSocket, "w " & $speed & @LF)
+$send = "w " & $speed & @LF
+If $g_iAndroidAdbMinitouchMode = 0 Then
+$bytes += TCPSend($g_bAndroidAdbMinitouchSocket, $send)
+Else
+AndroidAdbSendMinitouchShellCommand($send)
+EndIf
 _SleepMicro($speed * 1000)
 EndIf
 If $adjustSpeed > 0 Then
@@ -10501,6 +10726,7 @@ SetDebugLog("AndroidMinitouchClick: Sleep " & $wait & " ms.")
 $g_bSilentSetLog = $_SilentSetLog
 EndIf
 _Sleep($wait, False)
+EndIf
 EndIf
 EndIf
 $timeSlept += __TimerDiff($sleepTimer)
@@ -10547,7 +10773,7 @@ If $SymbolFix = False Then
 If $g_iAndroidAdbInputWordsCharLimit = 0 Then
 $newText = StringRegExpReplace($newText, "([\\\?""\$\^&\*\(\)\+<>\|'~;])", "\\$1")
 $newText = StringReplace($newText, " ", "%s")
-AndroidAdbSendShellCommand("input text " & $newText, Default, $wasRunState)
+AndroidAdbSendShellCommand("input text " & $newText, 6000, $wasRunState)
 Else
 Local $words = StringSplit($newText, " ")
 Local $i, $word, $newWord
@@ -10555,7 +10781,7 @@ For $i = 1 To $words[0]
 $word = $words[$i]
 While StringLen($word) > 0
 $newWord = StringRegExpReplace(StringLeft($word, $g_iAndroidAdbInputWordsCharLimit), "([\\\?""\$\^&\*\(\)\+<>\|'~;])", "\\$1")
-AndroidAdbSendShellCommand("input text " & $newWord, Default, $wasRunState)
+AndroidAdbSendShellCommand("input text " & $newWord, 6000, $wasRunState)
 $word = StringMid($word, $g_iAndroidAdbInputWordsCharLimit + 1)
 WEnd
 If $i < $words[0] Then AndroidAdbSendShellCommand("input text %s", Default, $wasRunState)
@@ -10576,7 +10802,7 @@ EndFunc
 Func AndroidInputSwipe($x1, $y1, $x2, $y2, $wasRunState = $g_bRunState)
 AndroidAdbLaunchShellInstance($wasRunState)
 If @error = 0 Then
-AndroidAdbSendShellCommand("input swipe " & $x1 & " " & $y1 & " " & $x2 & " " & $y2 & ";input tap " & $x2 & " " & $y2, Default, $wasRunState)
+AndroidAdbSendShellCommand("input swipe " & $x1 & " " & $y1 & " " & $x2 & " " & $y2 & ";input tap " & $x2 & " " & $y2, 6000, $wasRunState)
 SetError(0, 0)
 Else
 Local $error = @error
@@ -10882,6 +11108,7 @@ $path = $g_sAndroidPicturesHostPath
 If FileExists($path) = 1 Then
 ElseIf DirCreate($path) = 1 Then
 SetGuiLog("Shared folder created: " & $path, $COLOR_SUCCESS, $bSetLog)
+$Result = True
 Else
 SetGuiLog("Cannot configure " & $g_sAndroidEmulator & " shared folder", $COLOR_SUCCESS, $bSetLog)
 SetGuiLog("Cannot create folder: " & $path, $COLOR_ERROR, $bSetLog)
@@ -10890,6 +11117,40 @@ EndIf
 EndIf
 EndIf
 Return $Result
+EndFunc
+Func ConfigureSharedFolder($iMode = 0, $bSetLog = Default)
+If $bSetLog = Default Then $bSetLog = True
+Local $Result = Execute("ConfigureSharedFolder" & $g_sAndroidEmulator & "(" & $iMode & "," & $bSetLog & ")")
+If Not($Result = "" And @error <> 0) Then
+Return $Result
+EndIf
+Local $bResult = False
+Switch $iMode
+Case 0
+Local $aRegexResult = StringRegExp($__VBoxVMinfo, "Name: '" & $g_sAndroidSharedFolderName & "', Host path: '(.*)'.*", $STR_REGEXPARRAYGLOBALMATCH)
+If Not @error Then
+$bResult = True
+$g_bAndroidSharedFolderAvailable = True
+$g_sAndroidPicturesHostPath = $aRegexResult[UBound($aRegexResult) - 1] & "\"
+Else
+SetLog($g_sAndroidEmulator & " shared folder is not available", $COLOR_ERROR)
+$g_sAndroidPicturesHostPath = ""
+$g_bAndroidAdbScreencap = False
+$g_bAndroidSharedFolderAvailable = False
+EndIf
+Case 1
+$bResult = AndroidPicturePathAutoConfig(Default, Default, $bSetLog)
+Case 2
+If $g_bAndroidSharedFolderAvailable = False And $g_bAndroidPicturesPathAutoConfig = True And FileExists($g_sAndroidPicturesHostPath) = 1 Then
+Local $cmdOutput, $process_killed
+Local $path = $g_sAndroidPicturesHostPath
+If StringRight($path, 1) = "\" Then $path = StringLeft($path, StringLen($path) - 1)
+$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder remove " & $g_sAndroidInstance & " --name " & $g_sAndroidSharedFolderName, $process_killed)
+$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name " & $g_sAndroidSharedFolderName & " --hostpath """ & $path & """  --automount", $process_killed)
+$bResult = True
+EndIf
+EndSwitch
+Return SetError(0,0, $bResult)
 EndFunc
 Func OpenAdbShell()
 Local $bWasRunState = $g_bRunState
@@ -10953,6 +11214,9 @@ EndFunc
 Func OpenPlayStoreGame()
 Return OpenPlayStore($g_sUserGamePackage)
 EndFunc
+Func OpenPlayStoreGooglePlayServices()
+Return OpenPlayStore("com.google.android.gms")
+EndFunc
 Func OpenPlayStoreNovaLauncher()
 Return OpenPlayStore("com.teslacoilsw.launcher")
 EndFunc
@@ -10960,6 +11224,9 @@ Func LaunchAndroid($sProgramPath, $sCmdParam, $sPath, $iWaitInSecAfterLaunch = D
 If $iWaitInSecAfterLaunch = Default Then $iWaitInSecAfterLaunch = 10
 If $sCmdParam And StringLeft($sCmdParam, 1) <> " " Then
 $sCmdParam = " " & $sCmdParam
+EndIf
+If Not $g_sAndroidPicturesHostPath Then
+SetScreenAndroid()
 EndIf
 SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
 Local $pid = 0
@@ -11221,6 +11488,32 @@ Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder 
 Local $iFilesInShared = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
 If FileExists($hostFolder & "\shared_prefs") And $iFilesInShared < 1 Then
 If FileCopy($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs\*", $hostFolder & "\shared_prefs", $FC_OVERWRITE) And UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1 >= $iFiles Then
+If $g_bUpdateSharedPrefs And($g_bUpdateSharedPrefsLanguage OR $g_bUpdateSharedPrefsSnow Or $g_bUpdateSharedPrefsZoomLevel Or $g_bUpdateSharedPrefsGoogleDisconnected Or $g_bUpdateSharedPrefsRated) Then
+Local $hFile = FileOpen($hostFolder & "\shared_prefs\storage_new.xml", $FO_READ + $FO_UTF8_NOBOM)
+Local $sStorage = FileRead($hFile)
+FileClose($hFile)
+If $sStorage Then
+Local $sStorageUpdated = $sStorage
+If $g_bUpdateSharedPrefsLanguage Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="d0h6phQUOxO\/uSfvat949w==">.+<\/string>', '<string name="d0h6phQUOxO/uSfvat949w==">FWCNTu39RUlYoSt0Y6mCwg==</string>', 1)
+If $g_bUpdateSharedPrefsSnow Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="WnITdUFs6FnH4NScnkEtyg==">.+<\/string>', '<string name="WnITdUFs6FnH4NScnkEtyg==">jS26iozgAh+i/424eyY5cA==</string>', 1)
+If $g_bUpdateSharedPrefsZoomLevel Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="MjhxqoFNUV\+begGvsz3gkg==">.+<\/string>', '<string name="MjhxqoFNUV+begGvsz3gkg==">oiMa1oDch9dThLoIKokZqQ==</string>', 1)
+If $g_bUpdateSharedPrefsGoogleDisconnected Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="AQ\+\/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=">.+<\/string>', '<string name="AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=">pmvEzdQuRQuKZob4KB0IeA==</string>', 1)
+If $g_bUpdateSharedPrefsRated Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="7lJCTt3TmNyzikZuHh9wZQ==">.+<\/string>', '<string name="7lJCTt3TmNyzikZuHh9wZQ==">pmvEzdQuRQuKZob4KB0IeA==</string>', 1)
+If $sStorageUpdated <> $sStorage Then
+Local $hFile = FileOpen($hostFolder & "\shared_prefs\storage_new.xml", $FO_OVERWRITE + $FO_UTF8_NOBOM)
+If FileWrite($hFile, $sStorageUpdated) Then
+SetLog("Updated shared_prefs", $COLOR_SUCCESS)
+Else
+SetLog("Failed to update shared_prefs", $COLOR_ERROR)
+EndIf
+FileClose($hFile)
+Else
+SetDebugLog("No need to update shared_prefs", $COLOR_ERROR)
+EndIf
+Else
+SetLog("Failed to read shared_prefs", $COLOR_ERROR)
+EndIf
+EndIf
 AndroidAdbSendShellCommand("set result=$(rm /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* >&2)")
 AndroidAdbSendShellCommand("set result=$(cp " & $androidFolder & "/shared_prefs/* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
 $cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
@@ -11302,9 +11595,9 @@ Local $NewVersion = ""
 Local $HelpLink = "Please visit MyBot Forum!"
 Switch $g_sAndroidEmulator
 Case "BlueStacks2"
-$NewVersion = GetVersionNormalized("4.33.0.0")
+$NewVersion = GetVersionNormalized("4.61.0.0")
 Case "MEmu"
-$NewVersion = GetVersionNormalized("6.1.0.0")
+$NewVersion = GetVersionNormalized("6.2.0.0")
 Case "Nox"
 $NewVersion = GetVersionNormalized("6.3.0.0")
 Case Else
@@ -14710,7 +15003,7 @@ Global $g_hGUI_NOTIFY = 0, $g_hGUI_NOTIFY_TAB = 0, $g_hGUI_NOTIFY_TAB_ITEM2 = 0
 Global $g_hGrpNotify = 0
 Global $g_hChkNotifyTGEnable = 0, $g_hTxtNotifyTGToken = 0
 Global $g_hChkNotifyRemote = 0, $g_hTxtNotifyOrigin = 0
-Global $g_hChkNotifyAlertMatchFound = 0, $g_hChkNotifyAlertLastRaidIMG = 0, $g_hChkNotifyAlertLastRaidTXT = 0, $g_hChkNotifyAlertCampFull = 0, $g_hChkNotifyAlertUpgradeWall = 0, $g_hChkNotifyAlertOutOfSync = 0, $g_hChkNotifyAlertTakeBreak = 0, $g_hChkNotifyAlertBuilderIdle = 0, $g_hChkNotifyAlertVillageStats = 0, $g_hChkNotifyAlertLastAttack = 0, $g_hChkNotifyAlertAnotherDevice = 0, $g_hChkNotifyAlertMaintenance = 0, $g_hChkNotifyAlertBAN = 0, $g_hChkNotifyBOTUpdate = 0, $g_hChkNotifyAlertSmartWaitTime = 0
+Global $g_hChkNotifyAlertMatchFound = 0, $g_hChkNotifyAlertLastRaidIMG = 0, $g_hChkNotifyAlertLastRaidTXT = 0, $g_hChkNotifyAlertCampFull = 0, $g_hChkNotifyAlertUpgradeWall = 0, $g_hChkNotifyAlertOutOfSync = 0, $g_hChkNotifyAlertTakeBreak = 0, $g_hChkNotifyAlertBuilderIdle = 0, $g_hChkNotifyAlertVillageStats = 0, $g_hChkNotifyAlertLastAttack = 0, $g_hChkNotifyAlertAnotherDevice = 0, $g_hChkNotifyAlertMaintenance = 0, $g_hChkNotifyAlertBAN = 0, $g_hChkNotifyBOTUpdate = 0, $g_hChkNotifyAlertSmartWaitTime = 0, $g_hChkNotifyAlertLaboratoryIdle = 0
 Global $g_hChkNotifyOnlyHours = 0, $g_hChkNotifyOnlyWeekDays = 0, $g_hChkNotifyhours[24] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_hChkNotifyWeekdays[7] = [0, 0, 0, 0, 0, 0, 0]
 GLobal $g_hLblNotifyhour = 0, $g_ahLblNotifyhoursE = 0, $g_hChkNotifyhoursE1 = 0, $g_hChkNotifyhoursE2 = 0, $g_hLblNotifyhoursAM = 0, $g_hLblNotifyhoursPM = 0
 GLobal $g_hLblNotifyhours[12] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -14797,6 +15090,9 @@ _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify",
 GUICtrlSetState(-1, $GUI_DISABLE)
 $g_hChkNotifyBOTUpdate = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyBOTUpdate", "BOT Update"), $x + 210, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyBOTUpdate_Info_01", "Send an Alert when there is a new version of the bot."))
+GUICtrlSetState(-1, $GUI_DISABLE)
+$g_hChkNotifyAlertLaboratoryIdle = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyAlertLaboratoryIdle", "Laboratory Idle"), $x + 315, $y, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Notify", "ChkNotifyAlertLaboratoryIdle_Info_01", "Send an Alert when the laboratory is idle."))
 GUICtrlSetState(-1, $GUI_DISABLE)
 $y += 20
 $y += 30
@@ -19214,7 +19510,7 @@ $g_hBtnExportData = GUICtrlCreateButton( GetTranslatedFileIni("MBR GUI Design Ch
 GUICtrlSetOnEvent(-1, "SQLiteExport")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
-Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbAndroidZoomoutMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClick = 0, $g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, $g_hTxtAndroidRebootHours = 0, $g_hChkAndroidCloseWithBot = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0
+Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbAndroidZoomoutMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClick = 0, $g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, $g_hTxtAndroidRebootHours = 0, $g_hChkAndroidCloseWithBot = 0, $g_hChkUpdateSharedPrefs = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0
 Func CreateBotAndroid()
 Local $x = 25, $y = 45, $y2, $w = 240, $h = 50, $sTxtTip
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR Distributors", "Group_01", "Distributors"), $x - 20, $y - 20, $w, $h)
@@ -19254,13 +19550,16 @@ $g_hChkAndroidCloseWithBot = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android
 _GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAndroidCloseWithBot_Info", "Close also Android Emulator when bot exists."))
 GUICtrlSetState(-1,(($g_bAndroidCloseWithBot) ?($GUI_CHECKED) :($GUI_UNCHECKED)))
 $y += 25
-GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblAndroidRebootHours", "Reboot Android in") & ":", $x + 17, $y + 2, -1, -1)
+$g_hChkUpdateSharedPrefs = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs", "Update shared_prefs"), $x, $y, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs_Info", "Pull and push shared_prefs to reset zoom,\nset language to English, disable snow and rate popup."))
+GUICtrlSetState(-1,(($g_bUpdateSharedPrefs) ?($GUI_CHECKED) :($GUI_UNCHECKED)))
+GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblAndroidRebootHours", "Reboot Android in") & ":", $x + 217, $y + 2, -1, -1)
 $sTxtTip = GetTranslatedFileIni("Android", "LblAndroidRebootHours_Info", "Enter hours when Android will be automatically rebooted after specified run-time.")
 _GUICtrlSetTip(-1, $sTxtTip)
-$g_hTxtAndroidRebootHours = GUICtrlCreateInput($g_iAndroidRebootHours, $x + 177, $y + 1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$g_hTxtAndroidRebootHours = GUICtrlCreateInput($g_iAndroidRebootHours, $x + 327, $y + 1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 _GUICtrlSetTip(-1, $sTxtTip)
 GUICtrlSetLimit(-1, 4)
-GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "hrs", -1), $x + 212, $y + 2, -1, -1)
+GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "hrs", -1), $x + 362, $y + 2, -1, -1)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $y = $y2 + $h + 5
 $w = $g_iSizeWGrpTab2 - 2
@@ -19295,14 +19594,17 @@ GUICtrlSetOnEvent(-1, "DisableShowTouchs")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $x = 25 + 240 + 10 + 30
 $y = $y2
-$w = 125
-$h = 80
+$w = 145
+$h = 110
 GUICtrlCreateGroup(GetTranslatedFileIni("Android Control", "Group_04", "Install Play Store Apps"), $x - 20, $y - 20, $w, $h)
 $y -= 2
-GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreGame", "Clash of Clans"), $x - 8, $y, 100, 25)
+GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreGame", "Clash of Clans"), $x - 8, $y, $w - 24, 25)
 GUICtrlSetOnEvent(-1, "OpenPlayStoreGame")
 $y += 30
-GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreNovaLauncher", "Nova Launcher"), $x - 8, $y, 100, 25)
+GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreGooglePlayServices", "Google Play Services"), $x - 8, $y, $w - 24, 25)
+GUICtrlSetOnEvent(-1, "OpenPlayStoreGooglePlayServices")
+$y += 30
+GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreNovaLauncher", "Nova Launcher"), $x - 8, $y, $w - 24, 25)
 GUICtrlSetOnEvent(-1, "OpenPlayStoreNovaLauncher")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $y += 105
@@ -25323,6 +25625,7 @@ GUICtrlSetState($g_hChkNotifyAlertMaintenance, $GUI_ENABLE)
 GUICtrlSetState($g_hChkNotifyAlertBAN, $GUI_ENABLE)
 GUICtrlSetState($g_hChkNotifyBOTUpdate, $GUI_ENABLE)
 GUICtrlSetState($g_hChkNotifyAlertSmartWaitTime, $GUI_ENABLE)
+GUICtrlSetState($g_hChkNotifyAlertLaboratoryIdle, $GUI_ENABLE)
 Else
 GUICtrlSetState($g_hChkNotifyRemote, $GUI_DISABLE)
 GUICtrlSetState($g_hTxtNotifyOrigin, $GUI_DISABLE)
@@ -25341,6 +25644,7 @@ GUICtrlSetState($g_hChkNotifyAlertMaintenance, $GUI_DISABLE)
 GUICtrlSetState($g_hChkNotifyAlertBAN, $GUI_DISABLE)
 GUICtrlSetState($g_hChkNotifyBOTUpdate, $GUI_DISABLE)
 GUICtrlSetState($g_hChkNotifyAlertSmartWaitTime, $GUI_DISABLE)
+GUICtrlSetState($g_hChkNotifyAlertLaboratoryIdle, $GUI_DISABLE)
 EndIf
 EndFunc
 Func chkNotifyHours()
@@ -27677,6 +27981,17 @@ SetDebugLog("EnableShowTouchs OFF")
 EndFunc
 Func BotStart($bAutostartDelay = 0)
 FuncEnter(BotStart)
+If Not $g_bSearchMode Then
+If $g_hLogFile = 0 Then CreateLogFile()
+CreateAttackLogFile()
+If $g_iFirstRun = -1 Then $g_iFirstRun = 1
+EndIf
+SetLogCentered(" BOT LOG ", Default, Default, True)
+If Not ForumAuthentication() Then
+EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
+SetRedrawBotWindow(True, Default, Default, Default, "BotStart")
+Return FuncReturn()
+EndIf
 ResumeAndroid()
 CleanSecureFiles()
 CalCostCamp()
@@ -27693,12 +28008,6 @@ $g_bDonationEnabled = True
 $g_bMeetCondStop = False
 $g_bIsClientSyncError = False
 $g_bDisableBreakCheck = False
-If Not $g_bSearchMode Then
-If $g_hLogFile = 0 Then CreateLogFile()
-CreateAttackLogFile()
-If $g_iFirstRun = -1 Then $g_iFirstRun = 1
-EndIf
-SetLogCentered(" BOT LOG ", Default, Default, True)
 SaveConfig()
 readConfig()
 applyConfig(False)
@@ -28030,7 +28339,7 @@ SetCriticalMessageProcessing($wasCritical)
 Return $GUI_RUNDEFMSG
 EndIf
 Switch $iMsg
-Case $WM_LBUTTONDOWN, $WM_LBUTTONUP, $WM_RBUTTONDOWN, $WM_RBUTTONUP
+Case $WM_LBUTTONDOWN, $WM_LBUTTONUP, $WM_RBUTTONDOWN, $WM_RBUTTONUP, $WM_LBUTTONDBLCLK
 Local $hInput = GUICtrlGetHandle($g_hFrmBotEmbeddedShieldInput)
 _WinAPI_SetFocus($hInput)
 EndSwitch
@@ -28046,6 +28355,11 @@ Case $WM_LBUTTONDOWN
 If $g_bDebugClick And AndroidShieldHasFocus() Then
 Local $c = GetPixelFromWindow($x, $y, $g_hAndroidControl)
 SetLog(StringFormat("Mouse LBUTTONDOWN %03i,%03i Color %s", $x, $y, $c), $COLOR_DEBUG)
+EndIf
+Case $WM_LBUTTONDBLCLK
+If $g_bDebugClick And AndroidShieldHasFocus() Then
+Local $c = GetPixelFromWindow($x, $y, $g_hAndroidControl)
+SetLog(StringFormat("Mouse LBUTTONDBLCLK %03i,%03i Color %s", $x, $y, $c), $COLOR_DEBUG)
 EndIf
 Case $WM_LBUTTONUP, $WM_RBUTTONUP
 If $g_iDebugWindowMessages Then
@@ -28074,7 +28388,7 @@ Case $WM_MOUSEMOVE
 If $s_x <> $x Or $s_y <> $y Then
 $iBytesSent = Minitouch($x, $y, 0)
 EndIf
-Case $WM_LBUTTONDOWN
+Case $WM_LBUTTONDOWN, $WM_LBUTTONDBLCLK
 $iBytesSent = Minitouch($x, $y, 1)
 Case $WM_LBUTTONUP
 $iBytesSent = Minitouch($x, $y, 2)
@@ -31843,8 +32157,10 @@ If($pMatchMode <= $LB And $bCheckSlot12 And Not $bDoubleRow And UBound($aAttackB
 DragAttackBar()
 Local $aExtendedArray = ExtendedAttackBarCheck($aAttackBar, $bRemaining, $sSearchDiamond)
 _ArrayAdd($aFinalAttackBar, $aExtendedArray)
-$g_iTotalAttackSlot = UBound($aFinalAttackBar, 1) + 1
-If Not $bRemaining Then DragAttackBar($g_iTotalAttackSlot, True)
+If Not $bRemaining Then
+$g_iTotalAttackSlot = UBound($aFinalAttackBar, 1) - 1
+DragAttackBar($g_iTotalAttackSlot, True)
+EndIf
 EndIf
 _ArraySort($aFinalAttackBar, 0, 0, 0, 1)
 Return $aFinalAttackBar
@@ -33369,9 +33685,9 @@ $iMaxReturnPoints = 3
 $iMaxLevel = 7
 Case "All"
 If $g_iDetectedImageType = 1 Then
-$sdirectory = @ScriptDir & "\imgxml\Storages\All"
-Else
 $sdirectory = @ScriptDir & "\imgxml\Storages\All_Snow"
+Else
+$sdirectory = @ScriptDir & "\imgxml\Storages\All"
 EndIf
 $iMaxReturnPoints = 21
 $iMaxLevel = 13
@@ -35046,9 +35362,12 @@ EndIf
 EndIf
 ReleaseClicks($g_iAndroidAdbClicksTroopDeploySize)
 If _Sleep($DELAYRESPOND) Then Return
+If $value4 <> "REMAIN" Then
 $iTroopIndex = TroopIndexLookup($value4, "ParseAttackCSV")
 $bWardenDrop =($iTroopIndex = $eWarden) And($sleepdrop1 < 1000)
+EndIf
 Case "WAIT"
+Local $hSleepTimer = __TimerInit()
 ReleaseClicks()
 Local $sleep1, $sleep2, $sleepvect
 $sleepvect = StringSplit($value1, "-", 2)
@@ -35061,7 +35380,7 @@ $sleep1 = 1
 $sleep2 = 1
 EndIf
 Else
-If Int($value3) > 0 Then
+If Int($value1) > 0 Then
 $sleep1 = Int($value1)
 $sleep2 = Int($value1)
 Else
@@ -35082,9 +35401,57 @@ Local $Trophies = 0
 Local $exitOneStar = 0
 Local $exitTwoStars = 0
 Local $exitNoResources = 0
-Local $hSleepTimer = __TimerInit()
+Local $exitAttackEnded = 0
+Local $bBreakOnTH = False
+Local $bBreakOnSiege = False
+Local $bBreakOnTHAndSiege = False
+Local $aSiegeSlotPos = [0,0]
+Local $tempvalue2 = StringStripWS($value2, $STR_STRIPALL)
+If StringLen($tempvalue2) > 0 Then
+Local $aParam = StringSplit($tempvalue2, ",", $STR_NOCOUNT)
+For $iParam = 0 To UBound($aParam) - 1
+Switch $aParam[$iParam]
+Case "TH"
+$bBreakOnTH = True
+Case "SIEGE"
+$bBreakOnSiege = True
+Case "TH+SIEGE"
+$bBreakOnTHAndSiege = True
+EndSwitch
+Next
+SetDebugLog("$bBreakOnTH = " & $bBreakOnTH & ", $bBreakOnSiege = " & $bBreakOnSiege & ", $bBreakOnTHAndSiege = " & $bBreakOnTHAndSiege, $COLOR_INFO)
+If $bBreakOnSiege Or $bBreakOnTHAndSiege Then
+debugAttackCSV("WAIT Condition Break on Siege Troop Drop set")
+For $i = 0 To UBound($g_avAttackTroops) - 1
+If $g_avAttackTroops[$i][0] = $eCastle Then
+SetDebugLog("WAIT Break on Siege Machine is set but Clan Castle Troop selected.", $COLOR_INFO)
+ExitLoop
+ElseIf $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Or $g_avAttackTroops[$i][0] = $eStoneS Then
+Local $sSiegeName = GetTroopName($g_avAttackTroops[$i][0])
+SetDebugLog("	" & $sSiegeName & " found. Let's Check If is Dropped Or Not?", $COLOR_SUCCESS)
+If ReadTroopQuantity($i) = 0 Then
+SetDebugLog("	" & $sSiegeName & " is dropped.", $COLOR_SUCCESS)
+$aSiegeSlotPos = GetSlotPosition($i, True)
+Else
+SetDebugLog("	" & $sSiegeName & " is not dropped yet.", $COLOR_SUCCESS)
+EndIf
+ExitLoop
+EndIf
+Next
+If $aSiegeSlotPos[0] = 0 And $aSiegeSlotPos[1] = 0 Then
+SetDebugLog("WAIT no dropped Siege found, so unset Break on Siege.", $COLOR_INFO)
+If $bBreakOnTHAndSiege Then $bBreakOnTH = True
+$bBreakOnSiege = False
+$bBreakOnTHAndSiege = False
+If Not $bBreakOnTH Then ContinueLoop
+EndIf
+EndIf
+EndIf
 While __TimerDiff($hSleepTimer) < $sleep
 CheckHeroesHealth()
+If $bBreakOnSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) Then ContinueLoop 2
+If $bBreakOnTH And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
+If $bBreakOnTHAndSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
 $Gold = getGoldVillageSearch(48, 69)
 $Elixir = getElixirVillageSearch(48, 69 + 29)
 If _Sleep($DELAYRESPOND) Then Return
@@ -35096,6 +35463,9 @@ $DarkElixir = ""
 $Trophies = getTrophyVillageSearch(48, 69 + 69)
 EndIf
 CheckHeroesHealth()
+If $bBreakOnSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) Then ContinueLoop 2
+If $bBreakOnTH And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
+If $bBreakOnTHAndSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
 If $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 If $g_abStopAtkNoResources[$g_iMatchMode] And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
 If Not $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
@@ -35116,9 +35486,14 @@ EndIf
 If $g_abStopAtkPctHigherEnable[$g_iMatchMode] And Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY)) > Int($g_aiStopAtkPctHigherAmt[$g_iMatchMode]) Then
 ExitLoop
 EndIf
+If _CheckPixel($aEndFightSceneBtn, True) And _CheckPixel($aEndFightSceneAvl, True) And _CheckPixel($aEndFightSceneReportGold, True) Then
+SetDebugLog("From Attackcsv: Found End Fight Scene to close, exit", $COLOR_SUCCESS)
+$exitAttackEnded = 1
+ExitLoop
+EndIf
 If _Sleep($DELAYRESPOND) Then Return
 WEnd
-If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop
+If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Or $exitAttackEnded = 1 Then ExitLoop
 Case "RECALC"
 ReleaseClicks()
 PrepareAttack($g_iMatchMode, True)
@@ -35150,6 +35525,39 @@ ReleaseClicks()
 Else
 SetLog("Cannot find attack file " & $g_sCSVAttacksPath & "\" & $filename & ".csv", $COLOR_ERROR)
 EndIf
+EndFunc
+Func CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos)
+If _ColorCheck(_GetPixelColor($aSiegeSlotPos[0] + 20, $aSiegeSlotPos[1] + 20, True, "WAIT--> IsSiegeDestroyed"), Hex(0x474747, 6), 10) Then
+SetDebugLog("WAIT--> Siege Got Destroyed After " & Round(__TimerDiff($hSleepTimer)) & "ms.", $COLOR_SUCCESS)
+Return True
+EndIf
+Return False
+EndFunc
+Func CheckIfTownHallGotDestroyed($hSleepTimer)
+Static $hPopupTimer = 0
+Local $bIsTHDestroyed = False
+Local $bWonOneStar = _CheckPixel($aWonOneStar, True)
+Local $bWonTwoStar = _CheckPixel($aWonTwoStar, True)
+Local $bCentralStarPopup = _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) - 2, Int($g_iGAME_HEIGHT / 2) - 2, True), Hex(0xC0C4C0, 6), 20) And  _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) - 2, Int($g_iGAME_HEIGHT / 2) + 2, True), Hex(0xC0C4C0, 6), 20) And  _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) + 2, Int($g_iGAME_HEIGHT / 2) + 2, True), Hex(0xC0C4C0, 6), 20) And  _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) + 2, Int($g_iGAME_HEIGHT / 2) - 2, True), Hex(0xC0C4C0, 6), 20)
+Local $iDamage = Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY))
+If $bCentralStarPopup Then
+If $iDamage < 50 Then
+$bIsTHDestroyed = True
+ElseIf $bWonOneStar Then
+$bIsTHDestroyed = True
+ElseIf $hPopupTimer = 0 Or __TimerDiff($hPopupTimer) > 1500 Then
+$hPopupTimer = __TimerInit()
+ElseIf __TimerDiff($hPopupTimer) > 500 Then
+$bIsTHDestroyed = True
+EndIf
+ElseIf $bWonOneStar And $iDamage < 50 Then
+$bIsTHDestroyed = True
+ElseIf $bWonTwoStar Then
+$bIsTHDestroyed = True
+EndIf
+SetDebugLog("WAIT--> $iDamage: " & $iDamage & ", $bCentralStarPopup: " & $bCentralStarPopup & ", $bWonOneStar: " & $bWonOneStar & ", $bWonTwoStar: " & $bWonTwoStar & ", $bIsTHDestroyed: " & $bIsTHDestroyed, $COLOR_INFO)
+If $bIsTHDestroyed Then SetDebugLog("WAIT--> Town Hall Got Destroyed After " & Round(__TimerDiff($hSleepTimer)) & "ms.", $COLOR_SUCCESS)
+Return $bIsTHDestroyed
 EndFunc
 Func ParseAttackCSV_MainSide($debug = False)
 Local $bForceSideExist = False
@@ -38499,7 +38907,7 @@ If $g_bDebugSetlog Then SetDebugLog("drop KING = " & $bDropKing, $COLOR_DEBUG)
 If $g_bDebugSetlog Then SetDebugLog("drop QUEEN = " & $bDropQueen, $COLOR_DEBUG)
 If $g_bDebugSetlog Then SetDebugLog("drop WARDEN = " & $bDropWarden, $COLOR_DEBUG)
 If $bDropKing Then
-SetLog("Dropping King", $COLOR_INFO)
+SetLog("Dropping King at " & $iX & ", " & $iY, $COLOR_INFO)
 SelectDropTroop($iKingSlotNumber, 1, Default, False)
 If _Sleep($DELAYDROPHEROES2) Then Return
 AttackClick($iX, $iY, 1, 0, 0, "#0093")
@@ -38514,7 +38922,7 @@ If _Sleep($DELAYDROPHEROES1) Then Return
 EndIf
 If _Sleep($DELAYDROPHEROES1) Then Return
 If $bDropQueen Then
-SetLog("Dropping Queen", $COLOR_INFO)
+SetLog("Dropping Queen at " & $iX & ", " & $iY, $COLOR_INFO)
 SelectDropTroop($iQueenSlotNumber, 1, Default, False)
 If _Sleep($DELAYDROPHEROES2) Then Return
 AttackClick($iX, $iY, 1, 0, 0, "#0095")
@@ -38529,7 +38937,7 @@ If _Sleep($DELAYDROPHEROES1) Then Return
 EndIf
 If _Sleep($DELAYDROPHEROES1) Then Return
 If $bDropWarden Then
-SetLog("Dropping Grand Warden", $COLOR_INFO)
+SetLog("Dropping Grand Warden at " & $iX & ", " & $iY, $COLOR_INFO)
 SelectDropTroop($iWardenSlotNumber, 1, Default, False)
 If _Sleep($DELAYDROPHEROES2) Then Return
 AttackClick($iX, $iY, 1, 0, 0, "#x999")
@@ -40302,14 +40710,14 @@ If($iTrainWaitTime >= $MinimumTimeClose) Or $bTest Then
 If $iShieldTime > 0 Then
 If $iDiffTime <= 0 Then
 SetLog("Smart wait while shield time = " & StringFormat("%.2f", $iShieldTime / 60) & " Minutes", $COLOR_INFO)
-If $g_bNotifyTGEnable And $g_bNotifyAlertSmartWaitTime Then NotifyPushToTelegram($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_01", "Smart Wait While Shield Time = ") & StringFormat("%.2f", $iShieldTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
+If $g_bNotifyTGEnable And $g_bNotifyAlertSmartWaitTime Then NotifyPushToTelegram($g_sNotifyOrigin & " : " & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_01", "Smart Wait While Shield Time = ") & StringFormat("%.2f", $iShieldTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
 If $bTest Then $iShieldTime = $iTestSeconds
 UniversalCloseWaitOpenCoC($iShieldTime * 1000, "SmartWait4Train_", $StopEmulator, $bFullRestart, $bSuspendComputer)
 $g_bRestart = True
 ResetTrainTimeArray()
 Else
 SetLog("Smart wait train time = " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_INFO)
-If $g_bNotifyTGEnable And $g_bNotifyAlertSmartWaitTime Then NotifyPushToTelegram($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_04", "Smart Wait Train Time = ") & StringFormat("%.2f", $iTrainWaitTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
+If $g_bNotifyTGEnable And $g_bNotifyAlertSmartWaitTime Then NotifyPushToTelegram($g_sNotifyOrigin & " : " & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_04", "Smart Wait Train Time = ") & StringFormat("%.2f", $iTrainWaitTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
 If $bTest Then $iTrainWaitTime = $iTestSeconds
 UniversalCloseWaitOpenCoC($iTrainWaitTime * 1000, "SmartWait4Train_", $StopEmulator, $bFullRestart, $bSuspendComputer)
 $g_bRestart = True
@@ -40317,7 +40725,7 @@ ResetTrainTimeArray()
 EndIf
 ElseIf($g_bCloseWithoutShield And $g_aiTimeTrain[0] > 0) Or($ichkCloseWaitSpell = 1 And $g_aiTimeTrain[1] > 0) Or($ichkCloseWaitHero = 1 And $g_aiTimeTrain[2] > 0) Then
 SetLog("Smart Wait time = " & StringFormat("%.2f", $iTrainWaitTime / 60) & " Minutes", $COLOR_INFO)
-If $g_bNotifyTGEnable And $g_bNotifyAlertSmartWaitTime Then NotifyPushToTelegram($g_sNotifyOrigin & " : " & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_05", "Smart Wait Time = ") & StringFormat("%.2f", $iTrainWaitTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "\n" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
+If $g_bNotifyTGEnable And $g_bNotifyAlertSmartWaitTime Then NotifyPushToTelegram($g_sNotifyOrigin & " : " & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_05", "Smart Wait Time = ") & StringFormat("%.2f", $iTrainWaitTime / 60) & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_02", " Minutes") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Smart-Wait-Time_Info_03", "Wait For Troops Ready"))
 If $bTest Then $iTrainWaitTime = $iTestSeconds
 UniversalCloseWaitOpenCoC($iTrainWaitTime * 1000, "SmartWait4TrainNoShield_", $StopEmulator, $bFullRestart, $bSuspendComputer)
 $g_bRestart = True
@@ -40620,7 +41028,6 @@ Else
 SetLog("Waiting for Heroes to drop trophies!", $COLOR_ACTION)
 EndIf
 EndIf
-If(IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
 If $g_bFullArmy And $g_bCheckSpells And $bFullArmyHero And $bFullArmyCC And $bFullSiege Then
 $g_bIsFullArmywithHeroesAndSpells = True
 If $g_bFirstStart Then $g_bFirstStart = False
@@ -40636,10 +41043,6 @@ $g_bIsFullArmywithHeroesAndSpells = False
 EndIf
 If $g_bFullArmy And $g_bCheckSpells And $bFullArmyHero Then
 If Not $bFullArmyCC Then $g_bWaitForCCTroopSpell = True
-EndIf
-Else
-If $g_bDebugSetlog Then SetDebugLog(" Army not ready: IsSearchModeActive($DB)=" & IsSearchModeActive($DB) & ", checkCollectors(True, False)=" & checkCollectors(True, False) & ", IsSearchModeActive($LB)=" & IsSearchModeActive($LB) & ", IsSearchModeActive($TS)=" & IsSearchModeActive($TS), $COLOR_DEBUG)
-$g_bIsFullArmywithHeroesAndSpells = False
 EndIf
 Local $sLogText = ""
 If Not $g_bFullArmy Then $sLogText &= " Troops,"
@@ -42228,7 +42631,9 @@ SetLog("TrainIt.au3 GetVariable(): Wrong Resolution used for ImgLoc Search!", $C
 Else
 If $g_bDebugSetlogTrain Then SetLog("String: " & $asResult[0])
 Local $aResult = StringSplit($asResult[0], "|", $STR_NOCOUNT)
+If UBound($aResult) > 1 Then
 Local $aCoordinates = StringSplit($aResult[1], ",", $STR_NOCOUNT)
+If UBound($aCoordinates) > 1 Then
 Local $iButtonX = 25 + Int($aCoordinates[0])
 Local $iButtonY = 375 + Int($aCoordinates[1])
 Local $sColorToCheck = "0x" & _GetPixelColor($iButtonX, $iButtonY, $g_bCapturePixel)
@@ -42238,9 +42643,15 @@ If $g_bDebugSetlogTrain Then SetLog("Found: [" & $iButtonX & "," & $iButtonY & "
 If $g_bDebugSetlogTrain Then SetLog("$sColorToCheck: " & $sColorToCheck, $COLOR_SUCCESS)
 If $g_bDebugSetlogTrain Then SetLog("$iTolerance: " & $iTolerance, $COLOR_SUCCESS)
 Return $aTrainPos
+Else
+SetLog("Don't know how to train the troop with index " & $iIndex & " yet.")
 EndIf
 Else
-SetLog("Don't know how to train the troop with index " & $iIndex & " yet")
+SetLog("Don't know how to train the troop with index " & $iIndex & " yet..")
+EndIf
+EndIf
+Else
+SetLog("Don't know how to train the troop with index " & $iIndex & " yet...")
 EndIf
 Return $aTrainPos
 EndFunc
@@ -43126,7 +43537,7 @@ GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
 Return
 EndIf
 If _ColorCheck(_GetPixelColor(730, 200, True), Hex(0xA2CB6C, 6), 20) Then
-SetLog("Laboratory is Running. ", $COLOR_INFO)
+SetLog("Laboratory is Running", $COLOR_INFO)
 GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
 GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
 GUICtrlSetState($g_hPicLabGreen, $GUI_SHOW)
@@ -43143,6 +43554,7 @@ If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
 Return True
 ElseIf _ColorCheck(_GetPixelColor(730, 200, True), Hex(0x8088B0, 6), 20) Then
 SetLog("Laboratory has Stopped", $COLOR_INFO)
+If $g_bNotifyTGEnable And $g_bNotifyAlertLaboratoryIdle Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_01", "Laboratory Idle") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_02", "Laboratory has Stopped"))
 ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
 GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
 GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
@@ -44962,25 +45374,24 @@ If $iY > 315 Then Return 120
 Case 171 To 243
 If $iY < 315 Then Return 184
 If $iY > 315 Then Return 195
-Case 244 To 307
+Case 244 To 314
 If $iY < 315 Then Return 255
 If $iY > 315 Then Return 272
-Case 308 To 392
+Case 315 To 387
 If $iY < 315 Then Return 330
 If $iY > 315 Then Return 341
-Case 393 To 464
+Case 388 To 460
 If $iY < 315 Then Return 403
 If $iY > 315 Then Return 415
-Case 465 To 540
+Case 461 To 533
 If $iY < 315 Then Return 477
 If $iY > 315 Then Return 485
-Case 538 To 610
-Return 551
-Case 611 To 682
+Case 605 To 677
 Return 620
-Case 683 To 752
-If $iY > 315 Then Return 691
-Return 700
+Case 678 To 752
+Return 693
+Case 754 To 826
+Return 769
 EndSwitch
 Else
 Switch $iX
@@ -45515,7 +45926,7 @@ EndFunc
 Func checkObstacles($bBuilderBase = Default)
 FuncEnter(checkObstacles)
 If $bBuilderBase = Default Then $bBuilderBase = False
-Static $checkObstaclesActive = False
+Static $iRecursive = 0
 If TestCapture() = False And WinGetAndroidHandle() = 0 Then
 Return FuncReturn(True)
 EndIf
@@ -45524,11 +45935,10 @@ SetLog("Found Switch Account dialog...!", $COLOR_INFO)
 PureClick(383, 375 + $g_iMidOffsetY, 1, 0, "Click Cancel")
 EndIf
 Local $wasForce = OcrForceCaptureRegion(False)
-Local $checkObstaclesWasActive = $checkObstaclesActive
-$checkObstaclesActive = True
-Local $Result = _checkObstacles($bBuilderBase, $checkObstaclesWasActive)
+$iRecursive += 1
+Local $Result = _checkObstacles($bBuilderBase, $iRecursive > 5)
 OcrForceCaptureRegion($wasForce)
-$checkObstaclesActive = $checkObstaclesWasActive
+$iRecursive -= 1
 Return FuncReturn($Result)
 EndFunc
 Func _checkObstacles($bBuilderBase = False, $bRecursive = False)
@@ -45611,7 +46021,7 @@ BanMsgBox()
 Return checkObstacles_StopBot($msg)
 EndIf
 SetLog("Connection lost, Reloading CoC...", $COLOR_ERROR)
-If $g_bChkSharedPrefs And HaveSharedPrefs() Then
+If($g_bChkSharedPrefs Or $g_bUpdateSharedPrefs) And HaveSharedPrefs() Then
 SetLog("Please wait for loading CoC...!")
 PushSharedPrefs()
 If Not $bRecursive Then OpenCoC()
@@ -45693,7 +46103,7 @@ $msg = "Sorry but account has been banned, Bot must stop!!"
 BanMsgBox()
 Return checkObstacles_StopBot($msg)
 EndIf
-SetLog("Warning: Can not find type of Reload error message", $COLOR_ERROR)
+SetLog("Warning: Cannot find type of Reload error message", $COLOR_ERROR)
 EndSelect
 If TestCapture() Then Return "Village is out of sync or inactivity or connection lost or maintenance"
 Return checkObstacles_ReloadCoC($aReloadButton, "#0131", $bRecursive)
@@ -47232,7 +47642,6 @@ Return False
 EndFunc
 Func _OpenBlueStacks2($bRestart = False)
 Local $hTimer, $iCount = 0, $cmdOutput, $process_killed, $i, $connected_to, $PID, $cmdPar
-SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
 CloseUnsupportedBlueStacks2()
 LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "start-server", $process_killed)
 $hTimer = __TimerInit()
@@ -47363,13 +47772,7 @@ $g_sAndroidProgramPath = $__BlueStacks_Path & $frontend_exe
 $g_sAndroidAdbPath = $sPreferredADB
 If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $__BlueStacks_Path & "HD-Adb.exe"
 $g_sAndroidVersion = $__BlueStacks_Version
-For $i = 0 To 5
-If RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Name") = "BstSharedFolder" Then
-$g_sAndroidPicturesPath = "/storage/sdcard/windows/BstSharedFolder/"
-$g_sAndroidPicturesHostPath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Path")
-ExitLoop
-EndIf
-Next
+ConfigureSharedFolderBlueStacksX(0)
 SetDebugLog($g_sAndroidEmulator & " Engine 'Plus'-Mode: " & $plusMode)
 SetDebugLog($g_sAndroidEmulator & " OEM Features: " & $OEMFeatures)
 SetDebugLog($g_sAndroidEmulator & " System Bar is " &($g_bAndroidHasSystemBar ? "" : "not ") & "available")
@@ -47382,6 +47785,31 @@ Next
 WinGetAndroidHandle()
 EndIf
 Return True
+EndFunc
+Func ConfigureSharedFolderBlueStacks($iMode = 0, $bSetLog = Default)
+ConfigureSharedFolderBlueStacksX($iMode, $bSetLog)
+EndFunc
+Func ConfigureSharedFolderBlueStacks2($iMode = 0, $bSetLog = Default)
+ConfigureSharedFolderBlueStacksX($iMode, $bSetLog)
+EndFunc
+Func ConfigureSharedFolderBlueStacksX($iMode = 0, $bSetLog = Default)
+If $bSetLog = Default Then $bSetLog = True
+Local $bResult = False
+Switch $iMode
+Case 0
+For $i = 0 To 5
+If RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Name") = "BstSharedFolder" Then
+$bResult = True
+$g_bAndroidSharedFolderAvailable = True
+$g_sAndroidPicturesPath = "/storage/sdcard/windows/BstSharedFolder/"
+$g_sAndroidPicturesHostPath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Path")
+ExitLoop
+EndIf
+Next
+Case 1
+Case 2
+EndSwitch
+Return SetError(0, 0, $bResult)
 EndFunc
 Func InitBlueStacks($bCheckOnly = False)
 Local $bInstalled = InitBlueStacksX($bCheckOnly)
@@ -47411,6 +47839,7 @@ $__VBoxManage_Path = $__BlueStacks_Path & "BstkVMMgr.exe"
 Local $bsNow = GetVersionNormalized($__BlueStacks_Version)
 If $bsNow > GetVersionNormalized("4.0") Then
 $g_sAndroidAdbShellOptions = " /data/anr/../../system/xbin/bstk/su root"
+$g_iAndroidAdbMinitouchMode = 1
 EndIf
 CheckBlueStacksVersionMod()
 Local $BstAdbPort = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config\", "BstAdbPort")
@@ -47911,16 +48340,8 @@ $g_sAndroidTitle = StringReplace($g_avAndroidAppConfig[$g_iAndroidConfig][2], "D
 EndIf
 EndIf
 $g_sAndroidPicturesPath = "/mnt/shared/picture/"
-$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'picture', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-If Not @error Then
-$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
-$g_bAndroidSharedFolderAvailable = True
-Else
-SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
-$g_sAndroidPicturesHostPath = ""
-$g_bAndroidAdbScreencap = False
-$g_bAndroidSharedFolderAvailable = False
-EndIf
+$g_sAndroidSharedFolderName = "picture"
+ConfigureSharedFolder(0)
 WinGetAndroidHandle()
 UpdateDroid4XConfig()
 EndIf
@@ -47932,12 +48353,8 @@ If Not InitAndroid() Then Return False
 Local $cmdOutput, $process_killed
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_graph_mode " & $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight & "-16", $process_killed)
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
-AndroidPicturePathAutoConfig()
-If $g_bAndroidSharedFolderAvailable = False And $g_bAndroidPicturesPathAutoConfig = True And FileExists($g_sAndroidPicturesHostPath) = 1 Then
-Local $path = $g_sAndroidPicturesHostPath
-If StringRight($path, 1) = "\" Then $path = StringLeft($path, StringLen($path) - 1)
-$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name picture --hostpath """ & $path & """  --automount", $process_killed)
-EndIf
+ConfigureSharedFolder(1, True)
+ConfigureSharedFolder(2, True)
 Return True
 EndFunc
 Func RebootDroid4XSetScreen()
@@ -47967,7 +48384,7 @@ $iErrCnt += 1
 EndIf
 Next
 If $iErrCnt > 0 Then Return False
-If AndroidPicturePathAutoConfig(Default, Default, $bSetLog) Then $iErrCnt += 1
+If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
 Return True
 EndFunc
 Func UpdateDroid4XConfig()
@@ -48138,11 +48555,7 @@ If $memuCurr > $memu6 Then
 EndIf
 InitAndroidConfig(True)
 If Not GetAndroidVMinfo($__VBoxVMinfo, $MEmu_Manage_Path) Then Return False
-Local $sAdbPAth = GetMEmuAdbPath()
-If $sAdbPAth Then
-$sPreferredADB = $sAdbPAth
 $g_bAndroidAdbPortPerInstance = False
-EndIf
 $g_sAndroidProgramPath = $MEmu_Path & "MEmu.exe"
 $g_sAndroidAdbPath = $sPreferredADB
 If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $MEmu_Path & "adb.exe"
@@ -48172,15 +48585,8 @@ Else
 SetLog("Using ADB default device " & $g_sAndroidAdbDevice & " for " & $g_sAndroidEmulator, $COLOR_ERROR)
 EndIf
 $g_sAndroidPicturesPath = "/mnt/shell/emulated/0/Pictures/"
-$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'picture', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-If Not @error Then
-$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
-Else
-$oops = 1
-$g_bAndroidAdbScreencap = False
-$g_sAndroidPicturesHostPath = ""
-SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
-EndIf
+$g_sAndroidSharedFolderName = "picture"
+ConfigureSharedFolder(0)
 $__VBoxGuestProperties = LaunchConsole($__VBoxManage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 UpdateMEmuConfig()
 EndIf
@@ -48194,6 +48600,8 @@ $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroi
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " is_full_screen 0", $process_killed)
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " is_customed_resolution 1", $process_killed)
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
+ConfigureSharedFolder(1, True)
+ConfigureSharedFolder(2, True)
 Return True
 EndFunc
 Func RebootMEmuSetScreen()
@@ -48225,6 +48633,7 @@ EndIf
 $iErrCnt += 1
 EndIf
 Next
+If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
 If $iErrCnt > 0 Then Return False
 Return True
 EndFunc
@@ -48445,15 +48854,18 @@ EndIf
 If Not $bCheckOnly Then
 InitAndroidConfig(True)
 If Not GetAndroidVMinfo($__VBoxVMinfo, $LeapDroid_Manage_Path) Then Return False
-Local $sAdbPAth = GetLeapDroidAdbPath()
-If $sAdbPAth Then
-$sPreferredADB = $sAdbPAth
 $g_bAndroidAdbPortPerInstance = False
-EndIf
 $__VBoxGuestProperties = LaunchConsole($LeapDroid_Manage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 $g_sAndroidProgramPath = $LeapDroid_Path & "LeapdroidVM.exe"
 $g_sAndroidAdbPath = $sPreferredADB
 If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $LeapDroid_Path & "adb.exe"
+If Not $LeapDroidVersion Then
+Local $pAndroidFileVersionInfo
+If _WinAPI_GetFileVersionInfo($g_sAndroidProgramPath, $pAndroidFileVersionInfo) Then
+$g_avAndroidProgramFileVersionInfo = _WinAPI_VerQueryValue($pAndroidFileVersionInfo, "FileVersion")
+If UBound($g_avAndroidProgramFileVersionInfo) > 1 Then $LeapDroidVersion = $g_avAndroidProgramFileVersionInfo[1][1]
+EndIf
+EndIf
 $g_sAndroidVersion = $LeapDroidVersion
 $__LeapDroid_Path = $LeapDroid_Path
 $g_sAndroidPath = $__LeapDroid_Path
@@ -48472,22 +48884,14 @@ $g_sAndroidAdbDevice = "emulator-" &($g_sAndroidAdbDevicePort - 1)
 Else
 SetLog("Using ADB default device " & $g_sAndroidAdbDevice & " for " & $g_sAndroidEmulator, $COLOR_ERROR)
 EndIf
-$g_sAndroidPicturesPath = "/mnt/shared/yw_shared/"
-$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'yw_shared', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-If Not @error Then
-$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
-Else
+If GetVersionNormalized($g_sAndroidVersion) >= GetVersionNormalized("1.7.0") Then
 $g_sAndroidPicturesPath = "/mnt/shared/LeapDroidShared/"
-$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'LeapDroidShared', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-If Not @error Then
-$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
+$g_sAndroidSharedFolderName = "LeapDroidShared"
 Else
-$oops = 1
-$g_bAndroidAdbScreencap = False
-$g_sAndroidPicturesHostPath = ""
-SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
+$g_sAndroidPicturesPath = "/mnt/shared/yw_shared/"
+$g_sAndroidSharedFolderName = "yw_shared"
 EndIf
-EndIf
+ConfigureSharedFolder(0)
 $g_bUpdateAndroidWindowTitle = True
 EndIf
 Return SetError($oops, 0, True)
@@ -48534,6 +48938,8 @@ FileClose($h)
 EndIf
 EndIf
 Next
+ConfigureSharedFolder(1, True)
+ConfigureSharedFolder(2, True)
 Return True
 EndFunc
 Func RebootLeapDroidSetScreen()
@@ -48544,6 +48950,9 @@ Return CloseVboxAndroidSvc()
 EndFunc
 Func CheckScreenLeapDroid($bSetLog = True)
 If Not InitAndroid() Then Return False
+Local $iErrCnt = 0
+If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
+If $iErrCnt > 0 Then Return False
 Return True
 EndFunc
 Func EmbedLeapDroid($bEmbed = Default, $hHWndAfter = Default)
@@ -48595,7 +49004,6 @@ Return False
 EndIf
 EndIf
 $hTimer = __TimerInit()
-If WaitForRunningVMS($g_iAndroidLaunchWaitSec - __TimerDiff($hTimer) / 1000, $hTimer) Then Return False
 $g_bInitAndroid = True
 InitAndroid()
 $connected_to = ConnectAndroidAdb(False, 60 * 1000)
@@ -48681,7 +49089,7 @@ Local $sConfig = GetNoxConfigFile()
 If $sConfig Then
 Local $graphic_engine_type = IniRead($sConfig, "setting", "graphic_engine_type", "")
 Switch $graphic_engine_type
-Case "0"
+Case "0", ""
 Return $iOpenGL
 Case "1"
 Return $iDirectX
@@ -48744,31 +49152,6 @@ $g_sAndroidAdbDevice = $g_sAndroidAdbDeviceHost & ":" & $g_sAndroidAdbDevicePort
 Else
 SetLog("Using ADB default device " & $g_sAndroidAdbDevice & " for " & $g_sAndroidEmulator, $COLOR_ERROR)
 EndIf
-$g_sAndroidPicturesPath = "(/mnt/shared/Other|/mnt/shell/emulated/0/Download/other|/mnt/shell/emulated/0/Others)"
-$aRegexResult = StringRegExp($__VBoxVMinfo, "Name: 'Other', Host path: '(.*)'.*", $STR_REGEXPARRAYGLOBALMATCH)
-If Not @error Then
-$g_bAndroidSharedFolderAvailable = True
-$g_sAndroidPicturesHostPath = $aRegexResult[UBound($aRegexResult) - 1] & "\"
-Else
-If FileExists(@MyDocumentsDir & "\Nox_share\") Then
-$g_bAndroidSharedFolderAvailable = True
-$g_sAndroidPicturesHostPath = @MyDocumentsDir & "\Nox_share\Other\"
-If Not FileExists($g_sAndroidPicturesHostPath) Then
-DirCreate($g_sAndroidPicturesHostPath)
-EndIf
-ElseIf FileExists(@HomeDrive & @HomePath & "\Nox_share\") Then
-$g_bAndroidSharedFolderAvailable = True
-$g_sAndroidPicturesHostPath = @HomeDrive & @HomePath & "\Nox_share\"
-If Not FileExists($g_sAndroidPicturesHostPath) Then
-DirCreate($g_sAndroidPicturesHostPath)
-EndIf
-Else
-$g_bAndroidSharedFolderAvailable = False
-$g_bAndroidAdbScreencap = False
-$g_sAndroidPicturesHostPath = ""
-SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
-EndIf
-EndIf
 Local $v = GetVersionNormalized($g_sAndroidVersion)
 For $i = 0 To UBound($__Nox_Config) - 1
 Local $v2 = GetVersionNormalized($__Nox_Config[$i][0])
@@ -48780,6 +49163,8 @@ $g_avAndroidAppConfig[$g_iAndroidConfig][3] = $g_sAppClassInstance
 ExitLoop
 EndIf
 Next
+$g_sAndroidSharedFolderName = "Other"
+ConfigureSharedFolderNox(0)
 UpdateHWnD($g_hAndroidWindow, False)
 EndIf
 Return True
@@ -48792,16 +49177,45 @@ Local $sConfig = $sLocalAppData & "\Nox\" & $sPre & "conf.ini"
 If FileExists($sConfig) Then Return $sConfig
 Return ""
 EndFunc
+Func ConfigureSharedFolderNox($iMode = 0, $bSetLog = Default)
+If $bSetLog = Default Then $bSetLog = True
+Local $bResult = False
+Switch $iMode
+Case 0
+$g_sAndroidPicturesPath = "(/mnt/shared/Other|/mnt/shell/emulated/0/Download/other|/mnt/shell/emulated/0/Others)"
+Local $aRegexResult = StringRegExp($__VBoxVMinfo, "Name: '" & $g_sAndroidSharedFolderName & "', Host path: '(.*)'.*", $STR_REGEXPARRAYGLOBALMATCH)
+If Not @error Then
+$bResult = True
+$g_bAndroidSharedFolderAvailable = True
+$g_sAndroidPicturesHostPath = $aRegexResult[UBound($aRegexResult) - 1] & "\"
+Else
+If FileExists(@HomeDrive & @HomePath & "\Nox_share\OtherShare\") Then
+$g_bAndroidSharedFolderAvailable = True
+$g_sAndroidPicturesHostPath = @HomeDrive & @HomePath & "\Nox_share\OtherShare\"
+ElseIf FileExists(@HomeDrive & @HomePath & "\Nox_share\") Then
+$g_bAndroidSharedFolderAvailable = True
+$g_sAndroidPicturesHostPath = @HomeDrive & @HomePath & "\Nox_share\"
+ElseIf FileExists(@MyDocumentsDir & "\Nox_share\Other\") Then
+$g_bAndroidSharedFolderAvailable = True
+$g_sAndroidPicturesHostPath = @MyDocumentsDir & "\Nox_share\Other\"
+Else
+$g_bAndroidSharedFolderAvailable = False
+$g_bAndroidAdbScreencap = False
+$g_sAndroidPicturesHostPath = ""
+SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
+EndIf
+EndIf
+Case 1
+$bResult = AndroidPicturePathAutoConfig(@MyDocumentsDir, "\Nox_share\Other", $bSetLog)
+Case Else
+Return SetError(1, 0, "")
+EndSwitch
+Return SetError(0, 0, $bResult)
+EndFunc
 Func SetScreenNox()
 If Not InitAndroid() Then Return False
-Local $cmdOutput, $process_killed
-AndroidPicturePathAutoConfig(@MyDocumentsDir, "\Nox_share\Other")
-If $g_bAndroidSharedFolderAvailable = False And $g_bAndroidPicturesPathAutoConfig = True And FileExists($g_sAndroidPicturesHostPath) = 1 Then
-Local $path = $g_sAndroidPicturesHostPath
-If StringRight($path, 1) = "\" Then $path = StringLeft($path, StringLen($path) - 1)
-$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder remove " & $g_sAndroidInstance & " --name Other", $process_killed)
-$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name Other --hostpath """ & $path & """  --automount", $process_killed)
-EndIf
+ConfigureSharedFolder(1, True)
+ConfigureSharedFolder(2, True)
 Local $sConfig = GetNoxConfigFile()
 If $sConfig Then
 SetDebugLog("Configure Nox screen config: " & $sConfig)
@@ -48828,7 +49242,24 @@ Local $aValues[2][2] = [ ["vbox_dpi", "160"], ["vbox_graph_mode", $g_iAndroidCli
 Local $i, $Value, $iErrCnt = 0, $process_killed, $aRegexResult
 For $i = 0 To UBound($aValues) - 1
 $aRegexResult = StringRegExp($__VBoxGuestProperties, "Name: " & $aValues[$i][0] & ", value: (.+), timestamp:", $STR_REGEXPARRAYMATCH)
-If @error = 0 Then $Value = $aRegexResult[0]
+If @error = 0 Then
+$Value = $aRegexResult[0]
+Else
+If StringInStr($__VBoxGuestProperties, "error:") = 0 Then
+If $bSetLog Then
+SetLog("Cannot validate " & $g_sAndroidEmulator & " property " & $aValues[$i][0], $COLOR_ERROR)
+Else
+SetDebugLog("Cannot validate " & $g_sAndroidEmulator & " property " & $aValues[$i][0], $COLOR_ERROR)
+EndIF
+Else
+$Value = $aValues[$i][1]
+If $bSetLog Then
+SetLog("Cannot validate " & $g_sAndroidEmulator & " property " & $aValues[$i][0] & ", assuming " & $Value, $COLOR_ERROR)
+Else
+SetDebugLog("Cannot validate " & $g_sAndroidEmulator & " property " & $aValues[$i][0] & ", assuming " & $Value, $COLOR_ERROR)
+EndIF
+EndIf
+EndIf
 If $Value <> $aValues[$i][1] Then
 If $iErrCnt = 0 Then
 If $bSetLog Then
@@ -48845,7 +49276,7 @@ EndIf
 $iErrCnt += 1
 EndIf
 Next
-If AndroidPicturePathAutoConfig(@MyDocumentsDir, "\Nox_share\Other", $bSetLog) Then $iErrCnt += 1
+If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
 If $iErrCnt > 0 Then Return False
 Return True
 EndFunc
@@ -49029,6 +49460,7 @@ Return False
 EndIf
 If Not $bCheckOnly Then
 InitAndroidConfig(True)
+$g_bAndroidAdbPortPerInstance = False
 If Not GetAndroidVMinfo($__VBoxVMinfo, $KOPLAYER_Manage_Path) Then Return False
 $g_sAndroidProgramPath = $KOPLAYER_Path & "KOPLAYER.exe"
 $g_sAndroidAdbPath = $sPreferredADB
@@ -49060,14 +49492,8 @@ Else
 SetLog("Using ADB default device " & $g_sAndroidAdbDevice & " for " & $g_sAndroidEmulator, $COLOR_RED)
 EndIf
 $g_sAndroidPicturesPath = "/mnt/shared/UserData/"
-$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'UserData', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-If Not @error Then
-$g_sAndroidPicturesHostPath = StringReplace($aRegExResult[0], "/", "\") & "\"
-Else
-$g_bAndroidAdbScreencap = False
-$g_sAndroidPicturesHostPath = ""
-SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_RED)
-EndIf
+$g_sAndroidSharedFolderName = "UserData"
+ConfigureSharedFolder(0)
 EndIf
 Return True
 EndFunc
@@ -49093,6 +49519,8 @@ Local $cmdOutput, $process_killed
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_graph_mode " & $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight & "-16", $process_killed)
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "setextradata " & $g_sAndroidInstance & " RenderWindowProp " & $g_iAndroidClientWidth & "*" & $g_iAndroidClientHeight & "*160", $process_killed)
+ConfigureSharedFolder(1, True)
+ConfigureSharedFolder(2, True)
 Return True
 EndFunc
 Func RebootKOPLAYERSetScreen()
@@ -49124,6 +49552,7 @@ EndIf
 $iErrCnt += 1
 EndIf
 Next
+If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
 If $iErrCnt > 0 Then Return False
 Return True
 EndFunc
@@ -49284,6 +49713,11 @@ $g_sAndroidProgramPath = $iTools_Path & "iToolsAVM.exe"
 $g_sAndroidAdbPath = $sPreferredADB
 If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $iTools_Path & "tools\adb.exe"
 $g_sAndroidVersion = ""
+Local $pAndroidFileVersionInfo
+If _WinAPI_GetFileVersionInfo($g_sAndroidProgramPath, $pAndroidFileVersionInfo) Then
+$g_avAndroidProgramFileVersionInfo = _WinAPI_VerQueryValue($pAndroidFileVersionInfo, "FileVersion")
+If UBound($g_avAndroidProgramFileVersionInfo) > 1 Then $g_sAndroidVersion = $g_avAndroidProgramFileVersionInfo[1][1]
+EndIf
 $__iTools_Path = $iTools_Path
 $g_sAndroidPath = $__iTools_Path
 $__VBoxManage_Path = $iTools_Manage_Path
@@ -49309,17 +49743,8 @@ Else
 SetLog("Using ADB default device " & $g_sAndroidAdbDevice & " for " & $g_sAndroidEmulator, $COLOR_ERROR)
 EndIf
 $g_sAndroidPicturesPath = "/mnt/shared/picture/"
-$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'picture', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-If Not @error Then
-$g_bAndroidSharedFolderAvailable = True
-$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
-Else
-$oops = 1
-$g_bAndroidAdbScreencap = False
-$g_bAndroidSharedFolderAvailable = False
-$g_sAndroidPicturesHostPath = ""
-SetLog($g_sAndroidEmulator & " shared folder is not available", $COLOR_ERROR)
-EndIf
+$g_sAndroidSharedFolderName = "picture"
+ConfigureSharedFolder(0)
 $g_bUpdateAndroidWindowTitle = True
 EndIf
 Return SetError($oops, 0, True)
@@ -49330,12 +49755,8 @@ If Not InitAndroid() Then Return False
 Local $cmdOutput, $process_killed
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_graph_mode " & $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight & "-16", $process_killed)
 $cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
-AndroidPicturePathAutoConfig()
-If $g_bAndroidSharedFolderAvailable = False And $g_bAndroidPicturesPathAutoConfig = True And FileExists($g_sAndroidPicturesHostPath) = 1 Then
-Local $path = $g_sAndroidPicturesHostPath
-If StringRight($path, 1) = "\" Then $path = StringLeft($path, StringLen($path) - 1)
-$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name picture --hostpath """ & $path & """  --automount", $process_killed)
-EndIf
+ConfigureSharedFolder(1, True)
+ConfigureSharedFolder(2, True)
 Return True
 EndFunc
 Func RebootiToolsSetScreen()
@@ -49360,7 +49781,7 @@ $iErrCnt += 1
 EndIf
 Next
 If $iErrCnt > 0 Then Return False
-If AndroidPicturePathAutoConfig(Default, Default, $bSetLog) Then $iErrCnt += 1
+If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
 If $iErrCnt > 0 Then Return False
 Return True
 EndFunc
@@ -49747,7 +50168,7 @@ EndIf
 If _Sleep($DELAYRESPOND) Then Return False
 OpenCoC()
 Case 1
-Local $bSendHome =($g_sAndroidEmulator <> "MEmu")
+Local $bSendHome = False
 If $bSendHome Then
 AndroidHomeButton()
 Else
@@ -51104,8 +51525,6 @@ $x += $g_aiBSrpos[0]
 $y += $g_aiBSrpos[1]
 EndIf
 If $g_iAndroidControlClickMode = 0 Then
-Opt("MouseClickDelay", $g_iAndroidControlClickDelay)
-Opt("MouseClickDownDelay", $g_iAndroidControlClickDownDelay)
 Return ControlClick($hWin, "", "", "left", "1", $x, $y)
 EndIf
 Local $WM_LBUTTONDOWN = 0x0201, $WM_LBUTTONUP = 0x0202
@@ -51924,7 +52343,7 @@ Return $success
 EndFunc
 Func isEveryFileInstalled($bSilent = False)
 Local $bResult = False, $iCount = 0
-Local $aCheckFiles = [@ScriptDir & "\COCBot", $g_sLibPath, @ScriptDir & "\Images", @ScriptDir & "\imgxml", $g_sLibPath & "\helper_functions.dll", $g_sLibPath & "\ImageSearchDLL.dll", $g_sLibPath & "\MBRBot.dll", $g_sLibPath & "\MyBot.run.dll", $g_sLibPath & "\sqlite3.dll", $g_sLibPath & "\opencv_core220.dll", $g_sLibPath & "\opencv_imgproc220.dll"]
+Local $aCheckFiles = [@ScriptDir & "\COCBot", $g_sLibPath, @ScriptDir & "\Images", @ScriptDir & "\imgxml", $g_sLibPath & "\helper_functions.dll", $g_sLibPath & "\ImageSearchDLL.dll", $g_sLibPath & "\MBRBot.dll", $g_sLibPath & "\MyBot.run.dll", $g_sLibPath & "\Newtonsoft.Json.dll", $g_sLibPath & "\sqlite3.dll", $g_sLibPath & "\opencv_core220.dll", $g_sLibPath & "\opencv_imgproc220.dll"]
 For $vElement In $aCheckFiles
 $iCount += FileExists($vElement)
 Next
@@ -51932,14 +52351,16 @@ Local $xmls = _FileListToArrayRec(@ScriptDir & "\imgxml\", "*.xml", $FLTAR_FILES
 If IsArray($xmls) Then
 If Number($xmls[0]) < 570 Then SetLog("Verify '\imgxml\' folder, found " & $xmls[0] & " *.xml files.", $COLOR_ERROR)
 EndIf
+Local $MsgBox = 0
+Local $sText1 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_01", "Hey Chief, we are missing some files!")
+Local $sText2 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_02", "Please extract all files and folders and start this program again!")
+Local $sText3 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_03", "Sorry, Start button disabled until fixed!")
+Local $sText4 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_04", "Hey Chief, file name incorrect!")
+Local $sText5 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_05", 'You have renamed the file "MyBot.run.exe"! Please change it back to MyBot.run.exe and restart the bot!')
 If $iCount = UBound($aCheckFiles) Then
 $bResult = True
 ElseIf Not $bSilent Then
 GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
-Local $sText1 = "", $sText2 = "", $sText3 = "", $MsgBox = 0
-$sText1 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_01", "Hey Chief, we are missing some files!")
-$sText2 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_02", "Please extract all files and folders and start this program again!")
-$sText3 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_03", "Sorry, Start button disabled until fixed!")
 SetLog($sText1, $COLOR_ERROR)
 SetLog($sText2, $COLOR_ERROR)
 SetLog($sText3, $COLOR_ERROR)
@@ -51950,15 +52371,11 @@ EndIf
 If @Compiled Then
 If Not StringInStr(@ScriptFullPath, "MyBot.run.exe", 1) Then
 If Not $bSilent Then
-Local $sText1, $sText2, $MsgBox
-$sText1 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_04", "Hey Chief, file name incorrect!")
-$sText2 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_05", 'You have renamed the file "MyBot.run.exe"! Please change it back to MyBot.run.exe and restart the bot!')
-$sText3 = GetTranslatedFileIni("MBR Popups", "CheckPrerequisites_Item_03", "Sorry, Start button disabled until fixed!")
 SetLog($sText1, $COLOR_ERROR)
-SetLog($sText2, $COLOR_ERROR)
+SetLog($sText5, $COLOR_ERROR)
 SetLog($sText3, $COLOR_ERROR)
 _ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-$MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), $sText1, $sText2, 0)
+$MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), $sText1, $sText5, 0)
 GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 EndIf
 $bResult = False
@@ -64084,7 +64501,7 @@ OpenCoC()
 waitMainScreen()
 EndIf
 SetSwitchAccLog("Switched to Acc [" & $NextAccount + 1 & "]", $COLOR_SUCCESS)
-If $g_bChkSharedPrefs Then
+If $g_bChkSharedPrefs And Not($g_bUpdateSharedPrefs And $g_bUpdateSharedPrefsGoogleDisconnected) Then
 waitMainScreen()
 If IsMainPage() Then
 Click($aButtonSetting[0], $aButtonSetting[1], 1, 0, "Click Setting")
@@ -66546,9 +66963,12 @@ Func _GUICtrlStatusBar_SetTextEx($hWnd, $sText = "", $iPart = 0, $iUFlag = 0)
 If $hWnd Then _GUICtrlStatusBar_SetText($hWnd, $sText, $iPart, $iUFlag)
 StatusBarManagedMyBotHost($sText)
 EndFunc
+Global Enum $g_eForumAuthenticationWaiting, $g_eForumAuthenticationLogin, $g_eForumAuthenticationExit
+Global $g_hGuiForumAuthentication = 0
+Global $g_hForumAuthenticationState = $g_eForumAuthenticationWaiting, $g_hForumAuthenticationLogin, $g_hForumAuthenticationExit, $g_hForumAuthenticationUser, $g_hForumAuthenticationPass
 Func ForumAuthentication()
 Local $sLogLogPleaseEnter = GetTranslatedFileIni("MBR Authentication", "LogPleaseEnter", "Please enter your Mybot.run Forum username and password")
-Local $sLogPasswordIsSave = GetTranslatedFileIni("MBR Authentication", "LogPasswordIsSave", "Your password is not saved anywhere and secure!")
+Local $sLogPasswordIsSave = GetTranslatedFileIni("MBR Authentication", "LogPasswordIsSave", "Password is only used once to authenticate and nowhere saved!")
 Local $sTitleUsername = GetTranslatedFileIni("MBR Authentication", "Username", "Username")
 Local $sTitlePassword = GetTranslatedFileIni("MBR Authentication", "Password", "Password")
 Local $sYouNeedToLogin = GetTranslatedFileIni("MBR Authentication", "YouNeedToLogin", "You need to login to MyBot.run Forum...")
@@ -66561,11 +66981,21 @@ Local $sLogin = GetTranslatedFileIni("MBR Authentication", "Login", "Login")
 Local $sExit = GetTranslatedFileIni("MBR Authentication", "Exit", "Exit")
 GetTranslatedFileIni("MBR Authentication", "BotIsAuthenticated", "MyBot.run is authenticated")
 GetTranslatedFileIni("MBR Authentication", "BotIsNotAuthenticated", "Error authenticating Mybot.run")
+Local $bNotAuthenticated =($g_hGuiForumAuthentication <> 0)
+Local $sOldFile = @MyDocumentsDir & "\MyBot.run-Profiles\.mybot.run.authentication"
+If FileExists($g_sPrivateAuthenticationFile) = 0 And FileExists($sOldFile) = 1 Then FileMove($sOldFile, $g_sPrivateAuthenticationFile)
 If FileExists($g_sPrivateAuthenticationFile) = 0 Or Not CheckForumAuthentication() Then
+If $bNotAuthenticated Then
+SetLog($sAuthenticationFailed1, $COLOR_ERROR)
+SetLog($sAuthenticationFailed2, $COLOR_ERROR)
+_Sleep(5000)
+Return False
+Else
 SetLog($sLogLogPleaseEnter, $COLOR_BLUE)
 SetLog($sLogPasswordIsSave, $COLOR_BLUE)
 Local $xyt = CreateSplashScreen("Form Login")
 Local $guiLogin = $g_hSplash
+$g_hGuiForumAuthentication = $guiLogin
 Local $iW = $xyt[0]
 Local $iH = $xyt[1]
 Local $iSpace = 20
@@ -66578,18 +67008,17 @@ Local $hPass = GUICtrlCreateInput("", $iSpace + 100 + 5, $iButtonTop, 100, 20, B
 GUICtrlSetLimit($hPass, 128, 1)
 Local $iTextAddWidth = 30
 Local $hText = GUICtrlCreateLabel($sYouNeedToLogin, $iSpace + 100 + 5 + 100 + 5 - $iTextAddWidth, $iButtonTop - 22, $iW - $iSpace -($iSpace + 100 + 5 + 100 + 5) + $iTextAddWidth, 20, $SS_RIGHT)
-Local $hLogin = GUICtrlCreateButton($sLogin, $iW - 50 - $iSpace, $iButtonTop, 50, 25, $BS_DEFPUSHBUTTON)
-Local $hExit = GUICtrlCreateButton($sExit, $iW -(50 + $iSpace + 50 + 5), $iButtonTop, 50, 25)
+$g_hForumAuthenticationLogin = GUICtrlCreateButton($sLogin, $iW - 50 - $iSpace, $iButtonTop, 50, 25, $BS_DEFPUSHBUTTON)
+GUICtrlSetOnEvent(-1, "ForumAuthenticationLogin")
+$g_hForumAuthenticationExit = GUICtrlCreateButton($sExit, $iW -(50 + $iSpace + 50 + 5), $iButtonTop, 50, 25)
+GUICtrlSetOnEvent(-1, "ForumAuthenticationExit")
 ControlFocus($guiLogin, "", $hUser)
-Local $iOpt = Opt("GUIOnEventMode", 0)
 GUISetState(@SW_SHOW, $guiLogin)
 Local $bOk = False
 Local $hTimer = __TimerInit()
 While True
-Switch GUIGetMsg()
-Case $GUI_EVENT_CLOSE, $hExit
-ExitLoop
-Case $hLogin
+Switch $g_hForumAuthenticationState
+Case $g_eForumAuthenticationLogin
 Local $sUser = GUICtrlRead($hUser)
 Local $sPass = GUICtrlRead($hPass)
 If $sUser = "" Or $sPass = "" Then
@@ -66605,8 +67034,8 @@ Else
 GUICtrlSetData($hText, $sLoginFailed)
 EndIf
 EndIf
-Case Else
-_WinAPI_PostMessage($guiLogin, $WM_SYSCOMMAND, 0xF012, 0)
+Case $g_eForumAuthenticationExit
+ExitLoop
 EndSwitch
 If __TimerDiff($hTimer) / 1000 > 15 * 60 Then
 SetLog($sAuthenticationFailed1, $COLOR_ERROR)
@@ -66614,12 +67043,21 @@ SetLog($sAuthenticationFailed2, $COLOR_ERROR)
 $bOk = True
 ExitLoop
 EndIf
+$g_hForumAuthenticationState = $g_eForumAuthenticationWaiting
+Sleep(100)
 WEnd
 GUIDelete($guiLogin)
-Opt("GUIOnEventMode", $iOpt)
+$g_hGuiForumAuthentication = 0
 If Not $bOk Then BotClose()
 EndIf
+EndIf
 Return True
+EndFunc
+Func ForumAuthenticationLogin()
+$g_hForumAuthenticationState = $g_eForumAuthenticationLogin
+EndFunc
+Func ForumAuthenticationExit()
+$g_hForumAuthenticationState = $g_eForumAuthenticationExit
 EndFunc
 Func setupProfileComboBox()
 Local $profileString = ""
@@ -66984,6 +67422,7 @@ _GUICtrlComboBox_SetCurSel($g_hCmbAndroidBackgroundMode, $g_iAndroidBackgroundMo
 _GUICtrlComboBox_SetCurSel($g_hCmbAndroidZoomoutMode, $g_iAndroidZoomoutMode)
 GUICtrlSetState($g_hChkAndroidAdbClickDragScript, $g_bAndroidAdbClickDragScript ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkAndroidCloseWithBot, $g_bAndroidCloseWithBot ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkUpdateSharedPrefs, $g_bUpdateSharedPrefs ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetData($g_hTxtAndroidRebootHours, $g_iAndroidRebootHours)
 _GUICtrlComboBox_SetCurSel($g_hCmbSuspendAndroid, AndroidSuspendFlagsToIndex($g_iAndroidSuspendModeFlags))
 Case "Save"
@@ -66994,6 +67433,7 @@ $g_bAndroidAdbClickEnabled =(GUICtrlRead($g_hChkAndroidAdbClick) = $GUI_CHECKED 
 $g_bAndroidAdbClick = $g_bAndroidAdbClickEnabled
 $g_bAndroidAdbClickDragScript =(GUICtrlRead($g_hChkAndroidAdbClickDragScript) = $GUI_CHECKED ? True : False)
 $g_bAndroidCloseWithBot =(GUICtrlRead($g_hChkAndroidCloseWithBot) = $GUI_CHECKED ? True : False)
+$g_bUpdateSharedPrefs =(GUICtrlRead($g_hChkUpdateSharedPrefs) = $GUI_CHECKED ? True : False)
 $g_iAndroidRebootHours = Int(GUICtrlRead($g_hTxtAndroidRebootHours))
 cmbSuspendAndroid()
 EndSwitch
@@ -67563,6 +68003,7 @@ GUICtrlSetState($g_hChkNotifyAlertMaintenance, $g_bNotifyAlertMaintenance ? $GUI
 GUICtrlSetState($g_hChkNotifyAlertBAN, $g_bNotifyAlertBAN ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkNotifyBOTUpdate, $g_bNotifyAlertBOTUpdate ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkNotifyAlertSmartWaitTime, $g_bNotifyAlertSmartWaitTime ? $GUI_CHECKED : $GUI_UNCHECKED)
+GUICtrlSetState($g_hChkNotifyAlertLaboratoryIdle, $g_bNotifyAlertLaboratoryIdle ? $GUI_CHECKED : $GUI_UNCHECKED)
 Case "Save"
 $g_bNotifyTGEnable =(GUICtrlRead($g_hChkNotifyTGEnable) = $GUI_CHECKED)
 $g_sNotifyTGToken = GUICtrlRead($g_hTxtNotifyTGToken)
@@ -67583,6 +68024,7 @@ $g_bNotifyAlertMaintenance =(GUICtrlRead($g_hChkNotifyAlertMaintenance) = $GUI_C
 $g_bNotifyAlertBAN =(GUICtrlRead($g_hChkNotifyAlertBAN) = $GUI_CHECKED)
 $g_bNotifyAlertBOTUpdate =(GUICtrlRead($g_hChkNotifyBOTUpdate) = $GUI_CHECKED)
 $g_bNotifyAlertSmartWaitTime =(GUICtrlRead($g_hChkNotifyAlertSmartWaitTime) = $GUI_CHECKED)
+$g_bNotifyAlertLaboratoryIdle =(GUICtrlRead($g_hChkNotifyAlertLaboratoryIdle) = $GUI_CHECKED)
 EndSwitch
 EndFunc
 Func ApplyConfig_600_19($TypeReadSave)
@@ -69152,6 +69594,7 @@ $g_iAndroidInactiveTransparency = Int(IniRead($g_sProfileConfigPath, "android", 
 $g_iAndroidSuspendModeFlags = Int(IniRead($g_sProfileConfigPath, "android", "suspend.mode", $g_iAndroidSuspendModeFlags))
 $g_iAndroidRebootHours = Int(IniRead($g_sProfileConfigPath, "android", "reboot.hours", $g_iAndroidRebootHours))
 $g_bAndroidCloseWithBot = Int(IniRead($g_sProfileConfigPath, "android", "close", $g_bAndroidCloseWithBot ? 1 : 0)) = 1
+$g_bUpdateSharedPrefs = Int(IniRead($g_sProfileConfigPath, "android", "shared_prefs.update", $g_bUpdateSharedPrefs ? 1 : 0)) = 1
 $g_iAndroidProcessAffinityMask = Int(IniRead($g_sProfileConfigPath, "android", "process.affinity.mask", $g_iAndroidProcessAffinityMask))
 If $g_bBotLaunchOption_Restart = True Or $g_asCmdLine[0] < 2 Then
 Local $sAndroidEmulator = IniRead($g_sProfileConfigPath, "android", "emulator", "")
@@ -69474,6 +69917,7 @@ IniReadS($g_bNotifyAlertMaintenance, $g_sProfileConfigPath, "notify", "AlertPBMa
 IniReadS($g_bNotifyAlertBAN, $g_sProfileConfigPath, "notify", "AlertPBBAN", False, "Bool")
 IniReadS($g_bNotifyAlertBOTUpdate, $g_sProfileConfigPath, "notify", "AlertPBUpdate", False, "Bool")
 IniReadS($g_bNotifyAlertSmartWaitTime, $g_sProfileConfigPath, "notify", "AlertSmartWaitTime", False, "Bool")
+IniReadS($g_bNotifyAlertLaboratoryIdle, $g_sProfileConfigPath, "notify", "AlertLaboratoryIdle", False, "Bool")
 EndFunc
 Func ReadConfig_600_19()
 $g_bNotifyScheduleHoursEnable =(IniRead($g_sProfileConfigPath, "notify", "NotifyHoursEnable", "0") = "1")
@@ -70224,6 +70668,7 @@ _Ini_Add("android", "emulator", $g_sAndroidEmulator)
 _Ini_Add("android", "instance", $g_sAndroidInstance)
 _Ini_Add("android", "reboot.hours", $g_iAndroidRebootHours)
 _Ini_Add("android", "close",($g_bAndroidCloseWithBot ? "1" : "0"))
+_Ini_Add("android", "shared_prefs.update",($g_bUpdateSharedPrefs ? "1" : "0"))
 _Ini_Add("android", "process.affinity.mask", $g_iAndroidProcessAffinityMask)
 EndFunc
 Func SaveConfig_Debug()
@@ -70463,6 +70908,7 @@ _Ini_Add("notify", "AlertPBMaintenance", $g_bNotifyAlertMaintenance ? 1 : 0)
 _Ini_Add("notify", "AlertPBBAN", $g_bNotifyAlertBAN ? 1 : 0)
 _Ini_Add("notify", "AlertPBUpdate", $g_bNotifyAlertBOTUpdate ? 1 : 0)
 _Ini_Add("notify", "AlertSmartWaitTime", $g_bNotifyAlertSmartWaitTime ? 1 : 0)
+_Ini_Add("notify", "AlertLaboratoryIdle", $g_bNotifyAlertLaboratoryIdle ? 1 : 0)
 EndFunc
 Func SaveConfig_600_19()
 ApplyConfig_600_19(GetApplyConfigSaveAction())
@@ -72350,6 +72796,8 @@ GetDroid4XBackgroundMode()
 GetKOPLAYERBackgroundMode()
 GetMEmuBackgroundMode()
 GetNoxBackgroundMode()
+ConfigureSharedFolderBlueStacks()
+ConfigureSharedFolderBlueStacks2()
 getChatString(0, 0, 0)
 getChatStringChinese(0, 0)
 getChatStringKorean(0, 0)
@@ -72718,8 +73166,8 @@ Opt("GUIEventOptions", 1)
 Opt("GUICloseOnESC", 0)
 Opt("WinTitleMatchMode", 3)
 Opt("GUIOnEventMode", 1)
-Opt("MouseClickDelay", 10)
-Opt("MouseClickDownDelay", 10)
+Opt("MouseClickDelay", $g_iAndroidControlClickDelay)
+Opt("MouseClickDownDelay", $g_iAndroidControlClickDownDelay)
 Opt("TrayMenuMode", 3)
 Opt("TrayOnEventMode", 1)
 InitializeBot()
@@ -72967,6 +73415,17 @@ $g_bOnlyInstance = $g_hMutex_MyBot <> 0
 SetDebugLog("My Bot is " &($g_bOnlyInstance ? "" : "not ") & "the only running instance")
 EndFunc
 Func SetupFilesAndFolders()
+Local $sOldProfiles = @MyDocumentsDir & "\MyBot.run-Profiles"
+If FileExists($sOldProfiles) = 1 And FileExists($g_sPrivateProfilePath) = 0 Then
+SetLog("Moving shared_prefs profiles folder...")
+If DirMove($sOldProfiles, $g_sPrivateProfilePath) = 0 Then
+SetLog("Error moving folder " & $sOldProfiles, $COLOR_ERROR)
+SetLog("to new location " & $g_sPrivateProfilePath, $COLOR_ERROR)
+SetLog("Please resolve manually!", $COLOR_ERROR)
+Else
+SetLog("Moved shared_prefs profiles to " & $g_sPrivateProfilePath, $COLOR_SUCCESS)
+EndIf
+EndIf
 DirCreate($g_sProfilePresetPath)
 DirCreate($g_sPrivateProfilePath & "\" & $g_sProfileCurrentName)
 DirCreate($g_sProfilePath & "\" & $g_sProfileCurrentName)
@@ -73002,7 +73461,8 @@ SetDebugLog("$g_sProfileCurrentName = " & $g_sProfileCurrentName)
 SetDebugLog("$g_sProfileLogsPath = " & $g_sProfileLogsPath)
 EndFunc
 Func FinalInitialization(Const $sAI)
-If CheckPrerequisites(True) Then
+Local $bCheckPrerequisitesOK = CheckPrerequisites(True)
+If $bCheckPrerequisitesOK Then
 MBRFunc(True)
 setAndroidPID()
 SetBotGuiPID()
@@ -73027,9 +73487,14 @@ WEnd
 If $g_iGuiPID = @AutoItPID Then
 SetDebugLog("GUI Process not received, close bot")
 BotClose()
+$bCheckPrerequisitesOK = False
 Else
 SetDebugLog("Linked to GUI Process " & $g_iGuiPID)
 EndIf
+EndIf
+DestroySplashScreen(False)
+If $bCheckPrerequisitesOK Then
+ForumAuthentication()
 EndIf
 DestroySplashScreen()
 CheckVersion()
@@ -73051,9 +73516,6 @@ $iStartDelay = $iDelay * 1000
 $g_iBotAction = $eBotStart
 If $g_bBotLaunchOption_HideAndroid Then $g_bIsHidden = True
 If $g_bBotLaunchOption_MinimizeBot Then BotMinimizeRequest()
-EndIf
-If $bCheckPrerequisitesOK Then
-ForumAuthentication()
 EndIf
 Local $hStarttime = _Timer_Init()
 CheckEmuNewVersions()
@@ -73113,6 +73575,7 @@ If Not $g_bRunState Then Return
 If $g_bRestart = True Then ContinueLoop
 checkObstacles()
 If $g_bRestart = True Then ContinueLoop
+If $g_bUpdateSharedPrefs Then PullSharedPrefs()
 If $g_bQuicklyFirstStart = True Then
 $g_bQuicklyFirstStart = False
 Else
@@ -73424,8 +73887,8 @@ If Not $g_bRunState Then Return
 If _Sleep($DELAYATTACKMAIN2) Then Return
 Return True
 Else
-SetLog("No one of search condition match:", $COLOR_WARNING)
-SetLog("Waiting on troops, heroes and/or spells according to search settings", $COLOR_WARNING)
+SetLog("None of search condition match:", $COLOR_WARNING)
+SetLog("Search, Trophy or Army Camp % are out of range in search setting", $COLOR_WARNING)
 $g_bIsSearchLimit = False
 $g_bIsClientSyncError = False
 $g_bQuickAttack = False

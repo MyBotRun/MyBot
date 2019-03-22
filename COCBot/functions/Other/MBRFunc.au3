@@ -115,7 +115,7 @@ EndFunc   ;==>debugMBRFunctions
 Func setAndroidPID($pid = GetAndroidPid())
 	If $g_hLibMyBot = -1 Then Return ; Bot didn't finish launch yet
 	SetDebugLog("setAndroidPID: $pid=" & $pid)
-	Local $result = DllCall($g_hLibMyBot, "str", "setAndroidPID", "int", $pid)
+	Local $result = DllCall($g_hLibMyBot, "str", "setAndroidPID", "int", $pid, "str", $g_sBotVersion, "str", $g_sAndroidEmulator, "str", $g_sAndroidVersion, "str", $g_sAndroidInstance)
 	If @error Then
 		_logErrorDLLCall($g_sLibMyBotPath & ", setAndroidPID:", @error)
 		Return SetError(@error)
@@ -178,7 +178,7 @@ EndFunc   ;==>CheckForumAuthentication
 
 Func ForumLogin($sUsername, $sPassword)
 	If $g_hLibMyBot = -1 Then Return False ; Bot didn't finish launch yet
-	Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", _Base64Encode(StringToBinary($sUsername, 4), 1024), "str", _Base64Encode(StringToBinary($sPassword, 4), 1024), "str", _Base64Encode(StringToBinary($g_sBotTitle, 4), 1024))
+	Local $result = DllCall($g_hLibMyBot, "str", "ForumLogin", "str", _Base64Encode(StringToBinary($sUsername, 4), 1024), "str", _Base64Encode(StringToBinary($sPassword, 4), 1024))
 	If @error Then
 		_logErrorDLLCall($g_sLibMyBotPath & ", ForumLogin:", @error)
 		Return SetError(@error)

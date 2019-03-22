@@ -240,9 +240,9 @@ Func SmartFarmDetection($txtBuildings = "Mines")
 			$iMaxLevel = 7
 		Case "All"
 			If $g_iDetectedImageType = 1 Then
-				$sdirectory = @ScriptDir & "\imgxml\Storages\All"
-			Else
 				$sdirectory = @ScriptDir & "\imgxml\Storages\All_Snow"
+			Else
+				$sdirectory = @ScriptDir & "\imgxml\Storages\All"
 			EndIf
 			$iMaxReturnPoints = 21
 			$iMaxLevel = 13

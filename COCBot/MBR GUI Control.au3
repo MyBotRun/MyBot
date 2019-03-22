@@ -320,7 +320,7 @@ Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 	EndIf
 
 	Switch $iMsg
-		Case $WM_LBUTTONDOWN, $WM_LBUTTONUP, $WM_RBUTTONDOWN, $WM_RBUTTONUP
+		Case $WM_LBUTTONDOWN, $WM_LBUTTONUP, $WM_RBUTTONDOWN, $WM_RBUTTONUP, $WM_LBUTTONDBLCLK
 			; ensure text box still has focus
 			Local $hInput = GUICtrlGetHandle($g_hFrmBotEmbeddedShieldInput)
 			_WinAPI_SetFocus($hInput)
@@ -338,6 +338,11 @@ Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 			If $g_bDebugClick And AndroidShieldHasFocus() Then
 				Local $c = GetPixelFromWindow($x, $y, $g_hAndroidControl)
 				SetLog(StringFormat("Mouse LBUTTONDOWN %03i,%03i Color %s", $x, $y, $c), $COLOR_DEBUG)
+			EndIf
+		Case $WM_LBUTTONDBLCLK
+			If $g_bDebugClick And AndroidShieldHasFocus() Then
+				Local $c = GetPixelFromWindow($x, $y, $g_hAndroidControl)
+				SetLog(StringFormat("Mouse LBUTTONDBLCLK %03i,%03i Color %s", $x, $y, $c), $COLOR_DEBUG)
 			EndIf
 		Case $WM_LBUTTONUP, $WM_RBUTTONUP
 			If $g_iDebugWindowMessages Then
@@ -376,7 +381,7 @@ Func GUIControl_WM_MOUSE($hWin, $iMsg, $wParam, $lParam)
 				If $s_x <> $x Or $s_y <> $y Then
 					$iBytesSent = Minitouch($x, $y, 0)
 				EndIf
-			Case $WM_LBUTTONDOWN
+			Case $WM_LBUTTONDOWN, $WM_LBUTTONDBLCLK
 				$iBytesSent = Minitouch($x, $y, 1)
 			Case $WM_LBUTTONUP
 				$iBytesSent = Minitouch($x, $y, 2)

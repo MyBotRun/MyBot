@@ -15,6 +15,21 @@
 
 Func BotStart($bAutostartDelay = 0)
 	FuncEnter(BotStart)
+
+	If Not $g_bSearchMode Then
+		If $g_hLogFile = 0 Then CreateLogFile() ; only create new log file when doesn't exist yet
+		CreateAttackLogFile()
+		If $g_iFirstRun = -1 Then $g_iFirstRun = 1
+	EndIf
+	SetLogCentered(" BOT LOG ", Default, Default, True)
+
+	If Not ForumAuthentication() Then
+		; not authenticated exit now, but restore controls first
+		EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
+		SetRedrawBotWindow(True, Default, Default, Default, "BotStart")
+		Return FuncReturn()
+	EndIf
+
 	ResumeAndroid()
 	CleanSecureFiles()
 	CalCostCamp()
@@ -35,13 +50,6 @@ Func BotStart($bAutostartDelay = 0)
 	$g_bMeetCondStop = False
 	$g_bIsClientSyncError = False
 	$g_bDisableBreakCheck = False ; reset flag to check for early warning message when bot start/restart in case user stopped in middle
-
-	If Not $g_bSearchMode Then
-		If $g_hLogFile = 0 Then CreateLogFile() ; only create new log file when doesn't exist yet
-		CreateAttackLogFile()
-		If $g_iFirstRun = -1 Then $g_iFirstRun = 1
-	EndIf
-	SetLogCentered(" BOT LOG ", Default, Default, True)
 
 	SaveConfig()
 	readConfig()

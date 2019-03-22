@@ -55,8 +55,8 @@ Opt("GUIEventOptions", 1) ; Handle minimize and restore for dock android support
 Opt("GUICloseOnESC", 0) ; Don't send the $GUI_EVENT_CLOSE message when ESC is pressed.
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
 Opt("GUIOnEventMode", 1)
-Opt("MouseClickDelay", 10)
-Opt("MouseClickDownDelay", 10)
+Opt("MouseClickDelay", $g_iAndroidControlClickDelay) ;Default: 10 milliseconds
+Opt("MouseClickDownDelay", $g_iAndroidControlClickDownDelay) ;Default: 2 milliseconds
 Opt("TrayMenuMode", 3)
 Opt("TrayOnEventMode", 1)
 
@@ -478,6 +478,19 @@ EndFunc   ;==>InitializeMBR
 ; ===============================================================================================================================
 Func SetupFilesAndFolders()
 
+	;Migrate old shared_prefs locations
+	Local $sOldProfiles = @MyDocumentsDir & "\MyBot.run-Profiles"
+	If FileExists($sOldProfiles) = 1 And FileExists($g_sPrivateProfilePath) = 0 Then
+		SetLog("Moving shared_prefs profiles folder...")
+		If DirMove($sOldProfiles, $g_sPrivateProfilePath) = 0 Then
+			SetLog("Error moving folder " & $sOldProfiles, $COLOR_ERROR)
+			SetLog("to new location " & $g_sPrivateProfilePath, $COLOR_ERROR)
+			SetLog("Please resolve manually!", $COLOR_ERROR)
+		Else
+			SetLog("Moved shared_prefs profiles to " & $g_sPrivateProfilePath, $COLOR_SUCCESS)
+		EndIf
+	EndIf
+
 	;DirCreate($sTemplates)
 	DirCreate($g_sProfilePresetPath)
 	DirCreate($g_sPrivateProfilePath & "\" & $g_sProfileCurrentName)
@@ -519,6 +532,7 @@ Func SetupFilesAndFolders()
 	SetDebugLog("$g_sProfilePath = " & $g_sProfilePath)
 	SetDebugLog("$g_sProfileCurrentName = " & $g_sProfileCurrentName)
 	SetDebugLog("$g_sProfileLogsPath = " & $g_sProfileLogsPath)
+
 EndFunc   ;==>SetupFilesAndFolders
 
 ; #FUNCTION# ====================================================================================================================
@@ -537,7 +551,8 @@ EndFunc   ;==>SetupFilesAndFolders
 ; ===============================================================================================================================
 Func FinalInitialization(Const $sAI)
 	; check for VC2010, .NET software and MyBot Files and Folders
-	If CheckPrerequisites(True) Then
+	Local $bCheckPrerequisitesOK = CheckPrerequisites(True)
+	If $bCheckPrerequisitesOK Then
 		MBRFunc(True) ; start MyBot.run.dll, after this point .net is initialized and threads popup all the time
 		setAndroidPID() ; set Android PID
 		SetBotGuiPID() ; set GUI PID
@@ -575,12 +590,20 @@ Func FinalInitialization(Const $sAI)
 		If $g_iGuiPID = @AutoItPID Then
 			SetDebugLog("GUI Process not received, close bot")
 			BotClose()
+			$bCheckPrerequisitesOK = False
 		Else
 			SetDebugLog("Linked to GUI Process " & $g_iGuiPID)
 		EndIf
 	EndIf
 
 	; destroy splash screen here (so we witness the 100% ;)
+	DestroySplashScreen(False)
+	If $bCheckPrerequisitesOK Then
+		; only when bot can run, register with forum
+		ForumAuthentication()
+	EndIf
+
+	; allow now other bots to launch
 	DestroySplashScreen()
 
 	; InitializeVariables();initialize variables used in extrawindows
@@ -624,11 +647,6 @@ Func MainLoop($bCheckPrerequisitesOK = True)
 		If $g_bBotLaunchOption_HideAndroid Then $g_bIsHidden = True
 		; check if bot should be minimized
 		If $g_bBotLaunchOption_MinimizeBot Then BotMinimizeRequest()
-	EndIf
-
-	If $bCheckPrerequisitesOK Then
-		; only when bot can run, register with forum
-		ForumAuthentication()
 	EndIf
 
 	Local $hStarttime = _Timer_Init()
@@ -713,6 +731,8 @@ Func runBot() ;Bot that runs everything in order
 		If $g_bRestart = True Then ContinueLoop
 		checkObstacles() ; trap common error messages also check for reconnecting animation
 		If $g_bRestart = True Then ContinueLoop
+
+		If $g_bUpdateSharedPrefs Then PullSharedPrefs()
 
 		If $g_bQuicklyFirstStart = True Then
 			$g_bQuicklyFirstStart = False
@@ -1053,8 +1073,8 @@ Func AttackMain() ;Main control for attack functions
 			If _Sleep($DELAYATTACKMAIN2) Then Return
 			Return True
 		Else
-			SetLog("No one of search condition match:", $COLOR_WARNING)
-			SetLog("Waiting on troops, heroes and/or spells according to search settings", $COLOR_WARNING)
+			SetLog("None of search condition match:", $COLOR_WARNING)
+			SetLog("Search, Trophy or Army Camp % are out of range in search setting", $COLOR_WARNING)
 			$g_bIsSearchLimit = False
 			$g_bIsClientSyncError = False
 			$g_bQuickAttack = False

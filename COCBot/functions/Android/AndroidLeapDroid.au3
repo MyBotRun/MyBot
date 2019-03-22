@@ -190,18 +190,22 @@ Func InitLeapDroid($bCheckOnly = False)
 		InitAndroidConfig(True) ; Restore default config
 
 		If Not GetAndroidVMinfo($__VBoxVMinfo, $LeapDroid_Manage_Path) Then Return False
-		Local $sAdbPAth = GetLeapDroidAdbPath()
-		If $sAdbPAth Then
-			; to avoid LeapDroid "device offline" problems, force to use LeapDroid adb
-			$sPreferredADB = $sAdbPAth
-			$g_bAndroidAdbPortPerInstance = False
-		EndIf
+		; to avoid LeapDroid "device offline" problems, force to use default port
+		$g_bAndroidAdbPortPerInstance = False
 		$__VBoxGuestProperties = LaunchConsole($LeapDroid_Manage_Path, "guestproperty enumerate " & $g_sAndroidInstance, $process_killed)
 
 		; update global variables
 		$g_sAndroidProgramPath = $LeapDroid_Path & "LeapdroidVM.exe"
 		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $LeapDroid_Path & "adb.exe"
+		If Not $LeapDroidVersion Then
+			; read Android Program Details
+			Local $pAndroidFileVersionInfo
+			If _WinAPI_GetFileVersionInfo($g_sAndroidProgramPath, $pAndroidFileVersionInfo) Then
+				$g_avAndroidProgramFileVersionInfo = _WinAPI_VerQueryValue($pAndroidFileVersionInfo, "FileVersion")
+				If UBound($g_avAndroidProgramFileVersionInfo) > 1 Then $LeapDroidVersion = $g_avAndroidProgramFileVersionInfo[1][1]
+			EndIf
+		EndIf
 		$g_sAndroidVersion = $LeapDroidVersion
 		$__LeapDroid_Path = $LeapDroid_Path
 		$g_sAndroidPath = $__LeapDroid_Path
@@ -226,24 +230,15 @@ Func InitLeapDroid($bCheckOnly = False)
 		EndIf
 
 		; get screencap paths: Name: 'picture', Host path: 'C:\Users\Administrator\Pictures\LeapDroid Photo' (machine mapping), writable
-		$g_sAndroidPicturesPath = "/mnt/shared/yw_shared/"
-		$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'yw_shared', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-		If Not @error Then
-			$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
-		Else
-			; new since 1.7.0
+		If GetVersionNormalized($g_sAndroidVersion) >= GetVersionNormalized("1.7.0") Then
 			; Name: 'LeapDroidShared', Host path: 'C:\Users\Administrator\AppData\Roaming\Leapdroid\shared' (machine mapping), writable
 			$g_sAndroidPicturesPath = "/mnt/shared/LeapDroidShared/"
-			$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'LeapDroidShared', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-			If Not @error Then
-				$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
-			Else
-				$oops = 1
-				$g_bAndroidAdbScreencap = False
-				$g_sAndroidPicturesHostPath = ""
-				SetLog($g_sAndroidEmulator & " Background Mode is not available", $COLOR_ERROR)
-			EndIf
+			$g_sAndroidSharedFolderName = "LeapDroidShared"
+		Else
+			$g_sAndroidPicturesPath = "/mnt/shared/yw_shared/"
+			$g_sAndroidSharedFolderName = "yw_shared"
 		EndIf
+		ConfigureSharedFolder(0) ; something like C:\Users\Administrator\AppData\Roaming\Leapdroid\shared\
 
 		; Android Window Title is always "Leapdroid" so add instance name
 		$g_bUpdateAndroidWindowTitle = True
@@ -320,6 +315,10 @@ Func SetScreenLeapDroid()
 		; Set dpi
 		$cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
 	#ce
+
+	ConfigureSharedFolder(1, True)
+	ConfigureSharedFolder(2, True)
+
 	Return True
 
 EndFunc   ;==>SetScreenLeapDroid
@@ -339,6 +338,8 @@ EndFunc   ;==>CloseLeapDroid
 Func CheckScreenLeapDroid($bSetLog = True)
 
 	If Not InitAndroid() Then Return False
+
+	Local $iErrCnt = 0
 
 	#cs
 		Local $aValues[4][2] = [ _
@@ -370,6 +371,11 @@ Func CheckScreenLeapDroid($bSetLog = True)
 		Next
 		If $iErrCnt > 0 Then Return False
 	#ce
+
+	; check if shared folder exists
+	If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
+
+	If $iErrCnt > 0 Then Return False
 	Return True
 
 EndFunc   ;==>CheckScreenLeapDroid

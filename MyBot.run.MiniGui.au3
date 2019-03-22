@@ -50,8 +50,6 @@ Opt("GUIEventOptions", 1) ; Handle minimize and restore for dock android support
 Opt("GUICloseOnESC", 0) ; Don't send the $GUI_EVENT_CLOSE message when ESC is pressed.
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
 Opt("GUIOnEventMode", 1)
-Opt("MouseClickDelay", 10)
-Opt("MouseClickDownDelay", 10)
 
 Global $hNtDll = DllOpen("ntdll.dll")
 #cs

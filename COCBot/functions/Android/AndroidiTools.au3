@@ -171,6 +171,12 @@ Func InitiTools($bCheckOnly = False)
 		$g_sAndroidAdbPath = $sPreferredADB
 		If $g_sAndroidAdbPath = "" Then $g_sAndroidAdbPath = $iTools_Path & "tools\adb.exe"
 		$g_sAndroidVersion = ""
+		; read Android Program Details
+		Local $pAndroidFileVersionInfo
+		If _WinAPI_GetFileVersionInfo($g_sAndroidProgramPath, $pAndroidFileVersionInfo) Then
+			$g_avAndroidProgramFileVersionInfo = _WinAPI_VerQueryValue($pAndroidFileVersionInfo, "FileVersion")
+			If UBound($g_avAndroidProgramFileVersionInfo) > 1 Then $g_sAndroidVersion = $g_avAndroidProgramFileVersionInfo[1][1]
+		EndIf
 		$__iTools_Path = $iTools_Path
 		$g_sAndroidPath = $__iTools_Path
 		$__VBoxManage_Path = $iTools_Manage_Path
@@ -201,17 +207,8 @@ Func InitiTools($bCheckOnly = False)
 
 		; get screencap paths: Name: 'picture', Host path: 'C:\Users\Administrator\Pictures\iTools Photo' (machine mapping), writable
 		$g_sAndroidPicturesPath = "/mnt/shared/picture/"
-		$aRegExResult = StringRegExp($__VBoxVMinfo, "Name: 'picture', Host path: '(.*)'.*", $STR_REGEXPARRAYMATCH)
-		If Not @error Then
-			$g_bAndroidSharedFolderAvailable = True
-			$g_sAndroidPicturesHostPath = $aRegExResult[0] & "\"
-		Else
-			$oops = 1
-			$g_bAndroidAdbScreencap = False
-			$g_bAndroidSharedFolderAvailable = False
-			$g_sAndroidPicturesHostPath = ""
-			SetLog($g_sAndroidEmulator & " shared folder is not available", $COLOR_ERROR)
-		EndIf
+		$g_sAndroidSharedFolderName = "picture"
+		ConfigureSharedFolder(0) ; something like C:\Users\Administrator\Pictures\iTools Photo\
 
 		; Android Window Title is always "iTools" so add instance name
 		$g_bUpdateAndroidWindowTitle = True
@@ -236,13 +233,8 @@ Func SetScreeniTools()
 	$cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
 
 	;vboxmanage sharedfolder add droid4x --name picture --hostpath "C:\Users\Administrator\Pictures\Droid4X Photo" --automount
-	AndroidPicturePathAutoConfig() ; ensure $g_sAndroidPicturesHostPath is set and exists
-	If $g_bAndroidSharedFolderAvailable = False And $g_bAndroidPicturesPathAutoConfig = True And FileExists($g_sAndroidPicturesHostPath) = 1 Then
-		; remove tailing backslash
-		Local $path = $g_sAndroidPicturesHostPath
-		If StringRight($path, 1) = "\" Then $path = StringLeft($path, StringLen($path) - 1)
-		$cmdOutput = LaunchConsole($__VBoxManage_Path, "sharedfolder add " & $g_sAndroidInstance & " --name picture --hostpath """ & $path & """  --automount", $process_killed)
-	EndIf
+	ConfigureSharedFolder(1, True)
+	ConfigureSharedFolder(2, True)
 
 	Return True
 
@@ -285,7 +277,7 @@ Func CheckScreeniTools($bSetLog = True)
 	If $iErrCnt > 0 Then Return False
 
 	; check if shared folder exists
-	If AndroidPicturePathAutoConfig(Default, Default, $bSetLog) Then $iErrCnt += 1
+	If ConfigureSharedFolder(1, $bSetLog) Then $iErrCnt += 1
 
 	If $iErrCnt > 0 Then Return False
 	Return True
