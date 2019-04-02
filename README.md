@@ -1,6 +1,6 @@
 ﻿ ### What is it?
 ----------
-- A Free Clash of Clans bot. 
+- A Free Clash of Clans bot.
 - A bot is a general term in gaming that is used to refer to a character controlled by a computer.
 - [MyBot.run](https://mybot.run)
 
@@ -10,16 +10,16 @@
 
 #### Documentation
 ----------
-- How to Start Bot - https://mybot.run/forums/index.php?/topic/4978-guide-how-to-use-the-bot/
+- How to Start Bot - https://mybot.run/forums/index.php?/topic/26348-guide-how-to-use-the-bot/
 - How to Report Bug/Help - https://mybot.run/forums/index.php?/forum/20-bug-reporting/
 
 #### Installation
-  ------------
+------------
 Essential software :
 - Windows XP/Vista/7/8/8.1/10
 - Microsoft Visual C++ 2010 Redistributable Package (x86)
 - Microsoft .NET Framework 4.5
-- Android Emulator , more infor : \COCBot\functions\Android\Android Status & Information.txt
+- Android Emulator, more info [here](https://github.com/MyBotRun/MyBot/blob/develop/COCBot/functions/Android/Android%20Status%20%26%20Information.txt)
 - The latest drivers for your graphics device
 - MyBot latest version available
 - DON'T USE THE OLD CONFIG FILES!
