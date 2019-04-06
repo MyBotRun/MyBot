@@ -59,7 +59,7 @@ Func LocateLab($bCollect = True)
 			ClickP($aAway, 1, 0, "#0382")
 			Return
 		EndIf
-		Local $sLabInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY); 860x780
+		Local $sLabInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
 		If $sLabInfo[0] > 1 Or $sLabInfo[0] = "" Then
 			If StringInStr($sLabInfo[1], "Lab") = 0 Then
 				Local $sLocMsg = ($sLabInfo[0] = "" ? "Nothing" : $sLabInfo[1])

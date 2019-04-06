@@ -24,25 +24,32 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = Default)
+Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix = Default, $sFixedPrefix = Default, $bOnBuilderBase = Default)
 
+	If $DebugLog = Default Then $DebugLog = False
 	If $sStonePrefix = Default Then $sStonePrefix = "stone"
 	If $sTreePrefix = Default Then $sTreePrefix = "tree"
+	If $sFixedPrefix = Default Then
+		$sFixedPrefix = ""
+		If $g_bUpdateSharedPrefs Then $sFixedPrefix = "fixed"
+	EndIf
 
 	Local $aResult = 0
 	Local $sDirectory
-	Local $stone[6] = [0, 0, 0, 0, 0, ""], $tree[6] = [0, 0, 0, 0, 0, ""]
+	Local $stone = [0, 0, 0, 0, 0, ""], $tree = [0, 0, 0, 0, 0, ""], $fixed = [0, 0, 0, 0, 0, ""]
 	Local $x0, $y0, $d0, $x, $y, $x1, $y1, $right, $bottom, $a
 
 	Local $iAdditionalY = 75
 	Local $iAdditionalX = 100
 
-	If isOnBuilderBase(True) Then
+	If $bOnBuilderBase = Default Then
+		$bOnBuilderBase = isOnBuilderBase(True)
+	EndIf
+	If $bOnBuilderBase Then
 		$sDirectory = $g_sImgZoomOutDirBB
 	Else
 		$sDirectory = $g_sImgZoomOutDir
 	EndIf
-
 	Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & "*.*", $FLTA_FILES)
 	If @error Then
 		SetLog("Error: Missing stone files (" & @error & ")", $COLOR_ERROR)
@@ -64,6 +71,44 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 		Return $aResult
 	EndIf
 	Local $i, $findImage, $sArea, $a
+
+	Local $aFixedFiles = ($sFixedPrefix ? _FileListToArray($sDirectory, $sFixedPrefix & "*.*", $FLTA_FILES) : 0)
+
+	If UBound($aFixedFiles) > 0 Then
+		For $i = 1 To $aFixedFiles[0]
+			$findImage = $aFixedFiles[$i]
+			$a = StringRegExp($findImage, ".*-(\d+)-(\d+)-(\d*,*\d+)_.*[.](xml|png|bmp)$", $STR_REGEXPARRAYMATCH)
+			If UBound($a) = 4 Then
+
+				$x0 = $a[0]
+				$y0 = $a[1]
+				$d0 = StringReplace($a[2], ",", ".")
+
+				$x1 = $x0 - $iAdditionalX
+				$y1 = $y0 - $iAdditionalY
+				$right = $x0 + $iAdditionalX
+				$bottom = $y0 + $iAdditionalY
+				$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
+				;SetDebugLog("GetVillageSize check for image " & $findImage)
+				$a = decodeSingleCoord(findImage($findImage, $sDirectory & $findImage, $sArea, 1, True))
+				If UBound($a) = 2 Then
+					$x = Int($a[0])
+					$y = Int($a[1])
+					;SetDebugLog("Found fixed image at " & $x & ", " & $y & ": " & $findImage)
+					$fixed[0] = $x ; x center of fixed found
+					$fixed[1] = $y ; y center of fixed found
+					$fixed[2] = $x0 ; x ref. center of fixed
+					$fixed[3] = $y0 ; y ref. center of fixed
+					$fixed[4] = $d0 ; distance to village map in pixel
+					$fixed[5] = $findImage
+					ExitLoop
+				EndIf
+
+			Else
+				;SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
+			EndIf
+		Next
+	EndIf
 
 	For $i = 1 To $aStoneFiles[0]
 		$findImage = $aStoneFiles[$i]
@@ -99,48 +144,56 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 		EndIf
 	Next
 
-	If $stone[0] = 0 Then
+	If $stone[0] = 0 And $fixed[0] = 0 And Not $g_bRestart Then
 		SetDebugLog("GetVillageSize cannot find stone", $COLOR_WARNING)
 		Return $aResult
 	EndIf
 
-	For $i = 1 To $aTreeFiles[0]
-		$findImage = $aTreeFiles[$i]
-		$a = StringRegExp($findImage, ".*-(\d+)-(\d+)-(\d*,*\d+)_.*[.](xml|png|bmp)$", $STR_REGEXPARRAYMATCH)
-		If UBound($a) = 4 Then
+	If $stone[0] Then
+		For $i = 1 To $aTreeFiles[0]
+			$findImage = $aTreeFiles[$i]
+			$a = StringRegExp($findImage, ".*-(\d+)-(\d+)-(\d*,*\d+)_.*[.](xml|png|bmp)$", $STR_REGEXPARRAYMATCH)
+			If UBound($a) = 4 Then
 
-			$x0 = $a[0]
-			$y0 = $a[1]
-			$d0 = StringReplace($a[2], ",", ".")
+				$x0 = $a[0]
+				$y0 = $a[1]
+				$d0 = StringReplace($a[2], ",", ".")
 
-			$x1 = $x0 - $iAdditionalX
-			$y1 = $y0 - $iAdditionalY
-			$right = $x0 + $iAdditionalX
-			$bottom = $y0 + $iAdditionalY
-			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
-			;SetDebugLog("GetVillageSize check for image " & $findImage)
-			$a = decodeSingleCoord(findImage($findImage, $sDirectory & "\" & $findImage, $sArea, 1, False))
-			If UBound($a) = 2 Then
-				$x = Int($a[0])
-				$y = Int($a[1])
-				;SetDebugLog("Found tree image at " & $x & ", " & $y & ": " & $findImage)
-				$tree[0] = $x ; x center of tree found
-				$tree[1] = $y ; y center of tree found
-				$tree[2] = $x0 ; x ref. center of tree
-				$tree[3] = $y0 ; y ref. center of tree
-				$tree[4] = $d0 ; distance to village map in pixel
-				$tree[5] = $findImage
-				ExitLoop
+				$x1 = $x0 - $iAdditionalX
+				$y1 = $y0 - $iAdditionalY
+				$right = $x0 + $iAdditionalX
+				$bottom = $y0 + $iAdditionalY
+				$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
+				;SetDebugLog("GetVillageSize check for image " & $findImage)
+				$a = decodeMultipleCoords(findImage($findImage, $sDirectory & $findImage, $sArea, 2, True), Default, Default, 0) ; sort by x because there can be a 2nd at the right that should not be used
+				If UBound($a) > 0 Then
+					$a = $a[0]
+					$x = Int($a[0])
+					$y = Int($a[1])
+					;SetDebugLog("Found tree image at " & $x & ", " & $y & ": " & $findImage)
+					$tree[0] = $x ; x center of tree found
+					$tree[1] = $y ; y center of tree found
+					$tree[2] = $x0 ; x ref. center of tree
+					$tree[3] = $y0 ; y ref. center of tree
+					$tree[4] = $d0 ; distance to village map in pixel
+					$tree[5] = $findImage
+					ExitLoop
+				EndIf
+
+			Else
+				;SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
 			EndIf
+		Next
 
-		Else
-			;SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
+		If $g_bUpdateSharedPrefs And Not $bOnBuilderBase And $tree[0] = 0 And $fixed[0] = 0 Then
+			; On main village use stone as fixed point
+			$fixed = $stone
 		EndIf
-	Next
 
-	If $tree[0] = 0 Then
-		SetDebugLog("GetVillageSize cannot find tree", $COLOR_WARNING)
-		Return $aResult
+		If $tree[0] = 0 And $fixed[0] = 0 And Not $g_bRestart Then
+			SetDebugLog("GetVillageSize cannot find tree", $COLOR_WARNING)
+			Return $aResult
+		EndIf
 	EndIf
 
 	; calculate village size, see https://en.wikipedia.org/wiki/Pythagorean_theorem
@@ -151,7 +204,9 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 
 	; initial reference village had a width of 473.60282919315 (and not 440) and stone located at 226, 567, so center on that reference and used zoom factor on that size
 	;Local $z = $c / 473.60282919315 ; don't use size of 440, as beta already using reference village
-	Local $z = $c / 458 ; 2019-01-02 Update village measuring as outer edges didn't align anymore
+	Local $iRefSize = 458 ; 2019-01-02 Update village measuring as outer edges didn't align anymore
+	Local $iDefSize = 444 ; 2019-04-01 New default size using shared_prefs zoom level
+	Local $z = $c / $iRefSize
 
 	Local $stone_x_exp = $stone[2]
 	Local $stone_y_exp = $stone[3]
@@ -159,20 +214,53 @@ Func GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = D
 	$x = $stone[0] - $stone_x_exp
 	$y = $stone[1] - $stone_y_exp
 
-	If $DebugLog Then SetDebugLog("GetVillageSize measured: " & $c & ", Zoom factor: " & $z & ", Offset: " & $x & ", " & $y, $COLOR_INFO)
+	If $fixed[0] = 0 And Not $g_bRestart Then
 
-	Dim $aResult[10]
-	$aResult[0] = $c
-	$aResult[1] = $z
-	$aResult[2] = $x
-	$aResult[4] = $stone[0]
-	$aResult[3] = $y
-	$aResult[5] = $stone[1]
-	$aResult[6] = $stone[5]
-	$aResult[7] = $tree[0]
-	$aResult[8] = $tree[1]
-	$aResult[9] = $tree[5]
-	Return $aResult
+		If $DebugLog Then SetDebugLog("GetVillageSize measured: " & $c & ", Zoom factor: " & $z & ", Offset: " & $x & ", " & $y, $COLOR_INFO)
+
+		Dim $aResult[10]
+		$aResult[0] = $c
+		$aResult[1] = $z
+		$aResult[2] = $x
+		$aResult[3] = $y
+		$aResult[4] = $stone[0]
+		$aResult[5] = $stone[1]
+		$aResult[6] = $stone[5]
+		$aResult[7] = $tree[0]
+		$aResult[8] = $tree[1]
+		$aResult[9] = $tree[5]
+		Return $aResult
+
+	Else
+
+		; used fixed tile position for village offset
+
+		If $tree[0] = 0 Or $stone[0] = 0 Then
+			; missing a tile
+			$c = $iDefSize
+			$z = $iDefSize / $iRefSize
+		EndIf
+
+		$x = $fixed[0] - $fixed[2]
+		$y = $fixed[1] - $fixed[3]
+
+		If $DebugLog Then SetDebugLog("GetVillageSize measured (fixed): " & $c & ", Zoom factor: " & $z & ", Offset: " & $x & ", " & $y, $COLOR_INFO)
+
+		Dim $aResult[10]
+		$aResult[0] = $c
+		$aResult[1] = $z
+		$aResult[2] = $x
+		$aResult[3] = $y
+		$aResult[4] = $stone[0]
+		$aResult[5] = $stone[1]
+		$aResult[6] = $stone[5]
+		$aResult[7] = $tree[0]
+		$aResult[8] = $tree[1]
+		$aResult[9] = $tree[5]
+		Return $aResult
+
+	EndIf
+
 EndFunc   ;==>GetVillageSize
 
 Func UpdateGlobalVillageOffset($x, $y)

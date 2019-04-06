@@ -1,7 +1,7 @@
 
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: LocateTownHall
-; Description ...: Locates TownHall for Rearm Function
+; Description ...: Locates TownHall
 ; Syntax ........: LocateTownHall()
 ; Parameters ....:
 ; Return values .: None

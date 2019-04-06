@@ -180,6 +180,8 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 				ExitLoop
 			EndIf
 		Next
+		If $g_bRestart Then Return
+		
 		; ----------------- FIND TARGET TOWNHALL -------------------------------------------
 		; $g_iSearchTH name of level of townhall (return "-" if no th found)
 		; $g_iTHx and $g_iTHy coordinates of townhall

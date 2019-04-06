@@ -35,7 +35,6 @@ Func OpenDroid4X($bRestart = False)
 	$connected_to = ConnectAndroidAdb(False, 60 * 1000)
 	If Not $g_bRunState Then Return False
 
-	SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
 	$hTimer = __TimerInit()
 	; Wait for device
 	;$cmdOutput = LaunchConsole($g_sAndroidAdbPath, "-s " & $g_sAndroidAdbDevice & " wait-for-device", $process_killed, 60 * 1000)

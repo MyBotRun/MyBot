@@ -342,7 +342,7 @@ Func SwitchCOCAcc($NextAccount)
 
 		SetSwitchAccLog("Switched to Acc [" & $NextAccount + 1 & "]", $COLOR_SUCCESS)
 
-		If $g_bChkSharedPrefs And Not ($g_bUpdateSharedPrefs And $g_bUpdateSharedPrefsGoogleDisconnected) Then
+		If $g_bChkSharedPrefs Then
 			; disconnect account again for saving shared_prefs
 			waitMainScreen()
 			If IsMainPage() Then

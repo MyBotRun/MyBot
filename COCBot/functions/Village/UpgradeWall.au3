@@ -117,95 +117,97 @@ EndFunc   ;==>UpgradeWall
 
 Func UpgradeWallGold()
 
-	;Click($WallxLOC, $WallyLOC)
 	If _Sleep($DELAYRESPOND) Then Return
 
-	Local $offColors[3][3] = [[0xD6714B, 47, 37], [0xF0E850, 70, 0], [0xF4F8F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel gold, 4th pixel edge of button
-	Local $ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 650 + $g_iBottomOffsetY, 1, 1, Hex(0xF3F3F1, 6), $offColors, 30) ; first gray/white pixel of button
-	If IsArray($ButtonPixel) Then
-		If $g_bDebugSetlog Then
-			SetDebugLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-			SetDebugLog("Color #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 47, $ButtonPixel[1] + 37, True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 70, $ButtonPixel[1], True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 79, $ButtonPixel[1], True), $COLOR_DEBUG)
-		EndIf
-		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0316") ; Click Upgrade Gold Button
-		If _Sleep($DELAYUPGRADEWALLGOLD2) Then Return
-
-		If _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x
-			If isNoUpgradeLoot(False) = True Then
-				SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
-				Return False
-			EndIf
-			Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0317")
-			If _Sleep(1000) Then Return
-			If isGemOpen(True) Then
-				ClickP($aAway, 1, 0, "#0314") ; click away
-				SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
-				Return False
-			ElseIf _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x, didnt closed on upgradeclick, so not able to upgrade
-				ClickP($aAway, 1, 0, "#0314") ; click away
-				SetLog("unable to upgrade", $COLOR_ERROR)
-				Return False
-			Else
-				If _Sleep($DELAYUPGRADEWALLGOLD3) Then Return
-				SetLog("Upgrade complete", $COLOR_SUCCESS)
-				PushMsg("UpgradeWithGold")
-				$g_iNbrOfWallsUppedGold += 1
-				$g_iNbrOfWallsUpped += 1
-				$g_iCostGoldWall += $g_iWallCost
-				UpdateStats()
-				Return True
-			EndIf
-		EndIf
-	Else
-		SetLog("No Upgrade Gold Button", $COLOR_ERROR)
-		Pushmsg("NowUpgradeGoldButton")
-		Return False
+	Local $aUpgradeButton = findButton("Upgrade", Default, 2, True)
+	If IsArray($aUpgradeButton) Then 
+		For $i = 0 To UBound($aUpgradeButton, 0) - 1  ; Check for goldcolor in right top button corner and click, if present
+			If _ColorCheck(_GetPixelColor($aUpgradeButton[$i][0] + 52, $aUpgradeButton[$i][1] - 13, True), Hex(0xFFE31D, 6), 20) Then Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
+		Next
 	EndIf
+
+	If _Sleep($DELAYUPGRADEWALLGOLD2) Then Return
+
+	If _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x
+		If isNoUpgradeLoot(False) = True Then
+			SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
+			Return False
+		EndIf
+		Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0317")
+		If _Sleep(1000) Then Return
+		If isGemOpen(True) Then
+			ClickP($aAway, 1, 0, "#0314") ; click away
+			SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
+			Return False
+		ElseIf _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x, didnt closed on upgradeclick, so not able to upgrade
+			ClickP($aAway, 1, 0, "#0314") ; click away
+			SetLog("unable to upgrade", $COLOR_ERROR)
+			Return False
+		Else
+			If _Sleep($DELAYUPGRADEWALLGOLD3) Then Return
+			ClickP($aAway, 1, 0, "#0314") ; click away
+			SetLog("Upgrade complete", $COLOR_SUCCESS)
+			PushMsg("UpgradeWithGold")
+			$g_iNbrOfWallsUppedGold += 1
+			$g_iNbrOfWallsUpped += 1
+			$g_iCostGoldWall += $g_iWallCost
+			UpdateStats()
+			Return True
+		EndIf
+	EndIf
+
+	ClickP($aAway, 1, 0, "#0314") ; click away
+	SetLog("No Upgrade Gold Button", $COLOR_ERROR)
+	Pushmsg("NowUpgradeGoldButton")
+	Return False
 
 EndFunc   ;==>UpgradeWallGold
 
 Func UpgradeWallElixir()
 
-	;Click($WallxLOC, $WallyLOC)
 	If _Sleep($DELAYRESPOND) Then Return
 
-	Local $offColors[3][3] = [[0xBC5B31, 38, 32], [0xF84CF9, 72, 0], [0xF5F9F2, 79, 0]] ; 2nd pixel brown hammer, 3rd pixel gold, 4th pixel edge of button
-	Local $ButtonPixel = _MultiPixelSearch(240, 563 + $g_iBottomOffsetY, 670, 650 + $g_iBottomOffsetY, 1, 1, Hex(0xF4F7F2, 6), $offColors, 30) ; first gray/white pixel of button
-	If IsArray($ButtonPixel) Then
-		Click($ButtonPixel[0] + 20, $ButtonPixel[1] + 20, 1, 0, "#0322") ; Click Upgrade Elixir Button
-
-		If _Sleep($DELAYUPGRADEWALLELIXIR2) Then Return
-		If _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then
-			If isNoUpgradeLoot(False) = True Then
-				SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
-				Return False
-			EndIf
-			Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0318")
-			If _Sleep(1000) Then Return
-			If isGemOpen(True) Then
-				ClickP($aAway, 1, 0, "#0314") ; click away
-				SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
-				Return False
-			ElseIf _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x, didnt closed on upgradeclick, so not able to upgrade
-				ClickP($aAway, 1, 0, "#0314") ; click away
-				SetLog("unable to upgrade", $COLOR_ERROR)
-				Return False
-			Else
-				If _Sleep($DELAYUPGRADEWALLELIXIR3) Then Return
-				SetLog("Upgrade complete", $COLOR_SUCCESS)
-				PushMsg("UpgradeWithElixir")
-				$g_iNbrOfWallsUppedElixir += 1
-				$g_iNbrOfWallsUpped += 1
-				$g_iCostElixirWall += $g_iWallCost
-				UpdateStats()
-				Return True
-			EndIf
-		EndIf
-	Else
-		SetLog("No Upgrade Elixir Button", $COLOR_ERROR)
-		Pushmsg("NowUpgradeElixirButton")
-		Return False
+	Local $aUpgradeButton = findButton("Upgrade", Default, 2, True)
+	If IsArray($aUpgradeButton) Then 
+		For $i = 0 To UBound($aUpgradeButton, 0) - 1  ; Check for elixircolor in right top button corner and click, if present
+			If _ColorCheck(_GetPixelColor($aUpgradeButton[$i][0] + 52, $aUpgradeButton[$i][1] - 13, True), Hex(0xEF25FF, 6), 20) Then Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
+		Next
 	EndIf
+
+	If _Sleep($DELAYUPGRADEWALLELIXIR2) Then Return
+
+	If _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then
+		If isNoUpgradeLoot(False) = True Then
+			SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
+			Return False
+		EndIf
+		Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0318")
+		If _Sleep(1000) Then Return
+		If isGemOpen(True) Then
+			ClickP($aAway, 1, 0, "#0314") ; click away
+			SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
+			Return False
+		ElseIf _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x, didnt closed on upgradeclick, so not able to upgrade
+			ClickP($aAway, 1, 0, "#0314") ; click away
+			SetLog("unable to upgrade", $COLOR_ERROR)
+			Return False
+		Else
+			If _Sleep($DELAYUPGRADEWALLELIXIR3) Then Return
+			ClickP($aAway, 1, 0, "#0314") ; click away
+			SetLog("Upgrade complete", $COLOR_SUCCESS)
+			PushMsg("UpgradeWithElixir")
+			$g_iNbrOfWallsUppedElixir += 1
+			$g_iNbrOfWallsUpped += 1
+			$g_iCostElixirWall += $g_iWallCost
+			UpdateStats()
+			Return True
+		EndIf
+	EndIf
+
+	ClickP($aAway, 1, 0, "#0314") ; click away
+	SetLog("No Upgrade Elixir Button", $COLOR_ERROR)
+	Pushmsg("NowUpgradeElixirButton")
+	Return False
 
 EndFunc   ;==>UpgradeWallElixir
 

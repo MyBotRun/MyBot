@@ -14,20 +14,6 @@
 ; ===============================================================================================================================
 #include-once
 
-; Func chkTrap()
-	; If GUICtrlRead($g_hChkTrap) = $GUI_CHECKED Then
-		; $g_bChkTrap = True
-		; ;GUICtrlSetState($btnLocateTownHall, $GUI_SHOW)
-	; Else
-		; $g_bChkTrap = False
-		; ;GUICtrlSetState($btnLocateTownHall, $GUI_HIDE)
-	; EndIf
-; EndFunc   ;==>chkTrap
-
-; Func ChkCollect()
-	; $g_bChkCollect = (GUICtrlRead($g_hChkCollect) = $GUI_CHECKED)
-; EndFunc   ;==>ChkCollect
-
 Func chkRequestCCHours()
 	Local $bWasRedraw = SetRedrawBotWindow(False, Default, Default, Default, "chkRequestCCHours")
 

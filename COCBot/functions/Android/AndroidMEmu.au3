@@ -30,7 +30,6 @@ Func OpenMEmu($bRestart = False)
 		EndIf
 	EndIf
 
-	SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_SUCCESS)
 	$hTimer = __TimerInit()
 
 	; Test ADB is connected

@@ -116,7 +116,8 @@ Global $g_bDebugOCRdonate = False ; Creates OCR/image data and simulate, but do 
 Global $g_bDebugDisableZoomout = False
 Global $g_bVillageSearchAlwaysMeasure = False ; If enabled, every village is measured, even if not attacked
 Global $g_bDebugDisableVillageCentering = False
-Global $g_iAndroidZoomoutMode = 0 ; 0 = Default, 1 = ADB minitouch script, 2 = ADB dd script, 3 = WinAPI
+Global $g_iAndroidZoomoutMode = 0 ; 0 = Default, 1 = ADB minitouch script, 2 = ADB dd script, 3 = WinAPI, 4 = Update shared_prefs
+Global $g_bZoomoutFailureNotRestartingAnything = False
 ; <><><><> Only used to debug GDI memory leaks! <><><><>
 Global $g_iDebugGDICount = 0 ; monitor bot GDI Handle count, 0 = Disabled, <> 0 = Enabled
 ; <><><><> Only used to debug language translations! <><><><>
@@ -319,6 +320,7 @@ Global $g_iAndroidWindowWidth ; Expected Width of android window
 Global $g_iAndroidWindowHeight ; Expected height of android window
 Global $g_bAndroidAdbUseMyBot = True ; Use MyBot provided adb.exe and not the one from emulator
 Global $g_bAndroidAdbReplaceEmulatorVersion = True ; If True and MyBot.run adb.exe is available, Android provided adb.exe will be replaced to ensure MyBot.run adb.exe version is used
+Global $g_bAndroidAdbReplaceEmulatorVersionWithDummy = False ; If try (only used by never Nox) emulator adb is replaced with a dummy exe that does nothing
 Global $g_sAndroidAdbPath ; Path to executable HD-Adb.exe or adb.exe
 Global $g_sAndroidAdbGlobalOptions ; Additional adb global options like -P 5037 for port
 Global $g_sAndroidAdbDevice ; full device name ADB connects to
@@ -344,7 +346,7 @@ Global $g_iAndroidControlClickWindow = 0 ; 0 = Click the Android Control, 1 = Cl
 Global $g_iAndroidControlClickMode = 0 ; 0 = Use AutoIt ControlClick, 1 = Use _SendMessage
 Global $g_bAndroidCloseWithBot = False ; Close Android when bot closes
 Global $g_bAndroidInitialized = False
-Global $g_bUpdateSharedPrefs = False ; Update shared_prefs/storage_new.xml before pushing
+Global $g_bUpdateSharedPrefs = True ; Update shared_prefs/storage_new.xml before pushing
 
 Global $g_iAndroidProcessAffinityMask = 0
 
@@ -567,7 +569,7 @@ Global $g_iBotAction = $eBotNoAction
 Global $g_bBotMoveRequested = False ; should the bot be moved
 Global $g_bBotShrinkExpandToggleRequested = False ; should the bot be slided
 Global $g_bBotGuiModeToggleRequested = False ; GUI is changing
-Global $g_bRestart = False
+Global $g_bRestart = False ; CoC or Android got restarted
 Global $g_bRunState = False
 Global $g_bIdleState = False ; bot is in Idle() routine waiting for things to finish
 Global $g_bBtnAttackNowPressed = False ; Set to true if any of the 3 attack now buttons are pressed
@@ -646,23 +648,23 @@ Global Const $g_aiTroopCostPerLevel[$eTroopCount][10] = [ _
 		[8, 50, 80, 120, 200, 300, 400, 500, 600], _ 			        ; Archer
 		[9, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000, 4500], _ 	    ; Giant
 		[7, 25, 40, 60, 80, 100, 150, 200], _ 				 	        ; Goblin
-		[8, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750], _          ; WallBreaker
-		[8, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500], _ 	        ; Balloon
-		[9, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500], _    ; Wizard
-		[5, 5000, 6000, 8000, 10000, 15000], _					        ; Healer
-		[7, 18000, 20000, 22000, 24000, 26000, 28000, 30000], _         ; Dragon
-		[8, 21000, 24000, 27000, 30000, 33000, 35000, 37000, 39000], _  ; Pekka
-		[6, 10000, 11000, 12000, 13000, 14000, 15000], _ 			    ; BabyDragon
+		[8, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000], _          ; WallBreaker
+		[8, 1750, 2250, 2750, 3500, 4000, 4500, 5000, 5500], _ 	        ; Balloon
+		[9, 1000, 1400, 1800, 2200, 2600, 3000, 3400, 3800, 4200], _    ; Wizard
+		[5, 5000, 6000, 8000, 10000, 14000], _					        ; Healer
+		[7, 10000, 12000, 14000, 16000, 18000, 20000, 22000], _         ; Dragon
+		[8, 14000, 16000, 18000, 20000, 22500, 25000, 27500, 30000], _  ; Pekka
+		[6, 5000, 6000, 7000, 8000, 9000, 10000], _ 			    ; BabyDragon
 		[6, 4200, 4800, 5200, 5600, 6000, 6400], _  			        ; Miner
-		[3, 36000, 40000, 44000], _  		                 	        ; ElectroDragon
-		[8, 6, 7, 8, 9, 10, 11, 12, 13], _ 							    ; Minion
-		[8, 40, 45, 52, 58, 65, 90, 115, 140], _					    ; HogRider
-		[7, 70, 100, 130, 160, 190, 220, 250], _ 				 	    ; Valkyrie
-		[8, 300, 375, 450, 525, 600, 675, 750, 825], _ 				    ; Golem
-		[4, 175, 225, 275, 325], _ 								 	    ; Witch
+		[3, 28000, 32000, 36000], _  		                 	        ; ElectroDragon
+		[8, 4, 5, 6, 7, 8, 9, 10, 11], _ 							    ; Minion
+		[9, 30, 34, 38, 42, 48, 60, 80, 100, 120], _					    ; HogRider
+		[7, 50, 65, 80, 100, 130, 160, 190], _ 				 	    ; Valkyrie
+		[8, 200, 250, 300, 350, 425, 500, 600, 700], _ 				    ; Golem
+		[5, 125, 150, 175, 225, 275], _ 								 	    ; Witch
 		[5, 390, 450, 510, 570, 630], _  							    ; Lavahound
-		[4, 110, 130, 150, 170], _ 									    ; Bowler
-		[4, 220, 240, 260, 280]] 									    ; IceGolem
+		[4, 70, 95, 115, 140], _ 									    ; Bowler
+		[5, 220, 240, 260, 280, 300]] 									    ; IceGolem
 Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 6, 30, 2, 5, 8, 30, 12, 30, 6, 15]
 
 ; Spells
@@ -676,9 +678,9 @@ Global Const $g_aiSpellTrainTime[$eSpellCount] = [360, 360, 360, 360, 360, 720, 
 Global Const $g_aiSpellCostPerLevel[$eSpellCount][8] = [ _
 		[7, 15000, 16500, 18000, 20000, 22000, 24000, 26000], _  ;LightningSpell
 		[7, 15000, 16500, 18000, 19000, 21000, 23000, 25000], _  ;HealSpell
-		[5, 23000, 25000, 27000, 30000, 33000], _     			 ;RageSpell
+		[5, 20000, 22000, 24000, 26000, 28000], _     			 ;RageSpell
 		[3, 23000, 27000, 31000], _        						 ;JumpSpell
-		[7, 12000, 13000, 14000, 15000, 16000, 17000, 18000], _  ;FreezeSpell
+		[7, 6000, 7000, 8000, 9000, 10000, 11000, 12000], _  ;FreezeSpell
 		[5, 38000, 39000, 41000, 43000, 45000], _				 ;CloneSpell
 		[5, 95, 110, 125, 140, 155], _         					 ;PoisonSpell
 		[4, 125, 140, 160, 180], _    							 ;EarthquakeSpell
@@ -822,7 +824,7 @@ Global $g_bChkBotStop = False, $g_iCmbBotCommand = 0, $g_iCmbBotCond = 0, $g_iCm
 Global $g_iTxtRestartGold = 10000
 Global $g_iTxtRestartElixir = 25000
 Global $g_iTxtRestartDark = 500
-Global $g_bChkTrap = True, $g_bChkCollect = True, $g_bChkTombstones = True, $g_bChkCleanYard = False, $g_bChkGemsBox = False
+Global $g_bChkCollect = True, $g_bChkTombstones = True, $g_bChkCleanYard = False, $g_bChkGemsBox = False
 Global $g_bChkCollectCartFirst = False, $g_iTxtCollectGold = 0, $g_iTxtCollectElixir = 0, $g_iTxtCollectDark = 0
 Global $g_bChkTreasuryCollect = False
 Global $g_iTxtTreasuryGold = 0
@@ -915,7 +917,7 @@ Global $g_iChkIgnoreTH = 0, $g_iChkIgnoreKing = 0, $g_iChkIgnoreQueen = 0, $g_iC
 Global $g_iChkIgnoreBarrack = 0, $g_iChkIgnoreDBarrack = 0, $g_iChkIgnoreFactory = 0, $g_iChkIgnoreDFactory = 0
 Global $g_iChkIgnoreGColl = 0, $g_iChkIgnoreEColl = 0, $g_iChkIgnoreDColl = 0
 Global $g_iTxtSmartMinGold = 150000, $g_iTxtSmartMinElixir = 150000, $g_iTxtSmartMinDark = 1500
-Global $g_iChkUpgradesToIgnore[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_iChkUpgradesToIgnore[14] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_iChkResourcesToIgnore[3] = [0, 0, 0]
 Global $g_iCurrentLineOffset = 0, $g_iNextLineOffset = 0
 Global $g_aUpgradeNameLevel ; [Nb of elements in Array, Name, Level]
@@ -930,6 +932,7 @@ Global $g_sUpgradeDuration
 ; Builder Base
 Global $g_iChkBBSuggestedUpgrades = 0, $g_iChkBBSuggestedUpgradesIgnoreGold = 0, $g_iChkBBSuggestedUpgradesIgnoreElixir = 0, $g_iChkBBSuggestedUpgradesIgnoreHall = 0
 Global $g_iChkPlacingNewBuildings = 0
+Global $g_bOnBuilderBase = False ; set to True in MyBot.run.au3 _RunFunction when on builder base
 
 Global $g_iQuickMISX = 0, $g_iQuickMISY = 0
 

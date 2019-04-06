@@ -62,6 +62,8 @@ Func UniversalCloseWaitOpenCoC($iWaitTime = 0, $sSource = "Unknown", $StopEmulat
 	If $g_bDebugSetlog Then SetDebugLog("Stop Android flag : Input flag " & $StopAndroidFlag & " : " & $StopEmulator, $COLOR_DEBUG)
 	If _Sleep($DELAYRESPOND) Then Return False
 
+	If $g_bUpdateSharedPrefs Then PullSharedPrefs()
+
 	Switch $StopAndroidFlag
 		Case 0 ; Do nothing while waiting, Let app time out
 			If $iWaitTime > 0 Then

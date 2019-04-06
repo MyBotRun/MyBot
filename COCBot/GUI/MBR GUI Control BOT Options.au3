@@ -650,6 +650,7 @@ Func btnTestVillageSize()
 	BeginImageTest()
 	Local $currentRunState = $g_bRunState
 	$g_bRunState = True
+	$g_bRestart = False
 
 	_CaptureRegion()
 	_CaptureRegion2Sync()

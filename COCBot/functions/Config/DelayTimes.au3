@@ -269,12 +269,6 @@ Global Const $DELAYNOTIFY1 = 500
 Global Const $DELAYPUSHMSG1 = 500
 Global Const $DELAYPUSHMSG2 = 1000
 
-;ReArm
-Global Const $DELAYREARM1 = 500
-Global Const $DELAYREARM2 = 1500
-Global Const $DELAYREARM3 = 700
-Global Const $DELAYREARM4 = 200
-
 ;Treasury
 Global Const $DELAYTREASURY1 = 500
 Global Const $DELAYTREASURY2 = 1500

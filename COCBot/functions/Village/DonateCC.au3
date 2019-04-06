@@ -785,8 +785,6 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 	$detectedSlot = $Slot
 	If $g_bDebugOCRdonate Then $g_bDebugOcr = $oldDebugOcr
 
-	If $Slot = -1 Then Return
-
 	; figure out row/position
 	If $Slot < 0 Or $Slot > 13 Then
 		SetLog("Invalid slot # found = " & $Slot & " for " & $g_asTroopNames[$iTroopIndex], $COLOR_ERROR)
@@ -1561,6 +1559,5 @@ Func SearchImgloc($directory = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0)
 		Next
 		Return $aResult
 	EndIf
-	$aResult[0] = "queued"
 	Return $aResult
 EndFunc   ;==>SearchImgloc

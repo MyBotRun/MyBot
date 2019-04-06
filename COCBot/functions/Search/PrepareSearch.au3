@@ -97,7 +97,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 	If $g_bDebugSetlog Then SetDebugLog("PrepareSearch exit check $g_bRestart= " & $g_bRestart & ", $g_bOutOfGold= " & $g_bOutOfGold, $COLOR_DEBUG)
 
 	If $g_bRestart Or $g_bOutOfGold Then ; If we have one or both errors, then return
-		$g_bIsClientSyncError = False ; reset fast restart flag to stop OOS mode, and rearm, collecting resources etc.
+		$g_bIsClientSyncError = False ; reset fast restart flag to stop OOS mode, collecting resources etc.
 		Return
 	EndIf
 	If IsAttackWhileShieldPage(False) Then ; check for shield window and then button to lose time due attack and click okay

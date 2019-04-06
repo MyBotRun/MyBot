@@ -1,4 +1,32 @@
-﻿* **V7.7.3**
+﻿* **V7.7.4**
+* April Update Fixed loot cart
+* April Update Fixed building info positions
+* April Update Fixed building icon positions
+* April Update Fixed auto upgrade upgrade button position
+* April Update Fixed Okay click
+* April Update Fixed star bonus
+* April Update Fixed wall upgrade
+* April Update Fixed Builder Base Upgrade
+* April Update Added auto upgrade wall exclude
+* Fixed main screen detection
+* Fixed zoomout / village measuring in rare cases
+* Fixed siege not dropping in CSV attack
+* Fixed zoom out mode setting not saved
+* Fixed BlueStacks v4 not showing the alternative launcher like nova launcher when started
+* Fixed shared folder sometimes not being initialized
+* Fixed pull/push of shared_prefs when profile contain special characters
+* Fixed KOPLAYER 2.0 additional instance support and screen resolution detection
+* Fixed Rage detected as Skeleton spell
+* Fixed train cost by @DUC4TI
+* Fixed Nox v6.2.8 nox_adb.exe crash by replacing it with MyBot.run.adb.dmmy.exe
+* Improved shared folder detection
+* Imporved zoomout behaviour when "Update shared_prefs" is enabled and selected in zoomout-mode to restart CoC rather than zooming out
+* Improved Builder Base zoomout when Bot/Android "Update shared_prefs" is enabled
+* Improved undocked Android Emulator windows to be grouped in taskbar
+* Updated adb version to 28.0.2 (March 2019)
+* Removed Rearm as it is not needed anymore (April 2019)
+
+* **V7.7.3**
 * Added Telegram notification when the lab is idle by @mitzu2250
 * Added Google Play Services button under Bot/Android Play Store to manually install/update Google Play Services
 * Added conditions "TH", "SIEGE" and "TH+SIEGE" to csv WAIT command, to break the wait early thx @Fahid.Mahmood for the inspiration

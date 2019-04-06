@@ -167,6 +167,12 @@ Func InitNox($bCheckOnly = False)
 	Local $VBoxFile = $RtPath & "BigNoxVMMgr.exe"
 
 	Local $Files = [$NoxFile, $AdbFile, $VBoxFile]
+
+	If Not $bCheckOnly And $g_bAndroidAdbReplaceEmulatorVersion And GetVersionNormalized($Version) > GetVersionNormalized("6.2.7") Then
+		; replace adb with dummy
+		$g_bAndroidAdbReplaceEmulatorVersionWithDummy = True
+	EndIf
+
 	Local $sPreferredADB = FindPreferredAdbPath()
 	If $sPreferredADB Then _ArrayDelete($Files, 1)
 

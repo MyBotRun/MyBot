@@ -82,11 +82,11 @@ Func CollectLootCart()
 			If _Sleep($DELAYCOLLECT1) Then Return
 
 			;Get LootCart info confirming the name
-			Local $sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
+			Local $sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY) ; 860x780
 			If @error Then SetError(0, 0, 0)
 			Local $CountGetInfo = 0
 			While IsArray($sInfo) = False
-				$sInfo = BuildingInfo(242, 520 + $g_iBottomOffsetY) ; 860x780
+				$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY) ; 860x780
 				If @error Then SetError(0, 0, 0)
 				If _Sleep($DELAYCOLLECT1) Then Return
 				$CountGetInfo += 1

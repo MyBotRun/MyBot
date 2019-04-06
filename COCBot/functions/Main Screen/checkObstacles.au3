@@ -16,7 +16,7 @@
 ;
 Func checkObstacles($bBuilderBase = Default) ;Checks if something is in the way for mainscreen
 	FuncEnter(checkObstacles)
-	If $bBuilderBase = Default Then $bBuilderBase = False
+	If $bBuilderBase = Default Then $bBuilderBase = $g_bOnBuilderBase
 	Static $iRecursive = 0
 
 	If TestCapture() = False And WinGetAndroidHandle() = 0 Then

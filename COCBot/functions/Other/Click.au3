@@ -326,7 +326,7 @@ Func _DecodeDebug($message)
 		Case "#0343"
 			Return $separator & "Train - Train Miner"
 		Case "#0344"
-			Return $separator & "Train - Train Ice Golem"	
+			Return $separator & "Train - Train Ice Golem"
 
 			;DONATE
 		Case "#0168"
@@ -355,19 +355,6 @@ Func _DecodeDebug($message)
 			Return $separator & "Profile - Profile Button"
 		Case "#0223"
 			Return $separator & "Profile - Close Page"
-			;REARM
-		Case "#0225"
-			Return $separator & "Rearm - Click Town Hall"
-		Case "#0326", "#0228"
-			Return $separator & "Rearm - Click Rearm Button"
-		Case "#0226", "#0229"
-			Return $separator & "Rearm - Click Rearm"
-		Case "#0227", "#0230", "#0233"
-			Return $separator & "Rearm - Close Gem Spend Window"
-		Case "#0231"
-			Return $separator & "Rearm - Click Inferno Button"
-		Case "#0232"
-			Return $separator & "Rearm - Inferno Button"
 			;REQUEST CC
 		Case "#0250"
 			Return $separator & "Request - Click Castle Clan"

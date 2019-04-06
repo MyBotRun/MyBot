@@ -32,7 +32,6 @@ Func OpenKOPLAYER($bRestart = False)
 		EndIf
 	EndIf
 
-	SetLog("Please wait while " & $g_sAndroidEmulator & " and CoC start...", $COLOR_GREEN)
 	$hTimer = __TimerInit()
 
 	; Test ADB is connected
@@ -56,10 +55,12 @@ Func GetKOPLAYERProgramParameter($bAlternative = False)
 	Local $bVer2 = (GetVersionNormalized($g_sAndroidVersion) >= GetVersionNormalized("2.0"))
 	If $bVer2 Then
 		If Not $bAlternative Or $g_sAndroidInstance <> $g_avAndroidAppConfig[$g_iAndroidConfig][1] Then
-			Local $a = FindAvaiableInstances()
 			; should be launched with these parameter
-			Local $i = _ArraySearch($a, ($g_sAndroidInstance = "" ? $g_avAndroidAppConfig[$g_iAndroidConfig][1] : $g_sAndroidInstance))
-			If $i < 0 Then $i = 0
+			Local $s = ($g_sAndroidInstance = "" ? $g_avAndroidAppConfig[$g_iAndroidConfig][1] : $g_sAndroidInstance)
+			Local $i = StringInStr($s, "_", 0, -1)
+			If $i > 0 Then
+				$i = StringMid($s, $i + 1)
+			EndIf
 			Return "-n " & $i
 		EndIf
 		; default instance gets launched as name "default" but vbox instance name is KOPLAYER (this is the alternative way)
@@ -240,15 +241,25 @@ EndFunc   ;==>CloseKOPLAYER
 Func CheckScreenKOPLAYER($bSetLog = True)
 
 	If Not InitAndroid() Then Return False
+	Local $bVer2 = (GetVersionNormalized($g_sAndroidVersion) >= GetVersionNormalized("2.0"))
 
 	Local $aValues[2][2] = [ _
 			["vbox_dpi", "160"], _
 			["vbox_graph_mode", $g_iAndroidClientWidth & "x" & $g_iAndroidClientHeight & "-16"] _
 			]
+	If $bVer2 Then
+		Local $aValues[1][2] = [ _
+				["RenderWindowProp", $g_iAndroidClientWidth & "*" & $g_iAndroidClientHeight & "*160"] _
+				]
+	EndIf
 	Local $i, $Value, $iErrCnt = 0, $process_killed, $aRegExResult
 
 	For $i = 0 To UBound($aValues) - 1
-		$aRegExResult = StringRegExp($__VBoxGuestProperties, "Name: " & $aValues[$i][0] & ", value: (.+), timestamp:", $STR_REGEXPARRAYMATCH)
+		If $bVer2 Then
+			$aRegExResult = StringRegExp($__VBoxExtraData, "Key: " & $aValues[$i][0] & ", Value: (.+)", $STR_REGEXPARRAYMATCH)
+		Else
+			$aRegExResult = StringRegExp($__VBoxGuestProperties, "Name: " & $aValues[$i][0] & ", value: (.+), timestamp:", $STR_REGEXPARRAYMATCH)
+		EndIf
 		If @error = 0 Then $Value = $aRegExResult[0]
 		If $Value <> $aValues[$i][1] Then
 			If $iErrCnt = 0 Then

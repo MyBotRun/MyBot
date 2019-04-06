@@ -55,7 +55,7 @@ Global $g_PushedSharedPrefsProfile_Timer = 0 ; Last __TimerInit() shared_prefs w
 Global $g_bUpdateSharedPrefsLanguage = True ; Reset Language to English when pushing shared_prefs
 Global $g_bUpdateSharedPrefsSnow = True ; Reset Snow when pushing shared_prefs
 Global $g_bUpdateSharedPrefsZoomLevel = True ; Reset ZoomLevel when pushing shared_prefs
-Global $g_bUpdateSharedPrefsGoogleDisconnected  = True ; Reset GoogleDisconnected when pushing shared_prefs
+Global $g_bUpdateSharedPrefsGoogleDisconnected  = True ; Reset GoogleDisconnected when pushing shared_prefs (not used, doesn't work!)
 Global $g_bUpdateSharedPrefsRated  = True ; Reset Rated when pushing shared_prefs
 
 
@@ -97,6 +97,7 @@ Func InitAndroidConfig($bRestart = False)
 	$g_bAndroidAdbPortPerInstance = True ; New default behavior to use a dedicated ADB daemon per bot and android instance using port between 5038-5137, it initializes $g_sAndroidAdbGlobalOptions
 	$g_iAndroidRecoverStrategy = $g_iAndroidRecoverStrategyDefault
 	$g_iAndroidAdbMinitouchMode = $g_iAndroidAdbMinitouchModeDefault
+	$g_bAndroidAdbReplaceEmulatorVersionWithDummy = False ; If try (only used by never Nox) emulator adb is replaced with a dummy exe that does nothing
 	; reset shared prefs variables
 	$g_PushedSharedPrefsProfile = ""
 	$g_PushedSharedPrefsProfile_Timer = 0
@@ -283,6 +284,7 @@ Func UpdateHWnD($hWin, $bRestart = True)
 		EndIf
 	EndIf
 
+	_WindowAppId($hWin, "MyBot.run.Android")
 	$g_hAndroidWindow = $hWin
 	CheckDpiAwareness()
 	; reset time lag
@@ -775,21 +777,24 @@ EndFunc   ;==>DetectInstalledAndroid
 
 ; Find preferred Adb Path. Current Android ADB is used and saved in profile.ini and shared across instances.
 Func FindPreferredAdbPath()
-	Local $sAdb = @ScriptDir & "\lib\adb\adb.exe"
 	Local $aDll = ["AdbWinApi.dll", "AdbWinUsbApi.dll"]
 	Local $adbPath = Execute("Get" & $g_sAndroidEmulator & "AdbPath()")
 	Local $sAdbFolder = StringLeft($adbPath, StringInStr($adbPath, "\", 0, -1))
 	Local $sAdbFile = StringMid($adbPath, StringLen($sAdbFolder) + 1)
+	Local $sRealAdb = @ScriptDir & "\lib\adb\adb.exe"
+	Local $sDummyAdb = @ScriptDir & "\MyBot.run.adb.dummy.exe"
+	Local $bDummy = $g_bAndroidAdbReplaceEmulatorVersionWithDummy And FileExists($sDummyAdb)
+	Local $sAdb = ($bDummy ? $sDummyAdb : $sRealAdb)
 
-	If $g_bAndroidAdbReplaceEmulatorVersion And $adbPath And FileExists($sAdb) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[0]) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[1]) _
-			And (FileGetSize($adbPath) <> FileGetSize($sAdb) Or FileGetSize($sAdbFolder & $aDll[0]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[0]) Or FileGetSize($sAdbFolder & $aDll[1]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[1])) Then
-		If FileCopy($sAdb, $adbPath, 1) And FileCopy(@ScriptDir & "\lib\adb\" & $aDll[0], $sAdbFolder & $aDll[0], 1) And FileCopy(@ScriptDir & "\lib\adb\" & $aDll[1], $sAdbFolder & $aDll[1], 1) Then
+	If $g_bAndroidAdbReplaceEmulatorVersion And $adbPath And FileExists($sAdb) And (Not $bDummy Or (FileExists(@ScriptDir & "\lib\adb\" & $aDll[0]) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[1]))) _
+			And (FileGetSize($adbPath) <> FileGetSize($sAdb) Or (Not $bDummy And (FileGetSize($sAdbFolder & $aDll[0]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[0]) Or FileGetSize($sAdbFolder & $aDll[1]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[1])))) Then
+		If FileCopy($sAdb, $adbPath, 1) And ($bDummy Or (FileCopy(@ScriptDir & "\lib\adb\" & $aDll[0], $sAdbFolder & $aDll[0], 1) And FileCopy(@ScriptDir & "\lib\adb\" & $aDll[1], $sAdbFolder & $aDll[1], 1))) Then
 			SetLog("Replaced " & $g_sAndroidEmulator & " ADB with MyBot.run version")
 		Else
 			SetLog("Cannot replace " & $g_sAndroidEmulator & " ADB with MyBot.run version", $COLOR_ERROR)
 		EndIf
 	EndIf
-
+	$sAdb = $sRealAdb
 	If $g_bAndroidAdbUseMyBot And FileExists($sAdb) Then
 		Return $sAdb
 	EndIf
@@ -1118,7 +1123,15 @@ Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
 
 	InitAndroidRebootCondition(False)
 	If Not Execute("Open" & $g_sAndroidEmulator & "(" & $bRestart & ")") Then Return False
+
 	InitAndroidRebootCondition(True) ; Android should be running now
+
+	; ensure adb shell is initialized
+	AndroidAdbLaunchShellInstance(Default, False)
+
+	; flag always restart to exit any current methods
+	$g_bRestart = True
+	$g_bIsClientSyncError = False
 
 	If $bStartOnlyAndroid Then
 		Return True
@@ -1134,6 +1147,12 @@ Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
 	AndroidBotStartEvent()
 
 	If Not $g_bRunState Then Return False
+	; Press home button to start default launcher (e.g. for BS 4 with Nova Launcher)
+	AndroidHomeButton()
+
+	If _Sleep(3000) Then Return False ; wait 3 seconds or delayed home button execution "kill" games (maybe more seconds required?)
+
+	If Not $g_bRunState Then Return False
 	; Launch CcC
 	If Not StartAndroidCoC() Then Return False
 
@@ -1145,8 +1164,6 @@ Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
 		WaitMainScreenMini()
 		If Not $g_bRunState Then Return False
 		If @error = 1 Then
-			$g_bRestart = True
-			$g_bIsClientSyncError = False
 			Return False
 		EndIf
 		Zoomout()
@@ -1744,15 +1761,74 @@ EndFunc   ;==>AndroidAdbLaunchShellInstance
 Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
 	;If Not $g_bAndroidInitialized Then Return
 	If $wasRunState = Default Then $wasRunState = $g_bRunState
-	Local $iConnected
+	Local $iConnected, $process_killed
 	If Not $g_bAndroidInitialized Or $g_iAndroidAdbProcess[0] = 0 Or ProcessExists2($g_iAndroidAdbProcess[0]) <> $g_iAndroidAdbProcess[0] Then
 		Local $SuspendMode = ResumeAndroid()
 		InitAndroid()
 		Local $s
 
+		; check ADB device connection
+		$iConnected = ConnectAndroidAdb($rebootAndroidIfNeccessary)
+		If $iConnected = 0 Or ($iConnected = 2 And $g_iAndroidAdbProcess[0] = 0) Then
+			; return with error
+			Return SetError(3, 0)
+		ElseIf $iConnected = 2 And $g_iAndroidAdbProcess[0] Then
+			; return OK
+			Return SetError(0, 0)
+		EndIf
+
+		; check shared folder
+		Local $pathFound = False
+		Local $iMount
+		For $iMount = 0 To 29
+			$s = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " mount", $process_killed)
+			Local $path = $g_sAndroidPicturesPath
+			If StringRight($path, 1) = "/" Then $path = StringLeft($path, StringLen($path) - 1)
+			Local $aRegExResult = StringRegExp($s, "[^ ]+(?: on)* ([^ ]+).+", $STR_REGEXPARRAYGLOBALMATCH)
+			;_ArrayDisplay($aRegExResult)
+			SetError(0)
+			Local $aMounts[0]
+			If $path Then _ArrayConcatenate($aMounts, StringSplit(((StringLeft($path, 1) = "(" And StringRight($path, 1) = ")") ? StringMid($path, 2, StringLen($path) - 2) : $path), "|", $STR_NOCOUNT))
+			If UBound($aRegExResult) > 0 Then _ArrayConcatenate($aMounts, $aRegExResult)
+			; check which path contains dummy file
+			Local $dummyFile = StringMid(_Crypt_HashData($g_sBotTitle & _Now(), $CALG_SHA1), 3)
+			If FileWriteLine($g_sAndroidPicturesHostPath & $dummyFile, _Now()) Then
+				SetDebugLog("Created dummy file: " & $g_sAndroidPicturesHostPath & $dummyFile)
+			Else
+				SetLog("Cannot create dummy file: " & $g_sAndroidPicturesHostPath & $dummyFile, $COLOR_ERROR)
+				Return SetError(4, 0)
+			EndIf
+			For $i = 0 To UBound($aMounts) - 1
+				$path = $aMounts[$i]
+				If $path = "" Then ContinueLoop
+				If StringRight($path, 1) <> "/" Then $path &= "/"
+				$s = LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "-s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbShellOptions & " ls '" & $path & $dummyFile & "'", $process_killed)
+				If StringInStr($s, $dummyFile) > 0 And StringInStr($s, $dummyFile & ":") = 0 And StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error") = 0 And StringInStr($s, "Permission denied") = 0 Then
+					$pathFound = True
+					$g_sAndroidPicturesPath = $path
+					SetDebugLog("Using " & $g_sAndroidPicturesPath & " for Android shared folder")
+					ExitLoop
+				EndIf
+			Next
+			; delete dummy FileChangeDir
+			FileDelete($g_sAndroidPicturesHostPath & $dummyFile)
+			If $pathFound = True Then ExitLoop
+			If $iMount = 0 Then
+				SetLog("Waiting for shared folder to get mounted...", $COLOR_GREEN)
+			Else
+				SetDebugLog("Still waiting for shared folder to get mounted...")
+			EndIf
+			If _Sleep(6000) Then Return
+		Next
+		$g_sAndroidPicturesPathAvailable = $pathFound
+		If $pathFound = False Then
+			SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
+		EndIf
+
 		; if shared folder is not available, configure it
 		If (Not $g_sAndroidPicturesHostPath Or Not $g_bAndroidSharedFolderAvailable) And $g_bAndroidPicturesPathAutoConfig And $rebootAndroidIfNeccessary Then
 			RebootAndroidSetScreenDefault()
+			Return SetError(0, 0)
 		EndIf
 
 		; sync android tools to shared folder
@@ -1847,69 +1923,12 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 			EndIf
 		EndIf
 
-		; check shared folder
-		;If StringInStr($g_sAndroidPicturesPath, "|", $STR_NOCASESENSEBASIC) > 0 Then
-		If True Then ; always validate picture patch
-			$iConnected = ConnectAndroidAdb($rebootAndroidIfNeccessary)
-			If $iConnected = 0 Or ($iConnected = 2 And $g_iAndroidAdbProcess[0] = 0) Then
-				; return with error
-				Return SetError(3, 0)
-			ElseIf $iConnected = 2 And $g_iAndroidAdbProcess[0] Then
-				; return OK
-				Return SetError(0, 0)
-			EndIf
-			Local $pathFound = False
-			Local $iMount
-			For $iMount = 0 To 29
-				$s = AndroidAdbSendShellCommand("mount", Default, $wasRunState, False)
-				Local $path = $g_sAndroidPicturesPath
-				If StringRight($path, 1) = "/" Then $path = StringLeft($path, StringLen($path) - 1)
-				Local $aRegExResult = StringRegExp($s, "[^ ]+(?: on)* ([^ ]+).+", $STR_REGEXPARRAYGLOBALMATCH)
-				;_ArrayDisplay($aRegExResult)
-				SetError(0)
-				Local $aMounts[0]
-				If $path Then _ArrayConcatenate($aMounts, StringSplit(((StringLeft($path, 1) = "(" And StringRight($path, 1) = ")") ? StringMid($path, 2, StringLen($path) - 2) : $path), "|", $STR_NOCOUNT))
-				If UBound($aRegExResult) > 0 Then _ArrayConcatenate($aMounts, $aRegExResult)
-				; check which path contains dummy file
-				Local $dummyFile = StringMid(_Crypt_HashData($g_sBotTitle & _Now(), $CALG_SHA1), 3)
-				If FileWriteLine($g_sAndroidPicturesHostPath & $dummyFile, _Now()) Then
-					SetDebugLog("Created dummy file: " & $g_sAndroidPicturesHostPath & $dummyFile)
-				Else
-					SetLog("Cannot create dummy file: " & $g_sAndroidPicturesHostPath & $dummyFile, $COLOR_ERROR)
-					Return SetError(4, 0)
-				EndIf
-				For $i = 0 To UBound($aMounts) - 1
-					$path = $aMounts[$i]
-					If $path = "" Then ContinueLoop
-					If StringRight($path, 1) <> "/" Then $path &= "/"
-					$s = AndroidAdbSendShellCommand("set result=$(ls '" & $path & $dummyFile & "' >&2)", 10000, $wasRunState, False) ; use timeout of 10 Seconds
-					If StringInStr($s, $dummyFile) > 0 And StringInStr($s, $dummyFile & ":") = 0 And StringInStr($s, "No such file or directory") = 0 And StringInStr($s, "syntax error") = 0 And StringInStr($s, "Permission denied") = 0 Then
-						$pathFound = True
-						$g_sAndroidPicturesPath = $path
-						SetDebugLog("Using " & $g_sAndroidPicturesPath & " for Android shared folder")
-						ExitLoop
-					EndIf
-				Next
-				; delete dummy FileChangeDir
-				FileDelete($g_sAndroidPicturesHostPath & $dummyFile)
-				If $pathFound = True Then ExitLoop
-				If $iMount = 0 Then
-					SetLog("Waiting for shared folder to get mounted...", $COLOR_GREEN)
-				Else
-					SetDebugLog("Still waiting for shared folder to get mounted...")
-				EndIf
-				If _Sleep(6000) Then Return
-			Next
-			$g_sAndroidPicturesPathAvailable = $pathFound
-			If $pathFound = False Then
-				SetLog($g_sAndroidEmulator & " cannot use ADB on shared folder, """ & $g_sAndroidPicturesPath & """ not found", $COLOR_ERROR)
-			EndIf
-			; clear output
-			AndroidAdbSendShellCommand("", Default, $wasRunState, False)
-			; update $g_iAndroidSystemAPI ; getprop ro.build.version.sdk
-			$g_iAndroidVersionAPI = Int(AndroidAdbSendShellCommand("getprop ro.build.version.sdk", Default, $wasRunState, False))
-			SetDebugLog("Android Version API = " & $g_iAndroidVersionAPI)
-		EndIf
+		; clear output
+		;AndroidAdbSendShellCommand("", Default, $wasRunState, False)
+		; update $g_iAndroidSystemAPI ; getprop ro.build.version.sdk
+		$g_iAndroidVersionAPI = Int(AndroidAdbSendShellCommand("getprop ro.build.version.sdk", Default, $wasRunState, False))
+		SetDebugLog("Android Version API = " & $g_iAndroidVersionAPI)
+
 		; check mouse device
 		If StringLen($g_sAndroidMouseDevice) > 0 And $g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] Then
 			$iConnected = ConnectAndroidAdb($rebootAndroidIfNeccessary)
@@ -4450,11 +4469,11 @@ Func PullSharedPrefs($sProfile = $g_sProfileCurrentName)
 		$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
 		$iFiles = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
 		If $iFiles >= 5 And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
-			Local $androidFolder = StringReplace($g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile, " ", "\ ")
-			AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
-			AndroidAdbSendShellCommand("set result=$(mkdir -p " & $androidFolder & "/shared_prefs >&2)")
-			AndroidAdbSendShellCommand("set result=$(cp /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* " & $androidFolder & "/shared_prefs >&2)")
-			$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l " & $androidFolder & "/shared_prefs/ >&2)")
+			Local $androidFolder = $g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile
+			AndroidAdbSendShellCommand("set result=$(rm -r """ & $androidFolder & """ >&2)")
+			AndroidAdbSendShellCommand("set result=$(mkdir -p """ & $androidFolder & "/shared_prefs"" >&2)")
+			AndroidAdbSendShellCommand("set result=$(cp /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* """ & $androidFolder & "/shared_prefs"" >&2)")
+			$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l """ & $androidFolder & "/shared_prefs/"" >&2)")
 			$iFilesPulled = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
 			If $iFilesPulled >= $iFiles And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then ; And StringInStr($cmdOutput, "usage: cp") = 0
 				Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
@@ -4466,7 +4485,7 @@ Func PullSharedPrefs($sProfile = $g_sProfileCurrentName)
 					DirCreate($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs")
 					If FileCopy($hostFolder & "\shared_prefs\*", $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", $FC_OVERWRITE) And UBound(_FileListToArray($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", "*", $FLTA_FILES)) - 1 >= $iFiles Then
 						; OK, files pulled
-						AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+						AndroidAdbSendShellCommand("set result=$(rm -r """ & $androidFolder & """ >&2)")
 						$Result = True
 					Else
 						SetLog("Cannot copy shared_prefs to " & $g_sPrivateProfilePath & "\" & $sProfile, $COLOR_ERROR)
@@ -4576,9 +4595,9 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 		Local $iSharedPrefs = _ArraySearch($aLs, "shared_prefs")
 		If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 And $iSharedPrefs > -1 Then
 			; shared_prefs exists
-			Local $androidFolder = StringReplace($g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile, " ", "\ ")
-			AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
-			AndroidAdbSendShellCommand("set result=$(mkdir -p " & $androidFolder & "/shared_prefs >&2)")
+			Local $androidFolder = $g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile
+			AndroidAdbSendShellCommand("set result=$(rm -r """ & $androidFolder & """ >&2)")
+			AndroidAdbSendShellCommand("set result=$(mkdir -p """ & $androidFolder & "/shared_prefs"" >&2)")
 			Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
 			Local $iFilesInShared = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
 			If FileExists($hostFolder & "\shared_prefs") And $iFilesInShared < 1 Then
@@ -4593,11 +4612,21 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 						FileClose($hFile)
 						If $sStorage Then
 							Local $sStorageUpdated = $sStorage
-							If $g_bUpdateSharedPrefsLanguage Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="d0h6phQUOxO\/uSfvat949w==">.+<\/string>', '<string name="d0h6phQUOxO/uSfvat949w==">FWCNTu39RUlYoSt0Y6mCwg==</string>', 1)
-							If $g_bUpdateSharedPrefsSnow Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="WnITdUFs6FnH4NScnkEtyg==">.+<\/string>', '<string name="WnITdUFs6FnH4NScnkEtyg==">jS26iozgAh+i/424eyY5cA==</string>', 1)
-							If $g_bUpdateSharedPrefsZoomLevel Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="MjhxqoFNUV\+begGvsz3gkg==">.+<\/string>', '<string name="MjhxqoFNUV+begGvsz3gkg==">oiMa1oDch9dThLoIKokZqQ==</string>', 1)
-							If $g_bUpdateSharedPrefsGoogleDisconnected Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="AQ\+\/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=">.+<\/string>', '<string name="AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=">pmvEzdQuRQuKZob4KB0IeA==</string>', 1)
-							If $g_bUpdateSharedPrefsRated Then $sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="7lJCTt3TmNyzikZuHh9wZQ==">.+<\/string>', '<string name="7lJCTt3TmNyzikZuHh9wZQ==">pmvEzdQuRQuKZob4KB0IeA==</string>', 1)
+							Local $aTags[4][3] = [[$g_bUpdateSharedPrefsLanguage, "d0h6phQUOxO/uSfvat949w==", "FWCNTu39RUlYoSt0Y6mCwg=="], _
+											[$g_bUpdateSharedPrefsSnow, "WnITdUFs6FnH4NScnkEtyg==", "jS26iozgAh+i/424eyY5cA=="], _
+											[$g_bUpdateSharedPrefsZoomLevel, "MjhxqoFNUV+begGvsz3gkg==", "oiMa1oDch9dThLoIKokZqQ=="], _
+											[$g_bUpdateSharedPrefsRated, "7lJCTt3TmNyzikZuHh9wZQ==", "pmvEzdQuRQuKZob4KB0IeA=="]]
+											; not working!
+											;[$g_bUpdateSharedPrefsGoogleDisconnected, "AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=", "pmvEzdQuRQuKZob4KB0IeA=="], _
+
+							For $i = 0 To UBound($aTags) -1
+								If $aTags[$i][0] Then
+									Local $sNewTag = '<string name="' & $aTags[$i][1] & '">' & $aTags[$i][2] & '</string>'
+									Local $sSearchName = StringRegExpReplace($aTags[$i][1], "([\/\+])", "\\$1")
+									$sStorageUpdated = StringRegExpReplace($sStorageUpdated, '<string name="' & $sSearchName & '">.+</string>', $sNewTag, 1)
+									If @extended = 0 Then $sStorageUpdated = StringReplace($sStorageUpdated, '</map>', "    " & $sNewTag & @LF & '</map>', 1, 1)
+								EndIf
+							Next
 							If $sStorageUpdated <> $sStorage Then
 								; write file
 								Local $hFile = FileOpen($hostFolder & "\shared_prefs\storage_new.xml", $FO_OVERWRITE + $FO_UTF8_NOBOM)
@@ -4700,29 +4729,6 @@ Func Ls_l_ToArray($sOutput)
 	Return $aResult
 EndFunc   ;==>Ls_l_ToArray
 
-Func CheckEmuNewVersions()
-
-	Local $Version = GetVersionNormalized($g_sAndroidVersion)
-	Local $NewVersion = ""
-	Local $HelpLink = "Please visit MyBot Forum!"
-
-	Switch $g_sAndroidEmulator
-		Case "BlueStacks2"
-			$NewVersion = GetVersionNormalized("4.61.0.0")
-		Case "MEmu"
-			$NewVersion = GetVersionNormalized("6.2.0.0")
-		Case "Nox"
-			$NewVersion = GetVersionNormalized("6.3.0.0")
-		Case Else
-			$NewVersion = GetVersionNormalized("99.0.0.0")
-	EndSwitch
-
-	If $Version > $NewVersion Then
-		SetLog("You are using an unsupported " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ")!", $COLOR_ERROR)
-		SetLog($HelpLink, $COLOR_INFO)
-	EndIf
-EndFunc   ;==>CheckEmuNewVersions
-
 Func InvalidAdbShellOptions($cmdOutput, $source)
 	; check for /data/anr/../../system/xbin/bstk/su: not found
 	If $g_sAndroidAdbShellOptions And StringInStr($cmdOutput, ": not found") > 0 Then
@@ -4756,3 +4762,28 @@ Func AddSpace($s, $Option = Default)
 	EndSwitch
 	Return $s
 EndFunc   ;==>AddSpace
+
+Func CheckEmuNewVersions()
+
+	Local $Version = GetVersionNormalized($g_sAndroidVersion)
+	Local $NewVersion = ""
+	Local $HelpLink = "Please visit MyBot Forum!"
+
+	Switch $g_sAndroidEmulator
+		Case "BlueStacks2"
+			$NewVersion = GetVersionNormalized("4.61.0.0")
+		Case "MEmu"
+			$NewVersion = GetVersionNormalized("6.2.0.0")
+		Case "Nox"
+			$NewVersion = GetVersionNormalized("6.3.0.0")
+		Case Else
+			; diabled of the others
+			$NewVersion = GetVersionNormalized("99.0.0.0")
+	EndSwitch
+
+	If $Version > $NewVersion Then
+		SetLog("You are using an unsupported " & $g_sAndroidEmulator & " version (" & $g_sAndroidVersion & ")!", $COLOR_ERROR)
+		SetLog($HelpLink, $COLOR_INFO)
+	EndIf
+EndFunc   ;==>CheckEmuNewVersions
+

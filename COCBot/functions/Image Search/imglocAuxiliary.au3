@@ -13,9 +13,12 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func decodeMultipleCoords($coords, $iDedupX = -1, $iDedupY = -1, $iSorted = -1)
+Func decodeMultipleCoords($coords, $iDedupX = Default, $iDedupY = Default, $iSorted = Default)
+	If $iDedupX = Default Then $iDedupX = -1
+	If $iDedupY = Default Then $iDedupY = -1
+	If $iSorted = Default Then $iSorted = -1
 	;returns array of N coordinates [0=x, 1=y][0=x1, 1=y1]
-	Local $retCoords
+	Local $retCoords, $c
 	Local $pOff = 0
 	;	SetDebugLog("**decodeMultipleCoords: " & $coords, $COLOR_DEBUG)
 	Local $aCoordsSplit = StringSplit($coords, "|", $STR_NOCOUNT)
@@ -27,7 +30,7 @@ Func decodeMultipleCoords($coords, $iDedupX = -1, $iDedupY = -1, $iSorted = -1)
 	EndIf
 	Local $iErr = 0
 	For $p = 0 To UBound($retCoords) - 1
-		Local $c = decodeSingleCoord($aCoordsSplit[$p + $pOff])
+		$c = decodeSingleCoord($aCoordsSplit[$p + $pOff])
 		If UBound($c) > 1 Then
 			$retCoords[$p - $iErr] = $c
 		Else
@@ -67,7 +70,7 @@ Func decodeMultipleCoords($coords, $iDedupX = -1, $iDedupY = -1, $iSorted = -1)
 		Local $aFinalCoords = $retCoords
 	EndIf
 	If $iSorted = 0 Or $iSorted = 1 Then
-		Local $a[UBound($aFinalCoords)][2]
+		Local $a[UBound($aFinalCoords)][2], $c1
 		For $i = 0 To UBound($aFinalCoords) - 1
 			$c1 = $aFinalCoords[$i]
 			$a[$i][0] = $c1[0]
@@ -207,9 +210,12 @@ Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $ma
 			;[1] -  coordinates
 			If $maxReturnPoints = 1 Then
 				Return StringSplit($aCoords[1], ",", $STR_NOCOUNT) ; return just X,Y coord
-			Else
-				; @TODO return 2 dimensional array
-				Return $result[0] ; return full string with count and points
+			ElseIf IsArray($aCoords) Then
+				Local $aReturnResult[0][2]
+				For $i = 1 To Ubound($aCoords) - 1
+					_ArrayAdd($aReturnResult, StringReplace($aCoords[$i], ",", "|"), 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
+				Next
+				Return $aReturnResult ; return 2D array
 			EndIf
 		EndIf
 
@@ -242,7 +248,7 @@ Func GetButtonDiamond($sButtonName)
 		Case "Next" ; attackpage attackwindow
 			$btnDiamond = "697,542|850,542|850,610|697,610"
 		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research" ; Full size of object buttons at the bottom
-			$btnDiamond = GetDiamondFromRect("140,620,720,700")
+			$btnDiamond = GetDiamondFromRect("140,591,720,671")
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
 			$btnDiamond = GetDiamondFromRect("359,412(148,66)")
 		Case "EnterShop"
@@ -273,8 +279,6 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = GetDiamondFromRect("630,280,850,360")
 		Case "ArmyTab", "TrainTroopsTab", "BrewSpellsTab", "BuildSiegeMachinesTab", "QuickTrainTab"
 			$btnDiamond = GetDiamondFromRect("18,100,800,150")
-		Case "Rearm"
-			$btnDiamond = "110,620|730,620|750,700|111,700"
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch

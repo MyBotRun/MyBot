@@ -17,6 +17,16 @@
 Global $g_aiSearchZoomOutCounter[2] = [0, 1] ; 0: Counter of SearchZoomOut calls, 1: # of post zoomouts after image found
 
 Func ZoomOut() ;Zooms out
+	Static $s_bZoomOutActive = False
+	If $s_bZoomOutActive Then Return ; recursive not allowed here
+	$s_bZoomOutActive = True
+
+	Local $Result = _ZoomOut()
+	$s_bZoomOutActive = False
+	Return $Result
+EndFunc   ;==>ZoomOut
+
+Func _ZoomOut() ;Zooms out
 	$g_aiSearchZoomOutCounter[0] = 0
 	$g_aiSearchZoomOutCounter[1] = 1
     ResumeAndroid()
@@ -42,7 +52,7 @@ Func ZoomOut() ;Zooms out
 	$Result = AndroidOnlyZoomOut()
 	$g_bSkipFirstZoomout = True
 	Return $Result
-EndFunc   ;==>ZoomOut
+EndFunc   ;==>_ZoomOut
 
 Func ZoomOutBlueStacks() ;Zooms out
 	; ctrl click is best and most stable for BlueStacks
@@ -95,7 +105,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 	Local $exitCount = 80
 	Local $delayCount = 20
 	ForceCaptureRegion()
-	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 
 	If StringInStr($aPicture[0], "zoomou") = 0 Then
 		If $g_bDebugSetlog Then
@@ -107,7 +117,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 		If $bAndroidZoomOut Then
 			AndroidZoomOut(0, Default, ($g_iAndroidZoomoutMode <> 2)) ; use new ADB zoom-out
 			ForceCaptureRegion()
-			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 		EndIf
 	    Local $tryCtrlWheelScroll = False
 		While StringInStr($aPicture[0], "zoomou") = 0 and Not $tryCtrlWheelScroll
@@ -147,7 +157,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
 			ForceCaptureRegion()
-			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 		WEnd
 		If $tryCtrlWheelScroll Then
 		    SetLog($g_sAndroidEmulator & " zoom-out with key " & $ZoomOutKey & " didn't work, try now Ctrl+MouseWheel...", $COLOR_INFO)
@@ -168,7 +178,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 	Local $ZoomActions[4] = ["ControlFocus", "Ctrl Down", "Mouse Wheel Scroll Down", "Ctrl Up"]
 	If $hWin = Default Then $hWin = ($g_bAndroidEmbedded = False ? $g_hAndroidWindow : $g_aiAndroidEmbeddedCtrlTarget[1])
 	ForceCaptureRegion()
-	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 
 	If StringInStr($aPicture[0], "zoomou") = 0 Then
 
@@ -183,7 +193,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 		If $AndroidZoomOut Then
 			AndroidZoomOut(0, Default, ($g_iAndroidZoomoutMode <> 2)) ; use new ADB zoom-out
 			ForceCaptureRegion()
-			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 		EndIf
 		Local $aMousePos = MouseGetPos()
 
@@ -249,7 +259,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
 			ForceCaptureRegion()
-			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 		 WEnd
 
 		 If $CenterMouseWhileZooming And $AndroidZoomOut = False Then MouseMove($aMousePos[0], $aMousePos[1], 0)
@@ -268,7 +278,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 	Local $SendCtrlUp = False
 	Local $ZoomActions[4] = ["ControlFocus", "Ctrl Down", "Click", "Ctrl Up"]
 	ForceCaptureRegion()
-	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 
 	If StringInStr($aPicture[0], "zoomou") = 0 Then
 
@@ -336,7 +346,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
 			ForceCaptureRegion()
-			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 		 WEnd
 
 		 If $SendCtrlUp Then ControlSend($g_hAndroidWindow, "", "", "{CTRLUP}{SPACE}")
@@ -353,7 +363,7 @@ Func AndroidOnlyZoomOut() ;Zooms out
 	Local $i = 0
 	Local $exitCount = 80
 	ForceCaptureRegion()
-	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+	Local $aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 
 	If StringInStr($aPicture[0], "zoomout") = 0 Then
 
@@ -364,7 +374,7 @@ Func AndroidOnlyZoomOut() ;Zooms out
 		EndIf
 		AndroidZoomOut(0, Default, ($g_iAndroidZoomoutMode <> 2)) ; use new ADB zoom-out
 		ForceCaptureRegion()
-		$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+		$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 		While StringInStr($aPicture[0], "zoomout") = 0
 
 			AndroidShield("AndroidOnlyZoomOut") ; Update shield status
@@ -377,7 +387,7 @@ Func AndroidOnlyZoomOut() ;Zooms out
 			EndIf
 			$i += 1  ; add one to index value to prevent endless loop if controlsend fails
 			ForceCaptureRegion()
-			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True, False)
+			$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 		WEnd
 		Return True
 	EndIf
@@ -410,22 +420,28 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 	If $CaptureRegion Then _CaptureRegion2()
 
 	Local $aResult = ["", 0, 0, 0, 0] ; expected dummy value
+	Local $bUpdateSharedPrefs = $g_bUpdateSharedPrefs And $g_iAndroidZoomoutMode = 4
 
 	Local $village
+	Local $bOnBuilderBase = isOnBuilderBase(True)
 	If $g_aiSearchZoomOutCounter[0] = 10 Then SetLog("Try secondary village measuring...", $COLOR_INFO)
 	If $g_aiSearchZoomOutCounter[0] < 10 Then
-		$village = GetVillageSize($DebugLog, "stone", "tree")
+		$village = GetVillageSize($DebugLog, "stone", "tree", Default, $bOnBuilderBase)
 	Else
 		; try secondary images
-		$village = GetVillageSize($DebugLog, "2stone", "2tree")
+		$village = GetVillageSize($DebugLog, "2stone", "2tree", Default, $bOnBuilderBase)
 	EndIf
 
 	; compare other stone measures
 	;GetVillageSize(True, "stoneBlueStacks2A")
 	;GetVillageSize(True, "stoneiTools")
 
+	Static $iCallCount = 0
 	If $g_aiSearchZoomOutCounter[0] > 0 Then
-		If _Sleep(1000) Then Return $aResult
+		If _Sleep(1000) Then
+			$iCallCount = 0
+			Return $aResult
+		EndIf
 	EndIf
 
 	If IsArray($village) = 1 Then
@@ -451,12 +467,16 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 				EndIf
 				ClickP($aAway, 1, 0, "#0000") ; ensure field is clean
 				ClickDrag($aScrollPos[0], $aScrollPos[1], $aScrollPos[0] - $x, $aScrollPos[1] - $y)
-				If _Sleep(250) Then Return $aResult
-				Local $aResult2 = SearchZoomOut(False, $UpdateMyVillage, "SearchZoomOut:" & $sSource, True, $DebugLog)
+				If _Sleep(250) Then
+					$iCallCount = 0
+					Return $aResult
+				EndIf
+				Local $aResult2 = SearchZoomOut(False, $UpdateMyVillage, "SearchZoomOut(1):" & $sSource, True, $DebugLog)
 				; update difference in offset
 				$aResult2[3] = $aResult2[1] - $aResult[1]
 				$aResult2[4] = $aResult2[2] - $aResult[2]
 				If $DebugLog Then SetDebugLog("Centered Village Offset" & $sSource & ": " & $aResult2[1] & ", " & $aResult2[2] & ", change: " & $aResult2[3] & ", " & $aResult2[4])
+				$iCallCount = 0
 				Return $aResult2
 			EndIf
 
@@ -470,31 +490,52 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 		EndIf
 	EndIf
 
-	If $UpdateMyVillage Then
-		If $aResult[0] = "" Then
-			If $g_aiSearchZoomOutCounter[0] > 20 Then
+	If $bCenterVillage And Not $g_bZoomoutFailureNotRestartingAnything Then
+		If $aResult[0] = "" Or ($bUpdateSharedPrefs And $villageSize > 300 And $villageSize < 400) Then
+			If $g_aiSearchZoomOutCounter[0] > 20 Or ($bUpdateSharedPrefs Or $g_aiSearchZoomOutCounter[0] > 3) Then
 				$g_aiSearchZoomOutCounter[0] = 0
-				Static $iCallCount = 0
 				$iCallCount += 1
-				If $iCallCount <= 2 Then
+				If $iCallCount <= 1 Then
 					;CloseCoC(True)
 					SetLog("Restart CoC to reset zoom" & $sSource & "...", $COLOR_INFO)
 					PoliteCloseCoC("Zoomout" & $sSource)
-					If _Sleep(1000) Then Return $aResult
+					If _Sleep(1000) Then
+						$iCallCount = 0
+						Return $aResult
+					EndIf
 					CloseCoC() ; ensure CoC is gone
 					OpenCoC()
+					Return SearchZoomOut($CenterVillageBoolOrScrollPos, $UpdateMyVillage, "SearchZoomOut(2):" & $sSource, True, $DebugLog)
 				Else
 					SetLog("Restart Android to reset zoom" & $sSource & "...", $COLOR_INFO)
 					$iCallCount = 0
 					RebootAndroid()
-					If _Sleep(1000) Then Return $aResult
+					If _Sleep(1000) Then
+						$iCallCount = 0
+						Return $aResult
+					EndIf
+					$aResult = SearchZoomOut($CenterVillageBoolOrScrollPos, $UpdateMyVillage, "SearchZoomOut(2):" & $sSource, True, $DebugLog)
+					If $bUpdateSharedPrefs And StringInStr($aResult[0], "zoomou") = 0 Then
+						; disable this CoC/Android restart
+						SetLog("Disable restarting CoC or Android on zoom-out failure", $COLOR_ERROR)
+						SetLog("Please clean village to allow village measuring and start bot again", $COLOR_ERROR)
+						$g_bZoomoutFailureNotRestartingAnything = True
+					EndIF
+					Return $aResult
 				EndIf
-				Return SearchZoomOut($CenterVillageBoolOrScrollPos, $UpdateMyVillage, "SearchZoomOut:" & $sSource, True, $DebugLog)
 			Else
+				; failed to find village
 				$g_aiSearchZoomOutCounter[0] += 1
+				If $bUpdateSharedPrefs Then
+					If _Sleep(3000) Then
+						$iCallCount = 0
+						Return $aResult
+					EndIf
+					Return SearchZoomOut($CenterVillageBoolOrScrollPos, $UpdateMyVillage, "SearchZoomOut(3):" & $sSource, True, $DebugLog)
+				EndIf
 			EndIf
 		Else
-			If Not $g_bDebugDisableZoomout And $villageSize > 480 Then
+			If Not $g_bDebugDisableZoomout And $villageSize > 480 And Not $bUpdateSharedPrefs Then
 				If Not $g_bSkipFirstZoomout Then
 					; force additional zoom-out
 					$aResult[0] = ""

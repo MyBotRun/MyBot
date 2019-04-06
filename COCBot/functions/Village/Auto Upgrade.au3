@@ -73,7 +73,8 @@ Func _AutoUpgrade()
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 
 		; check if any wrong click by verifying the presence of the Upgrade button (the hammer)
-		If Not QuickMIS("BC1", $g_sImgAUpgradeUpgradeBtn, 120, 630, 740, 680) Then
+		Local $aUpgradeButton = findButton("Upgrade", Default, 1, True)
+		If Not(IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2) Then
 			SetLog("No upgrade here... Wrong click, looking next...", $COLOR_WARNING)
 			;$g_iNextLineOffset = $g_iCurrentLineOffset -> not necessary finally, but in case, I keep lne commented
 			$g_iNextLineOffset = $g_iCurrentLineOffset
@@ -81,7 +82,7 @@ Func _AutoUpgrade()
 		EndIf
 
 		; get the name and actual level of upgrade selected, if strings are empty, will exit Auto Upgrade, an error happens
-		$g_aUpgradeNameLevel = BuildingInfo(242, 520 + $g_iBottomOffsetY)
+		$g_aUpgradeNameLevel = BuildingInfo(242, 490 + $g_iBottomOffsetY)
 		If $g_aUpgradeNameLevel[0] = "" Then
 			SetLog("Error when trying to get upgrade name and level, looking next...", $COLOR_ERROR)
 			$g_iNextLineOffset = $g_iCurrentLineOffset
@@ -103,20 +104,22 @@ Func _AutoUpgrade()
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[4] = 1) ? True : False
 			Case "Laboratory"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[5] = 1) ? True : False
+			Case "Wall"
+				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[6] = 1 Or $g_bAutoUpgradeWallsEnable = True) ? True : False ; if wall upgrade enabled, will ignore it
 			Case "Barracks"
-				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[6] = 1) ? True : False
-			Case "Dark Barracks"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[7] = 1) ? True : False
-			Case "Spell Factory"
+			Case "Dark Barracks"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[8] = 1) ? True : False
-			Case "Dark Spell Factory"
+			Case "Spell Factory"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[9] = 1) ? True : False
-			Case "Gold Mine"
+			Case "Dark Spell Factory"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[10] = 1) ? True : False
-			Case "Elixir Collector"
+			Case "Gold Mine"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[11] = 1) ? True : False
-			Case "Dark Elixir Drill"
+			Case "Elixir Collector"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[12] = 1) ? True : False
+			Case "Dark Elixir Drill"
+				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[13] = 1) ? True : False
 			Case Else
 				$bMustIgnoreUpgrade = False
 		EndSwitch
@@ -129,7 +132,7 @@ Func _AutoUpgrade()
 		EndIf
 
 		; if upgrade don't have to be ignored, click on the Upgrade button to open Upgrade window
-		Click(120 + $g_iQuickMISX, 630 + $g_iQuickMISY)
+		ClickP($aUpgradeButton)
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 
 		Switch $g_aUpgradeNameLevel[1]

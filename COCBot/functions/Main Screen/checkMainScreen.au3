@@ -22,7 +22,7 @@ EndFunc   ;==>checkMainScreen
 Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in main screen
 
 	If $bSetLog = Default Then $bSetLog = True
-	If $bBuilderBase = Default Then $bBuilderBase = False
+	If $bBuilderBase = Default Then $bBuilderBase = $g_bOnBuilderBase
 
 	Local $i, $iErrorCount, $iCheckBeforeRestartAndroidCount, $bObstacleResult, $bContinue
 	Local $aPixelToCheck = $aIsMain
@@ -89,7 +89,11 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 			If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 		EndIf
 	WEnd
-	If $bLocated Then ZoomOut()
+	If $bLocated Then 
+		; check that shared_prefs are pulled
+		If $g_bUpdateSharedPrefs And Not HaveSharedPrefs() Then PullSharedPrefs()
+		ZoomOut()
+	EndIf
 	If Not $g_bRunState Then Return False
 
 	If $bSetLog Then

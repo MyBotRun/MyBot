@@ -804,6 +804,9 @@ Func CloseBlueStacks2()
 				SetLog($g_sAndroidEmulator & " failed to kill " & $sFile, $COLOR_ERROR)
 			EndIf
 		Next
+
+		; also close vm
+		CloseVboxAndroidSvc()
 	Else
 		SetDebugLog("Closing BlueStacks: " & $__BlueStacks_Path & "HD-Quit.exe")
 		RunWait($__BlueStacks_Path & "HD-Quit.exe")

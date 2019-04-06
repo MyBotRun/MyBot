@@ -1,7 +1,7 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: MBR Bot
 ; Description ...: This file contains the initialization and main loop sequences f0r the MBR Bot
-; Author ........:  (2014)
+; Author ........: cosote (2017)
 ; Modified ......:
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
@@ -151,6 +151,11 @@ EndFunc   ;==>UpdateBotTitle
 Func _SleepMilli($iMilliSec)
 	_SleepMicro(Int($iMilliSec * 1000))
 EndFunc   ;==>_SleepMilli
+
+; added to avoid SciTE warning
+Func ResumeAndroid()
+EndFunc   ;==>ResumeAndroid
+
 
 Func ProcessCommandLine()
 

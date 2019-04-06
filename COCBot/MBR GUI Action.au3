@@ -41,6 +41,8 @@ Func BotStart($bAutostartDelay = 0)
 	$g_bSkipFirstZoomout = False
 	$g_bIsSearchLimit = False
 	$g_bIsClientSyncError = False
+	$g_bZoomoutFailureNotRestartingAnything = False
+	$g_bRestart = False
 
 	EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
 	;$g_iFirstAttack = 0
@@ -148,6 +150,7 @@ Func BotStop()
 	$g_bRunState = False
 	$g_bBotPaused = False
 	$g_bTogglePauseAllowed = True
+	$g_bRestart = False
 
 	;WinSetState($g_hFrmBotBottom, "", @SW_DISABLE)
 	Local $aCtrlState
@@ -192,7 +195,7 @@ Func BotStop()
 		If Not $g_bBotPaused Then $g_iTimePassed += Int(__TimerDiff($g_hTimerSinceStarted))
 		If ProfileSwitchAccountEnabled() And Not $g_bBotPaused Then $g_aiRunTime[$g_iCurAccount] += Int(__TimerDiff($g_ahTimerSinceSwitched[$g_iCurAccount]))
 		;AdlibUnRegister("SetTime")
-		$g_bRestart = True
+		;$g_bRestart = True
 
 	   If $g_hLogFile <> 0 Then
 		  FileClose($g_hLogFile)

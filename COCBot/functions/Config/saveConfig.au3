@@ -266,6 +266,7 @@ Func SaveConfig_Android()
 	_Ini_Add("android", "user.package", $g_sUserGamePackage)
 	_Ini_Add("android", "user.class", $g_sUserGameClass)
 	_Ini_Add("android", "backgroundmode", $g_iAndroidBackgroundMode)
+	_Ini_Add("android", "zoomoutmode", $g_iAndroidZoomoutMode)
 	_Ini_Add("android", "check.time.lag.enabled", ($g_bAndroidCheckTimeLagEnabled ? "1" : "0"))
 	_Ini_Add("android", "adb.screencap.timeout.min", $g_iAndroidAdbScreencapTimeoutMin)
 	_Ini_Add("android", "adb.screencap.timeout.max", $g_iAndroidAdbScreencapTimeoutMax)
@@ -337,7 +338,6 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "minrestartgold", $g_iTxtRestartGold)
 	_Ini_Add("other", "minrestartelixir", $g_iTxtRestartElixir)
 	_Ini_Add("other", "minrestartdark", $g_iTxtRestartDark)
-	_Ini_Add("other", "chkTrap", $g_bChkTrap ? 1 : 0)
 	_Ini_Add("other", "chkCollect", $g_bChkCollect ? 1 : 0)
 	_Ini_Add("other", "chkCollectCartFirst", $g_bChkCollectCartFirst ? 1 : 0)
 	_Ini_Add("other", "minCollectgold", $g_iTxtCollectGold)
@@ -523,7 +523,7 @@ Func SaveConfig_auto()
 	ApplyConfig_auto(GetApplyConfigSaveAction())
 	; Auto Upgrade
 	_Ini_Add("Auto Upgrade", "AutoUpgradeEnabled", $g_bAutoUpgradeEnabled)
-	For $i = 0 To 12
+	For $i = 0 To 13
 		_Ini_Add("Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i])
 	Next
 	For $i = 0 To 2
