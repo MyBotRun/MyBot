@@ -51,6 +51,7 @@ Func _OpenBlueStacks($bRestart = False)
 	$ErrorResult = ControlGetHandle("BlueStacks Error", "", "") ; Check for BS error window handle if it opens
 	If $g_bDebugAndroid Then SetDebugLog("$PID= " & $PID & ", $ErrorResult = " & $ErrorResult, $COLOR_DEBUG)
 	If $PID = 0 Or $ErrorResult <> 0 Then ; IF ShellExecute failed or BS opens error window = STOP
+		SetScreenBlueStacks()
 		SetError(1, 1, -1)
 		Return False
 	EndIf
@@ -61,6 +62,7 @@ Func _OpenBlueStacks($bRestart = False)
 		If _Sleep(3000) Then ExitLoop
 		_StatusUpdateTime($hTimer, $g_sAndroidEmulator & " Starting")
 		If __TimerDiff($hTimer) > $g_iAndroidLaunchWaitSec * 1000 Then ; if no BS position returned in 4 minutes, BS/PC has major issue so exit
+			SetScreenBlueStacks()
 			SetLog("Serious error has occurred, please restart PC and try again", $COLOR_ERROR)
 			SetLog("BlueStacks refuses to load, waited " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_ERROR)
 			SetLog("Unable to continue........", $COLOR_WARNING)
@@ -108,12 +110,14 @@ Func _OpenBlueStacks2($bRestart = False)
 		If $PID > 0 Then $PID = ProcessExists2($g_sAndroidProgramPath, $g_sAndroidInstance)
 		If $PID <= 0 Then
 			CloseAndroid("OpenBlueStacks2")
+			SetScreenBlueStacks2()
 			$bStopIfLaunchFails = True
 			If _Sleep(1000) Then Return False
 		EndIf
 
 		_StatusUpdateTime($hTimer)
 		If __TimerDiff($hTimer) > $g_iAndroidLaunchWaitSec * 1000 Or ($PID = 0 And $bStopIfLaunchFails = True) Then ; if no BS position returned in 4 minutes, BS/PC has major issue so exit
+			SetScreenBlueStacks2()
 			SetLog("Serious error has occurred, please restart PC and try again", $COLOR_ERROR)
 			SetLog($g_sAndroidEmulator & " refuses to load, waited " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_ERROR)
 			SetError(1, @extended, False)

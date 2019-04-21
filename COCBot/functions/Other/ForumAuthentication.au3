@@ -14,8 +14,12 @@
 Global Enum $g_eForumAuthenticationWaiting, $g_eForumAuthenticationLogin, $g_eForumAuthenticationExit
 Global $g_hGuiForumAuthentication = 0
 Global $g_hForumAuthenticationState = $g_eForumAuthenticationWaiting, $g_hForumAuthenticationLogin, $g_hForumAuthenticationExit, $g_hForumAuthenticationUser, $g_hForumAuthenticationPass
+Global $g_iForumRetryOnErrorCount = 20 ; retry on unknown error 5 times
+Global $g_iForumRetryOnErrorDelay = 3000 ; retry delay in Milliseconds
 
 Func ForumAuthentication()
+
+	Local $bWasRunState = $g_bRunState
 
 	; load text so translation is upadted
 	Local $sLogLogPleaseEnter = GetTranslatedFileIni("MBR Authentication", "LogPleaseEnter", "Please enter your Mybot.run Forum username and password")
@@ -26,8 +30,9 @@ Func ForumAuthentication()
 	Local $sPleaseEnter = GetTranslatedFileIni("MBR Authentication", "PleaseEnter", "Please enter a username and password.")
 	Local $sWelcome = GetTranslatedFileIni("MBR Authentication", "Welcome", "Welcome to MyBot.run!")
 	Local $sLoginFailed = GetTranslatedFileIni("MBR Authentication", "LoginFailed", "Login failed, username or password was incorrect.")
+	Local $sLoginFailedUnexpected = GetTranslatedFileIni("MBR Authentication", "LoginFailedUnknown", "Login failed due to unexpected error, try again")
 	Local $sAuthenticationFailed1 = GetTranslatedFileIni("MBR Authentication", "AuthenticationFailed1", "Not authenticated with MyBot.run Forum, bot will not work!")
-	Local $sAuthenticationFailed2 = GetTranslatedFileIni("MBR Authentication", "AuthenticationFailed2", "Please launch bot again and login to MyBot.run Forum!")
+	Local $sAuthenticationFailed2 = GetTranslatedFileIni("MBR Authentication", "AuthenticationFailed2", "Please start bot again and login to MyBot.run Forum!")
 	Local $sLogin = GetTranslatedFileIni("MBR Authentication", "Login", "Login")
 	Local $sExit = GetTranslatedFileIni("MBR Authentication", "Exit", "Exit")
 	; used by MBRFunc.au3
@@ -40,7 +45,52 @@ Func ForumAuthentication()
 	Local $sOldFile = @MyDocumentsDir & "\MyBot.run-Profiles\.mybot.run.authentication"
 	If FileExists($g_sPrivateAuthenticationFile) = 0 And FileExists($sOldFile) = 1 Then FileMove($sOldFile, $g_sPrivateAuthenticationFile)
 
-	If FileExists($g_sPrivateAuthenticationFile) = 0 Or Not CheckForumAuthentication() Then
+	Local $bOk = FileExists($g_sPrivateAuthenticationFile)
+	Local $iRetry = 0
+	Local $iAuthenticated = 0
+	Local $aBtnStates
+	If $bOk Then
+		$bOk = False
+		$iAuthenticated = CheckForumAuthentication()
+		Switch $iAuthenticated
+			Case 0 ; login name or password incorrect
+				$iRetry = 0
+				SetLog($sLoginFailed, $COLOR_ERROR)
+			Case 1 ; all ok
+				$bOk = True
+			Case Else ; unknown error
+				SetLog($sLoginFailedUnexpected, $COLOR_ERROR)
+				$iRetry = $g_iForumRetryOnErrorCount
+				SetLog("Try to authenticate with MyBot.run Forum for " & ($iRetry * $g_iForumRetryOnErrorDelay / 1000) & " sec.", $COLOR_BLUE)
+				; enable stop button if not running
+				If Not $bWasRunState Then
+					Local $a = [GUICtrlGetState($g_hBtnStart), GUICtrlGetState($g_hBtnStop)]
+					$aBtnStates = $a
+					GUICtrlSetState($g_hBtnStart, $GUI_HIDE)
+					GUICtrlSetState($g_hBtnStop, $GUI_SHOW)
+					$g_bRunState = True
+				EndIf
+		EndSwitch
+	EndIf
+	While $iRetry > 0 And $iAuthenticated = -1
+		; retry authentication on unknown error
+		If _Sleep($g_iForumRetryOnErrorDelay) Then ExitLoop
+		$iAuthenticated = CheckForumAuthentication()
+		If $iAuthenticated = 1 Then $bOk = True
+		SetDebugLog("ForumAuthentication: Result=" & $bOk & ", retry=" & $iRetry & ", authenticated=" & $iAuthenticated)
+		$iRetry -= 1
+	WEnd
+	If UBound($aBtnStates) > 1 Then
+		GUICtrlSetState($g_hBtnStart, $aBtnStates[0])
+		GUICtrlSetState($g_hBtnStop, $aBtnStates[1])
+	EndIf
+	$g_bRunState = $bWasRunState
+	If $iRetry > 0 And $iAuthenticated = -1 Then
+		Return False
+	EndIf
+
+	If Not $bOk Then
+		$g_hForumAuthenticationState = $g_eForumAuthenticationWaiting
 
 		If $bNotAuthenticated Then
 
@@ -61,16 +111,16 @@ Func ForumAuthentication()
 			Local $iW = $xyt[0]
 			Local $iH = $xyt[1]
 			Local $iT = $xyt[2]
-			Local $iSpace = 20
+			Local $iSpace = 30
 			Local $iButtonTop = $iH - 20 - $iSpace
-			GUICtrlCreateLabel($sTitleUsername, $iSpace, $iButtonTop - 22, 100, 20)
+			GUICtrlCreateLabel($sTitleUsername, $iSpace, $iButtonTop - 18, 100, 20)
 			Local $hUser = GUICtrlCreateInput("", $iSpace, $iButtonTop, 100, 20)
 			GUICtrlSetLimit($hUser, 128, 1)
-			GUICtrlCreateLabel($sTitlePassword, $iSpace + 100 + 5, $iButtonTop - 22, 100, 20)
+			GUICtrlCreateLabel($sTitlePassword, $iSpace + 100 + 5, $iButtonTop - 18, 100, 20)
 			Local $hPass = GUICtrlCreateInput("", $iSpace + 100 + 5, $iButtonTop, 100, 20, BitOR($ES_PASSWORD, $GUI_SS_DEFAULT_INPUT))
 			GUICtrlSetLimit($hPass, 128, 1)
 			Local $iTextAddWidth = 30
-			Local $hText = GUICtrlCreateLabel($sYouNeedToLogin, $iSpace + 100 + 5 + 100 + 5 - $iTextAddWidth, $iButtonTop - 22, $iW - $iSpace - ($iSpace + 100 + 5 + 100 + 5) + $iTextAddWidth, 20, $SS_RIGHT)
+			Local $hText = GUICtrlCreateLabel($sYouNeedToLogin, $iSpace, $iH - 22, $iW - 2 * $iSpace, 20, $SS_CENTER)
 			$g_hForumAuthenticationLogin = GUICtrlCreateButton($sLogin, $iW - 50 - $iSpace, $iButtonTop, 50, 25, $BS_DEFPUSHBUTTON)
 			GUICtrlSetOnEvent(-1, "ForumAuthenticationLogin")
 			$g_hForumAuthenticationExit = GUICtrlCreateButton($sExit, $iW - (50 + $iSpace + 50 + 5), $iButtonTop, 50, 25)
@@ -78,7 +128,6 @@ Func ForumAuthentication()
 			ControlFocus($guiLogin, "", $hUser)
 
 			GUISetState(@SW_SHOW, $guiLogin)
-			Local $bOk = False
 
 			Local $hTimer = __TimerInit()
 			While True
@@ -96,8 +145,10 @@ Func ForumAuthentication()
 								Sleep(1000)
 								$bOk = True
 								ExitLoop
-							Else
+							ElseIf StringInStr($json, '"login_err_bad_password"') Or StringInStr($json, '"login_err_no_account"') Then
 								GUICtrlSetData($hText, $sLoginFailed)
+							Else
+								GUICtrlSetData($hText, $sLoginFailedUnexpected)
 							EndIf
 						EndIf
 					Case $g_eForumAuthenticationExit
@@ -117,12 +168,12 @@ Func ForumAuthentication()
 			GUIDelete($guiLogin)
 			$g_hGuiForumAuthentication = 0
 
-			If Not $bOk Then BotClose()
+			If Not $bOk Then btnStop()
 
 		EndIf
 	EndIf
 
-	Return True
+	Return $bOk
 EndFunc   ;==>ForumAuthentication
 
 Func ForumAuthenticationLogin()

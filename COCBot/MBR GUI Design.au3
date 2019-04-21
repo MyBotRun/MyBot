@@ -526,9 +526,10 @@ Func CheckDpiAwareness($bCheckOnlyIfAlreadyAware = False, $bForceDpiAware = Fals
 		; DPI is different, check if awareness needs to be set
 		$bDpiAware = $bForceDpiAware = True _ ; override to set DPI Awareness regardless of current state
 				Or $g_bChkBackgroundMode = False _ ; in non background mode Desktop screen capture is totally wrong due to the scaling
-				Or ($g_bAndroidAdbScreencap = False And GetProcessDpiAwareness(GetAndroidPid())) ; in normal background mode using WinAPI and Android is DPI Aware, bot must be too or window will be scaled and blury
+				Or GetProcessDpiAwareness(GetAndroidPid()) ; in normal background mode using WinAPI and Android is DPI Aware, bot must be too or window will be scaled and blury
+				; 2019-04-19 cosote: removed "$g_bAndroidAdbScreencap = False And" from line above
 		$bChanged = $bDpiAware And Not $sbDpiAware
-		If $bChanged Then ; only required when not running with screencap
+		If $bChanged Then ; only required when not running with screencap, but even if screencap is running, change it 
 			$sbDpiAware = True ; do it only once, assume bot will become DPI aware
 			Local $bWasEmbedded = AndroidEmbedded()
 			If $bWasEmbedded Then AndroidEmbed(False)

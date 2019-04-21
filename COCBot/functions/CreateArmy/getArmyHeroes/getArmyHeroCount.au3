@@ -273,7 +273,26 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 	;CLOSE ARMY WINDOW
 	ClickP($aAway, 2, 0, "#0346") ;Click Away
 	If _Sleep(1500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
+	
+	;Check Personal Challenges
+	;For now we don't have a better place or use for Open/Close the Challenges
+	;So we doing it here, so that is called once every 6 hours
+	OpenPersonalChallenges()
+	If _Sleep($DELAYCLOSEOPEN500) Then Return
+	ClosePersonalChallenges()
 
+
+	If $g_iTownHallLevel < 3 Then
+		SetDebugLog("TH reads as Lvl " & $g_iTownHallLevel & ", has no Lab.")
+		;============Hide Red  Hide Green  Show Gray==
+		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
+		GUICtrlSetData($g_hLbLLabTime, "")
+		;============================================
+		Return
+	EndIf
+	
 	Setlog("Checking Lab Status", $COLOR_INFO)
 
 	;=================Section 2 Lab Gui
@@ -281,17 +300,14 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 	; If $g_bAutoLabUpgradeEnable = True Then  ====>>>> TODO : or use this or make a checkbox on GUI
 	; make sure lab is located, if not locate lab
 	If $g_aiLaboratoryPos[0] <= 0 Or $g_aiLaboratoryPos[1] <= 0 Then
-		SetLog("Laboratory Location not found!", $COLOR_ERROR)
-		LocateLab() ; Lab location unknown, so find it.
-		If $g_aiLaboratoryPos[0] = 0 Or $g_aiLaboratoryPos[1] = 0 Then
-			SetLog("Problem locating Laboratory, train laboratory position before proceeding", $COLOR_ERROR)
-			;============Hide Red  Hide Green  Show Gray==
-			GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
-			GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
-			GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
-			;============================================
-			Return
-		EndIf
+		SetLog("Laboratory Location is unknown!", $COLOR_ERROR)
+		;============Hide Red  Hide Green  Show Gray==
+		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
+		GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
+		GUICtrlSetData($g_hLbLLabTime, "")
+		;============================================
+		Return
 	EndIf
 	BuildingClickP($g_aiLaboratoryPos, "#0197") ;Click Laboratory
 	If _Sleep(1500) Then Return ; Wait for window to open
@@ -301,7 +317,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 
 	Local $aResearchButton = findButton("Research", Default, 1, True)
 	If IsArray($aResearchButton) And UBound($aResearchButton, 1) = 2 Then
-		If $g_bDebugImageSave Then DebugImageSave("StarLabUpgrade") ; Debug Only
+		If $g_bDebugImageSave Then DebugImageSave("LabUpgrade") ; Debug Only
 		ClickP($aResearchButton)
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
 	Else
@@ -311,6 +327,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		GUICtrlSetState($g_hPicLabGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabRed, $GUI_HIDE)
 		GUICtrlSetState($g_hPicLabGray, $GUI_SHOW)
+		GUICtrlSetData($g_hLbLLabTime, "")
 		;===========================================
 		Return
 	EndIf

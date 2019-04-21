@@ -183,9 +183,6 @@ Func InitMEmu($bCheckOnly = False)
 		InitAndroidConfig(True) ; Restore default config
 		If Not GetAndroidVMinfo($__VBoxVMinfo, $MEmu_Manage_Path) Then Return False
 
-		; to avoid MEmu "device offline" problems, force to use default port
-		$g_bAndroidAdbPortPerInstance = False
-
 		; update global variables
 		$g_sAndroidProgramPath = $MEmu_Path & "MEmu.exe"
 		$g_sAndroidAdbPath = $sPreferredADB

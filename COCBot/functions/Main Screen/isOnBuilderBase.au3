@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func isOnBuilderBase($bNeedCaptureRegion = False)
-	_Sleep($DELAYISBUILDERBASE)
+	If _Sleep($DELAYISBUILDERBASE) Then Return
 	Local $aSearchResult = decodeSingleCoord(findImage("isOnBuilderBase", $g_sImgIsOnBB, GetDiamondFromRect("260,0,406,54"), 1, $bNeedCaptureRegion))
 
 	If IsArray($aSearchResult) And UBound($aSearchResult) = 2 Then

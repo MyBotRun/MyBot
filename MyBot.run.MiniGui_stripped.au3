@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.4)
+#pragma compile(FileVersion, 7.7.5)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.4"
+Global $g_sBotVersion = "v7.7.5"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -2610,6 +2610,7 @@ Global $g_iAndroidAdbClicksTroopDeploySize = 0
 Global $g_bAndroidAdbInstanceEnabled = True
 Global $g_iAndroidSuspendModeFlags = 1
 Global $g_bNoFocusTampering = False
+Global $g_bAndroidAdbPortPerInstance = False
 Global $g_avAndroidAppConfig[8][16] = [ ["Nox", "nox", "No", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 4, $g_iDEFAULT_HEIGHT - 10,0, "127.0.0.1:62001", 1+2+4+8+16+32 +256+512, '# ', '(nox Virtual Input|Android Input|Android_Input)', 0, 2], ["MEmu", "MEmu", "MEmu ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 51,$g_iDEFAULT_HEIGHT - 12,0, "127.0.0.1:21503", 2+4+8+16+32 +512, '# ', '(Microvirt Virtual Input|User Input)', 0, 2], ["BlueStacks2","Android", "BlueStacks ", "[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1+2+4+8+16+32 +128, '$ ', 'BlueStacks Virtual Touch', 0, 1], ["BlueStacks", "Android", "BlueStacks App Player","[CLASS:BlueStacksApp; INSTANCE:1]","_ctl.Window", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "127.0.0.1:5555", 1 +8+16+32 +128, '$ ', 'BlueStacks Virtual Touch', 0, 1], ["LeapDroid", "vm1", "Leapd", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,0, "emulator-5554", 1 +8+16+32 +512, '# ', 'qwerty2', 1, 1], ["iTools", "iToolsVM","iTools ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 2, $g_iDEFAULT_HEIGHT - 13,0, "127.0.0.1:54001", 1+2+4+8+16+32+64 +512, '# ', 'iTools Virtual PassThrough Input', 0, 1], ["KOPLAYER", "KOPLAYER","KOPLAYER", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 64,$g_iDEFAULT_HEIGHT - 8, 0, "127.0.0.1:6555", 1+2+4+8+16+32 +512, '# ', 'ttVM Virtual Input', 0, 2], ["Droid4X", "droid4x", "Droid4X ", "[CLASS:subWin; INSTANCE:1]", "", $g_iDEFAULT_WIDTH, $g_iDEFAULT_HEIGHT - 48,$g_iDEFAULT_WIDTH + 10,$g_iDEFAULT_HEIGHT + 50,0, "127.0.0.1:26944", 2+4+8+16+32 +512, '# ', 'droid4x Virtual Input', 0, 2] ]
 Global $__Nox_Idx = _ArraySearch($g_avAndroidAppConfig, "Nox", 0, 0, 0, 0, 1, 0)
 Global $__MEmu_Idx = _ArraySearch($g_avAndroidAppConfig, "MEmu", 0, 0, 0, 0, 1, 0)
@@ -2650,6 +2651,7 @@ Global $g_bAndroidEmbed
 Global $g_iAndroidEmbedMode
 Global $g_bAndroidBackgroundLaunch
 Global $g_bAndroidBackgroundLaunched
+Global $g_iAndroidControlClickAdditionalDelay = 10
 Global $g_iAndroidAdbClickGroup = 50
 Global $g_bAndroidCloseWithBot = False
 Global $g_bUpdateSharedPrefs = True
@@ -2917,7 +2919,7 @@ Global $g_iDelayActivateQueen = 9000, $g_iDelayActivateKing = 9000, $g_iDelayAct
 Global $g_bAttackPlannerEnable = False, $g_bAttackPlannerCloseCoC = False, $g_bAttackPlannerCloseAll = False, $g_bAttackPlannerSuspendComputer = False, $g_bAttackPlannerRandomEnable = False, $g_iAttackPlannerRandomTime = 0, $g_iAttackPlannerRandomTime = 0, $g_bAttackPlannerDayLimit = False, $g_iAttackPlannerDayMin = 12, $g_iAttackPlannerDayMax = 15
 Global $g_abPlannedAttackWeekDays[7] = [True, True, True, True, True, True, True]
 Global $g_abPlannedattackHours[24] = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
-Global $g_bPlannedDropCCHoursEnable = False, $g_bUseCCBalanced = False, $g_iCCDonated = 0, $g_iCCReceived = 0
+Global $g_bPlannedDropCCHoursEnable = False, $g_bUseCCBalanced = False, $g_iCCDonated = 0, $g_iCCReceived = 0, $g_bCheckDonateOften = False
 Global $g_abPlannedDropCCHours[24] = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
 Global $g_bSmartZapEnable = False, $g_bEarthQuakeZap = False, $g_bNoobZap = False, $g_bSmartZapDB = True, $g_bSmartZapSaveHeroes = True, $g_bSmartZapFTW = False, $g_iSmartZapMinDE = 350, $g_iSmartZapExpectedDE = 320, $g_bDebugSmartZap = False
 Global $g_bShareAttackEnable = 0, $g_iShareMinGold = 300000, $g_iShareMinElixir = 300000, $g_iShareMinDark = 0, $g_sShareMessage = "Nice|Good|Thanks|Wowwww", $g_bTakeLootSnapShot = True, $g_bScreenshotLootInfo = False, $g_bShareAttackEnableNow = False
@@ -3664,8 +3666,7 @@ Return $aResult[0]
 EndFunc
 Global $g_RunPipe_hProcess = 0
 Global $g_RunPipe_hThread = 0
-Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
-Local $bDebug = $g_bDebugSetlog Or $g_bDebugAndroid
+Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False, $bNoLog = False)
 If $bUseSemaphore Then
 Local $hSemaphore = LockSemaphore(StringReplace($cmd, "\", "/"), "Waiting to launch: " & $cmd)
 EndIf
@@ -3673,11 +3674,10 @@ Local $data, $pid, $hStdIn[2], $hStdOut[2], $hTimer, $hProcess, $hThread
 If StringLen($param) > 0 Then $cmd &= " " & $param
 $hTimer = __TimerInit()
 $process_killed = False
-If $bDebug Then SetLog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG)
+If Not $bNoLog Then SetDebugLog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG)
 $pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut, $hProcess, $hThread)
-If $bDebug Then SetLog("Func LaunchConsole: command launched", $COLOR_DEBUG)
 If $pid = 0 Then
-SetLog("Launch faild: " & $cmd, $COLOR_ERROR)
+SetLog("Launch failed: " & $cmd, $COLOR_ERROR)
 If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
 Return
 EndIf
@@ -3689,7 +3689,7 @@ $data &= ReadPipe($hStdOut[0])
 Until($timeout > 0 And __TimerDiff($hTimer) > $timeout) Or $iWaitResult <> $WAIT_TIMEOUT
 If ProcessExists($pid) Then
 If ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread) = 1 Then
-If $bDebug Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
+If Not $bNoLog Then SetDebugLog("Process killed: " & $cmd, $COLOR_ERROR)
 $process_killed = True
 EndIf
 Else
@@ -3698,7 +3698,7 @@ EndIf
 $g_RunPipe_hProcess = 0
 $g_RunPipe_hThread = 0
 CleanLaunchOutput($data)
-If $bDebug Then SetLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
+If Not $bNoLog Then SetDebugLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
 If $bUseSemaphore Then UnlockSemaphore($hSemaphore)
 Return $data
 EndFunc
@@ -4665,6 +4665,7 @@ $g_sUserGameClass = IniRead($g_sProfileConfigPath, "android", "user.class", $g_s
 $g_iAndroidBackgroundMode = Int(IniRead($g_sProfileConfigPath, "android", "backgroundmode", $g_iAndroidBackgroundMode))
 $g_iAndroidZoomoutMode = Int(IniRead($g_sProfileConfigPath, "android", "zoomoutmode", $g_iAndroidZoomoutMode))
 $g_bAndroidCheckTimeLagEnabled = Int(IniRead($g_sProfileConfigPath, "android", "check.time.lag.enabled",($g_bAndroidCheckTimeLagEnabled ? 1 : 0))) = 1
+$g_bAndroidAdbPortPerInstance = Int(IniRead($g_sProfileConfigPath, "android", "adb.dedicated.instance", $g_bAndroidAdbPortPerInstance ? 1 : 0)) = 1
 $g_iAndroidAdbScreencapTimeoutMin = Int(IniRead($g_sProfileConfigPath, "android", "adb.screencap.timeout.min", $g_iAndroidAdbScreencapTimeoutMin))
 $g_iAndroidAdbScreencapTimeoutMax = Int(IniRead($g_sProfileConfigPath, "android", "adb.screencap.timeout.max", $g_iAndroidAdbScreencapTimeoutMax))
 $g_iAndroidAdbScreencapTimeoutDynamic = Int(IniRead($g_sProfileConfigPath, "android", "adb.screencap.timeout.dynamic", $g_iAndroidAdbScreencapTimeoutDynamic))
@@ -4686,6 +4687,7 @@ $g_iAndroidRebootHours = Int(IniRead($g_sProfileConfigPath, "android", "reboot.h
 $g_bAndroidCloseWithBot = Int(IniRead($g_sProfileConfigPath, "android", "close", $g_bAndroidCloseWithBot ? 1 : 0)) = 1
 $g_bUpdateSharedPrefs = Int(IniRead($g_sProfileConfigPath, "android", "shared_prefs.update", $g_bUpdateSharedPrefs ? 1 : 0)) = 1
 $g_iAndroidProcessAffinityMask = Int(IniRead($g_sProfileConfigPath, "android", "process.affinity.mask", $g_iAndroidProcessAffinityMask))
+$g_iAndroidControlClickAdditionalDelay = Int(IniRead($g_sProfileConfigPath, "android", "click.additional.delay", $g_iAndroidControlClickAdditionalDelay))
 If $g_bBotLaunchOption_Restart = True Or $g_asCmdLine[0] < 2 Then
 Local $sAndroidEmulator = IniRead($g_sProfileConfigPath, "android", "emulator", "")
 Local $sAndroidInstance = IniRead($g_sProfileConfigPath, "android", "instance", "")
@@ -4940,6 +4942,10 @@ Next
 $g_iCmbDonateFilter = Int(IniRead($g_sProfileConfigPath, "donate", "cmbFilterDonationsCC", 0))
 $g_iDonateSkipNearFullPercent = Int(IniRead($g_sProfileConfigPath, "donate", "SkipDonateNearFulLTroopsPercentual", 90))
 $g_bDonateSkipNearFullEnable =(IniRead($g_sProfileConfigPath, "donate", "SkipDonateNearFulLTroopsEnable", "1") = "1")
+IniReadS($g_bUseCCBalanced, $g_sProfileConfigPath, "donate", "BalanceCC", False, "Bool")
+IniReadS($g_iCCDonated, $g_sProfileConfigPath, "donate", "BalanceCCDonated", 1, "int")
+IniReadS($g_iCCReceived, $g_sProfileConfigPath, "donate", "BalanceCCReceived", 1, "int")
+IniReadS($g_bCheckDonateOften, $g_sProfileConfigPath, "donate", "CheckDonateOften", False, "Bool")
 EndFunc
 Func ReadConfig_600_14()
 IniReadS($g_bAutoLabUpgradeEnable, $g_sProfileBuildingPath, "upgrade", "upgradetroops", False, "Bool")
@@ -5191,9 +5197,6 @@ $g_abPlannedDropCCHours = StringSplit(IniRead($g_sProfileConfigPath, "planned", 
 For $i = 0 To 23
 $g_abPlannedDropCCHours[$i] =($g_abPlannedDropCCHours[$i] = "1")
 Next
-IniReadS($g_bUseCCBalanced, $g_sProfileConfigPath, "ClanClastle", "BalanceCC", False, "Bool")
-IniReadS($g_iCCDonated, $g_sProfileConfigPath, "ClanClastle", "BalanceCCDonated", 1, "int")
-IniReadS($g_iCCReceived, $g_sProfileConfigPath, "ClanClastle", "BalanceCCReceived", 1, "int")
 EndFunc
 Func ReadConfig_600_29_DB()
 IniReadS($g_aiAttackAlgorithm[$DB], $g_sProfileConfigPath, "attack", "DBAtkAlgorithm", 0, "int")

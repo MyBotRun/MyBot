@@ -746,6 +746,8 @@ Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
 	Local $bCheckEmbeddedShield = True
 
 	Switch $nID
+		Case $g_hSldAdditionalClickDelay
+			sldAdditionalClickDelay()
 		Case $g_hTabMain
 			; Handle RichText controls
 			tabMain()
@@ -1606,7 +1608,7 @@ Func CheckRedrawBotWindow($bForceRedraw = Default, $RedrawControlIDs = Default, 
 EndFunc   ;==>CheckRedrawBotWindow
 
 Func CheckRedrawControls($ForceCheck = Default, $sSource = "") ; ... that require additional redraw is executed like restore from minimized state
-	If $g_iRedrawBotWindowMode = 0 Then Return False ; disabled
+	If $g_iRedrawBotWindowMode = 0 Or $g_iGuiMode <> 1 Then Return False ; disabled
 	If $ForceCheck = Default Then $ForceCheck = False
 	If Not $g_bRedrawBotWindow[2] And Not $ForceCheck Then Return False
 	If GUICtrlRead($g_hTabMain, 1) = $g_hTabLog Then
@@ -1697,7 +1699,7 @@ Func SetTime($bForceUpdate = False)
 EndFunc   ;==>SetTime
 
 Func tabMain()
-	If $g_iGuiMode = 0 Then Return
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hTabMain)
 	Select
 		Case $tabidx = 0 ; Log
@@ -1748,6 +1750,7 @@ Func tabMain()
 EndFunc   ;==>tabMain
 
 Func tabVillage()
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hGUI_VILLAGE_TAB)
 	Select
 		Case $tabidx = 0 ; Misc Tab
@@ -1780,6 +1783,7 @@ Func tabVillage()
 EndFunc   ;==>tabVillage
 
 Func tabAttack()
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hGUI_ATTACK_TAB)
 	Select
 		Case $tabidx = 0 ; ARMY tab
@@ -1799,6 +1803,7 @@ Func tabAttack()
 EndFunc   ;==>tabAttack
 
 Func tabSEARCH()
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hGUI_SEARCH_TAB)
 	Local $tabdbx = _GUICtrlTab_GetItemRect($g_hGUI_SEARCH_TAB, 0) ;get array of deadbase Tabitem rectangle coordinates, index 2,3 will be lower right X,Y coordinates (not needed: 0,1 = top left x,y)
 	Local $tababx = _GUICtrlTab_GetItemRect($g_hGUI_SEARCH_TAB, 1) ;idem for activebase
@@ -1903,6 +1908,7 @@ Func tabSEARCH()
 EndFunc   ;==>tabSEARCH
 
 Func tabDONATE()
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hGUI_DONATE_TAB)
 	Local $tabdonx = _GUICtrlTab_GetItemRect($g_hGUI_DONATE_TAB, 1)
 
@@ -1942,6 +1948,7 @@ Func tabDONATE()
 EndFunc   ;==>tabDONATE
 
 Func tabBot()
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hGUI_BOT_TAB)
 	Select
 		Case $tabidx = 0 ; Options tab
@@ -1969,6 +1976,7 @@ Func tabBot()
 EndFunc   ;==>tabBot
 
 Func tabDeadbase()
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hGUI_DEADBASE_TAB)
 	Select
 		;			Case $tabidx = 0 ; Search tab
@@ -1988,6 +1996,7 @@ Func tabDeadbase()
 EndFunc   ;==>tabDeadbase
 
 Func tabActivebase()
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hGUI_ACTIVEBASE_TAB)
 	Select
 		;			Case $tabidx = 0 ; Search tab
@@ -2006,6 +2015,7 @@ Func tabActivebase()
 EndFunc   ;==>tabActivebase
 
 Func tabTHSnipe()
+	If $g_iGuiMode <> 1 Then Return
 	Local $tabidx = GUICtrlRead($g_hGUI_THSNIPE_TAB)
 	Select
 		;			Case $tabidx = 0 ; Search tab

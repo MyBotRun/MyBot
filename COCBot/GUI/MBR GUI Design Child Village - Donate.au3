@@ -71,7 +71,7 @@ Global $g_hGUI_RequestCC = 0, $g_hGUI_DONATECC = 0, $g_hGUI_ScheduleCC = 0
 Global $g_hGrpDonate = 0, $g_hChkDonate = 1, $g_hLblDonateDisabled = 0, $g_hLblScheduleDisabled = 0
 
 ; Clan castle
-Global $g_hChkUseCCBalanced = 0, $g_hCmbCCDonated = 0, $g_hCmbCCReceived = 0
+Global $g_hChkUseCCBalanced = 0, $g_hCmbCCDonated = 0, $g_hCmbCCReceived = 0, $g_hChkCheckDonateOften = 0
 GLobal $g_hLblDonateCChour = 0, $g_ahLblDonateCChoursE = 0
 GLobal $g_hLblDonateCChours[12] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -2267,15 +2267,15 @@ Func CreateScheduleSubTab()
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$x = $xStart
-	$y += 25
-	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Donate_Schedule", "Group_04", "Balance Donate/Receive"), $x - 20, $y, $g_iSizeWGrpTab3, 40)
+	$y = $yStart + 315
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Donate_Schedule", "Group_04", "Balance Donate/Receive"), $x - 20, $y, $g_iSizeWGrpTab3 / 3 * 2 - 5, 40)
 	$y += 12
 		$g_hChkUseCCBalanced = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Donate_Schedule", "Group_04", -1), $x, $y+2, -1, -1)
 			GUICtrlSetState(-1, $GUI_UNCHECKED)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Donate_Schedule", "ChkUseCCBalanced_Info_01", "Disable Clan Castle Usage or Donations if Ratio is not correct. Will Auto Continue when the Ratio is correct again"))
 			GUICtrlSetOnEvent(-1, "chkBalanceDR")
 
-	$x += 290
+	$x += 140
 		$g_hCmbCCDonated = GUICtrlCreateCombo("", $x + 40, $y, 30, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Donate_Schedule", "CmbCCDonated_Info_01", "Donated ratio"))
 			GUICtrlSetData(-1, "1|2|3|4|5", "1")
@@ -2289,6 +2289,15 @@ Func CreateScheduleSubTab()
 			GUICtrlSetData(-1, "1|2|3|4|5", "1")
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "cmbBalanceDR")
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	$x = $xStart + $g_iSizeWGrpTab3 / 3 * 2
+	$y = $yStart + 315
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Donate_Schedule", "Group_05", "Check Donate Often"), $x - 20, $y, $g_iSizeWGrpTab3 / 3, 40)
+	$y += 12
+		$g_hChkCheckDonateOften = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Donate_Schedule", "Group_05", -1), $x, $y+2, -1, -1)
+			GUICtrlSetState(-1, $GUI_UNCHECKED)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Donate_Schedule", "ChkCheckDonateOften_Info_01", "If checked, bot will check for requests every idle round."))
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 EndFunc   ;==>CreateScheduleSubTab

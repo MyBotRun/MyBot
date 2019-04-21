@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func isGemOpen($bNeedCaptureRegion = False)
-	_Sleep($DELAYISGEMOPEN1)
+	If _Sleep($DELAYISGEMOPEN1) Then Return
 	If _CheckPixel($aIsGemWindow1, $bNeedCaptureRegion) Then ; Safety Check if the normal use Gem window opens
 		If $g_bDebugSetlog Then SetDebugLog("Gemclick Red X detect", $COLOR_DEBUG)
 		PureClickP($aAway, 1, 0, "#0140") ; click away to close gem window

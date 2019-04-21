@@ -268,6 +268,7 @@ Func SaveConfig_Android()
 	_Ini_Add("android", "backgroundmode", $g_iAndroidBackgroundMode)
 	_Ini_Add("android", "zoomoutmode", $g_iAndroidZoomoutMode)
 	_Ini_Add("android", "check.time.lag.enabled", ($g_bAndroidCheckTimeLagEnabled ? "1" : "0"))
+	_Ini_Add("android", "adb.dedicated.instance", ($g_bAndroidAdbPortPerInstance ? "1" : "0"))
 	_Ini_Add("android", "adb.screencap.timeout.min", $g_iAndroidAdbScreencapTimeoutMin)
 	_Ini_Add("android", "adb.screencap.timeout.max", $g_iAndroidAdbScreencapTimeoutMax)
 	_Ini_Add("android", "adb.screencap.timeout.dynamic", $g_iAndroidAdbScreencapTimeoutDynamic)
@@ -291,6 +292,7 @@ Func SaveConfig_Android()
 	_Ini_Add("android", "close", ($g_bAndroidCloseWithBot ? "1" : "0"))
 	_Ini_Add("android", "shared_prefs.update", ($g_bUpdateSharedPrefs ? "1" : "0"))
 	_Ini_Add("android", "process.affinity.mask", $g_iAndroidProcessAffinityMask)
+	_Ini_Add("android", "click.additional.delay", $g_iAndroidControlClickAdditionalDelay)
 
 EndFunc   ;==>SaveConfig_Android
 
@@ -501,6 +503,10 @@ Func SaveConfig_600_13()
 	_Ini_Add("donate", "cmbFilterDonationsCC", $g_iCmbDonateFilter)
 	_Ini_Add("donate", "SkipDonateNearFulLTroopsEnable", $g_bDonateSkipNearFullEnable ? 1 : 0)
 	_Ini_Add("donate", "SkipDonateNearFulLTroopsPercentual", $g_iDonateSkipNearFullPercent)
+	_Ini_Add("donate", "BalanceCC", $g_bUseCCBalanced ? 1 : 0)
+	_Ini_Add("donate", "BalanceCCDonated", $g_iCCDonated)
+	_Ini_Add("donate", "BalanceCCReceived", $g_iCCReceived)
+	_Ini_Add("donate", "CheckDonateOften", $g_bCheckDonateOften ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_13
 
 Func SaveConfig_600_15()
@@ -782,9 +788,6 @@ Func SaveConfig_600_29()
 	Next
 	_Ini_Add("planned", "attackHours", $string)
 	_Ini_Add("planned", "DropCCEnable", $g_bPlannedDropCCHoursEnable ? 1 : 0)
-	_Ini_Add("ClanClastle", "BalanceCC", $g_bUseCCBalanced ? 1 : 0)
-	_Ini_Add("ClanClastle", "BalanceCCDonated", $g_iCCDonated)
-	_Ini_Add("ClanClastle", "BalanceCCReceived", $g_iCCReceived)
 	Local $string = ""
 	For $i = 0 To 23
 		$string &= ($g_abPlannedDropCCHours[$i] ? 1 : 0) & "|"

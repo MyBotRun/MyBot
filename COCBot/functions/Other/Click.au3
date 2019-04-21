@@ -77,9 +77,9 @@ Func _ControlClick($x, $y)
 	Local $lParam = BitOR(Int($y) * 0x10000, BitAND(Int($x), 0xFFFF)) ; HiWord = y-coordinate, LoWord = x-coordinate
 	; _WinAPI_PostMessage or _SendMessage
 	_SendMessage($hWin, $WM_LBUTTONDOWN, 0x0001, $lParam)
-	_SleepMicro($g_iAndroidControlClickDownDelay * 1000)
+	_SleepMicro(GetClickDownDelay() * 1000)
 	_SendMessage($hWin, $WM_LBUTTONUP, 0x0000, $lParam)
-	_SleepMicro($g_iAndroidControlClickDelay * 1000)
+	_SleepMicro(GetClickUpDelay() * 1000)
 	Return 1
 EndFunc   ;==>_ControlClick
 
@@ -116,7 +116,7 @@ Func PureClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 	If TestCapture() Then Return
 
 	If $g_bAndroidAdbClick = True Then
-		For $i = 1 to $times
+		For $i = 1 To $times
 			AndroidClick($x, $y, 1, $speed, False)
 		Next
 		Return
@@ -408,6 +408,13 @@ Func _DecodeDebug($message)
 			Return $separator & "Attack Search - Return Home button"
 		Case "#0514"
 			Return $separator & "Attack Search - Clouds, keep game alive"
+
+			;Personal Challenges
+		Case "#0666"
+			Return $separator & "Personal Challenges - Open button"
+		Case "#0667"
+			Return $separator & "Personal Challenges - Close button"
+
 		Case "#0000"
 			Return $separator & " "
 
@@ -472,3 +479,11 @@ Func _VkKeyScan($s_Char)
 	If @error Then Return SetError(@error, @extended, -1)
 	Return SetExtended(BitShift($a_Ret[0], 8), BitAND($a_Ret[0], 0xFF))
 EndFunc   ;==>_VkKeyScan
+
+Func GetClickDownDelay()
+	Return $g_iAndroidControlClickDownDelay + Int($g_iAndroidControlClickAdditionalDelay / 2)
+EndFunc   ;==>GetClickDownDelay
+
+Func GetClickUpDelay()
+	Return $g_iAndroidControlClickDelay + Int($g_iAndroidControlClickAdditionalDelay / 2)
+EndFunc   ;==>GetClickUpDelay

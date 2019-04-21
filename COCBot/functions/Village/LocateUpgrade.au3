@@ -104,7 +104,7 @@ Func LocateUpgrades()
 						SetDebugLog("Updgrade #" & $icount & " added at " & $g_avBuildingUpgrades[$icount][0] & "/" & $g_avBuildingUpgrades[$icount][1] & ", marker drawn: " & $bMarkerDrawn)
 						_GUICtrlSetImage($g_hPicUpgradeStatus[$icount], $g_sLibIconPath, $eIcnYellowLight) ; Set GUI Status to Yellow showing ready for upgrade
 						$g_aiPicUpgradeStatus[$icount] = $eIcnYellowLight
-						_Sleep(750)
+						If _Sleep(750) Then Return
 					Else
 						SetLog("Bad location recorded, location skipped?", $COLOR_ERROR)
 						$g_avBuildingUpgrades[$icount][0] = -1

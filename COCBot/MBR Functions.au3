@@ -288,6 +288,7 @@
 #include "functions\Village\SwitchAccountVariablesReload.au3"
 #include "functions\Village\Clan Games\ClanGames.au3"
 #include "functions\Village\FreeMagicItems.au3"
+#include "functions\Village\Personal Challenges\OpenCloseChallenges.au3"
 
 #include "functions\Village\BuilderBase\Collect.au3"
 #include "functions\Village\BuilderBase\StartClockTowerBoost.au3"

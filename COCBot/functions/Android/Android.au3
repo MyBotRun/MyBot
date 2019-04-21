@@ -16,7 +16,6 @@
 
 Global Const $g_sAdbScriptsPath = $g_sLibPath & "\adb.scripts" ; ADD script and event files folder
 Global $g_sAndroidAdbPrompt = "mybot.run:" ; Unique ADB PS1 prompt
-Global $g_bAndroidAdbPortPerInstance = True ; New default behavior to use a dedicated ADB daemon per bot and android instance using port between 5038-5137, it initializes $g_sAndroidAdbGlobalOptions
 Global $g_bAndroidAdbPort = 0 ; When $g_bAndroidAdbPortPerInstance = True save here the port
 Global $g_iAndroidAdbMinitouchModeDefault = 1 ; 0 = use tcp port, 1 = use stdin in separate shell
 Global $g_iAndroidAdbMinitouchMode = $g_iAndroidAdbMinitouchModeDefault ; 0 = use tcp port, 1 = use stdin in separate shell
@@ -57,6 +56,7 @@ Global $g_bUpdateSharedPrefsSnow = True ; Reset Snow when pushing shared_prefs
 Global $g_bUpdateSharedPrefsZoomLevel = True ; Reset ZoomLevel when pushing shared_prefs
 Global $g_bUpdateSharedPrefsGoogleDisconnected  = True ; Reset GoogleDisconnected when pushing shared_prefs (not used, doesn't work!)
 Global $g_bUpdateSharedPrefsRated  = True ; Reset Rated when pushing shared_prefs
+Global $g_bAndroidZoomoutModeFallback = False ; If shared_prefs zoomout mode is used, shared_prefs pushed, then fallback to normal zoomout if still not zoomed out
 
 
 Func InitAndroidConfig($bRestart = False)
@@ -94,7 +94,6 @@ Func InitAndroidConfig($bRestart = False)
 	$g_bAndroidControlUseParentPos = False ; If true, control pos is used from parent control (only used to fix docking for Nox in DirectX mode)
 	$g_sAndroidAdbInstanceShellOptions = $g_sAndroidAdbInstanceShellOptionsDefault ; Additional shell options, only used by BlueStacks2 " -t -t"
 	$g_sAndroidAdbShellOptions = "" ; Additional shell options when launch shell with command, only used by BlueStacks2 " /data/anr/../../system/xbin/bstk/su root"
-	$g_bAndroidAdbPortPerInstance = True ; New default behavior to use a dedicated ADB daemon per bot and android instance using port between 5038-5137, it initializes $g_sAndroidAdbGlobalOptions
 	$g_iAndroidRecoverStrategy = $g_iAndroidRecoverStrategyDefault
 	$g_iAndroidAdbMinitouchMode = $g_iAndroidAdbMinitouchModeDefault
 	$g_bAndroidAdbReplaceEmulatorVersionWithDummy = False ; If try (only used by never Nox) emulator adb is replaced with a dummy exe that does nothing
@@ -788,6 +787,11 @@ Func FindPreferredAdbPath()
 
 	If $g_bAndroidAdbReplaceEmulatorVersion And $adbPath And FileExists($sAdb) And (Not $bDummy Or (FileExists(@ScriptDir & "\lib\adb\" & $aDll[0]) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[1]))) _
 			And (FileGetSize($adbPath) <> FileGetSize($sAdb) Or (Not $bDummy And (FileGetSize($sAdbFolder & $aDll[0]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[0]) Or FileGetSize($sAdbFolder & $aDll[1]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[1])))) Then
+		Local $aAdbProcess = ProcessesExist($adbPath)
+		For $i = 0 To UBound($aAdbProcess) -1
+			; ensure target process is not running
+			KillProcess($aAdbProcess[$i], "FindPreferredAdbPath")
+		Next
 		If FileCopy($sAdb, $adbPath, 1) And ($bDummy Or (FileCopy(@ScriptDir & "\lib\adb\" & $aDll[0], $sAdbFolder & $aDll[0], 1) And FileCopy(@ScriptDir & "\lib\adb\" & $aDll[1], $sAdbFolder & $aDll[1], 1))) Then
 			SetLog("Replaced " & $g_sAndroidEmulator & " ADB with MyBot.run version")
 		Else
@@ -1092,12 +1096,6 @@ Func OpenAndroid($bRestart = False, $bStartOnlyAndroid = False, $wasRunState = $
 EndFunc   ;==>OpenAndroid
 
 Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
-	ResumeAndroid()
-
-	; list Android devices to ensure ADB Daemon is launched
-	Local $hMutex = AquireAdbDaemonMutex(), $process_killed
-	LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "devices", $process_killed)
-	ReleaseAdbDaemonMutex($hMutex)
 
 	If Not InitAndroid() Then
 		SetLog("Unable to open " & $g_sAndroidEmulator & ($g_sAndroidInstance = "" ? "" : " instance '" & $g_sAndroidInstance & "'"), $COLOR_ERROR)
@@ -1108,6 +1106,13 @@ Func _OpenAndroid($bRestart = False, $bStartOnlyAndroid = False)
 		SetError(1, 1, -1)
 		Return False
 	EndIf
+
+	ResumeAndroid()
+
+	; list Android devices to ensure ADB Daemon is launched
+	Local $hMutex = AquireAdbDaemonMutex(), $process_killed
+	LaunchConsole($g_sAndroidAdbPath, AddSpace($g_sAndroidAdbGlobalOptions) & "devices", $process_killed)
+	ReleaseAdbDaemonMutex($hMutex)
 
 	AndroidAdbTerminateShellInstance()
 	If Not $g_bRunState Then Return False
@@ -3409,7 +3414,7 @@ Func Minitouch($x, $y, $iAction = 0, $iDelay = 1)
 			EndIf
 			If $iAction = 2 Then ; up
 				;$s = "w " & $iDelay & @LF & "u 0 " & @LF & "c" & @LF
-				$s = "u 0 " & @LF & "c" & @LF & $sWait ; $g_iAndroidControlClickDelay
+				$s = "u 0 " & @LF & "c" & @LF & $sWait
 				;For $i = 1 To 9
 				;	$s &= "u " & $i & @LF & "c" & @LF
 				;Next
@@ -3427,7 +3432,7 @@ Func Minitouch($x, $y, $iAction = 0, $iDelay = 1)
 			EndIf
 		Case 1 ; down
 			;$s = "d 0 " & $x & " " & $y & " 50" & @LF & "w " & $iDelay & @LF & "c" & @LF
-			$s = "d 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF & $sWait ; $g_iAndroidControlClickDownDelay
+			$s = "d 0 " & $x & " " & $y & " 50" & @LF & "c" & @LF & $sWait
 			$t &= $s
 			If $g_iAndroidAdbMinitouchMode = 0 Then
 				$iBytes += TCPSend($g_bAndroidAdbMinitouchSocket, $s)
@@ -3451,8 +3456,8 @@ Func Minitouch($x, $y, $iAction = 0, $iDelay = 1)
 EndFunc   ;==>Minitouch
 
 Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect = True, $iRetryCount = 0)
-	Local $minSleep = $g_iAndroidControlClickDownDelay
-	Local $iDelay = $g_iAndroidControlClickDelay
+	Local $minSleep = GetClickDownDelay()
+	Local $iDelay = GetClickUpDelay()
 	Local $_SilentSetLog = $g_bSilentSetLog
 	Local $hDuration = __TimerInit()
 	If $times < 1 Then Return SetError(0, 0)
@@ -3628,7 +3633,7 @@ Func AndroidMinitouchClick($x, $y, $times = 1, $speed = 0, $checkProblemAffect =
 				EndIf
 
 				If $g_iAndroidAdbMinitouchMode = 0 Then
-					If $bytes < $bytesSent Then SetDebugLog("minitouch: Faild to send " & ($bytesSent - $bytes) & " bytes!", $COLOR_ERROR)
+					If $bytes < $bytesSent Then SetDebugLog("minitouch: Failed to send " & ($bytesSent - $bytes) & " bytes!", $COLOR_ERROR)
 				EndIf
 				;TCPRecv($g_bAndroidAdbMinitouchSocket, 256, 1)
 			Next
@@ -4612,12 +4617,11 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 						FileClose($hFile)
 						If $sStorage Then
 							Local $sStorageUpdated = $sStorage
-							Local $aTags[4][3] = [[$g_bUpdateSharedPrefsLanguage, "d0h6phQUOxO/uSfvat949w==", "FWCNTu39RUlYoSt0Y6mCwg=="], _
+							Local $aTags[5][3] = [[$g_bUpdateSharedPrefsLanguage, "d0h6phQUOxO/uSfvat949w==", "FWCNTu39RUlYoSt0Y6mCwg=="], _
 											[$g_bUpdateSharedPrefsSnow, "WnITdUFs6FnH4NScnkEtyg==", "jS26iozgAh+i/424eyY5cA=="], _
 											[$g_bUpdateSharedPrefsZoomLevel, "MjhxqoFNUV+begGvsz3gkg==", "oiMa1oDch9dThLoIKokZqQ=="], _
-											[$g_bUpdateSharedPrefsRated, "7lJCTt3TmNyzikZuHh9wZQ==", "pmvEzdQuRQuKZob4KB0IeA=="]]
-											; not working!
-											;[$g_bUpdateSharedPrefsGoogleDisconnected, "AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=", "pmvEzdQuRQuKZob4KB0IeA=="], _
+											[$g_bUpdateSharedPrefsRated, "7lJCTt3TmNyzikZuHh9wZQ==", "pmvEzdQuRQuKZob4KB0IeA=="], _
+											[$g_bUpdateSharedPrefsGoogleDisconnected, "AQ+/D2n+JXPIPpMLdPZcqHpYSGJ5PpF3sOnowks5I5s=", "pmvEzdQuRQuKZob4KB0IeA=="]]
 
 							For $i = 0 To UBound($aTags) -1
 								If $aTags[$i][0] Then
@@ -4645,13 +4649,13 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 					EndIf
 
 					AndroidAdbSendShellCommand("set result=$(rm /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* >&2)")
-					AndroidAdbSendShellCommand("set result=$(cp " & $androidFolder & "/shared_prefs/* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
+					AndroidAdbSendShellCommand("set result=$(cp """ & $androidFolder & "/shared_prefs/""* /data/data/" & $g_sAndroidGamePackage & "/shared_prefs >&2)")
 					$cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
 					$iFilesPushed = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
-					$cmdOutput += AndroidAdbSendShellCommand("set result=$(ls -l " & $androidFolder & "/shared_prefs/ >&2)")
+					$cmdOutput += AndroidAdbSendShellCommand("set result=$(ls -l """ & $androidFolder & "/shared_prefs/"" >&2)")
 					If $iFilesPushed >= $iFiles And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then ; And StringInStr($cmdOutput, "usage: cp") = 0
 						; OK, files pushed
-						AndroidAdbSendShellCommand("set result=$(rm -r " & $androidFolder & " >&2)")
+						AndroidAdbSendShellCommand("set result=$(rm -r """ & $androidFolder & """ >&2)")
 						; restore permissions and owner
 						Local $sPerm = Ls_l_PermissionsToNumber($aLs[$iSharedPrefs][0])
 						Local $sOwn = $aLs[$iSharedPrefs][1] & ":" & $aLs[$iSharedPrefs][2]
@@ -4679,6 +4683,7 @@ Func PushSharedPrefs($sProfile = $g_sProfileCurrentName, $bCloseGameIfRunning = 
 		SetLog("Pushed shared_prefs of profile " & $sProfile & " (" & $iFilesPushed & " files)")
 		$g_PushedSharedPrefsProfile = $sProfile
 		$g_PushedSharedPrefsProfile_Timer = __TimerInit()
+		If $g_bUpdateSharedPrefs And $g_iAndroidZoomoutMode = 4 Then $g_bAndroidZoomoutModeFallback = True
 		_Sleep(3000)
 	Else
 		; something went wrong

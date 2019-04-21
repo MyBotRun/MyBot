@@ -14,6 +14,11 @@
 ; ===============================================================================================================================
 Func LocateLab($bCollect = True)
 	Local $stext, $MsgBox, $iStupid = 0, $iSilly = 0, $sErrorText = ""
+	
+	If $g_iTownHallLevel < 3 Then
+		SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Lab, so skip locating.", $COLOR_ACTION)
+		Return
+	EndIf
 
 	SetLog("Locating Laboratory", $COLOR_INFO)
 

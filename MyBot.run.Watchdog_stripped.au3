@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.4)
+#pragma compile(FileVersion, 7.7.5)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.4"
+Global $g_sBotVersion = "v7.7.5"
 Opt("MustDeclareVars", 1)
 Global Const $WAIT_TIMEOUT = 258
 Global Const $STDERR_MERGED = 8
@@ -512,8 +512,6 @@ Global $g_iDebugWindowMessages = 0
 Global $hStruct_SleepMicro = DllStructCreate("int64 time;")
 Global $pStruct_SleepMicro = DllStructGetPtr($hStruct_SleepMicro)
 Global $DELAYSLEEP = 500
-Global $g_bDebugSetlog = False
-Global $g_bDebugAndroid = False
 Global $g_asCmdLine = [0]
 Global Enum $eLootGold, $eLootElixir, $eLootDarkElixir, $eLootTrophy, $eLootCount
 Global $g_aiCurrentLoot[$eLootCount] = [0, 0, 0, 0]
@@ -933,8 +931,7 @@ Return $aResult[0]
 EndFunc
 Global $g_RunPipe_hProcess = 0
 Global $g_RunPipe_hThread = 0
-Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
-Local $bDebug = $g_bDebugSetlog Or $g_bDebugAndroid
+Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False, $bNoLog = False)
 If $bUseSemaphore Then
 Local $hSemaphore = LockSemaphore(StringReplace($cmd, "\", "/"), "Waiting to launch: " & $cmd)
 EndIf
@@ -942,11 +939,10 @@ Local $data, $pid, $hStdIn[2], $hStdOut[2], $hTimer, $hProcess, $hThread
 If StringLen($param) > 0 Then $cmd &= " " & $param
 $hTimer = __TimerInit()
 $process_killed = False
-If $bDebug Then SetLog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG)
+If Not $bNoLog Then SetDebugLog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG)
 $pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut, $hProcess, $hThread)
-If $bDebug Then SetLog("Func LaunchConsole: command launched", $COLOR_DEBUG)
 If $pid = 0 Then
-SetLog("Launch faild: " & $cmd, $COLOR_ERROR)
+SetLog("Launch failed: " & $cmd, $COLOR_ERROR)
 If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
 Return
 EndIf
@@ -958,7 +954,7 @@ $data &= ReadPipe($hStdOut[0])
 Until($timeout > 0 And __TimerDiff($hTimer) > $timeout) Or $iWaitResult <> $WAIT_TIMEOUT
 If ProcessExists($pid) Then
 If ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread) = 1 Then
-If $bDebug Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
+If Not $bNoLog Then SetDebugLog("Process killed: " & $cmd, $COLOR_ERROR)
 $process_killed = True
 EndIf
 Else
@@ -967,7 +963,7 @@ EndIf
 $g_RunPipe_hProcess = 0
 $g_RunPipe_hThread = 0
 CleanLaunchOutput($data)
-If $bDebug Then SetLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
+If Not $bNoLog Then SetDebugLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
 If $bUseSemaphore Then UnlockSemaphore($hSemaphore)
 Return $data
 EndFunc

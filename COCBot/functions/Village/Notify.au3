@@ -631,7 +631,7 @@ Func NotifyPushMessageToBoth($Message, $Source = "")
 			ClickP($aAway, 1, 0, "#0112") ;Click Away to close the upgrade window
 			; open the builders menu
 			Click(295, 30)
-			_Sleep(750)
+			If _Sleep(750) Then Return
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
 			_CaptureRegion(224, 74, 446, 240)
@@ -654,7 +654,7 @@ Func NotifyPushMessageToBoth($Message, $Source = "")
 		Case "ShieldInfo"
 			ClickP($aAway, 1, 0, "#0112") ;Click Away to close the upgrade window
 			Click(435, 8)
-			_Sleep(500)
+			If _Sleep(500) Then Return
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
 			_CaptureRegion(200, 165, 660, 568)

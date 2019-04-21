@@ -21,9 +21,6 @@ Func TrainSystem()
 		Return
 	EndIf
 
-	; Check On Halt/Donate if army is really full
-	If $g_bIsFullArmywithHeroesAndSpells And ($g_iCommandStop = 3 Or $g_iCommandStop = 0 Or ($g_abDonateOnly[$g_iCurAccount] And ProfileSwitchAccountEnabled())) Then CheckIfArmyIsReady()
-
 	$g_sTimeBeforeTrain = _NowCalc()
 	StartGainCost()
 

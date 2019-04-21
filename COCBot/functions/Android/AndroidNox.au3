@@ -35,7 +35,7 @@ Func OpenNox($bRestart = False)
 	; Nox can have issues detecting if VM is running, so now disabled
 	;If WaitForRunningVMS($g_iAndroidLaunchWaitSec - __TimerDiff($hTimer) / 1000, $hTimer) Then Return False
 
-	; update ADB port, as that can changes when Nox just started...
+	; update ADB port, as that can changes when Nox just started... disable since v7.7.5 because newer Nox 6.2.x has LockMachine errors
 	$g_bInitAndroid = True
 	InitAndroid()
 
@@ -54,6 +54,11 @@ Func OpenNox($bRestart = False)
 	EndIf
 
 	SetLog($g_sAndroidEmulator & " Loaded, took " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds to begin.", $COLOR_SUCCESS)
+
+	If WinGetAndroidHandle() Then
+		; avoid another InitAndroid call, because it just got initialized and on newer Nox 6.2.x calls to vboxmanage have LockMachine problems when instance is running
+		$g_bInitAndroid = False
+	EndIf
 
 	Return True
 
@@ -92,18 +97,18 @@ Func GetNoxProgramParameter($bAlternative = False)
 EndFunc   ;==>GetNoxProgramParameter
 
 Func GetNoxRtPath()
-	Local $path = RegRead($g_sHKLM & "\SOFTWARE\BigNox\VirtualBox\", "InstallDir")
-	If @error = 0 Then
-		If StringRight($path, 1) <> "\" Then $path &= "\"
-	EndIf
+	Local $path = EnvGet("ProgramFiles(x86)") & "\Bignox\BigNoxVM\RT\"
 	If FileExists($path) = 0 Then
 		$path = @ProgramFilesDir & "\Bignox\BigNoxVM\RT\"
 	EndIf
 	If FileExists($path) = 0 Then
-		$path = EnvGet("ProgramFiles(x86)") & "\Bignox\BigNoxVM\RT\"
+		$path = EnvGet("ProgramFiles") & "\Bignox\BigNoxVM\RT\"
 	EndIf
 	If FileExists($path) = 0 Then
-		$path = EnvGet("ProgramFiles") & "\Bignox\BigNoxVM\RT\"
+		$path = RegRead($g_sHKLM & "\SOFTWARE\BigNox\VirtualBox\", "InstallDir")
+		If @error = 0 Then
+			If StringRight($path, 1) <> "\" Then $path &= "\"
+		EndIf
 	EndIf
 	SetError(0, 0, 0)
 	Return StringReplace($path, "\\", "\")
@@ -168,7 +173,7 @@ Func InitNox($bCheckOnly = False)
 
 	Local $Files = [$NoxFile, $AdbFile, $VBoxFile]
 
-	If Not $bCheckOnly And $g_bAndroidAdbReplaceEmulatorVersion And GetVersionNormalized($Version) > GetVersionNormalized("6.2.7") Then
+	If Not $bCheckOnly And $g_bAndroidAdbReplaceEmulatorVersion And GetVersionNormalized($Version) >= GetVersionNormalized("6.2.0") Then
 		; replace adb with dummy
 		$g_bAndroidAdbReplaceEmulatorVersionWithDummy = True
 	EndIf
@@ -287,13 +292,14 @@ Func ConfigureSharedFolderNox($iMode = 0, $bSetLog = Default)
 					; > Nox v6
 					$g_bAndroidSharedFolderAvailable = True
 					$g_sAndroidPicturesHostPath = @HomeDrive & @HomePath & "\Nox_share\OtherShare\"
+				ElseIf FileExists(@MyDocumentsDir & "\Nox_share\Other\") Then
+					; > Nox v5.2.1.0
+					$g_bAndroidSharedFolderAvailable = True
+					$g_sAndroidPicturesHostPath = @MyDocumentsDir & "\Nox_share\Other\"
 				ElseIf FileExists(@HomeDrive & @HomePath & "\Nox_share\") Then
 					; > Nox v5.2.0.0
 					$g_bAndroidSharedFolderAvailable = True
 					$g_sAndroidPicturesHostPath = @HomeDrive & @HomePath & "\Nox_share\"
-				ElseIf FileExists(@MyDocumentsDir & "\Nox_share\Other\") Then
-					$g_bAndroidSharedFolderAvailable = True
-					$g_sAndroidPicturesHostPath = @MyDocumentsDir & "\Nox_share\Other\"
 				Else
 					$g_bAndroidSharedFolderAvailable = False
 					$g_bAndroidAdbScreencap = False

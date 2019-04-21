@@ -182,6 +182,9 @@ Global Const $DELAYBOOSTBARRACKS3 = 200
 ;BoostSpellFactory
 Global Const $DELAYBOOSTSPELLFACTORY3 = 500
 
+;BoostWorkshop
+Global Const $DELAYBOOSTWORKSHOP3 = 500
+
 ;BoostHeroes
 Global Const $DELAYBOOSTHEROES1 = 1000
 Global Const $DELAYBOOSTHEROES2 = 2000

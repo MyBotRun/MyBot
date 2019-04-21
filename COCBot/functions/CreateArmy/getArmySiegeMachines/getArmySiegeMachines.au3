@@ -36,7 +36,7 @@ Func getArmySiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		If $bSetLog Then SetLog("Detected Clan Castle Message Blocking Troop Images. Waiting until it's gone", $COLOR_INFO)
 		_CaptureRegion2()
 		While _CheckPixel($aRecievedTroops, False)
-			_Sleep($DELAYTRAIN1)
+			IF _Sleep($DELAYTRAIN1) Then Return
 		WEnd
 	EndIf
 

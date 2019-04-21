@@ -16,7 +16,8 @@
 
 Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbAndroidZoomoutMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClick = 0, _
 	$g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, $g_hTxtAndroidRebootHours = 0, _
-	$g_hChkAndroidCloseWithBot = 0, $g_hChkUpdateSharedPrefs = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0
+	$g_hChkAndroidCloseWithBot = 0, $g_hChkUpdateSharedPrefs = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0, _
+	$g_hLblAdditionalClickDelay = 0, $g_hSldAdditionalClickDelay = 0, $g_hChkUseDedicatedAdbPort = 0
 
 Func CreateBotAndroid()
 
@@ -28,6 +29,23 @@ Func CreateBotAndroid()
 			GUICtrlSetOnEvent(-1, "cmbCOCDistributors")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
+	$x = 280
+	$y = 45
+	$w = 185
+	GUICtrlCreateGroup(GetTranslatedFileIni("Android", "Android_Options", "Additional Click Delay"), $x - 20, $y - 20, $w, $h)
+	$sTxtTip = GetTranslatedFileIni("Android", "LblAdditionalClickDelay_Info", "Increase the delay if your PC is slow or to create human like click speed")
+	$g_hLblAdditionalClickDelay = GUICtrlCreateLabel($g_iAndroidControlClickAdditionalDelay & " ms", $x + $w - 65, $y + 5, 37, 30, $SS_RIGHT)
+	_GUICtrlSetTip(-1, $sTxtTip)
+	$g_hSldAdditionalClickDelay = GUICtrlCreateSlider($x - 15, $y, $w - 44, 25, $TBS_AUTOTICKS)
+	_GUICtrlSetTip(-1, $sTxtTip)
+	_GUICtrlSlider_SetTipSide(-1, $TBTS_BOTTOM)
+	_GUICtrlSlider_SetTicFreq(-1, 2)
+	GUICtrlSetLimit(-1, 50, 0) ; 50 position multiplied by 2
+	GUICtrlSetData(-1, Int($g_iAndroidControlClickAdditionalDelay / 2)) ; default value
+	GUICtrlSetBkColor(-1, $COLOR_WHITE)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	$x = 25
 	$y += $h + 5
 	$y2 = $y
 	$w = $g_iSizeWGrpTab2 - 2
@@ -58,6 +76,10 @@ Func CreateBotAndroid()
 		$g_hChkAndroidCloseWithBot = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkAndroidCloseWithBot", "Close Android with bot"), $x, $y, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAndroidCloseWithBot_Info", "Close also Android Emulator when bot exists."))
 			GUICtrlSetState(-1, (($g_bAndroidCloseWithBot) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
+
+		$g_hChkUseDedicatedAdbPort = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkUseDedicatedAdbPort", "Use dedicated ADB port"), $x + 217, $y, -1, -1)
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkUseDedicatedAdbPort_Info", "Use dedicated ADB instance on unique port. Disable can fix ""device offline"" issues."))
+			GUICtrlSetState(-1, (($g_bAndroidAdbPortPerInstance) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
 
 	$y += 25
 		$g_hChkUpdateSharedPrefs = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs", "Update shared_prefs"), $x, $y, -1, -1)

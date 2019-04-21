@@ -133,7 +133,6 @@ Func isEveryFileInstalled($bSilent = False)
 
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 		$MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "Ok", "Ok"), $sText1, $sText2, 0)
-		GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 	EndIf
 	If @Compiled Then ;if .exe
 		If Not StringInStr(@ScriptFullPath, "MyBot.run.exe", 1) Then ; if filename isn't MyBot.run.exe

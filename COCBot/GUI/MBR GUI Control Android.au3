@@ -104,12 +104,27 @@ Func cmbAndroidBackgroundMode()
 	UpdateAndroidBackgroundMode()
 EndFunc   ;==>cmbAndroidBackgroundMode
 
-func EnableShowTouchs()
+Func EnableShowTouchs()
 	AndroidAdbSendShellCommand("content insert --uri content://settings/system --bind name:s:show_touches --bind value:i:1")
 	SetDebugLog("EnableShowTouchs ON")
-EndFunc
+EndFunc   ;==>EnableShowTouchs
 
-func DisableShowTouchs()
+Func DisableShowTouchs()
 	AndroidAdbSendShellCommand("content insert --uri content://settings/system --bind name:s:show_touches --bind value:i:0")
 	SetDebugLog("EnableShowTouchs OFF")
-EndFunc
+EndFunc   ;==>DisableShowTouchs
+
+Func sldAdditionalClickDelay($bSetControls = False)
+	If $bSetControls Then
+		GUICtrlSetData($g_hSldAdditionalClickDelay, Int($g_iAndroidControlClickAdditionalDelay / 2))
+		GUICtrlSetData($g_hLblAdditionalClickDelay, $g_iAndroidControlClickAdditionalDelay & " ms")
+	Else
+		Local $iValue = GUICtrlRead($g_hSldAdditionalClickDelay) * 2
+		If $iValue <> $g_iAndroidControlClickAdditionalDelay Then
+			$g_iAndroidControlClickAdditionalDelay = $iValue
+			GUICtrlSetData($g_hLblAdditionalClickDelay, $g_iAndroidControlClickAdditionalDelay & " ms")
+		EndIf
+	EndIf
+	Opt("MouseClickDelay", GetClickUpDelay()) ;Default: 10 milliseconds
+	Opt("MouseClickDownDelay", GetClickDownDelay()) ;Default: 5 milliseconds
+EndFunc   ;==>sldAdditionalClickDelay

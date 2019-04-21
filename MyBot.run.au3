@@ -55,8 +55,8 @@ Opt("GUIEventOptions", 1) ; Handle minimize and restore for dock android support
 Opt("GUICloseOnESC", 0) ; Don't send the $GUI_EVENT_CLOSE message when ESC is pressed.
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
 Opt("GUIOnEventMode", 1)
-Opt("MouseClickDelay", $g_iAndroidControlClickDelay) ;Default: 10 milliseconds
-Opt("MouseClickDownDelay", $g_iAndroidControlClickDownDelay) ;Default: 2 milliseconds
+Opt("MouseClickDelay", GetClickUpDelay()) ;Default: 10 milliseconds
+Opt("MouseClickDownDelay", GetClickDownDelay()) ;Default: 5 milliseconds
 Opt("TrayMenuMode", 3)
 Opt("TrayOnEventMode", 1)
 
@@ -724,6 +724,7 @@ Func runBot() ;Bot that runs everything in order
 		If Not $g_bRunState Then Return
 		$g_bRestart = False
 		$g_bFullArmy = False
+		$g_bIsFullArmywithHeroesAndSpells = False
 		$g_iCommandStop = -1
 		If _Sleep($DELAYRUNBOT1) Then Return
 		checkMainScreen()
@@ -756,25 +757,19 @@ Func runBot() ;Bot that runs everything in order
 				ContinueLoop ; Restart bot loop to reset $g_iCommandStop & $g_bTrainEnabled + $g_bDonationEnabled via BotCommand()
 			EndIf
 			If $g_bOutOfElixir And (Number($g_aiCurrentLoot[$eLootElixir]) >= Number($g_iTxtRestartElixir)) And (Number($g_aiCurrentLoot[$eLootDarkElixir]) >= Number($g_iTxtRestartDark)) Then ; check if enough elixir to begin searching again
-				$g_bOutOfElixir = False ; reset out of gold flag
+				$g_bOutOfElixir = False ; reset out of elixir flag
 				SetLog("Switching back to normal setting after no elixir to train ...", $COLOR_SUCCESS)
 				ContinueLoop ; Restart bot loop to reset $g_iCommandStop & $g_bTrainEnabled + $g_bDonationEnabled via BotCommand()
 			EndIf
 			If _Sleep($DELAYRUNBOT5) Then Return
 			checkMainScreen(False)
 			If $g_bRestart Then ContinueLoop
-			Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard']
-			While 1
+			Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard', 'CollectFreeMagicItems']
+			While UBound($aRndFuncList) > 0
 				If $g_bRunState = False Then Return
-				If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
-				If UBound($aRndFuncList) > 1 Then
-					Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
-					_RunFunction($aRndFuncList[$Index])
-					_ArrayDelete($aRndFuncList, $Index)
-				Else
-					_RunFunction($aRndFuncList[0])
-					ExitLoop
-				EndIf
+				Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
+				_RunFunction($aRndFuncList[$Index])
+				_ArrayDelete($aRndFuncList, $Index)
 				If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			WEnd
 
@@ -784,66 +779,57 @@ Func runBot() ;Bot that runs everything in order
 			If $g_bRunState = False Then Return
 			If $g_bRestart = True Then ContinueLoop
 			If IsSearchAttackEnabled() Then ; if attack is disabled skip reporting, requesting, donating, training, and boosting
-				Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC,Train', 'RequestCC', 'CollectFreeMagicItems']
-				While 1
+				Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC', 'RequestCC']
+				While UBound($aRndFuncList) > 0
 					If $g_bRunState = False Then Return
+					Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
+					_RunFunction($aRndFuncList[$Index])
+					_ArrayDelete($aRndFuncList, $Index)
 					If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
-					If UBound($aRndFuncList) > 1 Then
-						Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
-						_RunFunction($aRndFuncList[$Index])
-						_ArrayDelete($aRndFuncList, $Index)
-					Else
-						_RunFunction($aRndFuncList[0])
-						ExitLoop
-					EndIf
 					If CheckAndroidReboot() = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 				WEnd
 				BoostEverything() ; 1st Check if is to use Training Potion
-				Local $aRndFuncList = ['BoostBarracks', 'BoostSpellFactory', 'BoostKing', 'BoostQueen', 'BoostWarden']
-				While 1
+				If $g_bRestart = True Then ContinueLoop
+				Local $aRndFuncList = ['BoostBarracks', 'BoostSpellFactory', 'BoostWorkshop', 'BoostKing', 'BoostQueen', 'BoostWarden']
+				While UBound($aRndFuncList) > 0
 					If $g_bRunState = False Then Return
+					Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
+					_RunFunction($aRndFuncList[$Index])
+					_ArrayDelete($aRndFuncList, $Index)
 					If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
-					If UBound($aRndFuncList) > 1 Then
-						Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
-						_RunFunction($aRndFuncList[$Index])
-						_ArrayDelete($aRndFuncList, $Index)
-					Else
-						_RunFunction($aRndFuncList[0])
-						ExitLoop
-					EndIf
 					If CheckAndroidReboot() = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 				WEnd
 
 				If $g_bRunState = False Then Return
-				If $g_bRestart = True Then ContinueLoop
 				If $g_iUnbrkMode >= 1 Then
 					If Unbreakable() = True Then ContinueLoop
 				EndIf
+				If $g_bRestart = True Then ContinueLoop
 			EndIf
-			If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then ; Train Donate only - force a donate cc everytime, Ignore any SkipDonate Near Full Values
-				If BalanceDonRec(True) Then DonateCC()
-			EndIf
-			Local $aRndFuncList = ['Laboratory', 'UpgradeHeroes', 'UpgradeBuilding', 'BuilderBase']
-			While 1
+			; Train Donate only - force a donate cc everytime
+			If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then _RunFunction('DonateCC,Train')
+			If $g_bRestart = True Then ContinueLoop
+			Local $aRndFuncList = ['Laboratory', 'UpgradeHeroes', 'UpgradeBuilding']
+			While UBound($aRndFuncList) > 0
 				If $g_bRunState = False Then Return
+				Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
+				_RunFunction($aRndFuncList[$Index])
+				_ArrayDelete($aRndFuncList, $Index)
 				If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
-				If UBound($aRndFuncList) > 1 Then
-					$Index = Random(0, UBound($aRndFuncList) - 1, 1)
-					_RunFunction($aRndFuncList[$Index])
-					_ArrayDelete($aRndFuncList, $Index)
-				Else
-					_RunFunction($aRndFuncList[0])
-					ExitLoop
-				EndIf
+				If CheckAndroidReboot() = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
+			WEnd
+			; Ensure, that wall upgrade is last of the upgrades
+			Local $aRndFuncList = ['UpgradeWall', 'BuilderBase']
+			While UBound($aRndFuncList) > 0
+				If $g_bRunState = False Then Return
+				Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
+				_RunFunction($aRndFuncList[$Index])
+				_ArrayDelete($aRndFuncList, $Index)
+				If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 				If CheckAndroidReboot() = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			WEnd
 			If $g_bRunState = False Then Return
-			If $g_bRestart = True Then ContinueLoop
 			If IsSearchAttackEnabled() Then ; If attack scheduled has attack disabled now, stop wall upgrades, and attack.
-				$g_iNbrOfWallsUpped = 0
-				UpgradeWall()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If $g_bRestart = True Then ContinueLoop
 				If ProfileSwitchAccountEnabled() And $g_abDonateOnly[$g_iCurAccount] Then checkSwitchAcc()
 				Idle()
 				;$g_bFullArmy1 = $g_bFullArmy
@@ -905,7 +891,6 @@ Func Idle() ;Sequence that runs until Full Army
 EndFunc   ;==>Idle
 
 Func _Idle() ;Sequence that runs until Full Army
-	Static $iCollectCounter = 0 ; Collect counter, when reaches $g_iCollectAtCount, it will collect
 
 	Local $TimeIdle = 0 ;In Seconds
 	If $g_bDebugSetlog Then SetDebugLog("Func Idle ", $COLOR_DEBUG)
@@ -930,30 +915,26 @@ Func _Idle() ;Sequence that runs until Full Army
 				$g_iCommandStop = 0
 			EndIf
 		EndIf
-		ReplayShare($g_bShareAttackEnableNow)
-		If _Sleep($DELAYIDLE1) Then Return
 		If $g_bRestart = True Then ExitLoop
-		If $iCollectCounter > $g_iCollectAtCount Then ; This is prevent from collecting all the time which isn't needed anyway
-			Local $aRndFuncList = ['Collect', 'CheckTombs', 'DonateCC', 'CleanYard']
-			While 1
+		If Random(0, $g_iCollectAtCount - 1, 1) = 0 Then ; This is prevent from collecting all the time which isn't needed anyway, chance to run is 1/$g_iCollectAtCount
+			Local $aRndFuncList = ['Collect', 'CheckTombs', 'RequestCC', 'DonateCC', 'CleanYard']
+			While UBound($aRndFuncList) > 0
 				If $g_bRunState = False Then Return
+				Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
+				_RunFunction($aRndFuncList[$Index])
+				_ArrayDelete($aRndFuncList, $Index)
 				If $g_bRestart = True Then ExitLoop
 				If CheckAndroidReboot() Then ContinueLoop 2
-				If UBound($aRndFuncList) > 1 Then
-					Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
-					_RunFunction($aRndFuncList[$Index])
-					_ArrayDelete($aRndFuncList, $Index)
-				Else
-					_RunFunction($aRndFuncList[0])
-					ExitLoop
-				EndIf
 			WEnd
 			If $g_bRunState = False Then Return
 			If $g_bRestart = True Then ExitLoop
 			If _Sleep($DELAYIDLE1) Or $g_bRunState = False Then ExitLoop
-			$iCollectCounter = 0
+		ElseIf $g_bCheckDonateOften Then
+			_RunFunction('DonateCC')
+			If $g_bRunState = False Then Return
+			If $g_bRestart = True Then ExitLoop
+			If _Sleep($DELAYIDLE1) Or $g_bRunState = False Then ExitLoop
 		EndIf
-		$iCollectCounter = $iCollectCounter + 1
 		AddIdleTime()
 		checkMainScreen(False) ; required here due to many possible exits
 		If $g_iCommandStop = -1 Then
@@ -1005,10 +986,8 @@ Func _Idle() ;Sequence that runs until Full Army
 		EndIf
 		If _Sleep($DELAYIDLE1) Then Return
 		If $g_bRestart = True Then ExitLoop
+
 		$TimeIdle += Round(__TimerDiff($hTimer) / 1000, 2) ;In Seconds
-
-		If $g_bCanRequestCC = True Then RequestCC()
-
 		SetLog("Time Idle: " & StringFormat("%02i", Floor(Floor($TimeIdle / 60) / 60)) & ":" & StringFormat("%02i", Floor(Mod(Floor($TimeIdle / 60), 60))) & ":" & StringFormat("%02i", Floor(Mod($TimeIdle, 60))))
 
 		If $g_bOutOfGold = True Or $g_bOutOfElixir = True Then Return ; Halt mode due low resources, only 1 idle loop
@@ -1172,16 +1151,20 @@ Func _RunFunction($action)
 			_Sleep($DELAYRUNBOT3)
 		Case "DonateCC"
 			If $g_iActiveDonate And $g_bChkDonate Then
-				If SkipDonateNearFullTroops(True) = False And BalanceDonRec(True) Then DonateCC()
+				; if in "Halt/Donate" don't skip near full army
+				If (SkipDonateNearFullTroops(True) = False Or $g_iCommandStop = 3 Or $g_iCommandStop = 0) And BalanceDonRec(True) Then DonateCC()
 				If _Sleep($DELAYRUNBOT1) = False Then checkMainScreen(False)
 			EndIf
 		Case "DonateCC,Train"
 			If $g_iActiveDonate And $g_bChkDonate Then
 				If $g_bFirstStart Then
 					getArmyTroopCapacity(True, False)
+					If _Sleep($DELAYRESPOND) Then Return
 					getArmySpellCapacity(False, True)
+					If _Sleep($DELAYRESPOND) Then Return
 				EndIf
-				If SkipDonateNearFullTroops(True) = False And BalanceDonRec(True) Then DonateCC()
+				; if in "Halt/Donate" don't skip near full army
+				If (SkipDonateNearFullTroops(True) = False Or $g_iCommandStop = 3 Or $g_iCommandStop = 0) And BalanceDonRec(True) Then DonateCC()
 			EndIf
 			If _Sleep($DELAYRUNBOT1) = False Then checkMainScreen(False)
 			If $g_bTrainEnabled Then ; check for training enabled in halt mode
@@ -1196,7 +1179,9 @@ Func _RunFunction($action)
 						$g_iActualTrainSkip = 0
 					EndIf
 					CheckOverviewFullArmy(True, False) ; use true parameter to open train overview window
+					If _Sleep($DELAYRESPOND) Then Return
 					getArmySpells()
+					If _Sleep($DELAYRESPOND) Then Return
 					getArmyHeroCount(False, True)
 				EndIf
 			Else
@@ -1204,16 +1189,25 @@ Func _RunFunction($action)
 			EndIf
 		Case "BoostBarracks"
 			BoostBarracks()
+			_Sleep($DELAYRESPOND)
 		Case "BoostSpellFactory"
 			BoostSpellFactory()
+			_Sleep($DELAYRESPOND)
+		Case "BoostWorkshop"
+			BoostWorkshop()
+			_Sleep($DELAYRESPOND)
 		Case "BoostKing"
 			BoostKing()
+			_Sleep($DELAYRESPOND)
 		Case "BoostQueen"
 			BoostQueen()
+			_Sleep($DELAYRESPOND)
 		Case "BoostWarden"
 			BoostWarden()
+			_Sleep($DELAYRESPOND)
 		Case "BoostEverything"
 			BoostEverything()
+			_Sleep($DELAYRESPOND)
 		Case "LabCheck"
 			LabGuiDisplay()
 			_Sleep($DELAYRUNBOT3)
@@ -1228,24 +1222,40 @@ Func _RunFunction($action)
 			_Sleep($DELAYRUNBOT3)
 		Case "UpgradeBuilding"
 			UpgradeBuilding()
-			_Sleep($DELAYRUNBOT3)
+			If _Sleep($DELAYRUNBOT3) Then Return
 			AutoUpgrade()
+			_Sleep($DELAYRUNBOT3)
+		Case "UpgradeWall"
+			$g_iNbrOfWallsUpped = 0
+			UpgradeWall()
 			_Sleep($DELAYRUNBOT3)
 		Case "BuilderBase"
 			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades) And SwitchBetweenBases()) Then
 				$g_bOnBuilderBase = True
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
 				BuilderBaseReport()
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
 				CollectBuilderBase()
-				_Sleep($DELAYRUNBOT3)
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
 				StartClockTowerBoost()
-				_Sleep($DELAYRUNBOT3)
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
 				StarLaboratory()
-				_Sleep($DELAYRUNBOT3)
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
 				CleanBBYard()
-				_Sleep($DELAYRUNBOT3)
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
 				MainSuggestedUpgradeCode()
-				; switch back to normal village
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
 				BuilderBaseReport()
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
+				; switch back to normal village
 				SwitchBetweenBases()
 				$g_bOnBuilderBase = False
 			EndIf

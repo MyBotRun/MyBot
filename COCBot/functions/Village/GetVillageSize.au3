@@ -25,7 +25,7 @@
 ; ===============================================================================================================================
 
 Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix = Default, $sFixedPrefix = Default, $bOnBuilderBase = Default)
-
+	FuncEnter(GetVillageSize)
 	If $DebugLog = Default Then $DebugLog = False
 	If $sStonePrefix = Default Then $sStonePrefix = "stone"
 	If $sTreePrefix = Default Then $sTreePrefix = "tree"
@@ -53,7 +53,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & "*.*", $FLTA_FILES)
 	If @error Then
 		SetLog("Error: Missing stone files (" & @error & ")", $COLOR_ERROR)
-		Return $aResult
+		Return FuncReturn($aResult)
 	EndIf
 	; use stoneBlueStacks2A stones first
 	Local $iNewIdx = 1
@@ -68,7 +68,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	Local $aTreeFiles = _FileListToArray($sDirectory, $sTreePrefix & "*.*", $FLTA_FILES)
 	If @error Then
 		SetLog("Error: Missing tree (" & @error & ")", $COLOR_ERROR)
-		Return $aResult
+		Return FuncReturn($aResult)
 	EndIf
 	Local $i, $findImage, $sArea, $a
 
@@ -144,9 +144,9 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		EndIf
 	Next
 
-	If $stone[0] = 0 And $fixed[0] = 0 And Not $g_bRestart Then
+	If $stone[0] = 0 And $fixed[0] = 0 Then
 		SetDebugLog("GetVillageSize cannot find stone", $COLOR_WARNING)
-		Return $aResult
+		Return FuncReturn($aResult)
 	EndIf
 
 	If $stone[0] Then
@@ -192,7 +192,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 
 		If $tree[0] = 0 And $fixed[0] = 0 And Not $g_bRestart Then
 			SetDebugLog("GetVillageSize cannot find tree", $COLOR_WARNING)
-			Return $aResult
+			Return FuncReturn($aResult)
 		EndIf
 	EndIf
 
@@ -201,6 +201,10 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	Local $b = $stone[1] - $tree[1]
 	Local $c = Sqrt($a * $a + $b * $b) - $stone[4] - $tree[4]
 
+	If $g_bUpdateSharedPrefs And Not $bOnBuilderBase And $fixed[0] = 0 And $c >= 500 Then
+		; On main village use stone as fixed point when village size is too large, as that might cause an infinite loop when obstacle blocked (and another tree found)
+		$fixed = $stone
+	EndIf
 
 	; initial reference village had a width of 473.60282919315 (and not 440) and stone located at 226, 567, so center on that reference and used zoom factor on that size
 	;Local $z = $c / 473.60282919315 ; don't use size of 440, as beta already using reference village
@@ -229,14 +233,15 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$aResult[7] = $tree[0]
 		$aResult[8] = $tree[1]
 		$aResult[9] = $tree[5]
-		Return $aResult
+		Return FuncReturn($aResult)
 
 	Else
 
 		; used fixed tile position for village offset
-
-		If $tree[0] = 0 Or $stone[0] = 0 Then
-			; missing a tile
+		Local $bReset = $g_bUpdateSharedPrefs And $c >= 500
+		If $tree[0] = 0 Or $stone[0] = 0 Or $bReset Then
+			; missing a tile or reset required
+			If $bReset Then SetDebugLog("GetVillageSize resets village size from " & $c & " to " & $iDefSize, $COLOR_WARNING)
 			$c = $iDefSize
 			$z = $iDefSize / $iRefSize
 		EndIf
@@ -257,9 +262,11 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$aResult[7] = $tree[0]
 		$aResult[8] = $tree[1]
 		$aResult[9] = $tree[5]
-		Return $aResult
+		Return FuncReturn($aResult)
 
 	EndIf
+
+	FuncReturn()
 
 EndFunc   ;==>GetVillageSize
 

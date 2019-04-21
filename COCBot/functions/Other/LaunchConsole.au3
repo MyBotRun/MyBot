@@ -26,9 +26,7 @@ Global $g_RunPipe_StdOut = [0, 0] ; pipe read/write handles
 Global $g_RunPipe_hProcess = 0
 Global $g_RunPipe_hThread = 0
 
-Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False)
-
-	Local $bDebug = $g_bDebugSetlog Or $g_bDebugAndroid
+Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False, $bNoLog = False)
 
 	If $bUseSemaphore Then
 		Local $hSemaphore = LockSemaphore(StringReplace($cmd, "\", "/"), "Waiting to launch: " & $cmd)
@@ -36,17 +34,15 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 
 	Local $data, $pid, $hStdIn[2], $hStdOut[2], $hTimer, $hProcess, $hThread
 
-
 	If StringLen($param) > 0 Then $cmd &= " " & $param
 
 	$hTimer = __TimerInit()
 	$process_killed = False
 
-	If $bDebug Then SetLog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG) ; Debug Run
+	If Not $bNoLog Then SetDebugLog("Func LaunchConsole: " & $cmd, $COLOR_DEBUG) ; Debug Run
 	$pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut, $hProcess, $hThread)
-	If $bDebug Then SetLog("Func LaunchConsole: command launched", $COLOR_DEBUG)
 	If $pid = 0 Then
-		SetLog("Launch faild: " & $cmd, $COLOR_ERROR)
+		SetLog("Launch failed: " & $cmd, $COLOR_ERROR)
 		If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
 		Return
 	EndIf
@@ -61,7 +57,7 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 
 	If ProcessExists($pid) Then
 		If ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread) = 1 Then
-			If $bDebug Then SetLog("Process killed: " & $cmd, $COLOR_ERROR)
+			If Not $bNoLog Then SetDebugLog("Process killed: " & $cmd, $COLOR_ERROR)
 			$process_killed = True
 		EndIf
 	Else
@@ -71,7 +67,7 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 	$g_RunPipe_hThread = 0
 	CleanLaunchOutput($data)
 
-	If $bDebug Then SetLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG) ; Debug Run Output
+	If Not $bNoLog Then SetDebugLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG) ; Debug Run Output
 	If $bUseSemaphore Then UnlockSemaphore($hSemaphore)
 	Return $data
 EndFunc   ;==>LaunchConsole

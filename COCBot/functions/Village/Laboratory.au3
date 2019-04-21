@@ -88,6 +88,11 @@ Func Laboratory()
 	$g_iLaboratoryDElixirCost = 0
 	If Not $g_bAutoLabUpgradeEnable Then Return ; Lab upgrade not enabled.
 
+	If $g_iTownHallLevel < 3 Then
+		SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Lab.", $COLOR_ERROR)
+		Return
+	EndIf
+
 	If $g_aiLaboratoryPos[0] = 0 Or $g_aiLaboratoryPos[1] = 0 Then
 		SetLog("Laboratory Location not found!", $COLOR_WARNING)
 		LocateLab() ; Lab location unknown, so find it.

@@ -213,7 +213,7 @@ Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $ma
 			ElseIf IsArray($aCoords) Then
 				Local $aReturnResult[0][2]
 				For $i = 1 To Ubound($aCoords) - 1
-					_ArrayAdd($aReturnResult, StringReplace($aCoords[$i], ",", "|"), 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
+					_ArrayAdd($aReturnResult, $aCoords[$i], 0, ",", @CRLF, $ARRAYFILL_FORCE_NUMBER)
 				Next
 				Return $aReturnResult ; return 2D array
 			EndIf
@@ -247,7 +247,7 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = "357,545|502,545|502,607|357,607"
 		Case "Next" ; attackpage attackwindow
 			$btnDiamond = "697,542|850,542|850,610|697,610"
-		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research" ; Full size of object buttons at the bottom
+		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury" ; Full size of object buttons at the bottom
 			$btnDiamond = GetDiamondFromRect("140,591,720,671")
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
 			$btnDiamond = GetDiamondFromRect("359,412(148,66)")
@@ -271,8 +271,6 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = "282,85|306,85|306,130|282,130"
 		Case "DownDonation" ;mainwindow - only when chat window is visible
 			$btnDiamond = "282,635|306,635|306,680|282,680"
-		Case "Treasury"
-			$btnDiamond = "125,610|740,610|740,715|125,715"
 		Case "Collect"
 			$btnDiamond = "350,450|505,450|505,521|350,521"
 		Case "BoostBarrack", "BarrackBoosted"

@@ -1,4 +1,27 @@
-﻿* **V7.7.4**
+﻿* **V7.7.5**
+* April Update Fixed collect treasury
+* April Update Fixed boost potion thx @mitzu
+* Added new conditions "50%", "AQ", "BK", "GW" and "AQ+BK" to csv WAIT command
+*       see CSV HowTo Guide for usage
+* Added possibility to check for donations every idle round
+* Added boost option for siege workshop thx @mitzu
+* Added Bot/Android "Additional Click Delay" general option to delay Android clicks (additional delay is now 10ms)
+* Fixed pushing shared_prefs when profile contains spaces
+* Fixed wall upgrade
+* Fixed Nox v6.2.x nox_adb.exe crash by replacing it with MyBot.run.adb.dummy.exe
+* Fixed Nox shared folder detection
+* Fixed "Cannot replace [Android emulator] ADB with MyBot.run version" by kill adb process
+* Fixed new shared_prefs zoomout causing CoC/Android restart loop when obstacle blocks tree
+* Fixed CoC Google Connect popup with pushing shared_pref
+* Fixed setting bot dpi aware when screen is scaled and Android using screencap
+* Fixed shared_prefs zoomout not working when clan games results are available
+* Improved forum authentication on internet or forum error retrying for 1 Minute
+* Improved Abndroid "device offline" issues and added Bot/Android "Use dedicated ADB port" default is disabled
+* Improved shared_prefs zoomout not centering home base
+* Improved BlueStacks launch failure when registy screen settings is wrong
+* Revert adb version to 28.0.1 (Aug 2018)
+
+* **V7.7.4**
 * April Update Fixed loot cart
 * April Update Fixed building info positions
 * April Update Fixed building icon positions
@@ -18,9 +41,9 @@
 * Fixed KOPLAYER 2.0 additional instance support and screen resolution detection
 * Fixed Rage detected as Skeleton spell
 * Fixed train cost by @DUC4TI
-* Fixed Nox v6.2.8 nox_adb.exe crash by replacing it with MyBot.run.adb.dmmy.exe
+* Fixed Nox v6.2.8 nox_adb.exe crash by replacing it with MyBot.run.adb.dummy.exe
 * Improved shared folder detection
-* Imporved zoomout behaviour when "Update shared_prefs" is enabled and selected in zoomout-mode to restart CoC rather than zooming out
+* Improved zoomout behavior when "Update shared_prefs" is enabled and selected in zoomout-mode to restart
 * Improved Builder Base zoomout when Bot/Android "Update shared_prefs" is enabled
 * Improved undocked Android Emulator windows to be grouped in taskbar
 * Updated adb version to 28.0.2 (March 2019)

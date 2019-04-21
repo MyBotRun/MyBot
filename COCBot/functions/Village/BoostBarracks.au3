@@ -1,7 +1,7 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: BoostBarracks.au3
 ; Description ...:
-; Syntax ........: BoostBarracks(), BoostSpellFactory()
+; Syntax ........: BoostBarracks(), BoostSpellFactory(), BoostWorkshop()
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: MR.ViPER (9/9/2016)
@@ -19,6 +19,10 @@ EndFunc   ;==>BoostBarracks
 Func BoostSpellFactory()
 	Return BoostTrainBuilding("Spell Factory", $g_iCmbBoostSpellFactory, $g_hCmbBoostSpellFactory)
 EndFunc   ;==>BoostSpellFactory
+
+Func BoostWorkshop()
+	Return BoostTrainBuilding("Workshop", $g_iCmbBoostWorkshop, $g_hCmbBoostWorkshop)
+EndFunc   ;==>BoostWorkshop
 
 Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 	Local $boosted = False
@@ -39,6 +43,9 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 			OpenTroopsTab(True, "BoostTrainBuilding()")
 		ElseIf $sName = "Spell Factory" Then
 			OpenSpellsTab(True, "BoostTrainBuilding()")
+			$sIsAre = "is"
+		ElseIf $sName = "Workshop" Then
+			OpenSiegeMachinesTab(True, "BoostTrainBuilding()")
 			$sIsAre = "is"
 		Else
 			SetDebugLog("BoostTrainBuilding(): $sName called with a wrong Value.", $COLOR_ERROR)
@@ -92,13 +99,13 @@ Func BoostEverything()
 	If AllowBoosting("Everything", $g_iCmbBoostEverything) = False Then Return
 
 	SetLog("Boosting Everything .....", $COLOR_INFO)
-	If $g_aiClanCastlePos[0] = "" Or $g_aiClanCastlePos[0] = -1 Then
-		LocateClanCastle()
+	If $g_aiTownHallPos[0] = "" Or $g_aiTownHallPos[0] = -1 Then
+		LocateTownHall()
 		SaveConfig()
 		If _Sleep($DELAYBOOSTBARRACKS2) Then Return
 	EndIf
 
-	Return BoostPotion("Everything", "Castle", $g_aiClanCastlePos, $g_iCmbBoostEverything, $g_hCmbBoostEverything) = _NowCalc()
+	Return BoostPotion("Everything", "Town Hall", $g_aiTownHallPos, $g_iCmbBoostEverything, $g_hCmbBoostEverything) = _NowCalc()
 	$g_aiTimeTrain[0] = 0 ; reset Troop remaining time
 	$g_aiTimeTrain[1] = 0 ; reset Spells remaining time
 	$g_aiTimeTrain[2] = 0 ; reset Heroes remaining time

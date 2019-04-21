@@ -141,9 +141,6 @@ Func InitKOPLAYER($bCheckOnly = False)
 	If Not $bCheckOnly Then
 		InitAndroidConfig(True) ; Restore default config
 
-		; to avoid KOPLAYER "device offline" problems, force to use default port
-		$g_bAndroidAdbPortPerInstance = False
-
 		If Not GetAndroidVMinfo($__VBoxVMinfo, $KOPLAYER_Manage_Path) Then Return False
 		; update global variables
 		$g_sAndroidProgramPath = $KOPLAYER_Path & "KOPLAYER.exe"

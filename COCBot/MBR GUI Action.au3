@@ -23,18 +23,12 @@ Func BotStart($bAutostartDelay = 0)
 	EndIf
 	SetLogCentered(" BOT LOG ", Default, Default, True)
 
-	If Not ForumAuthentication() Then
-		; not authenticated exit now, but restore controls first
-		EnableControls($g_hFrmBotBottom, Default, $g_aFrmBotBottomCtrlState)
-		SetRedrawBotWindow(True, Default, Default, Default, "BotStart")
-		Return FuncReturn()
-	EndIf
-
 	ResumeAndroid()
 	CleanSecureFiles()
 	CalCostCamp()
 	CalCostSpell()
 	CalCostSiege()
+	sldAdditionalClickDelay(True)
 
 	$g_bRunState = True
 	$g_bTogglePauseAllowed = True
@@ -85,6 +79,11 @@ Func BotStart($bAutostartDelay = 0)
 	DisableGuiControls()
 
 	SetRedrawBotWindow(True, Default, Default, Default, "BotStart")
+
+	If Not ForumAuthentication() Then
+		btnStop()
+		Return FuncReturn()
+	EndIf
 
 	If $bAutostartDelay Then
 		SetLog("Bot Auto Starting in " & Round($bAutostartDelay / 1000, 0) & " seconds", $COLOR_ERROR)
@@ -171,6 +170,7 @@ Func BotStop()
 	; update bottom buttons
 	GUICtrlSetState($g_hChkBackgroundMode, $GUI_ENABLE)
 	GUICtrlSetState($g_hBtnStart, $GUI_SHOW)
+	GUICtrlSetState($g_hBtnStart, $GUI_ENABLE)
 	GUICtrlSetState($g_hBtnStop, $GUI_HIDE)
 	GUICtrlSetState($g_hBtnPause, $GUI_HIDE)
 	GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
@@ -179,12 +179,12 @@ Func BotStop()
 	;GUICtrlSetState($g_hBtnMakeScreenshot, $GUI_ENABLE)
 
 	; hide attack buttons if show
-		GUICtrlSetState($g_hBtnAttackNowDB, $GUI_HIDE)
-		GUICtrlSetState($g_hBtnAttackNowLB, $GUI_HIDE)
-		GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
-		HideShields(False)
-		;GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
-		$g_bBtnAttackNowPressed = False
+	GUICtrlSetState($g_hBtnAttackNowDB, $GUI_HIDE)
+	GUICtrlSetState($g_hBtnAttackNowLB, $GUI_HIDE)
+	GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
+	HideShields(False)
+	;GUICtrlSetState($g_hLblVersion, $GUI_SHOW)
+	$g_bBtnAttackNowPressed = False
 
 	; update try items
 	TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Start", "Start bot"))
