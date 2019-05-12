@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.5)
+#pragma compile(FileVersion, 7.7.6)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.5"
+Global $g_sBotVersion = "v7.7.6"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -1112,9 +1112,24 @@ Local $aRet = DllCall('kernel32.dll', 'bool', 'DeleteFileW', 'wstr', $sFilePath)
 If @error Then Return SetError(@error, @extended, False)
 Return $aRet[0]
 EndFunc
+Global Const $MSGFLT_ALLOW = 1
 Global Const $HANDLE_FLAG_INHERIT = 0x00000001
 Global Const $MAPVK_VK_TO_CHAR = 2
 Global Const $HSHELL_WINDOWACTIVATED = 4
+Func _WinAPI_ChangeWindowMessageFilterEx($hWnd, $iMsg, $iAction)
+Local $tCFS, $aRet
+If $hWnd And($__WINVER > 0x0600) Then
+Local Const $tagCHANGEFILTERSTRUCT = 'dword cbSize; dword ExtStatus'
+$tCFS = DllStructCreate($tagCHANGEFILTERSTRUCT)
+DllStructSetData($tCFS, 1, DllStructGetSize($tCFS))
+$aRet = DllCall('user32.dll', 'bool', 'ChangeWindowMessageFilterEx', 'hwnd', $hWnd, 'uint', $iMsg, 'dword', $iAction, 'struct*', $tCFS)
+Else
+$tCFS = 0
+$aRet = DllCall('user32.dll', 'bool', 'ChangeWindowMessageFilter', 'uint', $iMsg, 'dword', $iAction)
+EndIf
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+Return SetExtended(DllStructGetData($tCFS, 2), 1)
+EndFunc
 Func _WinAPI_DeregisterShellHookWindow($hWnd)
 Local $aRet = DllCall('user32.dll', 'bool', 'DeregisterShellHookWindow', 'hwnd', $hWnd)
 If @error Then Return SetError(@error, @extended, False)
@@ -5621,6 +5636,7 @@ Global Const $CRYPT_VERIFYCONTEXT = 0xF0000000
 Global Const $HP_HASHSIZE = 0x0004
 Global Const $HP_HASHVAL = 0x0002
 Global Const $CRYPT_USERDATA = 1
+Global Const $CALG_MD5 = 0x00008003
 Global Const $CALG_SHA1 = 0x00008004
 Global $__g_aCryptInternalData[3]
 Func _Crypt_Startup()
@@ -5892,8 +5908,7 @@ Global $g_iAndroidClientHeight
 Global $g_iAndroidWindowWidth
 Global $g_iAndroidWindowHeight
 Global $g_bAndroidAdbUseMyBot = True
-Global $g_bAndroidAdbReplaceEmulatorVersion = True
-Global $g_bAndroidAdbReplaceEmulatorVersionWithDummy = False
+Global $g_iAndroidAdbReplace = 2
 Global $g_sAndroidAdbPath
 Global $g_sAndroidAdbGlobalOptions
 Global $g_sAndroidAdbDevice
@@ -6055,7 +6070,7 @@ Global Const $g_sIcnBldGold = @ScriptDir & "\Images\gold.png"
 Global Const $g_sIcnBldElixir = @ScriptDir & "\Images\elixir.png"
 Global Const $g_sIcnBldTrophy = @ScriptDir & "\Images\trophy.png"
 Global $g_iRedrawBotWindowMode = 2
-Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eBtnTest, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant, $eIcnTrap, $eIcnGoblin, $eIcnDonGoblin, $eIcnGold, $eIcnGolem, $eIcnDonGolem, $eIcnHealer, $eIcnDonHealer, $eIcnHogRider, $eIcnDonHogRider, $eIcnHealSpell, $eIcnInferno, $eIcnJumpSpell, $eIcnLavaHound, $eIcnDonLavaHound, $eIcnLightSpell, $eIcnMinion, $eIcnDonMinion, $eIcnPekka, $eIcnDonPekka, $eIcnTreasury, $eIcnRageSpell, $eIcnTroops, $eIcnHourGlass, $eIcnTH1, $eIcnTH10, $eIcnTrophy, $eIcnValkyrie, $eIcnDonValkyrie, $eIcnWall, $eIcnWallBreaker, $eIcnDonWallBreaker, $eIcnWitch, $eIcnDonWitch, $eIcnWizard, $eIcnDonWizard, $eIcnXbow, $eIcnBarrackBoost, $eIcnMine, $eIcnCamp, $eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnNotify, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack, $eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes, $eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnKing, $eIcnQueen, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenUpgr, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost, $eIcnQueenBoost, $eIcnWardenBoost, $eEmpty3, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain, $eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner, $eIcnNoShield, $eIcnDonCustomB, $eIcnAirdefense, $eIcnDarkBarrackBoost, $eIcnDarkElixirStorage, $eIcnSpellsCost, $eIcnTroopsCost, $eIcnResetButton, $eIcnNewSmartZap, $eIcnTrain, $eIcnAttack, $eIcnDelay, $eIcnReOrder, $eIcn2Arrow, $eIcnArrowLeft, $eIcnArrowRight, $eIcnAndroid, $eHdV04, $eHdV05, $eHdV06, $eHdV07, $eHdV08, $eHdV09, $eHdV10, $eHdV11, $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend, $eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, $eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield, $eIcnBattleB, $eIcnWallW, $eIcnSiegeCost, $eIcnBoostPotion, $eIcnBatSpell, $eIcnStoneS, $eIcnIceGolem, $eIcnStarLaboratory, $eIcnRagedBarbarian, $eIcnSneakyArcher, $eIcnBoxerGiant, $eIcnBetaMinion, $eIcnBomber, $eIcnBBBabyDragon, $eIcnCannonCart, $eIcnNightWitch, $eIcnDropShip, $eIcnSuperPekka, $eIcnBBWall01, $eIcnBBWall02, $eIcnBBWall03, $eIcnBBWall04, $eIcnBBWall05, $eIcnBBWall06, $eIcnBBWall07, $eIcnBBWall08
+Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eBtnTest, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant, $eIcnTrap, $eIcnGoblin, $eIcnDonGoblin, $eIcnGold, $eIcnGolem, $eIcnDonGolem, $eIcnHealer, $eIcnDonHealer, $eIcnHogRider, $eIcnDonHogRider, $eIcnHealSpell, $eIcnInferno, $eIcnJumpSpell, $eIcnLavaHound, $eIcnDonLavaHound, $eIcnLightSpell, $eIcnMinion, $eIcnDonMinion, $eIcnPekka, $eIcnDonPekka, $eIcnTreasury, $eIcnRageSpell, $eIcnTroops, $eIcnHourGlass, $eIcnTH1, $eIcnTH10, $eIcnTrophy, $eIcnValkyrie, $eIcnDonValkyrie, $eIcnWall, $eIcnWallBreaker, $eIcnDonWallBreaker, $eIcnWitch, $eIcnDonWitch, $eIcnWizard, $eIcnDonWizard, $eIcnXbow, $eIcnBarrackBoost, $eIcnMine, $eIcnCamp, $eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnNotify, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack, $eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes, $eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnKing, $eIcnQueen, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenUpgr, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost, $eIcnQueenBoost, $eIcnWardenBoost, $eEmpty3, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain, $eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner, $eIcnNoShield, $eIcnDonCustomB, $eIcnAirdefense, $eIcnDarkBarrackBoost, $eIcnDarkElixirStorage, $eIcnSpellsCost, $eIcnTroopsCost, $eIcnResetButton, $eIcnNewSmartZap, $eIcnTrain, $eIcnAttack, $eIcnDelay, $eIcnReOrder, $eIcn2Arrow, $eIcnArrowLeft, $eIcnArrowRight, $eIcnAndroid, $eHdV04, $eHdV05, $eHdV06, $eHdV07, $eHdV08, $eHdV09, $eHdV10, $eHdV11, $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend, $eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, $eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield, $eIcnBattleB, $eIcnWallW, $eIcnSiegeCost, $eIcnBoostPotion, $eIcnBatSpell, $eIcnStoneS, $eIcnIceGolem, $eIcnStarLaboratory, $eIcnRagedBarbarian, $eIcnSneakyArcher, $eIcnBoxerGiant, $eIcnBetaMinion, $eIcnBomber, $eIcnBBBabyDragon, $eIcnCannonCart, $eIcnNightWitch, $eIcnDropShip, $eIcnSuperPekka, $eIcnBBWall01, $eIcnBBWall02, $eIcnBBWall03, $eIcnBBWall04, $eIcnBBWall05, $eIcnBBWall06, $eIcnBBWall07, $eIcnBBWall08, $eIcnWorkshopBoost, $eIcnStrongMan, $eIcnPowerPotion
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
 Global $eIcnAchievements = $eIcnMain
@@ -6256,7 +6271,7 @@ Global $g_aUpgradeNameLevel
 Global $g_aUpgradeResourceCostDuration[3] = ["", "", ""]
 Global $g_iChkBBSuggestedUpgrades = 0, $g_iChkBBSuggestedUpgradesIgnoreGold = 0, $g_iChkBBSuggestedUpgradesIgnoreElixir = 0, $g_iChkBBSuggestedUpgradesIgnoreHall = 0
 Global $g_iChkPlacingNewBuildings = 0
-Global $g_bOnBuilderBase = False
+Global $g_bStayOnBuilderBase = False
 Global $g_iQuickMISX = 0, $g_iQuickMISY = 0
 Global $g_iUnbrkMode = 0, $g_iUnbrkWait = 5
 Global $g_iUnbrkMinGold = 50000, $g_iUnbrkMinElixir = 50000, $g_iUnbrkMaxGold = 600000, $g_iUnbrkMaxElixir = 600000, $g_iUnbrkMinDark = 5000, $g_iUnbrkMaxDark = 6000
@@ -6290,6 +6305,7 @@ Global $g_bTotalCampForced = False, $g_iTotalCampForcedValue = 200
 Global $g_bForceBrewSpells = False
 Global $g_iTotalSpellValue = 0
 Global $g_bDoubleTrain
+Global $g_bAllBarracksUpgd = False
 Global $g_iCmbBoostBarracks = 0, $g_iCmbBoostSpellFactory = 0, $g_iCmbBoostWorkshop = 0, $g_iCmbBoostBarbarianKing = 0, $g_iCmbBoostArcherQueen = 0, $g_iCmbBoostWarden = 0, $g_iCmbBoostEverything = 0
 Global $g_abBoostBarracksHours[24] = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
 Global Const $g_aiTroopOrderIcon[23] = [ $eIcnOptions, $eIcnBarbarian, $eIcnArcher, $eIcnGiant, $eIcnGoblin, $eIcnWallBreaker, $eIcnBalloon, $eIcnWizard, $eIcnHealer, $eIcnDragon, $eIcnPekka, $eIcnBabyDragon, $eIcnMiner, $eIcnElectroDragon, $eIcnMinion, $eIcnHogRider, $eIcnValkyrie, $eIcnGolem, $eIcnWitch, $eIcnLavaHound, $eIcnBowler, $eIcnIceGolem]
@@ -8204,7 +8220,6 @@ $g_sAndroidAdbInstanceShellOptions = $g_sAndroidAdbInstanceShellOptionsDefault
 $g_sAndroidAdbShellOptions = ""
 $g_iAndroidRecoverStrategy = $g_iAndroidRecoverStrategyDefault
 $g_iAndroidAdbMinitouchMode = $g_iAndroidAdbMinitouchModeDefault
-$g_bAndroidAdbReplaceEmulatorVersionWithDummy = False
 $g_PushedSharedPrefsProfile = ""
 $g_PushedSharedPrefsProfile_Timer = 0
 If $g_bAndroidAdbScreencap Then
@@ -8750,10 +8765,10 @@ Local $adbPath = Execute("Get" & $g_sAndroidEmulator & "AdbPath()")
 Local $sAdbFolder = StringLeft($adbPath, StringInStr($adbPath, "\", 0, -1))
 Local $sAdbFile = StringMid($adbPath, StringLen($sAdbFolder) + 1)
 Local $sRealAdb = @ScriptDir & "\lib\adb\adb.exe"
-Local $sDummyAdb = @ScriptDir & "\MyBot.run.adb.dummy.exe"
-Local $bDummy = $g_bAndroidAdbReplaceEmulatorVersionWithDummy And FileExists($sDummyAdb)
+Local $sDummyAdb = @ScriptDir & "\lib\DummyExe.exe"
+Local $bDummy = $g_iAndroidAdbReplace = 2 And FileExists($sDummyAdb)
 Local $sAdb =($bDummy ? $sDummyAdb : $sRealAdb)
-If $g_bAndroidAdbReplaceEmulatorVersion And $adbPath And FileExists($sAdb) And(Not $bDummy Or(FileExists(@ScriptDir & "\lib\adb\" & $aDll[0]) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[1]))) And(FileGetSize($adbPath) <> FileGetSize($sAdb) Or(Not $bDummy And(FileGetSize($sAdbFolder & $aDll[0]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[0]) Or FileGetSize($sAdbFolder & $aDll[1]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[1])))) Then
+If $g_iAndroidAdbReplace And $adbPath And FileExists($sAdb) And(Not $bDummy Or(FileExists(@ScriptDir & "\lib\adb\" & $aDll[0]) And FileExists(@ScriptDir & "\lib\adb\" & $aDll[1]))) And(FileGetSize($adbPath) <> FileGetSize($sAdb) Or(Not $bDummy And(FileGetSize($sAdbFolder & $aDll[0]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[0]) Or FileGetSize($sAdbFolder & $aDll[1]) <> FileGetSize(@ScriptDir & "\lib\adb\" & $aDll[1])))) Then
 Local $aAdbProcess = ProcessesExist($adbPath)
 For $i = 0 To UBound($aAdbProcess) -1
 KillProcess($aAdbProcess[$i], "FindPreferredAdbPath")
@@ -9036,11 +9051,15 @@ Func StartAndroidCoC()
 FuncEnter(StartAndroidCoC)
 Return FuncReturn(RestartAndroidCoC(False, False, False))
 EndFunc
-Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True)
+Func RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True, $iRetry = 0)
+Static $iRecursive = -1
 FuncEnter(RestartAndroidCoC)
-Return FuncReturn(_RestartAndroidCoC($bInitAndroid, $bRestart, $bStopCoC))
+$iRecursive += 1
+Local $Result = _RestartAndroidCoC($bInitAndroid, $bRestart, $bStopCoC, $iRetry, $iRecursive)
+$iRecursive -= 1
+Return FuncReturn()
 EndFunc
-Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True)
+Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True, $iRetry = 0, $iRecursive = 0)
 ClearClicks()
 $g_bSkipFirstZoomout = False
 ResumeAndroid()
@@ -9065,10 +9084,10 @@ ConnectAndroidAdb()
 If Not $g_bRunState Then Return False
 If Not $g_bRunState Then Return False
 If((ProfileSwitchAccountEnabled() And $g_bChkSharedPrefs) Or $g_bUpdateSharedPrefs) And HaveSharedPrefs() And($g_bUpdateSharedPrefs Or $g_PushedSharedPrefsProfile <> $g_sProfileCurrentName Or($g_PushedSharedPrefsProfile_Timer = 0 Or __TimerDiff($g_PushedSharedPrefsProfile_Timer) > 120000)) Then PushSharedPrefs()
-$cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 60000)
+$cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 15000)
 If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
 SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_ERROR)
-SetLog("Unable to continue........", $COLOR_WARNING)
+SetLog("Unable to continue........", $COLOR_ERROR)
 btnStop()
 SetError(1, 1, -1)
 Return False
@@ -9082,6 +9101,36 @@ EndIf
 If Not $g_bRunState Then Return False
 AndroidAdbLaunchShellInstance()
 InitAndroidTimeLag()
+If _SleepStatus(3000) Then Return False
+If GetAndroidProcessPID(Default, False) = 0 And @error = 0 Then
+If $iRetry > 2 And $iRecursive > 2 Then
+SetLog("Unable to load Clash of Clans ! ! !", $COLOR_ERROR)
+SetLog("Please check Clash of Clans and Android installation.", $COLOR_ERROR)
+SetLog("Reinstalling Clash of Clans or Android might fix the problem.", $COLOR_ERROR)
+SetLog("Unable to continue........", $COLOR_ERROR)
+btnStop()
+SetError(1, 1, -1)
+Return False
+Else
+If $iRetry > 2 Then
+SetLog("Unable to load Clash of Clans, close Android and retry...", $COLOR_ERROR)
+CloseAndroid("_RestartAndroidCoC")
+Return OpenAndroid(True)
+EndIf
+$iRetry += 1
+SetLog("Unable to load Clash of Clans, " & $iRetry & ". retry...", $COLOR_ERROR)
+If $iRetry = 2 And $iRecursive = 0 And HaveSharedPrefs() Then
+$cmdOutput = AndroidAdbSendShellCommand("set export=$(pm clear " & $g_sAndroidGamePackage & " >&2)", 15000)
+If StringInStr($cmdOutput, "Success") Then
+SetLog("Clash of Clans cache now cleared", $COLOR_SUCCESS)
+Else
+SetLog("Clash of Clans cache not cleared: " & $cmdOutput, $COLOR_ERROR)
+EndIf
+EndIf
+If _SleepStatus(5000) Then Return False
+Return _RestartAndroidCoC($bInitAndroid, $bRestart, $bStopCoC, $iRetry, $iRecursive)
+EndIf
+EndIf
 Return True
 EndFunc
 Func ResetAndroidProcess()
@@ -9498,8 +9547,12 @@ Local $bWasActive = $bAndroidAdbLaunchShellInstanceActive
 FuncEnter(AndroidAdbLaunchShellInstance)
 $bAndroidAdbLaunchShellInstanceActive = True
 Local $Result = _AndroidAdbLaunchShellInstance($wasRunState,(($bWasActive) ?(False) :($rebootAndroidIfNeccessary)))
+Local $err = @error
+If $err Then
+AndroidAdbTerminateShellInstance()
+EndIf
 $bAndroidAdbLaunchShellInstanceActive = $bWasActive
-Return FuncReturn($Result)
+Return FuncReturn(SetError($err, 0, $Result))
 EndFunc
 Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
 If $wasRunState = Default Then $wasRunState = $g_bRunState
@@ -9812,7 +9865,7 @@ EndIf
 EndIf
 Return SetError($error, Int(__TimerDiff($hTimer)), $s)
 EndFunc
-Func AndroidAdbLaunchMinitouchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState)
+Func AndroidAdbLaunchMinitouchShellInstance($wasRunState = Default, $rebootAndroidIfNeccessary = $g_bRunState, $bUseMouseDevice = True)
 If Not $g_bAndroidInitialized Then Return SetError(2, 0)
 If $wasRunState = Default Then $wasRunState = $g_bRunState
 Local $iConnected
@@ -9825,7 +9878,11 @@ ElseIf $iConnected = 2 And $g_iAndroidAdbMinitouchProcess[0] Then
 Return SetError(0, 0)
 EndIf
 AndroidAdbTerminateMinitouchShellInstance()
+If $bUseMouseDevice Then
 Local $cmdMinitouch = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/") & "minitouch -d " & $g_sAndroidMouseDevice & " -i"
+Else
+Local $cmdMinitouch = $g_sAndroidPicturesPath & StringReplace($g_sAndroidPicturesHostFolder, "\", "/") & "minitouch -i"
+EndIf
 Local $cmd = '"' & $g_sAndroidAdbPath & '"' & AddSpace($g_sAndroidAdbGlobalOptions, 1) & " -s " & $g_sAndroidAdbDevice & " shell" & $g_sAndroidAdbInstanceShellOptions & $g_sAndroidAdbShellOptions & " " & $cmdMinitouch
 SetDebugLog("Run pipe ADB shell for minituch: " & $cmd)
 $g_iAndroidAdbMinitouchProcess[0] = RunPipe($cmd, "", @SW_HIDE, BitOR($STDIN_CHILD, $STDERR_MERGED), $g_iAndroidAdbMinitouchProcess[1], $g_iAndroidAdbMinitouchProcess[2], $g_iAndroidAdbMinitouchProcess[3], $g_iAndroidAdbMinitouchProcess[4])
@@ -9854,6 +9911,9 @@ EndIf
 EndIf
 If $g_iAndroidAdbMinitouchProcess[0] And ProcessExists2($g_iAndroidAdbMinitouchProcess[0]) = $g_iAndroidAdbMinitouchProcess[0] Then
 Else
+If $bUseMouseDevice Then
+Return AndroidAdbLaunchMinitouchShellInstance($wasRunState, $rebootAndroidIfNeccessary, False)
+EndIf
 SetLog($g_sAndroidEmulator & " error launching ADB shell for minitouch", $COLOR_ERROR)
 $g_iAndroidAdbMinitouchProcess[0] = 0
 Return SetError(1, 0)
@@ -11013,6 +11073,9 @@ If $sPackage = Default Then $sPackage = $g_sAndroidGamePackage
 If AndroidInvalidState() Then Return 0
 Local $cmd = "set result=$(ps -p|grep """ & $g_sAndroidGamePackage & """ >&2)"
 Local $output = AndroidAdbSendShellCommand($cmd)
+Local $error = @error
+SetError(0)
+If $error = 0 Then
 SetDebugLog("$g_sAndroidGamePackage: " & $g_sAndroidGamePackage)
 SetDebugLog("GetAndroidProcessPID StdOut :" & $output)
 $output = StringStripWS($output, 7)
@@ -11040,12 +11103,13 @@ EndIf
 Return Int($aPkgList[$i - 1][1])
 EndIf
 Next
+EndIf
 If $iRetryCount < 2 Then
 Sleep(100)
 Return GetAndroidProcessPID($sPackage, $bForeground, $iRetryCount + 1)
 EndIf
 SetDebugLog("Android process " & $sPackage & " not running")
-Return 0
+Return SetError($error, 0, 0)
 EndFunc
 Func AndroidToFront($hHWndAfter = Default, $sSource = "Unknown")
 If $hHWndAfter = Default Then $hHWndAfter = $HWND_TOPMOST
@@ -11340,7 +11404,7 @@ Func GetAndroidCodeName($iAPI = $g_iAndroidVersionAPI)
 If $iAPI >= $g_iAndroidNougat Then Return "Nougat"
 If $iAPI >= $g_iAndroidLollipop Then Return "Lollipop"
 If $iAPI >= $g_iAndroidJellyBean Then Return "JellyBean"
-SetDebugLog("Unsupport Android API Version: " & $iAPI, $COLOR_ERROR)
+SetDebugLog("Unsupported Android API Version: " & $iAPI, $COLOR_ERROR)
 Return ""
 EndFunc
 Func HaveSharedPrefs($sProfile = $g_sProfileCurrentName, $BothNewOrOld = Default, $bReturnArray = False)
@@ -11370,6 +11434,7 @@ SetLog("Shard folder in Android not availble, cannot pull shared_prefs", $COLOR_
 Return SetError(0, 0, $Result)
 EndIf
 SetDebugLog("Pulling shared_pref of profile " & $sProfile)
+Local $sProfileMD5 = _Crypt_HashData($sProfile, $CALG_MD5)
 DirRemove($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs_tmp", 1)
 DirMove($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs", $g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs_tmp")
 If FileExists($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs") Then
@@ -11394,14 +11459,14 @@ If $g_bPullPushSharedPrefsAbdCommand Then SetDebugLog("ADB pull failed, try to u
 $cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
 $iFiles = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
 If $iFiles >= 5 And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
-Local $androidFolder = $g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile
+Local $androidFolder = $g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfileMD5
 AndroidAdbSendShellCommand("set result=$(rm -r """ & $androidFolder & """ >&2)")
 AndroidAdbSendShellCommand("set result=$(mkdir -p """ & $androidFolder & "/shared_prefs"" >&2)")
 AndroidAdbSendShellCommand("set result=$(cp /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/* """ & $androidFolder & "/shared_prefs"" >&2)")
 $cmdOutput = AndroidAdbSendShellCommand("set result=$(ls -l """ & $androidFolder & "/shared_prefs/"" >&2)")
 $iFilesPulled = UBound(Ls_l_FilesOnly(StringSplit($cmdOutput, @LF, $STR_NOCOUNT)))
 If $iFilesPulled >= $iFiles And StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 Then
-Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
+Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfileMD5
 $iFilesPulled = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
 If $iFilesPulled >= $iFiles Then
 FileDelete($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs")
@@ -11460,6 +11525,7 @@ SetLog("Profile " & $sProfile & " doesn't have shared_prefs folder to push", $CO
 Return SetError(0, 0, $Result)
 EndIf
 SetDebugLog("Pushing shared_pref of profile " & $sProfile)
+Local $sProfileMD5 = _Crypt_HashData($sProfile, $CALG_MD5)
 $cmdOutput = AndroidAdbSendShellCommand("set result=$(ls /data/data/" & $g_sAndroidGamePackage & "/shared_prefs/ >&2)")
 If StringInStr($cmdOutput, "No such file or directory") Then
 SetLog("Please launch game one time before pushing shared_prefs", $COLOR_ERROR)
@@ -11499,10 +11565,10 @@ Local $aLs = Ls_l_ToArray($cmdOutput)
 SetDebugLog("Game folder: " & _ArrayToString($aLs))
 Local $iSharedPrefs = _ArraySearch($aLs, "shared_prefs")
 If StringInStr($cmdOutput, "Permission denied") = 0 And StringInStr($cmdOutput, "No such file or directory") = 0 And $iSharedPrefs > -1 Then
-Local $androidFolder = $g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfile
+Local $androidFolder = $g_sAndroidPicturesPath & $g_sAndroidPicturesHostFolder & $sProfileMD5
 AndroidAdbSendShellCommand("set result=$(rm -r """ & $androidFolder & """ >&2)")
 AndroidAdbSendShellCommand("set result=$(mkdir -p """ & $androidFolder & "/shared_prefs"" >&2)")
-Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfile
+Local $hostFolder = $g_sAndroidPicturesHostPath & $g_sAndroidPicturesHostFolder & $sProfileMD5
 Local $iFilesInShared = UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1
 If FileExists($hostFolder & "\shared_prefs") And $iFilesInShared < 1 Then
 If FileCopy($g_sPrivateProfilePath & "\" & $sProfile & "\shared_prefs\*", $hostFolder & "\shared_prefs", $FC_OVERWRITE) And UBound(_FileListToArray($hostFolder & "\shared_prefs", "*", $FLTA_FILES)) - 1 >= $iFiles Then
@@ -11645,9 +11711,9 @@ Local $NewVersion = ""
 Local $HelpLink = "Please visit MyBot Forum!"
 Switch $g_sAndroidEmulator
 Case "BlueStacks2"
-$NewVersion = GetVersionNormalized("4.61.0.0")
+$NewVersion = GetVersionNormalized("4.71.0.0")
 Case "MEmu"
-$NewVersion = GetVersionNormalized("6.2.0.0")
+$NewVersion = GetVersionNormalized("6.3.0.0")
 Case "Nox"
 $NewVersion = GetVersionNormalized("6.3.0.0")
 Case Else
@@ -11842,6 +11908,155 @@ Local $aRet = DllCall('Shell32.dll', 'LONG', 'SHGetPropertyStoreForWindow', 'HWN
 If @error Then Return SetError(@error, @extended, False)
 Return SetExtended($aRet[0],($aRet[0] = 0))
 EndFunc
+Global Const $THB_BITMAP = 0x00000001
+Global Const $THB_ICON = 0x00000002
+Global Const $THB_TOOLTIP = 0x00000004
+Global Const $THB_FLAGS = 0x00000008
+Global Const $THBF_ENABLED = 0x00000000
+Global Const $THBF_DISABLED = 0x00000001
+Global Const $THBN_CLICKED = 0x1800
+Global $g_ITBL_oTaskBar = 0
+Global $g_ITBL_oButtonIDs = ObjCreate("Scripting.Dictionary")
+Global $g_WM_TaskbarButtonCreated = _WinAPI_RegisterWindowMessage("TaskbarButtonCreated")
+Global $g_ITBL_bTaskBarReady = 0
+Global Enum $g_ITBL_DllStruct = 1, $g_ITBL_hGui
+Global Enum $g_ITBL_iID, $g_ITBL_hIcon, $g_ITBL_sToolTip, $g_ITBL_sCallFunc, $g_ITBL_iFlags, $g_ITBL_iBitmap, $g_ITBL_iMask, $g_ITBL_Max
+Global $g_ITBL_aButtons[1][$g_ITBL_Max] = [[0, 0]]
+Func _ITaskBar_Init($bRegisterWM_COMMAND = True)
+Global $g_ITBL_oErrorHandler
+If $bRegisterWM_COMMAND Then GUIRegisterMsg($WM_COMMAND, '__TaskbarWM_Command')
+GUIRegisterMsg($g_WM_TaskbarButtonCreated, "__TaskbarButtonCreated")
+OnAutoItExitRegister('__TaskbarExit')
+EndFunc
+Func _ITaskBar_CreateTaskBarObj($bInitiate = True, $bErrorHandler = True)
+If IsObj($g_ITBL_oTaskBar) Then Return $g_ITBL_oTaskBar
+If $bErrorHandler Then $g_ITBL_oErrorHandler = ObjEvent("AutoIt.Error", "__TaskbarErrFunc")
+Local $CLSID_TaskBarlist4 = "{56FDF344-FD6D-11D0-958A-006097C9A090}"
+Local $IID_ITaskbarList4 = "{56FDF342-FD6D-11d0-958A-006097C9A090}"
+Local $tagITaskbarList4 = "HrInit hresult();" & "AddTab hresult(hwnd);" & "DeleteTab hresult(hwnd);" & "ActivateTab hresult(hwnd);" & "SetActiveAlt hresult(hwnd);" & "MarkFullscreenWindow hresult(hwnd;bool);" & "SetProgressValue hresult(hwnd;uint64;uint64);" & "SetProgressState hresult(hwnd;int);" & "RegisterTab hresult(hwnd;hwnd);" & "UnregisterTab hresult(hwnd);" & "SetTabOrder hresult(hwnd;hwnd);" & "SetTabActive hresult(hwnd;hwnd;dword);" & "ThumbBarAddButtons hresult(hwnd;uint;ptr);" & "ThumbBarUpdateButtons hresult(hwnd;uint;ptr);" & "ThumbBarSetImageList hresult(hwnd;ptr);" & "SetOverlayIcon hresult(hwnd;ptr;wstr);" & "SetThumbnailTooltip hresult(hwnd;wstr);" & "SetThumbnailClip hresult(hwnd;ptr);" & "SetTabProperties hresult(hwnd;int);"
+$g_ITBL_oTaskBar = ObjCreateInterface($CLSID_TaskBarlist4, $IID_ITaskbarList4, $tagITaskbarList4)
+If @error Then Return SetError(1, 0, 0)
+If Not IsObj($g_ITBL_oTaskBar) Then Return SetError(3, 0, 0)
+If $bInitiate Then
+Local $iRet = $g_ITBL_oTaskBar.HrInit()
+If $iRet Then Return SetError($iRet, 0, 0)
+EndIf
+Local $time = TimerInit()
+While Not $g_ITBL_bTaskBarReady
+Sleep(10)
+If TimerDiff($time) > 5000 Then Return SetError(2, 0, 0)
+WEnd
+Return SetError(0, 0, $g_ITBL_oTaskBar)
+EndFunc
+Func _ITaskBar_AddTBButtons($hGui)
+If IsObj($g_ITBL_oTaskBar) = 0 Then Return SetError(1, 1, 0)
+If $g_ITBL_aButtons[0][0] = 0 Then Return SetError(1, 0, 0)
+$g_ITBL_aButtons[0][$g_ITBL_hGui] = $hGui
+Local $i, $tagTHUMBBUTTON = "dword;dword;dword;handle;WCHAR[260];dword_ptr"
+For $i = 1 To $g_ITBL_aButtons[0][0]
+$tagTHUMBBUTTON &= ';' & $tagTHUMBBUTTON
+Next
+$g_ITBL_aButtons[0][$g_ITBL_DllStruct] = DllStructCreate($tagTHUMBBUTTON)
+__SetThumbBarStructData()
+Local $iRet = $g_ITBL_oTaskBar.ThumbBarAddButtons($hGui, $g_ITBL_aButtons[0][0], DllStructGetPtr($g_ITBL_aButtons[0][$g_ITBL_DllStruct]))
+If $iRet Then Return SetError($iRet, 0, 0)
+Return 1
+EndFunc
+Func _ITaskBar_CreateTBButton($sToolTip = '', $hIcon = -1, $iBitmap = -1, $sFunctiontoCall = -1, $iFlags = -1, $iMask = -1)
+Local $iD = GUICtrlCreateDummy()
+If $g_ITBL_aButtons[0][0] = 7 Then Return SetError(3, 0, 0)
+If $hIcon <> -1 And Not IsPtr($hIcon) Then
+If Not FileExists($hIcon) Then Return SetError(1, 0, 0)
+If StringRight($hIcon, 3) = 'exe' Then
+$hIcon = __GetEXEIconHandle($hIcon)
+If @error Then Return SetError(2, 0, 0)
+Else
+$hIcon = _WinAPI_LoadImage(0, $hIcon, $IMAGE_ICON, 16, 16, $LR_LOADFROMFILE)
+If @error Then Return SetError(2, 0, 0)
+EndIf
+EndIf
+ReDim $g_ITBL_aButtons[UBound($g_ITBL_aButtons) + 1][$g_ITBL_Max]
+$g_ITBL_aButtons[0][0] += 1
+$g_ITBL_oButtonIDs.Add($iD, $g_ITBL_aButtons[0][0])
+If $hIcon = -1 Then $hIcon = 0
+If $iFlags = -1 Then $iFlags = $THBF_ENABLED
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_iID] = $iD
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_hIcon] = $hIcon
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_sToolTip] = $sToolTip
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_sCallFunc] = $sFunctiontoCall
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_iFlags] = $iFlags
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_iBitmap] = $iBitmap
+If $iMask <> -1 Then
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_iMask] = $iMask
+Else
+__UpdateTBMask($g_ITBL_aButtons[0][0])
+EndIf
+Return $iD
+EndFunc
+Func _ITaskBar_UpdateTBButton($iButton, $iFlags = -1, $sToolTip = -1, $sIcon = -1, $iBitmap = -1, $sFunctiontoCall = -1, $iMask = -1)
+If IsObj($g_ITBL_oTaskBar) = 0 Then Return SetError(1, 1, 0)
+If Not $g_ITBL_oButtonIDs.Exists($iButton) Then Return SetError(1, 0, 0)
+Local $iIndex = $g_ITBL_oButtonIDs.Item($iButton)
+If $sIcon <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_hIcon] = $sIcon
+If $sFunctiontoCall <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_sCallFunc] = $sFunctiontoCall
+If $iFlags <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iFlags] = $iFlags
+If $iBitmap <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iBitmap] = $iBitmap
+If $sToolTip <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_sToolTip] = $sToolTip
+If $iMask <> -1 Then
+$g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = $iMask
+Else
+__UpdateTBMask($iIndex)
+EndIf
+__SetThumbBarStructData()
+Local $iRet = $g_ITBL_oTaskBar.ThumbBarUpdateButtons($g_ITBL_aButtons[0][$g_ITBL_hGui], $g_ITBL_aButtons[0][0], DllStructGetPtr($g_ITBL_aButtons[0][$g_ITBL_DllStruct]))
+If $iRet Then Return SetError($iRet, 0, 0)
+Return 1
+EndFunc
+Func __GetEXEIconHandle($sPath)
+Local $Icon = DllStructCreate("handle")
+Local $iIcon = _WinAPI_ExtractIconEx($sPath, 0, 0, DllStructGetPtr($Icon), 1)
+If @error Then Return SetError(1, 0, 0)
+Return DllStructGetData($Icon, 1)
+EndFunc
+Func __SetThumbBarStructData()
+Local $j = 1
+For $i = 1 To $g_ITBL_aButtons[0][0]
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j, $g_ITBL_aButtons[$i][$g_ITBL_iMask])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 1, $g_ITBL_aButtons[$i][$g_ITBL_iID])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 2, $g_ITBL_aButtons[$i][$g_ITBL_iBitmap])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 3, $g_ITBL_aButtons[$i][$g_ITBL_hIcon])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 4, $g_ITBL_aButtons[$i][$g_ITBL_sToolTip])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 5, $g_ITBL_aButtons[$i][$g_ITBL_iFlags])
+$j += 6
+Next
+EndFunc
+Func __UpdateTBMask($iIndex)
+$g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = $THB_FLAGS
+If $g_ITBL_aButtons[$iIndex][$g_ITBL_hIcon] <> 0 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = BitOR($g_ITBL_aButtons[$iIndex][$g_ITBL_iMask], $THB_ICON)
+If $g_ITBL_aButtons[$iIndex][$g_ITBL_iBitmap] <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = BitOR($g_ITBL_aButtons[$iIndex][$g_ITBL_iMask], $THB_BITMAP)
+If $g_ITBL_aButtons[$iIndex][$g_ITBL_sToolTip] <> '' Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = BitOR($g_ITBL_aButtons[$iIndex][$g_ITBL_iMask], $THB_TOOLTIP)
+EndFunc
+Func __TaskbarWM_Command($hWnd, $msg, $wParam, $lParam)
+Local $iMsg = _WinAPI_HiWord($wParam)
+If $iMsg = $THBN_CLICKED Then
+Local $iID = _WinAPI_LoWord($wParam)
+If $g_ITBL_oButtonIDs.Exists($iID) Then
+Local $iIndex = $g_ITBL_oButtonIDs.Item($iID)
+If $g_ITBL_aButtons[$iIndex][$g_ITBL_sCallFunc] <> -1 Then Execute($g_ITBL_aButtons[$iIndex][$g_ITBL_sCallFunc] & "()")
+EndIf
+EndIf
+Return $GUI_RUNDEFMSG
+EndFunc
+Func __TaskbarButtonCreated()
+$g_ITBL_bTaskBarReady = 1
+EndFunc
+Func __TaskbarExit()
+$g_ITBL_oTaskBar = 0
+$g_ITBL_oButtonIDs = 0
+EndFunc
+Func __TaskbarErrFunc()
+ConsoleWrite("! COM Error !  Number: 0x" & Hex($g_ITBL_oErrorHandler.number, 8) & "   ScriptLine: " & $g_ITBL_oErrorHandler.scriptline & " - " & $g_ITBL_oErrorHandler.windescription & @CRLF)
+EndFunc
 Global $g_hToolTip = 0
 Func _GUICtrlSetTip($controlID, $tiptext, $title = Default, $icon = Default, $options = Default, $useControlID = True)
 If $g_hToolTip = 0 Then
@@ -11938,6 +12153,7 @@ Global $g_hTiShow = 0, $g_hTiHide = 0, $g_hTiDonate = 0, $g_hTiAbout = 0, $g_hTi
 Global $g_aFrmBotPosInit[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hFirstControlToHide = 0, $g_hLastControlToHide = 0, $g_aiControlPrevState[1]
 Global $g_bFrmBotMinimized = False
+Global $g_hTblStart = 0, $g_hTblStop = 0, $g_hTblPause = 0, $g_hTblResume = 0, $g_hTblMakeScreenshot = 0
 Global $g_oCtrlIconData = ObjCreate("Scripting.Dictionary")
 Global $g_oGuiNotInMini = ObjCreate("Scripting.Dictionary")
 Global $g_hBtnStart = 0, $g_hBtnStop = 0, $g_hBtnPause = 0, $g_hBtnResume = 0, $g_hBtnSearchMode = 0, $g_hBtnMakeScreenshot = 0, $g_hBtnHide = 0, $g_hBtnEmbed = 0, $g_hChkBackgroundMode = 0, $g_hLblDonate = 0, $g_hBtnAttackNowDB = 0, $g_hBtnAttackNowLB = 0, $g_hBtnAttackNowTS = 0
@@ -11960,7 +12176,6 @@ Local $x = 10, $y = $y_bottom + 10
 GUICtrlCreateGroup("https://mybot.run " & GetTranslatedFileIni("MBR GUI Design Bottom", "Group_01", "- freeware bot -"), $x - 5, $y - 10, 190, 108)
 $g_hBtnStart = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStart", "Start Bot"), $x, $y + 2 +5, 90, 40-5)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStart_Info_01", "Use this to START the bot."))
-GUICtrlSetOnEvent(-1, "btnStart")
 If $g_bBtnColor then GUICtrlSetBkColor(-1, 0x5CAD85)
 GUICtrlSetState(-1, $GUI_DISABLE)
 $g_hBtnStop = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStop", "Stop Bot"), -1, -1, 90, 40-5)
@@ -12328,10 +12543,11 @@ _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGembox, $x + 32, $y, 24, 24)
 $g_hChkGemsBox = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkGemsBox", "Remove GemBox"), $x + 100, $y + 4, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkGemsBox_Info_01", "Check this to automatically clear GemBox."))
 GUICtrlSetState(-1, $GUI_UNCHECKED)
-$g_hChkFreeMagicItems = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkFreeMagicItems", "Collect Free Magic Items"), $x + 250, $y + 4, -1, -1)
-$y -= 64
-Local const $icon = @ScriptDir & "\images\Potion.bmp"
-GUICtrlCreatePic($icon, $x + 300, $y + 20, 36, 47, $SS_BITMAP)
+_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPowerPotion, $x + 230, $y + 1 , 24, 24)
+$g_hChkFreeMagicItems = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkFreeMagicItems", "Collect Free Magic Items"), $x + 270, $y + 4, -1, -1)
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "ChkFreeMagicItems_Info", "Check this to automatically collect free magic items.\r\nMust be at least Th8."))
+GUICtrlSetOnEvent(-1, "ChkFreeMagicItems")
+GUICtrlSetColor(-1, $COLOR_ERROR )
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 Local $x = 20, $y = 363
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "Group_03", "Locate Manually"), $x - 15, $y - 20, $g_iSizeWGrpTab3, 60)
@@ -15865,9 +16081,8 @@ $g_hCmbBoostSpellFactory = GUICtrlCreateCombo("", $x + 185, $y, 60, 25, BitOR($C
 GUICtrlSetData(-1, "0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|No limit", "0")
 _GUICtrlSetTip(-1, $sTxtTip)
 $y += 25
-_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWallW, $x - 10, $y - 2, 24, 24)
-_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBattleB, $x + 19, $y - 2, 24, 24)
-GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_Boost", "LblWorkshopBoost", "Workshop") & " " & $sTextBoostLeft, $x + 20 + 29, $y + 4, -1, -1)
+_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWorkshopBoost, $x + 5, $y - 2, 24, 24)
+GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_Boost", "LblWorkshopBoost", "Workshop") & " " & $sTextBoostLeft, $x + 20 +29, $y + 4, -1, -1)
 $sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Troops_Boost", "LblWorkshopBoost_Info_01", "Use this to boost your Workshop with GEMS! Use with caution!")
 _GUICtrlSetTip(-1, $sTxtTip)
 $g_hCmbBoostWorkshop = GUICtrlCreateCombo("", $x + 185, $y, 60, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
@@ -19544,7 +19759,7 @@ $g_hBtnExportData = GUICtrlCreateButton( GetTranslatedFileIni("MBR GUI Design Ch
 GUICtrlSetOnEvent(-1, "SQLiteExport")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
-Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbAndroidZoomoutMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClick = 0, $g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, $g_hTxtAndroidRebootHours = 0, $g_hChkAndroidCloseWithBot = 0, $g_hChkUpdateSharedPrefs = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0, $g_hLblAdditionalClickDelay = 0, $g_hSldAdditionalClickDelay = 0, $g_hChkUseDedicatedAdbPort = 0
+Global $g_hCmbCOCDistributors = 0, $g_hCmbAndroidBackgroundMode = 0, $g_hCmbAndroidZoomoutMode = 0, $g_hCmbSuspendAndroid = 0, $g_hChkAndroidAdbClick = 0, $g_hChkAndroidAdbClickDragScript = 0, $g_hBtnAndroidAdbShell = 0, $g_hBtnAndroidHome = 0, $g_hBtnAndroidBack = 0, $g_hTxtAndroidRebootHours = 0, $g_hChkAndroidCloseWithBot = 0, $g_hChkUpdateSharedPrefs = 0, $g_hBtnAndroidEnableTouch = 0, $g_hBtnAndroidDisableTouch = 0, $g_lblHelpBot = 0, $g_hLblAdditionalClickDelay = 0, $g_hSldAdditionalClickDelay = 0, $g_hChkUseDedicatedAdbPort = 0, $g_hCmbAndroidReplaceAdb = 0
 Func CreateBotAndroid()
 Local $x = 25, $y = 45, $y2, $w = 240, $h = 50, $sTxtTip
 GUICtrlCreateGroup(GetTranslatedFileIni("MBR Distributors", "Group_01", "Distributors"), $x - 20, $y - 20, $w, $h)
@@ -19572,7 +19787,7 @@ $x = 25
 $y += $h + 5
 $y2 = $y
 $w = $g_iSizeWGrpTab2 - 2
-$h = 21 + 6 * 25
+$h = 9 * 25
 GUICtrlCreateGroup(GetTranslatedFileIni("Android", "Android_Options", "Android Options"), $x - 20, $y - 20, $w, $h)
 GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblBackgroundMode", "Screencapture Background Mode"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
 $g_hCmbAndroidBackgroundMode = GUICtrlCreateCombo("", $x - 8 + 180 + 5, $y, 200, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
@@ -19587,6 +19802,19 @@ GUICtrlSetData(-1, GetTranslatedFileIni("Android", "CmbZoomoutMode", "Default|Us
 _GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "CmbZoomoutMode_Info", 'Control how the zoomout is done. Default chooses usually Minitouch script, which is most stable.'))
 _GUICtrlComboBox_SetCurSel(-1, $g_iAndroidZoomoutMode)
 $y += 25
+GUICtrlCreateLabel(GetTranslatedFileIni("MBR Distributors", "LblAdvanced_Android_Options", "Suspend/Resume Android"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
+$g_hCmbSuspendAndroid = GUICtrlCreateCombo("", $x - 8 + 180 + 5, $y, 200, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+GUICtrlSetData(-1, GetTranslatedFileIni("MBR Distributors", "CmbSuspendAndroid_Item_01", "Disabled|Only during Search/Attack|For every Image processing call"))
+_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Distributors", "CmbSuspendAndroid_Info_01", 'Specify if Android will be suspended for brief time only during search and attack or\r\nfor every ImgLoc/Image processing call. If you experience more frequent network issues\r\ntry to use "Only during Search/Attack" option or disable this feature.'))
+_GUICtrlComboBox_SetCurSel(-1, AndroidSuspendFlagsToIndex($g_iAndroidSuspendModeFlags))
+GUICtrlSetOnEvent(-1, "cmbSuspendAndroid")
+$y += 25
+GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblReplaceAdb", "Replace ADB"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
+$g_hCmbAndroidReplaceAdb = GUICtrlCreateCombo("", $x - 8 + 180 + 5, $y, 200, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+GUICtrlSetData(-1, GetTranslatedFileIni("Android", "CmbReplaceAdb", "Don't replace adb.exe|With My Bot adb.exe|With dummy exe"))
+_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "CmbReplaceAdb_Info", 'Configure if Android Emulator adb.exe should be replaced with My Bot adb.exe or a dummy.exe to solve adb issues.'))
+_GUICtrlComboBox_SetCurSel(-1, $g_iAndroidAdbReplace)
+$y += 25
 $g_hChkAndroidAdbClick = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkAdbClick", "Use minitouch for Click"), $x, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAdbClick_Info", "Use minitouch for Android clicks.\r\nIf unchecked use WinAPI control messages."))
 GUICtrlSetState(-1,(($g_bAndroidAdbClickEnabled) ?($GUI_CHECKED) :($GUI_UNCHECKED)))
@@ -19598,14 +19826,14 @@ $y += 25
 $g_hChkAndroidCloseWithBot = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkAndroidCloseWithBot", "Close Android with bot"), $x, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkAndroidCloseWithBot_Info", "Close also Android Emulator when bot exists."))
 GUICtrlSetState(-1,(($g_bAndroidCloseWithBot) ?($GUI_CHECKED) :($GUI_UNCHECKED)))
-$g_hChkUseDedicatedAdbPort = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkUseDedicatedAdbPort", "Use dedicated ADB port"), $x + 217, $y, -1, -1)
+$g_hChkUseDedicatedAdbPort = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkUseDedicatedAdbPort", "Use dedicated ADB port"), $x + 227, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkUseDedicatedAdbPort_Info", "Use dedicated ADB instance on unique port. Disable can fix ""device offline"" issues."))
 GUICtrlSetState(-1,(($g_bAndroidAdbPortPerInstance) ?($GUI_CHECKED) :($GUI_UNCHECKED)))
 $y += 25
 $g_hChkUpdateSharedPrefs = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs", "Update shared_prefs"), $x, $y, -1, -1)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs_Info", "Pull and push shared_prefs to reset zoom,\nset language to English, disable snow and rate popup."))
 GUICtrlSetState(-1,(($g_bUpdateSharedPrefs) ?($GUI_CHECKED) :($GUI_UNCHECKED)))
-GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblAndroidRebootHours", "Reboot Android in") & ":", $x + 217, $y + 2, -1, -1)
+GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblAndroidRebootHours", "Reboot Android in") & ":", $x + 227, $y + 2, -1, -1)
 $sTxtTip = GetTranslatedFileIni("Android", "LblAndroidRebootHours_Info", "Enter hours when Android will be automatically rebooted after specified run-time.")
 _GUICtrlSetTip(-1, $sTxtTip)
 $g_hTxtAndroidRebootHours = GUICtrlCreateInput($g_iAndroidRebootHours, $x + 327, $y + 1, 30, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -19614,18 +19842,6 @@ GUICtrlSetLimit(-1, 4)
 GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "hrs", -1), $x + 362, $y + 2, -1, -1)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 $y = $y2 + $h + 5
-$w = $g_iSizeWGrpTab2 - 2
-$h = 50
-GUICtrlCreateGroup(GetTranslatedFileIni("MBR Distributors", "Group_02", "Advanced Android Options"), $x - 20, $y - 20, $w, $h)
-$y -= 2
-GUICtrlCreateLabel(GetTranslatedFileIni("MBR Distributors", "LblAdvanced_Android_Options", "Suspend/Resume Android"), $x - 8, $y + 5, 180, 22, $SS_RIGHT)
-$g_hCmbSuspendAndroid = GUICtrlCreateCombo("", $x - 8 + 180 + 5, $y, 200, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, GetTranslatedFileIni("MBR Distributors", "CmbSuspendAndroid_Item_01", "Disabled|Only during Search/Attack|For every Image processing call"))
-_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Distributors", "CmbSuspendAndroid_Info_01", 'Specify if Android will be suspended for brief time only during search and attack or\r\nfor every ImgLoc/Image processing call. If you experience more frequent network issues\r\ntry to use "Only during Search/Attack" option or disable this feature.'))
-_GUICtrlComboBox_SetCurSel(-1, AndroidSuspendFlagsToIndex($g_iAndroidSuspendModeFlags))
-GUICtrlSetOnEvent(-1, "cmbSuspendAndroid")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-$y += $h + 5
 $y2 = $y
 $w = 240
 $h = 120
@@ -19659,7 +19875,7 @@ $y += 30
 GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnPlayStoreNovaLauncher", "Nova Launcher"), $x - 8, $y, $w - 24, 25)
 GUICtrlSetOnEvent(-1, "OpenPlayStoreNovaLauncher")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-$y += 105
+$y += $h
 $x -= 60
 $g_lblHelpBot = GUICtrlCreateLabel("Command line Help ?", $x - 20, $y - 20, 220, 24, $SS_RIGHT)
 GUICtrlSetOnEvent($g_lblHelpBot, "ShowControlHelp")
@@ -21478,6 +21694,8 @@ $_GUI_MAIN_WIDTH = $_MINIGUI_MAIN_WIDTH
 $_GUI_MAIN_HEIGHT = $_MINIGUI_MAIN_HEIGHT
 EndSwitch
 $g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP,($g_iFrmBotPosX = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosX),($g_iFrmBotPosY = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosY), BitOR($WS_MINIMIZEBOX, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $iStyle))
+_WinAPI_ChangeWindowMessageFilterEx($g_hFrmBot, $g_WM_TaskbarButtonCreated, $MSGFLT_ALLOW)
+_WinAPI_ChangeWindowMessageFilterEx($g_hFrmBot, $WM_COMMAND, $MSGFLT_ALLOW)
 If $g_iFrmBotPosX = $g_WIN_POS_DEFAULT Or $g_iFrmBotPosY = $g_WIN_POS_DEFAULT Then
 Local $a = WinGetPos($g_hFrmBot)
 If UBound($a) > 1 Then
@@ -21698,6 +21916,20 @@ If Not $g_bNoFocusTampering Then
 GUISetState(@SW_SHOW, $g_hFrmBot)
 Else
 GUISetState(@SW_SHOW, $g_hFrmBot)
+EndIf
+If IsObj($g_ITBL_oTaskBar) = 0 Then
+_ITaskBar_CreateTaskBarObj(True, False)
+If @error Then
+SetLog("Cannot create Taskbar icons, error: " & @error, $COLOR_ERROR)
+EndIf
+EndIf
+If IsObj($g_ITBL_oTaskBar) And $g_hTblStart = 0 Then
+$g_hTblStart = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStart", "Start Bot"), @ScriptDir & '\images\Icons\TaskBar_start.ico')
+$g_hTblStop = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStop", "Stop Bot"), @ScriptDir & '\images\Icons\TaskBar_stop.ico', -1, -1, $THBF_DISABLED)
+$g_hTblPause = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnPause", "Pause"), @ScriptDir & '\images\Icons\TaskBar_pause.ico', -1, -1, $THBF_DISABLED)
+$g_hTblResume = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnResume", "Resume"), @ScriptDir & '\images\Icons\TaskBar_resume.ico', -1, -1, $THBF_DISABLED)
+$g_hTblMakeScreenshot = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnMakeScreenshot", "Photo"), @ScriptDir & '\images\Icons\TaskBar_photo.ico')
+_ITaskBar_AddTBButtons($g_hFrmBot)
 EndIf
 GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotButtons)
 If $g_hFrmBotEx Then GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEx)
@@ -27899,6 +28131,13 @@ GUICtrlSetState($g_hTxtTreasuryElixir, $GUI_DISABLE)
 GUICtrlSetState($g_hTxtTreasuryDark, $GUI_DISABLE)
 EndIf
 EndFunc
+Func ChkFreeMagicItems()
+If $g_iTownHallLevel >= 8 Then
+GUICtrlSetState($g_hChkFreeMagicItems, $GUI_ENABLE)
+Else
+GUICtrlSetState($g_hChkFreeMagicItems, $GUI_DISABLE)
+EndIf
+EndFunc
 Func chkStartClockTowerBoost()
 If GUICtrlRead($g_hChkStartClockTowerBoost) = $GUI_CHECKED Then
 GUICtrlSetState($g_hChkCTBoostBlderBz, $GUI_ENABLE)
@@ -28068,6 +28307,7 @@ $g_bIsSearchLimit = False
 $g_bIsClientSyncError = False
 $g_bZoomoutFailureNotRestartingAnything = False
 $g_bRestart = False
+$g_bStayOnBuilderBase = False
 EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
 $g_bTrainEnabled = True
 $g_bDonationEnabled = True
@@ -28090,6 +28330,10 @@ GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
 GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 GUICtrlSetState($g_hBtnSearchMode, $GUI_HIDE)
 GUICtrlSetState($g_hChkBackgroundMode, $GUI_DISABLE)
+_ITaskBar_UpdateTBButton($g_hTblStop, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblStart, $THBF_DISABLED)
+_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Stop", "Stop bot"))
 TrayItemSetState($g_hTiPause, $TRAY_ENABLE)
 TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Pause", "Pause bot"))
@@ -28170,6 +28414,10 @@ GUICtrlSetState($g_hBtnPause, $GUI_HIDE)
 GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 If $g_iTownHallLevel > 2 Then GUICtrlSetState($g_hBtnSearchMode, $GUI_ENABLE)
 GUICtrlSetState($g_hBtnSearchMode, $GUI_SHOW)
+_ITaskBar_UpdateTBButton($g_hTblStart, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblStop, $THBF_DISABLED)
+_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_DISABLED)
+_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 GUICtrlSetState($g_hBtnAttackNowDB, $GUI_HIDE)
 GUICtrlSetState($g_hBtnAttackNowLB, $GUI_HIDE)
 GUICtrlSetState($g_hBtnAttackNowTS, $GUI_HIDE)
@@ -28549,11 +28797,13 @@ Case $g_hFrmBot_URL_PIC, $g_hFrmBot_URL_PIC2
 OpenURL_Label($g_hLblMyBotURL)
 Case $g_hLblDonate
 ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
-Case $g_hBtnStop
+Case $g_hBtnStart, $g_hTblStart
+btnStart()
+Case $g_hBtnStop, $g_hTblStop
 btnStop()
-Case $g_hBtnPause
+Case $g_hBtnPause, $g_hTblPause
 btnPause()
-Case $g_hBtnResume
+Case $g_hBtnResume, $g_hTblResume
 btnResume()
 Case $g_hBtnHide
 btnHide()
@@ -28565,7 +28815,7 @@ Case $g_hBtnAttackNowLB
 btnAttackNowLB()
 Case $g_hBtnAttackNowTS
 btnAttackNowTS()
-Case $g_hBtnMakeScreenshot
+Case $g_hBtnMakeScreenshot, $g_hTblMakeScreenshot
 If $g_bRunState Then
 btnMakeScreenshot()
 Else
@@ -29778,7 +30028,7 @@ Local $aIconIndex = [$eIcnTH1, $eIcnCC, $eIcnLaboratory, $eIcnAchievements, $eIc
 Case $g_hGUI_TRAINARMY_TAB
 Local $aIconIndex = [$eIcnTrain, $eIcnGem, $eIcnReOrder, $eIcnOptions]
 Case $g_hGUI_MISC_TAB
-Local $aIconIndex = [$eIcnTH1, $eIcnBuilderHall]
+Local $aIconIndex = [$eIcnTH1, $eIcnBuilderHall, $eIcnStrongMan]
 Case $g_hGUI_DONATE_TAB
 Local $aIconIndex = [$eIcnCCRequest, $eIcnCCDonate, $eIcnHourGlass]
 Case $g_hGUI_UPGRADE_TAB
@@ -32066,25 +32316,7 @@ EndIf
 ClickP($aAway, 2, $DELAYUNBREAKABLE8, "#0115")
 If _Sleep($DELAYUNBREAKABLE1) Then Return True
 If CheckObstacles() = True Then SetLog("Window clean required, but no problem for MyBot!", $COLOR_INFO)
-SetLog("Closing Clash Of Clans", $COLOR_INFO)
-$i = 0
-While 1
-AndroidBackButton()
-If _Sleep($DELAYUNBREAKABLE1) Then Return True
-Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]]
-Local $ButtonPixel = _MultiPixelSearch(438, 372 + $g_iMidOffsetY, 590, 404 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20)
-If $g_bDebugSetlog Then SetDebugLog("Exit btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_DEBUG)
-If IsArray($ButtonPixel) Then
-If $g_bDebugSetlog Then
-SetDebugLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG)
-SetDebugLog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_DEBUG)
-EndIf
-PureClick($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 2, 50, "#0117")
-ExitLoop
-EndIf
-If $i > 15 Then ExitLoop
-$i += 1
-WEnd
+CloseCoC()
 $iTime = Number($g_iUnbrkWait)
 If $iTime < 1 Then $iTime = 1
 Local Const $iGracePeriodTime = 5
@@ -42156,6 +42388,7 @@ EndIf
 Next
 EndIf
 If $sArmyType = "Queue" Then
+_ArraySort($aResult, 1, 0, 0, 1)
 Local $xSlot
 For $i = 0 To UBound($aResult) - 1
 $xSlot = Int(Number($aResult[$i][1]) / 71) * 71 - 6
@@ -42695,6 +42928,10 @@ ForceCaptureRegion()
 Else
 If $g_bDebugSetlogTrain Then DebugImageSave("TroopIconNotFound_" & GetTroopName($iIndex))
 SetLog("TrainIt troop position " & GetTroopName($iIndex) & " did not find icon", $COLOR_ERROR)
+If $i = 5 Then
+SetLog("Seems all your barracks are upgrading!", $COLOR_ERROR)
+$g_bAllBarracksUpgd = True
+EndIf
 EndIf
 Else
 SetLog("Impossible happened? TrainIt troop position " & GetTroopName($iIndex) & " did not return array", $COLOR_ERROR)
@@ -45997,7 +46234,7 @@ Return FuncReturn(_checkMainScreen($bSetLog, $bBuilderBase))
 EndFunc
 Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default)
 If $bSetLog = Default Then $bSetLog = True
-If $bBuilderBase = Default Then $bBuilderBase = $g_bOnBuilderBase
+If $bBuilderBase = Default Then $bBuilderBase = $g_bStayOnBuilderBase
 Local $i, $iErrorCount, $iCheckBeforeRestartAndroidCount, $bObstacleResult, $bContinue
 Local $aPixelToCheck = $aIsMain
 If $bSetLog Then
@@ -46072,13 +46309,18 @@ DisposeWindows()
 NotifyPendingActions()
 Return $bLocated
 EndFunc
-Func _checkMainScreenImage(ByRef $bLocated, $aPixelToCheck)
-$bLocated = _CheckPixel($aPixelToCheck, $g_bNoCapturePixel) And Not checkObstacles_Network(False, False)
+Func _checkMainScreenImage(ByRef $bLocated, $aPixelToCheck, $bNeedCaptureRegion = $g_bNoCapturePixel)
+$bLocated = _CheckPixel($aPixelToCheck, $bNeedCaptureRegion) And Not checkObstacles_Network(False, False)
 Return $bLocated
+EndFunc
+Func isOnMainVillage($bNeedCaptureRegion = $g_bNoCapturePixel)
+Local $aPixelToCheck = $aIsMain
+Local $bLocated = False
+Return _checkMainScreenImage($bLocated, $aPixelToCheck)
 EndFunc
 Func checkObstacles($bBuilderBase = Default)
 FuncEnter(checkObstacles)
-If $bBuilderBase = Default Then $bBuilderBase = $g_bOnBuilderBase
+If $bBuilderBase = Default Then $bBuilderBase = $g_bStayOnBuilderBase
 Static $iRecursive = 0
 If TestCapture() = False And WinGetAndroidHandle() = 0 Then
 Return FuncReturn(True)
@@ -46103,8 +46345,13 @@ If checkObstacles_Network() Then Return True
 If checkObstacles_GfxError() Then Return True
 EndIf
 Local $bIsOnBuilderIsland = isOnBuilderBase()
-If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
+Local $bIsOnMainVillage = isOnMainVillage()
+If $bBuilderBase <> $bIsOnBuilderIsland And($bIsOnBuilderIsland Or $bIsOnBuilderIsland <> $bIsOnMainVillage) Then
+If $bIsOnBuilderIsland Then
 SetLog("Detected Builder Base, trying to switch back to Main Village")
+Else
+SetLog("Detected Main Village, trying to switch back to Builder Base")
+EndIf
 If SwitchBetweenBases() Then
 $g_bMinorObstacle = True
 If _Sleep($DELAYCHECKOBSTACLES1) Then Return
@@ -46955,7 +47202,7 @@ If Not $g_bRunState Then Return
 Local $iCount
 SetLog("Waiting for Main Screen")
 $iCount = 0
-Local $aPixelToCheck = $g_bOnBuilderBase ? $aIsOnBuilderBase : $aIsMain
+Local $aPixelToCheck = $g_bStayOnBuilderBase ? $aIsOnBuilderBase : $aIsMain
 For $i = 0 To 105
 If Not $g_bRunState Then Return
 If $g_bDebugSetlog Then SetDebugLog("waitMainScreen ChkObstl Loop = " & $i & ", ExitLoop = " & $iCount, $COLOR_DEBUG)
@@ -47020,7 +47267,7 @@ Local $hTimer = __TimerInit()
 SetDebugLog("waitMainScreenMini")
 If TestCapture() = False Then getBSPos()
 SetLog("Waiting for Main Screen after " & $g_sAndroidEmulator & " restart", $COLOR_INFO)
-Local $aPixelToCheck = $g_bOnBuilderBase ? $aIsOnBuilderBase : $aIsMain
+Local $aPixelToCheck = $g_bStayOnBuilderBase ? $aIsOnBuilderBase : $aIsMain
 For $i = 0 To 60
 If Not $g_bRunState Then Return
 If Not TestCapture() And WinGetAndroidHandle() = 0 Then ExitLoop
@@ -49299,9 +49546,6 @@ Local $NoxFile = $path & "Nox.exe"
 Local $AdbFile = $path & "nox_adb.exe"
 Local $VBoxFile = $RtPath & "BigNoxVMMgr.exe"
 Local $Files = [$NoxFile, $AdbFile, $VBoxFile]
-If Not $bCheckOnly And $g_bAndroidAdbReplaceEmulatorVersion And GetVersionNormalized($Version) >= GetVersionNormalized("6.2.0") Then
-$g_bAndroidAdbReplaceEmulatorVersionWithDummy = True
-EndIf
 Local $sPreferredADB = FindPreferredAdbPath()
 If $sPreferredADB Then _ArrayDelete($Files, 1)
 For $File In $Files
@@ -52216,7 +52460,7 @@ EndIf
 Local $sSwitchLogFName = "SwitchAccLog" & "-" & @YEAR & "-" & @MON & ".log"
 Local $sSwitchLogPath = $g_sProfilePath & "\" & $sSwitchLogFName
 $g_hSwitchLogFile = FileOpen($sSwitchLogPath, $FO_APPEND)
-SetDebugLog("Created attack log file: " & $sSwitchLogPath)
+SetDebugLog("Created switch log file: " & $sSwitchLogPath)
 EndFunc
 Func DebugImageSave($TxtName = "Unknown", $capturenew = Default, $extensionpng = Default, $makesubfolder = Default, $sTag = "")
 If $capturenew = Default Then $capturenew = True
@@ -52444,6 +52688,8 @@ PushMsg("Pause", $Source)
 GUICtrlSetState($g_hBtnPause, $GUI_HIDE)
 GUICtrlSetState($g_hBtnResume, $GUI_SHOW)
 TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Resume", "Resume bot"))
+_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_DISABLED)
 Else
 AndroidShield("TogglePauseImpl resumed")
 TrayTip($g_sBotTitle, "", 1)
@@ -52457,6 +52703,8 @@ PushMsg("Resume", $Source)
 GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
 GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Pause", "Pause bot"))
+_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 EndIf
 SetRedrawBotWindow(True, Default, Default, Default, "TogglePauseUpdateState")
 EndFunc
@@ -64627,6 +64875,12 @@ SetLog("Staying in this account")
 SetSwitchAccLog("Stay at [" & $g_iCurAccount + 1 & "]", $COLOR_SUCCESS)
 EndIf
 EndIf
+If $g_bAllBarracksUpgd = True then
+SetLog("Seems all your barracks are upgrading", $COLOR_INFO)
+SetLog("No troops can be trained, let's switch account", $COLOR_INFO)
+SetSwitchAccLog(" - All Barracks Upgrading, Force switch")
+$bForceSwitch = True
+EndIf
 EndFunc
 Func SwitchCOCAcc($NextAccount)
 Local $abAccountNo = AccountNoActive()
@@ -66153,6 +66407,8 @@ $aResults[$i] = Int($aResults[$i]) > 0 ? "No Space In Castle" : "Collected"
 EndIf
 EndIf
 EndIf
+ElseIf $aResults[$i] = "" Then
+$aResults[$i] = "N/A"
 EndIf
 If Not $g_bRunState Then Return
 Next
@@ -66276,9 +66532,9 @@ If $bSetLog Then SetLog("Builder Base Report", $COLOR_INFO)
 Case True
 If $bSetLog Then SetLog("Updating Builder Base Resource Values", $COLOR_INFO)
 Case Else
-If $bSetLog Then SetLog("Village Report Error, You have been a BAD programmer!", $COLOR_ERROR)
+If $bSetLog Then SetLog("Builder Base Village Report Error, You have been a BAD programmer!", $COLOR_ERROR)
 EndSwitch
-If Not $bSetLog Then SetLog("Village Report", $COLOR_INFO)
+If Not $bSetLog Then SetLog("Builder Base Village Report", $COLOR_INFO)
 getBuilderCount($bSetLog, True)
 If _Sleep($DELAYRESPOND) Then Return
 $g_aiCurrentLootBB[$eLootTrophyBB] = getTrophyMainScreen(67, 84)
@@ -67749,6 +68005,7 @@ sldAdditionalClickDelay(True)
 UpdateBotTitle()
 _GUICtrlComboBox_SetCurSel($g_hCmbAndroidBackgroundMode, $g_iAndroidBackgroundMode)
 _GUICtrlComboBox_SetCurSel($g_hCmbAndroidZoomoutMode, $g_iAndroidZoomoutMode)
+_GUICtrlComboBox_SetCurSel($g_hCmbAndroidReplaceAdb, $g_iAndroidAdbReplace)
 GUICtrlSetState($g_hChkAndroidAdbClickDragScript, $g_bAndroidAdbClickDragScript ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkAndroidCloseWithBot, $g_bAndroidCloseWithBot ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkUseDedicatedAdbPort, $g_bAndroidAdbPortPerInstance ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -67760,6 +68017,7 @@ cmbCOCDistributors()
 sldAdditionalClickDelay()
 cmbAndroidBackgroundMode()
 $g_iAndroidZoomoutMode = _GUICtrlComboBox_GetCurSel($g_hCmbAndroidZoomoutMode)
+$g_iAndroidAdbReplace = _GUICtrlComboBox_GetCurSel($g_hCmbAndroidReplaceAdb)
 $g_bAndroidAdbClickEnabled =(GUICtrlRead($g_hChkAndroidAdbClick) = $GUI_CHECKED ? True : False)
 $g_bAndroidAdbClick = $g_bAndroidAdbClickEnabled
 $g_bAndroidAdbClickDragScript =(GUICtrlRead($g_hChkAndroidAdbClickDragScript) = $GUI_CHECKED ? True : False)
@@ -67859,6 +68117,7 @@ GUICtrlSetState($g_hChkCleanYard, $g_bChkCleanYard ? $GUI_CHECKED : $GUI_UNCHECK
 GUICtrlSetState($g_hChkGemsBox, $g_bChkGemsBox ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkTreasuryCollect, $g_bChkTreasuryCollect ? $GUI_CHECKED : $GUI_UNCHECKED)
 GUICtrlSetState($g_hChkFreeMagicItems, $g_bChkCollectFreeMagicItems ? $GUI_CHECKED : $GUI_UNCHECKED)
+ChkFreeMagicItems()
 ChkTreasuryCollect()
 GUICtrlSetData($g_hTxtTreasuryGold, $g_iTxtTreasuryGold)
 GUICtrlSetData($g_hTxtTreasuryElixir, $g_iTxtTreasuryElixir)
@@ -69909,6 +70168,7 @@ $g_sUserGamePackage = IniRead($g_sProfileConfigPath, "android", "user.package", 
 $g_sUserGameClass = IniRead($g_sProfileConfigPath, "android", "user.class", $g_sUserGameClass)
 $g_iAndroidBackgroundMode = Int(IniRead($g_sProfileConfigPath, "android", "backgroundmode", $g_iAndroidBackgroundMode))
 $g_iAndroidZoomoutMode = Int(IniRead($g_sProfileConfigPath, "android", "zoomoutmode", $g_iAndroidZoomoutMode))
+$g_iAndroidAdbReplace = Int(IniRead($g_sProfileConfigPath, "android", "adb.replace", $g_iAndroidAdbReplace))
 $g_bAndroidCheckTimeLagEnabled = Int(IniRead($g_sProfileConfigPath, "android", "check.time.lag.enabled",($g_bAndroidCheckTimeLagEnabled ? 1 : 0))) = 1
 $g_bAndroidAdbPortPerInstance = Int(IniRead($g_sProfileConfigPath, "android", "adb.dedicated.instance", $g_bAndroidAdbPortPerInstance ? 1 : 0)) = 1
 $g_iAndroidAdbScreencapTimeoutMin = Int(IniRead($g_sProfileConfigPath, "android", "adb.screencap.timeout.min", $g_iAndroidAdbScreencapTimeoutMin))
@@ -70984,6 +71244,7 @@ _Ini_Add("android", "user.package", $g_sUserGamePackage)
 _Ini_Add("android", "user.class", $g_sUserGameClass)
 _Ini_Add("android", "backgroundmode", $g_iAndroidBackgroundMode)
 _Ini_Add("android", "zoomoutmode", $g_iAndroidZoomoutMode)
+_Ini_Add("android", "adb.replace", $g_iAndroidAdbReplace)
 _Ini_Add("android", "check.time.lag.enabled",($g_bAndroidCheckTimeLagEnabled ? "1" : "0"))
 _Ini_Add("android", "adb.dedicated.instance",($g_bAndroidAdbPortPerInstance ? "1" : "0"))
 _Ini_Add("android", "adb.screencap.timeout.min", $g_iAndroidAdbScreencapTimeoutMin)
@@ -73558,6 +73819,7 @@ If $bConfigRead Or FileExists($g_sProfileBuildingPath) Then
 readConfig()
 EndIf
 Local $sAndroidInfo = ""
+_ITaskBar_Init(False)
 _Crypt_Startup()
 __GDIPlus_Startup()
 TCPStartup()
@@ -74268,6 +74530,13 @@ EndIf
 EndIf
 EndFunc
 Func _RunFunction($action)
+FuncEnter(_RunFunction)
+$g_bStayOnBuilderBase = False
+Local $Result = __RunFunction($action)
+$g_bStayOnBuilderBase = False
+Return FuncReturn($Result)
+EndFunc
+Func __RunFunction($action)
 SetDebugLog("_RunFunction: " & $action & " BEGIN", $COLOR_DEBUG2)
 Switch $action
 Case "Collect"
@@ -74363,32 +74632,32 @@ UpgradeWall()
 _Sleep($DELAYRUNBOT3)
 Case "BuilderBase"
 If isOnBuilderBase() Or(($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades) And SwitchBetweenBases()) Then
-$g_bOnBuilderBase = True
+$g_bStayOnBuilderBase = True
 If _Sleep($DELAYRUNBOT3) Then Return
-If $g_bRestart = True Then Return
+If checkObstacles() Then Return
 BuilderBaseReport()
 If _Sleep($DELAYRUNBOT3) Then Return
-If $g_bRestart = True Then Return
+If checkObstacles() Then Return
 CollectBuilderBase()
 If _Sleep($DELAYRUNBOT3) Then Return
-If $g_bRestart = True Then Return
+If checkObstacles() Then Return
 StartClockTowerBoost()
 If _Sleep($DELAYRUNBOT3) Then Return
-If $g_bRestart = True Then Return
+If checkObstacles() Then Return
 StarLaboratory()
 If _Sleep($DELAYRUNBOT3) Then Return
-If $g_bRestart = True Then Return
+If checkObstacles() Then Return
 CleanBBYard()
 If _Sleep($DELAYRUNBOT3) Then Return
-If $g_bRestart = True Then Return
+If checkObstacles() Then Return
 MainSuggestedUpgradeCode()
 If _Sleep($DELAYRUNBOT3) Then Return
-If $g_bRestart = True Then Return
+If checkObstacles() Then Return
 BuilderBaseReport()
 If _Sleep($DELAYRUNBOT3) Then Return
-If $g_bRestart = True Then Return
+If checkObstacles() Then Return
 SwitchBetweenBases()
-$g_bOnBuilderBase = False
+$g_bStayOnBuilderBase = False
 EndIf
 _Sleep($DELAYRUNBOT3)
 Case "CollectFreeMagicItems"

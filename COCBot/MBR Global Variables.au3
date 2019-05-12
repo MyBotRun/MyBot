@@ -320,8 +320,7 @@ Global $g_iAndroidClientHeight ; Expected height of android rendering control
 Global $g_iAndroidWindowWidth ; Expected Width of android window
 Global $g_iAndroidWindowHeight ; Expected height of android window
 Global $g_bAndroidAdbUseMyBot = True ; Use MyBot provided adb.exe and not the one from emulator
-Global $g_bAndroidAdbReplaceEmulatorVersion = True ; If True and MyBot.run adb.exe is available, Android provided adb.exe will be replaced to ensure MyBot.run adb.exe version is used
-Global $g_bAndroidAdbReplaceEmulatorVersionWithDummy = False ; If try (only used by never Nox) emulator adb is replaced with a dummy exe that does nothing
+Global $g_iAndroidAdbReplace = 2 ; Replace Android Emulator adb.exe: 0 = don't replace, 1 = replace with MyBot version, 2 = repalce with dummy exe (default)
 Global $g_sAndroidAdbPath ; Path to executable HD-Adb.exe or adb.exe
 Global $g_sAndroidAdbGlobalOptions ; Additional adb global options like -P 5037 for port
 Global $g_sAndroidAdbDevice ; full device name ADB connects to
@@ -557,7 +556,8 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, _
 		$eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield, _
 		$eIcnBattleB, $eIcnWallW, $eIcnSiegeCost, $eIcnBoostPotion, $eIcnBatSpell, $eIcnStoneS, $eIcnIceGolem, $eIcnStarLaboratory, $eIcnRagedBarbarian, $eIcnSneakyArcher, $eIcnBoxerGiant, $eIcnBetaMinion, _
-		$eIcnBomber, $eIcnBBBabyDragon, $eIcnCannonCart, $eIcnNightWitch, $eIcnDropShip, $eIcnSuperPekka, $eIcnBBWall01, $eIcnBBWall02, $eIcnBBWall03, $eIcnBBWall04, $eIcnBBWall05, $eIcnBBWall06, $eIcnBBWall07, $eIcnBBWall08
+		$eIcnBomber, $eIcnBBBabyDragon, $eIcnCannonCart, $eIcnNightWitch, $eIcnDropShip, $eIcnSuperPekka, $eIcnBBWall01, $eIcnBBWall02, $eIcnBBWall03, $eIcnBBWall04, $eIcnBBWall05, $eIcnBBWall06, $eIcnBBWall07, $eIcnBBWall08, _
+		$eIcnWorkshopBoost, $eIcnStrongMan, $eIcnPowerPotion
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
@@ -934,7 +934,7 @@ Global $g_sUpgradeDuration
 ; Builder Base
 Global $g_iChkBBSuggestedUpgrades = 0, $g_iChkBBSuggestedUpgradesIgnoreGold = 0, $g_iChkBBSuggestedUpgradesIgnoreElixir = 0, $g_iChkBBSuggestedUpgradesIgnoreHall = 0
 Global $g_iChkPlacingNewBuildings = 0
-Global $g_bOnBuilderBase = False ; set to True in MyBot.run.au3 _RunFunction when on builder base
+Global $g_bStayOnBuilderBase = False ; set to True in MyBot.run.au3 _RunFunction when on builder base
 
 Global $g_iQuickMISX = 0, $g_iQuickMISY = 0
 
@@ -984,6 +984,7 @@ Global $g_bTotalCampForced = False, $g_iTotalCampForcedValue = 200
 Global $g_bForceBrewSpells = False
 Global $g_iTotalSpellValue = 0
 Global $g_bDoubleTrain
+Global $g_bAllBarracksUpgd = False
 
 ; <><><><> Attack Plan / Train Army / Boost <><><><>
 Global $g_iCmbBoostBarracks = 0, $g_iCmbBoostSpellFactory = 0, $g_iCmbBoostWorkshop = 0, $g_iCmbBoostBarbarianKing = 0, $g_iCmbBoostArcherQueen = 0, $g_iCmbBoostWarden = 0, $g_iCmbBoostEverything = 0

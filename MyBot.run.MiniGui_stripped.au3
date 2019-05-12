@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.5)
+#pragma compile(FileVersion, 7.7.6)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.5"
+Global $g_sBotVersion = "v7.7.6"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -227,6 +227,7 @@ EndFunc
 Global Const $BSF_IGNORECURRENTTASK = 0x0002
 Global Const $BSF_POSTMESSAGE = 0x0010
 Global Const $BSM_APPLICATIONS = 0x10
+Global Const $MSGFLT_ALLOW = 1
 Global Const $HANDLE_FLAG_INHERIT = 0x00000001
 Global Const $SE_PRIVILEGE_ENABLED = 0x00000002
 Global Enum $SECURITYANONYMOUS = 0, $SECURITYIDENTIFICATION, $SECURITYIMPERSONATION, $SECURITYDELEGATION
@@ -317,6 +318,7 @@ Global Const $IMAGE_ICON = 1
 Global Const $LOAD_LIBRARY_AS_DATAFILE = 0x02
 Global Const $S_OK = 0x00000000
 Global Const $LR_DEFAULTCOLOR = 0x0000
+Global Const $LR_LOADFROMFILE = 0x0010
 Global $__g_aInProcess_WinAPI[64][2] = [[0, 0]]
 Global Const $tagICONINFO = "bool Icon;dword XHotSpot;dword YHotSpot;handle hMask;handle hColor"
 Func _WinAPI_BitBlt($hDestDC, $iXDest, $iYDest, $iWidth, $iHeight, $hSrcDC, $iXSrc, $iYSrc, $iROP)
@@ -378,6 +380,11 @@ $iOptions = $DI_NOMIRROR
 EndSwitch
 Local $aResult = DllCall("user32.dll", "bool", "DrawIconEx", "handle", $hDC, "int", $iX, "int", $iY, "handle", $hIcon, "int", $iWidth, "int", $iHeight, "uint", $iStep, "handle", $hBrush, "uint", $iOptions)
 If @error Then Return SetError(@error, @extended, False)
+Return $aResult[0]
+EndFunc
+Func _WinAPI_ExtractIconEx($sFilePath, $iIndex, $paLarge, $paSmall, $iIcons)
+Local $aResult = DllCall("shell32.dll", "uint", "ExtractIconExW", "wstr", $sFilePath, "int", $iIndex, "struct*", $paLarge, "struct*", $paSmall, "uint", $iIcons)
+If @error Then Return SetError(@error, @extended, 0)
 Return $aResult[0]
 EndFunc
 Func _WinAPI_FreeLibrary($hModule)
@@ -558,6 +565,20 @@ Func _WinAPI_BroadcastSystemMessage($iMsg, $wParam = 0, $lParam = 0, $iFlags = 0
 Local $aRet = DllCall('user32.dll', 'long', 'BroadcastSystemMessageW', 'dword', $iFlags, 'dword*', $iRecipients, 'uint', $iMsg, 'wparam', $wParam, 'lparam', $lParam)
 If @error Or($aRet[0] = -1) Then Return SetError(@error, @extended, -1)
 Return SetExtended($aRet[2], $aRet[0])
+EndFunc
+Func _WinAPI_ChangeWindowMessageFilterEx($hWnd, $iMsg, $iAction)
+Local $tCFS, $aRet
+If $hWnd And($__WINVER > 0x0600) Then
+Local Const $tagCHANGEFILTERSTRUCT = 'dword cbSize; dword ExtStatus'
+$tCFS = DllStructCreate($tagCHANGEFILTERSTRUCT)
+DllStructSetData($tCFS, 1, DllStructGetSize($tCFS))
+$aRet = DllCall('user32.dll', 'bool', 'ChangeWindowMessageFilterEx', 'hwnd', $hWnd, 'uint', $iMsg, 'dword', $iAction, 'struct*', $tCFS)
+Else
+$tCFS = 0
+$aRet = DllCall('user32.dll', 'bool', 'ChangeWindowMessageFilter', 'uint', $iMsg, 'dword', $iAction)
+EndIf
+If @error Or Not $aRet[0] Then Return SetError(@error + 10, @extended, 0)
+Return SetExtended(DllStructGetData($tCFS, 2), 1)
 EndFunc
 Func _WinAPI_GetVersion()
 Return BitAND(BitShift($__WINVER, 8), 0xFF) & '.' & BitAND($__WINVER, 0xFF)
@@ -2634,6 +2655,7 @@ Global $g_iAndroidClientWidth
 Global $g_iAndroidClientHeight
 Global $g_iAndroidWindowWidth
 Global $g_iAndroidWindowHeight
+Global $g_iAndroidAdbReplace = 2
 Global $g_sAndroidAdbPath
 Global $g_sAndroidAdbGlobalOptions
 Global $g_sAndroidAdbDevice
@@ -2706,7 +2728,7 @@ Global $g_hLibNTDLL = DllOpen("ntdll.dll")
 Global $g_hLibUser32DLL = DllOpen("user32.dll")
 Global Const $g_sLibIconPath = $g_sLibPath & "\MBRBOT.dll"
 Global $g_iRedrawBotWindowMode = 2
-Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eBtnTest, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant, $eIcnTrap, $eIcnGoblin, $eIcnDonGoblin, $eIcnGold, $eIcnGolem, $eIcnDonGolem, $eIcnHealer, $eIcnDonHealer, $eIcnHogRider, $eIcnDonHogRider, $eIcnHealSpell, $eIcnInferno, $eIcnJumpSpell, $eIcnLavaHound, $eIcnDonLavaHound, $eIcnLightSpell, $eIcnMinion, $eIcnDonMinion, $eIcnPekka, $eIcnDonPekka, $eIcnTreasury, $eIcnRageSpell, $eIcnTroops, $eIcnHourGlass, $eIcnTH1, $eIcnTH10, $eIcnTrophy, $eIcnValkyrie, $eIcnDonValkyrie, $eIcnWall, $eIcnWallBreaker, $eIcnDonWallBreaker, $eIcnWitch, $eIcnDonWitch, $eIcnWizard, $eIcnDonWizard, $eIcnXbow, $eIcnBarrackBoost, $eIcnMine, $eIcnCamp, $eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnNotify, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack, $eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes, $eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnKing, $eIcnQueen, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenUpgr, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost, $eIcnQueenBoost, $eIcnWardenBoost, $eEmpty3, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain, $eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner, $eIcnNoShield, $eIcnDonCustomB, $eIcnAirdefense, $eIcnDarkBarrackBoost, $eIcnDarkElixirStorage, $eIcnSpellsCost, $eIcnTroopsCost, $eIcnResetButton, $eIcnNewSmartZap, $eIcnTrain, $eIcnAttack, $eIcnDelay, $eIcnReOrder, $eIcn2Arrow, $eIcnArrowLeft, $eIcnArrowRight, $eIcnAndroid, $eHdV04, $eHdV05, $eHdV06, $eHdV07, $eHdV08, $eHdV09, $eHdV10, $eHdV11, $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend, $eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, $eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield, $eIcnBattleB, $eIcnWallW, $eIcnSiegeCost, $eIcnBoostPotion, $eIcnBatSpell, $eIcnStoneS, $eIcnIceGolem, $eIcnStarLaboratory, $eIcnRagedBarbarian, $eIcnSneakyArcher, $eIcnBoxerGiant, $eIcnBetaMinion, $eIcnBomber, $eIcnBBBabyDragon, $eIcnCannonCart, $eIcnNightWitch, $eIcnDropShip, $eIcnSuperPekka, $eIcnBBWall01, $eIcnBBWall02, $eIcnBBWall03, $eIcnBBWall04, $eIcnBBWall05, $eIcnBBWall06, $eIcnBBWall07, $eIcnBBWall08
+Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIcnBarbarian, $eIcnDonBarbarian, $eBtnTest, $eIcnBuilder, $eIcnCC, $eIcnGUI, $eIcnDark, $eIcnDragon, $eIcnDonDragon, $eIcnDrill, $eIcnElixir, $eIcnCollector, $eIcnFreezeSpell, $eIcnGem, $eIcnGiant, $eIcnDonGiant, $eIcnTrap, $eIcnGoblin, $eIcnDonGoblin, $eIcnGold, $eIcnGolem, $eIcnDonGolem, $eIcnHealer, $eIcnDonHealer, $eIcnHogRider, $eIcnDonHogRider, $eIcnHealSpell, $eIcnInferno, $eIcnJumpSpell, $eIcnLavaHound, $eIcnDonLavaHound, $eIcnLightSpell, $eIcnMinion, $eIcnDonMinion, $eIcnPekka, $eIcnDonPekka, $eIcnTreasury, $eIcnRageSpell, $eIcnTroops, $eIcnHourGlass, $eIcnTH1, $eIcnTH10, $eIcnTrophy, $eIcnValkyrie, $eIcnDonValkyrie, $eIcnWall, $eIcnWallBreaker, $eIcnDonWallBreaker, $eIcnWitch, $eIcnDonWitch, $eIcnWizard, $eIcnDonWizard, $eIcnXbow, $eIcnBarrackBoost, $eIcnMine, $eIcnCamp, $eIcnBarrack, $eIcnSpellFactory, $eIcnDonBlacklist, $eIcnSpellFactoryBoost, $eIcnMortar, $eIcnWizTower, $eIcnPayPal, $eIcnNotify, $eIcnGreenLight, $eIcnLaboratory, $eIcnRedLight, $eIcnBlank, $eIcnYellowLight, $eIcnDonCustom, $eIcnTombstone, $eIcnSilverStar, $eIcnGoldStar, $eIcnDarkBarrack, $eIcnCollectorLocate, $eIcnDrillLocate, $eIcnMineLocate, $eIcnBarrackLocate, $eIcnDarkBarrackLocate, $eIcnDarkSpellFactoryLocate, $eIcnDarkSpellFactory, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnPoisonSpell, $eIcnBldgTarget, $eIcnBldgX, $eIcnRecycle, $eIcnHeroes, $eIcnBldgElixir, $eIcnBldgGold, $eIcnMagnifier, $eIcnWallElixir, $eIcnWallGold, $eIcnKing, $eIcnQueen, $eIcnDarkSpellBoost, $eIcnQueenBoostLocate, $eIcnKingBoostLocate, $eIcnKingUpgr, $eIcnQueenUpgr, $eIcnWardenUpgr, $eIcnWarden, $eIcnWardenBoostLocate, $eIcnKingBoost, $eIcnQueenBoost, $eIcnWardenBoost, $eEmpty3, $eIcnReload, $eIcnCopy, $eIcnAddcvs, $eIcnEdit, $eIcnTreeSnow, $eIcnSleepingQueen, $eIcnSleepingKing, $eIcnGoldElixir, $eIcnBowler, $eIcnDonBowler, $eIcnCCDonate, $eIcnEagleArt, $eIcnGembox, $eIcnInferno4, $eIcnInfo, $eIcnMain, $eIcnTree, $eIcnProfile, $eIcnCCRequest, $eIcnTelegram, $eIcnTiles, $eIcnXbow3, $eIcnBark, $eIcnDailyProgram, $eIcnLootCart, $eIcnSleepMode, $eIcnTH11, $eIcnTrainMode, $eIcnSleepingWarden, $eIcnCloneSpell, $eIcnSkeletonSpell, $eIcnBabyDragon, $eIcnDonBabyDragon, $eIcnMiner, $eIcnDonMiner, $eIcnNoShield, $eIcnDonCustomB, $eIcnAirdefense, $eIcnDarkBarrackBoost, $eIcnDarkElixirStorage, $eIcnSpellsCost, $eIcnTroopsCost, $eIcnResetButton, $eIcnNewSmartZap, $eIcnTrain, $eIcnAttack, $eIcnDelay, $eIcnReOrder, $eIcn2Arrow, $eIcnArrowLeft, $eIcnArrowRight, $eIcnAndroid, $eHdV04, $eHdV05, $eHdV06, $eHdV07, $eHdV08, $eHdV09, $eHdV10, $eHdV11, $eUnranked, $eBronze, $eSilver, $eGold, $eCrystal, $eMaster, $eChampion, $eTitan, $eLegend, $eWall04, $eWall05, $eWall06, $eWall07, $eWall08, $eWall09, $eWall10, $eWall11, $eIcnPBNotify, $eIcnCCTroops, $eIcnCCSpells, $eIcnSpellsGroup, $eBahasaIND, $eChinese_S, $eChinese_T, $eEnglish, $eFrench, $eGerman, $eItalian, $ePersian, $eRussian, $eSpanish, $eTurkish, $eMissingLangIcon, $eWall12, $ePortuguese, $eIcnDonPoisonSpell, $eIcnDonEarthQuakeSpell, $eIcnDonHasteSpell, $eIcnDonSkeletonSpell, $eVietnamese, $eKorean, $eAzerbaijani, $eArabic, $eIcnBuilderHall, $eIcnClockTower, $eIcnElixirCollectorL5, $eIcnGemMine, $eIcnGoldMineL5, $eIcnElectroDragon, $eIcnTH12, $eHdV12, $eWall13, $eIcnGrayShield, $eIcnBlueShield, $eIcnGreenShield, $eIcnRedShield, $eIcnBattleB, $eIcnWallW, $eIcnSiegeCost, $eIcnBoostPotion, $eIcnBatSpell, $eIcnStoneS, $eIcnIceGolem, $eIcnStarLaboratory, $eIcnRagedBarbarian, $eIcnSneakyArcher, $eIcnBoxerGiant, $eIcnBetaMinion, $eIcnBomber, $eIcnBBBabyDragon, $eIcnCannonCart, $eIcnNightWitch, $eIcnDropShip, $eIcnSuperPekka, $eIcnBBWall01, $eIcnBBWall02, $eIcnBBWall03, $eIcnBBWall04, $eIcnBBWall05, $eIcnBBWall06, $eIcnBBWall07, $eIcnBBWall08, $eIcnWorkshopBoost, $eIcnStrongMan, $eIcnPowerPotion
 Global Enum $eBotNoAction, $eBotStart, $eBotStop, $eBotSearchMode, $eBotClose
 Global $g_iBotAction = $eBotNoAction
 Global $g_bBotMoveRequested = False
@@ -4067,6 +4089,155 @@ Local $aRet = DllCall('Shell32.dll', 'LONG', 'SHGetPropertyStoreForWindow', 'HWN
 If @error Then Return SetError(@error, @extended, False)
 Return SetExtended($aRet[0],($aRet[0] = 0))
 EndFunc
+Global Const $THB_BITMAP = 0x00000001
+Global Const $THB_ICON = 0x00000002
+Global Const $THB_TOOLTIP = 0x00000004
+Global Const $THB_FLAGS = 0x00000008
+Global Const $THBF_ENABLED = 0x00000000
+Global Const $THBF_DISABLED = 0x00000001
+Global Const $THBN_CLICKED = 0x1800
+Global $g_ITBL_oTaskBar = 0
+Global $g_ITBL_oButtonIDs = ObjCreate("Scripting.Dictionary")
+Global $g_WM_TaskbarButtonCreated = _WinAPI_RegisterWindowMessage("TaskbarButtonCreated")
+Global $g_ITBL_bTaskBarReady = 0
+Global Enum $g_ITBL_DllStruct = 1, $g_ITBL_hGui
+Global Enum $g_ITBL_iID, $g_ITBL_hIcon, $g_ITBL_sToolTip, $g_ITBL_sCallFunc, $g_ITBL_iFlags, $g_ITBL_iBitmap, $g_ITBL_iMask, $g_ITBL_Max
+Global $g_ITBL_aButtons[1][$g_ITBL_Max] = [[0, 0]]
+Func _ITaskBar_Init($bRegisterWM_COMMAND = True)
+Global $g_ITBL_oErrorHandler
+If $bRegisterWM_COMMAND Then GUIRegisterMsg($WM_COMMAND, '__TaskbarWM_Command')
+GUIRegisterMsg($g_WM_TaskbarButtonCreated, "__TaskbarButtonCreated")
+OnAutoItExitRegister('__TaskbarExit')
+EndFunc
+Func _ITaskBar_CreateTaskBarObj($bInitiate = True, $bErrorHandler = True)
+If IsObj($g_ITBL_oTaskBar) Then Return $g_ITBL_oTaskBar
+If $bErrorHandler Then $g_ITBL_oErrorHandler = ObjEvent("AutoIt.Error", "__TaskbarErrFunc")
+Local $CLSID_TaskBarlist4 = "{56FDF344-FD6D-11D0-958A-006097C9A090}"
+Local $IID_ITaskbarList4 = "{56FDF342-FD6D-11d0-958A-006097C9A090}"
+Local $tagITaskbarList4 = "HrInit hresult();" & "AddTab hresult(hwnd);" & "DeleteTab hresult(hwnd);" & "ActivateTab hresult(hwnd);" & "SetActiveAlt hresult(hwnd);" & "MarkFullscreenWindow hresult(hwnd;bool);" & "SetProgressValue hresult(hwnd;uint64;uint64);" & "SetProgressState hresult(hwnd;int);" & "RegisterTab hresult(hwnd;hwnd);" & "UnregisterTab hresult(hwnd);" & "SetTabOrder hresult(hwnd;hwnd);" & "SetTabActive hresult(hwnd;hwnd;dword);" & "ThumbBarAddButtons hresult(hwnd;uint;ptr);" & "ThumbBarUpdateButtons hresult(hwnd;uint;ptr);" & "ThumbBarSetImageList hresult(hwnd;ptr);" & "SetOverlayIcon hresult(hwnd;ptr;wstr);" & "SetThumbnailTooltip hresult(hwnd;wstr);" & "SetThumbnailClip hresult(hwnd;ptr);" & "SetTabProperties hresult(hwnd;int);"
+$g_ITBL_oTaskBar = ObjCreateInterface($CLSID_TaskBarlist4, $IID_ITaskbarList4, $tagITaskbarList4)
+If @error Then Return SetError(1, 0, 0)
+If Not IsObj($g_ITBL_oTaskBar) Then Return SetError(3, 0, 0)
+If $bInitiate Then
+Local $iRet = $g_ITBL_oTaskBar.HrInit()
+If $iRet Then Return SetError($iRet, 0, 0)
+EndIf
+Local $time = TimerInit()
+While Not $g_ITBL_bTaskBarReady
+Sleep(10)
+If TimerDiff($time) > 5000 Then Return SetError(2, 0, 0)
+WEnd
+Return SetError(0, 0, $g_ITBL_oTaskBar)
+EndFunc
+Func _ITaskBar_AddTBButtons($hGui)
+If IsObj($g_ITBL_oTaskBar) = 0 Then Return SetError(1, 1, 0)
+If $g_ITBL_aButtons[0][0] = 0 Then Return SetError(1, 0, 0)
+$g_ITBL_aButtons[0][$g_ITBL_hGui] = $hGui
+Local $i, $tagTHUMBBUTTON = "dword;dword;dword;handle;WCHAR[260];dword_ptr"
+For $i = 1 To $g_ITBL_aButtons[0][0]
+$tagTHUMBBUTTON &= ';' & $tagTHUMBBUTTON
+Next
+$g_ITBL_aButtons[0][$g_ITBL_DllStruct] = DllStructCreate($tagTHUMBBUTTON)
+__SetThumbBarStructData()
+Local $iRet = $g_ITBL_oTaskBar.ThumbBarAddButtons($hGui, $g_ITBL_aButtons[0][0], DllStructGetPtr($g_ITBL_aButtons[0][$g_ITBL_DllStruct]))
+If $iRet Then Return SetError($iRet, 0, 0)
+Return 1
+EndFunc
+Func _ITaskBar_CreateTBButton($sToolTip = '', $hIcon = -1, $iBitmap = -1, $sFunctiontoCall = -1, $iFlags = -1, $iMask = -1)
+Local $iD = GUICtrlCreateDummy()
+If $g_ITBL_aButtons[0][0] = 7 Then Return SetError(3, 0, 0)
+If $hIcon <> -1 And Not IsPtr($hIcon) Then
+If Not FileExists($hIcon) Then Return SetError(1, 0, 0)
+If StringRight($hIcon, 3) = 'exe' Then
+$hIcon = __GetEXEIconHandle($hIcon)
+If @error Then Return SetError(2, 0, 0)
+Else
+$hIcon = _WinAPI_LoadImage(0, $hIcon, $IMAGE_ICON, 16, 16, $LR_LOADFROMFILE)
+If @error Then Return SetError(2, 0, 0)
+EndIf
+EndIf
+ReDim $g_ITBL_aButtons[UBound($g_ITBL_aButtons) + 1][$g_ITBL_Max]
+$g_ITBL_aButtons[0][0] += 1
+$g_ITBL_oButtonIDs.Add($iD, $g_ITBL_aButtons[0][0])
+If $hIcon = -1 Then $hIcon = 0
+If $iFlags = -1 Then $iFlags = $THBF_ENABLED
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_iID] = $iD
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_hIcon] = $hIcon
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_sToolTip] = $sToolTip
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_sCallFunc] = $sFunctiontoCall
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_iFlags] = $iFlags
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_iBitmap] = $iBitmap
+If $iMask <> -1 Then
+$g_ITBL_aButtons[$g_ITBL_aButtons[0][0]][$g_ITBL_iMask] = $iMask
+Else
+__UpdateTBMask($g_ITBL_aButtons[0][0])
+EndIf
+Return $iD
+EndFunc
+Func _ITaskBar_UpdateTBButton($iButton, $iFlags = -1, $sToolTip = -1, $sIcon = -1, $iBitmap = -1, $sFunctiontoCall = -1, $iMask = -1)
+If IsObj($g_ITBL_oTaskBar) = 0 Then Return SetError(1, 1, 0)
+If Not $g_ITBL_oButtonIDs.Exists($iButton) Then Return SetError(1, 0, 0)
+Local $iIndex = $g_ITBL_oButtonIDs.Item($iButton)
+If $sIcon <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_hIcon] = $sIcon
+If $sFunctiontoCall <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_sCallFunc] = $sFunctiontoCall
+If $iFlags <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iFlags] = $iFlags
+If $iBitmap <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iBitmap] = $iBitmap
+If $sToolTip <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_sToolTip] = $sToolTip
+If $iMask <> -1 Then
+$g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = $iMask
+Else
+__UpdateTBMask($iIndex)
+EndIf
+__SetThumbBarStructData()
+Local $iRet = $g_ITBL_oTaskBar.ThumbBarUpdateButtons($g_ITBL_aButtons[0][$g_ITBL_hGui], $g_ITBL_aButtons[0][0], DllStructGetPtr($g_ITBL_aButtons[0][$g_ITBL_DllStruct]))
+If $iRet Then Return SetError($iRet, 0, 0)
+Return 1
+EndFunc
+Func __GetEXEIconHandle($sPath)
+Local $Icon = DllStructCreate("handle")
+Local $iIcon = _WinAPI_ExtractIconEx($sPath, 0, 0, DllStructGetPtr($Icon), 1)
+If @error Then Return SetError(1, 0, 0)
+Return DllStructGetData($Icon, 1)
+EndFunc
+Func __SetThumbBarStructData()
+Local $j = 1
+For $i = 1 To $g_ITBL_aButtons[0][0]
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j, $g_ITBL_aButtons[$i][$g_ITBL_iMask])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 1, $g_ITBL_aButtons[$i][$g_ITBL_iID])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 2, $g_ITBL_aButtons[$i][$g_ITBL_iBitmap])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 3, $g_ITBL_aButtons[$i][$g_ITBL_hIcon])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 4, $g_ITBL_aButtons[$i][$g_ITBL_sToolTip])
+DllStructSetData($g_ITBL_aButtons[0][$g_ITBL_DllStruct], $j + 5, $g_ITBL_aButtons[$i][$g_ITBL_iFlags])
+$j += 6
+Next
+EndFunc
+Func __UpdateTBMask($iIndex)
+$g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = $THB_FLAGS
+If $g_ITBL_aButtons[$iIndex][$g_ITBL_hIcon] <> 0 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = BitOR($g_ITBL_aButtons[$iIndex][$g_ITBL_iMask], $THB_ICON)
+If $g_ITBL_aButtons[$iIndex][$g_ITBL_iBitmap] <> -1 Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = BitOR($g_ITBL_aButtons[$iIndex][$g_ITBL_iMask], $THB_BITMAP)
+If $g_ITBL_aButtons[$iIndex][$g_ITBL_sToolTip] <> '' Then $g_ITBL_aButtons[$iIndex][$g_ITBL_iMask] = BitOR($g_ITBL_aButtons[$iIndex][$g_ITBL_iMask], $THB_TOOLTIP)
+EndFunc
+Func __TaskbarWM_Command($hWnd, $msg, $wParam, $lParam)
+Local $iMsg = _WinAPI_HiWord($wParam)
+If $iMsg = $THBN_CLICKED Then
+Local $iID = _WinAPI_LoWord($wParam)
+If $g_ITBL_oButtonIDs.Exists($iID) Then
+Local $iIndex = $g_ITBL_oButtonIDs.Item($iID)
+If $g_ITBL_aButtons[$iIndex][$g_ITBL_sCallFunc] <> -1 Then Execute($g_ITBL_aButtons[$iIndex][$g_ITBL_sCallFunc] & "()")
+EndIf
+EndIf
+Return $GUI_RUNDEFMSG
+EndFunc
+Func __TaskbarButtonCreated()
+$g_ITBL_bTaskBarReady = 1
+EndFunc
+Func __TaskbarExit()
+$g_ITBL_oTaskBar = 0
+$g_ITBL_oButtonIDs = 0
+EndFunc
+Func __TaskbarErrFunc()
+ConsoleWrite("! COM Error !  Number: 0x" & Hex($g_ITBL_oErrorHandler.number, 8) & "   ScriptLine: " & $g_ITBL_oErrorHandler.scriptline & " - " & $g_ITBL_oErrorHandler.windescription & @CRLF)
+EndFunc
 Global $g_hToolTip = 0
 Func _GUICtrlSetTip($controlID, $tiptext, $title = Default, $icon = Default, $options = Default, $useControlID = True)
 If $g_hToolTip = 0 Then
@@ -4124,6 +4295,7 @@ Global $g_hStatusBar = 0
 Global $g_hTiShow = 0, $g_hTiHide = 0, $g_hTiDonate = 0, $g_hTiAbout = 0, $g_hTiStartStop = 0, $g_hTiPause = 0, $g_hTiExit = 0
 Global $g_aFrmBotPosInit[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_bFrmBotMinimized = False
+Global $g_hTblStart = 0, $g_hTblStop = 0, $g_hTblPause = 0, $g_hTblResume = 0, $g_hTblMakeScreenshot = 0
 Global $g_oCtrlIconData = ObjCreate("Scripting.Dictionary")
 Global $g_hBtnStart = 0, $g_hBtnStop = 0, $g_hBtnPause = 0, $g_hBtnResume = 0, $g_hBtnSearchMode = 0, $g_hBtnMakeScreenshot = 0, $g_hBtnHide = 0, $g_hBtnEmbed = 0, $g_hChkBackgroundMode = 0, $g_hLblDonate = 0, $g_hBtnAttackNowDB = 0, $g_hBtnAttackNowLB = 0, $g_hBtnAttackNowTS = 0
 Global $g_hPicTwoArrowShield = 0, $g_hLblVersion = 0, $g_hPicArrowLeft = 0, $g_hPicArrowRight = 0
@@ -4145,7 +4317,6 @@ Local $x = 10, $y = $y_bottom + 10
 GUICtrlCreateGroup("https://mybot.run " & GetTranslatedFileIni("MBR GUI Design Bottom", "Group_01", "- freeware bot -"), $x - 5, $y - 10, 190, 108)
 $g_hBtnStart = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStart", "Start Bot"), $x, $y + 2 +5, 90, 40-5)
 _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStart_Info_01", "Use this to START the bot."))
-GUICtrlSetOnEvent(-1, "btnStart")
 If $g_bBtnColor then GUICtrlSetBkColor(-1, 0x5CAD85)
 GUICtrlSetState(-1, $GUI_DISABLE)
 $g_hBtnStop = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStop", "Stop Bot"), -1, -1, 90, 40-5)
@@ -4317,6 +4488,8 @@ $_GUI_MAIN_WIDTH = $_MINIGUI_MAIN_WIDTH
 $_GUI_MAIN_HEIGHT = $_MINIGUI_MAIN_HEIGHT
 EndIf
 $g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP,($g_iFrmBotPosX = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosX),($g_iFrmBotPosY = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosY), BitOR($WS_MINIMIZEBOX, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $iStyle))
+_WinAPI_ChangeWindowMessageFilterEx($g_hFrmBot, $g_WM_TaskbarButtonCreated, $MSGFLT_ALLOW)
+_WinAPI_ChangeWindowMessageFilterEx($g_hFrmBot, $WM_COMMAND, $MSGFLT_ALLOW)
 If $g_iFrmBotPosX = $g_WIN_POS_DEFAULT Or $g_iFrmBotPosY = $g_WIN_POS_DEFAULT Then
 Local $a = WinGetPos($g_hFrmBot)
 If UBound($a) > 1 Then
@@ -4441,6 +4614,20 @@ If Not $g_bNoFocusTampering Then
 GUISetState(@SW_SHOW, $g_hFrmBot)
 Else
 GUISetState(@SW_SHOW, $g_hFrmBot)
+EndIf
+If IsObj($g_ITBL_oTaskBar) = 0 Then
+_ITaskBar_CreateTaskBarObj(True, False)
+If @error Then
+SetLog("Cannot create Taskbar icons, error: " & @error, $COLOR_ERROR)
+EndIf
+EndIf
+If IsObj($g_ITBL_oTaskBar) And $g_hTblStart = 0 Then
+$g_hTblStart = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStart", "Start Bot"), @ScriptDir & '\images\Icons\TaskBar_start.ico')
+$g_hTblStop = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStop", "Stop Bot"), @ScriptDir & '\images\Icons\TaskBar_stop.ico', -1, -1, $THBF_DISABLED)
+$g_hTblPause = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnPause", "Pause"), @ScriptDir & '\images\Icons\TaskBar_pause.ico', -1, -1, $THBF_DISABLED)
+$g_hTblResume = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnResume", "Resume"), @ScriptDir & '\images\Icons\TaskBar_resume.ico', -1, -1, $THBF_DISABLED)
+$g_hTblMakeScreenshot = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnMakeScreenshot", "Photo"), @ScriptDir & '\images\Icons\TaskBar_photo.ico')
+_ITaskBar_AddTBButtons($g_hFrmBot)
 EndIf
 GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotButtons)
 If $g_hFrmBotEx Then GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotEx)
@@ -4664,6 +4851,7 @@ $g_sUserGamePackage = IniRead($g_sProfileConfigPath, "android", "user.package", 
 $g_sUserGameClass = IniRead($g_sProfileConfigPath, "android", "user.class", $g_sUserGameClass)
 $g_iAndroidBackgroundMode = Int(IniRead($g_sProfileConfigPath, "android", "backgroundmode", $g_iAndroidBackgroundMode))
 $g_iAndroidZoomoutMode = Int(IniRead($g_sProfileConfigPath, "android", "zoomoutmode", $g_iAndroidZoomoutMode))
+$g_iAndroidAdbReplace = Int(IniRead($g_sProfileConfigPath, "android", "adb.replace", $g_iAndroidAdbReplace))
 $g_bAndroidCheckTimeLagEnabled = Int(IniRead($g_sProfileConfigPath, "android", "check.time.lag.enabled",($g_bAndroidCheckTimeLagEnabled ? 1 : 0))) = 1
 $g_bAndroidAdbPortPerInstance = Int(IniRead($g_sProfileConfigPath, "android", "adb.dedicated.instance", $g_bAndroidAdbPortPerInstance ? 1 : 0)) = 1
 $g_iAndroidAdbScreencapTimeoutMin = Int(IniRead($g_sProfileConfigPath, "android", "adb.screencap.timeout.min", $g_iAndroidAdbScreencapTimeoutMin))
@@ -6296,15 +6484,17 @@ Case $g_hFrmBot_URL_PIC, $g_hFrmBot_URL_PIC2
 OpenURL_Label("https://mybot.run/forums")
 Case $g_hLblDonate
 ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
-Case $g_hBtnStop
+Case $g_hBtnStart, $g_hTblStart
+btnStart()
+Case $g_hBtnStop, $g_hTblStop
 btnStop()
-Case $g_hBtnPause
+Case $g_hBtnPause, $g_hTblPause
 btnPause()
-Case $g_hBtnResume
+Case $g_hBtnResume, $g_hTblResume
 btnResume()
 Case $g_hBtnHide
 btnHide()
-Case $g_hBtnMakeScreenshot
+Case $g_hBtnMakeScreenshot, $g_hTblMakeScreenshot
 btnMakeScreenshot()
 Case $g_hPicTwoArrowShield
 btnVillageStat()
@@ -6476,6 +6666,10 @@ GUICtrlSetState($g_hBtnStop, $GUI_ENABLE)
 TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Stop", "Stop bot"))
 TrayItemSetState($g_hTiPause, $TRAY_ENABLE)
 TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Pause", "Pause bot"))
+_ITaskBar_UpdateTBButton($g_hTblStop, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblStart, $THBF_DISABLED)
+_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 EndFunc
 Func BotStopped()
 SetDebugLog("Bot stopped")
@@ -6489,18 +6683,26 @@ GUICtrlSetState($g_hBtnStart, $GUI_ENABLE)
 GUICtrlSetState($g_hBtnStop, $GUI_ENABLE)
 TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Start", "Start bot"))
 TrayItemSetState($g_hTiPause, $TRAY_DISABLE)
+_ITaskBar_UpdateTBButton($g_hTblStart, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblStop, $THBF_DISABLED)
+_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_DISABLED)
+_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 EndFunc
 Func BotPaused()
 SetDebugLog("Bot paused")
 GUICtrlSetState($g_hBtnPause, $GUI_HIDE)
 GUICtrlSetState($g_hBtnResume, $GUI_SHOW)
 TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Resume", "Resume bot"))
+_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_DISABLED)
+_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_ENABLED)
 EndFunc
 Func BotResumed()
 SetDebugLog("Bot resumed")
 GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
 GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Pause", "Pause bot"))
+_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_ENABLED)
+_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 EndFunc
 Func UpdateManagedMyBot($aBotDetails)
 If $g_iDebugWindowMessages Then SetDebugLog("UpdateManagedMyBot: " & $aBotDetails[$g_eBotDetailsBotForm])
@@ -6706,6 +6908,7 @@ Func ReferenceGlobals()
 If True Then Return
 EndFunc
 ProcessCommandLine()
+_ITaskBar_Init(False)
 _Crypt_Startup()
 _GDIPlus_Startup()
 $g_iGuiMode = 2

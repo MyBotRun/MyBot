@@ -68,6 +68,8 @@ Func CollectFreeMagicItems($bTest = False)
 					EndIf
 				EndIf
 			EndIf
+		ElseIf $aResults[$i] = "" Then
+			$aResults[$i] = "N/A"
 		EndIf
 
 		If Not $g_bRunState Then Return

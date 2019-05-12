@@ -71,6 +71,7 @@ MBR GUI Design.au3; CreateMainGUI()
 #include-once
 
 #include "Functions\Other\AppUserModelId.au3"
+#include "Functions\Other\ITaskBarList.au3"
 #include "Functions\GUI\_GUICtrlSetTip.au3"
 #include "functions\GUI\_GUICtrlCreatePic.au3"
 #include "functions\GUI\GUI_State.au3"
@@ -111,6 +112,7 @@ Global $g_aFrmBotPosInit[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hFirstControlToHide = 0, $g_hLastControlToHide = 0, $g_aiControlPrevState[1]
 Global $g_bFrmBotMinimized = False ; prevents bot flickering
 Global $g_lblHepNotify = 0, $g_lblHelpBot = 0
+Global $g_hTblStart = 0, $g_hTblStop = 0, $g_hTblPause = 0, $g_hTblResume = 0, $g_hTblMakeScreenshot = 0 ; TaskBarList buttons
 
 Global $g_oCtrlIconData = ObjCreate("Scripting.Dictionary")
 
@@ -146,6 +148,10 @@ Func CreateMainGUI()
 	EndIf
 	$g_hFrmBot = GUICreate($g_sBotTitle, $_GUI_MAIN_WIDTH, $_GUI_MAIN_HEIGHT + $_GUI_MAIN_TOP, ($g_iFrmBotPosX = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosX), ($g_iFrmBotPosY = $g_WIN_POS_DEFAULT ? -1 : $g_iFrmBotPosY), _
 			BitOR($WS_MINIMIZEBOX, $WS_POPUP, $WS_SYSMENU, $WS_CLIPCHILDREN, $WS_CLIPSIBLINGS, $iStyle))
+
+	; see https://github.com/Microsoft/Windows-classic-samples/blob/master/Samples/Win7Samples/winui/shell/appshellintegration/TaskbarThumbnailToolbar/ThumbnailToolbar.cpp
+	_WinAPI_ChangeWindowMessageFilterEx($g_hFrmBot, $g_WM_TaskbarButtonCreated, $MSGFLT_ALLOW)
+	_WinAPI_ChangeWindowMessageFilterEx($g_hFrmBot, $WM_COMMAND, $MSGFLT_ALLOW)
 
 	; update $g_iFrmBotPosX and $g_iFrmBotPosY for default position
 	If $g_iFrmBotPosX = $g_WIN_POS_DEFAULT Or $g_iFrmBotPosY = $g_WIN_POS_DEFAULT Then
@@ -335,6 +341,24 @@ Func ShowMainGUI()
 		;Local $lCurExStyle = _WinAPI_GetWindowLong($g_hFrmBot, $GWL_EXSTYLE)
 		;_WinAPI_SetWindowLong($g_hAndroidWindow, $GWL_EXSTYLE, BitOR($lCurExStyle, $WS_EX_TOPMOST))
 		;_WinAPI_SetWindowLong($g_hAndroidWindow, $GWL_EXSTYLE, $lCurExStyle)
+	EndIf
+
+	; create task bar object
+	If IsObj($g_ITBL_oTaskBar) = 0 Then
+		_ITaskBar_CreateTaskBarObj(True, False)
+		If @error Then
+			SetLog("Cannot create Taskbar icons, error: " & @error, $COLOR_ERROR)
+		EndIf
+	EndIf
+
+	; add taskbar buttons
+	If IsObj($g_ITBL_oTaskBar) And $g_hTblStart = 0 Then
+		$g_hTblStart = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStart", "Start Bot"), @ScriptDir & '\images\Icons\TaskBar_start.ico')
+		$g_hTblStop = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnStop", "Stop Bot"), @ScriptDir & '\images\Icons\TaskBar_stop.ico', -1, -1, $THBF_DISABLED)
+		$g_hTblPause = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnPause", "Pause"), @ScriptDir & '\images\Icons\TaskBar_pause.ico', -1, -1, $THBF_DISABLED)
+		$g_hTblResume = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnResume", "Resume"), @ScriptDir & '\images\Icons\TaskBar_resume.ico', -1, -1, $THBF_DISABLED)
+		$g_hTblMakeScreenshot = _ITaskBar_CreateTBButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnMakeScreenshot", "Photo"), @ScriptDir & '\images\Icons\TaskBar_photo.ico')
+		_ITaskBar_AddTBButtons($g_hFrmBot)
 	EndIf
 
 	GUISetState(@SW_SHOWNOACTIVATE, $g_hFrmBotButtons)

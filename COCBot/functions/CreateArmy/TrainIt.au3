@@ -73,6 +73,10 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 				Else
 					If $g_bDebugSetlogTrain Then DebugImageSave("TroopIconNotFound_" & GetTroopName($iIndex))
 					SetLog("TrainIt troop position " & GetTroopName($iIndex) & " did not find icon", $COLOR_ERROR)
+					If $i = 5 Then
+						SetLog("Seems all your barracks are upgrading!", $COLOR_ERROR)
+						$g_bAllBarracksUpgd = True
+					EndIf
 				EndIf
 			Else
 				SetLog("Impossible happened? TrainIt troop position " & GetTroopName($iIndex) & " did not return array", $COLOR_ERROR)

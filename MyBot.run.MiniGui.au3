@@ -772,15 +772,17 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $g_hLblDonate
 			; Donate URL is not in text nor tooltip
 			ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
-		Case $g_hBtnStop
+		Case $g_hBtnStart, $g_hTblStart
+			btnStart()
+		Case $g_hBtnStop, $g_hTblStop
 			btnStop()
-		Case $g_hBtnPause
+		Case $g_hBtnPause, $g_hTblPause
 			btnPause()
-		Case $g_hBtnResume
+		Case $g_hBtnResume, $g_hTblResume
 			btnResume()
 		Case $g_hBtnHide
 			btnHide()
-		Case $g_hBtnMakeScreenshot
+		Case $g_hBtnMakeScreenshot, $g_hTblMakeScreenshot
 			btnMakeScreenshot()
 		Case $g_hPicTwoArrowShield
 			btnVillageStat()
@@ -1009,13 +1011,21 @@ Func BotStarted()
 	GUICtrlSetState($g_hBtnResume, $g_bBotPaused ? $GUI_SHOW : $GUI_HIDE)
 	GUICtrlSetState($g_hBtnSearchMode, $GUI_HIDE)
 	GUICtrlSetState($g_hChkBackgroundMode, $GUI_DISABLE)
+
 	; enable buttons
 	GUICtrlSetState($g_hBtnStart, $GUI_ENABLE)
 	GUICtrlSetState($g_hBtnStop, $GUI_ENABLE)
+
 	; update try items
 	TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Stop", "Stop bot"))
 	TrayItemSetState($g_hTiPause, $TRAY_ENABLE)
 	TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Pause", "Pause bot"))
+
+	; update task bar buttons
+	_ITaskBar_UpdateTBButton($g_hTblStop, $THBF_ENABLED)
+	_ITaskBar_UpdateTBButton($g_hTblStart, $THBF_DISABLED)
+	_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_ENABLED)
+	_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 EndFunc   ;==>BotStarted
 
 Func BotStopped()
@@ -1043,6 +1053,12 @@ Func BotStopped()
 	; update try items
 	TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Start", "Start bot"))
 	TrayItemSetState($g_hTiPause, $TRAY_DISABLE)
+
+	; update task bar buttons
+	_ITaskBar_UpdateTBButton($g_hTblStart, $THBF_ENABLED)
+	_ITaskBar_UpdateTBButton($g_hTblStop, $THBF_DISABLED)
+	_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_DISABLED)
+	_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 EndFunc   ;==>BotStopped
 
 Func BotPaused()
@@ -1050,6 +1066,8 @@ Func BotPaused()
 	GUICtrlSetState($g_hBtnPause, $GUI_HIDE)
 	GUICtrlSetState($g_hBtnResume, $GUI_SHOW)
 	TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Resume", "Resume bot"))
+	_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_DISABLED)
+	_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_ENABLED)
 EndFunc   ;==>BotPaused
 
 Func BotResumed()
@@ -1057,6 +1075,8 @@ Func BotResumed()
 	GUICtrlSetState($g_hBtnPause, $GUI_SHOW)
 	GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 	TrayItemSetText($g_hTiPause, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Pause", "Pause bot"))
+	_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_ENABLED)
+	_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 EndFunc   ;==>BotResumed
 
 Func UpdateManagedMyBot($aBotDetails)
@@ -1321,6 +1341,7 @@ EndFunc   ;==>ReferenceGlobals
 
 ProcessCommandLine()
 
+_ITaskBar_Init(False)
 _Crypt_Startup()
 _GDIPlus_Startup() ; Start GDI+ Engine (incl. a new thread)
 

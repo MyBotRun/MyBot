@@ -37,6 +37,7 @@ Func BotStart($bAutostartDelay = 0)
 	$g_bIsClientSyncError = False
 	$g_bZoomoutFailureNotRestartingAnything = False
 	$g_bRestart = False
+	$g_bStayOnBuilderBase = False
 
 	EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
 	;$g_iFirstAttack = 0
@@ -68,6 +69,12 @@ Func BotStart($bAutostartDelay = 0)
 	GUICtrlSetState($g_hBtnResume, $GUI_HIDE)
 	GUICtrlSetState($g_hBtnSearchMode, $GUI_HIDE)
 	GUICtrlSetState($g_hChkBackgroundMode, $GUI_DISABLE)
+
+	; update task bar buttons
+	_ITaskBar_UpdateTBButton($g_hTblStop, $THBF_ENABLED)
+	_ITaskBar_UpdateTBButton($g_hTblStart, $THBF_DISABLED)
+	_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_ENABLED)
+	_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 
 	; update try items
 	TrayItemSetText($g_hTiStartStop, GetTranslatedFileIni("MBR GUI Design - Loading", "StatusBar_Item_Stop", "Stop bot"))
@@ -177,6 +184,12 @@ Func BotStop()
 	If $g_iTownHallLevel > 2 Then GUICtrlSetState($g_hBtnSearchMode, $GUI_ENABLE)
 	GUICtrlSetState($g_hBtnSearchMode, $GUI_SHOW)
 	;GUICtrlSetState($g_hBtnMakeScreenshot, $GUI_ENABLE)
+
+	; update task bar buttons
+	_ITaskBar_UpdateTBButton($g_hTblStart, $THBF_ENABLED)
+	_ITaskBar_UpdateTBButton($g_hTblStop, $THBF_DISABLED)
+	_ITaskBar_UpdateTBButton($g_hTblPause, $THBF_DISABLED)
+	_ITaskBar_UpdateTBButton($g_hTblResume, $THBF_DISABLED)
 
 	; hide attack buttons if show
 	GUICtrlSetState($g_hBtnAttackNowDB, $GUI_HIDE)

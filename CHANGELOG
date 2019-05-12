@@ -1,4 +1,18 @@
-﻿* **V7.7.5**
+﻿* **V7.7.6**
+* Added start, stop, pause, resume and photo buttons to bot thumbnail preview window
+* Added Android adb.exe replace option under Bot/Android to solve adb.exe issues
+* Fixed forum authentication
+* Fixed queued troops (removed old and updated balloon and wall breaker)
+* Fixed stuck situation when android emulator was restarted on builder base
+* Fixed inconsistent adb state on error initializing adb connection
+* Fixed rare "error launching ADB shell for minitouch" when mouse device not correctly identified
+* Fixed pull/push of shared_prefs when bot profile name contains umlauts
+* Fixed Clash of Clans crash right after launching the game by clearing cache when shared_prefs are available
+* Fixed Unbreakable Mode not using standard CoC close function by @mitzu
+* Fixed bot not account switching when all barracks upgrading by @Mika
+* Updated Persian lang file by @MohamamdKhan
+
+* **V7.7.5**
 * April Update Fixed collect treasury
 * April Update Fixed boost potion thx @mitzu
 * Added new conditions "50%", "AQ", "BK", "GW" and "AQ+BK" to csv WAIT command

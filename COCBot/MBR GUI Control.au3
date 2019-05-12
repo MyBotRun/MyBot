@@ -502,11 +502,13 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $g_hLblDonate
 			; Donate URL is not in text nor tooltip
 			ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
-		Case $g_hBtnStop
+		Case $g_hBtnStart, $g_hTblStart
+			btnStart()
+		Case $g_hBtnStop, $g_hTblStop
 			btnStop()
-		Case $g_hBtnPause
+		Case $g_hBtnPause, $g_hTblPause
 			btnPause()
-		Case $g_hBtnResume
+		Case $g_hBtnResume, $g_hTblResume
 			btnResume()
 		Case $g_hBtnHide
 			btnHide()
@@ -520,7 +522,7 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnAttackNowTS()
 			;Case $idMENU_DONATE_SUPPORT
 			;	ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
-		Case $g_hBtnMakeScreenshot
+		Case $g_hBtnMakeScreenshot, $g_hTblMakeScreenshot
 			If $g_bRunState Then
 				; call with flag when bot is running to execute on _sleep() idle
 				btnMakeScreenshot()
@@ -2059,7 +2061,7 @@ Func Bind_ImageList($nCtrl, ByRef $hImageList)
 			Local $aIconIndex = [$eIcnTrain, $eIcnGem, $eIcnReOrder, $eIcnOptions]
 
 		Case $g_hGUI_MISC_TAB
-			Local $aIconIndex = [$eIcnTH1, $eIcnBuilderHall]
+			Local $aIconIndex = [$eIcnTH1, $eIcnBuilderHall, $eIcnStrongMan]
 
 		Case $g_hGUI_DONATE_TAB
 			; the icons for donate tab

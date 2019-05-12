@@ -22,7 +22,7 @@ EndFunc   ;==>checkMainScreen
 Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in main screen
 
 	If $bSetLog = Default Then $bSetLog = True
-	If $bBuilderBase = Default Then $bBuilderBase = $g_bOnBuilderBase
+	If $bBuilderBase = Default Then $bBuilderBase = $g_bStayOnBuilderBase
 
 	Local $i, $iErrorCount, $iCheckBeforeRestartAndroidCount, $bObstacleResult, $bContinue
 	Local $aPixelToCheck = $aIsMain
@@ -113,7 +113,13 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 	Return $bLocated
 EndFunc   ;==>_checkMainScreen
 
-Func _checkMainScreenImage(ByRef $bLocated, $aPixelToCheck)
-	$bLocated = _CheckPixel($aPixelToCheck, $g_bNoCapturePixel) And Not checkObstacles_Network(False, False)
+Func _checkMainScreenImage(ByRef $bLocated, $aPixelToCheck, $bNeedCaptureRegion = $g_bNoCapturePixel)
+	$bLocated = _CheckPixel($aPixelToCheck, $bNeedCaptureRegion) And Not checkObstacles_Network(False, False)
 	Return $bLocated
+EndFunc
+
+Func isOnMainVillage($bNeedCaptureRegion = $g_bNoCapturePixel)
+	Local $aPixelToCheck = $aIsMain
+	Local $bLocated = False
+	Return _checkMainScreenImage($bLocated, $aPixelToCheck)
 EndFunc

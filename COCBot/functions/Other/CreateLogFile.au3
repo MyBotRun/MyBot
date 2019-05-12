@@ -124,5 +124,5 @@ Func CreateSwitchLogFile()
 	Local $sSwitchLogFName = "SwitchAccLog" & "-" & @YEAR & "-" & @MON & ".log"
 	Local $sSwitchLogPath = $g_sProfilePath & "\" & $sSwitchLogFName
 	$g_hSwitchLogFile = FileOpen($sSwitchLogPath, $FO_APPEND)
-	SetDebugLog("Created attack log file: " & $sSwitchLogPath)
+	SetDebugLog("Created switch log file: " & $sSwitchLogPath)
 EndFunc   ;==>CreateSwitchLogFile

@@ -103,29 +103,8 @@ Func Unbreakable()
 
 	If CheckObstacles() = True Then SetLog("Window clean required, but no problem for MyBot!", $COLOR_INFO)
 
-	SetLog("Closing Clash Of Clans", $COLOR_INFO)
-
-	$i = 0
-	While 1
-		AndroidBackButton()
-		;PureClickP($aBSBackButton, 1, 0, "#0116") ; Hit BS Back button for the confirm exit dialog to appear
-		If _Sleep($DELAYUNBREAKABLE1) Then Return True
-		; New button search as old pixel check matched grass color sometimes
-		Local $offColors[3][3] = [[0x000000, 144, 0], [0xFFFFFF, 54, 17], [0xCBE870, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
-		Local $ButtonPixel = _MultiPixelSearch(438, 372 + $g_iMidOffsetY, 590, 404 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $g_bDebugSetlog Then SetDebugLog("Exit btn chk-#1: " & _GetPixelColor(441, 374, True) & ", #2: " & _GetPixelColor(441 + 144, 374, True) & ", #3: " & _GetPixelColor(441 + 54, 374 + 17, True) & ", #4: " & _GetPixelColor(441 + 54, 374 + 10, True), $COLOR_DEBUG)
-		If IsArray($ButtonPixel) Then
-			If $g_bDebugSetlog Then
-				SetDebugLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
-				SetDebugLog("Pixel color found #1: " & _GetPixelColor($ButtonPixel[0], $ButtonPixel[1], True) & ", #2: " & _GetPixelColor($ButtonPixel[0] + 144, $ButtonPixel[1], True) & ", #3: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 17, True) & ", #4: " & _GetPixelColor($ButtonPixel[0] + 54, $ButtonPixel[1] + 27, True), $COLOR_DEBUG)
-			EndIf
-			PureClick($ButtonPixel[0] + 75, $ButtonPixel[1] + 25, 2, 50, "#0117") ; Click Okay Button
-			ExitLoop
-		EndIf
-		If $i > 15 Then ExitLoop
-		$i += 1
-	WEnd
-
+	CloseCoC()
+	
 	$iTime = Number($g_iUnbrkWait)
 	If $iTime < 1 Then $iTime = 1 ;error check user time input
 	Local Const $iGracePeriodTime = 5 ; 5 minutes for server to acknowledge log off.

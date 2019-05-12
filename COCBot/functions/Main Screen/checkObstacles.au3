@@ -16,7 +16,7 @@
 ;
 Func checkObstacles($bBuilderBase = Default) ;Checks if something is in the way for mainscreen
 	FuncEnter(checkObstacles)
-	If $bBuilderBase = Default Then $bBuilderBase = $g_bOnBuilderBase
+	If $bBuilderBase = Default Then $bBuilderBase = $g_bStayOnBuilderBase
 	Static $iRecursive = 0
 
 	If TestCapture() = False And WinGetAndroidHandle() = 0 Then
@@ -52,8 +52,13 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		If checkObstacles_GfxError() Then Return True
 	EndIf
 	Local $bIsOnBuilderIsland = isOnBuilderBase()
-	If $bBuilderBase = False And $bIsOnBuilderIsland = True Then
-		SetLog("Detected Builder Base, trying to switch back to Main Village")
+	Local $bIsOnMainVillage = isOnMainVillage()
+	If $bBuilderBase <> $bIsOnBuilderIsland And ($bIsOnBuilderIsland Or $bIsOnBuilderIsland <> $bIsOnMainVillage) Then
+		If $bIsOnBuilderIsland Then
+			SetLog("Detected Builder Base, trying to switch back to Main Village")
+		Else
+			SetLog("Detected Main Village, trying to switch back to Builder Base")
+		EndIf
 		If SwitchBetweenBases() Then
 			$g_bMinorObstacle = True
 			If _Sleep($DELAYCHECKOBSTACLES1) Then Return

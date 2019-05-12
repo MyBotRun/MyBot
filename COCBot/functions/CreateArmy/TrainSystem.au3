@@ -1471,6 +1471,7 @@ Func SearchArmy($sImageDir = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0, $sArmyType = 
 	EndIf
 
 	If $sArmyType = "Queue" Then
+		_ArraySort($aResult, 1, 0, 0, 1) ; reverse the queued slots from right to left
 		Local $xSlot
 		For $i = 0 To UBound($aResult) - 1
 			$xSlot = Int(Number($aResult[$i][1]) / 71) * 71 - 6

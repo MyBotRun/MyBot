@@ -590,6 +590,15 @@ Func ChkTreasuryCollect()
 	EndIf
 EndFunc   ;==>ChkTreasuryCollect
 
+Func ChkFreeMagicItems()
+	If $g_iTownHallLevel >= 8 Then ; Must be Th8 or more to use the Trader
+		GUICtrlSetState($g_hChkFreeMagicItems, $GUI_ENABLE)	
+	Else
+	   GUICtrlSetState($g_hChkFreeMagicItems, $GUI_DISABLE)
+	EndIf
+EndFunc   ;==>ChkFreeMagicItems
+
+
 Func chkStartClockTowerBoost()
 	If GUICtrlRead($g_hChkStartClockTowerBoost) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hChkCTBoostBlderBz, $GUI_ENABLE)

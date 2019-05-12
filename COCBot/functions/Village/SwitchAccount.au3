@@ -201,6 +201,15 @@ Func CheckSwitchAcc()
 			SetSwitchAccLog("Stay at [" & $g_iCurAccount + 1 & "]", $COLOR_SUCCESS)
 		EndIf
 	EndIf
+	
+	;Check if all barrack are upgrading, no army can be train --> Force Switch account
+	
+	If $g_bAllBarracksUpgd = True then 
+	   SetLog("Seems all your barracks are upgrading", $COLOR_INFO)
+	   SetLog("No troops can be trained, let's switch account", $COLOR_INFO)
+	   SetSwitchAccLog(" - All Barracks Upgrading, Force switch")
+	   $bForceSwitch = True
+	EndIf
 
 EndFunc   ;==>CheckSwitchAcc
 
