@@ -61,32 +61,29 @@ Func CreateAttackSearchActiveBaseEndBattle()
 	$y += 21
 		$g_hLblABMinRerourcesAtk2 = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblMinRerourcesAtk2", -1) & ":", $x + 16, $y + 2, -1, -1)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "LblMinRerourcesAtk2_Info_01", -1)
-			_GUICtrlSetTip(-1, $sTxtTip)
+			_GUICtrlSetTip(-1, $sTxtTip & " resources.")
 			GUICtrlSetState(-1, $GUI_DISABLE)
 
 	$y += 21
 		$g_hTxtABMinGoldStopAtk2 = GUICtrlCreateInput("2000", $x + 65, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, $sTxtTip)
+			_GUICtrlSetTip(-1, $sTxtTip & " gold.")
 			GUICtrlSetLimit(-1, 6)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$g_hPicABMinGoldStopAtk2 = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 117, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$y += 21
 		$g_hTxtABMinElixirStopAtk2 = GUICtrlCreateInput("2000", $x + 65, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, $sTxtTip)
+			_GUICtrlSetTip(-1, $sTxtTip & " elixir.")
 			GUICtrlSetLimit(-1, 6)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$g_hPicABMinElixirStopAtk2 = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 117, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$y += 21
 		$g_hTxtABMinDarkElixirStopAtk2 = GUICtrlCreateInput("50", $x + 65, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-			_GUICtrlSetTip(-1, $sTxtTip)
+			_GUICtrlSetTip(-1, $sTxtTip & "dark elixir.")
 			GUICtrlSetLimit(-1, 4)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$g_hPicABMinDarkElixirStopAtk2 = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x + 117, $y, 16, 16)
-			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$y += 21
 		$g_hChkABEndNoResources = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - EndBattle", "ChkEndNoResources", -1), $x, $y, -1, -1)

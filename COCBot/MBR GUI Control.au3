@@ -196,7 +196,7 @@ EndFunc   ;==>DisableProcessWindowsGhosting
 ; Check for any activated window to show bot when Android activated
 Func GUIControl_WM_SHELLHOOK($hWin, $iMsg, $wParam, $lParam)
 	If $g_iDebugWindowMessages Then SetDebugLog("GUIControl_WM_SHELLHOOK: $hWin=" & $hWin & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", Active=" & _WinAPI_GetActiveWindow(), Default, True)
-	If $hWin = $g_hFrmBot And $lParam And BitAND($wParam, $HSHELL_WINDOWACTIVATED) And Not AndroidEmbedded() Then
+	If $hWin = $g_hFrmBot And $lParam And BitAND($wParam, $HSHELL_WINDOWACTIVATED) And Not $g_bIsHidden And Not AndroidEmbedded() Then
 		Select
 			Case $lParam = $g_hAndroidWindow
 				; show bot without activating
@@ -569,8 +569,8 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 		Case $g_hChkMakeIMGCSV
 			chkmakeIMGCSV()
 		Case $g_hBtnTestTrain
-			;btnTestTrain()
-			TestSmartFarm()
+			btnTestTrain()
+			;TestSmartFarm()
 		Case $g_hBtnTestDonateCC
 			btnTestDonateCC()
 		Case $g_hBtnTestRequestCC
@@ -759,6 +759,8 @@ Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
 			tabDONATE()
 		Case $g_hGUI_ATTACK_TAB
 			tabAttack()
+		Case $g_hGUI_TRAINARMY_TAB
+			tabARMY()
 		Case $g_hGUI_SEARCH_TAB
 			tabSEARCH()
 		Case $g_hGUI_DEADBASE_TAB
@@ -1174,6 +1176,7 @@ Func BotGuiModeToggle()
 
 			GUICtrlDelete($g_hGUI_ATTACK_TAB)
 			GUICtrlDelete($g_hGUI_TRAINARMY_TAB)
+			GUICtrlDelete($g_hGUI_TRAINARMY_ARMY_TAB)
 			GUICtrlDelete($g_hGUI_SEARCH_TAB)
 			GUICtrlDelete($g_hGUI_DEADBASE_TAB)
 			GUICtrlDelete($g_hGUI_ACTIVEBASE_TAB)
@@ -1218,6 +1221,7 @@ Func BotGuiModeToggle()
 			; refresh tab states
 			tabBot()
 			tabDONATE()
+			tabARMY()
 			tabSEARCH()
 			tabAttack()
 			tabVillage()
@@ -1792,6 +1796,7 @@ Func tabAttack()
 			GUISetState(@SW_HIDE, $g_hGUI_STRATEGIES)
 			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY)
 			GUISetState(@SW_HIDE, $g_hGUI_SEARCH)
+			tabARMY()
 		Case $tabidx = 1 ; SEARCH tab
 			GUISetState(@SW_HIDE, $g_hGUI_STRATEGIES)
 			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY)
@@ -1803,6 +1808,39 @@ Func tabAttack()
 			GUISetState(@SW_HIDE, $g_hGUI_SEARCH)
 	EndSelect
 EndFunc   ;==>tabAttack
+
+Func tabARMY()
+	If $g_iGuiMode <> 1 Then Return
+	Local $tabidx = GUICtrlRead($g_hGUI_TRAINARMY_TAB)
+
+	Select
+		Case $tabidx = 0 ; Army tab
+			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_ARMY)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_OPTIONS)
+
+		Case $tabidx = 1 ; Boost tab
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_ARMY)
+			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_BOOST)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_OPTIONS)
+
+		Case $tabidx = 2 ; Train Order tab
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_ARMY)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
+			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_TRAINORDER)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_OPTIONS)
+
+		Case $tabidx = 3 ; Options tab
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_ARMY)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_BOOST)
+			GUISetState(@SW_HIDE, $g_hGUI_TRAINARMY_TRAINORDER)
+			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_TRAINARMY_OPTIONS)
+
+	EndSelect
+
+EndFunc   ;==>tabARMY
 
 Func tabSEARCH()
 	If $g_iGuiMode <> 1 Then Return

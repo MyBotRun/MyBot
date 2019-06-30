@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.6)
+#pragma compile(FileVersion, 7.7.7)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.6"
+Global $g_sBotVersion = "v7.7.7"
 Opt("MustDeclareVars", 1)
 Global Const $WAIT_TIMEOUT = 258
 Global Const $STDERR_MERGED = 8
@@ -22,6 +22,10 @@ Global Const $tagREBARBANDINFO = "uint cbSize;uint fMask;uint fStyle;dword clrFo
 Global Const $tagPROCESS_INFORMATION = "handle hProcess;handle hThread;dword ProcessID;dword ThreadID"
 Global Const $tagSTARTUPINFO = "dword Size;ptr Reserved1;ptr Desktop;ptr Title;dword X;dword Y;dword XSize;dword YSize;dword XCountChars;" & "dword YCountChars;dword FillAttribute;dword Flags;word ShowWindow;word Reserved2;ptr Reserved3;handle StdInput;" & "handle StdOutput;handle StdError"
 Global Const $tagSECURITY_ATTRIBUTES = "dword Length;ptr Descriptor;bool InheritHandle"
+Func _WinAPI_GetLastError(Const $_iCurrentError = @error, Const $_iCurrentExtended = @extended)
+Local $aResult = DllCall("kernel32.dll", "dword", "GetLastError")
+Return SetError($_iCurrentError, $_iCurrentExtended, $aResult[0])
+EndFunc
 Global Const $tagOSVERSIONINFO = 'struct;dword OSVersionInfoSize;dword MajorVersion;dword MinorVersion;dword BuildNumber;dword PlatformId;wchar CSDVersion[128];endstruct'
 Global Const $__WINVER = __WINVER()
 Func __WINVER()
@@ -929,8 +933,6 @@ $hReadPipe = $aResult[1]
 $hWritePipe = $aResult[2]
 Return $aResult[0]
 EndFunc
-Global $g_RunPipe_hProcess = 0
-Global $g_RunPipe_hThread = 0
 Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False, $bNoLog = False)
 If $bUseSemaphore Then
 Local $hSemaphore = LockSemaphore(StringReplace($cmd, "\", "/"), "Waiting to launch: " & $cmd)
@@ -944,7 +946,7 @@ $pid = RunPipe($cmd, "", @SW_HIDE, $STDERR_MERGED, $hStdIn, $hStdOut, $hProcess,
 If $pid = 0 Then
 SetLog("Launch failed: " & $cmd, $COLOR_ERROR)
 If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
-Return
+Return SetError(1, 0, "")
 EndIf
 Local $timeout_sec = Round($timeout / 1000)
 Local $iWaitResult
@@ -960,12 +962,10 @@ EndIf
 Else
 ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread)
 EndIf
-$g_RunPipe_hProcess = 0
-$g_RunPipe_hThread = 0
 CleanLaunchOutput($data)
 If Not $bNoLog Then SetDebugLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG)
 If $bUseSemaphore Then UnlockSemaphore($hSemaphore)
-Return $data
+Return SetError(0, 0, $data)
 EndFunc
 Func ProcessGetCommandLine($pid, $strComputer = ".")
 If Not IsNumber($pid) Then Return SetError(2, 0, -1)
@@ -984,8 +984,9 @@ CloseWmiObject()
 Return SetError(1, 0, -1)
 EndFunc
 Func CleanLaunchOutput(ByRef $output)
-$output = StringReplace($output, @CR & @CR, "")
-$output = StringReplace($output, @CRLF & @CRLF, "")
+$output = StringReplace($output, @LF & @LF, @LF, 0, 2)
+$output = StringReplace($output, @CR & @CR, @LF, 0, 2)
+$output = StringReplace($output, @CRLF & @CRLF, @LF, 0, 2)
 If StringRight($output, 1) = @LF Then $output = StringLeft($output, StringLen($output) - 1)
 If StringRight($output, 1) = @CR Then $output = StringLeft($output, StringLen($output) - 1)
 EndFunc
@@ -1019,10 +1020,11 @@ If __WinAPI_CreateProcess("", $program, 0, 0, True, 0, 0, $workdir, $lpStartupIn
 Local $pid = DllStructGetData($ProcessInformation, "ProcessID")
 $hProcess = DllStructGetData($ProcessInformation, "hProcess")
 $hThread = DllStructGetData($ProcessInformation, "hThread")
-Return $pid
+Return SetError(0, 0, $pid)
 EndIf
-SetDebugLog("RunPipe: Failed creating new process: " & $program)
+SetLog("Failed creating new process: " & $program, $COLOR_ERROR)
 ClosePipe(0, $hStdIn, $hStdOut, 0, 0)
+Return SetError(1, 0, 0)
 EndFunc
 Func ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread)
 _WinAPI_CloseHandle($hStdIn[0])
@@ -1040,11 +1042,11 @@ Local $iRead
 If _WinAPI_ReadFile($hPipe, DllStructGetPtr($tBuffer), 4096, $iRead) Then
 Return SetError(0, 0, DllStructGetData($tBuffer, "Text"))
 EndIf
-Return SetError(@error, @extended, "")
+Return SetError( _WinAPI_GetLastError(), 0, "")
 EndFunc
 Func DataInPipe(ByRef $hPipe)
 Local $aResult = DllCall("kernel32.dll", "bool", "PeekNamedPipe", "handle", $hPipe, "ptr", 0, "int", 0, "dword*", 0, "dword*", 0, "dword*", 0)
-If @error Then Return SetError(@error, @extended, 0)
+If @error Then Return SetError(@error, 0, 0)
 Return SetError(0, 0, $aResult[5])
 EndFunc
 Func __WinAPI_CreateProcess($sAppName, $sCommand, $tSecurity, $tThread, $bInherit, $iFlags, $pEnviron, $sDir, $tStartupInfo, $tProcess)

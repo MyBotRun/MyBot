@@ -288,7 +288,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = $g_hFr
 	Local $iButton_Width_Def = 80, $iButton_Width_Min = 50
 
 	; Declare local variables
-	Local $iParent_Win = 0, $fCountdown = False, $cCheckbox, $aLabel_Size, $aRet, $iRet_Value, $iHpos
+	Local $iParent_Win = 0, $fCountdown = False, $cCheckbox = 0, $aLabel_Size, $aRet, $iRet_Value, $iHpos
 	Local $sButton_Text, $iButton_Width, $iButton_Xpos
 
 	; Validate timeout value
@@ -698,7 +698,7 @@ Func _ExtMsgBox($vIcon, $vButton, $sTitle, $sText, $iTimeOut = 0, $hWin = $g_hFr
 	; Reset original mode
 	Opt('GUIOnEventMode', $iOrgMode)
 
-	If GUICtrlRead($cCheckbox) = 1 Then
+	If $cCheckbox And GUICtrlRead($cCheckbox) = 1 Then
 		; Negate the return value
 		$iRet_Value *= -1
 	EndIf

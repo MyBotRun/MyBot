@@ -45,6 +45,9 @@ Func Initiate()
 		$g_bFirstStart = True
 		$g_bInitiateSwitchAcc = True
 		$g_sLabUpgradeTime = ""
+		For $i = 0 To $eLootCount - 1
+			$g_abFullStorage[$i] = False
+		Next
 
 ;~ 		If $g_bNotifyDeleteAllPushesOnStart Then _DeletePush()
 

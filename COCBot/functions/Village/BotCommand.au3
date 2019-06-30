@@ -96,6 +96,9 @@ Func BotCommand()
 					$g_bTrainEnabled = False
 					$g_bDonationEnabled = False
 				EndIf
+			Case 22 ; At certain time in the day
+				Local $bResume = ($iCmbBotCommand = 0)
+				If StopAndResumeTimer($bResume) Then $g_bMeetCondStop = True
 		EndSwitch
 
 		If $g_bMeetCondStop Then
@@ -140,6 +143,20 @@ Func BotCommand()
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Shutdown(BitOR($SD_REBOOT, $SD_FORCE)) ; Reboot
 					Return True ; HaHa - No Return possible!
+				Case 7
+					If ProfileSwitchAccountEnabled() Then
+						Local $aActiveAccount = _ArrayFindAll($g_abAccountNo, True)
+						If UBound($aActiveAccount) >= 2 Then
+							GUICtrlSetState($g_ahChkAccount[$g_iCurAccount], $GUI_UNCHECKED)
+							$g_iCommandStop = 1 ; Turn Idle
+							checkSwitchAcc()
+						Else
+							SetLog("This is the last account to turn off. Stop bot now. Adios!", $COLOR_INFO)
+							If _Sleep($DELAYBOTCOMMAND1) Then Return
+							CloseCoC()
+							Return True
+						EndIf
+					EndIf
 			EndSwitch
 		EndIf
 	EndIf
@@ -162,11 +179,52 @@ EndFunc   ;==>BotCommand
 ; Example .......: No
 ; ===============================================================================================================================
 Func isTrophyMax()
-	Local $iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
-	If Number($iTrophyCurrent) > Number($g_iDropTrophyMax) Then
+	If Number($g_aiCurrentLoot[$eLootTrophy]) > Number($g_iDropTrophyMax) Then
 		SetLog("Max. Trophy Reached!", $COLOR_SUCCESS)
 		If _Sleep($DELAYBOTCOMMAND1) Then Return
-		Return True
+		$g_abFullStorage[$eLootTrophy] = True
+	ElseIf $g_abFullStorage[$eLootTrophy] Then
+		If Number($g_aiCurrentLoot[$eLootTrophy]) >= Number($g_aiResumeAttackLoot[$eLootTrophy]) Then
+			SetLog("Trophy is still relatively high: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_SUCCESS)
+			$g_abFullStorage[$eLootTrophy] = True
+		Else
+			SetLog("Switching back to normal when Trophy drops below " & $g_aiResumeAttackLoot[$eLootTrophy], $COLOR_SUCCESS)
+			$g_abFullStorage[$eLootTrophy] = False
+		EndIf
 	EndIf
-	Return False
+	Return $g_abFullStorage[$eLootTrophy]
 EndFunc   ;==>isTrophyMax
+
+Func StopAndResumeTimer($bResume = False)
+
+	Static $abStop[8] = [False, False, False, False, False, False, False, False]
+
+	Local $iTimerStop, $iTimerResume = 25
+	$iTimerStop = Number($g_iCmbTimeStop)
+	If $bResume Then $iTimerResume = Number($g_iResumeAttackTime)
+	Local $bCurrentStatus = $abStop[$g_iCurAccount]
+	SetDebugLog("$iTimerStop: " & $iTimerStop & ", $iTimerResume: " & $iTimerResume & ", Max: " & _Max($iTimerStop, $iTimerResume) & ", Min: " & _Min($iTimerStop, $iTimerResume) & ", $bCurrentStatus: " & $bCurrentStatus)
+
+	If @HOUR < _Min($iTimerStop, $iTimerResume) Then ; both timers are ahead.
+		;Do nothing
+	ElseIf @HOUR < _Max($iTimerStop, $iTimerResume) Then ; 1 timer has passed, 1 timer ahead
+		If $iTimerStop < $iTimerResume Then ; reach Timer to Stop
+			$abStop[$g_iCurAccount] = True
+			If Not $bCurrentStatus Then SetLog("Timer to stop is set at: " & $iTimerStop & ":00hrs. It's time to stop!", $COLOR_SUCCESS)
+		Else ; reach Timer to Resume
+			$abStop[$g_iCurAccount] = False
+			If $bCurrentStatus Then SetLog("Timer to resume attack is set at: " & $iTimerResume & ":00hrs. Resume attack now!", $COLOR_SUCCESS)
+		EndIf
+	Else ; passed both timers
+		If $iTimerStop < $iTimerResume Then ; reach Timer to Stop
+			$abStop[$g_iCurAccount] = False
+			If $bCurrentStatus Then SetLog("Timer to resume attack is set at: " & $iTimerResume & ":00hrs. Resume attack now!", $COLOR_SUCCESS)
+		Else
+			$abStop[$g_iCurAccount] = True
+			If Not $bCurrentStatus Then SetLog("Timer to stop is set at: " & $iTimerStop & ":00hrs. It's time to stop!", $COLOR_SUCCESS)
+		EndIf
+	EndIf
+	SetDebugLog("@HOUR: " & @HOUR & ", $bCurrentStatus: " & $bCurrentStatus & ", $abStop[$g_iCurAccount]: " & $abStop[$g_iCurAccount])
+	Return $abStop[$g_iCurAccount]
+EndFunc   ;==>StopAndResumeTimer
+

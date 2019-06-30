@@ -1,4 +1,25 @@
-﻿* **V7.7.6**
+﻿* **V7.7.7**
+* Fixed Search Attack (June 2019 Update)
+* Fixed Warden Detection on Army Overview and Attack (June 2019 Update)
+* Fixed halt mode not supported in account switching
+* Fixed bot accout switching all barracks upgrading logic running on all accounts when detected first time
+* Fixed Line 38926﻿﻿﻿ array error in standard attack
+* Fixed "Impossible value (-1) from Msgbox" when using "Locate Upgrades"
+* Fixed spell popup window when switching between mini gui and normal gui mode
+* Fixed array error in TcpTable.au3
+* Fixed switch account before donating in Halt attack mode.
+* Fixed Switch Account being stuck when going off Attack Schedule
+* Fixed not donating Ice Golem
+* Fixed KOPLAYER 2.0 mouse device detection
+* Fixed bot activation when android is hidden (improves Nox window popup when text input detected)
+* Fixed rare application crash due to unhandled exception in helper_functions.dll when screencap used
+* Added Resume Attack conditions after Halt-Attack due to full resources
+* Added Turn Idle as a bot command option, works with switch account mode
+* Added Timer for Halt-attack and Resume-attack schedule
+* Added Hog Glider to Auto Star Lab
+* Introduced new quick train system
+
+* **V7.7.6**
 * Added start, stop, pause, resume and photo buttons to bot thumbnail preview window
 * Added Android adb.exe replace option under Bot/Android to solve adb.exe issues
 * Fixed forum authentication

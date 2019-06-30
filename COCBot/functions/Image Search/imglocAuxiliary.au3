@@ -229,14 +229,12 @@ Func GetButtonDiamond($sButtonName)
 	Local $btnDiamond = "FV"
 
 	Switch $sButtonName
-		Case "FindMatch" ;Find Match Screen
-			$btnDiamond = "133,515|360,515|360,620|133,620"
 		Case "CloseFindMatch" ;Find Match Screen
 			$btnDiamond = "780,15|830,15|830,60|780,60"
 		Case "CloseFindMatch" ;Find Match Screen
 			$btnDiamond = "780,15|830,15|830,60|780,60"
-		Case "Attack" ;Main Window Screen
-			$btnDiamond = "15,620|112,620|112,715|15,715"
+		Case "AttackButton" ;Main Window Screen
+			$btnDiamond = GetDiamondFromRect("0,600,160,720")
 		Case "OpenTrainWindow" ;Main Window Screen
 			$btnDiamond = "15,560|65,560|65,610|15,610"
 		Case "OK"

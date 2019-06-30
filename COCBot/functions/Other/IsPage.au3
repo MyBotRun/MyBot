@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: IsTrainPage & IsAttackPage & IsMainPage & IsMainChatOpenPage & IsClanInfoPage & IsLaunchAttackPage &
 ;                  IsEndBattlePage & IsReturnHomeBattlePage
@@ -153,25 +152,36 @@ EndFunc   ;==>IsClanInfoPage
 
 Func IsLaunchAttackPage()
 
-	Local $resultnoshield = IsPageLoop($aFindMatchButton, 1)
-	Local $resultwithshield = IsPageLoop($aFindMatchButton2, 1)
-
-	If $resultnoshield Or $resultwithshield Then
+	If IsPageLoop($aFindMatchButton, 1) Then
 		If $g_bDebugSetlog Or $g_bDebugClick Then SetLog("**Launch Attack Window OK**", $COLOR_ACTION)
 		Return True
 	EndIf
 
 	If $g_bDebugSetlog Or $g_bDebugClick Then
 		Local $colorReadnoshield = _GetPixelColor($aFindMatchButton[0], $aFindMatchButton[1], True)
-		Local $colorReadwithshield = _GetPixelColor($aFindMatchButton2[0], $aFindMatchButton2[1], True)
 		SetLog("**Launch Attack Window FAIL**", $COLOR_ACTION)
-		SetLog("expected in (" & $aFindMatchButton[0] & "," & $aFindMatchButton[1] & ")  = " & Hex($aFindMatchButton[2], 6) & " or " & Hex($aFindMatchButton2[2], 6) & " - Found " & $colorReadnoshield & " or " & $colorReadwithshield, $COLOR_ACTION)
+		SetLog("expected in (" & $aFindMatchButton[0] & "," & $aFindMatchButton[1] & ") Found " & $colorReadnoshield, $COLOR_ACTION)
 	EndIf
 
 	If $g_bDebugImageSave Then DebugImageSave("IsLaunchAttackPage")
 	Return False
 
 EndFunc   ;==>IsLaunchAttackPage
+
+Func IsMultiplayerTabOpen()
+	Local $aMultiplayerTab = findImage("IsMultiplayerTab", $g_sImgIsMultiplayerTab, GetDiamondFromRect("4,46,258,680"), 1, True, Default)
+	If IsArray($aMultiplayerTab) And UBound($aMultiplayerTab, 1) > 0 Then
+		Local $aCoordinates = decodeSingleCoord($aMultiplayerTab)
+		ClickP($aCoordinates, 1)
+		If _Sleep(100) Then Return False
+		SetLog("Opened Multiplayer Tab!", $COLOR_INFO)
+	Else
+		SetDebugLog("Multiplayer Tab is open", $COLOR_INFO)
+		Return True
+	EndIf
+
+	Return False
+EndFunc
 
 Func IsEndBattlePage($bWriteLog = True)
 

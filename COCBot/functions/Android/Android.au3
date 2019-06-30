@@ -4832,7 +4832,7 @@ Func CheckEmuNewVersions()
 
 	Switch $g_sAndroidEmulator
 		Case "BlueStacks2"
-			$NewVersion = GetVersionNormalized("4.71.0.0")
+			$NewVersion = GetVersionNormalized("4.81.0.0")
 		Case "MEmu"
 			$NewVersion = GetVersionNormalized("6.3.0.0")
 		Case "Nox"

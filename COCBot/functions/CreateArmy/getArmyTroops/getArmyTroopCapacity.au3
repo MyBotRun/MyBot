@@ -139,4 +139,4 @@ Func getArmyTroopCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
 
-EndFunc   ;==>getArmyCapacity
+EndFunc   ;==>getArmyTroopCapacity

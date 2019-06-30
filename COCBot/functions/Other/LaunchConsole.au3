@@ -21,11 +21,6 @@
 #include <APISysConstants.au3>
 #include <NamedPipes.au3>
 
-Global $g_RunPipe_StdIn = [0, 0] ; pipe read/write handles
-Global $g_RunPipe_StdOut = [0, 0] ; pipe read/write handles
-Global $g_RunPipe_hProcess = 0
-Global $g_RunPipe_hThread = 0
-
 Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseSemaphore = False, $bNoLog = False)
 
 	If $bUseSemaphore Then
@@ -44,7 +39,7 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 	If $pid = 0 Then
 		SetLog("Launch failed: " & $cmd, $COLOR_ERROR)
 		If $bUseSemaphore = True Then UnlockSemaphore($hSemaphore)
-		Return
+		Return SetError(1, 0, "")
 	EndIf
 
 	Local $timeout_sec = Round($timeout / 1000)
@@ -63,13 +58,11 @@ Func LaunchConsole($cmd, $param, ByRef $process_killed, $timeout = 10000, $bUseS
 	Else
 		ClosePipe($pid, $hStdIn, $hStdOut, $hProcess, $hThread)
 	EndIf
-	$g_RunPipe_hProcess = 0
-	$g_RunPipe_hThread = 0
 	CleanLaunchOutput($data)
 
 	If Not $bNoLog Then SetDebugLog("Func LaunchConsole Output: " & $data, $COLOR_DEBUG) ; Debug Run Output
 	If $bUseSemaphore Then UnlockSemaphore($hSemaphore)
-	Return $data
+	Return SetError(0, 0, $data)
 EndFunc   ;==>LaunchConsole
 
 ; Special version of ProcessExists that checks process based on full process image path AND parameters
@@ -249,9 +242,9 @@ Func ProcessGetWmiProcess($pid, $strComputer = ".")
 EndFunc   ;==>ProcessGetWmiProcess
 
 Func CleanLaunchOutput(ByRef $output)
-	;$output = StringReplace($output, @LF & @LF, "")
-	$output = StringReplace($output, @CR & @CR, "")
-	$output = StringReplace($output, @CRLF & @CRLF, "")
+	$output = StringReplace($output, @LF & @LF, @LF, 0, 2)
+	$output = StringReplace($output, @CR & @CR, @LF, 0, 2)
+	$output = StringReplace($output, @CRLF & @CRLF, @LF, 0, 2)
 	If StringRight($output, 1) = @LF Then $output = StringLeft($output, StringLen($output) - 1)
 	If StringRight($output, 1) = @CR Then $output = StringLeft($output, StringLen($output) - 1)
 EndFunc   ;==>CleanLaunchOutput
@@ -292,12 +285,13 @@ Func RunPipe($program, $workdir, $show_flag, $opt_flag, ByRef $hStdIn, ByRef $hS
 		$hProcess = DllStructGetData($ProcessInformation, "hProcess")
 		$hThread = DllStructGetData($ProcessInformation, "hThread")
 		;_WinAPI_CloseHandle($hStdOut[1])
-		Return $pid
+		Return SetError(0, 0, $pid)
 	EndIf
 
-	SetDebugLog("RunPipe: Failed creating new process: " & $program)
+	SetLog("Failed creating new process: " & $program, $COLOR_ERROR)
 	; close handles
 	ClosePipe(0, $hStdIn, $hStdOut, 0, 0)
+	Return SetError(1, 0, 0)
 
 EndFunc   ;==>RunPipe
 
@@ -320,7 +314,7 @@ Func ReadPipe(ByRef $hPipe)
 	If _WinAPI_ReadFile($hPipe, DllStructGetPtr($tBuffer), 4096, $iRead) Then
 		Return SetError(0, 0, DllStructGetData($tBuffer, "Text"))
 	EndIf
-	Return SetError(@error, @extended, "")
+	Return SetError( _WinAPI_GetLastError(), 0, "")
 EndFunc   ;==>ReadPipe
 
 Func WritePipe(ByRef $hPipe, Const $s)
@@ -331,12 +325,12 @@ Func WritePipe(ByRef $hPipe, Const $s)
 	If _WinAPI_WriteFile($hPipe, DllStructGetPtr($tBuffer), $iToWrite, $iWritten) Then
 		Return SetError(0, 0, $iWritten)
 	EndIf
-	Return SetError(@error, @extended, 0)
+	Return SetError( _WinAPI_GetLastError(), 0, 0)
 EndFunc   ;==>WritePipe
 
 Func DataInPipe(ByRef $hPipe)
 	Local $aResult = DllCall("kernel32.dll", "bool", "PeekNamedPipe", "handle", $hPipe, "ptr", 0, "int", 0, "dword*", 0, "dword*", 0, "dword*", 0)
-	If @error Then Return SetError(@error, @extended, 0)
+	If @error Then Return SetError(@error, 0, 0)
 	Return SetError(0, 0, $aResult[5])
 EndFunc   ;==>DataInPipe
 

@@ -71,22 +71,20 @@ Func CreateAttackSearchDeadBaseSearch()
 
 	$y += 21
 		$g_hChkDBActivateTropies = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies", "Trophies"), $x, $y, 68, 18)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
-							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", "This option will NOT adjust tropies to stay in range entered!"))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", "Set the trophy range where this attack will be used") & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_02", "Note: - This option will NOT adjust trophies to stay in range entered!"))
 			GUICtrlSetOnEvent(-1, "chkDBActivateTropies")
 		$g_hTxtDBTropiesMin = GUICtrlCreateInput("0", $x + 70, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMinTropies_Info_01", "Set the Min. number of tropies where this attack will be used") & @CRLF & @CRLF & _
-							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
-							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01", -1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMinTropies_Info_01", "Set the Min. number of trophies where this attack will be used") & @CRLF & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_02", -1))
 			GUICtrlSetLimit(-1, 6)
 		$g_hLblDBTropies = GUICtrlCreateLabel("-", $x + 113, $y + 2, -1, -1)
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$g_hTxtDBTropiesMax = GUICtrlCreateInput("6000", $x + 120, $y, 40, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			GUICtrlSetState(-1, $GUI_DISABLE)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMaxTropies_Info_01", "Set the Max number of tropies where this attack will be used") & @CRLF & @CRLF & _
-							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateSearches_Info_01", -1) & @CRLF & _
-							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_01",  -1))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "LblActivateMaxTropies_Info_01", "Set the Max number of trophies where this attack will be used") & @CRLF & @CRLF & _
+							   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkActivateTropies_Info_02", -1))
 			GUICtrlSetLimit(-1, 6)
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrophy, $x + 163, $y + 1, 16, 16)
 

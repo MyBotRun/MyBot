@@ -28,7 +28,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 		$aAttackBar = $aDummyArray
 		$g_iLSpellLevel = 1
 		$g_iESpellLevel = 1
-		$g_iSiegeLevel = 1
+		$g_iSiegeLevel = 0
 
 		;Check if Double Row is enabled aswell as has 12+ Slots
 		If _CheckPixel($aDoubRowAttackBar, True) Then

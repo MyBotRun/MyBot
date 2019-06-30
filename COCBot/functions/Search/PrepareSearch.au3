@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will break shield
 
-	SetLog("Going to Attack...", $COLOR_INFO)
+	SetLog("Going to Attack", $COLOR_INFO)
 
 	; RestartSearchPickupHero - Check Remaining Heal Time
 	If $g_bSearchRestartPickupHero And $Mode <> $DT Then
@@ -34,7 +34,6 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 	ChkAttackCSVConfig()
 
 	If IsMainPage() Then
-
 		If _Sleep($DELAYTREASURY4) Then Return
 		If _CheckPixel($aAttackForTreasury, $g_bCapturePixel, Default, "Is attack for treasury:") Then
 			SetLog("It isn't attack for Treasury :-(", $COLOR_SUCCESS)
@@ -42,49 +41,91 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 		EndIf
 		If _Sleep($DELAYTREASURY4) Then Return
 
-		If $g_bUseRandomClick = False Then
-			ClickP($aAttackButton, 1, 0, "#0149") ; Click Attack Button
+		Local $aAttack = findButton("AttackButton", Default, 1, True)
+		If IsArray($aAttack) And UBound($aAttack, 1) = 2 Then
+			ClickP($aAttack, 1, 0, "#0149")
 		Else
-			ClickR($aAttackButtonRND, $aAttackButton[0], $aAttackButton[1], 1, 0)
+			SetLog("Couldn't find the Attack Button!", $COLOR_ERROR)
+			Return
 		EndIf
 	EndIf
+
 	If _Sleep($DELAYPREPARESEARCH1) Then Return
 
-	Local $j = 0
-	While Not ( IsLaunchAttackPage())
-		If _Sleep($DELAYPREPARESEARCH1) Then Return ; wait for Train Window to be ready.
-		$j += 1
-		If $j > 15 Then ExitLoop
-	WEnd
-	If $j > 15 Then
-		SetLog("Launch attack Page Fail", $COLOR_ERROR)
+	If Not IsWindowOpen($g_sImgGeneralCloseButton, 10, 200, GetDiamondFromRect("716,1,860,179")) Then
+		SetLog("Attack Window did not open!", $COLOR_ERROR)
 		AndroidPageError("PrepareSearch")
 		checkMainScreen()
 		$g_bRestart = True
 		$g_bIsClientSyncError = False
 		Return
-	Else
-		$g_bCloudsActive = True ; early set of clouds to ensure no android suspend occurs that might cause infinite waits...
-		If $g_bUseRandomClick = False Then
-			ClickP($aFindMatchButton, 1, 0, "#0150") ;Click Find a Match Button
-		Else
-			ClickR($aFindMatchButtonRND, $aFindMatchButton[0], $aFindMatchButton[1], 1, 0)
-		EndIf
-
-		If $g_iTownHallLevel <> "" And $g_iTownHallLevel > 0 Then
-			$g_iSearchCost += $g_aiSearchCost[$g_iTownHallLevel - 1]
-			$g_iStatsTotalGain[$eLootGold] -= $g_aiSearchCost[$g_iTownHallLevel - 1]
-		EndIf
-		UpdateStats()
 	EndIf
+
+	$g_bCloudsActive = True ; early set of clouds to ensure no android suspend occurs that might cause infinite waits
+
+	If Not IsMultiplayerTabOpen() Then
+		SetLog("Error while checking if Multiplayer Tab is opened", $COLOR_ERROR)
+		Return
+	EndIf
+
+	If Number($g_aiCurrentLoot[$eLootTrophy]) >= Number($g_asLeagueDetails[21][4]) Then
+		Local $sSearchDiamond = GetDiamondFromRect("271,185,834,659")
+		Local $avAttackButton = findMultiple($g_sImgPrepareLegendLeagueSearch, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
+		If IsArray($avAttackButton) And UBound($avAttackButton, 1) > 0 Then
+			Local $avAttackButtonSubResult = $avAttackButton[0]
+			Local $sButtonState = $avAttackButtonSubResult[0]
+
+			If StringInStr($sButtonState, "Ended", 0) > 0 Then
+				SetLog("League Day ended already! Trying again later", $COLOR_INFO)
+				Return
+			ElseIf StringInStr($sButtonState, "Made", 0) > 0 Then
+				SetLog("All Attacks already made! Returning home", $COLOR_INFO)
+				Return
+			ElseIf StringInStr($sButtonState, "Find", 0) > 0 Then
+
+				Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
+				ClickP($aCoordinates, 1, 0, "#0149")
+
+				If _Sleep(500) Then Return
+
+				Local $aConfirmAttackButton = findButton("ConfirmAttack", Default, 1, True)
+				If IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) = 2 Then
+					ClickP($aConfirmAttackButton, 1, 0)
+				Else
+					SetLog("Couldn't find the Confirm Attack Button!", $COLOR_ERROR)
+					Return
+				EndIf
+			Else
+				SetLog("Unknown Find a Match Button State: " & $sButtonState, $COLOR_WARNING)
+				Return
+			EndIf
+		Else
+			SetLog("Couldn't find the Attack Button!", $COLOR_ERROR)
+			Return
+		EndIf
+	Else
+		Local $aFindMatch = findButton("FindMatch", Default, 1, True)
+		If IsArray($aFindMatch) And UBound($aFindMatch, 1) = 2 Then
+			ClickP($aFindMatch, 1, 0, "#0150")
+		Else
+			SetLog("Couldn't find the Find a Match Button!", $COLOR_ERROR)
+			Return
+		EndIf
+	EndIf
+
+	If $g_iTownHallLevel <> "" And $g_iTownHallLevel > 0 Then
+		$g_iSearchCost += $g_aiSearchCost[$g_iTownHallLevel - 1]
+		$g_iStatsTotalGain[$eLootGold] -= $g_aiSearchCost[$g_iTownHallLevel - 1]
+	EndIf
+	UpdateStats()
 
 
 	If _Sleep($DELAYPREPARESEARCH2) Then Return
 
 	Local $Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak check
 
-	If isGemOpen(True) = True Then ; Check for gem window open)
-		SetLog(" Not enough gold to start searching.....", $COLOR_ERROR)
+	If isGemOpen(True) Then ; Check for gem window open)
+		SetLog(" Not enough gold to start searching!", $COLOR_ERROR)
 		Click(585, 252, 1, 0, "#0151") ; Click close gem window "X"
 		If _Sleep($DELAYPREPARESEARCH1) Then Return
 		Click(822, 32, 1, 0, "#0152") ; Click close attack window "X"
@@ -104,8 +145,8 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 		Local $offColors[3][3] = [[0x000000, 144, 1], [0xFFFFFF, 54, 17], [0xFFFFFF, 54, 28]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
 		Local $ButtonPixel = _MultiPixelSearch(359, 404 + $g_iMidOffsetY, 510, 445 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
 		If $g_bDebugSetlog Then SetDebugLog("Shield btn clr chk-#1: " & _GetPixelColor(441, 344 + $g_iMidOffsetY, True) & ", #2: " & _
-			_GetPixelColor(441 + 144, 344 + $g_iMidOffsetY, True) & ", #3: " & _GetPixelColor(441 + 54, 344 + 17 + $g_iMidOffsetY, True) & ", #4: " & _
-			_GetPixelColor(441 + 54, 344 + 10 + $g_iMidOffsetY, True), $COLOR_DEBUG)
+				_GetPixelColor(441 + 144, 344 + $g_iMidOffsetY, True) & ", #3: " & _GetPixelColor(441 + 54, 344 + 17 + $g_iMidOffsetY, True) & ", #4: " & _
+				_GetPixelColor(441 + 54, 344 + 10 + $g_iMidOffsetY, True), $COLOR_DEBUG)
 		If IsArray($ButtonPixel) Then
 			If $g_bDebugSetlog Then
 				SetDebugLog("ButtonPixel = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
@@ -116,5 +157,3 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 	EndIf
 
 EndFunc   ;==>PrepareSearch
-
-

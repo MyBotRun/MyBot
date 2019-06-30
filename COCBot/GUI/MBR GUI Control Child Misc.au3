@@ -207,24 +207,51 @@ Func WhatSCIDAccount2Use()
 EndFunc
 
 Func cmbBotCond()
-	If _GUICtrlComboBox_GetCurSel($g_hCmbBotCond) = 15 Then
+	Local $iCond = _GUICtrlComboBox_GetCurSel($g_hCmbBotCond)
+	If $iCond = 15 Then
 		If _GUICtrlComboBox_GetCurSel($g_hCmbHoursStop) = 0 Then _GUICtrlComboBox_SetCurSel($g_hCmbHoursStop, 1)
 		GUICtrlSetState($g_hCmbHoursStop, $GUI_ENABLE)
 	Else
 		_GUICtrlComboBox_SetCurSel($g_hCmbHoursStop, 0)
 		GUICtrlSetState($g_hCmbHoursStop, $GUI_DISABLE)
 	EndIf
+	If $iCond = 22 Then
+		GUICtrlSetState($g_hCmbHoursStop, $GUI_HIDE)
+		For $i = $g_ahTxtResumeAttackLoot[$eLootTrophy] To $g_ahTxtResumeAttackLoot[$eLootDarkElixir]
+			GUICtrlSetState($i, $GUI_HIDE)
+		Next
+		_GUI_Value_STATE("SHOW", $g_hCmbTimeStop & "#" & $g_hCmbResumeTime)
+		_GUI_Value_STATE("ENABLE", $g_hCmbTimeStop & "#" & $g_hCmbResumeTime)
+	Else
+		_GUI_Value_STATE("HIDE", $g_hCmbTimeStop & "#" & $g_hCmbResumeTime)
+		GUICtrlSetState($g_hCmbHoursStop, $GUI_SHOW)
+		For $i = $g_ahTxtResumeAttackLoot[$eLootTrophy] To $g_ahTxtResumeAttackLoot[$eLootDarkElixir]
+			GUICtrlSetState($i, $GUI_SHOW)
+		Next
+	EndIf
+
+	For $i = $g_LblResumeAttack To $g_ahTxtResumeAttackLoot[$eLootDarkElixir]
+		GUICtrlSetState($i, $GUI_DISABLE)
+	Next
+	If _GUICtrlComboBox_GetCurSel($g_hCmbBotCommand) <> 0 Then Return
+	If $iCond <= 14 Or $iCond = 22 Then GUICtrlSetState($g_LblResumeAttack, $GUI_ENABLE)
+	If $iCond <= 6 Or $iCond = 8 Or $iCond = 10 Or $iCond = 14 Then GUICtrlSetState($g_ahTxtResumeAttackLoot[$eLootGold], $GUI_ENABLE)
+	If $iCond <= 5 Or $iCond = 7 Or $iCond = 9 Or $iCond = 11 Or $iCond = 14 Then GUICtrlSetState($g_ahTxtResumeAttackLoot[$eLootElixir], $GUI_ENABLE)
+	If $iCond = 13 Or $iCond = 14 Then GUICtrlSetState($g_ahTxtResumeAttackLoot[$eLootDarkElixir], $GUI_ENABLE)
+	If $iCond <= 3 Or ($iCond >= 6 And $iCond <= 9) Or $iCond = 12 Then GUICtrlSetState($g_ahTxtResumeAttackLoot[$eLootTrophy], $GUI_ENABLE)
+	If $iCond = 22 Then GUICtrlSetState($g_hCmbResumeTime, $GUI_ENABLE)
 EndFunc   ;==>cmbBotCond
 
 Func chkBotStop()
 	If GUICtrlRead($g_hChkBotStop) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hCmbBotCommand, $GUI_ENABLE)
-		GUICtrlSetState($g_hCmbBotCond, $GUI_ENABLE)
-		_GUI_Value_STATE("ENABLE", $g_hTxtRestartGold & "#" & $g_hTxtRestartElixir & "#" & $g_hTxtRestartDark)
+		For $i = $g_hCmbBotCommand To $g_hCmbBotCond
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+		cmbBotCond()
 	Else
-		GUICtrlSetState($g_hCmbBotCommand, $GUI_DISABLE)
-		GUICtrlSetState($g_hCmbBotCond, $GUI_DISABLE)
-		_GUI_Value_STATE("DISABLE", $g_hTxtRestartGold & "#" & $g_hTxtRestartElixir & "#" & $g_hTxtRestartDark)
+		For $i = $g_hCmbBotCommand To $g_ahTxtResumeAttackLoot[$eLootDarkElixir]
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
 	EndIf
 EndFunc   ;==>chkBotStop
 
@@ -592,7 +619,7 @@ EndFunc   ;==>ChkTreasuryCollect
 
 Func ChkFreeMagicItems()
 	If $g_iTownHallLevel >= 8 Then ; Must be Th8 or more to use the Trader
-		GUICtrlSetState($g_hChkFreeMagicItems, $GUI_ENABLE)	
+		GUICtrlSetState($g_hChkFreeMagicItems, $GUI_ENABLE)
 	Else
 	   GUICtrlSetState($g_hChkFreeMagicItems, $GUI_DISABLE)
 	EndIf

@@ -59,9 +59,9 @@ Func _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetL
 	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	If $bGetHeroesTime = True Then
+	If $bGetHeroesTime Then
 		If $g_bDebugFuncTime Then StopWatchStart("getArmyHeroTime")
-		$HeroesRegenTime = getArmyHeroTime("all", $bSetLog)
+		$HeroesRegenTime = getArmyHeroTime("all")
 		If $g_bDebugFuncTime Then StopWatchStopLog()
 		If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 	EndIf
@@ -86,13 +86,13 @@ Func _checkArmyCamp($bOpenArmyWindow, $bCloseArmyWindow, $bGetHeroesTime, $bSetL
 	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	If $g_bDebugFuncTime Then StopWatchStart("getArmyCCSpellCapacity")
-	getArmyCCSpellCapacity(False, False, False, $bSetLog) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyCCStatus")
+	getArmyCCStatus(False, False, False, $bSetLog) ; Last parameter is to check the Army Window
 	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 
-	If $g_bDebugFuncTime Then StopWatchStart("getArmyCCStatus")
-	getArmyCCStatus(False, False, False, $bSetLog) ; Last parameter is to check the Army Window
+	If $g_bDebugFuncTime Then StopWatchStart("getArmyCCSpellCapacity")
+	getArmyCCSpellCapacity(False, False, False, $bSetLog) ; Last parameter is to check the Army Window
 	If $g_bDebugFuncTime Then StopWatchStopLog()
 	If _Sleep($DELAYCHECKARMYCAMP6) Then Return ; 10ms improve pause button response
 

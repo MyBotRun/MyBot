@@ -185,7 +185,7 @@ Func CreateAttackSearchDeadBaseAttack()
 		$y += 27
 		$x -= 92
 			$g_hPicDBSkeletonSpell = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSkeletonSpell, $x, $y, 24, 24)
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Skeleton_Info_01", "Use your Bats Spells when Attacking...")
+				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Skeleton_Info_01", "Use your Skeleton Spells when Attacking...")
 				_GUICtrlSetTip(-1, $sTxtTip)
 			$g_hChkDBSkeletonSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
 				_GUICtrlSetTip(-1, $sTxtTip)

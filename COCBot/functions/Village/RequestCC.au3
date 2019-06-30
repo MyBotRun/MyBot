@@ -35,7 +35,7 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 	checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
 	If $bClickPAtEnd Then CheckCCArmy()
 
-	Local $sSearchDiamond = GetDiamondFromRect("600,430,850,620")
+	Local $sSearchDiamond = GetDiamondFromRect("718,580,780,614")
 	Local Static $aRequestButtonPos[2] = [-1, -1]
 
 	Local $aRequestButton = findMultiple($g_sImgRequestCCButton, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
@@ -138,12 +138,16 @@ EndFunc   ;==>_makerequest
 Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine = 2
 	Local $aCheckCCNotFull[3] = [24, 455, 631], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
 	Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
-	Local $bCheckOnlyTroop = $g_abRequestType[0] = False And $g_abRequestType[1] = False And $g_abRequestType[2] = False
-	If Not $g_abRequestType[$CCType] And ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2] Or ($bCheckOnlyTroop And $CCType <> 0)) Then
-		If $g_bDebugSetlog Then SetLog($sLog[$CCType] & " not cared about.")
+	If $CCType <> 0 And Not ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2]) Then ; Continue reading CC status if all 3 items are unchecked, but only if not troop
+		If $g_bDebugSetlog Then SetLog($sLog[$CCType] & " not cared about, only checking troops.")
 		Return True
 	Else
 		If _ColorCheck(_GetPixelColor($aCheckCCNotFull[$CCType], 470, True), Hex(0xDC363A, 6), 30) Then ; red symbol
+			If Not $g_abRequestType[$CCType] Then 
+				; Don't care about the CC limit configured in setting
+				SetDebugLog("Found CC " & $sLog[$CCType] & " not full, but check is disabled")
+				Return True 
+			EndIf
 			SetDebugLog("Found CC " & $sLog[$CCType] & " not full")
 
 			; avoid total expected troops / spells is less than expected CC q'ty.

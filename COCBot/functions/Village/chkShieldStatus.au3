@@ -17,7 +17,8 @@
 Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
 	; skip shield data collection if force single PB, wait for shield, or close while training not enabled, or window is not on main base
-	If ($g_bForceSinglePBLogoff = False And ($g_bChkBotStop = True And $g_iCmbBotCond >= 19) = False) And $g_bCloseWhileTrainingEnable = False Or Not (IsMainPage()) Then Return
+	Local $bHaltModeWithShield = $g_bChkBotStop And $g_iCmbBotCond >= 19 And $g_iCmbBotCond <= 21
+	If (Not $g_bForceSinglePBLogoff And Not $bHaltModeWithShield) And Not $g_bCloseWhileTrainingEnable Or Not (IsMainPage()) Then Return
 
 	Local $Result, $iTimeTillPBTstartSec, $ichkTime = 0, $ichkSTime = 0, $ichkPBTime = 0
 
@@ -47,7 +48,7 @@ Func chkShieldStatus($bChkShield = True, $bForceChkPBT = False)
 
 			$g_asShieldStatus = $Result ; update ShieldStatus global values
 
-			If $g_bChkBotStop = True And $g_iCmbBotCond >= 19 Then ; is Halt mode enabled and With Shield selected?
+			If $bHaltModeWithShield Then ; is Halt mode enabled and With Shield selected?
 				If $g_asShieldStatus[0] = "shield" Then ; verify shield
 					SetLog("Shield found, Halt Attack Now!", $COLOR_INFO)
 					$g_bWaitShield = True

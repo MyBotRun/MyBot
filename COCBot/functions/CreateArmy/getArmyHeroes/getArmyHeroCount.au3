@@ -157,18 +157,17 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 EndFunc   ;==>getArmyHeroCount
 
 Func ArmyHeroStatus($i)
-	Local $sImageDir = "trainwindow-HeroStatus-bundle", $sResult = ""
-	Local Const $aHeroesRect[3][4] = [[655, 340, 680, 370], [730, 340, 755, 370], [805, 340, 830, 370]]
+	Local $sResult = ""
+	Local Const $aHeroesRect[3][4] = [[630, 340, 680, 380], [730, 340, 755, 370], [805, 340, 830, 370]]
 
 	; Perform the search
 	_CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
-	Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $sImageDir, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
+	Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $g_sImgArmyOverviewHeroes, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
 	If $res[0] <> "" Then
 		Local $aKeys = StringSplit($res[0], "|", $STR_NOCOUNT)
 		If StringInStr($aKeys[0], "xml", $STR_NOCASESENSEBASIC) Then
 			Local $aResult = StringSplit($aKeys[0], "_", $STR_NOCOUNT)
 			$sResult = $aResult[0]
-			;setlog("$i , $sResult :"& $i  & ", " & $sResult )
 
 			Select
 				Case $i = "King" Or $i = 0 Or $i = $eKing
@@ -273,7 +272,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 	;CLOSE ARMY WINDOW
 	ClickP($aAway, 2, 0, "#0346") ;Click Away
 	If _Sleep(1500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
-	
+
 	;Check Personal Challenges
 	;For now we don't have a better place or use for Open/Close the Challenges
 	;So we doing it here, so that is called once every 6 hours
@@ -292,7 +291,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		;============================================
 		Return
 	EndIf
-	
+
 	Setlog("Checking Lab Status", $COLOR_INFO)
 
 	;=================Section 2 Lab Gui

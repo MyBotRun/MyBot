@@ -338,6 +338,12 @@ Func SaveConfig_600_6()
 	_Ini_Add("general", "Command", $g_iCmbBotCommand)
 	_Ini_Add("general", "Cond", $g_iCmbBotCond)
 	_Ini_Add("general", "Hour", $g_iCmbHoursStop)
+	For $i = 0 To $eLootCount - 1
+		_Ini_Add("other", "MinResumeAttackLoot_" & $i, $g_aiResumeAttackLoot[$i])
+	Next
+	_Ini_Add("general", "CmbTimeStop", $g_iCmbTimeStop)
+	_Ini_Add("other", "ResumeAttackTime", $g_iResumeAttackTime)
+
 	_Ini_Add("other", "minrestartgold", $g_iTxtRestartGold)
 	_Ini_Add("other", "minrestartelixir", $g_iTxtRestartElixir)
 	_Ini_Add("other", "minrestartdark", $g_iTxtRestartDark)
@@ -1171,9 +1177,20 @@ Func SaveConfig_600_52_1()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
 	ApplyConfig_600_52_1(GetApplyConfigSaveAction())
 	_Ini_Add("other", "ChkUseQTrain", $g_bQuickTrainEnable ? 1 : 0)
-	_Ini_Add("troop", "QuickTrainArmy1", $g_bQuickTrainArmy[0] ? 1 : 0)
-	_Ini_Add("troop", "QuickTrainArmy2", $g_bQuickTrainArmy[1] ? 1 : 0)
-	_Ini_Add("troop", "QuickTrainArmy3", $g_bQuickTrainArmy[2] ? 1 : 0)
+
+	For $i = 0 To 2
+		_Ini_Add("troop", "QuickTrainArmy" & $i + 1, $g_bQuickTrainArmy[$i] ? 1 : 0)
+		_Ini_Add("troop", "UseInGameArmy_" & $i + 1, $g_abUseInGameArmy[$i] ? 1 : 0)
+		For $j = 0 To 6
+			_Ini_Add("QuickTroop", "QuickTroopType_" & $i + 1 & "_Slot_" & $j, $g_aiQuickTroopType[$i][$j])
+			_Ini_Add("QuickTroop", "QuickTroopQty_" & $i + 1 & "_Slot_" & $j, $g_aiQuickTroopQty[$i][$j])
+			_Ini_Add("QuickTroop", "QuickSpellType_" & $i + 1 & "_Slot_" & $j, $g_aiQuickSpellType[$i][$j])
+			_Ini_Add("QuickTroop", "QuickSpellQty_" & $i + 1 & "_Slot_" & $j, $g_aiQuickSpellQty[$i][$j])
+		Next
+		_Ini_Add("QuickTroop", "TotalQuickTroop" & $i + 1, $g_aiTotalQuickTroop[$i])
+		_Ini_Add("QuickTroop", "TotalQuickSpell" & $i + 1, $g_aiTotalQuickSpell[$i])
+	Next
+
 EndFunc   ;==>SaveConfig_600_52_1
 
 Func SaveConfig_600_52_2()
@@ -1197,7 +1214,6 @@ Func SaveConfig_600_52_2()
 	_Ini_Add("other", "ValueTotalCampForced", $g_iTotalCampForcedValue)
 	; spell capacity and forced flag
 	_Ini_Add("Spells", "SpellFactory", $g_iTotalSpellValue)
-	_Ini_Add("other", "ChkForceBrewBeforeAttack", $g_bForceBrewSpells ? 1 : 0)
 	; DoubleTrain - Demen
 	_Ini_Add("troop", "DoubleTrain", $g_bDoubleTrain ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_52_2

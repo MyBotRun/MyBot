@@ -86,7 +86,12 @@ Func _CV_GetExtendedTcpTable()
 
 		$iOffset = ($i - 1) * 6 + 1 ; going thru array of dwords
 
-		$aTCPTable[$i][5] = $aState[DllStructGetData($tMIB_TCPTABLE_OWNER_PID_DWORDS, 1, $iOffset + 1) - 1]
+		Local $iState = Int(DllStructGetData($tMIB_TCPTABLE_OWNER_PID_DWORDS, 1, $iOffset + 1))
+		If $iState > 0 And $iState <= UBound($aState) Then
+			$aTCPTable[$i][5] = $aState[$iState - 1]
+		Else
+			$aTCPTable[$i][5] = "UNKNOWN"
+		EndIf
 
 		$iIP = DllStructGetData($tMIB_TCPTABLE_OWNER_PID_DWORDS, 1, $iOffset + 2)
 

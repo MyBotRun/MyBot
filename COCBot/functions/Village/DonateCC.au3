@@ -148,7 +148,7 @@ Func DonateCC($bCheckForNewMsg = False)
 
 	Local $ClanString = ""
 
-	If Not $bDonate Or Not $g_bDonationEnabled Then
+	If Not $g_bChkDonate Or Not $bDonate Or Not $g_bDonationEnabled Then
 		If $g_bDebugSetlog Then SetDebugLog("Donate Clan Castle troops skip", $COLOR_DEBUG)
 		Return ; exit func if no donate checkmarks
 	EndIf
@@ -1314,13 +1314,13 @@ Func DetectSlotTroop(Const $iTroopIndex)
 
 		If $FullTemp[0] <> "" Then
 			Local $iFoundTroopIndex = TroopIndexLookup($FullTemp[0])
-			For $i = $eTroopBarbarian To $eTroopIceGolem
+			For $i = $eTroopBarbarian To $eTroopCount - 1
 				If $iFoundTroopIndex = $i Then
 					If $g_bDebugSetlog Then SetDebugLog("Detected " & $g_asTroopNames[$i], $COLOR_DEBUG)
 					If $iTroopIndex = $i Then Return $Slot
 					ExitLoop
 				EndIf
-				If $i = $eTroopIceGolem Then ; detection failed
+				If $i = $eTroopCount - 1 Then ; detection failed
 					If $g_bDebugSetlog Then SetDebugLog("Slot: " & $Slot & "Troop Detection Failed", $COLOR_DEBUG)
 				EndIf
 			Next
@@ -1339,14 +1339,14 @@ Func DetectSlotTroop(Const $iTroopIndex)
 		If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
 
 		If $FullTemp[0] <> "" Then
-			For $i = $eTroopBalloon To $eTroopBowler
+			For $i = $eTroopBalloon To $eTroopCount - 1
 				Local $iFoundTroopIndex = TroopIndexLookup($FullTemp[0])
 				If $iFoundTroopIndex = $i Then
 					If $g_bDebugSetlog Then SetDebugLog("Detected " & $g_asTroopNames[$i], $COLOR_DEBUG)
 					If $iTroopIndex = $i Then Return $Slot
 					ExitLoop
 				EndIf
-				If $i = $eTroopIceGolem Then ; detection failed
+				If $i = $eTroopCount - 1 Then ; detection failed
 					If $g_bDebugSetlog Then SetDebugLog("Slot: " & $Slot & "Troop Detection Failed", $COLOR_DEBUG)
 				EndIf
 			Next
@@ -1372,14 +1372,14 @@ Func DetectSlotSpell(Const $iSpellIndex)
 		If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
 
 		If $FullTemp[0] <> "" Then
-			For $i = $eSpellLightning To $eSpellBat
+			For $i = $eSpellLightning To $eSpellCount - 1
 				Local $sTmp = StringLeft($g_asSpellNames[$i], 4)
 				If StringInStr($FullTemp[0] & " ", $sTmp) > 0 Then
 					If $g_bDebugSetlog Then SetDebugLog("Detected " & $g_asSpellNames[$i], $COLOR_DEBUG)
 					If $iSpellIndex = $i Then Return $Slot
 					ExitLoop
 				EndIf
-				If $i = $eSpellBat Then ; detection failed
+				If $i = $eSpellCount - 1 Then ; detection failed
 					If $g_bDebugSetlog Then SetDebugLog("Slot: " & $Slot & "Spell Detection Failed", $COLOR_DEBUG)
 				EndIf
 			Next

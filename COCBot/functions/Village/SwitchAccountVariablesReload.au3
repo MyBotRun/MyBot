@@ -13,14 +13,16 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func SwitchAccountVariablesReload($sType = "Load")
+Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 	; Empty arrays
-	Local $aiZero[8] = [0, 0, 0, 0, 0, 0, 0, 0], $aiTrue[8] = [1, 1, 1, 1, 1, 1, 1, 1]
+	Local $aiZero[8] = [0, 0, 0, 0, 0, 0, 0, 0], $aiTrue[8] = [1, 1, 1, 1, 1, 1, 1, 1], $aiMinus[8] = [-1, -1, -1, -1, -1, -1, -1, -1]
 	Local $aiZero83[8][3] = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 	Local $aiZero84[8][4] = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 	Local $aiZero86[8][6] = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
 	Local $asEmpty[8] = ["", "", "", "", "", "", "", ""]
+	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 	; FirstRun
 	Static $aiFirstRun = $aiTrue
@@ -50,12 +52,26 @@ Func SwitchAccountVariablesReload($sType = "Load")
 	; Lab time
 	Static $asLabUpgradeTime = $asEmpty, $aiLabStatus = $aiZero, $aiLabElixirCost = $aiZero, $aiLabDElixirCost = $aiZero
 	Static $asStarLabUpgradeTime = $asEmpty
-	
+
 	; Hero State
 	Static $aiHeroAvailable = $aiZero
 	Static $aiHeroUpgradingBit = $aiZero
 	Static $aiHeroUpgrading = $aiZero83
-	
+
+	; QuickTrain comp
+	Static $asQuickTrainCheckTime = $asEmpty
+	Static $aaArmyQuickTroops[8] = [$aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop, $aiZeroTroop]
+	Static $aaArmyQuickSpells[8] = [$aiZeroSpell, $aiZeroSpell, $aiZeroSpell, $aiZeroSpell, $aiZeroSpell, $aiZeroSpell, $aiZeroSpell, $aiZeroSpell]
+	Static $aiTotalQuickTroops = $aiZero
+	Static $aiTotalQuickSpells = $aiZero
+	Static $abQuickArmyMixed = $aiZero
+
+	; Other global status
+	Static $aiCommandStop = $aiMinus
+	Static $aiAllBarracksUpgd = $aiZero
+
+	Static $abFullStorage = $aiZero84
+
 	; First time switch account
 	Switch $sType
 		Case "Reset"
@@ -66,7 +82,7 @@ Func SwitchAccountVariablesReload($sType = "Load")
 				GUICtrlSetData($g_ahLblTroopTime[$i], "")
 			Next
 			$g_ahTimerSinceSwitched = $aiZero
-			$g_ahTimerSinceSwitched[$g_iCurAccount] = $g_hTimerSinceStarted
+			$g_ahTimerSinceSwitched[$iAccount] = $g_hTimerSinceStarted
 
 			; Multi-Stats
 			$aiSkippedVillageCount = $aiZero
@@ -126,154 +142,200 @@ Func SwitchAccountVariablesReload($sType = "Load")
 			$aiHeroUpgradingBit = $aiZero
 			$aiHeroUpgrading = $aiZero83
 
+			; QuickTrain comp
+			$asQuickTrainCheckTime = $asEmpty
+			For $i = 0 To 7
+				$aaArmyQuickTroops[$i] = $aiZeroTroop
+				$aaArmyQuickSpells[$i] = $aiZeroSpell
+			Next
+			$aiTotalQuickTroops = $aiZero
+			$aiTotalQuickSpells = $aiZero
+			$abQuickArmyMixed = $aiZero
+
+			; Other global status
+			$aiCommandStop = $aiMinus
+			$aiAllBarracksUpgd = $aiZero
+			$abFullStorage = $aiZero84
+
 		Case "Save"
-			$aiFirstRun[$g_iCurAccount] = $g_iFirstRun
+			$aiFirstRun[$iAccount] = $g_iFirstRun
 
 			; Multi-Stats
-			$aiSkippedVillageCount[$g_iCurAccount] = $g_iSkippedVillageCount
-			$aiAttackedCount[$g_iCurAccount] = $g_aiAttackedCount
+			$aiSkippedVillageCount[$iAccount] = $g_iSkippedVillageCount
+			$aiAttackedCount[$iAccount] = $g_aiAttackedCount
 
 			; Gain Stats
 			For $i = 0 To 3
-				$aiStatsTotalGain[$g_iCurAccount][$i] = $g_iStatsTotalGain[$i]
-				$aiStatsStartedWith[$g_iCurAccount][$i] = $g_iStatsStartedWith[$i]
-				$aiStatsLastAttack[$g_iCurAccount][$i] = $g_iStatsLastAttack[$i]
-				$aiStatsBonusLast[$g_iCurAccount][$i] = $g_iStatsBonusLast[$i]
+				$aiStatsTotalGain[$iAccount][$i] = $g_iStatsTotalGain[$i]
+				$aiStatsStartedWith[$iAccount][$i] = $g_iStatsStartedWith[$i]
+				$aiStatsLastAttack[$iAccount][$i] = $g_iStatsLastAttack[$i]
+				$aiStatsBonusLast[$iAccount][$i] = $g_iStatsBonusLast[$i]
 			Next
 
 			; Misc Stats
-			$aiNbrOfOoS[$g_iCurAccount] = $g_iNbrOfOoS
-			$aiDroppedTrophyCount[$g_iCurAccount] = $g_iDroppedTrophyCount
-			$aiSearchCost[$g_iCurAccount] = $g_iSearchCost
-			$aiTrainCostElixir[$g_iCurAccount] = $g_iTrainCostElixir
-			$aiTrainCostDElixir[$g_iCurAccount] = $g_iTrainCostDElixir
-			$aiTrainCostGold[$g_iCurAccount] = $g_iTrainCostGold
-			$aiGoldFromMines[$g_iCurAccount] = $g_iGoldFromMines
-			$aiElixirFromCollectors[$g_iCurAccount] = $g_iElixirFromCollectors
-			$aiDElixirFromDrills[$g_iCurAccount] = $g_iDElixirFromDrills
+			$aiNbrOfOoS[$iAccount] = $g_iNbrOfOoS
+			$aiDroppedTrophyCount[$iAccount] = $g_iDroppedTrophyCount
+			$aiSearchCost[$iAccount] = $g_iSearchCost
+			$aiTrainCostElixir[$iAccount] = $g_iTrainCostElixir
+			$aiTrainCostDElixir[$iAccount] = $g_iTrainCostDElixir
+			$aiTrainCostGold[$iAccount] = $g_iTrainCostGold
+			$aiGoldFromMines[$iAccount] = $g_iGoldFromMines
+			$aiElixirFromCollectors[$iAccount] = $g_iElixirFromCollectors
+			$aiDElixirFromDrills[$iAccount] = $g_iDElixirFromDrills
 
-			$aiCostGoldWall[$g_iCurAccount] = $g_iCostGoldWall
-			$aiCostElixirWall[$g_iCurAccount] = $g_iCostElixirWall
-			$aiCostGoldBuilding[$g_iCurAccount] = $g_iCostGoldBuilding
-			$aiCostElixirBuilding[$g_iCurAccount] = $g_iCostElixirBuilding
-			$aiCostDElixirHero[$g_iCurAccount] = $g_iCostDElixirHero
-			$aiNbrOfWallsUppedGold[$g_iCurAccount] = $g_iNbrOfWallsUppedGold
-			$aiNbrOfWallsUppedElixir[$g_iCurAccount] = $g_iNbrOfWallsUppedElixir
-			$aiNbrOfBuildingsUppedGold[$g_iCurAccount] = $g_iNbrOfBuildingsUppedGold
-			$aiNbrOfBuildingsUppedElixir[$g_iCurAccount] = $g_iNbrOfBuildingsUppedElixir
-			$aiNbrOfHeroesUpped[$g_iCurAccount] = $g_iNbrOfHeroesUpped
-			$aiNbrOfWallsUpped[$g_iCurAccount] = $g_iNbrOfWallsUpped
+			$aiCostGoldWall[$iAccount] = $g_iCostGoldWall
+			$aiCostElixirWall[$iAccount] = $g_iCostElixirWall
+			$aiCostGoldBuilding[$iAccount] = $g_iCostGoldBuilding
+			$aiCostElixirBuilding[$iAccount] = $g_iCostElixirBuilding
+			$aiCostDElixirHero[$iAccount] = $g_iCostDElixirHero
+			$aiNbrOfWallsUppedGold[$iAccount] = $g_iNbrOfWallsUppedGold
+			$aiNbrOfWallsUppedElixir[$iAccount] = $g_iNbrOfWallsUppedElixir
+			$aiNbrOfBuildingsUppedGold[$iAccount] = $g_iNbrOfBuildingsUppedGold
+			$aiNbrOfBuildingsUppedElixir[$iAccount] = $g_iNbrOfBuildingsUppedElixir
+			$aiNbrOfHeroesUpped[$iAccount] = $g_iNbrOfHeroesUpped
+			$aiNbrOfWallsUpped[$iAccount] = $g_iNbrOfWallsUpped
 
 			; Attack Stats
 			For $i = 0 To 5
-				$aiAttackedVillageCount[$g_iCurAccount][$i] = $g_aiAttackedVillageCount[$i]
-				$aiTotalGoldGain[$g_iCurAccount][$i] = $g_aiTotalGoldGain[$i]
-				$aiTotalElixirGain[$g_iCurAccount][$i] = $g_aiTotalElixirGain[$i]
-				$aiTotalDarkGain[$g_iCurAccount][$i] = $g_aiTotalDarkGain[$i]
-				$aiTotalTrophyGain[$g_iCurAccount][$i] = $g_aiTotalTrophyGain[$i]
-				$aiNbrOfDetectedMines[$g_iCurAccount][$i] = $g_aiNbrOfDetectedMines[$i]
-				$aiNbrOfDetectedCollectors[$g_iCurAccount][$i] = $g_aiNbrOfDetectedCollectors[$i]
-				$aiNbrOfDetectedDrills[$g_iCurAccount][$i] = $g_aiNbrOfDetectedDrills[$i]
+				$aiAttackedVillageCount[$iAccount][$i] = $g_aiAttackedVillageCount[$i]
+				$aiTotalGoldGain[$iAccount][$i] = $g_aiTotalGoldGain[$i]
+				$aiTotalElixirGain[$iAccount][$i] = $g_aiTotalElixirGain[$i]
+				$aiTotalDarkGain[$iAccount][$i] = $g_aiTotalDarkGain[$i]
+				$aiTotalTrophyGain[$iAccount][$i] = $g_aiTotalTrophyGain[$i]
+				$aiNbrOfDetectedMines[$iAccount][$i] = $g_aiNbrOfDetectedMines[$i]
+				$aiNbrOfDetectedCollectors[$iAccount][$i] = $g_aiNbrOfDetectedCollectors[$i]
+				$aiNbrOfDetectedDrills[$iAccount][$i] = $g_aiNbrOfDetectedDrills[$i]
 			Next
-			$aiSmartZapGain[$g_iCurAccount] = $g_iSmartZapGain
-			$aiNumEQSpellsUsed[$g_iCurAccount] = $g_iNumEQSpellsUsed
-			$aiNumLSpellsUsed[$g_iCurAccount] = $g_iNumLSpellsUsed
+			$aiSmartZapGain[$iAccount] = $g_iSmartZapGain
+			$aiNumEQSpellsUsed[$iAccount] = $g_iNumEQSpellsUsed
+			$aiNumLSpellsUsed[$iAccount] = $g_iNumLSpellsUsed
 
 			; Lab time
-			$asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime
-			$aiLabElixirCost[$g_iCurAccount] = $g_iLaboratoryElixirCost
-			$aiLabDElixirCost[$g_iCurAccount] = $g_iLaboratoryDElixirCost
+			$asLabUpgradeTime[$iAccount] = $g_sLabUpgradeTime
+			$aiLabElixirCost[$iAccount] = $g_iLaboratoryElixirCost
+			$aiLabDElixirCost[$iAccount] = $g_iLaboratoryDElixirCost
 			If GUICtrlGetState($g_hPicLabGreen) = $GUI_ENABLE + $GUI_SHOW Then
-				$aiLabStatus[$g_iCurAccount] = 1
+				$aiLabStatus[$iAccount] = 1
 			ElseIf GUICtrlGetState($g_hPicLabRed) = $GUI_ENABLE + $GUI_SHOW Then
-				$aiLabStatus[$g_iCurAccount] = 2
+				$aiLabStatus[$iAccount] = 2
 			Else
-				$aiLabStatus[$g_iCurAccount] = 0
+				$aiLabStatus[$iAccount] = 0
 			EndIf
-			$asStarLabUpgradeTime[$g_iCurAccount] = $g_sStarLabUpgradeTime
-			
+			$asStarLabUpgradeTime[$iAccount] = $g_sStarLabUpgradeTime
+
 			; Hero State
-			$aiHeroAvailable[$g_iCurAccount] = $g_iHeroAvailable
-			$aiHeroUpgradingBit[$g_iCurAccount] = $g_iHeroUpgradingBit
+			$aiHeroAvailable[$iAccount] = $g_iHeroAvailable
+			$aiHeroUpgradingBit[$iAccount] = $g_iHeroUpgradingBit
 			For $i = 0 To 2
-				$aiHeroUpgrading[$g_iCurAccount][$i] = $g_iHeroUpgrading[$i]
+				$aiHeroUpgrading[$iAccount][$i] = $g_iHeroUpgrading[$i]
+			Next
+
+			; QuickTrain comp
+			$asQuickTrainCheckTime[$iAccount] = $g_sQuickTrainCheckTime
+			$aaArmyQuickTroops[$iAccount] = $g_aiArmyQuickTroops
+			$aaArmyQuickSpells[$iAccount] = $g_aiArmyQuickSpells
+			$aiTotalQuickTroops[$iAccount] = $g_iTotalQuickTroops
+			$aiTotalQuickSpells[$iAccount] = $g_iTotalQuickSpells
+			$abQuickArmyMixed[$iAccount] = $g_bQuickArmyMixed
+
+			; Other global status
+			$aiCommandStop[$iAccount] = $g_iCommandStop
+			$aiAllBarracksUpgd[$iAccount] = $g_bAllBarracksUpgd
+
+			For $i = 0 To 3
+				$abFullStorage[$iAccount][$i] = $g_abFullStorage[$i]
 			Next
 
 		Case "Load"
-			$g_iFirstRun = $aiFirstRun[$g_iCurAccount]
+			$g_iFirstRun = $aiFirstRun[$iAccount]
 
 			; Multi-Stats
-			$g_iSkippedVillageCount = $aiSkippedVillageCount[$g_iCurAccount]
-			$g_aiAttackedCount = $aiAttackedCount[$g_iCurAccount]
+			$g_iSkippedVillageCount = $aiSkippedVillageCount[$iAccount]
+			$g_aiAttackedCount = $aiAttackedCount[$iAccount]
 
 			; Gain Stats
 			For $i = 0 To 3
-				$g_iStatsTotalGain[$i] = $aiStatsTotalGain[$g_iCurAccount][$i]
-				$g_iStatsStartedWith[$i] = $aiStatsStartedWith[$g_iCurAccount][$i]
-				$g_iStatsLastAttack[$i] = $aiStatsLastAttack[$g_iCurAccount][$i]
-				$g_iStatsBonusLast[$i] = $aiStatsBonusLast[$g_iCurAccount][$i]
+				$g_iStatsTotalGain[$i] = $aiStatsTotalGain[$iAccount][$i]
+				$g_iStatsStartedWith[$i] = $aiStatsStartedWith[$iAccount][$i]
+				$g_iStatsLastAttack[$i] = $aiStatsLastAttack[$iAccount][$i]
+				$g_iStatsBonusLast[$i] = $aiStatsBonusLast[$iAccount][$i]
 			Next
 
 			; Misc Stats
-			$g_iNbrOfOoS = $aiNbrOfOoS[$g_iCurAccount]
-			$g_iDroppedTrophyCount = $aiDroppedTrophyCount[$g_iCurAccount]
-			$g_iSearchCost = $aiSearchCost[$g_iCurAccount]
-			$g_iTrainCostElixir = $aiTrainCostElixir[$g_iCurAccount]
-			$g_iTrainCostDElixir = $aiTrainCostDElixir[$g_iCurAccount]
-			$g_iTrainCostGold = $aiTrainCostGold[$g_iCurAccount]
-			$g_iGoldFromMines = $aiGoldFromMines[$g_iCurAccount]
-			$g_iElixirFromCollectors = $aiElixirFromCollectors[$g_iCurAccount]
-			$g_iDElixirFromDrills = $aiDElixirFromDrills[$g_iCurAccount]
+			$g_iNbrOfOoS = $aiNbrOfOoS[$iAccount]
+			$g_iDroppedTrophyCount = $aiDroppedTrophyCount[$iAccount]
+			$g_iSearchCost = $aiSearchCost[$iAccount]
+			$g_iTrainCostElixir = $aiTrainCostElixir[$iAccount]
+			$g_iTrainCostDElixir = $aiTrainCostDElixir[$iAccount]
+			$g_iTrainCostGold = $aiTrainCostGold[$iAccount]
+			$g_iGoldFromMines = $aiGoldFromMines[$iAccount]
+			$g_iElixirFromCollectors = $aiElixirFromCollectors[$iAccount]
+			$g_iDElixirFromDrills = $aiDElixirFromDrills[$iAccount]
 
-			$g_iCostGoldWall = $aiCostGoldWall[$g_iCurAccount]
-			$g_iCostElixirWall = $aiCostElixirWall[$g_iCurAccount]
-			$g_iCostGoldBuilding = $aiCostGoldBuilding[$g_iCurAccount]
-			$g_iCostElixirBuilding = $aiCostElixirBuilding[$g_iCurAccount]
-			$g_iCostDElixirHero = $aiCostDElixirHero[$g_iCurAccount]
-			$g_iNbrOfWallsUppedGold = $aiNbrOfWallsUppedGold[$g_iCurAccount]
-			$g_iNbrOfWallsUppedElixir = $aiNbrOfWallsUppedElixir[$g_iCurAccount]
-			$g_iNbrOfBuildingsUppedGold = $aiNbrOfBuildingsUppedGold[$g_iCurAccount]
-			$g_iNbrOfBuildingsUppedElixir = $aiNbrOfBuildingsUppedElixir[$g_iCurAccount]
-			$g_iNbrOfHeroesUpped = $aiNbrOfHeroesUpped[$g_iCurAccount]
-			$g_iNbrOfWallsUpped = $aiNbrOfWallsUpped[$g_iCurAccount]
+			$g_iCostGoldWall = $aiCostGoldWall[$iAccount]
+			$g_iCostElixirWall = $aiCostElixirWall[$iAccount]
+			$g_iCostGoldBuilding = $aiCostGoldBuilding[$iAccount]
+			$g_iCostElixirBuilding = $aiCostElixirBuilding[$iAccount]
+			$g_iCostDElixirHero = $aiCostDElixirHero[$iAccount]
+			$g_iNbrOfWallsUppedGold = $aiNbrOfWallsUppedGold[$iAccount]
+			$g_iNbrOfWallsUppedElixir = $aiNbrOfWallsUppedElixir[$iAccount]
+			$g_iNbrOfBuildingsUppedGold = $aiNbrOfBuildingsUppedGold[$iAccount]
+			$g_iNbrOfBuildingsUppedElixir = $aiNbrOfBuildingsUppedElixir[$iAccount]
+			$g_iNbrOfHeroesUpped = $aiNbrOfHeroesUpped[$iAccount]
+			$g_iNbrOfWallsUpped = $aiNbrOfWallsUpped[$iAccount]
 
 			; Attack Stats
 			For $i = 0 To 5
-				$g_aiAttackedVillageCount[$i] = $aiAttackedVillageCount[$g_iCurAccount][$i]
-				$g_aiTotalGoldGain[$i] = $aiTotalGoldGain[$g_iCurAccount][$i]
-				$g_aiTotalElixirGain[$i] = $aiTotalElixirGain[$g_iCurAccount][$i]
-				$g_aiTotalDarkGain[$i] = $aiTotalDarkGain[$g_iCurAccount][$i]
-				$g_aiTotalTrophyGain[$i] = $aiTotalTrophyGain[$g_iCurAccount][$i]
-				$g_aiNbrOfDetectedMines[$i] = $aiNbrOfDetectedMines[$g_iCurAccount][$i]
-				$g_aiNbrOfDetectedCollectors[$i] = $aiNbrOfDetectedCollectors[$g_iCurAccount][$i]
-				$g_aiNbrOfDetectedDrills[$i] = $aiNbrOfDetectedDrills[$g_iCurAccount][$i]
+				$g_aiAttackedVillageCount[$i] = $aiAttackedVillageCount[$iAccount][$i]
+				$g_aiTotalGoldGain[$i] = $aiTotalGoldGain[$iAccount][$i]
+				$g_aiTotalElixirGain[$i] = $aiTotalElixirGain[$iAccount][$i]
+				$g_aiTotalDarkGain[$i] = $aiTotalDarkGain[$iAccount][$i]
+				$g_aiTotalTrophyGain[$i] = $aiTotalTrophyGain[$iAccount][$i]
+				$g_aiNbrOfDetectedMines[$i] = $aiNbrOfDetectedMines[$iAccount][$i]
+				$g_aiNbrOfDetectedCollectors[$i] = $aiNbrOfDetectedCollectors[$iAccount][$i]
+				$g_aiNbrOfDetectedDrills[$i] = $aiNbrOfDetectedDrills[$iAccount][$i]
 			Next
-			$g_iSmartZapGain = $aiSmartZapGain[$g_iCurAccount]
-			$g_iNumEQSpellsUsed = $aiNumEQSpellsUsed[$g_iCurAccount]
-			$g_iNumLSpellsUsed = $aiNumLSpellsUsed[$g_iCurAccount]
+			$g_iSmartZapGain = $aiSmartZapGain[$iAccount]
+			$g_iNumEQSpellsUsed = $aiNumEQSpellsUsed[$iAccount]
+			$g_iNumLSpellsUsed = $aiNumLSpellsUsed[$iAccount]
 
 			; Lab time
-			$g_sLabUpgradeTime = $asLabUpgradeTime[$g_iCurAccount]
+			$g_sLabUpgradeTime = $asLabUpgradeTime[$iAccount]
 			GUICtrlSetData($g_hLbLLabTime, "")
-			$g_iLaboratoryElixirCost = $aiLabElixirCost[$g_iCurAccount]
-			$g_iLaboratoryDElixirCost = $aiLabDElixirCost[$g_iCurAccount]
+			$g_iLaboratoryElixirCost = $aiLabElixirCost[$iAccount]
+			$g_iLaboratoryDElixirCost = $aiLabDElixirCost[$iAccount]
 			Local $Counter = 0
 			For $i = $g_hPicLabGray To $g_hPicLabRed
 				GUICtrlSetState($i, $GUI_HIDE)
-				If $aiLabStatus[$g_iCurAccount] = $Counter Then GUICtrlSetState($i, $GUI_SHOW)
+				If $aiLabStatus[$iAccount] = $Counter Then GUICtrlSetState($i, $GUI_SHOW)
 				$Counter += 1
 			Next
-			$g_sStarLabUpgradeTime = $asStarLabUpgradeTime[$g_iCurAccount]
+			$g_sStarLabUpgradeTime = $asStarLabUpgradeTime[$iAccount]
 
 			; Hero State
-			$g_iHeroAvailable = $aiHeroAvailable[$g_iCurAccount]
-			$g_iHeroUpgradingBit = $aiHeroUpgradingBit[$g_iCurAccount]
+			$g_iHeroAvailable = $aiHeroAvailable[$iAccount]
+			$g_iHeroUpgradingBit = $aiHeroUpgradingBit[$iAccount]
 			For $i = 0 To 2
-				$g_iHeroUpgrading[$i] = $aiHeroUpgrading[$g_iCurAccount][$i]
+				$g_iHeroUpgrading[$i] = $aiHeroUpgrading[$iAccount][$i]
+			Next
+
+			; QuickTrain comp
+			$g_sQuickTrainCheckTime = $asQuickTrainCheckTime[$iAccount]
+			$g_aiArmyQuickTroops = $aaArmyQuickTroops[$iAccount]
+			$g_aiArmyQuickSpells = $aaArmyQuickSpells[$iAccount]
+			$g_iTotalQuickTroops = $aiTotalQuickTroops[$iAccount]
+			$g_iTotalQuickSpells = $aiTotalQuickSpells[$iAccount]
+			$g_bQuickArmyMixed = $abQuickArmyMixed[$iAccount]
+
+			; Other global status
+			$g_iCommandStop = $aiCommandStop[$iAccount]
+			$g_bAllBarracksUpgd = $aiAllBarracksUpgd[$iAccount]
+			For $i = 0 To 3
+				$g_abFullStorage[$i] = $abFullStorage[$iAccount][$i]
 			Next
 
 			ResetVariables("donated") ; reset for new account
-			$g_aiAttackedCountSwitch[$g_iCurAccount] = $aiAttackedCount[$g_iCurAccount]
+			$g_aiAttackedCountSwitch[$iAccount] = $aiAttackedCount[$iAccount]
 
 			; Reset the log
 			$g_hLogFile = 0
@@ -281,7 +343,7 @@ Func SwitchAccountVariablesReload($sType = "Load")
 		Case "UpdateStats"
 			For $i = 0 To 3
 				GUICtrlSetData($g_ahLblStatsStartedWith[$i], _NumberFormat($g_iStatsStartedWith[$i], True))
-				$aiStatsTotalGain[$g_iCurAccount][$i] = $g_iStatsTotalGain[$i]
+				$aiStatsTotalGain[$iAccount][$i] = $g_iStatsTotalGain[$i]
 			Next
 			For $i = 0 To 7
 				GUICtrlSetData($g_ahLblHourlyStatsGoldAcc[$i], _NumberFormat(Round($aiStatsTotalGain[$i][$eLootGold] / (Int(__TimerDiff($g_hTimerSinceStarted) + $g_iTimePassed)) * 3600)) & "k / h")
@@ -306,6 +368,9 @@ Func SwitchAccountVariablesReload($sType = "Load")
 					GUICtrlSetData($g_ahLblLabTime[$i], "")
 				EndIf
 			Next
+
+		Case "$g_iCommandStop"
+			return $aiCommandStop[$iAccount]
 
 	EndSwitch
 

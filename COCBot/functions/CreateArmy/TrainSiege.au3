@@ -23,7 +23,11 @@ Func TrainSiege()
 
 	If $g_bDebugSetlogTrain Then SetLog("-- TrainSiege --", $COLOR_DEBUG)
 
-	If Not OpenSiegeMachinesTab(True, "TrainSiege()") Then Return
+	If $g_bDoubleTrain Then
+		SetDebugLog(" == Double Train Siege == ", $COLOR_ACTION)
+		DoubleTrainSiege()
+		Return
+	EndIf
 
 	Local $aCheckIsOccupied[4] = [822, 206, 0xE00D0D, 10]
 	Local $aCheckIsFilled[4] = [802, 186, 0xD7AFA9, 10]
@@ -38,7 +42,7 @@ Func TrainSiege()
 	; If $g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeWallWrecker] ; Donate WallWrecker
 	; If $g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleBlimp] ; Donate BattleBlimp
 
-	Local $TextToUse = ["Clan Castle", $g_asSiegeMachineNames[0], $g_asSiegeMachineNames[1], $g_asSiegeMachineNames[2]]
+    Local $TextToUse = ["Clan Castle", $g_asSiegeMachineNames[0], $g_asSiegeMachineNames[1], $g_asSiegeMachineNames[2], "Any siege", "Default"]
 
 	If $g_bDebugSetlogTrain Then
 		For $iSiegeIndex = $eSiegeWallWrecker To $eSiegeMachineCount - 1
@@ -46,7 +50,8 @@ Func TrainSiege()
 			SetDebugLog(@TAB & "To Build: " & $g_aiArmyCompSiegeMachine[$iSiegeIndex])
 			SetDebugLog(@TAB & "Current Army: " & $g_aiCurrentSiegeMachines[$iSiegeIndex])
 			SetDebugLog(@TAB & "Current CC: " & $g_aiCurrentCCSiegeMachines[$iSiegeIndex])
-			SetDebugLog(@TAB & "To Use at " & $g_asModeText[$iSiegeIndex] & " " & $TextToUse[$g_aiAttackUseSiege[$iSiegeIndex]])
+            If $g_abAttackTypeEnable[$DB] Then SetDebugLog(@TAB & "To Use at " & $g_asModeText[$DB] & " " & $TextToUse[$g_aiAttackUseSiege[$DB]])
+            If $g_abAttackTypeEnable[$LB] Then SetDebugLog(@TAB & "To Use at " & $g_asModeText[$LB] & " " & $TextToUse[$g_aiAttackUseSiege[$LB]])
 		Next
 	EndIf
 

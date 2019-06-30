@@ -47,6 +47,7 @@ Func BotStart($bAutostartDelay = 0)
 	$g_bMeetCondStop = False
 	$g_bIsClientSyncError = False
 	$g_bDisableBreakCheck = False ; reset flag to check for early warning message when bot start/restart in case user stopped in middle
+	$g_sQuickTrainCheckTime = ""
 
 	SaveConfig()
 	readConfig()

@@ -84,6 +84,11 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 	ApplyConfig_600_17($TypeReadSave)
 	; <><><><> Village / Notify <><><><>
 	ApplyConfig_600_18($TypeReadSave)
+
+	; moved here due to check functions
+	; troop/spell levels and counts
+	ApplyConfig_600_52_2($TypeReadSave)
+
 	; <><><><> Village / Notify <><><><>
 	ApplyConfig_600_19($TypeReadSave)
 	; <><><> Attack Plan / Train Army / Boost <><><>
@@ -127,8 +132,6 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
 	; Quick train
 	ApplyConfig_600_52_1($TypeReadSave)
-	; troop/spell levels and counts
-	ApplyConfig_600_52_2($TypeReadSave)
 	; <><><> Attack Plan / Train Army / Train Order <><><>
 	ApplyConfig_600_54($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / SmartZap <><><><>
@@ -293,6 +296,12 @@ Func ApplyConfig_600_6($TypeReadSave)
 			_GUICtrlComboBox_SetCurSel($g_hCmbBotCond, $g_iCmbBotCond)
 			_GUICtrlComboBox_SetCurSel($g_hCmbHoursStop, $g_iCmbHoursStop)
 			cmbBotCond()
+			For $i = 0 To $eLootCount - 1
+				GUICtrlSetData($g_ahTxtResumeAttackLoot[$i], $g_aiResumeAttackLoot[$i])
+			Next
+			_GUICtrlComboBox_SetCurSel($g_hCmbTimeStop, $g_iCmbTimeStop)
+			_GUICtrlComboBox_SetCurSel($g_hCmbResumeTime, $g_iResumeAttackTime)
+
 			GUICtrlSetData($g_hTxtRestartGold, $g_iTxtRestartGold)
 			GUICtrlSetData($g_hTxtRestartElixir, $g_iTxtRestartElixir)
 			GUICtrlSetData($g_hTxtRestartDark, $g_iTxtRestartDark)
@@ -354,6 +363,12 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_iCmbBotCommand = _GUICtrlComboBox_GetCurSel($g_hCmbBotCommand)
 			$g_iCmbBotCond = _GUICtrlComboBox_GetCurSel($g_hCmbBotCond)
 			$g_iCmbHoursStop = _GUICtrlComboBox_GetCurSel($g_hCmbHoursStop)
+			For $i = 0 To $eLootCount - 1
+				$g_aiResumeAttackLoot[$i] = GUICtrlRead($g_ahTxtResumeAttackLoot[$i])
+			Next
+			$g_iCmbTimeStop = _GUICtrlComboBox_GetCurSel($g_hCmbTimeStop)
+			$g_iResumeAttackTime = _GUICtrlComboBox_GetCurSel($g_hCmbResumeTime)
+
 			$g_iTxtRestartGold = GUICtrlRead($g_hTxtRestartGold)
 			$g_iTxtRestartElixir = GUICtrlRead($g_hTxtRestartElixir)
 			$g_iTxtRestartDark = GUICtrlRead($g_hTxtRestartDark)
@@ -2147,15 +2162,22 @@ Func ApplyConfig_600_52_1($TypeReadSave)
 	; Quick train
 	Switch $TypeReadSave
 		Case "Read"
-			GUICtrlSetState($g_hChkUseQuickTrain, $g_bQuickTrainEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_ahChkArmy[0], $g_bQuickTrainArmy[0] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_ahChkArmy[1], $g_bQuickTrainArmy[1] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_ahChkArmy[2], $g_bQuickTrainArmy[2] ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hRadQuickTrain, $g_bQuickTrainEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
+
+			For $i = 0 To 2
+				GUICtrlSetState($g_ahChkArmy[$i], $g_bQuickTrainArmy[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
+				GUICtrlSetState($g_ahChkUseInGameArmy[$i], $g_abUseInGameArmy[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
+				_chkUseInGameArmy($i)
+			Next
+			ApplyQuickTrainArmy()
+
 		Case "Save"
-			$g_bQuickTrainEnable = (GUICtrlRead($g_hChkUseQuickTrain) = $GUI_CHECKED)
-			$g_bQuickTrainArmy[0] = (GUICtrlRead($g_ahChkArmy[0]) = $GUI_CHECKED)
-			$g_bQuickTrainArmy[1] = (GUICtrlRead($g_ahChkArmy[1]) = $GUI_CHECKED)
-			$g_bQuickTrainArmy[2] = (GUICtrlRead($g_ahChkArmy[2]) = $GUI_CHECKED)
+			$g_bQuickTrainEnable = (GUICtrlRead($g_hRadQuickTrain) = $GUI_CHECKED)
+			For $i = 0 To 2
+				$g_bQuickTrainArmy[$i] = (GUICtrlRead($g_ahChkArmy[$i]) = $GUI_CHECKED)
+				$g_abUseInGameArmy[$i] = (GUICtrlRead($g_ahChkUseInGameArmy[$i]) = $GUI_CHECKED)
+			Next
+
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_52_1
 
@@ -2199,7 +2221,6 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 			GUICtrlSetData($g_hTxtTotalCampForced, $g_iTotalCampForcedValue)
 			; spell capacity and forced flag
 			GUICtrlSetData($g_hTxtTotalCountSpell, $g_iTotalSpellValue)
-			GUICtrlSetState($g_hChkForceBrewBeforeAttack, $g_bForceBrewSpells ? $GUI_CHECKED : $GUI_UNCHECKED)
 			; DoubleTrain - Demen
 			GUICtrlSetState($g_hChkDoubleTrain, $g_bDoubleTrain ? $GUI_CHECKED : $GUI_UNCHECKED)
 		Case "Save"
@@ -2222,7 +2243,6 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 			$g_iTotalCampForcedValue = Int(GUICtrlRead($g_hTxtTotalCampForced))
 			; spell capacity and forced flag
 			$g_iTotalSpellValue = GUICtrlRead($g_hTxtTotalCountSpell)
-			$g_bForceBrewSpells = (GUICtrlRead($g_hChkForceBrewBeforeAttack) = $GUI_CHECKED)
 			; DoubleTrain - Demen
 			$g_bDoubleTrain = (GUICtrlRead($g_hChkDoubleTrain) = $GUI_CHECKED)
 	EndSwitch
@@ -2272,7 +2292,7 @@ Func ApplyConfig_600_54($TypeReadSave)
 			EndIf
 
 			chkTotalCampForced()
-			chkUseQTrain() ; this function also calls calls lblTotalCount and TotalSpellCountClick
+			radSelectTrainType() ; this function also calls calls lblTotalCount and TotalSpellCountClick
 			SetComboTroopComp() ; this function also calls lblTotalCount
 		Case "Save"
 			; Troops Order

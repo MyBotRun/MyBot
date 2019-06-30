@@ -24,6 +24,7 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 
 		Local $aTrainPos = GetTrainPos($iIndex)
 		If IsArray($aTrainPos) And $aTrainPos[0] <> -1 Then
+			$g_bAllBarracksUpgd = False
 			If _ColorCheck(_GetPixelColor($aTrainPos[0], $aTrainPos[1], $g_bCapturePixel), Hex($aTrainPos[2], 6), $aTrainPos[3]) Then
 				Local $FullName = GetFullName($iIndex, $aTrainPos)
 				If IsArray($FullName) Then

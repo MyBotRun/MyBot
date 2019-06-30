@@ -87,32 +87,32 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 						$bClearSlot = False
 						Local $sLogExtension = ""
 						If Not $bRemaining Then
-							; populate the i-th slot
-							Local $iTroopIndex = Number($avAttackBar[$j][0]) ; Troop Index
-							$g_avAttackTroops[$i][0] = $iTroopIndex ; Troop Index
-							$g_avAttackTroops[$i][1] = Number($avAttackBar[$j][2]) ; Amount
-							$g_avAttackTroops[$i][2] = Number($avAttackBar[$j][3]) ; X-Coord
-							$g_avAttackTroops[$i][3] = Number($avAttackBar[$j][4]) ; Y-Coord
-							$g_avAttackTroops[$i][4] = Number($avAttackBar[$j][5]) ; OCR X-Coord
-							$g_avAttackTroops[$i][5] = Number($avAttackBar[$j][6]) ; OCR Y-Coord
-		
+							; Select castle, siege machine and warden mode
 							If $pMatchMode = $DB Or $pMatchMode = $LB Then
-								Switch $iTroopIndex
+								Switch $avAttackBar[$j][0]
 									Case $eCastle, $eWallW, $eBattleB, $eStoneS
 										If $g_aiAttackUseSiege[$pMatchMode] <= 4 Then
-											SelectCastleOrSiege($iTroopIndex, Number($avAttackBar[$j][5]), $g_aiAttackUseSiege[$pMatchMode])
-											If $iTroopIndex <> $eCastle Then $sLogExtension = " (level " & $g_iSiegeLevel & ")"
+											SelectCastleOrSiege($avAttackBar[$j][0], Number($avAttackBar[$j][5]), $g_aiAttackUseSiege[$pMatchMode])
+											If $avAttackBar[$j][0] <> $eCastle Then $sLogExtension = " (level " & $g_iSiegeLevel & ")"
 										EndIf
 									Case $eWarden
 										If $g_aiAttackUseWardenMode[$pMatchMode] <= 1 Then $sLogExtension = SelectWardenMode($g_aiAttackUseWardenMode[$pMatchMode], Number($avAttackBar[$j][5]))
 								EndSwitch
 							EndIf
+
+							; populate the i-th slot
+							$g_avAttackTroops[$i][0] = Number($avAttackBar[$j][0]) ; Troop Index
+							$g_avAttackTroops[$i][1] = Number($avAttackBar[$j][2]) ; Amount
+							$g_avAttackTroops[$i][2] = Number($avAttackBar[$j][3]) ; X-Coord
+							$g_avAttackTroops[$i][3] = Number($avAttackBar[$j][4]) ; Y-Coord
+							$g_avAttackTroops[$i][4] = Number($avAttackBar[$j][5]) ; OCR X-Coord
+							$g_avAttackTroops[$i][5] = Number($avAttackBar[$j][6]) ; OCR Y-Coord
 						Else
 							; only update amount of i-th slot
 							$g_avAttackTroops[$i][1] = Number($avAttackBar[$j][2]) ; Amount
 						EndIf
 						$iTroopNumber += $avAttackBar[$j][2]
-		
+
 						Local $sDebugText = $g_bDebugSetlog ? " (X:" & $avAttackBar[$j][3] & "|Y:" & $avAttackBar[$j][4] & "|OCR-X:" & $avAttackBar[$j][5] & "|OCR-Y:" & $avAttackBar[$j][6] & ")" : ""
 						SetLog($avAttackBar[$j][1] & ": " & $avAttackBar[$j][2] & " " & GetTroopName($avAttackBar[$j][0], $avAttackBar[$j][2]) & $sLogExtension & $sDebugText, $COLOR_SUCCESS)
 					Else
@@ -266,7 +266,7 @@ Func SelectWardenMode($iMode, $XCoord)
 			ClickP($aArrowCoords, 1, 0)
 			If _Sleep(1200) Then Return
 
-			Local $sSymbol = GetDiamondFromRect(_Min($XCoord - 30, 696) & ",582(162,18)") ; x = 696 when Grand Warden is at slot 10
+			Local $sSymbol = GetDiamondFromRect(_Min($XCoord - 30, 696) & ",576(162,18)") ; x = 696 when Grand Warden is at slot 10
 			Local $aAvailableMode = findMultiple($g_sImgSwitchWardenMode, $sSymbol, $sSymbol, 0, 1000, 2, "objectname,objectpoints", True)
 			If $aAvailableMode <> "" And IsArray($aAvailableMode) Then
 				For $i = 0 To UBound($aAvailableMode, $UBOUND_ROWS) - 1
@@ -375,7 +375,7 @@ Func AttackRemainingTime($bInitialze = Default)
 
 	EndIf
 
-	If Not $bInitialze Then Return
+;~ 	If Not $bInitialze Then Return
 
 	; Return remaining attack time
 	Local $iAttackTime = 3 * 60 * 1000

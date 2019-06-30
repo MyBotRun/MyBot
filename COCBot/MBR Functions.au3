@@ -111,6 +111,7 @@
 #include "functions\CreateArmy\TrainSiege.au3"
 #include "functions\CreateArmy\TrainIt.au3"
 #include "functions\CreateArmy\DoubleTrain.au3" ; DoubleTrain Demen
+#include "functions\CreateArmy\QuickTrain.au3"
 
 #include "functions\CreateArmy\getArmyTroops\getArmyTroopTime.au3"
 #include "functions\CreateArmy\getArmyTroops\getArmyTroopCapacity.au3"
@@ -142,6 +143,7 @@
 #include "functions\Image Search\imglocCheckWall.au3"
 #include "functions\Image Search\imglocTHSearch.au3"
 #include "functions\Image Search\QuickMIS.au3"
+#include "functions\Image Search\IsWindowOpen.au3"
 
 #include "functions\Main Screen\checkMainScreen.au3"
 #include "functions\Main Screen\checkObstacles.au3"

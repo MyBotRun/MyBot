@@ -14,6 +14,10 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func GetPixelSide($listPixel, $index)
-	If $g_bDebugSetlog Then SetDebugLog("GetPixelSide " & $index & " = " & StringReplace($listPixel[$index], "-", ","))
-	Return GetListPixel($listPixel[$index])
+	If UBound($listPixel) > $index Then
+		If $g_bDebugSetlog Then SetDebugLog("GetPixelSide " & $index & " = " & StringReplace($listPixel[$index], "-", ","))
+		Return GetListPixel($listPixel[$index])
+	EndIf
+	; return -1 like GetListPixel would do on wrong array
+	Return -1
 EndFunc   ;==>GetPixelSide

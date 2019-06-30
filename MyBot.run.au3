@@ -744,13 +744,13 @@ Func runBot() ;Bot that runs everything in order
 
 		If CheckAndroidReboot() Then ContinueLoop
 		If Not $g_bIsClientSyncError And Not $g_bIsSearchLimit And (Not $g_bQuickAttack) Then
-			If BotCommand() Then btnStop()
-			If _Sleep($DELAYRUNBOT2) Then Return
 
 			checkMainScreen(False)
 			If $g_bRestart Then ContinueLoop
 			If _Sleep($DELAYRUNBOT3) Then Return
 			VillageReport()
+			If _Sleep($DELAYRUNBOT2) Then Return
+			If BotCommand() Then btnStop()
 			If Not $g_bRunState Then Return
 			If $g_bOutOfGold And (Number($g_aiCurrentLoot[$eLootGold]) >= Number($g_iTxtRestartGold)) Then ; check if enough gold to begin searching again
 				$g_bOutOfGold = False ; reset out of gold flag
@@ -774,13 +774,11 @@ Func runBot() ;Bot that runs everything in order
 				If $g_bRestart = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			WEnd
 
-			If ($g_iCommandStop = 0 Or $g_iCommandStop = 3) And ProfileSwitchAccountEnabled() And Not $g_abDonateOnly[$g_iCurAccount] Then checkSwitchAcc()
-
 			AddIdleTime()
 			If $g_bRunState = False Then Return
 			If $g_bRestart = True Then ContinueLoop
 			If IsSearchAttackEnabled() Then ; if attack is disabled skip reporting, requesting, donating, training, and boosting
-				Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC', 'RequestCC']
+				Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC,Train', 'RequestCC']
 				While UBound($aRndFuncList) > 0
 					If $g_bRunState = False Then Return
 					Local $Index = Random(0, UBound($aRndFuncList) - 1, 1)
@@ -830,8 +828,9 @@ Func runBot() ;Bot that runs everything in order
 				If CheckAndroidReboot() = True Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			WEnd
 			If $g_bRunState = False Then Return
+
+			If ProfileSwitchAccountEnabled() And ($g_iCommandStop = 0 Or $g_iCommandStop = 3 Or $g_abDonateOnly[$g_iCurAccount]) Then checkSwitchAcc()
 			If IsSearchAttackEnabled() Then ; If attack scheduled has attack disabled now, stop wall upgrades, and attack.
-				If ProfileSwitchAccountEnabled() And $g_abDonateOnly[$g_iCurAccount] Then checkSwitchAcc()
 				Idle()
 				;$g_bFullArmy1 = $g_bFullArmy
 				If _Sleep($DELAYRUNBOT3) Then Return
@@ -849,6 +848,11 @@ Func runBot() ;Bot that runs everything in order
 					If $g_bRestart = True Then ContinueLoop
 				EndIf
 			Else
+				If ProfileSwitchAccountEnabled() Then
+					$g_iCommandStop = 2
+					_RunFunction('DonateCC,Train')
+					checkSwitchAcc()
+				EndIf
 				$iWaitTime = Random($DELAYWAITATTACK1, $DELAYWAITATTACK2)
 				SetLog("Attacking Not Planned and Skipped, Waiting random " & StringFormat("%0.1f", $iWaitTime / 1000) & " Seconds", $COLOR_WARNING)
 				If _SleepStatus($iWaitTime) Then Return False
