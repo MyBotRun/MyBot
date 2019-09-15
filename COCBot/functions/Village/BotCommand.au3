@@ -37,7 +37,7 @@ Func BotCommand()
 	$g_bTrainEnabled = True
 	$g_bDonationEnabled = True
 
-	If $bChkBotStop = True Then
+	If $bChkBotStop Then
 
 		If $iCmbBotCond = 15 And $g_iCmbHoursStop <> 0 Then $TimeToStop = $g_iCmbHoursStop * 3600000 ; 3600000 = 1 Hours
 
@@ -104,42 +104,46 @@ Func BotCommand()
 		If $g_bMeetCondStop Then
 			Switch $iCmbBotCommand
 				Case 0
-					If $g_bDonationEnabled = False Then
-						SetLog("Halt Attack, Stay Online/Collect...", $COLOR_INFO)
-					ElseIf $g_bTrainEnabled = False Then
-						SetLog("Halt Attack, Stay Online/Collect/Donate...", $COLOR_INFO)
+					If $iCmbBotCond <= 14 And $g_bCollectStarBonus And WaitforPixel(84, 630, 97, 635, "AF5725", 20, 0.2) Then
+						SetLog("Star bonus available. Continue attacking to collect them.")
+						Return False
+					EndIf
+					If Not $g_bDonationEnabled Then
+						SetLog("Halt Attack, Stay Online/Collect", $COLOR_INFO)
+					ElseIf Not $g_bTrainEnabled Then
+						SetLog("Halt Attack, Stay Online/Collect/Donate", $COLOR_INFO)
 					Else
-						SetLog("Halt Attack, Stay Online/Train/Collect/Donate...", $COLOR_INFO)
+						SetLog("Halt Attack, Stay Online/Train/Collect/Donate", $COLOR_INFO)
 					EndIf
 					$g_iCommandStop = 0 ; Halt Attack
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 				Case 1
-					SetLog("MyBot.run Bot Stop as requested!!", $COLOR_INFO)
+					SetLog("MyBot.run Bot Stop as requested", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Return True
 				Case 2
-					SetLog("MyBot.run Close Bot as requested!!", $COLOR_INFO)
+					SetLog("MyBot.run Close Bot as requested", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					BotClose()
 					Return True ; HaHa - No Return possible!
 				Case 3
-					SetLog("Close Android and Bot as requested!!", $COLOR_INFO)
+					SetLog("Close Android and Bot as requested", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					CloseAndroid("BotCommand")
 					BotClose()
 					Return True ; HaHa - No Return possible!
 				Case 4
-					SetLog("Force Shutdown of PC...", $COLOR_INFO)
+					SetLog("Force Shutdown of Computer", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Shutdown(BitOR($SD_SHUTDOWN, $SD_FORCE)) ; Force Shutdown
 					Return True ; HaHa - No Return possible!
 				Case 5
-					SetLog("PC Sleep Mode Start now ...", $COLOR_INFO)
+					SetLog("Computer Sleep Mode Start now", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Shutdown($SD_STANDBY) ; Sleep / Stand by
 					Return True ; HaHa - No Return possible!
 				Case 6
-					SetLog("Rebooting PC...", $COLOR_INFO)
+					SetLog("Rebooting Computer", $COLOR_INFO)
 					If _Sleep($DELAYBOTCOMMAND1) Then Return
 					Shutdown(BitOR($SD_REBOOT, $SD_FORCE)) ; Reboot
 					Return True ; HaHa - No Return possible!
@@ -227,4 +231,3 @@ Func StopAndResumeTimer($bResume = False)
 	SetDebugLog("@HOUR: " & @HOUR & ", $bCurrentStatus: " & $bCurrentStatus & ", $abStop[$g_iCurAccount]: " & $abStop[$g_iCurAccount])
 	Return $abStop[$g_iCurAccount]
 EndFunc   ;==>StopAndResumeTimer
-

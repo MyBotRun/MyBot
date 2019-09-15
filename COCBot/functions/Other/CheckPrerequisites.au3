@@ -13,65 +13,45 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func CheckPrerequisites($bSilent = False)
-	Local $isAllOK = True
-	;Local $isNetFramework4Installed = isNetFramework4Installed()
+	Local $bIsAllOk = True
+
 	Local $isNetFramework4dot5Installed = isNetFramework4dot5Installed()
 	Local $isVC2010Installed = isVC2010Installed()
-	If ($isNetFramework4dot5Installed = False Or $isVC2010Installed = False) Then
-		#cs
-			If ($isNetFramework4Installed = False And Not $bSilent) Then
-			SetLog("The .Net Framework 4.0 is not installed", $COLOR_ERROR)
-			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=17718", $COLOR_ERROR)
-			EndIf
-		#ce
-		If ($isNetFramework4dot5Installed = False And Not $bSilent) Then
+	If (Not $isNetFramework4dot5Installed Or Not $isVC2010Installed) Then
+		If (Not $isNetFramework4dot5Installed And Not $bSilent) Then
 			SetLog("The .Net Framework 4.5 is not installed", $COLOR_ERROR)
 			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=30653", $COLOR_ERROR)
 		EndIf
-		If ($isVC2010Installed = False And Not $bSilent) Then
+		If (Not $isVC2010Installed And Not $bSilent) Then
 			SetLog("The VC 2010 x86 is not installed", $COLOR_ERROR)
 			SetLog("Please download here : https://www.microsoft.com/en-US/download/details.aspx?id=5555", $COLOR_ERROR)
 		EndIf
-		$isAllOK = False
+		$bIsAllOk = False
 	EndIf
-	If isEveryFileInstalled($bSilent) = False Then $isAllOK = False
-	If Not checkAutoitVersion($bSilent) Then $isAllOK = False
-	checkIsAdmin($bSilent)
+	If Not isEveryFileInstalled($bSilent) Or Not CheckAutoitVersion($bSilent) Then $bIsAllOk = False
+	CheckIsAdmin($bSilent)
 
 	If @DesktopHeight <= 768 Then
 		Opt('WinTitleMatchMode', 4)
-		Local $pos = ControlGetPos("classname=Shell_TrayWnd", "", "")
+		Local $aiPos = ControlGetPos("classname=Shell_TrayWnd", "", "")
 		If Not @error Then
-			If $pos[2] > $pos[3] And Int($pos[3]) + 732 > 768 Then
+			If $aiPos[2] > $aiPos[3] And Int($aiPos[3]) + 732 > 768 Then
 				SetLog("Display: " & @DesktopWidth & "," & @DesktopHeight, $COLOR_ERROR)
-				SetLog("Windows TaskBar: " & $pos[2] & "," & $pos[3], $COLOR_ERROR)
-				SetLog("Emulator[732] and taskbar[" & $pos[3] & "] doesn't fit on your display!", $COLOR_ERROR)
+				SetLog("Windows TaskBar: " & $aiPos[2] & "," & $aiPos[3], $COLOR_ERROR)
+				SetLog("Emulator[732] and taskbar[" & $aiPos[3] & "] doesn't fit on your display!", $COLOR_ERROR)
 				SetLog("Please set your Windows taskbar location to Right!", $COLOR_ERROR)
-				;$isAllOK = False
 			EndIf
 		EndIf
 		Opt('WinTitleMatchMode', 3)
 	EndIf
 
-	If $isAllOK = False And Not $bSilent Then
+	If Not $bIsAllOk And Not $bSilent Then
 		GUICtrlSetState($g_hBtnStart, $GUI_DISABLE)
 		$g_bRestarted = False
 	EndIf
 
-	Return $isAllOK
+	Return $bIsAllOk
 EndFunc   ;==>CheckPrerequisites
-
-Func isNetFramework4Installed()
-	Local $z = 0, $sKeyName, $success = False
-	Do
-		$z += 1
-		$sKeyName = RegEnumKey("HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP", $z)
-		If StringRegExp($sKeyName, "v4|v4.\d+") Then
-			$success = True
-		EndIf
-	Until $sKeyName = '' Or $success
-	Return $success
-EndFunc   ;==>isNetFramework4Installed
 
 Func isNetFramework4dot5Installed()
 	;https://msdn.microsoft.com/it-it/library/hh925568%28v=vs.110%29.aspx#net_b
@@ -99,7 +79,6 @@ Func isEveryFileInstalled($bSilent = False)
 			@ScriptDir & "\Images", _
 			@ScriptDir & "\imgxml", _
 			$g_sLibPath & "\helper_functions.dll", _
-			$g_sLibPath & "\ImageSearchDLL.dll", _
 			$g_sLibPath & "\MBRBot.dll", _
 			$g_sLibPath & "\MyBot.run.dll", _
 			$g_sLibPath & "\Newtonsoft.Json.dll", _
@@ -137,7 +116,7 @@ Func isEveryFileInstalled($bSilent = False)
 	If @Compiled Then ;if .exe
 		If Not StringInStr(@ScriptFullPath, "MyBot.run.exe", 1) Then ; if filename isn't MyBot.run.exe
 			If Not $bSilent Then
-			
+
 				SetLog($sText1, $COLOR_ERROR)
 				SetLog($sText5, $COLOR_ERROR)
 				SetLog($sText3, $COLOR_ERROR)
@@ -152,7 +131,7 @@ Func isEveryFileInstalled($bSilent = False)
 	Return $bResult
 EndFunc   ;==>isEveryFileInstalled
 
-Func checkAutoitVersion($bSilent = False)
+Func CheckAutoitVersion($bSilent = False)
 	If @Compiled = True Then Return 1
 	Local $requiredAutoit = "3.3.14.2"
 	Local $result = _VersionCompare(@AutoItVersion, $requiredAutoit)
@@ -168,9 +147,8 @@ Func checkAutoitVersion($bSilent = False)
 	Return 0
 EndFunc   ;==>checkAutoitVersion
 
-Func checkIsAdmin($bSilent = False)
+Func CheckIsAdmin($bSilent = False)
 	If IsAdmin() Then Return True
 	If Not $bSilent Then SetLog("My Bot running without admin privileges", $COLOR_ERROR)
 	Return False
 EndFunc   ;==>checkIsAdmin
-

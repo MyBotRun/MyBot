@@ -47,7 +47,7 @@ Func BotStart($bAutostartDelay = 0)
 	$g_bMeetCondStop = False
 	$g_bIsClientSyncError = False
 	$g_bDisableBreakCheck = False ; reset flag to check for early warning message when bot start/restart in case user stopped in middle
-	$g_sQuickTrainCheckTime = ""
+	$g_bFirstStart = True
 
 	SaveConfig()
 	readConfig()
@@ -245,7 +245,7 @@ Func BotSearchMode()
 	CheckIfArmyIsReady()
 	ClickP($aAway, 2, 0, "") ;Click Away
 	If _Sleep(100) Then Return FuncReturn()
-	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
+	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Then
 		If _Sleep(100) Then Return FuncReturn()
 		PrepareSearch()
 		If _Sleep(1000) Then Return FuncReturn()

@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: GetDPI_Ratio
 ; Description ...: Returns the current user DPI setting for display.
@@ -50,7 +49,6 @@ EndFunc   ;==>GetDPI_Ratio
 Func GUISetFont_DPI($isize, $iweight = "", $iattribute = "", $sfontname = "")
 	GUISetFont($isize / $g_iDPI_Ratio, $iweight, $iattribute, $sfontname)
 EndFunc   ;==>GUISetFont_DPI
-
 
 
 Func SetDPI()

@@ -5,35 +5,29 @@
 ; Parameters ....: $type                - Flag for type return desired.
 ; Return values .: None
 ; Author ........:
-; Modified ......: KnowJack (06-2015)
+; Modified ......: KnowJack (06/2015)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func SetSleep($type)
-	If IsKeepClicksActive() = True Then Return 0 ; fast bulk deploy
-	Local $factor0 = 10
-	Local $factor1 = 100
-	If $g_bAndroidAdbClick = True Then
+Func SetSleep($iType)
+	If IsKeepClicksActive() Then Return 0 ; fast bulk deploy
+	Local $iFactorZero = 10
+	Local $iFactorOne = 100
+
+	If $g_bAndroidAdbClick Then
 		; adjust for slow ADB clicks the delay factor
-		$factor0 = 10
-		$factor1 = 100
+		$iFactorZero = 10
+		$iFactorOne = 100
 	EndIf
-	Switch $type
+
+	Switch $iType
 		Case 0
-			If $g_abAttackStdRandomizeDelay[$g_iMatchMode] Then
-				Return Round(Random(1, 10)) * $factor0
-			Else
-				Return ($g_aiAttackStdUnitDelay[$g_iMatchMode] + 1) * $factor0
-			EndIf
+			Return Round(Random(1, 10)) * $iFactorZero
 		Case 1
-			If $g_abAttackStdRandomizeDelay[$g_iMatchMode] Then
-				Return Round(Random(1, 10)) * $factor1
-			Else
-				Return ($g_aiAttackStdWaveDelay[$g_iMatchMode] + 1) * $factor1
-			EndIf
+			Return Round(Random(1, 10)) * $iFactorOne
 	EndSwitch
 EndFunc   ;==>SetSleep
 
@@ -52,10 +46,10 @@ EndFunc   ;==>SetSleep
 ; Example .......: No
 ; ===============================================================================================================================
 Func _SleepAttack($iDelay, $iSleep = True)
-	If $g_bRunState = False Then
+	If Not $g_bRunState Then
 		ResumeAndroid()
 		Return True
 	EndIf
-	If IsKeepClicksActive() = True Then Return False
+	If IsKeepClicksActive() Then Return False
 	Return _Sleep($iDelay, $iSleep)
 EndFunc   ;==>_SleepAttack

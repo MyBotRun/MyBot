@@ -124,7 +124,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 						Case "objectpoints"
 							If $propsValues[$pv] = "0" Then
 								;there was an error inside imgloc and location is empty or error
-								DebugImageSave("imglocTHSearch_NoTHFound_", True)
+								SaveDebugImage("imglocTHSearch_NoTHFound_", True)
 								ResetTHsearch()
 								Return
 							EndIf
@@ -207,7 +207,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 			If $g_bDebugSetlog Then SetDebugLog("imgloc THSearch Calculated  (in " & Round($iFindTime / 1000, 2) & " seconds) :")
 			ExitLoop ; TH was found
 		Else
-			If $g_bDebugImageSave And $retry > 0 Then DebugImageSave("imglocTHSearch_NoTHFound_", True)
+			If $g_bDebugImageSave And $retry > 0 Then SaveDebugImage("imglocTHSearch_NoTHFound_", True)
 			If $g_bDebugSetlog Then SetDebugLog("imgloc THSearch Notfound, Retry:  " & $retry)
 		EndIf
 

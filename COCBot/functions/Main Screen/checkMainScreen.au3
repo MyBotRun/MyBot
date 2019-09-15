@@ -66,7 +66,7 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 				$bContinue = True
 			Else
 				If $i > $iCheckBeforeRestartAndroidCount Then
-					DebugImageSave("checkMainScreen_RestartCoC", False) ; why do we need to restart ?
+					SaveDebugImage("checkMainScreen_RestartCoC", False) ; why do we need to restart ?
 					RestartAndroidCoC() ; Need to try to restart CoC
 					$bContinue = True
 				EndIf
@@ -89,7 +89,7 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 			If _Sleep($DELAYCHECKMAINSCREEN1) Then Return
 		EndIf
 	WEnd
-	If $bLocated Then 
+	If $bLocated Then
 		; check that shared_prefs are pulled
 		If $g_bUpdateSharedPrefs And Not HaveSharedPrefs() Then PullSharedPrefs()
 		ZoomOut()

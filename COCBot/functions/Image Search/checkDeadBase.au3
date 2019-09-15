@@ -1,6 +1,6 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: checkDeadBase
-; Description ...: This file Includes the Variables and functions to detection of a DeadBase. Uses imagesearch to see whether a collector
+; Description ...: This file Includes the Variables and functions to detection of a DeadBase.
 ;                  is full or semi-full to indicate that it is a dead base
 ; Syntax ........: checkDeadBase() , ZombieSearch()
 ; Parameters ....: None

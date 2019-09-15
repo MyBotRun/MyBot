@@ -814,7 +814,7 @@ Func DonateTroopType(Const $iTroopIndex, $Quant = 0, Const $bDonateQueueOnly = F
 			SetLog("row: " & $donaterow, $COLOR_ERROR)
 			SetLog("pos in row: " & $donateposinrow, $COLOR_ERROR)
 			SetLog("coordinate: " & 365 + ($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
-			debugimagesave("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asTroopNames[$iTroopIndex] & "_")
+			SaveDebugImage("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asTroopNames[$iTroopIndex] & "_")
 		EndIf
 		; Use slow click when the Train system is Quicktrain
 		If $g_bQuickTrainEnable Then
@@ -938,7 +938,7 @@ Func DonateSpellType(Const $iSpellIndex, Const $bDonateQueueOnly = False, Const 
 			SetLog("row: " & $donaterow, $COLOR_ERROR)
 			SetLog("pos in row: " & $donateposinrow, $COLOR_ERROR)
 			SetLog("coordinate: " & 365 + ($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
-			debugimagesave("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asSpellNames[$iSpellIndex] & "_")
+			SaveDebugImage("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asSpellNames[$iSpellIndex] & "_")
 		EndIf
 		If Not $g_bDebugOCRdonate Then
 			Click(365 + ($Slot * 68), $g_iDonationWindowY + 100 + $YComp, $g_iDonSpellsQuantity, $DELAYDONATECC3, "#0600")
@@ -1008,7 +1008,7 @@ Func DonateSiegeType(Const $iSiegeIndex, $bDonateAll = False)
 		SetLog("row: " & $donaterow, $COLOR_ERROR)
 		SetLog("pos in row: " & $donateposinrow, $COLOR_ERROR)
 		SetLog("coordinate: " & 365 + ($Slot * 68) & "," & $g_iDonationWindowY + 100 + $YComp, $COLOR_ERROR)
-		debugimagesave("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asSiegeMachineNames[$iSiegeIndex] & "_")
+		SaveDebugImage("LiveDonateCC-r" & $donaterow & "-c" & $donateposinrow & "-" & $g_asSiegeMachineNames[$iSiegeIndex] & "_")
 	EndIf
 
 	; Use slow click when the Train system is Quicktrain

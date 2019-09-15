@@ -13,7 +13,6 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-;
 Func IsSearchAttackEnabled()
 
 	If $g_bDebugSetlog Then SetDebugLog("Begin IsSearchAttackScheduled:", $COLOR_DEBUG1)
@@ -24,10 +23,10 @@ Func IsSearchAttackEnabled()
 	Local $aNoAttackTimes[2] = [$sStartTime, $sEndTime] ; array to hold start/end time for when attacking is disabled.
 	Local $iWaitTime = 0
 
-	Local $bCloseGame = $g_bAttackPlannerCloseCoC = True Or $g_bAttackPlannerCloseAll = True Or $g_bAttackPlannerSuspendComputer = True ; flag summary for closing game from GUI values
+	Local $bCloseGame = $g_bAttackPlannerCloseCoC Or $g_bAttackPlannerCloseAll Or $g_bAttackPlannerSuspendComputer ; flag summary for closing game from GUI values
 	If $g_bDebugSetlog Then SetDebugLog("$bCloseGame:" & $bCloseGame, $COLOR_DEBUG)
 
-	If $g_bAttackPlannerDayLimit = True And _OverAttackLimit() Then ; check daily attack limit before checking schedule
+	If $g_bAttackPlannerDayLimit And _OverAttackLimit() Then ; check daily attack limit before checking schedule
 		SetLog("Daily attack limit reached, skip attacks till new day starts!", $COLOR_INFO)
 		If _Sleep($DELAYRESPOND) Then Return True
 		If $bCloseGame Then
@@ -40,14 +39,14 @@ Func IsSearchAttackEnabled()
 		EndIf
 	EndIf
 
-	If $g_bAttackPlannerRandomEnable = True Then ; random attack start/stop selected
+	If $g_bAttackPlannerRandomEnable Then ; random attack start/stop selected
 		$aNoAttackTimes = _getDailyRandomStartEnd($g_iAttackPlannerRandomTime) ; determine hours to start/end attack today
 		If @error Then ; log extended error message and return false to keep attacking if something strange happens
 			SetLog(@extended, $COLOR_ERROR)
 			Return True
 		EndIf
 		If _IsTimeInRange($aNoAttackTimes[0], $aNoAttackTimes[1]) Then ; returns true if time now is between start/end time
-			SetLog("Attack schedule random skip time found....", $COLOR_INFO)
+			SetLog("Attack schedule random skip time found", $COLOR_INFO)
 			If _Sleep($DELAYRESPOND) Then Return True
 			If $bCloseGame Then
 				$iWaitTime = _DateDiff("s", _NowCalc(), $aNoAttackTimes[1]) ; find time to stop attacking in seconds
@@ -66,25 +65,25 @@ Func IsSearchAttackEnabled()
 			Return True
 		EndIf
 	Else ; if not random stop attack time, use attack planner times set in GUI
-		If IsPlannedTimeNow() = False Then
-			SetLog("Attack schedule planned skip time found...", $COLOR_INFO)
+		If Not IsPlannedTimeNow() Then
+			SetLog("Attack schedule planned skip time found", $COLOR_INFO)
 			If _Sleep($DELAYRESPOND) Then Return True
 			If $bCloseGame Then
 				; determine how long to close CoC or emulator if selected
-				If $g_abPlannedAttackWeekDays[@WDAY - 1] = False Then
+				If Not $g_abPlannedAttackWeekDays[@WDAY - 1] Then
 					$iWaitTime = _getTimeRemainTimeToday() ; get number of seconds remaining till Midnight today
 					For $i = @WDAY To 6
-						If $g_abPlannedAttackWeekDays[$i] = False Then $iWaitTime += 86400 ; add 1 day of seconds to wait time
-						If $g_abPlannedAttackWeekDays[$i] = True Then ExitLoop ; stop adding days when find attack planner enabled
+						If Not $g_abPlannedAttackWeekDays[$i] Then $iWaitTime += 86400 ; add 1 day of seconds to wait time
+						If $g_abPlannedAttackWeekDays[$i] Then ExitLoop ; stop adding days when find attack planner enabled
 						If $g_bDebugSetlog Then SetDebugLog("Subtotal wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
 					Next
 				EndIf
 				If $iWaitTime = 0 Then ; if days are not set then compute wait time from hours
-					If $g_abPlannedAttackWeekDays[@WDAY - 1] = True And $g_abPlannedattackHours[@HOUR] = False Then
+					If $g_abPlannedAttackWeekDays[@WDAY - 1] And $g_abPlannedattackHours[@HOUR] = False Then
 						$iWaitTime += (59 - @MIN) * 60 ; compute seconds left this hour
 						For $i = @HOUR + 1 To 23
-							If $g_abPlannedattackHours[$i] = False Then $iWaitTime += 3600 ; add 1 hour of seconds to wait time
-							If $g_abPlannedattackHours[$i] = True Then ExitLoop ; stop adding hours when find attack planner enabled
+							If Not $g_abPlannedattackHours[$i] Then $iWaitTime += 3600 ; add 1 hour of seconds to wait time
+							If $g_abPlannedattackHours[$i] Then ExitLoop ; stop adding hours when find attack planner enabled
 							If $g_bDebugSetlog Then SetDebugLog("Subtotal wait time= " & $iWaitTime & " Seconds", $COLOR_DEBUG)
 						Next
 					EndIf

@@ -50,7 +50,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 
 		If UBound($aAttackBarResult) = 0 Then
 			SetLog("Error in AttackBarCheck(): Search did not return any results!", $COLOR_ERROR)
-			DebugImageSave("ErrorAttackBarCheck", False, Default, Default, "#1")
+			SaveDebugImage("ErrorAttackBarCheck", False, Default, "#1")
 			Return ""
 		EndIf
 
@@ -159,7 +159,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 	Next
 
 	; Drag left & checking extended troops from Slot11+ ONLY if not a smart attack
-	If ($pMatchMode <= $LB And $bCheckSlot12 And Not $bDoubleRow And UBound($aAttackBar) > 1 And $g_aiAttackAlgorithm[$pMatchMode] <> 3) Or ($bDebug And $bCheckSlot12) Then
+	If ($pMatchMode <= $LB And $bCheckSlot12 And Not $bDoubleRow And UBound($aAttackBar) > 1 And $g_aiAttackAlgorithm[$pMatchMode] <> 2) Or ($bDebug And $bCheckSlot12) Then
 		DragAttackBar()
 		Local $aExtendedArray = ExtendedAttackBarCheck($aAttackBar, $bRemaining, $sSearchDiamond)
 		_ArrayAdd($aFinalAttackBar, $aExtendedArray)
@@ -198,14 +198,14 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 
 		If UBound($aAttackBarResult) = 0 Then
 			SetLog("Error in AttackBarCheck(): Search did not return any results!", $COLOR_ERROR)
-			DebugImageSave("ErrorAttackBarCheck", False, Default, Default, "#2")
+			SaveDebugImage("ErrorAttackBarCheck", False, Default, "#2")
 			Return ""
 		EndIf
 
 		;Add found Stuff into our Arrays
 		For $i = 0 To UBound($aAttackBarResult, 1) - 1
 			$aTempArray = $aAttackBarResult[$i]
-			$aTempMultiCoords = decodeMultipleCoords($aTempArray[1], 60, 60, -1)
+			$aTempMultiCoords = decodeMultipleCoords($aTempArray[1], 40, 40, -1)
 			For $j = 0 To UBound($aTempMultiCoords, 1) - 1
 				$aTempCoords = $aTempMultiCoords[$j]
 				If UBound($aTempCoords) < 2 Then ContinueLoop

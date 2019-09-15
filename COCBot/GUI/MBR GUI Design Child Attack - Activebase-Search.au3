@@ -110,38 +110,31 @@ Func CreateAttackSearchActiveBaseSearch()
 	$y += 20
 	$x += 20
 		$g_hChkABKingWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
-			Local $sTxtKingWait = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtHeroesWait_Info_01", -1)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_01", -1) & @CRLF & _
 					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_02", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetOnEvent(-1, "chkABKingWait")
 		$g_hPicABKingWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicABKingSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingKing, $x - 18, $y + 4, 48, 48)
-			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$x += 55
 		$g_hChkABQueenWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_01", -1) & @CRLF & _
 					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_02", -1)
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetOnEvent(-1, "chkABQueenWait")
 		$g_hPicABQueenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicABQueenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingQueen, $x - 18, $y + 4, 48, 48)
-			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$x += 55
 		$g_hChkABWardenWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_01", -1) & @CRLF & $sTxtKingWait & @CRLF & _
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_01", -1) & @CRLF & _
 					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_02", -1)
-			GUICtrlSetOnEvent(-1, "chkABWardenWait")
 		$g_hPicABWardenWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicABWardenSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingWarden, $x - 18, $y + 4, 48, 48)
-			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$y += 70

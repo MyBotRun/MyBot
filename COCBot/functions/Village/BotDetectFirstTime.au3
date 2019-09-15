@@ -44,17 +44,19 @@ Func BotDetectFirstTime()
 		Local $aTownHallLevel = GetTownHallLevel(True) ; Get the Users TH level
 		If IsArray($aTownHallLevel) Then $g_iTownHallLevel = 0 ; Check for error finding TH level, and reset to zero if yes
 	EndIf
+
 	If Number($g_iTownHallLevel) > 1 And Number($g_iTownHallLevel) < 6 Then
 		SetLog("Warning: TownHall level below 6 NOT RECOMMENDED!", $COLOR_ERROR)
 		SetLog("Proceed with caution as errors may occur.", $COLOR_ERROR)
 	EndIf
+
 	If $g_iTownHallLevel < 2 Or ($g_aiTownHallPos[1] = "" Or $g_aiTownHallPos[1] = -1) Then LocateTownHall(False, False)
 
 	If _Sleep($DELAYBOTDETECT1) Then Return
 	CheckImageType()
 	If _Sleep($DELAYBOTDETECT1) Then Return
 
-	If GUICtrlRead($g_hChkScreenshotHideName) = $GUI_CHECKED Or $g_bScreenshotHideName Then
+	If $g_bScreenshotHideName Then
 		If _Sleep($DELAYBOTDETECT3) Then Return
 		If $g_aiClanCastlePos[0] = -1 Then
 			LocateClanCastle(False)
@@ -68,28 +70,29 @@ Func BotDetectFirstTime()
 		SaveConfig()
 	EndIf
 
-
-	If (GUICtrlRead($g_hCmbBoostBarbarianKing) > 0) Or $g_bUpgradeKingEnable Then
-		If _Sleep($DELAYBOTDETECT3) Then Return
-		If $g_aiKingAltarPos[0] = -1 Then
-			LocateKingAltar(False)
-			SaveConfig()
+	If Number($g_iTownHallLevel) >= 7 Then
+		If $g_iCmbBoostBarbarianKing > 0 Or $g_bUpgradeKingEnable Then
+			If _Sleep($DELAYBOTDETECT3) Then Return
+			If $g_aiKingAltarPos[0] = -1 Then
+				LocateKingAltar(False)
+				SaveConfig()
+			EndIf
 		EndIf
-	EndIf
 
-	If (GUICtrlRead($g_hCmbBoostArcherQueen) > 0) Or $g_bUpgradeQueenEnable Then
-		If _Sleep($DELAYBOTDETECT3) Then Return
-		If $g_aiQueenAltarPos[0] = -1 Then
-			LocateQueenAltar(False)
-			SaveConfig()
+		If Number($g_iTownHallLevel) >= 9 And ($g_iCmbBoostArcherQueen > 0 Or $g_bUpgradeQueenEnable) Then
+			If _Sleep($DELAYBOTDETECT3) Then Return
+			If $g_aiQueenAltarPos[0] = -1 Then
+				LocateQueenAltar(False)
+				SaveConfig()
+			EndIf
 		EndIf
-	EndIf
 
-	If Number($g_iTownHallLevel) > 10 And ((GUICtrlRead($g_hCmbBoostWarden) > 0) Or $g_bUpgradeWardenEnable) Then
-		If _Sleep($DELAYBOTDETECT3) Then Return
-		If $g_aiWardenAltarPos[0] = -1 Then
-			LocateWardenAltar(False)
-			SaveConfig()
+		If Number($g_iTownHallLevel) >= 11 And ($g_iCmbBoostWarden > 0 Or $g_bUpgradeWardenEnable) Then
+			If _Sleep($DELAYBOTDETECT3) Then Return
+			If $g_aiWardenAltarPos[0] = -1 Then
+				LocateWardenAltar(False)
+				SaveConfig()
+			EndIf
 		EndIf
 	EndIf
 

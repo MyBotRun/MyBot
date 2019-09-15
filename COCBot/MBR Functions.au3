@@ -32,8 +32,6 @@
 #include "functions\Attack\GetAttackBar.au3"
 
 #include "functions\Attack\Attack Algorithms\algorithm_AllTroops.au3"
-#include "functions\Attack\Attack Algorithms\algorithmTH.au3"
-#include "functions\Attack\Attack Algorithms\THAttackTypes.au3"
 #include "functions\Attack\Attack Algorithms\AttackFromCSV.au3"
 #include "functions\Attack\Attack Algorithms\SmartFarm.au3"
 
@@ -52,23 +50,6 @@
 #include "functions\Attack\AttackCSV\CleanRedArea.au3"
 #include "functions\Attack\AttackCSV\ChkAttackCSVConfig.au3"
 #include "functions\Attack\AttackCSV\ParseAttackCSV_Settings_variables.au3"
-
-#include "functions\Attack\MilkingAttack\Algorithm_MilkingAttack.au3"
-#include "functions\Attack\MilkingAttack\AmountOfResourcesInStructure.au3"
-#include "functions\Attack\MilkingAttack\DetectAmountOfResourceInStructure.au3"
-#include "functions\Attack\MilkingAttack\MilkFarmObjectivesSTR_INSERT.au3"
-#include "functions\Attack\MilkingAttack\LoadAmountOfResourcesImages.au3"
-#include "functions\Attack\MilkingAttack\MilkFarmObjectivesDebugImage.au3"
-#include "functions\Attack\MilkingAttack\MilkingAttackStructure.au3"
-#include "functions\Attack\MilkingAttack\MilkingAttackStructureDestroyed.au3"
-#include "functions\Attack\MilkingAttack\_RandomUnique.au3"
-#include "functions\Attack\MilkingAttack\MilkingDetectElixirExtractors.au3"
-#include "functions\Attack\MilkingAttack\MilkingDetectMineExtractors.au3"
-#include "functions\Attack\MilkingAttack\MilkingDetectDarkExtractors.au3"
-#include "functions\Attack\MilkingAttack\MilkingDetectRedArea.au3"
-#include "functions\Attack\MilkingAttack\MilkingDebug.au3"
-#include "functions\Attack\MilkingAttack\MilkingRedAreaPointsNearStructure.au3"
-#include "functions\Attack\MilkingAttack\MilkingCheckMilkingBase.au3"
 
 #include "functions\Attack\RedArea\_FindPixelCloser.au3"
 #include "functions\Attack\RedArea\_GetOffsetTroopFurther.au3"
@@ -136,7 +117,6 @@
 #include "functions\CreateArmy\getArmyCCSiegeMachines\getArmyCCSiegeMachines.au3"
 #EndRegion CreateArmy / Train
 
-#include "functions\Image Search\ImageSearch.au3"
 #include "functions\Image Search\checkDeadBase.au3"
 #include "functions\Image Search\CheckTombs.au3"
 #include "functions\Image Search\imglocAuxiliary.au3"
@@ -187,7 +167,7 @@
 #include "functions\Other\ClickOkay.au3"
 #include "functions\Other\ClickRemove.au3"
 #include "functions\Other\CreateLogFile.au3"
-#include "functions\Other\DebugImageSave.au3"
+#include "functions\Other\SaveDebugImage.au3"
 #include "functions\Other\ExtendedErrorInfo.au3"
 #include "functions\Other\FindPos.au3"
 #include "functions\Other\StringSize.au3"
@@ -205,7 +185,6 @@
 #include "functions\Other\CloseRunningBot.au3"
 #include "functions\Other\RestartBot.au3"
 #include "functions\Other\WindowSystemMenu.au3"
-#include "functions\Other\image_get_info.au3"
 #include "functions\Other\SetWakeUpTime.au3"
 #include "functions\Other\ScriptingDictionaryTools.au3"
 
@@ -238,7 +217,6 @@
 #include "functions\Search\PrepareSearch.au3"
 #include "functions\Search\VillageSearch.au3"
 #include "functions\Search\CheckZoomOut.au3"
-#include "functions\Search\SearchTownHallloc.au3"
 #include "functions\Search\FindTownHall.au3"
 #include "functions\Search\IsSearchModeActive.au3"
 #include "functions\Search\IsSearchAttackEnabled.au3"
@@ -290,7 +268,7 @@
 #include "functions\Village\SwitchAccountVariablesReload.au3"
 #include "functions\Village\Clan Games\ClanGames.au3"
 #include "functions\Village\FreeMagicItems.au3"
-#include "functions\Village\Personal Challenges\OpenCloseChallenges.au3"
+#include "functions\Village\Personal Challenges\DailyChallenges.au3"
 
 #include "functions\Village\BuilderBase\Collect.au3"
 #include "functions\Village\BuilderBase\StartClockTowerBoost.au3"

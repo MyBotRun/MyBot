@@ -91,8 +91,6 @@ Func CreateBottomPanel()
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_hBtnAttackNowLB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowLB", "LB Attack!"), $x + 190, $y + 23, 60, -1)
 			GUICtrlSetState(-1, $GUI_HIDE)
-		$g_hBtnAttackNowTS = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowTS", "TH Snipe!"), $x + 190, $y + 50, 60, -1)
-			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_hLblDonate = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Bottom", "LblDonate", "Support the Development"), $x + 293, $y + 80, 142, 24, $SS_RIGHT)
 			GUICtrlSetCursor(-1, 0) ; https://www.autoitscript.com/autoit3/docs/functions/MouseGetCursor.htm
 			GUICtrlSetFont(-1, 8.5, $FW_BOLD) ;, $GUI_FONTITALIC + $GUI_FONTUNDER)
@@ -101,18 +99,6 @@ Func CreateBottomPanel()
 
 	If $g_bAndroidAdbScreencap Then chkBackground() ; update background mode GUI
 
-	;$g_hPicTwoArrowShield = _GUICtrlCreateIcon($g_sLibIconPath, $eIcn2Arrow, $x + 190, $y + 10, 48, 48)
-;	$g_hLblVersion = GUICtrlCreateLabel($g_sBotVersion, 200, $y + 60, 60, 17, $SS_CENTER)
-;		GUICtrlSetColor(-1, $COLOR_MEDGRAY)
-
-;	$g_hPicArrowLeft = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnArrowLeft, $x + 249, $y + 30, 16, 16)
-;		$sTxtTip = GetTranslatedFileIni("MBR GUI Design Bottom", "GrpVillage_Info_01", "Switch between village info and stats")
-;		_GUICtrlSetTip(-1, $sTxtTip)
-;	$g_hPicArrowRight = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnArrowRight, $x + 247 + 198, $y + 30, 16, 16)
-;		_GUICtrlSetTip(-1, $sTxtTip)
-
-;	$g_hLblVersion = GUICtrlCreateLabel($g_sBotVersion, 195, $y + 72, 35, 17, $SS_LEFT)
-;	   GUICtrlSetColor(-1, $COLOR_MEDGRAY)
     $g_hPicArrowLeft = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnArrowLeft, $x + 269, $y + 30, 16, 16)
 	  $sTxtTip = GetTranslatedFileIni("MBR GUI Design Bottom", "GrpVillage_Info_01", "Switch between village info and stats")
 	  _GUICtrlSetTip(-1, $sTxtTip)

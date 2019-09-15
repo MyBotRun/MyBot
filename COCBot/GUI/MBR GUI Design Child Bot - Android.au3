@@ -32,7 +32,7 @@ Func CreateBotAndroid()
 	$x = 280
 	$y = 45
 	$w = 185
-	GUICtrlCreateGroup(GetTranslatedFileIni("Android", "Android_Options", "Additional Click Delay"), $x - 20, $y - 20, $w, $h)
+	GUICtrlCreateGroup(GetTranslatedFileIni("Android", "Android_Click_Delay", "Additional Click Delay"), $x - 20, $y - 20, $w, $h)
 	$sTxtTip = GetTranslatedFileIni("Android", "LblAdditionalClickDelay_Info", "Increase the delay if your PC is slow or to create human like click speed")
 	$g_hLblAdditionalClickDelay = GUICtrlCreateLabel($g_iAndroidControlClickAdditionalDelay & " ms", $x + $w - 65, $y + 5, 37, 30, $SS_RIGHT)
 	_GUICtrlSetTip(-1, $sTxtTip)

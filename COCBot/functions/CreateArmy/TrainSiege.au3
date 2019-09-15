@@ -23,11 +23,8 @@ Func TrainSiege()
 
 	If $g_bDebugSetlogTrain Then SetLog("-- TrainSiege --", $COLOR_DEBUG)
 
-	If $g_bDoubleTrain Then
-		SetDebugLog(" == Double Train Siege == ", $COLOR_ACTION)
-		DoubleTrainSiege()
-		Return
-	EndIf
+	If Not OpenSiegeMachinesTab(True, "TrainSiege()") Then Return
+	If _Sleep(500) Then Return
 
 	Local $aCheckIsOccupied[4] = [822, 206, 0xE00D0D, 10]
 	Local $aCheckIsFilled[4] = [802, 186, 0xD7AFA9, 10]
@@ -35,87 +32,71 @@ Func TrainSiege()
 	Local $aCheckIsAvailableSiege1[4] = [229, 556, 0x47717E, 10]
 	Local $aCheckIsAvailableSiege2[4] = [400, 556, 0x47717E, 10]
 
-	Local $ToMake[3], $g_aiQueuedSiege[3]
+	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0]
+	Local $aiTotalSiegeMachine = $g_aiCurrentSiegeMachines
 
-	; $ToMake[$eSiegeWallWrecker] = $g_aiArmyCompSiegeMachine[$eSiegeWallWrecker] - ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] + $g_aiCurrentCCSiegeMachines[$eSiegeWallWrecker] + $g_aiQueuedSiege[$eSiegeWallWrecker])
-	; $ToMake[$eSiegeBattleBlimp] = $g_aiArmyCompSiegeMachine[$eSiegeBattleBlimp] - ($g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] + $g_aiCurrentCCSiegeMachines[$eSiegeBattleBlimp]+ $g_aiQueuedSiege[$eSiegeBattleBlimp])
-	; If $g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeWallWrecker] ; Donate WallWrecker
-	; If $g_abChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleBlimp] ; Donate BattleBlimp
+	; check queueing siege
+	If _CheckPixel($aCheckIsFilled, True, Default, "Siege is Filled") Or _CheckPixel($aCheckIsOccupied, True, Default, "Siege is Queued") Then
+		Local $aSearchResult = SearchArmy("trainwindow-SiegesInQueue-bundle", 410, 205, 840, 235, "Queue")
+		If $aSearchResult[0][0] <> "" Then
+			For $i = 0 To UBound($aSearchResult) - 1
+				Local $iSiegeIndex = TroopIndexLookup($aSearchResult[$i][0]) - $eWallW
+				$aiQueueSiegeMachine[$iSiegeIndex] += $aSearchResult[$i][3]
+				$aiTotalSiegeMachine[$iSiegeIndex] += $aSearchResult[$i][3]
+				Setlog("- " & $g_asSiegeMachineNames[$iSiegeIndex] & " x" & $aSearchResult[$i][3] & " Queued.")
+			Next
+		EndIf
+	EndIf
 
-    Local $TextToUse = ["Clan Castle", $g_asSiegeMachineNames[0], $g_asSiegeMachineNames[1], $g_asSiegeMachineNames[2], "Any siege", "Default"]
-
-	If $g_bDebugSetlogTrain Then
+	If $g_bDebugSetlogTrain Or $g_bDebugSetLog Then
 		For $iSiegeIndex = $eSiegeWallWrecker To $eSiegeMachineCount - 1
-			SetDebugLog("-- " & $g_asSiegeMachineNames[$iSiegeIndex] & " --")
-			SetDebugLog(@TAB & "To Build: " & $g_aiArmyCompSiegeMachine[$iSiegeIndex])
-			SetDebugLog(@TAB & "Current Army: " & $g_aiCurrentSiegeMachines[$iSiegeIndex])
-			SetDebugLog(@TAB & "Current CC: " & $g_aiCurrentCCSiegeMachines[$iSiegeIndex])
-            If $g_abAttackTypeEnable[$DB] Then SetDebugLog(@TAB & "To Use at " & $g_asModeText[$DB] & " " & $TextToUse[$g_aiAttackUseSiege[$DB]])
-            If $g_abAttackTypeEnable[$LB] Then SetDebugLog(@TAB & "To Use at " & $g_asModeText[$LB] & " " & $TextToUse[$g_aiAttackUseSiege[$LB]])
+			SetLog("-- " & $g_asSiegeMachineNames[$iSiegeIndex] & " --", $COLOR_DEBUG)
+			SetLog(@TAB & "To Build: " & $g_aiArmyCompSiegeMachine[$iSiegeIndex], $COLOR_DEBUG)
+			SetLog(@TAB & "Current Army: " & $g_aiCurrentSiegeMachines[$iSiegeIndex], $COLOR_DEBUG)
+			SetLog(@TAB & "In queue: " & $aiQueueSiegeMachine[$iSiegeIndex], $COLOR_DEBUG)
 		Next
 	EndIf
 
-	If $g_bIsFullArmywithHeroesAndSpells And ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then Return
-
 	; Refill
-	If $g_bIsFullArmywithHeroesAndSpells And Not _CheckPixel($aCheckIsFilled, True, Default, "Siege is Filled") And Not _CheckPixel($aCheckIsOccupied, True, Default, "Siege is Queued") Then
-		For $iSiegeIndex = $eSiegeWallWrecker To $eSiegeMachineCount - 1
-			If $g_aiArmyCompSiegeMachine[$iSiegeIndex] = 0 Then ContinueLoop
-			; Check if is available to make
-			Local $checkPixel
-            If $iSiegeIndex = $eSiegeWallWrecker Then $checkPixel = $aCheckIsAvailableSiege
-            If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
-            If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
-			If _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeIndex]) Then
-				; ::: Just making the Siege to use :::
-				If ($g_aiAttackUseSiege[$DB] = $iSiegeIndex + 1 Or $g_aiAttackUseSiege[$LB] = $iSiegeIndex + 1) And $g_aiCurrentCCSiegeMachines[$iSiegeIndex] = 0 Then
-					PureClick($checkPixel[0], $checkPixel[1], $g_aiArmyCompSiegeMachine[$iSiegeIndex], $g_iTrainClickDelay)
-					Local $sSiegeName = $g_aiArmyCompSiegeMachine[$iSiegeIndex] >= 2 ? $g_asSiegeMachineNames[$iSiegeIndex] & "s" : $g_asSiegeMachineNames[$iSiegeIndex] & ""
-					Setlog("Build " & $g_aiArmyCompSiegeMachine[$iSiegeIndex] & " " & $sSiegeName, $COLOR_SUCCESS)
-				EndIf
-			EndIf
-			If Not $g_bRunState Then Return
-		Next
-	Else
-		If _CheckPixel($aCheckIsFilled, True, Default, "Siege is Filled") Or _CheckPixel($aCheckIsOccupied, True, Default, "Siege is Queued") Then
-			Local $aSearchResult = SearchArmy("trainwindow-SiegesInQueue-bundle", 520, 210, 840, 220)
-
-			If $aSearchResult[0][0] <> "" Then
-				For $i = 0 To UBound($aSearchResult) - 1
-					Local $tempSiege = TroopIndexLookup($aSearchResult[$i][0])
-					Setlog("- " & GetTroopName($tempSiege) & " Queued.", $COLOR_INFO)
-				Next
-			EndIf
-
-			; OCR to get remain time - coc-siegeremain
-			Local $sResultSpells = getRemainBuildTimer(780, 244, True) ; Get time via OCR.
-			If $sResultSpells <> "" Then
-				$g_aiTimeTrain[3] = ConvertOCRTime("Siege", $sResultSpells, False) ; Update global array
-				SetLog("Remaining Siege build time: " & StringFormat("%.2f", $g_aiTimeTrain[3]), $COLOR_INFO)
-			EndIf
-			Return
+	For $iSiegeIndex = $eSiegeWallWrecker To $eSiegeMachineCount - 1
+		Local $HowMany = $g_aiArmyCompSiegeMachine[$iSiegeIndex] - $g_aiCurrentSiegeMachines[$iSiegeIndex] - $aiQueueSiegeMachine[$iSiegeIndex]
+		Local $checkPixel
+		If $iSiegeIndex = $eSiegeWallWrecker Then $checkPixel = $aCheckIsAvailableSiege
+		If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
+		If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
+		If $HowMany > 0 And _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeIndex]) Then
+			PureClick($checkPixel[0], $checkPixel[1], $HowMany, $g_iTrainClickDelay)
+			Local $sSiegeName = $HowMany >= 2 ? $g_asSiegeMachineNames[$iSiegeIndex] & "s" : $g_asSiegeMachineNames[$iSiegeIndex] & ""
+			Setlog("Build " & $HowMany & " " & $sSiegeName, $COLOR_SUCCESS)
+			$aiTotalSiegeMachine[$iSiegeIndex] += $HowMany
+			If _Sleep(250) Then Return
 		EndIf
-		If Not OpenArmyTab(False, "TrainSiege()") Then Return
-		If _sleep(500) Then Return
-		getArmySiegeMachines(False, False, False, False) ; Last parameter is to check the Army Window
-		If _sleep(500) Then Return
-		If Not OpenSiegeMachinesTab(False, "TrainSiege()") Then Return
-		If _sleep(500) Then Return
+		If Not $g_bRunState Then Return
+	Next
+
+	; build 2nd army
+	If $g_bDoubleTrain And $g_iTotalTrainSpaceSiege <= 3 Then
 		For $iSiegeIndex = $eSiegeWallWrecker To $eSiegeMachineCount - 1
-			If $g_aiArmyCompSiegeMachine[$iSiegeIndex] = 0 Then ContinueLoop
-			If $g_aiCurrentSiegeMachines[$iSiegeIndex] < $g_aiArmyCompSiegeMachine[$iSiegeIndex] Then
-				Local $HowMany = $g_aiArmyCompSiegeMachine[$iSiegeIndex] - $g_aiCurrentSiegeMachines[$iSiegeIndex]
-				Local $checkPixel
-                If $iSiegeIndex = $eSiegeWallWrecker Then $checkPixel = $aCheckIsAvailableSiege
-                If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
-                If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
-				If _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeIndex]) Then
-					PureClick($checkPixel[0], $checkPixel[1], $HowMany, $g_iTrainClickDelay)
-					Local $sSiegeName = $HowMany >= 2 ? $g_asSiegeMachineNames[$iSiegeIndex] & "s" : $g_asSiegeMachineNames[$iSiegeIndex] & ""
-					Setlog("Build " & $HowMany & " " & $sSiegeName, $COLOR_SUCCESS)
-				EndIf
+			Local $HowMany = $g_aiArmyCompSiegeMachine[$iSiegeIndex] * 2 - $aiTotalSiegeMachine[$iSiegeIndex]
+			Local $checkPixel
+			If $iSiegeIndex = $eSiegeWallWrecker Then $checkPixel = $aCheckIsAvailableSiege
+			If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
+			If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
+			If $HowMany > 0 And _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeIndex]) Then
+				PureClick($checkPixel[0], $checkPixel[1], $HowMany, $g_iTrainClickDelay)
+				Local $sSiegeName = $HowMany >= 2 ? $g_asSiegeMachineNames[$iSiegeIndex] & "s" : $g_asSiegeMachineNames[$iSiegeIndex] & ""
+				Setlog("Build " & $HowMany & " " & $sSiegeName, $COLOR_SUCCESS)
+				If _Sleep(250) Then Return
 			EndIf
 			If Not $g_bRunState Then Return
 		Next
+	EndIf
+	If _Sleep(500) Then Return
+
+	; OCR to get remain time - coc-siegeremain
+	Local $sSiegeTime = getRemainBuildTimer(780, 244) ; Get time via OCR.
+	If $sSiegeTime <> "" Then
+		$g_aiTimeTrain[3] = ConvertOCRTime("Siege", $sSiegeTime, False) ; Update global array
+		SetLog("Remaining Siege build time: " & StringFormat("%.2f", $g_aiTimeTrain[3]), $COLOR_INFO)
 	EndIf
 EndFunc   ;==>TrainSiege

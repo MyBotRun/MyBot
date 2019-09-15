@@ -17,7 +17,7 @@
 
 Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 
-	If $bStopRecursion = True Then $g_bDisableBreakCheck = True ; Set flag to stop checking for attackdisable messages, stop recursion
+	If $bStopRecursion Then $g_bDisableBreakCheck = True ; Set flag to stop checking for attackdisable messages, stop recursion
 
 	Switch $sReturnHome
 		Case "cloud" ; PB found while in clouds searching for base, must press return home and wait for main base
@@ -38,26 +38,26 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 
 	If IsMainPage() Then ; check for main page
 
-		If $g_bDebugSetlog Then SetDebugLog("CheckBaseQuick now...", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("CheckBaseQuick now", $COLOR_DEBUG)
 
 		RequestCC() ; fill CC
 		If _Sleep($DELAYRUNBOT1) Then Return
 		checkMainScreen(False) ; required here due to many possible exits
-		If $g_bRestart = True Then
-			If $bStopRecursion = True Then $g_bDisableBreakCheck = False
+		If $g_bRestart Then
+			If $bStopRecursion Then $g_bDisableBreakCheck = False
 			Return
 		EndIf
 
 		DonateCC() ; donate troops
 		If _Sleep($DELAYRUNBOT1) Then Return
 		checkMainScreen(False) ; required here due to many possible function exits
-		If $g_bRestart = True Then
-			If $bStopRecursion = True Then $g_bDisableBreakCheck = False
+		If $g_bRestart Then
+			If $bStopRecursion Then $g_bDisableBreakCheck = False
 			Return
 		EndIf
 
 		CheckOverviewFullArmy(True) ; Check if army needs to be trained due donations
-		If Not ($g_bFullArmy) And $g_bTrainEnabled = True Then
+		If Not ($g_bFullArmy) And $g_bTrainEnabled Then
 			If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
 				; Train()
 				TrainSystem()
@@ -71,7 +71,7 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 				If $g_iActualTrainSkip >= $g_iMaxTrainSkip Then
 					$g_iActualTrainSkip = 0
 				EndIf
-				If $bStopRecursion = True Then $g_bDisableBreakCheck = False
+				If $bStopRecursion Then $g_bDisableBreakCheck = False
 				Return
 			EndIf
 		EndIf
@@ -83,6 +83,6 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 		If $g_bDebugSetlog Then SetDebugLog("Not on main page, CheckBaseQuick skipped", $COLOR_WARNING)
 	EndIf
 
-	If $bStopRecursion = True Then $g_bDisableBreakCheck = False ; reset flag to stop checking for attackdisable messages, stop recursion
+	If $bStopRecursion Then $g_bDisableBreakCheck = False ; reset flag to stop checking for attackdisable messages, stop recursion
 
 EndFunc   ;==>CheckBaseQuick

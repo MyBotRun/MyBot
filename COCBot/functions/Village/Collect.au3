@@ -73,6 +73,8 @@ Func Collect($bCheckTreasury = True)
 EndFunc   ;==>Collect
 
 Func CollectLootCart()
+	If Not $g_abNotNeedAllTime[0] Then Return
+
 	SetLog("Searching for a Loot Cart", $COLOR_INFO)
 
 	Local $aLootCart = decodeSingleCoord(findImage("LootCart", $g_sImgCollectLootCart, "ECD", 1, True))
@@ -98,7 +100,16 @@ Func CollectLootCart()
 				If StringInStr($sInfo[1], "Loot") = 0 Then
 					If $g_bDebugSetlog Then SetDebugLog("Bad Loot Cart location", $COLOR_ACTION)
 				Else
-					If IsMainPage() Then Click($aLootCartBtn[0], $aLootCartBtn[1], 1, 0, "#0331") ;Click loot cart button
+					If IsMainPage() Then
+						Local $aiCollectButton = findButton("CollectLootCart", Default, 1, True)
+						If IsArray($aiCollectButton) And UBound($aiCollectButton) = 2 Then
+							ClickP($aiCollectButton)
+						Else
+							SetLog("Cannot find Collect Button", $COLOR_ERROR)
+							Return False
+						EndIf
+
+					EndIf
 				EndIf
 			EndIf
 		Else
@@ -107,4 +118,6 @@ Func CollectLootCart()
 	Else
 		SetLog("No Loot Cart found on your Village", $COLOR_SUCCESS)
 	EndIf
+
+	$g_abNotNeedAllTime[0] = False
 EndFunc   ;==>CollectLootCart

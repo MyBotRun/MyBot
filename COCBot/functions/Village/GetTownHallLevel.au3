@@ -28,7 +28,7 @@ Func GetTownHallLevel($bFirstTime = False)
 		If _Sleep($DELAYGETTHLEVEL2) Then Return
 	EndIf
 
-	If $g_bDebugImageSave Then DebugImageSave("GetTHLevelView")
+	If $g_bDebugImageSave Then SaveDebugImage("GetTHLevelView")
 
 	$g_iTownHallLevel = 0 ; Reset Townhall level
 	$aTHInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY)

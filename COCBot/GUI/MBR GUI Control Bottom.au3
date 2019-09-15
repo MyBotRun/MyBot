@@ -42,7 +42,6 @@ Func Initiate()
 			SetLogCentered(" Warning Debug Mode Enabled! ", "-", $COLOR_ERROR)
 		EndIf
 
-		$g_bFirstStart = True
 		$g_bInitiateSwitchAcc = True
 		$g_sLabUpgradeTime = ""
 		For $i = 0 To $eLootCount - 1
@@ -154,12 +153,6 @@ Func UpdateChkBackground()
 	EndIf
 EndFunc   ;==>UpdateChkBackground
 
-Func IsStopped()
-	If $g_bRunState Then Return False
-	If $g_bRestart Then Return True
-	Return False
-EndFunc   ;==>IsStopped
-
 Func btnStart()
 	; decide when to run
 	EnableControls($g_hFrmBotBottom, False, $g_aFrmBotBottomCtrlState)
@@ -213,13 +206,6 @@ Func btnAttackNowLB()
 		$g_iMatchMode = $LB
 	EndIf
 EndFunc   ;==>btnAttackNowLB
-
-Func btnAttackNowTS()
-	If $g_bRunState Then
-		$g_bBtnAttackNowPressed = True
-		$g_iMatchMode = $TS
-	EndIf
-EndFunc   ;==>btnAttackNowTS
 
 ;~ Hide Android Window again without overwriting $botPos[0] and [1]
 Func reHide()

@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: ClickRemove
 ; Description ...: checks if shield information window is open, finds remove button and clicks if found
@@ -30,7 +29,7 @@ Func ClickRemove($FeatureName = "Remove")
 			EndIf
 			If $i > 15 Then
 				SetLog("Can not find button for " & $FeatureName & ", giving up", $COLOR_ERROR)
-				If $g_bDebugImageSave Then DebugImageSave($FeatureName & "_ButtonCheck_")
+				If $g_bDebugImageSave Then SaveDebugImage($FeatureName & "_ButtonCheck_")
 				SetError(1, @extended, False)
 				Return
 			EndIf

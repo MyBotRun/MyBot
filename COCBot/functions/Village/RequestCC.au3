@@ -19,9 +19,11 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 		Return
 	EndIf
 
+	If Not $g_bRunState Then Return
+
 	If $g_bRequestTroopsEnable Then
 		Local $hour = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
-		If $g_abRequestCCHours[$hour[0]] = False Then
+		If Not $g_abRequestCCHours[$hour[0]] Then
 			SetLog("Request Clan Castle troops not planned, Skipped..", $COLOR_ACTION)
 			Return ; exit func if no planned donate checkmarks
 		EndIf
@@ -35,14 +37,19 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 	checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
 	If $bClickPAtEnd Then CheckCCArmy()
 
+	If Not $g_bRunState Then Return
+
 	Local $sSearchDiamond = GetDiamondFromRect("718,580,780,614")
 	Local Static $aRequestButtonPos[2] = [-1, -1]
 
 	Local $aRequestButton = findMultiple($g_sImgRequestCCButton, $sSearchDiamond, $sSearchDiamond, 0, 1000, 1, "objectname,objectpoints", True)
 	If Not IsArray($aRequestButton) Then
 		SetLog("Error in RequestCC(): $aRequestButton is no Array")
+		If $g_bDebugImageSave Then SaveDebugImage("RequestButtonStateError")
 		Return
 	EndIf
+
+	If Not $g_bRunState Then Return
 
 	If UBound($aRequestButton, 1) >= 1 Then
 		Local $sButtonState
@@ -69,6 +76,7 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 			EndIf
 
 			If $bNeedRequest Then
+				If Not $g_bRunState Then Return
 				Local $x = _makerequest($aRequestButtonPos)
 			EndIf
 		ElseIf StringInStr($sButtonState, "Already", 0) > 0 Then
@@ -138,15 +146,16 @@ EndFunc   ;==>_makerequest
 Func IsFullClanCastleType($CCType = 0) ; Troops = 0, Spells = 1, Siege Machine = 2
 	Local $aCheckCCNotFull[3] = [24, 455, 631], $sLog[3] = ["Troop", "Spell", "Siege Machine"]
 	Local $aiRequestCountCC[3] = [Number($g_iRequestCountCCTroop), Number($g_iRequestCountCCSpell), 0]
-	If $CCType <> 0 And Not ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2]) Then ; Continue reading CC status if all 3 items are unchecked, but only if not troop
+	Local $bIsCCRequestTypeNotUsed = Not ($g_abRequestType[0] Or $g_abRequestType[1] Or $g_abRequestType[2])
+	If $CCType <> 0 And $bIsCCRequestTypeNotUsed Then ; Continue reading CC status if all 3 items are unchecked, but only if not troop
 		If $g_bDebugSetlog Then SetLog($sLog[$CCType] & " not cared about, only checking troops.")
 		Return True
 	Else
 		If _ColorCheck(_GetPixelColor($aCheckCCNotFull[$CCType], 470, True), Hex(0xDC363A, 6), 30) Then ; red symbol
-			If Not $g_abRequestType[$CCType] Then 
+			If Not $g_abRequestType[$CCType] And Not $bIsCCRequestTypeNotUsed And $CCType <> 0 Then
 				; Don't care about the CC limit configured in setting
 				SetDebugLog("Found CC " & $sLog[$CCType] & " not full, but check is disabled")
-				Return True 
+				Return True
 			EndIf
 			SetDebugLog("Found CC " & $sLog[$CCType] & " not full")
 

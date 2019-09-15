@@ -34,7 +34,7 @@ Global $g_ahLblTrainArmySpellLevel[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 Global $g_ahTxtTrainArmySiegeCount[$eSiegeMachineCount] = [0, 0, 0]
 Global $g_ahLblTrainArmySiegeLevel[$eSiegeMachineCount] = [0, 0, 0]
 Global $g_hTxtFullTroop = 0, $g_hChkTotalCampForced = 0, $g_hTxtTotalCampForced = 0
-Global $g_hChkDoubleTrain = 0
+Global $g_hChkDoubleTrain = 0, $g_hChkPreciseArmy = 0
 
 Global $g_hGrpTrainTroops = 0
 Global $g_ahPicTrainArmyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -50,6 +50,7 @@ Global $g_aQuickTroopIcon[$eTroopCount] = [$eIcnBarbarian, $eIcnArcher, $eIcnGia
 Global $g_aQuickSpellIcon[$eSpellCount] = [$eIcnLightSpell, $eIcnHealSpell, $eIcnRageSpell, $eIcnJumpSpell, $eIcnFreezeSpell, $eIcnCloneSpell, $eIcnPoisonSpell, $eIcnEarthQuakeSpell, $eIcnHasteSpell, $eIcnSkeletonSpell, $eIcnBatSpell]
 Global $g_ahChkUseInGameArmy[3], $g_ahPicTotalQTroop[3], $g_ahPicTotalQSpell[3], $g_ahLblTotalQTroop[3], $g_ahLblTotalQSpell[3]
 Global $g_ahBtnEditArmy[3], $g_ahLblEditArmy[3], $g_ahPicQuickTroop[3][22], $g_ahLblQuickTroop[3][22], $g_ahPicQuickSpell[3][11], $g_ahLblQuickSpell[3][11]
+Global $g_ahLblQuickTrainNote[3], $g_ahLblUseInGameArmyNote[3]
 
 Global $g_hGUI_QuickTrainEdit = 0, $g_hGrp_QTEdit = 0
 Global $g_hBtnRemove_QTEdit, $g_hBtnSave_QTEdit, $g_hBtnCancel_QTEdit
@@ -144,7 +145,7 @@ Func CreateAttackTroops()
 	$g_hGUI_TRAINTYPE_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_01", "Army"))
 	$g_hGUI_TRAINTYPE_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_02", "Boost"))
 	$g_hGUI_TRAINTYPE_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_03", "Train Order"))
-	$g_hGUI_TRAINTYPE_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_03", "Options"))
+	$g_hGUI_TRAINTYPE_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_04", "Options"))
 
 	CreateQuickTrainEdit()
 
@@ -157,51 +158,59 @@ Func CreateTrainArmy()
 	$g_hGUI_TRAINARMY_ARMY = _GUICreate("", $g_iSizeWGrpTab3, $g_iSizeHGrpTab3, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_TRAINARMY)
 	GUISetBkColor($COLOR_WHITE, $g_hGUI_TRAINARMY_ARMY)
 
-	$g_hRadCustomTrain = GUICtrlCreateRadio("", 75, 34, 13, 13)
+	$g_hRadCustomTrain = GUICtrlCreateRadio("", 75, 35, 13, 13)
 	GUICtrlSetState(-1, $GUI_CHECKED)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetOnEvent(-1, "radSelectTrainType")
-	$g_hRadQuickTrain = GUICtrlCreateRadio("", 155, 34, 13, 13)
+	$g_hRadQuickTrain = GUICtrlCreateRadio("", 165, 35, 13, 13)
 	GUICtrlSetState(-1, $GUI_UNCHECKED)
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 	GUICtrlSetOnEvent(-1, "radSelectTrainType")
 
 	Local $x = 12
 	Local $y = 5
 
-	$g_hChkTotalCampForced = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "ChkTotalCampForced", "Total Camp") & ":", $x, $y, -1, -1)
+	$g_hChkTotalCampForced = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "ChkTotalCampForced", "Force Total Army Camp") & ":", $x, $y, -1, -1)
 	GUICtrlSetState(-1, $GUI_CHECKED)
 	GUICtrlSetOnEvent(-1, "chkTotalCampForced")
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "ChkTotalCampForced_Info_01", "If not detected set army camp values (instead ask)"))
-	$g_hTxtTotalCampForced = GUICtrlCreateInput("220", $x + 78, $y + 3, 30, 17, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	$g_hTxtTotalCampForced = GUICtrlCreateInput("220", $x + 134, $y + 3, 30, 17, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 	GUICtrlSetOnEvent(-1, "SetComboTroopComp")
 	GUICtrlSetLimit(-1, 3)
 
-	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "LblFullTroop", "'Full' Camp") & " " & ChrW(8805), $x + 117, $y + 5, -1, 17)
-	$g_hTxtFullTroop = GUICtrlCreateInput("100", $x + 180, $y + 3, 30, 17, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "LblFullTroop", "'Full' Camp") & " " & ChrW(8805), $x + 170, $y + 5, 70, 17, $SS_RIGHT)
+	$g_hTxtFullTroop = GUICtrlCreateInput("100", $x + 242, $y + 3, 30, 17, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 	GUICtrlSetOnEvent(-1, "SetComboTroopComp")
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "TxtFullTroop_Info_01", "Army camps are 'Full' when reaching this %, then start attack."))
 	GUICtrlSetLimit(-1, 3)
-	GUICtrlCreateLabel("%", $x + 211, $y + 5, -1, 17)
+	GUICtrlCreateLabel("%", $x + 273, $y + 5, -1, 17)
 
-	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "SpellCapacity", "Total Spell") & ":", $x + 220, $y + 5, -1, -1, $SS_RIGHT)
-	$g_hTxtTotalCountSpell = GUICtrlCreateCombo("", $x + 285, $y + 2, 35, 16, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "SpellCapacity", "Spell Capacity") & ":", $x + 288, $y + 5, 90, 17, $SS_RIGHT)
+	$g_hTxtTotalCountSpell = GUICtrlCreateCombo("", $x + 380, $y + 1, 35, 16, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "TxtTotalCountSpell_Info_01", "Enter the No. of Spells Capacity."))
 	GUICtrlSetData(-1, "0|2|4|6|7|8|9|10|11", "0")
 	GUICtrlSetOnEvent(-1, "TotalSpellCountClick")
 
-	$g_hChkDoubleTrain = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "ChkDoubleTrain", "Double Train"), $x + 332, $y, -1, -1)
+	$g_hChkPreciseArmy = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "ChkPreciseArmy", "Precise Army"), $x + 242, $y + 26, -1, -1)
+	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "Precise ArmyTip", "Always check and remove wrong troops or spells exist in army"))
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+
+	$g_hChkDoubleTrain = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "ChkDoubleTrain", "Double Train"), $x + 332, $y + 26, -1, -1)
 	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Global GUI Design", "DoubleTrainTip", "Train 2nd set of Troops & Spells after training 1st combo") & @CRLF & _
 			GetTranslatedFileIni("MBR Global GUI Design", "DoubleTrainTip1", "Make sure to enter exactly the 'Total Camp',") & @CRLF & _
 			GetTranslatedFileIni("MBR Global GUI Design", "DoubleTrainTip2", "'Total Spell' and number of Troops/Spells in your Setting") & @CRLF & _
 			GetTranslatedFileIni("MBR Global GUI Design", "DoubleTrainTip3", "Note: Donations + Double Train can produce an unbalanced army!"))
+	GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 
-	$g_hGUI_TRAINARMY_ARMY_TAB = GUICtrlCreateTab(0, 30, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3 - 30, BitOR($TCS_MULTILINE, $TCS_RIGHTJUSTIFY))
+	$g_hGUI_TRAINARMY_ARMY_TAB = GUICtrlCreateTab(0, 30, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3 - 30, BitOR($TCS_FORCELABELLEFT, $TCS_FIXEDWIDTH))
+	_GUICtrlTab_SetItemSize($g_hGUI_TRAINARMY_ARMY_TAB, 90, 20)
 	CreateCustomTrainSubTab()
 	CreateQuickTrainSubTab()
 
 EndFunc   ;==>CreateTrainArmy
 
 Func CreateQuickTrainSubTab()
-	$g_hGUI_TRAINARMY_ARMY_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_01_STab_02", "Quick Train") & "     ")
+	$g_hGUI_TRAINARMY_ARMY_TAB_ITEM2 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_01_STab_02", "Quick Train"))
 
 	Local $x = 12, $y = 50, $del_y = 108
 
@@ -209,7 +218,7 @@ Func CreateQuickTrainSubTab()
 		GUICtrlCreateGroup("", $x - 2, $y, 412, $del_y)
 		$g_ahChkArmy[$i] = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "ChkArmy", "Army ") & $i + 1, $x + 10, $y + 20, 70, 15)
 		If $i = 0 Then GUICtrlSetState(-1, $GUI_CHECKED)
-		GUICtrlSetOnEvent(-1, "chkQuickTrainCombo")
+		GUICtrlSetOnEvent(-1, "chkQuickTrainArmy")
 
 		$g_ahChkUseInGameArmy[$i] = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "ChkUseInGameArmy", "In-Game Army"), $x + 10, $y + 45, -1, 15)
 		GUICtrlSetState(-1, $GUI_CHECKED)
@@ -232,6 +241,13 @@ Func CreateQuickTrainSubTab()
 		GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 		$g_ahPicTotalQSpell[$i] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSpellsCost, $x + 350, $y + 65, 24, 24)
 
+		$g_ahLblQuickTrainNote[$i] = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "LblQuickTrainNote", "Use button 'Edit Army' to create troops and spells in quick Army ") & $i + 1, $x + 120, $y + 30, 200, 70, $SS_CENTER)
+			GUICtrlSetFont(-1, 12, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_SKYBLUE)
+		$g_ahLblUseInGameArmyNote[$i] = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "LblUseInGameArmyNote", "Quick train using in-game troops and spells preset Army ") & $i + 1, $x + 120, $y + 30, 270, 70, $SS_CENTER)
+			GUICtrlSetFont(-1, 12, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_SKYBLUE)
+
 		For $j = 0 To 6
 			$g_ahPicQuickTroop[$i][$j] = _GUICtrlCreateIcon($g_sLibIconPath, $eEmpty3, $x + 100 + $j * 36, $y + 10, 32, 32)
 			$g_ahLblQuickTroop[$i][$j] = GUICtrlCreateLabel("", $x + 101 + $j * 36, $y + 42, 30, 11, $ES_CENTER)
@@ -241,7 +257,7 @@ Func CreateQuickTrainSubTab()
 
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-		For $j = $g_ahPicQuickTroop[$i][0] To $g_ahLblQuickSpell[$i][6]
+		For $j = $g_ahLblQuickTrainNote[$i] To $g_ahLblQuickSpell[$i][6]
 			GUICtrlSetState($j, $GUI_HIDE)
 		Next
 
@@ -337,7 +353,7 @@ EndFunc   ;==>CreateQuickTrainEdit
 
 Func CreateCustomTrainSubTab()
 
-	$g_hGUI_TRAINARMY_ARMY_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_01_STab_01", "Custom Train") & "     ")
+	$g_hGUI_TRAINARMY_ARMY_TAB_ITEM1 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_03_STab_01_STab_01_STab_01", "Custom Train"))
 
 	Local $sTxtSetPerc = GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "TxtSetTroop_Info_01", "Enter the No. of")
 	Local $sTxtSetPerc2 = GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "TxtSetTroop_Info_02", "to make.")

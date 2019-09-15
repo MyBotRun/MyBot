@@ -171,70 +171,36 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 	ReDim $g_aiPixelRedAreaFurther[UBound($g_aiPixelRedArea)]
 
 	Local $a
-	If $g_iMatchMode = $DB And $g_aiAttackAlgorithm[$DB] = 2 Then
-		If $g_bDebugSetlog Then SetDebugLog("redarea no calc pixel further (quick)", $COLOR_DEBUG)
-		Local $count = 0
-		ReDim $g_aiPixelTopLeftFurther[UBound($g_aiPixelTopLeft)]
-		For $i = 0 To UBound($g_aiPixelTopLeft) - 1
-			$a = $g_aiPixelTopLeft[$i]
-			$g_aiPixelTopLeftFurther[$i] = $a
-			$g_aiPixelRedArea[$count] = $a
-			$g_aiPixelRedAreaFurther[$count] = $g_aiPixelTopLeftFurther[$i]
-			$count += 1
-		Next
-		ReDim $g_aiPixelBottomLeftFurther[UBound($g_aiPixelBottomLeft)]
-		For $i = 0 To UBound($g_aiPixelBottomLeft) - 1
-			$g_aiPixelBottomLeftFurther[$i] = $g_aiPixelBottomLeft[$i]
-			$g_aiPixelRedArea[$count] = $g_aiPixelBottomLeft[$i]
-			$g_aiPixelRedAreaFurther[$count] = $g_aiPixelBottomLeftFurther[$i]
-			$count += 1
-		Next
-		ReDim $g_aiPixelTopRightFurther[UBound($g_aiPixelTopRight)]
-		For $i = 0 To UBound($g_aiPixelTopRight) - 1
-			$g_aiPixelTopRightFurther[$i] = $g_aiPixelTopRight[$i]
-			$g_aiPixelRedArea[$count] = $g_aiPixelTopRight[$i]
-			$g_aiPixelRedAreaFurther[$count] = $g_aiPixelTopRightFurther[$i]
-			$count += 1
-		Next
-		ReDim $g_aiPixelBottomRightFurther[UBound($g_aiPixelBottomRight)]
-		For $i = 0 To UBound($g_aiPixelBottomRight) - 1
-			$g_aiPixelBottomRightFurther[$i] = $g_aiPixelBottomRight[$i]
-			$g_aiPixelRedArea[$count] = $g_aiPixelBottomRight[$i]
-			$g_aiPixelRedAreaFurther[$count] = $g_aiPixelBottomRightFurther[$i]
-			$count += 1
-		Next
-	Else
-		If $g_bDebugSetlog Then SetDebugLog("redarea calc pixel further", $COLOR_DEBUG)
-		Local $count = 0
-		ReDim $g_aiPixelTopLeftFurther[UBound($g_aiPixelTopLeft)]
-		For $i = 0 To UBound($g_aiPixelTopLeft) - 1
-			$g_aiPixelTopLeftFurther[$i] = _GetOffsetTroopFurther($g_aiPixelTopLeft[$i], $eVectorLeftTop, $offsetArcher)
-			$g_aiPixelRedArea[$count] = $g_aiPixelTopLeft[$i]
-			$g_aiPixelRedAreaFurther[$count] = $g_aiPixelTopLeftFurther[$i]
-			$count += 1
-		Next
-		ReDim $g_aiPixelBottomLeftFurther[UBound($g_aiPixelBottomLeft)]
-		For $i = 0 To UBound($g_aiPixelBottomLeft) - 1
-			$g_aiPixelBottomLeftFurther[$i] = _GetOffsetTroopFurther($g_aiPixelBottomLeft[$i], $eVectorLeftBottom, $offsetArcher)
-			$g_aiPixelRedArea[$count] = $g_aiPixelBottomLeft[$i]
-			$g_aiPixelRedAreaFurther[$count] = $g_aiPixelBottomLeftFurther[$i]
-			$count += 1
-		Next
-		ReDim $g_aiPixelTopRightFurther[UBound($g_aiPixelTopRight)]
-		For $i = 0 To UBound($g_aiPixelTopRight) - 1
-			$g_aiPixelTopRightFurther[$i] = _GetOffsetTroopFurther($g_aiPixelTopRight[$i], $eVectorRightTop, $offsetArcher)
-			$g_aiPixelRedArea[$count] = $g_aiPixelTopRight[$i]
-			$g_aiPixelRedAreaFurther[$count] = $g_aiPixelTopRightFurther[$i]
-			$count += 1
-		Next
-		ReDim $g_aiPixelBottomRightFurther[UBound($g_aiPixelBottomRight)]
-		For $i = 0 To UBound($g_aiPixelBottomRight) - 1
-			$g_aiPixelBottomRightFurther[$i] = _GetOffsetTroopFurther($g_aiPixelBottomRight[$i], $eVectorRightBottom, $offsetArcher)
-			$g_aiPixelRedArea[$count] = $g_aiPixelBottomRight[$i]
-			$g_aiPixelRedAreaFurther[$count] = $g_aiPixelBottomRightFurther[$i]
-			$count += 1
-		Next
-	EndIf
+	If $g_bDebugSetlog Then SetDebugLog("redarea calc pixel further", $COLOR_DEBUG)
+	Local $count = 0
+	ReDim $g_aiPixelTopLeftFurther[UBound($g_aiPixelTopLeft)]
+	For $i = 0 To UBound($g_aiPixelTopLeft) - 1
+		$g_aiPixelTopLeftFurther[$i] = _GetOffsetTroopFurther($g_aiPixelTopLeft[$i], $eVectorLeftTop, $offsetArcher)
+		$g_aiPixelRedArea[$count] = $g_aiPixelTopLeft[$i]
+		$g_aiPixelRedAreaFurther[$count] = $g_aiPixelTopLeftFurther[$i]
+		$count += 1
+	Next
+	ReDim $g_aiPixelBottomLeftFurther[UBound($g_aiPixelBottomLeft)]
+	For $i = 0 To UBound($g_aiPixelBottomLeft) - 1
+		$g_aiPixelBottomLeftFurther[$i] = _GetOffsetTroopFurther($g_aiPixelBottomLeft[$i], $eVectorLeftBottom, $offsetArcher)
+		$g_aiPixelRedArea[$count] = $g_aiPixelBottomLeft[$i]
+		$g_aiPixelRedAreaFurther[$count] = $g_aiPixelBottomLeftFurther[$i]
+		$count += 1
+	Next
+	ReDim $g_aiPixelTopRightFurther[UBound($g_aiPixelTopRight)]
+	For $i = 0 To UBound($g_aiPixelTopRight) - 1
+		$g_aiPixelTopRightFurther[$i] = _GetOffsetTroopFurther($g_aiPixelTopRight[$i], $eVectorRightTop, $offsetArcher)
+		$g_aiPixelRedArea[$count] = $g_aiPixelTopRight[$i]
+		$g_aiPixelRedAreaFurther[$count] = $g_aiPixelTopRightFurther[$i]
+		$count += 1
+	Next
+	ReDim $g_aiPixelBottomRightFurther[UBound($g_aiPixelBottomRight)]
+	For $i = 0 To UBound($g_aiPixelBottomRight) - 1
+		$g_aiPixelBottomRightFurther[$i] = _GetOffsetTroopFurther($g_aiPixelBottomRight[$i], $eVectorRightBottom, $offsetArcher)
+		$g_aiPixelRedArea[$count] = $g_aiPixelBottomRight[$i]
+		$g_aiPixelRedAreaFurther[$count] = $g_aiPixelBottomRightFurther[$i]
+		$count += 1
+	Next
 
 	; calculate average side length
 	Local $aSideLength[4]

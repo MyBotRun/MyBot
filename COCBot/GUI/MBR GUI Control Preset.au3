@@ -150,15 +150,13 @@ Func MakeSavePresetMessage()
 	$message &= @CRLF
 
 	$message &= "SEARCH SETTINGS:" & @CRLF
-	For $i = $DB To $TS
+	For $i = $DB To $LB
 		If IsSearchModeActive($i, True) Then
 			Switch $i
 				Case $DB
 					$message &= "- DB search: "
 				Case $LB
-					$message &= "- AS search: "
-				Case $TS
-					$message &= "- TH search: "
+					$message &= "- AB search: "
 			EndSwitch
 			If $g_abSearchSearchesEnable[$i] Then $message &= " " & "s. " & $g_aiSearchSearchesMin[$i] & "-" & $g_aiSearchSearchesMax[$i]
 			If $g_abSearchTropiesEnable[$i] Then $message &= "  " & "t. " & $g_aiSearchTrophiesMin[$i] & "-" & $g_aiSearchTrophiesMax[$i]
@@ -168,9 +166,7 @@ Func MakeSavePresetMessage()
 				Case $DB
 					$message &= "- DB filter: "
 				Case $LB
-					$message &= "- AS filter: "
-				Case $TS
-					$message &= "- TH filter: "
+					$message &= "- AB filter: "
 			EndSwitch
 			Switch $g_aiFilterMeetGE[$i]
 				Case 0
@@ -198,15 +194,13 @@ Func MakeSavePresetMessage()
 
 
 	$message &= @CRLF & "ATTACK SETTINGS:" & @CRLF
-	For $i = $DB To $TS
+	For $i = $DB To $LB
 		If IsSearchModeActive($i, True) Then
 			Switch $i
 				Case $DB
 					$message &= "- DB: "
 				Case $LB
 					$message &= "- AS: "
-				Case $TS
-					$message &= "- TH: "
 			EndSwitch
 			If $i = $DB Or $i = $LB Then
 				Switch $g_aiAttackAlgorithm[$i]
@@ -214,11 +208,8 @@ Func MakeSavePresetMessage()
 						$message &= "Standard Attack > "
 					Case "1"
 						$message &= "Scripted Attack > "
-					Case "2"
-						$message &= "Milking Attack   " & @CRLF
 				EndSwitch
 			EndIf
-			If $i = $TS Then $message &= $g_sAtkTSType & @CRLF
 
 			If ($i = $DB Or $i = $LB) And $g_aiAttackAlgorithm[$i] = 0 Then
 				Local $tmp = StringSplit("one side|two sides|three sides|four sides|DE side|TH side", "|", 2)
@@ -229,15 +220,13 @@ Func MakeSavePresetMessage()
 
 
 	$message &= @CRLF & "END BATTLE SETTINGS:" & @CRLF
-	For $i = $DB To $TS
+	For $i = $DB To $LB
 		If IsSearchModeActive($i, True) Then
 			Switch $i
 				Case $DB
 					$message &= "- DB: "
 				Case $LB
-					$message &= "- AS: "
-				Case $TS
-					$message &= "- TH: "
+					$message &= "- AB: "
 			EndSwitch
 			If $g_abStopAtkNoLoot1Enable[$i] Then $message &= "wait " & $g_aiStopAtkNoLoot1Time[$i] & "  "
 			If $g_abStopAtkNoLoot2Enable[$i] Then $message &= "wait " & $g_aiStopAtkNoLoot2Time[$i] & " ->(" & $g_aiStopAtkNoLoot2MinGold[$i] & "," & $g_aiStopAtkNoLoot2MinElixir[$i] & "," & $g_aiStopAtkNoLoot2MinDark[$i] & ")  "

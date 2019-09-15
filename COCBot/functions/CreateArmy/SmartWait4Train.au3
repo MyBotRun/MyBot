@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: SmartWait4Train
 ; Description ...: Will shutdown Android emulator & stop bot based on GUI configuration when waiting for troop training, spell cooking, or hero healing
@@ -17,10 +16,10 @@
 
 Func SmartWait4Train($iTestSeconds = Default)
 	If Not $g_bRunState Then Return
-	
+
 	Static $ichkCloseWaitSpell = 0, $ichkCloseWaitHero = 0
 	Local $bTest = ($iTestSeconds <> Default)
-	
+
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin SmartWait4Train:", $COLOR_DEBUG1)
 
 	If Not $g_bCloseWhileTrainingEnable Then Return ; Skip if not enabled
@@ -87,7 +86,7 @@ Func SmartWait4Train($iTestSeconds = Default)
 
 	Local $result = OpenArmyOverview(True, "SmartWait4Train()") ; Open train overview
 	If Not $result Then
-		If $g_bDebugImageSave Or $g_bDebugSetlogTrain Then DebugImageSave("SmartWait4Troop2_")
+		If $g_bDebugImageSave Or $g_bDebugSetlogTrain Then SaveDebugImage("SmartWait4Troop2_")
 	EndIf
 	If _Sleep($DELAYRESPOND) Then Return
 

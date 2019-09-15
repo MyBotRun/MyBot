@@ -115,9 +115,9 @@ Func smartZap($minDE = -1)
 	If $g_bDebugSmartZap = True Then SetLog("$g_bSmartZapEnable = " & $g_bSmartZapEnable & " | $g_bNoobZap = " & $g_bNoobZap, $COLOR_DEBUG)
 	If $g_bSmartZapEnable = False Then Return $performedZap
 	If $bZapDrills Then
-		If $g_bSmartZapEnable = True And $g_bNoobZap = False Then
+		If $g_bSmartZapEnable And Not $g_bNoobZap Then
 			SetLog("====== You have activated SmartZap Mode ======", $COLOR_ERROR)
-		ElseIf $g_bNoobZap = True Then
+		ElseIf $g_bNoobZap Then
 			SetLog("====== You have activated NoobZap Mode ======", $COLOR_ERROR)
 		EndIf
 	EndIf
@@ -129,10 +129,10 @@ Func smartZap($minDE = -1)
 		$g_iSearchDark = getDarkElixirVillageSearch(48, 126)
 		If Number($g_iSearchDark) = 0 Then
 			SetLog("No Dark Elixir!", $COLOR_INFO)
-			If $g_bDebugSmartZap = True Then SetLog("$g_iSearchDark|Current DE value: " & Number($g_iSearchDark), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("$g_iSearchDark|Current DE value: " & Number($g_iSearchDark), $COLOR_DEBUG)
 			$bZapDrills = False
 		Else
-			If $g_bDebugSmartZap = True Then SetLog("$g_iSearchDark|Current DE value: " & Number($g_iSearchDark), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("$g_iSearchDark|Current DE value: " & Number($g_iSearchDark), $COLOR_DEBUG)
 		EndIf
 	EndIf
 
@@ -140,10 +140,10 @@ Func smartZap($minDE = -1)
 		; Check to see if the DE Storage is already full
 		If isAtkDarkElixirFull() Then
 			SetLog("No need to zap!", $COLOR_INFO)
-			If $g_bDebugSmartZap = True Then SetLog("isAtkDarkElixirFull(): True", $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("isAtkDarkElixirFull(): True", $COLOR_DEBUG)
 			$bZapDrills = False
 		Else
-			If $g_bDebugSmartZap = True Then SetLog("isAtkDarkElixirFull(): False", $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("isAtkDarkElixirFull(): False", $COLOR_DEBUG)
 		EndIf
 	EndIf
 
@@ -156,17 +156,17 @@ Func smartZap($minDE = -1)
 			$bZapDrills = False
 		ElseIf $g_iTownHallLevel < 7 Then
 			SetLog("You do not have the ability to store Dark Elixir!", $COLOR_ERROR)
-			If $g_bDebugSmartZap = True Then SetLog("Your Town Hall Lvl: " & Number($g_iTownHallLevel), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("Your Town Hall Lvl: " & Number($g_iTownHallLevel), $COLOR_DEBUG)
 			$bZapDrills = False
 		Else
-			If $g_bDebugSmartZap = True Then SetLog("Your Town Hall Lvl: " & Number($g_iTownHallLevel), $COLOR_DEBUG)
+			If $g_bDebugSmartZap Then SetLog("Your Town Hall Lvl: " & Number($g_iTownHallLevel), $COLOR_DEBUG)
 		EndIf
 	EndIf
 
 	If $bZapDrills Then
 		; Check match mode
-		If $g_bDebugSmartZap = True Then SetLog("$g_bSmartZapDB = " & $g_bSmartZapDB, $COLOR_DEBUG)
-		If $g_bSmartZapDB = True And $g_iMatchMode <> $DB Then
+		If $g_bDebugSmartZap Then SetLog("$g_bSmartZapDB = " & $g_bSmartZapDB, $COLOR_DEBUG)
+		If $g_bSmartZapDB And $g_iMatchMode <> $DB Then
 			SetLog("Not a dead base!", $COLOR_INFO)
 			$bZapDrills = False
 		EndIf
@@ -175,11 +175,11 @@ Func smartZap($minDE = -1)
 	If $bZapDrills Then
 		; Offset the drill level based on town hall level
 		$drillLvlOffset = getDrillOffset()
-		If $g_bDebugSmartZap = True Then SetLog("Drill Level Offset is: " & Number($drillLvlOffset), $COLOR_DEBUG)
+		If $g_bDebugSmartZap Then SetLog("Drill Level Offset is: " & Number($drillLvlOffset), $COLOR_DEBUG)
 
 		; Offset the number of spells based on town hall level
 		$spellAdjust = getSpellOffset()
-		If $g_bDebugSmartZap = True Then SetLog("Spell Adjust is: " & Number($spellAdjust), $COLOR_DEBUG)
+		If $g_bDebugSmartZap Then SetLog("Spell Adjust is: " & Number($spellAdjust), $COLOR_DEBUG)
 	EndIf
 
 	; Get the number of lightning/EQ spells
@@ -193,14 +193,14 @@ Func smartZap($minDE = -1)
 					$aSpells[0][3] = Number($g_iLSpellLevel) ; Get the Level on Attack bar
 					$aSpells[0][4] = $g_avAttackTroops[$i][1]
 				Else
-					If $g_bDebugSmartZap = True Then SetLog("Donated " & GetTroopName($g_avAttackTroops[$i][0]) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
+					If $g_bDebugSmartZap Then SetLog("Donated " & GetTroopName($g_avAttackTroops[$i][0]) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
 					$aSpells[1][2] = $i
 					$aSpells[1][3] = Number($g_iLSpellLevel) ; Get the Level on Attack bar
 					$aSpells[1][4] = $g_avAttackTroops[$i][1]
 				EndIf
 			EndIf
 			If $g_avAttackTroops[$i][0] = $eESpell Then
-				If $g_bDebugSmartZap = True Then SetLog(GetTroopName($g_avAttackTroops[$i][0]) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
+				If $g_bDebugSmartZap Then SetLog(GetTroopName($g_avAttackTroops[$i][0]) & ": " & $g_avAttackTroops[$i][1], $COLOR_DEBUG)
 				$aSpells[2][2] = $i
 				$aSpells[2][3] = Number($g_iESpellLevel) ; Get the Level on Attack bar
 				$aSpells[2][4] = $g_avAttackTroops[$i][1]

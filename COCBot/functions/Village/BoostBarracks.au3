@@ -25,14 +25,14 @@ Func BoostWorkshop()
 EndFunc   ;==>BoostWorkshop
 
 Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
-	Local $boosted = False
+	Local $bBoosted = False
 
-	If Not $g_bTrainEnabled Or $iCmbBoost <= 0 Then Return $boosted
+	If Not $g_bTrainEnabled Or $iCmbBoost <= 0 Then Return $bBoosted
 
 	Local $aHours = StringSplit(_NowTime(4), ":", $STR_NOCOUNT)
 	If Not $g_abBoostBarracksHours[$aHours[0]] Then
 		SetLog("Boosting " & $sName & " isn't planned, skipping", $COLOR_INFO)
-		Return $boosted
+		Return $bBoosted
 	EndIf
 
 	Local $sIsAre = "are"
@@ -51,7 +51,7 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 			SetDebugLog("BoostTrainBuilding(): $sName called with a wrong Value.", $COLOR_ERROR)
 			ClickP($aAway, 1, 0, "#0161")
 			_Sleep($DELAYBOOSTBARRACKS2)
-			Return $boosted
+			Return $bBoosted
 		EndIf
 		Local $aBoostBtn = findButton("BoostBarrack")
 		If IsArray($aBoostBtn) Then
@@ -71,7 +71,7 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 					ElseIf $iCmbBoost = 25 Then
 						SetLog("Remain " & $sName & " Boosts: Unlimited", $COLOR_SUCCESS)
 					EndIf
-					$boosted = True
+					$bBoosted = True
 					; Force to get the Remain Time
 					If $sName = "Barracks" Then
 						$g_aiTimeTrain[0] = 0 ; reset Troop remaining time
@@ -91,14 +91,15 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 
 	ClickP($aAway, 1, 0, "#0161")
 	_Sleep($DELAYBOOSTBARRACKS2)
-	Return $boosted
+
+	Return $bBoosted
 EndFunc   ;==>BoostTrainBuilding
 
 Func BoostEverything()
 	; Verifying existent Variables to run this routine
-	If AllowBoosting("Everything", $g_iCmbBoostEverything) = False Then Return
+	If Not AllowBoosting("Everything", $g_iCmbBoostEverything) Then Return
 
-	SetLog("Boosting Everything .....", $COLOR_INFO)
+	SetLog("Boosting Everything", $COLOR_INFO)
 	If $g_aiTownHallPos[0] = "" Or $g_aiTownHallPos[0] = -1 Then
 		LocateTownHall()
 		SaveConfig()

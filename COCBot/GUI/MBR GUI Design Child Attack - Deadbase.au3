@@ -18,7 +18,6 @@ Global $g_hGUI_DEADBASE = 0
 
 #include "MBR GUI Design Child Attack - Deadbase Attack Standard.au3"
 #include "MBR GUI Design Child Attack - Deadbase Attack Scripted.au3"
-#include "MBR GUI Design Child Attack - Deadbase Attack Milking.au3"
 #include "MBR GUI Design Child Attack - Deadbase Attack Smart Farm.au3"
 #include "MBR GUI Design Child Attack - Deadbase-Search.au3"
 #include "MBR GUI Design Child Attack - Deadbase-Attack.au3"
@@ -35,7 +34,6 @@ Func CreateAttackSearchDeadBase()
 	;creating subchilds first!
 	CreateAttackSearchDeadBaseStandard()
 	CreateAttackSearchDeadBaseScripted()
-	CreateAttackSearchDeadBaseMilking()
 	CreateAttackSearchDeadBaseSmartFarm()
 
 	GUISwitch($g_hGUI_DEADBASE)

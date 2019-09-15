@@ -422,7 +422,7 @@ EndFunc   ;==>_ClanGames
 Func IsClanGamesWindow($getCapture = True)
 	If QuickMIS("BC1", $g_sImgCaravan, 200, 55, 300, 135, $getCapture, False) Then
 		; If QuickMIS("BC1", $g_sImgCaravan, 236, 119, 270, 122, True) Then
-		SetLog("Caravan available... Entering Clan Games...", $COLOR_SUCCESS)
+		SetLog("Caravan available! Entering Clan Games", $COLOR_SUCCESS)
 		Click($g_iQuickMISX + 200, $g_iQuickMISY + 55)
 		; Just wait for window open
 		If _Sleep(1500) Then Return
@@ -443,7 +443,7 @@ Func IsClanGamesWindow($getCapture = True)
 			Return False
 		EndIf
 	Else
-		SetLog("Caravan not available...", $COLOR_WARNING)
+		SetLog("Caravan not available", $COLOR_WARNING)
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		Return False
 	EndIf
@@ -459,7 +459,7 @@ Func GetTimesAndScores()
 	$sTimeRemain = StringReplace(getOcrTimeGameTime(50, 479), " ", "") ; read Clan Games waiting time
 	; JUST IN CASE
 	If Not _IsValideOCR($sTimeRemain) Then
-		SetLog("Get Time Remain error!!!", $COLOR_WARNING)
+		SetLog("Get Time Remain error!", $COLOR_WARNING)
 		Return -1
 	EndIf
 	SetLog("Clan Games Time Remaining: " & $sTimeRemain, $COLOR_INFO)
@@ -510,7 +510,7 @@ Func IsEventRunning()
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
 		Return True
 	Else
-		SetLog("No event under progress... Lets look for one...", $COLOR_INFO)
+		SetLog("No event under progress. Lets look for one", $COLOR_INFO)
 		Return False
 	EndIf
 
@@ -520,9 +520,9 @@ Func ClickOnEvent(ByRef $YourAccScore, $ScoreLimits, $sEventName, $getCapture)
 	If $YourAccScore[$g_iCurAccount][1] = False Then
 		Local $Text = "", $color = $COLOR_SUCCESS
 		If $YourAccScore[$g_iCurAccount][0] <> $ScoreLimits[0] Then
-			$Text = "You Won " & $ScoreLimits[0] - $YourAccScore[$g_iCurAccount][0] & "pts in last Event"
+			$Text = "You on " & $ScoreLimits[0] - $YourAccScore[$g_iCurAccount][0] & "points in last Event"
 		Else
-			$Text = "You could not complete the last event!!"
+			$Text = "You could not complete the last event!"
 			$color = $COLOR_WARNING
 		EndIf
 		SetLog($Text, $color)

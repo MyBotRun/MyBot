@@ -40,7 +40,7 @@ Func StarLaboratory($bTestRun = False)
 	If Not $g_bAutoStarLabUpgradeEnable Then Return ; Lab upgrade not enabled.
 
 	;Create local array to hold upgrade values
-	Local $aUpgradeValue[11] = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aUpgradeValue[12] = [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $iAvailElixir, $sElixirCount, $TimeDiff, $aArray, $Result, $aSearchForTroop
 	Local $iXMoved = 0, $iYMoved = 0, $iFirstPageOffset = 0, $iLastPageOffset = 0
 	Local $iSelectedUpgrade = $g_iCmbStarLaboratory
@@ -66,7 +66,7 @@ Func StarLaboratory($bTestRun = False)
 	; Find Research Button
 	Local $aResearchButton = findButton("Research", Default, 1, True)
 	If IsArray($aResearchButton) And UBound($aResearchButton, 1) = 2 Then
-		If $g_bDebugImageSave Then DebugImageSave("StarLabUpgrade") ; Debug Only
+		If $g_bDebugImageSave Then SaveDebugImage("StarLabUpgrade") ; Debug Only
 		ClickP($aResearchButton)
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
 	Else
@@ -135,7 +135,7 @@ Func StarLaboratory($bTestRun = False)
 	EndIf
 
 	If $g_bDebugSetlog Then StarLabTroopImages(1, 10)
-	For $i = 1 To 10
+	For $i = 1 To UBound($aUpgradeValue) - 1
 		If $g_avStarLabTroops[$i][0] = -1 Or $g_avStarLabTroops[$i][1] = -1 Then
 			$aUpgradeValue[$i] = -1
 			If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " is not upgradeable, now = " & $aUpgradeValue[$i], $COLOR_DEBUG)
@@ -163,7 +163,7 @@ Func StarLaboratory($bTestRun = False)
 		Else
 			SetLog("No upgrade for " & $g_avStarLabTroops[$g_iCmbStarLaboratory][3] & " available.", $COLOR_INFO)
 		EndIf
-		For $i = 1 To 10
+		For $i = 1 To UBound($aUpgradeValue) - 1
 			If $aUpgradeValue[$i] > 0 Then ; is upgradeable
 				If $g_bDebugSetlog Then SetLog($g_avStarLabTroops[$i][3] & " is upgradeable, Value = " & $aUpgradeValue[$i], $COLOR_DEBUG)
 				If $iCheapestCost = 0 Or $aUpgradeValue[$i] < $iCheapestCost Then
@@ -225,7 +225,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 			; If none of other error conditions apply, begin upgrade process
 			Click($g_avStarLabTroops[$iSelectedUpgrade][0] + 40, $g_avStarLabTroops[$iSelectedUpgrade][1] + 40, 1, 0, "#0200") ; Click Upgrade troop button
 			If _Sleep($DELAYLABUPGRADE1) Then Return ; Wait for window to open
-			If $g_bDebugImageSave Then DebugImageSave("StarLabUpgrade")
+			If $g_bDebugImageSave Then SaveDebugImage("StarLabUpgrade")
 
 			; double check if maxed?
 			If _ColorCheck(_GetPixelColor(258 + $iXMoved, 192 + $iYMoved, True), Hex(0xFF1919, 6), 20) And _ColorCheck(_GetPixelColor(272 + $iXMoved, 194 + $iYMoved, True), Hex(0xFF1919, 6), 20) Then
@@ -307,7 +307,7 @@ Func StarDebugIconSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0) ; Debug Cod
 EndFunc   ;==>StarDebugIconSave
 
 Func StarLabTroopImages($iStart, $iEnd) ; Debug function to record pixel values for troops
-	If $g_bDebugImageSave Then DebugImageSave("StarLabUpgrade")
+	If $g_bDebugImageSave Then SaveDebugImage("StarLabUpgrade")
 	For $i = $iStart To $iEnd
 		If $g_avStarLabTroops[$i][0] <> -1 And $g_avStarLabTroops[$i][1] <> -1 Then
 			StarDebugIconSave($g_avStarLabTroops[$i][3], $g_avStarLabTroops[$i][0], $g_avStarLabTroops[$i][1])

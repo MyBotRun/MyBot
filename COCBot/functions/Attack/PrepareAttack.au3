@@ -21,7 +21,7 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 			If $g_iSearchTH = "-" Then ; If TH is unknown, try again to find as it is needed for filename
 				imglocTHSearch(True, False, False)
 			EndIf
-			DebugImageSave("clean", False, Default, Default, "TH" & $g_iSearchTH & "-") ; make clean snapshot as well
+			SaveDebugImage("clean", False, Default, "TH" & $g_iSearchTH & "-") ; make clean snapshot as well
 		EndIf
 	EndIf
 
@@ -230,7 +230,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $XCoord, $iCmbSiege)
 				EndIf
 
 			Else
-				If $g_bDebugImageSave Then DebugImageSave("PrepareAttack_SwitchSiege")
+				If $g_bDebugImageSave Then SaveDebugImage("PrepareAttack_SwitchSiege")
 				; If was not detectable lets click again on green icon to hide the window!
 				Setlog("Undetected " & ($bAnySiege ? "any siege machine " : GetTroopName($ToUse)) & " after click on switch btn!", $COLOR_DEBUG)
 				Click($lastX, $lastY, 1)
@@ -289,57 +289,47 @@ Func SelectWardenMode($iMode, $XCoord)
 EndFunc   ;==>SelectWardenMode
 
 Func IsUnitUsed($iMatchMode, $iTroopIndex)
-	Local $iTempMode = ($iMatchMode = $MA ? $DB : $iMatchMode)
-
 	If $iTroopIndex < $eKing Then ;Index is a Troop
 		If $iMatchMode = $DT Or $iMatchMode = $TB Then Return True
-		Local $aTempArray = $g_aaiTroopsToBeUsed[$g_aiAttackTroopSelection[$iTempMode]]
+		Local $aTempArray = $g_aaiTroopsToBeUsed[$g_aiAttackTroopSelection[$iMatchMode]]
 		Local $iFoundAt = _ArraySearch($aTempArray, $iTroopIndex)
-		If $iFoundAt <> -1 Then
-			If $iMatchMode = $MA And $iTroopIndex = $eGobl Then
-				Return False
-			Else
-				Return True
-			EndIf
-		EndIf
+		If $iFoundAt <> -1 Then	Return True
 		Return False
 	Else ; Index is a Hero/Siege/Castle/Spell
-		Local $iTempMode = ($iMatchMode = $MA ? $DB : $iMatchMode)
-
-		If $iMatchMode <> $DB And $iMatchMode <> $LB And $iMatchMode <> $TS And $iMatchMode <> $MA Then
+		If $iMatchMode <> $DB And $iMatchMode <> $LB Then
 			Return True
 		Else
 			Switch $iTroopIndex
 				Case $eKing
-					If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroKing) = $eHeroKing) Then Return True
+					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroKing) = $eHeroKing) Then Return True
 				Case $eQueen
-					If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroQueen) = $eHeroQueen) Then Return True
+					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroQueen) = $eHeroQueen) Then Return True
 				Case $eWarden
-					If (BitAND($g_aiAttackUseHeroes[$iTempMode], $eHeroWarden) = $eHeroWarden) Then Return True
+					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroWarden) = $eHeroWarden) Then Return True
 				Case $eCastle, $eWallW, $eBattleB, $eStoneS
-					If $g_abAttackDropCC[$iTempMode] Then Return True
+					If $g_abAttackDropCC[$iMatchMode] Then Return True
 				Case $eLSpell
-					If $g_abAttackUseLightSpell[$iTempMode] Or $g_bSmartZapEnable Then Return True
+					If $g_abAttackUseLightSpell[$iMatchMode] Or $g_bSmartZapEnable Then Return True
 				Case $eHSpell
-					If $g_abAttackUseHealSpell[$iTempMode] Then Return True
+					If $g_abAttackUseHealSpell[$iMatchMode] Then Return True
 				Case $eRSpell
-					If $g_abAttackUseRageSpell[$iTempMode] Then Return True
+					If $g_abAttackUseRageSpell[$iMatchMode] Then Return True
 				Case $eJSpell
-					If $g_abAttackUseJumpSpell[$iTempMode] Then Return True
+					If $g_abAttackUseJumpSpell[$iMatchMode] Then Return True
 				Case $eFSpell
-					If $g_abAttackUseFreezeSpell[$iTempMode] Then Return True
+					If $g_abAttackUseFreezeSpell[$iMatchMode] Then Return True
 				Case $ePSpell
-					If $g_abAttackUsePoisonSpell[$iTempMode] Then Return True
+					If $g_abAttackUsePoisonSpell[$iMatchMode] Then Return True
 				Case $eESpell
-					If $g_abAttackUseEarthquakeSpell[$iTempMode] = 1 Or $g_bSmartZapEnable Then Return True
+					If $g_abAttackUseEarthquakeSpell[$iMatchMode] = 1 Or $g_bSmartZapEnable Then Return True
 				Case $eHaSpell
-					If $g_abAttackUseHasteSpell[$iTempMode] Then Return True
+					If $g_abAttackUseHasteSpell[$iMatchMode] Then Return True
 				Case $eCSpell
-					If $g_abAttackUseCloneSpell[$iTempMode] Then Return True
+					If $g_abAttackUseCloneSpell[$iMatchMode] Then Return True
 				Case $eSkSpell
-					If $g_abAttackUseSkeletonSpell[$iTempMode] Then Return True
+					If $g_abAttackUseSkeletonSpell[$iMatchMode] Then Return True
 				Case $eBtSpell
-					If $g_abAttackUseBatSpell[$iTempMode] Then Return True
+					If $g_abAttackUseBatSpell[$iMatchMode] Then Return True
 				Case Else
 					Return False
 			EndSwitch

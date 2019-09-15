@@ -79,7 +79,6 @@ Func _Ini_Save($filename)
 						$sCurrentSection = "attack" Or _
 						$sCurrentSection = "troop" Or _
 						$sCurrentSection = "spells" Or _
-						$sCurrentSection = "milkingattack" Or _
 						$sCurrentSection = "endbattle" Or _
 						$sCurrentSection = "collectors" Or _
 						$sCurrentSection = "DropOrder" Or _
@@ -98,7 +97,6 @@ Func _Ini_Save($filename)
 					$sCurrentSection = "attack" Or _
 					$sCurrentSection = "troop" Or _
 					$sCurrentSection = "spells" Or _
-					$sCurrentSection = "milkingattack" Or _
 					$sCurrentSection = "endbattle" Or _
 					$sCurrentSection = "collectors" Or _
 					$sCurrentSection = "DropOrder" Or _

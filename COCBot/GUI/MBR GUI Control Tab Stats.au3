@@ -14,14 +14,6 @@
 ; ===============================================================================================================================
 #include-once
 
-Func btnLoots()
-	Run("Explorer.exe " & $g_sProfilePath & "\" & $g_sProfileCurrentName & "\Loots")
-EndFunc   ;==>btnLoots
-
-Func btnLogs()
-	Run("Explorer.exe " & $g_sProfilePath & "\" & $g_sProfileCurrentName & "\Logs")
-EndFunc   ;==>btnLogs
-
 Func btnResetStats()
 	ResetStats()
 EndFunc   ;==>btnResetStats

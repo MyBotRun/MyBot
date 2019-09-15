@@ -32,10 +32,10 @@ Global $g_hLblWallGoldMake = 0, $g_hLblWallElixirMake = 0, $g_hLblNbrOfBuildingU
 Global $g_hLblWallUpgCostGold = 0, $g_hLblWallUpgCostElixir = 0, $g_hLblBuildingUpgCostGold = 0, $g_hLblBuildingUpgCostElixir = 0, $g_hLblHeroUpgCost = 0
 
 ; Attacks
-Global $g_hLblAttacked[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLblTotalGoldGain[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLblTotalElixirGain[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], _
-	   $g_hLblTotalDElixirGain[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLblTotalTrophyGain[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLblNbrOfTSSuccess = 0, $g_hLblNbrOfTSFailed = 0
-Global $g_hLblNbrOfDetectedMines[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLblNbrOfDetectedCollectors[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], _
-	   $g_hLblNbrOfDetectedDrills[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_hLblSmartZap = 0, $g_hLblSmartLightningUsed = 0, $g_hLblSmartEarthQuakeUsed = 0
+Global $g_hLblAttacked[$g_iModeCount] = [0, 0, 0], $g_hLblTotalGoldGain[$g_iModeCount] = [0, 0, 0], $g_hLblTotalElixirGain[$g_iModeCount] = [0, 0, 0], _
+	   $g_hLblTotalDElixirGain[$g_iModeCount] = [0, 0, 0], $g_hLblTotalTrophyGain[$g_iModeCount] = [0, 0, 0], $g_hLblNbrOfTSSuccess = 0, $g_hLblNbrOfTSFailed = 0
+Global $g_hLblNbrOfDetectedMines[$g_iModeCount] = [0, 0, 0], $g_hLblNbrOfDetectedCollectors[$g_iModeCount] = [0, 0, 0], _
+	   $g_hLblNbrOfDetectedDrills[$g_iModeCount] = [0, 0, 0], $g_hLblSmartZap = 0, $g_hLblSmartLightningUsed = 0, $g_hLblSmartEarthQuakeUsed = 0
 
 ; Donations
 Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -819,82 +819,10 @@ Func CreateAttacksSubTab()
 
 	$x = $xStart + 5
 	$y = $yStart + 165
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Snipe", "TH Snipe"), $x - 20, $y - 32, 187, 17, $SS_CENTER)
-			GUICtrlSetBkColor(-1, 0xD4D4D4)
 		GUICtrlCreateLabel("", $x + 35 + 130, $y - 32, 30, 17, $SS_CENTER)
 			GUICtrlSetBkColor(-1, 0xD4D4D4)
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Bully", "TH Bully"), $x - 18 + 212, $y - 32, 207, 17, $SS_CENTER)
 			GUICtrlSetBkColor(-1, 0xD4D4D4)
-
-	$x -= 10
-	$y -= 10
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBldgTarget, $x - 10, $y, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Snipe_Info_01", "The No. of TH Snipes attacked by the Bot.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblBase-Attacked", "Attacked") & ":", $x + 13, $y + 2, -1, 17)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hLblAttacked[$TS] = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
-			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-			GUICtrlSetColor(-1, $COLOR_BLACK)
-			_GUICtrlSetTip(-1, $sTxtTip)
-	$y += 20
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x - 10, $y, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Snipe-Gain-Gold_Info_01", "The amount of Gold gained from TH Snipe bases attacked by the Bot.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblDead-Base-Gain",-1) & ":", $x + 13, $y + 2, -1, 17)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hLblTotalGoldGain[$TS] = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
-			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-			GUICtrlSetColor(-1, $COLOR_BLACK)
-			_GUICtrlSetTip(-1, $sTxtTip)
-	$y += 20
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x - 10, $y, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Snipe-Gain-Elixir_Info_01", "The amount of Elixir gained from TH Snipe bases attacked by the Bot.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblDead-Base-Gain",-1) & ":", $x + 13, $y + 2, -1, 17)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hLblTotalElixirGain[$TS] = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
-			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-			GUICtrlSetColor(-1, $COLOR_BLACK)
-			_GUICtrlSetTip(-1, $sTxtTip)
-	$y += 20
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDark, $x - 10, $y, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Snipe-Gain-Dark_Info_01", "The amount of Dark Elixir gained from TH Snipe bases attacked by the Bot.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblDead-Base-Gain",-1) & ":", $x + 13, $y + 2, -1, 17)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hLblTotalDElixirGain[$TS] = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
-			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-			GUICtrlSetColor(-1, $COLOR_BLACK)
-			_GUICtrlSetTip(-1, $sTxtTip)
-	$y += 20
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTrophy, $x - 10, $y, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Snipe-Gain-Trophy_Info_01", "The amount of Trophy gained from TH Snipe bases attacked by the Bot.")
-			_GUICtrlSetTip(-1, $sTxtTip)
-		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblDead-Base-Gain",-1) & ":", $x + 13, $y + 2, -1, 17)
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hLblTotalTrophyGain[$TS] = GUICtrlCreateLabel("0", $x + 115, $y + 2, 70, 17, $SS_RIGHT)
-			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-			GUICtrlSetColor(-1, $COLOR_BLACK)
-			_GUICtrlSetTip(-1, $sTxtTip)
-	$x += 25
-	$y += 25
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnGreenLight, $x - 15, $y - 4, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Snipe-Win_Info_01", "The number of successful TH Snipes")
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hLblNbrOfTSSuccess = GUICtrlCreateLabel("0", $x + 13, $y - 2, 25, 17, $SS_RIGHT)
-			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-			GUICtrlSetColor(-1, $COLOR_BLACK)
-			_GUICtrlSetTip(-1, $sTxtTip)
-	$x += 50
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnRedLight, $x + 35, $y - 4, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Bot - Stats", "LblTH-Snipe-Lost_Info_01", "The number of failed TH Snipe attempt")
-			_GUICtrlSetTip(-1, $sTxtTip)
-		$g_hLblNbrOfTSFailed = GUICtrlCreateLabel("0", $x + 63, $y - 2, 25, 17, $SS_RIGHT)
-			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-			GUICtrlSetColor(-1, $COLOR_BLACK)
-			_GUICtrlSetTip(-1, $sTxtTip)
-	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$x = $xStart + 180
 	$y = $yStart + 165

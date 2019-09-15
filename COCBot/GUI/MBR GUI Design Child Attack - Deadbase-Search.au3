@@ -110,39 +110,32 @@ Func CreateAttackSearchDeadBaseSearch()
 	$y += 20
 	$x += 20
 		$g_hChkDBKingWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
-			Local $sTxtKingWait = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtHeroesWait_Info_01", "Wait for Hero option disabled when continuous Upgrade Hero selected!")
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_01", "Wait for King to be ready before attacking...") & @CRLF & $sTxtKingWait & @CRLF & _
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_01", "Wait for King to be ready before attacking...") & @CRLF & _
 					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtKingWait_Info_02", "Enabled with TownHall 7 and higher")
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetOnEvent(-1, "chkDBKingWait")
 		$g_hPicDBKingWait=_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicDBKingSleepWait=_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingKing, $x - 18, $y + 4, 48, 48)
-			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$x += 55
 		$g_hChkDBQueenWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_01", "Wait for Queen to be ready before attacking...") & @CRLF & $sTxtKingWait & @CRLF & _
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_01", "Wait for Queen to be ready before attacking...") & @CRLF & _
 					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtQueenWait_Info_02", "Enabled with TownHall 9 and higher")
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetOnEvent(-1, "chkDBQueenWait")
 		$g_hPicDBQueenWait=_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicDBQueenSleepWait=_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingQueen, $x - 18, $y + 4, 48, 48)
-			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$x += 55
 		$g_hChkDBWardenWait = GUICtrlCreateCheckbox("", $x, $y + 55, 16, 16)
-			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_01", "Wait for Warden to be ready before attacking...") & @CRLF & $sTxtKingWait & @CRLF & _
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_01", "Wait for Warden to be ready before attacking...") & @CRLF & _
 					   GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtWardenWait_Info_02", "Enabled with TownHall 11")
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetOnEvent(-1, "chkDBWardenWait")
 		$g_hPicDBWardenWait=_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x - 18, $y + 4, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
 		$g_hPicDBWardenSleepWait=_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingWarden, $x - 18, $y + 4, 48, 48)
-			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetState(-1, $GUI_HIDE)
 
 	$y += 70

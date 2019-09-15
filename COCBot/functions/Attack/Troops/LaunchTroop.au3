@@ -250,17 +250,8 @@ Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
 					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $iKing, $iQueen, $iWarden)
 				EndIf
 			Else
-				;no drop goblins in standard attack after milking attack
-				If $g_bDuringMilkingAttack = False Then
-					If LaunchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
-						If _Sleep(SetSleep(1)) Then Return
-					EndIf
-				Else
-					If $listInfoDeploy[$i][0] <> $eGobl Then
-						If LaunchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
-							If _Sleep(SetSleep(1)) Then Return
-						EndIf
-					EndIf
+				If LaunchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
+					If _Sleep(SetSleep(1)) Then Return
 				EndIf
 			EndIf
 

@@ -177,7 +177,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 				checkObstacles_ResetSearch()
 			Case Else
 				;  Add check for game update and Rate CoC error messages
-				If $g_bDebugImageSave Then DebugImageSave("ChkObstaclesReloadMsg_", False) ; debug only
+				If $g_bDebugImageSave Then SaveDebugImage("ChkObstaclesReloadMsg_", False) ; debug only
 				;$Result = getOcrRateCoc(228, 390 + $g_iMidOffsetY, "Check Obstacles getOCRRateCoC= ")
 				Local $sRegion = "220,420(60,25)"
 				If $g_iAndroidVersionAPI >= $g_iAndroidLollipop Then
@@ -425,7 +425,7 @@ Func checkObstacles_GfxError($bForceCapture = False, $bRebootAndroid = True)
 	If UBound($aResult) >= 8 Then
 		SetLog(UBound($aResult) & " Gfx Errors detected, Reloading Android...", $COLOR_ERROR)
 		; Save debug image
-		DebugImageSave("GfxError", False)
+		SaveDebugImage("GfxError", False)
 		If $bRebootAndroid Then Return checkObstacles_RebootAndroid()
 		Return True
 	EndIf

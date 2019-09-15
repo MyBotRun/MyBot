@@ -143,10 +143,10 @@ Func CreateBotDebug()
 		$g_hBtnTestTHimgloc = GUICtrlCreateButton("imgloc TH", $x, $y, 140, 25)
 	$y += $yNext
 
-		$g_hBtnTestTrainsimgloc = GUICtrlCreateButton("Queued Spells", $x, $y, 140, 25)
+		$g_hBtnTestTrainsimgloc = GUICtrlCreateButton("PrepareAttack", $x, $y, 140, 25)
 	$y += $yNext
 
-		$g_hBtnTestQuickTrainsimgloc = GUICtrlCreateButton("Queued Troops", $x, $y, 140, 25)
+		$g_hBtnTestQuickTrainsimgloc = GUICtrlCreateButton("PrepareAttack Remain", $x, $y, 140, 25)
 
 	$y += $yNext
 		$g_hBtnTestOcrMemory = GUICtrlCreateButton("OCR Memory Test", $x, $y, 140, 25)

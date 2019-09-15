@@ -27,12 +27,12 @@ Global $g_oTxtSALogInitText = ObjCreate("Scripting.Dictionary")
 Global $g_bSilentSetDebugLog = False
 Global $g_aLastStatusBar
 
-Func SetLog($sLogMessage, $iColor = Default, $sFont = Default, $iFontSize = Default, $iStatusbar = Default, $bConsoleWrite = Default) ;Sets the text for the log
-	If $sLogMessage <> "" Then Return _SetLog($sLogMessage, $iColor, $sFont, $iFontSize, $iStatusbar, $bConsoleWrite)
+Func SetLog($sLogMessage, $iColor = Default, $sFont = Default, $iFontSize = Default, $iStatusbar = Default, $bConsoleWrite = Default, $time = Default, $bEndLine = Default) ;Sets the text for the log
+	If $sLogMessage <> "" Then Return _SetLog($sLogMessage, $iColor, $sFont, $iFontSize, $iStatusbar, $time, $bConsoleWrite, $bEndLine)
 EndFunc   ;==>SetLog
 
 ; internal _SetLog(), don't use outside this file
-Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Default, $statusbar = Default, $time = Default, $bConsoleWrite = Default, _
+Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Default, $statusbar = Default, $time = Default, $bConsoleWrite = Default, $bEndLine = Default, _
 		$LogPrefix = Default, $bPostponed = Default, $bSilentSetLog = Default, $bWriteToLogFile = Default)
 
 	Local Static $bActive = False
@@ -42,9 +42,10 @@ Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Defaul
 	If $Font = Default Then $Font = "Verdana"
 	If $FontSize = Default Then $FontSize = 7.5
 	If $statusbar = Default Then $statusbar = 1
-	If $time = Default Then $time = Time()
+    If $time = Default Then $time = Time()
 	Local $debugTime = TimeDebug()
 	If $bConsoleWrite = Default Then $bConsoleWrite = True
+	If $bEndLine = Default Then $bEndLine = True
 	If $LogPrefix = Default Then $LogPrefix = "L "
 	If $bPostponed = Default Then $bPostponed = $g_bCriticalMessageProcessing
 	If $bSilentSetLog = Default Then $bSilentSetLog = $g_bSilentSetLog
@@ -53,7 +54,7 @@ Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Defaul
 	Local $log = $LogPrefix & $debugTime & $sLogMessage
 	If $bConsoleWrite = True And $sLogMessage <> "" Then
 		Local $sLevel = GetLogLevel($Color)
-		_ConsoleWrite($sLevel & $log & @CRLF) ; Always write any log to console
+		_ConsoleWrite($sLevel & $log) ; Always write any log to console
 	EndIf
 	If $g_hLogFile = 0 And $g_sProfileLogsPath Then
 		CreateLogFile()
@@ -67,7 +68,7 @@ Func _SetLog($sLogMessage, $Color = Default, $Font = Default, $FontSize = Defaul
 	EndIf
 	;Local $txtLogMutex = AcquireMutex("txtLog")
 	Local $a[6]
-	$a[0] = $sLogMessage
+	$a[0] = $sLogMessage & ($bEndLine ? @CRLF : "")
 	$a[1] = $Color
 	$a[2] = $Font
 	$a[3] = $FontSize
@@ -152,7 +153,7 @@ Func SetLogText(ByRef $hTxtLog, ByRef $sLogMessage, ByRef $Color, ByRef $Font, B
 		_GUICtrlRichEdit_AppendTextColor($hTxtLog, $time, 0x000000, False)
 	EndIf
 	_GUICtrlRichEdit_SetFont($hTxtLog, $FontSize, $Font)
-	_GUICtrlRichEdit_AppendTextColor($hTxtLog, $sLogMessage & @CRLF, _ColorConvert($Color), False)
+	_GUICtrlRichEdit_AppendTextColor($hTxtLog, $sLogMessage, _ColorConvert($Color), False)
 EndFunc   ;==>SetLogText
 
 Func SetDebugLog($sLogMessage, $sColor = $COLOR_DEBUG, $bSilentSetLog = Default, $Font = Default, $FontSize = Default, $statusbar = 0)
@@ -160,15 +161,15 @@ Func SetDebugLog($sLogMessage, $sColor = $COLOR_DEBUG, $bSilentSetLog = Default,
 	Local $sLog = $sLogPrefix & TimeDebug() & $sLogMessage
 	If $bSilentSetLog = Default Then $bSilentSetLog = $g_bSilentSetDebugLog
 
-	If $g_bDebugSetlog And $bSilentSetLog = False Then
-		_SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, True, $sLogPrefix)
+	If $g_bDebugSetlog And Not $bSilentSetLog Then
+        _SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, Default, Default, $sLogPrefix)
 	Else
-		If $sLogMessage <> "" Then _ConsoleWrite(GetLogLevel($sColor) & $sLog & @CRLF) ; Always write any log to console
+		If $sLogMessage <> "" Then _ConsoleWrite(GetLogLevel($sColor) & $sLog) ; Always write any log to console
 		If $g_hLogFile = 0 And $g_sProfileLogsPath Then CreateLogFile()
 		If $g_hLogFile Then
 			__FileWriteLog($g_hLogFile, $sLog)
 		Else
-			_SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, False, $sLogPrefix, Default, True)
+            _SetLog($sLogMessage, $sColor, $Font, $FontSize, $statusbar, Default, False, Default, $sLogPrefix, Default, True) ; $bConsoleWrite = False
 		EndIf
 	EndIf
 EndFunc   ;==>SetDebugLog
@@ -304,7 +305,7 @@ Func SetAtkLog($String1, $String2 = "", $Color = $COLOR_BLACK, $Font = "Lucida C
 
 	;Local $txtLogMutex = AcquireMutex("txtAtkLog")
 	Dim $a[6]
-	$a[0] = $String1
+	$a[0] = $String1 & @CRLF
 	$a[1] = $Color
 	$a[2] = $Font
 	$a[3] = $FontSize
@@ -326,7 +327,7 @@ Func SetSwitchAccLog($String, $Color = $COLOR_BLACK, $Font = "Verdana", $FontSiz
 	_FileWriteLog($g_hSwitchLogFile, $String)
 
 	Dim $a[6]
-	$a[0] = $String
+	$a[0] = $String & @CRLF
 	$a[1] = $Color
 	$a[2] = $Font
 	$a[3] = $FontSize

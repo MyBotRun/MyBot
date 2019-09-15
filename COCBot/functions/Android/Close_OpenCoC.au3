@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: CloseCoC
 ; Description ...: Kill then restart CoC
@@ -40,8 +39,6 @@ Func CloseCoC($ReOpenCoC = False, $bCheckRunState = True)
 	EndIf
 	FuncReturn()
 EndFunc   ;==>CloseCoC
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: OpenCoC
@@ -72,8 +69,6 @@ Func OpenCoC()
 	waitMainScreenMini()
 	FuncReturn()
 EndFunc   ;==>OpenCoC
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: WaitnOpenCoC
@@ -165,7 +160,7 @@ Func PoliteCloseCoC($sSource = "Unknown_", $bPoliteCloseCoC = $g_bPoliteCloseCoC
 				If ClickOkay("ExitOkay_" & $sSource, True) = True Then ExitLoop ; Confirm okay to exit
 				If $i > 10 Then
 					SetLog("Can not find Okay button to exit CoC, Forcefully Closing CoC", $COLOR_ERROR)
-					If $g_bDebugImageSave Then DebugImageSave($sSource)
+					If $g_bDebugImageSave Then SaveDebugImage($sSource)
 					CloseCoC()
 					ExitLoop
 				EndIf
@@ -215,13 +210,13 @@ Func PoliteCloseCoC($sSource = "Unknown_", $bPoliteCloseCoC = $g_bPoliteCloseCoC
 						ContinueCase
 					Case Else
 						SetLog("Polite Close Unsupported - " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
-						If $g_bDebugImageSave Then DebugImageSave($sSource)
+						If $g_bDebugImageSave Then SaveDebugImage($sSource)
 						CloseCoC()
 						ExitLoop
 				EndSwitch
 				If $i > 10 Then
 					SetLog("Can not find exit button: " & $g_sAndroidGameDistributor & ", Forcefully Closing CoC", $COLOR_ERROR)
-					If $g_bDebugImageSave Then DebugImageSave($sSource)
+					If $g_bDebugImageSave Then SaveDebugImage($sSource)
 					CloseCoC()
 					ExitLoop
 				EndIf

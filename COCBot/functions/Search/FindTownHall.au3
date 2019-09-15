@@ -14,20 +14,17 @@
 ; ===============================================================================================================================
 #include-once
 
-Func FindTownHall($check = True, $forceCaptureRegion = True)
+Func FindTownHall($bCheck = True, $forceCaptureRegion = True)
 	Local $THString = ""
 	$g_iSearchTH = "-"
 	$g_iTHx = 0
-	$g_iTHy = 0 ;if not check, find     TH Snipe and bully mode, always find				if deadbase enabled, and TH lvl or Outside checked, find          same with ActiveBase
+	$g_iTHy = 0 ;if not check, find bully mode, always find				if deadbase enabled, and TH lvl or Outside checked, find          same with ActiveBase
 
-	If $check = True Or _
-			IsSearchModeActive($TS) Or _
-			($isModeActive[$DB] And ($g_abFilterMeetTH[$DB] Or $g_abFilterMeetTHOutsideEnable[$DB])) Or _
-			($isModeActive[$LB] And ($g_abFilterMeetTH[$LB] Or $g_abFilterMeetTHOutsideEnable[$LB])) Then
+	If $bCheck Or ($isModeActive[$DB] And ($g_abFilterMeetTH[$DB] Or $g_abFilterMeetTHOutsideEnable[$DB])) Or ($isModeActive[$LB] And ($g_abFilterMeetTH[$LB] Or $g_abFilterMeetTHOutsideEnable[$LB])) Then
 
 		$g_iSearchTH = imgloccheckTownHallADV2(0, 0, $forceCaptureRegion)
 
-		If $g_iSearchTH <> "-" And SearchTownHallLoc() = False Then
+		If $g_iSearchTH <> "-" Then
 			$g_sTHLoc = "In"
 		ElseIf $g_iSearchTH <> "-" Then
 			$g_sTHLoc = "Out"
@@ -36,7 +33,6 @@ Func FindTownHall($check = True, $forceCaptureRegion = True)
 			$g_iTHx = 0
 			$g_iTHy = 0
 		EndIf
-		;EndIf
 		Return " [TH]:" & StringFormat("%2s", $g_iSearchTH) & ", " & $g_sTHLoc
 	EndIf
 	$g_sTHLoc = $g_iSearchTH

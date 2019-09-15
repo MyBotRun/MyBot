@@ -56,7 +56,7 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 					SetLog("Troop " & GetTroopName($iIndex) & " is not available due to full queue", $COLOR_DEBUG)
 				Else
 					If Mod($i, 2) = 0 Then ; executed on $i = 2 or 4
-						If $g_bDebugSetlogTrain Then DebugImageSave("BadPixelCheck_" & GetTroopName($iIndex))
+						If $g_bDebugSetlogTrain Then SaveDebugImage("BadPixelCheck_" & GetTroopName($iIndex))
 						SetLog("Bad pixel check on troop position " & GetTroopName($iIndex), $COLOR_ERROR)
 						If $g_bDebugSetlogTrain Then SetLog("Train Pixel Color: " & $sBadPixelColor, $COLOR_DEBUG)
 					EndIf
@@ -72,7 +72,7 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 				If $i < 5 Then
 					ForceCaptureRegion()
 				Else
-					If $g_bDebugSetlogTrain Then DebugImageSave("TroopIconNotFound_" & GetTroopName($iIndex))
+					If $g_bDebugSetlogTrain Then SaveDebugImage("TroopIconNotFound_" & GetTroopName($iIndex))
 					SetLog("TrainIt troop position " & GetTroopName($iIndex) & " did not find icon", $COLOR_ERROR)
 					If $i = 5 Then
 						SetLog("Seems all your barracks are upgrading!", $COLOR_ERROR)

@@ -21,11 +21,11 @@ Func imglocCheckWall()
 	Local $iLastGoodWallx = $g_aiLastGoodWallPos[0]
 	Local $iLastGoodWally = $g_aiLastGoodWallPos[1]
 	ConvertToVillagePos($iLastGoodWallx, $iLastGoodWally)
-	
+
 	If _Sleep(500) Then Return
 
 	Local $levelWall = $g_iCmbUpgradeWallsLevel + 4
-	
+
 	Switch $levelWall
 	Case 10
 		$iXClickOffset = 2
@@ -43,7 +43,7 @@ Func imglocCheckWall()
 	If ($g_aiLastGoodWallPos[0] > 0) And ($g_aiLastGoodWallPos[1] > 0) Then ; Last known good position exists, trying to find upgradeable walls there
 		_CaptureRegion2($iLastGoodWallx - $iXRange, $iLastGoodWally - $iYRange, $iLastGoodWallx + $iXRange, $iLastGoodWally + $iYRange)
 		$FoundWalls = imglocFindWalls($levelWall, "FV", "FV", 4) ; lets get up to 4 surrounding points
-		If $g_bDebugImageSave Then DebugImageSave("WallUpgrade", False)
+		If $g_bDebugImageSave Then SaveDebugImage("WallUpgrade", False)
 	EndIf
 	If ($FoundWalls[0] = "") Then ; nothing found
 		$g_aiLastGoodWallPos[0] = -1

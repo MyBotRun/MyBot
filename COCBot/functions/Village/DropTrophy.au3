@@ -128,7 +128,6 @@ Func DropTrophy()
 							PrepareAttack($DB) ; ==== Troops :checks for type, slot, and quantity ===
 							If $g_bRestart Then Return
 							Attack()
-							$g_bFirstStart = True ;reset barracks upon return when attacked a Dead Base with 70%~100% troops capacity
 							ReturnHome($g_bTakeLootSnapShot)
 							$g_bIsClientSyncError = False ; reset OOS flag to get new new army
 							$g_bIsSearchLimit = False ; reset search limit flag to get new new army

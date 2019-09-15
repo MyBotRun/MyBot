@@ -1,4 +1,27 @@
-﻿* **V7.7.7**
+﻿* **V7.7.8**
+* Added Legend League attack with auto sign-up: any dead or live base search conditions are ignored
+* Added precise Army to train system
+* Added collect rewards in daily challenge
+* Added check discount rate for heroes and wall upgrade
+* Added resume attack to collect star bonus
+* Improved quick train and double custom train to brew 11 lightning spells
+* Improved train siege machine, not being skipped when halt-attack
+* Improved request CC and attack when full to fall back to troop only when no troop types have been selected
+* Fixed smartzap crashed with level-5 EQ spell
+* Fixed collect free magic items
+* Fixed builder base detection when master builder is gone
+* Fixed delete army in quick train
+* Fixed make 2nd army while in Halt-attack/Donate-only mode
+* Fixed train tab display in languages other than English
+* Fixed star laboratory crashed
+* Fixed hero auto upgrade issues
+* Fixed loot cart collection & obstacle removal when shovel is available
+* Fixed Extended Attackbar Issues with 13 Slots
+* Renamed debugImageSave and remove ability to choose jpg images
+* Increased bot/emulator alignment offset
+* Removed milking & townHall Sniping
+
+* **V7.7.7**
 * Fixed Search Attack (June 2019 Update)
 * Fixed Warden Detection on Army Overview and Attack (June 2019 Update)
 * Fixed halt mode not supported in account switching

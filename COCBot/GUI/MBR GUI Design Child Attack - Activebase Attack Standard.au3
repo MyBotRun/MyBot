@@ -56,25 +56,6 @@ Func CreateAttackSearchActiveBaseStandard()
 								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "CmbStandardDropSides_Item_05", "DE Side Attack") & "|" & _
 								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "CmbStandardDropSides_Item_06", "TH Side Attack"), GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "CmbStandardDropSides_Item_04", -1))
 
-		$y += 25
-			GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "Lbl-CmbStandardUnitDelay", -1) & ":", $x, $y + 5, -1, -1)
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "Lbl-CmbStandardUnitDelay_Info_01", -1) & @CRLF & _
-						   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "Lbl-CmbStandardUnitDelay_Info_02", -1)
-				_GUICtrlSetTip(-1, $sTxtTip)
-			$g_hCmbStandardUnitDelayAB = GUICtrlCreateCombo("", $x + 55, $y, 36, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10", "4")
-			GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "Lbl-CmbStandardWaveDelay_Info_01", -1) & ":", $x + 100, $y + 5, -1, -1)
-				_GUICtrlSetTip(-1, $sTxtTip)
-			$g_hCmbStandardWaveDelayAB = GUICtrlCreateCombo("", $x + 140, $y, 36, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10", "4")
-
-		$y += 22
-			$g_hChkRandomSpeedAtkAB = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "ChkRandomSpeedAtk", -1), $x, $y, -1, -1)
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetOnEvent(-1, "chkRandomSpeedAtkAB")
-
 		$y +=22
 			$g_hChkSmartAttackRedAreaAB = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "ChkSmartAttackRedArea", -1), $x, $y, -1, -1)
 				_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Attack Standard", "ChkSmartAttackRedArea_Info_01", -1))

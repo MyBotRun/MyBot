@@ -124,71 +124,13 @@ Func ConvertInternalExternArea()
 			$InternalArea[0][0] & "," & $InternalArea[0][1]
 EndFunc   ;==>ConvertInternalExternArea
 
-Func CheckAttackLocation(ByRef $x, ByRef $y)
-	;If $x < 1 Then $x = 1
-	;If $x > $g_iGAME_WIDTH - 1 Then $x = $g_iGAME_WIDTH - 1
-	;If $y < 1 Then $y = 1
-	If $y > $DeployableLRTB[3] Then
-		$y = $DeployableLRTB[3]
+Func CheckAttackLocation(ByRef $iX, ByRef $iY)
+	If $iY > $DeployableLRTB[3] Then
+		$iY = $DeployableLRTB[3]
 		Return False
 	EndIf
+
 	Return True
-	#cs
-		Local $sPoints = GetDeployableNextTo($x & "," & $y)
-		Local $aPoints = StringSplit($sPoints, "|", $STR_NOCOUNT)
-		If UBound($aPoints) > 0 Then
-		Local $aPoint = StringSplit($aPoints[0], ",", $STR_NOCOUNT)
-		If UBound($aPoint) > 1 Then
-		$x = $aPoint[0]
-		$y = $aPoint[1]
-		Return True
-		EndIf
-		EndIf
-	#ce
-
-	#cs
-		Local $aPoint = [$x, $y]
-		If isInsideDiamondRedArea($aPoint) = True Then Return False
-
-		; find closest red line point
-
-		Local $isLeft = ($x <= $ExternalArea[2][0])
-		Local $isTop = ($y <=  $ExternalArea[0][1])
-
-		Local $aPoints
-		If $isLeft = True Then
-		If $isTop = True Then
-		$aPoints = $g_aiPixelTopLeft
-		Else
-		$aPoints = $g_aiPixelBottomLeft
-		EndIf
-		Else
-		If $isTop = True Then
-		$aPoints = $g_aiPixelTopRight
-		Else
-		$aPoints = $g_aiPixelBottomRight
-		EndIf
-		EndIf
-
-		Local $aP = [0, 0, 9999]
-		For $aPoint In $aPoints
-		Local $a = $x - $aPoint[0]
-		Local $b = $y - $aPoint[1]
-		Local $d = Round(Sqrt($a * $a + $b * $b))
-		If $d < $aP[2] Then
-		Local $aP = [$aPoint[0], $aPoint[1], $d]
-		If $d < 5 Then ExitLoop
-		EndIf
-		Next
-
-		If $aP[2] < 9999 Then
-		$x = $aP[0]
-		$y = $aP[1]
-		Return True
-		EndIf
-	#ce
-
-	;debugAttackCSV("CheckAttackLocation: Failed: " & $x & ", " & $y)
 EndFunc   ;==>CheckAttackLocation
 
 Func GetMinPoint($PointList, $Dim)
@@ -774,23 +716,6 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	; 12 - DEBUGIMAGE ------------------------------------------------------------------------
 	If $g_bDebugMakeIMGCSV Then AttackCSVDEBUGIMAGE() ;make IMG debug
 	If $g_bDebugAttackCSV Then _LogObjList($g_oBldgAttackInfo) ; display dictionary for raw find image debug
-
-	; 13 - START TH SNIPE BEFORE ATTACK CSV IF NEED ------------------------------------------
-	If $g_bTHSnipeBeforeEnable[$DB] And $g_iSearchTH = "-" Then FindTownHall(True) ;search townhall if no previous detect
-	If $g_bTHSnipeBeforeEnable[$DB] Then
-		If $g_iSearchTH <> "-" Then
-			If SearchTownHallLoc() Then
-				SetLogCentered(" TH snipe Before Scripted Attack ", Default, $COLOR_INFO)
-				$g_bTHSnipeUsedKing = False
-				$g_bTHSnipeUsedQueen = False
-				AttackTHParseCSV()
-			Else
-				If $g_bDebugSetlog Then SetDebugLog("TH snipe before scripted attack skip, th internal village", $COLOR_DEBUG)
-			EndIf
-		Else
-			If $g_bDebugSetlog Then SetDebugLog("TH snipe before scripted attack skip, no th found", $COLOR_DEBUG)
-		EndIf
-	EndIf
 
 	; 14 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
 	SetSlotSpecialTroops()

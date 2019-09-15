@@ -151,13 +151,7 @@ Func UpdateStats($bForceUpdate = False)
 
 	Local $bStatsUpdated = False
 
-	If $g_iFirstAttack = 1 Then
-		;GUICtrlSetState($lblLastAttackTemp, $GUI_HIDE)
-		;GUICtrlSetState($lblLastAttackBonusTemp, $GUI_HIDE)
-		;GUICtrlSetState($lblTotalLootTemp, $GUI_HIDE)
-		;GUICtrlSetState($lblHourlyStatsTemp, $GUI_HIDE)
-		$g_iFirstAttack = 2
-	EndIf
+	If $g_iFirstAttack = 1 Then $g_iFirstAttack = 2
 
 	If Number($g_iStatsLastAttack[$eLootGold]) > Number($topgoldloot) Then
 		$bStatsUpdated = True
@@ -409,18 +403,6 @@ Func UpdateStats($bForceUpdate = False)
 		$iOldNbrOfOoS = $g_iNbrOfOoS
 	EndIf
 
-	If $iOldNbrOfTHSnipeFails <> $g_iNbrOfTHSnipeFails Then
-		$bStatsUpdated = True
-		GUICtrlSetData($g_hLblNbrOfTSFailed, $g_iNbrOfTHSnipeFails)
-		$iOldNbrOfTHSnipeFails = $g_iNbrOfTHSnipeFails
-	EndIf
-
-	If $iOldNbrOfTHSnipeSuccess <> $g_iNbrOfTHSnipeSuccess Then
-		$bStatsUpdated = True
-		GUICtrlSetData($g_hLblNbrOfTSSuccess, $g_iNbrOfTHSnipeSuccess)
-		$iOldNbrOfTHSnipeSuccess = $g_iNbrOfTHSnipeSuccess
-	EndIf
-
 	If $iOldGoldFromMines <> $g_iGoldFromMines Then
 		$bStatsUpdated = True
 		GUICtrlSetData($g_hLblGoldFromMines, _NumberFormat($g_iGoldFromMines, True))
@@ -521,7 +503,7 @@ Func UpdateStats($bForceUpdate = False)
 
 	$g_aiAttackedCount = 0
 
-	For $i = 0 To $g_iModeCount
+	For $i = 0 To $g_iModeCount - 1
 
 		If $iOldAttackedVillageCount[$i] <> $g_aiAttackedVillageCount[$i] Then
 			$bStatsUpdated = True
@@ -563,9 +545,7 @@ Func UpdateStats($bForceUpdate = False)
 		$iOldAttackedCount = $g_aiAttackedCount
 	EndIf
 
-	For $i = 0 To $g_iModeCount
-
-		If $i = $TS Then ContinueLoop
+	For $i = 0 To $g_iModeCount - 1
 
 		If $iOldNbrOfDetectedMines[$i] <> $g_aiNbrOfDetectedMines[$i] Then
 			$bStatsUpdated = True
@@ -704,15 +684,13 @@ Func ResetStats()
 	$g_iTrainCostDElixir = 0
 	$g_iTrainCostGold = 0
 	$g_iNbrOfOoS = 0
-	$g_iNbrOfTHSnipeFails = 0
-	$g_iNbrOfTHSnipeSuccess = 0
 	$g_iGoldFromMines = 0
 	$g_iElixirFromCollectors = 0
 	$g_iDElixirFromDrills = 0
 	$g_iSmartZapGain = 0
 	$g_iNumLSpellsUsed = 0
 	$g_iNumEQSpellsUsed = 0
-	For $i = 0 To $g_iModeCount
+	For $i = 0 To $g_iModeCount - 1
 		$g_aiAttackedVillageCount[$i] = 0
 		$g_aiTotalGoldGain[$i] = 0
 		$g_aiTotalElixirGain[$i] = 0

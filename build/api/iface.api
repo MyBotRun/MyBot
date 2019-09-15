@@ -1,0 +1,670 @@
+editor.Anchor 
+editor.AutoCAutoHide 
+editor.AutoCCancelAtStart
+editor.AutoCChooseSingle
+editor.AutoCDropRestOfWord
+editor.AutoCFillUps
+editor.AutoCIgnoreCase
+editor.AutoCSeparator
+editor.AutoCTypeSeparator
+editor.BackSpaceUnIndents
+editor.BufferedDraw
+editor.CallTipBack
+editor.CallTipFore
+editor.CallTipForeHlt
+editor.CaretFore
+editor.CaretLineBack
+editor.CaretLineVisible
+editor.CaretPeriod
+editor.CaretWidth
+editor.CharAt
+editor.CodePage
+editor.Column
+editor.ControlCharSymbol
+editor.CurrentPos
+editor.Cursor
+editor.DirectFunction
+editor.DirectPointer
+editor.DocPointer
+editor.EdgeColour
+editor.EdgeColumn
+editor.EdgeMode
+editor.EndAtLastLine
+editor.EndStyled
+editor.FirstVisibleLine
+editor.Focus
+editor.FoldExpanded
+editor.FoldLevel
+editor.FoldParent
+editor.HighlightGuide
+editor.HotspotActiveBack
+editor.HotspotActiveFore
+editor.HotspotActiveUnderline
+editor.HotspotSingleLine
+editor.HScrollBar
+editor.Indent
+editor.IndentationGuides
+editor.IndicFore
+editor.IndicStyle
+editor.KeyWords
+editor.LastChild
+editor.LayoutCache
+editor.Lexer
+editor.LexerLanguage
+editor.LineCount
+editor.LineEndPosition
+editor.LineIndentation
+editor.LineIndentPosition
+editor.LinesOnScreen
+editor.LineState
+editor.MarginLeft
+editor.MarginMaskN
+editor.MarginRight
+editor.MarginSensitiveN
+editor.MarginTypeN
+editor.MarginWidthN
+editor.MaxLineState
+editor.ModEventMask
+editor.Modify
+editor.MouseDownCaptures
+editor.MouseDwellTime
+editor.Overtype
+editor.PrintColourMode
+editor.PrintMagnification
+editor.PrintWrapMode
+editor.Property
+editor.ReadOnly
+editor.ScrollWidth
+editor.SearchFlags
+editor.SelectionEnd
+editor.SelectionIsRectangle
+editor.SelectionMode
+editor.SelectionStart
+editor.Status
+editor.StyleAt
+editor.StyleBack
+editor.StyleBits
+editor.StyleBold
+editor.StyleCase
+editor.StyleChangeable
+editor.StyleCharacter
+editor.StyleClearAll
+editor.StyleEOLFilled
+editor.StyleFont
+editor.StyleFore
+editor.StyleHotSpot
+editor.StyleItalic
+editor.StyleSize
+editor.StyleUnderline
+editor.StyleVisible
+editor.TabIndents
+editor.TabWidth
+editor.TarEnd
+editor.TarStart
+editor.TextLength
+editor.TwoPhaseDraw
+editor.Uabs
+editor.UndoCollection
+editor.UsePalette
+editor.ViewEOL
+editor.ViewWS
+editor.VScrollBar
+editor.WhitespaceChars
+editor.WordChars
+editor.WrapMode
+editor.WrapStartIndent
+editor.WrapVisualFlags
+editor.WrapVisualFlagsLocation
+editor.XOff
+editor:AddRefDocument(, int doc) Create a new document object. Starts with reference count of 1 and not selected into editor. Extend life of document.
+editor:AddStyledText(int length, cells c) Add array of cells to document.
+editor:AddText(int length, string text) Add text to the document at current position.
+editor:Allocate(int bytes,) Enlarge the document to a particular size of text bytes.
+editor:AppendText(int length, string text) Append a string to the end of the document without changing the selection.
+editor:AssignCmdKey(keymod km, int msg) When key+modifier combination km is pressed perform msg.
+editor:AutoCActive(,) Is there an auto-completion list visible?
+editor:AutoCCancel(,) Remove the auto-completion list from the screen.
+editor:AutoCComplete(,) User has selected an item so remove the list and insert the selection.
+editor:AutoCGetCurrent(,) Get currently selected item position in the auto-completion list
+editor:AutoCPosStart(,) Retrieve the position of the caret when the auto-completion list was displayed.
+editor:AutoCSelect(, string text) Select the item in the auto-completion list that starts with a string.
+editor:AutoCShow(int lenEntered, string itemList) Display a auto-completion list. The lenEntered parameter indicates how many characters before the caret should be used to provide context.
+editor:AutoCStops(, string characterSet) Define a set of character that when typed cancel the auto-completion list.
+editor:BackTab(,) Dedent the selected lines.
+editor:BeginUndoAction(,) Start a sequence of actions that is undone and redone as a unit. May be nested.
+editor:BraceBadLight(position pos,) Highlight the character at a position indicating there is no matching brace.
+editor:BraceHighlight(position pos1, position pos2) Highlight the characters at two positions.
+editor:BraceMatch(position pos,) Find the position of a matching brace or INVALID_POSITION if no match.
+editor:CallTipActive(,) Is there an active call tip?
+editor:CallTipCancel(,) Remove the call tip from the screen.
+editor:CallTipPosStart(,) Retrieve the position where the caret was before displaying the call tip.
+editor:CallTipSetHlt(int start, int end) Highlight a segment of the definition.
+editor:CallTipShow(position pos, string definition) Show a call tip containing a definition near position pos.
+editor:Cancel(,) Cancel any modes such as call tip or auto-completion list display.
+editor:CanPaste(,) Will a paste succeed?
+editor:CanRedo(,) Are there any redoable actions in the undo history?
+editor:CanUndo(,) Are there any undoable actions in the undo history?
+editor:CharLeft(,) Move caret left one character.
+editor:CharLeftExtend(,) Move caret left one character extending selection to new caret position.
+editor:CharLeftRectExtend(,) Move caret left one character, extending rectangular selection to new caret position.
+editor:CharRight(,) Move caret right one character.
+editor:CharRightExtend(,) Move caret right one character extending selection to new caret position.
+editor:CharRightRectExtend(,) Move caret right one character, extending rectangular selection to new caret position.
+editor:ChooseCaretX(,) Set the last x chosen value to be the caret x position.
+editor:Clear(,) Clear the selection.
+editor:ClearAll(,) Delete all text in the document.
+editor:ClearAllCmdKeys(,) Drop all key mappings.
+editor:ClearCmdKey(keymod km,) When key+modifier combination km is pressed do nothing.
+editor:ClearDocumentStyle(,) Set all style bytes to 0, remove all folding information.
+editor:ClearRegisteredImages(,) Clear all the registered XPM images.
+editor:Colourise(position start, position end) Colourise a segment of the document using the current lexing language.
+editor:ConvertEOLs(int eolMode,) Convert all line endings in the document to one mode.
+editor:Copy(,) Copy the selection to the clipboard.
+editor:CopyRange(position start, position end) Copy a range of text to the clipboard. Positions are clipped into the document.
+editor:CopyText(int length, string text) Copy argument text to the clipboard.
+editor:CreateDocument(,) Create a new document object. Starts with reference count of 1 and not selected into editor.
+editor:Cut(,) Cut the selection to the clipboard.
+editor:DeleteBack(,) Delete the selection or if no selection, the character before the caret.
+editor:DeleteBackNotLine(,) Delete the selection or if no selection, the character before the caret. Will not delete the character before at the start of a line.
+editor:DelLineLeft(,) Delete back from the current position to the start of the line.
+editor:DelLineRight(,) Delete forwards from the current position to the end of the line.
+editor:DelWordLeft(,) Delete the word to the left of the caret.
+editor:DelWordRight(,) Delete the word to the right of the caret.
+editor:DocLineFromVisible(int lineDisplay,) Find the document line of a display line taking hidden lines into account.
+editor:DocumentEnd(,) Move caret to last position in document.
+editor:DocumentEndExtend(,) Move caret to last position in document extending selection to new caret position.
+editor:DocumentStart(,) Move caret to first position in document.
+editor:DocumentStartExtend(,) Move caret to first position in document extending selection to new caret position.
+editor:EditToggleOvertype(,) Switch from insert to overtype mode or the reverse.
+editor:EmptyUndoBuffer(,) Delete the undo history.
+editor:EndUndoAction(,) End a sequence of actions that is undone and redone as a unit.
+editor:EnsureVisible(int line,) Ensure a particular line is visible by expanding any header line hiding it.
+editor:EnsureVisibleEnforcePolicy(int line,) Ensure a particular line is visible by expanding any header line hiding it. Use the currently set visibility policy to determine which range to display.
+editor:FindText(int flags, findtext ft) Find some text in the document.
+editor:FormatRange(bool draw, formatrange fr) On Windows, will draw the document into a display context such as a printer.
+editor:FormFeed(,) Insert a Form Feed character.
+editor:GetCurLine(int length, stringresult text) Retrieve the text of the line containing the caret. Returns the index of the caret on the line.
+editor:GetLine(int line, stringresult text) Retrieve the contents of a line. Returns the length of the line.
+editor:GetLineSelEndPosition(int line,) Retrieve the position of the end of the selection at the given line (INVALID_POSITION if no selection on this line).
+editor:GetLineSelStartPosition(int line,) Retrieve the position of the start of the selection at the given line (INVALID_POSITION if no selection on this line).
+editor:GetSelText(, stringresult text) Retrieve the selected text. Return the length of the text.
+editor:GetStyledText(, textrange tr) Retrieve a buffer of cells. Returns the number of bytes in the buffer not including terminating NULs.
+editor:GetText(int length, stringresult text) Retrieve all the text in the document. Returns number of characters retrieved.
+editor:GetTextRange(, textrange tr) Retrieve a range of text. Return the length of the text.
+editor:GotoLine(int line,) Set caret to start of a line and ensure it is visible.
+editor:GotoPos(position pos,) Set caret to a position and ensure it is visible.
+editor:GrabFocus(,) Set the focus to this Scintilla widget. GTK+ Specific.
+editor:HideLines(int lineStart, int lineEnd) Make a range of lines invisible.
+editor:HideSelection(bool normal,) Draw the selection in normal style or with selection highlighted.
+editor:Home(,) Move caret to first position on line.
+editor:HomeDisplay(,) Move caret to first position on display line.
+editor:HomeDisplayExtend(,) Move caret to first position on display line extending selection to new caret position.
+editor:HomeExtend(,) Move caret to first position on line extending selection to new caret position.
+editor:HomeRectExtend(,) Move caret to first position on line, extending rectangular selection to new caret position.
+editor:HomeWrap(,)
+editor:HomeWrapExtend(,)
+editor:InsertText(position pos, string text) Insert string at a position.
+editor:LineCopy(,) Copy the line containing the caret.
+editor:LineCut(,) Cut the line containing the caret.
+editor:LineDelete(,) Delete the line containing the caret.
+editor:LineDown(,)# Start of key messages Move caret down one line.
+editor:LineDownExtend(,) Move caret down one line extending selection to new caret position.
+editor:LineDownRectExtend(,)# RectExtended rectangular selection moves Move caret down one line, extending rectangular selection to new caret position.
+editor:LineDuplicate(,) Duplicate the current line.
+editor:LineEnd(,) Move caret to last position on line.
+editor:LineEndDisplay(,) Move caret to last position on display line.
+editor:LineEndDisplayExtend(,) Move caret to last position on display line extending selection to new caret position.
+editor:LineEndExtend(,) Move caret to last position on line extending selection to new caret position.
+editor:LineEndRectExtend(,) Move caret to last position on line, extending rectangular selection to new caret position.
+editor:LineEndWrap(,)
+editor:LineEndWrapExtend(,)
+editor:LineFromPosition(position pos,) Retrieve the line containing a position.
+editor:LineLength(int line,) How many characters are on a line, not including end of line characters?
+editor:LineScroll(int columns, int lines) Scroll horizontally and vertically.
+editor:LineScrollDown(,) Scroll the document down, keeping the caret visible.
+editor:LineScrollUp(,) Scroll the document up, keeping the caret visible.
+editor:LinesJoin(,) Join the lines in the target.
+editor:LinesSplit(int pixelWidth,) Split the lines in the target into lines that are less wide than pixelWidth where possible.
+editor:LineTranspose(,) Switch the current line with the previous.
+editor:LineUp(,) Move caret up one line.
+editor:LineUpExtend(,) Move caret up one line extending selection to new caret position.
+editor:LineUpRectExtend(,) Move caret up one line, extending rectangular selection to new caret position.
+editor:LoadLexerLibrary(, string path) Load a lexer library (dll / so).
+editor:LowerCase(,) Transform the selection to lower case.
+editor:MarkerAdd(int line, int markerNumber) Add a marker to a line, returning an ID which can be used to find or delete the marker.
+editor:MarkerDefine(int markerNumber, int markerSymbol) Set the symbol used for a particular marker number.
+editor:MarkerDefinePixmap(int markerNumber, string pixmap) Define a marker from a pixmap.
+editor:MarkerDelete(int line, int markerNumber) Delete a marker from a line.
+editor:MarkerDeleteAll(int markerNumber,) Delete all markers with a particular number from all lines.
+editor:MarkerDeleteHandle(int handle,) Delete a marker.
+editor:MarkerGet(int line,) Get a bit mask of all the markers set on a line.
+editor:MarkerLineFromHandle(int handle,) Retrieve the line number at which a particular marker is located.
+editor:MarkerNext(int lineStart, int markerMask) Find the next line after lineStart that includes a marker in mask.
+editor:MarkerPrevious(int lineStart, int markerMask) Find the previous line before lineStart that includes a marker in mask.
+editor:MarkerSetBack(int markerNumber, colour back) Set the background colour used for a particular marker number.
+editor:MarkerSetFore(int markerNumber, colour fore) Set the foreground colour used for a particular marker number.
+editor:MoveCaretInsideView(,) Move the caret inside current view if it's not there already.
+editor:NewLine(,) Insert a new line, may use a CRLF, CR or LF depending on EOL mode.
+editor:Null(,) Null operation.
+editor:PageDown(,) Move caret one page down.
+editor:PageDownExtend(,) Move caret one page down extending selection to new caret position.
+editor:PageDownRectExtend(,) Move caret one page down, extending rectangular selection to new caret position.
+editor:PageUp(,) Move caret one page up.
+editor:PageUpExtend(,) Move caret one page up extending selection to new caret position.
+editor:PageUpRectExtend(,) Move caret one page up, extending rectangular selection to new caret position.
+editor:ParaDown(,) Move caret between paragraphs (delimited by empty lines).
+editor:ParaDownExtend(,) Move caret between paragraphs (delimited by empty lines).
+editor:ParaUp(,) Move caret between paragraphs (delimited by empty lines).
+editor:ParaUpExtend(,) Move caret between paragraphs (delimited by empty lines).
+editor:Paste(,) Paste the contents of the clipboard into the document replacing the selection.
+editor:PointXFromPosition(, position pos) Retrieve the x value of the point in the window where a position is displayed.
+editor:PointYFromPosition(, position pos) Retrieve the y value of the point in the window where a position is displayed.
+editor:PositionAfter(position pos,) Given a valid document position, return the next position taking code page into account. Maximum value returned is the last position in the document.
+editor:PositionBefore(position pos,) Given a valid document position, return the previous position taking code page into account. Returns 0 if passed 0.
+editor:PositionFromLine(int line,) Retrieve the position at the start of a line.
+editor:PositionFromPoint(int x, int y) Find the position from a point within the window.
+editor:PositionFromPointClose(int x, int y) Find the position from a point within the window but return INVALID_POSITION if not close to text.
+editor:Redo(,) Redoes the next action on the undo history.
+editor:RegisterImage(int type, string xpmData) Register an XPM image for use in autocompletion lists.
+editor:ReleaseDocument(, int doc) Create a new document object. Starts with reference count of 1 and not selected into editor. Extend life of document. Release a reference to the document, deleting document if it fades to black.
+editor:ReplaceSel(, string text) Replace the selected text with the argument text.
+editor:ReplaceTarget(int length, string text) Replace the target text with the argument text. Text is counted so it can contain NULs. Returns the length of the replacement text.
+editor:ReplaceTargetRE(int length, string text) Replace the target text with the argument text after \d processing. Text is counted so it can contain NULs. Looks for \d where d is between 1 and 9 and replaces these with the strings matched in the last search operation which were surrounded by \( and \). Returns the length of the replacement text including any change caused by processing the \d patterns.
+editor:ScrollCaret(,) Ensure the caret is visible.
+editor:SearchAnchor(,) Sets the current caret position to be the search anchor.
+editor:SearchInTarget(int length, string text) Search for a counted string in the target and set the target to the found range. Text is counted so it can contain NULs. Returns length of range or -1 for failure in which case target is not moved.
+editor:SearchNext(int flags, string text) Find some text starting at the search anchor. Does not ensure the selection is visible.
+editor:SearchPrev(int flags, string text) Find some text starting at the search anchor and moving backwards. Does not ensure the selection is visible.
+editor:SelectAll(,) Select all the text in the document.
+editor:SetCaretPolicy(int caretPolicy, int caretSlop) CARET_POLICY changed in 1.47
+editor:SetCharsDefault(,) Reset the set of characters for whitespace and word characters to the defaults.
+editor:SetFoldFlags(int flags,) Set some style options for folding.
+editor:SetFoldMarginColour(bool useSetting, colour back) Set the colours used as a chequerboard pattern in the fold margin
+editor:SetFoldMarginHiColour(bool useSetting, colour fore) Set the colours used as a chequerboard pattern in the fold margin
+editor:SetSavePoint(,) Remember the current position in the undo history as the position at which the document was saved.
+editor:SetSel(position start, position end) Select a range of text.
+editor:SetSelBack(bool useSetting, colour back) Set the background colour of the selection and whether to use this setting.
+editor:SetSelFore(bool useSetting, colour fore) Set the foreground colour of the selection and whether to use this setting.
+editor:SetStyling(int length, int style) Change style from current styling position for length characters to a style and move the current styling position to after this newly styled segment.
+editor:SetStylingEx(int length, string styles) Set the styles for a segment of the document.
+editor:SetText(, string text) Replace the contents of the document with the argument text.
+editor:SetVisiblePolicy(int visiblePolicy, int visibleSlop) Constants for use with SetVisiblePolicy, similar to SetCaretPolicy. Set the way the display area is determined when a particular line is to be moved to by Find, FindNext, GotoLine, etc.
+editor:SetWhitespaceBack(bool useSetting, colour back) Set the background colour of all whitespace and whether to use this setting.
+editor:SetWhitespaceFore(bool useSetting, colour fore) Set the foreground colour of all whitespace and whether to use this setting.
+editor:SetXCaretPolicy(int caretPolicy, int caretSlop) Set the way the caret is kept visible when going sideway. The exclusion zone is given in pixels.
+editor:SetYCaretPolicy(int caretPolicy, int caretSlop) Set the way the line the caret is on is kept visible. The exclusion zone is given in lines.
+editor:ShowLines(int lineStart, int lineEnd) Make a range of lines visible.
+editor:StartRecord(,) Start notifying the container of all key presses and commands.
+editor:StartStyling(position pos, int mask) Set the current styling position to pos and the styling mask to mask. The styling mask can be used to protect some bits in each styling byte from modification.
+editor:StopRecord(,) Stop notifying the container of all key presses and commands.
+editor:StutteredPageDown(,) Move caret to bottom of page, or one page down if already at bottom of page.
+editor:StutteredPageDownExtend(,) Move caret to bottom of page, or one page down if already at bottom of page, extending selection to new caret position.
+editor:StutteredPageUp(,) Move caret to top of page, or one page up if already at top of page.
+editor:StutteredPageUpExtend(,) Move caret to top of page, or one page up if already at top of page, extending selection to new caret position.
+editor:StyleResetDefault(,) Reset the default style to its state at startup
+editor:Tab(,) If selection is empty or all on one line replace the selection with a tab character. If more than one line selected, indent the lines.
+editor:TargetFromSelection(,) Make the target range start and end be the same as the selection range start and end.
+editor:TextHeight(int line,) Retrieve the height of a particular line of text in pixels.
+editor:TextWidth(int style, string text) Measure the pixel width of some text in a particular style. NUL terminated text argument. Does not handle tab or control characters.
+editor:ToggleFold(int line,) Switch a header line between expanded and contracted.
+editor:Undo(,) Undo one action in the undo history.
+editor:UpperCase(,) Transform the selection to upper case.
+editor:UsePopUp(bool allowPopUp,) Set whether a pop up menu is displayed automatically when the user presses the wrong mouse button.
+editor:UserListShow(int listType, string itemList) Display a list of strings and send notification when user chooses one.
+editor:VCHome(,) Move caret to before first visible character on line. If already there move to first character on line.
+editor:VCHomeExtend(,) Like VCHome but extending selection to new caret position.
+editor:VCHomeRectExtend(,) Move caret to before first visible character on line. If already there move to first character on line. In either case, extend rectangular selection to new caret position.
+editor:VCHomeWrap(,)
+editor:VCHomeWrapExtend(,)
+editor:VisibleFromDocLine(int line,) Find the display line of a document line taking hidden lines into account.
+editor:WordEndPosition(position pos, bool onlyWordCharacters) Get position of end of word.
+editor:WordLeft(,) Move caret left one word.
+editor:WordLeftEnd(,) Move caret left one word, position cursor at end of word.
+editor:WordLeftEndExtend(,) Move caret left one word, position cursor at end of word, extending selection to new caret position.
+editor:WordLeftExtend(,) Move caret left one word extending selection to new caret position.
+editor:WordPartLeft(,) Move to the previous change in capitalisation.
+editor:WordPartLeftExtend(,) Move to the previous change in capitalisation. Move to the previous change in capitalisation extending selection to new caret position.
+editor:WordPartRight(,) Move to the previous change in capitalisation. Move to the previous change in capitalisation extending selection to new caret position. Move to the change next in capitalisation.
+editor:WordPartRightExtend(,) Move to the previous change in capitalisation. Move to the previous change in capitalisation extending selection to new caret position. Move to the change next in capitalisation. Move to the next change in capitalisation extending selection to new caret position.
+editor:WordRight(,) Move caret right one word.
+editor:WordRightEnd(,) Move caret right one word, position cursor at end of word.
+editor:WordRightEndExtend(,) Move caret right one word, position cursor at end of word, extending selection to new caret position.
+editor:WordRightExtend(,) Move caret right one word extending selection to new caret position.
+editor:WordStartPosition(position pos, bool onlyWordCharacters) Get position of start of word.
+editor:ZoomIn(,) Magnify the displayed text by increasing the sizes by 1 point.
+editor:ZoomOut(,) Make the displayed text smaller by decreasing the sizes by 1 point.
+output.Anchor
+output.AutoCAutoHide
+output.AutoCCancelAtStart
+output.AutoCChooseSingle
+output.AutoCDropRestOfWord
+output.AutoCFillUps
+output.AutoCIgnoreCase
+output.AutoCSeparator
+output.AutoCTypeSeparator
+output.BackSpaceUnIndents
+output.BufferedDraw
+output.CallTipBack
+output.CallTipFore
+output.CallTipForeHlt
+output.CaretFore
+output.CaretLineBack
+output.CaretLineVisible
+output.CaretPeriod
+output.CaretWidth
+output.CharAt
+output.CodePage
+output.Column
+output.ControlCharSymbol
+output.CurrentPos
+output.Cursor
+output.DirectFunction
+output.DirectPointer
+output.DocPointer
+output.EdgeColour
+output.EdgeColumn
+output.EdgeMode
+output.EndAtLastLine
+output.EndStyled
+output.FirstVisibleLine
+output.Focus
+output.FoldExpanded
+output.FoldLevel
+output.FoldParent
+output.HighlightGuide
+output.HotspotActiveBack
+output.HotspotActiveFore
+output.HotspotActiveUnderline
+output.HotspotSingleLine
+output.HScrollBar
+output.Indent
+output.IndentationGuides
+output.IndicFore
+output.IndicStyle
+output.KeyWords
+output.LastChild
+output.LayoutCache
+output.Lexer
+output.LexerLanguage
+output.LineCount
+output.LineEndPosition
+output.LineIndentation
+output.LineIndentPosition
+output.LinesOnScreen
+output.LineState
+output.MarginLeft
+output.MarginMaskN
+output.MarginRight
+output.MarginSensitiveN
+output.MarginTypeN
+output.MarginWidthN
+output.MaxLineState
+output.ModEventMask
+output.Modify
+output.MouseDownCaptures
+output.MouseDwellTime
+output.Overtype
+output.PrintColourMode
+output.PrintMagnification
+output.PrintWrapMode
+output.Property
+output.ReadOnly
+output.ScrollWidth
+output.SearchFlags
+output.SelectionEnd
+output.SelectionIsRectangle
+output.SelectionMode
+output.SelectionStart
+output.Status
+output.StyleAt
+output.StyleBack
+output.StyleBits
+output.StyleBold
+output.StyleCase
+output.StyleChangeable
+output.StyleCharacter
+output.StyleClearAll
+output.StyleEOLFilled
+output.StyleFont
+output.StyleFore
+output.StyleHotSpot
+output.StyleItalic
+output.StyleSize
+output.StyleUnderline
+output.StyleVisible
+output.TabIndents
+output.TabWidth
+output.TarEnd
+output.TarStart
+output.TextLength
+output.TwoPhaseDraw
+output.Uabs
+output.UndoCollection
+output.UsePalette
+output.ViewEOL
+output.ViewWS
+output.VScrollBar
+output.WhitespaceChars
+output.WordChars
+output.WrapMode
+output.WrapStartIndent
+output.WrapVisualFlags
+output.WrapVisualFlagsLocation
+output.XOff
+output:AddRefDocument(, int doc) Create a new document object. Starts with reference count of 1 and not selected into editor. Extend life of document.
+output:AddStyledText(int length, cells c) Add array of cells to document.
+output:AddText(int length, string text) Add text to the document at current position.
+output:Allocate(int bytes,) Enlarge the document to a particular size of text bytes.
+output:AppendText(int length, string text) Append a string to the end of the document without changing the selection.
+output:AssignCmdKey(keymod km, int msg) When key+modifier combination km is pressed perform msg.
+output:AutoCActive(,) Is there an auto-completion list visible?
+output:AutoCCancel(,) Remove the auto-completion list from the screen.
+output:AutoCComplete(,) User has selected an item so remove the list and insert the selection.
+output:AutoCGetCurrent(,) Get currently selected item position in the auto-completion list
+output:AutoCPosStart(,) Retrieve the position of the caret when the auto-completion list was displayed.
+output:AutoCSelect(, string text) Select the item in the auto-completion list that starts with a string.
+output:AutoCShow(int lenEntered, string itemList) Display a auto-completion list. The lenEntered parameter indicates how many characters before the caret should be used to provide context.
+output:AutoCStops(, string characterSet) Define a set of character that when typed cancel the auto-completion list.
+output:BackTab(,) Dedent the selected lines.
+output:BeginUndoAction(,) Start a sequence of actions that is undone and redone as a unit. May be nested.
+output:BraceBadLight(position pos,) Highlight the character at a position indicating there is no matching brace.
+output:BraceHighlight(position pos1, position pos2) Highlight the characters at two positions.
+output:BraceMatch(position pos,) Find the position of a matching brace or INVALID_POSITION if no match.
+output:CallTipActive(,) Is there an active call tip?
+output:CallTipCancel(,) Remove the call tip from the screen.
+output:CallTipPosStart(,) Retrieve the position where the caret was before displaying the call tip.
+output:CallTipSetHlt(int start, int end) Highlight a segment of the definition.
+output:CallTipShow(position pos, string definition) Show a call tip containing a definition near position pos.
+output:Cancel(,) Cancel any modes such as call tip or auto-completion list display.
+output:CanPaste(,) Will a paste succeed?
+output:CanRedo(,) Are there any redoable actions in the undo history?
+output:CanUndo(,) Are there any undoable actions in the undo history?
+output:CharLeft(,) Move caret left one character.
+output:CharLeftExtend(,) Move caret left one character extending selection to new caret position.
+output:CharLeftRectExtend(,) Move caret left one character, extending rectangular selection to new caret position.
+output:CharRight(,) Move caret right one character.
+output:CharRightExtend(,) Move caret right one character extending selection to new caret position.
+output:CharRightRectExtend(,) Move caret right one character, extending rectangular selection to new caret position.
+output:ChooseCaretX(,) Set the last x chosen value to be the caret x position.
+output:Clear(,) Clear the selection.
+output:ClearAll(,) Delete all text in the document.
+output:ClearAllCmdKeys(,) Drop all key mappings.
+output:ClearCmdKey(keymod km,) When key+modifier combination km is pressed do nothing.
+output:ClearDocumentStyle(,) Set all style bytes to 0, remove all folding information.
+output:ClearRegisteredImages(,) Clear all the registered XPM images.
+output:Colourise(position start, position end) Colourise a segment of the document using the current lexing language.
+output:ConvertEOLs(int eolMode,) Convert all line endings in the document to one mode.
+output:Copy(,) Copy the selection to the clipboard.
+output:CopyRange(position start, position end) Copy a range of text to the clipboard. Positions are clipped into the document.
+output:CopyText(int length, string text) Copy argument text to the clipboard.
+output:CreateDocument(,) Create a new document object. Starts with reference count of 1 and not selected into editor.
+output:Cut(,) Cut the selection to the clipboard.
+output:DeleteBack(,) Delete the selection or if no selection, the character before the caret.
+output:DeleteBackNotLine(,) Delete the selection or if no selection, the character before the caret. Will not delete the character before at the start of a line.
+output:DelLineLeft(,) Delete back from the current position to the start of the line.
+output:DelLineRight(,) Delete forwards from the current position to the end of the line.
+output:DelWordLeft(,) Delete the word to the left of the caret.
+output:DelWordRight(,) Delete the word to the right of the caret.
+output:DocLineFromVisible(int lineDisplay,) Find the document line of a display line taking hidden lines into account.
+output:DocumentEnd(,) Move caret to last position in document.
+output:DocumentEndExtend(,) Move caret to last position in document extending selection to new caret position.
+output:DocumentStart(,) Move caret to first position in document.
+output:DocumentStartExtend(,) Move caret to first position in document extending selection to new caret position.
+output:EditToggleOvertype(,) Switch from insert to overtype mode or the reverse.
+output:EmptyUndoBuffer(,) Delete the undo history.
+output:EndUndoAction(,) End a sequence of actions that is undone and redone as a unit.
+output:EnsureVisible(int line,) Ensure a particular line is visible by expanding any header line hiding it.
+output:EnsureVisibleEnforcePolicy(int line,) Ensure a particular line is visible by expanding any header line hiding it. Use the currently set visibility policy to determine which range to display.
+output:FindText(int flags, findtext ft) Find some text in the document.
+output:FormatRange(bool draw, formatrange fr) On Windows, will draw the document into a display context such as a printer.
+output:FormFeed(,) Insert a Form Feed character.
+output:GetCurLine(int length, stringresult text) Retrieve the text of the line containing the caret. Returns the index of the caret on the line.
+output:GetLine(int line, stringresult text) Retrieve the contents of a line. Returns the length of the line.
+output:GetLineSelEndPosition(int line,) Retrieve the position of the end of the selection at the given line (INVALID_POSITION if no selection on this line).
+output:GetLineSelStartPosition(int line,) Retrieve the position of the start of the selection at the given line (INVALID_POSITION if no selection on this line).
+output:GetSelText(, stringresult text) Retrieve the selected text. Return the length of the text.
+output:GetStyledText(, textrange tr) Retrieve a buffer of cells. Returns the number of bytes in the buffer not including terminating NULs.
+output:GetText(int length, stringresult text) Retrieve all the text in the document. Returns number of characters retrieved.
+output:GetTextRange(, textrange tr) Retrieve a range of text. Return the length of the text.
+output:GotoLine(int line,) Set caret to start of a line and ensure it is visible.
+output:GotoPos(position pos,) Set caret to a position and ensure it is visible.
+output:GrabFocus(,) Set the focus to this Scintilla widget. GTK+ Specific.
+output:HideLines(int lineStart, int lineEnd) Make a range of lines invisible.
+output:HideSelection(bool normal,) Draw the selection in normal style or with selection highlighted.
+output:Home(,) Move caret to first position on line.
+output:HomeDisplay(,) Move caret to first position on display line.
+output:HomeDisplayExtend(,) Move caret to first position on display line extending selection to new caret position.
+output:HomeExtend(,) Move caret to first position on line extending selection to new caret position.
+output:HomeRectExtend(,) Move caret to first position on line, extending rectangular selection to new caret position.
+output:HomeWrap(,)
+output:HomeWrapExtend(,)
+output:InsertText(position pos, string text) Insert string at a position.
+output:LineCopy(,) Copy the line containing the caret.
+output:LineCut(,) Cut the line containing the caret.
+output:LineDelete(,) Delete the line containing the caret.
+output:LineDown(,)# Start of key messages Move caret down one line.
+output:LineDownExtend(,) Move caret down one line extending selection to new caret position.
+output:LineDownRectExtend(,)# RectExtended rectangular selection moves Move caret down one line, extending rectangular selection to new caret position.
+output:LineDuplicate(,) Duplicate the current line.
+output:LineEnd(,) Move caret to last position on line.
+output:LineEndDisplay(,) Move caret to last position on display line.
+output:LineEndDisplayExtend(,) Move caret to last position on display line extending selection to new caret position.
+output:LineEndExtend(,) Move caret to last position on line extending selection to new caret position.
+output:LineEndRectExtend(,) Move caret to last position on line, extending rectangular selection to new caret position.
+output:LineEndWrap(,)
+output:LineEndWrapExtend(,)
+output:LineFromPosition(position pos,) Retrieve the line containing a position.
+output:LineLength(int line,) How many characters are on a line, not including end of line characters?
+output:LineScroll(int columns, int lines) Scroll horizontally and vertically.
+output:LineScrollDown(,) Scroll the document down, keeping the caret visible.
+output:LineScrollUp(,) Scroll the document up, keeping the caret visible.
+output:LinesJoin(,) Join the lines in the target.
+output:LinesSplit(int pixelWidth,) Split the lines in the target into lines that are less wide than pixelWidth where possible.
+output:LineTranspose(,) Switch the current line with the previous.
+output:LineUp(,) Move caret up one line.
+output:LineUpExtend(,) Move caret up one line extending selection to new caret position.
+output:LineUpRectExtend(,) Move caret up one line, extending rectangular selection to new caret position.
+output:LoadLexerLibrary(, string path) Load a lexer library (dll / so).
+output:LowerCase(,) Transform the selection to lower case.
+output:MarkerAdd(int line, int markerNumber) Add a marker to a line, returning an ID which can be used to find or delete the marker.
+output:MarkerDefine(int markerNumber, int markerSymbol) Set the symbol used for a particular marker number.
+output:MarkerDefinePixmap(int markerNumber, string pixmap) Define a marker from a pixmap.
+output:MarkerDelete(int line, int markerNumber) Delete a marker from a line.
+output:MarkerDeleteAll(int markerNumber,) Delete all markers with a particular number from all lines.
+output:MarkerDeleteHandle(int handle,) Delete a marker.
+output:MarkerGet(int line,) Get a bit mask of all the markers set on a line.
+output:MarkerLineFromHandle(int handle,) Retrieve the line number at which a particular marker is located.
+output:MarkerNext(int lineStart, int markerMask) Find the next line after lineStart that includes a marker in mask.
+output:MarkerPrevious(int lineStart, int markerMask) Find the previous line before lineStart that includes a marker in mask.
+output:MarkerSetBack(int markerNumber, colour back) Set the background colour used for a particular marker number.
+output:MarkerSetFore(int markerNumber, colour fore) Set the foreground colour used for a particular marker number.
+output:MoveCaretInsideView(,) Move the caret inside current view if it's not there already.
+output:NewLine(,) Insert a new line, may use a CRLF, CR or LF depending on EOL mode.
+output:Null(,) Null operation.
+output:PageDown(,) Move caret one page down.
+output:PageDownExtend(,) Move caret one page down extending selection to new caret position.
+output:PageDownRectExtend(,) Move caret one page down, extending rectangular selection to new caret position.
+output:PageUp(,) Move caret one page up.
+output:PageUpExtend(,) Move caret one page up extending selection to new caret position.
+output:PageUpRectExtend(,) Move caret one page up, extending rectangular selection to new caret position.
+output:ParaDown(,) Move caret between paragraphs (delimited by empty lines).
+output:ParaDownExtend(,) Move caret between paragraphs (delimited by empty lines).
+output:ParaUp(,) Move caret between paragraphs (delimited by empty lines).
+output:ParaUpExtend(,) Move caret between paragraphs (delimited by empty lines).
+output:Paste(,) Paste the contents of the clipboard into the document replacing the selection.
+output:PointXFromPosition(, position pos) Retrieve the x value of the point in the window where a position is displayed.
+output:PointYFromPosition(, position pos) Retrieve the y value of the point in the window where a position is displayed.
+output:PositionAfter(position pos,) Given a valid document position, return the next position taking code page into account. Maximum value returned is the last position in the document.
+output:PositionBefore(position pos,) Given a valid document position, return the previous position taking code page into account. Returns 0 if passed 0.
+output:PositionFromLine(int line,) Retrieve the position at the start of a line.
+output:PositionFromPoint(int x, int y) Find the position from a point within the window.
+output:PositionFromPointClose(int x, int y) Find the position from a point within the window but return INVALID_POSITION if not close to text.
+output:Redo(,) Redoes the next action on the undo history.
+output:RegisterImage(int type, string xpmData) Register an XPM image for use in autocompletion lists.
+output:ReleaseDocument(, int doc) Create a new document object. Starts with reference count of 1 and not selected into editor. Extend life of document. Release a reference to the document, deleting document if it fades to black.
+output:ReplaceSel(, string text) Replace the selected text with the argument text.
+output:ReplaceTarget(int length, string text) Replace the target text with the argument text. Text is counted so it can contain NULs. Returns the length of the replacement text.
+output:ReplaceTargetRE(int length, string text) Replace the target text with the argument text after \d processing. Text is counted so it can contain NULs. Looks for \d where d is between 1 and 9 and replaces these with the strings matched in the last search operation which were surrounded by \( and \). Returns the length of the replacement text including any change caused by processing the \d patterns.
+output:ScrollCaret(,) Ensure the caret is visible.
+output:SearchAnchor(,) Sets the current caret position to be the search anchor.
+output:SearchInTarget(int length, string text) Search for a counted string in the target and set the target to the found range. Text is counted so it can contain NULs. Returns length of range or -1 for failure in which case target is not moved.
+output:SearchNext(int flags, string text) Find some text starting at the search anchor. Does not ensure the selection is visible.
+output:SearchPrev(int flags, string text) Find some text starting at the search anchor and moving backwards. Does not ensure the selection is visible.
+output:SelectAll(,) Select all the text in the document.
+output:SetCaretPolicy(int caretPolicy, int caretSlop) CARET_POLICY changed in 1.47
+output:SetCharsDefault(,) Reset the set of characters for whitespace and word characters to the defaults.
+output:SetFoldFlags(int flags,) Set some style options for folding.
+output:SetFoldMarginColour(bool useSetting, colour back) Set the colours used as a chequerboard pattern in the fold margin
+output:SetFoldMarginHiColour(bool useSetting, colour fore) Set the colours used as a chequerboard pattern in the fold margin
+output:SetSavePoint(,) Remember the current position in the undo history as the position at which the document was saved.
+output:SetSel(position start, position end) Select a range of text.
+output:SetSelBack(bool useSetting, colour back) Set the background colour of the selection and whether to use this setting.
+output:SetSelFore(bool useSetting, colour fore) Set the foreground colour of the selection and whether to use this setting.
+output:SetStyling(int length, int style) Change style from current styling position for length characters to a style and move the current styling position to after this newly styled segment.
+output:SetStylingEx(int length, string styles) Set the styles for a segment of the document.
+output:SetText(, string text) Replace the contents of the document with the argument text.
+output:SetVisiblePolicy(int visiblePolicy, int visibleSlop) Constants for use with SetVisiblePolicy, similar to SetCaretPolicy. Set the way the display area is determined when a particular line is to be moved to by Find, FindNext, GotoLine, etc.
+output:SetWhitespaceBack(bool useSetting, colour back) Set the background colour of all whitespace and whether to use this setting.
+output:SetWhitespaceFore(bool useSetting, colour fore) Set the foreground colour of all whitespace and whether to use this setting.
+output:SetXCaretPolicy(int caretPolicy, int caretSlop) Set the way the caret is kept visible when going sideway. The exclusion zone is given in pixels.
+output:SetYCaretPolicy(int caretPolicy, int caretSlop) Set the way the line the caret is on is kept visible. The exclusion zone is given in lines.
+output:ShowLines(int lineStart, int lineEnd) Make a range of lines visible.
+output:StartRecord(,) Start notifying the container of all key presses and commands.
+output:StartStyling(position pos, int mask) Set the current styling position to pos and the styling mask to mask. The styling mask can be used to protect some bits in each styling byte from modification.
+output:StopRecord(,) Stop notifying the container of all key presses and commands.
+output:StutteredPageDown(,) Move caret to bottom of page, or one page down if already at bottom of page.
+output:StutteredPageDownExtend(,) Move caret to bottom of page, or one page down if already at bottom of page, extending selection to new caret position.
+output:StutteredPageUp(,) Move caret to top of page, or one page up if already at top of page.
+output:StutteredPageUpExtend(,) Move caret to top of page, or one page up if already at top of page, extending selection to new caret position.
+output:StyleResetDefault(,) Reset the default style to its state at startup
+output:Tab(,) If selection is empty or all on one line replace the selection with a tab character. If more than one line selected, indent the lines.
+output:TargetFromSelection(,) Make the target range start and end be the same as the selection range start and end.
+output:TextHeight(int line,) Retrieve the height of a particular line of text in pixels.
+output:TextWidth(int style, string text) Measure the pixel width of some text in a particular style. NUL terminated text argument. Does not handle tab or control characters.
+output:ToggleFold(int line,) Switch a header line between expanded and contracted.
+output:Undo(,) Undo one action in the undo history.
+output:UpperCase(,) Transform the selection to upper case.
+output:UsePopUp(bool allowPopUp,) Set whether a pop up menu is displayed automatically when the user presses the wrong mouse button.
+output:UserListShow(int listType, string itemList) Display a list of strings and send notification when user chooses one.
+output:VCHome(,) Move caret to before first visible character on line. If already there move to first character on line.
+output:VCHomeExtend(,) Like VCHome but extending selection to new caret position.
+output:VCHomeRectExtend(,) Move caret to before first visible character on line. If already there move to first character on line. In either case, extend rectangular selection to new caret position.
+output:VCHomeWrap(,)
+output:VCHomeWrapExtend(,)
+output:VisibleFromDocLine(int line,) Find the display line of a document line taking hidden lines into account.
+output:WordEndPosition(position pos, bool onlyWordCharacters) Get position of end of word.
+output:WordLeft(,) Move caret left one word.
+output:WordLeftEnd(,) Move caret left one word, position cursor at end of word.
+output:WordLeftEndExtend(,) Move caret left one word, position cursor at end of word, extending selection to new caret position.
+output:WordLeftExtend(,) Move caret left one word extending selection to new caret position.
+output:WordPartLeft(,) Move to the previous change in capitalisation.
+output:WordPartLeftExtend(,) Move to the previous change in capitalisation. Move to the previous change in capitalisation extending selection to new caret position.
+output:WordPartRight(,) Move to the previous change in capitalisation. Move to the previous change in capitalisation extending selection to new caret position. Move to the change next in capitalisation.
+output:WordPartRightExtend(,) Move to the previous change in capitalisation. Move to the previous change in capitalisation extending selection to new caret position. Move to the change next in capitalisation. Move to the next change in capitalisation extending selection to new caret position.
+output:WordRight(,) Move caret right one word.
+output:WordRightEnd(,) Move caret right one word, position cursor at end of word.
+output:WordRightEndExtend(,) Move caret right one word, position cursor at end of word, extending selection to new caret position.
+output:WordRightExtend(,) Move caret right one word extending selection to new caret position.
+output:WordStartPosition(position pos, bool onlyWordCharacters) Get position of start of word.
+output:ZoomIn(,) Magnify the displayed text by increasing the sizes by 1 point.
+output:ZoomOut(,) Make the displayed text smaller by decreasing the sizes by 1 point.

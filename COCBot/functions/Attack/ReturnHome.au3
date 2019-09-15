@@ -72,8 +72,6 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	; Reset building info used to attack base
 	_ObjDeleteKey($g_oBldgAttackInfo, "") ; Remove all Keys from dictionary
 
-	If $g_abAttackTypeEnable[$TS] = 1 And $g_iMatchMode = $TS Then $g_bFirstStart = True ;reset barracks upon return when TH sniping w/custom army
-
 	SetLog("Returning Home", $COLOR_INFO)
 	If $g_bRunState = False Then Return
 

@@ -390,7 +390,7 @@ Func DebugImageGetLocation($sVector, $sType, $iBuildingENUM = "")
 						If isInsideDiamondRedArea($aPixels) Then
 							If $g_bDebugSetlog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 							_CaptureRegion($aPixels[0] - 30, $aPixels[1] - 30, $aPixels[0] + 30, $aPixels[1] + 30)
-							DebugImageSave("DebugImageGetLocation_" & $sType & "_", False)
+							SaveDebugImage("DebugImageGetLocation_" & $sType & "_", False)
 						Else
 							If $g_bDebugSetlog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 						EndIf
@@ -406,7 +406,7 @@ Func DebugImageGetLocation($sVector, $sType, $iBuildingENUM = "")
 					If isInsideDiamondRedArea($aPixels) Then
 						If $g_bDebugSetlog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 						_CaptureRegion($aPixels[0] - 30, $aPixels[1] - 30, $aPixels[0] + 30, $aPixels[1] + 30)
-						DebugImageSave("DebugImageGetLocation_" & $sType & "_", False)
+						SaveDebugImage("DebugImageGetLocation_" & $sType & "_", False)
 					Else
 						If $g_bDebugSetlog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 					EndIf
@@ -425,7 +425,7 @@ Func DebugImageGetLocation($sVector, $sType, $iBuildingENUM = "")
 					If isInsideDiamondRedArea($aPixels) Then
 						If $g_bDebugSetlog Then SetDebugLog("coordinate inside village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 						_CaptureRegion($aPixels[0] - 30, $aPixels[1] - 30, $aPixels[0] + 30, $aPixels[1] + 30)
-						DebugImageSave("DebugImageGetLocation_" & StringStripWS($g_sBldgNames[$iBuildingENUM], $STR_STRIPALL) & "_", False)
+						SaveDebugImage("DebugImageGetLocation_" & StringStripWS($g_sBldgNames[$iBuildingENUM], $STR_STRIPALL) & "_", False)
 					Else
 						If $g_bDebugSetlog Then SetDebugLog("coordinate out of village (" & $aPixels[0] & "," & $aPixels[1] & ")")
 					EndIf

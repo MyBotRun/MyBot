@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: waitMainScreen
 ; Description ...: Waits 5 minutes for the pixel of mainscreen to be located, checks for obstacles every 2 seconds.  After five minutes, will try to restart bluestacks.
@@ -45,7 +44,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 			If checkObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
 		EndIf
 		If Mod($i, 5) = 0 Then ;every 10 seconds
-			If $g_bDebugImageSave Then DebugImageSave("WaitMainScreen_", False)
+			If $g_bDebugImageSave Then SaveDebugImage("WaitMainScreen_", False)
 		EndIf
 		If ($i > 105) Or ($iCount > 120) Then ExitLoop ; If CheckObstacles forces reset, limit total time to 4 minutes
 
@@ -64,7 +63,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 	$iCount = 0
 	While 1
 		If Not $g_bRunState Then Return
-		SetLog("Unable to load CoC, attempt to fix it...", $COLOR_ERROR)
+		SetLog("Unable to load CoC, attempt to fix it", $COLOR_ERROR)
 		If $g_bDebugSetlog Then SetDebugLog("Restart Loop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop data
 		CloseAndroid("waitMainScreen") ; Android must die!
 		If _Sleep(1000) Then Return

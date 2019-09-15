@@ -257,9 +257,10 @@ EndFunc   ;==>ArmyHeroStatus
 
 Func LabGuiDisplay() ; called from main loop to get an early status for indictors in bot bottom
 
-	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
+	Local Static $iLastTimeChecked[8]
+	If $g_bFirstStart Then $iLastTimeChecked[$g_iCurAccount] = ""
 
-		; Check if is a valid date and Calculated the number of minutes from remain time Lab and now
+	; Check if is a valid date and Calculated the number of minutes from remain time Lab and now
 	If _DateIsValid($g_sLabUpgradeTime) And _DateIsValid($iLastTimeChecked[$g_iCurAccount]) Then
 		Local $iLabTime = _DateDiff('n', _NowCalc(), $g_sLabUpgradeTime)
 		Local $iLastCheck =_DateDiff('n', $iLastTimeChecked[$g_iCurAccount], _NowCalc()) ; elapse time from last check (minutes)
@@ -272,14 +273,6 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 	;CLOSE ARMY WINDOW
 	ClickP($aAway, 2, 0, "#0346") ;Click Away
 	If _Sleep(1500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
-
-	;Check Personal Challenges
-	;For now we don't have a better place or use for Open/Close the Challenges
-	;So we doing it here, so that is called once every 6 hours
-	OpenPersonalChallenges()
-	If _Sleep($DELAYCLOSEOPEN500) Then Return
-	ClosePersonalChallenges()
-
 
 	If $g_iTownHallLevel < 3 Then
 		SetDebugLog("TH reads as Lvl " & $g_iTownHallLevel & ", has no Lab.")
@@ -316,7 +309,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 
 	Local $aResearchButton = findButton("Research", Default, 1, True)
 	If IsArray($aResearchButton) And UBound($aResearchButton, 1) = 2 Then
-		If $g_bDebugImageSave Then DebugImageSave("LabUpgrade") ; Debug Only
+		If $g_bDebugImageSave Then SaveDebugImage("LabUpgrade") ; Debug Only
 		ClickP($aResearchButton)
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
 	Else

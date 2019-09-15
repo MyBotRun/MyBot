@@ -190,7 +190,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		If _Sleep($DELAYUPGRADEVALUE1) Then Return
 		BuildingClick($g_avBuildingUpgrades[$inum][0], $g_avBuildingUpgrades[$inum][1]) ;Select upgrade trained
 		If _Sleep($DELAYUPGRADEVALUE4) Then Return
-		If $bOopsFlag = True Then DebugImageSave("ButtonView")
+		If $bOopsFlag = True Then SaveDebugImage("ButtonView")
 		; check if upgrading collector type building, and reselect in case previous click only collect resource
 		If StringInStr($g_avBuildingUpgrades[$inum][4], "collect", $STR_NOCASESENSEBASIC) Or _
 				StringInStr($g_avBuildingUpgrades[$inum][4], "mine", $STR_NOCASESENSEBASIC) Or _
@@ -232,10 +232,10 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		If _Sleep($DELAYUPGRADEVALUE1) Then Return
 		BuildingClick($g_avBuildingUpgrades[$inum][0], $g_avBuildingUpgrades[$inum][1], "#0212") ;Select upgrade trained
 		If _Sleep($DELAYUPGRADEVALUE2) Then Return
-		If $bOopsFlag = True Then DebugImageSave("ButtonView")
+		If $bOopsFlag = True Then SaveDebugImage("ButtonView")
 	EndIf
 
-	If $bOopsFlag And $g_bDebugImageSave Then DebugImageSave("ButtonView")
+	If $bOopsFlag And $g_bDebugImageSave Then SaveDebugImage("ButtonView")
 
 	$aResult = BuildingInfo(242, 490 + $g_iBottomOffsetY)
 	If $aResult[0] > 0 Then
@@ -256,7 +256,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2 Then
 		ClickP($aUpgradeButton, 1, 0, "#0213") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADEVALUE5) Then Return
-		If $bOopsFlag And $g_bDebugImageSave Then DebugImageSave("UpgradeView")
+		If $bOopsFlag And $g_bDebugImageSave Then SaveDebugImage("UpgradeView")
 
 		_CaptureRegion()
 		Select ;Ensure the right upgrade window is open!
@@ -346,9 +346,9 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
 			Local $stext = GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_09", "Save copy of upgrade image for developer analysis ?")
 			Local $MsgBox = _ExtMsgBox(48, GetTranslatedFileIni("MBR Popups", "YES_NO", "YES|NO"), GetTranslatedFileIni("MBR Popups", "Notice", "Notice"), $stext, 60, $g_hFrmBot)
-			If $MsgBox = 1 And $g_bDebugImageSave Then DebugImageSave("UpgradeReadError_")
+			If $MsgBox = 1 And $g_bDebugImageSave Then SaveDebugImage("UpgradeReadError_")
 		EndIf
-		If $g_avBuildingUpgrades[$inum][3] = "" And $bOopsFlag = True And $bRepeat = False Then
+		If $g_avBuildingUpgrades[$inum][3] = "" And $bOopsFlag And Not $bRepeat Then
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 10, "Comic Sans MS", 500)
 			$inputbox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_10", "   GOLD   |  ELIXIR  |DARK ELIXIR"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_11",  "Need User Help"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Building_12", "Select Upgrade Type:"), 0, $g_hFrmBot)
 			If $g_bDebugSetlog Then SetDebugLog(" _MsgBox returned = " & $inputbox, $COLOR_DEBUG)
@@ -365,7 +365,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 			EndSwitch
 			SetLog("User selected type = " & $g_avBuildingUpgrades[$inum][3], $COLOR_DEBUG)
 		EndIf
-		If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][3] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then ;report loot error if exists
+		If $g_avBuildingUpgrades[$inum][2] = "" Or $g_avBuildingUpgrades[$inum][3] = "" And Not $g_abUpgradeRepeatEnable[$inum] Then ;report loot error if exists
 			SetLog("Error finding loot info " & $inum & ", Loot = " & $g_avBuildingUpgrades[$inum][2] & ", Type= " & $g_avBuildingUpgrades[$inum][3], $COLOR_ERROR)
 			$g_avBuildingUpgrades[$inum][0] = -1 ; Clear upgrade location value as it is invalid
 			$g_avBuildingUpgrades[$inum][1] = -1 ; Clear upgrade location value as it  is invalid

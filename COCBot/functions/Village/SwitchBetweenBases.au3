@@ -39,7 +39,7 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 
 		If _sleep(1000) Then Return
 		If Not $g_bRunState Then Return
-		
+
 		ZoomOut() ; ensure boat is visible
 		If Not $g_bRunState Then Return
 
@@ -60,7 +60,6 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 			WEnd
 
 			If $bSwitched Then
-				;SetLog("Successfully went" & $sBack & " to the " & $sSwitchTo, $COLOR_SUCCESS)
 				If $bCheckMainScreen Then checkMainScreen(True, Not $bIsOnBuilderBase)
 				Return True
 			Else

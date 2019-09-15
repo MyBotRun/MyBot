@@ -217,7 +217,7 @@ Func MakeTargetDropPoints($side, $pointsQty, $addtiles, $building)
 	EndSwitch
 
 	Local $aBuildingLoc = _ObjGetValue($g_oBldgAttackInfo, $BuildingEnum & "_LOCATION")
-	;Local $aBuildingLoc  = $g_oBldgAttackInfo.item($BuildingEnum & "_LOCATION") ; Get building location data without error check
+
 	If @error Then
 		_ObjErrMsg("_ObjGetValue " & $g_sBldgNames[$BuildingEnum] & " _LOCATION", @error) ; Log errors
 		SetError(2, 0, "")
@@ -281,12 +281,11 @@ Func MakeTargetDropPoints($side, $pointsQty, $addtiles, $building)
 				EndSwitch
 				If isInsideDiamondRedArea($pixel) Then ExitLoop
 			Next
-			If isInsideDiamondRedArea($pixel) = False Then SetDebugLog("MakeTargetDropPoints() ADDTILES error!")
+			If Not isInsideDiamondRedArea($pixel) Then SetDebugLog("MakeTargetDropPoints() ADDTILES error!")
 			$sLoc = $pixel[0] & "-" & $pixel[1] ; make string for modified building location
 			SetLog("Target drop point for " &  $g_sBldgNames[$BuildingEnum] & " (adding " & $addtiles & " tiles): " & $sLoc)
 			Return GetListPixel($sLoc, "-", "MakeTargetDropPoints TARGET") ; return ADDTILES modified location array
 		Case 5
-			; drop point(s) are 5 points outside redline closest to building target as returned by GetDeployableNextTo($sPoints, $distance = 3, $redlineoverride = "")
 			$sLoc = $aLocation[0] & "|" & $aLocation[1] ; make string for bldg location
 			$Output = GetDeployableNextTo($sLoc, 10, $g_oBldgAttackInfo.item($eBldgRedLine & "_OBJECTPOINTS")) ; Get 5 near points, 10 pixels outisde red line for drop
 			Return GetListPixel($Output, ",", "MakeTargetDropPoints NEARPOINTS") ;imgloc DLL calls return comma separated values

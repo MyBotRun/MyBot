@@ -43,6 +43,7 @@ Global $g_sImgCollectReward = @ScriptDir & "\imgxml\Resources\ClaimReward"
 Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
 Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscount"
 Global $g_sImgBuyDealWindow = @ScriptDir & "\imgxml\FreeMagicItems\BuyDeal"
+Global Const $g_sImgUpgradeWhiteZero = @ScriptDir & "\imgxml\Main Village\Upgrade\WhiteZero*"
 #EndRegion
 
 #Region Builder Base
@@ -51,7 +52,7 @@ Global $g_sImgBoatBB = @ScriptDir & "\imgxml\Boat\BoatBuilderBase_0_89.xml"
 Global $g_sImgZoomOutDirBB = @ScriptDir & "\imgxml\village\BuilderBase\"
 Global $g_sImgStartCTBoost = @ScriptDir & "\imgxml\Resources\BuildersBase\ClockTower\ClockTowerAvailable*.xml"
 Global $g_sImgCleanBBYard = @ScriptDir & "\imgxml\Resources\ObstaclesBB"
-Global $g_sImgIsOnBB = @ScriptDir & "\imgxml\village\Page\BuilderBase*"
+Global $g_sImgIsOnBB = @ScriptDir & "\imgxml\village\Page\BuilderBase\"
 Global $g_sImgStarLaboratory = @ScriptDir & "\imgxml\Resources\BuildersBase\StarLaboratory"
 Global $g_sImgStarLabElex = @ScriptDir & "\imgxml\Resources\BuildersBase\StarLabElex\StarLabElex*"
 #EndRegion

@@ -36,7 +36,6 @@ Global $g_hFrmBot_WNDPROC_ptr = 0
 #include "GUI\MBR GUI Control Tab SmartZap.au3"
 #include "GUI\MBR GUI Control Tab Stats.au3"
 #include "GUI\MBR GUI Control Collectors.au3"
-#include "GUI\MBR GUI Control Milking.au3"
 #include "GUI\MBR GUI Control Attack Standard.au3"
 #include "GUI\MBR GUI Control Attack Scripted.au3"
 #include "GUI\MBR GUI Control Achievements.au3"
@@ -142,12 +141,7 @@ EndFunc   ;==>SetCriticalMessageProcessing
 
 Func UpdateFrmBotStyle()
 	If $g_iGuiMode = 0 Then Return False
-	#cs Works but causes bot window not to get activated anymore
-		Local $ShowMinimize = $g_bAndroidBackgroundLaunched = True Or $g_bAndroidEmbedded = False Or ($g_bAndroidEmbedded = True And $g_bAndroidAdbScreencap = True And $g_bChkBackgroundMode = True)
-		WindowSystemMenu($g_hFrmBot, $SC_MINIMIZE, $ShowMinimize, "Minimize")
-		Return
-	#ce
-	;Local $ShowMinimize = $g_bAndroidBackgroundLaunched = True Or $g_bAndroidEmbedded = False Or ($g_bAndroidEmbedded = True And $g_bAndroidAdbScreencap = True And $g_bChkBackgroundMode = True)
+
 	Local $bChanged = False
 	Local $ShowMinimize = $g_bAndroidBackgroundLaunched = True Or $g_bAndroidEmbedded = False Or ($g_bAndroidEmbedded = True And $g_bChkBackgroundMode = True) ; now bot is not really minimized anymore
 	Local $lStyle = $WS_MINIMIZEBOX
@@ -276,16 +270,6 @@ Func GUIControl_WM_FOCUS($hWin, $iMsg, $wParam, $lParam)
 					AndroidEmbedCheck(False, Default, 1) ; Always update z-order
 				EndIf
 			EndIf
-			#cs
-				Case $g_hFrmBotEmbeddedShield
-				If $lParam = $g_hFrmBotEmbeddedShieldInput Then
-				Local $hInput = GUICtrlGetHandle($g_hFrmBotEmbeddedShieldInput)
-				If _WinAPI_GetFocus() <> $hInput Then
-				;_SendMessage($g_hFrmBotEmbeddedShield, $WM_SETFOCUS, 1, $g_hFrmBotEmbeddedShieldInput)
-				;_WinAPI_SetFocus($hInput)
-				EndIf
-				EndIf
-			#ce
 	EndSwitch
 	$g_bTogglePauseAllowed = $wasAllowed
 	SetCriticalMessageProcessing($wasCritical)
@@ -518,17 +502,13 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnAttackNowDB()
 		Case $g_hBtnAttackNowLB
 			btnAttackNowLB()
-		Case $g_hBtnAttackNowTS
-			btnAttackNowTS()
-			;Case $idMENU_DONATE_SUPPORT
-			;	ShellExecute("https://mybot.run/forums/index.php?/donate/make-donation/")
 		Case $g_hBtnMakeScreenshot, $g_hTblMakeScreenshot
 			If $g_bRunState Then
 				; call with flag when bot is running to execute on _sleep() idle
 				btnMakeScreenshot()
 			Else
 				; call directly when bot is stopped
-				If $g_bScreenshotPNGFormat = False Then
+				If Not $g_bScreenshotPNGFormat Then
 					MakeScreenshot($g_sProfileTempPath, "jpg")
 				Else
 					MakeScreenshot($g_sProfileTempPath, "png")
@@ -538,8 +518,6 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			btnVillageStat()
 		Case $g_hPicArrowLeft, $g_hPicArrowRight
 			btnVillageStat()
-
-			; debug checkboxes and buttons
 		Case $g_hChkDebugSetlog
 			chkDebugSetlog()
 		Case $g_hChkDebugAndroid
@@ -629,15 +607,15 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 
 			Local $RuntimeA = $g_bRunState
 			$g_bRunState = True
-			Setlog("Queued Spells Test")
-			CheckQueueSpells()
+			Setlog("Prepare Attack test")
+			PrepareAttack($DB, False)
 			$g_bRunState = $RuntimeA
 		Case $g_hBtnTestQuickTrainsimgloc
 
 			Local $RuntimeA = $g_bRunState
 			$g_bRunState = True
-			Setlog("Queued Troops Test")
-			CheckQueueTroops()
+			Setlog("Prepare Attack test - Remaining troops")
+			PrepareAttack($DB, True)
 			$g_bRunState = $RuntimeA
 	EndSwitch
 
@@ -732,7 +710,6 @@ Func GUIControl_WM_SYSCOMMAND($hWind, $iMsg, $wParam, $lParam)
 EndFunc   ;==>GUIControl_WM_SYSCOMMAND
 
 Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
-	;If $g_bGUIControlDisabled = True Then Return $GUI_RUNDEFMSG
 	Local $wasCritical = SetCriticalMessageProcessing(True)
 	Local $wasAllowed = $g_bTogglePauseAllowed
 	$g_bTogglePauseAllowed = False
@@ -740,10 +717,6 @@ Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
 	Local $nNotifyCode = BitShift($wParam, 16)
 	Local $nID = BitAND($wParam, 0x0000FFFF)
 	Local $hCtrl = $lParam
-
-	;If $__TEST_ERROR = True Then ConsoleWrite("GUIControl: $hWind=" & $hWind & ", $iMsg=" & $iMsg & ", $wParam=" & $wParam & ", $lParam=" & $lParam & ", $nNotifyCode=" & $nNotifyCode & ", $nID=" & $nID & ", $hCtrl=" & $hCtrl & ", $g_hFrmBot=" & $g_hFrmBot & @CRLF)
-	;GUIControl_WM_NOTIFY: $hWind=0x0055A084,$iMsg=78,$wParam=0x00000008,$lParam=0x0108BB30
-	; WM_SYSCOMAND msdn: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646360(v=vs.85).aspx
 
 	Local $bCheckEmbeddedShield = True
 
@@ -767,8 +740,6 @@ Func GUIControl_WM_NOTIFY($hWind, $iMsg, $wParam, $lParam)
 			tabDeadbase()
 		Case $g_hGUI_ACTIVEBASE_TAB
 			tabActivebase()
-		Case $g_hGUI_THSNIPE_TAB
-			tabTHSnipe()
 		Case $g_hGUI_BOT_TAB
 			tabBot()
 		Case Else
@@ -1180,7 +1151,6 @@ Func BotGuiModeToggle()
 			GUICtrlDelete($g_hGUI_SEARCH_TAB)
 			GUICtrlDelete($g_hGUI_DEADBASE_TAB)
 			GUICtrlDelete($g_hGUI_ACTIVEBASE_TAB)
-			GUICtrlDelete($g_hGUI_THSNIPE_TAB)
 			GUICtrlDelete($g_hGUI_ATTACKOPTION_TAB)
 			GUICtrlDelete($g_hGUI_STRATEGIES_TAB)
 			GUICtrlDelete($g_hGUI_BOT_TAB)
@@ -1847,13 +1817,10 @@ Func tabSEARCH()
 	Local $tabidx = GUICtrlRead($g_hGUI_SEARCH_TAB)
 	Local $tabdbx = _GUICtrlTab_GetItemRect($g_hGUI_SEARCH_TAB, 0) ;get array of deadbase Tabitem rectangle coordinates, index 2,3 will be lower right X,Y coordinates (not needed: 0,1 = top left x,y)
 	Local $tababx = _GUICtrlTab_GetItemRect($g_hGUI_SEARCH_TAB, 1) ;idem for activebase
-	Local $tabtsx = _GUICtrlTab_GetItemRect($g_hGUI_SEARCH_TAB, 2) ;idem for thsnipe
-	Local $tabblx = _GUICtrlTab_GetItemRect($g_hGUI_SEARCH_TAB, 3) ;idem for bully
-
+	Local $tabblx = _GUICtrlTab_GetItemRect($g_hGUI_SEARCH_TAB, 2) ;idem for bully
 	Select
 		Case $tabidx = 0 ; Deadbase tab
 			GUISetState(@SW_HIDE, $g_hGUI_ACTIVEBASE)
-			GUISetState(@SW_HIDE, $g_hGUI_THSNIPE)
 			GUISetState(@SW_HIDE, $g_hGUI_BULLY)
 			GUISetState(@SW_HIDE, $g_hGUI_ATTACKOPTION)
 
@@ -1866,14 +1833,12 @@ Func tabSEARCH()
 			EndIf
 
 			GUICtrlSetPos($g_hChkActivebase, $tababx[2] - 15, $tababx[3] - 15) ; use x,y coordinate of tabitem rectangle bottom right corner to dynamically reposition the checkbox control (for translated tabnames)
-			GUICtrlSetPos($g_hChkTHSnipe, $tabtsx[2] - 15, $tabtsx[3] - 15)
 			GUICtrlSetPos($g_hChkBully, $tabblx[2] - 15, $tabblx[3] - 15)
 
 			GUICtrlSetPos($g_hChkDeadbase, $tabdbx[2] - 15, $tabdbx[3] - 17)
 			tabDeadbase()
 		Case $tabidx = 1 ; Activebase tab
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE)
-			GUISetState(@SW_HIDE, $g_hGUI_THSNIPE)
 			GUISetState(@SW_HIDE, $g_hGUI_BULLY)
 			GUISetState(@SW_HIDE, $g_hGUI_ATTACKOPTION)
 
@@ -1886,35 +1851,13 @@ Func tabSEARCH()
 			EndIf
 
 			GUICtrlSetPos($g_hChkDeadbase, $tabdbx[2] - 15, $tabdbx[3] - 15)
-			GUICtrlSetPos($g_hChkTHSnipe, $tabtsx[2] - 15, $tabtsx[3] - 15)
 			GUICtrlSetPos($g_hChkBully, $tabblx[2] - 15, $tabblx[3] - 15)
 
 			GUICtrlSetPos($g_hChkActivebase, $tababx[2] - 15, $tababx[3] - 17)
 			tabActivebase()
-		Case $tabidx = 2 ; THSnipe tab
+		Case $tabidx = 2 ; Bully tab
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE)
 			GUISetState(@SW_HIDE, $g_hGUI_ACTIVEBASE)
-			GUISetState(@SW_HIDE, $g_hGUI_BULLY)
-			GUISetState(@SW_HIDE, $g_hGUI_ATTACKOPTION)
-
-			If GUICtrlRead($g_hChkTHSnipe) = $GUI_CHECKED Then
-				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_THSNIPE)
-				GUICtrlSetState($g_hLblTHSnipeDisabled, $GUI_HIDE)
-			Else
-				GUISetState(@SW_HIDE, $g_hGUI_THSNIPE)
-				GUICtrlSetState($g_hLblTHSnipeDisabled, $GUI_SHOW)
-			EndIf
-
-			GUICtrlSetPos($g_hChkDeadbase, $tabdbx[2] - 15, $tabdbx[3] - 15)
-			GUICtrlSetPos($g_hChkActivebase, $tababx[2] - 15, $tababx[3] - 15)
-			GUICtrlSetPos($g_hChkBully, $tabblx[2] - 15, $tabblx[3] - 15)
-
-			GUICtrlSetPos($g_hChkTHSnipe, $tabtsx[2] - 15, $tabtsx[3] - 17)
-			tabTHSnipe()
-		Case $tabidx = 3 ; Bully tab
-			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE)
-			GUISetState(@SW_HIDE, $g_hGUI_ACTIVEBASE)
-			GUISetState(@SW_HIDE, $g_hGUI_THSNIPE)
 			GUISetState(@SW_HIDE, $g_hGUI_ATTACKOPTION)
 
 			If GUICtrlRead($g_hChkBully) = $GUI_CHECKED Then
@@ -1927,21 +1870,18 @@ Func tabSEARCH()
 
 			GUICtrlSetPos($g_hChkDeadbase, $tabdbx[2] - 15, $tabdbx[3] - 15)
 			GUICtrlSetPos($g_hChkActivebase, $tababx[2] - 15, $tababx[3] - 15)
-			GUICtrlSetPos($g_hChkTHSnipe, $tabtsx[2] - 15, $tabtsx[3] - 15)
 
 			GUICtrlSetPos($g_hChkBully, $tabblx[2] - 15, $tabblx[3] - 17)
 			; Bully has no tabs
-		Case $tabidx = 4 ; Options
+		Case $tabidx = 3 ; Options
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE)
 			GUISetState(@SW_HIDE, $g_hGUI_ACTIVEBASE)
-			GUISetState(@SW_HIDE, $g_hGUI_THSNIPE)
 			GUISetState(@SW_HIDE, $g_hGUI_BULLY)
 
 			GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_ATTACKOPTION)
 
 			GUICtrlSetPos($g_hChkDeadbase, $tabdbx[2] - 15, $tabdbx[3] - 15)
 			GUICtrlSetPos($g_hChkActivebase, $tababx[2] - 15, $tababx[3] - 15)
-			GUICtrlSetPos($g_hChkTHSnipe, $tabtsx[2] - 15, $tabtsx[3] - 15)
 			GUICtrlSetPos($g_hChkBully, $tabblx[2] - 15, $tabblx[3] - 15)
 	EndSelect
 
@@ -2029,7 +1969,6 @@ Func tabDeadbase()
 		Case Else
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_STANDARD)
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_SCRIPTED)
-			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_MILKING)
 			GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_SMARTFARM)
 	EndSelect
 
@@ -2053,23 +1992,6 @@ Func tabActivebase()
 	EndSelect
 
 EndFunc   ;==>tabActivebase
-
-Func tabTHSnipe()
-	If $g_iGuiMode <> 1 Then Return
-	Local $tabidx = GUICtrlRead($g_hGUI_THSNIPE_TAB)
-	Select
-		;			Case $tabidx = 0 ; Search tab
-
-		Case $tabidx = 1 ; Attack tab
-			;				cmbTHAlgorithm()
-
-			;			Case $tabidx = 2 ; End Battle tab
-
-		Case Else
-
-	EndSelect
-
-EndFunc   ;==>tabTHSnipe
 
 ;---------------------------------------------------
 ; Extra Functions used on GUI Control
@@ -2127,10 +2049,6 @@ Func Bind_ImageList($nCtrl, ByRef $hImageList)
 
 		Case $g_hGUI_ACTIVEBASE_TAB
 			; the icons for activebase tab
-			Local $aIconIndex = [$eIcnMagnifier, $eIcnCamp, $eIcnSilverStar]
-
-		Case $g_hGUI_THSNIPE_TAB
-			; the icons for thsnipe tab
 			Local $aIconIndex = [$eIcnMagnifier, $eIcnCamp, $eIcnSilverStar]
 
 		Case $g_hGUI_ATTACKOPTION_TAB

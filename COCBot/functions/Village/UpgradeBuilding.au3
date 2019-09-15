@@ -238,7 +238,7 @@ Func UpgradeNormal($iUpgradeNumber)
 		If _Sleep($DELAYUPGRADENORMAL2) Then Return
 		ClickP($aUpgradeButton, 1, 0, "#0297") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADENORMAL3) Then Return ; Wait for window to open
-		If $g_bDebugImageSave Then DebugImageSave("UpgradeRegBtn1")
+		If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn1")
 		Local $aBldgUpgradeWinChk[4] = [687, 161 + $g_iMidOffsetY, 0xCD1419, 20] ; Red pixel on botton X to close window
 		If _WaitForCheckPixel($aBldgUpgradeWinChk, $g_bCapturePixel,Default, "BldgUpgradeWinChk", Default, Default, 100) Then ; wait up to 2 seconds for hero upgrade window to open
 			If _ColorCheck(_GetPixelColor(459, 490 + $g_iMidOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(459, 494 + $g_iMidOffsetY), Hex(0xE70A12, 6), 20) And _
@@ -251,7 +251,7 @@ Func UpgradeNormal($iUpgradeNumber)
 			Else
 				Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADENORMAL3) Then Return
-				If $g_bDebugImageSave Then DebugImageSave("UpgradeRegBtn2")
+				If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No Loot!", $COLOR_ERROR)
 					ClickP($aAway, 2, 0, "#0300") ;Click Away to close windows
@@ -292,7 +292,7 @@ Func UpgradeNormal($iUpgradeNumber)
 			Else
 				Click(670, 510 + $g_iMidOffsetY, 1, 0, "#0299") ; Click upgrade buttton
 				If _Sleep($DELAYUPGRADENORMAL3) Then Return
-				If $g_bDebugImageSave Then DebugImageSave("UpgradeRegBtn2")
+				If $g_bDebugImageSave Then SaveDebugImage("UpgradeRegBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No Loot!", $COLOR_RED)
 					ClickP($aAway, 2, 0, "#0300") ;Click Away to close windows
@@ -343,7 +343,7 @@ Func UpgradeHero($iUpgradeNumber)
 		If _Sleep($DELAYUPGRADEHERO2) Then Return
 		ClickP($aUpgradeButton, 1, 0, "#0305") ; Click Upgrade Button
 		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
-		If $g_bDebugImageSave Then DebugImageSave("UpgradeDarkBtn1")
+		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
 		Local $aHeroUpgradeWinChk[4] = [729, 128 + $g_iMidOffsetY, 0xCD161D, 20] ; Red pixel on botton X to close window
 		If _WaitForCheckPixel($aHeroUpgradeWinChk, $g_bCapturePixel,Default, "HeroUpgradeWinChk", Default, Default, 100) Then ; wait up to 2 seconds for hero upgrade window to open
 			If _ColorCheck(_GetPixelColor(691, 523 + $g_iMidOffsetY, True), Hex(0xE70A12, 6), 20) And _ColorCheck(_GetPixelColor(691, 527 + $g_iMidOffsetY), Hex(0xE70A12, 6), 20) And _
@@ -355,7 +355,7 @@ Func UpgradeHero($iUpgradeNumber)
 				Click(660, 515 + $g_iMidOffsetY, 1, 0, "#0307") ; Click upgrade buttton
 				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
-				If $g_bDebugImageSave Then DebugImageSave("UpgradeDarkBtn2")
+				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Upgrade Fail #" & $iUpgradeNumber + 1 & " " & $g_avBuildingUpgrades[$iUpgradeNumber][4] & " No DE!", $COLOR_ERROR)
 					ClickP($aAway, 2, 0, "#0309") ;Click Away to close windows

@@ -33,7 +33,7 @@ Func CleanBBYard()
 						If IsMainPageBuilderBase() Then Click($CleanBBYardXY[0], $CleanBBYardXY[1], 1, 0, "#0430")
 						$Locate = 1
 						If _Sleep($DELAYCOLLECT3) Then Return
-						If IsMainPageBuilderBase() Then GemClick($aCleanYard[0], $aCleanYard[1], 1, 0, "#0431") ; Click Obstacles button to clean
+						If Not ClickRemoveObstacle() Then ContinueLoop
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
 						ClickP($aAway, 2, 300, "#0329") ;Click Away
 						If _Sleep($DELAYCHECKTOMBS1) Then Return

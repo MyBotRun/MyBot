@@ -245,7 +245,7 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = "357,545|502,545|502,607|357,607"
 		Case "Next" ; attackpage attackwindow
 			$btnDiamond = "697,542|850,542|850,610|697,610"
-		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury" ; Full size of object buttons at the bottom
+		Case "ObjectButtons", "BoostOne", "BoostCT", "Upgrade", "Research", "Treasury", "RemoveObstacle", "CollectLootCart" ; Full size of object buttons at the bottom
 			$btnDiamond = GetDiamondFromRect("140,591,720,671")
 		Case "GEM", "BOOSTBtn" ; Boost window button (full button size)
 			$btnDiamond = GetDiamondFromRect("359,412(148,66)")
@@ -361,7 +361,7 @@ Func findImage($sImageName, $sImageTile, $sImageArea, $maxReturnPoints = 1, $bFo
 	EndIf
 
 	If checkImglocError($result, "findImage", $sImageTile, $sImageArea) Then
-		If $g_bDebugSetlog And $g_bDebugImageSave Then DebugImageSave("findImage_" & $sImageName, True)
+		If $g_bDebugSetlog And $g_bDebugImageSave Then SaveDebugImage("findImage_" & $sImageName, True)
 		Return $aCoords
 	EndIf
 
@@ -377,7 +377,7 @@ Func findImage($sImageName, $sImageTile, $sImageArea, $maxReturnPoints = 1, $bFo
 		EndIf
 	Else
 		If $g_bDebugSetlog Then SetDebugLog("findImage : " & $sImageName & " NOT FOUND " & $sImageTile)
-		If $g_bDebugSetlog And $g_bDebugImageSave Then DebugImageSave("findImage_" & $sImageName, True)
+		If $g_bDebugSetlog And $g_bDebugImageSave Then SaveDebugImage("findImage_" & $sImageName, True)
 		Return $aCoords
 	EndIf
 
@@ -701,165 +701,6 @@ Func SearchRedLinesMultipleTimes($sCocDiamond = "ECD", $iCount = 3, $iDelay = 30
 	Return $g_sImglocRedline
 EndFunc   ;==>SearchRedLinesMultipleTimes
 
-Func decodeTroopEnum($tEnum)
-	Switch $tEnum
-		Case $eBarb
-			Return "Barbarian"
-		Case $eArch
-			Return "Archer"
-		Case $eBall
-			Return "Balloon"
-		Case $eDrag
-			Return "Dragon"
-		Case $eGiant
-			Return "Giant"
-		Case $eGobl
-			Return "Goblin"
-		Case $eGole
-			Return "Golem"
-		Case $eHeal
-			Return "Healer"
-		Case $eHogs
-			Return "HogRider"
-		Case $eKing
-			Return "King"
-		Case $eLava
-			Return "LavaHound"
-		Case $eMini
-			Return "Minion"
-		Case $ePekk
-			Return "Pekka"
-		Case $eQueen
-			Return "Queen"
-		Case $eValk
-			Return "Valkyrie"
-		Case $eWall
-			Return "WallBreaker"
-		Case $eWarden
-			Return "Warden"
-		Case $eWitc
-			Return "Witch"
-		Case $eWiza
-			Return "Wizard"
-		Case $eBabyD
-			Return "BabyDragon"
-		Case $eMine
-			Return "Miner"
-		Case $eEDrag
-			Return "ElectroDragon"
-		Case $eBowl
-			Return "Bowler"
-		Case $eIceG
-			Return "IceGolem"
-		Case $eESpell
-			Return "EarthquakeSpell"
-		Case $eFSpell
-			Return "FreezeSpell"
-		Case $eHaSpell
-			Return "HasteSpell"
-		Case $eHSpell
-			Return "HealSpell"
-		Case $eJSpell
-			Return "JumpSpell"
-		Case $eLSpell
-			Return "LightningSpell"
-		Case $ePSpell
-			Return "PoisonSpell"
-		Case $eRSpell
-			Return "RageSpell"
-		Case $eSkSpell
-			Return "SkeletonSpell"
-		Case $eBtSpell
-			Return "BatSpell"
-		Case $eCSpell
-			Return "CloneSpell"
-		Case $eCastle
-			Return "Castle"
-	EndSwitch
-
-EndFunc   ;==>decodeTroopEnum
-
-
-Func decodeTroopName($sName)
-
-	Switch $sName
-		Case "Barbarian"
-			Return $eBarb
-		Case "Archer"
-			Return $eArch
-		Case "Balloon"
-			Return $eBall
-		Case "Dragon"
-			Return $eDrag
-		Case "Giant"
-			Return $eGiant
-		Case "Goblin"
-			Return $eGobl
-		Case "Golem"
-			Return $eGole
-		Case "Healer"
-			Return $eHeal
-		Case "HogRider"
-			Return $eHogs
-		Case "King"
-			Return $eKing
-		Case "LavaHound"
-			Return $eLava
-		Case "Minion"
-			Return $eMini
-		Case "Pekka"
-			Return $ePekk
-		Case "Queen"
-			Return $eQueen
-		Case "Valkyrie"
-			Return $eValk
-		Case "WallBreaker"
-			Return $eWall
-		Case "Warden"
-			Return $eWarden
-		Case "Witch"
-			Return $eWitc
-		Case "Wizard"
-			Return $eWiza
-		Case "BabyDragon"
-			Return $eBabyD
-		Case "Miner"
-			Return $eMine
-		Case "ElectroDragon"
-			Return $eEDrag
-		Case "Bowler"
-			Return $eBowl
-		Case "IceGolem"
-			Return $eIceG
-		Case "EarthquakeSpell"
-			Return $eESpell
-		Case "FreezeSpell"
-			Return $eFSpell
-		Case "HasteSpell"
-			Return $eHaSpell
-		Case "HealSpell"
-			Return $eHSpell
-		Case "JumpSpell"
-			Return $eJSpell
-		Case "LightningSpell"
-			Return $eLSpell
-		Case "PoisonSpell"
-			Return $ePSpell
-		Case "RageSpell"
-			Return $eRSpell
-		Case "SkeletonSpell"
-			Return $eSkSpell
-		Case "BatSpell"
-			Return $eBtSpell
-		Case "CloneSpell"
-			Return $eCSpell
-		Case "Castle"
-			Return $eCastle
-
-	EndSwitch
-
-EndFunc   ;==>decodeTroopName
-
 Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 	If $iY < 490 Then
 		Switch $iX ; Troops & Spells Slots
@@ -939,7 +780,6 @@ Func GetDummyRectangle($sCoords, $ndistance)
 	Local $aCoords = StringSplit($sCoords, ",", $STR_NOCOUNT)
 	Return Number($aCoords[0]) - $ndistance & "," & Number($aCoords[1]) - $ndistance & "," & Number($aCoords[0]) + $ndistance & "," & Number($aCoords[1]) + $ndistance
 EndFunc   ;==>GetDummyRectangle
-
 
 Func ImgLogDebugProps($result)
 	If UBound($result) < 1 Then Return False

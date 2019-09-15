@@ -13,68 +13,29 @@
 ; Example .......: No
 ; ===============================================================================================================================
 #include-once
-Func btnMilkingOptions()
-;~ 	OpenGUIMilk2()
-EndFunc   ;==>btnMilkingOptions
-
-Func btnDBAttackConfigure()
-	Switch _GUICtrlComboBox_GetCurSel($g_hCmbDBAlgorithm)
-		Case 0
-			;Algorithm Alltroops
-;~ 			OpenGUIAlgorithmAllTroopsConfig($DB)
-		Case 1
-			; Scripted Attack
-;~ 			OpenGUIAlgorithmAttackCSVConfig($DB)
-		Case 2
-			; Milking Attack
-;~ 			OpenGUIMilk2()
-	EndSwitch
-EndFunc   ;==>btnDBAttackConfigure
-
-Func btnABAttackConfigure()
-	Switch _GUICtrlComboBox_GetCurSel($g_hCmbDBAlgorithm)
-		Case 0
-			;Algorithm Alltroops
-;~ 			OpenGUIAlgorithmAllTroopsConfig($LB)
-		Case 1
-			; Scripted Attack
-;~ 			OpenGUIAlgorithmAttackCSVConfig($LB)
-
-	EndSwitch
-EndFunc   ;==>btnABAttackConfigure
 
 Func cmbDBAlgorithm()
 	Local $iCmbValue = _GUICtrlComboBox_GetCurSel($g_hCmbDBAlgorithm)
 	; Algorithm Alltroops
-	; show spells if milking because after milking you can continue to attack with thsnipe or standard attack where you can use spells
-	_GUI_Value_STATE(($iCmbValue = 1 Or $iCmbValue = 2) ? "SHOW" : "HIDE", $g_aGroupAttackDBSpell & "#" & $groupIMGAttackDBSpell)
+	_GUI_Value_STATE($iCmbValue = 1 ? "SHOW" : "HIDE", $g_aGroupAttackDBSpell & "#" & $groupIMGAttackDBSpell)
 
 	If BitAND(GUICtrlGetState($g_hGUI_DEADBASE), $GUI_SHOW) And GUICtrlRead($g_hGUI_DEADBASE_TAB) = 1 Then ; fix ghosting during control applyConfig
 		Select
 			Case $iCmbValue = 0 ; Standard Attack
 				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_DEADBASE_ATTACK_STANDARD)
 				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_SCRIPTED)
-				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_MILKING)
 				GUISetState(@SW_HIDE,$g_hGUI_DEADBASE_ATTACK_SMARTFARM)
 			Case $iCmbValue = 1 ; Scripted Attack
 				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_STANDARD)
 				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_DEADBASE_ATTACK_SCRIPTED)
-				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_MILKING)
 				GUISetState(@SW_HIDE,$g_hGUI_DEADBASE_ATTACK_SMARTFARM)
-			Case $iCmbValue = 2 ; Milking Attack
+			Case $iCmbValue = 2 ; Smart Farm Attack
 				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_STANDARD)
 				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_SCRIPTED)
-				GUISetState(@SW_SHOWNOACTIVATE, $g_hGUI_DEADBASE_ATTACK_MILKING)
-				GUISetState(@SW_HIDE,$g_hGUI_DEADBASE_ATTACK_SMARTFARM)
-			Case $iCmbValue = 3 ; Smart Farm Attack
-				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_STANDARD)
-				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_SCRIPTED)
-				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_MILKING)
 				GUISetState(@SW_SHOWNOACTIVATE,$g_hGUI_DEADBASE_ATTACK_SMARTFARM)
 			Case Else
 				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_STANDARD)
 				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_SCRIPTED)
-				GUISetState(@SW_HIDE, $g_hGUI_DEADBASE_ATTACK_MILKING)
 				GUISetState(@SW_HIDE,$g_hGUI_DEADBASE_ATTACK_SMARTFARM)
 		EndSelect
 	EndIf
@@ -145,120 +106,6 @@ Func chkAttackNow()
 		GUICtrlSetState($g_hCmbAttackNowDelay, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkAttackNow
-
-Func LoadThSnipeAttacks()
-	Dim $FileSearch, $NewFile
-	$FileSearch = FileFindFirstFile($g_sTHSnipeAttacksPath & "\*.csv")
-	Dim $output = ""
-	While True
-		$NewFile = FileFindNextFile($FileSearch)
-		If @error Then ExitLoop
-		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
-	WEnd
-	FileClose($FileSearch)
-	;remove last |
-	$output = StringLeft($output, StringLen($output) - 1)
-	;reset combo box
-	_GUICtrlComboBox_ResetContent($g_hCmbAttackTHType)
-	;set combo box
-	GUICtrlSetData($g_hCmbAttackTHType, $output)
-
-	_GUICtrlComboBox_SetCurSel($g_hCmbAttackTHType, _GUICtrlComboBox_FindStringExact($g_hCmbAttackTHType, $g_sAtkTSType))
-EndFunc   ;==>LoadThSnipeAttacks
-
-
-Func LoadDBSnipeAttacks()
-	Dim $FileSearch, $NewFile
-	$FileSearch = FileFindFirstFile($g_sTHSnipeAttacksPath & "\*.csv")
-	Dim $output = ""
-	While True
-		$NewFile = FileFindNextFile($FileSearch)
-		If @error Then ExitLoop
-		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
-	WEnd
-	FileClose($FileSearch)
-	;remove last |
-	$output = StringLeft($output, StringLen($output) - 1)
-	;reset combo box
-	_GUICtrlComboBox_ResetContent($g_hCmbTHSnipeBeforeDBScript)
-	;set combo box
-	GUICtrlSetData($g_hCmbTHSnipeBeforeDBScript, $output)
-
-	_GUICtrlComboBox_SetCurSel($g_hCmbTHSnipeBeforeDBScript, _GUICtrlComboBox_FindStringExact($g_hCmbTHSnipeBeforeDBScript, $g_iTHSnipeBeforeTiles[$DB]))
-EndFunc   ;==>LoadDBSnipeAttacks
-
-Func LoadABSnipeAttacks()
-	Dim $FileSearch, $NewFile
-	$FileSearch = FileFindFirstFile($g_sTHSnipeAttacksPath & "\*.csv")
-	Dim $output = ""
-	While True
-		$NewFile = FileFindNextFile($FileSearch)
-		If @error Then ExitLoop
-		$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
-	WEnd
-	FileClose($FileSearch)
-	;remove last |
-	$output = StringLeft($output, StringLen($output) - 1)
-	;reset combo box
-	_GUICtrlComboBox_ResetContent($g_hCmbTHSnipeBeforeLBScript)
-	;set combo box
-	GUICtrlSetData($g_hCmbTHSnipeBeforeLBScript, $output)
-
-	_GUICtrlComboBox_SetCurSel($g_hCmbTHSnipeBeforeLBScript, _GUICtrlComboBox_FindStringExact($g_hCmbTHSnipeBeforeLBScript, $g_iTHSnipeBeforeScript[$LB]))
-EndFunc   ;==>LoadABSnipeAttacks
-
-
-
-Func cmbAttackTHType()
-	Local $arrayattack = _GUICtrlComboBox_GetListArray($g_hCmbAttackTHType)
-	$g_sAtkTSType = $arrayattack[_GUICtrlComboBox_GetCurSel($g_hCmbAttackTHType) + 1]
-EndFunc   ;==>cmbAttackTHType
-
-Func btnTestTHcsv()
-	AttackTHParseCSV(True) ; launch attach th parse CSV only for test in log
-EndFunc   ;==>btnTestTHcsv
-
-Func cmbTSGoldElixir()
-	If _GUICtrlComboBox_GetCurSel($g_hCmbTSMeetGE) < 2 Then
-		GUICtrlSetState($g_hTxtTSMinGold, $GUI_SHOW)
-		GUICtrlSetState($g_hPicTSMinGold, $GUI_SHOW)
-		GUICtrlSetState($g_hTxtTSMinElixir, $GUI_SHOW)
-		GUICtrlSetState($g_hPicTSMinElixir, $GUI_SHOW)
-		GUICtrlSetState($g_hTxtTSMinGoldPlusElixir, $GUI_HIDE)
-		GUICtrlSetState($g_hPicTSMinGPEGold, $GUI_HIDE)
-	Else
-		GUICtrlSetState($g_hTxtTSMinGold, $GUI_HIDE)
-		GUICtrlSetState($g_hPicTSMinGold, $GUI_HIDE)
-		GUICtrlSetState($g_hTxtTSMinElixir, $GUI_HIDE)
-		GUICtrlSetState($g_hPicTSMinElixir, $GUI_HIDE)
-		GUICtrlSetState($g_hTxtTSMinGoldPlusElixir, $GUI_SHOW)
-		GUICtrlSetState($g_hPicTSMinGPEGold, $GUI_SHOW)
-	EndIf
-EndFunc   ;==>cmbTSGoldElixir
-
-Func chkTHSnipeBeforeDBEnable()
-	If GUICtrlRead($g_hChkTHSnipeBeforeDBEnable) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hLblTHSnipeBeforeDBTiles, $GUI_ENABLE)
-		GUICtrlSetState($g_hTxtTHSnipeBeforeDBTiles, $GUI_ENABLE)
-		GUICtrlSetState($g_hCmbTHSnipeBeforeDBScript, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($g_hLblTHSnipeBeforeDBTiles, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtTHSnipeBeforeDBTiles, $GUI_DISABLE)
-		GUICtrlSetState($g_hCmbTHSnipeBeforeDBScript, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkTHSnipeBeforeDBEnable
-
-Func chkTHSnipeBeforeLBEnable()
-	If GUICtrlRead($g_hChkTHSnipeBeforeLBEnable) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hLblTHSnipeBeforeLBTiles, $GUI_ENABLE)
-		GUICtrlSetState($g_hTxtTHSnipeBeforeLBTiles, $GUI_ENABLE)
-		GUICtrlSetState($g_hCmbTHSnipeBeforeLBScript, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($g_hLblTHSnipeBeforeLBTiles, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtTHSnipeBeforeLBTiles, $GUI_DISABLE)
-		GUICtrlSetState($g_hCmbTHSnipeBeforeLBScript, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkTHSnipeBeforeLBEnable
 
 Func radHerosApply()
 	GUICtrlSetState($g_hRadAutoQueenAbility, $g_iActivateQueen = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -572,26 +419,6 @@ Func chkSearchReduction()
 	EndIf
 EndFunc   ;==>chkSearchReduction
 
-; Func chkBullyMode()
-; If GUICtrlRead($Bullycheck) = $GUI_CHECKED Then
-; GUISetState(@SW_SHOW, $g_hGrpBullyAtkCombo)
-; GUISetState(@SW_SHOW, $g_hLblBullyMode)
-; GUISetState(@SW_SHOW, $g_hTxtATBullyMode)
-; GUISetState(@SW_SHOW, $g_hLblATBullyMode)
-; GUISetState(@SW_SHOW, $g_hCmbBullyMaxTH)
-; GUISetState(@SW_SHOW, $g_hRadBullyUseDBAttack)
-; GUISetState(@SW_SHOW, $g_hRadBullyUseLBAttack)
-; Else
-; GUISetState(@SW_HIDE, $g_hGrpBullyAtkCombo)
-; GUISetState(@SW_HIDE, $g_hLblBullyMode)
-; GUISetState(@SW_HIDE, $g_hTxtATBullyMode)
-; GUISetState(@SW_HIDE, $g_hLblATBullyMode)
-; GUISetState(@SW_HIDE, $g_hCmbBullyMaxTH)
-; GUISetState(@SW_HIDE, $g_hRadBullyUseDBAttack)
-; GUISetState(@SW_HIDE, $g_hRadBullyUseLBAttack)
-; EndIf
-; EndFunc   ;==>chkBullyMode
-
 Func sldMaxVSDelay()
 	$g_iSearchDelayMax = GUICtrlRead($g_hSldMaxVSDelay)
 	GUICtrlSetData($g_hLblMaxVSDelay, $g_iSearchDelayMax)
@@ -655,18 +482,6 @@ Func abCheck()
 		tabSEARCH() ; just call tabSEARCH()
 	EndIf
 EndFunc   ;==>abCheck
-
-Func tsCheck()
-	$g_abAttackTypeEnable[$TS] = (GUICtrlRead($g_hChkTHSnipe) = $GUI_CHECKED)
-
-	If IsBotLaunched() Then _GUICtrlTab_SetCurFocus($g_hGUI_SEARCH_TAB, 2)
-	If BitAND(GUICtrlRead($g_hChkTSActivateSearches), GUICtrlRead($g_hChkTSActivateTropies), GUICtrlRead($g_hChkTSActivateCamps)) = $GUI_UNCHECKED Then
-		GUICtrlSetState($g_hChkTSActivateSearches, $GUI_CHECKED)
-		chkTSActivateSearches() ; this includes a call to tsCheckall() -> tabSEARCH()
-	Else
-		tabSEARCH() ; just call tabSEARCH()
-	EndIf
-EndFunc   ;==>tsCheck
 
 Func bullyCheck()
 	$g_abAttackTypeEnable[$TB] = (GUICtrlRead($g_hChkBully) = $GUI_CHECKED)

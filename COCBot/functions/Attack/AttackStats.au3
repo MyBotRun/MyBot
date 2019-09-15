@@ -16,16 +16,14 @@
 #include <SQLite.au3>
 
 Func OpenSqlite()
-
 	If Not $g_bUseStatistics Then Return
 
-	Local $sLocalSQLiteDll = @ScriptDir & "\lib\sqlite3.dll"
-
-	Local $sSQLite = _SQLite_Startup($sLocalSQLiteDll, False, 1)
+	Local $sSQLite = _SQLite_Startup($g_sLibSQLitePath, False, 1)
 	If @error Then
 		MsgBox($MB_SYSTEMMODAL, "SQLite Error", "SQLite3.dll Can't be Loaded!", 10)
 		Return False
 	EndIf
+
 	$g_hSQLiteDB = _SQLite_Open(@ScriptDir & "\AttackStats.sqlite3")
 	If @error Then
 		MsgBox($MB_SYSTEMMODAL, "SQLite DB", "Can't open or create a Database!", 10)
@@ -35,10 +33,8 @@ Func OpenSqlite()
 EndFunc   ;==>OpenSqlite
 
 Func CloseSqlite()
-
 	_SQLite_Close($g_hSQLiteDB)
 	_SQLite_Shutdown()
-
 EndFunc   ;==>CloseSqlite
 
 Func CreaTableDB()
@@ -166,9 +162,3 @@ Func UpdateVarStats()
 	Local $totalgrab = Int($g_sLootGold) + Int($g_sLootElixir) + Int($g_sLootDE)
 	$g_sPercentagesResources = StringFormat("%.2f", (($totalgrab / $totalresources) * 100)) & "%"
 EndFunc   ;==>UpdateVarStats
-
-
-
-
-
-

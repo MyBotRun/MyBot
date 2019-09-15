@@ -133,7 +133,7 @@ Func Laboratory()
 	; Find Research Button
 	Local $aResearchButton = findButton("Research", Default, 1, True)
 	If IsArray($aResearchButton) And UBound($aResearchButton, 1) = 2 Then
-		If $g_bDebugImageSave Then DebugImageSave("StarLabUpgrade") ; Debug Only
+		If $g_bDebugImageSave Then SaveDebugImage("StarLabUpgrade") ; Debug Only
 		ClickP($aResearchButton)
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
 	Else
@@ -491,7 +491,7 @@ Func LabUpgrade($iSelectedUpgrade)
 			; If none of other error conditions apply, begin upgrade process
 			Click($g_avLabTroops[$iSelectedUpgrade][0] + 40, $g_avLabTroops[$iSelectedUpgrade][1] + 40, 1, 0, "#0200") ; Click Upgrade troop button
 			If _Sleep($DELAYLABUPGRADE1) Then Return ; Wait for window to open
-			If $g_bDebugImageSave Then DebugImageSave("LabUpgrade")
+			If $g_bDebugImageSave Then SaveDebugImage("LabUpgrade")
 
 			; double check if maxed?
 			If _ColorCheck(_GetPixelColor(258, 192, True), Hex(0xFF1919, 6), 20) And _ColorCheck(_GetPixelColor(272, 194, True), Hex(0xFF1919, 6), 20) Then
@@ -592,7 +592,7 @@ Func CheckXPos($iXTroop) ; return x diff between lightning spell border and targ
 	Local $aPosXY[0]
 	Local $iDiffBorder = 23
 
-	If $g_bDebugImageSave Then DebugImageSave("CheckXPos")
+	If $g_bDebugImageSave Then SaveDebugImage("CheckXPos")
 	_CaptureRegion2($aCoor[0], $aCoor[1], $aCoor[2], $aCoor[3])
 
 	$result = findMultiple($sDirectory, "FV", "FV", 0, 0, 1, $sReturnProps, False)
@@ -628,7 +628,7 @@ Func DebugIconSave($sTxtName = "Unknown", $iLeft = 0, $iTop = 0) ; Debug Code to
 EndFunc   ;==>DebugIconSave
 
 Func LabTroopImages($iStart, $iEnd) ; Debug function to record pixel values for troops
-	If $g_bDebugImageSave Then DebugImageSave("LabUpgrade")
+	If $g_bDebugImageSave Then SaveDebugImage("LabUpgrade")
 	For $i = $iStart To $iEnd
 		DebugIconSave($g_avLabTroops[$i][3], $g_avLabTroops[$i][0], $g_avLabTroops[$i][1])
 		SetDebugLog($g_avLabTroops[$i][3], $COLOR_WARNING)

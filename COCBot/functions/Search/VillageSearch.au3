@@ -106,7 +106,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 		_ObjDeleteKey($g_oBldgAttackInfo, "") ; Remove all keys from building dictionary
 
-		If $g_bDebugVillageSearchImages Then DebugImageSave("villagesearch")
+		If $g_bDebugVillageSearchImages Then SaveDebugImage("villagesearch")
 		$logwrited = False
 		$g_bBtnAttackNowPressed = False
 		$g_iSearchTHLResult = -1
@@ -114,17 +114,17 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 		Local $Time = @HOUR & "." & @MIN & "." & @SEC
 
-		If $g_bRestart = True Then Return ; exit func
+		If $g_bRestart Then Return ; exit func
 
 		; ----------------- READ ENEMY VILLAGE RESOURCES  -----------------------------------
 		WaitForClouds() ; Wait for clouds to disappear
 		AttackRemainingTime(True) ; Timer for knowing when attack starts, in 30 Sec. attack automatically starts and lasts for 3 Minutes
-		If $g_bRestart = True Then Return ; exit func
+		If $g_bRestart Then Return ; exit func
 
 		$g_bCloudsActive = False
 
 		GetResources(False) ;Reads Resource Values
-		If $g_bRestart = True Then Return ; exit func
+		If $g_bRestart Then Return ; exit func
 
 		SuspendAndroid()
 
@@ -162,8 +162,8 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		Local $bAlwaysMeasure = $g_bVillageSearchAlwaysMeasure
 		For $i = 0 To $g_iModeCount - 1
 			If $match[$i] Or $bAlwaysMeasure Then
-				If CheckZoomOut("VillageSearch", True, False) = False Then
-					DebugImageSave("VillageSearchMeasureFailed", False, Default, Default) ; make clean snapshot as well
+				If Not CheckZoomOut("VillageSearch", True, False) Then
+					SaveDebugImage("VillageSearchMeasureFailed", False) ; make clean snapshot as well
 					ExitLoop ; disable exiting search for December 2018 update due to zoomout issues
 					; check two more times, only required for snow theme (snow fall can make it easily fail), but don't hurt to keep it
 					$i = 0
@@ -175,18 +175,18 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 						_CaptureRegion2()
 						$bMeasured = CheckZoomOut("VillageSearch", $i < 2, False)
 					Until $bMeasured = True Or $i >= 2
-					If $bMeasured = False Then Return ; exit func
+					If Not $bMeasured Then Return ; exit func
 				EndIf
 				ExitLoop
 			EndIf
 		Next
 		If $g_bRestart Then Return
-		
+
 		; ----------------- FIND TARGET TOWNHALL -------------------------------------------
 		; $g_iSearchTH name of level of townhall (return "-" if no th found)
 		; $g_iTHx and $g_iTHy coordinates of townhall
 		Local $THString = ""
-		If $match[$DB] Or $match[$LB] Or $match[$TS] Then ; make sure resource conditions are met
+		If $match[$DB] Or $match[$LB] Then ; make sure resource conditions are met
 			$THString = FindTownhall(False, False) ;find TH, but only if TH condition is checked
 		ElseIf ($g_abFilterMeetOneConditionEnable[$DB] Or $g_abFilterMeetOneConditionEnable[$LB]) Then ; meet one then attack, do not need correct resources
 			$THString = FindTownhall(True, False)
@@ -224,8 +224,8 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 		; ----------------- CHECK DEAD BASE -------------------------------------------------
 		If Not $g_bRunState Then Return
-		; check deadbase if no milking attack or milking attack but low cpu settings  ($g_iMilkAttackType=1)
-		Local $checkDeadBase = ($match[$DB] And $g_aiAttackAlgorithm[$DB] <> 2) Or $match[$LB] Or ($match[$DB] And $g_aiAttackAlgorithm[$DB] = 2 And $g_iMilkAttackType = 1)
+		; check deadbase
+		Local $checkDeadBase = $match[$DB] Or $match[$LB]
 		If $checkDeadBase Then
 			$dbBase = checkDeadBase()
 		EndIf
@@ -270,31 +270,20 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 			Next
 		EndIf
 
-		; ----------------- CHECK MILKING ----------------------------------------------------
-		CheckMilkingBase($match[$DB], $dbBase) ;update  $milkingAttackOutside, $g_sMilkFarmObjectivesSTR, $g_iSearchTH  etc.
-
 		ResumeAndroid()
 
+		If $g_bLeagueAttack Then
+			If $dbBase And Not $match[$DB] Then
+				SetLog("Force attacking League Dead Base")
+				$match[$DB] = True
+			ElseIf Not $match[$LB] Then
+				SetLog("Force attacking League Live Base")
+				$match[$LB] = True
+			EndIf
+		EndIf
+
 		; ----------------- WRITE LOG VILLAGE FOUND AND ASSIGN VALUE AT $g_iMatchMode and exitloop  IF CONTITIONS MEET ---------------------------
-		If $match[$DB] And $g_aiAttackAlgorithm[$DB] = 2 And $g_bMilkingAttackOutside = True Then
-			SetLog($GetResourcesTXT, $COLOR_SUCCESS, "Lucida Console", 7.5)
-			SetLog("      " & "Milking Attack th outside Found!", $COLOR_SUCCESS, "Lucida Console", 7.5)
-			$logwrited = True
-			$g_iMatchMode = $DB
-			ExitLoop
-		ElseIf $match[$DB] And $g_aiAttackAlgorithm[$DB] = 2 And $g_iMilkAttackType = 0 And StringLen($g_sMilkFarmObjectivesSTR) > 0 Then
-			SetLog($GetResourcesTXT, $COLOR_SUCCESS, "Lucida Console", 7.5)
-			SetLog("      " & "Milking Attack HIGH CPU SETTINGS Found!", $COLOR_SUCCESS, "Lucida Console", 7.5)
-			$logwrited = True
-			$g_iMatchMode = $DB
-			ExitLoop
-		ElseIf $match[$DB] And $g_aiAttackAlgorithm[$DB] = 2 And $g_iMilkAttackType = 1 And StringLen($g_sMilkFarmObjectivesSTR) > 0 And $dbBase Then
-			SetLog($GetResourcesTXT, $COLOR_SUCCESS, "Lucida Console", 7.5)
-			SetLog("      " & "Milking Attack LOW CPU SETTINGS Found!", $COLOR_SUCCESS, "Lucida Console", 7.5)
-			$logwrited = True
-			$g_iMatchMode = $DB
-			ExitLoop
-		ElseIf $match[$DB] And $dbBase Then
+		If $match[$DB] And $dbBase Then
 			SetLog($GetResourcesTXT, $COLOR_SUCCESS, "Lucida Console", 7.5)
 			SetLog("      " & "Dead Base Found!", $COLOR_SUCCESS, "Lucida Console", 7.5)
 			$logwrited = True
@@ -322,18 +311,6 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 			EndIf
 		EndIf
 
-		If SearchTownHallLoc() And $match[$TS] Then ; attack this base anyway because outside TH found to snipe
-			If CompareResources($TS) Then
-				SetLog($GetResourcesTXT, $COLOR_SUCCESS, "Lucida Console", 7.5)
-				SetLog("      " & "TH Outside Found! ", $COLOR_SUCCESS, "Lucida Console", 7.5)
-				$logwrited = True
-				$g_iMatchMode = $TS
-				ExitLoop
-			Else
-				$noMatchTxt &= ", Not a " & $g_asModeText[$TS] & ", fails resource min"
-			EndIf
-		EndIf
-
 		If $match[$DB] And Not $dbBase Then
 			$noMatchTxt &= ", Not a " & $g_asModeText[$DB]
 		ElseIf $match[$LB] And $dbBase Then
@@ -341,7 +318,6 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 
 		If $noMatchTxt <> "" Then
-			;SetLog(_PadStringCenter(" " & StringMid($noMatchTxt, 3) & " ", 50, "~"), $COLOR_DEBUG)
 			SetLog($GetResourcesTXT, $COLOR_BLACK, "Lucida Console", 7.5)
 			SetLog("      " & StringMid($noMatchTxt, 3), $COLOR_ACTION, "Lucida Console", 7.5)
 			$logwrited = True
@@ -510,7 +486,7 @@ EndFunc   ;==>SearchLimit
 
 
 Func WriteLogVillageSearch($x)
-	;this function write in BOT LOG the values setting for each attack mode ($DB,$LB, $TS)
+	;this function write in BOT LOG the values setting for each attack mode ($DB,$LB)
 	;example
 	;[18.07.30] ============== Searching For Dead Base ===============
 	;[18.07.30] Enable Dead Base search IF

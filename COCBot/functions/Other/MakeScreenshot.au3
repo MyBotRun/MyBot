@@ -64,5 +64,3 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 	EndIf
 
 EndFunc   ;==>MakeScreenshot
-
-

@@ -14,6 +14,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: below function:
 ; ===============================================================================================================================
+
 Func getPBTime()
 
 	Local $sTimeResult = ""
@@ -44,7 +45,7 @@ Func getPBTime()
 		$iCount += 1
 		If $iCount > 20 Then ; Wait ~10-12 seconds for window to open before error return
 			SetLog("PBT information window failed to open", $COLOR_DEBUG)
-			If $g_bDebugImageSave Then DebugImageSave("PBTInfo_", $g_bCapturePixel, "png", False)
+			If $g_bDebugImageSave Then SaveDebugImage("PBTInfo_", $g_bCapturePixel, False)
 			ClickP($aAway, 1, 0, "#9999") ; close window if opened
 			If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
 			Return

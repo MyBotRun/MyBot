@@ -33,12 +33,12 @@ Func CheckAndroidPageError($bRebootAndroid = True)
 
 		If $bRebootAndroid = True Then
 			SetLog("Reboot " & $g_sAndroidEmulator & " due to " & $g_aiAndroidPageError[0] & " page errors in " & $sMin, $COLOR_ERROR)
-			DebugImageSave("page_error", False, Default, Default, "current-hbitmap-")
-			DebugImageSave("page_error", True, Default, Default, "new-hbitmap-")
+			SaveDebugImage("page_error", False, Default, "current-hbitmap-")
+			SaveDebugImage("page_error", True, Default, "new-hbitmap-")
 		Else
 			SetLog($g_sAndroidEmulator & " had " & $g_aiAndroidPageError[0] & " page errors in " & $sMin, $COLOR_ERROR)
 		EndIf
-		
+
 		InitAndroidPageError()
 
 		If $bRebootAndroid = True Then

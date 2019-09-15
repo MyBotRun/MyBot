@@ -101,24 +101,18 @@ Func applyConfig($bRedrawAtExit = True, $TypeReadSave = "Read") ;Applies the dat
 	ApplyConfig_600_28_DB($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Activebase / Search <><><><>
 	ApplyConfig_600_28_LB($TypeReadSave)
-	; <><><><> Attack Plan / Search & Attack / TH Snipe / Search <><><><>
-	ApplyConfig_600_28_TS($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / Attack <><><><>
 	ApplyConfig_600_29($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Attack <><><><>
 	ApplyConfig_600_29_DB($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Activebase / Attack <><><><>
 	ApplyConfig_600_29_LB($TypeReadSave)
-	; <><><><> Attack Plan / Search & Attack / TH Snipe / Attack <><><><>
-	ApplyConfig_600_29_TS($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / End Battle <><><><>
 	ApplyConfig_600_30($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Deadbase / End Battle <><><><>
 	ApplyConfig_600_30_DB($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Activebase / End Battle <><><><>
 	ApplyConfig_600_30_LB($TypeReadSave)
-	; <><><><> Attack Plan / Search & Attack / TH Snipe / End Battle <><><><>
-	ApplyConfig_600_30_TS($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Collectors <><><><>
 	ApplyConfig_600_31($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / Trophy Settings <><><><>
@@ -291,16 +285,16 @@ Func ApplyConfig_600_6($TypeReadSave)
 	Switch $TypeReadSave
 		Case "Read"
 			GUICtrlSetState($g_hChkBotStop, $g_bChkBotStop ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkBotStop()
 			_GUICtrlComboBox_SetCurSel($g_hCmbBotCommand, $g_iCmbBotCommand)
 			_GUICtrlComboBox_SetCurSel($g_hCmbBotCond, $g_iCmbBotCond)
 			_GUICtrlComboBox_SetCurSel($g_hCmbHoursStop, $g_iCmbHoursStop)
-			cmbBotCond()
 			For $i = 0 To $eLootCount - 1
 				GUICtrlSetData($g_ahTxtResumeAttackLoot[$i], $g_aiResumeAttackLoot[$i])
 			Next
+			GUICtrlSetState($g_hChkCollectStarBonus, $g_bCollectStarBonus ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbTimeStop, $g_iCmbTimeStop)
 			_GUICtrlComboBox_SetCurSel($g_hCmbResumeTime, $g_iResumeAttackTime)
+			chkBotStop()
 
 			GUICtrlSetData($g_hTxtRestartGold, $g_iTxtRestartGold)
 			GUICtrlSetData($g_hTxtRestartElixir, $g_iTxtRestartElixir)
@@ -321,6 +315,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetData($g_hTxtTreasuryGold, $g_iTxtTreasuryGold)
 			GUICtrlSetData($g_hTxtTreasuryElixir, $g_iTxtTreasuryElixir)
 			GUICtrlSetData($g_hTxtTreasuryDark, $g_iTxtTreasuryDark)
+			GUICtrlSetState($g_hChkCollectRewards, $g_bChkCollectRewards ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			GUICtrlSetState($g_hChkCollectBuilderBase, $g_bChkCollectBuilderBase ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkCleanBBYard, $g_bChkCleanBBYard ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -366,6 +361,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			For $i = 0 To $eLootCount - 1
 				$g_aiResumeAttackLoot[$i] = GUICtrlRead($g_ahTxtResumeAttackLoot[$i])
 			Next
+			$g_bCollectStarBonus = (GUICtrlRead($g_hChkCollectStarBonus) = $GUI_CHECKED)
 			$g_iCmbTimeStop = _GUICtrlComboBox_GetCurSel($g_hCmbTimeStop)
 			$g_iResumeAttackTime = _GUICtrlComboBox_GetCurSel($g_hCmbResumeTime)
 
@@ -385,6 +381,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_iTxtTreasuryGold = GUICtrlRead($g_hTxtTreasuryGold)
 			$g_iTxtTreasuryElixir = GUICtrlRead($g_hTxtTreasuryElixir)
 			$g_iTxtTreasuryDark = GUICtrlRead($g_hTxtTreasuryDark)
+			$g_bChkCollectRewards = (GUICtrlRead($g_hChkCollectRewards) = $GUI_CHECKED)
 
 			$g_bChkCollectBuilderBase = (GUICtrlRead($g_hChkCollectBuilderBase) = $GUI_CHECKED)
 			$g_bChkCleanBBYard = (GUICtrlRead($g_hChkCleanBBYard) = $GUI_CHECKED)
@@ -1227,59 +1224,6 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_28_LB
 
-Func ApplyConfig_600_28_TS($TypeReadSave)
-	; <><><><> Attack Plan / Search & Attack / TH Snipe / Search <><><><>
-	Switch $TypeReadSave
-		Case "Read"
-			; Search - Start Search If
-			GUICtrlSetState($g_hChkTSActivateSearches, $g_abSearchSearchesEnable[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtTSSearchesMin, $g_aiSearchSearchesMin[$TS])
-			GUICtrlSetData($g_hTxtTSSearchesMax, $g_aiSearchSearchesMax[$TS])
-			GUICtrlSetState($g_hChkTSActivateTropies, $g_abSearchTropiesEnable[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkTSActivateTropies()
-			GUICtrlSetData($g_hTxtTSTropiesMin, $g_aiSearchTrophiesMin[$TS])
-			GUICtrlSetData($g_hTxtTSTropiesMax, $g_aiSearchTrophiesMax[$TS])
-			GUICtrlSetState($g_hChkTSActivateCamps, $g_abSearchCampsEnable[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkTSActivateCamps()
-			GUICtrlSetData($g_hTxtTSArmyCamps, $g_aiSearchCampsPct[$TS])
-
-			chkTSActivateSearches()
-			GUICtrlSetState($g_hChkTHSnipe, $g_abAttackTypeEnable[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-
-			; Search - Filters
-			_GUICtrlComboBox_SetCurSel($g_hCmbTSMeetGE, $g_aiFilterMeetGE[$TS])
-			GUICtrlSetData($g_hTxtTSMinGold, $g_aiFilterMinGold[$TS])
-			GUICtrlSetData($g_hTxtTSMinElixir, $g_aiFilterMinElixir[$TS])
-			GUICtrlSetData($g_hTxtTSMinGoldPlusElixir, $g_aiFilterMinGoldPlusElixir[$TS])
-			cmbTSGoldElixir()
-			GUICtrlSetState($g_hChkTSMeetDE, $g_abFilterMeetDEEnable[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtTSMinDarkElixir, $g_aiFilterMeetDEMin[$TS])
-			chkTSMeetDE()
-			GUICtrlSetData($g_hTxtSWTTiles, $g_iAtkTSAddTilesWhileTrain)
-			GUICtrlSetData($g_hTxtTHaddTiles, $g_iAtkTSAddTilesFullTroops)
-		Case "Save"
-			$g_abAttackTypeEnable[$TS] = (GUICtrlRead($g_hChkTHSnipe) = $GUI_CHECKED)
-			; Search - Start Search If
-			$g_abSearchSearchesEnable[$TS] = (GUICtrlRead($g_hChkTSActivateSearches) = $GUI_CHECKED)
-			$g_aiSearchSearchesMin[$TS] = GUICtrlRead($g_hTxtTSSearchesMin)
-			$g_aiSearchSearchesMax[$TS] = GUICtrlRead($g_hTxtTSSearchesMax)
-			$g_abSearchTropiesEnable[$TS] = (GUICtrlRead($g_hChkTSActivateTropies) = $GUI_CHECKED)
-			$g_aiSearchTrophiesMin[$TS] = GUICtrlRead($g_hTxtTSTropiesMin)
-			$g_aiSearchTrophiesMax[$TS] = GUICtrlRead($g_hTxtTSTropiesMax)
-			$g_abSearchCampsEnable[$TS] = (GUICtrlRead($g_hChkTSActivateCamps) = $GUI_CHECKED)
-			$g_aiSearchCampsPct[$TS] = Int(GUICtrlRead($g_hTxtTSArmyCamps))
-			; Search - Filters
-			$g_aiFilterMeetGE[$TS] = _GUICtrlComboBox_GetCurSel($g_hCmbTSMeetGE)
-			$g_aiFilterMinGold[$TS] = GUICtrlRead($g_hTxtTSMinGold)
-			$g_aiFilterMinElixir[$TS] = GUICtrlRead($g_hTxtTSMinElixir)
-			$g_aiFilterMinGoldPlusElixir[$TS] = GUICtrlRead($g_hTxtTSMinGoldPlusElixir)
-			$g_abFilterMeetDEEnable[$TS] = (GUICtrlRead($g_hChkTSMeetDE) = $GUI_CHECKED)
-			$g_aiFilterMeetDEMin[$TS] = GUICtrlRead($g_hTxtTSMinDarkElixir)
-			$g_iAtkTSAddTilesWhileTrain = GUICtrlRead($g_hTxtSWTTiles)
-			$g_iAtkTSAddTilesFullTroops = GUICtrlRead($g_hTxtTHaddTiles)
-	EndSwitch
-EndFunc   ;==>ApplyConfig_600_28_TS
-
 Func ApplyConfig_600_29($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / Attack <><><><>
 	Switch $TypeReadSave
@@ -1393,12 +1337,6 @@ Func ApplyConfig_600_29_DB($TypeReadSave)
 			GUICtrlSetState($g_hChkDBHasteSpell, $g_abAttackUseHasteSpell[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDBSkeletonSpell, $g_abAttackUseSkeletonSpell[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDBBatSpell, $g_abAttackUseBatSpell[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTHSnipeBeforeDBEnable, $g_bTHSnipeBeforeEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkTHSnipeBeforeDBEnable()
-			GUICtrlSetData($g_hTxtTHSnipeBeforeDBTiles, $g_iTHSnipeBeforeTiles[$DB])
-			LoadDBSnipeAttacks() ; recreate combo box values
-			_GUICtrlComboBox_SetCurSel($g_hCmbTHSnipeBeforeDBScript, _GUICtrlComboBox_FindStringExact($g_hCmbTHSnipeBeforeDBScript, $g_iTHSnipeBeforeScript[$DB]))
-
 			_GUICtrlComboBox_SetCurSel($g_hCmbDBWardenMode, $g_aiAttackUseWardenMode[$DB])
 			_GUICtrlComboBox_SetCurSel($g_hCmbDBSiege, $g_aiAttackUseSiege[$DB])
 		Case "Save"
@@ -1421,9 +1359,6 @@ Func ApplyConfig_600_29_DB($TypeReadSave)
 			$g_abAttackUseCloneSpell[$DB] = (GUICtrlRead($g_hChkDBCloneSpell) = $GUI_CHECKED)
 			$g_abAttackUseSkeletonSpell[$DB] = (GUICtrlRead($g_hChkDBSkeletonSpell) = $GUI_CHECKED)
 			$g_abAttackUseBatSpell[$DB] = (GUICtrlRead($g_hChkDBBatSpell) = $GUI_CHECKED)
-			$g_bTHSnipeBeforeEnable[$DB] = (GUICtrlRead($g_hChkTHSnipeBeforeDBEnable) = $GUI_CHECKED)
-			$g_iTHSnipeBeforeTiles[$DB] = GUICtrlRead($g_hTxtTHSnipeBeforeDBTiles)
-			$g_iTHSnipeBeforeScript[$DB] = GUICtrlRead($g_hCmbTHSnipeBeforeDBScript)
 
 			$g_aiAttackUseWardenMode[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbDBWardenMode)
 			$g_aiAttackUseSiege[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbDBSiege)
@@ -1431,7 +1366,6 @@ Func ApplyConfig_600_29_DB($TypeReadSave)
 
 	ApplyConfig_600_29_DB_Standard($TypeReadSave)
 	ApplyConfig_600_29_DB_Scripted($TypeReadSave)
-	ApplyConfig_600_29_DB_Milking($TypeReadSave)
 	ApplyConfig_600_29_DB_SmartFarm($TypeReadSave)
 EndFunc   ;==>ApplyConfig_600_29_DB
 
@@ -1441,13 +1375,6 @@ Func ApplyConfig_600_29_DB_Standard($TypeReadSave)
 		Case "Read"
 			_GUICtrlComboBox_SetCurSel($g_hCmbStandardDropOrderDB, $g_aiAttackStdDropOrder[$DB])
 			_GUICtrlComboBox_SetCurSel($g_hCmbStandardDropSidesDB, $g_aiAttackStdDropSides[$DB])
-			_GUICtrlComboBox_SetCurSel($g_hCmbStandardUnitDelayDB, $g_aiAttackStdUnitDelay[$DB])
-			_GUICtrlComboBox_SetCurSel($g_hCmbStandardWaveDelayDB, $g_aiAttackStdWaveDelay[$DB])
-			_GUICtrlComboBox_SetCurSel($g_hCmbStandardUnitDelayDB1, $g_aiAttackStdUnitDelay[$DB])
-			_GUICtrlComboBox_SetCurSel($g_hCmbStandardWaveDelayDB1, $g_aiAttackStdWaveDelay[$DB])
-			GUICtrlSetState($g_hChkRandomSpeedAtkDB, $g_abAttackStdRandomizeDelay[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkRandomSpeedAtkDB1, $g_abAttackStdRandomizeDelay[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkRandomSpeedAtkDB()
 			GUICtrlSetState($g_hChkSmartAttackRedAreaDB, $g_abAttackStdSmartAttack[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkSmartAttackRedAreaDB()
 			_GUICtrlComboBox_SetCurSel($g_hCmbSmartDeployDB, $g_aiAttackStdSmartDeploy[$DB])
@@ -1457,9 +1384,6 @@ Func ApplyConfig_600_29_DB_Standard($TypeReadSave)
 		Case "Save"
 			$g_aiAttackStdDropOrder[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbStandardDropOrderDB)
 			$g_aiAttackStdDropSides[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbStandardDropSidesDB)
-			$g_aiAttackStdUnitDelay[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbStandardUnitDelayDB)
-			$g_aiAttackStdWaveDelay[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbStandardWaveDelayDB)
-			$g_abAttackStdRandomizeDelay[$DB] = (GUICtrlRead($g_hChkRandomSpeedAtkDB) = $GUI_CHECKED)
 			$g_abAttackStdSmartAttack[$DB] = (GUICtrlRead($g_hChkSmartAttackRedAreaDB) = $GUI_CHECKED)
 			$g_aiAttackStdSmartDeploy[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbSmartDeployDB)
 			$g_abAttackStdSmartNearCollectors[$DB][0] = (GUICtrlRead($g_hChkAttackNearGoldMineDB) = $GUI_CHECKED)
@@ -1495,135 +1419,6 @@ Func ApplyConfig_600_29_DB_Scripted($TypeReadSave)
 			IniWriteS($g_sProfileConfigPath, "attack", "ScriptDB", $g_sAttackScrScriptName[$DB])
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_29_DB_Scripted
-
-Func ApplyConfig_600_29_DB_Milking($TypeReadSave)
-	; <><><><> Attack Plan / Search & Attack / Deadbase / Attack / Milking <><><><>
-	Switch $TypeReadSave
-		Case "Read"
-			_GUICtrlComboBox_SetCurSel($g_hCmbMilkAttackType, $g_iMilkAttackType = 1 ? 1 : 0)
-			; A. Structures
-			For $i = 0 To 8
-				_GUICtrlComboBox_SetCurSel($g_hCmbMilkLvl[$i + 4], $g_aiMilkFarmElixirParam[$i] + 1)
-			Next
-			; B. Conditions
-			GUICtrlSetState($g_hChkAtkElixirExtractors, $g_bMilkFarmLocateElixir ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkAtkGoldMines, $g_bMilkFarmLocateMine ? $GUI_CHECKED : $GUI_UNCHECKED)
-			_GUICtrlComboBox_SetCurSel($g_hCmbAtkGoldMinesLevel, $g_iMilkFarmMineParam - 1)
-			GUICtrlSetState($g_hChkAtkDarkDrills, $g_bMilkFarmLocateDrill ? $GUI_CHECKED : $GUI_UNCHECKED)
-			_GUICtrlComboBox_SetCurSel($g_hCmbAtkDarkDrillsLevel, $g_iMilkFarmDrillParam - 1)
-			_GUICtrlComboBox_SetCurSel($g_hCmbRedlineResDistance, $g_iMilkFarmResMaxTilesFromBorder)
-			GUICtrlSetState($g_hChkAttackMinesIfGold, $g_bMilkFarmAttackGoldMines ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkAttackMinesIfElixir, $g_bMilkFarmAttackElixirExtractors ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkAttackMinesIfDarkElixir, $g_bMilkFarmAttackDarkDrills ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetData($g_hTxtAttackMinesIfGold, $g_iMilkFarmLimitGold)
-			GUICtrlSetData($g_hTxtAttackMinesIfElixir, $g_iMilkFarmLimitElixir)
-			GUICtrlSetData($g_hTxtAttackMinesIfDarkElixir, $g_iMilkFarmLimitDark)
-			chkAttackMinesifGold()
-			chkAttackMinesifelixir()
-			chkAttackMinesifdarkElixir()
-			; C. Attack
-			GUICtrlSetData($g_hTxtLowerXWave, $g_iMilkFarmTroopForWaveMin)
-			GUICtrlSetData($g_hTxtUpperXWave, $g_iMilkFarmTroopForWaveMax)
-			GUICtrlSetData($g_hTxtMaxWaves, $g_iMilkFarmTroopMaxWaves)
-			GUICtrlSetData($g_hTxtLowerDelayWaves, $g_iMilkFarmDelayFromWavesMin)
-			GUICtrlSetData($g_hTxtUpperDelayWaves, $g_iMilkFarmDelayFromWavesMax)
-			_GUICtrlComboBox_SetCurSel($g_hCmbMilkingAttackDropGoblinAlgorithm, $g_iMilkingAttackDropGoblinAlgorithm = 1 ? 1 : 0)
-			_GUICtrlComboBox_SetCurSel($g_hCmbStructureOrder, $g_iMilkingAttackStructureOrder)
-			GUICtrlSetState($g_hChkStructureDestroyedBeforeAttack, $g_bMilkingAttackCheckStructureDestroyedBeforeAttack ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkStructureDestroyedAfterAttack, $g_bMilkingAttackCheckStructureDestroyedAfterAttack ? $GUI_CHECKED : $GUI_UNCHECKED)
-			; D. After Milking
-			GUICtrlSetState($g_hChkMilkAfterAttackTHSnipe, $g_bMilkAttackAfterTHSnipeEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkMilkAfterAttackTHSnipe()
-			GUICtrlSetData($g_hTxtMaxTilesMilk, $g_iMilkFarmTHMaxTilesFromBorder)
-			Local $FileSearch, $NewFile
-			$FileSearch = FileFindFirstFile($g_sTHSnipeAttacksPath & "\*.csv")
-			Local $output = ""
-			While True
-				$NewFile = FileFindNextFile($FileSearch)
-				If @error Then ExitLoop
-				$output = $output & StringLeft($NewFile, StringLen($NewFile) - 4) & "|"
-			WEnd
-			FileClose($FileSearch)
-			$output = StringLeft($output, StringLen($output) - 1) ;remove last |
-			GUICtrlSetData($g_hCmbMilkSnipeAlgorithm, $output)
-			_GUICtrlComboBox_SetCurSel($g_hCmbMilkSnipeAlgorithm, _GUICtrlComboBox_FindStringExact($g_hCmbMilkSnipeAlgorithm, $g_sMilkFarmAlgorithmTh))
-			GUICtrlSetState($g_hChkSnipeIfNoElixir, $g_bMilkFarmSnipeEvenIfNoExtractorsFound ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkMilkAfterAttackScripted, $g_bMilkAttackAfterScriptedAtkEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
-			PopulateComboMilkingCSVScriptsFiles()
-			Local $tempindex = _GUICtrlComboBox_FindStringExact($g_hCmbMilkingCSVScriptName, $g_sMilkAttackCSVscript)
-			If $tempindex = -1 Then
-				$tempindex = 0
-				SetLog("Previous saved Milking Scripted Attack not found (deleted, renamed?)", $COLOR_ERROR)
-				SetLog("Automatically setted a default script, please check your config", $COLOR_ERROR)
-			EndIf
-			_GUICtrlComboBox_SetCurSel($g_hCmbMilkingCSVScriptName, $tempindex)
-			; Advanced
-			GUICtrlSetState($g_hChkMilkFarmForceTolerance, $g_bMilkFarmForceToleranceEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkMilkFarmForcetolerance()
-			GUICtrlSetData($g_hTxtMilkFarmForceToleranceNormal, $g_iMilkFarmForceToleranceNormal)
-			GUICtrlSetData($g_hTxtMilkFarmForceToleranceBoosted, $g_iMilkFarmForceToleranceBoosted)
-			GUICtrlSetData($g_hTxtMilkFarmForceToleranceDestroyed, $g_iMilkFarmForceToleranceDestroyed)
-			If $g_bDevMode = True Then
-				GUICtrlSetState($g_hGrpMilkingDebug, $GUI_SHOW)
-				GUICtrlSetState($g_hChkMilkingDebugIMG, $GUI_SHOW)
-				GUICtrlSetState($g_hChkMilkingDebugVillage, $GUI_SHOW)
-				GUICtrlSetState($g_hChkMilkingDebugFullSearch, $GUI_SHOW)
-				GUICtrlSetState($g_hChkMilkingDebugIMG, $g_bDebugResourcesOffset ? $GUI_CHECKED : $GUI_UNCHECKED)
-				GUICtrlSetState($g_hChkMilkingDebugVillage, $g_bDebugMilkingIMGmake ? $GUI_CHECKED : $GUI_UNCHECKED)
-				GUICtrlSetState($g_hChkMilkingDebugFullSearch, $g_bDebugContinueSearchElixir ? $GUI_CHECKED : $GUI_UNCHECKED)
-			EndIf
-		Case "Save"
-			$g_iMilkAttackType = _GUICtrlComboBox_GetCurSel($g_hCmbMilkAttackType)
-			; A. Structures
-			Local $TempMilkFarmElixirParam = ""
-			For $i = 0 To 8
-				$g_aiMilkFarmElixirParam[$i] = _GUICtrlComboBox_GetCurSel($g_hCmbMilkLvl[$i + 4]) - 1
-			Next
-			; B. Conditions
-			$g_bMilkFarmLocateElixir = (GUICtrlRead($g_hChkAtkElixirExtractors) = $GUI_CHECKED)
-			$g_bMilkFarmLocateMine = (GUICtrlRead($g_hChkAtkGoldMines) = $GUI_CHECKED)
-			$g_iMilkFarmMineParam = _GUICtrlComboBox_GetCurSel($g_hCmbAtkGoldMinesLevel) + 1
-			$g_bMilkFarmLocateDrill = (GUICtrlRead($g_hChkAtkDarkDrills) = $GUI_CHECKED)
-			$g_iMilkFarmDrillParam = _GUICtrlComboBox_GetCurSel($g_hCmbAtkDarkDrillsLevel) + 1
-			$g_iMilkFarmResMaxTilesFromBorder = _GUICtrlComboBox_GetCurSel($g_hCmbRedlineResDistance)
-			$g_bMilkFarmAttackGoldMines = (GUICtrlRead($g_hChkAttackMinesIfGold) = $GUI_CHECKED)
-			$g_bMilkFarmAttackElixirExtractors = (GUICtrlRead($g_hChkAttackMinesIfElixir) = $GUI_CHECKED)
-			$g_bMilkFarmAttackDarkDrills = (GUICtrlRead($g_hChkAttackMinesIfDarkElixir) = $GUI_CHECKED)
-			$g_iMilkFarmLimitGold = GUICtrlRead($g_hTxtAttackMinesIfGold)
-			$g_iMilkFarmLimitElixir = GUICtrlRead($g_hTxtAttackMinesIfElixir)
-			$g_iMilkFarmLimitDark = GUICtrlRead($g_hTxtAttackMinesIfDarkElixir)
-			; C. Attack
-			$g_iMilkFarmTroopForWaveMin = GUICtrlRead($g_hTxtLowerXWave)
-			$g_iMilkFarmTroopForWaveMax = GUICtrlRead($g_hTxtUpperXWave)
-			$g_iMilkFarmTroopMaxWaves = GUICtrlRead($g_hTxtMaxWaves)
-			$g_iMilkFarmDelayFromWavesMin = GUICtrlRead($g_hTxtLowerDelayWaves)
-			$g_iMilkFarmDelayFromWavesMax = GUICtrlRead($g_hTxtUpperDelayWaves)
-			$g_iMilkingAttackDropGoblinAlgorithm = _GUICtrlComboBox_GetCurSel($g_hCmbMilkingAttackDropGoblinAlgorithm)
-			$g_iMilkingAttackStructureOrder = _GUICtrlComboBox_GetCurSel($g_hCmbStructureOrder)
-			$g_bMilkingAttackCheckStructureDestroyedBeforeAttack = (GUICtrlRead($g_hChkStructureDestroyedBeforeAttack) = $GUI_CHECKED)
-			$g_bMilkingAttackCheckStructureDestroyedAfterAttack = (GUICtrlRead($g_hChkStructureDestroyedAfterAttack) = $GUI_CHECKED)
-			; D. After Milking
-			$g_bMilkAttackAfterTHSnipeEnable = (GUICtrlRead($g_hChkMilkAfterAttackTHSnipe) = $GUI_CHECKED)
-			$g_iMilkFarmTHMaxTilesFromBorder = GUICtrlRead($g_hTxtMaxTilesMilk)
-			$g_sMilkFarmAlgorithmTh = GUICtrlRead($g_hCmbMilkSnipeAlgorithm)
-			$g_bMilkFarmSnipeEvenIfNoExtractorsFound = (GUICtrlRead($g_hChkSnipeIfNoElixir) = $GUI_CHECKED)
-			$g_bMilkAttackAfterScriptedAtkEnable = (GUICtrlRead($g_hChkMilkAfterAttackScripted) = $GUI_CHECKED)
-			Local $indexofscript = _GUICtrlComboBox_GetCurSel($g_hCmbMilkingCSVScriptName)
-			Local $scriptname
-			_GUICtrlComboBox_GetLBText($g_hCmbMilkingCSVScriptName, $indexofscript, $scriptname)
-			$g_sMilkAttackCSVscript = $scriptname
-			; Advanced
-			$g_bMilkFarmForceToleranceEnable = (GUICtrlRead($g_hChkMilkFarmForceTolerance) = $GUI_CHECKED)
-			$g_iMilkFarmForceToleranceNormal = GUICtrlRead($g_hTxtMilkFarmForceToleranceNormal)
-			$g_iMilkFarmForceToleranceBoosted = GUICtrlRead($g_hTxtMilkFarmForceToleranceBoosted)
-			$g_iMilkFarmForceToleranceDestroyed = GUICtrlRead($g_hTxtMilkFarmForceToleranceDestroyed)
-			If $g_bDevMode Then
-				$g_bDebugResourcesOffset = (GUICtrlRead($g_hChkMilkingDebugIMG) = $GUI_CHECKED)
-				$g_bDebugMilkingIMGmake = (GUICtrlRead($g_hChkMilkingDebugVillage) = $GUI_CHECKED)
-				$g_bDebugContinueSearchElixir = (GUICtrlRead($g_hChkMilkingDebugFullSearch) = $GUI_CHECKED)
-			EndIf
-	EndSwitch
-EndFunc   ;==>ApplyConfig_600_29_DB_Milking
 
 Func ApplyConfig_600_29_DB_SmartFarm($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Attack / SmartFarm <><><><>
@@ -1668,12 +1463,6 @@ Func ApplyConfig_600_29_LB($TypeReadSave)
 			GUICtrlSetState($g_hChkABHasteSpell, $g_abAttackUseHasteSpell[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkABSkeletonSpell, $g_abAttackUseSkeletonSpell[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkABBatSpell, $g_abAttackUseBatSpell[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTHSnipeBeforeLBEnable, $g_bTHSnipeBeforeEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkTHSnipeBeforeLBEnable()
-			GUICtrlSetData($g_hTxtTHSnipeBeforeLBTiles, $g_iTHSnipeBeforeTiles[$LB])
-			LoadABSnipeAttacks() ; recreate combo box values
-			_GUICtrlComboBox_SetCurSel($g_hCmbTHSnipeBeforeLBScript, _GUICtrlComboBox_FindStringExact($g_hCmbTHSnipeBeforeLBScript, $g_iTHSnipeBeforeScript[$LB]))
-
 			_GUICtrlComboBox_SetCurSel($g_hCmbABWardenMode, $g_aiAttackUseWardenMode[$LB])
 			_GUICtrlComboBox_SetCurSel($g_hCmbABSiege, $g_aiAttackUseSiege[$LB])
 		Case "Save"
@@ -1696,9 +1485,6 @@ Func ApplyConfig_600_29_LB($TypeReadSave)
 			$g_abAttackUseHasteSpell[$LB] = (GUICtrlRead($g_hChkABHasteSpell) = $GUI_CHECKED)
 			$g_abAttackUseSkeletonSpell[$LB] = (GUICtrlRead($g_hChkABSkeletonSpell) = $GUI_CHECKED)
 			$g_abAttackUseBatSpell[$LB] = (GUICtrlRead($g_hChkABBatSpell) = $GUI_CHECKED)
-			$g_bTHSnipeBeforeEnable[$LB] = (GUICtrlRead($g_hChkTHSnipeBeforeLBEnable) = $GUI_CHECKED)
-			$g_iTHSnipeBeforeTiles[$LB] = GUICtrlRead($g_hTxtTHSnipeBeforeLBTiles)
-			$g_iTHSnipeBeforeScript[$LB] = GUICtrlRead($g_hCmbTHSnipeBeforeLBScript)
 
 			$g_aiAttackUseWardenMode[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbABWardenMode)
 			$g_aiAttackUseSiege[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbABSiege)
@@ -1714,10 +1500,6 @@ Func ApplyConfig_600_29_LB_Standard($TypeReadSave)
 		Case "Read"
 			_GUICtrlComboBox_SetCurSel($g_hCmbStandardDropOrderAB, $g_aiAttackStdDropOrder[$LB])
 			_GUICtrlComboBox_SetCurSel($g_hCmbStandardDropSidesAB, $g_aiAttackStdDropSides[$LB])
-			_GUICtrlComboBox_SetCurSel($g_hCmbStandardUnitDelayAB, $g_aiAttackStdUnitDelay[$LB])
-			_GUICtrlComboBox_SetCurSel($g_hCmbStandardWaveDelayAB, $g_aiAttackStdWaveDelay[$LB])
-			GUICtrlSetState($g_hChkRandomSpeedAtkAB, $g_abAttackStdRandomizeDelay[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkRandomSpeedAtkAB()
 			GUICtrlSetState($g_hChkSmartAttackRedAreaAB, $g_abAttackStdSmartAttack[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkSmartAttackRedAreaAB()
 			_GUICtrlComboBox_SetCurSel($g_hCmbSmartDeployAB, $g_aiAttackStdSmartDeploy[$LB])
@@ -1727,9 +1509,6 @@ Func ApplyConfig_600_29_LB_Standard($TypeReadSave)
 		Case "Save"
 			$g_aiAttackStdDropOrder[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbStandardDropOrderAB)
 			$g_aiAttackStdDropSides[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbStandardDropSidesAB)
-			$g_aiAttackStdUnitDelay[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbStandardUnitDelayAB)
-			$g_aiAttackStdWaveDelay[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbStandardWaveDelayAB)
-			$g_abAttackStdRandomizeDelay[$LB] = (GUICtrlRead($g_hChkRandomSpeedAtkAB) = $GUI_CHECKED)
 			$g_abAttackStdSmartAttack[$LB] = (GUICtrlRead($g_hChkSmartAttackRedAreaAB) = $GUI_CHECKED)
 			$g_aiAttackStdSmartDeploy[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbSmartDeployAB)
 			$g_abAttackStdSmartNearCollectors[$LB][0] = (GUICtrlRead($g_hChkAttackNearGoldMineAB) = $GUI_CHECKED)
@@ -1764,51 +1543,6 @@ Func ApplyConfig_600_29_LB_Scripted($TypeReadSave)
 			IniWriteS($g_sProfileConfigPath, "attack", "ScriptAB", $g_sAttackScrScriptName[$LB])
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_29_LB_Scripted
-
-Func ApplyConfig_600_29_TS($TypeReadSave)
-	; <><><><> Attack Plan / Search & Attack / TH Snipe / Attack <><><><>
-	Switch $TypeReadSave
-		Case "Read"
-			; Attack
-			_GUICtrlComboBox_SetCurSel($g_hCmbTSSelectTroop, $g_aiAttackTroopSelection[$TS])
-			GUICtrlSetState($g_hChkTSKingAttack, BitAND($g_aiAttackUseHeroes[$TS], $eHeroKing) = $eHeroKing ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSQueenAttack, BitAND($g_aiAttackUseHeroes[$TS], $eHeroQueen) = $eHeroQueen ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSWardenAttack, BitAND($g_aiAttackUseHeroes[$TS], $eHeroWarden) = $eHeroWarden ? $GUI_CHECKED : $GUI_UNCHECKED)
-			Local $temp1, $temp2, $temp3
-			$temp1 = GUICtrlRead($g_hChkTSKingAttack) = $GUI_CHECKED ? $eHeroKing : $eHeroNone
-			$temp2 = GUICtrlRead($g_hChkTSQueenAttack) = $GUI_CHECKED ? $eHeroQueen : $eHeroNone
-			$temp3 = GUICtrlRead($g_hChkTSWardenAttack) = $GUI_CHECKED ? $eHeroWarden : $eHeroNone
-			$g_aiAttackUseHeroes[$TS] = BitOR(Int($temp1), Int($temp2), Int($temp3))
-			GUICtrlSetState($g_hChkTSDropCC, $g_abAttackDropCC[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSLightSpell, $g_abAttackUseLightSpell[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSHealSpell, $g_abAttackUseHealSpell[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSRageSpell, $g_abAttackUseRageSpell[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSJumpSpell, $g_abAttackUseJumpSpell[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSFreezeSpell, $g_abAttackUseFreezeSpell[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSPoisonSpell, $g_abAttackUsePoisonSpell[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSEarthquakeSpell, $g_abAttackUseEarthquakeSpell[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkTSHasteSpell, $g_abAttackUseHasteSpell[$TS] ? $GUI_CHECKED : $GUI_UNCHECKED)
-			LoadThSnipeAttacks() ; recreate combo box values
-			_GUICtrlComboBox_SetCurSel($g_hCmbAttackTHType, _GUICtrlComboBox_FindStringExact($g_hCmbAttackTHType, $g_sAtkTSType))
-		Case "Save"
-			$g_aiAttackTroopSelection[$TS] = _GUICtrlComboBox_GetCurSel($g_hCmbTSSelectTroop)
-			Local $temp1, $temp2, $temp3
-			$temp1 = GUICtrlRead($g_hChkTSKingAttack) = $GUI_CHECKED ? $eHeroKing : $eHeroNone
-			$temp2 = GUICtrlRead($g_hChkTSQueenAttack) = $GUI_CHECKED ? $eHeroQueen : $eHeroNone
-			$temp3 = GUICtrlRead($g_hChkTSWardenAttack) = $GUI_CHECKED ? $eHeroWarden : $eHeroNone
-			$g_aiAttackUseHeroes[$TS] = BitOR(Int($temp1), Int($temp2), Int($temp3))
-			$g_abAttackDropCC[$TS] = (GUICtrlRead($g_hChkTSDropCC) = $GUI_CHECKED)
-			$g_abAttackUseLightSpell[$TS] = (GUICtrlRead($g_hChkTSLightSpell) = $GUI_CHECKED)
-			$g_abAttackUseHealSpell[$TS] = (GUICtrlRead($g_hChkTSHealSpell) = $GUI_CHECKED)
-			$g_abAttackUseRageSpell[$TS] = (GUICtrlRead($g_hChkTSRageSpell) = $GUI_CHECKED)
-			$g_abAttackUseJumpSpell[$TS] = (GUICtrlRead($g_hChkTSJumpSpell) = $GUI_CHECKED)
-			$g_abAttackUseFreezeSpell[$TS] = (GUICtrlRead($g_hChkTSFreezeSpell) = $GUI_CHECKED)
-			$g_abAttackUsePoisonSpell[$TS] = (GUICtrlRead($g_hChkTSPoisonSpell) = $GUI_CHECKED)
-			$g_abAttackUseEarthquakeSpell[$TS] = (GUICtrlRead($g_hChkTSEarthquakeSpell) = $GUI_CHECKED)
-			$g_abAttackUseHasteSpell[$TS] = (GUICtrlRead($g_hChkTSHasteSpell) = $GUI_CHECKED)
-			$g_sAtkTSType = GUICtrlRead($g_hCmbAttackTHType)
-	EndSwitch
-EndFunc   ;==>ApplyConfig_600_29_TS
 
 Func ApplyConfig_600_30($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Options / End Battle <><><><>
@@ -1926,19 +1660,6 @@ Func ApplyConfig_600_30_LB($TypeReadSave)
 			$g_aiStopAtkPctNoChangeTime[$LB] = GUICtrlRead($g_hTxtABPercentChange)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_30_LB
-
-Func ApplyConfig_600_30_TS($TypeReadSave)
-	; <><><><> Attack Plan / Search & Attack / TH Snipe / End Battle <><><><>
-	Switch $TypeReadSave
-		Case "Read"
-			GUICtrlSetState($g_hChkTSActivateCamps2, $g_bEndTSCampsEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
-			chkTSActivateCamps2()
-			GUICtrlSetData($g_hTxtTSArmyCamps2, $g_iEndTSCampsPct)
-		Case "Save"
-			$g_bEndTSCampsEnable = (GUICtrlRead($g_hChkTSActivateCamps2) = $GUI_CHECKED)
-			$g_iEndTSCampsPct = GUICtrlRead($g_hTxtTSArmyCamps2)
-	EndSwitch
-EndFunc   ;==>ApplyConfig_600_30_TS
 
 Func ApplyConfig_600_31($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Collectors <><><><>
@@ -2113,21 +1834,9 @@ Func ApplyConfig_600_35_2($TypeReadSave)
 		Case "Read"
 			_GUICtrlComboBox_SetCurSel($g_hCmbSwitchAcc, $g_iCmbSwitchAcc)
 			GUICtrlSetState($g_hChkSwitchAcc, $g_bChkSwitchAcc ? $GUI_CHECKED : $GUI_UNCHECKED)
-			If $g_bChkGooglePlay Then
-				GUICtrlSetState($g_hRadSwitchGooglePlay, $GUI_CHECKED)
-				GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_UNCHECKED)
-				GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_UNCHECKED)
-			EndIf
-			If $g_bChkSuperCellID Then
-				GUICtrlSetState($g_hRadSwitchGooglePlay, $GUI_UNCHECKED)
-				GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_CHECKED)
-				GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_UNCHECKED)
-			EndIf
-			If $g_bChkSharedPrefs Then
-				GUICtrlSetState($g_hRadSwitchGooglePlay, $GUI_UNCHECKED)
-				GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_UNCHECKED)
-				GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_CHECKED)
-			EndIf
+			If $g_bChkGooglePlay Then GUICtrlSetState($g_hRadSwitchGooglePlay, $GUI_CHECKED)
+			If $g_bChkSuperCellID Then GUICtrlSetState($g_hRadSwitchSuperCellID, $GUI_CHECKED)
+			If $g_bChkSharedPrefs Then GUICtrlSetState($g_hRadSwitchSharedPrefs, $GUI_CHECKED)
 			GUICtrlSetState($g_hChkSmartSwitch, $g_bChkSmartSwitch ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDonateLikeCrazy, $g_bDonateLikeCrazy ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbTotalAccount, $g_iTotalAcc - 1)
@@ -2162,14 +1871,14 @@ Func ApplyConfig_600_52_1($TypeReadSave)
 	; Quick train
 	Switch $TypeReadSave
 		Case "Read"
-			GUICtrlSetState($g_hRadQuickTrain, $g_bQuickTrainEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_bQuickTrainEnable ? $g_hRadQuickTrain : $g_hRadCustomTrain, $GUI_CHECKED)
 
 			For $i = 0 To 2
 				GUICtrlSetState($g_ahChkArmy[$i], $g_bQuickTrainArmy[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
 				GUICtrlSetState($g_ahChkUseInGameArmy[$i], $g_abUseInGameArmy[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
+				ApplyQuickTrainArmy($i)
 				_chkUseInGameArmy($i)
 			Next
-			ApplyQuickTrainArmy()
 
 		Case "Save"
 			$g_bQuickTrainEnable = (GUICtrlRead($g_hRadQuickTrain) = $GUI_CHECKED)
@@ -2187,7 +1896,7 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 		Case "Read"
 			For $T = 0 To $eTroopCount - 1
 				Local $iCurrLevel = $g_aiTrainArmyTroopLevel[$T]
-				Local $iCurrCount = $g_aiArmyCompTroops[$T]
+				Local $iCurrCount = $g_aiArmyCustomTroops[$T]
 				Local $iMaxLevel = $g_aiTroopCostPerLevel[$T][0]
 				Local $iColor = ($iCurrLevel = $iMaxLevel ? $COLOR_YELLOW : $COLOR_WHITE)
 				GUICtrlSetData($g_ahTxtTrainArmyTroopCount[$T], ($iCurrCount <> 0 And $iCurrLevel <> 0) ? $iCurrCount : 0)
@@ -2197,7 +1906,7 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 			Next
 			For $S = 0 To $eSpellCount - 1
 				Local $iCurrLevel = $g_aiTrainArmySpellLevel[$S]
-				Local $iCurrCount = $g_aiArmyCompSpells[$S]
+				Local $iCurrCount = $g_aiArmyCustomSpells[$S]
 				Local $iMaxLevel = $g_aiSpellCostPerLevel[$S][0]
 				Local $iColor = ($iCurrLevel = $iMaxLevel ? $COLOR_YELLOW : $COLOR_WHITE)
 				GUICtrlSetData($g_ahTxtTrainArmySpellCount[$S], ($iCurrCount <> 0 And $iCurrLevel <> 0) ? $iCurrCount : 0)
@@ -2223,14 +1932,15 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 			GUICtrlSetData($g_hTxtTotalCountSpell, $g_iTotalSpellValue)
 			; DoubleTrain - Demen
 			GUICtrlSetState($g_hChkDoubleTrain, $g_bDoubleTrain ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkPreciseArmy, $g_bPreciseArmy ? $GUI_CHECKED : $GUI_UNCHECKED)
 		Case "Save"
 			; troop/spell levels and counts
 			For $T = 0 To $eTroopCount - 1
-				$g_aiArmyCompTroops[$T] = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$T])
+				$g_aiArmyCustomTroops[$T] = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$T])
 				$g_aiTrainArmyTroopLevel[$T] = GUICtrlRead($g_ahLblTrainArmyTroopLevel[$T])
 			Next
 			For $S = 0 To $eSpellCount - 1
-				$g_aiArmyCompSpells[$S] = GUICtrlRead($g_ahTxtTrainArmySpellCount[$S])
+				$g_aiArmyCustomSpells[$S] = GUICtrlRead($g_ahTxtTrainArmySpellCount[$S])
 				$g_aiTrainArmySpellLevel[$S] = GUICtrlRead($g_ahLblTrainArmySpellLevel[$S])
 			Next
 			For $S = 0 To $eSiegeMachineCount - 1
@@ -2245,6 +1955,7 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 			$g_iTotalSpellValue = GUICtrlRead($g_hTxtTotalCountSpell)
 			; DoubleTrain - Demen
 			$g_bDoubleTrain = (GUICtrlRead($g_hChkDoubleTrain) = $GUI_CHECKED)
+			$g_bPreciseArmy = (GUICtrlRead($g_hChkPreciseArmy) = $GUI_CHECKED)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_52_2
 

@@ -21,40 +21,6 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 
 	SmartAttackStrategy($g_iMatchMode) ; detect redarea first to drop any troops
 
-	; If one of condtions passed then start TH snipe attack
-	; - detect matchmode TS
-	; - detect matchmode DB and enabled TH snipe before attack and th outside
-	; - detect matchmode LB and enabled TH snipe before attack and th outside
-	If ($g_iSearchTH = "-" And ($g_iMatchMode = $DB And $g_bTHSnipeBeforeEnable[$DB])) Or ($g_iSearchTH = "-" And ($g_iMatchMode = $LB And $g_bTHSnipeBeforeEnable[$LB])) Then
-		FindTownHall(True) ;If no previous detect townhall search th position
-	EndIf
-
-	Local $bTHSearchTemp = SearchTownHallLoc()
-	If $g_iMatchMode = $TS Or _
-			($g_iMatchMode = $DB And $g_bTHSnipeBeforeEnable[$DB] And $bTHSearchTemp = True) Or _
-			($g_iMatchMode = $LB And $g_bTHSnipeBeforeEnable[$LB] And $bTHSearchTemp = True) Then
-
-		SwitchAttackTHType()
-	EndIf
-
-	If $g_iMatchMode = $TS Then ; Return ;Exit attacking if trophy hunting and not bullymode
-		If ($g_bTHSnipeUsedKing = True Or $g_bTHSnipeUsedQueen = True) And ($g_bSmartZapEnable = True And $g_bSmartZapSaveHeroes = True) Then
-			SetLog("King and/or Queen dropped, close attack")
-			If $g_bSmartZapEnable = True Then SetLog("Skipping SmartZap to protect your royals!", $COLOR_FUCHSIA)
-		ElseIf IsAttackPage() And Not SmartZap() And $g_bTHSnipeUsedKing = False And $g_bTHSnipeUsedQueen = False Then
-			SetLog("Wait few sec before close attack")
-			If _Sleep(Random(0, 2, 1) * 1000) Then Return ;wait 0-2 second before exit if king and queen are not dropped
-		EndIf
-
-		;Apply to switch Attack Standard after THSnipe End  ==>
-		If CompareResources($DB) And $g_aiAttackAlgorithm[$DB] = 0 And $g_bEndTSCampsEnable And Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100) >= Int($g_iEndTSCampsPct) Then
-			$g_iMatchMode = $DB
-		Else
-			CloseBattle()
-			Return
-		EndIf
-	EndIf
-
 	Local $nbSides = 0
 	Switch $g_aiAttackStdDropSides[$g_iMatchMode]
 		Case 0 ;Single sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,7 +48,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	If _Sleep($DELAYALGORITHM_ALLTROOPS2) Then Return
 
 	$g_iSidesAttack = $nbSides
-	
+
 	; Reset the deploy Giants points , spread along red line
 	$g_iSlotsGiants = 0
 	Local $GiantComp = 0
@@ -98,7 +64,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 	Switch $GiantComp
 		Case 0 To 10
 			$g_iSlotsGiants = 2
-		Case Else 
+		Case Else
 			Switch $nbSides
 				Case 1 To 2
 					$g_iSlotsGiants = 4
@@ -359,8 +325,6 @@ EndFunc   ;==>CloseBattle
 
 
 Func SmartAttackStrategy($imode)
-	If $g_iMatchMode <> $MA Then ; (milking attack use own strategy)
-
 		If ($g_abAttackStdSmartAttack[$imode]) Then
 			SetLog("Calculating Smart Attack Strategy", $COLOR_INFO)
 			Local $hTimer = __TimerInit()
@@ -408,6 +372,4 @@ Func SmartAttackStrategy($imode)
 			EndIf
 
 		EndIf
-	EndIf
-
 EndFunc   ;==>SmartAttackStrategy

@@ -22,101 +22,83 @@ Func QuickTrain()
 
 	If $bDebug Then SetLog(" == Quick Train == ", $COLOR_ACTION)
 
-	CheckIfArmyIsReady()
-
-	CheckQuickTrainTroop() ; update values of $g_aiArmyQuickTroops, $g_aiArmyQuickSpells
-
-	If $g_bIsFullArmywithHeroesAndSpells Or ($g_CurrentCampUtilization = 0 And $g_bFirstStart) Then
-
-		If $g_bIsFullArmywithHeroesAndSpells Then SetLog(" - Your Army is Full, let's make troops before Attack!", $COLOR_INFO)
-		If ($g_CurrentCampUtilization = 0 And $g_bFirstStart) Then
-			SetLog(" - Your Army is Empty, let's make troops before Attack!", $COLOR_ACTION1)
-			SetLog(" - Go to Train Army Tab and select your Quick Army position!", $COLOR_ACTION1)
-		EndIf
-
-		If IsQueueEmpty("Troops", True, False) Then $iTroopStatus = $g_bIsFullArmywithHeroesAndSpells ? 1 : 0
-		If IsQueueEmpty("Spells", True, False) And Number($g_iCurrentSpells) >= $g_iTotalQuickSpells Then $iSpellStatus = $g_bIsFullArmywithHeroesAndSpells ? 1 : 0
-
-		If $bDebug Then SetLog("$iTroopStatus: " & $iTroopStatus & ", $iSpellStatus: " & $iSpellStatus, $COLOR_DEBUG)
-
-		If $g_bFirstStart Then $g_bFirstStart = False
+	; Troop
+	If Not $g_bDonationEnabled Or Not $g_bChkDonate Or Not MakingDonatedTroops("Troops") Then ; No need OpenTroopsTab() if MakingDonatedTroops() returns true
+		If Not OpenTroopsTab(False, "QuickTrain()") Then Return
+		If _Sleep(250) Then Return
 	EndIf
 
-	; Troop
-	If $iTroopStatus = -1 Then
-		If Not $g_bDonationEnabled Or Not $g_bChkDonate Or Not MakingDonatedTroops("Troops") Then ; No need OpenTroopsTab() if MakingDonatedTroops() returns true
-			If Not OpenTroopsTab(False, "QuickTrain()") Then Return
+	Local $Step = 1
+	While 1
+		Local $TroopCamp = GetCurrentArmy(48, 160)
+		SetLog("Checking Troop tab: " & $TroopCamp[0] & "/" & $TroopCamp[1] * 2)
+		If $TroopCamp[1] = 0 Then ExitLoop
+
+		If $TroopCamp[0] <= 0 Then ; 0/280
+			$iTroopStatus = 0
+			If $bDebug Then SetLog("No troop", $COLOR_DEBUG)
+
+		ElseIf $TroopCamp[0] < $TroopCamp[1] Then ; 1-279/280
+			If Not IsQueueEmpty("Troops", True, False) Then DeleteQueued("Troops")
+			$bNeedRecheckTroop = True
+			If $bDebug Then SetLog("$bNeedRecheckTroop for at Army Tab: " & $bNeedRecheckTroop, $COLOR_DEBUG)
+
+		ElseIf $TroopCamp[0] = $TroopCamp[1] Then ; 280/280
+			$iTroopStatus = 1
+			If $bDebug Then SetLog($g_bDoubleTrain ? "ready to make double troop training" : "troops are training perfectly", $COLOR_DEBUG)
+
+		ElseIf $TroopCamp[0] <= $TroopCamp[1] * 1.5 Then ; 281-420/560
+			RemoveExtraTroopsQueue()
+			If $bDebug Then SetLog($Step & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
 			If _Sleep(250) Then Return
-		EndIf
+			$Step += 1
+			If $Step = 6 Then ExitLoop
+			ContinueLoop
 
-		Local $Step = 1
-		While 1
-			Local $TroopCamp = GetCurrentArmy(48, 160)
-			SetLog("Checking Troop tab: " & $TroopCamp[0] & "/" & $TroopCamp[1] * 2)
-			If $TroopCamp[1] = 0 Then ExitLoop
-
-			If $TroopCamp[0] <= 0 Then ; 0/280
-				$iTroopStatus = 0
-				If $bDebug Then SetLog("No troop", $COLOR_DEBUG)
-
-			ElseIf $TroopCamp[0] < $TroopCamp[1] Then ; 1-279/280
-				If Not IsQueueEmpty("Troops", True, False) Then DeleteQueued("Troops")
-				$bNeedRecheckTroop = True
-				If $bDebug Then SetLog("$bNeedRecheckTroop for at Army Tab: " & $bNeedRecheckTroop, $COLOR_DEBUG)
-
-			ElseIf $TroopCamp[0] = $TroopCamp[1] Then ; 280/280
-				$iTroopStatus = 1
-				If $bDebug Then SetLog($g_bDoubleTrain ? "ready to make double troop training" : "troops are training perfectly", $COLOR_DEBUG)
-
-			ElseIf $TroopCamp[0] <= $TroopCamp[1] * 1.5 Then ; 281-420/560
+		ElseIf $TroopCamp[0] <= $TroopCamp[1] * 2 Then ; 421-560/560
+			If CheckQueueTroopAndTrainRemain($TroopCamp, $bDebug) Then
+				$iTroopStatus = 2
+				If $bDebug Then SetLog($Step & ". CheckQueueTroopAndTrainRemain()", $COLOR_DEBUG)
+			Else
 				RemoveExtraTroopsQueue()
 				If $bDebug Then SetLog($Step & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
 				If _Sleep(250) Then Return
 				$Step += 1
 				If $Step = 6 Then ExitLoop
 				ContinueLoop
-
-			ElseIf $TroopCamp[0] <= $TroopCamp[1] * 2 Then ; 421-560/560
-				$g_aiArmyCompTroops = $g_aiArmyQuickTroops
-				If CheckQueueTroopAndTrainRemain($TroopCamp, $bDebug) Then
-					$iTroopStatus = 2
-					If $bDebug Then SetLog($Step & ". CheckQueueTroopAndTrainRemain()", $COLOR_DEBUG)
-					ReadConfig_600_52_2() ; reload $g_aiArmyCompTroops from config
-				Else
-					ReadConfig_600_52_2() ; reload $g_aiArmyCompTroops from config
-					RemoveExtraTroopsQueue()
-					If $bDebug Then SetLog($Step & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
-					If _Sleep(250) Then Return
-					$Step += 1
-					If $Step = 6 Then ExitLoop
-					ContinueLoop
-				EndIf
 			EndIf
-			ExitLoop
-		WEnd
-	EndIf
+		EndIf
+		ExitLoop
+	WEnd
 
 	; Spell
-	If $g_iTotalQuickSpells = 0 Then $iSpellStatus = 2
-	If $iSpellStatus = -1 Or ($iSpellStatus < $iTroopStatus) Then
+	If $g_iTotalQuickSpells = 0 Then
+		$iSpellStatus = 2
+	Else
 		If Not $g_bDonationEnabled Or Not $g_bChkDonate Or Not MakingDonatedTroops("Spells") Then ; No need OpenSpellsTab() if MakingDonatedTroops() returns true
 			If Not OpenSpellsTab(False, "QuickTrain()") Then Return
 			If _Sleep(250) Then Return
 		EndIf
 
-		Local $Step = 1
+		Local $Step = 1, $iUnbalancedSpell = 0
 		While 1
 			Local $aiSpellCamp = GetCurrentArmy(43, 160)
 			SetLog("Checking Spell tab: " & $aiSpellCamp[0] & "/" & $aiSpellCamp[1] * 2)
-			If $aiSpellCamp[1] = 0 Then ExitLoop
+			If $aiSpellCamp[1] > $g_iTotalQuickSpells Then
+				SetLog("Unbalance total quick spell vs actual spell capacity: " & $g_iTotalQuickSpells & "/" & $aiSpellCamp[1])
+				$iUnbalancedSpell = $aiSpellCamp[1] - $g_iTotalQuickSpells
+				$aiSpellCamp[1] = $g_iTotalQuickSpells
+			EndIf
 
 			If $aiSpellCamp[0] <= 0 Then ; 0/22
 				If $iTroopStatus >= 1 And $g_bQuickArmyMixed Then
-					$g_aiArmyCompSpells = $g_aiArmyQuickSpells
-					TrainFullQueue(True)
-					If $iTroopStatus = 2 And $g_bDoubleTrain Then TrainFullQueue(True)
-					ReadConfig_600_52_2() ; reload $g_aiArmyCompTroops from config
-					$iSpellStatus = 2
+					BrewFullSpell()
+					$iSpellStatus = 1
+					If $iTroopStatus = 2 And $g_bDoubleTrain Then
+						BrewFullSpell(True)
+						TopUpUnbalancedSpell($iUnbalancedSpell)
+						$iSpellStatus = 2
+					EndIf
 				Else
 					$iSpellStatus = 0
 					If $bDebug Then SetLog("No Spell", $COLOR_DEBUG)
@@ -127,26 +109,22 @@ Func QuickTrain()
 				$bNeedRecheckSpell = True
 				If $bDebug Then SetLog("$bNeedRecheckSpell at Army Tab: " & $bNeedRecheckSpell, $COLOR_DEBUG)
 
-			ElseIf $aiSpellCamp[0] = $aiSpellCamp[1] Then ; 11/22
+			ElseIf $aiSpellCamp[0] = $aiSpellCamp[1] Or $aiSpellCamp[0] <= $aiSpellCamp[1] + $iUnbalancedSpell Then  ; 11/22
 				If $iTroopStatus = 2 And $g_bQuickArmyMixed And $g_bDoubleTrain Then
-					$g_aiArmyCompSpells = $g_aiArmyQuickSpells
-					TrainFullQueue(True)
+					BrewFullSpell(True)
+					TopUpUnbalancedSpell($iUnbalancedSpell)
 					If $bDebug Then SetLog("$iTroopStatus = " & $iTroopStatus & ". Brewed full queued spell", $COLOR_DEBUG)
-					ReadConfig_600_52_2() ; reload $g_aiArmyCompTroops from config
 					$iSpellStatus = 2
 				Else
 					$iSpellStatus = 1
 					If $bDebug Then SetLog($g_bDoubleTrain ? "ready to make double spell brewing" : "spells are brewing perfectly", $COLOR_DEBUG)
 				EndIf
 
-			ElseIf $aiSpellCamp[0] <= $aiSpellCamp[1] * 2 Then ; 12-22/22
-
-				$g_aiArmyCompSpells = $g_aiArmyQuickSpells
-				If ($iTroopStatus = 2 Or Not $g_bQuickArmyMixed) And CheckQueueSpellAndTrainRemain($aiSpellCamp, $bDebug) Then
-					ReadConfig_600_52_2() ; reload $g_aiArmyCompTroops from config
+			Else ; If $aiSpellCamp[0] <= $aiSpellCamp[1] * 2 Then ; 12-22/22
+				If ($iTroopStatus = 2 Or Not $g_bQuickArmyMixed) And CheckQueueSpellAndTrainRemain($aiSpellCamp, $bDebug, $iUnbalancedSpell) Then
+					If $aiSpellCamp[0] < ($aiSpellCamp[1] + $iUnbalancedSpell) * 2 Then TopUpUnbalancedSpell($iUnbalancedSpell)
 					$iSpellStatus = 2
 				Else
-					ReadConfig_600_52_2() ; reload $g_aiArmyCompTroops from config
 					RemoveExtraTroopsQueue()
 					If _Sleep(500) Then Return
 					$Step += 1
@@ -161,9 +139,6 @@ Func QuickTrain()
 
 	; check existing army then train missing troops, spells
 	If $bNeedRecheckTroop Or $bNeedRecheckSpell Then
-		$g_iTotalSpellValue = $g_iTotalQuickSpells ; this is to force WhatToTrain()
-		$g_aiArmyCompTroops = $g_aiArmyQuickTroops
-		$g_aiArmyCompSpells = $g_aiArmyQuickSpells
 
 		Local $aWhatToRemove = WhatToTrain(True)
 		RemoveExtraTroops($aWhatToRemove)
@@ -171,7 +146,7 @@ Func QuickTrain()
 		Local $bEmptyTroop = _ColorCheck(_GetPixelColor(30, 205, True), Hex(0xCAC9C1, 6), 20) ; remove all troops
 		Local $bEmptySpell = _ColorCheck(_GetPixelColor(30, 350, True), Hex(0xCAC9C1, 6), 20) ; remove all spells
 
-		Local $aWhatToTrain = WhatToTrain()
+		Local $aWhatToTrain = WhatToTrain(False, False) ; $g_bIsFullArmywithHeroesAndSpells = False
 
 		If DoWhatToTrainContainTroop($aWhatToTrain) Then
 			If $bEmptyTroop And $bEmptySpell Then
@@ -192,12 +167,10 @@ Func QuickTrain()
 				$iSpellStatus = 0
 			Else
 				If $bDebug Then SetLog("Topping up spells", $COLOR_DEBUG)
-				TrainUsingWhatToTrain($aWhatToTrain, True) ; spell
+				BrewUsingWhatToTrain($aWhatToTrain) ; spell
 				$iSpellStatus = 1
 			EndIf
 		EndIf
-
-		ReadConfig_600_52_2() ; reload $g_aiArmyCompTroops, $g_aiArmyCompSpells and $g_iTotalSpellValue from config
 	EndIf
 
 	If _Sleep(250) Then Return
@@ -211,13 +184,14 @@ Func QuickTrain()
 	Switch _Min($iTroopStatus, $iSpellStatus)
 		Case 0
 			If Not OpenQuickTrainTab(False, "QuickTrain()") Then Return
-			If _Sleep(500) Then Return
+			If _Sleep(750) Then Return
 			TrainArmyNumber($g_bQuickTrainArmy)
 			If $g_bDoubleTrain Then TrainArmyNumber($g_bQuickTrainArmy)
 		Case 1
 			If $g_bIsFullArmywithHeroesAndSpells Or $g_bDoubleTrain Then
+				If $g_bIsFullArmywithHeroesAndSpells Then SetLog(" - Your Army is Full, let's make troops before Attack!", $COLOR_INFO)
 				If Not OpenQuickTrainTab(False, "QuickTrain()") Then Return
-				If _Sleep(500) Then Return
+				If _Sleep(750) Then Return
 				TrainArmyNumber($g_bQuickTrainArmy)
 			EndIf
 	EndSwitch
@@ -228,13 +202,20 @@ EndFunc   ;==>QuickTrain
 Func CheckQuickTrainTroop()
 
 	Local $bResult = True
-	If _DateIsValid($g_sQuickTrainCheckTime) Then
-		Local $iLastCheck = _DateDiff('n', $g_sQuickTrainCheckTime, _NowCalc()) ; elapse time from last check (minutes)
-		SetDebugLog("Latest CheckQuickTrainTroop() at: " & $g_sQuickTrainCheckTime & ", Check DateCalc: " & $iLastCheck & " min" & @CRLF & "_ArrayMax($g_aiArmyQuickTroops) = " & _ArrayMax($g_aiArmyQuickTroops))
+
+	Local Static $asLastTimeChecked[8]
+	If $g_bFirstStart Then $asLastTimeChecked[$g_iCurAccount] = ""
+
+	If _DateIsValid($asLastTimeChecked[$g_iCurAccount]) Then
+		Local $iLastCheck = _DateDiff('n', $asLastTimeChecked[$g_iCurAccount], _NowCalc()) ; elapse time from last check (minutes)
+		SetDebugLog("Latest CheckQuickTrainTroop() at: " & $asLastTimeChecked[$g_iCurAccount] & ", Check DateCalc: " & $iLastCheck & " min" & @CRLF & _
+		"_ArrayMax($g_aiArmyQuickTroops) = " & _ArrayMax($g_aiArmyQuickTroops))
 		If $iLastCheck <= 360 And _ArrayMax($g_aiArmyQuickTroops) > 0 Then Return ; A check each 6 hours [6*60 = 360]
 	EndIf
 
-	If Not OpenQuickTrainTab(False, "QuickTrain()") Then Return
+	If Not OpenArmyOverview(False, "CheckQuickTrainTroop()") Then Return
+	If _Sleep(250) Then Return
+	If Not OpenQuickTrainTab(False, "CheckQuickTrainTroop()") Then Return
 	If _Sleep(500) Then Return
 
 	SetLog("Reading troops & spells in quick train army...")
@@ -260,7 +241,7 @@ Func CheckQuickTrainTroop()
 
 		If _ColorCheck(_GetPixelColor($aEditButton[$i][0], $aEditButton[$i][1], True), Hex($aEditButton[$i][2], 6), $aEditButton[$i][3]) Then
 			Click($aEditButton[$i][0], $aEditButton[$i][1]) ; Click edit army 1, 2, 3
-			If _Sleep(500) Then Return
+			If _Sleep(1000) Then Return
 
 			Local $TempTroopTotal = 0, $TempSpellTotal = 0
 
@@ -281,6 +262,7 @@ Func CheckQuickTrainTroop()
 						ContinueLoop
 					Else
 						Setlog("No troops/spells detected in Quick Army " & $i + 1, $COLOR_ERROR)
+						If _Sleep(1000) Then Return
 						ContinueLoop 2
 					EndIf
 				EndIf
@@ -375,17 +357,22 @@ Func CheckQuickTrainTroop()
 
 			ClickP($g_abUseInGameArmy[$i] ? $aCancelButton : $aSaveButton)
 
-			If _Sleep(250) Then Return
+			If _Sleep(1000) Then Return
 
 		Else
 			SetLog("Cannot find 'Edit' button for Army " & $i + 1, $COLOR_ERROR)
+			$bResult = False
 		EndIf
 	Next
+
+	$g_aiArmyCompTroops = $g_aiArmyQuickTroops
+	$g_aiArmyCompSpells = $g_aiArmyQuickSpells
 
 	If $g_iTotalQuickTroops > $iTroopCamp Then SetLog("Total troops in combo army " & $sLog & "exceeds your camp capacity (" & $g_iTotalQuickTroops & " vs " & $iTroopCamp & ")", $COLOR_ERROR)
 	If $g_iTotalQuickSpells > $iSpellCamp Then SetLog("Total spells in combo army " & $sLog & "exceeds your camp capacity (" & $g_iTotalQuickSpells & " vs " & $iSpellCamp & ")", $COLOR_ERROR)
 
-	$g_sQuickTrainCheckTime = $bResult ? _NowCalc() : ""
+	ClickP($aAway, 2, 0, "#0000") ;Click Away
+	$asLastTimeChecked[$g_iCurAccount] = $bResult ? _NowCalc() : ""
 
 EndFunc   ;==>CheckQuickTrainTroop
 
@@ -397,7 +384,7 @@ Func CreateQuickTrainPreset($i)
 
 	If _ColorCheck(_GetPixelColor($aRemoveButton[0], $aRemoveButton[1], True), Hex($aRemoveButton[2], 6), $aRemoveButton[2]) Then
 		ClickP($aRemoveButton) ; click remove
-		If _Sleep(250) Then Return
+		If _Sleep(750) Then Return
 
 		DragIfNeeded("Barb")
 		For $j = 0 To 6

@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.7)
+#pragma compile(FileVersion, 7.7.8)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.7"
+Global $g_sBotVersion = "v7.7.8 b7"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -2586,9 +2586,6 @@ Global $g_bDebugAttackCSV = False
 Global $g_bDebugMakeIMGCSV = False
 Global $g_bDebugBetaVersion = StringInStr($g_sBotVersion, " b") > 0
 Global $g_bDebugDeadBaseImage = False
-Global $g_bDebugResourcesOffset = False
-Global $g_bDebugMilkingIMGmake = False
-Global $g_bDebugContinueSearchElixir = False
 Global $g_bDebugOCRdonate = False
 Global $g_bDebugDisableZoomout = False
 Global $g_bDebugDisableVillageCentering = False
@@ -2744,7 +2741,7 @@ Global $g_bTogglePauseAllowed = True
 Global Const $REDLINE_IMGLOC_RAW = 0
 Global Const $DROPLINE_EDGE_FIRST = 1
 Global Enum $eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, $eEDrag, $eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eIceG, $eKing, $eQueen, $eWarden, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell, $eWallW, $eBattleB, $eStoneS, $eArmyCount
-Global Enum $DB, $LB, $TS, $MA, $TB, $DT
+Global Enum $DB, $LB, $TB, $DT
 Global Const $g_iModeCount = 3
 Global Enum $eTroopBarbarian, $eTroopArcher, $eTroopGiant, $eTroopGoblin, $eTroopWallBreaker, $eTroopBalloon, $eTroopWizard, $eTroopHealer, $eTroopDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopMiner, $eTroopElectroDragon, $eTroopMinion, $eTroopHogRider, $eTroopValkyrie, $eTroopGolem, $eTroopWitch, $eTroopLavaHound, $eTroopBowler, $eTroopIceGolem, $eTroopCount
 Global Const $g_asTroopNames[$eTroopCount] = [ "Barbarian", "Archer", "Giant", "Goblin", "Wall Breaker", "Balloon", "Wizard", "Healer", "Dragon", "Pekka", "Baby Dragon", "Miner", "Electro Dragon", "Minion", "Hog Rider", "Valkyrie", "Golem", "Witch", "Lava Hound", "Bowler", "Ice Golem"]
@@ -2778,6 +2775,7 @@ Global $g_iCmbLogDividerOption = 0
 Global $g_bChkBackgroundMode
 Global $g_bChkBotStop = False, $g_iCmbBotCommand = 0, $g_iCmbBotCond = 0, $g_iCmbHoursStop = 0, $g_iCmbTimeStop = 0
 Global $g_abFullStorage[$eLootCount] = [False, False, False, False], $g_aiResumeAttackLoot[$eLootCount] = [0, 0, 0, 0], $g_iResumeAttackTime = 0
+Global $g_bCollectStarBonus = False
 Global $g_iTxtRestartGold = 10000
 Global $g_iTxtRestartElixir = 25000
 Global $g_iTxtRestartDark = 500
@@ -2865,12 +2863,16 @@ Global $g_abNotifyScheduleHours[24] = [False, False, False, False, False, False,
 Global $g_abNotifyScheduleWeekDays[7] = [False, False, False, False, False, False, False]
 Global $g_bQuickTrainEnable = False
 Global $g_bQuickTrainArmy[3] = [True, False, False]
+Global $g_aiArmyQuickTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiArmyQuickSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_abUseInGameArmy[3]
 Global $g_aiQuickTroopType[3][7] = [[-1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1]]
 Global $g_aiQuickSpellType[3][7] = [[-1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1]]
 Global $g_aiQuickTroopQty[3][7] = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
 Global $g_aiQuickSpellQty[3][7] = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
 Global $g_aiTotalQuickTroop[3] = [0, 0, 0], $g_aiTotalQuickSpell[3] = [0, 0, 0]
+Global $g_aiArmyCustomTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiArmyCustomSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiArmyCompTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiArmyCompSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiArmyCompSiegeMachine[$eSiegeMachineCount] = [0, 0, 0]
@@ -2880,7 +2882,7 @@ Global $g_aiTrainArmySiegeMachineLevel[$eSiegeMachineCount] = [0, 0, 0]
 Global $g_iTrainArmyFullTroopPct = 100
 Global $g_bTotalCampForced = False, $g_iTotalCampForcedValue = 200
 Global $g_iTotalSpellValue = 0
-Global $g_bDoubleTrain
+Global $g_bDoubleTrain, $g_bPreciseArmy
 Global $g_abBoostBarracksHours[24] = [True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]
 Global $g_bCustomTrainOrderEnable = False, $g_aiCmbCustomTrainOrder[$eTroopCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 Global $g_bCustomBrewOrderEnable = False, $g_aiCmbCustomBrewOrder[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
@@ -2889,7 +2891,7 @@ Global $g_bCustomDropOrderEnable = False, $g_aiCmbCustomDropOrder[$eDropOrderCou
 Global $g_bCloseWhileTrainingEnable = True, $g_bCloseWithoutShield = False, $g_bCloseEmulator = False, $g_bSuspendComputer = False, $g_bCloseRandom = False, $g_bCloseExactTime = False, $g_bCloseRandomTime = True, $g_iCloseRandomTimePercent = 10, $g_iCloseMinimumTime = 2
 Global $g_iTrainClickDelay = 40
 Global $g_bTrainAddRandomDelayEnable = False, $g_iTrainAddRandomDelayMin = 5, $g_iTrainAddRandomDelayMax = 60
-Global $g_abAttackTypeEnable[$g_iModeCount + 3] = [True, False, False, -1, False, -1]
+Global $g_abAttackTypeEnable[$g_iModeCount + 1] = [True, False, False, -1]
 Global $g_abSearchSearchesEnable[$g_iModeCount] = [True, False, False], $g_aiSearchSearchesMin[$g_iModeCount] = [0, 0, 0], $g_aiSearchSearchesMax[$g_iModeCount] = [0, 0, 0]
 Global $g_abSearchTropiesEnable[$g_iModeCount] = [False, False, False], $g_aiSearchTrophiesMin[$g_iModeCount] = [0, 0, 0], $g_aiSearchTrophiesMax[$g_iModeCount] = [0, 0, 0]
 Global $g_abSearchCampsEnable[$g_iModeCount] = [False, False, False], $g_aiSearchCampsPct[$g_iModeCount] = [0, 0, 0]
@@ -2905,29 +2907,18 @@ Global $g_abFilterMeetTHOutsideEnable[$g_iModeCount] = [False, False, False]
 Global $g_abFilterMaxMortarEnable[$g_iModeCount] = [False, False, False], $g_abFilterMaxWizTowerEnable[$g_iModeCount] = [False, False, False], $g_abFilterMaxAirDefenseEnable[$g_iModeCount] = [False, False, False], $g_abFilterMaxXBowEnable[$g_iModeCount] = [False, False, False], $g_abFilterMaxInfernoEnable[$g_iModeCount] = [False, False, False], $g_abFilterMaxEagleEnable[$g_iModeCount] = [False, False, False]
 Global $g_aiFilterMaxMortarLevel[$g_iModeCount] = [5, 5, 0], $g_aiFilterMaxWizTowerLevel[$g_iModeCount] = [4, 4, 0], $g_aiFilterMaxAirDefenseLevel[$g_iModeCount] = [0, 0, 0], $g_aiFilterMaxXBowLevel[$g_iModeCount] = [0, 0, 0], $g_aiFilterMaxInfernoLevel[$g_iModeCount] = [0, 0, 0], $g_aiFilterMaxEagleLevel[$g_iModeCount] = [0, 0, 0]
 Global $g_abFilterMeetOneConditionEnable[$g_iModeCount] = [False, False, False]
-Global $g_aiAttackAlgorithm[$g_iModeCount] = [0, 0, 0], $g_aiAttackTroopSelection[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0], $g_aiAttackUseHeroes[$g_iModeCount] = [0, 0, 0], $g_abAttackDropCC[$g_iModeCount] = [0, 0, 0] , $g_aiAttackUseSiege[$g_iModeCount] = [0, 0, 0], $g_aiAttackUseWardenMode[$g_iModeCount] = [0, 0, 0]
+Global $g_aiAttackAlgorithm[$g_iModeCount] = [0, 0, 0], $g_aiAttackTroopSelection[$g_iModeCount + 1] = [0, 0, 0, 0], $g_aiAttackUseHeroes[$g_iModeCount] = [0, 0, 0], $g_abAttackDropCC[$g_iModeCount] = [0, 0, 0] , $g_aiAttackUseSiege[$g_iModeCount] = [0, 0, 0], $g_aiAttackUseWardenMode[$g_iModeCount] = [0, 0, 0]
 Global $g_abAttackUseLightSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseHealSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseRageSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseJumpSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseFreezeSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseCloneSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUsePoisonSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseEarthquakeSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseHasteSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseSkeletonSpell[$g_iModeCount] = [0, 0, 0], $g_abAttackUseBatSpell[$g_iModeCount] = [0, 0, 0]
-Global $g_bTHSnipeBeforeEnable[$g_iModeCount] = [False, False, False], $g_iTHSnipeBeforeTiles[$g_iModeCount] = [0, 0, 0], $g_iTHSnipeBeforeScript[$g_iModeCount] = [0, 0, 0]
-Global $g_aiAttackStdDropOrder[$g_iModeCount + 1] = [0, 0, 0, 0], $g_aiAttackStdDropSides[$g_iModeCount + 1] = [3, 3, 0, 1], $g_aiAttackStdUnitDelay[$g_iModeCount + 1] = [4, 4, 0, 4], $g_aiAttackStdWaveDelay[$g_iModeCount + 1] = [4, 4, 0, 4], $g_abAttackStdRandomizeDelay[$g_iModeCount + 1] = [True, True, False, True], $g_abAttackStdSmartAttack[$g_iModeCount + 3] = [True, True, False, True, False, False], $g_aiAttackStdSmartDeploy[$g_iModeCount + 3] = [0, 0, 0, 0, 0, 0]
-Global $g_abAttackStdSmartNearCollectors[$g_iModeCount + 3][3] = [[False, False, False], [False, False, False], [False, False, False], [False, False, False], [False, False, False], [False, False, False]]
-Global $g_aiAttackScrRedlineRoutine[$g_iModeCount + 3] = [$REDLINE_IMGLOC_RAW, $REDLINE_IMGLOC_RAW, 0, 0, 0, 0]
-Global $g_aiAttackScrDroplineEdge[$g_iModeCount + 3] = [$DROPLINE_EDGE_FIRST, $DROPLINE_EDGE_FIRST, 0, 0, 0, 0]
+Global $g_aiAttackStdDropOrder[$g_iModeCount + 1] = [0, 0, 0, 0], $g_aiAttackStdDropSides[$g_iModeCount + 1] = [3, 3, 0, 1], $g_abAttackStdSmartAttack[$g_iModeCount + 1] = [True, True, False, False], $g_aiAttackStdSmartDeploy[$g_iModeCount + 1] = [0, 0, 0, 0]
+Global $g_abAttackStdSmartNearCollectors[$g_iModeCount + 1][3] = [[False, False, False], [False, False, False], [False, False, False], [False, False, False]]
+Global $g_aiAttackScrRedlineRoutine[$g_iModeCount + 1] = [$REDLINE_IMGLOC_RAW, $REDLINE_IMGLOC_RAW, 0, 0]
+Global $g_aiAttackScrDroplineEdge[$g_iModeCount + 1] = [$DROPLINE_EDGE_FIRST, $DROPLINE_EDGE_FIRST, 0, 0]
 Global $g_sAttackScrScriptName[$g_iModeCount] = ["Barch four fingers", "Barch four fingers", ""]
 Global $g_abStopAtkNoLoot1Enable[$g_iModeCount] = [True, True, False], $g_aiStopAtkNoLoot1Time[$g_iModeCount] = [0, 0, 0], $g_abStopAtkNoLoot2Enable[$g_iModeCount] = [False, False, False], $g_aiStopAtkNoLoot2Time[$g_iModeCount] = [0, 0, 0]
 Global $g_aiStopAtkNoLoot2MinGold[$g_iModeCount] = [0, 0, 0], $g_aiStopAtkNoLoot2MinElixir[$g_iModeCount] = [0, 0, 0], $g_aiStopAtkNoLoot2MinDark[$g_iModeCount] = [0, 0, 0]
 Global $g_abStopAtkNoResources[$g_iModeCount] = [False, False, False], $g_abStopAtkOneStar[$g_iModeCount] = [False, False, False], $g_abStopAtkTwoStars[$g_iModeCount] = [False, False, False]
 Global $g_abStopAtkPctHigherEnable[$g_iModeCount] = [False, False, False], $g_aiStopAtkPctHigherAmt[$g_iModeCount] = [0, 0, 0]
 Global $g_abStopAtkPctNoChangeEnable[$g_iModeCount] = [False, False, False], $g_aiStopAtkPctNoChangeTime[$g_iModeCount] = [0, 0, 0]
-Global $g_iMilkAttackType = 1, $g_aiMilkFarmElixirParam[9] = [-1, -1, -1, -1, -1, -1, 2, 2, 2]
-Global $g_bMilkFarmLocateElixir = True, $g_bMilkFarmLocateMine = True, $g_bMilkFarmLocateDrill = True
-Global $g_iMilkFarmMineParam = 5
-Global $g_iMilkFarmDrillParam = 1
-Global $g_iMilkFarmResMaxTilesFromBorder = 0, $g_bMilkFarmAttackGoldMines = True, $g_bMilkFarmAttackElixirExtractors = True, $g_bMilkFarmAttackDarkDrills = True, $g_iMilkFarmLimitGold = 9995000, $g_iMilkFarmLimitElixir = 9995000, $g_iMilkFarmLimitDark = 200000
-Global $g_iMilkFarmTroopForWaveMin = 4, $g_iMilkFarmTroopForWaveMax = 6, $g_iMilkFarmTroopMaxWaves = 3, $g_iMilkFarmDelayFromWavesMin = 3000, $g_iMilkFarmDelayFromWavesMax = 5000
-Global $g_iMilkingAttackDropGoblinAlgorithm = 1
-Global $g_iMilkingAttackStructureOrder = 1, $g_bMilkingAttackCheckStructureDestroyedBeforeAttack = False, $g_bMilkingAttackCheckStructureDestroyedAfterAttack = False
-Global $g_bMilkAttackAfterTHSnipeEnable = False, $g_iMilkFarmTHMaxTilesFromBorder = 1, $g_sMilkFarmAlgorithmTh = "Queen&GobTakeTH", $g_bMilkFarmSnipeEvenIfNoExtractorsFound = False, $g_bMilkAttackAfterScriptedAtkEnable = False, $g_sMilkAttackCSVscript = "Barch four fingers"
-Global $g_bMilkFarmForceToleranceEnable = False, $g_iMilkFarmForceToleranceNormal = 31, $g_iMilkFarmForceToleranceBoosted = 31, $g_iMilkFarmForceToleranceDestroyed = 31
 Global $g_iTxtInsidePercentage = 0 , $g_iTxtOutsidePercentage = 0 , $g_bDebugSmartFarm = False
 Global $g_abCollectorLevelEnabled[14] = [-1, -1, -1, -1, -1, -1, True, True, True, True, True, True, True, True]
 Global $g_aiCollectorLevelFill[14] = [-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -2935,9 +2926,6 @@ Global $g_bCollectorFilterDisable = False
 Global $g_iCollectorMatchesMin = 3
 Global $g_iCollectorToleranceOffset = 0
 Global $g_bDESideEndEnable = False, $g_iDESideEndMin = 25, $g_bDESideDisableOther = False, $g_bDESideEndAQWeak = False, $g_bDESideEndBKWeak = False, $g_bDESideEndOneStar = False
-Global $g_iAtkTSAddTilesWhileTrain = 1, $g_iAtkTSAddTilesFullTroops = 0
-Global $g_sAtkTSType = "Bam"
-Global $g_bEndTSCampsEnable = False, $g_iEndTSCampsPct = 0
 Global $g_iAtkTBEnableCount = 150, $g_iAtkTBMaxTHLevel = 0, $g_iAtkTBMode = 0
 Global $g_bSearchReductionEnable = False, $g_iSearchReductionCount = 20, $g_iSearchReductionGold = 2000, $g_iSearchReductionElixir = 2000, $g_iSearchReductionGoldPlusElixir = 4000, $g_iSearchReductionDark = 100, $g_iSearchReductionTrophy = 2
 Global $g_iSearchDelayMin = 0, $g_iSearchDelayMax = 0
@@ -3088,6 +3076,7 @@ Global $g_bChkClanGamesStopBeforeReachAndPurge = 0
 Global $g_bChkClanGamesDebug = 0
 Global $g_iPurgeMax = 5
 Global $g_bChkCollectFreeMagicItems = True
+Global $g_bChkCollectRewards = True
 Global $g_bOnlySCIDAccounts = False
 Global $g_iWhatSCIDAccount2Use = 0
 Global $g_bUseStatistics = False
@@ -4364,8 +4353,6 @@ $g_hBtnAttackNowDB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bo
 GUICtrlSetState(-1, $GUI_HIDE)
 $g_hBtnAttackNowLB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowLB", "LB Attack!"), $x + 190, $y + 23, 60, -1)
 GUICtrlSetState(-1, $GUI_HIDE)
-$g_hBtnAttackNowTS = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Bottom", "BtnAttackNowTS", "TH Snipe!"), $x + 190, $y + 50, 60, -1)
-GUICtrlSetState(-1, $GUI_HIDE)
 $g_hLblDonate = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Bottom", "LblDonate", "Support the Development"), $x + 293, $y + 80, 142, 24, $SS_RIGHT)
 GUICtrlSetCursor(-1, 0)
 GUICtrlSetFont(-1, 8.5, $FW_BOLD)
@@ -4802,15 +4789,12 @@ ReadConfig_600_26()
 ReadConfig_600_28()
 ReadConfig_600_28_DB()
 ReadConfig_600_28_LB()
-ReadConfig_600_28_TS()
 ReadConfig_600_29()
 ReadConfig_600_29_DB()
 ReadConfig_600_29_LB()
-ReadConfig_600_29_TS()
 ReadConfig_600_30()
 ReadConfig_600_30_DB()
 ReadConfig_600_30_LB()
-ReadConfig_600_30_TS()
 ReadConfig_600_31()
 ReadConfig_600_32()
 ReadConfig_600_33()
@@ -4837,9 +4821,6 @@ $g_bDebugOcr = IniRead($g_sProfileConfigPath, "debug", "debugocr", 0) = 1 ? True
 $g_bDebugImageSave = IniRead($g_sProfileConfigPath, "debug", "debugimagesave", 0) = 1 ? True : False
 $g_bDebugBuildingPos = IniRead($g_sProfileConfigPath, "debug", "debugbuildingpos", 0) = 1 ? True : False
 $g_bDebugSetlogTrain = IniRead($g_sProfileConfigPath, "debug", "debugtrain", 0) = 1 ? True : False
-$g_bDebugResourcesOffset = IniRead($g_sProfileConfigPath, "debug", "debugresourcesoffset", 0) = 1 ? True : False
-$g_bDebugContinueSearchElixir = IniRead($g_sProfileConfigPath, "debug", "continuesearchelixirdebug", 0) = 1 ? True : False
-$g_bDebugMilkingIMGmake = IniRead($g_sProfileConfigPath, "debug", "debugMilkingIMGmake", 0) = 1 ? True : False
 $g_bDebugOCRdonate = IniRead($g_sProfileConfigPath, "debug", "debugOCRDonate", 0) = 1 ? True : False
 $g_bDebugAttackCSV = IniRead($g_sProfileConfigPath, "debug", "debugAttackCSV", 0) = 1 ? True : False
 $g_bDebugMakeIMGCSV = IniRead($g_sProfileConfigPath, "debug", "debugmakeimgcsv", 0) = 1 ? True : False
@@ -4906,6 +4887,7 @@ IniReadS($g_iCmbHoursStop, $g_sProfileConfigPath, "general", "Hour", 0, "int")
 For $i = 0 To $eLootCount - 1
 IniReadS($g_aiResumeAttackLoot[$i], $g_sProfileConfigPath, "other", "MinResumeAttackLoot_" & $i, 0, "int")
 Next
+IniReadS($g_bCollectStarBonus, $g_sProfileConfigPath, "general", "CollectStarBonus", False, "Bool")
 IniReadS($g_iCmbTimeStop, $g_sProfileConfigPath, "general", "CmbTimeStop", 0, "int")
 IniReadS($g_iResumeAttackTime, $g_sProfileConfigPath, "other", "ResumeAttackTime", 12, "int")
 IniReadS($g_iTxtRestartGold, $g_sProfileConfigPath, "other", "minrestartgold", 50000, "int")
@@ -4920,6 +4902,7 @@ IniReadS($g_bChkTombstones, $g_sProfileConfigPath, "other", "chkTombstones", Tru
 IniReadS($g_bChkCleanYard, $g_sProfileConfigPath, "other", "chkCleanYard", False, "Bool")
 IniReadS($g_bChkGemsBox, $g_sProfileConfigPath, "other", "chkGemsBox", False, "Bool")
 IniReadS($g_bChkCollectFreeMagicItems, $g_sProfileConfigPath, "other", "ChkCollectFreeMagicItems", False, "Bool")
+IniReadS($g_bChkCollectRewards, $g_sProfileConfigPath, "other", "ChkCollectRewards", False, "Bool")
 IniReadS($g_bChkTreasuryCollect, $g_sProfileConfigPath, "other", "ChkTreasuryCollect", False, "Bool")
 IniReadS($g_iTxtTreasuryGold, $g_sProfileConfigPath, "other", "minTreasurygold", 0, "int")
 IniReadS($g_iTxtTreasuryElixir, $g_sProfileConfigPath, "other", "minTreasuryelixir", 0, "int")
@@ -5346,25 +5329,6 @@ IniReadS($g_aiFilterMaxInfernoLevel[$LB], $g_sProfileConfigPath, "search", "ABWe
 IniReadS($g_aiFilterMaxEagleLevel[$LB], $g_sProfileConfigPath, "search", "ABWeakEagle", 2, "int")
 IniReadS($g_abFilterMeetOneConditionEnable[$LB], $g_sProfileConfigPath, "search", "ABMeetOne", False, "Bool")
 EndFunc
-Func ReadConfig_600_28_TS()
-IniReadS($g_abAttackTypeEnable[$TS], $g_sProfileConfigPath, "search", "TScheck", False, "Bool")
-IniReadS($g_abSearchSearchesEnable[$TS], $g_sProfileConfigPath, "search", "ChkTSSearchSearches", False, "Bool")
-IniReadS($g_aiSearchSearchesMin[$TS], $g_sProfileConfigPath, "search", "TSEnableAfterCount", 1, "int")
-IniReadS($g_aiSearchSearchesMax[$TS], $g_sProfileConfigPath, "search", "TSEnableBeforeCount", 9999, "int")
-IniReadS($g_abSearchTropiesEnable[$TS], $g_sProfileConfigPath, "search", "ChkTSSearchTropies", False, "Bool")
-IniReadS($g_aiSearchTrophiesMin[$TS], $g_sProfileConfigPath, "search", "TSEnableAfterTropies", 100, "int")
-IniReadS($g_aiSearchTrophiesMax[$TS], $g_sProfileConfigPath, "search", "TSEnableBeforeTropies", 6000, "int")
-IniReadS($g_abSearchCampsEnable[$TS], $g_sProfileConfigPath, "search", "ChkTSSearchCamps", False, "Bool")
-IniReadS($g_aiSearchCampsPct[$TS], $g_sProfileConfigPath, "search", "TSEnableAfterArmyCamps", 100, "int")
-IniReadS($g_aiFilterMeetGE[$TS], $g_sProfileConfigPath, "search", "TSMeetGE", 1, "int")
-IniReadS($g_aiFilterMinGold[$TS], $g_sProfileConfigPath, "search", "TSsearchGold", 80000, "int")
-IniReadS($g_aiFilterMinElixir[$TS], $g_sProfileConfigPath, "search", "TSsearchElixir", 80000, "int")
-IniReadS($g_aiFilterMinGoldPlusElixir[$TS], $g_sProfileConfigPath, "search", "TSsearchGoldPlusElixir", 160000, "int")
-IniReadS($g_abFilterMeetDEEnable[$TS], $g_sProfileConfigPath, "search", "TSMeetDE", False, "Bool")
-IniReadS($g_aiFilterMeetDEMin[$TS], $g_sProfileConfigPath, "search", "TSsearchDark", 600, "int")
-IniReadS($g_iAtkTSAddTilesWhileTrain, $g_sProfileConfigPath, "search", "SWTtiles", 1, "int")
-IniReadS($g_iAtkTSAddTilesFullTroops, $g_sProfileConfigPath, "search", "THaddTiles", 2, "int")
-EndFunc
 Func ReadConfig_600_29()
 IniReadS($g_iActivateQueen, $g_sProfileConfigPath, "attack", "ActivateQueen", 0, "int")
 IniReadS($g_iActivateKing, $g_sProfileConfigPath, "attack", "ActivateKing", 0, "int")
@@ -5415,14 +5379,8 @@ IniReadS($g_abAttackUseHasteSpell[$DB], $g_sProfileConfigPath, "attack", "DBHast
 IniReadS($g_abAttackUseCloneSpell[$DB], $g_sProfileConfigPath, "attack", "DBCloneSpell", False, "Bool")
 IniReadS($g_abAttackUseSkeletonSpell[$DB], $g_sProfileConfigPath, "attack", "DBSkeletonSpell", False, "Bool")
 IniReadS($g_abAttackUseBatSpell[$DB], $g_sProfileConfigPath, "attack", "DBBatSpell", False, "Bool")
-IniReadS($g_bTHSnipeBeforeEnable[$DB], $g_sProfileConfigPath, "attack", "THSnipeBeforeDBEnable", False, "Bool")
-IniReadS($g_iTHSnipeBeforeTiles[$DB], $g_sProfileConfigPath, "attack", "THSnipeBeforeDBTiles", 0, "int")
-IniReadS($g_iTHSnipeBeforeScript[$DB], $g_sProfileConfigPath, "attack", "THSnipeBeforeDBScript", "bam")
 IniReadS($g_aiAttackStdDropOrder[$DB], $g_sProfileConfigPath, "attack", "DBStandardAlgorithm", 0, "int")
 IniReadS($g_aiAttackStdDropSides[$DB], $g_sProfileConfigPath, "attack", "DBDeploy", 3, "int")
-IniReadS($g_aiAttackStdUnitDelay[$DB], $g_sProfileConfigPath, "attack", "DBUnitD", 4, "int")
-IniReadS($g_aiAttackStdWaveDelay[$DB], $g_sProfileConfigPath, "attack", "DBWaveD", 4, "int")
-IniReadS($g_abAttackStdRandomizeDelay[$DB], $g_sProfileConfigPath, "attack", "DBRandomSpeedAtk", True, "Bool")
 IniReadS($g_abAttackStdSmartAttack[$DB], $g_sProfileConfigPath, "attack", "DBSmartAttackRedArea", True, "Bool")
 IniReadS($g_aiAttackStdSmartDeploy[$DB], $g_sProfileConfigPath, "attack", "DBSmartAttackDeploy", 0, "int")
 IniReadS($g_abAttackStdSmartNearCollectors[$DB][0], $g_sProfileConfigPath, "attack", "DBSmartAttackGoldMine", False, "Bool")
@@ -5431,40 +5389,6 @@ IniReadS($g_abAttackStdSmartNearCollectors[$DB][2], $g_sProfileConfigPath, "atta
 IniReadS($g_aiAttackScrRedlineRoutine[$DB], $g_sProfileConfigPath, "attack", "RedlineRoutineDB", $g_aiAttackScrRedlineRoutine[$DB], "Int")
 IniReadS($g_aiAttackScrDroplineEdge[$DB], $g_sProfileConfigPath, "attack", "DroplineEdgeDB", $g_aiAttackScrDroplineEdge[$DB], "Int")
 IniReadS($g_sAttackScrScriptName[$DB], $g_sProfileConfigPath, "attack", "ScriptDB", "Barch four fingers")
-IniReadS($g_iMilkAttackType, $g_sProfileConfigPath, "MilkingAttack", "MilkAttackType", 0, "int")
-IniReadS($g_aiMilkFarmElixirParam, $g_sProfileConfigPath, "MilkingAttack", "LocateElixirLevel", "-1|-1|-1|-1|-1|-1|2|2|2")
-$g_aiMilkFarmElixirParam = StringSplit($g_aiMilkFarmElixirParam, "|", 2)
-IniReadS($g_bMilkFarmLocateElixir, $g_sProfileConfigPath, "MilkingAttack", "LocateElixir", True, "Bool")
-IniReadS($g_bMilkFarmLocateMine, $g_sProfileConfigPath, "MilkingAttack", "LocateMine", True, "Bool")
-IniReadS($g_bMilkFarmLocateDrill, $g_sProfileConfigPath, "MilkingAttack", "LocateDrill", True, "Bool")
-IniReadS($g_iMilkFarmMineParam, $g_sProfileConfigPath, "MilkingAttack", "MineParam", 5, "int")
-IniReadS($g_iMilkFarmDrillParam, $g_sProfileConfigPath, "MilkingAttack", "DrillParam", 1, "int")
-IniReadS($g_iMilkFarmResMaxTilesFromBorder, $g_sProfileConfigPath, "MilkingAttack", "MaxTiles", 1, "int")
-IniReadS($g_bMilkFarmAttackGoldMines, $g_sProfileConfigPath, "MilkingAttack", "AttackMine", True, "Bool")
-IniReadS($g_bMilkFarmAttackElixirExtractors, $g_sProfileConfigPath, "MilkingAttack", "AttackElixir", True, "Bool")
-IniReadS($g_bMilkFarmAttackDarkDrills, $g_sProfileConfigPath, "MilkingAttack", "AttackDrill", True, "Bool")
-IniReadS($g_iMilkFarmLimitGold, $g_sProfileConfigPath, "MilkingAttack", "LimitGold", 9950000, "int")
-IniReadS($g_iMilkFarmLimitElixir, $g_sProfileConfigPath, "MilkingAttack", "LimitElixir", 9950000, "int")
-IniReadS($g_iMilkFarmLimitDark, $g_sProfileConfigPath, "MilkingAttack", "LimitDark", 200000, "int")
-IniReadS($g_iMilkFarmTroopForWaveMin, $g_sProfileConfigPath, "MilkingAttack", "TroopForWaveMin", 4, "int")
-IniReadS($g_iMilkFarmTroopForWaveMax, $g_sProfileConfigPath, "MilkingAttack", "TroopForWaveMax", 6, "int")
-IniReadS($g_iMilkFarmTroopMaxWaves, $g_sProfileConfigPath, "MilkingAttack", "MaxWaves", 4, "int")
-IniReadS($g_iMilkFarmDelayFromWavesMin, $g_sProfileConfigPath, "MilkingAttack", "DelayBetweenWavesMin", 3000, "int")
-IniReadS($g_iMilkFarmDelayFromWavesMax, $g_sProfileConfigPath, "MilkingAttack", "DelayBetweenWavesMax", 5000, "int")
-IniReadS($g_iMilkingAttackDropGoblinAlgorithm, $g_sProfileConfigPath, "MilkingAttack", "DropRandomPlace", 0, "int")
-IniReadS($g_iMilkingAttackStructureOrder, $g_sProfileConfigPath, "MilkingAttack", "StructureOrder", 1, "int")
-IniReadS($g_bMilkingAttackCheckStructureDestroyedBeforeAttack, $g_sProfileConfigPath, "MilkingAttack", "CheckStructureDestroyedBeforeAttack", False, "Bool")
-IniReadS($g_bMilkingAttackCheckStructureDestroyedAfterAttack, $g_sProfileConfigPath, "MilkingAttack", "CheckStructureDestroyedAfterAttack", False, "Bool")
-IniReadS($g_bMilkAttackAfterTHSnipeEnable, $g_sProfileConfigPath, "MilkingAttack", "MilkAttackAfterTHSnipe", False, "Bool")
-IniReadS($g_iMilkFarmTHMaxTilesFromBorder, $g_sProfileConfigPath, "MilkingAttack", "TownhallTiles", 0, "int")
-IniReadS($g_sMilkFarmAlgorithmTh, $g_sProfileConfigPath, "MilkingAttack", "TownHallAlgorithm", "Bam")
-IniReadS($g_bMilkFarmSnipeEvenIfNoExtractorsFound, $g_sProfileConfigPath, "MilkingAttack", "TownHallHitAnyway", False, "Bool")
-IniReadS($g_bMilkAttackAfterScriptedAtkEnable, $g_sProfileConfigPath, "MilkingAttack", "MilkAttackAfterScriptedAtk", False, "Bool")
-IniReadS($g_sMilkAttackCSVscript, $g_sProfileConfigPath, "MilkingAttack", "MilkAttackCSVscript", "0")
-IniReadS($g_bMilkFarmForceToleranceEnable, $g_sProfileConfigPath, "MilkingAttack", "MilkFarmForceTolerance", False, "Bool")
-IniReadS($g_iMilkFarmForceToleranceNormal, $g_sProfileConfigPath, "MilkingAttack", "MilkFarmForcetolerancenormal", 60, "int")
-IniReadS($g_iMilkFarmForceToleranceBoosted, $g_sProfileConfigPath, "MilkingAttack", "MilkFarmForcetoleranceboosted", 60, "int")
-IniReadS($g_iMilkFarmForceToleranceDestroyed, $g_sProfileConfigPath, "MilkingAttack", "MilkFarmForcetolerancedestroyed", 60, "int")
 IniReadS($g_aiAttackUseWardenMode[$DB], $g_sProfileConfigPath, "attack", "DBAtkUseWardenMode", 2, "int")
 IniReadS($g_aiAttackUseSiege[$DB], $g_sProfileConfigPath, "attack", "DBAtkUseSiege", 5, "int")
 IniReadS($g_iTxtInsidePercentage, $g_sProfileConfigPath, "SmartFarm", "InsidePercentage", 65, "int")
@@ -5491,14 +5415,8 @@ IniReadS($g_abAttackUseHasteSpell[$LB], $g_sProfileConfigPath, "attack", "ABHast
 IniReadS($g_abAttackUseCloneSpell[$LB], $g_sProfileConfigPath, "attack", "ABCloneSpell", False, "Bool")
 IniReadS($g_abAttackUseSkeletonSpell[$LB], $g_sProfileConfigPath, "attack", "ABSkeletonSpell", False, "Bool")
 IniReadS($g_abAttackUseBatSpell[$LB], $g_sProfileConfigPath, "attack", "ABBatSpell", False, "Bool")
-IniReadS($g_bTHSnipeBeforeEnable[$LB], $g_sProfileConfigPath, "attack", "THSnipeBeforeLBEnable", False, "Bool")
-IniReadS($g_iTHSnipeBeforeTiles[$LB], $g_sProfileConfigPath, "attack", "THSnipeBeforeLBTiles", 0, "int")
-IniReadS($g_iTHSnipeBeforeScript[$LB], $g_sProfileConfigPath, "attack", "THSnipeBeforeLBScript", "bam")
 IniReadS($g_aiAttackStdDropOrder[$LB], $g_sProfileConfigPath, "attack", "LBStandardAlgorithm", 0, "int")
 IniReadS($g_aiAttackStdDropSides[$LB], $g_sProfileConfigPath, "attack", "ABDeploy", 0, "int")
-IniReadS($g_aiAttackStdUnitDelay[$LB], $g_sProfileConfigPath, "attack", "ABUnitD", 4, "int")
-IniReadS($g_aiAttackStdWaveDelay[$LB], $g_sProfileConfigPath, "attack", "ABWaveD", 4, "int")
-IniReadS($g_abAttackStdRandomizeDelay[$LB], $g_sProfileConfigPath, "attack", "ABRandomSpeedAtk", True, "Bool")
 IniReadS($g_abAttackStdSmartAttack[$LB], $g_sProfileConfigPath, "attack", "ABSmartAttackRedArea", True, "Bool")
 IniReadS($g_aiAttackStdSmartDeploy[$LB], $g_sProfileConfigPath, "attack", "ABSmartAttackDeploy", 1, "int")
 IniReadS($g_abAttackStdSmartNearCollectors[$LB][0], $g_sProfileConfigPath, "attack", "ABSmartAttackGoldMine", False, "Bool")
@@ -5509,24 +5427,6 @@ IniReadS($g_aiAttackScrDroplineEdge[$LB], $g_sProfileConfigPath, "attack", "Drop
 IniReadS($g_sAttackScrScriptName[$LB], $g_sProfileConfigPath, "attack", "ScriptAB", "Barch four fingers")
 IniReadS($g_aiAttackUseWardenMode[$LB], $g_sProfileConfigPath, "attack", "ABAtkUseWardenMode", 2, "int")
 IniReadS($g_aiAttackUseSiege[$LB], $g_sProfileConfigPath, "attack", "ABAtkUseSiege", 5, "int")
-EndFunc
-Func ReadConfig_600_29_TS()
-IniReadS($g_aiAttackTroopSelection[$TS], $g_sProfileConfigPath, "attack", "TSSelectTroop", 0, "int")
-Local $temp1, $temp2, $temp3
-IniReadS($temp1, $g_sProfileConfigPath, "attack", "TSKingAtk", $eHeroNone)
-IniReadS($temp2, $g_sProfileConfigPath, "attack", "TSQueenAtk", $eHeroNone)
-IniReadS($temp3, $g_sProfileConfigPath, "attack", "TSWardenAtk", $eHeroNone)
-$g_aiAttackUseHeroes[$TS] = BitOR(Int($temp1), Int($temp2), Int($temp3))
-IniReadS($g_abAttackDropCC[$TS], $g_sProfileConfigPath, "attack", "TSDropCC", False, "Bool")
-IniReadS($g_abAttackUseHealSpell[$TS], $g_sProfileConfigPath, "attack", "TSHealSpell", False, "Bool")
-IniReadS($g_abAttackUseLightSpell[$TS], $g_sProfileConfigPath, "attack", "TSLightSpell", False, "Bool")
-IniReadS($g_abAttackUseRageSpell[$TS], $g_sProfileConfigPath, "attack", "TSRageSpell", False, "Bool")
-IniReadS($g_abAttackUseJumpSpell[$TS], $g_sProfileConfigPath, "attack", "TSJumpSpell", False, "Bool")
-IniReadS($g_abAttackUseFreezeSpell[$TS], $g_sProfileConfigPath, "attack", "TSFreezeSpell", False, "Bool")
-IniReadS($g_abAttackUsePoisonSpell[$TS], $g_sProfileConfigPath, "attack", "TSPoisonSpell", False, "Bool")
-IniReadS($g_abAttackUseEarthquakeSpell[$TS], $g_sProfileConfigPath, "attack", "TSEarthquakeSpell", False, "Bool")
-IniReadS($g_abAttackUseHasteSpell[$TS], $g_sProfileConfigPath, "attack", "TSHasteSpell", False, "Bool")
-IniReadS($g_sAtkTSType, $g_sProfileConfigPath, "attack", "AttackTHType", "bam")
 EndFunc
 Func ReadConfig_600_30()
 $g_bShareAttackEnable =(IniRead($g_sProfileConfigPath, "shareattack", "ShareAttack", "0") = "1")
@@ -5574,10 +5474,6 @@ IniReadS($g_abStopAtkPctHigherEnable[$LB], $g_sProfileConfigPath, "endbattle", "
 IniReadS($g_aiStopAtkPctHigherAmt[$LB], $g_sProfileConfigPath, "endbattle", "txtABPercentageHigher", 50, "int")
 IniReadS($g_abStopAtkPctNoChangeEnable[$LB], $g_sProfileConfigPath, "endbattle", "chkABPercentageChange", False, "Bool")
 IniReadS($g_aiStopAtkPctNoChangeTime[$LB], $g_sProfileConfigPath, "endbattle", "txtABPercentageChange", 15, "int")
-EndFunc
-Func ReadConfig_600_30_TS()
-IniReadS($g_bEndTSCampsEnable, $g_sProfileConfigPath, "search", "ChkTSSearchCamps2", False, "Bool")
-IniReadS($g_iEndTSCampsPct, $g_sProfileConfigPath, "search", "TSEnableAfterArmyCamps2", 100, "int")
 EndFunc
 Func ReadConfig_600_31()
 $g_abCollectorLevelEnabled[6] = 0
@@ -5726,13 +5622,15 @@ Case Else
 IniReadS($tempTroopCount, $g_sProfileConfigPath, "troop", $g_asTroopShortNames[$T], 0, "int")
 IniReadS($tempTroopLevel, $g_sProfileConfigPath, "LevelTroop", $g_asTroopShortNames[$T], 0, "int")
 EndSwitch
-$g_aiArmyCompTroops[$T] = $tempTroopCount
+$g_aiArmyCustomTroops[$T] = $tempTroopCount
 $g_aiTrainArmyTroopLevel[$T] = $tempTroopLevel
 Next
 For $S = 0 To $eSpellCount - 1
-IniReadS($g_aiArmyCompSpells[$S], $g_sProfileConfigPath, "Spells", $g_asSpellShortNames[$S], 0, "int")
+IniReadS($g_aiArmyCustomSpells[$S], $g_sProfileConfigPath, "Spells", $g_asSpellShortNames[$S], 0, "int")
 IniReadS($g_aiTrainArmySpellLevel[$S], $g_sProfileConfigPath, "LevelSpell", $g_asSpellShortNames[$S], 0, "int")
 Next
+$g_aiArmyCompTroops = $g_bQuickTrainEnable ? $g_aiArmyQuickTroops : $g_aiArmyCustomTroops
+$g_aiArmyCompSpells = $g_bQuickTrainEnable ? $g_aiArmyQuickSpells : $g_aiArmyCustomSpells
 For $S = 0 To $eSiegeMachineCount - 1
 IniReadS($g_aiArmyCompSiegeMachine[$S], $g_sProfileConfigPath, "Siege", $g_asSiegeMachineShortNames[$S], 0, "int")
 IniReadS($g_aiTrainArmySiegeMachineLevel[$S], $g_sProfileConfigPath, "LevelSiege", $g_asSiegeMachineShortNames[$S], 0, "int")
@@ -5743,6 +5641,7 @@ $g_iTotalCampForcedValue = Int(IniRead($g_sProfileConfigPath, "other", "ValueTot
 IniReadS($g_iTotalSpellValue, $g_sProfileConfigPath, "Spells", "SpellFactory", 0, "int")
 $g_iTotalSpellValue = Int($g_iTotalSpellValue)
 $g_bDoubleTrain =(IniRead($g_sProfileConfigPath, "troop", "DoubleTrain", "0") = "1")
+$g_bPreciseArmy =(IniRead($g_sProfileConfigPath, "troop", "PreciseArmy", "0") = "1")
 EndFunc
 Func ReadConfig_600_54()
 IniReadS($g_bCustomTrainOrderEnable, $g_sProfileConfigPath, "troop", "chkTroopOrder", False, "Bool")
@@ -5970,8 +5869,6 @@ $iOldAttackedCount = $g_aiAttackedCount
 EndIf
 If $g_iFirstAttack = 2 Then
 $bStatsUpdated = True
-If $g_iStatsStartedWith[$eLootDarkElixir] <> "" Then
-EndIf
 GUICtrlSetData($g_hLblResultGoldHourNow, _NumberFormat(Round($g_iStatsTotalGain[$eLootGold] /(Int(__TimerDiff($g_hTimerSinceStarted) + $g_iTimePassed)) * 3600)) & "k / h")
 GUICtrlSetData($g_hLblResultElixirHourNow, _NumberFormat(Round($g_iStatsTotalGain[$eLootElixir] /(Int(__TimerDiff($g_hTimerSinceStarted) + $g_iTimePassed)) * 3600)) & "k / h")
 If $g_iStatsStartedWith[$eLootDarkElixir] <> "" Then

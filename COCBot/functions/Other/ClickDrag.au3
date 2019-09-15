@@ -110,8 +110,8 @@ Func ClickDrag($X1, $Y1, $X2, $Y2, $Delay = 50)
 	If $g_bDebugClick Then
 		SetLog("ClickDrag " & $X1 & "," & $Y1 & " to " & $X2 & "," & $Y2 & " delay=" & $Delay, $COLOR_ACTION, "Verdana", "7.5", 0)
 	EndIf
-	If $g_bAndroidAdbClickDrag = True Then
-		If $g_bAndroidAdbClickDragScript = True Then
+	If $g_bAndroidAdbClickDrag Then
+		If $g_bAndroidAdbClickDragScript Then
 			AndroidClickDrag($X1, $Y1, $X2, $Y2, $g_bRunState)
 			$error = @error
 		Else
@@ -120,7 +120,7 @@ Func ClickDrag($X1, $Y1, $X2, $Y2, $Delay = 50)
 		EndIf
 		If _Sleep($Delay / 5) Then Return SetError(-1, "", False)
 	EndIf
-	If $g_bAndroidAdbClickDrag = False Or $error <> 0 Then
+	If Not $g_bAndroidAdbClickDrag Or $error <> 0 Then
 		Return _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, "left", $Delay)
 	EndIf
 	Return SetError(0, 0, ($error = 0 ? True : False))

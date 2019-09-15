@@ -54,7 +54,7 @@ Func CheckTombs()
 					If $g_bDebugSetlog Then SetDebugLog("Coords :" & $TombsXY[$j][0] & "," & $TombsXY[$j][1])
 					If IsMainPage() Then
 						Click($TombsXY[$j][0], $TombsXY[$j][1], 1, 0, "#0430")
-						If $bRemoved = False Then $bRemoved = IsMainPage()
+						If Not $bRemoved Then $bRemoved = IsMainPage()
 					EndIf
 				EndIf
 			Next
@@ -95,7 +95,7 @@ Func CleanYard()
 	Local $redLines = $sCocDiamond
 	Local $bNoBuilders = $g_iFreeBuilderCount < 1
 
-	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard = True And Number($g_aiCurrentLoot[$eLootElixir]) > 50000 Then
+	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > 50000 Then
 		Local $aResult = findMultiple($g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard, $sCocDiamond, $redLines, 0, 1000, 10, "objectname,objectlevel,objectpoints", True)
 		If IsArray($aResult) Then
 			For $matchedValues In $aResult
@@ -108,11 +108,11 @@ Func CleanYard()
 						If IsMainPage() Then Click($CleanYardXY[0], $CleanYardXY[1], 1, 0, "#0430")
 						$Locate = 1
 						If _Sleep($DELAYCOLLECT3) Then Return
-						If IsMainPage() Then GemClick($aCleanYard[0], $aCleanYard[1], 1, 0, "#0431") ; Click Obstacles button to clean
+						If Not ClickRemoveObstacle() Then ContinueLoop
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
 						ClickP($aAway, 2, 300, "#0329") ;Click Away
 						If _Sleep($DELAYCHECKTOMBS1) Then Return
-						If getBuilderCount() = False Then Return ; update builder data, return if problem
+						If Not getBuilderCount() Then Return ; update builder data, return if problem
 						If _Sleep($DELAYRESPOND) Then Return
 						If $g_iFreeBuilderCount = 0 Then
 							SetLog("No More Builders available")
@@ -159,11 +159,11 @@ Func CleanYard()
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
 						$Locate = 1
 						If _Sleep($DELAYCOLLECT3) Then Return
-						If IsMainPage() Then Click($aCleanYard[0], $aCleanYard[1], 1, 0, "#0431") ; Click GemBox button to remove item
+						If Not ClickRemoveObstacle() Then ContinueLoop
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
 						ClickP($aAway, 2, 300, "#0329") ;Click Away
 						If _Sleep($DELAYCHECKTOMBS1) Then Return
-						If getBuilderCount() = False Then Return ; update builder data, return if problem
+						If Not getBuilderCount() Then Return ; update builder data, return if problem
 						If _Sleep($DELAYRESPOND) Then Return
 						If $g_iFreeBuilderCount = 0 Then
 							SetLog("No More Builders available")
@@ -190,4 +190,15 @@ Func CleanYard()
 
 EndFunc   ;==>CleanYard
 
-
+Func ClickRemoveObstacle()
+	Local $aiButton = findButton("RemoveObstacle", Default, 1, True)
+	If IsArray($aiButton) And UBound($aiButton) = 2 Then
+		If IsMainPage() Then
+			ClickP($aiButton)
+			Return True
+		EndIf
+	Else
+		SetLog("Cannot find Remove Button", $COLOR_ERROR)
+		Return False
+	EndIf
+EndFunc

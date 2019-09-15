@@ -51,7 +51,7 @@ Global $g_aGroupLeague = ""
 
 ; Groups of controls
 Global $aTabControlsVillage, $aTabControlsMisc, $aTabControlsDonate, $aTabControlsUpgrade, $aTabControlsNotify
-Global $aTabControlsAttack, $aTabControlsArmy, $aTabControlsSearch, $aTabControlsDeadbase, $aTabControlsActivebase, $aTabControlsTHSnipe, $aTabControlsAttackOptions
+Global $aTabControlsAttack, $aTabControlsArmy, $aTabControlsSearch, $aTabControlsDeadbase, $aTabControlsActivebase, $aTabControlsAttackOptions
 Global $aTabControlsStrategies, $aTabControlsBot, $aTabControlsStats
 Global $oAlwaysEnabledControls = ObjCreate("Scripting.Dictionary")
 
@@ -82,10 +82,6 @@ Func InitializeControlVariables()
    $groupSpellsAB = $g_hChkABSpellsWait&"#"&$g_hPicABLightSpellWait&"#"&$g_hPicABHealSpellWait&"#"&$g_hPicABRageSpellWait&"#"&$g_hPicABJumpSpellWait&"#"& _
 				    $g_hPicABFreezeSpellWait&"#"&$g_hPicABPoisonSpellWait&"#"&$g_hPicABEarthquakeSpellWait&"#"&$g_hPicABHasteSpellWait
 
-   $groupSearchTS = $g_hGrpTSFilter&"#"&$g_hCmbTSMeetGE&"#"&$g_hTxtTSMinGold&"#"&$g_hPicTSMinGold&"#"&$g_hTxtTSMinElixir&"#"&$g_hPicTSMinElixir&"#"& _
-				    $g_hTxtTSMinGoldPlusElixir&"#"&$g_hPicTSMinGPEGold&"#"&$g_hChkTSMeetDE&"#"&$g_hTxtTSMinDarkElixir&"#"&$g_hPicTSMinDarkElixir&"#"& _
-					$g_hLblAddTiles&"#"&$g_hLblAddTiles2&"#"&$g_hLblSWTTiles&"#"&$g_hTxtSWTTiles&"#"&$g_hLblTHadd&"#"&$g_hTxtTHaddTiles
-
    ;Attack
    $g_aGroupAttackDB = 	$g_hCmbDBAlgorithm&"#"&$g_hCmbDBSelectTroop&"#"&$g_hChkDBKingAttack&"#"&$g_hChkDBQueenAttack&"#"&$g_hChkDBWardenAttack&"#"&$g_hChkDBDropCC&"#"& _
 						$g_hChkDBLightSpell&"#"&$g_hChkDBHealSpell&"#"&$g_hChkDBRageSpell&"#"&$g_hChkDBJumpSpell&"#"&$g_hChkDBFreezeSpell&"#"&$g_hChkDBCloneSpell&"#"& _
@@ -109,17 +105,6 @@ Func InitializeControlVariables()
    $groupIMGAttackABSpell = $g_hPicABLightSpell&"#"&$g_hPicABHealSpell&"#"&$g_hPicABRageSpell&"#"&$g_hPicABJumpSpell&"#"&$g_hPicABFreezeSpell&"#"&$g_hPicABCloneSpell&"#"& _
 							$g_hPicABPoisonSpell&"#"&$g_hPicABEarthquakeSpell&"#"&$g_hPicABHasteSpell&"#"&$g_hPicABSkeletonSpell&"#"&$g_hPicABBatSpell
 
-   $groupAttackTS = $g_hGrpABAttack&"#"&$g_hLblAttackTHType&"#"&$g_hCmbAttackTHType&"#"&$g_hLblTSSelectTroop&"#"&$g_hCmbTSSelectTroop&"#"& _
-				    $g_hLblTSSelectSpecialTroop&"#"&$g_hChkTSKingAttack&"#"&$g_hChkTSQueenAttack&"#"&$g_hChkTSWardenAttack&"#"&$g_hChkTSDropCC&"#"&$g_hChkTSLightSpell&"#"& _
-				    $g_hChkTSHealSpell&"#"&$g_hChkTSRageSpell&"#"&$g_hChkTSJumpSpell&"#"&$g_hChkTSFreezeSpell&"#"&$g_hChkTSPoisonSpell&"#"&$g_hChkTSEarthquakeSpell&"#"& _
-				    $g_hChkTSHasteSpell
-   $groupAttackTSSpell = $g_hChkTSLightSpell&"#"&$g_hChkTSHealSpell&"#"&$g_hChkTSRageSpell&"#"&$g_hChkTSJumpSpell&"#"&$g_hChkTSFreezeSpell&"#"& _
-						 $g_hChkTSPoisonSpell&"#"&$g_hChkTSEarthquakeSpell&"#"&$g_hChkTSHasteSpell
-   $groupIMGAttackTS = $g_hPicTSKingAttack&"#"&$g_hPicTSQueenAttack&"#"&$g_hPicTSWardenAttack&"#"&$g_hPicTSDropCC&"#"&$g_hPicTSLightSpell&"#"& _
-					   $g_hPicTSHealSpell&"#"&$g_hPicTSRageSpell&"#"&$g_hPicTSJumpSpell&"#"&$g_hPicTSFreezeSpell&"#"&$g_hPicTSPoisonSpell&"#"&$g_hPicTSEarthquakeSpell&"#"& _
-					   $g_hPicTSHasteSpell
-   $groupIMGAttackTSSpell = $g_hPicTSLightSpell&"#"&$g_hPicTSHealSpell&"#"&$g_hPicTSRageSpell&"#"&$g_hPicTSJumpSpell&"#"&$g_hPicTSFreezeSpell&"#"& _
-						    $g_hPicTSPoisonSpell&"#"&$g_hPicTSEarthquakeSpell&"#"&$g_hPicTSHasteSpell
 
    $g_aGroupListPicMinTrophy = $g_hPicMinTrophies[$eLeagueUnranked]&"#"&$g_hPicMinTrophies[$eLeagueBronze]&"#"&$g_hPicMinTrophies[$eLeagueSilver]&"#"&$g_hPicMinTrophies[$eLeagueGold] &"#"& _
 				  $g_hPicMinTrophies[$eLeagueCrystal]&"#"&$g_hPicMinTrophies[$eLeagueMaster]&"#"&$g_hPicMinTrophies[$eLeagueChampion]&"#"&$g_hPicMinTrophies[$eLeagueTitan]&"#"& _
@@ -215,10 +200,9 @@ Func InitializeControlVariables()
    Dim $aTabControlsAttack = [$g_hGUI_ATTACK_TAB, $g_hGUI_ATTACK_TAB_ITEM1, $g_hGUI_ATTACK_TAB_ITEM2, $g_hGUI_ATTACK_TAB_ITEM3]
 
    Dim $aTabControlsArmy = [$g_hGUI_TRAINARMY_TAB, $g_hGUI_TRAINARMY_TAB_ITEM1, $g_hGUI_TRAINARMY_TAB_ITEM2, $g_hGUI_TRAINARMY_TAB_ITEM3, $g_hGUI_TRAINARMY_TAB_ITEM4, $g_hGUI_TRAINARMY_ARMY_TAB, $g_hGUI_TRAINARMY_ARMY_TAB_ITEM1, $g_hGUI_TRAINARMY_ARMY_TAB_ITEM2]
-   Dim $aTabControlsSearch = [$g_hGUI_SEARCH_TAB, $g_hGUI_SEARCH_TAB_ITEM1, $g_hGUI_SEARCH_TAB_ITEM2, $g_hGUI_SEARCH_TAB_ITEM3, $g_hGUI_SEARCH_TAB_ITEM4, $g_hGUI_SEARCH_TAB_ITEM5]
+   Dim $aTabControlsSearch = [$g_hGUI_SEARCH_TAB, $g_hGUI_SEARCH_TAB_ITEM1, $g_hGUI_SEARCH_TAB_ITEM2, $g_hGUI_SEARCH_TAB_ITEM3, $g_hGUI_SEARCH_TAB_ITEM4]
    Dim $aTabControlsDeadbase = [$g_hGUI_DEADBASE_TAB, $g_hGUI_DEADBASE_TAB_ITEM1, $g_hGUI_DEADBASE_TAB_ITEM2, $g_hGUI_DEADBASE_TAB_ITEM3, $g_hGUI_DEADBASE_TAB_ITEM4]
    Dim $aTabControlsActivebase = [$g_hGUI_ACTIVEBASE_TAB, $g_hGUI_ACTIVEBASE_TAB_ITEM1, $g_hGUI_ACTIVEBASE_TAB_ITEM2, $g_hGUI_ACTIVEBASE_TAB_ITEM3]
-   Dim $aTabControlsTHSnipe = [$g_hGUI_THSNIPE_TAB, $g_hGUI_THSNIPE_TAB_ITEM1, $g_hGUI_THSNIPE_TAB_ITEM2, $g_hGUI_THSNIPE_TAB_ITEM3]
    Dim $aTabControlsAttackOptions = [$g_hGUI_ATTACKOPTION_TAB, $g_hGUI_ATTACKOPTION_TAB_ITEM1, $g_hGUI_ATTACKOPTION_TAB_ITEM2, $g_hGUI_ATTACKOPTION_TAB_ITEM3,  $g_hGUI_ATTACKOPTION_TAB_ITEM4,  $g_hGUI_ATTACKOPTION_TAB_ITEM5]
    Dim $aTabControlsStrategies = [$g_hGUI_STRATEGIES_TAB, $g_hGUI_STRATEGIES_TAB_ITEM1, $g_hGUI_STRATEGIES_TAB_ITEM2]
 
@@ -312,9 +296,6 @@ Func InitializeControlVariables()
 		$oAlwaysEnabledControls($i) = 1
 	Next
 	For $i in $aTabControlsActivebase
-		$oAlwaysEnabledControls($i) = 1
-	Next
-	For $i in $aTabControlsTHSnipe
 		$oAlwaysEnabledControls($i) = 1
 	Next
 	For $i in $aTabControlsAttackOptions

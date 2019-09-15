@@ -24,10 +24,6 @@ Func CheckNeedOpenTrain($TimeBeforeTrain)
 		If $g_aiSearchCampsPct[$LB] < $QuickArmyCamps Then $QuickArmyCamps = $g_aiSearchCampsPct[$LB]
 		If $g_aiSearchCampsPct[$LB] - Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100) < $QuickArmyCamps Then $QuickArmyCamps = $g_aiSearchCampsPct[$LB] - Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100)
 	EndIf
-	If $g_abSearchCampsEnable[$TS] Then
-		If $g_aiSearchCampsPct[$TS] < $QuickArmyCamps Then $QuickArmyCamps = $g_aiSearchCampsPct[$TS]
-		If $g_aiSearchCampsPct[$TS] - Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100) < $QuickArmyCamps Then $QuickArmyCamps = $g_aiSearchCampsPct[$TS] - Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100)
-	EndIf
 
 	If $g_aiTimeTrain[0] = 0 Then $bToReturn = True
 

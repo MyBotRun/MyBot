@@ -14,8 +14,7 @@
 ; ===============================================================================================================================
 
 Func CollectFreeMagicItems($bTest = False)
-	If Not $g_bChkCollectFreeMagicItems Then Return
-	If Not $g_bRunState Then Return
+	If Not $g_bChkCollectFreeMagicItems Or Not $g_bRunState Then Return
 
 	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 	If $iLastTimeChecked[$g_iCurAccount] = @MDAY Then Return
@@ -38,7 +37,7 @@ Func CollectFreeMagicItems($bTest = False)
 	EndIf
 
 	; Check Daily Discounts Window
-	If Not QuickMIS("BC1", $g_sImgDailyDiscountWindow, 280, 175, 345, 210, True, False) Then
+	If Not QuickMIS("BC1", $g_sImgDailyDiscountWindow, 310, 175, 375, 210, True, False) Then
 		ClickP($aAway, 1, 0, "#0332") ;Click Away
 		Return
 	EndIf

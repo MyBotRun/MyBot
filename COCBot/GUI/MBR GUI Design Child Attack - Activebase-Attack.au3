@@ -23,10 +23,6 @@ Global $g_hGrpABAttack = 0, $g_hPicABKingAttack = 0, $g_hPicABQueenAttack = 0, $
 Global $g_hPicABLightSpell = 0, $g_hPicABHealSpell = 0, $g_hPicABRageSpell = 0, $g_hPicABJumpSpell = 0, $g_hPicABFreezeSpell = 0, $g_hPicABCloneSpell = 0, _
 	   $g_hPicABPoisonSpell = 0, $g_hPicABEarthquakeSpell = 0, $g_hPicABHasteSpell = 0, $g_hPicABSkeletonSpell = 0, $g_hPicABBatSpell = 0
 
-; TH Snipe
-Global $g_hChkTHSnipeBeforeLBEnable = 0, $g_hTxtTHSnipeBeforeLBTiles = 0, $g_hCmbTHSnipeBeforeLBScript = 0
-Global $g_hLblTHSnipeBeforeLBTiles = 0
-
 Global $g_hCmbABSiege = 0, $g_hCmbABWardenMode = 0
 
 Func CreateAttackSearchActiveBaseAttack()
@@ -191,33 +187,4 @@ Func CreateAttackSearchActiveBaseAttack()
 			$g_hChkABBatSpell = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
 				_GUICtrlSetTip(-1, $sTxtTip)
 		GUICtrlCreateGroup("", -99, -99, 1, 1)
-
-	Local $x = 10, $y = 308
-		GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Group_02", -1), $x - 5, $y - 20, 145, 84,$SS_CENTER)
-			$g_hChkTHSnipeBeforeLBEnable = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "ChkTHSnipeBeforeEnable", -1), $x, $y - 5, -1, -1)
-				_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "ChkTHSnipeBeforeEnable_Info_01", -1))
-				GUICtrlSetOnEvent(-1, "chkTHSnipeBeforeLBEnable")
-
-		$y += 16
-			$g_hLblTHSnipeBeforeLBTiles = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "LblTHSnipeBeforeTiles", -1) & ":", $x, $y + 3, 70, -1, $SS_RIGHT)
-				GUICtrlSetState(-1, $GUI_DISABLE)
-			$g_hTxtTHSnipeBeforeLBTiles = GUICtrlCreateInput("2", $x + 75, $y + 1, 30, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "LblTHSnipeBeforeTiles_Info_01", -1)
-				_GUICtrlSetTip(-1, $sTxtTip)
-				GUICtrlSetLimit(-1, 2)
-				GUICtrlSetState(-1, $GUI_DISABLE)
-			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTiles, $x + 107, $y + 1, 16, 16)
-				_GUICtrlSetTip(-1, $sTxtTip)
-
-		$y += 21
-			$g_hCmbTHSnipeBeforeLBScript = GUICtrlCreateCombo("", $x, $y, 130, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-				GUICtrlSetData(-1, "")
-				_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "CmbTHSnipeBeforeScript_Info_01", -1))
-				;GUICtrlSetOnEvent(-1, "cmbAttackTHType")
-				GUICtrlSetState(-1, $GUI_DISABLE)
-		LoadABSnipeAttacks()
-		_GUICtrlComboBox_SetCurSel($g_hCmbTHSnipeBeforeLBScript, _GUICtrlComboBox_FindStringExact($g_hCmbTHSnipeBeforeLBScript, "Bam"))
-		GUICtrlCreateGroup("", -99, -99, 1, 1)
-
-
 EndFunc   ;==>CreateAttackSearchActiveBaseAttack

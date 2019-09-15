@@ -27,12 +27,12 @@ Func TestSmartFarm()
 	CheckIfArmyIsReady()
 	ClickP($aAway, 2, 0, "") ;Click Away
 	If _Sleep(100) Then Return FuncReturn()
-	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
+	If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Then
 		If _Sleep(100) Then Return FuncReturn()
 		PrepareSearch()
 		If _Sleep(1000) Then Return FuncReturn()
 		VillageSearch()
-		If $g_bOutOfGold = True Then Return ; Check flag for enough gold to search
+		If $g_bOutOfGold Then Return ; Check flag for enough gold to search
 		If _Sleep(100) Then Return FuncReturn()
 	Else
 		SetLog("Your Army is not prepared, check the Attack/train options")
@@ -482,10 +482,7 @@ Func DebugImageSmartFarm($THdetails, $aIn, $aOut, $sTime, $BestSideToAttack, $re
 	_GDIPlus_PenDispose($hPen)
 	_GDIPlus_PenDispose($hPen2)
 	_GDIPlus_GraphicsDispose($hGraphic)
-	Setlog(" » Debug Image saved!")
-
-	; Open the Debug Directory
-	; Run("explorer.exe " & $subDirectory)
+	Setlog("Debug Image saved!")
 
 EndFunc   ;==>DebugImageSmartFarm
 
@@ -753,11 +750,11 @@ Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $SID
 							CheckHeroesHealth()
 						EndIf
 					Next
-					If _Sleep(SetSleep(0)) Then Return ; $g_aiAttackStdUnitDelay
+					If _Sleep(SetSleep(0)) Then Return
 				Next
 			EndIf
 		EndIf
-		If _Sleep(SetSleep(1)) Then Return ; $g_aiAttackStdWaveDelay
+		If _Sleep(SetSleep(1)) Then Return
 	Next
 
 	For $numWave = 0 To UBound($listListInfoDeployTroopPixel) - 1

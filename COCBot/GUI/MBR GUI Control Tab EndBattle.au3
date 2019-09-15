@@ -140,60 +140,6 @@ Func chkDESideEB()
 	EndIf
 EndFunc   ;==>chkDESideEB
 
-
-Func chkTSMeetDE()
-	_GUICtrlEdit_SetReadOnly($g_hTxtTSMinDarkElixir, GUICtrlRead($g_hChkTSMeetDE) = $GUI_CHECKED ? False : True)
-EndFunc   ;==>chkTSMeetDE
-#CS
-Func chkTSTimeStopAtk()
-	If GUICtrlRead($chkTSTimeStopAtk) = $GUI_CHECKED Then
-		$g_abStopAtkNoLoot1Enable[$TS] = True
-		GUICtrlSetState($txtTSTimeStopAtk, $GUI_ENABLE)
-		GUICtrlSetState($lblTSTimeStopAtk, $GUI_ENABLE)
-	Else
-		$g_abStopAtkNoLoot1Enable[$TS] = False
-		GUICtrlSetState($txtTSTimeStopAtk, $GUI_DISABLE)
-		GUICtrlSetState($lblTSTimeStopAtk, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkTSTimeStopAtk
-
-Func chkTSTimeStopAtk2()
-	If GUICtrlRead($chkTSTimeStopAtk2) = $GUI_CHECKED Then
-		$g_abStopAtkNoLoot2Enable[$TS] = True
-		GUICtrlSetState($txtTSTimeStopAtk2, $GUI_ENABLE)
-		GUICtrlSetState($lblTSTimeStopAtk2, $GUI_ENABLE)
-		GUICtrlSetState($txtTSMinGoldStopAtk2, $GUI_ENABLE)
-		GUICtrlSetState($txtTSMinElixirStopAtk2, $GUI_ENABLE)
-		GUICtrlSetState($g_hTxtTSMinDarkElixirStopAtk2, $GUI_ENABLE)
-		GUICtrlSetState($lblTSMinRerourcesAtk2, $GUI_ENABLE)
-	Else
-		$g_abStopAtkNoLoot2Enable[$TS] = False
-		GUICtrlSetState($txtTSTimeStopAtk2, $GUI_DISABLE)
-		GUICtrlSetState($lblTSTimeStopAtk2, $GUI_DISABLE)
-		GUICtrlSetState($txtTSMinGoldStopAtk2, $GUI_DISABLE)
-		GUICtrlSetState($txtTSMinElixirStopAtk2, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtTSMinDarkElixirStopAtk2, $GUI_DISABLE)
-		GUICtrlSetState($lblTSMinRerourcesAtk2, $GUI_DISABLE)
-
-	EndIf
-EndFunc   ;==>chkTSTimeStopAtk2
-#CE
-Func btnConfigureReplayShare()
-;~ 	OpenGUIReplayShare()
-EndFunc   ;==>btnConfigureReplayShare
-
 Func chkTakeLootSS()
 	GUICtrlSetState($g_hChkScreenshotLootInfo, GUICtrlRead($g_hChkTakeLootSS) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkTakeLootSS
-
-;Apply to switch Attack Standard after THSnipe End ==>
-Func chkTSActivateCamps2()
-	If GUICtrlRead($g_hChkTSActivateCamps2) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hLblTSArmyCamps2, $GUI_ENABLE)
-		GUICtrlSetState($g_hTxtTSArmyCamps2, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($g_hLblTSArmyCamps2, $GUI_DISABLE)
-		GUICtrlSetState($g_hTxtTSArmyCamps2, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkTSActivateCamps2
-;==> Apply to switch Attack Standard after THSnipe End

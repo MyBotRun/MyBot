@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: ClickOkay
 ; Description ...: checks for window with "Okay" button, and clicks it
@@ -32,7 +31,7 @@ Func ClickOkay($FeatureName = "Okay", $bCheckOneTime = False)
 		If $bCheckOneTime Then Return False ; enable external control of loop count or follow on actions, return false if not clicked
 		If $i > 5 Then
 			SetLog("Can not find button for " & $FeatureName & ", giving up", $COLOR_ERROR)
-			If $g_bDebugImageSave Then DebugImageSave($FeatureName & "_ButtonCheck_")
+			If $g_bDebugImageSave Then SaveDebugImage($FeatureName & "_ButtonCheck_")
 			SetError(1, @extended, False)
 			Return
 		EndIf
