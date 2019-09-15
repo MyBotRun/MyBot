@@ -19,5 +19,5 @@
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_On
 
-Global $g_sBotVersion = "v7.7.8 b7" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also used in Checkversion()
+Global $g_sBotVersion = "v7.7.8" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it is also used in Checkversion()
 
