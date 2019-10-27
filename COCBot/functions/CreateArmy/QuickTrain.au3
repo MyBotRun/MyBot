@@ -28,43 +28,43 @@ Func QuickTrain()
 		If _Sleep(250) Then Return
 	EndIf
 
-	Local $Step = 1
+	Local $iStep = 1
 	While 1
-		Local $TroopCamp = GetCurrentArmy(48, 160)
-		SetLog("Checking Troop tab: " & $TroopCamp[0] & "/" & $TroopCamp[1] * 2)
-		If $TroopCamp[1] = 0 Then ExitLoop
+		Local $avTroopCamp = GetCurrentArmy(48, 160)
+		SetLog("Checking Troop tab: " & $avTroopCamp[0] & "/" & $avTroopCamp[1] * 2)
+		If $avTroopCamp[1] = 0 Then ExitLoop
 
-		If $TroopCamp[0] <= 0 Then ; 0/280
+		If $avTroopCamp[0] <= 0 Then ; 0/280
 			$iTroopStatus = 0
 			If $bDebug Then SetLog("No troop", $COLOR_DEBUG)
 
-		ElseIf $TroopCamp[0] < $TroopCamp[1] Then ; 1-279/280
+		ElseIf $avTroopCamp[0] < $avTroopCamp[1] Then ; 1-279/280
 			If Not IsQueueEmpty("Troops", True, False) Then DeleteQueued("Troops")
 			$bNeedRecheckTroop = True
 			If $bDebug Then SetLog("$bNeedRecheckTroop for at Army Tab: " & $bNeedRecheckTroop, $COLOR_DEBUG)
 
-		ElseIf $TroopCamp[0] = $TroopCamp[1] Then ; 280/280
+		ElseIf $avTroopCamp[0] = $avTroopCamp[1] Then ; 280/280
 			$iTroopStatus = 1
 			If $bDebug Then SetLog($g_bDoubleTrain ? "ready to make double troop training" : "troops are training perfectly", $COLOR_DEBUG)
 
-		ElseIf $TroopCamp[0] <= $TroopCamp[1] * 1.5 Then ; 281-420/560
+		ElseIf $avTroopCamp[0] <= $avTroopCamp[1] * 1.5 Then ; 281-420/560
 			RemoveExtraTroopsQueue()
-			If $bDebug Then SetLog($Step & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
+			If $bDebug Then SetLog($iStep & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
 			If _Sleep(250) Then Return
-			$Step += 1
-			If $Step = 6 Then ExitLoop
+			$iStep += 1
+			If $iStep = 6 Then ExitLoop
 			ContinueLoop
 
-		ElseIf $TroopCamp[0] <= $TroopCamp[1] * 2 Then ; 421-560/560
-			If CheckQueueTroopAndTrainRemain($TroopCamp, $bDebug) Then
+		ElseIf $avTroopCamp[0] <= $avTroopCamp[1] * 2 Then ; 421-560/560
+			If CheckQueueTroopAndTrainRemain($avTroopCamp, $bDebug) Then
 				$iTroopStatus = 2
-				If $bDebug Then SetLog($Step & ". CheckQueueTroopAndTrainRemain()", $COLOR_DEBUG)
+				If $bDebug Then SetLog($iStep & ". CheckQueueTroopAndTrainRemain()", $COLOR_DEBUG)
 			Else
 				RemoveExtraTroopsQueue()
-				If $bDebug Then SetLog($Step & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
+				If $bDebug Then SetLog($iStep & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
 				If _Sleep(250) Then Return
-				$Step += 1
-				If $Step = 6 Then ExitLoop
+				$iStep += 1
+				If $iStep = 6 Then ExitLoop
 				ContinueLoop
 			EndIf
 		EndIf
@@ -218,7 +218,7 @@ Func CheckQuickTrainTroop()
 	If Not OpenQuickTrainTab(False, "CheckQuickTrainTroop()") Then Return
 	If _Sleep(500) Then Return
 
-	SetLog("Reading troops & spells in quick train army...")
+	SetLog("Reading troops & spells in quick train army")
 
 	; reset troops/spells in quick army
 	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -231,7 +231,7 @@ Func CheckQuickTrainTroop()
 
 	Local $iTroopCamp = 0, $iSpellCamp = 0, $sLog = ""
 
-	Local $aEditButton[3][4] = [[808, 300, 0xd2f17a, 20], [808, 418, 0xd0f078, 20], [808, 536, 0xccee74, 20]] ; green
+	Local $aEditButton[3][4] = [[808, 292, 0xd2f17a, 20], [808, 400, 0xcff077, 20], [808, 505, 0xd6f37e, 20]] ; green
 	Local $aSaveButton[4] = [808, 300, 0xdcf684, 20] ; green
 	Local $aCancelButton[4] = [650, 300, 0xff8c91, 20] ; red
 	Local $aRemoveButton[4] = [535, 300, 0xff8f94, 20] ; red
@@ -360,7 +360,7 @@ Func CheckQuickTrainTroop()
 			If _Sleep(1000) Then Return
 
 		Else
-			SetLog("Cannot find 'Edit' button for Army " & $i + 1, $COLOR_ERROR)
+			SetLog('Cannot find "Edit" button for Army ' & $i + 1, $COLOR_ERROR)
 			$bResult = False
 		EndIf
 	Next

@@ -30,7 +30,6 @@ Func UpdateStats()
     Static $iOldNbrOfWallsUppedGold, $iOldNbrOfWallsUppedElixir, $iOldNbrOfBuildingsUppedGold, $iOldNbrOfBuildingsUppedElixir, $iOldNbrOfHeroesUpped ; number of wall, building, hero upgrades with gold, elixir, delixir
     Static $iOldSearchCost, $iOldTrainCostElixir, $iOldTrainCostDElixir ; search and train troops cost
     Static $iOldNbrOfOoS ; number of Out of Sync occurred
-    Static $iOldNbrOfTHSnipeFails, $iOldNbrOfTHSnipeSuccess ; number of fails and success while TH Sniping
     Static $iOldGoldFromMines, $iOldElixirFromCollectors, $iOldDElixirFromDrills ; number of resources gain by collecting mines, collectors, drills
     Static $iOldAttackedCount, $iOldAttackedVillageCount[$g_iModeCount + 1] ; number of attack villages for DB, LB, TB, TS
     Static $iOldTotalGoldGain[$g_iModeCount + 1], $iOldTotalElixirGain[$g_iModeCount + 1], $iOldTotalDarkGain[$g_iModeCount + 1], $iOldTotalTrophyGain[$g_iModeCount + 1] ; total resource gains for DB, LB, TB, TS
@@ -328,8 +327,6 @@ Func ResetStats()
 	$g_iTrainCostGold = 0
 	$g_iTrainCostDElixir = 0
 	$g_iNbrOfOoS = 0
-	$g_iNbrOfTHSnipeFails = 0
-	$g_iNbrOfTHSnipeSuccess = 0
 	$g_iGoldFromMines = 0
 	$g_iElixirFromCollectors = 0
 	$g_iDElixirFromDrills = 0

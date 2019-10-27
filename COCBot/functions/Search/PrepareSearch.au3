@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: PrepareSearch
 ; Description ...: Goes into searching for a match, breaks shield if it has to
@@ -106,16 +105,21 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 				ElseIf StringInStr($sButtonState, "Find", 0) > 0 Then
 					Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
 					ClickP($aCoordinates, 1, 0, "#0149")
-					If _Sleep(500) Then Return
-					Local $aConfirmAttackButton = findButton("ConfirmAttack", Default, 1, True)
-					If IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) = 2 Then
-						ClickP($aConfirmAttackButton, 1, 0)
-					Else
-						SetLog("Couldn't find the Confirm Attack Button!", $COLOR_ERROR)
+					Local $aConfirmAttackButton
+					For $i = 0 To 10
+						If _Sleep(200) Then Return
+						$aConfirmAttackButton = findButton("ConfirmAttack", Default, 1, True)
+						If IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) = 2 Then
+							ClickP($aConfirmAttackButton, 1, 0)
+							ExitLoop
+						EndIf
+					Next
+					If Not IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) < 2 Then
+						SetLog("Couldn't find the confirm attack button!", $COLOR_ERROR)
 						Return
 					EndIf
 				ElseIf StringInStr($sButtonState, "Sign", 0) > 0 Then
-					SetLog("Sign-up to Legend League...", $COLOR_INFO)
+					SetLog("Sign-up to Legend League", $COLOR_INFO)
 					Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
 					ClickP($aCoordinates, 1, 0, "#0000")
 					If _Sleep(1000) Then Return

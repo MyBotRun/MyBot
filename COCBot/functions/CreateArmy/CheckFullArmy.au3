@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: CheckOverviewFullArmy
 ; Description ...: Checks if the army is full on the training overview screen

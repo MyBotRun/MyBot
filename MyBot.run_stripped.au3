@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.8)
+#pragma compile(FileVersion, 7.7.9)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.8"
+Global $g_sBotVersion = "v7.7.9"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -6867,10 +6867,8 @@ Global Const $DELAYCHECKARMYCAMP6 = 10
 Global Const $DELAYCHECKFULLARMY1 = 100
 Global Const $DELAYCHECKFULLARMY2 = 200
 Global Const $DELAYCHECKFULLARMY3 = 500
-Global Const $DELAYCOLLECT1 = 100
 Global Const $DELAYCOLLECT2 = 250
 Global Const $DELAYCOLLECT3 = 500
-Global Const $DELAYDONATECC1 = 200
 Global Const $DELAYDONATECC2 = 250
 Global Const $DELAYDONATECC3 = 50
 Global Const $DELAYDONATECC4 = 1250
@@ -7076,6 +7074,7 @@ Global $aIsMaintenance[4] = [350, 273 + $g_iMidOffsetY, 0x33B5E5, 20]
 Global $aReloadButton[4] = [443, 408 + $g_iMidOffsetY, 0x282828, 10]
 Global $aIsAttackShield[4] = [250, 415 + $g_iMidOffsetY, 0xE8E8E0, 10]
 Global $aAway[2] = [175, 10]
+Global $aAway2[2] = [400, 10]
 Global $aNoShield[4] = [448, 20, 0x43484B, 15]
 Global $aHaveShield[4] = [455, 19, 0xF0F8FB, 15]
 Global $aHavePerGuard[4] = [455, 19, 0x10100D, 15]
@@ -7090,10 +7089,6 @@ Global $aEndFightSceneAvl[4] = [241, 196 + $g_iMidOffsetY, 0xFFF090, 20]
 Global $aEndFightSceneReportGold = $aEndFightSceneAvl
 Global $aReturnHomeButton[4] = [376, 567 + $g_iMidOffsetY, 0x60AC10, 20]
 Global $aChatTab[4] = [331, 325 + $g_iMidOffsetY, 0xF0951D, 20]
-Global $aChatTab2[4] = [331, 330 + $g_iMidOffsetY, 0xF0951D, 20]
-Global $aChatTab3[4] = [331, 335 + $g_iMidOffsetY, 0xF0951D, 20]
-Global $aOpenChat[2] = [19, 349 + $g_iMidOffsetY]
-Global $aClanTab[2] = [189, 24]
 Global $aArmyCampSize[2] = [110, 136 + $g_iMidOffsetY]
 Global $aArmySpellSize[2] = [99, 284 + $g_iMidOffsetY]
 Global $g_aArmyCCSpellSize[2] = [473, 438 + $g_iMidOffsetY]
@@ -7103,7 +7098,6 @@ Global $aBuildersDigits[2] = [324, 21]
 Global $aBuildersDigitsBuilderBase[2] = [414, 21]
 Global $aTrophies[2] = [69, 84]
 Global $aNoCloudsAttack[4] = [25, 606, 0xCD0D0D, 15]
-Global $aMessageButton[2] = [38, 143]
 Global $aArmyTrainButton[2] = [40, 525 + $g_iBottomOffsetY]
 Global $aWonOneStar[4] = [714, 538 + $g_iBottomOffsetY, 0xC0C8C0, 20]
 Global $aWonTwoStar[4] = [739, 538 + $g_iBottomOffsetY, 0xC0C8C0, 20]
@@ -7146,17 +7140,11 @@ Global $aDoubRowAttackBar[4] = [68, 486, 0xFC5D64, 20]
 Global $aTroopIsDeployed[4] = [0, 0, 0x404040, 20]
 Global Const $aIsAttackPage[4] = [56, 548 + $g_iBottomOffsetY, 0xcf0d0e, 20]
 Global $aRequestTroopsAO[6] = [761, 592, 0x565656, 0x71BA2F, 0xFFFFFE, 25]
-Global Const $aCloseChat[4] = [331, 330 + $g_iMidOffsetY, 0xF0951D, 20]
-Global Const $aChatDonateBtnColors[4][4] = [[0x0d0d0d, 0, -4, 20], [0xdaf582, 10, 0, 20], [0xcdef75, 10, 5, 20], [0xFFFFFF, 24, 9, 10]]
 Global Const $aAtkRprtDECheck[4] = [459, 372 + $g_iMidOffsetY, 0x433350, 20]
 Global Const $aAtkRprtTrophyCheck[4] = [327, 189 + $g_iMidOffsetY, 0x3B321C, 30]
 Global Const $aAtkRprtDECheck2[4] = [678, 418 + $g_iMidOffsetY, 0x030000, 30]
 Global Const $aRtnHomeCheck1[4] = [363, 548 + $g_iMidOffsetY, 0x78C11C, 20]
 Global Const $aRtnHomeCheck2[4] = [497, 548 + $g_iMidOffsetY, 0x79C326, 20]
-Global Const $aAttackLogPage[4] = [775, 125, 0xEB1115, 40]
-Global Const $aAttackLogAttackTab[4] = [437, 114, 0xF0F4F0, 30]
-Global Const $aBlueShareReplayButton[4] = [500, 156 + $g_iMidOffsetY, 0x70D4E8, 30]
-Global Const $aGrayShareReplayButton[4] = [500, 156 + $g_iMidOffsetY, 0xBBBBBB, 30]
 Global Const $aProfileReport[4] = [619, 344, 0x4E4D79, 20]
 Global $aArmyTrainButtonRND[4] = [20, 540 + $g_iMidOffsetY, 55, 570 + $g_iMidOffsetY]
 Global $NextBtnRND[4] = [710, 530 + $g_iMidOffsetY, 830, 570 + $g_iMidOffsetY]
@@ -7236,7 +7224,7 @@ Global Const $g_sImgGfxError = @ScriptDir & "\imgxml\other\GfxError*"
 Global Const $g_sImgError = @ScriptDir & "\imgxml\other\Error[[Android]]*"
 Global Const $g_sImgOutOfSync = @ScriptDir & "\imgxml\other\Oos[[Android]]*"
 Global $g_sImgCollectRessources = @ScriptDir & "\imgxml\Resources\Collect"
-Global $g_sImgCollectLootCart = @ScriptDir & "\imgxml\Resources\LootCart\LootCart_0_85.xml"
+Global $g_sImgCollectLootCart = @ScriptDir & "\imgxml\Resources\CollectLootCart*"
 Global $g_sImgBoat = @ScriptDir & "\imgxml\Boat\BoatNormalVillage_0_89.xml"
 Global $g_sImgZoomOutDir = @ScriptDir & "\imgxml\village\NormalVillage\"
 Global $g_sImgCheckWallDir = @ScriptDir & "\imgxml\Walls"
@@ -7248,6 +7236,7 @@ Global $g_sImgCollectReward = @ScriptDir & "\imgxml\Resources\ClaimReward"
 Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
 Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscount"
 Global Const $g_sImgUpgradeWhiteZero = @ScriptDir & "\imgxml\Main Village\Upgrade\WhiteZero*"
+Global Const $g_sImgDonateCC = @ScriptDir & "\imgxml\DonateCC\"
 Global $g_sImgCollectRessourcesBB = @ScriptDir & "\imgxml\Resources\BuildersBase\Collect"
 Global $g_sImgBoatBB = @ScriptDir & "\imgxml\Boat\BoatBuilderBase_0_89.xml"
 Global $g_sImgZoomOutDirBB = @ScriptDir & "\imgxml\village\BuilderBase\"
@@ -40581,38 +40570,38 @@ If Not $g_bDonationEnabled Or Not $g_bChkDonate Or Not MakingDonatedTroops("Troo
 If Not OpenTroopsTab(False, "QuickTrain()") Then Return
 If _Sleep(250) Then Return
 EndIf
-Local $Step = 1
+Local $iStep = 1
 While 1
-Local $TroopCamp = GetCurrentArmy(48, 160)
-SetLog("Checking Troop tab: " & $TroopCamp[0] & "/" & $TroopCamp[1] * 2)
-If $TroopCamp[1] = 0 Then ExitLoop
-If $TroopCamp[0] <= 0 Then
+Local $avTroopCamp = GetCurrentArmy(48, 160)
+SetLog("Checking Troop tab: " & $avTroopCamp[0] & "/" & $avTroopCamp[1] * 2)
+If $avTroopCamp[1] = 0 Then ExitLoop
+If $avTroopCamp[0] <= 0 Then
 $iTroopStatus = 0
 If $bDebug Then SetLog("No troop", $COLOR_DEBUG)
-ElseIf $TroopCamp[0] < $TroopCamp[1] Then
+ElseIf $avTroopCamp[0] < $avTroopCamp[1] Then
 If Not IsQueueEmpty("Troops", True, False) Then DeleteQueued("Troops")
 $bNeedRecheckTroop = True
 If $bDebug Then SetLog("$bNeedRecheckTroop for at Army Tab: " & $bNeedRecheckTroop, $COLOR_DEBUG)
-ElseIf $TroopCamp[0] = $TroopCamp[1] Then
+ElseIf $avTroopCamp[0] = $avTroopCamp[1] Then
 $iTroopStatus = 1
 If $bDebug Then SetLog($g_bDoubleTrain ? "ready to make double troop training" : "troops are training perfectly", $COLOR_DEBUG)
-ElseIf $TroopCamp[0] <= $TroopCamp[1] * 1.5 Then
+ElseIf $avTroopCamp[0] <= $avTroopCamp[1] * 1.5 Then
 RemoveExtraTroopsQueue()
-If $bDebug Then SetLog($Step & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
+If $bDebug Then SetLog($iStep & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
 If _Sleep(250) Then Return
-$Step += 1
-If $Step = 6 Then ExitLoop
+$iStep += 1
+If $iStep = 6 Then ExitLoop
 ContinueLoop
-ElseIf $TroopCamp[0] <= $TroopCamp[1] * 2 Then
-If CheckQueueTroopAndTrainRemain($TroopCamp, $bDebug) Then
+ElseIf $avTroopCamp[0] <= $avTroopCamp[1] * 2 Then
+If CheckQueueTroopAndTrainRemain($avTroopCamp, $bDebug) Then
 $iTroopStatus = 2
-If $bDebug Then SetLog($Step & ". CheckQueueTroopAndTrainRemain()", $COLOR_DEBUG)
+If $bDebug Then SetLog($iStep & ". CheckQueueTroopAndTrainRemain()", $COLOR_DEBUG)
 Else
 RemoveExtraTroopsQueue()
-If $bDebug Then SetLog($Step & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
+If $bDebug Then SetLog($iStep & ". RemoveExtraTroopsQueue()", $COLOR_DEBUG)
 If _Sleep(250) Then Return
-$Step += 1
-If $Step = 6 Then ExitLoop
+$iStep += 1
+If $iStep = 6 Then ExitLoop
 ContinueLoop
 EndIf
 EndIf
@@ -40740,7 +40729,7 @@ If Not OpenArmyOverview(False, "CheckQuickTrainTroop()") Then Return
 If _Sleep(250) Then Return
 If Not OpenQuickTrainTab(False, "CheckQuickTrainTroop()") Then Return
 If _Sleep(500) Then Return
-SetLog("Reading troops & spells in quick train army...")
+SetLog("Reading troops & spells in quick train army")
 Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 $g_aiArmyQuickTroops = $aEmptyTroop
@@ -40749,7 +40738,7 @@ $g_iTotalQuickTroops = 0
 $g_iTotalQuickSpells = 0
 $g_bQuickArmyMixed = False
 Local $iTroopCamp = 0, $iSpellCamp = 0, $sLog = ""
-Local $aEditButton[3][4] = [[808, 300, 0xd2f17a, 20], [808, 418, 0xd0f078, 20], [808, 536, 0xccee74, 20]]
+Local $aEditButton[3][4] = [[808, 292, 0xd2f17a, 20], [808, 400, 0xcff077, 20], [808, 505, 0xd6f37e, 20]]
 Local $aSaveButton[4] = [808, 300, 0xdcf684, 20]
 Local $aCancelButton[4] = [650, 300, 0xff8c91, 20]
 For $i = 0 To UBound($g_bQuickTrainArmy) - 1
@@ -40854,7 +40843,7 @@ $sLog &= $i + 1 & " "
 ClickP($g_abUseInGameArmy[$i] ? $aCancelButton : $aSaveButton)
 If _Sleep(1000) Then Return
 Else
-SetLog("Cannot find 'Edit' button for Army " & $i + 1, $COLOR_ERROR)
+SetLog('Cannot find "Edit" button for Army ' & $i + 1, $COLOR_ERROR)
 $bResult = False
 EndIf
 Next
@@ -42432,11 +42421,10 @@ ClickP($aAway, 1, 300, "#0329")
 EndFunc
 Func ClickRemoveObstacle()
 Local $aiButton = findButton("RemoveObstacle", Default, 1, True)
-If IsArray($aiButton) And UBound($aiButton) = 2 Then
-If IsMainPage() Then
+If IsArray($aiButton) And UBound($aiButton) >= 2 Then
+SetDebugLog("Remove Button found! Clicking it at X: " & $aiButton[0] & ", Y: " & $aiButton[1], $COLOR_DEBUG1)
 ClickP($aiButton)
 Return True
-EndIf
 Else
 SetLog("Cannot find Remove Button", $COLOR_ERROR)
 Return False
@@ -42547,6 +42535,15 @@ If $g_bDebugSetlog Then SetDebugLog($funcName & " - Imgloc  Error: Not an Array 
 Return True
 EndIf
 EndFunc
+Func ClickB($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $iDelay = 100)
+Local $aiButton = findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath, 1, True)
+If IsArray($aiButton) And UBound($aiButton) >= 2 Then
+ClickP($aiButton, 1)
+If _Sleep($iDelay) Then Return
+Return True
+EndIf
+Return False
+EndFunc
 Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $maxReturnPoints = 1, $bForceCapture = True)
 If $buttonTileArrayOrPatternOrFullPath = Default Then $buttonTileArrayOrPatternOrFullPath = $sButtonName & "*"
 Local $error, $extError
@@ -42605,7 +42602,7 @@ If $maxReturnPoints = 1 Then
 Return StringSplit($aCoords[1], ",", $STR_NOCOUNT)
 ElseIf IsArray($aCoords) Then
 Local $aReturnResult[0][2]
-For $i = 1 To Ubound($aCoords) - 1
+For $i = 1 To UBound($aCoords) - 1
 _ArrayAdd($aReturnResult, $aCoords[$i], 0, ",", @CRLF, $ARRAYFILL_FORCE_NUMBER)
 Next
 Return $aReturnResult
@@ -42626,6 +42623,10 @@ Case "AttackButton"
 $btnDiamond = GetDiamondFromRect("0,600,160,720")
 Case "OpenTrainWindow"
 $btnDiamond = "15,560|65,560|65,610|15,610"
+Case "TrashEvent"
+$btnDiamond = GetDiamondFromRect("100,200,840,540")
+Case "EventFailed"
+$btnDiamond = GetDiamondFromRect("230,130,777,560")
 Case "OK"
 $btnDiamond = "440,395|587,395|587,460|440,460"
 Case "CANCEL"
@@ -42642,10 +42643,8 @@ Case "EnterShop"
 $btnDiamond = GetDiamondFromRect("359,392(148,66)")
 Case "EndBattleSurrender"
 $btnDiamond = "12,577|125,577|125,615|12,615"
-Case "ExpandChat"
-$btnDiamond = "2,330|35,350|35,410|2,430"
-Case "CollapseChat"
-$btnDiamond = "315,334|350,350|350,410|315,430"
+Case "ClanChat"
+$btnDiamond = GetDiamondFromRect("0,300,400,450")
 Case "ChatOpenRequestPage"
 $btnDiamond = "5,688|65,688|65,615|5,725"
 Case "Profile"
@@ -42664,6 +42663,10 @@ Case "BoostBarrack", "BarrackBoosted"
 $btnDiamond = GetDiamondFromRect("630,280,850,360")
 Case "ArmyTab", "TrainTroopsTab", "BrewSpellsTab", "BuildSiegeMachinesTab", "QuickTrainTab"
 $btnDiamond = GetDiamondFromRect("18,100,800,150")
+Case "MessagesButton"
+$btnDiamond = GetDiamondFromRect("0,0,250,250")
+Case "AttackLogTab", "ShareReplayButton"
+$btnDiamond = GetDiamondFromRect("280,85,600,300")
 Case Else
 $btnDiamond = "FV"
 EndSwitch
@@ -42887,6 +42890,19 @@ $DiamdValues[2] = $Ex & "," & $Ey
 $DiamdValues[3] = $X & "," & $Ey
 $returnvalue = $DiamdValues[0] & "|" & $DiamdValues[1] & "|" & $DiamdValues[2] & "|" & $DiamdValues[3]
 Return $returnvalue
+EndFunc
+Func GetDiamondFromArray($aRectArray)
+If UBound($aRectArray, 1) < 4 Then
+SetDebugLog("GetDiamondFromArray: Bad Input Array!", $COLOR_ERROR)
+Return ""
+EndIf
+Local $iX = Number($aRectArray[0]), $iY = Number($aRectArray[1])
+Local $iEndX = Number($aRectArray[2]), $iEndY = Number($aRectArray[3])
+If $iEndY <= $iY Then $iEndY += $iY
+If $iEndX <= $iX Then $iEndX += $iX
+Local $sReturnDiamond = ""
+$sReturnDiamond = $iX & "," & $iY & "|" & $iEndX & "," & $iY & "|" & $iEndX & "," & $iEndY & "|" & $iX & "," & $iEndY
+Return $sReturnDiamond
 EndFunc
 Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = True, $AndroidTag = Default)
 If $g_bDebugSetlog Then SetDebugLog("FindImageInPlace : > " & $sImageName & " - " & $sImageTile & " - " & $place, $COLOR_INFO)
@@ -54160,16 +54176,21 @@ Return
 ElseIf StringInStr($sButtonState, "Find", 0) > 0 Then
 Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
 ClickP($aCoordinates, 1, 0, "#0149")
-If _Sleep(500) Then Return
-Local $aConfirmAttackButton = findButton("ConfirmAttack", Default, 1, True)
+Local $aConfirmAttackButton
+For $i = 0 To 10
+If _Sleep(200) Then Return
+$aConfirmAttackButton = findButton("ConfirmAttack", Default, 1, True)
 If IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) = 2 Then
 ClickP($aConfirmAttackButton, 1, 0)
-Else
-SetLog("Couldn't find the Confirm Attack Button!", $COLOR_ERROR)
+ExitLoop
+EndIf
+Next
+If Not IsArray($aConfirmAttackButton) And UBound($aConfirmAttackButton, 1) < 2 Then
+SetLog("Couldn't find the confirm attack button!", $COLOR_ERROR)
 Return
 EndIf
 ElseIf StringInStr($sButtonState, "Sign", 0) > 0 Then
-SetLog("Sign-up to Legend League...", $COLOR_INFO)
+SetLog("Sign-up to Legend League", $COLOR_INFO)
 Local $aCoordinates = StringSplit($avAttackButtonSubResult[1], ",", $STR_NOCOUNT)
 ClickP($aCoordinates, 1, 0, "#0000")
 If _Sleep(1000) Then Return
@@ -54682,7 +54703,7 @@ $g_iTHx = 0
 $g_iTHy = 0
 Return ""
 EndFunc
-Func IsSearchModeActive($g_iMatchMode, $nocheckHeroes = False, $bNoLog = False)
+Func IsSearchModeActive($g_iMatchMode, $bDontCheckHeroes = False, $bNoLog = False)
 Local $currentSearch = $g_iSearchCount + 1
 Local $currentTropies = $g_aiCurrentLoot[$eLootTrophy]
 Local $currentArmyCamps = Int($g_CurrentCampUtilization / $g_iTotalCampSpace * 100)
@@ -54690,9 +54711,9 @@ Local $bMatchModeEnabled = False
 Local $checkSearches = Int($currentSearch) >= Int($g_aiSearchSearchesMin[$g_iMatchMode]) And Int($currentSearch) <= Int($g_aiSearchSearchesMax[$g_iMatchMode]) And $g_abSearchSearchesEnable[$g_iMatchMode]
 Local $checkTropies = Int($currentTropies) >= Int($g_aiSearchTrophiesMin[$g_iMatchMode]) And Int($currentTropies) <= Int($g_aiSearchTrophiesMax[$g_iMatchMode]) And $g_abSearchTropiesEnable[$g_iMatchMode]
 Local $checkArmyCamps = Int($currentArmyCamps) >= Int($g_aiSearchCampsPct[$g_iMatchMode]) And $g_abSearchCampsEnable[$g_iMatchMode]
-Local $checkHeroes = Not($g_aiSearchHeroWaitEnable[$g_iMatchMode] > $eHeroNone And(BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $g_aiSearchHeroWaitEnable[$g_iMatchMode], $g_iHeroAvailable) = $g_aiSearchHeroWaitEnable[$g_iMatchMode]) = False) Or $nocheckHeroes
-If $checkHeroes = False Then
-If Abs($g_aiSearchHeroWaitEnable[$g_iMatchMode] - $g_iHeroUpgradingBit) <= $eHeroNone Then $checkHeroes = True
+Local $bCheckHeroes = Not($g_aiSearchHeroWaitEnable[$g_iMatchMode] > $eHeroNone And(BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $g_aiSearchHeroWaitEnable[$g_iMatchMode], $g_iHeroAvailable) = $g_aiSearchHeroWaitEnable[$g_iMatchMode]) = False) Or $bDontCheckHeroes
+If Not $bCheckHeroes Then
+If Abs($g_aiSearchHeroWaitEnable[$g_iMatchMode] - $g_iHeroUpgradingBit) <= $eHeroNone Then $bCheckHeroes = True
 EndIf
 Local $g_bCheckSpells =($g_bFullArmySpells And $g_abSearchSpellsWaitEnable[$g_iMatchMode]) Or $g_abSearchSpellsWaitEnable[$g_iMatchMode] = False
 Local $totalSpellsToBrew = 0
@@ -54725,9 +54746,9 @@ Else
 $bcheckSiege = True
 EndIf
 If Not $bMatchModeEnabled Then Return False
-If $checkHeroes And $g_bCheckSpells And $bcheckSiege Then
+If $bCheckHeroes And $g_bCheckSpells And $bcheckSiege Then
 If($checkSearches Or $g_abSearchSearchesEnable[$g_iMatchMode] = False) And($checkTropies Or $g_abSearchTropiesEnable[$g_iMatchMode] = False) And($checkArmyCamps Or $g_abSearchCampsEnable[$g_iMatchMode] = False) Then
-If $g_bDebugSetlog And Not $bNoLog Then SetLog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies & ",$checkArmyCamps=" & $checkArmyCamps & ",$checkHeroes=" & $checkHeroes & ",$g_bCheckSpells=" & $g_bCheckSpells & ",$bcheckSiege=" & $bcheckSiege & ")", $COLOR_INFO)
+If $g_bDebugSetlog And Not $bNoLog Then SetLog($g_asModeText[$g_iMatchMode] & " active! ($checkSearches=" & $checkSearches & ",$checkTropies=" & $checkTropies & ",$checkArmyCamps=" & $checkArmyCamps & ",$bCheckHeroes=" & $bCheckHeroes & ",$g_bCheckSpells=" & $g_bCheckSpells & ",$bcheckSiege=" & $bcheckSiege & ")", $COLOR_INFO)
 Return True
 Else
 If $g_bDebugSetlog And Not $bNoLog Then
@@ -54739,7 +54760,7 @@ If $checkTropies Then $txttropies = "Success"
 Local $txtArmyCamp = "Fail"
 If $checkArmyCamps Then $txtArmyCamp = "Success"
 Local $txtHeroes = "Fail"
-If $checkHeroes Then $txtHeroes = "Success"
+If $bCheckHeroes Then $txtHeroes = "Success"
 If $g_abSearchSearchesEnable[$g_iMatchMode] Then SetLog("searches range: " & $g_aiSearchSearchesMin[$g_iMatchMode] & "-" & $g_aiSearchSearchesMax[$g_iMatchMode] & "  actual value: " & $currentSearch & " - " & $txtsearches, $COLOR_INFO)
 If $g_abSearchTropiesEnable[$g_iMatchMode] Then SetLog("tropies range: " & $g_aiSearchTrophiesMin[$g_iMatchMode] & "-" & $g_aiSearchTrophiesMax[$g_iMatchMode] & "  actual value: " & $currentTropies & " | " & $txttropies, $COLOR_INFO)
 If $g_abSearchCampsEnable[$g_iMatchMode] Then SetLog("Army camps % range >=: " & $g_aiSearchCampsPct[$g_iMatchMode] & " actual value: " & $currentArmyCamps & " | " & $txtArmyCamp, $COLOR_INFO)
@@ -54751,7 +54772,7 @@ If $g_abSearchSiegeWaitEnable[$g_iMatchMode] Then SetLog("Siege status: " & $bch
 EndIf
 Return False
 EndIf
-ElseIf $checkHeroes = 0 Then
+ElseIf Not $bCheckHeroes Then
 If $g_bDebugSetlog And Not $bNoLog Then SetLog("Heroes not ready", $COLOR_DEBUG)
 Return False
 ElseIf Not $bcheckSiege Then
@@ -55948,40 +55969,17 @@ EndFunc
 Func CollectLootCart()
 If Not $g_abNotNeedAllTime[0] Then Return
 SetLog("Searching for a Loot Cart", $COLOR_INFO)
-Local $aLootCart = decodeSingleCoord(findImage("LootCart", $g_sImgCollectLootCart, "ECD", 1, True))
+Local $aLootCart = decodeSingleCoord(findImage("LootCart", $g_sImgCollectLootCart, GetDiamondFromRect("50,150,200,250"), 1, True))
 If UBound($aLootCart) > 1 Then
-If isInsideDiamond($aLootCart) Then
+$aLootCart[1] += 15
 If IsMainPage() Then ClickP($aLootCart, 1, 0, "#0330")
-If _Sleep($DELAYCOLLECT1) Then Return
-Local $sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY)
-If @error Then SetError(0, 0, 0)
-Local $CountGetInfo = 0
-While IsArray($sInfo) = False
-$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY)
-If @error Then SetError(0, 0, 0)
-If _Sleep($DELAYCOLLECT1) Then Return
-$CountGetInfo += 1
-If $CountGetInfo >= 5 Then Return
-WEnd
-If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
-If @error Then Return SetError(0, 0, 0)
-If $sInfo[0] > 1 Or $sInfo[0] = "" Then
-If StringInStr($sInfo[1], "Loot") = 0 Then
-If $g_bDebugSetlog Then SetDebugLog("Bad Loot Cart location", $COLOR_ACTION)
-Else
-If IsMainPage() Then
+If _Sleep(400) Then Return
 Local $aiCollectButton = findButton("CollectLootCart", Default, 1, True)
 If IsArray($aiCollectButton) And UBound($aiCollectButton) = 2 Then
 ClickP($aiCollectButton)
 Else
 SetLog("Cannot find Collect Button", $COLOR_ERROR)
 Return False
-EndIf
-EndIf
-EndIf
-EndIf
-Else
-SetLog("LootCart is not inside the Village (X: " & $aLootCart[0] & " | Y: " & $aLootCart[1] & ")", $COLOR_INFO)
 EndIf
 Else
 SetLog("No Loot Cart found on your Village", $COLOR_SUCCESS)
@@ -56051,7 +56049,6 @@ Global $g_iDonTroopsLimit = 8, $iDonSpellsLimit = 1, $g_iDonTroopsAv = 0, $g_iDo
 Global $g_iDonTroopsQuantityAv = 0, $g_iDonTroopsQuantity = 0, $g_iDonSpellsQuantityAv = 0, $g_iDonSpellsQuantity = 0
 Global $g_bSkipDonTroops = False, $g_bSkipDonSpells = False, $g_bSkipDonSiege = False
 Global $g_bDonateAllRespectBlk = False
-Global $g_aiDonatePixel
 Global $g_aiAvailQueuedTroop[$eTroopCount], $g_aiAvailQueuedSpell[$eSpellCount]
 Func PrepareDonateCC()
 $g_aiPrepDon[0] = 0
@@ -56145,7 +56142,7 @@ Next
 If _Sleep(250) Then ContinueLoop
 EndIf
 Next
-ClickP($aAway, 1, 0, "#0818")
+ClickP($aAway2, 1, 0, "#0818")
 If _Sleep($DELAYDONATECC2) Then Return
 EndFunc
 Func DonateCC($bCheckForNewMsg = False)
@@ -56158,6 +56155,7 @@ Local $bDonateAllSiege =($g_aiPrepDon[5] = 1)
 Local $bDonate =($g_iActiveDonate = 1)
 Local $bOpen = True, $bClose = False
 Local $ClanString = ""
+Local $iScrollY = 77
 If Not $g_bChkDonate Or Not $bDonate Or Not $g_bDonationEnabled Then
 If $g_bDebugSetlog Then SetDebugLog("Donate Clan Castle troops skip", $COLOR_DEBUG)
 Return
@@ -56167,8 +56165,7 @@ If Not $g_abDonateHours[$hour[0]] And $g_bDonateHoursEnable Then
 If $g_bDebugSetlog Then SetDebugLog("Donate Clan Castle troops not planned, Skipped..", $COLOR_DEBUG)
 Return
 EndIf
-Local $y = 90
-If $bCheckForNewMsg Then
+If($bCheckForNewMsg And Random(0, 3, 1) < 3) Then
 If Not _ColorCheck(_GetPixelColor(26, 312 + $g_iMidOffsetY, True), Hex(0xf00810, 6), 20) Then Return
 EndIf
 Local $abDonateQueueOnly = $g_abChkDonateQueueOnly
@@ -56185,69 +56182,50 @@ $bDonateAllSpell = False
 EndIf
 $bDonate = BitOR($bDonateTroop, $bDonateAllTroop, $bDonateSpell, $bDonateAllSpell, $bDonateSiege, $bDonateAllSiege)
 If Not $bDonate Then Return
-ClickP($aAway, 1, 0, "#0167")
-ForceCaptureRegion()
-If Not _CheckPixel($aChatTab, $g_bCapturePixel) Or Not _CheckPixel($aChatTab2, $g_bCapturePixel) Or Not _CheckPixel($aChatTab3, $g_bCapturePixel) Then ClickP($aOpenChat, 1, 0, "#0168")
-If _Sleep($DELAYDONATECC4) Then Return
-Local $iLoopCount = 0
-While 1
-If _ColorCheck(_GetPixelColor(189, 24, True), Hex(0x706C50, 6), 20) Then
-ExitLoop
-EndIf
-If _ColorCheck(_GetPixelColor(189, 24, True), Hex(0x383828, 6), 20) Then
-If _Sleep($DELAYDONATECC1) Then Return
-ClickP($aClanTab, 1, 0, "#0169")
-ExitLoop
-EndIf
-$iLoopCount += 1
-If $iLoopCount >= 15 Then
-SetLog("Clan Chat Did Not Open - Abandon Donate")
-AndroidPageError("DonateCC")
+ClickP($aAway2, 1, 0, "#0167")
+If _Sleep($DELAYDONATECC2) Then Return
+If Not ClickB("ClanChat") Then
+SetLog("Error finding the Clan Tab Button", $COLOR_ERROR)
 Return
 EndIf
-If _Sleep($DELAYDONATECC1) Then Return
-WEnd
+If _Sleep($DELAYDONATECC4) Then Return
 Local $aCoord = decodeSingleCoord(findImage("I Understand", $g_sImgChatIUnterstand, GetDiamondFromRect("50,400,280,550")))
 If UBound($aCoord) > 1 Then
-SetLog("Clicking 'I Understand' button", $COLOR_ACTION)
+SetLog('Clicking "I Understand" button', $COLOR_ACTION)
 ClickP($aCoord)
 If _Sleep($DELAYDONATECC2) Then Return
 EndIf
 Local $Scroll
 While 1
 ForceCaptureRegion()
-$y = 90
-$Scroll = _PixelSearch(293, 8 + $y, 295, 23 + $y, Hex(0xFFFFFF, 6), 20)
-If IsArray($Scroll) And _ColorCheck(_GetPixelColor(300, 110, True), Hex(0x509808, 6), 20) Then
+$iScrollY = 77
+$Scroll = _PixelSearch(293, 8 + $iScrollY, 295, 23 + $iScrollY, Hex(0xFFFFFF, 6), 20)
+If IsArray($Scroll) And _ColorCheck(_GetPixelColor(300, 85, True), Hex(0x95CD0E, 6), 20) Then
 $bDonate = True
-Click($Scroll[0], $Scroll[1], 1, 0, "#0172")
-$y = 90
+ClickP($Scroll, 1, 0, "#0172")
+$iScrollY = 77
 If _Sleep($DELAYDONATECC2 + 100) Then ExitLoop
 ContinueLoop
 EndIf
 ExitLoop
 WEnd
 If $g_iCommandStop <> 0 And $g_iCommandStop <> 3 Then SetLog("Checking for Donate Requests in Clan Chat", $COLOR_INFO)
-Local $itime = TimerInit()
-Local $iBenchmark
-Local $Buttons = 0
+Local $iTimer
+Local $sSearchArea, $aiSearchArray[4] = [200, 90, 300, 700], $aiSearchArrayBackUp = $aiSearchArray
+Local $aiDonateButton
 While $bDonate
 checkAttackDisable($g_iTaBChkIdle)
 $ClanString = ""
-$itime = TimerInit()
 If _Sleep($DELAYDONATECC2) Then ExitLoop
-ForceCaptureRegion()
-$g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get all Buttons in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
-If IsArray($g_aiDonatePixel) Then
-$Buttons += 1
-If $g_bDebugSetlog Then SetDebugLog("***** Donate Request Number " & $Buttons & " *****", $COLOR_ACTION)
-If $g_bDebugSetlog Then SetDebugLog("$g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
-If Not donateCCWBLUserImageCollect($g_aiDonatePixel[0], $g_aiDonatePixel[1]) Then
-SetLog("Skip Donation at this Clan Mate...", $COLOR_ACTION)
-$y = $g_aiDonatePixel[1] + 50
+$iTimer = TimerInit()
+$sSearchArea = GetDiamondFromArray($aiSearchArray)
+$aiDonateButton = decodeSingleCoord(findImage("Donate Button", $g_sImgDonateCC & "DonateButton*", $sSearchArea, 1, True, Default))
+If $g_bDebugSetlog Then SetDebugLog("Get all Buttons in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
+If IsArray($aiDonateButton) And UBound($aiDonateButton, 1) >= 2 Then
+If Not donateCCWBLUserImageCollect($aiDonateButton[0], $aiDonateButton[1]) Then
+SetLog("Skip Donation at this Clan Mate", $COLOR_ACTION)
+$aiSearchArray[1] = $aiDonateButton[1] + 20
 ContinueLoop
 EndIf
 $bDonate = False
@@ -56270,7 +56248,7 @@ $ClanString = ""
 SetLog("Using OCR to read " & $log & " derived alphabets.", $COLOR_ACTION)
 For $j = 0 To 2
 If $ClanString = "" Or $ClanString = " " Then
-$ClanString &= $BlankSpaces & getChatString(30, $g_aiDonatePixel[1] - $coordinates[$j], $OcrName)
+$ClanString &= $BlankSpaces & getChatString(30, $aiDonateButton[1] - $coordinates[$j], $OcrName)
 If $g_bDebugSetlog Then SetDebugLog("$OcrName: " & $OcrName)
 If $g_bDebugSetlog Then SetDebugLog("$coordinates: " & $coordinates[$j])
 If $g_bDebugSetlog Then SetDebugLog("$ClanString: " & $ClanString)
@@ -56283,7 +56261,7 @@ If $Alphabets[$i] Then
 If $ClanString = "" Or $ClanString = " " Then
 SetLog("Using OCR to read " & $TextAlphabetsNames[$i] & " alphabets.", $COLOR_ACTION)
 #Au3Stripper_Off
-$ClanString &= $BlankSpaces & Call($AlphabetFunctions[$i], 30, $g_aiDonatePixel[1] - $Yaxis[$i])
+$ClanString &= $BlankSpaces & Call($AlphabetFunctions[$i], 30, $aiDonateButton[1] - $Yaxis[$i])
 #Au3Stripper_On
 If @error = 0xDEAD And @extended = 0xBEEF Then SetLog("[DonatCC] Function " & $AlphabetFunctions[$i] & "() had a problem.")
 If $g_bDebugSetlog Then SetDebugLog("$OcrName: " & $OcrName)
@@ -56294,13 +56272,12 @@ EndIf
 EndIf
 EndIf
 Next
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get Request OCR in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+If $g_bDebugSetlog Then SetDebugLog("Get Request OCR in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 If $ClanString = "" Or $ClanString = " " Then
 SetLog("Unable to read Chat Request!", $COLOR_ERROR)
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
+$aiSearchArray[1] = $aiDonateButton[1] + 20
 ContinueLoop
 Else
 If $g_bChkExtraAlphabets Then
@@ -56322,13 +56299,13 @@ If $g_bDebugSetlog Then SetDebugLog("Siege: [" & $i - $eTroopCount - $g_iCustomD
 If CheckDonateSiege($i - $eTroopCount - $g_iCustomDonateConfigs, $g_asTxtDonateTroop[$i], $g_asTxtBlacklistTroop[$i], $ClanString) Then $Checked = True
 EndIf
 EndIf
-If $Checked = False And $i < UBound($g_abChkDonateSpell) And $g_abChkDonateSpell[$i] And CheckDonateSpell($i, $g_asTxtDonateSpell[$i], $g_asTxtBlacklistSpell[$i], $ClanString) Then $Checked = True
+If Not $Checked And $i < UBound($g_abChkDonateSpell) And $g_abChkDonateSpell[$i] And CheckDonateSpell($i, $g_asTxtDonateSpell[$i], $g_asTxtBlacklistSpell[$i], $ClanString) Then $Checked = True
 If $Checked Then ExitLoop
 Next
-If $Checked = False Then
+If Not $Checked Then
 SetDebugLog("Chat Request does not match any donate keyword, go to next request")
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
+$aiSearchArray[1] = $aiDonateButton[1] + 20
 ContinueLoop
 EndIf
 SetDebugLog("Chat Request matches a donate keyword, proceed with donating")
@@ -56337,12 +56314,11 @@ EndIf
 ElseIf $bDonateAllTroop Or $bDonateAllSpell Or $bDonateAllSiege Then
 SetLog("Skip reading chat requests. Donate all is enabled!", $COLOR_ACTION)
 EndIf
-RemainingCCcapacity()
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get remaining CC capacity in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+RemainingCCcapacity($aiDonateButton)
+If $g_bDebugSetlog Then SetDebugLog("Get remaining CC capacity in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 If $g_iTotalDonateTroopCapacity <= 0 Then
-SetLog("Clan Castle troops are full, skip troop donation...", $COLOR_ACTION)
+SetLog("Clan Castle troops are full, skip troop donation", $COLOR_ACTION)
 $g_bSkipDonTroops = True
 EndIf
 If $g_iCurrentSpells = 0 And $g_iCurrentSpells <> "" Then
@@ -56352,31 +56328,31 @@ ElseIf $g_iTotalDonateSpellCapacity = 0 Then
 SetLog("Clan Castle spells are full, skip spell donation...", $COLOR_ACTION)
 $g_bSkipDonSpells = True
 ElseIf $g_iTotalDonateSpellCapacity = -1 Then
-If $g_bDebugSetlog Then SetDebugLog("This CC cannot accept spells, skip spell donation...", $COLOR_DEBUG)
+If $g_bDebugSetlog Then SetDebugLog("This CC cannot accept spells, skip spell donation", $COLOR_DEBUG)
 $g_bSkipDonSpells = True
 EndIf
 If Not $bDonateSiege And Not $bDonateAllSiege Then
-SetLog("Siege donation is not enabled, skip siege donation...", $COLOR_ACTION)
+SetLog("Siege donation is not enabled, skip siege donation", $COLOR_ACTION)
 $g_bSkipDonSiege = True
 ElseIf $g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 0 And $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 0 Then
-SetLog("No siege machines available, skip siege donation...", $COLOR_ORANGE)
+SetLog("No siege machines available, skip siege donation", $COLOR_ORANGE)
 $g_bSkipDonSiege = True
 ElseIf $g_iTotalDonateSiegeMachineCapacity = -1 Then
-SetLog("This CC cannot accept Siege, skip Siege donation...", $COLOR_ACTION)
+SetLog("This CC cannot accept Siege, skip Siege donation", $COLOR_ACTION)
 $g_bSkipDonSiege = True
 ElseIf $g_iTotalDonateSiegeMachineCapacity = 0 Then
-SetLog("Clan Castle Siege is full, skip Siege donation...", $COLOR_ACTION)
+SetLog("Clan Castle Siege is full, skip Siege donation", $COLOR_ACTION)
 $g_bSkipDonSiege = True
 EndIf
 If $g_bSkipDonTroops And $g_bSkipDonSpells And $g_bSkipDonSiege Then
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
+$aiSearchArray[1] += 50
 ContinueLoop
 EndIf
 If _Sleep($DELAYDONATECC3) Then Return
-If Not DonateWindow($bOpen) Then
+If Not DonateWindow($aiDonateButton, $bOpen) Then
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
+$aiSearchArray[1] = $aiDonateButton[1] + 20
 SetLog("Donate Window did not open - Exiting Donate", $COLOR_ERROR)
 ExitLoop
 EndIf
@@ -56385,13 +56361,12 @@ Local $eDonateCustom[4] = [$g_aiDonateCustomTrpNumA, $g_aiDonateCustomTrpNumB, $
 If $bDonateTroop Or $bDonateSpell Or $bDonateSiege Then
 If $g_bDebugSetlog Then SetDebugLog("Troop/Spell/Siege checkpoint.", $COLOR_DEBUG)
 DonateWindowCap($g_bSkipDonTroops, $g_bSkipDonSpells)
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get available donate cap in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+If $g_bDebugSetlog Then SetDebugLog("Get available donate cap in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 If $g_bSkipDonTroops And $g_bSkipDonSpells And $g_bSkipDonSiege Then
-DonateWindow($bClose)
+DonateWindow($aiDonateButton, $bClose)
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
+$aiSearchArray[1] = $aiDonateButton[1] + 20
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ContinueLoop
 EndIf
@@ -56427,9 +56402,8 @@ EndIf
 EndIf
 Next
 EndIf
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get Donated troops in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+If $g_bDebugSetlog Then SetDebugLog("Get Donated troops in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 EndIf
 If Not $g_bSkipDonSiege And $bDonateSiege Then
 If $g_bDebugSetlog Then SetDebugLog("Siege checkpoint.", $COLOR_DEBUG)
@@ -56453,9 +56427,8 @@ If _Sleep($DELAYDONATECC3) Then ExitLoop
 EndIf
 EndIf
 Next
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get Donated Spells in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+If $g_bDebugSetlog Then SetDebugLog("Get Donated Spells in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 EndIf
 EndIf
 If $bDonateAllTroop Or $bDonateAllSpell Or $bDonateAllSiege Then
@@ -56463,13 +56436,12 @@ If $g_bDebugSetlog Then SetDebugLog("Troop/Spell/Siege All checkpoint.", $COLOR_
 $g_bDonateAllRespectBlk = True
 If $bDonateAllTroop And Not $g_bSkipDonTroops Then
 DonateWindowCap($g_bSkipDonTroops, $g_bSkipDonSpells)
-$iBenchmark = TimerDiff($itime)
-Setlog("Get available donate cap (to all) in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+Setlog("Get available donate cap (to all) in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 If $g_bSkipDonTroops And $g_bSkipDonSpells Then
-DonateWindow($bClose)
+DonateWindow($aiDonateButton, $bClose)
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
+$aiSearchArray[1] = $aiDonateButton[1] + 20
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ContinueLoop
 EndIf
@@ -56482,16 +56454,16 @@ For $i = 0 To 2
 If $CorrectDonateCustom[$i][0] < $eBarb Then
 $CorrectDonateCustom[$i][0] = $eArch
 ElseIf $CorrectDonateCustom[$i][0] > $eIceG Then
-DonateWindow($bClose)
+DonateWindow($aiDonateButton, $bClose)
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
+$aiSearchArray[1] = $aiDonateButton[1] + 20
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ContinueLoop
 EndIf
 If $CorrectDonateCustom[$i][1] < 1 Then
-DonateWindow($bClose)
+DonateWindow($aiDonateButton, $bClose)
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
+$aiSearchArray[1] = $aiDonateButton[1] + 20
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ContinueLoop
 ElseIf $CorrectDonateCustom[$i][1] > 8 Then
@@ -56512,9 +56484,8 @@ EndIf
 Next
 EndIf
 Next
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get Donated troops (to all) in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+If $g_bDebugSetlog Then SetDebugLog("Get Donated troops (to all) in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 EndIf
 If $bDonateAllSpell And Not $g_bSkipDonSpells Then
 If $g_bDebugSetlog Then SetDebugLog("Spell All checkpoint.", $COLOR_DEBUG)
@@ -56527,9 +56498,8 @@ EndIf
 ExitLoop
 EndIf
 Next
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get Donated Spells (to all)  in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+If $g_bDebugSetlog Then SetDebugLog("Get Donated Spells (to all)  in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 EndIf
 If $bDonateAllSiege And Not $g_bSkipDonSiege Then
 If $g_bDebugSetlog Then SetDebugLog("Siege All checkpoint.", $COLOR_DEBUG)
@@ -56542,56 +56512,43 @@ EndIf
 ExitLoop
 EndIf
 Next
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get Donated Sieges (to all)  in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-$itime = TimerInit()
+If $g_bDebugSetlog Then SetDebugLog("Get Donated Sieges (to all)  in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+$iTimer = TimerInit()
 EndIf
 $g_bDonateAllRespectBlk = False
 EndIf
 $bDonate = True
-$y = $g_aiDonatePixel[1] + 50
-ClickP($aAway, 1, 0, "#0171")
+$aiSearchArray[1] = $aiDonateButton[1] + 20
+If _Sleep($DELAYDONATEWINDOW1) Then ExitLoop
+ClickP($aAway2, 1, 0, "#0171")
 If _Sleep($DELAYDONATEWINDOW1) Then ExitLoop
 EndIf
-ForceCaptureRegion()
-$g_aiDonatePixel = _MultiPixelSearch(200, $y, 230, 660 + $g_iBottomOffsetY, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
-$iBenchmark = TimerDiff($itime)
-If $g_bDebugSetlog Then SetDebugLog("Get more donate buttons in " & StringFormat("%.2f", $iBenchmark) & "'ms", $COLOR_DEBUG)
-If IsArray($g_aiDonatePixel) Then
-If $g_bDebugSetlog Then SetDebugLog("More Donate buttons found, new $g_aiDonatePixel: (" & $g_aiDonatePixel[0] & "," & $g_aiDonatePixel[1] & ")", $COLOR_DEBUG)
+$sSearchArea = GetDiamondFromArray($aiSearchArray)
+$aiDonateButton = decodeSingleCoord(findImage("Donate Button", $g_sImgDonateCC & "DonateButton*", $sSearchArea, 1, True, Default))
+If $g_bDebugSetlog Then SetDebugLog("Get more donate buttons in " & StringFormat("%.2f", TimerDiff($iTimer)) & "'ms", $COLOR_DEBUG)
+If IsArray($aiDonateButton) And UBound($aiDonateButton, 1) >= 2 Then
+If $g_bDebugSetlog Then SetDebugLog("More Donate buttons found, new $aiDonateButton: (" & $aiDonateButton[0] & "," & $aiDonateButton[1] & ")", $COLOR_DEBUG)
 ContinueLoop
 Else
-If $g_bDebugSetlog Then SetDebugLog("No more Donate buttons found, closing chat ($y=" & $y & ")", $COLOR_DEBUG)
+If $g_bDebugSetlog Then SetDebugLog("No more Donate buttons found, closing chat", $COLOR_DEBUG)
 EndIf
 ForceCaptureRegion()
 $Scroll = _PixelSearch(293, 687 - 30, 295, 693 - 30, Hex(0xFFFFFF, 6), 20)
 If IsArray($Scroll) Then
 $bDonate = True
 Click($Scroll[0], $Scroll[1], 1, 0, "#0172")
-$y = 600
+$aiSearchArray = $aiSearchArrayBackUp
 If _Sleep($DELAYDONATECC2) Then ExitLoop
 ContinueLoop
 EndIf
 $bDonate = False
 WEnd
-ClickP($aAway, 1, 0, "#0176")
+ClickP($aAway2, 1, 0, "#0176")
 If _Sleep($DELAYDONATECC2) Then Return
-$i = 0
-While 1
-If _Sleep(100) Then Return
-If _ColorCheck(_GetPixelColor($aCloseChat[0], $aCloseChat[1], True), Hex($aCloseChat[2], 6), $aCloseChat[3]) Then
-Click($aCloseChat[0], $aCloseChat[1], 1, 0, "#0173")
-ExitLoop
-Else
-If _Sleep(100) Then Return
-$i += 1
-If $i > 30 Then
-SetLog("Error finding Clan Tab to close...", $COLOR_ERROR)
+If Not ClickB("ClanChat") Then
+SetLog("Error finding the Clan Tab Button", $COLOR_ERROR)
 AndroidPageError("DonateCC")
-ExitLoop
 EndIf
-EndIf
-WEnd
 UpdateStats()
 If _Sleep($DELAYDONATECC2) Then Return
 EndFunc
@@ -56858,37 +56815,26 @@ Else
 SetLog("No " & $g_asSiegeMachineNames[$iSiegeIndex] & " available to donate..", $COLOR_ERROR)
 EndIf
 EndFunc
-Func DonateWindow($bOpen = True)
+Func DonateWindow($aiDonateButton, $bOpen = True)
 If $g_bDebugSetlog And $bOpen Then SetLog("DonateWindow Open Start", $COLOR_DEBUG)
 If $g_bDebugSetlog And Not $bOpen Then SetLog("DonateWindow Close Start", $COLOR_DEBUG)
 If Not $bOpen Then
-ClickP($aAway, 1, 0, "#0176")
+ClickP($aAway2, 1, 0, "#0176")
 If _Sleep($DELAYDONATEWINDOW1) Then Return
 If $g_bDebugSetlog Then SetDebugLog("DonateWindow Close Exit", $COLOR_DEBUG)
 Return
 EndIf
-Local $iLeft = 0, $iTop = 0, $iRight = 0, $iBottom = 0, $i
-For $i = 0 To UBound($aChatDonateBtnColors) - 1
-If $aChatDonateBtnColors[$i][1] < $iLeft Then $iLeft = $aChatDonateBtnColors[$i][1]
-If $aChatDonateBtnColors[$i][1] > $iRight Then $iRight = $aChatDonateBtnColors[$i][1]
-If $aChatDonateBtnColors[$i][2] < $iTop Then $iTop = $aChatDonateBtnColors[$i][2]
-If $aChatDonateBtnColors[$i][2] > $iBottom Then $iBottom = $aChatDonateBtnColors[$i][2]
-Next
-$iLeft += $g_aiDonatePixel[0]
-$iTop += $g_aiDonatePixel[1]
-$iRight += $g_aiDonatePixel[0] + 1
-$iBottom += $g_aiDonatePixel[1] + 1
-ForceCaptureRegion()
-Local $g_aiDonatePixelCheck = _MultiPixelSearch($iLeft, $iTop, $iRight, $iBottom, -2, 1, Hex(0x6da725, 6), $aChatDonateBtnColors, 20)
-If IsArray($g_aiDonatePixelCheck) Then
-Click($g_aiDonatePixel[0] + 50, $g_aiDonatePixel[1] + 10, 1, 0, "#0174")
+Local $aiSearchArray[4] = [$aiDonateButton[0] - 20, $aiDonateButton[1] - 20, $aiDonateButton[0] + 20, $aiDonateButton[1] + 20]
+Local $aiDonateButtonCheck = decodeSingleCoord(findImage("Donate Button", $g_sImgDonateCC & "DonateButton*", GetDiamondFromArray($aiSearchArray), 1, True, Default))
+If IsArray($aiDonateButtonCheck) And UBound($aiDonateButtonCheck, 1) > 1 Then
+ClickP($aiDonateButton)
 Else
 If $g_bDebugSetlog Then SetDebugLog("Could not find the Donate Button!", $COLOR_DEBUG)
 Return False
 EndIf
 If _Sleep($DELAYDONATEWINDOW1) Then Return
 Local $icount = 0
-While Not(_ColorCheck(_GetPixelColor(331, $g_aiDonatePixel[1], True, "DonateWindow"), Hex(0xffffff, 6), 0))
+While Not(_ColorCheck(_GetPixelColor(331, $aiDonateButton[1], True, "DonateWindow"), Hex(0xffffff, 6), 0))
 If _Sleep($DELAYDONATEWINDOW2) Then Return
 ForceCaptureRegion()
 $icount += 1
@@ -56961,7 +56907,7 @@ SetDebugLog("$g_bSkipDonSpells: " & $g_bSkipDonSpells, $COLOR_DEBUG)
 SetDebugLog("DonateCapWindow End", $COLOR_DEBUG)
 EndIf
 EndFunc
-Func RemainingCCcapacity()
+Func RemainingCCcapacity($aiDonateButton)
 Local $sCapTroops = "", $aTempCapTroops, $sCapSpells = "", $aTempCapSpells, $sCapSiegeMachine = "", $aTempCapSiegeMachine
 Local $iDonatedTroops = 0, $iDonatedSpells = 0, $iDonatedSiegeMachine = 0
 Local $iCapTroopsTotal = 0, $iCapSpellsTotal = 0, $iCapSiegeMachineTotal = 0
@@ -56973,17 +56919,18 @@ Local $bDonateSiege =($g_aiPrepDon[4] = 1 Or $g_aiPrepDon[5] = 1) And($g_aiCurre
 SetDebugLog("$g_aiPrepDon[2]: " & $g_aiPrepDon[2] & ", $g_aiPrepDon[3]: " & $g_aiPrepDon[3] & ", $g_iCurrentSpells: " & $g_iCurrentSpells & ", $bDonateSpell: " & $bDonateSpell)
 SetDebugLog("$g_aiPrepDon[4]: " & $g_aiPrepDon[4] & "$g_aiPrepDon[5]: " & $g_aiPrepDon[5] & ", $bDonateSiege: " & $bDonateSiege)
 If $g_bDebugSetLog Then SetDebugLog("Start dual getOcrSpaceCastleDonate", $COLOR_DEBUG)
-$sCapTroops = getOcrSpaceCastleDonate(27, $g_aiDonatePixel[1])
+$aiDonateButton[1] -= 10
+$sCapTroops = getOcrSpaceCastleDonate(27, $aiDonateButton[1])
 If StringInStr($sCapTroops, "#") Then
-$sCapSpells = $bDonateSpell ? getOcrSpaceCastleDonate(110, $g_aiDonatePixel[1]) : -1
-$sCapSiegeMachine = $bDonateSiege ? getOcrSpaceCastleDonate(170, $g_aiDonatePixel[1]) : -1
+$sCapSpells = $bDonateSpell ? getOcrSpaceCastleDonate(110, $aiDonateButton[1]) : -1
+$sCapSiegeMachine = $bDonateSiege ? getOcrSpaceCastleDonate(170, $aiDonateButton[1]) : -1
 Else
-$sCapTroops = getOcrSpaceCastleDonate(60, $g_aiDonatePixel[1])
+$sCapTroops = getOcrSpaceCastleDonate(60, $aiDonateButton[1])
 If StringRegExp($sCapTroops, "#([0-9]{2})") = 1 Then
-$sCapSpells = $bDonateSpell ? getOcrSpaceCastleDonate(160, $g_aiDonatePixel[1]) : -1
+$sCapSpells = $bDonateSpell ? getOcrSpaceCastleDonate(160, $aiDonateButton[1]) : -1
 $sCapSiegeMachine = -1
 Else
-$sCapTroops = getOcrSpaceCastleDonate(82, $g_aiDonatePixel[1])
+$sCapTroops = getOcrSpaceCastleDonate(82, $aiDonateButton[1])
 $sCapSpells = -1
 $sCapSiegeMachine = -1
 EndIf
@@ -57008,12 +56955,12 @@ $iCapTroopsTotal = 35
 EndIf
 EndIf
 Else
-SetLog("Error reading the Castle Troop Capacity[1]...", $COLOR_ERROR)
+SetLog("Error reading the Castle Troop Capacity (1)", $COLOR_ERROR)
 $iDonatedTroops = 0
 $iCapTroopsTotal = 0
 EndIf
 Else
-SetLog("Error reading the Castle Troop Capacity[2]...", $COLOR_ERROR)
+SetLog("Error reading the Castle Troop Capacity (2)", $COLOR_ERROR)
 $iDonatedTroops = 0
 $iCapTroopsTotal = 0
 EndIf
@@ -57027,12 +56974,12 @@ $iDonatedSpells = $aTempCapSpells[1]
 $iCapSpellsTotal = $aTempCapSpells[2]
 EndIf
 Else
-SetLog("Error reading the Castle Spell Capacity[1]...", $COLOR_ERROR)
+SetLog("Error reading the Castle Spell Capacity (1)", $COLOR_ERROR)
 $iDonatedSpells = 0
 $iCapSpellsTotal = 0
 EndIf
 Else
-SetLog("Error reading the Castle Spell Capacity[2]...", $COLOR_ERROR)
+SetLog("Error reading the Castle Spell Capacity (2)", $COLOR_ERROR)
 $iDonatedSpells = 0
 $iCapSpellsTotal = 0
 EndIf
@@ -57047,12 +56994,12 @@ $iDonatedSiegeMachine = $aTempCapSiegeMachine[1]
 $iCapSiegeMachineTotal = $aTempCapSiegeMachine[2]
 EndIf
 Else
-SetLog("Error reading the Castle Siege Machine Capacity[1]...", $COLOR_ERROR)
+SetLog("Error reading the Castle Siege Machine Capacity (1)", $COLOR_ERROR)
 $iDonatedSiegeMachine = 0
 $iCapSiegeMachineTotal = 0
 EndIf
 Else
-SetLog("Error reading the Castle Siege Machine Capacity[2]...", $COLOR_ERROR)
+SetLog("Error reading the Castle Siege Machine Capacity (2)", $COLOR_ERROR)
 $iDonatedSiegeMachine = 0
 $iCapSiegeMachineTotal = 0
 EndIf
@@ -60956,53 +60903,51 @@ EndFunc
 Func ReplayShare($bShareLastReplay)
 If Not $g_bShareAttackEnable Or Not $bShareLastReplay Then Return
 Local Static $sLastTimeShared = ""
-If $sLastTimeShared = "" Or _DateDiff("n", $sLastTimeShared, _NowCalc()) > 30 Then
-SetLog("Going to share the last Attack!")
+If $sLastTimeShared <> "" And Number(_DateDiff("n", $sLastTimeShared, _NowCalc())) <= 5 Then
+SetDebugLog("Last Replay got shared less than 30 Minutes ago, return (" & $sLastTimeShared & ")", $COLOR_DEBUG)
+Return
+EndIf
+SetLog("Sharing last Attack", $COLOR_INFO)
 ClickP($aAway, 1, 0, "#0235")
 If _Sleep($DELAYREPLAYSHARE2) Then Return
-ClickP($aMessageButton, 1, 0, "#0236")
-If Not _WaitForCheckPixel($aAttackLogPage, $g_bCapturePixel) Then
-SetLog("Error while checking if the Attack Log Page opened up", $COLOR_ERROR)
-ClickP($aAway, 1, 0, "#0235")
-Return
-EndIf
-Click(380, 90 + $g_iMidOffsetY, 1, 0, "#0237")
-If Not _WaitForCheckPixel($aAttackLogAttackTab, $g_bCapturePixel) Then
-SetLog("Error while trying to open Attacks Page", $COLOR_ERROR)
-ClickP($aAway, 1, 0, "#0235")
-Return
-EndIf
+If ClickB("MessagesButton", Default, 300) Then
+Local $aiAttackLogTab = findButton("AttackLogTab")
+If IsArray($aiAttackLogTab) And UBound($aiAttackLogTab, 1) >= 2 Then
+Local $aIsAttackLogTabOpen[4] = [$aiAttackLogTab[0] - 30, $aiAttackLogTab[1], 0xF4F4F0, 20]
+If Not _CheckPixel($aIsAttackLogTabOpen, True) Then ClickP($aiAttackLogTab)
+If ClickB("ShareReplayButton") Then
 Local $asReplayText = StringSplit($g_sShareMessage, "|")
-Local $sRndMessage
-If @error Then
-$sRndMessage = $asReplayText[1]
-Else
-$sRndMessage = $asReplayText[Random(1, $asReplayText[0], 1)]
-EndIf
-If _CheckPixel($aBlueShareReplayButton, True) Then
-ClickP($aBlueShareReplayButton, 1, 0, "#0238")
+Local $sRndMessage = @error ? $asReplayText[1] : $asReplayText[Random(1, $asReplayText[0], 1)]
 If _Sleep($DELAYREPLAYSHARE1) Then Return
-Click(300, 120, 1, 0, "#0239")
+Local $aiSendButton = findButton("SendButton")
+If IsArray($aiSendButton) And UBound($aiSendButton, 1) >= 1 Then
+Click($aiSendButton[0], $aiSendButton[1] - 75)
 If _Sleep($DELAYREPLAYSHARE1) Then Return
 If Not $g_bChkBackgroundMode And Not $g_bNoFocusTampering Then ControlFocus($g_hAndroidWindow, "", "")
 AndroidSendText($sRndMessage, True)
 If _Sleep($DELAYREPLAYSHARE1) Then Return
 If SendText($sRndMessage) = 0 Then
-SetLog("Failed to insert Share Replay Text!", $COLOR_ERROR)
+SetLog("Failed to insert text!", $COLOR_ERROR)
 Return
 EndIf
 If _Sleep($DELAYREPLAYSHARE1) Then Return
-Click(530, 210 + $g_iMidOffsetY, 1, 0, "#0240")
-$sLastTimeShared = _NowCalc
-ElseIf _CheckPixel($aGrayShareReplayButton, True) Then
-SetLog("Sharing latest Attack is not enabled right now, storing it and share later!")
-ClickP($aAway, 1, 0, "#0235")
+ClickP($aiSendButton)
+$sLastTimeShared = _NowCalc()
 Else
-SetLog("Error checking Share Button State. Replay might be not available anymore or Bot made mistakes", $COLOR_ERROR)
-ClickP($aAway, 1, 0, "#0235")
+SetLog("Send Button not found", $COLOR_ERROR)
+Return
 EndIf
 Else
-SetLog("Skip Replay Sharing because the 30 minutes cooldown is not over yet!")
+SetLog("Share Replay Button not available or not found", $COLOR_WARNING)
+Return
+EndIf
+Else
+SetLog("Error checking/opening attack log tab!", $COLOR_ERROR)
+Return
+EndIf
+Else
+SetLog("Error opening Messages Window!", $COLOR_ERROR)
+Return
 EndIf
 ClickP($aAway, 1, 0, "#0235")
 EndFunc
@@ -63174,7 +63119,7 @@ If Not $g_bChkClanGamesEnabled Then Return
 Local $sINIPath = StringReplace($g_sProfileConfigPath, "config.ini", "ClanGames_config.ini")
 If Not FileExists($sINIPath) Then ClanGamesChallenges("", True, $sINIPath, $g_bChkClanGamesDebug)
 ClickP($aAway, 1, 0, "#0000")
-SetLog("Entering Clan Games...", $COLOR_INFO)
+SetLog("Entering Clan Games", $COLOR_INFO)
 If _Sleep(500) Then Return
 Local $TabChallengesPosition[2] = [820, 130]
 Local $sTimeRemain = "", $sEventName = "", $getCapture = True
@@ -63191,11 +63136,11 @@ $hTimer = TimerInit()
 If _Sleep(1500) Then Return
 SetLog("Your Score is: " & Int($ScoreLimits[0]), $COLOR_INFO)
 If Int($ScoreLimits[0]) = Int($ScoreLimits[1]) Then
-SetLog("Your Score limit was reached, Congrats...")
+SetLog("Your Score limit was reached! Congrats")
 ClickP($aAway, 1, 0, "#0000")
 Return
 ElseIf Int($ScoreLimits[0]) + 200 > Int($ScoreLimits[1]) Then
-SetLog("Your Score limit is almost reached...")
+SetLog("Your Score limit is almost reached")
 If $g_bChkClanGamesStopBeforeReachAndPurge Then
 If CooldownTime() Then Return
 If IsEventRunning() Then Return
@@ -63210,14 +63155,13 @@ If $YourAccScore[$g_iCurAccount][0] = -1 Then $YourAccScore[$g_iCurAccount][0] =
 If CooldownTime() Then Return
 If $g_bChkClanGamesDebug Then Setlog("_ClanGames CooldownTime (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 $hTimer = TimerInit()
-If $g_bRunState = False Then Return
+If Not $g_bRunState Then Return
 If IsEventRunning() Then Return
 If $g_bChkClanGamesDebug Then Setlog("_ClanGames IsEventRunning (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 $hTimer = TimerInit()
 If $g_bRunState = False Then Return
 If $g_bChkClanGamesDebug Then SetLog("Your TownHall Level is " & $g_iTownHallLevel)
 If isProblemAffect(True) Then checkMainScreen(False)
-Local $FullArea = "300,155,765,550"
 Local $pathImages = @ScriptDir & "\imgxml\Resources\ClanGamesImages\Challenges"
 Local $pathTemp = @TempDir & "\" & $g_sProfileCurrentName & "\Challenges\"
 If $g_bChkClanGamesLoot Then FileCopy($pathImages & "\L-*.xml", $pathTemp, $FC_OVERWRITE + $FC_CREATEPATH)
@@ -63228,12 +63172,12 @@ If $g_bChkClanGamesDestruction Then FileCopy($pathImages & "\D-*.xml", $pathTemp
 If $g_bChkClanGamesMiscellaneous Then FileCopy($pathImages & "\M-*.xml", $pathTemp, $FC_OVERWRITE + $FC_CREATEPATH)
 Local $HowManyImages = _FileListToArray($pathTemp, "*", $FLTA_FILES)
 If IsArray($HowManyImages) Then
-Setlog($HowManyImages[0] & " Events to search...")
+Setlog($HowManyImages[0] & " Events to search")
 Else
 Setlog("ClanGames-Error on $HowManyImages: " & @error)
 EndIf
 Local $aAllDetectionsOnScreen[0][4]
-Local $sClanGamesWindow = GetDiamondFromRect($FullArea)
+Local $sClanGamesWindow = GetDiamondFromRect("300,155,765,550")
 Local $aCurrentDetection = findMultiple($pathTemp, $sClanGamesWindow, $sClanGamesWindow, 0, 1000, 0, "objectname,objectpoints", True)
 Local $aEachDetection
 If $g_bChkClanGamesDebug Then Setlog("_ClanGames findMultiple (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
@@ -63467,16 +63411,16 @@ Return True
 EndFunc
 Func GetTimesAndScores()
 Local $rest = -1, $YourScore = "", $ScoreLimits, $sTimeRemain
-$sTimeRemain = StringReplace(getOcrTimeGameTime(50, 479), " ", "")
+$sTimeRemain = StringReplace(getOcrTimeGameTime(55, 470), " ", "")
 If Not _IsValideOCR($sTimeRemain) Then
-SetLog("Get Time Remain error!", $COLOR_WARNING)
+SetLog("Get Time Remain error", $COLOR_WARNING)
 Return -1
 EndIf
 SetLog("Clan Games Time Remaining: " & $sTimeRemain, $COLOR_INFO)
 GUICtrlSetData($g_hLblRemainTime, $sTimeRemain)
 GUICtrlSetState($g_hLblRemainTime, $GUI_ENABLE)
 For $i = 0 To 10
-$YourScore = getOcrYourScore(55, 533)
+$YourScore = getOcrYourScore(45, 530)
 If $g_bChkClanGamesDebug Then SetLog("Your OCR score: " & $YourScore)
 $YourScore = StringReplace($YourScore, "#", "/")
 $ScoreLimits = StringSplit($YourScore, "/", $STR_NOCOUNT)
@@ -63502,11 +63446,23 @@ EndIf
 Return False
 EndFunc
 Func IsEventRunning()
-If Not _ColorCheck(_GetPixelColor(304, 257, True), Hex(0x53E050, 6), 5) Then
-SetLog("An Event is already in progress !", $COLOR_SUCCESS)
+Local $aEventFailed[4] = [304, 255, 0xEA2B24, 20]
+If Not _ColorCheck(_GetPixelColor(304, 260, True), Hex(0x53E050, 6), 5) Then
+If _CheckPixel($aEventFailed, True) Then
+SetLog("Couldn't finish last event! Lets trash it and look for a new one", $COLOR_INFO)
+If TrashFailedEvent() Then
+Return False
+Else
+SetLog("Error happend while trashing failed event", $COLOR_ERROR)
+ClickP($aAway, 1, 0, "#0000")
+Return True
+EndIf
+Else
+SetLog("An event is already in progress!", $COLOR_SUCCESS)
 If $g_bChkClanGamesDebug Then SetLog("[0]: " & _GetPixelColor(304, 257, True))
 ClickP($aAway, 1, 0, "#0000")
 Return True
+EndIf
 Else
 SetLog("No event under progress. Lets look for one", $COLOR_INFO)
 Return False
@@ -63533,7 +63489,7 @@ ClickP($aAway, 1, 0, "#0000")
 Return True
 EndFunc
 Func StartsEvent($sEventName, $g_bPurgeJob = False, $getCapture = True, $g_bChkClanGamesDebug = False)
-If $g_bRunState = False Then Return
+If Not $g_bRunState Then Return
 If QuickMIS("BC1", $g_sImgStart, 220, 150, 830, 580, $getCapture, $g_bChkClanGamesDebug) Then
 Local $Timer = GetEventTimeInMinutes($g_iQuickMISX + 220, $g_iQuickMISY + 150)
 SetLog("Starting  Event" & " [" & $Timer & " min]", $COLOR_SUCCESS)
@@ -63554,17 +63510,17 @@ GUICtrlSetData($g_hTxtClanGamesLog, @CRLF & _NowDate() & " " & _NowTime() & " ["
 _FileWriteLog($g_sProfileLogsPath & "\ClanGames.log", " [" & $g_sProfileCurrentName & "] - [" & $g_iPurgeJobCount[$g_iCurAccount] + 1 & "] - Purging Event ")
 ClickP($aAway, 1, 0, "#0000")
 Else
-SetLog("$g_sImgOkayPurge Issue!!!", $COLOR_WARNING)
+SetLog("$g_sImgOkayPurge Issue", $COLOR_ERROR)
 Return False
 EndIf
 Else
-SetLog("$g_sImgTrashPurge Issue!!!", $COLOR_WARNING)
+SetLog("$g_sImgTrashPurge Issue", $COLOR_ERROR)
 Return False
 EndIf
 EndIf
 Return True
 Else
-SetLog("Didn't Get the Green Start Button Event!!", $COLOR_WARNING)
+SetLog("Didn't Get the Green Start Button Event", $COLOR_WARNING)
 If $g_bChkClanGamesDebug Then SetLog("[X: " & 220 & " Y:" & 150 & " X1: " & 830 & " Y1: " & 580 & "]", $COLOR_WARNING)
 ClickP($aAway, 1, 0, "#0000")
 Return False
@@ -63575,7 +63531,7 @@ SetLog("Checking Builder Base Challenges to Purge", $COLOR_DEBUG)
 Local $x = 281, $y = 150, $x1 = 775, $y1 = 545
 If QuickMIS("BC1", $directoryImage, $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
 Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
-SetLog("Starting Impossible Job to purge...", $COLOR_INFO)
+SetLog("Starting Impossible Job to purge", $COLOR_INFO)
 If _Sleep(1500) Then Return
 If StartsEvent($sEventName, True, $getCapture, $g_bChkClanGamesDebug) Then
 ClickP($aAway, 1, 0, "#0000")
@@ -63583,6 +63539,19 @@ Return True
 EndIf
 EndIf
 Return False
+EndFunc
+Func TrashFailedEvent()
+If Not ClickB("EventFailed") Then
+SetLog("Could not find the failed event icon!", $COLOR_ERROR)
+Return False
+EndIf
+If _Sleep(300) Then Return
+If Not ClickB("TrashEvent") Then
+SetLog("Could not find the trash event button!", $COLOR_ERROR)
+Return False
+EndIf
+If _Sleep(500) Then Return
+Return True
 EndFunc
 Func _IsValideOCR($sString)
 If StringInStr($sString, "d") > 0 Or StringInStr($sString, "h") > 0 Or StringInStr($sString, "m") > 0 Or StringInStr($sString, "s") > 0 Then Return True
@@ -63641,7 +63610,7 @@ If $debug Then Setlog(" - Ini Path: " & $LocalINI)
 Local $section[4] = ["Loot Challenges", "Battle Challenges", "Destruction Challenges", "Misc Challenges"]
 Local $array[4] = [$LootChallenges, $BattleChallenges, $DestructionChallenges, $MiscChallenges]
 Local $ResultIni = "", $TempChallenge, $tempXSector
-If $makeIni = False Then
+If Not $makeIni Then
 Switch $sReturnArray
 Case "$AirTroopChallenges"
 Return $AirTroopChallenges

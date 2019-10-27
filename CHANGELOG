@@ -1,4 +1,13 @@
-﻿* **V7.7.8**
+﻿* **V7.7.9**
+* Fix builder base remove obstacle Button not found @DUC4TI
+* Fix share replay function
+* Fix cannot find confirm attack button @nytol
+* Fix loot cart collection (October 2019 Update)
+* Fix clan games (October 2019 Update)
+* Fix donations (October 2019 Update)
+* Fix quick train (October 2019 Update)
+
+* **V7.7.8**
 * Added Legend League attack with auto sign-up: any dead or live base search conditions are ignored
 * Added precise Army to train system
 * Added collect rewards in daily challenge

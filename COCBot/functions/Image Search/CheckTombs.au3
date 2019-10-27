@@ -192,11 +192,10 @@ EndFunc   ;==>CleanYard
 
 Func ClickRemoveObstacle()
 	Local $aiButton = findButton("RemoveObstacle", Default, 1, True)
-	If IsArray($aiButton) And UBound($aiButton) = 2 Then
-		If IsMainPage() Then
-			ClickP($aiButton)
-			Return True
-		EndIf
+	If IsArray($aiButton) And UBound($aiButton) >= 2 Then
+		SetDebugLog("Remove Button found! Clicking it at X: " & $aiButton[0] & ", Y: " & $aiButton[1], $COLOR_DEBUG1)
+		ClickP($aiButton)
+		Return True
 	Else
 		SetLog("Cannot find Remove Button", $COLOR_ERROR)
 		Return False

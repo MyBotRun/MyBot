@@ -5,11 +5,11 @@
 #pragma compile(Icon, "Images\MyBot.ico")
 #pragma compile(FileDescription, Clash of Clans Bot - A Free Clash of Clans bot - https://mybot.run)
 #pragma compile(ProductVersion, 7.7)
-#pragma compile(FileVersion, 7.7.8)
+#pragma compile(FileVersion, 7.7.9)
 #pragma compile(LegalCopyright, © https://mybot.run)
 #Au3Stripper_Off
 #Au3Stripper_On
-Global $g_sBotVersion = "v7.7.8"
+Global $g_sBotVersion = "v7.7.9"
 Opt("MustDeclareVars", 1)
 Global $g_sBotTitle = ""
 Global $g_hFrmBot = 0
@@ -5714,7 +5714,6 @@ Static $iOldCostGoldWall, $iOldCostElixirWall, $iOldCostGoldBuilding, $iOldCostE
 Static $iOldNbrOfWallsUppedGold, $iOldNbrOfWallsUppedElixir, $iOldNbrOfBuildingsUppedGold, $iOldNbrOfBuildingsUppedElixir, $iOldNbrOfHeroesUpped
 Static $iOldSearchCost, $iOldTrainCostElixir, $iOldTrainCostDElixir
 Static $iOldNbrOfOoS
-Static $iOldNbrOfTHSnipeFails, $iOldNbrOfTHSnipeSuccess
 Static $iOldGoldFromMines, $iOldElixirFromCollectors, $iOldDElixirFromDrills
 Static $iOldAttackedCount, $iOldAttackedVillageCount[$g_iModeCount + 1]
 Static $iOldTotalGoldGain[$g_iModeCount + 1], $iOldTotalElixirGain[$g_iModeCount + 1], $iOldTotalDarkGain[$g_iModeCount + 1], $iOldTotalTrophyGain[$g_iModeCount + 1]

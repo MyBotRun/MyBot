@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: checkObstacles
 ; Description ...: Checks whether something is blocking the pixel for mainscreen and tries to unblock

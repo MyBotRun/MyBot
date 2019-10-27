@@ -112,7 +112,7 @@ Func checkImglocError(ByRef $imglocvalue, $funcName, $sTileSource = "", $sImageA
 	;Return true if there is an error in imgloc return string
 	If IsArray($imglocvalue) Then ;despite beeing a string, AutoIt receives a array[0]
 		If $imglocvalue[0] = "0" Or $imglocvalue[0] = "" Then
-			If $g_bDebugSetlog Then SetDebugLog($funcName & " imgloc search returned no results" & ($sImageArea ? " in " & $sImageArea : "")  & ($sTileSource ? " for '" & $sTileSource & "' !" : "!"), $COLOR_WARNING)
+			If $g_bDebugSetlog Then SetDebugLog($funcName & " imgloc search returned no results" & ($sImageArea ? " in " & $sImageArea : "") & ($sTileSource ? " for '" & $sTileSource & "' !" : "!"), $COLOR_WARNING)
 			Return True
 		ElseIf StringLeft($imglocvalue[0], 2) = "-1" Then ;error
 			If $g_bDebugSetlog Then SetDebugLog($funcName & " - Imgloc DLL Error: " & $imglocvalue[0], $COLOR_ERROR)
@@ -135,6 +135,16 @@ Func checkImglocError(ByRef $imglocvalue, $funcName, $sTileSource = "", $sImageA
 		Return True
 	EndIf
 EndFunc   ;==>checkImglocError
+
+Func ClickB($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $iDelay = 100)
+	Local $aiButton = findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath, 1, True)
+	If IsArray($aiButton) And UBound($aiButton) >= 2 Then
+		ClickP($aiButton, 1)
+		If _Sleep($iDelay) Then Return
+		Return True
+	EndIf
+	Return False
+EndFunc   ;==>ClickB
 
 Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $maxReturnPoints = 1, $bForceCapture = True)
 
@@ -212,7 +222,7 @@ Func findButton($sButtonName, $buttonTileArrayOrPatternOrFullPath = Default, $ma
 				Return StringSplit($aCoords[1], ",", $STR_NOCOUNT) ; return just X,Y coord
 			ElseIf IsArray($aCoords) Then
 				Local $aReturnResult[0][2]
-				For $i = 1 To Ubound($aCoords) - 1
+				For $i = 1 To UBound($aCoords) - 1
 					_ArrayAdd($aReturnResult, $aCoords[$i], 0, ",", @CRLF, $ARRAYFILL_FORCE_NUMBER)
 				Next
 				Return $aReturnResult ; return 2D array
@@ -237,6 +247,10 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = GetDiamondFromRect("0,600,160,720")
 		Case "OpenTrainWindow" ;Main Window Screen
 			$btnDiamond = "15,560|65,560|65,610|15,610"
+		Case "TrashEvent"
+			$btnDiamond = GetDiamondFromRect("100,200,840,540")
+		Case "EventFailed"
+			$btnDiamond = GetDiamondFromRect("230,130,777,560")
 		Case "OK"
 			$btnDiamond = "440,395|587,395|587,460|440,460"
 		Case "CANCEL"
@@ -253,10 +267,8 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = GetDiamondFromRect("359,392(148,66)")
 		Case "EndBattleSurrender" ;surrender - attackwindow
 			$btnDiamond = "12,577|125,577|125,615|12,615"
-		Case "ExpandChat" ;mainwindow
-			$btnDiamond = "2,330|35,350|35,410|2,430"
-		Case "CollapseChat" ;mainwindow
-			$btnDiamond = "315,334|350,350|350,410|315,430"
+		Case "ClanChat"
+			$btnDiamond = GetDiamondFromRect("0,300,400,450")
 		Case "ChatOpenRequestPage" ;mainwindow - chat open
 			$btnDiamond = "5,688|65,688|65,615|5,725"
 		Case "Profile" ;mainwindow - only visible if chat closed
@@ -275,6 +287,10 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = GetDiamondFromRect("630,280,850,360")
 		Case "ArmyTab", "TrainTroopsTab", "BrewSpellsTab", "BuildSiegeMachinesTab", "QuickTrainTab"
 			$btnDiamond = GetDiamondFromRect("18,100,800,150")
+		Case "MessagesButton"
+			$btnDiamond = GetDiamondFromRect("0,0,250,250")
+		Case "AttackLogTab", "ShareReplayButton"
+			$btnDiamond = GetDiamondFromRect("280,85,600,300")
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch
@@ -558,8 +574,8 @@ Func GetDiamondFromArray($aRectArray)
 	;		  $aArray[3] = EndY
 
 	If UBound($aRectArray, 1) < 4 Then
-			SetDebugLog("GetDiamondFromArray: Bad Input Array!", $COLOR_ERROR)
-			Return ""
+		SetDebugLog("GetDiamondFromArray: Bad Input Array!", $COLOR_ERROR)
+		Return ""
 	EndIf
 	Local $iX = Number($aRectArray[0]), $iY = Number($aRectArray[1])
 	Local $iEndX = Number($aRectArray[2]), $iEndY = Number($aRectArray[3])
@@ -570,8 +586,8 @@ Func GetDiamondFromArray($aRectArray)
 
 	Local $sReturnDiamond = ""
 	$sReturnDiamond = $iX & "," & $iY & "|" & $iEndX & "," & $iY & "|" & $iEndX & "," & $iEndY & "|" & $iX & "," & $iEndY
-    Return $sReturnDiamond
-EndFunc
+	Return $sReturnDiamond
+EndFunc   ;==>GetDiamondFromArray
 
 Func FindImageInPlace($sImageName, $sImageTile, $place, $bForceCaptureRegion = True, $AndroidTag = Default)
 	;creates a reduced capture of the place area a finds the image in that area
@@ -763,7 +779,7 @@ Func Slot($iX, $iY) ; Return Slots for Quantity Reading on Army Window
 			Case 393 To 435 ; CC Troops Slot 6
 				Return 403
 
-			Case 450 To 510; CC Spell Slot 1
+			Case 450 To 510 ; CC Spell Slot 1
 				Return 475
 			Case 511 To 535 ; CC Spell Middle ( Happens with Clan Castles with the max. Capacity of 1!)
 				Return 510
