@@ -255,7 +255,8 @@ Func DonateCC($bCheckForNewMsg = False)
 			If $bDonateTroop Or $bDonateSpell Or $bDonateSiege Then
 
 				Local $Alphabets[4] = [$g_bChkExtraAlphabets, $g_bChkExtraChinese, $g_bChkExtraKorean, $g_bChkExtraPersian]
-				Local $Yaxis[4] = [50, 26, 26, 31]
+				;Fix by TFKNazGul for Chinese fonts
+				Local $Yaxis[4] = [50, 36, 36, 41]
 				Local $TextAlphabetsNames[4] = ["Cyrillic and Latin", "Chinese", "Korean", "Persian"]
 				Local $AlphabetFunctions[4] = ["getChatString", "getChatStringChinese", "getChatStringKorean", "getChatStringPersian"]
 				Local $BlankSpaces = ""

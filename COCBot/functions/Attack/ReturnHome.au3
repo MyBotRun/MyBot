@@ -18,6 +18,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	Local $counter = 0
 	Local $hBitmap_Scaled
 	Local $i, $j
+	Local $aiSurrenderButton
 
 	If $g_bDESideDisableOther And $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 4 And $g_bDESideEndEnable And ($g_bDropQueen Or $g_bDropKing) Then
 		SaveandDisableEBO()
@@ -79,9 +80,10 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	If Not (IsReturnHomeBattlePage(True, False)) Then ; check if battle is already over
 		For $i = 0 To 5 ; dynamic wait loop for surrender button to appear (if end battle or surrender button are not found in 5*(200)ms + 10*(200)ms or 3 seconds, then give up.)
 			If $g_bDebugSetlog Then SetDebugLog("Wait for surrender button to appear #" & $i)
-			If _CheckPixel($aSurrenderButton, $g_bCapturePixel) Then ;is surrender button is visible?
+			$aiSurrenderButton = findButton("EndBattle", Default, 1, True)
+			If IsArray($aiSurrenderButton) And UBound($aiSurrenderButton, 1) = 2 Then
 				If IsAttackPage() Then ; verify still on attack page, and battle has not ended magically before clicking
-					ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
+					ClickP($aiSurrenderButton, 1, 0, "#0099") ;Click Surrender
 					$j = 0
 					While 1 ; dynamic wait for Okay button
 						If $g_bDebugSetlog Then SetDebugLog("Wait for OK button to appear #" & $j)
@@ -96,6 +98,8 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 						If _Sleep($DELAYRETURNHOME5) Then Return
 					WEnd
 				EndIf
+			Else
+				SetDebugLog("Cannot Find Surrender Button", $COLOR_ERROR)
 			EndIf
 			If ReturnHomeMainPage() Then Return
 			If _Sleep($DELAYRETURNHOME5) Then Return
@@ -186,28 +190,30 @@ Func ReturnHomeMainPage()
 EndFunc   ;==>ReturnHomeMainPage
 
 Func ReturnfromDropTrophies()
-
+	Local $aiSurrenderButton
 	If $g_bDebugSetlog Then SetDebugLog(" -- ReturnfromDropTrophies -- ")
 
 	For $i = 0 To 5 ; dynamic wait loop for surrender button to appear (if end battle or surrender button are not found in 5*(200)ms + 10*(200)ms or 3 seconds, then give up.)
-		If $g_bDebugSetlog Then SetDebugLog("Wait for surrender button to appear #" & $i)
-		ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
-		Local $j = 0
-		While 1 ; dynamic wait for Okay button
-			If $g_bDebugSetlog Then SetDebugLog("Wait for OK button to appear #" & $j)
-			If IsEndBattlePage(True) Then
-				ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
-				ExitLoop 2
-			Else
-				$j += 1
-			EndIf
-			If $j > 10 Then ExitLoop ; if Okay button not found in 10*(200)ms or 2 seconds, then give up.
+		$aiSurrenderButton = findButton("Surrender", Default, 1, True)
+		If IsArray($aiSurrenderButton) And UBound($aiSurrenderButton, 1) = 2 Then
+			ClickP($aiSurrenderButton, 1, 0, "#0099") ;Click Surrender
+			If _Sleep(500) Then Return
+			Local $j = 0
+			While 1 ; dynamic wait for Okay button
+				If $g_bDebugSetlog Then SetDebugLog("Wait for OK button to appear #" & $j)
+				If IsEndBattlePage(True) Then
+					ClickOkay("SurrenderOkay") ; Click Okay to Confirm surrender
+					ExitLoop 2
+				Else
+					$j += 1
+				EndIf
+				If $j > 10 Then ExitLoop ; if Okay button not found in 10*(200)ms or 2 seconds, then give up.
+				If _Sleep(100) Then Return
+			WEnd
 			If _Sleep(100) Then Return
-			If _CheckPixel($aSurrenderButton, $g_bCapturePixel) Then ;is surrender button is visible?
-				ClickP($aSurrenderButton, 1, 0, "#0099") ;Click Surrender
-			EndIf
-		WEnd
-		If _Sleep(100) Then Return
+		Else
+			SetDebugLog("Cannot Find Surrender Button", $COLOR_ERROR)
+		EndIf
 	Next
 
 	$i = 0 ; Reset Loop counter
@@ -217,14 +223,13 @@ Func ReturnfromDropTrophies()
 		If _CheckPixel($aEndFightSceneAvl, $g_bCapturePixel) Then ; check for the gold ribbon in the end of battle data screen
 			If IsReturnHomeBattlePage(True) Then
 				ClickP($aReturnHomeButton, 1, 0, "#0101") ;Click Return Home Button
-				; sometimes 1st click is not closing, so check again
+				; sometimes 1st click is not closing, so try again
 				$iExitLoop = $i
 			EndIf
-		Else
-			$i += 1
 		EndIf
 		If $i > 25 Or ($iExitLoop > -1 And $i > $iExitLoop) Then ExitLoop ; if end battle window is not found in 25*200mms or 5 seconds, then give up.
 		If _Sleep($DELAYRETURNHOME5) Then Return
+		$i += 1
 	WEnd
 	If _Sleep($DELAYRETURNHOME2) Then Return ; short wait for screen to close
 	$g_bFullArmy = False ; forcing check the army

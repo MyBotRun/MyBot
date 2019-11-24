@@ -1,4 +1,3 @@
-
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: ProfileReport
 ; Description ...: This function will report Attacks Won, Defenses Won, Troops Donated and Troops Received from Profile info page
@@ -60,21 +59,21 @@ Func ProfileReport()
 		$iAttacksWon = 0
 		$iDefensesWon = 0
 	Else
-		$iAttacksWon = getProfile(578, 347)
+		$iAttacksWon = getProfile(564, 403)
 		If $g_bDebugSetlog Then SetDebugLog("$iAttacksWon: " & $iAttacksWon, $COLOR_DEBUG)
 		$iCount = 0
 		While $iAttacksWon = "" ; Wait for $attacksWon to be readable in case of slow PC
 			If _Sleep($DELAYPROFILEREPORT1) Then Return
-			$iAttacksWon = getProfile(578, 347)
+			$iAttacksWon = getProfile(564, 403)
 			If $g_bDebugSetlog Then SetDebugLog("Read Loop $iAttacksWon: " & $iAttacksWon & ", Count: " & $iCount, $COLOR_DEBUG)
 			$iCount += 1
 			If $iCount >= 20 Then ExitLoop
 		WEnd
-		If $g_bDebugSetlog And $iCount >= 20 Then SetLog("Excess wait time for reading $AttacksWon: " & getProfile(578, 347), $COLOR_DEBUG)
-		$iDefensesWon = getProfile(790, 347)
+		If $g_bDebugSetlog And $iCount >= 20 Then SetLog("Excess wait time for reading $AttacksWon: " & getProfile(564, 403), $COLOR_DEBUG)
+		$iDefensesWon = getProfile(795, 403)
 	EndIf
-	$g_iTroopsDonated = getProfile(158, 347)
-	$g_iTroopsReceived = getProfile(360, 347)
+	$g_iTroopsDonated = getProfile(160, 403)
+	$g_iTroopsReceived = getProfile(362, 403)
 
 	SetLog(" [ATKW]: " & _NumberFormat($iAttacksWon) & " [DEFW]: " & _NumberFormat($iDefensesWon) & " [TDON]: " & _NumberFormat($g_iTroopsDonated) & " [TREC]: " & _NumberFormat($g_iTroopsReceived), $COLOR_SUCCESS)
 	Click(830, 80, 1, 0, "#0223") ; Close Profile page

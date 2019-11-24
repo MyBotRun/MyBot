@@ -231,16 +231,18 @@ Func CheckQuickTrainTroop()
 
 	Local $iTroopCamp = 0, $iSpellCamp = 0, $sLog = ""
 
-	Local $aEditButton[3][4] = [[808, 292, 0xd2f17a, 20], [808, 400, 0xcff077, 20], [808, 505, 0xd6f37e, 20]] ; green
 	Local $aSaveButton[4] = [808, 300, 0xdcf684, 20] ; green
 	Local $aCancelButton[4] = [650, 300, 0xff8c91, 20] ; red
 	Local $aRemoveButton[4] = [535, 300, 0xff8f94, 20] ; red
 
+	local $iDistanceBetweenArmies = 108 ; pixels
+	local $aArmy1Location = [718, 272] ; first area of quick train army buttons
+
 	For $i = 0 To UBound($g_bQuickTrainArmy) - 1 ; check all 3 army combo
 		If Not $g_bQuickTrainArmy[$i] Then ContinueLoop ; skip unchecked quick train army
 
-		If _ColorCheck(_GetPixelColor($aEditButton[$i][0], $aEditButton[$i][1], True), Hex($aEditButton[$i][2], 6), $aEditButton[$i][3]) Then
-			Click($aEditButton[$i][0], $aEditButton[$i][1]) ; Click edit army 1, 2, 3
+		If QuickMIS("BC1", $g_sImgEditQuickTrain, $aArmy1Location[0], $aArmy1Location[1] + $iDistanceBetweenArmies*$i, 775, $aArmy1Location[1] + $iDistanceBetweenArmies*($i+1) ) Then
+			Click($g_iQuickMISX + $aArmy1Location[0], $g_iQuickMISY + $aArmy1Location[1] + $iDistanceBetweenArmies*$i, 1) ; Click edit army 1, 2, 3
 			If _Sleep(1000) Then Return
 
 			Local $TempTroopTotal = 0, $TempSpellTotal = 0
@@ -256,12 +258,14 @@ Func CheckQuickTrainTroop()
 						Setlog("No troops/spells detected in Army " & $i + 1 & ", let's create quick train preset", $Step > 3 ? $COLOR_ERROR : $COLOR_BLACK)
 						If $Step > 3 Then
 							SetLog("Some problems creating army preset", $COLOR_ERROR)
+							Click($aCancelButton[0], $aCancelButton[1]) ; Close editing
 							ContinueLoop 2
 						EndIf
 						CreateQuickTrainPreset($i)
 						ContinueLoop
 					Else
 						Setlog("No troops/spells detected in Quick Army " & $i + 1, $COLOR_ERROR)
+						Click($aCancelButton[0], $aCancelButton[1]) ; Close editing
 						If _Sleep(1000) Then Return
 						ContinueLoop 2
 					EndIf

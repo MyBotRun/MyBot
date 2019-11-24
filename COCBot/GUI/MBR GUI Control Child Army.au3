@@ -175,7 +175,7 @@ Func lblTotalCountTroop2()
 	Local $NbrOfDarkBarrack = 2 ;For the moment fix to 2 until fine detect level of each Barrack
 	For $i = $eTroopBarbarian To $eTroopElectroDragon
 		Local $NbrOfTroop = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$i])
-		Local $LevOfTroop = $g_aiTrainArmyTroopLevel[$i]
+		Local $LevOfTroop = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
 
 		If $NbrOfTroop > 0 And $LevOfTroop > 0 Then
 			If IsInt($NbrOfTroop / $NbrOfBarrack) = 1 Then
@@ -189,7 +189,7 @@ Func lblTotalCountTroop2()
 
 	For $i = $eTroopMinion To $eTroopIceGolem
 		Local $NbrOfTroop = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$i])
-		Local $LevOfTroop = $g_aiTrainArmyTroopLevel[$i]
+		Local $LevOfTroop = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
 
 		If $NbrOfTroop > 0 And $LevOfTroop > 0 Then
 			If IsInt($NbrOfTroop / $NbrOfDarkBarrack) = 1 Then
@@ -228,12 +228,13 @@ EndFunc   ;==>lblTotalCountSpell2
 
 Func lblTotalCountSiege()
 	; calculate total space and time for Siege composition
-	Local $iTotalTotalTimeSiege = 0
+	Local $iTotalTotalTimeSiege = 0, $indexLevel = 0
 	$g_iTotalTrainSpaceSiege = 0
 
 	For $i = 0 To $eSiegeMachineCount - 1
 		$g_iTotalTrainSpaceSiege += $g_aiArmyCompSiegeMachine[$i] * $g_aiSiegeMachineSpace[$i]
-		$iTotalTotalTimeSiege += $g_aiArmyCompSiegeMachine[$i] * $g_aiSiegeMachineTrainTimePerLevel[$i][$g_aiTrainArmySiegeMachineLevel[$i]]
+		$indexLevel = $g_aiTrainArmySiegeMachineLevel[$i] > 0 ? $g_aiTrainArmySiegeMachineLevel[$i] : $g_aiSiegeMachineCostPerLevel[$i][0]
+		$iTotalTotalTimeSiege += $g_aiArmyCompSiegeMachine[$i] * $g_aiSiegeMachineTrainTimePerLevel[$i][$indexLevel]
 	Next
 
 	GUICtrlSetData($g_hLblTotalTimeSiege, CalculTimeTo($iTotalTotalTimeSiege))
@@ -249,6 +250,7 @@ Func lblTotalCountSiege()
 		GUICtrlSetData($g_hLblGoldCostSiege, "0")
 		GUICtrlSetData($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege)
 		GUICtrlSetData($g_hLblTotalTimeSiege, " 0s")
+		_GUI_Value_STATE("HIDE", $groupListSieges)
 	EndIf
 EndFunc   ;==>lblTotalCountSiege
 
@@ -258,7 +260,7 @@ Func TotalSpellCountClick()
 	$g_iTownHallLevel = Int($g_iTownHallLevel)
 
 	If $g_iTownHallLevel > 4 Or $g_iTownHallLevel = 0 Then
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellLightning] > 0 ? $g_aGroupLightning : $groupIcnLightning)
+		_GUI_Value_STATE("SHOW", $groupLightning)
 	Else
 		For $i = 0 To $eSpellCount - 1
 			GUICtrlSetData($g_ahTxtTrainArmySpellCount[$i], 0)
@@ -268,7 +270,7 @@ Func TotalSpellCountClick()
 	EndIf
 
 	If $g_iTownHallLevel > 5 Or $g_iTownHallLevel = 0 Then
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellHeal] > 0 ? $groupHeal : $groupIcnHeal)
+		_GUI_Value_STATE("SHOW", $groupHeal)
 	Else
 		For $i = $eSpellRage To $eSpellBat
 			GUICtrlSetData($g_ahTxtTrainArmySpellCount[$i], 0)
@@ -277,7 +279,7 @@ Func TotalSpellCountClick()
 	EndIf
 
 	If $g_iTownHallLevel > 6 Or $g_iTownHallLevel = 0 Then
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellRage] > 0 ? $groupRage : $groupIcnRage)
+		_GUI_Value_STATE("SHOW", $groupRage)
 	Else
 		For $i = $eSpellJump To $eSpellBat
 			GUICtrlSetData($g_ahTxtTrainArmySpellCount[$i], 0)
@@ -286,8 +288,8 @@ Func TotalSpellCountClick()
 	EndIf
 
 	If $g_iTownHallLevel > 7 Or $g_iTownHallLevel = 0 Then
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellPoison] > 0 ? $g_aGroupPoison : $groupIcnPoison)
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellEarthquake] > 0 ? $groupEarthquake : $groupIcnEarthquake)
+		_GUI_Value_STATE("SHOW", $groupPoison)
+		_GUI_Value_STATE("SHOW", $groupEarthquake)
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellJump], 0)
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellFreeze], 0)
@@ -304,18 +306,20 @@ Func TotalSpellCountClick()
 	EndIf
 
 	If $g_iTownHallLevel > 8 Or $g_iTownHallLevel = 0 Then
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellJump] > 0 ? $groupJumpSpell : $groupIcnJumpSpell)
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellFreeze] > 0 ? $groupFreeze : $groupIcnFreeze)
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellHaste] > 0 ? $groupHaste : $groupIcnHaste)
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellSkeleton] > 0 ? $groupSkeleton : $groupIcnSkeleton)
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellBat] > 0 ? $groupSkeleton : $groupIcnBat)
+		_GUI_Value_STATE("SHOW", $groupJump)
+		_GUI_Value_STATE("SHOW", $groupFreeze)
+		_GUI_Value_STATE("SHOW", $groupHaste)
+		_GUI_Value_STATE("SHOW", $groupSkeleton)
 	Else
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellClone], 0)
+		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$eSpellBat], 0)
 		GUICtrlSetData($g_ahLblTrainArmySpellLevel[$eSpellClone], 0)
+		GUICtrlSetData($g_ahLblTrainArmySpellLevel[$eSpellBat], 0)
 	EndIf
 
 	If $g_iTownHallLevel > 9 Or $g_iTownHallLevel = 0 Then
-		_GUI_Value_STATE("SHOW", $g_aiTrainArmySpellLevel[$eSpellClone] > 0 ? $groupClone : $groupIcnClone)
+		_GUI_Value_STATE("SHOW", $groupClone)
+		_GUI_Value_STATE("SHOW", $groupBat)
 	EndIf
 
 	lblTotalCountSpell2()
@@ -863,19 +867,12 @@ Func LevUpDownTroop($iTroopIndex, $NoChangeLev = True)
 	EndIf
 
 	Local $hLevel = $g_ahLblTrainArmyTroopLevel[$iTroopIndex]
-	Local $hCount = $g_ahTxtTrainArmyTroopCount[$iTroopIndex]
 
 	If $TempLev > $MaxLev Or $TempLev = 0 Then
 		$TempLev = 0
-		GUICtrlSetData($hCount, 0)
-		$g_aiArmyCustomTroops[$iTroopIndex] = 0
-		If IsGUICtrlHidden($hCount) = False Then GUICtrlSetState($hCount, $GUI_HIDE)
 		If $NoChangeLev Then lblTotalCountTroop1()
 	ElseIf $TempLev < 0 Then
 		$TempLev = $MaxLev
-		If IsGUICtrlHidden($hCount) Then GUICtrlSetState($hCount, $GUI_SHOW)
-	ElseIf $TempLev > 0 And $TempLev <= $MaxLev And IsGUICtrlHidden($hCount) Then
-		GUICtrlSetState($hCount, $GUI_SHOW)
 	EndIf
 
 	$g_aiTrainArmyTroopLevel[$iTroopIndex] = $TempLev
@@ -900,19 +897,11 @@ Func LevUpDownSiege($iSiege, $NoChangeLev = True)
 	EndIf
 
 	Local $hLevel = $g_ahLblTrainArmySiegeLevel[$iSiege]
-	Local $hCount = $g_ahTxtTrainArmySiegeCount[$iSiege]
 
 	If $TempLev > $MaxLev Or $TempLev = 0 Then
 		$TempLev = 0
-		GUICtrlSetData($hCount, 0)
-		$g_aiArmyCompSiegeMachine[$iSiege] = 0
-		If IsGUICtrlHidden($hCount) = False Then GUICtrlSetState($hCount, $GUI_HIDE)
-		;If $NoChangeLev Then lblTotalCountSiege()
 	ElseIf $TempLev < 0 Then
 		$TempLev = $MaxLev
-		If IsGUICtrlHidden($hCount) Then GUICtrlSetState($hCount, $GUI_SHOW)
-	ElseIf $TempLev > 0 And $TempLev <= $MaxLev And IsGUICtrlHidden($hCount) Then
-		GUICtrlSetState($hCount, $GUI_SHOW)
 	EndIf
 
 	$g_aiTrainArmySiegeMachineLevel[$iSiege] = $TempLev
@@ -939,19 +928,12 @@ Func LevUpDownSpell($iSpellIndex, $NoChangeLev = True)
 	EndIf
 
 	Local $hLevel = $g_ahLblTrainArmySpellLevel[$iSpellIndex]
-	Local $hCount = $g_ahTxtTrainArmySpellCount[$iSpellIndex]
 
 	If $TempLev > $MaxLev Or $TempLev = 0 Then
 		$TempLev = 0
-		GUICtrlSetData($hCount, 0)
-		$g_aiArmyCustomSpells[$iSpellIndex] = 0
-		If IsGUICtrlHidden($hCount) = False Then GUICtrlSetState($hCount, $GUI_HIDE)
 		If $NoChangeLev Then lblTotalCountSpell2()
 	ElseIf $TempLev < 0 Then
 		$TempLev = $MaxLev
-		If IsGUICtrlHidden($hCount) Then GUICtrlSetState($hCount, $GUI_SHOW)
-	ElseIf $TempLev > 0 And $TempLev <= $MaxLev And IsGUICtrlHidden($hCount) Then
-		GUICtrlSetState($hCount, $GUI_SHOW)
 	EndIf
 
 	$g_aiTrainArmySpellLevel[$iSpellIndex] = $TempLev
@@ -1022,14 +1004,16 @@ Func TrainSpellLevelClick()
 EndFunc   ;==>TrainSpellLevelClick
 
 Func CalCostCamp()
-	Local $iElixirCostCamp = 0, $iDarkCostCamp = 0
+	Local $iElixirCostCamp = 0, $iDarkCostCamp = 0, $indexLevel = 0
 
 	For $i = $eTroopBarbarian To $eTroopElectroDragon
-		$iElixirCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$g_aiTrainArmyTroopLevel[$i]]
+		$indexLevel = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
+		$iElixirCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$indexLevel]
 	Next
 
 	For $i = $eTroopMinion To $eTroopIceGolem
-		$iDarkCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$g_aiTrainArmyTroopLevel[$i]]
+		$indexLevel = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
+		$iDarkCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$indexLevel]
 	Next
 
 	GUICtrlSetData($g_hLblElixirCostCamp, _NumberFormat($iElixirCostCamp, True))
@@ -1037,14 +1021,16 @@ Func CalCostCamp()
 EndFunc   ;==>CalCostCamp
 
 Func CalCostSpell()
-	Local $iElixirCostSpell = 0, $iDarkCostSpell = 0
+	Local $iElixirCostSpell = 0, $iDarkCostSpell = 0, $indexLevel = 0
 
 	For $i = $eSpellLightning To $eSpellClone
-		$iElixirCostSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellCostPerLevel[$i][$g_aiTrainArmySpellLevel[$i]]
+		$indexLevel = $g_aiTrainArmySpellLevel[$i] > 0 ? $g_aiTrainArmySpellLevel[$i] : $g_aiSpellCostPerLevel[$i][0]
+		$iElixirCostSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellCostPerLevel[$i][$indexLevel]
 	Next
 
 	For $i = $eSpellPoison To $eSpellBat
-		$iDarkCostSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellCostPerLevel[$i][$g_aiTrainArmySpellLevel[$i]]
+		$indexLevel = $g_aiTrainArmySpellLevel[$i] > 0 ? $g_aiTrainArmySpellLevel[$i] : $g_aiSpellCostPerLevel[$i][0]
+		$iDarkCostSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellCostPerLevel[$i][$indexLevel]
 	Next
 
 	GUICtrlSetData($g_hLblElixirCostSpell, _NumberFormat($iElixirCostSpell, True))
@@ -1052,10 +1038,11 @@ Func CalCostSpell()
 EndFunc   ;==>CalCostSpell
 
 Func CalCostSiege()
-	Local $iGoldCostSiege = 0
+	Local $iGoldCostSiege = 0, $indexLevel = 0
 
 	For $i = 0 To $eSiegeMachineCount - 1
-		$iGoldCostSiege += $g_aiArmyCompSiegeMachine[$i] * $g_aiSiegeMachineCostPerLevel[$i][$g_aiTrainArmySiegeMachineLevel[$i]]
+		$indexLevel = $g_aiTrainArmySiegeMachineLevel[$i] > 0 ? $g_aiTrainArmySiegeMachineLevel[$i] : $g_aiSiegeMachineCostPerLevel[$i][0]
+		$iGoldCostSiege += $g_aiArmyCompSiegeMachine[$i] * $g_aiSiegeMachineCostPerLevel[$i][$indexLevel]
 	Next
 
 	GUICtrlSetData($g_hLblGoldCostSiege, _NumberFormat($iGoldCostSiege, True))

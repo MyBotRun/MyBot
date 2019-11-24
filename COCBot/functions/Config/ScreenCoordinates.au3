@@ -26,7 +26,7 @@ Global $aAttackButton[2] = [60, 614 + $g_iBottomOffsetY] ; Attack Button, Main S
 Global $aFindMatchButton[4] = [470, 20 + $g_iBottomOffsetY, 0xD8A420, 10] ; Find Multiplayer Match Button, Attack Screen 860x780 without shield
 Global $aIsAttackShield[4] = [250, 415 + $g_iMidOffsetY, 0xE8E8E0, 10] ; Attack window, white shield verification window
 Global $aAway[2] = [175, 10] ; Away click, moved from 1,1 to prevent scroll window from top, moved from 0,10 to 175,32 to prevent structure click or 175,10 to just fix MEmu 2.x opening and closing toolbar
-Global $aAway2[2] = [400, 10] ; Second Away Position for Windows like Donate Window where at $aAway is a button
+Global $aAway2[2] = [235, 10] ; Second Away Position for Windows like Donate Window where at $aAway is a button
 Global $aNoShield[4] = [448, 20, 0x43484B, 15] ; Main Screen, charcoal pixel center of shield when no shield is present
 Global $aHaveShield[4] = [455, 19, 0xF0F8FB, 15] ; Main Screen, Silver pixel top center of shield
 Global $aHavePerGuard[4] = [455, 19, 0x10100D, 15] ; Main Screen, black pixel in sword outline top center of shield
@@ -139,22 +139,17 @@ Global $NextBtnRND[4] = [710, 530 + $g_iMidOffsetY, 830, 570 + $g_iMidOffsetY] ;
 Global $aLoginWithSupercellID[4] = [280, 640 + $g_iMidOffsetY, 0xDCF684, 20] ; Upper green button section "Log in with Supercell ID" 0xB1E25A
 Global $aLoginWithSupercellID2[4] = [266, 653 + $g_iMidOffsetY, 0xFFFFFF , 10] ; White Font "Log in with Supercell ID"
 Global $aButtonSetting[4] = [820, 550 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Setting button, Main Screen
-Global $aIsSettingPage[4] = [753, 75 + $g_iMidOffsetY, 0xFF8F95, 10] ; Main Screen, Setting page open - left upper corner of x button
+Global $aIsSettingPage[4] = [753, 81 + $g_iMidOffsetY, 0xFF8F95, 10] ; Main Screen, Setting page open - left upper corner of x button
 
 ;Google Play
-Global $aButtonConnected[4] = [602, 374 + $g_iMidOffsetY, 0xDAF481, 20] ; Setting screen, Connected button
-Global $aButtonDisconnected[4] = [602, 374 + $g_iMidOffsetY, 0xFF7E82, 20] ; Setting screen, Disconnected button
 Global $aListAccount[4] = [635, 210 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Accounts list google, White
 Global $aButtonVillageLoad[4] = [515, 411 + $g_iMidOffsetY, 0x6EBD1F, 20] ; Load button, Green
 Global $aTextBox[4] = [320, 160 + $g_iMidOffsetY, 0xFFFFFF, 10] ; Text box, White
 Global $aButtonVillageOkay[4] = [500, 170 + $g_iMidOffsetY, 0x81CA2D, 20] ; Okay button, Green
 
 ;SuperCell ID
-Global $aButtonConnectedSCID[4] = [453, 513 + $g_iMidOffsetY, 0x72BB2F, 20] ; Setting screen, Supercell ID Connected button
-Global $aButtonLogOutSCID[4] = [615,  270 + $g_iMidOffsetY, 0x308AFB, 20] ; Supercell ID, Log Out button
-Global $aButtonConfirmSCID[4] = [475, 420 + $g_iMidOffsetY, 0x2C88FA, 20] ; Supercell ID, Confirm button
-Global $aListAccountSCID[4] = [490, 185 + $g_iMidOffsetY, 0x000000, 10] ; Supercell ID, Black check in word "ID"
-Global $aCloseTabSCID[4] = [732, 145] ; Button Close Supercell ID tab
+Global $aButtonConnectedSCID[4] = [640, 160 + $g_iMidOffsetY, 0x2D89FD, 20] ; Setting screen, Supercell ID Connected button (Blue Part)
+Global $aCloseTabSCID[4] = [831, 57] ; Button Close Supercell ID tab
 
 ;Train
 Global $aButtonEditArmy[4] = [800, 542, 0xDDF685, 25]
@@ -199,9 +194,9 @@ Global $aTrainArmy[$eArmyCount] = [$aTrainBarb, $aTrainArch, $aTrainGiant, $aTra
 								   $aTrainMini, $aTrainHogs, $aTrainValk, $aTrainGole, $aTrainWitc, $aTrainLava, $aTrainBowl, $aTrainIceG, 0, 0, 0, 0, $aTrainLSpell, $aTrainHSpell, $aTrainRSpell, $aTrainJSpell, $aTrainFSpell, $aTrainCSpell, _
 								   $aTrainPSpell, $aTrainESpell, $aTrainHaSpell, $aTrainSkSpell, $aTrainBtSpell]
 ;Change Language To English
-Global $aButtonLanguage[4] = [210, 375 + $g_iMidOffsetY, 0xD0E978, 20]
-Global $aListLanguage[4] = [110, 90 + $g_iMidOffsetY, 0xFFFFFF, 10]
-Global $aEnglishLanguage[4] = [420, 140 + $g_iMidOffsetY, 0xD7D5C7, 20]
+Global $aButtonLanguage[4] = [620, 275 + $g_iMidOffsetY, 0xDDF685, 20]
+Global $aListLanguage[4] = [110, 100 + $g_iMidOffsetY, 0xFFFFFF, 10]
+Global $aEnglishLanguage[4] = [420, 145 + $g_iMidOffsetY, 0xD7D5C7, 20]
 Global $aLanguageOkay[4] = [510, 420 + $g_iMidOffsetY, 0x6FBD1F, 20]
 
 ;Personal Challenges

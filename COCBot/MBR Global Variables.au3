@@ -350,6 +350,7 @@ Global $g_iAndroidProcessAffinityMask = 0
 ; Android details
 ; Supported Android Versions, used for some ImgLoc functions and in GetAndroidCodeName()
 Global Const $g_iAndroidJellyBean = 17
+Global Const $g_iAndroidKitKat = 19
 Global Const $g_iAndroidLollipop = 21
 Global Const $g_iAndroidNougat = 24
 Global $g_iAndroidVersionAPI = $g_iAndroidJellyBean ; getprop ro.build.version.sdk
@@ -663,6 +664,9 @@ Global Const $g_aiTroopCostPerLevel[$eTroopCount][10] = [ _
 		[5, 220, 240, 260, 280, 300]] 									    ; IceGolem
 Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 6, 30, 2, 5, 8, 30, 12, 30, 6, 15]
 
+Global Const $g_aiTroopOcrOffSet[$eTroopCount][2] = [[37, 37], [41, 30], [33, 38], [50, 38], [59, 32], [19, 67], [55, 39], [58, 34], [37, 42], [53, 30], [49, 47], [52, 40], [52, 44], _
+		[39, 34], [41, 42], [38, 32], [38, 32], [39, 31], [33, 40], [52, 30], [45, 42]]
+
 ; Spells
 Global Enum $eSpellLightning, $eSpellHeal, $eSpellRage, $eSpellJump, $eSpellFreeze, $eSpellClone, _
 		$eSpellPoison, $eSpellEarthquake, $eSpellHaste, $eSpellSkeleton, $eSpellBat, $eSpellCount
@@ -684,6 +688,8 @@ Global Const $g_aiSpellCostPerLevel[$eSpellCount][8] = [ _
 		[6, 110, 120, 130, 140, 150, 160], _ 					 ;SkeletonSpell
 		[5, 110, 120, 130, 140, 150]] 							 ;BatSpell
 Global Const $g_aiSpellDonateXP[$eSpellCount] = [10, 10, 10, 10, 10, 0, 5, 5, 5, 5, 5]
+
+Global Const $g_aiSpellOcrOffSet[$eSpellCount][2] = [[44, 29], [41, 27], [41, 27], [50, 19], [34, 50], [43, 25], [47, 19], [39, 45], [45, 22], [46, 18], [30, 46]]
 
 ;Siege Machines
 Global Enum $eSiegeWallWrecker, $eSiegeBattleBlimp, $eSiegeStoneSlammer, $eSiegeMachineCount
@@ -831,6 +837,31 @@ Global $g_iTxtTreasuryElixir = 0
 Global $g_iTxtTreasuryDark = 0
 
 Global $g_bChkCollectBuilderBase = False, $g_bChkStartClockTowerBoost = False, $g_bChkCTBoostBlderBz = False, $g_bChkCleanBBYard = False
+
+; Builder Base Attack
+Global $g_hChkEnableBBAttack = 0, $g_hChkBBTrophyRange = 0, $g_hTxtBBTrophyLowerLimit = 0, $g_hTxtBBTrophyUpperLimit = 0, $g_hChkBBAttIfLootAvail = 0, $g_hChkBBWaitForMachine = 0
+Global $g_bChkEnableBBAttack = False, $g_bChkBBTrophyRange = False, $g_bChkBBAttIfLootAvail = False, $g_bChkBBWaitForMachine = False
+Global $g_iTxtBBTrophyLowerLimit = 0, $g_iTxtBBTrophyUpperLimit = 5000
+Global $g_bBBMachineReady = False
+Global $g_aBBMachine = [0,0] ; x,y coordinates of where to click for Battle machine on attack bar
+Global $g_iBBMachAbilityTime = 14000 ; in milliseconds, so 14 seconds between abilities
+Global Const $g_iBBNextTroopDelayDefault = 2000,  $g_iBBSameTroopDelayDefault = 300 ; default delay times
+Global $g_iBBNextTroopDelay = $g_iBBNextTroopDelayDefault,  $g_iBBSameTroopDelay = $g_iBBSameTroopDelayDefault; delay time between different and same troops
+Global $g_iBBNextTroopDelayIncrement = 400,  $g_iBBSameTroopDelayIncrement = 60 ; used for math to calculate delays based on selection
+Global $g_hCmbBBNextTroopDelay = 0, $g_hCmbBBSameTroopDelay = 0
+Global $g_apTL[10][2] = [ [22, 374], [59, 348], [102, 319], [137, 288], [176, 259], [209, 232], [239, 212], [270, 188], [307, 164], [347, 139] ]
+Global $g_apTR[10][2] = [ [831, 368], [791, 334], [747, 306], [714, 277], [684, 252], [647, 227], [615, 203], [577, 177], [539, 149], [506, 123] ]
+
+; BB Drop Order
+Global $g_hBtnBBDropOrder = 0
+Global $g_hGUI_BBDropOrder = 0
+Global $g_hChkBBCustomDropOrderEnable = 0
+Global $g_hBtnBBDropOrderSet = 0, $g_hBtnBBRemoveDropOrder = 0, $g_hBtnBBClose = 0
+Global $g_bBBDropOrderSet = False
+Global Const $g_iBBTroopCount = 11
+Global Const $g_sBBDropOrderDefault = "BoxerGiant|HogGlider|SuperPekka|DropShip|Witch|BabyDrag|WallBreaker|Barbarian|CannonCart|Archer|Minion"
+Global $g_sBBDropOrder = $g_sBBDropOrderDefault
+Global $g_ahCmbBBDropOrder[$g_iBBTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 ; <><><><> Village / Donate - Request <><><><>
 Global $g_bRequestTroopsEnable = False
@@ -1515,7 +1546,7 @@ Global $g_bCheckClanCastleTroops = False
 
 ; Donate
 Global Const $g_aiDonateTroopPriority[$eTroopCount] = [ _
-		$eTroopLavaHound, $eTroopElectroDragon, $eTroopGolem, $eTroopIceGolem, $eTroopPekka, $eTroopDragon, $eTroopWitch, $eTroopHealer, $eTroopBabyDragon, _
+		$eTroopLavaHound, $eTroopElectroDragon, $eTroopGolem, $eTroopPekka, $eTroopDragon, $eTroopIceGolem, $eTroopWitch, $eTroopHealer, $eTroopBabyDragon, _
 		$eTroopValkyrie, $eTroopBowler, $eTroopMiner, $eTroopGiant, $eTroopBalloon, $eTroopHogRider, $eTroopWizard, _
 		$eTroopWallBreaker, $eTroopMinion, $eTroopArcher, $eTroopBarbarian, $eTroopGoblin]
 Global Const $g_aiDonateSpellPriority[$eSpellCount] = [ _
@@ -1715,6 +1746,8 @@ Global $g_bChkClanGamesStopBeforeReachAndPurge = 0
 Global $g_bChkClanGamesDebug = 0
 Global $g_iPurgeJobCount[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_iPurgeMax = 5 ; [0] is unlimited , 1-10
+
+Global $g_sClanGamesScore = "N/A", $g_sClanGamesTimeRemaining = "N/A"
 
 ; Collect Free Magic Items
 Global $g_bChkCollectFreeMagicItems = True

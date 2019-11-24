@@ -82,6 +82,11 @@
 #include "functions\Attack\SmartZap\easyPreySearch.au3"
 #include "functions\Attack\SmartZap\smartZap.au3"
 
+; Builder Base Attack
+#include "functions\Attack\BuilderBase\PrepareAttackBB.au3"
+#include "functions\Attack\BuilderBase\AttackBB.au3"
+#include "functions\Attack\BuilderBase\GetAttackBarBB.au3"
+
 #Region CreateArmy / Train
 #include "functions\CreateArmy\CheckFullArmy.au3"
 #include "functions\CreateArmy\CheckArmyCamp.au3"

@@ -1165,7 +1165,7 @@ Func __RunFunction($action)
 			UpgradeWall()
 			_Sleep($DELAYRUNBOT3)
 		Case "BuilderBase"
-			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades) And SwitchBetweenBases()) Then
+			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades or $g_bChkEnableBBAttack) And SwitchBetweenBases()) Then
 				$g_bStayOnBuilderBase = True
 				If _Sleep($DELAYRUNBOT3) Then Return
 				If checkObstacles() Then Return
@@ -1173,6 +1173,9 @@ Func __RunFunction($action)
 				If _Sleep($DELAYRUNBOT3) Then Return
 				If checkObstacles() Then Return
 				CollectBuilderBase()
+				AttackBB()
+				If _Sleep($DELAYRUNBOT3) Then Return
+				If $g_bRestart = True Then Return
 				If _Sleep($DELAYRUNBOT3) Then Return
 				If checkObstacles() Then Return
 				StartClockTowerBoost()

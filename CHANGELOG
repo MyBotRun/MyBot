@@ -1,4 +1,29 @@
-﻿* **V7.7.9**
+﻿* **V7.8**
+* Fix Surrender button reported by @Hecki
+* Fix Switch Account with new SCID Update (Support for 8 Accs)
+* Fix Error finding clan tab button
+* Fix for Invalid slot # found = -1 for Archer
+* Fix for October release change to Google ID
+* Fix for October release for "balance donations"
+* Fix for October release Chinese fonts in donation requests
+* Fix October release Quick Train
+* Fix Language Check
+* Fix Empty sieges not dropping when empty
+* Fix Star lab not upgrading troops in Builder Base
+* Fix BuilderBase can't place new building
+* Fix False positive on the bush when bot tries removing obstacles! Reported by @MikeD 
+* Update Turkish @F A T İ H
+* Update Army Levels Now as Optional
+* Add Random Clicks
+* Add BuilderBase Attack
+* Fix Order for IceGolem Donate Reported by @ anondad
+* Legends sleep now random, 7 to 25 mins rather than fixed at 30.
+* Improvement Inferno Tower Level 6 Detection
+* Improvement Air Defense Level 10 Detection
+* Improvement X-Bow Level 6 Detection
+* Improvement Wizard Tower Level 11 Detection
+
+* **V7.7.9**
 * Fix builder base remove obstacle Button not found @DUC4TI
 * Fix share replay function
 * Fix cannot find confirm attack button @nytol

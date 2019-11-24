@@ -175,6 +175,18 @@ Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColo
 	Return $result
 EndFunc   ;==>getOcrMaintenanceTime
 
+Func getOcrTimeGameTime($x_start, $y_start) ;  -> Get the guard/shield time left, middle top of the screen
+	Return getOcrAndCapture("coc-clangames", $x_start, $y_start, 116, 31, True)
+EndFunc   ;==>getOcrTimeGameTime
+
+Func getOcrYourScore($x_start, $y_start) ; -> Gets CheckValuesCost on Train Window
+	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 120, 18, True)
+EndFunc   ;==>getOcrYourScore
+
+Func getOcrEventTime($x_start, $y_start) ; -> Gets CheckValuesCost on Train Window
+	Return getOcrAndCapture("coc-events", $x_start, $y_start, 80, 20, True)
+EndFunc   ;==>getOcrEventTime
+
 Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	;  -> Get the Text with time till maintenance is over from reload msg(228, 402)
 	Local $result = getOcrAndCapture("coc-ratecoc", $x_start, $y_start, 42, 28, True)
@@ -289,6 +301,10 @@ Func getChatStringPersian($x_start, $y_start, $bConvert = True) ; -> Get string 
 	EndIf
 	Return $OCRString
 EndFunc   ;==>getChatStringPersian
+
+Func getArmyResourcesFromButtons($x_start, $y_start) ;  -> Gets cost of Troops/Spells from buttons
+	Return Number(getOcrAndCapture("coc-NewCapacity", $x_start, $y_start, 89, 19, True))
+EndFunc   ;==>getArmyCapacityOnTrainTroops
 
 Func OcrForceCaptureRegion($bForce = Default)
 	If $bForce = Default Then Return $g_bOcrForceCaptureRegion

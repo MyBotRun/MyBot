@@ -24,11 +24,7 @@ Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 
 	If WaitforPixel(23, 505 + $g_iBottomOffsetY, 53, 507 + $g_iBottomOffsetY, Hex(0xEEB344, 6), 5, 10) Then
 		If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton" & " (Called from " & $sWhereFrom & ")", $COLOR_SUCCESS)
-		If Not $g_bUseRandomClick Then
-			ClickP($aArmyTrainButton, 1, 0, "#0293") ; Button Army Overview
-		Else
-			ClickR($aArmyTrainButtonRND, $aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0)
-		EndIf
+		ClickP($aArmyTrainButton, 1, 0, "#0293") ; Button Army Overview
 	EndIf
 
 	If _Sleep($DELAYRUNBOT6) Then Return ; wait for window to open

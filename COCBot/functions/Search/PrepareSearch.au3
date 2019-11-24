@@ -69,6 +69,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 	EndIf
 
 	Static $bWait30Minutes = False
+	Local $iWait30Time = Random(7,25,1) ;Random minutes, 7 to 25.
 	$g_bLeagueAttack = False
 	Do
 		Local $bSignedUpLegendLeague = False
@@ -86,7 +87,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 					ClickP($aAway, 1, 0, "#0000") ;Click Away to prevent any pages on top
 					If $bWait30Minutes Then
 						$bWait30Minutes = False
-						UniversalCloseWaitOpenCoC(30 * 60 * 1000, "PrepareSearch")
+						UniversalCloseWaitOpenCoC($iWait30Time * 60 * 1000, "PrepareSearch")
 					Else
 						$bWait30Minutes = True
 					EndIf
@@ -97,7 +98,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 					ClickP($aAway, 1, 0, "#0000") ;Click Away to prevent any pages on top
 					If $bWait30Minutes Then
 						$bWait30Minutes = False
-						UniversalCloseWaitOpenCoC(30 * 60 * 1000, "PrepareSearch")
+						UniversalCloseWaitOpenCoC($iWait30Time * 60 * 1000, "PrepareSearch")
 					Else
 						$bWait30Minutes = True
 					EndIf

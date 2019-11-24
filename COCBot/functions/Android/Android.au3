@@ -1975,6 +1975,18 @@ Func _AndroidAdbLaunchShellInstance($wasRunState = Default, $rebootAndroidIfNecc
 		; update $g_iAndroidSystemAPI ; getprop ro.build.version.sdk
 		$g_iAndroidVersionAPI = Int(AndroidAdbSendShellCommand("getprop ro.build.version.sdk", Default, $wasRunState, False))
 		SetDebugLog("Android Version API = " & $g_iAndroidVersionAPI)
+		Switch $g_iAndroidVersionAPI
+			Case $g_iAndroidJellyBean
+				SetDebugLog("Android Version 4.1 - 4.3.1")
+			Case $g_iAndroidKitKat
+				SetDebugLog("Android Version 4.4")
+			Case $g_iAndroidLollipop
+				SetDebugLog("Android Version 5.1")
+			Case $g_iAndroidNougat
+				SetDebugLog("Android Version 7.0")
+			Case Else
+				SetDebugLog("Android Version not detected!")
+		EndSwitch
 
 		; check mouse device
 		If StringLen($g_sAndroidMouseDevice) > 0 And $g_sAndroidMouseDevice = $g_avAndroidAppConfig[$g_iAndroidConfig][13] Then
@@ -4461,6 +4473,7 @@ EndFunc   ;==>UpdateAndroidBackgroundMode
 Func GetAndroidCodeName($iAPI = $g_iAndroidVersionAPI)
 
 	If $iAPI >= $g_iAndroidNougat Then Return "Nougat"
+	If $iAPI >= $g_iAndroidKitKat Then Return "KitKat"
 	If $iAPI >= $g_iAndroidLollipop Then Return "Lollipop"
 	If $iAPI >= $g_iAndroidJellyBean Then Return "JellyBean"
 

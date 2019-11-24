@@ -291,6 +291,10 @@ Func GetButtonDiamond($sButtonName)
 			$btnDiamond = GetDiamondFromRect("0,0,250,250")
 		Case "AttackLogTab", "ShareReplayButton"
 			$btnDiamond = GetDiamondFromRect("280,85,600,300")
+		Case "EndBattle", "Surrender"
+			$btnDiamond = GetDiamondFromRect("1,570,140,628")
+		Case "Okay"
+			$btnDiamond = GetDiamondFromRect("241,249,616,478")
 		Case Else
 			$btnDiamond = "FV" ; use full image to locate button
 	EndSwitch

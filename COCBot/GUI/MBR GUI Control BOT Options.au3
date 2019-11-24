@@ -1070,16 +1070,16 @@ Func btnTestUpgradeWindow()
 EndFunc   ;==>btnTestUpgradeWindow
 
 Func btnTestSmartWait()
-	Local $currentRunState = $g_bRunState
-	Local $bCloseWhileTrainingEnable = $g_bCloseWhileTrainingEnable
+    Local $currentRunState = $g_bRunState
+    Local $bCloseWhileTrainingEnable = $g_bCloseWhileTrainingEnable
 
-	$g_bRunState = True
-	$g_bCloseWhileTrainingEnable = True
+    $g_bRunState = True
+    $g_bCloseWhileTrainingEnable = True
 
-	SmartWait4Train(20)
+    SmartWait4Train(20)
 
-	$g_bRunState = $currentRunState
-	$g_bCloseWhileTrainingEnable = $bCloseWhileTrainingEnable
+    $g_bRunState = $currentRunState
+    $g_bCloseWhileTrainingEnable = $bCloseWhileTrainingEnable
 EndFunc   ;==>btnTestSmartWait
 
 Func btnConsoleWindow()

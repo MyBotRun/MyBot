@@ -294,10 +294,10 @@ Func GetUpgradeButton($sUpgButtom = "", $Debug = False)
 				ClickP($aAway, 1, 0, "#0121")
 				SetLog("Not enough Resources to Upgrade " & $aBuildingName[1] & " !", $COLOR_ERROR)
 			EndIf
-	
+
 		EndIf
 	EndIf
-	
+
 	Return False
 EndFunc   ;==>GetUpgradeButton
 
@@ -324,7 +324,7 @@ Func NewBuildings($aResult)
 					ExitLoop
 				EndIf
 				; Coordinates for Slot Zone from Clock position
-				Local $x = ($Coordinates[0] + 20), $y = ($Coordinates[1] + 250) - 135, $x1 = ($Coordinates[0] + 20) + 220, $y1 = ($Coordinates[1] + 250) + 52
+				Local $x = ($Coordinates[0] + 20), $y = ($Coordinates[1] + 250), $x1 = ($Coordinates[0] + 20) + 160, $y1 = ($Coordinates[1] + 250) + 75
 				; Lets see if exist resources
 				If $g_bDebugSetlog Then SetDebugLog("[x]: " & $x & " [y]: " & $y & " [x1]: " & $x1 & " [y1]: " & $y1, $COLOR_DEBUG)
 				If QuickMIS("BC1", $g_sImgAutoUpgradeZero, $x, $y, $x1, $y1, $Screencap, $Debug) Then

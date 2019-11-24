@@ -195,6 +195,7 @@ Func CreateBotOptions()
 			GUICtrlSetOnEvent(-1, "chkDisableNotifications")
 	$y += 19
 		$g_hChkUseRandomClick = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Bot - Options", "ChkUseRandomClick", "Random Click"), $x, $y, -1, -1)
+			GUICtrlSetState(-1, $GUI_CHECKED)
 			GUICtrlSetOnEvent(-1, "chkUseRandomClick")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 

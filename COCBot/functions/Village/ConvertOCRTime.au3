@@ -13,38 +13,38 @@
 ; Example .......:
 ; ===============================================================================================================================
 
-Func ConvertOCRTime($WhereRead, $ToConvert, $bSetLog = True)
-	Local $iRemainTimer = 0, $aResult, $iDay = 0, $iHour = 0, $iMinute = 0, $iSecond = 0
+Func ConvertOCRTime($sCaller, $sConvertTo, $bSetLog = True)
+	Local $iRemainTimer = 0, $avResult, $iDay = 0, $iHour = 0, $iMinute = 0, $iSecond = 0
 
-	If $ToConvert <> "" Then
-		If StringInStr($ToConvert, "d") > 1 Then
-			$aResult = StringSplit($ToConvert, "d", $STR_NOCOUNT)
-			; $aResult[0] will be the Day and the $aResult[1] will be the rest
-			$iDay = Number($aResult[0])
-			$ToConvert = $aResult[1]
+	If $sConvertTo <> "" Then
+		If StringInStr($sConvertTo, "d") > 1 Then
+			$avResult = StringSplit($sConvertTo, "d", $STR_NOCOUNT)
+			; $avResult[0] will be the Day and the $avResult[1] will be the rest
+			$iDay = Number($avResult[0])
+			$sConvertTo = $avResult[1]
 		EndIf
-		If StringInStr($ToConvert, "h") > 1 Then
-			$aResult = StringSplit($ToConvert, "h", $STR_NOCOUNT)
-			$iHour = Number($aResult[0])
-			$ToConvert = $aResult[1]
+		If StringInStr($sConvertTo, "h") > 1 Then
+			$avResult = StringSplit($sConvertTo, "h", $STR_NOCOUNT)
+			$iHour = Number($avResult[0])
+			$sConvertTo = $avResult[1]
 		EndIf
-		If StringInStr($ToConvert, "m") > 1 Then
-			$aResult = StringSplit($ToConvert, "m", $STR_NOCOUNT)
-			$iMinute = Number($aResult[0])
-			$ToConvert = $aResult[1]
+		If StringInStr($sConvertTo, "m") > 1 Then
+			$avResult = StringSplit($sConvertTo, "m", $STR_NOCOUNT)
+			$iMinute = Number($avResult[0])
+			$sConvertTo = $avResult[1]
 		EndIf
-		If StringInStr($ToConvert, "s") > 1 Then
-			$aResult = StringSplit($ToConvert, "s", $STR_NOCOUNT)
-			$iSecond = Number($aResult[0])
+		If StringInStr($sConvertTo, "s") > 1 Then
+			$avResult = StringSplit($sConvertTo, "s", $STR_NOCOUNT)
+			$iSecond = Number($avResult[0])
 		EndIf
 
 		$iRemainTimer = Round($iDay * 24 * 60 + $iHour * 60 + $iMinute + $iSecond / 60, 0)
-		If $iRemainTimer = 0 And $g_bDebugSetlog Then SetDebugLog($WhereRead & ": Bad OCR string", $COLOR_ERROR)
+		If $iRemainTimer = 0 And $g_bDebugSetlog Then SetDebugLog($sCaller & ": Bad OCR string", $COLOR_ERROR)
 
-		If $bSetLog Then SetLog($WhereRead & " time: " & StringFormat("%.2f", $iRemainTimer) & " min", $COLOR_INFO)
-
+		If $bSetLog Then SetLog($sCaller & " time: " & StringFormat("%.2f", $iRemainTimer) & " min", $COLOR_INFO)
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("Can not read remaining time for " & $WhereRead, $COLOR_ERROR)
+		If $g_bDebugSetlog Then SetDebugLog("Can not read remaining time for " & $sCaller, $COLOR_ERROR)
 	EndIf
+
 	Return $iRemainTimer
 EndFunc   ;==>ConvertOCRTime

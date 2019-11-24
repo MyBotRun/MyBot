@@ -36,6 +36,7 @@ Func UpdateStats($bForceUpdate = False)
 	Static $iOldAttackedCount, $iOldAttackedVillageCount[$g_iModeCount + 1] ; number of attack villages for DB, LB, TB, TS
 	Static $iOldTotalGoldGain[$g_iModeCount + 1], $iOldTotalElixirGain[$g_iModeCount + 1], $iOldTotalDarkGain[$g_iModeCount + 1], $iOldTotalTrophyGain[$g_iModeCount + 1] ; total resource gains for DB, LB, TB, TS
 	Static $iOldNbrOfDetectedMines[$g_iModeCount + 1], $iOldNbrOfDetectedCollectors[$g_iModeCount + 1], $iOldNbrOfDetectedDrills[$g_iModeCount + 1] ; number of mines, collectors, drills detected for DB, LB, TB
+	Static $sOldClanGamesScore, $sOldClanGameTimeRemaining
 	; Builder Base old values
 	Static $iOldCurrentLootBB[$eLootCountBB] ; current stats
 
@@ -605,6 +606,16 @@ Func UpdateStats($bForceUpdate = False)
 		$bStatsUpdated = True
 		$topTrophyloot = $g_iStatsLastAttack[$eLootTrophy]
 		GUICtrlSetData($g_ahLblStatsTop[$eLootTrophy], _NumberFormat($topTrophyloot))
+	EndIf
+
+	If $g_sClanGamesTimeRemaining <> $sOldClanGameTimeRemaining Then
+		GUICtrlSetData($g_hLblRemainTime, $g_sClanGamesTimeRemaining)
+		$sOldClanGameTimeRemaining = $g_sClanGamesTimeRemaining
+	EndIf
+
+	If  $g_sClanGamesScore <> $sOldClanGamesScore Then
+		GUICtrlSetData($g_hLblYourScore, $g_sClanGamesScore)
+		$sOldClanGamesScore = $g_sClanGamesScore
 	EndIf
 
 	; update Builder Base stats

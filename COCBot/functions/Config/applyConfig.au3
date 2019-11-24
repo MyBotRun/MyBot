@@ -353,6 +353,30 @@ Func ApplyConfig_600_6($TypeReadSave)
 			chkActivateClangames()
 			chkPurgeLimits()
 
+			; Builder Base Attack
+			GUICtrlSetState($g_hChkEnableBBAttack, $g_bChkEnableBBAttack ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkBBTrophyRange, $g_bChkBBTrophyRange ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetData($g_hTxtBBTrophyLowerLimit, $g_iTxtBBTrophyLowerLimit)
+			GUICtrlSetData($g_hTxtBBTrophyUpperLimit, $g_iTxtBBTrophyUpperLimit)
+			GUICtrlSetState($g_hChkBBAttIfLootAvail, $g_bChkBBAttIfLootAvail ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkBBWaitForMachine, $g_bChkBBWaitForMachine ? $GUI_CHECKED : $GUI_UNCHECKED)
+			_GUICtrlComboBox_SetCurSel($g_hCmbBBNextTroopDelay, (($g_iBBNextTroopDelay - $g_iBBNextTroopDelayDefault) / $g_iBBNextTroopDelayIncrement) + 4) ; set combos based on delays
+			_GUICtrlComboBox_SetCurSel($g_hCmbBBSameTroopDelay, (($g_iBBSameTroopDelay - $g_iBBSameTroopDelayDefault) / $g_iBBSameTroopDelayIncrement) + 4)
+			chkBBTrophyRange()
+			chkEnableBBAttack()
+
+			; Builder Base Drop Order
+			If $g_bBBDropOrderSet Then
+				GUICtrlSetState($g_hChkBBCustomDropOrderEnable, $GUI_CHECKED)
+				GUICtrlSetState($g_hBtnBBDropOrderSet, $GUI_ENABLE)
+				GUICtrlSetState($g_hBtnBBRemoveDropOrder, $GUI_ENABLE)
+				Local $asBBDropOrder = StringSplit($g_sBBDropOrder, "|")
+				For $i=0 To $g_iBBTroopCount - 1
+					_GUICtrlComboBox_SetCurSel($g_ahCmbBBDropOrder[$i], _GUICtrlComboBox_SelectString($g_ahCmbBBDropOrder[$i], $asBBDropOrder[$i+1]))
+				Next
+				GUICtrlSetBkColor($g_hBtnBBDropOrder, $COLOR_GREEN)
+			EndIf
+
 		Case "Save"
 			$g_bChkBotStop = (GUICtrlRead($g_hChkBotStop) = $GUI_CHECKED)
 			$g_iCmbBotCommand = _GUICtrlComboBox_GetCurSel($g_hCmbBotCommand)
@@ -409,6 +433,14 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_bChkClanGamesGroundTroop = (GUICtrlRead($g_hChkClanGamesGroundTroop) = $GUI_CHECKED) ? 1 : 0
 			$g_bChkClanGamesMiscellaneous = (GUICtrlRead($g_hChkClanGamesMiscellaneous) = $GUI_CHECKED) ? 1 : 0
 			$g_iPurgeMax = _GUICtrlComboBox_GetCurSel($g_hcmbPurgeLimit)
+
+			; Builder Base Attack
+			$g_bChkEnableBBAttack = (GUICtrlRead($g_hChkEnableBBAttack) = $GUI_CHECKED)
+			$g_bChkBBTrophyRange = (GUICtrlRead($g_hChkBBTrophyRange) = $GUI_CHECKED)
+			$g_iTxtBBTrophyLowerLimit = GUICtrlRead($g_hTxtBBTrophyLowerLimit)
+			$g_iTxtBBTrophyUpperLimit = GUICtrlRead($g_hTxtBBTrophyUpperLimit)
+			$g_bChkBBAttIfLootAvail = (GUICtrlRead($g_hChkBBAttIfLootAvail) = $GUI_CHECKED)
+			$g_bChkBBWaitForMachine = (GUICtrlRead($g_hChkBBWaitForMachine) = $GUI_CHECKED)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_6
 
@@ -1895,33 +1927,21 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 	Switch $TypeReadSave
 		Case "Read"
 			For $T = 0 To $eTroopCount - 1
-				Local $iCurrLevel = $g_aiTrainArmyTroopLevel[$T]
-				Local $iCurrCount = $g_aiArmyCustomTroops[$T]
-				Local $iMaxLevel = $g_aiTroopCostPerLevel[$T][0]
-				Local $iColor = ($iCurrLevel = $iMaxLevel ? $COLOR_YELLOW : $COLOR_WHITE)
-				GUICtrlSetData($g_ahTxtTrainArmyTroopCount[$T], ($iCurrCount <> 0 And $iCurrLevel <> 0) ? $iCurrCount : 0)
-				GUICtrlSetState($g_ahTxtTrainArmyTroopCount[$T], $iCurrLevel <> 0 ? $GUI_SHOW : $GUI_HIDE)
-				GUICtrlSetData($g_ahLblTrainArmyTroopLevel[$T], $iCurrLevel)
+				Local $iColor = ($g_aiTrainArmyTroopLevel[$T] = $g_aiTroopCostPerLevel[$T][0] ? $COLOR_YELLOW : $COLOR_WHITE)
+				GUICtrlSetData($g_ahTxtTrainArmyTroopCount[$T], $g_aiArmyCustomTroops[$T])
+				GUICtrlSetData($g_ahLblTrainArmyTroopLevel[$T], $g_aiTrainArmyTroopLevel[$T])
 				If GUICtrlGetBkColor($g_ahLblTrainArmyTroopLevel[$T]) <> $iColor Then GUICtrlSetBkColor($g_ahLblTrainArmyTroopLevel[$T], $iColor)
 			Next
 			For $S = 0 To $eSpellCount - 1
-				Local $iCurrLevel = $g_aiTrainArmySpellLevel[$S]
-				Local $iCurrCount = $g_aiArmyCustomSpells[$S]
-				Local $iMaxLevel = $g_aiSpellCostPerLevel[$S][0]
-				Local $iColor = ($iCurrLevel = $iMaxLevel ? $COLOR_YELLOW : $COLOR_WHITE)
-				GUICtrlSetData($g_ahTxtTrainArmySpellCount[$S], ($iCurrCount <> 0 And $iCurrLevel <> 0) ? $iCurrCount : 0)
-				GUICtrlSetState($g_ahTxtTrainArmySpellCount[$S], $iCurrLevel <> 0 ? $GUI_SHOW : $GUI_HIDE)
-				GUICtrlSetData($g_ahLblTrainArmySpellLevel[$S], $iCurrLevel)
+				Local $iColor = ($g_aiTrainArmySpellLevel[$S] = $g_aiSpellCostPerLevel[$S][0] ? $COLOR_YELLOW : $COLOR_WHITE)
+				GUICtrlSetData($g_ahTxtTrainArmySpellCount[$S], $g_aiArmyCustomSpells[$S])
+				GUICtrlSetData($g_ahLblTrainArmySpellLevel[$S], $g_aiTrainArmySpellLevel[$S])
 				If GUICtrlGetBkColor($g_ahLblTrainArmySpellLevel[$S]) <> $iColor Then GUICtrlSetBkColor($g_ahLblTrainArmySpellLevel[$S], $iColor)
 			Next
 			For $S = 0 To $eSiegeMachineCount - 1
-				Local $iCurrLevel = $g_aiTrainArmySiegeMachineLevel[$S]
-				Local $iCurrCount = $g_aiArmyCompSiegeMachine[$S]
-				Local $iMaxLevel = $g_aiSiegeMachineCostPerLevel[$S][0]
-				Local $iColor = ($iCurrLevel = $iMaxLevel ? $COLOR_YELLOW : $COLOR_WHITE)
-				GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$S], ($iCurrCount <> 0 And $iCurrLevel <> 0) ? $iCurrCount : 0)
-				GUICtrlSetState($g_ahTxtTrainArmySiegeCount[$S], $iCurrLevel <> 0 ? $GUI_SHOW : $GUI_HIDE)
-				GUICtrlSetData($g_ahLblTrainArmySiegeLevel[$S], $iCurrLevel)
+				Local $iColor = ($g_aiTrainArmySiegeMachineLevel[$S] = $g_aiSiegeMachineCostPerLevel[$S][0] ? $COLOR_YELLOW : $COLOR_WHITE)
+				GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$S], $g_aiArmyCompSiegeMachine[$S])
+				GUICtrlSetData($g_ahLblTrainArmySiegeLevel[$S], $g_aiTrainArmySiegeMachineLevel[$S])
 				If GUICtrlGetBkColor($g_ahLblTrainArmySiegeLevel[$S]) <> $iColor Then GUICtrlSetBkColor($g_ahLblTrainArmySiegeLevel[$S], $iColor)
 			Next
 			; full & forced Total Camp values
