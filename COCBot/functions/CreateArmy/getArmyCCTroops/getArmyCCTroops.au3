@@ -38,7 +38,7 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 	Local $aTempTroopArray,$aTroops ,$aTroopCoords
 	Local $sTroopName = ""
 	Local $iTroopIndex = -1
-	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
+	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
 
 	$g_aiCurrentCCTroops = $aCurrentCCTroopsEmpty ; Reset Current Troops Array
 	If UBound($aCurrentCCTroops, 1) >= 1 Then

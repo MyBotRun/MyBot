@@ -52,6 +52,7 @@ Func chkDBWeakBase()
 	GUICtrlSetState($g_ahCmbWeakXBow[$DB], GUICtrlRead($g_ahChkMaxXBow[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 	GUICtrlSetState($g_ahCmbWeakInferno[$DB], GUICtrlRead($g_ahChkMaxInferno[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 	GUICtrlSetState($g_ahCmbWeakEagle[$DB], GUICtrlRead($g_ahChkMaxEagle[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakScatter[$DB], GUICtrlRead($g_ahChkMaxScatter[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkDBWeakBase
 
 Func cmbABGoldElixir()
@@ -92,6 +93,7 @@ Func chkABWeakBase()
 	GUICtrlSetState($g_ahCmbWeakXBow[$LB], GUICtrlRead($g_ahChkMaxXBow[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 	GUICtrlSetState($g_ahCmbWeakInferno[$LB], GUICtrlRead($g_ahChkMaxInferno[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 	GUICtrlSetState($g_ahCmbWeakEagle[$LB], GUICtrlRead($g_ahChkMaxEagle[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
+	GUICtrlSetState($g_ahCmbWeakScatter[$LB], GUICtrlRead($g_ahChkMaxScatter[$LB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkABWeakBase
 
 Func chkRestartSearchLimit()
@@ -147,6 +149,7 @@ Func EnableSearchPanels($iMatchMode)
 			   GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkDBChampionWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBNotWaitHeroes) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkDBSpellsWait) = $GUI_CHECKED Then
 
@@ -167,6 +170,7 @@ Func EnableSearchPanels($iMatchMode)
 			   GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED Or _
+			   GUICtrlRead($g_hChkABChampionWait) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABNotWaitHeroes) = $GUI_CHECKED Or _
 			   GUICtrlRead($g_hChkABSpellsWait) = $GUI_CHECKED Then
 
@@ -259,6 +263,15 @@ Func chkDBWardenWait()
 	EndIf
 EndFunc   ;==>chkDBWardenWait
 
+Func chkDBChampionWait()
+	If $g_iTownHallLevel > 12 Or $g_iTownHallLevel = 0 Then ; Must be TH13 to have Champion
+		_GUI_Value_STATE("ENABLE", $g_hChkDBChampionWait & "#" & $g_hChkDBChampionAttack)
+	Else
+		GUICtrlSetState($g_hChkDBChampionWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkDBChampionAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+	EndIf
+EndFunc   ;==>chkDBChampionWait
+
 Func chkABKingWait()
 	If $g_iTownHallLevel > 6 Or $g_iTownHallLevel = 0 Then ; Must be TH7 or above to have King
 		_GUI_Value_STATE("ENABLE", $g_hChkABKingWait & "#" & $g_hChkABKingAttack)
@@ -285,6 +298,15 @@ Func chkABWardenWait()
 		GUICtrlSetState($g_hChkABWardenAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
 	EndIf
 EndFunc   ;==>chkABWardenWait
+
+Func chkABChampionWait()
+	If $g_iTownHallLevel > 12 Or $g_iTownHallLevel = 0 Then ; Must be TH13 to have Champion
+		_GUI_Value_STATE("ENABLE", $g_hChkABChampionWait & "#" & $g_hChkABChampionAttack)
+	Else
+		GUICtrlSetState($g_hChkABChampionWait, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		GUICtrlSetState($g_hChkABChampionAttack, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+	EndIf
+EndFunc   ;==>chkABChampionWait
 
 Func chkDBSpellsWait()
 	If $g_iTownHallLevel > 4 Or $g_iTownHallLevel = 0 Then ; Must be TH5+ to have spells

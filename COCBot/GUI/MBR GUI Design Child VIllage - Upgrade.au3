@@ -24,6 +24,7 @@ Global $g_hChkAutoStarLabUpgrades = 0, $g_hCmbStarLaboratory = 0, $g_hLblNextSLU
 ; Heroes
 Global $g_hChkUpgradeKing = 0, $g_hChkUpgradeQueen = 0, $g_hChkUpgradeWarden = 0, $g_hPicChkKingSleepWait = 0, $g_hPicChkQueenSleepWait = 0, $g_hPicChkWardenSleepWait = 0
 Global $g_hCmbHeroReservedBuilder = 0, $g_hLblHeroReservedBuilderTop = 0, $g_hLblHeroReservedBuilderBottom = 0
+Global $g_hChkUpgradeChampion = 0, $g_hPicChkChampionSleepWait = 0
 
 ; Buildings
 Global $g_hChkUpgrade[$g_iUpgradeSlots] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -41,14 +42,14 @@ Global $g_hTxtUpgrMinGold = 0, $g_hTxtUpgrMinElixir = 0, $g_hTxtUpgrMinDark = 0
 Global $g_hChkWalls = 0, $g_hTxtWallMinGold = 0, $g_hTxtWallMinElixir = 0, $g_hRdoUseGold = 0, $g_hRdoUseElixir = 0, $g_hRdoUseElixirGold = 0, $g_hChkSaveWallBldr = 0, _
 	   $g_hCmbWalls = 4
 Global $g_hLblWallCost = 0, $g_hBtnFindWalls = 0
-Global $g_ahWallsCurrentCount[14] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
-Global $g_ahPicWallsLevel[14] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
+Global $g_ahWallsCurrentCount[15] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
+Global $g_ahPicWallsLevel[15] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
 
 ; Auto Upgrade
 Global $g_hChkAutoUpgrade = 0, $g_hLblAutoUpgrade = 0, $g_hTxtAutoUpgradeLog = 0
 Global $g_hTxtSmartMinGold = 0, $g_hTxtSmartMinElixir = 0, $g_hTxtSmartMinDark = 0
 Global $g_hChkResourcesToIgnore[3] = [0, 0, 0]
-Global $g_hChkUpgradesToIgnore[14] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hChkUpgradesToIgnore[15] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Func CreateVillageUpgrade()
 
@@ -89,6 +90,7 @@ Func CreateLaboratorySubTab()
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBabyDragons", "Baby Dragons") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMiners", "Miners") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtEDragon", "Electro Dragon") & "|" & _
+					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtYeti", "Yeti") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtLightningSpells", "Lightning Spell") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtHealingSpells", "Healing Spell") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtRageSpells", "Rage Spell") & "|" & _
@@ -110,7 +112,8 @@ Func CreateLaboratorySubTab()
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtIceGolems", "Ice Golems") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallWreckers", "Wall Wreckers") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleBlimps", "Battle Blimps") & "|" & _
-					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtStoneSlammers", "Stone Slammers")
+					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtStoneSlammers", "Stone Slammers") & "|" & _
+					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtSiegeBarracks", "Siege Barracks")
 
 	Local $sTxtSLNames = GetTranslatedFileIni("MBR Global GUI Design", "Any", "Any") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Builderbase Troops", "TxtRagedBarbarian", "Raged Barbarian") & "|" & _
@@ -238,6 +241,22 @@ Func CreateHeroesSubTab()
 			GUICtrlSetState(-1,$GUI_HIDE)
 
 	$x += 95
+		$g_hChkUpgradeChampion = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeChampion_Info_01", "Enable upgrading of your Royal Champion when you have enough Dark Elixir (Saving Min. Dark Elixir)") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeChampion_Info_02", "You can manually locate your Royal Champion Altar on Misc Tab") & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeHeroes_Info_01", -1) & @CRLF & _
+					   GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeChampion_Info_03", "Enabled with TownHall 13 and higher")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetOnEvent(-1, "chkUpgradeChampion")
+			GUICtrlSetColor ( -1, $COLOR_ERROR )
+			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampionUpgr, $x + 18, $y, 64, 64)
+			_GUICtrlSetTip(-1, $sTxtTip)
+		$g_hPicChkChampionSleepWait = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnSleepingChampion, $x + 18, $y, 64, 64)
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetState(-1,$GUI_HIDE)
+
+	$y += 90
+	$x = 25
 		$g_hLblHeroReservedBuilderTop = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "LblHeroReservedBuilderTop", "Reserve ") , $x, $y + 15, -1, -1)
 		$g_hCmbHeroReservedBuilder = GUICtrlCreateCombo("", $x + 50, $y + 11, 30, 21, $CBS_DROPDOWNLIST, $WS_EX_RIGHT)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "CmbHeroReservedBuilder", "At least this many builders have to upgrade heroes, or wait for it."))
@@ -394,7 +413,7 @@ Func CreateWallsSubTab()
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "LblSearchforWalls", "Search for Walls level") & ":", $x, $y + 2, -1, -1)
 		$g_hCmbWalls = GUICtrlCreateCombo("", $x + 110, $y, 61, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL), $WS_EX_RIGHT)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "CmbWalls_Info_01", "Search for Walls of this level and try to upgrade them one by one."))
-			GUICtrlSetData(-1, "4   |5   |6   |7   |8   |9   |10   |11   |12   ", "4   ")
+			GUICtrlSetData(-1, "4   |5   |6   |7   |8   |9   |10   |11   |12   |13   ", "4   ")
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "cmbWalls")
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "LblNextWalllevelcosts", "Next Wall level costs") & ":", $x, $y + 25, -1, -1)
@@ -421,7 +440,7 @@ Func CreateWallsSubTab()
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	Local $x = 25, $y = 175
-	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "Group_02", "Walls counter"), $x - 20, $y - 20, $g_iSizeWGrpTab3, 95)
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "Group_02", "Walls counter"), $x - 20, $y - 20, $g_iSizeWGrpTab3, 95 + 40)
 		$g_ahWallsCurrentCount[4] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", "Input number of Walls level") & " 4 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", "you have."))
 		$g_ahPicWallsLevel[4] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall04, $x + 27, $y - 2, 24, 24)
@@ -462,6 +481,11 @@ Func CreateWallsSubTab()
 		$g_ahWallsCurrentCount[13] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", -1) & " 13 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", -1))
 		$g_ahPicWallsLevel[13] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall13, $x + 27, $y - 2, 24, 24)
+	Local $x = 25
+	$y += 40
+		$g_ahWallsCurrentCount[14] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", -1) & " 14 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", -1))
+		$g_ahPicWallsLevel[14] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall14, $x + 27, $y - 2, 24, 24)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 EndFunc   ;==>CreateWallsSubTab
@@ -503,16 +527,20 @@ Func CreateAutoUpgradeSubTab()
 		$g_hChkUpgradesToIgnore[0] = GUICtrlCreateCheckbox("", $x + 20 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x + 95, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[1] = GUICtrlCreateCheckbox("", $x + 110 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x + 50, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[1] = GUICtrlCreateCheckbox("", $x + 65 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x + 140, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[2] = GUICtrlCreateCheckbox("", $x + 155 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x + 95, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[2] = GUICtrlCreateCheckbox("", $x + 110 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x + 185, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[3] = GUICtrlCreateCheckbox("", $x + 200 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x + 140, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[3] = GUICtrlCreateCheckbox("", $x + 155 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x + 185, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[14] = GUICtrlCreateCheckbox("", $x + 200 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x + 245, $y + $yRow1, $iIconSize, $iIconSize)

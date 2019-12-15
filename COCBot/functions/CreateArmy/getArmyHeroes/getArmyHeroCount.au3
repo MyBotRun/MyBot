@@ -36,10 +36,9 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 
 	; Detection by OCR
 	Local $sResult
-	Local Const $iHeroes = 3
 	Local $sMessage = ""
 
-	For $i = 0 To $iHeroes - 1
+	For $i = 0 To $eHeroCount - 1
 		$sResult = ArmyHeroStatus($i)
 		If $sResult <> "" Then ; we found something, figure out what?
 			Select
@@ -48,19 +47,25 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroKing)
 					; unset King upgrading
 					$g_iHeroUpgrading[0] = 0
-					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroQueen,$eHeroWarden))
+					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroQueen,$eHeroWarden,$eHeroChampion))
 				Case StringInStr($sResult, "queen", $STR_NOCASESENSEBASIC)
 					If $bSetLog Then SetLog(" - Archer Queen Available", $COLOR_SUCCESS)
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroQueen)
 					; unset Queen upgrading
 					$g_iHeroUpgrading[1] = 0
-					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroWarden))
+					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroWarden,$eHeroChampion))
 				Case StringInStr($sResult, "warden", $STR_NOCASESENSEBASIC)
 					If $bSetLog Then SetLog(" - Grand Warden Available", $COLOR_SUCCESS)
 					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroWarden)
 					; unset Warden upgrading
 					$g_iHeroUpgrading[2] = 0
-					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroQueen))
+					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroQueen,$eHeroChampion))
+				Case StringInStr($sResult, "champion", $STR_NOCASESENSEBASIC)
+					If $bSetLog Then SetLog(" - Royal Champion Available", $COLOR_SUCCESS)
+					$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroChampion)
+					; unset Champion upgrading
+					$g_iHeroUpgrading[3] = 0
+					$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroQueen,$eHeroWarden))
 				Case StringInStr($sResult, "heal", $STR_NOCASESENSEBASIC)
 					If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then
 						Switch $i
@@ -68,17 +73,22 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 								$sMessage = "-Barbarian King"
 								; unset King upgrading
 								$g_iHeroUpgrading[0] = 0
-								$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroQueen,$eHeroWarden))
+								$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroQueen,$eHeroWarden,$eHeroChampion))
 							Case 1
 								$sMessage = "-Archer Queen"
 								; unset Queen upgrading
 								$g_iHeroUpgrading[1] = 0
-								$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroWarden))
+								$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroWarden,$eHeroChampion))
 							Case 2
 								$sMessage = "-Grand Warden"
 								; unset Warden upgrading
 								$g_iHeroUpgrading[2] = 0
-								$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroQueen))
+								$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroQueen,$eHeroChampion))
+							Case 3
+								$sMessage = "-Royal Champion"
+								; unset Champion upgrading
+								$g_iHeroUpgrading[3] = 0
+								$g_iHeroUpgradingBit = BitAND($g_iHeroUpgradingBit, BitOr($eHeroKing,$eHeroQueen,$eHeroWarden))
 							Case Else
 								$sMessage = "-Very Bad Monkey Needs"
 						EndSwitch
@@ -131,6 +141,21 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 								EndIf
 								_GUI_Value_STATE("SHOW", $groupWardenSleeping) ; Show Warden sleeping icon
 							EndIf
+						Case 3
+							$sMessage = "-Royal Champion"
+							; set Champion upgrading
+							$g_iHeroUpgrading[3] = 1
+							$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroChampion)
+							; safety code
+							If ($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroChampion) = $eHeroChampion) Or _
+									($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroChampion) = $eHeroChampion) Then
+								If $g_iSearchNotWaitHeroesEnable Then
+									$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroChampion)
+								Else
+									SetLog("Warning: Royal Champion Upgrading & Wait enabled, Disable Wait for Royal Champion or may never attack!", $COLOR_ERROR)
+								EndIf
+								_GUI_Value_STATE("SHOW", $groupChampionSleeping) ; Show Champion sleeping icon
+							EndIf
 						Case Else
 							$sMessage = "-Need to Feed Code Monkey some bananas"
 					EndSwitch
@@ -146,8 +171,8 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 		EndIf
 	Next
 
-	If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Status  K|Q|W : " & BitAND($g_iHeroAvailable, $eHeroKing) & "|" & BitAND($g_iHeroAvailable, $eHeroQueen) & "|" & BitAND($g_iHeroAvailable, $eHeroWarden), $COLOR_DEBUG)
-	If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Upgrade K|Q|W : " & BitAND($g_iHeroUpgradingBit, $eHeroKing) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroQueen) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroWarden), $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Status  K|Q|W|C : " & BitAND($g_iHeroAvailable, $eHeroKing) & "|" & BitAND($g_iHeroAvailable, $eHeroQueen) & "|" & BitAND($g_iHeroAvailable, $eHeroWarden) & "|" & BitAND($g_iHeroAvailable, $eHeroChampion), $COLOR_DEBUG)
+	If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Upgrade K|Q|W|C : " & BitAND($g_iHeroUpgradingBit, $eHeroKing) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroQueen) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroWarden) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroChampion), $COLOR_DEBUG)
 
 	If $bCloseArmyWindow Then
 		ClickP($aAway, 1, 0, "#0000") ;Click Away
@@ -158,7 +183,7 @@ EndFunc   ;==>getArmyHeroCount
 
 Func ArmyHeroStatus($i)
 	Local $sResult = ""
-	Local Const $aHeroesRect[3][4] = [[630, 340, 680, 380], [730, 340, 755, 370], [805, 340, 830, 370]]
+	Local Const $aHeroesRect[$eHeroCount][4] = [[566, 340, 616, 380], [666, 340, 691, 370], [741, 340, 766, 370], [815, 340, 840, 380]] ; Review
 
 	; Perform the search
 	_CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
@@ -226,6 +251,25 @@ Func ArmyHeroStatus($i)
 							GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
 							GUICtrlSetState($g_hPicWardenGreen, $GUI_SHOW)
 					EndSwitch
+
+				Case $i = "Champion" Or $i = 3 Or $i = $eChampion
+					Switch $sResult
+						Case "heal" ; Blue
+							GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionGreen, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionBlue, $GUI_SHOW)
+						Case "upgrade" ; Red
+							GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionGreen, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionRed, $GUI_SHOW)
+						Case "Champion" ; Green
+							GUICtrlSetState($g_hPicChampionGray, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionRed, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
+							GUICtrlSetState($g_hPicChampionGreen, $GUI_SHOW)
+					EndSwitch
 			EndSelect
 			Return $sResult
 		EndIf
@@ -250,6 +294,12 @@ Func ArmyHeroStatus($i)
 			GUICtrlSetState($g_hPicWardenRed, $GUI_HIDE)
 			GUICtrlSetState($g_hPicWardenBlue, $GUI_HIDE)
 			GUICtrlSetState($g_hPicWardenGray, $GUI_SHOW)
+			Return "none"
+		Case 3
+			GUICtrlSetState($g_hPicChampionGreen, $GUI_HIDE)
+			GUICtrlSetState($g_hPicChampionRed, $GUI_HIDE)
+			GUICtrlSetState($g_hPicChampionBlue, $GUI_HIDE)
+			GUICtrlSetState($g_hPicChampionGray, $GUI_SHOW)
 			Return "none"
 	EndSwitch
 
@@ -372,7 +422,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 EndFunc   ;==>LabGuiDisplay
 
 Func HideShields($bHide = False)
-	Local Static $ShieldState[20]
+	Local Static $ShieldState[25]
 	Local $counter
 	If $bHide = True Then
 		$counter = 0

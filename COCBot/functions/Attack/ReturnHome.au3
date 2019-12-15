@@ -33,7 +33,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 			WEnd
 			If IsAttackPage() Then smartZap() ; Check to see if we should zap the DE Drills
 			;If Heroes were not activated: Hero Ability activation before End of Battle to restore health
-			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower) Then
+			If ($g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower Or $g_bCheckChampionPower) Then
 				;_CaptureRegion()
 				If _ColorCheck(_GetPixelColor($aRtnHomeCheck1[0], $aRtnHomeCheck1[1], True), Hex($aRtnHomeCheck1[2], 6), $aRtnHomeCheck1[3]) = False And _ColorCheck(_GetPixelColor($aRtnHomeCheck2[0], $aRtnHomeCheck2[1], True), Hex($aRtnHomeCheck2[2], 6), $aRtnHomeCheck2[3]) = False Then ; If not already at Return Homescreen
 					If $g_bCheckKingPower Then
@@ -47,6 +47,10 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 					If $g_bCheckWardenPower Then
 						SetLog("Activating Warden's power to restore some health before EndBattle", $COLOR_INFO)
 						If IsAttackPage() Then SelectDropTroop($g_iWardenSlot) ;If Queen was not activated: Boost Queen before EndBattle to restore some health
+					EndIf
+					If $g_bCheckChampionPower Then
+						SetLog("Activating Royal Champion's power to restore some health before EndBattle", $COLOR_INFO)
+						If IsAttackPage() Then SelectDropTroop($g_iChampionSlot) ;If Champion was not activated: Boost Champion before EndBattle to restore some health
 					EndIf
 				EndIf
 			EndIf
@@ -63,12 +67,15 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 	$g_bCheckKingPower = False
 	$g_bCheckQueenPower = False
 	$g_bCheckWardenPower = False
+	$g_bCheckChampionPower = False
 	$g_bDropKing = False
 	$g_bDropQueen = False
 	$g_bDropWarden = False
+	$g_bDropChampion = False
 	$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
 	$g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
 	$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
+	$g_aHeroesTimerActivation[$eHeroRoyalChampion] = 0
 
 	; Reset building info used to attack base
 	_ObjDeleteKey($g_oBldgAttackInfo, "") ; Remove all Keys from dictionary

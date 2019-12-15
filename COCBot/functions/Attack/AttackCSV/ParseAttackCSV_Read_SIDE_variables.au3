@@ -22,6 +22,7 @@ Func ParseAttackCSV_Read_SIDE_variables()
 	$g_bCSVLocateStorageDarkElixir = False
 	$g_bCSVLocateStorageTownHall = False
 	$g_bCSVLocateEagle = False
+	$g_bCSVLocateScatter = False
 	$g_bCSVLocateInferno = False
 	$g_bCSVLocateXBow = False
 	$g_bCSVLocateWizTower = False
@@ -88,7 +89,7 @@ Func ParseAttackCSV_Read_SIDE_variables()
 							If Int($value4) > 0 Then $g_bCSVLocateWizTower = True
 							If Int($value5) > 0 Then $g_bCSVLocateMortar = True
 							If Int($value6) > 0 Then $g_bCSVLocateAirDefense = True
-							; If Int($value7) > 0 Then $g_bCSVLocateGemBox = True IE unused
+							If Int($value7) > 0 Then $g_bCSVLocateScatter = True
 							; If Int($value8) > 0 Then $g_bCSVLocateGemBox = True IE unused
 						EndIf
 					Case "MAKE" ; check if targeted building vectors are used im MAKE commands >> starting in V7.2+
@@ -102,6 +103,8 @@ Func ParseAttackCSV_Read_SIDE_variables()
 									$g_bCSVLocateInferno = True
 								Case "XBOW"
 									$g_bCSVLocateXBow = True
+								Case "SCATTER"
+									$g_bCSVLocateScatter = True
 								Case "WIZTOWER"
 									$g_bCSVLocateWizTower = True
 								Case "MORTAR"

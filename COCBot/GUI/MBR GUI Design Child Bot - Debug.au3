@@ -21,8 +21,8 @@ Global $g_hChkDebugSetlog = 0, $g_hChkDebugAndroid = 0, $g_hChkDebugClick = 0, $
 Global $g_hChkdebugAttackCSV = 0, $g_hChkMakeIMGCSV = 0, $g_hChkDebugDisableZoomout = 0, $g_hChkDebugDisableVillageCentering = 0, $g_hChkDebugDeadbaseImage = 0, $g_hChkDebugFunc = 0
 
 Global $g_hBtnTestTrain = 0, $g_hBtnTestDonateCC = 0, $g_hBtnTestRequestCC = 0, $g_hBtnTestSendText = 0, $g_hBtnTestAttackBar = 0, $g_hBtnTestClickDrag = 0, $g_hBtnTestImage = 0
-Global $g_hBtnTestVillageSize = 0, $g_hBtnTestDeadBase = 0, $g_hBtnTestTHimgloc = 0, $g_hBtnTestTrainsimgloc = 0, $g_hBtnTestQuickTrainsimgloc = 0, $g_hTxtTestFindButton = 0
-Global $g_hBtnTestFindButton = 0, $g_hBtnTestDeadBaseFolder = 0, $g_hBtnTestCleanYard = 0, $g_hBtnTestAttackCSV = 0, $g_hBtnTestBuildingLocation = 0, $g_hBtnTestArmyWindow = 0
+Global $g_hBtnTestVillageSize = 0, $g_hBtnTestDeadBase = 0, $g_hBtnTestTHimgloc = 0, $g_hBtnTestTrainsimgloc = 0, $g_hBtnTestQuickTrainsimgloc = 0, $g_hTxtRunFunction = 0
+Global $g_hBtnRunFunction = 0, $g_hBtnTestDeadBaseFolder = 0, $g_hBtnTestCleanYard = 0, $g_hBtnTestAttackCSV = 0, $g_hBtnTestBuildingLocation = 0, $g_hBtnTestArmyWindow = 0
 Global $g_hBtnTestConfigSave = 0, $g_hBtnTestConfigApply = 0, $g_hBtnTestConfigRead = 0, $g_hBtnTestOcrMemory = 0, $g_hBtnTestWeakBase = 0, $g_hBtnTestClickAway = 0, $g_hBtnTestAutoUpgrade = 0
 Global $g_hBtnTestUpgradeWindow = 0, $g_hBtnTestSmartWait = 0, $g_hBtnConsoleWindow = 0
 
@@ -157,8 +157,8 @@ Func CreateBotDebug()
 	; now go up again
 	$x -= 145
 
-		$g_hTxtTestFindButton = GUICtrlCreateInput("BoostOne", $x - 90, $y + 3, 85, 20)
-		$g_hBtnTestFindButton = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "TestFindButton", "Test Find Button"), $x, $y, 140, 25)
+		$g_hTxtRunFunction = GUICtrlCreateInput("zoomOut()", $x - 145, $y + 3, 140, 20)
+		$g_hBtnRunFunction = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "RunFunction", "Run Function"), $x, $y, 140, 25)
 	$y -= $yNext
 
 		$g_hBtnTestDeadBaseFolder = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestDeadBaseFolder", "Test Dead Base Folder"), $x, $y, 140, 25)
@@ -193,7 +193,7 @@ Func CreateBotDebug()
 
 		$g_hBtnConsoleWindow = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "ConsoleWindow", "Show/hide Console"), $x + 20, $y, 120, 25)
 	$y -= $yNext
-	
+
 		$g_hBtnTestArmyWindow = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestArmyWindow", "Army Window"), $x + 20, $y, 120, 25)
 	$y -= $yNext
 	GUICtrlCreateGroup("", -99, -99, 1, 1)

@@ -49,7 +49,7 @@ Func DropTrophy()
 		Next
 		; if heroes enabled, check them and reset drop trophy disable
 		If $g_bDropTrophyUseHeroes And $g_iHeroAvailable > 0 Then
-			If $g_bDebugSetlog Then SetDebugLog("Drop Trophy Found Hero BK|AQ|GW: " & BitOR($g_iHeroAvailable, $eHeroKing) & "|" & BitOR($g_iHeroAvailable, $eHeroQueen) & "|" & BitOR($g_iHeroAvailable, $eHeroWarden), $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("Drop Trophy Found Hero BK|AQ|GW|RC: " & BitOR($g_iHeroAvailable, $eHeroKing) & "|" & BitOR($g_iHeroAvailable, $eHeroQueen) & "|" & BitOR($g_iHeroAvailable, $eHeroWarden) & "|" & BitOR($g_iHeroAvailable, $eHeroChampion), $COLOR_DEBUG)
 			$bHaveTroops = True
 		EndIf
 
@@ -159,21 +159,25 @@ Func DropTrophy()
 
 
 					;c) check if hero avaiable and drop according to priority
-					If ($g_iQueenSlot <> -1 Or $g_iKingSlot <> -1 Or $g_iWardenSlot <> -1) Then
+					If ($g_iQueenSlot <> -1 Or $g_iKingSlot <> -1 Or $g_iWardenSlot <> -1 Or $g_iChampionSlot <> -1) Then
 						Local $sHeroPriority
 						Switch $g_iDropTrophyHeroesPriority
 							Case 0
-								$sHeroPriority = "QKW"
+								$sHeroPriority = "QKWC"
 							Case 1
-								$sHeroPriority = "QWK"
+								$sHeroPriority = "QWKC"
 							Case 2
-								$sHeroPriority = "KQW"
+								$sHeroPriority = "KQWC"
 							Case 3
-								$sHeroPriority = "KWQ"
+								$sHeroPriority = "KWQC"
 							Case 4
-								$sHeroPriority = "WKQ"
+								$sHeroPriority = "WKQC"
 							Case 5
-								$sHeroPriority = "WQK"
+								$sHeroPriority = "WQKC"
+							Case 6
+								$sHeroPriority = "CWQK"
+							Case 7
+								$sHeroPriority = "CQWK"
 						EndSwitch
 
 						Local $t
@@ -219,11 +223,24 @@ Func DropTrophy()
 										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 										ExitLoop
 									EndIf
+								Case "C"
+									If $g_iChampionSlot <> -1 Then
+										SetTrophyLoss()
+										SetLog("Deploying Royal Champion", $COLOR_INFO)
+										SelectDropTroop($g_iChampionSlot)
+										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
+										Click($aRandomEdge[$iRandomXY][0], $aRandomEdge[$iRandomXY][1], 1, 0, "#0000") ;Drop Champion
+										If _Sleep($DELAYDROPTROPHY4) Then ExitLoop
+										SelectDropTroop($g_iChampionSlot) ;If Champion was not activated: Boost Champion before EndBattle to restore some health
+										ReturnfromDropTrophies()
+										If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
+										ExitLoop
+									EndIf
 							EndSwitch
 						Next
 					EndIf
 				EndIf
-				If ($g_iQueenSlot = -1 And $g_iKingSlot = -1 And $g_iWardenSlot = -1) Or Not $g_bDropTrophyUseHeroes Then
+				If ($g_iQueenSlot = -1 And $g_iKingSlot = -1 And $g_iWardenSlot = -1 And $g_iChampionSlot = -1) Or Not $g_bDropTrophyUseHeroes Then
 					$aRandomEdge = $g_aaiEdgeDropPoints[Round(Random(0, 3))]
 					$iRandomXY = Round(Random(0, 4))
 					If $g_bDebugSetlog Then SetDebugLog("Troop Loc = " & $iRandomXY & ", X:Y= " & $aRandomEdge[$iRandomXY][0] & "|" & $aRandomEdge[$iRandomXY][1], $COLOR_DEBUG)

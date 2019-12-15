@@ -1,7 +1,7 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: dropHeroes
 ; Description ...: Will drop heroes in a specific coordinates, only if slot is not -1,Only drops when option is clicked.
-; Syntax ........: dropHeroes($x, $y[, $KingSlot = -1[, $QueenSlot = -1[, $WardenSlot = -1]]])
+; Syntax ........: dropHeroes($x, $y, $iKingSlot = -1, $iQueenSlot = -1, $iWardenSlot = -1, $iChampionSlot = -1)
 ; Parameters ....: $x                   - an unknown value.
 ;                  $y                   - an unknown value.
 ;                  $KingSlot            - [optional] an unknown value. Default is -1.
@@ -16,21 +16,24 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWardenSlotNumber = -1) ;Drops for king and queen and Grand Warden
-	If $g_bDebugSetlog Then SetDebugLog("dropHeroes $iKingSlotNumber " & $iKingSlotNumber & " $iQueenSlotNumber " & $iQueenSlotNumber & " $iWardenSlotNumber " & $iWardenSlotNumber & " matchmode " & $g_iMatchMode, $COLOR_DEBUG)
+Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWardenSlotNumber = -1, $iChampionSlotNumber = -1) ;Drops for All Heroes
+	If $g_bDebugSetlog Then SetDebugLog("dropHeroes $iKingSlotNumber " & $iKingSlotNumber & " $iQueenSlotNumber " & $iQueenSlotNumber & " $iWardenSlotNumber " & $iWardenSlotNumber & " $iChampionSlotNumber " & $iChampionSlotNumber & " matchmode " & $g_iMatchMode, $COLOR_DEBUG)
 	If _Sleep($DELAYDROPHEROES1) Then Return
 	Local $bDropKing = False
 	Local $bDropQueen = False
 	Local $bDropWarden = False
+	Local $bDropChampion = False
 
 	;use hero if  slot (detected ) and ( ($g_iMatchMode <>DB and <>LB  ) or (check user GUI settings) )
 	If $iKingSlotNumber <> -1 And (($g_iMatchMode <> $DB And $g_iMatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $eHeroKing) = $eHeroKing) Then $bDropKing = True
 	If $iQueenSlotNumber <> -1 And (($g_iMatchMode <> $DB And $g_iMatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $eHeroQueen) = $eHeroQueen) Then $bDropQueen = True
 	If $iWardenSlotNumber <> -1 And (($g_iMatchMode <> $DB And $g_iMatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $eHeroWarden) = $eHeroWarden) Then $bDropWarden = True
+	If $iChampionSlotNumber <> -1 And (($g_iMatchMode <> $DB And $g_iMatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $eHeroChampion) = $eHeroChampion) Then $bDropChampion = True
 
 	If $g_bDebugSetlog Then SetDebugLog("drop KING = " & $bDropKing, $COLOR_DEBUG)
 	If $g_bDebugSetlog Then SetDebugLog("drop QUEEN = " & $bDropQueen, $COLOR_DEBUG)
 	If $g_bDebugSetlog Then SetDebugLog("drop WARDEN = " & $bDropWarden, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("drop CHAMPION = " & $bDropChampion, $COLOR_DEBUG)
 
 	If $bDropKing Then
 		SetLog("Dropping King at " & $iX & ", " & $iY, $COLOR_INFO)
@@ -78,6 +81,23 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 		EndIf
 		$g_bDropWarden = True ; Set global flag hero dropped
 		$g_aHeroesTimerActivation[$eHeroGrandWarden] = __TimerInit() ; initialize fixed activation timer
+		If _Sleep($DELAYDROPHEROES1) Then Return
+	EndIf
+
+	If _Sleep($DELAYDROPHEROES1) Then Return
+
+	If $bDropChampion Then
+		SetLog("Dropping Royal Champion at " & $iX & ", " & $iY, $COLOR_INFO)
+		SelectDropTroop($iChampionSlotNumber, 1, Default, False)
+		If _Sleep($DELAYDROPHEROES2) Then Return
+		AttackClick($iX, $iY, 1, 0, 0, "#x999")
+		If Not $g_bDropChampion Then ; check global flag, only begin hero health check on 1st hero drop as flag is reset to false after activation
+			$g_bCheckChampionPower = True
+		Else
+			SetDebugLog("Royal Champion dropped 2nd time, Check Power flag not changed") ; do nothing as hero already dropped
+		EndIf
+		$g_bDropChampion = True ; Set global flag hero dropped
+		$g_aHeroesTimerActivation[$eHeroRoyalChampion] = __TimerInit() ; initialize fixed activation timer
 		If _Sleep($DELAYDROPHEROES1) Then Return
 	EndIf
 

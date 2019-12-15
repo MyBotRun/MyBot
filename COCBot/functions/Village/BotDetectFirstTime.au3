@@ -94,6 +94,14 @@ Func BotDetectFirstTime()
 				SaveConfig()
 			EndIf
 		EndIf
+
+		If Number($g_iTownHallLevel) >= 13 And ($g_iCmbBoostChampion > 0 Or $g_bUpgradeChampionEnable) Then
+			If _Sleep($DELAYBOTDETECT3) Then Return
+			If $g_aiChampionAltarPos[0] = -1 Then
+				LocateChampionAltar(False)
+				SaveConfig()
+			EndIf
+		EndIf
 	EndIf
 
 	;Display Level TH in Stats

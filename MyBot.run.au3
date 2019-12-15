@@ -767,7 +767,7 @@ Func runBot() ;Bot that runs everything in order
 				Next
 				BoostEverything() ; 1st Check if is to use Training Potion
 				If $g_bRestart Then ContinueLoop
-				Local $aRndFuncList = ['BoostBarracks', 'BoostSpellFactory', 'BoostWorkshop', 'BoostKing', 'BoostQueen', 'BoostWarden']
+				Local $aRndFuncList = ['BoostBarracks', 'BoostSpellFactory', 'BoostWorkshop', 'BoostKing', 'BoostQueen', 'BoostWarden', 'BoostChampion']
 				_ArrayShuffle($aRndFuncList)
 				For $Index In $aRndFuncList
 					If Not $g_bRunState Then Return
@@ -1136,6 +1136,9 @@ Func __RunFunction($action)
 			_Sleep($DELAYRESPOND)
 		Case "BoostWarden"
 			BoostWarden()
+			_Sleep($DELAYRESPOND)
+		Case "BoostChampion"
+			BoostChampion()
 			_Sleep($DELAYRESPOND)
 		Case "BoostEverything"
 			BoostEverything()

@@ -587,7 +587,31 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		SetDebugLog("> Eagle Artillery detection not need, skipping", $COLOR_DEBUG)
 	EndIf
 
-	; 07 - Inferno ------------------------------------------------------------------------
+	; 07 - Scatter Shot ------------------------------------------------------------------------
+
+	$g_aiCSVScatterPos = "" ; reset pixel position to null
+
+	If $g_bCSVLocateScatter = True Then ; eagle find required?
+		If $g_iSearchTH = "-" Or $g_iSearchTH > 10 Then ; TH level where eagle exists?
+			If _ObjSearch($g_oBldgAttackInfo, $eBldgScatter & "_LOCATION") = False Then ; get data if not already exist?
+				$aResult = GetLocationBuilding($eBldgScatter, $g_iSearchTH, False)
+				If $aResult = -1 Then SetLog("Monkey ate bad banana: " & "GetLocationBuilding " & $g_sBldgNames[$eBldgScatter], $COLOR_ERROR)
+			EndIf
+			$aResult = _ObjGetValue($g_oBldgAttackInfo, $eBldgScatter & "_LOCATION")
+			If @error Then
+				_ObjErrMsg("_ObjGetValue " & $g_sBldgNames[$eBldgScatter] & " _LOCATION", @error) ; Log errors
+				SetLog("> " & $g_sBldgNames[$eBldgScatter] & " location not in dictionary", $COLOR_WARNING)
+			Else
+				If IsArray($aResult[0]) Then $g_aiCSVEagleArtilleryPos = $aResult[0]
+			EndIf
+		Else
+			SetLog("> TH Level to low for Scatter Shot, skip detection", $COLOR_INFO)
+		EndIf
+	Else
+		SetDebugLog("> Scatter Shot detection not need, skipping", $COLOR_DEBUG)
+	EndIf
+
+	; 08 - Inferno ------------------------------------------------------------------------
 
 	$g_aiCSVInfernoPos = "" ; reset location array?
 
@@ -611,7 +635,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		SetDebugLog("> Inferno detection not need, skipping", $COLOR_DEBUG)
 	EndIf
 
-	; 08 - X-Bow ------------------------------------------------------------------------
+	; 09 - X-Bow ------------------------------------------------------------------------
 
 	$g_aiCSVXBowPos = "" ; reset location array?
 
@@ -636,7 +660,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	EndIf
 
 
-	; 09 - Wizard Tower -----------------------------------------------------------------
+	; 10 - Wizard Tower -----------------------------------------------------------------
 
 	$g_aiCSVWizTowerPos = "" ; reset location array?
 
@@ -656,7 +680,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		SetDebugLog("> " & $g_sBldgNames[$eBldgWizTower] & " detection not need, skipping", $COLOR_DEBUG)
 	EndIf
 
-	; 10 - Mortar ------------------------------------------------------------------------
+	; 11 - Mortar ------------------------------------------------------------------------
 
 	$g_aiCSVMortarPos = "" ; reset location array?
 
@@ -676,7 +700,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 		SetDebugLog("> " & $g_sBldgNames[$eBldgMortar] & " detection not need, skipping", $COLOR_DEBUG)
 	EndIf
 
-	; 11 - Air Defense ------------------------------------------------------------------------
+	; 12 - Air Defense ------------------------------------------------------------------------
 
 	$g_aiCSVAirDefensePos = "" ; reset location array?
 
@@ -699,7 +723,7 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	; Calculate main attack side
 	ParseAttackCSV_MainSide()
 
-	; 12 - Wall
+	; 13 - Wall
 	If $g_bCSVLocateWall Then
 		Local $aCSVExternalWall[1], $aCSVInternalWall[1]
 		If FindWallCSV($aCSVExternalWall, $aCSVInternalWall) Then
@@ -713,11 +737,11 @@ Func Algorithm_AttackCSV($testattack = False, $captureredarea = True)
 	; Log total CSV prep time
 	SetLog(">> Total time: " & Round(__timerdiff($hTimerTOTAL) / 1000, 2) & " seconds", $COLOR_INFO)
 
-	; 12 - DEBUGIMAGE ------------------------------------------------------------------------
+	; 14 - DEBUGIMAGE ------------------------------------------------------------------------
 	If $g_bDebugMakeIMGCSV Then AttackCSVDEBUGIMAGE() ;make IMG debug
 	If $g_bDebugAttackCSV Then _LogObjList($g_oBldgAttackInfo) ; display dictionary for raw find image debug
 
-	; 14 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
+	; 15 - LAUNCH PARSE FUNCTION -------------------------------------------------------------
 	SetSlotSpecialTroops()
 	If _Sleep($DELAYRESPOND) Then Return
 

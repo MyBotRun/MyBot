@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 Func UpgradeHeroes()
 
-	If Not $g_bUpgradeKingEnable And Not $g_bUpgradeQueenEnable And Not $g_bUpgradeWardenEnable Then Return
+	If Not $g_bUpgradeKingEnable And Not $g_bUpgradeQueenEnable And Not $g_bUpgradeWardenEnable And Not $g_bUpgradeChampionEnable Then Return
 	If _Sleep(500) Then Return
 
 	checkMainScreen(False)
@@ -36,6 +36,12 @@ Func UpgradeHeroes()
 	If $g_bUpgradeWardenEnable Then
 		If Not isInsideDiamond($g_aiWardenAltarPos) Then LocateWardenAltar()
 		If $g_aiWardenAltarPos[0] = -1 Or $g_aiWardenAltarPos[1] = -1 Then LocateWardenAltar()
+		SaveConfig()
+	EndIf
+
+	If $g_bUpgradeChampionEnable Then
+		If Not isInsideDiamond($g_aiChampionAltarPos) Then LocateChampionAltar()
+		If $g_aiChampionAltarPos[0] = -1 Or $g_aiChampionAltarPos[1] = -1 Then LocateChampionAltar()
 		SaveConfig()
 	EndIf
 
@@ -67,6 +73,18 @@ Func UpgradeHeroes()
 				Return
 			EndIf
 			KingUpgrade()
+
+			If _Sleep($DELAYUPGRADEHERO1) Then Return
+		EndIf
+		; ### Royal Champion ###
+		If $g_bUpgradeChampionEnable And BitAND($g_iHeroUpgradingBit, $eHeroChampion) <> $eHeroChampion Then
+			If Not getBuilderCount() Then Return ; update builder data, return if problem
+			If _Sleep($DELAYRESPOND) Then Return
+			If $g_iFreeBuilderCount < 1 + ($g_bAutoUpgradeWallsEnable And $g_bUpgradeWallSaveBuilder ? 1 : 0) Then
+				SetLog("Not enough Builders available to upgrade the Royal Champion")
+				Return
+			EndIf
+			ChampionUpgrade()
 
 			If _Sleep($DELAYUPGRADEHERO1) Then Return
 		EndIf
@@ -416,8 +434,112 @@ Func WardenUpgrade()
 	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
 EndFunc   ;==>WardenUpgrade
 
+Func ChampionUpgrade()
+
+	If Not $g_bUpgradeChampionEnable Then Return
+	Local $aHeroLevel = 0
+
+	SetLog("Upgrade Champion")
+	ClickP($aAway, 1, 0, "#0166") ; Click away
+	If _Sleep($DELAYUPGRADEHERO2) Then Return
+	BuildingClickP($g_aiChampionAltarPos) ;Click Champion Altar
+	If _Sleep($DELAYUPGRADEHERO2) Then Return
+
+	;Get Champion info and Level
+	Local $sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY) ; 860x780
+	If @error Then SetError(0, 0, 0)
+	Local $CountGetInfo = 0
+	While IsArray($sInfo) = False
+		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY) ; 860x780
+		If @error Then SetError(0, 0, 0)
+		Sleep(100)
+		$CountGetInfo += 1
+		If $CountGetInfo >= 50 Then Return
+	WEnd
+	If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+	If @error Then Return SetError(0, 0, 0)
+
+
+	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
+		If StringInStr($sInfo[1], "Champ") = 0 Then
+			SetLog("Bad Royal Champion location", $COLOR_ACTION)
+			Return
+		Else
+			If $sInfo[2] <> "" Then
+				$aHeroLevel = Number($sInfo[2]) ; grab hero level from building info array
+				SetLog("Your Royal Champion level read as: " & $aHeroLevel, $COLOR_SUCCESS)
+				If $aHeroLevel = $g_iMaxChampionLevel Then ; max hero
+					SetLog("Your Royal Champion is at max level, cannot upgrade anymore!", $COLOR_INFO)
+					$g_bUpgradeChampionEnable = False ; turn Off the Champions upgrade
+					Return
+				EndIf
+			Else
+				SetLog("Your Royal Champion Level was not found!", $COLOR_INFO)
+				Return
+			EndIf
+		EndIf
+	Else
+		SetLog("Bad Royal Champion OCR", $COLOR_ERROR)
+		Return
+	EndIf
+
+	If _Sleep($DELAYUPGRADEHERO1) Then Return
+
+	;##### Get updated village elixir and dark elixir values
+	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
+		$g_aiCurrentLoot[$eLootDarkElixir] = Number(getResourcesMainScreen(728, 123))
+		If $g_bDebugSetlog Then SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
+	Else
+		If $g_bDebugSetlog Then SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
+	EndIf
+
+	If $g_aiCurrentLoot[$eLootDarkElixir] < ($g_afChampionUpgCost[$aHeroLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) + $g_iUpgradeMinDark Then
+		SetLog("Insufficient DE for Upg Champion, requires: " & ($g_afChampionUpgCost[$aHeroLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) & " + " & $g_iUpgradeMinDark, $COLOR_INFO)
+		Return
+	EndIf
+
+	Local $aUpgradeButton = findButton("Upgrade", Default, 1, True)
+	If IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2 Then
+		If _Sleep($DELAYUPGRADEHERO2) Then Return
+		ClickP($aUpgradeButton)
+		If _Sleep($DELAYUPGRADEHERO3) Then Return ; Wait for window to open
+		If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn1")
+		If _ColorCheck(_GetPixelColor(721, 118 + $g_iMidOffsetY, True), Hex(0xE00408, 6), 20) Then ; Check if the Hero Upgrade window is open
+
+			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
+			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
+				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
+				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
+
+				If _Sleep($DELAYUPGRADEHERO1) Then Return
+				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
+				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xDB0408, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
+					SetLog("Champion Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
+					ClickP($aAway, 2, 0, "#0309") ;Click Away to close windows
+					Return
+				EndIf
+				SetLog("Champion Upgrade complete", $COLOR_SUCCESS)
+				If _Sleep($DELAYUPGRADEHERO2) Then Return ; Wait for window to close
+				$g_iNbrOfHeroesUpped += 1
+				$g_iCostDElixirHero += $g_afChampionUpgCost[$aHeroLevel - 1] * 1000 * (1 - Number($g_iBuilderBoostDiscount) / 100)
+				UpdateStats()
+			Else
+				SetLog("Champion Upgrade Fail! No DE!", $COLOR_ERROR)
+				ClickP($aAway, 2, 0, "#0306") ;Click Away to close window
+				Return
+			EndIf
+		Else
+			SetLog("Upgrade Royal Champion window open fail", $COLOR_ERROR)
+		EndIf
+	Else
+		SetLog("Upgrade Royal Champion error finding button", $COLOR_ERROR)
+	EndIf
+
+	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
+EndFunc   ;==>ChampionUpgrade
+
 Func ReservedBuildersForHeroes()
-	Local $iUsedBuildersForHeroes = Number(BitAND($g_iHeroUpgradingBit, $eHeroKing) = $eHeroKing ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroQueen) = $eHeroQueen ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroWarden) = $eHeroWarden ? 1 : 0)
+	Local $iUsedBuildersForHeroes = Number(BitAND($g_iHeroUpgradingBit, $eHeroKing) = $eHeroKing ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroQueen) = $eHeroQueen ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroWarden) = $eHeroWarden ? 1 : 0) + Number(BitAND($g_iHeroUpgradingBit, $eHeroChampion) = $eHeroChampion ? 1 : 0)
 	If $iUsedBuildersForHeroes = 1 Then
 		SetLog($iUsedBuildersForHeroes & " builder is upgrading your heroes.", $COLOR_INFO)
 	Else

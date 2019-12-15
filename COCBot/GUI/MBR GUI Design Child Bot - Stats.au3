@@ -18,7 +18,7 @@ Global $g_hGUI_STATS = 0, $g_hGUI_STATS_TAB = 0, $g_hGUI_STATS_TAB_ITEM1 = 0, $g
 Global $btnResetStats = 0
 
 ; Gain
-Global $g_ahPicTHLevels[13], $g_hLblTHLevels = 0
+Global $g_ahPicTHLevels[14], $g_hLblTHLevels = 0
 Global $g_ahPicLeague[$eLeagueCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0], $g_hLblLeague = 0
 Global $g_ahLblStatsStartedWith[$eLootCount] = [0, 0, 0, 0], $g_ahLblStatsGainPerHour[$eLootCount] = [0, 0, 0, 0]
 Global $g_ahLblStatsTotalGain[$eLootCount] = [0, 0, 0, 0], $g_ahLblStatsLastAttack[$eLootCount] = [0, 0, 0, 0]
@@ -38,9 +38,9 @@ Global $g_hLblNbrOfDetectedMines[$g_iModeCount] = [0, 0, 0], $g_hLblNbrOfDetecte
 	   $g_hLblNbrOfDetectedDrills[$g_iModeCount] = [0, 0, 0], $g_hLblSmartZap = 0, $g_hLblSmartLightningUsed = 0, $g_hLblSmartEarthQuakeUsed = 0
 
 ; Donations
-Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hLblDonSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_hLblDonSiegel[$eSiegeMachineCount] = [0, 0, 0]
+Global $g_hLblDonSiegel[$eSiegeMachineCount] = [0, 0, 0, 0]
 Global $g_hLblTotalTroopsQ = 0, $g_hLblTotalTroopsXP = 0, $g_hLblTotalSpellsQ = 0, $g_hLblTotalSpellsXP = 0
 
 ; Multi Stats
@@ -106,6 +106,8 @@ Func CreateGainSubTab()
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahPicTHLevels[12] = _GUICtrlCreateIcon($g_sLibIconPath, $eHdV12, $x - 11, $y + 15, 52, 52)
 			GUICtrlSetState(-1, $GUI_HIDE)
+		$g_ahPicTHLevels[13] = _GUICtrlCreateIcon($g_sLibIconPath, $eHdV13, $x - 11, $y + 15, 52, 52)
+			GUICtrlSetState(-1, $GUI_HIDE)
 
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR Global GUI Design", "LblTownhall", "TownHall"), $x - 11, $y, -1, -1, $SS_CENTER)
 
@@ -130,7 +132,7 @@ Func CreateGainSubTab()
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahPicLeague[$eLeagueMaster] = _GUICtrlCreateIcon($g_sLibIconPath, $eMaster, $x - 2, $y - 5 + 15, 56, 56)
 			GUICtrlSetState(-1, $GUI_HIDE)
-		$g_ahPicLeague[$eLeagueChampion] = _GUICtrlCreateIcon($g_sLibIconPath, $eChampion, $x - 2, $y - 5 + 15, 56, 56)
+		$g_ahPicLeague[$eLeagueChampion] = _GUICtrlCreateIcon($g_sLibIconPath, $eLChampion, $x - 2, $y - 5 + 15, 56, 56)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahPicLeague[$eLeagueTitan] = _GUICtrlCreateIcon($g_sLibIconPath, $eTitan, $x - 2, $y - 5 + 15, 56, 56)
 			GUICtrlSetState(-1, $GUI_HIDE)
@@ -1001,6 +1003,16 @@ Func CreateDonationsSubTab()
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnYeti, $x + 145, $y, 24, 24)
+			$sTxtTip = ""
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(":", $x + 175, $y + 4, -1, 17)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		$g_hLblDonTroop[$eTroopYeti] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
 	$y += 28
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnGiant, $x - 10, $y, 24, 24)
 			$sTxtTip = ""
@@ -1018,6 +1030,16 @@ Func CreateDonationsSubTab()
 		GUICtrlCreateLabel(":", $x + 95, $y + 4, -1, 17)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 		$g_hLblDonTroop[$eTroopDragon] = GUICtrlCreateLabel("0", $x + 85, $y + 4, 50, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSiegeB, $x + 145, $y, 24, 24)
+			$sTxtTip = ""
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(":", $x + 175, $y + 4, -1, 17)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		$g_hLblDonSiegel[$eSiegeBarracks] = GUICtrlCreateLabel("0", $x + 165, $y + 4, 50, 17, $SS_RIGHT)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)

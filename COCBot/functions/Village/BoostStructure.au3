@@ -1,5 +1,5 @@
 ; #FUNCTION# ====================================================================================================================
-; Name ..........: Boost any structure (King, Queen, Warden)
+; Name ..........: Boost any structure (King, Queen, Warden, Champion)
 ; Description ...:
 ; Syntax ........: BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 ; Parameters ....:
@@ -120,7 +120,7 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 				If $g_bDebugSetlog Then SetDebugLog("Boost Potion Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 				ClickP($Boost)
 				If _Sleep($DELAYBOOSTHEROES1) Then Return
-				If Not _ColorCheck(_GetPixelColor(255, 550, True), Hex(0xFFFFFF, 6), 25) Then
+				If Not _ColorCheck(_GetPixelColor(255, 535, True), Hex(0xFFFFFF, 6), 25) Then
 					SetLog("Cannot find/verify 'Use' Button", $COLOR_WARNING)
 					ClickP($aAway, 2, 0, "#000000") ; Click Away, Necessary! due to possible errors/changes
 					Return False ; Exit Function

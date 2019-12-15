@@ -285,6 +285,11 @@ Func AttackCSVDEBUGIMAGE()
 		_GDIPlus_GraphicsDrawRect($hGraphic, $g_aiCSVEagleArtilleryPos[0] - 15, $g_aiCSVEagleArtilleryPos[1] - 15, 30, 30, $hPenBlue)
 	EndIf
 
+	; - DRAW Eagle -------------------------------------------------------------------
+	If $g_bCSVLocateScatter = True And IsArray($g_aiCSVScatterPos) Then
+		_GDIPlus_GraphicsDrawRect($hGraphic, $g_aiCSVScatterPos[0] - 15, $g_aiCSVScatterPos[1] - 15, 30, 30, $hPenBlue)
+	EndIf
+
 	; - DRAW Inferno -------------------------------------------------------------------
 	If $g_bCSVLocateInferno = True And IsArray($g_aiCSVInfernoPos) Then
 		For $i = 0 To UBound($g_aiCSVInfernoPos) - 1

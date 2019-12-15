@@ -97,6 +97,8 @@ Func CheckCsvValues($instruction, $variablenumber, $variable)
 							Return True
 						Case "IN-WALL"
 							Return True
+						Case "SCATTER"
+							Return True
 						Case Else
 							Return False
 					EndSwitch

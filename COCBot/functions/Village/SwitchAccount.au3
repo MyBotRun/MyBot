@@ -641,8 +641,6 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 			Return "OK"
 		EndIf
 
-		SetDebugLog("Find " & UBound($aSuperCellIDReload) & " Reload Button at x:" & $aSuperCellIDReload[0] & " y:" & $aSuperCellIDReload[1])
-
 		If $i = 20 Then
 			$bResult = False
 			;ExitLoop 2
@@ -728,11 +726,11 @@ EndFunc   ;==>SwitchCOCAcc_ClickAccountSCID
 
 Func CheckWaitHero() ; get hero regen time remaining if enabled
 	Local $iActiveHero
-	Local $aHeroResult[3]
+	Local $aHeroResult[$eHeroCount]
 	$g_aiTimeTrain[2] = 0
 
 	$aHeroResult = getArmyHeroTime("all")
-	If UBound($aHeroResult) < 3 Then Return ; OCR error
+	If UBound($aHeroResult) < $eHeroCount Then Return ; OCR error
 
 	If _Sleep($DELAYRESPOND) Then Return
 	If Not $g_bRunState Then Return

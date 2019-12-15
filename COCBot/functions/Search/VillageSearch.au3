@@ -42,8 +42,8 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	Local $logwrited = False
 	Local $iSkipped = 0
 	Local $bReturnToPickupHero = False
-	Local $abHeroUse[3] = [False, False, False]
-	For $i = 0 to 2
+	Local $abHeroUse[$eHeroCount] = [False, False, False, False]
+	For $i = 0 To $eHeroCount - 1
 		$abHeroUse[$i] = ($g_abSearchSearchesEnable[$DB] ? IsUnitUsed($DB, $eKing + $i) : False) _
 							Or ($g_abSearchSearchesEnable[$LB] ? IsUnitUsed($LB, $eKing + $i) : False)
 	Next
@@ -328,7 +328,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 
 		If $g_bSearchRestartPickupHero Then
-			For $i = 0 To 2 ; check all 3 hero
+			For $i = 0 To $eHeroCount - 1 ; check all heros
 				If Not $abHeroUse[$i] Or Not _DateIsValid($g_asHeroHealTime[$i]) Then ContinueLoop
 				Local $iTimeTillHeroHealed = Int(_DateDiff('s', _NowCalc(), $g_asHeroHealTime[$i])) ; hero time in seconds
 				SetDebugLog($g_asHeroNames[$i] & " will be ready in " & $iTimeTillHeroHealed & " seconds")

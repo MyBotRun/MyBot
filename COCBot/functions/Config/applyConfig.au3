@@ -326,6 +326,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreGold, $g_iChkBBSuggestedUpgradesIgnoreGold = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreElixir, $g_iChkBBSuggestedUpgradesIgnoreElixir = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreHall, $g_iChkBBSuggestedUpgradesIgnoreHall = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreWall, $g_iChkBBSuggestedUpgradesIgnoreWall = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			GUICtrlSetState($g_hChkPlacingNewBuildings, $g_iChkPlacingNewBuildings = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 
@@ -415,6 +416,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_iChkBBSuggestedUpgradesIgnoreGold = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreGold) = $GUI_CHECKED) ? 1 : 0
 			$g_iChkBBSuggestedUpgradesIgnoreElixir = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreElixir) = $GUI_CHECKED) ? 1 : 0
 			$g_iChkBBSuggestedUpgradesIgnoreHall = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreHall) = $GUI_CHECKED) ? 1 : 0
+			$g_iChkBBSuggestedUpgradesIgnoreWall = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreWall) = $GUI_CHECKED) ? 1 : 0
 
 			$g_iChkPlacingNewBuildings = (GUICtrlRead($g_hChkPlacingNewBuildings) = $GUI_CHECKED) ? 1 : 0
 
@@ -739,12 +741,17 @@ Func ApplyConfig_600_15($TypeReadSave)
 			chkUpgradeWarden()
 			chkDBWardenWait()
 			chkABWardenWait()
+			GUICtrlSetState($g_hChkUpgradeChampion, $g_bUpgradeChampionEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
+			chkUpgradeChampion()
+			chkDBChampionWait()
+			chkABChampionWait()
 			_GUICtrlComboBox_SetCurSel($g_hCmbHeroReservedBuilder, $g_iHeroReservedBuilder)
 			cmbHeroReservedBuilder()
 		Case "Save"
 			$g_bUpgradeKingEnable = (GUICtrlRead($g_hChkUpgradeKing) = $GUI_CHECKED)
 			$g_bUpgradeQueenEnable = (GUICtrlRead($g_hChkUpgradeQueen) = $GUI_CHECKED)
 			$g_bUpgradeWardenEnable = (GUICtrlRead($g_hChkUpgradeWarden) = $GUI_CHECKED)
+			$g_bUpgradeChampionEnable = (GUICtrlRead($g_hChkUpgradeChampion) = $GUI_CHECKED)
 			$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_15
@@ -956,6 +963,7 @@ Func ApplyConfig_600_22($TypeReadSave)
 			_GUICtrlComboBox_SetCurSel($g_hCmbBoostBarbarianKing, $g_iCmbBoostBarbarianKing)
 			_GUICtrlComboBox_SetCurSel($g_hCmbBoostArcherQueen, $g_iCmbBoostArcherQueen)
 			_GUICtrlComboBox_SetCurSel($g_hCmbBoostWarden, $g_iCmbBoostWarden)
+			_GUICtrlComboBox_SetCurSel($g_hCmbBoostChampion, $g_iCmbBoostChampion)
 			_GUICtrlComboBox_SetCurSel($g_hCmbBoostEverything, $g_iCmbBoostEverything)
 			For $i = 0 To 23
 				GUICtrlSetState($g_hChkBoostBarracksHours[$i], $g_abBoostBarracksHours[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -967,6 +975,7 @@ Func ApplyConfig_600_22($TypeReadSave)
 			$g_iCmbBoostBarbarianKing = _GUICtrlComboBox_GetCurSel($g_hCmbBoostBarbarianKing)
 			$g_iCmbBoostArcherQueen = _GUICtrlComboBox_GetCurSel($g_hCmbBoostArcherQueen)
 			$g_iCmbBoostWarden = _GUICtrlComboBox_GetCurSel($g_hCmbBoostWarden)
+			$g_iCmbBoostChampion = _GUICtrlComboBox_GetCurSel($g_hCmbBoostChampion)
 			$g_iCmbBoostEverything = _GUICtrlComboBox_GetCurSel($g_hCmbBoostEverything)
 			For $i = 0 To 23
 				$g_abBoostBarracksHours[$i] = (GUICtrlRead($g_hChkBoostBarracksHours[$i]) = $GUI_CHECKED)
@@ -1058,10 +1067,12 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			GUICtrlSetState($g_hChkDBKingWait, BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroKing) = $eHeroKing ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDBQueenWait, BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroQueen) = $eHeroQueen ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDBWardenWait, BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroWarden) = $eHeroWarden ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDBChampionWait, BitAND($g_aiSearchHeroWaitEnable[$DB], $eHeroChampion) = $eHeroChampion ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDBNotWaitHeroes, $g_aiSearchNotWaitHeroesEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			$g_iHeroWaitAttackNoBit[$DB][0] = GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED ? 1 : 0
 			$g_iHeroWaitAttackNoBit[$DB][1] = GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED ? 1 : 0
 			$g_iHeroWaitAttackNoBit[$DB][2] = GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED ? 1 : 0
+			$g_iHeroWaitAttackNoBit[$DB][3] = GUICtrlRead($g_hChkDBChampionWait) = $GUI_CHECKED ? 1 : 0
 			GUICtrlSetState($g_hChkDBSpellsWait, $g_abSearchSpellsWaitEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkDBSpellsWait()
 			GUICtrlSetState($g_hChkDBWaitForCastle, $g_abSearchCastleWaitEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -1090,12 +1101,14 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			GUICtrlSetState($g_ahChkMaxXBow[$DB], $g_abFilterMaxXBowEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxInferno[$DB], $g_abFilterMaxInfernoEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxEagle[$DB], $g_abFilterMaxEagleEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_ahChkMaxScatter[$DB], $g_abFilterMaxScatterEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakMortar[$DB], $g_aiFilterMaxMortarLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakWizTower[$DB], $g_aiFilterMaxWizTowerLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakAirDefense[$DB], $g_aiFilterMaxAirDefenseLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakXBow[$DB], $g_aiFilterMaxXBowLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakInferno[$DB], $g_aiFilterMaxInfernoLevel[$DB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakEagle[$DB], $g_aiFilterMaxEagleLevel[$DB])
+			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakScatter[$DB], $g_aiFilterMaxScatterLevel[$DB])
 			chkDBWeakBase()
 			GUICtrlSetState($g_ahChkMeetOne[$DB], $g_abFilterMeetOneConditionEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 		Case "Save"
@@ -1112,6 +1125,7 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			$g_iHeroWaitAttackNoBit[$DB][0] = GUICtrlRead($g_hChkDBKingWait) = $GUI_CHECKED ? 1 : 0
 			$g_iHeroWaitAttackNoBit[$DB][1] = GUICtrlRead($g_hChkDBQueenWait) = $GUI_CHECKED ? 1 : 0
 			$g_iHeroWaitAttackNoBit[$DB][2] = GUICtrlRead($g_hChkDBWardenWait) = $GUI_CHECKED ? 1 : 0
+			$g_iHeroWaitAttackNoBit[$DB][3] = GUICtrlRead($g_hChkDBChampionWait) = $GUI_CHECKED ? 1 : 0
 			$g_aiSearchNotWaitHeroesEnable[$DB] = GUICtrlRead($g_hChkDBNotWaitHeroes) = $GUI_CHECKED ? 1 : 0
 			chkNotWaitHeroes()
 			$g_abSearchSpellsWaitEnable[$DB] = (GUICtrlRead($g_hChkDBSpellsWait) = $GUI_CHECKED)
@@ -1136,12 +1150,14 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			$g_abFilterMaxXBowEnable[$DB] = (GUICtrlRead($g_ahChkMaxXBow[$DB]) = $GUI_CHECKED)
 			$g_abFilterMaxInfernoEnable[$DB] = (GUICtrlRead($g_ahChkMaxInferno[$DB]) = $GUI_CHECKED)
 			$g_abFilterMaxEagleEnable[$DB] = (GUICtrlRead($g_ahChkMaxEagle[$DB]) = $GUI_CHECKED)
+			$g_abFilterMaxScatterEnable[$DB] = (GUICtrlRead($g_ahChkMaxScatter[$DB]) = $GUI_CHECKED)
 			$g_aiFilterMaxMortarLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakMortar[$DB])
 			$g_aiFilterMaxWizTowerLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakWizTower[$DB])
 			$g_aiFilterMaxAirDefenseLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakAirDefense[$DB])
 			$g_aiFilterMaxXBowLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakXBow[$DB])
 			$g_aiFilterMaxInfernoLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakInferno[$DB])
 			$g_aiFilterMaxEagleLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakEagle[$DB])
+			$g_aiFilterMaxScatterLevel[$DB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakScatter[$DB])
 			$g_abFilterMeetOneConditionEnable[$DB] = (GUICtrlRead($g_ahChkMeetOne[$DB]) = $GUI_CHECKED)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_28_DB
@@ -1168,10 +1184,12 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 			GUICtrlSetState($g_hChkABKingWait, BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroKing) = $eHeroKing ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkABQueenWait, BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroQueen) = $eHeroQueen ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkABWardenWait, BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkABChampionWait, BitAND($g_aiSearchHeroWaitEnable[$LB], $eHeroChampion) = $eHeroChampion ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkABNotWaitHeroes, $g_aiSearchNotWaitHeroesEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			$g_iHeroWaitAttackNoBit[$LB][0] = GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED ? 1 : 0
 			$g_iHeroWaitAttackNoBit[$LB][1] = GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED ? 1 : 0
 			$g_iHeroWaitAttackNoBit[$LB][2] = GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED ? 1 : 0
+			$g_iHeroWaitAttackNoBit[$LB][3] = GUICtrlRead($g_hChkABChampionWait) = $GUI_CHECKED ? 1 : 0
 			GUICtrlSetState($g_hChkABSpellsWait, $g_abSearchSpellsWaitEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkABSpellsWait()
 			GUICtrlSetState($g_hChkABWaitForCastle, $g_abSearchCastleWaitEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -1200,12 +1218,14 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 			GUICtrlSetState($g_ahChkMaxXBow[$LB], $g_abFilterMaxXBowEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxInferno[$LB], $g_abFilterMaxInfernoEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxEagle[$LB], $g_abFilterMaxEagleEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_ahChkMaxScatter[$LB], $g_abFilterMaxScatterEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakMortar[$LB], $g_aiFilterMaxMortarLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakWizTower[$LB], $g_aiFilterMaxWizTowerLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakAirDefense[$LB], $g_aiFilterMaxAirDefenseLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakXBow[$LB], $g_aiFilterMaxXBowLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakInferno[$LB], $g_aiFilterMaxInfernoLevel[$LB])
 			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakEagle[$LB], $g_aiFilterMaxEagleLevel[$LB])
+			_GUICtrlComboBox_SetCurSel($g_ahCmbWeakScatter[$LB], $g_aiFilterMaxScatterLevel[$LB])
 			chkABWeakBase()
 			GUICtrlSetState($g_ahChkMeetOne[$LB], $g_abFilterMeetOneConditionEnable[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 		Case "Save"
@@ -1222,6 +1242,7 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 			$g_iHeroWaitAttackNoBit[$LB][0] = GUICtrlRead($g_hChkABKingWait) = $GUI_CHECKED ? 1 : 0
 			$g_iHeroWaitAttackNoBit[$LB][1] = GUICtrlRead($g_hChkABQueenWait) = $GUI_CHECKED ? 1 : 0
 			$g_iHeroWaitAttackNoBit[$LB][2] = GUICtrlRead($g_hChkABWardenWait) = $GUI_CHECKED ? 1 : 0
+			$g_iHeroWaitAttackNoBit[$LB][3] = GUICtrlRead($g_hChkABChampionWait) = $GUI_CHECKED ? 1 : 0
 			$g_aiSearchNotWaitHeroesEnable[$LB] = GUICtrlRead($g_hChkABNotWaitHeroes) = $GUI_CHECKED ? 1 : 0
 			ChkNotWaitHeroes()
 			$g_abSearchSpellsWaitEnable[$LB] = (GUICtrlRead($g_hChkABSpellsWait) = $GUI_CHECKED)
@@ -1246,12 +1267,14 @@ Func ApplyConfig_600_28_LB($TypeReadSave)
 			$g_abFilterMaxXBowEnable[$LB] = (GUICtrlRead($g_ahChkMaxXBow[$LB]) = $GUI_CHECKED)
 			$g_abFilterMaxInfernoEnable[$LB] = (GUICtrlRead($g_ahChkMaxInferno[$LB]) = $GUI_CHECKED)
 			$g_abFilterMaxEagleEnable[$LB] = (GUICtrlRead($g_ahChkMaxEagle[$LB]) = $GUI_CHECKED)
+			$g_abFilterMaxScatterEnable[$LB] = (GUICtrlRead($g_ahChkMaxScatter[$LB]) = $GUI_CHECKED)
 			$g_aiFilterMaxMortarLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakMortar[$LB])
 			$g_aiFilterMaxWizTowerLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakWizTower[$LB])
 			$g_aiFilterMaxAirDefenseLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakAirDefense[$LB])
 			$g_aiFilterMaxXBowLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakXBow[$LB])
 			$g_aiFilterMaxInfernoLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakInferno[$LB])
 			$g_aiFilterMaxEagleLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakEagle[$LB])
+			$g_aiFilterMaxScatterLevel[$LB] = _GUICtrlComboBox_GetCurSel($g_ahCmbWeakScatter[$LB])
 			$g_abFilterMeetOneConditionEnable[$LB] = (GUICtrlRead($g_ahChkMeetOne[$LB]) = $GUI_CHECKED)
 	EndSwitch
 EndFunc   ;==>ApplyConfig_600_28_LB
@@ -1312,6 +1335,15 @@ Func ApplyConfig_600_29($TypeReadSave)
 			EndIf
 			$g_iDelayActivateWarden = Int(GUICtrlRead($g_hTxtManWardenAbility) * 1000)
 
+			If GUICtrlRead($g_hRadAutoChampionAbility) = $GUI_CHECKED Then
+				$g_iActivateChampion = 0
+			ElseIf GUICtrlRead($g_hRadManChampionAbility) = $GUI_CHECKED Then
+				$g_iActivateChampion = 1
+			ElseIf GUICtrlRead($g_hRadBothChampionAbility) = $GUI_CHECKED Then
+				$g_iActivateChampion = 2
+			EndIf
+			$g_iDelayActivateChampion = Int(GUICtrlRead($g_hTxtManChampionAbility) * 1000)
+
 			$g_bAttackPlannerEnable = (GUICtrlRead($g_hChkAttackPlannerEnable) = $GUI_CHECKED)
 			$g_bAttackPlannerCloseCoC = (GUICtrlRead($g_hChkAttackPlannerCloseCoC) = $GUI_CHECKED)
 			$g_bAttackPlannerCloseAll = (GUICtrlRead($g_hChkAttackPlannerCloseAll) = $GUI_CHECKED)
@@ -1351,11 +1383,13 @@ Func ApplyConfig_600_29_DB($TypeReadSave)
 			GUICtrlSetState($g_hChkDBQueenAttack, BitAND($g_aiAttackUseHeroes[$DB], $eHeroQueen) = $eHeroQueen ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDBWardenAttack, BitAND($g_aiAttackUseHeroes[$DB], $eHeroWarden) = $eHeroWarden ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkDBWardenAttack()
-			Local $temp1, $temp2, $temp3
+			GUICtrlSetState($g_hChkDBChampionAttack, BitAND($g_aiAttackUseHeroes[$DB], $eHeroChampion) = $eHeroChampion ? $GUI_CHECKED : $GUI_UNCHECKED)
+			Local $temp1, $temp2, $temp3, $temp4
 			$temp1 = GUICtrlRead($g_hChkDBKingAttack) = $GUI_CHECKED ? $eHeroKing : $eHeroNone
 			$temp2 = GUICtrlRead($g_hChkDBQueenAttack) = $GUI_CHECKED ? $eHeroQueen : $eHeroNone
 			$temp3 = GUICtrlRead($g_hChkDBWardenAttack) = $GUI_CHECKED ? $eHeroWarden : $eHeroNone
-			$g_aiAttackUseHeroes[$DB] = BitOR(Int($temp1), Int($temp2), Int($temp3))
+			$temp4 = GUICtrlRead($g_hChkDBChampionAttack) = $GUI_CHECKED ? $eHeroChampion : $eHeroNone
+			$g_aiAttackUseHeroes[$DB] = BitOR(Int($temp1), Int($temp2), Int($temp3), Int($temp4))
 			GUICtrlSetState($g_hChkDBDropCC, $g_abAttackDropCC[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkDBDropCC()
 			GUICtrlSetState($g_hChkDBLightSpell, $g_abAttackUseLightSpell[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -1374,11 +1408,12 @@ Func ApplyConfig_600_29_DB($TypeReadSave)
 		Case "Save"
 			$g_aiAttackAlgorithm[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbDBAlgorithm)
 			$g_aiAttackTroopSelection[$DB] = _GUICtrlComboBox_GetCurSel($g_hCmbDBSelectTroop)
-			Local $temp1, $temp2, $temp3
+			Local $temp1, $temp2, $temp3, $temp4
 			$temp1 = GUICtrlRead($g_hChkDBKingAttack) = $GUI_CHECKED ? $eHeroKing : $eHeroNone
 			$temp2 = GUICtrlRead($g_hChkDBQueenAttack) = $GUI_CHECKED ? $eHeroQueen : $eHeroNone
 			$temp3 = GUICtrlRead($g_hChkDBWardenAttack) = $GUI_CHECKED ? $eHeroWarden : $eHeroNone
-			$g_aiAttackUseHeroes[$DB] = BitOR(Int($temp1), Int($temp2), Int($temp3))
+			$temp4 = GUICtrlRead($g_hChkDBChampionAttack) = $GUI_CHECKED ? $eHeroChampion : $eHeroNone
+			$g_aiAttackUseHeroes[$DB] = BitOR(Int($temp1), Int($temp2), Int($temp3), Int($temp4))
 			$g_abAttackDropCC[$DB] = (GUICtrlRead($g_hChkDBDropCC) = $GUI_CHECKED)
 			$g_abAttackUseLightSpell[$DB] = (GUICtrlRead($g_hChkDBLightSpell) = $GUI_CHECKED)
 			$g_abAttackUseHealSpell[$DB] = (GUICtrlRead($g_hChkDBHealSpell) = $GUI_CHECKED)
@@ -1477,11 +1512,13 @@ Func ApplyConfig_600_29_LB($TypeReadSave)
 			GUICtrlSetState($g_hChkABQueenAttack, BitAND($g_aiAttackUseHeroes[$LB], $eHeroQueen) = $eHeroQueen ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkABWardenAttack, BitAND($g_aiAttackUseHeroes[$LB], $eHeroWarden) = $eHeroWarden ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkABWardenAttack()
-			Local $temp1, $temp2, $temp3
+			GUICtrlSetState($g_hChkABChampionAttack, BitAND($g_aiAttackUseHeroes[$LB], $eHeroChampion) = $eHeroChampion ? $GUI_CHECKED : $GUI_UNCHECKED)
+			Local $temp1, $temp2, $temp3, $temp4
 			$temp1 = GUICtrlRead($g_hChkABKingAttack) = $GUI_CHECKED ? $eHeroKing : $eHeroNone
 			$temp2 = GUICtrlRead($g_hChkABQueenAttack) = $GUI_CHECKED ? $eHeroQueen : $eHeroNone
 			$temp3 = GUICtrlRead($g_hChkABWardenAttack) = $GUI_CHECKED ? $eHeroWarden : $eHeroNone
-			$g_aiAttackUseHeroes[$LB] = BitOR(Int($temp1), Int($temp2), Int($temp3))
+			$temp4 = GUICtrlRead($g_hChkABChampionAttack) = $GUI_CHECKED ? $eHeroChampion : $eHeroNone
+			$g_aiAttackUseHeroes[$LB] = BitOR(Int($temp1), Int($temp2), Int($temp3), Int($temp4))
 			GUICtrlSetState($g_hChkABDropCC, $g_abAttackDropCC[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkABDropCC()
 			GUICtrlSetState($g_hChkABLightSpell, $g_abAttackUseLightSpell[$LB] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -1500,11 +1537,12 @@ Func ApplyConfig_600_29_LB($TypeReadSave)
 		Case "Save"
 			$g_aiAttackAlgorithm[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbABAlgorithm)
 			$g_aiAttackTroopSelection[$LB] = _GUICtrlComboBox_GetCurSel($g_hCmbABSelectTroop)
-			Local $temp1, $temp2, $temp3
+			Local $temp1, $temp2, $temp3, $temp4
 			$temp1 = GUICtrlRead($g_hChkABKingAttack) = $GUI_CHECKED ? $eHeroKing : $eHeroNone
 			$temp2 = GUICtrlRead($g_hChkABQueenAttack) = $GUI_CHECKED ? $eHeroQueen : $eHeroNone
 			$temp3 = GUICtrlRead($g_hChkABWardenAttack) = $GUI_CHECKED ? $eHeroWarden : $eHeroNone
-			$g_aiAttackUseHeroes[$LB] = BitOR(Int($temp1), Int($temp2), Int($temp3))
+			$temp4 = GUICtrlRead($g_hChkABChampionAttack) = $GUI_CHECKED ? $eHeroChampion : $eHeroNone
+			$g_aiAttackUseHeroes[$LB] = BitOR(Int($temp1), Int($temp2), Int($temp3), Int($temp4))
 			$g_abAttackDropCC[$LB] = (GUICtrlRead($g_hChkABDropCC) = $GUI_CHECKED)
 			$g_abAttackUseLightSpell[$LB] = (GUICtrlRead($g_hChkABLightSpell) = $GUI_CHECKED)
 			$g_abAttackUseHealSpell[$LB] = (GUICtrlRead($g_hChkABHealSpell) = $GUI_CHECKED)

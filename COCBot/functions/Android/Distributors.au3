@@ -22,7 +22,7 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 
 	; Clash Of Magic private server, https://www.clashofmagic.net/, Server 3: http://download825.mediafireuserdownload.com/g29mv74piaqg/jeab7w484b77n86/Magic-CoC_S3-9.105-R1.apk
 	Dim $_g_asDISTRIBUTORS[24][4] = [ _
-			["Google", "com.supercell.clashofclans", "com.supercell.clashofclans.GameApp", "Google"], _
+			["Google", "com.supercell.clashofclans", "com.supercell.titan.GameApp", "Google"], _
 			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.clashofclans.GameAppKunlun", "Kunlun"], _
 			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.clashofclans.GameAppKunlun","Qihoo"], _
 			["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.clashofclans.GameAppKunlun", "Baidu"], _

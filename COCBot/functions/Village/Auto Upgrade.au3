@@ -100,6 +100,8 @@ Func _AutoUpgrade()
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[2] = 1 Or $g_bUpgradeQueenEnable = True) ? True : False ; if upgrade queen is selected, will ignore it
 			Case "Grand Warden"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[3] = 1 Or $g_bUpgradeWardenEnable = True) ? True : False ; if upgrade warden is selected, will ignore it
+			Case "Royal Champion"
+				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[14] = 1 Or $g_bUpgradeChampionEnable = True) ? True : False ; if upgrade champion is selected, will ignore it
 			Case "Clan Castle"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[4] = 1) ? True : False
 			Case "Laboratory"
@@ -136,7 +138,7 @@ Func _AutoUpgrade()
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 
 		Switch $g_aUpgradeNameLevel[1]
-			Case "Barbarian King", "Archer Queen", "Grand Warden"
+			Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
 				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 690, 540, 730, 580) ; get resource
 				$g_aUpgradeResourceCostDuration[1] = getResourcesBonus(598, 522 + $g_iMidOffsetY) ; get cost
 				$g_aUpgradeResourceCostDuration[2] = getHeroUpgradeTime(578, 465 + $g_iMidOffsetY) ; get duration
@@ -195,7 +197,7 @@ Func _AutoUpgrade()
 
 		; final click on upgrade button, click coord is get looking at upgrade type (heroes have a diferent place for Upgrade button)
 		Switch $g_aUpgradeNameLevel[1]
-			Case "Barbarian King", "Archer Queen", "Grand Warden"
+			Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
 				Click(660, 560)
 			Case Else
 				Click(440, 530)

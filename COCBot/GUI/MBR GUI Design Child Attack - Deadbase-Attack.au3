@@ -23,7 +23,7 @@ Global $g_hPicDBKingAttack = 0, $g_hPicDBQueenAttack = 0, $g_hPicDBWardenAttack 
 Global $g_hPicDBLightSpell = 0, $g_hPicDBHealSpell = 0, $g_hPicDBRageSpell = 0, $g_hPicDBJumpSpell = 0, $g_hPicDBFreezeSpell = 0, $g_hPicDBCloneSpell = 0, _
 	   $g_hPicDBPoisonSpell = 0, $g_hPicDBEarthquakeSpell = 0, $g_hPicDBHasteSpell = 0, $g_hPicDBSkeletonSpell = 0, $g_hPicDBBatSpell = 0
 
-Global $g_hCmbDBSiege = 0, $g_hCmbDBWardenMode = 0
+Global $g_hCmbDBSiege = 0, $g_hCmbDBWardenMode = 0, $g_hChkDBChampionAttack = 0, $g_hPicDBChampionAttack = 0
 
 Func CreateAttackSearchDeadBaseAttack()
 	Local $sTxtTip = ""
@@ -69,8 +69,16 @@ Func CreateAttackSearchDeadBaseAttack()
 			$g_hChkDBQueenAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
 				_GUICtrlSetTip(-1, $sTxtTip)
 
+		$x += 46
+			$g_hPicDBChampionAttack = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x, $y, 24, 24)
+				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Champion_Info_01", "Use your Champion when Attacking...") & @CRLF & _
+						   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Champion_Info_02", "Enabled with TownHall 13 and higher")
+				_GUICtrlSetTip(-1, $sTxtTip)
+			$g_hChkDBChampionAttack = GUICtrlCreateCheckbox("", $x + 27, $y, 17, 17)
+				_GUICtrlSetTip(-1, $sTxtTip)
+
         $y += 27
-        $x -= 46
+        $x -= 92
 			$g_hPicDBWardenAttack = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x, $y, 24, 24)
 				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Warden_Info_01", "Use your Warden when Attacking...") & @CRLF & _
 						   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Chk-Use-Warden_Info_02", "Enabled with Townhall 11")
@@ -104,6 +112,7 @@ Func CreateAttackSearchDeadBaseAttack()
 								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_02", "Wall Wrecker") & "|" & _
 								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_03", "Battle Blimp") & "|" & _
 								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_04", "Stone Slammer") & "|" & _
+								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_07", "Siege Barracks") & "|" & _
 								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_05", "Any Siege") & "|" & _
 								   GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_06", "Default"), GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Item_06", -1))
 				$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Cmb-Siege_Tip", "Select Castle or Siege to be used." & @CRLF & _

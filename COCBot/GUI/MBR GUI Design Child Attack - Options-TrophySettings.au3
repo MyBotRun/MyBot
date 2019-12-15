@@ -51,7 +51,7 @@ Func CreateAttackSearchOptionsTrophySettings()
 			GUICtrlSetState(-1,$GUI_HIDE)
 		$g_hPicMinTrophies[$eLeagueMaster] = _GUICtrlCreateIcon($g_sLibIconPath, $eMaster, $x + 116, $y - 30, 24, 24)
 			GUICtrlSetState(-1,$GUI_HIDE)
-		$g_hPicMinTrophies[$eLeagueChampion] = _GUICtrlCreateIcon($g_sLibIconPath, $eChampion, $x + 116, $y - 30, 24, 24)
+		$g_hPicMinTrophies[$eLeagueChampion] = _GUICtrlCreateIcon($g_sLibIconPath, $eLChampion, $x + 116, $y - 30, 24, 24)
 			GUICtrlSetState(-1,$GUI_HIDE)
 		$g_hPicMinTrophies[$eLeagueTitan] = _GUICtrlCreateIcon($g_sLibIconPath, $eTitan, $x + 116, $y - 30, 24, 24)
 			GUICtrlSetState(-1,$GUI_HIDE)
@@ -80,7 +80,7 @@ Func CreateAttackSearchOptionsTrophySettings()
 			GUICtrlSetState(-1,$GUI_HIDE)
 		$g_hPicMaxTrophies[$eLeagueMaster] = _GUICtrlCreateIcon($g_sLibIconPath, $eMaster, $x + 161, $y - 30, 24, 24)
 			GUICtrlSetState(-1,$GUI_HIDE)
-		$g_hPicMaxTrophies[$eLeagueChampion] = _GUICtrlCreateIcon($g_sLibIconPath, $eChampion, $x + 161, $y - 30, 24, 24)
+		$g_hPicMaxTrophies[$eLeagueChampion] = _GUICtrlCreateIcon($g_sLibIconPath, $eLChampion, $x + 161, $y - 30, 24, 24)
 			GUICtrlSetState(-1,$GUI_HIDE)
 		$g_hPicMaxTrophies[$eLeagueTitan] = _GUICtrlCreateIcon($g_sLibIconPath, $eTitan, $x + 161, $y - 30, 24, 24)
 			GUICtrlSetState(-1,$GUI_HIDE)
@@ -104,15 +104,19 @@ Func CreateAttackSearchOptionsTrophySettings()
 			Local $txtPriorityConnector = ">"
 			Local $txtPriorityDefault = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & _
 										GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & _
-										GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) ; default value Queen, King, G.Warden
+										GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1)
+										GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) ; default value Queen, King, G.Warden, Royal Champion
 			Local $txtPriorityList = "" & _
-			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & "|" & _
-			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & "|" & _
-			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & "|" & _
-			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & "|" & _
-			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & "|" & _
-			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Grand Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & "|" & _
+			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & "|" & _
 			""
+
 			If $g_bDebugSetlog Then SetDebugLog($txtPriorityDefault)
 			If $g_bDebugSetlog Then SetDebugLog($txtPriorityList)
 			GUICtrlSetData(-1, $txtPriorityList , $txtPriorityDefault)

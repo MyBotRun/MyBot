@@ -19,25 +19,15 @@ Func CheckImageType()
 	If _Sleep($DELAYCHECKIMAGETYPE1) Then Return
 	If Not IsMainPage() Then ClickP($aAway, 2, 20, "#0467") ;Click Away Again
 
-	Local $x = 150
-	Local $y = 150
-	Local $x1 = $x + 50
-	Local $y1 = $y + 50
+	Local $sImgSnowTheme = @ScriptDir & "\imgxml\SnowTheme\Snow*.xml"
+	Local $aResult = decodeMultipleCoords(findImage("Snow", $sImgSnowTheme, "DCD", 0, True))
 
-	Local $directory = @ScriptDir & "\imgxml\SnowTheme"
-	Local $temp = SearchImgloc($directory, $x, $y, $x1, $y1)
-
-	If IsArray($temp) Then
-		If StringInStr($temp[0], "Snow") > 0 Then
-			$g_iDetectedImageType = 1 ;Snow Theme
-			SetLog("Snow Theme detected")
-		Else
-			$g_iDetectedImageType = 0 ; Normal Theme
-			SetLog("Normal Theme detected")
-		EndIf
+	If IsArray($aResult) And UBound($aResult) >= 5 Then
+		$g_iDetectedImageType = 1 ;Snow Theme
+		SetDebugLog("Found Snow Images " & UBound($aResult))
+		SetLog("Snow Theme detected")
 	Else
 		$g_iDetectedImageType = 0 ; Normal Theme
-		SetLog("Normal Theme detected", $COLOR_ERROR)
+		SetLog("Normal Theme detected")
 	EndIf
-
 EndFunc   ;==>CheckImageType

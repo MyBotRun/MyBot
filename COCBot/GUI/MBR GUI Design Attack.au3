@@ -26,7 +26,7 @@ Func LoadTranslatedDropOrderList()
 	Global $g_asDropOrderList = ["", _
 		"Barbarians", "Archers", "Giants", "Goblins", _
 		"Wall Breakers", "Balloons", "Wizards", "Healers", _
-		"Dragons", "Pekkas", "Baby Dragons", "Miners", "Electro Dragons", _
+		"Dragons", "Pekkas", "Baby Dragons", "Miners", "Electro Dragons", "Yetis", _
 		"Minions", "Hog Riders", "Valkyries", "Golems", _
 		"Witches", "Lava Hounds", "Bowlers", "Ice Golems", "Clan Castle", "Heroes"]
 EndFunc   ;==>LoadTranslatedDropOrderList

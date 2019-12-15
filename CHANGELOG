@@ -1,4 +1,24 @@
-﻿* **V7.8**
+﻿* **V7.8.1**
+* Fix Bot Crash on SCID Switch! Reported by @paulinho
+* Fix character 'з' is not detected correctly on Cyrillic font, Reported by @OlegD
+* Fix Forum Login
+* Add BB Ignore Wall AutoUpgrade
+* Winter Update:
+** Add Support for Townhall 13 (December Update)
+** Add ScatterShot Support CSV Script attack. (December Update)
+** Add Royal Champion Support. (December Update)
+** Add Yeti support. (December Update)
+** Add Siege Barracks support. (December Update)
+** Add New Heroes\Troops\Spells Levels Info (December Update)
+** Add Support Wall Level 13. (December Update)
+** Fix ADB Can't Start The Game. (December Update)
+** Fix Heroes Positions. (December Update)
+** Fix Heroes Time Read Positions. (December Update)
+** Fix Snow Theme Detection (December Update)
+** Improve/Fix Laboratory for the Main Village (December Update)
+** Update Defense Levels TH13 (December Update)
+
+* **V7.8**
 * Fix Surrender button reported by @Hecki
 * Fix Switch Account with new SCID Update (Support for 8 Accs)
 * Fix Error finding clan tab button

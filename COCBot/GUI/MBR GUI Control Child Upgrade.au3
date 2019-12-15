@@ -332,10 +332,44 @@ Func chkUpgradeWarden()
 	EndIf
 EndFunc   ;==>chkUpgradeWarden
 
+Func chkUpgradeChampion()
+	If $g_iTownHallLevel > 12 Then ; Must be TH13 to have Champion
+		If GUICtrlRead($g_hCmbBoostChampion) > 0 Then
+			GUICtrlSetState($g_hChkUpgradeChampion, $GUI_DISABLE)
+			GUICtrlSetState($g_hChkUpgradeChampion, $GUI_UNCHECKED)
+			$g_bUpgradeChampionEnable = False
+		Else
+			GUICtrlSetState($g_hChkUpgradeChampion, $GUI_ENABLE)
+		EndIf
+
+		Local $ahGroupChampionWait[4] = [$g_hChkDBChampionWait, $g_hChkABChampionWait, $g_hPicDBChampionWait, $g_hPicABChampionWait]
+		Local $TxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtChampionWait_Info_01", -1) & @CRLF & _
+						GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtChampionWait_Info_02", -1)
+		Local $TxtWarningTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtChampionWait_Info_03", "ATTENTION: Champion auto upgrade is currently enable.")
+		If GUICtrlRead($g_hChkUpgradeChampion) = $GUI_CHECKED Then
+			$g_bUpgradeChampionEnable = True
+			_GUI_Value_STATE("SHOW", $groupChampionSleeping)
+			For $i In $ahGroupChampionWait
+				_GUICtrlSetTip($i, $TxtTip & @CRLF & $TxtWarningTip)
+			Next
+		Else
+			$g_bUpgradeChampionEnable = False
+			_GUI_Value_STATE("HIDE", $groupChampionSleeping)
+			For $i In $ahGroupChampionWait
+				_GUICtrlSetTip($i, $TxtTip)
+			Next
+		EndIf
+	Else
+		GUICtrlSetState($g_hChkUpgradeChampion, BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+	EndIf
+EndFunc   ;==>chkUpgradeChampion
+
 Func cmbHeroReservedBuilder()
 	$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
 	If $g_iTownHallLevel > 6 Then ; Must be TH7 or above to have Heroes
-		If $g_iTownHallLevel > 10 Then ; For TH11 enable up to 3 reserved builders
+		If $g_iTownHallLevel > 12 Then ; For TH13 enable up to 4 reserved builders
+			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3|4", "0")
+		ElseIf $g_iTownHallLevel > 10 Then ; For TH11 enable up to 3 reserved builders
 			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2|3", "0")
 		ElseIf $g_iTownHallLevel > 8 Then ; For TH9 enable up to 2 reserved builders
 			GUICtrlSetData($g_hCmbHeroReservedBuilder, "|0|1|2", "0")
@@ -394,7 +428,7 @@ Func cmbWalls()
 	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_SHOW)
 	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_SHOW)
    Next
-   For $i = $g_iCmbUpgradeWallsLevel+6 To 13
+   For $i = $g_iCmbUpgradeWallsLevel+6 To 14
 	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
 	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
    Next

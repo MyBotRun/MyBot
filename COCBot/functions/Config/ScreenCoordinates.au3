@@ -98,6 +98,8 @@ Global $aKingHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 13]
 Global $aQueenHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 8]
 ; Warden Health Bar, check at the middle of the bar, index 4 is x-offset added to middle of health bar
 Global $aWardenHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 3]
+; Champion Health Bar, check at the middle of the bar, index 4 is x-offset added to middle of health bar
+Global $aChampionHealth = [-1, 569 + $g_iBottomOffsetY, 0x00D500, 15, 3]
 
 ; attack report... stars won
 Global $aWonOneStarAtkRprt[4] = [325, 180 + $g_iMidOffsetY, 0xC8CaC4, 30] ; Center of 1st Star reached attacked village
@@ -169,6 +171,7 @@ Global $aTrainPekk[4]  = [-1, -1, -1, -1]
 Global $aTrainBabyD[4] = [-1, -1, -1, -1]
 Global $aTrainMine[4]  = [-1, -1, -1, -1]
 Global $aTrainEDrag[4]  = [-1, -1, -1, -1]
+Global $aTrainYeti[4]  = [-1, -1, -1, -1]
 Global $aTrainMini[4] = [-1, -1, -1, -1]
 Global $aTrainHogs[4] = [-1, -1, -1, -1]
 Global $aTrainValk[4] = [-1, -1, -1, -1]
@@ -190,8 +193,8 @@ Global $aTrainSkSpell[4] = [-1, -1, -1, -1]
 Global $aTrainBtSpell[4] = [-1, -1, -1, -1]
 Global $aTrain[4] = [-1, -1, -1, -1]
 
-Global $aTrainArmy[$eArmyCount] = [$aTrainBarb, $aTrainArch, $aTrainGiant, $aTrainGobl, $aTrainWall, $aTrainBall, $aTrainWiza, $aTrainHeal, $aTrainDrag, $aTrainPekk, $aTrainBabyD, $aTrainMine, $aTrainEDrag, _
-								   $aTrainMini, $aTrainHogs, $aTrainValk, $aTrainGole, $aTrainWitc, $aTrainLava, $aTrainBowl, $aTrainIceG, 0, 0, 0, 0, $aTrainLSpell, $aTrainHSpell, $aTrainRSpell, $aTrainJSpell, $aTrainFSpell, $aTrainCSpell, _
+Global $aTrainArmy[$eArmyCount] = [$aTrainBarb, $aTrainArch, $aTrainGiant, $aTrainGobl, $aTrainWall, $aTrainBall, $aTrainWiza, $aTrainHeal, $aTrainDrag, $aTrainPekk, $aTrainBabyD, $aTrainMine, $aTrainEDrag, $aTrainYeti, _
+								   $aTrainMini, $aTrainHogs, $aTrainValk, $aTrainGole, $aTrainWitc, $aTrainLava, $aTrainBowl, $aTrainIceG, 0, 0, 0, 0, 0, $aTrainLSpell, $aTrainHSpell, $aTrainRSpell, $aTrainJSpell, $aTrainFSpell, $aTrainCSpell, _
 								   $aTrainPSpell, $aTrainESpell, $aTrainHaSpell, $aTrainSkSpell, $aTrainBtSpell]
 ;Change Language To English
 Global $aButtonLanguage[4] = [620, 275 + $g_iMidOffsetY, 0xDDF685, 20]

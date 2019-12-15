@@ -14,24 +14,26 @@
 ; ===============================================================================================================================
 Func CheckHeroesHealth()
 
-	If $g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower Then
+	If $g_bCheckKingPower Or $g_bCheckQueenPower Or $g_bCheckWardenPower Or $g_bCheckChampionPower Then
 		ForceCaptureRegion() ; ensure no screenshot caching kicks in
 
-		Local $aDisplayTime[$eHeroCount] = [0, 0, 0] ; array to hold converted timerdiff into seconds
+		Local $aDisplayTime[$eHeroCount] = [0, 0, 0, 0] ; array to hold converted timerdiff into seconds
 
 		; Slot11+
 		Local $TempKingSlot = $g_iKingSlot
 		Local $TempQueenSlot = $g_iQueenSlot
 		Local $TempWardenSlot = $g_iWardenSlot
-		If $g_iKingSlot >= 11 Or $g_iQueenSlot >= 11 Or $g_iWardenSlot >= 11 Then
+		Local $TempChampionSlot = $g_iChampionSlot
+		If $g_iKingSlot >= 11 Or $g_iQueenSlot >= 11 Or $g_iWardenSlot >= 11 Or $g_iChampionSlot >= 11 Then
 			If Not $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, False) ; drag forward
-		ElseIf $g_iKingSlot >= 0 And $g_iQueenSlot >= 0 And $g_iWardenSlot >= 0 And ($g_iKingSlot < $g_iTotalAttackSlot - 10 Or $g_iQueenSlot < $g_iTotalAttackSlot - 10 Or $g_iWardenSlot < $g_iTotalAttackSlot - 10) Then
+		ElseIf $g_iKingSlot >= 0 And $g_iQueenSlot >= 0 And $g_iWardenSlot >= 0 And $g_iChampionSlot >= 0 And ($g_iKingSlot < $g_iTotalAttackSlot - 10 Or $g_iQueenSlot < $g_iTotalAttackSlot - 10 Or $g_iWardenSlot < $g_iTotalAttackSlot - 10 Or $g_iChampionSlot < $g_iTotalAttackSlot - 10) Then
 			If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True) ; return drag
 		EndIf
 		If $g_bDraggedAttackBar Then
 			$TempKingSlot -= $g_iTotalAttackSlot - 10
 			$TempQueenSlot -= $g_iTotalAttackSlot - 10
 			$TempWardenSlot -= $g_iTotalAttackSlot - 10
+			$TempChampionSlot -= $g_iTotalAttackSlot - 10
 		EndIf
 
 		If $g_bDebugSetlog Then
@@ -135,6 +137,41 @@ Func CheckHeroesHealth()
 					$g_iCSVLastTroopPositionDropTroopFromINI = $g_iWardenSlot
 					$g_bCheckWardenPower = False ; Reset check power flag
 					$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0 ; Reset Timer
+				EndIf
+			EndIf
+		EndIf
+
+		If $g_bDebugSetlog Then
+			SetDebugLog("CheckHeroesHealth() for Royal Champion started ")
+			If _Sleep($DELAYRESPOND) Then Return ; improve pause button response
+		EndIf
+
+		If $g_iActivateChampion = 0 Or $g_iActivateChampion = 2 And ($g_aHeroesTimerActivation[$eHeroRoyalChampion] = 0 Or __TimerDiff($g_aHeroesTimerActivation[$eHeroRoyalChampion]) > $DELAYCHECKHEROESHEALTH) Then
+			If $g_bCheckChampionPower Then
+				Local $aChampionHealthCopy = $aChampionHealth
+				Local $aSlotPosition = GetSlotPosition($TempChampionSlot)
+				$aChampionHealthCopy[0] = $aSlotPosition[0] + $aChampionHealthCopy[4] ; Slot11+
+				Local $ChampionPixelColor = _GetPixelColor($aChampionHealthCopy[0], $aChampionHealthCopy[1], $g_bCapturePixel)
+				If $g_bDebugSetlog Then SetDebugLog("Royal Champion _GetPixelColor(" & $aChampionHealthCopy[0] & "," & $aChampionHealthCopy[1] & "): " & $ChampionPixelColor, $COLOR_DEBUG)
+				If Not _CheckPixel2($aChampionHealthCopy, $ChampionPixelColor, "Red+Blue") Then
+					SetLog("Royal Champion is getting weak, Activating Royal Champion's ability", $COLOR_INFO)
+					SelectDropTroop($TempChampionSlot, 2, Default, False) ; Slot11+
+					$g_iCSVLastTroopPositionDropTroopFromINI = $g_iChampionSlot
+					$g_bCheckChampionPower = False
+				EndIf
+			EndIf
+		EndIf
+		If $g_iActivateChampion = 1 Or $g_iActivateChampion = 2 Then
+			If $g_bCheckChampionPower Then
+				If $g_aHeroesTimerActivation[$eHeroRoyalChampion] <> 0 Then
+					$aDisplayTime[$eHeroRoyalChampion] = Ceiling(__TimerDiff($g_aHeroesTimerActivation[$eHeroRoyalChampion]) / 1000) ; seconds
+				EndIf
+				If (Int($g_iDelayActivateChampion) / 1000) <= $aDisplayTime[$eHeroRoyalChampion] Then
+					SetLog("Activating Royal Champion's ability after " & $aDisplayTime[$eHeroRoyalChampion] & "'s", $COLOR_INFO)
+					SelectDropTroop($TempChampionSlot, 2, Default, False) ; Slot11+
+					$g_iCSVLastTroopPositionDropTroopFromINI = $g_iChampionSlot
+					$g_bCheckChampionPower = False ; Reset check power flag
+					$g_aHeroesTimerActivation[$eHeroRoyalChampion] = 0 ; Reset Timer
 				EndIf
 			EndIf
 		EndIf

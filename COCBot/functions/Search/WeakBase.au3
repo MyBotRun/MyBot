@@ -83,6 +83,7 @@ Func displayWeakBaseLog($aResult, $showLog = False)
 		SetLog("Highest Wizard Tower: " & $aResult[4][0] & " - Level: " & $aResult[4][2], $COLOR_INFO)
 		SetLog("Highest Mortar: " & $aResult[5][0] & " - Level: " & $aResult[5][2], $COLOR_INFO)
 		SetLog("Highest Air Defense: " & $aResult[6][0] & " - Level: " & $aResult[6][2], $COLOR_INFO)
+		SetLog("Highest Scatter Shot: " & $aResult[7][0] & " - Level: " & $aResult[7][2], $COLOR_INFO)
 		SetLog("Time taken: " & $aResult[0][2] & " " & $aResult[0][3], $COLOR_INFO)
 		SetLog("================ Weak Base Detection Stop =================", $COLOR_INFO)
 	EndIf
@@ -91,7 +92,7 @@ EndFunc   ;==>displayWeakBaseLog
 Func getTHDefenseMax($levelTownHall, $iDefenseType)
 
 	; replace orginal weak base code with dictionary function used by any attack method
-	If $levelTownHall = 0 Or $levelTownHall = "-" Then $levelTownHall = 11 ; ; If something went wrong with TH search and returned 0, set to max TH level
+	If $levelTownHall = 0 Or $levelTownHall = "-" Then $levelTownHall = 13 ; ; If something went wrong with TH search and returned 0, set to max TH level
 
 	Local $maxLevel = _ObjGetValue($g_oBldgLevels, $iDefenseType + 7)[$levelTownHall - 1] ; add 6 to weakbase enum to equal building enum
 	If @error Then
@@ -145,7 +146,8 @@ Func getIsWeak($aResults, $searchType)
 			And $aResults[$eWeakXBow][2] <= Number($g_aiFilterMaxXBowLevel[$searchType]) _
 			And $aResults[$eWeakWizard][2] <= Number($g_aiFilterMaxWizTowerLevel[$searchType]) _
 			And $aResults[$eWeakMortar][2] <= Number($g_aiFilterMaxMortarLevel[$searchType]) _
-			And $aResults[$eWeakAirDefense][2] <= Number($g_aiFilterMaxAirDefenseLevel[$searchType])
+			And $aResults[$eWeakAirDefense][2] <= Number($g_aiFilterMaxAirDefenseLevel[$searchType]) _
+			And $aResults[$eWeakScatter][2] <= Number($g_aiFilterMaxScatterLevel[$searchType])
 
 	Local $text = "DB"
 	If $searchType = 1 Then $text = "LB"
@@ -156,6 +158,7 @@ Func getIsWeak($aResults, $searchType)
 	If $g_abFilterMaxWizTowerEnable[$searchType] Then SetLog("[" & $text & "] WTower level " & $g_aiFilterMaxWizTowerLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakWizard][2], $COLOR_DEBUG)
 	If $g_abFilterMaxMortarEnable[$searchType] Then SetLog("[ " & $text & "] Mortar level " & $g_aiFilterMaxMortarLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakMortar][2], $COLOR_DEBUG)
 	If $g_abFilterMaxAirDefenseEnable[$searchType] Then SetLog("[" & $text & "] AirDef level " & $g_aiFilterMaxAirDefenseLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakAirDefense][2], $COLOR_DEBUG)
+	If $g_abFilterMaxScatterEnable[$searchType] Then SetLog("[" & $text & "] Scatter level " & $g_aiFilterMaxScatterLevel[$searchType] & " as max, detection higher level: " & $aResults[$eWeakScatter][2], $COLOR_DEBUG)
 	SetLog("Is a Weak Base? " & $aResults)
 	SetLog("================ Weak Base Detection Stop =================")
 	Return $aResults
@@ -164,7 +167,7 @@ EndFunc   ;==>getIsWeak
 
 Func IsWeakBaseActive($type)
 	Return ($g_abFilterMaxEagleEnable[$type] Or $g_abFilterMaxInfernoEnable[$type] Or $g_abFilterMaxXBowEnable[$type] Or $g_abFilterMaxWizTowerEnable[$type] Or _
-			$g_abFilterMaxMortarEnable[$type] Or $g_abFilterMaxAirDefenseEnable[$type]) And IsSearchModeActiveMini($type)
+			$g_abFilterMaxMortarEnable[$type] Or $g_abFilterMaxAirDefenseEnable[$type] or $g_abFilterMaxScatterEnable[$type]) And IsSearchModeActiveMini($type)
 EndFunc   ;==>IsWeakBaseActive
 
 Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $iDefenseType, ByRef $performSearch, $guiEnabledArray, $bForceCaptureRegion = True)
@@ -218,23 +221,25 @@ Func weakBaseCheck($townHallLevel = 11, $redlines = "", $bForceCaptureRegion = T
 	; Setup default return coords of 0,0
 	Local $defaultCoords[1][2] = [[0, 0]]
 	; Setup Empty Results in case to avoid errors, levels are set to max level of each type
-	Local $aResult[7][6] = [[$redlines, 0, 0, "Seconds", "", ""], _
+	Local $aResult[8][6] = [[$redlines, 0, 0, "Seconds", "", ""], _
 			["Skipped", "Skipped", $g_oBldgLevels.Item($eWeakEagle + 6), 0, 0, $defaultCoords], _ ; Eagle
 			["Skipped", "Skipped", $g_oBldgLevels.Item($eWeakInferno + 6), 0, 0, $defaultCoords], _ ; Inferno
 			["Skipped", "Skipped", $g_oBldgLevels.Item($eWeakXBow + 6), 0, 0, $defaultCoords], _ ; X-Bow
 			["Skipped", "Skipped", $g_oBldgLevels.Item($eWeakWizard + 6), 0, 0, $defaultCoords], _ ; Wizard
 			["Skipped", "Skipped", $g_oBldgLevels.Item($eWeakMortar + 6), 0, 0, $defaultCoords], _ ; Mortar
-			["Skipped", "Skipped", $g_oBldgLevels.Item($eWeakAirDefense + 6), 0, 0, $defaultCoords]] ; Air Defense
+			["Skipped", "Skipped", $g_oBldgLevels.Item($eWeakAirDefense + 6), 0, 0, $defaultCoords], _ ; Air Defense
+			["Skipped", "Skipped", $g_oBldgLevels.Item($eWeakScatter + 6), 0, 0, $defaultCoords]] ; Scatter Shot
 	; [redline data array, num points found, weakbase search time, search time unit, ??, ??] = 1st Row values
 	; [image filename found, bldg type, bldg max level, bldg Fill level, number bldg found, location data array] = 2nd+ building row values
 
-	Local $aEagleResults, $aInfernoResults, $aMortarResults, $aWizardTowerResults, $aXBowResults, $aAirDefenseResults
+	Local $aEagleResults, $aScatterResults, $aInfernoResults, $aMortarResults, $aWizardTowerResults, $aXBowResults, $aAirDefenseResults
 	Local $performSearch = True
 	; Start the timer for overall weak base search
 	Local $hWeakTimer = __TimerInit()
 
 	; Check Eagle Artillery first as there is less images to process, mortars may not be needed.
 	$aEagleResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsEagleDir, $townHallLevel, $g_aiFilterMaxEagleLevel, $eWeakEagle, $performSearch, $g_abFilterMaxEagleEnable, $bForceCaptureRegion)
+	$aScatterResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsScatterDir, $townHallLevel, $g_aiFilterMaxScatterLevel, $eWeakScatter, $performSearch, $g_abFilterMaxScatterEnable, $bForceCaptureRegion)
 	$aInfernoResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsInfernoDir, $townHallLevel, $g_aiFilterMaxInfernoLevel, $eWeakInferno, $performSearch, $g_abFilterMaxInfernoEnable, $bForceCaptureRegion)
 	$aXBowResults = defenseSearch($aResult, $g_sImgWeakBaseBuildingsXbowDir, $townHallLevel, $g_aiFilterMaxXBowLevel, $eWeakXBow, $performSearch, $g_abFilterMaxXBowEnable, $bForceCaptureRegion)
 	If $g_iDetectedImageType = 1 Then
@@ -261,6 +266,8 @@ Func weakBaseCheck($townHallLevel = 11, $redlines = "", $bForceCaptureRegion = T
 					If IsArray($aMortarResults) Then $aResult[$i][$j] = $aMortarResults[$j]
 				Case $eWeakAirDefense
 					If IsArray($aAirDefenseResults) Then $aResult[$i][$j] = $aAirDefenseResults[$j]
+				Case $eWeakScatter
+					If IsArray($aScatterResults) Then $aResult[$i][$j] = $aScatterResults[$j]
 				Case Else
 					; This should never happen unless there is a problem with the code.
 			EndSwitch
@@ -311,6 +318,9 @@ Func IsWeakBase($townHallLevel = $g_iMaxTHLevel, $redlines = "", $bForceCaptureR
 	ElseIf $g_bDebugImageSave And Number($aResult[6][4]) = 0 Then
 		; Air Defenses not detected, so lets log the picture for manual inspection
 		captureDebugImage($aResult, "WeakBase_Detection_ADefense_NotDetected")
+	ElseIf $g_bDebugImageSave And Number($aResult[7][4]) = 0 Then
+		; Scatter shot not detected, so lets log the picture for manual inspection
+		captureDebugImage($aResult, "WeakBase_Detection_Scatter_NotDetected")
 	ElseIf $g_bDebugImageSave Then
 		; Debug option is set, so take a debug picture
 		captureDebugImage($aResult, "WeakBase_Detection")

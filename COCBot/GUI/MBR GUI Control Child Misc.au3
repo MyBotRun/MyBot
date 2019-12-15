@@ -314,6 +314,10 @@ Func btnLocateWardenAltar()
 	LocateWardenAltar()
 EndFunc   ;==>btnLocateWardenAltar
 
+Func btnLocateChampionAltar()
+	LocateChampionAltar()
+EndFunc   ;==>btnLocateWardenAltar
+
 Func btnLocateTownHall()
 	Local $wasRunState = $g_bRunState
 	Local $g_iOldTownHallLevel = $g_iTownHallLevel

@@ -463,6 +463,7 @@ Func btnTestDonateCC()
 	$g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 1
+	$g_aiCurrentSiegeMachines[$eSiegeBarracks] = 1
 	DonateCC()
 	SetLog(_PadStringCenter(" Test DonateCC end ", 54, "="), $COLOR_INFO)
 
@@ -761,7 +762,7 @@ Func btnTestGetLocationBuilding()
 
 	SetLog("Testing GetLocationBuilding() with all buildings", $COLOR_INFO)
 
-	For $b = $eBldgGoldS To $eBldgAirDefense
+	For $b = $eBldgGoldS To $eBldgScatter
 		If $b = $eBldgDarkS Then ContinueLoop ; skip dark elixir as images not available
 		$aResult = GetLocationBuilding($b, $g_iSearchTH, False)
 		If $aResult = -1 Then SetLog("Monkey ate bad banana: " & "GetLocationBuilding " & $g_sBldgNames[$b], $COLOR_ERROR)
@@ -869,6 +870,17 @@ Func btnTestGetLocationBuildingImage()
 		EndIf
 	EndIf
 
+	; - DRAW Scatter Shot -------------------------------------------------------------------
+	If $g_oBldgAttackInfo.exists($eBldgScatter & "_LOCATION") Then
+		$g_aiCSVScatterPos = $g_oBldgAttackInfo.item($eBldgScatter & "_LOCATION")
+		If IsArray($g_aiCSVScatterPos) Then
+			For $i = 0 To UBound($g_aiCSVScatterPos) - 1
+				$pixel = $g_aiCSVScatterPos[$i]
+				_GDIPlus_GraphicsDrawRect($hGraphic, $pixel[0] - 10, $pixel[1] - 25, 25, 25, $hPenBlue)
+			Next
+		EndIf
+	EndIf
+
 	; - DRAW Wizard Towers -------------------------------------------------------------------
 	If $g_oBldgAttackInfo.exists($eBldgWizTower & "_LOCATION") Then
 		$g_aiCSVWizTowerPos = $g_oBldgAttackInfo.item($eBldgWizTower & "_LOCATION")
@@ -932,18 +944,38 @@ Func btnTestGetLocationBuildingImage()
 
 EndFunc   ;==>btnTestGetLocationBuildingImage
 
-Func btnTestFindButton()
-	BeginImageTest()
-	Local $result
-	Local $sButton = GUICtrlRead($g_hTxtTestFindButton)
-	SetLog("Testing findButton(""" & $sButton & """)", $COLOR_INFO)
-	$result = findButton($sButton)
-	$result = ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
-	If @error Then $result = "Error " & @error & ", " & @extended & ", "
-	SetLog("Result findButton(""" & $sButton & """) = " & $result, $COLOR_INFO)
-	SetLog("Testing findButton(""" & $sButton & """) DONE", $COLOR_INFO)
-	EndImageTest()
-EndFunc   ;==>btnTestFindButton
+;~ Func btnTestFindButton()
+;~ 	BeginImageTest()
+;~ 	Local $result
+;~ 	Local $sButton = GUICtrlRead($g_hTxtTestFindButton)
+;~ 	SetLog("Testing findButton(""" & $sButton & """)", $COLOR_INFO)
+;~ 	$result = findButton($sButton)
+;~ 	$result = ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
+;~ 	If @error Then $result = "Error " & @error & ", " & @extended & ", "
+;~ 	SetLog("Result findButton(""" & $sButton & """) = " & $result, $COLOR_INFO)
+;~ 	SetLog("Testing findButton(""" & $sButton & """) DONE", $COLOR_INFO)
+;~ 	EndImageTest()
+;~ EndFunc   ;==>btnTestFindButton
+
+Func btnRunFunction()
+	Local $currentRunState = $g_bRunState
+	$g_bRunState = True
+
+	Local $sFunc = GUICtrlRead($g_hTxtRunFunction)
+	SetLog("Run Function : " & $sFunc, $COLOR_INFO)
+
+	Local $saExecResult = Execute($sFunc)
+	If $saExecResult = "" And @error <> 0 Then
+		Setlog("Result : Error", $COLOR_ERROR)
+	ElseIf IsArray($saExecResult) Then
+		Setlog("Result (IsArray) : " & _ArrayToString($saExecResult, ","), $COLOR_INFO)
+		_ArrayDisplay($saExecResult, "Debug Func. Result")
+	Else
+		Setlog("Result : " & $saExecResult, $COLOR_INFO)
+	EndIf
+
+	$g_bRunState = $currentRunState
+EndFunc
 
 Func btnTestCleanYard()
 	Local $currentRunState = $g_bRunState

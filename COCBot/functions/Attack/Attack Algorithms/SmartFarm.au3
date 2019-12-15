@@ -543,7 +543,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	SetDebugLog("Giants : " & $GiantComp & "  , per side: " & ($GiantComp / $nbSides) & " / deploy points per side: " & $g_iSlotsGiants)
 
 	If $g_bCustomDropOrderEnable Then
-		Local $listInfoDeploy[23][5] = [[MatchTroopDropName(0), $nbSides, MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+		Local $listInfoDeploy[24][5] = [[MatchTroopDropName(0), $nbSides, MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 				[MatchTroopDropName(1), $nbSides, MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 				[MatchTroopDropName(2), $nbSides, MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 				[MatchTroopDropName(3), $nbSides, MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -565,9 +565,10 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				[MatchTroopDropName(19), $nbSides, MatchTroopWaveNb(19), 1, MatchSlotsPerEdge(19)], _
 				[MatchTroopDropName(20), $nbSides, MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)], _
 				[MatchTroopDropName(21), $nbSides, MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)], _
-				[MatchTroopDropName(22), $nbSides, MatchTroopWaveNb(22), 1, MatchSlotsPerEdge(22)]]
+				[MatchTroopDropName(22), $nbSides, MatchTroopWaveNb(22), 1, MatchSlotsPerEdge(22)], _
+				[MatchTroopDropName(23), $nbSides, MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)]]
 	Else
-		Local $listInfoDeploy[23][5] = [[$eGole, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[24][5] = [[$eGole, $nbSides, 1, 1, 2] _
 				, [$eLava, $nbSides, 1, 1, 2] _
 				, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 				, [$eDrag, $nbSides, 1, 1, 0] _
@@ -589,6 +590,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$eGobl, $nbSides, 1, 1, 0] _
 				, [$eHeal, $nbSides, 1, 1, 1] _
 				, [$ePekk, $nbSides, 1, 1, 1] _
+				, [$eYeti, $nbSides, 1, 1, 1] _
 				, ["HEROES", 1, 2, 1, 1] _
 				]
 	EndIf
@@ -600,7 +602,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	$g_aiDeployHeroesPosition[0] = -1
 	$g_aiDeployHeroesPosition[1] = -1
 
-	LaunchTroopSmartFarm($listInfoDeploy, $g_iClanCastleSlot, $g_iKingSlot, $g_iQueenSlot, $g_iWardenSlot, $SIDESNAMES)
+	LaunchTroopSmartFarm($listInfoDeploy, $g_iClanCastleSlot, $g_iKingSlot, $g_iQueenSlot, $g_iWardenSlot, $g_iChampionSlot, $SIDESNAMES)
 
 	If Not $g_bRunState Then Return
 
@@ -627,9 +629,9 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 
 EndFunc   ;==>AttackSmartFarm
 
-Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $SIDESNAMES = "TR|TL|BR|BL")
+Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $iChampion, $SIDESNAMES = "TR|TL|BR|BL")
 
-	If $g_bDebugSetlog Then SetDebugLog("LaunchTroopSmartFarm with CC " & $iCC & ", K " & $iKing & ", Q " & $iQueen & ", W " & $iWarden, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("LaunchTroopSmartFarm with CC " & $iCC & ", K " & $iKing & ", Q " & $iQueen & ", W " & $iWarden & ", C " & $iChampion, $COLOR_DEBUG)
 	; $ListInfoDeploy = [Troop, No. of Sides, $WaveNb, $MaxWaveNb, $slotsPerEdge]
 	Local $listListInfoDeployTroopPixel[0]
 	Local $pixelRandomDrop[2]
@@ -728,7 +730,7 @@ Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $SID
 								dropCC($pixelRandomDropcc[0], $pixelRandomDropcc[1], $iCC)
 								$g_bIsCCDropped = True
 							ElseIf ($g_bIsHeroesDropped = False And $infoTroopListArrPixel[0] = "HEROES" And $i = $numberSidesDropTroop - 1) Then
-								dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $iKing, $iQueen, $iWarden)
+								dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $iKing, $iQueen, $iWarden, $iChampion)
 								$g_bIsHeroesDropped = True
 							EndIf
 						Else

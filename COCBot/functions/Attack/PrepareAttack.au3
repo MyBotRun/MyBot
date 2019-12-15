@@ -29,9 +29,11 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 		$g_bDropKing = False ; reset hero dropped flags
 		$g_bDropQueen = False
 		$g_bDropWarden = False
+		$g_bDropChampion = False
 		If $g_iActivateKing = 1 Or $g_iActivateKing = 2 Then $g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
 		If $g_iActivateQueen = 1 Or $g_iActivateQueen = 2 Then $g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
 		If $g_iActivateWarden = 1 Or $g_iActivateWarden = 2 Then $g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
+		If $g_iActivateChampion = 1 Or $g_iActivateChampion = 2 Then $g_aHeroesTimerActivation[$eHeroRoyalChampion] = 0
 
 		$g_iTotalAttackSlot = 10 ; reset flag - Slot11+
 		$g_bDraggedAttackBar = False
@@ -63,6 +65,8 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 					$bDropped = $g_bDropQueen
 				Case $eWarden
 					$bDropped = $g_bDropWarden
+				Case $eChampion
+					$bDropped = $g_bDropChampion
 			EndSwitch
 			If $bDropped = False Then
 				SetDebugLog("Discard updating hero " & GetTroopName($g_avAttackTroops[$i][0]) & " because not dropped yet")
@@ -90,8 +94,8 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 							; Select castle, siege machine and warden mode
 							If $pMatchMode = $DB Or $pMatchMode = $LB Then
 								Switch $avAttackBar[$j][0]
-									Case $eCastle, $eWallW, $eBattleB, $eStoneS
-										If $g_aiAttackUseSiege[$pMatchMode] <= 4 Then
+									Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB
+										If $g_aiAttackUseSiege[$pMatchMode] <= 5 Then
 											SelectCastleOrSiege($avAttackBar[$j][0], Number($avAttackBar[$j][5]), $g_aiAttackUseSiege[$pMatchMode])
 											If $avAttackBar[$j][0] <> $eCastle Then $sLogExtension = " (level " & $g_iSiegeLevel & ")"
 										EndIf
@@ -141,7 +145,7 @@ EndFunc   ;==>PrepareAttack
 Func SelectCastleOrSiege(ByRef $iTroopIndex, $XCoord, $iCmbSiege)
 
 	Local $hStarttime = _Timer_Init()
-	Local $aSiegeTypes[5] = [$eCastle, $eWallW, $eBattleB, $eStoneS, "Any"]
+	Local $aSiegeTypes[6] = [$eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, "Any"]
 
 	Local $ToUse = $aSiegeTypes[$iCmbSiege]
 	Local $bNeedSwitch = False, $bAnySiege = False
@@ -155,7 +159,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $XCoord, $iCmbSiege)
 				SetLog(GetTroopName($iTroopIndex) & " level " & $g_iSiegeLevel & " detected. Try looking for higher level.")
 			EndIf
 
-		Case $eCastle, $eWallW, $eBattleB, $eStoneS ; NOT the same as current castle/siege
+		Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB ; NOT the same as current castle/siege
 			$bNeedSwitch = True
 			SetLog(GetTroopName($iTroopIndex) & ($ToUse <> $eCastle ? " level " & $g_iSiegeLevel & " detected. Try looking for " : " detected. Switching to ") & GetTroopName($ToUse))
 
@@ -198,7 +202,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $XCoord, $iCmbSiege)
 						ExitLoop
 					EndIf
 
-					If $iSiegeIndex >= $eWallW And $iSiegeIndex <= $eStoneS And ($bAnySiege Or $iSiegeIndex = $ToUse) Then
+					If $iSiegeIndex >= $eWallW And $iSiegeIndex <= $eSiegeB And ($bAnySiege Or $iSiegeIndex = $ToUse) Then
 						For $j = 0 To UBound($aAllCoords) - 1
 							Local $aCoords = $aAllCoords[$j]
 							Local $SiegeLevel = getTroopsSpellsLevel(Number($aCoords[0]) - 30, 587)
@@ -306,7 +310,9 @@ Func IsUnitUsed($iMatchMode, $iTroopIndex)
 					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroQueen) = $eHeroQueen) Then Return True
 				Case $eWarden
 					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroWarden) = $eHeroWarden) Then Return True
-				Case $eCastle, $eWallW, $eBattleB, $eStoneS
+				Case $eChampion
+					If (BitAND($g_aiAttackUseHeroes[$iMatchMode], $eHeroChampion) = $eHeroChampion) Then Return True
+				Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB
 					If $g_abAttackDropCC[$iMatchMode] Then Return True
 				Case $eLSpell
 					If $g_abAttackUseLightSpell[$iMatchMode] Or $g_bSmartZapEnable Then Return True

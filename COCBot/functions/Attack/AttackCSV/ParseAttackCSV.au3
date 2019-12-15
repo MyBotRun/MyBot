@@ -370,6 +370,7 @@ Func ParseAttackCSV($debug = False)
 						Local $bBreakOnBKAct = False
 						Local $bBreakOnAQandBKAct = False
 						Local $bBreakOnGWAct = False
+						Local $bBreakOnRCAct = False
 						Local $aSiegeSlotPos = [0,0]
 						Local $tempvalue2 = StringStripWS($value2, $STR_STRIPALL) ; remove all whitespaces from parameter
 						If StringLen($tempvalue2) > 0 Then ; If parameter is not empty
@@ -403,6 +404,11 @@ Func ParseAttackCSV($debug = False)
 											$bBreakImmediately = False
 											$bBreakOnGWAct = True
 										EndIf
+									Case "RC"
+										If $g_bCheckChampionPower Then ; Champion is dropped, automatic activation on and not activated yet
+											$bBreakImmediately = False
+											$bBreakOnRCAct = True
+										EndIf
 									Case "AQ+BK", "BK+AQ"
 										If $g_bCheckQueenPower AND $g_bCheckKingPower Then ; Queen and King are dropped, automatic activation on and not activated yet
 											$bBreakImmediately = False
@@ -417,15 +423,15 @@ Func ParseAttackCSV($debug = False)
 								EndSwitch
 							Next
 							SetDebugLog("$bBreakImmediately = " & $bBreakImmediately & ", $bBreakOnTH = " & $bBreakOnTH & ", $bBreakOnSiege = " & $bBreakOnSiege & ", $bBreakOnTHAndSiege = " & $bBreakOnTHAndSiege, $COLOR_INFO)
-							SetDebugLog("$bBreakOn50Percent = " & $bBreakOn50Percent & ", $bBreakOnAQAct = " & $bBreakOnAQAct & ", $bBreakOnBKAct = " & $bBreakOnBKAct & ", $bBreakOnGWAct = " & $bBreakOnGWAct, $COLOR_INFO)
-							If $bBreakOnSiege Or $bBreakOnTHAndSiege Then 
+							SetDebugLog("$bBreakOn50Percent = " & $bBreakOn50Percent & ", $bBreakOnAQAct = " & $bBreakOnAQAct & ", $bBreakOnBKAct = " & $bBreakOnBKAct & ", $bBreakOnGWAct = " & $bBreakOnGWAct & ", $bBreakOnRCAct = " & $bBreakOnRCAct, $COLOR_INFO)
+							If $bBreakOnSiege Or $bBreakOnTHAndSiege Then
 								debugAttackCSV("WAIT Condition Break on Siege Troop Drop set")
 								;Check if Siege is Available In Attackbar
 								For $i = 0 To UBound($g_avAttackTroops) - 1
 									If $g_avAttackTroops[$i][0] = $eCastle Then
 										SetDebugLog("WAIT Break on Siege Machine is set but Clan Castle Troop selected.", $COLOR_INFO)
 										ExitLoop
-									ElseIf $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Or $g_avAttackTroops[$i][0] = $eStoneS Then
+									ElseIf $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Or $g_avAttackTroops[$i][0] = $eStoneS Or $g_avAttackTroops[$i][0] = $eSiegeB Then
 										Local $sSiegeName = GetTroopName($g_avAttackTroops[$i][0])
 										SetDebugLog("	" & $sSiegeName & " found. Let's Check If is Dropped Or Not?", $COLOR_SUCCESS)
 										;Check Siege Slot Quantity If It's 0 Means Siege Is Dropped
@@ -460,6 +466,8 @@ Func ParseAttackCSV($debug = False)
 							If $bBreakOnBKAct And Not $g_bCheckKingPower Then ContinueLoop 2
 							; Break on Warden Activation
 							If $bBreakOnGWAct And Not $g_bCheckWardenPower Then ContinueLoop 2
+							; Break on Champion Activation
+							If $bBreakOnRCAct And Not $g_bCheckChampionPower Then ContinueLoop 2
 							; When Break on Siege is active and troops dropped, return ASAP
 							If $bBreakOnSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) Then ContinueLoop 2
 							; When Break on TH Kill is active in case townhall destroyed, return ASAP
@@ -488,13 +496,15 @@ Func ParseAttackCSV($debug = False)
 							If $bBreakOnBKAct And Not $g_bCheckKingPower Then ContinueLoop 2
 							; Break on Warden Activation
 							If $bBreakOnGWAct And Not $g_bCheckWardenPower Then ContinueLoop 2
+							; Break on Champion Activation
+							If $bBreakOnRCAct And Not $g_bCheckChampionPower Then ContinueLoop 2
 							; When Break on Siege is active and troops dropped, return ASAP
 							If $bBreakOnSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) Then ContinueLoop 2
 							; When Break on TH Kill is active in case townhall destroyed, return ASAP
 							If $bBreakOnTH And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
 							; When Break on TH Kill And Siege is active, if both TH is destroyed and Siege troops are dropped, return ASAP
 							If $bBreakOnTHAndSiege And CheckIfSiegeDroppedTheTroops($hSleepTimer, $aSiegeSlotPos) And CheckIfTownHallGotDestroyed($hSleepTimer) Then ContinueLoop 2
-							
+
 							If $g_bDebugSetlog Then SetDebugLog("detected [G]: " & $Gold & " [E]: " & $Elixir & " [DE]: " & $DarkElixir, $COLOR_INFO)
 							;EXIT IF RESOURCES = 0
 							If $g_abStopAtkNoResources[$g_iMatchMode] And Number($Gold) = 0 And Number($Elixir) = 0 And Number($DarkElixir) = 0 Then
@@ -586,7 +596,7 @@ Func CheckIfTownHallGotDestroyed($hSleepTimer)
 							   _ColorCheck(_GetPixelColor(Int($g_iGAME_WIDTH / 2) + 2, Int($g_iGAME_HEIGHT / 2) - 2, True), Hex(0xC0C4C0, 6), 20)
 	;Get Current Damge %
 	Local $iDamage = Number(getOcrOverAllDamage(780, 527 + $g_iBottomOffsetY))
-	
+
 	; Optimistic Trigger on Star Popup
 	If $bCentralStarPopup Then
 	; When damage < 50% TH is destroyed
@@ -600,7 +610,7 @@ Func CheckIfTownHallGotDestroyed($hSleepTimer)
 		ElseIf $hPopupTimer = 0 Or __TimerDiff($hPopupTimer) > 1500 Then
 			$hPopupTimer = __TimerInit()
 	; trigger, when 500ms after a star popup there is still a popped up star (the star usually stays less than half a sec)
-		ElseIf __TimerDiff($hPopupTimer) > 500 Then 
+		ElseIf __TimerDiff($hPopupTimer) > 500 Then
 			$bIsTHDestroyed = True
 		EndIf
 	; Failsafe Trigger: If Got 1 Star and Damage % < 50% then TH was taken before 50%
@@ -861,6 +871,24 @@ Func ParseAttackCSV_MainSide($debug = False)
 								Case 7, 8
 									$heightBottomLeft += Int($value1)
 							EndSwitch
+
+							If IsArray($g_aiCSVScatterPos) Then
+								For $i = 0 To UBound($g_aiCSVScatterPos) - 1
+									Local $pixel = $g_aiCSVScatterPos[$i]
+									If UBound($pixel) = 2 Then
+										Switch StringLeft(Slice8($pixel), 1)
+											Case 1, 2
+												$heightBottomRight += Int($value4)
+											Case 3, 4
+												$heightTopRight += Int($value4)
+											Case 5, 6
+												$heightTopLeft += Int($value4)
+											Case 7, 8
+												$heightBottomLeft += Int($value4)
+										EndSwitch
+									EndIf
+								Next
+							EndIf
 
 							If IsArray($g_aiCSVInfernoPos) Then
 								For $i = 0 To UBound($g_aiCSVInfernoPos) - 1

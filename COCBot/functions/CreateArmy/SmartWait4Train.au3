@@ -38,7 +38,7 @@ Func SmartWait4Train($iTestSeconds = Default)
 	If Not $g_bCloseWhileTrainingEnable And Not $g_bCloseWithoutShield Then Return ; skip if nothing selected in GUI
 
 	Local $aResult, $iActiveHero
-	Local $aHeroResult[3]
+	Local $aHeroResult[$eHeroCount]
 	Local Const $TRAINWAIT_NOWAIT = 0x00 ; default no waiting
 	Local Const $TRAINWAIT_SHIELD = 0x01 ; Flag value used to simplify shield exists
 	Local Const $TRAINWAIT_TROOP = 0x02 ; Value when wait for troop training and valid time exists

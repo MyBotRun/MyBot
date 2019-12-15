@@ -579,8 +579,8 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			$g_bRunState = $RuntimeA
 		Case $g_hBtnTestBuildingLocation
 			btnTestGetLocationBuilding()
-		Case $g_hBtnTestFindButton
-			btnTestFindButton()
+		Case $g_hBtnRunFunction
+			btnRunFunction()
 		Case $g_hBtnTestCleanYard
 			btnTestCleanYard()
 		Case $g_hBtnTestOcrMemory
@@ -2010,7 +2010,7 @@ Func Bind_ImageList($nCtrl, ByRef $hImageList)
 	Switch $nCtrl
 		Case $g_hTabMain
 			; the icons for main tab
-			Local $aIconIndex = [$eIcnHourGlass, $eIcnTH12, $eIcnAttack, $eIcnGUI, $eIcnInfo]
+			Local $aIconIndex = [$eIcnHourGlass, $eIcnTH13, $eIcnAttack, $eIcnGUI, $eIcnInfo]
 
 		Case $g_hGUI_VILLAGE_TAB
 			; the icons for village tab

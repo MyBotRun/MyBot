@@ -24,7 +24,7 @@ Global $g_aGroupListPicMinTrophy = "", $g_aGroupListPicMaxTrophy = ""
 
 ;End Battle
 Global $g_aGroupEndBattleDB = "", $groupEndBattkeAB = "", $groupKingSleeping = "", $groupQueenSleeping = "", $groupWardenSleeping = "", $groupCloseWhileTraining = "", _
-	   $grpTrainTroops = "", $grpCookSpell = ""
+	   $grpTrainTroops = "", $grpCookSpell = "", $groupChampionSleeping = ""
 
 ;Spell
 Global $groupLightning = "", $groupHeal = "", $groupRage = "", $groupJump = "", $groupFreeze = "", $groupClone = ""
@@ -36,7 +36,7 @@ Global $groupPoison = "", $groupEarthquake = "", $groupHaste = "", $groupSkeleto
 Global $groupListSpells = ""
 
 ;Sieges
-Global $groupWallWrecker = "", $groupBattleBlimp = "", $groupStoneSlammer = "", $groupListSieges = ""
+Global $groupWallWrecker = "", $groupBattleBlimp = "", $groupStoneSlammer = "", $groupSiegeBarracks = "", $groupListSieges = ""
 
 ;TH Level
 Global $g_aGroupListTHLevels = ""
@@ -67,9 +67,9 @@ Func InitializeControlVariables()
 				    $g_ahChkMaxMortar[$DB]&"#"&$g_ahCmbWeakMortar[$DB]&"#"&$g_ahPicWeakMortar[$DB]&"#"&$g_ahChkMaxWizTower[$DB]&"#"&$g_ahCmbWeakWizTower[$DB]&"#"& _
 				    $g_ahPicWeakWizTower[$DB]&"#"& _
 				    $g_ahChkMaxXBow[$DB]&"#"&$g_ahCmbWeakXBow[$DB]&"#"&$g_ahPicWeakXBow[$DB]&"#"&$g_ahChkMaxInferno[$DB]&"#"&$g_ahCmbWeakInferno[$DB]&"#"& _
-				    $g_ahPicWeakInferno[$DB]&"#"&$g_ahChkMaxEagle[$DB]&"#"&$g_ahCmbWeakEagle[$DB]&"#"&$g_ahPicWeakEagle[$DB]
-   $groupHerosDB = $g_hPicDBHeroesWait&"#"&$g_hTxtDBHeroesWait&"#"&$g_hChkDBKingWait&"#"&$g_hChkDBQueenWait&"#"&$g_hChkDBWardenWait&"#"&$g_hPicDBKingWait&"#"& _
-				   $g_hPicDBQueenWait&"#"&$g_hPicDBWardenWait&"#"&$g_hChkDBNotWaitHeroes
+				    $g_ahPicWeakInferno[$DB]&"#"&$g_ahChkMaxEagle[$DB]&"#"&$g_ahCmbWeakEagle[$DB]&"#"&$g_ahPicWeakEagle[$DB]&"#"&$g_ahChkMaxScatter[$DB]&"#"&$g_ahCmbWeakScatter[$DB]&"#"&$g_ahPicWeakScatter[$DB]
+   $groupHerosDB = $g_hPicDBHeroesWait&"#"&$g_hTxtDBHeroesWait&"#"&$g_hChkDBKingWait&"#"&$g_hChkDBQueenWait&"#"&$g_hChkDBWardenWait&"#"&$g_hChkDBChampionWait&"#"&$g_hPicDBKingWait&"#"& _
+				   $g_hPicDBQueenWait&"#"&$g_hPicDBWardenWait&"#"&$g_hPicDBChampionWait&"#"&$g_hChkDBNotWaitHeroes
 
    $groupSearchAB = $g_hGrpABFilter&"#"&$g_hCmbABMeetGE&"#"&$g_hTxtABMinGold&"#"&$g_hPicABMinGold&"#"&$g_hTxtABMinElixir&"#"&$g_hPicABMinElixir&"#"& _
 				    $g_hTxtABMinGoldPlusElixir&"#"&$g_hPicABMinGPEGold&"#"&$g_hChkABMeetDE&"#"&$g_hTxtABMinDarkElixir&"#"&	$g_hPicABMinDarkElixir&"#"&$g_hChkABMeetTrophy&"#"& _
@@ -77,9 +77,9 @@ Func InitializeControlVariables()
 				    $g_ahChkMeetOne[$LB]&"#"& _
 				    $g_ahChkMaxMortar[$LB]&"#"&$g_ahCmbWeakMortar[$LB]&"#"&$g_ahPicWeakMortar[$LB]&"#"&$g_ahChkMaxWizTower[$LB]&"#"&$g_ahCmbWeakWizTower[$LB]&"#"& _
 					$g_ahPicWeakWizTower[$LB]&"#"&$g_ahChkMaxXBow[$LB]&"#"&$g_ahCmbWeakXBow[$LB]&"#"&$g_ahPicWeakXBow[$LB]&"#"&$g_ahChkMaxInferno[$LB]&"#"& _
-					$g_ahCmbWeakInferno[$LB]&"#"&$g_ahPicWeakInferno[$LB]&"#"&$g_ahChkMaxEagle[$LB]&"#"&$g_ahCmbWeakEagle[$LB]&"#"&$g_ahPicWeakEagle[$LB]
-   $groupHerosAB = $g_hPicABHeroesWait&"#"&$g_hTxtABHeroesWait&"#"&$g_hChkABKingWait&"#"&$g_hChkABQueenWait&"#"&$g_hChkABWardenWait&"#"&$g_hPicABKingWait&"#"& _
-				   $g_hPicABQueenWait&"#"&$g_hPicABWardenWait&"#"&$g_hChkABNotWaitHeroes
+					$g_ahCmbWeakInferno[$LB]&"#"&$g_ahPicWeakInferno[$LB]&"#"&$g_ahChkMaxEagle[$LB]&"#"&$g_ahCmbWeakEagle[$LB]&"#"&$g_ahPicWeakEagle[$LB]&"#"&$g_ahChkMaxScatter[$LB]&"#"&$g_ahCmbWeakScatter[$LB]&"#"&$g_ahPicWeakScatter[$LB]
+   $groupHerosAB = $g_hPicABHeroesWait&"#"&$g_hTxtABHeroesWait&"#"&$g_hChkABKingWait&"#"&$g_hChkABQueenWait&"#"&$g_hChkABWardenWait&"#"&$g_hChkABChampionWait&"#"& _
+					$g_hPicABKingWait&"#"&$g_hPicABQueenWait&"#"&$g_hPicABWardenWait&"#"&$g_hPicABChampionWait&"#"&$g_hChkABNotWaitHeroes
 
    $groupSpellsDB = $g_hChkDBSpellsWait&"#"&$g_hPicDBLightSpellWait&"#"&$g_hPicDBHealSpellWait&"#"&$g_hPicDBRageSpellWait&"#"&$g_hPicDBJumpSpellWait&"#"& _
 				    $g_hPicDBFreezeSpellWait&"#"&$g_hPicDBPoisonSpellWait&"#"&$g_hPicDBEarthquakeSpellWait&"#"&$g_hPicDBHasteSpellWait
@@ -87,23 +87,23 @@ Func InitializeControlVariables()
 				    $g_hPicABFreezeSpellWait&"#"&$g_hPicABPoisonSpellWait&"#"&$g_hPicABEarthquakeSpellWait&"#"&$g_hPicABHasteSpellWait
 
    ;Attack
-   $g_aGroupAttackDB = 	$g_hCmbDBAlgorithm&"#"&$g_hCmbDBSelectTroop&"#"&$g_hChkDBKingAttack&"#"&$g_hChkDBQueenAttack&"#"&$g_hChkDBWardenAttack&"#"&$g_hChkDBDropCC&"#"& _
+   $g_aGroupAttackDB = 	$g_hCmbDBAlgorithm&"#"&$g_hCmbDBSelectTroop&"#"&$g_hChkDBKingAttack&"#"&$g_hChkDBQueenAttack&"#"&$g_hChkDBWardenAttack&"#"&$g_hChkDBChampionAttack&"#"&$g_hChkDBDropCC&"#"& _
 						$g_hChkDBLightSpell&"#"&$g_hChkDBHealSpell&"#"&$g_hChkDBRageSpell&"#"&$g_hChkDBJumpSpell&"#"&$g_hChkDBFreezeSpell&"#"&$g_hChkDBCloneSpell&"#"& _
 						$g_hChkDBPoisonSpell&"#"&$g_hChkDBEarthquakeSpell&"#"&$g_hChkDBHasteSpell&"#"&$g_hChkDBSkeletonSpell&"#"&$g_hChkDBBatSpell
    $g_aGroupAttackDBSpell = $g_hChkDBLightSpell&"#"&$g_hChkDBHealSpell&"#"&$g_hChkDBRageSpell&"#"&$g_hChkDBJumpSpell&"#"&$g_hChkDBFreezeSpell&"#"&$g_hChkDBCloneSpell&"#"& _
 							$g_hChkDBPoisonSpell&"#"&$g_hChkDBEarthquakeSpell&"#"&$g_hChkDBHasteSpell&"#"&$g_hChkDBSkeletonSpell&"#"&$g_hChkDBBatSpell
-   $groupIMGAttackDB = 	$g_hPicDBKingAttack&"#"&$g_hPicDBQueenAttack&"#"&$g_hPicDBWardenAttack&"#"&$g_hPicDBDropCC&"#"& _
+   $groupIMGAttackDB = 	$g_hPicDBKingAttack&"#"&$g_hPicDBQueenAttack&"#"&$g_hPicDBWardenAttack&"#"&$g_hPicDBChampionAttack&"#"&$g_hPicDBDropCC&"#"& _
 						$g_hPicDBLightSpell&"#"&$g_hPicDBHealSpell&"#"&$g_hPicDBRageSpell&"#"&$g_hPicDBJumpSpell&"#"&$g_hPicDBFreezeSpell&"#"&$g_hPicDBCloneSpell&"#"& _
 						$g_hPicDBPoisonSpell&"#"&$g_hPicDBEarthquakeSpell&"#"&$g_hPicDBHasteSpell&"#"&$g_hPicDBSkeletonSpell&"#"&$g_hPicDBBatSpell
    $groupIMGAttackDBSpell = $g_hPicDBLightSpell&"#"&$g_hPicDBHealSpell&"#"&$g_hPicDBRageSpell&"#"&$g_hPicDBJumpSpell&"#"&$g_hPicDBFreezeSpell&"#"&$g_hPicDBCloneSpell&"#"& _
 							$g_hPicDBPoisonSpell&"#"&$g_hPicDBEarthquakeSpell&"#"&$g_hPicDBHasteSpell&"#"&$g_hPicDBSkeletonSpell&"#"&$g_hPicDBBatSpell
 
-   $groupAttackAB = $g_hCmbDBAlgorithm&"#"&$g_hCmbABSelectTroop&"#"&$g_hChkABKingAttack&"#"&$g_hChkABQueenAttack&"#"&$g_hChkABWardenAttack&"#"&$g_hChkABDropCC&"#"& _
+   $groupAttackAB = $g_hCmbDBAlgorithm&"#"&$g_hCmbABSelectTroop&"#"&$g_hChkABKingAttack&"#"&$g_hChkABQueenAttack&"#"&$g_hChkABWardenAttack&"#"&$g_hChkABChampionAttack&"#"&$g_hChkABDropCC&"#"& _
 				    $g_hChkABLightSpell&"#"&$g_hChkABHealSpell&"#"&$g_hChkABRageSpell&"#"&$g_hChkABJumpSpell&"#"&$g_hChkABFreezeSpell&"#"&$g_hChkABCloneSpell&"#"& _
 					$g_hChkABPoisonSpell&"#"&$g_hChkABEarthquakeSpell&"#"&$g_hChkABHasteSpell&"#"&$g_hChkABSkeletonSpell&"#"&$g_hChkABBatSpell
    $groupAttackABSpell = 	$g_hChkABLightSpell&"#"&$g_hChkABHealSpell&"#"&$g_hChkABRageSpell&"#"&$g_hChkABJumpSpell&"#"&$g_hChkABFreezeSpell&"#"&$g_hChkABCloneSpell&"#"& _
 							$g_hChkABPoisonSpell&"#"&$g_hChkABEarthquakeSpell&"#"&$g_hChkABHasteSpell&"#"&$g_hChkABSkeletonSpell&"#"&$g_hChkABBatSpell
-   $groupIMGAttackAB = 	$g_hPicABKingAttack&"#"&$g_hPicABQueenAttack&"#"&$g_hPicABWardenAttack&"#"&$g_hPicABDropCC&"#"& _
+   $groupIMGAttackAB = 	$g_hPicABKingAttack&"#"&$g_hPicABQueenAttack&"#"&$g_hPicABWardenAttack&"#"&$g_hPicABChampionAttack&"#"&$g_hPicABDropCC&"#"& _
 						$g_hPicABLightSpell&"#"&$g_hPicABHealSpell&"#"&$g_hPicABRageSpell&"#"&$g_hPicABJumpSpell&"#"&$g_hPicABFreezeSpell&"#"&$g_hPicABCloneSpell&"#"& _
 							$g_hPicABPoisonSpell&"#"&$g_hPicABEarthquakeSpell&"#"&$g_hPicABHasteSpell&"#"&$g_hPicABSkeletonSpell&"#"&$g_hPicABBatSpell
    $groupIMGAttackABSpell = $g_hPicABLightSpell&"#"&$g_hPicABHealSpell&"#"&$g_hPicABRageSpell&"#"&$g_hPicABJumpSpell&"#"&$g_hPicABFreezeSpell&"#"&$g_hPicABCloneSpell&"#"& _
@@ -130,6 +130,7 @@ Func InitializeControlVariables()
    $groupKingSleeping = $g_hPicDBKingSleepWait&"#"&$g_hPicABKingSleepWait&"#"&$g_hPicChkKingSleepWait
    $groupQueenSleeping = $g_hPicDBQueenSleepWait&"#"&$g_hPicABQueenSleepWait&"#"&$g_hPicChkQueenSleepWait
    $groupWardenSleeping = $g_hPicDBWardenSleepWait&"#"&$g_hPicABWardenSleepWait&"#"&$g_hPicChkWardenSleepWait
+   $groupChampionSleeping = $g_hPicDBChampionSleepWait&"#"&$g_hPicABChampionSleepWait&"#"&$g_hPicChkChampionSleepWait
 
    $groupCloseWhileTraining = $g_hChkCloseWithoutShield&"#"&$g_hChkCloseEmulator&"#"&$g_hChkSuspendComputer&"#"&$g_hPicCloseWaitTrain&"#"&$g_hChkRandomClose&"#"&$g_hPicCloseWaitStop&"#"& _
 							  $g_hRdoCloseWaitExact&"#"&$g_hPicCloseWaitExact&"#"&$g_hRdoCloseWaitRandom&"#"&$g_hCmbCloseWaitRdmPercent&"#"&$g_hLblCloseWaitRdmPercent
@@ -139,7 +140,8 @@ Func InitializeControlVariables()
 					 $g_ahTxtTrainArmyTroopCount[$eTroopPekka]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBabyDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopMiner]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopMinion]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHogRider]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopValkyrie]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWitch]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopLavaHound]&"#"& _
-					 $g_ahTxtTrainArmyTroopCount[$eTroopBowler]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceGolem]
+					 $g_ahTxtTrainArmyTroopCount[$eTroopBowler]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceGolem]&"#"& _
+					 $g_ahTxtTrainArmyTroopCount[$eTroopYeti]
    $grpCookSpell = $g_ahTxtTrainArmySpellCount[$eSpellLightning]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHeal]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellRage]&"#"& _
 				   $g_ahTxtTrainArmySpellCount[$eSpellJump]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellFreeze]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellClone]&"#"& _
 				   $g_ahTxtTrainArmySpellCount[$eSpellPoison]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellEarthquake]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHaste]&"#"& _
@@ -167,23 +169,24 @@ Func InitializeControlVariables()
 	$groupWallWrecker = $g_ahPicTrainArmySiege[$eSiegeWallWrecker]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker]&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeWallWrecker]
 	$groupBattleBlimp = $g_ahPicTrainArmySiege[$eSiegeBattleBlimp]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeBattleBlimp]&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeBattleBlimp]
 	$groupStoneSlammer = $g_ahPicTrainArmySiege[$eSiegeStoneSlammer]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeStoneSlammer]&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeStoneSlammer]
-	$groupListSieges = $groupWallWrecker&"#"&$groupBattleBlimp&"#"&$groupStoneSlammer
+	$groupSiegeBarracks = $g_ahPicTrainArmySiege[$eSiegeBarracks]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeBarracks]&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeBarracks]
+	$groupListSieges = $groupWallWrecker&"#"&$groupBattleBlimp&"#"&$groupStoneSlammer&"#"&$groupSiegeBarracks
 
    ;TH Level
    $g_aGroupListTHLevels = $g_ahPicTHLevels[4]&"#"&$g_ahPicTHLevels[5]&"#"&$g_ahPicTHLevels[6]&"#"&$g_ahPicTHLevels[7]&"#"&$g_ahPicTHLevels[8]&"#"& _
-						$g_ahPicTHLevels[9]&"#"&$g_ahPicTHLevels[10]&"#"&$g_ahPicTHLevels[11]&"#"&$g_ahPicTHLevels[12]
+						$g_ahPicTHLevels[9]&"#"&$g_ahPicTHLevels[10]&"#"&$g_ahPicTHLevels[11]&"#"&$g_ahPicTHLevels[12]&"#"&$g_ahPicTHLevels[13]
 
    ;PicDBMaxTH
    $g_aGroupListPicDBMaxTH = $g_ahPicDBMaxTH[6]&"#"&$g_ahPicDBMaxTH[7]&"#"&$g_ahPicDBMaxTH[8]&"#"& _
-						$g_ahPicDBMaxTH[9]&"#"&$g_ahPicDBMaxTH[10]&"#"&$g_ahPicDBMaxTH[11] & "#" & $g_ahPicDBMaxTH[12]
+						$g_ahPicDBMaxTH[9]&"#"&$g_ahPicDBMaxTH[10]&"#"&$g_ahPicDBMaxTH[11]&"#"&$g_ahPicDBMaxTH[12]&"#"&$g_ahPicDBMaxTH[13]
 
    ;PicABMaxTH
    $g_aGroupListPicABMaxTH = $g_ahPicABMaxTH[6]&"#"&$g_ahPicABMaxTH[7]&"#"&$g_ahPicABMaxTH[8]&"#"& _
-						$g_ahPicABMaxTH[9]&"#"&$g_ahPicABMaxTH[10]&"#"&$g_ahPicABMaxTH[11] & "#" & $g_ahPicABMaxTH[12]
+						$g_ahPicABMaxTH[9]&"#"&$g_ahPicABMaxTH[10]&"#"&$g_ahPicABMaxTH[11]&"#"&$g_ahPicABMaxTH[12]&"#"&$g_ahPicABMaxTH[13]
 
    ;PicBullyMaxTH
    $g_aGroupListPicBullyMaxTH = $g_ahPicBullyMaxTH[6]&"#"&$g_ahPicBullyMaxTH[7]&"#"&$g_ahPicBullyMaxTH[8]&"#"& _
-						$g_ahPicBullyMaxTH[9]&"#"&$g_ahPicBullyMaxTH[10]&"#"&$g_ahPicBullyMaxTH[11] & "#" & $g_ahPicBullyMaxTH[12]
+						$g_ahPicBullyMaxTH[9]&"#"&$g_ahPicBullyMaxTH[10]&"#"&$g_ahPicBullyMaxTH[11]&"#"&$g_ahPicBullyMaxTH[12]&"#"&$g_ahPicBullyMaxTH[13]
 
    ;League
    $g_aGroupLeague = $g_ahPicLeague[$eLeagueUnranked]&"#"&$g_ahPicLeague[$eLeagueBronze]&"#"&$g_ahPicLeague[$eLeagueSilver]&"#"&$g_ahPicLeague[$eLeagueGold] &"#"& _
@@ -240,8 +243,8 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hChkMakeIMGCSV) = 1
 	$oAlwaysEnabledControls($g_hBtnTestAttackCSV) = 1
 	$oAlwaysEnabledControls($g_hBtnTestBuildingLocation) = 1
-	$oAlwaysEnabledControls($g_hBtnTestFindButton) = 1
-	$oAlwaysEnabledControls($g_hTxtTestFindButton) = 1
+	$oAlwaysEnabledControls($g_hBtnRunFunction) = 1
+	$oAlwaysEnabledControls($g_hTxtRunFunction) = 1
 	$oAlwaysEnabledControls($g_hBtnTestCleanYard) = 1
 	$oAlwaysEnabledControls($g_hLblSmartLightningUsed) = 1
 	$oAlwaysEnabledControls($g_hLblSmartZap) = 1

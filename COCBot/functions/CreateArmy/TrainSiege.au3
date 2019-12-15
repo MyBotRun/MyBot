@@ -31,8 +31,9 @@ Func TrainSiege()
 	Local $aCheckIsAvailableSiege[4] = [58, 556, 0x47717E, 10]
 	Local $aCheckIsAvailableSiege1[4] = [229, 556, 0x47717E, 10]
 	Local $aCheckIsAvailableSiege2[4] = [400, 556, 0x47717E, 10]
+	Local $aCheckIsAvailableSiege3[4] = [576, 556, 0x47717E, 10]
 
-	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0]
+	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0]
 	Local $aiTotalSiegeMachine = $g_aiCurrentSiegeMachines
 
 	; check queueing siege
@@ -64,6 +65,7 @@ Func TrainSiege()
 		If $iSiegeIndex = $eSiegeWallWrecker Then $checkPixel = $aCheckIsAvailableSiege
 		If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
 		If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
+		If $iSiegeIndex = $eSiegeBarracks Then $checkPixel = $aCheckIsAvailableSiege3
 		If $HowMany > 0 And _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeIndex]) Then
 			PureClick($checkPixel[0], $checkPixel[1], $HowMany, $g_iTrainClickDelay)
 			Local $sSiegeName = $HowMany >= 2 ? $g_asSiegeMachineNames[$iSiegeIndex] & "s" : $g_asSiegeMachineNames[$iSiegeIndex] & ""

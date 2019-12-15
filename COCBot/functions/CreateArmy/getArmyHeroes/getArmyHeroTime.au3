@@ -22,9 +22,10 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 	$g_asHeroHealTime[0] = ""
 	$g_asHeroHealTime[1] = ""
 	$g_asHeroHealTime[2] = ""
+	$g_asHeroHealTime[3] = ""
 
 	; validate hero troop type input, must be hero enum value or "all"
-	If $iHeroType <> $eHeroKing And $iHeroType <> $eHeroQueen And $iHeroType <> $eHeroWarden And StringInStr($iHeroType, "all", $STR_NOCASESENSEBASIC) = 0 Then
+	If $iHeroType <> $eHeroKing And $iHeroType <> $eHeroQueen And $iHeroType <> $eHeroWarden And $iHeroType <> $eHeroChampion And StringInStr($iHeroType, "all", $STR_NOCASESENSEBASIC) = 0 Then
 		SetLog("getHeroTime slipped on banana, get doctor, tell him: " & $iHeroType, $COLOR_ERROR)
 		SetError(1)
 		Return
@@ -43,11 +44,11 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 
 	Local $iRemainTrainHeroTimer = 0, $sResultHeroTime
 	Local $sResult
-	Local $aResultHeroes[3] = ["", "", ""] ; array to hold all remaining regen time read via OCR
+	Local $aResultHeroes[$eHeroCount] = ["", "", "", ""] ; array to hold all remaining regen time read via OCR
 	;Local Const $aHeroStatusSlots[3][2] = [[658, 347], [732, 347], [805, 347]] ; Location of hero status check tile
 
 	; Constant Array with OCR find location: [X pos, Y Pos, Text Name, Global enum value]
-	Local Const $aHeroRemainData[3][4] = [[619, 414, "King", $eHeroKing], [691, 414, "Queen", $eHeroQueen], [764, 414, "Warden", $eHeroWarden]]
+	Local Const $aHeroRemainData[$eHeroCount][4] = [[555, 414, "King", $eHeroKing], [627, 414, "Queen", $eHeroQueen], [700, 414, "Warden", $eHeroWarden], [772, 414, "Champion", $eHeroChampion]]
 
 	For $index = 0 To UBound($aHeroRemainData) - 1 ;cycle through all 3 slots and hero types
 
@@ -105,11 +106,11 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 	EndIf
 
 	; Determine proper return value
-	If $iHeroType = $eHeroKing Or $iHeroType = $eHeroQueen Or $iHeroType = $eHeroWarden Then
+	If $iHeroType = $eHeroKing Or $iHeroType = $eHeroQueen Or $iHeroType = $eHeroWarden Or $iHeroType = $eHeroChampion Then
 		Return $iRemainTrainHeroTimer ; return one requested hero value
 	ElseIf StringInStr($iHeroType, "all", $STR_NOCASESENSEBASIC) > 0 Then
 		; Set Time Array for PickupHealedHeroes
-		For $i = 0 To 2
+		For $i = 0 To $eHeroCount - 1
 			If $aResultHeroes[$i] <> "" and $aResultHeroes[$i] > 0 Then $g_asHeroHealTime[$i] = _DateAdd("s", Int($aResultHeroes[$i]) * 60, _NowCalc())
 			SetDebugLog($aHeroRemainData[$i][2] & " heal time: " & $g_asHeroHealTime[$i])
 		Next

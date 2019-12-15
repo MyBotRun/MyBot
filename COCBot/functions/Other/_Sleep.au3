@@ -4,7 +4,7 @@
 ; Syntax ........: _Sleep($iDelay[, $iSleep = True])
 ; Parameters ....: $iDelay              - an integer value.
 ;                  $iSleep              - [optional] an integer value. Default is True. unused and deprecated
-;                  $$CheckRunState      - Exit and returns True if $g_bRunState is False
+;                  $CheckRunState      - Exit and returns True if $g_bRunState is False
 ; Return values .: True when $g_bRunState is False otherwise True (also True if $CheckRunState=False)
 ; Author ........:
 ; Modified ......: CodeSlinger69 (2017)

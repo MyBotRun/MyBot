@@ -47,8 +47,8 @@ Func LaunchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 	Return True
 EndFunc   ;==>LaunchTroop
 
-Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
-	If $g_bDebugSetlog Then SetDebugLog("LaunchTroop2 with CC " & $iCC & ", K " & $iKing & ", Q " & $iQueen & ", W " & $iWarden, $COLOR_DEBUG)
+Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $iChampion)
+	If $g_bDebugSetlog Then SetDebugLog("LaunchTroop2 with CC " & $iCC & ", K " & $iKing & ", Q " & $iQueen & ", W " & $iWarden & ", C " & $iChampion, $COLOR_DEBUG)
 	Local $listListInfoDeployTroopPixel[0]
 	Local $pixelRandomDrop[2]
 	Local $pixelRandomDropcc[2]
@@ -124,7 +124,7 @@ Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
 							dropCC($pixelRandomDropcc[0], $pixelRandomDropcc[1], $iCC)
 							$g_bIsCCDropped = True
 						ElseIf ($infoPixelDropTroop[0] = "HEROES") Then
-							dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $iKing, $iQueen, $iWarden)
+							dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $iKing, $iQueen, $iWarden, $iChampion)
 							$g_bIsHeroesDropped = True
 						EndIf
 					Else
@@ -190,7 +190,7 @@ Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
 										dropCC($pixelRandomDropcc[0], $pixelRandomDropcc[1], $iCC)
 										$g_bIsCCDropped = True
 									ElseIf ($g_bIsHeroesDropped = False And $infoTroopListArrPixel[0] = "HEROES" And $i = $numberSidesDropTroop - 1) Then
-										dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $iKing, $iQueen, $iWarden)
+										dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $iKing, $iQueen, $iWarden, $iChampion)
 										$g_bIsHeroesDropped = True
 									EndIf
 								Else
@@ -247,7 +247,7 @@ Func LaunchTroop2($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden)
 				If ($listInfoDeploy[$i][0] = "CC") Then
 					dropCC($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $iCC)
 				ElseIf ($listInfoDeploy[$i][0] = "HEROES") Then
-					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $iKing, $iQueen, $iWarden)
+					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $iKing, $iQueen, $iWarden, $iChampion)
 				EndIf
 			Else
 				If LaunchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then

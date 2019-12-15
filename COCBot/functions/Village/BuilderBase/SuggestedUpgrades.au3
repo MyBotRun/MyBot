@@ -57,12 +57,14 @@ Func chkActivateBBSuggestedUpgrades()
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreGold, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreElixir, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreHall, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreWall, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkPlacingNewBuildings, $GUI_ENABLE)
 	Else
 		$g_iChkBBSuggestedUpgrades = 0
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreGold, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreElixir, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreHall, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
+		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreWall, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 		GUICtrlSetState($g_hChkPlacingNewBuildings, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 	EndIf
 EndFunc   ;==>chkActivateBBSuggestedUpgrades
@@ -72,18 +74,22 @@ Func chkActivateBBSuggestedUpgradesGold()
 	If $g_iChkBBSuggestedUpgrades = 0 Then Return
 	; Ignore Upgrade Building with Gold [Update values]
 	$g_iChkBBSuggestedUpgradesIgnoreGold = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreGold) = $GUI_CHECKED) ? 1 : 0
-	; If Gold is Selected Than we can disable the Builder Hall [is gold]
+	; If Gold is Selected Than we can disable the Builder Hall [is gold] and Wall almost [is Gold]
 	If $g_iChkBBSuggestedUpgradesIgnoreGold = 0 Then
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreElixir, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreHall, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreWall, $GUI_ENABLE)
 	Else
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreElixir, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreHall, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
+		GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreWall, BitOR($GUI_UNCHECKED, $GUI_DISABLE))
 	EndIf
 	; Ignore Upgrade Builder Hall [Update values]
 	$g_iChkBBSuggestedUpgradesIgnoreHall = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreHall) = $GUI_CHECKED) ? 1 : 0
 	; Update Elixir value
 	$g_iChkBBSuggestedUpgradesIgnoreElixir = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreElixir) = $GUI_CHECKED) ? 1 : 0
+	; Ignore Wall
+	$g_iChkBBSuggestedUpgradesIgnoreWall = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreWall) = $GUI_CHECKED) ? 1 : 0
 EndFunc   ;==>chkActivateBBSuggestedUpgradesGold
 
 Func chkActivateBBSuggestedUpgradesElixir()
@@ -274,6 +280,10 @@ Func GetUpgradeButton($sUpgButtom = "", $Debug = False)
 					$aBtnPos[0] = 590
 					$aBtnPos[1] = 530
 				#ce
+			EndIf
+			If StringInStr($aBuildingName[1], "Wall") And $g_iChkBBSuggestedUpgradesIgnoreWall Then
+				SetLog("Ups! Wall is not to Upgrade!", $COLOR_ERROR)
+				Return False
 			EndIf
 			Click($g_iQuickMISX + 300, $g_iQuickMISY + 650, 1)
 			If _Sleep(1500) Then Return

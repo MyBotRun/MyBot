@@ -15,7 +15,7 @@
 #include-once
 
 Global $g_aiDonIcons[$eTroopCount + 1] = [$eIcnDonBarbarian, $eIcnDonArcher, $eIcnDonGiant, $eIcnDonGoblin, $eIcnDonWallBreaker, $eIcnDonBalloon, $eIcnDonWizard, $eIcnDonHealer, _
-							$eIcnDonDragon, $eIcnDonPekka, $eIcnDonBabyDragon, $eIcnDonMiner, $eIcnElectroDragon, $eIcnDonMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnDonGolem, _
+							$eIcnDonDragon, $eIcnDonPekka, $eIcnDonBabyDragon, $eIcnDonMiner, $eIcnElectroDragon, $eIcnYeti, $eIcnDonMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnDonGolem, _
 							$eIcnDonWitch, $eIcnDonLavaHound, $eIcnDonBowler, $eIcnIceGolem, $eIcnDonBlank]
 
 Func btnDonateTroop()

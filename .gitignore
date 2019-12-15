@@ -15,6 +15,10 @@
 !lib/*.exe
 !lib/*/*.exe
 
+#don't exclude builder exe
+![Bb]uildMBR.exe
+
+
 # Global Folders
 [Pp]rofiles/
 [Tt]emplates/
@@ -30,6 +34,10 @@
 
 # Exclusion build
 ![Bb]uild/**
+
+build/MBR_Compiler/MBR_Compiler/bin/*
+build/MBR_Compiler/MBR_Compiler/obj/*
+build/MBR_Compiler/.vs/*
 
 # Exclusion language ini files
 ![Ll]anguages/*.ini

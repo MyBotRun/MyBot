@@ -173,7 +173,7 @@ Func lblTotalCountTroop2()
 	Local $TotalTotalTimeTroop = 0
 	Local $NbrOfBarrack = 4 ;For the moment fix to 4 until fine detect level of each Barrack
 	Local $NbrOfDarkBarrack = 2 ;For the moment fix to 2 until fine detect level of each Barrack
-	For $i = $eTroopBarbarian To $eTroopElectroDragon
+	For $i = $eTroopBarbarian To $eTroopYeti
 		Local $NbrOfTroop = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$i])
 		Local $LevOfTroop = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
 
@@ -660,7 +660,7 @@ Func BtnTroopOrderSet()
 	Local $bMissingTroop = False ; flag for when troops are not assigned by user
 	Local $aiUsedTroop[$eTroopCount] = [ _
 			$eTroopBarbarian, $eTroopArcher, $eTroopGiant, $eTroopGoblin, $eTroopWallBreaker, $eTroopBalloon, $eTroopWizard, _
-			$eTroopHealer, $eTroopDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopMiner, $eTroopElectroDragon, $eTroopMinion, $eTroopHogRider, _
+			$eTroopHealer, $eTroopDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopMiner, $eTroopElectroDragon, $eTroopYeti, $eTroopMinion, $eTroopHogRider, _
 			$eTroopValkyrie, $eTroopGolem, $eTroopWitch, $eTroopLavaHound, $eTroopBowler, $eTroopIceGolem]
 
 	; check for duplicate combobox index and take action
@@ -1006,7 +1006,7 @@ EndFunc   ;==>TrainSpellLevelClick
 Func CalCostCamp()
 	Local $iElixirCostCamp = 0, $iDarkCostCamp = 0, $indexLevel = 0
 
-	For $i = $eTroopBarbarian To $eTroopElectroDragon
+	For $i = $eTroopBarbarian To $eTroopYeti
 		$indexLevel = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
 		$iElixirCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$indexLevel]
 	Next

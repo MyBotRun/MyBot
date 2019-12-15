@@ -122,6 +122,11 @@ Func radHerosApply()
 	GUICtrlSetState($g_hRadManWardenAbility, $g_iActivateWarden = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetState($g_hRadBothWardenAbility, $g_iActivateWarden = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
 	GUICtrlSetData($g_hTxtManWardenAbility, ($g_iDelayActivateWarden / 1000))
+
+	GUICtrlSetState($g_hRadAutoChampionAbility, $g_iActivateChampion = 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($g_hRadManChampionAbility, $g_iActivateChampion = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetState($g_hRadBothChampionAbility, $g_iActivateChampion = 2 ? $GUI_CHECKED : $GUI_UNCHECKED)
+	GUICtrlSetData($g_hTxtManChampionAbility, ($g_iDelayActivateChampion / 1000))
 EndFunc   ;==>radHerosApply
 
 Func chkattackHoursE1()

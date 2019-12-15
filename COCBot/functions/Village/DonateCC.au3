@@ -367,7 +367,7 @@ Func DonateCC($bCheckForNewMsg = False)
 			If Not $bDonateSiege And Not $bDonateAllSiege Then
 				SetLog("Siege donation is not enabled, skip siege donation", $COLOR_ACTION)
 				$g_bSkipDonSiege = True
-			ElseIf $g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 0 And $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 0 Then
+			ElseIf $g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 0 And $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBarracks] = 0 Then
 				SetLog("No siege machines available, skip siege donation", $COLOR_ORANGE)
 				$g_bSkipDonSiege = True
 			ElseIf $g_iTotalDonateSiegeMachineCapacity = -1 Then
@@ -1106,7 +1106,7 @@ Func RemainingCCcapacity($aiDonateButton)
 
 	; Skip reading unnecessary items
 	Local $bDonateSpell = ($g_aiPrepDon[2] = 1 Or $g_aiPrepDon[3] = 1) And ($g_iCurrentSpells > 0 Or $g_iCurrentSpells = "")
-	Local $bDonateSiege = ($g_aiPrepDon[4] = 1 Or $g_aiPrepDon[5] = 1) And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0)
+	Local $bDonateSiege = ($g_aiPrepDon[4] = 1 Or $g_aiPrepDon[5] = 1) And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBarracks] > 0)
 	SetDebugLog("$g_aiPrepDon[2]: " & $g_aiPrepDon[2] & ", $g_aiPrepDon[3]: " & $g_aiPrepDon[3] & ", $g_iCurrentSpells: " & $g_iCurrentSpells & ", $bDonateSpell: " & $bDonateSpell)
 	SetDebugLog("$g_aiPrepDon[4]: " & $g_aiPrepDon[4] & "$g_aiPrepDon[5]: " & $g_aiPrepDon[5] & ", $bDonateSiege: " & $bDonateSiege)
 
@@ -1401,7 +1401,7 @@ Func SkipDonateNearFullTroops($bSetLog = False, $aHeroResult = Default)
 				If $aHeroResult = Default Or Not IsArray($aHeroResult) Then
 					$aHeroResult = getArmyHeroTime("all", True, True) ; including open & close army overview
 				EndIf
-				If @error Or UBound($aHeroResult) < 3 Then
+				If @error Or UBound($aHeroResult) < $eHeroCount Then
 					SetLog("getArmyHeroTime return error: #" & @error & "|IA:" & IsArray($aHeroResult) & "," & UBound($aHeroResult) & ", exit SkipDonateNearFullTroops!", $COLOR_ERROR)
 					Return False ; if error, then quit SkipDonateNearFullTroops enable the donation
 				EndIf
