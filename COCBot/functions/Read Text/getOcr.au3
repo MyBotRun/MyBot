@@ -91,7 +91,7 @@ Func getStarLabUpgrdResourceRed($x_start, $y_start) ; -> Gets complete value of 
 EndFunc   ;==>getLabUpgrdResourceRed
 
 Func getBldgUpgradeTime($x_start, $y_start) ; -> Gets complete remain building upgrade time
-	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 42, 18) ; 42 is enougth xxx : 2 numbers and one letter at max
+	Return getOcrAndCapture("coc-uptime", $x_start, $y_start, 72, 18) ; Was 42. 72 tested as enough : "12d 19h" now
 EndFunc   ;==>getBldgUpgradeTime
 
 Func getLabUpgradeTime($x_start, $y_start) ; -> Gets complete remain lab upgrade time V2 for Dec2015 update

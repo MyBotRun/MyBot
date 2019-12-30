@@ -634,7 +634,7 @@ Func NotifyPushMessageToBoth($Message, $Source = "")
 			If _Sleep(750) Then Return
 			Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 			Local $Time = @HOUR & "." & @MIN
-			_CaptureRegion(224, 74, 446, 240)
+			_CaptureRegion(215, 77, 450, 360)
 			Local $Screnshotfilename = "Screenshot_" & $Date & "_" & $Time & ".jpg"
 			_GDIPlus_ImageSaveToFile($g_hBitmap, $g_sProfileTempPath & $Screnshotfilename)
 			If $g_bTGRequestBuilderInfo Then

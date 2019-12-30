@@ -22,11 +22,8 @@ Func IsSearchModeActive($g_iMatchMode, $bDontCheckHeroes = False, $bNoLog = Fals
 	Local $checkSearches = Int($currentSearch) >= Int($g_aiSearchSearchesMin[$g_iMatchMode]) And Int($currentSearch) <= Int($g_aiSearchSearchesMax[$g_iMatchMode]) And $g_abSearchSearchesEnable[$g_iMatchMode]
 	Local $checkTropies = Int($currentTropies) >= Int($g_aiSearchTrophiesMin[$g_iMatchMode]) And Int($currentTropies) <= Int($g_aiSearchTrophiesMax[$g_iMatchMode]) And $g_abSearchTropiesEnable[$g_iMatchMode]
 	Local $checkArmyCamps = Int($currentArmyCamps) >= Int($g_aiSearchCampsPct[$g_iMatchMode]) And $g_abSearchCampsEnable[$g_iMatchMode]
-	Local $bCheckHeroes = Not ($g_aiSearchHeroWaitEnable[$g_iMatchMode] > $eHeroNone And (BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $g_aiSearchHeroWaitEnable[$g_iMatchMode], $g_iHeroAvailable) = $g_aiSearchHeroWaitEnable[$g_iMatchMode]) = False) Or $bDontCheckHeroes
-
-	If Not $bCheckHeroes Then
-		If Abs($g_aiSearchHeroWaitEnable[$g_iMatchMode] - $g_iHeroUpgradingBit) <= $eHeroNone Then $bCheckHeroes = True
-	EndIf
+	; true if we have correct needed heroes or we do not need to check our heroes... this variable decides if your heroes are ready for this particular search mode
+	Local $bCheckHeroes = ($g_aiSearchHeroWaitEnable[$g_iMatchMode] = $eHeroNone) or ($g_aiSearchHeroWaitEnable[$g_iMatchMode] > $eHeroNone And BitAND($g_aiSearchHeroWaitEnable[$g_iMatchMode], $g_iHeroAvailable) = $g_aiSearchHeroWaitEnable[$g_iMatchMode]) Or $bDontCheckHeroes
 
 	Local $g_bCheckSpells = ($g_bFullArmySpells And $g_abSearchSpellsWaitEnable[$g_iMatchMode]) Or $g_abSearchSpellsWaitEnable[$g_iMatchMode] = False
 	Local $totalSpellsToBrew = 0

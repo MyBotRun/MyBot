@@ -97,6 +97,12 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 									Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB
 										If $g_aiAttackUseSiege[$pMatchMode] <= 5 Then
 											SelectCastleOrSiege($avAttackBar[$j][0], Number($avAttackBar[$j][5]), $g_aiAttackUseSiege[$pMatchMode])
+
+											If $g_aiAttackUseSiege[$pMatchMode] = 0 And Not($avAttackBar[$j][0] = $eCastle) Then ; if the user wanted to drop castle and no troops were available, do not drop a siege
+												SetDebugLog("Discard use of " & GetTroopName($avAttackBar[$j][0]) & " (" & $avAttackBar[$j][0] & ")", $COLOR_ERROR)
+												ContinueLoop
+											EndIf
+
 											If $avAttackBar[$j][0] <> $eCastle Then $sLogExtension = " (level " & $g_iSiegeLevel & ")"
 										EndIf
 									Case $eWarden

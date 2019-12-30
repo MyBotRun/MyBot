@@ -14,26 +14,25 @@
 ; ===============================================================================================================================
 
 Global $g_sNO_COC, $g_sUNKNOWN_COC
-Global $_g_asDISTRIBUTORS[24][4]
+Global $_g_asDISTRIBUTORS[20][4]
 
 Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language is detected
 	$g_sNO_COC = "<" & GetTranslatedFileIni("MBR Distributors", "NO_COC", "No COC") & ">"
 	$g_sUNKNOWN_COC = "<" & GetTranslatedFileIni("MBR Distributors", "Unknown_COC", "Unknown COC") & ">"
 
-	; Clash Of Magic private server, https://www.clashofmagic.net/, Server 3: http://download825.mediafireuserdownload.com/g29mv74piaqg/jeab7w484b77n86/Magic-CoC_S3-9.105-R1.apk
-	Dim $_g_asDISTRIBUTORS[24][4] = [ _
+	Dim $_g_asDISTRIBUTORS[20][4] = [ _
 			["Google", "com.supercell.clashofclans", "com.supercell.titan.GameApp", "Google"], _
-			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.clashofclans.GameAppKunlun", "Kunlun"], _
-			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.clashofclans.GameAppKunlun","Qihoo"], _
-			["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.clashofclans.GameAppKunlun", "Baidu"], _
-			["9game", "com.supercell.clashofclans.uc", "com.supercell.clashofclans.uc.GameApp", "9game"], _
-			["Wandoujia/Downjoy", "com.supercell.clashofclans.wdj", "com.supercell.clashofclans.GameAppKunlun", "Wandoujia/Downjoy"], _
-			["Huawei", "com.supercell.clashofclans.huawei", "com.supercell.clashofclans.GameAppKunlun", "Huawei"], _
-			["OPPO", "com.supercell.clashofclans.nearme.gamecenter", "com.supercell.clashofclans.GameAppKunlun", "OPPO"], _
-			["VIVO", "com.supercell.clashofclans.vivo", "com.supercell.clashofclans.GameAppKunlun", "VIVO"], _
-			["Anzhi", "com.supercell.clashofclans.anzhi", "com.supercell.clashofclans.GameAppKunlun", "Anzhi"], _
-			["Kaopu", "com.supercell.clashofclans.ewan.kaopu", "com.supercell.clashofclans.GameAppKunlun", "Kaopu"], _
-			["Lenovo", "com.supercell.clashofclans.lenovo", "com.supercell.clashofclans.GameAppKunlun", "Lenovo"], _
+			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.titan.kunlun.GameAppKunlun", "Kunlun"], _
+			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.titan.kunlun.GameAppKunlun","Qihoo"], _
+			["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.titan.kunlun.GameAppKunlun", "Baidu"], _
+			["9game", "com.supercell.clashofclans.uc", "com.supercell.titan.GameApp", "9game"], _
+			["Wandoujia/Downjoy", "com.supercell.clashofclans.wdj", "com.supercell.titan.kunlun.GameAppKunlun", "Wandoujia/Downjoy"], _
+			["Huawei", "com.supercell.clashofclans.huawei", "com.supercell.titan.kunlun.GameAppKunlun", "Huawei"], _
+			["OPPO", "com.supercell.clashofclans.nearme.gamecenter", "com.supercell.titan.kunlun.GameAppKunlun", "OPPO"], _
+			["VIVO", "com.supercell.clashofclans.vivo", "com.supercell.titan.kunlun.GameAppKunlun", "VIVO"], _
+			["Anzhi", "com.supercell.clashofclans.anzhi", "com.supercell.titan.kunlun.GameAppKunlun", "Anzhi"], _
+			["Kaopu", "com.supercell.clashofclans.ewan.kaopu", "com.supercell.titan.kunlun.GameAppKunlun", "Kaopu"], _
+			["Lenovo", "com.supercell.clashofclans.lenovo", "com.lenovo.lsf.gamesdk.ui.WelcomeActivity", "Lenovo"], _
 			["Guopan", "com.supercell.clashofclans.guopan", "com.flamingo.sdk.view.GPSplashActivity", "Guopan"], _
 			["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.clashofclans.mi.GameAppXiaomi","Xiaomi"], _
 			["Haimawan", "com.supercell.clashofclans.ewan.hm", "cn.ewan.supersdk.activity.SplashActivity", "Haimawan"], _
@@ -41,12 +40,7 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 			["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", "Microvirt"], _
 			["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity","Yeshen"], _
 			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity","Aiyouxi"], _
-			["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.tencent.tmgp.supercell.clashofclans.GameAppTencent","Tencent"], _
-			["Clash Of Magic, The Black Magic: S1", "net.clashofmagic.s1", "com.supercell.clashofclans.GameApp", "Clash Of Magic, The Black Magic: S1"], _
-			["Clash Of Magic, The Power Of Magic: S2", "net.clashofmagic.s2", "com.supercell.clashofclans.GameApp","Clash Of Magic, The Power Of Magic: S2"], _
-			["Clash Of Magic, The Hall Of Magic: S3", "net.clashofmagic.s3", "com.supercell.clashofclans.GameApp", "Clash Of Magic, The Hall Of Magic: S3"], _
-			["Clash Of Magic, The Hall Of Magic 2: S4", "net.clashofmagic.s4", "com.supercell.clashofclans.GameApp", "Clash Of Magic, The Hall Of Magic 2: S4"] _
-			]
+			["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.supercell.titan.tencent.GameAppTencent","Tencent"]]
 EndFunc   ;==>InitializeCOCDistributors
 
 Func GetCOCDistributors()

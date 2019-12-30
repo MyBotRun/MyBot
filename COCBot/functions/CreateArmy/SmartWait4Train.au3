@@ -144,7 +144,7 @@ Func SmartWait4Train($iTestSeconds = Default)
 		If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("getArmyHeroTime returned: " & $aHeroResult[0] & ":" & $aHeroResult[1] & ":" & $aHeroResult[2], $COLOR_DEBUG)
 		If _Sleep($DELAYRESPOND) Then Return
 		If $aHeroResult[0] > 0 Or $aHeroResult[1] > 0 Or $aHeroResult[2] > 0 Then ; check if hero is enabled to use/wait and set wait time
-			For $pTroopType = $eKing To $eWarden ; check all 3 hero
+			For $pTroopType = $eKing To $eChampion ; check all 3 hero
 				Local $iHeroIdx = $pTroopType - $eKing
 				For $pMatchMode = $DB To $LB ; check only DB and LB (TS has no wait option!)
 					If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then

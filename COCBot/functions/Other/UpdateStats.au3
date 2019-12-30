@@ -747,7 +747,7 @@ Func WallsStatsMAJ()
 	$g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] -= Number($g_iNbrOfWallsUpped)
 	$g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 5] += Number($g_iNbrOfWallsUpped)
 	$g_iNbrOfWallsUpped = 0
-	For $i = 4 To 13
+	For $i = 4 To 14
 		GUICtrlSetData($g_ahWallsCurrentCount[$i], $g_aiWallsCurrentCount[$i])
 	Next
 	SaveConfig()

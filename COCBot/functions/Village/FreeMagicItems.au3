@@ -17,7 +17,7 @@ Func CollectFreeMagicItems($bTest = False)
 	If Not $g_bChkCollectFreeMagicItems Or Not $g_bRunState Then Return
 
 	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
-	If $iLastTimeChecked[$g_iCurAccount] = @MDAY Then Return
+	If $iLastTimeChecked[$g_iCurAccount] = @MDAY And Not $bTest Then Return
 
 	ClickP($aAway, 1, 0, "#0332") ;Click Away
 
@@ -27,6 +27,7 @@ Func CollectFreeMagicItems($bTest = False)
 	If _Sleep($DELAYCOLLECT2) Then Return
 
 	; Check Trader Icon on Main Village
+	
 	If QuickMIS("BC1", $g_sImgTrader, 120, 160, 210, 215, True, False) Then
 		SetLog("Trader available, Entering Daily Discounts", $COLOR_SUCCESS)
 		Click($g_iQuickMISX + 120, $g_iQuickMISY + 160)

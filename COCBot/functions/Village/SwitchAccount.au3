@@ -702,15 +702,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
 				SetLog("   " & $iStep + 1 & ". Please wait for loading CoC!")
 				$bResult = True
 				Return "OK"
-			Else
-				SetLog("Cannot Find Any Supercell ID Account!")
-				$bResult = False
-				Return "Error"
 			EndIf
-		Else
-			SetLog("Cannot Find Supercell ID Windows!")
-			$bResult = False
-			Return "Error"
 		EndIf
 
 		If $i = 30 Then
@@ -735,7 +727,7 @@ Func CheckWaitHero() ; get hero regen time remaining if enabled
 	If _Sleep($DELAYRESPOND) Then Return
 	If Not $g_bRunState Then Return
 	If $aHeroResult[0] > 0 Or $aHeroResult[1] > 0 Or $aHeroResult[2] > 0 Then ; check if hero is enabled to use/wait and set wait time
-		For $pTroopType = $eKing To $eWarden ; check all 3 hero
+		For $pTroopType = $eKing To $eChampion ; check all 3 hero
 			For $pMatchMode = $DB To $g_iModeCount - 1 ; check all attack modes
 				$iActiveHero = -1
 				If IsUnitUsed($pMatchMode, $pTroopType) And _

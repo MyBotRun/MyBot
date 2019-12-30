@@ -35,6 +35,14 @@ Func AttackBB()
 		Return
 	EndIf
 
+	If _Sleep(1500) Then Return ; give time for find now button to go away
+	If _CheckPixel($aBBFindNow, True) Then ; click failed so something went wrong
+		SetLog("Click BB Find Now failed. We will come back and try again.", $COLOR_ERROR)
+		ClickP($aAway)
+		ZoomOut()
+		Return
+	EndIf
+
 	local $iAndroidSuspendModeFlagsLast = $g_iAndroidSuspendModeFlags
 	$g_iAndroidSuspendModeFlags = 0 ; disable suspend and resume
 	If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Disabled")

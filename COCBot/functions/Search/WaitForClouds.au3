@@ -53,7 +53,7 @@ Func WaitForClouds()
 
 	While $g_bRestart = False And _CaptureRegions() And _CheckPixel($aNoCloudsAttack) = False ; loop to wait for clouds to disappear
 		; notice: don't exit function with return in this loop, use ExitLoop ! ! !
-		If _Sleep($DELAYGETRESOURCES1) Then ExitLoop
+		If _Sleep($DELAYGETRESOURCES1 * 10) Then ExitLoop ;250ms * 10 = 2.5 sec
 		$iCount += 1
 		If isProblemAffect(True) Then ; check for reload error messages and restart search if needed
 			resetAttackSearch()

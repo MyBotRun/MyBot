@@ -18,7 +18,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 
 	; RestartSearchPickupHero - Check Remaining Heal Time
 	If $g_bSearchRestartPickupHero And $Mode <> $DT Then
-		For $pTroopType = $eKing To $eWarden ; check all 3 hero
+		For $pTroopType = $eKing To $eChampion ; check all 4 hero
 			For $pMatchMode = $DB To $g_iModeCount - 1 ; check all attack modes
 				If IsUnitUsed($pMatchMode, $pTroopType) Then
 					If Not _DateIsValid($g_asHeroHealTime[$pTroopType - $eKing]) Then

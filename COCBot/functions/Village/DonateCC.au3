@@ -1408,7 +1408,7 @@ Func SkipDonateNearFullTroops($bSetLog = False, $aHeroResult = Default)
 				If $g_bDebugSetlog Then SetDebugLog("getArmyHeroTime returned: " & $aHeroResult[0] & ":" & $aHeroResult[1] & ":" & $aHeroResult[2], $COLOR_DEBUG)
 				Local $iActiveHero = 0
 				Local $iHighestTime = -1
-				For $pTroopType = $eKing To $eWarden ; check all 3 hero
+				For $pTroopType = $eKing To $eChampion ; check all 3 hero
 					For $pMatchMode = $DB To $g_iModeCount - 1 ; check all attack modes
 						$iActiveHero = -1
 						If IsSearchModeActiveMini($pMatchMode) And IsUnitUsed($pMatchMode, $pTroopType) And $g_iHeroUpgrading[$pTroopType - $eKing] <> 1 And $g_iHeroWaitAttackNoBit[$pMatchMode][$pTroopType - $eKing] = 1 Then

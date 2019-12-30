@@ -1,4 +1,17 @@
-﻿* **V7.8.1**
+﻿* **V7.8.2**
+* Fix lv14 walls amount not saving
+* Fix lab upgrading wrong troops when user has made a selection.
+* Fix csv train command with Champion. Reported by @Ratakantez.
+* Fix attack BB infintie clouds loop.
+* Fix bot not attacking when Royal Champion upgrading
+* Fix bot dropping sieges when no cc present and drop "Castle Only" selected.
+* Fix telegram builder info window not being displayed completely
+* Fix Hide Shields
+* Fix Drop Trophies clicking on Boost Heroes
+* Fix FreeMagicItems
+* Fix Boost Grand Warden
+
+* **V7.8.1**
 * Fix Bot Crash on SCID Switch! Reported by @paulinho
 * Fix character 'з' is not detected correctly on Cyrillic font, Reported by @OlegD
 * Fix Forum Login
@@ -31,7 +44,7 @@
 * Fix Empty sieges not dropping when empty
 * Fix Star lab not upgrading troops in Builder Base
 * Fix BuilderBase can't place new building
-* Fix False positive on the bush when bot tries removing obstacles! Reported by @MikeD 
+* Fix False positive on the bush when bot tries removing obstacles! Reported by @MikeD
 * Update Turkish @F A T İ H
 * Update Army Levels Now as Optional
 * Add Random Clicks

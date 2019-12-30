@@ -40,7 +40,7 @@ Func LocateUpgrades()
 	Local $wasDown = AndroidShieldForcedDown()
 	AndroidShield("LocateUpgrades") ; Update shield status due to manual $g_bRunState
 
-	;	SetLog("Upgrade Buildings and Auto Wall Upgrade Can Not Use same Loot Type!", $COLOR_SUCCESS)  = disabled due v7.0 skipwallupgrade code
+	;SetLog("Upgrade Buildings and Auto Wall Upgrade Can Not Use same Loot Type!", $COLOR_SUCCESS)  = disabled due v7.0 skipwallupgrade code
 	Local $MsgBox, $stext
 	Local $icount = 0
 	Local $hGraphic = 0
@@ -242,7 +242,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		$g_avBuildingUpgrades[$inum][4] = $aResult[1] ; Store bldg name
 		GUICtrlSetData($g_hTxtUpgradeName[$inum], $g_avBuildingUpgrades[$inum][4]) ; Set GUI name to match $g_avBuildingUpgrades variable
 		If $aResult[0] > 1 Then
-			$g_avBuildingUpgrades[$inum][5] = $aResult[2] ; Sotre bdlg level
+			$g_avBuildingUpgrades[$inum][5] = $aResult[2] ; Store bdlg level
 			GUICtrlSetData($g_hTxtUpgradeLevel[$inum], $g_avBuildingUpgrades[$inum][5]) ; Set GUI level to match $g_avBuildingUpgrades variable
 		Else
 			SetLog("Error: Level for Upgrade not found?", $COLOR_ERROR)
@@ -287,7 +287,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 				If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getUpgradeResource(366, 487 + $g_iMidOffsetY)) ;read RED upgrade text
 				If $g_avBuildingUpgrades[$inum][2] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then $bOopsFlag = True ; set error flag for user to set value if not repeat upgrade
 
-				$g_avBuildingUpgrades[$inum][6] = getBldgUpgradeTime(195, 307 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
+				;HArchH X value was 195
+				$g_avBuildingUpgrades[$inum][6] = getBldgUpgradeTime(185, 307 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
 				SetLog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)
 				If $g_avBuildingUpgrades[$inum][6] <> "" Then $g_avBuildingUpgrades[$inum][7] = "" ; Clear old upgrade end time
 

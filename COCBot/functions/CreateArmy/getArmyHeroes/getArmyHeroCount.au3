@@ -133,7 +133,7 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 							$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroWarden)
 							; safety code
 							If ($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroWarden) = $eHeroWarden) Or _
-									($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden) Then
+									($g_abAttackTypeEnable[$LB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroWarden) = $eHeroWarden) Then
 								If $g_iSearchNotWaitHeroesEnable Then
 									$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroWarden)
 								Else
@@ -148,7 +148,7 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 							$g_iHeroUpgradingBit = BitOR($g_iHeroUpgradingBit, $eHeroChampion)
 							; safety code
 							If ($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$DB], $g_aiSearchHeroWaitEnable[$DB], $eHeroChampion) = $eHeroChampion) Or _
-									($g_abAttackTypeEnable[$DB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroChampion) = $eHeroChampion) Then
+									($g_abAttackTypeEnable[$LB] And BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $eHeroChampion) = $eHeroChampion) Then
 								If $g_iSearchNotWaitHeroesEnable Then
 									$g_iHeroAvailable = BitOR($g_iHeroAvailable, $eHeroChampion)
 								Else
@@ -426,14 +426,14 @@ Func HideShields($bHide = False)
 	Local $counter
 	If $bHide = True Then
 		$counter = 0
-		For $i = $g_hlblKing to $g_hLbLLabTime
+		For $i = $g_hPicKingGray To $g_hLbLLabTime
 			$ShieldState[$counter] = GUICtrlGetState($i)
 			GUICtrlSetState($i, $GUI_HIDE)
 			$counter += 1
 		Next
 	Else
 		$counter = 0
-		For $i = $g_hlblKing to $g_hLbLLabTime
+		For $i = $g_hPicKingGray To $g_hLbLLabTime
 			If $ShieldState[$counter] = 80 Then
 				GUICtrlSetState($i, $GUI_SHOW )
 			EndIf

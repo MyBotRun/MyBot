@@ -12,6 +12,10 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+Local $iSlotWidth = 94, $iDistBetweenSlots = 12, $iYMidPoint = 472; use for logic to upgrade troops.. good for generic-ness
+Local $iPicsPerPage = 12, $iPages = 4 ; use to know exactly which page the users choice is on
+Local $sLabWindow = "99,122,760,616", $sLabTroopsSection = "115,363,750,577"
+Local $sLabWindowDiam = GetDiamondFromRect($sLabWindow), $sLabTroopsSectionDiam = GetDiamondFromRect($sLabTroopsSection) ; easy to change search areas
 
 Func TestLaboratory()
 	Local $bWasRunState = $g_bRunState
@@ -28,12 +32,6 @@ Func TestLaboratory()
 EndFunc
 
 Func Laboratory($debug=False)
-
-	Local $TimeDiff ; time remaining on lab upgrade
-	Local $iSlotWidth = 94, $iDistBetweenSlots = 12, $iYMidPoint = 472; use for logic to upgrade troops.. good for generic-ness
-	Local $iPicsPerPage = 12, $iPages = 4 ; use to know exactly which page the users choice is on
-	Local $sLabWindow = "99,122,760,616", $sLabTroopsSection = "115,363,750,577"
-	Local $sLabWindowDiam = GetDiamondFromRect($sLabWindow), $sLabTroopsSectionDiam = GetDiamondFromRect($sLabTroopsSection) ; easy to change search areas
 
 	If Not $g_bAutoLabUpgradeEnable Then Return ; Lab upgrade not enabled.
 
@@ -77,65 +75,55 @@ Func Laboratory($debug=False)
 			If _Sleep(2000) Then Return
 		WEnd
 
-		; get cost and coords from image slot
-		Local $iSlotsToTheRight = Ceiling(( $g_iCmbLaboratory - 12*($iPage-1) ) / 2); we only want to know how many to the right we are, 1-12 counting top to bottom... ex. Page 1) barb = 1, arch = 2 giant = 3 etc...
-		Local $aCoords[2] ; coords to actually click slot
-		If $iPage = $iPages Then ; we are on last page... so we are looking at only 1 extra colummn which we did on the click drag... this will need to be fixed as more columns of troops are added to page 4
-			If Mod($g_iCmbLaboratory, 2) = 0 Then ; we are on second row
-				$sCostResult = getLabUpgrdResourceWht( Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iSlotsToTheRight-1 + 5)*($iSlotWidth + $iDistBetweenSlots),  $iYMidPoint + 76) ; +5 columns we need to complete page 4.. so change this as more columns are added after SiegeB col
-				$aCoords[0] = Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iSlotsToTheRight-1 + 5)*($iSlotWidth + $iDistBetweenSlots) + 48; add [48,-30] to Coords to be looking in middle of image now... slightly right and up
-				$aCoords[1] = $iYMidPoint + 76 - 30
-			Else ; first row
-				$sCostResult = getLabUpgrdResourceWht( Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iSlotsToTheRight-1 + 5)*($iSlotWidth + $iDistBetweenSlots),  Int(StringSplit($sLabTroopsSection, ",")[2]) + 76); +5 columns we need to complete page 4.. so change this as more columns are added after SiegeB col
-				$aCoords[0] = Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iSlotsToTheRight-1 + 5)*($iSlotWidth + $iDistBetweenSlots) + 48; add [48,30] to Coords to be looking in middle of image now
-				$aCoords[1] = Int(StringSplit($sLabTroopsSection, ",")[2]) + 76 - 30
-			EndIf
-		Else ; we are not on last page... so we are looking at only 1 extra colummn which we did on the click drag... this will need to be fixed as more columns of troops are added to page 4
-			If Mod($g_iCmbLaboratory, 2) = 0 Then ; we are on second row
-				$sCostResult = getLabUpgrdResourceWht( Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots),  $iYMidPoint + 76)
-				$aCoords[0] = Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots) + 48; add [48,-30] to Coords to be looking in middle of image now... slightly right and up
-				$aCoords[1] = $iYMidPoint + 76 - 30
-			Else ; first row
-				$sCostResult = getLabUpgrdResourceWht( Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots),  Int(StringSplit($sLabTroopsSection, ",")[2]) + 76)
-				$aCoords[0] = Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots) + 48; add [48,30] to Coords to be looking in middle of image now
-				$aCoords[1] = Int(StringSplit($sLabTroopsSection, ",")[2]) + 76 - 30
-			EndIf
+		; Get coords of upgrade the user wants
+		local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsSectionDiam, $sLabTroopsSectionDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
+		Local $aCoords, $bUpgradeFound = False
+		If UBound($aPageUpgrades, 1) >= 1 Then ; if we found any troops
+			For $i = 0 To UBound($aPageUpgrades, 1) - 1 ; Loop through found upgrades
+				Local $aTempTroopArray = $aPageUpgrades[$i] ; Declare Array to Temp Array
+
+				If $aTempTroopArray[0] = $g_avLabTroops[$g_iCmbLaboratory][2] Then ; if this is the file we want
+					$aCoords = decodeSingleCoord($aTempTroopArray[1])
+					$bUpgradeFound = True
+					ExitLoop
+				EndIf
+				If _Sleep($DELAYLABORATORY2) Then Return
+			Next
 		EndIf
 
+		If Not $bUpgradeFound Then
+			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][0] & " - Not available.", $COLOR_INFO)
+			Return False
+		EndIf
+
+		$sCostResult = GetLabCostResult($aCoords) ; get cost of the upgrade
+
 		If $sCostResult = "" Then ; not enough resources
-			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][3] & " - Not enough Resources. We will try again later.", $COLOR_INFO)
+			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][0] & " - Not enough Resources." & @CRLF & "We will try again later.", $COLOR_INFO)
 			If $g_bDebugSetlog Then SetDebugLog("Coords: (" & $aCoords[0] & "," & $aCoords[1] & ")")
-		ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult)+1 Then ; max level... all ones returned from ocr
-			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][3] & " - Max Level. Please choose another upgrade.", $COLOR_INFO)
+		ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult)+1 or StringSplit($sCostResult, "1")[1] = "0" Then ; max level if all ones returned from ocr or if the first letter is a 0.
+			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][0] & " - Max Level. Choose another upgrade.", $COLOR_INFO)
 			If $g_bDebugSetlog Then SetDebugLog("Coords: (" & $aCoords[0] & "," & $aCoords[1] & ")")
 		Else
-			Return LaboratoryUpgrade($g_avLabTroops[$g_iCmbLaboratory][3], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
+			Return LaboratoryUpgrade($g_avLabTroops[$g_iCmbLaboratory][0], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
 		EndIf
 		If _Sleep($DELAYLABORATORY2) Then Return
 		ClickP($aAway, 2, 0, "#0204")
 
 	Else ; users choice is any upgrade
-		While($iCurPage < $iPages)
+		While($iCurPage <= $iPages)
 			local $aPageUpgrades = findMultiple($g_sImgLabResearch, $sLabTroopsSectionDiam, $sLabTroopsSectionDiam, 0, 1000, 0, "objectname,objectpoints", True) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 			If UBound($aPageUpgrades, 1) >= 1 Then ; if we found any troops
 				For $i = 0 To UBound($aPageUpgrades, 1) - 1 ; Loop through found upgrades
 					Local $aTempTroopArray = $aPageUpgrades[$i] ; Declare Array to Temp Array
 
 					; find image slot that we found so that we can read the cost to see if we can upgrade it... slots read 1-12 top to bottom so barb = 1, arch = 2, giant = 3, etc...
-					Local $iCurSlotOnPage, $iCurSlotsToTheRight
 					Local $aCoords = decodeSingleCoord($aTempTroopArray[1])
-					$iCurSlotsToTheRight = Ceiling( ( Int($aCoords[0]) - Int(StringSplit($sLabTroopsSection, ",")[1]) ) / ($iSlotWidth + $iDistBetweenSlots) )
-					If Int($aCoords[1]) < $iYMidPoint Then ; first row
-						$iCurSlotOnPage = 2*$iCurSlotsToTheRight - 1
-						$sCostResult = getLabUpgrdResourceWht( Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iCurSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots),  Int(StringSplit($sLabTroopsSection, ",")[2]) + 76)
-					Else; second row
-						$iCurSlotOnPage = 2*$iCurSlotsToTheRight
-						$sCostResult = getLabUpgrdResourceWht( Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iCurSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots),  $iYMidPoint + 76)
-					EndIf
+					$sCostResult = GetLabCostResult($aCoords) ; get cost of the current upgrade option
 
 					If $sCostResult = "" Then ; not enough resources
 						If $g_bDebugSetlog Then SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Not enough Resources")
-					ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult)+1 Then ; max level... all ones returned from ocr
+					ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult)+1 or StringSplit($sCostResult, "1")[1] = "0" Then ; max level if all ones returned from ocr or if the first letter is a 0.
 							If $g_bDebugSetlog Then SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Max Level")
 					Else
 						Return LaboratoryUpgrade($aTempTroopArray[0], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
@@ -214,6 +202,21 @@ Func SetLabUpgradeTime($sTrooopName)
 	Return True ; success
 EndFunc
 
+; get the cost of an upgrade based on its coords
+; find image slot that we found so that we can read the cost to see if we can upgrade it... slots read 1-12 top to bottom so barb = 1, arch = 2, giant = 3, etc...
+Func GetLabCostResult($aCoords)
+	Local $iCurSlotOnPage, $iCurSlotsToTheRight, $sCostResult
+	$iCurSlotsToTheRight = Ceiling( ( Int($aCoords[0]) - Int(StringSplit($sLabTroopsSection, ",")[1]) ) / ($iSlotWidth + $iDistBetweenSlots) )
+	If Int($aCoords[1]) < $iYMidPoint Then ; first row
+		$iCurSlotOnPage = 2*$iCurSlotsToTheRight - 1
+		$sCostResult = getLabUpgrdResourceWht( Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iCurSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots),  Int(StringSplit($sLabTroopsSection, ",")[2]) + 76)
+	Else; second row
+		$iCurSlotOnPage = 2*$iCurSlotsToTheRight
+		$sCostResult = getLabUpgrdResourceWht( Int(StringSplit($sLabTroopsSection, ",")[1]) + 10 + ($iCurSlotsToTheRight-1)*($iSlotWidth + $iDistBetweenSlots),  $iYMidPoint + 76)
+	EndIf
+	Return $sCostResult
+EndFunc
+
 ; if we are on last page, smaller clickdrag... for future dev: this is whatever is enough distance to move 6 off to the left and have the next page similarily aligned
 Func LabNextPage($iCurPage, $iPages, $iYMidPoint)
 	If $iCurPage >= $iPages Then Return ; nothing left to scroll
@@ -254,7 +257,7 @@ Func ChkUpgradeInProgress()
 	Local $TimeDiff ; time remaining on lab upgrade
 	If $g_sLabUpgradeTime <> "" Then $TimeDiff = _DateDiff("n", _NowCalc(), $g_sLabUpgradeTime) ; what is difference between end time and now in minutes?
 	If @error Then _logErrorDateDiff(@error)
-	If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$g_iCmbLaboratory][3] & " Lab end time: " & $g_sLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$g_iCmbLaboratory][0] & " Lab end time: " & $g_sLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
 
 	If Not $g_bRunState Then Return
 	If $TimeDiff <= 0 Then
