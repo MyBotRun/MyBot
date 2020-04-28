@@ -1089,20 +1089,23 @@ Func ResetVariables($sArmyType = "")
 
 EndFunc   ;==>ResetVariables
 
-Func TrainArmyNumber($Army)
-	local $iDistanceBetweenArmies = 108 ; pixels
-	local $aArmy1Location = [718, 272] ; first area of quick train army buttons
+Func TrainArmyNumber($abQuickTrainArmy)
+	local $iDistanceBetweenArmies = 110
+	Local $aiTrainButton, $aiSearchArea[4] = [720, 270, 850, 380]
 
-	For $Num = 0 To 2
-		If $Army[$Num] Then
-			If QuickMIS("BC1", $g_sImgQuickTrain, $aArmy1Location[0], $aArmy1Location[1] + $iDistanceBetweenArmies*$Num, 775, $aArmy1Location[1] + $iDistanceBetweenArmies*($Num+1) ) Then ; search for each armies button
-				Click($g_iQuickMISX + $aArmy1Location[0], $g_iQuickMISY + $aArmy1Location[1] + $iDistanceBetweenArmies*$Num, 1)
-				SetLog(" - Making the Army " & $Num + 1, $COLOR_INFO)
+	For $iArmyNumber = 0 To 2
+		If $abQuickTrainArmy[$iArmyNumber] Then
+			$aiTrainButton = decodeSingleCoord(findImage("QuickTrainButton", $g_sImgQuickTrain, GetDiamondFromArray($aiSearchArea), 1, True))
+			If UBound($aiTrainButton, 1) = 2 Then
+				ClickP($aiTrainButton)
+				SetLog(" - Making the Army " & $iArmyNumber + 1, $COLOR_INFO)
 				If _Sleep(500) Then Return
 			Else
-				SetLog(" - Army: " & $Num + 1 & " is already trained.")
+				SetLog(" - Army: " & $iArmyNumber + 1 & " is already trained.")
 			EndIf
 		EndIf
+		$aiSearchArea[1] = ($aiSearchArea[1] + $iDistanceBetweenArmies)
+		$aiSearchArea[3] = ($aiSearchArea[3] + $iDistanceBetweenArmies)
 	Next
 
 EndFunc   ;==>TrainArmyNumber

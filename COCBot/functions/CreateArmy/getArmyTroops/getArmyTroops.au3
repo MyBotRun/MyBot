@@ -47,10 +47,12 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 	Local $sTroopName = ""
 	Local $iTroopIndex = -1, $iDropTrophyIndex = -1
 	Local $aCurrentTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
+	Local $aCurrentSuperTroopsEmpty[$eSuperTroopCount] = [0, 0, 0, 0]
 	Local $aTroopsForTropyDropEmpty[8][2] = [["Barb", 0], ["Arch", 0], ["Giant", 0], ["Wall", 0], ["Gobl", 0], ["Mini", 0], ["Ball", 0], ["Wiza", 0]] ; Local Copy to reset Troop Drop Trophy Array
 	Local $aCurrentTroopsLog[$eTroopCount][3] ; [0] = Name [1] = Quantities [3] Xaxis
 
 	$g_aiCurrentTroops = $aCurrentTroopsEmpty ; Reset Current Troops Array
+	$g_aiCurrentSuperTroops = $aCurrentSuperTroopsEmpty ; Reset Current Super Troops Array
 	$g_avDTtroopsToBeUsed = $aTroopsForTropyDropEmpty ; Reset Drop Trophy Troops Array
 	If UBound($aCurrentTroops, 1) >= 1 Then
 		For $i = 0 To UBound($aCurrentTroops, 1) - 1 ; Loop through found Troops
@@ -62,15 +64,26 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 
 			If $iTroopIndex = -1 Then ContinueLoop
 
-			$g_aiCurrentTroops[$iTroopIndex] = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 196, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
+			If $iTroopIndex >= $eSuperBarb Then ;Detected Troop is a Super Troop => Fill own Array
+				$iTroopIndex = $iTroopIndex - $eSuperBarb
+				$g_aiCurrentSuperTroops[$iTroopIndex] = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 196, $bNeedCapture))
 
-			$iDropTrophyIndex = _ArraySearch($g_avDTtroopsToBeUsed, $aTempTroopArray[0]) ; Search the Troops ShortName in the Drop Trophy Global to check if it is a Drop Trophy Troop
-			If $iDropTrophyIndex <> -1 Then $g_avDTtroopsToBeUsed[$iDropTrophyIndex][1] += $g_aiCurrentTroops[$iTroopIndex] ; If there was a Match in the Array then add the Troop Quantity to it
+				$sTroopName = $g_aiCurrentTroops[$iTroopIndex] >= 2 ? $g_asSuperTroopNamesPlural[$iTroopIndex] : $g_asSuperTroopNames[$iTroopIndex] ; Select the right Troop Name, If more than one then use the Plural
+				$aCurrentTroopsLog[$iTroopIndex][0] = $sTroopName
+				$aCurrentTroopsLog[$iTroopIndex][1] = $g_aiCurrentSuperTroops[$iTroopIndex]
+				$aCurrentTroopsLog[$iTroopIndex][2] = Slot($aTroopCoords[0], $aTroopCoords[1])
+			Else
 
-			$sTroopName = $g_aiCurrentTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex] ; Select the right Troop Name, If more than one then use the Plural
-			$aCurrentTroopsLog[$iTroopIndex][0] = $sTroopName
-			$aCurrentTroopsLog[$iTroopIndex][1] = $g_aiCurrentTroops[$iTroopIndex]
-			$aCurrentTroopsLog[$iTroopIndex][2] = Slot($aTroopCoords[0], $aTroopCoords[1])
+				$g_aiCurrentTroops[$iTroopIndex] = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 196, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
+
+				$iDropTrophyIndex = _ArraySearch($g_avDTtroopsToBeUsed, $aTempTroopArray[0]) ; Search the Troops ShortName in the Drop Trophy Global to check if it is a Drop Trophy Troop
+				If $iDropTrophyIndex <> -1 Then $g_avDTtroopsToBeUsed[$iDropTrophyIndex][1] += $g_aiCurrentTroops[$iTroopIndex] ; If there was a Match in the Array then add the Troop Quantity to it
+
+				$sTroopName = $g_aiCurrentTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex] ; Select the right Troop Name, If more than one then use the Plural
+				$aCurrentTroopsLog[$iTroopIndex][0] = $sTroopName
+				$aCurrentTroopsLog[$iTroopIndex][1] = $g_aiCurrentTroops[$iTroopIndex]
+				$aCurrentTroopsLog[$iTroopIndex][2] = Slot($aTroopCoords[0], $aTroopCoords[1])
+			EndIf
 		Next
 	EndIf
 

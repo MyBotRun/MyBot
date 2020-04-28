@@ -35,8 +35,7 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 			$asCommand = StringSplit($sLine, "|")
 			If $asCommand[0] >= 8 Then
 				$asCommand[$iCommandCol] = StringStripWS(StringUpper($asCommand[$iCommandCol]), $STR_STRIPTRAILING)
-
-				If $asCommand[$iCommandCol] <> "TRAIN" And $asCommand[$iCommandCol] <> "REDLN" And $asCommand[$iCommandCol] <> "DRPLN" And $asCommand[$iCommandCol] <> "CCREQ" Then ContinueLoop
+				If Not StringRegExp($asCommand[$iCommandCol], "(TRAIN)|(REDLN)|(DRPLN)|(CCREQ)|(BOOST)", $STR_REGEXPMATCH) Then ContinueLoop
 
 				If $iTHCol = 0 Then ; select a command column TH based on camp space or skip all commands
 					If $g_bDebugAttackCSV Then SetLog("Camp Total Space: " & $g_iTotalCampSpace, $COLOR_DEBUG)
@@ -124,6 +123,11 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 					Case "CCREQ"
 						$sCSVCCReq = $asCommand[$iTHCol]
 						If $g_bDebugAttackCSV Then SetLog("CC Request: " & $sCSVCCReq, $COLOR_DEBUG)
+					Case "BOOST"
+						$iTroopIndex = TroopIndexLookup($asCommand[$iTroopNameCol], "ParseAttackCSV_Settings_variables")
+						If $iTroopIndex >= $eBarb And $iTroopIndex <= $eIceG Then
+							$g_iBoostSuperTroopIndex = $iTroopIndex
+						EndIf
 				EndSwitch
 			EndIf
 		Next

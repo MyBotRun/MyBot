@@ -1,4 +1,22 @@
-﻿* **V7.8.2**
+﻿* **V7.8.3**
+* Add Super Troops Training and Attacking (Spring 2020 Update) - Not Complete
+* Fix Lootcart Position (Spring 2020 Update)
+* Fix Main Village Zoomout (Spring 2020 Update)
+* Fix Diamond Shape (Spring 2020 Update)
+* Fix Maintenance Detection (Spring 2020 Update)
+* Fix Clan Castle Request (Spring 2020 Update)
+* Fix Search Condition Townhall Filter. Reported by @coccolino
+* Fix Builder Base Attack Ending
+* Fix Train Siege not Working on MiniGui. Reported by @grumpyhog
+* Fix Bot not Switching Accounts when all legend attacks are done.
+* Fix DonateCC OCR Position (Spring 2020 Update)
+* Fix Donations from 2 Row! (Spring 2020 Update)
+* Fix LatinA OCR Problems (Spring 2020 Update)
+* Fix Royal Champion Ability
+* Fix Google Play account list detection
+* More fixes for optional update moving donate screen
+
+* **V7.8.2**
 * Fix lv14 walls amount not saving
 * Fix lab upgrading wrong troops when user has made a selection.
 * Fix csv train command with Champion. Reported by @Ratakantez.

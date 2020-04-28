@@ -14,11 +14,15 @@
 ; ===============================================================================================================================
 #include-once
 
-Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $CheckWindow = True, $bSetLog = True, $bNeedCapture = True)
+Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckWindow = True, $bSetLog = True, $bNeedCapture = True)
+	If $g_iTownHallLevel < 8 And $g_iTownHallLevel <> -1 Then
+		SetDebugLog("getArmyCCSpellCapacity(): Early exit because clan castle cannot fit spells", $COLOR_DEBUG)
+		Return
+	EndIf
 
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Begin getArmyCCSpellCapacity:", $COLOR_DEBUG1)
 
-	If $CheckWindow Then
+	If $bCheckWindow Then
 		If Not $bOpenArmyWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)
 			Return ; not open, not requested to be open - error.
@@ -31,14 +35,10 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 		EndIf
 	EndIf
 
-	Local $aGetCCSpellsSize[3] = ["", "", ""]
-	Local $iCount
-	Local $sCCSpellsInfo = ""
-
 	; Verify spell current and total capacity
-	$sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
+	Local $sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 
-	$iCount = 0 ; reset OCR loop counter
+	Local $iCount = 0 ; reset OCR loop counter
 	While $sCCSpellsInfo = "" ; In case the CC donations recieved msg are blocking, need to keep checking numbers till valid
 		$sCCSpellsInfo = getArmyCampCap($g_aArmyCCSpellSize[0], $g_aArmyCCSpellSize[1], $bNeedCapture) ; OCR read Spells and total capacity
 		$iCount += 1
@@ -47,19 +47,19 @@ Func getArmyCCSpellCapacity($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	WEnd
 
 	If $g_bDebugSetlogTrain Then SetLog("$sCCSpellsInfo = " & $sCCSpellsInfo, $COLOR_DEBUG)
-	$aGetCCSpellsSize = StringSplit($sCCSpellsInfo, "#") ; split the existen Spells from the total Spell factory capacity
+	Local $aGetCCSpellsSize = StringSplit($sCCSpellsInfo, "#") ; split the existen Spells from the total Spell factory capacity
 
 	If IsArray($aGetCCSpellsSize) Then
 		If $aGetCCSpellsSize[0] > 1 Then
 			$g_iTotalCCSpells = Number($aGetCCSpellsSize[2])
 			$g_iCurrentCCSpells = Number($aGetCCSpellsSize[1])
 		Else
-			SetLog("CC Spells size read error.", $COLOR_ERROR) ; log if there is read error
+			SetLog("CC Spells size read error (invalid row count)", $COLOR_ERROR) ; log if there is read error
 			$g_iTotalCCSpells = 0
 			$g_iCurrentCCSpells = 0
 		EndIf
 	Else
-		SetLog("CC Spells size read error.", $COLOR_ERROR) ; log if there is read error
+		SetLog("CC Spells size read error (no array)", $COLOR_ERROR) ; log if there is read error
 		$g_iTotalCCSpells = 0
 		$g_iCurrentCCSpells = 0
 	EndIf

@@ -15,6 +15,7 @@ Global $g_sImgImgLocButtons = @ScriptDir & "\imgxml\imglocbuttons"
 
 #Region Windows
 Global Const $g_sImgGeneralCloseButton = @ScriptDir & "\imgxml\Windows\CloseButton*"
+Global Const $g_sImgSuperTroopsWindow = @ScriptDir & "\imgxml\Windows\SuperTroop*"
 #EndRegion
 
 #Region Obstacles
@@ -27,6 +28,8 @@ Global Const $g_sImgAppRateNever = @ScriptDir & "\imgxml\other\RateNever[[Androi
 Global Const $g_sImgGfxError = @ScriptDir & "\imgxml\other\GfxError*"
 Global Const $g_sImgError = @ScriptDir & "\imgxml\other\Error[[Android]]*"
 Global Const $g_sImgOutOfSync = @ScriptDir & "\imgxml\other\Oos[[Android]]*"
+Global Const $g_sImgConnectionLost = @ScriptDir & "\imgxml\other\ConnectionLost[[Android]]*"
+Global Const $g_sImgMaintenance = @ScriptDir & "\imgxml\other\Maintenance*"
 #EndRegion
 
 #Region Main Village
@@ -46,6 +49,12 @@ Global $g_sImgBuyDealWindow = @ScriptDir & "\imgxml\FreeMagicItems\BuyDeal"
 Global Const $g_sImgUpgradeWhiteZero = @ScriptDir & "\imgxml\Main Village\Upgrade\WhiteZero*"
 Global Const $g_sImgDonateCC = @ScriptDir & "\imgxml\DonateCC\"
 Global Const $g_sImgLabResearch = @ScriptDir & "\imgxml\Research\Laboratory\"
+#EndRegion
+
+#Region Boost Super Troops
+Global $g_sImgBoostTroopsBarrel = @ScriptDir & "\imgxml\Main Village\BoostSuperTroop\Barrel\"
+Global $g_sImgBoostTroopsIcons = @ScriptDir & "\imgxml\Main Village\BoostSuperTroop\Troops\"
+Global $g_sImgBoostTroopsButtons = @ScriptDir & "\imgxml\Main Village\BoostSuperTroop\Buttons\"
 #EndRegion
 
 #Region Builder Base
@@ -105,8 +114,9 @@ Global $g_sImgTrainTroops = @ScriptDir & "\imgxml\Train\Train_Train\"
 Global $g_sImgTrainSpells = @ScriptDir & "\imgxml\Train\Spell_Train\"
 Global $g_sImgArmyOverviewSpells = @ScriptDir & "\imgxml\ArmyOverview\Spells" ; @ScriptDir & "\imgxml\ArmySpells"
 Global $g_sImgRequestCCButton = @ScriptDir & "\imgxml\ArmyOverview\RequestCC"
+Global $g_sImgSendRequestButton = @ScriptDir & "\imgxml\ArmyOverview\RequestCC\SendRequest\SendButton*"
 Global $g_sImgArmyOverviewHeroes = @ScriptDir & "\imgxml\ArmyOverview\Heroes"
-Global $g_sImgQuickTrain = @ScriptDir & "\imgxml\Train\Quick_Train\"
+Global $g_sImgQuickTrain = @ScriptDir & "\imgxml\Train\Quick_Train\*"
 Global $g_sImgEditQuickTrain = @ScriptDir & "\imgxml\Train\EditQuickTrain\"
 #EndRegion
 

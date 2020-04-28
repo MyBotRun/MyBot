@@ -44,7 +44,7 @@ Func _checkMainScreen($bSetLog = Default, $bBuilderBase = Default) ;Checks if in
 
 	$i = 0
 	$iErrorCount = 0
-	$iCheckBeforeRestartAndroidCount = 3
+	$iCheckBeforeRestartAndroidCount = 5
 
 	If $bBuilderBase Then $aPixelToCheck = $aIsOnBuilderBase
 	Local $bLocated

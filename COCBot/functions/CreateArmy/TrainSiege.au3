@@ -14,11 +14,10 @@
 ; ===============================================================================================================================
 #include-once
 
-
 Func TrainSiege()
 
 	; Check if is necessary run the routine
-	If $g_iTotalTrainSpaceSiege < 1 Then Return
+
 	If Not $g_bRunState Then Return
 
 	If $g_bDebugSetlogTrain Then SetLog("-- TrainSiege --", $COLOR_DEBUG)

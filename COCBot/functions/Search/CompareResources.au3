@@ -23,80 +23,64 @@ Func CompareResources($pMode) ;Compares resources and returns true if conditions
 			If $g_iAimTrophyMax[$pMode] + $g_iSearchReductionTrophy < 99 Then $g_iAimTrophyMax[$pMode] += $g_iSearchReductionTrophy
 			If $g_iAimGoldPlusElixir[$pMode] - $g_iSearchReductionGoldPlusElixir >= 0 Then $g_iAimGoldPlusElixir[$pMode] -= $g_iSearchReductionGoldPlusElixir
 
-			Local $txtTrophies = "", $txtTownhall = ""
-			If $g_abFilterMeetTrophyEnable[$pMode] Then $txtTrophies = " [T]:" & StringFormat("%2s", $g_iAimTrophy[$pMode]) & "-" & StringFormat("%2s", $g_iAimTrophyMax[$pMode])
-			If $g_abFilterMeetTH[$pMode] Then $txtTownhall = " [TH]:" & StringFormat("%2s", $g_aiMaxTH[$pMode]) ;$g_aiFilterMeetTHMin
-			If $g_abFilterMeetTHOutsideEnable[$pMode] Then $txtTownhall &= ", Out"
+			Local $sTrophyText = "", $sTownhallText = ""
+			If $g_abFilterMeetTrophyEnable[$pMode] Then $sTrophyText = " [T]:" & StringFormat("%2s", $g_iAimTrophy[$pMode]) & "-" & StringFormat("%2s", $g_iAimTrophyMax[$pMode])
+			If $g_abFilterMeetTH[$pMode] Then $sTrophyText = " [TH]:" & StringFormat("%2s", $g_aiMaxTH[$pMode]) ;$g_aiFilterMeetTHMin
+			If $g_abFilterMeetTHOutsideEnable[$pMode] Then $sTrophyText &= ", Out"
 			If $g_aiFilterMeetGE[$pMode] = 2 Then
-				SetLog("Aim:           [G+E]:" & StringFormat("%7s", $g_iAimGoldPlusElixir[$pMode]) & " [D]:" & StringFormat("%5s", $g_iAimDark[$pMode]) & $txtTrophies & $txtTownhall & " for: " & $g_asModeText[$pMode], $COLOR_SUCCESS, "Lucida Console", 7.5)
+				SetLog("Aim:           [G+E]:" & StringFormat("%7s", $g_iAimGoldPlusElixir[$pMode]) & " [D]:" & StringFormat("%5s", $g_iAimDark[$pMode]) & $sTrophyText & $sTrophyText & " for: " & $g_asModeText[$pMode], $COLOR_SUCCESS, "Lucida Console", 7.5)
 			Else
-				SetLog("Aim: [G]:" & StringFormat("%7s", $g_iAimGold[$pMode]) & " [E]:" & StringFormat("%7s", $g_iAimElixir[$pMode]) & " [D]:" & StringFormat("%5s", $g_iAimDark[$pMode]) & $txtTrophies & $txtTownhall & " for: " & $g_asModeText[$pMode], $COLOR_SUCCESS, "Lucida Console", 7.5)
+				SetLog("Aim: [G]:" & StringFormat("%7s", $g_iAimGold[$pMode]) & " [E]:" & StringFormat("%7s", $g_iAimElixir[$pMode]) & " [D]:" & StringFormat("%5s", $g_iAimDark[$pMode]) & $sTrophyText & $sTrophyText & " for: " & $g_asModeText[$pMode], $COLOR_SUCCESS, "Lucida Console", 7.5)
 			EndIf
 		EndIf
 	EndIf
 
-	Local $G = (Number($g_iSearchGold) >= Number($g_iAimGold[$pMode])), $E = (Number($g_iSearchElixir) >= Number($g_iAimElixir[$pMode])), $D = (Number($g_iSearchDark) >= Number($g_iAimDark[$pMode])), $T = (Number($g_iSearchTrophy) >= Number($g_iAimTrophy[$pMode])) And (Number($g_iSearchTrophy) <= Number($g_iAimTrophyMax[$pMode])), $GPE = ((Number($g_iSearchGold) + Number($g_iSearchElixir)) >= Number($g_iAimGoldPlusElixir[$pMode]))
-
-
-
-
-
-
+	Local $bGoldMet = (Number($g_iSearchGold) >= Number($g_iAimGold[$pMode])), $bElixirMet = (Number($g_iSearchElixir) >= Number($g_iAimElixir[$pMode]))
+    Local $bDarkElixirMet = (Number($g_iSearchDark) >= Number($g_iAimDark[$pMode]))
+    Local $bTrophiesMet = (Number($g_iSearchTrophy) >= Number($g_iAimTrophy[$pMode])) And (Number($g_iSearchTrophy) <= Number($g_iAimTrophyMax[$pMode]))
+    Local $bGoldPlusElxirMet = ((Number($g_iSearchGold) + Number($g_iSearchElixir)) >= Number($g_iAimGoldPlusElixir[$pMode]))
 
 	If $g_abFilterMeetOneConditionEnable[$pMode] Then
-		;		If $iChkWeakBase[$pMode] = 1 Then
-		;			If $bIsWeakBase Then Return True
-		;		EndIf
-
 		If $g_aiFilterMeetGE[$pMode] = 0 Then
-			If $G = True And $E = True Then Return True
+			If $bGoldMet And $bElixirMet Then Return True
 		EndIf
 
 		If $g_abFilterMeetDEEnable[$pMode] Then
-			If $D = True Then Return True
+			If $bDarkElixirMet Then Return True
 		EndIf
 
 		If $g_abFilterMeetTrophyEnable[$pMode] Then
-			If $T = True Then Return True
+			If $bTrophiesMet Then Return True
 		EndIf
 
 		If $g_aiFilterMeetGE[$pMode] = 1 Then
-			If $G = True Or $E = True Then Return True
+			If $bGoldMet Or $bElixirMet Then Return True
 		EndIf
 
-
-
 		If $g_aiFilterMeetGE[$pMode] = 2 Then
-			If $GPE = True Then Return True
+			If $bGoldPlusElxirMet Then Return True
 		EndIf
 
 		Return False
 	Else
-		;		If $iChkWeakBase[$pMode] = 1 Then
-		;			If Not $bIsWeakBase Then Return False
-		;		EndIf
-
 		If $g_aiFilterMeetGE[$pMode] = 0 Then
-			If $G = False Or $E = False Then Return False
+			If Not $bGoldMet Or Not $bElixirMet Then Return False
 		EndIf
 
 		If $g_abFilterMeetDEEnable[$pMode] Then
-			If $D = False Then Return False
+			If Not $bDarkElixirMet Then Return False
 		EndIf
 
 		If $g_abFilterMeetTrophyEnable[$pMode] Then
-			If $T = False Then Return False
+			If Not $bTrophiesMet Then Return False
 		EndIf
 
 		If $g_aiFilterMeetGE[$pMode] = 1 Then
-			If $G = False And $E = False Then Return False
+			If Not $bGoldMet And Not $bElixirMet Then Return False
 		EndIf
 
-
-
 		If $g_aiFilterMeetGE[$pMode] = 2 Then
-			If $GPE = False Then Return False
-			;SetLog("[G + E]:" & StringFormat("%7s", $g_iSearchGold + $g_iSearchElixir), $COLOR_SUCCESS, "Lucida Console", 7.5)
+			If Not $bGoldPlusElxirMet Then Return False
 		EndIf
 	EndIf
 
@@ -104,39 +88,42 @@ Func CompareResources($pMode) ;Compares resources and returns true if conditions
 EndFunc   ;==>CompareResources
 
 Func CompareTH($pMode)
-	Local $THL = -1, $THLO = -1
+	Local $iTownhallLevel = -1, $iTownhallInOut = -1
 
-	If $g_iSearchTH = 6 Then $g_iSearchTH = "4-6"
-	For $i = 0 To 5 ;add th11
-		If $g_iSearchTH = $g_asTHText[$i] Then $THL = $i
+	If $g_iSearchTH = 6 Then $g_iSearchTH = $g_asTHText[0]
+	For $i = 1 To UBound($g_asTHText, 1) - 1
+		If $g_iSearchTH = $g_asTHText[$i] Then $iTownhallLevel = $i
 	Next
 
 	Switch $g_sTHLoc
 		Case "In"
-			$THLO = 0
+			$iTownhallInOut = 0
 		Case "Out"
-			$THLO = 1
+			$iTownhallInOut = 1
 	EndSwitch
+
 	$g_iSearchTHLResult = 0
-	If $THL > -1 And $THL <= $g_iAtkTBMaxTHLevel And $g_iSearchTH <> "-" Then $g_iSearchTHLResult = 1
+
+	If $iTownhallLevel > -1 And $iTownhallLevel <= $g_iAtkTBMaxTHLevel And $g_iSearchTH <> "-" Then $g_iSearchTHLResult = 1
 	If $g_abFilterMeetOneConditionEnable[$pMode] Then
 		If $g_abFilterMeetTH[$pMode] Then
-			If $THL <> -1 And $THL <= $g_aiFilterMeetTHMin[$pMode] Then Return True
+			If $iTownhallLevel <> -1 And $iTownhallLevel <= $g_aiFilterMeetTHMin[$pMode] Then Return True
 		EndIf
 
 		If $g_abFilterMeetTHOutsideEnable[$pMode] Then
-			If $THLO = 1 Then Return True
+			If $iTownhallInOut = 1 Then Return True
 		EndIf
+
 		Return False
 	Else
 		If $g_abFilterMeetTH[$pMode] Then
-			If $THL = -1 Or $THL > $g_aiFilterMeetTHMin[$pMode] Then Return False
+			If $iTownhallLevel = -1 Or $iTownhallLevel > $g_aiFilterMeetTHMin[$pMode] Then Return False
 		EndIf
 
 		If $g_abFilterMeetTHOutsideEnable[$pMode] Then
-			If $THLO <> 1 Then Return False
+			If $iTownhallInOut <> 1 Then Return False
 		EndIf
-
 	EndIf
+
 	Return True
 EndFunc   ;==>CompareTH

@@ -15,7 +15,7 @@
 
 Func getArmySiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckWindow = False, $bSetLog = True, $bNeedCapture = True)
 
-	If $g_iTotalTrainSpaceSiege < 1 Then Return
+	;If $g_iTotalTrainSpaceSiege < 1 Then Return
 
 	If $g_bDebugSetlogTrain Then SetLog("getArmySiegeMachines():", $COLOR_DEBUG)
 

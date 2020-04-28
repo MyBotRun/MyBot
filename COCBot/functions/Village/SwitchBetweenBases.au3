@@ -20,7 +20,7 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 
 	If Not $g_bRunState Then Return
 
-	For $i = 0 To 1
+	For $i = 0 To 2
 		If isOnBuilderBase(True) Then
 			$sSwitchFrom = "Builder Base"
 			$sSwitchTo = "Normal Village"
@@ -73,6 +73,8 @@ Func SwitchBetweenBases($bCheckMainScreen = True)
 			Else
 				SetLog("Cannot find the Boat on the Coast. Maybe it is still broken or not visible", $COLOR_ERROR)
 			EndIf
+
+			If $i >= 1 Then RestartAndroidCoC() ; Need to try to restart CoC
 		EndIf
 	Next
 

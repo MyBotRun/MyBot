@@ -91,7 +91,7 @@ Func CheckSwitchAcc()
 
 	Local $aDonateAccount = _ArrayFindAll($g_abDonateOnly, True)
 	Local $bReachAttackLimit = ($g_aiAttackedCountSwitch[$g_iCurAccount] <= $g_aiAttackedCount - 2)
-	Local $bForceSwitch = False
+	Local $bForceSwitch = $g_bForceSwitch
 	Local $nMinRemainTrain, $iWaitTime
 	Local $aActibePBTaccounts = _ArrayFindAll($g_abPBActive, True)
 
@@ -220,6 +220,8 @@ Func CheckSwitchAcc()
 		EndIf
 	EndIf
 	If Not $g_bRunState Then Return
+	
+	$g_bForceSwitch = false ; reset the need to switch
 EndFunc   ;==>CheckSwitchAcc
 
 Func SwitchCOCAcc($NextAccount)
@@ -846,11 +848,9 @@ EndFunc   ;==>releaseSwitchAccountMutex
 
 ; Checks if Acc Account is shown and returns true if not or sucessfully switched, clicks first account if $bSelectFirst is true
 Func CheckGoogleSelectAccount($bSelectFirst = True)
-
 	Local $bResult = False
-	Local $pColor = _GetPixelColor($aListAccount[0], $aListAccount[1], False)
-	If _ColorCheck($pColor, Hex($aListAccount[2], 6), $aListAccount[3]) Then ; White
 
+	If _CheckPixel($aListAccount, True) Then
 		SetDebugLog("Found open Google Accounts list pixel")
 
 		; Account List check be there, validate with imgloc
@@ -884,9 +884,11 @@ Func CheckGoogleSelectAccount($bSelectFirst = True)
 			EndIf
 		Else
 			SetDebugLog("Open Google Accounts list not verified")
+			Click($aAway[0], $aAway[1] + 40, 1)
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("CheckGoogleSelectAccount pixel color: " & $pColor)
+		If $g_bDebugSetlog Then SetDebugLog("CheckGoogleSelectAccount pixel color: " & _GetPixelColor($aListAccount[0], $aListAccount[1], False))
+		Click($aAway[0], $aAway[1] + 40, 1)
 	EndIf
 
 	Return $bResult
@@ -903,7 +905,7 @@ Func CheckLoginWithSupercellID()
 		SetLog("Verified Log in with Supercell ID boot screen")
 
 		If HaveSharedPrefs($g_sProfileCurrentName) Then
-			SetLog("Close CoC and push shared_prefs for Supercell ID screen...")
+			SetLog("Close CoC and push shared_prefs for Supercell ID screen")
 			PushSharedPrefs()
 			Return True
 		Else

@@ -23,15 +23,10 @@ Func checkObstacles($bBuilderBase = Default) ;Checks if something is in the way 
 		Return FuncReturn(True)
 	EndIf
 	If _ColorCheck(_GetPixelColor(383, 405), Hex(0xF0BE70, 6), 20) Then
-		SetLog("Found Switch Account dialog...!", $COLOR_INFO)
+		SetLog("Found Switch Account dialog!", $COLOR_INFO)
 		PureClick(383, 375 + $g_iMidOffsetY, 1, 0, "Click Cancel")
 	EndIf
-	; prevent recursion
-	;If $checkObstaclesActive = True Then
-	; delay recursion
-	;	_Sleep(1000)
-	;	Return FuncReturn(True)
-	;EndIf
+
 	Local $wasForce = OcrForceCaptureRegion(False)
 	$iRecursive += 1
 	Local $Result = _checkObstacles($bBuilderBase, $iRecursive > 5)
@@ -81,13 +76,11 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	Local $aMessage = _PixelSearch($aIsReloadError[0], $aIsReloadError[1], $aIsReloadError[0] + 3, $aIsReloadError[1] + 11, Hex($aIsReloadError[2], 6), $aIsReloadError[3], $g_bNoCapturePixel)
 	If IsArray($aMessage) Or (UBound(decodeSingleCoord(FindImageInPlace("Error", $g_sImgError, "680,300(2,20)", False, $g_iAndroidLollipop))) > 1) Then
 		If $g_bDebugSetlog Then SetDebugLog("(DC=" & _GetPixelColor($aIsConnectLost[0], $aIsConnectLost[1]) & ")(OoS=" & _GetPixelColor($aIsCheckOOS[0], $aIsCheckOOS[1]) & ")", $COLOR_DEBUG)
-		If $g_bDebugSetlog Then SetDebugLog("(Maintenance=" & _GetPixelColor($aIsMaintenance[0], $aIsMaintenance[1]) & ")(RateCoC=" & ")", $COLOR_DEBUG)
 		If $g_bDebugSetlog Then SetDebugLog("33B5E5=>true, 282828=>false", $COLOR_DEBUG)
 		;;;;;;;##### 1- Another device #####;;;;;;;
-		$Result = getOcrMaintenanceTime(184, 325 + $g_iMidOffsetY, "Another Device OCR:") ; OCR text to find Another device message
-		Local $sRegion = "220,330(80,60)"
+		$Result = getOcrReloadMessage(184, 325 + $g_iMidOffsetY, "Another Device OCR:") ; OCR text to find Another device message
 		If StringInStr($Result, "device", $STR_NOCASESENSEBASIC) Or _
-				UBound(decodeSingleCoord(FindImageInPlace("Device", $g_sImgAnotherDevice, $sRegion, False))) > 1 Then
+				UBound(decodeSingleCoord(FindImageInPlace("Device", $g_sImgAnotherDevice, "220,330(80,60)", False))) > 1 Then
 			If TestCapture() Then Return "Another Device has connected"
 			If $g_iAnotherDeviceWaitTime > 3600 Then
 				SetLog("Another Device has connected, waiting " & Floor(Floor($g_iAnotherDeviceWaitTime / 60) / 60) & " hours " & Floor(Mod(Floor($g_iAnotherDeviceWaitTime / 60), 60)) & " minutes " & Floor(Mod($g_iAnotherDeviceWaitTime, 60)) & " seconds", $COLOR_ERROR)
@@ -108,7 +101,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		;;;;;;;##### 2- Take a break #####;;;;;;;
 
 		If UBound(decodeSingleCoord(FindImageInPlace("Break", $g_sImgPersonalBreak, "165,287,335,335", False))) > 1 Then ; used for all 3 different break messages
-			SetLog("Village must take a break, wait ...", $COLOR_ERROR)
+			SetLog("Village must take a break, wait", $COLOR_ERROR)
 			If TestCapture() Then Return "Village must take a break"
 			PushMsg("TakeBreak")
 			If _SleepStatus($DELAYCHECKOBSTACLES4) Then Return ; 2 Minutes
@@ -120,60 +113,31 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		;;;;;;;##### Connection Lost & OoS & Inactive & Maintenance #####;;;;;;;
 		Select
 			Case UBound(decodeSingleCoord(FindImageInPlace("AnyoneThere", $g_sImgAnyoneThere, "440,340,580,390", False))) > 1 ; Inactive only
-				SetLog("Village was Inactive, Reloading CoC...", $COLOR_ERROR)
+				SetLog("Village was Inactive, Reloading CoC", $COLOR_ERROR)
 				If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
-			Case _CheckPixel($aIsConnectLost, $g_bNoCapturePixel) ; Connection Lost
+			Case _CheckPixel($aIsConnectLost, $g_bNoCapturePixel) Or UBound(decodeSingleCoord(FindImageInPlace("ConnectionLost", $g_sImgConnectionLost, "160,300,700,450", False))) > 1 ; Connection Lost
 				;  Add check for banned account :(
-				$Result = getOcrMaintenanceTime(171, 358 + $g_iMidOffsetY, "Check Obstacles OCR 'policy at super'=") ; OCR text for "policy at super"
+				$Result = getOcrReloadMessage(171, 358 + $g_iMidOffsetY, "Check Obstacles OCR 'policy at super'=") ; OCR text for "policy at super"
 				If StringInStr($Result, "policy", $STR_NOCASESENSEBASIC) Then
-					$msg = "Sorry but account has been banned, Bot must stop!!"
+					$msg = "Sorry but account has been banned, Bot must stop!"
 					BanMsgBox()
 					Return checkObstacles_StopBot($msg)
 				EndIf
-				$Result = getOcrMaintenanceTime(171, 337 + $g_iMidOffsetY, "Check Obstacles OCR 'prohibited 3rd'= ") ; OCR text for "prohibited 3rd party"
+				$Result = getOcrReloadMessage(171, 337 + $g_iMidOffsetY, "Check Obstacles OCR 'prohibited 3rd'= ") ; OCR text for "prohibited 3rd party"
 				If StringInStr($Result, "3rd", $STR_NOCASESENSEBASIC) Then
-					$msg = "Sorry but account has been banned, Bot must stop!!"
+					$msg = "Sorry but account has been banned, Bot must stop!"
 					BanMsgBox()
 					Return checkObstacles_StopBot($msg) ; stop bot
 				EndIf
-				SetLog("Connection lost, Reloading CoC...", $COLOR_ERROR)
+				SetLog("Connection lost, Reloading CoC", $COLOR_ERROR)
 				If ($g_bChkSharedPrefs Or $g_bUpdateSharedPrefs) And HaveSharedPrefs() Then
-					SetLog("Please wait for loading CoC...!")
+					SetLog("Please wait for loading CoC!")
 					PushSharedPrefs()
 					If Not $bRecursive Then OpenCoC()
 					Return True
 				EndIf
 			Case _CheckPixel($aIsCheckOOS, $g_bNoCapturePixel) Or (UBound(decodeSingleCoord(FindImageInPlace("OOS", $g_sImgOutOfSync, "355,335,435,395", False, $g_iAndroidLollipop))) > 1) ; Check OoS
-				SetLog("Out of Sync Error, Reloading CoC...", $COLOR_ERROR)
-			Case _CheckPixel($aIsMaintenance, $g_bNoCapturePixel) ; Check Maintenance
-				$Result = getOcrMaintenanceTime(171, 345 + $g_iMidOffsetY, "Check Obstacles OCR Maintenance Break=") ; OCR text to find wait time
-				Local $iMaintenanceWaitTime = 0
-				Select
-					Case $Result = ""
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES4 ; Wait 2 min
-					Case StringInStr($Result, "few", $STR_NOCASESENSEBASIC)
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES4 ; Wait 2 min
-					Case StringInStr($Result, "10", $STR_NOCASESENSEBASIC)
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES6 ; Wait 5 min
-					Case StringInStr($Result, "15", $STR_NOCASESENSEBASIC)
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES6 ; Wait 5 min
-					Case StringInStr($Result, "20", $STR_NOCASESENSEBASIC)
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES7 ; Wait 10 min
-					Case StringInStr($Result, "30", $STR_NOCASESENSEBASIC)
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES8 ; Wait 15 min
-					Case StringInStr($Result, "45", $STR_NOCASESENSEBASIC)
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES9 ; Wait 20 min
-					Case StringInStr($Result, "hour", $STR_NOCASESENSEBASIC)
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES10 ; Wait 30 min
-					Case Else
-						$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES4 ; Wait 2 min
-						SetLog("Error reading Maintenance Break time?", $COLOR_ERROR)
-				EndSelect
-				SetLog("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....", $COLOR_ERROR)
-				If $g_bNotifyTGEnable And $g_bNotifyAlertMaintenance = True Then NotifyPushToTelegram("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....")
-				If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
-				If _SleepStatus($iMaintenanceWaitTime) Then Return
-				checkObstacles_ResetSearch()
+				SetLog("Out of Sync Error, Reloading CoC", $COLOR_ERROR)
 			Case Else
 				;  Add check for game update and Rate CoC error messages
 				If $g_bDebugImageSave Then SaveDebugImage("ChkObstaclesReloadMsg_", False) ; debug only
@@ -189,10 +153,10 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 					$g_bMinorObstacle = True
 					Return True
 				EndIf
-				$Result = getOcrMaintenanceTime(171, 325 + $g_iMidOffsetY, "Check Obstacles OCR 'Good News!'=") ; OCR text for "Good News!"
+				$Result = getOcrReloadMessage(171, 325 + $g_iMidOffsetY, "Check Obstacles OCR 'Good News!'=") ; OCR text for "Good News!"
 				If StringInStr($Result, "new", $STR_NOCASESENSEBASIC) Then
 					If Not $g_bAutoUpdateGame Then
-						$msg = "Game Update is required, Bot must stop!!"
+						$msg = "Game Update is required, Bot must stop!"
 						Return checkObstacles_StopBot($msg) ; stop bot
 					Else
 						; CoC update required
@@ -202,7 +166,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 								If Not $bRecursive Then Return checkObstacles_ReloadCoC()
 							Case False
 								; Update failed
-								$msg = "Game Update failed, Bot must stop!!"
+								$msg = "Game Update failed, Bot must stop!"
 								Return checkObstacles_StopBot($msg) ; stop bot
 						EndSwitch
 					EndIf
@@ -213,15 +177,15 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 					Return True
 				EndIf
 				;  Add check for banned account :(
-				$Result = getOcrMaintenanceTime(171, 358 + $g_iMidOffsetY, "Check Obstacles OCR 'policy at super'=") ; OCR text for "policy at super"
+				$Result = getOcrReloadMessage(171, 358 + $g_iMidOffsetY, "Check Obstacles OCR 'policy at super'=") ; OCR text for "policy at super"
 				If StringInStr($Result, "policy", $STR_NOCASESENSEBASIC) Then
-					$msg = "Sorry but account has been banned, Bot must stop!!"
+					$msg = "Sorry but account has been banned, Bot must stop!"
 					BanMsgBox()
 					Return checkObstacles_StopBot($msg) ; stop bot
 				EndIf
-				$Result = getOcrMaintenanceTime(171, 337 + $g_iMidOffsetY, "Check Obstacles OCR 'prohibited 3rd'= ") ; OCR text for "prohibited 3rd party"
+				$Result = getOcrReloadMessage(171, 337 + $g_iMidOffsetY, "Check Obstacles OCR 'prohibited 3rd'= ") ; OCR text for "prohibited 3rd party"
 				If StringInStr($Result, "3rd", $STR_NOCASESENSEBASIC) Then
-					$msg = "Sorry but account has been banned, Bot must stop!!"
+					$msg = "Sorry but account has been banned, Bot must stop!"
 					BanMsgBox()
 					Return checkObstacles_StopBot($msg) ; stop bot
 				EndIf
@@ -230,6 +194,30 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		If TestCapture() Then Return "Village is out of sync or inactivity or connection lost or maintenance"
 		Return checkObstacles_ReloadCoC($aReloadButton, "#0131", $bRecursive) ; Click for out of sync or inactivity or connection lost or maintenance
 	EndIf
+
+	If UBound(decodeSingleCoord(FindImageInPlace("Maintenance", $g_sImgMaintenance, "270,70,640, 160", False))) > 1 Then ; Maintenance Break
+		$Result = getOcrMaintenanceTime(310, 575, "Check Obstacles OCR Maintenance Break=")         ; OCR text to find wait time
+		Local $iMaintenanceWaitTime = 0
+		Local $avTime = StringRegExp($Result, "([\d]+)[Mm]|(soon)|([\d]+[Hh])", $STR_REGEXPARRAYMATCH)
+		If UBound($avTime, 1) = 1 And Not @error Then
+			If UBound($avTime, 1) = 3 Then
+				$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES10
+			Else
+				$iMaintenanceWaitTime = Int($avTime[0]) * 60000
+				If $iMaintenanceWaitTime > $DELAYCHECKOBSTACLES10 Then $iMaintenanceWaitTime = $DELAYCHECKOBSTACLES10
+			EndIf
+		Else
+			$iMaintenanceWaitTime = $DELAYCHECKOBSTACLES4         ; Wait 2 min
+			If @error Then SetLog("Error reading Maintenance Break time?", $COLOR_ERROR)
+		EndIf
+		SetLog("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes", $COLOR_ERROR)
+		If $g_bNotifyTGEnable And $g_bNotifyAlertMaintenance = True Then NotifyPushToTelegram("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....")
+		If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
+		If _SleepStatus($iMaintenanceWaitTime) Then Return
+		checkObstacles_ResetSearch()
+	EndIf
+
+
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	If TestCapture() = 0 And GetAndroidProcessPID() = 0 Then
 		; CoC not running
@@ -331,7 +319,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	If Not CheckGoogleSelectAccount() Then
 		SetDebugLog("check Log in with Supercell ID login by shared_prefs")
 		; check Log in with Supercell ID login screen by shared_prefs
-		If CheckLoginWithSupercellID() then Return True
+		If CheckLoginWithSupercellID() Then Return True
 	EndIf
 
 	Return False
@@ -458,5 +446,5 @@ Func UpdateGame()
 
 		SetLog("Game updated failed"
 		Return False
-	#ce
+	#ce Finish that when time permits ;)
 EndFunc   ;==>UpdateGame

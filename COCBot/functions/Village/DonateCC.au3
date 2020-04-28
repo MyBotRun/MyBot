@@ -253,17 +253,21 @@ Func DonateCC($bCheckForNewMsg = False)
 
 			; Read chat request for DonateTroop and DonateSpell
 			If $bDonateTroop Or $bDonateSpell Or $bDonateSiege Then
-
 				Local $Alphabets[4] = [$g_bChkExtraAlphabets, $g_bChkExtraChinese, $g_bChkExtraKorean, $g_bChkExtraPersian]
-				;Fix by TFKNazGul for Chinese fonts
-				Local $Yaxis[4] = [50, 36, 36, 41]
 				Local $TextAlphabetsNames[4] = ["Cyrillic and Latin", "Chinese", "Korean", "Persian"]
 				Local $AlphabetFunctions[4] = ["getChatString", "getChatStringChinese", "getChatStringKorean", "getChatStringPersian"]
 				Local $BlankSpaces = ""
-
+				Local $aiSearchArrayNew[4] = [33, $aiDonateButton[1] - 105, 100, $aiDonateButton[1] - 90]
+				Local $sAreaToSearch = GetDiamondFromRect($aiSearchArrayNew) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+				Local $aiNewRequested = decodeSingleCoord(findImage("Requested MSG", $g_sImgDonateCC & "RequestedButton*", $sAreaToSearch, 1, True, Default))
+				Local $iIndexOCR = 0
+				If IsArray($aiNewRequested) And UBound($aiNewRequested, 1) >= 2 Then
+					$iIndexOCR = 1
+				EndIf
 				For $i = 0 To UBound($Alphabets) - 1
 					If $i = 0 Then
-						Local $coordinates[3] = [50, 36, 23] ; Extra coordinates for Latin
+						; Line 3 to 1
+						Local $aCoordinates[2][3] = [[60, 47, 34], [152, 139, 126]] ; Extra coordinates for Latin (3 Lines)
 						Local $OcrName = ($Alphabets[$i] = True) ? ("coc-latin-cyr") : ("coc-latinA")
 						Local $log = "Latin"
 						If $Alphabets[$i] Then $log = $TextAlphabetsNames[$i]
@@ -271,25 +275,26 @@ Func DonateCC($bCheckForNewMsg = False)
 						SetLog("Using OCR to read " & $log & " derived alphabets.", $COLOR_ACTION)
 						For $j = 0 To 2
 							If $ClanString = "" Or $ClanString = " " Then
-								$ClanString &= $BlankSpaces & getChatString(30, $aiDonateButton[1] - $coordinates[$j], $OcrName)
+								$ClanString &= $BlankSpaces & getChatString(30, $aiDonateButton[1] - $aCoordinates[$iIndexOCR][$j], $OcrName)
 								If $g_bDebugSetlog Then SetDebugLog("$OcrName: " & $OcrName)
-								If $g_bDebugSetlog Then SetDebugLog("$coordinates: " & $coordinates[$j])
+								If $g_bDebugSetlog Then SetDebugLog("$aCoordinates: " & $aCoordinates[$iIndexOCR][$j])
 								If $g_bDebugSetlog Then SetDebugLog("$ClanString: " & $ClanString)
 								If $ClanString <> "" And $ClanString <> " " Then ExitLoop
 							EndIf
 							If $ClanString <> "" Then $BlankSpaces = " "
 						Next
 					Else
+						Local $Yaxis[2][3] = [[37, 36, 39], [130, 129, 132]] ; "Chinese", "Korean", "Persian"
 						If $Alphabets[$i] Then
 							If $ClanString = "" Or $ClanString = " " Then
 								SetLog("Using OCR to read " & $TextAlphabetsNames[$i] & " alphabets.", $COLOR_ACTION)
 								; Ensure used functions are references in "MBR References.au3"
 								#Au3Stripper_Off
-								$ClanString &= $BlankSpaces & Call($AlphabetFunctions[$i], 30, $aiDonateButton[1] - $Yaxis[$i])
+								$ClanString &= $BlankSpaces & Call($AlphabetFunctions[$i], 30, $aiDonateButton[1] - $Yaxis[$iIndexOCR][$i - 1])
 								#Au3Stripper_On
 								If @error = 0xDEAD And @extended = 0xBEEF Then SetLog("[DonatCC] Function " & $AlphabetFunctions[$i] & "() had a problem.")
 								If $g_bDebugSetlog Then SetDebugLog("$OcrName: " & $OcrName)
-								If $g_bDebugSetlog Then SetDebugLog("$Yaxis: " & $Yaxis[$i])
+								If $g_bDebugSetlog Then SetDebugLog("$Yaxis: " & $Yaxis[$iIndexOCR][$i - 1])
 								If $g_bDebugSetlog Then SetDebugLog("$ClanString: " & $ClanString)
 								If $ClanString <> "" And $ClanString <> " " Then ExitLoop
 							EndIf
@@ -1275,7 +1280,7 @@ Func DetectSlotTroop(Const $iTroopIndex)
 		If StringInStr($FullTemp[0] & " ", "empty") > 0 Then ExitLoop
 
 		If $FullTemp[0] <> "" Then
-			For $i = $eTroopBalloon To $eTroopCount - 1
+			For $i = $eTroopArcher To $eTroopCount - 1
 				Local $iFoundTroopIndex = TroopIndexLookup($FullTemp[0])
 				If $iFoundTroopIndex = $i Then
 					If $g_bDebugSetlog Then SetDebugLog("Detected " & $g_asTroopNames[$i], $COLOR_DEBUG)

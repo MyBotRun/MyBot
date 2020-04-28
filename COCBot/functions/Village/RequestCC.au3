@@ -96,19 +96,12 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 
 EndFunc   ;==>RequestCC
 
-Func _makerequest($aButtonPosition)
-	;click button request troops
-	ClickP($aButtonPosition, 1, 0, "0336") ;Select text for request
+Func _makerequest($aRequestButtonPos)
+	Local $sSendButtonArea = GetDiamondFromRect("220,150,650,650")
 
-	;wait window
-	Local $iCount = 0
-	While Not ( _ColorCheck(_GetPixelColor($aCancRequestCCBtn[0], $aCancRequestCCBtn[1], True), Hex($aCancRequestCCBtn[2], 6), $aCancRequestCCBtn[3]))
-		If _Sleep($DELAYMAKEREQUEST1) Then ExitLoop
-		$iCount += 1
-		If $g_bDebugSetlog Then SetDebugLog("$icount2 = " & $iCount & ", " & _GetPixelColor($aCancRequestCCBtn[0], $aCancRequestCCBtn[1], True), $COLOR_DEBUG)
-		If $iCount > 20 Then ExitLoop ; wait 21*500ms = 10.5 seconds max
-	WEnd
-	If $iCount > 20 Then
+	ClickP($aRequestButtonPos, 1, 0, "0336") ;click button request troops
+
+	If Not IsWindowOpen($g_sImgSendRequestButton, 20, 100, $sSendButtonArea) Then
 		SetLog("Request has already been made, or request window not available", $COLOR_ERROR)
 		ClickP($aAway, 2, 0, "#0257")
 		If _Sleep($DELAYMAKEREQUEST2) Then Return
@@ -117,7 +110,7 @@ Func _makerequest($aButtonPosition)
 			If Not $g_bChkBackgroundMode And Not $g_bNoFocusTampering Then ControlFocus($g_hAndroidWindow, "", "")
 			; fix for Android send text bug sending symbols like ``"
 			AndroidSendText($g_sRequestTroopsText, True)
-			Click($atxtRequestCCBtn[0], $atxtRequestCCBtn[1], 1, 0, "#0254") ;Select text for request $atxtRequestCCBtn[2] = [430, 140]
+			Click(Int($g_avWindowCoordinates[0]), Int($g_avWindowCoordinates[1] - 75), 1, 0, "#0254")
 			If _Sleep($DELAYMAKEREQUEST2) Then Return
 			If SendText($g_sRequestTroopsText) = 0 Then
 				SetLog(" Request text entry failed, try again", $COLOR_ERROR)
@@ -125,19 +118,14 @@ Func _makerequest($aButtonPosition)
 			EndIf
 		EndIf
 		If _Sleep($DELAYMAKEREQUEST2) Then Return ; wait time for text request to complete
-		$iCount = 0
-		While Not _ColorCheck(_GetPixelColor($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], True), Hex(0x5fac10, 6), 20)
-			If _Sleep($DELAYMAKEREQUEST1) Then ExitLoop
-			$iCount += 1
-			If $g_bDebugSetlog Then SetDebugLog("$icount3 = " & $iCount & ", " & _GetPixelColor($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], True), $COLOR_DEBUG)
-			If $iCount > 25 Then ExitLoop ; wait 26*500ms = 13 seconds max
-		WEnd
-		If $iCount > 25 Then
+
+		If Not IsWindowOpen($g_sImgSendRequestButton, 20, 100, $sSendButtonArea) Then
 			If $g_bDebugSetlog Then SetDebugLog("Send request button not found", $COLOR_DEBUG)
 			CheckMainScreen(False) ;emergency exit
 		EndIf
-		If $g_bChkBackgroundMode = False And $g_bNoFocusTampering = False Then ControlFocus($g_hAndroidWindow, "", "") ; make sure Android has window focus
-		Click($aSendRequestCCBtn[0], $aSendRequestCCBtn[1], 1, 100, "#0256") ; click send button
+
+		If Not $g_bChkBackgroundMode And Not $g_bNoFocusTampering Then ControlFocus($g_hAndroidWindow, "", "") ; make sure Android has window focus
+		ClickP($g_avWindowCoordinates, 1, 100, "#0256")
 		$g_bCanRequestCC = False
 	EndIf
 

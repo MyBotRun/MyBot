@@ -299,7 +299,7 @@ Func SelectWardenMode($iMode, $XCoord)
 EndFunc   ;==>SelectWardenMode
 
 Func IsUnitUsed($iMatchMode, $iTroopIndex)
-	If $iTroopIndex < $eKing Then ;Index is a Troop
+	If $iTroopIndex < $eKing Or ($iTroopIndex >= $eSuperBarb And $iTroopIndex <= $eSuperWall) Then ;Index is a Troop
 		If $iMatchMode = $DT Or $iMatchMode = $TB Then Return True
 		Local $aTempArray = $g_aaiTroopsToBeUsed[$g_aiAttackTroopSelection[$iMatchMode]]
 		Local $iFoundAt = _ArraySearch($aTempArray, $iTroopIndex)

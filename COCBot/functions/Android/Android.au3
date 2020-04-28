@@ -4473,8 +4473,8 @@ EndFunc   ;==>UpdateAndroidBackgroundMode
 Func GetAndroidCodeName($iAPI = $g_iAndroidVersionAPI)
 
 	If $iAPI >= $g_iAndroidNougat Then Return "Nougat"
-	If $iAPI >= $g_iAndroidKitKat Then Return "KitKat"
 	If $iAPI >= $g_iAndroidLollipop Then Return "Lollipop"
+		If $iAPI >= $g_iAndroidKitKat Then Return "KitKat"
 	If $iAPI >= $g_iAndroidJellyBean Then Return "JellyBean"
 
 	SetDebugLog("Unsupported Android API Version: " & $iAPI, $COLOR_ERROR)

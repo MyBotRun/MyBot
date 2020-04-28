@@ -208,7 +208,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 
 	; initial reference village had a width of 473.60282919315 (and not 440) and stone located at 226, 567, so center on that reference and used zoom factor on that size
 	;Local $z = $c / 473.60282919315 ; don't use size of 440, as beta already using reference village
-	Local $iRefSize = 458 ; 2019-01-02 Update village measuring as outer edges didn't align anymore
+	Local $iRefSize = 445;458 ; 2019-01-02 Update village measuring as outer edges didn't align anymore
 	Local $iDefSize = 444 ; 2019-04-01 New default size using shared_prefs zoom level
 	Local $z = $c / $iRefSize
 

@@ -103,7 +103,7 @@ Func getHeroUpgradeTime($x_start, $y_start) ; -> Gets complete upgrade time for 
 EndFunc   ;==>getHeroUpgradeTime
 
 Func getChatString($x_start, $y_start, $language) ; -> Get string chat request - Latin Alphabetic - EN "DonateCC.au3"
-	Return getOcrAndCapture($language, $x_start, $y_start, 280, 16)
+	Return getOcrAndCapture($language, $x_start, $y_start, 280, 14)
 EndFunc   ;==>getChatString
 
 Func getBuilders($x_start, $y_start) ;  -> Gets Builders number - main screen --> getBuilders(324,23)  coc-profile
@@ -158,9 +158,25 @@ Func getOcrPBTtime($x_start, $y_start) ;  -> Get the Time until PBT starts from 
 	Return getOcrAndCapture("coc-pbttime", $x_start, $y_start, 59, 15)
 EndFunc   ;==>getOcrPBTtime
 
+Func getOcrReloadMessage($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
+	Local $result = getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
+	Local $String = ""
+	If $sLogText = Default Then
+		$String = "getOcrReloadMessage: " & $result
+	Else
+		$String = $sLogText & " " & $result
+	EndIf
+	If $g_bDebugSetlog Then ; if enabled generate debug log message
+		SetDebugLog($String, $LogTextColor, $bSilentSetLog)
+	ElseIf $result <> "" Then ;
+		SetDebugLog($String, $LogTextColor, True) ; if result found, add to log file
+	EndIf
+	Return $result
+EndFunc   ;==>getOcrMaintenanceTime
+
 Func getOcrMaintenanceTime($x_start, $y_start, $sLogText = Default, $LogTextColor = Default, $bSilentSetLog = Default)
 	;  -> Get the Text with time till maintenance is over from reload msg(171, 375)
-	Local $result = getOcrAndCapture("coc-reloadmsg", $x_start, $y_start, 116, 19, True)
+	Local $result = getOcrAndCapture("coc-maintenance", $x_start, $y_start, 150, 25, True)
 	Local $String = ""
 	If $sLogText = Default Then
 		$String = "getOcrMaintenanceTime: " & $result

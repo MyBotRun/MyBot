@@ -169,24 +169,25 @@ Func AttackBB()
 	SetLog("Waiting for end of battle.", $COLOR_BLUE)
 	If Not Okay() Then
 		$g_iAndroidSuspendModeFlags = $iAndroidSuspendModeFlagsLast
-		If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Enabled")
+		If $g_bDebugSetlog Then SetDebugLog("Android Suspend Mode Enabled")
 		Return
 	EndIf
-	SetLog("Battle Ended.")
+	SetLog("Battle ended")
 	If _Sleep(3000) Then
 		$g_iAndroidSuspendModeFlags = $iAndroidSuspendModeFlagsLast
-		If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Enabled")
+		If $g_bDebugSetlog Then SetDebugLog("Android Suspend Mode Enabled")
 		Return
 	EndIf
 
 	; wait for ok after both attacks are finished
-	SetLog("Waiting for opponent.", $COLOR_BLUE)
+	SetLog("Waiting for opponent", $COLOR_BLUE)
 	Okay()
-	SetLog("Done.", $COLOR_SUCCESS)
+	ClickP($aAway)
+	SetLog("Done", $COLOR_SUCCESS)
 	ZoomOut()
 
 	$g_iAndroidSuspendModeFlags = $iAndroidSuspendModeFlagsLast ; reset android suspend and resume stuff
-	If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Enabled")
+	If $g_bDebugSetlog Then SetDebugLog("Android Suspend Mode Enabled")
 EndFunc
 
 Func CheckBattleStarted()

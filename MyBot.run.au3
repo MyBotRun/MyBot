@@ -745,7 +745,7 @@ Func runBot() ;Bot that runs everything in order
 			If _Sleep($DELAYRUNBOT5) Then Return
 			checkMainScreen(False)
 			If $g_bRestart Then ContinueLoop
-			Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard', 'CollectFreeMagicItems', 'DailyChallenge']
+			Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard', 'CollectFreeMagicItems', 'DailyChallenge', 'BoostSuperTroop']
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
 				If Not $g_bRunState Then Return
@@ -807,7 +807,7 @@ Func runBot() ;Bot that runs everything in order
 			If $g_bFirstStart Then SetDebugLog("First loop completed!")
 			$g_bFirstStart = False ; already finished first loop since bot started.
 
-			If ProfileSwitchAccountEnabled() And ($g_iCommandStop = 0 Or $g_iCommandStop = 3 Or $g_abDonateOnly[$g_iCurAccount]) Then checkSwitchAcc()
+			If ProfileSwitchAccountEnabled() And ($g_iCommandStop = 0 Or $g_iCommandStop = 3 Or $g_abDonateOnly[$g_iCurAccount] or $g_bForceSwitch) Then checkSwitchAcc()
 			If IsSearchAttackEnabled() Then ; If attack scheduled has attack disabled now, stop wall upgrades, and attack.
 				Idle()
 				;$g_bFullArmy1 = $g_bFullArmy
@@ -1168,7 +1168,7 @@ Func __RunFunction($action)
 			UpgradeWall()
 			_Sleep($DELAYRUNBOT3)
 		Case "BuilderBase"
-			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades or $g_bChkEnableBBAttack) And SwitchBetweenBases()) Then
+			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack) And SwitchBetweenBases()) Then
 				$g_bStayOnBuilderBase = True
 				If _Sleep($DELAYRUNBOT3) Then Return
 				If checkObstacles() Then Return
@@ -1204,6 +1204,8 @@ Func __RunFunction($action)
 		Case "CollectFreeMagicItems"
 			CollectFreeMagicItems()
 			_Sleep($DELAYRUNBOT3)
+		Case "BoostSuperTroop"
+			If $g_iBoostSuperTroopIndex <> -1 Then BoostSuperTroop($g_iBoostSuperTroopIndex)
 		Case ""
 			SetDebugLog("Function call doesn't support empty string, please review array size", $COLOR_ERROR)
 		Case Else

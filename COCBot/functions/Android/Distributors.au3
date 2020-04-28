@@ -34,7 +34,7 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 			["Kaopu", "com.supercell.clashofclans.ewan.kaopu", "com.supercell.titan.kunlun.GameAppKunlun", "Kaopu"], _
 			["Lenovo", "com.supercell.clashofclans.lenovo", "com.lenovo.lsf.gamesdk.ui.WelcomeActivity", "Lenovo"], _
 			["Guopan", "com.supercell.clashofclans.guopan", "com.flamingo.sdk.view.GPSplashActivity", "Guopan"], _
-			["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.clashofclans.mi.GameAppXiaomi","Xiaomi"], _
+			["Xiaomi", "com.supercell.clashofclans.mi", "com.supercell.titan.kunlun.mi.GameAppKunlunXiaomi","Xiaomi"], _
 			["Haimawan", "com.supercell.clashofclans.ewan.hm", "cn.ewan.supersdk.activity.SplashActivity", "Haimawan"], _
 			["Leshi", "com.supercell.clashofclans.ewan.leshi", "cn.ewan.supersdk.activity.SplashActivity", "Leshi"], _
 			["Microvirt", "com.supercell.clashofclans.ewan.xyaz", "cn.ewan.supersdk.activity.SplashActivity", "Microvirt"], _

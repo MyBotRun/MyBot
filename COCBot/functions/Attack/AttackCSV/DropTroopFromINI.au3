@@ -1,21 +1,21 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: DropTroopFromINI
 ; Description ...:
-; Syntax ........: DropTroopFromINI($vectors, $indexStart, $indexEnd, $qtaMin, $qtaMax, $troopName, $delayPointmin,
+; Syntax ........: DropTroopFromINI($vectors, $iStartIndex, $iEndIndex, $iMinQuantity, $iMaxQuantity, $sTroopName, $delayPointmin,
 ;                  $delayPointmax, $delayDropMin, $delayDropMax, $sleepafterMin, $sleepAfterMax[, $debug = False])
 ; Parameters ....: $vectors             -
-;                  $indexStart          -
-;                  $indexEnd            -
-;                  $qtaMin              -
-;                  $qtaMax              -
-;                  $troopName           -
+;                  $iStartIndex         -
+;                  $iEndIndex           -
+;                  $iMinQuantity        -
+;                  $iMaxQuantity        -
+;                  $sTroopName          -
 ;                  $delayPointmin       -
 ;                  $delayPointmax       -
 ;                  $delayDropMin        -
 ;                  $delayDropMax        -
 ;                  $sleepafterMin       -
 ;                  $sleepAfterMax       -
-;                  $debug               - [optional] Default is False.
+;                  $bDebug               - [optional] Default is False.
 ; Return values .: None
 ; Author ........: Sardo (2016)
 ; Modified ......: MonkeyHunter (03-2017)
@@ -25,18 +25,18 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $qtaMax, $troopName, $delayPointmin, $delayPointmax, $delayDropMin, $delayDropMax, $sleepafterMin, $sleepAfterMax, $debug = False)
-	If IsArray($indexArray) = 0 Then
-		debugAttackCSV("drop using vectors " & $vectors & " index " & $indexStart & "-" & $indexEnd & " and using " & $qtaMin & "-" & $qtaMax & " of " & $troopName)
+Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $iMinQuantity, $iMaxQuantity, $sTroopName, $delayPointmin, $delayPointmax, $delayDropMin, $delayDropMax, $sleepafterMin, $sleepAfterMax, $bDebug = False)
+	If IsArray($aiIndexArray) = 0 Then
+		debugAttackCSV("drop using vectors " & $sDropVectors & " index " & $iStartIndex & "-" & $iEndIndex & " and using " & $iMinQuantity & "-" & $iMaxQuantity & " of " & $sTroopName)
 	Else
-		debugAttackCSV("drop using vectors " & $vectors & " index " & _ArrayToString($indexArray, ",") & " and using " & $qtaMin & "-" & $qtaMax & " of " & $troopName)
+		debugAttackCSV("drop using vectors " & $sDropVectors & " index " & _ArrayToString($aiIndexArray, ",") & " and using " & $iMinQuantity & "-" & $iMaxQuantity & " of " & $sTroopName)
 	EndIf
 	debugAttackCSV(" - delay for multiple troops in same point: " & $delayPointmin & "-" & $delayPointmax)
 	debugAttackCSV(" - delay when  change deploy point : " & $delayDropMin & "-" & $delayDropMax)
 	debugAttackCSV(" - delay after drop all troops : " & $sleepafterMin & "-" & $sleepAfterMax)
 
 	;how many vectors need to manage...
-	Local $temp = StringSplit($vectors, "-")
+	Local $temp = StringSplit($sDropVectors, "-")
 	Local $numbersOfVectors
 	If UBound($temp) > 0 Then
 		$numbersOfVectors = $temp[0]
@@ -52,37 +52,45 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 		If $temp[0] >= 3 Then $vector3 = "ATTACKVECTOR_" & $temp[3]
 		If $temp[0] >= 4 Then $vector4 = "ATTACKVECTOR_" & $temp[4]
 	Else
-		$vector1 = $vectors
+		$vector1 = $sDropVectors
 	EndIf
 
 	;Qty to drop
-	If $qtaMin <> $qtaMax Then
-		Local $qty = Random($qtaMin, $qtaMax, 1)
+	If $iMinQuantity <> $iMaxQuantity Then
+		Local $qty = Random($iMinQuantity, $iMaxQuantity, 1)
 	Else
-		Local $qty = $qtaMin
+		Local $qty = $iMinQuantity
 	EndIf
 	debugAttackCSV(">> qty to deploy: " & $qty)
 
 	;number of troop to drop in one point...
-	Local $qtyxpoint = Int($qty / ($indexEnd - $indexStart + 1))
-	Local $extraunit = Mod($qty, ($indexEnd - $indexStart + 1))
+	Local $qtyxpoint = Int($qty / ($iEndIndex - $iStartIndex + 1))
+	Local $extraunit = Mod($qty, ($iEndIndex - $iStartIndex + 1))
 	debugAttackCSV(">> qty x point: " & $qtyxpoint)
 	debugAttackCSV(">> qty extra: " & $extraunit)
 
 	; Get the integer index of the troop name specified
-	Local $iTroopIndex = TroopIndexLookup($troopName, "DropTroopFromINI")
+	Local $iTroopIndex = TroopIndexLookup($sTroopName, "DropTroopFromINI")
 	If $iTroopIndex = -1 Then
-		SetLog("CSV troop name '" & $troopName & "' is unrecognized.")
+		SetLog("CSV troop name '" & $sTroopName & "' is unrecognized.")
 		Return
 	EndIf
 	Local $bHeroDrop = ($iTroopIndex = $eWarden ? True : False) ;set flag TRUE if Warden was dropped
+
+	;Super troop hotfix, if only super troop is available and normal troop is in csv, use the super troop
+	If $iTroopIndex <= $eIceG And _ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb) > -1 Then
+		SetLog("CSV contains normal troop but only super troop available, append drop quantity", $COLOR_INFO)
+		$iTroopIndex += $eSuperBarb
+		$qtyxpoint = Round($qtyxpoint / $g_aiSuperTroopSpace[$iTroopIndex - $eSuperBarb])
+		$extraunit = Round($extraunit / $g_aiSuperTroopSpace[$iTroopIndex - $eSuperBarb])
+	EndIf
 
 	;search slot where is the troop...
 	Local $troopPosition = -1
 	Local $troopSlotConst = -1 ; $troopSlotConst = xx/22 (the unique slot number of troop) - Slot11+
 	For $i = 0 To UBound($g_avAttackTroops) - 1
 		If $g_avAttackTroops[$i][0] = $iTroopIndex And $g_avAttackTroops[$i][1] > 0 Then
-			debugAttackCSV("Found troop position " & $i & ". " & $troopName & " x" & $g_avAttackTroops[$i][1])
+			debugAttackCSV("Found troop position " & $i & ". " & $sTroopName & " x" & $g_avAttackTroops[$i][1])
 			$troopSlotConst = $i
 			$troopPosition = $troopSlotConst
 			ExitLoop
@@ -153,14 +161,14 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 			$g_iCSVLastTroopPositionDropTroopFromINI = $troopSlotConst
 		EndIf
 		;drop
-		For $i = $indexStart To $indexEnd
+		For $i = $iStartIndex To $iEndIndex
 			Local $delayDrop = 0
 			Local $index = $i
-			Local $indexMax = $indexEnd
-			If IsArray($indexArray) = 1 Then
+			Local $indexMax = $iEndIndex
+			If IsArray($aiIndexArray) = 1 Then
 				; adjust $index and $indexMax based on array
-				$index = $indexArray[$i]
-				$indexMax = $indexArray[$indexEnd]
+				$index = $aiIndexArray[$i]
+				$indexMax = $aiIndexArray[$iEndIndex]
 			EndIf
 			If $index <> $indexMax Then
 				;delay time between 2 drops in different point
@@ -179,7 +187,7 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 				If $index <= UBound(Execute("$" & Eval("vector" & $j))) Then
 					Local $pixel = Execute("$" & Eval("vector" & $j) & "[" & $index - 1 & "]")
 					Local $qty2 = $qtyxpoint
-					If $index < $indexStart + $extraunit Then $qty2 += 1
+					If $index < $iStartIndex + $extraunit Then $qty2 += 1
 
 					;delay time between 2 drops in same point
 					If $delayPointmin <> $delayPointmax Then
@@ -189,44 +197,44 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 					EndIf
 
 					Switch $iTroopIndex
-						Case $eBarb To $eIceG ; drop normal troops
-							If $debug = True Then
+						Case $eBarb To $eIceG, $eSuperBarb To $eSuperWall ; drop normal/super troops
+							If $bDebug Then
 								SetLog("AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else
 								AttackClick($pixel[0], $pixel[1], $qty2, $delayPoint, $delayDropLast, "#0666")
 							EndIf
 						Case $eKing
-							If $debug = True Then
-								SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", " & $troopPosition & ", -1, -1) ")
+							If $bDebug Then
+								SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", " & $troopPosition & ", -1, -1, -1) ")
 							Else
-								dropHeroes($pixel[0], $pixel[1], $troopPosition, -1, -1) ; was $g_iKingSlot, Slot11+
+								dropHeroes($pixel[0], $pixel[1], $troopPosition, -1, -1, -1) ; was $g_iKingSlot, Slot11+
 							EndIf
 						Case $eQueen
-							If $debug = True Then
-								SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ",-1," & $troopPosition & ", -1) ")
+							If $bDebug Then
+								SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ",-1," & $troopPosition & ", -1, -1) ")
 							Else
-								dropHeroes($pixel[0], $pixel[1], -1, $troopPosition, -1) ; was $g_iQueenSlot, Slot11+
+								dropHeroes($pixel[0], $pixel[1], -1, $troopPosition, -1, -1) ; was $g_iQueenSlot, Slot11+
 							EndIf
 						Case $eWarden
-							If $debug = True Then
-								SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", -1, -1," & $troopPosition & ") ")
+							If $bDebug Then
+								SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", -1, -1," & $troopPosition & ", -1) ")
 							Else
-								dropHeroes($pixel[0], $pixel[1], -1, -1, $troopPosition) ; was $g_iWardenSlot, Slot11+
+								dropHeroes($pixel[0], $pixel[1], -1, -1, $troopPosition, -1) ; was $g_iWardenSlot, Slot11+
 							EndIf
 						Case $eChampion
-							If $debug = True Then
-								SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ",-1," & $troopPosition & ", -1) ")
+							If $bDebug Then
+								SetLog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ",-1, -1, -1," & $troopPosition & ") ")
 							Else
-								dropHeroes($pixel[0], $pixel[1], -1, $troopPosition, -1) ; was $g_iChampionSlot, Slot11+
+								dropHeroes($pixel[0], $pixel[1], -1, -1, -1, $troopPosition) ; was $g_iChampionSlot, Slot11+
 							EndIf
 						Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB
-							If $debug = True Then
+							If $bDebug Then
 								SetLog("dropCC(" & $pixel[0] & ", " & $pixel[1] & ", " & $troopPosition & ")")
 							Else
 								dropCC($pixel[0], $pixel[1], $troopPosition)
 							EndIf
 						Case $eLSpell To $eBtSpell
-							If $debug = True Then
+							If $bDebug Then
 								SetLog("Drop Spell AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else
 								AttackClick($pixel[0], $pixel[1], $qty2, $delayPoint, $delayDropLast, "#0667")
@@ -239,26 +247,25 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 						Case Else
 							SetLog("Error parsing line")
 					EndSwitch
-					debugAttackCSV($troopName & " qty " & $qty2 & " in (" & $pixel[0] & "," & $pixel[1] & ") delay " & $delayPoint)
+					debugAttackCSV($sTroopName & " qty " & $qty2 & " in (" & $pixel[0] & "," & $pixel[1] & ") delay " & $delayPoint)
 				EndIf
 				;;;;if $j <> $numbersOfVectors Then _sleep(5) ;little delay by passing from a vector to another vector
 			Next
 		Next
 
 		ReleaseClicks()
-		;SuspendAndroid($SuspendMode)
 
 		;sleep time after deploy all troops
-		Local $sleepafter = 0
+		Local $iPostDeploySleep = 0
 		If $sleepafterMin <> $sleepAfterMax Then
-			$sleepafter = Random($sleepafterMin, $sleepAfterMax, 1)
+			$iPostDeploySleep = Random($sleepafterMin, $sleepAfterMax, 1)
 		Else
-			$sleepafter = Int($sleepafterMin)
+			$iPostDeploySleep = Int($sleepafterMin)
 		EndIf
-		If $sleepafter > 0 And IsKeepClicksActive() = False Then
-			debugAttackCSV("- delay after drop all troops: " & $sleepafter)
-			If $sleepafter <= 1000 Then ; check SLEEPAFTER value is less than 1 second?
-				If _Sleep($sleepafter) Then Return
+		If $iPostDeploySleep > 0 And Not IsKeepClicksActive() Then
+			debugAttackCSV("- delay after drop all troops: " & $iPostDeploySleep)
+			If $iPostDeploySleep <= 1000 Then ; check SLEEPAFTER value is less than 1 second?
+				If _Sleep($iPostDeploySleep) Then Return
 				If $bHeroDrop = True Then ;Check hero but skip Warden if was dropped with sleepafter to short to allow icon update
 					Local $bHold = $g_bCheckWardenPower ; store existing flag state, should be true?
 					$g_bCheckWardenPower = False ;temp disable warden health check
@@ -268,11 +275,11 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $q
 					CheckHeroesHealth()
 				EndIf
 			Else ; $sleepafter is More than 1 second, then improve pause/stop button response with max 1 second delays
-				For $z = 1 To Int($sleepafter / 1000) ; Check hero health every second while while sleeping
+				For $z = 1 To Int($iPostDeploySleep / 1000) ; Check hero health every second while while sleeping
 					If _Sleep(980) Then Return ; sleep 1 second minus estimated herohealthcheck time when heroes not activiated
 					CheckHeroesHealth() ; check hero health == does nothing if hero not dropped
 				Next
-				If _Sleep(Mod($sleepafter, 1000)) Then Return ; $sleepafter must be integer for MOD function return correct value!
+				If _Sleep(Mod($iPostDeploySleep, 1000)) Then Return ; $sleepafter must be integer for MOD function return correct value!
 				CheckHeroesHealth() ; check hero health == does nothing if hero not dropped
 			EndIf
 		EndIf
