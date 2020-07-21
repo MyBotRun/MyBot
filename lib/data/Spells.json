@@ -1,0 +1,103 @@
+{
+    "Spells": {
+        "LightningSpell": {
+            "Name": "Lightning Spell",
+            "Plural": "Lightning Spells",
+            "TrainingTime": 360,
+            "TrainingCost": [7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
+            "HousingSpace": 1,
+            "DonateXP": 5,
+            "OCR_Offset": [44, 29]
+        },
+        "HealSpell": {
+            "Name": "Heal Spell",
+            "Plural": "Heal Spells",
+            "TrainingTime": 360,
+            "TrainingCost": [15000, 16500, 18000, 19000, 21000, 23000, 25000, 27000],
+            "HousingSpace": 2,
+            "DonateXP": 10,
+            "OCR_Offset": [41, 27]
+        },
+        "RageSpell": {
+            "Name": "Rage Spell",
+            "Plural": "Rage Spells",
+            "TrainingTime": 360,
+            "TrainingCost": [20000, 22000, 24000, 26000, 28000, 30000],
+            "HousingSpace": 2,
+            "DonateXP": 10,
+            "OCR_Offset": [41, 27]
+        },
+        "JumpSpell": {
+            "Name": "Jump Spell",
+            "Plural": "Jump Spells",
+            "TrainingTime": 360,
+            "TrainingCost": [23000, 27000, 31000, 32000],
+            "HousingSpace": 2,
+            "DonateXP": 10,
+            "OCR_Offset": [50, 19]
+        },
+        "FreezeSpell": {
+            "Name": "Freeze Spell",
+            "Plural": "Freeze Spells",
+            "TrainingTime": 360,
+            "TrainingCost": [6000, 7000, 8000, 9000, 10000, 11000, 12000],
+            "HousingSpace": 1,
+            "DonateXP": 5,
+            "OCR_Offset": [34, 50]
+        },
+        "CloneSpell": {
+            "Name": "Clone Spell",
+            "Plural": "Clone Spells",
+            "TrainingTime": 720,
+            "TrainingCost": [38000, 39000, 41000, 43000, 45000, 35500],
+            "HousingSpace": 3,
+            "DonateXP": 0,
+            "OCR_Offset": [43, 25]
+        },
+        "PoisonSpell": {
+            "Name": "Poison Spell",
+            "Plural": "Poison Spells",
+            "TrainingTime": 180,
+            "TrainingCost": [95, 110, 125, 140, 155, 170],
+            "HousingSpace": 1,
+            "DonateXP": 5,
+            "OCR_Offset": [47, 19]
+        },
+        "EarthquakeSpell": {
+            "Name": "Earthquake Spell",
+            "Plural": "Earthquake Spells",
+            "TrainingTime": 180,
+            "TrainingCost": [125, 140, 160, 180, 200],
+            "HousingSpace": 1,
+            "DonateXP": 5,
+            "OCR_Offset": [39, 45]
+        },
+        "HasteSpell": {
+            "Name": "Haste Spell",
+            "Plural": "Haste Spells",
+            "TrainingTime": 180,
+            "TrainingCost": [80, 85, 90, 95, 100],
+            "HousingSpace": 1,
+            "DonateXP": 5,
+            "OCR_Offset": [45, 22]
+        },
+        "SkeletonSpell": {
+            "Name": "Skeleton Spell",
+            "Plural": "Skeleton Spells",
+            "TrainingTime": 180,
+            "TrainingCost": [110, 120, 130, 140, 150, 160, 170],
+            "HousingSpace": 1,
+            "DonateXP": 5,
+            "OCR_Offset": [46, 18]
+        },
+        "BatSpell": {
+            "Name": "Bat Spell",
+            "Plural": "Bat Spells",
+            "TrainingTime": 180,
+            "TrainingCost": [110, 120, 130, 140, 150],
+            "HousingSpace": 1,
+            "DonateXP": 5,
+            "OCR_Offset": [30, 46]
+        }
+    }
+}

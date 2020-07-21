@@ -187,7 +187,7 @@ Func lblTotalCountTroop2()
 		EndIf
 	Next
 
-	For $i = $eTroopMinion To $eTroopIceGolem
+	For $i = $eTroopMinion To $eTroopHeadhunter
 		Local $NbrOfTroop = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$i])
 		Local $LevOfTroop = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
 
@@ -661,7 +661,7 @@ Func BtnTroopOrderSet()
 	Local $aiUsedTroop[$eTroopCount] = [ _
 			$eTroopBarbarian, $eTroopArcher, $eTroopGiant, $eTroopGoblin, $eTroopWallBreaker, $eTroopBalloon, $eTroopWizard, _
 			$eTroopHealer, $eTroopDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopMiner, $eTroopElectroDragon, $eTroopYeti, $eTroopMinion, $eTroopHogRider, _
-			$eTroopValkyrie, $eTroopGolem, $eTroopWitch, $eTroopLavaHound, $eTroopBowler, $eTroopIceGolem]
+			$eTroopValkyrie, $eTroopGolem, $eTroopWitch, $eTroopLavaHound, $eTroopBowler, $eTroopIceGolem, $eTroopHeadhunter]
 
 	; check for duplicate combobox index and take action
 	For $i = 0 To UBound($g_ahCmbTroopOrder) - 1
@@ -1011,7 +1011,7 @@ Func CalCostCamp()
 		$iElixirCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$indexLevel]
 	Next
 
-	For $i = $eTroopMinion To $eTroopIceGolem
+	For $i = $eTroopMinion To $eTroopHeadhunter
 		$indexLevel = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
 		$iDarkCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$indexLevel]
 	Next

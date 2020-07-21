@@ -19,12 +19,18 @@ Func UpgradeWall()
 
 	If $g_bAutoUpgradeWallsEnable = True Then
 		SetLog("Checking Upgrade Walls", $COLOR_INFO)
+		SetDebugLog("$iWallCost:" & $iWallCost)
 		If SkipWallUpgrade($iWallCost) Then Return
+		SetDebugLog("$g_iFreeBuilderCount:" & $g_iFreeBuilderCount)
 		If $g_iFreeBuilderCount > 0 Then
-			ClickP($aAway, 1, 0, "#0313") ; click away
+			ClickAway()
 			Local $MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $iWallCost) > Number($g_iUpgradeWallMinGold) ; Check if enough Gold
 			Local $MinWallElixir = Number($g_aiCurrentLoot[$eLootElixir] - $iWallCost) > Number($g_iUpgradeWallMinElixir) ; Check if enough Elixir
 
+			SetDebugLog("$g_iUpgradeWallLootType" & $g_iUpgradeWallLootType)
+			SetDebugLog("$MinWallGold" & $MinWallGold)
+			SetDebugLog("$MinWallElixir" & $MinWallElixir)
+			
 			While ($g_iUpgradeWallLootType = 0 And $MinWallGold) Or ($g_iUpgradeWallLootType = 1 And $MinWallElixir) Or ($g_iUpgradeWallLootType = 2 And ($MinWallGold Or $MinWallElixir))
 
 				Switch $g_iUpgradeWallLootType
@@ -100,7 +106,7 @@ Func UpgradeWall()
 					Click(820, 40, 1, 0, "#0315") ; Close it
 				EndIf
 
-				ClickP($aAway, 1, 0, "#0314") ; click away
+				ClickAway()
 				VillageReport(True, True)
 				If SkipWallUpgrade($iWallCost) Then Return
 				$MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $iWallCost) > Number($g_iUpgradeWallMinGold) ; Check if enough Gold
@@ -141,16 +147,16 @@ Func UpgradeWallGold($iWallCost = $g_iWallCost)
 		Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0317")
 		If _Sleep(1000) Then Return
 		If isGemOpen(True) Then
-			ClickP($aAway, 1, 0, "#0314") ; click away
+			ClickAway()
 			SetLog("Upgrade stopped due no loot", $COLOR_ERROR)
 			Return False
 		ElseIf _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x, didnt closed on upgradeclick, so not able to upgrade
-			ClickP($aAway, 1, 0, "#0314") ; click away
+			ClickAway()
 			SetLog("unable to upgrade", $COLOR_ERROR)
 			Return False
 		Else
 			If _Sleep($DELAYUPGRADEWALLGOLD3) Then Return
-			ClickP($aAway, 1, 0, "#0314") ; click away
+			ClickAway()
 			SetLog("Upgrade complete", $COLOR_SUCCESS)
 			PushMsg("UpgradeWithGold")
 			$g_iNbrOfWallsUppedGold += 1
@@ -161,7 +167,7 @@ Func UpgradeWallGold($iWallCost = $g_iWallCost)
 		EndIf
 	EndIf
 
-	ClickP($aAway, 1, 0, "#0314") ; click away
+	ClickAway()
 	SetLog("No Upgrade Gold Button", $COLOR_ERROR)
 	Pushmsg("NowUpgradeGoldButton")
 	Return False
@@ -192,16 +198,16 @@ Func UpgradeWallElixir($iWallCost)
 		Click(440, 480 + $g_iMidOffsetY, 1, 0, "#0318")
 		If _Sleep(1000) Then Return
 		If isGemOpen(True) Then
-			ClickP($aAway, 1, 0, "#0314") ; click away
+			ClickAway()
 			SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
 			Return False
 		ElseIf _ColorCheck(_GetPixelColor(677, 150 + $g_iMidOffsetY, True), Hex(0xE1090E, 6), 20) Then ; wall upgrade window red x, didnt closed on upgradeclick, so not able to upgrade
-			ClickP($aAway, 1, 0, "#0314") ; click away
+			ClickAway()
 			SetLog("unable to upgrade", $COLOR_ERROR)
 			Return False
 		Else
 			If _Sleep($DELAYUPGRADEWALLELIXIR3) Then Return
-			ClickP($aAway, 1, 0, "#0314") ; click away
+			ClickAway()
 			SetLog("Upgrade complete", $COLOR_SUCCESS)
 			PushMsg("UpgradeWithElixir")
 			$g_iNbrOfWallsUppedElixir += 1
@@ -212,7 +218,7 @@ Func UpgradeWallElixir($iWallCost)
 		EndIf
 	EndIf
 
-	ClickP($aAway, 1, 0, "#0314") ; click away
+	ClickAway()
 	SetLog("No Upgrade Elixir Button", $COLOR_ERROR)
 	Pushmsg("NowUpgradeElixirButton")
 	Return False
@@ -227,19 +233,25 @@ Func SkipWallUpgrade($iWallCost = $g_iWallCost) ; Dynamic Upgrades
 	Local $iBuildingsNeedGold = 0
 	Local $iBuildingsNeedElixir = 0
 	Local $iAvailBuilderCount = 0
-
+	
+	SetDebugLog("In SkipWallUpgrade")
+	SetDebugLog("$g_iTownHallLevel" & $g_iTownHallLevel)
+	
 	Switch $g_iTownHallLevel
 		Case 5 To 8 ;Start at Townhall 5 because any Wall Level below 4 is not supported anyways
+			SetDebugLog("Case 5 to 8")
 			If $g_iTownHallLevel < $g_iCmbUpgradeWallsLevel + 4 Then
 				SetLog("Skip Wall upgrade -insufficient TH-Level", $COLOR_WARNING)
 				Return True
 			EndIf
 		Case 9 To 13
+			SetDebugLog("Case 9 to 13")
 			If $g_iTownHallLevel < $g_iCmbUpgradeWallsLevel + 3 Then
 				SetLog("Skip Wall upgrade -insufficient TH-Level", $COLOR_WARNING)
 				Return True
 			EndIf
 		Case Else
+			SetDebugLog("Else case returning True")
 			Return True
 	EndSwitch
 

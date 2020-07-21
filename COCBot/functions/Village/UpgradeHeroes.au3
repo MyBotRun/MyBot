@@ -112,7 +112,7 @@ Func QueenUpgrade()
 	Local $aHeroLevel = 0
 
 	SetLog("Upgrade Queen")
-	ClickP($aAway, 1, 0, "#0166") ; Click away
+	ClickAway()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	BuildingClickP($g_aiQueenAltarPos) ;Click Queen Altar
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
@@ -181,13 +181,13 @@ Func QueenUpgrade()
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
-				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
+				ClickAway()
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xDB0408, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Queen Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
-					ClickP($aAway, 2, 0, "#0309") ;Click Away to close windows
+					ClickAway()
 					Return
 				EndIf
 				SetLog("Queen Upgrade complete", $COLOR_SUCCESS)
@@ -197,7 +197,7 @@ Func QueenUpgrade()
 				UpdateStats()
 			Else
 				SetLog("Queen Upgrade Fail! No DE!", $COLOR_ERROR)
-				ClickP($aAway, 2, 0, "#0306") ;Click Away to close window
+				ClickAway()
 				Return
 			EndIf
 		Else
@@ -207,7 +207,7 @@ Func QueenUpgrade()
 		SetLog("Upgrade Queen error finding button", $COLOR_ERROR)
 	EndIf
 
-	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
+	ClickAway()
 EndFunc   ;==>QueenUpgrade
 
 Func KingUpgrade()
@@ -216,7 +216,7 @@ Func KingUpgrade()
 	Local $aHeroLevel = 0
 
 	SetLog("Upgrade King")
-	ClickP($aAway, 1, 0, "#0166") ; Click away
+	ClickAway()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	BuildingClickP($g_aiKingAltarPos) ;Click King Altar
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
@@ -285,13 +285,13 @@ Func KingUpgrade()
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
-				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
+				ClickAway()
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xDB0408, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("King Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
-					ClickP($aAway, 2, 0, "#0309") ;Click Away to close windows
+					ClickAway()
 					Return
 				EndIf
 				SetLog("King Upgrade complete", $COLOR_SUCCESS)
@@ -301,7 +301,7 @@ Func KingUpgrade()
 				UpdateStats()
 			Else
 				SetLog("King Upgrade Fail! No DE!", $COLOR_ERROR)
-				ClickP($aAway, 2, 0, "#0306") ;Click Away to close window
+				ClickAway()
 				Return
 			EndIf
 
@@ -312,7 +312,7 @@ Func KingUpgrade()
 		SetLog("Upgrade King error finding button", $COLOR_ERROR)
 	EndIf
 
-	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
+	ClickAway()
 EndFunc   ;==>KingUpgrade
 
 Func WardenUpgrade()
@@ -324,7 +324,7 @@ Func WardenUpgrade()
 	EndIf
 
 	SetLog("Upgrade Grand Warden")
-	ClickP($aAway, 1, 0, "#0166") ; Click away
+	ClickAway()
 
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 
@@ -402,14 +402,14 @@ Func WardenUpgrade()
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
-				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
+				ClickAway()
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 
 				If $g_bDebugSetlog Then SaveDebugImage("UpgradeElixirBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xDB0408, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Warden Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
-					ClickP($aAway, 1, 0, "#0309") ;Click Away to close windows
+					ClickAway()
 					Return
 				EndIf
 
@@ -421,7 +421,7 @@ Func WardenUpgrade()
 				UpdateStats()
 			Else
 				SetLog("Warden Upgrade Fail! Not enough Elixir!", $COLOR_ERROR)
-				ClickP($aAway, 1, 0, "#0306") ;Click Away to close window
+				ClickAway()
 				Return
 			EndIf
 		Else
@@ -431,7 +431,7 @@ Func WardenUpgrade()
 		SetLog("Upgrade Warden error finding button", $COLOR_ERROR)
 	EndIf
 
-	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
+	ClickAway()
 EndFunc   ;==>WardenUpgrade
 
 Func ChampionUpgrade()
@@ -440,7 +440,7 @@ Func ChampionUpgrade()
 	Local $aHeroLevel = 0
 
 	SetLog("Upgrade Champion")
-	ClickP($aAway, 1, 0, "#0166") ; Click away
+	ClickAway()
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
 	BuildingClickP($g_aiChampionAltarPos) ;Click Champion Altar
 	If _Sleep($DELAYUPGRADEHERO2) Then Return
@@ -509,13 +509,13 @@ Func ChampionUpgrade()
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
 			If IsArray($aWhiteZeros) And UBound($aWhiteZeros, 1) = 2 Then
 				ClickP($aWhiteZeros, 1, 0) ; Click upgrade buttton
-				ClickP($aAway, 1, 0, "#0308") ;Click Away to close windows
+				ClickAway()
 
 				If _Sleep($DELAYUPGRADEHERO1) Then Return
 				If $g_bDebugImageSave Then SaveDebugImage("UpgradeDarkBtn2")
 				If _ColorCheck(_GetPixelColor(573, 256 + $g_iMidOffsetY, True), Hex(0xDB0408, 6), 20) Then ; Redundant Safety Check if the use Gem window opens
 					SetLog("Champion Upgrade Fail! Gem Window popped up!", $COLOR_ERROR)
-					ClickP($aAway, 2, 0, "#0309") ;Click Away to close windows
+					ClickAway()
 					Return
 				EndIf
 				SetLog("Champion Upgrade complete", $COLOR_SUCCESS)
@@ -525,7 +525,7 @@ Func ChampionUpgrade()
 				UpdateStats()
 			Else
 				SetLog("Champion Upgrade Fail! No DE!", $COLOR_ERROR)
-				ClickP($aAway, 2, 0, "#0306") ;Click Away to close window
+				ClickAway()
 				Return
 			EndIf
 		Else
@@ -535,7 +535,7 @@ Func ChampionUpgrade()
 		SetLog("Upgrade Royal Champion error finding button", $COLOR_ERROR)
 	EndIf
 
-	ClickP($aAway, 2, 0, "#0312") ;Click Away to close windows
+	ClickAway()
 EndFunc   ;==>ChampionUpgrade
 
 Func ReservedBuildersForHeroes()

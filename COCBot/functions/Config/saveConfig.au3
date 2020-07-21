@@ -351,6 +351,7 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "chkCleanYard", $g_bChkCleanYard ? 1 : 0)
 	_Ini_Add("other", "ChkCollectFreeMagicItems", $g_bChkCollectFreeMagicItems ? 1 : 0)
 	_Ini_Add("other", "ChkCollectRewards", $g_bChkCollectRewards ? 1 : 0)
+	_Ini_Add("other", "ChkSellRewards", $g_bChkSellRewards ? 1 : 0)
 	_Ini_Add("other", "chkGemsBox", $g_bChkGemsBox ? 1 : 0)
 	_Ini_Add("other", "ChkTreasuryCollect", $g_bChkTreasuryCollect ? 1 : 0)
 	_Ini_Add("other", "minTreasurygold", $g_iTxtTreasuryGold)
@@ -452,7 +453,7 @@ Func SaveConfig_600_12()
 
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 		Local $sIniName = ""
-		If $i >= $eTroopBarbarian And $i <= $eTroopIceGolem Then
+		If $i >= $eTroopBarbarian And $i <= $eTroopHeadhunter Then
 			$sIniName = StringReplace($g_asTroopNamesPlural[$i], " ", "")
 		ElseIf $i = $eCustomA Then
 			$sIniName = "CustomA"

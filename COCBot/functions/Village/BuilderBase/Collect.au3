@@ -20,7 +20,7 @@ Func CollectBuilderBase($bSwitchToBB = False, $bSwitchToNV = False)
 	If Not $g_bRunState Then Return
 
 	If $bSwitchToBB Then
-		ClickP($aAway, 1, 0, "#0332") ;Click Away
+		ClickAway()
 		If Not SwitchBetweenBases() Then Return ; Switching to Builders Base
 	EndIf
 

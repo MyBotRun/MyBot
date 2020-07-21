@@ -16,7 +16,7 @@
 
 Global $g_aiDonIcons[$eTroopCount + 1] = [$eIcnDonBarbarian, $eIcnDonArcher, $eIcnDonGiant, $eIcnDonGoblin, $eIcnDonWallBreaker, $eIcnDonBalloon, $eIcnDonWizard, $eIcnDonHealer, _
 							$eIcnDonDragon, $eIcnDonPekka, $eIcnDonBabyDragon, $eIcnDonMiner, $eIcnElectroDragon, $eIcnYeti, $eIcnDonMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnDonGolem, _
-							$eIcnDonWitch, $eIcnDonLavaHound, $eIcnDonBowler, $eIcnIceGolem, $eIcnDonBlank]
+							$eIcnDonWitch, $eIcnDonLavaHound, $eIcnDonBowler, $eIcnIceGolem, $eIcnHeadhunter, $eIcnDonBlank]
 
 Func btnDonateTroop()
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs + $eSiegeMachineCount

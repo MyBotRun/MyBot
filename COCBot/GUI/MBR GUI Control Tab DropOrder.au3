@@ -105,7 +105,7 @@ Func BtnDropOrderSet()
 	Local $aiDropOrder[$eDropOrderCount] = [ _
 			$eTroopBarbarianS, $eTroopArcherS, $eTroopGiantS, $eTroopGoblinS, $eTroopWallBreakerS, $eTroopBalloonS, $eTroopWizardS, _
 			$eTroopHealerS, $eTroopDragonS, $eTroopPekkaS, $eTroopBabyDragonS, $eTroopMinerS, $eTroopElectroDragonS, $eTroopYetiS, $eTroopMinionS, $eTroopHogRiderS, _
-			$eTroopValkyrieS, $eTroopGolemS, $eTroopWitchS, $eTroopLavaHoundS, $eTroopBowlerS, $eTroopIceGolemS, $eHeroeS, $eCCS]
+			$eTroopValkyrieS, $eTroopGolemS, $eTroopWitchS, $eTroopLavaHoundS, $eTroopBowlerS, $eTroopIceGolemS, $eTroopHeadhunterS, $eHeroeS, $eCCS]
 
 	; check for duplicate combobox index and take action
 	For $i = 0 To UBound($g_ahCmbDropOrder) - 1

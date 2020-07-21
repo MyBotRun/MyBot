@@ -35,7 +35,7 @@ Func CleanBBYard()
 						If _Sleep($DELAYCOLLECT3) Then Return
 						If Not ClickRemoveObstacle() Then ContinueLoop
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
-						ClickP($aAway, 2, 300, "#0329") ;Click Away
+						ClickAway()
 						If _Sleep($DELAYCHECKTOMBS1) Then Return
 						If getBuilderCount(True, True) = False Then Return ; update builder data, return if problem
 						If _Sleep($DELAYRESPOND) Then Return
@@ -57,6 +57,6 @@ Func CleanBBYard()
 		If $g_bDebugSetlog Then SetDebugLog("Time: " & Round(__TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
 	EndIf
 	UpdateStats()
-	ClickP($aAway, 1, 300, "#0329") ;Click Away
+	ClickAway()
 
 EndFunc   ;==>CleanBBYard

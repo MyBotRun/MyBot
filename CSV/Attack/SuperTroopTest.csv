@@ -1,0 +1,34 @@
+NOTE  | SuperTroopTestingOnly
+
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|
+SIDE  |           |           |           |           |           |0          |0         |           |
+      |EAGLE      |INFERNO    |XBOW       |WIZTOWER   |MORTAR |AIRDEFENSE     |GEMBOX     |GEMBOX     |
+SIDEB |20         |0          |0          |0          |0      |5              |           |           |
+
+      
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|BUILDING___|
+	  
+MAKE  |A          |FRONT-LEFT |10         |2          |INT-EXT    |0          |0          |           |
+MAKE  |B          |FRONT-RIGHT|10         |2          |INT-EXT    |0          |0          |           |
+MAKE  |C          |FRONT-LEFT |10         |-4         |INT-EXT    |0          |0          |           |
+MAKE  |D          |FRONT-RIGHT|10         |-4         |INT-EXT    |0          |0          |           |
+MAKE  |E          |FRONT-LEFT |20         |-12        |INT-EXT    |0          |0          |           |
+MAKE  |F          |FRONT-RIGHT|20         |-12        |INT-EXT    |0          |0          |           |
+MAKE  |G          |FRONT-RIGHT|10         |-20        |INT-EXT    |0          |0          |           |
+MAKE  |H          |FRONT-LEFT |1          |1          |IGNORE     |           |           |EAGLE      |           
+	 
+      |VECTOR_____|INDEX____________|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE    |SLEEPAFTER_|___________|
+
+DROP  |B          |1                |1          |KING       |50-70      |0              |10-20      |           |
+DROP  |B          |1                |1          |QUEEN      |50-70      |0              |10-20      |           |
+DROP  |B          |1                |1          |CHAMPION   |50-70      |0              |10-20      |           |
+DROP  |G          |1                |1          |RSpell     |50-70      |0              |10-12      |           |
+DROP  |B          |1                |6          |Heal       |50-70      |0              |10-12      |           |
+DROP  |B          |3                |3          |Gobl       |50-70      |0              |10-12      |           |
+DROP  |B          |3                |3          |Witc       |50-70      |0              |10-12      |           |
+DROP  |B          |3                |3          |Barb       |50-70      |0              |10-12      |           |
+DROP  |B          |3                |3          |Giant      |50-70      |0              |10-12      |           |
+DROP  |B          |3                |3          |Wall       |50-70      |0              |10-12      |           |
+DROP  |B          |3                |3          |BabyD      |50-70      |0              |10-12      |           |
+DROP  |A-B        |1-7              |10         |REMAIN     |50-70      |30-50          |10-12      |           |
+

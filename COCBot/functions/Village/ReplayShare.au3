@@ -24,7 +24,7 @@ Func ReplayShare($bShareLastReplay)
 
 	SetLog("Sharing last Attack", $COLOR_INFO)
 
-	ClickP($aAway, 1, 0, "#0235") ;Click away any open Windows
+	ClickAway()
 	If _Sleep($DELAYREPLAYSHARE2) Then Return
 
 	If ClickB("MessagesButton", Default, 300) Then
@@ -72,5 +72,5 @@ Func ReplayShare($bShareLastReplay)
 		Return
 	EndIf
 
-	ClickP($aAway, 1, 0, "#0235") ;Click away any open Windows
+	ClickAway()
 EndFunc   ;==>ReplayShare

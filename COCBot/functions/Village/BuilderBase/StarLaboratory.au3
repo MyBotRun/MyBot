@@ -71,7 +71,7 @@ Func StarLaboratory($bTestRun = False)
 		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
 	Else
 		SetLog("Cannot find the Star Laboratory Research Button!", $COLOR_ERROR)
-		ClickP($aAway, 2, $DELAYLABORATORY4, "#0199")
+		ClickAway()
 		Return False
 	EndIf
 
@@ -83,7 +83,7 @@ Func StarLaboratory($bTestRun = False)
 		If $g_bDebugSetlog Then Setlog("Lab window off: (" & $iXMoved & ", " & $iYMoved & ")", $COLOR_DEBUG)
 	Else
 		SetLog("Trouble finding lab close button, try again...", $COLOR_WARNING)
-		ClickP($aAway, 2, $DELAYLABORATORY4, "#0199")
+		ClickAway()
 		Return False
 	EndIf
 
@@ -104,7 +104,7 @@ Func StarLaboratory($bTestRun = False)
 		ElseIf $g_bDebugSetlog Then
 			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
-		ClickP($aAway, 2, $DELAYLABORATORY4, "#0328")
+		ClickAway()
 		Return False
 	EndIf
 
@@ -130,7 +130,7 @@ Func StarLaboratory($bTestRun = False)
 		Next
 	Else
 		SetLog("No upgradable troop found!", $COLOR_ERROR)
-		ClickP($aAway, 2, $DELAYLABORATORY4, "#0328")
+		ClickAway()
 		Return False
 	EndIf
 
@@ -174,7 +174,7 @@ Func StarLaboratory($bTestRun = False)
 		Next
 		If $g_iCmbStarLaboratory = $iSelectedUpgrade Then
 			SetLog("No alternate troop for upgrade found", $COLOR_WARNING)
-			ClickP($aAway, 2, $DELAYLABORATORY4, "#0353")
+			ClickAway()
 			Return False
 		Else
 			SetLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " selected for upgrade, upgrade cost = " & $aUpgradeValue[$iSelectedUpgrade], $COLOR_INFO)
@@ -184,15 +184,15 @@ Func StarLaboratory($bTestRun = False)
 	; Try to upgrade - LabUpgrade(), check insufficient resource first
 	If $iAvailElixir < $aUpgradeValue[$iSelectedUpgrade] Then
 		SetLog("Insufficent Elixir for " & $g_avStarLabTroops[$iSelectedUpgrade][3] & ", Lab requires: " & $aUpgradeValue[$iSelectedUpgrade] & ", available: " & $iAvailElixir, $COLOR_INFO)
-		ClickP($aAway, 2, $DELAYLABORATORY4, "#0355")
+		ClickAway()
 		Return False
 	ElseIf StarLabUpgrade($iSelectedUpgrade, $iXMoved, $iYMoved, $bTestRun) = True Then
 		SetLog("Elixir used = " & $aUpgradeValue[$iSelectedUpgrade], $COLOR_INFO)
-		ClickP($aAway, 2, $DELAYLABORATORY4, "#0356")
+		ClickAway()
 		Return True
 	EndIf
 
-	ClickP($aAway, 2, $DELAYLABORATORY4, "#0359")
+	ClickAway()
 	Return False
 
 EndFunc   ;==>Laboratory
@@ -231,7 +231,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 			If _ColorCheck(_GetPixelColor(258 + $iXMoved, 192 + $iYMoved, True), Hex(0xFF1919, 6), 20) And _ColorCheck(_GetPixelColor(272 + $iXMoved, 194 + $iYMoved, True), Hex(0xFF1919, 6), 20) Then
 				SetLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Previously maxxed, select another troop", $COLOR_ERROR) ; oops, we found the red warning message
 				If _Sleep($DELAYLABUPGRADE2) Then Return
-				ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0201")
+				ClickAway()
 				Return False
 			EndIf
 
@@ -239,7 +239,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 			If _PixelSearch($g_avStarLabTroops[$iSelectedUpgrade][0] + 67, $g_avStarLabTroops[$iSelectedUpgrade][1] + 79, $g_avStarLabTroops[$iSelectedUpgrade][0] + 69, $g_avStarLabTroops[$iSelectedUpgrade][0] + 84, $sStarColorNoLoot, 20) <> 0 Then ; Check for Red Zero = means not enough loot!
 				SetLog("Missing Loot to upgrade " & $g_avStarLabTroops[$iSelectedUpgrade][3] & " (secondary check after Upgrade Value read failed)", $COLOR_ERROR)
 				If _Sleep($DELAYLABUPGRADE2) Then Return
-				ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0333")
+				ClickAway()
 				Return False
 			EndIf
 
@@ -247,7 +247,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 			If _ColorCheck(_GetPixelColor(625 + $iXMoved, 250 + $g_iMidOffsetY + $iYMoved, True), Hex(0x848484, 6), 20) And _ColorCheck(_GetPixelColor(660 + $iXMoved, 250 + $g_iMidOffsetY + $iYMoved, True), Hex(0x848484, 6), 20) Then
 				SetLog("Upgrade in progress, waiting for completion of other troops", $COLOR_WARNING)
 				If _Sleep($DELAYLABORATORY2) Then Return
-				ClickP($aAway, 2, $DELAYLABORATORY4, "#0000")
+				ClickAway()
 				Return False
 			Else
 				; get upgrade time from window
@@ -272,7 +272,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 				; check for green button to use gems to finish upgrade, checking if upgrade actually started
 				If Not (_ColorCheck(_GetPixelColor(625 + $iXMoved, 218 + $g_iMidOffsetY + $iYMoved, True), Hex(0x6fbd1f, 6), 15) Or _ColorCheck(_GetPixelColor(660 + $iXMoved, 218 + $g_iMidOffsetY + $iYMoved, True), Hex(0x6fbd1f, 6), 15)) Then
 					SetLog("Something went wrong with " & $g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade, try again.", $COLOR_ERROR)
-					ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0360")
+					ClickAway()
 					Return False
 				EndIf
 				SetLog("Upgrade " & $g_avStarLabTroops[$iSelectedUpgrade][3] & " in your star laboratory started with success...", $COLOR_SUCCESS)
@@ -280,14 +280,14 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 				PushMsg("StarLabSuccess")
 				If _Sleep($DELAYLABUPGRADE2) Then Return
 
-				ClickP($aAway, 2, 0, "#0204")
+				ClickAway()
 
 				Return True
 			Else
 				SetLog("Oops, Gems required for " & $g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade, try again.", $COLOR_ERROR)
 			EndIf
 	EndSelect
-	ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0205")
+	ClickAway()
 	Return False
 
 EndFunc   ;==>StarLabUpgrade
@@ -340,7 +340,7 @@ Func LocateStarLab()
 				SetLog("It reads as Level " & $aResult[2] & ".", $COLOR_INFO)
 				Return True
 			Else
-				ClickP($aAway, 1, 0, "#0931") ;Click Away
+				ClickAway()
 				SetDebugLog("Stored Star Laboratory Position is not valid.", $COLOR_ERROR)
 				SetDebugLog("Found instead: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG)
 				SetDebugLog("Village position: " & $g_aiStarLaboratoryPos[0] & ", " & $g_aiStarLaboratoryPos[1], $COLOR_DEBUG, True)
@@ -350,7 +350,7 @@ Func LocateStarLab()
 				$g_aiStarLaboratoryPos[1] = -1
 			EndIf
 		Else
-			ClickP($aAway, 1, 0, "#0932") ;Click Away
+			ClickAway()
 			SetDebugLog("Stored Star Laboratory Position is not valid.", $COLOR_ERROR)
 			SetDebugLog("Village position: " & $g_aiStarLaboratoryPos[0] & ", " & $g_aiStarLaboratoryPos[1], $COLOR_DEBUG, True)
 			ConvertToVillagePos($g_aiStarLaboratoryPos[0],$g_aiStarLaboratoryPos[1])
@@ -421,7 +421,7 @@ Func LocateStarLab()
 				SetLog("It reads as Level " & $aResult[2] & ".", $COLOR_INFO)
 				Return True
 			Else
-				ClickP($aAway, 1, 0, "#0931") ;Click Away
+				ClickAway()
 				SetDebugLog("Found Star Laboratory Position is not valid.", $COLOR_ERROR)
 				SetDebugLog("Found instead: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG)
 				SetDebugLog("Village position: " & $g_aiStarLaboratoryPos[0] & ", " & $g_aiStarLaboratoryPos[1], $COLOR_DEBUG, True)
@@ -431,7 +431,7 @@ Func LocateStarLab()
 				$g_aiStarLaboratoryPos[1] = -1
 			EndIf
 		Else
-			ClickP($aAway, 1, 0, "#0932") ;Click Away
+			ClickAway()
 			SetDebugLog("Found Star Laboratory Position is not valid.", $COLOR_ERROR)
 			SetDebugLog("Village position: " & $g_aiStarLaboratoryPos[0] & ", " & $g_aiStarLaboratoryPos[1], $COLOR_DEBUG, True)
 			ConvertToVillagePos($g_aiStarLaboratoryPos[0],$g_aiStarLaboratoryPos[1])

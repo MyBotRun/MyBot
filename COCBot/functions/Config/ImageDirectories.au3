@@ -30,11 +30,12 @@ Global Const $g_sImgError = @ScriptDir & "\imgxml\other\Error[[Android]]*"
 Global Const $g_sImgOutOfSync = @ScriptDir & "\imgxml\other\Oos[[Android]]*"
 Global Const $g_sImgConnectionLost = @ScriptDir & "\imgxml\other\ConnectionLost[[Android]]*"
 Global Const $g_sImgMaintenance = @ScriptDir & "\imgxml\other\Maintenance*"
+Global Const $G_sImgImportantNotice = @ScriptDir & "\imgxml\other\ImportantNotice[[Android]]*"
 #EndRegion
 
 #Region Main Village
 Global $g_sImgCollectRessources = @ScriptDir & "\imgxml\Resources\Collect"
-Global $g_sImgCollectLootCart = @ScriptDir & "\imgxml\Resources\CollectLootCart*"
+Global $g_sImgCollectLootCart = @ScriptDir & "\imgxml\Resources\LootCart*"
 Global $g_sImgBoat = @ScriptDir & "\imgxml\Boat\BoatNormalVillage_0_89.xml"
 Global $g_sImgZoomOutDir = @ScriptDir & "\imgxml\village\NormalVillage\"
 Global $g_sImgCheckWallDir = @ScriptDir & "\imgxml\Walls"

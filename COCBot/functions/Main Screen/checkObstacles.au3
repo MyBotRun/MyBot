@@ -18,7 +18,7 @@ Func checkObstacles($bBuilderBase = Default) ;Checks if something is in the way 
 	If $bBuilderBase = Default Then $bBuilderBase = $g_bStayOnBuilderBase
 	Static $iRecursive = 0
 
-	If TestCapture() = False And WinGetAndroidHandle() = 0 Then
+	If Not TestCapture() And WinGetAndroidHandle() = 0 Then
 		; Android not available
 		Return FuncReturn(True)
 	EndIf
@@ -138,6 +138,8 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 				EndIf
 			Case _CheckPixel($aIsCheckOOS, $g_bNoCapturePixel) Or (UBound(decodeSingleCoord(FindImageInPlace("OOS", $g_sImgOutOfSync, "355,335,435,395", False, $g_iAndroidLollipop))) > 1) ; Check OoS
 				SetLog("Out of Sync Error, Reloading CoC", $COLOR_ERROR)
+			Case (UBound(decodeSingleCoord(FindImageInPlace("ImportantNotice", $G_sImgImportantNotice, "150,250,430,320", False))) > 1)
+				SetLog("Found the 'Important Notice' window, closing it", $COLOR_INFO)
 			Case Else
 				;  Add check for game update and Rate CoC error messages
 				If $g_bDebugImageSave Then SaveDebugImage("ChkObstaclesReloadMsg_", False) ; debug only
@@ -214,6 +216,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		If $g_bNotifyTGEnable And $g_bNotifyAlertMaintenance = True Then NotifyPushToTelegram("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....")
 		If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
 		If _SleepStatus($iMaintenanceWaitTime) Then Return
+		If ClickB("ReloadButton") Then SetLog("Trying to reload game after maintenance break", $COLOR_INFO)
 		checkObstacles_ResetSearch()
 	EndIf
 

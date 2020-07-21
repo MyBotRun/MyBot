@@ -21,7 +21,8 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	;;;;;; Use this only in halt attack mode and if an error happened in reading army current number Or Max capacity ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	If $bOpenArmyWindow Then
-		ClickP($aAway, 1, 0, "#0346") ;Click Away
+		;ClickP($aAway, 1, 0, "#0346") ;Click Away
+		ClickAway()
 		If _Sleep($DELAYCHECKFULLARMY1) Then Return
 		Click($aArmyTrainButton[0], $aArmyTrainButton[1], 1, 0, "#0347") ; Click Button Army Overview
 		If _Sleep($DELAYCHECKFULLARMY2) Then Return
@@ -54,7 +55,8 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	If $g_bDebugSetlog Then SetDebugLog("Can Request CC: " & $g_bCanRequestCC, $COLOR_DEBUG)
 
 	If $bCloseArmyWindow Then
-		ClickP($aAway, 1, 0, "#0348") ;Click Away
+		;ClickP($aAway, 1, 0, "#0348") ;Click Away
+		ClickAway()
 		If _Sleep($DELAYCHECKFULLARMY3) Then Return
 	EndIf
 

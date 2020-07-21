@@ -55,6 +55,7 @@ Func _ZoomOut() ;Zooms out
 EndFunc   ;==>_ZoomOut
 
 Func ZoomOutBlueStacks() ;Zooms out
+	SetDebugLog("ZoomOutBlueStacks()")
 	; ctrl click is best and most stable for BlueStacks
 	Return ZoomOutCtrlClick(False, False, False, 250)
    ;Return DefaultZoomOut("{DOWN}", 0)
@@ -63,6 +64,7 @@ Func ZoomOutBlueStacks() ;Zooms out
 EndFunc
 
 Func ZoomOutBlueStacks2()
+	SetDebugLog("ZoomOutBlueStacks2()")
 	If $__BlueStacks2Version_2_5_or_later = False Then
 		; ctrl click is best and most stable for BlueStacks, but not working after 2.5.55.6279 version
 		Return ZoomOutCtrlClick(False, False, False, 250)
@@ -76,7 +78,7 @@ Func ZoomOutBlueStacks2()
 EndFunc
 
 Func ZoomOutMEmu()
-   ;ClickP($aAway) ; activate window first with Click Away (when not clicked zoom might not work)
+	SetDebugLog("ZoomOutDroid4X()")
    Return DefaultZoomOut("{F3}", 0, ($g_iAndroidZoomoutMode <> 3))
 EndFunc
 
@@ -91,15 +93,18 @@ EndFunc
 #ce
 
 Func ZoomOutDroid4X()
+   SetDebugLog("ZoomOutDroid4X()")
    Return ZoomOutCtrlWheelScroll(True, True, True, ($g_iAndroidZoomoutMode <> 3), Default, -5, 250)
 EndFunc
 
 Func ZoomOutNox()
-   Return ZoomOutCtrlWheelScroll(True, True, True, ($g_iAndroidZoomoutMode <> 3), Default, -5, 250)
-   ;Return DefaultZoomOut("{CTRLDOWN}{DOWN}{CTRLUP}", 0)
+	SetDebugLog("ZoomOutNox()")
+	Return ZoomOutCtrlWheelScroll(True, True, True, ($g_iAndroidZoomoutMode <> 3), Default, -5, 250)
+	;Return DefaultZoomOut("{CTRLDOWN}{DOWN}{CTRLUP}", 0)
 EndFunc
 
 Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40, $bAndroidZoomOut = True) ;Zooms out
+	SetDebugLog("DefaultZoomOut()")
 	Local $sFunc = "DefaultZoomOut"
 	Local $result0, $result1, $i = 0
 	Local $exitCount = 80
@@ -170,6 +175,7 @@ EndFunc   ;==>ZoomOut
 
 ;Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel = True, $AlwaysControlFocus = False, $AndroidZoomOut = True, $WheelRotation = -5, $WheelRotationCount = 1)
 Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel = True, $AlwaysControlFocus = False, $AndroidZoomOut = True, $hWin = Default, $ScrollSteps = -5, $ClickDelay = 250)
+	SetDebugLog("ZoomOutCtrlWheelScroll()")
 	Local $sFunc = "ZoomOutCtrlWheelScroll"
    ;AutoItSetOption ( "SendKeyDownDelay", 3000)
 	Local $exitCount = 80
@@ -185,7 +191,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 		If $g_bDebugSetlog Then
 			SetDebugLog("Zooming Out (" & $sFunc & ")", $COLOR_INFO)
 		Else
-			SetLog("Zooming Out", $COLOR_INFO)
+			SetLog("Zooming Out ", $COLOR_INFO)
 		EndIf
 
 		AndroidShield("ZoomOutCtrlWheelScroll") ; Update shield status
@@ -270,6 +276,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
  EndFunc
 
 Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = False, $AndroidZoomOut = True, $ClickDelay = 250)
+	SetDebugLog("ZoomOutCtrlClick()")
 	Local $sFunc = "ZoomOutCtrlClick"
    ;AutoItSetOption ( "SendKeyDownDelay", 3000)
 	Local $exitCount = 80
@@ -359,6 +366,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
  EndFunc
 
 Func AndroidOnlyZoomOut() ;Zooms out
+	SetDebugLog("AnroidOnlyZoomOut()")
 	Local $sFunc = "AndroidOnlyZoomOut"
 	Local $i = 0
 	Local $exitCount = 80
@@ -467,7 +475,7 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 					$aScrollPos[0] = $aCenterHomeVillageClickDrag[0]
 					$aScrollPos[1] = $aCenterHomeVillageClickDrag[1]
 				EndIf
-				ClickP($aAway, 1, 0, "#0000") ; ensure field is clean
+				ClickAway()
 				ClickDrag($aScrollPos[0], $aScrollPos[1], $aScrollPos[0] - $x, $aScrollPos[1] - $y)
 				If _Sleep(250) Then
 					$iCallCount = 0

@@ -59,6 +59,7 @@ Func btnAddConfirm()
 			EndIf
 
 			saveConfig() ; save current config so we don't miss anything recently changed
+			readConfig() ; read it back in to reset all of the .ini file global variables
 
 			$g_sProfileCurrentName = $newProfileName
 			; Setup the profile if it doesn't exist.

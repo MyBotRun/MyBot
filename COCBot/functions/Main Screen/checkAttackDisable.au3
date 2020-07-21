@@ -112,7 +112,8 @@ Func checkAttackDisable($iSource, $Result = "")
 			If $iSource = $g_iTaBChkIdle Then
 				While _CheckPixel($aIsMain, $g_bCapturePixel) = False
 					If _Sleep($DELAYATTACKDISABLE500) Then Return
-					ClickP($aAway, 1, 0, "#0000") ;Click Away to close Topen page
+					;ClickP($aAway, 1, 0, "#0000") ;Click Away to close Topen page
+					ClickAway()
 					$iCount += 1
 					If $g_bDebugSetlog Then SetDebugLog("wait main page" & $iCount, $COLOR_DEBUG)
 					If $iCount > 5 Or isProblemAffect(True) Then ; wait 2.5 seconds, give up, let checkobstacles try to clear page

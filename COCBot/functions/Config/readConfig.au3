@@ -135,8 +135,8 @@ Func ReadBuildingConfig()
 		$g_avBuildingUpgrades[$iz][7] = IniRead($g_sProfileBuildingPath, "upgrade", "upgradeend" & $iz, "-1")
 		$g_abBuildingUpgradeEnable[$iz] = (IniRead($g_sProfileBuildingPath, "upgrade", "upgradechk" & $iz, 0) = "1")
 		$g_abUpgradeRepeatEnable[$iz] = (IniRead($g_sProfileBuildingPath, "upgrade", "upgraderepeat" & $iz, 0) = "1")
-		$g_aiPicUpgradeStatus[$iz] = IniRead($g_sProfileBuildingPath, "upgrade", "upgradestatusicon" & $iz, $eIcnTroops)
-
+		$g_aiPicUpgradeStatus[$iz] = IniRead($g_sProfileBuildingPath, "upgrade", "upgradestatusicon" & $iz, $eIcnRedLight)
+		
 		If $locationsInvalid = True Then
 			$g_avBuildingUpgrades[$iz][0] = -1
 			$g_avBuildingUpgrades[$iz][1] = -1
@@ -404,6 +404,7 @@ Func ReadConfig_600_6()
 	IniReadS($g_bChkGemsBox, $g_sProfileConfigPath, "other", "chkGemsBox", False, "Bool")
 	IniReadS($g_bChkCollectFreeMagicItems, $g_sProfileConfigPath, "other", "ChkCollectFreeMagicItems", False, "Bool")
 	IniReadS($g_bChkCollectRewards, $g_sProfileConfigPath, "other", "ChkCollectRewards", False, "Bool")
+	IniReadS($g_bChkSellRewards, $g_sProfileConfigPath, "other", "ChkSellRewards", False, "Bool")
 	IniReadS($g_bChkTreasuryCollect, $g_sProfileConfigPath, "other", "ChkTreasuryCollect", False, "Bool")
 	IniReadS($g_iTxtTreasuryGold, $g_sProfileConfigPath, "other", "minTreasurygold", 0, "int")
 	IniReadS($g_iTxtTreasuryElixir, $g_sProfileConfigPath, "other", "minTreasuryelixir", 0, "int")
@@ -484,7 +485,7 @@ Func ReadConfig_600_11()
 	For $i = 0 To 2
 		$g_aiClanCastleTroopWaitType[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbClanCastleTroop" & $i, $eTroopCount))
 		$g_aiClanCastleTroopWaitQty[$i] = Int(IniRead($g_sProfileConfigPath, "donate", "txtClanCastleTroop" & $i, "0"))
-		If $g_aiClanCastleTroopWaitType[$i] < $eTroopCount Then ; barb - IceG
+		If $g_aiClanCastleTroopWaitType[$i] < $eTroopCount Then ; Barb - Hunt
 			$g_aiCCTroopsExpected[$g_aiClanCastleTroopWaitType[$i]] += $g_aiClanCastleTroopWaitQty[$i]
 		EndIf
 
@@ -511,7 +512,7 @@ Func ReadConfig_600_12()
 	IniReadS($g_abChkDonateQueueOnly[1], $g_sProfileConfigPath, "donate", "chkDonateQueueOnly[1]", True, "Bool")
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
 		Local $sIniName = ""
-		If $i >= $eTroopBarbarian And $i <= $eTroopIceGolem Then
+		If $i >= $eTroopBarbarian And $i <= $eTroopHeadhunter Then
 			$sIniName = StringReplace($g_asTroopNamesPlural[$i], " ", "")
 		ElseIf $i = $eCustomA Then
 			$sIniName = "CustomA"
@@ -592,6 +593,9 @@ Func ReadConfig_600_12()
 
 	$g_asTxtDonateTroop[$eTroopIceGolem] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateIceGolems", "ice golem|ice golems"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopIceGolem] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistIceGolems", "no ice golem|ice golem no"), "|", @CRLF)
+	
+	$g_asTxtDonateTroop[$eTroopHeadhunter] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateHeadhunters", "headhunter|hunt"), "|", @CRLF)
+	$g_asTxtBlacklistTroop[$eTroopHeadhunter] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistHeadhunters", "no headhunt|no hunt"), "|", @CRLF)
 
 	$g_asTxtDonateTroop[$eCustomA] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomA", "ground support|ground"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eCustomA] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistCustomA", "no ground|ground no|nonly"), "|", @CRLF)

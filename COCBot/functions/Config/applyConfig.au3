@@ -316,7 +316,8 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetData($g_hTxtTreasuryElixir, $g_iTxtTreasuryElixir)
 			GUICtrlSetData($g_hTxtTreasuryDark, $g_iTxtTreasuryDark)
 			GUICtrlSetState($g_hChkCollectRewards, $g_bChkCollectRewards ? $GUI_CHECKED : $GUI_UNCHECKED)
-
+			GUICtrlSetState($g_hChkSellRewards, $g_bChkSellRewards ? $GUI_CHECKED : $GUI_UNCHECKED)
+			
 			GUICtrlSetState($g_hChkCollectBuilderBase, $g_bChkCollectBuilderBase ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkCleanBBYard, $g_bChkCleanBBYard ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkStartClockTowerBoost, $g_bChkStartClockTowerBoost ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -407,6 +408,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_iTxtTreasuryElixir = GUICtrlRead($g_hTxtTreasuryElixir)
 			$g_iTxtTreasuryDark = GUICtrlRead($g_hTxtTreasuryDark)
 			$g_bChkCollectRewards = (GUICtrlRead($g_hChkCollectRewards) = $GUI_CHECKED)
+			$g_bChkSellRewards = (GUICtrlRead($g_hChkSellRewards) = $GUI_CHECKED)
 
 			$g_bChkCollectBuilderBase = (GUICtrlRead($g_hChkCollectBuilderBase) = $GUI_CHECKED)
 			$g_bChkCleanBBYard = (GUICtrlRead($g_hChkCleanBBYard) = $GUI_CHECKED)
@@ -758,10 +760,18 @@ EndFunc   ;==>ApplyConfig_600_15
 
 Func ApplyConfig_600_16($TypeReadSave)
 	; <><><><> Village / Upgrade - Buildings <><><><>
+	Local $j=0
 	Switch $TypeReadSave
 		Case "Read"
 			For $iz = 0 To UBound($g_avBuildingUpgrades, 1) - 1 ; Apply the buildings upgrade variable to GUI
-				_GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $g_aiPicUpgradeStatus[$iz]) ; Set GUI status pic
+				;SetDebugLog("Setting image to " & $g_aiPicUpgradeStatus[$iz])
+				;$eIcnTroops=43, $eIcnGreenLight=69, $eIcnRedLight=71 or $eIcnYellowLight=73
+				;I have no idea why this crap is necessary...
+				$j=$eIcnRedLight
+				if $g_aiPicUpgradeStatus[$iz]=$eIcnYellowLight Then $j=$eIcnYellowLight
+				If $g_aiPicUpgradeStatus[$iz]=$eIcnGreenLight Then $j=$eIcnGreenLight
+				;Should be no other value...otherwise will default to Red.
+				_GUICtrlSetImage($g_hPicUpgradeStatus[$iz], $g_sLibIconPath, $j) ; Set GUI status pic
 				If $g_avBuildingUpgrades[$iz][2] > 0 Then
 					GUICtrlSetData($g_hTxtUpgradeValue[$iz], _NumberFormat($g_avBuildingUpgrades[$iz][2])) ; Set GUI loot value to match $g_avBuildingUpgrades variable
 				Else

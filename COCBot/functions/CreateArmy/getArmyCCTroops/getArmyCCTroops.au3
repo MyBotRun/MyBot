@@ -19,7 +19,7 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 
 	If $g_bDebugSetlogTrain Then SetLog("getArmyCCTroops():", $COLOR_DEBUG)
 
-	If Not $bOpenArmyWindow  Then
+	If Not $bOpenArmyWindow Then
 		If $bCheckWindow And Not IsTrainPage() Then ; check for train page
 			SetError(1)
 			Return ; not open, not requested to be open - error.
@@ -35,53 +35,90 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 	Local $sTroopDiamond = GetDiamondFromRect("20,495,462,598") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 	Local $aCurrentCCTroops = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Troops", $sTroopDiamond, $sTroopDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 
-	Local $aTempTroopArray,$aTroops ,$aTroopCoords
+	Local $aTempTroopArray, $avTroops, $aTroopCoords
 	Local $sTroopName = ""
 	Local $iTroopIndex = -1
-	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
+	Local $bSuperTroop = False
+	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
+	Local $aCurrentTroopsLog[0][3] ; [0] = Name [1] = Quantities [3] Xaxis
 
 	$g_aiCurrentCCTroops = $aCurrentCCTroopsEmpty ; Reset Current Troops Array
+	$g_aiCurrentCCSuperTroops = $aCurrentCCTroopsEmpty
+
 	If UBound($aCurrentCCTroops, 1) >= 1 Then
 		For $i = 0 To UBound($aCurrentCCTroops, 1) - 1 ; Loop through found CC Troops
 			$aTempTroopArray = $aCurrentCCTroops[$i] ; Declare Array to Temp Array
 
 			$iTroopIndex = TroopIndexLookup($aTempTroopArray[0], "getArmyTroops()") ; Get the Index of the Troop from the ShortName
+			If $iTroopIndex >= $eSuperBarb Then
+				$iTroopIndex -= $eSuperBarb
+				$bSuperTroop = True
+			EndIf
 
 			If StringInStr($aTempTroopArray[1], "|") Then
-				$aTroops = StringSplit($aTempTroopArray[1], "|")
-				For $j = 1 To $aTroops[0]
-					$aTroopCoords = StringSplit($aTroops[$j], ",", $STR_NOCOUNT) ; Split the Coordinates where the Troop got found into X and Y
-					Local $TempQty = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 498, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
-					$g_aiCurrentCCTroops[$iTroopIndex] += $TempQty
+				$avTroops = StringSplit($aTempTroopArray[1], "|")
+				For $j = 1 To $avTroops[0]
+					$aTroopCoords = StringSplit($avTroops[$j], ",", $STR_NOCOUNT) ; Split the Coordinates where the Troop got found into X and Y
+					Local $iQuantity = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 498, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
+					If $bSuperTroop Then
+						$g_aiCurrentCCSuperTroops[$iTroopIndex] += $iQuantity
+					Else
+						$g_aiCurrentCCTroops[$iTroopIndex] += $iQuantity
+					EndIf
 					$aTroopWSlot[UBound($aTroopWSlot) - 1][0] = Slot($aTroopCoords[0], $aTroopCoords[1])
 					$aTroopWSlot[UBound($aTroopWSlot) - 1][1] = $iTroopIndex
-					$aTroopWSlot[UBound($aTroopWSlot) - 1][2] = $TempQty
+					$aTroopWSlot[UBound($aTroopWSlot) - 1][2] = $iQuantity
 					ReDim $aTroopWSlot[UBound($aTroopWSlot) + 1][3]
+
+					If $bSuperTroop Then
+						$sTroopName = $g_aiCurrentCCSuperTroops[$iTroopIndex] >= 2 ? $g_asSuperTroopNamesPlural[$iTroopIndex] : $g_asSuperTroopNames[$iTroopIndex]
+					Else
+						$sTroopName = $g_aiCurrentCCTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex]
+					EndIf
+					_ArrayAdd($aCurrentTroopsLog, $sTroopName & "|" & $iQuantity & "|" & Slot($aTroopCoords[0], $aTroopCoords[1]))
 				Next
 			Else
 				$aTroopCoords = StringSplit($aTempTroopArray[1], ",", $STR_NOCOUNT) ; Split the Coordinates where the Troop got found into X and Y
-				$g_aiCurrentCCTroops[$iTroopIndex] = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 498, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
+				Local $iQuantity = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 498, $bNeedCapture))
+				If $bSuperTroop Then
+					$g_aiCurrentCCSuperTroops[$iTroopIndex] += $iQuantity
+				Else
+					$g_aiCurrentCCTroops[$iTroopIndex] += $iQuantity
+				EndIf
+
 				$aTroopWSlot[UBound($aTroopWSlot) - 1][0] = Slot($aTroopCoords[0], $aTroopCoords[1])
 				$aTroopWSlot[UBound($aTroopWSlot) - 1][1] = $iTroopIndex
-				$aTroopWSlot[UBound($aTroopWSlot) - 1][2] = $g_aiCurrentCCTroops[$iTroopIndex]
+				$aTroopWSlot[UBound($aTroopWSlot) - 1][2] = $iQuantity
 				ReDim $aTroopWSlot[UBound($aTroopWSlot) + 1][3]
+
+				If $bSuperTroop Then
+					$sTroopName = $g_aiCurrentCCSuperTroops[$iTroopIndex] >= 2 ? $g_asSuperTroopNamesPlural[$iTroopIndex] : $g_asSuperTroopNames[$iTroopIndex]
+				Else
+					$sTroopName = $g_aiCurrentCCTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex]
+				EndIf
+				_ArrayAdd($aCurrentTroopsLog, $sTroopName & "|" & $iQuantity & "|" & Slot($aTroopCoords[0], $aTroopCoords[1]))
 			EndIf
 
-			$sTroopName = $g_aiCurrentCCTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex] ; Select the right Troop Name, If more than one then use the Plural
-			If $bSetLog Then SetLog(" - " & $g_aiCurrentCCTroops[$iTroopIndex] & "x " & $sTroopName & " (Clan Castle)", $COLOR_SUCCESS) ; Log What Troop is available and How many
 		Next
 	EndIf
 
+	_ArraySort($aCurrentTroopsLog, 0, 0, 0, 2)
+	For $index = 0 To UBound($aCurrentTroopsLog) - 1
+		If $aCurrentTroopsLog[$index][1] > 0 And $bSetLog Then SetLog(" - " & $aCurrentTroopsLog[$index][1] & " " & $aCurrentTroopsLog[$index][0] & " Available (Clan Castle)", $COLOR_SUCCESS)
+	Next
+
+
 	If $bCloseArmyWindow Then
-		ClickP($aAway, 1, 0, "#0000") ;Click Away
+		;ClickP($aAway, 1, 0, "#0000") ;Click Away
+		ClickAway()
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
 
 	If $bGetSlot Then
-		If Ubound($aTroopWSlot) > 1 Then _ArrayDelete($aTroopWSlot, Ubound($aTroopWSlot) - 1)
+		If UBound($aTroopWSlot) > 1 Then _ArrayDelete($aTroopWSlot, UBound($aTroopWSlot) - 1)
 		If UBound($aTroopWSlot) = 1 And $aTroopWSlot[0][0] = 0 And $aTroopWSlot[0][1] = "" Then Return
 		_ArraySort($aTroopWSlot)
 		Return $aTroopWSlot
 	EndIf
 
-EndFunc   ;==>getArmyTroops
+EndFunc   ;==>getArmyCCTroops

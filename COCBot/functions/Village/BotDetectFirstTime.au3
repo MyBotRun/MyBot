@@ -14,7 +14,7 @@
 Func BotDetectFirstTime()
 	If $g_bIsClientSyncError Then Return ; if restart after OOS, and User stop/start bot, skip this.
 
-	ClickP($aAway, 1, 0, "#0166") ; Click away
+	ClickAway()
 	If _Sleep($DELAYBOTDETECT1) Then Return
 
 	SetLog("Detecting your Buildings", $COLOR_INFO)

@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func BuilderBaseReport($bBypass = False, $bSetLog = True)
-	PureClickP($aAway, 1, 0, "#0319") ;Click Away
+	ClickAway()
 	If _Sleep($DELAYVILLAGEREPORT1) Then Return
 
 	Switch $bBypass

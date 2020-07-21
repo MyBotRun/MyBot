@@ -18,7 +18,7 @@
 
 Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 	If $g_bDebugSetlogTrain Then SetLog("Func TrainIt $iIndex=" & $iIndex & " $howMuch=" & $iQuantity & " $iSleep=" & $iSleep, $COLOR_DEBUG)
-	Local $bDark = ($iIndex >= $eMini And $iIndex <= $eIceG)
+	Local $bDark = ($iIndex >= $eMini And $iIndex <= $eHunt)
 
 	For $i = 1 To 5 ; Do
 
@@ -96,18 +96,26 @@ Func GetTrainPos(Const $iIndex)
 	If $g_bDebugSetlogTrain Then SetLog("GetTrainPos($iIndex=" & $iIndex & ")", $COLOR_DEBUG)
 
 	; Get the Image path to search
-	If ($iIndex >= $eBarb And $iIndex <= $eIceG) Or ($iIndex >= $eSuperBarb And $iIndex <= $eSuperGiant) Then
+	If ($iIndex >= $eBarb And $iIndex <= $eHunt) Or ($iIndex >= $eSuperBarb And $iIndex <= $eSuperGiant) Then
 		Local $sFilter = "*" & String($g_asTroopShortNames[$iIndex]) & "*"
 		Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
-		If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & _ArrayToString($asImageToUse, "|"))
-		Return GetVariable($asImageToUse, $iIndex)
+		If Not @error Then
+			If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & _ArrayToString($asImageToUse, "|"))
+			Return GetVariable($asImageToUse, $iIndex)
+		Else
+			Return 0
+		EndIf
 	EndIf
 
 	If $iIndex >= $eLSpell And $iIndex <= $eBtSpell Then
 		Local $sFilter = String($g_asSpellShortNames[$iIndex - $eLSpell]) & "*"
 		Local $asImageToUse = _FileListToArray($g_sImgTrainSpells, $sFilter, $FLTA_FILES, True)
-		If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Spell: " & $asImageToUse[1])
-		Return GetVariable($asImageToUse, $iIndex)
+		If Not @error Then
+			If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Spell: " & $asImageToUse[1])
+			Return GetVariable($asImageToUse, $iIndex)
+		Else
+			Return 0
+		EndIf
 	EndIf
 
 	Return 0
@@ -116,7 +124,7 @@ EndFunc   ;==>GetTrainPos
 Func GetFullName(Const $iIndex, Const $aTrainPos)
 	If $g_bDebugSetlogTrain Then SetLog("GetFullName($iIndex=" & $iIndex & ")", $COLOR_DEBUG)
 
-	If $iIndex >= $eBarb And $iIndex <= $eIceG Then
+	If $iIndex >= $eBarb And $iIndex <= $eHunt Then
 		Local $sTroopType = ($iIndex >= $eMini ? "Dark" : "Normal")
 		Return GetFullNameSlot($aTrainPos, $sTroopType)
 	EndIf

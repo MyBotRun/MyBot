@@ -13,6 +13,8 @@
 ; Example .......: No
 ; ===============================================================================================================================
 #include-once
+#include <Array.au3>
+#include <MsgBoxConstants.au3>
 
 Func TrainSystem()
 
@@ -377,7 +379,7 @@ EndFunc   ;==>IsElixirTroop
 
 Func IsDarkTroop($Troop)
 	Local $iIndex = TroopIndexLookup($Troop, "IsDarkTroop")
-	If $iIndex >= $eMini And $iIndex <= $eIceG Then Return True
+	If $iIndex >= $eMini And $iIndex <= $eHunt Then Return True
 	Return False
 EndFunc   ;==>IsDarkTroop
 
@@ -489,7 +491,6 @@ Func RemoveExtraTroops($toRemove)
 
 		If Not $g_bRunState Then Return
 		ClickP($aButtonRemoveTroopsOK1, 1) ; Click on 'Okay' button to save changes
-
 		If _Sleep(1200) Then Return
 	    If Not _CheckPixel($aButtonRemoveTroopsOK2, True) Then; If no 'Okay' button found to verify that we accept the changes
 			SetLog("Cannot find/verify 'Okay #2' Button in Army tab", $COLOR_WARNING)
@@ -641,7 +642,7 @@ Func GetSlotNumber($bSpells = False)
 	Select
 		Case $bSpells = False
 			Local Const $Orders = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $eYeti, $ePekk, $eBabyD, $eMine, $eEDrag, _
-					$eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eIceG] ; Set Order of troop display in Army Tab
+					$eMini, $eHogs, $eValk, $eGole, $eWitc, $eLava, $eBowl, $eIceG, $eHunt] ; Set Order of troop display in Army Tab
 
 			Local $allCurTroops[UBound($Orders)]
 
@@ -835,13 +836,14 @@ EndFunc   ;==>IsArmyWindow
 
 Func CheckQueueTroops($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlot = False)
 	Local $aResult[1] = [""]
-	If $bSetLog Then SetLog("Checking Troops Queue...", $COLOR_INFO)
+	If $bSetLog Then SetLog("Checking Troops Queue", $COLOR_INFO)
 
-	Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\TroopQueued"
+	Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\TroopsQueued"
 
 	Local $aSearchResult = SearchArmy($Dir, 18, 182, $x, 261, $bGetQuantity ? "Queue" : "")
 
 	ReDim $aResult[UBound($aSearchResult)]
+
 
 	If $aSearchResult[0][0] = "" Then
 		Setlog("No Troops detected!", $COLOR_ERROR)
@@ -877,52 +879,60 @@ Func CheckQueueTroops($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 EndFunc   ;==>CheckQueueTroops
 
 Func CheckQueueSpells($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlot = False)
-	Local $aResult[1] = [""], $sImageDir = "trainwindow-SpellsInQueue-bundle"
-	;$hTimer = TimerInit()
-	If $bSetLog Then SetLog("Checking Spells Queue...", $COLOR_INFO)
+	Local $avResult[$eSpellCount]
+	Local $sImageDir = @ScriptDir & "\imgxml\ArmyOverview\SpellsQueued"
 
-	Local $aSearchResult = SearchArmy($sImageDir, 18, 215, $x, 230, $bGetQuantity ? "Queue" : "")
-	ReDim $aResult[UBound($aSearchResult)]
+	If $bSetLog Then SetLog("Checking Spells Queue", $COLOR_INFO)
+	Local $avSearchResult = SearchArmy($sImageDir, 18, 213, $x, 230, $bGetQuantity ? "Queue" : "")
 
-	If $aSearchResult[0][0] = "" Then
+	If $avSearchResult[0][0] = "" Then
 		Setlog("No Spells detected!", $COLOR_ERROR)
 		Return
 	EndIf
 
-	For $i = 0 To (UBound($aSearchResult) - 1)
+	For $i = 0 To (UBound($avSearchResult) - 1)
 		If Not $g_bRunState Then Return
-		$aResult[$i] = $aSearchResult[$i][0]
+		;_ArrayAdd($avResult, $avSearchResult[$i][0])
+		$avResult[$i] = $avSearchResult[$i][0]
 	Next
 
+;_ArrayDisplay($avSearchResult, "avSearchResult")
+;_ArrayDisplay($avResult, "avResult")
+
+	;Trim length to number of returned values
+	ReDim $avResult[UBound($avSearchResult)][1]
+
 	If $bGetQuantity Then
-		Local $aQuantities[UBound($aResult)][2]
+		Local $aiQuantities[UBound($avResult)][2]
 		Local $aQueueSpell[$eSpellCount]
-		For $i = 0 To (UBound($aQuantities) - 1)
+		For $i = 0 To (UBound($aiQuantities) - 1)
 			If Not $g_bRunState Then Return
-			$aQuantities[$i][0] = $aSearchResult[$i][0]
-			$aQuantities[$i][1] = $aSearchResult[$i][3]
-			If $bSetLog Then SetLog("  - " & $g_asSpellNames[TroopIndexLookup($aQuantities[$i][0], "CheckQueueSpells") - $eLSpell] & ": " & $aQuantities[$i][1] & "x", $COLOR_SUCCESS)
-			$aQueueSpell[TroopIndexLookup($aQuantities[$i][0]) - $eLSpell] += $aQuantities[$i][1]
+			$aiQuantities[$i][0] = $avSearchResult[$i][0]
+			$aiQuantities[$i][1] = $avSearchResult[$i][3]
+			If $bSetLog Then SetLog("  - " & $g_asSpellNames[TroopIndexLookup($aiQuantities[$i][0], "CheckQueueSpells") - $eLSpell] & ": " & $aiQuantities[$i][1] & "x", $COLOR_SUCCESS)
+			$aQueueSpell[TroopIndexLookup($aiQuantities[$i][0]) - $eLSpell] += $aiQuantities[$i][1]
 		Next
-		If $bQtyWSlot Then Return $aQuantities
+		If $bQtyWSlot Then Return $aiQuantities
 		Return $aQueueSpell
 	EndIf
 
-	_ArrayReverse($aResult)
-	Return $aResult
+	_ArrayReverse($avResult)
+	Return $avResult
 EndFunc   ;==>CheckQueueSpells
 
 Func SearchArmy($sImageDir = "", $x = 0, $y = 0, $x1 = 0, $y1 = 0, $sArmyType = "", $bSkipReceivedTroopsCheck = False)
 	; Setup arrays, including default return values for $return
 	Local $aResult[1][4], $aCoordArray[1][2], $aCoords, $aCoordsSplit, $aValue
 
-	For $iCount = 0 To 10
+	For $iCount = 0 To 10  ;Why is this loop here?
 		If Not $g_bRunState Then Return $aResult
 		If Not getReceivedTroops(162, 200, $bSkipReceivedTroopsCheck) Then
 			; Perform the search
 			_CaptureRegion2($x, $y, $x1, $y1)
 			Local $res = DllCallMyBot("SearchMultipleTilesBetweenLevels", "handle", $g_hHBitmap2, "str", $sImageDir, "str", "FV", "Int", 0, "str", "FV", "Int", 0, "Int", 1000)
-
+			
+;_ArrayDisplay($res, "Res")
+			
 			If $res[0] <> "" Then
 				; Get the keys for the dictionary item.
 				Local $aKeys = StringSplit($res[0], "|", $STR_NOCOUNT)
@@ -1442,7 +1452,7 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	Local $aTrainPos = GetTrainPos($iTroopIndex)
 	Local $iTempTroopCost, $iTempSpellCost
 	If IsArray($aTrainPos) And $aTrainPos[0] <> -1 Then
-		If $iTroopIndex >= $eBarb And $iTroopIndex <= $eIceG Then
+		If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
 			$iTempTroopCost = getArmyResourcesFromButtons($aTrainPos[0] - $g_aiTroopOcrOffSet[$iTroopIndex][0], $aTrainPos[1] + $g_aiTroopOcrOffSet[$iTroopIndex][1])
 			If $iTempTroopCost <> "" Then
 				$troopCost = $iTempTroopCost

@@ -69,7 +69,7 @@ Func Unbreakable()
 
 	DropTrophy()
 	If _Sleep($DELAYUNBREAKABLE2) Then Return True ; wait for home screen
-	ClickP($aAway, 1, $DELAYUNBREAKABLE7, "#0112") ;clear screen
+	ClickAway()
 	If _Sleep($DELAYUNBREAKABLE1) Then Return True ; wait for home screen
 	If $g_bRestart = True Then Return True ; Check Restart Flag to see if drop trophy used all the troops and need to train more.
 	$iCount = 0
@@ -79,7 +79,7 @@ Func Unbreakable()
 		If $g_bDebugSetlog Then SetDebugLog("Drop Trophy Loop #" & $iCount + 1, $COLOR_DEBUG)
 		DropTrophy()
 		If _Sleep($DELAYUNBREAKABLE2) Then Return True; wait for home screen
-		ClickP($aAway, 1, 0, "#0395") ;clear screen
+		ClickAway()
 		If _Sleep($DELAYUNBREAKABLE1) Then Return True; wait for home screen
 		$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 		If ($iCount > 2) And (Number($iTrophyCurrent) > Number($g_iDropTrophyMax)) Then ; If unable to drop trophy after a couple of tries, restart at main loop.
@@ -94,11 +94,11 @@ Func Unbreakable()
 	BreakPersonalShield() ; break personal Shield and Personal Guard
 	If @error Then
 		If @extended <> "" Then SetLog("PersonalShield button problem: " & @extended, $COLOR_ERROR)
-		ClickP($aAway, 1, 0, "#0395") ;clear screen
+		ClickAway()
 		Return True ; return to runbot and try again
 	EndIf
 
-	ClickP($aAway, 2, $DELAYUNBREAKABLE8, "#0115") ;clear screen selections
+	ClickAway()
 	If _Sleep($DELAYUNBREAKABLE1) Then Return True
 
 	If CheckObstacles() = True Then SetLog("Window clean required, but no problem for MyBot!", $COLOR_INFO)

@@ -33,7 +33,7 @@ Func LocateLab($bCollect = True)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Laboratory_02", "Locate Laboratory"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickP($aAway, 1, 0, "#0379")
+			ClickAway()
 			Local $aPos = FindPos()
 			$g_aiLaboratoryPos[0] = Int($aPos[0])
 			$g_aiLaboratoryPos[1] = Int($aPos[1])
@@ -55,13 +55,13 @@ Func LocateLab($bCollect = True)
 						ContinueLoop
 					Case $iStupid > 4
 						SetLog(" Operator Error - Bad Laboratory Location.", $COLOR_ERROR)
-						ClickP($aAway, 1, 0, "#0380")
+						ClickAway()
 						Return False
 				EndSelect
 			EndIf
 		Else
 			SetLog("Locate Laboratory Cancelled", $COLOR_INFO)
-			ClickP($aAway, 1, 0, "#0382")
+			ClickAway()
 			Return
 		EndIf
 		Local $sLabInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY); 860x780
@@ -85,7 +85,7 @@ Func LocateLab($bCollect = True)
 						ContinueLoop
 					Case $iSilly > 4
 						SetLog("Ok, you really think that's a Laboratory?" & @CRLF & "I don't care anymore, go ahead with it!", $COLOR_ERROR)
-						ClickP($aAway, 1, 0, "#0383")
+						ClickAway()
 						ExitLoop
 				EndSelect
 			EndIf
@@ -93,12 +93,12 @@ Func LocateLab($bCollect = True)
 			SetLog(" Operator Error - Bad Laboratory Location: " & "(" & $g_aiLaboratoryPos[0] & "," & $g_aiLaboratoryPos[1] & ")", $COLOR_ERROR)
 			$g_aiLaboratoryPos[0] = -1
 			$g_aiLaboratoryPos[1] = -1
-			ClickP($aAway, 1, 0, "#0384")
+			ClickAway()
 			Return False
 		EndIf
 		SetLog("Locate Laboratory Success: " & "(" & $g_aiLaboratoryPos[0] & "," & $g_aiLaboratoryPos[1] & ")", $COLOR_SUCCESS)
 		ExitLoop
 	WEnd
-	Clickp($aAway, 2, 0, "#0207")
+	ClickAway()
 
 EndFunc   ;==>LocateLab

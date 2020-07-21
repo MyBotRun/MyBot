@@ -635,7 +635,9 @@ Func _GUICtrlSetImage($controlID, $filename, $iconName = -1, $iconType = 1)
 
 	Local $aIconData = $g_oCtrlIconData("Icon:" & GUICtrlGetHandle($controlID))
 
+	;SetDebugLog("_GUICtrlSetImage pass $iconName=" & $iconName)
 	If IsArray($aIconData) = 0 Then
+		;SetDebugLog("Control is an array, returning.")
 		Return GUICtrlSetImage($controlID, $filename, $iconName, $iconType)
 	EndIf
 
@@ -646,17 +648,25 @@ Func _GUICtrlSetImage($controlID, $filename, $iconName = -1, $iconType = 1)
 			$s_hLibIcon = _WinAPI_LoadLibraryEx($filename, $LOAD_LIBRARY_AS_DATAFILE)
 		EndIf
 		$hLib = $s_hLibIcon
+		;SetDebugLog("$hlib set to " & $hlib)
 	Else
 		$hLib = _WinAPI_LoadLibraryEx($filename, $LOAD_LIBRARY_AS_DATAFILE)
 	EndIf
+	;If $hLib = 0 Then SetDebugLog("hLib is zero.  Returning.")
 	If $hLib = 0 Then Return 0
 	Local $width = $aIconData[0], $height = $aIconData[1]
 	Local $hIcon = _WinAPI_LoadImage($hLib, $iconName, $IMAGE_ICON, $width, $height, $LR_DEFAULTCOLOR)
+	;SetDebugLog("width, height:" & $width & ", " & $height)
+	;SetDebugLog("$hIcon=" & $hIcon)
+	;SetDebugLog("$s_hlibIcon=" & $s_hLibIcon)
 	If $hLib <> $s_hLibIcon Then
 		_WinAPI_FreeLibrary($hLib)
+		;SetDebugLog("Freed $hlib=" & $hlib)
 	EndIf
+	;If $hIcon = 0 Then SetDebugLog("hIcon is zero.  Returning.")
 	If $hIcon = 0 Then Return 0
 	Local $hBmp = _WinAPI_Create32BitHBITMAP($hIcon, False, True)
+	;If $hBmp = 0 Then SetDebugLog("hBmp is zero.  Returning.")
 	If $hBmp = 0 Then Return 0
 	_WinAPI_DeleteObject(GUICtrlSendMsg($controlID, $STM_SETIMAGE, 0, 0))
 	GUICtrlSendMsg($controlID, $STM_SETIMAGE, 0, $hBmp)

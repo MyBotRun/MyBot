@@ -29,7 +29,7 @@ Func DropTrophy()
 			SetDebugLog("Current Trophy Count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
 			If $g_aiCurrentLoot[$eLootTrophy] <> "" Then ExitLoop
 			If _Sleep(1000) Then Return
-			ClickP($aAway, 1, 0, "#0000") ;Click Away to prevent any pages on top
+			ClickAway()
 		Next
 
 		If Number($g_aiCurrentLoot[$eLootTrophy]) <= Number($g_iDropTrophyMax) Then Return ; exit on trophy count to avoid other checks
@@ -181,7 +181,7 @@ Func DropTrophy()
 						EndSwitch
 
 						Local $t
-						For $i = 1 To 3
+						For $i = 1 To 4
 							$t = StringMid($sHeroPriority, $i, 1)
 							Switch $t
 								Case "Q"

@@ -19,7 +19,7 @@ Func CollectFreeMagicItems($bTest = False)
 	Local Static $iLastTimeChecked[8] = [0, 0, 0, 0, 0, 0, 0, 0]
 	If $iLastTimeChecked[$g_iCurAccount] = @MDAY And Not $bTest Then Return
 
-	ClickP($aAway, 1, 0, "#0332") ;Click Away
+	ClickAway()
 
 	If Not IsMainPage() Then Return
 
@@ -39,7 +39,7 @@ Func CollectFreeMagicItems($bTest = False)
 
 	; Check Daily Discounts Window
 	If Not QuickMIS("BC1", $g_sImgDailyDiscountWindow, 310, 175, 375, 210, True, False) Then
-		ClickP($aAway, 1, 0, "#0332") ;Click Away
+		ClickAway()
 		Return
 	EndIf
 
@@ -57,7 +57,7 @@ Func CollectFreeMagicItems($bTest = False)
 				If $aResults[$i] = "FREE" Then
 					Click($aOcrPositions[$i][0], $aOcrPositions[$i][1], 2, 500)
 					SetLog("Free Magic Item detected", $COLOR_INFO)
-					ClickP($aAway, 2, 0, "#0332") ;Click Away
+					ClickAway()
 					If _Sleep(1000) Then Return
 					Return
 				Else
@@ -77,6 +77,6 @@ Func CollectFreeMagicItems($bTest = False)
 
 	SetLog("Daily Discounts: " & $aResults[0] & " | " & $aResults[1] & " | " & $aResults[2])
 	SetLog("Nothing free to collect!", $COLOR_INFO)
-	ClickP($aAway, 2, 0, "#0332") ;Click Away
+	ClickAway()
 	If _Sleep(1000) Then Return
 EndFunc   ;==>CollectFreeMagicItems

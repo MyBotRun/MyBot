@@ -18,7 +18,7 @@ Func ProfileReport()
 	Local $iAttacksWon = 0, $iDefensesWon = 0
 
 	Local $iCount
-	ClickP($aAway, 1, 0, "#0221") ;Click Away
+	ClickAway()
 	If _Sleep($DELAYPROFILEREPORT1) Then Return
 
 	SetLog("Profile Report", $COLOR_INFO)

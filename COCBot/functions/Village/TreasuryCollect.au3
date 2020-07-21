@@ -18,7 +18,7 @@ Func TreasuryCollect()
 	If $g_bDebugSetlog Then SetDebugLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
 	If Not $g_bRunState Then Return ; ensure bot is running
 
-	ClickP($aAway, 1, 0, "#0441") ; clear open windows - Click Away before reading village data
+	ClickAway()
 	If _Sleep($DELAYRESPOND) Then Return
 
 	If ($g_aiClanCastlePos[0] = "-1" Or $g_aiClanCastlePos[1] = "-1") Then ;check for valid CC location
@@ -30,7 +30,7 @@ Func TreasuryCollect()
 			Return
 		EndIf
 	EndIf
-	ClickP($aAway, 1, 0, "#0440") ; Click away just in case user interupted process
+	ClickAway()
 	If _Sleep($DELAYCOLLECT3) Then Return
 	BuildingClick($g_aiClanCastlePos[0], $g_aiClanCastlePos[1], "#0250") ; select CC
 	; Click($g_aiClanCastlePos[0], $g_aiClanCastlePos[1], 1, 0, "#0433")   ; select CC
@@ -74,10 +74,10 @@ Func TreasuryCollect()
 			SetDebugLog("Error in TreasuryCollect(): Cannot find the Collect Button", $COLOR_ERROR)
 		EndIf
 	Else
-		ClickP($aAway, 1, 0, "#0438") ; Click away
+		ClickAway()
 		If _Sleep($DELAYTREASURY4) Then Return
 	EndIf
 
-	ClickP($aAway, 1, 0, "#0438") ; Click away
+	ClickAway()
 	If _Sleep($DELAYTREASURY4) Then Return
 EndFunc   ;==>TreasuryCollect

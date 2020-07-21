@@ -11,6 +11,11 @@
 ; ===============================================================================================================================
 #include-once
 
+;[11:11:58 AM] Collecting Daily Rewards...
+;[11:11:59 AM] Dragging back for more... [11:12:02 AM] Storage full. Cancelling to sell it
+;[11:12:03 AM] Storage full. Cancelling to sell it
+
+
 Func DailyChallenges()
 	Local Static $asLastTimeChecked[8]
 	If $g_bFirstStart Then $asLastTimeChecked[$g_iCurAccount] = ""
@@ -47,7 +52,7 @@ Func OpenPersonalChallenges()
 		ClickP($aPersonalChallengeOpenButton2, 1, 0, "#0666")
 	Else
 		SetLog("Can't find button", $COLOR_ERROR)
-		ClickP($aAway, 2, 20, "#0467") ;Click Away
+		ClickAway()
 		Return False
 	EndIf
 
@@ -88,8 +93,14 @@ Func CollectDailyRewards($bGoldPass = False)
 					For $j = 0 To UBound($aAllCoords) - 1
 						ClickP($aAllCoords[$j], 1, 0, "Claim " & $j + 1) ; Click Claim button
 						If WaitforPixel(350, 410, 351, 411, Hex(0xFDC875, 6), 20, 3) Then; wait for Cancel Button popped up in 1.5 second
-							SetLog("Storage full. Cancelling to sell it", $COLOR_SUCCESS)
-							ClickP($aPersonalChallengeCancelBtn, 1, 0, "Cancel Btn") ; Click Claim button
+						    If $g_bChkSellRewards Then
+							    Setlog("Selling extra reward for gems", $COLOR_SUCCESS)
+								ClickP($aPersonalChallengeOkBtn, 1, 0, "Okay Btn") ; Click the Okay
+								$iClaim += 1
+							Else
+								SetLog("Cancel. Not selling extra rewards.", $COLOR_SUCCESS)
+								ClickP($aPersonalChallengeCancelBtn, 1, 0, "Cancel Btn") ; Click Claim button
+							Endif
 							If _Sleep(1000) Then ExitLoop
 						Else
 							$iClaim += 1
@@ -147,7 +158,7 @@ Func ClosePersonalChallenges()
 		ClickP($aPersonalChallengeCloseButton, 1, 0, "#0667")
 	Else
 		SetLog("Can't find close button", $COLOR_ERROR)
-		ClickP($aAway, 2, 20, "#0467") ;Click Away
+		ClickAway()
 	EndIf
 
 	Local $counter = 0

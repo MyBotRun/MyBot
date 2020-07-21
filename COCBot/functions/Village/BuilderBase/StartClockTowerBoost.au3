@@ -20,7 +20,7 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 	If Not $g_bRunState Then Return
 
 	If $bSwitchToBB Then
-		ClickP($aAway, 1, 0, "#0332")
+		ClickAway()
 		If Not SwitchBetweenBases() Then Return ; Switching to Builders Base
 	EndIf
 
@@ -63,7 +63,7 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 			SetLog("Clock Tower boost is not available!")
 		EndIf
 	EndIf
-	ClickP($aAway, 1, 0, "#0329")
+	ClickAway()
 
 	If $bSwitchToNV Then SwitchBetweenBases() ; Switching back to the normal Village if true
 EndFunc   ;==>StartClockTowerBoost

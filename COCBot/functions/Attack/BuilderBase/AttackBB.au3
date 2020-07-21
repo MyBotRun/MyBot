@@ -18,7 +18,7 @@ Func AttackBB()
 
 	local $iSide = Random(0, 1, 1) ; randomly choose top left or top right
 	local $aBMPos = 0
-	ClickP($aAway)
+	ClickAway()
 	SetLog("Going to attack.", $COLOR_BLUE)
 
 	; check for troops, loot and Batlle Machine
@@ -38,7 +38,7 @@ Func AttackBB()
 	If _Sleep(1500) Then Return ; give time for find now button to go away
 	If _CheckPixel($aBBFindNow, True) Then ; click failed so something went wrong
 		SetLog("Click BB Find Now failed. We will come back and try again.", $COLOR_ERROR)
-		ClickP($aAway)
+		ClickAway()
 		ZoomOut()
 		Return
 	EndIf
@@ -182,7 +182,7 @@ Func AttackBB()
 	; wait for ok after both attacks are finished
 	SetLog("Waiting for opponent", $COLOR_BLUE)
 	Okay()
-	ClickP($aAway)
+	ClickAway()
 	SetLog("Done", $COLOR_SUCCESS)
 	ZoomOut()
 

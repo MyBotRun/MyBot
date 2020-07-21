@@ -17,7 +17,7 @@
 Func Collect($bCheckTreasury = True)
 	If Not $g_bChkCollect Or Not $g_bRunState Then Return
 
-	ClickP($aAway, 1, 0, "#0332") ;Click Away
+	ClickAway()
 
 	StartGainCost()
 	checkAttackDisable($g_iTaBChkIdle) ; Early Take-A-Break detection
@@ -73,7 +73,10 @@ Func Collect($bCheckTreasury = True)
 EndFunc   ;==>Collect
 
 Func CollectLootCart()
-	If Not $g_abNotNeedAllTime[0] Then Return
+	If Not $g_abNotNeedAllTime[0] Then 
+	    SetLog("Skipping loot cart check", $COLOR_INFO)
+	    Return
+	EndIf
 
 	SetLog("Searching for a Loot Cart", $COLOR_INFO)
 
@@ -85,6 +88,7 @@ Func CollectLootCart()
 
 		Local $aiCollectButton = findButton("CollectLootCart", Default, 1, True)
 		If IsArray($aiCollectButton) And UBound($aiCollectButton) = 2 Then
+			SetLog("Clicking to collect loot cart.", $COLOR_SUCCESS)
 			ClickP($aiCollectButton)
 		Else
 			SetLog("Cannot find Collect Button", $COLOR_ERROR)

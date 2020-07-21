@@ -221,7 +221,7 @@ Func CheckQuickTrainTroop()
 	SetLog("Reading troops & spells in quick train army")
 
 	; reset troops/spells in quick army
-	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	$g_aiArmyQuickTroops = $aEmptyTroop
 	$g_aiArmyQuickSpells = $aEmptySpell
@@ -413,7 +413,7 @@ Func CreateQuickTrainPreset($i)
 			Local $iIndex = $g_aiQuickSpellType[$i][$j]
 			If _ArrayIndexValid($g_aiArmyQuickSpells, $iIndex) Then
 				If $iArmyPage < 2 Then
-					If Not DragIfNeeded("IceG") Then Return
+					If Not DragIfNeeded("Hunt") Then Return
 					If _Sleep(1500) Then Return
 					$iArmyPage = 2
 				EndIf

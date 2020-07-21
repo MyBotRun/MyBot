@@ -239,6 +239,8 @@ Func GetButtonDiamond($sButtonName)
 	Local $btnDiamond = "FV"
 
 	Switch $sButtonName
+		Case "ReloadButton"
+			$btnDiamond = GetDiamondFromRect("550,450,850,700")
 		Case "CloseFindMatch" ;Find Match Screen
 			$btnDiamond = "780,15|830,15|830,60|780,60"
 		Case "CloseFindMatch" ;Find Match Screen

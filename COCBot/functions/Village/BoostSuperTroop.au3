@@ -14,14 +14,14 @@
 ; ===============================================================================================================================
 
 Func BoostSuperTroop($iTroopIndex)
-	If $iTroopIndex < $eBarb Or $iTroopIndex > $eIceG Or $g_asSuperTroopShortNames[$iTroopIndex] == "" Then
+	If $iTroopIndex < $eBarb Or $iTroopIndex > $eHunt Or $g_asSuperTroopShortNames[$iTroopIndex] == "" Then
 		SetLog("BoostSuperTroop(): $iTroopIndex out of boundary (" & $iTroopIndex & ")", $COLOR_ERROR)
 		Return False
 	EndIf
 
 	Local $sTroopName = GetTroopName($iTroopIndex)
 	SetLog("Trying to boost " & $sTroopName, $COLOR_INFO)
-	ClickP($aAway, 1, 0, "#0332")     ;Click Away
+	ClickAway()
 
 	Local $sSearchArea = GetDiamondFromRect("80,80,250,250")
 	Local $avBarrel = findMultiple($g_sImgBoostTroopsBarrel, $sSearchArea, $sSearchArea, 0, 1000, 1, "objectname,objectpoints", True)
@@ -55,13 +55,22 @@ Func BoostSuperTroop($iTroopIndex)
 		Return False
 	EndIf
 
-	Local $sShortTroopName = $g_asSuperTroopShortNames[$iTroopIndex]
+    Local $sShortTroopName = $g_asSuperTroopShortNames[$iTroopIndex]
+    ; _ArraySearch($aiSuperTroopsWindow,
+
+
 	Local $asTroopIcon = _FileListToArrayRec($g_sImgBoostTroopsIcons, $sShortTroopName & "*", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_NOSORT, $FLTAR_FULLPATH)
 	If IsArray($asTroopIcon) And UBound($asTroopIcon, $UBOUND_ROWS) > 1 Then
 		Local $aiTroopIcon = decodeSingleCoord(findImage($sShortTroopName, $asTroopIcon[1], GetDiamondFromRect("130,240,730,520"), 1, True))
+
 		If Not IsArray($aiTroopIcon) Or UBound($aiTroopIcon, $UBOUND_ROWS) < 2 Then
-			SetLog($sShortTroopName & " not available", $COLOR_ERROR)
-			Return False
+			ClickDrag(428,500,428,260, 200)
+			If _Sleep(500) Then Return False
+			$aiTroopIcon = decodeSingleCoord(findImage($sShortTroopName, $asTroopIcon[1], GetDiamondFromRect("130,240,730,520"), 1, True))
+			If Not IsArray($aiTroopIcon) Or UBound($aiTroopIcon, $UBOUND_ROWS) < 2 Then
+				SetLog($sShortTroopName & " not available", $COLOR_ERROR)
+				Return False
+			EndIf
 		EndIf
 
 		ClickP($aiTroopIcon)
@@ -98,6 +107,6 @@ Func BoostSuperTroop($iTroopIndex)
 		EndIf
 	EndIf
 
-	ClickP($aAway)
+	ClickAway()
 	Return False
 EndFunc   ;==>BoostSuperTroop

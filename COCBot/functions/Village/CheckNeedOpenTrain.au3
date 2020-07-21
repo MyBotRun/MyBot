@@ -43,7 +43,7 @@ Func CheckNeedOpenTrain($TimeBeforeTrain)
 	If $iTimeBeforeTrain2 <= 0 Then $bToReturn = True
 	If ($g_iActiveDonate Or $g_bDonationEnabled) And $g_bChkDonate Then $bToReturn = True
 	If Not $bToReturn Then SetLog("Train end time: " & $iTimeBeforeTrain1, $COLOR_DEBUG)
-	If Not $bToReturn Then ClickP($aAway, 1, 0, "#0332") ;Click Away
+	If Not $bToReturn Then ClickAway()
 
 	Return $bToReturn
 EndFunc   ;==>CheckNeedOpenTrain

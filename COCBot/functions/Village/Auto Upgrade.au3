@@ -32,7 +32,7 @@ Func _AutoUpgrade()
 		$iLoopAmount += 1
 		If $iLoopAmount >= $iLoopMax Or $iLoopAmount >= 12 Then ExitLoop ; 6 loops max, to avoid infinite loop
 
-		ClickP($aAway, 1, 0, "#0000") ;Click Away
+		ClickAway()
 		If _sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 		VillageReport(True, True)
 
@@ -234,6 +234,6 @@ Func _AutoUpgrade()
 	$g_iNextLineOffset = 0
 
 	SetLog("Auto Upgrade finished", $COLOR_INFO)
-	ClickP($aAway, 1, 0, "#0000") ;Click Away
+	ClickAway()
 
 EndFunc   ;==>AutoUpgrade

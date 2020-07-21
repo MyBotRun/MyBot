@@ -14,10 +14,10 @@
 Func CheckImageType()
 	SetLog("Detecting your Village Theme", $COLOR_INFO)
 
-	ClickP($aAway, 2, 20, "#0467") ;Click Away
+	ClickAway()
 
 	If _Sleep($DELAYCHECKIMAGETYPE1) Then Return
-	If Not IsMainPage() Then ClickP($aAway, 2, 20, "#0467") ;Click Away Again
+	If Not IsMainPage() Then ClickAway()
 
 	Local $sImgSnowTheme = @ScriptDir & "\imgxml\SnowTheme\Snow*.xml"
 	Local $aResult = decodeMultipleCoords(findImage("Snow", $sImgSnowTheme, "DCD", 0, True))

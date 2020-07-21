@@ -10,7 +10,13 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-;                                 x    y     color  tolerance
+; 	   $aiSomeVar = [StartX, StartY, EndX, EndY]
+;Global $aiClickAwayRegionLeft = [225, 10, 255, 30]
+;Global $aiClickAwayRegionRight = [605, 10, 645, 30]
+;Let's tighten these up to avoid clicking on shields.
+Global $aiClickAwayRegionLeft = [235, 10, 245, 30]
+Global $aiClickAwayRegionRight = [625, 10, 635, 30]
+
 Global $aCenterEnemyVillageClickDrag = [65, 545] ; Scroll village using this location in the water
 Global $aCenterHomeVillageClickDrag = [430, 650] ; Scroll village using this location in the water
 Global $aIsReloadError[4] = [457, 301 + $g_iMidOffsetY, 0x33B5E5, 10] ; Pixel Search Check point For All Reload Button errors, except break ending
@@ -170,3 +176,4 @@ Global Const $aPersonalChallengeRewardsTab[4] = [450, 33 + $g_iMidOffsetY, 0x988
 Global Const $aPersonalChallengePerksTab[4] = [660, 33 + $g_iMidOffsetY, 0xEFE079, 20] ; Personal Challenge - Perks tab Checked
 Global Const $aPersonalChallengeLeftEdge[4] = [30, 385 + $g_iMidOffsetY, 0x28221E, 20] ; Personal Challenge Window - Rewards tab - Black left edge
 Global Const $aPersonalChallengeCancelBtn[4] = [350, 380 + $g_iMidOffsetY, 0xFDC875, 20] ; Personal Challenge Window - Cancel button at Storage Full msg
+Global Const $aPersonalChallengeOkBtn[4] = [515, 380 + $g_iMidOffsetY, 0xDFF887, 20] ; Personal Challenge Window - Okay button at Storage Full msg

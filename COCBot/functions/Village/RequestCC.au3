@@ -92,7 +92,7 @@ Func RequestCC($bClickPAtEnd = True, $sText = "")
 
 	;exit from army overview
 	If _Sleep($DELAYREQUESTCC1) Then Return
-	If $bClickPAtEnd Then ClickP($aAway, 2, 0, "#0335")
+	If $bClickPAtEnd Then ClickAway()
 
 EndFunc   ;==>RequestCC
 
@@ -103,7 +103,7 @@ Func _makerequest($aRequestButtonPos)
 
 	If Not IsWindowOpen($g_sImgSendRequestButton, 20, 100, $sSendButtonArea) Then
 		SetLog("Request has already been made, or request window not available", $COLOR_ERROR)
-		ClickP($aAway, 2, 0, "#0257")
+		ClickAway()
 		If _Sleep($DELAYMAKEREQUEST2) Then Return
 	Else
 		If $g_sRequestTroopsText <> "" Then
@@ -327,7 +327,7 @@ Func RemoveCastleArmy($aToRemove)
 		$counter += 1
 		If $counter <= 5 Then ContinueLoop
 		SetLog("Cannot find/verify 'Okay' Button in Army tab", $COLOR_WARNING)
-		ClickP($aAway, 2, 0, "#0346") ; Click Away, Necessary! due to possible errors/changes
+		ClickAway()
 		If _Sleep(400) Then OpenArmyOverview(True, "RemoveCastleSpell()") ; Open Army Window AGAIN
 		Return False ; Exit Function
 	WEnd
@@ -342,7 +342,7 @@ Func RemoveCastleArmy($aToRemove)
 		$counter += 1
 		If $counter <= 5 Then ContinueLoop
 		SetLog("Cannot find/verify 'Okay #2' Button in Army tab", $COLOR_WARNING)
-		ClickP($aAway, 2, 0, "#0346") ;Click Away
+		ClickAway()
 		Return False ; Exit function
 	WEnd
 

@@ -61,7 +61,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 				SetLog($sName & " is already Boosted", $COLOR_SUCCESS)
 			EndIf
 			If _Sleep($DELAYBOOSTHEROES3) Then Return
-			ClickP($aAway, 1, 0, "#0465")
+			ClickAway()
 		Else
 			SetLog($sName & " Boost Button not found", $COLOR_ERROR)
 			If _Sleep($DELAYBOOSTHEROES4) Then Return
@@ -122,7 +122,7 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 				If _Sleep($DELAYBOOSTHEROES1) Then Return
 				If Not _ColorCheck(_GetPixelColor(255, 535, True), Hex(0xFFFFFF, 6), 25) Then
 					SetLog("Cannot find/verify 'Use' Button", $COLOR_WARNING)
-					ClickP($aAway, 2, 0, "#000000") ; Click Away, Necessary! due to possible errors/changes
+					ClickAway()
 					Return False ; Exit Function
 				EndIf
 				Click(305, 556) ; Click on 'Use'
@@ -145,7 +145,7 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 				If _Sleep($DELAYBOOSTHEROES4) Then Return
 			EndIf
 			If _Sleep($DELAYBOOSTHEROES3) Then Return
-			ClickP($aAway, 1, 0, "#0465")
+			ClickAway()
 		Else
 			SetLog("Abort boosting " & $sName & ", bad location", $COLOR_ERROR)
 		EndIf

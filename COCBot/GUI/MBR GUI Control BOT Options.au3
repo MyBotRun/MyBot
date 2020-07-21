@@ -1081,7 +1081,7 @@ Func btnTestWeakBase()
 EndFunc   ;==>btnTestWeakBase
 
 Func btnTestClickAway()
-	ClickP($aAway, 2, 0)
+	ClickAway()
 EndFunc   ;==>btnTestClickAway
 
 Func btnTestUpgradeWindow()

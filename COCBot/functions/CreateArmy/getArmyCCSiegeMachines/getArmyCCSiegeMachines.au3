@@ -75,7 +75,8 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	EndIf
 
 	If $bCloseArmyWindow Then
-		ClickP($aAway, 1, 0, "#0000") ;Click Away
+		;ClickP($aAway, 1, 0, "#0000") ;Click Away
+		ClickAway()
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf
 EndFunc   ;==>getArmyTroops

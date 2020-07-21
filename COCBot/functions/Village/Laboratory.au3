@@ -108,7 +108,7 @@ Func Laboratory($debug=False)
 			Return LaboratoryUpgrade($g_avLabTroops[$g_iCmbLaboratory][0], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
 		EndIf
 		If _Sleep($DELAYLABORATORY2) Then Return
-		ClickP($aAway, 2, 0, "#0204")
+		ClickAway()
 
 	Else ; users choice is any upgrade
 		While($iCurPage <= $iPages)
@@ -139,7 +139,7 @@ Func Laboratory($debug=False)
 
 		; If We got to here without returning, then nothing available for upgrade
 		SetLog("Nothing available for upgrade at the moment, try again later.")
-		ClickP($aAway, 2, 0, "#0204")
+		ClickAway()
 	EndIf
 
 	Return False ; No upgrade started
@@ -152,7 +152,7 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 	If _Sleep(2000) Then Return
 
 	If Not(SetLabUpgradeTime($name)) Then
-		ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0360")
+		ClickAway()
 		Return False ; couldnt set time to upgrade started
 	EndIf
 	If _Sleep($DELAYLABUPGRADE1) Then Return
@@ -160,7 +160,7 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 	LabStatusGUIUpdate()
 	If $debug = True Then ; if debugging, do not actually click it
 		SetLog("[debug mode] - Start Upgrade, Click (" & 660 & "," & 520 + $g_iMidOffsetY & ")", $COLOR_ACTION)
-		ClickP($aAway, 2, 0, "#0204")
+		ClickAway()
 		Return True ; return true as if we really started an upgrade
 	Else
 		Click(660, 520 + $g_iMidOffsetY, 1, 0, "#0202") ; Everything is good - Click the upgrade button
@@ -168,7 +168,7 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 			; check for green button to use gems to finish upgrade, checking if upgrade actually started
 			If Not (_ColorCheck(_GetPixelColor(625, 218 + $g_iMidOffsetY, True), Hex(0x6fbd1f, 6), 15) Or _ColorCheck(_GetPixelColor(660, 218 + $g_iMidOffsetY, True), Hex(0x6fbd1f, 6), 15)) Then
 				SetLog("Something went wrong with " & $name & " Upgrade, try again.", $COLOR_ERROR)
-				ClickP($aAway, 2, $DELAYLABUPGRADE3, "#0360")
+				ClickAway()
 				Return False
 			EndIf
 
@@ -176,7 +176,7 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 			SetLog("Upgrade " & $name & " in your laboratory started with success...", $COLOR_SUCCESS)
 			PushMsg("LabSuccess")
 			If _Sleep($DELAYLABUPGRADE2) Then Return
-			ClickP($aAway, 2, 0, "#0204")
+			ClickAway()
 			Return True ; upgrade started
 		Else
 			SetLog("Oops, Gems required for " & $name & " Upgrade, try again.", $COLOR_ERROR)
@@ -246,7 +246,7 @@ Func ChkLabUpgradeInProgress()
 		ElseIf $g_bDebugSetlog Then
 			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
-		ClickP($aAway, 2, $DELAYLABORATORY4, "#0328")
+		ClickAway()
 		Return True
 	EndIf
 	Return False ; returns False if no upgrade in progress
@@ -279,7 +279,7 @@ Func FindResearchButton()
 		Return True
 	Else
 		SetLog("Cannot find the Laboratory Research Button!", $COLOR_ERROR)
-		ClickP($aAway, 2, $DELAYLABORATORY4, "#0199")
+		ClickAway()
 		Return False
 	EndIf
 EndFunc

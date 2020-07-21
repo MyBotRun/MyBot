@@ -84,26 +84,122 @@ Func picUpgradeTypeLocation()
 EndFunc   ;==>picUpgradeTypeLocation
 
 Func btnResetUpgrade()
+	Local $iEmptyRow=-1 ;-1 means no empty row found yet.
+	Local $j=0 ;temp upgrade type or status
+	;Sleep(5000)
+	;SetDebugLog("Reset Upgarde *******************************************")
 	For $i = 0 To UBound($g_avBuildingUpgrades, 1) - 1
-		If GUICtrlRead($g_hChkUpgradeRepeat[$i]) = $GUI_CHECKED Then ContinueLoop
-		$g_avBuildingUpgrades[$i][0] = -1 ; clear location and loot value in $g_avBuildingUpgrades variable
-		$g_avBuildingUpgrades[$i][1] = -1 ; clear location and loot value in $g_avBuildingUpgrades variable
-		$g_avBuildingUpgrades[$i][2] = -1 ; clear location and loot value in $g_avBuildingUpgrades variable
-		$g_avBuildingUpgrades[$i][3] = "" ;Clear Upgrade Type
-		$g_avBuildingUpgrades[$i][4] = "" ;Clear Upgrade Unit Name
-		$g_avBuildingUpgrades[$i][5] = "" ;Clear Upgrade Level
-		$g_avBuildingUpgrades[$i][6] = "" ;Clear Upgrade Time
-		$g_avBuildingUpgrades[$i][7] = "" ;Clear Upgrade Starting Time
-		GUICtrlSetData($g_hTxtUpgradeName[$i], "") ; Clear GUI Unit Name
-		GUICtrlSetData($g_hTxtUpgradeLevel[$i], "") ; Clear GUI Unit Level
-		GUICtrlSetData($g_hTxtUpgradeValue[$i], "") ; Clear Upgrade value in GUI
-		GUICtrlSetData($g_hTxtUpgradeTime[$i], "") ; Clear Upgrade time in GUI
-		_GUICtrlSetImage($g_hPicUpgradeType[$i], $g_sLibIconPath, $eIcnBlank) ; change GUI upgrade image to blank
-		$g_aiPicUpgradeStatus[$i] = $eIcnTroops
-		_GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, $g_aiPicUpgradeStatus[$i]) ; Change GUI upgrade status to not ready
-		GUICtrlSetState($g_hChkUpgrade[$i], $GUI_UNCHECKED) ; Change upgrade selection box to unchecked
-		GUICtrlSetData($g_hTxtUpgradeEndTime[$i], "") ; Clear Upgrade time in GUI
-		GUICtrlSetState($g_hChkUpgradeRepeat[$i], $GUI_UNCHECKED) ; Change repeat box to unchecked
+		If GUICtrlRead($g_hChkUpgradeRepeat[$i]) = $GUI_CHECKED Then
+		;SetDebugLog("Row to keep " & $i)
+		  If $iEmptyRow<>-1 Then  ;Is there an empty row to fill?
+		    ;SetDebugLog("Moving from " & $i)
+			;SetDebugLog("Moving to " & $iEmptyRow)
+		    ;Move this row up...
+			$g_aiPicUpgradeStatus[$iEmptyRow] = $g_aiPicUpgradeStatus[$i] ; Upgrade status
+		    $g_avBuildingUpgrades[$iEmptyRow][0] = $g_avBuildingUpgrades[$i][0] ;Upgrade Location X
+		    $g_avBuildingUpgrades[$iEmptyRow][1] = $g_avBuildingUpgrades[$i][1] ;Upgrade Location Y
+		    $g_avBuildingUpgrades[$iEmptyRow][2] = $g_avBuildingUpgrades[$i][2] ;Upgrade Value
+			;SetDebugLog("Type setting to " & $g_avBuildingUpgrades[$i][3])
+		    $g_avBuildingUpgrades[$iEmptyRow][3] = $g_avBuildingUpgrades[$i][3] ;Upgrade Type
+			;SetDebugLog("Name in global setting to " & $g_avBuildingUpgrades[$i][4])
+		    $g_avBuildingUpgrades[$iEmptyRow][4] = $g_avBuildingUpgrades[$i][4] ;Upgrade Unit Name
+			;SetDebugLog("Level in global setting to " & $g_avBuildingUpgrades[$i][5])
+		    $g_avBuildingUpgrades[$iEmptyRow][5] = $g_avBuildingUpgrades[$i][5] ;Upgrade Level
+		    $g_avBuildingUpgrades[$iEmptyRow][6] = $g_avBuildingUpgrades[$i][6] ;Upgrade Duration
+		    $g_avBuildingUpgrades[$iEmptyRow][7] = $g_avBuildingUpgrades[$i][7] ;Upgrade Finish Time
+			
+			;Set the GUI data for new row and clear the GUI data for the cleared row.
+			;GUI Unit Name
+			;SetDebugLog("Setting name " & $g_avBuildingUpgrades[$iEmptyRow][4])
+			GUICtrlSetData($g_hTxtUpgradeName[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][4])
+			GUICtrlSetData($g_hTxtUpgradeName[$i], "") 
+			;GUI Unit Level
+			;SetDebugLog("Setting level " & $g_avBuildingUpgrades[$iEmptyRow][5])
+			GUICtrlSetData($g_hTxtUpgradeLevel[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][5])
+		    GUICtrlSetData($g_hTxtUpgradeLevel[$i], "") 
+			;Upgrade value in GUI
+			GUICtrlSetData($g_hTxtUpgradeValue[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][2])
+		    GUICtrlSetData($g_hTxtUpgradeValue[$i], "") 
+		    ;Upgrade duration in GUI
+			GUICtrlSetData($g_hTxtUpgradeTime[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][6])
+			GUICtrlSetData($g_hTxtUpgradeTime[$i], "") 
+			
+			;GUI upgrade type image
+			$j = $eIcnElixir
+			If $g_avBuildingUpgrades[$iEmptyRow][3] = "GOLD" Then $j = $eIcnGold
+			;SetDebugLog("Setting GUI type to " & $j)
+			_GUICtrlSetImage($g_hPicUpgradeType[$iEmptyRow], $g_sLibIconPath, $j)
+		    _GUICtrlSetImage($g_hPicUpgradeType[$i], $g_sLibIconPath, $eIcnBlank) 
+			
+			;GUI Status icon : Still not working right!  
+			;$eIcnTroops=43, $eIcnGreenLight=69, $eIcnRedLight=71 or $eIcnYellowLight=73
+			;SetDebugLog("Setting status to " & $g_aiPicUpgradeStatus[$i])
+			;$j=$g_aiPicUpgradeStatus[$i]
+			;No idea why this crap is needed, but I can't pass a variable to _GUICtrlSetImage
+			$j=$eIcnGreenLight
+			If $g_aiPicUpgradeStatus[$i] = $eIcnYellowLight Then $j=$eIcnYellowLight
+			$g_aiPicUpgradeStatus[$iEmptyRow] = $j
+			_GUICtrlSetImage($g_hPicUpgradeStatus[$iEmptyRow], $g_sLibIconPath, $j)
+		    ;SetDebugLog("Clearing old status to red light " & $eIcnRedLight)
+			$g_aiPicUpgradeStatus[$i] = $eIcnRedLight ;blank row goes red
+			_GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, $eIcnRedLight) 
+			
+			;Upgrade selection box
+			GUICtrlSetState($g_hChkUpgrade[$iEmptyRow], $GUI_CHECKED)
+			GUICtrlSetState($g_hChkUpgrade[$i], $GUI_UNCHECKED) 
+			;Upgrade finish time in GUI
+			GUICtrlSetData($g_hTxtUpgradeEndTime[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][7])
+		    GUICtrlSetData($g_hTxtUpgradeEndTime[$i], "") 
+			;Repeat box
+			GUICtrlSetState($g_hChkUpgradeRepeat[$iEmptyRow], $GUI_CHECKED)
+		    GUICtrlSetState($g_hChkUpgradeRepeat[$i], $GUI_UNCHECKED) 
+
+			;Now clear the row we just moved from.
+			$g_avBuildingUpgrades[$i][0] = -1 ;Upgrade Location X
+		    $g_avBuildingUpgrades[$i][1] = -1 ;Upgrade Location Y
+		    $g_avBuildingUpgrades[$i][2] = -1 ;Upgrade Value
+		    $g_avBuildingUpgrades[$i][3] = "" ;Upgrade Type
+		    $g_avBuildingUpgrades[$i][4] = "" ;Upgrade Unit Name
+		    $g_avBuildingUpgrades[$i][5] = "" ;Upgrade Level
+		    $g_avBuildingUpgrades[$i][6] = "" ;Upgrade Duration
+		    $g_avBuildingUpgrades[$i][7] = "" ;Upgrade Finish Time
+			
+			
+			$i = $iEmptyRow ;Reset counter to this row so we continue forward from here.
+			$iEmptyRow = -1 ;This should be the first empty row now.
+			
+		  Else
+			;set these to clear up old status icon issues on rows not moved
+		    ;SetDebugLog("Not moving row " & $i)
+			$j=$g_aiPicUpgradeStatus[$i]
+			;SetDebugLog("Setting GUI status to " & $j) ;
+			;Following works if a constant is used, but not an variable?
+			if $j=69 then _GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, 69) 
+			if $j=73 then _GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, 73) 
+			ContinueLoop
+		  Endif
+		Else ;Row not checked.  Clear it.
+		  ;SetDebugLog("Row not checked, clearing row " & $i)
+		  $g_avBuildingUpgrades[$i][0] = -1 ;Upgrade position x
+		  $g_avBuildingUpgrades[$i][1] = -1 ;Upgrade position y
+		  $g_avBuildingUpgrades[$i][2] = -1 ;Upgrade value
+		  $g_avBuildingUpgrades[$i][3] = "" ;Upgrade Type
+		  $g_avBuildingUpgrades[$i][4] = "" ;Upgrade Unit Name
+		  $g_avBuildingUpgrades[$i][5] = "" ;Upgrade Level
+		  $g_avBuildingUpgrades[$i][6] = "" ;Upgrade Duration
+		  $g_avBuildingUpgrades[$i][7] = "" ;Upgrade Finish Time
+		  GUICtrlSetData($g_hTxtUpgradeName[$i], "")  ;GUI Unit Name
+		  GUICtrlSetData($g_hTxtUpgradeLevel[$i], "") ;GUI Unit Level
+		  GUICtrlSetData($g_hTxtUpgradeValue[$i], "") ;Upgrade value in GUI
+		  GUICtrlSetData($g_hTxtUpgradeTime[$i], "")  ;Upgrade duration in GUI
+		  _GUICtrlSetImage($g_hPicUpgradeType[$i], $g_sLibIconPath, $eIcnBlank) ;Upgrade type blank
+		  $g_aiPicUpgradeStatus[$i] = $eIcnRedLight
+		  _GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, $eIcnRedLight) ;Upgrade status to not ready
+		  GUICtrlSetState($g_hChkUpgrade[$i], $GUI_UNCHECKED) ;Change upgrade selection box to unchecked
+		  GUICtrlSetData($g_hTxtUpgradeEndTime[$i], "") ;Clear Upgrade time in GUI
+		  GUICtrlSetState($g_hChkUpgradeRepeat[$i], $GUI_UNCHECKED) ;Change repeat box to unchecked
+		  If $iEmptyRow = -1 Then $iEmptyRow=$i ;This row is now empty.  
+		Endif
 	Next
 EndFunc   ;==>btnResetUpgrade
 

@@ -44,16 +44,16 @@ Func GetTownHallLevel($bFirstTime = False)
 			saveConfig()
 		Else
 			SetLog("Your Town Hall Level was not found! Please Manually Locate", $COLOR_INFO)
-			ClickP($aAway, 1, 0, "#0350") ; Unselect TH
+			ClickAway()
 			Return False
 		EndIf
 	Else
 		SetLog("Your Town Hall Level was not found! Please Manually Locate", $COLOR_INFO)
-		ClickP($aAway, 1, 0, "#0351") ; Unselect TH
+		ClickAway()
 		Return False
 	EndIf
 
-	ClickP($aAway, 2, $DELAYGETTHLEVEL3, "#0352") ; Unselect TH
+	ClickAway()
 	Return True
 
 EndFunc   ;==>GetTownHallLevel

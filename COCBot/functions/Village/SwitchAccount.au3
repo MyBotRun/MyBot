@@ -130,7 +130,7 @@ Func CheckSwitchAcc()
 		$g_aiTimeTrain[2] = 0
 		If IsWaitforHeroesActive() Then CheckWaitHero() ; update $g_aiTimeTrain[2]
 
-		ClickP($aAway, 1, 0, "#0000") ;Click Away
+		ClickAway()
 
 		$iWaitTime = _ArrayMax($g_aiTimeTrain, 1, 0, 2) ; Not check Siege Machine time: $g_aiTimeTrain[3]
 		If $bReachAttackLimit And $iWaitTime <= 0 Then
@@ -220,7 +220,7 @@ Func CheckSwitchAcc()
 		EndIf
 	EndIf
 	If Not $g_bRunState Then Return
-	
+
 	$g_bForceSwitch = false ; reset the need to switch
 EndFunc   ;==>CheckSwitchAcc
 
@@ -459,7 +459,7 @@ Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $iNextAccount, $bStayDisconnected
 	For $i = 0 To 20 ; Checking Account List continuously in 20sec
 		If _ColorCheck(_GetPixelColor($aListAccount[0], $aListAccount[1], True), Hex($aListAccount[2], 6), $aListAccount[3]) Then ;	Grey
 			If $bStayDisconnected Then
-				ClickP($aAway, 1, 0, "#0000") ;Click Away
+				ClickAway()
 				Return FuncReturn("OK")
 			EndIf
 			If _Sleep(600) Then Return FuncReturn("Exit")
@@ -506,7 +506,7 @@ Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $iNextAccount, $bStayDisconnected
 			Return FuncReturn("Error")
 		ElseIf (Not $bLateDisconnectButtonCheck Or $i = 6) And UBound(decodeSingleCoord(findImage("Google Play Disconnected", $g_sImgGoogleButtonState & "GooglePlayRed*", GetDiamondFromRect("50,100,800,600"), 1, True, Default)), 1) > 0 Then ; Red, double click did not work, try click Disconnect 1 more time
 			If $bStayDisconnected Then
-				ClickP($aAway, 1, 0, "#0000") ;Click Away
+				ClickAway()
 				Return FuncReturn("OK")
 			EndIf
 			If _Sleep(250) Then Return FuncReturn("Exit")
@@ -520,7 +520,7 @@ Func SwitchCOCAcc_ClickAccount(ByRef $bResult, $iNextAccount, $bStayDisconnected
 			If IsArray($aSuperCellIDConnected) And UBound($aSuperCellIDConnected, 1) >= 2 Then
 				;SetLog("Account connected to SuperCell ID, cannot disconnect")
 				If $bStayDisconnected Then
-					ClickP($aAway, 1, 0, "#0000") ;Click Away
+					ClickAway()
 					Return FuncReturn("OK")
 				EndIf
 			EndIf
@@ -614,7 +614,7 @@ Func SwitchCOCAcc_ConfirmAccount(ByRef $bResult, $iStep = 3, $bDisconnectAfterSw
 						Return "Exit"
 				EndSwitch
 			EndIf
-			ClickP($aAway, 2, 0, "#0167") ; Click Away
+			ClickAway()
 			If _Sleep(500) Then Return "Exit"
 			If Not $g_bRunState Then Return "Exit"
 			$bResult = True
@@ -694,7 +694,9 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
 
 				_ArraySort($aCoordinates, 0, 0, 0, 1) ; short by column 1 [Y]
 
+				Local $iProfiles = UBound($g_asProfileName)
 				For $j = 0 To UBound($aCoordinates) - 1
+					If  ($j + $iIndexSCID) > $iProfiles  Then ExitLoop
 					SetDebugLog("[" & $j & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$j + $iIndexSCID])
 				Next
 

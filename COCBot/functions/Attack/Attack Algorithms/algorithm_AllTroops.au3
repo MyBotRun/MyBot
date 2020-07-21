@@ -78,7 +78,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		Switch $g_aiAttackStdDropOrder[$g_iMatchMode]
 			Case 0
 				If $g_bCustomDropOrderEnable Then
-					Local $listInfoDeploy[24][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+					Local $listInfoDeploy[25][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 							[MatchTroopDropName(1), MatchSidesDrop(1), MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 							[MatchTroopDropName(2), MatchSidesDrop(2), MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 							[MatchTroopDropName(3), MatchSidesDrop(3), MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -101,9 +101,10 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							[MatchTroopDropName(20), MatchSidesDrop(20), MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)], _
 							[MatchTroopDropName(21), MatchSidesDrop(21), MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)], _
 							[MatchTroopDropName(22), MatchSidesDrop(22), MatchTroopWaveNb(22), 1, MatchSlotsPerEdge(22)], _
-							[MatchTroopDropName(23), MatchSidesDrop(23), MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)]]
+							[MatchTroopDropName(23), MatchSidesDrop(23), MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)], _
+							[MatchTroopDropName(24), MatchSidesDrop(24), MatchTroopWaveNb(24), 1, MatchSlotsPerEdge(24)]]
 				Else
-					Local $listInfoDeploy[27][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[28][5] = [[$eGole, $nbSides, 1, 1, 2] _
 							, [$eLava, $nbSides, 1, 1, 2] _
 							, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 							, [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
@@ -130,6 +131,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							, [$ePekk, $nbSides, 1, 1, 1] _
 							, [$eIceG, $nbSides, 1, 1, 0] _
 							, [$eYeti, $nbSides, 1, 1, 0] _
+							, [$eHunt, $nbSides, 1, 1, 0] _
 							, ["HEROES", 1, 2, 1, 1] _
 							]
 				EndIf
@@ -168,7 +170,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		Switch $g_aiAttackStdDropOrder[$g_iMatchMode]
 			Case 0
 				If $g_bCustomDropOrderEnable Then
-					Local $listInfoDeploy[24][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+					Local $listInfoDeploy[25][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 							[MatchTroopDropName(1), MatchSidesDrop(1), MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 							[MatchTroopDropName(2), MatchSidesDrop(2), MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 							[MatchTroopDropName(3), MatchSidesDrop(3), MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -191,9 +193,10 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							[MatchTroopDropName(20), MatchSidesDrop(20), MatchTroopWaveNb(20), 1, MatchSlotsPerEdge(20)], _
 							[MatchTroopDropName(21), MatchSidesDrop(21), MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)], _
 							[MatchTroopDropName(22), MatchSidesDrop(22), MatchTroopWaveNb(22), 1, MatchSlotsPerEdge(22)], _
-							[MatchTroopDropName(23), MatchSidesDrop(23), MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)]]
+							[MatchTroopDropName(23), MatchSidesDrop(23), MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)], _
+							[MatchTroopDropName(24), MatchSidesDrop(24), MatchTroopWaveNb(24), 1, MatchSlotsPerEdge(24)]]
 				Else
-					Local $listInfoDeploy[28][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[29][5] = [[$eGole, $nbSides, 1, 1, 2] _
 							, [$eLava, $nbSides, 1, 1, 2] _
 							, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 							, [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
@@ -220,6 +223,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							, [$eHeal, $nbSides, 1, 1, 1] _
 							, [$ePekk, $nbSides, 1, 1, 1] _
 							, [$eYeti, $nbSides, 1, 1, 1] _
+							, [$eHunt, $nbSides, 1, 1, 0] _
 							, ["HEROES", 1, 2, 1, 1] _
 							]
 				EndIf
@@ -296,7 +300,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 			If $g_bDebugSetlog Then SetDebugLog("No Wast time... exit, no troops usable left", $COLOR_DEBUG)
 			ExitLoop ;Check remaining quantities
 		EndIf
-		For $i = $eBarb To $eIceG ; launch all remaining troops
+		For $i = $eBarb To $eHunt ; launch all remaining troops
 			If LaunchTroop($i, $nbSides, 1, 1, 1) Then
 				CheckHeroesHealth()
 				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return

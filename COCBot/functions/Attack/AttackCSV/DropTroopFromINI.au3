@@ -25,6 +25,11 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+
+#include-once
+#include <Array.au3>
+#include <MsgBoxConstants.au3>
+
 Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $iMinQuantity, $iMaxQuantity, $sTroopName, $delayPointmin, $delayPointmax, $delayDropMin, $delayDropMax, $sleepafterMin, $sleepAfterMax, $bDebug = False)
 	If IsArray($aiIndexArray) = 0 Then
 		debugAttackCSV("drop using vectors " & $sDropVectors & " index " & $iStartIndex & "-" & $iEndIndex & " and using " & $iMinQuantity & "-" & $iMaxQuantity & " of " & $sTroopName)
@@ -78,12 +83,54 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 	Local $bHeroDrop = ($iTroopIndex = $eWarden ? True : False) ;set flag TRUE if Warden was dropped
 
 	;Super troop hotfix, if only super troop is available and normal troop is in csv, use the super troop
-	If $iTroopIndex <= $eIceG And _ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb) > -1 Then
+	SetDebugLog("$iTroopIndex = " & $iTroopIndex)
+	SetDebugLog("_ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb) = " & _ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb))
+	;Returned the "$iTroopIndex + " from "$iTroopIndex + $eSuperBarb" if the _ArraySearch test.
+	If $iTroopIndex <= $eHunt And _ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb) > -1 Then
 		SetLog("CSV contains normal troop but only super troop available, append drop quantity", $COLOR_INFO)
-		$iTroopIndex += $eSuperBarb
-		$qtyxpoint = Round($qtyxpoint / $g_aiSuperTroopSpace[$iTroopIndex - $eSuperBarb])
-		$extraunit = Round($extraunit / $g_aiSuperTroopSpace[$iTroopIndex - $eSuperBarb])
+		;_ArrayDisplay($g_avAttackTroops, "$g_avAttackTroops")
+		;Troops enum: $eBarb=0, $eArch=1, $eGiant=2, $eGobl=3, $eWall=4, $eBall=5, $eWiza=6, $eHeal=7, $eDrag=8, $ePekk=9
+		;Supertroops enum: $eSuperBarb=43, $$eSuperGiant=44, eSneakyGobl=45, $eSuperWall=46
+		;$iTroopIndex += $eSuperBarb ;Is this right?  Won't SuperGiants get set to 45 instead of 44?
+		Local $bSwitched = False, $iOldIndex
+		$iOldIndex = $iTroopIndex
+		;Be sure to only switch out troops that have a corresponding super type
+		Switch $iTroopIndex ;convert troop to super troop index,
+			Case $eBarb
+				SetDebugLog("Switching to $eSuperBarb: " & $eSuperBarb)
+				$iTroopIndex =  $eSuperBarb
+				$bSwitched = True
+			Case $eGiant
+				SetDebugLog("Switching to $eSuperGiant: " & $eSuperGiant)
+				$iTroopIndex = $eSuperGiant
+				$bSwitched = True
+			Case $eGobl
+				SetDebugLog("Switching to $eSneakyGobl: " & $eSneakyGobl)
+				$iTroopIndex = $eSneakyGobl
+				$bSwitched = True
+			Case $eWall
+				SetDebugLog("Switching to $eSuperWall: " & $eSuperWall)
+				$iTroopIndex = $eSuperWall
+				$bSwitched = True
+			Case $eBabyD
+				SetDebugLog("Switching to $eInfernoDrag: " & $eInfernoDrag)
+				$iTroopIndex = $eInfernoDrag
+				$bSwitched = True
+			Case $eWitc
+				SetDebugLog("Switching to $eSuperWitc: " & $eSuperWitc)
+				$iTroopIndex = $eSuperWitc
+				$bSwitched = True
+			Case Else
+				SetDebugLog("No switch.  Sticking with: " & $iTroopIndex)
+				$bSwitched = False
+		EndSwitch
+		if $bSwitched Then
+			$qtyxpoint = Round($qtyxpoint / ($g_aiSuperTroopSpace[$iOldIndex] / $g_aiTroopSpace[$iOldIndex]))
+			$extraunit = Round($extraunit / ($g_aiSuperTroopSpace[$iOldIndex] / $g_aiTroopSpace[$iOldIndex]))
+		Endif
 	EndIf
+
+	_ArrayDisplay($g_avAttackTroops, "Index: " & $iTroopIndex)
 
 	;search slot where is the troop...
 	Local $troopPosition = -1
@@ -103,7 +150,8 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 		If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True) ; return drag
 	ElseIf $troopSlotConst > 10 Then ; can only be selected when in 2nd page of troopbar
 		If $g_bDraggedAttackBar = False Then DragAttackBar($g_iTotalAttackSlot, False) ; drag forward
-	EndIf
+		EndIf
+
 	If $g_bDraggedAttackBar And $troopPosition > -1 Then
 		$troopPosition = $troopSlotConst - ($g_iTotalAttackSlot - 10)
 		debugAttackCSV("New troop position: " & $troopPosition)
@@ -197,7 +245,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 					EndIf
 
 					Switch $iTroopIndex
-						Case $eBarb To $eIceG, $eSuperBarb To $eSuperWall ; drop normal/super troops
+						Case $eBarb To $eHunt, $eSuperBarb To $eSuperHunt ; drop normal/super troops
 							If $bDebug Then
 								SetLog("AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else

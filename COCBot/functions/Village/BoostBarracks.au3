@@ -49,7 +49,7 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 			$sIsAre = "is"
 		Else
 			SetDebugLog("BoostTrainBuilding(): $sName called with a wrong Value.", $COLOR_ERROR)
-			ClickP($aAway, 1, 0, "#0161")
+			ClickAway()
 			_Sleep($DELAYBOOSTBARRACKS2)
 			Return $bBoosted
 		EndIf
@@ -89,7 +89,7 @@ Func BoostTrainBuilding($sName, $iCmbBoost, $iCmbBoostCtrl)
 		EndIf
 	EndIf
 
-	ClickP($aAway, 1, 0, "#0161")
+	ClickAway()
 	_Sleep($DELAYBOOSTBARRACKS2)
 
 	Return $bBoosted

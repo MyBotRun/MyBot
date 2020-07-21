@@ -29,7 +29,7 @@ Func LocateClanCastle($bCollect = True)
 		$MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Func_Locate_Clan_Castle_02", "Locate Clan Castle"), $stext, 15)
 		If $MsgBox = 1 Then
 			WinGetAndroidHandle()
-			ClickP($aAway, 1, 0, "#0373")
+			ClickAway()
 			Local $aPos = FindPos()
 			$g_aiClanCastlePos[0] = $aPos[0]
 			$g_aiClanCastlePos[1] = $aPos[1]
@@ -51,20 +51,20 @@ Func LocateClanCastle($bCollect = True)
 						ContinueLoop
 					Case $iStupid > 4
 						SetLog(" Operator Error - Bad Clan Castle Location: " & "(" & $g_aiClanCastlePos[0] & "," & $g_aiClanCastlePos[1] & ")", $COLOR_ERROR)
-						ClickP($aAway, 1, 0, "#0374")
+						ClickAway()
 						Return False
 					Case Else
 						SetLog(" Operator Error - Bad Clan Castle Location: " & "(" & $g_aiClanCastlePos[0] & "," & $g_aiClanCastlePos[1] & ")", $COLOR_ERROR)
 						$g_aiClanCastlePos[0] = -1
 						$g_aiClanCastlePos[1] = -1
-						ClickP($aAway, 1, 0, "#0375")
+						ClickAway()
 						Return False
 				EndSelect
 			EndIf
 			SetLog("Clan Castle: " & "(" & $g_aiClanCastlePos[0] & "," & $g_aiClanCastlePos[1] & ")", $COLOR_SUCCESS)
 		Else
 			SetLog("Locate Clan Castle Cancelled", $COLOR_INFO)
-			ClickP($aAway, 1, 0, "#0376")
+			ClickAway()
 			Return
 		EndIf
 		$sInfo = BuildingInfo(242, 490 + $g_iBottomOffsetY) ; 860x780
@@ -90,7 +90,7 @@ Func LocateClanCastle($bCollect = True)
 						SetLog("Quit joking, Click the Clan Castle, or restart bot and try again", $COLOR_ERROR)
 						$g_aiClanCastlePos[0] = -1
 						$g_aiClanCastlePos[1] = -1
-						ClickP($aAway, 1, 0, "#0377")
+						ClickAway()
 						Return False
 				EndSelect
 			EndIf
@@ -103,11 +103,11 @@ Func LocateClanCastle($bCollect = True)
 			SetLog(" Operator Error - Bad Clan Castle Location: " & "(" & $g_aiClanCastlePos[0] & "," & $g_aiClanCastlePos[1] & ")", $COLOR_ERROR)
 			$g_aiClanCastlePos[0] = -1
 			$g_aiClanCastlePos[1] = -1
-			ClickP($aAway, 1, 0, "#0378")
+			ClickAway()
 			Return False
 		EndIf
 		ExitLoop
 	WEnd
 
-	ClickP($aAway, 1, 200, "#0327")
+	ClickAway()
 EndFunc   ;==>LocateClanCastle
