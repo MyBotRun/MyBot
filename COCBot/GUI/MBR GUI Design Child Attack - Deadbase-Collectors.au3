@@ -15,8 +15,8 @@
 #include-once
 
 Global $g_hChkDBDisableCollectorsFilter = 0
-Global $g_ahChkDBCollectorLevel[14] = [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 thru 5 are never referenced
-Global $g_ahCmbDBCollectorLevel[14] = [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 thru 5 are never referenced
+Global $g_ahChkDBCollectorLevel[15] = [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 thru 5 are never referenced
+Global $g_ahCmbDBCollectorLevel[15] = [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 thru 5 are never referenced
 Global $g_hCmbMinCollectorMatches = 0, $g_hSldCollectorTolerance = 0, $g_hLblCollectorWarning = 0
 
 Func CreateAttackSearchDeadBaseCollectors()
@@ -32,7 +32,7 @@ Func CreateAttackSearchDeadBaseCollectors()
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkDisableCollectorsFilter_Info_01", "Disable Collector Filter CHANGES DeadBase into another ActiveBase search"))
 
 	$y += 15
-	For $i = 6 To 13
+	For $i = 6 To 14
 		$y += 25
 			$g_ahChkDBCollectorLevel[$i] = GUICtrlCreateCheckbox("", $x, $y, 18, 18)
 				$sTxtTip = $s_TxtTip1 & @CRLF & GetTranslatedFileIni("MBR GUI Design Child Attack - Deadbase-Collectors", "ChkCollectorLevel" & $i & "_Info_01", "for level " & $i & " elixir collectors during dead base detection.")

@@ -105,6 +105,8 @@ Func GetLocationElixirWithLevel()
 	; Lvl 6 elixir collector level 10
 	; Lvl 7 elixir collector level 11
 	; Lvl 8 elixir collector level 12
+	; Lvl 9 elixir collector level 13
+	; Lvl 10 elixir collector level 14
 
 	If $g_iDetectedImageType = 0 Then
 		Local $aEndResult = DllCallMyBot("getLocationElixirExtractorWithLevel", "ptr", $g_hHBitmap2)
@@ -131,7 +133,9 @@ Func GetLocationMineWithLevel()
 	; Lvl 6 gold mine level 10
 	; Lvl 7 gold mine level 11
 	; Lvl 8 gold mine level 12
-
+	; Lvl 9 gold mine level 13
+	; Lvl 10 gold mine level 14
+	
 	If $g_iDetectedImageType = 0 Then
 		Local $aEndResult = DllCallMyBot("getLocationMineExtractorWithLevel", "ptr", $g_hHBitmap2)
 		If $g_bDebugBuildingPos Then SetLog("#*# getLocationMineExtractorWithLevel: " & $aEndResult[0], $COLOR_DEBUG)

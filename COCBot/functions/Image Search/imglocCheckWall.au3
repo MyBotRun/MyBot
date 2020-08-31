@@ -52,6 +52,7 @@ Func imglocCheckWall()
 		SetLog("Looking further away.", $COLOR_SUCCESS)
 		_CaptureRegion2()
 		$FoundWalls = imglocFindWalls($levelWall, "ECD", "ECD", 10) ; lets get 10 points just to make sure we discard false positives
+		SetDebugLog("$FoundWalls = " & $FoundWalls)
 	EndIf
 
 	;ClickP($aAway, 1, 0, "#0505") ; to prevent bot 'Anyone there ?'
@@ -59,6 +60,9 @@ Func imglocCheckWall()
 
 	If ($FoundWalls[0] = "") Then ; nothing found
 		SetLog("No wall(s) level: " & $levelWall & " found.", $COLOR_ERROR)
+		If SwitchToNextWallLevel() Then
+			SetLog("No more walls of current level, switching to next", $COLOR_ACTION)
+		EndIf
 	Else
 		For $i = 0 To UBound($FoundWalls) - 1
 			Local $WallCoordsArray = decodeMultipleCoords($FoundWalls[$i])

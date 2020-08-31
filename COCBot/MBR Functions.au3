@@ -236,6 +236,7 @@
 #include "functions\Village\CheckBaseQuick.au3"
 #include "functions\Village\chkShieldStatus.au3"
 #include "functions\Village\Collect.au3"
+#include "functions\Village\CollectAchievements.au3"
 #include "functions\Village\TreasuryCollect.au3"
 #include "functions\Village\DonateCC.au3"
 #include "functions\Village\DonateCCWBL.au3"

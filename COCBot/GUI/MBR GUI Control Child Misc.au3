@@ -652,7 +652,11 @@ Func chkActivateClangames()
 		;V3
 		GUICtrlSetState($g_hChkClanGamesLoot, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesBattle, $GUI_ENABLE)
+		 GUICtrlSetState($g_hChkClanGamesSuperTroop, $GUI_ENABLE)
+
+		 GUICtrlSetState($g_hChkClanGamesSpell, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesDestruction, $GUI_ENABLE)
+
 		GUICtrlSetState($g_hChkClanGamesAirTroop, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_ENABLE)
@@ -670,6 +674,10 @@ Func chkActivateClangames()
 		;V3
 		GUICtrlSetState($g_hChkClanGamesLoot, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesBattle, $GUI_DISABLE)
+
+		GUICtrlSetState($g_hChkClanGamesSuperTroop, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesSpell, $GUI_DISABLE)
+
 		GUICtrlSetState($g_hChkClanGamesDestruction, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesAirTroop, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_DISABLE)

@@ -900,7 +900,9 @@ EndFunc   ;==>CheckGoogleSelectAccount
 Func CheckLoginWithSupercellID()
 
 	Local $bResult = False
-
+	
+	If Not $g_bRunState Then Return
+	
 	; Account List check be there, validate with imgloc
 	If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "318,678(125,30)", False))) > 1 Then
 		; Google Account selection found

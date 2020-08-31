@@ -251,6 +251,10 @@ Func lblTotalCountSiege()
 		GUICtrlSetData($g_hLblCountTotalSiege, $g_iTotalTrainSpaceSiege)
 		GUICtrlSetData($g_hLblTotalTimeSiege, " 0s")
 		_GUI_Value_STATE("HIDE", $groupListSieges)
+	Else
+		GUICtrlSetBkColor($g_hLblCountTotalSiege, $COLOR_MONEYGREEN) ;lime, moneygreen
+		_GUICtrlSetTip($g_hLblCountTotalSiege, GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "LblCountTotal_Info_02", "The total units of Siege Machines"))
+		_GUI_Value_STATE("SHOW", $groupListSieges)
 	EndIf
 EndFunc   ;==>lblTotalCountSiege
 

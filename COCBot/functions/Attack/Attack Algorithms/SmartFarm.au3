@@ -225,7 +225,7 @@ Func SmartFarmDetection($txtBuildings = "Mines")
 				$sdirectory = @ScriptDir & "\imgxml\Storages\GoldMines"
 			EndIf
 			$iMaxReturnPoints = 7
-			$iMaxLevel = 13
+			$iMaxLevel = 14
 		Case "Collectors"
 			If $g_iDetectedImageType = 1 Then
 				$sdirectory = @ScriptDir & "\imgxml\Storages\Collectors_Snow"
@@ -233,11 +233,11 @@ Func SmartFarmDetection($txtBuildings = "Mines")
 				$sdirectory = @ScriptDir & "\imgxml\Storages\Collectors"
 			EndIf
 			$iMaxReturnPoints = 7
-			$iMaxLevel = 13
+			$iMaxLevel = 14
 		Case "Drills"
 			$sdirectory = @ScriptDir & "\imgxml\Storages\Drills"
 			$iMaxReturnPoints = 3
-			$iMaxLevel = 7
+			$iMaxLevel = 8
 		Case "All"
 			If $g_iDetectedImageType = 1 Then
 				$sdirectory = @ScriptDir & "\imgxml\Storages\All_Snow"
@@ -245,7 +245,7 @@ Func SmartFarmDetection($txtBuildings = "Mines")
 				$sdirectory = @ScriptDir & "\imgxml\Storages\All"
 			EndIf
 			$iMaxReturnPoints = 21
-			$iMaxLevel = 13
+			$iMaxLevel = 14
 	EndSwitch
 
 	; Necessary Variables
@@ -569,13 +569,14 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				[MatchTroopDropName(23), $nbSides, MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)], _
 				[MatchTroopDropName(24), $nbSides, MatchTroopWaveNb(24), 1, MatchSlotsPerEdge(24)]]
 	Else
-		Local $listInfoDeploy[25][5] = [[$eGole, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[32][5] = [[$eGole, $nbSides, 1, 1, 2] _
 				, [$eLava, $nbSides, 1, 1, 2] _
 				, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
+				, [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 				, [$eDrag, $nbSides, 1, 1, 0] _
-				, ["CC", 1, 1, 1, 1] _
 				, [$eBall, $nbSides, 1, 1, 0] _
 				, [$eBabyD, $nbSides, 1, 1, 0] _
+				, [$eInfernoDrag, $nbSides, 1, 1, 0] _
 				, [$eHogs, $nbSides, 1, 1, 1] _
 				, [$eValk, $nbSides, 1, 1, 0] _
 				, [$eBowl, $nbSides, 1, 1, 0] _
@@ -583,16 +584,22 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$eMine, $nbSides, 1, 1, 0] _
 				, [$eEDrag, $nbSides, 1, 1, 0] _
 				, [$eWall, $nbSides, 1, 1, 1] _
+				, [$eSuperWall, $nbSides, 1, 1, 1] _
 				, [$eBarb, $nbSides, 1, 1, 0] _
+				, [$eSuperBarb, $nbSides, 1, 1, 0] _
 				, [$eArch, $nbSides, 1, 1, 0] _
+				, [$eSuperArch, $nbSides, 1, 1, 0] _
 				, [$eWiza, $nbSides, 1, 1, 0] _
 				, [$eMini, $nbSides, 1, 1, 0] _
 				, [$eWitc, $nbSides, 1, 1, 1] _
+				, [$eSuperWitc, $nbSides, 1, 1, 1] _
 				, [$eGobl, $nbSides, 1, 1, 0] _
+				, [$eSneakyGobl, $nbSides, 1, 1, 0] _
 				, [$eHeal, $nbSides, 1, 1, 1] _
 				, [$ePekk, $nbSides, 1, 1, 1] _
 				, [$eYeti, $nbSides, 1, 1, 1] _
 				, [$eHunt, $nbSides, 1, 1, 0] _
+				, ["CC", 1, 1, 1, 1] _
 				, ["HEROES", 1, 2, 1, 1] _
 				]
 	EndIf
