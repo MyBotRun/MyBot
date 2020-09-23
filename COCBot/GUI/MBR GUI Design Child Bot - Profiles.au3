@@ -194,7 +194,7 @@ Func CreateBotProfiles()
 		For $i = 0 To UBound($g_ahChkAccount) - 1
 			$g_ahChkAccount[$i] = GUICtrlCreateCheckbox("Acc " & $i + 1 & ".", $x, $y + ($i) * 25, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkAccountX")
-			$g_ahCmbProfile[$i] = GUICtrlCreateCombo("", $x + 65, $y + ($i) * 25, 110, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+			$g_ahCmbProfile[$i] = GUICtrlCreateCombo("", $x + 65, $y + ($i) * 25, 110, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL, $WS_VSCROLL))
 			GUICtrlSetOnEvent(-1, "cmbSwitchAccProfileX")
 			GUICtrlSetData(-1, _GUICtrlComboBox_GetList($g_hCmbProfile))
 			$g_ahChkDonate[$i] = GUICtrlCreateCheckbox("", $x + 190, $y + ($i) * 25 - 3, -1, 25)

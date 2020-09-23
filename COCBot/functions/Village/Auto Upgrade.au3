@@ -190,7 +190,7 @@ Func _AutoUpgrade()
 		EndSwitch
 		; if boolean still False, we can't launch upgrade, exiting...
 		If Not $bSufficentResourceToUpgrade Then
-			SetLog("Unsufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade, looking Next...", $COLOR_WARNING)
+			SetLog("Insufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade, looking Next...", $COLOR_WARNING)
 			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
@@ -202,7 +202,26 @@ Func _AutoUpgrade()
 			Case Else
 				Click(440, 530)
 		EndSwitch
-
+		
+		;Check for 'End Boost?' pop-up
+		If _Sleep(1000) Then Return
+		Local $aImgAUpgradeEndBoost = decodeSingleCoord(findImage("EndBoost", $g_sImgAUpgradeEndBoost, GetDiamondFromRect("350, 310, 570, 230"), 1, True))
+		If UBound($aImgAUpgradeEndBoost) > 1 Then
+			SetLog("End Boost? pop-up found", $COLOR_INFO)
+			SetLog("Clicking OK", $COLOR_INFO)
+			Local $aImgAUpgradeEndBoostOKBtn = decodeSingleCoord(findImage("EndBoostOKBtn", $g_sImgAUpgradeEndBoostOKBtn, GetDiamondFromRect("420, 470, 610, 380"), 1, True))
+			If UBound($aImgAUpgradeEndBoostOKBtn) > 1 Then
+				Click($aImgAUpgradeEndBoostOKBtn[0], $aImgAUpgradeEndBoostOKBtn[1])
+				If _Sleep(1000) Then Return
+			Else
+				SetLog("Unable to locate OK Button", $COLOR_ERROR)
+				If _Sleep(1000) Then Return
+				ClickAway()
+				Return
+			EndIf
+		EndIf
+		
+		
 		; Upgrade completed, but at the same line there might be more...
 		$g_iCurrentLineOffset -= $g_iQuickMISY
 		$iLoopMax += 1
