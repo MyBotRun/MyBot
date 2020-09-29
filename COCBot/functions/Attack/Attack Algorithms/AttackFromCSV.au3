@@ -40,7 +40,7 @@ Global $g_aiPixelBottomRightDOWNDropLine
 Local $DeployableLRTB = [0, $g_iGAME_WIDTH - 1, 0, 626]
 Local $DiamandAdjX = -25
 Local $DiamandAdjY = -22
-Local $OuterDiamondLeft = 26 - $DiamandAdjX, $OuterDiamondRight = 847 + $DiamandAdjX, $OuterDiamondTop = 26 - $DiamandAdjY, $OuterDiamondBottom = 644 + $DiamandAdjY ; set the diamond shape based on reference village
+Local $OuterDiamondLeft = 10 - $DiamandAdjX, $OuterDiamondRight = 855 + $DiamandAdjX, $OuterDiamondTop = 10 - $DiamandAdjY, $OuterDiamondBottom = 655 + $DiamandAdjY ; set the diamond shape based on reference village
 Local $DiamondMiddleX = ($OuterDiamondLeft + $OuterDiamondRight) / 2
 Local $DiamondMiddleY = ($OuterDiamondTop + $OuterDiamondBottom) / 2
 Local $InnerDiamandDiffX = 60 + $DiamandAdjX ; set the diamond shape based on reference village

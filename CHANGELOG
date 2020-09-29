@@ -1,4 +1,56 @@
-﻿* **V7.8.3**
+* **V7.8.7**
+* Additional fixes to village measuring 
+
+* **V7.8.6**
+* Added additional error handling to the ZoomOut function
+* Add handling for End Boost pop-up when Auto Upgrading
+* Add scroll bar to switch profiles dropdown boxes
+* Fix Click $speed parameter ignored by bot if passed when calling the function (reported by  Boldina)
+* Update Lab upgrade Lightening Spell (reported by @Boldina)
+* Fix village measuring errors due to scenery changes
+
+* **V7.8.5**
+* Fix Clangames air troop challenge typo. Reported and found by @MyBotIvan 
+* Add scroll bar to profiles combobox
+* Fix Troops Array!
+* Add scroll bar to profiles combobox
+* Correct auto switch wall level
+* Add additional check for missing images
+* Update lightening image
+* Add function 'Collect Achievement Rewards'
+* Update mine level 14, collector level 14 and drill level 8
+* Siege machine hidden on train tab - reported by @ydoyoudothis
+* Add Automatic Town Hall level update to FirstCheck
+
+**V7.8.4**
+* Add New Donation System!
+* Fix lightning spell detection (Summer 2020 Update. Reported by @grumpyhog)
+* Fix lightning spell space (Summer 2020 Update)
+* Add new super troop support and fix new troop level values (Summer 2020 Update)
+* Add New Dark Troop Headhunter (Summer 2020 Update)
+* Fix array error on scid account switch. Reported by @passionfruit
+* Fix legend league 'search for opponent' screen. Reported by @nytol
+* Fix legend league not finding 'confirm attack' button when trophies are below 5000. Reported by @nytol
+* Fix 'important notice' window not getting detected. Reported by @MikeD
+* Fix getarmycctroops crashing when cc contains super troops. Reported by @nytol
+* Fix array error while training troops/spells. Reported by @HarchH
+* Improve new maintenance screen handling. Reported by @RoKSeus @priapus.cranium @HarchH
+* Improve Away Clicks to be more randomized. Suggested by @grumpyhog
+* @grumpyhog's fix to DropTrophy to also use RC
+* Close up blank lines when "Reset Upgrades" button is pressed (Village / Upgrade / Buildings)
+* Fixed status icon in the Village / Upgrade / Buildings screen
+* Stop processing the building upgrade list when you run out of builders.
+* Updated BK and AQ upgrade costs. Reported by @Brazuca87
+* Support 6/22 upgrade AQ & BK levels 71 to 75 and new rates
+* Added Help example of making a .bat file to start multiple instances
+* Fix array error on spells queue read
+* Add GUI option to sell all extra magic items for gems in personal challenges
+* More work on SuperTroops use in CSV attacks.  (Needs more testing with more troop types)
+* Fixed Global vars for SuperTroops by @TFKNazgul
+* Fixed SuperTroops CSV support by @Grumpyhog
+* Smartfarm support for SuperTroops by @Grumpyhog
+
+* **V7.8.3**
 * Add Super Troops Training and Attacking (Spring 2020 Update) - Not Complete
 * Fix Lootcart Position (Spring 2020 Update)
 * Fix Main Village Zoomout (Spring 2020 Update)
