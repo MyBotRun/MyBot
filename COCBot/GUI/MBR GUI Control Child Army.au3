@@ -1202,8 +1202,11 @@ Func SelectTroop_QTEdit()
 EndFunc   ;==>SelectTroop_QTEdit
 
 Func AddTroop_QTEdit($iTroop)
-	Local $bOverSpace = False, $bOverSlot = False
-	If $g_iQTEdit_TotalTroop + $g_aiTroopSpace[$iTroop] > 280 Then $bOverSpace = True
+	Local $bOverSpace = False, $bOverSlot = False, $iTotalCampSpace=0
+
+   $iTotalCampSpace=Number(GUICtrlRead($g_hTxtTotalCampForced))
+
+	If $g_iQTEdit_TotalTroop + $g_aiTroopSpace[$iTroop] > $iTotalCampSpace Then $bOverSpace = True
 
 	For $j = 0 To 6
 		If $bOverSpace Then ExitLoop
@@ -1244,7 +1247,7 @@ Func AddTroop_QTEdit($iTroop)
 	Next
 
 	If $bOverSpace Or $bOverSlot Then
-		ToolTip($bOverSlot ? "Quick train does not support more than 7 troop slots" : "Total selected troops exceeds possible camp capacity (280)")
+		ToolTip($bOverSlot ? "Quick train does not support more than 7 troop slots" : "Total selected troops exceeds possible camp capacity (" & $iTotalCampSpace & ")")
 		Sleep(2000)
 		ToolTip('')
 	Else
@@ -1317,8 +1320,11 @@ Func SelectSpell_QTEdit()
 EndFunc   ;==>SelectSpell_QTEdit
 
 Func AddSpell_QTEdit($iSpell)
-	Local $bOverSpace = False, $bOverSlot = False
-	If $g_iQTEdit_TotalSpell + $g_aiSpellSpace[$iSpell] > 11 Then $bOverSpace = True
+	Local $bOverSpace = False, $bOverSlot = False, $iTotalSpellSpace=0
+
+	$iTotalSpellSpace=Number(GUICtrlRead($g_hTxtTotalCountSpell))
+
+	If $g_iQTEdit_TotalSpell + $g_aiSpellSpace[$iSpell] > $iTotalSpellSpace Then $bOverSpace = True
 
 	For $j = 0 To 6
 		If $bOverSpace Then ExitLoop
@@ -1359,7 +1365,7 @@ Func AddSpell_QTEdit($iSpell)
 	Next
 
 	If $bOverSpace Or $bOverSlot Then
-		ToolTip($bOverSlot ? "Quick train does not support more than 7 Spell slots" : "Total selected Spells exceeds possible spell camp capacity (11)")
+		ToolTip($bOverSlot ? "Quick train does not support more than 7 Spell slots" : "Total selected Spells exceeds possible spell camp capacity (" & $iTotalSpellSpace & ")")
 		Sleep(2000)
 		ToolTip('')
 	Else
@@ -1483,8 +1489,11 @@ Func ApplyQuickTrainArmy($Army)
 EndFunc   ;==>ApplyQuickTrainArmy
 
 Func TxtQTEdit_Troop()
-	Local $iTroop, $iQty, $iSpace, $iSlot
-	For $j = 0 To 6
+	Local $iTroop, $iQty, $iSpace, $iSlot, $iTotalCampSpace=0
+
+   $iTotalCampSpace=Number(GUICtrlRead($g_hTxtTotalCampForced))
+
+   For $j = 0 To 6
 		If @GUI_CtrlId = $g_ahTxtQTEdit_Troop[$j] Then
 			$iTroop = $g_aiQTEdit_TroopType[$j]
 			$iQty = GUICtrlRead($g_ahTxtQTEdit_Troop[$j])
@@ -1497,10 +1506,10 @@ Func TxtQTEdit_Troop()
 	Next
 	TotalTroopCount_QTEdit()
 
-	If $g_iQTEdit_TotalTroop > 280 Then
-		Local $iSpaceLeft = 280 - ($g_iQTEdit_TotalTroop - $iSpace)
+	If $g_iQTEdit_TotalTroop > $iTotalCampSpace Then
+		Local $iSpaceLeft = $iTotalCampSpace - ($g_iQTEdit_TotalTroop - $iSpace)
 		Local $iMaxQtyLeft = Int($iSpaceLeft / $g_aiTroopSpace[$iTroop])
-		ToolTip("Your input of " & $iQty & "x " & $g_asTroopNames[$iTroop] & " makes total troops to exceed possible camp capacity (280)." & @CRLF & "Automatically changing to: " & $iMaxQtyLeft & "x " & $g_asTroopNames[$iTroop])
+	    ToolTip("Your input of " & $iQty & "x " & $g_asTroopNames[$iTroop] & " makes total troops to exceed possible camp capacity (" & $iTotalCampSpace & ")." & @CRLF & "Automatically changing to: " & $iMaxQtyLeft & "x " & $g_asTroopNames[$iTroop])
 		Sleep(2000)
 		ToolTip('')
 		GUICtrlSetData($g_ahTxtQTEdit_Troop[$iSlot], $iMaxQtyLeft)
@@ -1509,7 +1518,10 @@ Func TxtQTEdit_Troop()
 EndFunc   ;==>TxtQTEdit_Troop
 
 Func TxtQTEdit_Spell()
-	Local $iSpell, $iQty, $iSpace, $iSlot
+	Local $iSpell, $iQty, $iSpace, $iSlot, $iTotalSpellSpace=0
+
+	$iTotalSpellSpace=Number(GUICtrlRead($g_hTxtTotalCountSpell))
+
 	For $j = 0 To 6
 		If @GUI_CtrlId = $g_ahTxtQTEdit_Spell[$j] Then
 			$iSpell = $g_aiQTEdit_SpellType[$j]
@@ -1523,10 +1535,10 @@ Func TxtQTEdit_Spell()
 	Next
 	TotalSpellCount_QTEdit()
 
-	If $g_iQTEdit_TotalSpell > 11 Then
-		Local $iSpaceLeft = 11 - ($g_iQTEdit_TotalSpell - $iSpace)
+	If $g_iQTEdit_TotalSpell > $iTotalSpellSpace Then
+		Local $iSpaceLeft = $iTotalSpellSpace - ($g_iQTEdit_TotalSpell - $iSpace)
 		Local $iMaxQtyLeft = Int($iSpaceLeft / $g_aiSpellSpace[$iSpell])
-		ToolTip("Your input of " & $iQty & "x " & $g_asSpellNames[$iSpell] & " makes total Spells to exceed possible camp capacity (11)." & @CRLF & "Automatically changing to: " & $iMaxQtyLeft & "x " & $g_asSpellNames[$iSpell])
+		ToolTip("Your input of " & $iQty & "x " & $g_asSpellNames[$iSpell] & " makes total Spells to exceed possible camp capacity (" & $iTotalSpellSpace & ")." & @CRLF & "Automatically changing to: " & $iMaxQtyLeft & "x " & $g_asSpellNames[$iSpell])
 		Sleep(2000)
 		ToolTip('')
 		GUICtrlSetData($g_ahTxtQTEdit_Spell[$iSlot], $iMaxQtyLeft)

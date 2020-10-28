@@ -647,29 +647,29 @@ Global Const $g_aiTroopTrainTime[$eTroopCount] = [ _
 		36, 90, 180, 600, 360, 600, 120, 180, 480]
 ; Zero element contains number of levels, elements 1 thru n contain cost of that level troop
 Global Const $g_aiTroopCostPerLevel[$eTroopCount][11] = [ _
-		[9, 25, 40, 60, 100, 150, 200, 250, 300, 350], _ 			    ; Barbarian
-		[9, 50, 80, 120, 200, 300, 400, 500, 600, 700], _ 			    ; Archer
-		[9, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000, 4500], _ 	    ; Giant
-		[8, 25, 40, 60, 80, 100, 150, 200, 250], _ 				 	    ; Goblin
-		[9, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2000], _      ; WallBreaker
-		[9, 1750, 2250, 2750, 3500, 4000, 4500, 5000, 5500, 6000], _ 	; Balloon
-		[9, 1000, 1400, 1800, 2200, 2600, 3000, 3400, 3800, 4200], _    ; Wizard
-		[6, 5000, 6000, 8000, 10000, 14000, 17000], _					; Healer
-		[8, 10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000], _  ; Dragon
-		[8, 14000, 16000, 18000, 20000, 22500, 25000, 27500, 30000], _  ; Pekka
-		[7, 5000, 6000, 7000, 8000, 9000, 10000, 11000], _ 			    ; BabyDragon
-		[7, 4200, 4800, 5200, 5600, 6000, 6400, 6800], _  			    ; Miner
-		[4, 28000, 32000, 36000, 40000], _  		                 	; ElectroDragon
-		[3, 19000, 21000, 23000], _  		                 	        ; Yeti
-		[9, 4, 5, 6, 7, 8, 9, 10, 11, 12], _ 							; Minion
-		[10, 30, 34, 38, 42, 48, 60, 80, 100, 120, 140], _				; HogRider
-		[8, 50, 65, 80, 100, 130, 160, 190, 220], _ 				 	; Valkyrie
-		[10, 200, 250, 300, 350, 425, 500, 575, 650, 725, 800], _ 		; Golem
-		[5, 125, 150, 175, 225, 275], _ 								; Witch
-		[6, 390, 450, 510, 570, 630, 750], _  							; Lavahound
-		[5, 70, 95, 115, 140, 175], _ 									; Bowler
-		[5, 220, 240, 260, 280, 300], _ 								; IceGolem
-		[3, 100, 120, 140]]			 									; Headhunter
+		[9, 25, 40, 60, 100, 150, 200, 250, 300, 350], _ 			    		; Barbarian
+		[9, 50, 80, 120, 200, 300, 400, 500, 600, 700], _ 			    		; Archer
+		[10, 250, 750, 1250, 1750, 2250, 3000, 3500, 4000, 4500, 4600], _ 	    ; Giant
+		[8, 25, 40, 60, 80, 100, 150, 200, 250], _ 				 	    		; Goblin
+		[9, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2000], _      		; WallBreaker
+		[9, 1750, 2250, 2750, 3500, 4000, 4500, 5000, 5500, 6000], _ 			; Balloon
+		[10, 1000, 1400, 1800, 2200, 2600, 3000, 3400, 3800, 4200, 4600], _    	; Wizard
+		[6, 5000, 6000, 8000, 10000, 14000, 17000], _							; Healer
+		[8, 10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000], _  		; Dragon
+		[9, 14000, 16000, 18000, 20000, 22500, 25000, 27500, 30000, 32500], _  	; Pekka
+		[7, 5000, 6000, 7000, 8000, 9000, 10000, 11000], _ 			    		; BabyDragon
+		[7, 4200, 4800, 5200, 5600, 6000, 6400, 6800], _  			    		; Miner
+		[4, 28000, 32000, 36000, 40000], _  		                 			; ElectroDragon
+		[3, 19000, 21000, 23000], _  		                 	        		; Yeti
+		[9, 4, 5, 6, 7, 8, 9, 10, 11, 12], _ 									; Minion
+		[10, 30, 34, 38, 42, 48, 60, 80, 100, 120, 140], _						; HogRider
+		[8, 50, 65, 80, 100, 130, 160, 190, 220], _ 				 			; Valkyrie
+		[10, 200, 250, 300, 350, 425, 500, 575, 650, 725, 800], _ 				; Golem
+		[5, 125, 150, 175, 225, 275], _ 										; Witch
+		[6, 390, 450, 510, 570, 630, 750], _  									; Lavahound
+		[5, 70, 95, 115, 140, 175], _ 											; Bowler
+		[5, 220, 240, 260, 280, 300], _ 										; IceGolem
+		[3, 100, 120, 140]]			 											; Headhunter
 Global Const $g_aiTroopDonateXP[$eTroopCount] = [1, 1, 5, 1, 2, 5, 4, 14, 20, 25, 10, 6, 30, 18, 2, 5, 8, 30, 12, 30, 6, 15, 6]
 
 Global Const $g_aiTroopOcrOffSet[$eTroopCount][2] = [[37, 37], [41, 30], [33, 38], [50, 38], [59, 32], [19, 67], [55, 39], [58, 34], [37, 42], [53, 30], [49, 47], [52, 40], [52, 44], _
@@ -684,20 +684,20 @@ Global Enum $eTroopSuperBarbarian, $eTroopSuperArcher, $eTroopSuperGiant, $eTroo
 		$eTroopSuperLavaHound, $eTroopSuperBowler, $eTroopSuperIceGolem, $eTroopSuperHeadhunter, $eSuperTroopCount
 
 Global Const $g_asSuperTroopNames[$eSuperTroopCount] = [ _
-		"Super Barbarian", "Super Archer", "Super Giant", "Sneaky Goblin", "Super Wall Breaker", "Balloon", "Wizard", "Healer", "Dragon", "Pekka", "Inferno Dragon", "Miner", "Electro Dragon", "Yeti", _
-		"Minion", "Hog Rider", "Valkyrie", "Golem", "Super Witch", "Lava Hound", "Bowler", "Ice Golem", "Headhunter"]
+		"Super Barbarian", "Super Archer", "Super Giant", "Sneaky Goblin", "Super Wall Breaker", "Super Balloon", "Wizard", "Healer", "Dragon", "Pekka", "Inferno Dragon", "Miner", "Electro Dragon", "Yeti", _
+		"Super Minion", "Hog Rider", "Super Valkyrie", "Golem", "Super Witch", "Lava Hound", "Bowler", "Ice Golem", "Headhunter"]
 
 Global Const $g_asSuperTroopNamesPlural[$eSuperTroopCount] = [ _
-		"Super Barbarians", "Super Archers", "Super Giants", "Sneaky Goblins", "Super Wall Breakers", "Balloosn", "Wizards", "Healers", "Dragons", "Pekkas", "Inferno Dragons", "Miners", "Electro Dragons", "Yetis", _
-		"Minions", "Hog Riders", "Valkyries", "Golems", "Super Witches", "Lava Hounds", "Bowlers", "Ice Golems", "Headhunters"]
+		"Super Barbarians", "Super Archers", "Super Giants", "Sneaky Goblins", "Super Wall Breakers", "Super Balloons", "Wizards", "Healers", "Dragons", "Pekkas", "Inferno Dragons", "Miners", "Electro Dragons", "Yetis", _
+		"Super Minions", "Hog Riders", "Super Valkyries", "Golems", "Super Witches", "Lava Hounds", "Bowlers", "Ice Golems", "Headhunters"]
 
 Global Const $g_asSuperTroopShortNames[$eSuperTroopCount] = [ _
-		"SuperBarb", "SuperArch", "SuperGiant", "SneakyGobl", "SuperWall", "Balloon", "Wizard", "Healer", "Dragon", "Pekka", "InfernoDrag", "Miner", "Electro Dragon", "Yeti", _
-		"Minion", "Hog Rider", "Valkyrie", "Golem", "SuperWitc", "Lava Hound", "Bowler", "Ice Golem", "Headhunter"]
+		"SuperBarb", "SuperArch", "SuperGiant", "SneakyGobl", "SuperWall", "SuperBall", "Wizard", "Healer", "Dragon", "Pekka", "InfernoDrag", "Miner", "Electro Dragon", "Yeti", _
+		"SuperMini", "Hog Rider", "SuperValk", "Golem", "SuperWitc", "Lava Hound", "Bowler", "Ice Golem", "Headhunter"]
 
 Global Const $g_aiSuperTroopSpace[$eSuperTroopCount] = [ _
 		5, 12, 10, 3, 8, 5, 4, 14, 20, 25, 15, 6, 30, 18, _
-		2, 5, 8, 30, 40, 30, 6, 15, 6]
+		12, 5, 20, 30, 40, 30, 6, 15, 6]
 
 Global Const $g_aiSuperTroopTrainTime[$eSuperTroopCount] = [ _
         25, 72, 60, 21, 60, 120, 120, 480, 720, 720, 135, 120, 1440, 720, _
@@ -719,9 +719,9 @@ Global Const $g_aiSuperTroopCostPerLevel[$eSuperTroopCount][11] = [ _
 		[7, 4200, 4800, 5200, 5600, 6000, 6400, 6800], _  			    ; Miner
 		[4, 28000, 32000, 36000, 40000], _  		                 	; ElectroDragon
 		[3, 19000, 21000, 23000], _  		                 	        ; Yeti
-		[8, 4, 5, 6, 7, 8, 9, 10, 11], _ 							    ; Minion
+		[9, -1, -1, -1, -1, -1, -1, -1, 66, 72], _					    ; Super Minion
 		[10, 30, 34, 38, 42, 48, 60, 80, 100, 120, 140], _				; HogRider
-		[7, 50, 65, 80, 100, 130, 160, 190], _ 				 	    	; Valkyrie
+		[8, -1, -1, -1, -1, -1, -1, 250, 300], _			 	    	; Super Valkyrie
 		[9, 200, 250, 300, 350, 425, 500, 600, 700, 800], _ 		    ; Golem
 		[5, -1, -1, -1, -1, 915], _ 			     					; Super Witch
 		[5, 390, 450, 510, 570, 630], _  							    ; Lavahound
@@ -1080,6 +1080,7 @@ Global $g_abNotifyScheduleWeekDays[7] = [False, False, False, False, False, Fals
 Global $g_bQuickTrainEnable = False
 Global $g_bQuickTrainArmy[3] = [True, False, False]
 Global $g_aiArmyQuickTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiArmyQuickSuperTroops[$eSuperTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]	; troop array for ?
 Global $g_aiArmyQuickSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_iTotalQuickTroops = 0, $g_iTotalQuickSpells = 0, $g_bQuickArmyMixed = False
 
@@ -1096,13 +1097,18 @@ Global $g_aiQTEdit_SpellType[7] = [-1, -1, -1, -1, -1, -1, -1]
 Global $g_iQTEdit_TotalTroop = 0, $g_iQTEdit_TotalSpell = 0
 
 Global $g_aiArmyCustomTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiArmyCustomSuperTroops[$eSuperTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Custom Train Super Troops
 Global $g_aiArmyCustomSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Global $g_aiArmyCompTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_aiArmyCompSuperTroops[$eSuperTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiArmyCompSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 Global $g_aiArmyCompSiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0]
+
 Global $g_aiTrainArmyTroopLevel[$eTroopCount] = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiTrainArmySpellLevel[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 Global $g_aiTrainArmySiegeMachineLevel[$eSiegeMachineCount] = [0, 0, 0, 0]
 Global $g_iTrainArmyFullTroopPct = 100
 Global $g_bTotalCampForced = False, $g_iTotalCampForcedValue = 200
@@ -1547,7 +1553,7 @@ Global Const $g_aiUseAllTroops[$eArmyCount - 1] = [$eBarb, $eArch, $eGiant, $eGo
 									  $eSuperIceG, $eSuperHunt]
 Global Const $g_aiUseBarracks[35] = [$eBarb, $eArch, $eGiant, $eGobl, $eWall, $eBall, $eWiza, $eHeal, $eDrag, $ePekk, $eBabyD, $eMine, $eEDrag, $eYeti, _
 									 $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell, _
-									 $eSuperBarb, $eSuperArch, $eSuperGiant, $eSneakyGobl, $eSuperWall]
+									 $eSuperBarb, $eSuperArch, $eSuperGiant, $eSneakyGobl, $eSuperWall] ; missing rest of SuperTroops?
 Global Const $g_aiUseBarbs[18] = [$eBarb, $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell, $eSuperBarb]
 Global Const $g_aiUseArchs[17] = [$eArch, $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
 Global Const $g_aiUseBarcher[19] = [$eBarb, $eArch, $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell, $eSuperBarb]
@@ -1663,7 +1669,7 @@ Global $g_iActiveDonate = -1 ; -1 means not set yet
 Global $g_aiDonateTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiDonateSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiDonateSiegeMachines[$eSiegeMachineCount] = [0, 0, 0, 0]
 Global $g_aiDonateSuperTroops[$eSuperTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiCurrentTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentSiegeMachines[$eSiegeMachineCount] = [0, 0, 0, 0]
-Global $g_aiCurrentSuperTroops[$eSuperTroopCount] = [0, 0, 0, 0]
+Global $g_aiCurrentSuperTroops[$eSuperTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_aiCurrentCCTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentCCSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], $g_aiCurrentCCSiegeMachines[$eSiegeMachineCount] = [0, 0, 0, 0]
 Global $g_aiCurrentCCSuperTroops[$eSuperTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_bDonationEnabled = True
@@ -1727,7 +1733,7 @@ Global $g_aWeakDefenseNames = ["None", "Eagle Artillery", "Inferno Tower", "XBow
 ; Building variables used by CSV attacks
 Global Enum $eBldgRedLine, $eBldgTownHall, $eBldgGoldM, $eBldgElixirC, $eBldgDrill, $eBldgGoldS, $eBldgElixirS, $eBldgDarkS, $eBldgEagle, $eBldgInferno, $eBldgXBow, $eBldgWizTower, $eBldgMortar, $eBldgAirDefense, $eBldgScatter, $eExternalWall, $eInternalWall
 Global $g_sBldgNames = ["Red Line", "Town Hall", "Gold Mine", "Elixir Collector", "Dark Elixir Drill", "Gold Storage", "Elixir Storage", "Dark Elixir Storage", "Eagle Artillery", "Inferno Tower", "XBow", "Wizard Tower", "Mortar", "Air Defense", "Scatter Shot", "External Wall", "Internal Wall"]
-Global Const $g_iMaxCapTroopTH[14] = [0, 20, 30, 70, 80, 135, 150, 200, 200, 220, 240, 260, 280, 280] ; element 0 is a dummy
+Global Const $g_iMaxCapTroopTH[14] = [0, 20, 30, 70, 80, 135, 150, 200, 200, 220, 240, 260, 280, 300] ; element 0 is a dummy
 Global Const $g_iMaxCapSpellTH[14] = [0, 0, 0, 0, 0, 2, 4, 6, 7, 9, 11, 11, 11, 11] ; element 0 is a dummy
 Global $g_oBldgAttackInfo = ObjCreate("Scripting.Dictionary") ; stores building information of base being attacked
 $g_oBldgAttackInfo.CompareMode = 1 ; use case in-sensitve compare for key values

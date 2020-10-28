@@ -104,17 +104,19 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							[MatchTroopDropName(23), MatchSidesDrop(23), MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)], _
 							[MatchTroopDropName(24), MatchSidesDrop(24), MatchTroopWaveNb(24), 1, MatchSlotsPerEdge(24)]]
 				Else
-					Local $listInfoDeploy[32][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[35][5] = [[$eGole, $nbSides, 1, 1, 2] _
 							, [$eLava, $nbSides, 1, 1, 2] _
 							, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 							, [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 							, [$eDrag, $nbSides, 1, 1, 0] _
 							, ["CC", 1, 1, 1, 1] _
 							, [$eBall, $nbSides, 1, 1, 0] _
+							, [$eSuperBall, $nbSides, 1, 1, 0] _
 							, [$eBabyD, $nbSides, 1, 1, 1] _
 						    , [$eInfernoDrag, $nbSides, 1, 1, 1] _
 							, [$eHogs, $nbSides, 1, 1, 1] _
 							, [$eValk, $nbSides, 1, 1, 0] _
+							, [$eSuperValk, $nbSides, 1, 1, 0] _							
 							, [$eBowl, $nbSides, 1, 1, 0] _
 							, [$eMine, $nbSides, 1, 1, 0] _
 							, [$eEDrag, $nbSides, 1, 1, 0] _
@@ -126,6 +128,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						    , [$eSuperArch, $nbSides, 1, 1, 0] _
 							, [$eWiza, $nbSides, 1, 1, 0] _
 							, [$eMini, $nbSides, 1, 1, 0] _
+							, [$eSuperMini, $nbSides, 1, 1, 0] _
 							, [$eWitc, $nbSides, 1, 1, 1] _
 							, [$eSuperWitc, $nbSides, 1, 1, 1] _
 							, [$eGobl, $nbSides, 1, 1, 0] _
@@ -139,18 +142,19 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							]
 				EndIf
 			Case 1
-				Local $listInfoDeploy[9][5] = [[$eBarb, $nbSides, 1, 1, 0] _
+				Local $listInfoDeploy[10][5] = [[$eBarb, $nbSides, 1, 1, 0] _
 						, [$eSuperBarb, $nbSides, 1, 1, 0] _
 						, [$eArch, $nbSides, 1, 1, 0] _
 						, [$eSuperArch, $nbSides, 1, 1, 0] _
 						, [$eGobl, $nbSides, 1, 1, 0] _
 						, [$eSneakyGobl, $nbSides, 1, 1, 0] _
 						, [$eMini, $nbSides, 1, 1, 0] _
+						, [$eSuperMini, $nbSides, 1, 1, 0] _
 						, ["CC", 1, 1, 1, 1] _
 						, ["HEROES", 1, 2, 1, 1] _
 						]
 			Case 2
-				Local $listInfoDeploy[20][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
+				Local $listInfoDeploy[22][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, ["CC", 1, 1, 1, 1] _
 						, [$eWall, $nbSides, 1, 1, 2] _
@@ -167,7 +171,9 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, [$eHogs, $nbSides, 1, 1, 1] _
 						, [$eWiza, $nbSides, 1, 1, 0] _
 						, [$eMini, $nbSides, 1, 1, 0] _
+						, [$eSuperMini, $nbSides, 1, 1, 0] _
 						, [$eArch, $nbSides, 3, 3, 2] _
+						, [$eSuperArch, $nbSides, 3, 3, 2] _						
 						, [$eGobl, $nbSides, 1, 1, 1] _
 						, [$eSneakyGobl, $nbSides, 1, 1, 1] _
 						]
@@ -203,17 +209,19 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							[MatchTroopDropName(23), MatchSidesDrop(23), MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)], _
 							[MatchTroopDropName(24), MatchSidesDrop(24), MatchTroopWaveNb(24), 1, MatchSlotsPerEdge(24)]]
 				Else
-					Local $listInfoDeploy[32][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[35][5] = [[$eGole, $nbSides, 1, 1, 2] _
 							, [$eLava, $nbSides, 1, 1, 2] _
 							, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 							, [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 							, [$eDrag, $nbSides, 1, 1, 0] _
 							, ["CC", 1, 1, 1, 1] _
 							, [$eBall, $nbSides, 1, 1, 0] _
+							, [$eSuperBall, $nbSides, 1, 1, 0] _
 							, [$eBabyD, $nbSides, 1, 1, 0] _
 							, [$eInfernoDrag, $nbSides, 1, 1, 0] _
 							, [$eHogs, $nbSides, 1, 1, 1] _
 							, [$eValk, $nbSides, 1, 1, 0] _
+							, [$eSuperValk, $nbSides, 1, 1, 0] _
 							, [$eBowl, $nbSides, 1, 1, 0] _
 							, [$eIceG, $nbSides, 1, 1, 0] _
 							, [$eMine, $nbSides, 1, 1, 0] _
@@ -226,6 +234,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							, [$eSuperArch, $nbSides, 1, 1, 0] _
 							, [$eWiza, $nbSides, 1, 1, 0] _
 							, [$eMini, $nbSides, 1, 1, 0] _
+							, [$eSuperMini, $nbSides, 1, 1, 0] _
 							, [$eWitc, $nbSides, 1, 1, 1] _
 							, [$eSuperWitc, $nbSides, 1, 1, 1] _
 							, [$eGobl, $nbSides, 1, 1, 0] _
@@ -238,18 +247,19 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							]
 				EndIf
 			Case 1
-				Local $listInfoDeploy[9][5] = [[$eBarb, $nbSides, 1, 1, 0] _
+				Local $listInfoDeploy[10][5] = [[$eBarb, $nbSides, 1, 1, 0] _
 						, [$eSuperBarb, $nbSides, 1, 1, 0] _
 						, [$eArch, $nbSides, 1, 1, 0] _
 						, [$eSuperArch, $nbSides, 1, 1, 0] _
 						, [$eGobl, $nbSides, 1, 1, 0] _
 						, [$eSneakyGobl, $nbSides, 1, 1, 0] _
 						, [$eMini, $nbSides, 1, 1, 0] _
+						, [$eSuperMini, $nbSides, 1, 1, 0] _
 						, ["CC", 1, 1, 1, 1] _
 						, ["HEROES", 1, 2, 1, 1] _
 						]
 			Case 2
-				Local $listInfoDeploy[20][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
+				Local $listInfoDeploy[21][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 				        , [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, ["CC", 1, 1, 1, 1] _
 						, [$eBarb, $nbSides, 1, 2, 0] _
@@ -265,6 +275,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, [$eHogs, $nbSides, 1, 1, 1] _
 						, [$eWiza, $nbSides, 1, 1, 0] _
 						, [$eMini, $nbSides, 1, 1, 0] _
+						, [$eSuperMini, $nbSides, 1, 1, 0] _
 						, [$eArch, $nbSides, 2, 2, 0] _
 						, [$eGobl, $nbSides, 2, 2, 0] _
 						, [$eSneakyGobl, $nbSides, 2, 2, 0] _
@@ -272,7 +283,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						]
 			Case Else
 				SetLog("Algorithm type unavailable, defaulting to regular", $COLOR_ERROR)
-				Local $listInfoDeploy[21][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
+				Local $listInfoDeploy[22][5] = [[$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 						, ["CC", 1, 1, 1, 1] _
 						, [$eBarb, $nbSides, 1, 2, 0] _
@@ -288,6 +299,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 						, [$eHogs, $nbSides, 1, 1, 1] _
 						, [$eWiza, $nbSides, 1, 1, 0] _
 						, [$eMini, $nbSides, 1, 1, 0] _
+						, [$eSuperMini, $nbSides, 1, 1, 0] _
 						, [$eArch, $nbSides, 2, 2, 0] _
 						, [$eSuperArch, $nbSides, 2, 2, 0] _
 						, [$eGobl, $nbSides, 2, 2, 0] _

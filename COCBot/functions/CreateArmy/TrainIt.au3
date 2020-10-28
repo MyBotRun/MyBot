@@ -162,6 +162,50 @@ Func GetRNDName(Const $iIndex, Const $aTrainPos)
 	Return 0
 EndFunc   ;==>GetRNDName
 
+;Func GetVariable(Const $ImageToUse, Const $iIndex)
+;   Local $aTrainPos[4] = [-1, -1, -1, -1]
+   ; Capture the screen for comparison
+;   _CaptureRegion2(25, 375, 840, 548)
+
+;   Local $asResult = DllCallMyBot("FindTile", "handle", $g_hHBitmap2, "str", $ImageToUse, "str", "FV", "int", 1)
+
+ ;  If @error Then _logErrorDLLCall($g_sLibMyBotPath, @error)
+
+ ;  If IsArray($asResult) Then
+;	  If $asResult[0] = "0" Then
+;		 SetLog("No " & GetTroopName($iIndex) & " Icon found!", $COLOR_ERROR)
+;	  ElseIf $asResult[0] = "-1" Then
+;		 SetLog("TrainIt.au3 GetVariable(): ImgLoc DLL Error Occured!", $COLOR_ERROR)
+;	  ElseIf $asResult[0] = "-2" Then
+;		 SetLog("TrainIt.au3 GetVariable(): Wrong Resolution used for ImgLoc Search!", $COLOR_ERROR)
+;	  Else
+;		 If $g_bDebugSetlogTrain Then SetLog("String: " & $asResult[0])
+;		 Local $aResult = StringSplit($asResult[0], "|", $STR_NOCOUNT)
+;		 If UBound($aResult) > 1 Then
+;			Local $aCoordinates = StringSplit($aResult[1], ",", $STR_NOCOUNT)
+;			If UBound($aCoordinates) > 1 Then
+;			   Local $iButtonX = 25 + Int($aCoordinates[0])
+;			   Local $iButtonY = 375 + Int($aCoordinates[1])
+;			   Local $sColorToCheck = "0x" & _GetPixelColor($iButtonX, $iButtonY, $g_bCapturePixel)
+;			   Local $iTolerance = 40
+;			   Local $aTrainPos[4] = [$iButtonX, $iButtonY, $sColorToCheck, $iTolerance]
+;			   If $g_bDebugSetlogTrain Then SetLog("Found: [" & $iButtonX & "," & $iButtonY & "]", $COLOR_SUCCESS)
+;			   If $g_bDebugSetlogTrain Then SetLog("$sColorToCheck: " & $sColorToCheck, $COLOR_SUCCESS)
+;			   If $g_bDebugSetlogTrain Then SetLog("$iTolerance: " & $iTolerance, $COLOR_SUCCESS)
+;			   Return $aTrainPos
+;			Else
+;				  SetLog("Don't know how to train the troop with index " & $iIndex & " yet.")
+;			EndIf
+;		 Else
+;			SetLog("Don't know how to train the troop with index " & $iIndex & " yet..")
+;		 EndIf
+;	  EndIf
+ ;  Else
+;		 SetLog("Don't know how to train the troop with index " & $iIndex & " yet...")
+;   EndIf
+;   Return $aTrainPos
+;EndFunc   ;==>GetVariable
+
 Func GetVariable(Const $asImageToUse, Const $iIndex)
 	Local $aTrainPos[5] = [-1, -1, -1, -1, $eBarb]
 	; Capture the screen for comparison
@@ -220,7 +264,6 @@ Func GetVariable(Const $asImageToUse, Const $iIndex)
 
 	Return $aTrainPos
 EndFunc   ;==>GetVariable
-
 
 ; Function to use on GetFullName() , returns slot and correct [i] symbols position on train window
 Func GetFullNameSlot(Const $iTrainPos, Const $sTroopType)

@@ -224,6 +224,7 @@ Func CheckQuickTrainTroop()
 	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	$g_aiArmyQuickTroops = $aEmptyTroop
+	$g_aiArmyQuickSuperTroops = $aEmptyTroop
 	$g_aiArmyQuickSpells = $aEmptySpell
 	$g_iTotalQuickTroops = 0
 	$g_iTotalQuickSpells = 0
@@ -272,7 +273,12 @@ Func CheckQuickTrainTroop()
 				EndIf
 
 				; get quantity
-				Local $aiInGameTroop = $aEmptyTroop, $aiInGameSpell = $aEmptySpell, $aiGUITroop = $aEmptyTroop, $aiGUISpell = $aEmptySpell
+				Local $aiInGameTroop = $aEmptyTroop
+				Local $aiInGameSuperTroop = $aEmptyTroop
+				Local $aiInGameSpell = $aEmptySpell
+				Local $aiGUITroop = $aEmptyTroop
+				Local $aiGUISpell = $aEmptySpell
+
 				SetLog("Quick Army " & $i + 1 & ":", $COLOR_SUCCESS)
 				For $j = 0 To (UBound($aSearchResult) - 1)
 					Local $iTroopIndex = TroopIndexLookup($aSearchResult[$j][0])
@@ -280,6 +286,10 @@ Func CheckQuickTrainTroop()
 						SetLog("  - " & $g_asTroopNames[$iTroopIndex] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
 						$aiInGameTroop[$iTroopIndex] = $aSearchResult[$j][3]
 
+					ElseIf $iTroopIndex >= $eSuperBarb And $iTroopIndex <= $eSuperHunt Then ; add to supertroop array
+						SetLog("  - " & $g_asSuperTroopNames[$iTroopIndex - $eSuperBarb] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
+						$aiInGameSuperTroop[$iTroopIndex - $eSuperBarb] = $aSearchResult[$j][3]
+						
 					ElseIf $iTroopIndex >= $eLSpell And $iTroopIndex <= $eBtSpell Then
 						SetLog("  - " & $g_asSpellNames[$iTroopIndex - $eLSpell] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
 						$aiInGameSpell[$iTroopIndex - $eLSpell] = $aSearchResult[$j][3]
@@ -320,10 +330,14 @@ Func CheckQuickTrainTroop()
 				; If all correct (or after 3 times trying to preset QT army), add result to $g_aiArmyQuickTroops & $g_aiArmyQuickSpells
 				For $j = 0 To $eTroopCount - 1
 					$g_aiArmyQuickTroops[$j] += $aiInGameTroop[$j]
-					$TempTroopTotal += $aiInGameTroop[$j] * $g_aiTroopSpace[$j]
+					$TempTroopTotal += $aiInGameTroop[$j] * $g_aiTroopSpace[$j]              ; tally normal troops
+
+					$g_aiArmyQuickSuperTroops[$j] += $aiInGameSuperTroop[$j]
+					$TempTroopTotal += $aiInGameSuperTroop[$j] * $g_aiSuperTroopSpace[$j]    ; tally super troops
+
 					If $j > $eSpellCount - 1 Then ContinueLoop
 					$g_aiArmyQuickSpells[$j] += $aiInGameSpell[$j]
-					$TempSpellTotal += $aiInGameSpell[$j] * $g_aiSpellSpace[$j]
+					$TempSpellTotal += $aiInGameSpell[$j] * $g_aiSpellSpace[$j]              ; tally spells
 				Next
 
 				ExitLoop
@@ -389,7 +403,6 @@ Func CreateQuickTrainPreset($i)
 	If _ColorCheck(_GetPixelColor($aRemoveButton[0], $aRemoveButton[1], True), Hex($aRemoveButton[2], 6), $aRemoveButton[2]) Then
 		ClickP($aRemoveButton) ; click remove
 		If _Sleep(750) Then Return
-
 		DragIfNeeded("Barb")
 		For $j = 0 To 6
 			Local $iIndex = $g_aiQuickTroopType[$i][$j]
@@ -413,8 +426,15 @@ Func CreateQuickTrainPreset($i)
 			Local $iIndex = $g_aiQuickSpellType[$i][$j]
 			If _ArrayIndexValid($g_aiArmyQuickSpells, $iIndex) Then
 				If $iArmyPage < 2 Then
-					If Not DragIfNeeded("Hunt") Then Return
+				    If _Sleep(250) Then Return
+					ClickDrag(620, 445 + $g_iMidOffsetY, 620 - 373, 445 + $g_iMidOffsetY, 2000)
 					If _Sleep(1500) Then Return
+					 ClickDrag(620, 445 + $g_iMidOffsetY, 620 - 373, 445 + $g_iMidOffsetY, 2000)
+					If _Sleep(1500) Then Return
+					 ClickDrag(620, 445 + $g_iMidOffsetY, 620 - 373, 445 + $g_iMidOffsetY, 2000)
+					If _Sleep(1500) Then Return
+					;If Not DragIfNeeded("Witc") Then Return
+					;If _Sleep(1500) Then Return
 					$iArmyPage = 2
 				EndIf
 				Local $sFilter = String($g_asSpellShortNames[$iIndex]) & "*"

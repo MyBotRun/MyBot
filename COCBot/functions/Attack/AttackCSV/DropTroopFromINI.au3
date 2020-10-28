@@ -124,6 +124,14 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 				SetDebugLog("Switching to $eSuperWitc: " & $eSuperWitc)
 				$iTroopIndex = $eSuperWitc
 				$bSwitched = True
+			Case $eMini
+				SetDebugLog("Switching to $eSuperMini: " & $eSuperMini)
+				$iTroopIndex = $eSuperMini
+				$bSwitched = True
+			Case $eValk
+				SetDebugLog("Switching to $eSuperValk: " & $eSuperValk)
+				$iTroopIndex = $eSuperValk
+				$bSwitched = True
 			Case Else
 				SetDebugLog("No switch.  Sticking with: " & $iTroopIndex)
 				$bSwitched = False

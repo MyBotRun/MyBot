@@ -655,22 +655,11 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
 Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
-	Local $sAccountDiamond = GetDiamondFromRect("440,330,859,732") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sAccountDiamond = GetDiamondFromRect("440,353,859,732") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
     Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = 0
 	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
 	If Not $g_bRunState Then Return "Exit"
-
-	If $NextAccount >= 5 Then
-		Switch $g_iTotalAcc
-			Case 5
-				$sAccountDiamond = GetDiamondFromRect("440,462,859,596")
-			Case 6
-				$sAccountDiamond = GetDiamondFromRect("440,380,859,590")
-			Case 7
-				$sAccountDiamond = GetDiamondFromRect("440,330,859,732")
-		EndSwitch
-	EndIf
 
 	SCIDragIfNeeded($NextAccount)
 
@@ -685,23 +674,24 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
 				SetDebugLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
 
 				; Correct Index for Profile if needs to drag
-				If $NextAccount >= 5 Then $iIndexSCID = 5
+				If $NextAccount >= 4 and UBound($aSearchForAccount) == 4 Then $iIndexSCID = 3 ; based on drag logic, the account will always be the bottom one
 
+				; fixes wierd issue with arrays after getting image info
 				For $j = 0 To UBound($aSearchForAccount) - 1
 					$aTempArray = $aSearchForAccount[$j]
 					_ArrayAdd($aCoordinates, $aTempArray[0] & "|" & $aTempArray[1], 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
 				Next
 
-				_ArraySort($aCoordinates, 0, 0, 0, 1) ; short by column 1 [Y]
+				_ArraySort($aCoordinates, 0, 0, 0, 1) ; short by column 1 [Y]... this is to keep them in order of actual list
 
+				; list all account seeable after drag on debug chat
 				Local $iProfiles = UBound($g_asProfileName)
 				For $j = 0 To UBound($aCoordinates) - 1
-					If  ($j + $iIndexSCID) > $iProfiles  Then ExitLoop
-					SetDebugLog("[" & $j & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$j + $iIndexSCID])
+					SetDebugLog("[" & $j & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
 				Next
 
 				SetLog("   " & $iStep & ". Click Account [" & $NextAccount + 1 & "] Supercell ID with Profile: " & $g_asProfileName[$NextAccount])
-				Click($aCoordinates[$NextAccount - $iIndexSCID][0], $aCoordinates[$NextAccount - $iIndexSCID][1], 1)
+				Click($aCoordinates[$iIndexSCID][0]-75, $aCoordinates[$iIndexSCID][1], 1)
 				If _Sleep(750) Then Return "Exit"
 				SetLog("   " & $iStep + 1 & ". Please wait for loading CoC!")
 				$bResult = True
@@ -900,11 +890,11 @@ EndFunc   ;==>CheckGoogleSelectAccount
 Func CheckLoginWithSupercellID()
 
 	Local $bResult = False
-	
+
 	If Not $g_bRunState Then Return
-	
+
 	; Account List check be there, validate with imgloc
-	If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "318,678(125,30)", False))) > 1 Then
+	If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "355,705,125,30", False))) > 1 Then
 		; Google Account selection found
 		SetLog("Verified Log in with Supercell ID boot screen")
 
@@ -1047,9 +1037,9 @@ EndFunc   ;==>SwitchAccountCheckProfileInUse
 
 Func SCIDragIfNeeded($iSCIDAccount)
 	If Not $g_bRunState Then Return
-	If $iSCIDAccount < 5 Then Return
+	If $iSCIDAccount < 4 Then Return
 
-	ClickDrag(785, 674 + $g_iMidOffsetY, 785, 260 + $g_iMidOffsetY, 2000)
+	ClickDrag(748, 720, 748, 720-(90*($iSCIDAccount-3)), 2000) ; drag a multiple of 90 pixels up for how many accounts down it is
 	If _Sleep(1500) Then Return
 EndFunc   ;==>SCIDragIfNeeded
 

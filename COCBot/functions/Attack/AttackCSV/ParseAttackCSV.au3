@@ -306,6 +306,12 @@ Func ParseAttackCSV($debug = False)
 												Setlog("Name: " & $name, $COLOR_DEBUG)
 												Setlog("Qty: " & $g_avAttackTroops[$x][1], $COLOR_DEBUG)
 												DropTroopFromINI($value1, $index1, $index2, $indexArray, $g_avAttackTroops[$x][1], $g_avAttackTroops[$x][1], $g_asTroopShortNames[$ii], $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
+												
+												; drop super troop
+												If $g_avAttackTroops[$x][0] == ($ii + $eSuperBarb) Then
+													DropTroopFromINI($value1, $index1, $index2, $indexArray, $g_avAttackTroops[$x][1], $g_avAttackTroops[$x][1], $g_asSuperTroopShortNames[$ii], $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
+												EndIf
+												
 												CheckHeroesHealth()
 												If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
 											EndIf
