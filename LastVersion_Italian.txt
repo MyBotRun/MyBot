@@ -1,4 +1,4 @@
 [general]
-version    = "v7.8.7"
+version    = "v7.8.8"
 messagenew = "Funziona con l'aggiornamento di 2020!\nCon nuove strategie di farming\n Nuove macchine d'assedio\n Per avere più informazioni, vai a \n https://mybot.run \n Sempre gratis e open source."
-messageold = "Una nuova versione di MyBot (v7.8.7) è disponibile!\nPer favore, scarica la nuova versione da:\nhttps://mybot.run"
+messageold = "Una nuova versione di MyBot (v7.8.8) è disponibile!\nPer favore, scarica la nuova versione da:\nhttps://mybot.run"
