@@ -416,6 +416,7 @@ Global Const $g_iCoCReconnectingTimeout = 60000 ; When still (or again) CoC reco
 ; Special Android Emulator variables
 Global $__BlueStacks_Version
 Global $__BlueStacks_Path
+Global $__BlueStacks_isHyperV
 Global $__Droid4X_Version
 Global $__Droid4X_Path
 Global $__MEmu_Path

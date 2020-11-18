@@ -5,8 +5,8 @@
 ; Parameters ....: $bRestart            - [optional] a boolean value. Default is False.
 ; Return values .: None
 ; Author ........: GkevinOD (2014), Hervidero (2015)
-; Modified ......: Cosote (12-2015), KnowJack (08-2015)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Modified ......: Cosote (12-2015), KnowJack (08-2015), TeknolojikPanda(11-2020)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2020
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -178,8 +178,27 @@ EndFunc   ;==>GetBlueStacks2AdbPath
 
 Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMode = False)
 
+	$__BlueStacks_isHyperV = False
+	$__BlueStacks_Version = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "Version")
+	$__BlueStacks_Path = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "InstallDir")
+	If @error <> 0 Then
+		$__BlueStacks_isHyperV = True
+		$__BlueStacks_Version = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\", "Version")
+		$__BlueStacks_Path = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\", "InstallDir")
+		If @error <> 0 Then
+			$__BlueStacks_isHyperV = False
+			$__BlueStacks_Path = @ProgramFilesDir & "\BlueStacks\"
+			SetError(0, 0, 0)
+		EndIf
+	EndIf
+
 	; more recent BlueStacks 2 version install VirtualBox based "plus" mode by default
-	Local $plusMode = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "Engine") = "plus" And $bLegacyMode = False
+	If $__BlueStacks_isHyperV = False Then
+		Local $plusMode = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "Engine") = "plus" And $bLegacyMode = False
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		Local $plusMode = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\", "Engine") = "plus" And $bLegacyMode = False
+	EndIf
 	Local $frontend_exe = ["HD-Frontend.exe", "HD-Player.exe"]
 	If $plusMode = True Then
 		Local $frontend_exe = "HD-Plus-Frontend.exe"
@@ -194,12 +213,6 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 			]
 	Local $bChanged = False
 
-	$__BlueStacks_Version = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "Version")
-	$__BlueStacks_Path = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "InstallDir")
-	If @error <> 0 Then
-		$__BlueStacks_Path = @ProgramFilesDir & "\BlueStacks\"
-		SetError(0, 0, 0)
-	EndIf
 	$__BlueStacks_Path = StringReplace($__BlueStacks_Path, "\\", "\")
 
 	Local $sPreferredADB = FindPreferredAdbPath()
@@ -256,7 +269,13 @@ Func InitBlueStacksX($bCheckOnly = False, $bAdjustResolution = False, $bLegacyMo
 		EndIf
 
 		$g_iAndroidAdbSuCommand = "/system/xbin/bstk/su"
-		Local $BootParameter = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\", "BootParameters")
+		Local $BootParameter
+		If $__BlueStacks_isHyperV = False Then
+			$BootParameter = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\", "BootParameters")
+		EndIf
+		If $__BlueStacks_isHyperV = True Then
+			$BootParameter = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\", "BootParameters")
+		EndIf
 		Local $OEMFeatures
 		Local $aRegExResult = StringRegExp($BootParameter, "OEMFEATURES=(\d+)", $STR_REGEXPARRAYGLOBALMATCH)
 		If Not @error Then
@@ -326,11 +345,23 @@ Func ConfigureSharedFolderBlueStacksX($iMode = 0, $bSetLog = Default)
 	Switch $iMode
 		Case 0 ; check that shared folder is configured in VM
 			For $i = 0 To 5
-				If RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Name") = "BstSharedFolder" Then
+				Local $gSharedFolder
+				If $__BlueStacks_isHyperV = False Then
+					$gSharedFolder = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Name")
+				EndIf
+				If $__BlueStacks_isHyperV = True Then
+					$gSharedFolder = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Name")
+				EndIf
+				If $gSharedFolder = "BstSharedFolder" Then
 					$bResult = True
 					$g_bAndroidSharedFolderAvailable = True
 					$g_sAndroidPicturesPath = "/storage/sdcard/windows/BstSharedFolder/"
-					$g_sAndroidPicturesHostPath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Path")
+					If $__BlueStacks_isHyperV = False Then
+						$g_sAndroidPicturesHostPath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Path")
+					EndIf
+					If $__BlueStacks_isHyperV = True Then
+						$g_sAndroidPicturesHostPath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\SharedFolder\" & $i & "\", "Path")
+					EndIf
 					ExitLoop
 				EndIf
 			Next
@@ -385,7 +416,13 @@ Func InitBlueStacks2($bCheckOnly = False)
 		CheckBlueStacksVersionMod()
 
 		; read ADB port
-		Local $BstAdbPort = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config\", "BstAdbPort")
+		Local $BstAdbPort
+		If $__BlueStacks_isHyperV = False Then
+			$BstAdbPort = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config\", "BstAdbPort")
+		EndIf
+		If $__BlueStacks_isHyperV = True Then
+			$BstAdbPort = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\Config\", "BstAdbPort")
+		EndIf
 		If $BstAdbPort Then
 			$g_sAndroidAdbDevice = "127.0.0.1:" & $BstAdbPort
 		Else
@@ -450,7 +487,13 @@ EndFunc   ;==>GetBlueStacksBackgroundMode
 
 Func GetBlueStacks2BackgroundMode()
 	; check if BlueStacks 2 is running in OpenGL mode
-	Local $GlRenderMode = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config\", "GlRenderMode")
+	Local $GlRenderMode
+	If $__BlueStacks_isHyperV = False Then
+		$GlRenderMode = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config\", "GlRenderMode")
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$GlRenderMode = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\Config\", "GlRenderMode")
+	EndIf
 	Switch $GlRenderMode
 		Case 4
 			; DirectX
@@ -484,7 +527,13 @@ Func RestartBlueStacks2CoC()
 EndFunc   ;==>RestartBlueStacks2CoC
 
 Func CheckScreenBlueStacksX($bSetLog = True)
-	Local $REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	Local $REGISTRY_KEY_DIRECTORY
+	If $__BlueStacks_isHyperV = False Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	EndIf
 	Local $aValues[5][2] = [ _
 			["FullScreen", 0], _
 			["GuestHeight", $g_iAndroidClientHeight], _
@@ -505,7 +554,13 @@ Func CheckScreenBlueStacksX($bSetLog = True)
 	Next
 	; check DPI
 	Local $DPI = 0
-	Local $BootParameter = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\", "BootParameters")
+	Local $BootParameter
+	If $__BlueStacks_isHyperV = False Then
+		$BootParameter = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\", "BootParameters")
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$BootParameter = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\", "BootParameters")
+	EndIf
 	Local $aRegExResult = StringRegExp($BootParameter, "DPI=(\d+)", $STR_REGEXPARRAYGLOBALMATCH)
 	If Not @error Then
 		; get last match!
@@ -531,13 +586,24 @@ Func CheckScreenBlueStacks2($bSetLog = True)
 EndFunc   ;==>CheckScreenBlueStacks2
 
 Func SetScreenBlueStacks()
-	Local $REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	Local $REGISTRY_KEY_DIRECTORY
+	If $__BlueStacks_isHyperV = False Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	EndIf
 	RegWrite($REGISTRY_KEY_DIRECTORY, "FullScreen", "REG_DWORD", "0")
 	RegWrite($REGISTRY_KEY_DIRECTORY, "GuestHeight", "REG_DWORD", $g_iAndroidClientHeight)
 	RegWrite($REGISTRY_KEY_DIRECTORY, "GuestWidth", "REG_DWORD", $g_iAndroidClientWidth)
 	RegWrite($REGISTRY_KEY_DIRECTORY, "WindowHeight", "REG_DWORD", $g_iAndroidClientHeight)
 	RegWrite($REGISTRY_KEY_DIRECTORY, "WindowWidth", "REG_DWORD", $g_iAndroidClientWidth)
-	$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance
+	If $__BlueStacks_isHyperV = False Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance
+	EndIf
 	Local $BootParameter = RegRead($REGISTRY_KEY_DIRECTORY, "BootParameters")
 	$BootParameter = StringRegExpReplace($BootParameter, "DPI=\d+", "DPI=160")
 	If @error = 0 And @extended > 0 Then
@@ -549,7 +615,13 @@ Func SetScreenBlueStacks()
 EndFunc   ;==>SetScreenBlueStacks
 
 Func SetScreenBlueStacks2()
-	Local $REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	Local $REGISTRY_KEY_DIRECTORY
+	If $__BlueStacks_isHyperV = False Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\FrameBuffer\0"
+	EndIf
 	RegWrite($REGISTRY_KEY_DIRECTORY, "FullScreen", "REG_DWORD", "0")
 	RegWrite($REGISTRY_KEY_DIRECTORY, "GuestHeight", "REG_DWORD", $g_iAndroidClientHeight)
 	RegWrite($REGISTRY_KEY_DIRECTORY, "GuestWidth", "REG_DWORD", $g_iAndroidClientWidth)
@@ -557,9 +629,19 @@ Func SetScreenBlueStacks2()
 	RegWrite($REGISTRY_KEY_DIRECTORY, "WindowWidth", "REG_DWORD", $g_iAndroidClientWidth)
 	; Enable bottom action bar with Back- and Home-Button (Menu-Button has no function and don't click Full-Screen-Button at the right as you cannot go back - F11 is not working!)
 	; 2015-12-24 cosote Disabled with "0" again because latest version 2.0.2.5623 doesn't support it anymore
-	$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config"
+	If $__BlueStacks_isHyperV = False Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance & "\Config"
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance & "\Config"
+	EndIf
 	RegWrite($REGISTRY_KEY_DIRECTORY, "FEControlBar", "REG_DWORD", "0")
-	$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance
+	If $__BlueStacks_isHyperV = False Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks\Guests\" & $g_sAndroidInstance
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$REGISTRY_KEY_DIRECTORY = $g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Guests\" & $g_sAndroidInstance
+	EndIf
 	Local $BootParameter = RegRead($REGISTRY_KEY_DIRECTORY, "BootParameters")
 	$BootParameter = StringRegExpReplace($BootParameter, "DPI=\d+", "DPI=160")
 	If @error = 0 And @extended > 0 Then
@@ -904,7 +986,13 @@ EndFunc   ;==>CloseUnsupportedBlueStacks2
 
 Func CloseUnsupportedBlueStacksX($bClose = True)
 	Local $WinTitleMatchMode = Opt("WinTitleMatchMode", -3) ; in recent 2.3.x can be also "BlueStacks App Player"
-	Local $sPartnerExePath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Config\", "PartnerExePath")
+	Local $sPartnerExePath
+	If $__BlueStacks_isHyperV = False Then
+		$sPartnerExePath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\Config\", "PartnerExePath")
+	EndIf
+	If $__BlueStacks_isHyperV = True Then
+		$sPartnerExePath = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks_bgp64_hyperv\Config\", "PartnerExePath")
+	EndIf
 	If IsArray(ControlGetPos("Bluestacks App Player", "", "")) Or ($sPartnerExePath And ProcessExists2($sPartnerExePath)) Then ; $g_avAndroidAppConfig[1][4]
 		Opt("WinTitleMatchMode", $WinTitleMatchMode)
 		; Offical "Bluestacks App Player" v2.0 not supported because it changes the Android Screen!!!
@@ -918,4 +1006,3 @@ Func CloseUnsupportedBlueStacksX($bClose = True)
 	Opt("WinTitleMatchMode", $WinTitleMatchMode)
 	Return False
 EndFunc   ;==>CloseUnsupportedBlueStacksX
-
