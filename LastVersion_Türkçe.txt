@@ -1,4 +1,4 @@
 ﻿[general]
-version = "v7.8.8"
+version = "v7.8.9"
 messagenew = "Önemli refactoring güncellemesi!\nhttps://github.com/MyBotRun/MyBot/wiki/ChangeLog\n\nArtı yeni özellikler ve düzeltmeler"
-messageold = "MyBot'un yeni bir sürümü (v7.8.8) çıktı!\nLütfen yeni sürümü web sayfamızdan indirin:\nhttps://mybot.run"
+messageold = "MyBot'un yeni bir sürümü (v7.8.9) çıktı!\nLütfen yeni sürümü web sayfamızdan indirin:\nhttps://mybot.run"
