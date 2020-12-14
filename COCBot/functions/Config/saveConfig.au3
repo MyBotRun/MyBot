@@ -698,6 +698,9 @@ Func SaveConfig_600_28_DB()
 	_Ini_Add("search", "DBMeetTH", $g_abFilterMeetTH[$DB] ? 1 : 0)
 	_Ini_Add("search", "DBTHLevel", $g_aiFilterMeetTHMin[$DB])
 	_Ini_Add("search", "DBMeetTHO", $g_abFilterMeetTHOutsideEnable[$DB] ? 1 : 0)
+	
+	_Ini_Add("search", "DBMeetDeadEagle", $g_bChkDeadEagle ? 1 : 0)
+	
 	_Ini_Add("search", "DBCheckMortar", $g_abFilterMaxMortarEnable[$DB] ? 1 : 0)
 	_Ini_Add("search", "DBCheckWizTower", $g_abFilterMaxWizTowerEnable[$DB] ? 1 : 0)
 	_Ini_Add("search", "DBCheckAirDefense", $g_abFilterMaxAirDefenseEnable[$DB] ? 1 : 0)
@@ -1116,12 +1119,19 @@ Func SaveConfig_600_52_2()
 		_Ini_Add("troop", $g_asTroopShortNames[$t], $g_aiArmyCustomTroops[$t])
 		_Ini_Add("LevelTroop", $g_asTroopShortNames[$t], $g_aiTrainArmyTroopLevel[$t])
 	Next
+
+	; SuperTroops
+	For $t = 0 To $eSuperTroopCount - 1
+		_Ini_Add("troop", $g_asSuperTroopShortNames[$t], $g_aiArmyCustomSuperTroops[$t])
+		;_Ini_Add("LevelTroop", $g_asSuperTroopShortNames[$t], $g_aiTrainArmySuperTroopLevel[$t])
+	Next
+
 	For $s = 0 To $eSpellCount - 1
 		_Ini_Add("Spells", $g_asSpellShortNames[$s], $g_aiArmyCustomSpells[$s])
 		_Ini_Add("LevelSpell", $g_asSpellShortNames[$s], $g_aiTrainArmySpellLevel[$s])
 	Next
 	For $s = 0 To $eSiegeMachineCount - 1
-		_Ini_Add("Siege", $g_asSiegeMachineShortNames[$s], $g_aiArmyCompSiegeMachine[$s])
+		_Ini_Add("Siege", $g_asSiegeMachineShortNames[$s], $g_aiArmyCompSiegeMachines[$s])
 		_Ini_Add("LevelSiege", $g_asSiegeMachineShortNames[$s], $g_aiTrainArmySiegeMachineLevel[$s])
 	Next
 	; full & forced Total Camp values

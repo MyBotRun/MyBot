@@ -36,6 +36,13 @@ Global $g_ahLblTrainArmySiegeLevel[$eSiegeMachineCount] = [0, 0, 0, 0]
 Global $g_hTxtFullTroop = 0, $g_hChkTotalCampForced = 0, $g_hTxtTotalCampForced = 0
 Global $g_hChkDoubleTrain = 0, $g_hChkPreciseArmy = 0
 
+Global $g_ahCmbSuperTroopSelect = 0
+Global $g_ahTxtSuperTroop = 0
+
+
+Global $g_ahTxtTrainArmySuperTroopCount = 0
+
+
 Global $g_hGrpTrainTroops = 0
 Global $g_ahPicTrainArmyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_ahPicTrainArmySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -695,6 +702,27 @@ Func CreateCustomTrainSubTab()
 
 	$y += 37
 	$x = 170
+
+	;Local $g_hChkSuperTroopEnable = GUICtrlCreateCheckbox("Boost Super Troop", $x - 156, $y + 10, -1, -1)
+	;GUICtrlSetState(-1, $GUI_UNCHECKED)
+	GUICtrlCreateLabel("Boost Super Troop", $x - 156, $y + 14, -1, -1)
+
+	Local $sComboTroopNames = "Super Barbarian|Super Archer|Super Giant|Sneaky Goblin|Super Wall Breaker|Inferno Dragon|Super Minion|Super Valkyrie|Super Witch"
+
+	$g_ahCmbSuperTroopSelect = GUICtrlCreateCombo("", $x - 156, $y + 32, 115, 18)
+	;GUICtrlSetOnEvent(-1, "GUITrainOrder")
+	GUICtrlSetData(-1, $sComboTroopNames, "")
+	;_GUICtrlSetTip(-1, $txtTroopOrder & $z + 1)
+	;GUICtrlSetState(-1, $GUI_DISABLE)
+	GUICtrlSetOnEvent(-1, "TrainSuperTroopCountEdit")
+
+	$g_ahTxtSuperTroop = GUICtrlCreateInput("0", $x - 30, $y + 34, 30, 17)
+	;_GUICtrlSetTip(-1, $sTxtSetPerc & " " & $sTroopName & " " & $sTxtSetPerc2)
+	GUICtrlSetLimit(-1, 2)
+	GUICtrlSetOnEvent(-1, "TrainSuperTroopCountEdit")
+
+
+
 	; troop count
 	_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTroopsCost, $x, $y + 10, 24, 24)
 	$g_hLblTotalTimeCamp = GUICtrlCreateLabel(" 0s", $x + 28, $y + 15, 70, 15, $SS_RIGHT)
@@ -714,10 +742,10 @@ Func CreateCustomTrainSubTab()
 
 	$x = $iStartX
 	$y += 26
-	$g_hCalTotalTroops = GUICtrlCreateProgress($x, $y + 9, 336, 10)
-	$g_hLblTotalProgress = GUICtrlCreateLabel("", $x, $y + 9, 336, 10)
-	GUICtrlSetBkColor(-1, $COLOR_RED)
-	GUICtrlSetState(-1, BitOR($GUI_DISABLE, $GUI_HIDE))
+	;$g_hCalTotalTroops = GUICtrlCreateProgress($x, $y + 9, 336, 10)
+	;$g_hLblTotalProgress = GUICtrlCreateLabel("", $x, $y + 9, 336, 10)
+	;GUICtrlSetBkColor(-1, $COLOR_RED)
+	;GUICtrlSetState(-1, BitOR($GUI_DISABLE, $GUI_HIDE))
 
 	GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Attack - Troops", "LblCountTotal", "Total"), $x + 341, $y + 7, -1, -1)
 	$g_hLblCountTotal = GUICtrlCreateLabel(0, $x + 368, $y + 7, 30, 15, $SS_CENTER)

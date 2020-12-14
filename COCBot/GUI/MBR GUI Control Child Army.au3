@@ -136,6 +136,22 @@ Func lblTotalCountTroop1()
 		EndIf
 	Next
 
+   ; Get SuperTroop from Combo List Box
+   Local $sSuperTroop = GUICtrlRead($g_ahCmbSuperTroopSelect)
+
+   ; Get SuperTroop quantity from text box
+   Local $iQuantity = GUICtrlRead($g_ahTxtSuperTroop)
+
+   ; Find the SuperTroop index from the troop name
+   For $i = 0 to $eSuperTroopCount -1
+	  If $sSuperTroop = $g_asSuperTroopNames[$i] Then
+		 ; quantity > 0
+		 If $iQuantity > 0 Then
+			$TotalTroopsToTrain += $iQuantity * $g_aiSuperTroopSpace[$i]
+		 EndIf
+	  EndIf
+   Next
+
 	GUICtrlSetData($g_hLblCountTotal, String($TotalTroopsToTrain))
 
 	If GUICtrlRead($g_hChkTotalCampForced) = $GUI_CHECKED And GUICtrlRead($g_hLblCountTotal) = GUICtrlRead($g_hTxtTotalCampForced) Then
@@ -164,6 +180,8 @@ Func lblTotalCountTroop1()
 	Else
 		GUICtrlSetState($g_hLblTotalProgress, $GUI_HIDE)
 	EndIf
+
+   ;debugTroopsSpells($g_aiArmyCustomTroops, $g_aiArmyCustomSuperTroops, $g_aiArmyCompSpells, 'UI Test')
 
 	lblTotalCountTroop2()
 EndFunc   ;==>lblTotalCountTroop1
@@ -232,9 +250,9 @@ Func lblTotalCountSiege()
 	$g_iTotalTrainSpaceSiege = 0
 
 	For $i = 0 To $eSiegeMachineCount - 1
-		$g_iTotalTrainSpaceSiege += $g_aiArmyCompSiegeMachine[$i] * $g_aiSiegeMachineSpace[$i]
+		$g_iTotalTrainSpaceSiege += $g_aiArmyCompSiegeMachines[$i] * $g_aiSiegeMachineSpace[$i]
 		$indexLevel = $g_aiTrainArmySiegeMachineLevel[$i] > 0 ? $g_aiTrainArmySiegeMachineLevel[$i] : $g_aiSiegeMachineCostPerLevel[$i][0]
-		$iTotalTotalTimeSiege += $g_aiArmyCompSiegeMachine[$i] * $g_aiSiegeMachineTrainTimePerLevel[$i][$indexLevel]
+		$iTotalTotalTimeSiege += $g_aiArmyCompSiegeMachines[$i] * $g_aiSiegeMachineTrainTimePerLevel[$i][$indexLevel]
 	Next
 
 	GUICtrlSetData($g_hLblTotalTimeSiege, CalculTimeTo($iTotalTotalTimeSiege))
@@ -1046,7 +1064,7 @@ Func CalCostSiege()
 
 	For $i = 0 To $eSiegeMachineCount - 1
 		$indexLevel = $g_aiTrainArmySiegeMachineLevel[$i] > 0 ? $g_aiTrainArmySiegeMachineLevel[$i] : $g_aiSiegeMachineCostPerLevel[$i][0]
-		$iGoldCostSiege += $g_aiArmyCompSiegeMachine[$i] * $g_aiSiegeMachineCostPerLevel[$i][$indexLevel]
+		$iGoldCostSiege += $g_aiArmyCompSiegeMachines[$i] * $g_aiSiegeMachineCostPerLevel[$i][$indexLevel]
 	Next
 
 	GUICtrlSetData($g_hLblGoldCostSiege, _NumberFormat($iGoldCostSiege, True))
@@ -1074,6 +1092,8 @@ Func CalculTimeTo($TotalTotalTime)
 EndFunc   ;==>CalculTimeTo
 
 Func Removecamp()
+	Local $aiZeroTroops[$eSuperTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 	For $T = 0 To $eTroopCount - 1
 		$g_aiArmyCustomTroops[$T] = 0
 		GUICtrlSetData($g_ahTxtTrainArmyTroopCount[$T], 0)
@@ -1083,9 +1103,14 @@ Func Removecamp()
 		GUICtrlSetData($g_ahTxtTrainArmySpellCount[$S], $g_aiArmyCustomSpells[$S])
 	Next
 	For $S = 0 To $eSiegeMachineCount - 1
-		$g_aiArmyCompSiegeMachine[$S] = 0
-		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$S], $g_aiArmyCompSiegeMachine[$S])
+		$g_aiArmyCompSiegeMachines[$S] = 0
+		GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$S], $g_aiArmyCompSiegeMachines[$S])
 	Next
+
+	$g_aiArmyCustomSuperTroops = $aiZeroTroops
+	_GUICtrlComboBox_SelectString($g_ahCmbSuperTroopSelect, "")	; clear SuperTroop listbox
+	GUICtrlSetData($g_ahTxtSuperTroop, "") 						; clear SuperTroop quantity textbox
+
 	GUICtrlSetData($g_hLblTotalTimeCamp, " 0s")
 	GUICtrlSetData($g_hLblTotalTimeSpell, " 0s")
 	GUICtrlSetData($g_hLblElixirCostCamp, "0")
@@ -1108,10 +1133,39 @@ Func TrainTroopCountEdit()
 	Next
 EndFunc   ;==>TrainTroopCountEdit
 
+
+
+Func TrainSuperTroopCountEdit()
+   Local $aiZeroSuperTroop[$eSuperTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+   ; There can be only ONE SuperTroop active at anyone time, need to zero array
+   $g_aiArmyCustomSuperTroops = $aiZeroSuperTroop
+
+   ; Get SuperTroop from Combo List Box
+   Local $sSuperTroop = GUICtrlRead($g_ahCmbSuperTroopSelect)
+
+   ; Get SuperTroop quantity from text box
+   Local $iQuantity = GUICtrlRead($g_ahTxtSuperTroop)
+
+   ; Find the SuperTroop index from the troop name
+   For $i = 0 to $eSuperTroopCount -1
+	  If $sSuperTroop = $g_asSuperTroopNames[$i] Then
+		 ; assign quantity if > 0
+		 If $iQuantity > 0 Then
+			$g_aiArmyCustomSuperTroops[$i] = $iQuantity
+			; update troop count
+			lblTotalCountTroop1()
+		 EndIf
+	  EndIf
+   Next
+
+EndFunc   ;==>TrainSuperTroopCountEdit
+
+
 Func TrainSiegeCountEdit()
 	For $i = 0 To $eSiegeMachineCount - 1
 		If @GUI_CtrlId = $g_ahTxtTrainArmySiegeCount[$i] Then
-			$g_aiArmyCompSiegeMachine[$i] = GUICtrlRead($g_ahTxtTrainArmySiegeCount[$i])
+			$g_aiArmyCompSiegeMachines[$i] = GUICtrlRead($g_ahTxtTrainArmySiegeCount[$i])
 			lblTotalCountSiege()
 			Return
 		EndIf

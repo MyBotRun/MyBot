@@ -109,7 +109,6 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 
 
 	If $bCloseArmyWindow Then
-		;ClickP($aAway, 1, 0, "#0000") ;Click Away
 		ClickAway()
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf

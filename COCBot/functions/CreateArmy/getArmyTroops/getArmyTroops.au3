@@ -12,6 +12,9 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+#include <Array.au3>
+#include <MsgBoxConstants.au3>
+
 
 Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckWindow = False, $bSetLog = True, $bNeedCapture = True)
 
@@ -38,10 +41,12 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 		WEnd
 	EndIf
 
-	Local $sTroopDiamond = GetDiamondFromRect("23,215,585,255") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sTroopDiamond = GetDiamondFromRect("23,215,585,260") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
 	If $g_bDebugFuncTime Then StopWatchStart("findMultiple, \imgxml\ArmyOverview\Troops")
 	Local $aCurrentTroops = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Troops", $sTroopDiamond, $sTroopDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 	If $g_bDebugFuncTime Then StopWatchStopLog()
+
+   ;_ArrayDisplay($aCurrentTroops, "$aCurrentTroops")
 
 	Local $aTempTroopArray, $aTroopCoords
 	Local $sTroopName = ""
@@ -89,7 +94,6 @@ Func getArmyTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 	Next
 
 	If $bCloseArmyWindow Then
-		;ClickP($aAway, 1, 0, "#0000") ;Click Away
 		ClickAway()
 		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
 	EndIf

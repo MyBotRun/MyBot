@@ -49,6 +49,8 @@ Func BotStart($bAutostartDelay = 0)
 	$g_bDisableBreakCheck = False ; reset flag to check for early warning message when bot start/restart in case user stopped in middle
 	$g_bFirstStart = True
 
+	$g_iBoostSuperTroopIndex = -1
+
 	SaveConfig()
 	readConfig()
 	applyConfig(False) ; bot window redraw stays disabled!

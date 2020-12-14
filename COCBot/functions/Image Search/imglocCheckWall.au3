@@ -55,7 +55,6 @@ Func imglocCheckWall()
 		SetDebugLog("$FoundWalls = " & $FoundWalls)
 	EndIf
 
-	;ClickP($aAway, 1, 0, "#0505") ; to prevent bot 'Anyone there ?'
 	ClickAway()
 
 	If ($FoundWalls[0] = "") Then ; nothing found
@@ -91,7 +90,6 @@ Func imglocCheckWall()
 						ConvertFromVillagePos($g_aiLastGoodWallPos[0],$g_aiLastGoodWallPos[1])
 						Return True
 					Else
-						;ClickP($aAway, 1, 0, "#0931") ;Click Away
 						ClickAway()
 						If $g_bDebugSetlog Then
 							SetDebugLog("Position : " & $aCoord[0] & ", " & $aCoord[1] & " is not a Wall Level: " & $levelWall & ". It was: " & $aResult[1] & ", " & $aResult[2] & " !", $COLOR_DEBUG) ;debug
@@ -101,7 +99,6 @@ Func imglocCheckWall()
 						EndIf
 					EndIf
 				Else
-					;ClickP($aAway, 1, 0, "#0932") ;Click Away
 					ClickAway()
 				EndIf
 			Next

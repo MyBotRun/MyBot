@@ -1115,6 +1115,9 @@ Func ApplyConfig_600_28_DB($TypeReadSave)
 			chkDBMeetTH()
 			CmbDBTH()
 			GUICtrlSetState($g_hChkDBMeetTHO, $g_abFilterMeetTHOutsideEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
+			
+			GUICtrlSetState($g_hChkDBMeetDeadEagle, $g_bChkDeadEagle ? $GUI_CHECKED : $GUI_UNCHECKED)
+			
 			GUICtrlSetState($g_ahChkMaxMortar[$DB], $g_abFilterMaxMortarEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxWizTower[$DB], $g_abFilterMaxWizTowerEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_ahChkMaxAirDefense[$DB], $g_abFilterMaxAirDefenseEnable[$DB] ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -1990,6 +1993,20 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 				GUICtrlSetData($g_ahLblTrainArmyTroopLevel[$T], $g_aiTrainArmyTroopLevel[$T])
 				If GUICtrlGetBkColor($g_ahLblTrainArmyTroopLevel[$T]) <> $iColor Then GUICtrlSetBkColor($g_ahLblTrainArmyTroopLevel[$T], $iColor)
 			Next
+	
+
+			_GUICtrlComboBox_SelectString($g_ahCmbSuperTroopSelect, "") ; set name
+			GUICtrlSetData($g_ahTxtSuperTroop, "") 						; set quantity
+	
+			; loop thro SuperTroop array
+			For $T = 0 To $eSuperTroopCount - 1
+				; if troop then set combo box
+				If $g_aiArmyCustomSuperTroops[$T] > 0 Then
+					_GUICtrlComboBox_SelectString($g_ahCmbSuperTroopSelect, $g_asSuperTroopNames[$T]) ; set name
+					GUICtrlSetData($g_ahTxtSuperTroop, $g_aiArmyCustomSuperTroops[$T]) ; set quantity
+				Endif
+			Next
+			
 			For $S = 0 To $eSpellCount - 1
 				Local $iColor = ($g_aiTrainArmySpellLevel[$S] = $g_aiSpellCostPerLevel[$S][0] ? $COLOR_YELLOW : $COLOR_WHITE)
 				GUICtrlSetData($g_ahTxtTrainArmySpellCount[$S], $g_aiArmyCustomSpells[$S])
@@ -1998,7 +2015,7 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 			Next
 			For $S = 0 To $eSiegeMachineCount - 1
 				Local $iColor = ($g_aiTrainArmySiegeMachineLevel[$S] = $g_aiSiegeMachineCostPerLevel[$S][0] ? $COLOR_YELLOW : $COLOR_WHITE)
-				GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$S], $g_aiArmyCompSiegeMachine[$S])
+				GUICtrlSetData($g_ahTxtTrainArmySiegeCount[$S], $g_aiArmyCompSiegeMachines[$S])
 				GUICtrlSetData($g_ahLblTrainArmySiegeLevel[$S], $g_aiTrainArmySiegeMachineLevel[$S])
 				If GUICtrlGetBkColor($g_ahLblTrainArmySiegeLevel[$S]) <> $iColor Then GUICtrlSetBkColor($g_ahLblTrainArmySiegeLevel[$S], $iColor)
 			Next
@@ -2017,12 +2034,31 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 				$g_aiArmyCustomTroops[$T] = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$T])
 				$g_aiTrainArmyTroopLevel[$T] = GUICtrlRead($g_ahLblTrainArmyTroopLevel[$T])
 			Next
+		
+		
+			; Get SuperTroop from Combo List Box
+			Local $sSuperTroop = GUICtrlRead($g_ahCmbSuperTroopSelect)
+
+			; Get SuperTroop quantity from text box
+			Local $iQuantity = GUICtrlRead($g_ahTxtSuperTroop)
+
+			; Find the SuperTroop index from the troop name
+			For $T = 0 to $eSuperTroopCount -1
+				If $sSuperTroop = $g_asSuperTroopNames[$T] Then
+					; quantity > 0
+					If $iQuantity > 0 Then
+						$g_aiArmyCustomSuperTroops[$T] = $iQuantity
+					EndIf
+				EndIf
+			Next		
+					
+			
 			For $S = 0 To $eSpellCount - 1
 				$g_aiArmyCustomSpells[$S] = GUICtrlRead($g_ahTxtTrainArmySpellCount[$S])
 				$g_aiTrainArmySpellLevel[$S] = GUICtrlRead($g_ahLblTrainArmySpellLevel[$S])
 			Next
 			For $S = 0 To $eSiegeMachineCount - 1
-				$g_aiArmyCompSiegeMachine[$S] = GUICtrlRead($g_ahTxtTrainArmySiegeCount[$S])
+				$g_aiArmyCompSiegeMachines[$S] = GUICtrlRead($g_ahTxtTrainArmySiegeCount[$S])
 				$g_aiTrainArmySiegeMachineLevel[$S] = GUICtrlRead($g_ahLblTrainArmySiegeLevel[$S])
 			Next
 			; full & forced Total Camp values

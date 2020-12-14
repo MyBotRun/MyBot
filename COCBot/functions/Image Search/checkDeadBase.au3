@@ -156,7 +156,11 @@ Func checkDeadBaseNew()
 EndFunc   ;==>checkDeadBaseNew
 
 Func checkDeadBase()
-	Return checkDeadBaseSuperNew(False)
+   If $g_bChkDeadEagle Then
+		Return CheckForDeadEagle()
+	Else
+		Return checkDeadBaseSuperNew(False)
+	EndIf
 EndFunc   ;==>checkDeadBase
 
 Func GetCollectorIndexByFillLevel($level)
@@ -491,3 +495,31 @@ Func checkDeadBaseFolder($directory, $executeOldCode = "checkDeadBaseNew()", $ex
 	Return True
 
 EndFunc   ;==>checkDeadBaseFolder
+
+; search image for Dead Eagle
+; return True if found
+Func CheckForDeadEagle()
+	Local $sImgDeadEagleImages = @ScriptDir & "\imgxml\Buildings\DeadEagle"
+	Local $sBoostDiamond = "ECD"
+	Local $redlines = "ECD"
+
+	; search for a clock face in the Boost window
+	Local $avDeadEagle = findMultiple($sImgDeadEagleImages, $sBoostDiamond, $redlines, 0, 1000, 0, "objectname,objectpoints")
+
+	; no clockface lets scroll up and look again
+	If Not IsArray($avDeadEagle) Or UBound($avDeadEagle, $UBOUND_ROWS) <= 0 Then
+		SetLog("No Dead Eagle!")
+		Return False
+	EndIf
+
+	Local $avTempArray
+
+	For $i = 0 To UBound($avDeadEagle, $UBOUND_ROWS) - 1
+		$avTempArray = $avDeadEagle[$i]
+
+		SetLog("Search find : " & $avTempArray[0])
+		SetLog("Location    : " & $avTempArray[1])
+	Next
+
+	Return True
+EndFunc

@@ -148,7 +148,7 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 	Return $iTroopNumber
 EndFunc   ;==>PrepareAttack
 
-Func SelectCastleOrSiege(ByRef $iTroopIndex, $XCoord, $iCmbSiege)
+Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 
 	Local $hStarttime = _Timer_Init()
 	Local $aSiegeTypes[6] = [$eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, "Any"]
@@ -178,15 +178,17 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $XCoord, $iCmbSiege)
 	EndSwitch
 
 	If $bNeedSwitch Then
-		If QuickMIS("BC1", $g_sImgSwitchSiegeMachine, $XCoord - 30, 700, $XCoord + 35, 720, True, False) Then
-			Click($g_iQuickMISX + $XCoord - 30, $g_iQuickMISY + 700, 1)
+		Local $sSearchArea = GetDiamondFromRect($iX - 30 & ",700," & $iX + 35 & ",720")
+		Local $aiSwitchBtn = decodeSingleCoord(findImage("SwitchSiegeButton", $g_sImgSwitchSiegeMachine & "SiegeAtt*", $sSearchArea, 1, True, Default))
+		If IsArray($aiSwitchBtn) And UBound($aiSwitchBtn, 1) = 2 Then
+			ClickP($aiSwitchBtn)
 
 			; wait to appears the new small window
-			Local $lastX = $g_iQuickMISX + $XCoord - 30, $lastY = $g_iQuickMISY + 700
+			Local $iLastX = $aiSwitchBtn[0] - 30, $iLastY = $aiSwitchBtn[1]
 			If _Sleep(1250) Then Return
 
 			; Lets detect the CC & Sieges and click
-			Local $sSearchArea = GetDiamondFromRect(_Min($XCoord - 50, 470) & ",530(390,30)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
+			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",530(390,30)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
 			Local $aSearchResult = findMultiple($g_sImgSwitchSiegeMachine, $sSearchArea, $sSearchArea, 0, 1000, 5, "objectname,objectpoints", True)
 			If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 			$hStarttime = _Timer_Init()
@@ -229,21 +231,21 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $XCoord, $iCmbSiege)
 
 				If ($iTroopIndex = $ToUse Or $bAnySiege) And $g_iSiegeLevel >= $iFinalLevel Then
 					SetLog($bAnySiege ? "No higher level siege machine found" : "No higher level of " & GetTroopName($iTroopIndex) & " found")
-					Click($lastX, $lastY, 1)
+					Click($iLastX, $iLastY, 1)
 				ElseIf IsArray($aFinalCoords) Then
 					ClickP($aFinalCoords, 1, 0)
 					$g_iSiegeLevel = $iFinalLevel
 					$iTroopIndex = $iFinalSiege
 				Else
 					If Not $bAnySiege Then SetLog("No " & GetTroopName($ToUse) & " found")
-					Click($lastX, $lastY, 1)
+					Click($iLastX, $iLastY, 1)
 				EndIf
 
 			Else
 				If $g_bDebugImageSave Then SaveDebugImage("PrepareAttack_SwitchSiege")
 				; If was not detectable lets click again on green icon to hide the window!
 				Setlog("Undetected " & ($bAnySiege ? "any siege machine " : GetTroopName($ToUse)) & " after click on switch btn!", $COLOR_DEBUG)
-				Click($lastX, $lastY, 1)
+				Click($iLastX, $iLastY, 1)
 			EndIf
 			If _Sleep(750) Then Return
 		EndIf

@@ -45,6 +45,16 @@ Func chkDBMeetTH()
 	GUICtrlSetState($g_hCmbDBTH, GUICtrlRead($g_hChkDBMeetTH) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 EndFunc   ;==>chkDBMeetTH
 
+Func chkDBMeetDeadEagle()
+	If GUICtrlRead($g_hChkDBMeetDeadEagle) = $GUI_CHECKED Then
+		$g_bChkDeadEagle = True
+	Else
+		$g_bChkDeadEagle = False
+	EndIf
+
+	SetLog("$g_bChkDeadEagle :" & $g_bChkDeadEagle)
+EndFunc
+
 Func chkDBWeakBase()
 	GUICtrlSetState($g_ahCmbWeakMortar[$DB], GUICtrlRead($g_ahChkMaxMortar[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)
 	GUICtrlSetState($g_ahCmbWeakWizTower[$DB], GUICtrlRead($g_ahChkMaxWizTower[$DB]) = $GUI_CHECKED ? $GUI_ENABLE : $GUI_DISABLE)

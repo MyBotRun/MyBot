@@ -897,6 +897,9 @@ Func ReadConfig_600_28_DB()
 	IniReadS($g_abFilterMeetTH[$DB], $g_sProfileConfigPath, "search", "DBMeetTH", False, "Bool")
 	IniReadS($g_aiFilterMeetTHMin[$DB], $g_sProfileConfigPath, "search", "DBTHLevel", 0, "int")
 	IniReadS($g_abFilterMeetTHOutsideEnable[$DB], $g_sProfileConfigPath, "search", "DBMeetTHO", False, "Bool")
+	
+	IniReadS($g_bChkDeadEagle, $g_sProfileConfigPath, "search", "DBMeetDeadEagle", False, "Bool")
+	
 	IniReadS($g_abFilterMaxMortarEnable[$DB], $g_sProfileConfigPath, "search", "DBCheckMortar", False, "Bool")
 	IniReadS($g_abFilterMaxWizTowerEnable[$DB], $g_sProfileConfigPath, "search", "DBCheckWizTower", False, "Bool")
 	IniReadS($g_abFilterMaxAirDefenseEnable[$DB], $g_sProfileConfigPath, "search", "DBCheckAirDefense", False, "Bool")
@@ -1311,15 +1314,24 @@ Func ReadConfig_600_52_2()
 		$g_aiArmyCustomTroops[$T] = $tempTroopCount
 		$g_aiTrainArmyTroopLevel[$T] = $tempTroopLevel
 	Next
+
+
+	For $T = 0 To $eSuperTroopCount - 1
+		IniReadS($g_aiArmyCustomSuperTroops[$T], $g_sProfileConfigPath, "troop", $g_asSuperTroopShortNames[$T], 0, "int")
+		;IniReadS($g_aiTrainArmySuperTroopLevel[$T], $g_sProfileConfigPath, "LevelTroop", $g_asSuperTroopShortNames[$T], 0, "int")
+	Next
+
+
 	For $S = 0 To $eSpellCount - 1
 		IniReadS($g_aiArmyCustomSpells[$S], $g_sProfileConfigPath, "Spells", $g_asSpellShortNames[$S], 0, "int")
 		IniReadS($g_aiTrainArmySpellLevel[$S], $g_sProfileConfigPath, "LevelSpell", $g_asSpellShortNames[$S], 0, "int")
 	Next
 	$g_aiArmyCompTroops = $g_bQuickTrainEnable ? $g_aiArmyQuickTroops : $g_aiArmyCustomTroops
+	$g_aiArmyCompSuperTroops = $g_bQuickTrainEnable ? $g_aiArmyQuickSuperTroops : $g_aiArmyCustomSuperTroops
 	$g_aiArmyCompSpells = $g_bQuickTrainEnable ? $g_aiArmyQuickSpells : $g_aiArmyCustomSpells
 
 	For $S = 0 To $eSiegeMachineCount - 1
-		IniReadS($g_aiArmyCompSiegeMachine[$S], $g_sProfileConfigPath, "Siege", $g_asSiegeMachineShortNames[$S], 0, "int")
+		IniReadS($g_aiArmyCompSiegeMachines[$S], $g_sProfileConfigPath, "Siege", $g_asSiegeMachineShortNames[$S], 0, "int")
 		IniReadS($g_aiTrainArmySiegeMachineLevel[$S], $g_sProfileConfigPath, "LevelSiege", $g_asSiegeMachineShortNames[$S], 0, "int")
 	Next
 	IniReadS($g_iTrainArmyFullTroopPct, $g_sProfileConfigPath, "troop", "fullTroop", 100, "int")

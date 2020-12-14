@@ -46,7 +46,6 @@ Func getPBTime()
 		If $iCount > 20 Then ; Wait ~10-12 seconds for window to open before error return
 			SetLog("PBT information window failed to open", $COLOR_DEBUG)
 			If $g_bDebugImageSave Then SaveDebugImage("PBTInfo_", $g_bCapturePixel, False)
-			;ClickP($aAway, 1, 0, "#9999") ; close window if opened
 			ClickAway()
 			If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
 			Return
@@ -64,7 +63,6 @@ Func getPBTime()
 			If $sTimeResult = "" And $bPBTStart = False Then ; error if no read value
 				SetLog("strange error, no PBT value found?", $COLOR_ERROR)
 				SetError(1, "Bad OCR of PB time value ")
-				;ClickP($aAway, 1, 0, "#9999") ; close window
 				ClickAway()
 				If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
 				Return
@@ -86,7 +84,6 @@ Func getPBTime()
 					Case Else
 						SetLog("strange error, unexpected PBT value? |" & $aString[1], $COLOR_ERROR)
 						SetError(2, "Error processing time string")
-						;ClickP($aAway, 1, 0, "#9999") ; close window
 						ClickAway()
 						If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
 						Return
@@ -106,7 +103,6 @@ Func getPBTime()
 					Case Else
 						SetLog("strange error, unexpected PBT value? |" & $aString[1] & "|" & $aString[2], $COLOR_ERROR)
 						SetError(3, "Error processing time string")
-						;ClickP($aAway, 1, 0, "#9999") ; close window
 						ClickAway()
 						If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
 						Return
@@ -115,7 +111,6 @@ Func getPBTime()
 				If $bPBTStart = False Then
 					SetLog("Error processing PBT time string: " & $sTimeResult, $COLOR_ERROR)
 					SetError(4, "Error processing time string")
-					;ClickP($aAway, 1, 0, "#9999") ; close window
 					ClickAway()
 					If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
 					Return
@@ -137,7 +132,6 @@ Func getPBTime()
 		If $g_bDebugSetlog Then SetDebugLog("PBT starts: " & $sPBTReturnResult, $COLOR_DEBUG)
 		If _Sleep($DELAYPERSONALSHIELD1) Then Return
 
-		;ClickP($aAway, 1, 0, "#9999") ; close window
 		ClickAway()
 		If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
 

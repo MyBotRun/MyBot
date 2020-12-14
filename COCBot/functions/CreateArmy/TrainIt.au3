@@ -33,11 +33,11 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 
 						If $aTrainPos[4] >= $eSuperBarb Then
 							If $iIndex >= $eSuperBarb Then $iIndex -= $eSuperBarb
-							Local $iNewQuantity = $iQuantity / ($g_aiSuperTroopSpace[$iIndex] / $g_aiTroopSpace[$iIndex])
+							;Local $iNewQuantity = $iQuantity / ($g_aiSuperTroopSpace[$iIndex] / $g_aiTroopSpace[$iIndex])
 							SetLog("Detected a super troop, reducing train quantity to fit camps", $COLOR_INFO)
-							SetDebugLog("Old Quantity for Index (" & $iIndex & "): " & $iQuantity & " | New Quantity: " & $iNewQuantity, $COLOR_DEBUG)
+							;SetDebugLog("Old Quantity for Index (" & $iIndex & "): " & $iQuantity & " | New Quantity: " & $iNewQuantity, $COLOR_DEBUG)
 
-							$iQuantity = $iNewQuantity
+							;$iQuantity = $iNewQuantity
 						EndIf
 
 						TrainClickP($aTrainPos, $iQuantity, $g_iTrainClickDelay, $FullName, "#0266", $RNDName)
@@ -96,8 +96,22 @@ Func GetTrainPos(Const $iIndex)
 	If $g_bDebugSetlogTrain Then SetLog("GetTrainPos($iIndex=" & $iIndex & ")", $COLOR_DEBUG)
 
 	; Get the Image path to search
-	If ($iIndex >= $eBarb And $iIndex <= $eHunt) Or ($iIndex >= $eSuperBarb And $iIndex <= $eSuperGiant) Then
-		Local $sFilter = "*" & String($g_asTroopShortNames[$iIndex]) & "*"
+	If ($iIndex >= $eBarb And $iIndex <= $eHunt) Then
+		Local $sFilter = String($g_asTroopShortNames[$iIndex]) & "*"
+		SetLog("$sFilter :" & $sFilter)
+		Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
+		If Not @error Then
+			If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & _ArrayToString($asImageToUse, "|"))
+			Return GetVariable($asImageToUse, $iIndex)
+		Else
+			Return 0
+		EndIf
+	EndIf
+	
+	; Get the Image path to search
+	If $iIndex >= $eSuperBarb And $iIndex <= $eSuperHunt Then
+		Local $sFilter = String($g_asSuperTroopShortNames[$iIndex - $eSuperBarb]) & "*"
+		SetLog("$sFilter :" & $sFilter)
 		Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
 		If Not @error Then
 			If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & _ArrayToString($asImageToUse, "|"))
@@ -129,7 +143,7 @@ Func GetFullName(Const $iIndex, Const $aTrainPos)
 		Return GetFullNameSlot($aTrainPos, $sTroopType)
 	EndIf
 
-	If $iIndex >= $eSuperBarb And $iIndex <= $eSuperGiant Then
+	If $iIndex >= $eSuperBarb And $iIndex <= $eSuperHunt Then
 		Return GetFullNameSlot($aTrainPos, "Normal")
 	EndIf
 
@@ -169,9 +183,9 @@ EndFunc   ;==>GetRNDName
 
 ;   Local $asResult = DllCallMyBot("FindTile", "handle", $g_hHBitmap2, "str", $ImageToUse, "str", "FV", "int", 1)
 
- ;  If @error Then _logErrorDLLCall($g_sLibMyBotPath, @error)
+;   If @error Then _logErrorDLLCall($g_sLibMyBotPath, @error)
 
- ;  If IsArray($asResult) Then
+;   If IsArray($asResult) Then
 ;	  If $asResult[0] = "0" Then
 ;		 SetLog("No " & GetTroopName($iIndex) & " Icon found!", $COLOR_ERROR)
 ;	  ElseIf $asResult[0] = "-1" Then
@@ -200,7 +214,7 @@ EndFunc   ;==>GetRNDName
 ;			SetLog("Don't know how to train the troop with index " & $iIndex & " yet..")
 ;		 EndIf
 ;	  EndIf
- ;  Else
+;  Else
 ;		 SetLog("Don't know how to train the troop with index " & $iIndex & " yet...")
 ;   EndIf
 ;   Return $aTrainPos

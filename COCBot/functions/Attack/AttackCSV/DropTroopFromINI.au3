@@ -82,7 +82,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 	EndIf
 	Local $bHeroDrop = ($iTroopIndex = $eWarden ? True : False) ;set flag TRUE if Warden was dropped
 
-	;Super troop hotfix, if only super troop is available and normal troop is in csv, use the super troop
+#cs	;Super troop hotfix, if only super troop is available and normal troop is in csv, use the super troop
 	SetDebugLog("$iTroopIndex = " & $iTroopIndex)
 	SetDebugLog("_ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb) = " & _ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb))
 	;Returned the "$iTroopIndex + " from "$iTroopIndex + $eSuperBarb" if the _ArraySearch test.
@@ -104,10 +104,10 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 				SetDebugLog("Switching to $eSuperArch: " & $eSuperArch)
 				$iTroopIndex =  $eSuperArch
 				$bSwitched = True
-			Case $eGiant
-				SetDebugLog("Switching to $eSuperGiant: " & $eSuperGiant)
-				$iTroopIndex = $eSuperGiant
-				$bSwitched = True
+			;Case $eGiant
+			;	SetDebugLog("Switching to $eSuperGiant: " & $eSuperGiant)
+			;	$iTroopIndex = $eSuperGiant
+			;	$bSwitched = True
 			Case $eGobl
 				SetDebugLog("Switching to $eSneakyGobl: " & $eSneakyGobl)
 				$iTroopIndex = $eSneakyGobl
@@ -141,7 +141,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 			$extraunit = Round($extraunit / ($g_aiSuperTroopSpace[$iOldIndex] / $g_aiTroopSpace[$iOldIndex]))
 		Endif
 	EndIf
-
+#ce
 	;_ArrayDisplay($g_avAttackTroops, "Index: " & $iTroopIndex)
 
 	;search slot where is the troop...

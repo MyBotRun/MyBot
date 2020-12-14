@@ -28,17 +28,22 @@ Func CollectFreeMagicItems($bTest = False)
 
 	; Check Trader Icon on Main Village
 	
-	If QuickMIS("BC1", $g_sImgTrader, 120, 160, 210, 215, True, False) Then
+	Local $sSearchArea = GetDiamondFromRect("120,160,210,215")
+	Local $avTraderIcon = findMultiple($g_sImgTrader, $sSearchArea, $sSearchArea, 0, 1000, 1, "objectpoints", True)
+
+	If IsArray($avTraderIcon) And UBound($avTraderIcon) > 0 Then
+		Local $asTempArray = $avTraderIcon[0]
+		Local $aiCoords = decodeSingleCoord($asTempArray[0])
 		SetLog("Trader available, Entering Daily Discounts", $COLOR_SUCCESS)
-		Click($g_iQuickMISX + 120, $g_iQuickMISY + 160)
+		ClickP($aiCoords)
 		If _Sleep(1500) Then Return
 	Else
 		SetLog("Trader unavailable", $COLOR_INFO)
 		Return
 	EndIf
 
-	; Check Daily Discounts Window
-	If Not QuickMIS("BC1", $g_sImgDailyDiscountWindow, 310, 175, 375, 210, True, False) Then
+	Local $aiDailyDiscount = decodeSingleCoord(findImage("DailyDiscount", $g_sImgDailyDiscountWindow, GetDiamondFromRect("310,175,375,210"), 1, True, Default))
+	If Not IsArray($aiDailyDiscount) Or UBound($aiDailyDiscount, 1) < 1 Then
 		ClickAway()
 		Return
 	EndIf

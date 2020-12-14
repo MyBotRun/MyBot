@@ -521,7 +521,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	$g_iSlotsGiants = 0
 	; Giants quantities
 	For $i = 0 To UBound($g_avAttackTroops) - 1
-		If $g_avAttackTroops[$i][0] = $eGiant Then
+		If $g_avAttackTroops[$i][0] = $eGiant Or $g_avAttackTroops[$i][0] = $eSuperGiant Then
 			$GiantComp = $g_avAttackTroops[$i][1]
 		EndIf
 	Next

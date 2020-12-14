@@ -1,4 +1,4 @@
-; #FUNCTION# ====================================================================================================================
+;FUNCTION# ====================================================================================================================
 ; Name ..........: MBR GUI Design
 ; Description ...: This file creates the "Search" tab under the "DeadBase" tab under the "Search & Attack" tab under the "Attack Plan" tab
 ; Syntax ........:
@@ -31,7 +31,7 @@ Global $g_hPicDBLightSpellWait = 0, $g_hPicDBHealSpellWait = 0, $g_hPicDBRageSpe
 Global $g_hCmbDBMeetGE = 0, $g_hTxtDBMinGold = 0, $g_hTxtDBMinElixir = 0, $g_hTxtDBMinGoldPlusElixir = 0
 Global $g_hChkDBMeetDE = 0, $g_hTxtDBMinDarkElixir = 0
 Global $g_hChkDBMeetTrophy = 0, $g_hTxtDBMinTrophy = 0, $g_hTxtDBMaxTrophy = 0
-Global $g_hChkDBMeetTH = 0, $g_hCmbDBTH = 0, $g_hChkDBMeetTHO = 0
+Global $g_hChkDBMeetTH = 0, $g_hCmbDBTH = 0, $g_hChkDBMeetTHO = 0, $g_hChkDBMeetDeadEagle = 0
 
 Global $g_hGrpDBFilter = 0, $g_hPicDBMinGold = 0, $g_hPicDBMinElixir = 0, $g_hPicDBMinGPEGold = 0, $g_hPicDBMinDarkElixir = 0, $g_hPicDBMinTrophies = 0
 Global $g_ahPicDBMaxTH[14]
@@ -279,8 +279,11 @@ Func CreateAttackSearchDeadBaseSearch()
 			GUICtrlSetState (-1, $GUI_HIDE)
 
 	$y += 24
-		$g_hChkDBMeetTHO = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO", "Townhall Outside"), $x, $y, -1, -1)
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO_Info_01", "Search for a base that has an exposed Townhall. (Outside of Walls)"))
+			; create checkbox with handle $g_hChkDBMeetDeadEagle
+		$g_hChkDBMeetDeadEagle = GUICtrlCreateCheckbox("Dead Eagle Only", $x, $y, -1, -1)
+			GUICtrlSetOnEvent(-1, "chkDBMeetDeadEagle")
+		;$g_hChkDBMeetTHO = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO", "Townhall Outside"), $x, $y, -1, -1)
+		;	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO_Info_01", "Search for a base that has an exposed Townhall. (Outside of Walls)"))
 	$y += 24
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "Group_03", "Weak base | max defenses"), $x, $y, 215, 120)
 	$x += 5
