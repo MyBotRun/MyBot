@@ -25,12 +25,12 @@ Func CompareResources($pMode) ;Compares resources and returns true if conditions
 
 			Local $sTrophyText = "", $sTownhallText = ""
 			If $g_abFilterMeetTrophyEnable[$pMode] Then $sTrophyText = " [T]:" & StringFormat("%2s", $g_iAimTrophy[$pMode]) & "-" & StringFormat("%2s", $g_iAimTrophyMax[$pMode])
-			If $g_abFilterMeetTH[$pMode] Then $sTrophyText = " [TH]:" & StringFormat("%2s", $g_aiMaxTH[$pMode]) ;$g_aiFilterMeetTHMin
+			If $g_abFilterMeetTH[$pMode] Then $sTownhallText = " [TH]:" & StringFormat("%2s", $g_aiMaxTH[$pMode]) ;---
 			If $g_abFilterMeetTHOutsideEnable[$pMode] Then $sTrophyText &= ", Out"
 			If $g_aiFilterMeetGE[$pMode] = 2 Then
-				SetLog("Aim:           [G+E]:" & StringFormat("%7s", $g_iAimGoldPlusElixir[$pMode]) & " [D]:" & StringFormat("%5s", $g_iAimDark[$pMode]) & $sTrophyText & $sTrophyText & " for: " & $g_asModeText[$pMode], $COLOR_SUCCESS, "Lucida Console", 7.5)
+				SetLog("Aim:           [G+E]:" & StringFormat("%7s", $g_iAimGoldPlusElixir[$pMode]) & " [D]:" & StringFormat("%5s", $g_iAimDark[$pMode]) & $sTrophyText & $sTownhallText & " for: " & $g_asModeText[$pMode], $COLOR_SUCCESS, "Lucida Console", 7.5) ;---
 			Else
-				SetLog("Aim: [G]:" & StringFormat("%7s", $g_iAimGold[$pMode]) & " [E]:" & StringFormat("%7s", $g_iAimElixir[$pMode]) & " [D]:" & StringFormat("%5s", $g_iAimDark[$pMode]) & $sTrophyText & $sTrophyText & " for: " & $g_asModeText[$pMode], $COLOR_SUCCESS, "Lucida Console", 7.5)
+				SetLog("Aim: [G]:" & StringFormat("%7s", $g_iAimGold[$pMode]) & " [E]:" & StringFormat("%7s", $g_iAimElixir[$pMode]) & " [D]:" & StringFormat("%5s", $g_iAimDark[$pMode]) & $sTrophyText & $sTownhallText & " for: " & $g_asModeText[$pMode], $COLOR_SUCCESS, "Lucida Console", 7.5) ;---
 			EndIf
 		EndIf
 	EndIf

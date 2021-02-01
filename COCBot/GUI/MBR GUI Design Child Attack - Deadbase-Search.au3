@@ -1,4 +1,4 @@
-;FUNCTION# ====================================================================================================================
+; #FUNCTION# ====================================================================================================================
 ; Name ..........: MBR GUI Design
 ; Description ...: This file creates the "Search" tab under the "DeadBase" tab under the "Search & Attack" tab under the "Attack Plan" tab
 ; Syntax ........:
@@ -31,7 +31,7 @@ Global $g_hPicDBLightSpellWait = 0, $g_hPicDBHealSpellWait = 0, $g_hPicDBRageSpe
 Global $g_hCmbDBMeetGE = 0, $g_hTxtDBMinGold = 0, $g_hTxtDBMinElixir = 0, $g_hTxtDBMinGoldPlusElixir = 0
 Global $g_hChkDBMeetDE = 0, $g_hTxtDBMinDarkElixir = 0
 Global $g_hChkDBMeetTrophy = 0, $g_hTxtDBMinTrophy = 0, $g_hTxtDBMaxTrophy = 0
-Global $g_hChkDBMeetTH = 0, $g_hCmbDBTH = 0, $g_hChkDBMeetTHO = 0, $g_hChkDBMeetDeadEagle = 0
+Global $g_hChkDBMeetTH = 0, $g_hCmbDBTH = 0, $g_hChkDBMeetTHO = 0, $g_hChkDBMeetDeadEagle = 0, $g_hTxtDeadEagleSearch = 0
 
 Global $g_hGrpDBFilter = 0, $g_hPicDBMinGold = 0, $g_hPicDBMinElixir = 0, $g_hPicDBMinGPEGold = 0, $g_hPicDBMinDarkElixir = 0, $g_hPicDBMinTrophies = 0
 Global $g_ahPicDBMaxTH[14]
@@ -280,8 +280,15 @@ Func CreateAttackSearchDeadBaseSearch()
 
 	$y += 24
 			; create checkbox with handle $g_hChkDBMeetDeadEagle
-		$g_hChkDBMeetDeadEagle = GUICtrlCreateCheckbox("Dead Eagle Only", $x, $y, -1, -1)
+		$g_hChkDBMeetDeadEagle = GUICtrlCreateCheckbox("Dead Eagle Search", $x, $y, -1, -1)
 			GUICtrlSetOnEvent(-1, "chkDBMeetDeadEagle")
+			
+		$g_hTxtDeadEagleSearch = GUICtrlCreateInput("50", $x + 115, $y, 20, 18)
+			;$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTrophy_Info_03", "Set the Max. amount of Trophies to search for on a village to attack.")
+			;_GUICtrlSetTip(-1, $sTxtTip)
+			;_GUICtrlEdit_SetReadOnly(-1, True)
+			;GUICtrlSetLimit(-1, 2)	
+			
 		;$g_hChkDBMeetTHO = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO", "Townhall Outside"), $x, $y, -1, -1)
 		;	_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "ChkMeetTHO_Info_01", "Search for a base that has an exposed Townhall. (Outside of Walls)"))
 	$y += 24

@@ -38,7 +38,7 @@ Func getArmyCCSiegeMachines($bOpenArmyWindow = False, $bCloseArmyWindow = False,
 	Local $aTempCCSiegeArray, $aCCSiegeCoords
 	Local $sCCSiegeName = ""
 	Local $iCCSiegeIndex = -1
-	Local $aCurrentCCSiegeEmpty[$eSiegeMachineCount] = [0, 0, 0, 0] ; Local Copy to reset Siege Machine Array
+	Local $aCurrentCCSiegeEmpty[$eSiegeMachineCount] = [0, 0, 0, 0, 0] ; Local Copy to reset Siege Machine Array
 
 	$g_aiCurrentCCSiegeMachines = $aCurrentCCSiegeEmpty ; Reset Current Siege Machine Array
 

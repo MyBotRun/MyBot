@@ -48,6 +48,7 @@ EndFunc   ;==>chkDBMeetTH
 Func chkDBMeetDeadEagle()
 	If GUICtrlRead($g_hChkDBMeetDeadEagle) = $GUI_CHECKED Then
 		$g_bChkDeadEagle = True
+		$g_iDeadEagleSearch = GUICtrlRead($g_hTxtDeadEagleSearch)
 	Else
 		$g_bChkDeadEagle = False
 	EndIf

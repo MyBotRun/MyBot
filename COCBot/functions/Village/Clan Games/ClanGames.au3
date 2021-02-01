@@ -104,7 +104,8 @@ Func _ClanGames($test = False)
 	If $g_bChkClanGamesDestruction Then FileCopy($sImagePath & "\D-*.xml", $sTempPath, $FC_OVERWRITE + $FC_CREATEPATH)
 	If $g_bChkClanGamesMiscellaneous Then FileCopy($sImagePath & "\M-*.xml", $sTempPath, $FC_OVERWRITE + $FC_CREATEPATH)
     If $g_bChkClanGamesSpell Then FileCopy($sImagePath & "\S-*.xml", $sTempPath, $FC_OVERWRITE + $FC_CREATEPATH) ; -grumpy
-    If $g_bChkClanGamesSuperTroop Then FileCopy($sImagePath & "\X-*.xml", $sTempPath, $FC_OVERWRITE + $FC_CREATEPATH)
+    If $g_bChkClanGamesBBBattle Then FileCopy($sImagePath & "\BBB-*.xml", $sTempPath, $FC_OVERWRITE + $FC_CREATEPATH)
+    If $g_bChkClanGamesBBDestruction Then FileCopy($sImagePath & "\BBD-*.xml", $sTempPath, $FC_OVERWRITE + $FC_CREATEPATH)
 
 	Local $HowManyImages = _FileListToArray($sTempPath, "*", $FLTA_FILES)
 	If IsArray($HowManyImages) Then
@@ -173,7 +174,8 @@ Func _ClanGames($test = False)
 
 	If UBound($aAllDetectionsOnScreen) > 0 Then
 		For $i = 0 To UBound($aAllDetectionsOnScreen) - 1
-			If IsBBChallenge($aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3]) Then ContinueLoop
+            If IsBBChallenge($aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3]) and $g_bChkClanGamesBBBattle == 0 and $g_bChkClanGamesBBDestruction == 0 Then ContinueLoop ; only skip if it is a BB challenge not supported
+
 			Switch $aAllDetectionsOnScreen[$i][0]
 				Case "L"
 					If Not $g_bChkClanGamesLoot Then ContinueLoop
@@ -235,30 +237,6 @@ Func _ClanGames($test = False)
 							Local $aArray[4] = [$SpellChallenges[$j][1], $aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3], 1]
 						EndIf
 					Next
-
-				Case "X" ; - grumpy
-					If Not $g_bChkClanGamesSuperTroop Then ContinueLoop
-					;[0] = Path Directory , [1] = Event Name , [2] = TH level , [3] = Event Quantities
-					Local $SuperTroopChallenges = ClanGamesChallenges("$SuperTroopChallenges", False, $sINIPath, $g_bChkClanGamesDebug) ; load all spell challenges
-					For $j = 0 To UBound($SuperTroopChallenges) - 1 ; loop through all challenges
-						; Match the names
-						If $aAllDetectionsOnScreen[$i][1] = $SuperTroopChallenges[$j][0] Then
-							; Verify if the Spell exist in your Army Composition
-							Local $SuperTroopIndex = Int(Eval("eSuperTroop" & $SuperTroopChallenges[$j][1])) ; assign $SuperTroopIndex enum second column of array is supertroop name line 682 in GlobalVariables
-							; If doesn't Exist the Troop on your Army
-							If $g_aiCurrentSuperTroops[$SuperTroopIndex] < 1 Then
-								If $g_bChkClanGamesDebug Then SetLog("[" & $SuperTroopChallenges[$j][1] & "] No " & $g_asSuperTroopNames[$SuperTroopIndex] & " on your army composition.")
-								ExitLoop
-								; If Exist BUT not is required quantities
-							ElseIf $g_aiCurrentSuperTroops[$SuperTroopIndex] > 0 And $g_aiCurrentSuperTroops[$SuperTroopIndex] < $SuperTroopChallenges[$j][3] Then
-								If $g_bChkClanGamesDebug Then SetLog("[" & $SuperTroopChallenges[$j][1] & "] You need more " & $g_asSuperTroopNames[$SuperTroopIndex] & " [" & $g_aiCurrentSuperTroops[$SuperTroopIndex] & "/" & $SuperTroopChallenges[$j][3] & "]")
-								ExitLoop
-							EndIf
-							; [0]Event Name Full Name  , [1] Xaxis ,  [2] Yaxis , [3] difficulty
-							Local $aArray[4] = [$SuperTroopChallenges[$j][1], $aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3], 1]
-						EndIf
-					Next
-
 
 			   Case "G"
 					If Not $g_bChkClanGamesGroundTroop Then ContinueLoop
@@ -376,10 +354,28 @@ Func _ClanGames($test = False)
 
 							If $MiscChallenges[$j][1] = "Siege Barrack" And ($g_aiAttackUseSiege[$DB] = 4 Or $g_aiAttackUseSiege[$LB] = 4) And $g_aiArmyCompSiegeMachines[$eSiegeBarracks] = 0 Then ExitLoop
 
+							If $MiscChallenges[$j][1] = "Log Launcher" And ($g_aiAttackUseSiege[$DB] = 5 Or $g_aiAttackUseSiege[$LB] = 5) And $g_aiArmyCompSiegeMachines[$eSiegeLogLauncher] = 0 Then ExitLoop
+
 							; [0]Event Name Full Name  , [1] Xaxis ,  [2] Yaxis , [3] difficulty
 							Local $aArray[4] = [$MiscChallenges[$j][1], $aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3], $MiscChallenges[$j][3]]
 						EndIf
 					Next
+                Case "BBB" ; BB Battle challenges
+                    If Not $g_bChkClanGamesBBBattle Then ContinueLoop
+
+                    ;[0] = Path Directory , [1] = Event Name , [2] = TH level , [3] = Difficulty Level , [4] = Time to do it
+                    Local $BBBattleChallenges = ClanGamesChallenges("$BBBattleChallenges", False, $sINIPath, $g_bChkClanGamesDebug)
+                    For $j = 0 To UBound($BBBattleChallenges) - 1
+                        ; Match the names
+                        If $aAllDetectionsOnScreen[$i][1] = $BBBattleChallenges[$j][0] Then
+
+                            ; Verify your TH level and Challenge kind
+                            ; If $g_iBBTownHallLevel < $DestructionChallenges[$j][2] Then ExitLoop ; adding soon
+
+                            Local $aArray[4] = [$BBBattleChallenges[$j][1], $aAllDetectionsOnScreen[$i][2], $aAllDetectionsOnScreen[$i][3], $BBBattleChallenges[$j][3]]
+                        EndIf
+                    Next
+                Case "BBD" ; BB Destruction challenges
 			EndSwitch
 			If IsDeclared("aArray") And $aArray[0] <> "" Then
 				ReDim $aSelectChallenges[UBound($aSelectChallenges) + 1][5]
@@ -698,7 +694,7 @@ Func GetEventTimeInMinutes($iXStartBtn, $iYStartBtn, $bIsStartBtn = True)
 	EndIf
 
 	Local $Ocr = getOcrEventTime($XAxis, $YAxis)
-	Return ConvertOCRTime("ClanGames()", "m", True)
+    Return ConvertOCRTime("ClanGames()", $Ocr, True)
 EndFunc   ;==>GetEventTimeInMinutes
 
 Func GetEventInformation()
@@ -755,15 +751,18 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False, $sINIPath = "", $bDebu
 			["ElixirEmbezz", 			"Elixir Embezzlement", 			 3,  1, 1], _ ; Loot a total of 500,000 TO 1,500,000 from Multiplayer Battle 	|1h-2d 	|100-600
 			["DarkEHeist", 				"Dark Elixir Heist", 			 9,  3, 1]]   ; Loot a total of 1,500 TO 12,500 from Multiplayer Battle 		|1h-2d 	|100-600
 
-	Local $AirTroopChallenges[6][5] = [ _
+	Local $AirTroopChallenges[9][5] = [ _
 			["Mini", 					"Minion", 						 7, 10, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 20 Minions		|3h-8h	|40-100
 			["Ball", 					"Balloon", 						 4, 12, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 12 Balloons		|3h-8h	|40-100
 			["Drag", 					"Dragon", 						 7,  6, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 6 Dragons			|3h-8h	|40-100
 			["BabyD", 					"BabyDragon", 					 9,  2, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 4 Baby Dragons	|3h-8h	|40-100
 			["Edrag", 					"ElectroDragon", 				10,  2, 1], _ ; Earn 2-4 Stars from Multiplayer Battles using 2 Electro Dragon	|3h-8h	|40-300
-			["Lava", 					"Lavahound", 					 9,  1, 1]]   ; Earn 2-5 Stars from Multiplayer Battles using 3 Lava Hounds		|3h-8h	|40-100
+			["Lava", 					"Lavahound", 					 9,  1, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 3 Lava Hounds		|3h-8h	|40-100
+			["Smini", 					"SuperMinion", 					12,  4, 1], _ ; updated 25/01/2021
+			["InfernoD",				"InfernoDrag", 					12,  1, 1], _ ; check quantity missing
+			["IceH", 					"IceHound", 					13,  1, 1]]   ; check quantity missing xml
 
-	Local $GroundTroopChallenges[17][5] = [ _
+	Local $GroundTroopChallenges[25][5] = [ _
 			["Arch", 					"Archer", 						 1, 10, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 30 Barbarians		|3h-8h	|40-100
 			["Barb", 					"Barbarian", 					 1, 30, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 30 Archers		|3h-8h	|40-100
 			["Giant", 					"Giant", 						 1, 10, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 10 Giants			|3h-8h	|40-100
@@ -773,22 +772,22 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False, $sINIPath = "", $bDebu
 			["Heal", 					"Healer", 						 6,  3, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 3 Healers			|3h-8h	|40-100
 			["Hogs", 					"HogRider", 					 7, 10, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 10 Hog Riders		|3h-8h	|40-100
 			["Mine", 					"Miner", 						10,  8, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 8 Miners			|3h-8h	|40-100
-			["Pekk", 					"Pekka", 						 8,  1, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 2 P.E.K.K.As		|3h-8h	|40-100
+			["Pekk", 					"Pekka", 						 8,  1, 1], _ ; updated 25/01/2021
 			["Witc", 					"Witch", 						 9,  2, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 2 Witches			|3h-8h	|40-100
 			["Bowl", 					"Bowler", 						10,  8, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 8 Bowlers			|3h-8h	|40-100
 			["Valk", 					"Valkyrie", 					 8,  4, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 8 Valkyries		|3h-8h	|40-100
 			["Gole", 					"Golem", 						 8,  2, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 2 Golems			|3h-8h	|40-100
-			["Yeti", 					"Yeti", 						 12, 1, 1], _ ;
-			["IceG", 					"IceGolem", 					 11, 2, 1], _ ;
-			["Hunt", 					"HeadHunters", 					 12, 2, 1]]   ;
-
-	Local $SuperTroopChallenges[6][5] = [ _
-			["SuperBarb", 				"SuperBarbarian",				 11, 4, 1], _ ;
-			["SneakyGobl", 				"SneakyGoblin",					 11, 6, 1], _ ;
-			["SuperGaint", 				"SuperGaint", 					 11, 2, 1], _ ;
-			["SuperWall", 				"SuperWall", 					 11, 2, 1], _ ;
-			["InfernoDrag", 			"InfernoDragon",				 11, 2, 1], _ ;
-			["SuperWitc", 				"SuperWitch", 					 11, 1, 1]]   ;
+			["Yeti", 					"Yeti", 						 12, 1, 1], _ ; check quantity
+			["IceG", 					"IceGolem", 					 11, 2, 1], _ ; check quantity
+			["Hunt", 					"HeadHunters", 					 12, 2, 1], _ ; updated 25/01/2021
+			["Sbarb", 					"SuperBarbarian", 				 11, 4, 1], _ ; updated 25/01/2021
+			["Sarch", 					"SuperArcher", 					 11, 1, 1], _ ; check quantity missing xml
+			["Sgiant", 					"SuperGiant", 					 12, 1, 1], _ ; check quantity
+			["Sgobl", 					"SneakyGoblin", 				 11, 1, 1], _ ; check quantity
+			["Swall", 					"SuperWallBreaker", 			 11, 1, 1], _ ; check quantity
+			["Swiza", 					"SuperWizard",					 12, 1, 1], _ ; check quantity missing xml
+			["Svalk", 					"SuperValkyrie",				 12, 2, 1], _ ; updated 25/01/2021
+			["Switc", 					"SuperWitch", 					 12, 1, 1]]   ; check quantity
 
 	Local $BattleChallenges[20][5] = [ _
 			["Start", 					"Star Collector", 				 3,  1, 8], _ ; Collect a total of 6-18 stars from Multiplayer Battles			|8h-2d	|100-600
@@ -846,28 +845,33 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False, $sINIPath = "", $bDebu
 			["ScatterShotSabotage",		"Destroy ScatterShot",			13,  5, 1]]   ;
 
 
-	Local $MiscChallenges[7][5] = [ _
+	Local $MiscChallenges[8][5] = [ _
 			["Gard", 					"Gardening Exercise", 			 3,  1, 8], _ ; Clear 5 obstacles from your Home Village or Builder Base		|8h	|50
 			["DonateSpell", 			"Donate Spells", 				 9,  3, 8], _ ; Donate a total of 10 housing space worth of spells				|8h	|50
 			["DonateTroop", 			"Helping Hand", 				 6,  2, 8], _ ; Donate a total of 100 housing space worth of troops				|8h	|50
 			["BattleBlimpBoogie", 		"Battle Blimp", 				10,  5, 1], _ ; Earn 2-4 Stars from Multiplayer Battles using 1 Battle Blimp	|3h-8h	|40-300
 			["WallWreckerWallop", 		"Wall Wrecker", 				10,  5, 1], _ ; Earn 2-5 Stars from Multiplayer Battles using 1 Wall Wrecker 	|3h-8h	|40-100
 			["SmashAndGrab",	 		"Stone Slammer", 				10,  5, 1], _ ;
-			["FlyingFortress", 			"Siege Barrack", 				10,  5, 1]]   ;
-
+			["FlyingFortress", 			"Siege Barrack", 				10,  5, 1], _ ;
+			["UnleashTheLog", 			"Log Launcher", 				10,  5, 1]]   ;
 
    Local $SpellChallenges[11][5] = [ _
 			["LSpell", 					"Lightning", 					 6,  1, 1], _ ;
-			["HSpell", 					"Heal",							 6,  2, 1], _ ;
+			["HSpell", 					"Heal",							 6,  2, 1], _ ; updated 25/01/2021
 			["RSpell", 					"Rage", 					 	 6,  2, 1], _ ;
 			["JSpell", 					"Jump", 					 	 6,  1, 1], _ ;
-			["FSpell", 					"Freeze", 					 	 9,  1, 1], _ ;
+			["FSpell", 					"Freeze", 					 	 9,  2, 1], _ ;
 			["CSpell", 					"Clone", 					 	11,  1, 1], _ ;
 			["PSpell", 					"Poison", 					 	 6,  1, 1], _ ;
-			["ESpell", 					"EarthQuake", 					 6,  1, 1], _ ;
-			["HaSpell", 				"HasteSpell", 					 6,  2, 1], _ ;
+			["ESpell", 					"Earthquake", 					 6,  1, 1], _ ;
+			["HaSpell", 				"Haste",	 					 6,  2, 1], _ ; updated 25/01/2021
 			["SkSpell",					"Skeleton", 					11,  1, 1], _ ;
 			["BtSpell",					"Bat", 					 		10,  1, 1]]   ;
+
+    Local $BBBattleChallenges[3][5] = [ _
+            ["StarM",                     "Builder Base Star Master",                  2,  1, 1], _ ; Earn 6 - 24 stars on the BB
+            ["Victories",                 "Builder Base Victories",                  2,  10, 1], _ ; Earn 3 - 6 victories on the BB
+            ["Destruction",             "Builder Base Destruction",                  2,  1, 1]] ; Earn 225% - 900% on BB attacks
 
 	; Just in Case
 	Local $LocalINI = $sINIPath
@@ -888,10 +892,10 @@ Func ClanGamesChallenges($sReturnArray, $makeIni = False, $sINIPath = "", $bDebu
 				Return $AirTroopChallenges
 			Case "$GroundTroopChallenges"
 				Return $GroundTroopChallenges
-			Case "$SuperTroopChallenges"
-				Return $SuperTroopChallenges
 			Case "$SpellChallenges"
 				Return $SpellChallenges
+            Case "$BBBattleChallenges"
+                Return $BBBattleChallenges
 
 			Case "$LootChallenges"
 				$TempChallenge = $array[0]

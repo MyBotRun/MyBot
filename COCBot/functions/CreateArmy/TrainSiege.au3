@@ -31,13 +31,15 @@ Func TrainSiege($bTrainFullSiege = False)
 	Local $aCheckIsAvailableSiege1[4] = [229, 556, 0x47717E, 10]
 	Local $aCheckIsAvailableSiege2[4] = [400, 556, 0x47717E, 10]
 	Local $aCheckIsAvailableSiege3[4] = [576, 556, 0x47717E, 10]
+	Local $aCheckIsAvailableSiege4[4] = [750, 556, 0x47717E, 10]
 
-	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0]
+	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0, 0]
 	Local $aiTotalSiegeMachine = $g_aiCurrentSiegeMachines
 
 	; check queueing siege
 	If _CheckPixel($aCheckIsFilled, True, Default, "Siege is Filled") Or _CheckPixel($aCheckIsOccupied, True, Default, "Siege is Queued") Then
-		Local $aSearchResult = SearchArmy("trainwindow-SiegesInQueue-bundle", 410, 205, 840, 235, "Queue")
+		Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\SiegeMachinesQueued"
+		Local $aSearchResult = SearchArmy($Dir, 18, 182, 840, 261, "Queue")
 		If $aSearchResult[0][0] <> "" Then
 			For $i = 0 To UBound($aSearchResult) - 1
 				Local $iSiegeIndex = TroopIndexLookup($aSearchResult[$i][0]) - $eWallW
@@ -65,6 +67,7 @@ Func TrainSiege($bTrainFullSiege = False)
 		If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
 		If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
 		If $iSiegeIndex = $eSiegeBarracks Then $checkPixel = $aCheckIsAvailableSiege3
+		If $iSiegeIndex = $eSiegeLogLauncher Then $checkPixel = $aCheckIsAvailableSiege4
 		If $HowMany > 0 And _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeIndex]) Then
 			PureClick($checkPixel[0], $checkPixel[1], $HowMany, $g_iTrainClickDelay)
 			Local $sSiegeName = $HowMany >= 2 ? $g_asSiegeMachineNames[$iSiegeIndex] & "s" : $g_asSiegeMachineNames[$iSiegeIndex] & ""
@@ -83,6 +86,8 @@ Func TrainSiege($bTrainFullSiege = False)
 			If $iSiegeIndex = $eSiegeWallWrecker Then $checkPixel = $aCheckIsAvailableSiege
 			If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
 			If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
+			If $iSiegeIndex = $eSiegeBarracks Then $checkPixel = $aCheckIsAvailableSiege3
+			If $iSiegeIndex = $eSiegeLogLauncher Then $checkPixel = $aCheckIsAvailableSiege4
 			If $HowMany > 0 And _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeIndex]) Then
 				PureClick($checkPixel[0], $checkPixel[1], $HowMany, $g_iTrainClickDelay)
 				Local $sSiegeName = $HowMany >= 2 ? $g_asSiegeMachineNames[$iSiegeIndex] & "s" : $g_asSiegeMachineNames[$iSiegeIndex] & ""
@@ -110,7 +115,6 @@ Func CheckQueueSieges($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 
 	Local $aSearchResult = SearchArmy($Dir, 18, 182, $x, 261, $bGetQuantity ? "queue" : "")
 	ReDim $aResult[UBound($aSearchResult)]
-
 
 	If $aSearchResult[0][0] = "" Then
 		Setlog("No siege detected!", $COLOR_ERROR)

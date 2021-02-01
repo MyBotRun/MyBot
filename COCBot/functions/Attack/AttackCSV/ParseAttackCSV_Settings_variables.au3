@@ -49,6 +49,9 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 						Return
 					EndIf
 					Switch $g_iTotalCampSpace
+						Case $g_iMaxCapTroopTH[12] + 5 To $g_iMaxCapTroopTH[13]	; TH13
+							$iTHCol = $iTHBeginCol + 7
+							$iTH = 13
 						Case $g_iMaxCapTroopTH[11] + 5 To $g_iMaxCapTroopTH[12]	; TH12
 							$iTHCol = $iTHBeginCol + 6
 							$iTH = 12
@@ -123,11 +126,6 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 					Case "CCREQ"
 						$sCSVCCReq = $asCommand[$iTHCol]
 						If $g_bDebugAttackCSV Then SetLog("CC Request: " & $sCSVCCReq, $COLOR_DEBUG)
-					Case "BOOST"
-						$iTroopIndex = TroopIndexLookup($asCommand[$iTroopNameCol], "ParseAttackCSV_Settings_variables")
-						If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
-							$g_iBoostSuperTroopIndex = $iTroopIndex
-						EndIf
 				EndSwitch
 			EndIf
 		Next

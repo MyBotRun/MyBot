@@ -301,17 +301,11 @@ Func ParseAttackCSV($debug = False)
 										; Loop on all detected troops
 										For $x = 0 To UBound($g_avAttackTroops) - 1
 											; If the Name exist and haves more than zero is deploy it
-											If ($g_avAttackTroops[$x][0] = $ii Or $g_avAttackTroops[$x][0] == ($ii + $eSuperBarb)) And $g_avAttackTroops[$x][1] > 0 Then
+											If $g_avAttackTroops[$x][0] = $ii And $g_avAttackTroops[$x][1] > 0 Then
 												Local $name = GetTroopName($g_avAttackTroops[$x][0], $g_avAttackTroops[$x][1])
 												Setlog("Name: " & $name, $COLOR_DEBUG)
 												Setlog("Qty: " & $g_avAttackTroops[$x][1], $COLOR_DEBUG)
 												DropTroopFromINI($value1, $index1, $index2, $indexArray, $g_avAttackTroops[$x][1], $g_avAttackTroops[$x][1], $g_asTroopShortNames[$ii], $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
-																						
-												; drop super troop
-												If $g_avAttackTroops[$x][0] == ($ii + $eSuperBarb) Then
-													DropTroopFromINI($value1, $index1, $index2, $indexArray, $g_avAttackTroops[$x][1], $g_avAttackTroops[$x][1], $g_asSuperTroopShortNames[$ii], $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
-												EndIf
-												
 												CheckHeroesHealth()
 												If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
 											EndIf
@@ -437,7 +431,7 @@ Func ParseAttackCSV($debug = False)
 									If $g_avAttackTroops[$i][0] = $eCastle Then
 										SetDebugLog("WAIT Break on Siege Machine is set but Clan Castle Troop selected.", $COLOR_INFO)
 										ExitLoop
-									ElseIf $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Or $g_avAttackTroops[$i][0] = $eStoneS Or $g_avAttackTroops[$i][0] = $eSiegeB Then
+									ElseIf $g_avAttackTroops[$i][0] = $eWallW Or $g_avAttackTroops[$i][0] = $eBattleB Or $g_avAttackTroops[$i][0] = $eStoneS Or $g_avAttackTroops[$i][0] = $eSiegeB Or $g_avAttackTroops[$i][0] = $eLogL Then
 										Local $sSiegeName = GetTroopName($g_avAttackTroops[$i][0])
 										SetDebugLog("	" & $sSiegeName & " found. Let's Check If is Dropped Or Not?", $COLOR_SUCCESS)
 										;Check Siege Slot Quantity If It's 0 Means Siege Is Dropped

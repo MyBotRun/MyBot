@@ -69,7 +69,7 @@ EndFunc   ;==>chkRequestCountCC
 
 Func CmbClanCastleTroop()
 	For $i = 0 To UBound($g_ahCmbClanCastleTroop) - 1
-		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleTroop[$i]) < $eTroopCount Then
+		If _GUICtrlComboBox_GetCurSel($g_ahCmbClanCastleTroop[$i]) > 0 Then
 			GUICtrlSetState($g_ahTxtClanCastleTroop[$i], $GUI_ENABLE)
 		Else
 			GUICtrlSetState($g_ahTxtClanCastleTroop[$i], $GUI_DISABLE)

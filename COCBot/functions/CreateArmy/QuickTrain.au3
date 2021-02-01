@@ -13,8 +13,6 @@
 ; Example .......: No
 ; ===============================================================================================================================
 #include-once
-#include <Array.au3>
-#include <MsgBoxConstants.au3>
 
 Func QuickTrain()
 	Local $bDebug = $g_bDebugSetlogTrain Or $g_bDebugSetlog
@@ -176,18 +174,12 @@ Func QuickTrain()
 
 		Local $aWhatToRemove = WhatToTrain(True)
 
-;	    _ArrayDisplay($aWhatToRemove, "$aWhatToRemove")
-		showTroopList($aWhatToRemove, "$aWhatToRemove")
-
 		RemoveExtraTroops($aWhatToRemove)
 
 		Local $bEmptyTroop = _ColorCheck(_GetPixelColor(30, 205, True), Hex(0xCAC9C1, 6), 20) ; remove all troops
 		Local $bEmptySpell = _ColorCheck(_GetPixelColor(30, 350, True), Hex(0xCAC9C1, 6), 20) ; remove all spells
 
 		Local $aWhatToTrain = WhatToTrain(False, False) ; $g_bIsFullArmywithHeroesAndSpells = False
-
-		;_ArrayDisplay($aWhatToTrain, "$aWhatToTrain")
-		showTroopList($aWhatToTrain, "$aWhatToTrain")
 
 		If DoWhatToTrainContainTroop($aWhatToTrain) Then
 			If $bEmptyTroop And $bEmptySpell Then
@@ -242,14 +234,10 @@ Func QuickTrain()
 
 EndFunc   ;==>QuickTrain
 
-; CheckQuickTrainTroop is called at first run then every 6 six hours, Static $asLastTimeChecked[8] is counter
-; Read QuickTrain Armies and store them in QuickTroopActiveCombo
-; Set ArmyComp on first run
 Func CheckQuickTrainTroop()
 
 	Local $bResult = True
-	Local $iTroop;
-	Local $iSpell;
+
 
 	Local Static $asLastTimeChecked[8]
 	If $g_bFirstStart Then $asLastTimeChecked[$g_iCurAccount] = ""
@@ -264,33 +252,18 @@ Func CheckQuickTrainTroop()
 	If Not OpenArmyOverview(False, "CheckQuickTrainTroop()") Then Return
 	If _Sleep(250) Then Return
 
-    CheckArmyCamp(False, False, True, True) ; get current troops and spell
-    If _Sleep(500) Then Return
+
 
 	If Not OpenQuickTrainTab(False, "CheckQuickTrainTroop()") Then Return
 	If _Sleep(500) Then Return
 
-	; check for super troops in the quick train armies and boosted if needed
-	If ChkQTST() Then
-		; Super Troops checked and boosted open army tab again
-		If Not OpenArmyOverview(False, "CheckQuickTrainTroop()") Then Return
-		If _Sleep(250) Then Return
-
-		CheckArmyCamp(False, False, True, True) ; get current troops and spell
-		If _Sleep(500) Then Return
-
-		If Not OpenQuickTrainTab(False, "CheckQuickTrainTroop()") Then Return
-		If _Sleep(500) Then Return
-	EndIf
-
 	SetLog("Reading troops/spells/siege in quick train army")
 
 	; reset troops/spells in quick army
-	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aEmptySiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0]
+	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aEmptySiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0, 0]
 	$g_aiArmyQuickTroops = $aEmptyTroop
-	$g_aiArmyQuickSuperTroops = $aEmptyTroop
 	$g_aiArmyQuickSpells = $aEmptySpell
 	$g_aiArmyQuickSiegeMachines = $aEmptySiegeMachine
 	$g_iTotalQuickTroops = 0
@@ -356,7 +329,6 @@ Func CheckQuickTrainTroop()
 
 				; get quantity
 				Local $aiInGameTroop = $aEmptyTroop
-				Local $aiInGameSuperTroop = $aEmptyTroop
 				Local $aiInGameSpell = $aEmptySpell
 				Local $aiInGameSiegeMachine = $aEmptySiegeMachine
 				Local $aiGUITroop = $aEmptyTroop
@@ -369,13 +341,10 @@ Func CheckQuickTrainTroop()
 					If $iTroopIndex >= 0 And $iTroopIndex < $eTroopCount Then
 						SetLog("  - " & $g_asTroopNames[$iTroopIndex] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
 						$aiInGameTroop[$iTroopIndex] = $aSearchResult[$j][3]
-					ElseIf $iTroopIndex >= $eSuperBarb And $iTroopIndex <= $eSuperHunt Then ; add to supertroop array
-						SetLog("  - " & $g_asSuperTroopNames[$iTroopIndex - $eSuperBarb] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
-						$aiInGameSuperTroop[$iTroopIndex - $eSuperBarb] = $aSearchResult[$j][3]
 					ElseIf $iTroopIndex >= $eLSpell And $iTroopIndex <= $eBtSpell Then
 						SetLog("  - " & $g_asSpellNames[$iTroopIndex - $eLSpell] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
 						$aiInGameSpell[$iTroopIndex - $eLSpell] = $aSearchResult[$j][3]
-					ElseIf $iTroopIndex >= $eWallW And $iTroopIndex <= $eSiegeB Then
+					ElseIf $iTroopIndex >= $eWallW And $iTroopIndex <= $eLogL Then
 						SetLog("  - " & $g_asSiegeMachineNames[$iTroopIndex - $eWallW] & ": " & $aSearchResult[$j][3] & "x", $COLOR_SUCCESS)
 						$aiInGameSiegeMachine[$iTroopIndex - $eWallW] = $aSearchResult[$j][3]
 					Else
@@ -426,9 +395,6 @@ Func CheckQuickTrainTroop()
 					$g_aiArmyQuickTroops[$j] += $aiInGameTroop[$j]
 					$TempTroopTotal += $aiInGameTroop[$j] * $g_aiTroopSpace[$j]              ; tally normal troops
 
-					$g_aiArmyQuickSuperTroops[$j] += $aiInGameSuperTroop[$j]
-					$TempTroopTotal += $aiInGameSuperTroop[$j] * $g_aiSuperTroopSpace[$j]    ; tally super troops
-
 					If $j > $eSpellCount - 1 Then ContinueLoop
 					$g_aiArmyQuickSpells[$j] += $aiInGameSpell[$j]
 					$TempSpellTotal += $aiInGameSpell[$j] * $g_aiSpellSpace[$j]              ; tally spells
@@ -441,8 +407,8 @@ Func CheckQuickTrainTroop()
 				ExitLoop
 			WEnd
 
-			; check if an army has troops , spells and sieges
-			If Not $g_bQuickArmyMixed And $TempTroopTotal > 0 And $TempSpellTotal > 0 And $TempSiegeTotal > 0 Then $g_bQuickArmyMixed = True
+			; check if an army has troops , spells
+			If Not $g_bQuickArmyMixed And $TempTroopTotal > 0 And $TempSpellTotal > 0 Then $g_bQuickArmyMixed = True
 			SetDebugLog("$g_bQuickArmyMixed: " & $g_bQuickArmyMixed)
 
 			; cross check with army camp
@@ -493,7 +459,6 @@ Func CheckQuickTrainTroop()
    Next
 
 	$g_aiArmyCompTroops = $g_aiArmyQuickTroops
-	$g_aiArmyCompSuperTroops = $g_aiArmyQuickSuperTroops
 	$g_aiArmyCompSpells = $g_aiArmyQuickSpells
 	$g_aiArmyCompSiegeMachines = $g_aiArmyQuickSiegeMachines
 
@@ -563,90 +528,3 @@ Func CreateQuickTrainPreset($i)
 		If _Sleep(1000) Then Return
 	EndIf
 EndFunc   ;==>CreateQuickTrainPreset
-
-; Show what is in the Troop and Spell arrays
-Func debugTroopsSpells($aiTroops, $aiSuperTroops, $aiSpells, $army = 'Army Array')
-
-   Local $iTroops = 0
-   Local $iSpells = 0
-   Local $sTroopName = []
-   Local $iTroopQuantity = 0
-   Local $sSpellName = []
-   Local $iSpellQuantity = 0
-
-   SetLog($army)
-
-   For $iTroops = 0 to $eTroopCount - 1
-	  If $aiTroops[$iTroops] > 0 Then
-		 $sTroopName = $g_asTroopNamesPlural[$iTroops]
-		 $iTroopQuantity = $aiTroops[$iTroops]
-
-		 SetLog($iTroopQuantity & "  " & $sTroopName)
-	  EndIf
-   Next
-
-	For $iTroops = 0 to $eSuperTroopCount - 1
-	  If $aiSuperTroops[$iTroops] > 0 Then
-		 $sTroopName = $g_asSuperTroopNamesPlural[$iTroops]
-		 $iTroopQuantity = $aiSuperTroops[$iTroops]
-
-		 SetLog($iTroopQuantity & "  " & $sTroopName)
-	  EndIf
-   Next
-
-   For $iSpells = 0 to $eSpellCount - 1
-	  If $aiSpells[$iSpells] > 0 Then
-		 $sSpellName = $g_asSpellNames[$iSpells]
-		 $iSpellQuantity = $aiSpells[$iSpells]
-
-		 SetLog($iSpellQuantity & "  " & $sSpellName)
-	  EndIf
-   Next
-
-EndFunc
-
-; Coord for each line of troops
-; 20, 300, 716, 360
-; 20, 415, 716, 465
-; 20, 518, 716, 576
-;
-; Search Quick Train Tab for Super Troops, try to boost if found
-; It is possible to have multiple Super Troops in the Quick Train Tab
-Func ChkQTST()
-
-	Local $sQTSuperTroopImages = @ScriptDir & "\imgxml\ArmyOverview\QTSuperTroops"
-	Local $aiSearchArea[4] = [18, 300, 716, 576]
-
-	; search for Super Troops and return filename, screen coord of tile not needed
-	Local $avSuperTroops = findMultiple($sQTSuperTroopImages, $aiSearchArea, $aiSearchArea, 0, 1000, 0, "objectname")
-
-	;_ArrayDisplay($avSuperTroops[0], "$avSuperTroops")
-
-	; found Super Troops
-	If IsArray($avSuperTroops) Or UBound($avSuperTroops, $UBOUND_ROWS) > 1 Then
-		; get the first super troop found
-		Local $avTempSuperTroop = $avSuperTroops[0]
-
-		;_ArrayDisplay($avTempSuperTroop, "$avTempSuperTroop")
-
-		Local $iSuperTroopIndex = TroopIndexLookup($avTempSuperTroop[0])
-
-		SetLog("$avTempSuperTroop[0] : " & $avTempSuperTroop[0])
-		SetLog("$iSuperTroopIndex : " & $iSuperTroopIndex)
-
-		; If first run check if Super Troop is Boosted
-		If $g_iBoostSuperTroopIndex = -1 Then
-			ClickAway()
-			If _Sleep(500) Then Return
-
-			If BoostSuperTroop($iSuperTroopIndex - $eSuperBarb) Then
-				Return True
-			EndIf
-		EndIf
-	EndIf
-
-	Return False
-EndFunc
-
-
-

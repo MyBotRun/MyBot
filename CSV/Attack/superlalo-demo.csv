@@ -1,0 +1,111 @@
+NOTE  |Author: Z E C K v6.3 [08.08.2018]
+NOTE  |  Script work on "EXTERNAL EDGES"                 
+NOTE  |
+NOTE  |TH-12 : 2 IceH, 20 Ball, 8 Mini, 1 wiz 
+NOTE  |TH-13 : 2 IceH, 24 Ball, 8 Mini, 1 wiz
+NOTE  |Spells: 5 Rage, 1 Frz
+NOTE  |CC    : 1 Rage and Ball Any Siege
+      |                                                                                                                       |
+      |-------------------------------------------------     Iqhq(x)     -----------------------------------------------------|
+      |                                                                                                                       |
+      |_TROOPNAME_|__FLEXIBLE_|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|____TH13___|
+TRAIN |IceH       |0          |0          |0          |0          |0          |0          |0          |2          |2          |
+TRAIN |Ball       |0          |0          |0          |0          |0          |0          |0          |20         |24         |
+TRAIN |Smini      |0          |0          |0          |0          |0          |0          |0          |8          |8          |
+TRAIN |Wiza       |0          |0          |0          |0          |0          |0          |0          |1          |1          |
+      |                                                                                                                       |
+TRAIN |RSpell     |0          |0          |0          |0          |0          |0          |0          |5          |5          |
+TRAIN |FSpell     |0          |0          |0          |0          |0          |0          |0          |1          |1          |
+      |                                                                                                                       |
+      |_TROOPNAME_|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|____TH13___|
+TRAIN |King       |0          |0          |0          |0          |0          |0          |0          |1          |1          |
+TRAIN |Queen      |0          |0          |0          |0          |0          |0          |0          |1          |1          |
+TRAIN |Warden     |0          |0          |0          |0          |0          |0          |0          |1          |1          |
+TRAIN |Champion   |0          |0          |0          |0          |0          |0          |0          |0          |1          |
+      |                                                                                                                       |
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___________________________|____TH13_______________|
+REDLN |0          |0          |0          |0          |0          |0          |0          |0                      |4                      |4                      |
+DRPLN |0          |0          |0          |0          |0          |0          |0          |0                      |0                      |0                      |
+      |                                                                                                                                                           |
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11_______________|____TH12_______________|____TH13_______________|
+CCREQ |           |           |           |           |           |           |           |Balloons Rage Sieges   |Balloons Rage Sieges   |Balloons Rage Sieges   |
+
+	  |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|___________|
+SIDE  |0          |0          |0          |0          |0          |0          |9          |           |           |
+      |EAGLE      |INFERNO    |XBOW       |WIZTOWER   |MORTAR     |AIRDEFENSE |AIRSWEEPER |GEMBOX     |           |
+SIDEB |10         |5          |0          |0          |0          |0          |0          |0          |           |
+
+      |-------------------------------------------LavaLoonion Start-----------------------------------------------|
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|BUILDING___|___________|
+MAKE  |A          |FRONT-LEFT |10         |0          |EXT-INT    |10         |10         |           |           |
+MAKE  |B          |FRONT-RIGHT|10         |0          |INT-EXT    |10         |10         |           |           |
+MAKE  |Z          |FRONT-RIGHT|10         |0          |EXT-INT    |10         |10         |           |           |
+MAKE  |K          |FRONT-LEFT |10         |0          |INT-EXT    |10         |10         |           |           |
+
+MAKE  |C          |FRONT-LEFT |10         |-7         |INT-EXT    |10         |10         |           |           |
+MAKE  |D          |FRONT-RIGHT|10         |-8         |INT-EXT    |10         |10         |           |           |
+MAKE  |E          |FRONT-LEFT |10         |-16        |INT-EXT    |10         |10         |           |           |
+MAKE  |F          |FRONT-RIGHT|10         |-17        |INT-EXT    |10         |10         |           |           |
+MAKE  |H          |FRONT-RIGHT|10         |-23        |INT-EXT    |10         |10         |           |           |
+MAKE  |G          |FRONT-LEFT |10         |-24        |INT-EXT    |10         |10         |           |           |
+MAKE  |O          |LEFT-BACK  |10         |0          |EXT-INT    |10         |10         |           |           |
+MAKE  |P          |RIGHT-BACK |10         |0          |EXT-INT    |10         |10         |           |           |
+MAKE  |R          |BACK-RIGHT |10         |0          |INT-EXT    |10         |10         |           |           |
+MAKE  |J          |BACK-LEFT  |10         |0          |INT-EXT    |10         |10         |           |           |
+MAKE  |M          |LEFT-FRONT |10         |0          |INT-EXT    |10         |10         |           |           |
+MAKE  |N          |RIGHT-FRONT|10         |0          |EXT-INT    |10         |10         |           |           |
+
+MAKE  |W          |FRONT-LEFT |10         |0          |EXT-INT    |10         |10         |           |           |
+MAKE  |S          |FRONT-LEFT |10         |0          |EXT-INT    |10         |10         |           |           |
+MAKE  |T          |FRONT-LEFT |10         |0          |EXT-INT    |10         |10         |           |           |
+MAKE  |X          |FRONT-LEFT |10         |0          |EXT-INT    |10         |10         |           |           |
+
+MAKE  |Y          |FRONT-RIGHT|1          |0          |IGNORE     |           |           |TOWNHALL   | TH
+
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|___________|
+DROP  |S          |10         |1          |SiegeB     |0          |0          |150-170    |           |           |
+DROP  |A-Z        |6          |1          |IceH       |50-70      |27-50      |200-250    |           |           |
+DROP  |B-K        |2          |1          |IceH       |50-70      |27-50      |200-250    |           |           |
+DROP  |S          |10         |1          |Castle     |0          |0          |150-170    |           |           |
+DROP  |S          |10         |1          |BattleB    |0          |0          |150-170    |           |           |
+DROP  |S          |10         |1          |WallW      |0          |0          |150-170    |           |           |
+DROP  |S          |10         |1          |StoneS     |0          |0          |150-170    |           |           |
+DROP  |S          |10         |1          |LogL       |0          |0          |150-170    |           |           |
+
+DROP  |A          |4,5,6,7,8,9|6          |Ball       |50-70      |27-50      |15-20      |           |           |
+DROP  |B          |1,3,4,5,5,6|6          |Ball       |50-70      |27-50      |15-20      |           |           |
+DROP  |Z          |3,5,7,9,9,10|6          |Ball       |55-70      |27-50      |15-20      |           |           |
+DROP  |K          |1,3,4,5,6,7|6          |Ball       |55-70      |27-50      |15-20      |           |           |
+
+WAIT  |200-250    |           |           |           |           |           |           |           |           |
+DROP  |W          |10         |1          |Warden     |70-100     |0          |200-250    |           |           |
+DROP  |D          |1          |1          |RSpell     |50-100     |0          |200-250    |           |           |
+DROP  |C          |4          |1          |RSpell     |50-100     |0          |150-170    |           |           |
+DROP  |D          |5          |1          |RSpell     |50-100     |0          |50-100     |           |           |
+
+WAIT  |700-900    |           |           |           |           |           |           |           |           |
+DROP  |A          |3,5,7,9    |5          |SMini      |50-70      |27-50      |15-20      |           |           |
+DROP  |B          |1,3,5,7    |5          |SMini      |50-70      |27-50      |90-100     |           |           |
+
+WAIT  |700-900    |           |           |           |           |           |           |           |           |
+DROP  |E          |5          |1          |RSpell     |50-100     |0          |190-200    |           |           |
+DROP  |E          |1          |1          |RSpell     |50-100     |0          |190-200    |           |           |
+DROP  |F          |4          |1          |RSpell     |50-100     |0          |190-200    |           |           |
+DROP  |T          |10         |1          |Champion   |70-100     |           |200-250    |           |           |
+
+WAIT  |300-500    |           |           |           |           |           |           |           |           |
+DROP  |Y          |1          |1          |Fspell     |0          |0          |100-120    |           |
+DROP  |R          |5          |1          |King       |0          |0          |400-500    |           |           |
+DROP  |R          |5          |1          |wiza       |0          |0          |100-200    |           |           |
+DROP  |J          |5          |1          |Queen      |0          |0          |400-500    |           |           |
+
+WAIT  |8000-8500  |TH,SIEGE   |           |           |           |           |           |           |
+DROP  |W          |10         |1          |Warden     |0          |0          |150-200    |           |           |
+
+WAIT  |1500-1700  |           |           |           |           |           |           |           |           |
+DROP  |A-Z        |1-8        |1          |REMAIN     |50-70      |100        |50-100     |           |           |
+
+      |                                                                                                           |
+      |--------------------------------------------LavaLoonion End------------------------------------------------|

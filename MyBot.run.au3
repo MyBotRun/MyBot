@@ -725,6 +725,7 @@ Func runBot() ;Bot that runs everything in order
 		If CheckAndroidReboot() Then ContinueLoop
 		If Not $g_bIsClientSyncError Then ;ARCH:  was " And Not $g_bIsSearchLimit"
 			SetDebugLog("ARCH: Top of loop", $COLOR_DEBUG)
+			If $g_bIsSearchLimit Then SetLog("Search limit hit", $COLOR_INFO)
 			checkMainScreen(False)
 			If $g_bRestart Then ContinueLoop
 			If _Sleep($DELAYRUNBOT3) Then Return
@@ -745,7 +746,7 @@ Func runBot() ;Bot that runs everything in order
 			If _Sleep($DELAYRUNBOT5) Then Return
 			checkMainScreen(False)
 			If $g_bRestart Then ContinueLoop
-			;Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard', 'CollectAchievements', 'CollectFreeMagicItems', 'DailyChallenge', 'BoostSuperTroop']
+			;Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard', 'CollectAchievements', 'CollectFreeMagicItems', 'DailyChallenge']
 			If $g_bIsSearchLimit Then
 				Local $aRndFuncList = ['LabCheck', 'Collect']
 			Else
@@ -794,6 +795,7 @@ Func runBot() ;Bot that runs everything in order
 			; Train Donate only - force a donate cc every time
 			If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then _RunFunction('DonateCC,Train')
 			If $g_bRestart Then ContinueLoop
+			
 			Local $aRndFuncList = ['Laboratory', 'UpgradeHeroes', 'UpgradeBuilding']
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
@@ -802,8 +804,12 @@ Func runBot() ;Bot that runs everything in order
 				If $g_bRestart Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 				If CheckAndroidReboot() Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			Next
+			
+			;ARCH Trying it out here.
+			If Not $g_bIsSearchLimit Then _ClanGames() ; move to here to pick event before going to BB.
+
 			; Ensure, that wall upgrade is last of the upgrades
-			Local $aRndFuncList = ['UpgradeWall', 'BuilderBase']
+			Local $aRndFuncList = ['UpgradeWall', 'BuilderBase'] ;Copied BuilderBase to AttackMain
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
 				If Not $g_bRunState Then Return
@@ -1017,8 +1023,8 @@ Func AttackMain() ;Main control for attack functions
 				SetDebugLog(_PadStringCenter(" Hero status check" & BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $g_iHeroAvailable) & "|" & $g_aiSearchHeroWaitEnable[$LB] & "|" & $g_iHeroAvailable, 54, "="), $COLOR_DEBUG)
 				;SetLog("BullyMode: " & $g_abAttackTypeEnable[$TB] & ", Bully Hero: " & BitAND($g_aiAttackUseHeroes[$g_iAtkTBMode], $g_aiSearchHeroWaitEnable[$g_iAtkTBMode], $g_iHeroAvailable) & "|" & $g_aiSearchHeroWaitEnable[$g_iAtkTBMode] & "|" & $g_iHeroAvailable, $COLOR_DEBUG)
 			EndIf
-			_ClanGames()
-			ClickAway()
+			;_ClanGames() ;Trying to do this above in the main loop
+			;ClickAway()
 			If $g_bUpdateSharedPrefs Then PullSharedPrefs()
 			PrepareSearch()
 			If Not $g_bRunState Then Return
@@ -1183,37 +1189,8 @@ Func __RunFunction($action)
 			UpgradeWall()
 			_Sleep($DELAYRUNBOT3)
 		Case "BuilderBase"
-			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack) And SwitchBetweenBases()) Then
-				$g_bStayOnBuilderBase = True
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				BuilderBaseReport()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				CollectBuilderBase()
-				AttackBB()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If $g_bRestart = True Then Return
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				StartClockTowerBoost()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				StarLaboratory()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				CleanBBYard()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				MainSuggestedUpgradeCode()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				BuilderBaseReport()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				; switch back to normal village
-				SwitchBetweenBases()
-				$g_bStayOnBuilderBase = False
+			If $g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack Then
+				BuilderBase()
 			EndIf
 			_Sleep($DELAYRUNBOT3)
 		Case "CollectAchievements"
@@ -1221,8 +1198,6 @@ Func __RunFunction($action)
 		Case "CollectFreeMagicItems"
 			CollectFreeMagicItems()
 			_Sleep($DELAYRUNBOT3)
-		Case "BoostSuperTroop"
-			If $g_iBoostSuperTroopIndex <> -1 Then BoostSuperTroop($g_iBoostSuperTroopIndex)
 		Case ""
 			SetDebugLog("Function call doesn't support empty string, please review array size", $COLOR_ERROR)
 		Case Else
@@ -1304,3 +1279,78 @@ Func FirstCheck()
 		EndIf
 	EndIf
 EndFunc   ;==>FirstCheck
+
+
+Func BuilderBase()
+
+	; switch to builderbase and check it is builderbase
+	If SwitchBetweenBases() And isOnBuilderBase()  Then
+
+		$g_bStayOnBuilderBase = True
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		BuilderBaseReport()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		CollectBuilderBase()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		AttackBB()
+		If $g_bRestart = True Then Return
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		StartClockTowerBoost()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		StarLaboratory()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		CleanBBYard()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		MainSuggestedUpgradeCode()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		BuilderBaseReport()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		; switch back to normal village
+		SwitchBetweenBases()
+		$g_bStayOnBuilderBase = False
+
+	EndIf
+
+EndFunc
+
+Func TestBuilderBase()
+	Local $bChkCollectBuilderBase = $g_bChkCollectBuilderBase
+	Local $bChkStartClockTowerBoost = $g_bChkStartClockTowerBoost
+	Local $bChkCTBoostBlderBz = $g_bChkCTBoostBlderBz
+	Local $bChkCleanBBYard = $g_bChkCleanBBYard
+	Local $bChkEnableBBAttack = $g_bChkEnableBBAttack
+
+	$g_bChkCollectBuilderBase = True
+	$g_bChkStartClockTowerBoost = True
+	$g_bChkCTBoostBlderBz = True
+	$g_bChkCleanBBYard = True
+	$g_bChkEnableBBAttack = True
+
+	BuilderBase()
+	
+	If _Sleep($DELAYRUNBOT3) Then Return
+	
+	$g_bChkCollectBuilderBase = $bChkCollectBuilderBase
+	$g_bChkStartClockTowerBoost = $bChkStartClockTowerBoost
+	$g_bChkCTBoostBlderBz = $bChkCTBoostBlderBz
+	$g_bChkCleanBBYard = $bChkCleanBBYard
+	$g_bChkEnableBBAttack = $bChkEnableBBAttack
+EndFunc

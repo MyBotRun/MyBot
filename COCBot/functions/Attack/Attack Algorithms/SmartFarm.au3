@@ -521,7 +521,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	$g_iSlotsGiants = 0
 	; Giants quantities
 	For $i = 0 To UBound($g_avAttackTroops) - 1
-		If $g_avAttackTroops[$i][0] = $eGiant Or $g_avAttackTroops[$i][0] = $eSuperGiant Then
+		If $g_avAttackTroops[$i][0] = $eGiant Then
 			$GiantComp = $g_avAttackTroops[$i][1]
 		EndIf
 	Next
@@ -543,7 +543,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	SetDebugLog("Giants : " & $GiantComp & "  , per side: " & ($GiantComp / $nbSides) & " / deploy points per side: " & $g_iSlotsGiants)
 
 	If $g_bCustomDropOrderEnable Then
-		Local $listInfoDeploy[25][5] = [[MatchTroopDropName(0), $nbSides, MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+		Local $listInfoDeploy[36][5] = [[MatchTroopDropName(0), $nbSides, MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 				[MatchTroopDropName(1), $nbSides, MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 				[MatchTroopDropName(2), $nbSides, MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 				[MatchTroopDropName(3), $nbSides, MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -567,44 +567,55 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				[MatchTroopDropName(21), $nbSides, MatchTroopWaveNb(21), 1, MatchSlotsPerEdge(21)], _
 				[MatchTroopDropName(22), $nbSides, MatchTroopWaveNb(22), 1, MatchSlotsPerEdge(22)], _
 				[MatchTroopDropName(23), $nbSides, MatchTroopWaveNb(23), 1, MatchSlotsPerEdge(23)], _
-				[MatchTroopDropName(24), $nbSides, MatchTroopWaveNb(24), 1, MatchSlotsPerEdge(24)]]
+				[MatchTroopDropName(24), $nbSides, MatchTroopWaveNb(24), 1, MatchSlotsPerEdge(24)], _
+				[MatchTroopDropName(25), $nbSides, MatchTroopWaveNb(25), 1, MatchSlotsPerEdge(25)], _
+				[MatchTroopDropName(26), $nbSides, MatchTroopWaveNb(26), 1, MatchSlotsPerEdge(26)], _
+				[MatchTroopDropName(27), $nbSides, MatchTroopWaveNb(27), 1, MatchSlotsPerEdge(27)], _
+				[MatchTroopDropName(28), $nbSides, MatchTroopWaveNb(28), 1, MatchSlotsPerEdge(28)], _
+				[MatchTroopDropName(29), $nbSides, MatchTroopWaveNb(29), 1, MatchSlotsPerEdge(29)], _
+				[MatchTroopDropName(30), $nbSides, MatchTroopWaveNb(30), 1, MatchSlotsPerEdge(30)], _
+				[MatchTroopDropName(31), $nbSides, MatchTroopWaveNb(31), 1, MatchSlotsPerEdge(31)], _
+				[MatchTroopDropName(32), $nbSides, MatchTroopWaveNb(32), 1, MatchSlotsPerEdge(32)], _
+				[MatchTroopDropName(33), $nbSides, MatchTroopWaveNb(33), 1, MatchSlotsPerEdge(33)], _
+				[MatchTroopDropName(34), $nbSides, MatchTroopWaveNb(34), 1, MatchSlotsPerEdge(34)], _
+				[MatchTroopDropName(35), $nbSides, MatchTroopWaveNb(35), 1, MatchSlotsPerEdge(35)]]
 	Else
-		Local $listInfoDeploy[35][5] = [[$eGole, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[36][5] = [[$eGole, $nbSides, 1, 1, 2] _
 				, [$eLava, $nbSides, 1, 1, 2] _
+				, [$eIceH, $nbSides, 1, 1, 2] _
+				, [$eIceG, $nbSides, 1, 1, 2] _
+				, [$eYeti, $nbSides, 1, 1, 2] _
 				, [$eGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
-				, [$eSuperGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
+				, [$eSGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 				, [$eDrag, $nbSides, 1, 1, 0] _
 				, [$eBall, $nbSides, 1, 1, 0] _
-				, [$eSuperBall, $nbSides, 1, 1, 0] _
 				, [$eBabyD, $nbSides, 1, 1, 0] _
-				, [$eInfernoDrag, $nbSides, 1, 1, 0] _
+				, [$eInfernoD, $nbSides, 1, 1, 0] _
 				, [$eHogs, $nbSides, 1, 1, 1] _
 				, [$eValk, $nbSides, 1, 1, 0] _
-				, [$eSuperValk, $nbSides, 1, 1, 0] _
+				, [$eSValk, $nbSides, 1, 1, 0] _
 				, [$eBowl, $nbSides, 1, 1, 0] _
-				, [$eIceG, $nbSides, 1, 1, 0] _
 				, [$eMine, $nbSides, 1, 1, 0] _
 				, [$eEDrag, $nbSides, 1, 1, 0] _
 				, [$eWall, $nbSides, 1, 1, 1] _
-				, [$eSuperWall, $nbSides, 1, 1, 1] _
+				, [$eSWall, $nbSides, 1, 1, 1] _
 				, [$eBarb, $nbSides, 1, 1, 0] _
-				, [$eSuperBarb, $nbSides, 1, 1, 0] _
+				, [$eSBarb, $nbSides, 1, 1, 0] _
 				, [$eArch, $nbSides, 1, 1, 0] _
-				, [$eSuperArch, $nbSides, 1, 1, 0] _
+				, [$eSArch, $nbSides, 1, 1, 0] _
 				, [$eWiza, $nbSides, 1, 1, 0] _
+				, [$eSWiza, $nbSides, 1, 1, 0] _
 				, [$eMini, $nbSides, 1, 1, 0] _
-				, [$eSuperMini, $nbSides, 1, 1, 0] _
+				, [$eSMini, $nbSides, 1, 1, 0] _
 				, [$eWitc, $nbSides, 1, 1, 1] _
-				, [$eSuperWitc, $nbSides, 1, 1, 1] _
+				, [$eSWitc, $nbSides, 1, 1, 1] _
 				, [$eGobl, $nbSides, 1, 1, 0] _
-				, [$eSneakyGobl, $nbSides, 1, 1, 0] _
+				, [$eSGobl, $nbSides, 1, 1, 0] _
 				, [$eHeal, $nbSides, 1, 1, 1] _
 				, [$ePekk, $nbSides, 1, 1, 1] _
-				, [$eYeti, $nbSides, 1, 1, 1] _
 				, [$eHunt, $nbSides, 1, 1, 0] _
 				, ["CC", 1, 1, 1, 1] _
-				, ["HEROES", 1, 2, 1, 1] _
-				]
+				, ["HEROES", 1, 2, 1, 1]]
 	EndIf
 
 	$g_bIsCCDropped = False
@@ -630,12 +641,6 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 		For $i = $eBarb To $eHunt
 		   ; launch remaining troops
 			If LaunchTroop($i, $nbSides, 1, 1, 1) Then
-				CheckHeroesHealth()
-				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
-			EndIf
-
-			; launch remaining super troops
-			If LaunchTroop($i + $eSuperBarb, $nbSides, 1, 1, 1) Then
 				CheckHeroesHealth()
 				If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
 			EndIf

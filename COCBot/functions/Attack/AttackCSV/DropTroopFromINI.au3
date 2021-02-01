@@ -82,66 +82,6 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 	EndIf
 	Local $bHeroDrop = ($iTroopIndex = $eWarden ? True : False) ;set flag TRUE if Warden was dropped
 
-#cs	;Super troop hotfix, if only super troop is available and normal troop is in csv, use the super troop
-	SetDebugLog("$iTroopIndex = " & $iTroopIndex)
-	SetDebugLog("_ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb) = " & _ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb))
-	;Returned the "$iTroopIndex + " from "$iTroopIndex + $eSuperBarb" if the _ArraySearch test.
-	If $iTroopIndex <= $eHunt And _ArraySearch($g_avAttackTroops, $iTroopIndex + $eSuperBarb) > -1 Then
-		SetLog("CSV contains normal troop but only super troop available, append drop quantity", $COLOR_INFO)
-		;_ArrayDisplay($g_avAttackTroops, "$g_avAttackTroops")
-		;Troops enum: $eBarb=0, $eArch=1, $eGiant=2, $eGobl=3, $eWall=4, $eBall=5, $eWiza=6, $eHeal=7, $eDrag=8, $ePekk=9
-		;Supertroops enum: $eSuperBarb=43, $$eSuperGiant=44, eSneakyGobl=45, $eSuperWall=46
-		;$iTroopIndex += $eSuperBarb ;Is this right?  Won't SuperGiants get set to 45 instead of 44?
-		Local $bSwitched = False, $iOldIndex
-		$iOldIndex = $iTroopIndex
-		;Be sure to only switch out troops that have a corresponding super type
-		Switch $iTroopIndex ;convert troop to super troop index,
-			Case $eBarb
-				SetDebugLog("Switching to $eSuperBarb: " & $eSuperBarb)
-				$iTroopIndex =  $eSuperBarb
-				$bSwitched = True
-			Case $eArch
-				SetDebugLog("Switching to $eSuperArch: " & $eSuperArch)
-				$iTroopIndex =  $eSuperArch
-				$bSwitched = True
-			;Case $eGiant
-			;	SetDebugLog("Switching to $eSuperGiant: " & $eSuperGiant)
-			;	$iTroopIndex = $eSuperGiant
-			;	$bSwitched = True
-			Case $eGobl
-				SetDebugLog("Switching to $eSneakyGobl: " & $eSneakyGobl)
-				$iTroopIndex = $eSneakyGobl
-				$bSwitched = True
-			Case $eWall
-				SetDebugLog("Switching to $eSuperWall: " & $eSuperWall)
-				$iTroopIndex = $eSuperWall
-				$bSwitched = True
-			Case $eBabyD
-				SetDebugLog("Switching to $eInfernoDrag: " & $eInfernoDrag)
-				$iTroopIndex = $eInfernoDrag
-				$bSwitched = True
-			Case $eWitc
-				SetDebugLog("Switching to $eSuperWitc: " & $eSuperWitc)
-				$iTroopIndex = $eSuperWitc
-				$bSwitched = True
-			Case $eMini
-				SetDebugLog("Switching to $eSuperMini: " & $eSuperMini)
-				$iTroopIndex = $eSuperMini
-				$bSwitched = True
-			Case $eValk
-				SetDebugLog("Switching to $eSuperValk: " & $eSuperValk)
-				$iTroopIndex = $eSuperValk
-				$bSwitched = True
-			Case Else
-				SetDebugLog("No switch.  Sticking with: " & $iTroopIndex)
-				$bSwitched = False
-		EndSwitch
-		if $bSwitched Then
-			$qtyxpoint = Round($qtyxpoint / ($g_aiSuperTroopSpace[$iOldIndex] / $g_aiTroopSpace[$iOldIndex]))
-			$extraunit = Round($extraunit / ($g_aiSuperTroopSpace[$iOldIndex] / $g_aiTroopSpace[$iOldIndex]))
-		Endif
-	EndIf
-#ce
 	;_ArrayDisplay($g_avAttackTroops, "Index: " & $iTroopIndex)
 
 	;search slot where is the troop...
@@ -184,6 +124,8 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 			If Not $g_abAttackUseFreezeSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $eCSpell
 			If Not $g_abAttackUseCloneSpell[$g_iMatchMode] Then $bUseSpell = False
+		Case $eISpell
+			If Not $g_abAttackUseInvisibilitySpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $ePSpell
 			If Not $g_abAttackUsePoisonSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $eESpell
@@ -194,7 +136,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 			If Not $g_abAttackUseSkeletonSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $eBtSpell
 			If Not $g_abAttackUseBatSpell[$g_iMatchMode] Then $bUseSpell = False
-		Case $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB
+		Case $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL
 			$bSelectTroop = False ; avoid double select
 	EndSwitch
 
@@ -257,7 +199,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 					EndIf
 
 					Switch $iTroopIndex
-						Case $eBarb To $eHunt, $eSuperBarb To $eSuperHunt ; drop normal/super troops
+						Case $eBarb To $eHunt ; drop normal/super troops
 							If $bDebug Then
 								SetLog("AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else
@@ -287,7 +229,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 							Else
 								dropHeroes($pixel[0], $pixel[1], -1, -1, -1, $troopPosition) ; was $g_iChampionSlot, Slot11+
 							EndIf
-						Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB
+						Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL
 							If $bDebug Then
 								SetLog("dropCC(" & $pixel[0] & ", " & $pixel[1] & ", " & $troopPosition & ")")
 							Else

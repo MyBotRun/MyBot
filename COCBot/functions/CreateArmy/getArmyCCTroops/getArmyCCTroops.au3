@@ -38,64 +38,41 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 	Local $aTempTroopArray, $avTroops, $aTroopCoords
 	Local $sTroopName = ""
 	Local $iTroopIndex = -1
-	Local $bSuperTroop = False
-	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
+	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
 	Local $aCurrentTroopsLog[0][3] ; [0] = Name [1] = Quantities [3] Xaxis
 
 	$g_aiCurrentCCTroops = $aCurrentCCTroopsEmpty ; Reset Current Troops Array
-	$g_aiCurrentCCSuperTroops = $aCurrentCCTroopsEmpty
 
 	If UBound($aCurrentCCTroops, 1) >= 1 Then
 		For $i = 0 To UBound($aCurrentCCTroops, 1) - 1 ; Loop through found CC Troops
 			$aTempTroopArray = $aCurrentCCTroops[$i] ; Declare Array to Temp Array
 
 			$iTroopIndex = TroopIndexLookup($aTempTroopArray[0], "getArmyTroops()") ; Get the Index of the Troop from the ShortName
-			If $iTroopIndex >= $eSuperBarb Then
-				$iTroopIndex -= $eSuperBarb
-				$bSuperTroop = True
-			EndIf
-
 			If StringInStr($aTempTroopArray[1], "|") Then
 				$avTroops = StringSplit($aTempTroopArray[1], "|")
 				For $j = 1 To $avTroops[0]
 					$aTroopCoords = StringSplit($avTroops[$j], ",", $STR_NOCOUNT) ; Split the Coordinates where the Troop got found into X and Y
 					Local $iQuantity = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 498, $bNeedCapture)) ; Get The Quantity of the Troop, Slot() Does return the exact spot to read the Number from
-					If $bSuperTroop Then
-						$g_aiCurrentCCSuperTroops[$iTroopIndex] += $iQuantity
-					Else
-						$g_aiCurrentCCTroops[$iTroopIndex] += $iQuantity
-					EndIf
+					$g_aiCurrentCCTroops[$iTroopIndex] += $iQuantity
 					$aTroopWSlot[UBound($aTroopWSlot) - 1][0] = Slot($aTroopCoords[0], $aTroopCoords[1])
 					$aTroopWSlot[UBound($aTroopWSlot) - 1][1] = $iTroopIndex
 					$aTroopWSlot[UBound($aTroopWSlot) - 1][2] = $iQuantity
 					ReDim $aTroopWSlot[UBound($aTroopWSlot) + 1][3]
 
-					If $bSuperTroop Then
-						$sTroopName = $g_aiCurrentCCSuperTroops[$iTroopIndex] >= 2 ? $g_asSuperTroopNamesPlural[$iTroopIndex] : $g_asSuperTroopNames[$iTroopIndex]
-					Else
-						$sTroopName = $g_aiCurrentCCTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex]
-					EndIf
+					$sTroopName = $g_aiCurrentCCTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex]
 					_ArrayAdd($aCurrentTroopsLog, $sTroopName & "|" & $iQuantity & "|" & Slot($aTroopCoords[0], $aTroopCoords[1]))
 				Next
 			Else
 				$aTroopCoords = StringSplit($aTempTroopArray[1], ",", $STR_NOCOUNT) ; Split the Coordinates where the Troop got found into X and Y
 				Local $iQuantity = Number(getBarracksNewTroopQuantity(Slot($aTroopCoords[0], $aTroopCoords[1]), 498, $bNeedCapture))
-				If $bSuperTroop Then
-					$g_aiCurrentCCSuperTroops[$iTroopIndex] += $iQuantity
-				Else
-					$g_aiCurrentCCTroops[$iTroopIndex] += $iQuantity
-				EndIf
+				$g_aiCurrentCCTroops[$iTroopIndex] += $iQuantity
 
 				$aTroopWSlot[UBound($aTroopWSlot) - 1][0] = Slot($aTroopCoords[0], $aTroopCoords[1])
 				$aTroopWSlot[UBound($aTroopWSlot) - 1][1] = $iTroopIndex
 				$aTroopWSlot[UBound($aTroopWSlot) - 1][2] = $iQuantity
 				ReDim $aTroopWSlot[UBound($aTroopWSlot) + 1][3]
 
-				If $bSuperTroop Then
-					$sTroopName = $g_aiCurrentCCSuperTroops[$iTroopIndex] >= 2 ? $g_asSuperTroopNamesPlural[$iTroopIndex] : $g_asSuperTroopNames[$iTroopIndex]
-				Else
-					$sTroopName = $g_aiCurrentCCTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex]
-				EndIf
+				$sTroopName = $g_aiCurrentCCTroops[$iTroopIndex] >= 2 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex]
 				_ArrayAdd($aCurrentTroopsLog, $sTroopName & "|" & $iQuantity & "|" & Slot($aTroopCoords[0], $aTroopCoords[1]))
 			EndIf
 

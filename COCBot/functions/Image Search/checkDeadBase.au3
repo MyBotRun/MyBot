@@ -156,9 +156,11 @@ Func checkDeadBaseNew()
 EndFunc   ;==>checkDeadBaseNew
 
 Func checkDeadBase()
-   If $g_bChkDeadEagle Then
+   If $g_bChkDeadEagle And $g_iSearchCount < $g_iDeadEagleSearch Then
+		If $g_bDebugSetlog Then SetDebugLog("Checking base for DeadEagle : " & $g_iSearchCount)
 		Return CheckForDeadEagle()
 	Else
+		If $g_bDebugSetlog Then SetDebugLog("Checking base for Collector Level : " & $g_iSearchCount)
 		Return checkDeadBaseSuperNew(False)
 	EndIf
 EndFunc   ;==>checkDeadBase
@@ -503,12 +505,11 @@ Func CheckForDeadEagle()
 	Local $sBoostDiamond = "ECD"
 	Local $redlines = "ECD"
 
-	; search for a clock face in the Boost window
 	Local $avDeadEagle = findMultiple($sImgDeadEagleImages, $sBoostDiamond, $redlines, 0, 1000, 0, "objectname,objectpoints")
 
-	; no clockface lets scroll up and look again
 	If Not IsArray($avDeadEagle) Or UBound($avDeadEagle, $UBOUND_ROWS) <= 0 Then
-		SetLog("No Dead Eagle!")
+		SetDebugLog("No Dead Eagle!")
+		If $g_bDebugImageSave Then SaveDebugImage("DeadEagle", False)
 		Return False
 	EndIf
 

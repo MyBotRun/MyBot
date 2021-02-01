@@ -143,15 +143,12 @@ Func getArmyRequest($aiDonateCoords, $bNeedCapture = True)
 			; Troops
 			If $iArmyIndex >= $eBarb And $iArmyIndex <= $eHunt Then
 				$sClanText &= ", " & $g_asTroopNames[$iArmyIndex]
-				; Spells
+			; Spells
 			ElseIf $iArmyIndex >= $eLSpell And $iArmyIndex <= $eBtSpell Then
 				$sClanText &= ", " & $g_asSpellNames[$iArmyIndex - $eLSpell]
-				; Sieges
-			ElseIf $iArmyIndex >= $eWallW And $iArmyIndex <= $eSiegeB Then
+			; Sieges
+			ElseIf $iArmyIndex >= $eWallW And $iArmyIndex <= $eLogL Then
 				$sClanText &= ", " & $g_asSiegeMachineNames[$iArmyIndex - $eWallW]
-				; SuperTroops
-			ElseIf $iArmyIndex >= $eSuperBarb And $iArmyIndex <= $eSuperWall Then
-				$sClanText &= ", " & $g_asSuperTroopNames[$iArmyIndex - $eSuperBarb]
 			ElseIf $iArmyIndex = -1 Then
 				ContinueLoop
 			EndIf
@@ -412,7 +409,7 @@ Func DonateCC($bCheckForNewMsg = False)
 			If Not $bDonateSiege And Not $bDonateAllSiege Then
 				SetLog("Siege donation is not enabled, skip siege donation", $COLOR_ACTION)
 				$g_bSkipDonSiege = True
-			ElseIf $g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 0 And $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBarracks] = 0 Then
+			ElseIf $g_aiCurrentSiegeMachines[$eSiegeWallWrecker] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 0 And $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 0 And $g_aiCurrentSiegeMachines[$eSiegeBarracks] = 0 And $g_aiCurrentSiegeMachines[$eSiegeLogLauncher] = 0 Then
 				SetLog("No siege machines available, skip siege donation", $COLOR_ORANGE)
 				$g_bSkipDonSiege = True
 			ElseIf $g_iTotalDonateSiegeMachineCapacity = -1 Then
@@ -1151,7 +1148,7 @@ Func RemainingCCcapacity($aiDonateButton)
 
 	; Skip reading unnecessary items
 	Local $bDonateSpell = ($g_aiPrepDon[2] = 1 Or $g_aiPrepDon[3] = 1) And ($g_iCurrentSpells > 0 Or $g_iCurrentSpells = "")
-	Local $bDonateSiege = ($g_aiPrepDon[4] = 1 Or $g_aiPrepDon[5] = 1) And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBarracks] > 0)
+	Local $bDonateSiege = ($g_aiPrepDon[4] = 1 Or $g_aiPrepDon[5] = 1) And ($g_aiCurrentSiegeMachines[$eSiegeWallWrecker] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeBarracks] > 0 Or $g_aiCurrentSiegeMachines[$eSiegeLogLauncher] > 0)
 	SetDebugLog("$g_aiPrepDon[2]: " & $g_aiPrepDon[2] & ", $g_aiPrepDon[3]: " & $g_aiPrepDon[3] & ", $g_iCurrentSpells: " & $g_iCurrentSpells & ", $bDonateSpell: " & $bDonateSpell)
 	SetDebugLog("$g_aiPrepDon[4]: " & $g_aiPrepDon[4] & "$g_aiPrepDon[5]: " & $g_aiPrepDon[5] & ", $bDonateSiege: " & $bDonateSiege)
 

@@ -30,16 +30,6 @@ Func TrainIt($iIndex, $iQuantity = 1, $iSleep = 400)
 				If IsArray($FullName) Then
 					Local $RNDName = GetRNDName($iIndex, $aTrainPos)
 					If IsArray($RNDName) Then
-
-						If $aTrainPos[4] >= $eSuperBarb Then
-							If $iIndex >= $eSuperBarb Then $iIndex -= $eSuperBarb
-							;Local $iNewQuantity = $iQuantity / ($g_aiSuperTroopSpace[$iIndex] / $g_aiTroopSpace[$iIndex])
-							SetLog("Detected a super troop, reducing train quantity to fit camps", $COLOR_INFO)
-							;SetDebugLog("Old Quantity for Index (" & $iIndex & "): " & $iQuantity & " | New Quantity: " & $iNewQuantity, $COLOR_DEBUG)
-
-							;$iQuantity = $iNewQuantity
-						EndIf
-
 						TrainClickP($aTrainPos, $iQuantity, $g_iTrainClickDelay, $FullName, "#0266", $RNDName)
 						If _Sleep($iSleep) Then Return
 						If $g_bOutOfElixir Then
@@ -98,20 +88,6 @@ Func GetTrainPos(Const $iIndex)
 	; Get the Image path to search
 	If ($iIndex >= $eBarb And $iIndex <= $eHunt) Then
 		Local $sFilter = String($g_asTroopShortNames[$iIndex]) & "*"
-		SetLog("$sFilter :" & $sFilter)
-		Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
-		If Not @error Then
-			If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & _ArrayToString($asImageToUse, "|"))
-			Return GetVariable($asImageToUse, $iIndex)
-		Else
-			Return 0
-		EndIf
-	EndIf
-	
-	; Get the Image path to search
-	If $iIndex >= $eSuperBarb And $iIndex <= $eSuperHunt Then
-		Local $sFilter = String($g_asSuperTroopShortNames[$iIndex - $eSuperBarb]) & "*"
-		SetLog("$sFilter :" & $sFilter)
 		Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
 		If Not @error Then
 			If $g_bDebugSetlogTrain Then SetLog("$asImageToUse Troops: " & _ArrayToString($asImageToUse, "|"))
@@ -141,10 +117,6 @@ Func GetFullName(Const $iIndex, Const $aTrainPos)
 	If $iIndex >= $eBarb And $iIndex <= $eHunt Then
 		Local $sTroopType = ($iIndex >= $eMini ? "Dark" : "Normal")
 		Return GetFullNameSlot($aTrainPos, $sTroopType)
-	EndIf
-
-	If $iIndex >= $eSuperBarb And $iIndex <= $eSuperHunt Then
-		Return GetFullNameSlot($aTrainPos, "Normal")
 	EndIf
 
 	If $iIndex >= $eLSpell And $iIndex <= $eBtSpell Then
@@ -253,8 +225,6 @@ Func GetVariable(Const $asImageToUse, Const $iIndex)
 						If $g_bDebugSetlogTrain Then SetLog("Found: [" & $iButtonX & "," & $iButtonY & "]", $COLOR_SUCCESS)
 						If $g_bDebugSetlogTrain Then SetLog("$sColorToCheck: " & $sColorToCheck, $COLOR_SUCCESS)
 						If $g_bDebugSetlogTrain Then SetLog("$iTolerance: " & $iTolerance, $COLOR_SUCCESS)
-
-						If StringRegExp($asImageToUse[$i], "([Ss]uper)|([Ss]neaky)") Then $aTrainPos[4] = $eSuperBarb
 						Return $aTrainPos
 					Else
 						SetLog("Don't know how to train the troop with index " & $iIndex & " yet.")

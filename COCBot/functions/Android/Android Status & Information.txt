@@ -3,12 +3,13 @@ List of Supported Android Emulator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Newer versions of Android Emulators listed here might work.
+After DEC20 update only emulators with Android 4.4 and higher work with Clash of clans.
 The once listed here have been tested and do work.
 
 MEmu
 ====
 http://www.memuplay.com/
-Versions 6.2.1, 6.1.1, 6.1.0, 6.0.7.6, 6.0.6.0, 5.3.2.0, 5.2.3.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x, 2.9.6.1, 2.9.3, 2.9.1, 2.8.6, 2.8.5, 2.8.3, 2.8.2, 2.8.0, 2.7.2, 2.7.0, 2.6.6, 2.6.5, 2.6.2, 2.6.1, 2.5.0, 2.3.1, 2.3.0, 2.2.1
+Versions 6.2.1, 6.1.1, 6.1.0, 6.0.7.6, 6.0.6.0, 5.3.2.0, 5.2.3.0, 5.0.1.0, 3.6.2.0, 3.5.0.2, 3.1.2.x
 MyBot Command Line Key: MEmu
 Default Instance Key: MEmu
 Second Instance Key:  MEmu_1
@@ -19,8 +20,8 @@ BlueStacks
 ==========
 http://www.bluestacks.com/
 Find version 0.10.7.5601 here: https://filehippo.com/de/download_bluestacks_app_player/64518/
-Version 4.70.x, 4.60.x, 4.50.x, 4.32.x, 4.3.x, 3.50.x, 3.7.x, 2.7.x, 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x, 0.9.x, 0.8.x
-MyBot Command Line Key (0.8.x - 0.11.x): BlueStacks
+Version 4.70.x, 4.60.x, 4.50.x, 4.32.x, 4.3.x, 3.50.x, 3.7.x, 2.7.x, 2.6.x, 2.5.x, 2.4.x, 2.3.x, 2.2.x, 2.1.x, 2.0.x, 0.11.x, 0.10.x
+MyBot Command Line Key (0.10.x - 0.11.x): BlueStacks
 MyBot Command Line Key (2.x/3.x/4.x): BlueStacks2
 Default Instance Key: Android
 Second Instance Key (only for BlueStacks 3.x/4.x):  Android_1

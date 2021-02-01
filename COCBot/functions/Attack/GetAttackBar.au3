@@ -20,7 +20,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 
 	If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True)
 
-	;Reset All Static Variables if the AttackBarCheck is not for Remaining
+	;Reset All Static Variables if GetAttackBar is not for Remaining
 	If Not $bRemaining Then
 		$bCheckSlot12 = False
 		$bDoubleRow = False
@@ -36,12 +36,9 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 			$sSearchDiamond = GetDiamondFromRect("0,535,835,698")
 		ElseIf _CheckPixel($a12OrMoreSlots, True) Then
 			$bCheckSlot12 = True
-			SetLog("Found 12th slot for Normal Troops")
-		 ElseIf _CheckPixel($a12OrMoreSlots2, True) Then
-			$bCheckSlot12 = True
-			SetLog("Found 12th slot for Super Troops")
+			SetDeBugLog("Found 12th slot for Normal Troops")
 		EndIf
-		SetDebugLog("AttackBarCheck: DoubleRow= " & $bDoubleRow)
+		SetDebugLog("GetBarCheck: DoubleRow= " & $bDoubleRow)
 	EndIf
 
 	If Not $g_bRunState Then Return
@@ -53,8 +50,8 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 		Local $aAttackBarResult = findMultiple($g_sImgAttackBarDir, $sSearchDiamond, $sSearchDiamond, 0, 1000, 0, "objectname,objectpoints", True)
 
 		If UBound($aAttackBarResult) = 0 Then
-			SetLog("Error in AttackBarCheck(): Search did not return any results!", $COLOR_ERROR)
-			SaveDebugImage("ErrorAttackBarCheck", False, Default, "#1")
+			SetLog("Error in GetAttackBar(): Search did not return any results!", $COLOR_ERROR)
+			SaveDebugImage("ErrorGetAttackBar", False, Default, "#1")
 			Return ""
 		EndIf
 
@@ -79,7 +76,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 		Next
 
 		If UBound($aAttackBar, 1) = 0 Then
-			SetLog("Error in AttackBarCheck(): $aAttackBar has no results in it", $COLOR_ERROR)
+			SetLog("Error in GetAttackBar(): $aAttackBar has no results in it", $COLOR_ERROR)
 			Return ""
 		EndIf
 
@@ -88,7 +85,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 		_ArraySort($aSlotAmountX)
 		If $bDoubleRow Then $aSlotAmountX = SortDoubleRowXElements($aSlotAmountX)
 
-		SetDebugLog("AttackBarCheck(): Finished Image Search in: " & StringFormat("%.2f", __TimerDiff($iAttackbarStart)) & " ms")
+		SetDebugLog("GetAttackBar(): Finished Image Search in: " & StringFormat("%.2f", __TimerDiff($iAttackbarStart)) & " ms")
 		$iAttackbarStart = __TimerInit()
 
 	EndIf
@@ -108,7 +105,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 	Local $aFinalAttackBar[0][7]
 	Local $aiOCRY = [-1, -1]
 	If Not $bRemaining Then $aiOCRY = GetOCRYLocation($aSlotAmountX)
-	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(Champion)|(WallW)|(BattleB)|(StoneS)|(SiegeB)" ; TODO: check if (WallW)|(BattleB)|(StoneS)|(SiegeB) required
+	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(Champion)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)" ; TODO: check if (WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL) required
 
 	For $i = 0 To UBound($aAttackBar, 1) - 1
 		If $aAttackBar[$i][1] > 0 Then
@@ -124,10 +121,10 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 					$bRemoved = True
 					$aAttackBar[$i][4] = 0 ; set available troops to 0
 					If StringRegExp($aAttackBar[$i][0], $sKeepRemainTroops, 0) = 0 Then
-						SetDebugLog("AttackBarCheck(): Troop " & $aAttackBar[$i][0] & " already deployed, now removed")
+						SetDebugLog("GetAttackBar(): Troop " & $aAttackBar[$i][0] & " already deployed, now removed")
 						ContinueLoop
 					Else
-						SetDebugLog("AttackBarCheck(): Troop " & $aAttackBar[$i][0] & " already deployed, but stays")
+						SetDebugLog("GetAttackBar(): Troop " & $aAttackBar[$i][0] & " already deployed, but stays")
 					EndIf
 				EndIf
 			Else
@@ -138,9 +135,9 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 				If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)", 0) And $aiOCRY[$aAttackBar[$i][7] - 1] <> -1 Then $aAttackBar[$i][6] = ($aiOCRY[$aAttackBar[$i][7] - 1] - 7)
 			EndIf
 
-			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)", 0) Then
+			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)", 0) Then
 				If Not $bRemoved Then $aAttackBar[$i][4] = 1
-				If ($pMatchMode = $DB Or $pMatchMode = $LB) And StringRegExp($aAttackBar[$i][0], "(WallW)|(BattleB)|(StoneS)|(SiegeB)", 0) And $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] > 0 And $g_aiAttackUseSiege[$pMatchMode] <= 5 Then
+				If ($pMatchMode = $DB Or $pMatchMode = $LB) And StringRegExp($aAttackBar[$i][0], "(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)", 0) And $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] > 0 And $g_aiAttackUseSiege[$pMatchMode] <= 6 Then
 					$g_iSiegeLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 30, 704))
 					If $g_iSiegeLevel = "" Then $g_iSiegeLevel = 1
 					SetDebugLog($aAttackBar[$i][0] & " level: " & $g_iSiegeLevel)
@@ -176,7 +173,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 	_ArraySort($aFinalAttackBar, 0, 0, 0, 1) ; Sort Final Array by Slot Number
 	Return $aFinalAttackBar
 
-EndFunc   ;==>AttackBarCheck
+EndFunc   ;==>GetBarCheck
 
 Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond)
 
@@ -251,7 +248,7 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 
 	Local $aFinalAttackBar[0][7]
 	Local $aiOCRY = [-1, -1]
-	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(Champion)|(WallW)|(BattleB)|(StoneS)" ; TODO: check if (WallW)|(BattleB)|(StoneS) required
+	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(Champion)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)" ; TODO: check if (WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL) required
 
 	If Not $bRemaining Then
 		$aiOCRY = GetOCRYLocation($aSlotAmountX)
@@ -288,7 +285,7 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 				If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)", 0) And $aiOCRY[$aAttackBar[$i][7] - 1] <> -1 Then $aAttackBar[$i][6] = ($aiOCRY[$aAttackBar[$i][7] - 1] - 7)
 			EndIf
 
-			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)", 0) Then
+			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)", 0) Then
 				If Not $bRemoved Then $aAttackBar[$i][4] = 1
 			Else
 				If Not $bRemoved Then
