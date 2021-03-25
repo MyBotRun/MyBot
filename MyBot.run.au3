@@ -723,8 +723,9 @@ Func runBot() ;Bot that runs everything in order
 		If $g_bRestart Then ContinueLoop
 
 		If CheckAndroidReboot() Then ContinueLoop
-		If Not $g_bIsClientSyncError And Not $g_bIsSearchLimit Then
-
+		If Not $g_bIsClientSyncError Then ;ARCH:  was " And Not $g_bIsSearchLimit"
+			SetDebugLog("ARCH: Top of loop", $COLOR_DEBUG)
+			If $g_bIsSearchLimit Then SetLog("Search limit hit", $COLOR_INFO)
 			checkMainScreen(False)
 			If $g_bRestart Then ContinueLoop
 			If _Sleep($DELAYRUNBOT3) Then Return
@@ -745,7 +746,12 @@ Func runBot() ;Bot that runs everything in order
 			If _Sleep($DELAYRUNBOT5) Then Return
 			checkMainScreen(False)
 			If $g_bRestart Then ContinueLoop
-			Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard', 'CollectAchievements', 'CollectFreeMagicItems', 'DailyChallenge', 'BoostSuperTroop']
+			;Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard', 'CollectAchievements', 'CollectFreeMagicItems', 'DailyChallenge']
+			If $g_bIsSearchLimit Then
+				Local $aRndFuncList = ['LabCheck', 'Collect']
+			Else
+				Local $aRndFuncList = ['LabCheck', 'Collect', 'CheckTombs', 'CleanYard', 'CollectAchievements', 'CollectFreeMagicItems', 'DailyChallenge']
+			EndIf
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
 				If Not $g_bRunState Then Return
@@ -757,7 +763,11 @@ Func runBot() ;Bot that runs everything in order
 			If Not $g_bRunState Then Return
 			If $g_bRestart Then ContinueLoop
 			If IsSearchAttackEnabled() Then ; if attack is disabled skip reporting, requesting, donating, training, and boosting
-				Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC,Train', 'RequestCC']
+				If $g_bIsSearchLimit Then
+					Local $aRndFuncList = ['DonateCC,Train']
+				Else
+					Local $aRndFuncList = ['ReplayShare', 'NotifyReport', 'DonateCC,Train', 'RequestCC']
+				EndIf
 				_ArrayShuffle($aRndFuncList)
 				For $Index In $aRndFuncList
 					If Not $g_bRunState Then Return
@@ -782,9 +792,10 @@ Func runBot() ;Bot that runs everything in order
 				EndIf
 				If $g_bRestart Then ContinueLoop
 			EndIf
-			; Train Donate only - force a donate cc everytime
+			; Train Donate only - force a donate cc every time
 			If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then _RunFunction('DonateCC,Train')
 			If $g_bRestart Then ContinueLoop
+			
 			Local $aRndFuncList = ['Laboratory', 'UpgradeHeroes', 'UpgradeBuilding']
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
@@ -793,8 +804,12 @@ Func runBot() ;Bot that runs everything in order
 				If $g_bRestart Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 				If CheckAndroidReboot() Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			Next
+			
+			;ARCH Trying it out here.
+			If Not $g_bIsSearchLimit Then _ClanGames() ; move to here to pick event before going to BB.
+
 			; Ensure, that wall upgrade is last of the upgrades
-			Local $aRndFuncList = ['UpgradeWall', 'BuilderBase']
+			Local $aRndFuncList = ['UpgradeWall', 'BuilderBase'] ;Copied BuilderBase to AttackMain
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
 				If Not $g_bRunState Then Return
@@ -834,14 +849,21 @@ Func runBot() ;Bot that runs everything in order
 				SetLog("Attacking Not Planned and Skipped, Waiting random " & StringFormat("%0.1f", $iWaitTime / 1000) & " Seconds", $COLOR_WARNING)
 				If _SleepStatus($iWaitTime) Then Return False
 			EndIf
-		Else ;When error occours directly goes to attack
+		Else ;When error occurs directly goes to attack
 			Local $sRestartText = $g_bIsSearchLimit ? " due search limit" : " after Out of Sync Error: Attack Now"
 			SetLog("Restarted" & $sRestartText, $COLOR_INFO)
+			;Use "CheckDonateOften" setting to run loop on hitting SearchLimit
+			If $g_bIsSearchLimit and $g_bCheckDonateOften Then
+				SetDebugLog("ARCH: Clearing booleans", $COLOR_DEBUG)
+				$g_bIsClientSyncError = False
+				$g_bRestart = False
+			EndIf
 			If _Sleep($DELAYRUNBOT3) Then Return
 			;  OCR read current Village Trophies when OOS restart maybe due PB or else DropTrophy skips one attack cycle after OOS
 			$g_aiCurrentLoot[$eLootTrophy] = Number(getTrophyMainScreen($aTrophies[0], $aTrophies[1]))
 			If $g_bDebugSetlog Then SetDebugLog("Runbot Trophy Count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
-			AttackMain()
+			If Not $g_bIsSearchLimit or Not $g_bCheckDonateOften Then AttackMain() ;If Search Limit hit, do main loop.
+			SetDebugLog("ARCH: Not case on SearchLimit or CheckDonateOften",$COLOR_DEBUG)
 			If Not $g_bRunState Then Return
 			$g_bSkipFirstZoomout = False
 			If $g_bOutOfGold Then
@@ -1001,8 +1023,8 @@ Func AttackMain() ;Main control for attack functions
 				SetDebugLog(_PadStringCenter(" Hero status check" & BitAND($g_aiAttackUseHeroes[$LB], $g_aiSearchHeroWaitEnable[$LB], $g_iHeroAvailable) & "|" & $g_aiSearchHeroWaitEnable[$LB] & "|" & $g_iHeroAvailable, 54, "="), $COLOR_DEBUG)
 				;SetLog("BullyMode: " & $g_abAttackTypeEnable[$TB] & ", Bully Hero: " & BitAND($g_aiAttackUseHeroes[$g_iAtkTBMode], $g_aiSearchHeroWaitEnable[$g_iAtkTBMode], $g_iHeroAvailable) & "|" & $g_aiSearchHeroWaitEnable[$g_iAtkTBMode] & "|" & $g_iHeroAvailable, $COLOR_DEBUG)
 			EndIf
-			_ClanGames()
-			ClickAway()
+			;_ClanGames() ;Trying to do this above in the main loop
+			;ClickAway()
 			If $g_bUpdateSharedPrefs Then PullSharedPrefs()
 			PrepareSearch()
 			If Not $g_bRunState Then Return
@@ -1167,37 +1189,8 @@ Func __RunFunction($action)
 			UpgradeWall()
 			_Sleep($DELAYRUNBOT3)
 		Case "BuilderBase"
-			If isOnBuilderBase() Or (($g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack) And SwitchBetweenBases()) Then
-				$g_bStayOnBuilderBase = True
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				BuilderBaseReport()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				CollectBuilderBase()
-				AttackBB()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If $g_bRestart = True Then Return
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				StartClockTowerBoost()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				StarLaboratory()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				CleanBBYard()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				MainSuggestedUpgradeCode()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				BuilderBaseReport()
-				If _Sleep($DELAYRUNBOT3) Then Return
-				If checkObstacles() Then Return
-				; switch back to normal village
-				SwitchBetweenBases()
-				$g_bStayOnBuilderBase = False
+			If $g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack Then
+				BuilderBase()
 			EndIf
 			_Sleep($DELAYRUNBOT3)
 		Case "CollectAchievements"
@@ -1205,8 +1198,6 @@ Func __RunFunction($action)
 		Case "CollectFreeMagicItems"
 			CollectFreeMagicItems()
 			_Sleep($DELAYRUNBOT3)
-		Case "BoostSuperTroop"
-			If $g_iBoostSuperTroopIndex <> -1 Then BoostSuperTroop($g_iBoostSuperTroopIndex)
 		Case ""
 			SetDebugLog("Function call doesn't support empty string, please review array size", $COLOR_ERROR)
 		Case Else
@@ -1288,3 +1279,78 @@ Func FirstCheck()
 		EndIf
 	EndIf
 EndFunc   ;==>FirstCheck
+
+
+Func BuilderBase()
+
+	; switch to builderbase and check it is builderbase
+	If SwitchBetweenBases() And isOnBuilderBase()  Then
+
+		$g_bStayOnBuilderBase = True
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		BuilderBaseReport()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		CollectBuilderBase()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		AttackBB()
+		If $g_bRestart = True Then Return
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		StartClockTowerBoost()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		StarLaboratory()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		CleanBBYard()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		MainSuggestedUpgradeCode()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		BuilderBaseReport()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
+
+		; switch back to normal village
+		SwitchBetweenBases()
+		$g_bStayOnBuilderBase = False
+
+	EndIf
+
+EndFunc
+
+Func TestBuilderBase()
+	Local $bChkCollectBuilderBase = $g_bChkCollectBuilderBase
+	Local $bChkStartClockTowerBoost = $g_bChkStartClockTowerBoost
+	Local $bChkCTBoostBlderBz = $g_bChkCTBoostBlderBz
+	Local $bChkCleanBBYard = $g_bChkCleanBBYard
+	Local $bChkEnableBBAttack = $g_bChkEnableBBAttack
+
+	$g_bChkCollectBuilderBase = True
+	$g_bChkStartClockTowerBoost = True
+	$g_bChkCTBoostBlderBz = True
+	$g_bChkCleanBBYard = True
+	$g_bChkEnableBBAttack = True
+
+	BuilderBase()
+	
+	If _Sleep($DELAYRUNBOT3) Then Return
+	
+	$g_bChkCollectBuilderBase = $bChkCollectBuilderBase
+	$g_bChkStartClockTowerBoost = $bChkStartClockTowerBoost
+	$g_bChkCTBoostBlderBz = $bChkCTBoostBlderBz
+	$g_bChkCleanBBYard = $bChkCleanBBYard
+	$g_bChkEnableBBAttack = $bChkEnableBBAttack
+EndFunc

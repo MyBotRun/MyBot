@@ -85,7 +85,7 @@ Func DropTroop($troop, $nbSides, $number, $slotsPerEdge = 0, $indexToAttack = -1
 			For $i = $startIndex To $maxElementNearCollector
 				Local $pixel = $g_aiPixelNearCollector[$i]
 				ReDim $listEdgesPixelToDrop[UBound($listEdgesPixelToDrop) + 1]
-				If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini Or $troop = $eBarb) Then
+				If ($troop = $eArch Or $troop = $eSArch Or $troop = $eWiza Or $troop = $eSWiza Or $troop = $eMini Or $troop = $eSMini Or $troop = $eBarb Or $troop = $eSBarb) Then
 					$listEdgesPixelToDrop[UBound($listEdgesPixelToDrop) - 1] = _FindPixelCloser($g_aiPixelRedAreaFurther, $pixel, 5)
 				Else
 					$listEdgesPixelToDrop[UBound($listEdgesPixelToDrop) - 1] = _FindPixelCloser($g_aiPixelRedArea, $pixel, 5)
@@ -147,7 +147,7 @@ Func DropTroop2($troop, $nbSides, $number, $slotsPerEdge = 0, $name = "")
 			Local $maxElementNearCollector = UBound($g_aiPixelNearCollector) - 1
 			Local $startIndex = 0
 			Local $troopFurther = False
-			If ($troop = $eArch Or $troop = $eWiza Or $troop = $eMini Or $troop = $eBarb) Then
+			If ($troop = $eArch Or $troop = $eSArch Or $troop = $eWiza Or $troop = $eSWiza Or $troop = $eMini Or $troop = $eSMini Or $troop = $eBarb Or $troop = $eSBarb) Then
 				$troopFurther = True
 			EndIf
 			Local $centerPixel[2] = [430, 338]

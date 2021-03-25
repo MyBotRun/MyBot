@@ -186,7 +186,6 @@ Func CleanYard()
 		If $g_bDebugSetlog Then SetDebugLog("Time: " & Round(__TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
 	EndIf
 	UpdateStats()
-	;ClickP($aAway, 1, 300, "#0329") ;Click Away
 	ClickAway()
 
 EndFunc   ;==>CleanYard

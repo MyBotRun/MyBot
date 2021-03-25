@@ -464,6 +464,7 @@ Func btnTestDonateCC()
 	$g_aiCurrentSiegeMachines[$eSiegeBattleBlimp] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeBarracks] = 1
+	$g_aiCurrentSiegeMachines[$eSiegeLogLauncher] = 1
 	DonateCC()
 	SetLog(_PadStringCenter(" Test DonateCC end ", 54, "="), $COLOR_INFO)
 

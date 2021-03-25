@@ -1,5 +1,58 @@
+* **V7.9.0**
+* December Update 2020:
+** Added Spell Invisibility (CSV name = ISpell)
+** Added Siege Log Launcher (CSV name = LogL)
+** New Royal Champion Levels
+** Added Log Launcher and renamed EDragv2 CSV to "[TH12-13] EDragv2 201222a.csv"
+** Fixed daily challenge collection caused by new checkmark.
+** Super Troops capabilities added to Custom Train, QuickTrain, Donations, and Attack.  New profiles required, or check Request Troops tab for correct Troops, Spells, and Siege Machines.
+* Improved donations tab GUI
+* Add BB Battle Challenges to Clan Games
+* Fix OCR on Clan Games
+* Fix log message during search by @xbebenk
+
+Usage Warnings:
+- If you make multiple types of siege machines your queues may become unbalanced.  There is no code to delete siege machines from camps and queues due to their high cost.
+- If you use SCID and have 4 or more accounts there is a problem scrolling to number 4 and above.
+- Super Troops capabilities added to Custom Train, QuickTrain, Donations, and Attack.  New profiles required, or check Request Troops tab for correct Troops, Spells, and Siege Machines.  "Any" now at the top of the list to help avoid this in the future.
+
+* **V7.8.9**
+* Fixed queue for Siege Machine
+* New Level 13 wall images
+** Updated some attack scripts.
+** Added auto boost to Super Troops (Doesnt work with multiple super troops yet)
+* Added Queens Gambit script
+* When Search Limit exceeded and Check Donate Often checked, will process main loop before resuming search.
+* Fix switch account using scid
+
+* **V7.8.8**
+* Oct 20 Update
+** Remove hard coding for camp and spell space
+** Updated troop status
+** Added SuperMinion, SuperValk.  Smart Farm Update, CSV Atttack
+** Updated standard attack to use SuperTroops
+** Smart Farm not drops "Remain" troops
+** Added SuperBall to Standard Attack, SmartFarm and Scripts
+** Added code to REMAIN for dropping SuperTroops
+** Added code to read SuperTroops in QuickTrain
+** Added SuperValk Images
+** Updated standard attack to use new supertroops
+* Updated SmartFarm
+* Updated Script Attack
+* Smartfarm now drops excess super troops
+* Updated troop stats, TODO list
+* Developer specific changes
+** Added custom, quick, comp troop arrays for SuperTroops
+** Add .code-workspace to gitignore
+** Add function to get queued siege machines
+** Restored GetVariable but QT preset broken
+* Fix super giant not working with custom train
+* Fix switch account using scid
+* Removed Skeleton Barrel troop
+* Fixed Level 14 wall upgrades
+
 * **V7.8.7**
-* Additional fixes to village measuring 
+* Additional fixes to village measuring
 
 * **V7.8.6**
 * Added additional error handling to the ZoomOut function
@@ -10,7 +63,7 @@
 * Fix village measuring errors due to scenery changes
 
 * **V7.8.5**
-* Fix Clangames air troop challenge typo. Reported and found by @MyBotIvan 
+* Fix Clangames air troop challenge typo. Reported and found by @MyBotIvan
 * Add scroll bar to profiles combobox
 * Fix Troops Array!
 * Add scroll bar to profiles combobox

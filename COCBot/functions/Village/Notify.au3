@@ -435,9 +435,9 @@ Func NotifyRemoteControlProc()
 								$txtTroopStats &= $g_asSpellShortNames[$i] & ": " & $g_aiCurrentSpells[$i] & " of " & $g_aiArmyCompSpells[$i] & "%0A"
 							EndIf
 						Next
-						For $i = 0 To UBound($g_aiArmyCompSiegeMachine) - 1
-							If $g_aiArmyCompSiegeMachine[$i] > 0 Then
-								$txtTroopStats &= $g_asSiegeMachineShortNames[$i] & ": " & $g_aiArmyCompSiegeMachine[$i] & " of " & $g_aiArmyCompSiegeMachine[$i] & "%0A"
+						For $i = 0 To UBound($g_aiArmyCompSiegeMachines) - 1
+							If $g_aiArmyCompSiegeMachines[$i] > 0 Then
+								$txtTroopStats &= $g_asSiegeMachineShortNames[$i] & ": " & $g_aiArmyCompSiegeMachines[$i] & " of " & $g_aiArmyCompSiegeMachines[$i] & "%0A"
 							EndIf
 						Next
 						$txtTroopStats &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Train_Info_05", "Current Capacities") & ":"

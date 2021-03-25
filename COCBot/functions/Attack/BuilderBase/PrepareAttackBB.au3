@@ -27,7 +27,6 @@ Func PrepareAttackBB()
 
 	If Not CheckArmyReady() Then
 		_Sleep(1500)
-		;ClickP($aAway)
 		ClickAway()
 		Return False
 	EndIf
@@ -35,7 +34,6 @@ Func PrepareAttackBB()
 	If $g_bChkBBAttIfLootAvail Then
 		If Not CheckLootAvail() Then
 			_Sleep(1500)
-			;ClickP($aAway)
 			ClickAway()
 			Return False
 		EndIf
@@ -45,7 +43,6 @@ Func PrepareAttackBB()
 	If $g_bChkBBWaitForMachine And Not $g_bBBMachineReady Then
 		SetLog("Battle Machine is not ready.")
 		_Sleep(1500)
-		;ClickP($aAway)
 		ClickAway()
 		Return False
 	EndIf

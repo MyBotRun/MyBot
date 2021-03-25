@@ -116,7 +116,7 @@ Func CollectDailyRewards($bGoldPass = False)
 			Else
 				SetLog($i & ".. ", Default, Default, Default, Default, Default, 0, $i < 10 ? False : Default) ; no time
 			EndIf
-			ClickDrag(50, 385 + $g_iMidOffsetY, 810, 385 + $g_iMidOffsetY, 1000)
+			ClickDrag(100, 385 + $g_iMidOffsetY, 750, 385 + $g_iMidOffsetY, 1000) ;x1 was 50. x2 was 810  Change for Dec '20 update
 			If _Sleep(500) Then ExitLoop
 		Else
 			If $i > 0 Then SetLog($i & ".", Default, Default, Default, Default, Default, False) ; no time + end line

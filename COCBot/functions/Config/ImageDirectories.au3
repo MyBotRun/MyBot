@@ -15,7 +15,6 @@ Global $g_sImgImgLocButtons = @ScriptDir & "\imgxml\imglocbuttons"
 
 #Region Windows
 Global Const $g_sImgGeneralCloseButton = @ScriptDir & "\imgxml\Windows\CloseButton*"
-Global Const $g_sImgSuperTroopsWindow = @ScriptDir & "\imgxml\Windows\SuperTroop*"
 #EndRegion
 
 #Region Obstacles
@@ -50,17 +49,11 @@ Global $g_sImgAchievementsClaimReward = @ScriptDir & "\imgxml\AchievementRewards
 Global $g_sImgAchievementsScrollEnd = @ScriptDir & "\imgxml\AchievementRewards\ScrollEnd*"
 Global $g_sImgCollectReward = @ScriptDir & "\imgxml\Resources\ClaimReward"
 Global $g_sImgTrader = @ScriptDir & "\imgxml\FreeMagicItems\TraderIcon"
-Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscount"
+Global $g_sImgDailyDiscountWindow = @ScriptDir & "\imgxml\FreeMagicItems\DailyDiscounts*"
 Global $g_sImgBuyDealWindow = @ScriptDir & "\imgxml\FreeMagicItems\BuyDeal"
 Global Const $g_sImgUpgradeWhiteZero = @ScriptDir & "\imgxml\Main Village\Upgrade\WhiteZero*"
 Global Const $g_sImgDonateCC = @ScriptDir & "\imgxml\DonateCC\"
 Global Const $g_sImgLabResearch = @ScriptDir & "\imgxml\Research\Laboratory\"
-#EndRegion
-
-#Region Boost Super Troops
-Global $g_sImgBoostTroopsBarrel = @ScriptDir & "\imgxml\Main Village\BoostSuperTroop\Barrel\"
-Global $g_sImgBoostTroopsIcons = @ScriptDir & "\imgxml\Main Village\BoostSuperTroop\Troops\"
-Global $g_sImgBoostTroopsButtons = @ScriptDir & "\imgxml\Main Village\BoostSuperTroop\Buttons\"
 #EndRegion
 
 #Region Builder Base
