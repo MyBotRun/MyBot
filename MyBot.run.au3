@@ -692,7 +692,7 @@ EndFunc   ;==>MainLoop
 
 Func runBot() ;Bot that runs everything in order
 	Local $iWaitTime
-	
+
 	InitiateSwitchAcc()
 	If ProfileSwitchAccountEnabled() And $g_bReMatchAcc Then
 		SetLog("Rematching Account [" & $g_iNextAccount + 1 & "] with Profile [" & GUICtrlRead($g_ahCmbProfile[$g_iNextAccount]) & "]")
@@ -795,7 +795,7 @@ Func runBot() ;Bot that runs everything in order
 			; Train Donate only - force a donate cc every time
 			If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then _RunFunction('DonateCC,Train')
 			If $g_bRestart Then ContinueLoop
-			
+
 			Local $aRndFuncList = ['Laboratory', 'UpgradeHeroes', 'UpgradeBuilding']
 			_ArrayShuffle($aRndFuncList)
 			For $Index In $aRndFuncList
@@ -804,7 +804,7 @@ Func runBot() ;Bot that runs everything in order
 				If $g_bRestart Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 				If CheckAndroidReboot() Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			Next
-			
+
 			;ARCH Trying it out here.
 			If Not $g_bIsSearchLimit Then _ClanGames() ; move to here to pick event before going to BB.
 
@@ -1232,7 +1232,7 @@ Func FirstCheck()
 		applyConfig()
 	EndIf
 	;;;;;;;;;;;;;;;;;;;;;;;;;;
-	
+
 	VillageReport()
 	If Not $g_bRunState Then Return
 
@@ -1345,12 +1345,22 @@ Func TestBuilderBase()
 	$g_bChkEnableBBAttack = True
 
 	BuilderBase()
-	
+
 	If _Sleep($DELAYRUNBOT3) Then Return
-	
+
 	$g_bChkCollectBuilderBase = $bChkCollectBuilderBase
 	$g_bChkStartClockTowerBoost = $bChkStartClockTowerBoost
 	$g_bChkCTBoostBlderBz = $bChkCTBoostBlderBz
 	$g_bChkCleanBBYard = $bChkCleanBBYard
 	$g_bChkEnableBBAttack = $bChkEnableBBAttack
+ EndFunc
+
+ Func SetSAtk($attack = False)
+
+	If $attack = True Then
+		$g_bTestSceneryAttack = True
+	Else
+		$g_bTestSceneryAttack = False
+	EndIf
+
 EndFunc

@@ -388,7 +388,7 @@ EndFunc   ;==>DoWhatToTrainContainSpell
 
 Func IsElixirTroop($Troop)
 	Local $iIndex = TroopIndexLookup($Troop, "IsElixirTroop")
-	If $iIndex >= $eBarb And $iIndex <= $eInfernoD Then Return True
+	If $iIndex >= $eBarb And $iIndex <= $eYeti Then Return True
 	Return False
 EndFunc   ;==>IsElixirTroop
 

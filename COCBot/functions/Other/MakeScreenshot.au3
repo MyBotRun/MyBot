@@ -25,7 +25,9 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 		Local $hHBitmapScreenshot = _CaptureRegion($iLeft, $iTop, $iRight, $iBottom, True)
 		Local $hBitmapScreenshot = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmapScreenshot)
 		Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($hBitmapScreenshot) ; Get graphics content from bitmap image
-		Local $hBrush = _GDIPlus_BrushCreateSolid(0xFF000029) ;create a brush AARRGGBB (using 0x000029 = Dark Blue)
+;		Local $hBrush = _GDIPlus_BrushCreateSolid(0xFF000029) ;create a brush AARRGGBB (using 0x000029 = Dark Blue)
+		Local $hBrush = _GDIPlus_BrushCreateSolid(0xFFFFFFFF) ;create a brush AARRGGBB (using 0x000029 = Dark Blue)
+
 
 	    If $g_bScreenshotHideName Then
 			If $g_aiClanCastlePos[0] = -1 Or $g_aiClanCastlePos[1] = -1 Then
@@ -38,7 +40,13 @@ Func MakeScreenshot($TargetDir, $type = "jpg")
 				ConvertToVillagePos($xCC, $yCC)
 				_GDIPlus_GraphicsFillRect($hGraphic, $xCC - 31, $yCC - 3, 66, 20, $hBrush) ;draw filled rectangle on the image to hide the user CC if position is known
 			EndIf
+
+			GetVillageSize()
+
+			_GDIPlus_GraphicsDrawString($hGraphic, "S: " & $g_aVillageSize[4] & ", " & $g_aVillageSize[5], 5, 10, "Arial", 12)
+			_GDIPlus_GraphicsDrawString($hGraphic, "T: " & $g_aVillageSize[7] & ", " & $g_aVillageSize[8], 5, 30, "Arial", 12)						
 		EndIf
+		
 		Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 		Local $Time = @HOUR & "." & @MIN & "." & @SEC
 		Local $filename = $Date & "_" & $Time & "." & $type  ; most systems support type = png, jpg, bmp, gif, tif

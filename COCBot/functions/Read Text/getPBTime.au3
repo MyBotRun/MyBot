@@ -72,6 +72,7 @@ Func getPBTime()
 		If _Sleep($DELAYRESPOND) Then Return ; improve pause/stop button response
 
 		$aString = StringSplit($sTimeResult, " ") ; split hours/minutes or minutes/seconds
+		If @error then $aString[0] = 3  ; @priapus.cranium suggestion
 		Switch $aString[0]
 			Case 1 ; Only one field split from OCR
 				Select

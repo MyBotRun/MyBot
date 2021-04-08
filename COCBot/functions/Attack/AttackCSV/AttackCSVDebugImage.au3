@@ -340,6 +340,14 @@ Func AttackCSVDEBUGIMAGE()
 	_GDIPlus_GraphicsDrawString($hGraphic, "7", 110, 450, "Arial", 20)
 	_GDIPlus_GraphicsDrawString($hGraphic, "8", 310, 580, "Arial", 20)
 
+	; - DRAW GetVillageSize
+	_GDIPlus_GraphicsDrawString($hGraphic, "S: " & DetectScenery($g_aVillageSize[6]), 5, 490, "Arial", 12)
+	_GDIPlus_GraphicsDrawString($hGraphic, "Size: " & $g_aVillageSize[0], 5, 510, "Arial", 12)
+	_GDIPlus_GraphicsDrawString($hGraphic, "ZF: " & $g_aVillageSize[1], 5, 530, "Arial", 12)
+	_GDIPlus_GraphicsDrawString($hGraphic, "Offset: " & $g_aVillageSize[2] & ", " & $g_aVillageSize[3], 5, 550, "Arial", 12)
+	
+	_GDIPlus_GraphicsDrawLine($hGraphic, int($g_aVillageSize[4]), int($g_aVillageSize[5]), int($g_aVillageSize[7]), int($g_aVillageSize[8]), $hPenMagenta)
+
 	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
 	Local $Time = @HOUR & "." & @MIN & "." & @SEC
 	Local $filename = $g_sProfileTempDebugPath & String("AttackDebug_" & $Date & "_" & $Time) & ".jpg"

@@ -404,7 +404,8 @@ Func DebugImageSmartFarm($THdetails, $aIn, $aOut, $sTime, $BestSideToAttack, $re
 
 	; Store a copy of the image handle
 	Local $editedImage = $g_hBitmap
-	Local $subDirectory = @ScriptDir & "\SmartFarm\"
+	;Local $subDirectory = @ScriptDir & "\SmartFarm\"
+	Local $subDirectory = $g_sProfileTempDebugPath & "\SmartFarm\"
 	DirCreate($subDirectory)
 
 	; Create the timestamp and filename

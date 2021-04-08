@@ -212,6 +212,41 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		; Check the TH Level for BullyMode conditional
 		If $g_iSearchTHLResult = -1 Then CompareTH(0) ; inside have a conditional to update $g_iSearchTHLResult
 
+
+
+
+
+		; ----------------- MOD -----------------------------------
+
+	  If $g_bTestSceneryAttack Then
+		Local $sScenery = DetectScenery($g_aVillageSize[6])
+
+		If $sScenery = "Clashy Construction" Then
+			SetLog("Attacking Clashy Construction")
+			ExitLoop
+		EndIf
+
+		If $sScenery = "Pirate Scenery" Then
+			SetLog("Attacking Pirate Scenery")
+			ExitLoop
+		EndIf
+
+		If $sScenery = "Winter Scenery" Then
+			SetLog("Attacking Winter Scenery")
+			ExitLoop
+		EndIf
+
+		If $sScenery = "Hog Mountain" Then
+			SetLog("Attacking Hog Mountain")
+			ExitLoop
+		EndIf
+
+	  EndIf
+
+
+
+
+
 		; ----------------- WRITE LOG OF ENEMY RESOURCES -----------------------------------
 		Local $GetResourcesTXT = StringFormat("%3s", $g_iSearchCount) & "> [G]:" & StringFormat("%7s", $g_iSearchGold) & " [E]:" & StringFormat("%7s", $g_iSearchElixir) & " [D]:" & StringFormat("%5s", $g_iSearchDark) & " [T]:" & StringFormat("%2s", $g_iSearchTrophy) & $THString
 

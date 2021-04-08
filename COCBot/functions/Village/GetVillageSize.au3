@@ -89,12 +89,12 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 				$right = $x0 + $iAdditionalX
 				$bottom = $y0 + $iAdditionalY
 				$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
-				;SetDebugLog("GetVillageSize check for image " & $findImage)
+				SetDebugLog("GetVillageSize check for image " & $findImage)
 				$a = decodeSingleCoord(findImage($findImage, $sDirectory & $findImage, $sArea, 1, True))
 				If UBound($a) = 2 Then
 					$x = Int($a[0])
 					$y = Int($a[1])
-					;SetDebugLog("Found fixed image at " & $x & ", " & $y & ": " & $findImage)
+					SetDebugLog("Found fixed image at " & $x & ", " & $y & ": " & $findImage)
 					$fixed[0] = $x ; x center of fixed found
 					$fixed[1] = $y ; y center of fixed found
 					$fixed[2] = $x0 ; x ref. center of fixed
@@ -105,7 +105,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 				EndIf
 
 			Else
-				;SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
+				SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
 			EndIf
 		Next
 	EndIf
@@ -124,12 +124,12 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 			$right = $x0 + $iAdditionalX
 			$bottom = $y0 + $iAdditionalY
 			$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
-			;SetDebugLog("GetVillageSize check for image " & $findImage)
+			SetDebugLog("GetVillageSize check for image " & $findImage)
 			$a = decodeSingleCoord(findImage($findImage, $sDirectory & $findImage, $sArea, 1, True))
 			If UBound($a) = 2 Then
 				$x = Int($a[0])
 				$y = Int($a[1])
-				;SetDebugLog("Found stone image at " & $x & ", " & $y & ": " & $findImage)
+				SetDebugLog("Found stone image at " & $x & ", " & $y & ": " & $findImage)
 				$stone[0] = $x ; x center of stone found
 				$stone[1] = $y ; y center of stone found
 				$stone[2] = $x0 ; x ref. center of stone
@@ -140,7 +140,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 			EndIf
 
 		Else
-			;SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
+			SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
 		EndIf
 	Next
 
@@ -164,13 +164,14 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 				$right = $x0 + $iAdditionalX
 				$bottom = $y0 + $iAdditionalY
 				$sArea = Int($x1) & "," & Int($y1) & "|" & Int($right) & "," & Int($y1) & "|" & Int($right) & "," & Int($bottom) & "|" & Int($x1) & "," & Int($bottom)
-				;SetDebugLog("GetVillageSize check for image " & $findImage)
-				$a = decodeMultipleCoords(findImage($findImage, $sDirectory & $findImage, $sArea, 2, True), Default, Default, 0) ; sort by x because there can be a 2nd at the right that should not be used
+				SetDebugLog("GetVillageSize check for image " & $findImage)
+				; sort by x because there can be a 2nd at the right that should not be used
+				$a = decodeMultipleCoords(findImage($findImage, $sDirectory & $findImage, $sArea, 2, True), Default, Default, 0)
 				If UBound($a) > 0 Then
 					$a = $a[0]
 					$x = Int($a[0])
 					$y = Int($a[1])
-					;SetDebugLog("Found tree image at " & $x & ", " & $y & ": " & $findImage)
+					SetDebugLog("Found tree image at " & $x & ", " & $y & ": " & $findImage)
 					$tree[0] = $x ; x center of tree found
 					$tree[1] = $y ; y center of tree found
 					$tree[2] = $x0 ; x ref. center of tree
@@ -181,7 +182,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 				EndIf
 
 			Else
-				;SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
+				SetDebugLog("GetVillageSize ignore image " & $findImage & ", reason: " & UBound($a), $COLOR_WARNING)
 			EndIf
 		Next
 
@@ -233,6 +234,9 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$aResult[7] = $tree[0]
 		$aResult[8] = $tree[1]
 		$aResult[9] = $tree[5]
+	
+		$g_aVillageSize = $aResult
+		
 		Return FuncReturn($aResult)
 
 	Else
@@ -262,6 +266,9 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$aResult[7] = $tree[0]
 		$aResult[8] = $tree[1]
 		$aResult[9] = $tree[5]
+		
+		$g_aVillageSize = $aResult
+		
 		Return FuncReturn($aResult)
 
 	EndIf
@@ -312,3 +319,23 @@ Func UpdateGlobalVillageOffset($x, $y)
 	Return $updated
 
 EndFunc   ;==>UpdateGlobalVillageOffset
+
+Func DetectScenery($stone = "None")
+	Local $sScenery = ""
+
+	If StringInStr($stone, "DS", $STR_CASESENSE) Then
+		$sScenery = "Default Scenery"
+	ElseIf StringInStr($stone, "CC", $STR_CASESENSE) Then
+		$sScenery = "Clashy Construction"
+	ElseIf StringInStr($stone, "PC", $STR_CASESENSE) Then
+		$sScenery = "Pirate Scenery"
+	ElseIf StringInStr($stone, "WS", $STR_CASESENSE) Then
+		$sScenery = "Winter Scenery"
+	ElseIf StringInStr($stone, "HM", $STR_CASESENSE) Then
+		$sScenery = "Hog Mountain"
+	Else
+		$sScenery = "Failed scenery detection"
+	EndIf
+
+	Return $sScenery
+EndFunc

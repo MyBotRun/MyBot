@@ -1,3 +1,15 @@
+* **v7.9.1**
+* TH8 village fix
+* updated italian language by quisazadrah
+* Fix gui issue with freeze spell requests
+* Added Stone and Trees info to MakeScreenShot
+* Added Attack CC, HM, WS, PC sceneries - SetSAtk(True) in Run Function
+* Added Hog Mountain Scenery
+* Added Winter Scenery
+* Added Pirate Scenery
+* Added GetVillageSize info to AttackDebug Image
+
+
 * **V7.9.0**
 * December Update 2020:
 ** Added Spell Invisibility (CSV name = ISpell)
