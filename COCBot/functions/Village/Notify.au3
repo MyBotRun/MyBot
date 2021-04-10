@@ -99,30 +99,37 @@ Func NotifyPushToTelegram($pMessage)
 
 	If $g_bDebugSetlog Then SetDebugLog("NotifyPushToTelegram(" & $pMessage & " ): ")
 
-	If Not $g_bNotifyTGEnable Or $g_sNotifyTGToken = "" Then Return
+	If Not $g_bNotifyTGEnable Or $g_sNotifyTGToken = "" Then Return False
 
-	If Not IsPlanUseTelegram($pMessage) Then Return
+	If Not IsPlanUseTelegram($pMessage) Then Return False
 
 	If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" Then
 		Local $Date = @YEAR & '-' & @MON & '-' & @MDAY
 		Local $Time = @HOUR & ':' & @MIN
 
-		Local $text = __WinHttpURLEncode($pMessage & chr(10)) & $Date & ' ' & $Time
+		Local $text = __WinHttpURLEncode($pMessage & chr(10) & $Date & ' ' & $Time) 
 		; Telegram Message
 		Local $SdtOut = InetRead($TELEGRAM_URL & $g_sNotifyTGToken & "/sendMessage?chat_id=" & $g_sTGChatID & "&text=" & $text, $INET_FORCERELOAD)
-		
+
 		If $g_bDebugSetlog Then SetDebugLog("Telegram sent msg:" & $TELEGRAM_URL & $g_sNotifyTGToken & "/sendMessage?chat_id=" & $g_sTGChatID & "&text=" & $text)
+		If $g_bDebugSetlog Then SetDebugLog("NotifyPushToTelegram Send Return code:" & @error)
+		;If $g_bDebugSetlog Then SetDebugLog("NotifyPushToTelegram Send Return SdtOut:" & $SdtOut)
 		
-		If @error Or $SdtOut = "" Then Return
+		If @error Or $SdtOut = "" Then Return False
 		; Convert Binary to String/Json Format
 		Local $sCorrectStdOut = BinaryToString($SdtOut, 4)
-		If @error Or $sCorrectStdOut = "" Then Return
+		If @error Or $sCorrectStdOut = "" Then Return False
+		If $g_bDebugSetlog Then SetDebugLog("NotifyPushToTelegram Send Return msg:" & $sCorrectStdOut)
 		; Json Format :
 		; {"ok":true,"result":{"message_id":XXX,"from":{"id":XXXXXXX,"is_bot":true,"first_name":"TH12","username":"TH12bot"},"chat":{"id":XXXXXXX,"first_name":"XXXXX","username":"XXXXXX","type":"private"},"date":XXXXXXXX,"text":"XXXXXXX"}}
 		; Parse message id from Json Format , just to confirm if all are ok
 		Local $mdg = _StringBetween($sCorrectStdOut, '"message_id":', ',"from":')
-		If @error Or Not IsArray($mdg) Then SetDebugLog("NotifyPushToTelegram Send Error!: " & $sCorrectStdOut)
+		If @error Or Not IsArray($mdg) Then 
+			SetDebugLog("NotifyPushToTelegram Send Error!: " & $sCorrectStdOut)
+			Return False
+		EndIf
 		If $g_bDebugSetlog Then SetDebugLog("Telegram last sent msg number is '" & $mdg[0] & "'")
+		Return True
 	EndIf
 EndFunc   ;==>NotifyPushToTelegram
 
@@ -144,10 +151,10 @@ Func NotifyPushFileToTelegram($File, $Folder, $FileType, $body)
 				$sCmd1 = "document"
 			EndIf
 			Local $FullTelegram_url = $TELEGRAM_URL & $g_sNotifyTGToken & $sCmd
-			
+
 			If $g_bDebugSetlog Then SetDebugLog("NotifyPushFileToTelegram(): " & $g_sCurlPath & " -i -X POST " & $FullTelegram_url & ' -F chat_id="' & $g_sTGChatID & '" -F ' & $sCmd1 & '=@"' & $g_sProfilePath & "\" & $g_sProfileCurrentName & '\' & $Folder & '\' & $File & '"')
-			
-			
+
+
 			Local $Result = RunWait($g_sCurlPath & " -i -X POST " & $FullTelegram_url & ' -F chat_id="' & $g_sTGChatID & '" -F ' & $sCmd1 & '=@"' & $g_sProfilePath & "\" & $g_sProfileCurrentName & '\' & $Folder & '\' & $File & '"', "", @SW_HIDE)
 
 			; Telegram Message attached to file
@@ -272,9 +279,12 @@ Func NotifyRemoteControlProcBtnStart()
 			$g_iTGLastRemote = $g_sTGLast_UID
 
 			Switch $TGActionMSG
-				Case GetTranslatedFileIni("MBR Func_Notify", "START", "START"), BinaryToString( Binary("0x25b6"), 3)&' ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START")
+				Case "/START", GetTranslatedFileIni("MBR Func_Notify", "START", "START"), BinaryToString( Binary("0x25b6"), 3)&' ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START")
 					btnStart()
 					NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_01", "Request to Start...") & chr(10) & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_02", "Your bot is now starting..."))
+				Case "/KEYBOARD", "/keyboard"
+					NotifyActivateKeyboardOnTelegram($g_sNotifyOrigin & " | " & $g_sBotTitle & " | Notify " & $g_sNotifyVersion)
+					
 				Case Else
 					NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_03", "Start MyBot first."))
 			EndSwitch
@@ -282,6 +292,22 @@ Func NotifyRemoteControlProcBtnStart()
 	EndIf
 	SetDebugLogSilent($bWasSilent)
 EndFunc   ;==>NotifyRemoteControlProcBtnStart
+
+
+
+; CONTROL TELEGRAM ON MAINLOOP()
+Func NotifyRemoteBotisOnline()
+	;Local $bWasSilent = SetDebugLogSilent()
+	If $g_bNotifyTGEnable And $g_sNotifyTGToken <> "" And $g_bNotifyBotOnline = False Then
+		local $TGRet = NotifyPushToTelegram($g_sNotifyOrigin & ":" & chr(10) & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_04", "The Bot is online, you can say:" & @CRLF & "/start - start the bot" & @CRLF & "/keyboard - get a command keyboard"))
+		;not send this msg again
+		If $TGRet = True Then $g_bNotifyBotOnline = TRUE
+		If $g_bDebugSetlog Then SetDebugLog("Telegram | NotifyRemoteBotisOnline $TGRet:" & $TGRet & " $g_bNotifyBotOnline:" & $g_bNotifyBotOnline)
+	EndIf
+	;SetDebugLogSilent($bWasSilent)
+EndFunc   ;==>NotifyRemoteBotisOnline
+
+
 
 ; CONTROL TELEGRAM : REMOTE CONTROL
 Func NotifyRemoteControlProc()
@@ -298,7 +324,7 @@ Func NotifyRemoteControlProc()
 		If $g_bDebugSetlog Then SetDebugLog("Telegram | NotifyRemoteControlProc $TGActionMSG : " & $TGActionMSG)
 		If $g_bDebugSetlog Then SetDebugLog("Telegram | NotifyRemoteControlProc $g_iTGLastRemote : " & $g_iTGLastRemote)
 		If $g_bDebugSetlog Then SetDebugLog("Telegram | NotifyRemoteControlProc $g_sTGLast_UID : " & $g_sTGLast_UID)
-		If ($TGActionMSG = "/START" Or $TGActionMSG = "KEYB") And $g_iTGLastRemote <> $g_sTGLast_UID Then
+		If ($TGActionMSG = "/START" Or $TGActionMSG = "KEYB" Or $TGActionMSG = "/KEYBOARD") And $g_iTGLastRemote <> $g_sTGLast_UID Then
 			$g_iTGLastRemote = $g_sTGLast_UID
 			NotifyActivateKeyboardOnTelegram($g_sBotTitle & " | Notify " & $g_sNotifyVersion)
 		Else
@@ -429,7 +455,7 @@ Func NotifyRemoteControlProc()
 					Case GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT", "LASTRAIDTXT"), BinaryToString( Binary("0xD83Ddcc4"), 3)&' '   & GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT", "LASTRAIDTXT")
 						SetLog("Notify Telegram: Your request has been received. Last Raid txt sent", $COLOR_SUCCESS)
 						NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Last-Raid_Info_04", "Last Raid txt") & chr(10) & "[" & GetTranslatedFileIni("MBR Func_Notify", "Stats-G_Info_01", "G") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootGold]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-E_Info_01", "E") & "]: " & _NumberFormat($g_iStatsLastAttack[$eLootElixir]) & " [D]: " & _NumberFormat($g_iStatsLastAttack[$eLootDarkElixir]) & " [" & GetTranslatedFileIni("MBR Func_Notify", "Stats-T_Info_01", "T") & "]: " & $g_iStatsLastAttack[$eLootTrophy])
-					Case GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT", "SCREENSHOT"), BinaryToString( Binary("0xD83Ddcf7"), 3)&' '   & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT", "SCREENSHOT") 
+					Case GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT", "SCREENSHOT"), BinaryToString( Binary("0xD83Ddcf7"), 3)&' '   & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT", "SCREENSHOT")
 						SetLog("Notify Telegram: ScreenShot request received", $COLOR_SUCCESS)
 						NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOT_Info_03", "Chief, your request for Screenshot will be processed ASAP"))
 						$g_bTGRequestScreenshot = True
@@ -522,7 +548,7 @@ Func NotifyRemoteControlProc()
 						$bHibernate = False
 						$bStandby = False
 					Case Else
-						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "ELSE_Info_01", "Sorry Chief!, ") & ' ' & $TGActionMSG & " " & _
+						NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "ELSE_Info_01", "Sorry Chief!, ") & ' ' & $TGActionMSG & " " & _
 								GetTranslatedFileIni("MBR Func_Notify", "ELSE_Info_02", " is not a valid command."))
 				EndSwitch
 			EndIf

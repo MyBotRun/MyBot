@@ -649,10 +649,13 @@ Func MainLoop($bCheckPrerequisitesOK = True)
 
 	; Check the Supported Emulator versions
 	CheckEmuNewVersions()
-
+	
 	;Reset Telegram message
 	NotifyGetLastMessageFromTelegram()
 	$g_iTGLastRemote = $g_sTGLast_UID
+	
+	;the message maybe failed, not try again because efficiency 
+	NotifyRemoteBotisOnline()
 
 	While 1
 		_Sleep($DELAYSLEEP, True, False)
