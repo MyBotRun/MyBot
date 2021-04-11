@@ -192,6 +192,8 @@ Func NotifyGetLastMessageFromTelegram()
 	; Convert Binary to String/Json Format
 	; convert from Web UTF-8 to AutoIt native UTF-16
 	Local $sCorrectStdOut = BinaryToString($SdtOut, 4)
+	;convert \uxxxx to real word
+	$sCorrectStdOut = Json_StringDecode($sCorrectStdOut)
 	If @error Or $sCorrectStdOut = "" Then Return
 	If $g_bDebugSetlog Then SetDebugLog("Notify | getUpdates(): " & $sCorrectStdOut)
 	; Parse user_id from Json Format
@@ -218,6 +220,7 @@ Func NotifyGetLastMessageFromTelegram()
 	Local $SdtOut = InetRead($TELEGRAM_URL & $g_sNotifyTGToken & "/getupdates?offset=" & $g_sTGLast_UID, $INET_FORCERELOAD)
 	If @error Or $SdtOut = "" Then Return
 	Local $sCorrectStdOut = BinaryToString($SdtOut, 4)
+	$sCorrectStdOut = Json_StringDecode($sCorrectStdOut)
 	If $g_bDebugSetlog Then SetDebugLog("Notify | getupdates?offset=" & $g_sTGLast_UID & " : " & $sCorrectStdOut)
 
 	; Parse message text from Json Format
@@ -277,6 +280,8 @@ Func NotifyRemoteControlProcBtnStart()
 		If $g_bDebugSetlog Then SetDebugLog("Telegram | NotifyRemoteControlProcBtnStart $g_sTGLast_UID : " & $g_sTGLast_UID)
 		If $g_iTGLastRemote <> $g_sTGLast_UID Then
 			$g_iTGLastRemote = $g_sTGLast_UID
+			
+			If $g_bDebugSetlog Then SetDebugLog("Telegram | NotifyRemoteControlProcBtnStart $TGActionMSG1:" & $TGActionMSG)
 
 			Switch $TGActionMSG
 				Case "/START", GetTranslatedFileIni("MBR Func_Notify", "START", "START"), BinaryToString( Binary("0x25b6"), 3)&' ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START")
@@ -286,7 +291,7 @@ Func NotifyRemoteControlProcBtnStart()
 					NotifyActivateKeyboardOnTelegram($g_sNotifyOrigin & " | " & $g_sBotTitle & " | Notify " & $g_sNotifyVersion)
 					
 				Case Else
-					NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_03", "Start MyBot first."))
+					NotifyPushToTelegram($g_sNotifyOrigin & ":" & chr(10) & "Get:" & $TGActionMSG & chr(10) & GetTranslatedFileIni("MBR Func_Notify", "Request-Start_Info_03", "Start MyBot first."))
 			EndSwitch
 		EndIf
 	EndIf
