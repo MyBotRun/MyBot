@@ -34,7 +34,7 @@ Global $g_hChkABMeetTrophy = 0, $g_hTxtABMinTrophy = 0, $g_hTxtABMaxTrophy = 0
 Global $g_hChkABMeetTH = 0, $g_hCmbABTH = 0, $g_hChkABMeetTHO = 0
 
 Global $g_hGrpABFilter = 0, $g_hPicABMinGold = 0, $g_hPicABMinElixir = 0, $g_hPicABMinGPEGold = 0, $g_hPicABMinDarkElixir = 0, $g_hPicABMinTrophies = 0
-Global $g_ahPicABMaxTH[14]
+Global $g_ahPicABMaxTH[15]
 
 Func CreateAttackSearchActiveBaseSearch()
 	Local $sTxtLightningSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortLightningSpells", -1)

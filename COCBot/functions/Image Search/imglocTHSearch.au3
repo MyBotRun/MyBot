@@ -20,8 +20,8 @@ Global $IMGLOCTHFAR
 Global $IMGLOCTHRDISTANCE
 
 Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
-	Local $xdirectorya = "imglocth-bundle"
-	Local $xdirectoryb = "imglocth2-bundle"
+	Local $xdirectorya = @ScriptDir & "\imgxml\Buildings\Townhall"
+	Local $xdirectoryb = @ScriptDir & "\imgxml\Buildings\Townhall2"
 	Local $xdirectory
 	Local $sCocDiamond = "ECD"
 	Local $redLines = ""
