@@ -234,9 +234,9 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$aResult[7] = $tree[0]
 		$aResult[8] = $tree[1]
 		$aResult[9] = $tree[5]
-	
+
 		$g_aVillageSize = $aResult
-		
+
 		Return FuncReturn($aResult)
 
 	Else
@@ -266,9 +266,9 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		$aResult[7] = $tree[0]
 		$aResult[8] = $tree[1]
 		$aResult[9] = $tree[5]
-		
+
 		$g_aVillageSize = $aResult
-		
+
 		Return FuncReturn($aResult)
 
 	EndIf
@@ -324,7 +324,9 @@ Func DetectScenery($stone = "None")
 	Local $sScenery = ""
 
 	If StringInStr($stone, "DS", $STR_CASESENSE) Then
-		$sScenery = "Default Scenery"
+		$sScenery = "Classic Scenery"
+	ElseIf StringInStr($stone, "JS", $STR_CASESENSE) Then
+		$sScenery = "Jungle Scenery"
 	ElseIf StringInStr($stone, "CC", $STR_CASESENSE) Then
 		$sScenery = "Clashy Construction"
 	ElseIf StringInStr($stone, "PC", $STR_CASESENSE) Then

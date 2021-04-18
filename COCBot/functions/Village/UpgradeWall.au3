@@ -246,8 +246,8 @@ Func SkipWallUpgrade($iWallCost = $g_iWallCost) ; Dynamic Upgrades
 				SetLog("Skip Wall upgrade -insufficient TH-Level", $COLOR_WARNING)
 				Return True
 			EndIf
-		Case 9 To 13
-			SetDebugLog("Case 9 to 13")
+		Case 9 To $g_iMaxTHLevel
+			SetDebugLog("Case 9 to Max")
 			If $g_iTownHallLevel < $g_iCmbUpgradeWallsLevel + 3 Then
 				SetLog("Skip Wall upgrade -insufficient TH-Level", $COLOR_WARNING)
 				Return True

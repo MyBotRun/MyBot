@@ -1459,24 +1459,24 @@ EndFunc   ;==>TranslateTroopNames
 
 ; Upgrading - Wall
 ;First cost is for walls level 5.  MBR doesn't support walls until level 4.
-Global Const $g_aiWallCost[10] = [20000, 40000, 80000, 150000, 250000, 500000, 1000000, 3000000, 5000000, 6000000]
+Global Const $g_aiWallCost[11] = [20000, 40000, 80000, 150000, 250000, 500000, 1000000, 3000000, 5000000, 6000000, 7000000]
 Global $g_iWallCost = 0
 
 ; Upgrading - Heroes
 ; Barbarian King/Queen Upgrade Costs = Dark Elixir in xxxK
-Global Const $g_iMaxKingLevel = 75
-Global Const $g_iMaxQueenLevel = 75
-Global Const $g_iMaxWardenLevel = 50
-Global Const $g_iMaxChampionLevel = 25
-Global Const $g_afKingUpgCost[$g_iMaxKingLevel] = [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 53, 56, 59, 62, 65, 68, 72, 76, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 170, 173, 176, 179, 182, 185, 188, 191, 194, 197, 200, 203, 206, 209, 212, 215, 218, 221, 224, 227, 230, 233, 236, 239, 240, 250, 260, 270, 280, 290, 292, 294, 296, 298, 300]
+Global Const $g_iMaxKingLevel = 80
+Global Const $g_iMaxQueenLevel = 80
+Global Const $g_iMaxWardenLevel = 55
+Global Const $g_iMaxChampionLevel = 30
+Global Const $g_afKingUpgCost[$g_iMaxKingLevel] = [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 53, 56, 59, 62, 65, 68, 72, 76, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 170, 173, 176, 179, 182, 185, 188, 191, 194, 197, 200, 203, 206, 209, 212, 215, 218, 221, 224, 227, 230, 233, 236, 239, 240, 250, 260, 270, 280, 290, 292, 294, 296, 298, 300, 305, 310, 315, 320, 325]
 
-Global Const $g_afQueenUpgCost[$g_iMaxQueenLevel] = [20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 98, 106, 114, 122, 130, 138, 146, 154, 162, 170, 180, 182, 184, 186, 188, 190, 192, 194, 196, 198, 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 240, 240, 240, 240, 250, 260, 270, 280, 290, 292, 294, 296, 298, 300]
+Global Const $g_afQueenUpgCost[$g_iMaxQueenLevel] = [20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 98, 106, 114, 122, 130, 138, 146, 154, 162, 170, 180, 182, 184, 186, 188, 190, 192, 194, 196, 198, 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 240, 240, 240, 240, 250, 260, 270, 280, 290, 292, 294, 296, 298, 300, 306, 312, 318, 324, 330]
 
-Global Const $g_afChampionUpgCost[$g_iMaxChampionLevel] = [120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295]
+Global Const $g_afChampionUpgCost[$g_iMaxChampionLevel] = [120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300, 305, 310, 315, 320]
 
 ; Grand Warden Upgrade Costs = Elixir in xx.xK
 Global $g_iWardenLevel = -1
-Global Const $g_afWardenUpgCost[$g_iMaxWardenLevel] = [6, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.4, 8.8, 9.1, 9.4, 9.6, 9.8, 10, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.2, 11.4, 11.6, 11.8, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5]
+Global Const $g_afWardenUpgCost[$g_iMaxWardenLevel] = [6, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.4, 8.8, 9.1, 9.4, 9.6, 9.8, 10, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.2, 11.4, 11.6, 11.8, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19]
 
 ; Special Bot activities active
 Global $g_bVillageSearchActive = False ;True during Village Search
@@ -1484,9 +1484,9 @@ Global $g_bCloudsActive = False ;True when waiting for clouds
 Global $g_bAttackActive = False ;True when attacking Village
 
 ; Search
-Global Const $g_iMaxTHLevel = 13
-Global Const $g_asTHText[8] = ["4-6", "7", "8", "9", "10", "11", "12", "13"]
-Global Const $g_aiSearchCost[$g_iMaxTHLevel] = [10, 50, 75, 110, 170, 250, 380, 580, 750, 900, 1000, 1100, 1200]
+Global Const $g_iMaxTHLevel = 14
+Global Const $g_asTHText[9] = ["4-6", "7", "8", "9", "10", "11", "12", "13", "14"]
+Global Const $g_aiSearchCost[$g_iMaxTHLevel] = [10, 50, 75, 110, 170, 250, 380, 580, 750, 900, 1000, 1100, 1200, 1300]
 Global $g_bSearchMode = False
 Global $g_bIsSearchLimit = False
 Global $g_bIsClientSyncError = False ;If true means while searching Client Out Of Sync error occurred.
@@ -1683,8 +1683,8 @@ Global $g_aWeakDefenseNames = ["None", "Eagle Artillery", "Inferno Tower", "XBow
 ; Building variables used by CSV attacks
 Global Enum $eBldgRedLine, $eBldgTownHall, $eBldgGoldM, $eBldgElixirC, $eBldgDrill, $eBldgGoldS, $eBldgElixirS, $eBldgDarkS, $eBldgEagle, $eBldgInferno, $eBldgXBow, $eBldgWizTower, $eBldgMortar, $eBldgAirDefense, $eBldgScatter, $eExternalWall, $eInternalWall
 Global $g_sBldgNames = ["Red Line", "Town Hall", "Gold Mine", "Elixir Collector", "Dark Elixir Drill", "Gold Storage", "Elixir Storage", "Dark Elixir Storage", "Eagle Artillery", "Inferno Tower", "XBow", "Wizard Tower", "Mortar", "Air Defense", "Scatter Shot", "External Wall", "Internal Wall"]
-Global Const $g_iMaxCapTroopTH[14] = [0, 20, 30, 70, 80, 135, 150, 200, 200, 220, 240, 260, 280, 300] ; element 0 is a dummy
-Global Const $g_iMaxCapSpellTH[14] = [0, 0, 0, 0, 0, 2, 4, 6, 7, 9, 11, 11, 11, 11] ; element 0 is a dummy
+Global Const $g_iMaxCapTroopTH[15] = [0, 20, 30, 70, 80, 135, 150, 200, 200, 220, 240, 260, 280, 300, 300] ; element 0 is a dummy
+Global Const $g_iMaxCapSpellTH[15] = [0, 0, 0, 0, 0, 2, 4, 6, 7, 9, 11, 11, 11, 11, 13] ; element 0 is a dummy
 Global $g_oBldgAttackInfo = ObjCreate("Scripting.Dictionary") ; stores building information of base being attacked
 $g_oBldgAttackInfo.CompareMode = 1 ; use case in-sensitve compare for key values
 
@@ -1716,29 +1716,29 @@ Global $g_oBldgLevels = ObjCreate("Scripting.Dictionary")
 ; to find max level for any defense = $g_oBldgLevels.item(Building enum)[TownHall level -1]
 
 Func _FilloBldgLevels()
-	Local Const $aBldgCollector[13] = [2, 4, 6, 8, 10, 10, 11, 12, 12, 12, 12, 12, 12]
+	Local Const $aBldgCollector[$g_iMaxTHLevel] = [2, 4, 6, 8, 10, 10, 11, 12, 12, 12, 12, 12, 12, 12]
 	$g_oBldgLevels.add($eBldgGoldM, $aBldgCollector)
 	$g_oBldgLevels.add($eBldgElixirC, $aBldgCollector)
-	Local Const $aBldgDrill[13] = [0, 0, 0, 0, 0, 0, 3, 3, 6, 6, 6, 6, 6]
+	Local Const $aBldgDrill[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 3, 3, 6, 6, 6, 6, 6, 6]
 	$g_oBldgLevels.add($eBldgDrill, $aBldgDrill)
-	Local Const $aBldgStorage[13] = [1, 3, 6, 8, 9, 10, 11, 11, 11, 11, 12, 13, 14]
+	Local Const $aBldgStorage[$g_iMaxTHLevel] = [1, 3, 6, 8, 9, 10, 11, 11, 11, 11, 12, 13, 14, 15]
 	$g_oBldgLevels.add($eBldgGoldS, $aBldgStorage)
 	$g_oBldgLevels.add($eBldgElixirS, $aBldgStorage)
-	Local Const $aBldgDarkStorage[13] = [0, 0, 0, 0, 0, 0, 2, 4, 6, 6, 6, 7, 8]
+	Local Const $aBldgDarkStorage[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 2, 4, 6, 6, 6, 7, 8, 9]
 	$g_oBldgLevels.add($eBldgDarkS, $aBldgDarkStorage)
-	Local Const $aBldgEagle[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 4]
+	Local Const $aBldgEagle[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 4, 5]
 	$g_oBldgLevels.add($eBldgEagle, $aBldgEagle)
-	Local Const $aBldgInferno[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 5, 6, 7]
+	Local Const $aBldgInferno[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 5, 6, 7, 8]
 	$g_oBldgLevels.add($eBldgInferno, $aBldgInferno)
-	Local Const $aBldgMortar[13] = [0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 11]
+	Local Const $aBldgMortar[$g_iMaxTHLevel] = [0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 11, 12]
 	$g_oBldgLevels.add($eBldgMortar, $aBldgMortar)
-	Local Const $aBldgWizTower[13] = [0, 0, 0, 0, 2, 3, 4, 6, 7, 9, 10, 11, 12]
+	Local Const $aBldgWizTower[$g_iMaxTHLevel] = [0, 0, 0, 0, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13]
 	$g_oBldgLevels.add($eBldgWizTower, $aBldgWizTower)
-	Local Const $aBldgXBow[13] = [0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 5, 6, 7]
+	Local Const $aBldgXBow[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 5, 6, 7, 8]
 	$g_oBldgLevels.add($eBldgXBow, $aBldgXBow)
-	Local Const $aBldgAirDefense[13] = [0, 0, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+	Local Const $aBldgAirDefense[$g_iMaxTHLevel] = [0, 0, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 	$g_oBldgLevels.add($eBldgAirDefense, $aBldgAirDefense)
-	Local const $aBldgScatterShot[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+	Local const $aBldgScatterShot[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3]
 	$g_oBldgLevels.add($eBldgScatter, $aBldgScatterShot)
 EndFunc   ;==>_FilloBldgLevels
 _FilloBldgLevels()
@@ -1748,37 +1748,37 @@ Global $g_oBldgMaxQty = ObjCreate("Scripting.Dictionary")
 ; to find max number of bldgs for any defense = $g_oBldgMaxQty.item(Building enum)[TownHall level -1]
 
 Func _FilloBldgMaxQty()
-	Local Const $aBldgCollector[13] = [1, 2, 3, 4, 5, 6, 6, 6, 6, 7, 7, 7, 7]
+	Local Const $aBldgCollector[$g_iMaxTHLevel] = [1, 2, 3, 4, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7]
 	$g_oBldgMaxQty.add($eBldgGoldM, $aBldgCollector)
 	$g_oBldgMaxQty.add($eBldgElixirC, $aBldgCollector)
-	Local Const $aBldgDrill[13] = [0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 3, 3, 3]
+	Local Const $aBldgDrill[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 3, 3, 3, 3]
 	$g_oBldgMaxQty.add($eBldgDrill, $aBldgDrill)
-	Local Const $aBldgStorage[13] = [1, 1, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4]
+	Local Const $aBldgStorage[$g_iMaxTHLevel] = [1, 1, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4]
 	$g_oBldgMaxQty.add($eBldgGoldS, $aBldgStorage)
 	$g_oBldgMaxQty.add($eBldgElixirS, $aBldgStorage)
-	Local Const $aBldgDarkStorage[13] = [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1]
+	Local Const $aBldgDarkStorage[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1]
 	$g_oBldgMaxQty.add($eBldgDarkS, $aBldgDarkStorage)
-	Local Const $aBldgEagle[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1]
+	Local Const $aBldgEagle[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1]
 	$g_oBldgMaxQty.add($eBldgEagle, $aBldgEagle)
-	Local Const $aBldgInferno[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 3, 3]
+	Local Const $aBldgInferno[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 3, 3, 3]
 	$g_oBldgMaxQty.add($eBldgInferno, $aBldgInferno)
-	Local Const $aBldgMortar[13] = [0, 0, 1, 1, 1, 2, 3, 4, 4, 4, 4, 4, 4]
+	Local Const $aBldgMortar[$g_iMaxTHLevel] = [0, 0, 1, 1, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4]
 	$g_oBldgMaxQty.add($eBldgMortar, $aBldgMortar)
-	Local Const $aBldgWizTower[13] = [0, 0, 0, 0, 1, 2, 2, 3, 4, 4, 5, 5, 5]
+	Local Const $aBldgWizTower[$g_iMaxTHLevel] = [0, 0, 0, 0, 1, 2, 2, 3, 4, 4, 5, 5, 5, 5]
 	$g_oBldgMaxQty.add($eBldgWizTower, $aBldgWizTower)
-	Local Const $aBldgXBow[13] = [0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 4, 4, 4]
+	Local Const $aBldgXBow[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 4, 4, 4, 4]
 	$g_oBldgMaxQty.add($eBldgXBow, $aBldgXBow)
-	Local Const $aBldgAirDefense[13] = [0, 0, 0, 1, 1, 2, 3, 3, 4, 4, 4, 4, 4]
+	Local Const $aBldgAirDefense[$g_iMaxTHLevel] = [0, 0, 0, 1, 1, 2, 3, 3, 4, 4, 4, 4, 4, 4]
 	$g_oBldgMaxQty.add($eBldgAirDefense, $aBldgAirDefense)
-	Local const $aBldgScatterShot[13] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+	Local const $aBldgScatterShot[$g_iMaxTHLevel] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2]
 	$g_oBldgMaxQty.add($eBldgScatter, $aBldgScatterShot)
 EndFunc   ;==>_FilloBldgMaxQty
 _FilloBldgMaxQty()
 
 Global $g_oBldgImages = ObjCreate("Scripting.Dictionary") ; stores strings with location of images used to find buildings during attacks
 ; Building image key string value = bldg type enum & "_" & $g_iDetectedImageType (no snow, with snow)
-$g_oBldgImages.add($eBldgTownHall & "_" & "0", "imglocth-bundle")
-$g_oBldgImages.add($eBldgTownHall & "_" & "1", "snow-imglocth-bundle")
+$g_oBldgImages.add($eBldgTownHall & "_" & "0", @ScriptDir & "\imgxml\Buildings\Townhall")
+$g_oBldgImages.add($eBldgTownHall & "_" & "1", @ScriptDir & "\imgxml\Buildings\snow-Townhall")
 $g_oBldgImages.add($eBldgGoldM & "_" & "0", @ScriptDir & "\imgxml\Storages\Mines")
 $g_oBldgImages.add($eBldgGoldM & "_" & "1", @ScriptDir & "\imgxml\Storages\Mines_Snow")
 $g_oBldgImages.add($eBldgElixirC & "_" & "0", @ScriptDir & "\imgxml\Storages\Collectors")
