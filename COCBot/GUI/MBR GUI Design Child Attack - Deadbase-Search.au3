@@ -34,7 +34,7 @@ Global $g_hChkDBMeetTrophy = 0, $g_hTxtDBMinTrophy = 0, $g_hTxtDBMaxTrophy = 0
 Global $g_hChkDBMeetTH = 0, $g_hCmbDBTH = 0, $g_hChkDBMeetTHO = 0, $g_hChkDBMeetDeadEagle = 0, $g_hTxtDeadEagleSearch = 0
 
 Global $g_hGrpDBFilter = 0, $g_hPicDBMinGold = 0, $g_hPicDBMinElixir = 0, $g_hPicDBMinGPEGold = 0, $g_hPicDBMinDarkElixir = 0, $g_hPicDBMinTrophies = 0
-Global $g_ahPicDBMaxTH[14]
+Global $g_ahPicDBMaxTH[15]
 
 Func CreateAttackSearchDeadBaseSearch()
 	Local $sTxtLightningSpells = GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtShortLightningSpells", -1)

@@ -19,7 +19,7 @@ Global $g_hGUI_BULLY = 0
 Global $g_hTxtATBullyMode = 0, $g_hCmbBullyMaxTH = 0, $g_hRadBullyUseDBAttack = 0, $g_hRadBullyUseLBAttack = 0
 Global $g_hGrpBullyAtkCombo = 0, $g_hLblBullyMode = 0, $g_hLblATBullyMode = 0
 
-Global $g_ahPicBullyMaxTH[14]
+Global $g_ahPicBullyMaxTH[15]
 
 Func CreateAttackSearchBully()
 

@@ -1,3 +1,15 @@
+* **v7.9.2**
+* Spring 2021 Update
+** Globals: TH Level 14, BK, AQ, GW, RC new levels
+** Added TH14 images
+** Fixed auto Townhall locate - removed opencv Townhall detection
+** Update TH14 building arrays
+** Increased StoneCC image tolerance due to interferrence with Jungle Scenery
+** Update League Day End image
+** Fixed Lab array error
+** Added Jungle Scenery
+** Fixed upgrade walls
+
 * **v7.9.1**
 * TH8 village fix
 * updated italian language by quisazadrah
