@@ -23,7 +23,7 @@ Func UpgradeBuilding()
 	Local $iAvailBldr, $iAvailGold, $iAvailElixir, $iAvailDark
 	Local $Endtime, $Endperiod, $TimeAdd
 	Local $iUpGrdEndTimeDiff = 0
-	Local $aCheckFrequency[11] = [5, 15, 20, 30, 60, 60, 120, 240, 240, 240, 240] ; Dwell Time in minutes between each repeat upgrade check TH3-12.  TH reference are game TH level - 3.  So TH13 = 10 in this array.
+	Local $aCheckFrequency[12] = [5, 15, 20, 30, 60, 60, 120, 240, 240, 240, 240, 300] ; Dwell Time in minutes between each repeat upgrade check TH3-14.  TH reference are game TH level - 3.  So TH13 = 10 in this array.
 	;  $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)]  ; returns dwell time based on user THlevel, range from 3=[0] to 11=[7]
 	Local $iDTDiff
 	Local $bChkAllRptUpgrade = False

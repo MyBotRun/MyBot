@@ -45,7 +45,7 @@ Func AttackBB()
 
 	local $iAndroidSuspendModeFlagsLast = $g_iAndroidSuspendModeFlags
 	$g_iAndroidSuspendModeFlags = 0 ; disable suspend and resume
-	If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Disabled")
+	SetDebugLog("Android Suspend Mode Disabled")
 
 	; wait for the clouds to clear
 	SetLog("Searching for Opponent.", $COLOR_BLUE)
@@ -72,8 +72,16 @@ Func AttackBB()
 		Return
 	EndIf
 
-	; Deploy all troops
 	local $bTroopsDropped = False, $bBMDeployed = False
+	;Function uses this list of local variables...
+	$aBMPos = GetMachinePos() ;Need this initialized before it starts flashing
+	If $g_bChkBBDropBMFirst = True Then 
+		SetDebugLog("Dropping BM First")
+		$bBMDeployed = DeployBM($bBMDeployed, $aBMPos, $iSide, $iAndroidSuspendModeFlagsLast)
+	EndIF
+	
+	; Deploy all troops
+	;local $bTroopsDropped = False, $bBMDeployed = False
 	SetLog( $g_bBBDropOrderSet = True ? "Deploying Troops in Custom Order." : "Deploying Troops in Order of Attack Bar.", $COLOR_BLUE)
 	While Not $bTroopsDropped
 		local $iNumSlots = UBound($aBBAttackBar, 1)
@@ -119,48 +127,39 @@ Func AttackBB()
 	WEnd
 	SetLog("All Troops Deployed", $COLOR_SUCCESS)
 
-	; place hero and activate ability
-	If $g_bBBMachineReady And Not $bBMDeployed Then SetLog("Deploying Battle Machine.", $COLOR_BLUE)
-	While Not $bBMDeployed And $g_bBBMachineReady
-		$aBMPos = GetMachinePos()
-		If IsArray($aBMPos) Then
-			PureClickP($aBMPos)
-			local $iPoint = Random(0, 9, 1)
-			If $iSide Then
-				PureClick($g_apTR[$iPoint][0], $g_apTR[$iPoint][1])
-			Else
-				PureClick($g_apTL[$iPoint][0], $g_apTL[$iPoint][1])
-			EndIf
-			If _Sleep(500) Then ; wait before clicking ability
-				$g_iAndroidSuspendModeFlags = $iAndroidSuspendModeFlagsLast
-				If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Enabled")
-				Return
-			EndIf
-			PureClickP($aBMPos) ; potentially add sleep here later, but not needed at the moment
-		Else
-			$bBMDeployed = True ; true if we dont find the image... this logic is because sometimes clicks can be funky so id rather keep looping till image is gone rather than until we think we have deployed
-		EndIf
-	WEnd
-	If $bBMDeployed Then SetLog("Battle Machine Deployed", $COLOR_SUCCESS)
+	;If not dropping Builder Machine first, drop it now
+	If $g_bChkBBDropBMFirst = False Then 
+		SetDebugLog("Dropping BM Last")
+		$bBMDeployed = DeployBM($bBMDeployed, $aBMPos, $iSide, $iAndroidSuspendModeFlagsLast)
+		;Have to sleep here to while TimerDiff loop works first time, below.
+		If $bBMDeployed = True Then Sleep($g_iBBMachAbilityTime)
+	EndIf
 
 	; Continue with abilities until death
 	local $bMachineAlive = True
 	while $bMachineAlive And $bBMDeployed
-		If _Sleep($g_iBBMachAbilityTime) Then ; wait for machine to be available
-			$g_iAndroidSuspendModeFlags = $iAndroidSuspendModeFlagsLast
-			If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Enabled")
-			Return
-		EndIf
+		SetDebugLog("Top of Battle Machine Loop")
 		local $timer = __TimerInit() ; give a bit of time to check if hero is dead because of the random lightning strikes through graphic
 		$aBMPos = GetMachinePos()
 		While __TimerDiff($timer) < 3000 And Not IsArray($aBMPos) ; give time to find
+			SetDebugLog("Checking BM Pos again")
 			$aBMPos = GetMachinePos()
 		WEnd
 
-		If Not IsArray($aBMPos) Then ; if machine wasnt found then it is dead, if not we hit ability
+		If Not IsArray($aBMPos) Then ; if machine wasn't found then it is dead, if not we hit ability
 			$bMachineAlive = False
+			SetDebugLog("BM not found...is dead")
 		Else
+			SetDebugLog("Clicking BM")
 			PureClickP($aBMPos)
+		EndIf
+		;Sleep at the end with BM
+		If $bMachineAlive Then ;Only wait if still alive
+			If _Sleep($g_iBBMachAbilityTime) Then ; wait for machine to be available
+				$g_iAndroidSuspendModeFlags = $iAndroidSuspendModeFlagsLast
+				If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Enabled")
+				Return
+			Endif
 		EndIf
 	WEnd
 	If $bBMDeployed And Not $bMachineAlive Then SetLog("Battle Machine Dead")
@@ -189,6 +188,34 @@ Func AttackBB()
 	$g_iAndroidSuspendModeFlags = $iAndroidSuspendModeFlagsLast ; reset android suspend and resume stuff
 	If $g_bDebugSetlog Then SetDebugLog("Android Suspend Mode Enabled")
 EndFunc
+
+Func DeployBM($bBMDeployed, $aBMPos, $iSide, $iAndroidSuspendModeFlagsLast)
+	; place hero first and activate ability
+	If $g_bBBMachineReady And Not $bBMDeployed Then SetLog("Deploying Battle Machine.", $COLOR_BLUE)
+	While Not $bBMDeployed And $g_bBBMachineReady
+		$aBMPos = GetMachinePos()
+		If IsArray($aBMPos) Then
+			PureClickP($aBMPos)
+			local $iPoint = Random(0, 9, 1)
+			If $iSide Then
+				PureClick($g_apTR[$iPoint][0], $g_apTR[$iPoint][1])
+			Else
+				PureClick($g_apTL[$iPoint][0], $g_apTL[$iPoint][1])
+			EndIf
+			If _Sleep(1000) Then ; wait before clicking ability
+				$g_iAndroidSuspendModeFlags = $iAndroidSuspendModeFlagsLast
+				If $g_bDebugSetlog = True Then SetDebugLog("Android Suspend Mode Enabled")
+				Return
+			EndIf
+			PureClickP($aBMPos) ; potentially add sleep here later, but not needed at the moment
+			Sleep(2000) ;Delay after starting BM
+		Else
+			$bBMDeployed = True ; true if we dont find the image... this logic is because sometimes clicks can be funky so id rather keep looping till image is gone rather than until we think we have deployed
+		EndIf
+	WEnd
+	If $bBMDeployed Then SetLog("Battle Machine Deployed", $COLOR_SUCCESS)
+	Return($bBMDeployed)
+EndFunc ; DeployBM
 
 Func CheckBattleStarted()
 	local $sSearchDiamond = GetDiamondFromRect("376,11,420,26")

@@ -23,6 +23,7 @@ Global $g_bDonateAllRespectBlk = False ; is turned on off durning donate all sec
 Global $g_aiAvailQueuedTroop[$eTroopCount], $g_aiAvailQueuedSpell[$eSpellCount]
 
 Func PrepareDonateCC()
+	;Troops
 	$g_aiPrepDon[0] = 0
 	$g_aiPrepDon[1] = 0
 	For $i = 0 To $eTroopCount - 1 + $g_iCustomDonateConfigs
@@ -30,14 +31,14 @@ Func PrepareDonateCC()
 		$g_aiPrepDon[1] = BitOR($g_aiPrepDon[1], ($g_abChkDonateAllTroop[$i] ? 1 : 0))
 	Next
 
+	; Spells
 	$g_aiPrepDon[2] = 0
 	$g_aiPrepDon[3] = 0
 	For $i = 0 To $eSpellCount - 1
-		If $i <> $eSpellClone Then
-			$g_aiPrepDon[2] = BitOR($g_aiPrepDon[2], ($g_abChkDonateSpell[$i] ? 1 : 0))
-			$g_aiPrepDon[3] = BitOR($g_aiPrepDon[3], ($g_abChkDonateAllSpell[$i] ? 1 : 0))
-		EndIf
+		$g_aiPrepDon[2] = BitOR($g_aiPrepDon[2], ($g_abChkDonateSpell[$i] ? 1 : 0))
+		$g_aiPrepDon[3] = BitOR($g_aiPrepDon[3], ($g_abChkDonateAllSpell[$i] ? 1 : 0))
 	Next
+
 	; Siege
 	$g_aiPrepDon[4] = 0
 	$g_aiPrepDon[5] = 0

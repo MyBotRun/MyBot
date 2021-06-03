@@ -12,7 +12,7 @@
 ;                  $bConsoleWrite       - [optional] a boolean value. Default is True.
 ; Return values .: None
 ; Author ........:
-; Modified ......: CodeSlinger69 (01-2017)
+; Modified ......: CodeSlinger69 (01-2017), MikeD (04-2021)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -339,9 +339,9 @@ EndFunc   ;==>SetSwitchAccLog
 
 Func AtkLogHead()
 	SetAtkLog(_PadStringCenter(" " & GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_01", "ATTACK LOG") & " ", 71, "="), "", $COLOR_BLACK, "MS Shell Dlg", 8.5)
-	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                      -------  LOOT ------           ------ BONUS ------'), "")
-	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|AC|TIME.|TROP.|SRC|DS|   GOLD| ELIXIR|  DE|TR.|S|  %|  GOLD|ELIXIR|  DE|L.'), "")
-EndFunc   ;==>AtkLogHead
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                       ------- LOOT --------            -- BONUS --   |'), "")
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|AC| TIME|TROPHY|SRC|DS|   GOLD| ELIXER|   DE| TR| *|  %| G & E|  DE|L.|'), "")
+EndFunc   ;==>AtkLogHead                                                                          
 
 Func __FileWriteLog($handle, $text)
 	Return FileWriteLine($handle, BitAND(WinGetState($g_hFrmBot), 2) & ": " & $text)

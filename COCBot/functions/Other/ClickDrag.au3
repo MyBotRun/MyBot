@@ -103,7 +103,7 @@ Func _MakeLong($LowWORD, $HiWORD)
 	Return BitOR($HiWORD * 0x10000, BitAND($LowWORD, 0xFFFF))
 EndFunc   ;==>_MakeLong
 
-Func ClickDrag($X1, $Y1, $X2, $Y2, $Delay = 50)
+Func ClickDrag($X1, $Y1, $X2, $Y2, $Delay = 50, $bSCIDSwitch = False)
 	If TestCapture() Then Return
 	;Return _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, "left", $Delay)
 	Local $error = 0
@@ -112,7 +112,7 @@ Func ClickDrag($X1, $Y1, $X2, $Y2, $Delay = 50)
 	EndIf
 	If $g_bAndroidAdbClickDrag Then
 		If $g_bAndroidAdbClickDragScript Then
-			AndroidClickDrag($X1, $Y1, $X2, $Y2, $g_bRunState)
+			AndroidClickDrag($X1, $Y1, $X2, $Y2, $g_bRunState, $bSCIDSwitch)
 			$error = @error
 		Else
 			AndroidInputSwipe($X1, $Y1, $X2, $Y2, $g_bRunState)

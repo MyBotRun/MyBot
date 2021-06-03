@@ -661,12 +661,11 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
 	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
 	If Not $g_bRunState Then Return "Exit"
 
-	SCIDragIfNeeded($NextAccount)
-
 	For $i = 0 To 30 ; Checking "New SuperCellID UI" continuously in 30sec
 		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect("440,1,859,243"), 1, True, Default))
 		If _Sleep(500) Then Return "Exit"
 		If IsArray($aSuperCellIDWindowsUI) And UBound($aSuperCellIDWindowsUI, 1) >= 2 Then
+			SCIDragIfNeeded($NextAccount) ; Make Drag only when SCID window is visible.
 			$aSearchForAccount = decodeMultipleCoords(findImage("Account Locations", $g_sImgSupercellIDSlots, $sAccountDiamond, 0, True, Default))
 			If _Sleep(500) Then Return "Exit"
 			If Not $g_bRunState Then Return "Exit"
@@ -676,15 +675,15 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
 				; Correct Index for Profile if needs to drag
 				If $NextAccount >= 3 and UBound($aSearchForAccount) == 4 Then $iIndexSCID = 3 ; based on drag logic, the account will always be the bottom one
 
-				; fixes wierd issue with arrays after getting image info
+				; fixes weird issue with arrays after getting image info
 				For $j = 0 To UBound($aSearchForAccount) - 1
 					$aTempArray = $aSearchForAccount[$j]
 					_ArrayAdd($aCoordinates, $aTempArray[0] & "|" & $aTempArray[1], 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
 				Next
 
-				_ArraySort($aCoordinates, 0, 0, 0, 1) ; short by column 1 [Y]... this is to keep them in order of actual list
+				_ArraySort($aCoordinates, 0, 0, 0, 1) ; sort by column 1 [Y]... this is to keep them in order of actual list
 
-				; list all account seeable after drag on debug chat
+				; list all account see-able after drag on debug chat
 				Local $iProfiles = UBound($g_asProfileName)
 				For $j = 0 To UBound($aCoordinates) - 1
 					SetDebugLog("[" & $j & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
@@ -1038,8 +1037,7 @@ EndFunc   ;==>SwitchAccountCheckProfileInUse
 Func SCIDragIfNeeded($iSCIDAccount)
 	If Not $g_bRunState Then Return
 	If $iSCIDAccount < 4 Then Return
-
-	ClickDrag(748, 720, 748, 720-(90*($iSCIDAccount-3)), 2000) ; drag a multiple of 90 pixels up for how many accounts down it is
-	If _Sleep(1500) Then Return
+	If _Sleep(1000) Then Return
+	ClickDrag(450, 600, 450, 600 - (95 * ($iSCIDAccount - 3)), 2000, True) ; drag a multiple of 95 pixels up for how many accounts down it is
 EndFunc   ;==>SCIDragIfNeeded
 

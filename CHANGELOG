@@ -1,14 +1,30 @@
-* **v7.9.2**
+* **v7.9.3** 
 * Spring 2021 Update
 ** Globals: TH Level 14, BK, AQ, GW, RC new levels
 ** Added TH14 images
 ** Fixed auto Townhall locate - removed opencv Townhall detection
 ** Update TH14 building arrays
-** Increased StoneCC image tolerance due to interferrence with Jungle Scenery
+** Increased StoneCC image tolerance due to interference with Jungle Scenery
 ** Update League Day End image
 ** Fixed Lab array error
 ** Added Jungle Scenery
 ** Fixed upgrade walls
+** GUI & ini support for level 15 walls.
+** Support for Pet upgrades with first GUI
+** Fix Collect Achievements scrolling forever, now only collects one per visit
+** Renamed, updated CSV script [TH12-13] EDragv2...csv.  Update your profile if you use it!
+** Fixed TH14 induced array error in Upgrades
+** 3 slots in CC: Added Clone spell donations.
+** Added Inferno lvl8 images
+** Added 1 Scattershot lvl3 image - see readme
+** Added lvl15 wall images
+** Added PetGuiDisplay - research timer
+** Added PetHouse image search
+** Added Laboratory image search
+* Add BB "Drop Battle Machine First" feature @ahmed.hamdy
+* Cleaned up NOTES on "[TH12-14] EDragv2 210425.csv" for @anondad
+** Fixed SuperCell SwitchAccount
+
 
 * **v7.9.1**
 * TH8 village fix

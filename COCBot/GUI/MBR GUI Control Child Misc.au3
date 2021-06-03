@@ -392,6 +392,15 @@ Func btnLab()
 	AndroidShield("btnLab") ; Update shield status due to manual $g_bRunState
 EndFunc   ;==>btnLab
 
+Func btnPet()
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
+	ZoomOut()
+	LocatePetHouse()
+	$g_bRunState = $wasRunState
+	AndroidShield("btnPet") ; Update shield status due to manual $g_bRunState
+EndFunc   ;==>btnPet
+
 Func chkTrophyAtkDead()
 	If GUICtrlRead($g_hChkTrophyAtkDead) = $GUI_CHECKED Then
 		$g_bDropTrophyAtkDead = True
@@ -716,6 +725,7 @@ Func chkEnableBBAttack()
 		GUICtrlSetState($g_hChkBBTrophyRange, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBAttIfLootAvail, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBWaitForMachine, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkBBDropBMFirst, $GUI_ENABLE)
 		GUICtrlSetState($g_hBtnBBDropOrder, $GUI_ENABLE)
 		GUICtrlSetState($g_hCmbBBSameTroopDelay, $GUI_ENABLE)
 		GUICtrlSetState($g_hCmbBBNextTroopDelay, $GUI_ENABLE)
@@ -726,6 +736,7 @@ Func chkEnableBBAttack()
 		GUICtrlSetState($g_hTxtBBTrophyLowerLimit, $GUI_DISABLE)
 		GUICtrlSetState($g_hTxtBBTrophyUpperLimit, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkBBWaitForMachine, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkBBDropBMFirst, $GUI_DISABLE)
 		GUICtrlSetState($g_hBtnBBDropOrder, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbBBSameTroopDelay, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbBBNextTroopDelay, $GUI_DISABLE)

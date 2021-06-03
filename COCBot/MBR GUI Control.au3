@@ -1651,6 +1651,18 @@ Func SetTime($bForceUpdate = False)
 			$g_sLabUpgradeTime = ""
 		EndIf
 	EndIf
+	
+	If _DateIsValid($g_sPetUpgradeTime) Then
+		Local $iPetTime = _DateDiff("s", _NowCalc(), $g_sPetUpgradeTime) * 1000
+		If $iPetTime > 0 Then
+			_TicksToDay($iPetTime, $day, $hour, $min, $sec)
+			GUICtrlSetData($g_hLbLPetTime, $day > 0 ? StringFormat("%2ud %02i:%02i", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+			GUICtrlSetColor($g_hLbLPetTime, $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
+		Else
+			GUICtrlSetData($g_hLbLPetTime, "")
+			$g_sPetUpgradeTime = ""
+		EndIf
+	EndIf
 
 	If ProfileSwitchAccountEnabled() Then
 		If GUICtrlRead($g_hGUI_STATS_TAB, 1) = $g_hGUI_STATS_TAB_ITEM5 And GUICtrlRead($g_hGUI_BOT_TAB, 1) = $g_hGUI_BOT_TAB_ITEM5 And GUICtrlRead($g_hTabMain, 1) = $g_hTabBot Then

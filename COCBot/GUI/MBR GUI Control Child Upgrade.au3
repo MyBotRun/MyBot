@@ -107,31 +107,31 @@ Func btnResetUpgrade()
 		    $g_avBuildingUpgrades[$iEmptyRow][5] = $g_avBuildingUpgrades[$i][5] ;Upgrade Level
 		    $g_avBuildingUpgrades[$iEmptyRow][6] = $g_avBuildingUpgrades[$i][6] ;Upgrade Duration
 		    $g_avBuildingUpgrades[$iEmptyRow][7] = $g_avBuildingUpgrades[$i][7] ;Upgrade Finish Time
-			
+
 			;Set the GUI data for new row and clear the GUI data for the cleared row.
 			;GUI Unit Name
 			;SetDebugLog("Setting name " & $g_avBuildingUpgrades[$iEmptyRow][4])
 			GUICtrlSetData($g_hTxtUpgradeName[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][4])
-			GUICtrlSetData($g_hTxtUpgradeName[$i], "") 
+			GUICtrlSetData($g_hTxtUpgradeName[$i], "")
 			;GUI Unit Level
 			;SetDebugLog("Setting level " & $g_avBuildingUpgrades[$iEmptyRow][5])
 			GUICtrlSetData($g_hTxtUpgradeLevel[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][5])
-		    GUICtrlSetData($g_hTxtUpgradeLevel[$i], "") 
+		    GUICtrlSetData($g_hTxtUpgradeLevel[$i], "")
 			;Upgrade value in GUI
 			GUICtrlSetData($g_hTxtUpgradeValue[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][2])
-		    GUICtrlSetData($g_hTxtUpgradeValue[$i], "") 
+		    GUICtrlSetData($g_hTxtUpgradeValue[$i], "")
 		    ;Upgrade duration in GUI
 			GUICtrlSetData($g_hTxtUpgradeTime[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][6])
-			GUICtrlSetData($g_hTxtUpgradeTime[$i], "") 
-			
+			GUICtrlSetData($g_hTxtUpgradeTime[$i], "")
+
 			;GUI upgrade type image
 			$j = $eIcnElixir
 			If $g_avBuildingUpgrades[$iEmptyRow][3] = "GOLD" Then $j = $eIcnGold
 			;SetDebugLog("Setting GUI type to " & $j)
 			_GUICtrlSetImage($g_hPicUpgradeType[$iEmptyRow], $g_sLibIconPath, $j)
-		    _GUICtrlSetImage($g_hPicUpgradeType[$i], $g_sLibIconPath, $eIcnBlank) 
-			
-			;GUI Status icon : Still not working right!  
+		    _GUICtrlSetImage($g_hPicUpgradeType[$i], $g_sLibIconPath, $eIcnBlank)
+
+			;GUI Status icon : Still not working right!
 			;$eIcnTroops=43, $eIcnGreenLight=69, $eIcnRedLight=71 or $eIcnYellowLight=73
 			;SetDebugLog("Setting status to " & $g_aiPicUpgradeStatus[$i])
 			;$j=$g_aiPicUpgradeStatus[$i]
@@ -142,17 +142,17 @@ Func btnResetUpgrade()
 			_GUICtrlSetImage($g_hPicUpgradeStatus[$iEmptyRow], $g_sLibIconPath, $j)
 		    ;SetDebugLog("Clearing old status to red light " & $eIcnRedLight)
 			$g_aiPicUpgradeStatus[$i] = $eIcnRedLight ;blank row goes red
-			_GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, $eIcnRedLight) 
-			
+			_GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, $eIcnRedLight)
+
 			;Upgrade selection box
 			GUICtrlSetState($g_hChkUpgrade[$iEmptyRow], $GUI_CHECKED)
-			GUICtrlSetState($g_hChkUpgrade[$i], $GUI_UNCHECKED) 
+			GUICtrlSetState($g_hChkUpgrade[$i], $GUI_UNCHECKED)
 			;Upgrade finish time in GUI
 			GUICtrlSetData($g_hTxtUpgradeEndTime[$iEmptyRow], $g_avBuildingUpgrades[$iEmptyRow][7])
-		    GUICtrlSetData($g_hTxtUpgradeEndTime[$i], "") 
+		    GUICtrlSetData($g_hTxtUpgradeEndTime[$i], "")
 			;Repeat box
 			GUICtrlSetState($g_hChkUpgradeRepeat[$iEmptyRow], $GUI_CHECKED)
-		    GUICtrlSetState($g_hChkUpgradeRepeat[$i], $GUI_UNCHECKED) 
+		    GUICtrlSetState($g_hChkUpgradeRepeat[$i], $GUI_UNCHECKED)
 
 			;Now clear the row we just moved from.
 			$g_avBuildingUpgrades[$i][0] = -1 ;Upgrade Location X
@@ -163,19 +163,19 @@ Func btnResetUpgrade()
 		    $g_avBuildingUpgrades[$i][5] = "" ;Upgrade Level
 		    $g_avBuildingUpgrades[$i][6] = "" ;Upgrade Duration
 		    $g_avBuildingUpgrades[$i][7] = "" ;Upgrade Finish Time
-			
-			
+
+
 			$i = $iEmptyRow ;Reset counter to this row so we continue forward from here.
 			$iEmptyRow = -1 ;This should be the first empty row now.
-			
+
 		  Else
 			;set these to clear up old status icon issues on rows not moved
 		    ;SetDebugLog("Not moving row " & $i)
 			$j=$g_aiPicUpgradeStatus[$i]
 			;SetDebugLog("Setting GUI status to " & $j) ;
 			;Following works if a constant is used, but not an variable?
-			if $j=69 then _GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, 69) 
-			if $j=73 then _GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, 73) 
+			if $j=69 then _GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, 69)
+			if $j=73 then _GUICtrlSetImage($g_hPicUpgradeStatus[$i], $g_sLibIconPath, 73)
 			ContinueLoop
 		  Endif
 		Else ;Row not checked.  Clear it.
@@ -198,7 +198,7 @@ Func btnResetUpgrade()
 		  GUICtrlSetState($g_hChkUpgrade[$i], $GUI_UNCHECKED) ;Change upgrade selection box to unchecked
 		  GUICtrlSetData($g_hTxtUpgradeEndTime[$i], "") ;Clear Upgrade time in GUI
 		  GUICtrlSetState($g_hChkUpgradeRepeat[$i], $GUI_UNCHECKED) ;Change repeat box to unchecked
-		  If $iEmptyRow = -1 Then $iEmptyRow=$i ;This row is now empty.  
+		  If $iEmptyRow = -1 Then $iEmptyRow=$i ;This row is now empty.
 		Endif
 	Next
 EndFunc   ;==>btnResetUpgrade
@@ -520,14 +520,14 @@ Func cmbWalls()
 	$g_iWallCost = $g_aiWallCost[$g_iCmbUpgradeWallsLevel]
 	GUICtrlSetData($g_hLblWallCost, _NumberFormat($g_iWallCost))
 
-   For $i = 4 To $g_iCmbUpgradeWallsLevel+5
+   For $i = 4 To 14; $g_iCmbUpgradeWallsLevel+  ;Will now always show all.
 	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_SHOW)
 	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_SHOW)
    Next
-   For $i = $g_iCmbUpgradeWallsLevel+6 To 14
-	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
-	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
-   Next
+   ;For $i = $g_iCmbUpgradeWallsLevel+6 To 14
+   ;  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
+   ;  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
+   ;Next
 
    If $g_iCmbUpgradeWallsLevel <= 3 Then GUICtrlSetState($g_hRdoUseGold, $GUI_CHECKED)
 
@@ -584,3 +584,15 @@ Func chkUpgradesToIgnore()
 		$g_iChkUpgradesToIgnore[$i] = GUICtrlRead($g_hChkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
 	Next
 EndFunc   ;==>chkUpgradesToIgnore
+
+Func chkUpgradePets()
+	For $i = 0 to $ePetCount - 1
+		If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
+			$g_bUpgradePetsEnable[$i] = True
+			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " enabled")
+		Else
+			$g_bUpgradePetsEnable[$i] = False
+			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
+		EndIf
+	Next
+EndFunc
