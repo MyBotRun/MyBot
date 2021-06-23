@@ -137,14 +137,15 @@ Func InitializeControlVariables()
    $grpTrainTroops = $g_ahTxtTrainArmyTroopCount[$eTroopBarbarian]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperBarbarian]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopArcher]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopSuperArcher]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopGiant]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperGiant]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopGoblin]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSneakyGoblin]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWallBreaker]&"#"& _
-					 $g_ahTxtTrainArmyTroopCount[$eTroopSuperWallBreaker]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBalloon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWizard]&"#"& _
+					 $g_ahTxtTrainArmyTroopCount[$eTroopSuperWallBreaker]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBalloon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopRocketBalloon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWizard]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopSuperWizard]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHealer]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopDragon]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopPekka]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBabyDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopInfernoDragon]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopMiner]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopMinion]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperMinion]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopHogRider]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopValkyrie]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperValkyrie]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWitch]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperWitch]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopLavaHound]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceHound]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBowler]&"#"& _
-					 $g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopYeti]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHeadhunter]
+					 $g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopYeti]&"#"& _
+					 $g_ahTxtTrainArmyTroopCount[$eTroopDragonRider]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHeadhunter]
    $grpCookSpell = $g_ahTxtTrainArmySpellCount[$eSpellLightning]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHeal]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellRage]&"#"& _
 				   $g_ahTxtTrainArmySpellCount[$eSpellJump]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellFreeze]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellClone]&"#"& _
 				   $g_ahTxtTrainArmySpellCount[$eSpellInvisibility]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellPoison]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellEarthquake]&"#"& _

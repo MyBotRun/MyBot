@@ -29,13 +29,13 @@ Global $g_ahCmbClanCastleSpell[3], $g_ahCmbClanCastleSiege[2]
 
 ; Donate
 Global $g_hChkExtraAlphabets = 0, $g_hChkExtraChinese = 0, $g_hChkExtraKorean = 0, $g_hChkExtraPersian = 0
-Global $g_ahChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahChkDonateAllTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahGrpDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahLblDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Global $g_ahBtnDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahChkDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahChkDonateAllTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahGrpDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahLblDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_ahBtnDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeMachineCount] = 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Global $g_ahChkDonateSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_ahChkDonateAllSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -330,6 +330,7 @@ Func CreateDonateSubTab()
 	Local $sTxtGoblins = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtGoblins", "Goblins")
 	Local $sTxtWallBreakers = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallBreakers", "Wall Breakers")
 	Local $sTxtBalloons = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBalloons", "Balloons")
+	Local $sTxtRocketBalloons = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtRocketBalloons", "Rocket Balloons")
 	Local $sTxtWizards = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWizards", "Wizards")
 	Local $sTxtHealers = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtHealers", "Healers")
 	Local $sTxtDragons = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtDragons", "Dragons")
@@ -347,6 +348,7 @@ Func CreateDonateSubTab()
 	Local $sTxtMiners = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtMiners", "Miners")
 	Local $sTxtElectroDragons = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtElectroDragons", "Electro Dragons")
 	Local $sTxtYetis = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtYetis", "Yetis")
+	Local $sTxtDragonRiders = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtDragonRiders", "Dragon Riders")
 
 	Local $sTxtWallWreckers = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtWallWreckers", "Wall Wreckers")
 	Local $sTxtBattleBlimps = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleBlimps", "Battle Blimps")
@@ -381,9 +383,9 @@ Func CreateDonateSubTab()
 
 	Local $x = $xStart
 	Local $y = $yStart - 15
-	Local $Offx = 34
+	Local $Offx = 36
 	; 1 Row
-	$x = $xStart - 11
+	$x = $xStart - 21
 	; Barbarian
 		$g_ahLblDonateTroop[$eTroopBarbarian] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -439,50 +441,49 @@ Func CreateDonateSubTab()
 		$g_ahBtnDonateTroop[$eTroopElectroDragon] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnElectroDragon, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; Minion
+	; DragonRider
 	$x += $Offx
-	$x += 4
-		$g_ahLblDonateTroop[$eTroopMinion] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+	    $g_ahLblDonateTroop[$eTroopDragonRider] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopMinion] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnMinion, 1)
+		$g_ahBtnDonateTroop[$eTroopDragonRider] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnDragonRider, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; Valkyrie
+	; HogRider
 	$x += $Offx
-		$g_ahLblDonateTroop[$eTroopValkyrie] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+		$g_ahLblDonateTroop[$eTroopHogRider] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopValkyrie] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnValkyrie, 1)
+		$g_ahBtnDonateTroop[$eTroopHogRider] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnHogRider, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; Witch
+	; Golem
 	$x += $Offx
-		$g_ahLblDonateTroop[$eTroopWitch] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+		$g_ahLblDonateTroop[$eTroopGolem] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopWitch] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnWitch, 1)
+		$g_ahBtnDonateTroop[$eTroopGolem] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGolem, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; Bowler
+	; LavaHound
 	$x += $Offx
-		$g_ahLblDonateTroop[$eTroopBowler] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+		$g_ahLblDonateTroop[$eTroopLavaHound] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopBowler] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnBowler, 1)
+		$g_ahBtnDonateTroop[$eTroopLavaHound] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnLavaHound, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; Headhunter
+	; IceGolem
 	$x += $Offx
-		$g_ahLblDonateTroop[$eTroopHeadhunter] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+		$g_ahLblDonateTroop[$eTroopIceGolem] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopHeadhunter] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnHeadhunter, 1)
+		$g_ahBtnDonateTroop[$eTroopIceGolem] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnIceGolem, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
 
 	; 2 Row
-	$x = $xStart - 11
+	$x = $xStart - 21
 	; Archer
 	$y += 35
 		$g_ahLblDonateTroop[$eTroopArcher] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
@@ -539,42 +540,49 @@ Func CreateDonateSubTab()
 		$g_ahBtnDonateTroop[$eTroopYeti] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnYeti, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; HogRider
+	; Minion
 	$x += $Offx
-	$x += 4
-		$g_ahLblDonateTroop[$eTroopHogRider] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+		$g_ahLblDonateTroop[$eTroopMinion] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopHogRider] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnHogRider, 1)
+		$g_ahBtnDonateTroop[$eTroopMinion] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnMinion, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; Golem
+	; Valkyrie
 	$x += $Offx
-		$g_ahLblDonateTroop[$eTroopGolem] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+		$g_ahLblDonateTroop[$eTroopValkyrie] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopGolem] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnGolem, 1)
+		$g_ahBtnDonateTroop[$eTroopValkyrie] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnValkyrie, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; LavaHound
+	; Witch
 	$x += $Offx
-		$g_ahLblDonateTroop[$eTroopLavaHound] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+		$g_ahLblDonateTroop[$eTroopWitch] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopLavaHound] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnLavaHound, 1)
+		$g_ahBtnDonateTroop[$eTroopWitch] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnWitch, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
-	; IceGolem
+	; Bowler
 	$x += $Offx
-		$g_ahLblDonateTroop[$eTroopIceGolem] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+		$g_ahLblDonateTroop[$eTroopBowler] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
-		$g_ahBtnDonateTroop[$eTroopIceGolem] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnIceGolem, 1)
+		$g_ahBtnDonateTroop[$eTroopBowler] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnBowler, 1)
+			GUICtrlSetOnEvent(-1, "btnDonateTroop")
+	; Headhunter
+	$x += $Offx
+		$g_ahLblDonateTroop[$eTroopHeadhunter] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$g_ahBtnDonateTroop[$eTroopHeadhunter] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnHeadhunter, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
 
 	; 3 Row
-	$x = $xStart - 11
+	$x = $xStart - 21
 	$y += 35
 		$g_ahLblDonateSpell[$eSpellLightning] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -626,7 +634,7 @@ Func CreateDonateSubTab()
 			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnCloneSpell, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateSpell")
 
-	$x += $Offx + 4
+	$x += $Offx
 		$g_ahLblDonateSpell[$eSpellPoison] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
 			GUICtrlSetState(-1, $GUI_DISABLE)
@@ -663,7 +671,7 @@ Func CreateDonateSubTab()
 			GUICtrlSetOnEvent(-1, "btnDonateSpell")
 	; 4 Row
 	; Super Barbarian
-	$x = $xStart - 11
+	$x = $xStart - 21
 	$y += 40
 		$g_ahLblDonateTroop[$eTroopSuperBarbarian] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -702,6 +710,14 @@ Func CreateDonateSubTab()
 			GUICtrlSetState(-1, $GUI_DISABLE)
 		$g_ahBtnDonateTroop[$eTroopSuperWallBreaker] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
 			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnSuperWallBreaker, 1)
+			GUICtrlSetOnEvent(-1, "btnDonateTroop")
+	; Rocket Balloon
+	$x += $Offx
+		$g_ahLblDonateTroop[$eTroopRocketBalloon] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
+			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+			GUICtrlSetState(-1, $GUI_DISABLE)
+		$g_ahBtnDonateTroop[$eTroopRocketBalloon] = GUICtrlCreateButton("", $x + 2, $y, $Offx - 2, $Offx - 2, $BS_ICON)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnRocketBalloon, 1)
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
 	; Super Wizard
 	$x += $Offx
@@ -753,7 +769,7 @@ Func CreateDonateSubTab()
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
 
 	; 5 Row
-	$x = $xStart - 11
+	$x = $xStart - 21
 	$y += 35
 		$g_ahLblDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeWallWrecker] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -791,7 +807,6 @@ Func CreateDonateSubTab()
 			GUICtrlSetOnEvent(-1, "btnDonateTroop")
 
 	$x += $Offx + $Offx + $Offx
-	$x += 4
 		;;; Custom Combination Donate #1 by ChiefM3, edit my MonkeyHunter
 		$g_ahLblDonateTroop[$eCustomA] = GUICtrlCreateLabel("", $x, $y - 2, $Offx + 2, $Offx + 2)
 			GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -1287,6 +1302,38 @@ Func CreateDonateSubTab()
 
 	$x = $xStart
 	$y = $Offy
+	$g_ahGrpDonateTroop[$eTroopDragonRider] = GUICtrlCreateGroup($sTxtDragonRiders, $x - 20, $y - 20, $g_iSizeWGrpTab3, 169)
+	$x -= 10
+	$y -= 4
+		GUICtrlSetState(-1, $GUI_HIDE)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDragonRider, $x + 215, $y, 64, 64, $BS_ICON)
+			GUICtrlSetState(-1, $GUI_HIDE)
+		$g_ahChkDonateTroop[$eTroopDragonRider] = GUICtrlCreateCheckbox($sTxtDonate & " " & $sTxtDragonRiders, $x + 285, $y, -1, -1)
+			GUICtrlSetState(-1, $GUI_HIDE)
+			_GUICtrlSetTip(-1, $sTxtDonateTip & " " & $sTxtDragonRiders & " " & $sTxtDonateTipTroop)
+			GUICtrlSetOnEvent(-1, "chkDonateTroop")
+		$g_ahChkDonateAllTroop[$eTroopDragonRider] = GUICtrlCreateCheckbox($sTxtDonateAll, $x + 285, $y + 20, -1, -1)
+			GUICtrlSetState(-1, $GUI_HIDE)
+			_GUICtrlSetTip(-1, $sTxtDonateTip & " " & $sTxtDragonRiders & " " & $sTxtDonateTipAll & @CRLF & $sTxtIgnoreAll)
+			GUICtrlSetOnEvent(-1, "chkDonateAllTroop")
+		GUICtrlCreateLabel($sTxtKeywords & " " & $sTxtDragonRiders & ":" , $x - 5, $y + 5, -1, -1)
+			GUICtrlSetState(-1, $GUI_HIDE)
+		$g_ahTxtDonateTroop[$eTroopDragonRider] = GUICtrlCreateEdit("", $x - 5, $y + 20, 205, 125, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
+			GUICtrlSetState(-1, $GUI_HIDE)
+			GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtDonateTroop_Item_54", "Dragon Rider\r\nDragon Riders")))
+			_GUICtrlSetTip(-1, $sTxtKeywords & " " & $sTxtDragonRiders)
+		GUICtrlCreateLabel($sTxtKeywordsNo & ":", $x + 215, $y + 70, -1, -1)
+			GUICtrlSetState(-1, $GUI_HIDE)
+		$g_ahTxtBlacklistTroop[$eTroopDragonRider] = GUICtrlCreateEdit("", $x + 215, $y + 85, 200, 60, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
+			GUICtrlSetState(-1, $GUI_HIDE)
+			GUICtrlSetBkColor(-1, 0x505050)
+			GUICtrlSetColor(-1, $COLOR_WHITE)
+			GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtBlacklistTroop_Item_54", "No Dragon Rider\r\nDragon Rider No\r\nDragon Riders No")))
+			_GUICtrlSetTip(-1, $sTxtKeywordsNoTip & " " & $sTxtDragonRiders)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	$x = $xStart
+	$y = $Offy
 	$g_ahGrpDonateTroop[$eTroopMinion] = GUICtrlCreateGroup($sTxtMinions, $x - 20, $y - 20, $g_iSizeWGrpTab3, 169)
 	$x -= 10
 	$y -= 4
@@ -1732,6 +1779,38 @@ Func CreateDonateSubTab()
 			GUICtrlSetColor(-1, $COLOR_WHITE)
 			GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtBlacklistTroop_Item_46", "no super wall breakers\r\nsuper  wall breakers no")))
 			_GUICtrlSetTip(-1, $sTxtKeywordsNoTip & " " & $sTxtSuperWallBreakers)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+	$x = $xStart
+	$y = $Offy
+	$g_ahGrpDonateTroop[$eTroopRocketBalloon] = GUICtrlCreateGroup($sTxtRocketBalloons, $x - 20, $y - 20, $g_iSizeWGrpTab3, 169)
+	$x -= 10
+	$y -= 4
+		GUICtrlSetState(-1, $GUI_HIDE)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnRocketBalloon, $x + 215, $y, 64, 64, $BS_ICON)
+			GUICtrlSetState(-1, $GUI_HIDE)
+		$g_ahChkDonateTroop[$eTroopRocketBalloon] = GUICtrlCreateCheckbox($sTxtDonate & " " & $sTxtRocketBalloons, $x + 285, $y, -1, -1)
+			GUICtrlSetState(-1, $GUI_HIDE)
+			_GUICtrlSetTip(-1, $sTxtDonateTip & " " & $sTxtRocketBalloons & " " & $sTxtDonateTipTroop)
+			GUICtrlSetOnEvent(-1, "chkDonateTroop")
+		$g_ahChkDonateAllTroop[$eTroopRocketBalloon] = GUICtrlCreateCheckbox($sTxtDonateAll, $x + 285, $y + 20, -1, -1)
+			GUICtrlSetState(-1, $GUI_HIDE)
+			_GUICtrlSetTip(-1, $sTxtDonateTip & " " & $sTxtRocketBalloons & " " & $sTxtDonateTipAll & @CRLF & $sTxtIgnoreAll)
+			GUICtrlSetOnEvent(-1, "chkDonateAllTroop")
+		GUICtrlCreateLabel($sTxtKeywords & " " & $sTxtRocketBalloons & ":" , $x - 5, $y + 5, -1, -1)
+			GUICtrlSetState(-1, $GUI_HIDE)
+		$g_ahTxtDonateTroop[$eTroopRocketBalloon] = GUICtrlCreateEdit("", $x - 5, $y + 20, 205, 125, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
+			GUICtrlSetState(-1, $GUI_HIDE)
+			GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtDonateTroop_Item_55", "Rocket Balloon\r\nRocket Balloons")))
+			_GUICtrlSetTip(-1, $sTxtKeywords & " " & $sTxtRocketBalloons)
+		GUICtrlCreateLabel($sTxtKeywordsNo & ":", $x + 215, $y + 70, -1, -1)
+			GUICtrlSetState(-1, $GUI_HIDE)
+		$g_ahTxtBlacklistTroop[$eTroopRocketBalloon] = GUICtrlCreateEdit("", $x + 215, $y + 85, 200, 60, BitOR($ES_WANTRETURN, $ES_CENTER, $ES_AUTOVSCROLL))
+			GUICtrlSetState(-1, $GUI_HIDE)
+			GUICtrlSetBkColor(-1, 0x505050)
+			GUICtrlSetColor(-1, $COLOR_WHITE)
+			GUICtrlSetData(-1, StringFormat(GetTranslatedFileIni("MBR GUI Design Child Village - Donate", "TxtBlacklistTroop_Item_55", "No Rocket Balloon\r\nRocket Balloon No\r\nRocket Balloons No")))
+			_GUICtrlSetTip(-1, $sTxtKeywordsNoTip & " " & $sTxtRocketBalloons)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$x = $xStart
@@ -2502,7 +2581,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomA[0] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonWizard, $x + 6, $y, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomA[0] = GUICtrlCreateCombo("", $x + 35, $y, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtWizards)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtWizards)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomA")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomA[0] = GUICtrlCreateInput("2", $x + 165, $y, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2514,7 +2593,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomA[1] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonArcher, $x + 6, $y + 25, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomA[1] = GUICtrlCreateCombo("", $x + 35, $y + 25, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtArchers)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtArchers)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomA")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomA[1] = GUICtrlCreateInput("3", $x + 165, $y + 25, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2526,7 +2605,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomA[2] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonBarbarian, $x + 6, $y + 50, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomA[2] = GUICtrlCreateCombo("", $x + 35, $y + 50, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBarbarians)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBarbarians)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomA")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomA[2] = GUICtrlCreateInput("1", $x + 165, $y + 50, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2572,7 +2651,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomB[0] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonBabyDragon, $x + 6, $y, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomB[0] = GUICtrlCreateCombo("", $x + 35, $y, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBabyDragons)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBabyDragons)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomB")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomB[0] = GUICtrlCreateInput("1", $x + 165, $y, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2584,7 +2663,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomB[1] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonBalloon, $x + 6, $y + 25, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomB[1] = GUICtrlCreateCombo("", $x + 35, $y + 25, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBalloons)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBalloons)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomB")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomB[1] = GUICtrlCreateInput("3", $x + 165, $y + 25, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2596,7 +2675,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomB[2] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonMinion, $x + 6, $y + 50, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomB[2] = GUICtrlCreateCombo("", $x + 35, $y + 50, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtMinions)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtMinions)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomB")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomB[2] = GUICtrlCreateInput("5", $x + 165, $y + 50, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2642,7 +2721,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomC[0] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonWizard, $x + 6, $y, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomC[0] = GUICtrlCreateCombo("", $x + 35, $y, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtWizards)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtWizards)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomC")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomC[0] = GUICtrlCreateInput("1", $x + 165, $y, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2654,7 +2733,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomC[1] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonArcher, $x + 6, $y + 25, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomC[1] = GUICtrlCreateCombo("", $x + 35, $y + 25, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtArchers)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtArchers)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomC")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomC[1] = GUICtrlCreateInput("3", $x + 165, $y + 25, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2666,7 +2745,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomC[2] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonBarbarian, $x + 6, $y + 50, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomC[2] = GUICtrlCreateCombo("", $x + 35, $y + 50, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBarbarians)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBarbarians)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomC")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomC[2] = GUICtrlCreateInput("5", $x + 165, $y + 50, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2712,7 +2791,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomD[0] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonBabyDragon, $x + 6, $y, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomD[0] = GUICtrlCreateCombo("", $x + 35, $y, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBabyDragons)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBabyDragons)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomD")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomD[0] = GUICtrlCreateInput("1", $x + 165, $y, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2724,7 +2803,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomD[1] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonBalloon, $x + 6, $y + 25, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomD[1] = GUICtrlCreateCombo("", $x + 35, $y + 25, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBalloons)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtBalloons)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomD")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomD[1] = GUICtrlCreateInput("3", $x + 165, $y + 25, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
@@ -2736,7 +2815,7 @@ Func CreateDonateSubTab()
 		$g_ahPicDonateCustomD[2] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnDonMinion, $x + 6, $y + 50, 24, 24)
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahCmbDonateCustomD[2] = GUICtrlCreateCombo("", $x + 35, $y + 50, 120, 25, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
-						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtMinions)
+						GUICtrlSetData(-1, $sTxtBarbarians & "|" & $sTxtSuperBarbarians & "|" & $sTxtArchers & "|" & $sTxtSuperArchers & "|" & $sTxtGiants & "|" & $sTxtSuperGiants & "|" & $sTxtGoblins & "|" & $sTxtSneakyGoblins & "|" & $sTxtWallBreakers & "|" & $sTxtSuperWallBreakers & "|" & $sTxtBalloons & "|" & $sTxtRocketBalloons & "|" & $sTxtWizards & "|" & $sTxtSuperWizards & "|" & $sTxtHealers & "|" & $sTxtDragons & "|" & $sTxtPekkas & "|" & $sTxtBabyDragons & "|" & $sTxtInfernoDragons & "|" & $sTxtMiners & "|" & $sTxtElectroDragons & "|" & $sTxtYetis & "|" & $sTxtDragonRiders & "|" & $sTxtMinions & "|" & $sTxtSuperMinions & "|" & $sTxtHogRiders & "|" & $sTxtValkyries & "|" & $sTxtSuperValkyries & "|" & $sTxtGolems & "|" & $sTxtWitches & "|" & $sTxtSuperWitches & "|" & $sTxtLavaHounds & "|" & $sTxtIceHounds & "|" & $sTxtBowlers & "|" & $sTxtIceGolems & "|" & $sTxtHeadhunters & "|" & $sTxtNothing, $sTxtMinions)
 			GUICtrlSetOnEvent(-1, "cmbDonateCustomD")
 			GUICtrlSetState(-1, $GUI_HIDE)
 		$g_ahTxtDonateCustomD[2] = GUICtrlCreateInput("5", $x + 165, $y + 50, 30, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))

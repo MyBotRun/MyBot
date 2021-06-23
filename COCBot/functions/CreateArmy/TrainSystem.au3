@@ -388,7 +388,7 @@ EndFunc   ;==>DoWhatToTrainContainSpell
 
 Func IsElixirTroop($Troop)
 	Local $iIndex = TroopIndexLookup($Troop, "IsElixirTroop")
-	If $iIndex >= $eBarb And $iIndex <= $eYeti Then Return True
+	If $iIndex >= $eBarb And $iIndex <= $eDragR Then Return True
 	Return False
 EndFunc   ;==>IsElixirTroop
 
@@ -663,7 +663,7 @@ EndFunc   ;==>GetSlotRemoveBtnPosition
 Func GetSlotNumber($bSpells = False)
 	Select
 		Case $bSpells = False
-		Local Const $Orders = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eYeti, $ePekk, $eBabyD, $eInfernoD, $eMine, $eEDrag, _
+		Local Const $Orders = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eYeti, $eDragR, $ePekk, $eBabyD, $eInfernoD, $eMine, $eEDrag, _
 					$eMini, $eSMini, $eHogs, $eValk, $eSValk, $eGole, $eWitc, $eSWitc, $eLava, $eIceH, $eBowl, $eIceG, $eHunt] ; Set Order of troop display in Army Tab
 
 			Local $allCurTroops[UBound($Orders)]
@@ -1074,7 +1074,7 @@ EndFunc   ;==>ResetVariables
 
 Func TrainArmyNumber($abQuickTrainArmy)
 	local $iDistanceBetweenArmies = 110
-	Local $aiTrainButton, $aiSearchArea[4] = [720, 270, 850, 380]
+	Local $aiTrainButton, $aiSearchArea[4] = [750, 270, 815, 380]
 
 	For $iArmyNumber = 0 To 2
 		If $abQuickTrainArmy[$iArmyNumber] Then

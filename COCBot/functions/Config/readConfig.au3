@@ -571,6 +571,9 @@ Func ReadConfig_600_12()
 	$g_asTxtDonateTroop[$eTroopBalloon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBalloons", "balloons|balloon"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopBalloon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBalloons", "no balloon|balloons no"), "|", @CRLF)
 
+	$g_asTxtDonateTroop[$eTroopRocketBalloon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateRocketBalloons", "Rocket Balloons|Rocket Balloon"), "|", @CRLF)
+	$g_asTxtBlacklistTroop[$eTroopRocketBalloon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistRocketBalloons", "No Rocket Balloon|Rocket Balloons No"), "|", @CRLF)
+
 	$g_asTxtDonateTroop[$eTroopWizard] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateWizards", "wizards|wizard|wiz"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopWizard] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistWizards", "no wizards|wizards no|no wizard|wizard no"), "|", @CRLF)
 
@@ -600,6 +603,9 @@ Func ReadConfig_600_12()
 
 	$g_asTxtDonateTroop[$eTroopYeti] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateYetis", "Yeti|Yetis"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopYeti] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistYetis", "No Yeti|No Yetis"), "|", @CRLF)
+
+	$g_asTxtDonateTroop[$eTroopDragonRider] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateDragonRiders", "Dragon Rider|Dragon Riders"), "|", @CRLF)
+	$g_asTxtBlacklistTroop[$eTroopDragonRider] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistDragonRiders", "No Dragon Rider|No Dragon Riders"), "|", @CRLF)
 
 	$g_asTxtDonateTroop[$eTroopMinion] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateMinions", "minions|minion"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopMinion] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistMinions", "no minion|minions no"), "|", @CRLF)

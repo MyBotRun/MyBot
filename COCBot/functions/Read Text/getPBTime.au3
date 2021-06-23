@@ -18,10 +18,8 @@
 Func getPBTime()
 
 	Local $sTimeResult = ""
-	Local $aString[3]
 	Local $bPBTStart = False
 	Local $iPBTSeconds, $Result
-	Local $iHour = 0, $iMin = 0, $iSec = 0
 	Local $sPBTReturnResult = ""
 
 	If IsMainPage() = False Then ; check for main page or do not try
@@ -53,14 +51,13 @@ Func getPBTime()
 	WEnd
 
 	If _CheckPixel($aIsShieldInfo, $g_bCapturePixel) Or $bPBTStart Then ; PB Info window open?
-
 		$sTimeResult = getOcrPBTtime(555, 499 + $g_iMidOffsetY) ; read PBT time
 		If $g_bDebugSetlog Then SetDebugLog("OCR PBT Time= " & $sTimeResult, $COLOR_DEBUG)
 		If $sTimeResult = "" Then ; try a 2nd time after a short delay if slow PC and null read
 			If _Sleep($DELAYPERSONALSHIELD2) Then Return ; pause for slow PC
 			$sTimeResult = getOcrPBTtime(555, 499 + $g_iMidOffsetY) ; read PBT time
 			If $g_bDebugSetlog Then SetDebugLog("OCR2 PBT Time= " & $sTimeResult, $COLOR_DEBUG)
-			If $sTimeResult = "" And $bPBTStart = False Then ; error if no read value
+			If $sTimeResult = "" And Not $bPBTStart Then ; error if no read value
 				SetLog("strange error, no PBT value found?", $COLOR_ERROR)
 				SetError(1, "Bad OCR of PB time value ")
 				ClickAway()
@@ -71,72 +68,30 @@ Func getPBTime()
 
 		If _Sleep($DELAYRESPOND) Then Return ; improve pause/stop button response
 
-		$aString = StringSplit($sTimeResult, " ") ; split hours/minutes or minutes/seconds
-		If @error then $aString[0] = 3  ; @priapus.cranium suggestion
-		Switch $aString[0]
-			Case 1 ; Only one field split from OCR
-				Select
-					Case StringInStr($aString[1], "s", $STR_NOCASESENSEBASIC)
-						$iSec = Number($aString[1])
-					Case StringInStr($aString[1], "m", $STR_NOCASESENSEBASIC)
-						$iMin = Number($aString[2])
-					Case StringInStr($aString[1], "h", $STR_NOCASESENSEBASIC)
-						$iHour = Number($aString[1])
-					Case Else
-						SetLog("strange error, unexpected PBT value? |" & $aString[1], $COLOR_ERROR)
-						SetError(2, "Error processing time string")
-						ClickAway()
-						If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
-						Return
-				EndSelect
-			Case 2 ; 2 fields split from OCR
-				Select
-					Case StringInStr($aString[1], "h", $STR_NOCASESENSEBASIC)
-						$iHour = Number($aString[1])
-						If StringInStr($aString[2], "m", $STR_NOCASESENSEBASIC) Then
-							$iMin = Number($aString[2])
-						EndIf
-					Case StringInStr($aString[1], "m", $STR_NOCASESENSEBASIC)
-						$iMin = Number($aString[1])
-						If StringInStr($aString[2], "s", $STR_NOCASESENSEBASIC) Then
-							$iSec = Number($aString[2])
-						EndIf
-					Case Else
-						SetLog("strange error, unexpected PBT value? |" & $aString[1] & "|" & $aString[2], $COLOR_ERROR)
-						SetError(3, "Error processing time string")
-						ClickAway()
-						If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
-						Return
-				EndSelect
-			Case Else ; Not likely condition, but just in case needed.
-				If $bPBTStart = False Then
-					SetLog("Error processing PBT time string: " & $sTimeResult, $COLOR_ERROR)
-					SetError(4, "Error processing time string")
-					ClickAway()
-					If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
-					Return
-				Else
-					SetLog("Error processing PBT time string: " & $sTimeResult, $COLOR_INFO)
-					SetLog("Continue due PB starting now", $COLOR_SUCCESS)
-				EndIf
-		EndSwitch
-
-		$iPBTSeconds = ($iHour * 3600) + ($iMin * 60) + $iSec ; convert PB time into total seconds
+		$iPBTSeconds = ConvertOCRTime("OCR PBT", $sTimeResult, True)
 		If $g_bDebugSetlog Then SetDebugLog("Computed PBT Seconds = " & $iPBTSeconds, $COLOR_DEBUG)
 
-		If $bPBTStart Then
-			$sPBTReturnResult = _DateAdd('s', -10, _NowCalc()) ; Calc expire time -10 seconds from now.
+		If ($iPBTSeconds > 0) Then
+			If $bPBTStart Then
+				$sPBTReturnResult = _DateAdd('s', -10, _NowCalc()) ; Calc expire time -10 seconds from now.
+			Else
+				$sPBTReturnResult = _DateAdd('s', $iPBTSeconds, _NowCalc()) ; Calc actual expire time from now.
+			EndIf
+			If @error Then SetLog("_DateAdd error= " & @error, $COLOR_ERROR)
+			If $g_bDebugSetlog Then SetDebugLog("PBT starts: " & $sPBTReturnResult, $COLOR_DEBUG)
+			If _Sleep($DELAYPERSONALSHIELD1) Then Return
+
+			ClickAway()
+			If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
+
+			Return $sPBTReturnResult
 		Else
-			$sPBTReturnResult = _DateAdd('s', $iPBTSeconds, _NowCalc()) ; Calc actual expire time from now.
+			SetLog("Strange error, unexpected PBT value? |" & $sTimeResult, $COLOR_ERROR)
+			SetError(2, "Error processing time string")
+			ClickAway()
+			If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
+			Return
 		EndIf
-		If @error Then SetLog("_DateAdd error= " & @error, $COLOR_ERROR)
-		If $g_bDebugSetlog Then SetDebugLog("PBT starts: " & $sPBTReturnResult, $COLOR_DEBUG)
-		If _Sleep($DELAYPERSONALSHIELD1) Then Return
-
-		ClickAway()
-		If _Sleep($DELAYPERSONALSHIELD2) Then Return ; wait for close
-
-		Return $sPBTReturnResult
 	Else
 		If $g_bDebugSetlog Then SetDebugLog("PB Info window failed to open for PB Time OCR", $COLOR_ERROR)
 	EndIf

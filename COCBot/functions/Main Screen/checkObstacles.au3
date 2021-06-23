@@ -74,13 +74,14 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Detect All Reload Button errors => 1- Another device, 2- Take a break, 3- Connection lost or error, 4- Out of sync, 5- Inactive, 6- Maintenance, 7- SCID Login Screen
 	Local $aMessage = _PixelSearch($aIsReloadError[0], $aIsReloadError[1], $aIsReloadError[0] + 3, $aIsReloadError[1] + 11, Hex($aIsReloadError[2], 6), $aIsReloadError[3], $g_bNoCapturePixel)
-	If IsArray($aMessage) Or (UBound(decodeSingleCoord(FindImageInPlace("Error", $g_sImgError, "680,300(2,20)", False, $g_iAndroidLollipop))) > 1) Then
+	If IsArray($aMessage) Or (UBound(decodeSingleCoord(FindImageInPlace("Error", $g_sImgError, "630,300(2,20)", False, $g_iAndroidLollipop))) > 1) Then
 		If $g_bDebugSetlog Then SetDebugLog("(DC=" & _GetPixelColor($aIsConnectLost[0], $aIsConnectLost[1]) & ")(OoS=" & _GetPixelColor($aIsCheckOOS[0], $aIsCheckOOS[1]) & ")", $COLOR_DEBUG)
 		If $g_bDebugSetlog Then SetDebugLog("33B5E5=>true, 282828=>false", $COLOR_DEBUG)
+
 		;;;;;;;##### 1- Another device #####;;;;;;;
 		$Result = getOcrReloadMessage(184, 325 + $g_iMidOffsetY, "Another Device OCR:") ; OCR text to find Another device message
 		If StringInStr($Result, "device", $STR_NOCASESENSEBASIC) Or _
-				UBound(decodeSingleCoord(FindImageInPlace("Device", $g_sImgAnotherDevice, "220,330(80,60)", False))) > 1 Then
+				UBound(decodeSingleCoord(FindImageInPlace("Device", $g_sImgAnotherDevice, "220,330(130,60)", False))) > 1 Then
 			If TestCapture() Then Return "Another Device has connected"
 			If $g_iAnotherDeviceWaitTime > 3600 Then
 				SetLog("Another Device has connected, waiting " & Floor(Floor($g_iAnotherDeviceWaitTime / 60) / 60) & " hours " & Floor(Mod(Floor($g_iAnotherDeviceWaitTime / 60), 60)) & " minutes " & Floor(Mod($g_iAnotherDeviceWaitTime, 60)) & " seconds", $COLOR_ERROR)
@@ -98,8 +99,8 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			checkObstacles_ResetSearch()
 			Return True
 		EndIf
-		;;;;;;;##### 2- Take a break #####;;;;;;;
 
+		;;;;;;;##### 2- Take a break #####;;;;;;;
 		If UBound(decodeSingleCoord(FindImageInPlace("Break", $g_sImgPersonalBreak, "165,287,335,335", False))) > 1 Then ; used for all 3 different break messages
 			SetLog("Village must take a break, wait", $COLOR_ERROR)
 			If TestCapture() Then Return "Village must take a break"
@@ -110,6 +111,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			checkObstacles_ResetSearch()
 			Return True
 		EndIf
+
 		;;;;;;;##### Connection Lost & OoS & Inactive & Maintenance #####;;;;;;;
 		Select
 			Case UBound(decodeSingleCoord(FindImageInPlace("AnyoneThere", $g_sImgAnyoneThere, "440,340,580,390", False))) > 1 ; Inactive only
@@ -221,7 +223,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	EndIf
 
 	;;;;;;;##### 7- SCID Login Screen #####;;;;;;;
-	CheckLoginWithSupercellID()									   
+	CheckLoginWithSupercellID()
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	If TestCapture() = 0 And GetAndroidProcessPID() = 0 Then

@@ -30,7 +30,7 @@ Func PetHouse($test = False)
 	Local $bUpgradePets = False
 
    If $g_iTownHallLevel < 14 Then
-		SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Pet House.", $COLOR_ERROR)
+		;SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Pet House.", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -374,7 +374,7 @@ Func GetMinDark4PetUpgrade()
 
 	For $i = 0 to $ePetCount - 1
 		; check if pet upgrade enabled and unlocked ; c3b6a5 nox c1b7a5 memu?
-		If _ColorCheck(_GetPixelColor($iPetUnlockedxCoord[$i], 415, True), Hex(0xc3b6a5, 6), 20) Then
+		If _ColorCheck(_GetPixelColor($iPetUnlockedxCoord[$i], 415, True), Hex(0xc3b6a5, 6), 20) And $g_bUpgradePetsEnable[$i] Then
 
 			; get the Pet Level
 			Local $iPetLevel = getTroopsSpellsLevel($iPetLevelxCoord[$i], 533)

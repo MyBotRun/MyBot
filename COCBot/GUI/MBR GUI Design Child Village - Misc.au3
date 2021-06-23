@@ -325,7 +325,7 @@ Func CreateMiscNormalVillageSubTab()
 	$x -= 11
 	$y -= 2
 		GUICtrlCreateButton(GetTranslatedFileIni("MBR Global GUI Design", "LblTownhall", -1), $x, $y, 36, 36, $BS_ICON)
-			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnTH13, 1)
+			_GUICtrlSetImage(-1, $g_sLibIconPath, $eIcnTH14, 1)
 			_GUICtrlSetTip(-1, $sTxtRelocate & GetTranslatedFileIni("MBR GUI Design Child Village - Misc", "BtnTownhall", "Town Hall"))
 			GUICtrlSetOnEvent(-1, "btnLocateTownHall")
 

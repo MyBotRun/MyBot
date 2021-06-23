@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: kaganus (06-2015)
 ; Modified ......: CodeSlinger69 (01-2017), Fliegerfaust (02-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2021
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -747,7 +747,7 @@ Func WallsStatsMAJ()
 	$g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] -= Number($g_iNbrOfWallsUpped)
 	$g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 5] += Number($g_iNbrOfWallsUpped)
 	$g_iNbrOfWallsUpped = 0
-	For $i = 4 To 14
+	For $i = 4 To 15
 		GUICtrlSetData($g_ahWallsCurrentCount[$i], $g_aiWallsCurrentCount[$i])
 	Next
 	SaveConfig()

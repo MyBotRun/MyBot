@@ -1,3 +1,19 @@
+* **V7.9.4**
+* Fix ScreenShot when bot as paused
+* Fix SmartZap Level 9 Lightening Spell
+* Fix Device Connect Android 7
+* Fix QuickTrain after SummerUpdate
+* WallCost LVL12/13 updated to latest game-update @isaiahig
+* Fix Wall lvl15 counter @moebius14
+* Small French typo fix @Arisk0
+* Fix Pethouse array issue when pets maxed @GrumpyHog
+* Fix for Laboratory drag @xbebenk
+* Fix PBTime
+* Improve OCR for Over Damage
+* Improve Townhall Detection
+* Add New Super Troop Rocket Balloon
+* Add New Elixir Dragon Rider
+
 * **v7.9.3** 
 * Spring 2021 Update
 ** Globals: TH Level 14, BK, AQ, GW, RC new levels

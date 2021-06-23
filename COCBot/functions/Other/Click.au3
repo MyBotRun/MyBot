@@ -366,6 +366,10 @@ Func _DecodeDebug($message)
 			Return $separator & "Train - Train Ice Golem"
 		Case "#0345"
 			Return $separator & "Train - Train Yeti"
+		Case "#0346"
+			Return $separator & "Train - Train Dragon Rider"
+		Case "#0347"
+			Return $separator & "Train - Train Rocket Ballon"
 
 			;DONATE
 		Case "#0168"

@@ -6,7 +6,7 @@
 ; Return values .: NA
 ; Author ........:
 ; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2021
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -890,7 +890,7 @@ Func ApplyConfig_600_17($TypeReadSave)
 			EndIf
 			$g_bUpgradeWallSaveBuilder = (GUICtrlRead($g_hChkSaveWallBldr) = $GUI_CHECKED)
 			$g_iCmbUpgradeWallsLevel = _GUICtrlComboBox_GetCurSel($g_hCmbWalls)
-			For $i = 4 To 14
+			For $i = 4 To 15 ; added wall-lvl15
 				$g_aiWallsCurrentCount[$i] = Number(GUICtrlRead($g_ahWallsCurrentCount[$i]))
 			Next
 	EndSwitch

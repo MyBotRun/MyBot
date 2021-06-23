@@ -544,7 +544,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	SetDebugLog("Giants : " & $GiantComp & "  , per side: " & ($GiantComp / $nbSides) & " / deploy points per side: " & $g_iSlotsGiants)
 
 	If $g_bCustomDropOrderEnable Then
-		Local $listInfoDeploy[36][5] = [[MatchTroopDropName(0), $nbSides, MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+		Local $listInfoDeploy[38][5] = [[MatchTroopDropName(0), $nbSides, MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 				[MatchTroopDropName(1), $nbSides, MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 				[MatchTroopDropName(2), $nbSides, MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 				[MatchTroopDropName(3), $nbSides, MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -579,9 +579,11 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				[MatchTroopDropName(32), $nbSides, MatchTroopWaveNb(32), 1, MatchSlotsPerEdge(32)], _
 				[MatchTroopDropName(33), $nbSides, MatchTroopWaveNb(33), 1, MatchSlotsPerEdge(33)], _
 				[MatchTroopDropName(34), $nbSides, MatchTroopWaveNb(34), 1, MatchSlotsPerEdge(34)], _
-				[MatchTroopDropName(35), $nbSides, MatchTroopWaveNb(35), 1, MatchSlotsPerEdge(35)]]
+				[MatchTroopDropName(35), $nbSides, MatchTroopWaveNb(35), 1, MatchSlotsPerEdge(35)], _
+				[MatchTroopDropName(36), $nbSides, MatchTroopWaveNb(36), 1, MatchSlotsPerEdge(36)], _
+				[MatchTroopDropName(37), $nbSides, MatchTroopWaveNb(37), 1, MatchSlotsPerEdge(37)]]
 	Else
-		Local $listInfoDeploy[36][5] = [[$eGole, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[38][5] = [[$eGole, $nbSides, 1, 1, 2] _
 				, [$eLava, $nbSides, 1, 1, 2] _
 				, [$eIceH, $nbSides, 1, 1, 2] _
 				, [$eIceG, $nbSides, 1, 1, 2] _
@@ -590,6 +592,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$eSGiant, $nbSides, 1, 1, $g_iSlotsGiants] _
 				, [$eDrag, $nbSides, 1, 1, 0] _
 				, [$eBall, $nbSides, 1, 1, 0] _
+				, [$eRBall, $nbSides, 1, 1, 0] _
 				, [$eBabyD, $nbSides, 1, 1, 0] _
 				, [$eInfernoD, $nbSides, 1, 1, 0] _
 				, [$eHogs, $nbSides, 1, 1, 1] _
@@ -598,6 +601,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$eBowl, $nbSides, 1, 1, 0] _
 				, [$eMine, $nbSides, 1, 1, 0] _
 				, [$eEDrag, $nbSides, 1, 1, 0] _
+				, [$eDragR, $nbSides, 1, 1, 0] _
 				, [$eWall, $nbSides, 1, 1, 1] _
 				, [$eSWall, $nbSides, 1, 1, 1] _
 				, [$eBarb, $nbSides, 1, 1, 0] _

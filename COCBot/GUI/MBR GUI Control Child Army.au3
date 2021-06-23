@@ -174,7 +174,7 @@ Func lblTotalCountTroop2()
     Local $NbrOfBarrack = 4 ; Elixir Barrack
 
 	For $i = $eTroopBarbarian To $eTroopHeadhunter
-		If $i > $eTroopYeti Then $NbrOfBarrack = 2 ; Dark Elixir Barrack
+		If $i > $eTroopDragonRider Then $NbrOfBarrack = 2 ; Dark Elixir Barrack
 		Local $NbrOfTroop = GUICtrlRead($g_ahTxtTrainArmyTroopCount[$i])
 		If $NbrOfTroop > 0 Then
 			$TotalTotalTimeTroop += $NbrOfTroop * ($g_aiTroopTrainTime[$i] / $NbrOfBarrack)
@@ -648,8 +648,8 @@ Func BtnTroopOrderSet()
 	Local $bMissingTroop = False ; flag for when troops are not assigned by user
 	Local $aiUsedTroop[$eTroopCount] = [ _
 			$eTroopBarbarian, $eTroopSuperBarbarian, $eTroopArcher, $eTroopSuperArcher, $eTroopGiant, $eTroopSuperGiant, $eTroopGoblin, $eTroopSneakyGoblin, $eTroopWallBreaker, _
-			$eTroopSuperWallBreaker, $eTroopBalloon, $eTroopWizard, $eTroopSuperWizard, $eTroopHealer, $eTroopDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopInfernoDragon, $eTroopMiner, _
-			$eTroopElectroDragon, $eTroopYeti, $eTroopMinion, $eTroopSuperMinion, $eTroopHogRider, $eTroopValkyrie, $eTroopSuperValkyrie, $eTroopGolem, $eTroopWitch, $eTroopSuperWitch, _
+			$eTroopSuperWallBreaker, $eTroopBalloon, $eTroopRocketBalloon, $eTroopWizard, $eTroopSuperWizard, $eTroopHealer, $eTroopDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopInfernoDragon, $eTroopMiner, _
+			$eTroopElectroDragon, $eTroopYeti, $eTroopDragonRider, $eTroopMinion, $eTroopSuperMinion, $eTroopHogRider, $eTroopValkyrie, $eTroopSuperValkyrie, $eTroopGolem, $eTroopWitch, $eTroopSuperWitch, _
 			$eTroopLavaHound, $eTroopIceHound, $eTroopBowler, $eTroopIceGolem, $eTroopHeadhunter]
 
 	; check for duplicate combobox index and take action
@@ -995,7 +995,7 @@ EndFunc   ;==>TrainSpellLevelClick
 Func CalCostCamp()
 	Local $iElixirCostCamp = 0, $iDarkCostCamp = 0, $indexLevel = 0
 
-	For $i = $eTroopBarbarian To $eTroopYeti
+	For $i = $eTroopBarbarian To $eTroopDragonRider
 		$indexLevel = $g_aiTrainArmyTroopLevel[$i] > 0 ? $g_aiTrainArmyTroopLevel[$i] : $g_aiTroopCostPerLevel[$i][0]
 		$iElixirCostCamp += $g_aiArmyCustomTroops[$i] * $g_aiTroopCostPerLevel[$i][$indexLevel]
 	Next

@@ -15,8 +15,8 @@
 #include-once
 
 Global $g_aiDonIcons[$eTroopCount + 1] = [$eIcnDonBarbarian, $eIcnSuperBarbarian, $eIcnDonArcher, $eIcnSuperArcher, $eIcnDonGiant, $eIcnSuperGiant, $eIcnDonGoblin, $eIcnSneakyGoblin, _
-							$eIcnDonWallBreaker, $eIcnSuperWallBreaker, $eIcnDonBalloon, $eIcnDonWizard, $eIcnSuperWizard, $eIcnDonHealer, $eIcnDonDragon, $eIcnDonPekka, $eIcnDonBabyDragon, _
-							$eIcnInfernoDragon, $eIcnDonMiner, $eIcnElectroDragon, $eIcnYeti, $eIcnDonMinion, $eIcnSuperMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnSuperValkyrie, $eIcnDonGolem, _
+							$eIcnDonWallBreaker, $eIcnSuperWallBreaker, $eIcnDonBalloon, $eIcnRocketBalloon, $eIcnDonWizard, $eIcnSuperWizard, $eIcnDonHealer, $eIcnDonDragon, $eIcnDonPekka, $eIcnDonBabyDragon, _
+							$eIcnInfernoDragon, $eIcnDonMiner, $eIcnElectroDragon, $eIcnYeti, $eIcnDragonRider, $eIcnDonMinion, $eIcnSuperMinion, $eIcnDonHogRider, $eIcnDonValkyrie, $eIcnSuperValkyrie, $eIcnDonGolem, _
 							$eIcnDonWitch, $eIcnSuperWitch, $eIcnDonLavaHound, $eIcnIceHound, $eIcnDonBowler, $eIcnIceGolem, $eIcnHeadhunter, $eIcnDonBlank]
 
 Func btnDonateTroop()

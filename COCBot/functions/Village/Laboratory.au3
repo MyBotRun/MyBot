@@ -12,7 +12,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Local $iSlotWidth = 94, $iDistBetweenSlots = 12, $iYMidPoint = 472; use for logic to upgrade troops.. good for generic-ness
+Local $iSlotWidth = 94, $iDistBetweenSlots = 12, $iYMidPoint = 530; use for logic to upgrade troops.. good for generic-ness
 Local $iPicsPerPage = 12, $iPages = 4 ; use to know exactly which page the users choice is on
 Local $sLabWindow = "99,122,760,616", $sLabTroopsSection = "115,363,750,577"
 Local $sLabWindowDiam = GetDiamondFromRect($sLabWindow), $sLabTroopsSectionDiam = GetDiamondFromRect($sLabTroopsSection) ; easy to change search areas

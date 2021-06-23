@@ -260,7 +260,7 @@ Func CheckQuickTrainTroop()
 	SetLog("Reading troops/spells/siege in quick train army")
 
 	; reset troops/spells in quick army
-	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aEmptySiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0, 0]
 	$g_aiArmyQuickTroops = $aEmptyTroop
@@ -278,7 +278,7 @@ Func CheckQuickTrainTroop()
 	Local $aRemoveButton[4] = [535, 300, 0xff8f94, 20] ; red
 
 	local $iDistanceBetweenArmies = 108 ; pixels
-	local $aArmy1Location = [718, 272] ; first area of quick train army buttons
+	local $aArmy1Location = [758, 272] ; first area of quick train army buttons
 
 	; findImage needs filename and path
 	Local $avEditQuickTrainIcon = _FileListToArrayRec($g_sImgEditQuickTrain, "*", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_NOSORT, $FLTAR_FULLPATH)
@@ -292,7 +292,7 @@ Func CheckQuickTrainTroop()
 		If Not $g_bQuickTrainArmy[$i] Then ContinueLoop ; skip unchecked quick train army
 
 		; calculate search area for EditQuickTrainIcon
-		Local $sSearchArea = $aArmy1Location[0] & "," & ($aArmy1Location[1] + $iDistanceBetweenArmies*$i) & ",775," &  ($aArmy1Location[1] + $iDistanceBetweenArmies*($i+1))
+		Local $sSearchArea = $aArmy1Location[0] & ", " & ($aArmy1Location[1] + ($iDistanceBetweenArmies * $i)) & ", 815, " & ($aArmy1Location[1] + ($iDistanceBetweenArmies * ($i + 1)))
 
 		; search for EditQuickTrainIcon
 		Local $aiEditButton = decodeSingleCoord(findImage("EditQuickTrain", $avEditQuickTrainIcon[1], GetDiamondFromRect($sSearchArea), 1, True, Default))
@@ -481,43 +481,57 @@ Func CreateQuickTrainPreset($i)
 		ClickP($aRemoveButton) ; click remove
 		If _Sleep(750) Then Return
 
-		DragIfNeeded("Barb")
 		For $j = 0 To 6
 			Local $iIndex = $g_aiQuickTroopType[$i][$j]
 			If _ArrayIndexValid($g_aiArmyQuickTroops, $iIndex) Then
-				If $iIndex >= $eMini And $iArmyPage = 0 Then
+				If $iIndex >= $eHeal And $iArmyPage = 0 Then
 					If _Sleep(250) Then Return
-					ClickDrag(620, 445 + $g_iMidOffsetY, 620 - 373, 445 + $g_iMidOffsetY, 2000)
+					ClickDrag(715, 475, 25, 475, 2000)
 					If _Sleep(1500) Then Return
 					$iArmyPage = 1
 				EndIf
-				Local $sFilter = String($g_asTroopShortNames[$iIndex]) & "*"
-				Local $asImageToUse = _FileListToArray($g_sImgTrainTroops, $sFilter, $FLTA_FILES, True)
-				Local $aTrainPos = GetVariable($asImageToUse[1], $iIndex)
+
+				If $iIndex >= $eGole And $iArmyPage = 1 Then
+					If _Sleep(250) Then Return
+					ClickDrag(715, 475, 25, 475, 2000)
+					If _Sleep(1500) Then Return
+					$iArmyPage = 2
+				EndIf
+
+				Local $aTrainPos = GetTrainPos($iIndex)
 				If IsArray($aTrainPos) And $aTrainPos[0] <> -1 Then
 					SetLog("Adding " & $g_aiQuickTroopQty[$i][$j] & "x " & $g_asTroopNames[$iIndex], $COLOR_SUCCESS)
 					ClickP($aTrainPos, $g_aiQuickTroopQty[$i][$j], $g_iTrainClickDelay, "QTrain")
 				EndIf
 			EndIf
 		Next
+
 		For $j = 0 To 6
 			Local $iIndex = $g_aiQuickSpellType[$i][$j]
 			If _ArrayIndexValid($g_aiArmyQuickSpells, $iIndex) Then
-				If $iArmyPage < 2 Then
+				If $iArmyPage = 0 Then
 				    If _Sleep(250) Then Return
-					ClickDrag(620, 445 + $g_iMidOffsetY, 620 - 373, 445 + $g_iMidOffsetY, 2000)
+					ClickDrag(715, 475, 25, 475, 2000)
 					If _Sleep(1500) Then Return
-					 ClickDrag(620, 445 + $g_iMidOffsetY, 620 - 373, 445 + $g_iMidOffsetY, 2000)
+					ClickDrag(715, 475, 25, 475, 2000)
 					If _Sleep(1500) Then Return
-					 ClickDrag(620, 445 + $g_iMidOffsetY, 620 - 373, 445 + $g_iMidOffsetY, 2000)
+					ClickDrag(510, 475, 25, 475, 2000)
 					If _Sleep(1500) Then Return
-					;If Not DragIfNeeded("Witc") Then Return
-					;If _Sleep(1500) Then Return
-					$iArmyPage = 2
+					$iArmyPage = 3
+				ElseIf $iArmyPage = 1 Then
+				    If _Sleep(250) Then Return
+					ClickDrag(715, 475, 25, 475, 2000)
+					If _Sleep(1500) Then Return
+					ClickDrag(510, 475, 25, 475, 2000)
+					If _Sleep(1500) Then Return
+					$iArmyPage = 3
+				ElseIf $iArmyPage = 2 Then
+				    If _Sleep(250) Then Return
+					ClickDrag(510, 475, 25, 475, 2000)
+					If _Sleep(1500) Then Return
+					$iArmyPage = 3
 				EndIf
-				Local $sFilter = String($g_asSpellShortNames[$iIndex]) & "*"
-				Local $asImageToUse = _FileListToArray($g_sImgTrainSpells, $sFilter, $FLTA_FILES, True)
-				Local $aTrainPos = GetVariable($asImageToUse[1], $iIndex + $eLSpell)
+				Local $aTrainPos = GetTrainPos($iIndex + $eLSpell)
 				If IsArray($aTrainPos) And $aTrainPos[0] <> -1 Then
 					SetLog("Adding " & $g_aiQuickSpellQty[$i][$j] & "x " & $g_asSpellNames[$iIndex], $COLOR_SUCCESS)
 					ClickP($aTrainPos, $g_aiQuickSpellQty[$i][$j], $g_iTrainClickDelay, "QTrain")

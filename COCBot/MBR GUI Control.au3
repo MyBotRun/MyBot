@@ -1651,7 +1651,7 @@ Func SetTime($bForceUpdate = False)
 			$g_sLabUpgradeTime = ""
 		EndIf
 	EndIf
-	
+
 	If _DateIsValid($g_sPetUpgradeTime) Then
 		Local $iPetTime = _DateDiff("s", _NowCalc(), $g_sPetUpgradeTime) * 1000
 		If $iPetTime > 0 Then
@@ -2023,7 +2023,7 @@ Func Bind_ImageList($nCtrl, ByRef $hImageList)
 	Switch $nCtrl
 		Case $g_hTabMain
 			; the icons for main tab
-			Local $aIconIndex = [$eIcnHourGlass, $eIcnTH13, $eIcnAttack, $eIcnGUI, $eIcnInfo]
+			Local $aIconIndex = [$eIcnHourGlass, $eIcnTH14, $eIcnAttack, $eIcnGUI, $eIcnInfo]
 
 		Case $g_hGUI_VILLAGE_TAB
 			; the icons for village tab
