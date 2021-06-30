@@ -601,7 +601,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$eBowl, $nbSides, 1, 1, 0] _
 				, [$eMine, $nbSides, 1, 1, 0] _
 				, [$eEDrag, $nbSides, 1, 1, 0] _
-				, [$eDragR, $nbSides, 1, 1, 0] _
+				, [$eRDrag, $nbSides, 1, 1, 0] _
 				, [$eWall, $nbSides, 1, 1, 1] _
 				, [$eSWall, $nbSides, 1, 1, 1] _
 				, [$eBarb, $nbSides, 1, 1, 0] _

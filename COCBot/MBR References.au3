@@ -512,7 +512,7 @@ Func ReferenceGlobals()
 	$a1 = $eBabyD
 	$a1 = $eEDrag
 	$a1 = $eYeti
-	$a1 = $eDragR
+	$a1 = $eRDrag
 	$a1 = $eMine
 
 	$a1 = $eMini

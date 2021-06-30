@@ -68,7 +68,7 @@ Func getPBTime()
 
 		If _Sleep($DELAYRESPOND) Then Return ; improve pause/stop button response
 
-		$iPBTSeconds = ConvertOCRTime("OCR PBT", $sTimeResult, True)
+		$iPBTSeconds = ConvertOCRTime("OCR PBT", $sTimeResult, True, "sec")
 		If $g_bDebugSetlog Then SetDebugLog("Computed PBT Seconds = " & $iPBTSeconds, $COLOR_DEBUG)
 
 		If ($iPBTSeconds > 0) Then

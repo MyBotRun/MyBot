@@ -59,7 +59,9 @@ Func GetLastVersion($txt)
 EndFunc   ;==>GetLastVersion
 
 Func GetLastChangeLog($txt)
-	Return _StringBetween($txt, '"body":"', '"}')
+	Local $sChangeLog = _StringBetween($txt, '"body":"', '"}')
+	If @error Then $sChangeLog = _StringBetween($txt, '"body":"', '","')
+	Return $sChangeLog
 EndFunc   ;==>GetLastChangeLog
 
 Func GetVersionNormalized($VersionString, $Chars = 5)

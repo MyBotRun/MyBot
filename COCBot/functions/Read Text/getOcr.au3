@@ -31,7 +31,7 @@ Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete valu
 EndFunc   ;==>getElixirVillageSearch
 
 Func getResourcesValueTrainPage($x_start, $y_start) ; -> Gets CheckValuesCost on Train Window
-	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 100, 18, True)
+	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 113, 18, True)
 EndFunc   ;==>getResourcesValueTrainPage
 
 Func getDarkElixirVillageSearch($x_start, $y_start) ;48, 69+57 or 69+69  -> Gets complete value of Dark Elixir xxx,xxx, top left,  Getresources.au3
@@ -319,7 +319,7 @@ Func getChatStringPersian($x_start, $y_start, $bConvert = True) ; -> Get string 
 EndFunc   ;==>getChatStringPersian
 
 Func getArmyResourcesFromButtons($x_start, $y_start) ;  -> Gets cost of Troops/Spells from buttons
-	Return Number(getOcrAndCapture("coc-NewCapacity", $x_start, $y_start, 89, 19, True))
+	Return Number(getOcrAndCapture("coc-TrainResources", $x_start - 45, $y_start + 25, 89, 20, True))
 EndFunc   ;==>getArmyCapacityOnTrainTroops
 
 Func OcrForceCaptureRegion($bForce = Default)

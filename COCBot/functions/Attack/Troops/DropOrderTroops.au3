@@ -57,7 +57,7 @@ Func MatchTroopDropName($Num)
 		Case 21
 			Return $eYeti
 		Case 22
-			Return $eDragR
+			Return $eRDrag
 		Case 23
 			Return $eMini
 		Case 24
@@ -166,7 +166,7 @@ Func MatchSlotsPerEdge($Num)
 			Else
 				Return 2
 			EndIf
-		Case 22 ; $eDragR
+		Case 22 ; $eRDrag
 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
 				Return 0
 			Else

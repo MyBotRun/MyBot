@@ -13,7 +13,7 @@
 ; Example .......:
 ; ===============================================================================================================================
 
-Func ConvertOCRTime($sCaller, $sConvertTo, $bSetLog = True)
+Func ConvertOCRTime($sCaller, $sConvertTo, $bSetLog = True, $sReturnFormat = "min")
 	Local $iRemainTimer = 0, $avResult, $iDay = 0, $iHour = 0, $iMinute = 0, $iSecond = 0
 
 	If $sConvertTo <> "" Then
@@ -38,10 +38,26 @@ Func ConvertOCRTime($sCaller, $sConvertTo, $bSetLog = True)
 			$iSecond = Number($avResult[0])
 		EndIf
 
-		$iRemainTimer = Round($iDay * 24 * 60 + $iHour * 60 + $iMinute + $iSecond / 60, 0)
+		Local $iTimeInSeconds = ($iDay * 24 * 3600) + ($iHour * 3600) + ($iMinute * 60) + $iSecond
+
+		Switch StringLower($sReturnFormat)
+			Case "day"
+				$iRemainTimer = Int($iTimeInSeconds / 86400)
+			Case "hour"
+				$iRemainTimer = Int($iTimeInSeconds / 3600)
+			Case "min"
+				$iRemainTimer = Int($iTimeInSeconds / 60)
+			Case "sec"
+				$iRemainTimer = Int($iTimeInSeconds)
+			Case Else
+				SetLog("Error processing ReturnFormat " & $sReturnFormat, $COLOR_ERROR)
+				SetError(3, "Error processing time string")
+				Return $iRemainTimer
+		EndSwitch
+
 		If $iRemainTimer = 0 And $g_bDebugSetlog Then SetDebugLog($sCaller & ": Bad OCR string", $COLOR_ERROR)
 
-		If $bSetLog Then SetLog($sCaller & " time: " & StringFormat("%.2f", $iRemainTimer) & " min", $COLOR_INFO)
+		If $bSetLog Then SetLog($sCaller & " Time: " & $iRemainTimer & " " & $sReturnFormat, $COLOR_INFO)
 	Else
 		If $g_bDebugSetlog Then SetDebugLog("Can not read remaining time for " & $sCaller, $COLOR_ERROR)
 	EndIf

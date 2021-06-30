@@ -35,7 +35,7 @@ Func TrainSystem()
 		TrainCustomArmy()
 	EndIf
 
-    TrainSiege()
+	TrainSiege()
 
 	If $g_bDonationEnabled And $g_bChkDonate Then ResetVariables("donated")
 
@@ -242,7 +242,7 @@ EndFunc   ;==>CheckSiegeMachine
 Func TrainUsingWhatToTrain($rWTT, $bQueue = $g_bIsFullArmywithHeroesAndSpells)
 	If Not $g_bRunState Then Return
 
-	If UBound($rWTT) = 1 And $rWTT[0][0] = "Arch" And $rWTT[0][1] = 0 Then Return True; If was default Result of WhatToTrain
+	If UBound($rWTT) = 1 And $rWTT[0][0] = "Arch" And $rWTT[0][1] = 0 Then Return True ; If was default Result of WhatToTrain
 
 	If Not OpenTroopsTab(True, "TrainUsingWhatToTrain()") Then Return
 
@@ -253,24 +253,24 @@ Func TrainUsingWhatToTrain($rWTT, $bQueue = $g_bIsFullArmywithHeroesAndSpells)
 			If IsSpellToBrew($rWTT[$i][0]) Then ContinueLoop
 			Local $iTroopIndex = TroopIndexLookup($rWTT[$i][0], "TrainUsingWhatToTrain()")
 
-			If $iTroopIndex >= $eBarb and $iTroopIndex <= $eHunt Then
+			If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
 				Local $NeededSpace = $g_aiTroopSpace[$iTroopIndex] * $rWTT[$i][1]
-			Endif
+			EndIf
 
 			Local $aLeftSpace = GetOCRCurrent(48, 160)
 			Local $LeftSpace = $bQueue ? ($aLeftSpace[1] * 2) - $aLeftSpace[0] : $aLeftSpace[2]
 
 
 			If $NeededSpace > $LeftSpace Then
-				If $iTroopIndex >= $eBarb and $iTroopIndex <= $eHunt Then
+				If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
 					$rWTT[$i][1] = Int($LeftSpace / $g_aiTroopSpace[$iTroopIndex])
-				Endif
+				EndIf
 			EndIf
 
 			If $rWTT[$i][1] > 0 Then
 				If Not DragIfNeeded($rWTT[$i][0]) Then Return False
 
-				If $iTroopIndex >= $eBarb and $iTroopIndex <= $eHunt Then
+				If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
 					Local $sTroopName = ($rWTT[$i][1] > 1 ? $g_asTroopNamesPlural[$iTroopIndex] : $g_asTroopNames[$iTroopIndex])
 				EndIf
 
@@ -293,7 +293,7 @@ EndFunc   ;==>TrainUsingWhatToTrain
 Func BrewUsingWhatToTrain($rWTT, $bQueue = $g_bIsFullArmywithHeroesAndSpells)
 	If Not $g_bRunState Then Return
 
-	If UBound($rWTT) = 1 And $rWTT[0][0] = "Arch" And $rWTT[0][1] = 0 Then Return True; If was default Result of WhatToTrain
+	If UBound($rWTT) = 1 And $rWTT[0][0] = "Arch" And $rWTT[0][1] = 0 Then Return True ; If was default Result of WhatToTrain
 
 	If Not OpenSpellsTab(True, "BrewUsingWhatToTrain()") Then Return
 
@@ -388,7 +388,7 @@ EndFunc   ;==>DoWhatToTrainContainSpell
 
 Func IsElixirTroop($Troop)
 	Local $iIndex = TroopIndexLookup($Troop, "IsElixirTroop")
-	If $iIndex >= $eBarb And $iIndex <= $eDragR Then Return True
+	If $iIndex >= $eBarb And $iIndex <= $eRDrag Then Return True
 	Return False
 EndFunc   ;==>IsElixirTroop
 
@@ -443,7 +443,7 @@ Func RemoveExtraTroops($toRemove)
 			$iResult = 2
 		EndIf
 
-        If $iResult = 2 Then $toRemove = WhatToTrain(True) ; Check Everything Again...
+		If $iResult = 2 Then $toRemove = WhatToTrain(True) ; Check Everything Again...
 
 		Local $rGetSlotNumber = GetSlotNumber() ; Get all available Slot numbers with troops assigned on them
 		Local $rGetSlotNumberSpells = GetSlotNumber(True)
@@ -497,7 +497,7 @@ Func RemoveExtraTroops($toRemove)
 		Next
 
 		If _Sleep(500) Then Return
-		If Not _CheckPixel($aButtonRemoveTroopsOK1, True) Then; If no 'Okay' button found in army tab to save changes
+		If Not _CheckPixel($aButtonRemoveTroopsOK1, True) Then ; If no 'Okay' button found in army tab to save changes
 			SetLog("Cannot find/verify 'Okay' Button in Army tab", $COLOR_WARNING)
 			ClickP($aAway, 2, 0, "#0346") ; Click Away, Necessary! due to possible errors/changes
 			If _Sleep(400) Then OpenArmyOverview(True, "RemoveExtraTroops()") ; Open Army Window AGAIN
@@ -507,7 +507,7 @@ Func RemoveExtraTroops($toRemove)
 		If Not $g_bRunState Then Return
 		ClickP($aButtonRemoveTroopsOK1, 1) ; Click on 'Okay' button to save changes
 		If _Sleep(1200) Then Return
-	    If Not _CheckPixel($aButtonRemoveTroopsOK2, True) Then; If no 'Okay' button found to verify that we accept the changes
+		If Not _CheckPixel($aButtonRemoveTroopsOK2, True) Then ; If no 'Okay' button found to verify that we accept the changes
 			SetLog("Cannot find/verify 'Okay #2' Button in Army tab", $COLOR_WARNING)
 			ClickP($aAway, 2, 0, "#0346") ;Click Away
 			Return False ; Exit function
@@ -602,7 +602,7 @@ Func IsQueueEmpty($sType = "Troops", $bSkipTabCheck = False, $removeExtraTroopsQ
 	If Not _ColorCheck(_GetPixelColor($iArrowX, $iArrowY, True), Hex(0xa0d077, 6), 30) And Not _ColorCheck(_GetPixelColor($iArrowX, $iArrowY + 4, True), Hex(0x6ab320, 6), 30) Then
 		Return True ; Check Green Arrows at top first, if not there -> Return
 	ElseIf _ColorCheck(_GetPixelColor($iArrowX, $iArrowY, True), Hex(0xa0d077, 6), 30) And _ColorCheck(_GetPixelColor($iArrowX, $iArrowY + 4, True), Hex(0x6ab320, 6), 30) And Not $removeExtraTroopsQueue Then
-		If Not WaitforPixel($iArrowX - 11, $iArrowY - 1, $iArrowX - 9, $iArrowY + 1 , Hex(0xa0d077, 6), 30, 2) Then Return False ; check if boost arrow
+		If Not WaitforPixel($iArrowX - 11, $iArrowY - 1, $iArrowX - 9, $iArrowY + 1, Hex(0xa0d077, 6), 30, 2) Then Return False  ; check if boost arrow
 	EndIf
 
 	If Not $bSkipTabCheck Or $removeExtraTroopsQueue Then
@@ -663,7 +663,7 @@ EndFunc   ;==>GetSlotRemoveBtnPosition
 Func GetSlotNumber($bSpells = False)
 	Select
 		Case $bSpells = False
-		Local Const $Orders = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eYeti, $eDragR, $ePekk, $eBabyD, $eInfernoD, $eMine, $eEDrag, _
+			Local Const $Orders = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eYeti, $eRDrag, $ePekk, $eBabyD, $eInfernoD, $eMine, $eEDrag, _
 					$eMini, $eSMini, $eHogs, $eValk, $eSValk, $eGole, $eWitc, $eSWitc, $eLava, $eIceH, $eBowl, $eIceG, $eHunt] ; Set Order of troop display in Army Tab
 
 			Local $allCurTroops[UBound($Orders)]
@@ -839,7 +839,7 @@ Func CheckQueueTroops($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 		Local $aQueueTroop[$eTroopCount]
 		For $i = 0 To (UBound($aQuantities) - 1)
 			$aQuantities[$i][0] = $aSearchResult[$i][0]
-			$aQuantities[$i][1]	= $aSearchResult[$i][3]
+			$aQuantities[$i][1] = $aSearchResult[$i][3]
 			Local $iTroopIndex = TroopIndexLookup($aQuantities[$i][0])
 			If $iTroopIndex >= 0 And $iTroopIndex < $eTroopCount Then
 				If $bSetLog Then SetLog("  - " & $g_asTroopNames[TroopIndexLookup($aQuantities[$i][0], "CheckQueueTroops")] & ": " & $aQuantities[$i][1] & "x", $COLOR_SUCCESS)
@@ -1073,7 +1073,7 @@ Func ResetVariables($sArmyType = "")
 EndFunc   ;==>ResetVariables
 
 Func TrainArmyNumber($abQuickTrainArmy)
-	local $iDistanceBetweenArmies = 110
+	Local $iDistanceBetweenArmies = 110
 	Local $aiTrainButton, $aiSearchArea[4] = [750, 270, 815, 380]
 
 	For $iArmyNumber = 0 To 2
@@ -1283,11 +1283,11 @@ Func MakingDonatedTroops($sType = "All")
 				Local $aCheckIsAvailableSiege3[4] = [576, 556, 0x47717E, 10]
 				Local $aCheckIsAvailableSiege4[4] = [750, 556, 0x47717E, 10]
 				Local $checkPixel
-                If $iSiegeIndex = $eSiegeWallWrecker Then $checkPixel = $aCheckIsAvailableSiege
-                If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
-                If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
-                If $iSiegeIndex = $eSiegeBarracks Then $checkPixel = $aCheckIsAvailableSiege3
-                If $iSiegeIndex = $eSiegeLogLauncher Then $checkPixel = $aCheckIsAvailableSiege4
+				If $iSiegeIndex = $eSiegeWallWrecker Then $checkPixel = $aCheckIsAvailableSiege
+				If $iSiegeIndex = $eSiegeBattleBlimp Then $checkPixel = $aCheckIsAvailableSiege1
+				If $iSiegeIndex = $eSiegeStoneSlammer Then $checkPixel = $aCheckIsAvailableSiege2
+				If $iSiegeIndex = $eSiegeBarracks Then $checkPixel = $aCheckIsAvailableSiege3
+				If $iSiegeIndex = $eSiegeLogLauncher Then $checkPixel = $aCheckIsAvailableSiege4
 				Local $HowMany = $g_aiDonateSiegeMachines[$iSiegeIndex]
 				If _CheckPixel($checkPixel, True, Default, $g_asSiegeMachineNames[$iSiegeIndex]) Then
 					;PureClick($pos[0], $pos[1], $howMuch, 500)
@@ -1381,38 +1381,19 @@ Func ValidateSearchArmyResult($aSearchResult, $iIndex = 0)
 	Return False
 EndFunc   ;==>ValidateSearchArmyResult
 
-Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
+Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1)
 	; Local Variables
-	Local $TempColorToCheck = ""
-	Local $nElixirCurrent = 0, $nDarkCurrent = 0, $bLocalDebugOCR = 0
+	Local $nElixirCurrent = 0, $nDarkCurrent = 0
 
 	If _Sleep(1000) Then Return ; small delay
 	If Not $g_bRunState Then Return
 
-	; 	DEBUG
-	If $g_bDebugSetlogTrain Or $DebugLogs Then
-		$bLocalDebugOCR = $g_bDebugOcr
-		$g_bDebugOcr = True ; enable the OCR debug
-		$TempColorToCheck = _GetPixelColor(223, 594, True)
-		SetLog("CheckValuesCost|ColorToCheck: " & $TempColorToCheck)
-	EndIf
+	; Update Current Resources From Army Windows
+	Local $aCurrentResources = getArmyResources($g_bDebugSetlogTrain)
+	$nElixirCurrent = $aCurrentResources[1]
+	$nDarkCurrent = $aCurrentResources[2]
 
-	; Let??s UPDATE the current Elixir and Dark elixir each Troop train on 'Bottom train Window Page'
-	If _ColorCheck(_GetPixelColor(223, 594, True), Hex(0xE8E8E0, 6), 20) Then ; Gray background window color
-		; Village without Dark Elixir
-		$nElixirCurrent = getResourcesValueTrainPage(315, 594) ; ELIXIR
-	Else
-		; Village with Elixir and Dark Elixir
-		$nElixirCurrent = getResourcesValueTrainPage(230, 594) ; ELIXIR
-		$nDarkCurrent = getResourcesValueTrainPage(382, 594) ; DARK ELIXIR
-	EndIf
-
-	; 	DEBUG
-	If $g_bDebugSetlogTrain Or $DebugLogs Then
-		SetLog("- Current resources:")
-		SetLog(" - Elixir: " & _NumberFormat($nElixirCurrent) & " / Dark Elixir: " & _NumberFormat($nDarkCurrent), $COLOR_INFO)
-		$g_bDebugOcr = $bLocalDebugOCR ; disable OCR Debug
-	EndIf
+	If $g_bDebugSetlogTrain Then SetLog("Elixir: " & $nElixirCurrent & ",  Dark Elixir: " & $nDarkCurrent, $COLOR_DEBUG)
 
 	Local $troopCost = 0
 	Local $iTroopIndex = TroopIndexLookup($Troop, "CheckValuesCost")
@@ -1421,16 +1402,16 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	Local $iTempTroopCost, $iTempSpellCost
 	If IsArray($aTrainPos) And $aTrainPos[0] <> -1 Then
 		If $iTroopIndex >= $eBarb And $iTroopIndex <= $eHunt Then
-			$iTempTroopCost = getArmyResourcesFromButtons($aTrainPos[0] - $g_aiTroopOcrOffSet[$iTroopIndex][0], $aTrainPos[1] + $g_aiTroopOcrOffSet[$iTroopIndex][1])
+			$iTempTroopCost = getArmyResourcesFromButtons($aTrainPos[0], $aTrainPos[1])
 			If $iTempTroopCost <> "" Then
-				$troopCost = $iTempTroopCost
+				$troopCost = Number($iTempTroopCost)
 			Else
 				$troopCost = $g_aiTroopCostPerLevel[$iTroopIndex][$g_aiTrainArmyTroopLevel[$iTroopIndex]]
 			EndIf
 		ElseIf $iTroopIndex >= $eLSpell And $iTroopIndex <= $eBtSpell Then
-			$iTempSpellCost = getArmyResourcesFromButtons($aTrainPos[0] - $g_aiSpellOcrOffSet[$iTroopIndex - $eLSpell][0], $aTrainPos[1] + $g_aiSpellOcrOffSet[$iTroopIndex - $eLSpell][1])
-			IF $iTempSpellCost <> "" Then
-				$troopCost = $iTempSpellCost
+			$iTempSpellCost = getArmyResourcesFromButtons($aTrainPos[0], $aTrainPos[1])
+			If $iTempSpellCost <> "" Then
+				$troopCost = Number($iTempSpellCost)
 			Else
 				$troopCost = $g_aiSpellCostPerLevel[$iTroopIndex - $eLSpell][$g_aiTrainArmySpellLevel[$iTroopIndex - $eLSpell]]
 			EndIf
@@ -1438,31 +1419,31 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	EndIf
 
 	;	DEBUG
-	If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Individual Cost " & $Troop & "= " & $troopCost)
+	If $g_bDebugSetlogTrain Then SetLog("Individual Cost " & $Troop & "= " & $troopCost)
 
 	; Cost of the Troop&Spell x the quantities
 	$troopCost *= $troopQuantity
 
 	; 	DEBUG
-	If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Total Cost " & $Troop & "= " & $troopCost)
+	If $g_bDebugSetlogTrain Then SetLog("Total Cost " & $Troop & "= " & $troopCost)
 
 	If IsDarkTroop($Troop) Then
 		; If is Dark Troop
-		If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Dark Troop " & $Troop & " Is Dark Troop")
+		If $g_bDebugSetlogTrain Then SetLog("Dark Troop " & $Troop & " Is Dark Troop")
 		If $troopCost <= $nDarkCurrent Then
 			Return True
 		EndIf
 		Return False
 	ElseIf IsElixirSpell($Troop) Then
 		; If is Elixir Spell
-		If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Spell " & $Troop & " Is Elixir Spell")
+		If $g_bDebugSetlogTrain Then SetLog("Spell " & $Troop & " Is Elixir Spell")
 		If $troopCost <= $nElixirCurrent Then
 			Return True
 		EndIf
 		Return False
 	ElseIf IsDarkSpell($Troop) Then
 		; If is Dark Spell
-		If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Dark Spell " & $Troop & " Is Dark Spell")
+		If $g_bDebugSetlogTrain Then SetLog("Dark Spell " & $Troop & " Is Dark Spell")
 		If $troopCost <= $nDarkCurrent Then
 			Return True
 		EndIf
@@ -1470,9 +1451,43 @@ Func CheckValuesCost($Troop = "Arch", $troopQuantity = 1, $DebugLogs = 0)
 	Else
 		; If Isn't Dark Troop And Spells, Then is Elixir Troop : )
 		If $troopCost <= $nElixirCurrent Then
-			If $g_bDebugSetlogTrain Or $DebugLogs Then SetLog("Troop " & $Troop & " Is Elixir Troop")
+			If $g_bDebugSetlogTrain Then SetLog("Troop " & $Troop & " Is Elixir Troop")
 			Return True
 		EndIf
 		Return False
 	EndIf
 EndFunc   ;==>CheckValuesCost
+
+Func getArmyResources($bSetLog = True, $bNeedCapture = True)
+
+	If $bSetLog Then SetDebugLog("getArmyResources():", $COLOR_DEBUG)
+	Local $sResourceDiamond = GetDiamondFromRect("11,583,848,623")
+	Local $aCurrentResources = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Resources", $sResourceDiamond, $sResourceDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture)
+	Local $aTempResourceArray, $aResourceCoords, $iResourceIndex = -1
+	Local $aResources[4] = [0, 0, 0, 0] ; Gold, Elixir, Dark Elixir, Gems
+
+	If $bSetLog Then SetDebugLog("Current Resources: " & UBound($aCurrentResources, 1), $COLOR_SUCCESS)
+	If IsArray($aCurrentResources) And UBound($aCurrentResources, 1) >= 1 Then
+		For $i = 0 To UBound($aCurrentResources, 1) - 1
+			$aTempResourceArray = $aCurrentResources[$i]
+			$aResourceCoords = StringSplit($aTempResourceArray[1], ",", $STR_NOCOUNT)
+			$iResourceIndex = ResourceIndex($aTempResourceArray[0])
+			If $iResourceIndex = -1 Then ContinueLoop
+			$aResources[$iResourceIndex] = Number(getResourcesValueTrainPage($aResourceCoords[0] + 10, $aResourceCoords[1] - 5))
+			If $bSetLog Then SetDebugLog($aTempResourceArray[0] & ": " & $aResources[$iResourceIndex], $COLOR_INFO)
+		Next
+	EndIf
+
+	Return $aResources
+EndFunc   ;==>getArmyResources
+
+Func ResourceIndex(Const $sName)
+	Local $asResourceNames[4] = ["Gold", "Elixir", "DarkElixir", "Gems"]
+	For $i = 0 To UBound($asResourceNames) - 1
+		If $sName = $asResourceNames[$i] Then
+			Return $i
+		EndIf
+	Next
+
+	Return -1
+EndFunc   ;==>ResourceIndex
