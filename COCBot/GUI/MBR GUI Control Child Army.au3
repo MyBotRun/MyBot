@@ -1568,6 +1568,8 @@ EndFunc   ;==>TotalSpellCount_QTEdit
 Func chkSuperTroops()
 	If GUICtrlRead($g_hChkSuperTroops) = $GUI_CHECKED Then
 		$g_bSuperTroopsEnable = True
+		GUICtrlSetState($g_hChkSkipBoostSuperTroopOnHalt, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkUsePotionFirst, $GUI_ENABLE)
 		For $i = 0 To $iMaxSupersTroop - 1
 			GUICtrlSetState($g_ahLblSuperTroops[$i], $GUI_ENABLE)
 			GUICtrlSetState($g_ahCmbSuperTroops[$i], $GUI_ENABLE)
@@ -1576,12 +1578,24 @@ Func chkSuperTroops()
 		Next
 	Else
 		$g_bSuperTroopsEnable = False
+		GUICtrlSetState($g_hChkSkipBoostSuperTroopOnHalt, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkUsePotionFirst, $GUI_DISABLE)
 		For $i = 0 To $iMaxSupersTroop - 1
 			GUICtrlSetState($g_ahLblSuperTroops[$i], $GUI_DISABLE)
 			GUICtrlSetState($g_ahCmbSuperTroops[$i], $GUI_DISABLE)
 			GUICtrlSetState($g_ahPicSuperTroops[$i], $GUI_HIDE)
 			_GUICtrlSetImage($g_ahPicSuperTroops[$i], $g_sLibIconPath, $g_aSuperTroopsIcons[$g_iCmbSuperTroops[$i]])
 		Next
+	EndIf
+	If GUICtrlRead($g_hChkSkipBoostSuperTroopOnHalt) = $GUI_CHECKED Then
+		$g_bSkipBoostSuperTroopOnHalt = True
+	Else
+		$g_bSkipBoostSuperTroopOnHalt = False
+	EndIf
+	If GUICtrlRead($g_hChkUsePotionFirst) = $GUI_CHECKED Then
+		$g_bSuperTroopsBoostUsePotionFirst = True
+	Else
+		$g_bSuperTroopsBoostUsePotionFirst = False
 	EndIf
 EndFunc
 

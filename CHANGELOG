@@ -1,3 +1,18 @@
+* **v.7.9.6**
+* Fix attack log in all languages reported by Boldina
+* Fix misdetection wall lvl9
+* Fix no elixer / gold button in wall upgrade for 14.93.6 game version
+* Fix for max pet levels
+* Fix BB not attacking when loot available
+* Fix misdetect army overview RLoons with Loons
+* Fix for autoTH level search, don't regress, adjust some TH image tolerances
+* Fix smart train not waiting for royal champion
+* Fix BB option checkboxes not enabling/disabling properly
+* Fix account log file after switch account
+* Emulator/Instance Selection at Android Tab
+* Removed support for LeapDroid, KOPLAYER and Droid4X
+* Added Supertroops AutoBoost by xbebenk and TFKNazgul
+
 * **V7.9.5**
 * Fix Train issues
 * Fix PB Time

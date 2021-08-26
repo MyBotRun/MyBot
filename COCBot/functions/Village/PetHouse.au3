@@ -34,7 +34,7 @@ Func PetHouse($test = False)
 		Return
 	EndIf
 
-	; Check at least one pet upgrade is enable
+	; Check at least one pet upgrade is enabled
 	For $i = 0 to $ePetCount - 1
 		If $g_bUpgradePetsEnable[$i] Then
 			$bUpgradePets = True
@@ -60,8 +60,12 @@ Func PetHouse($test = False)
 
 	; not enought Dark Elixir to upgrade lowest Pet
 	If $g_aiCurrentLoot[$eLootDarkElixir] < $g_iMinDark4PetUpgrade Then
-		SetLog("Current DE Storage: " & $g_aiCurrentLoot[$eLootDarkElixir])
-		SetLog("Minumum DE for upgrade: " & $g_iMinDark4PetUpgrade)
+		If $g_iMinDark4PetUpgrade <> 999999 Then
+			SetLog("Current DE Storage: " & $g_aiCurrentLoot[$eLootDarkElixir])
+			SetLog("Minimum DE for Pet upgrade: " & $g_iMinDark4PetUpgrade)
+		Else
+			SetLog("No Pets available for upgrade.")
+		EndIf
 		Return
 	EndIf
 
@@ -90,12 +94,12 @@ Func PetHouse($test = False)
 			; get the Pet Level
 			Local $iPetLevel = getTroopsSpellsLevel($iPetLevelxCoord[$i], 533)
 			SetLog($g_asPetNames[$i] & " is at level " & $iPetLevel)
+			If $iPetLevel = $g_ePetLevels Then ContinueLoop
 
 			If _Sleep($DELAYLABORATORY2) Then Return
 
 			; get DE requirement to upgrade Pet
 			Local $iDarkElixirReq = 1000 * number($g_aiPetUpgradeCostPerLevel[$i][$iPetLevel])
-
 			SetLog("DE Requirement: " & $iDarkElixirReq)
 
 			If $iDarkElixirReq < $g_aiCurrentLoot[$eLootDarkElixir] Then
@@ -245,8 +249,12 @@ Func PetGuiDisplay()
 
 	; not enough Dark Elixir for upgrade -
 	If $g_aiCurrentLoot[$eLootDarkElixir] < $g_iMinDark4PetUpgrade Then
-		SetLog("Current DE Storage: " & $g_aiCurrentLoot[$eLootDarkElixir])
-		SetLog("Minumum DE for upgrade: " & $g_iMinDark4PetUpgrade)
+		If $g_iMinDark4PetUpgrade <> 999999 Then
+			SetLog("Current DE Storage: " & $g_aiCurrentLoot[$eLootDarkElixir])
+			SetLog("Minimum DE for Pet upgrade: " & $g_iMinDark4PetUpgrade)
+		Else
+			SetLog("No Pets available for upgrade.")
+		EndIf
 		Return
 	EndIf
 
@@ -379,6 +387,7 @@ Func GetMinDark4PetUpgrade()
 			; get the Pet Level
 			Local $iPetLevel = getTroopsSpellsLevel($iPetLevelxCoord[$i], 533)
 			SetLog($g_asPetNames[$i] & " is at level " & $iPetLevel)
+			If $iPetLevel = $g_ePetLevels Then ContinueLoop
 
 			If _Sleep($DELAYLABORATORY2) Then Return
 

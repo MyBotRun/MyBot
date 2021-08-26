@@ -128,3 +128,123 @@ Func sldAdditionalClickDelay($bSetControls = False)
 	Opt("MouseClickDelay", GetClickUpDelay()) ;Default: 10 milliseconds
 	Opt("MouseClickDownDelay", GetClickDownDelay()) ;Default: 5 milliseconds
 EndFunc   ;==>sldAdditionalClickDelay
+
+Func cmbAndroidEmulator()
+	getAllEmulatorsInstances()
+	Local $Emulator = GUICtrlRead($g_hCmbAndroidEmulator)
+	If MsgBox($MB_YESNO, "Emulator Selection", $Emulator & ", Is correct?" & @CRLF & "Any mistake and your profile will be not useful!" & @CRLF & "If 'yes' and your instance is OK, is necessary " & @CRLF & "REBOOT the 'bot'.", 10) = $IDYES Then
+		SetLog("Emulator " & $Emulator & " Selected. Please select an Instance.")
+		$g_sAndroidEmulator = $Emulator
+		$g_sAndroidInstance = GUICtrlRead($g_hCmbAndroidInstance)
+		BtnSaveprofile()
+	Else
+		_GUICtrlComboBox_SelectString($g_hCmbAndroidEmulator, $g_sAndroidEmulator)
+		getAllEmulatorsInstances()
+	EndIf
+EndFunc   ;==>cmbAndroidEmulator
+
+Func cmbAndroidInstance()
+	Local $Instance = GUICtrlRead($g_hCmbAndroidInstance)
+	If MsgBox($MB_YESNO, "Instance Selection", $Instance & ", Is correct?" & @CRLF & "If 'yes' is necessary REBOOT the 'bot'.", 10) = $IDYES Then
+		SetLog("Instance " & $Instance & " Selected.")
+		$g_sAndroidInstance = $Instance
+		BtnSaveprofile()
+	Else
+		getAllEmulatorsInstances()
+	EndIf
+EndFunc   ;==>cmbAndroidInstance
+
+Func getAllEmulators()
+
+	; Initial Var with all emulators , will populate the ComboBox UI
+	Local $sEmulatorString = ""
+
+	; Reset content , Emulator ComboBox var
+	GUICtrlSetData($g_hCmbAndroidEmulator, '')
+
+	; Bluestacks :
+	$__BlueStacks_Version = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "Version")
+	If Not @error Then
+		If GetVersionNormalized($__BlueStacks_Version) < GetVersionNormalized("0.10") Then $sEmulatorString &= "BlueStacks|"
+		If GetVersionNormalized($__BlueStacks_Version) > GetVersionNormalized("1.0") Then $sEmulatorString &= "BlueStacks2|"
+	EndIf
+
+	; Nox :
+	Local $NoxEmulator = GetNoxPath()
+	If FileExists($NoxEmulator) Then $sEmulatorString &= "Nox|"
+
+	; Memu :
+	Local $MEmuEmulator = GetMEmuPath()
+	If FileExists($MEmuEmulator) Then $sEmulatorString &= "MEmu|"
+
+	; iTools
+	Local $iToolsEmulator = GetiToolsPath()
+	If FileExists($iToolsEmulator) Then $sEmulatorString &= "iTools|"
+
+	Local $sResult = StringRight($sEmulatorString, 1)
+	If $sResult == "|" Then $sEmulatorString = StringTrimRight($sEmulatorString, 1)
+	Setlog("All Emulator found in your machine: " & $sEmulatorString)
+	GUICtrlSetData($g_hCmbAndroidEmulator, $sEmulatorString)
+
+	; $g_sAndroidEmulator Cosote Var to store the Emulator
+	_GUICtrlComboBox_SelectString($g_hCmbAndroidEmulator, $g_sAndroidEmulator)
+
+	; Lets get all Instances
+	getAllEmulatorsInstances()
+EndFunc   ;==>getAllEmulators
+
+Func getAllEmulatorsInstances()
+
+	; Reset content, Instance ComboBox var
+	GUICtrlSetData($g_hCmbAndroidInstance, '')
+
+	; Get all Instances from SELECTED EMULATOR - $g_hCmbAndroidEmulator is the Emulator ComboBox
+	Local $Emulator = GUICtrlRead($g_hCmbAndroidEmulator)
+	Local $sEmulatorPath = ""
+
+	Switch $Emulator
+		Case "BlueStacks"
+			GUICtrlSetData($g_hCmbAndroidInstance, "Android", "Android")
+			Return
+		Case "BlueStacks2"
+			Local $VMsBlueStacks = RegRead($g_sHKLM & "\SOFTWARE\BlueStacks\", "DataDir")
+			$sEmulatorPath = $VMsBlueStacks ; C:\ProgramData\BlueStacks\Engine
+		Case "Nox"
+			$sEmulatorPath = GetNoxPath() & "\BignoxVMS"  ; C:\Program Files\Nox\bin\BignoxVMS
+		Case "MEmu"
+			$sEmulatorPath = GetMEmuPath() & "\MemuHyperv VMs"  ; C:\Program Files\Microvirt\MEmu\MemuHyperv VMs
+		Case "iTools"
+			$sEmulatorPath = GetiToolsPath() & "\Repos\VMs"  ; C:\Program Files (x86)\ThinkSky\iToolsAVM\Repos\VMs
+	EndSwitch
+
+	; Just in case
+	$sEmulatorPath = StringReplace($sEmulatorPath, "\\", "\")
+
+	; BS Multi Instance
+	Local $sBlueStacksFolder = ""
+	If $Emulator = "BlueStacks2" Then $sBlueStacksFolder = "Android"
+
+	; Getting all VM Folders
+	Local $aEmulatorFolders = _FileListToArray($sEmulatorPath, $sBlueStacksFolder & "*", $FLTA_FOLDERS)
+
+	If @error = 1 Then
+		Setlog($Emulator & " -- Path was invalid. " & $sEmulatorPath)
+		Return
+	EndIf
+	If @error = 4 Then
+		Setlog($Emulator & " -- No file(s) were found. " & $sEmulatorPath)
+		Return
+	EndIf
+
+	; Removing the [0] -> $aArray[0] = Number of Files\Folders returned
+	_ArrayDelete($aEmulatorFolders, 0)
+
+	; Populating the Instance ComboBox var
+	GUICtrlSetData($g_hCmbAndroidInstance, _ArrayToString($aEmulatorFolders))
+
+	If $Emulator == $g_sAndroidEmulator Then
+		_GUICtrlComboBox_SelectString($g_hCmbAndroidInstance, $g_sAndroidInstance)
+	Else
+		_GUICtrlComboBox_SetCurSel($g_hCmbAndroidInstance, 0)
+	EndIf
+EndFunc   ;==>getAllEmulatorsInstances

@@ -37,6 +37,8 @@ Func GetAttackBarBB($bRemaining = False)
 		[n][4] = The Amount
 	#comments-end
 
+	If Not $g_bRunState Then Return ; Stop Button
+	
 	local $sSearchDiamond = GetDiamondFromRect("0,630,860,732")
 	local $aBBAttackBarResult = findMultiple($g_sImgDirBBTroops, $sSearchDiamond, $sSearchDiamond, 0, 1000, 0, "objectname,objectpoints", True)
 
@@ -48,6 +50,8 @@ Func GetAttackBarBB($bRemaining = False)
 		Return ""
 	EndIf
 
+	If Not $g_bRunState Then Return ; Stop Button
+	
 	; parse data into attackbar array... not done
 	For $i = 0 To UBound($aBBAttackBarResult, 1) - 1
 		local $aTroop = $aBBAttackBarResult[$i]
@@ -67,6 +71,7 @@ Func GetAttackBarBB($bRemaining = False)
 			_ArrayAdd($aBBAttackBar, $aTempElement)
 		Next
 
+	If Not $g_bRunState Then Return ; Stop Button
 	Next
 	_ArraySort($aBBAttackBar, 0, 0, 0, 3)
 	For $i=0 To UBound($aBBAttackBar, 1) - 1

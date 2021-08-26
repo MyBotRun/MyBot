@@ -6,7 +6,7 @@
 ; Return values .: None
 ; Author ........: ProMac (2015), HungLe (2015)
 ; Modified ......: Sardo (08-2015), KnowJack (08-2015), MonkeyHunter(06-2016) , trlopes (07-2016)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2021
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......: checkwall.au3
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -16,9 +16,9 @@
 Func UpgradeWall()
 
 	Local $iWallCost = Int($g_iWallCost - ($g_iWallCost * Number($g_iBuilderBoostDiscount) / 100))
-	
+
 	If Not $g_bRunState Then Return
-	
+
 	If $g_bAutoUpgradeWallsEnable = True Then
 		SetLog("Checking Upgrade Walls", $COLOR_INFO)
 		SetDebugLog("$iWallCost:" & $iWallCost)
@@ -32,7 +32,7 @@ Func UpgradeWall()
 			SetDebugLog("$g_iUpgradeWallLootType" & $g_iUpgradeWallLootType)
 			SetDebugLog("$MinWallGold" & $MinWallGold)
 			SetDebugLog("$MinWallElixir" & $MinWallElixir)
-			
+
 			While ($g_iUpgradeWallLootType = 0 And $MinWallGold) Or ($g_iUpgradeWallLootType = 1 And $MinWallElixir) Or ($g_iUpgradeWallLootType = 2 And ($MinWallGold Or $MinWallElixir))
 
 				Switch $g_iUpgradeWallLootType
@@ -132,7 +132,7 @@ Func UpgradeWallGold($iWallCost = $g_iWallCost)
 	Local $aUpgradeButton = findButton("Upgrade", Default, 2, True)
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton) > 0 Then
 		For $i = 0 To UBound($aUpgradeButton) - 1  ; Check for elixircolor in right top button corner and click, if present
-			If _ColorCheck(_GetPixelColor($aUpgradeButton[$i][0] + 52, $aUpgradeButton[$i][1] - 13, True), Hex(0xFFE31D, 6), 20) Then
+			If _ColorCheck(_GetPixelColor($aUpgradeButton[$i][0] + 52, $aUpgradeButton[$i][1] - 13, True), Hex(0xFFE41D, 6), 20) Then
 				Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
 				ExitLoop
 			EndIf
@@ -183,7 +183,7 @@ Func UpgradeWallElixir($iWallCost)
 	Local $aUpgradeButton = findButton("Upgrade", Default, 2, True)
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton) > 0 Then
 		For $i = 0 To UBound($aUpgradeButton) - 1  ; Check for elixircolor in right top button corner and click, if present
-			If _ColorCheck(_GetPixelColor($aUpgradeButton[$i][0] + 52, $aUpgradeButton[$i][1] - 13, True), Hex(0xEF25FF, 6), 20) Then
+			If _ColorCheck(_GetPixelColor($aUpgradeButton[$i][0] + 52, $aUpgradeButton[$i][1] - 13, True), Hex(0xF032FF, 6), 20) Then
 				Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
 				ExitLoop
 			EndIf
@@ -235,10 +235,10 @@ Func SkipWallUpgrade($iWallCost = $g_iWallCost) ; Dynamic Upgrades
 	Local $iBuildingsNeedGold = 0
 	Local $iBuildingsNeedElixir = 0
 	Local $iAvailBuilderCount = 0
-	
+
 	SetDebugLog("In SkipWallUpgrade")
-	SetDebugLog("$g_iTownHallLevel" & $g_iTownHallLevel)
-	
+	SetDebugLog("$g_iTownHallLevel = " & $g_iTownHallLevel)
+
 	Switch $g_iTownHallLevel
 		Case 5 To 8 ;Start at Townhall 5 because any Wall Level below 4 is not supported anyways
 			SetDebugLog("Case 5 to 8")
@@ -365,7 +365,7 @@ Func SwitchToNextWallLevel() ; switches wall level to upgrade to next level
 	If $g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] = 0 And $g_iCmbUpgradeWallsLevel < 9 Then
 		SetDebugLog("$g_aiWallsCurrentCount = " & $g_aiWallsCurrentCount)
 		SetDebugLog("$g_iCmbUpgradeWallsLevel = " & $g_iCmbUpgradeWallsLevel)
-		
+
 		EnableGuiControls()
 		_GUICtrlComboBox_SetCurSel($g_hCmbWalls, $g_iCmbUpgradeWallsLevel + 1)
 		cmbWalls()

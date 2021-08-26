@@ -22,8 +22,12 @@ Func PrepareAttackBB()
 			Return False
 		EndIf
 	EndIf
+	
+	If Not $g_bRunState Then Return ; Stop Button
+
 
 	If Not ClickAttack() Then Return False
+	_Sleep(1000)
 
 	If Not CheckArmyReady() Then
 		_Sleep(1500)
@@ -55,6 +59,8 @@ Func ClickAttack()
 	Local $ButtonPixel = _MultiPixelSearch(8, 640, 120, 755, 1, 1, Hex(0xeac68c, 6), $aColors, 20)
 	local $bRet = False
 
+	If Not $g_bRunState Then Return ; Stop Button
+	
 	If IsArray($ButtonPixel) Then
 		SetDebugLog(String($ButtonPixel[0]) & " " & String($ButtonPixel[1]))
 		PureClick($ButtonPixel[0] + 25, $ButtonPixel[1] + 25) ; Click fight Button
@@ -70,6 +76,8 @@ Func CheckLootAvail()
 	local $aCoords = decodeSingleCoord(findImage("BBLootAvail_bmp", $g_sImgBBLootAvail, GetDiamondFromRect("210,622,658,721"), 1, True))
 	local $bRet = False
 
+	If Not $g_bRunState Then Return ; Stop Button
+	
 	If IsArray($aCoords) And UBound($aCoords) = 2 Then
 		$bRet = True
 		SetLog("Loot is Available.")
@@ -85,6 +93,8 @@ Func CheckMachReady()
 	local $aCoords = decodeSingleCoord(findImage("BBMachReady_bmp", $g_sImgBBMachReady, GetDiamondFromRect("113,388,170,448"), 1, True))
 	local $bRet = False
 
+	If Not $g_bRunState Then Return ; Stop Button
+	
 	If IsArray($aCoords) And UBound($aCoords) = 2 Then
 		$bRet = True
 		SetLog("Battle Machine ready.")
@@ -100,6 +110,8 @@ Func CheckArmyReady()
 	local $bReady = True, $bNeedTrain = False, $bTraining = False
 	local $sSearchDiamond = GetDiamondFromRect("114,384,190,450") ; start of trained troops bar untill a bit after the 'r' "in Your Troops"
 
+	If Not $g_bRunState Then Return ; Stop Button
+	
 	If _Sleep($DELAYCHECKFULLARMY2) Then Return False ; wait for window
 	While $i < 6 And $bReady ; wait for fight preview window
 		local $aNeedTrainCoords = decodeSingleCoord(findImage("NeedTrainBB", $g_sImgBBNeedTrainTroops, $sSearchDiamond, 1, True))
@@ -116,6 +128,9 @@ Func CheckArmyReady()
 
 		$i += 1
 	WEnd
+	
+	If Not $g_bRunState Then Return ; Stop Button
+		
 	If Not $bReady Then
 		SetLog("Army is not ready.")
 		If $bTraining Then SetLog("Troops are training.")

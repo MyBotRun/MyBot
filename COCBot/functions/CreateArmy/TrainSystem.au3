@@ -25,6 +25,8 @@ Func TrainSystem()
 	$g_sTimeBeforeTrain = _NowCalc()
 	StartGainCost()
 
+	BoostSuperTroop()
+
 	If $g_bQuickTrainEnable Then CheckQuickTrainTroop() ; update values of $g_aiArmyComTroops, $g_aiArmyComSpells
 
 	CheckIfArmyIsReady()

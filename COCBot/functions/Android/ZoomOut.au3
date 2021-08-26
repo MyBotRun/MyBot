@@ -78,23 +78,8 @@ Func ZoomOutBlueStacks2()
 EndFunc
 
 Func ZoomOutMEmu()
-	SetDebugLog("ZoomOutDroid4X()")
+	SetDebugLog("ZoomOutMEmu()")
    Return DefaultZoomOut("{F3}", 0, ($g_iAndroidZoomoutMode <> 3))
-EndFunc
-
-#cs
-Func ZoomOutLeapDroid()
-	Return ZoomOutCtrlWheelScroll(True, True, True, False)
-EndFunc
-
-Func ZoomOutKOPLAYER()
-   Return ZoomOutCtrlWheelScroll(False, False, False, True, -70, 15)
-EndFunc
-#ce
-
-Func ZoomOutDroid4X()
-   SetDebugLog("ZoomOutDroid4X()")
-   Return ZoomOutCtrlWheelScroll(True, True, True, ($g_iAndroidZoomoutMode <> 3), Default, -5, 250)
 EndFunc
 
 Func ZoomOutNox()

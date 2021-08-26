@@ -186,8 +186,8 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 					Case 1
 						_WinAPI_SetWindowLong($g_hAndroidWindow, $GWL_EXSTYLE, $lCurExStyle)
 						_WinAPI_SetWindowLong($g_hAndroidWindow, $GWL_STYLE, $lCurStyle)
-						WinMove($g_hAndroidWindow, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3] - 1) ; force redraw this way (required for LeapDroid)
-						WinMove($g_hAndroidWindow, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3]) ; force redraw this way (required for LeapDroid)
+						;WinMove($g_hAndroidWindow, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3] - 1) ; force redraw this way (required for LeapDroid)
+						;WinMove($g_hAndroidWindow, "", $aPos[0], $aPos[1], $aPos[2], $aPos[3]) ; force redraw this way (required for LeapDroid)
 				EndSwitch
 			EndIf
 
@@ -480,8 +480,8 @@ Func _AndroidEmbed($Embed = True, $CallWinGetAndroidHandle = True, $bForceEmbed 
 			_WinAPI_UpdateWindow($g_hAndroidWindow)
 			_WinAPI_SetWindowLong($g_hAndroidWindow, $GWL_EXSTYLE, BitOR(_WinAPI_GetWindowLong($g_hAndroidWindow, $GWL_EXSTYLE), $WS_EX_TOOLWINDOW, $WS_EX_NOACTIVATE))
 
-			WinMove($g_hAndroidWindow, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3] - 1) ; force redraw this way (required for LeapDroid)
-			WinMove($g_hAndroidWindow, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3]) ; force redraw this way (required for LeapDroid)
+			;WinMove($g_hAndroidWindow, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3] - 1) ; force redraw this way (required for LeapDroid)
+			;WinMove($g_hAndroidWindow, "", $a[0], $a[1], $aPosCtl[2], $aPosCtl[3]) ; force redraw this way (required for LeapDroid)
 			If $targetIsHWnD = False Then
 				WinMove2($hCtrlTarget, "", 0, 0, $aPosCtl[2], $aPosCtl[3], 0, 0, False)
 			EndIf
@@ -740,7 +740,7 @@ Func AndroidEmbedCheck($bTestIfRequired = Default, $bHasFocus = Default, $iActio
 
 		Local $style = _WinAPI_GetWindowLong($g_hAndroidWindow, $GWL_STYLE)
 		If BitAND($style, $WS_DISABLED) > 0 Then $newStyle = BitOR($newStyle, $WS_DISABLED)
-		If BitAND($style, $WS_MAXIMIZEBOX) > 0 Then $newStyle = BitOR($newStyle, $WS_MAXIMIZEBOX) ; dirty fix for LeapDroid 1.7.0: It always adds $WS_MAXIMIZEBOX again
+		;If BitAND($style, $WS_MAXIMIZEBOX) > 0 Then $newStyle = BitOR($newStyle, $WS_MAXIMIZEBOX) ; dirty fix for LeapDroid 1.7.0: It always adds $WS_MAXIMIZEBOX again
 
 		Local $iStyle = (($style <> $newStyle) ? 2 : 0)
 		If $iStyle > 0 Then

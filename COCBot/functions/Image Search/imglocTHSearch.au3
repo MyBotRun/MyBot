@@ -197,7 +197,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 				EndIf
 			EndIf
 		Else
-			;thnotfound
+			;th not found
 			If $g_bDebugSetlog And $retry > 0 Then SetLog("imgloc Could not find TH", $COLOR_WARNING)
 			If $g_bDebugSetlog And $retry > 0 Then SetLog("imgloc THSearch Calculated  (in " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds) :")
 		EndIf

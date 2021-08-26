@@ -199,7 +199,7 @@ Func getAndroidPos($FastCheck = False, $RetryCount1 = 0, $RetryCount2 = 0, $bWid
 			EndIf
 			Local $bExpectControlResize = True
 
-			; check if emultor window only needs resizing (problem with BS or Droid4X in lower Screen Resolutions!)
+			; check if emultor window only needs resizing (problem with BS in lower Screen Resolutions!)
 			Local $AndroidWinPos = WinGetPos($g_hAndroidWindow)
 			If UBound($AndroidWinPos) < 4 Then
 				; window not accessible

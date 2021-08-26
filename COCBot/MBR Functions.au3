@@ -141,7 +141,7 @@
 #include "functions\Main Screen\waitMainScreen.au3"
 #include "functions\Main Screen\isOnBuilderBase.au3"
 
-; Android support for MEmu, LeapDroid, Droid4X, Nox, BlueStacks...
+; Android support for MEmu, Nox, BlueStacks and iTools
 #include "functions\Android\AndroidMenuShortcuts.au3"
 #include "functions\Android\Close_OpenCoC.au3"
 #include "functions\Android\ZoomOut.au3"
@@ -149,11 +149,8 @@
 #include "functions\Android\CheckAndroidPageError.au3"
 #include "functions\Android\CheckAndroidRebootCondition.au3"
 #include "functions\Android\AndroidBlueStacks.au3"
-#include "functions\Android\AndroidDroid4X.au3"
 #include "functions\Android\AndroidMEmu.au3"
-#include "functions\Android\AndroidLeapDroid.au3"
 #include "functions\Android\AndroidNox.au3"
-#include "functions\Android\AndroidKOPLAYER.au3"
 #include "functions\Android\AndroidiTools.au3"
 #include "functions\Android\getBSPos.au3"
 #include "functions\Android\UniversalCloseWaitOpenCoC.au3"

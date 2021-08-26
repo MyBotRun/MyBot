@@ -231,7 +231,7 @@ Func SetScreeniTools()
 	; Set dpi
 	$cmdOutput = LaunchConsole($__VBoxManage_Path, "guestproperty set " & $g_sAndroidInstance & " vbox_dpi 160", $process_killed)
 
-	;vboxmanage sharedfolder add droid4x --name picture --hostpath "C:\Users\Administrator\Pictures\Droid4X Photo" --automount
+	;vboxmanage sharedfolder add iTools --name picture --hostpath "C:\Users\Administrator\Pictures\iTools Photo" --automount
 	ConfigureSharedFolder(1, True)
 	ConfigureSharedFolder(2, True)
 

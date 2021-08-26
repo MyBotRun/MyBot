@@ -995,6 +995,8 @@ Func ApplyConfig_600_22($TypeReadSave)
 				GUICtrlSetState($g_hChkBoostBarracksHours[$i], $g_abBoostBarracksHours[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
 			GUICtrlSetState($g_hChkSuperTroops, $g_bSuperTroopsEnable ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkSkipBoostSuperTroopOnHalt, $g_bSkipBoostSuperTroopOnHalt ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkUsePotionFirst, $g_bSuperTroopsBoostUsePotionFirst ? $GUI_CHECKED : $GUI_UNCHECKED)
 			chkSuperTroops()
 			For $i = 0 To $iMaxSupersTroop - 1
 				_GUICtrlComboBox_SetCurSel($g_ahCmbSuperTroops[$i], $g_iCmbSuperTroops[$i])
@@ -1013,6 +1015,8 @@ Func ApplyConfig_600_22($TypeReadSave)
 				$g_abBoostBarracksHours[$i] = (GUICtrlRead($g_hChkBoostBarracksHours[$i]) = $GUI_CHECKED)
 			Next
 			$g_bSuperTroopsEnable = (GUICtrlRead($g_hChkSuperTroops) = $GUI_CHECKED)
+			$g_bSkipBoostSuperTroopOnHalt = (GUICtrlRead($g_hChkSkipBoostSuperTroopOnHalt) = $GUI_CHECKED)
+			$g_bSuperTroopsBoostUsePotionFirst = (GUICtrlRead($g_hChkUsePotionFirst) = $GUI_CHECKED)
 			For $i = 0 To $iMaxSupersTroop - 1
 				$g_iCmbSuperTroops[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbSuperTroops[$i])
 			Next

@@ -1205,6 +1205,8 @@ Func BotGuiModeToggle()
 
 			DistributorsUpdateGUI() ; Now loading Distributors (during GUI switch it must be called outside CreateMainGUIControls()!)
 
+			getAllEmulators()
+
 			DestroySplashScreen()
 
 			; apply config
