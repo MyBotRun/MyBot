@@ -51,7 +51,7 @@ Func CheckOverviewFullArmy($bOpenArmyWindow = False, $bCloseArmyWindow = False)
 	EndIf
 
 	$g_bCanRequestCC = _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1] + 20, True), Hex($aRequestTroopsAO[3], 6), $aRequestTroopsAO[5]) And _ColorCheck(_GetPixelColor($aRequestTroopsAO[0], $aRequestTroopsAO[1], True), Hex($aRequestTroopsAO[4], 6), $aRequestTroopsAO[5])
-	If $g_bDebugSetlog Then SetDebugLog("Can Request CC: " & $g_bCanRequestCC, $COLOR_DEBUG)
+	SetDebugLog("Can Request CC: " & $g_bCanRequestCC, $COLOR_DEBUG)
 
 	If $bCloseArmyWindow Then
 		ClickAway()

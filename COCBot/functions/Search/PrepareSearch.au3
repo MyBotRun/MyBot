@@ -177,7 +177,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 
 	checkAttackDisable($g_iTaBChkAttack, $Result) ;See If TakeABreak msg on screen
 
-	If $g_bDebugSetlog Then SetDebugLog("PrepareSearch exit check $g_bRestart= " & $g_bRestart & ", $g_bOutOfGold= " & $g_bOutOfGold, $COLOR_DEBUG)
+	SetDebugLog("PrepareSearch exit check $g_bRestart= " & $g_bRestart & ", $g_bOutOfGold= " & $g_bOutOfGold, $COLOR_DEBUG)
 
 	If $g_bRestart Or $g_bOutOfGold Then ; If we have one or both errors, then return
 		$g_bIsClientSyncError = False ; reset fast restart flag to stop OOS mode, collecting resources etc.
@@ -186,7 +186,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 	If IsAttackWhileShieldPage(False) Then ; check for shield window and then button to lose time due attack and click okay
 		Local $offColors[3][3] = [[0x000000, 144, 1], [0xFFFFFF, 54, 17], [0xFFFFFF, 54, 28]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
 		Local $ButtonPixel = _MultiPixelSearch(359, 404 + $g_iMidOffsetY, 510, 445 + $g_iMidOffsetY, 1, 1, Hex(0x000000, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $g_bDebugSetlog Then SetDebugLog("Shield btn clr chk-#1: " & _GetPixelColor(441, 344 + $g_iMidOffsetY, True) & ", #2: " & _
+		SetDebugLog("Shield btn clr chk-#1: " & _GetPixelColor(441, 344 + $g_iMidOffsetY, True) & ", #2: " & _
 				_GetPixelColor(441 + 144, 344 + $g_iMidOffsetY, True) & ", #3: " & _GetPixelColor(441 + 54, 344 + 17 + $g_iMidOffsetY, True) & ", #4: " & _
 				_GetPixelColor(441 + 54, 344 + 10 + $g_iMidOffsetY, True), $COLOR_DEBUG)
 		If IsArray($ButtonPixel) Then

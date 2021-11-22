@@ -56,7 +56,7 @@ Func Collect($bCheckTreasury = True)
 			EndSwitch
 			If IsArray($aCollectXY) Then ; found array of locations
 				$t = Random(0, UBound($aCollectXY) - 1, 1) ; SC May 2017 update only need to pick one of each to collect all
-				If $g_bDebugSetlog Then SetDebugLog($sFileName & " found, random pick(" & $aCollectXY[$t][0] & "," & $aCollectXY[$t][1] & ")", $COLOR_GREEN)
+				SetDebugLog($sFileName & " found, random pick(" & $aCollectXY[$t][0] & "," & $aCollectXY[$t][1] & ")", $COLOR_GREEN)
 				If IsMainPage() Then Click($aCollectXY[$t][0], $aCollectXY[$t][1], 1, 0, "#0430")
 				If _Sleep($DELAYCOLLECT2) Then Return
 			EndIf

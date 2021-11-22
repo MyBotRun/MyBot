@@ -202,7 +202,7 @@ EndFunc   ;==>RemoveDupNearby
 ; ===============================================================================================================================
 Func AddPoints_RemoveDuplicate(ByRef $sLoc1Coord, $sLoc2Coord, $iReturnpoints, $iDistance = 8)
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin AddPoints_RemoveDuplicate", $COLOR_DEBUG1)
+	SetDebugLog("Begin AddPoints_RemoveDuplicate", $COLOR_DEBUG1)
 
 	Local $aCoord1 = StringSplit($sLoc1Coord, "|")
 	Local $aCoord2 = StringSplit($sLoc2Coord, "|")

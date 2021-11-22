@@ -39,7 +39,7 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 		$g_bDraggedAttackBar = False
 	EndIf
 
-	If $g_bDebugSetlog Then SetDebugLog("PrepareAttack for " & $pMatchMode & " " & $g_asModeText[$pMatchMode], $COLOR_DEBUG)
+	SetDebugLog("PrepareAttack for " & $pMatchMode & " " & $g_asModeText[$pMatchMode], $COLOR_DEBUG)
 	If $bRemaining Then
 		SetLog("Checking remaining unused troops for: " & $g_asModeText[$pMatchMode], $COLOR_INFO)
 	Else
@@ -191,7 +191,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",530(390,30)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
 
 			Local $aSearchResult = findMultiple($g_sImgSwitchSiegeMachine, $sSearchArea, $sSearchArea, 0, 1000, 5, "objectname,objectpoints", True)
-			If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+			SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 			$hStarttime = _Timer_Init()
 
 			If $aSearchResult <> "" And IsArray($aSearchResult) Then
@@ -227,7 +227,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 						Next
 					EndIf
 				Next
-				If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege Levels: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+				SetDebugLog("Benchmark Switch Siege Levels: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 				$hStarttime = _Timer_Init()
 
 				If ($iTroopIndex = $ToUse Or $bAnySiege) And $g_iSiegeLevel >= $iFinalLevel Then
@@ -251,7 +251,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			If _Sleep(750) Then Return
 		EndIf
 	EndIf
-	If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege Detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+	SetDebugLog("Benchmark Switch Siege Detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 
 EndFunc   ;==>SelectCastleOrSiege
 

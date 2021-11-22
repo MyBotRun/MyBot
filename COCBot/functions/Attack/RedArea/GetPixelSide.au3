@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 Func GetPixelSide($listPixel, $index)
 	If UBound($listPixel) > $index Then
-		If $g_bDebugSetlog Then SetDebugLog("GetPixelSide " & $index & " = " & StringReplace($listPixel[$index], "-", ","))
+		SetDebugLog("GetPixelSide " & $index & " = " & StringReplace($listPixel[$index], "-", ","))
 		Return GetListPixel($listPixel[$index])
 	EndIf
 	; return -1 like GetListPixel would do on wrong array

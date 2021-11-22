@@ -51,7 +51,7 @@ Func SmartWait4Train($iTestSeconds = Default)
 	Local $RandomAddPercent = Random(0, $g_iCloseRandomTimePercent / 100) ; generate random percentage between 0 and user set GUI value
 	Local $MinimumTimeClose = Number($g_iCloseMinimumTime * 60) ; Minimum time required to close
 	If $g_bDebugSetlogTrain Or $g_bDebugSetlog Then SetLog("Random add percent = " & StringFormat("%.4f", $RandomAddPercent), $COLOR_DEBUG)
-	If $g_bDebugSetlog Then SetDebugLog("$MinimumTimeClose = " & $MinimumTimeClose & "s", $COLOR_DEBUG)
+	SetDebugLog("$MinimumTimeClose = " & $MinimumTimeClose & "s", $COLOR_DEBUG)
 
 	; Determine state of $StopEmulator flag
 	Local $StopEmulator = False

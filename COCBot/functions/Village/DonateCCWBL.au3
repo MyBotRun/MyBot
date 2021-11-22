@@ -23,7 +23,7 @@ Func donateCCWBLUserImageCollect($x, $y)
 	_CaptureRegion2()
 
 	;if OnlyWhiteList enable check and donate TO COMPLETE
-	If $g_bDebugSetlog Then SetDebugLog("Search into whitelist...", $color_purple)
+	SetDebugLog("Search into whitelist...", $color_purple)
 	Local $xyz = _FileListToArrayRec($g_sProfileDonateCaptureWhitelistPath, "*.png", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 	If UBound($xyz) > 1 Then
 		;_CaptureRegion2()
@@ -39,7 +39,7 @@ Func donateCCWBLUserImageCollect($x, $y)
 	EndIf
 
 	;if OnlyBlackList enable check and donate
-	If $g_bDebugSetlog Then SetDebugLog("Search into blacklist...", $color_purple)
+	SetDebugLog("Search into blacklist...", $color_purple)
 	Local $xyz1 = _FileListToArrayRec($g_sProfileDonateCaptureBlacklistPath, "*.png", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 	If UBound($xyz1) > 1 Then
 		;_CaptureRegion2()
@@ -51,13 +51,13 @@ Func donateCCWBLUserImageCollect($x, $y)
 				If $g_iCmbDonateFilter = 3 Then Return False ; <=== return NO DONATE if name found in black list
 				ExitLoop
 			Else
-				If $g_bDebugSetlog Then SetDebugLog("Image not found", $COLOR_ERROR)
+				SetDebugLog("Image not found", $COLOR_ERROR)
 			EndIf
 		Next
 	EndIf
 
 	If $imagematch = False And $g_iCmbDonateFilter > 0 Then
-		If $g_bDebugSetlog Then SetDebugLog("Search into images to assign...", $color_purple)
+		SetDebugLog("Search into images to assign...", $color_purple)
 		;try to search into images to Assign
 		Local $xyzw = _FileListToArrayRec($g_sProfileDonateCapturePath, "*.png", $FLTAR_FILES, $FLTAR_NORECUR, $FLTAR_SORT, $FLTAR_NOPATH)
 		If UBound($xyzw) > 1 Then
@@ -74,7 +74,7 @@ Func donateCCWBLUserImageCollect($x, $y)
 
 		;save image (search divider chat line to know position of village name)
 		If $imagematch = False Then
-			If $g_bDebugSetlog Then SetDebugLog("save image in images to assign...", $color_purple)
+			SetDebugLog("save image in images to assign...", $color_purple)
 
 			;search chat divider line
 			Local $founddivider
@@ -86,11 +86,11 @@ Func donateCCWBLUserImageCollect($x, $y)
 				;search chat divider hidden
 				Local $reshidden = FindImageInPlace("DCCWBL", $g_sImgChatDividerHidden, "0," & $y - 90 & "," & $x - 30 & "," & $y, False)
 				If $reshidden = "" Then
-					If $g_bDebugSetlog Then SetDebugLog("No Chat divider hidden found", $COLOR_ERROR)
+					SetDebugLog("No Chat divider hidden found", $COLOR_ERROR)
 				Else
 					Local $xfound = Int(StringSplit($reshidden, ",", 2)[0])
 					Local $yfound = Int(StringSplit($reshidden, ",", 2)[1])
-					If $g_bDebugSetlog Then SetDebugLog("ChatDivider hidden found (" & $xfound & "," & $yfound & ")", $COLOR_SUCCESS)
+					SetDebugLog("ChatDivider hidden found (" & $xfound & "," & $yfound & ")", $COLOR_SUCCESS)
 
 					; now crop image to have only request village name and put in $hClone
 					Local $oBitmap = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
@@ -113,7 +113,7 @@ Func donateCCWBLUserImageCollect($x, $y)
 			Else
 				Local $xfound = Int(StringSplit($res, ",", 2)[0])
 				Local $yfound = Int(StringSplit($res, ",", 2)[1])
-				If $g_bDebugSetlog Then SetDebugLog("ChatDivider found (" & $xfound & "," & $yfound & ")", $COLOR_SUCCESS)
+				SetDebugLog("ChatDivider found (" & $xfound & "," & $yfound & ")", $COLOR_SUCCESS)
 
 				; now crop image to have only request village name and put in $hClone
 				Local $oBitmap = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)

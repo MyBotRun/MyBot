@@ -47,7 +47,7 @@ Func StarLaboratory($bTestRun = False)
 
 	If $g_sStarLabUpgradeTime <> "" Then $TimeDiff = _DateDiff("n", _NowCalc(), $g_sStarLabUpgradeTime) ; what is difference between end time and now in minutes?
 	If @error Then _logErrorDateDiff(@error)
-	If $g_bDebugSetlog Then SetDebugLog($g_avStarLabTroops[$g_iCmbStarLaboratory][3] & " Lab end time: " & $g_sStarLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
+	SetDebugLog($g_avStarLabTroops[$g_iCmbStarLaboratory][3] & " Lab end time: " & $g_sStarLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
 
 	If Not $g_bRunState Then Return
 	If $TimeDiff <= 0 Then
@@ -255,7 +255,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 				Local $iLabFinishTime = ConvertOCRTime("Lab Time", $Result, False)
 				SetLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
 				$StartTime = _NowCalc() ; what is date:time now
-				If $g_bDebugSetlog Then SetDebugLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
+				SetDebugLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
 				If $iLabFinishTime > 0 Then
 					$g_sStarLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), $StartTime)
 					SetLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade Finishes @ " & $Result & " (" & $g_sStarLabUpgradeTime & ")", $COLOR_SUCCESS)

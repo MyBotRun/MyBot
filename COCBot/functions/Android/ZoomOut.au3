@@ -121,7 +121,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 				EndIf
 				If Not $bAndroidZoomOut Then
 				   ; original windows based zoom-out
-				   If $g_bDebugSetlog Then SetDebugLog("Index = "&$i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
+				   SetDebugLog("Index = "&$i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 				   If _Sleep($DELAYZOOMOUT2) Then Return True
 				   If $g_bChkBackgroundMode = False And $g_bNoFocusTampering = False Then
 					  $Result0 = ControlFocus($g_hAndroidWindow, "", "")
@@ -129,7 +129,7 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 					  $Result0 = 1
 				   EndIf
 				   $Result1 = ControlSend($g_hAndroidWindow, "", "", $ZoomOutKey)
-				   If $g_bDebugSetlog Then SetDebugLog("ControlFocus Result = "&$Result0 & ", ControlSend Result = "&$Result1& "|" & "@error= " & @error, $COLOR_DEBUG)
+				   SetDebugLog("ControlFocus Result = "&$Result0 & ", ControlSend Result = "&$Result1& "|" & "@error= " & @error, $COLOR_DEBUG)
 				   If $Result1 = 1 Then
 					   $i += 1
 				   Else
@@ -200,7 +200,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 			EndIf
 			If Not $AndroidZoomOut Then
 			   ; original windows based zoom-out
-			   If $g_bDebugSetlog Then SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
+			   SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 			   If _Sleep($DELAYZOOMOUT2) Then ExitLoop
 			   If ($g_bChkBackgroundMode = False And $g_bNoFocusTampering = False) Or $AlwaysControlFocus Then
 				  $Result[0] = ControlFocus($hWin, "", "")
@@ -225,7 +225,7 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 			   If _Sleep($ClickDelay) Then ExitLoop
 			   $Result[3] = ControlSend($hWin, "", "", "{CTRLUP}{SPACE}")
 
-			   If $g_bDebugSetlog Then SetDebugLog("ControlFocus Result = " & $Result[0] & _
+			   SetDebugLog("ControlFocus Result = " & $Result[0] & _
 					  ", " & $ZoomActions[1] & " = " & $Result[1] & _
 					  ", " & $ZoomActions[2] & " = " & $Result[2] & _
 					  ", " & $ZoomActions[3] & " = " & $Result[3] & _
@@ -298,7 +298,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 			EndIf
 			If Not $AndroidZoomOut Then
 			   ; original windows based zoom-out
-			   If $g_bDebugSetlog Then SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
+			   SetDebugLog("Index = " & $i, $COLOR_DEBUG) ; Index=2X loop count if success, will be increment by 1 if controlsend fail
 			   If _Sleep($DELAYZOOMOUT2) Then ExitLoop
 			   If ($g_bChkBackgroundMode = False And $g_bNoFocusTampering = False) Or $AlwaysControlFocus Then
 				  $Result[0] = ControlFocus($g_hAndroidWindow, "", "")
@@ -314,7 +314,7 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 			   $Result[3] = ControlSend($g_hAndroidWindow, "", "", "{CTRLUP}{SPACE}")
 			   $SendCtrlUp = False
 
-			   If $g_bDebugSetlog Then SetDebugLog("ControlFocus Result = " & $Result[0] & _
+			   SetDebugLog("ControlFocus Result = " & $Result[0] & _
 					  ", " & $ZoomActions[1] & " = " & $Result[1] & _
 					  ", " & $ZoomActions[2] & " = " & $Result[2] & _
 					  ", " & $ZoomActions[3] & " = " & $Result[3] & _

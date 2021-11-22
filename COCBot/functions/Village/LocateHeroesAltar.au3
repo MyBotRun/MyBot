@@ -88,7 +88,7 @@ Func _LocateQueenAltar($bCollect = True)
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $g_bDebugSetlog Then SetDebugLog($sInfo[1] & $sInfo[2])
+		SetDebugLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -216,7 +216,7 @@ Func _LocateKingAltar($bCollect = True)
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $g_bDebugSetlog Then SetDebugLog($sInfo[1] & $sInfo[2])
+		SetDebugLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -347,7 +347,7 @@ Func _LocateWardenAltar($bCollect = True)
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $g_bDebugSetlog Then SetDebugLog($sInfo[1] & $sInfo[2])
+		SetDebugLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -479,7 +479,7 @@ Func _LocateChampionAltar($bCollect = True)
 			$CountGetInfo += 1
 			If $CountGetInfo = 50 Then Return
 		WEnd
-		If $g_bDebugSetlog Then SetDebugLog($sInfo[1] & $sInfo[2])
+		SetDebugLog($sInfo[1] & $sInfo[2])
 		If @error Then Return SetError(0, 0, 0)
 
 		If $sInfo[0] > 1 Or $sInfo[0] = "" Then

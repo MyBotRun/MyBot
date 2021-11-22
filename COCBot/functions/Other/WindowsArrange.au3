@@ -191,7 +191,7 @@ Func WinMove2($WinTitle, $WinText, $x = -1, $y = -1, $w = -1, $h = -1, $hAfter =
 		$NoResize = $NoResize Or ($w = $aPos[2] And $h = $aPos[3])
 	EndIf
 
-	;If $g_bDebugSetlog Then SetDebugLog("Window " & $WinTitle & "(" & $hWin & "): " & ($NoResize ? "no resize" : "resize to " & $w & " x " & $h) & ($NoMove ? ", no move" : ", move to " & $x & "," & $y), $COLOR_INFO);
+	;SetDebugLog("Window " & $WinTitle & "(" & $hWin & "): " & ($NoResize ? "no resize" : "resize to " & $w & " x " & $h) & ($NoMove ? ", no move" : ", move to " & $x & "," & $y), $COLOR_INFO);
 	If $g_bWinMove2_Compatible And $NoResize = False Then
 		WinMove($WinTitle, $WinText, $x, $y, $w, $h)
 		_WinAPI_SetWindowPos($hWin, $hAfter, 0, 0, 0, 0, BitOR($SWP_NOSIZE, $SWP_NOMOVE, $SWP_NOREPOSITION, $SWP_NOACTIVATE, $SWP_NOSENDCHANGING, $NOZORDER, $iFlags)) ; resize window without sending changing message to window

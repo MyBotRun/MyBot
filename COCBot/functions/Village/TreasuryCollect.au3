@@ -15,7 +15,7 @@
 #include-once
 
 Func TreasuryCollect()
-	If $g_bDebugSetlog Then SetDebugLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
+	SetDebugLog("Begin CollectTreasury:", $COLOR_DEBUG1) ; function trace
 	If Not $g_bRunState Then Return ; ensure bot is running
 
 	ClickAway()

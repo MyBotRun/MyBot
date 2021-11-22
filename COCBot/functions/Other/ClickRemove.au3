@@ -18,7 +18,7 @@ Func ClickRemove($FeatureName = "Remove")
 		While 1 ; wait window with remove button
 			Local $offColors[3][3] = [[0x1A1A1A, 108, 0], [0xFFFFFF, 64, 12], [0xE51115, 55, 20]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel Red in bottom center
 			Local $ButtonPixel = _MultiPixelSearch(474, 252, 587, 276, 1, 1, Hex(0x0D0D0D, 6), $offColors, 20) ; first vertical black pixel of Remove, used 860x780, need to check 860x720?
-			If $g_bDebugSetlog Then SetDebugLog($FeatureName & " btn chk-#1: " & _GetPixelColor(476, 253, True) & ", #2: " & _GetPixelColor(476 + 108, 253, True) & ", #3: " & _GetPixelColor(476 + 64, 253 + 12, True) & ", #4: " & _GetPixelColor(476 + 55, 253 + 20, True), $COLOR_DEBUG)
+			SetDebugLog($FeatureName & " btn chk-#1: " & _GetPixelColor(476, 253, True) & ", #2: " & _GetPixelColor(476 + 108, 253, True) & ", #3: " & _GetPixelColor(476 + 64, 253 + 12, True) & ", #4: " & _GetPixelColor(476 + 55, 253 + 20, True), $COLOR_DEBUG)
 			If IsArray($ButtonPixel) Then
 				If $g_bDebugSetlog Then
 					SetDebugLog("ButtonPixelLocation = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
@@ -38,7 +38,7 @@ Func ClickRemove($FeatureName = "Remove")
 		WEnd
 		Return True
 	Else
-		If $g_bDebugSetlog Then SetDebugLog($FeatureName & " remove button found", $COLOR_INFO)
+		SetDebugLog($FeatureName & " remove button found", $COLOR_INFO)
 		Return False
 	EndIf
 EndFunc   ;==>ClickRemove

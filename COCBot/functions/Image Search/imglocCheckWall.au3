@@ -140,7 +140,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 	; Process results
 	If $result[0] <> "" Then
 		; Get the keys for the dictionary item.
-		If $g_bDebugSetlog Then SetDebugLog(" imglocFindMyWall search returned : " & $result[0])
+		SetDebugLog(" imglocFindMyWall search returned : " & $result[0])
 		Local $aKeys = StringSplit($result[0], "|", $STR_NOCOUNT)
 		; Loop through the array
 		ReDim $FoundWalls[UBound($aKeys)]

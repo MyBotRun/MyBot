@@ -94,7 +94,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 				If UBound($a) = 2 Then
 					$x = Int($a[0])
 					$y = Int($a[1])
-					SetDebugLog("Found fixed image at " & $x & ", " & $y & ": " & $findImage)
+					SetDebugLog("Found fixed image at " & $x & ", " & $y & ": " & $findImage, $COLOR_INFO)
 					$fixed[0] = $x ; x center of fixed found
 					$fixed[1] = $y ; y center of fixed found
 					$fixed[2] = $x0 ; x ref. center of fixed
@@ -129,7 +129,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 			If UBound($a) = 2 Then
 				$x = Int($a[0])
 				$y = Int($a[1])
-				SetDebugLog("Found stone image at " & $x & ", " & $y & ": " & $findImage)
+				SetDebugLog("Found stone image at " & $x & ", " & $y & ": " & $findImage, $COLOR_INFO)
 				$stone[0] = $x ; x center of stone found
 				$stone[1] = $y ; y center of stone found
 				$stone[2] = $x0 ; x ref. center of stone
@@ -171,7 +171,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 					$a = $a[0]
 					$x = Int($a[0])
 					$y = Int($a[1])
-					SetDebugLog("Found tree image at " & $x & ", " & $y & ": " & $findImage)
+					SetDebugLog("Found tree image at " & $x & ", " & $y & ": " & $findImage, $COLOR_INFO)
 					$tree[0] = $x ; x center of tree found
 					$tree[1] = $y ; y center of tree found
 					$tree[2] = $x0 ; x ref. center of tree

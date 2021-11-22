@@ -394,7 +394,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 		EndIf
 		If _Sleep($DELAYRESPOND) Then Return
 
-		; ------- Add attack not button delay and check button status
+		; ------- Add attack now button delay and check button status
 		If $g_bSearchAttackNowEnable And $g_iSearchAttackNowDelay > 0 Then
 			If _Sleep(1000 * $g_iSearchAttackNowDelay) Then Return ; add human reaction time on AttackNow button function
 		EndIf
@@ -420,7 +420,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 				ClickP($NextBtn, 1, 0, "#0155") ;Click Next
 				ExitLoop
 			Else
-				If $g_bDebugSetlog Then SetDebugLog("Wait to see Next Button... " & $i, $COLOR_DEBUG)
+				SetDebugLog("Wait to see Next Button... " & $i, $COLOR_DEBUG)
 			EndIf
 			If $i >= 99 Or isProblemAffect() Or (Mod($i, 10) = 0 And checkObstacles_Network(False, False)) Then ; if we can't find the next button or there is an error, then restart
 				$g_bIsClientSyncError = True
@@ -476,10 +476,16 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 	;--- write in log match found ----
 	If $g_bSearchAlertMe Then
 		TrayTip($g_sProfileCurrentName & ": " & $g_asModeText[$g_iMatchMode] & " Match Found!", "Gold: " & $g_iSearchGold & "; Elixir: " & $g_iSearchElixir & "; Dark: " & $g_iSearchDark & "; Trophy: " & $g_iSearchTrophy, "", 0)
+		SetDebugLog("Trying to play sound.  Set volume to 50%", $COLOR_DEBUG)
+		SoundSetWaveVolume( 50 ) ;50% WAV volume setting
 		If FileExists(@WindowsDir & "\media\Festival\Windows Exclamation.wav") Then
+			SetDebugLog("Playing first sound.", $COLOR_DEBUG)
 			SoundPlay(@WindowsDir & "\media\Festival\Windows Exclamation.wav", 1)
 		ElseIf FileExists(@WindowsDir & "\media\Windows Exclamation.wav") Then
+			SetDebugLog("Playing second sound.", $COLOR_DEBUG)
 			SoundPlay(@WindowsDir & "\media\Windows Exclamation.wav", 1)
+		Else
+			SetDebugLog("No sound files found.", $COLOR_DEBUG)
 		EndIf
 	EndIf
 
@@ -496,7 +502,7 @@ Func SearchLimit($iSkipped, $bReturnToPickupHero = False)
 		While _CheckPixel($aSurrenderButton, $g_bCapturePixel) = False
 			If _Sleep($DELAYSEARCHLIMIT) Then Return
 			$Wcount += 1
-			If $g_bDebugSetlog Then SetDebugLog("wait surrender button " & $Wcount, $COLOR_DEBUG)
+			SetDebugLog("wait surrender button " & $Wcount, $COLOR_DEBUG)
 			If $Wcount >= 50 Or isProblemAffect(True) Then
 				checkMainScreen()
 				$g_bIsClientSyncError = False ; reset OOS flag for long restart

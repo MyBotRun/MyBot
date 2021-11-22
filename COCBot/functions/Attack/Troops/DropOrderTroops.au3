@@ -81,12 +81,14 @@ Func MatchTroopDropName($Num)
 		Case 33
 			Return $eBowl
 		Case 34
-			Return $eIceG
+			Return $eSBowl
 		Case 35
-			Return $eHunt
+			Return $eIceG
 		Case 36
-			Return "CC"
+			Return $eHunt
 		Case 37
+			Return "CC"
+		Case 38
 			Return "HEROES"
 	EndSwitch
 EndFunc   ;==>MatchTroopDropName
@@ -214,13 +216,15 @@ Func MatchSlotsPerEdge($Num)
 			Return 2
 		Case 33 ;$eBowl
 			Return 0
-		Case 34 ;$eIceG
-			Return 2
-		Case 35 ;$eHunt
+		Case 34 ;$eSBowl
 			Return 0
-		Case 36 ;CC
+		Case 35 ;$eIceG
+			Return 2
+		Case 36 ;$eHunt
+			Return 0
+		Case 37 ;CC
 			Return 1
-		Case 37 ;HEROES
+		Case 38 ;HEROES
 			Return 1
 	EndSwitch
 EndFunc   ;==>MatchSlotsPerEdge

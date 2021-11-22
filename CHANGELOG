@@ -1,3 +1,26 @@
+* **v.7.9.7**
+* Fix boost SuporTroops for slower VPS reported by @Wazzock1972
+* Fix ClanGames get information by @xbebenk
+* Adjust field widths to show 20.000.000 G,E and 11.000 DE in log by @HArchH
+* Adjust field widths to allow 1M+ entries in "Share Replay" screen
+* Fix DonateCC - Can not find Clan Tab error by @xbebenk
+* fix attack window fail. because pixel to check covered by siege empty message by @xbebenk
+* Suggestion by @MrPleb to increase search field widths, G, E, DE
+* Change tolerance _92 -> _93 solve misdetection in attackbar autumn scenery by @miked
+* Fix Telegrapm "Run Time" value. 
+* Attempt to stop calling BM "dead" prematurely
+* Autumn Update
+-- Change BB boat and tree images for zoomout
+-- Fix SCID switch account
+-- Set levels and prices for troops and spells.  Mod GUI to show 2-digit levels in Custom Training.
+-- Superbowler support, including boost
+* Fix combo box for instance without emulator
+* Fix for SCID switch crash by @grumpyhog
+* Report missing imgxlm files as errors to user's console.
+* Restart MBR if MBR hangs on "Attack results" screen after BB attack.
+* Donate screen, first column now shows orange outline.
+* Set "alert sound" volumne to 50% before playing it.
+
 * **v.7.9.6**
 * Fix attack log in all languages reported by Boldina
 * Fix misdetection wall lvl9

@@ -32,10 +32,10 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 
 	If $g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 0 And $g_aiAttackStdDropSides[$LB] = 4 Then ; Used for DES Side Attack (need to know the side the DES is on)
 		$result = DllCallMyBot("getRedAreaSideBuilding", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingDES)
-		If $g_bDebugSetlog Then SetDebugLog("Debug: Redline with DES Side chosen")
+		SetDebugLog("Debug: Redline with DES Side chosen")
 	ElseIf $g_iMatchMode = $LB And $g_aiAttackAlgorithm[$LB] = 0 And $g_aiAttackStdDropSides[$LB] = 5 Then ; Used for TH Side Attack (need to know the side the TH is on)
 		$result = DllCallMyBot("getRedAreaSideBuilding", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation, "int", $eSideBuildingTH)
-		If $g_bDebugSetlog Then SetDebugLog("Debug: Redline with TH Side chosen")
+		SetDebugLog("Debug: Redline with TH Side chosen")
 	Else ; Normal getRedArea
 
 		Switch $iMode
@@ -61,7 +61,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 			Case $REDLINE_ORIGINAL ; Original red line routine
 				Local $result = DllCallMyBot("getRedArea", "ptr", $g_hHBitmap2, "int", $xSkip, "int", $ySkip, "int", $colorVariation)
 		EndSwitch
-		If $g_bDebugSetlog Then SetDebugLog("Debug: Redline chosen")
+		SetDebugLog("Debug: Redline chosen")
 	EndIf
 
 	If IsArray($result) Then
@@ -171,7 +171,7 @@ Func _GetRedArea($iMode = $REDLINE_IMGLOC, $iMaxAllowedPixelDistance = 25, $fMin
 	ReDim $g_aiPixelRedAreaFurther[UBound($g_aiPixelRedArea)]
 
 	Local $a
-	If $g_bDebugSetlog Then SetDebugLog("redarea calc pixel further", $COLOR_DEBUG)
+	SetDebugLog("redarea calc pixel further", $COLOR_DEBUG)
 	Local $count = 0
 	ReDim $g_aiPixelTopLeftFurther[UBound($g_aiPixelTopLeft)]
 	For $i = 0 To UBound($g_aiPixelTopLeft) - 1
@@ -269,7 +269,7 @@ EndFunc   ;==>SortRedline
 
 Func SortByDistance($PixelList, ByRef $StartPixel, ByRef $EndPixel, ByRef $iInvalid)
 
-	If $g_bDebugSetlog Then SetDebugLog("SortByDistance Start = " & PixelToString($StartPixel, ',') & " : " & PixelArrayToString($PixelList, ","))
+	SetDebugLog("SortByDistance Start = " & PixelToString($StartPixel, ',') & " : " & PixelArrayToString($PixelList, ","))
 	Local $iMax = UBound($PixelList) - 1
 	Local $iMin2 = 0
 	Local $iMax2 = $iMax

@@ -666,7 +666,7 @@ Func GetSlotNumber($bSpells = False)
 	Select
 		Case $bSpells = False
 			Local Const $Orders = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eYeti, $eRDrag, $ePekk, $eBabyD, $eInfernoD, $eMine, $eEDrag, _
-					$eMini, $eSMini, $eHogs, $eValk, $eSValk, $eGole, $eWitc, $eSWitc, $eLava, $eIceH, $eBowl, $eIceG, $eHunt] ; Set Order of troop display in Army Tab
+					$eMini, $eSMini, $eHogs, $eValk, $eSValk, $eGole, $eWitc, $eSWitc, $eLava, $eIceH, $eBowl, $eSBowl, $eIceG, $eHunt] ; Set Order of troop display in Army Tab
 
 			Local $allCurTroops[UBound($Orders)]
 

@@ -146,7 +146,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 			SetLog("No " & GetTroopName($iTroopIndex) & " found in your attack troops list")
 			debugAttackCSV("No " & GetTroopName($iTroopIndex) & " found in your attack troops list")
 		Else
-			If $g_bDebugSetlog Then SetDebugLog("Discard use " & GetTroopName($iTroopIndex), $COLOR_DEBUG)
+			SetDebugLog("Discard use " & GetTroopName($iTroopIndex), $COLOR_DEBUG)
 		EndIf
 
 	Else

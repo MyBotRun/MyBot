@@ -260,7 +260,7 @@ Func CheckQuickTrainTroop()
 	SetLog("Reading troops/spells/siege in quick train army")
 
 	; reset troops/spells in quick army
-	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aEmptyTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aEmptySpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aEmptySiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0, 0]
 	$g_aiArmyQuickTroops = $aEmptyTroop

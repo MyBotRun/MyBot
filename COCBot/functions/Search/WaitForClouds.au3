@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 Func WaitForClouds()
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin WaitForClouds:", $COLOR_DEBUG1)
+	SetDebugLog("Begin WaitForClouds:", $COLOR_DEBUG1)
 	$g_bCloudsActive = True
 	
 	Local $iCount = 0
@@ -132,10 +132,10 @@ Func EnableLongSearch()
 	Local $result = ""
 	Local $iCount
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin EnableLongSearch:", $COLOR_DEBUG1)
+	SetDebugLog("Begin EnableLongSearch:", $COLOR_DEBUG1)
 
 	If Int($g_aiCurrentLoot[$eLootTrophy]) < 3700 Then ; If not searching Champion 1 or higher, skip long waiting to return and restart due error
-		If $g_bDebugSetlog Then SetDebugLog("Long cloud search not enabled due trophy count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
+		SetDebugLog("Long cloud search not enabled due trophy count: " & $g_aiCurrentLoot[$eLootTrophy], $COLOR_DEBUG)
 		Return False
 	EndIf
 
@@ -146,7 +146,7 @@ Func EnableLongSearch()
 		If chkAttackSearchFail() = 1 Then Return True ; OCR text for search fail message, and press retry if available, success continue searching
 
 		If chkSearchText() = False Then
-			If $g_bDebugSetlog Then SetDebugLog("Cloud Search Text not found...", $COLOR_DEBUG)
+			SetDebugLog("Cloud Search Text not found...", $COLOR_DEBUG)
 			Return False
 		Else
 			Local $KeepAlive[2] = [271, 351 + $g_iMidOffsetY]
@@ -199,7 +199,7 @@ Func chkAttackSearchPersonalBreak()
 	EndIf
 	If $g_bForceSinglePBLogoff And _DateIsValid($g_sPBStartTime) Then ; silly feature to use with long clouds, but check if single PB is enabled.
 		Local $iTimeTillPBTstartSec = Int(_DateDiff('s', $g_sPBStartTime, _NowCalc())) ; time in seconds
-		If $g_bDebugSetlog Then SetDebugLog("PB starts in: " & $iTimeTillPBTstartSec & " Seconds", $COLOR_DEBUG)
+		SetDebugLog("PB starts in: " & $iTimeTillPBTstartSec & " Seconds", $COLOR_DEBUG)
 		If $iTimeTillPBTstartSec >= 0 Then ; test if PBT date/time in past (positive value) or future (negative value
 			SetLog("Prepare base before user forced Break..", $COLOR_INFO)
 			CheckBaseQuick(True, "cloud") ; check and restock base before exit.
@@ -223,7 +223,7 @@ Func chkSurrenderBtn()
 	Local $wCount = 0
 	While 1
 		If _CheckPixel($aSurrenderButton, $g_bCapturePixel, Default, "Surrender btn wait #" & $wCount, $COLOR_DEBUG) = True Then
-			If $g_bDebugSetlog Then SetDebugLog("Surrender button found, clouds gone, continue...", $COLOR_DEBUG)
+			SetDebugLog("Surrender button found, clouds gone, continue...", $COLOR_DEBUG)
 			Return True
 		EndIf
 		If _Sleep($DELAYSLEEP) Then Return

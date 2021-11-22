@@ -38,7 +38,7 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 
 	If IsMainPage() Then ; check for main page
 
-		If $g_bDebugSetlog Then SetDebugLog("CheckBaseQuick now", $COLOR_DEBUG)
+		SetDebugLog("CheckBaseQuick now", $COLOR_DEBUG)
 
 		RequestCC() ; fill CC
 		If _Sleep($DELAYRUNBOT1) Then Return
@@ -80,7 +80,7 @@ Func CheckBaseQuick($bStopRecursion = False, $sReturnHome = "")
 		If _Sleep($DELAYRUNBOT1) Then Return
 
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("Not on main page, CheckBaseQuick skipped", $COLOR_WARNING)
+		SetDebugLog("Not on main page, CheckBaseQuick skipped", $COLOR_WARNING)
 	EndIf
 
 	If $bStopRecursion Then $g_bDisableBreakCheck = False ; reset flag to stop checking for attackdisable messages, stop recursion

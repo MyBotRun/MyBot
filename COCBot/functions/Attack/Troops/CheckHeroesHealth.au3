@@ -47,7 +47,7 @@ Func CheckHeroesHealth()
 				Local $aSlotPosition = GetSlotPosition($TempQueenSlot)
 				$aQueenHealthCopy[0] = $aSlotPosition[0] + $aQueenHealthCopy[4] ; Slot11+
 				Local $QueenPixelColor = _GetPixelColor($aQueenHealthCopy[0], $aQueenHealthCopy[1], $g_bCapturePixel)
-				If $g_bDebugSetlog Then SetDebugLog(" Queen _GetPixelColor(" & $aQueenHealthCopy[0] & "," & $aQueenHealthCopy[1] & "): " & $QueenPixelColor, $COLOR_DEBUG)
+				SetDebugLog(" Queen _GetPixelColor(" & $aQueenHealthCopy[0] & "," & $aQueenHealthCopy[1] & "): " & $QueenPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aQueenHealthCopy, $QueenPixelColor, "Red+Blue") Then
 					SetLog("Queen is getting weak, Activating Queen's ability", $COLOR_INFO)
 					SelectDropTroop($TempQueenSlot, 2, Default, False) ; Slot11+
@@ -82,7 +82,7 @@ Func CheckHeroesHealth()
 				Local $aSlotPosition = GetSlotPosition($TempKingSlot)
 				$aKingHealthCopy[0] = $aSlotPosition[0] + $aKingHealthCopy[4] ; Slot11+
 				Local $KingPixelColor = _GetPixelColor($aKingHealthCopy[0], $aKingHealthCopy[1], $g_bCapturePixel)
-				If $g_bDebugSetlog Then SetDebugLog("King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
+				SetDebugLog("King _GetPixelColor(" & $aKingHealthCopy[0] & "," & $aKingHealthCopy[1] & "): " & $KingPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aKingHealthCopy, $KingPixelColor, "Red+Blue") Then
 					SetLog("King is getting weak, Activating King's ability", $COLOR_INFO)
 					SelectDropTroop($TempKingSlot, 2, Default, False) ; Slot11+
@@ -117,7 +117,7 @@ Func CheckHeroesHealth()
 				Local $aSlotPosition = GetSlotPosition($TempWardenSlot)
 				$aWardenHealthCopy[0] = $aSlotPosition[0] + $aWardenHealthCopy[4] ; Slot11+
 				Local $WardenPixelColor = _GetPixelColor($aWardenHealthCopy[0], $aWardenHealthCopy[1], $g_bCapturePixel)
-				If $g_bDebugSetlog Then SetDebugLog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
+				SetDebugLog(" Grand Warden _GetPixelColor(" & $aWardenHealthCopy[0] & "," & $aWardenHealthCopy[1] & "): " & $WardenPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aWardenHealthCopy, $WardenPixelColor, "Red+Blue") Then
 					SetLog("Grand Warden is getting weak, Activating Warden's ability", $COLOR_INFO)
 					SelectDropTroop($TempWardenSlot, 2, Default, False) ; Slot11+
@@ -152,7 +152,7 @@ Func CheckHeroesHealth()
 				Local $aSlotPosition = GetSlotPosition($TempChampionSlot)
 				$aChampionHealthCopy[0] = $aSlotPosition[0] + $aChampionHealthCopy[4] ; Slot11+
 				Local $ChampionPixelColor = _GetPixelColor($aChampionHealthCopy[0], $aChampionHealthCopy[1], $g_bCapturePixel)
-				If $g_bDebugSetlog Then SetDebugLog("Royal Champion _GetPixelColor(" & $aChampionHealthCopy[0] & "," & $aChampionHealthCopy[1] & "): " & $ChampionPixelColor, $COLOR_DEBUG)
+				SetDebugLog("Royal Champion _GetPixelColor(" & $aChampionHealthCopy[0] & "," & $aChampionHealthCopy[1] & "): " & $ChampionPixelColor, $COLOR_DEBUG)
 				If Not _CheckPixel2($aChampionHealthCopy, $ChampionPixelColor, "Red+Blue") Then
 					SetLog("Royal Champion is getting weak, Activating Royal Champion's ability", $COLOR_INFO)
 					SelectDropTroop($TempChampionSlot, 2, Default, False) ; Slot11+

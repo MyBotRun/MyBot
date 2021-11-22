@@ -44,7 +44,10 @@ Func _ClanGames($test = False)
 
 	; Let's get some information , like Remain Timer, Score and limit
 	Local $aiScoreLimit = GetTimesAndScores()
-	If $aiScoreLimit = -1 Or UBound($aiScoreLimit) <> 2 Then Return
+	If $aiScoreLimit = -1 Or UBound($aiScoreLimit) <> 2 Then
+		ClickAway() ;need ClickAway, as we are leaving function.
+		Return
+	Endif
 
 	If $g_bChkClanGamesDebug Then Setlog("_ClanGames GetTimesAndScores (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
 	$hTimer = TimerInit()

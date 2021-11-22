@@ -58,7 +58,7 @@ Func OpenPersonalChallenges()
 
 	Local $counter = 0
 	While Not _CheckPixel($aPersonalChallengeCloseButton, $g_bCapturePixel) ; test for Personal Challenge Close Button
-		If $g_bDebugSetlog Then SetDebugLog("Wait for Personal Challenge Close Button to appear #" & $counter)
+		SetDebugLog("Wait for Personal Challenge Close Button to appear #" & $counter)
 		If _Sleep($DELAYRUNBOT6) Then Return
 		$counter += 1
 		If $counter > 40 Then Return False
@@ -163,7 +163,7 @@ Func ClosePersonalChallenges()
 
 	Local $counter = 0
 	While Not IsMainPage(1) ; test for Personal Challenge Close Button
-		If $g_bDebugSetlog Then SetDebugLog("Wait for Personal Challenge Window to close #" & $counter)
+		SetDebugLog("Wait for Personal Challenge Window to close #" & $counter)
 		If _Sleep($DELAYRUNBOT6) Then ExitLoop
 		$counter += 1
 		If $counter > 40 Then ExitLoop

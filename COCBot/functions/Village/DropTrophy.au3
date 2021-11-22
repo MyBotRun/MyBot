@@ -49,7 +49,7 @@ Func DropTrophy()
 		Next
 		; if heroes enabled, check them and reset drop trophy disable
 		If $g_bDropTrophyUseHeroes And $g_iHeroAvailable > 0 Then
-			If $g_bDebugSetlog Then SetDebugLog("Drop Trophy Found Hero BK|AQ|GW|RC: " & BitOR($g_iHeroAvailable, $eHeroKing) & "|" & BitOR($g_iHeroAvailable, $eHeroQueen) & "|" & BitOR($g_iHeroAvailable, $eHeroWarden) & "|" & BitOR($g_iHeroAvailable, $eHeroChampion), $COLOR_DEBUG)
+			SetDebugLog("Drop Trophy Found Hero BK|AQ|GW|RC: " & BitOR($g_iHeroAvailable, $eHeroKing) & "|" & BitOR($g_iHeroAvailable, $eHeroQueen) & "|" & BitOR($g_iHeroAvailable, $eHeroWarden) & "|" & BitOR($g_iHeroAvailable, $eHeroChampion), $COLOR_DEBUG)
 			$bHaveTroops = True
 		EndIf
 
@@ -132,7 +132,7 @@ Func DropTrophy()
 							$g_bIsClientSyncError = False ; reset OOS flag to get new new army
 							$g_bIsSearchLimit = False ; reset search limit flag to get new new army
 							$g_bRestart = True ; Set restart flag after dead base attack to ensure troops are trained
-							If $g_bDebugSetlog Then SetDebugLog("Drop Trophy END: Dead Base was attacked, reset army and return to Village.", $COLOR_DEBUG)
+							SetDebugLog("Drop Trophy END: Dead Base was attacked, reset army and return to Village.", $COLOR_DEBUG)
 							ExitLoop ; or Return, Will end function, no troops left to drop Trophies, will need to Train new Troops first
 						Else
 							SetLog("      " & "Not a Dead Base, resuming Trophy Dropping.", $COLOR_BLACK, "Lucida Console", 7.5)
@@ -155,7 +155,7 @@ Func DropTrophy()
 					;b) calculate random drop point...
 					$aRandomEdge = $g_aaiEdgeDropPoints[Round(Random(0, 3))]
 					$iRandomXY = Round(Random(0, 4))
-					If $g_bDebugSetlog Then SetDebugLog("Hero Loc = " & $iRandomXY & ", X:Y= " & $aRandomEdge[$iRandomXY][0] & "|" & $aRandomEdge[$iRandomXY][1], $COLOR_DEBUG)
+					SetDebugLog("Hero Loc = " & $iRandomXY & ", X:Y= " & $aRandomEdge[$iRandomXY][0] & "|" & $aRandomEdge[$iRandomXY][1], $COLOR_DEBUG)
 
 
 					;c) check if hero avaiable and drop according to priority
@@ -243,7 +243,7 @@ Func DropTrophy()
 				If ($g_iQueenSlot = -1 And $g_iKingSlot = -1 And $g_iWardenSlot = -1 And $g_iChampionSlot = -1) Or Not $g_bDropTrophyUseHeroes Then
 					$aRandomEdge = $g_aaiEdgeDropPoints[Round(Random(0, 3))]
 					$iRandomXY = Round(Random(0, 4))
-					If $g_bDebugSetlog Then SetDebugLog("Troop Loc = " & $iRandomXY & ", X:Y= " & $aRandomEdge[$iRandomXY][0] & "|" & $aRandomEdge[$iRandomXY][1], $COLOR_DEBUG)
+					SetDebugLog("Troop Loc = " & $iRandomXY & ", X:Y= " & $aRandomEdge[$iRandomXY][0] & "|" & $aRandomEdge[$iRandomXY][1], $COLOR_DEBUG)
 					For $i = 0 To UBound($g_avAttackTroops) - 1
 						If ($g_avAttackTroops[$i][0] >= $eBarb And $g_avAttackTroops[$i][0] <= $eWiza) Or $g_avAttackTroops[$i][0] = $eMini Then
 							SelectDropTroop($i)
@@ -264,20 +264,20 @@ Func DropTrophy()
 					If _Sleep($DELAYDROPTROPHY1) Then ExitLoop
 				EndIf
 				$iDateCalc = _DateDiff('s', _NowCalc(), $sWaitToDate)
-				If $g_bDebugSetlog Then SetDebugLog("ChkBaseQuick delay= " & $sWaitToDate & " Now= " & _NowCalc() & " Diff= " & $iDateCalc, $COLOR_DEBUG)
+				SetDebugLog("ChkBaseQuick delay= " & $sWaitToDate & " Now= " & _NowCalc() & " Diff= " & $iDateCalc, $COLOR_DEBUG)
 				If $iDateCalc <= 0 Then ; check length of time in drop trophy
 					SetLog(" Checking base during long drop cycle", $COLOR_INFO)
 					CheckBaseQuick() ; check base during long drop times
 					$sWaitToDate = _DateAdd('n', Int($iWaitTime), _NowCalc()) ; create new delay date/time
-					If $g_bDebugSetlog Then SetDebugLog("ChkBaseQuick new delay time= " & $sWaitToDate, $COLOR_DEBUG)
+					SetDebugLog("ChkBaseQuick new delay time= " & $sWaitToDate, $COLOR_DEBUG)
 				EndIf
 			Else
 				SetLog("Trophy Drop Complete", $COLOR_INFO)
 			EndIf
 		WEnd
-		If $g_bDebugSetlog Then SetDebugLog("DropTrophy(): End", $COLOR_DEBUG)
+		SetDebugLog("DropTrophy(): End", $COLOR_DEBUG)
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("Drop Trophy SKIP", $COLOR_DEBUG)
+		SetDebugLog("Drop Trophy SKIP", $COLOR_DEBUG)
 	EndIf
 
 EndFunc   ;==>DropTrophy

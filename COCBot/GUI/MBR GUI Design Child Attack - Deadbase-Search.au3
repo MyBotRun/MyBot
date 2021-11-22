@@ -191,7 +191,7 @@ Func CreateAttackSearchDeadBaseSearch()
 		$g_hTxtDBMinGold = GUICtrlCreateInput("80000", $x + 85, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinGold_Info_01", "Set the Min. amount of Gold to search for on a village to attack.")
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetLimit(-1, 6)
+			GUICtrlSetLimit(-1, 7) ;HArchH Increase to 7 digits for Gold
 		$g_hPicDBMinGold = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGold, $x + 140, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
@@ -199,7 +199,7 @@ Func CreateAttackSearchDeadBaseSearch()
 		$g_hTxtDBMinElixir = GUICtrlCreateInput("80000", $x + 85, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinElixir_Info_01", "Set the Min. amount of Elixir to search for on a village to attack.")
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetLimit(-1, 6)
+			GUICtrlSetLimit(-1, 7) ;HArchH Increase to 7 digits for Elixir
 		$g_hPicDBMinElixir = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnElixir, $x + 140, $y, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
@@ -207,7 +207,7 @@ Func CreateAttackSearchDeadBaseSearch()
 		$g_hTxtDBMinGoldPlusElixir = GUICtrlCreateInput("160000", $x + 85, $y, 50, 18, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Attack - Search", "TxtMinGoldPlusElixir_Info_01", "Set the Min. amount of Gold + Elixir to search for on a village to attack.")
 			_GUICtrlSetTip(-1, $sTxtTip)
-			GUICtrlSetLimit(-1, 6)
+			GUICtrlSetLimit(-1, 7) ;HArchH Increase to 7 digits for G+E
 			GUICtrlSetState (-1, $GUI_HIDE)
 		$g_hPicDBMinGPEGold = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnGoldElixir, $x + 140, $y + 1, 16, 16)
 			_GUICtrlSetTip(-1, $sTxtTip)

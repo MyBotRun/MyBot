@@ -26,10 +26,10 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 
 	If IsArray($Res) Then
 		;If $Debug Then _ArrayDisplay($Res)
-		If $g_bDebugSetlog Then SetDebugLog("DLL Call succeeded " & $Res[0], $COLOR_PURPLE)
+		SetDebugLog("DLL Call succeeded " & $Res[0], $COLOR_PURPLE)
 
 		If $Res[0] = "" Or $Res[0] = "0" Then
-			If $g_bDebugSetlog Then SetDebugLog("No Button found")
+			SetDebugLog("No Button found")
 			Switch $ValueReturned
 				Case "BC1"
 					Return False
@@ -85,7 +85,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						If UBound(decodeSingleCoord($DLLRes[0])) > 1 Then $Result &= $DLLRes[0] & "|"
 					Next
 					If StringRight($Result, 1) = "|" Then $Result = StringLeft($Result, (StringLen($Result) - 1))
-					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
+					SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
 					Local $CoordsInArray = StringSplit($Result, "|", $STR_NOCOUNT)
 					Return $CoordsInArray
 
@@ -115,7 +115,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						$Result &= $DLLRes[0] & "|"
 					Next
 					If StringRight($Result, 1) = "|" Then $Result = StringLeft($Result, (StringLen($Result) - 1))
-					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
+					SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
 					Local $QuantityInArray = StringSplit($Result, "|", $STR_NOCOUNT)
 					Return $QuantityInArray[0]
 

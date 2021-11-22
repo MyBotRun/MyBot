@@ -317,6 +317,7 @@ Func ReferenceGlobals()
 	$a1 = $eIcnGoldElixir
 	$a1 = $eIcnBowler
 	$a1 = $eIcnDonBowler
+	$a1 = $eIcnSuperBowler
 	$a1 = $eIcnCCDonate
 	$a1 = $eIcnEagleArt
 	$a1 = $eIcnGembox
@@ -482,6 +483,7 @@ Func ReferenceGlobals()
 	$a1 = $eWitc
 	$a1 = $eLava
 	$a1 = $eBowl
+	$a1 = $eSBowl
 	$a1 = $eIceG
 	$a1 = $eHunt
 	$a1 = $eKing

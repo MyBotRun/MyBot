@@ -90,7 +90,7 @@ Func UpgradeBuilding()
 					$sNextCheckTime = _DateAdd("n", $aCheckFrequency[($g_iTownHallLevel < 3 ? 0 : $g_iTownHallLevel - 3)], _NowCalc()) ; create new check date/time
 					If @error Then _logErrorDateAdd(@error) ; log Date function errors
 					$bChkAllRptUpgrade = True ; set flag to allow entire array of updates to get updated values if delay time is past.
-					If $g_bDebugSetlog Then SetDebugLog("New delayed check time=  " & $sNextCheckTime, $COLOR_DEBUG)
+					SetDebugLog("New delayed check time=  " & $sNextCheckTime, $COLOR_DEBUG)
 				EndIf
 			EndIf
 
@@ -100,7 +100,7 @@ Func UpgradeBuilding()
 					_logErrorDateDiff(@error)
 					$iUpGrdEndTimeDiff = 0
 				EndIf
-				If $g_bDebugSetlog Then SetDebugLog("Difference between upgrade end and NOW= " & $iUpGrdEndTimeDiff & " Min", $COLOR_DEBUG)
+				SetDebugLog("Difference between upgrade end and NOW= " & $iUpGrdEndTimeDiff & " Min", $COLOR_DEBUG)
 			EndIf
 
 			If $bChkAllRptUpgrade = True Or $iUpGrdEndTimeDiff < 0 Then ; when past delay time or past end time for previous upgrade then check status
@@ -119,7 +119,7 @@ Func UpgradeBuilding()
 		EndIf
 
 		SetLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Selected", $COLOR_SUCCESS) ; Tell logfile which upgrade working on.
-		If $g_bDebugSetlog Then SetDebugLog("-Upgrade location =  " & "(" & $g_avBuildingUpgrades[$iz][0] & "," & $g_avBuildingUpgrades[$iz][1] & ")", $COLOR_DEBUG) ;Debug
+		SetDebugLog("-Upgrade location =  " & "(" & $g_avBuildingUpgrades[$iz][0] & "," & $g_avBuildingUpgrades[$iz][1] & ")", $COLOR_DEBUG) ;Debug
 		If _Sleep($DELAYUPGRADEBUILDING1) Then Return
 
 		Switch $g_avBuildingUpgrades[$iz][3] ;Change action based on upgrade type!
@@ -168,7 +168,7 @@ Func UpgradeBuilding()
 		EndSwitch
 
 		$g_avBuildingUpgrades[$iz][7] = _NowCalc() ; what is date:time now
-		If $g_bDebugSetlog Then SetDebugLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Started @ " & $g_avBuildingUpgrades[$iz][7], $COLOR_SUCCESS)
+		SetDebugLog("Upgrade #" & $iz + 1 & " " & $g_avBuildingUpgrades[$iz][4] & " Started @ " & $g_avBuildingUpgrades[$iz][7], $COLOR_SUCCESS)
 		Local $aArray = StringSplit($g_avBuildingUpgrades[$iz][6], ' ', BitOR($STR_CHRSPLIT, $STR_NOCOUNT)) ;separate days, hours
 		If IsArray($aArray) Then
 			Local $iRemainingTimeMin = 0
@@ -187,7 +187,7 @@ Func UpgradeBuilding()
 					Case Else
 						SetLog("Upgrade #" & $iz + 1 & " OCR time invalid" & $aArray[$i], $COLOR_WARNING)
 				EndSelect
-				If $g_bDebugSetlog Then SetDebugLog("Upgrade Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_DEBUG)
+				SetDebugLog("Upgrade Time: " & $aArray[$i] & ", Minutes= " & $iRemainingTimeMin, $COLOR_DEBUG)
 			Next
 			$g_avBuildingUpgrades[$iz][7] = _DateAdd('n', Floor($iRemainingTimeMin), _NowCalc()) ; add the time required to NOW to finish the upgrade
 			If @error Then _logErrorDateAdd(@error)

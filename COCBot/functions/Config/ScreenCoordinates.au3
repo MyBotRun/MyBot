@@ -114,7 +114,7 @@ Global $NextBtn[4] = [780, 546 + $g_iBottomOffsetY, 0xD34300, 20] ;  Next Button
 Global $a12OrMoreSlots[4] = [16, 648, 0x4583B9, 25] ; Attackbar Check if 12+ Slots exist
 Global $aDoubRowAttackBar[4] = [68, 486, 0xFC5D64, 20]
 Global $aTroopIsDeployed[4] = [0, 0, 0x404040, 20] ; Attackbar Remain Check X and Y are Dummies
-Global Const $aIsAttackPage[4] = [56, 548 + $g_iBottomOffsetY, 0xcf0d0e, 20] ; red button "end battle" 860x780
+Global Const $aIsAttackPage[4] = [18, 548 + $g_iBottomOffsetY, 0xcf0d0e, 20] ; red button "end battle" - left portion
 
 ; 1 - Dark Gray : Castle filled/No Castle | 2 - Light Green : Available or Already made | 3 - White : Available or Castle filled/No Castle
 Global $aRequestTroopsAO[6] = [761, 592, 0x565656, 0x71BA2F, 0xFFFFFE, 25] ; Button Request Troops in Army Overview  (x,y, Gray - Full/No Castle, Green - Available or Already, White - Available or Full)

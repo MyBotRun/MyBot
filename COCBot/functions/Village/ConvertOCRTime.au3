@@ -59,7 +59,7 @@ Func ConvertOCRTime($sCaller, $sConvertTo, $bSetLog = True, $sReturnFormat = "mi
 
 		If $bSetLog Then SetLog($sCaller & " Time: " & $iRemainTimer & " " & $sReturnFormat, $COLOR_INFO)
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("Can not read remaining time for " & $sCaller, $COLOR_ERROR)
+		SetDebugLog("Can not read remaining time for " & $sCaller, $COLOR_ERROR)
 	EndIf
 
 	Return $iRemainTimer

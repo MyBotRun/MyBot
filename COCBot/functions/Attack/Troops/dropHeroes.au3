@@ -17,7 +17,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWardenSlotNumber = -1, $iChampionSlotNumber = -1) ;Drops for All Heroes
-	If $g_bDebugSetlog Then SetDebugLog("dropHeroes $iKingSlotNumber " & $iKingSlotNumber & " $iQueenSlotNumber " & $iQueenSlotNumber & " $iWardenSlotNumber " & $iWardenSlotNumber & " $iChampionSlotNumber " & $iChampionSlotNumber & " matchmode " & $g_iMatchMode, $COLOR_DEBUG)
+	SetDebugLog("dropHeroes $iKingSlotNumber " & $iKingSlotNumber & " $iQueenSlotNumber " & $iQueenSlotNumber & " $iWardenSlotNumber " & $iWardenSlotNumber & " $iChampionSlotNumber " & $iChampionSlotNumber & " matchmode " & $g_iMatchMode, $COLOR_DEBUG)
 	If _Sleep($DELAYDROPHEROES1) Then Return
 	Local $bDropKing = False
 	Local $bDropQueen = False
@@ -30,10 +30,10 @@ Func dropHeroes($iX, $iY, $iKingSlotNumber = -1, $iQueenSlotNumber = -1, $iWarde
 	If $iWardenSlotNumber <> -1 And (($g_iMatchMode <> $DB And $g_iMatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $eHeroWarden) = $eHeroWarden) Then $bDropWarden = True
 	If $iChampionSlotNumber <> -1 And (($g_iMatchMode <> $DB And $g_iMatchMode <> $LB) Or BitAND($g_aiAttackUseHeroes[$g_iMatchMode], $eHeroChampion) = $eHeroChampion) Then $bDropChampion = True
 
-	If $g_bDebugSetlog Then SetDebugLog("drop KING = " & $bDropKing, $COLOR_DEBUG)
-	If $g_bDebugSetlog Then SetDebugLog("drop QUEEN = " & $bDropQueen, $COLOR_DEBUG)
-	If $g_bDebugSetlog Then SetDebugLog("drop WARDEN = " & $bDropWarden, $COLOR_DEBUG)
-	If $g_bDebugSetlog Then SetDebugLog("drop CHAMPION = " & $bDropChampion, $COLOR_DEBUG)
+	SetDebugLog("drop KING = " & $bDropKing, $COLOR_DEBUG)
+	SetDebugLog("drop QUEEN = " & $bDropQueen, $COLOR_DEBUG)
+	SetDebugLog("drop WARDEN = " & $bDropWarden, $COLOR_DEBUG)
+	SetDebugLog("drop CHAMPION = " & $bDropChampion, $COLOR_DEBUG)
 
 	If $bDropKing Then
 		SetLog("Dropping King at " & $iX & ", " & $iY, $COLOR_INFO)

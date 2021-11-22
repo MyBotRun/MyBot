@@ -98,7 +98,7 @@ Func DetectLanguage()
 	If Not FileExists(@ScriptDir & "\Languages\" & $g_sLanguage & ".ini") Then $g_sLanguage = ""
 	If $g_sLanguage = "" Then
 		Local $OSLang = @OSLang
-		If $g_bDebugSetlog Then SetDebugLog("Detected language code: " & $OSLang)
+		SetDebugLog("Detected language code: " & $OSLang)
 		Switch $OSLang;get language
 
 			Case Hex(0x0004, 4)

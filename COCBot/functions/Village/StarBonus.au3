@@ -13,7 +13,7 @@
 ; ===============================================================================================================================
 Func StarBonus()
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin Star Bonus window check", $COLOR_DEBUG1)
+	SetDebugLog("Begin Star Bonus window check", $COLOR_DEBUG1)
 
 	; Verify is Star bonus window open?
 	If Not _CheckPixel($aIsMainGrayed, $g_bCapturePixel, Default, "IsMainGrayed") Then Return ; Star bonus window opens on main base view, and grays page.
@@ -28,7 +28,7 @@ Func StarBonus()
 		; Find and Click Okay button
 		Local $offColors[3][3] = [[0x131313, 144, 0], [0xFFFFFF, 54, 17], [0xD7F478, 54, 10]] ; 2nd Black opposite button, 3rd pixel white "O" center top, 4th pixel White "0" bottom center
 		Local $ButtonPixel = _MultiPixelSearch(353, 442 + $g_iMidOffsetY, 502, 474 + $g_iMidOffsetY, 1, 1, Hex(0x131313, 6), $offColors, 20) ; first vertical black pixel of Okay
-		If $g_bDebugSetlog Then SetDebugLog("Okay btn chk-#1: " & _GetPixelColor(354, 442 + $g_iMidOffsetY, $g_bCapturePixel) & ", #2: " & _GetPixelColor(354 + 145, 442 + $g_iMidOffsetY, $g_bCapturePixel) & ", #3: " & _GetPixelColor(354 + 55, 442 + 16 + $g_iMidOffsetY, $g_bCapturePixel) & ", #4: " & _GetPixelColor(355 + 51, 442 + 23 + $g_iMidOffsetY, $g_bCapturePixel), $COLOR_DEBUG)
+		SetDebugLog("Okay btn chk-#1: " & _GetPixelColor(354, 442 + $g_iMidOffsetY, $g_bCapturePixel) & ", #2: " & _GetPixelColor(354 + 145, 442 + $g_iMidOffsetY, $g_bCapturePixel) & ", #3: " & _GetPixelColor(354 + 55, 442 + 16 + $g_iMidOffsetY, $g_bCapturePixel) & ", #4: " & _GetPixelColor(355 + 51, 442 + 23 + $g_iMidOffsetY, $g_bCapturePixel), $COLOR_DEBUG)
 		If IsArray($ButtonPixel) Then
 			If $g_bDebugSetlog Then
 				SetDebugLog("ButtonPixelLocation = " & $ButtonPixel[0] & ", " & $ButtonPixel[1], $COLOR_DEBUG) ;Debug
@@ -40,7 +40,7 @@ Func StarBonus()
 		EndIf
 	EndIf
 
-	If $g_bDebugSetlog Then SetDebugLog("Star Bonus window not found?", $COLOR_DEBUG)
+	SetDebugLog("Star Bonus window not found?", $COLOR_DEBUG)
 	Return False
 
 EndFunc   ;==>StarBonus

@@ -120,7 +120,7 @@ Func _makerequest($aRequestButtonPos)
 		If _Sleep($DELAYMAKEREQUEST2) Then Return ; wait time for text request to complete
 
 		If Not IsWindowOpen($g_sImgSendRequestButton, 20, 100, $sSendButtonArea) Then
-			If $g_bDebugSetlog Then SetDebugLog("Send request button not found", $COLOR_DEBUG)
+			SetDebugLog("Send request button not found", $COLOR_DEBUG)
 			CheckMainScreen(False) ;emergency exit
 		EndIf
 

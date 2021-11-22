@@ -100,10 +100,10 @@ Func Laboratory($debug=False)
 
 		If $sCostResult = "" Then ; not enough resources
 			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][0] & " - Not enough Resources." & @CRLF & "We will try again later.", $COLOR_INFO)
-			If $g_bDebugSetlog Then SetDebugLog("Coords: (" & $aCoords[0] & "," & $aCoords[1] & ")")
+			SetDebugLog("Coords: (" & $aCoords[0] & "," & $aCoords[1] & ")")
 		ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult)+1 or StringSplit($sCostResult, "1")[1] = "0" Then ; max level if all ones returned from ocr or if the first letter is a 0.
 			SetLog("Lab Upgrade " & $g_avLabTroops[$g_iCmbLaboratory][0] & " - Max Level. Choose another upgrade.", $COLOR_INFO)
-			If $g_bDebugSetlog Then SetDebugLog("Coords: (" & $aCoords[0] & "," & $aCoords[1] & ")")
+			SetDebugLog("Coords: (" & $aCoords[0] & "," & $aCoords[1] & ")")
 		Else
 			Return LaboratoryUpgrade($g_avLabTroops[$g_iCmbLaboratory][0], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
 		EndIf
@@ -122,9 +122,9 @@ Func Laboratory($debug=False)
 					$sCostResult = GetLabCostResult($aCoords) ; get cost of the current upgrade option
 
 					If $sCostResult = "" Then ; not enough resources
-						If $g_bDebugSetlog Then SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Not enough Resources")
+						SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Not enough Resources")
 					ElseIf StringSplit($sCostResult, "1")[0] = StringLen($sCostResult)+1 or StringSplit($sCostResult, "1")[1] = "0" Then ; max level if all ones returned from ocr or if the first letter is a 0.
-							If $g_bDebugSetlog Then SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Max Level")
+							SetDebugLog("Lab Upgrade " & $aTempTroopArray[0] & " - Max Level")
 					Else
 						Return LaboratoryUpgrade($aTempTroopArray[0], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
 					EndIf
@@ -191,7 +191,7 @@ Func SetLabUpgradeTime($sTrooopName)
 	Local $iLabFinishTime = ConvertOCRTime("Lab Time", $Result, False)
 	SetLog($sTrooopName & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
 	Local $StartTime = _NowCalc() ; what is date:time now
-	If $g_bDebugSetlog Then SetDebugLog($sTrooopName & " Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
+	SetDebugLog($sTrooopName & " Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
 	If $iLabFinishTime > 0 Then
 		$g_sLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), $StartTime)
 		SetLog($sTrooopName & " Upgrade Finishes @ " & $Result & " (" & $g_sLabUpgradeTime & ")", $COLOR_SUCCESS)
@@ -257,7 +257,7 @@ Func ChkUpgradeInProgress()
 	Local $TimeDiff ; time remaining on lab upgrade
 	If $g_sLabUpgradeTime <> "" Then $TimeDiff = _DateDiff("n", _NowCalc(), $g_sLabUpgradeTime) ; what is difference between end time and now in minutes?
 	If @error Then _logErrorDateDiff(@error)
-	If $g_bDebugSetlog Then SetDebugLog($g_avLabTroops[$g_iCmbLaboratory][0] & " Lab end time: " & $g_sLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
+	SetDebugLog($g_avLabTroops[$g_iCmbLaboratory][0] & " Lab end time: " & $g_sLabUpgradeTime & ", DIFF= " & $TimeDiff, $COLOR_DEBUG)
 
 	If Not $g_bRunState Then Return
 	If $TimeDiff <= 0 Then

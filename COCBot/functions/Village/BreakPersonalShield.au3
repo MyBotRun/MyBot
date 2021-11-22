@@ -17,7 +17,7 @@
 
 Func BreakPersonalShield()
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin BreakPersonalShield:", $COLOR_DEBUG1)
+	SetDebugLog("Begin BreakPersonalShield:", $COLOR_DEBUG1)
 
 	If $g_bDebugSetlog Then
 		SetDebugLog("Checking if Shield available", $COLOR_INFO)
@@ -44,7 +44,7 @@ Func BreakPersonalShield()
 			SetLog("Shield removed", $COLOR_SUCCESS)
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("No shield available", $COLOR_SUCCESS)
+		SetDebugLog("No shield available", $COLOR_SUCCESS)
 	EndIf
 
 	If _Sleep($DELAYPERSONALSHIELD1) Then ; wait for break shield window
@@ -77,7 +77,7 @@ Func BreakPersonalShield()
 			SetLog("Personal Guard removed", $COLOR_SUCCESS)
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("No guard available", $COLOR_SUCCESS)
+		SetDebugLog("No guard available", $COLOR_SUCCESS)
 	EndIf
 
 EndFunc   ;==>BreakPersonalShield

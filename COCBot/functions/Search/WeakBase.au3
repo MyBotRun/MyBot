@@ -118,7 +118,7 @@ Func getMaxUISetting($settingArray, $iDefenseType)
 		$result = _Max(Number($maxDB), Number($maxLB))
 	EndIf
 
-	If $g_bDebugSetlog Then SetDebugLog("Max " & $g_aWeakDefenseNames[$iDefenseType] & " Level: " & $result, $COLOR_INFO)
+	SetDebugLog("Max " & $g_aWeakDefenseNames[$iDefenseType] & " Level: " & $result, $COLOR_INFO)
 	Return $result
 EndFunc   ;==>getMaxUISetting
 
@@ -136,7 +136,7 @@ Func getMinUISetting($settingArray, $iDefenseType)
 		$result = _Min(Number($minDB), Number($minLB))
 	EndIf
 
-	If $g_bDebugSetlog Then SetDebugLog("Min " & $g_aWeakDefenseNames[$iDefenseType] & " Level: " & $result, $COLOR_INFO)
+	SetDebugLog("Min " & $g_aWeakDefenseNames[$iDefenseType] & " Level: " & $result, $COLOR_INFO)
 	Return $result
 EndFunc   ;==>getMinUISetting
 
@@ -194,7 +194,7 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $i
 		If $guiCheckDefense And $maxSearchLevel >= $minSearchLevel Then
 			; Check the defense.
 			Local $sDefenseName = StringSplit($directory, "\", $STR_NOCOUNT)
-			If $g_bDebugSetlog Then SetDebugLog("checkDefense :" & $sDefenseName[UBound($sDefenseName) - 1] & " > " & $minSearchLevel & " < " & $maxSearchLevel & " For TH:" & $townHallLevel, $COLOR_ORANGE)
+			SetDebugLog("checkDefense :" & $sDefenseName[UBound($sDefenseName) - 1] & " > " & $minSearchLevel & " < " & $maxSearchLevel & " For TH:" & $townHallLevel, $COLOR_ORANGE)
 			$aDefenseResult = DefenseSearchMultiMatch($iDefenseType, $directory, $aResult[0][0], $g_sProfileBuildingStatsPath, $minSearchLevel, $maxSearchLevel, $bForceCaptureRegion)
 			; Store the redlines retrieved for use in the later searches, if you don't currently have redlines saved.
 			If $aResult[0][0] = "" Then $aResult[0][0] = $aDefenseResult[6]
@@ -208,7 +208,7 @@ Func defenseSearch(ByRef $aResult, $directory, $townHallLevel, $settingArray, $i
 			EndIf
 		Else
 			$aDefenseResult = $aNotNecessary
-			If $g_bDebugSetlog Then SetDebugLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " not necessary! $bGuiEnableArray=" & $bGuiEnableArray & ", $bIsSearchModeActiveDB=" & $bIsSearchModeActiveDB & ", $bIsSearchModeActiveLB=" & $bIsSearchModeActiveLB & ", $maxSearchLevel=" & $maxSearchLevel & ", $minSearchLevel=" & $minSearchLevel)
+			SetDebugLog("checkDefense: " & $g_aWeakDefenseNames[$iDefenseType] & " not necessary! $bGuiEnableArray=" & $bGuiEnableArray & ", $bIsSearchModeActiveDB=" & $bIsSearchModeActiveDB & ", $bIsSearchModeActiveLB=" & $bIsSearchModeActiveLB & ", $maxSearchLevel=" & $maxSearchLevel & ", $minSearchLevel=" & $minSearchLevel)
 		EndIf
 	EndIf
 
@@ -353,7 +353,7 @@ EndFunc   ;==>IsWeakBase
 ; ===============================================================================================================================
 Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $statFile = "", $minLevel = 0, $maxLevel = 100, $bForceCaptureRegion = True)
 
-	If $g_bDebugSetlog Then SetDebugLog("Begin DefenseSearchMultiMatch: " & $g_sBldgNames[$iDefenseType + 7], $COLOR_DEBUG1)
+	SetDebugLog("Begin DefenseSearchMultiMatch: " & $g_sBldgNames[$iDefenseType + 7], $COLOR_DEBUG1)
 
 	Local $hTimer = __TimerInit() ; begin local timer
 
@@ -588,7 +588,7 @@ Func DefenseSearchMultiMatch($iDefenseType, $directory, $redlines = "DCD", $stat
 			Local $iTime = __TimerDiff($hTimer) * 0.001 ; Image search time saved to dictionary in seconds
 			_ObjAdd($g_oBldgAttackInfo, $iDefenseType + 7 & "_FINDTIME", $iTime)
 			If @error Then _ObjErrMsg("_ObjAdd" & $g_sBldgNames[$iDefenseType + 7] & " _FINDTIME", @error) ; Log errors
-			If $g_bDebugSetlog Then SetDebugLog("  - Location(s) found in: " & Round($iTime, 2) & " seconds ", $COLOR_DEBUG1)
+			SetDebugLog("  - Location(s) found in: " & Round($iTime, 2) & " seconds ", $COLOR_DEBUG1)
 
 		EndIf
 

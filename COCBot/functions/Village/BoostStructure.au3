@@ -38,7 +38,7 @@ Func BoostStructure($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCt
 	If $ok = True Then
 		Local $Boost = findButton("BoostOne")
 		If IsArray($Boost) Then
-			If $g_bDebugSetlog Then SetDebugLog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
+			SetDebugLog("Boost Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 			Click($Boost[0], $Boost[1], 1, 0, "#0463")
 			If _Sleep($DELAYBOOSTHEROES1) Then Return
 			$Boost = findButton("GEM")
@@ -112,12 +112,12 @@ Func BoostPotion($sName, $sOcrName, $aPos, ByRef $icmbBoostValue, $cmbBoostCtrl)
 		Local $sTile = "BoostPotion_0_90.xml", $sRegionToSearch = "172,238,684,469"
 		Local $Boost = findButton("MagicItems")
 		If UBound($Boost) > 1 Then
-			If $g_bDebugSetlog Then SetDebugLog("Magic Items Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
+			SetDebugLog("Magic Items Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 			Click($Boost[0], $Boost[1], 1, 0, "#0463")
 			If _Sleep($DELAYBOOSTHEROES1) Then Return
 			$Boost = decodeSingleCoord(FindImageInPlace($sTile, @ScriptDir & "\imgxml\imglocbuttons\" & $sTile, $sRegionToSearch))
 			If UBound($Boost) > 1 Then
-				If $g_bDebugSetlog Then SetDebugLog("Boost Potion Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
+				SetDebugLog("Boost Potion Button X|Y = " & $Boost[0] & "|" & $Boost[1], $COLOR_DEBUG)
 				ClickP($Boost)
 				If _Sleep($DELAYBOOSTHEROES1) Then Return
 				If Not _ColorCheck(_GetPixelColor(255, 535, True), Hex(0xFFFFFF, 6), 25) Then

@@ -60,7 +60,7 @@ Func SaveDebugImage($sImageName = "Unknown", $vCaptureNew = Default, $bCreateSub
 		Local $EditedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
 		_GDIPlus_ImageSaveToFile($EditedImage, $sFullFileName)
 		_GDIPlus_BitmapDispose($EditedImage)
-		If $g_bDebugSetlog Then SetDebugLog("DebugImageSave " & $sFullFileName, $COLOR_DEBUG)
+		SetDebugLog("DebugImageSave " & $sFullFileName, $COLOR_DEBUG)
 	EndIf
 
 	If _Sleep($DELAYDEBUGIMAGESAVE1) Then Return

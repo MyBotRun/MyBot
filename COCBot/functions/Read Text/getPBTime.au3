@@ -34,7 +34,7 @@ Func getPBTime()
 	While _CheckPixel($aIsShieldInfo, $g_bCapturePixel) = False ; wait for open PB info window
 		If _Sleep($DELAYPERSONALSHIELD2) Then Return
 		$Result = getAttackDisable(180, 156 + $g_iMidOffsetY) ; Try to grab Ocr for PBT warning message as it can randomly block pixel check
-		If $g_bDebugSetlog Then SetDebugLog("OCR PBT early warning= " & $Result, $COLOR_DEBUG)
+		SetDebugLog("OCR PBT early warning= " & $Result, $COLOR_DEBUG)
 		If (StringLen($Result) > 3) And StringRegExp($Result, "[a-w]", $STR_REGEXPMATCH) Then ; Check string for valid characters
 			SetLog("Personal Break Warning found!", $COLOR_INFO)
 			$bPBTStart = True
@@ -52,11 +52,11 @@ Func getPBTime()
 
 	If _CheckPixel($aIsShieldInfo, $g_bCapturePixel) Or $bPBTStart Then ; PB Info window open?
 		$sTimeResult = getOcrPBTtime(555, 499 + $g_iMidOffsetY) ; read PBT time
-		If $g_bDebugSetlog Then SetDebugLog("OCR PBT Time= " & $sTimeResult, $COLOR_DEBUG)
+		SetDebugLog("OCR PBT Time= " & $sTimeResult, $COLOR_DEBUG)
 		If $sTimeResult = "" Then ; try a 2nd time after a short delay if slow PC and null read
 			If _Sleep($DELAYPERSONALSHIELD2) Then Return ; pause for slow PC
 			$sTimeResult = getOcrPBTtime(555, 499 + $g_iMidOffsetY) ; read PBT time
-			If $g_bDebugSetlog Then SetDebugLog("OCR2 PBT Time= " & $sTimeResult, $COLOR_DEBUG)
+			SetDebugLog("OCR2 PBT Time= " & $sTimeResult, $COLOR_DEBUG)
 			If $sTimeResult = "" And Not $bPBTStart Then ; error if no read value
 				SetLog("strange error, no PBT value found?", $COLOR_ERROR)
 				SetError(1, "Bad OCR of PB time value ")
@@ -69,7 +69,7 @@ Func getPBTime()
 		If _Sleep($DELAYRESPOND) Then Return ; improve pause/stop button response
 
 		$iPBTSeconds = ConvertOCRTime("OCR PBT", $sTimeResult, True, "sec")
-		If $g_bDebugSetlog Then SetDebugLog("Computed PBT Seconds = " & $iPBTSeconds, $COLOR_DEBUG)
+		SetDebugLog("Computed PBT Seconds = " & $iPBTSeconds, $COLOR_DEBUG)
 
 		If ($iPBTSeconds > 0) Then
 			If $bPBTStart Then
@@ -78,7 +78,7 @@ Func getPBTime()
 				$sPBTReturnResult = _DateAdd('s', $iPBTSeconds, _NowCalc()) ; Calc actual expire time from now.
 			EndIf
 			If @error Then SetLog("_DateAdd error= " & @error, $COLOR_ERROR)
-			If $g_bDebugSetlog Then SetDebugLog("PBT starts: " & $sPBTReturnResult, $COLOR_DEBUG)
+			SetDebugLog("PBT starts: " & $sPBTReturnResult, $COLOR_DEBUG)
 			If _Sleep($DELAYPERSONALSHIELD1) Then Return
 
 			ClickAway()
@@ -93,7 +93,7 @@ Func getPBTime()
 			Return
 		EndIf
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("PB Info window failed to open for PB Time OCR", $COLOR_ERROR)
+		SetDebugLog("PB Info window failed to open for PB Time OCR", $COLOR_ERROR)
 	EndIf
 
 EndFunc   ;==>getPBTime

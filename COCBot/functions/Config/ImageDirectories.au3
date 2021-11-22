@@ -31,6 +31,7 @@ Global Const $g_sImgOutOfSync = @ScriptDir & "\imgxml\other\Oos[[Android]]*"
 Global Const $g_sImgConnectionLost = @ScriptDir & "\imgxml\other\ConnectionLost[[Android]]*"
 Global Const $g_sImgMaintenance = @ScriptDir & "\imgxml\other\Maintenance*"
 Global Const $G_sImgImportantNotice = @ScriptDir & "\imgxml\other\ImportantNotice[[Android]]*"
+Global Const $g_sImgOptUpdateCoC = @ScriptDir & "\imgxml\other\OptUpdateCoC*"
 #EndRegion
 
 #Region Main Village
@@ -166,7 +167,7 @@ Global Const $g_sImgGoogleAccounts = @ScriptDir & "\imgxml\SwitchAccounts\Google
 Global Const $g_sImgSupercellIDConnected = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\Connected\SCIDConnected*"
 Global Const $g_sImgSupercellIDReload = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\Reload\SCIDReload*"
 Global Const $g_sImgSupercellIDWindows = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\SCIDWindows*"
-Global Const $g_sImgSupercellIDSlots = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\Slots\SCIDSlot*"
+Global Const $g_sImgSupercellIDSlots = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\Slots\"
 #EndRegion
 
 #Region ClanGames

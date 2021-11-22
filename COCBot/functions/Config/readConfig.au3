@@ -639,6 +639,9 @@ Func ReadConfig_600_12()
 
 	$g_asTxtDonateTroop[$eTroopBowler] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBowlers", "bowler|bowl"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopBowler] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBowlers", "no bowler|bowl no"), "|", @CRLF)
+	
+	$g_asTxtDonateTroop[$eTroopSuperBowler] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperBowlers", "Super Bowler|SBowl"), "|", @CRLF)
+	$g_asTxtBlacklistTroop[$eTroopSuperBowler] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperBowlers", "No Super Bowler|SBowl No"), "|", @CRLF)
 
 	$g_asTxtDonateTroop[$eTroopIceGolem] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateIceGolems", "ice golem|ice golems"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopIceGolem] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistIceGolems", "no ice golem|ice golem no"), "|", @CRLF)

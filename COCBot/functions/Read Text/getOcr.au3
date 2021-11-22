@@ -382,7 +382,7 @@ Func getOcrImgLoc(ByRef Const $_hHBitmap, $sLanguage)
 	Local $extError = @extended
 	If $error Then
 		_logErrorDLLCall($g_hLibMyBot, $error)
-		If $g_bDebugSetlog Then SetDebugLog(" imgloc DLL Error : " & $error & " --- " & $extError)
+		SetDebugLog(" imgloc DLL Error : " & $error & " --- " & $extError)
 		Return SetError(2, $extError, "") ; Set external error code = 2 for DLL error
 	EndIf
 	If $g_bDebugImageSave Then SaveDebugImage($sLanguage, False)

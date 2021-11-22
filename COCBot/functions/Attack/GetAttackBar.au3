@@ -399,7 +399,7 @@ EndFunc   ;==>AttackSlot
 
 Func DebugAttackBarImage($aAttackBarResult)
 	#comments-start
-		If $g_bDebugSetlog Then SetDebugLog("Attackbar OCR completed in " & StringFormat("%.2f", __TimerDiff($iAttackbarStart)) & " ms")
+		SetDebugLog("Attackbar OCR completed in " & StringFormat("%.2f", __TimerDiff($iAttackbarStart)) & " ms")
 
 		If $bDebug Then
 		Local $iX1 = 0, $iY1 = 635, $iX2 = 853, $iY2 = 698

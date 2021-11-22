@@ -145,7 +145,7 @@ Func InitializeControlVariables()
 					 $g_ahTxtTrainArmyTroopCount[$eTroopGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWitch]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperWitch]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopLavaHound]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceHound]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBowler]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopYeti]&"#"& _
-					 $g_ahTxtTrainArmyTroopCount[$eTroopDragonRider]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHeadhunter]
+					 $g_ahTxtTrainArmyTroopCount[$eTroopDragonRider]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHeadhunter]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperBowler]
    $grpCookSpell = $g_ahTxtTrainArmySpellCount[$eSpellLightning]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHeal]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellRage]&"#"& _
 				   $g_ahTxtTrainArmySpellCount[$eSpellJump]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellFreeze]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellClone]&"#"& _
 				   $g_ahTxtTrainArmySpellCount[$eSpellInvisibility]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellPoison]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellEarthquake]&"#"& _

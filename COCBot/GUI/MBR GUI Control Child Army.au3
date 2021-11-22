@@ -650,7 +650,7 @@ Func BtnTroopOrderSet()
 			$eTroopBarbarian, $eTroopSuperBarbarian, $eTroopArcher, $eTroopSuperArcher, $eTroopGiant, $eTroopSuperGiant, $eTroopGoblin, $eTroopSneakyGoblin, $eTroopWallBreaker, _
 			$eTroopSuperWallBreaker, $eTroopBalloon, $eTroopRocketBalloon, $eTroopWizard, $eTroopSuperWizard, $eTroopHealer, $eTroopDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopInfernoDragon, $eTroopMiner, _
 			$eTroopElectroDragon, $eTroopYeti, $eTroopDragonRider, $eTroopMinion, $eTroopSuperMinion, $eTroopHogRider, $eTroopValkyrie, $eTroopSuperValkyrie, $eTroopGolem, $eTroopWitch, $eTroopSuperWitch, _
-			$eTroopLavaHound, $eTroopIceHound, $eTroopBowler, $eTroopIceGolem, $eTroopHeadhunter]
+			$eTroopLavaHound, $eTroopIceHound, $eTroopBowler, $eTroopSuperBowler, $eTroopIceGolem, $eTroopHeadhunter]
 
 	; check for duplicate combobox index and take action
 	For $i = 0 To UBound($g_ahCmbTroopOrder) - 1

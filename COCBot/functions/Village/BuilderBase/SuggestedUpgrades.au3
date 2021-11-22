@@ -336,7 +336,7 @@ Func NewBuildings($aResult)
 				; Coordinates for Slot Zone from Clock position
 				Local $x = ($Coordinates[0] + 20), $y = ($Coordinates[1] + 250), $x1 = ($Coordinates[0] + 20) + 160, $y1 = ($Coordinates[1] + 250) + 75
 				; Lets see if exist resources
-				If $g_bDebugSetlog Then SetDebugLog("[x]: " & $x & " [y]: " & $y & " [x1]: " & $x1 & " [y1]: " & $y1, $COLOR_DEBUG)
+				SetDebugLog("[x]: " & $x & " [y]: " & $y & " [x1]: " & $x1 & " [y1]: " & $y1, $COLOR_DEBUG)
 				If QuickMIS("BC1", $g_sImgAutoUpgradeZero, $x, $y, $x1, $y1, $Screencap, $Debug) Then
 					; Lets se if exist or NOT the Yellow Arrow, If Doesnt exist the [i] icon than exist the Yellow arrow , DONE
 					If Not QuickMIS("BC1", $g_sImgAutoUpgradeInfo, $x, $y, $x1, $y1, $Screencap, $Debug) Then
@@ -362,14 +362,14 @@ Func NewBuildings($aResult)
 						EndIf
 					Else
 						If $i = UBound($ClocksCoordinates) - 1 Then
-							If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources![1]", $COLOR_DEBUG)
+							SetDebugLog("Slot without enough resources![1]", $COLOR_DEBUG)
 							Click(820, 38, 1) ; exit from Shop
 							ExitLoop
 						EndIf
 						ContinueLoop
 					EndIf
 				Else
-					If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources![2]", $COLOR_DEBUG)
+					SetDebugLog("Slot without enough resources![2]", $COLOR_DEBUG)
 					If $i = UBound($ClocksCoordinates) - 1 Then Click(820, 38, 1)
 				EndIf
 			Next

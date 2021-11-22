@@ -128,7 +128,7 @@ Func QueenUpgrade()
 		$CountGetInfo += 1
 		If $CountGetInfo >= 50 Then Return
 	WEnd
-	If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+	SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 	If @error Then Return SetError(0, 0, 0)
 
 
@@ -160,9 +160,9 @@ Func QueenUpgrade()
 	;##### Get updated village elixir and dark elixir values
 	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootDarkElixir] = Number(getResourcesMainScreen(728, 123))
-		If $g_bDebugSetlog Then SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
+		SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
+		SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
 	EndIf
 
 	If $g_aiCurrentLoot[$eLootDarkElixir] < ($g_afQueenUpgCost[$aHeroLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) + $g_iUpgradeMinDark Then
@@ -232,7 +232,7 @@ Func KingUpgrade()
 		$CountGetInfo += 1
 		If $CountGetInfo >= 50 Then Return
 	WEnd
-	If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+	SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 	If @error Then Return SetError(0, 0, 0)
 
 	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -263,9 +263,9 @@ Func KingUpgrade()
 	;##### Get updated village elixir and dark elixir values
 	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootDarkElixir] = Number(getResourcesMainScreen(728, 123))
-		If $g_bDebugSetlog Then SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
+		SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
+		SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
 	EndIf
 	If _Sleep(100) Then Return
 
@@ -343,7 +343,7 @@ Func WardenUpgrade()
 		$CountGetInfo += 1
 		If $CountGetInfo = 50 Then Return
 	WEnd
-	If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "))
+	SetDebugLog(_ArrayToString($sInfo, " "))
 	If @error Then Return SetError(0, 0, 0)
 
 	If $sInfo[0] > 1 Or $sInfo[0] = "" Then
@@ -374,7 +374,7 @@ Func WardenUpgrade()
 	;##### Get updated village elixir values
 	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(705, 74)
-		If $g_bDebugSetlog Then SetDebugLog("Updating village values [E]: " & $g_aiCurrentLoot[$eLootElixir], $COLOR_DEBUG)
+		SetDebugLog("Updating village values [E]: " & $g_aiCurrentLoot[$eLootElixir], $COLOR_DEBUG)
 	Else
 		$g_aiCurrentLoot[$eLootElixir] = getResourcesMainScreen(710, 74)
 	EndIf
@@ -396,7 +396,7 @@ Func WardenUpgrade()
 
 		If $g_bDebugSetlog Then SaveDebugImage("UpgradeElixirBtn1")
 
-		If $g_bDebugSetlog Then SetDebugLog("pixel: " & _GetPixelColor(718, 120 + $g_iMidOffsetY, True) & " expected " & Hex(0xDD0408, 6) & " result: " & _ColorCheck(_GetPixelColor(718, 120 + $g_iMidOffsetY, True), Hex(0xDD0408, 6), 20), $COLOR_DEBUG)
+		SetDebugLog("pixel: " & _GetPixelColor(718, 120 + $g_iMidOffsetY, True) & " expected " & Hex(0xDD0408, 6) & " result: " & _ColorCheck(_GetPixelColor(718, 120 + $g_iMidOffsetY, True), Hex(0xDD0408, 6), 20), $COLOR_DEBUG)
 		If _ColorCheck(_GetPixelColor(718, 120 + $g_iMidOffsetY, True), Hex(0xDD0408, 6), 20) Then ; Check if the Hero Upgrade window is open
 
 			Local $aWhiteZeros = decodeSingleCoord(findImage("UpgradeWhiteZero" ,$g_sImgUpgradeWhiteZero, GetDiamondFromRect("408,519,747,606"), 1, True, Default))
@@ -456,7 +456,7 @@ Func ChampionUpgrade()
 		$CountGetInfo += 1
 		If $CountGetInfo >= 50 Then Return
 	WEnd
-	If $g_bDebugSetlog Then SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
+	SetDebugLog(_ArrayToString($sInfo, " "), $COLOR_DEBUG)
 	If @error Then Return SetError(0, 0, 0)
 
 
@@ -488,9 +488,9 @@ Func ChampionUpgrade()
 	;##### Get updated village elixir and dark elixir values
 	If _CheckPixel($aVillageHasDarkElixir, $g_bCapturePixel) Then ; check if the village have a Dark Elixir Storage
 		$g_aiCurrentLoot[$eLootDarkElixir] = Number(getResourcesMainScreen(728, 123))
-		If $g_bDebugSetlog Then SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
+		SetDebugLog("Updating village values [D]: " & $g_aiCurrentLoot[$eLootDarkElixir], $COLOR_DEBUG)
 	Else
-		If $g_bDebugSetlog Then SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
+		SetDebugLog("getResourcesMainScreen didn't get the DE value", $COLOR_DEBUG)
 	EndIf
 
 	If $g_aiCurrentLoot[$eLootDarkElixir] < ($g_afChampionUpgCost[$aHeroLevel] * 1000) * (1 - Number($g_iBuilderBoostDiscount) / 100) + $g_iUpgradeMinDark Then

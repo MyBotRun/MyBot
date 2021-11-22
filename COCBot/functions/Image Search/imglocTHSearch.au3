@@ -40,7 +40,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 	;aux data
 	Local $propsNames = StringSplit($returnProps, ",", $STR_NOCOUNT)
-	If $g_bDebugSetlog Then SetDebugLog("imgloc TH search Start", $COLOR_DEBUG)
+	SetDebugLog("imgloc TH search Start", $COLOR_DEBUG)
 	Local $numRetry = 1 ; try to find TH twice (one retry)
 	If $g_iDetectedImageType = 1 Then
 		$numRetry = 3 ; try to find TH 4 times (three retries also without snow)
@@ -81,7 +81,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 			Local $iBestResult = 0
 			If UBound($result) > 1 Then
-				If $g_bDebugSetlog Then SetDebugLog("imgloc Found Multiple TH : " & UBound($result), $COLOR_INFO)
+				SetDebugLog("imgloc Found Multiple TH : " & UBound($result), $COLOR_INFO)
 				; search for highest level
 				Local $iHighestLvl = 0
 				For $iResult = 0 To UBound($result) - 1
@@ -97,13 +97,13 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 						EndSwitch
 					Next
 				Next
-				If $g_bDebugSetlog Then SetDebugLog("imgloc Found Multiple TH : Using index " & $iBestResult, $COLOR_INFO)
+				SetDebugLog("imgloc Found Multiple TH : Using index " & $iBestResult, $COLOR_INFO)
 			EndIf
 			If UBound($result) > 0 Then
-				If $g_bDebugSetlog Then SetDebugLog("imgloc Found TH : ", $COLOR_INFO)
+				SetDebugLog("imgloc Found TH : ", $COLOR_INFO)
 				Local $propsValues = $result[$iBestResult]
 				For $pv = 0 To UBound($propsValues) - 1
-					If $g_bDebugSetlog Then SetDebugLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
+					SetDebugLog("imgloc Found : " & $propsNames[$pv] & " - " & $propsValues[$pv], $COLOR_INFO)
 					Switch $propsNames[$pv]
 						Case "objectname"
 							;nothing to do
@@ -204,11 +204,11 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 		If $iLvlFound > 0 Then
 			$iFindTime += __TimerDiff($hTimer) ; add total TH search time in milliseconds
-			If $g_bDebugSetlog Then SetDebugLog("imgloc THSearch Calculated  (in " & Round($iFindTime / 1000, 2) & " seconds) :")
+			SetDebugLog("imgloc THSearch Calculated  (in " & Round($iFindTime / 1000, 2) & " seconds) :")
 			ExitLoop ; TH was found
 		Else
 			If $g_bDebugImageSave And $retry > 0 Then SaveDebugImage("imglocTHSearch_NoTHFound_", True)
-			If $g_bDebugSetlog Then SetDebugLog("imgloc THSearch Notfound, Retry:  " & $retry)
+			SetDebugLog("imgloc THSearch Notfound, Retry:  " & $retry)
 		EndIf
 
 	Next ; retry
