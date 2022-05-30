@@ -1,10 +1,21 @@
 * v7.9.8
-* May 22 Update
-* Added support for Sdrag and FlameF
-* Added Clan Capital 
-* Fix SCID switching with less than 4 accounts 
-* Fixed FreeTrader MAY22 update
-* Fixed Zoomout MAY22 update
+* Super Dragon support ( Sdrag ) added
+* Flame Flinger siege machine support ( FlameF ) added
+* Updated hero upgrade costs
+* Updated wall upgrade costs
+* Add FlameFlinger and SuperDragon @xbebenk
+* Improve handling of frozen game during ReturnHome
+* Improve handling network connection lost
+* Disable shared_prefs resetting snow (thanks @Famine098)
+* Fix SCID switching with less than 4 accounts
+* Fix for "blue sale prices" on siege machines.
+* New TH10 image (thanks @grumphog)
+* Worked on lab to get FlameF working.  Fixed latent 2nd row bug.
+* Fix price to upgrade level 10 walls to 11.
+* Zoom-out temp fix due to update May 2022 by Grumpyhog
+* Improved TH8 detection reported by Priapus
+* Added Clan Capital Collect, Forge and Auto upgrade by xbebenk + small fixes for CollectCCGold+Forge
+* Fix Trader MAY22 Update 
 
 * **v.7.9.7**
 * Fix boost SuporTroops for slower VPS reported by @Wazzock1972
