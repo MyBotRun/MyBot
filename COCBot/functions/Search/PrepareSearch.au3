@@ -51,7 +51,7 @@ Func PrepareSearch($Mode = $DB) ;Click attack button and find match button, will
 	EndIf
 
 	If _Sleep($DELAYPREPARESEARCH1) Then Return
-	If Not IsWindowOpen($g_sImgGeneralCloseButton, 10, 200, GetDiamondFromRect("716,1,860,179")) Then
+	If Not IsWindowOpen($g_sImgGeneralCloseButton & "*", 10, 200, GetDiamondFromRect("716,1,860,179")) Then
 		SetLog("Attack Window did not open!", $COLOR_ERROR)
 		AndroidPageError("PrepareSearch")
 		checkMainScreen()

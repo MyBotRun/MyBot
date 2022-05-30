@@ -26,7 +26,7 @@ Func isInsideDiamondRedArea($aCoords)
 	If $DX >= 5 Then $DX -= 5
 	If $DY >= 5 Then $DY -= 5
 
-	If ($DX / $aSize[0] + $DY / $aSize[1] <= 1) And $aCoords[0] > $DeployableLRTB[0] And $aCoords[0] <= $DeployableLRTB[1] And $aCoords[1] >= $DeployableLRTB[2] And $aCoords[1] <= $DeployableLRTB[3] Then
+	If ($DX / $aSize[0] + $DY / $aSize[1] <= 1) And $aCoords[0] > $g_aiDeployableLRTB[0] And $aCoords[0] <= $g_aiDeployableLRTB[1] And $aCoords[1] >= $g_aiDeployableLRTB[2] And $aCoords[1] <= $g_aiDeployableLRTB[3] Then
 		Return True ; Inside Village
 	Else
 		;debugAttackCSV("isInsideDiamondRedArea outside: " & $aCoords[0] & "," & $aCoords[1])

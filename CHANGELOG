@@ -1,3 +1,11 @@
+* v7.9.8
+* May 22 Update
+* Added support for Sdrag and FlameF
+* Added Clan Capital 
+* Fix SCID switching with less than 4 accounts 
+* Fixed FreeTrader MAY22 update
+* Fixed Zoomout MAY22 update
+
 * **v.7.9.7**
 * Fix boost SuporTroops for slower VPS reported by @Wazzock1972
 * Fix ClanGames get information by @xbebenk

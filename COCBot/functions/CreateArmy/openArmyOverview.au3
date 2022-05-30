@@ -1,6 +1,6 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: OpenArmyOverview
-; Description ...: Opens and waits for Army Overiew window and verifes success
+; Description ...: Opens and waits for Army Overview window and verifies success
 ; Syntax ........: OpenArmyOverview()
 ; Parameters ....:
 ; Return values .: None

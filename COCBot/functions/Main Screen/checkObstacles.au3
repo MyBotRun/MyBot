@@ -412,9 +412,9 @@ Func checkObstacles_Network($bForceCapture = False, $bReloadCoC = True)
 			SetLog("Network Connection lost...", $COLOR_ERROR)
 			$hCocReconnectingTimer = __TimerInit()
 		ElseIf __TimerDiff($hCocReconnectingTimer) > $g_iCoCReconnectingTimeout Then
-			SetLog("Network Connection really lost, Reloading CoC...", $COLOR_ERROR)
+			SetLog("Network Connection really lost, Reloading Android...", $COLOR_ERROR)
 			$hCocReconnectingTimer = 0
-			If $bReloadCoC = True Then Return checkObstacles_ReloadCoC()
+			If $bReloadCoC = True Then Return checkObstacles_RebootAndroid()
 			Return True
 		Else
 			SetLog("Network Connection lost, waiting...", $COLOR_ERROR)

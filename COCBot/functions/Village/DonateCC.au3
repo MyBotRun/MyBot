@@ -148,7 +148,7 @@ Func getArmyRequest($aiDonateCoords, $bNeedCapture = True)
 			ElseIf $iArmyIndex >= $eLSpell And $iArmyIndex <= $eBtSpell Then
 				$sClanText &= ", " & $g_asSpellNames[$iArmyIndex - $eLSpell]
 			; Sieges
-			ElseIf $iArmyIndex >= $eWallW And $iArmyIndex <= $eLogL Then
+			ElseIf $iArmyIndex >= $eWallW And $iArmyIndex <= $eFlameF Then
 				$sClanText &= ", " & $g_asSiegeMachineNames[$iArmyIndex - $eWallW]
 			ElseIf $iArmyIndex = -1 Then
 				ContinueLoop

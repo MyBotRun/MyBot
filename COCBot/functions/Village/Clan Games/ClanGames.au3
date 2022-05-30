@@ -482,7 +482,7 @@ Func IsClanGamesWindow($getCapture = True)
 
 	If QuickMIS("BC1", $g_sImgCaravan, 200, 55, 300, 135, $getCapture, False) Then
 		SetLog("Caravan available! Entering Clan Games", $COLOR_SUCCESS)
-		Click($g_iQuickMISX + 200, $g_iQuickMISY + 55)
+		Click($g_iQuickMISX, $g_iQuickMISY)
 		; Just wait for window open
 		If _Sleep(1500) Then Return
 		If QuickMIS("BC1", $g_sImgReward, 760, 480, 830, 570, $getCapture, $g_bChkClanGamesDebug) Then
@@ -611,20 +611,20 @@ Func StartsEvent($sEventName, $g_bPurgeJob = False, $getCapture = True, $g_bChkC
 	If Not $g_bRunState Then Return
 
 	If QuickMIS("BC1", $g_sImgStart, 220, 150, 830, 580, $getCapture, $g_bChkClanGamesDebug) Then
-		Local $Timer = GetEventTimeInMinutes($g_iQuickMISX + 220, $g_iQuickMISY + 150)
+		Local $Timer = GetEventTimeInMinutes($g_iQuickMISX, $g_iQuickMISY)
 		SetLog("Starting  Event" & " [" & $Timer & " min]", $COLOR_SUCCESS)
-		Click($g_iQuickMISX + 220, $g_iQuickMISY + 150)
+		Click($g_iQuickMISX, $g_iQuickMISY)
 		GUICtrlSetData($g_hTxtClanGamesLog, @CRLF & _NowDate() & " " & _NowTime() & " [" & $g_sProfileCurrentName & "] - Starting " & $sEventName & " for " & $Timer & " min", 1)
 		_FileWriteLog($g_sProfileLogsPath & "\ClanGames.log", " [" & $g_sProfileCurrentName & "] - Starting " & $sEventName & " for " & $Timer & " min")
 		If $g_bPurgeJob Then
 			If _Sleep(2000) Then Return
 			If QuickMIS("BC1", $g_sImgTrashPurge, 220, 150, 830, 580, $getCapture, $g_bChkClanGamesDebug) Then
-				Click($g_iQuickMISX + 220, $g_iQuickMISY + 150)
+				Click($g_iQuickMISX, $g_iQuickMISY)
 				If _Sleep(1200) Then Return
 				SetLog("Click Trash", $COLOR_INFO)
 				If QuickMIS("BC1", $g_sImgOkayPurge, 440, 400, 580, 450, $getCapture, $g_bChkClanGamesDebug) Then
 					SetLog("Click OK", $COLOR_INFO)
-					Click($g_iQuickMISX + 440, $g_iQuickMISY + 400)
+					Click($g_iQuickMISX, $g_iQuickMISY)
 					SetLog("Purging a job on progress !", $COLOR_SUCCESS)
 					GUICtrlSetData($g_hTxtClanGamesLog, @CRLF & _NowDate() & " " & _NowTime() & " [" & $g_sProfileCurrentName & "] - [" & $g_iPurgeJobCount[$g_iCurAccount] + 1 & "] - Purging Event ", 1)
 					_FileWriteLog($g_sProfileLogsPath & "\ClanGames.log", " [" & $g_sProfileCurrentName & "] - [" & $g_iPurgeJobCount[$g_iCurAccount] + 1 & "] - Purging Event ")
@@ -654,7 +654,7 @@ Func PurgeEvent($directoryImage, $sEventName, $getCapture = True)
 	; Screen coordinates for ScreenCapture
 	Local $x = 281, $y = 150, $x1 = 775, $y1 = 545
 	If QuickMIS("BC1", $directoryImage, $x, $y, $x1, $y1, $getCapture, $g_bChkClanGamesDebug) Then
-		Click($g_iQuickMISX + $x, $g_iQuickMISY + $y)
+		Click($g_iQuickMISX, $g_iQuickMISY)
 		; Start and Purge at same time
 		SetLog("Starting Impossible Job to purge", $COLOR_INFO)
 		If _Sleep(1500) Then Return
@@ -702,7 +702,7 @@ EndFunc   ;==>GetEventTimeInMinutes
 
 Func GetEventInformation()
 	If QuickMIS("BC1", $g_sImgStart, 220, 150, 830, 580, True, $g_bChkClanGamesDebug) Then
-		Return GetEventTimeInMinutes($g_iQuickMISX + 220, $g_iQuickMISY + 150)
+		Return GetEventTimeInMinutes($g_iQuickMISX, $g_iQuickMISY)
 	Else
 		Return 0
 	EndIf

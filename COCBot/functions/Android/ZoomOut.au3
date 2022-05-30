@@ -448,7 +448,7 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 
 	If IsArray($village) = 1 Then
 		$villageSize = $village[0]
-		If $villageSize < 500 Or $g_bDebugDisableZoomout Then
+		If $villageSize < 525 Or $g_bDebugDisableZoomout Then
 			$z = $village[1]
 			$x = $village[2]
 			$y = $village[3]
@@ -508,6 +508,9 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 					EndIf
 					CloseCoC() ; ensure CoC is gone
 					OpenCoC()
+
+					waitMainScreen()
+
 					Return FuncReturn(SearchZoomOut($CenterVillageBoolOrScrollPos, $UpdateMyVillage, "SearchZoomOut(2):" & $sSource, True, $DebugLog))
 				Else
 					SetLog("Restart Android to reset zoom" & $sSource & "...", $COLOR_INFO)
@@ -517,6 +520,9 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 						$iCallCount = 0
 						Return FuncReturn($aResult)
 					EndIf
+					
+					waitMainScreen()
+					
 					$aResult = SearchZoomOut($CenterVillageBoolOrScrollPos, $UpdateMyVillage, "SearchZoomOut(2):" & $sSource, True, $DebugLog)
 					If $bUpdateSharedPrefs And StringInStr($aResult[0], "zoomou") = 0 Then
 						; disable this CoC/Android restart

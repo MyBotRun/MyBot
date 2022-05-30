@@ -54,7 +54,7 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 	While _ColorCheck(_GetPixelColor(819, 39, True), Hex(0xF8FCFF, 6), 20) = True ; wait for Builder/shop to close
 		$i += 1
 		If _Sleep($DELAYVILLAGEREPORT1) Then Return
-		If $i >= 20 Then ExitLoop
+		If $i >= 2 Then ExitLoop
 	WEnd
 
 EndFunc   ;==>VillageReport

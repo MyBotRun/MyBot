@@ -14,7 +14,7 @@
 ;================================================================================================================================
 
 Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME_WIDTH, $Bottom = $g_iGAME_HEIGHT, $bNeedCapture = True, $Debug = False)
-	If ($ValueReturned <> "BC1") And ($ValueReturned <> "CX") And ($ValueReturned <> "N1") And ($ValueReturned <> "NX") And ($ValueReturned <> "Q1") And ($ValueReturned <> "QX") Then
+	If ($ValueReturned <> "BC1") And ($ValueReturned <> "CX") And ($ValueReturned <> "CXR") And ($ValueReturned <> "CNX") And ($ValueReturned <> "N1") And ($ValueReturned <> "NX") And ($ValueReturned <> "Q1") And ($ValueReturned <> "QX") Then
 		SetLog("Bad parameters during QuickMIS call for MultiSearch...", $COLOR_RED)
 		Return
 	EndIf
@@ -25,15 +25,19 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 	If $g_bDebugImageSave Then SaveDebugImage("QuickMIS_" & $ValueReturned, False)
 
 	If IsArray($Res) Then
-		;If $Debug Then _ArrayDisplay($Res)
-		SetDebugLog("DLL Call succeeded " & $Res[0], $COLOR_PURPLE)
+		;_ArrayDisplay($Res)
+		If $g_bDebugSetlog Then SetDebugLog("DLL Call succeeded " & $Res[0], $COLOR_PURPLE)
 
 		If $Res[0] = "" Or $Res[0] = "0" Then
-			SetDebugLog("No Button found")
+			SetDebugLog($ValueReturned & ", Image not found in " & $directory)
 			Switch $ValueReturned
 				Case "BC1"
 					Return False
 				Case "CX"
+					Return -1
+				Case "CXR"
+					Return -1
+				Case "CNX"
 					Return -1
 				Case "N1"
 					Return "none"
@@ -60,18 +64,16 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						If UBound(decodeSingleCoord($DLLRes[0])) > 1 Then $Result &= $DLLRes[0] & "|"
 					Next
 					If StringRight($Result, 1) = "|" Then $Result = StringLeft($Result, (StringLen($Result) - 1))
-					Local $aCords = decodeMultipleCoords($Result, 60, 10, 1)
-					If UBound($aCords) = 0 Then Return False ; should never happen, but it did...
-					Local $aCord = $aCords[0] ; sorted by Y
-					If UBound($aCord) < 2 Then Return False ; should never happen, but anyway...
-					$g_iQuickMISX = $aCord[0]
-					$g_iQuickMISY = $aCord[1]
+					Local $aCords = decodeSingleCoord($Result)
+					$g_iQuickMISX = $aCords[0] + $Left
+					$g_iQuickMISY = $aCords[1] + $Top
 
 					$Name = RetrieveImglocProperty($KeyValue[0], "objectname")
+					$g_iQuickMISName = $Name
 
 					If $g_bDebugSetlog Or $Debug Then
-						SetDebugLog($ValueReturned & " Found: " & $Result & ", using " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_PURPLE)
-						If $g_bDebugImageSave Then DebugQuickMIS($Left, $Top, "BC1_detected[" & $Name & "_" & $g_iQuickMISX + $Left & "x" & $g_iQuickMISY + $Top & "]")
+						SetDebugLog($ValueReturned & " Found: " & $Name & ", using " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_PURPLE)
+						If $g_bDebugImageSave Then DebugQuickMIS($Left, $Top, "BC1_detected[" & $Name & "_" & $g_iQuickMISX & "x" & $g_iQuickMISY & "]")
 					EndIf
 
 					Return True
@@ -85,9 +87,44 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						If UBound(decodeSingleCoord($DLLRes[0])) > 1 Then $Result &= $DLLRes[0] & "|"
 					Next
 					If StringRight($Result, 1) = "|" Then $Result = StringLeft($Result, (StringLen($Result) - 1))
-					SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
+					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
 					Local $CoordsInArray = StringSplit($Result, "|", $STR_NOCOUNT)
 					Return $CoordsInArray
+					
+				Case "CXR" ; coordinates of each image found - eg: $Array[0] = [X1, Y1] ; $Array[1] = [X2, Y2]
+
+					Local $Result[0][2]
+					Local $KeyValue = StringSplit($Res[0], "|", $STR_NOCOUNT)
+					For $i = 0 To UBound($KeyValue) - 1
+						Local $DLLRes = DllCallMyBot("GetProperty", "str", $KeyValue[$i], "str", "objectpoints")
+						Local $xy = StringSplit($DLLRes[0], "|", $STR_NOCOUNT)
+						For $j = 0 To Ubound($xy) - 1
+							If UBound(decodeSingleCoord($xy[$j])) > 1 Then 
+								Local $Tmpxy = StringSplit($xy[$j], ",", $STR_NOCOUNT)
+								_ArrayAdd($Result, $Tmpxy[0] + $Left & "|" & $Tmpxy[1] + $Top)
+							EndIf
+						Next
+					Next
+					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & _ArrayToString($Result), $COLOR_PURPLE)
+					Return $Result
+					
+				Case "CNX" 
+					Local $Result[0][4]
+					Local $KeyValue = StringSplit($Res[0], "|", $STR_NOCOUNT)
+					For $i = 0 To UBound($KeyValue) - 1
+						Local $DLLRes = DllCallMyBot("GetProperty", "str", $KeyValue[$i], "str", "objectpoints")
+						Local $objName = StringSplit($KeyValue[$i], "_", $STR_NOCOUNT)
+						Local $xy = StringSplit($DLLRes[0], "|", $STR_NOCOUNT)
+						;SetDebugLog(_ArrayToString($xy))
+						For $j = 0 To Ubound($xy) - 1
+							If UBound(decodeSingleCoord($xy[$j])) > 1 Then 
+								Local $Tmpxy = StringSplit($xy[$j], ",", $STR_NOCOUNT)
+								_ArrayAdd($Result, $objName[0] & "|" & $Tmpxy[0] + $Left & "|" & $Tmpxy[1] + $Top & "|" & $objName[1])
+							EndIf
+						Next
+					Next
+					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & _ArrayToString($Result), $COLOR_PURPLE)
+					Return $Result
 
 				Case "N1" ; name of first file found
 
@@ -115,7 +152,7 @@ Func QuickMIS($ValueReturned, $directory, $Left = 0, $Top = 0, $Right = $g_iGAME
 						$Result &= $DLLRes[0] & "|"
 					Next
 					If StringRight($Result, 1) = "|" Then $Result = StringLeft($Result, (StringLen($Result) - 1))
-					SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
+					If $g_bDebugSetlog Then SetDebugLog($ValueReturned & " Found: " & $Result, $COLOR_PURPLE)
 					Local $QuantityInArray = StringSplit($Result, "|", $STR_NOCOUNT)
 					Return $QuantityInArray[0]
 
@@ -135,13 +172,13 @@ Func DebugQuickMIS($x, $y, $DebugText)
 	Local $subDirectory = $g_sProfileTempDebugPath & "QuickMIS"
 	DirCreate($subDirectory)
 	Local $Date = @YEAR & "-" & @MON & "-" & @MDAY
-	Local $Time = @HOUR & "." & @MIN & "." & @SEC
+	Local $Time = @HOUR & "." & @MIN & "." & @SEC & "." & @MSEC
 	Local $filename = String($Date & "_" & $Time & "_" & $DebugText & "_.png")
 	Local $editedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
 	Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($editedImage)
-	Local $hPenRED = _GDIPlus_PenCreate(0xFFFF0000, 3) ; Create a pencil Color FF0000/RED
+	Local $hPenRED = _GDIPlus_PenCreate(0xFFFFD800, 3) ; Create a pencil Color FFFFD800/Yellow
 
-	_GDIPlus_GraphicsDrawRect($hGraphic, $g_iQuickMISX - 5 + $x, $g_iQuickMISY - 5 + $y, 10, 10, $hPenRED)
+	_GDIPlus_GraphicsDrawRect($hGraphic, $g_iQuickMISX - 5, $g_iQuickMISY - 5, 10, 10, $hPenRED)
 
 	_GDIPlus_ImageSaveToFile($editedImage, $subDirectory & "\" & $filename)
 	_GDIPlus_PenDispose($hPenRED)

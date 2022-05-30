@@ -26,7 +26,7 @@ Func LoadTranslatedDropOrderList()
 	Global $g_asDropOrderList = ["", _
 		"Barbarians", "Super Barbarians", "Archers", "Super Archers", "Giants", "Super Giants", "Goblins", "Sneaky Goblins", _
 		"Wall Breakers", "Super Wall Breakers", "Balloons", "Rocket Balloons", "Wizards", "Super Wizards", "Healers", _
-		"Dragons", "Pekkas", "Baby Dragons", "Inferno Dragons", "Miners", "Electro Dragons", "Yetis", "Dragon Riders", _
+		"Dragons", "Super Dragons", "Pekkas", "Baby Dragons", "Inferno Dragons", "Miners", "Electro Dragons", "Yetis", "Dragon Riders", _
 		"Minions", "Super Minions", "Hog Riders", "Valkyries", "Super Valkyries", "Golems", _
 		"Witchs", "Super Witchs", "Lava Hounds", "Ice Hounds", "Bowlers", "Super Bowlers", "Ice Golems", "Headhunters", "Clan Castle", "Heroes"]
 EndFunc   ;==>LoadTranslatedDropOrderList
@@ -60,12 +60,12 @@ EndFunc   ;==>CreateAttackTab
 
 Func CreateDropOrderGUI()
 
-	$g_hGUI_DropOrder = _GUICreate(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "GUI_DropOrder", "Attack Custom Dropping Order"), 525, 480, -1, -1, $WS_BORDER, $WS_EX_CONTROLPARENT)
+	$g_hGUI_DropOrder = _GUICreate(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "GUI_DropOrder", "Attack Custom Dropping Order"), 525, 520, -1, -1, $WS_BORDER, $WS_EX_CONTROLPARENT)
 	SetDefaultDropOrderGroup(False)
 	LoadTranslatedDropOrderList()
 
 	Local $x = 25, $y = 25
-	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Group_03", "Custom Dropping Order"), $x - 20, $y - 20, 511, 377)
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "Group_03", "Custom Dropping Order"), $x - 20, $y - 20, 511, 397)
 	$x += 10
 	$y += 20
 
@@ -86,7 +86,7 @@ Func CreateDropOrderGUI()
 
 	$y += 5
 		For $p = 0 To $eDropOrderCount - 1
-			If $p < 13 Then
+			If $p < 14 Then
 				GUICtrlCreateLabel($p + 1 & ":", $x - 19, $y + 3, -1, 18)
 				$g_ahCmbDropOrder[$p] = GUICtrlCreateCombo("", $x, $y, 120, 18, BitOR($CBS_DROPDOWNLIST + $WS_VSCROLL, $CBS_AUTOHSCROLL))
 					GUICtrlSetOnEvent(-1, "GUIDropOrder")
@@ -95,8 +95,8 @@ Func CreateDropOrderGUI()
 					GUICtrlSetState(-1, $GUI_DISABLE)
 				$g_ahImgDropOrder[$p] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 122, $y + 1, 18, 18)
 				$y += 25 ; move down to next combobox location
-			ElseIf $p < 26 Then
-				If $p = 13 Then
+			ElseIf $p < 28 Then
+				If $p = 14 Then
 					$x += 150
 					$y = 49
 				EndIf
@@ -109,7 +109,7 @@ Func CreateDropOrderGUI()
 				$g_ahImgDropOrder[$p] = _GUICtrlCreateIcon($g_sLibIconPath, $eIcnOptions, $x + 132, $y + 1, 18, 18)
 				$y += 25 ; move down to next combobox location
 			Else
-				If $p = 26 Then
+				If $p = 28 Then
 					$x += 160
 					$y = 49
 				EndIf
@@ -125,7 +125,7 @@ Func CreateDropOrderGUI()
 		Next
 
 	$x = 125
-	$y = 390
+	$y = 410
 		; Create push button to set training order once completed
 		$g_hBtnDropOrderSet = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Attack - Attack", "BtnDropOrderSet", "Apply New Order"), $x, $y, 100, 25)
 			GUICtrlSetState(-1, BitOR($GUI_UNCHECKED, $GUI_ENABLE))

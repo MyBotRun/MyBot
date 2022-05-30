@@ -469,6 +469,7 @@ Func ReferenceGlobals()
 	$a1 = $eWiza
 	$a1 = $eHeal
 	$a1 = $eDrag
+	$a1 = $eSDrag
 	$a1 = $ePekk
 	$a1 = $eBabyD
 	$a1 = $eEDrag

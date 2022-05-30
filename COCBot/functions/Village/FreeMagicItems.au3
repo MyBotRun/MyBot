@@ -49,39 +49,58 @@ Func CollectFreeMagicItems($bTest = False)
 	EndIf
 
 	If Not $g_bRunState Then Return
-	Local $aOcrPositions[3][2] = [[200, 439], [390, 439], [580, 439]]
-	Local $aResults[3] = ["", "", ""]
-
+	
 	$iLastTimeChecked[$g_iCurAccount] = @MDAY
-
-	For $i = 0 To 2
-		$aResults[$i] = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 80, 25, True)
-		; 5D79C5 ; >Blue Background price
-		If $aResults[$i] <> "" Then
-			If Not $bTest Then
-				If $aResults[$i] = "FREE" Then
-					Click($aOcrPositions[$i][0], $aOcrPositions[$i][1], 2, 500)
-					SetLog("Free Magic Item detected", $COLOR_INFO)
-					ClickAway()
-					If _Sleep(1000) Then Return
-					Return
-				Else
-					If _ColorCheck(_GetPixelColor($aOcrPositions[$i][0], $aOcrPositions[$i][1] + 5, True), Hex(0x5D79C5, 6), 5) Then
-						$aResults[$i] = $aResults[$i] & " Gems"
-					Else
-						$aResults[$i] = Int($aResults[$i]) > 0 ? "No Space In Castle" : "Collected"
-					EndIf
-				EndIf
-			EndIf
-		ElseIf $aResults[$i] = "" Then
-			$aResults[$i] = "N/A"
-		EndIf
-
-		If Not $g_bRunState Then Return
+	
+	Local $Collected = False
+	Local $aResults = GetFreeMagic()
+	Local $aGem[3]
+	
+	For $i = 0 To UBound($aResults) - 1
+		$aGem[$i] = $aResults[$i][0]
 	Next
-
-	SetLog("Daily Discounts: " & $aResults[0] & " | " & $aResults[1] & " | " & $aResults[2])
-	SetLog("Nothing free to collect!", $COLOR_INFO)
+	
+	For $t = 0 To UBound($aResults) - 1
+		If $aResults[$t][0] = "FREE" Then
+			If Not $bTest Then
+				Click($aResults[$t][1], $aResults[$t][2], 1, 500)
+			Else
+				SetLog("Should click on [" & $aResults[$t][1] & "," & $aResults[$t][2] & "]", $COLOR_ERROR)
+			EndIf
+			SetLog("Free Magic Item detected", $COLOR_INFO)
+			If _Sleep(1000) Then Return
+			$Collected = True
+			ExitLoop
+		EndIf
+	Next
+	
+	If Not $Collected Then 
+		SetLog("Nothing free to collect!", $COLOR_INFO)
+	EndIf
+	SetLog("Daily Discounts: " & $aGem[0] & " | " & $aGem[1] & " | " & $aGem[2])
+	
 	ClickAway()
 	If _Sleep(1000) Then Return
 EndFunc   ;==>CollectFreeMagicItems
+
+Func GetFreeMagic()
+	Local $aOcrPositions[3][2] = [[285, 345], [465, 345], [635, 345]]
+	Local $aClickFreeItemPositions[3][2] = [[320, 285], [500, 285], [680, 285]]
+	Local $aResults[0][3]
+	
+	For $i = 0 To UBound($aOcrPositions) - 1
+	
+		Local $Read = getOcrAndCapture("coc-freemagicitems", $aOcrPositions[$i][0], $aOcrPositions[$i][1], 200, 25, True)
+		If $Read = "FREE" Then 
+			If WaitforPixel($aOcrPositions[$i][0] - 10, $aOcrPositions[$i][1], $aOcrPositions[$i][0] - 9, $aOcrPositions[$i][1] + 1, "A3A3A3", 10, 1) Then
+				$Read = "N/A"
+			EndIf
+		EndIf
+		If $Read = "" Then $Read = "N/A"
+		If Number($Read) > 10 Then 
+			$Read = $Read & " Gems"
+		EndIf
+		_ArrayAdd($aResults, $Read & "|" & $aClickFreeItemPositions[$i][0] & "|" & $aClickFreeItemPositions[$i][1])
+	Next
+	Return $aResults
+EndFunc

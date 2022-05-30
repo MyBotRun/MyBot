@@ -1,12 +1,12 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........:
-; Description ...: This file contens the attack algorithm SCRIPTED
+; Description ...: This file contains the attack algorithm SCRIPTED
 ; Syntax ........:
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Sardo (2016)
-; Modified ......: CodeSlinger69 (01-2017)
-; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
+; Modified ......: CodeSlinger69 (01-2017) GrumpyHog (05-2022)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2022
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
@@ -37,20 +37,27 @@ Global $g_aiPixelBottomLeftDOWNDropLine
 Global $g_aiPixelBottomRightUPDropLine
 Global $g_aiPixelBottomRightDOWNDropLine
 
-Local $DeployableLRTB = [0, $g_iGAME_WIDTH - 1, 0, 626]
-Local $DiamandAdjX = -25
-Local $DiamandAdjY = -22
-; set the diamond shape based on reference village
-;Local $OuterDiamondLeft = 10 - $DiamandAdjX, $OuterDiamondRight = 855 + $DiamandAdjX, $OuterDiamondTop = 10 - $DiamandAdjY, $OuterDiamondBottom = 655 + $DiamandAdjY
- Local $OuterDiamondLeft = 10 - $DiamandAdjX, $OuterDiamondRight = 850 + $DiamandAdjX, $OuterDiamondTop = 15 - $DiamandAdjY, $OuterDiamondBottom = 650 + $DiamandAdjY
+Global $g_aiDeployableLRTB = [0, $g_iGAME_WIDTH - 1, 0, 626] ; used by another isInsideDiamondRedArea
 
-Local $DiamondMiddleX = ($OuterDiamondLeft + $OuterDiamondRight) / 2
-Local $DiamondMiddleY = ($OuterDiamondTop + $OuterDiamondBottom) / 2
-Local $InnerDiamandDiffX = 60 + $DiamandAdjX ; set the diamond shape based on reference village
-Local $InnerDiamandDiffY = 45 + $DiamandAdjY ; set the diamond shape based on reference village
-Local $InnerDiamondLeft = $OuterDiamondLeft + $InnerDiamandDiffX, $InnerDiamondRight = $OuterDiamondRight - $InnerDiamandDiffX, $InnerDiamondTop = $OuterDiamondTop + $InnerDiamandDiffY, $InnerDiamondBottom = $OuterDiamondBottom - $InnerDiamandDiffY
+Func ConvertInternalExternArea()
+	; set the diamond shape based on reference village
+	Local $InnerDiamondLeft = $g_afRefVillage[$g_iTree][1]
+	Local $InnerDiamondRight = $g_afRefVillage[$g_iTree][2]
+	Local $InnerDiamondTop = $g_afRefVillage[$g_iTree][3]
+	Local $InnerDiamondBottom = $g_afRefVillage[$g_iTree][4]
 
-Local $ExternalAreaRef[8][3] = [ _
+	Local $DiamandAdjX = 30
+	Local $DiamandAdjY = 30
+	
+	Local $OuterDiamondLeft =  $InnerDiamondLeft - $DiamandAdjX 
+	Local $OuterDiamondRight = $InnerDiamondRight + $DiamandAdjX 
+	Local $OuterDiamondTop =  $InnerDiamondTop - $DiamandAdjY
+	Local $OuterDiamondBottom = $InnerDiamondBottom + $DiamandAdjY
+
+	Local $DiamondMiddleX = ($OuterDiamondLeft + $OuterDiamondRight) / 2
+	Local $DiamondMiddleY = ($OuterDiamondTop + $OuterDiamondBottom) / 2
+
+	Local $ExternalAreaRef[8][3] = [ _
 		[$OuterDiamondLeft, $DiamondMiddleY, "LEFT"], _
 		[$OuterDiamondRight, $DiamondMiddleY, "RIGHT"], _
 		[$DiamondMiddleX, $OuterDiamondTop, "TOP"], _
@@ -61,7 +68,7 @@ Local $ExternalAreaRef[8][3] = [ _
 		[$DiamondMiddleX + ($OuterDiamondRight - $DiamondMiddleX) / 2, $DiamondMiddleY + ($OuterDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-RIGHT"] _
 		]
 
-Local $InternalAreaRef[8][3] = [ _
+	Local $InternalAreaRef[8][3] = [ _
 		[$InnerDiamondLeft, $DiamondMiddleY, "LEFT"], _
 		[$InnerDiamondRight, $DiamondMiddleY, "RIGHT"], _
 		[$DiamondMiddleX, $InnerDiamondTop, "TOP"], _
@@ -72,9 +79,6 @@ Local $InternalAreaRef[8][3] = [ _
 		[$DiamondMiddleX + ($InnerDiamondRight - $DiamondMiddleX) / 2, $DiamondMiddleY + ($InnerDiamondBottom - $DiamondMiddleY) / 2, "BOTTOM-RIGHT"] _
 		]
 
-ConvertInternalExternArea() ; initial layout so variables are not empty
-
-Func ConvertInternalExternArea()
 	Local $x, $y
 
 	; Update External coord.
@@ -127,8 +131,8 @@ Func ConvertInternalExternArea()
 EndFunc   ;==>ConvertInternalExternArea
 
 Func CheckAttackLocation(ByRef $iX, ByRef $iY)
-	If $iY > $DeployableLRTB[3] Then
-		$iY = $DeployableLRTB[3]
+	If $iY > $g_aiDeployableLRTB[3] Then
+		$iY = $g_aiDeployableLRTB[3]
 		Return False
 	EndIf
 
