@@ -28,11 +28,11 @@ Func FindExitButton($sButtonName)
 		$aPosXY = StringSplit(($result[0])[0], ",", $STR_NOCOUNT)
 		$aPosXY[0] += $aCoor[0]
 		$aPosXY[1] += $aCoor[1]
-		SetDebugLog("FindExitButton: " & $sButtonName & " Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("FindExitButton: " & $sButtonName & " Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
 		Return $aPosXY
 	EndIf
 
-	SetDebugLog("FindExitButton: " & $sButtonName & " NOT Found" , $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("FindExitButton: " & $sButtonName & " NOT Found" , $COLOR_DEBUG)
 	Return $aPosXY
 EndFunc   ;==>FindExitButton
 
@@ -48,11 +48,11 @@ Func FindAdsXButton()
 
 	If IsArray($result) then
 		$aPosXY = StringSplit(($result[0])[0], ",", $STR_NOCOUNT)
-		SetDebugLog("FindAdsXButton: " & $g_sAndroidGameDistributor & " AdsX Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("FindAdsXButton: " & $g_sAndroidGameDistributor & " AdsX Button X|Y = " & $aPosXY[0] & "|" & $aPosXY[1], $COLOR_DEBUG)
 		Return $aPosXY
 	EndIf
 
-	SetDebugLog("FindAdsXButton: " & $g_sAndroidGameDistributor & " NOT Found", $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("FindAdsXButton: " & $g_sAndroidGameDistributor & " NOT Found", $COLOR_DEBUG)
 	Return $aPosXY
 EndFunc   ;==>FindAdsXButton
 

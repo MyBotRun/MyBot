@@ -98,6 +98,7 @@ Func CreateBotAndroid()
 		$g_hChkUpdateSharedPrefs = GUICtrlCreateCheckbox(GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs", "Update shared_prefs"), $x + 227, $y, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("Android", "ChkUpdateSharedPrefs_Info", "Pull and push shared_prefs to reset zoom,\nset language to English, disable snow and rate popup."))
 			GUICtrlSetState(-1, (($g_bUpdateSharedPrefs) ? ($GUI_CHECKED) : ($GUI_UNCHECKED)))
+			GUICtrlSetState(-1, $GUI_DISABLE)
 
 	$y += 25
 		GUICtrlCreateLabel(GetTranslatedFileIni("Android", "LblAndroidRebootHours", "Reboot Android in") & ":", $x + 227, $y - 48, -1, -1)

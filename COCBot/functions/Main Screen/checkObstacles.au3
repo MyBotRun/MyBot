@@ -41,6 +41,8 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 
 	_CaptureRegions()
 
+	If _Sleep(50) Then Return False
+
 	If Not $bRecursive Then
 		If checkObstacles_Network() Then Return True
 		If checkObstacles_GfxError() Then Return True
@@ -232,7 +234,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 		PureClick(520, 475, 1, 0) ; Click No Thanks
 		$g_bMinorObstacle = True
-		
+
 		If _Sleep($DELAYCHECKOBSTACLES1) Then Return
 		Return False
 	EndIf
@@ -467,3 +469,178 @@ Func UpdateGame()
 		Return False
 	#ce Finish that when time permits ;)
 EndFunc   ;==>UpdateGame
+
+; Connection Lost, Another Device Connected, Anyone There
+Func ConnectionLost($bRecursive, $bDebugLog=False)
+	Local $sImgConnectionLost = @ScriptDir & "\imgxml\CheckObstacles\ConnectionLost*"
+	Local $sImgReloadBtn = @ScriptDir & "\imgxml\CheckObstacles\reloadbtn*"
+	Local $sImgDevice = @ScriptDir & "\imgxml\CheckObstacles\device*"
+
+	; Initial Timer
+	Local $hTimer = TimerInit()
+
+	SetDebugLog("Searching for ConnectionLost ...", $COLOR_DEBUG)
+
+	Local $aiConnectionLost = decodeSingleCoord(findImage("ConnectionLost", $sImgConnectionLost, GetDiamondFromRect("175,290,400,350"), 1, True))
+
+	If IsArray($aiConnectionLost) and UBound($aiConnectionLost, 1) = 2 Then
+
+		SetLog("Detected Connection Lost! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_DEBUG)
+
+		SaveDebugRectImage("ConnectionLost", "175,290,400,350")
+
+		SetLog("Searching for Another Device Connected ...", $COLOR_DEBUG)
+
+		; check for 'Another device'
+		Local $aiDevice = decodeSingleCoord(findImage("device", $sImgDevice, GetDiamondFromRect("230,330,360,360"), 1, True))
+
+		If IsArray($aiDevice) and UBound($aiDevice, 1) = 2 Then
+
+			SetLog("Detected Another Device Connected! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_DEBUG)
+
+			SaveDebugRectImage("AnotherDeviceConnected", "230,330,360,360")
+
+			If $g_iAnotherDeviceWaitTime > 3600 Then
+				SetLog("Another Device has connected, waiting " & Floor(Floor($g_iAnotherDeviceWaitTime / 60) / 60) & " hours " & Floor(Mod(Floor($g_iAnotherDeviceWaitTime / 60), 60)) & " minutes " & Floor(Mod($g_iAnotherDeviceWaitTime, 60)) & " seconds", $COLOR_ERROR)
+				PushMsg("AnotherDevice3600")
+			ElseIf $g_iAnotherDeviceWaitTime > 60 Then
+				SetLog("Another Device has connected, waiting " & Floor(Mod(Floor($g_iAnotherDeviceWaitTime / 60), 60)) & " minutes " & Floor(Mod($g_iAnotherDeviceWaitTime, 60)) & " seconds", $COLOR_ERROR)
+				PushMsg("AnotherDevice60")
+			Else
+				SetLog("Another Device has connected, waiting " & Floor(Mod($g_iAnotherDeviceWaitTime, 60)) & " seconds", $COLOR_ERROR)
+				PushMsg("AnotherDevice")
+			EndIf
+
+			If _SleepStatus($g_iAnotherDeviceWaitTime * 1000) Then Return ; Wait as long as user setting in GUI, default 120 seconds
+
+			SetLog("Searching for Reload \ Try Again Button ...", $COLOR_DEBUG)
+
+			; find reload / try again button
+			Local $aiReloadBtn = decodeSingleCoord(findImage("device", $sImgReloadBtn, GetDiamondFromRect("175,405,330,425"), 1, True))
+
+			If IsArray($aiReloadBtn) and UBound($aiReloadBtn, 1) = 2 Then
+
+				If _Sleep(100) Then Return
+
+				SetLog("Found reload button....")
+
+				PureClick($aiReloadBtn[0], $aiReloadBtn[1])
+			Else
+				SaveDebugRectImage("ConnectionLostReloadBtn", "175,405,330,425")
+
+				checkObstacles_ReloadCoC()
+			EndIf
+
+			If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
+
+			checkObstacles_ResetSearch()
+
+			Return True
+		Else
+			SetLog("Searching for Reload \ Try Again Button ...", $COLOR_DEBUG)
+
+			; find reload / try again button
+			Local $aiReloadBtn = decodeSingleCoord(findImage("device", $sImgReloadBtn, GetDiamondFromRect("175,405,330,425"), 1, True))
+
+			If IsArray($aiReloadBtn) and UBound($aiReloadBtn, 1) = 2 Then
+
+				If _Sleep(100) Then Return
+
+				SetLog("Found reload button....")
+
+				PureClick($aiReloadBtn[0], $aiReloadBtn[1])
+			Else
+				SaveDebugRectImage("ConnectionLostReloadBtn", "175,405,330,425")
+
+				checkObstacles_ReloadCoC()
+			EndIf
+
+			Return True
+		EndIf
+	EndIf
+
+	SetDebugLog("No Connection Lost Image found! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_DEBUG)
+
+	Return False
+EndFunc
+
+Func RateGame()
+	Local $sImgRateGame = @ScriptDir & "\imgxml\CheckObstacles\RateGame*"
+	Local $sImgNeverBtn = @ScriptDir & "\imgxml\CheckObstacles\NeverBtn*"
+
+	; Initial Timer
+	Local $hTimer = TimerInit()
+
+	SetLog("Searching for Rate Game ...", $COLOR_DEBUG)
+
+	Local $aiRateGame = decodeSingleCoord(findImage("RateGame", $sImgRateGame, GetDiamondFromRect("175,290,400,350"), 1, True))
+
+	If $g_bDebugImageSave Then SaveDebugRectImage("RateGame", "175,290,400,350")
+
+	SaveDebugRectImage("RateGame", "175,290,400,350")
+
+	If IsArray($aiRateGame) and UBound($aiRateGame, 1) = 2 Then
+
+		SetLog("Detected Rate Game! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_DEBUG)
+
+		If _Sleep(100) Then Return
+
+		SetLog("Searching for NEVER Button ...", $COLOR_DEBUG)
+
+		; find 'Never' button
+		Local $aiNeverBtn = decodeSingleCoord(findImage("NeverBtn", $sImgNeverBtn, GetDiamondFromRect("540,395,700,450"), 1, True))
+
+		SaveDebugRectImage("RateGameNeverBtn", "540,395,700,450")
+
+		If IsArray($aiNeverBtn) and UBound($aiNeverBtn, 1) = 2 Then
+
+			If _Sleep(100) Then Return
+
+			SetLog("Found NEVER button....", $COLOR_DEBUG)
+
+			PureClick($aiNeverBtn[0], $aiNeverBtn[1])
+
+			$g_bMinorObstacle = True
+
+			Return True
+		Else
+			SetLog("Failed to find the NEVER Button", $COLOR_DEBUG)
+
+			Return False
+		EndIf
+
+	EndIf
+
+	SetLog("No Rate Game found! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_DEBUG)
+
+	Return False
+EndFunc
+
+Func ClashOfMagicAdvert()
+	; Initial Timer
+	Local $hTimer = TimerInit()
+	Local $sImgClashOfMagicAdvert = @ScriptDir & "\imgxml\CheckObstacles\ClashOfMagicAdvert*"
+	Local $aiSearchFeature[4] = [820,10,850,35]
+
+	SetLog("Searching for Clash Of Magic Advert ...")
+
+	Local $aiClashOfMagicAdvert = decodeSingleCoord(findImage("ClashOfMagicAdvert", $sImgClashOfMagicAdvert, GetDiamondFromArray($aiSearchFeature), 1, True))
+
+	If $g_bDebugImageSave Then SaveDebugRectImage("ClashOfMagicAdvert", "820,10,850,35")
+
+	SaveDebugRectImage("ClashOfMagicAdvert", "820,10,850,35")
+
+	If IsArray($aiClashOfMagicAdvert) and UBound($aiClashOfMagicAdvert, 1) = 2 Then
+		SetLog("Detected Clash Of Magic Advert! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+
+		If _Sleep(500) Then Return
+
+		ClickP($aiClashOfMagicAdvert)
+
+		Return True
+	EndIf
+
+	SetLog("No Clash Of Magic Advert found! (in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds)", $COLOR_INFO)
+
+	Return False
+EndFunc

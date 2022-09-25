@@ -17,6 +17,10 @@
 Global $aiClickAwayRegionLeft = [235, 10, 245, 30]
 Global $aiClickAwayRegionRight = [625, 10, 635, 30]
 
+
+Global $aiClickAwayRegionLeft2 = [75, 88, 145, 98]
+Global $aiClickAwayRegionRight2 = [760, 176, 835, 185]
+
 Global $aCenterEnemyVillageClickDrag = [65, 545] ; Scroll village using this location in the water
 Global $aCenterHomeVillageClickDrag = [430, 650] ; Scroll village using this location in the water
 Global $aIsReloadError[4] = [457, 301 + $g_iMidOffsetY, 0x33B5E5, 10] ; Pixel Search Check point For All Reload Button errors, except break ending
@@ -112,6 +116,7 @@ Global $aWonThreeStarAtkRprt[4] = [534, 180 + $g_iMidOffsetY, 0xC8CAC7, 30] ; Ce
 
 Global $NextBtn[4] = [780, 546 + $g_iBottomOffsetY, 0xD34300, 20] ;  Next Button
 Global $a12OrMoreSlots[4] = [16, 648, 0x4583B9, 25] ; Attackbar Check if 12+ Slots exist
+Global $a12OrMoreSlots2[4] = [16, 648, 0x7E2327, 25] ; Attackbar Check if 12+ Slots exist SuperTroops
 Global $aDoubRowAttackBar[4] = [68, 486, 0xFC5D64, 20]
 Global $aTroopIsDeployed[4] = [0, 0, 0x404040, 20] ; Attackbar Remain Check X and Y are Dummies
 Global Const $aIsAttackPage[4] = [18, 548 + $g_iBottomOffsetY, 0xcf0d0e, 20] ; red button "end battle" - left portion

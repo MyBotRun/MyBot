@@ -90,6 +90,13 @@ Func SaveBuildingConfig()
 
 	_Ini_Add("upgrade", "StarLabPosX", $g_aiStarLaboratoryPos[0])
 	_Ini_Add("upgrade", "StarLabPosY", $g_aiStarLaboratoryPos[1])
+	
+	_Ini_Add("upgrade", "BattleMachinePosX", $g_aiBattleMachinePos[0])
+	_Ini_Add("upgrade", "BattleMachinePosY", $g_aiBattleMachinePos[1])
+
+	_Ini_Add("other", "BuilderHallPosX", $g_aiBuilderHallPos[0])
+	_Ini_Add("other", "BuilderHallPosY", $g_aiBuilderHallPos[1])
+	_Ini_Add("other", "LevelBuilderHall", $g_iBuilderHallLevel)
 
 	_Ini_Add("other", "xTownHall", $g_aiTownHallPos[0])
 	_Ini_Add("other", "yTownHall", $g_aiTownHallPos[1])
@@ -373,16 +380,29 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "ChkBBSuggestedUpgradesIgnoreWall", $g_iChkBBSuggestedUpgradesIgnoreWall)
 
 	_Ini_Add("other", "ChkPlacingNewBuildings", $g_iChkPlacingNewBuildings)
+	
+	_Ini_Add("other", "chkBattleMachineUpgrade", $g_bBattleMachineUpgrade)
 
 	_Ini_Add("other", "ChkClanGamesAir", $g_bChkClanGamesAir ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesGround", $g_bChkClanGamesGround ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesMisc", $g_bChkClanGamesMisc ? 1 : 0)
 
 	_Ini_Add("other", "ChkClanGamesEnabled", $g_bChkClanGamesEnabled ? 1 : 0)
+	
+	_Ini_Add("other", "ChkClanGamesNightVillage", $g_bChkClanGamesNightVillage ? 1 : 0)	
+	
 	_Ini_Add("other", "ChkClanGames60", $g_bChkClanGames60 ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesPurge", $g_bChkClanGamesPurge ? 1 : 0)
+	
+	_Ini_Add("other", "ChkClanGamesPurgeHome", $g_bChkClanGamesPurgeHome ? 1 : 0)
+	_Ini_Add("other", "ChkClanGamesPurgeNight", $g_bChkClanGamesPurgeNight ? 1 : 0)
+	
+	
 	_Ini_Add("other", "ChkClanGamesStopBeforeReachAndPurge", $g_bChkClanGamesStopBeforeReachAndPurge ? 1 : 0)
+
+	_Ini_Add("other", "ChkClanGamesCollectRewards", $g_bChkClanGamesCollectRewards ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesDebug", $g_bChkClanGamesDebug ? 1 : 0)
+	_Ini_Add("other", "ChkClanGamesDebugImages", $g_bChkClanGamesDebugImages ? 1 : 0)
 
 	_Ini_Add("other", "ChkClanGamesLoot", $g_bChkClanGamesLoot ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesBattle", $g_bChkClanGamesBattle ? 1 : 0)
@@ -397,12 +417,19 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "ChkClanGamesMiscellaneous", $g_bChkClanGamesMiscellaneous ? 1 : 0)
 	_Ini_Add("other", "PurgeMax", $g_iPurgeMax)
 
+	; Active Clan Game Challenges
+	_Ini_Add("other", "ActiveEventName", $g_sActiveEventName)
+
 	; Builder Base Attack
 	_Ini_Add("other", "ChkEnableBBAttack", $g_bChkEnableBBAttack)
 	_Ini_Add("other", "ChkBBTrophyRange", $g_bChkBBTrophyRange)
 	_Ini_Add("other", "TxtBBTrophyLowerLimit", $g_iTxtBBTrophyLowerLimit)
 	_Ini_Add("other", "TxtBBTrophyUpperLimit", $g_iTxtBBTrophyUpperLimit)
 	_Ini_Add("other", "ChkBBAttIfLootAvail", $g_bChkBBAttIfLootAvail)
+	
+	_Ini_Add("other", "ChkBBHaltOnGoldFull", $g_bChkBBHaltOnGoldFull)
+	_Ini_Add("other", "ChkBBHaltOnElixirFull", $g_bChkBBHaltOnElixirFull)
+	
 	_Ini_Add("other", "ChkBBWaitForMachine", $g_bChkBBWaitForMachine)
 	_Ini_Add("other", "ChkBBDropBMFirst", $g_bChkBBDropBMFirst)
 	_Ini_Add("other", "iBBNextTroopDelay", $g_iBBNextTroopDelay)
@@ -422,6 +449,8 @@ Func SaveConfig_600_6()
 	_Ini_Add("ClanCapital", "ForgeUseBuilder", $g_iCmbForgeBuilder)
 	_Ini_Add("ClanCapital", "AutoUpgradeCC", $g_bChkEnableAutoUpgradeCC)
 	_Ini_Add("ClanCapital", "ChkAutoUpgradeCCIgnore", $g_bChkAutoUpgradeCCIgnore)
+	_Ini_Add("ClanCapital", "ChkAutoUpgradeCCWallIgnore", $g_bChkAutoUpgradeCCWallIgnore)
+	_Ini_Add("ClanCapital", "ChkAutoUpgradeCCPriorArmy", $g_bChkAutoUpgradeCCPriorArmy)
 
 EndFunc   ;==>SaveConfig_600_6
 
@@ -1145,16 +1174,16 @@ Func SaveConfig_600_52_2()
 	ApplyConfig_600_52_2(GetApplyConfigSaveAction())
 	For $t = 0 To $eTroopCount - 1
 		_Ini_Add("troop", $g_asTroopShortNames[$t], $g_aiArmyCustomTroops[$t])
-		_Ini_Add("LevelTroop", $g_asTroopShortNames[$t], $g_aiTrainArmyTroopLevel[$t])
+		;_Ini_Add("LevelTroop", $g_asTroopShortNames[$t], $g_aiTrainArmyTroopLevel[$t])
 	Next
 
 	For $s = 0 To $eSpellCount - 1
 		_Ini_Add("Spells", $g_asSpellShortNames[$s], $g_aiArmyCustomSpells[$s])
-		_Ini_Add("LevelSpell", $g_asSpellShortNames[$s], $g_aiTrainArmySpellLevel[$s])
+		;_Ini_Add("LevelSpell", $g_asSpellShortNames[$s], $g_aiTrainArmySpellLevel[$s])
 	Next
 	For $s = 0 To $eSiegeMachineCount - 1
-		_Ini_Add("Siege", $g_asSiegeMachineShortNames[$s], $g_aiArmyCompSiegeMachines[$s])
-		_Ini_Add("LevelSiege", $g_asSiegeMachineShortNames[$s], $g_aiTrainArmySiegeMachineLevel[$s])
+		_Ini_Add("Siege", $g_asSiegeMachineShortNames[$s], $g_aiArmyCustomSiegeMachines[$s])
+		;_Ini_Add("LevelSiege", $g_asSiegeMachineShortNames[$s], $g_aiTrainArmySiegeMachineLevel[$s])
 	Next
 	; full & forced Total Camp values
 	_Ini_Add("troop", "fulltroop", $g_iTrainArmyFullTroopPct)

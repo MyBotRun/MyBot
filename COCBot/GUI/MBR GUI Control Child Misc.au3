@@ -653,10 +653,10 @@ EndFunc   ;==>chkStartClockTowerBoost
 
 Func chkActivateClangames()
 	If GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hChkClanGames60, $GUI_ENABLE)
-		GUICtrlSetState($g_hChkClanGamesAir, $GUI_ENABLE)
-		GUICtrlSetState($g_hChkClanGamesGround, $GUI_ENABLE)
-		GUICtrlSetState($g_hChkClanGamesMisc, $GUI_ENABLE)
+		;GUICtrlSetState($g_hChkClanGames60, $GUI_ENABLE)
+		;GUICtrlSetState($g_hChkClanGamesAir, $GUI_ENABLE)
+		;GUICtrlSetState($g_hChkClanGamesGround, $GUI_ENABLE)
+		;GUICtrlSetState($g_hChkClanGamesMisc, $GUI_ENABLE)
 
 		;V3
 		GUICtrlSetState($g_hChkClanGamesLoot, $GUI_ENABLE)
@@ -669,19 +669,16 @@ Func chkActivateClangames()
 		GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_ENABLE)
 
-		GUICtrlSetState($g_hChkClanGamesPurge, $GUI_ENABLE)
-		If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED Then GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
-		GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
-		GUICtrlSetState($g_hChkClanGamesDebug, $GUI_ENABLE)
-		If GUICtrlRead($g_hChkClanGamesPurge) <> $GUI_CHECKED Then
-			GUICtrlSetState($g_hChkClanGamesBBBattle, $GUI_ENABLE)
-			GUICtrlSetState($g_hChkClanGamesBBDestruction, $GUI_ENABLE)
-		EndIf
+		GUICtrlSetState($g_hChkClanGamesPurgeHome, $GUI_ENABLE)
+		;If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED Then GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
+		;GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_ENABLE)
+		;GUICtrlSetState($g_hChkClanGamesDebug, $GUI_ENABLE)
+		;GUICtrlSetState($g_hChkClanGamesDebugImages, $GUI_ENABLE)
 	Else
-		GUICtrlSetState($g_hChkClanGames60, $GUI_DISABLE)
-		GUICtrlSetState($g_hChkClanGamesAir, $GUI_DISABLE)
-		GUICtrlSetState($g_hChkClanGamesGround, $GUI_DISABLE)
-		GUICtrlSetState($g_hChkClanGamesMisc, $GUI_DISABLE)
+		;GUICtrlSetState($g_hChkClanGames60, $GUI_DISABLE)
+		;GUICtrlSetState($g_hChkClanGamesAir, $GUI_DISABLE)
+		;GUICtrlSetState($g_hChkClanGamesGround, $GUI_DISABLE)
+		;GUICtrlSetState($g_hChkClanGamesMisc, $GUI_DISABLE)
 
 		;V3
 		GUICtrlSetState($g_hChkClanGamesLoot, $GUI_DISABLE)
@@ -693,45 +690,56 @@ Func chkActivateClangames()
 		GUICtrlSetState($g_hChkClanGamesAirTroop, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesGroundTroop, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkClanGamesMiscellaneous, $GUI_DISABLE)
-		GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
-		GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_DISABLE)
+		;GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
+		;GUICtrlSetState($g_hChkClanGamesStopBeforeReachAndPurge, $GUI_DISABLE)
 
-		GUICtrlSetState($g_hChkClanGamesPurge, $GUI_DISABLE)
-		GUICtrlSetState($g_hChkClanGamesDebug, $GUI_DISABLE)
-
-		GUICtrlSetState($g_hChkClanGamesBBBattle, $GUI_DISABLE)
-		GUICtrlSetState($g_hChkClanGamesBBDestruction, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkClanGamesPurgeHome, $GUI_DISABLE)
+		;GUICtrlSetState($g_hChkClanGamesDebug, $GUI_DISABLE)
+		;GUICtrlSetState($g_hChkClanGamesDebugImages, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkActivateClangames
 
-; Purging doesnt exist if we want BB challneges, because they are all attack basically... This avoids potential conflicts in code and logic if both are selected
-Func chkClanGamesBB()
-	If GUICtrlRead($g_hChkClanGamesBBBattle) = $GUI_CHECKED Or GUICtrlRead($g_hChkClanGamesBBDestruction) = $GUI_CHECKED Then
-		GUICtrlSetState($g_hChkClanGamesPurge, $GUI_DISABLE)
+Func chkActivateClangamesNightVillage()
+	If GUICtrlRead($g_hChkClanGamesNightVillage) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hChkClanGamesPurgeNight, $GUI_ENABLE)
 	Else
-		GUICtrlSetState($g_hChkClanGamesPurge, $GUI_ENABLE)
+
+		GUICtrlSetState($g_hChkClanGamesPurgeNight, $GUI_DISABLE)
 	EndIf
-EndFunc   ;==>chkClanGamesBB
+EndFunc   ;==>chkActivateClangamesNightVillage
+
+
+
+; Purging doesnt exist if we want BB challneges, because they are all attack basically... This avoids potential conflicts in code and logic if both are selected
+func chkClanGamesBB()
+    If GUICtrlRead($g_hChkClanGamesBBBattle) = $GUI_CHECKED or GUICtrlRead($g_hChkClanGamesBBDestruction) = $GUI_CHECKED Then
+        GUICtrlSetState($g_hChkClanGamesPurge, $GUI_DISABLE)
+    else
+        GUICtrlSetState($g_hChkClanGamesPurge, $GUI_ENABLE)
+    EndIf
+EndFunc
 
 Func chkPurgeLimits()
-	If GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
-		If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED Then
-			GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
-			GUICtrlSetState($g_hChkClanGamesBBBattle, $GUI_DISABLE) ; same as above, by purging, it is the same as doing BB challenges really. (unless gemming to completion) So this avoids potential code and logic conflicts again
-			GUICtrlSetState($g_hChkClanGamesBBDestruction, $GUI_DISABLE)
-		Else
-			GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
-			GUICtrlSetState($g_hChkClanGamesBBBattle, $GUI_ENABLE) ; same as above, by purging, it is the same as doing BB challenges really. (unless gemming to completion) So this avoids potential code and logic conflicts again
-			GUICtrlSetState($g_hChkClanGamesBBDestruction, $GUI_ENABLE)
-		EndIf
+	If GUICtrlRead($g_hChkClanGamesPurge) = $GUI_CHECKED AND _
+	   GUICtrlRead($g_hChkClanGamesEnabled) = $GUI_CHECKED Then
+		GUICtrlSetState($g_hcmbPurgeLimit, $GUI_ENABLE)
+        GUICtrlSetState($g_hChkClanGamesBBBattle, $GUI_DISABLE) ; same as above, by purging, it is the same as doing BB challenges really. (unless gemming to completion) So this avoids potential code and logic conflicts again
+        GUICtrlSetState($g_hChkClanGamesBBDestruction, $GUI_DISABLE)
+	Else
+		GUICtrlSetState($g_hcmbPurgeLimit, $GUI_DISABLE)
+        GUICtrlSetState($g_hChkClanGamesBBBattle, $GUI_ENABLE) ; same as above, by purging, it is the same as doing BB challenges really. (unless gemming to completion) So this avoids potential code and logic conflicts again
+        GUICtrlSetState($g_hChkClanGamesBBDestruction, $GUI_ENABLE)
 	EndIf
-EndFunc   ;==>chkPurgeLimits
-
+EndFunc
 
 Func chkEnableBBAttack()
 	If GUICtrlRead($g_hChkEnableBBAttack) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hChkBBTrophyRange, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBAttIfLootAvail, $GUI_ENABLE)
+		
+		GUICtrlSetState($g_hChkBBHaltOnGoldFull, $GUI_ENABLE)
+		GUICtrlSetState($g_hChkBBHaltOnElixirFull, $GUI_ENABLE)
+		
 		GUICtrlSetState($g_hChkBBWaitForMachine, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBDropBMFirst, $GUI_ENABLE)
 		GUICtrlSetState($g_hBtnBBDropOrder, $GUI_ENABLE)
@@ -741,6 +749,10 @@ Func chkEnableBBAttack()
 	Else
 		GUICtrlSetState($g_hChkBBTrophyRange, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkBBAttIfLootAvail, $GUI_DISABLE)
+		
+		GUICtrlSetState($g_hChkBBHaltOnGoldFull, $GUI_DISABLE)
+		GUICtrlSetState($g_hChkBBHaltOnElixirFull, $GUI_DISABLE)
+		
 		GUICtrlSetState($g_hTxtBBTrophyLowerLimit, $GUI_DISABLE)
 		GUICtrlSetState($g_hTxtBBTrophyUpperLimit, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkBBWaitForMachine, $GUI_DISABLE)
@@ -749,7 +761,7 @@ Func chkEnableBBAttack()
 		GUICtrlSetState($g_hCmbBBSameTroopDelay, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbBBNextTroopDelay, $GUI_DISABLE)
 	EndIf
-EndFunc   ;==>chkEnableBBAttack
+EndFunc
 
 Func cmbBBNextTroopDelay()
 	$g_iBBNextTroopDelay = $g_iBBNextTroopDelayDefault + ((_GUICtrlComboBox_GetCurSel($g_hCmbBBNextTroopDelay) + 1) - 5) * $g_iBBNextTroopDelayIncrement ; +- n*increment
@@ -859,3 +871,17 @@ Func CloseCustomBBDropOrder()
 	GUICtrlSetState($g_hBtnBBDropOrder, $GUI_ENABLE)
 	GUICtrlSetState($g_hChkEnableBBAttack, $GUI_ENABLE)
 EndFunc   ;==>CloseCustomBBDropOrder
+
+Func EnableAutoUpgradeCC()
+	If GUICtrlRead($g_hChkEnableAutoUpgradeCC) = $GUI_CHECKED Then
+		$g_bChkEnableAutoUpgradeCC = True
+		For $i = $g_hChkAutoUpgradeCCPriorArmy To $g_hChkAutoUpgradeCCWallIgnore
+			GUICtrlSetState($i, $GUI_ENABLE)
+		Next
+	Else
+		$g_bChkEnableAutoUpgradeCC = False
+		For $i = $g_hChkAutoUpgradeCCPriorArmy To $g_hChkAutoUpgradeCCWallIgnore
+			GUICtrlSetState($i, $GUI_DISABLE)
+		Next
+	EndIf
+EndFunc

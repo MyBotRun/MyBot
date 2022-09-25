@@ -25,7 +25,7 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 	Local $xdirectorySnowa = @ScriptDir & "\imgxml\Buildings\snow-Townhall"
 	Local $xdirectorySnowb = @ScriptDir & "\imgxml\Buildings\snow-Townhall2"
 	Local $xdirectory, $xdirectorySnow
-	Local $sCocDiamond = "ECD"
+	Local $sCocDiamond = $CocDiamondECD
 	Local $redLines = ""
 	Local $minLevel = 6 ; We only support TH6+
 	Local $maxLevel = 100
@@ -35,9 +35,9 @@ Func imglocTHSearch($bReTest = False, $myVillage = False, $bForceCapture = True)
 
 	If $myVillage = False Then ; these are only for OPONENT village
 		ResetTHsearch() ;see below
-		$redLines = "ECD" ;quick fix for bad redline data
+		$redLines = $CocDiamondECD ;quick fix for bad redline data
 	Else
-		$redLines = "ECD" ;needed for searching your own village
+		$redLines = $CocDiamondECD ;needed for searching your own village
 	EndIf
 
 	;aux data

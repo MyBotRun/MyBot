@@ -27,11 +27,11 @@ Func TrainSiege($bTrainFullSiege = False)
 
 	Local $aCheckIsOccupied[4] = [822, 206, 0xE00D0D, 10]
 	Local $aCheckIsFilled[4] = [802, 186, 0xD7AFA9, 10]
-	Local $aCheckIsAvailableSiege[4] = [58, 556, 0x47717E, 10] 
+	Local $aCheckIsAvailableSiege[4] = [58, 556, 0x47717E, 10]
 	Local $aCheckIsAvailableSiege1[4] = [229, 556, 0x47717E, 10]
 	Local $aCheckIsAvailableSiege2[4] = [400, 556, 0x47717E, 10]
 	Local $aCheckIsAvailableSiege3[4] = [576, 556, 0x47717E, 10]
-	Local $aCheckIsAvailableSiege4[4] = [750, 556, 0x47717E, 10] 
+	Local $aCheckIsAvailableSiege4[4] = [750, 556, 0x47717E, 10]
 	;Sale pixel values
 	Local $aCheckIsAvailableSiege5[5] = [58, 556, 0x64BA29, 10] ;There are blue when on "sale"
 	Local $aCheckIsAvailableSiege6[6] = [229, 556, 0x64BA29, 10]
@@ -75,7 +75,7 @@ Func TrainSiege($bTrainFullSiege = False)
 		Local $HowMany = $g_aiArmyCompSiegeMachines[$i] - $g_aiCurrentSiegeMachines[$i] - $aiQueueSiegeMachine[$i]
 		Local $checkPixel
 		SetDebugLog("HArchH: $HowMany = " & $HowMany, $COLOR_DEBUG)
-		If $HowMany > 0 And $iSiegeIndex = $eSiegeFlameFlinger Then 
+		If $HowMany > 0 And $iSiegeIndex = $eSiegeFlameFlinger Then
 			DragSiege("Next", 1)
 		EndIf
 		;Regular price pixel colors
@@ -99,7 +99,7 @@ Func TrainSiege($bTrainFullSiege = False)
 			$aiTotalSiegeMachine[$i] += $HowMany
 			If _Sleep(250) Then Return
 		EndIf
-		If $HowMany > 0 And $iSiegeIndex = $eSiegeFlameFlinger Then 
+		If $HowMany > 0 And $iSiegeIndex = $eSiegeFlameFlinger Then
 			DragSiege("Prev", 1)
 		EndIf
 		If Not $g_bRunState Then Return
@@ -115,7 +115,7 @@ Func TrainSiege($bTrainFullSiege = False)
 			SetDebugLog("HArchH: Refill2", $COLOR_DEBUG)
 			Local $HowMany = $g_aiArmyCompSiegeMachines[$i] * 2 - $aiTotalSiegeMachine[$i]
 			Local $checkPixel
-			If $HowMany > 0 And $iSiegeIndex = $eSiegeFlameFlinger Then 
+			If $HowMany > 0 And $iSiegeIndex = $eSiegeFlameFlinger Then
 				DragSiege("Next", 1)
 			EndIf
 			;Regular price pixel colors
@@ -137,7 +137,7 @@ Func TrainSiege($bTrainFullSiege = False)
 				Setlog("Build " & $HowMany & " " & $sSiegeName, $COLOR_SUCCESS)
 				If _Sleep(250) Then Return
 			EndIf
-			If $HowMany > 0 And $iSiegeIndex = $eSiegeFlameFlinger Then 
+			If $HowMany > 0 And $iSiegeIndex = $eSiegeFlameFlinger Then
 				DragSiege("Prev", 1)
 			EndIf
 			If Not $g_bRunState Then Return
@@ -146,7 +146,7 @@ Func TrainSiege($bTrainFullSiege = False)
 	If _Sleep(500) Then Return
 
 	; OCR to get remain time - coc-siegeremain
-	Local $sSiegeTime = getRemainBuildTimer(780, 244) ; Get time via OCR.
+	Local $sSiegeTime = getRemainTrainTimer(742, 159) ; Get time via OCR.
 	If $sSiegeTime <> "" Then
 		$g_aiTimeTrain[3] = ConvertOCRTime("Siege", $sSiegeTime, False) ; Update global array
 		SetLog("Remaining Siege build time: " & StringFormat("%.2f", $g_aiTimeTrain[3]), $COLOR_INFO)

@@ -170,8 +170,10 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 	If _Sleep(2000) Then Return
 
 	If Not(SetLabUpgradeTime($name)) Then
-		ClickAway()
-		Return False ; couldnt set time to upgrade started
+		;Not a fatal error.
+		SetDebugLog("Couldn't read upgrade time.  Continue anyway.", $COLOR_ERROR)
+		;ClickAway()
+		;Return False ; couldnt set time to upgrade started
 	EndIf
 	If _Sleep($DELAYLABUPGRADE1) Then Return
 

@@ -15,8 +15,11 @@
 Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 	Local Static $aAttackBar[0][8]
 	Local Static $bDoubleRow = False, $bCheckSlot12 = False
-	Local $sSearchDiamond = GetDiamondFromRect("0,635,835,698")
+	;Local $sSearchDiamond = GetDiamondFromRect("0,635,835,698")
+	Local $sSearchDiamond = GetDiamondFromRect("0,635,858,698")
 	Local $iYBelowRowOne = 630, $aiOCRLocation[2] = [-1, -1], $aSlotAmountX[0][3]
+	Local $g_bCheckExtAttackBar = True
+
 
 	If $g_bDraggedAttackBar Then DragAttackBar($g_iTotalAttackSlot, True)
 
@@ -34,9 +37,12 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 		If _CheckPixel($aDoubRowAttackBar, True) Then
 			$bDoubleRow = True
 			$sSearchDiamond = GetDiamondFromRect("0,535,835,698")
-		ElseIf _CheckPixel($a12OrMoreSlots, True) Then
+		ElseIf _CheckPixel($a12OrMoreSlots, True) And $g_bCheckExtAttackBar Then
 			$bCheckSlot12 = True
-			SetDeBugLog("Found 12th slot for Normal Troops")
+			SetLog("Found 12th slot for Normal Troops")
+		ElseIf _CheckPixel($a12OrMoreSlots2, True) And $g_bCheckExtAttackBar Then
+			$bCheckSlot12 = True
+			SetLog("Found 12th slot for Super Troops")
 		EndIf
 		SetDebugLog("GetBarCheck: DoubleRow= " & $bDoubleRow)
 	EndIf
@@ -90,6 +96,8 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 
 	EndIf
 
+	DebugAttackBarImage($aAttackBar)
+
 	#comments-start
 		$aAttackBar[n][8]
 		[n][0] = Name of the found Troop/Spell/Hero/Siege
@@ -137,7 +145,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 
 			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)", 0) Then
 				If Not $bRemoved Then $aAttackBar[$i][4] = 1
-				If ($pMatchMode = $DB Or $pMatchMode = $LB) And StringRegExp($aAttackBar[$i][0], "(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)", 0) And $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] > 0 And $g_aiAttackUseSiege[$pMatchMode] <= 6 Then
+				If ($pMatchMode = $DB Or $pMatchMode = $LB) And StringRegExp($aAttackBar[$i][0], "(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)", 0) And $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] > 0 And $g_aiAttackUseSiege[$pMatchMode] <= 7 Then
 					$g_iSiegeLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 30, 704))
 					If $g_iSiegeLevel = "" Then $g_iSiegeLevel = 1
 					SetDebugLog($aAttackBar[$i][0] & " level: " & $g_iSiegeLevel)
@@ -147,14 +155,18 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 					$aAttackBar[$i][4] = Number(getTroopCountSmall(Number($aAttackBar[$i][5]), Number($aAttackBar[$i][6])))
 					If $aAttackBar[$i][4] = 0 Then $aAttackBar[$i][4] = Number(getTroopCountBig(Number($aAttackBar[$i][5]), Number($aAttackBar[$i][6] - 2)))
 				EndIf
-				If StringRegExp($aAttackBar[$i][0], "(LSpell)", 0) And $g_bSmartZapEnable Then
-					Local $iLSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 20, 704))
-					SetDebugLog("$iLSpellLevel:" & $iLSpellLevel)
-					If $iLSpellLevel > 0 And $iLSpellLevel <= 9 Then $g_iLSpellLevel = $iLSpellLevel
-				ElseIf StringRegExp($aAttackBar[$i][0], "(ESpell)", 0) And $g_bEarthQuakeZap Then
-					Local $iESpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 20, 704))
-					SetDebugLog("$iESpellLevel:" & $iESpellLevel)
-					If $iESpellLevel > 0 And $iESpellLevel <= 5 Then $g_iESpellLevel = $iESpellLevel
+				If StringRegExp($aAttackBar[$i][0], "(LSpell)|(ESpell)", 0) And $g_bSmartZapEnable Then
+					If StringInStr($aAttackBar[$i][0], "LSpell") <> 0 Then
+						Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 18, 702)) ; use image location as 'x' changes with quantity
+						If $iSpellLevel > 0 Then $g_iLSpellLevel = $iSpellLevel
+						SetLog("Lightning Spell Level : " & $iSpellLevel, $COLOR_INFO)
+					EndIf
+
+					If StringInStr($aAttackBar[$i][0], "ESpell") <> 0 Then
+						Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 25, 702)) ; use image location as 'x' changes with quantity
+						If $iSpellLevel > 0 Then $g_iESpellLevel = $iSpellLevel
+						SetLog("Earth Quake Spell Level : " & $iSpellLevel, $COLOR_INFO)
+					EndIf
 				EndIf
 			EndIf
 			; 0: Index, 1: Slot, 2: Amount, 3: X-Coord, 4: Y-Coord, 5: OCR X-Coord, 6: OCR Y-Coord
@@ -163,10 +175,15 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 		EndIf
 	Next
 
+	DebugAB($aFinalAttackBar, "Initial")
+
 	; Drag left & checking extended troops from Slot11+ ONLY if not a smart attack
 	If ($pMatchMode <= $LB And $bCheckSlot12 And Not $bDoubleRow And UBound($aAttackBar) > 1 And $g_aiAttackAlgorithm[$pMatchMode] <> 2) Or ($bDebug And $bCheckSlot12) Then
 		DragAttackBar()
 		Local $aExtendedArray = ExtendedAttackBarCheck($aAttackBar, $bRemaining, $sSearchDiamond)
+
+		DebugAB($aExtendedArray, "Extended Return")
+
 		_ArrayAdd($aFinalAttackBar, $aExtendedArray)
 		If Not $bRemaining Then
 			$g_iTotalAttackSlot = UBound($aFinalAttackBar, 1) - 1
@@ -175,11 +192,15 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 	EndIf
 
 	_ArraySort($aFinalAttackBar, 0, 0, 0, 1) ; Sort Final Array by Slot Number
+
+	DebugAB($aFinalAttackBar, "Final")
+
 	Return $aFinalAttackBar
 
 EndFunc   ;==>GetBarCheck
 
 Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond)
+	;DebugAB($aAttackBarFirstSearch, "ExtendedAttackBarCheck")
 
 	Local Static $aAttackBar[0][8]
 	Local $iLastSlotNumber = _ArrayMax($aAttackBarFirstSearch, 0, -1, -1, 3)
@@ -256,9 +277,23 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 
 	If Not $bRemaining Then
 		$aiOCRY = GetOCRYLocation($aSlotAmountX)
-		Local $iLastTroopIndex = _ArraySearch($aAttackBar, $sLastTroopName, 0, 0, 0, 0, 1, 0) + 1
+		; locate the last troop from the first AB on the extended AB
+
+		Local $iSlot = _ArrayUnique($aAttackBarFirstSearch)
+
+		;_ArrayDisplay($iSlot)
+
+		;SetLog("number of unique troops: " & $iSlot[0])
+
+		If $iSlot[0] < 11 Then
+			Local $iLastTroopIndex = _ArraySearch($aAttackBar, $sLastTroopName, 0, 0, 0, 0, 0, 0) + 1 ; works with 3 troops 4 heroes 2 spells (1 is rage) cc rage and 1 more
+		Else
+			Local $iLastTroopIndex = _ArraySearch($aAttackBar, $sLastTroopName, 0, 0, 0, 0, 1, 0) + 1
+		EndIf
+
 		$aAttackBar = _ArrayExtract($aAttackBar, $iLastTroopIndex)
 		$aSlotAmountX = _ArrayExtract($aSlotAmountX, $iLastTroopIndex)
+
 	EndIf
 
 	For $i = 0 To UBound($aAttackBar, 1) - 1
@@ -296,14 +331,18 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 					$aAttackBar[$i][4] = Number(getTroopCountSmall(Number($aAttackBar[$i][5]), Number($aAttackBar[$i][6])))
 					If $aAttackBar[$i][4] = 0 Then $aAttackBar[$i][4] = Number(getTroopCountBig(Number($aAttackBar[$i][5]), Number($aAttackBar[$i][6] - 2)))
 				EndIf
-				If StringRegExp($aAttackBar[$i][0], "(LSpell)", 0) And $g_bSmartZapEnable Then
-					Local $iLSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 20, 704))
-					SetDebugLog("$iLSpellLevel:" & $iLSpellLevel)
-					If $iLSpellLevel > 0 And $iLSpellLevel <= 9 Then $g_iLSpellLevel = $iLSpellLevel
-				ElseIf StringRegExp($aAttackBar[$i][0], "(ESpell)", 0) And $g_bEarthQuakeZap Then
-					Local $iESpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 20, 704))
-					SetDebugLog("$iESpellLevel:" & $iESpellLevel)
-					If $iESpellLevel > 0 And $iESpellLevel <= 5 Then $g_iESpellLevel = $iESpellLevel
+				If StringRegExp($aAttackBar[$i][0], "(LSpell)|(ESpell)", 0) And $g_bSmartZapEnable Then
+					If StringInStr($aAttackBar[$i][0], "LSpell") <> 0 Then
+						Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 18, 702)) ; use image location as 'x' changes with quantity
+						If $iSpellLevel > 0 Then $g_iLSpellLevel = $iSpellLevel
+						SetLog("Lightning Spell Level : " & $iSpellLevel, $COLOR_INFO)
+					EndIf
+
+					If StringInStr($aAttackBar[$i][0], "ESpell") <> 0 Then
+						Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 25, 702)) ; use image location as 'x' changes with quantity
+						If $iSpellLevel > 0 Then $g_iESpellLevel = $iSpellLevel
+						SetLog("Earth Quake Spell Level : " & $iSpellLevel, $COLOR_INFO)
+					EndIf
 				EndIf
 			EndIf
 			; 0: Index, 1: Slot, 2: Amount, 3: X-Coord, 4: Y-Coord, 5: OCR X-Coord, 6: OCR Y-Coord
@@ -424,6 +463,15 @@ Func DebugAttackBarImage($aAttackBarResult)
 		_GDIPlus_GraphicsDispose($hGraphic)
 		_GDIPlus_BitmapDispose($hEditedImage)
 		EndIf
-
-	#comments-end
+		#comments-end
 EndFunc   ;==>DebugAttackBarImage
+
+Func DebugAB($aAttackBar, $sText="")
+	For $i = 0 To UBound($aAttackBar, 1) - 1
+		If IsInt($aAttackBar[$i][0]) Then
+			SetLog("AttackBarCheck(): Slot(" & $aAttackBar[$i][3] & ")-"& $sText & " Troop " & GetTroopName($aAttackBar[$i][0]))
+		Else
+			SetLog("AttackBarCheck(): Slot(" & $aAttackBar[$i][3] & ")-"& $sText & " Troop " & $aAttackBar[$i][0])
+		EndIf
+	Next
+EndFunc

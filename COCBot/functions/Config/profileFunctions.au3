@@ -176,7 +176,7 @@ Func setupProfile($sProfile = Default)
 	; Create the profile if needed, this also sets the variables if the profile exists.
 	createProfile()
 	; Set the profile name on the village info group.
-	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
+	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName )
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
 
 	Return FuncReturn(True)
@@ -216,7 +216,7 @@ Func selectProfile($sProfile = Default)
 	EndIf
 
 	; Set the profile name on the village info group.
-	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & ": " & $g_sProfileCurrentName)
+	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName )
 	GUICtrlSetData($g_hTxtNotifyOrigin, $g_sProfileCurrentName)
 	Return FuncReturn(True)
 EndFunc   ;==>selectProfile

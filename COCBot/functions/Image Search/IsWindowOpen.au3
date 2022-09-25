@@ -33,6 +33,7 @@ Func IsWindowOpen($sImagePath, $iLoopCount = 1, $iDelay = 200, $sSearchArea = "F
 				$g_avWindowCoordinates = $aWindow
 				Return True
 			EndIf
+			SetLog("Failed to locate :" & $sImagePath);
 			If _Sleep($iDelay) Then Return False
 		Next
 	EndIf

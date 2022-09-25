@@ -520,12 +520,60 @@ Func AttackNow()
 	$g_aiCurrentSiegeMachines[$eSiegeStoneSlammer] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeBarracks] = 1
 	$g_aiCurrentSiegeMachines[$eSiegeLogLauncher] = 1
+	$g_aiCurrentSiegeMachines[$eSiegeFlameFlinger] = 1
 	$g_aiAttackAlgorithm[$LB] = 1										; Select Scripted Attack
 	$g_sAttackScrScriptName[$LB] = GuiCtrlRead($g_hCmbScriptNameAB)		; Select Scripted Attack File From The Combo Box, Cos it wasn't refreshing until pressing Start button
 	$g_iMatchMode = $LB													; Select Live Base As Attack Type
 	$g_bRunState = True
+
+	_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+	; cleanup some vars used by imgloc just in case. usend in TH and DeadBase ( imgloc functions)
+	ResetTHsearch()
+
+	_ObjDeleteKey($g_oBldgAttackInfo, "") ; Remove all keys from building dictionary
+
+	; reset village measures
+	setVillageOffset(0, 0, 1)
+	ConvertInternalExternArea()
+
+	; only one capture here, very important for consistent debug images, zombies, redline calc etc.
+	ForceCaptureRegion()
+	_CaptureRegion2()
+
+	If Not CheckZoomOut("AttackNow", True, False) Then SaveDebugImage("VillageSearchMeasureFailed", False)
+
 	PrepareAttack($g_iMatchMode)										;
-		Attack()			; Fire xD
+
+	If _Sleep(1000) Then Return
+
+	Attack()			; Fire xD
+
+	For $i = 0 to 10
+		CheckHeroesHealth()
+
+		If _Sleep(100) Then Return
+
+	Next
+
+	; Reset hero variables
+	$g_bCheckKingPower = False
+	$g_bCheckQueenPower = False
+	$g_bCheckWardenPower = False
+	$g_bCheckChampionPower = False
+	$g_bDropKing = False
+	$g_bDropQueen = False
+	$g_bDropWarden = False
+	$g_bDropChampion = False
+	$g_aHeroesTimerActivation[$eHeroBarbarianKing] = 0
+	$g_aHeroesTimerActivation[$eHeroArcherQueen] = 0
+	$g_aHeroesTimerActivation[$eHeroGrandWarden] = 0
+	$g_aHeroesTimerActivation[$eHeroRoyalChampion] = 0
+
+	_ObjDeleteKey($g_oBldgAttackInfo, "") ; Remove all keys from building dictionary
+
 	$g_aiCurrentSiegeMachines = $tempSieges
 	$g_bRunState = $tempbRunState
+	
+	SetLog("AttackNow completed!")
 EndFunc   ;==>AttackNow

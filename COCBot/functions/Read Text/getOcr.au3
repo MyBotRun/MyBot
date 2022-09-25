@@ -11,7 +11,7 @@
 ; ===============================================================================================================================
 
 Func getNameBuilding($x_start, $y_start) ; getNameBuilding(242,520) -> Gets complete name and level of the buildings, bottom of screen
-	Return getOcrAndCapture("coc-build", $x_start, $y_start, 377, 27)
+	Return getOcrAndCapture("coc-build", $x_start, $y_start, 420, 27)
 EndFunc   ;==>getNameBuilding
 
 Func getGoldVillageSearch($x_start, $y_start) ;48, 69 -> Gets complete value of gold xxx,xxx while searching, top left, Getresources.au3
@@ -19,11 +19,12 @@ Func getGoldVillageSearch($x_start, $y_start) ;48, 69 -> Gets complete value of 
 EndFunc   ;==>getGoldVillageSearch
 
 Func getRemainTrainTimer($x_start, $y_start, $bNeedCapture = True) ;
-	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 70, 12, True, False, $bNeedCapture)
+	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 101, 15, True, False, $bNeedCapture)
 EndFunc   ;==>getRemainTrainTimer
 
 Func getRemainBuildTimer($x_start, $y_start, $bNeedCapture = True) ;
-	Return getOcrAndCapture("coc-siegeremain", $x_start, $y_start, 50, 10, True, False, $bNeedCapture)
+	;Return getOcrAndCapture("coc-siegeremain", $x_start, $y_start, 98, 17, True, False, $bNeedCapture)
+	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 98, 17, True, False, $bNeedCapture)
 EndFunc   ;==>getRemainTrainTimer
 
 Func getElixirVillageSearch($x_start, $y_start) ;48, 69+29 -> Gets complete value of Elixir xxx,xxx, top left,  Getresources.au3
@@ -116,7 +117,7 @@ Func getProfile($x_start, $y_start) ;  -> Gets Attack Win/Defense Win/Donated/Re
 EndFunc   ;==>getProfile
 
 Func getTroopCountSmall($x_start, $y_start, $bNeedNewCapture = Default) ;  -> Gets troop amount on Attack Screen for non-selected troop kind
-	Return getOcrAndCapture("coc-t-s", $x_start, $y_start, 55, 16, True, Default, $bNeedNewCapture)
+	Return getOcrAndCapture("coc-t-s", $x_start, $y_start, 57, 16, True, Default, $bNeedNewCapture)
 EndFunc   ;==>getTroopCountSmall
 
 Func getTroopCountBig($x_start, $y_start, $bNeedNewCapture = Default) ;  -> Gets troop amount on Attack Screen for selected troop kind
@@ -129,6 +130,10 @@ EndFunc   ;==>getTroopsSpellsLevel
 
 Func getArmyCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
 	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 82, 16, True, False, $bNeedCapture)
+EndFunc   ;==>getArmyCampCap
+
+Func getSiegeCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
+	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 38, 20, True, False, $bNeedCapture)
 EndFunc   ;==>getArmyCampCap
 
 Func getCastleDonateCap($x_start, $y_start) ;  -> Gets clan castle capacity,  --> donatecc.au3
@@ -161,24 +166,52 @@ EndFunc   ;==>getOcrPBTtime
 
 Func getCCBuildingName($x_start, $y_start) ;  -> Get BuildingName on builder menu
 	Local $BuildingName = "", $Count = 1
-	Local $Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start, 200, 20, False)
+	Local $Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start, 200, 18, False)
 	If StringRegExp($Name, "x\d{1,}") Then
 		Local $aCount = StringRegExp($Name, "\d{1,}", 1) ;check if we found count of building
 		If IsArray($aCount) Then $Count = $aCount[0]
 	EndIf
-	
-	If StringLeft($Name, 2) = "l " Then 
+
+	If StringLeft($Name, 2) = "l " Then
 		$BuildingName = StringTrimLeft($Name, 2) ;remove first "l" because sometimes buildermenu border captured as "l"
 	Else
 		$BuildingName = $Name
 	EndIf
-	
+
 	If StringRegExp($BuildingName, "x\d{1,}") Then
 		Local $aReplace = StringRegExp($BuildingName, "( x\d{1,})", 1)
-		;SetDebugLog($aReplace[0])
 		Local $TmpBuildingName = StringReplace($BuildingName, $aReplace[0], "")
-		;SetDebugLog($TmpBuildingName)
 		$BuildingName = StringStripWS($TmpBuildingName, $STR_STRIPTRAILING)
+	EndIf
+	
+	Local $aResult[2]
+	$aResult[0] = $BuildingName
+	$aResult[1] = Number($Count)
+	Return $aResult
+EndFunc   ;==>getBuildingName
+
+Func getCCBuildingNameSuggested($x_start, $y_start) ;  -> Get BuildingName on builder menu
+	Local $BuildingName = "", $Count = 1
+	Local $Name = getOcrAndCapture("coc-ccbuildermenu-name", $x_start, $y_start, 200, 18, False)
+	If StringRegExp($Name, "x\d{1,}") Then
+		Local $aCount = StringRegExp($Name, "\d{1,}", 1) ;check if we found count of building
+		If IsArray($aCount) Then $Count = $aCount[0]
+	EndIf
+
+	If StringLeft($Name, 2) = "l " Then
+		$BuildingName = StringTrimLeft($Name, 2) ;remove first "l" because sometimes buildermenu border captured as "l"
+	Else
+		$BuildingName = $Name
+	EndIf
+
+	If StringRegExp($BuildingName, "x\d{1,}") Then
+		Local $aReplace = StringRegExp($BuildingName, "(x\d{1,})", 1)
+		Local $TmpBuildingName = StringReplace($BuildingName, $aReplace[0], "")
+		$BuildingName = StringStripWS($TmpBuildingName, $STR_STRIPTRAILING)
+	EndIf
+	
+	If StringRight($BuildingName, 2) = " l" Then
+		$BuildingName = StringTrimRight($BuildingName, 2) ;remove "l" at the end in some cases
 	EndIf
 	
 	Local $aResult[2]
@@ -189,26 +222,28 @@ EndFunc   ;==>getBuildingName
 
 Func getCCBuildingNameBlue($x_start, $y_start) ;  -> Get BuildingName on builder menu
 	Local $BuildingName = "", $Count = 1
-	Local $Name = getOcrAndCapture("coc-ccbuildermenu-nameblue", $x_start, $y_start, 200, 20, False)
+	Local $Name = getOcrAndCapture("coc-ccbuildermenu-nameblue", $x_start, $y_start, 200, 18, False)
 	If StringRegExp($Name, "x\d{1,}") Then
 		Local $aCount = StringRegExp($Name, "\d{1,}", 1) ;check if we found count of building
 		If IsArray($aCount) Then $Count = $aCount[0]
 	EndIf
-	
-	If StringLeft($Name, 2) = "l " Then 
+
+	If StringLeft($Name, 2) = "l " Then
 		$BuildingName = StringTrimLeft($Name, 2) ;remove first "l" because sometimes buildermenu border captured as "l"
 	Else
 		$BuildingName = $Name
 	EndIf
-	
+
 	If StringRegExp($BuildingName, "x\d{1,}") Then
 		Local $aReplace = StringRegExp($BuildingName, "( x\d{1,})", 1)
-		;SetDebugLog($aReplace[0])
 		Local $TmpBuildingName = StringReplace($BuildingName, $aReplace[0], "")
-		;SetDebugLog($TmpBuildingName)
 		$BuildingName = StringStripWS($TmpBuildingName, $STR_STRIPTRAILING)
 	EndIf
 	
+	If StringRight($BuildingName, 2) = " l" Then
+		$BuildingName = StringTrimRight($BuildingName, 2) ;remove "l" at the end in some cases
+	EndIf
+
 	Local $aResult[2]
 	$aResult[0] = $BuildingName
 	$aResult[1] = Number($Count)

@@ -157,10 +157,14 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 	Local $bNeedSwitch = False, $bAnySiege = False
 
 	Local $sLog = GetTroopName($iTroopIndex)
+	
+	Local $iMaxSiegeLevel = 4
+	
+	If $g_iTownHallLevel < 11 Then $iMaxSiegeLevel = 3
 
 	Switch $ToUse
 		Case $iTroopIndex ; the same as current castle/siege
-			If $iTroopIndex <> $eCastle And $g_iSiegeLevel < 4 Then
+			If $iTroopIndex <> $eCastle And $g_iSiegeLevel < $iMaxSiegeLevel Then
 				$bNeedSwitch = True
 				SetLog(GetTroopName($iTroopIndex) & " level " & $g_iSiegeLevel & " detected. Try looking for higher level.")
 			EndIf
@@ -170,7 +174,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			SetLog(GetTroopName($iTroopIndex) & ($ToUse <> $eCastle ? " level " & $g_iSiegeLevel & " detected. Try looking for " : " detected. Switching to ") & GetTroopName($ToUse))
 
 		Case "Any" ; use any siege
-			If $iTroopIndex = $eCastle Or ($iTroopIndex <> $eCastle And $g_iSiegeLevel < 4) Then ; found Castle or a low level Siege
+			If $iTroopIndex = $eCastle Or ($iTroopIndex <> $eCastle And $g_iSiegeLevel < $iMaxSiegeLevel) Then ; found Castle or a low level Siege
 				$bNeedSwitch = True
 				$bAnySiege = True
 				SetLog(GetTroopName($iTroopIndex) & ($iTroopIndex = $eCastle ? " detected. Try looking for any siege machine" : " level " & $g_iSiegeLevel & " detected. Try looking for any higher siege machine"))
@@ -187,11 +191,13 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			Local $iLastX = $aiSwitchBtn[0] - 30, $iLastY = $aiSwitchBtn[1]
 			If _Sleep(1250) Then Return
 
-			; Lets detect the CC & Sieges and click - search window is - X, 530, X + 390, 530 + 60
-			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",530(500,60)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
-			SetLog($sSearchArea)
+			; Lets detect the CC & Sieges and click - search window is - X, 530, X + 390, 530 + 30
+			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",530(390,30)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
+
+			SetLog("Switch Search Area : " & $sSearchArea)
+
 			Local $aSearchResult = findMultiple($g_sImgSwitchSiegeMachine, $sSearchArea, $sSearchArea, 0, 1000, 5, "objectname,objectpoints", True)
-			SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+			If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 			$hStarttime = _Timer_Init()
 
 			If $aSearchResult <> "" And IsArray($aSearchResult) Then
@@ -223,11 +229,12 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 								$iFinalSiege = $iSiegeIndex
 							EndIf
 							SetDebugLog($i & "." & $j & ". Name: " & $aAvailable[0] & ", Level: " & $SiegeLevel & ", Coords: " & _ArrayToString($aCoords))
-							If $iFinalLevel = 3 Then ExitLoop 2
+							SetLog($i & "." & $j & ". Name: " & $aAvailable[0] & ", Level: " & $SiegeLevel & ", Coords: " & _ArrayToString($aCoords))
+							If $iFinalLevel = $iMaxSiegeLevel Then ExitLoop 2 ; $iFinalLevel = 3?
 						Next
 					EndIf
 				Next
-				SetDebugLog("Benchmark Switch Siege Levels: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+				If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege Levels: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 				$hStarttime = _Timer_Init()
 
 				If ($iTroopIndex = $ToUse Or $bAnySiege) And $g_iSiegeLevel >= $iFinalLevel Then
@@ -251,7 +258,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			If _Sleep(750) Then Return
 		EndIf
 	EndIf
-	SetDebugLog("Benchmark Switch Siege Detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
+	If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege Detection: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
 
 EndFunc   ;==>SelectCastleOrSiege
 

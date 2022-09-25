@@ -239,7 +239,13 @@ Func GetButtonDiamond($sButtonName)
 	Local $btnDiamond = "FV"
 
 	Switch $sButtonName
-		Case "UpgradePets"
+		case "ClanGamesStorageFullYes"
+			$btnDiamond = GetDiamondFromRect("245,250,615,480")
+		case "ClanGamesCollectRewards"
+			$btnDiamond = GetDiamondFromRect("570,505,830,570")
+		case "ClanGamesClaimReward"
+			$btnDiamond = GetDiamondFromRect("570,505,830,570")
+		case "UpgradePets"
 			$btnDiamond = GetDiamondFromRect("590,530,735,595")
 		Case "ReloadButton"
 			$btnDiamond = GetDiamondFromRect("550,450,850,700")
@@ -645,7 +651,7 @@ Func SearchRedLines($sCocDiamond = "ECD")
 	Return $g_sImglocRedline
 EndFunc   ;==>SearchRedLines
 
-Func SearchRedLinesMultipleTimes($sCocDiamond = "ECD", $iCount = 3, $iDelay = 300)
+Func SearchRedLinesMultipleTimes($sCocDiamond = $CocDiamondECD, $iCount = 5, $iDelay = 300)
 	Local $bHBitmap_synced = ($g_hHBitmap = $g_hHBitmap2)
 	Local $g_hHBitmap2_old = $g_hHBitmap2
 	Local $g_sImglocRedline_old
@@ -690,6 +696,7 @@ Func SearchRedLinesMultipleTimes($sCocDiamond = "ECD", $iCount = 3, $iDelay = 30
 		$iRedlinePoints[1] = UBound(StringSplit($g_sImglocRedline, "|", $STR_NOCOUNT))
 
 		SetDebugLog($i & ". # of redline points: " & $iRedlinePoints[1])
+		SetLog($i & ". # of redline points: " & $iRedlinePoints[1])
 
 		If $iRedlinePoints[1] > $iRedlinePoints[0] Then
 			; new picture has more redline points

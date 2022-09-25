@@ -261,6 +261,13 @@ Func ClickAway($Region = Default )
 	ClickP($aiSpot, 1, 0, "#0000")
 EndFunc
 
+Func ClickAway2()
+	Local $aiRegionToUse = Random(0, 1, 1) > 0 ? $aiClickAwayRegionLeft2 : $aiClickAwayRegionRight2
+	Local $aiSpot[2] = [Random($aiRegionToUse[0], $aiRegionToUse[2], 1), Random($aiRegionToUse[1], $aiRegionToUse[3], 1)]
+	If $g_bDebugClick Then SetDebugLog("ClickAway2(): on X:" & $aiSpot[0] & ", Y:" & $aiSpot[1], $COLOR_DEBUG)
+	ClickP($aiSpot, 1, 0, "#0000")
+EndFunc
+
 Func _DecodeDebug($message)
 	Local $separator = " | "
 	Switch $message

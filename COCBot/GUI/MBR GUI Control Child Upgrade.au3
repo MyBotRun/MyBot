@@ -460,6 +460,24 @@ Func chkUpgradeChampion()
 	EndIf
 EndFunc   ;==>chkUpgradeChampion
 
+Func chkUpgradePets()
+	If $g_iTownHallLevel > 13 Then ; Must be TH14 to have Pets
+		For $i = 0 to $ePetCount - 1
+			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
+				$g_bUpgradePetsEnable[$i] = True
+				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " enabled")
+			Else
+				$g_bUpgradePetsEnable[$i] = False
+				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
+			EndIf
+		Next
+	Else
+		For $i = 0 to $ePetCount - 1
+			GUICtrlSetState($g_hChkUpgradePets[$i], BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+		Next
+	EndIf
+EndFunc
+
 Func cmbHeroReservedBuilder()
 	$g_iHeroReservedBuilder = _GUICtrlComboBox_GetCurSel($g_hCmbHeroReservedBuilder)
 	If $g_iTownHallLevel > 6 Then ; Must be TH7 or above to have Heroes
@@ -520,20 +538,20 @@ Func cmbWalls()
 	$g_iWallCost = $g_aiWallCost[$g_iCmbUpgradeWallsLevel]
 	GUICtrlSetData($g_hLblWallCost, _NumberFormat($g_iWallCost))
 
-   For $i = 4 To 14; $g_iCmbUpgradeWallsLevel+  ;Will now always show all.
+   For $i = 4 To $g_iCmbUpgradeWallsLevel+5
 	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_SHOW)
 	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_SHOW)
    Next
-   ;For $i = $g_iCmbUpgradeWallsLevel+6 To 14
-   ;  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
-   ;  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
-   ;Next
+   For $i = $g_iCmbUpgradeWallsLevel+6 To 15
+	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
+	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
+   Next
 
    If $g_iCmbUpgradeWallsLevel <= 3 Then GUICtrlSetState($g_hRdoUseGold, $GUI_CHECKED)
 
-   GUICtrlSetState($g_hRdoUseElixir, $g_iCmbUpgradeWallsLevel <= 3 ? $GUI_DISABLE : $GUI_ENABLE)
-   GUICtrlSetState($g_hRdoUseElixirGold, $g_iCmbUpgradeWallsLevel <= 3 ? $GUI_DISABLE : $GUI_ENABLE)
-   GUICtrlSetState($g_hTxtWallMinElixir, $g_iCmbUpgradeWallsLevel <= 3 ? $GUI_DISABLE : $GUI_ENABLE)
+   GUICtrlSetState($g_hRdoUseElixir, $g_iCmbUpgradeWallsLevel < 1 ? $GUI_DISABLE : $GUI_ENABLE)
+   GUICtrlSetState($g_hRdoUseElixirGold, $g_iCmbUpgradeWallsLevel < 1 ? $GUI_DISABLE : $GUI_ENABLE)
+   GUICtrlSetState($g_hTxtWallMinElixir, $g_iCmbUpgradeWallsLevel < 1 ? $GUI_DISABLE : $GUI_ENABLE)
 EndFunc   ;==>cmbWalls
 
 Func btnWalls()
@@ -584,15 +602,3 @@ Func chkUpgradesToIgnore()
 		$g_iChkUpgradesToIgnore[$i] = GUICtrlRead($g_hChkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
 	Next
 EndFunc   ;==>chkUpgradesToIgnore
-
-Func chkUpgradePets()
-	For $i = 0 to $ePetCount - 1
-		If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
-			$g_bUpgradePetsEnable[$i] = True
-			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " enabled")
-		Else
-			$g_bUpgradePetsEnable[$i] = False
-			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
-		EndIf
-	Next
-EndFunc

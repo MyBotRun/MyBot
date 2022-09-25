@@ -14,7 +14,7 @@
 ; ===============================================================================================================================
 
 Func GetAttackBarBB($bRemaining = False)
-	local $iTroopBanners = 640 ; y location of where to find troop quantities
+	local $iTroopBanners = 639; 640 ; y location of where to find troop quantities
 	local $aSlot1 = [85, 640] ; location of first slot
 	local $iSlotOffset = 73 ; slots are 73 pixels apart
 	local $iBarOffset = 66 ; 66 pixels from side to attack bar
@@ -61,12 +61,18 @@ Func GetAttackBarBB($bRemaining = False)
 			local $aTempCoords = $aTempMultiCoords[$j]
 			If UBound($aTempCoords) < 2 Then ContinueLoop
 			local $iSlot = Int(($aTempCoords[0] - $iBarOffset) / $iSlotOffset)
-			local $iCount = Number(getTroopCountSmall($aTempCoords[0], $iTroopBanners))
-			If $iCount == 0 Then $iCount = Number(getTroopCountBig($aTempCoords[0], $iTroopBanners-2))
-			If $iCount == 0 Then
-				SetLog("Could not get count for " & $aTroop[0] & " in slot " & String($iSlot), $COLOR_ERROR)
-				ContinueLoop
+
+			If $aTroop[0] = "BattleMachine" Then
+				Local $iCount = 0
+			Else
+				local $iCount = Number(getTroopCountSmall($aTempCoords[0], $iTroopBanners))
+				If $iCount == 0 Then $iCount = Number(getTroopCountBig($aTempCoords[0], $iTroopBanners-5))
+				If $iCount == 0 Then
+					SetLog("Could not get count for " & $aTroop[0] & " in slot " & String($iSlot), $COLOR_ERROR)
+					ContinueLoop
+				EndIf
 			EndIf
+
 			local $aTempElement[1][5] = [[$aTroop[0], $aTempCoords[0], $aTempCoords[1], $iSlot, $iCount]] ; element to add to attack bar list
 			_ArrayAdd($aBBAttackBar, $aTempElement)
 		Next

@@ -14,18 +14,18 @@
 ; ===============================================================================================================================
 
 Global $g_sNO_COC, $g_sUNKNOWN_COC
-Global $_g_asDISTRIBUTORS[21][4]
+Global $_g_asDISTRIBUTORS[22][4]
 
 Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language is detected
 	$g_sNO_COC = "<" & GetTranslatedFileIni("MBR Distributors", "NO_COC", "No COC") & ">"
 	$g_sUNKNOWN_COC = "<" & GetTranslatedFileIni("MBR Distributors", "Unknown_COC", "Unknown COC") & ">"
 
-	Dim $_g_asDISTRIBUTORS[21][4] = [ _
+	Dim $_g_asDISTRIBUTORS[22][4] = [ _
 			["Google", "com.supercell.clashofclans", "com.supercell.titan.GameApp", "Google"], _
 			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.titan.kunlun.GameAppKunlun", "Kunlun"], _
 			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.titan.kunlun.GameAppKunlun","Qihoo"], _
 			["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.titan.kunlun.GameAppKunlun", "Baidu"], _
-			["9game", "com.supercell.clashofclans.uc", "com.supercell.titan.GameApp", "9game"], _
+			["9game", "com.supercell.clashofclans.uc", "com.supercell.titan.kunlun.uc.GameAppKunlunUC", "9game"], _
 			["Wandoujia/Downjoy", "com.supercell.clashofclans.wdj", "com.supercell.titan.kunlun.GameAppKunlun", "Wandoujia/Downjoy"], _
 			["Huawei", "com.supercell.clashofclans.huawei", "com.supercell.titan.kunlun.GameAppKunlun", "Huawei"], _
 			["OPPO", "com.supercell.clashofclans.nearme.gamecenter", "com.supercell.titan.kunlun.GameAppKunlun", "OPPO"], _
@@ -41,7 +41,8 @@ Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language 
 			["Yeshen", "com.supercell.clashofclans.ewan.yeshen", "cn.ewan.supersdk.activity.SplashActivity","Yeshen"], _
 			["Aiyouxi", "com.supercell.clashofclans.ewan.egame", "cn.ewan.supersdk.activity.SplashActivity","Aiyouxi"], _
 			["Tencent", "com.tencent.tmgp.supercell.clashofclans", "com.supercell.titan.tencent.GameAppTencent","Tencent"], _
-			["Ewan", "com.supercell.clashofclans.ewan", "com.supercell.titan.kunlun.GameAppKunlun","Ewan"]]
+			["Ewan", "com.supercell.clashofclans.ewan", "com.supercell.titan.kunlun.GameAppKunlun","Ewan"], _
+			["Magic", "cc.clashofmagic.s2", "com.atrasis.main.GameMain","Magic"]]
 EndFunc   ;==>InitializeCOCDistributors
 
 Func GetCOCDistributors()

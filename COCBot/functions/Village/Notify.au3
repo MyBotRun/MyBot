@@ -207,12 +207,12 @@ Func NotifyActivateKeyboardOnTelegram($TGMsg)
 			'\ud83d\udd30 ' & GetTranslatedFileIni("MBR Func_Notify", "SHIELD", "SHIELD") & '"],["' & _
 			'\ud83d\udcc8 ' & GetTranslatedFileIni("MBR Func_Notify", "STATS", "STATS") & '","' & _
 			'\ud83d\udcaa ' & GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS") & '","' & _
-			'\u2753 ' & GetTranslatedFileIni("MBR Func_Notify", "HELP", "HELP") & '"],["' & _
+			'\u2753 ' & GetTranslatedFileIni("MBR Func_Notify", "HELP", "HELP") & '","' & _
+			'\ud83d\udd01 ' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART") & '"],["' & _
 			'\u25aa ' & GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP") & '","' & _
 			'\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "START", "START") & '","' & _
-			'\ud83d\udd00 ' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE") & '","' & _
-			'\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "RESUME", "RESUME") & '","' & _
-			'\ud83d\udd01 ' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART") & '"],["' & _
+			'\u23f8 ' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE") & '","' & _
+			'\u25b6 ' & GetTranslatedFileIni("MBR Func_Notify", "RESUME", "RESUME") & '"],["' & _
 			'\ud83d\udccb ' & GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG") & '","' & _
 			'\ud83c\udf04 ' & GetTranslatedFileIni("MBR Func_Notify", "LASTRAID", "LASTRAID") & '","' & _
 			'\ud83d\udcc4 ' & GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT", "LASTRAIDTXT") & '"],["' & _
@@ -220,7 +220,8 @@ Func NotifyActivateKeyboardOnTelegram($TGMsg)
 			'\u274C ' & GetTranslatedFileIni("MBR Func_Notify", "ATTACK OFF", "ATTACK OFF") & '"],["' & _
 			'\ud83d\udca4 ' & GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNATE") & '","' & _
 			'\u26a1 ' & GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN") & '","' & _
-			'\ud83d\udd06 ' & GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY") & '"]],"one_time_keyboard": false,"resize_keyboard":true}'
+			'\ud83d\udd06 ' & GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY") & '","' & _
+			'\u267b ' & GetTranslatedFileIni("MBR Func_Notify", "REBOOT", "REBOOT") & '"]],"one_time_keyboard": false,"resize_keyboard":true}'
 
 	Local $sOUTPUT = InetRead("https://api.telegram.org/bot" & $g_sNotifyTGToken & "/sendMessage?chat_id=" & $g_sTGChatID & "&text=" & $TGMsg & "&reply_markup=" & $ReplayMarkup, $INET_FORCERELOAD)
 	If @error Or $sOUTPUT = "" Then Return False
@@ -260,6 +261,7 @@ Func NotifyRemoteControlProc()
 	Static $bShutdown = False
 	Static $bHibernate = False
 	Static $bStandby = False
+	Static $bReboot = False
 
 	If Not $g_bNotifyTGEnable Or Not $g_bNotifyRemoteEnable Then Return
 
@@ -279,12 +281,13 @@ Func NotifyRemoteControlProc()
 					Case GetTranslatedFileIni("MBR Func_Notify", "HELP", "HELP"), '\U2753 ' & GetTranslatedFileIni("MBR Func_Notify", "HELP", "HELP")
 						Local $txtHelp = "Telegram " & GetTranslatedFileIni("MBR Func_Notify", "HELP", "HELP") & " " & GetTranslatedFileIni("MBR Func_Notify", "Bot_Info_01", "- You can remotely control your bot sending COMMANDS from the following list:")
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "HELP", -1) & " " & GetTranslatedFileIni("MBR Func_Notify", "HELP_Info_01", "- send this help message")
-						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART") & " " & GetTranslatedFileIni("MBR Func_Notify", "RESTART_Info_01", "- restart the Emulator and bot named") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "START", "START") & " " & GetTranslatedFileIni("MBR Func_Notify", "START_Info_01", "- start the bot named") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "STOP", "STOP") & " " & GetTranslatedFileIni("MBR Func_Notify", "STOP_Info_01", "- stop the bot named") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE") & " " & GetTranslatedFileIni("MBR Func_Notify", "PAUSE_Info_01", "- pause the bot named") & " <" & $g_sNotifyOrigin & ">"
+						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART") & " " & GetTranslatedFileIni("MBR Func_Notify", "RESTART_Info_01", "- restart the Emulator and bot named") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "RESUME", "RESUME") & " " & GetTranslatedFileIni("MBR Func_Notify", "RESUME_Info_01", "- resume the bot named") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "STATS", "STATS") & " " & GetTranslatedFileIni("MBR Func_Notify", "STATS_Info_01", "- send Village Statistics of") & " <" & $g_sNotifyOrigin & ">"
+						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS", "RESETSTATS") & " " & GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS_Info_01", "- reset Village Statistics")					
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG") & GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_01", "- send the current log file of") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "LASTRAID", "LASTRAID") & " " & GetTranslatedFileIni("MBR Func_Notify", "LASTRAID_Info_01", "- send the last raid loot screenshot of") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT", "LASTRAIDTXT") & " " & GetTranslatedFileIni("MBR Func_Notify", "LASTRAIDTXT_Info_01", "- send the last raid loot values of") & " <" & $g_sNotifyOrigin & ">"
@@ -292,14 +295,14 @@ Func NotifyRemoteControlProc()
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOTHD", "SCREENSHOTHD") & " " & GetTranslatedFileIni("MBR Func_Notify", "SCREENSHOTHD_Info_01", "- send a screenshot in high resolution of") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "BUILDER", "BUILDER") & " " & GetTranslatedFileIni("MBR Func_Notify", "BUILDER_Info_01", "- send a screenshot of builder status of") & " <" & $g_sNotifyOrigin & ">"
 						$txtHelp &= '%0A' & GetTranslatedFileIni("MBR Func_Notify", "SHIELD", "SHIELD") & " " & GetTranslatedFileIni("MBR Func_Notify", "SHIELD_Info_01", "- send a screenshot of shield status of") & " <" & $g_sNotifyOrigin & ">"
-						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS", "RESETSTATS") & " " & GetTranslatedFileIni("MBR Func_Notify", "RESETSTATS_Info_01", "- reset Village Statistics")
-						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS") & " " & GetTranslatedFileIni("MBR Func_Notify", "TROOPS_Info_01", "- send Troops & Spells Stats")
+						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "TROOPS", "TROOPS") & " " & GetTranslatedFileIni("MBR Func_Notify", "TROOPS_Info_01", "- send Troops and Spells Stats")
 						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "HALTATTACKON", "HALTATTACKON") & " " & GetTranslatedFileIni("MBR Func_Notify", "ATTACK OFF_Info_01", "- Turn On 'Halt Attack' in the 'Misc' Tab with the 'stay online' option")
 						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "HALTATTACKOFF", "HALTATTACKOFF") & " " & GetTranslatedFileIni("MBR Func_Notify", "ATTACK ON_Info_01", "- Turn Off 'Halt Attack' in the 'Misc' Tab")
 						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNATE") & " " & GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE_Info_01", "- Hibernate host PC")
 						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN") & " " & GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN_Info_01", "- Shut down host PC")
 						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY") & " " & GetTranslatedFileIni("MBR Func_Notify", "STANDBY_Info_01", "- Standby host PC")
-
+						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "REBOOT", "REBOOT") & " " & GetTranslatedFileIni("MBR Func_Notify", "REBOOT_Info_01", "- Force Reboot of host PC")
+						$txtHelp &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "KEYB", "KEYB") & " " & GetTranslatedFileIni("MBR Func_Notify", "KEYB_Info_01", "- Send Keyboard to Mobile")
 						NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-For-Help_Info_02", "Request for Help") & "%0A" & $txtHelp)
 						SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Help has been sent", $COLOR_SUCCESS)
 					Case GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART"), '\UD83D\UDD01 ' & GetTranslatedFileIni("MBR Func_Notify", "RESTART", "RESTART")
@@ -329,7 +332,7 @@ Func NotifyRemoteControlProc()
 						Else
 							NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_02", "Request to Stop...") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Request-Stop_Info_04", "Your bot is currently stopped, no action was taken"))
 						EndIf
-					Case GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE"), '\UD83D\UDD00 ' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE")
+					Case GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE"), '\u23f8 ' & GetTranslatedFileIni("MBR Func_Notify", "PAUSE", "PAUSE")
 						If $g_bBotPaused = False And $g_bRunState = True Then
 							If ( _ColorCheck(_GetPixelColor($NextBtn[0], $NextBtn[1], True), Hex($NextBtn[2], 6), $NextBtn[3])) = False And IsAttackPage() Then
 								SetLog("Notify Telegram: Unable to pause during attack", $COLOR_ERROR)
@@ -382,8 +385,16 @@ Func NotifyRemoteControlProc()
 						_TicksToDay(Int(__TimerDiff($g_hTimerSinceStarted) + $g_iTimePassed), $day, $hour, $min, $sec)
 						GUICtrlSetData($g_hLblResultRuntime, $day > 0 ? StringFormat("%2u Day(s) %02i:%02i:%02i", $day, $hour, $min, $sec) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 						$txtStats &= "%0A" & GetTranslatedFileIni("MBR Func_Notify", "LOG_Info_07", "Run Time") & ": " & GUICtrlRead($g_hLblResultRuntime) ;This label only changes when on the stats screen, so update it here.
-						$txtStats &= "%0A%0A" & "Clan Games:"
-						$txtStats &= "%0A" & "[T]: " & GUICtrlRead($g_hLblRemainTime) & " [S]: " & GUICtrlRead($g_hLblYourScore)
+						;Optionally show Clan Games stats
+						If (GUICtrlRead($g_hLblRemainTime) <> "N/A" AND GUICtrlRead($g_hLblRemainTime) <> "0d 00h") Then
+							$txtStats &= "%0A%0A" & "Clan Games:"
+							$txtStats &= "%0A" & "[T]: " & GUICtrlRead($g_hLblRemainTime) & " [S]: " & GUICtrlRead($g_hLblYourScore)
+						EndIf
+						;Optionally show Clan Capitol Stats
+						if ($g_iStatsClanCapCollected > 0 Or $g_iStatsClanCapUpgrade > 0) Then
+							$txtStats &= "%0A%0A" & "Clan Capitol:"
+							$txtStats &= "%0A" & "Collected: " & $g_iStatsClanCapCollected & ", Upgrades: " & $g_iStatsClanCapUpgrade
+						EndIf
 						$txtStats &= "%0A" & " "
 						NotifyPushToTelegram($g_sNotifyOrigin & $txtStats)
 					Case GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG"), '\UD83D\UDCCB ' & GetTranslatedFileIni("MBR Func_Notify", "LOG", "LOG")
@@ -463,18 +474,23 @@ Func NotifyRemoteControlProc()
 					Case GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNATE"), '\UD83D\UDCA4 ' & GetTranslatedFileIni("MBR Func_Notify", "HIBERNATE", "HIBERNATE")
 						SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Hibernate PC", $COLOR_SUCCESS)
 						$bHibernate = True
-						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_01", "Are you sure?, Please send") & " CONFIRM" & "%0A" & _
-								GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_02", "If isn't to continue send") & " CANCEL")
+						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_01", "Are you sure? Please send") & " CONFIRM" & "%0A" & _
+								GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_02", "If not please send") & " CANCEL")
 					Case GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN"), '\U26A1 ' & StringUpper(GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN", "SHUTDOWN"))
 						SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Shutdown PC", $COLOR_SUCCESS)
 						$bShutdown = True
-						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_01", "Are you sure?, Please send") & " CONFIRM" & "%0A" & _
-								GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_02", "If isn't to continue send") & " CANCEL")
+						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_01", "Are you sure? Please send") & " CONFIRM" & "%0A" & _
+								GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_02", "If not please send") & " CANCEL")
 					Case GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY"), '\UD83d\UDD06 ' & GetTranslatedFileIni("MBR Func_Notify", "STANDBY", "STANDBY")
 						SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Standby PC", $COLOR_SUCCESS)
-						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_01", "Are you sure?, Please send") & " CONFIRM" & "%0A" & _
-								GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_02", "If isn't to continue send") & " CANCEL")
+						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_01", "Are you sure? Please send") & " CONFIRM" & "%0A" & _
+								GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_02", "If not please send") & " CANCEL")
 						$bStandby = True
+					Case GetTranslatedFileIni("MBR Func_Notify", "REBOOT", "REBOOT"), '\u267b ' & GetTranslatedFileIni("MBR Func_Notify", "REBOOT", "REBOOT")
+						SetLog("Notify Telegram: Your request has been received from " & $g_sNotifyOrigin & ". Reboot PC", $COLOR_SUCCESS)
+						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_01", "Are you sure? Please send") & " CONFIRM" & "%0A" & _
+								GetTranslatedFileIni("MBR Func_Notify", "CONFIRM_Info_02", "If not please send") & " CANCEL")
+						$bReboot = True
 					Case "CONFIRM"
 						If $bShutdown Then
 							NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "SHUTDOWN_Info_02", "PC Shutdown sequence initiated"))
@@ -488,6 +504,10 @@ Func NotifyRemoteControlProc()
 							NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "STANDBY_Info_02", "PC Standby sequence initiated"))
 							$bStandby = False
 							Shutdown(32)
+						ElseIf $bReboot Then
+							NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "REBOOT_Info_02", "PC Restart sequence initiated"))
+							$bReboot = False
+							Shutdown(6)
 						EndIf
 					Case "CANCEL"
 						NotifyPushToTelegram(GetTranslatedFileIni("MBR Func_Notify", "CANCEL_Info_01", "Canceled the last sequence"))

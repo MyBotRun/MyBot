@@ -42,16 +42,16 @@ Func CheckTombs()
 		Next
 		$TombsXY = $return[5]
 
-		SetDebugLog("Filename :" & $return[0])
-		SetDebugLog("Type :" & $return[1])
-		SetDebugLog("Total Objects :" & $return[4])
+		If $g_bDebugSetlog Then SetDebugLog("Filename :" & $return[0])
+		If $g_bDebugSetlog Then SetDebugLog("Type :" & $return[1])
+		If $g_bDebugSetlog Then SetDebugLog("Total Objects :" & $return[4])
 
 		Local $bRemoved = False
 		If IsArray($TombsXY) Then
 			; Loop through all found points for the item and click them to clear them, there should only be one
 			For $j = 0 To UBound($TombsXY) - 1
-				If isInsideDiamondXY($TombsXY[$j][0], $TombsXY[$j][1]) Then
-					SetDebugLog("Coords :" & $TombsXY[$j][0] & "," & $TombsXY[$j][1])
+				If IsCoordSafe($TombsXY[$j][0], $TombsXY[$j][1]) Then
+					If $g_bDebugSetlog Then SetDebugLog("Coords :" & $TombsXY[$j][0] & "," & $TombsXY[$j][1])
 					If IsMainPage() Then
 						Click($TombsXY[$j][0], $TombsXY[$j][1], 1, 0, "#0430")
 						If Not $bRemoved Then $bRemoved = IsMainPage()
@@ -89,24 +89,26 @@ Func CleanYard()
 
 	; Setup arrays, including default return values for $return
 	Local $Filename = ""
-	Local $Locate = 0
+	Local $bLocate = False
 	Local $CleanYardXY
 	Local $sCocDiamond = $CocDiamondECD
-	Local $redLines = $sCocDiamond
+	Local $sRedLines = $CocDiamondECD
+	Local $iElixir = 50000
 	Local $bNoBuilders = $g_iFreeBuilderCount < 1
+	Local $sImgCleanYard = $g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard
 
-	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > 50000 Then
-		Local $aResult = findMultiple($g_iDetectedImageType = 1 ? $g_sImgCleanYardSnow  : $g_sImgCleanYard, $sCocDiamond, $redLines, 0, 1000, 10, "objectname,objectlevel,objectpoints", True)
+	If $g_iFreeBuilderCount > 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir Then
+		Local $aResult = findMultiple($sImgCleanYard, $sCocDiamond, $sRedLines, 0, 1000, 10, "objectname,objectlevel,objectpoints", True)
 		If IsArray($aResult) Then
 			For $matchedValues In $aResult
 				Local $aPoints = decodeMultipleCoords($matchedValues[2])
 				$Filename = $matchedValues[0] ; Filename
 				For $i = 0 To UBound($aPoints) - 1
 					$CleanYardXY = $aPoints[$i] ; Coords
-					If UBound($CleanYardXY) > 1 And isInsideDiamondXY($CleanYardXY[0], $CleanYardXY[1]) Then ; secure x because of clan chat tab
-						SetDebugLog($Filename & " found (" & $CleanYardXY[0] & "," & $CleanYardXY[1] & ")", $COLOR_SUCCESS)
+					If UBound($CleanYardXY) > 1 And IsCoordSafe($CleanYardXY[0], $CleanYardXY[1]) Then ; secure x because of clan chat tab
+						If $g_bDebugSetlog Then SetDebugLog($Filename & " found (" & $CleanYardXY[0] & "," & $CleanYardXY[1] & ")", $COLOR_SUCCESS)
 						If IsMainPage() Then Click($CleanYardXY[0], $CleanYardXY[1], 1, 0, "#0430")
-						$Locate = 1
+						$bLocate = True
 						If _Sleep($DELAYCOLLECT3) Then Return
 						If Not ClickRemoveObstacle() Then ContinueLoop
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
@@ -130,7 +132,7 @@ Func CleanYard()
 	Local $GemBoxXY[2] = [0, 0]
 
 	; Perform a parallel search with all images inside the directory
-	If ($g_iFreeBuilderCount > 0 And $g_bChkGemsBox And Number($g_aiCurrentLoot[$eLootElixir]) > 50000) Or TestCapture() Then
+	If ($g_iFreeBuilderCount > 0 And $g_bChkGemsBox And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir) Or TestCapture() Then
 		Local $aResult = multiMatches($g_sImgGemBox, 1, $sCocDiamond, $sCocDiamond)
 		If UBound($aResult) > 1 Then
 			; Now loop through the array to modify values, select the highest entry to return
@@ -146,18 +148,18 @@ Func CleanYard()
 			Next
 			$GemBoxXY = $return[5]
 
-			SetDebugLog("Filename :" & $return[0])
-			SetDebugLog("Type :" & $return[1])
-			SetDebugLog("Total Objects :" & $return[4])
+			If $g_bDebugSetlog Then SetDebugLog("Filename :" & $return[0])
+			If $g_bDebugSetlog Then SetDebugLog("Type :" & $return[1])
+			If $g_bDebugSetlog Then SetDebugLog("Total Objects :" & $return[4])
 
 			If IsArray($GemBoxXY) Then
 				; Loop through all found points for the item and click them to remove it, there should only be one
 				For $j = 0 To UBound($GemBoxXY) - 1
-					SetDebugLog("Coords :" & $GemBoxXY[$j][0] & "," & $GemBoxXY[$j][1])
-					If isInsideDiamondXY($GemBoxXY[$j][0], $GemBoxXY[$j][1]) Then
+					If $g_bDebugSetlog Then SetDebugLog("Coords :" & $GemBoxXY[$j][0] & "," & $GemBoxXY[$j][1])
+					If IsCoordSafe($GemBoxXY[$j][0], $GemBoxXY[$j][1]) Then
 						If IsMainPage() Then Click($GemBoxXY[$j][0], $GemBoxXY[$j][1], 1, 0, "#0430")
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
-						$Locate = 1
+						$bLocate = True
 						If _Sleep($DELAYCOLLECT3) Then Return
 						If Not ClickRemoveObstacle() Then ContinueLoop
 						If _Sleep($DELAYCHECKTOMBS2) Then Return
@@ -182,8 +184,8 @@ Func CleanYard()
 	If $bNoBuilders Then
 		SetLog("No Builders available to remove Obstacles!")
 	Else
-		If $Locate = 0 And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > 50000 Then SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)
-		SetDebugLog("Time: " & Round(__TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
+		If Not $bLocate And $g_bChkCleanYard And Number($g_aiCurrentLoot[$eLootElixir]) > $iElixir Then SetLog("No Obstacles found, Yard is clean!", $COLOR_SUCCESS)
+		If $g_bDebugSetlog Then SetDebugLog("Time: " & Round(__TimerDiff($hObstaclesTimer) / 1000, 2) & "'s", $COLOR_SUCCESS)
 	EndIf
 	UpdateStats()
 	ClickAway()
@@ -195,6 +197,7 @@ Func ClickRemoveObstacle()
 	If IsArray($aiButton) And UBound($aiButton) >= 2 Then
 		SetDebugLog("Remove Button found! Clicking it at X: " & $aiButton[0] & ", Y: " & $aiButton[1], $COLOR_DEBUG1)
 		ClickP($aiButton)
+		If _Sleep(3000) Then Return
 		Return True
 	Else
 		SetLog("Cannot find Remove Button", $COLOR_ERROR)

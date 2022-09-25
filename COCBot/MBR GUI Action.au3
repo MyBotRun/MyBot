@@ -25,9 +25,9 @@ Func BotStart($bAutostartDelay = 0)
 
 	ResumeAndroid()
 	CleanSecureFiles()
-	CalCostCamp()
-	CalCostSpell()
-	CalCostSiege()
+	;CalCostCamp()
+	;CalCostSpell()
+	;CalCostSiege()
 	sldAdditionalClickDelay(True)
 
 	$g_bRunState = True

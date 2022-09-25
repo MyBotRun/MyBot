@@ -51,7 +51,7 @@ Func imglocCheckWall()
 		SetLog("No wall(s) next to previously upgraded found.", $COLOR_ERROR)
 		SetLog("Looking further away.", $COLOR_SUCCESS)
 		_CaptureRegion2()
-		$FoundWalls = imglocFindWalls($levelWall, "ECD", "ECD", 10) ; lets get 10 points just to make sure we discard false positives
+		$FoundWalls = imglocFindWalls($levelWall, $CocDiamondECD, $CocDiamondECD, 10) ; lets get 10 points just to make sure we discard false positives
 		SetDebugLog("$FoundWalls = " & $FoundWalls)
 	EndIf
 
@@ -110,7 +110,7 @@ Func imglocCheckWall()
 
 EndFunc   ;==>imglocCheckWall
 
-Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn = 0)
+Func imglocFindWalls($walllevel, $searcharea = $CocDiamondECD, $redline = $CocDiamondECD, $maxreturn = 0)
 	; Will find maxreturn Wall in specified diamond
 
 	;name , level , coords
@@ -118,7 +118,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 
 	Local $redLines = $redline
 	Local $minLevel = (IsNumber($walllevel) ? $walllevel : 1)
-	Local $maxLevel = (IsNumber($walllevel) ? $walllevel : 14)
+	Local $maxLevel = (IsNumber($walllevel) ? $walllevel : 15)
 	Local $maxReturnPoints = $maxreturn
 
 	; Perform the search
@@ -140,7 +140,7 @@ Func imglocFindWalls($walllevel, $searcharea = "DCD", $redline = "", $maxreturn 
 	; Process results
 	If $result[0] <> "" Then
 		; Get the keys for the dictionary item.
-		SetDebugLog(" imglocFindMyWall search returned : " & $result[0])
+		If $g_bDebugSetlog Then SetDebugLog(" imglocFindMyWall search returned : " & $result[0])
 		Local $aKeys = StringSplit($result[0], "|", $STR_NOCOUNT)
 		; Loop through the array
 		ReDim $FoundWalls[UBound($aKeys)]

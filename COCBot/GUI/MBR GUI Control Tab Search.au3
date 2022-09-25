@@ -373,6 +373,13 @@ Func chkSpellWaitError()
 	Local $bErrorCondition = False
 	Local $sErrorText, $sText, $MsgBox1, $MsgBox2, $MsgBox3
 
+	$g_iTotalTrainSpaceSpell = 0
+
+	For $i = 0 To $eSpellCount - 1
+		$g_iTotalTrainSpaceSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellSpace[$i]
+;		$iTotalTotalTimeSpell += $g_aiArmyCustomSpells[$i] * $g_aiSpellTrainTime[$i]
+	Next
+
 	; Check if spell total GUI is larger than spell count trained for wait for spells to work properly!
 	If $g_iTotalTrainSpaceSpell > GUICtrlRead($g_hTxtTotalCountSpell) Then  ; we have an error!
 		$sErrorText = GetTranslatedFileIni("MBR GUI Control Tab Search", "Func_chkSpellWaitError_ErrorText_01", "Total number of trained spells exceeds total set in GUI!") & @CRLF & _

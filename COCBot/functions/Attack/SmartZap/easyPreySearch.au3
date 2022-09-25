@@ -22,7 +22,7 @@ Func easyPreySearch()
 			If _Sleep(5000) Then Return
 		EndIf
 
-		Local $aResult = multiMatches($g_sImgEasyBuildings, 0, "ECD", "ECD")
+		Local $aResult = multiMatches($g_sImgEasyBuildings, 0, $CocDiamondECD, $CocDiamondECD)
 		If $g_bDebugSmartZap = True Then
 			If UBound($aResult) = 2 Then
 				SetLog("1 target type found in " & $iLoop & ". searchround.", $COLOR_DEBUG)

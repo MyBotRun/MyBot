@@ -84,7 +84,7 @@ Func PetHouse($test = False)
 
 	; Pet upgrade is not in progress and not upgreading, so we need to start an upgrade.
 	Local $iPetUnlockedxCoord[4] = [190, 345, 500, 655]
-	Local $iPetLevelxCoord[4] = [134, 288, 443, 598]
+	Local $iPetLevelxCoord[4] = [134, 288, 443, 596]
 
 
 	For $i = 0 to $ePetCount - 1
@@ -377,7 +377,7 @@ EndFunc   ;==>PetGuiDisplay
 
 Func GetMinDark4PetUpgrade()
 	Local $iPetUnlockedxCoord[4] = [190, 345, 500, 655]
-	Local $iPetLevelxCoord[4] = [134, 288, 443, 598]
+	Local $iPetLevelxCoord[4] = [134, 288, 443, 596]
 	Local $iMinDark4PetUpgrade = 999999
 
 	For $i = 0 to $ePetCount - 1

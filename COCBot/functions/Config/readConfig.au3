@@ -122,6 +122,13 @@ Func ReadBuildingConfig()
 	IniReadS($g_aiStarLaboratoryPos[0], $g_sProfileBuildingPath, "upgrade", "StarLabPosX", -1, "int")
 	IniReadS($g_aiStarLaboratoryPos[1], $g_sProfileBuildingPath, "upgrade", "StarLabPosY", -1, "int")
 
+	IniReadS($g_aiBattleMachinePos[0], $g_sProfileBuildingPath, "upgrade", "BattleMachinePosX", -1, "int")
+	IniReadS($g_aiBattleMachinePos[1], $g_sProfileBuildingPath, "upgrade", "BattleMachinePosY", -1, "int")
+
+	IniReadS($g_aiBuilderHallPos[0], $g_sProfileBuildingPath, "other", "BuilderHallPosX", -1, "int")
+	IniReadS($g_aiBuilderHallPos[1], $g_sProfileBuildingPath, "other", "BuilderHallPosY", -1, "int")
+	IniReadS($g_iBuilderHallLevel, $g_sProfileBuildingPath, "other", "LevelBuilderHall", 0, "int")
+
 	IniReadS($g_aiLastGoodWallPos[0], $g_sProfileBuildingPath, "upgrade", "xLastGoodWallPos", -1, "int")
 	IniReadS($g_aiLastGoodWallPos[1], $g_sProfileBuildingPath, "upgrade", "yLastGoodWallPos", -1, "int")
 
@@ -331,6 +338,7 @@ Func ReadConfig_Android()
 	$g_iAndroidRebootHours = Int(IniRead($g_sProfileConfigPath, "android", "reboot.hours", $g_iAndroidRebootHours))
 	$g_bAndroidCloseWithBot = Int(IniRead($g_sProfileConfigPath, "android", "close", $g_bAndroidCloseWithBot ? 1 : 0)) = 1
 	$g_bUpdateSharedPrefs = Int(IniRead($g_sProfileConfigPath, "android", "shared_prefs.update", $g_bUpdateSharedPrefs ? 1 : 0)) = 1
+	$g_bUpdateSharedPrefs = 0 ; force to disable
 	$g_iAndroidProcessAffinityMask = Int(IniRead($g_sProfileConfigPath, "android", "process.affinity.mask", $g_iAndroidProcessAffinityMask))
 	$g_iAndroidControlClickAdditionalDelay = Int(IniRead($g_sProfileConfigPath, "android", "click.additional.delay", $g_iAndroidControlClickAdditionalDelay))
 
@@ -426,15 +434,31 @@ Func ReadConfig_600_6()
 
 	IniReadS($g_iChkPlacingNewBuildings, $g_sProfileConfigPath, "other", "ChkPlacingNewBuildings", $g_iChkPlacingNewBuildings, "Int")
 
+	IniReadS($g_bBattleMachineUpgrade, $g_sProfileConfigPath, "other", "chkBattleMachineUpgrade", $g_bBattleMachineUpgrade, "Bool")
+
 	IniReadS($g_bChkClanGamesAir, $g_sProfileConfigPath, "other", "ChkClanGamesAir", False, "Bool")
 	IniReadS($g_bChkClanGamesGround, $g_sProfileConfigPath, "other", "ChkClanGamesGround", False, "Bool")
 	IniReadS($g_bChkClanGamesMisc, $g_sProfileConfigPath, "other", "ChkClanGamesMisc", False, "Bool")
 
 	IniReadS($g_bChkClanGamesEnabled, $g_sProfileConfigPath, "other", "ChkClanGamesEnabled", False, "Bool")
+
+	IniReadS($g_bChkClanGamesNightVillage, $g_sProfileConfigPath, "other", "ChkClanGamesNightVillage", False, "Bool")
+
+
+
 	IniReadS($g_bChkClanGames60, $g_sProfileConfigPath, "other", "ChkClanGames60", False, "Bool")
 	IniReadS($g_bChkClanGamesPurge, $g_sProfileConfigPath, "other", "ChkClanGamesPurge", False, "Bool")
+
+	IniReadS($g_bChkClanGamesPurgeHome, $g_sProfileConfigPath, "other", "ChkClanGamesPurgeHome", False, "Bool")
+	IniReadS($g_bChkClanGamesPurgeNight, $g_sProfileConfigPath, "other", "ChkClanGamesPurgeNight", False, "Bool")
+
+
+
 	IniReadS($g_bChkClanGamesStopBeforeReachAndPurge, $g_sProfileConfigPath, "other", "ChkClanGamesStopBeforeReachAndPurge", False, "Bool")
+
+	IniReadS($g_bChkClanGamesCollectRewards, $g_sProfileConfigPath, "other", "ChkClanGamesCollectRewards", False, "Bool")
 	IniReadS($g_bChkClanGamesDebug, $g_sProfileConfigPath, "other", "ChkClanGamesDebug", False, "Bool")
+	IniReadS($g_bChkClanGamesDebugImages, $g_sProfileConfigPath, "other", "ChkClanGamesDebugImages", False, "Bool")
 
 	IniReadS($g_bChkClanGamesLoot, $g_sProfileConfigPath, "other", "ChkClanGamesLoot", False, "Bool")
 	IniReadS($g_bChkClanGamesBattle, $g_sProfileConfigPath, "other", "ChkClanGamesBattle", False, "Bool")
@@ -449,12 +473,18 @@ Func ReadConfig_600_6()
 	IniReadS($g_bChkClanGamesMiscellaneous, $g_sProfileConfigPath, "other", "ChkClanGamesMiscellaneous", False, "Bool")
 	IniReadS($g_iPurgeMax, $g_sProfileConfigPath, "other", "PurgeMax", 5, "int")
 
+	$g_sActiveEventName = IniRead($g_sProfileConfigPath, "other", "ActiveEventName", "")
+
 	; Builder Base Attack
 	IniReadS($g_bChkEnableBBAttack, $g_sProfileConfigPath, "other", "ChkEnableBBAttack", False, "Bool")
 	IniReadS($g_bChkBBTrophyRange, $g_sProfileConfigPath, "other", "ChkBBTrophyRange", False, "Bool")
 	IniReadS($g_iTxtBBTrophyLowerLimit, $g_sProfileConfigPath, "other", "TxtBBTrophyLowerLimit", 0, "int")
 	IniReadS($g_iTxtBBTrophyUpperLimit, $g_sProfileConfigPath, "other", "TxtBBTrophyUpperLimit", 5000, "int")
 	IniReadS($g_bChkBBAttIfLootAvail, $g_sProfileConfigPath, "other", "ChkBBAttIfLootAvail", False, "Bool")
+
+	IniReadS($g_bChkBBHaltOnGoldFull, $g_sProfileConfigPath, "other", "ChkBBHaltOnGoldFull", False, "Bool")
+	IniReadS($g_bChkBBHaltOnElixirFull, $g_sProfileConfigPath, "other", "ChkBBHaltOnElixirFull", False, "Bool")
+
 	IniReadS($g_bChkBBWaitForMachine, $g_sProfileConfigPath, "other", "ChkBBWaitForMachine", False, "Bool")
 	IniReadS($g_bChkBBDropBMFirst, $g_sProfileConfigPath, "other", "ChkBBDropBMFirst", False, "Bool")
 	IniReadS($g_iBBNextTroopDelay, $g_sProfileConfigPath, "other", "iBBNextTroopDelay", $g_iBBNextTroopDelayDefault, "int")
@@ -474,6 +504,8 @@ Func ReadConfig_600_6()
 	IniReadS($g_iCmbForgeBuilder, $g_sProfileConfigPath, "ClanCapital", "ForgeUseBuilder", 1, "int")
 	IniReadS($g_bChkEnableAutoUpgradeCC, $g_sProfileConfigPath, "ClanCapital", "AutoUpgradeCC", False, "Bool")
 	IniReadS($g_bChkAutoUpgradeCCIgnore, $g_sProfileConfigPath, "ClanCapital", "ChkAutoUpgradeCCIgnore", False, "Bool")
+	IniReadS($g_bChkAutoUpgradeCCWallIgnore, $g_sProfileConfigPath, "ClanCapital", "ChkAutoUpgradeCCWallIgnore", False, "Bool")
+	IniReadS($g_bChkAutoUpgradeCCPriorArmy, $g_sProfileConfigPath, "ClanCapital", "ChkAutoUpgradeCCPriorArmy", False, "Bool")
 EndFunc   ;==>ReadConfig_600_6
 
 Func ReadConfig_600_9()
@@ -1128,7 +1160,7 @@ Func ReadConfig_600_29_DB()
 	IniReadS($g_sAttackScrScriptName[$DB], $g_sProfileConfigPath, "attack", "ScriptDB", "Barch four fingers")
 
 	IniReadS($g_aiAttackUseWardenMode[$DB], $g_sProfileConfigPath, "attack", "DBAtkUseWardenMode", 2, "int")
-	IniReadS($g_aiAttackUseSiege[$DB], $g_sProfileConfigPath, "attack", "DBAtkUseSiege", 5, "int")
+	IniReadS($g_aiAttackUseSiege[$DB], $g_sProfileConfigPath, "attack", "DBAtkUseSiege", 7, "int")
 
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Attack / SmartFarm <><><><>
 	IniReadS($g_iTxtInsidePercentage, $g_sProfileConfigPath, "SmartFarm", "InsidePercentage", 65, "int")
@@ -1174,7 +1206,7 @@ Func ReadConfig_600_29_LB()
 	IniReadS($g_sAttackScrScriptName[$LB], $g_sProfileConfigPath, "attack", "ScriptAB", "Barch four fingers")
 
 	IniReadS($g_aiAttackUseWardenMode[$LB], $g_sProfileConfigPath, "attack", "ABAtkUseWardenMode", 2, "int")
-	IniReadS($g_aiAttackUseSiege[$LB], $g_sProfileConfigPath, "attack", "ABAtkUseSiege", 5, "int")
+	IniReadS($g_aiAttackUseSiege[$LB], $g_sProfileConfigPath, "attack", "ABAtkUseSiege", 7, "int")
 EndFunc   ;==>ReadConfig_600_29_LB
 
 Func ReadConfig_600_30()
@@ -1410,7 +1442,8 @@ Func ReadConfig_600_52_2()
 
 	For $S = 0 To $eSiegeMachineCount - 1
 		IniReadS($g_aiArmyCompSiegeMachines[$S], $g_sProfileConfigPath, "Siege", $g_asSiegeMachineShortNames[$S], 0, "int")
-		IniReadS($g_aiTrainArmySiegeMachineLevel[$S], $g_sProfileConfigPath, "LevelSiege", $g_asSiegeMachineShortNames[$S], 0, "int")
+		;IniReadS($g_aiTrainArmySiegeMachineLevel[$S], $g_sProfileConfigPath, "LevelSiege", $g_asSiegeMachineShortNames[$S], 0, "int")
+		;SetLog("Siege" & $g_asSiegeMachineShortNames[$S] & " - " & $g_aiArmyCompSiegeMachines[$S], $COLOR_ERROR)
 	Next
 	IniReadS($g_iTrainArmyFullTroopPct, $g_sProfileConfigPath, "troop", "fullTroop", 100, "int")
 	$g_bTotalCampForced = (IniRead($g_sProfileConfigPath, "other", "ChkTotalCampForced", "1") = "1")

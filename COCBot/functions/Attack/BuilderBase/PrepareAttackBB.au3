@@ -12,65 +12,95 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
+;Global $g_bBBGoldFull = False
+;Global $g_bBBElixirFull = False
 
-Func PrepareAttackBB()
-	If $g_bChkBBTrophyRange Then
-		If ($g_aiCurrentLootBB[$eLootTrophyBB] > $g_iTxtBBTrophyUpperLimit or $g_aiCurrentLootBB[$eLootTrophyBB] < $g_iTxtBBTrophyLowerLimit) Then
-			SetLog("Trophies out of range.")
-			SetDebugLog("Current Trophies: " & $g_aiCurrentLootBB[$eLootTrophyBB] & " Lower Limit: " & $g_iTxtBBTrophyLowerLimit & " Upper Limit: " & $g_iTxtBBTrophyUpperLimit)
-			_Sleep(1500)
-			Return False
-		EndIf
-	EndIf
+Func CheckBBGoldStorageFull()
+	Local $aBBGoldFull[4] = [710, 35, 0xDAB300, 10]
+
+	SetLog("Gold   : 0x" & _GetPixelColor(710, 35, True))
+
+	If _Sleep(500) Then Return
 	
-	If Not $g_bRunState Then Return ; Stop Button
+	If _CheckPixel($aBBGoldFull, True, Default, "BB Gold Full") Then
+		SetLog("BB Gold Full")
+		Return True
+	EndIf
 
+	Return False
+EndFunc
 
-	If Not ClickAttack() Then Return False
-	_Sleep(1000)
+Func CheckBBElixirStorageFull()
+	Local $aBBElixirFull[4] = [710, 65, 0xB31AB3, 10]
+	
+	SetLog("Elixir : 0x" & _GetPixelColor(710, 65, True))
+	
+	If _Sleep(500) Then Return
+	
+	If _CheckPixel($aBBElixirFull, True, Default, "BB Elixir Full") Then
+		SetLog("BB Elixir Full")
+		Return True
+	EndIf
+
+	Return False
+EndFunc
+
+Func PrepareAttackBB($bClanGames = False)
+	SetLog("Clan Games : " & $bClanGames)
 
 	If Not CheckArmyReady() Then
-		_Sleep(1500)
+		_Sleep(1500)		
 		ClickAway()
 		Return False
 	EndIf
 
-	If $g_bChkBBAttIfLootAvail Then
-		If Not CheckLootAvail() Then
+	$g_bBBMachineReady = CheckMachReady()
+	
+	If Not $bClanGames Then
+
+		If $g_bChkBBTrophyRange Then
+			If ($g_aiCurrentLootBB[$eLootTrophyBB] > $g_iTxtBBTrophyUpperLimit or $g_aiCurrentLootBB[$eLootTrophyBB] < $g_iTxtBBTrophyLowerLimit) Then
+				SetLog("Trophies out of range.")
+				SetDebugLog("Current Trophies: " & $g_aiCurrentLootBB[$eLootTrophyBB] & " Lower Limit: " & $g_iTxtBBTrophyLowerLimit & " Upper Limit: " & $g_iTxtBBTrophyUpperLimit)
+				_Sleep(1500)
+				Return False
+			EndIf
+		EndIf
+
+		If $g_bChkBBAttIfLootAvail Then
+			If Not CheckLootAvail() Then
+				_Sleep(1500)
+				ClickAway()
+				Return False
+			EndIf
+		EndIf
+
+		If $g_bChkBBHaltOnGoldFull Then
+			If CheckBBGoldStorageFull() Then
+				_Sleep(1500)
+				Return False
+			EndIf
+		EndIf
+		
+		If $g_bChkBBHaltOnElixirFull Then
+			If CheckBBElixirStorageFull() Then
+				_Sleep(1500)
+				Return False
+			EndIf
+		EndIf
+
+		If $g_bChkBBWaitForMachine And Not $g_bBBMachineReady Then
+			SetLog("Battle Machine is not ready.")
 			_Sleep(1500)
 			ClickAway()
 			Return False
 		EndIf
-	EndIf
 
-	$g_bBBMachineReady = CheckMachReady()
-	If $g_bChkBBWaitForMachine And Not $g_bBBMachineReady Then
-		SetLog("Battle Machine is not ready.")
-		_Sleep(1500)
-		ClickAway()
-		Return False
 	EndIf
-
+	
 	Return True ; returns true if all checks succeed
 EndFunc
 
-Func ClickAttack()
-	local $aColors = [[0xfdd79b, 96, 0], [0xffffff, 20, 50], [0xffffff, 69, 50]] ; coordinates of pixels relative to the 1st pixel
-	Local $ButtonPixel = _MultiPixelSearch(8, 640, 120, 755, 1, 1, Hex(0xeac68c, 6), $aColors, 20)
-	local $bRet = False
-
-	If Not $g_bRunState Then Return ; Stop Button
-	
-	If IsArray($ButtonPixel) Then
-		SetDebugLog(String($ButtonPixel[0]) & " " & String($ButtonPixel[1]))
-		PureClick($ButtonPixel[0] + 25, $ButtonPixel[1] + 25) ; Click fight Button
-		$bRet = True
-	Else
-		SetLog("Can not find button for Builders Base Attack button", $COLOR_ERROR)
-		If $g_bDebugImageSave Then SaveDebugImage("BBAttack_ButtonCheck_")
-	EndIf
-	Return $bRet
-EndFunc
 
 Func CheckLootAvail()
 	local $aCoords = decodeSingleCoord(findImage("BBLootAvail_bmp", $g_sImgBBLootAvail, GetDiamondFromRect("210,622,658,721"), 1, True))

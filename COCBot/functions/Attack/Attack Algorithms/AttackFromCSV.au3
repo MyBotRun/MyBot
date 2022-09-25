@@ -46,13 +46,10 @@ Func ConvertInternalExternArea()
 	Local $InnerDiamondTop = $g_afRefVillage[$g_iTree][3]
 	Local $InnerDiamondBottom = $g_afRefVillage[$g_iTree][4]
 
-	Local $DiamandAdjX = 30
-	Local $DiamandAdjY = 30
-	
-	Local $OuterDiamondLeft =  $InnerDiamondLeft - $DiamandAdjX 
-	Local $OuterDiamondRight = $InnerDiamondRight + $DiamandAdjX 
-	Local $OuterDiamondTop =  $InnerDiamondTop - $DiamandAdjY
-	Local $OuterDiamondBottom = $InnerDiamondBottom + $DiamandAdjY
+	Local $OuterDiamondLeft =  $InnerDiamondLeft - $g_afRefVillage[$g_iTree][6] 
+	Local $OuterDiamondRight = $InnerDiamondRight + $g_afRefVillage[$g_iTree][7] 
+	Local $OuterDiamondTop =  $InnerDiamondTop - $g_afRefVillage[$g_iTree][8]
+	Local $OuterDiamondBottom = $InnerDiamondBottom + $g_afRefVillage[$g_iTree][9]
 
 	Local $DiamondMiddleX = ($OuterDiamondLeft + $OuterDiamondRight) / 2
 	Local $DiamondMiddleY = ($OuterDiamondTop + $OuterDiamondBottom) / 2
@@ -94,21 +91,21 @@ Func ConvertInternalExternArea()
 	; Full ECD Diamond $CocDiamondECD
 	; Top
 	$x = $ExternalAreaRef[2][0]
-	$y = $ExternalAreaRef[2][1] + $DiamandAdjY
+	$y = $ExternalAreaRef[2][1]
 	ConvertToVillagePos($x, $y)
 	$CocDiamondECD = $x & "," & $y
 	; Right
-	$x = $ExternalAreaRef[1][0] - $DiamandAdjX
+	$x = $ExternalAreaRef[1][0]
 	$y = $ExternalAreaRef[1][1]
 	ConvertToVillagePos($x, $y)
 	$CocDiamondECD &= "|" & $x & "," & $y
 	; Bottom
 	$x = $ExternalAreaRef[3][0]
-	$y = $ExternalAreaRef[3][1] - $DiamandAdjY
+	$y = $ExternalAreaRef[3][1]
 	ConvertToVillagePos($x, $y)
 	$CocDiamondECD &= "|" & $x & "," & $y
 	; Left
-	$x = $ExternalAreaRef[0][0] + $DiamandAdjX
+	$x = $ExternalAreaRef[0][0]
 	$y = $ExternalAreaRef[0][1]
 	ConvertToVillagePos($x, $y)
 	$CocDiamondECD &= "|" & $x & "," & $y

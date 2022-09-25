@@ -2871,7 +2871,18 @@ Func _AndroidScreencap($iLeft, $iTop, $iWidth, $iHeight, $iRetryCount = 0)
 EndFunc   ;==>_AndroidScreencap
 
 Func AndroidZoomOut($loopCount = 0, $timeout = Default, $bMinitouch = Default, $wasRunState = Default)
-	Return AndroidAdbScript("ZoomOut", Default, $timeout, $bMinitouch, $wasRunState)
+	If $g_bOnBuilderBaseEnemyVillage Then
+		SetDebugLog("Running minitouch ZoomOutTOP script", $COLOR_INFO)
+		Return AndroidAdbScript("ZoomOutTop", Default, $timeout, $bMinitouch, $wasRunState)
+	Else
+		Local $iCounter = $g_aiSearchZoomOutCounter[0]
+		
+		If $iCounter > 5 Then $iCounter -= 5
+		
+		Local $sScript = "ZoomOut" & $iCounter
+		SetDeBugLog("Running minitouch script " & $sScript, $COLOR_INFO)
+		Return AndroidAdbScript($sScript, Default, $timeout, $bMinitouch, $wasRunState)
+	EndIf
 EndFunc   ;==>AndroidZoomOut
 
 Func AndroidAdbScript($scriptTag, $variablesArray = Default, $timeout = Default, $bMinitouch = Default, $wasRunState = Default)

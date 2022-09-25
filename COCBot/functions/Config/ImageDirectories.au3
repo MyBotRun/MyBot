@@ -37,7 +37,8 @@ Global Const $g_sImgOptUpdateCoC = @ScriptDir & "\imgxml\other\OptUpdateCoC*"
 #Region Main Village
 Global $g_sImgCollectRessources = @ScriptDir & "\imgxml\Resources\Collect"
 Global $g_sImgCollectLootCart = @ScriptDir & "\imgxml\Resources\LootCart*"
-Global $g_sImgBoat = @ScriptDir & "\imgxml\Boat\BoatNormalVillage_0_89.xml"
+;Global $g_sImgBoat = @ScriptDir & "\imgxml\Boat\BoatNormalVillage_0_89.xml"
+Global $g_sImgBoat = @ScriptDir & "\imgxml\Boat\NormalVillage\"
 Global $g_sImgZoomOutDir = @ScriptDir & "\imgxml\village\NormalVillage\"
 Global $g_sImgCheckWallDir = @ScriptDir & "\imgxml\Walls"
 Global $g_sImgClearTombs = @ScriptDir & "\imgxml\Resources\Tombs"
@@ -60,6 +61,7 @@ Global Const $g_sImgLabResearch = @ScriptDir & "\imgxml\Research\Laboratory\"
 #Region Clan Capital
 Global $g_sImgClanCapitalTutorial = @ScriptDir & "\imgxml\Resources\ClanCapital\Tutorial\"
 Global $g_sImgCCMap = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\"
+Global $g_sImgCCMapName = @ScriptDir & "\imgxml\Resources\ClanCapital\CapitalMap\"
 Global $g_sImgCCMenuTriangle = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\MenuTriangle\"
 Global $g_sImgAirShip = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\AirShip\"
 Global $g_sImgLock = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\Lock\"
@@ -69,6 +71,7 @@ Global $g_sImgActiveForge = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\CC
 Global $g_sImgForgeHouse = @ScriptDir & "\imgxml\Resources\ClanCapital\ForgeHouse\"
 Global $g_sImgResourceCC = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\BuilderMenu\"
 Global $g_sImgCCUpgradeButton = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\UpgradeButton\"
+Global $g_sImgCCRaid = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\Raid\"
 #EndRegion
 
 #Region Boost Super Troops
@@ -82,7 +85,8 @@ Global $g_sImgSTProgress = @ScriptDir & "\imgxml\SuperTroops\Progress\Progress*.
 
 #Region Builder Base
 Global $g_sImgCollectRessourcesBB = @ScriptDir & "\imgxml\Resources\BuildersBase\Collect"
-Global $g_sImgBoatBB = @ScriptDir & "\imgxml\Boat\BoatBuilderBase_0_89.xml"
+;Global $g_sImgBoatBB = @ScriptDir & "\imgxml\Boat\BoatBuilderBase_0_89.xml"
+Global $g_sImgBoatBB = @ScriptDir & "\imgxml\Boat\BuilderBase\"
 Global $g_sImgZoomOutDirBB = @ScriptDir & "\imgxml\village\BuilderBase\"
 Global $g_sImgStartCTBoost = @ScriptDir & "\imgxml\Resources\BuildersBase\ClockTower\ClockTowerAvailable*.xml"
 Global $g_sImgCleanBBYard = @ScriptDir & "\imgxml\Resources\ObstaclesBB"
@@ -98,6 +102,7 @@ Global $g_sImgBBBattleMachine = @ScriptDir & "\imgxml\Attack\BuilderBase\BattleM
 Global $g_sImgOkButton = @ScriptDir & "\imgxml\Attack\BuilderBase\OkayButton\OkayButton_0_90.xml"
 Global $g_sImgDirBBTroops = @ScriptDir & "\imgxml\Attack\BuilderBase\BBTroops"
 Global $g_sImgBBLootAvail = @ScriptDir & "\imgxml\Attack\BuilderBase\LootAvail\LootAvail_0_90.xml"
+Global $g_sImgBBAttackButton = @ScriptDir & "\imgxml\Attack\BuilderBase\AttackButton\*"
 #EndRegion
 
 #Region DonateCC
@@ -185,13 +190,14 @@ Global Const $g_sImgSupercellIDSlots = @ScriptDir & "\imgxml\SwitchAccounts\Supe
 #EndRegion
 
 #Region ClanGames
-Global Const $g_sImgCaravan =		@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Caravan"
-Global Const $g_sImgStart = 		@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Start"
-Global Const $g_sImgPurge = 		@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Purge"
-Global Const $g_sImgCoolPurge = 	@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Gem"
-Global Const $g_sImgTrashPurge = 	@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Trash"
-Global Const $g_sImgOkayPurge = 	@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Okay"
-Global Const $g_sImgReward = 		@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Reward"
-Global Const $g_sImageBuilerGames = @ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\BuilderGames"
+Global Const $g_sImgCaravan =			@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Caravan"
+Global Const $g_sImgStart = 			@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Start"
+Global Const $g_sImgPurge = 			@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Purge"
+Global Const $g_sImgPurgeHomeVillage=	@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\PurgeHomeVillage"
+Global Const $g_sImgCoolPurge = 		@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Gem"
+Global Const $g_sImgTrashPurge = 		@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Trash"
+Global Const $g_sImgOkayPurge = 		@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Okay"
+Global Const $g_sImgReward = 			@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\Reward"
+Global Const $g_sImageBuilerGames = 	@ScriptDir & "\imgxml\Resources\ClanGamesImages\MainLoop\BuilderGames"
 
 #EndRegion

@@ -600,7 +600,7 @@ EndFunc   ;==>btnTestImage
 
 Func btnTestVillageSize()
 	SetLog("Test Village Size")
-	
+
 	_GUICtrlTab_ClickTab($g_hTabMain, 0)
 
 	BeginImageTest()
@@ -615,7 +615,8 @@ Func btnTestVillageSize()
 	For $i = 0 To 1
 		SetLog("Testing GetVillageSize(True, """ & $a[$i][0] & """, """ & $a[$i][1] & """)", $COLOR_INFO)
 		Local $hTimer = __TimerInit()
-		Local $village = GetVillageSize(True, $a[$i][0], $a[$i][1])
+		;GetVillageSize($DebugLog = False, $sStonePrefix = Default, $sTreePrefix = Default, $sFixedPrefix = Default, $bOnBuilderBase = Default, $bMeasureOnly = False)
+		Local $village = GetVillageSize(True, $a[$i][0], $a[$i][1], Default, Default, True)
 		Local $ms = __TimerDiff($hTimer)
 		If $village = 0 Then
 			SetLog("Village not found (" & Round($ms, 0) & " ms.)", $COLOR_WARNING)
@@ -627,7 +628,7 @@ Func btnTestVillageSize()
 			SetLog("Village offset y: " & $village[3])
 			SetLog("Village stone " & $village[6] & ": " & $village[4] & ", " & $village[5])
 			SetLog("Village tree " & $village[9] & ": " & $village[7] & ", " & $village[8])
-			
+
 			If $village[4] > 0 And $village[5] > 0 And $village[7] > 0 And $village[8] > 0 And $i < 1 Then
 				; reset village measures
 				setVillageOffset(0, 0, 1)
@@ -641,9 +642,9 @@ Func btnTestVillageSize()
 
 				SaveVillageDebugImage()
 			EndIf
-			
-			
-			
+
+
+
 		EndIf
 	Next
 	EndImageTest()
@@ -983,6 +984,8 @@ Func btnRunFunction()
 	Local $currentRunState = $g_bRunState
 	$g_bRunState = True
 
+	_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
 	Local $sFunc = GUICtrlRead($g_hTxtRunFunction)
 	SetLog("Run Function : " & $sFunc, $COLOR_INFO)
 
@@ -1157,12 +1160,9 @@ Func SQLiteExport()
 EndFunc   ;==>SQLiteExport
 
 Func SaveVillageDebugImage()
-
 	Local $EditedImage = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
-	Local $testx
 	Local $hGraphic = _GDIPlus_ImageGetGraphicsContext($EditedImage)
 	Local $hBrush = _GDIPlus_BrushCreateSolid(0xFFFFFFFF)
-	Local $pixel
 
 	; Open box of crayons :-)
 	Local $hPenLtGreen = _GDIPlus_PenCreate(0xFF00DC00, 2)
@@ -1212,8 +1212,7 @@ Func SaveVillageDebugImage()
 	SetDebugLog("Village image saved: " & $filename)
 
 
-	_GDIPlus_GraphicsDispose($hGraphic)
-	_GDIPlus_BitmapDispose($EditedImage)
+
 
 	; Clean up resources
 	_GDIPlus_PenDispose($hPenLtGreen)
@@ -1231,8 +1230,12 @@ Func SaveVillageDebugImage()
 	_GDIPlus_PenDispose($hPenLtGrey)
 	_GDIPlus_PenDispose($hPenWhite)
 	_GDIPlus_PenDispose($hPenMagenta)
-	_GDIPlus_BrushDispose($hBrush)
-	
+
+   _GDIPlus_BrushDispose($hBrush)
+
+	_GDIPlus_GraphicsDispose($hGraphic)
+	_GDIPlus_BitmapDispose($EditedImage)
+
 	; open image
 	If TestCapture() = True Then
 		ShellExecute($filename)

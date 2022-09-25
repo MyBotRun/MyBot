@@ -18,7 +18,7 @@ Func drillSearch()
 	Local $pixelerror = 15
 
 	Local $Maxpositions = 0 ; Return all found Positions
-	Local $aResult = multiMatches($g_sImgSearchDrill, $Maxpositions, "ECD", "ECD")
+	Local $aResult = multiMatches($g_sImgSearchDrill, $Maxpositions, $CocDiamondECD, $CocDiamondECD)
 
 	For $iResult = 1 To UBound($aResult) - 1 ; Loop through all resultrows, skipping first row, which is searcharea, each matched img has its own row, if no resultrow, for is skipped
 		If _Sleep(10) Then Return
