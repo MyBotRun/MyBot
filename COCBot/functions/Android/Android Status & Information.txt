@@ -27,7 +27,7 @@ Second Instance Key (only for BlueStacks 3.x/4.x):  Android_1
 
 Known issues/bugs: True Background mode using ADB not available for older 0.x versions.
 Older versions might not install the right Clash of Clans APK: "CPU ABI incompatible" error in Play Store.
-In that case just install the latest arm-v7a version from apkmirror.com: https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=654652
+In that case just install the latest arm-v7a version from apkmirror.com: https://www.apkmirror.com/apk/supercell/clash-of-clans/
 ADB connection for BlueStacks2 can require one-time ADB daemon restart (initiated automatically by bot).
 
 Nox
