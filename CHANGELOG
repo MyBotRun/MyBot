@@ -1,5 +1,35 @@
+* v7.9.10 **
+* Added Autumn Scenery   ** Must rebuild broken Boat
+* Updated Summer Scenery ** Must rebuild Broken Boat
+
 * v7.9.9 **
 * Telegram REBOOT command, updated help, mobile icon updates.
+- Summer update 2022 included ( training costs removal, wall lvl elixer upgrade )
+- Some zoom-out recoding, please test any scenery and give feedback
+- Trader "sold-out" check
+- Updated ClanGames incl Builderbase
+- Auto Clan Games collect rewards activated.
+  You will need to enable it.  
+  The priority is; books-1, gems-2, runes-3, shovel-4, Research\Builder Pots-5, 50gems-6, wall rings-7, all other Pots-8, 10gems-9
+- remove troop/spells/siege cost in UI
+- disable update_shared_pref in UI
+- add multiple zoomout scripts
+- fix flame flinger donation
+- fix attackbar 
+   - siege level OCR
+   - ligthning spell level OCR
+   - when first troop is Super Troop
+   - when 2 of the same spell is visible
+- enable BattleMachine upgrade - ( still need low level BM images )  
+- fix deploy BM lvl 1-4
+- add networkconnection check to AttackBB
+- add sleep to ZoomOut loop
+- fix siegemachine OCR
+- ClanGames rewards auto collect
+- BB drop order + BM deployment
+- Fix troop deploy when BM upgrading
+- Fix FlameF attackbar template
+- Improve ClanCapital upgrade
 
 * v7.9.8
 * May 22 Update
