@@ -128,6 +128,18 @@ Func ReadBuildingConfig()
 	IniReadS($g_aiBuilderHallPos[0], $g_sProfileBuildingPath, "other", "BuilderHallPosX", -1, "int")
 	IniReadS($g_aiBuilderHallPos[1], $g_sProfileBuildingPath, "other", "BuilderHallPosY", -1, "int")
 	IniReadS($g_iBuilderHallLevel, $g_sProfileBuildingPath, "other", "LevelBuilderHall", 0, "int")
+	
+	IniReadS($g_aiDoubleCannonPos[0], $g_sProfileBuildingPath, "other", "DoubleCannonPosX", -1, "int")
+	IniReadS($g_aiDoubleCannonPos[1], $g_sProfileBuildingPath, "other", "DoubleCannonPosY", -1, "int")
+	
+	IniReadS($g_aiArcherTowerPos[0], $g_sProfileBuildingPath, "other", "ArcherTowerPosX", -1, "int")
+	IniReadS($g_aiArcherTowerPos[1], $g_sProfileBuildingPath, "other", "ArcherTowerPosY", -1, "int")
+	
+	IniReadS($g_aiMultiMortarPos[0], $g_sProfileBuildingPath, "other", "MultiMortarPosX", -1, "int")
+	IniReadS($g_aiMultiMortarPos[1], $g_sProfileBuildingPath, "other", "MultiMortarPosY", -1, "int")
+	
+	IniReadS($g_aiMegaTeslaPos[0], $g_sProfileBuildingPath, "other", "MegaTeslaPosX", -1, "int")
+	IniReadS($g_aiMegaTeslaPos[1], $g_sProfileBuildingPath, "other", "MegaTeslaPosY", -1, "int")
 
 	IniReadS($g_aiLastGoodWallPos[0], $g_sProfileBuildingPath, "upgrade", "xLastGoodWallPos", -1, "int")
 	IniReadS($g_aiLastGoodWallPos[1], $g_sProfileBuildingPath, "upgrade", "yLastGoodWallPos", -1, "int")
@@ -434,7 +446,12 @@ Func ReadConfig_600_6()
 
 	IniReadS($g_iChkPlacingNewBuildings, $g_sProfileConfigPath, "other", "ChkPlacingNewBuildings", $g_iChkPlacingNewBuildings, "Int")
 
-	IniReadS($g_bBattleMachineUpgrade, $g_sProfileConfigPath, "other", "chkBattleMachineUpgrade", $g_bBattleMachineUpgrade, "Bool")
+	; OTTO Building Upgrades
+	IniReadS($g_bBattleMachineUpgrade, $g_sProfileConfigPath, "other", "chkBattleMachineUpgrade", False, "Bool")
+	IniReadS($g_bDoubleCannonUpgrade, $g_sProfileConfigPath, "other", "chkDoubleCannonUpgrade", False, "Bool")
+	IniReadS($g_bArcherTowerUpgrade, $g_sProfileConfigPath, "other", "chkArcherTowerUpgrade", False, "Bool")
+	IniReadS($g_bMultiMortarUpgrade, $g_sProfileConfigPath, "other", "chkMultiMortarUpgrade", False, "Bool")
+	IniReadS($g_bMegaTeslaUpgrade, $g_sProfileConfigPath, "other", "chkMegaTeslaUpgrade", False, "Bool")
 
 	IniReadS($g_bChkClanGamesAir, $g_sProfileConfigPath, "other", "ChkClanGamesAir", False, "Bool")
 	IniReadS($g_bChkClanGamesGround, $g_sProfileConfigPath, "other", "ChkClanGamesGround", False, "Bool")
@@ -486,7 +503,6 @@ Func ReadConfig_600_6()
 	IniReadS($g_bChkBBHaltOnElixirFull, $g_sProfileConfigPath, "other", "ChkBBHaltOnElixirFull", False, "Bool")
 
 	IniReadS($g_bChkBBWaitForMachine, $g_sProfileConfigPath, "other", "ChkBBWaitForMachine", False, "Bool")
-	IniReadS($g_bChkBBDropBMFirst, $g_sProfileConfigPath, "other", "ChkBBDropBMFirst", False, "Bool")
 	IniReadS($g_iBBNextTroopDelay, $g_sProfileConfigPath, "other", "iBBNextTroopDelay", $g_iBBNextTroopDelayDefault, "int")
 	IniReadS($g_iBBSameTroopDelay, $g_sProfileConfigPath, "other", "iBBSameTroopDelay", $g_iBBSameTroopDelayDefault, "int")
 
@@ -652,6 +668,9 @@ Func ReadConfig_600_12()
 
 	$g_asTxtDonateTroop[$eTroopDragonRider] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateDragonRiders", "Dragon Rider|Dragon Riders"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopDragonRider] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistDragonRiders", "No Dragon Rider|No Dragon Riders"), "|", @CRLF)
+	
+	$g_asTxtDonateTroop[$eTroopElectroTitan] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateElectroTitans", "Electro Titan|Electro Titans"), "|", @CRLF)
+	$g_asTxtBlacklistTroop[$eTroopElectroTitan] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistElectroTitans", "No Electro Titan|No Electro Titans"), "|", @CRLF)
 
 	$g_asTxtDonateTroop[$eTroopMinion] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateMinions", "minions|minion"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopMinion] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistMinions", "no minion|minions no"), "|", @CRLF)
@@ -731,6 +750,9 @@ Func ReadConfig_600_12()
 	$g_asTxtDonateSpell[$eSpellInvisibility] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateInvisibilitySpells", "Invisibility"), "|", @CRLF)
 	$g_asTxtBlacklistSpell[$eSpellInvisibility] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistInvisibilitySpells", "No Invisibility|Invisibility No"), "|", @CRLF)
 
+	$g_asTxtDonateSpell[$eSpellRecall] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateRecallSpells", "Recall"), "|", @CRLF)
+	$g_asTxtBlacklistSpell[$eSpellRecall] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistRecallSpells", "No Recall|Recall No"), "|", @CRLF)
+
 	$g_asTxtDonateSpell[$eSpellClone] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateCloneSpells", "Clone"), "|", @CRLF)
 	$g_asTxtBlacklistSpell[$eSpellClone] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistCloneSpells", "No Clone|Clone No"), "|", @CRLF)
 
@@ -774,30 +796,33 @@ Func ReadConfig_600_12()
 	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeFlameFlinger] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateFlameF", "Flame Flinger"), "|", @CRLF)
 	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeFlameFlinger] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistFlameF", "Flame Flinger No"), "|", @CRLF)
 
-	$g_aiDonateCustomTrpNumA[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomA1", 6))
-	$g_aiDonateCustomTrpNumA[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomA2", 1))
+	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleDrill] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBattleD", "Drill|siege"), "|", @CRLF)
+	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleDrill] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBattleD", "no Drill|siege no"), "|", @CRLF)
+
+	$g_aiDonateCustomTrpNumA[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomA1", 12))
+	$g_aiDonateCustomTrpNumA[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomA2", 2))
 	$g_aiDonateCustomTrpNumA[2][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomA3", 0))
 	$g_aiDonateCustomTrpNumA[0][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomA1", 2))
 	$g_aiDonateCustomTrpNumA[1][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomA2", 3))
 	$g_aiDonateCustomTrpNumA[2][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomA3", 1))
 
-	$g_aiDonateCustomTrpNumB[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomB1", 11))
-	$g_aiDonateCustomTrpNumB[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomB2", 1))
-	$g_aiDonateCustomTrpNumB[2][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomB3", 6))
+	$g_aiDonateCustomTrpNumB[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomB1", 18))
+	$g_aiDonateCustomTrpNumB[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomB2", 9))
+	$g_aiDonateCustomTrpNumB[2][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomB3", 25))
 	$g_aiDonateCustomTrpNumB[0][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomB1", 3))
 	$g_aiDonateCustomTrpNumB[1][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomB2", 13))
 	$g_aiDonateCustomTrpNumB[2][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomB3", 5))
 
-	$g_aiDonateCustomTrpNumC[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomC1", 6))
-	$g_aiDonateCustomTrpNumC[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomC2", 1))
+	$g_aiDonateCustomTrpNumC[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomC1", 12))
+	$g_aiDonateCustomTrpNumC[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomC2", 2))
 	$g_aiDonateCustomTrpNumC[2][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomC3", 0))
 	$g_aiDonateCustomTrpNumC[0][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomC1", 2))
 	$g_aiDonateCustomTrpNumC[1][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomC2", 3))
 	$g_aiDonateCustomTrpNumC[2][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomC3", 1))
 
-	$g_aiDonateCustomTrpNumD[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomD1", 11))
-	$g_aiDonateCustomTrpNumD[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomD2", 1))
-	$g_aiDonateCustomTrpNumD[2][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomD3", 6))
+	$g_aiDonateCustomTrpNumD[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomD1", 18))
+	$g_aiDonateCustomTrpNumD[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomD2", 9))
+	$g_aiDonateCustomTrpNumD[2][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomD3", 25))
 	$g_aiDonateCustomTrpNumD[0][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomD1", 3))
 	$g_aiDonateCustomTrpNumD[1][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomD2", 13))
 	$g_aiDonateCustomTrpNumD[2][1] = Int(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomD3", 5))
@@ -843,10 +868,9 @@ Func ReadConfig_600_15()
 	IniReadS($g_bUpgradeChampionEnable, $g_sProfileConfigPath, "upgrade", "UpgradeChampion", False, "Bool")
 	IniReadS($g_iHeroReservedBuilder, $g_sProfileConfigPath, "upgrade", "HeroReservedBuilder", 0, "int")
 
-	IniReadS($g_bUpgradePetsEnable[$ePetLassi], $g_sProfileConfigPath, "upgrade", "UpgradePetLassi", False, "Bool")
-	IniReadS($g_bUpgradePetsEnable[$ePetEletroOwl], $g_sProfileConfigPath, "upgrade", "UpgradePetEletroOwl", False, "Bool")
-	IniReadS($g_bUpgradePetsEnable[$ePetMightyYak], $g_sProfileConfigPath, "upgrade", "UpgradePetMightyYak", False, "Bool")
-	IniReadS($g_bUpgradePetsEnable[$ePetUnicorn], $g_sProfileConfigPath, "upgrade", "UpgradePetUnicorn", False, "Bool")
+	For $i = 0 to $ePetCount - 1
+		IniReadS($g_bUpgradePetsEnable[$i], $g_sProfileConfigPath, "upgrade", "UpgradePet[" & $g_asPetShortNames[$i] & "]", False, "Bool")
+	Next
 EndFunc   ;==>ReadConfig_600_15
 
 Func ReadConfig_600_16()
@@ -860,7 +884,7 @@ EndFunc   ;==>ReadConfig_600_16
 Func ReadConfig_auto()
 	; Auto Upgrade
 	IniReadS($g_bAutoUpgradeEnabled, $g_sProfileConfigPath, "Auto Upgrade", "AutoUpgradeEnabled", False, "Bool")
-	For $i = 0 To 13
+	For $i = 0 To 15
 		IniReadS($g_iChkUpgradesToIgnore[$i], $g_sProfileConfigPath, "Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i], "int")
 	Next
 	For $i = 0 To 2
@@ -879,7 +903,7 @@ Func ReadConfig_600_17()
 	IniReadS($g_iUpgradeWallLootType, $g_sProfileConfigPath, "upgrade", "use-storage", 0, "int")
 	IniReadS($g_bUpgradeWallSaveBuilder, $g_sProfileConfigPath, "upgrade", "savebldr", False, "Bool")
 	IniReadS($g_iCmbUpgradeWallsLevel, $g_sProfileConfigPath, "upgrade", "walllvl", 6, "int")
-	For $i = 4 To 15
+	For $i = 4 To 16
 		IniReadS($g_aiWallsCurrentCount[$i], $g_sProfileConfigPath, "Walls", "Wall" & StringFormat("%02d", $i), 0, "int")
 	Next
 	IniReadS($g_iWallCost, $g_sProfileConfigPath, "upgrade", "WallCost", 0, "int")

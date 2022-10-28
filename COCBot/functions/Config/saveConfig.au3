@@ -97,6 +97,18 @@ Func SaveBuildingConfig()
 	_Ini_Add("other", "BuilderHallPosX", $g_aiBuilderHallPos[0])
 	_Ini_Add("other", "BuilderHallPosY", $g_aiBuilderHallPos[1])
 	_Ini_Add("other", "LevelBuilderHall", $g_iBuilderHallLevel)
+	
+	_Ini_Add("other", "DoubleCannonPosX", $g_aiDoubleCannonPos[0]) ; ? not sure why this is needed
+	_Ini_Add("other", "DoubleCannonPosY", $g_aiDoubleCannonPos[1])
+	
+	_Ini_Add("other", "ArcherTowerPosX", $g_aiArcherTowerPos[0]) ; ? not sure why this is needed
+	_Ini_Add("other", "ArcherTowerPosY", $g_aiArcherTowerPos[1])
+
+	_Ini_Add("other", "MultiMortarPosX", $g_aiMultiMortarPos[0]) ; ? not sure why this is needed
+	_Ini_Add("other", "MultiMortarPosY", $g_aiMultiMortarPos[1])
+	
+	_Ini_Add("other", "MegaTeslaPosX", $g_aiMegaTeslaPos[0]) ; ? not sure why this is needed
+	_Ini_Add("other", "MegaTeslaPosY", $g_aiMegaTeslaPos[1])
 
 	_Ini_Add("other", "xTownHall", $g_aiTownHallPos[0])
 	_Ini_Add("other", "yTownHall", $g_aiTownHallPos[1])
@@ -381,7 +393,12 @@ Func SaveConfig_600_6()
 
 	_Ini_Add("other", "ChkPlacingNewBuildings", $g_iChkPlacingNewBuildings)
 	
+	; OTTO Building Upgrades
 	_Ini_Add("other", "chkBattleMachineUpgrade", $g_bBattleMachineUpgrade)
+	_Ini_Add("other", "chkDoubleCannonUpgrade", $g_bDoubleCannonUpgrade)
+	_Ini_Add("other", "chkArcherTowerUpgrade", $g_bArcherTowerUpgrade)
+	_Ini_Add("other", "chkMultiMortarUpgrade", $g_bMultiMortarUpgrade)
+	_Ini_Add("other", "chkMegaTeslaUpgrade", $g_bMegaTeslaUpgrade)
 
 	_Ini_Add("other", "ChkClanGamesAir", $g_bChkClanGamesAir ? 1 : 0)
 	_Ini_Add("other", "ChkClanGamesGround", $g_bChkClanGamesGround ? 1 : 0)
@@ -431,7 +448,6 @@ Func SaveConfig_600_6()
 	_Ini_Add("other", "ChkBBHaltOnElixirFull", $g_bChkBBHaltOnElixirFull)
 	
 	_Ini_Add("other", "ChkBBWaitForMachine", $g_bChkBBWaitForMachine)
-	_Ini_Add("other", "ChkBBDropBMFirst", $g_bChkBBDropBMFirst)
 	_Ini_Add("other", "iBBNextTroopDelay", $g_iBBNextTroopDelay)
 	_Ini_Add("other", "iBBSameTroopDelay", $g_iBBSameTroopDelay)
 
@@ -584,10 +600,9 @@ Func SaveConfig_600_15()
 	_Ini_Add("upgrade", "UpgradeChampion", $g_bUpgradeChampionEnable ? 1 : 0)
 	_Ini_Add("upgrade", "HeroReservedBuilder", $g_iHeroReservedBuilder)
 
-	_Ini_Add("upgrade", "UpgradePetLassi", $g_bUpgradePetsEnable[$ePetLassi] ? 1 : 0)
-	_Ini_Add("upgrade", "UpgradePetEletroOwl", $g_bUpgradePetsEnable[$ePetEletroOwl] ? 1 : 0)
-	_Ini_Add("upgrade", "UpgradePetMightyYak", $g_bUpgradePetsEnable[$ePetMightyYak] ? 1 : 0)
-	_Ini_Add("upgrade", "UpgradePetUnicorn", $g_bUpgradePetsEnable[$ePetUnicorn] ? 1 : 0)
+	For $i = 0 to $ePetCount - 1
+		_Ini_Add("upgrade", "UpgradePet[" & $g_asPetShortNames[$i] & "]", $g_bUpgradePetsEnable[$i] ? 1 : 0)
+	Next
 EndFunc   ;==>SaveConfig_600_15
 
 Func SaveConfig_600_16()
@@ -601,7 +616,7 @@ Func SaveConfig_auto()
 	ApplyConfig_auto(GetApplyConfigSaveAction())
 	; Auto Upgrade
 	_Ini_Add("Auto Upgrade", "AutoUpgradeEnabled", $g_bAutoUpgradeEnabled)
-	For $i = 0 To 13
+	For $i = 0 To 15
 		_Ini_Add("Auto Upgrade", "ChkUpgradesToIgnore[" & $i & "]", $g_iChkUpgradesToIgnore[$i])
 	Next
 	For $i = 0 To 2
@@ -621,7 +636,7 @@ Func SaveConfig_600_17()
 	_Ini_Add("upgrade", "use-storage", $g_iUpgradeWallLootType)
 	_Ini_Add("upgrade", "savebldr", $g_bUpgradeWallSaveBuilder ? 1 : 0)
 	_Ini_Add("upgrade", "walllvl", $g_iCmbUpgradeWallsLevel)
-	For $i = 4 To 15
+	For $i = 4 To 16
 		_Ini_Add("Walls", "Wall" & StringFormat("%02d", $i), $g_aiWallsCurrentCount[$i])
 	Next
 	_Ini_Add("upgrade", "WallCost", $g_iWallCost)
@@ -1174,16 +1189,13 @@ Func SaveConfig_600_52_2()
 	ApplyConfig_600_52_2(GetApplyConfigSaveAction())
 	For $t = 0 To $eTroopCount - 1
 		_Ini_Add("troop", $g_asTroopShortNames[$t], $g_aiArmyCustomTroops[$t])
-		;_Ini_Add("LevelTroop", $g_asTroopShortNames[$t], $g_aiTrainArmyTroopLevel[$t])
 	Next
 
 	For $s = 0 To $eSpellCount - 1
 		_Ini_Add("Spells", $g_asSpellShortNames[$s], $g_aiArmyCustomSpells[$s])
-		;_Ini_Add("LevelSpell", $g_asSpellShortNames[$s], $g_aiTrainArmySpellLevel[$s])
 	Next
 	For $s = 0 To $eSiegeMachineCount - 1
-		_Ini_Add("Siege", $g_asSiegeMachineShortNames[$s], $g_aiArmyCustomSiegeMachines[$s])
-		;_Ini_Add("LevelSiege", $g_asSiegeMachineShortNames[$s], $g_aiTrainArmySiegeMachineLevel[$s])
+		_Ini_Add("Siege", $g_asSiegeMachineShortNames[$s], $g_aiArmyCompSiegeMachines[$s])
 	Next
 	; full & forced Total Camp values
 	_Ini_Add("troop", "fulltroop", $g_iTrainArmyFullTroopPct)

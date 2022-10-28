@@ -736,12 +736,11 @@ Func chkEnableBBAttack()
 	If GUICtrlRead($g_hChkEnableBBAttack) = $GUI_CHECKED Then
 		GUICtrlSetState($g_hChkBBTrophyRange, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBAttIfLootAvail, $GUI_ENABLE)
-		
+
 		GUICtrlSetState($g_hChkBBHaltOnGoldFull, $GUI_ENABLE)
 		GUICtrlSetState($g_hChkBBHaltOnElixirFull, $GUI_ENABLE)
-		
+
 		GUICtrlSetState($g_hChkBBWaitForMachine, $GUI_ENABLE)
-		GUICtrlSetState($g_hChkBBDropBMFirst, $GUI_ENABLE)
 		GUICtrlSetState($g_hBtnBBDropOrder, $GUI_ENABLE)
 		GUICtrlSetState($g_hCmbBBSameTroopDelay, $GUI_ENABLE)
 		GUICtrlSetState($g_hCmbBBNextTroopDelay, $GUI_ENABLE)
@@ -749,14 +748,13 @@ Func chkEnableBBAttack()
 	Else
 		GUICtrlSetState($g_hChkBBTrophyRange, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkBBAttIfLootAvail, $GUI_DISABLE)
-		
+
 		GUICtrlSetState($g_hChkBBHaltOnGoldFull, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkBBHaltOnElixirFull, $GUI_DISABLE)
-		
+
 		GUICtrlSetState($g_hTxtBBTrophyLowerLimit, $GUI_DISABLE)
 		GUICtrlSetState($g_hTxtBBTrophyUpperLimit, $GUI_DISABLE)
 		GUICtrlSetState($g_hChkBBWaitForMachine, $GUI_DISABLE)
-		GUICtrlSetState($g_hChkBBDropBMFirst, $GUI_DISABLE)
 		GUICtrlSetState($g_hBtnBBDropOrder, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbBBSameTroopDelay, $GUI_DISABLE)
 		GUICtrlSetState($g_hCmbBBNextTroopDelay, $GUI_DISABLE)
@@ -885,3 +883,73 @@ Func EnableAutoUpgradeCC()
 		Next
 	EndIf
 EndFunc
+
+
+Func chkUpgradeDoubleCannon()
+
+	If GUICtrlRead($g_hChkDoubleCannonUpgrade) = $GUI_CHECKED Then
+		_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+		SetLog("Please wait ......", $COLOR_ORANGE)
+		SetLog("Checking for valid Coordinates of Double Cannon ......", $COLOR_ORANGE)
+
+		$g_bDoubleCannonUpgrade = True
+		LocateDoubleCannon()
+	Else
+		$g_bDoubleCannonUpgrade = False
+		GUICtrlSetState($g_hChkDoubleCannonUpgrade, $GUI_UNCHECKED)
+	EndIf
+
+	Return
+EndFunc   ;==>chkUpgradeDoubleCannon
+
+Func chkUpgradeArcherTower()
+
+	If GUICtrlRead($g_hChkArcherTowerUpgrade) = $GUI_CHECKED Then
+		_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+		SetLog("Please wait ......", $COLOR_ORANGE)
+		SetLog("Checking for valid Coordinates of Archer Tower ......", $COLOR_ORANGE)
+
+		$g_bArcherTowerUpgrade = True
+		LocateArcherTower()
+	Else
+		$g_bArcherTowerUpgrade = False
+	EndIf
+
+	Return
+EndFunc   ;==>chkUpgradeArcherTower
+
+Func chkUpgradeMultiMortar()
+
+	If GUICtrlRead($g_hChkMultiMortarUpgrade) = $GUI_CHECKED Then
+		_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+		SetLog("Please wait ......", $COLOR_ORANGE)
+		SetLog("Checking for valid Coordinates of Multi Mortar ......", $COLOR_ORANGE)
+
+		$g_bMultiMortarUpgrade = True
+		LocateMultiMortar()
+	Else
+		$g_bMultiMortarUpgrade = False
+	EndIf
+
+	Return
+EndFunc   ;==>chkUpgradeMultiMortar
+
+Func chkUpgradeMegaTesla()
+
+	If GUICtrlRead($g_hChkMegaTeslaUpgrade) = $GUI_CHECKED Then
+		_GUICtrlTab_ClickTab($g_hTabMain, 0)
+
+		SetLog("Please wait ......", $COLOR_ORANGE)
+		SetLog("Checking for valid Coordinates of Mega Tesla ......", $COLOR_ORANGE)
+
+		$g_bMegaTeslaUpgrade = True
+		LocateMegaTesla()
+	Else
+		$g_bMegaTeslaUpgrade = False
+	EndIf
+
+	Return
+ EndFunc   ;==>chkUpgradeMegaTesla

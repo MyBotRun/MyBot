@@ -376,6 +376,7 @@ Func ReferenceGlobals()
 	$a1 = $eHdV12
 	$a1 = $eHdV13
 	$a1 = $eHdV14
+	$a1 = $eHdV15
 	$a1 = $eUnranked
 	$a1 = $eBronze
 	$a1 = $eSilver
@@ -393,6 +394,11 @@ Func ReferenceGlobals()
 	$a1 = $eWall09
 	$a1 = $eWall10
 	$a1 = $eWall11
+	$a1 = $eWall12
+	$a1 = $eWall13
+	$a1 = $eWall14
+	$a1 = $eWall15
+	$a1 = $eWall16
 	$a1 = $eIcnPBNotify
 	$a1 = $eIcnCCTroops
 	$a1 = $eIcnCCSpells
@@ -453,6 +459,7 @@ Func ReferenceGlobals()
 	$a1 = $eSpellFreeze
 	$a1 = $eSpellClone
 	$a1 = $eSpellInvisibility
+	$a1 = $eSpellRecall
 
 	$a1 = $eSpellPoison
 	$a1 = $eSpellEarthquake
@@ -499,6 +506,7 @@ Func ReferenceGlobals()
 	$a1 = $eFSpell
 	$a1 = $eCSpell
 	$a1 = $eISpell
+	$a1 = $eReSpell
 	$a1 = $ePSpell
 	$a1 = $eESpell
 	$a1 = $eHaSpell

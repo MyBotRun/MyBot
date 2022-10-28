@@ -30,22 +30,25 @@ Func BuildingInfo($iXstart, $iYstart)
 	If StringInStr($sBldgText, "Trunk") Then $sBldgText &= " (FakeLevel 97)"
 	If StringInStr($sBldgText, "Bush") Then $sBldgText &= " (FakeLevel 96)"
 	If StringInStr($sBldgText, "Bark") Then $sBldgText &= " (FakeLevel 95)"
-	If StringInStr($sBldgText, "Gem") Then $sBldgText &= " (FakeLevel 94)"
+	If StringInStr($sBldgText, "Gem") Then 
+		If Not StringInStr($sBldgText, "Gem Mine") Then $sBldgText &= " (FakeLevel 94)"
+	EndIf
+	
 	$aString = StringSplit($sBldgText, "(") ; Spilt the name and building level
 	If $aString[0] = 2 Then ; If we have name and level then use it
-		SetDebugLog("1st $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
+		If $g_bDebugSetlog Then SetDebugLog("1st $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
 		If $aString[1] <> "" Then $aResult[1] = StringStripWS($aString[1], 7) ; check for bad read and store name in result[]
 		If $aString[2] <> "" Then ; check for bad read of level
 			$sBldgLevel = $aString[2] ; store level text
 			$aString = StringSplit($sBldgLevel, ")") ;split off the closing parenthesis
 			If $aString[0] = 2 Then ; Check If we have "level XX" cleaned up
 				If StringInStr($aString[1], "Broken") Then $aString[1] &= " 200" ; Broken Clan Castle (not rebuild yet): add fake level
-				SetDebugLog("2nd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
+				If $g_bDebugSetlog Then SetDebugLog("2nd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
 				If $aString[1] <> "" Then $sBldgLevel = $aString[1] ; store "level XX"
 			EndIf
 			$aString = StringSplit($sBldgLevel, " ") ;split off the level number
 			If $aString[0] = 2 Then ; If we have level number then use it
-				SetDebugLog("3rd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
+				If $g_bDebugSetlog Then SetDebugLog("3rd $aString = " & $aString[0] & ", " & $aString[1] & ", " & $aString[2], $COLOR_DEBUG) ;debug
 				If $aString[2] <> "" Then $aResult[2] = Number($aString[2]) ; store bldg level
 			EndIf
 		EndIf

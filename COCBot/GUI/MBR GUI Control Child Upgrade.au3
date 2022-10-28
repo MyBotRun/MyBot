@@ -461,8 +461,25 @@ Func chkUpgradeChampion()
 EndFunc   ;==>chkUpgradeChampion
 
 Func chkUpgradePets()
-	If $g_iTownHallLevel > 13 Then ; Must be TH14 to have Pets
-		For $i = 0 to $ePetCount - 1
+	If $g_iTownHallLevel = 14 Then ; Must be TH14 to have Pets 1->4
+		For $i = 0 To $ePetCount - 5
+			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
+			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
+				$g_bUpgradePetsEnable[$i] = True
+				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " enabled")
+			Else
+				$g_bUpgradePetsEnable[$i] = False
+				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
+			EndIf
+		Next
+		For $i = $ePetCount - 4 To $ePetCount - 1
+			GUICtrlSetState($g_hChkUpgradePets[$i], BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+			$g_bUpgradePetsEnable[$i] = False
+			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
+		Next
+	ElseIf $g_iTownHallLevel > 14 Then ; Must be TH15 to have all Pets
+		For $i = 0 To $ePetCount - 1
+			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_ENABLE)
 			If GUICtrlRead($g_hChkUpgradePets[$i]) = $GUI_CHECKED Then
 				$g_bUpgradePetsEnable[$i] = True
 				SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " enabled")
@@ -474,6 +491,7 @@ Func chkUpgradePets()
 	Else
 		For $i = 0 to $ePetCount - 1
 			GUICtrlSetState($g_hChkUpgradePets[$i], BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+			$g_bUpgradePetsEnable[$i] = False
 		Next
 	EndIf
 EndFunc
@@ -542,7 +560,7 @@ Func cmbWalls()
 	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_SHOW)
 	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_SHOW)
    Next
-   For $i = $g_iCmbUpgradeWallsLevel+6 To 15
+   For $i = $g_iCmbUpgradeWallsLevel+6 To 16
 	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
 	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
    Next
@@ -598,7 +616,7 @@ Func chkResourcesToIgnore()
 EndFunc   ;==>chkResourcesToIgnore
 
 Func chkUpgradesToIgnore()
-	For $i = 0 To 13
+	For $i = 0 To 14
 		$g_iChkUpgradesToIgnore[$i] = GUICtrlRead($g_hChkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
 	Next
 EndFunc   ;==>chkUpgradesToIgnore

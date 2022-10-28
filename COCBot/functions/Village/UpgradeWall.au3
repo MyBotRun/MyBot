@@ -26,8 +26,8 @@ Func UpgradeWall()
 		SetDebugLog("$g_iFreeBuilderCount:" & $g_iFreeBuilderCount)
 		If $g_iFreeBuilderCount > 0 Then
 			ClickAway()
-			Local $MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $iWallCost) > Number($g_iUpgradeWallMinGold) ; Check if enough Gold
-			Local $MinWallElixir = Number($g_aiCurrentLoot[$eLootElixir] - $iWallCost) > Number($g_iUpgradeWallMinElixir) ; Check if enough Elixir
+			Local $MinWallGold = Number($g_aiCurrentLoot[$eLootGold] - $iWallCost) >= Number($g_iUpgradeWallMinGold) ; Check if enough Gold
+			Local $MinWallElixir = Number($g_aiCurrentLoot[$eLootElixir] - $iWallCost) >= Number($g_iUpgradeWallMinElixir) ; Check if enough Elixir
 
 			SetDebugLog("$g_iUpgradeWallLootType" & $g_iUpgradeWallLootType)
 			SetDebugLog("$MinWallGold" & $MinWallGold)

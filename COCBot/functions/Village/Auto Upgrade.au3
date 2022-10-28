@@ -22,15 +22,15 @@ EndFunc
 
 Func _AutoUpgrade()
 	If Not $g_bAutoUpgradeEnabled Then Return
-
+	
 	SetLog("Starting Auto Upgrade", $COLOR_INFO)
 	Local $iLoopAmount = 0
-	Local $iLoopMax = 6
+	Local $iLoopMax = 8
 
 	While 1
 
 		$iLoopAmount += 1
-		If $iLoopAmount >= $iLoopMax Or $iLoopAmount >= 12 Then ExitLoop ; 6 loops max, to avoid infinite loop
+		If $iLoopAmount >= $iLoopMax Or $iLoopAmount >= 12 Then ExitLoop ; 8 loops max, to avoid infinite loop
 
 		ClickAway()
 		If _sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
@@ -52,48 +52,68 @@ Func _AutoUpgrade()
 		Click(295, 30)
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
 
-		; search for 000 in builders menu, if 000 found, a possible upgrade is available
-		If QuickMIS("BC1", $g_sImgAUpgradeZero, 180, $g_iNextLineOffset, 480, 350) Then
-			SetLog("Possible upgrade found !", $COLOR_SUCCESS)
-			$g_iCurrentLineOffset = $g_iQuickMISY
+		; search for ressource images in builders menu, if found, a possible upgrade is available
+		Local $aTmpCoord
+		$aTmpCoord = QuickMIS("CNX", $g_sImgResourceIcon, 310, $g_iNextLineOffset, 450, 390)
+		_ArraySort($aTmpCoord, 0, 0, 0, 2);sort by Y coord
+		If IsArray($aTmpCoord) And UBound($aTmpCoord) > 0 Then
+			$g_iNextLineOffset = $aTmpCoord[0][2] + 14
+			If QuickMIS("BC1", $g_sImgAUpgradeZero, $aTmpCoord[0][1], $aTmpCoord[0][2] - 8, $aTmpCoord[0][1] + 100, $aTmpCoord[0][2] + 7) Then
+				SetLog("Possible upgrade found !", $COLOR_SUCCESS)
+			Else
+				SetLog("Not Enough Ressource, looking next...", $COLOR_INFO)
+				ContinueLoop
+			EndIf
 		Else
 			SetLog("No upgrade available... Exiting Auto Upgrade...", $COLOR_INFO)
 			ExitLoop
 		EndIf
-
-		; check in the line of the 000 if we can see "New" or the Gear of the equipment, in this case, will not do the upgrade
-		If QuickMIS("NX",$g_sImgAUpgradeObst, 180, $g_iCurrentLineOffset - 15, 480, $g_iCurrentLineOffset + 15) <> "none" Then
+	
+		; check in the line if we can see "New" or the Gear of the equipment, in this case, will not do the upgrade
+		If QuickMIS("NX",$g_sImgAUpgradeObst, 180, $aTmpCoord[0][2] - 15, 480, $aTmpCoord[0][2] + 15) <> "none" Then
 			SetLog("This is a New Building or an Equipment, looking next...", $COLOR_WARNING)
-			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
 
 		; if it's an upgrade, will click on the upgrade, in builders menu
-		Click($g_iQuickMISX, $g_iCurrentLineOffset)
+		Click($aTmpCoord[0][1] + 20, $aTmpCoord[0][2])
 		If _Sleep($DELAYAUTOUPGRADEBUILDING1) Then Return
-
+		
+		$g_aUpgradeNameLevel = BuildingInfo(242, 490 + $g_iBottomOffsetY)
+		Local $aUpgradeButton, $aTmpUpgradeButton
+		
 		; check if any wrong click by verifying the presence of the Upgrade button (the hammer)
-		Local $aUpgradeButton = findButton("Upgrade", Default, 1, True)
+		$aUpgradeButton = findButton("Upgrade", Default, 1, True)
+		
+		If $g_aUpgradeNameLevel[1] = "Town Hall" And $g_aUpgradeNameLevel[2] > 11 Then ;Upgrade THWeapon not Ignored
+			$aTmpUpgradeButton = findButton("THWeapon") ;try to find UpgradeTHWeapon button (swords)
+			If IsArray($aTmpUpgradeButton) And UBound($aTmpUpgradeButton) = 2 Then
+				If $g_iChkUpgradesToIgnore[15] Then
+					ContinueLoop
+				EndIf
+				$g_aUpgradeNameLevel[1] = "Town Hall Weapon"
+				$aUpgradeButton = $aTmpUpgradeButton
+			EndIf
+		Endif
+		
 		If Not(IsArray($aUpgradeButton) And UBound($aUpgradeButton, 1) = 2) Then
 			SetLog("No upgrade here... Wrong click, looking next...", $COLOR_WARNING)
-			;$g_iNextLineOffset = $g_iCurrentLineOffset -> not necessary finally, but in case, I keep lne commented
-			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
 
 		; get the name and actual level of upgrade selected, if strings are empty, will exit Auto Upgrade, an error happens
-		$g_aUpgradeNameLevel = BuildingInfo(242, 490 + $g_iBottomOffsetY)
 		If $g_aUpgradeNameLevel[0] = "" Then
 			SetLog("Error when trying to get upgrade name and level, looking next...", $COLOR_ERROR)
-			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
-
+		
 		Local $bMustIgnoreUpgrade = False
 		; matchmaking between building name and the ignore list
 		Switch $g_aUpgradeNameLevel[1]
 			Case "Town Hall"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[0] = 1) ? True : False
+			Case "Town Hall Weapon"
+				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[15] = 1) ? True : False
 			Case "Barbarian King"
 				$bMustIgnoreUpgrade = ($g_iChkUpgradesToIgnore[1] = 1 Or $g_bUpgradeKingEnable = True) ? True : False ; if upgrade king is selected, will ignore it
 			Case "Archer Queen"
@@ -129,7 +149,6 @@ Func _AutoUpgrade()
 		; check if the upgrade name is on the list of upgrades that must be ignored
 		If $bMustIgnoreUpgrade = True Then
 			SetLog("This upgrade must be ignored, looking next...", $COLOR_WARNING)
-			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
 
@@ -144,15 +163,14 @@ Func _AutoUpgrade()
 				$g_aUpgradeResourceCostDuration[2] = getHeroUpgradeTime(578, 465 + $g_iMidOffsetY) ; get duration
 			Case Else
 				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 460, 510, 500, 550) ; get resource
-				$g_aUpgradeResourceCostDuration[1] = getResourcesBonus(366, 487 + $g_iMidOffsetY) ; get cost
-				$g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(195, 307 + $g_iMidOffsetY) ; get duration
+				$g_aUpgradeResourceCostDuration[1] = getResourcesBonus(363, 487 + $g_iMidOffsetY) ; get cost
+				$g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(185, 307 + $g_iMidOffsetY) ; get duration
 		EndSwitch
 
 		; if one of the value is empty, there is an error, we must exit Auto Upgrade
 		For $i = 0 To 2
 			If $g_aUpgradeResourceCostDuration[$i] = "" Then
 				SetLog("Error when trying to get upgrade details, looking next...", $COLOR_ERROR)
-				$g_iNextLineOffset = $g_iCurrentLineOffset
 				ContinueLoop 2
 			EndIf
 		Next
@@ -173,7 +191,6 @@ Func _AutoUpgrade()
 		; check if the resource of the upgrade must be ignored
 		If $bMustIgnoreResource = True Then
 			SetLog("This resource must be ignored, looking next...", $COLOR_WARNING)
-			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
 
@@ -191,16 +208,15 @@ Func _AutoUpgrade()
 		; if boolean still False, we can't launch upgrade, exiting...
 		If Not $bSufficentResourceToUpgrade Then
 			SetLog("Insufficent " & $g_aUpgradeResourceCostDuration[0] & " to launch this upgrade, looking Next...", $COLOR_WARNING)
-			$g_iNextLineOffset = $g_iCurrentLineOffset
 			ContinueLoop
 		EndIf
-
+		
 		; final click on upgrade button, click coord is get looking at upgrade type (heroes have a diferent place for Upgrade button)
 		Switch $g_aUpgradeNameLevel[1]
 			Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
 				Click(660, 560)
 			Case Else
-				Click(440, 530)
+				Click(430, 530)
 		EndSwitch
 		
 		;Check for 'End Boost?' pop-up
@@ -221,13 +237,30 @@ Func _AutoUpgrade()
 			EndIf
 		EndIf
 		
-		
 		; Upgrade completed, but at the same line there might be more...
-		$g_iCurrentLineOffset -= $g_iQuickMISY
+		$g_iNextLineOffset = $aTmpCoord[0][2] - 10
 		$iLoopMax += 1
 
 		; update Logs and History file
-		SetLog("Launched upgrade of " & $g_aUpgradeNameLevel[1] & " to level " & $g_aUpgradeNameLevel[2] + 1 & " successfully !", $COLOR_SUCCESS)
+		If $g_aUpgradeNameLevel[1] = "Town Hall Weapon" Then
+			Switch $g_aUpgradeNameLevel[2]
+				Case 12
+					$g_aUpgradeNameLevel[1] = "Giga Tesla"
+					SetLog("Launched upgrade of Giga Tesla successfully !", $COLOR_SUCCESS)
+				Case 13
+					$g_aUpgradeNameLevel[1] = "Giga Inferno"
+					SetLog("Launched upgrade of Giga Inferno successfully !", $COLOR_SUCCESS)
+				Case 14
+					$g_aUpgradeNameLevel[1] = "Giga Inferno"
+					SetLog("Launched upgrade of Giga Inferno successfully !", $COLOR_SUCCESS)
+				Case 15
+					$g_aUpgradeNameLevel[1] = "Giga Inferno"
+					SetLog("Launched upgrade of Giga Inferno successfully !", $COLOR_SUCCESS)	
+			EndSwitch
+		Else
+			SetLog("Launched upgrade of " & $g_aUpgradeNameLevel[1] & " to level " & $g_aUpgradeNameLevel[2] + 1 & " successfully !", $COLOR_SUCCESS)
+		Endif
+				
 		SetLog(" - Cost : " & _NumberFormat($g_aUpgradeResourceCostDuration[1]) & " " & $g_aUpgradeResourceCostDuration[0], $COLOR_SUCCESS)
 		SetLog(" - Duration : " & $g_aUpgradeResourceCostDuration[2], $COLOR_SUCCESS)
 
@@ -248,12 +281,11 @@ Func _AutoUpgrade()
 
 	WEnd
 
-	; resetting the offsets of the lines
-	$g_iCurrentLineOffset = 0
-	$g_iNextLineOffset = 0
+	; resetting the offset of the lines
+	$g_iNextLineOffset = 75
 
 	SetLog("Auto Upgrade finished", $COLOR_INFO)
 	ClickAway()
 	ZoomOut() ; re-center village
-
+	
 EndFunc   ;==>AutoUpgrade

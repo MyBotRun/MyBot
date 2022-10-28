@@ -111,7 +111,7 @@ Func chkPlacingNewBuildings()
 EndFunc   ;==>chkPlacingNewBuildings
 
 ; MAIN CODE
-Func MainSuggestedUpgradeCode()
+Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave, $bFinishNow = False)
 
 	; If is not selected return
 	If $g_iChkBBSuggestedUpgrades = 0 Then Return
@@ -125,23 +125,23 @@ Func MainSuggestedUpgradeCode()
 			SetLog(" - Upg Window Opened successfully", $COLOR_INFO)
 			Local $y = 102, $y1 = 132, $step = 28, $x = 400, $x1 = 540
 			; Check for 6  Icons on Window
-			For $i = 0 To 5
+			For $i = 0 To 8
 				Local $bSkipGoldCheck = False
 				If $g_iChkBBSuggestedUpgradesIgnoreElixir = 0 And $g_aiCurrentLootBB[$eLootElixirBB] > 250 Then
 					; Proceeds with Elixir icon detection
-					Local $aResult = GetIconPosition($x, $y, $x1, $y1, $g_sImgAutoUpgradeElixir, "Elixir", $bScreencap, $bDebug)
+					Local $aResult = GetIconPosition($x, $y, $x1, $y1, $g_sImgAutoUpgradeElixir, "Elixir", $bScreencap, $bDebug, $bDebugImage)
 					Switch $aResult[2]
 						Case "Elixir"
 							Click($aResult[0], $aResult[1], 1)
 							If _Sleep(2000) Then Return
-							If GetUpgradeButton($aResult[2], $bDebug) Then
+							If GetUpgradeButton($aResult[2], $bDebug, $bDebugImage) Then
 								ExitLoop
 							EndIf
 							$bSkipGoldCheck = True
 						Case "New"
 							If $g_iChkPlacingNewBuildings = 1 Then
 								SetLog("[" & $i + 1 & "]" & " New Building detected, Placing it...", $COLOR_INFO)
-								If NewBuildings($aResult) Then
+								If NewBuildings($aResult, $bDebugImage) Then
 									ExitLoop
 								EndIf
 								$bSkipGoldCheck = True
@@ -153,24 +153,24 @@ Func MainSuggestedUpgradeCode()
 							;ExitLoop ; continue as suggested upgrades are not ordered by amount
 							$bSkipGoldCheck = True
 						Case Else
-							SetDebugLog("[" & $i + 1 & "]" & " Unsupport Elixir icon '" & $aResult[2] & "', continuing...", $COLOR_INFO)
+							SetLog("[" & $i + 1 & "]" & " Unsupport Elixir icon '" & $aResult[2] & "', continuing...", $COLOR_INFO)
 					EndSwitch
 				EndIf
 
 				If $g_iChkBBSuggestedUpgradesIgnoreGold = 0 And $g_aiCurrentLootBB[$eLootGoldBB] > 250 And Not $bSkipGoldCheck Then
 					; Proceeds with Gold coin detection
-					Local $aResult = GetIconPosition($x, $y, $x1, $y1, $g_sImgAutoUpgradeGold, "Gold", $bScreencap, $bDebug)
+					Local $aResult = GetIconPosition($x, $y, $x1, $y1, $g_sImgAutoUpgradeGold, "Gold", $bScreencap, $bDebug, $bDebugImage)
 					Switch $aResult[2]
 						Case "Gold"
 							Click($aResult[0], $aResult[1], 1)
 							If _Sleep(2000) Then Return
-							If GetUpgradeButton($aResult[2], $bDebug) Then
+							If GetUpgradeButton($aResult[2], $bDebug, $bDebugImage) Then
 								ExitLoop
 							EndIf
 						Case "New"
 							If $g_iChkPlacingNewBuildings = 1 Then
 								SetLog("[" & $i + 1 & "]" & " New Building detected, Placing it...", $COLOR_INFO)
-								If NewBuildings($aResult) Then
+								If NewBuildings($aResult, $bDebugImage) Then
 									ExitLoop
 								EndIf
 							Else
@@ -180,7 +180,7 @@ Func MainSuggestedUpgradeCode()
 							SetLog("[" & $i + 1 & "]" & " Not enough Gold, continuing...", $COLOR_INFO)
 							;ExitLoop ; continue as suggested upgrades are not ordered by amount
 						Case Else
-							SetDebugLog("[" & $i + 1 & "]" & " Unsupport Gold icon '" & $aResult[2] & "', continuing...", $COLOR_INFO)
+							SetLog("[" & $i + 1 & "]" & " Unsupport Gold icon '" & $aResult[2] & "', continuing...", $COLOR_INFO)
 					EndSwitch
 				EndIf
 
@@ -189,6 +189,9 @@ Func MainSuggestedUpgradeCode()
 			Next
 		EndIf
 	EndIf
+	
+	If $bFinishNow Then FinishNow($bDebugImage)
+	
 	ClickAway()
 EndFunc   ;==>MainSuggestedUpgradeCode
 
@@ -226,11 +229,12 @@ Func ClickOnBuilder()
 	Return False
 EndFunc   ;==>ClickOnBuilder
 
-Func GetIconPosition($x, $y, $x1, $y1, $directory, $Name = "Elixir", $Screencap = True, $Debug = False)
+Func GetIconPosition($x, $y, $x1, $y1, $directory, $Name = "Elixir", $Screencap = True, $Debug = False, $bDebugImage = $g_bDebugImageSave)
 	; [0] = x position , [1] y postion , [2] Gold, Elixir or New
 	Local $aResult[3] = [-1, -1, ""]
 
 	If QuickMIS("BC1", $directory, $x, $y, $x1, $y1, $Screencap, $Debug) Then
+		If $bDebugImage Then SaveDebugRectImage("GetIconPosition", $x & "," & $y & "," & $x1 & "," & $y1)
 		; Correct positions to Check Green 'New' Building word
 		Local $iYoffset = $g_iQuickMISY - 15, $iY1offset = $g_iQuickMISY + 7
 		Local $iX = 300, $iX1 = $g_iQuickMISX
@@ -256,19 +260,25 @@ Func GetIconPosition($x, $y, $x1, $y1, $directory, $Name = "Elixir", $Screencap 
 	Return $aResult
 EndFunc   ;==>GetIconPosition
 
-Func GetUpgradeButton($sUpgButtom = "", $Debug = False)
+Func GetUpgradeButton($sUpgButtom = "", $Debug = False, $bDebugImage = $g_bDebugImageSave)
 
 	;Local $aBtnPos = [360, 500, 180, 50] ; x, y, w, h
 	Local $aBtnPos = [360, 460, 380, 120] ; x, y, w, h ; support Battke Machine, broken and upgrade
 
 	If $sUpgButtom = "" Then Return
 
-	If $sUpgButtom = "Elixir" Then $sUpgButtom = $g_sImgAutoUpgradeBtnElixir
-	If $sUpgButtom = "Gold" Then $sUpgButtom = $g_sImgAutoUpgradeBtnGold
+	;If $sUpgButtom = "Elixir" Then $sUpgButtom = $g_sImgAutoUpgradeBtnElixir
+	;If $sUpgButtom = "Gold" Then $sUpgButtom = $g_sImgAutoUpgradeBtnGold
 
-	If QuickMIS("BC1", $g_sImgAutoUpgradeBtnDir, 300, 650, 600, 720, True, $Debug) Then
+	$sUpgButtom = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\ButtonUpg\"
+
+	If $bDebugImage Then SaveDebugRectImage("GetUpgradeButton", "300, 590, 600, 670")
+	If QuickMIS("BC1", $g_sImgAutoUpgradeBtnDir, 300, 590, 600, 670, True, $Debug) Then
 		Local $aBuildingName = BuildingInfo(245, 490 + $g_iBottomOffsetY)
-		If $aBuildingName[0] = 2 Then
+		
+		SetLog("BuildingName 0 : " & $aBuildingName[0])
+		
+		If $aBuildingName[0] >= 1 Then
 			SetLog("Building: " & $aBuildingName[1], $COLOR_INFO)
 			; Verify if is Builder Hall and If is to Upgrade
 			If StringInStr($aBuildingName[1], "Hall") And $g_iChkBBSuggestedUpgradesIgnoreHall Then
@@ -297,7 +307,7 @@ Func GetUpgradeButton($sUpgButtom = "", $Debug = False)
 					Return False
 				Else
 					SetLog($aBuildingName[1] & " Upgrading!", $COLOR_INFO)
-					ClickAway()
+					;ClickAway()
 					Return True
 				EndIf
 			Else
@@ -311,9 +321,25 @@ Func GetUpgradeButton($sUpgButtom = "", $Debug = False)
 	Return False
 EndFunc   ;==>GetUpgradeButton
 
-Func NewBuildings($aResult)
+Func NewBuildings($aResult, $bDebugImage = $g_bDebugImageSave)
 
+	Local $sImgDir = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\NewBuildings\Buildings\*"
 	Local $Screencap = True, $Debug = False
+
+	If $g_BBBuildingPlacementFailed > 5 Then
+		$g_BBBuildingPlacementFailed = 0
+		$g_BBVillageDrag += 1
+		If $g_BBVillageDrag > 3 Then $g_BBVillageDrag = 0
+		; write to config?
+	EndIf
+
+	If $g_BBVillageDrag > 0 Then
+		If $g_BBVillageDrag = 1 Then ClickDrag(300,85,250,85) ; drag left
+		If $g_BBVillageDrag = 2 Then ClickDrag(300,85,350,85) ; drag right
+		If $g_BBVillageDrag = 3 Then ClickDrag(300,85,300,135) ; drag down
+
+		If Not ClickOnBuilder() Then Return False
+	EndIf
 
 	If UBound($aResult) = 3 And $aResult[2] = "New" Then
 
@@ -322,54 +348,129 @@ Func NewBuildings($aResult)
 		If _Sleep(3000) Then Return
 
 		; If exist Clocks
-		Local $ClocksCoordinates = QuickMIS("CX", $g_sImgAutoUpgradeClock, 20, 250, 775, 530, $Screencap, $Debug)
+		Local $ClocksCoordinates = decodeMultipleCoords(findImage("AutoUpgradeClock", $g_sImgAutoUpgradeClock & "\*" ,GetDiamondFromRect("20,250,700,625") , 8, $Screencap))
+
+		If $bDebugImage Then SaveDebugRectImage("AutoUpgradeClock", "20,250,700,625")
+
 		If UBound($ClocksCoordinates) > 0 Then
 			SetLog("[Clocks]: " & UBound($ClocksCoordinates), $COLOR_DEBUG)
 			For $i = 0 To UBound($ClocksCoordinates) - 1
-				; Prepare the coordinates
-				Local $Coordinates = StringSplit($ClocksCoordinates[$i], ",", 2)
+				Local $Coordinates = $ClocksCoordinates[$i]
+				SetLog("Clock Found at : " & $Coordinates[0] & ", " & $Coordinates[1])
+				
 				; Just in Cause
 				If UBound($Coordinates) <> 2 Then
 					Click(820, 38, 1) ; exit from Shop
 					ExitLoop
 				EndIf
-				; Coordinates for Slot Zone from Clock position
-				Local $x = ($Coordinates[0] + 20), $y = ($Coordinates[1] + 250), $x1 = ($Coordinates[0] + 20) + 160, $y1 = ($Coordinates[1] + 250) + 75
+				
+				; Coordinates for Slot & Tile Zone from Clock position
+				Local $x = $Coordinates[0], $y = $Coordinates[1]
+
+				Local $aCostArea = $x & "," & $y & "," & $x + 160 & "," & $y + 75
+				Local $aTileArea = $x & "," & $y - 165 & "," & $x + 160 & "," & $y
+
 				; Lets see if exist resources
-				SetDebugLog("[x]: " & $x & " [y]: " & $y & " [x1]: " & $x1 & " [y1]: " & $y1, $COLOR_DEBUG)
-				If QuickMIS("BC1", $g_sImgAutoUpgradeZero, $x, $y, $x1, $y1, $Screencap, $Debug) Then
+				; look for white zeros					
+				Local $aiUpgZero = decodeSingleCoord(findImage("AutoUpgradeZero", $g_sImgAutoUpgradeZero & "\*" ,GetDiamondFromRect($aCostArea) , 1, $Screencap))
+				
+				If isArray($aiUpgZero) And Ubound($aiUpgZero) = 2 Then
+				
 					; Lets se if exist or NOT the Yellow Arrow, If Doesnt exist the [i] icon than exist the Yellow arrow , DONE
-					If Not QuickMIS("BC1", $g_sImgAutoUpgradeInfo, $x, $y, $x1, $y1, $Screencap, $Debug) Then
-						Click($x + 100, $y + 50, 1)
-						If _Sleep(3000) Then Return
-						; Lets search for the Correct Symbol on field
-						If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgYes, 150, 150, 650, 550, $Screencap, $Debug) Then
-							Click($g_iQuickMISX, $g_iQuickMISY, 1)
-							SetLog("Placed a new Building on Builder Island! [" & $g_iQuickMISX & "," & $g_iQuickMISY & "]", $COLOR_INFO)
-							If _Sleep(1000) Then Return
-							; Lets check if exist the [x] , Some Buildings like Traps when you place one will give other to place automaticly!
-							If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 150, 150, 650, 550, $Screencap, $Debug) Then
-								Click($g_iQuickMISX, $g_iQuickMISY, 1)
-							EndIf
-							Return True
-						Else
-							If QuickMIS("BC1", $g_sImgAutoUpgradeNewBldgNo, 150, 150, 650, 550, $Screencap, $Debug) Then
-								SetLog("Sorry! Wrong place to deploy a new building on BB! [" & $g_iQuickMISX & "," & $g_iQuickMISY & "]", $COLOR_ERROR)
-								Click($g_iQuickMISX, $g_iQuickMISY, 1)
-							Else
-								SetLog("Error on Undo symbol!", $COLOR_ERROR)
-							EndIf
-						EndIf
-					Else
+					Local $aiInfo = decodeSingleCoord(findImage("AutoUpgradeSlot", $g_sImgAutoUpgradeInfo & "\*" ,GetDiamondFromRect($aTileArea) , 1, $Screencap))
+					If IsArray($aiInfo) And Ubound($aiInfo) = 2 Then
+						SetLog("Failed to locate Arrow Icon : " & $aiInfo[0] & ", " & $aiInfo[1])
+						If $bDebugImage Then SaveDebugRectImage("FoundInfo", $aTileArea)
+						
 						If $i = UBound($ClocksCoordinates) - 1 Then
-							SetDebugLog("Slot without enough resources![1]", $COLOR_DEBUG)
+							If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources![1]", $COLOR_DEBUG)
 							Click(820, 38, 1) ; exit from Shop
 							ExitLoop
 						EndIf
-						ContinueLoop
+						ContinueLoop						
+					Else
+					
+						; look for wall
+						Local $aiWallCoord = decodeSingleCoord(findImage("AutoUpgradeBBwall", $sImgDir ,GetDiamondFromRect($aTileArea) , 1, $Screencap))
+						If IsArray($aiWallCoord) And UBound($aiWallCoord) = 2 Then
+							SetLog("Found Wall in Building Menu Tile")
+							If $bDebugImage Then SaveDebugRectImage("AutoUpgradeBBwall", $aTileArea)
+							Click(820, 38, 1) ; exit from Shop
+							
+							If _Sleep(100) Then Return False
+															
+							ClickOnBuilder()
+							
+							If _Sleep(1000) Then Return False
+							ExitLoop
+						EndIf				
+					
+
+						Local $aiPoint[2]
+						$aiPoint[0] = $x + 100
+						$aiPoint[1] = $y - 50
+						
+						If $bDebugImage Then SaveDebugPointImage("Tile", $aiPoint)
+						
+						Click($x + 100, $y - 50, 1)
+						If _Sleep(3000) Then Return
+						
+						Local $aSearchDiamond = GetReduceDiamond(30)
+						If $bDebugImage Then SaveDebugDiamondImage("UpgradeNewBldgYesNo", $aSearchDiamond)
+						
+						; Lets search for the Correct Symbol on field
+						Local $aiYesCoord = decodeSingleCoord(findImage("AutoUpgradeNewBldgYes", $g_sImgAutoUpgradeNewBldgYes & "\*", $aSearchDiamond, 1, $Screencap))
+						
+						If IsArray($aiYesCoord) And UBound($aiYesCoord) = 2 Then
+							ClickP($aiYesCoord)
+							SetLog("Placed a new Building on Builder Island! [" & $aiYesCoord[0] & "," & $aiYesCoord[1] & "]", $COLOR_INFO)
+
+							If _Sleep(1000) Then Return
+
+							; Lets check if exist the [x] , Some Buildings like Traps when you place one will give other to place automatically!
+							Local $aiNoCoord = decodeSingleCoord(findImage("AutoUpgradeNewBldgNo", $g_sImgAutoUpgradeNewBldgNo & "\*", $aSearchDiamond, 1, $Screencap))
+							If IsArray($aiNoCoord) And UBound($aiNoCoord) = 2 Then
+								SetLog("Found another building!")
+								ClickP($aiNoCoord)								
+							EndIf
+												
+							Return True
+						Else
+							
+							For $j = 0 to 9
+								Local $aiNoCoord = decodeSingleCoord(findImage("AutoUpgradeNewBldgNo", $g_sImgAutoUpgradeNewBldgNo & "\*", $aSearchDiamond, 1, $Screencap))
+								If IsArray($aiNoCoord) And UBound($aiNoCoord) = 2 Then
+									ClickP($aiNoCoord)				
+									SetLog("Failed to deploy a new building on BB! [" & $aiNoCoord[0] & "," & $aiNoCoord[1] & "]", $COLOR_ERROR)
+									$g_BBBuildingPlacementFailed += 1
+									SetLog("BuildingPlacementFailed : " & $g_BBBuildingPlacementFailed, $COLOR_ERROR)
+
+									If _Sleep(100) Then Return False
+																	
+									ClickOnBuilder()
+									
+									If _Sleep(1000) Then Return False
+									ExitLoop 2
+								;Else
+								;	SetLog("Failed to locate Cancel button [x]!")
+								;	
+								;	If _Sleep(100) Then Return False
+								;									
+								;	ClickOnBuilder()
+								;	
+								;	If _Sleep(1000) Then Return False
+								;	ExitLoop 2
+								EndIf
+								
+								SetLog("Failed to locate Cancel button [x] : " & $j)
+								
+								If _Sleep(100) Then Return
+							Next
+						EndIf		
 					EndIf
 				Else
-					SetDebugLog("Slot without enough resources![2]", $COLOR_DEBUG)
+					If $bDebugImage Then SaveDebugRectImage("NoWhiteZeros", $aCostArea)
+					If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources![2]", $COLOR_DEBUG)
 					If $i = UBound($ClocksCoordinates) - 1 Then Click(820, 38, 1)
 				EndIf
 			Next
@@ -383,3 +484,52 @@ Func NewBuildings($aResult)
 
 EndFunc   ;==>NewBuildings
 
+Func TestBBUp($iLoop = 0, $bFinishNow = False)
+	For $i = 0 to $iLoop
+		ZoomOut()
+		BuilderBaseReport()
+		
+		OttoBuildingUpgrades(True, $bFinishNow)
+		
+		BuilderBaseReport()
+		
+		MainSuggestedUpgradeCode(True, $bFinishNow)
+	
+		SetLog("Upgrade BB Building : " & $i)
+		If _Sleep(100) Then Return
+	Next
+	
+	Return
+EndFunc
+
+
+Func FinishNow($bDebugImage = $g_bDebugImageSave)
+
+	Local $sFshNowDir = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\FinishNow\*"
+	Local $sImgBBFshNowWindow =  @ScriptDir & "\imgxml\Windows\BBFshNowWindow*"
+
+	Local $aFshNowSearch = "300,590,600,670"
+
+	Local $aiFshNowBtn = decodeSingleCoord(findImage("AutoUpgradeFshNow", $sFshNowDir, GetDiamondFromRect($aFshNowSearch), 1, True))
+
+	If $bDebugImage Then SaveDebugRectImage("AutoUpgradeFshNow", $aFshNowSearch)
+
+	If IsArray($aiFshNowBtn) And UBound($aiFshNowBtn) = 2 Then
+		ClickP($aiFshNowBtn)
+
+		If _Sleep(250) Then Return
+
+		If IsWindowOpen($sImgBBFshNowWindow, 0, 0, GetDiamondFromRect("330,260,510,300")) Then
+		;If IsWindowOpen($sImgBBFshNowWindow) Then
+			Click(427, 423)
+		EndIf
+	EndIf
+	
+	If _Sleep(250) Then Return
+	
+	Return
+EndFunc
+
+Func DragBBVillageIfNeeded()
+
+EndFunc

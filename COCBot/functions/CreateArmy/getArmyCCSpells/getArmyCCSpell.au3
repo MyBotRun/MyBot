@@ -38,7 +38,7 @@ Func getArmyCCSpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 	Local $aTempSpellArray, $aSpells, $aSpellCoords
 	Local $sSpellName = ""
 	Local $iSpellIndex = -1
-	Local $aCurrentCCSpellsEmpty[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Spells Array
+	Local $aCurrentCCSpellsEmpty[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Spells Array
 
 	$g_aiCurrentCCSpells = $aCurrentCCSpellsEmpty ; Reset Current Spells Array
 

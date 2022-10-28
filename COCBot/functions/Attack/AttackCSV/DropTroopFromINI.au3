@@ -126,6 +126,8 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 			If Not $g_abAttackUseCloneSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $eISpell
 			If Not $g_abAttackUseInvisibilitySpell[$g_iMatchMode] Then $bUseSpell = False
+		Case $eReSpell
+			If Not $g_abAttackUseRecallSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $ePSpell
 			If Not $g_abAttackUsePoisonSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $eESpell
@@ -136,7 +138,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 			If Not $g_abAttackUseSkeletonSpell[$g_iMatchMode] Then $bUseSpell = False
 		Case $eBtSpell
 			If Not $g_abAttackUseBatSpell[$g_iMatchMode] Then $bUseSpell = False
-		Case $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF
+		Case $eKing, $eQueen, $eWarden, $eChampion, $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF, $eBattleD
 			$bSelectTroop = False ; avoid double select
 	EndSwitch
 
@@ -146,7 +148,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 			SetLog("No " & GetTroopName($iTroopIndex) & " found in your attack troops list")
 			debugAttackCSV("No " & GetTroopName($iTroopIndex) & " found in your attack troops list")
 		Else
-			SetDebugLog("Discard use " & GetTroopName($iTroopIndex), $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("Discard use " & GetTroopName($iTroopIndex), $COLOR_DEBUG)
 		EndIf
 
 	Else
@@ -229,7 +231,7 @@ Func DropTroopFromINI($sDropVectors, $iStartIndex, $iEndIndex, $aiIndexArray, $i
 							Else
 								dropHeroes($pixel[0], $pixel[1], -1, -1, -1, $troopPosition) ; was $g_iChampionSlot, Slot11+
 							EndIf
-						Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF
+						Case $eCastle, $eWallW, $eBattleB, $eStoneS, $eSiegeB, $eLogL, $eFlameF, $eBattleD
 							If $bDebug Then
 								SetLog("dropCC(" & $pixel[0] & ", " & $pixel[1] & ", " & $troopPosition & ")")
 							Else

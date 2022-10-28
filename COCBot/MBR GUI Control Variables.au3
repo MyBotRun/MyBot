@@ -27,7 +27,7 @@ Global $g_aGroupEndBattleDB = "", $groupEndBattkeAB = "", $groupKingSleeping = "
 	   $grpTrainTroops = "", $grpCookSpell = "", $groupChampionSleeping = ""
 
 ;Spell
-Global $groupLightning = "", $groupHeal = "", $groupRage = "", $groupJump = "", $groupFreeze = "", $groupClone = "", $groupInvisibility = ""
+Global $groupLightning = "", $groupHeal = "", $groupRage = "", $groupJump = "", $groupFreeze = "", $groupClone = "", $groupInvisibility = "", $groupRecall = ""
 
 ;Dark Spell
 Global $groupPoison = "", $groupEarthquake = "", $groupHaste = "", $groupSkeleton = "", $groupBat = ""
@@ -36,7 +36,7 @@ Global $groupPoison = "", $groupEarthquake = "", $groupHaste = "", $groupSkeleto
 Global $groupListSpells = ""
 
 ;Sieges
-Global $groupWallWrecker = "", $groupBattleBlimp = "", $groupStoneSlammer = "", $groupSiegeBarracks = "", $groupLogLauncher = "", $groupFlameFlinger = "", $groupListSieges = ""
+Global $groupWallWrecker = "", $groupBattleBlimp = "", $groupStoneSlammer = "", $groupSiegeBarracks = "", $groupLogLauncher = "", $groupFlameFlinger = "", $groupBattleDrill = "", $groupListSieges = ""
 
 ;TH Level
 Global $g_aGroupListTHLevels = ""
@@ -89,25 +89,25 @@ Func InitializeControlVariables()
    ;Attack
    $g_aGroupAttackDB = 	$g_hCmbDBAlgorithm&"#"&$g_hCmbDBSelectTroop&"#"&$g_hChkDBKingAttack&"#"&$g_hChkDBQueenAttack&"#"&$g_hChkDBWardenAttack&"#"&$g_hChkDBChampionAttack&"#"&$g_hChkDBDropCC&"#"& _
 						$g_hChkDBLightSpell&"#"&$g_hChkDBHealSpell&"#"&$g_hChkDBRageSpell&"#"&$g_hChkDBJumpSpell&"#"&$g_hChkDBFreezeSpell&"#"&$g_hChkDBCloneSpell&"#"& _
-						$g_hChkDBInvisibilitySpell&"#"&$g_hChkDBPoisonSpell&"#"&$g_hChkDBEarthquakeSpell&"#"&$g_hChkDBHasteSpell&"#"&$g_hChkDBSkeletonSpell&"#"&$g_hChkDBBatSpell
+						$g_hChkDBInvisibilitySpell&"#"&$g_hChkDBRecallSpell&"#"&$g_hChkDBPoisonSpell&"#"&$g_hChkDBEarthquakeSpell&"#"&$g_hChkDBHasteSpell&"#"&$g_hChkDBSkeletonSpell&"#"&$g_hChkDBBatSpell
    $g_aGroupAttackDBSpell = $g_hChkDBLightSpell&"#"&$g_hChkDBHealSpell&"#"&$g_hChkDBRageSpell&"#"&$g_hChkDBJumpSpell&"#"&$g_hChkDBFreezeSpell&"#"&$g_hChkDBCloneSpell&"#"& _
-							$g_hChkDBInvisibilitySpell&"#"&$g_hChkDBPoisonSpell&"#"&$g_hChkDBEarthquakeSpell&"#"&$g_hChkDBHasteSpell&"#"&$g_hChkDBSkeletonSpell&"#"&$g_hChkDBBatSpell
+							$g_hChkDBInvisibilitySpell&"#"&$g_hChkDBRecallSpell&"#"&$g_hChkDBPoisonSpell&"#"&$g_hChkDBEarthquakeSpell&"#"&$g_hChkDBHasteSpell&"#"&$g_hChkDBSkeletonSpell&"#"&$g_hChkDBBatSpell
    $groupIMGAttackDB = 	$g_hPicDBKingAttack&"#"&$g_hPicDBQueenAttack&"#"&$g_hPicDBWardenAttack&"#"&$g_hPicDBChampionAttack&"#"&$g_hPicDBDropCC&"#"& _
 						$g_hPicDBLightSpell&"#"&$g_hPicDBHealSpell&"#"&$g_hPicDBRageSpell&"#"&$g_hPicDBJumpSpell&"#"&$g_hPicDBFreezeSpell&"#"&$g_hPicDBCloneSpell&"#"& _
-						$g_hPicDBInvisibilitySpell&"#"&$g_hPicDBPoisonSpell&"#"&$g_hPicDBEarthquakeSpell&"#"&$g_hPicDBHasteSpell&"#"&$g_hPicDBSkeletonSpell&"#"&$g_hPicDBBatSpell
+						$g_hPicDBInvisibilitySpell&"#"&$g_hPicDBRecallSpell&"#"&$g_hPicDBPoisonSpell&"#"&$g_hPicDBEarthquakeSpell&"#"&$g_hPicDBHasteSpell&"#"&$g_hPicDBSkeletonSpell&"#"&$g_hPicDBBatSpell
    $groupIMGAttackDBSpell = $g_hPicDBLightSpell&"#"&$g_hPicDBHealSpell&"#"&$g_hPicDBRageSpell&"#"&$g_hPicDBJumpSpell&"#"&$g_hPicDBFreezeSpell&"#"&$g_hPicDBCloneSpell&"#"& _
-							$g_hPicDBInvisibilitySpell&"#"&$g_hPicDBPoisonSpell&"#"&$g_hPicDBEarthquakeSpell&"#"&$g_hPicDBHasteSpell&"#"&$g_hPicDBSkeletonSpell&"#"&$g_hPicDBBatSpell
+							$g_hPicDBInvisibilitySpell&"#"&$g_hPicDBRecallSpell&"#"&$g_hPicDBPoisonSpell&"#"&$g_hPicDBEarthquakeSpell&"#"&$g_hPicDBHasteSpell&"#"&$g_hPicDBSkeletonSpell&"#"&$g_hPicDBBatSpell
 
    $groupAttackAB = $g_hCmbDBAlgorithm&"#"&$g_hCmbABSelectTroop&"#"&$g_hChkABKingAttack&"#"&$g_hChkABQueenAttack&"#"&$g_hChkABWardenAttack&"#"&$g_hChkABChampionAttack&"#"&$g_hChkABDropCC&"#"& _
 				    $g_hChkABLightSpell&"#"&$g_hChkABHealSpell&"#"&$g_hChkABRageSpell&"#"&$g_hChkABJumpSpell&"#"&$g_hChkABFreezeSpell&"#"&$g_hChkABCloneSpell&"#"& _
-					$g_hChkABInvisibilitySpell&"#"&$g_hChkABPoisonSpell&"#"&$g_hChkABEarthquakeSpell&"#"&$g_hChkABHasteSpell&"#"&$g_hChkABSkeletonSpell&"#"&$g_hChkABBatSpell
+					$g_hChkABInvisibilitySpell&"#"&$g_hChkABRecallSpell&"#"&$g_hChkABPoisonSpell&"#"&$g_hChkABEarthquakeSpell&"#"&$g_hChkABHasteSpell&"#"&$g_hChkABSkeletonSpell&"#"&$g_hChkABBatSpell
    $groupAttackABSpell = 	$g_hChkABLightSpell&"#"&$g_hChkABHealSpell&"#"&$g_hChkABRageSpell&"#"&$g_hChkABJumpSpell&"#"&$g_hChkABFreezeSpell&"#"&$g_hChkABCloneSpell&"#"& _
-							$g_hChkABInvisibilitySpell&"#"&$g_hChkABPoisonSpell&"#"&$g_hChkABEarthquakeSpell&"#"&$g_hChkABHasteSpell&"#"&$g_hChkABSkeletonSpell&"#"&$g_hChkABBatSpell
+							$g_hChkABInvisibilitySpell&"#"&$g_hChkABRecallSpell&"#"&$g_hChkABPoisonSpell&"#"&$g_hChkABEarthquakeSpell&"#"&$g_hChkABHasteSpell&"#"&$g_hChkABSkeletonSpell&"#"&$g_hChkABBatSpell
    $groupIMGAttackAB = 	$g_hPicABKingAttack&"#"&$g_hPicABQueenAttack&"#"&$g_hPicABWardenAttack&"#"&$g_hPicABChampionAttack&"#"&$g_hPicABDropCC&"#"& _
 						$g_hPicABLightSpell&"#"&$g_hPicABHealSpell&"#"&$g_hPicABRageSpell&"#"&$g_hPicABJumpSpell&"#"&$g_hPicABFreezeSpell&"#"&$g_hPicABCloneSpell&"#"& _
-							$g_hPicABInvisibilitySpell&"#"&$g_hPicABPoisonSpell&"#"&$g_hPicABEarthquakeSpell&"#"&$g_hPicABHasteSpell&"#"&$g_hPicABSkeletonSpell&"#"&$g_hPicABBatSpell
+							$g_hPicABInvisibilitySpell&"#"&$g_hPicABRecallSpell&"#"&$g_hPicABPoisonSpell&"#"&$g_hPicABEarthquakeSpell&"#"&$g_hPicABHasteSpell&"#"&$g_hPicABSkeletonSpell&"#"&$g_hPicABBatSpell
    $groupIMGAttackABSpell = $g_hPicABLightSpell&"#"&$g_hPicABHealSpell&"#"&$g_hPicABRageSpell&"#"&$g_hPicABJumpSpell&"#"&$g_hPicABFreezeSpell&"#"&$g_hPicABCloneSpell&"#"& _
-							$g_hPicABInvisibilitySpell&"#"&$g_hPicABPoisonSpell&"#"&$g_hPicABEarthquakeSpell&"#"&$g_hPicABHasteSpell&"#"&$g_hPicABSkeletonSpell&"#"&$g_hPicABBatSpell
+							$g_hPicABInvisibilitySpell&"#"&$g_hPicABRecallSpell&"#"&$g_hPicABPoisonSpell&"#"&$g_hPicABEarthquakeSpell&"#"&$g_hPicABHasteSpell&"#"&$g_hPicABSkeletonSpell&"#"&$g_hPicABBatSpell
 
 
    $g_aGroupListPicMinTrophy = $g_hPicMinTrophies[$eLeagueUnranked]&"#"&$g_hPicMinTrophies[$eLeagueBronze]&"#"&$g_hPicMinTrophies[$eLeagueSilver]&"#"&$g_hPicMinTrophies[$eLeagueGold] &"#"& _
@@ -146,45 +146,47 @@ Func InitializeControlVariables()
 					 $g_ahTxtTrainArmyTroopCount[$eTroopGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWitch]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperWitch]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopLavaHound]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceHound]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBowler]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopElectroDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopYeti]&"#"& _
-					 $g_ahTxtTrainArmyTroopCount[$eTroopDragonRider]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHeadhunter]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperBowler]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperDragon]
+					 $g_ahTxtTrainArmyTroopCount[$eTroopDragonRider]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopElectroTitan]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHeadhunter]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperBowler]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperDragon]
 
    $grpCookSpell = $g_ahTxtTrainArmySpellCount[$eSpellLightning]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHeal]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellRage]&"#"& _
 				   $g_ahTxtTrainArmySpellCount[$eSpellJump]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellFreeze]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellClone]&"#"& _
-				   $g_ahTxtTrainArmySpellCount[$eSpellInvisibility]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellPoison]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellEarthquake]&"#"& _
+				   $g_ahTxtTrainArmySpellCount[$eSpellInvisibility]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellRecall]&"#"& _
+				   $g_ahTxtTrainArmySpellCount[$eSpellPoison]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellEarthquake]&"#"& _
 				   $g_ahTxtTrainArmySpellCount[$eSpellHaste]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellSkeleton]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellBat]
 
    ;Spell
-   $groupLightning = $g_ahPicTrainArmySpell[$eSpellLightning]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellLightning] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellLightning]
-   $groupHeal = $g_ahPicTrainArmySpell[$eSpellHeal]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHeal] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellHeal]
-   $groupRage = $g_ahPicTrainArmySpell[$eSpellRage]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellRage] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellRage]
-   $groupJump = $g_ahPicTrainArmySpell[$eSpellJump]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellJump] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellJump]
-   $groupFreeze = $g_ahPicTrainArmySpell[$eSpellFreeze]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellFreeze] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellFreeze]
-   $groupClone = $g_ahPicTrainArmySpell[$eSpellClone]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellClone] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellClone]
-   $groupInvisibility = $g_ahPicTrainArmySpell[$eSpellInvisibility]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellInvisibility] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellInvisibility]
-
+   $groupLightning = $g_ahPicTrainArmySpell[$eSpellLightning]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellLightning]
+   $groupHeal = $g_ahPicTrainArmySpell[$eSpellHeal]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHeal]
+   $groupRage = $g_ahPicTrainArmySpell[$eSpellRage]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellRage]
+   $groupJump = $g_ahPicTrainArmySpell[$eSpellJump]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellJump]
+   $groupFreeze = $g_ahPicTrainArmySpell[$eSpellFreeze]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellFreeze]
+   $groupClone = $g_ahPicTrainArmySpell[$eSpellClone]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellClone]
+   $groupInvisibility = $g_ahPicTrainArmySpell[$eSpellInvisibility]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellInvisibility]
+   $groupRecall = $g_ahPicTrainArmySpell[$eSpellRecall]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellRecall]
 
    ;Dark Spell
-   $groupPoison = $g_ahPicTrainArmySpell[$eSpellPoison]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellPoison] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellPoison]
-   $groupEarthquake = $g_ahPicTrainArmySpell[$eSpellEarthquake]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellEarthquake] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellEarthquake]
-   $groupHaste = $g_ahPicTrainArmySpell[$eSpellHaste]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHaste] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellHaste]
-   $groupSkeleton = $g_ahPicTrainArmySpell[$eSpellSkeleton]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellSkeleton] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellSkeleton]
-   $groupBat = $g_ahPicTrainArmySpell[$eSpellBat]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellBat] ;&"#"&$g_ahLblTrainArmySpellLevel[$eSpellBat]
+   $groupPoison = $g_ahPicTrainArmySpell[$eSpellPoison]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellPoison]
+   $groupEarthquake = $g_ahPicTrainArmySpell[$eSpellEarthquake]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellEarthquake]
+   $groupHaste = $g_ahPicTrainArmySpell[$eSpellHaste]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellHaste]
+   $groupSkeleton = $g_ahPicTrainArmySpell[$eSpellSkeleton]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellSkeleton]
+   $groupBat = $g_ahPicTrainArmySpell[$eSpellBat]&"#"&$g_ahTxtTrainArmySpellCount[$eSpellBat]
 
-   $groupListSpells = $groupLightning&"#"&$groupHeal&"#"&$groupRage&"#"&$groupJump&"#"&$groupFreeze&"#"&$groupClone&"#"&$groupInvisibility&"#"&$groupPoison&"#"& _
+   $groupListSpells = $groupLightning&"#"&$groupHeal&"#"&$groupRage&"#"&$groupJump&"#"&$groupFreeze&"#"&$groupClone&"#"&$groupInvisibility&"#"&$groupRecall&"#"&$groupPoison&"#"& _
 					  $groupEarthquake&"#"&$groupHaste&"#"&$groupSkeleton&"#"&$groupBat
 
 	; Sieges
-	$groupWallWrecker = $g_ahPicTrainArmySiege[$eSiegeWallWrecker]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker] ;&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeWallWrecker]
-	$groupBattleBlimp = $g_ahPicTrainArmySiege[$eSiegeBattleBlimp]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeBattleBlimp] ;&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeBattleBlimp]
-	$groupStoneSlammer = $g_ahPicTrainArmySiege[$eSiegeStoneSlammer]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeStoneSlammer] ;&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeStoneSlammer]
-	$groupSiegeBarracks = $g_ahPicTrainArmySiege[$eSiegeBarracks]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeBarracks] ;&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeBarracks]
-	$groupLogLauncher = $g_ahPicTrainArmySiege[$eSiegeLogLauncher]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeLogLauncher] ;&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeLogLauncher]
-	$groupFlameFlinger = $g_ahPicTrainArmySiege[$eSiegeFlameFlinger]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeFlameFlinger] ;&"#"&$g_ahLblTrainArmySiegeLevel[$eSiegeFlameFlinger]
-	$groupListSieges = $groupWallWrecker&"#"&$groupBattleBlimp&"#"&$groupStoneSlammer&"#"&$groupSiegeBarracks&"#"&$groupLogLauncher&"#"&$groupFlameFlinger
+	$groupWallWrecker = $g_ahPicTrainArmySiege[$eSiegeWallWrecker]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeWallWrecker]
+	$groupBattleBlimp = $g_ahPicTrainArmySiege[$eSiegeBattleBlimp]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeBattleBlimp]
+	$groupStoneSlammer = $g_ahPicTrainArmySiege[$eSiegeStoneSlammer]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeStoneSlammer]
+	$groupSiegeBarracks = $g_ahPicTrainArmySiege[$eSiegeBarracks]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeBarracks]
+	$groupLogLauncher = $g_ahPicTrainArmySiege[$eSiegeLogLauncher]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeLogLauncher]
+	$groupFlameFlinger = $g_ahPicTrainArmySiege[$eSiegeFlameFlinger]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeFlameFlinger]
+ 	$groupBattleDrill = $g_ahPicTrainArmySiege[$eSiegeBattleDrill]&"#"&$g_ahTxtTrainArmySiegeCount[$eSiegeBattleDrill]
+	$groupListSieges = $groupWallWrecker&"#"&$groupBattleBlimp&"#"&$groupStoneSlammer&"#"&$groupSiegeBarracks&"#"&$groupLogLauncher&"#"&$groupFlameFlinger&"#"&$groupBattleDrill
 
    ;TH Level
    $g_aGroupListTHLevels = $g_ahPicTHLevels[4]&"#"&$g_ahPicTHLevels[5]&"#"&$g_ahPicTHLevels[6]&"#"&$g_ahPicTHLevels[7]&"#"&$g_ahPicTHLevels[8]&"#"& _
-						$g_ahPicTHLevels[9]&"#"&$g_ahPicTHLevels[10]&"#"&$g_ahPicTHLevels[11]&"#"&$g_ahPicTHLevels[12]&"#"&$g_ahPicTHLevels[13]&"#"&$g_ahPicTHLevels[14]
+						$g_ahPicTHLevels[9]&"#"&$g_ahPicTHLevels[10]&"#"&$g_ahPicTHLevels[11]&"#"&$g_ahPicTHLevels[12]&"#"&$g_ahPicTHLevels[13]&"#"&$g_ahPicTHLevels[14]&"#"&$g_ahPicTHLevels[15]
 
    ;PicDBMaxTH
    $g_aGroupListPicDBMaxTH = $g_ahPicDBMaxTH[6]&"#"&$g_ahPicDBMaxTH[7]&"#"&$g_ahPicDBMaxTH[8]&"#"& _

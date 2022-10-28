@@ -1,9 +1,49 @@
+* v8.0.0 **
+* fixed SCID switch account missing slot image.
+* fixed Builder Base auto upgrade.
+* fixed Builder Base wall upgrade with builder elixir.
+* Fix for ClanCapital array bounds crash.
+* Fix Attack window detection.
+* Fixed AutoUpgrade Ignore array error.
+* Fix lab drag problem.
+* Preparation for October 2022 update: 
+- CSV preparation for TH15.
+- Added Lab lvl 13 image names + tolerances.
+- Added Heroes costs + levels.
+- TH15 images, Wall lvl 16 support.
+- Add Recall Spell To Scripted Attacks Gui. 
+- $eTroopCount, $eSpellCount dimensions ajust in few files. 
+- Improve CC Builder Border Window Detection.
+- Fixed drop order icons. 
+- Fixed drop order in Standard attack. 
+- Fixed Custom Troop Icons in Donation Tab. 
+- Updated troop and custom troop deployment in smartfarm.
+- Updated troop and custom troop deployment in standard attack.
+- PetHouse : New Pets + Switch Account (Pet house time) support.
+- Laboratory troops, spells and sieges detection improvement.
+- Fixed Typo Electro Owl.
+- Corrected OCR 8 Red & White in StarLab.
+- Fixed troop donation.
+- Fixed $aCheckFrequency Array Dimension error [TH15].
+- Improve Auto Upgrade and Buildings upgrades.
+* Added Electro Titan - ETitan
+* Added Battle Drill - BattleD
+* Added Recall Spell - ReSpell
+* Added Clash Fest scenery - no home support.
+* Added Magic scenery - no home support.
+* Added TH Weapon Support (TH Weapon Button).
+* Updated SCID.
+* Donations stats rewrite & updated with new troop/spell/sieges.
+* Disabling Spells & Sieges in Gui (training) depending TH level.
+* Donate when attack scheduling is idle.
+* Added Pet House Upgrade Time to Multi-Stats Page 2.
+* Builders Base & Clan Capital Resources now managed when Switch Account.
+
 * v7.9.10 **
 * Added Autumn Scenery   ** Must rebuild broken Boat
 * Updated Summer Scenery ** Must rebuild Broken Boat
 
 * v7.9.9 **
-* Telegram REBOOT command, updated help, mobile icon updates.
 - Summer update 2022 included ( training costs removal, wall lvl elixer upgrade )
 - Some zoom-out recoding, please test any scenery and give feedback
 - Trader "sold-out" check

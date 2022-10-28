@@ -44,14 +44,14 @@ Global $g_hTxtUpgrMinGold = 0, $g_hTxtUpgrMinElixir = 0, $g_hTxtUpgrMinDark = 0
 Global $g_hChkWalls = 0, $g_hTxtWallMinGold = 0, $g_hTxtWallMinElixir = 0, $g_hRdoUseGold = 0, $g_hRdoUseElixir = 0, $g_hRdoUseElixirGold = 0, $g_hChkSaveWallBldr = 0, _
 	   $g_hCmbWalls = 4
 Global $g_hLblWallCost = 0, $g_hBtnFindWalls = 0
-Global $g_ahWallsCurrentCount[16] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
-Global $g_ahPicWallsLevel[16] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
+Global $g_ahWallsCurrentCount[17] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
+Global $g_ahPicWallsLevel[17] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
 
 ; Auto Upgrade
 Global $g_hChkAutoUpgrade = 0, $g_hLblAutoUpgrade = 0, $g_hTxtAutoUpgradeLog = 0
 Global $g_hTxtSmartMinGold = 0, $g_hTxtSmartMinElixir = 0, $g_hTxtSmartMinDark = 0
 Global $g_hChkResourcesToIgnore[3] = [0, 0, 0]
-Global $g_hChkUpgradesToIgnore[15] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hChkUpgradesToIgnore[16] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 Func CreateVillageUpgrade()
 
@@ -94,6 +94,7 @@ Func CreateLaboratorySubTab()
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtEDragon", "Electro Dragon") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtYeti", "Yeti") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtDragonRider", "Dragon Rider") & "|" & _
+ 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtElectroTitans", "Electro Titans") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtLightningSpells", "Lightning Spell") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtHealingSpells", "Healing Spell") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtRageSpells", "Rage Spell") & "|" & _
@@ -101,6 +102,7 @@ Func CreateLaboratorySubTab()
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtFreezeSpells", "Freeze Spell") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtCloneSpells", "Clone Spell")& "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtInvisibilitySpells", "Invisibility Spell")& "|" & _
+					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtRecallSpells", "Recall Spell")& "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtPoisonSpells", "Poison Spell") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtEarthQuakeSpells", "EarthQuake Spell") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Spells", "TxtHasteSpells", "Haste Spell") & "|" &  _
@@ -119,8 +121,9 @@ Func CreateLaboratorySubTab()
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleBlimps", "Battle Blimps") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtStoneSlammers", "Stone Slammers") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtSiegeBarracks", "Siege Barracks") & "|" & _
-					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtLogLauncher", "Log Launcher") & "|" & _
-					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtFlameFlinger", "Flame Flinger")
+					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtLogLaunchers", "Log Launchers") & "|" & _
+					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtFlameFlingers", "Flame Flingers") & "|" & _
+					   GetTranslatedFileIni("MBR Global GUI Design Names Troops", "TxtBattleDrills", "Battle Drills")
 
 	Local $sTxtSLNames = GetTranslatedFileIni("MBR Global GUI Design", "Any", "Any") & "|" & _
 					   GetTranslatedFileIni("MBR Global GUI Design Names Builderbase Troops", "TxtRagedBarbarian", "Raged Barbarian") & "|" & _
@@ -201,7 +204,7 @@ EndFunc   ;==>CreateLaboratorySubTab
 Func CreateHeroesSubTab()
 	Local $sTxtTip = ""
 	Local $x = 25, $y = 45
-	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "Group_01", "Upgrade Heroes Continuously"), $x - 20, $y - 20, $g_iSizeWGrpTab3, $g_iSizeHGrpTab3)
+	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "Group_01", "Upgrade Heroes Continuously"), $x - 20, $y - 20, $g_iSizeWGrpTab3 - 4, $g_iSizeHGrpTab3)
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "LblAutoUpgrading_01", "Auto upgrading of your Heroes"), $x - 10, $y, -1, -1)
 
 	$y += 20
@@ -270,10 +273,9 @@ Func CreateHeroesSubTab()
 			GUICtrlSetData(-1, "|0|1|2|3", "0")
 			GUICtrlSetOnEvent(-1, "cmbHeroReservedBuilder")
 		$g_hLblHeroReservedBuilderBottom = GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "LblHeroReservedBuilderBottom", "builder/s for hero upgrade"), $x, $y + 35, -1, -1)
-	GUICtrlCreateGroup("", -99, -99, 1, 1)
-
+	
 ; Pets
-	Local $x = 25, $y = 300
+	Local $x = 25, $y = 220
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Pets", "LblAutoUpgrading_02", "Auto upgrading of your Pets"), $x - 10, $y, -1, -1)
 
 	$y += 20
@@ -285,7 +287,7 @@ Func CreateHeroesSubTab()
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x += 95
-		$g_hChkUpgradePets[$ePetEletroOwl] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
+		$g_hChkUpgradePets[$ePetElectroOwl] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeElectroOwl_Info_01", "Enable upgrading of your Pet, Electro Owl, when you have enough Dark Elixir")
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkUpgradePets")
@@ -309,6 +311,46 @@ Func CreateHeroesSubTab()
 			GUICtrlSetColor ( -1, $COLOR_ERROR )
 			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetUnicorn, $x + 18, $y, 64, 64)
 			_GUICtrlSetTip(-1, $sTxtTip)
+			
+	;----------------------------------------------NEW
+	$x = 25
+	$y += 80
+		$g_hChkUpgradePets[$ePetFrosty] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeFrosty_Info_01", "Enable upgrading of your Pet, Frosty, when you have enough Dark Elixir")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetOnEvent(-1, "chkUpgradePets")
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetFrosty, $x + 18, $y, 64, 64)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+	$x += 95
+		$g_hChkUpgradePets[$ePetDiggy] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeDiggy_Info_01", "Enable upgrading of your Pet, Diggy, when you have enough Dark Elixir")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetOnEvent(-1, "chkUpgradePets")
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetDiggy, $x + 18, $y, 64, 64)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+	$x += 95
+		$g_hChkUpgradePets[$ePetPoisonLizard] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradePoisonLizard_Info_01", "Enable upgrading of your Pet, Poison Lizard, when you have enough Dark Elixir")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetOnEvent(-1, "chkUpgradePets")
+			GUICtrlSetColor ( -1, $COLOR_ERROR )
+			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetPoisonLizard, $x + 18, $y, 64, 64)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+	$x += 95
+		$g_hChkUpgradePets[$ePetPhoenix] = GUICtrlCreateCheckbox("", $x, $y + 25, 17, 17)
+			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradePhoenix_Info_01", "Enable upgrading of your Pet, Phoenix, when you have enough Dark Elixir")
+			_GUICtrlSetTip(-1, $sTxtTip)
+			GUICtrlSetOnEvent(-1, "chkUpgradePets")
+			GUICtrlSetColor ( -1, $COLOR_ERROR )
+			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetPhoenix, $x + 18, $y, 64, 64)
+			_GUICtrlSetTip(-1, $sTxtTip)
+
+	;--------------------------------------------------		
+	GUICtrlCreateGroup("", -99, -99, 1, 1)		
+			
 EndFunc   ;==>CreateHeroesSubTab
 
 Func CreateBuildingsSubTab()
@@ -459,7 +501,7 @@ Func CreateWallsSubTab()
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "LblSearchforWalls", "Search for Walls level") & ":", $x, $y + 2, -1, -1)
 		$g_hCmbWalls = GUICtrlCreateCombo("", $x + 110, $y, 61, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL), $WS_EX_RIGHT)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "CmbWalls_Info_01", "Search for Walls of this level and try to upgrade them one by one."))
-			GUICtrlSetData(-1, "4   |5   |6   |7   |8   |9   |10   |11   |12   |13   |14   ", "4   ")
+			GUICtrlSetData(-1, "4   |5   |6   |7   |8   |9   |10   |11   |12   |13   |14   |15   ", "4   ")
 			GUICtrlSetState(-1, $GUI_DISABLE)
 			GUICtrlSetOnEvent(-1, "cmbWalls")
 		GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "LblNextWalllevelcosts", "Next Wall level costs") & ":", $x, $y + 25, -1, -1)
@@ -536,6 +578,10 @@ Func CreateWallsSubTab()
 			$g_ahWallsCurrentCount[15] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", -1) & " 15 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", -1))
 		$g_ahPicWallsLevel[15] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall15, $x + 27, $y - 2, 24, 24)
+		$x += 80
+			$g_ahWallsCurrentCount[16] = GUICtrlCreateInput("0", $x, $y, 25, 19, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_01", -1) & " 16 " & GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Walls", "WallsCurrentCount_Info_02", -1))
+		$g_ahPicWallsLevel[16] = _GUICtrlCreateIcon($g_sLibIconPath, $eWall16, $x + 27, $y - 2, 24, 24)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 EndFunc   ;==>CreateWallsSubTab
@@ -573,52 +619,58 @@ Func CreateAutoUpgradeSubTab()
 	Local $yRow1 = 50
 	Local $yRow2 = 110
 	Local $yChkOff = 32
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTH14, $x + 5, $y + $yRow1, $iIconSize, $iIconSize)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnTH15, $x + 5, $y + $yRow1, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[0] = GUICtrlCreateCheckbox("", $x + 20 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore TownHall Upgrade")
+			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
+			
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIconTH15Weapon, $x + 50, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[15] = GUICtrlCreateCheckbox("", $x + 65 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore TownHall Weapon Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x + 50, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[1] = GUICtrlCreateCheckbox("", $x + 65 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x + 110, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[1] = GUICtrlCreateCheckbox("", $x + 125 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x + 95, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[2] = GUICtrlCreateCheckbox("", $x + 110 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x + 155, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[2] = GUICtrlCreateCheckbox("", $x + 170 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x + 140, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[3] = GUICtrlCreateCheckbox("", $x + 155 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x + 200, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[3] = GUICtrlCreateCheckbox("", $x + 215 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x + 185, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[14] = GUICtrlCreateCheckbox("", $x + 200 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x + 245, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[14] = GUICtrlCreateCheckbox("", $x + 260 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x + 245, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[4] = GUICtrlCreateCheckbox("", $x + 260 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x + 305, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[4] = GUICtrlCreateCheckbox("", $x + 320 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnLaboratory, $x + 305, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[5] = GUICtrlCreateCheckbox("", $x + 320 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnLaboratory, $x + 365, $y + $yRow1, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[5] = GUICtrlCreateCheckbox("", $x + 380 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWall, $x + 365, $y + $yRow1, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[6] = GUICtrlCreateCheckbox("", $x + 380 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWall, $x + 5, $y + $yRow2, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[6] = GUICtrlCreateCheckbox("", $x + 20 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBarrack, $x + 5, $y + $yRow2, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[7] = GUICtrlCreateCheckbox("", $x + 20 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBarrack, $x + 65, $y + $yRow2, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[7] = GUICtrlCreateCheckbox("", $x + 80 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDarkBarrack, $x + 50, $y + $yRow2, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[8] = GUICtrlCreateCheckbox("", $x + 65 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDarkBarrack, $x + 110, $y + $yRow2, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[8] = GUICtrlCreateCheckbox("", $x + 125 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSpellFactory, $x + 140, $y + $yRow2, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[9] = GUICtrlCreateCheckbox("", $x + 155 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSpellFactory, $x + 170, $y + $yRow2, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[9] = GUICtrlCreateCheckbox("", $x + 185 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDarkSpellFactory, $x + 185, $y + $yRow2, $iIconSize, $iIconSize)
-		$g_hChkUpgradesToIgnore[10] = GUICtrlCreateCheckbox("", $x + 200 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDarkSpellFactory, $x + 215, $y + $yRow2, $iIconSize, $iIconSize)
+		$g_hChkUpgradesToIgnore[10] = GUICtrlCreateCheckbox("", $x + 230 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMine, $x + 275, $y + $yRow2, $iIconSize, $iIconSize)

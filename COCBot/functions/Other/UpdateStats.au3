@@ -471,17 +471,14 @@ Func UpdateStats($bForceUpdate = False)
 			EndIf
 			$g_aiDonateStatsSieges[$i][1] = $g_aiDonateStatsSieges[$i][0]
 			$bDonateSiegeStatsChanged = True
-			$g_iTotalDonateStatsTroopsXP = $g_iTotalDonateStatsSiegeMachinesXP + $g_iTotalDonateStatsTroopsXP
-			$g_iTotalDonateStatsTroops = $g_iTotalDonateStatsTroops + $g_iTotalDonateStatsSiegeMachines
 		EndIf
 	Next
-
+	
 	If $bDonateSiegeStatsChanged Then
 		$bStatsUpdated = True
-		; TODO
-		;GUICtrlSetData($g_hLblTotalTroopsQ, _NumberFormat($g_iTotalDonateStatsTroops, True))
-		GUICtrlSetData($g_hLblTotalTroopsQ, _NumberFormat($g_iTotalDonateStatsTroops, True))
-		GUICtrlSetData($g_hLblTotalTroopsXP, _NumberFormat($g_iTotalDonateStatsTroopsXP, True))
+		GUICtrlSetData($g_hLblTotalSiegesQ, _NumberFormat($g_iTotalDonateStatsSiegeMachines, True))
+		GUICtrlSetData($g_hLblTotalSiegesXP, _NumberFormat($g_iTotalDonateStatsSiegeMachinesXP, True))
+		$bDonateSiegeStatsChanged = False
 	EndIf
 
 	If $s_iOldSmartZapGain <> $g_iSmartZapGain Then
@@ -628,6 +625,7 @@ Func UpdateStats($bForceUpdate = False)
 	Next
 
 	If Not _DateIsValid($g_sLabUpgradeTime) Then GUICtrlSetData($g_hLbLLabTime, "")
+	If Not _DateIsValid($g_sPetUpgradeTime) Then GUICtrlSetData($g_hLbLPetTime, "")
 
 	If ProfileSwitchAccountEnabled() Then
 		;village report
@@ -738,6 +736,7 @@ Func ResetStats()
 			GUICtrlSetData($g_ahLblResultRuntimeNowAcc[$i], "00:00:00")
 			$g_aiRunTime[$i] = 0
 			GUICtrlSetData($g_hLbLLabTime, "")
+			GUICtrlSetData($g_hLbLPetTime, "")
 		Next
 	EndIf
 	UpdateStats()
@@ -747,7 +746,7 @@ Func WallsStatsMAJ()
 	$g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] -= Number($g_iNbrOfWallsUpped)
 	$g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 5] += Number($g_iNbrOfWallsUpped)
 	$g_iNbrOfWallsUpped = 0
-	For $i = 4 To 15
+	For $i = 4 To 16
 		GUICtrlSetData($g_ahWallsCurrentCount[$i], $g_aiWallsCurrentCount[$i])
 	Next
 	SaveConfig()

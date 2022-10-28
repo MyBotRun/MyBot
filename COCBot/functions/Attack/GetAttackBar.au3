@@ -113,7 +113,7 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 	Local $aFinalAttackBar[0][7]
 	Local $aiOCRY = [-1, -1]
 	If Not $bRemaining Then $aiOCRY = GetOCRYLocation($aSlotAmountX)
-	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(Champion)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)" ; TODO: check if (WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF) required
+	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(Champion)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)|(BattleD)" ; TODO: check if (WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)|(BattleD) required
 
 	For $i = 0 To UBound($aAttackBar, 1) - 1
 		If $aAttackBar[$i][1] > 0 Then
@@ -143,9 +143,9 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 				If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)", 0) And $aiOCRY[$aAttackBar[$i][7] - 1] <> -1 Then $aAttackBar[$i][6] = ($aiOCRY[$aAttackBar[$i][7] - 1] - 7)
 			EndIf
 
-			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)", 0) Then
+			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)|(BattleD)", 0) Then
 				If Not $bRemoved Then $aAttackBar[$i][4] = 1
-				If ($pMatchMode = $DB Or $pMatchMode = $LB) And StringRegExp($aAttackBar[$i][0], "(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)", 0) And $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] > 0 And $g_aiAttackUseSiege[$pMatchMode] <= 7 Then
+				If ($pMatchMode = $DB Or $pMatchMode = $LB) And StringRegExp($aAttackBar[$i][0], "(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)|(BattleD)", 0) And $g_abAttackDropCC[$pMatchMode] And $g_aiAttackUseSiege[$pMatchMode] > 0 And $g_aiAttackUseSiege[$pMatchMode] <= 7 Then
 					$g_iSiegeLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][5]) - 30, 704))
 					If $g_iSiegeLevel = "" Then $g_iSiegeLevel = 1
 					SetDebugLog($aAttackBar[$i][0] & " level: " & $g_iSiegeLevel)
@@ -273,7 +273,7 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 
 	Local $aFinalAttackBar[0][7]
 	Local $aiOCRY = [-1, -1]
-	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(Champion)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)" ; TODO: check if (WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF) required
+	Local $sKeepRemainTroops = "(King)|(Queen)|(Warden)|(Champion)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)|(BattleD)" ; TODO: check if (WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)|(BattleD) required
 
 	If Not $bRemaining Then
 		$aiOCRY = GetOCRYLocation($aSlotAmountX)
@@ -324,7 +324,7 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 				If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)", 0) And $aiOCRY[$aAttackBar[$i][7] - 1] <> -1 Then $aAttackBar[$i][6] = ($aiOCRY[$aAttackBar[$i][7] - 1] - 7)
 			EndIf
 
-			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)", 0) Then
+			If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)|(Castle)|(WallW)|(BattleB)|(StoneS)|(SiegeB)|(LogL)|(FlameF)|(BattleD)", 0) Then
 				If Not $bRemoved Then $aAttackBar[$i][4] = 1
 			Else
 				If Not $bRemoved Then

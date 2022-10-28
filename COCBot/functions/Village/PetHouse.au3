@@ -28,9 +28,9 @@ EndFunc
 
 Func PetHouse($test = False)
 	Local $bUpgradePets = False
+	Local $iPage = 0
 
    If $g_iTownHallLevel < 14 Then
-		;SetLog("Townhall Lvl " & $g_iTownHallLevel & " has no Pet House.", $COLOR_ERROR)
 		Return
 	EndIf
 
@@ -73,7 +73,7 @@ Func PetHouse($test = False)
 	BuildingClickP($g_aiPetHousePos, "#0197")
 	If _Sleep(1500) Then Return ; Wait for window to open
 
-	If Not FindPetsButton() Then Return False ; cant start becuase we cannot find the Pets button
+	If Not FindPetsButton() Then Return False ; cant start because we cannot find the Pets button
 
 	If Not IsPetHousePage() Then
 		SetLog("Failed to open Pet House Window!", $COLOR_ERROR)
@@ -83,56 +83,57 @@ Func PetHouse($test = False)
 	If CheckPetUpgrade() Then Return False ; cant start if something upgrading
 
 	; Pet upgrade is not in progress and not upgreading, so we need to start an upgrade.
-	Local $iPetUnlockedxCoord[4] = [190, 345, 500, 655]
-	Local $iPetLevelxCoord[4] = [134, 288, 443, 596]
-
+	Local $iPetUnlockedxCoord[8] = [185, 332, 479, 627, 224, 371, 518, 666]
+	Local $iPetLevelxCoord[8] = [127, 273, 420, 566, 166, 312, 459, 605]
 
 	For $i = 0 to $ePetCount - 1
-		; check if pet upgrade enabled and unlocked ; c3b6a5 nox c1b7a5 memu?
-		If $g_bUpgradePetsEnable[$i] And _ColorCheck(_GetPixelColor($iPetUnlockedxCoord[$i], 415, True), Hex(0xc3b6a5, 6), 20) Then
-
+		; check if pet upgrade enabled
+		If Not $g_bUpgradePetsEnable[$i] Then ContinueLoop
+	
+		Local $iPetIndex = $i
+		DragPetHouse($iPetIndex, $iPage)
+		
+		; check if pet upgrade unlocked ; c3b6a5 nox c1b7a5 memu?
+		If _ColorCheck(_GetPixelColor($iPetUnlockedxCoord[$i], 415, True), Hex(0xc3b6a5, 6), 20) Then
 			; get the Pet Level
-			Local $iPetLevel = getTroopsSpellsLevel($iPetLevelxCoord[$i], 533)
-			SetLog($g_asPetNames[$i] & " is at level " & $iPetLevel)
+			Local $iPetLevel = getTroopsSpellsLevel($iPetLevelxCoord[$i], 532)
+			If Not ($iPetLevel > 0 And $iPetLevel <= $g_ePetLevels) Then; If detected level is not between 1 and 10, To Prevent Crash
+				If $g_bDebugSetlog Then SetDebugLog("Pet Level OCR Misdetection, Detected Level is : " & $iPetLevel, $COLOR_WARNING)
+				ContinueLoop
+			EndIf
+			If $iPetLevel < $g_ePetLevels Then
+				SetLog($g_asPetNames[$i] & " is at level " & $iPetLevel)
+			Else
+				SetLog($g_asPetNames[$i] & " is at Max level (" & $g_ePetLevels & ")")
+			EndIf
 			If $iPetLevel = $g_ePetLevels Then ContinueLoop
-
 			If _Sleep($DELAYLABORATORY2) Then Return
-
 			; get DE requirement to upgrade Pet
 			Local $iDarkElixirReq = 1000 * number($g_aiPetUpgradeCostPerLevel[$i][$iPetLevel])
 			SetLog("DE Requirement: " & $iDarkElixirReq)
-
-			If $iDarkElixirReq < $g_aiCurrentLoot[$eLootDarkElixir] Then
+				If $iDarkElixirReq < $g_aiCurrentLoot[$eLootDarkElixir] Then
 				SetLog("Will now upgrade " & $g_asPetNames[$i])
-
-			   ; Randomise X,Y click
-				Local $iX = Random($iPetUnlockedxCoord[$i]-10, $iPetUnlockedxCoord[$i]+10, 1)
+					; Randomise X,Y click
+				Local $iX = Random($iPetUnlockedxCoord[$i] - 10, $iPetUnlockedxCoord[$i] + 10, 1)
 				Local $iY = Random(500, 520, 1)
 				Click($iX, $iY)
-
-			   ; wait for ungrade window to open
+				; wait for ungrade window to open
 				If _Sleep(1500) Then Return
-
-			   ; use image search to find Upgrade Button
+				; use image search to find Upgrade Button
 				Local $aUpgradePetButton = findButton("UpgradePet", Default, 1, True)
-
-			   ; check button found
-			   If IsArray($aUpgradePetButton) And UBound($aUpgradePetButton, 1) = 2 Then
+				; check button found
+				If IsArray($aUpgradePetButton) And UBound($aUpgradePetButton, 1) = 2 Then
 					If $g_bDebugImageSave Then SaveDebugImage("PetHouse") ; Debug Only
-
 					; check if this just a test
 					If Not $test Then
 						ClickP($aUpgradePetButton) ; click upgrade and window close
-
 						If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to close
-
-						; Just incase the buy Gem Window pop up!
+							; Just incase the buy Gem Window pop up!
 						If isGemOpen(True) Then
 							SetDebugLog("Not enough DE for to upgrade: " & $g_asPetNames[$i], $COLOR_DEBUG)
 							ClickAway()
 							Return False
 						EndIf
-
 						; Update gui
 						;==========Hide Red  Show Green Hide Gray===
 						GUICtrlSetState($g_hPicPetGray, $GUI_HIDE)
@@ -147,28 +148,32 @@ Func PetHouse($test = False)
 							$g_sPetUpgradeTime = _DateAdd('n', Ceiling($iPetFinishTime), _NowCalc())
 							SetLog("Pet House will finish in " & $sPetTimeOCR & " (" & $g_sPetUpgradeTime & ")")
 						EndIf
-
 					Else
 						ClickAway() ; close pet upgrade window
 					EndIf
-
-					SetLog("Started upgrade for: " & $g_asPetNames[$i])
+						SetLog("Started upgrade for : " & $g_asPetNames[$i])
 					ClickAway() ; close pet house window
+					_Sleep(1500)
+					ClickAway()
+					If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
 					Return True
 				Else
 					SetLog("Failed to find the Pets button!", $COLOR_ERROR)
 					ClickAway()
 					Return False
 				EndIf
-			   SetLog("Failed to find Upgrade button", $COLOR_ERROR)
+				SetLog("Failed to find Upgrade button", $COLOR_ERROR)
 			EndIf
 			SetLog("Upgrade Failed - Not enough Dark Elixir", $COLOR_ERROR)
-		 EndIf
+		ElseIf _ColorCheck(_GetPixelColor($iPetUnlockedxCoord[$i], 415, True), Hex(0xababab, 6), 20) Then
+			SetLog($g_asPetNames[$i] & " is Locked")	
+		EndIf
 	Next
-
-	SetLog("Pet upgrade failed, check your settings", $COLOR_ERROR)
-
-	Return
+SetLog("No Pet Upgrade Possible, Check Your Settings", $COLOR_DEBUG1)
+ClickAway()
+_Sleep(1500)
+ClickAway()
+Return
 EndFunc
 
 ; check the Pet House to see if a Pet is upgrading already
@@ -191,6 +196,9 @@ Func CheckPetUpgrade()
 			SetLog("PetLabUpgradeInProgress - Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
 		ClickAway()
+		_Sleep(1500)
+		ClickAway()
+		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
 		Return True
 	EndIf
 	Return False ; returns False if no upgrade in progress
@@ -223,6 +231,8 @@ Func FindPetsButton()
 	Else
 		SetLog("Cannot find the Pets Button!", $COLOR_ERROR)
 		ClickAway()
+		_Sleep(1500)
+		ClickAway()
 		Return False
 	EndIf
 EndFunc
@@ -230,6 +240,17 @@ EndFunc
 ; called from main loop to get an early status for indictors in bot bottom
 ; run every if no upgradeing pet
 Func PetGuiDisplay()
+
+	If $g_iTownHallLevel < 14 Then
+		SetLog("TH reads as Lvl " & $g_iTownHallLevel & ", has no Pet House.")
+		;============Hide Red  Hide Green  Show Gray==
+		GUICtrlSetState($g_hPicPetGreen, $GUI_HIDE)
+		GUICtrlSetState($g_hPicPetRed, $GUI_HIDE)
+		GUICtrlSetState($g_hPicPetGray, $GUI_SHOW)
+		GUICtrlSetData($g_hLbLPetTime, "")
+		;============================================
+		Return
+	EndIf
 
 	Local Static $iLastTimeChecked[8]
 	If $g_bFirstStart Then $iLastTimeChecked[$g_iCurAccount] = ""
@@ -244,9 +265,6 @@ Func PetGuiDisplay()
 		If $iLabTime > 0 And $iLastCheck <= 360 Then Return
 	EndIf
 
-
-	;If  $g_aiCurrentLoot[$eLootDarkElixir] < $g_iMinDark4PetUpgrade Then Return
-
 	; not enough Dark Elixir for upgrade -
 	If $g_aiCurrentLoot[$eLootDarkElixir] < $g_iMinDark4PetUpgrade Then
 		If $g_iMinDark4PetUpgrade <> 999999 Then
@@ -258,21 +276,7 @@ Func PetGuiDisplay()
 		Return
 	EndIf
 
-	;CLOSE ARMY WINDOW
-	;ClickAway()
-
 	If _Sleep(1500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
-
-	If $g_iTownHallLevel < 14 Then
-		SetDebugLog("TH reads as Lvl " & $g_iTownHallLevel & ", has no Pet House.")
-		;============Hide Red  Hide Green  Show Gray==
-		GUICtrlSetState($g_hPicPetGreen, $GUI_HIDE)
-		GUICtrlSetState($g_hPicPetRed, $GUI_HIDE)
-		GUICtrlSetState($g_hPicPetGray, $GUI_SHOW)
-		GUICtrlSetData($g_hLbLPetTime, "")
-		;============================================
-		Return
-	EndIf
 
 	Setlog("Checking Pet Status", $COLOR_INFO)
 
@@ -291,7 +295,7 @@ Func PetGuiDisplay()
 		Return
 	EndIf
 
-	SetLog("Pet House (x,y): " & $g_aiPetHousePos[0] & "," & $g_aiPetHousePos[1])
+	If $g_bDebugSetlog Then SetDebugLog("Pet House (x,y): " & $g_aiPetHousePos[0] & "," & $g_aiPetHousePos[1])
 
 	BuildingClickP($g_aiPetHousePos, "#0197") ;Click Laboratory
 	If _Sleep(1500) Then Return ; Wait for window to open
@@ -307,7 +311,8 @@ Func PetGuiDisplay()
 	Else
 		SetLog("Cannot find the Pet House Button!", $COLOR_ERROR)
 		ClickAway()
-		;CloseWindow("ClosePetHouse")
+		_Sleep(1500)
+		ClickAway()
 		;===========Hide Red  Hide Green  Show Gray==
 		GUICtrlSetState($g_hPicPetGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicPetRed, $GUI_HIDE)
@@ -323,9 +328,24 @@ Func PetGuiDisplay()
 	EndIf
 
 	$g_iMinDark4PetUpgrade = GetMinDark4PetUpgrade()
+	
+	Local $IsRunning = False
+	Local $IsStopped = False
+	
+	For $i = 0 To 5
+		If _ColorCheck(_GetPixelColor(695, 265, True), Hex(0xE5FD94, 6), 20) Then ; Look for light green in upper right corner of lab window.
+			 $IsRunning = True
+			 ExitLoop
+		EndIf
+		If _ColorCheck(_GetPixelColor(260, 260, True), Hex(0xCBB338, 6), 20) Then ; Look for the paw in the Pet House window.
+			$IsStopped = True
+			ExitLoop
+		EndIf
+		_Sleep(500)
+	Next
 
 	; check for upgrade in process - look for green in finish upgrade with gems button
-	If _ColorCheck(_GetPixelColor(695, 265, True), Hex(0xE5FD94, 6), 20) Then ; Look for light green in upper right corner of lab window.
+	If $IsRunning Then ; Look for light green in upper right corner of lab window.
 		SetLog("Pet House is Running", $COLOR_INFO)
 		;==========Hide Red  Show Green Hide Gray===
 		GUICtrlSetState($g_hPicPetGray, $GUI_HIDE)
@@ -340,14 +360,14 @@ Func PetGuiDisplay()
 			$g_sPetUpgradeTime = _DateAdd('n', Ceiling($iPetFinishTime), _NowCalc())
 			SetLog("Pet House will finish in " & $sPetTimeOCR & " (" & $g_sPetUpgradeTime & ")")
 		EndIf
-		;CloseWindow("CloseLab")
 		ClickAway()
-		;If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
+		_Sleep(1500)
+		ClickAway()
+		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
 			Return True
-	ElseIf _ColorCheck(_GetPixelColor(260, 260, True), Hex(0xCCB43B, 6), 20) Then ; Look for the paw in the Pet House window.
+	ElseIf $IsStopped Then ; Look for the paw in the Pet House window.
 			SetLog("Pet House has Stopped", $COLOR_INFO)
 		;If $g_bNotifyTGEnable And $g_bNotifyAlertLaboratoryIdle Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_01", "Laboratory Idle") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_02", "Laboratory has Stopped"))
-		;CloseWindow("CloseLab")
 		ClickAway()
 		;========Show Red  Hide Green  Hide Gray=====
 		GUICtrlSetState($g_hPicPetGray, $GUI_HIDE)
@@ -355,14 +375,13 @@ Func PetGuiDisplay()
 		GUICtrlSetState($g_hPicPetRed, $GUI_SHOW)
 		GUICtrlSetData($g_hLbLPetTime, "")
 		;============================================
-		;CloseWindow("CloseLab")
+		_Sleep(1500)
 		ClickAway()
 		$g_sPetUpgradeTime = ""
-		;If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
+		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
 		Return
 	Else
 		SetLog("Unable to determine Pet House Status", $COLOR_INFO)
-		;CloseWindow("CloseLab")
 		ClickAway()
 		;========Hide Red  Hide Green  Show Gray======
 		GUICtrlSetState($g_hPicPetGreen, $GUI_HIDE)
@@ -370,23 +389,40 @@ Func PetGuiDisplay()
 		GUICtrlSetState($g_hPicPetGray, $GUI_SHOW)
 		GUICtrlSetData($g_hLbLPetTime, "")
 		;=============================================
+		_Sleep(1500)
+		ClickAway()
 		Return
 	EndIf
 
 EndFunc   ;==>PetGuiDisplay
 
 Func GetMinDark4PetUpgrade()
-	Local $iPetUnlockedxCoord[4] = [190, 345, 500, 655]
-	Local $iPetLevelxCoord[4] = [134, 288, 443, 596]
+	Local $iPetUnlockedxCoord[8] = [185, 332, 479, 627, 224, 371, 518, 666]
+	Local $iPetLevelxCoord[8] = [127, 273, 420, 566, 166, 312, 459, 605]
 	Local $iMinDark4PetUpgrade = 999999
+	Local $iPage = 0
 
 	For $i = 0 to $ePetCount - 1
+		; check if pet upgrade enabled
+		If Not $g_bUpgradePetsEnable[$i] Then ContinueLoop
+		
+		Local $iPetIndex = $i
+		DragPetHouse($iPetIndex, $iPage)
+		
 		; check if pet upgrade enabled and unlocked ; c3b6a5 nox c1b7a5 memu?
-		If _ColorCheck(_GetPixelColor($iPetUnlockedxCoord[$i], 415, True), Hex(0xc3b6a5, 6), 20) And $g_bUpgradePetsEnable[$i] Then
+		If _ColorCheck(_GetPixelColor($iPetUnlockedxCoord[$i], 415, True), Hex(0xc3b6a5, 6), 20) Then
 
 			; get the Pet Level
-			Local $iPetLevel = getTroopsSpellsLevel($iPetLevelxCoord[$i], 533)
-			SetLog($g_asPetNames[$i] & " is at level " & $iPetLevel)
+			Local $iPetLevel = getTroopsSpellsLevel($iPetLevelxCoord[$i], 532)
+			If Not ($iPetLevel > 0 And $iPetLevel <= $g_ePetLevels) Then; If detected level is not between 1 and 10, To Prevent Crash
+				If $g_bDebugSetlog Then SetDebugLog("Pet Level OCR Misdetection, Detected Level is : " & $iPetLevel, $COLOR_WARNING)
+				ContinueLoop
+			EndIf
+			If $iPetLevel < $g_ePetLevels Then
+				SetLog($g_asPetNames[$i] & " is at level " & $iPetLevel)
+			Else
+				SetLog($g_asPetNames[$i] & " is at Max level (" & $g_ePetLevels & ")")
+			EndIf
 			If $iPetLevel = $g_ePetLevels Then ContinueLoop
 
 			If _Sleep($DELAYLABORATORY2) Then Return
@@ -400,8 +436,39 @@ Func GetMinDark4PetUpgrade()
 				$iMinDark4PetUpgrade = $iDarkElixirReq
 				SetLog("New Min Dark: " & $iMinDark4PetUpgrade)
 			EndIf
+		ElseIf _ColorCheck(_GetPixelColor($iPetUnlockedxCoord[$i], 415, True), Hex(0xababab, 6), 20) Then
+			SetLog($g_asPetNames[$i] & " is Locked")
 		EndIf
 	Next
 
 	Return $iMinDark4PetUpgrade
+EndFunc
+
+Func DragPetHouse($iPetIndex, ByRef $iPage)
+	Local $iY1 = Random(480,520,1)
+	Local $iY2 = Random(480,520,1)
+	
+	If $iPage = 0 Then
+		If $iPetIndex < 4 Then 
+			Return True
+		Else
+			ClickDrag(725, $iY1, 175, $iY2, 250)
+			$iPage += 1
+			_Sleep(500)
+			Return True
+		EndIf
+	EndIf
+	
+	If $iPage = 1 Then
+		If $iPetIndex >= 4 Then
+			Return True
+		Else
+			ClickDrag(135, $iY1, 690, $iY2, 250)
+			$iPage -= 1
+			_Sleep(500)
+			Return True
+		EndIf
+	EndIf
+	
+	Return False
 EndFunc

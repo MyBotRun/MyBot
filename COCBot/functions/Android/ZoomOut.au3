@@ -461,7 +461,7 @@ Func SearchZoomOut($CenterVillageBoolOrScrollPos = $aCenterHomeVillageClickDrag,
 			$aResult[1] = $x
 			$aResult[2] = $y
 
-			If $bCenterVillage And ($x <> 0 Or $y <> 0) And ($UpdateMyVillage = False Or $x <> $g_iVILLAGE_OFFSET[0] Or $y <> $g_iVILLAGE_OFFSET[1]) Then ;And Not $g_bOnBuilderBaseEnemyVillage Then
+			If $bCenterVillage And ($x <> 0 Or $y <> 0) And ($UpdateMyVillage = False Or $x <> $g_iVILLAGE_OFFSET[0] Or $y <> $g_iVILLAGE_OFFSET[1]) And Not $g_bOnBuilderBaseEnemyVillage Then
 				If $DebugLog Then SetDebugLog("Center Village" & $sSource & " by: " & $x & ", " & $y)
 				If IsCoordSafe($stone[0], $stone[1]) Then
 					$aScrollPos[0] = $stone[0]

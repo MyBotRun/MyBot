@@ -249,7 +249,7 @@ Func SmartFarmDetection($txtBuildings = "Mines")
 	EndSwitch
 
 	; Necessary Variables
-	Local $sCocDiamond = "ECD"
+	Local $sCocDiamond = $CocDiamondECD
 	Local $sRedLines = ""
 	Local $iMinLevel = 1
 	Local $sReturnProps = "objectname,objectpoints,nearpoints,redlinedistance"
@@ -544,7 +544,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	SetDebugLog("Giants : " & $GiantComp & "  , per side: " & ($GiantComp / $nbSides) & " / deploy points per side: " & $g_iSlotsGiants)
 
 	If $g_bCustomDropOrderEnable Then
-		Local $listInfoDeploy[38][5] = [[MatchTroopDropName(0), $nbSides, MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+		Local $listInfoDeploy[41][5] = [[MatchTroopDropName(0), $nbSides, MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 				[MatchTroopDropName(1), $nbSides, MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 				[MatchTroopDropName(2), $nbSides, MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 				[MatchTroopDropName(3), $nbSides, MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -581,9 +581,12 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				[MatchTroopDropName(34), $nbSides, MatchTroopWaveNb(34), 1, MatchSlotsPerEdge(34)], _
 				[MatchTroopDropName(35), $nbSides, MatchTroopWaveNb(35), 1, MatchSlotsPerEdge(35)], _
 				[MatchTroopDropName(36), $nbSides, MatchTroopWaveNb(36), 1, MatchSlotsPerEdge(36)], _
-				[MatchTroopDropName(37), $nbSides, MatchTroopWaveNb(37), 1, MatchSlotsPerEdge(37)]]
+				[MatchTroopDropName(37), $nbSides, MatchTroopWaveNb(37), 1, MatchSlotsPerEdge(37)], _
+				[MatchTroopDropName(38), $nbSides, MatchTroopWaveNb(38), 1, MatchSlotsPerEdge(38)], _
+				[MatchTroopDropName(39), $nbSides, MatchTroopWaveNb(39), 1, MatchSlotsPerEdge(39)], _
+				[MatchTroopDropName(40), $nbSides, MatchTroopWaveNb(40), 1, MatchSlotsPerEdge(40)]]
 	Else
-		Local $listInfoDeploy[40][5] = [[$eGole, $nbSides, 1, 1, 2] _
+		Local $listInfoDeploy[41][5] = [[$eGole, $nbSides, 1, 1, 2] _
 				, [$eLava, $nbSides, 1, 1, 2] _
 				, [$eIceH, $nbSides, 1, 1, 2] _
 				, [$eIceG, $nbSides, 1, 1, 2] _
@@ -604,6 +607,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 				, [$eMine, $nbSides, 1, 1, 0] _
 				, [$eEDrag, $nbSides, 1, 1, 0] _
 				, [$eRDrag, $nbSides, 1, 1, 0] _
+				, [$eETitan, $nbSides, 1, 1, 0] _
 				, [$eWall, $nbSides, 1, 1, 1] _
 				, [$eSWall, $nbSides, 1, 1, 1] _
 				, [$eBarb, $nbSides, 1, 1, 0] _
@@ -642,7 +646,7 @@ Func AttackSmartFarm($Nside, $SIDESNAMES)
 	SetLog("Dropping left over troops", $COLOR_INFO)
 	For $x = 0 To 1
 		If PrepareAttack($g_iMatchMode, True) = 0 Then
-			SetDebugLog("No Wast time... exit, no troops usable left", $COLOR_DEBUG)
+			If $g_bDebugSetlog Then SetDebugLog("No Wast time... exit, no troops usable left", $COLOR_DEBUG)
 			ExitLoop ;Check remaining quantities
 		EndIf
 		For $i = $eBarb To $eHunt
@@ -662,7 +666,7 @@ EndFunc   ;==>AttackSmartFarm
 
 Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $iChampion, $SIDESNAMES = "TR|TL|BR|BL")
 
-	SetDebugLog("LaunchTroopSmartFarm with CC " & $iCC & ", K " & $iKing & ", Q " & $iQueen & ", W " & $iWarden & ", C " & $iChampion, $COLOR_DEBUG)
+	If $g_bDebugSetlog Then SetDebugLog("LaunchTroopSmartFarm with CC " & $iCC & ", K " & $iKing & ", Q " & $iQueen & ", W " & $iWarden & ", C " & $iChampion, $COLOR_DEBUG)
 	; $ListInfoDeploy = [Troop, No. of Sides, $WaveNb, $MaxWaveNb, $slotsPerEdge]
 	Local $listListInfoDeployTroopPixel[0]
 	Local $pixelRandomDrop[2]
@@ -680,7 +684,7 @@ Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $iCh
 		Local $waveNb = $listInfoDeploy[$i][2] ; waves
 		Local $maxWaveNb = $listInfoDeploy[$i][3] ; Max waves
 		Local $slotsPerEdge = $listInfoDeploy[$i][4] ; deploy Points per Edge
-		SetDebugLog("**ListInfoDeploy row " & $i & ": USE " & GetTroopName($troopKind, 0) & " SIDES " & $nbSides & " WAVE " & $waveNb & " XWAVE " & $maxWaveNb & " SLOTXEDGE " & $slotsPerEdge, $COLOR_DEBUG)
+		If $g_bDebugSetlog Then SetDebugLog("**ListInfoDeploy row " & $i & ": USE " & GetTroopName($troopKind, 0) & " SIDES " & $nbSides & " WAVE " & $waveNb & " XWAVE " & $maxWaveNb & " SLOTXEDGE " & $slotsPerEdge, $COLOR_DEBUG)
 
 		; Regular Troops , not Heroes or Castle
 		If (IsNumber($troopKind)) Then
@@ -741,20 +745,20 @@ Func LaunchTroopSmartFarm($listInfoDeploy, $iCC, $iKing, $iQueen, $iWarden, $iCh
 							If $g_aiDeployHeroesPosition[0] <> -1 Then
 								$pixelRandomDrop[0] = $g_aiDeployHeroesPosition[0]
 								$pixelRandomDrop[1] = $g_aiDeployHeroesPosition[1]
-								SetDebugLog("Deploy Heroes $g_aiDeployHeroesPosition")
+								If $g_bDebugSetlog Then SetDebugLog("Deploy Heroes $g_aiDeployHeroesPosition")
 							Else
 								$pixelRandomDrop[0] = $g_aaiBottomRightDropPoints[2][0]
 								$pixelRandomDrop[1] = $g_aaiBottomRightDropPoints[2][1] ;
-								SetDebugLog("Deploy Heroes $g_aaiBottomRightDropPoints")
+								If $g_bDebugSetlog Then SetDebugLog("Deploy Heroes $g_aaiBottomRightDropPoints")
 							EndIf
 							If $g_aiDeployCCPosition[0] <> -1 Then
 								$pixelRandomDropcc[0] = $g_aiDeployCCPosition[0]
 								$pixelRandomDropcc[1] = $g_aiDeployCCPosition[1]
-								SetDebugLog("Deploy CC $g_aiDeployHeroesPosition")
+								If $g_bDebugSetlog Then SetDebugLog("Deploy CC $g_aiDeployHeroesPosition")
 							Else
 								$pixelRandomDropcc[0] = $g_aaiBottomRightDropPoints[2][0]
 								$pixelRandomDropcc[1] = $g_aaiBottomRightDropPoints[2][1] ;
-								SetDebugLog("Deploy CC $g_aaiBottomRightDropPoints")
+								If $g_bDebugSetlog Then SetDebugLog("Deploy CC $g_aaiBottomRightDropPoints")
 							EndIf
 
 							If ($g_bIsCCDropped = False And $infoTroopListArrPixel[0] = "CC" And $i = $numberSidesDropTroop - 1) Then

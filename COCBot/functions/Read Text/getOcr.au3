@@ -23,7 +23,6 @@ Func getRemainTrainTimer($x_start, $y_start, $bNeedCapture = True) ;
 EndFunc   ;==>getRemainTrainTimer
 
 Func getRemainBuildTimer($x_start, $y_start, $bNeedCapture = True) ;
-	;Return getOcrAndCapture("coc-siegeremain", $x_start, $y_start, 98, 17, True, False, $bNeedCapture)
 	Return getOcrAndCapture("coc-RemainTrain", $x_start, $y_start, 98, 17, True, False, $bNeedCapture)
 EndFunc   ;==>getRemainTrainTimer
 
@@ -74,6 +73,14 @@ EndFunc   ;==>getResourcesLootT
 Func getResourcesBonus($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
 	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 98, 20, True)
 EndFunc   ;==>getResourcesBonus
+
+Func getCostsUpgrade($x_start, $y_start) ; -> Gets complete value of Gold/Elixir bonus loot in "AttackReport.au3"
+	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 104, 16, True)
+EndFunc   ;==>getCostsUpgrade
+
+Func getCostsUpgradeRed($x_start, $y_start) ; -> Gets complete value of Gold/Elixir xxx,xxx , RED text on green upgrade button."UpgradeBuildings.au3"
+	Return getOcrAndCapture("coc-u-r", $x_start, $y_start, 104, 16, True)
+EndFunc   ;==>getCostsUpgradeRed
 
 Func getResourcesBonusPerc($x_start, $y_start) ; -> Gets complete value of Bonus % in "AttackReport.au3"
 	Return getOcrAndCapture("coc-bonus", $x_start, $y_start, 48, 16, True)

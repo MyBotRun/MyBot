@@ -20,8 +20,8 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Local $aiZero83[8][3] = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 	Local $aiZero84[8][4] = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 	Local $asEmpty[8] = ["", "", "", "", "", "", "", ""]
-	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiZeroSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 	; FirstRun
 	Static $abFirstStart = $aiTrue
@@ -33,7 +33,14 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 	; Gain Stats
 	Static $aiStatsTotalGain = $aiZero84, $aiStatsStartedWith = $aiZero84, $aiStatsLastAttack = $aiZero84, $aiStatsBonusLast = $aiZero84
-
+	
+	;Clan Capital
+	Static $gSiLootCCGold = $aiZero
+	Static $gSiLootCCMedal = $aiZero
+	
+	;Builders Base
+	Static $gSaiCurrentLootBB = $aiZero83
+		
 	; Misc Stats
 	Static $aiNbrOfOoS = $aiZero
 	Static $aiDroppedTrophyCount = $aiZero
@@ -51,6 +58,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 
 	; Lab time
 	Static $asLabUpgradeTime = $asEmpty, $aiLabStatus = $aiZero, $aiLabElixirCost = $aiZero, $aiLabDElixirCost = $aiZero
+	Static $asPetLabUpgradeTime = $asEmpty, $aiPetStatus = $aiZero
 	Static $asStarLabUpgradeTime = $asEmpty
 
 	; Hero State
@@ -139,6 +147,8 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiLabElixirCost = $aiZero
 			$aiLabDElixirCost = $aiZero
 			$aiLabStatus = $aiZero
+			$asPetLabUpgradeTime = $asEmpty
+			$aiPetStatus = $aiZero
 			$asStarLabUpgradeTime = $asEmpty
 
 			; Hero State
@@ -162,7 +172,14 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiBuilderBoostDiscount = $aiZero
 			$abNotNeedAllTime0 = $aiTrue
 			$abNotNeedAllTime1 = $aiTrue
-
+			
+			;Clan Capital
+			$gSiLootCCGold = $aiZero
+			$gSiLootCCMedal = $aiZero
+			
+			;Builders Base
+			$gSaiCurrentLootBB = $aiZero83
+			
 		Case "Save"
 			$abFirstStart[$iAccount] = $g_bFirstStart
 			$aiFirstRun[$iAccount] = $g_iFirstRun
@@ -177,6 +194,15 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				$aiStatsStartedWith[$iAccount][$i] = $g_iStatsStartedWith[$i]
 				$aiStatsLastAttack[$iAccount][$i] = $g_iStatsLastAttack[$i]
 				$aiStatsBonusLast[$iAccount][$i] = $g_iStatsBonusLast[$i]
+			Next
+			
+			;Clan Capital
+			$gSiLootCCGold[$iAccount] = $g_iLootCCGold
+			$gSiLootCCMedal[$iAccount] = $g_iLootCCMedal
+			
+			;Builders Base
+			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
+				$gSaiCurrentLootBB[$iAccount][$i] = $g_aiCurrentLootBB[$i]
 			Next
 
 			; Misc Stats
@@ -228,6 +254,14 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			Else
 				$aiLabStatus[$iAccount] = 0
 			EndIf
+			$asPetLabUpgradeTime[$iAccount] = $g_sPetUpgradeTime
+			If GUICtrlGetState($g_hPicPetGreen) = $GUI_ENABLE + $GUI_SHOW Then
+				$aiPetStatus[$iAccount] = 1
+			ElseIf GUICtrlGetState($g_hPicPetRed) = $GUI_ENABLE + $GUI_SHOW Then
+				$aiPetStatus[$iAccount] = 2
+			Else
+				$aiPetStatus[$iAccount] = 0
+			EndIf
 			$asStarLabUpgradeTime[$iAccount] = $g_sStarLabUpgradeTime
 
 			; Hero State
@@ -269,6 +303,18 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				$g_iStatsStartedWith[$i] = $aiStatsStartedWith[$iAccount][$i]
 				$g_iStatsLastAttack[$i] = $aiStatsLastAttack[$iAccount][$i]
 				$g_iStatsBonusLast[$i] = $aiStatsBonusLast[$iAccount][$i]
+			Next
+			
+			;Clan Capital
+			$g_iLootCCGold = $gSiLootCCGold[$iAccount]
+			$g_iLootCCMedal = $gSiLootCCMedal[$iAccount]
+			GUICtrlSetData($g_lblCapitalGold, $g_iLootCCGold)
+			GUICtrlSetData($g_lblCapitalMedal, $g_iLootCCMedal)
+			
+			;Builders Base
+			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
+				$g_aiCurrentLootBB[$i] = $gSaiCurrentLootBB[$iAccount][$i]
+				GUICtrlSetData($g_alblBldBaseStats[$i], $g_aiCurrentLootBB[$i])
 			Next
 
 			; Misc Stats
@@ -318,6 +364,14 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			For $i = $g_hPicLabGray To $g_hPicLabRed
 				GUICtrlSetState($i, $GUI_HIDE)
 				If $aiLabStatus[$iAccount] = $Counter Then GUICtrlSetState($i, $GUI_SHOW)
+				$Counter += 1
+			Next
+			$g_sPetUpgradeTime = $asPetLabUpgradeTime[$iAccount]
+			GUICtrlSetData($g_hLbLPetTime, "")
+			Local $Counter = 0
+			For $i = $g_hPicPetGray To $g_hPicPetRed
+				GUICtrlSetState($i, $GUI_HIDE)
+				If $aiPetStatus[$iAccount] = $Counter Then GUICtrlSetState($i, $GUI_SHOW)
 				$Counter += 1
 			Next
 			$g_sStarLabUpgradeTime = $asStarLabUpgradeTime[$iAccount]
@@ -379,6 +433,19 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				Else
 					GUICtrlSetData($g_ahLblLabTime[$i], "")
 				EndIf
+				If _DateIsValid($asPetLabUpgradeTime[$i]) Then
+					Local $iPetHouseTime = _DateDiff("s", _NowCalc(), $asPetLabUpgradeTime[$i]) * 1000
+					If $iPetHouseTime > 0 Then
+						_TicksToDay($iPetHouseTime, $day, $hour, $min, $sec)
+						GUICtrlSetData($g_ahLbLPetTime[$i], $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+						GUICtrlSetColor($g_ahLbLPetTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
+ 					Else
+						GUICtrlSetData($g_ahLbLPetTime[$i], "")
+						$asPetLabUpgradeTime[$i] = ""
+ 					EndIf
+				Else
+					GUICtrlSetData($g_ahLbLPetTime[$i], "")
+ 				EndIf
 			Next
 
 		Case "$g_iCommandStop"

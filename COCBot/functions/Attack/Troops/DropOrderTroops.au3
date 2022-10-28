@@ -61,36 +61,38 @@ Func MatchTroopDropName($Num)
 		Case 23
 			Return $eRDrag
 		Case 24
-			Return $eMini
+			Return $eETitan
 		Case 25
-			Return $eSMini
+			Return $eMini
 		Case 26
-			Return $eHogs
+			Return $eSMini
 		Case 27
-			Return $eValk
+			Return $eHogs
 		Case 28
-			Return $eSValk
+			Return $eValk
 		Case 29
-			Return $eGole
+			Return $eSValk
 		Case 30
-			Return $eWitc
+			Return $eGole
 		Case 31
-			Return $eSWitc
+			Return $eWitc
 		Case 32
-			Return $eLava
+			Return $eSWitc
 		Case 33
-			Return $eIceH
+			Return $eLava
 		Case 34
-			Return $eBowl
+			Return $eIceH
 		Case 35
-			Return $eSBowl
+			Return $eBowl
 		Case 36
-			Return $eIceG
+			Return $eSBowl
 		Case 37
-			Return $eHunt
+			Return $eIceG
 		Case 38
-			Return "CC"
+			Return $eHunt
 		Case 39
+			Return "CC"
+		Case 40
 			Return "HEROES"
 	EndSwitch
 EndFunc   ;==>MatchTroopDropName
@@ -182,57 +184,63 @@ Func MatchSlotsPerEdge($Num)
 			Else
 				Return 2
 			EndIf
-		Case 24 ;$eMini
+		Case 24 ; $eETitan
+			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
+				Return 0
+			Else
+				Return 2
+			EndIf				
+		Case 25 ;$eMini
 			Return 0
-		Case 25 ;$eSMini
+		Case 26 ;$eSMini
 			Return 0
-		Case 26 ;$eHogs
+		Case 27 ;$eHogs
 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
 				Return 1
 			Else
 				Return 2
 			EndIf
-		Case 27 ;$eValk
+		Case 28 ;$eValk
 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
 				Return 0
 			Else
 				Return 2
 			EndIf
-		Case 28 ;$eSValk
+		Case 29 ;$eSValk
 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
 				Return 0
 			Else
 				Return 2
 			EndIf
-		Case 29 ;$eGole
+		Case 30 ;$eGole
 			Return 2
-		Case 30 ;$eWitc
+		Case 31 ;$eWitc
 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
 				Return 1
 			Else
 				Return 2
 			EndIf
-		Case 31 ;$eSWitc
+		Case 32 ;$eSWitc
 			If $g_iMatchMode = $LB And $g_aiAttackStdDropSides[$LB] = 5 Then
 				Return 1
 			Else
 				Return 2
 			EndIf
-		Case 32 ;$eLava
+		Case 33 ;$eLava
 			Return 2
-		Case 33 ;$eIceH
+		Case 34 ;$eIceH
 			Return 2
-		Case 34 ;$eBowl
+		Case 35 ;$eBowl
 			Return 0
-		Case 35 ;$eSBowl
+		Case 36 ;$eSBowl
 			Return 0
-		Case 36 ;$eIceG
+		Case 37 ;$eIceG
 			Return 2
-		Case 37 ;$eHunt
+		Case 38 ;$eHunt
 			Return 0
-		Case 38 ;CC
+		Case 39 ;CC
 			Return 1
-		Case 39 ;HEROES
+		Case 40 ;HEROES
 			Return 1
 	EndSwitch
 EndFunc   ;==>MatchSlotsPerEdge
@@ -247,9 +255,9 @@ Func MatchSidesDrop($Num)
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 4 Then Return 4
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 5 Then Return 1
 			If $g_aiAttackStdDropSides[$g_iMatchMode] = 6 Then Return 1
-		Case 34
+		Case 39
 			Return 1 ;CC
-		Case 35
+		Case 40
 			Return 1 ;HEROES
 	EndSwitch
 EndFunc   ;==>MatchSidesDrop

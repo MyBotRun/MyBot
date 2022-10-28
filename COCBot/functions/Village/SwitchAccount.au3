@@ -158,13 +158,13 @@ Func CheckSwitchAcc()
 			$nMinRemainTrain = CheckTroopTimeAllAccount($bForceSwitch)
 
 			If $nMinRemainTrain <= 1 And Not $bForceSwitch And Not $g_bDonateLikeCrazy Then ; Active (force switch shall give priority to Donate Account)
-				SetDebugLog("Switch to or Stay at Active Account: " & $g_iNextAccount + 1, $COLOR_DEBUG)
+				If $g_bDebugSetlog Then SetDebugLog("Switch to or Stay at Active Account: " & $g_iNextAccount + 1, $COLOR_DEBUG)
 				$g_iDonateSwitchCounter = 0
 			Else
 				If $g_iDonateSwitchCounter < UBound($aDonateAccount) Then ; Donate
 					$g_iNextAccount = $aDonateAccount[$g_iDonateSwitchCounter]
 					$g_iDonateSwitchCounter += 1
-					SetDebugLog("Switch to Donate Account " & $g_iNextAccount + 1 & ". $g_iDonateSwitchCounter = " & $g_iDonateSwitchCounter, $COLOR_DEBUG)
+					If $g_bDebugSetlog Then SetDebugLog("Switch to Donate Account " & $g_iNextAccount + 1 & ". $g_iDonateSwitchCounter = " & $g_iDonateSwitchCounter, $COLOR_DEBUG)
 					SetSwitchAccLog(" - Donate Acc [" & $g_iNextAccount + 1 & "]")
 				Else ; Active
 					$g_iDonateSwitchCounter = 0
@@ -391,16 +391,20 @@ Func SwitchCOCAcc($NextAccount)
 	waitMainScreen()
 	If Not $g_bRunState Then Return
 	;switch using scid sometime makes emulator seem freeze but not, need to send back button first for click work again
-	If $g_bChkSuperCellID Then
-		SetDebugLog("Checkscidswitch: Send AndroidBackButton", $COLOR_DEBUG)
-		AndroidBackButton() ;Send back button to android
-		If _Sleep(1000) Then Return
-		If IsEndBattlePage() Then
-			AndroidBackButton()
-		EndIf
-	EndIf
+	;If $g_bChkSuperCellID Then
+	;	SetDebugLog("Checkscidswitch: Send AndroidBackButton", $COLOR_DEBUG)
+	;	AndroidBackButton() ;Send back button to android
+	;	If _Sleep(1000) Then Return
+	;	If IsEndBattlePage() Then
+	;		AndroidBackButton()
+	;	EndIf
+	;EndIf
 	CheckObstacles()
 	If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
+	
+	SetLog("Switch Account Load TownLevel : " & $g_iTownHallLevel)
+	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName )
+
 	runBot()
 
 EndFunc   ;==>SwitchCOCAcc
@@ -669,66 +673,90 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
 Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
-    Local $aSuperCellIDWindowsUI, $bSCIDWindowOpened = False
+	Local $sAccountDiamond = GetDiamondFromRect("440,353,859,732") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+    Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = $NextAccount
-	Local $aAccount, $aFound, $aCoord[0][2]
-	If Not $g_bRunState Then Return
+	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
+
+	If Not $g_bRunState Then Return "Exit"
+
+	;SCIDragIfNeeded($NextAccount)
 
 	For $i = 0 To 30 ; Checking "New SuperCellID UI" continuously in 30sec
-		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect("550,60,760,160"), 1, True, Default))
-		If _Sleep(500) Then Return
+		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect("440,1,859,243"), 1, True, Default))
+		If _Sleep(500) Then Return "Exit"
 		If IsArray($aSuperCellIDWindowsUI) And UBound($aSuperCellIDWindowsUI, 1) >= 2 Then
-			SetLog("SupercellID Window Opened", $COLOR_DEBUG)
-			$bSCIDWindowOpened = True
-			ExitLoop
-		EndIf 
+					
+			; verifiy SCID Account slots has not moved for accounts 0 to 3
+			If $g_iTotalAcc < 4 Then
+
+				If Not IsSCIDAccComplete($g_iTotalAcc) Then 
+					$bResult = False
+					Return False
+				EndIf
+			
+			Else
+			
+				If Not IsSCIDAccComplete() Then 
+					$bResult = False
+					Return False
+				EndIf
+	
+			EndIf
+	
+			; Make Drag only when SCID window is visible.
+			If Not SCIDragIfNeeded($NextAccount) Then
+				SetLog("SCIDragIfNeeded failed")
+				$bResult = False
+				Return "Error"
+			EndIf
+			
+			If $g_bDebugSetlog Then SetSwitchAccLog("Switching to Account: " & $NextAccount + 1, $COLOR_DEBUG)			
+			
+			$aSearchForAccount = decodeMultipleCoords(findImage("Account Locations", $g_sImgSupercellIDSlots, $sAccountDiamond, 0, True, Default))
+			If _Sleep(500) Then Return "Exit"
+			If Not $g_bRunState Then Return "Exit"
+			If IsArray($aSearchForAccount) And UBound($aSearchForAccount) > 0 Then
+				SetDebugLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
+				SetLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
+				
+				If $g_bDebugSetlog Then SetSwitchAccLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
+
+				; Correct Index for Profile if needs to drag
+				If $NextAccount >= 3 and UBound($aSearchForAccount) == 4 Then $iIndexSCID = 3 ; based on drag logic, the account will always be the bottom one
+
+				; fixes weird issue with arrays after getting image info
+				For $j = 0 To UBound($aSearchForAccount) - 1
+					$aTempArray = $aSearchForAccount[$j]
+					_ArrayAdd($aCoordinates, $aTempArray[0] & "|" & $aTempArray[1], 0, "|", @CRLF, $ARRAYFILL_FORCE_NUMBER)
+				Next
+
+				_ArraySort($aCoordinates, 0, 0, 0, 1) ; sort by column 1 [Y]... this is to keep them in order of actual list
+
+				; list all account see-able after drag on debug chat
+				Local $iProfiles = UBound($g_asProfileName)
+				For $j = 0 To UBound($aCoordinates) - 1
+					SetDebugLog("[" & $j + 1 & "] Account coordinates: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " named: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
+					If $g_bDebugSetlog Then SetSwitchAccLog("[" & $j + 1 & "] A/C coord: " & $aCoordinates[$j][0] & "," & $aCoordinates[$j][1] & " Profile: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
+				Next
+
+				SetLog("   " & $iStep & ". Click Account [" & $NextAccount + 1 & "] Supercell ID with Profile: " & $g_asProfileName[$NextAccount])
+				Click($aCoordinates[$iIndexSCID][0]-75, $aCoordinates[$iIndexSCID][1]+50, 1)
+				If _Sleep(750) Then Return "Exit"
+				SetLog("   " & $iStep + 1 & ". Please wait for loading CoC!")
+				$bResult = True
+				Return "OK"
+			EndIf
+		EndIf
+
 		If $i = 30 Then
 			$bResult = False
 			Return "Error"
 		EndIf
-		If _Sleep(900) Then Return
-		If Not $g_bRunState Then Return
+		If _Sleep(900) Then Return "Exit"
+		If Not $g_bRunState Then Return "Exit"
 	Next
-	
-	If $bSCIDWindowOpened Then
-		If _Sleep(500) Then Return
-		SCIDScrollUp()
-		
-		SCIDScrollDown($NextAccount) ; Make Drag only when SCID window is visible.
-		If _Sleep(1000) Then Return
-		$aAccount = QuickMIS("CX", $g_sImgSupercellIDSlots, 750, 320, 850, 685, True, False)
-		SetLog("Found: " & UBound($aAccount) & " SCID", $COLOR_SUCCESS)
-		If IsArray($aAccount) And UBound($aAccount) > 0 Then
-			For $j = 0 To UBound($aAccount) - 1
-				$aFound = StringSplit($aAccount[$j], ",", $STR_NOCOUNT)
-				_ArrayAdd($aCoord, $aFound[0]+750 & "|" & $aFound[1]+320)
-			Next
-			_ArraySort($aCoord, 0, 0, 0, 1)
-			
-			; Correct Index for Profile if needs to drag
-			If $NextAccount >= 3 Then $iIndexSCID = 3 ; based on drag logic, the account will always be the bottom one
-			
-			; list all account see-able after drag on debug chat
-			For $j = 0 To UBound($aCoord) - 1
-				SetLog("[" & $j & "] Account coordinates: " & $aCoord[$j][0] & "," & $aCoord[$j][1] & " named: " & $g_asProfileName[$NextAccount-$iIndexSCID+$j])
-			Next
-			
-			If UBound($aCoord) < 4 And $NextAccount >= 3 Then 
-				SetLog("Only Found " & UBound($aCoord) & " SCID Account, Select Last Account", $COLOR_INFO)
-				$iIndexSCID = UBound($aCoord) - 1
-			EndIf
-			
-			SetLog("   " & $iStep & ". Click Account [" & $NextAccount + 1 & "] Supercell ID with Profile: " & $g_asProfileName[$NextAccount])
-			Click($aCoord[$iIndexSCID][0]-75, $aCoord[$iIndexSCID][1] + 10, 1)
-			If _Sleep(750) Then Return
-			SetLog("   " & $iStep + 1 & ". Please wait for loading CoC!")
-			$bResult = True
-			Return "OK"
-		Else
-			$bResult = False
-			Return "Error"
-		EndIf
-	EndIf
+	Return "" ; should never get here
 EndFunc   ;==>SwitchCOCAcc_ClickAccountSCID
 
 Func CheckWaitHero() ; get hero regen time remaining if enabled
@@ -900,7 +928,7 @@ Func CheckGoogleSelectAccount($bSelectFirst = True)
 			Click($aAway[0], $aAway[1] + 40, 1)
 		EndIf
 	Else
-		SetDebugLog("CheckGoogleSelectAccount pixel color: " & _GetPixelColor($aListAccount[0], $aListAccount[1], False))
+		If $g_bDebugSetlog Then SetDebugLog("CheckGoogleSelectAccount pixel color: " & _GetPixelColor($aListAccount[0], $aListAccount[1], False))
 		Click($aAway[0], $aAway[1] + 40, 1)
 	EndIf
 
@@ -1056,30 +1084,112 @@ Func SwitchAccountCheckProfileInUse($sNewProfile)
 	EndIf
 EndFunc   ;==>SwitchAccountCheckProfileInUse
 
-Func SCIDScrollDown($iSCIDAccount)
+Func SCIDragIfNeeded($iSCIDAccount)
 	If Not $g_bRunState Then Return
-	If $iSCIDAccount < 4 Then Return
-	For $i = 0 To $iSCIDAccount - 4
-		Switch $g_sAndroidEmulator
-			Case "Memu", "nox"
-				AndroidAdbScript("ScrollDownSCID")
-			Case "BlueStacks2"
-				AndroidAdbScript("ScrollDownSCID.Bluestacks")
-		EndSwitch
-		If _Sleep(500) Then Return
-	Next
-EndFunc   ;==>SCIDScrollDown
 
-Func SCIDScrollUp()
-	If Not $g_bRunState Then Return
-	SetLog("Try to scroll up", $COLOR_DEBUG)
-	For $i = 0 To Ceiling($g_iTotalAcc/4) - 1
-		Switch $g_sAndroidEmulator
-			Case "Memu", "nox"
-				AndroidAdbScript("ScrollUpSCID")
-			Case "BlueStacks2"
-				AndroidAdbScript("ScrollUpSCID.Bluestacks")
-		EndSwitch
-		If _Sleep(500) Then Return
+	If $iSCIDAccount < 4 Then Return True
+
+	Local $x1 = Random(444,748,1) ; 444 ;
+	Local $x2 = Random(444,748,1) ; 444 ;
+	Local $y  = Random(630,634,1)
+
+	SetLog("ClickDrag SCID Window(" & $x1 & "," & $y & ")")
+	SetLog("ClickDrag SCID Window(" & $x2 & "," & $y & ")")
+
+	ClickDrag($x1, $y, $x2, $y-(94*($iSCIDAccount-3)), 500, True) ; drag a multiple of 90 pixels up for how many accounts down it is
+
+	If Not IsSCIDAccComplete($iSCIDAccount) Then Return False
+
+	If _Sleep(1000) Then Return
+	
+	Return True
+EndFunc   ;==>SCIDragIfNeeded
+
+Func IsSCIDAccComplete($iAccounts = 3)
+	SetLog("-----IsSCIDAccComplete----")
+	Local $sImgSupercellIDHead = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\Slots\SCIDHead*"
+	Local $sImgSupercellIDCup = @ScriptDir & "\imgxml\SwitchAccounts\SupercellID\Slots\SCIDCup*"
+	Local $iDistanceBetweenAccounts = 95
+	Local $aiSlotCoord, $aiHeadCoord, $aiCupCoord
+	Local $aiSearchArea[4] = [455, 347, 845, 437]
+	Local $bSaveImage = False
+	Local $bResult = True
+	Local $iLoop = 3
+	
+	Local $sFolder = @ScriptDir & "\Profiles\SCID_Errors\"
+	Local $j = 0
+	
+	; Profile Index offset
+	SetLog("$iAccounts : " & $iAccounts)
+	If $iAccounts < 4 Then
+		Local $j = 0
+		$iLoop = $iAccounts
+	Else
+		Local $j = $iAccounts - 3
+	EndIf
+	
+	DirCreate($sFolder)
+
+	; check the barbarians are in their expected location
+	For $i = 0 to $iLoop
+		Local $sProfileFolder = @ScriptDir & "\Profiles\" & $g_asProfileName[$i + $j] & "\"
+	
+		SetLog("Checking SCID Slot: " & $i)
+		;SetLog($sProfileFolder)
+		;SetLog($g_asProfileName[$i + $j])
+		
+		$aiHeadCoord = decodeSingleCoord(findImage("IsSCIDAccComplete", $sImgSupercellIDHead, GetDiamondFromArray($aiSearchArea), 1, True))
+		
+		If Not IsArray($aiHeadCoord) Or UBound($aiHeadCoord, $UBOUND_ROWS) < 2 Then
+			SetSwitchAccLog("Slot: " & $i & " Barbarian Head missing!")
+			$bSaveImage = True
+			$bResult = False
+		Else
+			Local $filename = String($g_asProfileName[$i + $j] & "_0_98.png")
+	
+			SetLog("Looking for " & $sProfileFolder & $filename)
+	
+			If FileExists($sProfileFolder & $filename) Then
+			
+				SetLog("Found file!")
+			
+				Local $aiVillageNameCoord  = decodeSingleCoord(findImage("IsSCIDAccComplete", $sProfileFolder & $filename, GetDiamondFromArray($aiSearchArea), 1, True))
+				
+				If Not IsArray($aiVillageNameCoord) Or UBound($aiVillageNameCoord, $UBOUND_ROWS) < 2 Then
+					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - missing!")
+					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - missing!")
+					$bSaveImage = True
+					$bResult = False
+					
+				Else
+					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - OK!")
+					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - OK!")
+				EndIf
+			Else
+				Local $x = $aiHeadCoord[0] - 10
+				Local $y = $aiHeadCoord[1] - 30
+
+				; now crop image to have only village name and put in $hClone
+				Local $oBitmap = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
+				Local $hClone = _GDIPlus_BitmapCloneArea($oBitmap, $x, $y, 65, 20, $GDIP_PXF24RGB)
+					
+				_GDIPlus_ImageSaveToFile($hClone, $sProfileFolder & $filename)
+				SetSwitchAccLog($g_asProfileName[$i + $j] & " image Stored: ")
+				SetLog($g_asProfileName[$i + $j] & " image Stored: " & $filename, $COLOR_SUCCESS)
+				_GDIPlus_BitmapDispose($hClone)
+				_GDIPlus_BitmapDispose($oBitmap)
+			EndIf
+		EndIf
+
+		$aiSearchArea[1] = ($aiSearchArea[1] + $iDistanceBetweenAccounts)
+		$aiSearchArea[3] = ($aiSearchArea[3] + $iDistanceBetweenAccounts)
+		
+		If _Sleep(250) Then Return
+		
+		If $i = 3 Then ExitLoop
 	Next
-EndFunc   ;==>SCIDScrollUp
+	
+	If $bSaveImage = True Then SaveSCIDebugImage("SCID_Errors", False)
+		
+	Return $bResult
+EndFunc

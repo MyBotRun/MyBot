@@ -384,7 +384,7 @@ EndFunc   ;==>DoWhatToTrainContainSpell
 
 Func IsElixirTroop($Troop)
 	Local $iIndex = TroopIndexLookup($Troop, "IsElixirTroop")
-	If $iIndex >= $eBarb And $iIndex <= $eRDrag Then Return True
+	If $iIndex >= $eBarb And $iIndex <= $eETitan Then Return True
 	Return False
 EndFunc   ;==>IsElixirTroop
 
@@ -659,7 +659,8 @@ EndFunc   ;==>GetSlotRemoveBtnPosition
 Func GetSlotNumber($bSpells = False)
 	Select
 		Case $bSpells = False
-			Local Const $Orders = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eSDrag, $eYeti, $eRDrag, $ePekk, $eBabyD, $eInfernoD, $eMine, $eEDrag, _
+			Local Const $Orders = [$eBarb, $eSBarb, $eArch, $eSArch, $eGiant, $eSGiant, $eGobl, $eSGobl, $eWall, $eSWall, $eBall, $eRBall, $eWiza, $eSWiza, $eHeal, $eDrag, $eSDrag, _
+					$eYeti, $eRDrag, $ePekk, $eBabyD, $eInfernoD, $eMine, $eEDrag, $eETitan, _
 					$eMini, $eSMini, $eHogs, $eValk, $eSValk, $eGole, $eWitc, $eSWitc, $eLava, $eIceH, $eBowl, $eSBowl, $eIceG, $eHunt] ; Set Order of troop display in Army Tab
 
 			Local $allCurTroops[UBound($Orders)]
@@ -684,7 +685,7 @@ Func GetSlotNumber($bSpells = False)
 		Case $bSpells = True
 
 			; Set Order of Spells display in Army Tab
-			Local Const $SpellsOrders = [$eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
+			Local Const $SpellsOrders = [$eLSpell, $eHSpell, $eRSpell, $eJSpell, $eFSpell, $eCSpell, $eISpell, $eReSpell, $ePSpell, $eESpell, $eHaSpell, $eSkSpell, $eBtSpell]
 
 			Local $allCurSpells[UBound($SpellsOrders)]
 

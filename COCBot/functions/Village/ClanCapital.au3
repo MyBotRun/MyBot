@@ -1,8 +1,23 @@
+; #FUNCTION# ====================================================================================================================
+; Name ..........: Bot Clan Capital / ClanCapital.au3
+; Description ...: This file controls the "Clan Capital" tab
+; Syntax ........:
+; Parameters ....: None
+; Return values .: None
+; Author ........: Xbebenk, Moebius14
+; Modified ......: Moebius14 (09.14.2022)
+; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2022
+;                  MyBot is distributed under the terms of the GNU GPL
+; Related .......:
+; Link ..........: https://github.com/MyBotRun/MyBot/wiki
+; Example .......: No
+; ===============================================================================================================================
 #include-once
+
 Func CollectCCGold($bTest = False)
 	If Not $g_bChkEnableCollectCCGold Then Return
 	Local $bWindowOpened = False
-	Local $CollectedCCGold = 0
+	Local $CollectingCCGold = 0, $CollectedCCGold = 0
 	Local $aCollect, $iBuilderToUse = $g_iCmbForgeBuilder + 1
 	SetLog("Start Collecting Clan Capital Gold", $COLOR_INFO)
 	ClickAway("Right")
@@ -11,7 +26,7 @@ Func CollectCCGold($bTest = False)
 	_Sleep(500)
 	
 	If QuickMIS("BC1", $g_sImgCCGoldCollect, 250, 550, 400, 730) Then
-		Click($g_iQuickMISX, $g_iQuickMISY + 20)
+		Click($g_iQuickMISX, $g_iQuickMISY + 30)
 		For $i = 1 To 5
 			SetDebugLog("Waiting for Forge Window #" & $i, $COLOR_ACTION)
 			If QuickMis("BC1", $g_sImgGeneralCloseButton, 710, 180, 760, 225) Then
@@ -23,13 +38,21 @@ Func CollectCCGold($bTest = False)
 		
 		If $bWindowOpened Then 
 			$aCollect = QuickMIS("CNX", $g_sImgCCGoldCollect, 120, 360, 740, 430)
-			If IsArray($aCollect) And UBound($aCollect) > 0 Then
+			_ArraySort($aCollect, 0, 0, 0, 1)
+			If IsArray($aCollect) And UBound($aCollect) > 0 And UBound($aCollect, $UBOUND_COLUMNS) > 1 Then
 				SetLog("Collecting " & UBound($aCollect) & " Clan Capital Gold", $COLOR_INFO)
 				For $i = 0 To UBound($aCollect) - 1
-					If Not $bTest Then 
+					If Not $bTest Then
+						$CollectingCCGold = getOcrAndCapture("coc-forge-ccgold", $aCollect[$i][1] - 70, $aCollect[$i][2] - 13, 64, 18, True)
+						SetLog("Collecting " & $CollectingCCGold & " Clan Capital Gold", $COLOR_INFO)
+						$CollectedCCGold += $CollectingCCGold
+						_Sleep(1000)
 						Click($aCollect[$i][1], $aCollect[$i][2]) ;Click Collect
-						$CollectedCCGold +=1
 					Else
+						$CollectingCCGold = getOcrAndCapture("coc-forge-ccgold", $aCollect[$i][1] - 70, $aCollect[$i][2] - 13, 64, 18, True)
+						SetLog("Test Only, Should Collecting " & $CollectingCCGold & " Clan Capital Gold", $COLOR_INFO)
+						$CollectedCCGold += $CollectingCCGold
+						_Sleep(1000)
 						SetLog("Test Only, Should Click on [" & $aCollect[$i][1] & "," & $aCollect[$i][2] & "]")
 					EndIf
 					_Sleep(500)
@@ -37,18 +60,26 @@ Func CollectCCGold($bTest = False)
 			EndIf
 			_Sleep(1000)
 			
-			If $iBuilderToUse > 3 Then 
+			If $g_iTownHallLevel > 13 Then
 				SetLog("Checking 4th Builder forge result", $COLOR_INFO)
 				ClickDrag(720, 315, 600, 315, 500)
 				_Sleep(1000)
 				$aCollect = QuickMIS("CNX", $g_sImgCCGoldCollect, 500, 360, 740, 430)
-				If IsArray($aCollect) And UBound($aCollect) > 0 Then
+				_ArraySort($aCollect, 0, 0, 0, 1)
+				If IsArray($aCollect) And UBound($aCollect) > 0 And UBound($aCollect, $UBOUND_COLUMNS) > 1 Then
 					SetLog("Collecting " & UBound($aCollect) & " Clan Capital Gold", $COLOR_INFO)
 					For $i = 0 To UBound($aCollect) - 1
 						If Not $bTest Then 
+							$CollectingCCGold = getOcrAndCapture("coc-forge-ccgold", $aCollect[$i][1] - 70, $aCollect[$i][2] - 13, 64, 18, True)
+							SetLog("Collecting " & $CollectingCCGold & " Clan Capital Gold", $COLOR_INFO)
+							$CollectedCCGold += $CollectingCCGold
+							_Sleep(1000)
 							Click($aCollect[$i][1], $aCollect[$i][2]) ;Click Collect
-							$CollectedCCGold +=1
 						Else
+							$CollectingCCGold = getOcrAndCapture("coc-forge-ccgold", $aCollect[$i][1] - 70, $aCollect[$i][2] - 13, 64, 18, True)
+							SetLog("Test Only, Should Collecting " & $CollectingCCGold & " Clan Capital Gold", $COLOR_INFO)
+							$CollectedCCGold += $CollectingCCGold
+							_Sleep(1000)
 							SetLog("Test Only, Should Click on [" & $aCollect[$i][1] & "," & $aCollect[$i][2] & "]")
 						EndIf
 						_Sleep(500)
@@ -56,7 +87,7 @@ Func CollectCCGold($bTest = False)
 				EndIf
 			EndIf
 			
-			SetLog("Clan Capital Gold collected successfully!", $COLOR_SUCCESS)
+			SetLog("Collected " & $CollectedCCGold & " Clan Capital Gold Successfully !", $COLOR_SUCCESS1)
 			_Sleep(800)
 			
 			If QuickMIS("BC1", $g_sImgGeneralCloseButton, 715, 190, 760, 235) Then
@@ -78,6 +109,7 @@ Func ClanCapitalReport($SetLog = True)
 	$g_iLootCCMedal = getOcrAndCapture("coc-ms", 670, 70, 160, 25)
 	GUICtrlSetData($g_lblCapitalGold, $g_iLootCCGold)
 	GUICtrlSetData($g_lblCapitalMedal, $g_iLootCCMedal)
+	If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
 	
 	If $SetLog Then
 		SetLog("Capital Report", $COLOR_INFO)
@@ -95,7 +127,7 @@ EndFunc
 Func OpenForgeWindow()
 	Local $bRet = False
 	If QuickMIS("BC1", $g_sImgForgeHouse, 200, 570, 400, 730) Then 
-		Click($g_iQuickMISX + 10, $g_iQuickMISY + 10)
+		Click($g_iQuickMISX + 18, $g_iQuickMISY + 20)
 		For $i = 1 To 5
 			SetDebugLog("Waiting for Forge Window #" & $i, $COLOR_ACTION)
 			If QuickMis("BC1", $g_sImgGeneralCloseButton, 715, 180, 760, 225) Then
@@ -147,6 +179,7 @@ Func ForgeClanCapitalGold($bTest = False)
 	Local $aForgeType[5] = [$g_bChkEnableForgeGold, $g_bChkEnableForgeElix, $g_bChkEnableForgeDE, $g_bChkEnableForgeBBGold, $g_bChkEnableForgeBBElix]
 	Local $bForgeEnabled = False
 	Local $iBuilderToUse = $g_iCmbForgeBuilder + 1
+	Local $WallnHeroReserved = 0
 	For $i In $aForgeType ;check for every option enabled
 		If $i = True Then 
 			$bForgeEnabled = True
@@ -162,8 +195,11 @@ Func ForgeClanCapitalGold($bTest = False)
 	Local $iWallReserve = $g_bUpgradeWallSaveBuilder ? 1 : 0
 	If $g_iFreeBuilderCount - $iWallReserve - ReservedBuildersForHeroes() < 1 Then ;check builder reserve on wall and hero upgrade
 		SetLog("FreeBuilder=" & $g_iFreeBuilderCount & ", Reserved (ForHero=" & $g_iHeroReservedBuilder & " ForWall=" & $iWallReserve & ")", $COLOR_INFO)
-		SetLog("Not Have builder, exiting", $COLOR_INFO)
+		SetLog("No available builder for Craft, exiting", $COLOR_INFO)
 		Return
+	Else
+		$WallnHeroReserved = $g_iFreeBuilderCount - $iWallReserve - ReservedBuildersForHeroes(False)
+		SetDebugLog("Free Builders allowed for Forge : " & $WallnHeroReserved & " / " & $g_iFreeBuilderCount, $COLOR_DEBUG)
 	EndIf
 	
 	Local $iCurrentGold = getResourcesMainScreen(695, 23) ;get current Gold
@@ -175,10 +211,8 @@ Func ForgeClanCapitalGold($bTest = False)
 		Return
 	EndIf
 	
-	If $iBuilderToUse > 3 Then ClickDrag(720, 315, 600, 315)
-	If _Sleep(1000) Then Return
+	_Sleep(1000)
 	
-	If Not $g_bRunState Then Return
 	SetLog("Number of Enabled builder for Forge = " & $iBuilderToUse, $COLOR_ACTION)
 	If ($g_iTownHallLevel = 13 Or $g_iTownHallLevel = 12) And $iBuilderToUse = 4 Then
 		SetLog("TH Level Allows 3 Builders For Forge", $COLOR_DEBUG)
@@ -191,11 +225,16 @@ Func ForgeClanCapitalGold($bTest = False)
 		$iBuilderToUse = 1
 	EndIf
 	
+	If $iBuilderToUse > 3 Then ClickDrag(720, 315, 600, 315)
+	If _Sleep(1000) Then Return
+	
+	If Not $g_bRunState Then Return
+	SetLog("Number of Enabled builder for Forge : " & $iBuilderToUse, $COLOR_ACTION)
+	
 	Local $iBuilder = 0
 	Local $iActiveForge = QuickMIS("CNX", $g_sImgActiveForge, 120, 230, 740, 450) ;check if we have forge in progress
 	RemoveDupCNX($iActiveForge)
 	If IsArray($iActiveForge) And UBound($iActiveForge) > 0 Then
-		_ArraySort($iActiveForge, 0, 0, 0, 1)
 		If UBound($iActiveForge) >= $iBuilderToUse Then
 			SetLog("We have All Builder Active for Forge", $COLOR_INFO)
 			ClickAway("Right")
@@ -204,15 +243,47 @@ Func ForgeClanCapitalGold($bTest = False)
 		$iBuilder = UBound($iActiveForge)
 	EndIf
 	
-	SetLog("Already active builder Forging = " & $iBuilder, $COLOR_ACTION)
+	SetLog("Already active builder Forging : " & $iBuilder, $COLOR_ACTION)
 	If Not $g_bRunState Then Return
-	Local $iBuilderToAssign = Number($iBuilderToUse) - Number($iBuilder)
+	
 	Local $aResource[5][2] = [["Gold", 240], ["Elixir", 330], ["Dark Elixir", 425], ["Builder Base Gold", 520], ["Builder Base Elixir", 610]]
 	Local $aCraft = QuickMIS("CNX", $g_sImgCCGoldCraft, 120, 230, 740, 450)
 	_ArraySort($aCraft, 0, 0, 0, 1) ;sort by column 1 (x coord)
-	SetDebugLog("Count of Craft Button: " & UBound($aCraft))
-	SetLog("Available Builder for forge = " & $iBuilderToAssign, $COLOR_INFO)
+	SetDebugLog("Count of Craft Button : " & UBound($aCraft), $COLOR_DEBUG)
+	
 	If IsArray($aCraft) And UBound($aCraft) > 0 And UBound($aCraft, $UBOUND_COLUMNS) > 1 Then
+	
+		Local $iBuilderToAssign = 0
+		Local $UnactiveCraftToStart = $iBuilderToUse - $iBuilder
+		SetDebugLog("Number of Builder(s) To Use : " & $UnactiveCraftToStart, $COLOR_DEBUG)
+		If $UnactiveCraftToStart < UBound($aCraft) Then
+			$iBuilderToAssign = $UnactiveCraftToStart ; When assigned in Gui < Crafts ready to start
+			If $bTest Then SetLog("Case 1 : Gui < Crafts", $COLOR_DEBUG)
+		Else
+			$iBuilderToAssign = UBound($aCraft)	; When assigned in Gui >= Crafts ready to start 
+			If $bTest Then SetLog("Case 2 : Gui >= Crafts", $COLOR_DEBUG)
+		EndIf
+		
+		If $WallnHeroReserved < $iBuilderToAssign Then ;check builder reserve on wall and hero upgrade
+			$iBuilderToAssign = $WallnHeroReserved
+			If ($g_iHeroReservedBuilder + $iWallReserve) = 1 Then
+				SetLog("Reserved Builder (ForHero=" & $g_iHeroReservedBuilder & " ForWall=" & $iWallReserve & ")", $COLOR_ACTION)
+			Else
+				SetLog("Reserved Builders (ForHero=" & $g_iHeroReservedBuilder & " ForWall=" & $iWallReserve & ")", $COLOR_ACTION)
+			EndIf
+		EndIf
+		
+		If $iBuilderToAssign = 1 Then
+			SetLog("Builder to Assign : " & $iBuilderToAssign, $COLOR_SUCCESS1)
+		Else
+			SetLog("Builders to Assign : " & $iBuilderToAssign, $COLOR_SUCCESS1)
+		EndIf
+		
+		If $bTest Then
+			ClickAway("Right")
+			Return
+		EndIf
+		
 		For $j = 1 To $iBuilderToAssign
 			SetDebugLog("Proceed with builder #" & $j)
 			Click($aCraft[$j-1][1], $aCraft[$j-1][2])
@@ -268,19 +339,29 @@ EndFunc
 
 Func IsCCBuilderMenuOpen()
 	Local $bRet = False
-	Local $aBorder[4] = [350, 73, 0xF7F8F5, 40]
+	Local $aBorder0[4] = [400, 73, 0x8C9CB6, 20]
+	Local $aBorder1[4] = [400, 73, 0xC0C9D3, 20]
+	Local $aBorder2[4] = [400, 73, 0xBEBFBC, 20]
+	Local $aBorder3[4] = [400, 73, 0xFFFFFF, 20]
+	Local $aBorder4[4] = [400, 73, 0xF7F8F5, 20]
+	Local $aBorder5[4] = [400, 73, 0xC3CBD9, 20]
 	Local $sTriangle
-	If _CheckPixel($aBorder, True) Then 
-		SetDebugLog("Found Border Color: " & _GetPixelColor($aBorder[0], $aBorder[1], True), $COLOR_ACTION)
-		$bRet = True ;got correct color for border 
-	EndIf
+	
+	For $i = 0 To 5
+		If _CheckPixel($aBorder0, True) Or _CheckPixel($aBorder1, True) Or _CheckPixel($aBorder2, True) Or _CheckPixel($aBorder3, True) Or _CheckPixel($aBorder4, True) Or _CheckPixel($aBorder5, True) Then 
+			SetDebugLog("Found Border Color: " & _GetPixelColor($aBorder0[0], $aBorder0[1], True), $COLOR_ACTION)
+			$bRet = True ;got correct color for border
+			ExitLoop
+		EndIf
+		_Sleep(500)
+	Next	
 	
 	If Not $bRet Then ;lets re check if border color check not success
 		$sTriangle = getOcrAndCapture("coc-buildermenu-cc", 350, 55, 200, 25)
 		SetDebugLog("$sTriangle: " & $sTriangle)
-		If $sTriangle = "^" Or $sTriangle = "~" Then $bRet = True
+		If $sTriangle = "^" Or $sTriangle = "~" Or $sTriangle = "@" Or $sTriangle = "#" Or $sTriangle = "%" Or $sTriangle = "$" Or $sTriangle = "&" Then $bRet = True
 	EndIf
-	SetDebugLog(String($bRet))
+	SetDebugLog("IsCCBuilderMenuOpen : " & String($bRet))
 	Return $bRet
 EndFunc
 
@@ -565,6 +646,8 @@ Func AutoUpgradeCC()
 				$Failed = True
 				ExitLoop
 			EndIf
+		Else 
+			ExitLoop
 		EndIf
 	WEnd
 	
@@ -668,7 +751,7 @@ Func CapitalMainUpgradeLoop($aUpgrade)
 			AutoUpgradeCCLog($BuildingName, $cost)
 			_Sleep(1000)
 			ClickAway("Right")
-			_Sleep(800)
+			If _Sleep(2000) Then Return
 		EndIf
 		ExitLoop
 	Next
@@ -706,9 +789,9 @@ Func DistrictUpgrade($aUpgrade)
 			Click(645, 560) ;Click Contribute
 			$g_iStatsClanCapUpgrade = $g_iStatsClanCapUpgrade + 1
 			AutoUpgradeCCLog($BuildingName, $cost)
-			_Sleep(1000)
+			_Sleep(1500)
 			ClickAway("Right")
-			_Sleep(800)
+			If _Sleep(1500) Then Return
 			ClickAway("Right")
 		EndIf
 		ExitLoop

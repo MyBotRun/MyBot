@@ -331,8 +331,13 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreWall, $g_iChkBBSuggestedUpgradesIgnoreWall = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			GUICtrlSetState($g_hChkPlacingNewBuildings, $g_iChkPlacingNewBuildings = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
-
+			
+			; Otto Target Upgrades
 			GUICtrlSetState($g_hChkBattleMachineUpgrade, $g_bBattleMachineUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkDoubleCannonUpgrade, $g_bDoubleCannonUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkArcherTowerUpgrade, $g_bArcherTowerUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkMultiMortarUpgrade, $g_bMultiMortarUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			GUICtrlSetState($g_hChkMegaTeslaUpgrade, $g_bMegaTeslaUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			chkActivateBBSuggestedUpgrades()
 			chkActivateBBSuggestedUpgradesGold()
@@ -390,7 +395,6 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkBBHaltOnElixirFull, $g_bChkBBHaltOnElixirFull ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			GUICtrlSetState($g_hChkBBWaitForMachine, $g_bChkBBWaitForMachine ? $GUI_CHECKED : $GUI_UNCHECKED)
-			GUICtrlSetState($g_hChkBBDropBMFirst, $g_bChkBBDropBMFirst ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbBBNextTroopDelay, (($g_iBBNextTroopDelay - $g_iBBNextTroopDelayDefault) / $g_iBBNextTroopDelayIncrement) + 4) ; set combos based on delays
 			_GUICtrlComboBox_SetCurSel($g_hCmbBBSameTroopDelay, (($g_iBBSameTroopDelay - $g_iBBSameTroopDelayDefault) / $g_iBBSameTroopDelayIncrement) + 4)
 			chkBBTrophyRange()
@@ -473,8 +477,13 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_iChkBBSuggestedUpgradesIgnoreWall = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreWall) = $GUI_CHECKED) ? 1 : 0
 
 			$g_iChkPlacingNewBuildings = (GUICtrlRead($g_hChkPlacingNewBuildings) = $GUI_CHECKED) ? 1 : 0
-
+			
+			; OTTO Building Upgrades
 			$g_bBattleMachineUpgrade = (GUICtrlRead($g_hChkBattleMachineUpgrade) = $GUI_CHECKED) ? 1 : 0
+			$g_bDoubleCannonUpgrade = (GUICtrlRead($g_hChkDoubleCannonUpgrade) = $GUI_CHECKED) ? 1 : 0
+			$g_bArcherTowerUpgrade = (GUICtrlRead($g_hChkArcherTowerUpgrade) = $GUI_CHECKED) ? 1 : 0
+			$g_bMultiMortarUpgrade = (GUICtrlRead($g_hChkMultiMortarUpgrade) = $GUI_CHECKED) ? 1 : 0
+			$g_bMegaTeslaUpgrade = (GUICtrlRead($g_hChkMegaTeslaUpgrade) = $GUI_CHECKED) ? 1 : 0
 
 			$g_bChkClanGamesAir = (GUICtrlRead($g_hChkClanGamesAir) = $GUI_CHECKED) ? 1 : 0
 			$g_bChkClanGamesGround = (GUICtrlRead($g_hChkClanGamesGround) = $GUI_CHECKED) ? 1 : 0
@@ -523,8 +532,6 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_iTxtBBTrophyUpperLimit = GUICtrlRead($g_hTxtBBTrophyUpperLimit)
 			$g_bChkBBAttIfLootAvail = (GUICtrlRead($g_hChkBBAttIfLootAvail) = $GUI_CHECKED)
 			$g_bChkBBWaitForMachine = (GUICtrlRead($g_hChkBBWaitForMachine) = $GUI_CHECKED)
-			$g_bChkBBDropBMFirst = (GUICtrlRead($g_hChkBBDropBMFirst) = $GUI_CHECKED)
-
 			$g_bChkBBHaltOnGoldFull = (GUICtrlRead($g_hChkBBHaltOnGoldFull) = $GUI_CHECKED)
 			$g_bChkBBHaltOnElixirFull = (GUICtrlRead($g_hChkBBHaltOnElixirFull) = $GUI_CHECKED)
 
@@ -917,7 +924,7 @@ Func ApplyConfig_auto($TypeReadSave)
 	Switch $TypeReadSave
 		Case "Read"
 			GUICtrlSetState($g_hChkAutoUpgrade, $g_bAutoUpgradeEnabled ? $GUI_CHECKED : $GUI_UNCHECKED)
-			For $i = 0 To 13
+			For $i = 0 To 15
 				GUICtrlSetState($g_hChkUpgradesToIgnore[$i], $g_iChkUpgradesToIgnore[$i] = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			Next
 			For $i = 0 To 2
@@ -929,7 +936,7 @@ Func ApplyConfig_auto($TypeReadSave)
 			chkAutoUpgrade()
 		Case "Save"
 			$g_bAutoUpgradeEnabled = (GUICtrlRead($g_hChkAutoUpgrade) = $GUI_CHECKED)
-			For $i = 0 To 13
+			For $i = 0 To 15
 				$g_iChkUpgradesToIgnore[$i] = GUICtrlRead($g_hChkUpgradesToIgnore[$i]) = $GUI_CHECKED ? 1 : 0
 			Next
 			For $i = 0 To 2
@@ -958,7 +965,7 @@ Func ApplyConfig_600_17($TypeReadSave)
 			EndSwitch
 			GUICtrlSetState($g_hChkSaveWallBldr, $g_bUpgradeWallSaveBuilder ? $GUI_CHECKED : $GUI_UNCHECKED)
 			_GUICtrlComboBox_SetCurSel($g_hCmbWalls, $g_iCmbUpgradeWallsLevel)
-			For $i = 4 To 15
+			For $i = 4 To 16
 				GUICtrlSetData($g_ahWallsCurrentCount[$i], $g_aiWallsCurrentCount[$i])
 			Next
 			cmbWalls()
@@ -976,7 +983,7 @@ Func ApplyConfig_600_17($TypeReadSave)
 			EndIf
 			$g_bUpgradeWallSaveBuilder = (GUICtrlRead($g_hChkSaveWallBldr) = $GUI_CHECKED)
 			$g_iCmbUpgradeWallsLevel = _GUICtrlComboBox_GetCurSel($g_hCmbWalls)
-			For $i = 4 To 15 ; added wall-lvl15
+			For $i = 4 To 16 ; added wall-lvl16
 				$g_aiWallsCurrentCount[$i] = Number(GUICtrlRead($g_ahWallsCurrentCount[$i]))
 			Next
 	EndSwitch
@@ -2138,7 +2145,7 @@ Func ApplyConfig_600_52_2($TypeReadSave)
 				;$g_aiTrainArmySpellLevel[$S] = GUICtrlRead($g_ahLblTrainArmySpellLevel[$S])
 			Next
 			For $S = 0 To $eSiegeMachineCount - 1
-				$g_aiArmyCustomSiegeMachines[$S] = GUICtrlRead($g_ahTxtTrainArmySiegeCount[$S])
+				$g_aiArmyCompSiegeMachines[$S] = GUICtrlRead($g_ahTxtTrainArmySiegeCount[$S])
 				;$g_aiTrainArmySiegeMachineLevel[$S] = GUICtrlRead($g_ahLblTrainArmySiegeLevel[$S])
 			Next
 			; full & forced Total Camp values

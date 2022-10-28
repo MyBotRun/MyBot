@@ -14,7 +14,7 @@ Func chkUpgradeBattleMachine()
 	$g_bBattleMachineUpgrade = (GUICtrlRead($g_hChkBattleMachineUpgrade) = $GUI_CHECKED) ? 1 : 0
 EndFunc   ;==>chkUpgradeBattleMachine
 
-Func BattleMachineUpgrade($test = False)
+Func BattleMachineUpgrade($test = False, $bFinishNow = False)
 
 	SetLog("Upgrade Battle Machine")
 	Local $aHeroLevel = 0
@@ -131,6 +131,7 @@ Func BattleMachineUpgrade($test = False)
 				EndIf
 
 				SetLog("Battle Machine Upgrade complete", $COLOR_SUCCESS)
+				$g_iFreeBuilderCountBB -= 1
 				If _Sleep($DELAYUPGRADEHERO2) Then Return ; Wait for window to close
 			Else
 				SetLog("Battle Machine Upgrade Fail!", $COLOR_ERROR)
@@ -145,6 +146,8 @@ Func BattleMachineUpgrade($test = False)
 		SetLog("Upgrade Battle Machine error finding button", $COLOR_ERROR)
 		If $g_bDebugImageSave Then SaveDebugImage("UpgradeBMBtn1")
 	EndIf
+
+	If $bFinishNow Then FinishNow()
 
 	ClickAway()
 EndFunc   ;==>BattleMachineUpgrade

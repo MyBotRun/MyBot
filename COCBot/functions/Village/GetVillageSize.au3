@@ -84,7 +84,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		Local $avSceneries = findMultiple($sImgDir, $sSearchArea, $sSearchArea, 0, 1000, 1, "objectname,objectpoints", $bForceCapture)
 
 		If Not IsArray($avSceneries) Or UBound($avSceneries, $UBOUND_ROWS) <= 0 Then
-			SetLog("No Sceneries Found", $COLOR_ERROR)
+			SetDeBugLog("No Sceneries Found", $COLOR_ERROR)
 			If $g_bDebugImageSave Then SaveDebugRectImage("FailedSceneryMultiSearch", $x1 & "," & $y1 & "," & $right & "," & $bottom)
 		Else
 			Local $avTempArray, $aiSceneryCoords
@@ -146,7 +146,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 		If Not $bMeasureOnly Then
 			If $scenery[0] = 0 And $g_aiSearchZoomOutCounter[0] = 1 Then
 				If $g_bDebugImageSave Then SaveDebugRectImage("FailedScenerySearch", $x1 & "," & $y1 & "," & $right & "," & $bottom)
-				ClickAway2()
+				ClickAway()
 				If _Sleep(100) Then Return
 			EndIf
 			;If $scenery[0] = 0 Then SaveDebugRectImage("FailedScenerySearch", $x1 & "," & $y1 & "," & $right & "," & $bottom)
@@ -163,7 +163,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	$hTimer = TimerInit()
 
 	If $scenery[0] = 0 Then
-		If $bIsOnMainBase Then SetLog("No Supported Sceneries Found!", $COLOR_ERROR)
+		If $bIsOnMainBase Then SetDeBugLog("No Supported Sceneries Found!", $COLOR_ERROR)
 		SetDeBugLog("Searching ALL Stone files", $COLOR_INFO)
 		Local $aStoneFiles = _FileListToArray($sDirectory, $sStonePrefix & "*.*", $FLTA_FILES)
 	Else
@@ -172,7 +172,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	EndIf
 
 	If @error Then
-		SetLog("Error: Missing stone files (" & @error & ")", $COLOR_ERROR)
+		SetDeBugLog("Error: Missing stone files (" & @error & ")", $COLOR_ERROR)
 		Return $aResult
 	EndIf
 
@@ -219,7 +219,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	Next
 
 	If $stone[0] = 0 Then
-		SetLog("GetVillageSize cannot find stone", $COLOR_WARNING)
+		SetDeBugLog("GetVillageSize cannot find stone", $COLOR_WARNING)
 		;Return $aResult
 	EndIf
 
@@ -236,7 +236,7 @@ Func GetVillageSize($DebugLog = Default, $sStonePrefix = Default, $sTreePrefix =
 	EndIf
 
 	If @error Then
-		SetLog("Error: Missing tree (" & @error & ")", $COLOR_ERROR)
+		SetDeBugLog("Error: Missing tree (" & @error & ")", $COLOR_ERROR)
 		Return FuncReturn($aResult)
 	EndIf
 
@@ -421,10 +421,10 @@ Func CenterVillage($iX, $iY, $iOffsetX, $iOffsetY)
 
 	If $g_bDebugSetlog Then SetDebugLog("CenterVillage at point : " & $aScrollPos[0] & ", " & $aScrollPos[1] & " Offset : " & $iOffsetX & ", " & $iOffsetY, $COLOR_INFO)
 	If $g_bDebugImageSave Then SaveDebugPointImage("CenterVillage", $aScrollPos)
-	ClickAway2()
+	ClickAway()
 	ClickDrag($aScrollPos[0], $aScrollPos[1], $aScrollPos[0] - $iOffsetX, $aScrollPos[1] - $iOffsetY)
 
-	If _Sleep(100) Then Return
+	If _Sleep(150) Then Return
 EndFunc
 
 Func IsCoordSafe($x, $y)

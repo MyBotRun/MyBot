@@ -219,6 +219,7 @@ Func SetLabUpgradeTime($sTrooopName)
 		SetLog("Error processing upgrade time required, try again!", $COLOR_WARNING)
 		Return False
 	EndIf
+	If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
 	Return True ; success
 EndFunc
 
@@ -247,16 +248,14 @@ EndFunc
 ; if we are on last page, smaller clickdrag... for future dev: this is whatever is enough distance to move 6 off to the left and have the next page similarily aligned.  "-50" to avoid the white triangle.
 Func LabNextPage($iCurPage, $iPages, $iYMidPoint)
 	If $iCurPage >= $iPages Then Return ; nothing left to scroll
-	If $iCurPage = $iPages-1 Then ; last page
-		;Last page has 3 columns of icons.  3*(94+12)=3*106=318.  720-318=402
-		SetDebugLog("Drag to last page to pixel 401")
-		ClickDrag(720, $iYMidPoint-50, 401, $iYMidPoint) ;"-50" to avoid the little triangle.
-		;If _Sleep(4000) Then Return ;Settling time on last page not needed if not rubber-band bounce.
+	If $iCurPage = $iPages - 1 Then ; last page
+		;Last page has 5 columns of icons.  5*(94+12)= 5*106=530 . 720-530=190 . Offset To be Sure : 190-12=178
+		SetDebugLog("Drag to last page to pixel 178")
+		ClickDrag(720, $iYMidPoint - 50, 178, $iYMidPoint, 300)
 	Else
 		SetDebugLog("Drag to next full page.")
-		ClickDrag(720, $iYMidPoint-50, 85, $iYMidPoint) ;"-50" to avoid the little triangle.  Diagonal drag doesn't matter.  Every human will diagonal drag.
+		ClickDrag(720, $iYMidPoint - 50, 85, $iYMidPoint, 300)
 	EndIf
-	
 EndFunc
 
 ; check the lab to see if something is upgrading in the lab already
@@ -279,7 +278,11 @@ Func ChkLabUpgradeInProgress()
 		ElseIf $g_bDebugSetlog Then
 			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
+		If _Sleep(500) Then Return
 		ClickAway()
+		If _Sleep(1500) Then Return
+		ClickAway("Right")
+		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
 		Return True
 	EndIf
 	Return False ; returns False if no upgrade in progress

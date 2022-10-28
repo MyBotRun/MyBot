@@ -765,7 +765,7 @@ Func runBot() ;Bot that runs everything in order
 			AddIdleTime()
 			If Not $g_bRunState Then Return
 			If $g_bRestart Then ContinueLoop
-			If IsSearchAttackEnabled() Then ; if attack is disabled skip reporting, requesting, donating, training, and boosting
+			If IsSearchAttackEnabled() Then ; if attack is disabled skip reporting, requesting and boosting
 				If $g_bIsSearchLimit Then
 					Local $aRndFuncList = ['DonateCC,Train']
 				Else
@@ -794,6 +794,8 @@ Func runBot() ;Bot that runs everything in order
 					If Unbreakable() Then ContinueLoop
 				EndIf
 				If $g_bRestart Then ContinueLoop
+			Else
+				_RunFunction('DonateCC,Train')
 			EndIf
 			; Train Donate only - force a donate cc every time
 			If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) Then _RunFunction('DonateCC,Train')
@@ -843,6 +845,7 @@ Func runBot() ;Bot that runs everything in order
 					If $g_bRestart = True Then ContinueLoop
 				EndIf
 			Else
+				_RunFunction('DonateCC,Train')
 				If ProfileSwitchAccountEnabled() Then
 					$g_iCommandStop = 2
 					_RunFunction('DonateCC,Train')
@@ -1056,6 +1059,7 @@ Func AttackMain() ;Main control for attack functions
 		EndIf
 	Else
 		SetLog("Attacking Not Planned, Skipped..", $COLOR_WARNING)
+		_RunFunction('DonateCC,Train')
 	EndIf
 EndFunc   ;==>AttackMain
 
@@ -1375,7 +1379,7 @@ Func BuilderBase($bTest = False)
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 
-		BattleMachineUpgrade()
+		OttoBuildingUpgrades()
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 		If $g_bRestart = True Then Return

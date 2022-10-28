@@ -34,11 +34,13 @@ Func BuilderBaseReport($bBypass = False, $bSetLog = True)
 	$g_aiCurrentLootBB[$eLootTrophyBB] = getTrophyMainScreen(67, 84)
 	$g_aiCurrentLootBB[$eLootGoldBB] = getResourcesMainScreen(705, 23)
 	$g_aiCurrentLootBB[$eLootElixirBB] = getResourcesMainScreen(705, 72)
-	If $bSetLog Then SetLog(" [G]: " & _NumberFormat($g_aiCurrentLootBB[$eLootGoldBB]) & " [E]: " & _NumberFormat($g_aiCurrentLootBB[$eLootElixirBB]) & "[T]: " & _NumberFormat($g_aiCurrentLootBB[$eLootTrophyBB]), $COLOR_SUCCESS)
+	If $bSetLog Then SetLog(" [G]: " & _NumberFormat($g_aiCurrentLootBB[$eLootGoldBB]) & " [E]: " & _NumberFormat($g_aiCurrentLootBB[$eLootElixirBB]) & " [T]: " & _NumberFormat($g_aiCurrentLootBB[$eLootTrophyBB]), $COLOR_SUCCESS)
 
 	If Not $bBypass Then ; update stats
 		UpdateStats()
 	EndIf
+	
+	If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
 EndFunc   ;==>BuilderBaseReport
 
 
