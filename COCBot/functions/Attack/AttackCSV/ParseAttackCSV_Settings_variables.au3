@@ -1,7 +1,7 @@
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: ParseAttackCSV_Settings_variables
 ; Description ...: Parse CSV settings and update byref var
-; Syntax ........: ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, ByRef $aiCSVHeros, ByRef $iCSVRedlineRoutineItem, ByRef $iCSVDroplineEdgeItem, ByRef $sCSVCCReq, $sFilename)
+; Syntax ........: ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, ByRef $aiCSVHeros, , ByRef $aiWardenMode, ByRef $iCSVRedlineRoutineItem, ByRef $iCSVDroplineEdgeItem, ByRef $sCSVCCReq, $sFilename)
 ; Parameters ....:
 ; Return values .: Success: 1
 ;				   Failure: 0
@@ -13,7 +13,7 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, ByRef $aiCSVHeros, ByRef $iCSVRedlineRoutineItem, ByRef $iCSVDroplineEdgeItem, ByRef $sCSVCCReq, $sFilename)
+Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, ByRef $aiCSVSieges, ByRef $aiCSVHeros, ByRef $aiCSVWardenMode, ByRef $iCSVRedlineRoutineItem, ByRef $iCSVDroplineEdgeItem, ByRef $sCSVCCReq, $sFilename)
 	If $g_bDebugAttackCSV Then SetLog("ParseAttackCSV_Settings_variables()", $COLOR_DEBUG)
 
 	Local $asCommand
@@ -35,7 +35,7 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 			$asCommand = StringSplit($sLine, "|")
 			If $asCommand[0] >= 8 Then
 				$asCommand[$iCommandCol] = StringStripWS(StringUpper($asCommand[$iCommandCol]), $STR_STRIPTRAILING)
-				If Not StringRegExp($asCommand[$iCommandCol], "(TRAIN)|(REDLN)|(DRPLN)|(CCREQ)|(BOOST)", $STR_REGEXPMATCH) Then ContinueLoop
+				If Not StringRegExp($asCommand[$iCommandCol], "(TRAIN)|(WMODE)|(REDLN)|(DRPLN)|(CCREQ)|(BOOST)", $STR_REGEXPMATCH) Then ContinueLoop
 
 				If $iTHCol = 0 Then ; select a command column TH based on camp space or skip all commands
 					If $g_bDebugAttackCSV Then SetLog("Camp Total Space: " & $g_iTotalCampSpace, $COLOR_DEBUG)
@@ -57,7 +57,7 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 							$iTH = 14
 						Case $g_iMaxCapTroopTH[12] + 5 To $g_iMaxCapTroopTH[13]	; TH13
 							$iTHCol = $iTHBeginCol + 7
-							$iTH = 13
+							$iTH = 13	
 						Case $g_iMaxCapTroopTH[11] + 5 To $g_iMaxCapTroopTH[12]	; TH12
 							$iTHCol = $iTHBeginCol + 6
 							$iTH = 12
@@ -112,6 +112,8 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 								If int($asCommand[$iFlexCol]) > 0 Then $iFlexTroopIndex = $iTroopIndex
 							Case $eLSpell To $eBtSpell
 								$aiCSVSpells[$iTroopIndex - $eLSpell] = int($asCommand[$iTHCol])
+							Case $eWallW To $eBattleD
+								$aiCSVSieges[$iTroopIndex - $eWallW] = int($asCommand[$iTHCol])
 							Case $eKing To $eChampion
 								Local $iHeroRadioItem = int(StringLeft($asCommand[$iTHCol], 1))
 								Local $iHeroTimed = Int(StringTrimLeft($asCommand[$iTHCol], 1))
@@ -123,6 +125,9 @@ Func ParseAttackCSV_Settings_variables(ByRef $aiCSVTroops, ByRef $aiCSVSpells, B
 								$aiCSVHeros[$iTroopIndex - $eKing][1] = $iHeroTimed * 1000
 						EndSwitch
 						If $g_bDebugAttackCSV Then SetLog("Train " & $asCommand[$iTHCol] & "x " & $asCommand[$iTroopNameCol], $COLOR_DEBUG)
+					Case "WMODE"
+						$aiCSVWardenMode = int($asCommand[$iTHCol])
+						If $g_bDebugAttackCSV Then SetLog("Warden Mode : " & $aiCSVWardenMode, $COLOR_DEBUG)
 					Case "REDLN"
 						$iCSVRedlineRoutineItem = int($asCommand[$iTHCol])
 						If $g_bDebugAttackCSV Then SetLog("Redline ComboBox #" & ($iCSVRedlineRoutineItem > 0 ? $iCSVRedlineRoutineItem : "None"), $COLOR_DEBUG)

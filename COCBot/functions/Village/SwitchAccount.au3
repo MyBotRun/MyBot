@@ -332,6 +332,7 @@ Func SwitchCOCAcc($NextAccount)
 		$g_ahTimerSinceSwitched[$g_iCurAccount] = __TimerInit()
 		$g_bInitiateSwitchAcc = False
 		If $g_sProfileCurrentName <> $g_asProfileName[$g_iNextAccount] Then
+			saveConfig() ;Always save before switch in case of any user changes
 			If $g_iGuiMode = 1 Then
 				; normal GUI Mode
 				_GUICtrlComboBox_SetCurSel($g_hCmbProfile, _GUICtrlComboBox_FindStringExact($g_hCmbProfile, $g_asProfileName[$g_iNextAccount]))
@@ -339,7 +340,7 @@ Func SwitchCOCAcc($NextAccount)
 				DisableGUI_AfterLoadNewProfile()
 			Else
 				; mini or headless GUI Mode
-				saveConfig()
+				; saveConfig()
 				$g_sProfileCurrentName = $g_asProfileName[$g_iNextAccount]
 				LoadProfile(False)
 			EndIf
@@ -401,7 +402,7 @@ Func SwitchCOCAcc($NextAccount)
 	;EndIf
 	CheckObstacles()
 	If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
-	
+
 	SetLog("Switch Account Load TownLevel : " & $g_iTownHallLevel)
 	GUICtrlSetData($g_hGrpVillage, GetTranslatedFileIni("MBR Main GUI", "Tab_02", "Village") & "[TH" & $g_iTownHallLevel & "]" & ": " & $g_sProfileCurrentName )
 
@@ -672,8 +673,8 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 	Return "" ; should never get here
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
-Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
-	Local $sAccountDiamond = GetDiamondFromRect("440,353,859,732") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bDebuglog = $g_bDebugSetlog,  $bDebugImageSave = $g_bDebugImageSave)
+	Local $sAccountDiamond = GetDiamondFromRect("520,353,555,732") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
     Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = $NextAccount
 	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
@@ -686,40 +687,42 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
 		$aSuperCellIDWindowsUI = decodeSingleCoord(findImage("SupercellID Windows", $g_sImgSupercellIDWindows, GetDiamondFromRect("440,1,859,243"), 1, True, Default))
 		If _Sleep(500) Then Return "Exit"
 		If IsArray($aSuperCellIDWindowsUI) And UBound($aSuperCellIDWindowsUI, 1) >= 2 Then
-					
+
 			; verifiy SCID Account slots has not moved for accounts 0 to 3
 			If $g_iTotalAcc < 4 Then
 
-				If Not IsSCIDAccComplete($g_iTotalAcc) Then 
+				If Not IsSCIDAccComplete($g_iTotalAcc) Then
 					$bResult = False
 					Return False
 				EndIf
-			
+
 			Else
-			
-				If Not IsSCIDAccComplete() Then 
+
+				If Not IsSCIDAccComplete() Then
 					$bResult = False
 					Return False
 				EndIf
-	
+
 			EndIf
-	
+
 			; Make Drag only when SCID window is visible.
 			If Not SCIDragIfNeeded($NextAccount) Then
 				SetLog("SCIDragIfNeeded failed")
 				$bResult = False
 				Return "Error"
 			EndIf
-			
-			If $g_bDebugSetlog Then SetSwitchAccLog("Switching to Account: " & $NextAccount + 1, $COLOR_DEBUG)			
-			
+
+			If $g_bDebugSetlog Then SetSwitchAccLog("Switching to Account: " & $NextAccount + 1, $COLOR_DEBUG)
+
+			If $bDebugImageSave Then SaveDebugDiamondImage("ClickAccountSCID",$sAccountDiamond)
+
 			$aSearchForAccount = decodeMultipleCoords(findImage("Account Locations", $g_sImgSupercellIDSlots, $sAccountDiamond, 0, True, Default))
 			If _Sleep(500) Then Return "Exit"
 			If Not $g_bRunState Then Return "Exit"
 			If IsArray($aSearchForAccount) And UBound($aSearchForAccount) > 0 Then
 				SetDebugLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
 				SetLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
-				
+
 				If $g_bDebugSetlog Then SetSwitchAccLog("SCID Accounts: " & UBound($aSearchForAccount), $COLOR_DEBUG)
 
 				; Correct Index for Profile if needs to drag
@@ -741,7 +744,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2)
 				Next
 
 				SetLog("   " & $iStep & ". Click Account [" & $NextAccount + 1 & "] Supercell ID with Profile: " & $g_asProfileName[$NextAccount])
-				Click($aCoordinates[$iIndexSCID][0]-75, $aCoordinates[$iIndexSCID][1]+50, 1)
+				Click($aCoordinates[$iIndexSCID][0], $aCoordinates[$iIndexSCID][1], 1)
 				If _Sleep(750) Then Return "Exit"
 				SetLog("   " & $iStep + 1 & ". Please wait for loading CoC!")
 				$bResult = True
@@ -1101,7 +1104,7 @@ Func SCIDragIfNeeded($iSCIDAccount)
 	If Not IsSCIDAccComplete($iSCIDAccount) Then Return False
 
 	If _Sleep(1000) Then Return
-	
+
 	Return True
 EndFunc   ;==>SCIDragIfNeeded
 
@@ -1115,10 +1118,10 @@ Func IsSCIDAccComplete($iAccounts = 3)
 	Local $bSaveImage = False
 	Local $bResult = True
 	Local $iLoop = 3
-	
+
 	Local $sFolder = @ScriptDir & "\Profiles\SCID_Errors\"
 	Local $j = 0
-	
+
 	; Profile Index offset
 	SetLog("$iAccounts : " & $iAccounts)
 	If $iAccounts < 4 Then
@@ -1127,40 +1130,40 @@ Func IsSCIDAccComplete($iAccounts = 3)
 	Else
 		Local $j = $iAccounts - 3
 	EndIf
-	
+
 	DirCreate($sFolder)
 
 	; check the barbarians are in their expected location
 	For $i = 0 to $iLoop
 		Local $sProfileFolder = @ScriptDir & "\Profiles\" & $g_asProfileName[$i + $j] & "\"
-	
+
 		SetLog("Checking SCID Slot: " & $i)
 		;SetLog($sProfileFolder)
 		;SetLog($g_asProfileName[$i + $j])
-		
+
 		$aiHeadCoord = decodeSingleCoord(findImage("IsSCIDAccComplete", $sImgSupercellIDHead, GetDiamondFromArray($aiSearchArea), 1, True))
-		
+
 		If Not IsArray($aiHeadCoord) Or UBound($aiHeadCoord, $UBOUND_ROWS) < 2 Then
 			SetSwitchAccLog("Slot: " & $i & " Barbarian Head missing!")
 			$bSaveImage = True
 			$bResult = False
 		Else
 			Local $filename = String($g_asProfileName[$i + $j] & "_0_98.png")
-	
+
 			SetLog("Looking for " & $sProfileFolder & $filename)
-	
+
 			If FileExists($sProfileFolder & $filename) Then
-			
+
 				SetLog("Found file!")
-			
+
 				Local $aiVillageNameCoord  = decodeSingleCoord(findImage("IsSCIDAccComplete", $sProfileFolder & $filename, GetDiamondFromArray($aiSearchArea), 1, True))
-				
+
 				If Not IsArray($aiVillageNameCoord) Or UBound($aiVillageNameCoord, $UBOUND_ROWS) < 2 Then
 					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - missing!")
 					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - missing!")
 					$bSaveImage = True
 					$bResult = False
-					
+
 				Else
 					SetSwitchAccLog("image " & $g_asProfileName[$i + $j] & " - OK!")
 					SetLog("SCID Account image :" & $g_asProfileName[$i + $j] & " - OK!")
@@ -1172,7 +1175,7 @@ Func IsSCIDAccComplete($iAccounts = 3)
 				; now crop image to have only village name and put in $hClone
 				Local $oBitmap = _GDIPlus_BitmapCreateFromHBITMAP($g_hHBitmap2)
 				Local $hClone = _GDIPlus_BitmapCloneArea($oBitmap, $x, $y, 65, 20, $GDIP_PXF24RGB)
-					
+
 				_GDIPlus_ImageSaveToFile($hClone, $sProfileFolder & $filename)
 				SetSwitchAccLog($g_asProfileName[$i + $j] & " image Stored: ")
 				SetLog($g_asProfileName[$i + $j] & " image Stored: " & $filename, $COLOR_SUCCESS)
@@ -1183,13 +1186,13 @@ Func IsSCIDAccComplete($iAccounts = 3)
 
 		$aiSearchArea[1] = ($aiSearchArea[1] + $iDistanceBetweenAccounts)
 		$aiSearchArea[3] = ($aiSearchArea[3] + $iDistanceBetweenAccounts)
-		
+
 		If _Sleep(250) Then Return
-		
+
 		If $i = 3 Then ExitLoop
 	Next
-	
+
 	If $bSaveImage = True Then SaveSCIDebugImage("SCID_Errors", False)
-		
+
 	Return $bResult
 EndFunc

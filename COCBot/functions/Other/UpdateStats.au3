@@ -641,6 +641,30 @@ Func UpdateStats($bForceUpdate = False)
 		SwitchAccountVariablesReload("UpdateStats")
 		GUICtrlSetData($g_ahLblResultAttacked[$g_iCurAccount], $g_aiAttackedCount)
 		GUICtrlSetData($g_ahLblResultSkipped[$g_iCurAccount], $g_iSkippedVillageCount)
+		
+		;Clan Capital
+		If ($g_iLootCCGold And $g_iLootCCMedal) = 0 Then
+			GUICtrlSetData($g_ahLbLLootCCGold[$g_iCurAccount], "")
+			GUICtrlSetData($g_ahLbLLootCCMedal[$g_iCurAccount], "")
+		Else
+			GUICtrlSetData($g_ahLbLLootCCGold[$g_iCurAccount], _NumberFormat($g_iLootCCGold, True))
+			GUICtrlSetData($g_ahLbLLootCCMedal[$g_iCurAccount], _NumberFormat($g_iLootCCMedal, True))
+		EndIf
+		
+		;Builders Base
+		If $g_iTotalBuilderCountBB = 0 Then
+			GUICtrlSetData($g_ahLblResultBBuilderNowAcc[$g_iCurAccount], "")
+		Else
+			GUICtrlSetData($g_ahLblResultBBuilderNowAcc[$g_iCurAccount], $g_iFreeBuilderCountBB & "/" & $g_iTotalBuilderCountBB)
+		EndIf
+		
+		For $i = 0 To UBound($g_aiCurrentLootBB) - 1
+			If $g_aiCurrentLootBB[$i] = 0 Then
+				GUICtrlSetData($g_ahLbLLootBB[$g_iCurAccount][$i], "")
+			Else
+				GUICtrlSetData($g_ahLbLLootBB[$g_iCurAccount][$i], _NumberFormat($g_aiCurrentLootBB[$i], True))
+			EndIf
+		Next
 	EndIf
 
 	If $ResetStats = 1 Then

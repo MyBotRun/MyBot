@@ -40,6 +40,8 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	
 	;Builders Base
 	Static $gSaiCurrentLootBB = $aiZero83
+	Static $gSiFreeBuilderCountBB = $aiZero
+	Static $gSiTotalBuilderCountBB = $aiZero
 		
 	; Misc Stats
 	Static $aiNbrOfOoS = $aiZero
@@ -56,9 +58,9 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 	Static $aiNbrOfDetectedMines = $aiZero83, $aiNbrOfDetectedCollectors = $aiZero83, $aiNbrOfDetectedDrills = $aiZero83 ; number of mines, collectors, drills detected for DB, LB, TB
 	Static $aiSmartZapGain = $aiZero, $aiNumEQSpellsUsed = $aiZero, $aiNumLSpellsUsed = $aiZero ; smart zap
 
-	; Lab time
+	; Labs time
 	Static $asLabUpgradeTime = $asEmpty, $aiLabStatus = $aiZero, $aiLabElixirCost = $aiZero, $aiLabDElixirCost = $aiZero
-	Static $asPetLabUpgradeTime = $asEmpty, $aiPetStatus = $aiZero
+	Static $asPetLabUpgradeTime = $asEmpty, $aiPetStatus = $aiZero, $asiMinDark4PetUpgrade = $aiZero
 	Static $asStarLabUpgradeTime = $asEmpty
 
 	; Hero State
@@ -142,13 +144,14 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiNumEQSpellsUsed = $aiZero
 			$aiNumLSpellsUsed = $aiZero
 
-			; Lab time
+			; Labs time
 			$asLabUpgradeTime = $asEmpty
 			$aiLabElixirCost = $aiZero
 			$aiLabDElixirCost = $aiZero
 			$aiLabStatus = $aiZero
 			$asPetLabUpgradeTime = $asEmpty
 			$aiPetStatus = $aiZero
+			$asiMinDark4PetUpgrade = $asEmpty
 			$asStarLabUpgradeTime = $asEmpty
 
 			; Hero State
@@ -179,6 +182,8 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			
 			;Builders Base
 			$gSaiCurrentLootBB = $aiZero83
+			$gSiFreeBuilderCountBB = $aiZero
+			$gSiTotalBuilderCountBB = $aiZero
 			
 		Case "Save"
 			$abFirstStart[$iAccount] = $g_bFirstStart
@@ -204,6 +209,8 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
 				$gSaiCurrentLootBB[$iAccount][$i] = $g_aiCurrentLootBB[$i]
 			Next
+			$gSiFreeBuilderCountBB[$iAccount] = $g_iFreeBuilderCountBB
+			$gSiTotalBuilderCountBB[$iAccount] = $g_iFreeBuilderCountBB
 
 			; Misc Stats
 			$aiNbrOfOoS[$iAccount] = $g_iNbrOfOoS
@@ -243,7 +250,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$aiNumEQSpellsUsed[$iAccount] = $g_iNumEQSpellsUsed
 			$aiNumLSpellsUsed[$iAccount] = $g_iNumLSpellsUsed
 
-			; Lab time
+			; Labs time
 			$asLabUpgradeTime[$iAccount] = $g_sLabUpgradeTime
 			$aiLabElixirCost[$iAccount] = $g_iLaboratoryElixirCost
 			$aiLabDElixirCost[$iAccount] = $g_iLaboratoryDElixirCost
@@ -254,6 +261,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			Else
 				$aiLabStatus[$iAccount] = 0
 			EndIf
+			
 			$asPetLabUpgradeTime[$iAccount] = $g_sPetUpgradeTime
 			If GUICtrlGetState($g_hPicPetGreen) = $GUI_ENABLE + $GUI_SHOW Then
 				$aiPetStatus[$iAccount] = 1
@@ -262,6 +270,8 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			Else
 				$aiPetStatus[$iAccount] = 0
 			EndIf
+			$asiMinDark4PetUpgrade[$iAccount] = $g_iMinDark4PetUpgrade
+			
 			$asStarLabUpgradeTime[$iAccount] = $g_sStarLabUpgradeTime
 
 			; Hero State
@@ -308,14 +318,16 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			;Clan Capital
 			$g_iLootCCGold = $gSiLootCCGold[$iAccount]
 			$g_iLootCCMedal = $gSiLootCCMedal[$iAccount]
-			GUICtrlSetData($g_lblCapitalGold, $g_iLootCCGold)
-			GUICtrlSetData($g_lblCapitalMedal, $g_iLootCCMedal)
+			GUICtrlSetData($g_lblCapitalGold, _NumberFormat($g_iLootCCGold, True))
+			GUICtrlSetData($g_lblCapitalMedal, _NumberFormat($g_iLootCCMedal, True))
 			
 			;Builders Base
 			For $i = 0 To UBound($g_aiCurrentLootBB) - 1
 				$g_aiCurrentLootBB[$i] = $gSaiCurrentLootBB[$iAccount][$i]
-				GUICtrlSetData($g_alblBldBaseStats[$i], $g_aiCurrentLootBB[$i])
+				GUICtrlSetData($g_alblBldBaseStats[$i], _NumberFormat($g_aiCurrentLootBB[$i], True))
 			Next
+			$g_iFreeBuilderCountBB = $gSiFreeBuilderCountBB[$iAccount]
+			$g_iTotalBuilderCountBB = $gSiTotalBuilderCountBB[$iAccount]
 
 			; Misc Stats
 			$g_iNbrOfOoS = $aiNbrOfOoS[$iAccount]
@@ -355,7 +367,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 			$g_iNumEQSpellsUsed = $aiNumEQSpellsUsed[$iAccount]
 			$g_iNumLSpellsUsed = $aiNumLSpellsUsed[$iAccount]
 
-			; Lab time
+			; Labs time
 			$g_sLabUpgradeTime = $asLabUpgradeTime[$iAccount]
 			GUICtrlSetData($g_hLbLLabTime, "")
 			$g_iLaboratoryElixirCost = $aiLabElixirCost[$iAccount]
@@ -366,6 +378,7 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				If $aiLabStatus[$iAccount] = $Counter Then GUICtrlSetState($i, $GUI_SHOW)
 				$Counter += 1
 			Next
+			
 			$g_sPetUpgradeTime = $asPetLabUpgradeTime[$iAccount]
 			GUICtrlSetData($g_hLbLPetTime, "")
 			Local $Counter = 0
@@ -374,6 +387,8 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 				If $aiPetStatus[$iAccount] = $Counter Then GUICtrlSetState($i, $GUI_SHOW)
 				$Counter += 1
 			Next
+			$g_iMinDark4PetUpgrade = $asiMinDark4PetUpgrade[$iAccount]
+			
 			$g_sStarLabUpgradeTime = $asStarLabUpgradeTime[$iAccount]
 
 			; Hero State
@@ -432,6 +447,19 @@ Func SwitchAccountVariablesReload($sType = "Load", $iAccount = $g_iCurAccount)
 					EndIf
 				Else
 					GUICtrlSetData($g_ahLblLabTime[$i], "")
+				EndIf
+				If _DateIsValid($asStarLabUpgradeTime[$i]) Then
+					Local $iStarLabTime = _DateDiff("s", _NowCalc(), $asStarLabUpgradeTime[$i]) * 1000
+					If $iStarLabTime > 0 Then
+						_TicksToDay($iStarLabTime, $day, $hour, $min, $sec)
+						GUICtrlSetData($g_ahLbLStarLabTime[$i], $day > 0 ? StringFormat("%2ud %02i:%02i'", $day, $hour, $min) : StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+						GUICtrlSetColor($g_ahLbLStarLabTime[$i], $day > 0 ? $COLOR_GREEN : $COLOR_ORANGE)
+					Else
+						GUICtrlSetData($g_ahLbLStarLabTime[$i], "")
+						$asStarLabUpgradeTime[$i] = ""
+					EndIf
+				Else
+					GUICtrlSetData($g_ahLbLStarLabTime[$i], "")
 				EndIf
 				If _DateIsValid($asPetLabUpgradeTime[$i]) Then
 					Local $iPetHouseTime = _DateDiff("s", _NowCalc(), $asPetLabUpgradeTime[$i]) * 1000

@@ -16,7 +16,7 @@
 
 Func checkCollectors($log = False, $showLabel = True)
 	Local $anyCollectorsEnabled = 0
-	For $i = 6 To 14
+	For $i = 6 To 15
 		If $g_abCollectorLevelEnabled[$i] Then
 			$anyCollectorsEnabled = 1
 			ExitLoop
@@ -38,7 +38,7 @@ Func checkCollectors($log = False, $showLabel = True)
 EndFunc   ;==>checkCollectors
 
 Func chkDBCollector()
-	For $i = 6 To 14
+	For $i = 6 To 15
 		If $g_ahChkDBCollectorLevel[$i] = @GUI_CtrlId Then
 			If $i = 6 Then
 				$g_abCollectorLevelEnabled[6] = False

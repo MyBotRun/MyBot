@@ -1,3 +1,43 @@
+* v8.0.1 **
+* Design. New GUI Icons.
+* Builder Base & Clan Capital Resources always in Number Format.
+* SkipWall-Upgrade Summary -> SetDebugLog.
+* Fix Wall Cost.
+* Added Star Lab Check Routine.
+* Added Third Page to Multi-Stats : BuilderBase + Clan Capital Stats.
+* Added Recalculate Star Lab Upgrade Time when Clock Tower Boost (Depending CT level).
+* Added $g_iMinDark4PetUpgrade in Account variables.
+* Tips in Auto Upgrade Gui.
+* Fixed Super Troops Donation.
+* Fix Donate Barb/Suba if on second Row.
+* Added Ignore Clan Capital Upgrades not started.
+* Update Weak Base Gui & images.
+* Added Mine & collector lvl 15 , DE Drill lvl9, Gold & Elixir Storages.
+* Added New possibilities in CSV/Apply settings : Train Sieges & Warden Mode.
+* Fixed Super DragonS plural name variable, prevented saving the specific donation text.
+* Super Dragon detection improvement (Train & Queue).
+* Upgrade Wall From level 4 with Elixir.
+* Added missing connector in default trophy priority hero drop list.
+* Improve Flame Flinger detection in AttackBar.
+* Electro Titan detection improvement in queued troops.
+* Improve Troops Upgrade Time OCR in Lab When > 10 days.
+* New image for Clan Castle in Attack Bar (Confused with Drag Rider).
+* Fixed Slot Order Enum in BB Attack Bar.
+* Added discount perks for pets upgrade cost.
+* Increase tolerance for army train button color variation.
+* Increase Lab upgrade time detection length zone.
+* Fixed Spells & Sieges Display in Gui depending TH level.
+* Use Barbarian Head for SCID slot detection
+* Added CloseWindow to close a window replacing ClickAway
+* Added upper bound to Spell level OCR
+* Updated SmartZap Drill Levels reported @PriapusCranium
+* Added CloseWindow To Pet House And Star Lab.
+* Added 9 White to coc-uptime2.
+* Increase Labs upgrade time (2) detection length zone.
+* Fixed Train Troop page.
+* Fixed AttackBar with 11 slots.
+* Improve Flame Flinger detection when switch is needed.
+
 * v8.0.0 **
 * fixed SCID switch account missing slot image.
 * fixed Builder Base auto upgrade.

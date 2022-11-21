@@ -158,14 +158,24 @@ Func GetAttackBar($bRemaining = False, $pMatchMode = $DB, $bDebug = False)
 				If StringRegExp($aAttackBar[$i][0], "(LSpell)|(ESpell)", 0) And $g_bSmartZapEnable Then
 					If StringInStr($aAttackBar[$i][0], "LSpell") <> 0 Then
 						Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 18, 702)) ; use image location as 'x' changes with quantity
-						If $iSpellLevel > 0 Then $g_iLSpellLevel = $iSpellLevel
-						SetLog("Lightning Spell Level : " & $iSpellLevel, $COLOR_INFO)
+						If $iSpellLevel > 0 And $iSpellLevel <= $g_iMaxLSpellLevel Then 
+							$g_iLSpellLevel = $iSpellLevel
+							SetLog("Lightning Spell Level : " & $iSpellLevel, $COLOR_INFO)
+						Else
+							$g_iLSpellLevel = 1
+							SetLog("Lightning Spell Level :" & $iSpellLevel & " is out of bounds", $COLOR_ERROR)
+						EndIf
 					EndIf
 
 					If StringInStr($aAttackBar[$i][0], "ESpell") <> 0 Then
 						Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 25, 702)) ; use image location as 'x' changes with quantity
-						If $iSpellLevel > 0 Then $g_iESpellLevel = $iSpellLevel
-						SetLog("Earth Quake Spell Level : " & $iSpellLevel, $COLOR_INFO)
+						If $iSpellLevel > 0 And $iSpellLevel <= $g_iMaxESpellLevel Then 
+							$g_iESpellLevel = $iSpellLevel
+							SetLog("Earth Quake Spell Level : " & $iSpellLevel, $COLOR_INFO)
+						Else
+							$g_iESpellLevel = 1
+							SetLog("Earthquake Spell Level :" & $iSpellLevel & " is out of bounds", $COLOR_ERROR)
+						EndIf
 					EndIf
 				EndIf
 			EndIf
@@ -320,7 +330,11 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 				Local $aTempSlot = AttackSlot(Number($aAttackBar[$i][1]), Number($aAttackBar[$i][7]), $aSlotAmountX)
 				$aAttackBar[$i][5] = Number($aTempSlot[0])
 				$aAttackBar[$i][6] = Number($aTempSlot[1])
-				$aAttackBar[$i][3] = Number($aTempSlot[2] + $iLastSlotNumber + 1)
+				If UBound($aAttackBar, 1) > 1 Then
+					$aAttackBar[$i][3] = Number($aTempSlot[2] + $iLastSlotNumber + 1)
+				Else
+					$aAttackBar[$i][3] = Number($iLastSlotNumber + 1)
+				EndIf
 				If StringRegExp($aAttackBar[$i][0], "(King)|(Queen)|(Warden)|(Champion)", 0) And $aiOCRY[$aAttackBar[$i][7] - 1] <> -1 Then $aAttackBar[$i][6] = ($aiOCRY[$aAttackBar[$i][7] - 1] - 7)
 			EndIf
 
@@ -334,14 +348,24 @@ Func ExtendedAttackBarCheck($aAttackBarFirstSearch, $bRemaining, $sSearchDiamond
 				If StringRegExp($aAttackBar[$i][0], "(LSpell)|(ESpell)", 0) And $g_bSmartZapEnable Then
 					If StringInStr($aAttackBar[$i][0], "LSpell") <> 0 Then
 						Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 18, 702)) ; use image location as 'x' changes with quantity
-						If $iSpellLevel > 0 Then $g_iLSpellLevel = $iSpellLevel
-						SetLog("Lightning Spell Level : " & $iSpellLevel, $COLOR_INFO)
+						If $iSpellLevel > 0 And $iSpellLevel <= $g_iMaxLSpellLevel Then
+							$g_iLSpellLevel = $iSpellLevel
+							SetLog("Lightning Spell Level : " & $iSpellLevel, $COLOR_INFO)
+						Else
+							$g_iLSpellLevel = 1
+							SetLog("Lightning Spell Level :" & $iSpellLevel & " is out of bounds", $COLOR_ERROR)
+						EndIf
 					EndIf
 
 					If StringInStr($aAttackBar[$i][0], "ESpell") <> 0 Then
 						Local $iSpellLevel = Number(getTroopsSpellsLevel(Number($aAttackBar[$i][1]) - 25, 702)) ; use image location as 'x' changes with quantity
-						If $iSpellLevel > 0 Then $g_iESpellLevel = $iSpellLevel
-						SetLog("Earth Quake Spell Level : " & $iSpellLevel, $COLOR_INFO)
+						If $iSpellLevel > 0 And $iSpellLevel <= $g_iMaxESpellLevel Then 
+							$g_iESpellLevel = $iSpellLevel
+							SetLog("Earth Quake Spell Level : " & $iSpellLevel, $COLOR_INFO)
+						Else
+							$g_iESpellLevel = 1
+							SetLog("Earthquake Spell Level :" & $iSpellLevel & " is out of bounds", $COLOR_ERROR)
+						EndIf
 					EndIf
 				EndIf
 			EndIf
@@ -469,9 +493,9 @@ EndFunc   ;==>DebugAttackBarImage
 Func DebugAB($aAttackBar, $sText="")
 	For $i = 0 To UBound($aAttackBar, 1) - 1
 		If IsInt($aAttackBar[$i][0]) Then
-			SetLog("AttackBarCheck(): Slot(" & $aAttackBar[$i][3] & ")-"& $sText & " Troop " & GetTroopName($aAttackBar[$i][0]))
+			SetLog("AttackBarCheck(): Slot(" & $aAttackBar[$i][1] & ")-"& $sText & " Troop(index) " & GetTroopName($aAttackBar[$i][0]) & " Qty : " & $aAttackBar[$i][2])
 		Else
-			SetLog("AttackBarCheck(): Slot(" & $aAttackBar[$i][3] & ")-"& $sText & " Troop " & $aAttackBar[$i][0])
+			SetLog("AttackBarCheck(): Slot(" & $aAttackBar[$i][1] & ")-"& $sText & " Troop " & $aAttackBar[$i][0] & " Qty : " & $aAttackBar[$i][2])
 		EndIf
 	Next
 EndFunc

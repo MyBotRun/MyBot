@@ -507,16 +507,6 @@ Global $g_hLibUser32DLL = DllOpen("user32.dll") ; handle to user32.dll, DllClose
 
 Global Const $g_sLibIconPath = $g_sLibPath & "\MBRBOT.dll" ; icon library
 Global Const $g_sCSVAttacksPath = @ScriptDir & "\CSV\Attack"
-Global Const $g_sIcnMBisland = @ScriptDir & "\Images\bbico.png"
-Global Const $g_sIcnBattleMachine = @ScriptDir & "\Images\BattleMachine.png"
-Global Const $g_sIcnDoubleCannon = @ScriptDir & "\Images\DoubleCannon4.png"
-Global Const $g_sIcnArcherTower = @ScriptDir & "\Images\ArcherTower6.png"
-Global Const $g_sIcnMultiMortar = @ScriptDir & "\Images\MultiMortar8.png"
-Global Const $g_sIcnMegaTesla = @ScriptDir & "\Images\MegaTesla9.png"
-
-Global Const $g_sIcnBldGold = @ScriptDir & "\Images\gold.png"
-Global Const $g_sIcnBldElixir = @ScriptDir & "\Images\elixir.png"
-Global Const $g_sIcnBldTrophy = @ScriptDir & "\Images\trophy.png"
 
 ; Improve GUI interactions by disabling bot window redraw
 Global $g_iRedrawBotWindowMode = 2 ; 0 = disabled, 1 = Redraw always entire bot window, 2 = Redraw only required bot window area (or entire bot if control not specified)
@@ -551,14 +541,13 @@ Global Enum $eIcnArcher = 1, $eIcnDonArcher, $eIcnBalloon, $eIcnDonBalloon, $eIc
 		$eIcnSuperBarbarian, $eIcnSuperArcher, $eIcnSuperGiant, $eIcnSneakyGoblin, $eIcnSuperWallBreaker, $eIcnSuperWizard, $eIcnInfernoDragon, $eIcnSuperMinion, $eIcnSuperValkyrie, $eIcnSuperWitch, $eIcnIceHound, _
 		$eIcnPetLassi, $eIcnPetElectroOwl, $eIcnPetMightyYak, $eIcnPetUnicorn, $eIcnTH14, $eWall15, $eIcnPetHouse, $eIcnRocketBalloon, $eIcnDragonRider, $eHdV14, $eIcnSuperBowler, $eIcnSuperDragon, $eIcnFlameF, _
         $eIcnClanCapital, $eIcnCapitalGold, $eIcnCapitalMedal, $eHdV15, $eWall16, $eIcnElectroTitan, $eIcnRecallSpell, $eIcnBattleD, $eIcnTH15, $eIcnPetFrosty, $eIcnPetDiggy, $eIcnPetPoisonLizard, $eIcnPetPhoenix, _
-		$eIconTH15Weapon
+		$eIconTH15Weapon, $eIcnBBGold, $eIcnBBElix, $eIcnBBTrophy, $eIcnLabUpgrade, $eIcnArcheTower6, $eIcnBattleMachine, $eIcnDoubleCannon4, $eIcnMegaTesla9, $eIcnMultiMortar8, $g_sIcnMBisland, $eIcnPetHouseGreen
 
 Global $eIcnDonBlank = $eIcnDonBlacklist
 Global $eIcnOptions = $eIcnDonBlacklist
 Global $eIcnAchievements = $eIcnMain
 Global $eIcnStrategies = $eIcnBlank
 Global $eIcnSleepingChampion = $eIcnSleepingWarden
-Global $eIcnBattleMachine = $eIcnBlank
 
 ; Controls bot startup and ongoing operation
 Global Const $g_iCollectAtCount = 10 ; Run Collect() after this amount of times before actually collect
@@ -634,7 +623,7 @@ Global Const $g_asTroopNames[$eTroopCount] = [ _
 		"Lava Hound", "Ice Hound", "Bowler", "Super Bowler", "Ice Golem", "Headhunter"]
 Global Const $g_asTroopNamesPlural[$eTroopCount] = [ _
 		"Barbarians", "Super Barbarians", "Archers", "Super Archers", "Giants", "Super Giants", "Goblins", "Sneaky Goblins", "Wall Breakers", _
-		"Super Wall Breakers", "Balloons", "Rocket Balloons", "Wizards", "Super Wizards", "Healers", "Dragons", "Super Dragon", "Pekkas", _
+		"Super Wall Breakers", "Balloons", "Rocket Balloons", "Wizards", "Super Wizards", "Healers", "Dragons", "Super Dragons", "Pekkas", _
 		"Baby Dragons", "Inferno Dragons", "Miners", "Electro Dragons", "Yetis", "Dragon Riders", "Electro Titans", "Minions", "Super Minions", "Hog Riders", "Valkyries", "Super Valkyries", "Golems", "Witches", "Super Witchs", _
 		"Lava Hounds", "Ice Hounds", "Bowlers", "Super Bowlers", "Ice Golems", "Headhunters"]
 Global Const $g_asTroopShortNames[$eTroopCount] = [ _
@@ -926,7 +915,7 @@ Global $g_abUpgradeRepeatEnable[$g_iUpgradeSlots] = [False, False, False, False,
 Global $g_bAutoUpgradeWallsEnable = 0
 Global $g_iUpgradeWallMinGold = 0, $g_iUpgradeWallMinElixir = 0
 Global $g_iUpgradeWallLootType = 0, $g_bUpgradeWallSaveBuilder = False
-Global $g_iCmbUpgradeWallsLevel = 6
+Global $g_iCmbUpgradeWallsLevel = 0
 Global $g_aiWallsCurrentCount[17] = [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; elements 0 to 3 are not referenced
 Global $g_aiLastGoodWallPos[2] = [-1, -1]
 
@@ -1171,8 +1160,8 @@ Global $g_iPercentageDamage = 0
 ; <<< nothing here - all in common Search & Attack grouping >>>
 
 ; <><><><> Attack Plan / Search & Attack / Deadbase / Collectors <><><><>
-Global $g_abCollectorLevelEnabled[15] = [-1, -1, -1, -1, -1, -1, True, True, True, True, True, True, True, True, True] ; elements 0 thru 5 are never referenced
-Global $g_aiCollectorLevelFill[15] = [-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1] ; elements 0 thru 5 are never referenced
+Global $g_abCollectorLevelEnabled[16] = [-1, -1, -1, -1, -1, -1, True, True, True, True, True, True, True, True, True, True] ; elements 0 thru 5 are never referenced
+Global $g_aiCollectorLevelFill[16] = [-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] ; elements 0 thru 5 are never referenced
 Global $g_bCollectorFilterDisable = False
 Global $g_iCollectorMatchesMin = 3
 Global $g_iCollectorToleranceOffset = 0
@@ -1362,7 +1351,7 @@ Global $g_CurrentCampUtilization = 0, $g_iTotalCampSpace = 0
 ; Upgrading - Lab
 Global $g_iLaboratoryElixirCost = 0, $g_iLaboratoryDElixirCost = 0
 Global $g_sLabUpgradeTime = ""
-Global $g_sStarLabUpgradeTime = ""
+Global $g_sStarLabUpgradeTime = "", $iStarLabFinishTimeMod = 0
 
 ; Array to hold Laboratory Troop information [LocX of upper left corner of image, LocY of upper left corner of image, PageLocation, Troop "name", Icon # in DLL file, ShortName on image file]
 Global $g_avLabTroops[42][3]
@@ -1436,7 +1425,7 @@ EndFunc   ;==>TranslateTroopNames
 ; Upgrading - Wall
 ;Updated for Dec2021
 ;First cost is for upgrade to walls level 5.  MBR doesn't support walls until level 4.
-Global Const $g_aiWallCost[12] = [20000, 30000, 50000, 75000, 100000, 200000, 5000000, 1000000, 3000000, 5000000, 7000000, 8000000]
+Global Const $g_aiWallCost[12] = [20000, 30000, 50000, 75000, 100000, 200000, 500000, 1000000, 2000000, 4000000, 7000000, 8000000]
 Global $g_iWallCost = 0
 
 ; Upgrading - Heroes
@@ -1677,16 +1666,18 @@ Global $__TEST_ERROR_SLOW_ADB_CLICK_DELAY = 0
 ; SmartZap
 Global $g_iLSpellLevel = 1
 Global $g_iESpellLevel = 1
+Global $g_iMaxLSpellLevel = 10
+Global $g_iMaxESpellLevel = 5
 Global Const $g_fDarkStealFactor = 0.75
 Global Const $g_fDarkFillLevel = 0.70
-; Array to hold Total HP of DE Drills at each level (1-8)
-Global Const $g_aDrillLevelHP[8] = [800, 860, 920, 980, 1060, 1160, 1280, 1380]
-; Array to hold Total Amount of DE available from Drill at each level (1-8)
-Global Const $g_aDrillLevelTotal[8] = [160, 300, 540, 840, 1280, 1800, 2400, 3000]
+; Array to hold Total HP of DE Drills at each level (1-9)
+Global Const $g_aDrillLevelHP[9] = [800, 860, 920, 980, 1060, 1160, 1280, 1380, 1480]
+; Array to hold Total Amount of DE available from Drill at each level (1-9)
+Global Const $g_aDrillLevelTotal[9] = [160, 300, 540, 840, 1280, 1800, 2400, 3000, 3600]
 ; Array to hold Total Damage of Lightning Spell at each level (1-10)
-Global Const $g_aLSpellDmg[10] = [150, 180, 210, 240, 270, 320, 400, 480, 560, 600]
+Global Const $g_aLSpellDmg[$g_iMaxLSpellLevel] = [150, 180, 210, 240, 270, 320, 400, 480, 560, 600]
 ; Array to hold Total Damage of Earthquake Spell at each level (1-5)
-Global Const $g_aEQSpellDmg[5] = [0.14, 0.17, 0.21, 0.25, 0.29]
+Global Const $g_aEQSpellDmg[$g_iMaxESpellLevel] = [0.14, 0.17, 0.21, 0.25, 0.29]
 
 ; Weak Base Defense Building Information
 Global Enum $eWeakEagle = 1, $eWeakInferno, $eWeakXBow, $eWeakWizard, $eWeakMortar, $eWeakAirDefense, $eWeakScatter
@@ -1991,6 +1982,8 @@ Global $g_bOnBuilderBaseEnemyVillage = False
 
 Global $g_BBBuildingPlacementFailed = 0
 Global $g_BBVillageDrag = 0
+
+Global $g_iNextPageTroop = $eMini
 
 ;ClanCapital
 Global $g_iLootCCGold = 0, $g_iLootCCMedal = 0, $g_bChkEnableAutoUpgradeCC = False, $g_bChkAutoUpgradeCCIgnore = False, $g_bChkAutoUpgradeCCWallIgnore = False, $g_bChkAutoUpgradeCCPriorArmy = False

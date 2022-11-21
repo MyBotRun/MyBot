@@ -83,7 +83,7 @@ Func StarLaboratory($bTestRun = False)
 		If $g_bDebugSetlog Then Setlog("Lab window off: (" & $iXMoved & ", " & $iYMoved & ")", $COLOR_DEBUG)
 	Else
 		SetLog("Trouble finding lab close button, try again...", $COLOR_WARNING)
-		ClickAway()
+		CloseWindow()
 		Return False
 	EndIf
 
@@ -100,11 +100,13 @@ Func StarLaboratory($bTestRun = False)
 			$g_sStarLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), _NowCalc())
 			If @error Then _logErrorDateAdd(@error)
 			SetLog("Research will finish in " & $sLabTimeOCR & " (" & $g_sStarLabUpgradeTime & ")")
-			LabStatusGUIUpdate() ; Update GUI flag
+			$iStarLabFinishTimeMod = $iLabFinishTime
+			If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asStarLabUpgradeTime[$g_iCurAccount] = $g_sStarLabUpgradeTime for instantly displaying in multi-stats
+			StarLabStatusGUIUpdate() ; Update GUI flag
 		ElseIf $g_bDebugSetlog Then
 			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
-		ClickAway()
+		CloseWindow()
 		Return False
 	EndIf
 
@@ -130,7 +132,7 @@ Func StarLaboratory($bTestRun = False)
 		Next
 	Else
 		SetLog("No upgradable troop found!", $COLOR_ERROR)
-		ClickAway()
+		CloseWindow()
 		Return False
 	EndIf
 
@@ -174,7 +176,7 @@ Func StarLaboratory($bTestRun = False)
 		Next
 		If $g_iCmbStarLaboratory = $iSelectedUpgrade Then
 			SetLog("No alternate troop for upgrade found", $COLOR_WARNING)
-			ClickAway()
+			CloseWindow()
 			Return False
 		Else
 			SetLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " selected for upgrade, upgrade cost = " & $aUpgradeValue[$iSelectedUpgrade], $COLOR_INFO)
@@ -184,7 +186,7 @@ Func StarLaboratory($bTestRun = False)
 	; Try to upgrade - LabUpgrade(), check insufficient resource first
 	If $iAvailElixir < $aUpgradeValue[$iSelectedUpgrade] Then
 		SetLog("Insufficent Elixir for " & $g_avStarLabTroops[$iSelectedUpgrade][3] & ", Lab requires: " & $aUpgradeValue[$iSelectedUpgrade] & ", available: " & $iAvailElixir, $COLOR_INFO)
-		ClickAway()
+		CloseWindow()
 		Return False
 	ElseIf StarLabUpgrade($iSelectedUpgrade, $iXMoved, $iYMoved, $bTestRun) = True Then
 		SetLog("Elixir used = " & $aUpgradeValue[$iSelectedUpgrade], $COLOR_INFO)
@@ -253,12 +255,14 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 				; get upgrade time from window
 				$Result = getLabUpgradeTime(554 + $iXMoved, 491 + $iYMoved) ; Try to read white text showing time for upgrade
 				Local $iLabFinishTime = ConvertOCRTime("Lab Time", $Result, False)
-				SetLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
+				SetDebugLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
 				$StartTime = _NowCalc() ; what is date:time now
 				If $g_bDebugSetlog Then SetDebugLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
 				If $iLabFinishTime > 0 Then
 					$g_sStarLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), $StartTime)
 					SetLog($g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade Finishes @ " & $Result & " (" & $g_sStarLabUpgradeTime & ")", $COLOR_SUCCESS)
+					$iStarLabFinishTimeMod = $iLabFinishTime
+					If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asStarLabUpgradeTime[$g_iCurAccount] = $g_sStarLabUpgradeTime for instantly displaying in multi-stats
 				Else
 					SetLog("Error processing upgrade time required, try again!", $COLOR_WARNING)
 					Return False
@@ -279,9 +283,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 				StarLabStatusGUIUpdate()
 				PushMsg("StarLabSuccess")
 				If _Sleep($DELAYLABUPGRADE2) Then Return
-
-				ClickAway()
-
+				CloseWindow()
 				Return True
 			Else
 				SetLog("Oops, Gems required for " & $g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade, try again.", $COLOR_ERROR)
@@ -444,3 +446,80 @@ Func LocateStarLab()
 	SetLog("Can not find Star Laboratory.", $COLOR_ERROR)
 	Return False
 EndFunc   ;==>LocateStarLab()
+
+Func StarLabGuiDisplay()
+	Local $iXMoved = 0, $iYMoved = 0
+	Local Static $iLastTimeChecked[8]
+	If $g_bFirstStart Then $iLastTimeChecked[$g_iCurAccount] = ""
+	
+	; Check if is a valid date and Calculated the number of minutes from remain time Lab and now
+	If _DateIsValid($g_sStarLabUpgradeTime) And _DateIsValid($iLastTimeChecked[$g_iCurAccount]) Then
+		Local $iStarLabTime = _DateDiff('n', _NowCalc(), $g_sStarLabUpgradeTime)
+		Local $iLastCheck =_DateDiff('n', $iLastTimeChecked[$g_iCurAccount], _NowCalc()) ; elapse time from last check (minutes)
+		SetDebugLog("Star Lab UpgradeTime: " & $g_sStarLabUpgradeTime & ", Star Lab DateCalc: " & $iStarLabTime)
+		SetDebugLog("Star Lab LastCheck: " & $iLastTimeChecked[$g_iCurAccount] & ", Check DateCalc: " & $iLastCheck)
+		; A check each 6 hours [6*60 = 360] or when Lab research time finishes
+		If $iStarLabTime > 0 And $iLastCheck <= 360 Then Return
+	EndIf
+
+	If Not LocateStarLab() Then Return False
+	
+	; Find Research Button
+	Local $aResearchButton = findButton("Research", Default, 1, True)
+	If IsArray($aResearchButton) And UBound($aResearchButton, 1) = 2 Then
+		If $g_bDebugImageSave Then SaveDebugImage("StarLabUpgrade") ; Debug Only
+		ClickP($aResearchButton)
+		If _Sleep($DELAYLABORATORY1) Then Return ; Wait for window to open
+	Else
+		SetLog("Cannot find the Star Laboratory Research Button!", $COLOR_ERROR)
+		ClickAway()
+		Return False
+	EndIf
+	
+	$iLastTimeChecked[$g_iCurAccount] = _NowCalc()
+	
+	; Lab window coor correction
+	Local $aiCloseBtn = findButton("CloseWindow")
+	If IsArray($aiCloseBtn) Then
+		$iXMoved = $aiCloseBtn[0] - $aiStarCloseDefaultPOS[0]
+		$iYMoved = $aiCloseBtn[1] - $aiStarCloseDefaultPOS[1]
+		If $g_bDebugSetlog Then Setlog("Lab window off: (" & $iXMoved & ", " & $iYMoved & ")", $COLOR_DEBUG)
+	Else
+		SetLog("Trouble finding lab close button, try again...", $COLOR_WARNING)
+		CloseWindow()
+		Return False
+	EndIf
+	
+	; check for upgrade in process - Look for light green in upper right corner of lab window.
+	If $g_bDebugSetlog Then SetLog("_GetPixelColor(" & 720 + $iXMoved & "," & 190 + $iYMoved & "): " & _GetPixelColor(720 + $iXMoved, 190 + $iYMoved, True) & ":A2CB6C", $COLOR_DEBUG)
+	If _ColorCheck(_GetPixelColor(720 + $iXMoved, 190 + $iYMoved, True), Hex(0xA2CB6C, 6), 20) Then
+		SetLog("Laboratory Upgrade in progress, waiting for completion", $COLOR_INFO)
+		If _Sleep($DELAYLABORATORY2) Then Return
+		; upgrade in process and time not recorded so update completion time!
+		Local $sLabTimeOCR = getRemainTLaboratory(260 + $iXMoved, 257 + $iYMoved)
+		Local $iLabFinishTime = ConvertOCRTime("Lab Time", $sLabTimeOCR, False)
+		SetDebugLog("$sLabTimeOCR: " & $sLabTimeOCR & ", $iLabFinishTime = " & $iLabFinishTime & " m")
+		If $iLabFinishTime > 0 Then
+			$iStarLabFinishTimeMod = $iLabFinishTime
+			$g_sStarLabUpgradeTime = _DateAdd('n', Ceiling($iLabFinishTime), _NowCalc())
+			If @error Then _logErrorDateAdd(@error)
+			SetLog("Research will finish in " & $sLabTimeOCR & " (" & $g_sStarLabUpgradeTime & ")")
+			StarLabStatusGUIUpdate() ; Update GUI flag
+		ElseIf $g_bDebugSetlog Then
+			SetLog("Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
+			If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asStarLabUpgradeTime[$g_iCurAccount] = $g_sStarLabUpgradeTime for instantly displaying in multi-stats
+			CloseWindow()
+			Return False
+		EndIf
+	Else
+		SetLog("No Laboratory Upgrade in progress", $COLOR_INFO)
+		$g_sStarLabUpgradeTime = ""
+		StarLabStatusGUIUpdate()
+		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asStarLabUpgradeTime[$g_iCurAccount] = $g_sStarLabUpgradeTime for instantly displaying in multi-stats
+		CloseWindow()
+		Return False
+	EndIf
+	If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asStarLabUpgradeTime[$g_iCurAccount] = $g_sStarLabUpgradeTime for instantly displaying in multi-stats
+	CloseWindow()
+	Return True
+EndFunc   ;==>StarLabGuiDisplay

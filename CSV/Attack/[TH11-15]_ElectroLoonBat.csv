@@ -1,0 +1,99 @@
+NOTE  |Author: Moebius14
+NOTE  |Attack: ElectroLoonBat
+NOTE  |*** Support TH11, TH12, TH13, TH14, TH15
+NOTE  |CC : 1 Rage 1 Freeze and Balloons
+NOTE  |Siege : Stone Slammers
+NOTE  |Script work on "EXTERNAL EDGES"
+      |                                              				                                                                     			  |
+      |---------------------------------------------------------ElectroLoonBat Start------------------------------------------------------------------|
+      |                                              				                                                                     			  |
+      |_TROOPNAME_|__FLEXIBLE_|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|____TH13___|____TH14___|____TH15___|
+TRAIN |EDrag      |0          |0          |0          |0          |0          |0          |7          |7          |8          |8          |8          |
+TRAIN |Ball       |1          |0          |0          |0          |0          |0          |10         |14         |12         |12         |16         |
+      |                                                                                                                                 			  |
+TRAIN |BtSpell    |0          |0          |0          |0          |0          |0          |5          |5          |5          |5          |5          |
+TRAIN |RSpell     |0          |0          |0          |0          |0          |0          |3          |3          |3          |3          |3          |
+      |                                                                                                                                  			  |
+TRAIN |StoneS     |0          |0          |0          |0          |0          |0          |0          |3          |3          |3          |3          |
+      |                                                                                                                                  			  |
+      |_TROOPNAME_|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|____TH13___|____TH14___|____TH15___|
+TRAIN |King       |0          |0          |0          |0          |0          |0          |1          |1          |1          |1          |1          |
+TRAIN |Queen      |0          |0          |0          |0          |0          |0          |1          |1          |1          |1          |1          |
+TRAIN |Warden     |0          |0          |0          |0          |0          |0          |312        |312        |312        |312	      |312        |
+TRAIN |Champion   |0          |0          |0          |0          |0          |0          |0          |0          |1          |1          |1          |
+      |                                                                                                                                  			  |
+      |_TROOPNAME_|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|____TH13___|____TH14___|____TH15___|	  
+WMODE |0	      |0          |2          |2          |2          |2          |2          |1          |1          |1          |1  	      |1       	  |
+      |                                                                                                                                  			  |
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|____TH13___|____TH14___|____TH15___|
+REDLN |0          |0          |0          |0          |0          |0          |0          |4          |4          |4          |4          |4          |
+DRPLN |0          |0          |0          |0          |0          |0          |0          |0          |0          |0          |0          |0          |
+      |                                                                                                                                  			  |
+      |___________|___________|____TH06___|____TH07___|____TH08___|____TH09___|____TH10___|____TH11___|____TH12___|____TH13___|____TH14___|____TH15___|
+CCREQ |           |   ||||||Loons Rage Slammer|Loons Rage Freeze Slammer|Loons Rage Freeze Slammer|Loons Rage Freeze Slammer|Loons Rage Freeze Slammer|
+      |                                                                                                                                 			  |
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|___________|___________|___________|___________|
+SIDE  |0          |0          |0          |0          |0          |0          |20         |           |           |           |           |           |
+      |EAGLE      |INFERNO    |XBOW       |WIZTOWER   |MORTAR     |AIRDEFENSE |GEMBOX     |GEMBOX     |           |           |           |           |
+SIDEB |9          |5          |0          |0          |0          |0          |0          |           |           |           |           |           |
+      |                                                                                                               								  |
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|BUILDING___|___________|___________|___________|___________|
+MAKE  |A          |FRONT-LEFT |10         |0          |EXT-INT    |0          |0          |           |           |           |           |           |
+MAKE  |B          |FRONT-RIGHT|10         |0          |INT-EXT    |0          |0          |           |           |           |           |           |
+MAKE  |V          |FRONT-RIGHT|10         |0          |EXT-INT    |0          |0          |           |           |           |           |           |
+MAKE  |K          |FRONT-LEFT |10         |0          |INT-EXT    |0          |0          |           |           |           |           |           |
+MAKE  |C          |FRONT-LEFT |10         |-9         |INT-EXT    |0          |0          |           |           |           |           |           |
+MAKE  |D          |FRONT-RIGHT|10         |-9         |INT-EXT    |0          |0          |           |           |           |           |           |
+MAKE  |E          |FRONT-LEFT |10         |-16        |INT-EXT    |1          |1          |           |           |           |           |           |
+MAKE  |F          |FRONT-RIGHT|10         |-16        |INT-EXT    |1          |1          |           |           |           |           |           |
+MAKE  |H          |FRONT-RIGHT|10         |-23        |INT-EXT    |0          |0          |           |           |           |           |           |
+MAKE  |M          |LEFT-FRONT |10         |0          |EXT-INT    |0          |0          |           |           |           |           |           |
+MAKE  |N          |RIGHT-FRONT|10         |0          |EXT-INT    |0          |0          |           |           |           |           |           |
+MAKE  |G          |LEFT-FRONT |1          |1          |IGNORE     |0          |0          |INFERNO    |           |           |           |           |
+MAKE  |L          |RIGHT-FRONT|1          |1          |IGNORE     |0          |0          |INFERNO    |           |           |           |           |
+MAKE  |U          |FRONT-RIGHT|1          |1          |IGNORE     |0          |0          |INFERNO    |           |           |           |           |
+MAKE  |Z          |FRONT-LEFT |1          |1          |IGNORE     |0          |0          |EAGLE      |           |           |           |           |
+MAKE  |P          |FRONT-LEFT |1          |1          |IGNORE     |0          |0          |TOWNHALL   |           |           |           |           |
+      |                                                                                                                     					      |
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________|___________|___________|___________|___________|
+DROP  |B          |8,10       |2          |Ball       |250-470    |427-650    |15-20      |           |           |           |           |           |
+WAIT  |2000-4000  |           |           |           |           |           |           |           |           |           |           |           |
+DROP  |B          |9          |1          |EDrag      |50-70      |37-50      |500-900    |           |           |           |           |           |
+DROP  |A          |2          |1          |WallW      |0          |50-70      |150-170    |           |           |           |           |           |
+DROP  |A          |2          |1          |BattleB    |0          |50-70      |150-170    |           |           |           |           |           |
+DROP  |A          |2          |1          |SiegeB     |0          |50-70      |150-170    |           |           |           |           |           |
+DROP  |A          |2          |1          |StoneS     |0          |50-70      |150-170    |           |           |           |           |           |
+DROP  |A          |2          |1          |Castle     |0          |50-70      |150-170    |           |           |           |           |           |
+WAIT  |2000-3500  |           |           |           |           |           |           |           |           |           |           |           |
+DROP  |A          |2          |1          |KING       |0          |0          |450-600    |           |           |           |           |           |
+WAIT  |1000-2000  |           |           |           |           |           |           |           |           |           |           |           |
+DROP  |A          |2          |1          |QUEEN      |0          |0          |150-200    |           |           |           |           |           |
+WAIT  |4000-6000  |           |           |           |           |           |           |           |           |           |           |           |
+DROP  |A          |3,6,8,10   |4          |Ball       |50-70      |160-190    |15-20      |           |           |           |           |           |
+DROP  |B          |2,4,6,8    |4          |Ball       |50-70      |160-190    |90-110     |           |           |           |           |           |
+DROP  |A          |7          |1          |Ball       |50-70      |160-190    |70-90      |           |           |           |           |           |
+DROP  |B          |4          |1          |Ball       |50-70      |160-190    |70-90      |           |           |           |           |           |
+DROP  |A          |8          |1          |Ball       |50-70      |160-190    |70-90      |           |           |           |           |           |
+DROP  |B          |3          |1          |Ball       |50-70      |160-190    |70-90      |           |           |           |           |           |
+DROP  |A          |9          |1          |Ball       |50-70      |160-190    |70-90      |           |           |           |           |           |
+DROP  |B          |2          |1          |Ball       |50-70      |160-190    |70-90      |           |           |           |           |           |
+DROP  |A          |4,6,8,9    |4          |EDrag      |50-70      |137-150    |15-20      |           |           |           |           |           |
+DROP  |B          |1,2,4,7    |4          |EDrag      |50-70      |137-150    |500-700    |           |           |           |           |           |
+DROP  |A          |10         |1          |Warden     |0	      |0          |500-650    |           |           |           |           |           |
+DROP  |C          |3          |1          |RSpell     |0          |0          |178-200    |           |           |           |           |           |
+DROP  |D          |2          |1          |RSpell     |0          |0          |530-550    |           |           |           |           |           |
+DROP  |A          |8          |1          |CHAMPION   |0          |0          |150-300    |           |           |           |           |           |
+WAIT  |6000-8000  |           |           |           |           |           |           |           |           |           |           |           |
+DROP  |C          |8,9,10     |3          |BtSpell    |50-70      |37-50      |15-20      |           |           |           |           |           |
+DROP  |D          |1,2,3      |3          |BtSpell    |50-70      |37-50      |15-20      |           |           |           |           |           |
+WAIT  |500-1000   |           |           |           |           |           |           |           |           |           |           |           |
+DROP  |E          |3          |1          |RSpell     |0          |0          |150-170    |           |           |           |           |           |
+DROP  |F          |3          |1          |RSpell     |0          |0          |150-170    |           |           |           |           |           |
+WAIT  |350-1200   |           |           |           |           |           |           |           |           |           |           |           |
+DROP  |Z          |1          |1          |FSpell     |0          |0          |190-230    |           |           |           |           |           |
+DROP  |U          |1          |1          |FSpell     |0          |0          |190-230    |           |           |           |           |           |
+DROP  |G          |1          |1          |FSpell     |0          |0          |200-250    |           |           |           |           |           |
+DROP  |A          |8-10       |1          |REMAIN     |50-70      |100        |50-100     |           |			  |           |           |           |
+WAIT  |3500-5000  |           |           |           |           |           |           |           |           |           |           |           |
+      |                                                                                                                               			      |
+      |---------------------------------------------------------ElectroLoonBat End--------------------------------------------------------------------|

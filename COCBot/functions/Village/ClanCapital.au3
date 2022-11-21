@@ -18,7 +18,7 @@ Func CollectCCGold($bTest = False)
 	If Not $g_bChkEnableCollectCCGold Then Return
 	Local $bWindowOpened = False
 	Local $CollectingCCGold = 0, $CollectedCCGold = 0
-	Local $aCollect, $iBuilderToUse = $g_iCmbForgeBuilder + 1
+	Local $aCollect
 	SetLog("Start Collecting Clan Capital Gold", $COLOR_INFO)
 	ClickAway("Right")
 	_Sleep(500)
@@ -40,7 +40,6 @@ Func CollectCCGold($bTest = False)
 			$aCollect = QuickMIS("CNX", $g_sImgCCGoldCollect, 120, 360, 740, 430)
 			_ArraySort($aCollect, 0, 0, 0, 1)
 			If IsArray($aCollect) And UBound($aCollect) > 0 And UBound($aCollect, $UBOUND_COLUMNS) > 1 Then
-				SetLog("Collecting " & UBound($aCollect) & " Clan Capital Gold", $COLOR_INFO)
 				For $i = 0 To UBound($aCollect) - 1
 					If Not $bTest Then
 						$CollectingCCGold = getOcrAndCapture("coc-forge-ccgold", $aCollect[$i][1] - 70, $aCollect[$i][2] - 13, 64, 18, True)
@@ -67,7 +66,6 @@ Func CollectCCGold($bTest = False)
 				$aCollect = QuickMIS("CNX", $g_sImgCCGoldCollect, 500, 360, 740, 430)
 				_ArraySort($aCollect, 0, 0, 0, 1)
 				If IsArray($aCollect) And UBound($aCollect) > 0 And UBound($aCollect, $UBOUND_COLUMNS) > 1 Then
-					SetLog("Collecting " & UBound($aCollect) & " Clan Capital Gold", $COLOR_INFO)
 					For $i = 0 To UBound($aCollect) - 1
 						If Not $bTest Then 
 							$CollectingCCGold = getOcrAndCapture("coc-forge-ccgold", $aCollect[$i][1] - 70, $aCollect[$i][2] - 13, 64, 18, True)
@@ -107,13 +105,14 @@ EndFunc
 Func ClanCapitalReport($SetLog = True)
 	$g_iLootCCGold = getOcrAndCapture("coc-ms", 670, 17, 160, 25)
 	$g_iLootCCMedal = getOcrAndCapture("coc-ms", 670, 70, 160, 25)
-	GUICtrlSetData($g_lblCapitalGold, $g_iLootCCGold)
-	GUICtrlSetData($g_lblCapitalMedal, $g_iLootCCMedal)
+	GUICtrlSetData($g_lblCapitalGold, _NumberFormat($g_iLootCCGold, True))
+	GUICtrlSetData($g_lblCapitalMedal, _NumberFormat($g_iLootCCMedal, True))
+	UpdateStats()
 	If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
 	
 	If $SetLog Then
 		SetLog("Capital Report", $COLOR_INFO)
-		SetLog("[Gold]:" & $g_iLootCCGold & " [Medal]:" & $g_iLootCCMedal, $COLOR_SUCCESS)
+		SetLog("[Gold]: " & $g_iLootCCGold & " [Medal]: " & $g_iLootCCMedal, $COLOR_SUCCESS)
 	EndIf
 	
 	If QuickMis("BC1", $g_sImgCCRaid, 360, 480, 500, 530) Then
@@ -386,7 +385,11 @@ Func FindCCExistingUpgrade()
 		_ArraySort($aUpgrade, 0, 0, 0, 2) ;sort by Y coord
 		
 		For $i = 0 To UBound($aUpgrade) - 1
-			$name = getCCBuildingName($aUpgrade[$i][1] - 255, $aUpgrade[$i][2] - 9)
+			$name = getCCBuildingName($aUpgrade[$i][1] - 250, $aUpgrade[$i][2] - 8)
+			If $name[0] = "l" Then $name = getCCBuildingNameBlue($aUpgrade[$i][1] - 230, $aUpgrade[$i][2] - 12)
+			
+			If Not IsPrioritizedStarted($aUpgrade, $i) Then ContinueLoop
+			
 			If $g_bChkAutoUpgradeCCPriorArmy Then
 				For $y In $g_bCCPriorArmy
 					If StringInStr($name[0], $y) Then
@@ -402,7 +405,11 @@ Func FindCCExistingUpgrade()
 		If $IsFoundArmy = True Then Return $aResult
 		
 		For $i = 0 To UBound($aUpgrade) - 1
-			$name = getCCBuildingName($aUpgrade[$i][1] - 255, $aUpgrade[$i][2] - 9)
+			$name = getCCBuildingName($aUpgrade[$i][1] - 250, $aUpgrade[$i][2] - 8)
+			If $name[0] = "l" Then $name = getCCBuildingNameBlue($aUpgrade[$i][1] - 230, $aUpgrade[$i][2] - 12)
+			
+			If Not IsPrioritizedStarted($aUpgrade, $i) Then ContinueLoop
+			
 			If $g_bChkAutoUpgradeCCIgnore Then 
 				For $y In $aCCBuildingIgnore
 					If StringInStr($name[0], $y) Then 
@@ -758,8 +765,11 @@ Func CapitalMainUpgradeLoop($aUpgrade)
 	SwitchToCapitalMain()
 	_Sleep(1000)
 	ClanCapitalReport(False)
-	If Not $Failed Then Return True
-	If Not $g_bRunState Then Return
+	If $Failed Then
+		Return False
+	Else
+		Return True
+	EndIf
 EndFunc
 
 Func DistrictUpgrade($aUpgrade)
@@ -869,4 +879,21 @@ EndFunc
 Func AutoUpgradeCCLog($BuildingName = "", $cost = "")
 	SetLog("Successfully upgrade " & $BuildingName & ", Contribute " & $cost & " CapitalGold", $COLOR_SUCCESS)
 	GUICtrlSetData($g_hTxtAutoUpgradeCCLog, @CRLF & _NowDate() & " " & _NowTime() & " [" & $g_sProfileCurrentName & "] - Upgrade " & $BuildingName & ", contribute " & $cost & " CapitalGold", 1)
+EndFunc
+
+Func IsPrioritizedStarted($aUpgrade, $i = 0)
+	Local $sUpgradeCost
+	Local $started = False
+	
+	If QuickMis("BC1", $g_sImgPrioritizeCC, $aUpgrade[$i][1] + 3, $aUpgrade[$i][2] - 12, $aUpgrade[$i][1] + 23, $aUpgrade[$i][2] + 8) Then
+		If WaitforPixel($aUpgrade[$i][1] - 70, $aUpgrade[$i][2] - 3, $aUpgrade[$i][1] - 10, $aUpgrade[$i][2], "C9F659", 20, 2) Then $started = True
+		$sUpgradeCost = getOcrAndCapture("coc-cc-zero", $aUpgrade[$i][1] - 50 , $aUpgrade[$i][2] - 12, 40, 10)
+		If ($sUpgradeCost = "000" Or $sUpgradeCost = "0000") And Not $started Then
+			SetLog("Prioritized Upgrade Detected", $COLOR_SUCCESS1)
+			SetLog("But Unstarted, Skip Upgrade", $COLOR_ERROR)
+			Return False
+		EndIf
+	EndIf
+
+	Return True
 EndFunc

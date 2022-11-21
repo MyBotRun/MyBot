@@ -468,6 +468,12 @@ EndFunc   ;==>MegaTeslaUpgrade
 
 Func OttoBuildingUpgrades($bTest = False, $bFinishNow = False)
 
+	; Master Builder is not available return
+	If $g_iFreeBuilderCountBB = 0 Then
+		SetLog("No Master Builder available for Otto upgrades !", $COLOR_INFO)
+		Return False
+	EndIf
+
 	If $g_bBattleMachineUpgrade Then
 		BattleMachineUpgrade($bTest, $bFinishNow)
 		If _Sleep($DELAYRUNBOT3) Then Return

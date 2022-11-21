@@ -22,7 +22,16 @@ Func DailyChallenges()
 
 	checkMainScreen(False)
 	Local $bGoldPass = _CheckPixel($aPersonalChallengeOpenButton2, $g_bCapturePixel) ; golden badge button at mainscreen
-	Local $bCheckDiscount = $bGoldPass And ($g_bUpgradeKingEnable Or $g_bUpgradeQueenEnable Or $g_bUpgradeWardenEnable Or $g_bUpgradeChampionEnable or $g_bAutoUpgradeWallsEnable)
+	
+	; Check at least one pet upgrade is enabled
+	Local $bUpgradePets = False
+	For $i = 0 to $ePetCount - 1
+		If $g_bUpgradePetsEnable[$i] Then
+			$bUpgradePets = True
+		EndIf
+	Next
+	
+	Local $bCheckDiscount = $bGoldPass And ($g_bUpgradeKingEnable Or $g_bUpgradeQueenEnable Or $g_bUpgradeWardenEnable Or $g_bUpgradeChampionEnable Or $g_bAutoUpgradeWallsEnable Or $bUpgradePets)
 
 	If Not $g_bChkCollectRewards And Not $bCheckDiscount Then Return
 	Local $bRedSignal = _CheckPixel($aPersonalChallengeOpenButton3, $g_bCapturePixel)

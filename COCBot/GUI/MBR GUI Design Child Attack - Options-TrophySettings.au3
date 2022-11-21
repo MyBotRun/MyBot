@@ -104,7 +104,7 @@ Func CreateAttackSearchOptionsTrophySettings()
 			Local $txtPriorityConnector = ">"
 			Local $txtPriorityDefault = GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & _
 										GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & _
-										GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1)
+										GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & _
 										GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) ; default value Queen, King, G.Warden, Royal Champion
 			Local $txtPriorityList = "" & _
 			GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Queen", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "King", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Warden", -1) & $txtPriorityConnector & GetTranslatedFileIni("MBR Global GUI Design Names Troops", "Champion", -1) & "|" & _

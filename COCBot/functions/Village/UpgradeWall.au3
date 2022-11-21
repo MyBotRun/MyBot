@@ -281,7 +281,7 @@ Func SkipWallUpgrade($iWallCost = $g_iWallCost) ; Dynamic Upgrades
 				EndSwitch
 			EndIf
 		Next
-		SetLog("SkipWall-Upgrade Summary: G:" & $iBuildingsNeedGold & ", E:" & $iBuildingsNeedElixir & ", Wall: " & $iWallCost & ", MinG: " & $g_iUpgradeWallMinGold & ", MinE: " & $g_iUpgradeWallMinElixir) ; debug
+		SetDebugLog("SkipWall-Upgrade Summary: G:" & $iBuildingsNeedGold & ", E:" & $iBuildingsNeedElixir & ", Wall: " & $iWallCost & ", MinG: " & $g_iUpgradeWallMinGold & ", MinE: " & $g_iUpgradeWallMinElixir) ; debug
 		If $iBuildingsNeedGold > 0 Or $iBuildingsNeedElixir > 0 Then ; if upgrade enabled and building upgrade resource is required, log user messages.
 			Switch $g_iUpgradeWallLootType
 				Case 0 ; Using gold
@@ -362,17 +362,15 @@ Func SkipWallUpgrade($iWallCost = $g_iWallCost) ; Dynamic Upgrades
 EndFunc   ;==>SkipWallUpgrade
 
 Func SwitchToNextWallLevel() ; switches wall level to upgrade to next level
-	If $g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] = 0 And $g_iCmbUpgradeWallsLevel < 9 Then
+	If $g_aiWallsCurrentCount[$g_iCmbUpgradeWallsLevel + 4] = 0 And $g_iCmbUpgradeWallsLevel < 12 Then
 		SetDebugLog("$g_aiWallsCurrentCount = " & $g_aiWallsCurrentCount)
 		SetDebugLog("$g_iCmbUpgradeWallsLevel = " & $g_iCmbUpgradeWallsLevel)
 
 		EnableGuiControls()
+		
 		_GUICtrlComboBox_SetCurSel($g_hCmbWalls, $g_iCmbUpgradeWallsLevel + 1)
+		
 		cmbWalls()
-		If $g_iCmbUpgradeWallsLevel = 4 Then
-			GUICtrlSetState($g_hRdoUseElixirGold, $GUI_CHECKED)
-			GUICtrlSetData($g_hTxtWallMinElixir, GUICtrlRead($g_hTxtWallMinGold))
-		EndIf
 		SaveConfig()
 		DisableGuiControls()
 		Return True

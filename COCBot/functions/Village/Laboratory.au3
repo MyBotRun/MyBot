@@ -119,7 +119,8 @@ Func Laboratory($debug=False)
 			Return LaboratoryUpgrade($g_avLabTroops[$g_iCmbLaboratory][0], $aCoords, $sCostResult, $debug) ; return whether or not we successfully upgraded
 		EndIf
 		If _Sleep($DELAYLABORATORY2) Then Return
-		ClickAway()
+		;ClickAway()
+		CloseWindow()
 
 	Else ; users choice is any upgrade
 		While($iCurPage <= $iPages)
@@ -157,7 +158,8 @@ Func Laboratory($debug=False)
 
 		; If We got to here without returning, then nothing available for upgrade
 		SetLog("Nothing available for upgrade at the moment, try again later.")
-		ClickAway()
+		;ClickAway()
+		CloseWindow()
 	EndIf
 
 	Return False ; No upgrade started
@@ -197,6 +199,8 @@ Func LaboratoryUpgrade($name, $aCoords, $sCostResult, $debug = False)
 			PushMsg("LabSuccess")
 			If _Sleep($DELAYLABUPGRADE2) Then Return
 			ClickAway()
+			_Sleep(1500)
+			ClickAway()
 			Return True ; upgrade started
 		Else
 			SetLog("Oops, Gems required for " & $name & " Upgrade, try again.", $COLOR_ERROR)
@@ -209,7 +213,7 @@ EndFunc
 Func SetLabUpgradeTime($sTrooopName)
 	Local $Result = getLabUpgradeTime(581, 495) ; Try to read white text showing time for upgrade
 	Local $iLabFinishTime = ConvertOCRTime("Lab Time", $Result, False)
-	SetLog($sTrooopName & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
+	SetDebugLog($sTrooopName & " Upgrade OCR Time = " & $Result & ", $iLabFinishTime = " & $iLabFinishTime & " m", $COLOR_INFO)
 	Local $StartTime = _NowCalc() ; what is date:time now
 	SetDebugLog($sTrooopName & " Upgrade Started @ " & $StartTime, $COLOR_SUCCESS)
 	If $iLabFinishTime > 0 Then

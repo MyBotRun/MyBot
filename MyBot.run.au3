@@ -1366,9 +1366,9 @@ Func BuilderBase($bTest = False)
 		If _Sleep($DELAYRUNBOT3) Then Return
 		If checkObstacles() Then Return
 
-		;LocateBuilderHall()
-		;If _Sleep($DELAYRUNBOT3) Then Return
-		;If checkObstacles() Then Return
+		StarLabGuiDisplay()
+		If _Sleep($DELAYRUNBOT3) Then Return
+		If checkObstacles() Then Return
 
 		AttackBB()
 		If _Sleep($DELAYRUNBOT3) Then Return

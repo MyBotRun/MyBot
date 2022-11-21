@@ -320,7 +320,7 @@ Func getOcrRateCoc($x_start, $y_start, $sLogText = Default, $LogTextColor = Defa
 EndFunc   ;==>getOcrRateCoc
 
 Func getRemainTLaboratory($x_start, $y_start) ; read actual time remaining in Lab for current upgrade (336,260), changed CoC v9.24 282,277
-	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 194, 25)
+	Return getOcrAndCapture("coc-RemainLaboratory", $x_start, $y_start, 214, 25)
 EndFunc   ;==>getRemainTLaboratory
 
 Func getRemainTHero($x_start, $y_start, $bNeedCapture = True) ; Get time remaining for hero to be ready for attack from train window, BK:443,504 AQ:504,504 GW:565:504

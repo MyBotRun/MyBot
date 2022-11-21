@@ -60,7 +60,7 @@ Func GetAttackBarBB($bRemaining = False)
 		For $j=0 To UBound($aTempMultiCoords, 1) - 1
 			local $aTempCoords = $aTempMultiCoords[$j]
 			If UBound($aTempCoords) < 2 Then ContinueLoop
-			local $iSlot = Int(($aTempCoords[0] - $iBarOffset) / $iSlotOffset)
+			local $iSlot = Round(($aTempCoords[0] - $iBarOffset) / $iSlotOffset)
 
 			If $aTroop[0] = "BattleMachine" Then
 				Local $iCount = 0

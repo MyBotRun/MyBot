@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .: None
 ; Author ........: MonkeyHunter (01-2016)
-; Modified ......:
+; Modified ......: GrumpyHog (11/2022)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2019
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -22,7 +22,7 @@ Func OpenArmyOverview($bCheckMain = True, $sWhereFrom = "Undefined")
 		EndIf
 	EndIf
 
-	If WaitforPixel(23, 505 + $g_iBottomOffsetY, 53, 507 + $g_iBottomOffsetY, Hex(0xEEB344, 6), 5, 10) Then
+	If WaitforPixel(23, 505 + $g_iBottomOffsetY, 53, 507 + $g_iBottomOffsetY, Hex(0xEEB344, 6), 15, 10) Then
 		If $g_bDebugSetlogTrain Then SetLog("Click $aArmyTrainButton" & " (Called from " & $sWhereFrom & ")", $COLOR_SUCCESS)
 		ClickP($aArmyTrainButton, 1, 0, "#0293") ; Button Army Overview
 	EndIf
@@ -41,7 +41,11 @@ Func OpenArmyTab($bSetLog = True, $sWhereFrom = "Undefined")
 EndFunc   ;==>OpenArmyTab
 
 Func OpenTroopsTab($bSetLog = True, $sWhereFrom = "Undefined")
-	Return OpenTrainTab("Train Troops Tab", $bSetLog, $sWhereFrom)
+   	Local $bResult = OpenTrainTab("Train Troops Tab", $bSetLog, $sWhereFrom)
+
+	If $bResult Then UpdateNextPageTroop()
+
+	Return $bResult
 EndFunc   ;==>OpenTroopsTab
 
 Func OpenSpellsTab($bSetLog = True, $sWhereFrom = "Undefined")
@@ -84,4 +88,40 @@ Func OpenTrainTab($sTab, $bSetLog = True, $sWhereFrom = "Undefined")
 
 	If _Sleep(200) Then Return
 	Return True
-EndFunc   ;==>OpenTrainTab
+ EndFunc   ;==>OpenTrainTab
+
+ Func UpdateNextPageTroop()
+	Local $aSlot0[4] = [615, 465, 705, 370]
+	Local $aSlot1[4] = [615, 570, 705, 480]
+	Local $aSlot2[4] = [715, 465, 865, 370]
+	Local $sEDragTile = @ScriptDir & "\imgxml\ArmyOverview\Troops\EDrag*"
+
+	SetLog("UpdateNextPageTroop...")
+
+	$g_iNextPageTroop = $eMini
+
+	DragIfNeeded($eBarb)
+
+	Local $aiTileCoord = decodeSingleCoord(findImage("UpdateNextPageTroop", $sEDragTile, GetDiamondFromRect("25,375,840,548"), 1, True))
+
+	If IsArray($aiTileCoord) And Ubound($aiTileCoord, 1) = 2 Then
+		SetLog("Found EDrag at " & $aiTileCoord[0] & ", " & $aiTileCoord[1])
+
+		If PointInRect($aSlot1[0], $aSlot1[1], $aSlot1[2], $aSlot1[3], $aiTileCoord[0], $aiTileCoord[1]) Then
+			$g_iNextPageTroop = $eETitan
+			SetLog("Found Edrag moved 1 Slot")
+		EndIf
+
+		If PointInRect($aSlot2[0], $aSlot2[1], $aSlot2[2], $aSlot2[3], $aiTileCoord[0], $aiTileCoord[1]) Then
+			$g_iNextPageTroop = $eRDrag
+			SetLog("Found Edrag moved 2 Slot")
+		EndIf
+	EndIf
+
+EndFunc
+
+Func PointInRect($iBLx, $iBLy, $iTRx, $iTRy, $iPTx, $iPTy)
+	If $iPTx > $iBLx And $iPTx < $iTRx And $iPTy < $iBLy And $iPTy > $iTRy Then Return True
+
+	Return False
+EndFunc

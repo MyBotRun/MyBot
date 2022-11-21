@@ -331,7 +331,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkBBSuggestedUpgradesIgnoreWall, $g_iChkBBSuggestedUpgradesIgnoreWall = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 
 			GUICtrlSetState($g_hChkPlacingNewBuildings, $g_iChkPlacingNewBuildings = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
-			
+
 			; Otto Target Upgrades
 			GUICtrlSetState($g_hChkBattleMachineUpgrade, $g_bBattleMachineUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkDoubleCannonUpgrade, $g_bDoubleCannonUpgrade = 1 ? $GUI_CHECKED : $GUI_UNCHECKED)
@@ -405,9 +405,9 @@ Func ApplyConfig_600_6($TypeReadSave)
 				GUICtrlSetState($g_hChkBBCustomDropOrderEnable, $GUI_CHECKED)
 				GUICtrlSetState($g_hBtnBBDropOrderSet, $GUI_ENABLE)
 				GUICtrlSetState($g_hBtnBBRemoveDropOrder, $GUI_ENABLE)
-				SetLog("Old List :" & $g_sBBDropOrder)
 				Local $asBBDropOrder = StringSplit($g_sBBDropOrder, "|")
 				If $asBBDropOrder[0] = 11 Then
+				  SetLog("Old List :" & $g_sBBDropOrder)
 				  SetLog("Old Custom Troop List, appending Battle Machine")
 				  ReDim $asBBDropOrder[13]
 				  $asBBDropOrder[12] = "BattleMachine"
@@ -433,7 +433,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			GUICtrlSetState($g_hChkAutoUpgradeCCWallIgnore, $g_bChkAutoUpgradeCCWallIgnore ? $GUI_CHECKED : $GUI_UNCHECKED)
 			GUICtrlSetState($g_hChkAutoUpgradeCCPriorArmy, $g_bChkAutoUpgradeCCPriorArmy ? $GUI_CHECKED : $GUI_UNCHECKED)
 			EnableAutoUpgradeCC()
-			
+
 		Case "Save"
 			$g_bChkBotStop = (GUICtrlRead($g_hChkBotStop) = $GUI_CHECKED)
 			$g_iCmbBotCommand = _GUICtrlComboBox_GetCurSel($g_hCmbBotCommand)
@@ -477,7 +477,7 @@ Func ApplyConfig_600_6($TypeReadSave)
 			$g_iChkBBSuggestedUpgradesIgnoreWall = (GUICtrlRead($g_hChkBBSuggestedUpgradesIgnoreWall) = $GUI_CHECKED) ? 1 : 0
 
 			$g_iChkPlacingNewBuildings = (GUICtrlRead($g_hChkPlacingNewBuildings) = $GUI_CHECKED) ? 1 : 0
-			
+
 			; OTTO Building Upgrades
 			$g_bBattleMachineUpgrade = (GUICtrlRead($g_hChkBattleMachineUpgrade) = $GUI_CHECKED) ? 1 : 0
 			$g_bDoubleCannonUpgrade = (GUICtrlRead($g_hChkDoubleCannonUpgrade) = $GUI_CHECKED) ? 1 : 0
@@ -1878,7 +1878,7 @@ Func ApplyConfig_600_31($TypeReadSave)
 	; <><><><> Attack Plan / Search & Attack / Deadbase / Collectors <><><><>
 	Switch $TypeReadSave
 		Case "Read"
-			For $i = 6 To 14
+			For $i = 6 To 15
 				GUICtrlSetState($g_ahChkDBCollectorLevel[$i], $g_abCollectorLevelEnabled[$i] ? $GUI_CHECKED : $GUI_UNCHECKED)
                 GUICtrlSetState($g_ahCmbDBCollectorLevel[$i], $g_abCollectorLevelEnabled[$i] ? $GUI_ENABLE : $GUI_DISABLE)
 				_GUICtrlComboBox_SetCurSel($g_ahCmbDBCollectorLevel[$i], $g_aiCollectorLevelFill[$i])
@@ -1888,7 +1888,7 @@ Func ApplyConfig_600_31($TypeReadSave)
 			GUICtrlSetData($g_hSldCollectorTolerance, $g_iCollectorToleranceOffset)
 			checkCollectors()
 		Case "Save"
-			For $i = 6 To 14
+			For $i = 6 To 15
 				$g_abCollectorLevelEnabled[$i] = (GUICtrlRead($g_ahChkDBCollectorLevel[$i]) = $GUI_CHECKED)
 				$g_aiCollectorLevelFill[$i] = _GUICtrlComboBox_GetCurSel($g_ahCmbDBCollectorLevel[$i])
 			Next

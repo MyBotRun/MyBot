@@ -24,8 +24,17 @@ Func UpdateMultiStats()
 	For $i = 0 To 7
 		If $bEnableSwitchAcc And $i <= $iCmbTotalAcc Then
 			_GUI_Value_STATE("SHOW", $g_ahGrpDefaultAcc[$i])
-			If GUICtrlGetState($g_ahLblHourlyStatsGoldAcc[$i]) = $GUI_ENABLE + $GUI_HIDE Then _GUI_Value_STATE("SHOW", $g_ahGrpReportAcc[$i])
-
+			If (GUICtrlGetState($g_ahLblHourlyStatsGoldAcc[$i]) And GUICtrlGetState($g_ahLbLLootCCGold[$i])) = $GUI_ENABLE + $GUI_HIDE Then
+				_GUI_Value_STATE("SHOW", $g_ahGrpReportAcc[$i])
+			
+			ElseIf (GUICtrlGetState($g_ahLbLLootCCGold[$i]) And GUICtrlGetState($g_ahLblResultGoldNowAcc[$i])) = $GUI_ENABLE + $GUI_HIDE Then
+				_GUI_Value_STATE("SHOW", $g_ahGrpStatsAcc[$i])
+		
+			ElseIf (GUICtrlGetState($g_ahLblResultGoldNowAcc[$i]) And GUICtrlGetState($g_ahLblHourlyStatsGoldAcc[$i])) = $GUI_ENABLE + $GUI_HIDE Then
+				_GUI_Value_STATE("SHOW", $g_ahGrpStats2Acc[$i])
+				
+			EndIf	
+						
 			If GUICtrlRead($g_ahChkAccount[$i]) = $GUI_CHECKED Then
 				If GUICtrlRead($g_ahChkDonate[$i]) = $GUI_UNCHECKED Then
 					GUICtrlSetData($g_ahGrpVillageAcc[$i], GUICtrlRead($g_ahCmbProfile[$i]) & " (Active)")
@@ -36,15 +45,23 @@ Func UpdateMultiStats()
 				GUICtrlSetData($g_ahGrpVillageAcc[$i], GUICtrlRead($g_ahCmbProfile[$i]) & " (Idle)")
 			EndIf
 		Else
-			_GUI_Value_STATE("HIDE", $g_ahGrpDefaultAcc[$i] & "#" & $g_ahGrpReportAcc[$i] & "#" & $g_ahGrpStatsAcc[$i])
+			_GUI_Value_STATE("HIDE", $g_ahGrpDefaultAcc[$i] & "#" & $g_ahGrpReportAcc[$i] & "#" & $g_ahGrpStatsAcc[$i] & "#" & $g_ahGrpStats2Acc[$i])
 		EndIf
 	Next
 EndFunc   ;==>UpdateMultiStats
 
 Func SwitchVillageInfo()
 	For $i = 0 To 7
-		If @GUI_CtrlId = $g_ahPicArrowLeft[$i] Or @GUI_CtrlId = $g_ahPicArrowRight[$i] Then
+		If @GUI_CtrlId = $g_ahPicArrowLeft[$i] Then
 			Return _SwitchVillageInfo($i)
+		EndIf
+	Next
+EndFunc
+
+Func SwitchVillageInfo2()
+	For $i = 0 To 7
+		If @GUI_CtrlId = $g_ahPicArrowRight[$i] Then
+			Return _SwitchVillageInfo2($i)
 		EndIf
 	Next
 EndFunc
@@ -52,9 +69,36 @@ EndFunc
 Func _SwitchVillageInfo($i)
 	If GUICtrlGetState($g_ahLblResultGoldNowAcc[$i]) = $GUI_ENABLE + $GUI_SHOW Then
 		_GUI_Value_STATE("HIDE", $g_ahGrpReportAcc[$i])
-		_GUI_Value_STATE("SHOW", $g_ahGrpStatsAcc[$i])
-	Else
+		_GUI_Value_STATE("SHOW", $g_ahGrpStats2Acc[$i])
 		_GUI_Value_STATE("HIDE", $g_ahGrpStatsAcc[$i])
+		
+	ElseIf GUICtrlGetState($g_ahLblHourlyStatsGoldAcc[$i]) = $GUI_ENABLE + $GUI_SHOW Then
 		_GUI_Value_STATE("SHOW", $g_ahGrpReportAcc[$i])
+		_GUI_Value_STATE("HIDE", $g_ahGrpStats2Acc[$i])
+		_GUI_Value_STATE("HIDE", $g_ahGrpStatsAcc[$i])
+	
+	ElseIf GUICtrlGetState($g_ahLbLLootCCGold[$i]) = $GUI_ENABLE + $GUI_SHOW Then
+		_GUI_Value_STATE("HIDE", $g_ahGrpReportAcc[$i])
+		_GUI_Value_STATE("HIDE", $g_ahGrpStats2Acc[$i])
+		_GUI_Value_STATE("SHOW", $g_ahGrpStatsAcc[$i])
 	EndIf
 EndFunc
+
+Func _SwitchVillageInfo2($i)
+	If GUICtrlGetState($g_ahLblResultGoldNowAcc[$i]) = $GUI_ENABLE + $GUI_SHOW Then
+		_GUI_Value_STATE("HIDE", $g_ahGrpReportAcc[$i])
+		_GUI_Value_STATE("HIDE", $g_ahGrpStats2Acc[$i])
+		_GUI_Value_STATE("SHOW", $g_ahGrpStatsAcc[$i])
+		
+	ElseIf GUICtrlGetState($g_ahLblHourlyStatsGoldAcc[$i]) = $GUI_ENABLE + $GUI_SHOW Then
+		_GUI_Value_STATE("HIDE", $g_ahGrpReportAcc[$i])
+		_GUI_Value_STATE("SHOW", $g_ahGrpStats2Acc[$i])
+		_GUI_Value_STATE("HIDE", $g_ahGrpStatsAcc[$i])
+		
+	ElseIf GUICtrlGetState($g_ahLbLLootCCGold[$i]) = $GUI_ENABLE + $GUI_SHOW Then
+		_GUI_Value_STATE("SHOW", $g_ahGrpReportAcc[$i])
+		_GUI_Value_STATE("HIDE", $g_ahGrpStats2Acc[$i])
+		_GUI_Value_STATE("HIDE", $g_ahGrpStatsAcc[$i])
+	EndIf
+EndFunc
+

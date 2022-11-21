@@ -266,16 +266,19 @@ EndFunc   ;==>DuplicateScriptAB
 
 Func ApplyScriptDB()
 	Local $iApply = 0
+	Local $iApplySieges = 0
 	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0]]
+	Local $aiCSVWardenMode = -1
 	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
 	Local $sCSVCCReq = ""
 	Local $aTemp = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameDB)
 	Local $sFilename = $aTemp[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB) + 1]
 
 	SetLog("CSV settings apply starts: " & $sFilename, $COLOR_INFO)
-	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVHeros, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
+	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVSieges, $aiCSVHeros, $aiCSVWardenMode, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
 	If Not $iApply Then
 		SetLog("CSV settings apply failed", $COLOR_ERROR)
 		Return
@@ -288,19 +291,27 @@ Func ApplyScriptDB()
 	For $i = 0 To UBound($aiCSVSpells) - 1
 		If $aiCSVSpells[$i] > 0 Then $iApply += 1
 	Next
+	For $i = 0 To UBound($aiCSVSieges) - 1
+		If $aiCSVSieges[$i] > 0 Then $iApply += 1
+		If $aiCSVSieges[$i] > 0 Then $iApplySieges += 1
+	Next
 	If $iApply > 0 Then
-		For $t = 0 To UBound($aiCSVTroops) - 1 ; set troops to level 1 if none on GUI
-			If $aiCSVTroops[$t] > 0 And $g_aiTrainArmyTroopLevel[$t] = 0 Then $g_aiTrainArmyTroopLevel[$t] = 1
-		Next
 		$g_aiArmyCustomTroops = $aiCSVTroops
-		For $s = 0 To UBound($aiCSVSpells) - 1 ; set spells to level 1 if none on GUI
-			If $aiCSVSpells[$s] > 0 And $g_aiTrainArmySpellLevel[$s] = 0 Then $g_aiTrainArmySpellLevel[$s] = 1
-		Next
 		$g_aiArmyCustomSpells = $aiCSVSpells
+		$g_aiArmyCompSiegeMachines = $aiCSVSieges
 		ApplyConfig_600_52_2("Read")
 		SetComboTroopComp() ; GUI refresh
 		lblTotalCountSpell2()
+		lblTotalCountSiege2()
 		SetLog("CSV Train settings applied", $COLOR_SUCCESS)
+	EndIf
+			
+	If IsArray($aiCSVSieges) And $iApplySieges > 0 Then
+		Local $aMachine = _ArrayMaxIndex($aiCSVSieges, 0, 1)
+		_GUICtrlComboBox_SetCurSel($g_hCmbDBSiege, $aMachine + 1)
+		GUICtrlSetState($g_hChkDBDropCC, $GUI_CHECKED)
+		GUICtrlSetState($g_hCmbDBSiege, $GUI_ENABLE)
+		SetLog("CSV 'Sieges' settings applied", $COLOR_SUCCESS)
 	EndIf
 
 	$iApply = 0
@@ -332,10 +343,18 @@ Func ApplyScriptDB()
 		GUICtrlSetState($g_hChkDBKingAttack, $aiCSVHeros[$eHeroBarbarianKing][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBKingAttack))
 		GUICtrlSetState($g_hChkDBQueenAttack, $aiCSVHeros[$eHeroArcherQueen][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBQueenAttack))
 		GUICtrlSetState($g_hChkDBWardenAttack, $aiCSVHeros[$eHeroGrandWarden][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBWardenAttack))
+		chkDBWardenAttack()
 		GUICtrlSetState($g_hChkDBChampionAttack, $aiCSVHeros[$eHeroRoyalChampion][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkDBChampionAttack))
 		SetLog("CSV 'Attack with' Hero settings applied", $COLOR_SUCCESS)
 	EndIf
-
+	
+	If $aiCSVWardenMode >= 0 And $aiCSVWardenMode < 3 Then;	0 = Ground / 1 = Air / 2 = Default
+		_GUICtrlComboBox_SetCurSel($g_hCmbDBWardenMode, $aiCSVWardenMode)
+		SetLog("CSV 'Warden Mode' settings applied", $COLOR_SUCCESS)
+	Else
+		If $aiCSVWardenMode <> -1 Then SetLog("CSV 'Warden Mode' settings out of bounds", $COLOR_ERROR)
+	EndIf
+	
 	If $sCSVCCReq <> "" Then
 		GUICtrlSetState($g_hChkDBDropCC, $GUI_CHECKED)
 		SetLog("CSV 'Attack with' CC settings applied", $COLOR_SUCCESS)
@@ -376,16 +395,19 @@ EndFunc   ;==>ApplyScriptDB
 
 Func ApplyScriptAB()
 	Local $iApply = 0
+	Local $iApplySieges = 0
 	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0]
+	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0]]
+	Local $aiCSVWardenMode = -1
 	Local $iCSVRedlineRoutineItem = 0, $iCSVDroplineEdgeItem = 0
 	Local $sCSVCCReq = ""
 	Local $aTemp = _GUICtrlComboBox_GetListArray($g_hCmbScriptNameAB)
 	Local $sFilename = $aTemp[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB) + 1]
 
 	SetLog("CSV settings apply starts: " & $sFilename, $COLOR_INFO)
-	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVHeros, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
+	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVSieges, $aiCSVHeros, $aiCSVWardenMode, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
 	If Not $iApply Then
 		SetLog("CSV settings apply failed", $COLOR_ERROR)
 		Return
@@ -398,19 +420,27 @@ Func ApplyScriptAB()
 	For $i = 0 To UBound($aiCSVSpells) - 1
 		If $aiCSVSpells[$i] > 0 Then $iApply += 1
 	Next
+	For $i = 0 To UBound($aiCSVSieges) - 1
+		If $aiCSVSieges[$i] > 0 Then $iApply += 1
+		If $aiCSVSieges[$i] > 0 Then $iApplySieges += 1
+	Next
 	If $iApply > 0 Then
-		For $t = 0 To UBound($aiCSVTroops) - 1 ; set troops to level 1 if none on GUI
-			If $aiCSVTroops[$t] > 0 And $g_aiTrainArmyTroopLevel[$t] = 0 Then $g_aiTrainArmyTroopLevel[$t] = 1
-		Next
 		$g_aiArmyCustomTroops = $aiCSVTroops
-		For $s = 0 To UBound($aiCSVSpells) - 1 ; set spells to level 1 if none on GUI
-			If $aiCSVSpells[$s] > 0 And $g_aiTrainArmySpellLevel[$s] = 0 Then $g_aiTrainArmySpellLevel[$s] = 1
-		Next
 		$g_aiArmyCustomSpells = $aiCSVSpells
+		$g_aiArmyCompSiegeMachines = $aiCSVSieges
 		ApplyConfig_600_52_2("Read")
 		SetComboTroopComp() ; GUI refresh
 		lblTotalCountSpell2()
+		lblTotalCountSiege2()
 		SetLog("CSV Train settings applied", $COLOR_SUCCESS)
+	EndIf
+	
+	If IsArray($aiCSVSieges) And $iApplySieges > 0 Then
+		Local $aMachine = _ArrayMaxIndex($aiCSVSieges, 0, 1)
+		_GUICtrlComboBox_SetCurSel($g_hCmbABSiege, $aMachine + 1)
+		GUICtrlSetState($g_hChkABDropCC, $GUI_CHECKED)
+		GUICtrlSetState($g_hCmbABSiege, $GUI_ENABLE)
+		SetLog("CSV 'Sieges' settings applied", $COLOR_SUCCESS)
 	EndIf
 
 	$iApply = 0
@@ -442,8 +472,16 @@ Func ApplyScriptAB()
 		GUICtrlSetState($g_hChkABKingAttack, $aiCSVHeros[$eHeroBarbarianKing][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABKingAttack))
 		GUICtrlSetState($g_hChkABQueenAttack, $aiCSVHeros[$eHeroArcherQueen][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABQueenAttack))
 		GUICtrlSetState($g_hChkABWardenAttack, $aiCSVHeros[$eHeroGrandWarden][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABWardenAttack))
+		chkABWardenAttack()
 		GUICtrlSetState($g_hChkABChampionAttack, $aiCSVHeros[$eHeroRoyalChampion][0] > 0 ? $GUI_CHECKED : GUICtrlGetState($g_hChkABChampionAttack))
 		SetLog("CSV 'Attack with' Hero settings applied", $COLOR_SUCCESS)
+	EndIf
+	
+	If $aiCSVWardenMode >= 0 And $aiCSVWardenMode < 3 Then;	0 = Ground / 1 = Air / 2 = Default
+		_GUICtrlComboBox_SetCurSel($g_hCmbABWardenMode, $aiCSVWardenMode)
+		SetLog("CSV 'Warden Mode' settings applied", $COLOR_SUCCESS)
+	Else
+		If $aiCSVWardenMode <> -1 Then SetLog("CSV 'Warden Mode' settings out of bounds", $COLOR_ERROR)
 	EndIf
 
 	If $sCSVCCReq <> "" Then

@@ -110,6 +110,7 @@ Func PetHouse($test = False)
 			If _Sleep($DELAYLABORATORY2) Then Return
 			; get DE requirement to upgrade Pet
 			Local $iDarkElixirReq = 1000 * number($g_aiPetUpgradeCostPerLevel[$i][$iPetLevel])
+			$iDarkElixirReq = Int($iDarkElixirReq - ($iDarkElixirReq * Number($g_iBuilderBoostDiscount) / 100))
 			SetLog("DE Requirement: " & $iDarkElixirReq)
 				If $iDarkElixirReq < $g_aiCurrentLoot[$eLootDarkElixir] Then
 				SetLog("Will now upgrade " & $g_asPetNames[$i])
@@ -131,7 +132,7 @@ Func PetHouse($test = False)
 							; Just incase the buy Gem Window pop up!
 						If isGemOpen(True) Then
 							SetDebugLog("Not enough DE for to upgrade: " & $g_asPetNames[$i], $COLOR_DEBUG)
-							ClickAway()
+							CloseWindow()
 							Return False
 						EndIf
 						; Update gui
@@ -151,15 +152,13 @@ Func PetHouse($test = False)
 					Else
 						ClickAway() ; close pet upgrade window
 					EndIf
-						SetLog("Started upgrade for : " & $g_asPetNames[$i])
-					ClickAway() ; close pet house window
-					_Sleep(1500)
-					ClickAway()
+					SetLog("Started upgrade for : " & $g_asPetNames[$i])
 					If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
+					CloseWindow()
 					Return True
 				Else
 					SetLog("Failed to find the Pets button!", $COLOR_ERROR)
-					ClickAway()
+					CloseWindow()
 					Return False
 				EndIf
 				SetLog("Failed to find Upgrade button", $COLOR_ERROR)
@@ -169,11 +168,9 @@ Func PetHouse($test = False)
 			SetLog($g_asPetNames[$i] & " is Locked")	
 		EndIf
 	Next
-SetLog("No Pet Upgrade Possible, Check Your Settings", $COLOR_DEBUG1)
-ClickAway()
-_Sleep(1500)
-ClickAway()
-Return
+	SetLog("No Pet Upgrade Possible, Check Your Settings", $COLOR_DEBUG1)
+	CloseWindow()
+	Return
 EndFunc
 
 ; check the Pet House to see if a Pet is upgrading already
@@ -195,10 +192,8 @@ Func CheckPetUpgrade()
 		ElseIf $g_bDebugSetlog Then
 			SetLog("PetLabUpgradeInProgress - Invalid getRemainTLaboratory OCR", $COLOR_DEBUG)
 		EndIf
-		ClickAway()
-		_Sleep(1500)
-		ClickAway()
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
+		CloseWindow()
 		Return True
 	EndIf
 	Return False ; returns False if no upgrade in progress
@@ -230,9 +225,7 @@ Func FindPetsButton()
 		Return True
 	Else
 		SetLog("Cannot find the Pets Button!", $COLOR_ERROR)
-		ClickAway()
-		_Sleep(1500)
-		ClickAway()
+		CloseWindow()
 		Return False
 	EndIf
 EndFunc
@@ -276,6 +269,7 @@ Func PetGuiDisplay()
 		Return
 	EndIf
 
+	ClickAway()
 	If _Sleep(1500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
 
 	Setlog("Checking Pet Status", $COLOR_INFO)
@@ -310,15 +304,13 @@ Func PetGuiDisplay()
 		If _Sleep(1500) Then Return ; Wait for window to open
 	Else
 		SetLog("Cannot find the Pet House Button!", $COLOR_ERROR)
-		ClickAway()
-		_Sleep(1500)
-		ClickAway()
 		;===========Hide Red  Hide Green  Show Gray==
 		GUICtrlSetState($g_hPicPetGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicPetRed, $GUI_HIDE)
 		GUICtrlSetState($g_hPicPetGray, $GUI_SHOW)
 		GUICtrlSetData($g_hLbLPetTime, "")
 		;===========================================
+		ClickAway()
 		Return
 	EndIf
 
@@ -360,37 +352,31 @@ Func PetGuiDisplay()
 			$g_sPetUpgradeTime = _DateAdd('n', Ceiling($iPetFinishTime), _NowCalc())
 			SetLog("Pet House will finish in " & $sPetTimeOCR & " (" & $g_sPetUpgradeTime & ")")
 		EndIf
-		ClickAway()
-		_Sleep(1500)
-		ClickAway()
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
-			Return True
+		CloseWindow()
+		Return True
 	ElseIf $IsStopped Then ; Look for the paw in the Pet House window.
 			SetLog("Pet House has Stopped", $COLOR_INFO)
 		;If $g_bNotifyTGEnable And $g_bNotifyAlertLaboratoryIdle Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_01", "Laboratory Idle") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_02", "Laboratory has Stopped"))
-		ClickAway()
 		;========Show Red  Hide Green  Hide Gray=====
 		GUICtrlSetState($g_hPicPetGray, $GUI_HIDE)
 		GUICtrlSetState($g_hPicPetGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicPetRed, $GUI_SHOW)
 		GUICtrlSetData($g_hLbLPetTime, "")
 		;============================================
-		_Sleep(1500)
-		ClickAway()
 		$g_sPetUpgradeTime = ""
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asPetLabUpgradeTime[$g_iCurAccount] = $g_sPetUpgradeTime for instantly displaying in multi-stats
+		CloseWindow()
 		Return
 	Else
 		SetLog("Unable to determine Pet House Status", $COLOR_INFO)
-		ClickAway()
 		;========Hide Red  Hide Green  Show Gray======
 		GUICtrlSetState($g_hPicPetGreen, $GUI_HIDE)
 		GUICtrlSetState($g_hPicPetRed, $GUI_HIDE)
 		GUICtrlSetState($g_hPicPetGray, $GUI_SHOW)
 		GUICtrlSetData($g_hLbLPetTime, "")
 		;=============================================
-		_Sleep(1500)
-		ClickAway()
+		CloseWindow()
 		Return
 	EndIf
 
@@ -429,7 +415,7 @@ Func GetMinDark4PetUpgrade()
 
 			; get DE requirement to upgrade Pet
 			Local $iDarkElixirReq = 1000 * number($g_aiPetUpgradeCostPerLevel[$i][$iPetLevel])
-
+			$iDarkElixirReq = Int($iDarkElixirReq - ($iDarkElixirReq * Number($g_iBuilderBoostDiscount) / 100))
 			SetLog("DE Requirement: " & $iDarkElixirReq)
 
 			If $iDarkElixirReq < $iMinDark4PetUpgrade Then

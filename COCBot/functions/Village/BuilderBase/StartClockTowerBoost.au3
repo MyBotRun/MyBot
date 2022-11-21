@@ -14,10 +14,44 @@
 ; ===============================================================================================================================
 #include-once
 
+Func ClockTimeGained()
+Local $aResult = BuildingInfo(242, 490 + $g_iBottomOffsetY)
+Local $TowerClockLevel = $aResult[2]
+SetLog("Clock Tower Level " & $TowerClockLevel & " Detected")
+Local $ClockTimeGained = 0
+
+	Switch $TowerClockLevel
+		Case 1
+			$ClockTimeGained = 126
+		Case 2
+			$ClockTimeGained = 144
+		Case 3
+			$ClockTimeGained = 162
+		Case 4
+			$ClockTimeGained = 180
+		Case 5
+			$ClockTimeGained = 198
+		Case 6
+			$ClockTimeGained = 216
+		Case 7
+			$ClockTimeGained = 236
+		Case 8
+			$ClockTimeGained = 252
+		Case 9
+			$ClockTimeGained = 270
+		Case Else
+			$ClockTimeGained = 270
+	EndSwitch
+
+Return $ClockTimeGained
+EndFunc
+
 Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 
 	If Not $g_bChkStartClockTowerBoost Then Return
 	If Not $g_bRunState Then Return
+	
+	Local $TimeGained = 0
 
 	If $bSwitchToBB Then
 		ClickAway()
@@ -42,6 +76,7 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 			$aCTCoords = StringSplit($sCTCoords, ",", $STR_NOCOUNT)
 			ClickP($aCTCoords)
 			If _Sleep($DELAYCLOCKTOWER1) Then Return
+			$TimeGained = ClockTimeGained()
 
 			$aCTBoost = findButton("BoostCT") ; Search for Start Clock Tower Boost Button
 			If IsArray($aCTBoost) Then
@@ -53,6 +88,11 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 					ClickP($aCTBoost)
 					If _Sleep($DELAYCLOCKTOWER2) Then Return
 					SetLog("Boosted Clock Tower successfully!", $COLOR_SUCCESS)
+					If $iStarLabFinishTimeMod > 0 Then
+						$g_sStarLabUpgradeTime = _DateAdd('n', Ceiling($iStarLabFinishTimeMod - $TimeGained), _NowCalc())
+						SetLog("Recalculate Research Time, Boosting Clock Tower (" & $g_sStarLabUpgradeTime & ")")
+						StarLabStatusGUIUpdate()
+					EndIf
 				Else
 					SetLog("Failed to find the BOOST window button", $COLOR_ERROR)
 				EndIf
@@ -64,6 +104,7 @@ Func StartClockTowerBoost($bSwitchToBB = False, $bSwitchToNV = False)
 		EndIf
 	EndIf
 	ClickAway()
+	If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save")
 
 	If $bSwitchToNV Then SwitchBetweenBases() ; Switching back to the normal Village if true
 EndFunc   ;==>StartClockTowerBoost

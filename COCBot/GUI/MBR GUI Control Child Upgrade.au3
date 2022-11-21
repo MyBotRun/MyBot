@@ -473,7 +473,7 @@ Func chkUpgradePets()
 			EndIf
 		Next
 		For $i = $ePetCount - 4 To $ePetCount - 1
-			GUICtrlSetState($g_hChkUpgradePets[$i], BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_DISABLE + $GUI_UNCHECKED)
 			$g_bUpgradePetsEnable[$i] = False
 			SetDebugLog("Upgrade: " & $g_asPetNames[$i] & " disabled")
 		Next
@@ -490,7 +490,7 @@ Func chkUpgradePets()
 		Next
 	Else
 		For $i = 0 to $ePetCount - 1
-			GUICtrlSetState($g_hChkUpgradePets[$i], BitOR($GUI_DISABLE, $GUI_UNCHECKED))
+			GUICtrlSetState($g_hChkUpgradePets[$i], $GUI_DISABLE + $GUI_UNCHECKED)
 			$g_bUpgradePetsEnable[$i] = False
 		Next
 	EndIf
@@ -523,14 +523,11 @@ Func chkWalls()
 	If GUICtrlRead($g_hChkWalls) = $GUI_CHECKED Then
 		$g_bAutoUpgradeWallsEnable = True
 		GUICtrlSetState($g_hRdoUseGold, $GUI_ENABLE)
-		; GUICtrlSetState($sldMaxNbWall, $GUI_ENABLE)
-		;GUICtrlSetState($sldToleranceWall, $GUI_ENABLE)
-		;GUICtrlSetState($g_hBtnFindWalls, $GUI_ENABLE)
-		;		GUICtrlSetState($g_hRdoUseElixir, $GUI_ENABLE)
-		;		GUICtrlSetState($g_hRdoUseElixirGold, $GUI_ENABLE)
+		GUICtrlSetState($g_hRdoUseElixir, $GUI_ENABLE)
+		GUICtrlSetState($g_hRdoUseElixirGold, $GUI_ENABLE)
 		GUICtrlSetState($g_hCmbWalls, $GUI_ENABLE)
 		GUICtrlSetState($g_hTxtWallMinGold, $GUI_ENABLE)
-		;		GUICtrlSetState($g_hTxtWallMinElixir, $GUI_ENABLE)
+		GUICtrlSetState($g_hTxtWallMinElixir, $GUI_ENABLE)
 		cmbWalls()
 	Else
 		$g_bAutoUpgradeWallsEnable = False
@@ -540,10 +537,6 @@ Func chkWalls()
 		GUICtrlSetState($g_hCmbWalls, $GUI_DISABLE)
 		GUICtrlSetState($g_hTxtWallMinGold, $GUI_DISABLE)
 		GUICtrlSetState($g_hTxtWallMinElixir, $GUI_DISABLE)
-		; GUICtrlSetState($sldMaxNbWall, $GUI_DISABLE)
-		;GUICtrlSetState($sldToleranceWall, $GUI_DISABLE)
-		;GUICtrlSetState($g_hBtnFindWalls, $GUI_DISABLE)
-
 	EndIf
 EndFunc   ;==>chkWalls
 
@@ -556,20 +549,15 @@ Func cmbWalls()
 	$g_iWallCost = $g_aiWallCost[$g_iCmbUpgradeWallsLevel]
 	GUICtrlSetData($g_hLblWallCost, _NumberFormat($g_iWallCost))
 
-   For $i = 4 To $g_iCmbUpgradeWallsLevel+5
-	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_SHOW)
-	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_SHOW)
-   Next
-   For $i = $g_iCmbUpgradeWallsLevel+6 To 16
-	  GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
-	  GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
-   Next
-
-   If $g_iCmbUpgradeWallsLevel <= 3 Then GUICtrlSetState($g_hRdoUseGold, $GUI_CHECKED)
-
-   GUICtrlSetState($g_hRdoUseElixir, $g_iCmbUpgradeWallsLevel < 1 ? $GUI_DISABLE : $GUI_ENABLE)
-   GUICtrlSetState($g_hRdoUseElixirGold, $g_iCmbUpgradeWallsLevel < 1 ? $GUI_DISABLE : $GUI_ENABLE)
-   GUICtrlSetState($g_hTxtWallMinElixir, $g_iCmbUpgradeWallsLevel < 1 ? $GUI_DISABLE : $GUI_ENABLE)
+    For $i = 4 To $g_iCmbUpgradeWallsLevel+5
+		GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_SHOW)
+	    GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_SHOW)
+	Next
+   
+    For $i = $g_iCmbUpgradeWallsLevel+6 To 16
+	    GUICtrlSetState($g_ahWallsCurrentCount[$i], $GUI_HIDE)
+	    GUICtrlSetState($g_ahPicWallsLevel[$i], $GUI_HIDE)
+    Next
 EndFunc   ;==>cmbWalls
 
 Func btnWalls()

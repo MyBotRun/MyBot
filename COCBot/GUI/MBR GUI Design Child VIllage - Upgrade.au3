@@ -140,7 +140,7 @@ Func CreateLaboratorySubTab()
 
 	Local $x = 25, $y = 45
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Laboratory", "Group_01", "Laboratory"), $x - 20, $y - 20, $g_iSizeWGrpTab3, 100)
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnLaboratory, $x, $y, 64, 64)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnLabUpgrade, $x, $y, 64, 64)
 		$g_hChkAutoLabUpgrades = GUICtrlCreateCheckbox(GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Laboratory", "ChkAutoLabUpgrades", "Auto Laboratory Upgrades"), $x + 80, $y + 5, -1, -1)
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Laboratory", "ChkAutoLabUpgrades_Info_01", "Check box to enable automatically starting Upgrades in laboratory"))
 			GUICtrlSetOnEvent(-1, "chkLab")
@@ -283,7 +283,7 @@ Func CreateHeroesSubTab()
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeLassi_Info_01", "Enable upgrading of your Pet, Lassi, when you have enough Dark Elixir")
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkUpgradePets")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetLassi, $x + 18, $y, 64, 64)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetLassi, $x + 18, $y + 5, 48, 48)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x += 95
@@ -291,7 +291,7 @@ Func CreateHeroesSubTab()
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeElectroOwl_Info_01", "Enable upgrading of your Pet, Electro Owl, when you have enough Dark Elixir")
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkUpgradePets")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetElectroOwl, $x + 18, $y, 64, 64)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetElectroOwl, $x + 18, $y + 5, 64, 64)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x += 95
@@ -300,7 +300,7 @@ Func CreateHeroesSubTab()
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkUpgradePets")
 			GUICtrlSetColor ( -1, $COLOR_ERROR )
-			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetMightyYak, $x + 18, $y, 64, 64)
+			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetMightyYak, $x + 18, $y - 1, 60, 60)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x += 95
@@ -309,7 +309,7 @@ Func CreateHeroesSubTab()
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkUpgradePets")
 			GUICtrlSetColor ( -1, $COLOR_ERROR )
-			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetUnicorn, $x + 18, $y, 64, 64)
+			_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetUnicorn, $x + 18, $y - 4, 64, 64)
 			_GUICtrlSetTip(-1, $sTxtTip)
 			
 	;----------------------------------------------NEW
@@ -327,7 +327,7 @@ Func CreateHeroesSubTab()
 			$sTxtTip = GetTranslatedFileIni("MBR GUI Design Child Village - Upgrade_Heroes", "ChkUpgradeDiggy_Info_01", "Enable upgrading of your Pet, Diggy, when you have enough Dark Elixir")
 			_GUICtrlSetTip(-1, $sTxtTip)
 			GUICtrlSetOnEvent(-1, "chkUpgradePets")
-		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetDiggy, $x + 18, $y, 64, 64)
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnPetDiggy, $x + 18, $y + 2, 64, 64)
 			_GUICtrlSetTip(-1, $sTxtTip)
 
 	$x += 95
@@ -631,58 +631,72 @@ Func CreateAutoUpgradeSubTab()
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnKing, $x + 110, $y + $yRow1, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[1] = GUICtrlCreateCheckbox("", $x + 125 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Barbarian King Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnQueen, $x + 155, $y + $yRow1, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[2] = GUICtrlCreateCheckbox("", $x + 170 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Archer Queen Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWarden, $x + 200, $y + $yRow1, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[3] = GUICtrlCreateCheckbox("", $x + 215 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Grand Warden Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnChampion, $x + 245, $y + $yRow1, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[14] = GUICtrlCreateCheckbox("", $x + 260 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Royal Champion Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCC, $x + 305, $y + $yRow1, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[4] = GUICtrlCreateCheckbox("", $x + 320 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Clan Castle Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnLaboratory, $x + 365, $y + $yRow1, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[5] = GUICtrlCreateCheckbox("", $x + 380 - $xOff, $y + $yRow1 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Laboratory Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnWall, $x + 5, $y + $yRow2, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[6] = GUICtrlCreateCheckbox("", $x + 20 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Wall Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnBarrack, $x + 65, $y + $yRow2, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[7] = GUICtrlCreateCheckbox("", $x + 80 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Barrack Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDarkBarrack, $x + 110, $y + $yRow2, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[8] = GUICtrlCreateCheckbox("", $x + 125 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Dark Barrack Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSpellFactory, $x + 170, $y + $yRow2, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[9] = GUICtrlCreateCheckbox("", $x + 185 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Spell Factory Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDarkSpellFactory, $x + 215, $y + $yRow2, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[10] = GUICtrlCreateCheckbox("", $x + 230 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Dark Spell Factory Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnMine, $x + 275, $y + $yRow2, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[11] = GUICtrlCreateCheckbox("", $x + 290 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Gold Mine Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnCollector, $x + 320, $y + $yRow2, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[12] = GUICtrlCreateCheckbox("", $x + 335 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Elixir Collector Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 
 		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnDrill, $x + 365, $y + $yRow2, $iIconSize, $iIconSize)
 		$g_hChkUpgradesToIgnore[13] = GUICtrlCreateCheckbox("", $x + 380 - $xOff, $y + $yRow2 + $yChkOff, 17, 17)
+			_GUICtrlSetTip(-1, "Ignore Dark Elixir Drill Upgrade")
 			GUICtrlSetOnEvent(-1, "chkUpgradesToIgnore")
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
