@@ -141,7 +141,7 @@ Func InitializeControlVariables()
 					 $g_ahTxtTrainArmyTroopCount[$eTroopSuperWallBreaker]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBalloon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopRocketBalloon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWizard]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopSuperWizard]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopHealer]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopDragon]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopPekka]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBabyDragon]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopInfernoDragon]&"#"& _
-					 $g_ahTxtTrainArmyTroopCount[$eTroopMiner]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopMinion]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperMinion]&"#"& _
+					 $g_ahTxtTrainArmyTroopCount[$eTroopMiner]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperMiner]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopMinion]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperMinion]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopHogRider]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopValkyrie]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperValkyrie]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopGolem]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopWitch]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopSuperWitch]&"#"& _
 					 $g_ahTxtTrainArmyTroopCount[$eTroopLavaHound]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopIceHound]&"#"&$g_ahTxtTrainArmyTroopCount[$eTroopBowler]&"#"& _

@@ -48,7 +48,7 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 	;Local Const $aHeroStatusSlots[3][2] = [[658, 347], [732, 347], [805, 347]] ; Location of hero status check tile
 
 	; Constant Array with OCR find location: [X pos, Y Pos, Text Name, Global enum value]
-	Local Const $aHeroRemainData[$eHeroCount][4] = [[555, 414, "King", $eHeroKing], [627, 414, "Queen", $eHeroQueen], [700, 414, "Warden", $eHeroWarden], [772, 414, "Champion", $eHeroChampion]]
+	Local Const $aHeroRemainData[$eHeroCount][4] = [[555, 384 + $g_iMidOffsetY, "King", $eHeroKing], [627, 384 + $g_iMidOffsetY, "Queen", $eHeroQueen], [700, 384 + $g_iMidOffsetY, "Warden", $eHeroWarden], [772, 384 + $g_iMidOffsetY, "Champion", $eHeroChampion]]
 
 	For $index = 0 To UBound($aHeroRemainData) - 1 ;cycle through all 3 slots and hero types
 
@@ -100,10 +100,10 @@ Func getArmyHeroTime($iHeroType, $bOpenArmyWindow = False, $bCloseArmyWindow = F
 		EndIf
 	Next
 
-	If $bCloseArmyWindow Then
-		ClickAway()
-		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
-	EndIf
+	If $bCloseArmyWindow Then CloseWindow()
+	;	ClickAway()
+	;	If _Sleep($DELAYCHECKARMYCAMP4) Then Return
+	;EndIf
 
 	; Determine proper return value
 	If $iHeroType = $eHeroKing Or $iHeroType = $eHeroQueen Or $iHeroType = $eHeroWarden Or $iHeroType = $eHeroChampion Then

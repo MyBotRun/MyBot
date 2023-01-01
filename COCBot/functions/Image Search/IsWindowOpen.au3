@@ -49,11 +49,11 @@ Func IsWindowOpen($sImagePath, $iLoopCount = 1, $iDelay = 200, $sSearchArea = ""
 				$g_avWindowCoordinates = $aWindow
 				Return True
 			EndIf
-			SetLog("Failed to locate :" & $sImagePath);
 			If _Sleep($iDelay) Then Return False
 		Next
 	EndIf
 
+	SetLog("Failed to locate image: " & $sImagePath, $COLOR_ERROR);
 	Return False
 EndFunc
 

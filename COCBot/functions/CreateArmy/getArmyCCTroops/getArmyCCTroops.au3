@@ -32,13 +32,15 @@ Func getArmyCCTroops($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bChec
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	Local $sTroopDiamond = GetDiamondFromRect("20,495,462,598") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	;Local $sTroopDiamond = GetDiamondFromRect("20,495,462,598") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	Local $sTroopDiamond = GetDiamondFromRect2(20, 465 + $g_iMidOffsetY, 462, 568 + $g_iMidOffsetY) ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
+	
 	Local $aCurrentCCTroops = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Troops", $sTroopDiamond, $sTroopDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentTroops[index] = $aArray[2] = ["TroopShortName", CordX,CordY]
 
 	Local $aTempTroopArray, $avTroops, $aTroopCoords
 	Local $sTroopName = ""
 	Local $iTroopIndex = -1
-	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
+	Local $aCurrentCCTroopsEmpty[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ; Local Copy to reset Troops Array
 	Local $aCurrentTroopsLog[0][3] ; [0] = Name [1] = Quantities [3] Xaxis
 
 	$g_aiCurrentCCTroops = $aCurrentCCTroopsEmpty ; Reset Current Troops Array

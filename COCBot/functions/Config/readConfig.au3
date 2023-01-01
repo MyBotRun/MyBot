@@ -592,212 +592,28 @@ Func ReadConfig_600_12()
 		ElseIf $i = $eCustomD Then
 			$sIniName = "CustomD"
 		EndIf
-
 		$g_abChkDonateTroop[$i] = (IniRead($g_sProfileConfigPath, "donate", "chkDonate" & $sIniName, "0") = "1")
 		$g_abChkDonateAllTroop[$i] = (IniRead($g_sProfileConfigPath, "donate", "chkDonateAll" & $sIniName, "0") = "1")
+		$g_asTxtDonateTroop[$i] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonate" & $sIniName, $g_asTxtDonateTroop[$i]), "|", @CRLF)
+		$g_asTxtBlacklistTroop[$i] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklist" & $sIniName, $g_asTxtBlacklistTroop[$i]), "|", @CRLF)
 	Next
-
-	$g_asTxtDonateTroop[$eTroopBarbarian] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBarbarians", "barbarians|barbarian|barb"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopBarbarian] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBarbarians", "no barbarians|no barb|barbarian no|barb no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperBarbarian] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperBarbarians", "Super barbarians|Super barbarian|Super barb"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperBarbarian] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperBarbarians", "no Super barbarians|no Super barb|Super barbarian no|Super barb no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopArcher] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateArchers", "archers|archer|arch"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopArcher] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistArchers", "no archers|no arch|archer no|arch no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperArcher] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperArchers", "Super archers|Super archer|Super arch"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperArcher] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperArchers", "no Super archers|no Super arch|Super archer no|Super arch no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopGiant] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateGiants", "giants|giant|any"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopGiant] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistGiants", "no giants|giants no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperGiant] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperGiants", "Super giants|Super giant|any"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperGiant] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperGiants", "no Super giants|Super giants no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopGoblin] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateGoblins", "goblins|goblin"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopGoblin] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistGoblins", "no goblins|goblins no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSneakyGoblin] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSneakyGoblins", "Sneaky goblins|Sneaky goblin"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSneakyGoblin] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSneakyGoblins", "no Sneaky goblins|Sneaky goblins no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopWallBreaker] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateWallBreakers", "wall breakers|wb"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopWallBreaker] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistWallBreakers", "no wallbreakers|wb no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperWallBreaker] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperWallBreakers", "Super wall breakers|Super wb"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperWallBreaker] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperWallBreakers", "no Super wallbreakers|Super wb no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopBalloon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBalloons", "balloons|balloon"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopBalloon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBalloons", "no balloon|balloons no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopRocketBalloon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateRocketBalloons", "Rocket Balloons|Rocket Balloon"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopRocketBalloon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistRocketBalloons", "No Rocket Balloon|Rocket Balloons No"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopWizard] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateWizards", "wizards|wizard|wiz"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopWizard] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistWizards", "no wizards|wizards no|no wizard|wizard no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperWizard] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperWizards", "Super wizards|Super wizard|Super wiz"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperWizard] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperWizards", "no Super wizards|Super wizards no|no Super wizard|Super wizard no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopHealer] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateHealers", "healer"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopHealer] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistHealers", "no healer|healer no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateDragons", "dragon"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistDragons", "no dragon|dragon no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperDragons", "super dragon"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperDragons", "no super dragon|super dragon no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopPekka] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonatePekkas", "PEKKA|pekka"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopPekka] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistPekkas", "no PEKKA|pekka no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopBabyDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBabyDragons", "baby dragon|baby"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopBabyDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBabyDragons", "no baby dragon|baby dragon no|no baby|baby no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopInfernoDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateInfernoDragons", "Inferno dragon|Inferno"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopInfernoDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistInfernoDragons", "no Inferno dragon|Inferno dragon no|no Inferno|Inferno no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopMiner] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateMiners", "miner|mine"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopMiner] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistMiners", "no miner|miner no|no mine|mine no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopElectroDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateElectroDragons", "electro dragon|electrodrag|edrag"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopElectroDragon] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistElectroDragons", "no electro dragon|electrodrag no|edrag no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopYeti] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateYetis", "Yeti|Yetis"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopYeti] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistYetis", "No Yeti|No Yetis"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopDragonRider] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateDragonRiders", "Dragon Rider|Dragon Riders"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopDragonRider] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistDragonRiders", "No Dragon Rider|No Dragon Riders"), "|", @CRLF)
 	
-	$g_asTxtDonateTroop[$eTroopElectroTitan] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateElectroTitans", "Electro Titan|Electro Titans"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopElectroTitan] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistElectroTitans", "No Electro Titan|No Electro Titans"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopMinion] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateMinions", "minions|minion"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopMinion] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistMinions", "no minion|minions no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperMinion] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperMinions", "Super minions|Super minion"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperMinion] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperMinions", "no Super minion|Super minions no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopHogRider] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateHogRiders", "hogriders|hogs|hog"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopHogRider] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistHogRiders", "no hogriders|hogriders no|no hog|hogs no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopValkyrie] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateValkyries", "valkyries|valkyrie|valk"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopValkyrie] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistValkyries", "no valkyrie|valkyries no|no valk|valk no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperValkyrie] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperValkyries", "Super valkyries|Super valkyrie|Super valk"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperValkyrie] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperValkyries", "no Super valkyrie|Super valkyries no|no Super valk|Super valk no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopGolem] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateGolems", "golem"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopGolem] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistGolems", "no golem|golem no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopWitch] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateWitches", "witches|witch"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopWitch] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistWitches", "no witches|witches no|no witch|witch no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperWitch] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperWitches", "Super witches|Super witch"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperWitch] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperWitches", "no Super witches|Super witches no|no Super witch|Super witch no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopLavaHound] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateLavaHounds", "lavahounds|lava|hound"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopLavaHound] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistLavaHounds", "no lavahound|lavahound no|no lava|lava no|nohound|hound no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopIceHound] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateIceHounds", "Icehounds|IceH|IHound"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopIceHound] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistIceHounds", "no Icehound|Icehound no|no IceH|IceH no|noIHound|IHound no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopBowler] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBowlers", "bowler|bowl"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopBowler] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBowlers", "no bowler|bowl no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopSuperBowler] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSuperBowlers", "Super Bowler|SBowl"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopSuperBowler] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSuperBowlers", "No Super Bowler|SBowl No"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopIceGolem] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateIceGolems", "ice golem|ice golems"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopIceGolem] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistIceGolems", "no ice golem|ice golem no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopHeadhunter] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateHeadhunters", "headhunter|hunt"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopHeadhunter] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistHeadhunters", "no headhunt|no hunt"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eCustomA] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomA", "ground support|ground"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eCustomA] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistCustomA", "no ground|ground no|nonly"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eCustomB] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomB", "air support|any air"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eCustomB] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistCustomB", "no air|air no|only|just"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eCustomC] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomC", "ground support|ground"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eCustomC] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistCustomC", "no ground|ground no|nonly"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eCustomD] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateCustomD", "air support|any air"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eCustomD] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistCustomD", "no air|air no|only|just"), "|", @CRLF)
-
 	For $i = 0 To $eSpellCount - 1
 		Local $sIniName = $g_asSpellNames[$i] & "Spells"
 		$g_abChkDonateSpell[$i] = (IniRead($g_sProfileConfigPath, "donate", "chkDonate" & $sIniName, "0") = "1")
 		$g_abChkDonateAllSpell[$i] = (IniRead($g_sProfileConfigPath, "donate", "chkDonateAll" & $sIniName, "0") = "1")
+		$g_asTxtDonateSpell[$i] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonate" & $sIniName, $g_asTxtDonateSpell[$i]), "|", @CRLF)
+		$g_asTxtBlacklistSpell[$i] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklist" & $sIniName, $g_asTxtBlacklistSpell[$i]), "|", @CRLF)
 	Next
-
-	$g_asTxtDonateSpell[$eSpellLightning] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateLightningSpells", "lightning"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellLightning] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistLightningSpells", "no lightning|lightning no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellHeal] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateHealSpells", "heal"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellHeal] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistHealSpells", "no heal|heal no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellRage] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateRageSpells", "rage"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellRage] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistRageSpells", "no rage|rage no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellJump] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateJumpSpells", "jump"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellJump] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistJumpSpells", "no jump|jump no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellFreeze] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateFreezeSpells", "freeze"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellFreeze] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistFreezeSpells", "no freeze|freeze no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellInvisibility] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateInvisibilitySpells", "Invisibility"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellInvisibility] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistInvisibilitySpells", "No Invisibility|Invisibility No"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellRecall] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateRecallSpells", "Recall"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellRecall] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistRecallSpells", "No Recall|Recall No"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellClone] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateCloneSpells", "Clone"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellClone] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistCloneSpells", "No Clone|Clone No"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellPoison] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonatePoisonSpells", "poison"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellPoison] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistPoisonSpells", "no poison|poison no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellEarthquake] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateEarthQuakeSpells", "earthquake|quake"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellEarthquake] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistEarthQuakeSpells", "no earthquake|quake no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellHaste] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateHasteSpells", "haste"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellHaste] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistHasteSpells", "no haste|haste no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellSkeleton] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSkeletonSpells", "skeleton"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellSkeleton] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSkeletonSpells", "no skeleton|skeleton no"), "|", @CRLF)
-
-	$g_asTxtDonateSpell[$eSpellBat] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBatSpells", "bat"), "|", @CRLF)
-	$g_asTxtBlacklistSpell[$eSpellBat] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBatSpells", "no bat|bat no"), "|", @CRLF)
 
 	For $i = $eSiegeWallWrecker to $eSiegeMachineCount - 1
 		Local $index = $eTroopCount + $g_iCustomDonateConfigs
 		Local $sIniName = $g_asSiegeMachineShortNames[$i]
 		$g_abChkDonateTroop[$index + $i] = (IniRead($g_sProfileConfigPath, "donate", "chkDonate" & $sIniName, "0") = "1")
 		$g_abChkDonateAllTroop[$index + $i] = (IniRead($g_sProfileConfigPath, "donate", "chkDonateAll" & $sIniName, "0") = "1")
+		$g_asTxtDonateTroop[$index + $i] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonate" & $sIniName, $g_asTxtDonateTroop[$index + $i]), "|", @CRLF)
+		$g_asTxtBlacklistTroop[$index + $i] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklist" & $sIniName, $g_asTxtBlacklistTroop[$index + $i]), "|", @CRLF)
 	Next
-
-	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeWallWrecker] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateWallW", "Wrecker|siege"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeWallWrecker] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistWallW", "no WallW|no Wrecker|siege no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleBlimp] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBattleB", "Blimp|siege"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleBlimp] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBattleB", "no Blimp|siege no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeStoneSlammer] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateStoneS", "Slammer|siege"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeStoneSlammer] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistStoneS", "no Slammer|siege no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBarracks] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateSiegeB", "Barracks|siege"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBarracks] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistSiegeB", "no Barracks|siege no"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeLogLauncher] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateLogL", "Log Launcher"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeLogLauncher] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistLogL", "Log Launcher No"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeFlameFlinger] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateFlameF", "Flame Flinger"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeFlameFlinger] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistFlameF", "Flame Flinger No"), "|", @CRLF)
-
-	$g_asTxtDonateTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleDrill] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtDonateBattleD", "Drill|siege"), "|", @CRLF)
-	$g_asTxtBlacklistTroop[$eTroopCount + $g_iCustomDonateConfigs + $eSiegeBattleDrill] = StringReplace(IniRead($g_sProfileConfigPath, "donate", "txtBlacklistBattleD", "no Drill|siege no"), "|", @CRLF)
 
 	$g_aiDonateCustomTrpNumA[0][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomA1", 12))
 	$g_aiDonateCustomTrpNumA[1][0] = Int(IniRead($g_sProfileConfigPath, "donate", "cmbDonateCustomA2", 2))

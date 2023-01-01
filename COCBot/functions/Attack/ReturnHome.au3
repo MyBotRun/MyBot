@@ -180,9 +180,9 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True) ;Return main screen
 		$g_bIsFullArmywithHeroesAndSpells = False ; forcing check the army
 		If ReturnHomeMainPage() Then Return
 		$counter += 1
-		If $counter >= 2 Or isProblemAffect(True) Then
+		If $counter >= 20 Or isProblemAffect(True) Then
 			SetLog("Cannot return home.", $COLOR_ERROR)
-			;checkMainScreen()
+			checkMainScreen()
 			CloseAndroid("UniversalCloseWaitOpenCoC")
 			Return
 		EndIf

@@ -131,9 +131,26 @@ Func getTroopCountBig($x_start, $y_start, $bNeedNewCapture = Default) ;  -> Gets
 	Return getOcrAndCapture("coc-t-b", $x_start, $y_start, 55, 17, True, Default, $bNeedNewCapture)
 EndFunc   ;==>getTroopCountBig
 
-Func getTroopsSpellsLevel($x_start, $y_start) ;  -> Gets spell level on Attack Screen for selected spell kind (could be used for troops too)
-	Return getOcrAndCapture("coc-spellslevel", $x_start, $y_start, 20, 14, True)
+Func getTroopsSpellsLevel($x_start, $y_start, $bDebugImageSave = $g_bDebugImageSave) ;  -> Gets spell level on Attack Screen for selected spell kind (could be used for troops too)
+	Local $Result = getOcrAndCapture("coc-spellslevel", $x_start, $y_start, 20, 14, True)
+	$bDebugImageSave = True
+	If $bDebugImageSave Then
+		Local $sArea = $x_start & "," & $y_start & "," & $x_start + 20 & "," & $y_start + 14
+		SaveDebugRectImage("SpellsOCR" & $Result, $sArea)
+	EndIf
+	Return $Result
+	;Return getOcrAndCapture("coc-spellslevel", $x_start, $y_start, 20, 14, True)
 EndFunc   ;==>getTroopsSpellsLevel
+
+Func getSiegeLevel($x_start, $y_start, $bDebugImageSave = $g_bDebugImageSave) ;  -> Gets Siege level on Attack Screen
+	Local $Result = getOcrAndCapture("coc-siegelevel", $x_start, $y_start, 20, 14, True)
+	$bDebugImageSave = True
+	If $bDebugImageSave Then
+		Local $sArea = $x_start & "," & $y_start & "," & $x_start + 20 & "," & $y_start + 14
+		SaveDebugRectImage("SiegeOCR" & $Result, $sArea)
+	EndIf
+	Return $Result
+EndFunc   ;==>getSiegeLevel
 
 Func getArmyCampCap($x_start, $y_start, $bNeedCapture = True) ;  -> Gets army camp capacity --> train.au3, and used to read CC request time remaining
 	Return getOcrAndCapture("coc-ms", $x_start, $y_start, 82, 16, True, False, $bNeedCapture)

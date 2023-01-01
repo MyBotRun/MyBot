@@ -1223,7 +1223,9 @@ Func _RestartAndroidCoC($bInitAndroid = True, $bRestart = True, $bStopCoC = True
 
 	$cmdOutput = AndroidAdbSendShellCommand("set export=$(am start " & $sRestart & "-n " & $g_sAndroidGamePackage & "/" & $g_sAndroidGameClass & " >&2)", 15000) ; timeout of 15 Seconds
 	If StringInStr($cmdOutput, "Error:") > 0 And StringInStr($cmdOutput, $g_sAndroidGamePackage) > 0 Then
-		SetLog("Unable to load Clash of Clans, install/reinstall the game.", $COLOR_ERROR)
+        SetLog("Unable to load Clash of Clans, possible solutions:", $COLOR_ERROR)	
+		SetLog("1) install/reinstall the game.", $COLOR_ERROR)
+        SetLog("2) select Bot->Android->Reset to reset the game distributor", $COLOR_ERROR)		
 		SetLog("Unable to continue........", $COLOR_ERROR)
 		btnStop()
 		SetError(1, 1, -1)
@@ -3773,7 +3775,7 @@ Func AndroidSendText($sText, $SymbolFix = False, $wasRunState = $g_bRunState)
 				$newText = StringRegExpReplace($newText, "([\\\?""\$\^&\*\(\)\+<>\|'~;])", "\\$1")
 				; replace " " with "%s"
 				$newText = StringReplace($newText, " ", "%s")
-				AndroidAdbSendShellCommand("input text " & $newText, 6000, $wasRunState) ; use 6 secs for additional timeout
+				AndroidAdbSendShellCommand("input text " & $newText, 20000, $wasRunState) ; use 20 secs for additional timeout (was 6)
 			Else
 				; send one word per command
 				Local $words = StringSplit($newText, " ")
@@ -3783,11 +3785,11 @@ Func AndroidSendText($sText, $SymbolFix = False, $wasRunState = $g_bRunState)
 					While StringLen($word) > 0
 						; escape special characters
 						$newWord = StringRegExpReplace(StringLeft($word, $g_iAndroidAdbInputWordsCharLimit), "([\\\?""\$\^&\*\(\)\+<>\|'~;])", "\\$1")
-						AndroidAdbSendShellCommand("input text " & $newWord, 6000, $wasRunState) ; use 6 secs for additional timeout
+						AndroidAdbSendShellCommand("input text " & $newWord, 20000, $wasRunState) ; use 20 secs for additional timeout (was 6)
 						$word = StringMid($word, $g_iAndroidAdbInputWordsCharLimit + 1)
 					WEnd
 					; send space
-					If $i < $words[0] Then AndroidAdbSendShellCommand("input text %s", Default, $wasRunState)
+					If $i < $words[0] Then AndroidAdbSendShellCommand("input text %s", 20000, $wasRunState) ;Another 20 sec timeout that was 6 seconds.
 				Next
 			EndIf
 		Else

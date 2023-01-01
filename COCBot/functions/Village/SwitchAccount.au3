@@ -673,7 +673,7 @@ Func SwitchCOCAcc_ConnectedSCID(ByRef $bResult)
 	Return "" ; should never get here
 EndFunc   ;==>SwitchCOCAcc_ConnectedSCID
 
-Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bDebuglog = $g_bDebugSetlog,  $bDebugImageSave = $g_bDebugImageSave)
+Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bVerifyAcc = True, $bDebuglog = $g_bDebugSetlog,  $bDebugImageSave = $g_bDebugImageSave)
 	Local $sAccountDiamond = GetDiamondFromRect("520,353,555,732") ; Contains iXStart, $iYStart, $iXEnd, $iYEnd
     Local $aSuperCellIDWindowsUI
 	Local $iIndexSCID = $NextAccount
@@ -688,6 +688,7 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bD
 		If _Sleep(500) Then Return "Exit"
 		If IsArray($aSuperCellIDWindowsUI) And UBound($aSuperCellIDWindowsUI, 1) >= 2 Then
 
+		 If $bVerifyAcc Then
 			; verifiy SCID Account slots has not moved for accounts 0 to 3
 			If $g_iTotalAcc < 4 Then
 
@@ -704,9 +705,10 @@ Func SwitchCOCAcc_ClickAccountSCID(ByRef $bResult, $NextAccount, $iStep = 2, $bD
 				EndIf
 
 			EndIf
+		 EndIf
 
 			; Make Drag only when SCID window is visible.
-			If Not SCIDragIfNeeded($NextAccount) Then
+			If Not SCIDragIfNeeded($NextAccount, $bVerifyAcc) Then
 				SetLog("SCIDragIfNeeded failed")
 				$bResult = False
 				Return "Error"
@@ -993,35 +995,39 @@ Func CheckLoginWithSupercellIDScreen()
 
 	Local $bResult = False
 	Local $aSearchForAccount, $aCoordinates[0][2], $aTempArray
-	Local $acount = $g_iWhatSCIDAccount2Use
+	Local $iAccount = 0 ; default first account on list
+	
+	If $g_bOnlySCIDAccounts Then $iAccount = $g_iWhatSCIDAccount2Use
 
 	If $g_bChkSuperCellID And ProfileSwitchAccountEnabled() Then
-		$acount = $g_iCurAccount
+		$iAccount = $g_iCurAccount
 	EndIf
 
 	; Account List check be there, validate with imgloc
-	If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "318,678(125,30)", False))) > 1 Then
-		; Google Account selection found
+	;If UBound(decodeSingleCoord(FindImageInPlace("LoginWithSupercellID", $g_sImgLoginWithSupercellID, "318,678(125,30)", False))) > 1 Then
+	Local $aiLogin = decodeSingleCoord(FindImageInPlace2("LoginWithSupercellID", $g_sImgLoginWithSupercellID, 100, 595 + $g_iBottomOffsetY, 425, 655 + $g_iBottomOffsetY, False))
+		
+	If IsArray($aiLogin) And Ubound($aiLogin) = 2 Then
 		SetLog("Verified Log in with Supercell ID boot screen for login")
 
-		Click($aLoginWithSupercellID[0], $aLoginWithSupercellID[1], 1, 0, "Click Log in with SC_ID")
+		Click($aiLogin[0], $aiLogin[1], 1, 0, "Click Log in with SC_ID")
 		If _Sleep(2000) Then Return
 
 		$bResult = True
-		Switch SwitchCOCAcc_ClickAccountSCID($bResult, $acount, 1)
+		Switch SwitchCOCAcc_ClickAccountSCID($bResult, $iAccount, 1, False)
 			Case "OK"
 				; all good
+				Return True
 			Case "Error"
 				; some problem
-				Return
 			Case "Exit"
 				; no $g_bRunState
-				Return
 		EndSwitch
 	Else
 		SetDebugLog("Log in with Supercell ID boot screen not verified for login")
 	EndIf
 
+	Return False
 EndFunc   ;==>CheckLoginWithSupercellIDScreen
 
 Func SwitchAccountCheckProfileInUse($sNewProfile)
@@ -1087,7 +1093,7 @@ Func SwitchAccountCheckProfileInUse($sNewProfile)
 	EndIf
 EndFunc   ;==>SwitchAccountCheckProfileInUse
 
-Func SCIDragIfNeeded($iSCIDAccount)
+Func SCIDragIfNeeded($iSCIDAccount, $bVerifyAcc = True)
 	If Not $g_bRunState Then Return
 
 	If $iSCIDAccount < 4 Then Return True
@@ -1101,7 +1107,9 @@ Func SCIDragIfNeeded($iSCIDAccount)
 
 	ClickDrag($x1, $y, $x2, $y-(94*($iSCIDAccount-3)), 500, True) ; drag a multiple of 90 pixels up for how many accounts down it is
 
-	If Not IsSCIDAccComplete($iSCIDAccount) Then Return False
+	If $bVerifyAcc Then
+		If Not IsSCIDAccComplete($iSCIDAccount) Then Return False
+	EndIf
 
 	If _Sleep(1000) Then Return
 

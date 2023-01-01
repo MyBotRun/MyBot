@@ -40,7 +40,7 @@ Func checkAttackDisable($iSource, $Result = "")
 			While $Result = "" Or (StringLen($Result) < 3)
 				$i += 1
 				If _Sleep($DELAYATTACKDISABLE100) Then Return
-				$Result = getAttackDisable(346, 182) ; Grab Ocr for TakeABreak if not found due slow PC
+				$Result = getAttackDisable(346, 152 + $g_iMidOffsetY) ; Grab Ocr for TakeABreak if not found due slow PC
 				If $i >= 3 Then ExitLoop
 			WEnd
 			If $g_bDebugSetlog Then SetDebugLog("Attack Personal Break OCR result = " & $Result, $COLOR_DEBUG)

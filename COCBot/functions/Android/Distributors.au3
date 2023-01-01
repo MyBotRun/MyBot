@@ -16,12 +16,13 @@
 Global $g_sNO_COC, $g_sUNKNOWN_COC
 Global $_g_asDISTRIBUTORS[22][4]
 
+;["Google", "com.supercell.clashofclans", "com.supercell.titan.GameApp", "Google"], _
 Func InitializeCOCDistributors() ;initialized in InitializeMBR() after language is detected
 	$g_sNO_COC = "<" & GetTranslatedFileIni("MBR Distributors", "NO_COC", "No COC") & ">"
 	$g_sUNKNOWN_COC = "<" & GetTranslatedFileIni("MBR Distributors", "Unknown_COC", "Unknown COC") & ">"
 
 	Dim $_g_asDISTRIBUTORS[22][4] = [ _
-			["Google", "com.supercell.clashofclans", "com.supercell.titan.GameApp", "Google"], _
+			["Amazon", "com.supercell.clashofclans.amazon", "com.supercell.titan.amazon.GameAppAmazon", "Amazon"], _
 			["Kunlun", "com.supercell.clashofclans.kunlun", "com.supercell.titan.kunlun.GameAppKunlun", "Kunlun"], _
 			["Qihoo", "com.supercell.clashofclans.qihoo", "com.supercell.titan.kunlun.GameAppKunlun","Qihoo"], _
 			["Baidu", "com.supercell.clashofclans.baidu", "com.supercell.titan.kunlun.GameAppKunlun", "Baidu"], _

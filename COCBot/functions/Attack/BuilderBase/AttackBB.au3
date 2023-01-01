@@ -5,7 +5,7 @@
 ; Parameters ....: None
 ; Return values .: None
 ; Author ........: Chilly-Chill (04-2019)
-; Modified ......: GrumpyHog (06-2022)
+; Modified ......: GrumpyHog (06-2022), (12-2022)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2017
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -74,7 +74,7 @@ Func AttackBB($iNumberOfAttacks = 0, $iAttackSide = 0)
 		; search for a match
 		If _Sleep(2000) Then Return
 
-		local $aBBFindNow = [521, 308, 0xffc246, 30] ; search button
+		local $aBBFindNow = [521, 278 + $g_iMidOffsetY, 0xffc246, 30] ; search button
 
 		If _CheckPixel($aBBFindNow, True) Then
 			PureClick($aBBFindNow[0], $aBBFindNow[1])
@@ -205,7 +205,7 @@ Func AttackBB($iNumberOfAttacks = 0, $iAttackSide = 0)
 			
 			$aBBAttackBar = GetAttackBarBB(True)
 			If $aBBAttackBar = "" And (Not $bMachineAlive Or Not $g_bBBMachineReady) Then $bTroopsDropped = True
-			
+		
 			If ConnectionLost(False) Then Return False
 		WEnd
 
@@ -258,7 +258,7 @@ Func AttackBB($iNumberOfAttacks = 0, $iAttackSide = 0)
 EndFunc
 
 Func CheckBattleStarted()
-	local $sSearchDiamond = GetDiamondFromRect("376,10,460,28")
+	local $sSearchDiamond = GetDiamondFromRect("376,10,460,28") ; top
 
 	local $aCoords = decodeSingleCoord(findImage("BBBattleStarted", $g_sImgBBBattleStarted, $sSearchDiamond, 1, True))
 	If IsArray($aCoords) And UBound($aCoords) = 2 Then
@@ -272,7 +272,8 @@ EndFunc
 Func GetMachinePos($bDeployed = False)
 	If Not $g_bBBMachineReady Then Return
 
-	Local $sSearchDiamond = GetDiamondFromRect("0,630,860,732")
+	;Local $sSearchDiamond = GetDiamondFromRect("0,630,860,732") ; mid
+	Local $sSearchDiamond = GetDiamondFromRect2(0, 600 + $g_iMidOffsetY, 860, 702+ $g_iMidOffsetY)
 	Local $aCoords
 
 	If $bDeployed Then
@@ -399,7 +400,10 @@ Func DeployBBTroop($sName, $x, $y, $iAmount, $iSide)
 EndFunc
 
 Func ClickAttack()
-	local $aCoords = decodeSingleCoord(findImage("ClickAttack", $g_sImgBBAttackButton, GetDiamondFromRect("10,620,115,720"), 1, True))
+	;local $aCoords = decodeSingleCoord(findImage("ClickAttack", $g_sImgBBAttackButton, GetDiamondFromRect("10,620,115,720"), 1, True)) ; bottom
+	Local $sSearchDiamond = GetDiamondFromRect2(10, 560 + $g_iBottomOffsetY, 115, 660 + $g_iBottomOffsetY)
+	Local $aCoords = decodeSingleCoord(findImage("ClickAttack", $g_sImgBBAttackButton, $sSearchDiamond, 1, True)) ; bottom
+
 	local $bRet = False
 
 	If IsArray($aCoords) And UBound($aCoords) = 2 Then
@@ -408,7 +412,7 @@ Func ClickAttack()
 		$bRet = True
 	Else
 		SetLog("Can not find button for Builders Base Attack button", $COLOR_ERROR)
-		If $g_bDebugImageSave Then SaveDebugImage("ClickAttack")
+		If $g_bDebugImageSave Then SaveDebugDiamondImage("ClickAttack", $sSearchDiamond)
 	EndIf
 
 	Return $bRet
@@ -417,8 +421,8 @@ EndFunc
 Func IsClickOnPotions(ByRef $x, ByRef $y)
 	Local $bResult = False
 	SetLog("IsClickOnPotions :" & $x & ", " & $y, $COLOR_INFO)
-	If $y > 560 Then
-		$y = 560
+	If $y > 500 + $g_iBottomOffsetY  Then
+		$y = 500 + $g_iBottomOffsetY
 		If $x < 460 Then 
 			$x = 460
 		EndIf

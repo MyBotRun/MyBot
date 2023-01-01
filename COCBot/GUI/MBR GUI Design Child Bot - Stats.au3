@@ -38,7 +38,7 @@ Global $g_hLblNbrOfDetectedMines[$g_iModeCount] = [0, 0, 0], $g_hLblNbrOfDetecte
 	   $g_hLblNbrOfDetectedDrills[$g_iModeCount] = [0, 0, 0], $g_hLblSmartZap = 0, $g_hLblSmartLightningUsed = 0, $g_hLblSmartEarthQuakeUsed = 0
 
 ; Donations
-Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Global $g_hLblDonTroop[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hLblDonSpell[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Global $g_hLblDonSiegel[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 Global $g_hLblTotalTroopsQ = 0, $g_hLblTotalTroopsXP = 0, $g_hLblTotalSiegesQ = 0, $g_hLblTotalSiegesXP = 0, $g_hLblTotalSpellsQ = 0, $g_hLblTotalSpellsXP = 0
@@ -1309,6 +1309,16 @@ Func CreateDonationsSubTab()
 		GUICtrlCreateLabel(":", $x + 75, $y + 4, -1, 17)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 		$g_hLblDonTroop[$eTroopInfernoDragon] = GUICtrlCreateLabel("0", $x + 50, $y + 4, 50, 17, $SS_RIGHT)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+			GUICtrlSetColor(-1, $COLOR_BLACK)
+			_GUICtrlSetTip(-1, $sTxtTip)
+			
+		_GUICtrlCreateIcon($g_sLibIconPath, $eIcnSuperMiner, $x + 104, $y, 24, 24)
+			$sTxtTip = ""
+			_GUICtrlSetTip(-1, $sTxtTip)
+		GUICtrlCreateLabel(":", $x + 132, $y + 4, -1, 17)
+			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
+		$g_hLblDonTroop[$eTroopSuperMiner] = GUICtrlCreateLabel("0", $x + 107, $y + 4, 50, 17, $SS_RIGHT)
 			GUICtrlSetFont(-1, 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
 			GUICtrlSetColor(-1, $COLOR_BLACK)
 			_GUICtrlSetTip(-1, $sTxtTip)

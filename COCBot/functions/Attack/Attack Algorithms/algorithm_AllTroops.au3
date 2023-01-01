@@ -78,7 +78,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 		Switch $g_aiAttackStdDropOrder[$g_iMatchMode]
 			Case 0
 				If $g_bCustomDropOrderEnable Then
-					Local $listInfoDeploy[41][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
+					Local $listInfoDeploy[42][5] = [[MatchTroopDropName(0), MatchSidesDrop(0), MatchTroopWaveNb(0), 1, MatchSlotsPerEdge(0)], _
 							[MatchTroopDropName(1), MatchSidesDrop(1), MatchTroopWaveNb(1), 1, MatchSlotsPerEdge(1)], _
 							[MatchTroopDropName(2), MatchSidesDrop(2), MatchTroopWaveNb(2), 1, MatchSlotsPerEdge(2)], _
 							[MatchTroopDropName(3), MatchSidesDrop(3), MatchTroopWaveNb(3), 1, MatchSlotsPerEdge(3)], _
@@ -118,9 +118,10 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							[MatchTroopDropName(37), MatchSidesDrop(37), MatchTroopWaveNb(37), 1, MatchSlotsPerEdge(37)], _
 							[MatchTroopDropName(38), MatchSidesDrop(38), MatchTroopWaveNb(38), 1, MatchSlotsPerEdge(38)], _
 							[MatchTroopDropName(39), MatchSidesDrop(39), MatchTroopWaveNb(39), 1, MatchSlotsPerEdge(39)], _
-							[MatchTroopDropName(40), MatchSidesDrop(40), MatchTroopWaveNb(40), 1, MatchSlotsPerEdge(40)]]
+							[MatchTroopDropName(40), MatchSidesDrop(40), MatchTroopWaveNb(40), 1, MatchSlotsPerEdge(40)], _
+							[MatchTroopDropName(41), MatchSidesDrop(41), MatchTroopWaveNb(41), 1, MatchSlotsPerEdge(41)]]
 				Else
-					Local $listInfoDeploy[41][5] = [[$eGole, $nbSides, 1, 1, 2] _
+					Local $listInfoDeploy[42][5] = [[$eGole, $nbSides, 1, 1, 2] _
 							, [$eIceG, $nbSides, 1, 1, 2] _
 							, [$eLava, $nbSides, 1, 1, 2] _
 							, [$eYeti, $nbSides, 1, 1, 2] _
@@ -141,6 +142,7 @@ Func algorithm_AllTroops() ;Attack Algorithm for all existing troops
 							, [$eSBowl, $nbSides, 1, 1, 0] _
 							, [$eHunt, $nbSides, 1, 1, 0] _
 							, [$eMine, $nbSides, 1, 1, 0] _
+							, [$eSMine, $nbSides, 1, 1, 0] _
 							, [$eEDrag, $nbSides, 1, 1, 0] _
 							, [$eRDrag, $nbSides, 1, 1, 0] _
 							, [$eETitan, $nbSides, 1, 1, 0] _

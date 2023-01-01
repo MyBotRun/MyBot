@@ -16,9 +16,10 @@
 
 Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	Local $iPage = 0;
-	Local $sImgSieges = @ScriptDir & "\imgxml\Train\Siege_Train\"
+	Local $sImgSieges = @ScriptDir & "\imgxml\Train\Siege_Train\" ; "25,410,840,515"
+	Local $sSearchArea = GetDiamondFromRect2(25, 380 + $g_iMidOffsetY, 840, 485 + $g_iMidOffsetY)
+	
 	; Check if is necessary run the routine
-
 	If Not $g_bRunState Then Return
 
 	If $g_bDebugSetlogTrain Then SetLog("-- TrainSiege --", $COLOR_DEBUG)
@@ -26,15 +27,15 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	If Not OpenSiegeMachinesTab(True, "TrainSiege()") Then Return
 	If _Sleep(500) Then Return
 
-	Local $aCheckIsOccupied[4] = [822, 206, 0xE00D0D, 15]
-	Local $aCheckIsFilled[4] = [802, 186, 0xD7AFA9, 15]
+	Local $aCheckIsOccupied[4] = [822, 176 + $g_iMidOffsetY, 0xE00D0D, 15]
+	Local $aCheckIsFilled[4] = [802, 156 + $g_iMidOffsetY, 0xD7AFA9, 15]
 	Local $aiQueueSiegeMachine[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 	Local $aiTotalSiegeMachine = $g_aiCurrentSiegeMachines
 
 	; check queueing siege
 	If _CheckPixel($aCheckIsFilled, True, Default, "Siege is Filled") Or _CheckPixel($aCheckIsOccupied, True, Default, "Siege is Queued") Then
 		Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\SiegeMachinesQueued"
-		Local $aSearchResult = SearchArmy($Dir, 18, 182, 840, 261, "Queue")
+		Local $aSearchResult = SearchArmy($Dir, 18, 152 + $g_iMidOffsetY, 840, 231 + $g_iMidOffsetY, "Queue")
 		If $aSearchResult[0][0] <> "" Then
 			For $i = 0 To UBound($aSearchResult) - 1
 				Local $iSiegeIndex = TroopIndexLookup($aSearchResult[$i][0]) - $eWallW
@@ -62,7 +63,7 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 			DragSiegeIfNeeded($iSiegeIndex, $iPage)
 			
 			Local $sFilename = $sImgSieges & $g_asSiegeMachineShortNames[$iSiegeIndex] & "*"
-			Local $aiSiegeCoord = decodeSingleCoord(findImage("TrainSiege", $sFilename, GetDiamondFromRect("25,410,840,515"), 1, True))
+			Local $aiSiegeCoord = decodeSingleCoord(findImage("TrainSiege", $sFilename, $sSearchArea, 1, True))
 
 			If IsArray($aiSiegeCoord) And UBound($aiSiegeCoord, 1) = 2 Then
 				PureClick($aiSiegeCoord[0], $aiSiegeCoord[1], $HowMany, $g_iTrainClickDelay)
@@ -87,7 +88,7 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 				DragSiegeIfNeeded($iSiegeIndex, $iPage)
 
 				Local $sFilename = $sImgSieges & $g_asSiegeMachineShortNames[$iSiegeIndex] & "*"
-				Local $aiSiegeCoord = decodeSingleCoord(findImage("TrainSiege", $sFilename, GetDiamondFromRect("25,410,840,515"), 1, True))
+				Local $aiSiegeCoord = decodeSingleCoord(findImage("TrainSiege", $sFilename, $sSearchArea, 1, True))
 
 				If IsArray($aiSiegeCoord) And UBound($aiSiegeCoord, 1) = 2 Then
 					PureClick($aiSiegeCoord[0], $aiSiegeCoord[1], $HowMany, $g_iTrainClickDelay)
@@ -105,7 +106,7 @@ Func TrainSiege($bTrainFullSiege = False, $bDebugSetLog = $g_bDebugSetLog)
 	If _Sleep(500) Then Return
 
 	; OCR to get remain time - coc-siegeremain
-	Local $sSiegeTime = getRemainTrainTimer(742, 159) ; Get time via OCR.
+	Local $sSiegeTime = getRemainTrainTimer(742, 129 + $g_iMidOffsetY) ; Get time via OCR.
 	If $sSiegeTime <> "" Then
 		$g_aiTimeTrain[3] = ConvertOCRTime("Siege", $sSiegeTime, False) ; Update global array
 		SetLog("Remaining Siege build time: " & StringFormat("%.2f", $g_aiTimeTrain[3]), $COLOR_INFO)
@@ -118,7 +119,7 @@ Func CheckQueueSieges($bGetQuantity = True, $bSetLog = True, $x = 839, $bQtyWSlo
 
 	Local $Dir = @ScriptDir & "\imgxml\ArmyOverview\SiegeMachinesQueued"
 
-	Local $aSearchResult = SearchArmy($Dir, 18, 182, $x, 261, $bGetQuantity ? "queue" : "")
+	Local $aSearchResult = SearchArmy($Dir, 18, 152 + $g_iMidOffsetY, $x, 231 + $g_iMidOffsetY, $bGetQuantity ? "queue" : "")
 	ReDim $aResult[UBound($aSearchResult)]
 
 	If $aSearchResult[0][0] = "" Then
@@ -160,8 +161,8 @@ Func DragSiegeIfNeeded($iSiegeIndex, ByRef $iPage)
 	SetLog("Current Page : " & $iPage)
 	SetLog("Siege Needed: " & $g_asSiegeMachineNames[$iSiegeIndex])
 
-	Local $iY1 = Random(430,470,1)
-	Local $iY2 = Random(430,470,1)
+	Local $iY1 = Random(400 + $g_iMidOffsetY, 440 + $g_iMidOffsetY, 1)
+	Local $iY2 = Random(400 + $g_iMidOffsetY, 440 + $g_iMidOffsetY, 1)
 
 	If $iPage = 0 Then
 		If $iSiegeIndex >= $eSiegeWallWrecker And $iSiegeIndex <= $eSiegeLogLauncher Then 

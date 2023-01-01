@@ -49,7 +49,7 @@ Func ParseAttackCSV($debug = False)
 			$acommand = StringSplit($line, "|")
 			If $acommand[0] >= 8 Then
 				$command = StringStripWS(StringUpper($acommand[1]), $STR_STRIPTRAILING)
-				If $command = "TRAIN" Or $command = "WMODE" Or $command = "REDLN" Or $command = "DRPLN" Or $command = "CCREQ" Then ContinueLoop ; discard setting commands
+				If $command = "TRAIN" Or $command = "WMODE" Or $command = "REDLN" Or $command = "DRPLN" Or $command = "CCREQ" Or $command = "CCSPL" Then ContinueLoop ; discard setting commands
 				If $command = "SIDE" Or $command = "SIDEB" Then ContinueLoop ; discard attack side commands
 				; Set values
 				For $i = 2 To (UBound($acommand) - 1)

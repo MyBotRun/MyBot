@@ -131,10 +131,12 @@ Func UpgradeWallGold($iWallCost = $g_iWallCost)
 
 	Local $aUpgradeButton = findButton("Upgrade", Default, 2, True)
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton) > 0 Then
-		For $i = 0 To UBound($aUpgradeButton) - 1  ; Check for elixircolor in right top button corner and click, if present
-			If _ColorCheck(_GetPixelColor($aUpgradeButton[$i][0] + 52, $aUpgradeButton[$i][1] - 13, True), Hex(0xFFE41D, 6), 20) Then
-				Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
-				ExitLoop
+		For $i = 0 To UBound($aUpgradeButton) - 1
+			If QuickMIS("BC1", $g_sImgWallResource, $aUpgradeButton[$i][0] + 40, $aUpgradeButton[$i][1] - 20, $aUpgradeButton[$i][0] + 60, $aUpgradeButton[$i][1] - 5) Then
+				If $g_iQuickMISName = "WallGold" Then
+					Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
+					ExitLoop
+				EndIf
 			EndIf
 		Next
 	EndIf
@@ -182,11 +184,13 @@ Func UpgradeWallElixir($iWallCost)
 
 	Local $aUpgradeButton = findButton("Upgrade", Default, 2, True)
 	If IsArray($aUpgradeButton) And UBound($aUpgradeButton) > 0 Then
-		For $i = 0 To UBound($aUpgradeButton) - 1  ; Check for elixircolor in right top button corner and click, if present
-			If _ColorCheck(_GetPixelColor($aUpgradeButton[$i][0] + 52, $aUpgradeButton[$i][1] - 13, True), Hex(0xF032FF, 6), 20) Then
-				Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
-				ExitLoop
-			EndIf
+		For $i = 0 To UBound($aUpgradeButton) - 1
+			If QuickMIS("BC1", $g_sImgWallResource, $aUpgradeButton[$i][0] + 40, $aUpgradeButton[$i][1] - 20, $aUpgradeButton[$i][0] + 60, $aUpgradeButton[$i][1] - 5) Then
+				If $g_iQuickMISName = "WallElix" Then
+					Click($aUpgradeButton[$i][0], $aUpgradeButton[$i][1])
+					ExitLoop
+				EndIf
+			EndIf	
 		Next
 	EndIf
 

@@ -267,8 +267,11 @@ EndFunc   ;==>DuplicateScriptAB
 Func ApplyScriptDB()
 	Local $iApply = 0
 	Local $iApplySieges = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $iSlot = 0
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0]]
 	Local $aiCSVWardenMode = -1
@@ -278,7 +281,7 @@ Func ApplyScriptDB()
 	Local $sFilename = $aTemp[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameDB) + 1]
 
 	SetLog("CSV settings apply starts: " & $sFilename, $COLOR_INFO)
-	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVSieges, $aiCSVHeros, $aiCSVWardenMode, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
+	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVSieges, $aiCSVHeros, $aiCSVWardenMode, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sCSVCCSpl, $sFilename)
 	If Not $iApply Then
 		SetLog("CSV settings apply failed", $COLOR_ERROR)
 		Return
@@ -307,7 +310,7 @@ Func ApplyScriptDB()
 	EndIf
 			
 	If IsArray($aiCSVSieges) And $iApplySieges > 0 Then
-		Local $aMachine = _ArrayMaxIndex($aiCSVSieges, 0, 1)
+		Local $aMachine = _ArrayMaxIndex($aiCSVSieges)
 		_GUICtrlComboBox_SetCurSel($g_hCmbDBSiege, $aMachine + 1)
 		GUICtrlSetState($g_hChkDBDropCC, $GUI_CHECKED)
 		GUICtrlSetState($g_hCmbDBSiege, $GUI_ENABLE)
@@ -365,10 +368,32 @@ Func ApplyScriptDB()
 	If IsArray($ahChkDBSpell) Then
 		For $i = 0 To UBound($ahChkDBSpell) - 1
 			GUICtrlSetState($ahChkDBSpell[$i], $aiCSVSpells[$i] > 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			If $sCSVCCSpl[$i] = 1 Then GUICtrlSetState($ahChkDBSpell[$i], $GUI_CHECKED)
 			If $aiCSVSpells[$i] > 0 Then $iApply += 1
 		Next
 		If $iApply > 0 Then SetLog("CSV 'Attack with' Spell settings applied", $COLOR_SUCCESS)
 	EndIf
+	
+	For $t = 0 To UBound($sCSVCCSpl) - 1
+		If $sCSVCCSpl[$t] = 1 Then $iSlot += 1
+	Next
+	If $iSlot > 0 Then
+		GUICtrlSetState($g_hChkRequestType_Spells, $GUI_CHECKED)
+		For $x = 0 To UBound($g_ahCmbClanCastleSpell) - 1
+			_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$x], 0);Reset To Any
+		Next
+		chkRequestCountCC()
+	EndIf
+	For $i = 0 To UBound($g_ahCmbClanCastleSpell) - 1
+		If $i > $iSlot - 1 Then ExitLoop
+		For $z = 0 To UBound($sCSVCCSpl) - 1
+			If $sCSVCCSpl[$z] = 1 And $z <> $ToIgnore[$z] Then
+				_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $z+1)
+				If $ToIgnore[$z] = -1 Then $ToIgnore[$z] = $z
+				ExitLoop
+			EndIf
+		Next
+	Next
 
 	If $iCSVRedlineRoutineItem > 0 And $iCSVRedlineRoutineItem <= _GUICtrlComboBox_GetCount($g_hCmbScriptRedlineImplDB) + 1 Then
 		_GUICtrlComboBox_SetCurSel($g_hCmbScriptRedlineImplDB, $iCSVRedlineRoutineItem - 1)
@@ -396,8 +421,11 @@ EndFunc   ;==>ApplyScriptDB
 Func ApplyScriptAB()
 	Local $iApply = 0
 	Local $iApplySieges = 0
-	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	Local $iSlot = 0
+	Local $aiCSVTroops[$eTroopCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVSpells[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0]
+	Local $sCSVCCSpl[$eSpellCount] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0]
+	Local $ToIgnore[$eSpellCount] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 	Local $aiCSVSieges[$eSiegeMachineCount] = [0, 0, 0, 0, 0, 0, 0]
 	Local $aiCSVHeros[$eHeroCount][2] = [[0, 0], [0, 0], [0, 0], [0, 0]]
 	Local $aiCSVWardenMode = -1
@@ -407,7 +435,7 @@ Func ApplyScriptAB()
 	Local $sFilename = $aTemp[_GUICtrlComboBox_GetCurSel($g_hCmbScriptNameAB) + 1]
 
 	SetLog("CSV settings apply starts: " & $sFilename, $COLOR_INFO)
-	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVSieges, $aiCSVHeros, $aiCSVWardenMode, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sFilename)
+	$iApply = ParseAttackCSV_Settings_variables($aiCSVTroops, $aiCSVSpells, $aiCSVSieges, $aiCSVHeros, $aiCSVWardenMode, $iCSVRedlineRoutineItem, $iCSVDroplineEdgeItem, $sCSVCCReq, $sCSVCCSpl, $sFilename)
 	If Not $iApply Then
 		SetLog("CSV settings apply failed", $COLOR_ERROR)
 		Return
@@ -494,10 +522,32 @@ Func ApplyScriptAB()
 	If IsArray($ahChkABSpell) Then
 		For $i = 0 To UBound($ahChkABSpell) - 1
 			GUICtrlSetState($ahChkABSpell[$i], $aiCSVSpells[$i] > 0 ? $GUI_CHECKED : $GUI_UNCHECKED)
+			If $sCSVCCSpl[$i] = 1 Then GUICtrlSetState($ahChkABSpell[$i], $GUI_CHECKED)
 			If $aiCSVSpells[$i] > 0 Then $iApply += 1
 		Next
 		If $iApply > 0 Then SetLog("CSV 'Attack with' Spell settings applied", $COLOR_SUCCESS)
 	EndIf
+	
+	For $t = 0 To UBound($sCSVCCSpl) - 1
+		If $sCSVCCSpl[$t] = 1 Then $iSlot += 1
+	Next
+	If $iSlot > 0 Then
+		GUICtrlSetState($g_hChkRequestType_Spells, $GUI_CHECKED)
+		For $x = 0 To UBound($g_ahCmbClanCastleSpell) - 1
+			_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$x], 0);Reset To Any
+		Next
+		chkRequestCountCC()
+	EndIf
+	For $i = 0 To UBound($g_ahCmbClanCastleSpell) - 1
+		If $i > $iSlot - 1 Then ExitLoop
+		For $z = 0 To UBound($sCSVCCSpl) - 1
+			If $sCSVCCSpl[$z] = 1 And $z <> $ToIgnore[$z] Then
+				_GUICtrlComboBox_SetCurSel($g_ahCmbClanCastleSpell[$i], $z+1)
+				If $ToIgnore[$z] = -1 Then $ToIgnore[$z] = $z
+				ExitLoop
+			EndIf
+		Next
+	Next
 
 	If $iCSVRedlineRoutineItem > 0 And $iCSVRedlineRoutineItem <= _GUICtrlComboBox_GetCount($g_hCmbScriptRedlineImplAB) + 1 Then
 		_GUICtrlComboBox_SetCurSel($g_hCmbScriptRedlineImplAB, $iCSVRedlineRoutineItem - 1)

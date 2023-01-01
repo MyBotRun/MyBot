@@ -103,8 +103,11 @@ EndFunc
 
 
 Func CheckLootAvail()
-	local $aCoords = decodeSingleCoord(findImage("BBLootAvail_bmp", $g_sImgBBLootAvail, GetDiamondFromRect("210,622,658,721"), 1, True))
+	;local $aCoords = decodeSingleCoord(findImage("BBLootAvail_bmp", $g_sImgBBLootAvail, GetDiamondFromRect("210,622,658,721"), 1, True))
 	local $bRet = False
+	Local $sSearchDiamond = GetDiamondFromRect2(210, 592 + $g_iMidOffsetY, 658, 691 + $g_iMidOffsetY)
+	Local $aCoords = decodeSingleCoord(findImage("BBLootAvail_bmp", $g_sImgBBLootAvail, $sSearchDiamond, 1, True))
+
 
 	If Not $g_bRunState Then Return ; Stop Button
 	
@@ -113,15 +116,17 @@ Func CheckLootAvail()
 		SetLog("Loot is Available.")
 	Else
 		SetLog("No loot available.")
-		If $g_bDebugImageSave Then SaveDebugImage("CheckLootAvail")
+		If $g_bDebugImageSave Then SaveDebugDiamondImage("CheckLootAvail", $sSearchDiamond)
 	EndIf
 
 	Return $bRet
 EndFunc
 
 Func CheckMachReady()
-	local $aCoords = decodeSingleCoord(findImage("BBMachReady_bmp", $g_sImgBBMachReady, GetDiamondFromRect("113,388,170,448"), 1, True))
+	;local $aCoords = decodeSingleCoord(findImage("BBMachReady_bmp", $g_sImgBBMachReady, GetDiamondFromRect("113,388,170,448"), 1, True))
 	local $bRet = False
+	Local $sSearchDiamond = GetDiamondFromRect2(113, 358 + $g_iMidOffsetY, 170, 418 + $g_iMidOffsetY)
+	Local $aCoords = decodeSingleCoord(findImage("BBMachReady_bmp", $g_sImgBBMachReady, $sSearchDiamond, 1, True))
 
 	If Not $g_bRunState Then Return ; Stop Button
 	
@@ -129,7 +134,7 @@ Func CheckMachReady()
 		$bRet = True
 		SetLog("Battle Machine ready.")
 	Else
-		If $g_bDebugImageSave Then SaveDebugImage("CheckMachReady")
+		If $g_bDebugImageSave Then SaveDebugDiamondImage("CheckMachReady", $sSearchDiamond)
 	EndIf
 
 	Return $bRet
@@ -138,7 +143,9 @@ EndFunc
 Func CheckArmyReady()
 	local $i = 0
 	local $bReady = True, $bNeedTrain = False, $bTraining = False
-	local $sSearchDiamond = GetDiamondFromRect("114,384,190,450") ; start of trained troops bar untill a bit after the 'r' "in Your Troops"
+	;local $sSearchDiamond = GetDiamondFromRect("114,384,190,450") ; start of trained troops bar untill a bit after the 'r' "in Your Troops"
+	Local $sSearchDiamond = GetDiamondFromRect2(114, 354 + $g_iMidOffsetY, 190, 420 + $g_iMidOffsetY) ; start of trained troops bar untill a bit after the 'r' "in Your Troops"
+
 
 	If Not $g_bRunState Then Return ; Stop Button
 	

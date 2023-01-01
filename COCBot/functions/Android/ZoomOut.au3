@@ -98,7 +98,10 @@ Func DefaultZoomOut($ZoomOutKey = "{DOWN}", $tryCtrlWheelScrollAfterCycles = 40,
 		EndIf
 	    Local $tryCtrlWheelScroll = False
 		While StringInStr($aPicture[0], "zoomou") = 0 and Not $tryCtrlWheelScroll
-
+			If Not $g_bRunState Then
+				SetDebugLog("Exit ZoomOut, bot not running")
+				Return
+			EndIf
 			AndroidShield("DefaultZoomOut") ; Update shield status
 			If $bAndroidZoomOut Then
 			   AndroidZoomOut($i, Default, ($g_iAndroidZoomoutMode <> 2)) ; use new ADB zoom-out
@@ -175,7 +178,10 @@ Func ZoomOutCtrlWheelScroll($CenterMouseWhileZooming = True, $GlobalMouseWheel =
 		Local $aMousePos = MouseGetPos()
 
 		While StringInStr($aPicture[0], "zoomou") = 0
-
+			If Not $g_bRunState Then
+				SetDebugLog("Exit ZoomOut, bot not running")
+				Return
+			EndIf
 			If $AndroidZoomOut Then
 			   AndroidZoomOut($i, Default, ($g_iAndroidZoomoutMode <> 2)) ; use new ADB zoom-out
 			   If @error <> 0 Then $AndroidZoomOut = False
@@ -272,7 +278,10 @@ Func ZoomOutCtrlClick($CenterMouseWhileZooming = False, $AlwaysControlFocus = Fa
 
 		$i = 0
 		While StringInStr($aPicture[0], "zoomou") = 0
-
+			If Not $g_bRunState Then
+				SetDebugLog("Exit ZoomOut, bot not running")
+				Return
+			EndIf
 			If $AndroidZoomOut Then
 			   AndroidZoomOut($i, Default, ($g_iAndroidZoomoutMode <> 2)) ; use new ADB zoom-out
 			   If @error <> 0 Then $AndroidZoomOut = False
@@ -354,6 +363,10 @@ Func AndroidOnlyZoomOut() ;Zooms out
 		ForceCaptureRegion()
 		$aPicture = SearchZoomOut($aCenterHomeVillageClickDrag, True, "", True)
 		While StringInStr($aPicture[0], "zoomout") = 0
+			If Not $g_bRunState Then
+				SetDebugLog("Exit ZoomOut, bot not running")
+				Return
+			EndIf
 			If _Sleep(50) Then Return
 			AndroidShield("AndroidOnlyZoomOut") ; Update shield status
 			AndroidZoomOut($i, Default, ($g_iAndroidZoomoutMode <> 2)) ; use new ADB zoom-out

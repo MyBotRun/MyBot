@@ -98,7 +98,7 @@ Func PrepareAttack($pMatchMode, $bRemaining = False) ;Assigns troops
 
 										SetLog("$g_aiAttackUseSiege[$pMatchMode] :" & $g_aiAttackUseSiege[$pMatchMode])
 
-										If $g_aiAttackUseSiege[$pMatchMode] <= 7 Then
+										If $g_aiAttackUseSiege[$pMatchMode] <= $eSiegeMachineCount + 1 Then
 											SelectCastleOrSiege($avAttackBar[$j][0], Number($avAttackBar[$j][5]), $g_aiAttackUseSiege[$pMatchMode])
 
 											If $g_aiAttackUseSiege[$pMatchMode] = 0 And Not($avAttackBar[$j][0] = $eCastle) Then ; if the user wanted to drop castle and no troops were available, do not drop a siege
@@ -195,9 +195,10 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 			If _Sleep(1250) Then Return
 
 			; Lets detect the CC & Sieges and click - search window is - X, 530, X + 390, 530 + 30
-			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",530(390,30)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
+			Local $sSearchArea = GetDiamondFromRect(_Min($iX - 50, 470) & ",539(390,37)") ; x = 470 when Castle is at slot 6+ and there are 5 slots in siege switching window
 
 			SetLog("Switch Search Area : " & $sSearchArea)
+			SaveDebugDiamondImage("SelectCastleOrSiege", $sSearchArea)
 
 			Local $aSearchResult = findMultiple($g_sImgSwitchSiegeMachine, $sSearchArea, $sSearchArea, 0, 1000, 5, "objectname,objectpoints", True)
 			If $g_bDebugSetlog Then SetDebugLog("Benchmark Switch Siege imgloc: " & StringFormat("%.2f", _Timer_Diff($hStarttime)) & "'ms")
@@ -223,8 +224,7 @@ Func SelectCastleOrSiege(ByRef $iTroopIndex, $iX, $iCmbSiege)
 					If $iSiegeIndex >= $eWallW And $iSiegeIndex <= $eBattleD And ($bAnySiege Or $iSiegeIndex = $ToUse) Then
 						For $j = 0 To UBound($aAllCoords) - 1
 							Local $aCoords = $aAllCoords[$j]
-							Local $SiegeLevel = getTroopsSpellsLevel(Number($aCoords[0]) - 30, 587)
-							; Just in case of Level 1
+							Local $SiegeLevel = getSiegeLevel(Number($aCoords[0]) - 31, 586)
 							If $SiegeLevel = "" Then $SiegeLevel = 1
 							If $iFinalLevel < Number($SiegeLevel) Then
 								$iFinalLevel = Number($SiegeLevel)

@@ -30,7 +30,7 @@ Func DoubleTrain()
 
 	Local $Step = 1
 	While 1
-		Local $TroopCamp = GetCurrentArmy(48, 160)
+		Local $TroopCamp = GetCurrentArmy(48, 130 + $g_iMidOffsetY)
 		SetLog("Checking Troop tab: " & $TroopCamp[0] & "/" & $TroopCamp[1] * 2)
 		If $TroopCamp[1] = 0 Then ExitLoop
 		If $TroopCamp[1] <> $g_iTotalCampSpace Then _
@@ -76,7 +76,7 @@ Func DoubleTrain()
 		If _Sleep(250) Then Return
 		$Step = 1
 		While 1
-			Local $SpellCamp = GetCurrentArmy(43, 160)
+			Local $SpellCamp = GetCurrentArmy(43, 130 + $g_iMidOffsetY)
 			SetLog("Checking Spell tab: " & $SpellCamp[0] & "/" & $SpellCamp[1] * 2)
 
 			If $SpellCamp[1] > $TotalSpell Then
@@ -159,7 +159,7 @@ Func TrainFullTroop($bQueue = False)
 	TrainUsingWhatToTrain($ToReturn, $bQueue)
 	If _Sleep(500) Then Return
 
-	Local $CampOCR = GetCurrentArmy(48, 160)
+	Local $CampOCR = GetCurrentArmy(48, 130 + $g_iMidOffsetY)
 	SetDebugLog("Checking troop tab: " & $CampOCR[0] & "/" & $CampOCR[1] * 2)
 EndFunc   ;==>TrainFullTroop
 
@@ -181,7 +181,7 @@ Func BrewFullSpell($bQueue = False)
 	BrewUsingWhatToTrain($ToReturn, $bQueue)
 	If _Sleep(750) Then Return
 
-	Local $CampOCR = GetCurrentArmy(43, 160)
+	Local $CampOCR = GetCurrentArmy(43, 130 + $g_iMidOffsetY)
 	SetDebugLog("Checking spell tab: " & $CampOCR[0] & "/" & $CampOCR[1] * 2)
 EndFunc   ;==>BrewFullSpell
 
@@ -241,7 +241,7 @@ Func CheckQueueTroopAndTrainRemain($ArmyCamp, $bDebug)
 
 	Local $XQueueStart = 839
 	For $i = 0 To 10
-		If _ColorCheck(_GetPixelColor(825 - $i * 70, 186, True), Hex(0xD7AFA9, 6), 20) Then ; Pink background found
+		If _ColorCheck(_GetPixelColor(825 - $i * 70, 156 + $g_iMidOffsetY, True), Hex(0xD7AFA9, 6), 20) Then ; Pink background found
 			$XQueueStart -= 70.5 * $i
 			ExitLoop
 		EndIf
@@ -281,7 +281,7 @@ Func CheckQueueTroopAndTrainRemain($ArmyCamp, $bDebug)
 		TrainUsingWhatToTrain($rWTT, True)
 
 		If _Sleep(1000) Then Return
-		$ArmyCamp = GetCurrentArmy(48, 160)
+		$ArmyCamp = GetCurrentArmy(48, 130 + $g_iMidOffsetY)
 		SetLog("Checking troop tab: " & $ArmyCamp[0] & "/" & $ArmyCamp[1] * 2 & ($ArmyCamp[0] < $ArmyCamp[1] * 2 ? ". Top-up queue failed!" : ""))
 		If $ArmyCamp[0] < $ArmyCamp[1] * 2 Then Return False
 	EndIf
@@ -296,7 +296,7 @@ Func CheckQueueSpellAndTrainRemain($ArmyCamp, $bDebug, $iUnbalancedSpell = 0)
 
 	Local $XQueueStart = 839
 	For $i = 0 To 10
-		If _ColorCheck(_GetPixelColor(825 - $i * 70, 186, True), Hex(0xD7AFA9, 6), 20) Then ; Pink background found
+		If _ColorCheck(_GetPixelColor(825 - $i * 70, 156 + $g_iMidOffsetY, True), Hex(0xD7AFA9, 6), 20) Then ; Pink background found
 			$XQueueStart -= 70.5 * $i
 			ExitLoop
 		EndIf
@@ -341,7 +341,7 @@ Func CheckQueueSpellAndTrainRemain($ArmyCamp, $bDebug, $iUnbalancedSpell = 0)
 		BrewUsingWhatToTrain($rWTT, True)
 
 		If _Sleep(1000) Then Return
-		Local $NewSpellCamp = GetCurrentArmy(43, 160)
+		Local $NewSpellCamp = GetCurrentArmy(43, 130 + $g_iMidOffsetY)
 		SetLog("Checking spell tab: " & $NewSpellCamp[0] & "/" & $NewSpellCamp[1] * 2 & ($NewSpellCamp[0] < $ArmyCamp[1] * 2 ? ". Top-up queue failed!" : ""))
 		If $NewSpellCamp[0] < $ArmyCamp[1] * 2 Then Return False
 	EndIf

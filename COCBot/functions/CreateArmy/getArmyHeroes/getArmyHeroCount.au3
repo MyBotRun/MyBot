@@ -174,16 +174,19 @@ Func getArmyHeroCount($bOpenArmyWindow = False, $bCloseArmyWindow = False, $Chec
 	If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Status  K|Q|W|C : " & BitAND($g_iHeroAvailable, $eHeroKing) & "|" & BitAND($g_iHeroAvailable, $eHeroQueen) & "|" & BitAND($g_iHeroAvailable, $eHeroWarden) & "|" & BitAND($g_iHeroAvailable, $eHeroChampion), $COLOR_DEBUG)
 	If $g_bDebugSetlogTrain Or $iDebugArmyHeroCount = 1 Then SetLog("Hero Upgrade K|Q|W|C : " & BitAND($g_iHeroUpgradingBit, $eHeroKing) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroQueen) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroWarden) & "|" & BitAND($g_iHeroUpgradingBit, $eHeroChampion), $COLOR_DEBUG)
 
-	If $bCloseArmyWindow Then
-		ClickAway()
-		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
-	EndIf
+	If $bCloseArmyWindow Then CloseWindow()
+	;	ClickAway()
+	;	If _Sleep($DELAYCHECKARMYCAMP4) Then Return
+	;EndIf
 
 EndFunc   ;==>getArmyHeroCount
 
 Func ArmyHeroStatus($i)
 	Local $sResult = ""
-	Local Const $aHeroesRect[$eHeroCount][4] = [[566, 340, 616, 380], [666, 340, 691, 370], [741, 340, 766, 370], [815, 340, 840, 380]] ; Review
+	Local Const $aHeroesRect[$eHeroCount][4] = [[566, 310 + $g_iMidOffsetY, 616, 350 + $g_iMidOffsetY], _
+												[666, 310 + $g_iMidOffsetY, 691, 340 + $g_iMidOffsetY], _
+												[741, 310 + $g_iMidOffsetY, 766, 340 + $g_iMidOffsetY], _
+												[815, 310 + $g_iMidOffsetY, 840, 350 + $g_iMidOffsetY]] ; Review
 
 	; Perform the search
 	_CaptureRegion2($aHeroesRect[$i][0], $aHeroesRect[$i][1], $aHeroesRect[$i][2], $aHeroesRect[$i][3])
@@ -375,7 +378,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 	EndIf
 
 	; check for upgrade in process - look for green in finish upgrade with gems button
-	If _ColorCheck(_GetPixelColor(730, 200, True), Hex(0xA2CB6C, 6), 20) Then ; Look for light green in upper right corner of lab window.
+	If _ColorCheck(_GetPixelColor(730, 170 + $g_iMidOffsetY, True), Hex(0xA2CB6C, 6), 20) Then ; Look for light green in upper right corner of lab window.
 		SetLog("Laboratory is Running", $COLOR_INFO)
 		;==========Hide Red  Show Green Hide Gray===
 		GUICtrlSetState($g_hPicLabGray, $GUI_HIDE)
@@ -383,7 +386,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		GUICtrlSetState($g_hPicLabGreen, $GUI_SHOW)
 		;===========================================
 		If _Sleep($DELAYLABORATORY2) Then Return
-		Local $sLabTimeOCR = getRemainTLaboratory(270, 257)
+		Local $sLabTimeOCR = getRemainTLaboratory(270, 227 + $g_iMidOffsetY)
 		Local $iLabFinishTime = ConvertOCRTime("Lab Time", $sLabTimeOCR, False)
 		SetDebugLog("$sLabTimeOCR: " & $sLabTimeOCR & ", $iLabFinishTime = " & $iLabFinishTime & " m")
 		If $iLabFinishTime > 0 Then
@@ -394,7 +397,7 @@ Func LabGuiDisplay() ; called from main loop to get an early status for indictor
 		CloseWindow()
 		If ProfileSwitchAccountEnabled() Then SwitchAccountVariablesReload("Save") ; saving $asLabUpgradeTime[$g_iCurAccount] = $g_sLabUpgradeTime for instantly displaying in multi-stats
 		Return True
-	ElseIf _ColorCheck(_GetPixelColor(730, 200, True), Hex(0x8088B0, 6), 20) Then ; Look for light purple in upper right corner of lab window.
+	ElseIf _ColorCheck(_GetPixelColor(730, 170 + $g_iMidOffsetY, True), Hex(0x8088B0, 6), 20) Then ; Look for light purple in upper right corner of lab window.
 		SetLog("Laboratory has Stopped", $COLOR_INFO)
 		If $g_bNotifyTGEnable And $g_bNotifyAlertLaboratoryIdle Then NotifyPushToTelegram($g_sNotifyOrigin & " | " & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_01", "Laboratory Idle") & "%0A" & GetTranslatedFileIni("MBR Func_Notify", "Laboratory-Idle_Info_02", "Laboratory has Stopped"))
 		;ClickAway()

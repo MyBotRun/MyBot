@@ -25,9 +25,14 @@ Func CreateBotAndroid()
 	Local $x = 25, $y = 45, $y2, $w = 240, $h = 50, $sTxtTip
 	GUICtrlCreateGroup(GetTranslatedFileIni("MBR Distributors", "Group_01", "Distributors"), $x - 20, $y - 20, $w, $h) ; $g_iSizeWGrpTab2, $g_iSizeHGrpTab2
 	$y -= 2
-		$g_hCmbCOCDistributors = GUICtrlCreateCombo("", $x - 8, $y, $w - 25, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+		$g_hCmbCOCDistributors = GUICtrlCreateCombo("", $x - 8, $y, $w - 75, -1, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR Distributors", "CmbCOCDistributors_Info_01", "Allow bot to launch COC based on the distribution chosen"))
 			GUICtrlSetOnEvent(-1, "cmbCOCDistributors")
+
+	$x = 188
+		GUICtrlCreateButton(GetTranslatedFileIni("Android Control", "BtnResetDistributor", "Reset"), $x, $y - 2, 50, 25)
+			GUICtrlSetOnEvent(-1, "btnResetDistributor")
+
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$x = 280

@@ -5,7 +5,7 @@
 ; Parameters ....:
 ; Return values .:
 ; Author ........: xbebenk (08/2021)
-; Modified ......:
+; Modified ......: Moebius14 (12/2022)
 ; Remarks .......: This file is part of MyBot, previously known as ClashGameBot. Copyright 2015-2020
 ;                  MyBot is distributed under the terms of the GNU GPL
 ; Related .......:
@@ -34,13 +34,13 @@ Func BoostSuperTroop($bTest = False)
 			If OpenBarrel() Then
 				If _Sleep(1000) Then Return
 				Local $sTroopName = GetSTroopName($g_iCmbSuperTroops[$i] - 1)
-				SetLog("Trying to boost " & "[" & $g_iCmbSuperTroops[$i] & "] " & $sTroopName, $COLOR_INFO)
+				SetLog("Trying to boost " & $sTroopName, $COLOR_INFO)
 
 				Local $iColumnX = $columnStart
 				Select
 					Case $g_iCmbSuperTroops[$i] = 2 Or $g_iCmbSuperTroops[$i] = 6 Or $g_iCmbSuperTroops[$i] = 10 Or $g_iCmbSuperTroops[$i] = 14 ;second column
 						$iColumnX = $columnStart + (1 * ($picswidth + $picspad))
-					Case $g_iCmbSuperTroops[$i] = 3 Or $g_iCmbSuperTroops[$i] = 7 Or $g_iCmbSuperTroops[$i] = 11 ;third column
+					Case $g_iCmbSuperTroops[$i] = 3 Or $g_iCmbSuperTroops[$i] = 7 Or $g_iCmbSuperTroops[$i] = 11 Or $g_iCmbSuperTroops[$i] = 15 ;third column
 						$iColumnX = $columnStart + (2 * ($picswidth + $picspad))
 					Case $g_iCmbSuperTroops[$i] = 4 Or $g_iCmbSuperTroops[$i] = 8 Or $g_iCmbSuperTroops[$i] = 12 ;fourth column
 						$iColumnX = $columnStart + (3 * ($picswidth + $picspad))
@@ -53,9 +53,7 @@ Func BoostSuperTroop($bTest = False)
 					$iColumnY1 = 388
 					$iColumnY2 = 550
 				EndIf
-				;Setlog("columnRect = " & $iColumnX & "," & $iColumnY1 &"," & $iColumnX + $picswidth & "," & $iColumnY2, $COLOR_DEBUG)
 
-				;SetLog("QuickMIS(" & "BC1" & ", " & $g_sImgBoostTroopsClock & "," & $iColumnX & "," & $iColumnY1 & "," & $iColumnX + $picswidth & "," & $iColumnY2 & ")", $COLOR_DEBUG );
 				If QuickMIS("BC1", $g_sImgBoostTroopsClock, $iColumnX, $iColumnY1, $iColumnX + $picswidth, $iColumnY2, True, False) Then ;find pics Clock on spesific row / column (if clock found = troops already boosted)
 					SetLog($sTroopName & ", Troops Already boosted", $COLOR_INFO)
 					SetDebugLog("Found Clock Image", $COLOR_DEBUG)
@@ -65,7 +63,6 @@ Func BoostSuperTroop($bTest = False)
 					SetDebugLog("Clock Image Not Found", $COLOR_DEBUG)
 					SetLog($sTroopName & ", Currently is not boosted", $COLOR_INFO)
 					If FindStroopIcons($g_iCmbSuperTroops[$i], $iColumnX, $iColumnY1, $iColumnX + $picswidth, $iColumnY2) Then
-						;SetLog("QuickMIS(" & "BC1" & ", " & $g_sImgBoostTroopsIcons & "," & $iColumnX & "," & $iColumnY1 & "," & $iColumnX + $picswidth & "," & $iColumnY2 & ")", $COLOR_DEBUG );
 						If QuickMIS("BC1", $g_sImgBoostTroopsIcons, $iColumnX, $iColumnY1, $iColumnX + $picswidth, $iColumnY2, True, False) Then ;find pics of Stroop on spesific row / column
 							Click($g_iQuickMISX, $g_iQuickMISY, 1)
 							If _Sleep(1000) Then Return
@@ -157,31 +154,46 @@ EndFunc   ;==>BoostSuperTroop
 Func OpenBarrel()
 	ClickAway()
 	Local $iSTCount = 0, $bOpenBarrel = True
-	If QuickMIS("BC1", $g_sImgBoostTroopsBarrel, 0, 0, 220, 225, True, False) Then
+	If QuickMIS("BC1", $g_sImgBoostTroopsBarrel, 0, 0, 220, 235, True, False) Then
 		; Check if is already boosted.
-		Local $aiSearchArray[4] = [$g_iQuickMISX - 11, $g_iQuickMISY - 31, $g_iQuickMISX - 7, $g_iQuickMISY - 10]
+		Local $aiSearchArray[4] = [$g_iQuickMISX - 16, $g_iQuickMISY - 31, $g_iQuickMISX - 3, $g_iQuickMISY - 10]
 		Local $aSearchForProgress = decodeMultipleCoords(findImage("SuperTroopProgress", $g_sImgSTProgress, GetDiamondFromRect($aiSearchArray), 0, True, Default))
+		
 		If IsArray($aSearchForProgress) And UBound($aSearchForProgress, 1) > 0 Then
+		
+			If UBound($aSearchForProgress, 1) = $iMaxSupersTroop Then ;When 2 troops already boosted.
+				SetLog("Max Number of Troops Already boosted", $COLOR_INFO)
+				$g_bMaxNbrSTroops[$g_iCurAccount] = True
+				Return False
+			EndIf
+			
+			If $g_bMaxNbrSTroops[$g_iCurAccount] Then $g_bCheckBarrel[$g_iCurAccount] = True ;When 2 Troops Boosted at start, then 1 ends -> Check.
+		
 			; Reset
 			$iSTCount = 0
 			For $i = 0 To 1
 				If $g_iCmbSuperTroops[$i] > 0 Then $iSTCount += 1
 			Next
 			If $iSTCount = UBound($aSearchForProgress, 1) Then
-				SetLog("Troops Already boosted", $COLOR_INFO)
-				$bOpenBarrel = False
+				If $g_bCheckBarrel[$g_iCurAccount] Then ; First Start Or when 2 troops at start the 1 ends.
+					$bOpenBarrel = True
+					$g_bCheckBarrel[$g_iCurAccount] = False
+				Else	
+					SetLog("Troops Already boosted", $COLOR_INFO)
+					$bOpenBarrel = False
+				EndIf
 			Else
-				$bOpenBarrel = True
+				$bOpenBarrel = True ;Open in other cases.
 			EndIf
 		EndIf
-
+		
 		If $bOpenBarrel Then
-			SetLog("Found Barrel at " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_DEBUG)
+			SetLog("Found Barrel at " & $g_iQuickMISX & "," & $g_iQuickMISY, $COLOR_SUCCESS1)
 			Click($g_iQuickMISX, $g_iQuickMISY, 1)
 			Return True
 		EndIf
 	Else
-		SetLog("Couldn't find super troop barrel", $COLOR_ERROR)
+		SetLog("Couldn't Find Super Troop Barrel", $COLOR_ERROR)
 		ClickAway()
 	EndIf
 	Return False

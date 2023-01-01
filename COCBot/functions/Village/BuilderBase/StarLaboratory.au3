@@ -116,7 +116,7 @@ Func StarLaboratory($bTestRun = False)
 		$g_avStarLabTroops[$i][1] = -1
 	Next
 	; find upgradeable troops by elixir image
-	$aSearchForTroop = decodeMultipleCoords(findImage("TroopPositions", $g_sImgStarLabElex, GetDiamondFromRect("100,375,730,575"), 0, True, Default))
+	$aSearchForTroop = decodeMultipleCoords(findImage("TroopPositions", $g_sImgStarLabElex, GetDiamondFromRect2(100, 345+ $g_iMidOffsetY, 730, 545 + $g_iMidOffsetY), 0, True, Default))
 	If IsArray($aSearchForTroop) And UBound($aSearchForTroop, 1) > 0 Then
 		For $i = 0 To UBound($aSearchForTroop) - 1
 			Local $aTempArray = $aSearchForTroop[$i]
@@ -246,7 +246,7 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 			EndIf
 
 			; triple check for upgrade in process by gray upgrade button
-			If _ColorCheck(_GetPixelColor(625 + $iXMoved, 250 + $g_iMidOffsetY + $iYMoved, True), Hex(0x848484, 6), 20) And _ColorCheck(_GetPixelColor(660 + $iXMoved, 250 + $g_iMidOffsetY + $iYMoved, True), Hex(0x848484, 6), 20) Then
+			If _ColorCheck(_GetPixelColor(625 + $iXMoved, 280 + $iYMoved, True), Hex(0x848484, 6), 20) And _ColorCheck(_GetPixelColor(660 + $iXMoved, 280 + $iYMoved, True), Hex(0x848484, 6), 20) Then
 				SetLog("Upgrade in progress, waiting for completion of other troops", $COLOR_WARNING)
 				If _Sleep($DELAYLABORATORY2) Then Return
 				ClickAway()
@@ -268,13 +268,13 @@ Func StarLabUpgrade($iSelectedUpgrade, $iXMoved = 0, $iYMoved = 0, $bTestRun = F
 					Return False
 				EndIf
 
-				If Not $bTestRun Then Click(645 + $iXMoved, 530 + $g_iMidOffsetY + $iYMoved, 1, 0, "#0202") ; Everything is good - Click the upgrade button
+				If Not $bTestRun Then Click(645 + $iXMoved, 560 + $iYMoved, 1, 0, "#0202") ; Everything is good - Click the upgrade button
 				If _Sleep($DELAYLABUPGRADE1) Then Return
 			EndIf
 
 			If isGemOpen(True) = False Then ; check for gem window
 				; check for green button to use gems to finish upgrade, checking if upgrade actually started
-				If Not (_ColorCheck(_GetPixelColor(625 + $iXMoved, 218 + $g_iMidOffsetY + $iYMoved, True), Hex(0x6fbd1f, 6), 15) Or _ColorCheck(_GetPixelColor(660 + $iXMoved, 218 + $g_iMidOffsetY + $iYMoved, True), Hex(0x6fbd1f, 6), 15)) Then
+				If Not (_ColorCheck(_GetPixelColor(625 + $iXMoved, 248 + $iYMoved, True), Hex(0x6fbd1f, 6), 15) Or _ColorCheck(_GetPixelColor(660 + $iXMoved, 248 + $iYMoved, True), Hex(0x6fbd1f, 6), 15)) Then
 					SetLog("Something went wrong with " & $g_avStarLabTroops[$iSelectedUpgrade][3] & " Upgrade, try again.", $COLOR_ERROR)
 					ClickAway()
 					Return False

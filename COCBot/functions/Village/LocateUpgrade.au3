@@ -281,7 +281,7 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 		If $bOopsFlag And $g_bDebugImageSave Then SaveDebugImage("UpgradeView")
 		
 		If $IsTHWeapon Then
-			Local $THWLevelUp = getOcrAndCapture("coc-THWeapon", 500, 167, 16, 20)
+			Local $THWLevelUp = getOcrAndCapture("coc-THWeapon", 500, 137 + $g_iMidOffsetY, 18, 20)
 			If $THWLevelUp > 0 And $THWLevelUp <= 5 Then $g_avBuildingUpgrades[$inum][5] = Number($THWLevelUp - 1)
 			GUICtrlSetData($g_hTxtUpgradeLevel[$inum], $g_avBuildingUpgrades[$inum][5])
 		EndIf	
@@ -341,8 +341,8 @@ Func UpgradeValue($inum, $bRepeat = False) ;function to find the value and type 
 					Return False
 				EndIf
 				If _ColorCheck(_GetPixelColor(710, 535 + $g_iMidOffsetY, True), Hex(0x3C3035, 6), 20) Then $g_avBuildingUpgrades[$inum][3] = "Dark" ; Check if DE required and update type
-				$g_avBuildingUpgrades[$inum][2] = Number(getResourcesBonus(598, 522 + $g_iMidOffsetY)) ; Try to read white text.
-				If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getUpgradeResource(598, 522 + $g_iMidOffsetY)) ;read RED upgrade text
+				$g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgrade(598, 522 + $g_iMidOffsetY)) ; Try to read white text.
+				If $g_avBuildingUpgrades[$inum][2] = "" Then $g_avBuildingUpgrades[$inum][2] = Number(getCostsUpgradeRed(598, 522 + $g_iMidOffsetY)) ;read RED upgrade text
 				If $g_avBuildingUpgrades[$inum][2] = "" And $g_abUpgradeRepeatEnable[$inum] = False Then $bOopsFlag = True ; set error flag for user to set value
 				$g_avBuildingUpgrades[$inum][6] = getHeroUpgradeTime(578, 465 + $g_iMidOffsetY) ; Try to read white text showing time for upgrade
 				SetLog("Upgrade #" & $inum + 1 & " Time = " & $g_avBuildingUpgrades[$inum][6], $COLOR_INFO)

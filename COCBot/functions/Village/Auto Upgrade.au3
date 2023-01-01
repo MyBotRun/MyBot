@@ -158,11 +158,11 @@ Func _AutoUpgrade()
 
 		Switch $g_aUpgradeNameLevel[1]
 			Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
-				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 690, 540, 730, 580) ; get resource
+				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 690, 510 + $g_iMidOffsetY, 730, 550 + $g_iMidOffsetY) ; get resource
 				$g_aUpgradeResourceCostDuration[1] = getResourcesBonus(598, 522 + $g_iMidOffsetY) ; get cost
 				$g_aUpgradeResourceCostDuration[2] = getHeroUpgradeTime(578, 465 + $g_iMidOffsetY) ; get duration
 			Case Else
-				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 460, 510, 500, 550) ; get resource
+				$g_aUpgradeResourceCostDuration[0] = QuickMIS("N1", $g_sImgAUpgradeRes, 460, 480 + $g_iMidOffsetY, 500, 520 + $g_iMidOffsetY) ; get resource
 				$g_aUpgradeResourceCostDuration[1] = getResourcesBonus(363, 487 + $g_iMidOffsetY) ; get cost
 				$g_aUpgradeResourceCostDuration[2] = getBldgUpgradeTime(185, 307 + $g_iMidOffsetY) ; get duration
 		EndSwitch
@@ -214,18 +214,18 @@ Func _AutoUpgrade()
 		; final click on upgrade button, click coord is get looking at upgrade type (heroes have a diferent place for Upgrade button)
 		Switch $g_aUpgradeNameLevel[1]
 			Case "Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion"
-				Click(660, 560)
+				Click(660, 530 + $g_iMidOffsetY)
 			Case Else
-				Click(430, 530)
+				Click(430, 500 + $g_iMidOffsetY)
 		EndSwitch
 		
 		;Check for 'End Boost?' pop-up
 		If _Sleep(1000) Then Return
-		Local $aImgAUpgradeEndBoost = decodeSingleCoord(findImage("EndBoost", $g_sImgAUpgradeEndBoost, GetDiamondFromRect("350, 310, 570, 230"), 1, True))
+		Local $aImgAUpgradeEndBoost = decodeSingleCoord(findImage("EndBoost", $g_sImgAUpgradeEndBoost, GetDiamondFromRect2(350, 280 + $g_iMidOffsetY, 570, 200 + $g_iMidOffsetY), 1, True))
 		If UBound($aImgAUpgradeEndBoost) > 1 Then
 			SetLog("End Boost? pop-up found", $COLOR_INFO)
 			SetLog("Clicking OK", $COLOR_INFO)
-			Local $aImgAUpgradeEndBoostOKBtn = decodeSingleCoord(findImage("EndBoostOKBtn", $g_sImgAUpgradeEndBoostOKBtn, GetDiamondFromRect("420, 470, 610, 380"), 1, True))
+			Local $aImgAUpgradeEndBoostOKBtn = decodeSingleCoord(findImage("EndBoostOKBtn", $g_sImgAUpgradeEndBoostOKBtn, GetDiamondFromRect2(420, 440 + $g_iMidOffsetY, 610, 350 + $g_iMidOffsetY), 1, True))
 			If UBound($aImgAUpgradeEndBoostOKBtn) > 1 Then
 				Click($aImgAUpgradeEndBoostOKBtn[0], $aImgAUpgradeEndBoostOKBtn[1])
 				If _Sleep(1000) Then Return

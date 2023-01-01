@@ -383,6 +383,40 @@ Func btnResetBuilding()
 	AndroidShield("btnResetBuilding") ; Update shield status due to manual $g_bRunState
 EndFunc   ;==>btnResetBuilding
 
+Func btnResetDistributor()
+	Local $wasRunState = $g_bRunState
+	$g_bRunState = True
+	While 1
+		If _Sleep(500) Then Return ; add small delay before display message window
+
+			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 600)
+			Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Reset_Distributor_info", "Click OK to Reset Game Distributor,") & @CRLF & @CRLF & _
+					GetTranslatedFileIni("MBR Popups", "Bot_will_exit", "NOTE =>> Bot will exit and need to be restarted when complete") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", "Or Click Cancel to exit") & @CRLF
+			Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", "Ok|Cancel"), GetTranslatedFileIni("MBR Popups", "Reset_Game_Distributor_Info", "Delete Game Distributor Infomation ?"), $stext, 120)
+			If $g_bDebugSetlog Then SetDebugLog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
+			If $MsgBox = 1 Then
+				Local $stext = @CRLF & GetTranslatedFileIni("MBR Popups", "Sure_Game_Distributor_Info", "Are you 100% sure you want to reset Game Distributor information ?") & @CRLF & @CRLF & _
+						GetTranslatedFileIni("MBR Popups", "Reset_then_restart_bot", "Click OK to Reset and then restart the bot (manually)") & @CRLF & @CRLF & GetTranslatedFileIni("MBR Popups", "Cancel_to_exit", -1) & @CRLF
+				Local $MsgBox = _ExtMsgBox(0, GetTranslatedFileIni("MBR Popups", "Ok_Cancel", -1), GetTranslatedFileIni("MBR Popups", "Reset_Game_Distributor_Info", -1), $stext, 120)
+				If $g_bDebugSetlog Then SetDebugLog("$MsgBox= " & $MsgBox, $COLOR_DEBUG)
+				If $MsgBox = 1 Then
+					$g_sAndroidGameDistributor = "Amazon" ; Default CoC Game Distributor, loaded from config.ini
+					$g_sAndroidGamePackage = "com.supercell.clashofclans.amazon" ; Default CoC Game Package, loaded from config.ini
+					$g_sAndroidGameClass = "com.supercell.titan.amazon.GameAppAmazon" ; Default CoC Game Class, loaded from config.ini
+					$g_sUserGameDistributor = "Amazon" ; User Added CoC Game Distributor, loaded from config.ini
+					$g_sUserGamePackage = "com.supercell.clashofclans.amazon" ; User Added CoC Game Package, loaded from config.ini
+					$g_sUserGameClass = "com.supercell.titan.amazon.GameAppAmazon" ; User Added CoC Game Class, loaded from config.ini
+
+					SaveConfig()
+					BotClose(False)
+				EndIf
+			EndIf
+		ExitLoop
+	WEnd
+	$g_bRunState = $wasRunState
+	AndroidShield("btnResetDistributor") ; Update shield status due to manual $g_bRunState
+EndFunc   ;==>btnResetDistributor
+
 Func btnLab()
 	Local $wasRunState = $g_bRunState
 	$g_bRunState = True

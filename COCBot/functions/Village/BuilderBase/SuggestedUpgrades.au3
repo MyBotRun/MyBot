@@ -190,9 +190,15 @@ Func MainSuggestedUpgradeCode($bDebugImage = $g_bDebugImageSave, $bFinishNow = F
 		EndIf
 	EndIf
 	
-	If $bFinishNow Then FinishNow($bDebugImage)
 	
-	ClickAway()
+	
+	If $bFinishNow Then
+		If _Sleep(1000) Then Return
+	
+		FinishNow($bDebugImage)
+	EndIf
+	
+	ClickAway("Left")
 EndFunc   ;==>MainSuggestedUpgradeCode
 
 ; This fucntion will Open the Suggested Window and check if is OK
@@ -260,24 +266,24 @@ Func GetIconPosition($x, $y, $x1, $y1, $directory, $Name = "Elixir", $Screencap 
 	Return $aResult
 EndFunc   ;==>GetIconPosition
 
-Func GetUpgradeButton($sUpgButtom = "", $Debug = False, $bDebugImage = $g_bDebugImageSave)
+Func GetUpgradeButton($sUpgButton = "", $Debug = False, $bDebugImage = $g_bDebugImageSave)
+	Local $sIconBarDiamond = GetDiamondFromRect2(140, 531 + $g_iBottomOffsetY, 720, 611 + $g_iBottomOffsetY)
+	Local $sUpgradeButtonDiamond = GetDiamondFromRect2(350, 460 + $g_iMidOffsetY, 750, 570 + $g_iMidOffsetY)
 
-	;Local $aBtnPos = [360, 500, 180, 50] ; x, y, w, h
-	Local $aBtnPos = [360, 460, 380, 120] ; x, y, w, h ; support Battke Machine, broken and upgrade
-
-	If $sUpgButtom = "" Then Return
+	If $sUpgButton = "" Then Return
 
 	;If $sUpgButtom = "Elixir" Then $sUpgButtom = $g_sImgAutoUpgradeBtnElixir
 	;If $sUpgButtom = "Gold" Then $sUpgButtom = $g_sImgAutoUpgradeBtnGold
 
-	$sUpgButtom = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\ButtonUpg\"
+	$sUpgButton = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\ButtonUpg\*"
 
-	If $bDebugImage Then SaveDebugRectImage("GetUpgradeButton", "300, 590, 600, 670")
-	If QuickMIS("BC1", $g_sImgAutoUpgradeBtnDir, 300, 590, 600, 670, True, $Debug) Then
-		Local $aBuildingName = BuildingInfo(245, 490 + $g_iBottomOffsetY)
-		
+	If $bDebugImage Then SaveDebugDiamondImage("GetUpgradeButton", $sIconBarDiamond)
+
+	; search icon bar for 'upgrade' icon
+	Local $aUpgradeIcon = decodeSingleCoord(findImage("GetUpgradeButon", $g_sImgAutoUpgradeBtnDir & "\*", $sIconBarDiamond, 1, True))
+	If IsArray($aUpgradeIcon) And UBound($aUpgradeIcon) = 2 Then
+		Local $aBuildingName = BuildingInfo(245, 490 + $g_iBottomOffsetY) ; read building text
 		SetLog("BuildingName 0 : " & $aBuildingName[0])
-		
 		If $aBuildingName[0] >= 1 Then
 			SetLog("Building: " & $aBuildingName[1], $COLOR_INFO)
 			; Verify if is Builder Hall and If is to Upgrade
@@ -295,15 +301,27 @@ Func GetUpgradeButton($sUpgButtom = "", $Debug = False, $bDebugImage = $g_bDebug
 				SetLog("Ups! Wall is not to Upgrade!", $COLOR_ERROR)
 				Return False
 			EndIf
-			Click($g_iQuickMISX, $g_iQuickMISY, 1)
+
+			ClickP($aUpgradeIcon)
+			
+			; wait for Upgrade Window to open
 			If _Sleep(1500) Then Return
-			If QuickMIS("BC1", $sUpgButtom, $aBtnPos[0], $aBtnPos[1], $aBtnPos[0] + $aBtnPos[2], $aBtnPos[1] + $aBtnPos[3], True, $Debug) Then
-				Click($g_iQuickMISX, $g_iQuickMISY, 1)
+
+			; missing check for Upgrade Window
+
+			If $bDebugImage Then SaveDebugDiamondImage("GetUpgradeButton", $sUpgradeButtonDiamond)
+			
+			; search for 'resources' upgrade button
+			Local $aUpgradeButton = decodeSingleCoord(findImage("GetUpgradeButon", $sUpgButton, $sUpgradeButtonDiamond, 1, True))
+			If IsArray($aUpgradeButton) And UBound($aUpgradeButton) = 2 Then
+			
+				ClickP($aUpgradeButton)
+				
 				If isGemOpen(True) Then
 					SetLog("Upgrade stopped due to insufficient loot", $COLOR_ERROR)
-					ClickAway()
-					If _Sleep(500) Then Return
-					ClickAway()
+					CloseWindow() ; GEM Window
+					CloseWindow() ; upgrade Window
+					
 					Return False
 				Else
 					SetLog($aBuildingName[1] & " Upgrading!", $COLOR_INFO)
@@ -311,7 +329,8 @@ Func GetUpgradeButton($sUpgButtom = "", $Debug = False, $bDebugImage = $g_bDebug
 					Return True
 				EndIf
 			Else
-				ClickAway()
+				;ClickAway()
+				CloseWindow()
 				SetLog("Not enough Resources to Upgrade " & $aBuildingName[1] & " !", $COLOR_ERROR)
 			EndIf
 
@@ -348,9 +367,10 @@ Func NewBuildings($aResult, $bDebugImage = $g_bDebugImageSave)
 		If _Sleep(3000) Then Return
 
 		; If exist Clocks
-		Local $ClocksCoordinates = decodeMultipleCoords(findImage("AutoUpgradeClock", $g_sImgAutoUpgradeClock & "\*" ,GetDiamondFromRect("20,250,700,625") , 8, $Screencap))
+		Local $sSearchDiamond =  GetDiamondFromRect2(20, 220 + $g_iMidOffsetY, 700, 595 + $g_iMidOffsetY)
+		Local $ClocksCoordinates = decodeMultipleCoords(findImage("AutoUpgradeClock", $g_sImgAutoUpgradeClock & "\*" , $sSearchDiamond, 8, $Screencap))
 
-		If $bDebugImage Then SaveDebugRectImage("AutoUpgradeClock", "20,250,700,625")
+		If $bDebugImage Then SaveDebugDiamondImage("AutoUpgradeClock", $sSearchDiamond)
 
 		If UBound($ClocksCoordinates) > 0 Then
 			SetLog("[Clocks]: " & UBound($ClocksCoordinates), $COLOR_DEBUG)
@@ -360,7 +380,8 @@ Func NewBuildings($aResult, $bDebugImage = $g_bDebugImageSave)
 				
 				; Just in Cause
 				If UBound($Coordinates) <> 2 Then
-					Click(820, 38, 1) ; exit from Shop
+					;Click(820, 38, 1) ; exit from Shop
+					CloseWindow()
 					ExitLoop
 				EndIf
 				
@@ -384,7 +405,8 @@ Func NewBuildings($aResult, $bDebugImage = $g_bDebugImageSave)
 						
 						If $i = UBound($ClocksCoordinates) - 1 Then
 							If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources![1]", $COLOR_DEBUG)
-							Click(820, 38, 1) ; exit from Shop
+							;Click(820, 38, 1) ; exit from Shop
+							CloseWindow()
 							ExitLoop
 						EndIf
 						ContinueLoop						
@@ -395,7 +417,8 @@ Func NewBuildings($aResult, $bDebugImage = $g_bDebugImageSave)
 						If IsArray($aiWallCoord) And UBound($aiWallCoord) = 2 Then
 							SetLog("Found Wall in Building Menu Tile")
 							If $bDebugImage Then SaveDebugRectImage("AutoUpgradeBBwall", $aTileArea)
-							Click(820, 38, 1) ; exit from Shop
+							;Click(820, 38, 1) ; exit from Shop
+							CloseWindow()
 							
 							If _Sleep(100) Then Return False
 															
@@ -471,15 +494,19 @@ Func NewBuildings($aResult, $bDebugImage = $g_bDebugImageSave)
 				Else
 					If $bDebugImage Then SaveDebugRectImage("NoWhiteZeros", $aCostArea)
 					If $g_bDebugSetlog Then SetDebugLog("Slot without enough resources![2]", $COLOR_DEBUG)
-					If $i = UBound($ClocksCoordinates) - 1 Then Click(820, 38, 1)
+					If $i = UBound($ClocksCoordinates) - 1 Then CloseWindow() ;Click(820, 38, 1)
 				EndIf
 			Next
 		Else
 			SetLog("Slot without enough resources![3]", $COLOR_INFO)
-			Click(820, 38, 1) ; exit from Shop
+			;Click(820, 38, 1) ; exit from Shop
+			CloseWindow()
 		EndIf
 	EndIf
 
+	SetLog("Failed to place new building")
+
+	If _Sleep(1000) Then Return
 	Return False
 
 EndFunc   ;==>NewBuildings
@@ -504,24 +531,24 @@ EndFunc
 
 
 Func FinishNow($bDebugImage = $g_bDebugImageSave)
-
+	SetLog("Using GEMS to Finish Now")
 	Local $sFshNowDir = @ScriptDir & "\imgxml\Resources\BuildersBase\AutoUpgrade\FinishNow\*"
 	Local $sImgBBFshNowWindow =  @ScriptDir & "\imgxml\Windows\BBFshNowWindow*"
 
-	Local $aFshNowSearch = "300,590,600,670"
+	Local $aFshNowSearch = GetDiamondFromRect2(140, 531 + $g_iBottomOffsetY, 720, 611 + $g_iBottomOffsetY)
 
-	Local $aiFshNowBtn = decodeSingleCoord(findImage("AutoUpgradeFshNow", $sFshNowDir, GetDiamondFromRect($aFshNowSearch), 1, True))
+	Local $aiFshNowBtn = decodeSingleCoord(findImage("AutoUpgradeFshNow", $sFshNowDir, $aFshNowSearch, 1, True))
 
-	If $bDebugImage Then SaveDebugRectImage("AutoUpgradeFshNow", $aFshNowSearch)
+	If $bDebugImage Then SaveDebugDiamondImage("AutoUpgradeFshNow", $aFshNowSearch)
 
 	If IsArray($aiFshNowBtn) And UBound($aiFshNowBtn) = 2 Then
 		ClickP($aiFshNowBtn)
 
 		If _Sleep(250) Then Return
 
-		If IsWindowOpen($sImgBBFshNowWindow, 0, 0, GetDiamondFromRect("330,260,510,300")) Then
+		If IsWindowOpen($sImgBBFshNowWindow, 0, 0, GetDiamondFromRect2(330, 230 + $g_iMidOffsetY, 510, 270 + $g_iMidOffsetY)) Then
 		;If IsWindowOpen($sImgBBFshNowWindow) Then
-			Click(427, 423)
+			Click(427, 393 + $g_iMidOffsetY)
 		EndIf
 	EndIf
 	

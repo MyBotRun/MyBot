@@ -29,6 +29,7 @@ Global Const $g_sImgGfxError = @ScriptDir & "\imgxml\other\GfxError*"
 Global Const $g_sImgError = @ScriptDir & "\imgxml\other\Error[[Android]]*"
 Global Const $g_sImgOutOfSync = @ScriptDir & "\imgxml\other\Oos[[Android]]*"
 Global Const $g_sImgConnectionLost = @ScriptDir & "\imgxml\other\ConnectionLost[[Android]]*"
+Global Const $g_sImgConnectionError = @ScriptDir & "\imgxml\other\ConnectionError[[Android]]*"
 Global Const $g_sImgMaintenance = @ScriptDir & "\imgxml\other\Maintenance*"
 Global Const $G_sImgImportantNotice = @ScriptDir & "\imgxml\other\ImportantNotice[[Android]]*"
 Global Const $g_sImgOptUpdateCoC = @ScriptDir & "\imgxml\other\OptUpdateCoC*"
@@ -59,7 +60,6 @@ Global Const $g_sImgLabResearch = @ScriptDir & "\imgxml\Research\Laboratory\"
 #EndRegion
 
 #Region Clan Capital
-Global $g_sImgClanCapitalTutorial = @ScriptDir & "\imgxml\Resources\ClanCapital\Tutorial\"
 Global $g_sImgCCMap = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\"
 Global $g_sImgCCMapName = @ScriptDir & "\imgxml\Resources\ClanCapital\CapitalMap\"
 Global $g_sImgCCMenuTriangle = @ScriptDir & "\imgxml\Resources\ClanCapital\CCMap\MenuTriangle\"
@@ -123,6 +123,7 @@ Global $g_sImgChatIUnterstand = @ScriptDir & "\imgxml\DonateCC\donateccwbl\iunde
  Global $g_sImgAUpgradeEndBoost = @ScriptDir & "\imgxml\Resources\Auto Upgrade\EndBoost\EndBoost*"
  Global $g_sImgAUpgradeEndBoostOKBtn = @ScriptDir & "\imgxml\Resources\Auto Upgrade\EndBoost\EndBoostOKBtn*"
  Global $g_sImgResourceIcon = @ScriptDir & "\imgxml\Resources\Auto Upgrade\ResourceIcon\"
+  Global $g_sImgWallResource = @ScriptDir & "\imgxml\Resources\Auto Upgrade\UpgradeWalls\"
 #EndRegion
 
 #Region Auto Upgrade Builder Base

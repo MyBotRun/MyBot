@@ -28,7 +28,7 @@ Global $aIsMain[4] = [280, 9, 0x77BDE0, 20] ; Main Screen, Builder Info Icon
 Global $aIsMainGrayed[4] = [278, 9, 0x3C5F70, 15] ; Main Screen, Builder Info Icon grayed
 Global $aIsOnBuilderBase[4] = [838, 18, 0xffff46, 10] ; Check the Gold Coin from resources , is a square not round
 
-Global $aIsConnectLost[4] = [255, 271 + $g_iMidOffsetY, 0x33B5E5, 20] ; COC message : 'Connection Lost' network error or annother device
+Global $aIsConnectLost[4] = [240, 385 + $g_iMidOffsetY, 0x79BBB5, 20] ; COC message : 'Connection Lost' network error or annother device
 Global $aIsCheckOOS[4] = [223, 272 + $g_iMidOffsetY, 0x33B5E5, 20] ; COC message : 'Connection Lost' network error or annother device
 Global $aReloadButton[4] = [443, 408 + $g_iMidOffsetY, 0x282828, 10] ; Reload Coc Button after Out of Sync, 860x780
 Global $aAttackButton[2] = [60, 614 + $g_iBottomOffsetY] ; Attack Button, Main Screen
@@ -83,9 +83,9 @@ Global $aIsTrainPgChk2[4] = [762, 328 + $g_iMidOffsetY, 0xF18439, 10] ; Main Scr
 Global $aRtnHomeCloud1[4] = [56, 592 + $g_iBottomOffsetY, 0x0A223F, 15] ; Cloud Screen, during search, blue pixel in left eye
 Global $aRtnHomeCloud2[4] = [72, 592 + $g_iBottomOffsetY, 0x103F7E, 15] ; Cloud Screen, during search, blue pixel in right eye
 Global $aDetectLang[2] = [16, 634 + $g_iBottomOffsetY] ; Detect Language, bottom left Attack button must read "Attack"
-Global $aGreenArrowTrainTroops[2] = [310, 127]
-Global $aGreenArrowBrewSpells[2] = [467, 127]
-Global $aGreenArrowTrainSiegeMachines[2] = [623, 127]
+Global $aGreenArrowTrainTroops[2] = [310, 97 + $g_iMidOffsetY]
+Global $aGreenArrowBrewSpells[2] = [467, 97 + $g_iMidOffsetY]
+Global $aGreenArrowTrainSiegeMachines[2] = [623, 97 + $g_iMidOffsetY]
 Global $g_aShopWindowOpen[4] = [804, 54, 0xC00508, 15] ; Red pixel in lower right corner of RED X to close shop window
 Global $aTreasuryWindow[4] = [689, 138 + $g_iMidOffsetY, 0xFF8D95, 20] ; Redish pixel above X to close treasury window
 Global $aAttackForTreasury[4] = [88, 619 + $g_iMidOffsetY, 0xF0EBE8, 5] ; Red pixel below X to close treasury window
@@ -115,14 +115,14 @@ Global $aWonThreeStarAtkRprt[4] = [534, 180 + $g_iMidOffsetY, 0xC8CAC7, 30] ; Ce
 ; pixel color: location information								BS 850MB (Reg GFX), BS 500MB (Med GFX) : location
 
 Global $NextBtn[4] = [780, 546 + $g_iBottomOffsetY, 0xD34300, 20] ;  Next Button
-Global $a12OrMoreSlots[4] = [16, 648, 0x4583B9, 25] ; Attackbar Check if 12+ Slots exist
-Global $a12OrMoreSlots2[4] = [16, 648, 0x7E2327, 25] ; Attackbar Check if 12+ Slots exist SuperTroops
+Global $a12OrMoreSlots[4] = [16, 588 + $g_iBottomOffsetY, 0x4583B9, 25] ; Attackbar Check if 12+ Slots exist
+Global $a12OrMoreSlots2[4] = [16, 588 + $g_iBottomOffsetY, 0x7E2327, 25] ; Attackbar Check if 12+ Slots exist SuperTroops
 Global $aDoubRowAttackBar[4] = [68, 486, 0xFC5D64, 20]
 Global $aTroopIsDeployed[4] = [0, 0, 0x404040, 20] ; Attackbar Remain Check X and Y are Dummies
 Global Const $aIsAttackPage[4] = [18, 548 + $g_iBottomOffsetY, 0xcf0d0e, 20] ; red button "end battle" - left portion
 
 ; 1 - Dark Gray : Castle filled/No Castle | 2 - Light Green : Available or Already made | 3 - White : Available or Castle filled/No Castle
-Global $aRequestTroopsAO[6] = [761, 592, 0x565656, 0x71BA2F, 0xFFFFFE, 25] ; Button Request Troops in Army Overview  (x,y, Gray - Full/No Castle, Green - Available or Already, White - Available or Full)
+Global $aRequestTroopsAO[6] = [761, 562 + $g_iMidOffsetY, 0x565656, 0x71BA2F, 0xFFFFFE, 25] ; Button Request Troops in Army Overview  (x,y, Gray - Full/No Castle, Green - Available or Already, White - Available or Full)
 
 Global Const $aOpenChatTab[4] = [19, 335 + $g_iMidOffsetY, 0xE88D27, 20]
 Global Const $aCloseChat[4] = [331, 330 + $g_iMidOffsetY, 0xF0951D, 20] ; duplicate with $aChatTab above, need to rename and fix all code to use one?
@@ -162,9 +162,9 @@ Global $aButtonConnectedSCID[4] = [640, 160 + $g_iMidOffsetY, 0x2D89FD, 20] ; Se
 Global $aCloseTabSCID[4] = [831, 57] ; Button Close Supercell ID tab
 
 ;Train
-Global $aButtonEditArmy[4] = [800, 542, 0xDDF685, 25]
-Global $aButtonRemoveTroopsOK1[4] = [747, 582, 0x76BF2F, 20]
-Global $aButtonRemoveTroopsOK2[4] = [500, 447, 0x6DBC1F, 20]
+Global $aButtonEditArmy[4] = [800, 512 + $g_iMidOffsetY, 0xDDF685, 25]
+Global $aButtonRemoveTroopsOK1[4] = [747, 552 + $g_iMidOffsetY, 0x76BF2F, 20]
+Global $aButtonRemoveTroopsOK2[4] = [500, 417 + $g_iMidOffsetY, 0x6DBC1F, 20]
 
 ;Change Language To English
 Global $aButtonLanguage[4] = [620, 275 + $g_iMidOffsetY, 0xDDF685, 20]

@@ -30,7 +30,9 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 		If _Sleep($DELAYCHECKARMYCAMP5) Then Return
 	EndIf
 
-	Local $sSpellDiamond = GetDiamondFromRect("23,366,585,400")
+	;Local $sSpellDiamond = GetDiamondFromRect("23,366,585,400")
+	Local $sSpellDiamond = GetDiamondFromRect2(23, 336 + $g_iMidOffsetY, 585, 370 + $g_iMidOffsetY)
+
 	Local $aCurrentSpells = findMultiple(@ScriptDir & "\imgxml\ArmyOverview\Spells", $sSpellDiamond, $sSpellDiamond, 0, 1000, 0, "objectname,objectpoints", $bNeedCapture) ; Returns $aCurrentSpells[index] = $aArray[2] = ["SpellShortName", CordX,CordY]
 
 	Local $aTempSpellArray, $aSpellCoords
@@ -51,7 +53,7 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 
 			$aSpellCoords = StringSplit($aTempSpellArray[1], ",", $STR_NOCOUNT) ; Split the Coordinates where the Spell got found into X and Y
 			If UBound($aSpellCoords) < 2  Then ContinueLoop
-			$g_aiCurrentSpells[$iSpellIndex] = Number(getBarracksNewTroopQuantity(Slot($aSpellCoords[0], $aSpellCoords[1]), 341, $bNeedCapture)) ; Get The Quantity of the Spell, Slot() Does return the exact spot to read the Number from
+			$g_aiCurrentSpells[$iSpellIndex] = Number(getBarracksNewTroopQuantity(Slot($aSpellCoords[0], $aSpellCoords[1]), 311 + $g_iMidOffsetY, $bNeedCapture)) ; Get The Quantity of the Spell, Slot() Does return the exact spot to read the Number from
 
 			$sSpellName = $g_aiCurrentSpells[$iSpellIndex] >= 2 ? $g_asSpellNames[$iSpellIndex] & " Spells" : $g_asSpellNames[$iSpellIndex] & " Spell" ; Select the right Spell Name, If more than one then use Spells at the end
 			$aCurrentSpellsLog[$iSpellIndex][0] = $sSpellName
@@ -65,8 +67,8 @@ Func getArmySpells($bOpenArmyWindow = False, $bCloseArmyWindow = False, $bCheckW
 		If $aCurrentSpellsLog[$index][1] > 0 And $bSetLog Then SetLog(" - " & $aCurrentSpellsLog[$index][1] & " " & $aCurrentSpellsLog[$index][0] & " Brewed", $COLOR_SUCCESS)
 	Next
 
-	If $bCloseArmyWindow Then
-		ClickAway()
-		If _Sleep($DELAYCHECKARMYCAMP4) Then Return
-	EndIf
+	If $bCloseArmyWindow Then CloseWindow()
+	;	ClickAway()
+	;	If _Sleep($DELAYCHECKARMYCAMP4) Then Return
+	;EndIf
 EndFunc   ;==>getArmySpells

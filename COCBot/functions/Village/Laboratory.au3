@@ -15,8 +15,8 @@
 Local $iSlotWidth = 94, $iDistBetweenSlots = 12 ; use for logic to upgrade troops.. good for generic-ness
 Local $iYMidPoint = 468 ;Space between rows in lab screen.  CHANGE ONLY WITH EXTREME CAUTION.
 Local $iPicsPerPage = 12, $iPages = 4 ; used to know exactly which page the users choice is on
-Local $sLabWindow = "99,122,760,616", $sLabTroopsSection = "115,363,750,577", $sLabTroopLastPage = "435,363,750,577"
-;$sLabTroopLastPage for partial last page, currently 3 columns of siege machines.
+Local $sLabWindow = "99,122,760,616", $sLabTroopsSection = "115,363,750,577", $sLabTroopLastPage = "215,363,750,577"
+;$sLabTroopLastPage for partial last page, currently 5 columns.
 Local $sLabWindowDiam = GetDiamondFromRect($sLabWindow), $sLabTroopsSectionDiam = GetDiamondFromRect($sLabTroopsSection), $sLabTroopsLastPageDiam = GetDiamondFromRect($sLabTroopLastPage) ; easy to change search areas
 
 Func TestLaboratory()

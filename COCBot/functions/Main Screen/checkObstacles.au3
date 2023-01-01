@@ -22,7 +22,7 @@ Func checkObstacles($bBuilderBase = Default) ;Checks if something is in the way 
 		; Android not available
 		Return FuncReturn(True)
 	EndIf
-	If _ColorCheck(_GetPixelColor(383, 405), Hex(0xF0BE70, 6), 20) Then
+	If _ColorCheck(_GetPixelColor(383, 375 + $g_iMidOffsetY), Hex(0xF0BE70, 6), 20) Then
 		SetLog("Found Switch Account dialog!", $COLOR_INFO)
 		PureClick(383, 375 + $g_iMidOffsetY, 1, 0, "Click Cancel")
 	EndIf
@@ -82,8 +82,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 
 		;;;;;;;##### 1- Another device #####;;;;;;;
 		$Result = getOcrReloadMessage(184, 325 + $g_iMidOffsetY, "Another Device OCR:") ; OCR text to find Another device message
-		If StringInStr($Result, "device", $STR_NOCASESENSEBASIC) Or _
-				UBound(decodeSingleCoord(FindImageInPlace("Device", $g_sImgAnotherDevice, "220,330(130,60)", False))) > 1 Then
+		If StringInStr($Result, "device", $STR_NOCASESENSEBASIC) Or UBound(decodeSingleCoord(FindImageInPlace("Device", $g_sImgAnotherDevice, "220,330(130,60)", False))) > 1 Then
 			If TestCapture() Then Return "Another Device has connected"
 			If $g_iAnotherDeviceWaitTime > 3600 Then
 				SetLog("Another Device has connected, waiting " & Floor(Floor($g_iAnotherDeviceWaitTime / 60) / 60) & " hours " & Floor(Mod(Floor($g_iAnotherDeviceWaitTime / 60), 60)) & " minutes " & Floor(Mod($g_iAnotherDeviceWaitTime, 60)) & " seconds", $COLOR_ERROR)
@@ -114,12 +113,22 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 			Return True
 		EndIf
 
-		;;;;;;;##### Connection Lost & OoS & Inactive & Maintenance #####;;;;;;;
+		;;;;;;;##### Connection Lost & Error & OoS & Inactive & Maintenance #####;;;;;;;
 		Select
 			Case UBound(decodeSingleCoord(FindImageInPlace("AnyoneThere", $g_sImgAnyoneThere, "440,340,580,390", False))) > 1 ; Inactive only
 				SetLog("Village was Inactive, Reloading CoC", $COLOR_ERROR)
 				If $g_bForceSinglePBLogoff Then $g_bGForcePBTUpdate = True
-			Case _CheckPixel($aIsConnectLost, $g_bNoCapturePixel) Or UBound(decodeSingleCoord(FindImageInPlace("ConnectionLost", $g_sImgConnectionLost, "160,300,700,450", False))) > 1 ; Connection Lost
+			Case UBound(decodeSingleCoord(FindImageInPlace("ConnectionError", $g_sImgConnectionError, "160,290,400,350", False))) > 1 ; Connection Error
+				SetLog("Connection error, waiting " & $g_iConnectionErrorWaitTime & " seconds", $COLOR_ERROR)
+				If _SleepStatus($g_iConnectionErrorWaitTime * 1000) Then Return ; wait 1 minute
+				SetLog("Reloading CoC", $COLOR_ERROR)
+				If ($g_bChkSharedPrefs Or $g_bUpdateSharedPrefs) And HaveSharedPrefs() Then
+					SetLog("Please wait for loading CoC!")
+					PushSharedPrefs()
+					If Not $bRecursive Then OpenCoC()
+					Return True
+				EndIf
+			Case _CheckPixel($aIsConnectLost, $g_bNoCapturePixel) Or UBound(decodeSingleCoord(FindImageInPlace("ConnectionLost", $g_sImgConnectionLost, "160,290,400,350", False))) > 1 ; Connection Lost
 				;  Add check for banned account :(
 				$Result = getOcrReloadMessage(171, 358 + $g_iMidOffsetY, "Check Obstacles OCR 'policy at super'=") ; OCR text for "policy at super"
 				If StringInStr($Result, "policy", $STR_NOCASESENSEBASIC) Then
@@ -225,7 +234,7 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 	EndIf
 
 	;;;;;;;##### 7- SCID Login Screen #####;;;;;;;
-	CheckLoginWithSupercellID()
+	;CheckLoginWithSupercellID()
 
 	; optional game update
 	If UBound(decodeSingleCoord(FindImageInPlace("OptUpdateCoC", $g_sImgOptUpdateCoC, "155,220,705,510", False))) > 1 Then ; Found Optional Game Update Message
@@ -330,11 +339,13 @@ Func _checkObstacles($bBuilderBase = False, $bRecursive = False) ;Checks if some
 		SetDebugLog("checkObstacles: Found Black Android Screen")
 	EndIf
 
-	If $g_bOnlySCIDAccounts Then
-		SetDebugLog("check Log in with Supercell ID login by Clicks")
+	;If $g_bOnlySCIDAccounts Then
+	;	SetDebugLog("check Log in with Supercell ID login by Clicks")
 		; check Log in with Supercell ID login screen by Clicks
-		CheckLoginWithSupercellIDScreen()
-	EndIf
+	;	CheckLoginWithSupercellIDScreen()
+	;EndIf
+
+	If CheckLoginWithSupercellIDScreen() Then Return True
 
 	; check if google account list shown and select first
 	If Not CheckGoogleSelectAccount() Then

@@ -115,7 +115,7 @@ Func GetFullName(Const $iIndex, Const $aTrainPos)
 	If $g_bDebugSetlogTrain Then SetLog("GetFullName($iIndex=" & $iIndex & ")", $COLOR_DEBUG)
 
 	If $iIndex >= $eBarb And $iIndex <= $eHunt Then
-		Local $sTroopType = ($iIndex >= $eMini ? "Dark" : "Normal")
+		Local $sTroopType = ($iIndex >= $g_iNextPageTroop ? "Dark" : "Normal")
 		Return GetFullNameSlot($aTrainPos, $sTroopType)
 	EndIf
 
@@ -195,7 +195,7 @@ EndFunc   ;==>GetRNDName
 Func GetVariable(Const $asImageToUse, Const $iIndex)
 	Local $aTrainPos[5] = [-1, -1, -1, -1, $eBarb]
 	; Capture the screen for comparison
-	_CaptureRegion2(25, 375, 840, 548)
+	_CaptureRegion2(25, 345 + $g_iMidOffsetY, 840, 518 + $g_iMidOffsetY)
 
 	Local $iError = ""
 	For $i = 1 To $asImageToUse[0]
